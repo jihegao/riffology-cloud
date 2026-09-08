@@ -1,0 +1,85 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "riffology-m2-product-local",
+  "main": "../services/gateway/index.ts",
+  "compatibility_date": "2026-09-06",
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_do_not_populate_process_env"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": { "directory": "../services/web", "binding": "ASSETS", "run_worker_first": true },
+  "secrets": {
+    "required": [
+      "BETTER_AUTH_SECRET",
+      "GOOGLE_CLIENT_ID",
+      "GOOGLE_CLIENT_SECRET",
+      "M2_MODEL_PROXY_REQUEST_KEY",
+      "M2_TOOL_BRIDGE_REQUEST_KEY",
+      "M2_MODEL_TURN_CAPABILITY_KEY",
+      "M2_PROJECT_EFFECT_CAPABILITY_KEY",
+      "M2_OPENCODE_GO_API_KEY"
+    ]
+  },
+  "vars": {
+    "APP_ORIGIN": "http://127.0.0.1:8797",
+    "TENANT_QUOTA_CAPACITY": "1",
+    "TENANT_QUOTA_POLICY_VERSION": "m1-v1",
+    "M2_TURNS_ENABLED": "false",
+    "M2_MODEL_PROVIDER_ENABLED": "false",
+    "M2_MODEL_BUDGET_POLICY_VERSION": "m2-token-v1",
+    "M2_MODEL_PROVIDER": "opencode-go",
+    "M2_MODEL_ID": "gpt-5.6-luna",
+    "M2_MODEL_MAX_INPUT_TOKENS_PER_CALL": "262144",
+    "M2_MODEL_MAX_OUTPUT_TOKENS_PER_CALL": "4096",
+    "M2_MODEL_CAPABILITY_TTL_MS": "120000",
+    "MODEL_BUDGET_POLICY_VERSION": "m2-token-v1",
+    "MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN": "4",
+    "MODEL_BUDGET_MAX_DISPATCHED_CALLS_PER_TURN": "2",
+    "MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL": "262144",
+    "MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL": "4096",
+    "MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN": "532480"
+  },
+  "d1_databases": [
+    { "binding": "CATALOG", "database_name": "riffology-catalog-local", "database_id": "local-catalog", "migrations_dir": "../services/catalog/migrations" }
+  ],
+  "durable_objects": {
+    "bindings": [
+      { "name": "TENANT_QUOTA", "class_name": "TenantQuota" },
+      { "name": "WORKSPACE_AGENT", "class_name": "WorkspaceAgent" },
+      { "name": "PROJECT_RUNTIME", "class_name": "ProjectRuntime" },
+      { "name": "PRODUCT_TURN_RUNTIME", "class_name": "ProductTurnRuntime" },
+      { "name": "REVISION_STORE", "class_name": "RevisionStore" },
+      { "name": "TOOL_ARTIFACT_STORE", "class_name": "ToolArtifactStore" },
+      { "name": "TENANT_MODEL_BUDGET", "class_name": "TenantModelBudget" },
+      { "name": "PROJECT_SANDBOX", "class_name": "ProjectToolSandbox" },
+      { "name": "TRUSTED_PI_SANDBOX", "class_name": "TrustedPiSandbox" },
+      { "name": "TOOL_BRIDGE_AGENT", "class_name": "ToolBridgeAgent" }
+    ]
+  },
+  "services": [
+    { "binding": "TOOL_BRIDGE", "service": "riffology-m2-product-local", "entrypoint": "ToolBridgeService" },
+    { "binding": "MODEL_PROXY", "service": "riffology-m2-product-local", "entrypoint": "ModelProxyService" }
+  ],
+  "containers": [
+    { "name": "riffology-project-local", "class_name": "ProjectRuntime", "image": "../services/runtime/Dockerfile.cloud", "instance_type": "lite", "max_instances": 1 },
+    { "name": "riffology-m2-project-sandbox-local", "class_name": "ProjectToolSandbox", "image": "../services/project-tools/Dockerfile.cloud", "instance_type": "lite", "max_instances": 1 },
+    { "name": "riffology-m2-trusted-pi-local", "class_name": "TrustedPiSandbox", "image": "../Dockerfile.trusted-pi.cloud", "instance_type": "lite", "max_instances": 1 }
+  ],
+  "exports": {
+    "TenantQuota": { "type": "durable-object", "storage": "sqlite" },
+    "WorkspaceAgent": { "type": "durable-object", "storage": "sqlite" },
+    "ProductTurnRuntime": { "type": "durable-object", "storage": "sqlite" },
+    "RevisionStore": { "type": "durable-object", "storage": "sqlite" },
+    "ToolArtifactStore": { "type": "durable-object", "storage": "sqlite" },
+    "TenantModelBudget": { "type": "durable-object", "storage": "sqlite" },
+    "ToolBridgeAgent": { "type": "durable-object", "storage": "sqlite" },
+    "ProjectRuntime": { "type": "durable-object", "storage": "sqlite", "container": "riffology-project-local" },
+    "ProjectToolSandbox": { "type": "durable-object", "storage": "sqlite", "container": "riffology-m2-project-sandbox-local" },
+    "TrustedPiSandbox": { "type": "durable-object", "storage": "sqlite", "container": "riffology-m2-trusted-pi-local" }
+  },
+  "r2_buckets": [
+    { "binding": "WORKSPACE_CHECKPOINTS", "bucket_name": "riffology-workspace-local" }
+  ],
+  "triggers": { "crons": ["* * * * *"] },
+  "observability": { "enabled": true },
+  "dev": { "ip": "127.0.0.1", "port": 8797 }
+}

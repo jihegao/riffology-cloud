@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-tool-artifact-local-20260907",
+  "observedAt": "2026-09-07T10:21:30Z",
+  "environment": "local-workerd-colima-project-sandbox-r2",
+  "probe": {
+    "recordStatus": "completed",
+    "effectId": "b1f75952-aead-4dd0-9b52-14f8926f0185",
+    "artifact": {
+      "schemaVersion": 1,
+      "artifactId": "artifact-31c742a8387812331e9f7b8668f34c8181a02667cca153336f787a6f70de",
+      "operation": "read",
+      "mediaType": "application/json",
+      "bytes": 20146,
+      "sha256": "9dc5bd8770a628d664de3416d94dbbde8d88a37ef8d77f2293ec0a67756eb22b",
+      "createdAt": 1788775882827
+    },
+    "content": {
+      "kind": "read",
+      "path": "large-artifact.txt",
+      "bytes": 20000
+    },
+    "replayStable": true,
+    "r2ObjectCount": 1,
+    "publicReceiptLeaksObjectKey": false
+  },
+  "checks": {
+    "typecheckPassed": true,
+    "m2": {
+      "tests": 295,
+      "pass": 295,
+      "fail": 0,
+      "skipped": 0
+    },
+    "gitDiffCheckPassed": true
+  },
+  "cleanup": {
+    "wranglerStopped": true,
+    "port8796Listening": false,
+    "matchingRunningContainers": 0,
+    "ephemeralDevVarsRemoved": true
+  },
+  "mutations": {
+    "localContainerExecution": true,
+    "localR2Write": true,
+    "cloudDeploy": false,
+    "cloudResourceMutation": false,
+    "modelCalls": 0,
+    "commit": false,
+    "push": false
+  }
+}

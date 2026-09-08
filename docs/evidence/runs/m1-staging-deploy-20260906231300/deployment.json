@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T15:16:08.752072Z",
+  "environment": "cloudflare-staging",
+  "passed": true,
+  "g1Passed": false,
+  "source": {
+    "gitHead": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+    "dirty": true,
+    "sha256": "5a869f6a4bb0e851acc74d0eb0a625608f6bfb3162b8397a2a8e57471bd6d0ba",
+    "localChecks": "../m1-local-20260906151249505/local-checks.json"
+  },
+  "worker": {
+    "name": "riffology-m1-gateway-staging",
+    "deploymentId": "8428fd9d-6b7b-4ce5-9c90-da1ed81e514b",
+    "versionId": "a10264bc-8f82-422e-bdfe-4a659efc6abc",
+    "percentage": 100,
+    "workersDev": false,
+    "previewUrls": false
+  },
+  "route": {
+    "hostname": "m1.riff-demo.gaojihe.cn",
+    "homepageStatus": 200,
+    "unauthenticatedApiStatus": 401,
+    "securityHeaders": true
+  },
+  "legacy": {
+    "worker": "riffology-demo",
+    "workerExists": false,
+    "dnsResolves": false,
+    "routeRetained": false
+  },
+  "d1": {
+    "name": "riffology-catalog-staging",
+    "id": "993f2fd9-a135-4a93-9caa-10828dec6635",
+    "migrationsApplied": [
+      "0001_catalog.sql",
+      "0002_auth.sql",
+      "0003_provisioning.sql",
+      "0004_operator_invitations.sql",
+      "0005_initial_operator.sql"
+    ],
+    "bootstrapInvitationState": "pending",
+    "tokenStored": "hash-only"
+  },
+  "r2": {
+    "name": "riffology-m1-workspace-checkpoints-staging",
+    "private": true
+  },
+  "secrets": {
+    "names": [
+      "BETTER_AUTH_SECRET",
+      "GOOGLE_CLIENT_ID",
+      "GOOGLE_CLIENT_SECRET"
+    ],
+    "valuesRecorded": false
+  },
+  "container": {
+    "application": "riffology-m1-project-staging",
+    "applicationId": "a035c941-2207-406e-97aa-a42ab6e9d249",
+    "imageDigest": "sha256:bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00",
+    "instanceType": "basic",
+    "maxInstances": 2,
+    "activeInstances": 0,
+    "network": "private"
+  },
+  "oauth": {
+    "clientCreated": true,
+    "testing": true,
+    "testUsersObserved": 1,
+    "authorizedDomainPrepared": "gaojihe.cn",
+    "brandingSaved": false,
+    "consentFlowVerified": false
+  },
+  "modelCallsAdded": 0,
+  "limitations": [
+    "Google OAuth branding domain has not been saved or exercised.",
+    "Only one real Google identity is currently available; cross-identity G1 remains open.",
+    "M2 durable Turn dispatcher and Pi runtime are not deployed."
+  ]
+}

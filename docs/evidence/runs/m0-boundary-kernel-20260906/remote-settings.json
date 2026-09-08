@@ -1,0 +1,41 @@
+{
+  "observedAt": "2026-09-06T04:02:54.613Z",
+  "status": 200,
+  "success": true,
+  "errors": [],
+  "bindings": [
+    {
+      "type": "plain_text",
+      "name": "ENVIRONMENT"
+    },
+    {
+      "type": "plain_text",
+      "name": "M0_EXECUTION_ENVIRONMENT"
+    },
+    {
+      "type": "secret_text",
+      "name": "M0_PROBE_TOKEN"
+    },
+    {
+      "type": "durable_object_namespace",
+      "name": "ProjectSandbox",
+      "class_name": "ProjectSandbox",
+      "namespace_id": "34cc750fbe3046d79a0cc0c5a4eca171"
+    },
+    {
+      "type": "plain_text",
+      "name": "PROTOCOL_VERSION"
+    },
+    {
+      "type": "durable_object_namespace",
+      "name": "TrustedSandbox",
+      "class_name": "TrustedSandbox",
+      "namespace_id": "9378e4a1e1e546d09fb2c0ef5a45c25e"
+    }
+  ],
+  "compatibility_date": "2026-09-05",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "nodejs_compat_do_not_populate_process_env"
+  ]
+}

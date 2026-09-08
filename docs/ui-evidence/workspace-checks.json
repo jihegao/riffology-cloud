@@ -1,0 +1,173 @@
+{
+  "date": "2026-09-05",
+  "browser": "152.0.7977.76",
+  "results": [
+    [
+      "empty",
+      "先写下你想探索的问题。"
+    ],
+    [
+      "cancel",
+      "演示回合已取消。此前保存的版本保留，未发生真实模型消费。"
+    ],
+    [
+      "send",
+      "已完成一次界面演示：围绕「请记录这个 Session 的假设」读取模型、更新参数并保存至 r_019。文件与运行页面展示当前项目的原型状态。真实 Pi Agent 与仿真执行尚未连接。"
+    ],
+    [
+      "newSession",
+      "新 Session 3\nSession 03",
+      "从一个问题开始\n\n描述你想理解的系统，或让 Agent 帮你探索\n「机场地勤保障」的模型。\n\n梳理模型假设"
+    ],
+    [
+      "restoreSession",
+      "已完成一次界面演示：围绕「请记录这个 Session 的假设」读取模型、更新参数并保存至 r_019。文件与运行页面展示当前项目的原型状态。真实 Pi Agent 与仿真执行尚未连接。"
+    ],
+    [
+      "files",
+      "{\n  \"name\": \"资源配置比较\",\n  \"groups\": [4, 6],\n  \"repetitions\": 20,\n  \"base_seed\": 20260101\n}"
+    ],
+    [
+      "diff",
+      "− groups = 2\n+ groups = 4"
+    ],
+    [
+      "preview",
+      "已暂停 · 演示",
+      "已保障航班\n24架次\n平均等待\n8.4min\n资源利用率\n72%"
+    ],
+    [
+      "budgetCancel",
+      "调整预算"
+    ],
+    [
+      "negativeBudget",
+      "请输入 0.1 到 1000 元之间的预算。"
+    ],
+    [
+      "budgetSaved",
+      "继续回合",
+      "预算 ¥10.00 "
+    ],
+    [
+      "offline",
+      "连接已断开 · 已保存的内容仍可查看。重新连接后恢复事件。\n重连"
+    ],
+    [
+      "timeout",
+      "模型调用超时 · 已保存的文件保留，可重试当前演示回合。\n重试"
+    ],
+    [
+      "observation",
+      "Browser 观察暂不可用 · 预览与文件保持可用，Agent 不会声称已经观察。\n重试观察"
+    ],
+    [
+      "observe",
+      "示例观察：当前版本 r_019，保障组 6 组，2 架飞机等待，3 个保障位可见。观察与用户预览关联同一示例状态 state_demo。"
+    ],
+    [
+      "cancelStop",
+      "保障资源配置比较\n运行中\n\n4 组 / 6 组保障资源 · 20 次重复\n\n已完成 0 / 20\n失败 0\n\n输入 r_019 · 固定种子清单\n\n停止实验\n日志"
+    ],
+    [
+      "stopRun",
+      "保障资源配置比较\n已停止\n\n4 组 / 6 组保障资源 · 20 次重复\n\n已完成 1 / 20\n失败 0\n\n输入 r_019 · 固定种子清单\n\n重新运行\n日志\n结果"
+    ],
+    [
+      "csvRows",
+      "sample,groups,seed,waiting_minutes,input_revision\n1,4,20260101,12.4,r_019\n"
+    ],
+    [
+      "logs",
+      "[10:35:01] input_revision: r_019\n[10:35:02] plan: 20 repetitions\n[10:35:02] groups: [4, 6]\n[10:35:03] completed: 1/20\n[10:35:03] failed: 0\n[10:35:03] status: stopped\n\nUI demonstration logs"
+    ],
+    [
+      "attachment",
+      "请参考附件「example.csv」继续分析。"
+    ],
+    [
+      "focusReturn",
+      "附加文件"
+    ],
+    [
+      "focusTrap",
+      false
+    ],
+    [
+      "speed",
+      "--taxi-duration:5s"
+    ],
+    [
+      "reload",
+      "地勤资源优化\nSession 01"
+    ],
+    [
+      "focusTrapFixed",
+      true
+    ],
+    [
+      "completeRun",
+      "保障资源配置比较\n已完成\n\n4 组 / 6 组保障资源 · 20 次重复\n\n已完成 20 / 20\n失败 0\n\n输入 r_019 · 固定种子清单\n\n重新运行\n日志\n结果"
+    ],
+    [
+      "mobileDrawer",
+      1
+    ],
+    [
+      "drawerClose",
+      0
+    ],
+    [
+      "tabKeyboard",
+      "Changes\n3",
+      "workspace-tab-changes"
+    ],
+    [
+      "unknownRoute",
+      "地勤资源优化\nSession 01"
+    ],
+    [
+      "history",
+      "地勤资源优化\nSession 01"
+    ],
+    [
+      "resetBalance",
+      "¥126.30"
+    ]
+  ],
+  "contrast": [
+    [
+      ".nav-item.active",
+      "7.24"
+    ],
+    [
+      ".message-content",
+      "5.25"
+    ],
+    [
+      ".user-bubble",
+      "6.09"
+    ],
+    [
+      ".panel-tab.active",
+      "6.21"
+    ],
+    [
+      ".sim-metrics small",
+      "5.13"
+    ],
+    [
+      ".observation-bar",
+      "4.85"
+    ],
+    [
+      ".ws-bottom-bar",
+      "5.01"
+    ],
+    [
+      ".composer-caption",
+      "5.22"
+    ]
+  ],
+  "errors": []
+}

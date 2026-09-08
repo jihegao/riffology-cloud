@@ -1,0 +1,39 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "riffology-m0-model-proxy",
+  "main": "../spikes/m0-model-proxy/cloud.ts",
+  "compatibility_date": "2026-09-05",
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_do_not_populate_process_env", "enable_request_signal", "request_signal_passthrough"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
+  "limits": { "cpu_ms": 1000 },
+  "env": {
+    "staging": {
+      "name": "riffology-m0-model-proxy-staging",
+      "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+      "workers_dev": true,
+      "vars": {
+        "M0_MODEL_MODE": "fixture-only",
+        "M0_CONTROL_ORIGIN": "https://riffology-m0-model-proxy-staging.jihe-gao.workers.dev",
+        "PROTOCOL_VERSION": "m0-model-proxy-v1"
+      },
+      "secrets": { "required": ["M0_PROBE_TOKEN"] },
+      "exports": { "M0ModelProxyRun": { "type": "durable-object", "storage": "sqlite" } },
+      "durable_objects": { "bindings": [{ "name": "MODEL_RUNS", "class_name": "M0ModelProxyRun" }] }
+    },
+    "go_live": {
+      "name": "riffology-m0-model-proxy-go-live-staging",
+      "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+      "workers_dev": true,
+      "vars": {
+        "M0_MODEL_MODE": "go-live-only",
+        "M0_CONTROL_ORIGIN": "https://riffology-m0-model-proxy-go-live-staging.jihe-gao.workers.dev",
+        "PROTOCOL_VERSION": "m0-model-proxy-v1"
+      },
+      "secrets": { "required": ["M0_PROBE_TOKEN", "M0_GO_API_KEY"] },
+      "exports": { "M0ModelProxyRun": { "type": "durable-object", "storage": "sqlite" } },
+      "durable_objects": { "bindings": [{ "name": "MODEL_RUNS", "class_name": "M0ModelProxyRun" }] }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "at": "2026-09-06T07:53:54.721Z",
+  "originalRunSha256": "234cd835d29b46ed073aa9d0d08c4766a540acf1433a4582478718c67da852cc",
+  "oldResultPreserved": true,
+  "originalPassed": false,
+  "cleanupConfirmed": true,
+  "modelProxyInitialized": false,
+  "modelDispatchIntents": 0,
+  "diagnosis": "A DNS answer through Resolver.setServers does not authenticate the resolver destination. The original test incorrectly promoted the answer to external destination reachability.",
+  "verifiedProjectHttpBoundary": true,
+  "verifiedPinnedDependency": true,
+  "allSecretPresenceFalse": true,
+  "followUp": "New supervisor attempt with TEST-NET DNS comparison; same unchanged proxy run/ledger and two-call allowance. Old closed DO and inactive instance retained."
+}

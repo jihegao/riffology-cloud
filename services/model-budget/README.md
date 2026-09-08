@@ -1,0 +1,9 @@
+# TenantModelBudget — M2 product quota authority
+
+`TenantModelBudget` is a private, tenant-scoped SQLite Durable Object for model-call admission. It records conservative input/output token reservations before a Model Proxy dispatch and authorizes each dispatch once. It is separate from runtime concurrency in `TenantQuota` and from the future paid `TenantBilling` balance and settlement ledger.
+
+Production configuration is required through explicit policy bindings. The policy separates reservation attempts from calls that reached the dispatch fence, so local pre-dispatch failures cannot be reported as model calls while repeated failed admission still has a hard bound. The Durable Object persists the first Tenant and policy values it sees; changed configuration blocks new reservations and dispatches until a reviewed migration updates the stored policy. Every reservation also carries the same policy version and cannot be accepted under another version.
+
+Every record binds the immutable Turn scope and submitting user's authentication version. All calls in the same stable Product Turn share one call-count and token budget even if the runtime gets a new `dispatchId`. A dispatched request with a lost result becomes `unknown`, continues to hold its full reservation, blocks another call in that Turn, and is never automatically replay-authorized. A verified usage receipt can replace the conservative reservation with observed input plus output tokens. Missing usage remains pending and retains the bound. Only a reservation proven not to have been dispatched can release its tokens.
+
+The authority contains no prices, currency, balance, payment, recharge, invoice, refund, or user-settable quota. It also does not authenticate a Trusted Pi request by itself. The Model Proxy must validate a short-lived platform capability, derive the full Turn identity, and call this authority through a private binding.

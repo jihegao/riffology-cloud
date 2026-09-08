@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-native-project-effect-20260907",
+  "observedAt": "2026-09-06T17:15:38Z",
+  "environment": "local",
+  "decision": "accepted-as-local-native-adapter-and-product-image-candidate",
+  "source": {
+    "nativeAdapterSha256": "52f33ebd7838402c51415a794a93c0a8669953ef8496a9bf4d5c82b1cee89781",
+    "effectWrapperSha256": "dc1b3cd660fcdcd2000cbf5d9b097a72536be87109f0042c5374f558e3495234",
+    "fileServiceSha256": "a1f58ccb0760013f164e811f576f216e21c2895b4fab7dc9059ff206a40a95cb",
+    "dockerfileSha256": "70fdbf1ba52ee5ccfc42731f1443c6c53419123ee70d66721c3c3d83ee2a8b1f",
+    "nativeTestSha256": "514e02b2b5e957cef9fbb660cc1c947e2829b04e682cda0be26a51fab4b544fb"
+  },
+  "sdk": {
+    "package": "@cloudflare/sandbox",
+    "version": "0.12.9",
+    "stdinOptionAvailable": false,
+    "baseImage": "docker.io/cloudflare/sandbox:0.12.9-python",
+    "baseImageDigest": "sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806"
+  },
+  "image": {
+    "tag": "riffology-m2-project-tools:local",
+    "platform": "linux/amd64",
+    "localDigest": "sha256:d991886d8e3cfa39a0ff260286e42f787d0b71d3e3245c5c73a56d6c8600d32f",
+    "buildPassed": true,
+    "fileEffect": {
+      "exitCode": 0,
+      "stdoutValidated": true,
+      "controlFileRemoved": true,
+      "targetOwnerUid": 10001,
+      "targetMode": "0600",
+      "targetContent": "native-ok"
+    },
+    "isolation": {
+      "controlDirectoryOwnerUid": 0,
+      "controlDirectoryMode": "0700",
+      "projectUserDirectoryReadExitCode": 2,
+      "worldWritableControlExitCode": 4,
+      "worldWritableControlProducedTarget": false
+    }
+  },
+  "fullChecks": {
+    "path": "../m1-local-20260906171502993/local-checks.json",
+    "sha256": "4b5e3f82a111699c3de46e9c45cddb578c7c9aa1cce8fa0b41469cef46a65982",
+    "passed": true,
+    "sourceStableDuringCheck": true,
+    "sourceCount": 277,
+    "sourceSha256": "a14aa538cf7ccd98979ae8b2dbda109b1a2e2f0c1d2bb64d97aba79858c5eb2c",
+    "m0": { "pass": 348, "skip": 1, "fail": 0 },
+    "m1": { "pass": 108, "skip": 0, "fail": 0 },
+    "m2": { "pass": 91, "skip": 0, "fail": 0 }
+  },
+  "acceptedProperties": [
+    "The SDK has no stdin option; bounded control JSON is written to a root-owned 0700 directory and consumed by a fixed wrapper command.",
+    "Only a validated effect id enters the command string; program, wrapper, cwd, environment, timeout field, process id and auto-cleanup policy are fixed by the platform.",
+    "The wrapper loops to EOF, rejects non-root or group/world-writable control files, unlinks the control file before execution and drops to uid 10001 before touching the workspace.",
+    "Native process status and exit code are checked before bounded logs are decoded; killed, error, absent-after-fence and missing evidence cannot become completed.",
+    "A mismatched write acknowledgement cannot start a process, and the native adapter never retries writeFile or startProcess."
+  ],
+  "independentFinalReview": {
+    "p0": 0,
+    "p1": 0,
+    "fixedFindings": ["partial control-file read", "control-file owner and privilege separation"]
+  },
+  "notAccepted": [
+    "real Cloudflare Sandbox RPC writeFile ownership and startProcess integration",
+    "durable SqlProjectEffectSupervisor wiring inside a ProjectToolSandbox actor",
+    "Tool Bridge RPC wiring from Trusted Pi Sandbox",
+    "cloud Container application or staging deployment",
+    "large-result immutable artifact channel",
+    "Bash privilege-drop wrapper, process registry, cancellation and watchdog",
+    "R2 Revision and Pi Session checkpoint"
+  ],
+  "mutations": {
+    "localImageBuild": true,
+    "cloudDeploy": false,
+    "cloudResourceCreate": false,
+    "modelCalls": 0,
+    "commit": false,
+    "push": false
+  }
+}

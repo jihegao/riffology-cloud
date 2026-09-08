@@ -1,0 +1,184 @@
+{
+  "trusted": {
+    "indexDigest": "sha256:42eb9a36e2aa6098c9a146c5c0f149efe29f638d8d304efea523a592aa4002dc",
+    "manifestDigest": "sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+    "configDigest": "sha256:482804a737ab81448752c2df9b8ffc714fdb398c243cef011520b6c91f4076a6",
+    "compressedLayerBytes": 272337644,
+    "runtime": {
+      "entrypoint": [
+        "/container-server/sandbox"
+      ],
+      "cmd": null
+    },
+    "attestations": [
+      {
+        "file": "trusted-provenance-1-0.json",
+        "sha256": "sha256:37a0ba3af7dc8db108099514930cb0223894f9c88a32b1a4989bd9b5105f5cd7",
+        "predicate": {
+          "buildDefinition": {
+            "buildType": "https://github.com/moby/buildkit/blob/master/docs/attestations/slsa-definitions.md",
+            "resolvedDependencies": [
+              {
+                "uri": "pkg:docker/cloudflare/sandbox@0.12.9?digest=sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe&platform=linux%2Famd64",
+                "digest": {
+                  "sha256": "4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe"
+                }
+              }
+            ],
+            "externalParameters": {
+              "configSource": {
+                "path": "m0-trusted.Dockerfile"
+              },
+              "request": {
+                "frontend": "dockerfile.v0",
+                "locals": [
+                  {
+                    "name": "context"
+                  },
+                  {
+                    "name": "dockerfile"
+                  }
+                ],
+                "root": {
+                  "configSource": {
+                    "path": "m0-trusted.Dockerfile"
+                  },
+                  "request": {
+                    "args": {
+                      "vcs:localdir:context": ".local/pi-image-build-20260905T155750Z-167375ff",
+                      "vcs:localdir:dockerfile": ".local/pi-image-build-20260905T155750Z-167375ff/infra",
+                      "vcs:revision": "16219ffcaea7c83b8b89a2e542717eeada6fe275"
+                    }
+                  }
+                },
+                "compatibilityVersion": 20
+              }
+            },
+            "internalParameters": {
+              "builderPlatform": "linux/arm64",
+              "dockerfileVersion": "1.24.0"
+            }
+          },
+          "runDetails": {
+            "builder": {
+              "id": ""
+            },
+            "metadata": {
+              "invocationId": "qmhh96kitoo8szlht7erpy5rs",
+              "startedOn": "2026-09-05T23:59:13.686921775+08:00",
+              "finishedOn": "2026-09-05T23:59:53.769330919+08:00",
+              "buildkit_metadata": {
+                "vcs": {
+                  "localdir:context": ".local/pi-image-build-20260905T155750Z-167375ff",
+                  "localdir:dockerfile": ".local/pi-image-build-20260905T155750Z-167375ff/infra",
+                  "revision": "16219ffcaea7c83b8b89a2e542717eeada6fe275"
+                }
+              },
+              "buildkit_completeness": {
+                "request": true,
+                "resolvedDependencies": false
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "project": {
+    "indexDigest": "sha256:1d82f27d7cd328aef4f7125e0e27fe42fa6a03803c97ca7783951aba385cf42f",
+    "manifestDigest": "sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+    "configDigest": "sha256:ffa7f77ec007ce13c193e9280e3c06a9d46b37cbbd3aafca4c8c38f745eda3d0",
+    "compressedLayerBytes": 361823969,
+    "runtime": {
+      "entrypoint": [
+        "/container-server/sandbox"
+      ],
+      "cmd": null
+    },
+    "attestations": [
+      {
+        "file": "project-provenance-1-0.json",
+        "sha256": "sha256:c8c780f1de5dc906ee891c04ad4edc3026d8593c96c7fffbf4b4a1bf770fc017",
+        "predicate": {
+          "buildDefinition": {
+            "buildType": "https://github.com/moby/buildkit/blob/master/docs/attestations/slsa-definitions.md",
+            "resolvedDependencies": [
+              {
+                "uri": "pkg:docker/cloudflare/sandbox@0.12.9-python?digest=sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806&platform=linux%2Famd64",
+                "digest": {
+                  "sha256": "f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806"
+                }
+              }
+            ],
+            "externalParameters": {
+              "configSource": {
+                "path": "m0-project.Dockerfile"
+              },
+              "request": {
+                "frontend": "dockerfile.v0",
+                "args": {
+                  "force-network-mode": "none"
+                },
+                "locals": [
+                  {
+                    "name": "context"
+                  },
+                  {
+                    "name": "dockerfile"
+                  }
+                ],
+                "root": {
+                  "configSource": {
+                    "path": "m0-project.Dockerfile"
+                  },
+                  "request": {
+                    "args": {
+                      "force-network-mode": "none",
+                      "vcs:localdir:context": ".local/pi-image-build-20260905T155750Z-167375ff",
+                      "vcs:localdir:dockerfile": ".local/pi-image-build-20260905T155750Z-167375ff/infra",
+                      "vcs:revision": "16219ffcaea7c83b8b89a2e542717eeada6fe275"
+                    }
+                  }
+                },
+                "compatibilityVersion": 20
+              }
+            },
+            "internalParameters": {
+              "builderPlatform": "linux/arm64",
+              "dockerfileVersion": "1.24.0"
+            }
+          },
+          "runDetails": {
+            "builder": {
+              "id": ""
+            },
+            "metadata": {
+              "invocationId": "mdahglcip8kz642lzevskrt5i",
+              "startedOn": "2026-09-06T00:01:30.191330632+08:00",
+              "finishedOn": "2026-09-06T00:02:05.277065107+08:00",
+              "buildkit_metadata": {
+                "vcs": {
+                  "localdir:context": ".local/pi-image-build-20260905T155750Z-167375ff",
+                  "localdir:dockerfile": ".local/pi-image-build-20260905T155750Z-167375ff/infra",
+                  "revision": "16219ffcaea7c83b8b89a2e542717eeada6fe275"
+                }
+              },
+              "buildkit_completeness": {
+                "request": true,
+                "resolvedDependencies": false
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "firstTrustedIndexRead": {
+    "digest": "sha256:1a6630c327389ce685835ec3976cf64d0cb7cd9c152fdd5eadda9f0a86c69f68",
+    "exitCode": 1,
+    "stderr": "ctr: content digest sha256:1a6630c327389ce685835ec3976cf64d0cb7cd9c152fdd5eadda9f0a86c69f68: not found\ntime=\"2026-09-06T00:15:47+08:00\" level=fatal msg=\"exit status 1\"\n",
+    "available": false
+  },
+  "trustedLogManifestOccurrences": 2,
+  "firstAndSecondRuntimeMatchByBuildLog": true
+}

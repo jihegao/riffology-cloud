@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "run_id": "m0-g0-t06-cloud-20260905",
+  "recorded_at": "2026-09-05T10:43:55.007Z",
+  "gate_id": "G0-T06",
+  "case_id": "gate-summary",
+  "status": "passed",
+  "observed_at": "2026-09-05T10:37:42.030Z",
+  "environment": "staging",
+  "git_sha": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+  "versions": {
+    "wrangler": "4.129.0",
+    "worker_version": "e0d311aa-ab18-4b55-9fd8-0c188376041b",
+    "protocol": "m0-v1",
+    "bundle_sha256": "787a8590badf3f3881066ebaa55e63857bbd1eee589fe17ae5445139d76c42a4",
+    "scoped_source_sha256": "253cca7bc58e222467fc83d5a2c586956e36000a7e9bd8faa8b32027afc9b098",
+    "source_state": "uncommitted working tree; frozen scoped hashes are authoritative"
+  },
+  "command": "node --use-env-proxy scripts/m0/storage-cloud.mjs with verified staging origin, private credential file, observed version and frozen bundle digest; primary evidence review",
+  "evidence_paths": [
+    "m0-storage-cloud-bodyfix-20260905103521004/primary-review.json",
+    "m0-storage-cloud-bodyfix-20260905103521004/storage-cloud.json",
+    "m0-storage-cloud-bodyfix-20260905103521004/deployment-verified.json",
+    "m0-storage-cloud-bodyfix-20260905103521004/execution-summary.json",
+    "m0-storage-cloud-bodyfix-20260905103521004/post-run-deployment-api.json",
+    "m0-storage-cloud-bodyfix-20260905103521004/storage-cloud-20260905103710361-actions.ndjson"
+  ],
+  "evidence_sha256": [
+    "1a601f54051fe856dc640dea44d2b6cbf49fb0f707594b18e3567cf457038389",
+    "140a11d460e500350564712075b08a1e3d1e22efe9604095c91c29ceb394795a",
+    "6f27a02e2976aa6c8011e93a3004f252ed4df4a8b3b3f30b2a616b422e79e491",
+    "69802ad70d014de912db4986fbff78df6470c6c7fe4285d0c733895d840fa3f5",
+    "0736dfbe795f719a51f05b865d9ff9dc3751cf3b8f4bbeda06e033ec7f786910",
+    "a3a6e43fd5f2e6e93a572f0d6073876c11cc4cd389375efdec99e05c9503a783"
+  ],
+  "conclusion": "G0-T06 temporary cloud primitives passed: actual R2 streaming put interruption, pre/post commit DO instance abort, contiguous durable event replay with consumer deduplication, and exact run-scoped orphan GC. This signs only T06 for the recorded frozen source. Nine other G0 gates and final candidate consistency remain pending; no M1 promotion."
+}

@@ -1,0 +1,32 @@
+.account-actions{display:flex;align-items:center;gap:8px}
+.role{padding:5px 9px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px}
+.admin-container{max-width:1200px}
+.metric-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.metric{padding:18px}
+.metric p{margin:0;color:var(--muted);font-size:13px}
+.metric strong{display:block;margin:8px 0 4px;font-size:30px}
+.metric small{color:var(--muted)}
+.admin-section{margin-top:16px;padding:22px}
+.section-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.section-heading h2,.section-heading p{margin:0}
+.section-heading p{margin-top:4px;color:var(--muted)}
+.issue-form{display:flex;align-items:end;gap:10px;flex-wrap:wrap;margin:18px 0}
+.issue-form label{display:grid;gap:6px;color:var(--muted);font-size:13px}
+.issue-form label:first-child{flex:1;min-width:260px}
+.issue-form input,.issue-form select{min-height:42px}
+.issue-form select{padding:0 36px 0 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.token-panel{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0;padding:14px;border:1px solid var(--accent);border-radius:12px;background:var(--accent-soft)}
+.token-panel strong{width:100%}
+.token-panel input{min-width:min(540px,70vw);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{color:var(--muted);font-size:12px;font-weight:600}
+td{font-size:13px}
+td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+.button.compact{min-height:30px;padding:5px 10px}
+.empty-cell{padding:28px;text-align:center!important;color:var(--muted)}
+.status.pending,.status.suspended{background:#f5efdf;color:#8a682f}
+.status.revoked,.status.expired,.status.failed,.status.unknown{background:#fae9e7;color:var(--red)}
+@media(max-width:900px){.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.account-actions .role{display:none}.metric-grid{grid-template-columns:1fr}.admin-container{padding:24px 12px}.issue-form{align-items:stretch;flex-direction:column}.issue-form label,.issue-form label:first-child{min-width:0}.token-panel{align-items:stretch;flex-direction:column}.token-panel input{min-width:0;width:100%}}

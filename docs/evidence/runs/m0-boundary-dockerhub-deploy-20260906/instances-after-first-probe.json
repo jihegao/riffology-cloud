@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-09-06T01:41:16.537Z",
+  "apps": [
+    {
+      "id": "a03ea65b-b039-4f56-8422-36c719b87b72",
+      "status": 200,
+      "success": true,
+      "result": {
+        "instances": []
+      },
+      "errors": []
+    },
+    {
+      "id": "a03313e4-fa9d-4de2-ac2c-d2cc69efd875",
+      "status": 200,
+      "success": true,
+      "result": {
+        "instances": []
+      },
+      "errors": []
+    }
+  ]
+}

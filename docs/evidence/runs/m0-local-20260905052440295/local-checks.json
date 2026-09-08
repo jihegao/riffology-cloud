@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "runId": "m0-local-20260905052440295",
+  "environment": "local",
+  "startedAt": "2026-09-05T05:24:40.322Z",
+  "finishedAt": "2026-09-05T05:24:43.120Z",
+  "command": "npm run check",
+  "exitCode": 0,
+  "timedOut": false,
+  "sourceStableDuringCheck": true,
+  "gitHead": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+  "gitDirty": true,
+  "sources": {
+    "sha256": "20dc6d339f70ceda6e019f3172acc9942fad74c48e88eb08f73b012696bed071",
+    "files": [
+      {
+        "path": ".dockerignore",
+        "sha256": "46c6ff40eef5d467e276eb0c86c512e25a4f8f4913be33dc094449365aa9f6ab"
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "ebd2febbc682177605c565d0086c3c2949fafc7400c8f657318204a9a18790ab"
+      },
+      {
+        "path": "infra/m0-project.Dockerfile",
+        "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+      },
+      {
+        "path": "infra/m0-trusted.Dockerfile",
+        "sha256": "6dbcfa128b0bcc5a3ca5b6ddde6c45d13ca2dc45ec7124b4dba72e461321663c"
+      },
+      {
+        "path": "infra/wrangler.m0-storage.jsonc",
+        "sha256": "6387ca580b3812ac3c37d5e5a50b666ce31fbb5de8f6b4b38fc36950683b61a9"
+      },
+      {
+        "path": "infra/wrangler.m0.jsonc",
+        "sha256": "0c62cf3852f84753036a35d25b0674d553f7c43294c99954bf0267fe807391cd"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "661fa69178e1ad7b5e49a04e414a3732fc4b9890e1915e8ebfb54441747fde09"
+      },
+      {
+        "path": "scripts/evidence/recorder.mjs",
+        "sha256": "3f33008344d526938b147c2a23ff3cb2caab46a9715a372d33d568ac2bb338b6"
+      },
+      {
+        "path": "scripts/evidence/self-test.mjs",
+        "sha256": "436b77be323d2d4bb7c18bacfef62000ff51f67c767c0988497d0c4ccbbab0e7"
+      },
+      {
+        "path": "scripts/m0/pi-live-probe.mjs",
+        "sha256": "0b0a268c177f7a1c929f89c8bf094275d32077400a672ff12b386fd7217594d3"
+      },
+      {
+        "path": "scripts/m0/preflight-self-test.mjs",
+        "sha256": "d07bfac39ce28c922ba1d88947d3f74dcfff9554a566d244e15781ca1bfa732e"
+      },
+      {
+        "path": "scripts/m0/preflight.mjs",
+        "sha256": "385f53128b36668c7031e59f1644513f85bba8c570b2115324ec4b8fd4d58564"
+      },
+      {
+        "path": "scripts/m0/record-local-checks.mjs",
+        "sha256": "2cdad2c17f6a83dff7fb8b21801456604ba31421741290f6ce765f53bd2b7cfe"
+      },
+      {
+        "path": "services/runtime/controlled-pi.d.mts",
+        "sha256": "8c92fbd06faf16e4be8e51ea728935257fc28a544f2d58ee5c7103897b185e0b"
+      },
+      {
+        "path": "services/runtime/controlled-pi.mjs",
+        "sha256": "8effdc9f441480dc56f8fda2cf59c31d010f0e6add3fcd0e2544b0e990dfc523"
+      },
+      {
+        "path": "services/runtime/pi-probe-evidence.mjs",
+        "sha256": "bb8395477543d6a52c9a4faa830b0dab5fcbecf487f3d2abf571e514041c96cf"
+      },
+      {
+        "path": "spikes/m0-cloud/README.md",
+        "sha256": "8b9580dfeab2a3131c2b6115080bc02082d61e515ff8e4e09147589ac6545f35"
+      },
+      {
+        "path": "spikes/m0-cloud/auth.ts",
+        "sha256": "8c676c77c0b8dd7d860f10559170ae952551455c14a1ba4ef3218090e8540630"
+      },
+      {
+        "path": "spikes/m0-cloud/env.d.ts",
+        "sha256": "65cd7941dd7d735f961181e95a16487ebfc111c9837ccf2d3222a96fba0d1dcf"
+      },
+      {
+        "path": "spikes/m0-cloud/index.ts",
+        "sha256": "2f7c2b7ee39b408dc5327eb0790a83ebaf7c909ec086a36ce6df7d54c243e221"
+      },
+      {
+        "path": "spikes/m0-cloud/runtime.test.ts",
+        "sha256": "abd364c093ae78e73ab88aa72d0d6dad19d1f8b26bdf52f67bc317ed5ba41819"
+      },
+      {
+        "path": "spikes/m0-cloud/runtime.ts",
+        "sha256": "2eef14ab7daa845ee606a943f9e1232c777a76adcfe8973a0a14fce3d69fb7f2"
+      },
+      {
+        "path": "spikes/m0-cloud/worker.test.ts",
+        "sha256": "4a337a7d2cfa694dfddde0eb0d1b64be531b591fda17f9f3b4f96fcc2583a4e1"
+      },
+      {
+        "path": "spikes/m0-cloud/worker.ts",
+        "sha256": "5f4286e8bc18d9333865446812253816acf50b2ab6630a0f46cb866440fce244"
+      },
+      {
+        "path": "spikes/m0-storage/checkpoint.ts",
+        "sha256": "74bd5c364ca5e5d51ad3f46256cda910c5807c26b5fd7cb3b488e91fb13ed73a"
+      },
+      {
+        "path": "spikes/m0-storage/env.d.ts",
+        "sha256": "a3bc6a5b0f2d10b78dd8c6aa989184cac9efa533babeba24aedb47b2553e806d"
+      },
+      {
+        "path": "spikes/m0-storage/index.ts",
+        "sha256": "188390999d1639cbd5939f5262e0268563c786d33350a3f83186a5d01bc0e958"
+      },
+      {
+        "path": "tests/m0/checkpoint.test.ts",
+        "sha256": "9b4d357e5af603f05a6caf82085ab8e4e194bcbf0f669f790f1a15e12ea55136"
+      },
+      {
+        "path": "tests/m0/pi/controlled-pi.test.mjs",
+        "sha256": "c7efc3f969ae4e7e46e0bcd9ab621119b2731f49c4610086f40c3c6192e2b500"
+      },
+      {
+        "path": "tests/m0/pi/controlled-pi.types.ts",
+        "sha256": "b6c3e8710fb246b3c62a68b67b4ae8b89305a84c695b06ab620a9521fe292bad"
+      },
+      {
+        "path": "tests/m0/pi/probe-evidence.test.mjs",
+        "sha256": "17ccc84b399a528d0014c486f4c1e04b1570b6651f3dd09fb90120fab46d4380"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+      }
+    ]
+  },
+  "logSha256": "f39aa5c680f06be60eb2eaf7cd421c93a319ea5c909373a12e034dab1d5fc275",
+  "passed": true,
+  "cloudGatePassed": false
+}

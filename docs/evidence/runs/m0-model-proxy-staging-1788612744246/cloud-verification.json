@@ -1,0 +1,103 @@
+{
+  "observedAt": "2026-09-05T12:58:33.455Z",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "statuses": [
+    200,
+    200,
+    200,
+    200,
+    200
+  ],
+  "settings": {
+    "compatibility_date": "2026-09-05",
+    "compatibility_flags": [
+      "nodejs_compat",
+      "nodejs_compat_do_not_populate_process_env",
+      "enable_request_signal",
+      "request_signal_passthrough"
+    ],
+    "limits": {
+      "cpu_ms": 1000
+    },
+    "bindings": [
+      {
+        "name": "M0_CONTROL_ORIGIN",
+        "type": "plain_text",
+        "value": "https://riffology-m0-model-proxy-staging.jihe-gao.workers.dev"
+      },
+      {
+        "name": "M0_MODEL_MODE",
+        "type": "plain_text",
+        "value": "fixture-only"
+      },
+      {
+        "name": "M0_PROBE_TOKEN",
+        "type": "secret_text"
+      },
+      {
+        "name": "MODEL_RUNS",
+        "type": "durable_object_namespace",
+        "class_name": "M0ModelProxyRun",
+        "namespace_id": "95df6344c3f64b0f82ae9431c3ff36fb"
+      },
+      {
+        "name": "PROTOCOL_VERSION",
+        "type": "plain_text",
+        "value": "m0-model-proxy-v1"
+      }
+    ]
+  },
+  "deployments": {
+    "deployments": [
+      {
+        "id": "82602290-df8c-4981-86a7-58565c71bcda",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "annotations": {
+          "workers/message": "M0 fixed SSE fixture; no provider transport or VM",
+          "workers/triggered_by": "upload"
+        },
+        "versions": [
+          {
+            "version_id": "06e097f1-cb6d-4349-8cf5-af4472ba0079",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-09-05T12:55:18.218021Z"
+      }
+    ]
+  },
+  "secrets": [
+    {
+      "name": "M0_PROBE_TOKEN",
+      "type": "secret_text"
+    }
+  ],
+  "subdomain": {
+    "enabled": true,
+    "previews_enabled": false
+  },
+  "version": {
+    "id": "06e097f1-cb6d-4349-8cf5-af4472ba0079",
+    "metadata": {
+      "created_on": "2026-09-05T12:55:18.218021Z",
+      "source": "wrangler",
+      "has_preview": false
+    },
+    "script": {
+      "etag": "43226ca2347ed6cb68bb69130b49feb9cb6ef3e35e30478db781443656863671",
+      "handlers": [
+        "fetch"
+      ],
+      "named_handlers": [
+        {
+          "name": "M0ModelProxyRun",
+          "handlers": [
+            "class"
+          ]
+        }
+      ],
+      "last_deployed_from": "wrangler"
+    }
+  }
+}

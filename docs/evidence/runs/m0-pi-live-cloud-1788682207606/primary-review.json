@@ -1,0 +1,27 @@
+{
+  "at": "2026-09-06T08:20:45.172Z",
+  "reviewer": "root",
+  "scope": [
+    "G0-T01",
+    "G0-T09"
+  ],
+  "checksPassed": true,
+  "summarySha256": "66131675c9b4785ebb8335e120d8163bec868f4482c98d7a1a45b3ed6be395aa",
+  "sourceStable": true,
+  "independentR2SnapshotEqualsInitialSession": true,
+  "independentLedgerEqualsTerminal": true,
+  "allFourInstanceRecordsInactive": true,
+  "requests": 10,
+  "responseBytes": 99686,
+  "elapsedMs": 49443,
+  "confirmedPlatformDispatches": 2,
+  "upstreamResponseIds": [
+    "334a0284-0d81-4eb8-8132-fff02c269441",
+    "03fe7be4-f019-4116-b317-9270ae627d1f"
+  ],
+  "headerRequestIdsAvailable": false,
+  "actualSupplierGlobalDispatches": null,
+  "GoQuotaDelta": null,
+  "cashCharge": null,
+  "fullG0Accepted": false
+}

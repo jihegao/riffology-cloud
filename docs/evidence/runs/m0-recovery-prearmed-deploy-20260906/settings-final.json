@@ -1,0 +1,44 @@
+{
+  "observedAt": "2026-09-06T05:55:33.183Z",
+  "status": 200,
+  "success": true,
+  "bindings": [
+    {
+      "name": "CHECKPOINTS",
+      "type": "r2_bucket",
+      "bucket_name": "riffology-m0-checkpoints-staging"
+    },
+    {
+      "name": "ENVIRONMENT",
+      "type": "plain_text",
+      "text": "staging"
+    },
+    {
+      "name": "M0_EXECUTION_ENVIRONMENT",
+      "type": "plain_text",
+      "text": "cloudflare-vm"
+    },
+    {
+      "name": "M0_PROBE_TOKEN",
+      "type": "secret_text"
+    },
+    {
+      "name": "PROTOCOL_VERSION",
+      "type": "plain_text",
+      "text": "m0-v1"
+    },
+    {
+      "name": "RECOVERY",
+      "type": "durable_object_namespace",
+      "class_name": "M0RecoveryCoordinator",
+      "namespace_id": "a682f665b7004214bc5a27ef24b231b7"
+    },
+    {
+      "name": "RecoveryTrustedSandbox",
+      "type": "durable_object_namespace",
+      "class_name": "RecoveryTrustedSandbox",
+      "namespace_id": "e17c13abe5474cd0bbb673c6ce58a2a0"
+    }
+  ],
+  "errors": []
+}

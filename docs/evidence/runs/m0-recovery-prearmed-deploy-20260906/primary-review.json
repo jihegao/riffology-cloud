@@ -1,0 +1,52 @@
+{
+  "observedAt": "2026-09-06T05:59:27.736Z",
+  "checksPassed": true,
+  "gateDecision": "pending-independent-review",
+  "versionId": "5fef2b3a-a064-4162-b1c3-6b0ce25c098d",
+  "bundleSha256": "a43b5e8ab4bc2d1ad05130d870cc8284f3f55c0e52023dc2a244c52ed0b066f3",
+  "sourceSha256": "f9f7f41426d472f2077caac84a78bdf973da2911c39ed50873d9588a3b26cd92",
+  "summarySha256": "495932d53f20145cbcc2fa677d9bdf43321852ec90c68c1408c10457c6942cee",
+  "cases": [
+    {
+      "scenario": "disconnect",
+      "requests": 21,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "readFailures": []
+    },
+    {
+      "scenario": "process",
+      "requests": 28,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "readFailures": []
+    },
+    {
+      "scenario": "container",
+      "requests": 27,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "readFailures": [
+        {
+          "action": "report",
+          "error": "request-deadline"
+        }
+      ]
+    }
+  ],
+  "requests": 76,
+  "observedResponseBytes": 192966,
+  "elapsedMs": 130153,
+  "runtimeLifecyclesThisRun": 5,
+  "totalHistoricalInactiveRecords": 7,
+  "allObservedInstancesInactive": true,
+  "provider": "local-SSE-fixture-real-Pi-SDK",
+  "realProviderCalls": 0,
+  "limitations": [
+    "G0-T08 fixed recovery primitive, not production Turn/identity or actual supplier acceptance.",
+    "Prearmed faults execute from durable alarm only after actual streaming; previous externally requested unknown kill retained as failed.",
+    "Browser bytes count application-read data, not complete network transfer or bill.",
+    "A persisted unknown RPC intent after DO eviction remains cleanup_not_confirmed pending independent reconciliation; it is not silently replayed.",
+    "R2 checkpoints and DO audit records retained."
+  ]
+}

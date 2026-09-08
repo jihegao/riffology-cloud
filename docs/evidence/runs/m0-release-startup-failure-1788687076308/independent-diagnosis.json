@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "kind": "independent read-only startup-failure diagnosis",
+  "observedAt": "2026-09-06T09:51:10.743Z",
+  "accepted": false,
+  "cloudGatePassed": false,
+  "exit42Confirmed": false,
+  "originalOutcome": "unknown; original failed summary remains immutable",
+  "scope": {
+    "sourceEdits": 0,
+    "cloudApiCalls": 0,
+    "providerCalls": 0,
+    "probeReruns": 0,
+    "onlyNewDiagnosisWritten": true
+  },
+  "evidence": [
+    {
+      "path": "docs/evidence/runs/m0-release-startup-failure-1788687076308/summary.json",
+      "sha256": "f8e20e31f444adc2305ef661b7fdf4a395b70626a62d1f423f23171b0f7a6974"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-upgrade-1788687064356/summary.json",
+      "sha256": "8c21ee3d524ff53f6a1e4b7037be1fb0dbab3111d5191ad0c04b28a936a0e75f"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-upgrade-1788687064356/r2-independent-verification.json",
+      "sha256": "b7625ae70d5f04be5608c0367fd19a7ec5232504e6ed6f819db12d8cf73a6a98"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-upgrade-1788687064356/r2-manifest.json",
+      "sha256": "518090fb384338b9e63ddbdf091ea03f2ce2198d347b8e509c165947dc4753a7"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-upgrade-1788687064356/r2-state.json",
+      "sha256": "fe44e2085de9f5c29980f1a6c8a84a8c340131a8fefc9135a265d2667bde7b5c"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-deploy-rollback-1788687343387/deployment-verified.json",
+      "sha256": "ee50ba5c1705a18805606426ba7fd5a79027d9358981e5f60b191b74726b8e1d"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-deploy-rollback-1788687343387/api.json",
+      "sha256": "b437035f8641c2b820bf21132e408880c7e500d0cc07de56cf9efed414cfae29"
+    }
+  ],
+  "observedFacts": {
+    "receipt": {
+      "failed": false,
+      "state": {
+        "status": "running",
+        "lastChange": 1788687085284
+      },
+      "businessDispatches": 0,
+      "fault": "entrypoint-exit-42-before-readiness",
+      "expectedExitCode": 42,
+      "observedExitCode": null,
+      "exitEvidence": null,
+      "outcome": "unconfirmed",
+      "startupIssued": true,
+      "readinessConfirmed": false,
+      "startedAt": 1788687085268,
+      "finishedAt": 1788687085749
+    },
+    "methodElapsedMs": 481,
+    "phaseStatus": "unknown",
+    "cleanupConfirmed": true,
+    "runClosed": true,
+    "zeroBusinessDispatches": true,
+    "oldLifecycle": {
+      "state": {
+        "status": "stopped",
+        "lastChange": 1788686861237
+      },
+      "lastStop": null
+    }
+  },
+  "diagnosis": {
+    "certainty": "The source contains a path consistent with the 481ms failure and cached running state. The exact executed branch is not proven because the original record omitted native running and monitor rejection classification.",
+    "possiblePath": [
+      "SDK creates native monitor and sets cached state running.",
+      "Initial health check may return while the process runs but the service port is not listening.",
+      "waitForPort can then find native running=false and throw the original port error without waiting for monitor or updating state.",
+      "setupMonitorCallbacks is reached only after successful port readiness, so that failure skips exit-to-state propagation.",
+      "Immediate getState can consequently return the start-time running cache; this is not proof of process liveness."
+    ],
+    "additionalMismatch": "Existing diagnostic recognizes the legacy custom string produced only for numeric monitor rejections. Native Error messages such as container exited with unexpected exit code: 42 are parsed by a separate normal monitoring path and are not covered by that custom-string matcher.",
+    "onStopLimit": "Fallback synchronization may supply exitCode 0 without an independently observed process exit code. onStop is useful lifecycle context, not a replacement for the original monitor result.",
+    "cannotConclude": [
+      "The original process actually exited 42.",
+      "The exact startup/transport error or exact branch for this attempt.",
+      "A monitor requested after termination is guaranteed to replay historical exit evidence.",
+      "The original unknown result can be converted to passed."
+    ]
+  },
+  "sourceReferences": [
+    {
+      "path": "node_modules/@cloudflare/containers/dist/lib/container.js",
+      "locations": [
+        {
+          "line": 62,
+          "note": "Current Error message exit parser."
+        },
+        {
+          "line": 409,
+          "note": "getState returns cached state."
+        },
+        {
+          "line": 631,
+          "note": "State monitor callbacks are installed only after all ports become ready."
+        },
+        {
+          "line": 672,
+          "note": "A stopped native container during port checking throws without consuming monitor or updating cached state."
+        },
+        {
+          "line": 1346,
+          "note": "Only numeric monitor rejection becomes the legacy startup-specific exit string."
+        },
+        {
+          "line": 1378,
+          "note": "Native start then monitor, followed by cached running state."
+        },
+        {
+          "line": 1596,
+          "note": "Fallback onStop may synthesize exitCode 0 from native stopped and cached running; not independent exit evidence."
+        }
+      ],
+      "sha256": "9dfc5feaa43b2bdec08863c85eb94731237aeb9f19c7b7e58ff426776ec8863c"
+    },
+    {
+      "path": "node_modules/@cloudflare/workers-types/index.d.ts",
+      "locations": [
+        {
+          "line": 3984,
+          "note": "Public native start():void, monitor():Promise<void>, destroy(error?):Promise<void>; native startup uses env."
+        }
+      ],
+      "sha256": "01e76326acb914b63332664e0912e6000c6d4fd70de1ac88bf1409fd8b04960c"
+    },
+    {
+      "path": "spikes/m0-release/cloud-host.ts",
+      "locations": [],
+      "sha256": "304f40d3873fbf3b121fe85dace57860be2dca8b0fdb718ae7229436b7a8f54b"
+    }
+  ],
+  "officialReferences": [
+    {
+      "url": "https://developers.cloudflare.com/durable-objects/api/container/#monitor",
+      "note": "Official pattern installs monitor handlers immediately after start; historical replay is not promised."
+    },
+    {
+      "url": "https://developers.cloudflare.com/durable-objects/api/container/#destroy",
+      "note": "destroy(error) can select the monitor rejection; cleanup must not manufacture fault evidence."
+    }
+  ],
+  "minimumNextFaultProbe": {
+    "status": "proposal only; not implemented or run",
+    "identity": "A new completion DO and new fixed fault instance; never reopen, reset or replay closed release-g0-v3-20260906.",
+    "fixedNativeOptions": {
+      "entrypoint": [
+        "/bin/sh",
+        "-c",
+        "exit 42"
+      ],
+      "enableInternet": false,
+      "env": {}
+    },
+    "sequence": [
+      "Commit a one-shot startup intent and verify the fixed fresh instance is not already running.",
+      "Call public this.ctx.container.start(fixedOptions), then immediately obtain this.ctx.container.monitor() and install both settlement handlers, without intervening await. Do not access SDK-private monitor or issue another start.",
+      "Observe the single monitor under one absolute bounded deadline. Independently record native running/readiness observations and zero business dispatch; do not call SDK clients that may auto-start replacements.",
+      "Persist the actual monitor outcome before cleanup. A recognized native unexpected-exit Error with safe exitCode exactly 42 can satisfy the expected fault. Normal resolve, other exits/signals, unknown errors, timeout or lost ownership remain unconfirmed.",
+      "Only after the result is fixed, destroy the owned instance without passing an error value; keep cleanup-induced errors separate and independently confirm inactivity."
+    ],
+    "strictNativeErrorPattern": "^container exited with unexpected exit code:\\s*(\\d+)$",
+    "errorPatternCaseInsensitive": true,
+    "exitCodeRange": [
+      0,
+      255
+    ],
+    "requiredExitCode": 42,
+    "requiredOfflineChecks": [
+      "Expected monitor exit42 versus exit1/normal resolve/port error/runtime signal/unknown error/deadline.",
+      "One persisted intent survives owner loss and refuses replay.",
+      "Monitor result recorded before destroy; destroy cannot inject or overwrite fault evidence."
+    ]
+  },
+  "completionPlan": {
+    "status": "next-round dedicated completion only",
+    "step1": "Execute and review the new fixed startup-failure monitor probe.",
+    "step2": {
+      "action": "Use a separate fresh instance under verified W1/I1 to restore the already verified v3 checkpoint counter2, increment exactly once, then independently read counter3 and confirm cleanup.",
+      "sourcePrefix": "m0-release/release-g0-v3-20260906",
+      "sourceRevision": "518090fb384338b9e63ddbdf091ea03f2ce2198d347b8e509c165947dc4753a7",
+      "sourceSessionSha256": "fe44e2085de9f5c29980f1a6c8a84a8c340131a8fefc9135a265d2667bde7b5c",
+      "sourceCounter": 2,
+      "targetCounter": 3,
+      "sourceReadOnly": true,
+      "target": "New completion-run namespace; do not mutate the closed v3 coordinator or its existing immutable checkpoint.",
+      "acceptance": "Correlate actual Worker bundle and actual I1 instance, R2 manifest/session hashes, restored2, non-replayed increment/read3 and final inactivity."
+    },
+    "doNotRepeat": [
+      "Already completed baseline",
+      "W2/I1 compatibility",
+      "Completed rollout matrix",
+      "Any real model call"
+    ],
+    "gate": "T10 remains unaccepted until these missing portions and final evidence/source correspondence are independently reviewed."
+  },
+  "savedRollbackObservation": {
+    "apiAt": "2026-09-06T09:37:06.234Z",
+    "workerVersion": "e6a57b3f-a5fb-47e6-abbd-cedbc568c822",
+    "deploymentId": "1c8c2b77-4bb6-4564-a67c-f79be0cbab7a",
+    "trafficPercentage": 100,
+    "bundleSha256": "63429cde0c4d71a23eb331cf6d16e21be9dd6b2486d51bb2a9dba752197ffd40",
+    "applicationId": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+    "applicationVersion": 5,
+    "targetImage": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+    "inactiveInstances": [
+      {
+        "id": "62ead798db0d29864b0c5912c4d184b3fc7e34d0d36f9ac58fdf26bea08df5b5",
+        "name": "m0-release-g0-v3-20260906-new",
+        "status": {
+          "state": "inactive",
+          "updated_at": "2026-09-06T09:31:16Z"
+        }
+      },
+      {
+        "id": "89669f7474128f6fdc70bce37e33109c5f147b962df01c9717e30dbd51dba9a9",
+        "name": "m0-release-g0-v3-20260906-fault",
+        "status": {
+          "state": "inactive",
+          "updated_at": "2026-09-06T09:31:36Z"
+        }
+      },
+      {
+        "id": "8b301cc2ae4ef108659d1c3c01ffeb69f5bf6fdcf60a8f1f89988f715eff8825",
+        "name": "m0-release-g0-20260906-old",
+        "status": {
+          "state": "inactive",
+          "updated_at": "2026-09-06T09:12:15Z"
+        }
+      },
+      {
+        "id": "9c0e4e8e82b19a601302a6eb0d1721687e6f6a2d4e941c04ca0cb7d3370d878e",
+        "name": "m0-release-g0-v3-20260906-old",
+        "status": {
+          "state": "inactive",
+          "updated_at": "2026-09-06T09:31:08Z"
+        }
+      },
+      {
+        "id": "b5c6735ad1c187dde0e9189a8814643b4d18bb4d45b6e9514f4ce21403e12b71",
+        "name": "m0-release-g0-v2-20260906-old",
+        "status": {
+          "state": "inactive",
+          "updated_at": "2026-09-06T09:19:18Z"
+        }
+      }
+    ],
+    "scope": "Saved independent API evidence only. No new query, and no claim that post-rollback checkpoint restoration already ran."
+  },
+  "sourceSha256AtReview": "97c129827a57b960eab06e1e10664d65ae445bc6128ffcd94ff663f2d784a999",
+  "sourceStableDuringReview": true,
+  "originalFailureEvidenceUnchanged": true
+}

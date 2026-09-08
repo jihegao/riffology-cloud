@@ -1,0 +1,26 @@
+{
+  "label": "dry-run",
+  "startedAt": "2026-09-05T10:27:54.498Z",
+  "finishedAt": "2026-09-05T10:27:59.037Z",
+  "command": [
+    "/opt/homebrew/Cellar/node/25.3.0/bin/node",
+    "/Users/gaojihe/apps/riffology-cloud/node_modules/wrangler/bin/wrangler.js",
+    "deploy",
+    "--config",
+    "/Users/gaojihe/apps/riffology-cloud/infra/wrangler.m0-storage.jsonc",
+    "--env",
+    "staging",
+    "--dry-run",
+    "--outdir",
+    "/Users/gaojihe/apps/riffology-cloud/.local/m0-storage-cloud-deploy-20260905102546347/bundle",
+    "--secrets-file",
+    "/Users/gaojihe/apps/riffology-cloud/.local/cloud-staging/storage.secrets.json"
+  ],
+  "exitCode": 0,
+  "signal": null,
+  "timedOut": false,
+  "overflow": false,
+  "launchError": null,
+  "logSha256": "4b772b179ac94cdab69d6042f7c0d87e9ce5c7ca840efcaab7686633f01236ec",
+  "success": true
+}

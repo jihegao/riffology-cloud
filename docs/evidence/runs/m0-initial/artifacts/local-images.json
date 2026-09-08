@@ -1,0 +1,26 @@
+{
+  "observedAt": "2026-09-05T05:30:13.702Z",
+  "environment": "local-docker",
+  "images": [
+    {
+      "id": "sha256:a42bfa96d942f3d520481bc349103cd1f0f84807f550a5cb30ff6dd5abe724ad",
+      "tags": [
+        "cloudflare-dev/trustedsandbox:dc0c33d6",
+        "riffology-m0-trusted-staging:worker"
+      ],
+      "architecture": "amd64"
+    },
+    {
+      "id": "sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+      "tags": [
+        "cloudflare-dev/projectsandbox:dc0c33d6",
+        "riffology-m0-project-staging:worker"
+      ],
+      "architecture": "amd64"
+    }
+  ],
+  "buildContext": "explicit allowlist in .dockerignore; no host mounts",
+  "trustedPiImportCheck": "passed during Docker build",
+  "workerDryRun": "both boundary and storage succeeded; no cloud publish",
+  "cloudGatePassed": false
+}

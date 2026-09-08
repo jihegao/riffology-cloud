@@ -1,0 +1,19 @@
+{
+  "observedAt": "2026-09-05T08:37:41.604Z",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "readOnly": true,
+  "checks": [
+    {
+      "name": "containers",
+      "method": "GET",
+      "success": false,
+      "error": "Cloudflare API error: 1000: {\"error\":\"Unauthorized: You do not have access to Cloudflare Containers. Deploying containers requires the Workers Paid plan. Upgrade your plan at https://dash.cloudflare.com/?to=/:account/workers/plans\"}"
+    },
+    {
+      "name": "r2",
+      "method": "GET",
+      "success": false,
+      "error": "Cloudflare API error: 10042: Please enable R2 through the Cloudflare Dashboard."
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "operation": "G0-T07-local-smoke",
+  "run_id": "preview-live-1788588767993",
+  "observed_at": "2026-09-05T06:13:45.825Z",
+  "execution_environment": "local-docker-workerd",
+  "gate_decision": "not_evaluated",
+  "cases": {},
+  "cleanup": "not_run",
+  "cloud_browser_matrix": "not_run",
+  "websocket_expiry_real_time": "not_run"
+}

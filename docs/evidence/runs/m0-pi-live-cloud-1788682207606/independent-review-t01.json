@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "at": "2026-09-06T08:24:59.275Z",
+  "gate": "G0-T01",
+  "summarySha256": "66131675c9b4785ebb8335e120d8163bec868f4482c98d7a1a45b3ed6be395aa",
+  "reviewer": "m0_storage_gate_review",
+  "accepted": true,
+  "conclusion": "Original G0-T01 accepted using supplier SSE response IDs correlated with platform request IDs and payload hashes; HTTP supplier request ID headers are absent. Pi 0.85.0 saved full Session to R2, destroyed g1, restored g2, recalled marker without including it in the new prompt and cancelled an active stream; durable completed/cancelled receipts and final cleanup verified.",
+  "limitations": [
+    "SSE response IDs are not HTTP request header IDs",
+    "Provider internal retries and instant compute cessation are unverified",
+    "First terminal usage 81 input and 24 output; cancelled usage and cash unknown",
+    "Not production identity or durable Turn integration"
+  ]
+}

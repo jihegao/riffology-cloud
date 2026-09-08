@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-project-files-20260907",
+  "observedAt": "2026-09-06T16:24:41Z",
+  "environment": "local",
+  "decision": "accepted-as-unwired-project-sandbox-file-adapter",
+  "source": {
+    "fileServiceSha256": "cdf923565859aabdb543196f14a458e857d6b19e6ee1ac1d04315b58df392263",
+    "projectFilesTestSha256": "075c871f5bdde0380c0bafa2728ad515bfa283f31356c139d3ffec1351dc1291"
+  },
+  "fullChecks": {
+    "path": "../m0-local-20260906162231186/local-checks.json",
+    "sha256": "eebb3405cbf645ff65a976b3bb4ff67b7bcaf9751a08106798640e9c84767ac1",
+    "passed": true,
+    "sourceStableDuringCheck": true,
+    "sourceCount": 269,
+    "sourceSha256": "56a86175b84fd45b7f5e6c0e9f349ca4b92eb5cd4822f5ea39d616198359bed3",
+    "m0": { "pass": 348, "skip": 1, "fail": 0 },
+    "m1": { "pass": 107, "skip": 0, "fail": 0 },
+    "m2": { "pass": 70, "skip": 0, "fail": 0 }
+  },
+  "independentReview": {
+    "p0": 0,
+    "p1Found": 2,
+    "p1Fixed": 2,
+    "fixedIssues": [
+      "The first TypeScript implementation resolved paths before I/O and remained vulnerable to parent-directory symlink replacement; it was removed and replaced by fd-relative traversal with O_NOFOLLOW.",
+      "The replacement initially leaked a directory fd when a deadline ToolError interrupted traversal and could report a retryable failure after os.replace had committed; the fd is now closed and every post-commit uncertainty returns unknown with exit code 4."
+    ],
+    "finalP0": 0,
+    "finalP1": 0
+  },
+  "acceptedProperties": [
+    "Every path starts from a fixed directory fd and traverses each component with dir_fd, O_DIRECTORY and O_NOFOLLOW.",
+    "Read, edit, write, list and search reject reserved, noncanonical, absolute, traversal, backslash, control and symlink paths.",
+    "Inputs, files, queries, list entries, search files, search results, line previews and deadlines are bounded.",
+    "Writes use a same-directory temporary file, fsync, atomic replace and parent-directory identity checks.",
+    "A failure before atomic replace is failed; any uncertainty after the replace is unknown and therefore cannot be automatically retried.",
+    "Deterministic race tests cover parent replacement before commit and path replacement after commit without modifying an outside directory."
+  ],
+  "notAccepted": [
+    "Project Sandbox effect executor and ToolDispatcher wiring",
+    "mapping process exit 4 and unknown:true into the durable command ledger",
+    "Linux Sandbox image, mount, permission, filesystem-flag and ambient-secret validation",
+    "serialization or content preconditions for competing project writers",
+    "startup garbage collection for temporary files left by process death",
+    "Bash process registry, executor deadline recheck, watchdog, cancellation and native-stop receipt",
+    "WorkspaceAgent alarm and real Pi Runtime",
+    "R2 Revision and Pi Session checkpoint"
+  ],
+  "mutations": {
+    "cloudDeploy": false,
+    "cloudResourceCreate": false,
+    "modelCalls": 0,
+    "commit": false,
+    "push": false
+  }
+}

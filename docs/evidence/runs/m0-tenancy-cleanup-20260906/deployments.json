@@ -1,0 +1,36 @@
+[
+  {
+    "id": "ccea1106-e201-402e-b837-ed793c30fec5",
+    "source": "wrangler",
+    "strategy": "percentage",
+    "author_email": "jihe.gao@gmail.com",
+    "annotations": {
+      "workers/message": "Automatic deployment on upload.",
+      "workers/triggered_by": "upload"
+    },
+    "versions": [
+      {
+        "version_id": "09564102-d400-4ad9-bdd2-63ffe0b14386",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-09-06T04:13:18.429588Z"
+  },
+  {
+    "id": "874ac885-1c35-4216-8694-c20242f88cfd",
+    "source": "wrangler",
+    "strategy": "percentage",
+    "author_email": "jihe.gao@gmail.com",
+    "annotations": {
+      "workers/message": "Automatic deployment on upload.",
+      "workers/triggered_by": "upload"
+    },
+    "versions": [
+      {
+        "version_id": "00f869d8-8229-42d8-83e1-cb661f5cadfb",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-09-06T04:44:15.222083Z"
+  }
+]

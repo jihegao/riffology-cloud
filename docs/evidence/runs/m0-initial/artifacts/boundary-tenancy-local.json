@@ -1,0 +1,29 @@
+{
+  "environment": "local-docker-workerd",
+  "unauthenticatedStatus": 401,
+  "httpStatus": 200,
+  "report": {
+    "schema_version": 1,
+    "protocol": "m0-v1",
+    "run_id": "m0-tenancy-1788585282591",
+    "operation": "G0-T04-vm-files",
+    "observed_at": "2026-09-05T05:14:43.715Z",
+    "status": "observations_collected",
+    "gate_decision": "not_evaluated",
+    "observations": {
+      "worker_verified": {
+        "alpha_content_matches": true,
+        "bravo_content_matches": true,
+        "contents_differ": true
+      },
+      "limits": [
+        "Scoped capability fixtures are a separate HTTP probe.",
+        "No production login, service URL, WebSocket or Artifact store is implemented here."
+      ]
+    },
+    "cleanup": {
+      "alpha": "destroy_acknowledged",
+      "bravo": "destroy_acknowledged"
+    }
+  }
+}

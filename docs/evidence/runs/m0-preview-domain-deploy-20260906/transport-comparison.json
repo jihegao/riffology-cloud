@@ -1,0 +1,60 @@
+{
+  "observedAt": "2026-09-06T02:17:06.388Z",
+  "checks": [
+    {
+      "host": "riff-demo.gaojihe.cn",
+      "pathname": "/",
+      "ws": false,
+      "httpStatus": 403
+    },
+    {
+      "host": "riff-demo.gaojihe.cn",
+      "pathname": "/ws",
+      "ws": false,
+      "httpStatus": 403
+    },
+    {
+      "host": "riff-demo.gaojihe.cn",
+      "pathname": "/ws",
+      "ws": true,
+      "httpStatus": 403
+    },
+    {
+      "host": "preview.riff-demo.gaojihe.cn",
+      "pathname": "/",
+      "ws": false,
+      "httpStatus": 403
+    },
+    {
+      "host": "preview.riff-demo.gaojihe.cn",
+      "pathname": "/ws",
+      "ws": false,
+      "httpStatus": 403
+    },
+    {
+      "host": "preview.riff-demo.gaojihe.cn",
+      "pathname": "/ws",
+      "ws": true,
+      "httpStatus": 403
+    },
+    {
+      "host": "riffology-m0-preview-staging.jihe-gao.workers.dev",
+      "pathname": "/",
+      "ws": false,
+      "httpStatus": 403
+    },
+    {
+      "host": "riffology-m0-preview-staging.jihe-gao.workers.dev",
+      "pathname": "/ws",
+      "ws": false,
+      "errorCode": "ABORT_ERR",
+      "messageCategory": "transport-error"
+    },
+    {
+      "host": "riffology-m0-preview-staging.jihe-gao.workers.dev",
+      "pathname": "/ws",
+      "ws": true,
+      "httpStatus": 403
+    }
+  ]
+}

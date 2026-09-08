@@ -1,0 +1,7 @@
+{"ordinal":1,"action":"report","method":"GET","at":"2026-09-06T07:47:32.307Z","status":401,"outcome":"response","bodySha256":"bd2b17a0a6e1ad117ebe70eac2075b11b8a2dcdbca50689bcdcd0bd1cb5e6335","bytes":29}
+{"ordinal":2,"action":"report","method":"GET","at":"2026-09-06T07:47:35.097Z","status":200,"outcome":"response","bodySha256":"e638304c717ff2a0b0893ef26b52a9246dbcc1fc9005a89d8d5bc108c2ceaf4c","bytes":445}
+{"ordinal":3,"action":"accept","method":"POST","at":"2026-09-06T07:47:40.537Z","status":202,"outcome":"response","bodySha256":"7c5045f3ba706f0f850feb749006cc1161c2b1639db3ba73e4855e37bbe90a6d","bytes":616}
+{"ordinal":4,"action":"report","method":"GET","at":"2026-09-06T07:47:45.038Z","status":200,"outcome":"response","bodySha256":"4a3e1477cb2e9fbaa869245a65e62091b6384460d61d027e53110d9070795c39","bytes":674}
+{"ordinal":5,"action":"report","method":"GET","at":"2026-09-06T07:47:50.705Z","status":200,"outcome":"response","bodySha256":"5396354b70d30b9ae545c355ceea73f546b657433a5e9f23849d4469f7a79af8","bytes":682}
+{"ordinal":6,"action":"report","method":"GET","at":"2026-09-06T07:47:56.379Z","status":null,"outcome":"unconfirmed","error":"request-or-response-failed"}
+{"ordinal":7,"action":"report","method":"GET","at":"2026-09-06T07:48:01.385Z","status":200,"outcome":"response","bodySha256":"9c7ef9dc1c39f19432345d938c3496e600a9c2ad79ca6e31ab86b81ef02d97b3","bytes":3553}

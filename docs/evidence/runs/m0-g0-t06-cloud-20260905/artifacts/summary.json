@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "run_id": "m0-g0-t06-cloud-20260905",
+  "gate_count": 10,
+  "staging_passed": [
+    "G0-T06"
+  ],
+  "missing_staging_passed": [
+    "G0-T01",
+    "G0-T02",
+    "G0-T03",
+    "G0-T04",
+    "G0-T05",
+    "G0-T07",
+    "G0-T08",
+    "G0-T09",
+    "G0-T10"
+  ],
+  "accepted": false,
+  "local_is_supplementary": true
+}

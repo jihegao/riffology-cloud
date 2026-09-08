@@ -1,0 +1,16 @@
+{
+  "observedAt": "2026-09-06T02:14:56.926Z",
+  "change": "Cloud driver uses Node default agent so --use-env-proxy is honored; local fixture remains direct; TLS validation unchanged.",
+  "workerSourceChanged": false,
+  "workerRedeployed": false,
+  "workerVersion": "5e5f3e22-69b2-460a-b03b-354d9d803c1d",
+  "bundleSha256": "24c4e64458002e84f89ab2ec0ec76edaacf8ca90120216c32b27b238ddb78917",
+  "configSha256": "d65b6cb56bc8d4d2b0ec68463fb622eb61e3964109381bcd0946cc942fc14cb5",
+  "previousScopedHash": "067aa3c0430dabc2dcafcbe3ac3ec9d3320d9b0860cf5c6cef2b165000f638ed",
+  "driverAndDeploymentScopedHash": "6e84b44bc67ac14248b929fd6834581a2a6c5f2ca524a93925f2e93c0a8b6069",
+  "localChecks": "m0-local-20260906021336511",
+  "focusedTransportCheck": {
+    "workersDevHttpStatus": 403,
+    "tlsValidationEnabled": true
+  }
+}

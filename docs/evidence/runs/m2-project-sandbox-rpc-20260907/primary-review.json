@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-project-sandbox-rpc-20260907",
+  "observedAt": "2026-09-06T17:33:38Z",
+  "environment": "local-workerd-colima",
+  "decision": "accepted-as-local-sandbox-sdk-rpc-and-actor-capability-candidate",
+  "source": {
+    "nativeAdapterSha256": "db6fd73bc2df4079789668da89bc022c2ee39c4f0015fe19e0586c326c429e36",
+    "effectWrapperSha256": "dc1b3cd660fcdcd2000cbf5d9b097a72536be87109f0042c5374f558e3495234",
+    "fileServiceSha256": "a1f58ccb0760013f164e811f576f216e21c2895b4fab7dc9059ff206a40a95cb",
+    "dockerfileSha256": "70fdbf1ba52ee5ccfc42731f1443c6c53419123ee70d66721c3c3d83ee2a8b1f",
+    "capabilitySha256": "4e6e3ce1d5cd77abe164316fa8e53bef97180be77c5c98d2f85fbd70dab2e69a",
+    "sandboxClassesSha256": "8e5a497a597f5f094bea5b337c831e50491ddf51ef1c9437fc51e2814a661296",
+    "probeSha256": "fc9954d60f63b5004f6fc2ab2bfcd13b42ec1d9edf1efe475118e303a070b473",
+    "wranglerConfigSha256": "e5f8e113f07f42e67d5da119b936c050ab63c9d28b13c7cf7e537351f00c4da8",
+    "nativeTestSha256": "00e15648d8e2f689c57ffc252f3370e42d1a648b1c769f1f7ee872dffd5443b9",
+    "capabilityTestSha256": "716b85fc3f1ffef62c2836d42317b67585a270c4c8759312783e5ce2445d81c8"
+  },
+  "runtime": {
+    "wranglerVersion": "4.129.0",
+    "sandboxSdkVersion": "0.12.9",
+    "dockerServerVersion": "29.5.2",
+    "compatibilityDate": "2026-09-06",
+    "workerMode": "local",
+    "containerPlatform": "linux/amd64",
+    "baseImage": "docker.io/cloudflare/sandbox:0.12.9-python",
+    "baseImageDigest": "sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806",
+    "builtImageId": "sha256:e7e7e36f612312fe7f0de988952bf724fee185526ad255c7cca39e7bc753dfec",
+    "dryRunBundlePassed": true,
+    "capabilityKeyAbsentFromImageConfig": true
+  },
+  "rpcProbe": {
+    "endpoint": "http://127.0.0.1:8796/local-project-effect-probe",
+    "requestMethod": "POST",
+    "runs": 2,
+    "httpStatus": [200, 200],
+    "turnIds": [
+      "turn-a5998d19-4ba5-43ab-8234-ccf7e4860046",
+      "turn-bdcb11d9-9181-41c5-a1a0-97170a8ff28e"
+    ],
+    "authorization": {
+      "tamperedSignatureRejectedBeforeEffect": true,
+      "wrongActorRejectedBeforeEffect": true,
+      "capabilityBinds": ["named actor", "tenant", "project", "workspace generation", "turn", "dispatch", "command", "effect", "command digest", "expiry"],
+      "ledger": "synthetic-fixture"
+    },
+    "effect": {
+      "outcome": "completed",
+      "operation": "write",
+      "path": "native-probe.txt",
+      "bytes": 14,
+      "sha256": "6a48f6c8476f678074895b9c6bfb040ff68234c23e5aa282426044eafb00b280",
+      "readBackPath": "/workspace/native-probe.txt",
+      "readBackContent": "sandbox-rpc-ok"
+    },
+    "fixedIdentityReplayObservation": {
+      "outcome": "rejected",
+      "error": "project-effect-idempotency-conflict",
+      "interpretation": "the durable supervisor refused a reused effect id whose command digest changed"
+    }
+  },
+  "fullChecks": {
+    "path": "../m1-local-20260906173125134/local-checks.json",
+    "sha256": "8616eda6b3d634dc164c722b5bc94d25f06358b28513bee21ffa1eb49b02f93d",
+    "logSha256": "d483a6328899279329af058bb8d6009d6305b550f8384456f2c6ea53a0b6433b",
+    "passed": true,
+    "sourceStableDuringCheck": true,
+    "sourceCount": 281,
+    "sourceSha256": "12f0f46565d20f253057fc6e337bf4a362f96ba527217a84fd6f47063810de8c",
+    "m0": { "pass": 348, "skip": 1, "fail": 0 },
+    "m1": { "pass": 108, "skip": 0, "fail": 0 },
+    "m2": { "pass": 94, "skip": 0, "fail": 0 }
+  },
+  "independentReview": {
+    "initialP0": 0,
+    "initialP1": 2,
+    "fixedP1": [
+      "ProjectToolSandbox RPC trusted caller-supplied scope without actor-bound platform authorization",
+      "the local probe reused one fixed effect identity and did not disclose that it bypassed the Tool Ledger"
+    ],
+    "finalP0": 0,
+    "finalP1": 0
+  },
+  "cleanup": {
+    "wranglerStopped": true,
+    "port8796Listening": false,
+    "matchingRunningContainers": 0
+  },
+  "acceptedProperties": [
+    "A real local Workerd Durable Object called the Sandbox SDK, started the product container, executed the fixed root wrapper and read the resulting workspace file through SDK RPC.",
+    "The ProjectToolSandbox RPC validates a short-lived HMAC-SHA256 capability before entering the file effect; the capability binds the named actor and the complete immutable command/effect identity.",
+    "The capability key remains in the Worker/DO environment and is absent from the product image and the Sandbox process envVars.",
+    "Repeated probes use fresh platform-style turn, dispatch, command and effect identities, while a reused effect id with a changed digest is rejected by the durable supervisor.",
+    "The fixed wrapper, root-only control directory, readback fence, uid 10001 privilege drop, bounded logs and unknown-result rules from the earlier native image review remain in force."
+  ],
+  "notAccepted": [
+    "real Tool Ledger authorization or production Tool Bridge capability issuance",
+    "WorkspaceAgent-derived project actor selection",
+    "cloud Container application or staging deployment",
+    "cross-tenant, cross-workspace or old-generation cloud rejection",
+    "Trusted Pi Sandbox or Pi Runtime",
+    "Bash process registry, cancellation and watchdog",
+    "large-result immutable artifact channel",
+    "R2 Revision and Pi Session checkpoint"
+  ],
+  "mutations": {
+    "localImageBuild": true,
+    "localWorkerdRpc": true,
+    "cloudDeploy": false,
+    "cloudResourceCreate": false,
+    "modelCalls": 0,
+    "commit": false,
+    "push": false
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "modules": [
+    {
+      "name": "b6fa6f36803be1b5d7666449890bc9c7d0c344ed-go-pi-probe.mjs",
+      "sha256": "7c31360aacd8861b2bf9485e423404d31f763e4ac5d246a18f6daea1e850f0c8"
+    },
+    {
+      "name": "cf7a1c912179650b5fb212a71657cbccee78b6f4-egress-probe.mjs",
+      "sha256": "d13910c61f5cf44eb6c68b5b7d43c5a9a07620f0ad5a0baa50dd2364b8094859"
+    }
+  ],
+  "sources": [
+    {
+      "path": "services/runtime/go-pi-probe.mjs",
+      "sha256": "7c31360aacd8861b2bf9485e423404d31f763e4ac5d246a18f6daea1e850f0c8"
+    },
+    {
+      "path": "services/runtime/egress-probe.mjs",
+      "sha256": "d13910c61f5cf44eb6c68b5b7d43c5a9a07620f0ad5a0baa50dd2364b8094859"
+    }
+  ],
+  "verified": true
+}

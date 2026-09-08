@@ -1,0 +1,29 @@
+{
+  "observedAt": "2026-09-05T10:36:36.440Z",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "applications": [],
+  "cli": {
+    "standalonePush": "exit-1-proxy-broken-pipe",
+    "finishedAt": "2026-09-05T10:34:58.387Z",
+    "timedOut": false
+  },
+  "temporaryColimaConfiguration": {
+    "profile": "riffology-m0",
+    "uploadConcurrencyTested": 1,
+    "restored": true,
+    "restoredSha256": "4781adbcdc8cad86773c166d9417307bca1f26592bf222fc7e3a70745de883b0",
+    "backup": "/etc/docker/daemon.m0-upload-20260905.backup.json",
+    "noDockerPushProcessesRemain": true
+  },
+  "authentication": {
+    "existingWranglerOAuthVerified": true,
+    "workaround": "Official wrangler auth token used only in process memory for the same account's container push subprocess; no plaintext OAuth file or logged value.",
+    "registryCredentialLifetimeMinutes": 15
+  },
+  "runtime": {
+    "boundaryCloudProbeStarted": false,
+    "containerApplicationCreated": false,
+    "modelRequests": 0
+  },
+  "decision": "Image manifest not verified. Stop repeated identical pushes, retain partial Worker and image-layer evidence. G0 remains unaccepted."
+}

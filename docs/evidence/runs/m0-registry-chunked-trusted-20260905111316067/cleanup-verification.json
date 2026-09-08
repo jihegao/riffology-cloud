@@ -1,0 +1,17 @@
+{
+  "observedAt": "2026-09-05T11:19:14.171Z",
+  "uploadProcess": { "sessionId": 9788, "exitCode": 1, "terminal": true },
+  "remainingRegctlProcesses": 0,
+  "localDockerActiveContainers": 0,
+  "previewPort8791Listeners": 0,
+  "dockerDaemonConfigSha256": "4781adbcdc8cad86773c166d9417307bca1f26592bf222fc7e3a70745de883b0",
+  "dockerDaemonConfigMatchesRestoredBaseline": true,
+  "cloudContainerApplications": [],
+  "cloudApiEvidence": "post-run-container-api.json",
+  "credentialPersistenceEvidence": "credential-persistence-check.json",
+  "wrapperTimingCorrection": "wrapper-source-timing-correction.json",
+  "modelRequests": 0,
+  "newCloudVMStarts": 0,
+  "billingAmount": null,
+  "uploadRetryPerformedAfterUnknownResult": false
+}

@@ -1,0 +1,9 @@
+0bcd7d5c53d25898b250020a2fd04a7033b7034c730f6dfe9465cfd8d09a20f9  .local/pi-image-build-20260905T155750Z-167375ff/.dockerignore
+59d24628b66c5db4d7d6464c9d164584c58e29c988d09b95d244921f6ae50289  .local/pi-image-build-20260905T155750Z-167375ff/infra/m0-trusted.Dockerfile
+f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec  .local/pi-image-build-20260905T155750Z-167375ff/infra/m0-project.Dockerfile
+cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e  .local/pi-image-build-20260905T155750Z-167375ff/package.json
+523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb  .local/pi-image-build-20260905T155750Z-167375ff/package-lock.json
+3cf68643ced46c815b3fd6d5c8856882e57b0aae36ef5b148714c0bc27e5fe6a  .local/pi-image-build-20260905T155750Z-167375ff/services/runtime/controlled-pi.mjs
+b16c20eaa5a99beb4a456f87c27f5b2a79d7a677502ece201f35555fcff3b23c  .local/pi-image-build-20260905T155750Z-167375ff/services/runtime/proxy-pi.mjs
+e68380c365553e22bc4914c89cda85d3e342f76e5f7cca727e119420781be40a  .local/pi-image-build-20260905T155750Z-167375ff/scripts/m0/proxy-pi-child.mjs
+1f0865ad438abc6b2bf259d0e5601b409e64af17dff9533411838596892a054e  .local/pi-image-build-20260905T155750Z-167375ff/scripts/m0/pi-image-check.mjs

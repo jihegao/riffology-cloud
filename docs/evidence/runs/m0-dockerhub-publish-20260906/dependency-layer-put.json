@@ -1,0 +1,10 @@
+{
+  "startedAt": "2026-09-06T00:44:43.548288+00:00",
+  "digest": "sha256:66ffba5a7573966afbf9466bb673db8e8ad840be64a648c90433781830628997",
+  "bytes": 47294130,
+  "chunkBytes": 4194304,
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "reportedDigestMatches": true,
+  "endedAt": "2026-09-06T00:45:22.393312+00:00"
+}

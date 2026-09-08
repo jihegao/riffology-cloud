@@ -1,0 +1,21 @@
+{
+  "observedAt": "2026-09-06T06:42:40.517Z",
+  "decision": "T03 original fixed cloud resource-loading scope passed; pending independent final signature",
+  "checksPassed": true,
+  "summarySha256": "31c6f51c4fddb702718b309db192a05b7f14b7195100340a4a606786732c1629",
+  "sourceStable": true,
+  "fullCheckSourceFiles": 151,
+  "versionId": "b30e9f9d-dc60-4ea3-985c-6c6291f20513",
+  "requests": 8,
+  "responseBytes": 5208,
+  "elapsedMs": 13892,
+  "cloudInstances": 1,
+  "allInstancesInactive": true,
+  "realProviderCalls": 0,
+  "limitations": [
+    "Fixed malicious discovery fixtures with real SDK positive control, not arbitrary-code sandboxing.",
+    "Actual cloud VM probe with first and restored sessions in same supervised process; cross-VM interruption and restore are separately T08.",
+    "SDK fixed SSE transport, no actual supplier calls or T01/T09 acceptance.",
+    "DO audit report retained; no R2 binding used for this resource-loading probe."
+  ]
+}

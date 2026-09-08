@@ -1,0 +1,23 @@
+{
+  "label": "deploy",
+  "startedAt": "2026-09-05T12:55:04.542Z",
+  "finishedAt": "2026-09-05T12:55:20.802Z",
+  "command": [
+    "wrangler",
+    "deploy",
+    "--config",
+    "infra/wrangler.m0-model-proxy.jsonc",
+    "--env",
+    "staging",
+    "--outdir",
+    "/Users/gaojihe/apps/riffology-cloud/docs/evidence/runs/m0-model-proxy-staging-1788612744246/deployed-bundle",
+    "--secrets-file",
+    "/Users/gaojihe/apps/riffology-cloud/.local/cloud-staging/model-proxy.secrets.json",
+    "--message",
+    "M0 fixed SSE fixture; no provider transport or VM"
+  ],
+  "code": 0,
+  "signal": null,
+  "timedOut": false,
+  "logSha256": "9aaf9fd66b8b2229711a88cfa5e22dd931820ef2e9eb4e97c89552b3ac7e0f5a"
+}

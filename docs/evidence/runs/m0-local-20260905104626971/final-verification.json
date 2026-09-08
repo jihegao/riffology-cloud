@@ -1,0 +1,46 @@
+{
+  "observedAt": "2026-09-05T10:55:53.345133+00:00",
+  "documentationLinks": 152,
+  "missingLinks": [],
+  "documents": [
+    {
+      "path": "README.md",
+      "sha256": "8150613f2506694c5c2084665e2bde9f354afe6843441d8191109733f30437c7"
+    },
+    {
+      "path": "docs/development-status.md",
+      "sha256": "417583e4331e12754c420bb5fc120c6d4bba316d38a921f5a8ce757379b586e6"
+    },
+    {
+      "path": "docs/m0-staging-resources.md",
+      "sha256": "cee82bff0252a724a8b4fcfd4bc80d7cd849c6aa0973e9ee26f34addaca6bf7d"
+    },
+    {
+      "path": "docs/m0-remaining-work.md",
+      "sha256": "e3dd3a535fc70c8777c56ecd90c30543137ad5a28ea597d9f568a51068c238c1"
+    },
+    {
+      "path": "docs/m0-local-runbook.md",
+      "sha256": "9206f5e130d5b8a1162fba21ecb20f6d12fe29328f0ecc74a0698df2949ffb0b"
+    },
+    {
+      "path": "docs/development-deployment-plan.md",
+      "sha256": "b2a2a16880845ffb29e6fd42b0ecd5b4b7421dea8430c1981ec02df16e4dffe7"
+    },
+    {
+      "path": "spikes/m0-preview/README.md",
+      "sha256": "bfb06bf37c2dde33d8df11d5fe4713b20e43da7ac2fda7e387aef6a5635fa600"
+    }
+  ],
+  "sourceSha256": "ee9b73ebb6ca96975a553750d5785663ebca1236f8df6e6fc9875987bed5f926",
+  "localChecks": "m0-local-20260905104626971/local-checks.json",
+  "previewRegression": "preview-browser-1788605434924/artifacts/preview-browser.json",
+  "previewCleanup": "preview-regression-20260905104749/helper-cleanup.json",
+  "G0": {
+    "passed": [
+      "G0-T06"
+    ],
+    "accepted": false
+  },
+  "goalComplete": false
+}

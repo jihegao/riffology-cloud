@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-workspace-archive-local-20260907",
+  "observedAt": "2026-09-06T21:11:10Z",
+  "environment": "local-workerd-colima",
+  "endpoint": "http://127.0.0.1:8796/local-workspace-archive-probe",
+  "requestMethod": "POST",
+  "runs": [
+    {
+      "httpStatus": 200,
+      "archiveBytes": 10240,
+      "archiveSha256": "bfd73e7be4f91d3efd2bd03eb43d48c93a55781eafcb92bd6ccdb2414bdbd5f3",
+      "restoredContent": "before-freeze",
+      "actorsDerived": true,
+      "wrongActorRejected": true
+    },
+    {
+      "httpStatus": 200,
+      "archiveBytes": 10240,
+      "archiveSha256": "bfd73e7be4f91d3efd2bd03eb43d48c93a55781eafcb92bd6ccdb2414bdbd5f3",
+      "restoredContent": "before-freeze",
+      "actorsDerived": true,
+      "wrongActorRejected": true
+    }
+  ],
+  "lifecycle": [
+    "restore a canonical empty archive into a source Project Sandbox",
+    "write the source marker and freeze the Workspace",
+    "mutate the source marker after freeze",
+    "destroy the source Sandbox",
+    "restore the frozen bytes into a separately derived Project Sandbox actor",
+    "read back the pre-freeze marker and reject the source identity in the destination actor",
+    "destroy the destination Sandbox"
+  ],
+  "deterministicAcrossRuns": true,
+  "modelCalls": 0,
+  "cloudMutations": 0
+}

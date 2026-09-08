@@ -1,0 +1,96 @@
+{
+  "environment": "local-docker-workerd",
+  "httpStatus": 200,
+  "report": {
+    "schema_version": 1,
+    "protocol": "m0-v1",
+    "run_id": "m0-egress-v2-1788586212227",
+    "operation": "G0-T09",
+    "observed_at": "2026-09-05T05:30:15.545Z",
+    "status": "observations_collected",
+    "gate_decision": "not_evaluated",
+    "observations": {
+      "egress_observation_version": 2,
+      "execution_environment": "unrecorded",
+      "environment_label_source": "operator_configuration_requires_artifact_confirmation",
+      "trusted_runtime_observations": {
+        "http_attempts": [
+          {
+            "destination": "http://m0-control.invalid/health",
+            "http_status": 200,
+            "transport_error": false
+          },
+          {
+            "destination": "http://m0-control.invalid/billing/credit",
+            "http_status": 403,
+            "transport_error": false
+          },
+          {
+            "destination": "https://example.com/",
+            "http_status": null,
+            "transport_error": true
+          }
+        ]
+      },
+      "untrusted_project_observations": {
+        "egress_observation_version": 2,
+        "http_attempts": [
+          {
+            "destination": "http://m0-control.invalid/health",
+            "http_status": 520,
+            "transport_error": false
+          },
+          {
+            "destination": "http://m0-control.invalid/billing/credit",
+            "http_status": 520,
+            "transport_error": false
+          },
+          {
+            "destination": "https://example.com/",
+            "http_status": null,
+            "transport_error": true
+          },
+          {
+            "destination": "http://1.1.1.1/",
+            "http_status": 520,
+            "transport_error": false
+          }
+        ],
+        "dns_over_tcp_attempt": {
+          "destination": "1.1.1.1:53",
+          "protocol": "dns-over-tcp",
+          "query_name": "example.com",
+          "query_type": "A",
+          "transport_connected": true,
+          "query_sent": true,
+          "application_response_received": false,
+          "received_bytes": 0,
+          "outcome": "connection_closed_before_dns_response",
+          "response": null
+        },
+        "dns_exfiltration_tested": false
+      },
+      "worker_policy": {
+        "trusted_allowlist": [
+          "m0-control.invalid"
+        ],
+        "project_allowlist": [],
+        "default_internet": false,
+        "credentials_injected": false,
+        "privileged_routes_implemented": false
+      },
+      "limits": [
+        "Runtime output does not substitute for independent policy/traffic review.",
+        "Local Docker/Workerd interception is not cloud VM network evidence.",
+        "Transport connect alone may be a local proxy accepting the connection; it does not establish application reachability.",
+        "A matching DNS response, including REFUSED, demonstrates a DNS application response and must not be reported as deny-all passing; it does not authenticate the responder or prove arbitrary internet access.",
+        "Model proxy and dependency allowlist are not implemented.",
+        "Only the fixed non-secret example.com DNS-over-TCP query is tested; DNS exfiltration and all protocol variants are not covered."
+      ]
+    },
+    "cleanup": {
+      "trusted": "destroy_acknowledged",
+      "alpha": "destroy_acknowledged"
+    }
+  }
+}

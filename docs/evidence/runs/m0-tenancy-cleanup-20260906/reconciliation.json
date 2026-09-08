@@ -1,0 +1,103 @@
+{
+  "observedAt": "2026-09-06T04:46:00.777Z",
+  "versionId": "00f869d8-8229-42d8-83e1-cb661f5cadfb",
+  "priorRun": "tc-1788669563507-2719970e",
+  "emptyRun": "tc-1788669960777-empty",
+  "actions": [
+    {
+      "run": "tc-1788669563507-2719970e",
+      "op": "cleanup",
+      "startedAt": "2026-09-06T04:46:00.778Z",
+      "status": 200,
+      "body": {
+        "run_id": "tc-1788669563507-2719970e",
+        "deleted_keys": [
+          "m0-tenancy/tc-1788669563507-2719970e/alpha/workspace/fixture-alpha-workspace",
+          "m0-tenancy/tc-1788669563507-2719970e/alpha/artifact/fixture-alpha-artifact",
+          "m0-tenancy/tc-1788669563507-2719970e/bravo/workspace/fixture-bravo-workspace",
+          "m0-tenancy/tc-1788669563507-2719970e/bravo/artifact/fixture-bravo-artifact"
+        ],
+        "r2_remaining": 0,
+        "cleanup": "r2-prefix-and-sqlite-state-deleted"
+      },
+      "finishedAt": "2026-09-06T04:46:02.294Z"
+    },
+    {
+      "run": "tc-1788669563507-2719970e",
+      "op": "bootstrap",
+      "startedAt": "2026-09-06T04:46:02.294Z",
+      "status": 502,
+      "body": {
+        "error": "operator-operation-failed",
+        "capabilitiesReturned": false
+      },
+      "finishedAt": "2026-09-06T04:46:02.407Z"
+    },
+    {
+      "run": "tc-1788669563507-2719970e",
+      "op": "cleanup",
+      "startedAt": "2026-09-06T04:46:02.407Z",
+      "status": 200,
+      "body": {
+        "run_id": "tc-1788669563507-2719970e",
+        "deleted_keys": [
+          "m0-tenancy/tc-1788669563507-2719970e/alpha/workspace/fixture-alpha-workspace",
+          "m0-tenancy/tc-1788669563507-2719970e/alpha/artifact/fixture-alpha-artifact",
+          "m0-tenancy/tc-1788669563507-2719970e/bravo/workspace/fixture-bravo-workspace",
+          "m0-tenancy/tc-1788669563507-2719970e/bravo/artifact/fixture-bravo-artifact"
+        ],
+        "r2_remaining": 0,
+        "cleanup": "r2-prefix-and-sqlite-state-deleted"
+      },
+      "finishedAt": "2026-09-06T04:46:04.934Z"
+    },
+    {
+      "run": "tc-1788669960777-empty",
+      "op": "cleanup",
+      "startedAt": "2026-09-06T04:46:04.934Z",
+      "status": 200,
+      "body": {
+        "run_id": "tc-1788669960777-empty",
+        "deleted_keys": [
+          "m0-tenancy/tc-1788669960777-empty/alpha/workspace/fixture-alpha-workspace",
+          "m0-tenancy/tc-1788669960777-empty/alpha/artifact/fixture-alpha-artifact",
+          "m0-tenancy/tc-1788669960777-empty/bravo/workspace/fixture-bravo-workspace",
+          "m0-tenancy/tc-1788669960777-empty/bravo/artifact/fixture-bravo-artifact"
+        ],
+        "r2_remaining": 0,
+        "cleanup": "r2-prefix-and-sqlite-state-deleted"
+      },
+      "finishedAt": "2026-09-06T04:46:06.177Z"
+    },
+    {
+      "run": "tc-1788669960777-empty",
+      "op": "bootstrap",
+      "startedAt": "2026-09-06T04:46:06.177Z",
+      "status": 502,
+      "body": {
+        "error": "operator-operation-failed",
+        "capabilitiesReturned": false
+      },
+      "finishedAt": "2026-09-06T04:46:06.282Z"
+    },
+    {
+      "run": "tc-1788669960777-empty",
+      "op": "cleanup",
+      "startedAt": "2026-09-06T04:46:06.282Z",
+      "status": 200,
+      "body": {
+        "run_id": "tc-1788669960777-empty",
+        "deleted_keys": [
+          "m0-tenancy/tc-1788669960777-empty/alpha/workspace/fixture-alpha-workspace",
+          "m0-tenancy/tc-1788669960777-empty/alpha/artifact/fixture-alpha-artifact",
+          "m0-tenancy/tc-1788669960777-empty/bravo/workspace/fixture-bravo-workspace",
+          "m0-tenancy/tc-1788669960777-empty/bravo/artifact/fixture-bravo-artifact"
+        ],
+        "r2_remaining": 0,
+        "cleanup": "r2-prefix-and-sqlite-state-deleted"
+      },
+      "finishedAt": "2026-09-06T04:46:07.166Z"
+    }
+  ],
+  "passed": true
+}

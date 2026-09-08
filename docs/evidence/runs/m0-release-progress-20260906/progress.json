@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T09:48:03.053Z",
+  "kind": "cross-run partial progress; not an accepted common release",
+  "stagingPassed": [
+    {
+      "gate": "G0-T01",
+      "record": "m0-g0-t01-cloud-20260906/G0-T01-gate-summary.json",
+      "sha256": "9df6d767387209b1a6893497f5f12d728beec3e3f2ec4d1df944a6e695c10d54",
+      "versions": {
+        "pi": "0.85.0",
+        "sandbox": "0.12.9",
+        "wrangler": "4.129.0",
+        "worker_version": "7bb43caa-bc64-4d91-801f-b9d2758cff3a",
+        "proxy_worker_version": "8ff337aa-a548-4779-b1f7-d1053fc3939c",
+        "protocol": "m0-v1",
+        "bundle_sha256": "28f9c066cbfbb2be5076060e276f219f04f7d047ee4884ea24f06850757232f9",
+        "proxy_bundle_sha256": "dadf67f9d3c9ab5915625322313adfb4c2cf4aa423a6d3075b13d4190f287306",
+        "source_sha256": "0ca11907310ba492d13b715ff46ad4e4796bbe1c4d5ae5b397571e7cd9a386df",
+        "trusted_image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "project_image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+        "source_state": "uncommitted working tree; frozen source and deployment hashes authoritative"
+      }
+    },
+    {
+      "gate": "G0-T02",
+      "record": "m0-g0-t02-cloud-20260906/G0-T02-gate-summary.json",
+      "sha256": "dc1fa1f4537316c965e92d1b91eac70813a7cd658480efb1b60301e30e1f4ed1",
+      "versions": {
+        "wrangler": "4.129.0",
+        "worker_version": "f43bcfe0-03c3-4d76-9662-9deeacc750d6",
+        "protocol": "m0-v1",
+        "bundle_sha256": "7d2f55826967fceec9c59b4da9502b5f1f6f956cba9bbe0ac64b4b7804384ffd",
+        "scoped_source_sha256": "bd2c27f5073138b3ccae459add25f7c7fa8c5071832559a50866db77477e7a48",
+        "trusted_image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "project_image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+        "source_state": "uncommitted working tree; scoped runtime and driver hashes authoritative"
+      }
+    },
+    {
+      "gate": "G0-T03",
+      "record": "m0-g0-t03-cloud-20260906/G0-T03-gate-summary.json",
+      "sha256": "25d1dd11e5b2b35e3d9f6ab6658d7c390a2941979db18af0a5e250061344407f",
+      "versions": {
+        "wrangler": "4.129.0",
+        "worker_version": "b30e9f9d-dc60-4ea3-985c-6c6291f20513",
+        "protocol": "m0-v1",
+        "bundle_sha256": "eb3a8f791810661affa65e2f5d986a793e3a0a385ca9f6ff9f711a3ada0f8e6c",
+        "scoped_source_sha256": "96ea60703726c3eef146227a62c400277e85d533143a84938b89ea00a686dc44",
+        "trusted_image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "source_state": "uncommitted working tree; frozen current source, text module and deployment hashes authoritative"
+      }
+    },
+    {
+      "gate": "G0-T04",
+      "record": "m0-g0-t04-cloud-20260906/G0-T04-gate-summary.json",
+      "sha256": "8539562f799319b59cd06a5a4379f42d128cc9a6ae6128c9e81f7e555bebb465",
+      "versions": {
+        "wrangler": "4.129.0",
+        "worker_version": "00f869d8-8229-42d8-83e1-cb661f5cadfb",
+        "protocol": "m0-v1",
+        "bundle_sha256": "19985c0f5872ab53103cc1787a2828532f1ef73b10741f12a55a584c390555fc",
+        "scoped_source_sha256": "e2f0bdc41470fc4b51cf87456e93f31add1f122e272becef88321cffab63b661",
+        "source_state": "uncommitted working tree; frozen scoped runtime and driver hashes authoritative"
+      }
+    },
+    {
+      "gate": "G0-T05",
+      "record": "m0-g0-t05-cloud-20260906/G0-T05-gate-summary.json",
+      "sha256": "9df3aa799ade968bd018451b74cb913bae6b792525a2aa6ddfec5b39c0103ea5",
+      "versions": {
+        "wrangler": "4.129.0",
+        "worker_version": "98cc1d73-0efe-4d6f-9e43-7616f841b8c3",
+        "protocol": "m0-v1",
+        "image_digest": "sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+        "source_sha256": "8d368e8965d9f37651cc1d32bf606906e9c79a51c295137b9c5a7e56bfd45810",
+        "bundle_sha256": "30aad7810b5a1019e28c977989fd5a881bfd8e2d9836b197902016a3803d8fbc",
+        "source_state": "uncommitted working tree; frozen source hashes authoritative"
+      }
+    },
+    {
+      "gate": "G0-T06",
+      "record": "m0-g0-t06-cloud-20260905/G0-T06-gate-summary.json",
+      "sha256": "00b4a1b4543e0bf65a4163aaaf7a06b1b6c73685a43c3694c9178170a83b60bc",
+      "versions": {
+        "wrangler": "4.129.0",
+        "worker_version": "e0d311aa-ab18-4b55-9fd8-0c188376041b",
+        "protocol": "m0-v1",
+        "bundle_sha256": "787a8590badf3f3881066ebaa55e63857bbd1eee589fe17ae5445139d76c42a4",
+        "scoped_source_sha256": "253cca7bc58e222467fc83d5a2c586956e36000a7e9bd8faa8b32027afc9b098",
+        "source_state": "uncommitted working tree; frozen scoped hashes are authoritative"
+      }
+    },
+    {
+      "gate": "G0-T07",
+      "record": "m0-g0-t07-cloud-20260906/G0-T07-gate-summary.json",
+      "sha256": "7e6b145a7cb697347928d0581702e151e907df6f9f4e9e6ec227264904ecfa3d",
+      "versions": {
+        "wrangler": "4.129.0",
+        "worker_version": "5e5f3e22-69b2-460a-b03b-354d9d803c1d",
+        "protocol": "m0-v1",
+        "image_digest": "sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+        "scoped_source_sha256": "44893bb452096862beaabc50bdbae5b7b9fc6fc732772b2743ad7eecfe2ce8ed",
+        "source_state": "uncommitted working tree; runtime source unchanged since verified deployment; driver scoped hashes authoritative"
+      }
+    },
+    {
+      "gate": "G0-T08",
+      "record": "m0-g0-t08-cloud-20260906/G0-T08-gate-summary.json",
+      "sha256": "124730c5ee4dcdd8b2b0b9e0decde674b0ee89e9c72c7912c3316c347b0cdf51",
+      "versions": {
+        "wrangler": "4.129.0",
+        "worker_version": "5fef2b3a-a064-4162-b1c3-6b0ce25c098d",
+        "protocol": "m0-v1",
+        "bundle_sha256": "a43b5e8ab4bc2d1ad05130d870cc8284f3f55c0e52023dc2a244c52ed0b066f3",
+        "scoped_source_sha256": "f9f7f41426d472f2077caac84a78bdf973da2911c39ed50873d9588a3b26cd92",
+        "trusted_image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "source_state": "uncommitted working tree; frozen full and scoped source hashes authoritative"
+      }
+    },
+    {
+      "gate": "G0-T09",
+      "record": "m0-g0-t09-cloud-20260906/G0-T09-gate-summary.json",
+      "sha256": "75a930fa61f852a17486f7f1f2c521871acdcaa58a13ddda04a03b81c6c2c48c",
+      "versions": {
+        "pi": "0.85.0",
+        "sandbox": "0.12.9",
+        "wrangler": "4.129.0",
+        "worker_version": "7bb43caa-bc64-4d91-801f-b9d2758cff3a",
+        "proxy_worker_version": "8ff337aa-a548-4779-b1f7-d1053fc3939c",
+        "protocol": "m0-v1",
+        "bundle_sha256": "28f9c066cbfbb2be5076060e276f219f04f7d047ee4884ea24f06850757232f9",
+        "proxy_bundle_sha256": "dadf67f9d3c9ab5915625322313adfb4c2cf4aa423a6d3075b13d4190f287306",
+        "source_sha256": "0ca11907310ba492d13b715ff46ad4e4796bbe1c4d5ae5b397571e7cd9a386df",
+        "trusted_image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "project_image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+        "source_state": "uncommitted working tree; frozen source and deployment hashes authoritative"
+      }
+    }
+  ],
+  "stagingPassedCount": 9,
+  "missingStagingPassed": [
+    "G0-T10"
+  ],
+  "accepted": false,
+  "fullGoalComplete": false,
+  "finalCandidateConsistency": "preliminary passed; final pending",
+  "t10": {
+    "record": "m0-g0-t10-partial-20260906/G0-T10-gate-summary.json",
+    "sha256": "e7db77386efb5363eca1d17375d5c410522b1560910b4abf3a9e20ee9bde1f99",
+    "status": "failed",
+    "remaining": [
+      "confirmed startup-failure exit evidence",
+      "restore and write/read under reverted W1/I1"
+    ]
+  },
+  "deployment": {
+    "record": "m0-release-deploy-rollback-1788687343387/deployment-verified.json",
+    "sha256": "ee50ba5c1705a18805606426ba7fd5a79027d9358981e5f60b191b74726b8e1d"
+  },
+  "cleanup": {
+    "allFiveInstanceRecordsInactive": true,
+    "record": "m0-release-deploy-rollback-1788687343387/api.json"
+  },
+  "latestCheck": "m0-local-20260906092132818/local-checks.json",
+  "newModelDispatches": 0,
+  "cashCharge": null
+}

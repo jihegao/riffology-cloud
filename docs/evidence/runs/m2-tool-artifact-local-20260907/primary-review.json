@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-tool-artifact-local-20260907",
+  "observedAt": "2026-09-07T10:21:30Z",
+  "decision": "accepted-as-local-large-read-artifact-candidate",
+  "git": {
+    "head": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+    "workingTreeDirty": true
+  },
+  "sourceSha256": {
+    "services/artifacts/protocol.ts": "58fae378ca3c52a3d56fec4bb7be2f98e49014ba9674302da7ab4d85662a553f",
+    "services/artifacts/durable.ts": "3965290d39b0501c69d039fc6307df4d247bef838654981da80767076d1e0f7d",
+    "services/artifacts/materializer.ts": "55bab3650bb1c99d045bdfbdec3fadc255d97097a049a6da61956885fec60e3c",
+    "services/project-tools/file_service.py": "d260d78f6538d40006c0ff934932ae42393bd0891f32fb975d0bcf6a160bf7b5",
+    "services/project-tools/effect.ts": "6c8cb6b9622246e96dbf23a3c2f098325c01ac47e5dca6af0068d40c89ea2447",
+    "services/tools/dispatcher.ts": "6bc1024705c36dbb068ef38a3423c4df42c34e2aa90527974994307bc44dc4a7",
+    "services/tools/durable.ts": "a3250c3ba52072ab5a9337c5db00c95dc281562d8706d8eb6d07c20a293c8adc",
+    "services/workspace/durable.ts": "7ec5f7c721d0f927891bd4281f6edeb2a5bd3fdaa948662e7d417c7c0e969d2f",
+    "services/gateway/turn-services.ts": "f83a046d50b14d3bba7cc98c8036fef02fbcbffb4a1392362bb6cb88d53f6706",
+    "services/gateway/app.ts": "e3b9d6dbc6976405fc8404f0aff09e66f1a3329dd37c02294a641bbc5802513b",
+    "services/gateway/index.ts": "4309cfcb6b11ce88dd9b521829ff122f18da1a82ea5ae33a9f9fd94950ae37a1",
+    "infra/wrangler.m2-product-local.jsonc": "36c542ea1d8988475efdfd1e6c9cd9f130d81b6d51acea24f721c8286a66e177",
+    "infra/wrangler.m2-project-sandbox-local.jsonc": "3de76203ac27762fc959e726be73b6356877b01ee2500cf8c646290721b70c3b",
+    "spikes/m2-project-sandbox/index.ts": "3776e40a644af47ada480d587af7ef7a312545860db514ca303d23137280e322",
+    "scripts/m2/check-product-turn-local.mjs": "63c7bca71e6bf795c7cfe94bc7f7c209bc6b168c82f27be9cba9a343127b843f",
+    "tests/m2/tool-artifact-materializer.test.ts": "42951200c318ddbb4a3200c9db3e8fa55bfdf8dd670d216c01dd24cd92a7c79a",
+    "tests/m2/tool-artifact-store-workerd.test.mjs": "e40ee48830a52bee621fc0e47c8311b2675fd275bc7a67ed9f5876d61b7bac4c",
+    "tests/m2/gateway-turns.test.ts": "81a2884e096be2d9a02928be286ab3e4b7c78dd21d61f809a746fb34f34a0cbb",
+    "tests/m2/gateway-turn-runtime-gate.test.ts": "62bc8a8b2992dd65638976187ccc2bc73dd9dfa2ab9259b4adff9bb95ab12c2e",
+    "tests/m2/tool-dispatcher.test.ts": "06ddb4040119478b672c05ff595921e026b48fabaf33b0c5063346884f47cd41",
+    "tests/m2/project-files.test.mjs": "1ec1509a730af8ffc4cb6ef8c91437f9ae0d2210580f4b8bc174624e8c6218e4",
+    "tests/m2/project-effect.test.ts": "70f995155ccc2f8c0c1d23126365d54309174602a8343d28746207932dda84fd",
+    "tests/m2/product-local-topology.test.ts": "f36b079eb30d247ee23d3d3dbb82887824198081db0f8d7fa51d2707c879c51b"
+  },
+  "runtime": {
+    "wranglerVersion": "4.129.0",
+    "sandboxSdkVersion": "0.12.9",
+    "dockerServerVersion": "29.5.2",
+    "workerMode": "local",
+    "cloudDeployment": false
+  },
+  "evidence": {
+    "artifactLocalPath": "artifact-local.json",
+    "artifactLocalSha256": "e4646f6744326202987eeac9738845501bfe26dcce0284776eea81d9c5b21ffc",
+    "testM2LogSha256": "5e395a46b06a63646b01a4a5a3f057865aea6010328201009436f4c58a1a89dd",
+    "typecheckLogSha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f"
+  },
+  "acceptedProperties": [
+    "A 20000-byte UTF-8 project file crosses the real local Project Sandbox helper boundary and becomes one 20146-byte immutable JSON artifact.",
+    "The public receipt contains only artifact identity, operation, media type, bytes, digest and creation time; it contains no R2 object key.",
+    "Replaying the same terminal effect returns the same receipt and leaves exactly one object under the exact scope and Turn prefix.",
+    "ToolArtifactStore persists an operation fence before R2, verifies object bytes and SHA-256 after write, and unit coverage exercises acknowledgement loss plus exact reconciliation.",
+    "Gateway artifact reads require current Catalog ownership and ready Workspace, then verify the returned bytes and digest again.",
+    "Files, Diff and Artifact reads remain available while new Turn admission is disabled."
+  ],
+  "notAccepted": [
+    "staging or cloud R2 artifact binding and public route deployment",
+    "cross-tenant concurrent cloud execution",
+    "artifact reference authority, retention policy or garbage collection",
+    "agent paging for arbitrary sections of a large file",
+    "real provider execution or model consumption of a large result",
+    "M2 release gate enablement"
+  ],
+  "checks": {
+    "typecheckPassed": true,
+    "m2": {
+      "tests": 295,
+      "pass": 295,
+      "fail": 0,
+      "skipped": 0
+    },
+    "gitDiffCheckPassed": true
+  },
+  "cleanup": {
+    "wranglerStopped": true,
+    "port8796Listening": false,
+    "matchingRunningContainers": 0,
+    "ephemeralDevVarsRemoved": true
+  },
+  "mutations": {
+    "localContainerExecution": true,
+    "localR2Write": true,
+    "cloudDeploy": false,
+    "cloudResourceMutation": false,
+    "modelCalls": 0,
+    "commit": false,
+    "push": false
+  }
+}

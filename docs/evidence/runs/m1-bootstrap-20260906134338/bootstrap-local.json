@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "runId": "m1-bootstrap-20260906134338",
+  "environment": "local",
+  "scope": "initial operator offline bootstrap schema, CLI planning and atomic acceptance; SQLite/D1 fixtures only; no Google, cloud, invitation delivery or provider calls",
+  "implementation": {
+    "script": "scripts/m1/bootstrap-operator.mjs",
+    "scriptSha256": "24eb849966c968b4df8c875d9eb9400c398e40e57b1fbd3ce0ad1dea43fd38c8",
+    "migration": "services/catalog/migrations/0005_initial_operator.sql",
+    "migrationSha256": "d47edceeb7e3bbe105e01a571468bbe681e53ed24e09da5349649572ae5081d3",
+    "test": "tests/m1/operator-bootstrap.test.mjs",
+    "testSha256": "fe79f7364652846ff0d31e562486b7a35359b271896c2c0d19ad6a2df8e265bf"
+  },
+  "credentialBoundary": {
+    "input": "RIFFOLOGY_INITIAL_OPERATOR_TOKEN environment variable",
+    "wranglerChildReceivesPlaintextToken": false,
+    "databaseReceives": "sha256 only",
+    "scriptPrintsPlaintextToken": false,
+    "publicBootstrapEndpoint": false
+  },
+  "checks": [
+    "same email and token reconcile the original invitation",
+    "different token conflicts without another invitation",
+    "write response loss resolves by exact email and hash readback",
+    "verified acceptance grants one operator in the admission transaction",
+    "concurrent acceptance creates one role and one grant audit",
+    "ordinary invitation never grants an operator role",
+    "each of five injected admission statement failures rolls back user and role",
+    "an existing active operator blocks bootstrap",
+    "purpose and bootstrap metadata are immutable"
+  ],
+  "localD1": {
+    "database": "riffology-catalog-local",
+    "migrationApplied": "0005_initial_operator.sql",
+    "migrationsRemaining": 0,
+    "verificationLog": "migrations.log",
+    "verificationLogSha256": "29a8028a8b8a394dd0650dfe2241eb5dad31b724338785f5d46f88deba5426dc"
+  },
+  "fullCheck": {
+    "evidence": "../m1-local-20260906134220998/local-checks.json",
+    "m0": { "passed": 348, "skipped": 1, "failed": 0 },
+    "m1": { "passed": 103, "skipped": 0, "failed": 0 },
+    "sourceFiles": 242,
+    "sourceSha256": "72ef317d6cf3b92ef5cf8948ba9ec8c6d7f4daaf94090d55cabb03eb919f184f",
+    "sourceStableDuringCheck": true
+  },
+  "cloudGatePassed": false,
+  "remaining": [
+    "create and configure the real Google OAuth Web client",
+    "apply migrations and run bootstrap against staging",
+    "accept with the real operator identity and verify role revocation",
+    "complete two-identity staging and fault reconciliation"
+  ]
+}

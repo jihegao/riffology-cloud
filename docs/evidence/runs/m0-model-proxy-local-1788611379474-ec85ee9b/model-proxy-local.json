@@ -1,0 +1,623 @@
+{
+  "schemaVersion": 1,
+  "operation": "G0-T01-local-model-proxy",
+  "environment": "local-worker-fixture-only",
+  "origin": "http://127.0.0.1:8794",
+  "startedAt": "2026-09-05T12:29:39.500Z",
+  "gate_decision": "not_evaluated",
+  "cloudGatePassed": false,
+  "passed": true,
+  "cases": [
+    {
+      "name": "operator-auth-required",
+      "expectedStatus": 401,
+      "observedStatus": 401,
+      "passed": true
+    },
+    {
+      "name": "fixture-only-health",
+      "expectedStatus": 200,
+      "observedStatus": 200,
+      "passed": true,
+      "summary": {
+        "realProviderCalls": 0,
+        "mode": "fixture-only",
+        "liveEnabled": false
+      }
+    },
+    {
+      "name": "four-owned-runs-initialized",
+      "expectedStatus": 200,
+      "observedStatus": 200,
+      "passed": true,
+      "capabilityCountPerRun": 3
+    },
+    {
+      "name": "operator-token-cannot-model",
+      "expectedStatus": 401,
+      "observedStatus": 401,
+      "passed": true
+    },
+    {
+      "name": "model-cap-cannot-status",
+      "expectedStatus": 401,
+      "observedStatus": 401,
+      "passed": true
+    },
+    {
+      "name": "same-cap-concurrency-one-accepted",
+      "expectedStatus": "200+409",
+      "observedStatus": "200+409",
+      "passed": true
+    },
+    {
+      "name": "same-cap-different-payload-conflict",
+      "expectedStatus": 409,
+      "observedStatus": 409,
+      "passed": true
+    },
+    {
+      "name": "alpha-cap-cannot-address-bravo",
+      "expectedStatus": 401,
+      "observedStatus": 401,
+      "passed": true
+    },
+    {
+      "name": "bravo-no-dispatch-from-substitution",
+      "expectedStatus": 200,
+      "observedStatus": 200,
+      "passed": true,
+      "fixtureDispatches": 0
+    },
+    {
+      "name": "active-revoke-aborts-stream-and-persists-unknown",
+      "expectedStatus": "200/unknown",
+      "observedStatus": 200,
+      "passed": true,
+      "streamEnd": "server-eof",
+      "summary": {
+        "runId": "mp-1788611379500-99b5dd-bravo",
+        "tenantId": "m0-bravo",
+        "workspaceId": "m0-bravo-mp-1788611379500-99b5dd-bravo",
+        "revoked": true,
+        "instanceNonce": "ff53755c-4744-4461-8153-f8bc8e6940f4",
+        "fixtureDispatches": 1,
+        "activeRequests": 0,
+        "realProviderCalls": 0,
+        "mode": "fixture-only",
+        "liveEnabled": false,
+        "cancelledCalls": [],
+        "ledger": {
+          "dispatchCount": 1,
+          "heldMicrousd": 192,
+          "calls": {
+            "call-3": {
+              "state": "terminal",
+              "dispatchOrdinal": 1,
+              "billingAmount": null,
+              "outcome": "cancelled",
+              "errorCode": "proxy-cancelled",
+              "usage": {
+                "status": "unknown",
+                "input": 10,
+                "output": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "alpha-call2-completes",
+      "expectedStatus": 200,
+      "observedStatus": 200,
+      "passed": true
+    },
+    {
+      "name": "alpha-call3-explicitly-cancelled",
+      "expectedStatus": 200,
+      "observedStatus": 200,
+      "passed": true,
+      "streamEnd": "server-eof"
+    },
+    {
+      "name": "alpha-ledger-three-dispatches-and-held-budget",
+      "expectedStatus": 200,
+      "observedStatus": 200,
+      "passed": true,
+      "summary": {
+        "runId": "mp-1788611379500-99b5dd-alpha",
+        "tenantId": "m0-alpha",
+        "workspaceId": "m0-alpha-mp-1788611379500-99b5dd-alpha",
+        "revoked": false,
+        "instanceNonce": "de4eb400-0a58-439e-b737-bfc6789bdb80",
+        "fixtureDispatches": 3,
+        "activeRequests": 0,
+        "realProviderCalls": 0,
+        "mode": "fixture-only",
+        "liveEnabled": false,
+        "cancelledCalls": [
+          "call-3"
+        ],
+        "ledger": {
+          "dispatchCount": 3,
+          "heldMicrousd": 576,
+          "calls": {
+            "call-1": {
+              "state": "terminal",
+              "dispatchOrdinal": 1,
+              "billingAmount": null,
+              "outcome": "completed",
+              "errorCode": null,
+              "usage": {
+                "status": "known",
+                "input": 10,
+                "output": 1
+              }
+            },
+            "call-2": {
+              "state": "terminal",
+              "dispatchOrdinal": 2,
+              "billingAmount": null,
+              "outcome": "completed",
+              "errorCode": null,
+              "usage": {
+                "status": "known",
+                "input": 10,
+                "output": 1
+              }
+            },
+            "call-3": {
+              "state": "terminal",
+              "dispatchOrdinal": 3,
+              "billingAmount": null,
+              "outcome": "cancelled",
+              "errorCode": "proxy-cancelled",
+              "usage": {
+                "status": "unknown",
+                "input": 10,
+                "output": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "revoked-capability-rejected",
+      "expectedStatus": 403,
+      "observedStatus": 403,
+      "passed": true
+    },
+    {
+      "name": "pre-cancel-fence-prevents-reservation-and-fixture",
+      "expectedStatus": 403,
+      "observedStatus": 403,
+      "passed": true,
+      "summary": {
+        "runId": "mp-1788611379500-99b5dd-alpha-abort",
+        "tenantId": "m0-alpha",
+        "workspaceId": "m0-alpha-mp-1788611379500-99b5dd-alpha-abort",
+        "revoked": false,
+        "instanceNonce": "d806b9c7-361b-4482-947b-83916bf2c44f",
+        "fixtureDispatches": 0,
+        "activeRequests": 0,
+        "realProviderCalls": 0,
+        "mode": "fixture-only",
+        "liveEnabled": false,
+        "cancelledCalls": [
+          "call-2"
+        ]
+      }
+    },
+    {
+      "name": "arm-abort-armed",
+      "expectedStatus": 200,
+      "observedStatus": 200,
+      "passed": true
+    },
+    {
+      "name": "arm-abort-call-returns-interruption",
+      "expectedStatus": "500/unknown",
+      "observedStatus": 500,
+      "passed": true,
+      "reconciled": true,
+      "summary": {
+        "runId": "mp-1788611379500-99b5dd-alpha-abort",
+        "tenantId": "m0-alpha",
+        "workspaceId": "m0-alpha-mp-1788611379500-99b5dd-alpha-abort",
+        "revoked": false,
+        "instanceNonce": "df2026e0-f85d-4e89-8b25-b4bb9bf7d94e",
+        "fixtureDispatches": 0,
+        "activeRequests": 0,
+        "realProviderCalls": 0,
+        "mode": "fixture-only",
+        "liveEnabled": false,
+        "cancelledCalls": [
+          "call-2"
+        ],
+        "ledger": {
+          "dispatchCount": 1,
+          "heldMicrousd": 192,
+          "calls": {
+            "call-1": {
+              "state": "dispatched",
+              "dispatchOrdinal": 1,
+              "billingAmount": null,
+              "outcome": null,
+              "errorCode": null,
+              "usage": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "abort-intent-preserved-without-fixture-dispatch",
+      "expectedStatus": 200,
+      "observedStatus": 200,
+      "passed": true,
+      "summary": {
+        "runId": "mp-1788611379500-99b5dd-alpha-abort",
+        "tenantId": "m0-alpha",
+        "workspaceId": "m0-alpha-mp-1788611379500-99b5dd-alpha-abort",
+        "revoked": false,
+        "instanceNonce": "df2026e0-f85d-4e89-8b25-b4bb9bf7d94e",
+        "fixtureDispatches": 0,
+        "activeRequests": 0,
+        "realProviderCalls": 0,
+        "mode": "fixture-only",
+        "liveEnabled": false,
+        "cancelledCalls": [
+          "call-2"
+        ],
+        "ledger": {
+          "dispatchCount": 1,
+          "heldMicrousd": 192,
+          "calls": {
+            "call-1": {
+              "state": "dispatched",
+              "dispatchOrdinal": 1,
+              "billingAmount": null,
+              "outcome": null,
+              "errorCode": null,
+              "usage": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "aborted-call-not-replayed",
+      "expectedStatus": 409,
+      "observedStatus": 409,
+      "passed": true
+    },
+    {
+      "name": "restart-run-call1-completes",
+      "expectedStatus": 200,
+      "observedStatus": 200,
+      "passed": true
+    },
+    {
+      "name": "restart-returns-interruption",
+      "expectedStatus": "500/unknown",
+      "observedStatus": 500,
+      "passed": true,
+      "reconciled": true,
+      "summary": {
+        "runId": "mp-1788611379500-99b5dd-alpha-restart",
+        "tenantId": "m0-alpha",
+        "workspaceId": "m0-alpha-mp-1788611379500-99b5dd-alpha-restart",
+        "revoked": false,
+        "instanceNonce": "8025e514-b955-4f83-8603-e6ead5e5ff5e",
+        "fixtureDispatches": 1,
+        "activeRequests": 0,
+        "realProviderCalls": 0,
+        "mode": "fixture-only",
+        "liveEnabled": false,
+        "cancelledCalls": [],
+        "ledger": {
+          "dispatchCount": 1,
+          "heldMicrousd": 192,
+          "calls": {
+            "call-1": {
+              "state": "terminal",
+              "dispatchOrdinal": 1,
+              "billingAmount": null,
+              "outcome": "completed",
+              "errorCode": null,
+              "usage": {
+                "status": "known",
+                "input": 10,
+                "output": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "restart-call-not-replayed",
+      "expectedStatus": 409,
+      "observedStatus": 409,
+      "passed": true,
+      "summary": {
+        "runId": "mp-1788611379500-99b5dd-alpha-restart",
+        "tenantId": "m0-alpha",
+        "workspaceId": "m0-alpha-mp-1788611379500-99b5dd-alpha-restart",
+        "revoked": false,
+        "instanceNonce": "8025e514-b955-4f83-8603-e6ead5e5ff5e",
+        "fixtureDispatches": 1,
+        "activeRequests": 0,
+        "realProviderCalls": 0,
+        "mode": "fixture-only",
+        "liveEnabled": false,
+        "cancelledCalls": [],
+        "ledger": {
+          "dispatchCount": 1,
+          "heldMicrousd": 192,
+          "calls": {
+            "call-1": {
+              "state": "terminal",
+              "dispatchOrdinal": 1,
+              "billingAmount": null,
+              "outcome": "completed",
+              "errorCode": null,
+              "usage": {
+                "status": "known",
+                "input": 10,
+                "output": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "cleanup": [
+    {
+      "runId": "mp-1788611379500-99b5dd-bravo",
+      "tenant": "bravo",
+      "revoked": true,
+      "status": 200
+    },
+    {
+      "runId": "mp-1788611379500-99b5dd-alpha",
+      "tenant": "alpha",
+      "status": 200,
+      "revoked": true,
+      "responseUnknown": false
+    },
+    {
+      "runId": "mp-1788611379500-99b5dd-alpha-abort",
+      "tenant": "alpha",
+      "status": 200,
+      "revoked": true,
+      "responseUnknown": false
+    },
+    {
+      "runId": "mp-1788611379500-99b5dd-alpha-restart",
+      "tenant": "alpha",
+      "status": 200,
+      "revoked": true,
+      "responseUnknown": false
+    }
+  ],
+  "sourcesBefore": {
+    "sha256": "ceb21b8164afe0e7d616d348d5c6c02e810bb905b5db06f98276428fce64d6c3",
+    "files": [
+      {
+        "path": "infra/wrangler.m0-model-proxy.jsonc",
+        "sha256": "f5666d6084497adc33fc0c473324fe2e5a3446da321e6ccb0a2c19bd350ff841"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+      },
+      {
+        "path": "scripts/m0/model-proxy-local.mjs",
+        "sha256": "95f10f13ea1c1d31847de6383a8c60644da6cf5d779308edeb7055c0719ae22a"
+      },
+      {
+        "path": "scripts/m0/source-inventory.mjs",
+        "sha256": "1afeab93162678265a0372d57b2404902192efdc17fbe0a063e62f5a63460c6e"
+      },
+      {
+        "path": "spikes/m0-cloud/auth.ts",
+        "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+      },
+      {
+        "path": "spikes/m0-model-proxy/README.md",
+        "sha256": "1242de7933c44142fd46e7ec087a6c4e98ff93376c21635e97abf561e763b002"
+      },
+      {
+        "path": "spikes/m0-model-proxy/authority.ts",
+        "sha256": "f40c99799093823ab305086f9f828027a813b4c79a740c6d8c27b20bbc1eef96"
+      },
+      {
+        "path": "spikes/m0-model-proxy/capability.ts",
+        "sha256": "c853943e0ac94cb7a7e2b093b7b948444f7db69bdcf2434fc3f6d44743876748"
+      },
+      {
+        "path": "spikes/m0-model-proxy/cloud-env.d.ts",
+        "sha256": "61202c19410810bea9abe89f84e9082276d7218900c2e37ff410eb834212e657"
+      },
+      {
+        "path": "spikes/m0-model-proxy/cloud.ts",
+        "sha256": "4a6616372ca6edf5c2ceba895a46128dbc3c350459978b9654035434eadfb821"
+      },
+      {
+        "path": "spikes/m0-model-proxy/durable-store.ts",
+        "sha256": "cac26996d95df9ec386ad8e17304286603088d212da77873b5ef9cfcdfec2557"
+      },
+      {
+        "path": "spikes/m0-model-proxy/gateway-auth.ts",
+        "sha256": "7951a009e5f315bc81ee2eda880d49af357a498df2ae7b996dfec8eff20d6303"
+      },
+      {
+        "path": "spikes/m0-model-proxy/index.ts",
+        "sha256": "584be0a96783b7075cd99b1237d0b458610a10dce7f67df221f198ed5d61e83f"
+      },
+      {
+        "path": "spikes/m0-model-proxy/policy.ts",
+        "sha256": "3f7e8011bc7dafac7f58e5ff0748bb0b32196a99fd1a315f4309dfd9cbc92ce3"
+      },
+      {
+        "path": "spikes/m0-model-proxy/stream.ts",
+        "sha256": "47950527358764fd77624d12aa745e973001738167584adf5c0526cb87adf59b"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+      }
+    ],
+    "repositorySourceSha256": "3c47d912959072666e4d6ea434af472ead427d627d2ff780ca200d9ea4944731"
+  },
+  "plannedScopes": [
+    {
+      "runId": "mp-1788611379500-99b5dd-alpha",
+      "tenant": "alpha"
+    },
+    {
+      "runId": "mp-1788611379500-99b5dd-bravo",
+      "tenant": "bravo"
+    },
+    {
+      "runId": "mp-1788611379500-99b5dd-alpha-abort",
+      "tenant": "alpha"
+    },
+    {
+      "runId": "mp-1788611379500-99b5dd-alpha-restart",
+      "tenant": "alpha"
+    }
+  ],
+  "lastStatusObservation": {
+    "runId": "mp-1788611379500-99b5dd-alpha-restart",
+    "tenantId": "m0-alpha",
+    "workspaceId": "m0-alpha-mp-1788611379500-99b5dd-alpha-restart",
+    "revoked": false,
+    "instanceNonce": "8025e514-b955-4f83-8603-e6ead5e5ff5e",
+    "fixtureDispatches": 1,
+    "activeRequests": 0,
+    "realProviderCalls": 0,
+    "mode": "fixture-only",
+    "liveEnabled": false,
+    "cancelledCalls": [],
+    "ledger": {
+      "dispatchCount": 1,
+      "heldMicrousd": 192,
+      "calls": {
+        "call-1": {
+          "state": "terminal",
+          "dispatchOrdinal": 1,
+          "billingAmount": null,
+          "outcome": "completed",
+          "errorCode": null,
+          "usage": {
+            "status": "known",
+            "input": 10,
+            "output": 1
+          }
+        }
+      }
+    }
+  },
+  "sourcesAfter": {
+    "sha256": "ceb21b8164afe0e7d616d348d5c6c02e810bb905b5db06f98276428fce64d6c3",
+    "files": [
+      {
+        "path": "infra/wrangler.m0-model-proxy.jsonc",
+        "sha256": "f5666d6084497adc33fc0c473324fe2e5a3446da321e6ccb0a2c19bd350ff841"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+      },
+      {
+        "path": "scripts/m0/model-proxy-local.mjs",
+        "sha256": "95f10f13ea1c1d31847de6383a8c60644da6cf5d779308edeb7055c0719ae22a"
+      },
+      {
+        "path": "scripts/m0/source-inventory.mjs",
+        "sha256": "1afeab93162678265a0372d57b2404902192efdc17fbe0a063e62f5a63460c6e"
+      },
+      {
+        "path": "spikes/m0-cloud/auth.ts",
+        "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+      },
+      {
+        "path": "spikes/m0-model-proxy/README.md",
+        "sha256": "1242de7933c44142fd46e7ec087a6c4e98ff93376c21635e97abf561e763b002"
+      },
+      {
+        "path": "spikes/m0-model-proxy/authority.ts",
+        "sha256": "f40c99799093823ab305086f9f828027a813b4c79a740c6d8c27b20bbc1eef96"
+      },
+      {
+        "path": "spikes/m0-model-proxy/capability.ts",
+        "sha256": "c853943e0ac94cb7a7e2b093b7b948444f7db69bdcf2434fc3f6d44743876748"
+      },
+      {
+        "path": "spikes/m0-model-proxy/cloud-env.d.ts",
+        "sha256": "61202c19410810bea9abe89f84e9082276d7218900c2e37ff410eb834212e657"
+      },
+      {
+        "path": "spikes/m0-model-proxy/cloud.ts",
+        "sha256": "4a6616372ca6edf5c2ceba895a46128dbc3c350459978b9654035434eadfb821"
+      },
+      {
+        "path": "spikes/m0-model-proxy/durable-store.ts",
+        "sha256": "cac26996d95df9ec386ad8e17304286603088d212da77873b5ef9cfcdfec2557"
+      },
+      {
+        "path": "spikes/m0-model-proxy/gateway-auth.ts",
+        "sha256": "7951a009e5f315bc81ee2eda880d49af357a498df2ae7b996dfec8eff20d6303"
+      },
+      {
+        "path": "spikes/m0-model-proxy/index.ts",
+        "sha256": "584be0a96783b7075cd99b1237d0b458610a10dce7f67df221f198ed5d61e83f"
+      },
+      {
+        "path": "spikes/m0-model-proxy/policy.ts",
+        "sha256": "3f7e8011bc7dafac7f58e5ff0748bb0b32196a99fd1a315f4309dfd9cbc92ce3"
+      },
+      {
+        "path": "spikes/m0-model-proxy/stream.ts",
+        "sha256": "47950527358764fd77624d12aa745e973001738167584adf5c0526cb87adf59b"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+      }
+    ],
+    "repositorySourceSha256": "3c47d912959072666e4d6ea434af472ead427d627d2ff780ca200d9ea4944731"
+  },
+  "sourceStableDuringRun": true,
+  "finishedAt": "2026-09-05T12:29:39.666Z",
+  "bodyBytes": {
+    "business": 39143,
+    "cleanup": 178
+  },
+  "limits": {
+    "totalMs": 120000,
+    "requestMs": 10000,
+    "bodyBytes": 1048576,
+    "cleanupBodyBytes": 262144,
+    "businessRequests": 60,
+    "cleanupMs": 15000,
+    "cleanupRequests": 4,
+    "noLiveProvider": true,
+    "noCloudGate": true,
+    "businessRequestsUsed": 44,
+    "cleanupRequestsUsed": 2
+  }
+}

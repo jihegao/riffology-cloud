@@ -1,0 +1,42 @@
+{
+  "at": "2026-09-06T07:50:01.073Z",
+  "instances": [
+    {
+      "id": "a039ed42-159d-43db-be13-69315bce5189",
+      "response": {
+        "success": true,
+        "result": {
+          "instances": [
+            {
+              "id": "a88fa2af6a23e613a5e8cca10606699adb80a240310ff54a54be4a3cff64f3d5",
+              "application_id": "a039ed42-159d-43db-be13-69315bce5189",
+              "status": {
+                "state": "inactive",
+                "updated_at": "2026-09-06T07:47:54Z"
+              },
+              "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+              "name": "m0-pl-go-live-g0-20260906-p"
+            }
+          ]
+        },
+        "errors": [],
+        "messages": [],
+        "result_info": {},
+        "status": 200
+      }
+    },
+    {
+      "id": "a03ddc7e-1c6e-4cea-93ec-ac03d7b0073a",
+      "response": {
+        "success": true,
+        "result": {
+          "instances": []
+        },
+        "errors": [],
+        "messages": [],
+        "result_info": {},
+        "status": 200
+      }
+    }
+  ]
+}

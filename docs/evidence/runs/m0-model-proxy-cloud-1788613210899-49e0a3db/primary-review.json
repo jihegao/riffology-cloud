@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-05T13:36:30.616218+00:00",
+  "reviewer": "primary-agent",
+  "operation": "model-proxy-staging-fixture-review",
+  "acceptedScope": "Cloud Worker and SQLite DO fixture primitives only",
+  "fixtureEvidenceAccepted": true,
+  "cloudGatePassed": false,
+  "gates": {
+    "G0-T01": "not_passed",
+    "G0-T09": "not_passed",
+    "overallStagingPassed": 1,
+    "overallTotal": 10,
+    "accepted": false
+  },
+  "checks": {
+    "casesPassed": 23,
+    "finalScopesRevokedAndIdle": 4,
+    "runtimeFilesMatchDeployedBuild": true,
+    "dryAndUploadedBundleMatch": true,
+    "beforeAfterVersion100PercentMatches": true,
+    "sqliteNamespaceMatches": true,
+    "localChecksPassed": 176,
+    "localChecksSkipped": 1,
+    "localSelfTestsPassed": 2,
+    "localCheckLogHashMatches": true
+  },
+  "versionId": "06e097f1-cb6d-4349-8cf5-af4472ba0079",
+  "bundleSha256": "5892f2b2aaf2795abd66b0d4472fcee9369212ef82cbeae7e5e66aac97510d10",
+  "businessRequests": 50,
+  "emergencyCleanupRequests": 0,
+  "responseBytes": 50210,
+  "durationMs": 34347,
+  "realProviderCalls": 0,
+  "realProviderCallsBasis": "fixture-only implementation and status, not independent network audit",
+  "sourceReconciliation": {
+    "changedSinceLocalCheck": [
+      "spikes/m0-model-proxy/README.md"
+    ],
+    "classification": "documentation only; executable code unchanged",
+    "testWasNotRerunForDocumentation": true
+  },
+  "evidence": [
+    {
+      "path": "docs/evidence/runs/m0-model-proxy-cloud-1788613210899-49e0a3db/model-proxy-cloud.json",
+      "sha256": "a4d175784d5fad71030e3f12e557d3c166522e438bb7b076ae859593d489aac5"
+    },
+    {
+      "path": "docs/evidence/runs/m0-model-proxy-staging-1788612744246/deployment-verified.json",
+      "sha256": "2e826d0099793d3e4420a010425460df653b390a4a473e237b90dbe9d30851a5"
+    },
+    {
+      "path": "docs/evidence/runs/m0-model-proxy-staging-1788612744246/cloud-verification.json",
+      "sha256": "426ff811fbe7835c799b87f1a46a4b3bb369c49401678fdd84f061950ed2369f"
+    },
+    {
+      "path": "docs/evidence/runs/m0-model-proxy-staging-1788612744246/cloud-after.json",
+      "sha256": "ab4605c876aac12249550405e2f2fcef1021308c28fc513bb3b15a9da95eb5cc"
+    },
+    {
+      "path": "docs/evidence/runs/m0-local-20260905125007655/local-checks.json",
+      "sha256": "83690f443140a3374ef80a8d22d37a26c9eeb1ef2ae65ea42bfecb7c450dded8"
+    },
+    {
+      "path": "docs/evidence/runs/m0-local-20260905125007655/local-checks.log",
+      "sha256": "0ccc0bb78ccbcffb733690d6a9f8b61a4440abfd782df7ba23fc05a81daab004"
+    }
+  ],
+  "limitations": [
+    "Synthetic identities and SSE, no cloud Pi to real provider proof",
+    "No VM egress or supplier-secret isolation proof",
+    "No disconnect propagation or final supplier/cash billing proof",
+    "API version provenance and local upload bundle; remote module bytes not independently downloaded",
+    "Business request count from bounded driver, no per-request independent network trace",
+    "Unknown dispatched intent keeps full synthetic reservation; synthetic money is not an invoice"
+  ]
+}

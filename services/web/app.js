@@ -1,0 +1,752 @@
+const $ = selector => document.querySelector(selector);
+const notice = $('#notice');
+const dialog = $('#project-dialog');
+let tenant = null;
+let authenticated = false;
+let viewGeneration = 0;
+let listGeneration = 0;
+let pollTimer = null;
+let pollDeadline = 0;
+let intent = null;
+let creating = false;
+let pendingProject = null;
+let models = [];
+let modelsStatus = 'loading';
+let modelsGeneration = 0;
+let activeProject = null;
+let workspaceSnapshot = null;
+let workspaceEvents = [];
+let selectedSessionId = null;
+let sessionIntent = null;
+let creatingSession = false;
+let messageIntent = null;
+let sendingMessage = false;
+let eventSource = null;
+let eventRetryTimer = null;
+let snapshotRecovery = false;
+let workspaceFiles = null;
+let workspaceFilesError = '';
+let workspaceDiff = null;
+let workspaceDiffError = '';
+let workspaceArtifactPanel = 'files';
+const POLL_WINDOW_MS = 300000;
+const TERMINAL_TURNS = new Set(['completed', 'failed', 'cancelled', 'interrupted']);
+
+function show(message, error = false, action = null) {
+  notice.replaceChildren();
+  const text = document.createElement('span');
+  text.textContent = message;
+  notice.append(text);
+  if (action) {
+    const button = document.createElement('button');
+    button.className = 'button';
+    button.textContent = action.label;
+    button.onclick = action.run;
+    notice.append(button);
+  }
+  notice.className = `notice${error ? ' error' : ''}`;
+  notice.hidden = !message;
+}
+
+function renderModels() {
+  const box = $('#models');
+  const status = $('#models-status');
+  if (!box || !status) return;
+  box.replaceChildren();
+  if (modelsStatus === 'loading') { status.textContent = '正在加载官方模型…'; return; }
+  if (modelsStatus === 'error') { status.textContent = '官方模型暂时不可用，仍可创建空白项目。'; return; }
+  if (!models.length) { status.textContent = '当前暂无可用的官方模型。'; return; }
+  status.textContent = '选择固定版本开始独立项目。';
+  for (const model of models) {
+    const card = document.createElement('article'); card.className = 'model-card';
+    const title = document.createElement('h3'); title.textContent = model.title || model.model_id;
+    const description = document.createElement('p'); description.textContent = model.description || '暂无说明。';
+    const version = document.createElement('small'); version.textContent = `版本 ${model.version}`;
+    const use = document.createElement('button'); use.className = 'button compact'; use.type = 'button'; use.textContent = '使用此版本'; use.onclick = () => openProjectDialog(model);
+    card.append(title, description, version, use); box.append(card);
+  }
+}
+
+async function loadModels() {
+  const generation = ++modelsGeneration;
+  const priorSelection = $('#project-model')?.value || '';
+  $('#models-refresh').disabled = true;
+  modelsStatus = 'loading'; renderModels();
+  try {
+    const data = await api('/api/models');
+    if (generation !== modelsGeneration) return;
+    models = Array.isArray(data?.models) ? data.models.filter(model => model && (!model.status || model.status === 'published') && model.model_id && model.version) : [];
+    modelsStatus = 'ready'; renderModels();
+    const select = $('#project-model');
+    if (select) {
+      select.replaceChildren(new Option('空白项目', ''));
+      for (const model of models) { const option = new Option(`${model.title || model.model_id} · ${model.version}`, `${model.model_id}@${model.version}`); option.dataset.modelId = model.model_id; option.dataset.modelVersion = model.version; select.append(option); }
+      const frozen = intent?.payload?.modelId ? `${intent.payload.modelId}@${intent.payload.modelVersion}` : '';
+      if (frozen && ![...select.options].some(option => option.value === frozen)) {
+        const option = new Option(`${intent.payload.modelId} · ${intent.payload.modelVersion}（已冻结）`, frozen);
+        option.dataset.modelId = intent.payload.modelId; option.dataset.modelVersion = intent.payload.modelVersion; select.append(option);
+      }
+      const wanted = frozen || priorSelection;
+      select.value = [...select.options].some(option => option.value === wanted) ? wanted : '';
+      select.disabled = Boolean(intent);
+    }
+  } catch {
+    if (generation !== modelsGeneration) return;
+    models = []; modelsStatus = 'error'; renderModels();
+    const select = $('#project-model');
+    if (select && !intent) select.replaceChildren(new Option('空白项目', ''));
+  } finally {
+    if (generation === modelsGeneration) $('#models-refresh').disabled = false;
+  }
+}
+
+async function api(path, options = {}) {
+  const response = await fetch(path, {
+    credentials: 'same-origin', ...options,
+    headers: { 'Content-Type': 'application/json', ...options.headers },
+  });
+  if (!response.ok) {
+    const messages = { 400: '请求内容无效', 401: '请先登录', 404: '当前账号尚未获得访问权限', 409: '状态已变化，请刷新后重试', 503: '服务暂不可用，请稍后再试' };
+    throw Object.assign(new Error(messages[response.status] || '请求失败，请稍后重试'), { status: response.status });
+  }
+  return response.status === 204 ? null : response.json();
+}
+
+function stopPolling() {
+  clearTimeout(pollTimer);
+  pollTimer = null;
+}
+
+function stopEventStream() {
+  clearTimeout(eventRetryTimer);
+  eventRetryTimer = null;
+  eventSource?.close();
+  eventSource = null;
+}
+
+function accountView() {
+  $('#login').hidden = authenticated;
+  const workspaceRoutePending = Boolean(workspaceProjectIdFromHash()) && !activeProject;
+  $('#app').hidden = !tenant || Boolean(activeProject) || workspaceRoutePending;
+  $('#workspace').hidden = !tenant || !activeProject;
+  $('#invitation').hidden = !authenticated || Boolean(tenant);
+  $('#sign-out').hidden = !authenticated;
+}
+
+function turnStatus(turn) {
+  const labels = { queued: '排队中', running: '正在执行', cancelling: '正在停止', checkpointing: '正在保存', completed: '已完成', failed: '失败', cancelled: '已停止', interrupted: '已中断' };
+  if (turn.persistenceOutcome === 'failed') return `${labels[turn.status] || turn.status} · 保存失败`;
+  if (turn.persistenceOutcome === 'saved') return `${labels[turn.status] || turn.status} · 已保存`;
+  return labels[turn.status] || turn.status;
+}
+
+function appendTurnCard(kind, text, detail = '') {
+  const card = document.createElement('article');
+  card.className = `turn-card ${kind}`;
+  const body = document.createElement('p');
+  body.textContent = text;
+  card.append(body);
+  if (detail) {
+    const meta = document.createElement('small');
+    meta.textContent = detail;
+    card.append(meta);
+  }
+  $('#turns').append(card);
+}
+
+function appendToolCards(events, turnId) {
+  const cards = new Map();
+  const publicArtifact = value => {
+    if (!value || typeof value !== 'object' || Array.isArray(value) || value.schemaVersion !== 1
+      || typeof value.artifactId !== 'string' || !/^artifact-[a-f0-9]{60}$/.test(value.artifactId)
+      || !['read', 'list', 'search'].includes(value.operation) || value.mediaType !== 'application/json'
+      || !Number.isSafeInteger(value.bytes) || value.bytes <= 16384 || value.bytes > 1024 * 1024 + 64 * 1024
+      || typeof value.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(value.sha256)
+      || !Number.isSafeInteger(value.createdAt) || value.createdAt < 1) return null;
+    return { artifactId: value.artifactId, bytes: value.bytes };
+  };
+  for (const [index, event] of events.entries()) {
+    if (!['tool.started', 'tool.updated', 'tool.completed'].includes(event?.type)) continue;
+    const payload = event.payload && typeof event.payload === 'object' ? event.payload : {};
+    const callId = typeof payload.toolCallId === 'string' && payload.toolCallId ? payload.toolCallId : `missing-${index}`;
+    const key = `${turnId}:${callId}`;
+    const card = cards.get(key) || { name: '项目工具', status: 'running', summary: '', artifact: null };
+    if (typeof payload.name === 'string' && payload.name) card.name = payload.name;
+    if (typeof payload.summary === 'string') card.summary = payload.summary;
+    if (event.type === 'tool.completed') {
+      card.status = payload.isError === true ? 'failed' : 'completed';
+      card.artifact = payload.isError === true ? null : publicArtifact(payload.artifact);
+    }
+    else if (event.type === 'tool.updated' && card.status !== 'failed' && card.status !== 'completed') card.status = 'running';
+    cards.set(key, card);
+  }
+  for (const card of cards.values()) {
+    const details = document.createElement('details'); details.className = 'tool-card';
+    const summary = document.createElement('summary'); summary.textContent = `${card.name} · ${card.status === 'completed' ? '已完成' : card.status === 'failed' ? '失败' : '运行中'}`;
+    const detail = document.createElement('p'); detail.className = 'tool-summary'; detail.textContent = card.summary || '暂无更新摘要';
+    details.append(summary, detail);
+    if (card.artifact && activeProject?.workspace_id) {
+      const link = document.createElement('a');
+      link.className = 'tool-artifact-link';
+      link.href = `/api/workspaces/${encodeURIComponent(activeProject.workspace_id)}/artifacts/${encodeURIComponent(card.artifact.artifactId)}`;
+      link.target = '_blank'; link.rel = 'noopener';
+      link.textContent = `查看完整结果 · ${sizeLabel(card.artifact.bytes)}`;
+      details.append(link);
+    }
+    $('#turns').append(details);
+  }
+}
+
+function appendAssistantMessage(events) {
+  const assistant = events.filter(event => event?.type === 'assistant.delta' || event?.type === 'assistant.message');
+  if (!assistant.length) return;
+  const ordered = [...assistant].sort((a, b) => (Number.isInteger(a?.sequence) ? a.sequence : Number.MAX_SAFE_INTEGER) - (Number.isInteger(b?.sequence) ? b.sequence : Number.MAX_SAFE_INTEGER));
+  const final = ordered.findLast?.(event => event.type === 'assistant.message' && typeof event.payload?.text === 'string' && event.payload.text.length > 0);
+  let text = '';
+  let detail = '';
+  if (final) {
+    text = final.payload.text;
+    if (typeof final.payload.stopReason === 'string' && final.payload.stopReason) detail = final.payload.stopReason;
+  } else {
+    const bySequence = new Map();
+    for (const event of ordered) {
+      const value = event.payload && typeof event.payload === 'object' ? event.payload.text : null;
+      if (typeof value !== 'string' || value.length === 0 || !Number.isInteger(event.sequence) || event.sequence <= 0) continue;
+      if (!bySequence.has(event.sequence)) bySequence.set(event.sequence, value);
+    }
+    text = [...bySequence.entries()].sort((a, b) => a[0] - b[0]).map(([, value]) => value).join('');
+    if (!text) return;
+    detail = '流式输出';
+  }
+  appendTurnCard('assistant', text, detail);
+}
+
+function renderWorkspace() {
+  const box = $('#turns');
+  box.replaceChildren();
+  if (!workspaceSnapshot) {
+    const loading = document.createElement('p');
+    loading.className = 'turn-empty';
+    loading.textContent = '正在读取项目状态…';
+    box.append(loading);
+    return;
+  }
+  const sessions = Object.values(workspaceSnapshot.sessions || {}).sort((a, b) => (b.updatedAt ?? b.createdAt) - (a.updatedAt ?? a.createdAt));
+  if (!selectedSessionId || !workspaceSnapshot.sessions?.[selectedSessionId]) selectedSessionId = sessions[0]?.id || null;
+  const sessionSelect = $('#session-select');
+  if (sessionSelect) {
+    sessionSelect.replaceChildren(...sessions.map(session => {
+      const option = document.createElement('option'); option.value = session.id; option.textContent = session.title || session.id; return option;
+    }));
+    sessionSelect.value = selectedSessionId || '';
+    sessionSelect.disabled = !sessions.length;
+  }
+  const turns = Object.values(workspaceSnapshot.turns || {}).filter(turn => turn.sessionId === selectedSessionId).sort((a, b) => a.createdAt - b.createdAt);
+  if (!turns.length) {
+    const empty = document.createElement('p');
+    empty.className = 'turn-empty';
+    empty.textContent = '从一条消息开始。关闭页面不会终止已经提交的回合。';
+    box.append(empty);
+  }
+  for (const turn of turns) {
+    appendTurnCard('user', turn.message, turnStatus(turn));
+    const events = workspaceEvents.filter(event => event.turnId === turn.id);
+    appendAssistantMessage(events);
+    appendToolCards(events, turn.id);
+    const providerError = events.findLast?.(event => event.type === 'provider.status' && event.payload?.state === 'error');
+    if (providerError) appendTurnCard('system', `模型服务返回错误${providerError.payload?.status ? `（${providerError.payload.status}）` : ''}，平台仍会保存可恢复状态。`);
+    if (turn.errorCode && !events.some(event => event.type === 'assistant.message')) appendTurnCard('system', `回合未完成：${turn.errorCode}`, turnStatus(turn));
+  }
+  const active = workspaceSnapshot.activeTurnId && workspaceSnapshot.turns?.[workspaceSnapshot.activeTurnId];
+  $('#cancel-turn').hidden = !active || TERMINAL_TURNS.has(active.status);
+  $('#cancel-turn').dataset.turnId = active?.id || '';
+}
+
+function sizeLabel(value) {
+  if (!Number.isSafeInteger(value) || value < 0) return '—';
+  if (value < 1024) return `${value} B`;
+  return `${(value / 1024).toFixed(value < 10240 ? 1 : 0)} KB`;
+}
+
+function renderWorkspaceFiles() {
+  const box = $('#workspace-files'), meta = $('#files-meta');
+  if (!box || !meta) return;
+  box.replaceChildren();
+  if (workspaceFilesError) { meta.textContent = '读取失败'; const error = document.createElement('p'); error.className = 'file-empty file-error'; error.textContent = workspaceFilesError; box.append(error); return; }
+  if (!workspaceFiles) { meta.textContent = '正在读取最新已保存版本…'; const loading = document.createElement('p'); loading.className = 'file-empty'; loading.textContent = '正在加载文件清单'; box.append(loading); return; }
+  const files = Array.isArray(workspaceFiles.files) ? workspaceFiles.files : [];
+  if (!workspaceFiles.revision) { meta.textContent = '尚无 Turn 保存版本'; const empty = document.createElement('p'); empty.className = 'file-empty'; empty.textContent = '项目完成首个回合并保存后，文件会显示在这里。'; box.append(empty); return; }
+  meta.textContent = `${files.length} 项 · 保存于 ${new Date(workspaceFiles.revision.committedAt).toLocaleString('zh-CN', { hour12: false })}`;
+  for (const item of files) {
+    if (!item || typeof item.path !== 'string' || !['file', 'directory'].includes(item.type)) continue;
+    const row = document.createElement('div'); row.className = `file-entry ${item.type}`;
+    const path = document.createElement('span'); path.textContent = `${item.type === 'directory' ? '▸ ' : ''}${item.path}`;
+    const detail = document.createElement('small'); detail.textContent = item.type === 'directory' ? '目录' : sizeLabel(item.size);
+    row.append(path, detail); box.append(row);
+  }
+  if (!box.childElementCount) { const empty = document.createElement('p'); empty.className = 'file-empty'; empty.textContent = '这个保存版本没有可展示的文件。'; box.append(empty); }
+}
+
+async function refreshWorkspaceFiles(generation = viewGeneration) {
+  if (!activeProject || generation !== viewGeneration) return;
+  const workspaceId = activeProject.workspace_id;
+  workspaceFilesError = ''; renderWorkspaceFiles();
+  try { const value = await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/files`); if (generation !== viewGeneration || activeProject?.workspace_id !== workspaceId) return; workspaceFiles = value; }
+  catch (error) { if (generation !== viewGeneration) return; workspaceFilesError = error.message; }
+  renderWorkspaceFiles();
+}
+
+function renderWorkspaceDiff() {
+  const box=$('#workspace-diff'),meta=$('#diff-meta');if(!box||!meta)return;box.replaceChildren();
+  if(workspaceDiffError){meta.textContent='读取失败';const error=document.createElement('p');error.className='file-empty file-error';error.textContent=workspaceDiffError;box.append(error);return;}
+  if(!workspaceDiff){meta.textContent='选择 Diff 后读取父版本差异';const empty=document.createElement('p');empty.className='file-empty';empty.textContent='尚未读取差异';box.append(empty);return;}
+  if(!workspaceDiff.revision){meta.textContent='尚无 Turn 保存版本';const empty=document.createElement('p');empty.className='file-empty';empty.textContent='首个保存版本形成后，差异会显示在这里。';box.append(empty);return;}
+  const summary=workspaceDiff.summary||{},changes=Array.isArray(workspaceDiff.changes)?workspaceDiff.changes:[];meta.textContent=`新增 ${summary.added||0} · 修改 ${summary.modified||0} · 删除 ${summary.deleted||0}`;
+  for(const item of changes){if(!item||typeof item.path!=='string'||!['added','modified','deleted'].includes(item.change))continue;const row=document.createElement('div');row.className=`file-entry ${item.change}`;const path=document.createElement('span'),mark=document.createElement('b');mark.className='diff-mark';mark.textContent=item.change==='added'?'+ ':item.change==='deleted'?'− ':'~ ';path.append(mark,document.createTextNode(item.path));const detail=document.createElement('small');detail.textContent=item.type==='directory'?'目录':sizeLabel(item.size);row.append(path,detail);box.append(row);}
+  if(!box.childElementCount){const empty=document.createElement('p');empty.className='file-empty';empty.textContent='与父版本相比没有文件变化。';box.append(empty);}
+}
+
+async function refreshWorkspaceDiff(generation=viewGeneration){if(!activeProject||generation!==viewGeneration)return;const workspaceId=activeProject.workspace_id;workspaceDiffError='';renderWorkspaceDiff();try{const value=await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/diff`);if(generation!==viewGeneration||activeProject?.workspace_id!==workspaceId)return;workspaceDiff=value;}catch(error){if(generation!==viewGeneration)return;workspaceDiffError=error.message;}renderWorkspaceDiff();}
+
+function selectArtifactPanel(panel){workspaceArtifactPanel=panel==='diff'?'diff':'files';const diff=workspaceArtifactPanel==='diff';$('#files-tab').setAttribute('aria-selected',String(!diff));$('#diff-tab').setAttribute('aria-selected',String(diff));$('#files-view').hidden=diff;$('#diff-view').hidden=!diff;if(diff&&!workspaceDiff&&!workspaceDiffError)void refreshWorkspaceDiff(viewGeneration);}
+
+async function readWorkspaceEvents(workspaceId) {
+  const events = [];
+  let cursor = 0;
+  for (let pageNumber = 0; pageNumber < 12; pageNumber++) {
+    const page = await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/events?after_sequence=${cursor}&limit=200`);
+    if (page.snapshotRequired) return { events: [], cursor: Math.max(0, Number(page.nextSequence || 1) - 1), snapshotRequired: true };
+    events.push(...page.events);
+    cursor = page.nextSequence;
+    if (!page.hasMore) return { events, cursor, snapshotRequired: false };
+  }
+  throw new Error('事件过多，请刷新项目后重试');
+}
+
+function connectEventStream(workspaceId, cursor, generation) {
+  stopEventStream();
+  if (!workspaceSnapshot?.activeTurnId || document.hidden || generation !== viewGeneration) return;
+  const source = new EventSource(`/api/workspaces/${encodeURIComponent(workspaceId)}/events?after_sequence=${cursor}`);
+  eventSource = source;
+  const eventTypes = ['turn.queued', 'turn.started', 'turn.cancel_requested', 'turn.checkpointing', 'turn.completed', 'turn.failed', 'turn.cancelled', 'turn.interrupted', 'assistant.delta', 'assistant.message', 'tool.started', 'tool.updated', 'tool.completed', 'provider.status'];
+  for (const type of eventTypes) source.addEventListener(type, event => {
+    if (source !== eventSource || generation !== viewGeneration) return;
+    try {
+      const value = JSON.parse(event.data);
+      if (!workspaceEvents.some(item => item.eventId === value.eventId)) workspaceEvents.push(value);
+      cursor = Math.max(cursor, Number(event.lastEventId || value.sequence || 0));
+      renderWorkspace();
+      if (['turn.completed', 'turn.failed', 'turn.cancelled', 'turn.interrupted'].includes(type)) void refreshWorkspace(generation);
+    } catch { $('#message-error').textContent = '事件格式无效，请刷新项目。'; }
+  });
+  source.addEventListener('snapshot.required', () => {
+    if (source !== eventSource || generation !== viewGeneration || snapshotRecovery) return;
+    snapshotRecovery = true;
+    stopEventStream();
+    void refreshWorkspace(generation);
+  });
+  source.addEventListener('stream.closed', event => {
+    if (source !== eventSource) return;
+    let reason = 'temporarily_unavailable';
+    try { reason = JSON.parse(event.data).reason; } catch {}
+    stopEventStream();
+    if (reason === 'authorization_changed') { void load(); return; }
+    if (generation === viewGeneration && activeProject && !document.hidden) eventRetryTimer = setTimeout(() => void refreshWorkspace(generation), 1500);
+  });
+  source.onerror = () => {
+    if (source !== eventSource) return;
+    stopEventStream();
+    if (generation === viewGeneration && activeProject && !document.hidden) eventRetryTimer = setTimeout(() => void refreshWorkspace(generation), 1500);
+  };
+}
+
+async function refreshWorkspace(generation = viewGeneration) {
+  if (!activeProject || generation !== viewGeneration) return;
+  const workspaceId = activeProject.workspace_id;
+  try {
+    const [snapshot, replay] = await Promise.all([api(`/api/workspaces/${encodeURIComponent(workspaceId)}`), readWorkspaceEvents(workspaceId)]);
+    if (generation !== viewGeneration || activeProject?.workspace_id !== workspaceId) return;
+    workspaceSnapshot = snapshot;
+    workspaceEvents = replay.events;
+    renderWorkspace();
+    void refreshWorkspaceFiles(generation);
+    workspaceDiff=null;workspaceDiffError='';renderWorkspaceDiff();if(workspaceArtifactPanel==='diff')void refreshWorkspaceDiff(generation);
+    connectEventStream(workspaceId, replay.cursor, generation);
+  } catch (error) {
+    if (generation !== viewGeneration) return;
+    $('#message-error').textContent = error.message;
+  } finally {
+    if (generation === viewGeneration) snapshotRecovery = false;
+  }
+}
+
+function openWorkspace(project) {
+  if (project.status !== 'ready' || !project.workspace_id) return;
+  stopPolling();
+  stopEventStream();
+  viewGeneration++;
+  activeProject = project;
+  workspaceSnapshot = null;
+  workspaceEvents = [];
+  workspaceFiles = null;
+  workspaceFilesError = '';
+  workspaceDiff = null;
+  workspaceDiffError = '';
+  workspaceArtifactPanel = 'files';
+  selectedSessionId = null;
+  sessionIntent = null;
+  creatingSession = false;
+  messageIntent = null;
+  $('#new-session').textContent = '新建 Session';
+  if (location.hash !== `#/workspace/${encodeURIComponent(project.id)}`) history.replaceState(null, '', `#/workspace/${encodeURIComponent(project.id)}`);
+  $('#workspace-title').textContent = project.title;
+  $('#workspace-meta').textContent = '状态已保存 · 浏览器只是观察者';
+  $('#message-error').textContent = '';
+  accountView();
+  renderWorkspace();
+  renderWorkspaceFiles();
+  renderWorkspaceDiff();
+  selectArtifactPanel('files');
+  void refreshWorkspace(viewGeneration);
+}
+
+async function renderProjects() {
+  stopPolling();
+  if (!tenant || document.hidden) return;
+  const generation = viewGeneration;
+  const requestNumber = ++listGeneration;
+  const box = $('#projects');
+  box.setAttribute('aria-busy', 'true');
+  try {
+    const data = await api(`/api/tenants/${encodeURIComponent(tenant.id)}/projects`);
+    if (generation !== viewGeneration || requestNumber !== listGeneration) return;
+    const projects = [...data.projects];
+    const requestedProjectId = workspaceProjectIdFromHash();
+    if (requestedProjectId) {
+      const requested = projects.find(project => project.id === requestedProjectId && project.status === 'ready' && project.workspace_id);
+      if (requested) { openWorkspace(requested); return; }
+      history.replaceState(null, '', location.pathname + location.search);
+      if (activeProject) {
+        stopEventStream();
+        activeProject = null;
+        workspaceSnapshot = null;
+        workspaceEvents = [];
+        workspaceFiles = null;
+        workspaceFilesError = '';
+        selectedSessionId = null;
+        sessionIntent = null;
+        creatingSession = false;
+        messageIntent = null;
+        $('#new-session').textContent = '新建 Session';
+        accountView();
+      }
+      else accountView();
+    }
+    if (pendingProject) {
+      const authoritative = projects.find(project => project.id === pendingProject.id);
+      if (authoritative) pendingProject = null;
+      else projects.unshift(pendingProject);
+    }
+    box.replaceChildren();
+    if (!projects.length) {
+      const empty = document.createElement('p');
+      empty.className = 'meta';
+      empty.textContent = '还没有项目，创建你的第一个项目。';
+      box.append(empty);
+    }
+    for (const project of projects) {
+      const card = document.createElement('article');
+      card.className = 'card project';
+      const open = document.createElement('button');
+      open.className = 'project-open';
+      open.type = 'button';
+      open.disabled = project.status !== 'ready' || !project.workspace_id;
+      open.setAttribute('aria-label', project.status === 'ready' ? `打开项目 ${project.title}` : `${project.title} 尚未就绪`);
+      const title = document.createElement('h2');
+      title.textContent = project.title;
+      const status = document.createElement('span');
+      const labels = { provisioning: '准备中', ready: '就绪', failed: '失败', deleting: '删除中' };
+      status.className = `status ${Object.hasOwn(labels, project.status) ? project.status : ''}`;
+      status.textContent = labels[project.status] || '未知';
+      const detail = document.createElement('p');
+      detail.className = 'meta';
+      detail.textContent = project.source_model_id && project.source_model_version ? `官方版本 · 独立副本 · ${project.source_model_id}@${project.source_model_version}` : '空白项目';
+      open.append(title, status, detail);
+      if (!open.disabled) open.onclick = () => openWorkspace(project);
+      card.append(open);
+      box.append(card);
+    }
+    if (projects.some(project => project.status === 'provisioning')) {
+      if (Date.now() >= pollDeadline) {
+        show('项目仍在准备中，已停止自动刷新。', false, { label: '刷新', run: () => {
+          pollDeadline = Date.now() + POLL_WINDOW_MS;
+          show('');
+          void renderProjects();
+        } });
+      } else if (!document.hidden) {
+        pollTimer = setTimeout(renderProjects, 3000);
+      }
+    }
+  } catch (error) {
+    if (generation !== viewGeneration || requestNumber !== listGeneration) return;
+    if (error.status === 401) {
+      authenticated = false;
+      tenant = null;
+      viewGeneration++;
+      box.replaceChildren();
+      accountView();
+    }
+    show(error.message, true);
+  } finally {
+    if (generation === viewGeneration && requestNumber === listGeneration) box.setAttribute('aria-busy', 'false');
+  }
+}
+
+function workspaceProjectIdFromHash() {
+  const match = location.hash.match(/^#\/workspace\/([^/]+)$/);
+  if (!match) return null;
+  try { return decodeURIComponent(match[1]); } catch { return null; }
+}
+
+async function load() {
+  const generation = ++viewGeneration;
+  stopPolling();
+  stopEventStream();
+  activeProject = null;
+  workspaceSnapshot = null;
+  workspaceEvents = [];
+  workspaceFiles = null;
+  workspaceFilesError = '';
+  try {
+    const session = await api('/api/auth/get-session');
+    if (generation !== viewGeneration) return;
+    authenticated = Boolean(session?.user);
+    tenant = null;
+    accountView();
+    if (!authenticated) return;
+    const user = await api('/api/me');
+    if (generation !== viewGeneration) return;
+    tenant = user.tenants[0] || null;
+    accountView();
+    pollDeadline = Date.now() + POLL_WINDOW_MS;
+    if (tenant) { await Promise.all([renderProjects(), loadModels()]); }
+  } catch (error) {
+    if (generation !== viewGeneration) return;
+    accountView();
+    show(error.status === 404 && authenticated ? '输入邀请码，启用你的个人空间。' : error.message, error.status !== 404);
+  }
+}
+
+$('#google').onclick = async () => {
+  try {
+    const data = await api('/api/auth/sign-in/social', { method: 'POST', body: JSON.stringify({ provider: 'google', callbackURL: location.origin + '/' }) });
+    if (data?.url) location.assign(data.url);
+  } catch (error) { show(error.message, true); }
+};
+
+$('#sign-out').onclick = async () => {
+  viewGeneration++;
+  stopPolling();
+  const button = $('#sign-out');
+  button.disabled = true;
+  try {
+    await api('/api/auth/sign-out', { method: 'POST', body: '{}' });
+    authenticated = false;
+    tenant = null;
+    activeProject = null;
+    workspaceSnapshot = null;
+    workspaceEvents = [];
+    workspaceFiles = null;
+    workspaceFilesError = '';
+    intent = null;
+    sessionIntent = null;
+    creatingSession = false;
+    messageIntent = null;
+    $('#new-session').textContent = '新建 Session';
+    pendingProject = null;
+    pollDeadline = 0;
+    history.replaceState(null, '', location.pathname + location.search);
+    $('#projects').replaceChildren();
+    accountView();
+    show('已退出登录。');
+  } catch (error) { show(error.message, true); }
+  finally { button.disabled = false; }
+};
+
+document.addEventListener('visibilitychange', () => {
+  stopPolling();
+  stopEventStream();
+  listGeneration++;
+  if (!document.hidden && activeProject) void refreshWorkspace(viewGeneration);
+  else if (!document.hidden && tenant) void renderProjects();
+});
+
+window.addEventListener('hashchange', () => {
+  if (workspaceProjectIdFromHash()) { if (tenant) void renderProjects(); }
+  else if (activeProject) $('#workspace-back').click();
+});
+
+$('#workspace-back').onclick = () => {
+  viewGeneration++;
+  stopEventStream();
+  activeProject = null;
+  workspaceSnapshot = null;
+  workspaceEvents = [];
+  workspaceFiles = null;
+  workspaceFilesError = '';
+  selectedSessionId = null;
+  sessionIntent = null;
+  creatingSession = false;
+  messageIntent = null;
+  $('#new-session').textContent = '新建 Session';
+  history.replaceState(null, '', location.pathname + location.search);
+  $('#message-error').textContent = '';
+  accountView();
+  pollDeadline = Date.now() + POLL_WINDOW_MS;
+  void renderProjects();
+};
+
+$('#session-select').onchange = () => {
+  if (!workspaceSnapshot?.sessions?.[$('#session-select').value]) return;
+  selectedSessionId = $('#session-select').value;
+  renderWorkspace();
+};
+
+$('#files-refresh').onclick = () => void (workspaceArtifactPanel==='diff'?refreshWorkspaceDiff(viewGeneration):refreshWorkspaceFiles(viewGeneration));
+$('#files-tab').onclick=()=>selectArtifactPanel('files');
+$('#diff-tab').onclick=()=>selectArtifactPanel('diff');
+
+$('#new-session').onclick = async () => {
+  if (!activeProject || creatingSession) return;
+  const workspaceId = activeProject.workspace_id;
+  sessionIntent ??= { key: crypto.randomUUID(), title: `Session ${Object.keys(workspaceSnapshot?.sessions || {}).length + 1}` };
+  const current = sessionIntent;
+  const button = $('#new-session'); creatingSession = true; button.disabled = true;
+  $('#message-error').textContent = '';
+  try {
+    const created = await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/sessions`, { method: 'POST', headers: { 'Idempotency-Key': current.key }, body: JSON.stringify({ title: current.title }) });
+    if (activeProject?.workspace_id !== workspaceId) return;
+    selectedSessionId = created.session.id; sessionIntent = null;
+    button.textContent = '新建 Session';
+    await refreshWorkspace(viewGeneration);
+  } catch (error) { if (activeProject?.workspace_id === workspaceId) { $('#message-error').textContent = error.message; button.textContent = '重试新建 Session'; } }
+  finally { creatingSession = false; button.disabled = false; }
+};
+
+$('#message-form').onsubmit = async event => {
+  event.preventDefault();
+  if (sendingMessage || !activeProject) return;
+  const text = $('#message-input').value.trim();
+  if (!text) return;
+  const generation = viewGeneration;
+  const workspaceId = activeProject.workspace_id;
+  sendingMessage = true;
+  $('#message-submit').disabled = true;
+  $('#message-error').textContent = '';
+  try {
+    if (!selectedSessionId) {
+      sessionIntent ??= { key: crypto.randomUUID(), title: '主对话' };
+      const created = await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/sessions`, { method: 'POST', headers: { 'Idempotency-Key': sessionIntent.key }, body: JSON.stringify({ title: sessionIntent.title }) });
+      if (generation !== viewGeneration) return;
+      selectedSessionId = created.session.id;
+      sessionIntent = null;
+    }
+    messageIntent ??= { key: crypto.randomUUID(), sessionId: selectedSessionId, message: text };
+    const current = messageIntent;
+    await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/sessions/${encodeURIComponent(current.sessionId)}/turns`, { method: 'POST', headers: { 'Idempotency-Key': current.key }, body: JSON.stringify({ message: current.message }) });
+    if (generation !== viewGeneration) return;
+    messageIntent = null;
+    $('#message-input').value = '';
+    $('#message-submit').textContent = '发送';
+    await refreshWorkspace(generation);
+  } catch (error) {
+    if (generation !== viewGeneration) return;
+    $('#message-error').textContent = error.message;
+    $('#message-submit').textContent = '重试';
+  } finally {
+    sendingMessage = false;
+    $('#message-submit').disabled = false;
+  }
+};
+
+$('#cancel-turn').onclick = async () => {
+  if (!activeProject || !$('#cancel-turn').dataset.turnId) return;
+  const generation = viewGeneration;
+  const button = $('#cancel-turn');
+  button.disabled = true;
+  $('#message-error').textContent = '';
+  try {
+    await api(`/api/workspaces/${encodeURIComponent(activeProject.workspace_id)}/turns/${encodeURIComponent(button.dataset.turnId)}/cancel`, { method: 'POST', body: '{}' });
+    if (generation === viewGeneration) await refreshWorkspace(generation);
+  } catch (error) { if (generation === viewGeneration) $('#message-error').textContent = error.message; }
+  finally { button.disabled = false; }
+};
+
+$('#invite-form').onsubmit = async event => {
+  event.preventDefault();
+  const token = $('#invite-token').value.trim();
+  if (!token) return;
+  try {
+    const accepted = await api('/api/invitations/accept', { method: 'POST', body: JSON.stringify({ token }) });
+    $('#invite-token').value = '';
+    show('邀请已接受。');
+    tenant = { id: accepted.tenantId };
+    accountView();
+    pollDeadline = Date.now() + POLL_WINDOW_MS;
+    await Promise.all([renderProjects(), loadModels()]);
+  } catch (error) { show(error.message, true); }
+};
+
+function openProjectDialog(model = null) {
+  intent = null;
+  $('#project-title').value = '';
+  $('#project-title').disabled = false;
+  $('#project-error').textContent = '';
+  $('#project-model').disabled = false;
+  $('#project-model').value = model?.model_id && model?.version ? `${model.model_id}@${model.version}` : '';
+  $('#project-submit').textContent = '创建';
+  dialog.showModal();
+}
+$('#new-project').onclick = () => openProjectDialog();
+function closeDialog() { if (!creating) dialog.close(); }
+$('#project-close').onclick = closeDialog;
+$('#project-cancel').onclick = closeDialog;
+dialog.addEventListener('cancel', event => { if (creating) event.preventDefault(); });
+
+$('#project-form').onsubmit = async event => {
+  event.preventDefault();
+  if (creating || !tenant) return;
+  const title = $('#project-title').value.trim();
+  if (!title) return;
+  const selectedModel = $('#project-model').selectedOptions[0];
+  const payload = selectedModel?.dataset.modelId ? { title, modelId: selectedModel.dataset.modelId, modelVersion: selectedModel.dataset.modelVersion } : { title, starterVersion: 'blank-v1' };
+  intent ??= { key: crypto.randomUUID(), tenantId: tenant.id, payload };
+  const current = intent;
+  const generation = viewGeneration;
+  creating = true;
+  $('#project-submit').disabled = true;
+  $('#project-title').disabled = true;
+  $('#project-model').disabled = true;
+  $('#project-error').textContent = '';
+  try {
+    const result = await api(`/api/tenants/${encodeURIComponent(current.tenantId)}/projects`, {
+      method: 'POST', headers: { 'Idempotency-Key': current.key }, body: JSON.stringify(current.payload),
+    });
+    if (generation !== viewGeneration) return;
+    dialog.close();
+    intent = null;
+    pendingProject = result.project;
+    show(result.project.status === 'provisioning' ? '项目正在准备中。' : '项目已创建。');
+    pollDeadline = Date.now() + POLL_WINDOW_MS;
+    await renderProjects();
+  } catch (error) {
+    if (generation !== viewGeneration) return;
+    $('#project-error').textContent = error.message;
+    $('#project-submit').textContent = '重试';
+  } finally {
+    creating = false;
+    $('#project-submit').disabled = false;
+  }
+};
+$('#models-refresh').onclick = () => void loadModels();
+void load();

@@ -1,0 +1,79 @@
+[
+    {
+        "Id": "sha256:42eb9a36e2aa6098c9a146c5c0f149efe29f638d8d304efea523a592aa4002dc",
+        "RepoTags": [
+            "riffology-m0-trusted-proxy:20260905T155750Z-167375ff"
+        ],
+        "RepoDigests": [
+            "riffology-m0-trusted-proxy@sha256:42eb9a36e2aa6098c9a146c5c0f149efe29f638d8d304efea523a592aa4002dc"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-09-05T23:59:00.201654685+08:00",
+        "Config": {
+            "ExposedPorts": {
+                "3000/tcp": {}
+            },
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "DEBIAN_FRONTEND=noninteractive",
+                "SANDBOX_VERSION=0.12.9",
+                "PYTHON_POOL_MIN_SIZE=0",
+                "JAVASCRIPT_POOL_MIN_SIZE=0",
+                "TYPESCRIPT_POOL_MIN_SIZE=0"
+            ],
+            "Entrypoint": [
+                "/container-server/sandbox"
+            ],
+            "WorkingDir": "/opt/riffology",
+            "Labels": {
+                "org.opencontainers.image.version": "22.04"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 272351710,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:c0359c5b6ede84d4a083d06d35ee77f0b338dfb17423771854d007d89953fb3e",
+                "sha256:3d65b9874032d7fcc188f6bdfaf5b13788ab5b0bbefa77f4a5ac28c598bf1941",
+                "sha256:0576eb869f395313a1aa5f621268dfb9b5682ec97cf15fe71e371483f5c80fba",
+                "sha256:15ded8de01e6eca481f1a339c99bb4cfda5d23b1dfbc82a4cebb24c5c9a017a8",
+                "sha256:86a3be679e01b1fcee6c778834a25689e30f6071f66576d25fbffc5fce5aa98e",
+                "sha256:f334ab63d20359b7cffc52ca264dd415747a8d4ff7bfbb6149008b8683965dee",
+                "sha256:9b70e64f8f280bd9fa74b9185f0bf19604eaef611dd83c275886a24799d154e5",
+                "sha256:713264a10ffa9ed08c39191b9e03b8f298baa0a1d87f6e58589c8990a25743f3",
+                "sha256:1e82d0f1454bb6187960082585b9b98906b7a52f6ae24fdf1f51fe9e6e91e0e6",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:55394ae40b31c896ec476b35271dc2785c15c370ba8395e115d5a8b20a095f61",
+                "sha256:703eb6bf565d44cb0066bd69bf4b74dd6d5160e55cb1728bc0b1abb242c1a489",
+                "sha256:b7cb327a353f555554a14193e784b45adaf249df9b105bbbe7fd1632fc8bf515",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:6996f5cb764794f926da271d756055e0885640baf700c5467fe6cd5a86623b0e",
+                "sha256:41637d6d0ae7218db0e6b6224089bc8cb8c1ec4319a4b999d6fb611606ef60d0",
+                "sha256:cf3025d2e215bb80009804f64ba5fd485bca0f349052d186a8050fb5cb93733c",
+                "sha256:d4b3cb048462969ab4e281b4cc26db860d4d2db608c108e381774f4466ddd745",
+                "sha256:5818ce1366ffb7fc3596e451347ecebb10a9db5e92d030f774b3eeeef6f9bedc",
+                "sha256:06dd4d5e090d791b6f10470e6243c1a95492534d9490fd4614ed3142ca3ce904",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-09-05T15:59:53.785232877Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:42eb9a36e2aa6098c9a146c5c0f149efe29f638d8d304efea523a592aa4002dc",
+            "size": 856
+        },
+        "Identity": {
+            "Build": [
+                {
+                    "Ref": "tob6sr90jhffh2483pfn4jdze",
+                    "CreatedAt": "2026-09-05T23:59:53.788884169+08:00"
+                }
+            ]
+        }
+    }
+]

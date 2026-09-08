@@ -1,0 +1,18 @@
+{
+  "observedAt": "2026-09-06T03:00:08.622Z",
+  "localChecks": "m0-local-20260906024601622",
+  "tests": {
+    "pass": 199,
+    "skip": 1,
+    "fail": 0
+  },
+  "documentsChecked": 7,
+  "brokenLinks": [],
+  "T07EvidenceHashesVerified": true,
+  "stagingGatesPassed": [
+    "G0-T06",
+    "G0-T07"
+  ],
+  "fullGoalComplete": false,
+  "noNewRealModelCalls": true
+}

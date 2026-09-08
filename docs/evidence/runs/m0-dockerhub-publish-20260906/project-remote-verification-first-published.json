@@ -1,0 +1,14 @@
+{
+  "repository": "jihegao/riffology-m0-project",
+  "tag": "20260905T155750Z-167375ff",
+  "checkedAt": "2026-09-06T00:55:24.185566+00:00",
+  "anonymousPull": true,
+  "verified": false,
+  "indexDigest": "sha256:1d82f27d7cd328aef4f7125e0e27fe42fa6a03803c97ca7783951aba385cf42f",
+  "indexMatchesLocal": true,
+  "manifestDigest": "sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+  "manifestMatchesLocal": true,
+  "configDigest": "sha256:ffa7f77ec007ce13c193e9280e3c06a9d46b37cbbd3aafca4c8c38f745eda3d0",
+  "configMatchesLocal": true,
+  "errorType": "URLError"
+}

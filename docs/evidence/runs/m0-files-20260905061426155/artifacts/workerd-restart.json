@@ -1,0 +1,14 @@
+{
+  "environment": "local-docker-workerd",
+  "observedAt": "2026-09-05T06:25:12.311Z",
+  "operation": "read-report-after-workerd-process-restart",
+  "httpStatus": 200,
+  "reportIdentical": true,
+  "currentRevision": {
+    "revision": "1bb09e5ed2594e9be1677ac9b93dbf85f985d6dc55aa046726790fac235ee292",
+    "generation": 2,
+    "sequence": 2
+  },
+  "eventCount": 2,
+  "cloudGatePassed": false
+}

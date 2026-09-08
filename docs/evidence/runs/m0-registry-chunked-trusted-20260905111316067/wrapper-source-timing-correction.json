@@ -1,0 +1,8 @@
+{
+  "observedAt": "2026-09-05T11:16:47.875Z",
+  "supersedesField": "wrapper-source.json capturedDuringRunBeforeAnySourceEdits",
+  "capturedDuringRun": false,
+  "capturedAfterRunBeforeAnySourceEdits": true,
+  "sha256": "06e0647f450bacccc2f05286a072fc0fc60a4566ada4dfbbf76e560437d98fb2",
+  "reason": "tool returned terminal upload failure before provenance capture; source was unchanged"
+}

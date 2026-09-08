@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "runId": "m1-first-operator-cloud-20260907",
+  "observedAt": "2026-09-06T16:54:33Z",
+  "environment": "staging",
+  "decision": "accepted-as-first-identity-and-first-project-evidence-only",
+  "entrypoint": "https://m1.riff-demo.gaojihe.cn",
+  "deployment": {
+    "worker": "riffology-m1-gateway-staging",
+    "versionId": "9b2f8a93-6377-4690-8844-caf693214cf8",
+    "trafficPercentage": 100,
+    "homeStatus": 200,
+    "unauthenticatedMeStatus": 401
+  },
+  "identity": {
+    "userId": "4f263de1-1f25-4f20-ba14-2aaba4765ede",
+    "status": "active",
+    "authVersion": 1,
+    "oauthFlowObserved": true,
+    "invitationId": "bootstrap-53804881-be62-4538-b51c-9f33992b70c6",
+    "invitationPurpose": "initial_operator",
+    "invitationState": "accepted",
+    "operatorRole": "active",
+    "tenantId": "e320b036-31a2-40d9-9809-c9f6533ff031",
+    "userPageObserved": "personal-space",
+    "adminPageObserved": "operator-overview"
+  },
+  "project": {
+    "id": "fa2dd994-a4c4-4d83-b775-9c878e1de754",
+    "title": "G1 云验收项目",
+    "status": "ready",
+    "workspaceId": "ff134498-6112-4ae4-9cc3-2e17186999af",
+    "workspaceStatus": "ready",
+    "generation": 1,
+    "outbox": { "id": "62ad13a8-2087-46d9-bc59-309cca1a22c9", "state": "completed", "attempts": 1, "projectionSequence": 1 },
+    "receipt": { "id": "bc5b9150-c254-42b5-8670-3b3525204e1b", "sequence": 1, "outcome": "ready" }
+  },
+  "runtime": {
+    "applicationId": "a035c941-2207-406e-97aa-a42ab6e9d249",
+    "applicationName": "riffology-m1-project-staging",
+    "applicationState": "ready",
+    "configuredMaxInstances": 2,
+    "instanceId": "f75cde8f5660d9f879f6e1fc2ee24fdb144dc1560b78a511548a27cdac219dcf",
+    "runtimeId": "fbd79978-b6c9-428f-a576-f76bd17d5400",
+    "instanceState": "inactive",
+    "createdAt": "2026-09-06T16:49:30Z"
+  },
+  "checkpoint": {
+    "bucket": "riffology-m1-workspace-checkpoints-staging",
+    "key": "workspaces/e320b036-31a2-40d9-9809-c9f6533ff031/ff134498-6112-4ae4-9cc3-2e17186999af/1/fbd79978-b6c9-428f-a576-f76bd17d5400/initial.json",
+    "bytes": 734,
+    "sha256": "dc11e554183f0d9caf102cbf7022c2ec4f3a69da4c15851a8eb29bc56b0ccfcb",
+    "schemaVersion": 1,
+    "layoutVersion": "m1-empty-v1",
+    "directories": ["model", "app", "experiments", "results", "docs", ".riffology"],
+    "files": [".riffology/initialization.json", "README.md"]
+  },
+  "auditActions": ["operator.bootstrap.invite", "invitation.accept", "platform_role.grant", "project.create", "workspace.dispatch", "workspace.project"],
+  "database": {
+    "name": "riffology-catalog-staging",
+    "id": "993f2fd9-a135-4a93-9caa-10828dec6635",
+    "readReplicationMode": "disabled",
+    "verificationServedByPrimary": true
+  },
+  "observations": [
+    "The accepted invitation and active operator role were committed in D1 and visible on the user and admin pages.",
+    "The first project completed the D1 outbox, native Container, R2 checkpoint, native stop and D1 ready projection path.",
+    "The first UI read after both mutations briefly showed the pre-mutation state; a later reload showed the committed state. D1 read replication is disabled, so this evidence does not attribute the delay to a replica.",
+    "The bootstrap plaintext token was deleted after successful acceptance and was never added to this evidence."
+  ],
+  "legacy": {
+    "worker": "riffology-demo",
+    "workerApiResult": "10007-worker-does-not-exist",
+    "hostname": "riffology-demo.gaojihe.cn",
+    "dnsResult": "not-resolved"
+  },
+  "notAccepted": [
+    "second real identity",
+    "cross-tenant and cross-project object-id rejection matrix",
+    "same-tenant last-slot quota race",
+    "cloud fault-window reconciliation",
+    "G1 final sign-off"
+  ],
+  "mutations": {
+    "oauthLogin": true,
+    "invitationAccepted": true,
+    "projectCreated": true,
+    "cloudDeploy": false,
+    "cloudResourceCreate": false,
+    "modelCalls": 0,
+    "emailSent": false,
+    "commit": false,
+    "push": false
+  }
+}

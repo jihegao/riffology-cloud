@@ -1,0 +1,15 @@
+**
+!infra/
+!infra/m0-*.Dockerfile
+!package.json
+!package-lock.json
+!services/
+!services/runtime/
+!services/runtime/controlled-pi.mjs
+!services/runtime/proxy-pi.mjs
+!services/trusted-pi/
+!services/trusted-pi/**
+!scripts/
+!scripts/m0/
+!scripts/m0/proxy-pi-child.mjs
+!scripts/m0/pi-image-check.mjs

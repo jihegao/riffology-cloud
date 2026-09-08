@@ -1,0 +1,91 @@
+{
+  "at": "2026-09-06T10:15:46.678Z",
+  "applications": [
+    {
+      "applicationId": "a03693b8-f5be-4247-9280-f0c38435d911",
+      "success": true,
+      "result": {
+        "instances": [
+          {
+            "id": "7dac91806809fa018b659d3e9312f520a078a2375254c4a7fb4612ea38dd72de",
+            "application_id": "a03693b8-f5be-4247-9280-f0c38435d911",
+            "status": {
+              "state": "inactive",
+              "updated_at": "2026-09-06T10:14:34Z"
+            },
+            "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+            "name": "m0-release-completion-20260906-fault"
+          }
+        ]
+      }
+    },
+    {
+      "applicationId": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+      "success": true,
+      "result": {
+        "instances": [
+          {
+            "id": "e60e539d20459526fd493f77202505daa0b74c73cb4bb2520f2748e8321f4bde",
+            "application_id": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+            "status": {
+              "state": "inactive",
+              "updated_at": "2026-09-06T10:14:27Z"
+            },
+            "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+            "name": "m0-release-completion-20260906-restore"
+          },
+          {
+            "id": "62ead798db0d29864b0c5912c4d184b3fc7e34d0d36f9ac58fdf26bea08df5b5",
+            "application_id": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+            "status": {
+              "state": "inactive",
+              "updated_at": "2026-09-06T09:31:16Z"
+            },
+            "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+            "name": "m0-release-g0-v3-20260906-new"
+          },
+          {
+            "id": "89669f7474128f6fdc70bce37e33109c5f147b962df01c9717e30dbd51dba9a9",
+            "application_id": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+            "status": {
+              "state": "inactive",
+              "updated_at": "2026-09-06T09:31:36Z"
+            },
+            "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+            "name": "m0-release-g0-v3-20260906-fault"
+          },
+          {
+            "id": "8b301cc2ae4ef108659d1c3c01ffeb69f5bf6fdcf60a8f1f89988f715eff8825",
+            "application_id": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+            "status": {
+              "state": "inactive",
+              "updated_at": "2026-09-06T09:12:15Z"
+            },
+            "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+            "name": "m0-release-g0-20260906-old"
+          },
+          {
+            "id": "9c0e4e8e82b19a601302a6eb0d1721687e6f6a2d4e941c04ca0cb7d3370d878e",
+            "application_id": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+            "status": {
+              "state": "inactive",
+              "updated_at": "2026-09-06T09:31:08Z"
+            },
+            "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+            "name": "m0-release-g0-v3-20260906-old"
+          },
+          {
+            "id": "b5c6735ad1c187dde0e9189a8814643b4d18bb4d45b6e9514f4ce21403e12b71",
+            "application_id": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+            "status": {
+              "state": "inactive",
+              "updated_at": "2026-09-06T09:19:18Z"
+            },
+            "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+            "name": "m0-release-g0-v2-20260906-old"
+          }
+        ]
+      }
+    }
+  ]
+}

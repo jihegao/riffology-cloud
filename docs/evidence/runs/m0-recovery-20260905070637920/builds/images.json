@@ -1,0 +1,26 @@
+{
+  "observedAt": "2026-09-05T07:14:56.536Z",
+  "environment": "local-docker",
+  "images": [
+    {
+      "role": "trusted",
+      "id": "sha256:7fdfeeae723428c05d9e0c07d02d05fd2b88d880f18d887e5c191cd3301a6714",
+      "tags": [
+        "cloudflare-dev/recoverytrustedsandbox:aee4de34",
+        "riffology-m0-trusted-staging:worker"
+      ],
+      "architecture": "amd64"
+    },
+    {
+      "role": "project",
+      "id": "sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+      "tags": [
+        "cloudflare-dev/fileprojectsandbox:7a2bbc40",
+        "riffology-m0-preview-staging:worker",
+        "riffology-m0-project-staging:worker"
+      ],
+      "architecture": "amd64"
+    }
+  ],
+  "deployed": false
+}

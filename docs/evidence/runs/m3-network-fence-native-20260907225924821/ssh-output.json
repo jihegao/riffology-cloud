@@ -1,0 +1,6 @@
+{
+  "status": 0,
+  "signal": null,
+  "stdout": "{\"passed\": true, \"machine\": \"x86_64\", \"kernel\": \"6.8.0-124-generic\", \"uid\": 1000, \"baselineIpv4Connect\": true, \"temporaryDirectoryRemoved\": true, \"stage\": \"complete\", \"connectDenied\": [\"AF_INET\", \"AF_INET6\", \"AF_UNIX\"], \"ioUringDenied\": [\"io_uring_setup\", \"io_uring_enter\", \"io_uring_register\"], \"forkExecInherited\": true, \"listenAcceptResponseAfterFence\": true}\n",
+  "stderr": ""
+}

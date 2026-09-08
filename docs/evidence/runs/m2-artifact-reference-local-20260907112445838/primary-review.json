@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-artifact-reference-local-20260907112445838",
+  "environment": "local",
+  "startedAt": "2026-09-07T11:24:45.910Z",
+  "finishedAt": "2026-09-07T11:25:18.800Z",
+  "gitHead": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+  "gitDirty": true,
+  "sourceStable": true,
+  "sourceSha256": "a0fd7382dab3e4a2a0c9a724b5b849b3ecd03a01b8cc0c1240e3464794780dd0",
+  "sourceFileCount": 388,
+  "checks": {
+    "focused": {
+      "exitCode": 0,
+      "tests": 26,
+      "pass": 26,
+      "fail": 0,
+      "logSha256": "8541d3a2009922d4e274d32bed699bb8ba1db2bbb9ca221ba53feb69c89ea67a"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "logSha256": "dcb958aba4a6c7cd6d75b2bd69cf76202671333241d3c5ce33569584459aa324"
+    },
+    "m2": {
+      "exitCode": 0,
+      "tests": 304,
+      "pass": 304,
+      "fail": 0,
+      "logSha256": "aa34902f2f18c3ecea664353068299a89824bf3355bd5ca2ffc6556957a570e9"
+    }
+  },
+  "coverage": {
+    "artifactBornWithToolEffectReference": true,
+    "legacyReferenceBackfill": true,
+    "turnEventRetainBeforeJournalAppend": true,
+    "retainReplayIdempotent": true,
+    "releaseReplayIdempotent": true,
+    "crossTenantDenied": true,
+    "gcEnabled": false
+  },
+  "review": {
+    "readOnlySubagent": "no-current-slice-p1"
+  },
+  "external": {
+    "cloudDeploy": false,
+    "modelCalls": 0,
+    "emailSent": false,
+    "commit": false,
+    "push": false
+  },
+  "passed": true
+}

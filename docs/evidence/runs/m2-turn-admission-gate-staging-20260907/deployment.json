@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-turn-admission-gate-staging-20260907",
+  "environment": "cloudflare-staging",
+  "observedAt": "2026-09-06T19:35:08.925684Z",
+  "result": "passed",
+  "worker": {
+    "name": "riffology-m1-gateway-staging",
+    "versionId": "beeb20f0-6346-405e-88ea-632ea87863d8",
+    "versionNumber": 7,
+    "scriptEtag": "319e92cf5856f13ae3114a4bba1839f827e5e1fc877bea8a3aa96fc7f8f298a6",
+    "route": "m1.riff-demo.gaojihe.cn",
+    "message": "Disable M2 turn admission until runtime wiring",
+    "m2TurnsEnabled": "false"
+  },
+  "deployment": {
+    "commandClass": "wrangler deploy with containers-rollout=none and keep-vars",
+    "assetsUpdated": false,
+    "containerBuildOrRollout": false,
+    "durableObjects": ["ProjectRuntime", "TenantQuota", "WorkspaceAgent"],
+    "containerApplication": "riffology-m1-project-staging"
+  },
+  "liveChecks": {
+    "homepage": { "status": 200, "containsProductTitle": true },
+    "unauthenticatedMe": { "status": 401, "error": "authentication_required" },
+    "catalogActivation": {
+      "acceptedInvitations": 1,
+      "activeUsers": 1,
+      "activeTenants": 1,
+      "activeMemberships": 1,
+      "rowsWritten": 0
+    }
+  },
+  "linkedLocalProof": "../m2-turn-admission-gate-local-20260907/primary-review.json",
+  "externalActions": {
+    "workerDeployments": 1,
+    "containerBuildsOrRollouts": 0,
+    "modelCalls": 0,
+    "emailsOrInvitations": 0
+  },
+  "limitations": [
+    "The authenticated Turn POST was not replayed because the Mac was locked and no session credential was copied out of the browser.",
+    "The deployed binding and local zero-mutation test jointly establish the admission fence; real Pi execution remains disabled."
+  ]
+}

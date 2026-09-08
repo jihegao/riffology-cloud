@@ -1,0 +1,10 @@
+{
+  "dryRunExitedNormally": true,
+  "wrapperExitCode": 1,
+  "wrapperFailure": "post-run hash lookup used cwd-relative path; Wrangler resolved outdir relative to infra config",
+  "actualBundle": "infra/.local/m0-boundary-dockerhub-deploy-20260906/bundle/index.js",
+  "bundleSha256": "e4e3ac7422ea8d6d8967658a8d7a8fc61b48e454b694ef548f67882fc415acff",
+  "configSha256": "90f87013d8699c63d929dd2ca537f52ce1859f05f618926bb623aa495e8c5f34",
+  "dryRunLogSha256": "dc7369ec19feef304d19a9670914f06b44a7a1b17484b02c87821b1e12ad0662",
+  "localChecks": "docs/evidence/runs/m0-local-20260906013555959/local-checks.json"
+}

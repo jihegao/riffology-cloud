@@ -1,0 +1,36 @@
+{
+  "observedAt": "2026-09-05T08:40:05.178Z",
+  "environment": "local-colima-riffology-m0",
+  "helpers": [
+    {
+      "id": "7cc62435469c936f1bc8cc57006156c4a2345a12e6698ea7156ecf6a4e5d03fb",
+      "name": "/workerd-riffology-m0-preview-staging-PreviewSandbox-cb3c32fa2066589b22309e5c0b0ac8da36909e5f679066fa2b4e98179fb4b8c9-proxy",
+      "image": "sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "configuredImage": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "running": false
+    },
+    {
+      "id": "4c4d38f6f6111adf66dd558d1827561aa5e80137c405422cb4a33eb4bcba6a9a",
+      "name": "/workerd-riffology-m0-preview-staging-PreviewSandbox-d524aa0227c6f46fb97393175af99b8643638cdd3b09894131e1ec58a3017959-proxy",
+      "image": "sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "configuredImage": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "running": false
+    },
+    {
+      "id": "fb53c7452847f82df7af580d1efa60327777173c9c9d8f08971910adc9168681",
+      "name": "/workerd-riffology-m0-preview-staging-PreviewSandbox-420a924a89dd643d7d42c6b0b1a256932c2a86bf3df2f326917fc34f4b31d37e-proxy",
+      "image": "sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "configuredImage": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "running": false
+    },
+    {
+      "id": "ef0f06aa7c7f08b9a88b7f304ee9dac05213bb8c2f93cb39cae7171034d6b2e6",
+      "name": "/workerd-riffology-m0-preview-staging-PreviewSandbox-ef5cf26f6e7dce806bbcde87f1c1938160d15a67de69f4f2572e8859479dcd48-proxy",
+      "image": "sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "configuredImage": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "running": false
+    }
+  ],
+  "allStopped": true,
+  "remainingContainers": []
+}

@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "tool call error: tool call failed for `cloudflare-api/execute`\n\nCaused by:\n    0: failed to resolve OAuth metadata before using stored refresh credentials\n    1: Metadata error: OAuth metadata discovery failed for https://mcp.cloudflare.com/mcp\n         Caused by: HTTP request failed: http/request failed: error sending request for url (https://mcp.cloudflare.com/mcp)"
+    }
+  ],
+  "isError": true
+}

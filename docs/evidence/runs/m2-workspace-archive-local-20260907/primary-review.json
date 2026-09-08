@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-workspace-archive-local-20260907",
+  "reviewedAt": "2026-09-06T21:17:00Z",
+  "environment": "local-workerd-colima",
+  "decision": "accepted-as-local-project-workspace-freeze-and-restore-candidate",
+  "scope": [
+    "canonical bounded Project Workspace USTAR archive",
+    "verified pre-execution restore inside the Sandbox Workspace mount",
+    "R2 revision reader bounds and ProductTurnRuntime Workspace lifecycle adapter",
+    "legacy Turn v1 head migration by local journal sequence",
+    "real local build of the separate Project and Trusted Pi Sandbox images"
+  ],
+  "probe": {
+    "record": "probe.json",
+    "sha256": "b83ba4f2cc02ae55e7eabed7ee245c4a2987e8d7cf8b495c88e8544a3764fdaf",
+    "runs": 2,
+    "httpStatus": [200, 200],
+    "archiveBytes": [10240, 10240],
+    "archiveSha256": [
+      "bfd73e7be4f91d3efd2bd03eb43d48c93a55781eafcb92bd6ccdb2414bdbd5f3",
+      "bfd73e7be4f91d3efd2bd03eb43d48c93a55781eafcb92bd6ccdb2414bdbd5f3"
+    ],
+    "sourceSandboxDestroyedBeforeRestore": true,
+    "restoredInSeparatelyDerivedActor": true,
+    "restoredContent": "before-freeze",
+    "wrongActorRejected": true,
+    "destinationSandboxDestroyed": true
+  },
+  "archiveContract": {
+    "format": "USTAR",
+    "maxArchiveBytes": 58720256,
+    "maxFileBytes": 33554432,
+    "maxEntries": 4096,
+    "entries": "regular files and directories only",
+    "reservedPath": ".riffology",
+    "canonicalMetadata": "uid=0, gid=0, empty owner names, mtime=0, bounded modes, UTF-8 NFC paths",
+    "restore": "extract and canonical re-freeze verification before installing entries inside the Workspace mount",
+    "replay": "identity-derived token, per-token file lock, retained input archive and immutable success marker"
+  },
+  "images": {
+    "project": {
+      "tag": "cloudflare-dev/projecttoolsandbox:a25d6d99",
+      "id": "sha256:80b40b8b2a7b6eab82c7451b8b01118d5ad3a54941452fd68d94f7570d6a0bf9",
+      "architecture": "amd64",
+      "os": "linux",
+      "sizeBytes": 361856214
+    },
+    "trustedPi": {
+      "tag": "cloudflare-dev/trustedpisandbox:a25d6d99",
+      "id": "sha256:33ca98c60d7c4e876c2c068ff97ff3a3423c84811c6814e5f45ab344959597f9",
+      "architecture": "amd64",
+      "os": "linux",
+      "sizeBytes": 390902151,
+      "release": "fail-closed"
+    }
+  },
+  "closedDuringReview": [
+    "legacy v1 saved heads and claimed bases now use local terminal/start journal sequence instead of remote checkpoint timestamps",
+    "R2 restore now checks actual object bytes and the aggregate files plus Pi Session limit",
+    "archive restore serializes same-token attempts, retains input for replay, rejects directory races and checks USTAR name encodability",
+    "the Workspace mount cannot be renamed across the container mount boundary, so restore now verifies a staged tree inside the mount and installs it before Pi starts",
+    "Sandbox processes now use a fresh bounded attempt id while the archive token and marker retain operation idempotency",
+    "the Trusted Pi Dockerfile moved to repository root so Wrangler uses the required repository build context",
+    "the source inventory now includes the root Trusted Pi Dockerfile"
+  ],
+  "verification": {
+    "fullCheck": {
+      "record": "../m1-local-20260906211529852/local-checks.json",
+      "recordSha256": "b193c1dc604c5b26d5fe14236ba46b9e3760eddf323e7c06d9346edd21283307",
+      "log": "../m1-local-20260906211529852/local-checks.log",
+      "logSha256": "6383879780b7896ad1ce816a35cac6dfb5f990bcfb49d2f8cbb2bceb3487ddf6",
+      "passed": true,
+      "sourceStableDuringCheck": true,
+      "sourceFiles": 334,
+      "sourceSha256": "805fac4b3175f6a37d9c227cda5fea04e30d29e2627fc80e89cb509080a90953",
+      "m0": { "passed": 348, "failed": 0, "skipped": 1 },
+      "m1": { "passed": 108, "failed": 0, "skipped": 0 },
+      "m2": { "passed": 191, "failed": 0, "skipped": 0 }
+    },
+    "preservedPriorFailure": {
+      "record": "../m1-local-20260906211149808/local-checks.json",
+      "reason": "one existing M0 real-process concurrency timing assertion observed zero dispatches",
+      "focusedRerunPassed": 1,
+      "subsequentFullRunsPassed": 2
+    },
+    "modelCalls": 0,
+    "cloudMutations": 0,
+    "cloudDeployments": 0,
+    "port8796ListeningAfterCleanup": false,
+    "matchingContainersAfterCleanup": 0,
+    "ui4173Preserved": true
+  },
+  "sourceHashes": {
+    "Dockerfile.trusted-pi.cloud": "9684b829fc1d1610a579deb0f58bdc045939f62b9e20e17c87919bcf77bb1627",
+    "services/project-tools/Dockerfile.cloud": "8a669514e8b89151d6286fa25fcc8ef111fd19cee6cb9d4b695985c1f7da93c8",
+    "services/project-tools/workspace.ts": "7cd0ffe96849a5be36f4fa9f73f3572c15e90500d3aed9de64d71ed73396152b",
+    "services/project-tools/workspace_archive.py": "7a86cef42158390ad1e8274480b3d865e725eb5afe67a6b86c1b8e285cd4ac6e",
+    "services/turn-runtime/workspace.ts": "9bfa61e5788764e1420b45760c3f4d3f922beeacedf412c093e45639a93e3b89",
+    "services/turn-runtime/revision.ts": "3b95b5754ac6d38a05df7d6c6942e70b1959a24a49c50f3eaa0ff1d5f262a248",
+    "services/turn/store.ts": "836768f406498d1ccad61566812d1b92d3acd9d106f659e903becffc2beecab3",
+    "services/sandbox/classes.ts": "01d3fb33f5103c7f6798e320a618a05a13dbf110f8a02e6a8d8b02877fa66492",
+    "spikes/m2-project-sandbox/index.ts": "414af383b79f847e1e840ea447c7226073c7ffd69e35a7319c4873d6fa65e654",
+    "infra/wrangler.m2-project-sandbox-local.jsonc": "50c1655ae4de1efe5cb331b9444aa91102d58f86d60bc5814df83e1f32bb0bba",
+    "scripts/m0/source-inventory.mjs": "34f3a88a95465f8738065158bcd35e283953cf6f15f013d09ab9b930c5f3a184"
+  },
+  "notAccepted": [
+    "production ProductTurnRuntime release with model budget authority",
+    "cloud deployment or Cloudflare Container application rollout",
+    "real Pi Session and Project Workspace combined R2 recovery",
+    "cross-tenant cloud acceptance",
+    "Bash watchdog, large-result artifact path, event archive or user conversation UI"
+  ],
+  "mutations": {
+    "localImageBuild": true,
+    "localWorkerdRpc": true,
+    "cloudDeploy": false,
+    "cloudResourceCreate": false,
+    "modelCalls": 0,
+    "commit": false,
+    "push": false
+  }
+}

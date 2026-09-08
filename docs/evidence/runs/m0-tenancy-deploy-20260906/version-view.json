@@ -1,0 +1,67 @@
+{
+  "observedAt": "2026-09-06T04:23:21.580Z",
+  "id": "09564102-d400-4ad9-bdd2-63ffe0b14386",
+  "metadata": {
+    "created_on": "2026-09-06T04:13:18.429588Z",
+    "source": "wrangler",
+    "author_id": "1ddca18fc1543f9d346441f2626ae8ef",
+    "author_email": "jihe.gao@gmail.com",
+    "has_preview": false
+  },
+  "resources": {
+    "script": {
+      "etag": "3e2cb5a70b314114794a53edf0fb3dd84379e1cd65d52c1fa086f42ad54e4473",
+      "handlers": [
+        "fetch"
+      ],
+      "named_handlers": [
+        {
+          "name": "TenancyCoordinator",
+          "handlers": [
+            "class"
+          ]
+        }
+      ],
+      "last_deployed_from": "wrangler"
+    },
+    "script_runtime": {
+      "exports": {
+        "TenancyCoordinator": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        }
+      },
+      "compatibility_date": "2026-09-05",
+      "compatibility_flags": [
+        "nodejs_compat",
+        "nodejs_compat_do_not_populate_process_env"
+      ],
+      "usage_model": "standard"
+    },
+    "bindings": [
+      {
+        "type": "r2_bucket",
+        "name": "CHECKPOINTS",
+        "bucket_name": "riffology-m0-checkpoints-staging"
+      },
+      {
+        "type": "plain_text",
+        "name": "ENVIRONMENT"
+      },
+      {
+        "type": "secret_text",
+        "name": "M0_PROBE_TOKEN"
+      },
+      {
+        "type": "plain_text",
+        "name": "PROTOCOL_VERSION"
+      },
+      {
+        "type": "durable_object_namespace",
+        "name": "TENANCY",
+        "namespace_id": "72efcc4896bc4a1396eaf76e3bdc3a32",
+        "class_name": "TenancyCoordinator"
+      }
+    ]
+  }
+}

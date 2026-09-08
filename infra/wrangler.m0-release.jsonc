@@ -1,0 +1,80 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "riffology-m0-release",
+  "main": "../spikes/m0-release/cloud-w1.ts",
+  "compatibility_date": "2026-09-05",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "nodejs_compat_do_not_populate_process_env",
+    "enable_request_signal",
+    "request_signal_passthrough"
+  ],
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": {
+    "enabled": true
+  },
+  "env": {
+    "staging": {
+      "name": "riffology-m0-release-staging",
+      "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+      "workers_dev": true,
+      "vars": {
+        "ENVIRONMENT": "staging",
+        "PROTOCOL_VERSION": "m0-v1"
+      },
+      "secrets": {
+        "required": [
+          "M0_PROBE_TOKEN"
+        ]
+      },
+      "containers": [
+        {
+          "name": "riffology-m0-release-staging",
+          "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+          "instance_type": "basic",
+          "max_instances": 1,
+          "rollout_active_grace_period": 0
+        }
+      ],
+      "exports": {
+        "ReleaseSandbox": {
+          "type": "durable-object",
+          "storage": "sqlite",
+          "container": "riffology-m0-release-staging"
+        },
+        "ReleaseHost": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        }
+      },
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "ReleaseSandbox",
+            "class_name": "ReleaseSandbox"
+          },
+          {
+            "name": "HOST",
+            "class_name": "ReleaseHost"
+          }
+        ]
+      },
+      "r2_buckets": [
+        {
+          "binding": "CHECKPOINTS",
+          "bucket_name": "riffology-m0-checkpoints-staging"
+        }
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "Text",
+      "globs": [
+        "**/release-probe.mjs"
+      ],
+      "fallthrough": true
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "observedAt": "2026-09-05T09:48:37.053Z",
+  "command": [
+    "wrangler",
+    "whoami",
+    "--json"
+  ],
+  "exitCode": 0,
+  "loggedIn": true,
+  "authType": "OAuth Token",
+  "accountIds": [
+    "8b0d70250211aa10d89e20605a1c7e5e"
+  ],
+  "expectedAccountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "matchesExpected": true
+}

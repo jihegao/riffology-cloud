@@ -1,0 +1,14 @@
+{
+  "startedAt": "2026-09-06T02:02:59.887695+00:00",
+  "types": {
+    "firstExit": 1,
+    "reason": "output parent directory missing",
+    "retryExit": 0
+  },
+  "dryRunExit": 0,
+  "localChecks": "m0-local-20260906020152914",
+  "configSha256": "44979452e5db2b77db61c60670cb0823aab1e8269e926a725398c2fc1bf8160c",
+  "bundleSha256": "24c4e64458002e84f89ab2ec0ec76edaacf8ca90120216c32b27b238ddb78917",
+  "exitCode": 0,
+  "finishedAt": "2026-09-06T02:03:24.921183+00:00"
+}

@@ -1,0 +1,344 @@
+{
+  "schema_version": 2,
+  "operation": "G0-T07-local-browser",
+  "run_id": "preview-browser-1788596845959",
+  "observed_at": "2026-09-05T08:27:25.982Z",
+  "execution_environment": "local-workerd-docker-chrome-https",
+  "identity_provider": "server-owned-synthetic-principals-not-product-login",
+  "origin_model": "same-site-different-origin",
+  "gate_decision": "not_evaluated",
+  "cloud_browser_matrix": "not_run",
+  "cross_site_third_party_cookie_matrix": "not_run",
+  "product_login": "not_run",
+  "tls": {
+    "dedicated_ca": true,
+    "spki_allowlist_only": true,
+    "global_tls_verification_disabled": false,
+    "system_trust_modified": false
+  },
+  "cases": {
+    "secure_context_and_server_owned_fixture_sessions": {
+      "status": "passed",
+      "elapsed_ms": 9,
+      "browser_version": "152.0.7977.76",
+      "independent_contexts": 3
+    },
+    "copied_full_ticket_denies_other_tenant_and_independent_same_tenant_session": {
+      "status": "passed",
+      "elapsed_ms": 262,
+      "copied_context_cookies": false,
+      "owner_ticket_preserved": true
+    },
+    "real_DO_one_use_concurrent_authorization_and_redemption": {
+      "status": "passed",
+      "elapsed_ms": 89,
+      "authorization_statuses": [
+        303,
+        403
+      ],
+      "redemption_statuses": [
+        303,
+        403
+      ],
+      "code_without_challenge_denied": true,
+      "transport": "Node HTTPS against real DO; browser-copy check uses independent context"
+    },
+    "borrowed_owner_authorize_navigation_without_original_nonce_does_not_burn_ticket": {
+      "status": "passed",
+      "elapsed_ms": 111,
+      "failed_nonce_did_not_consume_ticket": true
+    },
+    "document_JS_API_WS_and_iframe_load_with_isolated_httponly_credentials": {
+      "status": "passed",
+      "elapsed_ms": 121,
+      "preview_origin": "https://p-065e98fe6bf841b6a38eb44c95ec795f.preview.m0.test:8791",
+      "document_cookie_empty": true,
+      "iframe_sandbox": "allow-scripts allow-same-origin"
+    },
+    "same_instance_two_independent_observers_report_identical_routing_marker_and_state": {
+      "status": "passed",
+      "elapsed_ms": 179,
+      "observers": 2,
+      "matching_state_sequence": 1,
+      "routing_marker_matches_expected_generation": true
+    },
+    "iframe_cannot_read_parent_or_navigate_top_and_cannot_inject_domain_host_cookie": {
+      "status": "passed",
+      "elapsed_ms": 132
+    },
+    "same_site_project_control_write_CSRF_denied_even_with_control_cookie": {
+      "status": "passed",
+      "elapsed_ms": 71,
+      "HTTP_status": 403,
+      "authenticated_cookie_was_sent": true,
+      "evidence_transport": "Chrome-CDP-correlated-frame-network-events"
+    },
+    "real_HTTP_header_redirect_raw_route_SSRF_and_WS_Origin_regression": {
+      "status": "passed",
+      "elapsed_ms": 116
+    },
+    "logout_revokes_issued_preview_access_and_active_websocket": {
+      "status": "passed",
+      "elapsed_ms": 71,
+      "websocket_closed_code": 1008,
+      "revocation_latency_ms": 13
+    },
+    "real_wall_clock_access_expiry_closes_websocket_and_denies_HTTP": {
+      "status": "passed",
+      "elapsed_ms": 19077,
+      "configured_access_seconds": 20,
+      "observed_wait_ms": 19001,
+      "websocket_closed_code": 1008
+    },
+    "preview_revocation_and_generation_replacement_reject_old_access_and_change_origin": {
+      "status": "passed",
+      "elapsed_ms": 1948,
+      "previous_origin": "https://p-065e98fe6bf841b6a38eb44c95ec795f.preview.m0.test:8791",
+      "replacement_origin": "https://p-4710f412da3c4c8a8bf95aca3c3a079a.preview.m0.test:8791"
+    },
+    "alpha_bravo_have_distinct_actual_origins_and_host_only_cookie_jars": {
+      "status": "passed",
+      "elapsed_ms": 1847,
+      "alpha_origin": "https://p-4710f412da3c4c8a8bf95aca3c3a079a.preview.m0.test:8791",
+      "bravo_origin": "https://p-2f6f65a72c8d4d0ba9e5145cc27ea23d.preview.m0.test:8791",
+      "routing_markers_match_expected_generations": true
+    },
+    "two_same_tenant_previews_isolate_origin_DOM_CSP_and_cookies": {
+      "status": "passed",
+      "elapsed_ms": 1865,
+      "first_origin": "https://p-4710f412da3c4c8a8bf95aca3c3a079a.preview.m0.test:8791",
+      "second_origin": "https://p-2f6d20917d334a3abe983116f9dee4fd.preview.m0.test:8791",
+      "same_tenant": true,
+      "routing_markers_match_expected_generations": true,
+      "cross_preview_fetch_denied_by_CSP": true
+    }
+  },
+  "cleanup": [
+    {
+      "run_id": "preview-browser-1788596845959",
+      "tenant": "alpha",
+      "action": "revoke",
+      "acknowledgment": "destroy_acknowledged",
+      "semantics": "Sandbox-only; development proxy helpers require separate caller inspection"
+    },
+    {
+      "run_id": "preview-browser-1788596845959",
+      "tenant": "bravo",
+      "action": "cleanup",
+      "acknowledgment": "destroy_acknowledged",
+      "semantics": "Sandbox-only; development proxy helpers require separate caller inspection"
+    },
+    {
+      "run_id": "preview-browser-1788596845959",
+      "tenant": "alpha",
+      "action": "cleanup",
+      "acknowledgment": "destroy_acknowledged",
+      "semantics": "Sandbox-only; development proxy helpers require separate caller inspection"
+    },
+    {
+      "run_id": "preview-browser-1788596845959-two",
+      "tenant": "alpha",
+      "action": "cleanup",
+      "acknowledgment": "destroy_acknowledged",
+      "semantics": "Sandbox-only; development proxy helpers require separate caller inspection"
+    }
+  ],
+  "sourcesBefore": {
+    "sha256": "eabfa3aa6515aafca679d1368d85294556638b49dfa6906a022252bece371d12",
+    "files": [
+      {
+        "path": ".dockerignore",
+        "sha256": "46c6ff40eef5d467e276eb0c86c512e25a4f8f4913be33dc094449365aa9f6ab"
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "ebd2febbc682177605c565d0086c3c2949fafc7400c8f657318204a9a18790ab"
+      },
+      {
+        "path": "infra/m0-project.Dockerfile",
+        "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+      },
+      {
+        "path": "infra/wrangler.m0-preview.jsonc",
+        "sha256": "58ac388c4c3e143e085c26f71df17a81ed15a406d9465d0e26ebc5061861600f"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+      },
+      {
+        "path": "scripts/m0/preview-browser.mjs",
+        "sha256": "9f294a2f417434c58932426eb05e24f78a29eb4f93c8976946475b704c6ddb9d"
+      },
+      {
+        "path": "scripts/m0/source-inventory.mjs",
+        "sha256": "1afeab93162678265a0372d57b2404902192efdc17fbe0a063e62f5a63460c6e"
+      },
+      {
+        "path": "spikes/m0-cloud/auth.ts",
+        "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+      },
+      {
+        "path": "spikes/m0-preview/README.md",
+        "sha256": "3c5a4d9f77d7223d48fbdb9770501b9834c70f995b21731c671ff82cc8d30402"
+      },
+      {
+        "path": "spikes/m0-preview/browser.test.ts",
+        "sha256": "dde576880a2ed19ad8bd7bbb4c8f6bf2aac655171cf3e89005f7dbdb6e9aab4d"
+      },
+      {
+        "path": "spikes/m0-preview/browser.ts",
+        "sha256": "768d5312adc354df1b2e52fb60d7794513cd5156ee2f427680433ed7ff9761d4"
+      },
+      {
+        "path": "spikes/m0-preview/env.d.ts",
+        "sha256": "8a45521d5be85d24a0c1faf01abdfd5771ce3e50d363e105bf1e4b3fefb209d9"
+      },
+      {
+        "path": "spikes/m0-preview/index.ts",
+        "sha256": "330b541eb099ae904660f6e5f618f9a72bcef4ee1344378e6a470d2b98b7421b"
+      },
+      {
+        "path": "spikes/m0-preview/lifecycle.ts",
+        "sha256": "7a34e172408615c37a181ec50f320f2d72e40172c0b48d4a96e76dcf21c28fcd"
+      },
+      {
+        "path": "spikes/m0-preview/policy.test.ts",
+        "sha256": "264368ac5c2b9b55462d07a086f62fc7be4a717235fb90e1fe219e8e036d9c3a"
+      },
+      {
+        "path": "spikes/m0-preview/policy.ts",
+        "sha256": "f93e50b3f8d3f1f64255c33707ac2a1795d843b339291f4530ec111f3d0010a6"
+      },
+      {
+        "path": "spikes/m0-preview/protocol.test.ts",
+        "sha256": "7438c1912cccc87feea678e250097597c7cf3f1268ceda4128ca0b0772bce200"
+      },
+      {
+        "path": "spikes/m0-preview/runtime.ts",
+        "sha256": "812ac6249f6d47fec7a4930f136cfef765c34002d34e4907f83dd3a86bd310fe"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+      }
+    ],
+    "repositorySourceSha256": "fa72c392fca7126d01c62996ea0c9b125908999d1bc8c7d617aea5bf0c8f0640"
+  },
+  "csrfNetworkEvidence": {
+    "cdp_attached": true,
+    "target_mode": "iframe",
+    "expected_frame_identified": true,
+    "matching_post_requests": 1,
+    "request_extra_info_observed": true,
+    "cookie_header_observed": true,
+    "origin_header_matched": true,
+    "response_extra_info_observed": true,
+    "network_status": 403,
+    "cors_failure_observed": true,
+    "browser_fetch_rejected": true,
+    "session_still_valid": true,
+    "deadline_elapsed": false,
+    "cdp_detached": true,
+    "event_counts": {
+      "request": 1,
+      "request_extra": 1,
+      "response_extra": 1,
+      "loading_failed": 1
+    }
+  },
+  "status": "local_checks_passed",
+  "browser_closed": true,
+  "sourcesAfter": {
+    "sha256": "eabfa3aa6515aafca679d1368d85294556638b49dfa6906a022252bece371d12",
+    "files": [
+      {
+        "path": ".dockerignore",
+        "sha256": "46c6ff40eef5d467e276eb0c86c512e25a4f8f4913be33dc094449365aa9f6ab"
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "ebd2febbc682177605c565d0086c3c2949fafc7400c8f657318204a9a18790ab"
+      },
+      {
+        "path": "infra/m0-project.Dockerfile",
+        "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+      },
+      {
+        "path": "infra/wrangler.m0-preview.jsonc",
+        "sha256": "58ac388c4c3e143e085c26f71df17a81ed15a406d9465d0e26ebc5061861600f"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+      },
+      {
+        "path": "scripts/m0/preview-browser.mjs",
+        "sha256": "9f294a2f417434c58932426eb05e24f78a29eb4f93c8976946475b704c6ddb9d"
+      },
+      {
+        "path": "scripts/m0/source-inventory.mjs",
+        "sha256": "1afeab93162678265a0372d57b2404902192efdc17fbe0a063e62f5a63460c6e"
+      },
+      {
+        "path": "spikes/m0-cloud/auth.ts",
+        "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+      },
+      {
+        "path": "spikes/m0-preview/README.md",
+        "sha256": "3c5a4d9f77d7223d48fbdb9770501b9834c70f995b21731c671ff82cc8d30402"
+      },
+      {
+        "path": "spikes/m0-preview/browser.test.ts",
+        "sha256": "dde576880a2ed19ad8bd7bbb4c8f6bf2aac655171cf3e89005f7dbdb6e9aab4d"
+      },
+      {
+        "path": "spikes/m0-preview/browser.ts",
+        "sha256": "768d5312adc354df1b2e52fb60d7794513cd5156ee2f427680433ed7ff9761d4"
+      },
+      {
+        "path": "spikes/m0-preview/env.d.ts",
+        "sha256": "8a45521d5be85d24a0c1faf01abdfd5771ce3e50d363e105bf1e4b3fefb209d9"
+      },
+      {
+        "path": "spikes/m0-preview/index.ts",
+        "sha256": "330b541eb099ae904660f6e5f618f9a72bcef4ee1344378e6a470d2b98b7421b"
+      },
+      {
+        "path": "spikes/m0-preview/lifecycle.ts",
+        "sha256": "7a34e172408615c37a181ec50f320f2d72e40172c0b48d4a96e76dcf21c28fcd"
+      },
+      {
+        "path": "spikes/m0-preview/policy.test.ts",
+        "sha256": "264368ac5c2b9b55462d07a086f62fc7be4a717235fb90e1fe219e8e036d9c3a"
+      },
+      {
+        "path": "spikes/m0-preview/policy.ts",
+        "sha256": "f93e50b3f8d3f1f64255c33707ac2a1795d843b339291f4530ec111f3d0010a6"
+      },
+      {
+        "path": "spikes/m0-preview/protocol.test.ts",
+        "sha256": "7438c1912cccc87feea678e250097597c7cf3f1268ceda4128ca0b0772bce200"
+      },
+      {
+        "path": "spikes/m0-preview/runtime.ts",
+        "sha256": "812ac6249f6d47fec7a4930f136cfef765c34002d34e4907f83dd3a86bd310fe"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+      }
+    ],
+    "repositorySourceSha256": "045433ec90489d8aaf160c3d7d102fc0f8c6e2a16a962e605ebac35b78327409"
+  },
+  "probeSourceStableDuringRun": true,
+  "completed_at": "2026-09-05T08:27:54.837Z"
+}

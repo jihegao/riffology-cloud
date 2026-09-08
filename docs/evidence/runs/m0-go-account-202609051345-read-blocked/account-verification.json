@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-05T13:42:58.724253+00:00",
+  "operation": "go-account-read-only-verification",
+  "userReportedLoggedIn": true,
+  "browserInventoryObserved": "opencode.ai/workspace/<workspace-id>/go",
+  "accountSettingsRead": false,
+  "reason": "CUA getTab timed out at 30s and 60s; native Codex app access denied by tool policy",
+  "subscriptionStatus": null,
+  "fiveHourQuota": null,
+  "weeklyQuota": null,
+  "monthlyQuota": null,
+  "useBalanceEnabled": null,
+  "autoReloadEnabled": null,
+  "settingsChanged": false,
+  "newProviderCalls": 0,
+  "nextInput": "User transcription of subscription, three quota windows and two billing switches",
+  "liveApproved": false
+}

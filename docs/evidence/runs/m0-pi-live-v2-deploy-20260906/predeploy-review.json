@@ -1,0 +1,14 @@
+{
+  "at": "2026-09-06T08:02:21.943Z",
+  "independentReviewer": "boundary_deadline_review",
+  "sourceSha256": "0ca11907310ba492d13b715ff46ad4e4796bbe1c4d5ae5b397571e7cd9a386df",
+  "oldFailedEvidenceUnchanged": true,
+  "previousModelDispatches": 0,
+  "sameProxyRunAndBudget": true,
+  "reuseProxyVersion": "8ff337aa-a548-4779-b1f7-d1053fc3939c",
+  "proxyBundleUnchanged": true,
+  "hostAttempt": "go-live-egress-v2-20260906",
+  "localChecks": "docs/evidence/runs/m0-local-20260906075740546/local-checks.json",
+  "decision": "approved-within-existing-scope",
+  "dnsScope": "Answer receipt does not authenticate the requested resolver destination; TEST-NET control is observational; HTTP/dependency/secret gates retained."
+}

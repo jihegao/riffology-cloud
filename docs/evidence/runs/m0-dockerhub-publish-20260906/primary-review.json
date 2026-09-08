@@ -1,0 +1,31 @@
+{
+  "recordedAt": "2026-09-06T01:00:12.898470+00:00",
+  "publicScopeApproved": true,
+  "images": {
+    "trusted": {
+      "repository": "jihegao/riffology-m0-trusted-proxy",
+      "tag": "20260905T155750Z-167375ff",
+      "indexDigest": "sha256:42eb9a36e2aa6098c9a146c5c0f149efe29f638d8d304efea523a592aa4002dc",
+      "manifestDigest": "sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+      "configDigest": "sha256:482804a737ab81448752c2df9b8ffc714fdb398c243cef011520b6c91f4076a6",
+      "anonymousReadVerified": true,
+      "layerDescriptorCount": 22
+    },
+    "project": {
+      "repository": "jihegao/riffology-m0-project",
+      "tag": "20260905T155750Z-167375ff",
+      "indexDigest": "sha256:1d82f27d7cd328aef4f7125e0e27fe42fa6a03803c97ca7783951aba385cf42f",
+      "manifestDigest": "sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+      "configDigest": "sha256:ffa7f77ec007ce13c193e9280e3c06a9d46b37cbbd3aafca4c8c38f745eda3d0",
+      "anonymousReadVerified": true,
+      "layerDescriptorCount": 21
+    }
+  },
+  "configurationPreflightPassed": true,
+  "localChecksPassed": true,
+  "sourceSha256": "37f88b3592d60f77cb66fd1e7625b62899ad1d705dacecc9b928cc28d4cdb043",
+  "cloudDeployed": false,
+  "cloudPullVerified": false,
+  "newModelCalls": 0,
+  "cloudGatePassed": false
+}

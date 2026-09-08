@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f6f8f5"><title>平台管理 · Riffology Cloud</title>
+  <link rel="stylesheet" href="./styles.css"><link rel="stylesheet" href="./admin.css">
+</head>
+<body>
+  <a class="skip" href="#main">跳到主要内容</a>
+  <header class="topbar">
+    <a class="brand" href="/admin" aria-label="Riffology Cloud 管理首页"><span class="mark">R</span><span>Riffology <small>platform</small></span></a>
+    <div class="account-actions"><span class="role">平台运维</span><a class="button" href="/">用户端</a><button id="sign-out" class="button" hidden>退出</button></div>
+  </header>
+  <main id="main" class="container admin-container" tabindex="-1">
+    <section id="notice" class="notice" role="status" aria-live="polite" hidden></section>
+    <section id="admin-login" class="card login"><p class="eyebrow">OPERATIONS</p><h1>进入平台管理</h1><p>使用已授予 operator 角色的 Google 账号登录。</p><button id="google" class="button primary">使用 Google 登录</button></section>
+    <section id="admin-denied" class="card login" hidden><p class="eyebrow">NO ACCESS</p><h1>没有管理权限</h1><p>当前账号不是平台运维人员。</p><a class="button" href="/">返回用户端</a></section>
+    <section id="admin-app" hidden>
+      <div class="heading"><div><p class="eyebrow">OPERATIONS</p><h1>平台状态</h1><p id="updated-at">只展示平台元数据</p></div><button id="refresh" class="button">刷新</button></div>
+      <div id="metrics" class="metric-grid" aria-live="polite"></div>
+
+      <section class="card admin-section" aria-labelledby="invite-heading">
+        <div class="section-heading"><div><h2 id="invite-heading">邀请</h2><p>令牌仅在首次创建成功后显示一次。</p></div></div>
+        <form id="issue-form" class="issue-form">
+          <label for="issue-email">Google 账号邮箱<input id="issue-email" type="email" autocomplete="off" maxlength="320" required placeholder="name@example.com"></label>
+          <label for="issue-days">有效期<select id="issue-days"><option value="1">1 天</option><option value="7" selected>7 天</option><option value="30">30 天</option></select></label>
+          <button id="issue-submit" class="button primary" type="submit">创建邀请</button>
+          <button id="issue-reset" class="button" type="button" hidden>取消重试</button>
+        </form>
+        <div id="token-panel" class="token-panel" role="status" hidden><strong id="token-title"></strong><input id="issued-token" readonly aria-label="新邀请码"><button id="copy-token" class="button" type="button">复制</button></div>
+        <div class="table-wrap"><table><thead><tr><th>邮箱</th><th>状态</th><th>创建时间</th><th>到期时间</th><th>操作</th></tr></thead><tbody id="invitations"></tbody></table></div>
+      </section>
+
+      <section class="card admin-section" aria-labelledby="model-heading">
+        <div class="section-heading"><div><h2 id="model-heading">官方模型目录</h2><p>创建草稿后上传规范包，再验证和发布。</p></div></div>
+        <form id="model-form" class="issue-form">
+          <label>模型 ID<input id="model-id" required maxlength="120"></label><label>版本<input id="model-version" required maxlength="40" placeholder="1.0.0"></label>
+          <label>标题<input id="model-title" required maxlength="160"></label><label>说明<input id="model-description" required maxlength="2000"></label>
+          <label>Starter 版本<input id="model-starter" required maxlength="120" value="blank-v1"></label><label>内容引用<input id="model-content-ref" required maxlength="500"></label><label>内容 SHA-256<input id="model-content-sha" required pattern="[a-f0-9]{64}" maxlength="64"></label>
+          <button id="model-submit" class="button primary" type="submit">创建草稿</button><button id="model-reset" class="button" type="button" hidden>取消重试</button>
+        </form>
+        <div class="table-wrap"><table><thead><tr><th>模型</th><th>版本</th><th>标题</th><th>状态</th><th>说明</th><th>操作</th></tr></thead><tbody id="models"></tbody></table></div>
+      </section>
+
+      <section class="card admin-section" aria-labelledby="tenant-heading">
+        <div class="section-heading"><div><h2 id="tenant-heading">租户</h2><p>仅显示生命周期和项目计数，不读取项目内容。</p></div></div>
+        <div class="table-wrap"><table><thead><tr><th>租户 ID</th><th>状态</th><th>项目</th><th>准备中</th><th>就绪</th><th>失败</th><th>创建时间</th></tr></thead><tbody id="tenants"></tbody></table></div>
+      </section>
+
+      <section class="card admin-section" aria-labelledby="audit-heading">
+        <div class="section-heading"><div><h2 id="audit-heading">审计事件</h2><p>最近 100 条平台元数据事件。</p></div></div>
+        <div class="table-wrap"><table><thead><tr><th>时间</th><th>动作</th><th>目标</th><th>结果</th><th>原因</th><th>请求 ID</th></tr></thead><tbody id="audit"></tbody></table></div>
+      </section>
+    </section>
+  </main>
+  <script type="module" src="./admin.js"></script>
+</body></html>

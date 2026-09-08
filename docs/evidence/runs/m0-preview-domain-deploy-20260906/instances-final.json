@@ -1,0 +1,76 @@
+{
+  "observedAt": "2026-09-06T02:21:04.327Z",
+  "apps": [
+    {
+      "id": "a03ea65b-b039-4f56-8422-36c719b87b72",
+      "status": 200,
+      "success": true,
+      "instances": [
+        {
+          "id": "089d718c2f81f82013adca34ff3839ecc8451c29c66faba7fbcb54263a78e3b0",
+          "name": "m0-t-m0-vm-isolation-fa0bb5bdd18c8b9a-s",
+          "state": "inactive"
+        },
+        {
+          "id": "7bff1428ff42464fbd58a4caf7f9aba216855f65731afd8db52ae06c02b22367",
+          "name": "m0-t-m0-vm-tenancy-37eefb3456341e8b-s",
+          "state": "inactive"
+        },
+        {
+          "id": "9c202e7963430388d8255e62f6fdca357efb405b0b7ccf1626c3d4079a3aafd3",
+          "name": "m0-t-m0-vm-egress-6bc929e6a04386cf-s",
+          "state": "inactive"
+        }
+      ]
+    },
+    {
+      "id": "a03313e4-fa9d-4de2-ac2c-d2cc69efd875",
+      "status": 200,
+      "success": true,
+      "instances": [
+        {
+          "id": "00388a11c2c34d3c4367eddd00fffd68b7ad50138f802b3c8b587df3d20ffaa0",
+          "name": "m0-a-m0-vm-tenancy-37eefb3456341e8b-s",
+          "state": "inactive"
+        },
+        {
+          "id": "3aaa5f8d1da220d1781195d19fa24fab045ade30024bc3b75c7cec04f8279a10",
+          "name": "m0-a-m0-vm-isolation-fa0bb5bdd18c8b9a-s",
+          "state": "inactive"
+        },
+        {
+          "id": "5c2e140ae3729f650ef633cd0d1c97e8bca26877338683e9ba05f940ba35aa8d",
+          "name": "m0-b-m0-vm-isolation-fa0bb5bdd18c8b9a-s",
+          "state": "inactive"
+        },
+        {
+          "id": "650c1eb7d24603bdf631e85a6912a54e941b5bc598c97ab77f12b9982484bb30",
+          "name": "m0-a-m0-vm-egress-6bc929e6a04386cf-s",
+          "state": "inactive"
+        },
+        {
+          "id": "9da8386a8911ca553b0175118d203415f5f58f28a87c1ec83973b07a30d114be",
+          "name": "m0-b-m0-vm-tenancy-37eefb3456341e8b-s",
+          "state": "inactive"
+        },
+        {
+          "id": "c2a4959d770c19f044d141963119c430099435fec1cf0d3838dc86e799bc2b90",
+          "name": "m0-b-m0-vm-egress-6bc929e6a04386cf-s",
+          "state": "inactive"
+        }
+      ]
+    },
+    {
+      "id": "a0332851-f795-46df-9f8e-ee0ddc220095",
+      "status": 200,
+      "success": true,
+      "instances": [
+        {
+          "id": "df92de4e6bc432ef4841e2edb0165ff6086408ac208587f8755a8e143ce37866",
+          "name": "m0-preview-alpha-9e5179c554f649a79a8f269f3592e89d",
+          "state": "inactive"
+        }
+      ]
+    }
+  ]
+}

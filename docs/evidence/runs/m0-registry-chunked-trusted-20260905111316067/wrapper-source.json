@@ -1,0 +1,7 @@
+{
+  "path": ".local/cloud-staging/push-image-chunked.mjs",
+  "sha256": "06e0647f450bacccc2f05286a072fc0fc60a4566ada4dfbbf76e560437d98fb2",
+  "observedAt": "2026-09-05T11:16:23.503Z",
+  "capturedDuringRunBeforeAnySourceEdits": true,
+  "chunkProtocolClaim": "configured-client-policy; actual PATCH trace not captured"
+}

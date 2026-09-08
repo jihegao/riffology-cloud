@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-model-budget-local-20260907",
+  "reviewedAt": "2026-09-06T22:01:54Z",
+  "environment": "local-node-sqlite-and-handler-fixtures",
+  "decision": "accepted-as-local-token-budget-and-private-model-proxy-gate-candidate",
+  "scope": [
+    "tenant-scoped SQLite token and call budget authority",
+    "short-lived product Turn model capability",
+    "Trusted Pi Sandbox request MAC and actual container identity binding",
+    "private Model Proxy HTTP gate with one durable provider dispatch fence",
+    "provider-safe adapter projection without tenant, project, user or capability claims"
+  ],
+  "authority": {
+    "aggregation": "stable scope plus session plus turn plus generation; runtime dispatch recovery does not reset budget",
+    "reservation": "input token upper bound plus maximum output tokens",
+    "limits": [
+      "reservation attempts per Turn",
+      "dispatched calls per Turn",
+      "input and output tokens per call",
+      "accounted tokens per Turn"
+    ],
+    "dispatch": "only the first durable reserved-to-dispatched transition authorizes provider execution",
+    "unknown": "holds the full reservation, blocks another active call and cannot authorize automatic replay",
+    "usage": "verified usage requires a provider request id; missing usage remains pending at the full bound",
+    "policy": "every request carries the capability-pinned policy version; changed configuration blocks new work",
+    "integrity": "turn key, call key, request digest, terminal digest, release digest, token total and timestamps are recomputed on read and replay"
+  },
+  "modelProxy": {
+    "route": "POST https://model-proxy.riffology.internal/v1/responses",
+    "publicDefaultRoute": false,
+    "requestWindowMs": 30000,
+    "capabilityMaxLifetimeMs": 900000,
+    "requestMac": "HMAC-SHA-256 over container id, request time, capability digest and body digest",
+    "capabilityBinds": [
+      "full Turn runtime identity",
+      "submitting user and authentication version",
+      "derived Trusted Pi actor",
+      "budget policy version",
+      "fixed provider and model",
+      "per-call input and output limits"
+    ],
+    "callerAuthorityDenied": [
+      "provider",
+      "model",
+      "credential",
+      "authorization",
+      "base URL",
+      "maximum output override"
+    ],
+    "providerProjection": [
+      "provider",
+      "model",
+      "idempotency key",
+      "bounded payload",
+      "maximum output tokens"
+    ],
+    "productionProvider": "unconfigured; ModelProxyService returns 503 before budget reservation",
+    "replay": "sequential and concurrent signed replay reaches the durable ledger but invokes the provider fixture once"
+  },
+  "review": {
+    "independentReadOnlyReview": true,
+    "closed": [
+      "private HTTP route, request freshness, capability and actual container id are checked before the budget",
+      "capability budget policy version is enforced by the ledger",
+      "persisted derived keys, digests, token totals and future times fail closed",
+      "reservation attempts and dispatched calls have separate limits",
+      "deadline crossing creates a deterministic not-dispatched proof",
+      "idempotent reserve replay performs the same full persisted-record verification as lookup",
+      "provider adapters do not receive internal tenant, user, actor or capability claims",
+      "terminal evidence older than a recorded unknown observation cannot close reconciliation",
+      "concurrent replay creates one reservation row and one provider authorization"
+    ],
+    "acceptedLimitation": "transport replay is deduplicated by the tenant durable ledger rather than a second nonce store"
+  },
+  "verification": {
+    "fullCheck": {
+      "record": "../m0-local-20260906220040991/local-checks.json",
+      "recordSha256": "fcce9de56f9852268d2fb4e48901b9b815b245fa570e260693b6eccb65a94082",
+      "log": "../m0-local-20260906220040991/local-checks.log",
+      "logSha256": "07d49f94d5f2cdf484e7b3bdd29e1ed7094b9de95eb050350281edb1c321a6a1",
+      "passed": true,
+      "sourceStableDuringCheck": true,
+      "sourceFiles": 345,
+      "sourceSha256": "028bf5a9bdf391551bdf37110178b1373f8f1223a8fdb35b021f24448dba2006",
+      "m0": { "passed": 348, "failed": 0, "skipped": 1 },
+      "m1": { "passed": 108, "failed": 0, "skipped": 0 },
+      "m2": { "passed": 223, "failed": 0, "skipped": 0 }
+    },
+    "focusedModelGateTests": 36,
+    "releaseManifestTests": 5,
+    "modelCalls": 0,
+    "cloudMutations": 0,
+    "cloudDeployments": 0,
+    "ui4173Preserved": true,
+    "activeDockerContainersAfterCheck": 0
+  },
+  "sourceHashes": {
+    "services/model-budget/README.md": "370e099ee4a6f768a5314cf612ee9db42cfdb3d456257920a80011f768b16273",
+    "services/model-budget/core.ts": "d76be1a861d2105daa20f56dce2c860aec4ad66a229675aa1036d9c7899174b7",
+    "services/model-budget/durable.ts": "8ce5a19c824f438366b61a23d656ffbf05902c40487f02b2d980bffdc853ef46",
+    "services/model-proxy/README.md": "56205fad5e8365cd7da6129477bb3188c2bf2412328d9178f6ed41055cd9321d",
+    "services/model-proxy/capability.ts": "e63b8fffbee61a2043431baed935c96cd3370825efe8941e0b2e3a94985922f6",
+    "services/model-proxy/internal-auth.ts": "90694403ac61cee7a2221e46f3c2b9327f6e7a2a3f86bb7f2e6edd52e2119d02",
+    "services/model-proxy/http.ts": "072d08715bb9841bb5ea0c8643a349d94dde11020539626fb5cc2bbf6ef791b0",
+    "services/model-proxy/service.ts": "b265a8d7b24e4ca554386e72f2526466be3981f1a0fd7cd65efa9376c8c047a7",
+    "services/sandbox/policy.ts": "12365c25879baeff45466caf68a5d6cd4baa4cd68976d47f8ed674fa0cdb8179",
+    "tests/m2/model-budget.test.ts": "a0af66cb9acc86464c43d0b3c68440f1e017592a13eaedefde0728780b2c99c4",
+    "tests/m2/model-capability.test.ts": "d9b8cf1b638183598076c667a1456e3d44b1f964ce036c12bf667d4b3e703273",
+    "tests/m2/model-proxy-http.test.ts": "94db9c0378039bfadda8a628349b5059f84c1387fce6afffaa493d91da31447e",
+    "tests/m2/sandbox-policy.test.ts": "ffd03fb79f07cea976277b215962f93309b085d4ebc20b61bfc2029461fa6a63"
+  },
+  "notAccepted": [
+    "production provider adapter, provider credentials or real model execution",
+    "Wrangler TenantModelBudget binding, SQLite migration or ModelProxyService binding",
+    "Workerd TenantModelBudget RPC and cloud Sandbox end-to-end validation",
+    "production capability issuance from ProductTurnRuntime release",
+    "streaming provider response and provider-side reconciliation query",
+    "prices, currency, balance, recharge, payment, refund or TenantBilling settlement",
+    "M2 staging deployment or enabling M2_TURNS_ENABLED"
+  ],
+  "mutations": {
+    "localTests": true,
+    "cloudDeploy": false,
+    "cloudResourceCreate": false,
+    "modelCalls": 0,
+    "commit": false,
+    "push": false
+  }
+}

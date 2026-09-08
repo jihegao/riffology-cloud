@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T03:39:02.452Z",
+  "kind": "cross-run signed gate progress; not a combined release candidate",
+  "stagingPassed": [
+    {
+      "gate": "G0-T05",
+      "record": "m0-g0-t05-cloud-20260906/G0-T05-gate-summary.json",
+      "sha256": "9df3aa799ade968bd018451b74cb913bae6b792525a2aa6ddfec5b39c0103ea5",
+      "versions": {
+        "wrangler": "4.129.0",
+        "worker_version": "98cc1d73-0efe-4d6f-9e43-7616f841b8c3",
+        "protocol": "m0-v1",
+        "image_digest": "sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+        "source_sha256": "8d368e8965d9f37651cc1d32bf606906e9c79a51c295137b9c5a7e56bfd45810",
+        "bundle_sha256": "30aad7810b5a1019e28c977989fd5a881bfd8e2d9836b197902016a3803d8fbc",
+        "source_state": "uncommitted working tree; frozen source hashes authoritative"
+      }
+    },
+    {
+      "gate": "G0-T06",
+      "record": "m0-g0-t06-cloud-20260905/G0-T06-gate-summary.json",
+      "sha256": "00b4a1b4543e0bf65a4163aaaf7a06b1b6c73685a43c3694c9178170a83b60bc",
+      "versions": {
+        "wrangler": "4.129.0",
+        "worker_version": "e0d311aa-ab18-4b55-9fd8-0c188376041b",
+        "protocol": "m0-v1",
+        "bundle_sha256": "787a8590badf3f3881066ebaa55e63857bbd1eee589fe17ae5445139d76c42a4",
+        "scoped_source_sha256": "253cca7bc58e222467fc83d5a2c586956e36000a7e9bd8faa8b32027afc9b098",
+        "source_state": "uncommitted working tree; frozen scoped hashes are authoritative"
+      }
+    },
+    {
+      "gate": "G0-T07",
+      "record": "m0-g0-t07-cloud-20260906/G0-T07-gate-summary.json",
+      "sha256": "7e6b145a7cb697347928d0581702e151e907df6f9f4e9e6ec227264904ecfa3d",
+      "versions": {
+        "wrangler": "4.129.0",
+        "worker_version": "5e5f3e22-69b2-460a-b03b-354d9d803c1d",
+        "protocol": "m0-v1",
+        "image_digest": "sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+        "scoped_source_sha256": "44893bb452096862beaabc50bdbae5b7b9fc6fc732772b2743ad7eecfe2ce8ed",
+        "source_state": "uncommitted working tree; runtime source unchanged since verified deployment; driver scoped hashes authoritative"
+      }
+    }
+  ],
+  "missing": [
+    "G0-T01",
+    "G0-T02",
+    "G0-T03",
+    "G0-T04",
+    "G0-T08",
+    "G0-T09",
+    "G0-T10"
+  ],
+  "accepted": false,
+  "fullGoalComplete": false,
+  "finalCandidateConsistency": "pending"
+}

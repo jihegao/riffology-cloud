@@ -1,0 +1,20 @@
+{
+  "label": "dry-run",
+  "startedAt": "2026-09-05T12:55:03.981Z",
+  "finishedAt": "2026-09-05T12:55:04.532Z",
+  "command": [
+    "wrangler",
+    "deploy",
+    "--dry-run",
+    "--config",
+    "infra/wrangler.m0-model-proxy.jsonc",
+    "--env",
+    "staging",
+    "--outdir",
+    "/Users/gaojihe/apps/riffology-cloud/docs/evidence/runs/m0-model-proxy-staging-1788612744246/dry-bundle"
+  ],
+  "code": 0,
+  "signal": null,
+  "timedOut": false,
+  "logSha256": "c5d44d625ca89c7dee468bdc66096a7cd41c25ec883ad924a950a90e193f5224"
+}

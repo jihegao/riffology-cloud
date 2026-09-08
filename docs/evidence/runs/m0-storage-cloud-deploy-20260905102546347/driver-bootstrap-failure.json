@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "command": "node .local/m0-storage-cloud-deploy-20260905102546347/driver.mjs dry-run",
+  "exitCode": 1,
+  "timedOut": false,
+  "cloudMutationStarted": false,
+  "failure": "Local orchestration import used three parent directories instead of two; module loading failed before spawning Wrangler.",
+  "correction": "Changed only ignored local driver imports to ../../scripts/m0/. No product or probe source was modified."
+}

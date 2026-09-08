@@ -1,0 +1,22 @@
+{
+  "at": "2026-09-06T07:28:01.277Z",
+  "args": [
+    "--context",
+    "colima-riffology-m0",
+    "run",
+    "--rm",
+    "--pull=never",
+    "--platform",
+    "linux/amd64",
+    "--network=none",
+    "--entrypoint",
+    "node",
+    "sha256:1d82f27d7cd328aef4f7125e0e27fe42fa6a03803c97ca7783951aba385cf42f",
+    "--version"
+  ],
+  "status": 0,
+  "stdout": "v22.23.2\n",
+  "stderr": "",
+  "configSha256": "sha256:1d82f27d7cd328aef4f7125e0e27fe42fa6a03803c97ca7783951aba385cf42f",
+  "publicationEvidence": "docs/m0-dockerhub-publication.md"
+}

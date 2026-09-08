@@ -1,0 +1,18 @@
+[
+  {
+    "label": "r2-manifest",
+    "exitCode": 0
+  },
+  {
+    "label": "r2-state",
+    "exitCode": 0
+  },
+  {
+    "label": "source-manifest",
+    "exitCode": 0
+  },
+  {
+    "label": "source-state",
+    "exitCode": 0
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-project-bash-local-20260907072338",
+  "environment": "local-docker-linux-amd64",
+  "imageId": "sha256:230d1d623246a915c01cd95cb10d0bd4fe993932f6284d8fa2e4c8800d83b1a0",
+  "sourceSha256": {
+    "services/project-tools/Dockerfile.cloud": "407dae7cb50d052940021a0f25ce963c16b761781401f21c0f559a9a02b7bba6",
+    "services/project-tools/file_service.py": "50d16166d3b625f80f2ddc698ee9323d0819525dfdebefefa1f1bdbff5ca1cdf",
+    "services/project-tools/effect_wrapper.py": "51e9ac581ddba5a9bff978b3394e5c84b21deeca856d1a0d678c7f3ad09729b3",
+    "services/project-tools/effect.ts": "40d58b3199deb9e91798b43b6c69f4d0e6e11c5f14076b17f13ad4a6f2b54724",
+    "services/sandbox/classes.ts": "a90815f0b3321ced1e89888cd302725606174128efd53639f6c1cec1d44e898b"
+  },
+  "assertions": {
+    "helperCompleted": true,
+    "bashUid10001": true,
+    "artifactOwner10001": true,
+    "artifactContent": true
+  },
+  "modelCalls": 0,
+  "cloudDeployment": false,
+  "passed": true
+}

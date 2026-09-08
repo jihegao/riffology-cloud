@@ -1,0 +1,21 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "riffology-m2-turn-revision-local",
+  "main": "../spikes/m2-turn-revision/index.ts",
+  "compatibility_date": "2026-09-06",
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_do_not_populate_process_env"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "durable_objects": {
+    "bindings": [
+      { "name": "TURN_REVISION_PROBE", "class_name": "TurnRevisionProbe" }
+    ]
+  },
+  "exports": {
+    "TurnRevisionProbe": { "type": "durable-object", "storage": "sqlite" }
+  },
+  "r2_buckets": [
+    { "binding": "TURN_REVISIONS", "bucket_name": "riffology-m2-turn-revision-local" }
+  ],
+  "dev": { "ip": "127.0.0.1", "port": 8798 }
+}

@@ -1,0 +1,9 @@
+{
+  "observedAt": "2026-09-05T12:48:12.843Z",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "scriptName": "riffology-m0-model-proxy-staging",
+  "exists": false,
+  "source": "Cloudflare settings API",
+  "errorCode": 10007,
+  "message": "This Worker does not exist on your account."
+}

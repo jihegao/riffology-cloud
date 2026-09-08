@@ -1,0 +1,19 @@
+{
+  "verified": true,
+  "files": [
+    {
+      "path": "m0-release-upgrade-1788687064356/independent-partial-review.json",
+      "sha256": "fe48e93203eecaa7c20133dbc87f831435c73178e1353ca077d7e63ca7d3c166"
+    },
+    {
+      "path": "m0-release-startup-failure-1788687076308/independent-diagnosis.json",
+      "sha256": "791fbcccd66c8aa3d061829046501f9696e26497deaee21477f8fe48e1605a7a"
+    },
+    {
+      "path": "m0-release-progress-20260906/progress.json",
+      "sha256": "d73dd8906162aa7a4e831dcb9911cca65a18a30b3a793c203cde74302ba20628"
+    }
+  ],
+  "t10Accepted": false,
+  "fullGoalComplete": false
+}

@@ -1,0 +1,52 @@
+[
+    {
+        "id": "a036b418-dcce-4d2f-bd3d-6debf982ea6f",
+        "name": "riffology-m0-recovery-staging",
+        "state": "ready",
+        "instances": 2,
+        "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "version": 1,
+        "updated_at": "2026-09-06T05:20:58.512999936Z",
+        "created_at": "2026-09-06T05:20:57.376Z"
+    },
+    {
+        "id": "a03c0d4b-d529-4d81-a2b6-bfb901222a18",
+        "name": "riffology-m0-files-project-staging",
+        "state": "ready",
+        "instances": 2,
+        "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+        "version": 1,
+        "updated_at": "2026-09-06T03:15:27.580999936Z",
+        "created_at": "2026-09-06T03:15:26.598000128Z"
+    },
+    {
+        "id": "a0332851-f795-46df-9f8e-ee0ddc220095",
+        "name": "riffology-m0-preview-staging",
+        "state": "ready",
+        "instances": 2,
+        "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+        "version": 1,
+        "updated_at": "2026-09-06T02:03:20.455000064Z",
+        "created_at": "2026-09-06T02:03:18.961999872Z"
+    },
+    {
+        "id": "a03313e4-fa9d-4de2-ac2c-d2cc69efd875",
+        "name": "riffology-m0-project-staging",
+        "state": "ready",
+        "instances": 2,
+        "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+        "version": 1,
+        "updated_at": "2026-09-06T01:38:36.614000128Z",
+        "created_at": "2026-09-06T01:38:35.737999872Z"
+    },
+    {
+        "id": "a03ea65b-b039-4f56-8422-36c719b87b72",
+        "name": "riffology-m0-trusted-staging",
+        "state": "ready",
+        "instances": 2,
+        "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "version": 1,
+        "updated_at": "2026-09-06T01:38:34.383000064Z",
+        "created_at": "2026-09-06T01:38:33.543000064Z"
+    }
+]

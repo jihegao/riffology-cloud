@@ -1,0 +1,15 @@
+{
+  "verified": true,
+  "verifiedAtMs": 1788687064280,
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "script": "riffology-m0-release-staging",
+  "origin": "https://riffology-m0-release-staging.jihe-gao.workers.dev",
+  "runId": "release-g0-v3-20260906",
+  "sourceSha256": "97c129827a57b960eab06e1e10664d65ae445bc6128ffcd94ff663f2d784a999",
+  "versionId": "f6f8808e-c9dd-4173-bb04-970645cdd4d7",
+  "deploymentId": "6b8bff24-6393-457c-a020-16f647584508",
+  "bundleSha256": "ccbff410cf3707101be8e530cec6c543abde27957688f14980b1e755326da35b",
+  "applicationId": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+  "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+  "applicationVersion": 4
+}

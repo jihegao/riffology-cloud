@@ -1,0 +1,20 @@
+{
+  "observedAt": "2026-09-06T06:51:05.859Z",
+  "reviewer": "/root/m0_storage_gate_review",
+  "decision": "accept original G0-T03 fixed cloud resource-loading gate",
+  "checksPassed": true,
+  "scope": "Independent read-only review; reviewer did not author resource probe or supervisor",
+  "checks": [
+    "Real cloud VM Pi SDK 0.85.0 first session and snapshot-restored new session reject unauthorized resources; normal discovery controls establish same fixtures are effective.",
+    "8 requests, 13892 ms and 5208 bytes; exactly one POST accept, no retries or unknown mutation results.",
+    "151 current full source files and 21 scoped files, bundle and Text module match frozen deployment evidence.",
+    "Worker b30e9f9d-dc60-4ea3-985c-6c6291f20513 at 100%; final unique instance name and pinned image match and state inactive.",
+    "Full check 248 passed, 1 skipped, zero failed, stable sources."
+  ],
+  "limitations": [
+    "Fixed discovery examples, not arbitrary-code sandboxing or production identity isolation.",
+    "Two Session objects in same supervised process; cross-VM recovery belongs to independently signed T08.",
+    "Injected fixed SSE; zero real supplier calls, no T01/T09 acceptance.",
+    "Opt-in Python HTTP/WS regression was skipped; do not claim all 249 tests executed."
+  ]
+}

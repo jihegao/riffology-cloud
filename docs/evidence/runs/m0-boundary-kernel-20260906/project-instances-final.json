@@ -1,0 +1,89 @@
+{
+    "instances": [
+        {
+            "id": "8e4f90c741d0dacca0493238c3f20e5ab3508ea59c7961ecfe62e831c72ee0e8",
+            "name": "m0-b-isolation-1788667134876-7c5f6681c9ec3c78ad81e93--s",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T04:00:22Z"
+        },
+        {
+            "id": "00388a11c2c34d3c4367eddd00fffd68b7ad50138f802b3c8b587df3d20ffaa0",
+            "name": "m0-a-m0-vm-tenancy-37eefb3456341e8b-s",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T01:52:24Z"
+        },
+        {
+            "id": "3aaa5f8d1da220d1781195d19fa24fab045ade30024bc3b75c7cec04f8279a10",
+            "name": "m0-a-m0-vm-isolation-fa0bb5bdd18c8b9a-s",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T01:50:43Z"
+        },
+        {
+            "id": "5c2e140ae3729f650ef633cd0d1c97e8bca26877338683e9ba05f940ba35aa8d",
+            "name": "m0-b-m0-vm-isolation-fa0bb5bdd18c8b9a-s",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T01:52:02Z"
+        },
+        {
+            "id": "650c1eb7d24603bdf631e85a6912a54e941b5bc598c97ab77f12b9982484bb30",
+            "name": "m0-a-m0-vm-egress-6bc929e6a04386cf-s",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T01:52:45Z"
+        },
+        {
+            "id": "831bb994ff72a6e25a06fcc7a16c158f3ed4918b0d889111e5a879dd07ff3eea",
+            "name": "m0-a-isolation-1788666613594-34db1d2565f1dc1ad3485c2--s",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T03:50:24Z"
+        },
+        {
+            "id": "8b2bc1b9b57a60b68b7f9a7569c6c7669494443f0b1921c7bb410e042f039c23",
+            "name": "m0-a-isolation-1788667134876-7c5f6681c9ec3c78ad81e93--s",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T03:59:06Z"
+        },
+        {
+            "id": "9da8386a8911ca553b0175118d203415f5f58f28a87c1ec83973b07a30d114be",
+            "name": "m0-b-m0-vm-tenancy-37eefb3456341e8b-s",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T01:52:23Z"
+        },
+        {
+            "id": "9e74d9575d0e2a4c68cbb967eea8c331560d88413bdfaddb6040b5a64c413cfa",
+            "name": "m0-b-isolation-1788666613594-34db1d2565f1dc1ad3485c2--s",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T03:51:40Z"
+        },
+        {
+            "id": "c2a4959d770c19f044d141963119c430099435fec1cf0d3838dc86e799bc2b90",
+            "name": "m0-b-m0-vm-egress-6bc929e6a04386cf-s",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T01:54:06Z"
+        }
+    ],
+    "result_info": {
+        "per_page": 30,
+        "page_token": null,
+        "next_page_token": null
+    }
+}

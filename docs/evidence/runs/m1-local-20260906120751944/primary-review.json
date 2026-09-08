@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "scope": "M1 local workspace initialization and user project page",
+  "reviewedAt": "2026-09-06T12:21:32.083Z",
+  "acceptedLocalScope": true,
+  "sourceSha256": "62f10ae79f0e9ee29a5c1b19bf922f13d336568ad076930b925d2149ce55c074",
+  "sourceFiles": 232,
+  "fullCheck": {
+    "path": "local-checks.json",
+    "m0Passed": 348,
+    "m0Skipped": 1,
+    "m1Passed": 88,
+    "m1Failed": 0
+  },
+  "nativeCheck": "../m1-workspace-20260906121130494/workspace-local.json",
+  "reviewFindingsResolved": [
+    "checkpoint PUT fence after durability wait",
+    "deadline rejection before new checkpoint",
+    "bounded native observation and late process cleanup",
+    "projection acknowledgment recovery",
+    "idempotent quota acquire/release retry reservations",
+    "browser repeated retry, invite access, cancel, logout and visibility behavior"
+  ],
+  "cloudGatePassed": false,
+  "productionReady": false,
+  "fullGoalComplete": false,
+  "remaining": [
+    "operator invitation administration and metadata UI",
+    "real Google OAuth client configuration and two-user staging G1",
+    "M2 durable Pi turn and mutable file restore",
+    "Browser, Run, official catalog and billing"
+  ],
+  "modelRequests": 0,
+  "cloudDeployments": 0,
+  "gitCommitCreated": false,
+  "gitPushed": false
+}

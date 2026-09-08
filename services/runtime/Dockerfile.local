@@ -1,0 +1,3 @@
+# Local development only. This cached image was built and exercised by M0.
+# Cloud deployment must use the separately reviewed immutable registry digest.
+FROM riffology-m0-project:20260905T155750Z-167375ff

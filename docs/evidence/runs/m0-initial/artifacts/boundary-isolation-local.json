@@ -1,0 +1,43 @@
+{
+  "environment": "local-docker-workerd",
+  "unauthenticatedStatus": 401,
+  "httpStatus": 200,
+  "report": {
+    "schema_version": 1,
+    "protocol": "m0-v1",
+    "run_id": "m0-isolation-1788585277501",
+    "operation": "G0-T02",
+    "observed_at": "2026-09-05T05:14:42.588Z",
+    "status": "observations_collected",
+    "gate_decision": "not_evaluated",
+    "observations": {
+      "topology": "separate_trusted_and_project_vms",
+      "worker_verified": {
+        "trusted_canary_unchanged": true,
+        "synthetic_session_unchanged": true,
+        "trusted_service_status": "running",
+        "expected_canary_sha256": "e1e4c6ed9a20ae83936e40666724935d171e26b65ed6ca3410365ce64ff370e3"
+      },
+      "untrusted_project_observations": {
+        "trusted_paths_readable": [],
+        "trusted_marker_in_process_environment": false,
+        "trusted_marker_in_process_command": false,
+        "platform_secret_variable_names_present": [],
+        "trusted_ipc_connectable": false,
+        "trusted_loopback_control_connectable": false,
+        "own_sdk_control_http_reachable": true
+      },
+      "script_sha256": "d738aaf969b987d3b5ad79fe67e5a0103481ce731e59e40e8cbe906a158485fb",
+      "limits": [
+        "Synthetic session only; not the Pi restore test.",
+        "Project output is diagnostic, never sufficient security evidence.",
+        "Own VM localhost SDK control is expected to be reachable and grants no Worker binding here.",
+        "Signal attacks and a compromised SDK daemon are not covered by this minimal probe."
+      ]
+    },
+    "cleanup": {
+      "trusted": "destroy_acknowledged",
+      "alpha": "destroy_acknowledged"
+    }
+  }
+}

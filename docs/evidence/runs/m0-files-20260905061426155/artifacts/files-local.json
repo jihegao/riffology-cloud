@@ -1,0 +1,535 @@
+{
+  "runId": "files-20260905061426155",
+  "environment": "local-docker-workerd",
+  "startedAt": "2026-09-05T06:14:26.156Z",
+  "finishedAt": "2026-09-05T06:15:45.522Z",
+  "httpStatus": 200,
+  "report": {
+    "schema_version": 1,
+    "protocol": "m0-v1",
+    "operation": "G0-T05-filesystem",
+    "observed_at": "2026-09-05T06:15:45.515Z",
+    "execution_environment": "local-docker-workerd",
+    "primitive_checks_passed": true,
+    "gate_decision": "not_evaluated",
+    "failure_stage": null,
+    "observations": {
+      "initial_filesystem": {
+        "root_absent": true,
+        "staging_absent": true,
+        "marker_absent": true
+      },
+      "initial_marker_sha256": "87b5d45267395afb7af67bf4e2a5e04fcbff867f8ed36f659283bf5f9048d118",
+      "mutations": {
+        "deleted_paths": [
+          "data/obsolete.csv",
+          "data/remove-me.csv",
+          "notes/draft.txt",
+          "scratch.txt",
+          "notes/scratch-renamed.txt"
+        ],
+        "operation_count": 20,
+        "receipts": [
+          {
+            "completed": true,
+            "index": 1,
+            "mode": 420,
+            "operation": "create",
+            "path": "README.md",
+            "sha256": "1c1fce075dbd73b8361e5f6c4aa2dd584833feedaa71a65d160dd5d300e9e00e",
+            "size": 29
+          },
+          {
+            "completed": true,
+            "index": 2,
+            "mode": 493,
+            "operation": "create",
+            "path": "src/main.py",
+            "sha256": "490444d4a56675d1509e7425c0c55fc378a62bf780bd61a652872a91f1ce21ac",
+            "size": 41
+          },
+          {
+            "completed": true,
+            "index": 3,
+            "mode": 420,
+            "operation": "create",
+            "path": "data/input.json",
+            "sha256": "cf5fe894cef13ab0e8950dabf979a57dfb38035786f4514ad3c3fb2760ce2e26",
+            "size": 26
+          },
+          {
+            "completed": true,
+            "index": 4,
+            "mode": 420,
+            "operation": "create",
+            "path": "data/obsolete.csv",
+            "sha256": "ffd147f91f6bb6c3d8dc0edcb42bafa9c25d9d4ea60064622852e969aca3ce6e",
+            "size": 20
+          },
+          {
+            "completed": true,
+            "index": 5,
+            "mode": 384,
+            "operation": "create",
+            "path": "private/token.txt",
+            "sha256": "978cfbebf8ce1ee3239cf57b1b4d8ee4c6c166ebf620890edf23b8ddd9dfd03d",
+            "size": 19
+          },
+          {
+            "completed": true,
+            "index": 6,
+            "mode": 420,
+            "operation": "create",
+            "path": "notes/draft.txt",
+            "sha256": "658adfd7d0232dbd2bdf35b813185935963388c1986b295e626abb697304801e",
+            "size": 30
+          },
+          {
+            "completed": true,
+            "index": 7,
+            "mode": 384,
+            "operation": "create",
+            "path": "data/blob.bin",
+            "sha256": "d17e31be584e63d71d0b96a22eb25c156c32297249a521b65b3180db1c621982",
+            "size": 10
+          },
+          {
+            "completed": true,
+            "index": 8,
+            "mode": 420,
+            "operation": "create",
+            "path": "empty.txt",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "size": 0
+          },
+          {
+            "completed": true,
+            "index": 9,
+            "mode": 420,
+            "operation": "update",
+            "path": "README.md",
+            "sha256": "813ef6eca1af35ced2ac186fb211fd1409f2ec25ab9b19dbeeea59b171719962",
+            "size": 48
+          },
+          {
+            "completed": true,
+            "index": 10,
+            "mode": 493,
+            "operation": "update",
+            "path": "src/main.py",
+            "sha256": "36b547e0042cbabffb96e68bb3d14f616ef6ebfdbafb0edc25ac44ec780acbe1",
+            "size": 61
+          },
+          {
+            "completed": true,
+            "index": 11,
+            "mode": 420,
+            "operation": "update",
+            "path": "data/input.json",
+            "sha256": "9f107b44d016499766f48104483e58c525a634f9c6250b7ea5ceed584cab2d8d",
+            "size": 31
+          },
+          {
+            "completed": true,
+            "index": 12,
+            "mode": 384,
+            "operation": "update",
+            "path": "private/token.txt",
+            "sha256": "180b5296454abd65109c10e110cd7def953eefc73ffb78898cd41193e0e949a5",
+            "size": 30
+          },
+          {
+            "completed": true,
+            "index": 13,
+            "mode": 420,
+            "operation": "rename",
+            "path": "notes/final.txt",
+            "previous_path": "notes/draft.txt",
+            "sha256": "658adfd7d0232dbd2bdf35b813185935963388c1986b295e626abb697304801e",
+            "size": 30,
+            "source_absent": true
+          },
+          {
+            "completed": true,
+            "index": 14,
+            "mode": 420,
+            "operation": "rename",
+            "path": "data/remove-me.csv",
+            "previous_path": "data/obsolete.csv",
+            "sha256": "ffd147f91f6bb6c3d8dc0edcb42bafa9c25d9d4ea60064622852e969aca3ce6e",
+            "size": 20,
+            "source_absent": true
+          },
+          {
+            "absent": true,
+            "completed": true,
+            "index": 15,
+            "operation": "delete",
+            "path": "data/remove-me.csv",
+            "previous": {
+              "mode": 420,
+              "sha256": "ffd147f91f6bb6c3d8dc0edcb42bafa9c25d9d4ea60064622852e969aca3ce6e",
+              "size": 20
+            }
+          },
+          {
+            "completed": true,
+            "index": 16,
+            "mode": 384,
+            "operation": "create",
+            "path": "scratch.txt",
+            "sha256": "067c33764a56216df5ed5ecc62b3bbb11f37c98793b5690f2a3416d141555ff8",
+            "size": 19
+          },
+          {
+            "completed": true,
+            "index": 17,
+            "mode": 384,
+            "operation": "update",
+            "path": "scratch.txt",
+            "sha256": "f6b8506a73a30e02b6b401bfcbcbc15cbd2c699ce5b494767e0c1851376b27d0",
+            "size": 19
+          },
+          {
+            "completed": true,
+            "index": 18,
+            "mode": 384,
+            "operation": "rename",
+            "path": "notes/scratch-renamed.txt",
+            "previous_path": "scratch.txt",
+            "sha256": "f6b8506a73a30e02b6b401bfcbcbc15cbd2c699ce5b494767e0c1851376b27d0",
+            "size": 19,
+            "source_absent": true
+          },
+          {
+            "absent": true,
+            "completed": true,
+            "index": 19,
+            "operation": "delete",
+            "path": "notes/scratch-renamed.txt",
+            "previous": {
+              "mode": 384,
+              "sha256": "f6b8506a73a30e02b6b401bfcbcbc15cbd2c699ce5b494767e0c1851376b27d0",
+              "size": 19
+            }
+          },
+          {
+            "completed": true,
+            "index": 20,
+            "mode": 384,
+            "operation": "update",
+            "path": "data/blob.bin",
+            "sha256": "24e6dd402b947f516250c7132bce2bd11d1676bd0c8fbc10accd7eb59da7f1ac",
+            "size": 10
+          }
+        ],
+        "root_mode": 493,
+        "tree": [
+          {
+            "kind": "file",
+            "mode": 420,
+            "path": "README.md",
+            "sha256": "813ef6eca1af35ced2ac186fb211fd1409f2ec25ab9b19dbeeea59b171719962",
+            "size": 48
+          },
+          {
+            "kind": "directory",
+            "mode": 493,
+            "path": "data",
+            "size": 0
+          },
+          {
+            "kind": "file",
+            "mode": 384,
+            "path": "data/blob.bin",
+            "sha256": "24e6dd402b947f516250c7132bce2bd11d1676bd0c8fbc10accd7eb59da7f1ac",
+            "size": 10
+          },
+          {
+            "kind": "file",
+            "mode": 420,
+            "path": "data/input.json",
+            "sha256": "9f107b44d016499766f48104483e58c525a634f9c6250b7ea5ceed584cab2d8d",
+            "size": 31
+          },
+          {
+            "kind": "directory",
+            "mode": 493,
+            "path": "empty-directory",
+            "size": 0
+          },
+          {
+            "kind": "file",
+            "mode": 420,
+            "path": "empty.txt",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "size": 0
+          },
+          {
+            "kind": "directory",
+            "mode": 493,
+            "path": "notes",
+            "size": 0
+          },
+          {
+            "kind": "file",
+            "mode": 420,
+            "path": "notes/final.txt",
+            "sha256": "658adfd7d0232dbd2bdf35b813185935963388c1986b295e626abb697304801e",
+            "size": 30
+          },
+          {
+            "kind": "directory",
+            "mode": 448,
+            "path": "private",
+            "size": 0
+          },
+          {
+            "kind": "file",
+            "mode": 384,
+            "path": "private/token.txt",
+            "sha256": "180b5296454abd65109c10e110cd7def953eefc73ffb78898cd41193e0e949a5",
+            "size": 30
+          },
+          {
+            "kind": "directory",
+            "mode": 493,
+            "path": "src",
+            "size": 0
+          },
+          {
+            "kind": "file",
+            "mode": 493,
+            "path": "src/main.py",
+            "sha256": "36b547e0042cbabffb96e68bb3d14f616ef6ebfdbafb0edc25ac44ec780acbe1",
+            "size": 61
+          }
+        ]
+      },
+      "expected_tree": [
+        {
+          "path": "README.md",
+          "kind": "file",
+          "mode": 420,
+          "size": 48,
+          "sha256": "813ef6eca1af35ced2ac186fb211fd1409f2ec25ab9b19dbeeea59b171719962"
+        },
+        {
+          "path": "data",
+          "kind": "directory",
+          "mode": 493,
+          "size": 0
+        },
+        {
+          "path": "data/blob.bin",
+          "kind": "file",
+          "mode": 384,
+          "size": 10,
+          "sha256": "24e6dd402b947f516250c7132bce2bd11d1676bd0c8fbc10accd7eb59da7f1ac"
+        },
+        {
+          "path": "data/input.json",
+          "kind": "file",
+          "mode": 420,
+          "size": 31,
+          "sha256": "9f107b44d016499766f48104483e58c525a634f9c6250b7ea5ceed584cab2d8d"
+        },
+        {
+          "path": "empty-directory",
+          "kind": "directory",
+          "mode": 493,
+          "size": 0
+        },
+        {
+          "path": "empty.txt",
+          "kind": "file",
+          "mode": 420,
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "notes",
+          "kind": "directory",
+          "mode": 493,
+          "size": 0
+        },
+        {
+          "path": "notes/final.txt",
+          "kind": "file",
+          "mode": 420,
+          "size": 30,
+          "sha256": "658adfd7d0232dbd2bdf35b813185935963388c1986b295e626abb697304801e"
+        },
+        {
+          "path": "private",
+          "kind": "directory",
+          "mode": 448,
+          "size": 0
+        },
+        {
+          "path": "private/token.txt",
+          "kind": "file",
+          "mode": 384,
+          "size": 30,
+          "sha256": "180b5296454abd65109c10e110cd7def953eefc73ffb78898cd41193e0e949a5"
+        },
+        {
+          "path": "src",
+          "kind": "directory",
+          "mode": 493,
+          "size": 0
+        },
+        {
+          "path": "src/main.py",
+          "kind": "file",
+          "mode": 493,
+          "size": 61,
+          "sha256": "36b547e0042cbabffb96e68bb3d14f616ef6ebfdbafb0edc25ac44ec780acbe1"
+        }
+      ],
+      "worker_verified_export": true,
+      "initial_receipt": {
+        "revision": "38afe35578cd2a6e0aff20158eb1c3f35be4debbe15a845e43b7023a25dece36",
+        "generation": 1,
+        "sequence": 1
+      },
+      "destroy_before_restore": "destroy_acknowledged",
+      "recreated_filesystem": {
+        "root_absent": true,
+        "staging_absent": true,
+        "marker_absent": true
+      },
+      "restoration": {
+        "entry_count": 12,
+        "restored": true,
+        "root_mode": 493,
+        "total_bytes": 210,
+        "tree": [
+          {
+            "kind": "file",
+            "mode": 420,
+            "path": "README.md",
+            "sha256": "813ef6eca1af35ced2ac186fb211fd1409f2ec25ab9b19dbeeea59b171719962",
+            "size": 48
+          },
+          {
+            "kind": "directory",
+            "mode": 493,
+            "path": "data",
+            "size": 0
+          },
+          {
+            "kind": "file",
+            "mode": 384,
+            "path": "data/blob.bin",
+            "sha256": "24e6dd402b947f516250c7132bce2bd11d1676bd0c8fbc10accd7eb59da7f1ac",
+            "size": 10
+          },
+          {
+            "kind": "file",
+            "mode": 420,
+            "path": "data/input.json",
+            "sha256": "9f107b44d016499766f48104483e58c525a634f9c6250b7ea5ceed584cab2d8d",
+            "size": 31
+          },
+          {
+            "kind": "directory",
+            "mode": 493,
+            "path": "empty-directory",
+            "size": 0
+          },
+          {
+            "kind": "file",
+            "mode": 420,
+            "path": "empty.txt",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "size": 0
+          },
+          {
+            "kind": "directory",
+            "mode": 493,
+            "path": "notes",
+            "size": 0
+          },
+          {
+            "kind": "file",
+            "mode": 420,
+            "path": "notes/final.txt",
+            "sha256": "658adfd7d0232dbd2bdf35b813185935963388c1986b295e626abb697304801e",
+            "size": 30
+          },
+          {
+            "kind": "directory",
+            "mode": 448,
+            "path": "private",
+            "size": 0
+          },
+          {
+            "kind": "file",
+            "mode": 384,
+            "path": "private/token.txt",
+            "sha256": "180b5296454abd65109c10e110cd7def953eefc73ffb78898cd41193e0e949a5",
+            "size": 30
+          },
+          {
+            "kind": "directory",
+            "mode": 493,
+            "path": "src",
+            "size": 0
+          },
+          {
+            "kind": "file",
+            "mode": 493,
+            "path": "src/main.py",
+            "sha256": "36b547e0042cbabffb96e68bb3d14f616ef6ebfdbafb0edc25ac44ec780acbe1",
+            "size": 61
+          }
+        ],
+        "write_probe": {
+          "completed": true,
+          "created": true,
+          "deleted": true,
+          "mode": 384,
+          "renamed": true,
+          "sha256": "dded478fd3ab39ba6074333682e8e52123fddbf5dbe63da1b9fee97630ca745b",
+          "size": 36
+        }
+      },
+      "worker_verified_restored_export": true,
+      "restored_receipt": {
+        "revision": "1bb09e5ed2594e9be1677ac9b93dbf85f985d6dc55aa046726790fac235ee292",
+        "generation": 2,
+        "sequence": 2
+      },
+      "old_generation_rejected": true,
+      "events": [
+        {
+          "revision": "38afe35578cd2a6e0aff20158eb1c3f35be4debbe15a845e43b7023a25dece36",
+          "generation": 1,
+          "sequence": 1
+        },
+        {
+          "revision": "1bb09e5ed2594e9be1677ac9b93dbf85f985d6dc55aa046726790fac235ee292",
+          "generation": 2,
+          "sequence": 2
+        }
+      ]
+    },
+    "cleanup": "destroy_acknowledged",
+    "script_sha256": {
+      "mutate": "39330bfa313697d4cf97715a41882b047978b5c77e798e80e335ccc8e374f43c",
+      "export": "5a59d4079c72ca9f4b9f64738b1e6b1686485d9616907d4799157d6cdd782236",
+      "restore": "9f86c75cefedf67cb3834aceede02a35e5a0f6bd3f2ee12c7877ee6f43bc9300"
+    },
+    "limits": [
+      "Fixed synthetic project, no concurrent untrusted writer or real Pi Session.",
+      "Runtime receipts are diagnostics corroborated by independently expected content hashes; no production authority is granted to stdout.",
+      "Local Docker/Workerd does not close cloud VM/R2 gates.",
+      "Destroy acknowledgement plus missing ephemeral marker and tree verifies filesystem recreation, not a cloud fault or account disaster recovery.",
+      "The probe does not resume an interrupted step; durable product Turn scheduling remains separate."
+    ]
+  },
+  "replayStatus": 200,
+  "replayIdentical": true,
+  "cloudGatePassed": false
+}

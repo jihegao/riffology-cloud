@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-product-turn-runtime-local-20260907",
+  "observedAt": "2026-09-06T18:36:19Z",
+  "environment": "local-node-sqlite",
+  "decision": "accepted-as-local-product-turn-runtime-orchestration-core-candidate",
+  "source": {
+    "runtimeCoreSha256": "af4476e275ee2c9aa82a681288f39581f0d617f2f8adaed09a9ca84a8208f6c6",
+    "runtimeIdentitySha256": "2da88062b8ada35b39d1d331dd0cc7ea264434c1a309d3393f9c7f103d89b365",
+    "turnProtocolSha256": "793231b95bf38cd4bf70e84668cd8c68978aae09a4a04186f47240c20cd32581",
+    "turnDispatcherSha256": "876c2b01fd93a645d0eefa3524b81f241b532c31e52fd97b2c16857373de6f17",
+    "turnJournalSha256": "674ac0427dc74bf6688cc45c6f3b8ab4cffbbd86b1399d6bc5529733ff03a5da",
+    "turnStoreSha256": "c067b1100c664ce247f0c0e5ac203e9156b604750b4252dd7dbd49dbb18df82f",
+    "runtimeTestSha256": "77c89ca570d99e4a07506e93161b4fdeee7e2d8e5acebe76dca46a52f8d6f2ce",
+    "m0RecorderSha256": "631c18daa1021822e78b0750c30b3049dceaf92aa1df0a00a7fd088d35a1dba4",
+    "m1RecorderSha256": "f7905f9132dd4961b4e189c47275aa121aa2f7be87cae8ccd82698230b8a40a2"
+  },
+  "runtimeContract": {
+    "actorIdentity": "scope + turnId + dispatchId + generation",
+    "storage": "SQLite Durable Object compatible single actor row",
+    "externalPorts": ["TurnExecutionPort", "TurnCheckpointPort"],
+    "executionReservedBeforeExternalAwait": true,
+    "unknownIsObserveOnly": true,
+    "cancelFenceBeforeExternalCancel": true,
+    "terminalRequiresNativeStopFence": true,
+    "terminalRequiresCheckpointOrPersistenceError": true,
+    "messageRemovedAfterExecutionTerminal": true,
+    "m0ProbeImports": 0,
+    "modelCalls": 0
+  },
+  "protocolCorrection": {
+    "issue": "TurnDispatcher previously treated an R2 object key as a flat identifier, rejecting canonical hierarchical keys, while journal validation did not define the same key grammar.",
+    "fixed": true,
+    "acceptedExamples": ["turns/tenant-a/workspace-a/2/turn-a/dispatch-a.json"],
+    "rejectedClasses": ["absolute", "traversal", "empty-segment", "unsupported-character"]
+  },
+  "focusedChecks": {
+    "runtimeAndDispatcher": { "pass": 23, "skip": 0, "fail": 0 },
+    "m2": { "pass": 118, "skip": 0, "fail": 0 },
+    "typecheckPassed": true,
+    "sqliteReopenPassed": true,
+    "lostStartResponseObserveOnlyPassed": true,
+    "checkpointLostResponseReconciliationPassed": true,
+    "cancelOncePassed": true,
+    "eventConflictFailClosedPassed": true,
+    "dispatcherIntegrationPassed": true
+  },
+  "fullChecks": {
+    "path": "../m1-local-20260906183543780/local-checks.json",
+    "sha256": "80680f92a2f3a0dd99185df8cc94221a3e870e443216a1e40c008eaa79e65aea",
+    "logSha256": "d049354f2cdc95ce51c1515600739416de13a7fdccdc56b66758b522df5b0104",
+    "passed": true,
+    "timedOut": false,
+    "sourceStableDuringCheck": true,
+    "sourceCount": 299,
+    "sourceSha256": "dbf0ca5a508d8f01f53b04dfde9475b0dab7dfb0aa0ea06b542963f9b2ae607d",
+    "m0": { "pass": 348, "skip": 1, "fail": 0 },
+    "m1": { "pass": 108, "skip": 0, "fail": 0 },
+    "m2": { "pass": 118, "skip": 0, "fail": 0 }
+  },
+  "retainedFailedCheck": {
+    "path": "../m0-local-20260906183402861/local-checks.json",
+    "reason": "the former 60 second recorder timeout expired while M2 was still running after M0 and M1 passed",
+    "testFailureObserved": false,
+    "sourceStableDuringCheck": true,
+    "recorderTimeoutRaisedToMs": 90000,
+    "recorderMaxBufferBytes": 4194304
+  },
+  "acceptedProperties": [
+    "A product Turn runtime actor is derived from the complete immutable scope, Turn, dispatch and generation identity.",
+    "The runtime persists message digest and execution reservation before its first external execution await.",
+    "A lost start response persists unknown; reopen and observe can recover terminal state without another start.",
+    "Repeated accept with the same payload observes the existing runtime, while a changed message or identity fails closed.",
+    "Only the first cancel request crosses the external cancel boundary; repeated cancellation observes the same runtime.",
+    "Execution terminal state is durable before checkpoint commit, and an uncertain checkpoint is reconciled by immutable observe before it becomes a persistence error.",
+    "Running and terminal events are retained by event ID; conflicting reuse is rejected.",
+    "Canonical hierarchical R2 object keys pass through Runtime, Dispatcher and Journal with one shared validator."
+  ],
+  "notAccepted": [
+    "ProductTurnRuntime Durable Object class and Wrangler binding",
+    "WorkspaceAgent installation of WorkspaceTurnEngine",
+    "real Trusted Pi execution adapter or Pi Session restoration",
+    "provider credentials, model call, streaming transport or provider cancellation",
+    "real project freeze, R2 Revision writer or session snapshot digest",
+    "cloud deployment, Workerd Durable Object restart or staging Turn",
+    "M2 or G2 completion"
+  ],
+  "cleanup": {
+    "newServerStarted": false,
+    "uiPort4173Touched": false,
+    "uiPort4173StillListening": true
+  },
+  "mutations": {
+    "localSqlite": true,
+    "cloudDeploy": false,
+    "cloudResourceCreate": false,
+    "modelCalls": 0,
+    "commit": false,
+    "push": false
+  }
+}

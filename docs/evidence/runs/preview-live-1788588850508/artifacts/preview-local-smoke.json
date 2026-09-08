@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "operation": "G0-T07-local-smoke",
+  "run_id": "preview-live-1788588850508",
+  "observed_at": "2026-09-05T06:14:32.170Z",
+  "execution_environment": "local-docker-workerd",
+  "status": "failed",
+  "failure": "AssertionError [ERR_ASSERTION]: {\"document\":true,\"app.js\":true,\"api/state\":true,\"redirect-external\":true,\"redirect-control\":true,\"redirect-safe\":true,\"main_cookie_not_forwarded\":true,\"no_capability_denied\":true,\"wrong_origin_denied\":true,\"raw_route_denied\":true,\"websocket_upgrade\":false,\"websocket_state\":false,\"websocket_revocation_close\":false,\"revoked_http_denied\":true}",
+  "gate_decision": "not_evaluated",
+  "cases": {
+    "document": true,
+    "app.js": true,
+    "api/state": true,
+    "redirect-external": true,
+    "redirect-control": true,
+    "redirect-safe": true,
+    "main_cookie_not_forwarded": true,
+    "no_capability_denied": true,
+    "wrong_origin_denied": true,
+    "raw_route_denied": true,
+    "websocket_upgrade": false,
+    "websocket_state": false,
+    "websocket_revocation_close": false,
+    "revoked_http_denied": true
+  },
+  "cleanup": "destroy_acknowledged",
+  "cloud_browser_matrix": "not_run",
+  "websocket_expiry_real_time": "not_run"
+}

@@ -1,0 +1,4 @@
+trusted_tag=riffology-m0-trusted-proxy:20260905T155750Z-167375ff
+project_tag=riffology-m0-project:20260905T155750Z-167375ff
+trusted_id=sha256:42eb9a36e2aa6098c9a146c5c0f149efe29f638d8d304efea523a592aa4002dc
+project_id=sha256:1d82f27d7cd328aef4f7125e0e27fe42fa6a03803c97ca7783951aba385cf42f

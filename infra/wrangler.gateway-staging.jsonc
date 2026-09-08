@@ -1,0 +1,71 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "riffology-m1-gateway-staging",
+  "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+  "main": "../services/gateway/index.ts",
+  "compatibility_date": "2026-09-06",
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_do_not_populate_process_env"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "m1.riff-demo.gaojihe.cn", "custom_domain": true }
+  ],
+  "assets": {
+    "directory": "../services/web",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "secrets": {
+    "required": ["BETTER_AUTH_SECRET", "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET"]
+  },
+  "vars": {
+    "APP_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
+    "TENANT_QUOTA_CAPACITY": "1",
+    "TENANT_QUOTA_POLICY_VERSION": "m1-v1",
+    "M2_TURNS_ENABLED": "false"
+  },
+  "d1_databases": [
+    {
+      "binding": "CATALOG",
+      "database_name": "riffology-catalog-staging",
+      "database_id": "993f2fd9-a135-4a93-9caa-10828dec6635",
+      "migrations_dir": "../services/catalog/migrations"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      { "name": "TENANT_QUOTA", "class_name": "TenantQuota" },
+      { "name": "WORKSPACE_AGENT", "class_name": "WorkspaceAgent" },
+      { "name": "PROJECT_RUNTIME", "class_name": "ProjectRuntime" },
+      { "name": "PRODUCT_TURN_RUNTIME", "class_name": "ProductTurnRuntime" },
+      { "name": "REVISION_STORE", "class_name": "RevisionStore" }
+    ]
+  },
+  "containers": [
+    {
+      "name": "riffology-m1-project-staging",
+      "class_name": "ProjectRuntime",
+      "image": "../services/runtime/Dockerfile.cloud",
+      "instance_type": "basic",
+      "max_instances": 2
+    }
+  ],
+  "exports": {
+    "TenantQuota": { "type": "durable-object", "storage": "sqlite" },
+    "WorkspaceAgent": { "type": "durable-object", "storage": "sqlite" },
+    "ProductTurnRuntime": { "type": "durable-object", "storage": "sqlite" },
+    "RevisionStore": { "type": "durable-object", "storage": "sqlite" },
+    "ProjectRuntime": {
+      "type": "durable-object",
+      "storage": "sqlite",
+      "container": "riffology-m1-project-staging"
+    }
+  },
+  "r2_buckets": [
+    {
+      "binding": "WORKSPACE_CHECKPOINTS",
+      "bucket_name": "riffology-m1-workspace-checkpoints-staging"
+    }
+  ],
+  "observability": { "enabled": true }
+}

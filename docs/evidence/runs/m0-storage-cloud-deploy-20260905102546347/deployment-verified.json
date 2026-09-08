@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T10:30:45.941Z",
+  "verified": true,
+  "worker": "riffology-m0-storage-staging",
+  "versionId": "91f94ed8-227d-4360-afdf-f610ab749de6",
+  "deploymentId": "e376a536-8973-4313-acb8-b7af862b95a9",
+  "percentage": 100,
+  "bundleSha256": "0dcb394f8d32dd57fb516da457a55e6f4ba0fa827741316355f0ad408c2ad4c4",
+  "scopedSourceSha256": "e6e332ad06ec5da080912b55116cd2df86025409e762b24964e2040a6e4b0c63",
+  "cloudGatePassed": false,
+  "evidenceFiles": [
+    {
+      "path": "deployment-observed.json",
+      "sha256": "5d2c511772494377bec9f5408c7fa11588985fa02069499960b42f1ba5926856"
+    },
+    {
+      "path": "post-deployment-api.json",
+      "sha256": "9e3b2ab090050820e57f3e656d3c44509f54a534c8fe20d5606c5bde2af29b8f"
+    },
+    {
+      "path": "deployments-status.log",
+      "sha256": "cce898a35821672830b674143e7afb5ea53ec9e728c4379a25833c583639d083"
+    },
+    {
+      "path": "version-details.log",
+      "sha256": "131a37701a715fa1aa7558822d9ee454ba002cbc1a0c7d5db741a95c3783536a"
+    },
+    {
+      "path": "frozen-build.json",
+      "sha256": "8b3dc761488ed91e8183425626651a05e1b957b25d09a64f31da478eac512078"
+    }
+  ]
+}

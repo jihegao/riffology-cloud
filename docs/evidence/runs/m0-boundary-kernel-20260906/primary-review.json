@@ -1,0 +1,90 @@
+{
+  "observedAt": "2026-09-06T04:07:02.477Z",
+  "gate": "G0-T02",
+  "decision": "passed",
+  "requirements": "development-deployment-plan.md:129; sensitive trusted reads and cross-boundary control effects denied",
+  "workerVersion": "f43bcfe0-03c3-4d76-9662-9deeacc750d6",
+  "scopedSourceSha256": "bd2c27f5073138b3ccae459add25f7c7fa8c5071832559a50866db77477e7a48",
+  "applicationCount": 2,
+  "distinctNamespaces": true,
+  "distinctKernelBoots": true,
+  "trustedSignalPositiveControl": true,
+  "rawSignalOutcome": "target not in project kernel; no cross-VM kill/EPERM claim",
+  "projectLocalWrites": [
+    {
+      "name": "foreign_session_write",
+      "outcome": "project-only-write; trusted target unchanged",
+      "httpStatus": 200
+    },
+    {
+      "name": "forged_sandbox_write",
+      "outcome": "project-only-write; trusted target unchanged",
+      "httpStatus": 200
+    }
+  ],
+  "activeInstances": 0,
+  "inactiveInstanceRecords": 15,
+  "peerReview": {
+    "agent": "boundary_deadline_review",
+    "decision": "passed after current cloud receipt and resource review",
+    "receiptSha256": "db561b075bb91697c8834793d3212e521c754664984ab9bab1d72f17c859534b"
+  },
+  "unclosedScopes": [
+    "G0-T01",
+    "G0-T03",
+    "G0-T04",
+    "G0-T09",
+    "public ingress upload deadline"
+  ],
+  "failedPredecessorPreserved": true,
+  "evidence": [
+    {
+      "path": "m0-isolation-1788667134876-7c5f6681c9ec3c78ad81e93/isolation-cloud.json",
+      "sha256": "db561b075bb91697c8834793d3212e521c754664984ab9bab1d72f17c859534b"
+    },
+    {
+      "path": "m0-boundary-kernel-20260906/deployment-verified.json",
+      "sha256": "af25e9865e8c2bdef05c75c7e478464e9145635d197a6821e2eae0c792d95f51"
+    },
+    {
+      "path": "m0-boundary-kernel-20260906/deploy-result.json",
+      "sha256": "d5ca49fed5dd42784a4abddff2eb4b3cae2a2198be5b7839ba3119fda6e2c476"
+    },
+    {
+      "path": "m0-boundary-kernel-20260906/deployments-final.json",
+      "sha256": "cddebb0c96507f2fc24a66af7073c0efff90eddcd0c12666bc303f2c0ed9afea"
+    },
+    {
+      "path": "m0-boundary-kernel-20260906/remote-settings.json",
+      "sha256": "deda16e9639544081cda494d4967dc84725980eff9d6b564ea1a96d58c67b389"
+    },
+    {
+      "path": "m0-boundary-kernel-20260906/apps-final.json",
+      "sha256": "e370314489af141798b59da408563d7b1f533c7227e5c3a42b0f2b2bc8606876"
+    },
+    {
+      "path": "m0-boundary-kernel-20260906/trusted-instances-final.json",
+      "sha256": "3f346b9a631a92272313033dc95c29d704b3d9d48fb3c69f566074c905af05c5"
+    },
+    {
+      "path": "m0-boundary-kernel-20260906/project-instances-final.json",
+      "sha256": "e850d4a7a69da8e7cc6ed336d4fdb1b858e9ea81a389eabd323ada765c21877d"
+    },
+    {
+      "path": "m0-boundary-kernel-20260906/runtime-worker-tests.log",
+      "sha256": "c38ee269deaafb038039e0954ef59404584cd11cedea8e254794d0a9918b0df1"
+    },
+    {
+      "path": "m0-isolation-1788666613594-34db1d2565f1dc1ad3485c2/isolation-cloud.json",
+      "sha256": "4d2a6018de79e9dc02b92362828d96d6c8ad854ed50a18f8307f4b2cbf112612"
+    },
+    {
+      "path": "m0-boundary-internal-20260906/internal-observations.json",
+      "sha256": "8009a36c994706655379749c3abf40ef65fb08f5a1d4f22985d9dc0e19e7f517"
+    },
+    {
+      "path": "m0-boundary-internal-20260906/public-ingress-observations.json",
+      "sha256": "6e001a5588e942de876dbbf09c33d1e642f47cbe6bd667136ecafeea45556738"
+    }
+  ]
+}

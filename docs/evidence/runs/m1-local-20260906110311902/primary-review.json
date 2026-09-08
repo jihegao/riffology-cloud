@@ -1,0 +1,54 @@
+{
+  "at": "2026-09-06T11:05:27.974Z",
+  "phase": "M1 partial implementation",
+  "sourceSha256": "05fbc2c5418dd67716a37ee9ef611a72a25ce8c12b617ceac7ad519215ce842b",
+  "tests": {
+    "m0": {
+      "pass": 348,
+      "skip": 1,
+      "fail": 0
+    },
+    "m1": {
+      "pass": 38,
+      "skip": 0,
+      "fail": 0
+    }
+  },
+  "catalogMigrationAppliedLocally": true,
+  "authMigrationAppliedLocally": true,
+  "migrationLogSha256": "3be803e9581affe4354012b1ce3b525dd55d90047707a54d68c55b580ffe22c0",
+  "review": {
+    "independentReviewers": [
+      "boundary_deadline_review",
+      "m0_storage_gate_review"
+    ],
+    "fixedFindings": [
+      "D1 permission reads use primary binding rather than a reused read-replica session",
+      "Accepted invitation audit written even for existing tenant"
+    ],
+    "primaryReviewedQuotaSource": true,
+    "remainingCriticalLocalFindings": []
+  },
+  "oldM0SourceChanges": [
+    "package-lock.json",
+    "package.json"
+  ],
+  "existingDependencyChanges": [],
+  "addedDependencyCount": 23,
+  "betterAuthVersion": "1.7.3",
+  "scope": {
+    "realSqlite": true,
+    "realAuthLibrarySessions": true,
+    "localWorkerdD1": true,
+    "localWorkerdQuotaRestart": true,
+    "realGoogleOAuth": false,
+    "workspaceProvisioner": false,
+    "userAdminUIConnected": false,
+    "cloudG1Passed": false,
+    "productionReady": false,
+    "fullGoalComplete": false
+  },
+  "cloudMutations": 0,
+  "modelDispatches": 0,
+  "legacyRestored": false
+}

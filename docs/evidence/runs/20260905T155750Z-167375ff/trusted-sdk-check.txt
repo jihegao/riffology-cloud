@@ -1,0 +1,1 @@
+42:#11 2.716 {"passed":true,"scope":"image-offline-sdk-and-staging-fixture-entrypoint","platform":"linux","architecture":"x64","sdkVersion":"0.85.0","childCalls":2,"transport":"in-process-synthetic-fetch","realProviderCalls":0,"cloudGatePassed":false}

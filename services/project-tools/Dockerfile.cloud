@@ -1,0 +1,22 @@
+FROM docker.io/cloudflare/sandbox:0.12.9-python@sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806
+
+USER root
+RUN useradd --create-home --uid 10001 --shell /usr/sbin/nologin project \
+    && mkdir -p /workspace /opt/riffology /var/lib/riffology/effects /var/lib/riffology/archives \
+    && chown project:project /workspace \
+    && chown root:root /opt/riffology /var/lib/riffology /var/lib/riffology/effects \
+    && chmod 0755 /opt/riffology /var/lib/riffology \
+    && chmod 0700 /var/lib/riffology/effects /var/lib/riffology/archives
+
+COPY --chown=root:root --chmod=0555 file_service.py /opt/riffology/file_service.py
+COPY --chown=root:root --chmod=0555 process_quiescence.py /opt/riffology/process_quiescence.py
+COPY --chown=root:root --chmod=0555 project_network_fence.py /opt/riffology/project_network_fence.py
+RUN python3 -c "import ctypes; ctypes.CDLL('libseccomp.so.2')"
+COPY --chown=root:root --chmod=0555 effect_wrapper.py /opt/riffology/effect_wrapper.py
+COPY --chown=root:root --chmod=0555 workspace_archive.py /opt/riffology/workspace_archive.py
+
+# The Sandbox service remains root so only platform wrappers can read the
+# control directory. The fixed wrapper drops to uid 10001 before the helper
+# performs file operations or starts a bounded Bash process in /workspace.
+
+COPY --chown=root:root --chmod=0555 platform_workspace_archive.py /opt/riffology/platform_workspace_archive.py

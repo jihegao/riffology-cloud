@@ -1,0 +1,19 @@
+[
+  {
+    "id": "abc2d0a1-a53e-4896-8cb1-31774254217a",
+    "source": "wrangler",
+    "strategy": "percentage",
+    "author_email": "jihe.gao@gmail.com",
+    "annotations": {
+      "workers/message": "Automatic deployment on upload.",
+      "workers/triggered_by": "upload"
+    },
+    "versions": [
+      {
+        "version_id": "98cc1d73-0efe-4d6f-9e43-7616f841b8c3",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-09-06T03:15:18.464277Z"
+  }
+]

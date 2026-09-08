@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "run_id": "m0-g0-t02-cloud-20260906",
+  "recorded_at": "2026-09-06T04:07:02.547Z",
+  "gate_id": "G0-T02",
+  "case_id": "gate-summary",
+  "status": "passed",
+  "observed_at": "2026-09-06T03:59:05.373Z",
+  "environment": "staging",
+  "git_sha": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+  "versions": {
+    "wrangler": "4.129.0",
+    "worker_version": "f43bcfe0-03c3-4d76-9662-9deeacc750d6",
+    "protocol": "m0-v1",
+    "bundle_sha256": "7d2f55826967fceec9c59b4da9502b5f1f6f956cba9bbe0ac64b4b7804384ffd",
+    "scoped_source_sha256": "bd2c27f5073138b3ccae459add25f7c7fa8c5071832559a50866db77477e7a48",
+    "trusted_image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+    "project_image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+    "source_state": "uncommitted working tree; scoped runtime and driver hashes authoritative"
+  },
+  "command": "node --use-env-proxy scripts/m0/isolation-cloud.mjs with independently verified deployment; primary and peer requirement review",
+  "evidence_paths": [
+    "m0-boundary-kernel-20260906/primary-review.json",
+    "m0-isolation-1788667134876-7c5f6681c9ec3c78ad81e93/isolation-cloud.json",
+    "m0-boundary-kernel-20260906/deployment-verified.json",
+    "m0-boundary-kernel-20260906/deploy-result.json",
+    "m0-boundary-kernel-20260906/deployments-final.json",
+    "m0-boundary-kernel-20260906/remote-settings.json",
+    "m0-boundary-kernel-20260906/apps-final.json",
+    "m0-boundary-kernel-20260906/trusted-instances-final.json",
+    "m0-boundary-kernel-20260906/project-instances-final.json",
+    "m0-boundary-kernel-20260906/runtime-worker-tests.log",
+    "m0-isolation-1788666613594-34db1d2565f1dc1ad3485c2/isolation-cloud.json",
+    "m0-boundary-internal-20260906/internal-observations.json",
+    "m0-boundary-internal-20260906/public-ingress-observations.json"
+  ],
+  "evidence_sha256": [
+    "2c48fa493f7690580d36f6b9ee148c54c9f6e9a3f97607442907785f052300a9",
+    "db561b075bb91697c8834793d3212e521c754664984ab9bab1d72f17c859534b",
+    "af25e9865e8c2bdef05c75c7e478464e9145635d197a6821e2eae0c792d95f51",
+    "d5ca49fed5dd42784a4abddff2eb4b3cae2a2198be5b7839ba3119fda6e2c476",
+    "cddebb0c96507f2fc24a66af7073c0efff90eddcd0c12666bc303f2c0ed9afea",
+    "deda16e9639544081cda494d4967dc84725980eff9d6b564ea1a96d58c67b389",
+    "e370314489af141798b59da408563d7b1f533c7227e5c3a42b0f2b2bc8606876",
+    "3f346b9a631a92272313033dc95c29d704b3d9d48fb3c69f566074c905af05c5",
+    "e850d4a7a69da8e7cc6ed336d4fdb1b858e9ea81a389eabd323ada765c21877d",
+    "c38ee269deaafb038039e0954ef59404584cd11cedea8e254794d0a9918b0df1",
+    "4d2a6018de79e9dc02b92362828d96d6c8ad854ed50a18f8307f4b2cbf112612",
+    "8009a36c994706655379749c3abf40ef65fb08f5a1d4f22985d9dc0e19e7f517",
+    "6e001a5588e942de876dbbf09c33d1e642f47cbe6bd667136ecafeea45556738"
+  ],
+  "conclusion": "G0-T02 staging separation passed. Fixed project Shell cannot read trusted files/session/environment or control trusted IPC/HTTP/process. Independent trusted readback preserved; kernel boot hashes differ and target is not addressable, without claiming a cross-VM kill/EPERM. SDK writes with forged metadata affect project files only and are recorded as confined, not HTTP rejection. Two applications/namespaces verified, all 15 instance records inactive. Initial capability_unavailable failure and public upload mismatch remain recorded. This is not full G0, Pi Session integration or production Tool Bridge acceptance."
+}

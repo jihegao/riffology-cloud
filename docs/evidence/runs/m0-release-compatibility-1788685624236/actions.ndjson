@@ -1,0 +1,3 @@
+{"action":"report","method":"GET","at":"2026-09-06T09:07:04.236Z","outcome":"response","status":200,"sha256":"45ad89290191c97c05fd5713578120d603f90552212752c31dfb86ada841f91c"}
+{"action":"compatibility","method":"POST","at":"2026-09-06T09:07:06.013Z","outcome":"response","status":202,"sha256":"90f0079f73e1a8325c9133710b094b33d16839e272301c82d567e6212d2591fa"}
+{"action":"report","method":"GET","at":"2026-09-06T09:07:06.538Z","outcome":"response","status":200,"sha256":"6741e937ad2c0b254f5fbc9adb97499d503c4af464ad529ffd75bbed207153a8"}

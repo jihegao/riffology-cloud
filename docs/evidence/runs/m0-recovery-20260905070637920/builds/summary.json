@@ -1,0 +1,126 @@
+[
+  {
+    "name": "boundary",
+    "startedAt": "2026-09-05T07:14:29.703Z",
+    "finishedAt": "2026-09-05T07:14:40.658Z",
+    "command": [
+      "npx",
+      "wrangler",
+      "deploy",
+      "--config",
+      "infra/wrangler.m0.jsonc",
+      "--env",
+      "staging",
+      "--dry-run",
+      "--outdir",
+      "/Users/gaojihe/apps/riffology-cloud/.local/m0-recovery-build-20260905070637920/boundary"
+    ],
+    "exitCode": 0,
+    "environment": "local",
+    "deployed": false,
+    "bundle": {
+      "path": "/Users/gaojihe/apps/riffology-cloud/.local/m0-recovery-build-20260905070637920/boundary/index.js",
+      "sha256": "1f525c98b67b2277f77125203b46ddab82cd7de4b0b5c9aeb748d22ccba5ce47"
+    }
+  },
+  {
+    "name": "storage",
+    "startedAt": "2026-09-05T07:14:40.661Z",
+    "finishedAt": "2026-09-05T07:14:44.096Z",
+    "command": [
+      "npx",
+      "wrangler",
+      "deploy",
+      "--config",
+      "infra/wrangler.m0-storage.jsonc",
+      "--env",
+      "staging",
+      "--dry-run",
+      "--outdir",
+      "/Users/gaojihe/apps/riffology-cloud/.local/m0-recovery-build-20260905070637920/storage",
+      "--containers-rollout=none"
+    ],
+    "exitCode": 0,
+    "environment": "local",
+    "deployed": false,
+    "bundle": {
+      "path": "/Users/gaojihe/apps/riffology-cloud/.local/m0-recovery-build-20260905070637920/storage/index.js",
+      "sha256": "2d289ffe5bfc125ff9762500f74d5b162f6a8ef2a66eb2a215f0e9481e0c2f8e"
+    }
+  },
+  {
+    "name": "files",
+    "startedAt": "2026-09-05T07:14:44.096Z",
+    "finishedAt": "2026-09-05T07:14:49.834Z",
+    "command": [
+      "npx",
+      "wrangler",
+      "deploy",
+      "--config",
+      "infra/wrangler.m0-files.jsonc",
+      "--env",
+      "staging",
+      "--dry-run",
+      "--outdir",
+      "/Users/gaojihe/apps/riffology-cloud/.local/m0-recovery-build-20260905070637920/files",
+      "--containers-rollout=none"
+    ],
+    "exitCode": 0,
+    "environment": "local",
+    "deployed": false,
+    "bundle": {
+      "path": "/Users/gaojihe/apps/riffology-cloud/.local/m0-recovery-build-20260905070637920/files/index.js",
+      "sha256": "ab3cb3fa35d2696f07b3afc58c465a15806119024210f9f43ee2c718bf72772e"
+    }
+  },
+  {
+    "name": "preview",
+    "startedAt": "2026-09-05T07:14:49.835Z",
+    "finishedAt": "2026-09-05T07:14:53.292Z",
+    "command": [
+      "npx",
+      "wrangler",
+      "deploy",
+      "--config",
+      "infra/wrangler.m0-preview.jsonc",
+      "--env",
+      "staging",
+      "--dry-run",
+      "--outdir",
+      "/Users/gaojihe/apps/riffology-cloud/.local/m0-recovery-build-20260905070637920/preview",
+      "--containers-rollout=none"
+    ],
+    "exitCode": 0,
+    "environment": "local",
+    "deployed": false,
+    "bundle": {
+      "path": "/Users/gaojihe/apps/riffology-cloud/.local/m0-recovery-build-20260905070637920/preview/index.js",
+      "sha256": "3558364c055615d848c84f8325d3df55f198fcfb528afe618567e212b9ba953e"
+    }
+  },
+  {
+    "name": "recovery",
+    "startedAt": "2026-09-05T07:14:53.293Z",
+    "finishedAt": "2026-09-05T07:14:56.437Z",
+    "command": [
+      "npx",
+      "wrangler",
+      "deploy",
+      "--config",
+      "infra/wrangler.m0-recovery.jsonc",
+      "--env",
+      "staging",
+      "--dry-run",
+      "--outdir",
+      "/Users/gaojihe/apps/riffology-cloud/.local/m0-recovery-build-20260905070637920/recovery",
+      "--containers-rollout=none"
+    ],
+    "exitCode": 0,
+    "environment": "local",
+    "deployed": false,
+    "bundle": {
+      "path": "/Users/gaojihe/apps/riffology-cloud/.local/m0-recovery-build-20260905070637920/recovery/index.js",
+      "sha256": "be4d36d8b1a2a81db212648d207f755bd9b98f4a69a3e089a5549a8b36e29ae8"
+    }
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-09-05T11:34:44.881Z",
+  "localChecksPassed": true,
+  "sourceStableSinceCheck": true,
+  "sourceSha256": "f62490bc7b01c1dd0373ec8a55ee25ce135967724f5611d0f33312242e9ca330",
+  "sourceFiles": 102,
+  "localChecksLogHashMatches": true,
+  "previewScopedSourceSha256": "f5c38924dbb30aefece17c91e53806f2cfbeab6d9d68ed409a7a23ee28754597",
+  "previewScopedSourceMatchesPreviousBrowserRun": true,
+  "previewBrowserNotRerunThisTurn": true,
+  "docs": {
+    "files": 23,
+    "links": 253,
+    "missing": []
+  },
+  "gitDiffCheck": "separately exit 0",
+  "cloudG0Accepted": false,
+  "stagingPassed": [
+    "G0-T06"
+  ],
+  "newRealProviderCalls": 0,
+  "supersedes": "final-verification.json docs URI classification only",
+  "correction": "chatgpt-conversation is a URI scheme, not a missing filesystem target; no source or document change"
+}

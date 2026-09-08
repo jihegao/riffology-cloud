@@ -1,0 +1,61 @@
+{
+  "buildx.build.provenance": {
+    "builder": {
+      "id": ""
+    },
+    "buildType": "https://mobyproject.org/buildkit@v1",
+    "materials": [
+      {
+        "uri": "pkg:docker/cloudflare/sandbox@0.12.9?digest=sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe\u0026platform=linux%2Famd64",
+        "digest": {
+          "sha256": "4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe"
+        }
+      }
+    ],
+    "invocation": {
+      "configSource": {
+        "entryPoint": "m0-trusted.Dockerfile"
+      },
+      "parameters": {
+        "frontend": "dockerfile.v0",
+        "locals": [
+          {
+            "name": "context"
+          },
+          {
+            "name": "dockerfile"
+          }
+        ],
+        "root": {
+          "configSource": {
+            "path": "m0-trusted.Dockerfile"
+          },
+          "request": {
+            "args": {
+              "vcs:localdir:context": ".local/m0-registry-alternative-local-20260905125524016/context",
+              "vcs:localdir:dockerfile": ".local/m0-registry-alternative-local-20260905125524016/context/infra",
+              "vcs:revision": "16219ffcaea7c83b8b89a2e542717eeada6fe275"
+            }
+          }
+        },
+        "compatibilityVersion": 20
+      },
+      "environment": {
+        "dockerfileVersion": "1.24.0",
+        "platform": "linux/arm64"
+      }
+    }
+  },
+  "buildx.build.ref": "default/default/qyahm524fgzepaqag4qkr25gl",
+  "containerimage.descriptor": {
+    "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+    "digest": "sha256:eab5723438fe6e5bc6482b79502b5e097639f1a14066ae3ac224e501904f41ac",
+    "size": 4615,
+    "platform": {
+      "architecture": "amd64",
+      "os": "linux"
+    }
+  },
+  "containerimage.digest": "sha256:eab5723438fe6e5bc6482b79502b5e097639f1a14066ae3ac224e501904f41ac",
+  "image.name": "docker.io/library/riffology-m0-trusted-alternative:20260905125524016-a3"
+}

@@ -1,0 +1,17 @@
+{
+  "observedAt": "2026-09-05T10:39:27.329Z",
+  "httpStatus": 200,
+  "success": true,
+  "latest": [
+    {
+      "id": "c45f1cd4-e5d9-4018-8879-4093d48a3a1f",
+      "versions": [
+        {
+          "version_id": "e0d311aa-ab18-4b55-9fd8-0c188376041b",
+          "percentage": 100
+        }
+      ],
+      "createdOn": "2026-09-05T10:35:58.516078Z"
+    }
+  ]
+}

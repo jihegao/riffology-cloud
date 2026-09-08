@@ -1,0 +1,259 @@
+{
+  "at": "2026-09-06T09:26:38.818Z",
+  "deployment": {
+    "result": {
+      "deployments": [
+        {
+          "id": "bd38f272-772e-407b-a59e-a98670144488",
+          "source": "wrangler",
+          "strategy": "percentage",
+          "author_email": "jihe.gao@gmail.com",
+          "annotations": {
+            "workers/message": "M0 T10 fixed release w2-retain; model calls dis...",
+            "workers/triggered_by": "upload"
+          },
+          "versions": [
+            {
+              "version_id": "cf882535-e7d0-4fd4-912d-85a88a65ceb7",
+              "percentage": 100
+            }
+          ],
+          "created_on": "2026-09-06T09:25:42.38053Z"
+        },
+        {
+          "id": "0434fd66-b1f6-460d-96ac-83a0defef63a",
+          "source": "wrangler",
+          "strategy": "percentage",
+          "author_email": "jihe.gao@gmail.com",
+          "annotations": {
+            "workers/message": "M0 T10 fixed release w1; model calls disabled",
+            "workers/triggered_by": "upload"
+          },
+          "versions": [
+            {
+              "version_id": "22f913a0-163f-41ad-b04f-9958ffae8872",
+              "percentage": 100
+            }
+          ],
+          "created_on": "2026-09-06T09:22:29.793343Z"
+        },
+        {
+          "id": "3164d0db-e44b-450b-ab46-a19e958bf077",
+          "source": "wrangler",
+          "strategy": "percentage",
+          "author_email": "jihe.gao@gmail.com",
+          "annotations": {
+            "workers/message": "M0 T10 fixed release w1; model calls disabled",
+            "workers/triggered_by": "upload"
+          },
+          "versions": [
+            {
+              "version_id": "998f94d9-edd7-45a2-a120-981e9225bd0b",
+              "percentage": 100
+            }
+          ],
+          "created_on": "2026-09-06T09:17:42.293284Z"
+        },
+        {
+          "id": "f1c47c2d-4e7d-4ecc-baed-a0e01e4917e7",
+          "source": "wrangler",
+          "strategy": "percentage",
+          "author_email": "jihe.gao@gmail.com",
+          "annotations": {
+            "workers/message": "M0 T10 restore W1 after expired release probe; no models",
+            "workers/triggered_by": "deployment"
+          },
+          "versions": [
+            {
+              "version_id": "cafb1c33-c559-4245-9fdf-707dd28120f0",
+              "percentage": 100
+            }
+          ],
+          "created_on": "2026-09-06T09:14:12.97544Z"
+        },
+        {
+          "id": "929a292a-e4bd-41c1-b62d-4d7a09e3c5e5",
+          "source": "wrangler",
+          "strategy": "percentage",
+          "author_email": "jihe.gao@gmail.com",
+          "annotations": {
+            "workers/message": "M0 T10 fixed release w2-rollout; model calls di...",
+            "workers/triggered_by": "upload"
+          },
+          "versions": [
+            {
+              "version_id": "fa130c14-76ca-4252-9aa9-6c1137ab2cf5",
+              "percentage": 100
+            }
+          ],
+          "created_on": "2026-09-06T09:08:22.44297Z"
+        },
+        {
+          "id": "94f97dff-8e18-403c-8546-9edab34026ee",
+          "source": "wrangler",
+          "strategy": "percentage",
+          "author_email": "jihe.gao@gmail.com",
+          "annotations": {
+            "workers/message": "M0 T10 fixed release w2-retain; model calls dis...",
+            "workers/triggered_by": "upload"
+          },
+          "versions": [
+            {
+              "version_id": "e9f81c50-aa01-41e0-9356-abb1cef9beb2",
+              "percentage": 100
+            }
+          ],
+          "created_on": "2026-09-06T09:06:22.127014Z"
+        },
+        {
+          "id": "52caffd7-4375-4e30-ad33-3f6505fb9bfa",
+          "source": "wrangler",
+          "strategy": "percentage",
+          "author_email": "jihe.gao@gmail.com",
+          "annotations": {
+            "workers/message": "M0 T10 fixed release w1; model calls disabled",
+            "workers/triggered_by": "upload"
+          },
+          "versions": [
+            {
+              "version_id": "cafb1c33-c559-4245-9fdf-707dd28120f0",
+              "percentage": 100
+            }
+          ],
+          "created_on": "2026-09-06T09:00:33.590403Z"
+        },
+        {
+          "id": "fbd245c8-9c10-4d31-a2b7-18484224ebf2",
+          "source": "wrangler",
+          "strategy": "percentage",
+          "author_email": "jihe.gao@gmail.com",
+          "annotations": {
+            "workers/message": "M0 T10 fixed release w1; model calls disabled",
+            "workers/triggered_by": "upload"
+          },
+          "versions": [
+            {
+              "version_id": "9997f467-e052-4da8-8314-6df1f4660af4",
+              "percentage": 100
+            }
+          ],
+          "created_on": "2026-09-06T08:59:08.007856Z"
+        }
+      ]
+    },
+    "success": true,
+    "errors": [],
+    "messages": [],
+    "status": 200
+  },
+  "applications": {
+    "success": true,
+    "result": [
+      {
+        "id": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+        "created_at": "2026-09-06T09:00:35.960999936Z",
+        "updated_at": "2026-09-06T09:18:20.718000128Z",
+        "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+        "name": "riffology-m0-release-staging",
+        "version": 3,
+        "scheduling_policy": "default",
+        "instances": 1,
+        "max_instances": 1,
+        "configuration": {
+          "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+          "vcpu": 0.25,
+          "memory": "1GiB",
+          "memory_mib": 1024,
+          "disk": {
+            "size_mb": 4000,
+            "size": "4GB"
+          },
+          "network": {
+            "assign_ipv6": "none",
+            "assign_ipv4": "none",
+            "mode": "private"
+          },
+          "command": [],
+          "entrypoint": [],
+          "runtime": "firecracker",
+          "observability": {
+            "logs": {
+              "enabled": true
+            }
+          }
+        },
+        "constraints": {
+          "tiers": [
+            1,
+            2
+          ]
+        },
+        "durable_objects": {
+          "namespace_id": "b3b02828c43a4578bc512cf4235903db"
+        },
+        "rollout_active_grace_period": 0,
+        "health": {
+          "errors": [],
+          "instances": {
+            "active": 1,
+            "assigned": 0,
+            "healthy": 0,
+            "stopped": 0,
+            "failed": 0,
+            "scheduling": 0,
+            "starting": 0
+          }
+        },
+        "network": {
+          "bandwidth_limit_mbps": 250
+        }
+      }
+    ]
+  },
+  "instances": {
+    "success": true,
+    "result": {
+      "instances": [
+        {
+          "id": "9c0e4e8e82b19a601302a6eb0d1721687e6f6a2d4e941c04ca0cb7d3370d878e",
+          "application_id": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+          "started_at": "2026-09-06T09:19:18.150000128Z",
+          "status": {
+            "state": "running",
+            "updated_at": "2026-09-06T09:23:36.116Z"
+          },
+          "location": {
+            "name": "nrt14",
+            "region": "APAC"
+          },
+          "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+          "name": "m0-release-g0-v3-20260906-old"
+        },
+        {
+          "id": "8b301cc2ae4ef108659d1c3c01ffeb69f5bf6fdcf60a8f1f89988f715eff8825",
+          "application_id": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+          "status": {
+            "state": "inactive",
+            "updated_at": "2026-09-06T09:12:15Z"
+          },
+          "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+          "name": "m0-release-g0-20260906-old"
+        },
+        {
+          "id": "b5c6735ad1c187dde0e9189a8814643b4d18bb4d45b6e9514f4ce21403e12b71",
+          "application_id": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+          "status": {
+            "state": "inactive",
+            "updated_at": "2026-09-06T09:19:18Z"
+          },
+          "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+          "name": "m0-release-g0-v2-20260906-old"
+        }
+      ]
+    },
+    "errors": [],
+    "messages": [],
+    "result_info": {},
+    "status": 200
+  }
+}

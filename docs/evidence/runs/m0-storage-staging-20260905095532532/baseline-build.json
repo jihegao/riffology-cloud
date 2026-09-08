@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "path": "spikes/m0-storage/index.ts",
+      "sha256": "7793e34949306a9345544b3c1c8506d9bb3a9f3e149874b775e5324e2f86112a"
+    },
+    {
+      "path": "spikes/m0-cloud/auth.ts",
+      "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+    },
+    {
+      "path": "spikes/m0-storage/checkpoint.ts",
+      "sha256": "74bd5c364ca5e5d51ad3f46256cda910c5807c26b5fd7cb3b488e91fb13ed73a"
+    },
+    {
+      "path": "spikes/m0-storage/adapters.ts",
+      "sha256": "2216554bd0979a8798eb20d517e74c7dc9affcf0e141efc853c3beafcfb0f490"
+    }
+  ],
+  "verifiedAgainst": "m0-local-20260905095449467",
+  "bundlePath": "/Users/gaojihe/apps/riffology-cloud/infra/.local/m0-storage-staging-20260905095532532/index.js",
+  "bundleSha256": "2d289ffe5bfc125ff9762500f74d5b162f6a8ef2a66eb2a215f0e9481e0c2f8e",
+  "configSha256": "af04af220f7450b390f4a2743c50cd1fe80bf177d3b2a75df81cf3b41040f240",
+  "outdirResolution": "Wrangler resolved relative --outdir against infra; bundle located and source-map content matched to passed check",
+  "deployed": false
+}

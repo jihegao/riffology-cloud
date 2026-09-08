@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-09-05T08:41:54.138Z",
+  "environment": "local",
+  "images": [
+    {
+      "id": "sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721",
+      "architecture": "amd64",
+      "tags": [
+        "cloudflare-dev/trustedsandbox:54743ab9",
+        "riffology-m0-trusted-staging:worker"
+      ]
+    },
+    {
+      "id": "sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+      "architecture": "amd64",
+      "tags": [
+        "cloudflare-dev/previewsandbox:39571a58",
+        "riffology-m0-preview-staging:worker",
+        "riffology-m0-project-staging:worker"
+      ]
+    }
+  ]
+}

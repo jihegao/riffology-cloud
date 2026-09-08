@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "run_id": "m0-g0-t03-cloud-20260906",
+  "recorded_at": "2026-09-06T06:51:06.094Z",
+  "gate_id": "G0-T03",
+  "case_id": "gate-summary",
+  "status": "passed",
+  "observed_at": "2026-09-06T06:51:06.031122+00:00",
+  "environment": "staging",
+  "git_sha": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+  "versions": {
+    "wrangler": "4.129.0",
+    "worker_version": "b30e9f9d-dc60-4ea3-985c-6c6291f20513",
+    "protocol": "m0-v1",
+    "bundle_sha256": "eb3a8f791810661affa65e2f5d986a793e3a0a385ca9f6ff9f711a3ada0f8e6c",
+    "scoped_source_sha256": "96ea60703726c3eef146227a62c400277e85d533143a84938b89ea00a686dc44",
+    "trusted_image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+    "source_state": "uncommitted working tree; frozen current source, text module and deployment hashes authoritative"
+  },
+  "command": "node --use-env-proxy scripts/m0/resource-loading-cloud.mjs --deployment docs/evidence/runs/m0-resource-deploy-20260906/deployment-verified.json; primary and independent read-only reviews",
+  "evidence_paths": [
+    "m0-resource-cloud-1788676841756/summary.json",
+    "m0-resource-cloud-1788676841756/actions.ndjson",
+    "m0-resource-deploy-20260906/deployment-verified.json",
+    "m0-resource-deploy-20260906/build.json",
+    "m0-resource-deploy-20260906/deploy-result.json",
+    "m0-resource-deploy-20260906/deployment-api.json",
+    "m0-resource-deploy-20260906/final-api.json",
+    "m0-resource-deploy-20260906/primary-review.json",
+    "m0-resource-deploy-20260906/predeploy-review.json",
+    "m0-resource-deploy-20260906/independent-review.json",
+    "m0-local-20260906063733403/local-checks.json"
+  ],
+  "evidence_sha256": [
+    "31c6f51c4fddb702718b309db192a05b7f14b7195100340a4a606786732c1629",
+    "b921250e49fa2626413235d343b84b5755d2c645876427f8aeb578d14f309326",
+    "dcf26e0ffda2e23b67a0208b5309f741b784fe6291bdab821535ce6fde162ae5",
+    "09f29c46a7a7556f4f0328e91c372cd497ad57fb3df5d1914f899dcc5c16e8ee",
+    "54f2e8e461370fc37815e870cd560a09d72ce9d7194233f6d7668616a0f31725",
+    "4a65eb2f6b1499ae3feab1703be0ac52bcb7775dade0a397e702b1a95f579279",
+    "5a207e3064d8709a65b8335b1f91562e642b6e4528e8ff35def4aa2562fbbc6c",
+    "aad07d15c71bad4e15548c70a9c237e2c91ce4b4ab5f1158e66a7861fc55b7f5",
+    "2b94b9e121ce940334a1fd0d89b5007c07bb3416f942a0bf0597e6d0eaa922c7",
+    "317d46d8a7492fa55c86b9c922a8527e3a287769e085c90ef340c3e0e6b44ad0",
+    "a6b34ec054f8dff4e43a598b9aea165d29c79630c80a4f0ee264dc3dee7dd734"
+  ],
+  "conclusion": "Original G0-T03 passed in actual cloud VM with locked Pi SDK. First and snapshot-restored sessions reject on-disk malicious extensions, skills, settings/models and tools; fixed Skill is in actual wire requests, restored history present. Same fixtures are then discovered by normal SDK, including actual marker-writing extension and malicious tool registration. Exactly one accept, 8 requests, no retries/unknown mutations; unique instance inactive with pinned image. Current source, bundle and text module match. Fixed discovery controls in same supervised process, not arbitrary-code sandboxing, production identity, T01/T09 or full G0 acceptance. Two fixed SSE requests, zero actual supplier calls. DO audit retained."
+}

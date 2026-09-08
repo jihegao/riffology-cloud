@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-project-effect-supervisor-20260907",
+  "observedAt": "2026-09-06T16:36:54Z",
+  "environment": "local",
+  "decision": "accepted-as-unwired-project-effect-domain-layer",
+  "source": {
+    "fileServiceSha256": "a1f58ccb0760013f164e811f576f216e21c2895b4fab7dc9059ff206a40a95cb",
+    "effectPortSha256": "5e773edf2f1f63734d109da81952c5e6df25196d9f8cebdc30d5c8411ee77fa0",
+    "effectSupervisorSha256": "eb0cf674acf8ca36e29c9a83ee7f2c97c188d9e268a841043b66c65213524db8",
+    "toolDispatcherSha256": "175443d9be6f7c992845a4ebb11b1dcfd000d9d50fb84510a44cf56815970038",
+    "projectFilesTestSha256": "988057829219c0554420f9c4ad9bee981fe1ca8a4e375ee8767c40e9acf30e9e",
+    "projectEffectTestSha256": "ca8215affac94bd8bdf57937a30c43b7b56019aab796c61c6549c5b47c0120ca",
+    "projectSupervisorTestSha256": "756cad099bb030fef174f3e7407d6219391496772cf0587bb2266278201e35cd"
+  },
+  "fullChecks": {
+    "path": "../m0-local-20260906163607922/local-checks.json",
+    "sha256": "dd5d36c5655444d5ef3c4cf6868a818667adcffef47dbc60c7187774a2c3ba0b",
+    "passed": true,
+    "sourceStableDuringCheck": true,
+    "sourceCount": 273,
+    "sourceSha256": "551864cc8f0e03add12d89657276e5c13580e3ffdd321113d6eb2268a08ddc72",
+    "m0": { "pass": 348, "skip": 1, "fail": 0 },
+    "m1": { "pass": 107, "skip": 0, "fail": 0 },
+    "m2": { "pass": 85, "skip": 0, "fail": 0 }
+  },
+  "reviewedRiskClusters": [
+    {
+      "risk": "Path validation followed by pathname I/O allowed parent-directory replacement races.",
+      "resolution": "The discarded TypeScript implementation was replaced with root-fd traversal using dir_fd and O_NOFOLLOW, plus deterministic before-commit and after-commit race tests."
+    },
+    {
+      "risk": "A deadline interruption leaked a directory fd and a failure after atomic replace could be reported as retryable failed.",
+      "resolution": "All traversal errors close the current fd; every uncertainty after replace returns unknown with exit code 4."
+    },
+    {
+      "risk": "File helper output could exceed the 16 KiB durable receipt result and poison a successful read as unknown.",
+      "resolution": "Helper output is receipt-bounded and oversized read-only results terminate with project-tool-result-too-large until an immutable artifact channel exists."
+    },
+    {
+      "risk": "Observe lacked the immutable operation and could never reconstruct a terminal receipt after the first response was lost.",
+      "resolution": "Observe now receives the retained command, verifies its digest and complete identity before native observation, and decodes exited output without issuing another start."
+    },
+    {
+      "risk": "A plain native process call had no durable proof that its one allowed start was already emitted.",
+      "resolution": "The SQLite supervisor syncs a prepared start digest before native start, then permits only observation for every existing effect row."
+    }
+  ],
+  "independentFinalReview": {
+    "p0": 0,
+    "p1": 0,
+    "conclusion": "No remaining P0 or P1 was found in the file helper, effect envelope, ToolDispatcher observe contract, or SQLite supervisor domain layer."
+  },
+  "acceptedProperties": [
+    "The project helper receives no tenant, Turn, dispatch, command or effect identity and cannot author the receipt envelope.",
+    "Exit code 4, unknown, start-response loss, native absent after preparation, and ambiguous mutation output never become retryable failure.",
+    "A retained command digest and complete scope bind terminal recovery after response loss.",
+    "A prepared effect is synced before native start and the same effectId cannot receive a second native start.",
+    "Exited output survives SQLite reopen; malformed active rows and start digests fail closed.",
+    "Program, argv, cwd, environment, stdin size and timeout are fixed or bounded before native start."
+  ],
+  "notAccepted": [
+    "NativeProjectEffectPort implementation in a real Project Sandbox",
+    "Project Sandbox product image and real Linux filesystem or ambient-secret validation",
+    "immutable artifact delivery for read, list or search results above 16 KiB",
+    "serialization or content preconditions for competing project writers",
+    "startup garbage collection for temporary files left by process death",
+    "Bash process registry, executor deadline recheck, watchdog, cancellation and native-stop receipt",
+    "WorkspaceAgent alarm and real Pi Runtime",
+    "R2 Revision and Pi Session checkpoint",
+    "authenticated cloud SSE and user workbench flow"
+  ],
+  "mutations": {
+    "cloudDeploy": false,
+    "cloudResourceCreate": false,
+    "modelCalls": 0,
+    "commit": false,
+    "push": false
+  }
+}

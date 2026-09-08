@@ -1,0 +1,52 @@
+{
+  "observedAt": "2026-09-06T02:42:21.891Z",
+  "vmRequests": 0,
+  "modelRequests": 0,
+  "cases": [
+    {
+      "mode": "complete",
+      "expectedStatus": 200,
+      "httpStatus": 200,
+      "bodyObservation": {
+        "version": 1,
+        "authMs": 0,
+        "readStartMs": 0,
+        "firstReadMs": 0,
+        "eofMs": 0,
+        "timerMs": -1,
+        "chunks": 1,
+        "bytes": 77,
+        "outcome": "complete"
+      },
+      "fixtureOnly": true,
+      "capabilityIssued": true,
+      "invalidBody": false,
+      "expectedStatusMatched": true,
+      "elapsedMs": 5842
+    },
+    {
+      "mode": "delayed",
+      "expectedStatus": 400,
+      "firstFlushMs": 1,
+      "lastWriteMs": 2103,
+      "httpStatus": 200,
+      "bodyObservation": {
+        "version": 1,
+        "authMs": 0,
+        "readStartMs": 0,
+        "firstReadMs": 0,
+        "eofMs": 0,
+        "timerMs": -1,
+        "chunks": 1,
+        "bytes": 77,
+        "outcome": "complete"
+      },
+      "fixtureOnly": true,
+      "capabilityIssued": true,
+      "invalidBody": false,
+      "expectedStatusMatched": false,
+      "elapsedMs": 2199
+    }
+  ],
+  "fullDeadlineGatePassed": false
+}

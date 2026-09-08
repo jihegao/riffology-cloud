@@ -1,0 +1,44 @@
+[
+  {
+    "repo": "docker.io/jihegao/riffology-m0-trusted-proxy",
+    "digest": "sha256:f81f4a720b08330f7bfb48beaa1aa3ef420da9a925ff2f955897c6c8a02dc7ec",
+    "exitCode": 1,
+    "exists": false,
+    "notFound": true
+  },
+  {
+    "repo": "docker.io/cloudflare/sandbox",
+    "digest": "sha256:f81f4a720b08330f7bfb48beaa1aa3ef420da9a925ff2f955897c6c8a02dc7ec",
+    "exitCode": 0,
+    "exists": true,
+    "notFound": false
+  },
+  {
+    "repo": "docker.io/jihegao/riffology-m0-trusted-proxy",
+    "digest": "sha256:5f06475c22fdc31cfe5f04907f567ef4b821980741c9f3c3a46e9c2fe81fb2a1",
+    "exitCode": 1,
+    "exists": false,
+    "notFound": true
+  },
+  {
+    "repo": "docker.io/cloudflare/sandbox",
+    "digest": "sha256:5f06475c22fdc31cfe5f04907f567ef4b821980741c9f3c3a46e9c2fe81fb2a1",
+    "exitCode": 0,
+    "exists": true,
+    "notFound": false
+  },
+  {
+    "repo": "docker.io/jihegao/riffology-m0-trusted-proxy",
+    "digest": "sha256:66ffba5a7573966afbf9466bb673db8e8ad840be64a648c90433781830628997",
+    "exitCode": 1,
+    "exists": false,
+    "notFound": true
+  },
+  {
+    "repo": "docker.io/cloudflare/sandbox",
+    "digest": "sha256:66ffba5a7573966afbf9466bb673db8e8ad840be64a648c90433781830628997",
+    "exitCode": 1,
+    "exists": false,
+    "notFound": true
+  }
+]

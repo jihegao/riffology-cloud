@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-09-06T02:43:11.525Z",
+  "latest": {
+    "id": "a480d56f-98eb-4e95-8515-b3fe17553355",
+    "source": "wrangler",
+    "strategy": "percentage",
+    "author_email": "jihe.gao@gmail.com",
+    "annotations": {
+      "workers/message": "Automatic deployment on upload.",
+      "workers/triggered_by": "upload"
+    },
+    "versions": [
+      {
+        "version_id": "a74ded2f-40dd-4cba-b33e-62bfb1b3d855",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-09-06T02:41:10.456057Z"
+  },
+  "bundleSha256": "94ef4523d80e85515c985c1d6b0c4c063a4fc6faab72a25f73506016055e9a3e",
+  "configSha256": "90f87013d8699c63d929dd2ca537f52ce1859f05f618926bb623aa495e8c5f34",
+  "localChecks": "m0-local-20260906023949819",
+  "imageChanges": false
+}

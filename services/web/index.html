@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f6f8f5"><title>Riffology Cloud</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./workspace.css">
+</head>
+<body>
+  <a class="skip" href="#main">跳到主要内容</a>
+  <header class="topbar"><a class="brand" href="/" aria-label="Riffology Cloud 首页"><span class="mark">R</span><span>Riffology <small>cloud</small></span></a><div id="account"><button id="sign-out" class="button" hidden>退出</button></div></header>
+  <main id="main" class="container" tabindex="-1">
+    <section id="notice" class="notice" role="status" aria-live="polite" hidden></section>
+    <section id="login" class="card login"><p class="eyebrow">PRIVATE WORKSPACE</p><h1>进入你的创作空间</h1><p>使用受邀请的 Google 账号登录，开始一个新的项目。</p><button id="google" class="button primary">使用 Google 登录</button></section>
+    <section id="app" hidden>
+      <div class="heading"><div><p class="eyebrow">PROJECTS</p><h1>你的项目</h1><p>个人空间</p></div><button id="new-project" class="button primary">新建项目</button></div>
+      <section class="model-library card" aria-labelledby="models-heading"><div class="section-heading"><div><p class="eyebrow">MODEL LIBRARY</p><h2 id="models-heading">官方模型</h2><p id="models-status" class="meta">正在加载官方模型…</p></div><button id="models-refresh" class="button compact" type="button">刷新目录</button></div><div id="models" class="model-grid" aria-live="polite"></div></section>
+      <div id="projects" class="project-grid" aria-live="polite"></div>
+    </section>
+    <section id="workspace" hidden>
+      <div class="workspace-head"><button id="workspace-back" class="button" type="button">← 返回项目</button><div><p class="eyebrow">PROJECT WORKSPACE</p><h1 id="workspace-title"></h1><p id="workspace-meta" class="meta"></p></div></div>
+      <div class="boundary-note"><strong>职责边界</strong><span>平台负责身份、Session、Turn、预算、保存与恢复；项目内 Pi 只通过受控工具读写本项目文件并运行仿真。</span></div>
+      <div class="workspace-grid">
+        <div class="workspace-main">
+          <div class="session-controls" aria-label="Session 管理"><label for="session-select">当前 Session</label><select id="session-select"></select><button id="new-session" class="button" type="button">新建 Session</button></div>
+          <div id="turns" class="turn-list" aria-live="polite"></div>
+          <form id="message-form" class="composer">
+            <label for="message-input">告诉 Pi 你想构建或修改什么</label>
+            <textarea id="message-input" rows="4" maxlength="16000" required placeholder="例如：创建一个单服务台排队模型，并解释等待时间如何变化。"></textarea>
+            <div class="composer-actions"><span id="message-error" role="status"></span><button id="cancel-turn" class="button" type="button" hidden>停止回合</button><button id="message-submit" class="button primary" type="submit">发送</button></div>
+          </form>
+        </div>
+        <aside class="files-panel" aria-labelledby="files-heading"><div class="files-heading"><div><p class="eyebrow">SAVED REVISION</p><h2 id="files-heading">项目文件</h2></div><button id="files-refresh" class="button compact" type="button">刷新</button></div><div class="artifact-tabs" role="tablist" aria-label="版本视图"><button id="files-tab" role="tab" aria-selected="true" aria-controls="workspace-files" type="button">Files</button><button id="diff-tab" role="tab" aria-selected="false" aria-controls="workspace-diff" type="button">Diff</button></div><section id="files-view"><p id="files-meta" class="meta"></p><div id="workspace-files" class="file-list" role="tabpanel" aria-labelledby="files-tab" aria-live="polite"></div></section><section id="diff-view" hidden><p id="diff-meta" class="meta"></p><div id="workspace-diff" class="file-list" role="tabpanel" aria-labelledby="diff-tab" aria-live="polite"></div></section></aside>
+      </div>
+    </section>
+    <section id="invitation" class="invite card" hidden><div><h2>启用个人空间</h2><p>输入收到的邀请码。</p></div><form id="invite-form"><label class="sr-only" for="invite-token">邀请码</label><input id="invite-token" autocomplete="off" placeholder="粘贴邀请码" required><button class="button" type="submit">接受邀请</button></form></section>
+  </main>
+  <dialog id="project-dialog"><form id="project-form" class="card"><button id="project-close" class="close" type="button" aria-label="关闭">×</button><p class="eyebrow">NEW PROJECT</p><h2>创建项目</h2><label for="project-title">项目名称</label><input id="project-title" required maxlength="120" placeholder="例如：排队仿真"><label for="project-model">项目来源</label><select id="project-model"><option value="">空白项目</option></select><p id="project-error" role="status"></p><div class="dialog-actions"><button id="project-cancel" class="button" type="button">取消</button><button id="project-submit" class="button primary" type="submit">创建</button></div></form></dialog>
+  <script type="module" src="./app.js"></script>
+</body></html>

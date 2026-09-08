@@ -1,0 +1,13 @@
+{
+  "verified": true,
+  "mode": "independent Wrangler remote R2 GET",
+  "manifestSha256": "518090fb384338b9e63ddbdf091ea03f2ce2198d347b8e509c165947dc4753a7",
+  "stateSha256": "fe44e2085de9f5c29980f1a6c8a84a8c340131a8fefc9135a265d2667bde7b5c",
+  "manifestBytes": 220,
+  "stateBytes": 24,
+  "state": {
+    "schema": 1,
+    "counter": 2
+  },
+  "bothGetExitCode": 0
+}

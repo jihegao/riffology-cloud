@@ -1,0 +1,30 @@
+{
+  "label": "deploy",
+  "startedAt": "2026-09-05T10:28:49.028Z",
+  "finishedAt": "2026-09-05T10:29:03.126Z",
+  "command": [
+    "/opt/homebrew/Cellar/node/25.3.0/bin/node",
+    "/Users/gaojihe/apps/riffology-cloud/node_modules/wrangler/bin/wrangler.js",
+    "deploy",
+    "--config",
+    "/Users/gaojihe/apps/riffology-cloud/.local/m0-storage-cloud-deploy-20260905102546347/wrangler.frozen.jsonc",
+    "--env",
+    "staging",
+    "--no-bundle",
+    "--secrets-file",
+    "/Users/gaojihe/apps/riffology-cloud/.local/cloud-staging/storage.secrets.json",
+    "--message",
+    "m0-storage-cloud-deploy-20260905102546347"
+  ],
+  "exitCode": 0,
+  "signal": null,
+  "timedOut": false,
+  "overflow": false,
+  "launchError": null,
+  "logSha256": "2e66bc0918760e8d1f6fa7d0ec3f283704c5b1c0d0263e947819df2ab423de7d",
+  "success": true,
+  "observedVersion": "91f94ed8-227d-4360-afdf-f610ab749de6",
+  "bundleSha256": "0dcb394f8d32dd57fb516da457a55e6f4ba0fa827741316355f0ad408c2ad4c4",
+  "priorBaselineVersion": "c2dd3dd5-ac4c-4ce3-afa6-74f90369000b",
+  "frozenBytesUnchanged": true
+}

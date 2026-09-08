@@ -1,0 +1,2 @@
+78751 trusted persistent terminal handle (initial tool window; no active process after completion)
+74014 project persistent terminal handle (no active process after completion)

@@ -1,0 +1,40 @@
+{
+  "observedAt": "2026-09-05T09:46:38.164Z",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "readOnly": true,
+  "checks": [
+    {
+      "name": "bucket",
+      "status": 200,
+      "success": true,
+      "errors": [],
+      "result": {
+        "name": "riffology-m0-checkpoints-staging",
+        "creation_date": "2026-09-05T09:45:33.136Z",
+        "location": "APAC",
+        "storage_class": "Standard",
+        "jurisdiction": "default"
+      }
+    },
+    {
+      "name": "publicDevelopmentDomain",
+      "status": 200,
+      "success": true,
+      "errors": [],
+      "result": {
+        "enabled": false,
+        "bucketId": "9fb9ad0b59a54b2199c7c46444f4d0d6",
+        "domain": "pub-9fb9ad0b59a54b2199c7c46444f4d0d6.r2.dev"
+      }
+    },
+    {
+      "name": "customDomains",
+      "status": 200,
+      "success": true,
+      "errors": [],
+      "result": {
+        "domains": []
+      }
+    }
+  ]
+}

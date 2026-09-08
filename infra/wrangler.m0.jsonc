@@ -1,0 +1,33 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "riffology-m0-probe",
+  "main": "../spikes/m0-cloud/index.ts",
+  "compatibility_date": "2026-09-05",
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_do_not_populate_process_env"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": true },
+  "env": {
+    "staging": {
+      "name": "riffology-m0-probe-staging",
+      "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+      "workers_dev": true,
+      "vars": { "ENVIRONMENT": "staging", "PROTOCOL_VERSION": "m0-v1", "M0_EXECUTION_ENVIRONMENT": "cloudflare-vm" },
+      "secrets": { "required": ["M0_PROBE_TOKEN"] },
+      "containers": [
+        { "name": "riffology-m0-trusted-staging", "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67", "instance_type": "basic", "max_instances": 2 },
+        { "name": "riffology-m0-project-staging", "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e", "instance_type": "basic", "max_instances": 2 }
+      ],
+      "exports": {
+        "TrustedSandbox": { "type": "durable-object", "storage": "sqlite", "container": "riffology-m0-trusted-staging" },
+        "ProjectSandbox": { "type": "durable-object", "storage": "sqlite", "container": "riffology-m0-project-staging" }
+      },
+      "durable_objects": {
+        "bindings": [
+          { "name": "TrustedSandbox", "class_name": "TrustedSandbox" },
+          { "name": "ProjectSandbox", "class_name": "ProjectSandbox" }
+        ]
+      }
+    }
+  }
+}

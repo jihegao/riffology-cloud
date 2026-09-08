@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-turn-base-lineage-local-20260907",
+  "createdAt": "2026-09-06T20:00:35.564Z",
+  "environment": "local",
+  "status": "passed",
+  "accepted": true,
+  "scope": "M2 immutable workspace and Pi Session base lineage from claim through checkpoint",
+  "git": {
+    "head": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+    "branch": "codex/m0-runtime-foundation",
+    "dirty": true,
+    "committed": false,
+    "pushed": false,
+    "remoteConfigured": false
+  },
+  "sourceHashes": {
+    "services/turn/protocol.ts": "b7e37c69e50f38ae07dd44c3e86eda57bb23330610695f90bcced9390ce52b1b",
+    "services/turn/journal.ts": "9161c26365be38a27c244abe872a3631eba5bd961fa913fa4122524e83e9dac4",
+    "services/turn/store.ts": "d8532a2b60ee8e9aeb30d8c34845a4ddaa2c39739a742d1fcd1b87a9f76904f2",
+    "services/turn/dispatcher.ts": "28edb7abab5dcde94a9b299f5440d8ef2f4d988c75ba4a9391b73bc4c78e6887",
+    "services/turn-runtime/core.ts": "914564da8a7f8884215e6a7894a7d5ee4352954edbd98278f108d0b9ecd93a17",
+    "services/turn-runtime/pi-execution.ts": "83701be9b3678ec6a8cfbd75e81fde37919d8d2ce87281965165101a2e13f096",
+    "services/turn-runtime/pi-native.ts": "0074cc643bc4ee6dbcb86e0013c47375197dc54b09ba6e68daf2781c71e1b865",
+    "services/turn-runtime/revision.ts": "6c6f778505954955bf0d7ed2fcc4141afcae49a42276ec95d4f670a079f657f1",
+    "tests/m2/turn-journal.test.ts": "2796052a4a2cde35a1dc3f6687c659066fc21a5ad9ee15580974a4ed18f3fc22",
+    "tests/m2/turn-store.test.ts": "beedca12d8d90a3bc85e8da68a3edda854841887d452c4c82b9e0b414dfac7f6",
+    "tests/m2/turn-dispatcher.test.ts": "64aa59700aef8a7864562150f3c9e94cd4442330e8135962100e8018b698bf95",
+    "tests/m2/product-turn-runtime.test.ts": "0aea920faea46249aef78e2f0bcb09d874c58543f161f8ed9fc954f3f56044c2",
+    "tests/m2/trusted-pi-native.test.ts": "239537bb331ef17acf8ca11cc3fe85ab1100788f157d0d1c2be302ee8b304958",
+    "tests/m2/turn-revision.test.ts": "30d702f2b1f8b080a49f236a63ae4e1e29bb5b2867f23910d791ada3e167bbc7",
+    "tests/m2/project-files.test.mjs": "cc536f38e421d77a8bbcb681dea4b342c34125348acb888870cd8a039f3ad2e7"
+  },
+  "review": {
+    "independentAgent": "/root/pi_runtime_reuse_audit",
+    "findings": [
+      "P1: a Turn had no immutable workspace or Pi Session input checkpoint, so retry or restore could observe a different base",
+      "P1: parentRevisionId was an opaque snapshot value without existence, scope or Session verification"
+    ],
+    "resolution": [
+      "WorkspaceAgent journal schema v2 stores the latest workspace head and each Session head, then freezes both receipts in the same transaction that claims a Turn",
+      "Dispatcher, Product Runtime, Trusted Pi execution/native adapters and Revision manifest carry the exact frozen base",
+      "Trusted Pi genesis requires no input Session; restore requires bytes whose SHA-256 equals the frozen Session receipt",
+      "Revision commit reads and validates every claimed base manifest and blob before freezing output, including tenant/project/workspace/generation and Session ownership",
+      "durable state rejects rolled-back heads, forged receipts and cross-Session base references before execution"
+    ],
+    "remainingP0": 0,
+    "remainingP1": 0
+  },
+  "verification": {
+    "fullRepositoryCheck": {
+      "record": "../m1-local-20260906200000137/local-checks.json",
+      "recordSha256": "4770d4d7477c73e4e102d9d49fb34d2a8eab4920277121de30ce09ffac6b8915",
+      "sourceSha256": "e19f06203ce851e72823802dc1b89151f44af7b9a375f2867527f6f99d01a58c",
+      "sourceFiles": 317,
+      "sourceStableDuringCheck": true,
+      "logSha256": "03e2bbb399558b372ad7e39d51955ff42b09234039e163243aa28b11a9449621",
+      "m0": { "tests": 349, "passed": 348, "failed": 0, "skipped": 1 },
+      "m1": { "tests": 108, "passed": 108, "failed": 0, "skipped": 0 },
+      "m2": { "tests": 161, "passed": 161, "failed": 0, "skipped": 0 }
+    },
+    "coverage": [
+      "genesis workspace and Session bases",
+      "workspace-wide head with per-Session head",
+      "Dispatcher exact base forwarding",
+      "Product Runtime idempotency digest includes the base",
+      "Trusted Pi restore digest equality",
+      "R2 base manifest and blob existence, digest, scope and Session checks",
+      "legacy v1 state migration on the next mutation",
+      "head rollback, forged receipt and cross-Session state corruption",
+      "macOS one-shot file helper boundary without an unbounded test subprocess"
+    ]
+  },
+  "boundaries": {
+    "productPlatform": [
+      "head selection, claim-time freezing, receipt validation, Runtime routing and Revision authority are platform functions",
+      "project Pi receives only the verified Session bytes selected by the platform and cannot choose or rewrite base receipts"
+    ],
+    "notAccepted": [
+      "ProductTurnRuntime Durable Object binding",
+      "WorkspaceAgent engine wiring",
+      "real Workspace canonical archive and restore",
+      "real Pi Session restore in a built cloud image",
+      "cloud Turn execution or M2 completion"
+    ],
+    "modelCalls": 0,
+    "cloudDeployments": 0,
+    "cloudMutations": 0,
+    "legacyRiffologyDemoRestored": false,
+    "ui4173Preserved": true
+  }
+}

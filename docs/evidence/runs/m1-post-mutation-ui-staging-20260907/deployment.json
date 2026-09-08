@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "runId": "m1-post-mutation-ui-staging-20260907",
+  "observedAt": "2026-09-06T17:03:37Z",
+  "environment": "staging",
+  "decision": "accepted-as-post-mutation-ui-release",
+  "change": {
+    "problem": "A successful invitation or project mutation could be followed by one stale-looking list response, making the confirmed resource temporarily disappear from the UI.",
+    "behavior": "Invitation acceptance uses its returned tenantId immediately. Project creation keeps the returned project visible until an authoritative list contains the same project id.",
+    "appSha256": "8f7b85c6ac37fa8f30637b56808dbdfbf7306780631d9dad0505e74494ac96a4",
+    "browserTestSha256": "4a4d7ac09c4a2b917f00a5b39aedd456198521bb53d1de7df03960c071153027"
+  },
+  "validation": {
+    "fullChecks": {
+      "path": "../m1-local-20260906170108074/local-checks.json",
+      "sha256": "174f8911da1d7730176715678d9a0dfe4ee2b68cb59e11900013c018bb197984",
+      "passed": true,
+      "sourceStableDuringCheck": true,
+      "sourceSha256": "9ead26bf77a216bc2bc7323e6d04578cfd601fe6785b752def43266b82a55f7d",
+      "m0": { "pass": 348, "skip": 1, "fail": 0 },
+      "m1": { "pass": 108, "skip": 0, "fail": 0 },
+      "m2": { "pass": 85, "skip": 0, "fail": 0 }
+    },
+    "cloudPreflight": { "passed": true, "checks": 20 },
+    "homeStatus": 200,
+    "unauthenticatedMeStatus": 401,
+    "authenticatedBrowser": {
+      "projectPage": "G1 云验收项目 / 就绪 / 项目文件已保存",
+      "adminOverview": { "tenants": 1, "projects": 1, "readyProjects": 1, "pendingInvitations": 0, "unknownTasks": 0 }
+    }
+  },
+  "deployment": {
+    "worker": "riffology-m1-gateway-staging",
+    "versionId": "21fa9209-59f6-413d-a009-0e4afce2ba8d",
+    "trafficPercentage": 100,
+    "customDomain": "m1.riff-demo.gaojihe.cn",
+    "containerRollout": "none"
+  },
+  "runtime": {
+    "applicationId": "a035c941-2207-406e-97aa-a42ab6e9d249",
+    "runtimeId": "fbd79978-b6c9-428f-a576-f76bd17d5400",
+    "instanceState": "inactive"
+  },
+  "legacy": {
+    "worker": "riffology-demo",
+    "workerApiResult": "10007-worker-does-not-exist"
+  },
+  "mutations": {
+    "cloudDeploy": true,
+    "cloudResourceCreate": false,
+    "containerRollout": false,
+    "modelCalls": 0,
+    "emailSent": false,
+    "commit": false,
+    "push": false
+  }
+}

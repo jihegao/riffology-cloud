@@ -1,0 +1,26 @@
+{
+  "observedAt": "2026-09-06T02:10:18.661640+00:00",
+  "checks": [
+    {
+      "host": "riff-demo.gaojihe.cn",
+      "path": "/health",
+      "exitCode": 0,
+      "response": "{\"error\":\"browser-session-required\"}\n403 0",
+      "error": ""
+    },
+    {
+      "host": "preview.riff-demo.gaojihe.cn",
+      "path": "/health",
+      "exitCode": 0,
+      "response": "{\"error\":\"preview-origin-denied\"}\n403 0",
+      "error": ""
+    },
+    {
+      "host": "p-0123456789abcdef0123456789abcdef.preview.riff-demo.gaojihe.cn",
+      "path": "/health",
+      "exitCode": 0,
+      "response": "{\"error\":\"preview-route-not-found\"}\n404 0",
+      "error": ""
+    }
+  ]
+}

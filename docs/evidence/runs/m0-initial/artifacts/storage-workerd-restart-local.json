@@ -1,0 +1,13 @@
+{
+  "observedAt": "2026-09-05T05:21:42.423Z",
+  "environment": "local-workerd",
+  "run": "m0-storage-v2-1788585487660",
+  "processRestarted": true,
+  "reportUnchanged": true,
+  "receipt": {
+    "revision": "11daf3fccedb6018674bb2f3016ea5fcc6793d611992f8561058d0d6a1084b28",
+    "generation": 1,
+    "sequence": 3
+  },
+  "cloudGatePassed": false
+}

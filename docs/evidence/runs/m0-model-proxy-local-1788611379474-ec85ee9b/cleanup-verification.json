@@ -1,0 +1,16 @@
+{
+  "observedAt": "2026-09-05T12:32:12.083Z",
+  "localPort8794Closed": true,
+  "modelWranglerProcessesAbsent": true,
+  "ui4173ListenerPids": [
+    "88606"
+  ],
+  "allOwnedScopesRevokeAcknowledged": true,
+  "realProviderCalls": 0,
+  "cloudDeploymentsThisTurn": 0,
+  "cloudContainerStartsThisTurn": 0,
+  "providerSecretRead": false,
+  "probeSha256": "e4635c149492ec3a773aff4710b37864a2f12dfa6ba34ffb27c47f184166b0c9",
+  "runtimeLogSha256": "9397b5de3738e294f669d45dbe7522396aed93bd4fca3d52425794c4b724339c",
+  "runtimeLogScope": "last successful local run only; intentional cancel/ctx.abort errors retained; no early request-stream-after-response error in this observed segment"
+}

@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-06T10:19:12.184021+00:00",
+  "gate": "G0-T10",
+  "status": "passed",
+  "accepted": true,
+  "scope": "Original fixed cloud release and rollback primitive, composed from immutable v3 and completion evidence",
+  "fullGoalComplete": false,
+  "productionReady": false,
+  "assessment": "Original T10 requirements are satisfied by the linked W1/I1 baseline, W2/I1 compatibility and real incompatible wire rejection, I2 replacement and committed restore, exact Worker rollback plus I1 image rollback, independent native exit-42 failure, and fresh execution through the original reverted W1 class restoring 2 and writing/reading 3.",
+  "plan": {
+    "path": "docs/development-deployment-plan.md",
+    "lines": "123-143"
+  },
+  "sourceSha256": "5178ec196a5ce48d1638688d9a43a0edb26f3dbd42889c0e3acb28ed2b31f43d",
+  "phaseEvidence": [
+    {
+      "path": "docs/evidence/runs/m0-release-baseline-1788686607924/summary.json",
+      "sha256": "07fd18a6c290a926b837bd3037d252d265cc9756a7f1fbe5cc0ae305e653b042",
+      "phase": "baseline",
+      "workerVersion": "22f913a0-163f-41ad-b04f-9958ffae8872",
+      "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+      "applicationVersion": 3
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-compatibility-1788686798887/summary.json",
+      "sha256": "50c740436553a8a6f4ac54ec5f726a4353d2f1c1d0e42bee62754e7508f00731",
+      "phase": "compatibility",
+      "workerVersion": "cf882535-e7d0-4fd4-912d-85a88a65ceb7",
+      "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+      "applicationVersion": 3
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-hold-1788686803553/summary.json",
+      "sha256": "c9cdc4e4fbf6b600a95e09358b85274c6662b048dd2b5039ffaadc7d30528335",
+      "phase": "hold",
+      "workerVersion": "cf882535-e7d0-4fd4-912d-85a88a65ceb7",
+      "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+      "applicationVersion": 3
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-upgrade-1788687064356/summary.json",
+      "sha256": "8c21ee3d524ff53f6a1e4b7037be1fb0dbab3111d5191ad0c04b28a936a0e75f",
+      "phase": "upgrade",
+      "workerVersion": "f6f8808e-c9dd-4173-bb04-970645cdd4d7",
+      "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+      "applicationVersion": 4
+    }
+  ],
+  "verified": {
+    "actualDriverAssertions": "checkPhase passed on baseline/compatibility/hold/upgrade; checkCompletion passed on the cloud completion report",
+    "singleAcceptPost": true,
+    "finalReportMatchesJournalHash": true,
+    "nativeExitCode": 42,
+    "nativeMonitor": "unexpected-exit",
+    "nativeReadiness": "rejected",
+    "sourceCounter": 2,
+    "restoredCounter": 2,
+    "newCounter": 3,
+    "incrementReplayed": false,
+    "readMatchesIncrementStateHash": true,
+    "originalNamespace": "b3b02828c43a4578bc512cf4235903db",
+    "originalOwnerVersion": "e6a57b3f-a5fb-47e6-abbd-cedbc568c822",
+    "originalOwnerBundleSha256": "63429cde0c4d71a23eb331cf6d16e21be9dd6b2486d51bb2a9dba752197ffd40",
+    "originalAppVersion": 5,
+    "originalImage": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+    "newCheckpointPrefix": "m0-release-completion/release-completion-20260906",
+    "newCheckpointRevision": "5e170cdd49a1c9ce11e30a2a8d0e306438a79f0daae224128a9703b67cb98cb5",
+    "newCheckpointIndependentGetHashVerified": true,
+    "sourceIndependentGetBytesUnchanged": true,
+    "faultAndRestoreDistinctApps": true,
+    "allSevenInstancesInactive": true,
+    "legacyWorkerAndRoutesAbsent": true,
+    "remainingEvidence": []
+  },
+  "evidence": [
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/summary.json",
+      "sha256": "c6dc6342730fce816900eb24b9a2d0891b8e9f144285cd19290c130e27e04abe"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/actions.ndjson",
+      "sha256": "9d2ac89642358d9dc9dd9bbb2625447b2bb5013fcfa7544b7d929e095336df0c"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/api-after.json",
+      "sha256": "7814a3fa7edb66049b63a69f510ed58eec5b9b8986a95f7ca76fb6a157e70d77"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/instances-after.json",
+      "sha256": "7f22fac4905933f760b5a6518b0df43280f7d88aacef1c0f85cdcb4f1b5f7acf"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/legacy-workers-after.json",
+      "sha256": "8597400671d4b92c3dc14a8b8863d888858f72b049fae9a7dd9651f6aac99920"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/legacy-routes-after.json",
+      "sha256": "97c372709d82d414a15ca38360642124d2021cc3d4d8819d35784705f9aff114"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/r2-fetch-receipts.json",
+      "sha256": "15bb98e7ae0cbb36414a97b38dcc160ce63e4b6414ba42ae6ade5a0324ce3a2b"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/r2-manifest.json",
+      "sha256": "5e170cdd49a1c9ce11e30a2a8d0e306438a79f0daae224128a9703b67cb98cb5"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/r2-state.json",
+      "sha256": "c064a295c7832a0e60e8457fbc21e16ddbfd805e1769316f3d930bb04a4df04b"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/source-manifest.json",
+      "sha256": "518090fb384338b9e63ddbdf091ea03f2ce2198d347b8e509c165947dc4753a7"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/source-state.json",
+      "sha256": "fe44e2085de9f5c29980f1a6c8a84a8c340131a8fefc9135a265d2667bde7b5c"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/r2-manifest.log",
+      "sha256": "30407037edbd2ee5251c0f2f1eaa2a3c5e56a40f109c40ab4e007a7e7ec0d288"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/r2-state.log",
+      "sha256": "9496e9ce6ca20d75add54a39d82caabd62a8f79a1ed7a0cf336644fbd262cc2b"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/source-manifest.log",
+      "sha256": "eb8fb5400cf9ac32efd07fdde3d05e899dd7e2eb8f99f4084ec4cda04bc846cc"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/source-state.log",
+      "sha256": "294aff51674b5866f5ba9ea51e2f49c66bb66a059dadf1f9055b757c2f19dfd4"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-v3-worker-rollback-20260906/api.json",
+      "sha256": "2c216c6c5b44d795c29b2ea537eec9b6029edc5b5b72f77ddbfc12cf801571be"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-deploy-rollback-1788687343387/deployment-verified.json",
+      "sha256": "ee50ba5c1705a18805606426ba7fd5a79027d9358981e5f60b191b74726b8e1d"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-deploy-rollback-1788687343387/api.json",
+      "sha256": "b437035f8641c2b820bf21132e408880c7e500d0cc07de56cf9efed414cfae29"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-deploy-rollback-1788687343387/bundle/cloud-w1.js",
+      "sha256": "63429cde0c4d71a23eb331cf6d16e21be9dd6b2486d51bb2a9dba752197ffd40"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-deploy-deploy-1788689170668/bundle/index.js",
+      "sha256": "9f855fb1a7f07ac39891672a9f35be8345e79b94c17038462921f3cd5e83d33d"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-deploy-deploy-1788689170668/deployment-verified.json",
+      "sha256": "50aebe7b8e33da6a4d6188d0cb2693d60f1c1de914b0eac9dea9bd1542201455"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-startup-failure-1788687076308/summary.json",
+      "sha256": "f8e20e31f444adc2305ef661b7fdf4a395b70626a62d1f423f23171b0f7a6974"
+    },
+    {
+      "path": "docs/evidence/runs/m0-g0-t10-partial-20260906/G0-T10-gate-summary.json",
+      "sha256": "e7db77386efb5363eca1d17375d5c410522b1560910b4abf3a9e20ee9bde1f99"
+    },
+    {
+      "path": "docs/evidence/runs/m0-local-20260906100509505/local-checks.json",
+      "sha256": "3a7442a69eb75e89828b90bdc419ed0d270119a105f559c756acf487f862d288"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/independent-cloud-verification.json",
+      "sha256": "7b63dfe96445a27c9b563c8d599792be52bdf5bcb1eb531450eb7c03ebec1455"
+    }
+  ],
+  "priorFailedGateReferenceHashesReverified": 14,
+  "limitations": [
+    "Acceptance is limited to the original G0-T10 fixed cloud release/recovery primitive. It does not certify production Turn/WorkspaceAgent, invite login, billing, or M1-M5 completion.",
+    "The original v3 startup-failure remains failed/unconfirmed and its run remains closed; the independent fixed native entrypoint probe supplies new exit-42 evidence without replaying or rewriting that attempt.",
+    "The rollout hold was observed running before replacement; afterwards the process was missing and lifecycle lastStop was null. Exact termination time, OS signal and successful completion are not established. Acceptance relies on replacement/version evidence and committed-checkpoint recovery, not an invented precise interruption.",
+    "Completion uses a new supervisor to call the existing W1 ReleaseSandbox namespace. It does not claim the original closed W1 ReleaseHost coordinator resumed.",
+    "The native fault tests a real entrypoint failure before readiness on the approved image, not a corrupt image pull or every possible startup failure.",
+    "The API-after application health aggregates are not used as proof of final inactivity; the later per-instance API at 10:15:46 UTC shows all seven records inactive.",
+    "No new model calls were issued by this review. Fixed probe source and bindings have no model access; modelDispatches:0 is not independent account billing evidence, and actual cash charges remain unverified.",
+    "Review read saved remote receipts only and did not issue fresh cloud, VM or provider requests. Hash stability does not expand any original gate scope; earlier DNS, public slow-upload and production-identity limitations remain unchanged."
+  ]
+}

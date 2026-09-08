@@ -1,0 +1,79 @@
+{
+  "startedAt": "2026-09-06T03:18:35.568622+00:00",
+  "finishedAt": "2026-09-06T03:18:58.929517+00:00",
+  "method": "independent Wrangler remote R2 GET, 10 exact run-owned keys, concurrency 2",
+  "objects": [
+    {
+      "key": "m0-files/7c849ca453c9752320dce47d6630ad123baec30fe4f764f3a25e563f229b5df4/blobs/180b5296454abd65109c10e110cd7def953eefc73ffb78898cd41193e0e949a5",
+      "exitCode": 1,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches": false
+    },
+    {
+      "key": "m0-files/7c849ca453c9752320dce47d6630ad123baec30fe4f764f3a25e563f229b5df4/blobs/24e6dd402b947f516250c7132bce2bd11d1676bd0c8fbc10accd7eb59da7f1ac",
+      "exitCode": 0,
+      "bytes": 10,
+      "sha256": "24e6dd402b947f516250c7132bce2bd11d1676bd0c8fbc10accd7eb59da7f1ac",
+      "matches": true
+    },
+    {
+      "key": "m0-files/7c849ca453c9752320dce47d6630ad123baec30fe4f764f3a25e563f229b5df4/blobs/36b547e0042cbabffb96e68bb3d14f616ef6ebfdbafb0edc25ac44ec780acbe1",
+      "exitCode": 1,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches": false
+    },
+    {
+      "key": "m0-files/7c849ca453c9752320dce47d6630ad123baec30fe4f764f3a25e563f229b5df4/blobs/658adfd7d0232dbd2bdf35b813185935963388c1986b295e626abb697304801e",
+      "exitCode": 0,
+      "bytes": 30,
+      "sha256": "658adfd7d0232dbd2bdf35b813185935963388c1986b295e626abb697304801e",
+      "matches": true
+    },
+    {
+      "key": "m0-files/7c849ca453c9752320dce47d6630ad123baec30fe4f764f3a25e563f229b5df4/blobs/813ef6eca1af35ced2ac186fb211fd1409f2ec25ab9b19dbeeea59b171719962",
+      "exitCode": 0,
+      "bytes": 48,
+      "sha256": "813ef6eca1af35ced2ac186fb211fd1409f2ec25ab9b19dbeeea59b171719962",
+      "matches": true
+    },
+    {
+      "key": "m0-files/7c849ca453c9752320dce47d6630ad123baec30fe4f764f3a25e563f229b5df4/blobs/9f107b44d016499766f48104483e58c525a634f9c6250b7ea5ceed584cab2d8d",
+      "exitCode": 0,
+      "bytes": 31,
+      "sha256": "9f107b44d016499766f48104483e58c525a634f9c6250b7ea5ceed584cab2d8d",
+      "matches": true
+    },
+    {
+      "key": "m0-files/7c849ca453c9752320dce47d6630ad123baec30fe4f764f3a25e563f229b5df4/blobs/bf86e15b9a2f9090ac0d58241f7bdaf86fb945ada2e64ef8119b5d9ed0eac95e",
+      "exitCode": 0,
+      "bytes": 69,
+      "sha256": "bf86e15b9a2f9090ac0d58241f7bdaf86fb945ada2e64ef8119b5d9ed0eac95e",
+      "matches": true
+    },
+    {
+      "key": "m0-files/7c849ca453c9752320dce47d6630ad123baec30fe4f764f3a25e563f229b5df4/blobs/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches": true
+    },
+    {
+      "key": "m0-files/7c849ca453c9752320dce47d6630ad123baec30fe4f764f3a25e563f229b5df4/manifests/1bb09e5ed2594e9be1677ac9b93dbf85f985d6dc55aa046726790fac235ee292",
+      "exitCode": 0,
+      "bytes": 1412,
+      "sha256": "1bb09e5ed2594e9be1677ac9b93dbf85f985d6dc55aa046726790fac235ee292",
+      "matches": true
+    },
+    {
+      "key": "m0-files/7c849ca453c9752320dce47d6630ad123baec30fe4f764f3a25e563f229b5df4/manifests/38afe35578cd2a6e0aff20158eb1c3f35be4debbe15a845e43b7023a25dece36",
+      "exitCode": 0,
+      "bytes": 1350,
+      "sha256": "38afe35578cd2a6e0aff20158eb1c3f35be4debbe15a845e43b7023a25dece36",
+      "matches": true
+    }
+  ],
+  "allVerified": false,
+  "totalBytes": 2950
+}

@@ -1,0 +1,263 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-09-05T07:57:38.324Z",
+  "environment": "local-docker-workerd",
+  "origin": "http://127.0.0.1:8789",
+  "gate_decision": "not_evaluated",
+  "cloudGatePassed": false,
+  "passed": false,
+  "sourcesBefore": {
+    "sha256": "7bce831a0c324991c99cbac34beb5d03009b695b380062b80d54f846eee9dc44",
+    "files": [
+      {
+        "path": ".dockerignore",
+        "sha256": "46c6ff40eef5d467e276eb0c86c512e25a4f8f4913be33dc094449365aa9f6ab"
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "ebd2febbc682177605c565d0086c3c2949fafc7400c8f657318204a9a18790ab"
+      },
+      {
+        "path": "infra/m0-project.Dockerfile",
+        "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+      },
+      {
+        "path": "infra/m0-trusted.Dockerfile",
+        "sha256": "6dbcfa128b0bcc5a3ca5b6ddde6c45d13ca2dc45ec7124b4dba72e461321663c"
+      },
+      {
+        "path": "infra/wrangler.m0.jsonc",
+        "sha256": "05cc50aa14f617b4b4cda8adc043d370c4e0aa29d0f1096041ccdaddd2f8b6c2"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "bca058a2a8aa239e2c88e5e81129d5f60aa86a9609e93a44f4338a858bfe0478"
+      },
+      {
+        "path": "scripts/m0/boundary-local.mjs",
+        "sha256": "a51cdd1457b050b0fbb0196a1892adba7b6df113805b75bb9f315592c6e89897"
+      },
+      {
+        "path": "scripts/m0/source-inventory.mjs",
+        "sha256": "1afeab93162678265a0372d57b2404902192efdc17fbe0a063e62f5a63460c6e"
+      },
+      {
+        "path": "services/runtime/controlled-pi.d.mts",
+        "sha256": "8c92fbd06faf16e4be8e51ea728935257fc28a544f2d58ee5c7103897b185e0b"
+      },
+      {
+        "path": "services/runtime/controlled-pi.mjs",
+        "sha256": "8effdc9f441480dc56f8fda2cf59c31d010f0e6add3fcd0e2544b0e990dfc523"
+      },
+      {
+        "path": "services/runtime/pi-probe-evidence.mjs",
+        "sha256": "bb8395477543d6a52c9a4faa830b0dab5fcbecf487f3d2abf571e514041c96cf"
+      },
+      {
+        "path": "spikes/m0-cloud/README.md",
+        "sha256": "26aed905f7f819c1737839021d94d9a033a7622e4b6fe9242c0d6199834aacc3"
+      },
+      {
+        "path": "spikes/m0-cloud/auth.ts",
+        "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+      },
+      {
+        "path": "spikes/m0-cloud/env.d.ts",
+        "sha256": "1917c8a371bb116a4107b048c282c15a7307cdc4ecbfc90bac8e52372a1a7eda"
+      },
+      {
+        "path": "spikes/m0-cloud/index.ts",
+        "sha256": "1847d12e9cd8eb118a5cbc29d2cea3254882425712ee6681d2672b305fcb2bb0"
+      },
+      {
+        "path": "spikes/m0-cloud/runtime.test.ts",
+        "sha256": "9fa0498b7752812caeb8019ccea9d874752267cfe51425788a1453fbf22fa194"
+      },
+      {
+        "path": "spikes/m0-cloud/runtime.ts",
+        "sha256": "38555a669a897f9bc8d2a6e9567e7c3ffd9f22d4a7d4088838656bfc30519eab"
+      },
+      {
+        "path": "spikes/m0-cloud/worker.test.ts",
+        "sha256": "2329cd7aadb5eaffd0db35215ecb666f9d2b25fb048d95b22830f82a633370f3"
+      },
+      {
+        "path": "spikes/m0-cloud/worker.ts",
+        "sha256": "ea17468402298172aed804c7a4a470f511d4e73a53d685dadd42c214efa74b36"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+      }
+    ],
+    "repositorySourceSha256": "75f9243a3d43127c4820b371290eec7ac55433c24a1611f60b1547ec66f796da"
+  },
+  "cases": [
+    {
+      "name": "missing-auth",
+      "expectedStatus": 401,
+      "response": {
+        "httpStatus": 401,
+        "body": {
+          "error": "unauthorized"
+        }
+      }
+    },
+    {
+      "name": "wrong-auth",
+      "expectedStatus": 401,
+      "response": {
+        "httpStatus": 401,
+        "body": {
+          "error": "unauthorized"
+        }
+      }
+    },
+    {
+      "name": "query",
+      "expectedStatus": 400,
+      "response": {
+        "httpStatus": 400,
+        "body": {
+          "error": "query_parameters_not_supported"
+        }
+      }
+    },
+    {
+      "name": "extra-field",
+      "expectedStatus": 400,
+      "response": {
+        "httpStatus": 400,
+        "body": {
+          "error": "unexpected_field"
+        }
+      }
+    },
+    {
+      "name": "overlong-id",
+      "expectedStatus": 400,
+      "response": {
+        "httpStatus": 400,
+        "body": {
+          "error": "invalid_run_id"
+        }
+      }
+    },
+    {
+      "name": "malformed-json",
+      "expectedStatus": 400,
+      "response": {
+        "httpStatus": 400,
+        "body": {
+          "error": "invalid_body"
+        }
+      }
+    }
+  ],
+  "cleanup": [],
+  "error": {
+    "kind": "probe-or-transport-failed"
+  },
+  "sourcesAfter": {
+    "sha256": "7bce831a0c324991c99cbac34beb5d03009b695b380062b80d54f846eee9dc44",
+    "files": [
+      {
+        "path": ".dockerignore",
+        "sha256": "46c6ff40eef5d467e276eb0c86c512e25a4f8f4913be33dc094449365aa9f6ab"
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "ebd2febbc682177605c565d0086c3c2949fafc7400c8f657318204a9a18790ab"
+      },
+      {
+        "path": "infra/m0-project.Dockerfile",
+        "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+      },
+      {
+        "path": "infra/m0-trusted.Dockerfile",
+        "sha256": "6dbcfa128b0bcc5a3ca5b6ddde6c45d13ca2dc45ec7124b4dba72e461321663c"
+      },
+      {
+        "path": "infra/wrangler.m0.jsonc",
+        "sha256": "05cc50aa14f617b4b4cda8adc043d370c4e0aa29d0f1096041ccdaddd2f8b6c2"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "bca058a2a8aa239e2c88e5e81129d5f60aa86a9609e93a44f4338a858bfe0478"
+      },
+      {
+        "path": "scripts/m0/boundary-local.mjs",
+        "sha256": "a51cdd1457b050b0fbb0196a1892adba7b6df113805b75bb9f315592c6e89897"
+      },
+      {
+        "path": "scripts/m0/source-inventory.mjs",
+        "sha256": "1afeab93162678265a0372d57b2404902192efdc17fbe0a063e62f5a63460c6e"
+      },
+      {
+        "path": "services/runtime/controlled-pi.d.mts",
+        "sha256": "8c92fbd06faf16e4be8e51ea728935257fc28a544f2d58ee5c7103897b185e0b"
+      },
+      {
+        "path": "services/runtime/controlled-pi.mjs",
+        "sha256": "8effdc9f441480dc56f8fda2cf59c31d010f0e6add3fcd0e2544b0e990dfc523"
+      },
+      {
+        "path": "services/runtime/pi-probe-evidence.mjs",
+        "sha256": "bb8395477543d6a52c9a4faa830b0dab5fcbecf487f3d2abf571e514041c96cf"
+      },
+      {
+        "path": "spikes/m0-cloud/README.md",
+        "sha256": "26aed905f7f819c1737839021d94d9a033a7622e4b6fe9242c0d6199834aacc3"
+      },
+      {
+        "path": "spikes/m0-cloud/auth.ts",
+        "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+      },
+      {
+        "path": "spikes/m0-cloud/env.d.ts",
+        "sha256": "1917c8a371bb116a4107b048c282c15a7307cdc4ecbfc90bac8e52372a1a7eda"
+      },
+      {
+        "path": "spikes/m0-cloud/index.ts",
+        "sha256": "1847d12e9cd8eb118a5cbc29d2cea3254882425712ee6681d2672b305fcb2bb0"
+      },
+      {
+        "path": "spikes/m0-cloud/runtime.test.ts",
+        "sha256": "9fa0498b7752812caeb8019ccea9d874752267cfe51425788a1453fbf22fa194"
+      },
+      {
+        "path": "spikes/m0-cloud/runtime.ts",
+        "sha256": "38555a669a897f9bc8d2a6e9567e7c3ffd9f22d4a7d4088838656bfc30519eab"
+      },
+      {
+        "path": "spikes/m0-cloud/worker.test.ts",
+        "sha256": "2329cd7aadb5eaffd0db35215ecb666f9d2b25fb048d95b22830f82a633370f3"
+      },
+      {
+        "path": "spikes/m0-cloud/worker.ts",
+        "sha256": "ea17468402298172aed804c7a4a470f511d4e73a53d685dadd42c214efa74b36"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+      }
+    ],
+    "repositorySourceSha256": "75f9243a3d43127c4820b371290eec7ac55433c24a1611f60b1547ec66f796da"
+  },
+  "probeSourceStableDuringRun": true,
+  "finishedAt": "2026-09-05T07:57:43.383Z",
+  "limits": [
+    "Local Docker/Workerd is not a cloud VM isolation gate.",
+    "Project reports are diagnostic; the Worker performs independent preservation checks.",
+    "Cleanup acknowledgement does not prove a timed-out operation or all development proxy helpers have terminated.",
+    "This probe uses synthetic sessions and identities, with no paid model or production login."
+  ]
+}

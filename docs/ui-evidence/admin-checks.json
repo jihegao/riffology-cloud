@@ -1,0 +1,324 @@
+{
+  "environment": {
+    "url": "http://127.0.0.1:4173",
+    "engine": "Playwright / Chrome headless",
+    "viewports": [
+      "1440x1000",
+      "1024x768",
+      "390x844"
+    ]
+  },
+  "checks": [
+    {
+      "name": "A01 六条管理路由",
+      "pass": true,
+      "detail": "[{\"route\":\"/admin\",\"h1\":\"让每一次建模顺畅发生。\",\"overflow\":false},{\"route\":\"/admin/models\",\"h1\":\"把可靠的起点交给用户。\",\"overflow\":false},{\"route\":\"/admin/tenants\",\"h1\":\"清晰归属，独立边界。\",\"overflow\":false},{\"route\":\"/admin/runs\",\"h1\":\"每个任务都有明确状态。\",\"overflow\":false},{\"route\":\"/admin/billing\",\"h1\":\"每笔变化，都有来由。\",\"overflow\":false},{\"route\":\"/admin/audit\",\"h1\":\"关键操作，留下完整记录。\",\"overflow\":false}]"
+    },
+    {
+      "name": "A02 总览待办跳转筛选",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A03 模型搜索与状态筛选",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A03 模型空结果",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A04 发布原因必填",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A04 发布审核确认必填",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A04 取消发布不改变状态",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A04 发布成功",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A05 撤回原因必填",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A05 撤回仅目标版本",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A06 新版本默认不重复",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A06 禁止版本覆盖",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A06 版本格式校验",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A06 新草稿创建",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A07 模拟版本验证",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A07 版本详情与证据边界",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A08 租户详情元数据",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A08 额度数值校验",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A08 额度原因必填",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A08 额度更新可见",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A09 暂停原因必填",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A09 取消暂停无变化",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A09 暂停后限制新增工作",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A09 恢复正常",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A10 运行筛选",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A10 运行详情版本与边界",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A10 停止原因必填",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A10 取消停止不改变运行",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A10 停止保留34样本",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A10 排队取消",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A11 消费明细与价目版本",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A12 补偿上限校验",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A12 补偿原因必填",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A12 追加补偿并阻止再次补偿",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A13 未知用量要求证据",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A13 未知用量要求原因",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A13 未执行释放预留",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A14 实际结算要求用量与金额",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A14 结算不得超预留",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A14 结算追加新流水",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A16 刷新后账务持久化",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A11 只读价目表版本",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A15 账务导出",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A15 操作审计筛选",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A15 审计导出",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A15 审计空结果",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A17 移动六路由无页面横溢",
+      "pass": true,
+      "detail": "[{\"route\":\"#/admin\",\"width\":390,\"document\":390,\"main\":390,\"mainScroll\":390,\"titleVisible\":true},{\"route\":\"#/admin/models\",\"width\":390,\"document\":390,\"main\":390,\"mainScroll\":390,\"titleVisible\":true},{\"route\":\"#/admin/tenants\",\"width\":390,\"document\":390,\"main\":390,\"mainScroll\":390,\"titleVisible\":true},{\"route\":\"#/admin/runs\",\"width\":390,\"document\":390,\"main\":390,\"mainScroll\":390,\"titleVisible\":true},{\"route\":\"#/admin/billing\",\"width\":390,\"document\":390,\"main\":390,\"mainScroll\":390,\"titleVisible\":true},{\"route\":\"#/admin/audit\",\"width\":390,\"document\":390,\"main\":390,\"mainScroll\":390,\"titleVisible\":true}]"
+    },
+    {
+      "name": "A17 移动菜单可打开",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A18 平台承担未知成本",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A18 平台承担写入审计",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A17 1024六路由无页面横溢",
+      "pass": true,
+      "detail": "[{\"route\":\"#/admin\",\"width\":1024,\"document\":1024,\"main\":830,\"mainScroll\":830},{\"route\":\"#/admin/models\",\"width\":1024,\"document\":1024,\"main\":830,\"mainScroll\":830},{\"route\":\"#/admin/tenants\",\"width\":1024,\"document\":1024,\"main\":830,\"mainScroll\":830},{\"route\":\"#/admin/runs\",\"width\":1024,\"document\":1024,\"main\":830,\"mainScroll\":830},{\"route\":\"#/admin/billing\",\"width\":1024,\"document\":1024,\"main\":830,\"mainScroll\":830},{\"route\":\"#/admin/audit\",\"width\":1024,\"document\":1024,\"main\":830,\"mainScroll\":830}]"
+    },
+    {
+      "name": "A18 Escape关闭弹窗",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A11 初始示例消费与价目一致",
+      "pass": true,
+      "detail": "[{\"id\":\"led_2105\",\"amount\":85,\"calculated\":85},{\"id\":\"led_2104\",\"amount\":124,\"calculated\":124},{\"id\":\"led_2102\",\"amount\":64,\"calculated\":64}]"
+    },
+    {
+      "name": "A18 无页面脚本异常",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "A11 缓存输入与普通输入互斥",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A18 搜索特殊字符安全呈现",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A02 版本待办跳转",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A02 租户待办跳转",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A10 运行摘要快捷筛选",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A10 运行摘要可恢复全部",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A15 导出文件包含筛选结果",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "A16 版本变更刷新后保留",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "scriptErrors": []
+}

@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-09-05T13:03:40.785Z",
+  "status": [
+    200,
+    200
+  ],
+  "versions": [
+    {
+      "version_id": "06e097f1-cb6d-4349-8cf5-af4472ba0079",
+      "percentage": 100
+    }
+  ],
+  "namespace": [
+    {
+      "id": "95df6344c3f64b0f82ae9431c3ff36fb",
+      "name": "riffology-m0-model-proxy-staging_M0ModelProxyRun",
+      "script": "riffology-m0-model-proxy-staging",
+      "class": "M0ModelProxyRun",
+      "use_sqlite": true
+    }
+  ]
+}

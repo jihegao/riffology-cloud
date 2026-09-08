@@ -1,0 +1,108 @@
+{
+  "contextFiles": [
+    {
+      "path": ".dockerignore",
+      "bytes": 249,
+      "sha256": "0bcd7d5c53d25898b250020a2fd04a7033b7034c730f6dfe9465cfd8d09a20f9"
+    },
+    {
+      "path": "infra/m0-project.Dockerfile",
+      "bytes": 453,
+      "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+    },
+    {
+      "path": "infra/m0-trusted.Dockerfile",
+      "bytes": 792,
+      "sha256": "59d24628b66c5db4d7d6464c9d164584c58e29c988d09b95d244921f6ae50289"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 200073,
+      "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2162,
+      "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+    },
+    {
+      "path": "scripts/m0/pi-image-check.mjs",
+      "bytes": 4221,
+      "sha256": "1f0865ad438abc6b2bf259d0e5601b409e64af17dff9533411838596892a054e"
+    },
+    {
+      "path": "scripts/m0/proxy-pi-child.mjs",
+      "bytes": 4754,
+      "sha256": "e68380c365553e22bc4914c89cda85d3e342f76e5f7cca727e119420781be40a"
+    },
+    {
+      "path": "services/runtime/controlled-pi.mjs",
+      "bytes": 16447,
+      "sha256": "3cf68643ced46c815b3fd6d5c8856882e57b0aae36ef5b148714c0bc27e5fe6a"
+    },
+    {
+      "path": "services/runtime/proxy-pi.mjs",
+      "bytes": 14574,
+      "sha256": "b16c20eaa5a99beb4a456f87c27f5b2a79d7a677502ece201f35555fcff3b23c"
+    }
+  ],
+  "copyLayers": [
+    {
+      "command": "COPY package.json package-lock.json ./ # buildkit",
+      "digest": "sha256:66f758c785bbbc752b6db927c9f6065591fea86fb4d8a226ad3f9be25e6c7117",
+      "bytes": 41721,
+      "regularFiles": [
+        {
+          "path": "opt/riffology/package-lock.json",
+          "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+        },
+        {
+          "path": "opt/riffology/package.json",
+          "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+        }
+      ]
+    },
+    {
+      "command": "COPY services/runtime/controlled-pi.mjs services/runtime/proxy-pi.mjs ./services/runtime/ # buildkit",
+      "digest": "sha256:fd42395cf1cb913a57ab4d60a7baa96541cfd76b393e87caac389f01cce32f83",
+      "bytes": 9278,
+      "regularFiles": [
+        {
+          "path": "opt/riffology/services/runtime/controlled-pi.mjs",
+          "sha256": "3cf68643ced46c815b3fd6d5c8856882e57b0aae36ef5b148714c0bc27e5fe6a"
+        },
+        {
+          "path": "opt/riffology/services/runtime/proxy-pi.mjs",
+          "sha256": "b16c20eaa5a99beb4a456f87c27f5b2a79d7a677502ece201f35555fcff3b23c"
+        }
+      ]
+    },
+    {
+      "command": "COPY scripts/m0/proxy-pi-child.mjs scripts/m0/pi-image-check.mjs ./scripts/m0/ # buildkit",
+      "digest": "sha256:457b51c6d0cc8c7e7692e8453d9471414b4e3e2e0694ce0b5ce62cbb06c3df9c",
+      "bytes": 3698,
+      "regularFiles": [
+        {
+          "path": "opt/riffology/scripts/m0/pi-image-check.mjs",
+          "sha256": "1f0865ad438abc6b2bf259d0e5601b409e64af17dff9533411838596892a054e"
+        },
+        {
+          "path": "opt/riffology/scripts/m0/proxy-pi-child.mjs",
+          "sha256": "e68380c365553e22bc4914c89cda85d3e342f76e5f7cca727e119420781be40a"
+        }
+      ]
+    },
+    {
+      "command": "RUN /bin/sh -c node scripts/m0/pi-image-check.mjs # buildkit",
+      "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+      "bytes": 32,
+      "regularFiles": []
+    }
+  ],
+  "sixCopiedFilesMatchCurrentSources": true,
+  "imageCheckLeavesNoFiles": true,
+  "projectConfigAndLayerContentsUnchanged": true,
+  "projectManifestEncodingChanged": true,
+  "excludedFilesIncluded": false,
+  "verificationScope": "Explicit context and project COPY/check layers; not a third-party base-layer security audit"
+}

@@ -1,0 +1,9 @@
+{
+  "startedAt": "2026-09-06T02:38:01.343588+00:00",
+  "localChecks": "m0-local-20260906023611322",
+  "dryRunExit": 0,
+  "configSha256": "90f87013d8699c63d929dd2ca537f52ce1859f05f618926bb623aa495e8c5f34",
+  "bundleSha256": "94ef4523d80e85515c985c1d6b0c4c063a4fc6faab72a25f73506016055e9a3e",
+  "exitCode": 1,
+  "finishedAt": "2026-09-06T02:39:00.687261+00:00"
+}

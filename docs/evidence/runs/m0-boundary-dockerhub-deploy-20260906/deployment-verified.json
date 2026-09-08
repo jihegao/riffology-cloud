@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "environment": "staging",
+  "verified": true,
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "workerName": "riffology-m0-probe-staging",
+  "workerUrl": "https://riffology-m0-probe-staging.jihe-gao.workers.dev",
+  "version": "de139207-4562-4545-a0ea-32de625710d2",
+  "bundleSha256": "e4e3ac7422ea8d6d8967658a8d7a8fc61b48e454b694ef548f67882fc415acff",
+  "configSha256": "90f87013d8699c63d929dd2ca537f52ce1859f05f618926bb623aa495e8c5f34",
+  "imageDigests": [
+    "sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+    "sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67"
+  ],
+  "verifiedAt": "2026-09-06T01:39:23.738Z",
+  "sourceEvidence": "docs/evidence/runs/m0-boundary-dockerhub-deploy-20260906/cloud-after-deploy.json"
+}

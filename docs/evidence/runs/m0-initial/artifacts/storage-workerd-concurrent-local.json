@@ -1,0 +1,49 @@
+{
+  "observedAt": "2026-09-05T05:18:07.720Z",
+  "environment": "local-workerd",
+  "run": "m0-storage-v2-1788585487660",
+  "status": 200,
+  "report": {
+    "protocol": "m0-v1",
+    "observations": {
+      "restorationVerified": true,
+      "interruptedUploadKeptPointer": true,
+      "precommitKeptPointer": true,
+      "lostResponseOneReceipt": true,
+      "renameModeAndDeletion": true,
+      "concurrentParentOneWinner": true,
+      "staleGenerationRejected": true
+    },
+    "primitiveChecksPassed": true,
+    "receipt": {
+      "revision": "11daf3fccedb6018674bb2f3016ea5fcc6793d611992f8561058d0d6a1084b28",
+      "generation": 1,
+      "sequence": 3
+    },
+    "events": [
+      {
+        "revision": "f3e3fc63bf02f6e5f3b0177599a7ec0c059ad01535211401e914e66794368962",
+        "generation": 1,
+        "sequence": 1
+      },
+      {
+        "revision": "ac706e241691d4fbbbe7f71097b0ef790cf4955803a3df337957f506beebdb2f",
+        "generation": 1,
+        "sequence": 2
+      },
+      {
+        "revision": "11daf3fccedb6018674bb2f3016ea5fcc6793d611992f8561058d0d6a1084b28",
+        "generation": 1,
+        "sequence": 3
+      }
+    ],
+    "gateStatus": "needs-review",
+    "limits": [
+      "synthetic entries; no filesystem CRUD",
+      "injected failures; no VM kill",
+      "no browser reconnect",
+      "no real Pi Session",
+      "no release or G0 acceptance"
+    ]
+  }
+}

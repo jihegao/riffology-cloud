@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-09-05T10:01:27.213Z",
+  "finishedAt": "2026-09-05T10:01:39.220Z",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "workerName": "riffology-m0-storage-staging",
+  "command": [
+    "wrangler",
+    "deploy",
+    "--no-bundle",
+    "--config",
+    "/Users/gaojihe/apps/riffology-cloud/.local/cloud-staging/storage-baseline.wrangler.json",
+    "--env",
+    "staging",
+    "--secrets-file",
+    "/Users/gaojihe/apps/riffology-cloud/.local/cloud-staging/storage.secrets.json",
+    "--outdir",
+    "/Users/gaojihe/apps/riffology-cloud/.local/m0-storage-staging-20260905095532532/upload",
+    "--message",
+    "M0 storage primitive baseline; synthetic data; G0 not accepted"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "version": "c2dd3dd5-ac4c-4ce3-afa6-74f90369000b",
+  "urls": [
+    "https://riffology-m0-storage-staging.jihe-gao.workers.dev"
+  ],
+  "bundleSha256": "2d289ffe5bfc125ff9762500f74d5b162f6a8ef2a66eb2a215f0e9481e0c2f8e",
+  "configSha256": "af04af220f7450b390f4a2743c50cd1fe80bf177d3b2a75df81cf3b41040f240",
+  "secretNames": [
+    "M0_PROBE_TOKEN"
+  ],
+  "deployed": true,
+  "gateAccepted": false
+}

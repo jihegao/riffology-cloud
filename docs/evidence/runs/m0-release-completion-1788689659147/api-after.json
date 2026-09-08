@@ -1,0 +1,210 @@
+{
+  "at": "2026-09-06T10:14:43.669Z",
+  "deployments": [
+    {
+      "name": "riffology-m0-release-completion-staging",
+      "success": true,
+      "current": {
+        "id": "21465788-cbbe-48d7-954b-7eba845290f0",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "author_email": "jihe.gao@gmail.com",
+        "annotations": {
+          "workers/message": "M0 T10 native exit and reverted W1 restore comp...",
+          "workers/triggered_by": "upload"
+        },
+        "versions": [
+          {
+            "version_id": "c3eeddf2-8945-4e0f-9af4-2948b22c5655",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-09-06T10:06:24.517248Z"
+      }
+    },
+    {
+      "name": "riffology-m0-release-staging",
+      "success": true,
+      "current": {
+        "id": "1c8c2b77-4bb6-4564-a67c-f79be0cbab7a",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "author_email": "jihe.gao@gmail.com",
+        "annotations": {
+          "workers/message": "M0 T10 fixed release rollback; model calls disa...",
+          "workers/triggered_by": "upload"
+        },
+        "versions": [
+          {
+            "version_id": "e6a57b3f-a5fb-47e6-abbd-cedbc568c822",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-09-06T09:36:08.796969Z"
+      }
+    }
+  ],
+  "applications": {
+    "success": true,
+    "result": [
+      {
+        "id": "a03693b8-f5be-4247-9280-f0c38435d911",
+        "created_at": "2026-09-06T10:06:27.415000064Z",
+        "updated_at": "2026-09-06T10:06:28.456999936Z",
+        "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+        "name": "riffology-m0-release-completion-staging",
+        "version": 1,
+        "scheduling_policy": "default",
+        "instances": 1,
+        "max_instances": 1,
+        "configuration": {
+          "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+          "vcpu": 0.25,
+          "memory": "1GiB",
+          "memory_mib": 1024,
+          "disk": {
+            "size_mb": 4000,
+            "size": "4GB"
+          },
+          "network": {
+            "assign_ipv6": "none",
+            "assign_ipv4": "none",
+            "mode": "private"
+          },
+          "command": [],
+          "entrypoint": [],
+          "runtime": "firecracker",
+          "observability": {
+            "logs": {
+              "enabled": true
+            }
+          }
+        },
+        "constraints": {
+          "tiers": [
+            1,
+            2
+          ]
+        },
+        "durable_objects": {
+          "namespace_id": "770fb0b25f4d4cfd8ea021495c2aebd6"
+        },
+        "rollout_active_grace_period": 0,
+        "health": {
+          "errors": [],
+          "instances": {
+            "active": 0,
+            "assigned": 0,
+            "healthy": 0,
+            "stopped": 0,
+            "failed": 0,
+            "scheduling": 0,
+            "starting": 1
+          }
+        },
+        "network": {
+          "bandwidth_limit_mbps": 250
+        }
+      },
+      {
+        "id": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+        "created_at": "2026-09-06T09:00:35.960999936Z",
+        "updated_at": "2026-09-06T09:36:47.976999936Z",
+        "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+        "name": "riffology-m0-release-staging",
+        "version": 5,
+        "scheduling_policy": "default",
+        "instances": 1,
+        "max_instances": 1,
+        "configuration": {
+          "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+          "vcpu": 0.25,
+          "memory": "1GiB",
+          "memory_mib": 1024,
+          "disk": {
+            "size_mb": 4000,
+            "size": "4GB"
+          },
+          "network": {
+            "assign_ipv6": "none",
+            "assign_ipv4": "none",
+            "mode": "private"
+          },
+          "command": [],
+          "entrypoint": [],
+          "runtime": "firecracker",
+          "observability": {
+            "logs": {
+              "enabled": true
+            }
+          }
+        },
+        "constraints": {
+          "tiers": [
+            1,
+            2
+          ]
+        },
+        "durable_objects": {
+          "namespace_id": "b3b02828c43a4578bc512cf4235903db"
+        },
+        "rollout_active_grace_period": 0,
+        "health": {
+          "errors": [],
+          "instances": {
+            "active": 0,
+            "assigned": 0,
+            "healthy": 1,
+            "stopped": 0,
+            "failed": 0,
+            "scheduling": 0,
+            "starting": 0
+          }
+        },
+        "network": {
+          "bandwidth_limit_mbps": 250
+        }
+      }
+    ]
+  },
+  "settings": {
+    "success": true,
+    "bindings": [
+      {
+        "name": "CHECKPOINTS",
+        "type": "r2_bucket"
+      },
+      {
+        "name": "ENVIRONMENT",
+        "type": "plain_text"
+      },
+      {
+        "name": "FAULT",
+        "type": "durable_object_namespace",
+        "namespace_id": "770fb0b25f4d4cfd8ea021495c2aebd6",
+        "class_name": "NativeFault"
+      },
+      {
+        "name": "HOST",
+        "type": "durable_object_namespace",
+        "namespace_id": "a67dec47a89f41a291866da7cf9a536a",
+        "class_name": "CompletionHost"
+      },
+      {
+        "name": "M0_PROBE_TOKEN",
+        "type": "secret_text"
+      },
+      {
+        "name": "PROTOCOL_VERSION",
+        "type": "plain_text"
+      },
+      {
+        "name": "RevertedSandbox",
+        "type": "durable_object_namespace",
+        "namespace_id": "b3b02828c43a4578bc512cf4235903db",
+        "class_name": "ReleaseSandbox",
+        "script_name": "riffology-m0-release-staging"
+      }
+    ]
+  }
+}

@@ -1,0 +1,303 @@
+{
+  "inventory": {
+    "observedAt": "2026-09-06T01:32:14.341Z",
+    "workers": [
+      {
+        "id": "2048-challenge-platform",
+        "modified_on": "2026-09-05T00:36:17.575147Z"
+      },
+      {
+        "id": "cadence-ai-riff-studio",
+        "modified_on": "2026-08-16T02:56:45.510942Z"
+      },
+      {
+        "id": "reflexive-poker-demo",
+        "modified_on": "2026-08-24T07:39:18.23776Z"
+      },
+      {
+        "id": "riffology-demo",
+        "modified_on": "2026-09-02T14:51:17.426548Z"
+      },
+      {
+        "id": "riffology-m0-model-proxy-staging",
+        "modified_on": "2026-09-05T12:55:21.677393Z"
+      },
+      {
+        "id": "riffology-m0-probe-staging",
+        "modified_on": "2026-09-05T10:13:36.924576Z"
+      },
+      {
+        "id": "riffology-m0-storage-staging",
+        "modified_on": "2026-09-05T10:36:00.345745Z"
+      }
+    ],
+    "domains": [
+      {
+        "id": "34a2588d5e590c4d83ac5d9e205a0c864b3b93c5",
+        "zone_id": "c97b548800561fada1a912c234696db1",
+        "zone_name": "gaojihe.cn",
+        "hostname": "poker.gaojihe.cn",
+        "service": "reflexive-poker-demo",
+        "environment": "production",
+        "cert_id": "7a90915a-b42d-4fad-820a-ad61ee56c588",
+        "previews_enabled": false,
+        "enabled": true
+      },
+      {
+        "id": "47b07d90c8f9113e09cba16307c8f5689a9abcc0",
+        "zone_id": "c97b548800561fada1a912c234696db1",
+        "zone_name": "gaojihe.cn",
+        "hostname": "2048.gaojihe.cn",
+        "service": "2048-challenge-platform",
+        "environment": "production",
+        "cert_id": "1ea8a518-3ebe-435f-9de9-18aa09c58e72",
+        "previews_enabled": false,
+        "enabled": true
+      }
+    ],
+    "routes": [
+      {
+        "id": "196653296b134fc3b8778753ecf3c7eb",
+        "pattern": "riffology.gaojihe.cn/*",
+        "script": "cadence-ai-riff-studio",
+        "request_limit_fail_open": false
+      },
+      {
+        "id": "807e9f94a77b4021bd88bc735226590c",
+        "pattern": "riff-demo.gaojihe.cn/*",
+        "script": "riffology-demo",
+        "request_limit_fail_open": false
+      }
+    ],
+    "dns": [
+      {
+        "id": "fec726a7b47cd68f367db51731435cd0",
+        "type": "CNAME",
+        "name": "riff-demo.gaojihe.cn",
+        "content": "1580dcb4-51a3-492a-9825-8b524f433117.cfargotunnel.com",
+        "proxied": true,
+        "ttl": 1
+      },
+      {
+        "id": "cf976826e3c74f2239b43891ac37a723",
+        "type": "CNAME",
+        "name": "riff-demo-visual.gaojihe.cn",
+        "content": "1580dcb4-51a3-492a-9825-8b524f433117.cfargotunnel.com",
+        "proxied": true,
+        "ttl": 1
+      }
+    ],
+    "status": [
+      {
+        "success": true,
+        "status": 200,
+        "errors": []
+      },
+      {
+        "success": true,
+        "status": 200,
+        "errors": null
+      },
+      {
+        "success": true,
+        "status": 200,
+        "errors": []
+      },
+      {
+        "success": true,
+        "status": 200,
+        "errors": []
+      }
+    ]
+  },
+  "legacySettings": {
+    "name": "riffology-demo",
+    "status": 200,
+    "success": true,
+    "errors": [],
+    "settings": {
+      "compatibility_date": "2026-08-14",
+      "compatibility_flags": [
+        "nodejs_compat"
+      ],
+      "bindings": [
+        {
+          "type": "assets",
+          "name": "ASSETS"
+        },
+        {
+          "type": "secret_text",
+          "name": "DEMO_ACCESS_PASSWORD"
+        },
+        {
+          "type": "plain_text",
+          "name": "EXECUTOR_ORIGIN"
+        },
+        {
+          "type": "secret_text",
+          "name": "EXECUTOR_TOKEN"
+        },
+        {
+          "type": "vpc_service",
+          "name": "EXECUTOR_VPC",
+          "service_id": "01a002fd-bbae-7801-a2cc-c43c068a56f3"
+        },
+        {
+          "type": "plain_text",
+          "name": "MOCK_MODE"
+        }
+      ],
+      "logpush": false,
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "redact_query_string": false,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "persist": true,
+          "invocation_logs": true
+        },
+        "traces": {
+          "enabled": false,
+          "persist": true,
+          "head_sampling_rate": 1
+        }
+      }
+    }
+  },
+  "reverseServiceBindings": [],
+  "lifecycle": {
+    "observedAt": "2026-09-06T01:33:42.450Z",
+    "entries": [
+      {
+        "kind": "deployments",
+        "success": true,
+        "status": 200,
+        "result": [
+          {
+            "id": "c95b3517-85c9-466b-8f48-714f50f15913",
+            "created_on": "2026-09-02T14:51:11.115842Z",
+            "versions": [
+              {
+                "version_id": "0049c183-7d21-4687-9e08-7d4220913775",
+                "percentage": 100
+              }
+            ]
+          },
+          {
+            "id": "bc6089b8-d237-4b32-8a62-06380d320b7c",
+            "created_on": "2026-09-02T10:48:14.993155Z",
+            "versions": [
+              {
+                "version_id": "1e8cef3f-8168-4676-956b-5efc5022b1b4",
+                "percentage": 100
+              }
+            ]
+          },
+          {
+            "id": "ba091fbf-9449-47c0-be61-52f6e4c93357",
+            "created_on": "2026-08-30T10:30:57.334405Z",
+            "versions": [
+              {
+                "version_id": "9163c3b5-ab90-428c-9b0c-450014bef097",
+                "percentage": 100
+              }
+            ]
+          },
+          {
+            "id": "d41b68fb-8417-4d76-bc57-a61b4df9d67b",
+            "created_on": "2026-08-28T11:36:15.378088Z",
+            "versions": [
+              {
+                "version_id": "003a1e79-7d5a-414a-a7df-7d4e97366be1",
+                "percentage": 100
+              }
+            ]
+          },
+          {
+            "id": "69813850-8da0-403a-a8e0-24b07479994a",
+            "created_on": "2026-08-28T11:21:12.476501Z",
+            "versions": [
+              {
+                "version_id": "359b6eac-a219-491b-8f58-b59bc7beb2bf",
+                "percentage": 100
+              }
+            ]
+          },
+          {
+            "id": "d00f8c48-eb9d-4c54-bb9f-39985bf56b12",
+            "created_on": "2026-08-28T11:01:54.578528Z",
+            "versions": [
+              {
+                "version_id": "12c7e350-2371-4a7b-b60b-0b4e84b6c22c",
+                "percentage": 100
+              }
+            ]
+          },
+          {
+            "id": "0288e398-6dad-4b2e-b95d-a31caa091253",
+            "created_on": "2026-08-28T08:43:05.019784Z",
+            "versions": [
+              {
+                "version_id": "205c54af-b783-4235-9ca8-507cb2706ca5",
+                "percentage": 100
+              }
+            ]
+          },
+          {
+            "id": "ad99f3fb-47cb-4bd8-aeb0-1f4521eae999",
+            "created_on": "2026-08-22T08:29:12.835747Z",
+            "versions": [
+              {
+                "version_id": "8cdf0afa-5e33-407c-af3f-287aa14b3fc4",
+                "percentage": 100
+              }
+            ]
+          },
+          {
+            "id": "5290410f-2375-458d-abaa-7e9bad302053",
+            "created_on": "2026-08-21T00:23:02.981077Z",
+            "versions": [
+              {
+                "version_id": "a6d6b8b4-249a-4573-ad6a-d7b532a46b4e",
+                "percentage": 100
+              }
+            ]
+          },
+          {
+            "id": "ffbe7aa4-fb57-4271-92bc-62e81ecc8e33",
+            "created_on": "2026-08-20T15:14:46.707857Z",
+            "versions": [
+              {
+                "version_id": "47ddd113-070f-4401-87f5-a7f103b32b23",
+                "percentage": 100
+              }
+            ]
+          }
+        ],
+        "errors": []
+      },
+      {
+        "kind": "subdomain",
+        "success": true,
+        "status": 200,
+        "result": {
+          "enabled": false,
+          "previews_enabled": false
+        },
+        "errors": []
+      },
+      {
+        "kind": "schedules",
+        "success": true,
+        "status": 200,
+        "result": {
+          "schedules": []
+        },
+        "errors": []
+      }
+    ]
+  },
+  "authorizedScope": "Retire riffology-demo Worker, its route and old demo DNS ingress; keep unrelated Workers and data resources."
+}

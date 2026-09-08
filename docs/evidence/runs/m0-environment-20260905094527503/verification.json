@@ -1,0 +1,22 @@
+{
+  "recordType": "environment-artifact-check",
+  "environmentPreflightPassed": true,
+  "preflightCheckCount": 7,
+  "accountMatchesConfig": true,
+  "privateBucketConfirmed": true,
+  "matchingCheckpointConfigs": [
+    "infra/wrangler.m0-files.jsonc",
+    "infra/wrangler.m0-recovery.jsonc",
+    "infra/wrangler.m0-storage.jsonc"
+  ],
+  "documentationFiles": [
+    "README.md",
+    "docs/development-status.md",
+    "docs/m0-local-runbook.md",
+    "docs/m0-remaining-work.md"
+  ],
+  "localLinksChecked": 97,
+  "missingLinks": [],
+  "workerDeploymentPerformed": false,
+  "g0EvaluationPerformed": false
+}

@@ -1,0 +1,8 @@
+{
+  "worker": "riffology-m0-files-staging",
+  "sourceSha256": "8d368e8965d9f37651cc1d32bf606906e9c79a51c295137b9c5a7e56bfd45810",
+  "bundleSha256": "30aad7810b5a1019e28c977989fd5a881bfd8e2d9836b197902016a3803d8fbc",
+  "configSha256": "b0849afa2f240aabdedeba26116f0c9bae061004cdcbce284505a41fb748c234",
+  "createdAt": "2026-09-06T03:14:33.841Z",
+  "localCheck": "m0-local-20260906031327004"
+}

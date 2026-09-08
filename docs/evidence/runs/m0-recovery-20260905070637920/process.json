@@ -1,0 +1,830 @@
+{
+  "schemaVersion": 1,
+  "runId": "recovery-20260905070637920-process",
+  "scenario": "process",
+  "startedAt": "2026-09-05T07:07:06.164Z",
+  "environment": "local-docker-workerd",
+  "provider": "local-SSE-fixture",
+  "gate_decision": "not_evaluated",
+  "passed": true,
+  "accepted": {
+    "httpStatus": 202,
+    "body": {
+      "accepted": true,
+      "state": {
+        "phase": "queued",
+        "generation": 1,
+        "runtimeGeneration": 1,
+        "mode": "initial",
+        "deadline": 1788592206168,
+        "reason": null,
+        "fault": null,
+        "cleanup": "pending",
+        "cleanupAttempts": 0,
+        "seed": null,
+        "final": null
+      },
+      "executionOwner": "durable-alarm",
+      "gate_decision": "not_evaluated"
+    }
+  },
+  "observationDisconnected": {
+    "afterSequence": 1,
+    "completedAt": "2026-09-05T07:07:06.173Z"
+  },
+  "streaming": {
+    "httpStatus": 202,
+    "body": {
+      "schema_version": 1,
+      "operation": "G0-T08-recovery",
+      "protocol": "m0-v1",
+      "execution_environment": "local-docker-workerd",
+      "observed_at": "2026-09-05T07:07:16.791Z",
+      "state": {
+        "phase": "streaming",
+        "generation": 1,
+        "runtimeGeneration": 1,
+        "mode": "initial",
+        "deadline": 1788592206168,
+        "reason": null,
+        "fault": null,
+        "cleanup": "pending",
+        "cleanupAttempts": 0,
+        "seed": {
+          "revision": "122769f0c18d0629ea985d902a446621cece34e4ba499d07c6b65822900ee31f",
+          "generation": 1,
+          "sequence": 1
+        },
+        "final": null
+      },
+      "events": [
+        {
+          "sequence": 1,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "queued",
+          "reason": null,
+          "at": "2026-09-05T07:07:06.168Z"
+        },
+        {
+          "sequence": 2,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "preparing",
+          "reason": null,
+          "at": "2026-09-05T07:07:06.269Z"
+        },
+        {
+          "sequence": 3,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "launching",
+          "reason": null,
+          "at": "2026-09-05T07:07:09.352Z"
+        },
+        {
+          "sequence": 4,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "ready-wait",
+          "reason": null,
+          "at": "2026-09-05T07:07:09.472Z"
+        },
+        {
+          "sequence": 5,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "go-intent",
+          "reason": null,
+          "at": "2026-09-05T07:07:12.303Z"
+        },
+        {
+          "sequence": 6,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "streaming",
+          "reason": null,
+          "at": "2026-09-05T07:07:14.290Z"
+        }
+      ],
+      "current": {
+        "revision": "122769f0c18d0629ea985d902a446621cece34e4ba499d07c6b65822900ee31f",
+        "generation": 1,
+        "sequence": 1
+      },
+      "seed_sha256": "f2fbdc18d7a6aa90c176628f3d478bf995268d527d355c8fc1a41d2fe385c6d7",
+      "final_sha256": null,
+      "runtime_status": {
+        "schemaVersion": 1,
+        "generation": 1,
+        "stage": "streaming",
+        "requestCount": 2,
+        "contextRestored": false,
+        "contextSeenOnRecovery": false,
+        "streamStartedAt": 1788592034299,
+        "providerRequestId": "m0-recovery-fixture-g1-r2",
+        "eventTypes": [
+          "agent_end",
+          "agent_settled",
+          "agent_start",
+          "message_end",
+          "message_start",
+          "message_update",
+          "turn_end",
+          "turn_start"
+        ]
+      },
+      "runtime_sandbox_id": "m0-recovery-05b43b2b8b535943eea1e8ee89abb775-g1",
+      "fault_receipt": null,
+      "stale_event_check": null,
+      "script_sha256": "e4cb0321fc207604e6bd6fda9b7f0c3286285cf1c5685fd73f89578ea793479d",
+      "gate_decision": "not_evaluated",
+      "limits": [
+        "Real Pi SDK with fixed local SSE provider; no external LLM or billing evidence.",
+        "Fixed single-project probe, no production authentication, queue, tools or untrusted project execution.",
+        "Recovery is a new explicit turn from the last committed Session; an interrupted model request is never automatically replayed.",
+        "Local Docker/Workerd does not prove cloud scheduling, VM isolation, rollout or durable Turn acceptance."
+      ]
+    }
+  },
+  "fault": {
+    "httpStatus": 202,
+    "body": {
+      "faultAccepted": "process",
+      "generation": 2
+    }
+  },
+  "interrupted": {
+    "httpStatus": 200,
+    "body": {
+      "schema_version": 1,
+      "operation": "G0-T08-recovery",
+      "protocol": "m0-v1",
+      "execution_environment": "local-docker-workerd",
+      "observed_at": "2026-09-05T07:07:17.567Z",
+      "state": {
+        "phase": "interrupted",
+        "generation": 2,
+        "runtimeGeneration": 1,
+        "mode": "initial",
+        "deadline": 1788592206168,
+        "reason": "injected-process-kill",
+        "fault": "process",
+        "cleanup": "destroy_acknowledged",
+        "cleanupAttempts": 1,
+        "seed": {
+          "revision": "122769f0c18d0629ea985d902a446621cece34e4ba499d07c6b65822900ee31f",
+          "generation": 1,
+          "sequence": 1
+        },
+        "final": null
+      },
+      "events": [
+        {
+          "sequence": 1,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "queued",
+          "reason": null,
+          "at": "2026-09-05T07:07:06.168Z"
+        },
+        {
+          "sequence": 2,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "preparing",
+          "reason": null,
+          "at": "2026-09-05T07:07:06.269Z"
+        },
+        {
+          "sequence": 3,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "launching",
+          "reason": null,
+          "at": "2026-09-05T07:07:09.352Z"
+        },
+        {
+          "sequence": 4,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "ready-wait",
+          "reason": null,
+          "at": "2026-09-05T07:07:09.472Z"
+        },
+        {
+          "sequence": 5,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "go-intent",
+          "reason": null,
+          "at": "2026-09-05T07:07:12.303Z"
+        },
+        {
+          "sequence": 6,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "streaming",
+          "reason": null,
+          "at": "2026-09-05T07:07:14.290Z"
+        },
+        {
+          "sequence": 7,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "interrupting",
+          "reason": "injected-process-kill",
+          "at": "2026-09-05T07:07:16.802Z"
+        },
+        {
+          "sequence": 8,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "interrupted",
+          "reason": "injected-process-kill",
+          "at": "2026-09-05T07:07:17.057Z"
+        }
+      ],
+      "current": {
+        "revision": "122769f0c18d0629ea985d902a446621cece34e4ba499d07c6b65822900ee31f",
+        "generation": 1,
+        "sequence": 1
+      },
+      "seed_sha256": "f2fbdc18d7a6aa90c176628f3d478bf995268d527d355c8fc1a41d2fe385c6d7",
+      "final_sha256": null,
+      "runtime_status": {
+        "schemaVersion": 1,
+        "generation": 1,
+        "stage": "streaming",
+        "requestCount": 2,
+        "contextRestored": false,
+        "contextSeenOnRecovery": false,
+        "streamStartedAt": 1788592034299,
+        "providerRequestId": "m0-recovery-fixture-g1-r2",
+        "eventTypes": [
+          "agent_end",
+          "agent_settled",
+          "agent_start",
+          "message_end",
+          "message_start",
+          "message_update",
+          "turn_end",
+          "turn_start"
+        ]
+      },
+      "runtime_sandbox_id": "m0-recovery-05b43b2b8b535943eea1e8ee89abb775-g1",
+      "fault_receipt": {
+        "kind": "process",
+        "signal": "SIGKILL",
+        "killed": true,
+        "status": "killed",
+        "before": {
+          "observedAt": 1788592036956,
+          "processStatus": "running",
+          "runtimeStage": "streaming",
+          "finalAbsent": true,
+          "streamStartedAt": 1788592034299
+        },
+        "cleanup": "destroy_acknowledged",
+        "confirmedAt": 1788592037057,
+        "windowHit": true,
+        "windowScope": "Fixed local 12-second SSE stream; conservative wall-clock bound, not arbitrary provider behavior."
+      },
+      "stale_event_check": null,
+      "script_sha256": "e4cb0321fc207604e6bd6fda9b7f0c3286285cf1c5685fd73f89578ea793479d",
+      "gate_decision": "not_evaluated",
+      "limits": [
+        "Real Pi SDK with fixed local SSE provider; no external LLM or billing evidence.",
+        "Fixed single-project probe, no production authentication, queue, tools or untrusted project execution.",
+        "Recovery is a new explicit turn from the last committed Session; an interrupted model request is never automatically replayed.",
+        "Local Docker/Workerd does not prove cloud scheduling, VM isolation, rollout or durable Turn acceptance."
+      ]
+    }
+  },
+  "staleEvent": {
+    "httpStatus": 409,
+    "body": {
+      "suppliedGeneration": 1,
+      "currentGeneration": 2,
+      "accepted": false,
+      "stateUnchanged": true,
+      "eventCountUnchanged": true
+    }
+  },
+  "recoveryAccepted": {
+    "httpStatus": 202,
+    "body": {
+      "recoveryAccepted": true,
+      "replayInterruptedRequest": false,
+      "state": {
+        "phase": "queued",
+        "generation": 2,
+        "runtimeGeneration": 2,
+        "mode": "recovery",
+        "deadline": 1788592217590,
+        "reason": null,
+        "fault": null,
+        "cleanup": "pending",
+        "cleanupAttempts": 0,
+        "seed": {
+          "revision": "122769f0c18d0629ea985d902a446621cece34e4ba499d07c6b65822900ee31f",
+          "generation": 1,
+          "sequence": 1
+        },
+        "final": null
+      }
+    }
+  },
+  "final": {
+    "httpStatus": 200,
+    "body": {
+      "schema_version": 1,
+      "operation": "G0-T08-recovery",
+      "protocol": "m0-v1",
+      "execution_environment": "local-docker-workerd",
+      "observed_at": "2026-09-05T07:07:32.032Z",
+      "state": {
+        "phase": "completed",
+        "generation": 2,
+        "runtimeGeneration": 2,
+        "mode": "recovery",
+        "deadline": 1788592217590,
+        "reason": null,
+        "fault": null,
+        "cleanup": "destroy_acknowledged",
+        "cleanupAttempts": 1,
+        "seed": {
+          "revision": "122769f0c18d0629ea985d902a446621cece34e4ba499d07c6b65822900ee31f",
+          "generation": 1,
+          "sequence": 1
+        },
+        "final": {
+          "revision": "9b134931107c8f1d5967adf62a50670ee515197638d8ccd0a0fb4f512feada41",
+          "generation": 2,
+          "sequence": 2
+        }
+      },
+      "events": [
+        {
+          "sequence": 1,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "queued",
+          "reason": null,
+          "at": "2026-09-05T07:07:06.168Z"
+        },
+        {
+          "sequence": 2,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "preparing",
+          "reason": null,
+          "at": "2026-09-05T07:07:06.269Z"
+        },
+        {
+          "sequence": 3,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "launching",
+          "reason": null,
+          "at": "2026-09-05T07:07:09.352Z"
+        },
+        {
+          "sequence": 4,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "ready-wait",
+          "reason": null,
+          "at": "2026-09-05T07:07:09.472Z"
+        },
+        {
+          "sequence": 5,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "go-intent",
+          "reason": null,
+          "at": "2026-09-05T07:07:12.303Z"
+        },
+        {
+          "sequence": 6,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "streaming",
+          "reason": null,
+          "at": "2026-09-05T07:07:14.290Z"
+        },
+        {
+          "sequence": 7,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "interrupting",
+          "reason": "injected-process-kill",
+          "at": "2026-09-05T07:07:16.802Z"
+        },
+        {
+          "sequence": 8,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "interrupted",
+          "reason": "injected-process-kill",
+          "at": "2026-09-05T07:07:17.057Z"
+        },
+        {
+          "sequence": 9,
+          "generation": 2,
+          "kind": "phase",
+          "phase": "queued",
+          "reason": null,
+          "at": "2026-09-05T07:07:17.591Z"
+        },
+        {
+          "sequence": 10,
+          "generation": 2,
+          "kind": "phase",
+          "phase": "preparing",
+          "reason": null,
+          "at": "2026-09-05T07:07:17.693Z"
+        },
+        {
+          "sequence": 11,
+          "generation": 2,
+          "kind": "phase",
+          "phase": "launching",
+          "reason": null,
+          "at": "2026-09-05T07:07:20.764Z"
+        },
+        {
+          "sequence": 12,
+          "generation": 2,
+          "kind": "phase",
+          "phase": "ready-wait",
+          "reason": null,
+          "at": "2026-09-05T07:07:20.878Z"
+        },
+        {
+          "sequence": 13,
+          "generation": 2,
+          "kind": "phase",
+          "phase": "go-intent",
+          "reason": null,
+          "at": "2026-09-05T07:07:23.715Z"
+        },
+        {
+          "sequence": 14,
+          "generation": 2,
+          "kind": "phase",
+          "phase": "streaming",
+          "reason": null,
+          "at": "2026-09-05T07:07:25.711Z"
+        },
+        {
+          "sequence": 15,
+          "generation": 2,
+          "kind": "phase",
+          "phase": "finishing",
+          "reason": null,
+          "at": "2026-09-05T07:07:27.730Z"
+        },
+        {
+          "sequence": 16,
+          "generation": 2,
+          "kind": "phase",
+          "phase": "completed",
+          "reason": null,
+          "at": "2026-09-05T07:07:29.732Z"
+        },
+        {
+          "sequence": 17,
+          "generation": 2,
+          "kind": "cleanup",
+          "phase": "completed",
+          "reason": null,
+          "at": "2026-09-05T07:07:31.767Z"
+        }
+      ],
+      "current": {
+        "revision": "9b134931107c8f1d5967adf62a50670ee515197638d8ccd0a0fb4f512feada41",
+        "generation": 2,
+        "sequence": 2
+      },
+      "seed_sha256": "f2fbdc18d7a6aa90c176628f3d478bf995268d527d355c8fc1a41d2fe385c6d7",
+      "final_sha256": "692002622093339315b4320e0d49a232160e40b62f7df953f89ba801f85a8ef0",
+      "runtime_status": {
+        "schemaVersion": 1,
+        "generation": 2,
+        "stage": "completed",
+        "requestCount": 1,
+        "contextRestored": true,
+        "contextSeenOnRecovery": true,
+        "streamStartedAt": null,
+        "providerRequestId": "m0-recovery-fixture-g2-r1",
+        "eventTypes": [
+          "agent_end",
+          "agent_settled",
+          "agent_start",
+          "message_end",
+          "message_start",
+          "message_update",
+          "turn_end",
+          "turn_start"
+        ]
+      },
+      "runtime_sandbox_id": "m0-recovery-05b43b2b8b535943eea1e8ee89abb775-g2",
+      "fault_receipt": {
+        "kind": "process",
+        "signal": "SIGKILL",
+        "killed": true,
+        "status": "killed",
+        "before": {
+          "observedAt": 1788592036956,
+          "processStatus": "running",
+          "runtimeStage": "streaming",
+          "finalAbsent": true,
+          "streamStartedAt": 1788592034299
+        },
+        "cleanup": "destroy_acknowledged",
+        "confirmedAt": 1788592037057,
+        "windowHit": true,
+        "windowScope": "Fixed local 12-second SSE stream; conservative wall-clock bound, not arbitrary provider behavior."
+      },
+      "stale_event_check": {
+        "suppliedGeneration": 1,
+        "currentGeneration": 2,
+        "accepted": false,
+        "stateUnchanged": true,
+        "eventCountUnchanged": true
+      },
+      "script_sha256": "e4cb0321fc207604e6bd6fda9b7f0c3286285cf1c5685fd73f89578ea793479d",
+      "gate_decision": "not_evaluated",
+      "limits": [
+        "Real Pi SDK with fixed local SSE provider; no external LLM or billing evidence.",
+        "Fixed single-project probe, no production authentication, queue, tools or untrusted project execution.",
+        "Recovery is a new explicit turn from the last committed Session; an interrupted model request is never automatically replayed.",
+        "Local Docker/Workerd does not prove cloud scheduling, VM isolation, rollout or durable Turn acceptance."
+      ]
+    }
+  },
+  "reconnect": {
+    "afterSequence": 1,
+    "replayedSequences": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17
+    ],
+    "exactReplay": true
+  },
+  "duplicateAccept": {
+    "stateUnchanged": true,
+    "eventCountUnchanged": true,
+    "receiptUnchanged": true
+  },
+  "cleanup": {
+    "httpStatus": 200,
+    "body": {
+      "cleanup": "destroy_acknowledged"
+    }
+  },
+  "cleanupFinal": {
+    "httpStatus": 200,
+    "body": {
+      "schema_version": 1,
+      "operation": "G0-T08-recovery",
+      "protocol": "m0-v1",
+      "execution_environment": "local-docker-workerd",
+      "observed_at": "2026-09-05T07:07:32.049Z",
+      "state": {
+        "phase": "completed",
+        "generation": 2,
+        "runtimeGeneration": 2,
+        "mode": "recovery",
+        "deadline": 1788592217590,
+        "reason": null,
+        "fault": null,
+        "cleanup": "destroy_acknowledged",
+        "cleanupAttempts": 1,
+        "seed": {
+          "revision": "122769f0c18d0629ea985d902a446621cece34e4ba499d07c6b65822900ee31f",
+          "generation": 1,
+          "sequence": 1
+        },
+        "final": {
+          "revision": "9b134931107c8f1d5967adf62a50670ee515197638d8ccd0a0fb4f512feada41",
+          "generation": 2,
+          "sequence": 2
+        }
+      },
+      "events": [
+        {
+          "sequence": 1,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "queued",
+          "reason": null,
+          "at": "2026-09-05T07:07:06.168Z"
+        },
+        {
+          "sequence": 2,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "preparing",
+          "reason": null,
+          "at": "2026-09-05T07:07:06.269Z"
+        },
+        {
+          "sequence": 3,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "launching",
+          "reason": null,
+          "at": "2026-09-05T07:07:09.352Z"
+        },
+        {
+          "sequence": 4,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "ready-wait",
+          "reason": null,
+          "at": "2026-09-05T07:07:09.472Z"
+        },
+        {
+          "sequence": 5,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "go-intent",
+          "reason": null,
+          "at": "2026-09-05T07:07:12.303Z"
+        },
+        {
+          "sequence": 6,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "streaming",
+          "reason": null,
+          "at": "2026-09-05T07:07:14.290Z"
+        },
+        {
+          "sequence": 7,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "interrupting",
+          "reason": "injected-process-kill",
+          "at": "2026-09-05T07:07:16.802Z"
+        },
+        {
+          "sequence": 8,
+          "generation": 1,
+          "kind": "phase",
+          "phase": "interrupted",
+          "reason": "injected-process-kill",
+          "at": "2026-09-05T07:07:17.057Z"
+        },
+        {
+          "sequence": 9,
+          "generation": 2,
+          "kind": "phase",
+          "phase": "queued",
+          "reason": null,
+          "at": "2026-09-05T07:07:17.591Z"
+        },
+        {
+          "sequence": 10,
+          "generation": 2,
+          "kind": "phase",
+          "phase": "preparing",
+          "reason": null,
+          "at": "2026-09-05T07:07:17.693Z"
+        },
+        {
+          "sequence": 11,
+          "generation": 2,
+          "kind": "phase",
+          "phase": "launching",
+          "reason": null,
+          "at": "2026-09-05T07:07:20.764Z"
+        },
+        {
+          "sequence": 12,
+          "generation": 2,
+          "kind": "phase",
+          "phase": "ready-wait",
+          "reason": null,
+          "at": "2026-09-05T07:07:20.878Z"
+        },
+        {
+          "sequence": 13,
+          "generation": 2,
+          "kind": "phase",
+          "phase": "go-intent",
+          "reason": null,
+          "at": "2026-09-05T07:07:23.715Z"
+        },
+        {
+          "sequence": 14,
+          "generation": 2,
+          "kind": "phase",
+          "phase": "streaming",
+          "reason": null,
+          "at": "2026-09-05T07:07:25.711Z"
+        },
+        {
+          "sequence": 15,
+          "generation": 2,
+          "kind": "phase",
+          "phase": "finishing",
+          "reason": null,
+          "at": "2026-09-05T07:07:27.730Z"
+        },
+        {
+          "sequence": 16,
+          "generation": 2,
+          "kind": "phase",
+          "phase": "completed",
+          "reason": null,
+          "at": "2026-09-05T07:07:29.732Z"
+        },
+        {
+          "sequence": 17,
+          "generation": 2,
+          "kind": "cleanup",
+          "phase": "completed",
+          "reason": null,
+          "at": "2026-09-05T07:07:31.767Z"
+        }
+      ],
+      "current": {
+        "revision": "9b134931107c8f1d5967adf62a50670ee515197638d8ccd0a0fb4f512feada41",
+        "generation": 2,
+        "sequence": 2
+      },
+      "seed_sha256": "f2fbdc18d7a6aa90c176628f3d478bf995268d527d355c8fc1a41d2fe385c6d7",
+      "final_sha256": "692002622093339315b4320e0d49a232160e40b62f7df953f89ba801f85a8ef0",
+      "runtime_status": {
+        "schemaVersion": 1,
+        "generation": 2,
+        "stage": "completed",
+        "requestCount": 1,
+        "contextRestored": true,
+        "contextSeenOnRecovery": true,
+        "streamStartedAt": null,
+        "providerRequestId": "m0-recovery-fixture-g2-r1",
+        "eventTypes": [
+          "agent_end",
+          "agent_settled",
+          "agent_start",
+          "message_end",
+          "message_start",
+          "message_update",
+          "turn_end",
+          "turn_start"
+        ]
+      },
+      "runtime_sandbox_id": "m0-recovery-05b43b2b8b535943eea1e8ee89abb775-g2",
+      "fault_receipt": {
+        "kind": "process",
+        "signal": "SIGKILL",
+        "killed": true,
+        "status": "killed",
+        "before": {
+          "observedAt": 1788592036956,
+          "processStatus": "running",
+          "runtimeStage": "streaming",
+          "finalAbsent": true,
+          "streamStartedAt": 1788592034299
+        },
+        "cleanup": "destroy_acknowledged",
+        "confirmedAt": 1788592037057,
+        "windowHit": true,
+        "windowScope": "Fixed local 12-second SSE stream; conservative wall-clock bound, not arbitrary provider behavior."
+      },
+      "stale_event_check": {
+        "suppliedGeneration": 1,
+        "currentGeneration": 2,
+        "accepted": false,
+        "stateUnchanged": true,
+        "eventCountUnchanged": true
+      },
+      "script_sha256": "e4cb0321fc207604e6bd6fda9b7f0c3286285cf1c5685fd73f89578ea793479d",
+      "gate_decision": "not_evaluated",
+      "limits": [
+        "Real Pi SDK with fixed local SSE provider; no external LLM or billing evidence.",
+        "Fixed single-project probe, no production authentication, queue, tools or untrusted project execution.",
+        "Recovery is a new explicit turn from the last committed Session; an interrupted model request is never automatically replayed.",
+        "Local Docker/Workerd does not prove cloud scheduling, VM isolation, rollout or durable Turn acceptance."
+      ]
+    }
+  },
+  "finishedAt": "2026-09-05T07:07:32.051Z"
+}

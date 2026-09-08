@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-sse-staging-20260906153434",
+  "observedAt": "2026-09-06T15:35:21Z",
+  "scope": "M2 authenticated gateway and SSE transport deployment; no real Pi turn execution",
+  "localEvidence": {
+    "path": "docs/evidence/runs/m1-local-20260906153130977/local-checks.json",
+    "sourceSha256": "29e6b92750df46272f7cf2eac9534a2b099f33f5fe867df0ea83abc324994fc5",
+    "sourceFiles": 256,
+    "m0": { "passed": 348, "skipped": 1, "failed": 0 },
+    "m1": { "passed": 107, "skipped": 0, "failed": 0 },
+    "m2": { "passed": 30, "skipped": 0, "failed": 0 }
+  },
+  "preflight": {
+    "status": "passed",
+    "checks": 20,
+    "proxyEnvironmentRemoved": true,
+    "dryRunContainerRollout": "none"
+  },
+  "worker": {
+    "name": "riffology-m1-gateway-staging",
+    "versionId": "9b2f8a93-6377-4690-8844-caf693214cf8",
+    "trafficPercent": 100,
+    "route": "m1.riff-demo.gaojihe.cn",
+    "workersDev": false,
+    "previewUrls": false
+  },
+  "container": {
+    "applicationId": "a035c941-2207-406e-97aa-a42ab6e9d249",
+    "name": "riffology-m1-project-staging",
+    "rollout": "none",
+    "imageDigest": "sha256:bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00",
+    "maxInstances": 2,
+    "activeInstances": 0,
+    "assignedInstances": 0,
+    "listedInstances": 0,
+    "networkMode": "private"
+  },
+  "http": {
+    "homeStatus": 200,
+    "meUnauthenticatedStatus": 401,
+    "meUnauthenticatedBody": { "error": "authentication_required" },
+    "securityHeadersObserved": ["cache-control", "content-security-policy", "referrer-policy", "x-content-type-options"]
+  },
+  "legacyRetirement": {
+    "worker": "riffology-demo",
+    "workerApiCode": 10007,
+    "workerExists": false,
+    "hostname": "riffology-demo.gaojihe.cn",
+    "dnsResolves": false,
+    "compatibilityRouteCreated": false
+  },
+  "oauthBrandingSavePending": true,
+  "newModelCalls": 0,
+  "g1Passed": false,
+  "passed": true
+}

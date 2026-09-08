@@ -1,0 +1,162 @@
+{
+  "repository": "jihegao/riffology-m0-project",
+  "tag": "20260905T155750Z-167375ff",
+  "checkedAt": "2026-09-06T00:56:21.074522+00:00",
+  "anonymousPull": true,
+  "verified": true,
+  "indexDigest": "sha256:1d82f27d7cd328aef4f7125e0e27fe42fa6a03803c97ca7783951aba385cf42f",
+  "indexMatchesLocal": true,
+  "manifestDigest": "sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+  "manifestMatchesLocal": true,
+  "configDigest": "sha256:ffa7f77ec007ce13c193e9280e3c06a9d46b37cbbd3aafca4c8c38f745eda3d0",
+  "configMatchesLocal": true,
+  "layers": [
+    {
+      "digest": "sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3",
+      "size": 30649033,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:f81f4a720b08330f7bfb48beaa1aa3ef420da9a925ff2f955897c6c8a02dc7ec",
+      "size": 47505857,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:2be099879e773021b91e149ca103715b48341d4c7088c2612c5a0081dd22797a",
+      "size": 493,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:17abb60538b761810d4643c6439e5fc006d93e8317294795aa416fc8b709524f",
+      "size": 131,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:5f06475c22fdc31cfe5f04907f567ef4b821980741c9f3c3a46e9c2fe81fb2a1",
+      "size": 45212329,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:7d96278bc0645dc77b944562ec87469247c9f1dcfa9feb95eb2d279d5220d914",
+      "size": 2988033,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:64934db2d8a2bcf4576fb90ad2dbe43ece4e7d9864dcb1a70d6e4d9fedac819a",
+      "size": 203,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:71b7e662ea744409a3224e890b8b71b5711ac23078fd9048851453629b34cd6d",
+      "size": 39446577,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:17d90541aea3975a0648cc43d64dd715dcdcfe3fe0853b20185ad753057e8c89",
+      "size": 39518258,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+      "size": 32,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:769135a6efef25c9eb2d9f612e0d9da76b19dce79eace0b4ed9ba5b7677bb618",
+      "size": 37179,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:c4e9406357ab6ba9cc171d9c6da018aba5aaa4eec0fa4e9ca34e89e9ec07d98c",
+      "size": 69744,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:fbf7c7028dc238451a8fd40c9675ecba3e7733555646a2db53bafb48fab35c37",
+      "size": 19560637,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+      "size": 32,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+      "size": 32,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:92c5c475ab3917d5c0943d1aceb2395f99b1265caa64aa1a379725040559be33",
+      "size": 99,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:1b4746a07dcbaf6316c454c0bae0d0f30f132675f0eb54c7f84aa21a8070c752",
+      "size": 47930478,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:d1c591b43542de5c747b967902d527f55a3039a7422d000474165140557b8737",
+      "size": 4490,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:c1f7df5d26c03be3ee67dcaa370517b5cac7eba2089d4b9ed172b2b8451dbdc2",
+      "size": 961,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:ff8f22125ad2050cff8b203caf65951b85b3f668f18a5bdd11c75dd85608f0f5",
+      "size": 88896392,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    },
+    {
+      "digest": "sha256:411141593df7ad34cd15563653a7f747d63e7db29dd3350d83de1d4eda4717c0",
+      "size": 2979,
+      "available": true,
+      "sizeMatches": true,
+      "digestHeaderMatches": true
+    }
+  ]
+}

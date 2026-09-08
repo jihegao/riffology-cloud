@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "environment": "staging",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "controlOrigin": "https://riff-demo.gaojihe.cn",
+  "previewBaseOrigin": "https://preview.riff-demo.gaojihe.cn",
+  "registrableSite": "gaojihe.cn",
+  "managementOrigins": [
+    "https://riff-demo.gaojihe.cn"
+  ],
+  "ingressOrigins": [],
+  "worker": {
+    "name": "riffology-m0-preview-staging",
+    "versionId": "5e5f3e22-69b2-460a-b03b-354d9d803c1d",
+    "deploymentId": "23f0ba54-8306-4a76-ab8e-f55bea0fc9bb"
+  },
+  "container": {
+    "applicationName": "riffology-m0-preview-staging",
+    "imageDigest": "sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e"
+  },
+  "deploymentSourceSha256": "c2a7a7e9bdd76c7963ade4534a4228692c912e67b8f3c7a71e6c9e6a3d74377f"
+}

@@ -1,0 +1,51 @@
+{
+  "observedAt": "2026-09-05T10:36:22.942Z",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "worker": "riffology-m0-storage-staging",
+  "deploymentsHttpStatus": 200,
+  "settingsHttpStatus": 200,
+  "success": true,
+  "activeDeployment": {
+    "id": "c45f1cd4-e5d9-4018-8879-4093d48a3a1f",
+    "createdOn": "2026-09-05T10:35:58.516078Z",
+    "versions": [
+      {
+        "version_id": "e0d311aa-ab18-4b55-9fd8-0c188376041b",
+        "percentage": 100
+      }
+    ],
+    "message": "m0-storage-cloud-bodyfix-20260905103521004"
+  },
+  "bindings": [
+    {
+      "type": "r2_bucket",
+      "name": "CHECKPOINTS",
+      "bucket_name": "riffology-m0-checkpoints-staging"
+    },
+    {
+      "type": "plain_text",
+      "name": "ENVIRONMENT",
+      "text": "staging"
+    },
+    {
+      "type": "secret_text",
+      "name": "M0_PROBE_TOKEN"
+    },
+    {
+      "type": "plain_text",
+      "name": "PROTOCOL_VERSION",
+      "text": "m0-v1"
+    },
+    {
+      "type": "durable_object_namespace",
+      "name": "STORAGE",
+      "class_name": "M0StorageCoordinator",
+      "namespace_id": "a1ac40fe21774c559be8f689dfb6a18b"
+    }
+  ],
+  "compatibilityDate": "2026-09-05",
+  "compatibilityFlags": [
+    "nodejs_compat",
+    "nodejs_compat_do_not_populate_process_env"
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-trusted-pi-runtime-local-20260907",
+  "environment": "local",
+  "reviewedAt": "2026-09-06T19:22:43.979Z",
+  "gitHead": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+  "gitDirty": true,
+  "scope": [
+    "session-bound ProductTurnRuntime identity and Revision keys",
+    "bounded deterministic Trusted Pi event mapping",
+    "Sandbox native start, observe, cancel and stopped proof",
+    "container-side controlled Pi turn host",
+    "separate fail-closed Trusted Pi image candidate"
+  ],
+  "findings": {
+    "p0": [],
+    "p1": [],
+    "closedDuringReview": [
+      {
+        "severity": "P1",
+        "finding": "A terminal result and frozen Session were incorrectly treated as native stopped proof when the Sandbox process registry entry was absent.",
+        "resolution": "Process absence now remains unknown. A fenced stop receipt requires the same registered process to report an exited state with exit code 0, followed by terminal result and Session digest validation."
+      }
+    ]
+  },
+  "claims": {
+    "identity": "scope, sessionId, turnId, dispatchId and generation are validated through runtime, receipts, actor digest and Revision object key",
+    "eventReplay": "event identity is derived from full runtime identity and host sequence; a replay with changed payload conflicts",
+    "eventBounds": "host observation count is at most 2048, individual text is bounded, persisted aggregate event JSON is at most 2 MiB, and timestamps remain inside the observed execution window",
+    "nativeStop": "terminal files do not prove process exit; missing or nonzero process evidence remains unknown",
+    "sessionFreeze": "input Session scope and digest are checked before Pi creation; output Session is written and hashed before terminal result",
+    "releaseBoundary": "control files cannot choose model, system prompt, skill, tools, credentials or provider callbacks; the image default release rejects execution",
+    "imageBoundary": "local Wrangler assigns distinct Dockerfiles to TrustedPiSandbox and ProjectToolSandbox"
+  },
+  "verification": {
+    "fullCheck": {
+      "record": "../m1-local-20260906192208839/local-checks.json",
+      "log": "../m1-local-20260906192208839/local-checks.log",
+      "command": "npm run check",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "sourceStableDuringCheck": true,
+      "sourceFiles": 314,
+      "sourceSha256": "76033e391bcb1c25eef2434bc5784d9257cdaca05128a9325b9236431cbd12dc",
+      "logSha256": "3f001446a3560d781884e4fefc6894306c7fd5fae684f299d77a86dfc3005ba2",
+      "m0": { "tests": 349, "passed": 348, "failed": 0, "skipped": 1 },
+      "m1": { "tests": 108, "passed": 108, "failed": 0, "skipped": 0 },
+      "m2": { "tests": 152, "passed": 152, "failed": 0, "skipped": 0 }
+    },
+    "priorTimedOutRecord": {
+      "record": "../m1-local-20260906192002290/local-checks.json",
+      "sourceStableDuringCheck": true,
+      "reason": "The former 90 second recorder limit expired during M2 after M0 and M1 passed; the recorder limit was raised to 180 seconds before the successful run."
+    },
+    "independentReadOnlyReview": {
+      "result": "no remaining P0 or P1",
+      "nativeAndHostFocusedTests": { "passed": 14, "failed": 0 }
+    },
+    "dockerImageBuild": { "attempted": false, "reason": "Docker daemon unavailable on this host" },
+    "cloudGatePassed": false,
+    "modelCalls": 0,
+    "cloudMutations": 0,
+    "cloudDeployments": 0
+  },
+  "sourceHashes": {
+    "services/turn/dispatcher.ts": "bac6b454b4b2c9be94628206a5b88754f17b8f78e83b7db5e16761edeb012f5e",
+    "services/turn-runtime/identity.ts": "05bd6df744683efa29f625e4e0fa93c90126907170cf34d5b1078a39592b0fd0",
+    "services/turn-runtime/core.ts": "24abf30df9bdd0c7d204657ae596a87c0738ae60e3e4499060945d4048c72faf",
+    "services/turn-runtime/pi-execution.ts": "fca84318763a6da008582e8a3f79449f262cd3a57d6bc9af0fa66363db87e8ea",
+    "services/turn-runtime/pi-native.ts": "8feadf832d02e14f9d34ae7967c8db733e7c761673545d1af3a32a8025f4ffc2",
+    "services/turn-runtime/revision.ts": "e6e063ff39bb7e881ee5607369ab3d26f3cad51ac2485f4c971f1c6341168f6c",
+    "services/trusted-pi/trusted-pi-turn-host.mjs": "814b7eeda900f75b3f146b5a560e67069d4f5a34451539d09d046f462caa3101",
+    "services/trusted-pi/release-unconfigured.mjs": "b930a5abdf7ef8a47e86d80011d05b9001cdc74b7c2e61126ac379c63f228ddd",
+    "services/trusted-pi/Dockerfile.cloud": "9684b829fc1d1610a579deb0f58bdc045939f62b9e20e17c87919bcf77bb1627",
+    "services/trusted-pi/package.json": "5f90a159f1625d57805121ae21eef69a5172f7c6c73f150668ab17069e53ff9b",
+    "services/trusted-pi/package-lock.json": "9deac6a32bb6d9d82be6468d696e928c5c3eb0c0d89deb4efca01f18bb2c74c3",
+    "infra/wrangler.m2-project-sandbox-local.jsonc": "116f30e1b017c22eeea23a59e20e923eefddaee6f8de7e090a8f57715bfbb18d"
+  },
+  "runtimeState": {
+    "ui4173Listening": true,
+    "workerd8798Listening": false,
+    "legacyRiffologyDemoRestored": false
+  },
+  "remaining": [
+    "ProductTurnRuntime Durable Object binding and WorkspaceAgent wiring",
+    "reviewed product release module with Tenant budget authority, Model Proxy and Tool Bridge definitions",
+    "real Trusted Pi image build and local Sandbox execution",
+    "real Workspace freezer and restore path",
+    "cloud dual-Sandbox and cross-tenant acceptance",
+    "Bash, large-result artifact path and user UI conversation wiring"
+  ]
+}

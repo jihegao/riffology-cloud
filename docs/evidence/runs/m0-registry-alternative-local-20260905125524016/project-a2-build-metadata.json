@@ -1,0 +1,65 @@
+{
+  "buildx.build.provenance": {
+    "builder": {
+      "id": ""
+    },
+    "buildType": "https://mobyproject.org/buildkit@v1",
+    "materials": [
+      {
+        "uri": "pkg:docker/cloudflare/sandbox@0.12.9-python?digest=sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806\u0026platform=linux%2Famd64",
+        "digest": {
+          "sha256": "f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806"
+        }
+      }
+    ],
+    "invocation": {
+      "configSource": {
+        "entryPoint": "m0-project.Dockerfile"
+      },
+      "parameters": {
+        "frontend": "dockerfile.v0",
+        "args": {
+          "force-network-mode": "none"
+        },
+        "locals": [
+          {
+            "name": "context"
+          },
+          {
+            "name": "dockerfile"
+          }
+        ],
+        "root": {
+          "configSource": {
+            "path": "m0-project.Dockerfile"
+          },
+          "request": {
+            "args": {
+              "force-network-mode": "none",
+              "vcs:localdir:context": ".local/m0-registry-alternative-local-20260905125524016/context",
+              "vcs:localdir:dockerfile": ".local/m0-registry-alternative-local-20260905125524016/context/infra",
+              "vcs:revision": "16219ffcaea7c83b8b89a2e542717eeada6fe275"
+            }
+          }
+        },
+        "compatibilityVersion": 20
+      },
+      "environment": {
+        "dockerfileVersion": "1.24.0",
+        "platform": "linux/arm64"
+      }
+    }
+  },
+  "buildx.build.ref": "default/default/8rvt1efabmm3bcpz12midao5k",
+  "containerimage.descriptor": {
+    "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+    "digest": "sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+    "size": 4425,
+    "platform": {
+      "architecture": "amd64",
+      "os": "linux"
+    }
+  },
+  "containerimage.digest": "sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+  "image.name": "docker.io/library/riffology-m0-project-alternative:20260905125524016-a2"
+}

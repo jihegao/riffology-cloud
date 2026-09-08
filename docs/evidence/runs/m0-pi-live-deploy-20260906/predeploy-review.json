@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-06T07:42:25.183Z",
+  "scope": "G0-T01 and G0-T09 fixed cloud diagnostic",
+  "sourceSha256": "244f0961fe8eb4170d786865097c8c0eed9147c2f03d37491203ef90410cb5f1",
+  "localChecks": "docs/evidence/runs/m0-local-20260906074036943/local-checks.json",
+  "tests": {
+    "passed": 301,
+    "skipped": 1,
+    "failed": 0
+  },
+  "independentReviewer": "boundary_deadline_review",
+  "reviewedFiles": [
+    "spikes/m0-pi-live/index.ts",
+    "spikes/m0-pi-live/child.ts",
+    "spikes/m0-pi-live/worker.ts",
+    "scripts/m0/pi-live-cloud.mjs",
+    "infra/wrangler.m0-pi-live.jsonc"
+  ],
+  "fixes": [
+    "Closed-state recheck before step and effect invocation",
+    "Preserve upstream response request ID",
+    "Verify final durable budget number and both final call receipts"
+  ],
+  "authorization": {
+    "incrementalBudgetUSD": 5,
+    "modelBudgetUSD": 1,
+    "maxPlatformDispatches": 2,
+    "noAutomaticThirdCall": true,
+    "useBalance": false,
+    "useBalanceSource": "user confirmation"
+  },
+  "modelQuotaDelta": null,
+  "cashCharge": null,
+  "actualLiveCallsThisCandidate": 0,
+  "legacyWorkerAbsent": true,
+  "legacyRoutesAbsent": true,
+  "cloudGatePassed": false
+}

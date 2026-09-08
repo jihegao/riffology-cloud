@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "runId": "cloud-storage-1788602556899",
+  "origin": "https://riffology-m0-storage-staging.jihe-gao.workers.dev",
+  "environment": "staging",
+  "version": "c2dd3dd5-ac4c-4ce3-afa6-74f90369000b",
+  "bundleSha256": "2d289ffe5bfc125ff9762500f74d5b162f6a8ef2a66eb2a215f0e9481e0c2f8e",
+  "startedAt": "2026-09-05T10:02:36.899Z",
+  "cases": [
+    {
+      "name": "missing-auth-denied",
+      "method": "GET",
+      "action": "report",
+      "status": 401,
+      "ray": "a364664bac1af277-NRT",
+      "body": {
+        "error": "unauthorized"
+      }
+    },
+    {
+      "name": "wrong-auth-denied",
+      "method": "GET",
+      "action": "report",
+      "status": 401,
+      "ray": "a364664ee8ffe364-NRT",
+      "body": {
+        "error": "unauthorized"
+      }
+    },
+    {
+      "name": "baseline-run",
+      "method": "POST",
+      "action": "run",
+      "status": 200,
+      "ray": "a364664f994ef277-NRT",
+      "body": {
+        "protocol": "m0-v1",
+        "observations": {
+          "restorationVerified": true,
+          "interruptedUploadKeptPointer": true,
+          "precommitKeptPointer": true,
+          "lostResponseOneReceipt": true,
+          "renameModeAndDeletion": true,
+          "concurrentParentOneWinner": true,
+          "metadataFailureRollsBackReceiptAndEvent": true,
+          "metadataReplayKeepsSingleReceipt": true,
+          "staleGenerationRejected": true
+        },
+        "primitiveChecksPassed": true,
+        "receipt": {
+          "revision": "896f23c10a4f7e942419e829d03601866c6f8ffda0281414f2a1ee1d97089eb4",
+          "generation": 1,
+          "sequence": 3
+        },
+        "events": [
+          {
+            "revision": "f3e3fc63bf02f6e5f3b0177599a7ec0c059ad01535211401e914e66794368962",
+            "generation": 1,
+            "sequence": 1
+          },
+          {
+            "revision": "ac706e241691d4fbbbe7f71097b0ef790cf4955803a3df337957f506beebdb2f",
+            "generation": 1,
+            "sequence": 2
+          },
+          {
+            "revision": "896f23c10a4f7e942419e829d03601866c6f8ffda0281414f2a1ee1d97089eb4",
+            "generation": 1,
+            "sequence": 3
+          }
+        ],
+        "gateStatus": "needs-review",
+        "limits": [
+          "synthetic entries; no filesystem CRUD",
+          "injected failures; no VM kill",
+          "no browser reconnect",
+          "no real Pi Session",
+          "no release or G0 acceptance"
+        ]
+      }
+    },
+    {
+      "name": "durable-report",
+      "method": "GET",
+      "action": "report",
+      "status": 200,
+      "ray": "a3646680cd84f277-NRT",
+      "body": {
+        "protocol": "m0-v1",
+        "observations": {
+          "restorationVerified": true,
+          "interruptedUploadKeptPointer": true,
+          "precommitKeptPointer": true,
+          "lostResponseOneReceipt": true,
+          "renameModeAndDeletion": true,
+          "concurrentParentOneWinner": true,
+          "metadataFailureRollsBackReceiptAndEvent": true,
+          "metadataReplayKeepsSingleReceipt": true,
+          "staleGenerationRejected": true
+        },
+        "primitiveChecksPassed": true,
+        "receipt": {
+          "revision": "896f23c10a4f7e942419e829d03601866c6f8ffda0281414f2a1ee1d97089eb4",
+          "generation": 1,
+          "sequence": 3
+        },
+        "events": [
+          {
+            "revision": "f3e3fc63bf02f6e5f3b0177599a7ec0c059ad01535211401e914e66794368962",
+            "generation": 1,
+            "sequence": 1
+          },
+          {
+            "revision": "ac706e241691d4fbbbe7f71097b0ef790cf4955803a3df337957f506beebdb2f",
+            "generation": 1,
+            "sequence": 2
+          },
+          {
+            "revision": "896f23c10a4f7e942419e829d03601866c6f8ffda0281414f2a1ee1d97089eb4",
+            "generation": 1,
+            "sequence": 3
+          }
+        ],
+        "gateStatus": "needs-review",
+        "limits": [
+          "synthetic entries; no filesystem CRUD",
+          "injected failures; no VM kill",
+          "no browser reconnect",
+          "no real Pi Session",
+          "no release or G0 acceptance"
+        ]
+      }
+    },
+    {
+      "name": "duplicate-run-refused",
+      "method": "POST",
+      "action": "run",
+      "status": 200,
+      "ray": "a364668489e4f277-NRT",
+      "body": {
+        "error": "run-already-started",
+        "rerun": "use a new run ID"
+      }
+    },
+    {
+      "name": "duplicate-did-not-change-report",
+      "method": "GET",
+      "action": "report",
+      "status": 200,
+      "ray": "a36466854c40f277-NRT",
+      "body": {
+        "protocol": "m0-v1",
+        "observations": {
+          "restorationVerified": true,
+          "interruptedUploadKeptPointer": true,
+          "precommitKeptPointer": true,
+          "lostResponseOneReceipt": true,
+          "renameModeAndDeletion": true,
+          "concurrentParentOneWinner": true,
+          "metadataFailureRollsBackReceiptAndEvent": true,
+          "metadataReplayKeepsSingleReceipt": true,
+          "staleGenerationRejected": true
+        },
+        "primitiveChecksPassed": true,
+        "receipt": {
+          "revision": "896f23c10a4f7e942419e829d03601866c6f8ffda0281414f2a1ee1d97089eb4",
+          "generation": 1,
+          "sequence": 3
+        },
+        "events": [
+          {
+            "revision": "f3e3fc63bf02f6e5f3b0177599a7ec0c059ad01535211401e914e66794368962",
+            "generation": 1,
+            "sequence": 1
+          },
+          {
+            "revision": "ac706e241691d4fbbbe7f71097b0ef790cf4955803a3df337957f506beebdb2f",
+            "generation": 1,
+            "sequence": 2
+          },
+          {
+            "revision": "896f23c10a4f7e942419e829d03601866c6f8ffda0281414f2a1ee1d97089eb4",
+            "generation": 1,
+            "sequence": 3
+          }
+        ],
+        "gateStatus": "needs-review",
+        "limits": [
+          "synthetic entries; no filesystem CRUD",
+          "injected failures; no VM kill",
+          "no browser reconnect",
+          "no real Pi Session",
+          "no release or G0 acceptance"
+        ]
+      }
+    }
+  ],
+  "passed": true,
+  "gateAccepted": false,
+  "maxRequests": 6,
+  "requestCount": 6,
+  "finishedAt": "2026-09-05T10:02:47.554Z",
+  "limits": [
+    "synthetic entries on real R2/DO",
+    "injected errors before operations; not actual upload or instance interruption",
+    "no event reconnect or orphan GC",
+    "G0 not accepted"
+  ]
+}

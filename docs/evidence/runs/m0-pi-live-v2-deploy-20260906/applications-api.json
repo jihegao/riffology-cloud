@@ -1,0 +1,47 @@
+{
+  "at": "2026-09-06T08:03:39.896Z",
+  "success": true,
+  "status": 200,
+  "applications": [
+    {
+      "id": "a039ed42-159d-43db-be13-69315bce5189",
+      "name": "riffology-m0-pi-live-project-staging",
+      "version": 1,
+      "max_instances": 1,
+      "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+      "namespaceId": "2217a2e7507d46ddb766164f94c678f7",
+      "health": {
+        "errors": [],
+        "instances": {
+          "active": 0,
+          "assigned": 0,
+          "healthy": 1,
+          "stopped": 0,
+          "failed": 0,
+          "scheduling": 0,
+          "starting": 0
+        }
+      }
+    },
+    {
+      "id": "a03ddc7e-1c6e-4cea-93ec-ac03d7b0073a",
+      "name": "riffology-m0-pi-live-trusted-staging",
+      "version": 1,
+      "max_instances": 1,
+      "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+      "namespaceId": "81dab5c2d43c44fa8a7e2fa7518ea389",
+      "health": {
+        "errors": [],
+        "instances": {
+          "active": 0,
+          "assigned": 0,
+          "healthy": 1,
+          "stopped": 0,
+          "failed": 0,
+          "scheduling": 0,
+          "starting": 0
+        }
+      }
+    }
+  ]
+}

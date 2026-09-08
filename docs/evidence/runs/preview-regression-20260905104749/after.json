@@ -1,0 +1,43 @@
+{
+  "execution_environment": "local",
+  "finished_at": 1788605586.538857,
+  "driver": {
+    "exit_code": 0,
+    "ended_at": 1788605467.8449762
+  },
+  "workerd": {
+    "exit_code": 130,
+    "ended_at": 1788605502.6710742,
+    "raw_log_persisted": false,
+    "redacted_log": "workerd-redacted.log"
+  },
+  "helpers_stopped": true,
+  "active_containers": {
+    "exit_code": 0,
+    "output": "",
+    "stderr": ""
+  },
+  "images": {
+    "exit_code": 0,
+    "output": "{\"Containers\":\"0\",\"CreatedAt\":\"2026-09-05 16:24:27 +0800 CST\",\"CreatedSince\":\"2 hours ago\",\"Digest\":\"\\u003cnone\\u003e\",\"ID\":\"sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721\",\"Repository\":\"cloudflare-dev/trustedsandbox\",\"SharedSize\":\"N/A\",\"Size\":\"1.2GB\",\"Tag\":\"54743ab9\",\"UniqueSize\":\"N/A\"}\n{\"Containers\":\"0\",\"CreatedAt\":\"2026-09-05 16:24:27 +0800 CST\",\"CreatedSince\":\"2 hours ago\",\"Digest\":\"\\u003cnone\\u003e\",\"ID\":\"sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721\",\"Repository\":\"riffology-m0-trusted-staging\",\"SharedSize\":\"N/A\",\"Size\":\"1.2GB\",\"Tag\":\"61647393\",\"UniqueSize\":\"N/A\"}\n{\"Containers\":\"0\",\"CreatedAt\":\"2026-09-05 16:24:27 +0800 CST\",\"CreatedSince\":\"2 hours ago\",\"Digest\":\"\\u003cnone\\u003e\",\"ID\":\"sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721\",\"Repository\":\"riffology-m0-trusted-staging\",\"SharedSize\":\"N/A\",\"Size\":\"1.2GB\",\"Tag\":\"66c7def0\",\"UniqueSize\":\"N/A\"}\n{\"Containers\":\"0\",\"CreatedAt\":\"2026-09-05 16:24:27 +0800 CST\",\"CreatedSince\":\"2 hours ago\",\"Digest\":\"\\u003cnone\\u003e\",\"ID\":\"sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721\",\"Repository\":\"riffology-m0-trusted-staging\",\"SharedSize\":\"N/A\",\"Size\":\"1.2GB\",\"Tag\":\"worker\",\"UniqueSize\":\"N/A\"}\n{\"Containers\":\"0\",\"CreatedAt\":\"2026-09-05 16:24:27 +0800 CST\",\"CreatedSince\":\"2 hours ago\",\"Digest\":\"sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721\",\"ID\":\"sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721\",\"Repository\":\"registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m0-trusted-staging\",\"SharedSize\":\"N/A\",\"Size\":\"1.2GB\",\"Tag\":\"61647393\",\"UniqueSize\":\"N/A\"}\n{\"Containers\":\"0\",\"CreatedAt\":\"2026-09-05 16:24:27 +0800 CST\",\"CreatedSince\":\"2 hours ago\",\"Digest\":\"sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721\",\"ID\":\"sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721\",\"Repository\":\"registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m0-trusted-staging\",\"SharedSize\":\"N/A\",\"Size\":\"1.2GB\",\"Tag\":\"66c7def0\",\"UniqueSize\":\"N/A\"}\n{\"Containers\":\"0\",\"CreatedAt\":\"2026-09-05 15:55:38 +0800 CST\",\"CreatedSince\":\"3 hours ago\",\"Digest\":\"sha256:168637ae5031c5a44a1bae5f66f3a48f1e9789e0318a4ef9031f5c8155001887\",\"ID\":\"sha256:168637ae5031c5a44a1bae5f66f3a48f1e9789e0318a4ef9031f5c8155001887\",\"Repository\":\"cloudflare-dev/trustedsandbox\",\"SharedSize\":\"N/A\",\"Size\":\"1.2GB\",\"Tag\":\"e5bc7ef6\",\"UniqueSize\":\"N/A\"}\n{\"Containers\":\"0\",\"CreatedAt\":\"2026-09-05 15:01:15 +0800 CST\",\"CreatedSince\":\"4 hours ago\",\"Digest\":\"sha256:7fdfeeae723428c05d9e0c07d02d05fd2b88d880f18d887e5c191cd3301a6714\",\"ID\":\"sha256:7fdfeeae723428c05d9e0c07d02d05fd2b88d880f18d887e5c191cd3301a6714\",\"Repository\":\"cloudflare-dev/recoverytrustedsandbox\",\"SharedSize\":\"N/A\",\"Size\":\"1.2GB\",\"Tag\":\"aee4de34\",\"UniqueSize\":\"N/A\"}\n{\"Containers\":\"0\",\"CreatedAt\":\"2026-09-05 13:25:38 +0800 CST\",\"CreatedSince\":\"5 hours ago\",\"Digest\":\"sha256:a42bfa96d942f3d520481bc349103cd1f0f84807f550a5cb30ff6dd5abe724ad\",\"ID\":\"sha256:a42bfa96d942f3d520481bc349103cd1f0f84807f550a5cb30ff6dd5abe724ad\",\"Repository\":\"cloudflare-dev/trustedsandbox\",\"SharedSize\":\"N/A\",\"Size\":\"1.2GB\",\"Tag\":\"dc0c33d6\",\"UniqueSize\":\"N/A\"}\n{\"Containers\":\"0\",\"CreatedAt\":\"2026-09-05 13:12:37 +0800 CST\",\"CreatedSince\":\"6 hours ago\",\"Digest\":\"sha256:9e87b167e21f234d4816217cfbc1f1ecc42db61bc3825118c426904ca4b510f3\",\"ID\":\"sha256:9e87b167e21f234d4816217cfbc1f1ecc42db61bc3825118c426904ca4b510f3\",\"Repository\":\"cloudflare-dev/trustedsandbox\",\"SharedSize\":\"N/A\",\"Size\":\"850MB\",\"Tag\":\"cc1a1e86\",\"UniqueSize\":\"N/A\"}\n{\"Containers\":\"0\",\"CreatedAt\":\"2026-08-25 18:15:56 +0800 CST\",\"CreatedSince\":\"11 days ago\",\"Digest\":\"\\u003cnone\\u003e\",\"ID\":\"sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda\",\"Repository\":\"cloudflare-dev/previewsandbox\",\"SharedSize\":\"N/A\",\"Size\":\"1.48GB\",\"Tag\":\"836a1cdf\",\"UniqueSize\":\"N/A\"}\n{\"Containers\":\"0\",\"CreatedAt\":\"2026-08-25 18:15:56 +0800 CST\",\"CreatedSince\":\"11 days ago\",\"Digest\":\"\\u003cnone\\u003e\",\"ID\":\"sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda\",\"Repository\":\"riffology-m0-preview-staging\",\"SharedSize\":\"N/A\",\"Size\":\"1.48GB\",\"Tag\":\"worker\",\"UniqueSize\":\"N/A\"}\n{\"Containers\":\"0\",\"CreatedAt\":\"2026-08-25 18:15:56 +0800 CST\",\"CreatedSince\":\"11 days ago\",\"Digest\":\"sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda\",\"ID\":\"sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda\",\"Repository\":\"riffology-m0-project-staging\",\"SharedSize\":\"N/A\",\"Size\":\"1.48GB\",\"Tag\":\"worker\",\"UniqueSize\":\"N/A\"}\n{\"Containers\":\"18\",\"CreatedAt\":\"2026-03-13 08:16:02 +0800 CST\",\"CreatedSince\":\"5 months ago\",\"Digest\":\"sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8\",\"ID\":\"sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8\",\"Repository\":\"cloudflare/proxy-everything\",\"SharedSize\":\"N/A\",\"Size\":\"31.1MB\",\"Tag\":\"\\u003cnone\\u003e\",\"UniqueSize\":\"N/A\"}",
+    "stderr": ""
+  },
+  "port_8791": {
+    "exit_code": 1,
+    "output": "",
+    "stderr": ""
+  },
+  "UI_4173": {
+    "exit_code": 0,
+    "output": "COMMAND   PID    USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nnode    88606 gaojihe   12u  IPv4 0x4ae63b47c37775cf      0t0  TCP 127.0.0.1:4173 (LISTEN)",
+    "stderr": ""
+  },
+  "source": {
+    "exit_code": 0,
+    "output": "{\"deploymentSourceSha256\":\"f5c38924dbb30aefece17c91e53806f2cfbeab6d9d68ed409a7a23ee28754597\"}",
+    "stderr": ""
+  },
+  "network_connection_lost_count": 15,
+  "SDK_error_attribution": "unresolved",
+  "cloud_G0_T07": "not_run"
+}

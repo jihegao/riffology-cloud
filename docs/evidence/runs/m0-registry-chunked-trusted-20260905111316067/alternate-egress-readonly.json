@@ -1,0 +1,20 @@
+{
+  "evidenceType": "subagent-reported-readonly-diagnostic",
+  "agent": "m0_runbook_refresh",
+  "hostAlias": "AMD128",
+  "sshOptions": ["BatchMode=yes", "ConnectTimeout=10"],
+  "commands": ["uname -m", "command -v curl", "curl --max-time 15 -sS -o /dev/null -w %{http_code} -I https://registry.cloudflare.com/v2/"],
+  "architecture": "x86_64",
+  "curlPresent": true,
+  "httpStatus": null,
+  "wrapperStatusText": "000000",
+  "wrapperExitCodeRawRetained": false,
+  "curlExitCode": null,
+  "curlErrorReason": null,
+  "limitation": "stderr and original curl exit code were discarded by the diagnostic wrapper; 000000 is not an HTTP response or authentication result",
+  "registryRequestsAttempted": 1,
+  "retryPerformed": false,
+  "sourceImageOrCredentialTransferPerformed": false,
+  "configurationChanged": false,
+  "uploadCapabilityVerified": false
+}

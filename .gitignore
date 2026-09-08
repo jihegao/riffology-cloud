@@ -7,4 +7,9 @@ dist/
 .wrangler/
 coverage/
 *.log
-
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.local/
+__pycache__/
+.venv/

@@ -1,0 +1,46 @@
+const paths = {
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  folder:'<path d="M3 7V5a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/>',
+  library:'<path d="M4 4v16M9 4v16M14 4v16M18 4l3 16"/>',
+  wallet:'<path d="M20 8V5a2 2 0 0 0-2-2H5a3 3 0 0 0 0 6h15v12H5a3 3 0 0 1-3-3V6"/><path d="M20 12h-5v5h5"/>',
+  settings:'<path d="m10 3-.8 3-2.7 1-2.7-.7-2 3 2 2v3l-2 2 2 3 2.7-.7 2.7 1 .8 3h4l.8-3 2.7-1 2.7.7 2-3-2-2v-3l2-2-2-3-2.7.7-2.7-1L14 3Z"/><circle cx="12" cy="12" r="3"/>',
+  search:'<circle cx="10.5" cy="10.5" r="7"/><path d="m16 16 5 5"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  arrowRight:'<path d="M4 12h16m-6-6 6 6-6 6"/>',
+  arrowUp:'<path d="M7 17 17 7M7 7h10v10"/>',
+  arrowLeft:'<path d="M20 12H4m6-6-6 6 6 6"/>',
+  chevronDown:'<path d="m6 9 6 6 6-6"/>',chevronRight:'<path d="m9 6 6 6-6 6"/>',
+  check:'<path d="m5 12 4 4L19 6"/>',checkCircle:'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
+  close:'<path d="m6 6 12 12M6 18 18 6"/>',more:'<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
+  play:'<path d="m8 4 12 8-12 8Z"/>',pause:'<path d="M8 5v14M16 5v14"/>',stop:'<rect x="6" y="6" width="12" height="12" rx="1"/>',
+  file:'<path d="M14 2H5v20h14V7Zm0 0v6h5M8 13h8M8 17h6"/>',
+  code:'<path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18"/>',
+  chart:'<path d="M3 3v18h18M7 15l4-5 4 3 6-8"/>',
+  download:'<path d="M12 3v12m-5-5 5 5 5-5M3 16v5h18v-5"/>',
+  refresh:'<path d="M20 9a8 8 0 0 0-14-4L3 8m0-6v6h6M4 15a8 8 0 0 0 14 4l3-3m0 6v-6h-6"/>',
+  shield:'<path d="m12 3 9 4v6c0 5-9 9-9 9s-9-4-9-9V7Z"/><path d="m8 12 3 3 5-6"/>',
+  users:'<circle cx="9" cy="7" r="4"/><path d="M2 21v-3a6 6 0 0 1 12 0v3M17 3a4 4 0 0 1 0 8m1 4a5 5 0 0 1 4 5"/>',
+  activity:'<path d="M2 12h5l3-9 4 18 3-9h5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  external:'<path d="M14 3h7v7m0-7L10 14M10 3H3v18h18v-7"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v.5"/>',
+  alert:'<path d="m12 3 10 18H2Z"/><path d="M12 9v5m0 3v.5"/>',
+  logout:'<path d="M9 3H3v18h6m4-15 6 6-6 6M7 12h13"/>',
+  send:'<path d="m3 3 18 9-18 9 4-9Zm4 9h14"/>',
+  terminal:'<path d="m4 6 6 6-6 6m9 0h7"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/>',
+  copy:'<rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V3H3v13h5"/>',
+  filter:'<path d="M3 5h18M6 12h12M9 19h6"/>',
+  sparkles:'<path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5ZM20 2v4m-2-2h4"/>',
+  message:'<path d="M21 15a3 3 0 0 1-3 3H8l-5 4V5a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3Z"/>',
+  panel:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M14 3v18"/>',
+  menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+  plane:'<path d="m22 12-9-3V3a1 1 0 0 0-2 0v6l-9 3v2l9-1v6l-3 2v1l4-1 4 1v-1l-3-2v-6l9 1Z"/>',
+  lock:'<rect x="5" y="10" width="14" height="12" rx="2"/><path d="M8 10V6a4 4 0 0 1 8 0v4"/>',
+  attach:'<path d="m8 13 7-7a3 3 0 0 1 4 4l-9 9a5 5 0 0 1-7-7L13 2"/>',
+};
+export function icon(name,size=18){return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name]||paths.grid}</svg>`;}
+export function esc(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+export function badge(label,tone='neutral'){return `<span class="badge ${esc(tone)}">${esc(label)}</span>`;}
+export function money(cents){return `¥${(Number(cents||0)/100).toFixed(2)}`;}
+export function pageHeader(eyebrow,title,description,actions=''){return `<div class="page-head"><div><div class="eyebrow">${esc(eyebrow)}</div><h1>${esc(title)}</h1><p>${esc(description)}</p></div><div class="page-actions">${actions}</div></div>`;}
+export function emptyState(title,desc,action=''){return `<div class="empty-state">${icon('search',32)}<h3>${esc(title)}</h3><p>${esc(desc)}</p>${action}</div>`;}

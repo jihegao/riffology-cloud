@@ -1,0 +1,264 @@
+{
+  "schema_version": 2,
+  "operation": "G0-T07-local-browser",
+  "run_id": "preview-browser-1788596255014",
+  "observed_at": "2026-09-05T08:17:35.037Z",
+  "execution_environment": "local-workerd-docker-chrome-https",
+  "identity_provider": "server-owned-synthetic-principals-not-product-login",
+  "origin_model": "same-site-different-origin",
+  "gate_decision": "not_evaluated",
+  "cloud_browser_matrix": "not_run",
+  "cross_site_third_party_cookie_matrix": "not_run",
+  "product_login": "not_run",
+  "tls": {
+    "dedicated_ca": true,
+    "spki_allowlist_only": true,
+    "global_tls_verification_disabled": false,
+    "system_trust_modified": false
+  },
+  "cases": {
+    "secure_context_and_server_owned_fixture_sessions": {
+      "status": "passed",
+      "elapsed_ms": 23,
+      "browser_version": "152.0.7977.76",
+      "independent_contexts": 3
+    },
+    "copied_full_ticket_denies_other_tenant_and_independent_same_tenant_session": {
+      "status": "passed",
+      "elapsed_ms": 694,
+      "copied_context_cookies": false,
+      "owner_ticket_preserved": true
+    },
+    "real_DO_one_use_concurrent_authorization_and_redemption": {
+      "status": "passed",
+      "elapsed_ms": 88,
+      "authorization_statuses": [
+        303,
+        403
+      ],
+      "redemption_statuses": [
+        303,
+        403
+      ],
+      "code_without_challenge_denied": true,
+      "transport": "Node HTTPS against real DO; browser-copy check uses independent context"
+    },
+    "borrowed_owner_authorize_navigation_without_original_nonce_does_not_burn_ticket": {
+      "status": "passed",
+      "elapsed_ms": 115,
+      "failed_nonce_did_not_consume_ticket": true
+    },
+    "document_JS_API_WS_and_iframe_load_with_isolated_httponly_credentials": {
+      "status": "passed",
+      "elapsed_ms": 107,
+      "preview_origin": "https://p-42f7fdef59f44565b745a9712647c2ae.preview.m0.test:8791",
+      "document_cookie_empty": true,
+      "iframe_sandbox": "allow-scripts allow-same-origin"
+    },
+    "same_instance_two_independent_observers_report_identical_routing_marker_and_state": {
+      "status": "passed",
+      "elapsed_ms": 170,
+      "observers": 2,
+      "matching_state_sequence": 1,
+      "routing_marker_matches_expected_generation": true
+    },
+    "iframe_cannot_read_parent_or_navigate_top_and_cannot_inject_domain_host_cookie": {
+      "status": "passed",
+      "elapsed_ms": 77
+    },
+    "same_site_project_control_write_CSRF_denied_even_with_control_cookie": {
+      "status": "failed",
+      "elapsed_ms": 30076,
+      "error_type": "TimeoutError"
+    }
+  },
+  "cleanup": [
+    {
+      "run_id": "preview-browser-1788596255014",
+      "tenant": "alpha",
+      "action": "cleanup",
+      "acknowledgment": "destroy_acknowledged",
+      "semantics": "Sandbox-only; development proxy helpers require separate caller inspection"
+    }
+  ],
+  "sourcesBefore": {
+    "sha256": "9a0ec5df6db9b6f75057d3928617ba970f634815b0523ecfabc5bf7f13ac67ba",
+    "files": [
+      {
+        "path": ".dockerignore",
+        "sha256": "46c6ff40eef5d467e276eb0c86c512e25a4f8f4913be33dc094449365aa9f6ab"
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "ebd2febbc682177605c565d0086c3c2949fafc7400c8f657318204a9a18790ab"
+      },
+      {
+        "path": "infra/m0-project.Dockerfile",
+        "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+      },
+      {
+        "path": "infra/wrangler.m0-preview.jsonc",
+        "sha256": "58ac388c4c3e143e085c26f71df17a81ed15a406d9465d0e26ebc5061861600f"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+      },
+      {
+        "path": "scripts/m0/preview-browser.mjs",
+        "sha256": "fd00bd07d876f093d35a087ea55b54c9707090207bdcbb758a3baa5e41ef1b13"
+      },
+      {
+        "path": "scripts/m0/source-inventory.mjs",
+        "sha256": "1afeab93162678265a0372d57b2404902192efdc17fbe0a063e62f5a63460c6e"
+      },
+      {
+        "path": "spikes/m0-cloud/auth.ts",
+        "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+      },
+      {
+        "path": "spikes/m0-preview/README.md",
+        "sha256": "3c5a4d9f77d7223d48fbdb9770501b9834c70f995b21731c671ff82cc8d30402"
+      },
+      {
+        "path": "spikes/m0-preview/browser.test.ts",
+        "sha256": "dde576880a2ed19ad8bd7bbb4c8f6bf2aac655171cf3e89005f7dbdb6e9aab4d"
+      },
+      {
+        "path": "spikes/m0-preview/browser.ts",
+        "sha256": "768d5312adc354df1b2e52fb60d7794513cd5156ee2f427680433ed7ff9761d4"
+      },
+      {
+        "path": "spikes/m0-preview/env.d.ts",
+        "sha256": "8a45521d5be85d24a0c1faf01abdfd5771ce3e50d363e105bf1e4b3fefb209d9"
+      },
+      {
+        "path": "spikes/m0-preview/index.ts",
+        "sha256": "330b541eb099ae904660f6e5f618f9a72bcef4ee1344378e6a470d2b98b7421b"
+      },
+      {
+        "path": "spikes/m0-preview/lifecycle.ts",
+        "sha256": "7a34e172408615c37a181ec50f320f2d72e40172c0b48d4a96e76dcf21c28fcd"
+      },
+      {
+        "path": "spikes/m0-preview/policy.test.ts",
+        "sha256": "264368ac5c2b9b55462d07a086f62fc7be4a717235fb90e1fe219e8e036d9c3a"
+      },
+      {
+        "path": "spikes/m0-preview/policy.ts",
+        "sha256": "f93e50b3f8d3f1f64255c33707ac2a1795d843b339291f4530ec111f3d0010a6"
+      },
+      {
+        "path": "spikes/m0-preview/protocol.test.ts",
+        "sha256": "7438c1912cccc87feea678e250097597c7cf3f1268ceda4128ca0b0772bce200"
+      },
+      {
+        "path": "spikes/m0-preview/runtime.ts",
+        "sha256": "812ac6249f6d47fec7a4930f136cfef765c34002d34e4907f83dd3a86bd310fe"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+      }
+    ],
+    "repositorySourceSha256": "d814436469346608683517bd2bbfbdc499b3b7753c1f159641c339691eb7d42d"
+  },
+  "status": "failed",
+  "failure": {
+    "case": "same_site_project_control_write_CSRF_denied_even_with_control_cookie",
+    "error_type": "TimeoutError"
+  },
+  "browser_closed": true,
+  "sourcesAfter": {
+    "sha256": "9a0ec5df6db9b6f75057d3928617ba970f634815b0523ecfabc5bf7f13ac67ba",
+    "files": [
+      {
+        "path": ".dockerignore",
+        "sha256": "46c6ff40eef5d467e276eb0c86c512e25a4f8f4913be33dc094449365aa9f6ab"
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "ebd2febbc682177605c565d0086c3c2949fafc7400c8f657318204a9a18790ab"
+      },
+      {
+        "path": "infra/m0-project.Dockerfile",
+        "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+      },
+      {
+        "path": "infra/wrangler.m0-preview.jsonc",
+        "sha256": "58ac388c4c3e143e085c26f71df17a81ed15a406d9465d0e26ebc5061861600f"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+      },
+      {
+        "path": "scripts/m0/preview-browser.mjs",
+        "sha256": "fd00bd07d876f093d35a087ea55b54c9707090207bdcbb758a3baa5e41ef1b13"
+      },
+      {
+        "path": "scripts/m0/source-inventory.mjs",
+        "sha256": "1afeab93162678265a0372d57b2404902192efdc17fbe0a063e62f5a63460c6e"
+      },
+      {
+        "path": "spikes/m0-cloud/auth.ts",
+        "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+      },
+      {
+        "path": "spikes/m0-preview/README.md",
+        "sha256": "3c5a4d9f77d7223d48fbdb9770501b9834c70f995b21731c671ff82cc8d30402"
+      },
+      {
+        "path": "spikes/m0-preview/browser.test.ts",
+        "sha256": "dde576880a2ed19ad8bd7bbb4c8f6bf2aac655171cf3e89005f7dbdb6e9aab4d"
+      },
+      {
+        "path": "spikes/m0-preview/browser.ts",
+        "sha256": "768d5312adc354df1b2e52fb60d7794513cd5156ee2f427680433ed7ff9761d4"
+      },
+      {
+        "path": "spikes/m0-preview/env.d.ts",
+        "sha256": "8a45521d5be85d24a0c1faf01abdfd5771ce3e50d363e105bf1e4b3fefb209d9"
+      },
+      {
+        "path": "spikes/m0-preview/index.ts",
+        "sha256": "330b541eb099ae904660f6e5f618f9a72bcef4ee1344378e6a470d2b98b7421b"
+      },
+      {
+        "path": "spikes/m0-preview/lifecycle.ts",
+        "sha256": "7a34e172408615c37a181ec50f320f2d72e40172c0b48d4a96e76dcf21c28fcd"
+      },
+      {
+        "path": "spikes/m0-preview/policy.test.ts",
+        "sha256": "264368ac5c2b9b55462d07a086f62fc7be4a717235fb90e1fe219e8e036d9c3a"
+      },
+      {
+        "path": "spikes/m0-preview/policy.ts",
+        "sha256": "f93e50b3f8d3f1f64255c33707ac2a1795d843b339291f4530ec111f3d0010a6"
+      },
+      {
+        "path": "spikes/m0-preview/protocol.test.ts",
+        "sha256": "7438c1912cccc87feea678e250097597c7cf3f1268ceda4128ca0b0772bce200"
+      },
+      {
+        "path": "spikes/m0-preview/runtime.ts",
+        "sha256": "812ac6249f6d47fec7a4930f136cfef765c34002d34e4907f83dd3a86bd310fe"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+      }
+    ],
+    "repositorySourceSha256": "d814436469346608683517bd2bbfbdc499b3b7753c1f159641c339691eb7d42d"
+  },
+  "probeSourceStableDuringRun": true,
+  "completed_at": "2026-09-05T08:18:09.764Z"
+}

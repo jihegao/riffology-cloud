@@ -1,0 +1,262 @@
+{
+  "schemaVersion": 1,
+  "operation": "G0-T10-v3-independent-partial-review",
+  "reviewedAt": "2026-09-06T09:47:37.551050+00:00",
+  "reviewer": "boundary_deadline_review",
+  "reviewMode": "offline-read-only-except-this-new-review-file",
+  "cloudRequestsPerformed": 0,
+  "modelRequestsPerformedByReview": 0,
+  "sourceFilesModified": false,
+  "decision": "partial-claims-supported-full-G0-T10-remains-failed-and-unaccepted",
+  "gateStatusPreserved": "failed",
+  "fullGateAccepted": false,
+  "fullGoalComplete": false,
+  "gateEvidenceHashVerification": {
+    "expectedReferences": 14,
+    "verifiedReferences": 14,
+    "allMatch": true
+  },
+  "preliminaryCandidateHashVerification": {
+    "gateRecordsVerified": 9,
+    "evidenceReferencesVerified": 110,
+    "allMatch": true,
+    "scope": "Recomputed referenced hashes only; no fresh cloud reattestation or replacement of the preliminary source review."
+  },
+  "verifiedPartialEvidence": {
+    "i2Restore": {
+      "runId": "release-g0-v3-20260906",
+      "workerVersionId": "f6f8808e-c9dd-4173-bb04-970645cdd4d7",
+      "applicationId": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+      "applicationVersion": 4,
+      "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+      "fromCounter": 1,
+      "initializedCounter": 1,
+      "incrementedCounter": 2,
+      "readBackCounter": 2,
+      "incrementReadStateHashesMatch": true,
+      "freshRole": "new",
+      "sourceSha256": "1d8e7c354198a11ecd0d8220216c13416756c40072de6ce631a712d2e2d52056"
+    },
+    "independentR2": {
+      "mode": "Offline verification of separately recorded remote Wrangler GET artifacts",
+      "getReceiptVerified": true,
+      "manifestBytes": 220,
+      "stateBytes": 24,
+      "manifestSha256": "518090fb384338b9e63ddbdf091ea03f2ce2198d347b8e509c165947dc4753a7",
+      "stateSha256": "fe44e2085de9f5c29980f1a6c8a84a8c340131a8fefc9135a265d2667bde7b5c",
+      "manifestParent": "7359ed1104f1af0b3dc31e28cd4223ab8e44a341d2848d798f794a438c715af1",
+      "state": {
+        "schema": 1,
+        "counter": 2
+      },
+      "sequence": 2,
+      "manifestAndSessionMatchHostReceipt": true
+    },
+    "startup": {
+      "phasePassed": false,
+      "startupIssued": true,
+      "readinessConfirmed": false,
+      "observedExitCode": null,
+      "stateAtObservation": "running",
+      "outcome": "unconfirmed",
+      "cleanupConfirmed": true,
+      "originalFailurePreserved": true
+    },
+    "rollback": {
+      "exactWorkerRollbackObservedAt": "2026-09-06T09:35:40.315Z",
+      "exactOriginalWorkerVersionId": "22f913a0-163f-41ad-b04f-9958ffae8872",
+      "exactVersionPercentage": 100,
+      "imageAfterWorkerOnlyRollback": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+      "finalObservedAt": "2026-09-06T09:37:06.234Z",
+      "finalWorkerVersionId": "e6a57b3f-a5fb-47e6-abbd-cedbc568c822",
+      "finalWorkerPercentage": 100,
+      "finalBundleSha256": "63429cde0c4d71a23eb331cf6d16e21be9dd6b2486d51bb2a9dba752197ffd40",
+      "finalBundleBytesEqualOriginalW1": true,
+      "finalApplicationVersion": 5,
+      "finalImage": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+      "rollbackRestoreWriteExecuted": false
+    },
+    "cleanup": {
+      "observedAt": "2026-09-06T09:37:06.234Z",
+      "instanceCount": 5,
+      "allRecordedInstancesInactive": true,
+      "instances": [
+        {
+          "id": "62ead798db0d29864b0c5912c4d184b3fc7e34d0d36f9ac58fdf26bea08df5b5",
+          "name": "m0-release-g0-v3-20260906-new",
+          "state": "inactive"
+        },
+        {
+          "id": "89669f7474128f6fdc70bce37e33109c5f147b962df01c9717e30dbd51dba9a9",
+          "name": "m0-release-g0-v3-20260906-fault",
+          "state": "inactive"
+        },
+        {
+          "id": "8b301cc2ae4ef108659d1c3c01ffeb69f5bf6fdcf60a8f1f89988f715eff8825",
+          "name": "m0-release-g0-20260906-old",
+          "state": "inactive"
+        },
+        {
+          "id": "9c0e4e8e82b19a601302a6eb0d1721687e6f6a2d4e941c04ca0cb7d3370d878e",
+          "name": "m0-release-g0-v3-20260906-old",
+          "state": "inactive"
+        },
+        {
+          "id": "b5c6735ad1c187dde0e9189a8814643b4d18bb4d45b6e9514f4ce21403e12b71",
+          "name": "m0-release-g0-v2-20260906-old",
+          "state": "inactive"
+        }
+      ]
+    },
+    "legacyRetirement": {
+      "observedAt": "2026-09-06T09:40:06.374Z",
+      "workersQuerySucceeded": true,
+      "routesQuerySucceeded": true,
+      "legacyWorkers": [],
+      "legacyRoutes": []
+    }
+  },
+  "holdObservationBoundary": {
+    "activePidBeforeRollout": 96,
+    "heldProcessId": "proc_1788686804460_3hcolx",
+    "containerStateAfterRollout": "stopped",
+    "containerStateLastChange": 1788686861237,
+    "onStopReceipt": null,
+    "processRecordMissing": true,
+    "exactProcessExitCode": null,
+    "exactProcessExitTime": null,
+    "specificOsSignal": null,
+    "conclusion": "The stopped Container state, missing process record and rollout metadata support replacement observation, but do not independently establish the held process exact interruption cause or signal. lastChange is Container state metadata, not a substitute process-exit timestamp."
+  },
+  "noNewModelCallClaim": {
+    "scope": "This fixed T10 release probe configuration and inspected runtime path only; not account-wide provider or financial audit.",
+    "configurations": [
+      {
+        "path": "infra/wrangler.m0-release.jsonc",
+        "sourceSnapshotMatched": true,
+        "serviceBindingCount": 0,
+        "requiredSecretNames": [
+          "M0_PROBE_TOKEN"
+        ],
+        "maxInstances": 1
+      },
+      {
+        "path": "infra/wrangler.m0-release-w2.jsonc",
+        "sourceSnapshotMatched": true,
+        "serviceBindingCount": 0,
+        "requiredSecretNames": [
+          "M0_PROBE_TOKEN"
+        ],
+        "maxInstances": 1
+      }
+    ],
+    "runtimeSourceMatchedFrozenDeployment": true,
+    "runtimeUsesOnlyNodeFilesystemCryptoPathAndStdin": true,
+    "runtimeContainsNoModelOrHttpCall": true,
+    "hostReportedModelDispatches": 0,
+    "providerAccountDispatchAuditPerformed": false,
+    "cashSettlementAuditPerformed": false,
+    "actualCashCharge": null,
+    "interpretation": "No model service binding, model secret or model transport is available in the inspected T10 path. The modelDispatches=0 report is fixed diagnostic metadata, not an independently metered provider count. Existing T01 live calls are outside this claim."
+  },
+  "claimAssessment": {
+    "documentPartialScopeSupported": true,
+    "gateFailedStatusAppropriate": true,
+    "gateMustNotBePromoted": true,
+    "blockingUnprovenRequirements": [
+      "Actual injected startup exit 42 was not observed.",
+      "After restoring both Worker and image, a fresh rollback instance did not perform R2 restore/increment/read."
+    ],
+    "notEquivalentToPassingEvidence": [
+      "Missing process record or null onStop does not establish an exact interruption or signal.",
+      "Container application image convergence and inactive instance image fields do not establish a post-rollback healthy runtime or successful business operation.",
+      "No model bindings and fixed probe source do not establish actual cash charges or all account activity."
+    ]
+  },
+  "evidence": [
+    {
+      "path": "docs/evidence/runs/m0-g0-t10-partial-20260906/G0-T10-gate-summary.json",
+      "sha256": "e7db77386efb5363eca1d17375d5c410522b1560910b4abf3a9e20ee9bde1f99"
+    },
+    {
+      "path": "docs/m0-release-cloud-validation.md",
+      "sha256": "d7454726ec25923437c0555d9958f21578d5ac57fbc77c11cc35f4c739f8ecc7"
+    },
+    {
+      "path": "docs/evidence/runs/m0-local-20260906092132818/local-checks.json",
+      "sha256": "39c0423e098b81f5b44362c08e0564148f7c61a76dbd7a3cd07cff3241379426"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-baseline-1788686607924/summary.json",
+      "sha256": "07fd18a6c290a926b837bd3037d252d265cc9756a7f1fbe5cc0ae305e653b042"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-compatibility-1788686798887/summary.json",
+      "sha256": "50c740436553a8a6f4ac54ec5f726a4353d2f1c1d0e42bee62754e7508f00731"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-hold-1788686803553/summary.json",
+      "sha256": "c9cdc4e4fbf6b600a95e09358b85274c6662b048dd2b5039ffaadc7d30528335"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-upgrade-1788687064356/summary.json",
+      "sha256": "8c21ee3d524ff53f6a1e4b7037be1fb0dbab3111d5191ad0c04b28a936a0e75f"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-upgrade-1788687064356/r2-independent-verification.json",
+      "sha256": "b7625ae70d5f04be5608c0367fd19a7ec5232504e6ed6f819db12d8cf73a6a98"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-upgrade-1788687064356/r2-manifest.json",
+      "sha256": "518090fb384338b9e63ddbdf091ea03f2ce2198d347b8e509c165947dc4753a7"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-upgrade-1788687064356/r2-state.json",
+      "sha256": "fe44e2085de9f5c29980f1a6c8a84a8c340131a8fefc9135a265d2667bde7b5c"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-startup-failure-1788687076308/summary.json",
+      "sha256": "f8e20e31f444adc2305ef661b7fdf4a395b70626a62d1f423f23171b0f7a6974"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-v3-worker-rollback-20260906/api.json",
+      "sha256": "2c216c6c5b44d795c29b2ea537eec9b6029edc5b5b72f77ddbfc12cf801571be"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-deploy-rollback-1788687343387/deployment-verified.json",
+      "sha256": "ee50ba5c1705a18805606426ba7fd5a79027d9358981e5f60b191b74726b8e1d"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-deploy-rollback-1788687343387/api.json",
+      "sha256": "b437035f8641c2b820bf21132e408880c7e500d0cc07de56cf9efed414cfae29"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-deploy-rollback-1788687343387/legacy-after.json",
+      "sha256": "6cf2969c922ff2762465446c9ec6b49558a8e18c165a2183cc841a050b464655"
+    },
+    {
+      "path": "docs/evidence/runs/m0-candidate-review-20260906/preliminary.json",
+      "sha256": "119905521f9ebaa6414080b8d437dfa12856d98f747bd7701e9b5b0b28ab57db"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-deploy-w1-1788686543978/bundle/cloud-w1.js",
+      "sha256": "63429cde0c4d71a23eb331cf6d16e21be9dd6b2486d51bb2a9dba752197ffd40"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-deploy-rollback-1788687343387/bundle/cloud-w1.js",
+      "sha256": "63429cde0c4d71a23eb331cf6d16e21be9dd6b2486d51bb2a9dba752197ffd40"
+    },
+    {
+      "path": "infra/wrangler.m0-release.jsonc",
+      "sha256": "96a62fa71b98d8e4daf73505a8e50af57f28a580631039d9334f72417d034b96"
+    },
+    {
+      "path": "infra/wrangler.m0-release-w2.jsonc",
+      "sha256": "ddc6438c95ccc5bba6cc73b712541361f3292071118ecd64d36289abc0789e06"
+    },
+    {
+      "path": "services/runtime/release-probe.mjs",
+      "sha256": "1d8e7c354198a11ecd0d8220216c13416756c40072de6ce631a712d2e2d52056"
+    }
+  ]
+}

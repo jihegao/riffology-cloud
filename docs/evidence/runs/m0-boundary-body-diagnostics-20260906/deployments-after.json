@@ -1,0 +1,70 @@
+[
+  {
+    "id": "b5689494-7f75-4d03-984a-5fb97af36a63",
+    "source": "wrangler",
+    "strategy": "percentage",
+    "author_email": "jihe.gao@gmail.com",
+    "annotations": {
+      "workers/message": "M0 isolated runtime probes; synthetic fixtures;...",
+      "workers/triggered_by": "upload"
+    },
+    "versions": [
+      {
+        "version_id": "66c7def0-1241-45e3-bd51-cd36a1bbc614",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-09-05T10:09:00.683222Z"
+  },
+  {
+    "id": "0b3170d2-3460-4ae4-8eb6-e587fc414f82",
+    "source": "wrangler",
+    "strategy": "percentage",
+    "author_email": "jihe.gao@gmail.com",
+    "annotations": {
+      "workers/message": "M0 isolated runtime probes; synthetic fixtures;...",
+      "workers/triggered_by": "upload"
+    },
+    "versions": [
+      {
+        "version_id": "61647393-9f5e-4187-98a3-218a4a188116",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-09-05T10:13:36.924576Z"
+  },
+  {
+    "id": "d9661158-d40d-46a3-a609-2c41af0c7b7e",
+    "source": "wrangler",
+    "strategy": "percentage",
+    "author_email": "jihe.gao@gmail.com",
+    "annotations": {
+      "workers/message": "Automatic deployment on upload.",
+      "workers/triggered_by": "upload"
+    },
+    "versions": [
+      {
+        "version_id": "de139207-4562-4545-a0ea-32de625710d2",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-09-06T01:38:31.105308Z"
+  },
+  {
+    "id": "a480d56f-98eb-4e95-8515-b3fe17553355",
+    "source": "wrangler",
+    "strategy": "percentage",
+    "author_email": "jihe.gao@gmail.com",
+    "annotations": {
+      "workers/message": "Automatic deployment on upload.",
+      "workers/triggered_by": "upload"
+    },
+    "versions": [
+      {
+        "version_id": "a74ded2f-40dd-4cba-b33e-62bfb1b3d855",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-09-06T02:41:10.456057Z"
+  }
+]

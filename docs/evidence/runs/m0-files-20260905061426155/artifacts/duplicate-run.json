@@ -1,0 +1,8 @@
+{
+  "originalArtifact": "docs/evidence/runs/m0-files-20260905061426155/artifacts/files-local.json",
+  "environment": "local-docker-workerd",
+  "httpStatus": 200,
+  "reportIdentical": true,
+  "eventCount": 2,
+  "cloudGatePassed": false
+}

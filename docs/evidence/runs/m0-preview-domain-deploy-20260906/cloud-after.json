@@ -1,0 +1,468 @@
+{
+  "observedAt": "2026-09-06T02:04:33.271Z",
+  "domains": {
+    "result": [
+      {
+        "id": "34a2588d5e590c4d83ac5d9e205a0c864b3b93c5",
+        "zone_id": "c97b548800561fada1a912c234696db1",
+        "zone_name": "gaojihe.cn",
+        "hostname": "poker.gaojihe.cn",
+        "service": "reflexive-poker-demo",
+        "environment": "production",
+        "cert_id": "7a90915a-b42d-4fad-820a-ad61ee56c588",
+        "previews_enabled": false,
+        "enabled": true
+      },
+      {
+        "id": "47b07d90c8f9113e09cba16307c8f5689a9abcc0",
+        "zone_id": "c97b548800561fada1a912c234696db1",
+        "zone_name": "gaojihe.cn",
+        "hostname": "2048.gaojihe.cn",
+        "service": "2048-challenge-platform",
+        "environment": "production",
+        "cert_id": "1ea8a518-3ebe-435f-9de9-18aa09c58e72",
+        "previews_enabled": false,
+        "enabled": true
+      },
+      {
+        "id": "46ac5c0f730f5f9b642ac9eb18e06c1dff353cad",
+        "zone_id": "c97b548800561fada1a912c234696db1",
+        "zone_name": "gaojihe.cn",
+        "hostname": "riff-demo.gaojihe.cn",
+        "service": "riffology-m0-preview-staging",
+        "environment": "production",
+        "cert_id": "60cd33d0-f18e-4526-8118-121c1bc4f85c",
+        "previews_enabled": false,
+        "enabled": true
+      },
+      {
+        "id": "76c11fedc2b25526e1eb61485062c3271e7859bd",
+        "zone_id": "c97b548800561fada1a912c234696db1",
+        "zone_name": "gaojihe.cn",
+        "hostname": "preview.riff-demo.gaojihe.cn",
+        "service": "riffology-m0-preview-staging",
+        "environment": "production",
+        "cert_id": "643ef831-a965-49f0-b45c-44c21e4ca9c2",
+        "previews_enabled": false,
+        "enabled": true
+      }
+    ],
+    "success": true,
+    "errors": null,
+    "messages": null,
+    "result_info": {
+      "page": 1,
+      "per_page": 4,
+      "count": 4,
+      "total_count": 4
+    },
+    "status": 200
+  },
+  "certificates": {
+    "result": [
+      {
+        "id": "1ea8a518-3ebe-435f-9de9-18aa09c58e72",
+        "type": "advanced",
+        "hosts": [
+          "*.2048.gaojihe.cn",
+          "gaojihe.cn",
+          "2048.gaojihe.cn"
+        ],
+        "primary_certificate": "5cdfdbab-495c-4769-b6fd-033bf3d732bc",
+        "status": "active",
+        "certificates": [
+          {
+            "id": "5cdfdbab-495c-4769-b6fd-033bf3d732bc",
+            "hosts": [
+              "*.2048.gaojihe.cn",
+              "gaojihe.cn",
+              "2048.gaojihe.cn"
+            ],
+            "issuer": "GoogleTrustServices",
+            "signature": "SHA256WithRSA",
+            "status": "active",
+            "bundle_method": "ubiquitous",
+            "zone_id": "c97b548800561fada1a912c234696db1",
+            "uploaded_on": "2026-09-06T02:04:33.955230Z",
+            "modified_on": "2026-08-26T16:54:59.821756Z",
+            "expires_on": "2026-11-24T16:51:14.000000Z",
+            "priority": null
+          },
+          {
+            "id": "f7cfb46a-d2b6-4444-b6c0-6c280b3ac249",
+            "hosts": [
+              "*.2048.gaojihe.cn",
+              "gaojihe.cn",
+              "2048.gaojihe.cn"
+            ],
+            "issuer": "GoogleTrustServices",
+            "signature": "ECDSAWithSHA256",
+            "status": "active",
+            "bundle_method": "ubiquitous",
+            "zone_id": "c97b548800561fada1a912c234696db1",
+            "uploaded_on": "2026-09-06T02:04:33.955270Z",
+            "modified_on": "2026-08-26T16:54:59.821756Z",
+            "expires_on": "2026-11-24T16:54:32.000000Z",
+            "priority": null
+          }
+        ],
+        "created_on": "2026-08-26T16:01:56.998772Z",
+        "validity_days": 90,
+        "validation_method": "txt",
+        "certificate_authority": "google"
+      },
+      {
+        "id": "7a90915a-b42d-4fad-820a-ad61ee56c588",
+        "type": "advanced",
+        "hosts": [
+          "gaojihe.cn",
+          "poker.gaojihe.cn",
+          "*.poker.gaojihe.cn"
+        ],
+        "primary_certificate": "956ae5de-682a-4d73-aeeb-0275fed9a7ca",
+        "status": "active",
+        "certificates": [
+          {
+            "id": "956ae5de-682a-4d73-aeeb-0275fed9a7ca",
+            "hosts": [
+              "gaojihe.cn",
+              "poker.gaojihe.cn",
+              "*.poker.gaojihe.cn"
+            ],
+            "issuer": "GoogleTrustServices",
+            "signature": "SHA256WithRSA",
+            "status": "active",
+            "bundle_method": "ubiquitous",
+            "zone_id": "c97b548800561fada1a912c234696db1",
+            "uploaded_on": "2026-09-06T02:04:33.966865Z",
+            "modified_on": "2026-08-17T03:37:16.044142Z",
+            "expires_on": "2026-11-15T03:34:38.000000Z",
+            "priority": null
+          },
+          {
+            "id": "694d00af-fff6-4461-b091-bc4952e94670",
+            "hosts": [
+              "gaojihe.cn",
+              "poker.gaojihe.cn",
+              "*.poker.gaojihe.cn"
+            ],
+            "issuer": "GoogleTrustServices",
+            "signature": "ECDSAWithSHA256",
+            "status": "active",
+            "bundle_method": "ubiquitous",
+            "zone_id": "c97b548800561fada1a912c234696db1",
+            "uploaded_on": "2026-09-06T02:04:33.966902Z",
+            "modified_on": "2026-08-17T03:37:16.044142Z",
+            "expires_on": "2026-11-15T03:37:04.000000Z",
+            "priority": null
+          }
+        ],
+        "created_on": "2026-08-17T03:34:36.677456Z",
+        "validity_days": 90,
+        "validation_method": "txt",
+        "certificate_authority": "google"
+      },
+      {
+        "id": "06635795-5e01-4e89-a65f-a5a4221f04e9",
+        "type": "universal",
+        "hosts": [
+          "gaojihe.cn",
+          "*.gaojihe.cn"
+        ],
+        "primary_certificate": "f7a3e2c2-cd3d-4c7d-abcd-8931791dea54",
+        "status": "active",
+        "certificates": [
+          {
+            "id": "f7a3e2c2-cd3d-4c7d-abcd-8931791dea54",
+            "hosts": [
+              "gaojihe.cn",
+              "*.gaojihe.cn"
+            ],
+            "issuer": "GoogleTrustServices",
+            "signature": "ECDSAWithSHA256",
+            "status": "active",
+            "bundle_method": "ubiquitous",
+            "zone_id": "c97b548800561fada1a912c234696db1",
+            "uploaded_on": "2026-09-06T02:04:34.010081Z",
+            "modified_on": "2026-07-30T11:40:16.292809Z",
+            "expires_on": "2026-10-28T11:38:01.000000Z",
+            "priority": null
+          }
+        ],
+        "created_on": "2026-07-30T11:37:59.057157Z",
+        "validity_days": 90,
+        "validation_method": "txt",
+        "certificate_authority": "google"
+      }
+    ],
+    "result_info": {
+      "page": 1,
+      "per_page": 50,
+      "total_pages": 1,
+      "count": 3,
+      "total_count": 3
+    },
+    "success": true,
+    "errors": [],
+    "messages": [],
+    "status": 200
+  },
+  "dns": {
+    "result": [
+      {
+        "id": "d5cb72718d1ad0de8fa060d1aebf262a",
+        "name": "preview.riff-demo.gaojihe.cn",
+        "type": "AAAA",
+        "content": "100::",
+        "proxiable": true,
+        "proxied": true,
+        "ttl": 1,
+        "settings": {},
+        "meta": {
+          "origin_worker_id": "76c11fedc2b25526e1eb61485062c3271e7859bd",
+          "read_only": true
+        },
+        "comment": null,
+        "tags": [],
+        "created_on": "2026-09-06T02:03:22.495534Z",
+        "modified_on": "2026-09-06T02:03:22.495534Z"
+      },
+      {
+        "id": "5ed63f346c2aa33921cff3b22e96526f",
+        "name": "riff-demo.gaojihe.cn",
+        "type": "AAAA",
+        "content": "100::",
+        "proxiable": true,
+        "proxied": true,
+        "ttl": 1,
+        "settings": {},
+        "meta": {
+          "origin_worker_id": "46ac5c0f730f5f9b642ac9eb18e06c1dff353cad",
+          "read_only": true
+        },
+        "comment": null,
+        "tags": [],
+        "created_on": "2026-09-06T02:03:22.442757Z",
+        "modified_on": "2026-09-06T02:03:22.442757Z"
+      }
+    ],
+    "success": true,
+    "errors": [],
+    "messages": [],
+    "result_info": {
+      "page": 1,
+      "per_page": 100,
+      "count": 2,
+      "total_count": 2,
+      "total_pages": 1
+    },
+    "status": 200
+  },
+  "deployments": {
+    "result": {
+      "deployments": [
+        {
+          "id": "4a9da549-0541-44b8-a0c5-f82505cb1238",
+          "source": "wrangler",
+          "strategy": "percentage",
+          "author_email": "jihe.gao@gmail.com",
+          "annotations": {
+            "workers/message": "Automatic deployment on upload.",
+            "workers/triggered_by": "upload"
+          },
+          "versions": [
+            {
+              "version_id": "9c1d7c65-7082-4cc1-9686-f5b699795f13",
+              "percentage": 100
+            }
+          ],
+          "created_on": "2026-09-06T02:03:15.683815Z"
+        }
+      ]
+    },
+    "success": true,
+    "errors": [],
+    "messages": [],
+    "status": 200
+  },
+  "apps": {
+    "success": true,
+    "result": [
+      {
+        "id": "a0332851-f795-46df-9f8e-ee0ddc220095",
+        "created_at": "2026-09-06T02:03:18.961999872Z",
+        "updated_at": "2026-09-06T02:03:20.455000064Z",
+        "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+        "name": "riffology-m0-preview-staging",
+        "version": 1,
+        "scheduling_policy": "default",
+        "instances": 2,
+        "max_instances": 2,
+        "configuration": {
+          "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+          "vcpu": 0.25,
+          "memory": "1GiB",
+          "memory_mib": 1024,
+          "disk": {
+            "size_mb": 4000,
+            "size": "4GB"
+          },
+          "network": {
+            "assign_ipv6": "none",
+            "assign_ipv4": "none",
+            "mode": "private"
+          },
+          "command": [],
+          "entrypoint": [],
+          "runtime": "firecracker"
+        },
+        "constraints": {
+          "tiers": [
+            1,
+            2
+          ]
+        },
+        "durable_objects": {
+          "namespace_id": "27043826748b49c691b140bf08f00a51"
+        },
+        "rollout_active_grace_period": 0,
+        "health": {
+          "errors": [],
+          "instances": {
+            "active": 0,
+            "assigned": 0,
+            "healthy": 1,
+            "stopped": 0,
+            "failed": 0,
+            "scheduling": 0,
+            "starting": 1
+          }
+        },
+        "network": {
+          "bandwidth_limit_mbps": 250
+        }
+      },
+      {
+        "id": "a03313e4-fa9d-4de2-ac2c-d2cc69efd875",
+        "created_at": "2026-09-06T01:38:35.737999872Z",
+        "updated_at": "2026-09-06T01:38:36.614000128Z",
+        "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+        "name": "riffology-m0-project-staging",
+        "version": 1,
+        "scheduling_policy": "default",
+        "instances": 2,
+        "max_instances": 2,
+        "configuration": {
+          "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+          "vcpu": 0.25,
+          "memory": "1GiB",
+          "memory_mib": 1024,
+          "disk": {
+            "size_mb": 4000,
+            "size": "4GB"
+          },
+          "network": {
+            "assign_ipv6": "none",
+            "assign_ipv4": "none",
+            "mode": "private"
+          },
+          "command": [],
+          "entrypoint": [],
+          "runtime": "firecracker",
+          "observability": {
+            "logs": {
+              "enabled": true
+            }
+          }
+        },
+        "constraints": {
+          "tiers": [
+            1,
+            2
+          ]
+        },
+        "durable_objects": {
+          "namespace_id": "34cc750fbe3046d79a0cc0c5a4eca171"
+        },
+        "rollout_active_grace_period": 0,
+        "health": {
+          "errors": [],
+          "instances": {
+            "active": 0,
+            "assigned": 0,
+            "healthy": 2,
+            "stopped": 0,
+            "failed": 0,
+            "scheduling": 0,
+            "starting": 0
+          }
+        },
+        "network": {
+          "bandwidth_limit_mbps": 250
+        }
+      },
+      {
+        "id": "a03ea65b-b039-4f56-8422-36c719b87b72",
+        "created_at": "2026-09-06T01:38:33.543000064Z",
+        "updated_at": "2026-09-06T01:38:34.383000064Z",
+        "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+        "name": "riffology-m0-trusted-staging",
+        "version": 1,
+        "scheduling_policy": "default",
+        "instances": 2,
+        "max_instances": 2,
+        "configuration": {
+          "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+          "vcpu": 0.25,
+          "memory": "1GiB",
+          "memory_mib": 1024,
+          "disk": {
+            "size_mb": 4000,
+            "size": "4GB"
+          },
+          "network": {
+            "assign_ipv6": "none",
+            "assign_ipv4": "none",
+            "mode": "private"
+          },
+          "command": [],
+          "entrypoint": [],
+          "runtime": "firecracker",
+          "observability": {
+            "logs": {
+              "enabled": true
+            }
+          }
+        },
+        "constraints": {
+          "tiers": [
+            1,
+            2
+          ]
+        },
+        "durable_objects": {
+          "namespace_id": "9378e4a1e1e546d09fb2c0ef5a45c25e"
+        },
+        "rollout_active_grace_period": 0,
+        "health": {
+          "errors": [],
+          "instances": {
+            "active": 0,
+            "assigned": 0,
+            "healthy": 2,
+            "stopped": 0,
+            "failed": 0,
+            "scheduling": 0,
+            "starting": 0
+          }
+        },
+        "network": {
+          "bandwidth_limit_mbps": 250
+        }
+      }
+    ],
+    "messages": [],
+    "errors": [],
+    "status": 200
+  }
+}

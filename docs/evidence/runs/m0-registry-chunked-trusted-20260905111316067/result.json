@@ -1,0 +1,243 @@
+{
+  "runId": "m0-registry-chunked-trusted-20260905111316067",
+  "startedAt": "2026-09-05T11:13:16.078Z",
+  "registry": "registry.cloudflare.com",
+  "image": {
+    "name": "riffology-m0-trusted-staging",
+    "tag": "61647393",
+    "digest": "sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721"
+  },
+  "regctl": {
+    "version": "v0.11.5",
+    "sha256": "f4d536d64d0c3cc1db7400902175a1c314675991d22e87e15c319501a2676d3f"
+  },
+  "limits": {
+    "wallMs": 600000,
+    "perCommandMs": 120000,
+    "blobChunkBytes": 4194304,
+    "blobMaxBytes": 4194304,
+    "requestConcurrency": 1,
+    "clientPayloadBytes": 419430400,
+    "maxBlobs": 30
+  },
+  "cliCalls": [
+    {
+      "command": "regctl",
+      "args": [
+        "config",
+        "set",
+        "--docker-cred=false",
+        "--docker-cert=false",
+        "--blob-limit",
+        "8388608"
+      ],
+      "startedAt": "2026-09-05T11:13:16.079Z",
+      "finishedAt": "2026-09-05T11:13:16.094Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "command": "regctl",
+      "args": [
+        "registry",
+        "set",
+        "registry.cloudflare.com",
+        "--tls",
+        "enabled",
+        "--blob-chunk",
+        "4194304",
+        "--blob-max",
+        "4194304",
+        "--req-concurrent",
+        "1",
+        "--req-per-sec",
+        "5",
+        "--cred-helper",
+        "/Users/gaojihe/apps/riffology-cloud/.local/cloud-staging/m0-registry-chunked-trusted-20260905111316067/docker-credential-m0-registry",
+        "--skip-check"
+      ],
+      "startedAt": "2026-09-05T11:13:16.095Z",
+      "finishedAt": "2026-09-05T11:13:16.099Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "command": "node",
+      "args": [
+        "credential-command-output-suppressed"
+      ],
+      "startedAt": "2026-09-05T11:13:16.099Z",
+      "finishedAt": "2026-09-05T11:13:16.666Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false
+    },
+    {
+      "command": "node",
+      "args": [
+        "credential-command-output-suppressed"
+      ],
+      "startedAt": "2026-09-05T11:13:16.666Z",
+      "finishedAt": "2026-09-05T11:13:18.150Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false
+    },
+    {
+      "command": "colima",
+      "args": [
+        "ssh",
+        "--profile",
+        "riffology-m0",
+        "--",
+        "sudo",
+        "ctr",
+        "--namespace",
+        "moby",
+        "content",
+        "get",
+        "sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721"
+      ],
+      "startedAt": "2026-09-05T11:13:18.150Z",
+      "finishedAt": "2026-09-05T11:13:18.422Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "stderr": ""
+    },
+    {
+      "command": "regctl",
+      "args": [
+        "manifest",
+        "head",
+        "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m0-trusted-staging:61647393"
+      ],
+      "startedAt": "2026-09-05T11:13:18.423Z",
+      "finishedAt": "2026-09-05T11:13:20.874Z",
+      "exitCode": 1,
+      "signal": null,
+      "timedOut": false,
+      "stderr": "failed to request manifest head registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m0-trusted-staging:61647393: request failed: not found [http 404]: \n",
+      "stdout": ""
+    },
+    {
+      "command": "regctl",
+      "args": [
+        "blob",
+        "head",
+        "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m0-trusted-staging",
+        "sha256:5ea9e3481a7ce092f7337d92fb107fd3fa735a3b95eb26b337a4792d332fad27"
+      ],
+      "startedAt": "2026-09-05T11:13:20.874Z",
+      "finishedAt": "2026-09-05T11:13:23.641Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "stderr": "",
+      "stdout": "Accept-Ranges: bytes\nCf-Ray: a364cdee4a648685-NRT\nContent-Length: 8866\nDate: Sat, 05 Sep 2026 11:13:24 GMT\nDocker-Content-Digest: sha256:5ea9e3481a7ce092f7337d92fb107fd3fa735a3b95eb26b337a4792d332fad27\nDocker-Distribution-Api-Version: registry/2.0+cf\nServer: cloudflare\nServer-Timing: registry_handler;dur=456.000\nVary: Origin\n"
+    },
+    {
+      "command": "regctl",
+      "args": [
+        "blob",
+        "head",
+        "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m0-trusted-staging",
+        "sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3"
+      ],
+      "startedAt": "2026-09-05T11:13:23.642Z",
+      "finishedAt": "2026-09-05T11:13:24.597Z",
+      "exitCode": 1,
+      "signal": null,
+      "timedOut": false,
+      "stderr": "failed to request blob head, digest sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3, ref registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m0-trusted-staging:latest: request failed: not found [http 404]: \n",
+      "stdout": ""
+    },
+    {
+      "command": "colima",
+      "args": [
+        "ssh",
+        "--profile",
+        "riffology-m0",
+        "--",
+        "sudo",
+        "ctr",
+        "--namespace",
+        "moby",
+        "content",
+        "get",
+        "sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3"
+      ],
+      "startedAt": "2026-09-05T11:13:24.598Z",
+      "finishedAt": "2026-09-05T11:13:25.786Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "stderr": ""
+    },
+    {
+      "command": "regctl",
+      "args": [
+        "blob",
+        "put",
+        "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m0-trusted-staging",
+        "--digest",
+        "sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3"
+      ],
+      "startedAt": "2026-09-05T11:13:25.797Z",
+      "finishedAt": "2026-09-05T11:15:25.802Z",
+      "exitCode": 1,
+      "signal": null,
+      "timedOut": true,
+      "stderr": "failed to send blob (chunk), ref registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m0-trusted-staging:latest: http do: context canceled\n",
+      "stdout": ""
+    },
+    {
+      "command": "regctl",
+      "args": [
+        "blob",
+        "head",
+        "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m0-trusted-staging",
+        "sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3"
+      ],
+      "startedAt": "2026-09-05T11:15:25.803Z",
+      "finishedAt": "2026-09-05T11:15:27.261Z",
+      "exitCode": 1,
+      "signal": null,
+      "timedOut": false,
+      "stderr": "failed to request blob head, digest sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3, ref registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m0-trusted-staging:latest: request failed: not found [http 404]: \n",
+      "stdout": ""
+    }
+  ],
+  "blobs": [
+    {
+      "digest": "sha256:5ea9e3481a7ce092f7337d92fb107fd3fa735a3b95eb26b337a4792d332fad27",
+      "size": 8866,
+      "status": "already-present"
+    },
+    {
+      "digest": "sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3",
+      "size": 30649033,
+      "localShaVerified": true,
+      "uploadCliSucceeded": false,
+      "status": "upload-result-unknown"
+    }
+  ],
+  "payloadBytesSubmitted": 30649033,
+  "manifestVerified": false,
+  "deploymentComplete": false,
+  "cloudInstancesStarted": 0,
+  "modelRequests": 0,
+  "networkRequestsAndRetransmissionBytes": "not-exactly-metered; bounded by client concurrency and hard wall deadline",
+  "phase": "stopped",
+  "success": false,
+  "error": "upload-not-remotely-verified-no-replay",
+  "finishedAt": "2026-09-05T11:15:27.262Z",
+  "elapsedMs": 131184,
+  "credentialPersistence": "helper reads only process environment; no registry login/password written to disk"
+}

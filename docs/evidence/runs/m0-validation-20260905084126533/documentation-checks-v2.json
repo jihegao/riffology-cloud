@@ -1,0 +1,8 @@
+{
+  "files": 10,
+  "localLinksChecked": 132,
+  "missing": [],
+  "passed": true,
+  "scope": "Local file targets only; URI schemes and heading anchors excluded.",
+  "previousAttempt": "documentation-checks.json misclassified the chatgpt-conversation URI as a file; no document link needed changing."
+}

@@ -1,0 +1,6 @@
+{
+  "status": "failed",
+  "reason": "Read path used live Miniflare RPC proxy values; later serialization after dispose threw poisoned stub. No completed acceptance record was produced.",
+  "supersededBy": "../m1-workspace-20260906121130494/workspace-local.json",
+  "claimsNativeAcceptance": false
+}

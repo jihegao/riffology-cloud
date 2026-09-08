@@ -1,0 +1,49 @@
+{
+    "instances": [
+        {
+            "id": "089d718c2f81f82013adca34ff3839ecc8451c29c66faba7fbcb54263a78e3b0",
+            "name": "m0-t-m0-vm-isolation-fa0bb5bdd18c8b9a-s",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T01:50:43Z"
+        },
+        {
+            "id": "7bff1428ff42464fbd58a4caf7f9aba216855f65731afd8db52ae06c02b22367",
+            "name": "m0-t-m0-vm-tenancy-37eefb3456341e8b-s",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T01:52:34Z"
+        },
+        {
+            "id": "998e806b077ab446360eb431ffe998f94afaaf2816065f6185195e7fc43ec4e8",
+            "name": "m0-t-isolation-1788666613594-34db1d2565f1dc1ad3485c2--s",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T03:50:24Z"
+        },
+        {
+            "id": "9c202e7963430388d8255e62f6fdca357efb405b0b7ccf1626c3d4079a3aafd3",
+            "name": "m0-t-m0-vm-egress-6bc929e6a04386cf-s",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T01:52:46Z"
+        },
+        {
+            "id": "cf72754eb03a41dd3b2bfe0bc2237b27f1d8e93852f6713696a2e7cf7a5b86e5",
+            "name": "m0-t-isolation-1788667134876-7c5f6681c9ec3c78ad81e93--s",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T03:59:06Z"
+        }
+    ],
+    "result_info": {
+        "per_page": 30,
+        "page_token": null,
+        "next_page_token": null
+    }
+}

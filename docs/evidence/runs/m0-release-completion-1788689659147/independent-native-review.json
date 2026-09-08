@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-06T10:19:23.148Z",
+  "reviewer": "independent-subagent-native-review",
+  "mode": "read-only-local-evidence",
+  "runId": "release-completion-20260906",
+  "decision": {
+    "completionScopeAccepted": true,
+    "nativeStartupFailureAccepted": true,
+    "revertedRuntimeRecoveryObserved": true,
+    "blockingFindings": [],
+    "g0T10OverallSignedByThisReview": false,
+    "overallDecisionOwner": "parent composite review of baseline, protocol compatibility, rollout, rollback and this completion evidence"
+  },
+  "scope": "G0-T10 remaining startup-failure and post-rollback restoration primitives only. This review performed no cloud, Container, Docker, model or deployment operation.",
+  "nativeEvidence": {
+    "source": {
+      "path": "spikes/m0-release-completion/native-fault.ts",
+      "sha256": "f4f88ca745cf9ddd7f1cf030f129e514343ebebb9ca6886c32aa4af14978d5d0"
+    },
+    "intentStartedAt": 1788689661666,
+    "deadlineAt": 1788689681666,
+    "startReturned": true,
+    "monitorAttached": true,
+    "monitor": {
+      "outcome": "unexpected-exit",
+      "exitCode": 42,
+      "observedAt": 1788689662759
+    },
+    "monitorDelayMs": 1093,
+    "resultRecordedAt": 1788689662825,
+    "recordDelayMs": 1159,
+    "nativeRunning": false,
+    "readiness": {
+      "port": 3000,
+      "status": "rejected"
+    },
+    "conclusion": "The fixed native entrypoint exited with code 42 within the 20-second observation bound. Exit evidence comes exclusively from native monitor rejection, not a port/start/cleanup error or cached SDK state.",
+    "orderingEvidence": [
+      "native-fault.ts:80 persists one-shot intent and awaits storage.sync at line 85 before start.",
+      "native-fault.ts:93 starts the fixed entrypoint; monitor at line 95 attaches both settlement handlers without an intervening await.",
+      "native-fault.ts:122 awaits saveResult, whose transaction and storage.sync at lines 58-64 complete before cleanup is called.",
+      "native-fault.ts:144 calls container.destroy() with no argument, after the existing result is flushed. Cleanup cannot supply a monitor error.",
+      "First terminal receipt wins. A concurrent cleanup would save cancelled or owner-lost before destroy, preventing a later monitor result from replacing it."
+    ],
+    "cleanupResultUnchanged": true,
+    "cleanupAttempts": 1,
+    "cleanup": "confirmed",
+    "ownerLost": false,
+    "limitation": "Ordering is established by the matching frozen source/bundle plus immutable before/after receipts, not a separately captured platform syscall trace. No raw native error text was retained; the fixed exact parser records only its bounded exit code."
+  },
+  "recoveryEvidence": {
+    "restored": {
+      "prefix": "m0-release/release-g0-v3-20260906",
+      "revision": "518090fb384338b9e63ddbdf091ea03f2ce2198d347b8e509c165947dc4753a7",
+      "stateSha256": "fe44e2085de9f5c29980f1a6c8a84a8c340131a8fefc9135a265d2667bde7b5c",
+      "counter": 2
+    },
+    "commands": [
+      {
+        "command": "initialize",
+        "requestId": "completion-initialize",
+        "pid": 10,
+        "counter": 2,
+        "stateSha256": "4be0221488d4c986f637b434f6af132b6caefd1a8b730d850aee8200db5a93a6"
+      },
+      {
+        "command": "increment",
+        "requestId": "completion-increment",
+        "pid": 22,
+        "counter": 3,
+        "stateSha256": "d4dfa250e778b784f19d5ca5aa426e8363d403faa1483876cf580a805c0810d0"
+      }
+    ],
+    "independentRead": {
+      "requestId": "completion-read-state",
+      "pid": 34,
+      "counter": 3,
+      "stateSha256": "d4dfa250e778b784f19d5ca5aa426e8363d403faa1483876cf580a805c0810d0"
+    },
+    "commandStateDigestsIndependentlyRecomputed": true,
+    "noCommandReplay": true,
+    "checkpoint": {
+      "revision": "5e170cdd49a1c9ce11e30a2a8d0e306438a79f0daae224128a9703b67cb98cb5",
+      "generation": 1,
+      "sequence": 1,
+      "prefix": "m0-release-completion/release-completion-20260906",
+      "stateSha256": "c064a295c7832a0e60e8457fbc21e16ddbfd805e1769316f3d930bb04a4df04b",
+      "counter": 3,
+      "sourceRevision": "518090fb384338b9e63ddbdf091ea03f2ce2198d347b8e509c165947dc4753a7"
+    },
+    "checkpointBytes": 24,
+    "checkpointDigestAndManifestIndependentlyRecomputed": true,
+    "runtimeModuleSha256": "1d8e7c354198a11ecd0d8220216c13416756c40072de6ce631a712d2e2d52056",
+    "conclusion": "The previously committed v3 counter-2 checkpoint was hash-verified, initialized into the distinct completion restore sandbox, incremented once to 3, and independently read back as 3 with the same complete child-state digest. The new checkpoint refers to the old source revision; the closed v3 run was not reset.",
+    "r2IndependentDownloadReceiptReviewed": false,
+    "r2IndependentDownloadOwner": "parent; this review checks saved content/digests, while parent verifies remote GET receipts"
+  },
+  "provenance": {
+    "sourceFileCount": 187,
+    "sourceSnapshotSha256": "5178ec196a5ce48d1638688d9a43a0edb26f3dbd42889c0e3acb28ed2b31f43d",
+    "sourceDrift": [],
+    "runAndDeploySnapshotsEqual": true,
+    "mappedSources": [
+      {
+        "path": "spikes/m0-release-completion/native-fault.ts",
+        "sha256": "f4f88ca745cf9ddd7f1cf030f129e514343ebebb9ca6886c32aa4af14978d5d0"
+      },
+      {
+        "path": "spikes/m0-release-completion/index.ts",
+        "sha256": "2b9ded3a091fca2572d4b7fe8e8bf702f8b1758c6395b110782cd92e6b9f7d0f"
+      }
+    ],
+    "bundleSha256": "9f855fb1a7f07ac39891672a9f35be8345e79b94c17038462921f3cd5e83d33d",
+    "versionId": "c3eeddf2-8945-4e0f-9af4-2948b22c5655",
+    "deploymentId": "21465788-cbbe-48d7-954b-7eba845290f0",
+    "cliExitCode": 0,
+    "preRunApiAt": "2026-09-06T10:07:39.356Z",
+    "postRunApiAt": "2026-09-06T10:14:43.669Z",
+    "revertedVersionId": "e6a57b3f-a5fb-47e6-abbd-cedbc568c822",
+    "revertedBundleSha256": "63429cde0c4d71a23eb331cf6d16e21be9dd6b2486d51bb2a9dba752197ffd40",
+    "revertedApplicationVersion": 5,
+    "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+    "crossScriptBinding": {
+      "name": "RevertedSandbox",
+      "type": "durable_object_namespace",
+      "namespace_id": "b3b02828c43a4578bc512cf4235903db",
+      "class_name": "ReleaseSandbox",
+      "script_name": "riffology-m0-release-staging"
+    },
+    "instanceEvidenceAt": "2026-09-06T10:15:46.678Z",
+    "instances": [
+      {
+        "id": "7dac91806809fa018b659d3e9312f520a078a2375254c4a7fb4612ea38dd72de",
+        "applicationId": "a03693b8-f5be-4247-9280-f0c38435d911",
+        "name": "m0-release-completion-20260906-fault",
+        "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "state": "inactive",
+        "updatedAt": "2026-09-06T10:14:34Z"
+      },
+      {
+        "id": "e60e539d20459526fd493f77202505daa0b74c73cb4bb2520f2748e8321f4bde",
+        "applicationId": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+        "name": "m0-release-completion-20260906-restore",
+        "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "state": "inactive",
+        "updatedAt": "2026-09-06T10:14:27Z"
+      }
+    ],
+    "note": "Saved APIs before and after the run associate the existing ReleaseSandbox binding with the rolled-back W1 deployment and I1 image. The later per-instance snapshot confirms both named completion instances inactive; the earlier app aggregate health counters are not used as terminal instance evidence."
+  },
+  "transport": {
+    "requests": 5,
+    "responseBytes": 6688,
+    "actionCount": 5,
+    "postAccepts": 1,
+    "otherPostMutations": 0,
+    "allActionsHaveResponses": true,
+    "lastResponseDigestMatchesStoredReport": true,
+    "modelDispatches": 0
+  },
+  "limitations": [
+    "This is one fixed startup command failure in a new dedicated NativeFault DO, followed by recovery through the original rolled-back W1 ReleaseSandbox. It does not prove arbitrary corrupt-image pulls, registry outages, every runtime signal, or production rollout failure handling.",
+    "The original SDK-based startup attempt remains failed/unconfirmed in its preserved artifact; this separate native probe does not retroactively establish its exit code or repair the SDK observation path.",
+    "No new live model call was made or required. This completion evidence does not extend T01, T09, billing, M1, capacity or production readiness claims.",
+    "The complete G0-T10 decision requires the previously reviewed mixed Worker/image and protocol/rollout evidence plus parent-owned independent R2 download and deployment/instance review. The driver itself intentionally leaves cloudGatePassed false."
+  ],
+  "evidence": [
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/summary.json",
+      "sha256": "c6dc6342730fce816900eb24b9a2d0891b8e9f144285cd19290c130e27e04abe"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/actions.ndjson",
+      "sha256": "9d2ac89642358d9dc9dd9bbb2625447b2bb5013fcfa7544b7d929e095336df0c"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-deploy-deploy-1788689170668/deployment-verified.json",
+      "sha256": "50aebe7b8e33da6a4d6188d0cb2693d60f1c1de914b0eac9dea9bd1542201455"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-deploy-deploy-1788689170668/deploy.json",
+      "sha256": "142f9667d55ad912c75ba8033292c387581aba1368f981117b6bed9040dab336"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-deploy-deploy-1788689170668/api.json",
+      "sha256": "e953e6766ccdb0f336c30e46e81b9fe524033a635fcd95544263672e983c8f34"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-deploy-deploy-1788689170668/bundle/index.js",
+      "sha256": "9f855fb1a7f07ac39891672a9f35be8345e79b94c17038462921f3cd5e83d33d"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-deploy-deploy-1788689170668/bundle/index.js.map",
+      "sha256": "6da99d11f051c1a47b88bc32864533f51010376128cb448882e139d0007ca5db"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/api-after.json",
+      "sha256": "7814a3fa7edb66049b63a69f510ed58eec5b9b8986a95f7ca76fb6a157e70d77"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/instances-after.json",
+      "sha256": "7f22fac4905933f760b5a6518b0df43280f7d88aacef1c0f85cdcb4f1b5f7acf"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-startup-failure-1788687076308/summary.json",
+      "sha256": "f8e20e31f444adc2305ef661b7fdf4a395b70626a62d1f423f23171b0f7a6974"
+    },
+    {
+      "path": "spikes/m0-release-completion/index.ts",
+      "sha256": "2b9ded3a091fca2572d4b7fe8e8bf702f8b1758c6395b110782cd92e6b9f7d0f"
+    },
+    {
+      "path": "spikes/m0-release-completion/native-fault.ts",
+      "sha256": "f4f88ca745cf9ddd7f1cf030f129e514343ebebb9ca6886c32aa4af14978d5d0"
+    },
+    {
+      "path": "scripts/m0/release-completion-cloud.mjs",
+      "sha256": "340ac17c5dee82697fb00c0ff313144109e04cc5ee120f79fddf9b295d1a0ac5"
+    },
+    {
+      "path": "infra/wrangler.m0-release-completion.jsonc",
+      "sha256": "ee3c295a071fdf171aef4ab597e5fefd489f7d555f25e25d5cbf634422e60f87"
+    },
+    {
+      "path": "services/runtime/release-probe.mjs",
+      "sha256": "1d8e7c354198a11ecd0d8220216c13416756c40072de6ce631a712d2e2d52056"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/r2-manifest.json",
+      "sha256": "5e170cdd49a1c9ce11e30a2a8d0e306438a79f0daae224128a9703b67cb98cb5"
+    },
+    {
+      "path": "docs/evidence/runs/m0-release-completion-1788689659147/r2-state.json",
+      "sha256": "c064a295c7832a0e60e8457fbc21e16ddbfd805e1769316f3d930bb04a4df04b"
+    }
+  ]
+}

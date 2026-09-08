@@ -1,0 +1,8 @@
+{
+  "observedAt": "2026-09-06T02:28:17.766Z",
+  "workerCodeChanged": false,
+  "driverOnlyChange": "fixed boolean iframe diagnostics",
+  "localChecks": "m0-local-20260906022355310",
+  "fullIngressGatePassed": false,
+  "scope": "custom domains; alternate ingress failures retained"
+}

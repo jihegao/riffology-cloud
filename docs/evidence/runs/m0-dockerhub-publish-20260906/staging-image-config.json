@@ -1,0 +1,29 @@
+{
+  "references": {
+    "trusted": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+    "project": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e"
+  },
+  "changes": [
+    {
+      "path": "infra/wrangler.m0.jsonc",
+      "beforeSha256": "05cc50aa14f617b4b4cda8adc043d370c4e0aa29d0f1096041ccdaddd2f8b6c2",
+      "afterSha256": "db8dc39ffcc690b9626364a0329a883448561f3265b443290a50bec974cd58cc"
+    },
+    {
+      "path": "infra/wrangler.m0-files.jsonc",
+      "beforeSha256": "d1f725af25d10223a197b1c97d996fbd922c96f849a238e8f6c49780654de0da",
+      "afterSha256": "0c9cd425958f4151c764f15b4b23754159b8ddf3c0b2a301c553c0d0c3f14854"
+    },
+    {
+      "path": "infra/wrangler.m0-preview.jsonc",
+      "beforeSha256": "58ac388c4c3e143e085c26f71df17a81ed15a406d9465d0e26ebc5061861600f",
+      "afterSha256": "0b1ed5af8206e5a739e8480f33ff157536ce54d79c63937aa9f9161c4010d1e6"
+    },
+    {
+      "path": "infra/wrangler.m0-recovery.jsonc",
+      "beforeSha256": "3842e48169f0b9bb765de0f8ca939b01e5042b1e296342ce46cc65e750d9be01",
+      "afterSha256": "6aefd1a89c156621ccc67e3b8fc5ebe1a0ac1ab75d0fae614c2565a48bd78595"
+    }
+  ],
+  "deployed": false
+}

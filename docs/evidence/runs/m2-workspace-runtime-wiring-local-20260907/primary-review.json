@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-workspace-runtime-wiring-local-20260907",
+  "createdAt": "2026-09-06T20:26:55.050Z",
+  "environment": "local",
+  "status": "passed",
+  "accepted": true,
+  "scope": "M2 independent ProductTurnRuntime binding and WorkspaceAgent Turn engine/alarm wiring",
+  "git": {
+    "head": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+    "branch": "codex/m0-runtime-foundation",
+    "dirty": true,
+    "committed": false,
+    "pushed": false,
+    "remoteConfigured": false
+  },
+  "sourceHashes": {
+    "services/workspace/alarm-router.ts": "8fd01c44d67b806280440a1e87eb65ef01812d3ed0a9057b99f3a67ca7b69654",
+    "services/workspace/durable.ts": "a3d61cd975670c4bea6922221c54a0dfe4b966f517835d26bb23fde5d6e3278d",
+    "services/turn-runtime/durable.ts": "f386516a2798b5e38daa16bdf64967615ad0c68dc2779277a6e8834417fd37c5",
+    "services/turn-runtime/host.ts": "191bda1d1e8f781517860e7e59a701d1768d3c507c87b629b3db8530fc7c442f",
+    "services/turn-runtime/client.ts": "8562af540dee8909826b51ae6265f676367766b46ad485398095b228038ad517",
+    "services/turn-runtime/release-unconfigured.ts": "d3ba26b01b53a217fa1e2633853c9ac03eb403147cf837f276398b5edc1ca3eb",
+    "services/turn/journal.ts": "260f1c6d304768294d8a265088eab1b3f88df5f20305f63a3e6b4c765f5e8356",
+    "services/turn/store.ts": "aba1669e34e99601b200c82ca1b90001a0ba62c7a50870f03711c46da20415fc",
+    "tests/m2/workspace-alarm-router.test.ts": "aaa03e30d24eb40235b87612f7aab39e3a825078cc66a287219f40de5f51b992",
+    "tests/m2/workspace-turn-workerd.test.mjs": "8e84f7eb2414e958a06f8f3d4480c8bd1bd84edae14cf71f294cb2d3ce6d7aea",
+    "tests/m2/product-turn-runtime-workerd.test.mjs": "a1e2ee99e6c57d4b7ddd92d30515a74b471aa0cddd2bf61db6550520ea513543"
+  },
+  "review": {
+    "independentAgent": "/root/workspace_alarm_test_plan",
+    "modelClass": "low-cost",
+    "findings": [
+      "an absent Workspace state returned before reconciling an existing Turn deadline",
+      "a due Turn on a non-ready Workspace re-projected a past deadline and could form an immediate alarm loop",
+      "checkpoint materialization in ProductTurnRuntime necessarily precedes WorkspaceAgent checkpointing acknowledgement, but the Journal required the opposite timestamp order"
+    ],
+    "resolution": [
+      "one testable alarm router advances due provisioning first, re-reads authoritative Workspace state, and then advances, defers or isolates the Turn deadline",
+      "every route reconciles the two logical deadlines onto the single physical Durable Object alarm",
+      "WorkspaceAgent now constructs WorkspaceTurnEngine with a ProductTurnRuntime client selected from the full immutable Turn identity",
+      "ProductTurnRuntime is an independent private SQLite Durable Object and a missing production release fails before core construction or storage mutation",
+      "Journal validates remote checkpoint time against execution evidence while using local commit time for terminal state and event ordering"
+    ],
+    "remainingP0": 0,
+    "remainingP1": 0
+  },
+  "verification": {
+    "fullRepositoryCheck": {
+      "record": "../m1-local-20260906202531649/local-checks.json",
+      "recordSha256": "9c5bcbb4ade86b2c9806455d5681177a3f71a65c18f0036104adb375b830f014",
+      "sourceSha256": "4d1fe198bb7bb9038c84b992040cd82b05e453ee88d79bc1799e2eb92f649413",
+      "sourceFiles": 326,
+      "sourceStableDuringCheck": true,
+      "logSha256": "67feec34e351a459470c5e95a529a4985e4b81b4c1f5161d9f24e3882f068b86",
+      "m0": { "tests": 349, "passed": 348, "failed": 0, "skipped": 1 },
+      "m1": { "tests": 108, "passed": 108, "failed": 0, "skipped": 0 },
+      "m2": { "tests": 175, "passed": 175, "failed": 0, "skipped": 0 }
+    },
+    "coverage": [
+      "production ProductTurnRuntime actor validation and fail-closed release in Workerd",
+      "production WorkspaceAgent create Session, durable submit, shared alarm, dispatcher, independent runtime actor, event replay and saved terminal checkpoint in Workerd",
+      "idempotent Turn submission invokes the runtime fixture once",
+      "provisioning-before-Turn ordering and authoritative state re-read",
+      "orphan Turn deadline isolation, non-ready retry and shared alarm reconciliation",
+      "remote checkpoint time preceding local checkpointing acknowledgement"
+    ]
+  },
+  "observations": [
+    "one M1 deadline-sensitive unit failed only while M1 and the heavy M2 Workerd suite ran concurrently; the focused test, sequential M1 suite and recorded sequential repository check all passed",
+    "the Workerd Turn chain uses explicit deterministic runtime receipt fixtures and does not prove a Pi VM, real R2 archive or provider call"
+  ],
+  "boundaries": {
+    "productPlatform": [
+      "WorkspaceAgent owns admission, durable queue, alarm routing, dispatch identity, event sequence and final Revision pointer",
+      "ProductTurnRuntime owns one identity-bound execution reservation and delegates only to platform-selected release ports",
+      "project Pi cannot select its Durable Object actor, base checkpoint, generation, release ports or terminal receipt"
+    ],
+    "notAccepted": [
+      "budget-authorized production ProductTurnRuntime release",
+      "real Workspace canonical archive and restore",
+      "real Pi Session restore in a built cloud image",
+      "cloud Turn execution, logged-in SSE or M2 completion"
+    ],
+    "modelCalls": 0,
+    "cloudDeployments": 0,
+    "cloudMutations": 0,
+    "cloudGatePassed": false,
+    "legacyRiffologyDemoRestored": false,
+    "ui4173Preserved": true
+  }
+}

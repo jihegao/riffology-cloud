@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T15:12:39.789Z",
+  "status": "passed",
+  "checks": [
+    {
+      "name": "worker-name",
+      "status": "passed"
+    },
+    {
+      "name": "account",
+      "status": "passed"
+    },
+    {
+      "name": "no-legacy-or-fallback",
+      "status": "passed"
+    },
+    {
+      "name": "single-custom-domain",
+      "status": "passed"
+    },
+    {
+      "name": "origin",
+      "status": "passed"
+    },
+    {
+      "name": "quota",
+      "status": "passed"
+    },
+    {
+      "name": "assets",
+      "status": "passed"
+    },
+    {
+      "name": "required-secrets",
+      "status": "passed"
+    },
+    {
+      "name": "dedicated-d1",
+      "status": "passed"
+    },
+    {
+      "name": "dedicated-r2",
+      "status": "passed"
+    },
+    {
+      "name": "durable-objects",
+      "status": "passed"
+    },
+    {
+      "name": "do-exports",
+      "status": "passed"
+    },
+    {
+      "name": "container-budget",
+      "status": "passed"
+    },
+    {
+      "name": "cron-disabled",
+      "status": "passed"
+    },
+    {
+      "name": "pinned-runtime-base",
+      "status": "passed"
+    },
+    {
+      "name": "catalog-migrations",
+      "status": "passed"
+    },
+    {
+      "name": "cloud-d1",
+      "status": "passed"
+    },
+    {
+      "name": "cloud-r2",
+      "status": "passed"
+    },
+    {
+      "name": "wrangler-dry-run",
+      "status": "passed"
+    },
+    {
+      "name": "deployment-secrets",
+      "status": "passed"
+    }
+  ]
+}

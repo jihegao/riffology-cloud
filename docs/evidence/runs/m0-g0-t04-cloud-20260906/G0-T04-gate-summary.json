@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "run_id": "m0-g0-t04-cloud-20260906",
+  "recorded_at": "2026-09-06T04:52:12.595Z",
+  "gate_id": "G0-T04",
+  "case_id": "gate-summary",
+  "status": "passed",
+  "observed_at": "2026-09-06T04:52:12.549Z",
+  "environment": "staging",
+  "git_sha": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+  "versions": {
+    "wrangler": "4.129.0",
+    "worker_version": "00f869d8-8229-42d8-83e1-cb661f5cadfb",
+    "protocol": "m0-v1",
+    "bundle_sha256": "19985c0f5872ab53103cc1787a2828532f1ef73b10741f12a55a584c390555fc",
+    "scoped_source_sha256": "e2f0bdc41470fc4b51cf87456e93f31add1f122e272becef88321cffab63b661",
+    "source_state": "uncommitted working tree; frozen scoped runtime and driver hashes authoritative"
+  },
+  "command": "bounded tenancy cloud matrix, separate idempotent cleanup reconciliation, primary and independent requirement review",
+  "evidence_paths": [
+    "m0-tenancy-cleanup-20260906/primary-review.json",
+    "m0-tenancy-cleanup-20260906/independent-review.json",
+    "m0-tenancy-cloud-1788669993268-0899e615/tenancy-cloud.json",
+    "m0-tenancy-cleanup-20260906/final-cleanup-reconciliation.json",
+    "m0-tenancy-cleanup-20260906/reconciliation.json",
+    "m0-tenancy-cleanup-20260906/deployment-verified.json",
+    "m0-tenancy-cleanup-20260906/deployments-final.json",
+    "m0-tenancy-cleanup-20260906/build.json",
+    "m0-tenancy-cleanup-20260906/deploy.log",
+    "m0-tenancy-deploy-20260906/version-view.json",
+    "m0-local-20260906044103630/local-checks.json",
+    "m0-tenancy-cloud-1788669563507-2719970e/tenancy-cloud.json",
+    "m0-tenancy-cloud-1788668426310-7f440e8f/tenancy-cloud.json",
+    "m0-tenancy-cloud-1788668251468-7a8c50ea/tenancy-cloud.json"
+  ],
+  "evidence_sha256": [
+    "731d47a54aa29488979eb823353c2e747ef300c182cd134d4548dbe014de88c5",
+    "6e45924e7b16fc5a76ef1e3ab23ee83b2e70523214cec8f827eaf05a7447634a",
+    "4be989d895a5251241779132219cd2747f41b3237038e23f2fe8b58a117f4e54",
+    "8388cce4e5ac4a4dd7412d5c5950d98dff96a81282e3a90eeb2eb5a655e79e2a",
+    "e68c9affb91c88c357d82a31bc14aae424871fe2481d02ae34594a658ecb9234",
+    "56665bbe4e690eb7f32b1ffde4643dc6d1dad32df1d966fcea9f005b78bd4288",
+    "9f436c5c9bb871f1741b9fd811f5b77028a6e05aa51f3969940380c3377ecc07",
+    "beb87f89fd76202e4aa09015f110507e3279860a7ea5c0f979eb9adc402bff30",
+    "2579b167cffdc941c40260af26014144833fba4b262b5d81a8f63a7b6e6eb7b6",
+    "7e058be76f7fe06c57e59891fe8b95b97a9ffa32aa8508cdf789bf169306980c",
+    "765435cd5f65bd441b66b7ec2cba258ff4d4456fbbbc7b54be21574f9e0af0cf",
+    "6cde412a1efef25a1972261dc2dbe99bfde78dc15291215ee9823940f6d133ea",
+    "f2b910cfda5b31fdd23725c146981e8cef6f1e3a9463b8115e2edb4f7db85abb",
+    "769f615401949c0a36032dc4a89bda1589cc7b1eea53a8b2b1b2d0eb59ea865d"
+  ],
+  "conclusion": "G0-T04 staging synthetic Workspace/Artifact R2 and DO authorization primitive passed through composite evidence: 87 business requests, concurrent two-owner writes and readback, cross-owner/object/service/expired or malformed capability rejection, unchanged owner digests, initial cleanup and eight closed-capability denials. Final cleanup response timed out; original driver passed=false remains immutable. Separate bounded idempotent cleanup confirms identical deletion result. Empty-run cleanup now durably closes before deletion and rejects delayed bootstrap. Resource rows deleted, lifecycle tombstones retained. Not full G0 or production Workspace/identity acceptance."
+}

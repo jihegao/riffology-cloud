@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "run_id": "m0-g0-t07-cloud-20260906",
+  "recorded_at": "2026-09-06T02:56:37.213Z",
+  "gate_id": "G0-T07",
+  "case_id": "gate-summary",
+  "status": "passed",
+  "observed_at": "2026-09-06T02:50:04.962Z",
+  "environment": "staging",
+  "git_sha": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+  "versions": {
+    "wrangler": "4.129.0",
+    "worker_version": "5e5f3e22-69b2-460a-b03b-354d9d803c1d",
+    "protocol": "m0-v1",
+    "image_digest": "sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+    "scoped_source_sha256": "44893bb452096862beaabc50bdbae5b7b9fc6fc732772b2743ad7eecfe2ce8ed",
+    "source_state": "uncommitted working tree; runtime source unchanged since verified deployment; driver scoped hashes authoritative"
+  },
+  "command": "node --use-env-proxy scripts/m0/preview-cloud.mjs with full verified ingress manifest and private operator input; primary requirement-by-requirement review",
+  "evidence_paths": [
+    "m0-preview-diagnostics-20260906/primary-review.json",
+    "preview-cloud-1788662851221/artifacts/preview-cloud.json",
+    "m0-preview-diagnostics-20260906/deployments-final.json",
+    "m0-preview-diagnostics-20260906/apps-final.json",
+    "m0-preview-diagnostics-20260906/instances-final.json",
+    "m0-preview-domain-deploy-20260906/wildcard-deploy-result.json"
+  ],
+  "evidence_sha256": [
+    "a789dd6c33225b5916d86e7816eee60045ed4dc60a8c280c3fad0436fc900a63",
+    "96a5af0c455e09a280a4f09be3846753db4a6a2e8153e1f5a343971580b3771c",
+    "cf19ab3c6a1dc8fa5a2d597023695fda826b36bcd920ac1357d7a7afefb3061a",
+    "f6c8d402a091462cdf7a8093551db79d09264796a6dda6e6675f1ac07691d2e5",
+    "b019352f54603f75cd75c91de8ca844c7d481ec4d04aec954bf2f868cee86ef9",
+    "bca4b575f0338cb085ca7dbd8a339c7dfc005d4ba4a52dbea23d37e4c6a31f5d"
+  ],
+  "conclusion": "G0-T07 staging technical primitives passed for same-site distinct origins with platform-controlled test principals: all actual ingress, HTTP/subresources/WS, redirects, real Cookie wire isolation, CSRF, revocation, expiry and generation replacement. SDK exposes no capability port. All Preview instances inactive. Production identity integration remains M1; this is not full G0 or product release acceptance."
+}

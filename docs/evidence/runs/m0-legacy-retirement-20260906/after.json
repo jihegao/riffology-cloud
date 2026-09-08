@@ -1,0 +1,37 @@
+{
+  "observedAt": "2026-09-06T01:34:22.161Z",
+  "workers": [
+    "2048-challenge-platform",
+    "cadence-ai-riff-studio",
+    "reflexive-poker-demo",
+    "riffology-m0-model-proxy-staging",
+    "riffology-m0-probe-staging",
+    "riffology-m0-storage-staging"
+  ],
+  "routes": [
+    {
+      "id": "196653296b134fc3b8778753ecf3c7eb",
+      "pattern": "riffology.gaojihe.cn/*",
+      "script": "cadence-ai-riff-studio",
+      "request_limit_fail_open": false
+    }
+  ],
+  "dns": [],
+  "status": [
+    {
+      "status": 200,
+      "success": true,
+      "errors": []
+    },
+    {
+      "status": 200,
+      "success": true,
+      "errors": []
+    },
+    {
+      "status": 200,
+      "success": true,
+      "errors": []
+    }
+  ]
+}

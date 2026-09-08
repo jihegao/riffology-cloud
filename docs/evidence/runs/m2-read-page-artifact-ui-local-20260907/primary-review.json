@@ -1,0 +1,50 @@
+{
+  "sourceStable": true,
+  "sourceSha256": "136f2e83be4855eab33127c55af254e1f56eefaddcca1b8c13abe4b8b8e372e5",
+  "sourceFileCount": 388,
+  "workerd": {
+    "httpStatus": 200,
+    "recordStatus": "completed",
+    "replayStable": true,
+    "r2ObjectCount": 1,
+    "artifact": {
+      "artifactId": "artifact-6fe317fe6b99418aa8bc169258825d56ca881760c8b327479c925df64f84",
+      "bytes": 20146,
+      "sha256": "9dc5bd8770a628d664de3416d94dbbde8d88a37ef8d77f2293ec0a67756eb22b",
+      "mediaType": "application/json"
+    },
+    "contentBytes": 20000,
+    "paging": {
+      "complete": true,
+      "pages": 3,
+      "nextOffset": 20000,
+      "sha256": "42e8bc96b8eec8c4e5d503483ba0cb843ce95243c8ca8575ffc69cd25d12c61c"
+    }
+  },
+  "tests": {
+    "m2": {
+      "exitCode": 0,
+      "tests": 300,
+      "pass": 300,
+      "fail": 0
+    },
+    "focused": {
+      "exitCode": 0,
+      "tests": 33,
+      "pass": 33,
+      "fail": 0
+    }
+  },
+  "cleanup": {
+    "wranglerStopped": true,
+    "port8796Free": true,
+    "liveDockerContainers": 0
+  },
+  "external": {
+    "cloudDeploy": false,
+    "modelCalls": 0,
+    "emailSent": false,
+    "commit": false,
+    "push": false
+  }
+}

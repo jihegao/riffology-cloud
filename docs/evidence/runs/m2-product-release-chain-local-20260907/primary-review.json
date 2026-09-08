@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-product-release-chain-local-20260907",
+  "reviewedAt": "2026-09-06T22:56:26.757Z",
+  "environment": "local-node-workerd-wrangler-docker",
+  "decision": "accepted-as-local-product-turn-release-chain-candidate",
+  "scope": [
+    "identity-bound ProductTurnRuntime release assembly from R2 restore through Trusted Pi execution and immutable Revision freeze",
+    "platform-issued model capability at the actual Trusted Pi Sandbox outbound boundary",
+    "fixed OpenCode Go Responses provider adapter with bounded terminal SSE and verified usage",
+    "Trusted Pi text-only model transport and six remote project tools",
+    "complete local Wrangler topology with eight Durable Objects, R2, two private services and three container classes",
+    "linux/amd64 Trusted Pi candidate image with active release still fail closed"
+  ],
+  "boundary": {
+    "platform": [
+      "Session, Turn, actor, generation and Sandbox addressing",
+      "R2 restore and Revision commit",
+      "model provider, credential, capability issuance and tenant token/call budget",
+      "Tool Ledger, effect capability, terminal evidence and release flags"
+    ],
+    "projectPi": [
+      "fixed system prompt and Simulation Skill",
+      "fixed text-only model selection",
+      "six project_* remote tool definitions",
+      "model and tool request transport bound to immutable Turn identity"
+    ],
+    "projectSandbox": [
+      "project files and bounded Python, SimPy and shell effects",
+      "no Pi Session, model capability, provider credential or outbound network"
+    ]
+  },
+  "release": {
+    "turnGate": "M2_TURNS_ENABLED=false",
+    "providerGate": "M2_MODEL_PROVIDER_ENABLED=false",
+    "activeTrustedPiRelease": "trusted-pi-release-not-configured",
+    "provider": "opencode-go",
+    "model": "gpt-5.6-luna",
+    "modelCalls": 0,
+    "cloudDeployments": 0,
+    "containerRollouts": 0
+  },
+  "verification": {
+    "fullCheck": {
+      "record": "../m0-local-20260906225325970/local-checks.json",
+      "recordSha256": "606dc042480188e9695a0ef7350af5715f5b9e73dd4e4238c623ec891b1c294e",
+      "log": "../m0-local-20260906225325970/local-checks.log",
+      "logSha256": "fd6ecd4c821cdf42415947ec4719d5ace974fdf58a84c22882f1eb4d30c624ea",
+      "passed": true,
+      "sourceStableDuringCheck": true,
+      "sourceFiles": 363,
+      "sourceSha256": "e82a9c03d63b19ef1e902eec6092d0152cbee92568044e8e98bd8845d7995dbf",
+      "m0": {
+        "passed": 348,
+        "failed": 0,
+        "skipped": 1
+      },
+      "m1": {
+        "passed": 108,
+        "failed": 0,
+        "skipped": 0
+      },
+      "m2": {
+        "passed": 261,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "wrangler": {
+      "command": "wrangler deploy --dry-run --containers-rollout=none with isolated local Docker configuration",
+      "log": "wrangler-dry-run.log",
+      "logSha256": "3aeb7a8f6bb8b55096a29ad827a741c0bab091424f0b45d471b806167f6828d8",
+      "recognizedBindings": 13,
+      "recognizedContainers": 3,
+      "cloudMutation": false
+    },
+    "image": {
+      "tag": "riffology-m2-trusted-pi-candidate:20260907",
+      "id": "sha256:4daab864f6148ab40662b9573d6cd641b9662c5e8b3ba09ec96dee84c23c51ad",
+      "platform": "linux/amd64",
+      "sizeBytes": 390911584,
+      "log": "trusted-pi-image.log",
+      "logSha256": "43d991a367a9ef59c1a2ac03e4125539ac461eb12725c696dc0004a7ab749064",
+      "activeGateObserved": "trusted-pi-release-not-configured"
+    },
+    "ui4173Preserved": true,
+    "activeDockerContainersAfterCheck": 0
+  },
+  "sourceHashes": {
+    "Dockerfile.trusted-pi.cloud": "5e34b77fa87d5b0d7c9e8d31a011ce01b8d9201d7400ca11506458d2137582f1",
+    "infra/wrangler.m2-product-local.jsonc": "09af67019b05a07f8b2a6e0221228a3c11bd7bdacbb6017ec08412a35afabbe3",
+    "services/gateway/index.ts": "536b45737b9c526d2d7f287825dfe1f829e40042aa6994e3f1c7eff764df0944",
+    "services/model-proxy/http.ts": "d98f17bd90744ea2c73eae1e171dcfff1d61e4030bb125291edd1162a8db0ec2",
+    "services/model-proxy/opencode-go-responses.ts": "9be31cdf126ee2261dc6471c655e9b5e19f897f213b60b23a2de6976fa642321",
+    "services/model-proxy/release.ts": "27d6aeca63a7800d5bf60cf5f2274efe74ac056984dd5195059de7e5738d8d8e",
+    "services/sandbox/policy.ts": "017980d6995d47ce813f7f4fcfd83e2dfe8d98e097bfbcd1bcf4d5624a308b43",
+    "services/trusted-pi/product-model-transport.mjs": "22dd3a17fc88ff77055ec80ac020834828b2b3bb4fa54c9478fe9c9a779c1006",
+    "services/trusted-pi/product-tool-bridge.mjs": "7d5f083b0d26e0d12706f4fb1bb8c3c3d3b66210324a8d66b717bbb11b1c5d60",
+    "services/trusted-pi/release-candidate.mjs": "63124bfe93a9e428e5fef35a66e1bf21a00ea44882361ebbe401e504177ee461",
+    "services/turn-runtime/durable.ts": "817797a4ac3517f329a24db2bb1fd154655723bfa8af233c6d0a68666ab97545",
+    "services/turn-runtime/release-gated.ts": "10a6dc6533d4607ca4a071e3241f061a2d952a585896232aa6d5fb8ae68f0992",
+    "services/turn-runtime/release.ts": "a0a68de395c4b6adf950e0eecd4676581e8409600368e61e738d028aa5d89b81",
+    "tests/m2/product-boundary-chain.test.mjs": "0044471f7d38d793ca14590bc46c1248bbf544f936b43bb0e6a47d4e7ddc09d8",
+    "tests/m2/product-local-topology.test.ts": "f8da768981d5cdc8cb18c69ddcf941e71e10faf732fe5ef08b83b92bfc96131e",
+    "tests/m2/product-model-transport.test.mjs": "b44167530eec69c8cd8a67c3d05c538b0195220311bb0245354876863592c619",
+    "tests/m2/product-tool-bridge.test.mjs": "a6963d5e7eee037c3920ee3a825fcca5f3aba4e5c939a67279bb0c83c7410ef3",
+    "tests/m2/product-turn-release-gate.test.ts": "0c4bf48865c94a4bdce4e902bfca2a6b49edce954c53aa683c1bf4d2fa544335",
+    "tests/m2/product-turn-release.test.ts": "002f918fb419b6294dd407dbed3edaa7708617cfd9bc7bd36d13efbabc152fa9"
+  },
+  "notAccepted": [
+    "production credential injection or enabling either release gate",
+    "real OpenCode Go model execution or any additional model budget",
+    "local or cloud product Turn using all three real containers",
+    "cloud R2 restore and Revision freeze for a real Pi Session",
+    "cloud M2 Container applications, deployment or rollout",
+    "large-result artifact channel, end-to-end cancellation/watchdog and UI Turn acceptance",
+    "price book, currency, balance, payment, refund or TenantBilling settlement"
+  ],
+  "mutations": {
+    "localSource": true,
+    "localTests": true,
+    "localDockerImage": true,
+    "cloudDeploy": false,
+    "cloudResourceCreate": false,
+    "modelCalls": 0,
+    "commit": false,
+    "push": false
+  }
+}

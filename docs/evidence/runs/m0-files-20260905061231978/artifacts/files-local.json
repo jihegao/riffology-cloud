@@ -1,0 +1,15 @@
+{
+  "runId": "files-20260905061231978",
+  "environment": "local-docker-workerd",
+  "startedAt": "2026-09-05T06:12:31.979Z",
+  "finishedAt": "2026-09-05T06:12:32.046Z",
+  "gitHead": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+  "httpStatus": 500,
+  "report": {
+    "error": "probe-failed",
+    "gate_decision": "not_evaluated"
+  },
+  "replayStatus": 202,
+  "replayIdentical": false,
+  "cloudGatePassed": false
+}

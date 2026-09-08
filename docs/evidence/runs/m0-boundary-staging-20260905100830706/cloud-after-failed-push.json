@@ -1,0 +1,64 @@
+{
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "observedAt": "2026-09-05T10:13:13.751Z",
+  "checks": [
+    {
+      "name": "storageDeployments",
+      "status": 200,
+      "success": true,
+      "result": {
+        "deployments": [
+          {
+            "id": "d6d576ba-d53f-4b2f-8614-338b7e4c7afb",
+            "created_on": "2026-09-05T10:01:34.906587Z",
+            "versions": [
+              {
+                "version_id": "c2dd3dd5-ac4c-4ce3-afa6-74f90369000b",
+                "percentage": 100
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "boundaryWorker",
+      "status": 200,
+      "success": true,
+      "result": {
+        "bindings": [
+          {
+            "name": "ENVIRONMENT",
+            "type": "plain_text"
+          },
+          {
+            "name": "M0_EXECUTION_ENVIRONMENT",
+            "type": "plain_text"
+          },
+          {
+            "name": "M0_PROBE_TOKEN",
+            "type": "secret_text"
+          },
+          {
+            "name": "ProjectSandbox",
+            "type": "durable_object_namespace"
+          },
+          {
+            "name": "PROTOCOL_VERSION",
+            "type": "plain_text"
+          },
+          {
+            "name": "TrustedSandbox",
+            "type": "durable_object_namespace"
+          }
+        ]
+      }
+    },
+    {
+      "name": "containers",
+      "status": 200,
+      "success": true,
+      "result": []
+    }
+  ]
+}

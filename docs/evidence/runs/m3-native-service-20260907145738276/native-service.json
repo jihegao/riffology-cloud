@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "runId": "m3-native-service-20260907145738276",
+  "environment": "local-docker",
+  "modelCalls": 0,
+  "cloudGatePassed": false,
+  "sourceBefore": "abe9c57cbd2290e62996aad25fd7c5d71b87c43428d8038d8de09d41b552760a",
+  "image": {
+    "tag": "riffology-m3-service:abe9c57cbd22",
+    "id": "sha256:22df471a659be4915a6d4e0bbb94c25da4050c8f74c66e8c8ac49a876eb4e264"
+  },
+  "http": {
+    "uid": 10001,
+    "readonly": true,
+    "protected": true,
+    "secretAbsent": true,
+    "nnp": "NoNewPrivs:\t1",
+    "starts": 1
+  },
+  "processesBeforeStop": 2,
+  "stop": {
+    "fenced": true,
+    "descendantsRemaining": 0,
+    "lateStartRejected": true,
+    "replayed": true
+  },
+  "stopBeforeUpload": true,
+  "chunkRecovery": {
+    "partialBytes": 128,
+    "archiveBytes": 716800,
+    "healthy": true,
+    "starts": 1
+  },
+  "imageMismatchRejected": true,
+  "passed": true,
+  "sourceAfter": "abe9c57cbd2290e62996aad25fd7c5d71b87c43428d8038d8de09d41b552760a",
+  "sourceStableDuringCheck": true
+}

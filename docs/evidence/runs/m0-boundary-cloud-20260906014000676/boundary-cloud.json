@@ -1,0 +1,240 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-09-06T01:40:00.703Z",
+  "environment": "staging-cloud-workerd",
+  "origin": "https://riffology-m0-probe-staging.jihe-gao.workers.dev",
+  "gate_decision": "not_evaluated",
+  "cloudGatePassed": false,
+  "passed": false,
+  "sourcesBefore": {
+    "sha256": "c15eceff2a69c5361bcac26f7ec391bf8dbbd5cef98b846d46d07f0a61a3603c",
+    "files": [
+      {
+        "path": ".dockerignore",
+        "sha256": "0bcd7d5c53d25898b250020a2fd04a7033b7034c730f6dfe9465cfd8d09a20f9"
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "ebd2febbc682177605c565d0086c3c2949fafc7400c8f657318204a9a18790ab"
+      },
+      {
+        "path": "infra/m0-project.Dockerfile",
+        "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+      },
+      {
+        "path": "infra/m0-trusted.Dockerfile",
+        "sha256": "59d24628b66c5db4d7d6464c9d164584c58e29c988d09b95d244921f6ae50289"
+      },
+      {
+        "path": "infra/wrangler.m0.jsonc",
+        "sha256": "90f87013d8699c63d929dd2ca537f52ce1859f05f618926bb623aa495e8c5f34"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+      },
+      {
+        "path": "scripts/m0/boundary-cloud.mjs",
+        "sha256": "def53cdd96d7621021af4250d04049e03d568edbe0bd8b6c075b9fe651907c18"
+      },
+      {
+        "path": "scripts/m0/boundary-local.mjs",
+        "sha256": "331c8d13adb569634156f616e9fd33b5c486cc2642f22d96eee784f72b4f0af5"
+      },
+      {
+        "path": "scripts/m0/source-inventory.mjs",
+        "sha256": "1afeab93162678265a0372d57b2404902192efdc17fbe0a063e62f5a63460c6e"
+      },
+      {
+        "path": "services/runtime/controlled-pi.d.mts",
+        "sha256": "5ae071c3710ef424c9c36e4e4cd19d20bc414df6f9c0bd07deae216884d1ac3e"
+      },
+      {
+        "path": "services/runtime/controlled-pi.mjs",
+        "sha256": "3cf68643ced46c815b3fd6d5c8856882e57b0aae36ef5b148714c0bc27e5fe6a"
+      },
+      {
+        "path": "services/runtime/pi-probe-evidence.mjs",
+        "sha256": "bb8395477543d6a52c9a4faa830b0dab5fcbecf487f3d2abf571e514041c96cf"
+      },
+      {
+        "path": "services/runtime/proxy-pi.d.mts",
+        "sha256": "bace6f838715a0d1b3dd8b90805b2e41c125c0560c1a45ba4fbca0b27cf95212"
+      },
+      {
+        "path": "services/runtime/proxy-pi.mjs",
+        "sha256": "b16c20eaa5a99beb4a456f87c27f5b2a79d7a677502ece201f35555fcff3b23c"
+      },
+      {
+        "path": "spikes/m0-cloud/README.md",
+        "sha256": "c6ef5cad20f0d3a594d643c332e51441a8a274b5c1f39a93102033b550599a3e"
+      },
+      {
+        "path": "spikes/m0-cloud/auth.ts",
+        "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+      },
+      {
+        "path": "spikes/m0-cloud/env.d.ts",
+        "sha256": "1917c8a371bb116a4107b048c282c15a7307cdc4ecbfc90bac8e52372a1a7eda"
+      },
+      {
+        "path": "spikes/m0-cloud/index.ts",
+        "sha256": "b5238242c6d12765b202c41a7f627c891c174a748d7ce2abc55041b8cf77bd2e"
+      },
+      {
+        "path": "spikes/m0-cloud/runtime.test.ts",
+        "sha256": "aa5707f7e9517b90fb93633dbdb5c98138238d421b20816afd240b4f8c54496b"
+      },
+      {
+        "path": "spikes/m0-cloud/runtime.ts",
+        "sha256": "7de4f33b4874ae166061bb82e7c7dae1a42906f674b00e9a85ece696630b6173"
+      },
+      {
+        "path": "spikes/m0-cloud/worker.test.ts",
+        "sha256": "2329cd7aadb5eaffd0db35215ecb666f9d2b25fb048d95b22830f82a633370f3"
+      },
+      {
+        "path": "spikes/m0-cloud/worker.ts",
+        "sha256": "ea17468402298172aed804c7a4a470f511d4e73a53d685dadd42c214efa74b36"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+      }
+    ],
+    "repositorySourceSha256": "4622882c3b7f51dbdfb144a4c97de1083a032e60c9de8d0e066f981c14e0efed"
+  },
+  "cases": [],
+  "cleanup": [],
+  "deployment": {
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "workerName": "riffology-m0-probe-staging",
+    "workerUrl": "https://riffology-m0-probe-staging.jihe-gao.workers.dev",
+    "version": "de139207-4562-4545-a0ea-32de625710d2",
+    "bundleSha256": "e4e3ac7422ea8d6d8967658a8d7a8fc61b48e454b694ef548f67882fc415acff",
+    "configSha256": "90f87013d8699c63d929dd2ca537f52ce1859f05f618926bb623aa495e8c5f34",
+    "imageDigests": [
+      "sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+      "sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67"
+    ]
+  },
+  "error": {
+    "kind": "probe-or-transport-failed"
+  },
+  "sourcesAfter": {
+    "sha256": "c15eceff2a69c5361bcac26f7ec391bf8dbbd5cef98b846d46d07f0a61a3603c",
+    "files": [
+      {
+        "path": ".dockerignore",
+        "sha256": "0bcd7d5c53d25898b250020a2fd04a7033b7034c730f6dfe9465cfd8d09a20f9"
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "ebd2febbc682177605c565d0086c3c2949fafc7400c8f657318204a9a18790ab"
+      },
+      {
+        "path": "infra/m0-project.Dockerfile",
+        "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+      },
+      {
+        "path": "infra/m0-trusted.Dockerfile",
+        "sha256": "59d24628b66c5db4d7d6464c9d164584c58e29c988d09b95d244921f6ae50289"
+      },
+      {
+        "path": "infra/wrangler.m0.jsonc",
+        "sha256": "90f87013d8699c63d929dd2ca537f52ce1859f05f618926bb623aa495e8c5f34"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+      },
+      {
+        "path": "scripts/m0/boundary-cloud.mjs",
+        "sha256": "def53cdd96d7621021af4250d04049e03d568edbe0bd8b6c075b9fe651907c18"
+      },
+      {
+        "path": "scripts/m0/boundary-local.mjs",
+        "sha256": "331c8d13adb569634156f616e9fd33b5c486cc2642f22d96eee784f72b4f0af5"
+      },
+      {
+        "path": "scripts/m0/source-inventory.mjs",
+        "sha256": "1afeab93162678265a0372d57b2404902192efdc17fbe0a063e62f5a63460c6e"
+      },
+      {
+        "path": "services/runtime/controlled-pi.d.mts",
+        "sha256": "5ae071c3710ef424c9c36e4e4cd19d20bc414df6f9c0bd07deae216884d1ac3e"
+      },
+      {
+        "path": "services/runtime/controlled-pi.mjs",
+        "sha256": "3cf68643ced46c815b3fd6d5c8856882e57b0aae36ef5b148714c0bc27e5fe6a"
+      },
+      {
+        "path": "services/runtime/pi-probe-evidence.mjs",
+        "sha256": "bb8395477543d6a52c9a4faa830b0dab5fcbecf487f3d2abf571e514041c96cf"
+      },
+      {
+        "path": "services/runtime/proxy-pi.d.mts",
+        "sha256": "bace6f838715a0d1b3dd8b90805b2e41c125c0560c1a45ba4fbca0b27cf95212"
+      },
+      {
+        "path": "services/runtime/proxy-pi.mjs",
+        "sha256": "b16c20eaa5a99beb4a456f87c27f5b2a79d7a677502ece201f35555fcff3b23c"
+      },
+      {
+        "path": "spikes/m0-cloud/README.md",
+        "sha256": "c6ef5cad20f0d3a594d643c332e51441a8a274b5c1f39a93102033b550599a3e"
+      },
+      {
+        "path": "spikes/m0-cloud/auth.ts",
+        "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+      },
+      {
+        "path": "spikes/m0-cloud/env.d.ts",
+        "sha256": "1917c8a371bb116a4107b048c282c15a7307cdc4ecbfc90bac8e52372a1a7eda"
+      },
+      {
+        "path": "spikes/m0-cloud/index.ts",
+        "sha256": "b5238242c6d12765b202c41a7f627c891c174a748d7ce2abc55041b8cf77bd2e"
+      },
+      {
+        "path": "spikes/m0-cloud/runtime.test.ts",
+        "sha256": "aa5707f7e9517b90fb93633dbdb5c98138238d421b20816afd240b4f8c54496b"
+      },
+      {
+        "path": "spikes/m0-cloud/runtime.ts",
+        "sha256": "7de4f33b4874ae166061bb82e7c7dae1a42906f674b00e9a85ece696630b6173"
+      },
+      {
+        "path": "spikes/m0-cloud/worker.test.ts",
+        "sha256": "2329cd7aadb5eaffd0db35215ecb666f9d2b25fb048d95b22830f82a633370f3"
+      },
+      {
+        "path": "spikes/m0-cloud/worker.ts",
+        "sha256": "ea17468402298172aed804c7a4a470f511d4e73a53d685dadd42c214efa74b36"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+      }
+    ],
+    "repositorySourceSha256": "4622882c3b7f51dbdfb144a4c97de1083a032e60c9de8d0e066f981c14e0efed"
+  },
+  "probeSourceStableDuringRun": true,
+  "finishedAt": "2026-09-06T01:40:11.246Z",
+  "limits": [
+    "Staging cloud reports are diagnostic and do not close the G0 gate.",
+    "Project reports are diagnostic; the Worker performs independent preservation checks.",
+    "Cleanup acknowledgement does not prove a timed-out operation or all development proxy helpers have terminated.",
+    "This probe uses synthetic sessions and identities, with no paid model or production login.",
+    "The HTTPS proxy delivers the body-deadline rejection after upload completion; early response delivery is not established.",
+    "Total runtime is bounded at 600000ms."
+  ]
+}

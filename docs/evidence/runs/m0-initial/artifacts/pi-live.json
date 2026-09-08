@@ -1,0 +1,253 @@
+{
+  "probe": "G0-T01-local-live-provider",
+  "sdkVersion": "0.85.0",
+  "provider": "opencode-go",
+  "model": "deepseek-v4-flash",
+  "environment": "local-trusted-pi-host",
+  "paidRequestOptIn": true,
+  "contextRestored": true,
+  "cancellation": "observed-aborted",
+  "responses": [
+    {
+      "status": 200,
+      "requestId": null
+    },
+    {
+      "status": 200,
+      "requestId": null
+    },
+    {
+      "status": 200,
+      "requestId": null
+    }
+  ],
+  "events": [
+    {
+      "type": "agent_start"
+    },
+    {
+      "type": "turn_start"
+    },
+    {
+      "type": "message_start"
+    },
+    {
+      "type": "message_end"
+    },
+    {
+      "type": "message_start"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_end",
+      "usage": {
+        "input": 163,
+        "output": 16,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 0,
+        "totalTokens": 179,
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0
+        }
+      },
+      "stopReason": "stop"
+    },
+    {
+      "type": "turn_end"
+    },
+    {
+      "type": "agent_end"
+    },
+    {
+      "type": "agent_settled"
+    },
+    {
+      "type": "agent_start"
+    },
+    {
+      "type": "turn_start"
+    },
+    {
+      "type": "message_start"
+    },
+    {
+      "type": "message_end"
+    },
+    {
+      "type": "message_start"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_end",
+      "usage": {
+        "input": 181,
+        "output": 42,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 0,
+        "totalTokens": 223,
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0
+        }
+      },
+      "stopReason": "stop"
+    },
+    {
+      "type": "turn_end"
+    },
+    {
+      "type": "agent_end"
+    },
+    {
+      "type": "agent_settled"
+    },
+    {
+      "type": "agent_start"
+    },
+    {
+      "type": "turn_start"
+    },
+    {
+      "type": "message_start"
+    },
+    {
+      "type": "message_end"
+    },
+    {
+      "type": "message_start"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_update"
+    },
+    {
+      "type": "message_end",
+      "usage": {
+        "input": 207,
+        "output": 1,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 0,
+        "totalTokens": 208,
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0
+        }
+      },
+      "stopReason": "aborted"
+    },
+    {
+      "type": "turn_end"
+    },
+    {
+      "type": "agent_end"
+    },
+    {
+      "type": "agent_settled"
+    }
+  ],
+  "outcome": "pass-local-live-subset",
+  "cloudGatePassed": false
+}

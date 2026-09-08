@@ -1,0 +1,58 @@
+{
+  "worker": "riffology-m0-tenancy-staging",
+  "sourceSha256": "19bc0390b18c80f5374107ad423940219cce61b7c57d5388a625ed79853a5155",
+  "sourceFiles": [
+    {
+      "path": "infra/wrangler.m0-tenancy.jsonc",
+      "sha256": "e756a1c78614a01c8098c9c2ad814be28c4cd476f60a7d919835dccdde7e450d"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+    },
+    {
+      "path": "package.json",
+      "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+    },
+    {
+      "path": "scripts/m0/source-inventory.mjs",
+      "sha256": "1afeab93162678265a0372d57b2404902192efdc17fbe0a063e62f5a63460c6e"
+    },
+    {
+      "path": "scripts/m0/storage-cloud.mjs",
+      "sha256": "8ca22c87bfa0297aaeb043ae0fcad227ad88e0a081b8421c5c44f3b32926d986"
+    },
+    {
+      "path": "scripts/m0/tenancy-cloud.mjs",
+      "sha256": "e1afa8bb6fc4b6ba893ef6bfd1474e0fab4f991d609eb6bb6e3114845b3a498f"
+    },
+    {
+      "path": "spikes/m0-tenancy/auth.ts",
+      "sha256": "b440e3165c59988e9e27841de9bfd7ee660c16e5a17fed28588715363cec2556"
+    },
+    {
+      "path": "spikes/m0-tenancy/core.ts",
+      "sha256": "9c054dc6a9bd49d52a58dcceb7e73856c316ab4a8c4cfda9164eb29a16c5880c"
+    },
+    {
+      "path": "spikes/m0-tenancy/env.d.ts",
+      "sha256": "7242c902a86171a91d893ca600df4754167d778d62b06f6297197ba253ab3eb0"
+    },
+    {
+      "path": "spikes/m0-tenancy/index.ts",
+      "sha256": "56740551267736efa69b4377d89b1e36c82ac42a8c70531ca048a4f2f54b41db"
+    },
+    {
+      "path": "spikes/m0-tenancy/worker.ts",
+      "sha256": "3412cc66b6bbc9307d8079c9af05aca837ad1e3feacf98e44afb149a310b792f"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+    }
+  ],
+  "repositorySourceSha256": "e70f6755dc97ffa7d5f2265ad4c70b925bd65a8947d8304b1a4368c09498771a",
+  "bundleSha256": "0e86285adf829a20eff235d0d45da4c88f0decbe11a31fae4b955215f47c61a3",
+  "configSha256": "e756a1c78614a01c8098c9c2ad814be28c4cd476f60a7d919835dccdde7e450d",
+  "createdAt": "2026-09-06T04:11:56.036Z"
+}

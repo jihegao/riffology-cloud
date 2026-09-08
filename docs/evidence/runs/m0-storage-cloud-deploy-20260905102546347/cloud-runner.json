@@ -1,0 +1,27 @@
+{
+  "label": "cloud-runner",
+  "startedAt": "2026-09-05T10:30:46.002Z",
+  "finishedAt": "2026-09-05T10:30:53.292Z",
+  "command": [
+    "/opt/homebrew/Cellar/node/25.3.0/bin/node",
+    "--use-env-proxy",
+    "/Users/gaojihe/apps/riffology-cloud/scripts/m0/storage-cloud.mjs",
+    "--origin",
+    "https://riffology-m0-storage-staging.jihe-gao.workers.dev",
+    "--secrets-file",
+    "/Users/gaojihe/apps/riffology-cloud/.local/cloud-staging/storage.secrets.json",
+    "--deployment-version",
+    "91f94ed8-227d-4360-afdf-f610ab749de6",
+    "--bundle-sha256",
+    "0dcb394f8d32dd57fb516da457a55e6f4ba0fa827741316355f0ad408c2ad4c4",
+    "--output",
+    "/Users/gaojihe/apps/riffology-cloud/docs/evidence/runs/m0-storage-cloud-deploy-20260905102546347/storage-cloud.json"
+  ],
+  "exitCode": 1,
+  "signal": null,
+  "timedOut": false,
+  "overflow": false,
+  "launchError": null,
+  "logSha256": "3ca4ea873d3b5de7eb621f86960872d7d6fe35ff776b0dfa110e86c65b5a6829",
+  "success": false
+}

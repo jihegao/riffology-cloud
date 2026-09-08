@@ -1,0 +1,8 @@
+docs/evidence/runs/20260905T155750Z-167375ff/project-image-inspect.json:3:        "Id": "sha256:1d82f27d7cd328aef4f7125e0e27fe42fa6a03803c97ca7783951aba385cf42f",
+docs/evidence/runs/20260905T155750Z-167375ff/project-image-inspect.json:4:        "RepoTags": [
+docs/evidence/runs/20260905T155750Z-167375ff/project-image-inspect.json:33:        "Architecture": "amd64",
+docs/evidence/runs/20260905T155750Z-167375ff/project-image-inspect.json:34:        "Os": "linux",
+docs/evidence/runs/20260905T155750Z-167375ff/trusted-image-inspect.json:3:        "Id": "sha256:42eb9a36e2aa6098c9a146c5c0f149efe29f638d8d304efea523a592aa4002dc",
+docs/evidence/runs/20260905T155750Z-167375ff/trusted-image-inspect.json:4:        "RepoTags": [
+docs/evidence/runs/20260905T155750Z-167375ff/trusted-image-inspect.json:32:        "Architecture": "amd64",
+docs/evidence/runs/20260905T155750Z-167375ff/trusted-image-inspect.json:33:        "Os": "linux",

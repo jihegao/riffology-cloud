@@ -1,0 +1,22 @@
+{
+  "result": {
+    "id": "5ca2eef183aacb0c1c017624e8bd37cd",
+    "name": "*.preview.riff-demo.gaojihe.cn",
+    "type": "AAAA",
+    "content": "100::",
+    "proxiable": true,
+    "proxied": true,
+    "ttl": 1,
+    "settings": {},
+    "meta": {},
+    "comment": "Riffology M0 isolated Preview generations; Worker-only ingress, no legacy origin",
+    "tags": [],
+    "created_on": "2026-09-06T02:05:52.93635Z",
+    "modified_on": "2026-09-06T02:05:52.93635Z",
+    "comment_modified_on": "2026-09-06T02:05:52.93635Z"
+  },
+  "success": true,
+  "errors": [],
+  "messages": [],
+  "status": 200
+}

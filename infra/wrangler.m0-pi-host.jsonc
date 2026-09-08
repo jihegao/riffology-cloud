@@ -1,0 +1,72 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "riffology-m0-pi-host",
+  "main": "../spikes/m0-pi-host/index.ts",
+  "compatibility_date": "2026-09-05",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "nodejs_compat_do_not_populate_process_env"
+  ],
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": {
+    "enabled": true
+  },
+  "env": {
+    "staging": {
+      "name": "riffology-m0-pi-host-staging",
+      "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+      "workers_dev": true,
+      "vars": {
+        "ENVIRONMENT": "staging",
+        "PROTOCOL_VERSION": "m0-v1",
+        "M0_RUN_ID": "resource-loading-20260906"
+      },
+      "secrets": {
+        "required": [
+          "M0_PROBE_TOKEN"
+        ]
+      },
+      "containers": [
+        {
+          "name": "riffology-m0-pi-host-staging",
+          "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+          "instance_type": "basic",
+          "max_instances": 1
+        }
+      ],
+      "exports": {
+        "PiHostSandbox": {
+          "type": "durable-object",
+          "storage": "sqlite",
+          "container": "riffology-m0-pi-host-staging"
+        },
+        "M0PiHost": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        }
+      },
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "PiHostSandbox",
+            "class_name": "PiHostSandbox"
+          },
+          {
+            "name": "HOST",
+            "class_name": "M0PiHost"
+          }
+        ]
+      }
+    }
+  },
+  "rules": [
+    {
+      "type": "Text",
+      "globs": [
+        "**/resource-loading-probe.mjs"
+      ],
+      "fallthrough": true
+    }
+  ]
+}

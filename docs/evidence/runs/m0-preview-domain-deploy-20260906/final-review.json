@@ -1,0 +1,12 @@
+{
+  "observedAt": "2026-09-06T02:21:34.543Z",
+  "documentsChecked": 10,
+  "brokenLinks": [],
+  "localChecks": "m0-local-20260906021336511",
+  "testResult": {
+    "pass": 193,
+    "fail": 0,
+    "skip": 1
+  },
+  "cloudGatePassed": false
+}

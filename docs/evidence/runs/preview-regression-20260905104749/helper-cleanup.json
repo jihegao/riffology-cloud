@@ -1,0 +1,72 @@
+{
+  "stopped_at": 1788605586.538524,
+  "authorization": "only-four-created-preview-helpers; exact-name-and-pinned-image-checked",
+  "before": [
+    {
+      "id": "465a0788dc99cae79580d9abd4feb56ec8b9452677ca0d92ff6c8b1d118857de",
+      "name": "/workerd-riffology-m0-preview-staging-PreviewSandbox-caa91b6f88d0f29cc26475bc6949820192538bff170c646f347d14e4362041dd-proxy",
+      "image_reference": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "image_id": "sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "status": "running"
+    },
+    {
+      "id": "253226a710d21c52434d7fb09cc099f0f7b382cd3315b82190c96f21028be369",
+      "name": "/workerd-riffology-m0-preview-staging-PreviewSandbox-bf278ea7191a5763ac2f0d741016e06b222b587e689808dfdd331c525300d660-proxy",
+      "image_reference": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "image_id": "sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "status": "running"
+    },
+    {
+      "id": "267dae271c97ab5cfbb5d32f9c0840299f56d2ebdd2fefd8018bb74006b90a07",
+      "name": "/workerd-riffology-m0-preview-staging-PreviewSandbox-a0faac2f45858da81eb8271fb32445bc2142ba2cb09be2c6086a797f85848fd7-proxy",
+      "image_reference": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "image_id": "sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "status": "running"
+    },
+    {
+      "id": "cd8c0f2378d9d71af85ea4e33b256e7c53f3ef434d40adf61fd7ea7c3455d8ee",
+      "name": "/workerd-riffology-m0-preview-staging-PreviewSandbox-a61cd7ed3b73201d34eff5dcf3705dcd24c58ac910e949a8fb5b8d068702af14-proxy",
+      "image_reference": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "image_id": "sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "status": "running"
+    }
+  ],
+  "stop_result": {
+    "exit_code": 0,
+    "output": "Flag --time has been deprecated, use --timeout instead\n465a0788dc99cae79580d9abd4feb56ec8b9452677ca0d92ff6c8b1d118857de\n253226a710d21c52434d7fb09cc099f0f7b382cd3315b82190c96f21028be369\n267dae271c97ab5cfbb5d32f9c0840299f56d2ebdd2fefd8018bb74006b90a07\ncd8c0f2378d9d71af85ea4e33b256e7c53f3ef434d40adf61fd7ea7c3455d8ee",
+    "stderr": ""
+  },
+  "after": [
+    {
+      "id": "465a0788dc99cae79580d9abd4feb56ec8b9452677ca0d92ff6c8b1d118857de",
+      "name": "/workerd-riffology-m0-preview-staging-PreviewSandbox-caa91b6f88d0f29cc26475bc6949820192538bff170c646f347d14e4362041dd-proxy",
+      "image_reference": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "image_id": "sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "status": "exited"
+    },
+    {
+      "id": "253226a710d21c52434d7fb09cc099f0f7b382cd3315b82190c96f21028be369",
+      "name": "/workerd-riffology-m0-preview-staging-PreviewSandbox-bf278ea7191a5763ac2f0d741016e06b222b587e689808dfdd331c525300d660-proxy",
+      "image_reference": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "image_id": "sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "status": "exited"
+    },
+    {
+      "id": "267dae271c97ab5cfbb5d32f9c0840299f56d2ebdd2fefd8018bb74006b90a07",
+      "name": "/workerd-riffology-m0-preview-staging-PreviewSandbox-a0faac2f45858da81eb8271fb32445bc2142ba2cb09be2c6086a797f85848fd7-proxy",
+      "image_reference": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "image_id": "sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "status": "exited"
+    },
+    {
+      "id": "cd8c0f2378d9d71af85ea4e33b256e7c53f3ef434d40adf61fd7ea7c3455d8ee",
+      "name": "/workerd-riffology-m0-preview-staging-PreviewSandbox-a61cd7ed3b73201d34eff5dcf3705dcd24c58ac910e949a8fb5b8d068702af14-proxy",
+      "image_reference": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "image_id": "sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "status": "exited"
+    }
+  ],
+  "all_four_stopped": true,
+  "containers_removed": false,
+  "images_removed": false
+}

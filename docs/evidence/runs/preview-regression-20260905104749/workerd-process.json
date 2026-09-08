@@ -1,0 +1,33 @@
+{
+  "pid": 95019,
+  "process_group": 95019,
+  "started_at": 1788605344.394806,
+  "service": "local-preview-only",
+  "command": [
+    "./node_modules/.bin/wrangler",
+    "dev",
+    "--config",
+    "infra/wrangler.m0-preview.jsonc",
+    "--env",
+    "staging",
+    "--local",
+    "--env-file",
+    "/Users/gaojihe/apps/riffology-cloud/.local/m0-browser-tls-1788596112069-263380ed87ab/vars.env",
+    "--ip",
+    "127.0.0.1",
+    "--port",
+    "8791",
+    "--local-protocol",
+    "https",
+    "--https-key-path",
+    "/Users/gaojihe/apps/riffology-cloud/.local/m0-browser-tls-1788596112069-263380ed87ab/key.pem",
+    "--https-cert-path",
+    "/Users/gaojihe/apps/riffology-cloud/.local/m0-browser-tls-1788596112069-263380ed87ab/cert.pem",
+    "--var",
+    "M0_CONTROL_ORIGIN:https://control.m0.test:8791",
+    "--var",
+    "M0_PREVIEW_ORIGIN:https://preview.m0.test:8791",
+    "--log-level",
+    "error"
+  ]
+}

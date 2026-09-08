@@ -1,0 +1,16 @@
+{
+  "outcome": "observer transport failure after successful baseline; cleanup confirmed",
+  "businessPhase": {
+    "phase": "baseline",
+    "release": "w1",
+    "startedAt": 1788686334954,
+    "finishedAt": 1788686338528,
+    "status": "completed",
+    "error": null
+  },
+  "actions": {},
+  "modelDispatches": 0,
+  "cause": "report() retried once; a second network failure escaped instead of consuming remaining shared allowance",
+  "fix": "bounded loop consumes the fixed three-read retry budget; POST is still never retried",
+  "nextRun": "release-g0-v3-20260906"
+}

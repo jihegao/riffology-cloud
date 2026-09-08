@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-artifact-reference-wiring-local-20260907113144206",
+  "environment": "local",
+  "startedAt": "2026-09-07T11:31:44.278Z",
+  "finishedAt": "2026-09-07T11:32:17.352Z",
+  "gitHead": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+  "gitDirty": true,
+  "sourceStable": true,
+  "sourceSha256": "845040861f2883ed9478b6bd4130a7e3d51d7efbef78435fd9b9ba582f6e180c",
+  "sourceFileCount": 388,
+  "checks": {
+    "focused": {
+      "exitCode": 0,
+      "tests": 25,
+      "pass": 25,
+      "fail": 0,
+      "logSha256": "765db479bfc93d5ffa08cca24ec27156a138dc3c692337aa958750c2bdd158b3"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "logSha256": "dcb958aba4a6c7cd6d75b2bd69cf76202671333241d3c5ce33569584459aa324"
+    },
+    "m2": {
+      "exitCode": 0,
+      "tests": 304,
+      "pass": 304,
+      "fail": 0,
+      "logSha256": "98ae5c283c282f02e23d1c5f0a6c3d3b34c59a2b140d1ab4893455b4c6debc19"
+    }
+  },
+  "coverage": {
+    "productionWorkspaceWiring": true,
+    "artifactReadThroughWorkspace": true,
+    "artifactBornWithToolEffectReference": true,
+    "turnEventRetainBeforeJournalAppend": true,
+    "legacyReferenceBackfill": true,
+    "crossTenantWorkspaceDenied": true,
+    "gcEnabled": false
+  },
+  "external": {
+    "cloudDeploy": false,
+    "modelCalls": 0,
+    "emailSent": false,
+    "commit": false,
+    "push": false
+  },
+  "passed": true
+}

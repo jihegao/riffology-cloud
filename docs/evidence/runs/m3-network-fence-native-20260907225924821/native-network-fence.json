@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "runId": "m3-network-fence-native-20260907225924821",
+  "environment": "ssh-AMD128-native-kernel",
+  "modelCalls": 0,
+  "cloudGatePassed": false,
+  "dockerValidated": false,
+  "projectUidValidated": false,
+  "sandboxSdkValidated": false,
+  "sourceBefore": "253d70c2669b290bd3ad9a70958f5c0866d3c1c9360a268f310c5658cc8e00ff",
+  "passed": true,
+  "native": {
+    "passed": true,
+    "machine": "x86_64",
+    "kernel": "6.8.0-124-generic",
+    "uid": 1000,
+    "baselineIpv4Connect": true,
+    "temporaryDirectoryRemoved": true,
+    "stage": "complete",
+    "connectDenied": [
+      "AF_INET",
+      "AF_INET6",
+      "AF_UNIX"
+    ],
+    "ioUringDenied": [
+      "io_uring_setup",
+      "io_uring_enter",
+      "io_uring_register"
+    ],
+    "forkExecInherited": true,
+    "listenAcceptResponseAfterFence": true
+  },
+  "sourceAfter": "253d70c2669b290bd3ad9a70958f5c0866d3c1c9360a268f310c5658cc8e00ff",
+  "sourceStableDuringCheck": true
+}

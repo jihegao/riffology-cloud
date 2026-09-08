@@ -1,0 +1,9 @@
+.local/pi-image-build-20260905T155750Z-167375ff/.dockerignore
+.local/pi-image-build-20260905T155750Z-167375ff/infra/m0-project.Dockerfile
+.local/pi-image-build-20260905T155750Z-167375ff/infra/m0-trusted.Dockerfile
+.local/pi-image-build-20260905T155750Z-167375ff/package-lock.json
+.local/pi-image-build-20260905T155750Z-167375ff/package.json
+.local/pi-image-build-20260905T155750Z-167375ff/scripts/m0/pi-image-check.mjs
+.local/pi-image-build-20260905T155750Z-167375ff/scripts/m0/proxy-pi-child.mjs
+.local/pi-image-build-20260905T155750Z-167375ff/services/runtime/controlled-pi.mjs
+.local/pi-image-build-20260905T155750Z-167375ff/services/runtime/proxy-pi.mjs

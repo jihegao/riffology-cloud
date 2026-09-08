@@ -1,0 +1,20 @@
+{
+  "command": [
+    "node_modules/.bin/wrangler",
+    "deploy",
+    "--config",
+    "infra/wrangler.m0.jsonc",
+    "--env",
+    "staging",
+    "--secrets-file",
+    "/Users/gaojihe/apps/riffology-cloud/.local/cloud-staging/boundary.secrets.json",
+    "--outdir",
+    "/Users/gaojihe/apps/riffology-cloud/.local/m0-boundary-dockerhub-deploy-20260906/deployed-bundle"
+  ],
+  "startedAt": "2026-09-06T01:38:23.030711+00:00",
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "endedAt": "2026-09-06T01:38:45.537017+00:00",
+  "bundleSha256": "e4e3ac7422ea8d6d8967658a8d7a8fc61b48e454b694ef548f67882fc415acff",
+  "configSha256": "90f87013d8699c63d929dd2ca537f52ce1859f05f618926bb623aa495e8c5f34"
+}

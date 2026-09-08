@@ -1,0 +1,102 @@
+{
+  "id": "612a2e93-04cd-4184-a803-bee0a47e0f3a",
+  "number": 1,
+  "metadata": {
+    "created_on": "2026-09-06T05:20:53.315106Z",
+    "source": "wrangler",
+    "author_id": "1ddca18fc1543f9d346441f2626ae8ef",
+    "author_email": "jihe.gao@gmail.com",
+    "has_preview": false
+  },
+  "resources": {
+    "script": {
+      "etag": "d5f9ad3f3f981f16c271135ae372721250d928facd97e1605510a2613d30f151",
+      "handlers": [
+        "fetch"
+      ],
+      "named_handlers": [
+        {
+          "name": "M0RecoveryCoordinator",
+          "handlers": [
+            "class"
+          ]
+        },
+        {
+          "name": "RecoveryTrustedSandbox",
+          "handlers": [
+            "class"
+          ]
+        },
+        {
+          "name": "ContainerProxy",
+          "handlers": [
+            "fetch"
+          ]
+        }
+      ],
+      "last_deployed_from": "wrangler"
+    },
+    "script_runtime": {
+      "exports": {
+        "M0RecoveryCoordinator": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        },
+        "RecoveryTrustedSandbox": {
+          "type": "durable-object",
+          "storage": "sqlite",
+          "container": "riffology-m0-recovery-staging"
+        }
+      },
+      "compatibility_date": "2026-09-05",
+      "compatibility_flags": [
+        "nodejs_compat",
+        "nodejs_compat_do_not_populate_process_env"
+      ],
+      "usage_model": "standard",
+      "containers": [
+        {
+          "name": "riffology-m0-recovery-staging"
+        }
+      ]
+    },
+    "bindings": [
+      {
+        "bucket_name": "riffology-m0-checkpoints-staging",
+        "name": "CHECKPOINTS",
+        "type": "r2_bucket"
+      },
+      {
+        "name": "ENVIRONMENT",
+        "text": "staging",
+        "type": "plain_text"
+      },
+      {
+        "name": "M0_EXECUTION_ENVIRONMENT",
+        "text": "cloudflare-vm",
+        "type": "plain_text"
+      },
+      {
+        "name": "M0_PROBE_TOKEN",
+        "type": "secret_text"
+      },
+      {
+        "name": "PROTOCOL_VERSION",
+        "text": "m0-v1",
+        "type": "plain_text"
+      },
+      {
+        "class_name": "M0RecoveryCoordinator",
+        "name": "RECOVERY",
+        "namespace_id": "a682f665b7004214bc5a27ef24b231b7",
+        "type": "durable_object_namespace"
+      },
+      {
+        "class_name": "RecoveryTrustedSandbox",
+        "name": "RecoveryTrustedSandbox",
+        "namespace_id": "e17c13abe5474cd0bbb673c6ce58a2a0",
+        "type": "durable_object_namespace"
+      }
+    ]
+  }
+}

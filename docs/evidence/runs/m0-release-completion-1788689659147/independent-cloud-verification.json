@@ -1,0 +1,26 @@
+{
+  "verified": true,
+  "at": "2026-09-06T10:17:25.855Z",
+  "sourceSha256": "5178ec196a5ce48d1638688d9a43a0edb26f3dbd42889c0e3acb28ed2b31f43d",
+  "versionsUnchanged": true,
+  "crossScriptBindingUnchanged": true,
+  "allSevenInstancesInactive": true,
+  "r2Independent": true,
+  "artifacts": [
+    {
+      "label": "r2",
+      "manifestSha256": "5e170cdd49a1c9ce11e30a2a8d0e306438a79f0daae224128a9703b67cb98cb5",
+      "stateSha256": "c064a295c7832a0e60e8457fbc21e16ddbfd805e1769316f3d930bb04a4df04b",
+      "counter": 3
+    },
+    {
+      "label": "source",
+      "manifestSha256": "518090fb384338b9e63ddbdf091ea03f2ce2198d347b8e509c165947dc4753a7",
+      "stateSha256": "fe44e2085de9f5c29980f1a6c8a84a8c340131a8fefc9135a265d2667bde7b5c",
+      "counter": 2
+    }
+  ],
+  "oldWorkerAndRouteAbsent": true,
+  "modelDispatches": 0,
+  "productionReady": false
+}

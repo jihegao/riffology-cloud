@@ -1,0 +1,37 @@
+{
+  "observedAt": "2026-09-06T04:51:33.230Z",
+  "checksPassed": true,
+  "gateDecision": "awaiting-independent-review",
+  "scope": "G0-T04 original synthetic two-workspace R2/DO primitive",
+  "versionId": "00f869d8-8229-42d8-83e1-cb661f5cadfb",
+  "sourceSha256": "e2f0bdc41470fc4b51cf87456e93f31add1f122e272becef88321cffab63b661",
+  "bundleSha256": "19985c0f5872ab53103cc1787a2828532f1ef73b10741f12a55a584c390555fc",
+  "matrix": {
+    "requests": 97,
+    "businessRequests": 87,
+    "checks": 70,
+    "httpOutcomes": {
+      "200": 30,
+      "401": 8,
+      "403": 58,
+      "request-deadline": 1
+    },
+    "maxConcurrentRequests": 2,
+    "elapsedMs": 66619,
+    "responseBytes": 11474,
+    "originalPassedFlag": false
+  },
+  "cleanup": {
+    "initialConfirmed": true,
+    "oldCapabilitiesRejected": 8,
+    "separateReconciliationPassed": true,
+    "emptyRunCleanupRegressionPassed": true,
+    "resourcesDeleted": true,
+    "durableClosedTombstonesRetained": true
+  },
+  "limitations": [
+    "Original driver failed on final cleanup response timeout; kept immutable. Separate one-request idempotent cleanup reconciliation supports final state, not a clean uninterrupted run.",
+    "Synthetic Workspace and Artifact primitives share a coordinator; production identities and product workspace lifecycle remain M1 work.",
+    "No actual provider/model/VM calls in these tenancy runs; cloud bill not reconciled."
+  ]
+}

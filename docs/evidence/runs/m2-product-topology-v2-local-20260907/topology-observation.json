@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T23:08:35.212Z",
+  "endpoint": "http://127.0.0.1:8797/",
+  "rootStatus": 200,
+  "rootBytes": 2326,
+  "worker": "riffology-m2-product-local",
+  "durableObjects": [
+    {
+      "binding": "TENANT_QUOTA",
+      "className": "TenantQuota",
+      "useSqlite": true
+    },
+    {
+      "binding": "WORKSPACE_AGENT",
+      "className": "WorkspaceAgent",
+      "useSqlite": true
+    },
+    {
+      "binding": "PROJECT_RUNTIME",
+      "className": "ProjectRuntime",
+      "useSqlite": true
+    },
+    {
+      "binding": "PRODUCT_TURN_RUNTIME",
+      "className": "ProductTurnRuntime",
+      "useSqlite": true
+    },
+    {
+      "binding": "TENANT_MODEL_BUDGET",
+      "className": "TenantModelBudget",
+      "useSqlite": true
+    },
+    {
+      "binding": "PROJECT_SANDBOX",
+      "className": "ProjectToolSandbox",
+      "useSqlite": true
+    },
+    {
+      "binding": "TRUSTED_PI_SANDBOX",
+      "className": "TrustedPiSandbox",
+      "useSqlite": true
+    },
+    {
+      "binding": "TOOL_BRIDGE_AGENT",
+      "className": "ToolBridgeAgent",
+      "useSqlite": true
+    }
+  ],
+  "d1": [
+    "CATALOG"
+  ],
+  "r2": [
+    "WORKSPACE_CHECKPOINTS"
+  ],
+  "runningContainers": 0,
+  "releaseGates": {
+    "M2_TURNS_ENABLED": false,
+    "M2_MODEL_PROVIDER_ENABLED": false
+  }
+}

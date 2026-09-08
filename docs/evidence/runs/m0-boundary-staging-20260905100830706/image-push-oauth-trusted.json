@@ -1,0 +1,23 @@
+{
+  "startedAt": "2026-09-05T10:33:34.645Z",
+  "finishedAt": "2026-09-05T10:34:58.387Z",
+  "command": [
+    "/opt/homebrew/Cellar/node/25.3.0/bin/node",
+    "node_modules/wrangler/bin/wrangler.js",
+    "containers",
+    "push",
+    "riffology-m0-trusted-staging:61647393",
+    "--config",
+    "infra/wrangler.m0.jsonc",
+    "--env",
+    "staging"
+  ],
+  "timeoutMs": 300000,
+  "temporaryMaxConcurrentUploads": 1,
+  "exitCode": 1,
+  "signal": null,
+  "timedOut": false,
+  "cliSucceeded": false,
+  "manifestVerified": false,
+  "deploymentComplete": false
+}

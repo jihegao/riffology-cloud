@@ -1,0 +1,539 @@
+import { actor as validateActor, positive, sha, turnDigest, type TurnActor } from '../turn/protocol.ts';
+import { turnRuntimeIdentity, type TurnRuntimeIdentity } from '../turn-runtime/identity.ts';
+
+export const MAX_MODEL_RESERVATION_MS = 15 * 60_000;
+
+export type ModelBudgetPolicy = {
+  tenantId: string;
+  version: string;
+  maxReservationAttemptsPerTurn: number;
+  maxDispatchedCallsPerTurn: number;
+  maxInputTokensPerCall: number;
+  maxOutputTokensPerCall: number;
+  maxReservedTokensPerTurn: number;
+};
+export type ModelCallRequest = {
+  schemaVersion: 1;
+  identity: TurnRuntimeIdentity;
+  actor: TurnActor;
+  callId: string;
+  requestId: string;
+  deadlineAt: number;
+  provider: string;
+  model: string;
+  payloadSha256: string;
+  inputTokenUpperBound: number;
+  maxOutputTokens: number;
+  inputBoundVersion: string;
+  budgetPolicyVersion: string;
+};
+export type ModelCallReference = {
+  identity: TurnRuntimeIdentity;
+  callId: string;
+  requestId: string;
+  digest: string;
+  reservationId: string;
+};
+export type ModelUsageEvidence =
+  | { kind: 'verified'; inputTokens: number; outputTokens: number; source: string; observedAt: number }
+  | { kind: 'unknown'; observedAt: number };
+export type ModelCallOutcome = 'completed' | 'failed' | 'cancelled';
+export type ModelCallTerminal = { outcome: ModelCallOutcome; errorCode: string | null; providerRequestId: string | null; usage: ModelUsageEvidence };
+export type ModelReleaseProof = {
+  confirmationId: string;
+  reason: 'cancelled-before-dispatch' | 'proxy-pre-dispatch-failed' | 'deadline-before-dispatch';
+  observedAt: number;
+};
+export type ModelCallStatus = 'reserved' | 'dispatched' | 'unknown' | ModelCallOutcome | 'not-dispatched';
+export type ModelCallRecord = {
+  schemaVersion: 1;
+  identity: TurnRuntimeIdentity;
+  actor: TurnActor;
+  turnKey: string;
+  callKey: string;
+  callId: string;
+  requestId: string;
+  digest: string;
+  reservationId: string;
+  deadlineAt: number;
+  provider: string;
+  model: string;
+  payloadSha256: string;
+  inputTokenUpperBound: number;
+  maxOutputTokens: number;
+  inputBoundVersion: string;
+  reservationTokens: number;
+  accountedTokens: number;
+  status: ModelCallStatus;
+  reconciliation: 'held' | 'recorded' | 'pending' | 'released';
+  acceptedAt: number;
+  updatedAt: number;
+  dispatchedAt: number | null;
+  dispatchOrdinal: number | null;
+  unknownAt: number | null;
+  finishedAt: number | null;
+  terminal: ModelCallTerminal | null;
+  releaseProof: ModelReleaseProof | null;
+};
+export type ModelBudgetSnapshot = {
+  tenantId: string;
+  policyVersion: string;
+  configuredPolicyMatches: boolean;
+  turnKey: string;
+  maxReservationAttemptsPerTurn: number;
+  maxDispatchedCallsPerTurn: number;
+  maxReservedTokensPerTurn: number;
+  attempts: number;
+  dispatchedCalls: number;
+  accountedTokens: number;
+  active: number;
+  pending: number;
+  records: ModelCallRecord[];
+};
+export type ModelBudgetStorage = Pick<DurableObjectStorage, 'sql' | 'transactionSync' | 'sync'>;
+
+type Row = Record<string, SqlStorageValue>;
+const ACTIVE = new Set<ModelCallStatus>(['reserved', 'dispatched', 'unknown']);
+const OUTCOMES = new Set<ModelCallOutcome>(['completed', 'failed', 'cancelled']);
+const TERMINAL = new Set<ModelCallStatus>([...OUTCOMES, 'not-dispatched']);
+const IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/;
+const PROVIDER = /^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/;
+const MODEL = /^[A-Za-z0-9][A-Za-z0-9._\/-]{0,149}$/;
+const EXTERNAL_ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
+
+function reject(code: string): never { throw Error(code); }
+function exact(value: unknown, keys: string[], code = 'invalid-model-budget-input'): asserts value is Record<string, unknown> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)
+    || Object.getPrototypeOf(value) !== Object.prototype
+    || Object.keys(value).length !== keys.length
+    || keys.some(key => !Object.hasOwn(value, key))) reject(code);
+}
+function identifier(value: unknown): string {
+  if (typeof value !== 'string' || !IDENTIFIER.test(value)
+    || ['__proto__', 'constructor', 'prototype'].includes(value)) reject('invalid-model-budget-identifier');
+  return value;
+}
+function externalId(value: unknown): string {
+  if (typeof value !== 'string' || !EXTERNAL_ID.test(value)) reject('invalid-model-provider-request-id');
+  return value;
+}
+function positiveInteger(value: unknown, maximum = Number.MAX_SAFE_INTEGER): number {
+  if (!Number.isSafeInteger(value) || (value as number) < 1 || (value as number) > maximum) reject('invalid-model-budget-integer');
+  return value as number;
+}
+function nonnegativeInteger(value: unknown, maximum = Number.MAX_SAFE_INTEGER): number {
+  if (!Number.isSafeInteger(value) || (value as number) < 0 || (value as number) > maximum) reject('invalid-model-budget-integer');
+  return value as number;
+}
+function canonical(value: unknown): string { return JSON.stringify(value); }
+function sameIdentity(a: TurnRuntimeIdentity, b: TurnRuntimeIdentity): boolean { return canonical(a) === canonical(b); }
+function stableTurnIdentity(identity: TurnRuntimeIdentity) {
+  return { scope: identity.scope, sessionId: identity.sessionId, turnId: identity.turnId, generation: identity.generation };
+}
+async function turnKey(identity: TurnRuntimeIdentity): Promise<string> {
+  return turnDigest({ schemaVersion: 1, purpose: 'model-budget-turn', ...stableTurnIdentity(identity) });
+}
+async function callKey(identity: TurnRuntimeIdentity, callId: string): Promise<string> {
+  return turnDigest({ schemaVersion: 1, purpose: 'model-budget-call', ...stableTurnIdentity(identity), callId });
+}
+
+function configuredPolicy(value: ModelBudgetPolicy): ModelBudgetPolicy {
+  exact(value, ['tenantId', 'version', 'maxReservationAttemptsPerTurn', 'maxDispatchedCallsPerTurn', 'maxInputTokensPerCall', 'maxOutputTokensPerCall', 'maxReservedTokensPerTurn'], 'invalid-model-budget-policy');
+  const policy = {
+    tenantId: identifier(value.tenantId),
+    version: identifier(value.version),
+    maxReservationAttemptsPerTurn: positiveInteger(value.maxReservationAttemptsPerTurn, 128),
+    maxDispatchedCallsPerTurn: positiveInteger(value.maxDispatchedCallsPerTurn, 64),
+    maxInputTokensPerCall: positiveInteger(value.maxInputTokensPerCall, 1_048_576),
+    maxOutputTokensPerCall: positiveInteger(value.maxOutputTokensPerCall, 131_072),
+    maxReservedTokensPerTurn: positiveInteger(value.maxReservedTokensPerTurn, 4_194_304),
+  };
+  if (policy.maxDispatchedCallsPerTurn > policy.maxReservationAttemptsPerTurn) reject('invalid-model-budget-policy');
+  return policy;
+}
+function normalizedRequest(value: unknown): ModelCallRequest {
+  exact(value, ['schemaVersion', 'identity', 'actor', 'callId', 'requestId', 'deadlineAt', 'provider', 'model', 'payloadSha256', 'inputTokenUpperBound', 'maxOutputTokens', 'inputBoundVersion', 'budgetPolicyVersion']);
+  if (value.schemaVersion !== 1) reject('invalid-model-call-request');
+  const provider = typeof value.provider === 'string' && PROVIDER.test(value.provider) ? value.provider : reject('invalid-model-call-request');
+  const model = typeof value.model === 'string' && MODEL.test(value.model) ? value.model : reject('invalid-model-call-request');
+  return {
+    schemaVersion: 1,
+    identity: turnRuntimeIdentity(value.identity),
+    actor: validateActor(value.actor),
+    callId: identifier(value.callId),
+    requestId: identifier(value.requestId),
+    deadlineAt: positiveInteger(value.deadlineAt),
+    provider,
+    model,
+    payloadSha256: sha(value.payloadSha256),
+    inputTokenUpperBound: positiveInteger(value.inputTokenUpperBound, 1_048_576),
+    maxOutputTokens: positiveInteger(value.maxOutputTokens, 131_072),
+    inputBoundVersion: identifier(value.inputBoundVersion),
+    budgetPolicyVersion: identifier(value.budgetPolicyVersion),
+  };
+}
+function normalizedReference(value: unknown): ModelCallReference {
+  exact(value, ['identity', 'callId', 'requestId', 'digest', 'reservationId']);
+  return {
+    identity: turnRuntimeIdentity(value.identity),
+    callId: identifier(value.callId),
+    requestId: identifier(value.requestId),
+    digest: sha(value.digest),
+    reservationId: identifier(value.reservationId),
+  };
+}
+function normalizedUsage(value: unknown, request: ModelCallRequest, dispatchedAt: number, now: number): ModelUsageEvidence {
+  if (!value || typeof value !== 'object' || Array.isArray(value) || Object.getPrototypeOf(value) !== Object.prototype) reject('invalid-model-usage-evidence');
+  if ((value as Record<string, unknown>).kind === 'unknown') {
+    exact(value, ['kind', 'observedAt'], 'invalid-model-usage-evidence');
+    const observedAt = positive(value.observedAt);
+    if (observedAt < dispatchedAt || observedAt > now) reject('invalid-model-usage-time');
+    return { kind: 'unknown', observedAt };
+  }
+  exact(value, ['kind', 'inputTokens', 'outputTokens', 'source', 'observedAt'], 'invalid-model-usage-evidence');
+  if (value.kind !== 'verified') reject('invalid-model-usage-evidence');
+  const inputTokens = nonnegativeInteger(value.inputTokens, request.inputTokenUpperBound);
+  const outputTokens = nonnegativeInteger(value.outputTokens, request.maxOutputTokens);
+  const source = identifier(value.source);
+  const observedAt = positive(value.observedAt);
+  if (observedAt < dispatchedAt || observedAt > now) reject('invalid-model-usage-time');
+  return { kind: 'verified', inputTokens, outputTokens, source, observedAt };
+}
+function normalizedTerminal(value: unknown, request: ModelCallRequest, dispatchedAt: number, now: number): ModelCallTerminal {
+  exact(value, ['outcome', 'errorCode', 'providerRequestId', 'usage'], 'invalid-model-call-terminal');
+  if (typeof value.outcome !== 'string' || !OUTCOMES.has(value.outcome as ModelCallOutcome)) reject('invalid-model-call-terminal');
+  const errorCode = value.errorCode === null ? null : identifier(value.errorCode);
+  if ((value.outcome === 'completed') !== (errorCode === null)) reject('invalid-model-call-terminal');
+  const providerRequestId = value.providerRequestId === null ? null : externalId(value.providerRequestId);
+  const usage = normalizedUsage(value.usage, request, dispatchedAt, now);
+  if (usage.kind === 'verified' && providerRequestId === null) reject('model-provider-request-id-required');
+  return { outcome: value.outcome as ModelCallOutcome, errorCode, providerRequestId, usage };
+}
+function normalizedRelease(value: unknown): ModelReleaseProof {
+  exact(value, ['confirmationId', 'reason', 'observedAt'], 'invalid-model-release-proof');
+  if (!['cancelled-before-dispatch', 'proxy-pre-dispatch-failed', 'deadline-before-dispatch'].includes(String(value.reason))) reject('invalid-model-release-proof');
+  return { confirmationId: identifier(value.confirmationId), reason: value.reason as ModelReleaseProof['reason'], observedAt: positive(value.observedAt) };
+}
+
+/** Tenant-scoped product quota ledger. It records calls and token bounds only.
+ * Prices, balances, payment and settlement belong to the future TenantBilling authority. */
+export class SqlTenantModelBudget {
+  #storage: ModelBudgetStorage;
+  #policy: ModelBudgetPolicy;
+  #clock: () => number;
+  #id: () => string;
+  #ready: Promise<void>;
+
+  constructor(storage: ModelBudgetStorage, policy: ModelBudgetPolicy, clock: () => number = Date.now, id: () => string = () => crypto.randomUUID()) {
+    if (!storage?.sql?.exec || !storage.transactionSync || !storage.sync) reject('sqlite-model-budget-storage-required');
+    this.#storage = storage;
+    this.#policy = configuredPolicy(structuredClone(policy));
+    this.#clock = clock;
+    this.#id = id;
+    storage.transactionSync(() => {
+      storage.sql.exec(`CREATE TABLE IF NOT EXISTS model_budget_meta (
+        singleton INTEGER PRIMARY KEY CHECK(singleton=1), tenant_id TEXT NOT NULL, policy_version TEXT NOT NULL,
+        max_reservation_attempts_per_turn INTEGER NOT NULL CHECK(max_reservation_attempts_per_turn BETWEEN 1 AND 128),
+        max_dispatched_calls_per_turn INTEGER NOT NULL CHECK(max_dispatched_calls_per_turn BETWEEN 1 AND 64),
+        max_input_tokens_per_call INTEGER NOT NULL CHECK(max_input_tokens_per_call BETWEEN 1 AND 1048576),
+        max_output_tokens_per_call INTEGER NOT NULL CHECK(max_output_tokens_per_call BETWEEN 1 AND 131072),
+        max_reserved_tokens_per_turn INTEGER NOT NULL CHECK(max_reserved_tokens_per_turn BETWEEN 1 AND 4194304)
+      );
+      CREATE TABLE IF NOT EXISTS model_calls (
+        call_key TEXT PRIMARY KEY, turn_key TEXT NOT NULL, call_id TEXT NOT NULL, request_id TEXT NOT NULL UNIQUE,
+        identity_json TEXT NOT NULL, request_json TEXT NOT NULL, request_digest TEXT NOT NULL, reservation_id TEXT NOT NULL UNIQUE,
+        reservation_tokens INTEGER NOT NULL CHECK(reservation_tokens>=1),
+        accounted_tokens INTEGER NOT NULL CHECK(accounted_tokens>=0 AND accounted_tokens<=reservation_tokens),
+        status TEXT NOT NULL CHECK(status IN ('reserved','dispatched','unknown','completed','failed','cancelled','not-dispatched')),
+        reconciliation TEXT NOT NULL CHECK(reconciliation IN ('held','recorded','pending','released')),
+        accepted_at INTEGER NOT NULL, updated_at INTEGER NOT NULL, dispatched_at INTEGER, dispatch_ordinal INTEGER,
+        unknown_at INTEGER, finished_at INTEGER, terminal_json TEXT, terminal_digest TEXT,
+        release_id TEXT UNIQUE, release_json TEXT, release_digest TEXT,
+        CHECK((status='reserved' AND dispatched_at IS NULL AND dispatch_ordinal IS NULL AND finished_at IS NULL AND reconciliation='held') OR
+          (status='dispatched' AND dispatched_at IS NOT NULL AND dispatch_ordinal IS NOT NULL AND finished_at IS NULL AND reconciliation='held') OR
+          (status='unknown' AND dispatched_at IS NOT NULL AND dispatch_ordinal IS NOT NULL AND unknown_at IS NOT NULL AND finished_at IS NULL AND reconciliation='pending') OR
+          (status IN ('completed','failed','cancelled') AND dispatched_at IS NOT NULL AND dispatch_ordinal IS NOT NULL AND finished_at IS NOT NULL AND terminal_json IS NOT NULL AND terminal_digest IS NOT NULL AND reconciliation IN ('recorded','pending')) OR
+          (status='not-dispatched' AND dispatched_at IS NULL AND dispatch_ordinal IS NULL AND finished_at IS NOT NULL AND release_id IS NOT NULL AND release_json IS NOT NULL AND release_digest IS NOT NULL AND accounted_tokens=0 AND reconciliation='released'))
+      ) STRICT;
+      CREATE UNIQUE INDEX IF NOT EXISTS model_one_active_call_per_turn ON model_calls(turn_key) WHERE status IN ('reserved','dispatched','unknown');
+      CREATE INDEX IF NOT EXISTS model_calls_by_turn ON model_calls(turn_key,accepted_at,call_key);`);
+      const meta = this.#rows('SELECT * FROM model_budget_meta WHERE singleton=1')[0];
+      if (meta && meta.tenant_id !== this.#policy.tenantId) reject('model-budget-tenant-conflict');
+      if (!meta) this.#storage.sql.exec('INSERT INTO model_budget_meta VALUES (1,?,?,?,?,?,?,?)', this.#policy.tenantId, this.#policy.version, this.#policy.maxReservationAttemptsPerTurn, this.#policy.maxDispatchedCallsPerTurn, this.#policy.maxInputTokensPerCall, this.#policy.maxOutputTokensPerCall, this.#policy.maxReservedTokensPerTurn);
+    });
+    this.#ready = storage.sync();
+  }
+
+  ready(): Promise<void> { return this.#ready; }
+  #rows(query: string, ...bindings: (string | number | null)[]): Row[] { return this.#storage.sql.exec<Row>(query, ...bindings).toArray(); }
+  #now(): number { return positive(this.#clock()); }
+  #meta(): Row {
+    const row = this.#rows('SELECT * FROM model_budget_meta WHERE singleton=1')[0];
+    if (!row || row.tenant_id !== this.#policy.tenantId) reject('model-budget-tenant-conflict');
+    return row;
+  }
+  #policyMatches(): boolean {
+    const row = this.#meta();
+    return row.policy_version === this.#policy.version
+      && row.max_reservation_attempts_per_turn === this.#policy.maxReservationAttemptsPerTurn
+      && row.max_dispatched_calls_per_turn === this.#policy.maxDispatchedCallsPerTurn
+      && row.max_input_tokens_per_call === this.#policy.maxInputTokensPerCall
+      && row.max_output_tokens_per_call === this.#policy.maxOutputTokensPerCall
+      && row.max_reserved_tokens_per_turn === this.#policy.maxReservedTokensPerTurn;
+  }
+  #scope(identity: TurnRuntimeIdentity): void {
+    if (identity.scope.tenantId !== this.#policy.tenantId) reject('model-budget-scope-denied');
+  }
+  #request(row: Row): ModelCallRequest {
+    try { return normalizedRequest(JSON.parse(row.request_json as string)); }
+    catch { reject('invalid-persisted-model-budget'); }
+  }
+  #get(key: string): Row | undefined { return this.#rows('SELECT * FROM model_calls WHERE call_key=?', key)[0]; }
+  #record(row: Row, now = this.#now()): ModelCallRecord {
+    try {
+      const request = this.#request(row);
+      const identity = turnRuntimeIdentity(JSON.parse(row.identity_json as string));
+      const status = row.status as ModelCallStatus;
+      if (!sameIdentity(identity, request.identity) || (!ACTIVE.has(status) && !TERMINAL.has(status))) throw Error();
+      const dispatchedAt = row.dispatched_at === null ? null : positive(row.dispatched_at);
+      const terminal = row.terminal_json === null ? null : normalizedTerminal(JSON.parse(row.terminal_json as string), request, dispatchedAt!, now);
+      const releaseProof = row.release_json === null ? null : normalizedRelease(JSON.parse(row.release_json as string));
+      const record: ModelCallRecord = {
+        schemaVersion: 1, identity, actor: request.actor,
+        turnKey: sha(row.turn_key), callKey: sha(row.call_key), callId: request.callId, requestId: request.requestId,
+        digest: sha(row.request_digest), reservationId: identifier(row.reservation_id), deadlineAt: request.deadlineAt,
+        provider: request.provider, model: request.model, payloadSha256: request.payloadSha256,
+        inputTokenUpperBound: request.inputTokenUpperBound, maxOutputTokens: request.maxOutputTokens, inputBoundVersion: request.inputBoundVersion,
+        reservationTokens: positiveInteger(row.reservation_tokens), accountedTokens: nonnegativeInteger(row.accounted_tokens),
+        status, reconciliation: row.reconciliation as ModelCallRecord['reconciliation'],
+        acceptedAt: positive(row.accepted_at), updatedAt: positive(row.updated_at), dispatchedAt,
+        dispatchOrdinal: row.dispatch_ordinal === null ? null : positive(row.dispatch_ordinal),
+        unknownAt: row.unknown_at === null ? null : positive(row.unknown_at),
+        finishedAt: row.finished_at === null ? null : positive(row.finished_at), terminal, releaseProof,
+      };
+      if (record.reservationTokens !== request.inputTokenUpperBound + request.maxOutputTokens
+        || record.accountedTokens > record.reservationTokens || record.updatedAt < record.acceptedAt || record.updatedAt > now
+        || !['held', 'recorded', 'pending', 'released'].includes(record.reconciliation)) throw Error();
+      if (ACTIVE.has(status) !== (record.finishedAt === null)) throw Error();
+      if (status === 'reserved' && (record.dispatchedAt || record.dispatchOrdinal || record.reconciliation !== 'held')) throw Error();
+      if (status === 'dispatched' && (!record.dispatchedAt || !record.dispatchOrdinal || record.unknownAt || record.reconciliation !== 'held')) throw Error();
+      if (status === 'unknown' && (!record.dispatchedAt || !record.dispatchOrdinal || !record.unknownAt || record.reconciliation !== 'pending')) throw Error();
+      if (record.dispatchedAt !== null && (record.dispatchedAt < record.acceptedAt || record.dispatchedAt > record.updatedAt)) throw Error();
+      if (record.unknownAt !== null && (record.dispatchedAt === null || record.unknownAt < record.dispatchedAt || record.unknownAt > record.updatedAt)) throw Error();
+      if (record.finishedAt !== null && (record.finishedAt < record.acceptedAt || record.finishedAt > record.updatedAt)) throw Error();
+      if (status === 'not-dispatched' && (!releaseProof || terminal || row.release_id !== releaseProof.confirmationId || record.reconciliation !== 'released'
+        || releaseProof.observedAt < record.acceptedAt || releaseProof.observedAt > record.finishedAt!)) throw Error();
+      if (OUTCOMES.has(status as ModelCallOutcome) && (!terminal || releaseProof || terminal.outcome !== status
+        || record.dispatchedAt === null || record.finishedAt! < record.dispatchedAt || terminal.usage.observedAt > record.finishedAt!)) throw Error();
+      return record;
+    } catch { reject('invalid-persisted-model-budget'); }
+  }
+  async #keys(request: ModelCallRequest): Promise<{ turn: string; call: string; digest: string }> {
+    return {
+      turn: await turnKey(request.identity),
+      call: await callKey(request.identity, request.callId),
+      digest: await turnDigest({ schemaVersion: 1, policyVersion: request.budgetPolicyVersion, request }),
+    };
+  }
+  async #verified(row: Row): Promise<ModelCallRecord> {
+    const record = this.#record(row), request = this.#request(row), keys = await this.#keys(request);
+    if (record.turnKey !== keys.turn || record.callKey !== keys.call || record.digest !== keys.digest) reject('invalid-persisted-model-budget');
+    if (record.terminal && row.terminal_digest !== await turnDigest(record.terminal)) reject('invalid-persisted-model-budget');
+    if (record.releaseProof && row.release_digest !== await turnDigest(record.releaseProof)) reject('invalid-persisted-model-budget');
+    return record;
+  }
+  async #referenced(value: unknown): Promise<{ key: string; record: ModelCallRecord }> {
+    const reference = normalizedReference(value);
+    this.#scope(reference.identity);
+    const key = await callKey(reference.identity, reference.callId);
+    const row = this.#get(key);
+    if (!row) reject('model-call-not-found');
+    const record = await this.#verified(row);
+    if (!sameIdentity(record.identity, reference.identity) || record.requestId !== reference.requestId
+      || record.digest !== reference.digest || record.reservationId !== reference.reservationId) reject('model-call-scope-denied');
+    return { key, record };
+  }
+
+  async reserve(value: unknown): Promise<{ record: ModelCallRecord; replayed: boolean }> {
+    const request = normalizedRequest(value);
+    this.#scope(request.identity);
+    const keys = await this.#keys(request);
+    await this.#ready;
+    const result = this.#storage.transactionSync(() => {
+      const prior = this.#get(keys.call);
+      if (prior) {
+        const record = this.#record(prior);
+        if (record.digest !== keys.digest) reject('model-call-idempotency-conflict');
+        return { record, replayed: true };
+      }
+      if (request.budgetPolicyVersion !== this.#policy.version) reject('model-budget-policy-conflict');
+      if (!this.#policyMatches()) reject('model-budget-policy-conflict');
+      const now = this.#now();
+      if (request.deadlineAt <= now || request.deadlineAt - now > MAX_MODEL_RESERVATION_MS) reject('invalid-model-call-deadline');
+      if (request.inputTokenUpperBound > this.#policy.maxInputTokensPerCall || request.maxOutputTokens > this.#policy.maxOutputTokensPerCall) reject('model-call-limit-exceeded');
+      if (this.#rows('SELECT call_key FROM model_calls WHERE request_id=?', request.requestId).length) reject('model-request-id-conflict');
+      const attempts = Number(this.#rows('SELECT count(*) AS n FROM model_calls WHERE turn_key=?', keys.turn)[0]?.n ?? 0);
+      const dispatched = Number(this.#rows('SELECT count(*) AS n FROM model_calls WHERE turn_key=? AND dispatched_at IS NOT NULL', keys.turn)[0]?.n ?? 0);
+      if (!Number.isSafeInteger(attempts) || attempts >= this.#policy.maxReservationAttemptsPerTurn) reject('model-turn-attempt-limit');
+      if (!Number.isSafeInteger(dispatched) || dispatched >= this.#policy.maxDispatchedCallsPerTurn) reject('model-turn-call-limit');
+      if (this.#rows("SELECT call_key FROM model_calls WHERE turn_key=? AND status IN ('reserved','dispatched','unknown')", keys.turn).length) reject('model-turn-active-call');
+      const reservationTokens = request.inputTokenUpperBound + request.maxOutputTokens;
+      const accounted = Number(this.#rows('SELECT coalesce(sum(accounted_tokens),0) AS n FROM model_calls WHERE turn_key=?', keys.turn)[0]?.n ?? 0);
+      if (!Number.isSafeInteger(reservationTokens) || !Number.isSafeInteger(accounted)
+        || reservationTokens > this.#policy.maxReservedTokensPerTurn - accounted) reject('model-turn-token-budget-exhausted');
+      const reservationId = identifier(this.#id());
+      this.#storage.sql.exec(
+        "INSERT INTO model_calls(call_key,turn_key,call_id,request_id,identity_json,request_json,request_digest,reservation_id,reservation_tokens,accounted_tokens,status,reconciliation,accepted_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,'reserved','held',?,?)",
+        keys.call, keys.turn, request.callId, request.requestId, canonical(request.identity), canonical(request), keys.digest,
+        reservationId, reservationTokens, reservationTokens, now, now,
+      );
+      return { record: this.#record(this.#get(keys.call)!), replayed: false };
+    });
+    await this.#storage.sync();
+    if (result.replayed) result.record = await this.#verified(this.#get(keys.call)!);
+    return structuredClone(result);
+  }
+
+  async lookup(identityValue: unknown, callIdValue: unknown): Promise<ModelCallRecord | null> {
+    const identity = turnRuntimeIdentity(identityValue), callId = identifier(callIdValue);
+    this.#scope(identity);
+    const key = await callKey(identity, callId);
+    await this.#ready;
+    const row = this.#get(key);
+    return row ? structuredClone(await this.#verified(row)) : null;
+  }
+
+  async dispatch(value: unknown): Promise<{ authorized: boolean; observeOnly: boolean; record: ModelCallRecord }> {
+    const reference = normalizedReference(value);
+    this.#scope(reference.identity);
+    const key = await callKey(reference.identity, reference.callId);
+    await this.#ready;
+    const verified = await this.#referenced(reference);
+    let granted = false;
+    const expiryProof: ModelReleaseProof = { confirmationId: reference.reservationId, reason: 'deadline-before-dispatch', observedAt: verified.record.deadlineAt };
+    const expiryDigest = await turnDigest(expiryProof);
+    this.#storage.transactionSync(() => {
+      const row = this.#get(key);
+      if (!row) reject('model-call-not-found');
+      const current = this.#record(row);
+      if (!sameIdentity(current.identity, reference.identity) || current.requestId !== reference.requestId
+        || current.digest !== reference.digest || current.reservationId !== reference.reservationId) reject('model-call-scope-denied');
+      if (!this.#policyMatches()) reject('model-budget-policy-conflict');
+      if (current.status !== 'reserved') return;
+      const now = this.#now();
+      if (current.deadlineAt <= now) {
+        this.#storage.sql.exec("UPDATE model_calls SET status='not-dispatched',reconciliation='released',accounted_tokens=0,updated_at=?,finished_at=?,release_id=?,release_json=?,release_digest=? WHERE call_key=?", now, now, expiryProof.confirmationId, canonical(expiryProof), expiryDigest, key);
+        return;
+      }
+      const ordinal = Number(this.#rows('SELECT count(*) AS n FROM model_calls WHERE turn_key=? AND dispatched_at IS NOT NULL', current.turnKey)[0]?.n ?? 0) + 1;
+      this.#storage.sql.exec("UPDATE model_calls SET status='dispatched',updated_at=?,dispatched_at=?,dispatch_ordinal=? WHERE call_key=?", now, now, ordinal, key);
+      granted = true;
+    });
+    await this.#storage.sync();
+    const final = this.#storage.transactionSync(() => {
+      const row = this.#get(key);
+      if (!row) reject('model-call-not-found');
+      const current = this.#record(row), now = this.#now();
+      if (granted && current.status === 'dispatched' && current.deadlineAt <= now) {
+        this.#storage.sql.exec("UPDATE model_calls SET status='unknown',reconciliation='pending',updated_at=?,unknown_at=? WHERE call_key=?", now, now, key);
+        granted = false;
+        return this.#record(this.#get(key)!);
+      }
+      return current;
+    });
+    await this.#storage.sync();
+    return { authorized: granted && final.status === 'dispatched', observeOnly: !granted && (final.status === 'dispatched' || final.status === 'unknown'), record: structuredClone(final) };
+  }
+
+  async markUnknown(value: unknown): Promise<ModelCallRecord> {
+    await this.#ready;
+    const { key } = await this.#referenced(value);
+    const result = this.#storage.transactionSync(() => {
+      const current = this.#record(this.#get(key)!);
+      if (current.status === 'reserved') reject('model-call-not-dispatched');
+      if (current.status === 'dispatched') {
+        const now = this.#now();
+        this.#storage.sql.exec("UPDATE model_calls SET status='unknown',reconciliation='pending',updated_at=?,unknown_at=? WHERE call_key=?", now, now, key);
+      }
+      return this.#record(this.#get(key)!);
+    });
+    await this.#storage.sync();
+    return structuredClone(result);
+  }
+
+  async finish(referenceValue: unknown, terminalValue: unknown): Promise<ModelCallRecord> {
+    await this.#ready;
+    const { key } = await this.#referenced(referenceValue);
+    const current = this.#record(this.#get(key)!);
+    if (!current.dispatchedAt || current.status === 'reserved' || current.status === 'not-dispatched') reject('model-call-not-dispatched');
+    const terminal = normalizedTerminal(terminalValue, this.#request(this.#get(key)!), current.dispatchedAt, this.#now());
+    const terminalDigest = await turnDigest(terminal);
+    const result = this.#storage.transactionSync(() => {
+      const latest = this.#record(this.#get(key)!);
+      if (TERMINAL.has(latest.status)) {
+        if (latest.status === 'not-dispatched' || this.#get(key)!.terminal_digest !== terminalDigest) reject('model-terminal-conflict');
+        return latest;
+      }
+      if (latest.status === 'reserved') reject('model-call-not-dispatched');
+      if (latest.unknownAt !== null && terminal.usage.observedAt < latest.unknownAt) reject('model-terminal-before-unknown');
+      const accountedTokens = terminal.usage.kind === 'verified' ? terminal.usage.inputTokens + terminal.usage.outputTokens : latest.reservationTokens;
+      const reconciliation = terminal.usage.kind === 'verified' ? 'recorded' : 'pending';
+      const now = this.#now();
+      this.#storage.sql.exec('UPDATE model_calls SET status=?,reconciliation=?,accounted_tokens=?,updated_at=?,finished_at=?,terminal_json=?,terminal_digest=? WHERE call_key=?', terminal.outcome, reconciliation, accountedTokens, now, now, canonical(terminal), terminalDigest, key);
+      return this.#record(this.#get(key)!);
+    });
+    await this.#storage.sync();
+    return structuredClone(result);
+  }
+
+  async releaseUndispatched(referenceValue: unknown, proofValue: unknown): Promise<ModelCallRecord> {
+    const proof = normalizedRelease(proofValue);
+    await this.#ready;
+    const { key } = await this.#referenced(referenceValue);
+    const proofDigest = await turnDigest(proof);
+    const result = this.#storage.transactionSync(() => {
+      const current = this.#record(this.#get(key)!), now = this.#now();
+      if (proof.observedAt < current.acceptedAt || proof.observedAt > now) reject('invalid-model-release-time');
+      if (current.status === 'not-dispatched') {
+        if (this.#get(key)!.release_digest !== proofDigest) reject('model-release-conflict');
+        return current;
+      }
+      if (current.status !== 'reserved') reject('model-call-may-have-dispatched');
+      if (this.#rows('SELECT call_key FROM model_calls WHERE release_id=?', proof.confirmationId).length) reject('model-release-proof-reused');
+      this.#storage.sql.exec("UPDATE model_calls SET status='not-dispatched',reconciliation='released',accounted_tokens=0,updated_at=?,finished_at=?,release_id=?,release_json=?,release_digest=? WHERE call_key=?", now, now, proof.confirmationId, canonical(proof), proofDigest, key);
+      return this.#record(this.#get(key)!);
+    });
+    await this.#storage.sync();
+    return structuredClone(result);
+  }
+
+  async snapshot(identityValue: unknown): Promise<ModelBudgetSnapshot> {
+    const identity = turnRuntimeIdentity(identityValue);
+    this.#scope(identity);
+    const key = await turnKey(identity);
+    await this.#ready;
+    const records = await Promise.all(this.#rows('SELECT * FROM model_calls WHERE turn_key=? ORDER BY accepted_at,call_key', key).map(row => this.#verified(row)));
+    const accountedTokens = records.reduce((sum, row) => sum + row.accountedTokens, 0);
+    if (!Number.isSafeInteger(accountedTokens) || accountedTokens > this.#policy.maxReservedTokensPerTurn) reject('model-budget-ledger-inconsistent');
+    return structuredClone({
+      tenantId: this.#policy.tenantId,
+      policyVersion: this.#meta().policy_version as string,
+      configuredPolicyMatches: this.#policyMatches(),
+      turnKey: key,
+      maxReservationAttemptsPerTurn: this.#policy.maxReservationAttemptsPerTurn,
+      maxDispatchedCallsPerTurn: this.#policy.maxDispatchedCallsPerTurn,
+      maxReservedTokensPerTurn: this.#policy.maxReservedTokensPerTurn,
+      attempts: records.length,
+      dispatchedCalls: records.filter(row => row.dispatchedAt !== null).length,
+      accountedTokens,
+      active: records.filter(row => ACTIVE.has(row.status)).length,
+      pending: records.filter(row => row.reconciliation === 'pending').length,
+      records,
+    });
+  }
+}
+
+export function modelCallReference(record: ModelCallRecord): ModelCallReference {
+  return { identity: structuredClone(record.identity), callId: record.callId, requestId: record.requestId, digest: record.digest, reservationId: record.reservationId };
+}
+export function modelBudgetTenantName(tenantId: string): string { return `tenant-model-budget:${identifier(tenantId)}`; }

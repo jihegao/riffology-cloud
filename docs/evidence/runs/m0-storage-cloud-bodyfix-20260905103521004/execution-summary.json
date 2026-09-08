@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-05T10:40:54.812Z",
+  "deploymentVerified": true,
+  "versionId": "e0d311aa-ab18-4b55-9fd8-0c188376041b",
+  "deploymentId": "c45f1cd4-e5d9-4018-8879-4093d48a3a1f",
+  "bundleSha256": "787a8590badf3f3881066ebaa55e63857bbd1eee589fe17ae5445139d76c42a4",
+  "scopedSourceSha256": "253cca7bc58e222467fc83d5a2c586956e36000a7e9bd8faa8b32027afc9b098",
+  "probeRunId": "storage-cloud-20260905103710361",
+  "primitiveChecksPassed": true,
+  "gateDecision": "needs-review",
+  "gateChanged": false,
+  "processExitCode": 0,
+  "timedOut": false,
+  "requests": 21,
+  "receivedBytes": 74848,
+  "startedAt": "2026-09-05T10:37:10.361Z",
+  "finishedAt": "2026-09-05T10:37:42.030Z",
+  "sourceStable": true,
+  "upload": {
+    "putInvoked": true,
+    "declaredBytes": 262144,
+    "consumedBytes": 65536,
+    "putRejected": true,
+    "objectAbsent": true
+  },
+  "crashes": {
+    "precommit": {
+      "httpStatus": 500,
+      "oldNonce": "1972f9aa-f323-43f5-ab92-73bccd66103e",
+      "newNonce": "9c1eb571-1fa8-4f3c-bc1f-7caec91b689c",
+      "previousReceiptPreserved": true,
+      "uncommittedCandidate": "7fd35a227ae7e8bc5962f7f440f93c96eb8dc43417d7ad54dbd25ad51c4e44e2"
+    },
+    "postcommit": {
+      "httpStatus": 500,
+      "oldNonce": "9c1eb571-1fa8-4f3c-bc1f-7caec91b689c",
+      "newNonce": "7dd2f725-1dd8-4890-bc1d-0bfdbb4f26a3",
+      "committedSequence": 2,
+      "committedRevision": "78d8d728eee03377adef57affb367011cd7f925b2ff11718da3817b530fbcef3"
+    }
+  },
+  "events": {
+    "persistedSequences": [
+      1,
+      2
+    ],
+    "consumer": {
+      "appliedSequences": [
+        1,
+        2
+      ],
+      "duplicateDeliveriesIgnored": 1,
+      "transportExactlyOnceClaimed": false
+    },
+    "duplicateFaultCommand": {
+      "rejected": true,
+      "instanceUnchanged": true,
+      "receiptUnchanged": true,
+      "eventCountUnchanged": true
+    },
+    "streamDisconnections": [
+      {
+        "ordinal": 4,
+        "cursor": 0,
+        "receivedSequences": [
+          1
+        ],
+        "readerCancellationAcknowledged": true,
+        "requestAborted": true,
+        "streamHadNotEnded": true
+      },
+      {
+        "ordinal": 11,
+        "cursor": 1,
+        "receivedSequences": [
+          2
+        ],
+        "readerCancellationAcknowledged": true,
+        "requestAborted": true,
+        "streamHadNotEnded": true
+      },
+      {
+        "ordinal": 12,
+        "cursor": 1,
+        "receivedSequences": [
+          2
+        ],
+        "readerCancellationAcknowledged": true,
+        "requestAborted": true,
+        "streamHadNotEnded": true
+      },
+      {
+        "ordinal": 13,
+        "cursor": 2,
+        "receivedSequences": [],
+        "readerCancellationAcknowledged": true,
+        "requestAborted": true,
+        "streamHadNotEnded": true
+      }
+    ]
+  },
+  "gc": {
+    "graceMs": 3000,
+    "deletedObjects": 3,
+    "deletedBytes": 400,
+    "retainedObjects": 5,
+    "retainedBytes": 730,
+    "restoredCommittedRevisions": [
+      "cee164591ddd36bd8317522849fca895a229b664ad43d0a37bdf4e8a28ad2226",
+      "78d8d728eee03377adef57affb367011cd7f925b2ff11718da3817b530fbcef3"
+    ],
+    "secondSweepDeletedNow": []
+  },
+  "costScope": {
+    "authorizedCumulativeBudgetUsd": 5,
+    "observedBillingCostUsd": null,
+    "runnerHttpRequestsAcrossBothAttempts": 29,
+    "newContainers": 0,
+    "llmCalls": 0
+  },
+  "priorFailure": {
+    "directory": "m0-storage-cloud-deploy-20260905102546347",
+    "runId": "storage-cloud-20260905103046065",
+    "initHttpStatus": 404,
+    "confirmedState": null,
+    "confirmedCurrent": null,
+    "confirmedEvents": [],
+    "confirmedObjects": [],
+    "mutationNotStarted": true,
+    "fix": "Bounded actual empty-body validation only; upload/crash/GC mechanisms unchanged."
+  },
+  "residue": {
+    "prefix": "m0-storage-faults/5a8545cf811b0c771fbd3d6bb3770c9695d734b33fb867e56fd5b42fff4c4f7c/",
+    "committedObjectsRetained": 5,
+    "doEvidenceRetained": true,
+    "existingWorkerUsesVerifiedNewVersion": true
+  },
+  "limits": [
+    "synthetic checkpoint entries and trusted session",
+    "controlled DO instance abort; not regional storage failure",
+    "G0 primitives only; no production Turn, concurrent GC or product browser acceptance",
+    "streaming single-put failure must be observed; no automatic multipart substitution"
+  ],
+  "sanitizedEvidenceScan": {
+    "files": 19,
+    "secretMatches": 0
+  },
+  "evidenceFiles": [
+    {
+      "path": "storage-cloud.json",
+      "sha256": "140a11d460e500350564712075b08a1e3d1e22efe9604095c91c29ceb394795a"
+    },
+    {
+      "path": "cloud-runner.json",
+      "sha256": "e302011ecb30d925a110125727e899d46e9dc452f989f92e9b2212aa50021f67"
+    },
+    {
+      "path": "deployment-verified.json",
+      "sha256": "6f27a02e2976aa6c8011e93a3004f252ed4df4a8b3b3f30b2a616b422e79e491"
+    },
+    {
+      "path": "post-run-deployment-api.json",
+      "sha256": "0736dfbe795f719a51f05b865d9ff9dc3751cf3b8f4bbeda06e033ec7f786910"
+    }
+  ]
+}

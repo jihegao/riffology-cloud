@@ -1,0 +1,138 @@
+[
+  {
+    "config": "m0",
+    "action": "types",
+    "command": [
+      "node_modules/.bin/wrangler",
+      "types",
+      ".local/m0-dockerhub-preflight/m0.d.ts",
+      "--config",
+      "infra/wrangler.m0.jsonc",
+      "--env",
+      "staging",
+      "--include-runtime",
+      "false"
+    ],
+    "startedAt": "2026-09-06T00:57:56.427320+00:00",
+    "exitCode": 0
+  },
+  {
+    "config": "m0",
+    "action": "dry-run",
+    "command": [
+      "node_modules/.bin/wrangler",
+      "deploy",
+      "--config",
+      "infra/wrangler.m0.jsonc",
+      "--env",
+      "staging",
+      "--dry-run",
+      "--outdir",
+      ".local/m0-dockerhub-preflight/m0"
+    ],
+    "startedAt": "2026-09-06T00:57:59.810570+00:00",
+    "exitCode": 0
+  },
+  {
+    "config": "m0-files",
+    "action": "types",
+    "command": [
+      "node_modules/.bin/wrangler",
+      "types",
+      ".local/m0-dockerhub-preflight/m0-files.d.ts",
+      "--config",
+      "infra/wrangler.m0-files.jsonc",
+      "--env",
+      "staging",
+      "--include-runtime",
+      "false"
+    ],
+    "startedAt": "2026-09-06T00:58:05.350872+00:00",
+    "exitCode": 0
+  },
+  {
+    "config": "m0-files",
+    "action": "dry-run",
+    "command": [
+      "node_modules/.bin/wrangler",
+      "deploy",
+      "--config",
+      "infra/wrangler.m0-files.jsonc",
+      "--env",
+      "staging",
+      "--dry-run",
+      "--outdir",
+      ".local/m0-dockerhub-preflight/m0-files"
+    ],
+    "startedAt": "2026-09-06T00:58:06.310534+00:00",
+    "exitCode": 0
+  },
+  {
+    "config": "m0-preview",
+    "action": "types",
+    "command": [
+      "node_modules/.bin/wrangler",
+      "types",
+      ".local/m0-dockerhub-preflight/m0-preview.d.ts",
+      "--config",
+      "infra/wrangler.m0-preview.jsonc",
+      "--env",
+      "staging",
+      "--include-runtime",
+      "false"
+    ],
+    "startedAt": "2026-09-06T00:58:07.367612+00:00",
+    "exitCode": 0
+  },
+  {
+    "config": "m0-preview",
+    "action": "dry-run",
+    "command": [
+      "node_modules/.bin/wrangler",
+      "deploy",
+      "--config",
+      "infra/wrangler.m0-preview.jsonc",
+      "--env",
+      "staging",
+      "--dry-run",
+      "--outdir",
+      ".local/m0-dockerhub-preflight/m0-preview"
+    ],
+    "startedAt": "2026-09-06T00:58:08.252618+00:00",
+    "exitCode": 0
+  },
+  {
+    "config": "m0-recovery",
+    "action": "types",
+    "command": [
+      "node_modules/.bin/wrangler",
+      "types",
+      ".local/m0-dockerhub-preflight/m0-recovery.d.ts",
+      "--config",
+      "infra/wrangler.m0-recovery.jsonc",
+      "--env",
+      "staging",
+      "--include-runtime",
+      "false"
+    ],
+    "startedAt": "2026-09-06T00:58:09.182572+00:00",
+    "exitCode": 0
+  },
+  {
+    "config": "m0-recovery",
+    "action": "dry-run",
+    "command": [
+      "node_modules/.bin/wrangler",
+      "deploy",
+      "--config",
+      "infra/wrangler.m0-recovery.jsonc",
+      "--env",
+      "staging",
+      "--dry-run",
+      "--outdir",
+      ".local/m0-dockerhub-preflight/m0-recovery"
+    ],
+    "startedAt": "2026-09-06T00:58:10.078839+00:00",
+    "exitCode": 0
+  }
+]

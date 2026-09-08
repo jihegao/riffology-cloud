@@ -1,0 +1,9 @@
+{
+  "observedAt": "2026-09-05T06:39:24.058Z",
+  "manifest": "docs/evidence/runs/m0-build-20260905063357356/candidate.json",
+  "verified": true,
+  "canPromote": false,
+  "gitHead": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+  "gitDirtyNow": true,
+  "buildProvenance": "unverified"
+}

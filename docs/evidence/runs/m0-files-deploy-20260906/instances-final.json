@@ -1,0 +1,17 @@
+{
+    "instances": [
+        {
+            "id": "18fbcd23f501056acbe3445fd7d5c30c7e6d13bcc739e19ae17975a31f9568ab",
+            "name": "m0-files-7c849ca453c9752320dce47d6630ad123baec30fe4f764f3",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T03:17:15Z"
+        }
+    ],
+    "result_info": {
+        "per_page": 30,
+        "page_token": null,
+        "next_page_token": null
+    }
+}

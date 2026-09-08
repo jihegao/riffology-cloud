@@ -1,0 +1,94 @@
+{
+  "observedAt": "2026-09-06T06:38:48.219Z",
+  "sources": {
+    "files": [
+      {
+        "path": ".dockerignore",
+        "sha256": "0bcd7d5c53d25898b250020a2fd04a7033b7034c730f6dfe9465cfd8d09a20f9"
+      },
+      {
+        "path": "infra/m0-trusted.Dockerfile",
+        "sha256": "59d24628b66c5db4d7d6464c9d164584c58e29c988d09b95d244921f6ae50289"
+      },
+      {
+        "path": "infra/wrangler.m0-pi-host.jsonc",
+        "sha256": "204fc37c98a79040a71983f7fa6b0cd4a0e74197905bbf523fc712517fbe15fe"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "ea26a2b615e74e7a8bf17a52796f53a65c94aa66108c2b8d93f79196bf5d8fed"
+      },
+      {
+        "path": "scripts/m0/resource-loading-cloud.mjs",
+        "sha256": "01595ff91ccf8c91f2bacc6dfb6c6fd7571a41877e7623bf8d9d37896132098b"
+      },
+      {
+        "path": "scripts/m0/source-inventory.mjs",
+        "sha256": "1afeab93162678265a0372d57b2404902192efdc17fbe0a063e62f5a63460c6e"
+      },
+      {
+        "path": "scripts/m0/storage-cloud.mjs",
+        "sha256": "8ca22c87bfa0297aaeb043ae0fcad227ad88e0a081b8421c5c44f3b32926d986"
+      },
+      {
+        "path": "services/runtime/controlled-pi.mjs",
+        "sha256": "3cf68643ced46c815b3fd6d5c8856882e57b0aae36ef5b148714c0bc27e5fe6a"
+      },
+      {
+        "path": "services/runtime/resource-loading-probe.mjs",
+        "sha256": "f76f307bf4c9d0e989e4876813f37f5d4855391631689b94b7f161de2c6d146b"
+      },
+      {
+        "path": "spikes/m0-cloud/auth.ts",
+        "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+      },
+      {
+        "path": "spikes/m0-model-proxy/policy.ts",
+        "sha256": "2ff792916654a55ce8cb47a07ef3a665ca554f0812b9965ebf9e4fd5a388da5e"
+      },
+      {
+        "path": "spikes/m0-pi-host/env.d.ts",
+        "sha256": "6c0dceb079f96c4edf6bd2a93a3b3ae94c270529b7e4a23e64e98c4a65e88dca"
+      },
+      {
+        "path": "spikes/m0-pi-host/index.ts",
+        "sha256": "c457a747a853af5a86d508f144016ed0a9045516e54b855a9d1ed12c7a7b1b2f"
+      },
+      {
+        "path": "spikes/m0-pi-host/modules.d.ts",
+        "sha256": "b2cd088ec7291de439caa79af72e03035d3eac5287e5b033d5c87efda59fcf44"
+      },
+      {
+        "path": "spikes/m0-pi-host/worker.ts",
+        "sha256": "a36c2145fa1c38d7750a405c9db9de94687b73e13bde8e60b5755c72d6771cb8"
+      },
+      {
+        "path": "spikes/m0-recovery/bounded-effect.ts",
+        "sha256": "0c8b8e66bfbd435d8c95200c7eb5446fd64ae3ca58edf301d221b40be90915e3"
+      },
+      {
+        "path": "tests/m0/pi-host.test.ts",
+        "sha256": "d98e9f34873336a8bb6f7c52f40276a3202d1605b31919e04c2359149a34151f"
+      },
+      {
+        "path": "tests/m0/pi/resource-loading-probe.test.mjs",
+        "sha256": "d95a54cf004f6f9e45975be94e286027bfad5ee389ede37993e076f28acc38e1"
+      },
+      {
+        "path": "tests/m0/resource-loading-cloud.test.mjs",
+        "sha256": "f0c46fe0ce8f759c81f9516f3c977dd48999af28f1c57e4140dc137daddd8a77"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+      }
+    ],
+    "sha256": "96ea60703726c3eef146227a62c400277e85d533143a84938b89ea00a686dc44"
+  },
+  "bundleSha256": "eb3a8f791810661affa65e2f5d986a793e3a0a385ca9f6ff9f711a3ada0f8e6c",
+  "exitCode": 0
+}

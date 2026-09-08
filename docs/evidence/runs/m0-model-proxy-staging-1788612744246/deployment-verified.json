@@ -1,0 +1,81 @@
+{
+  "verified": true,
+  "mode": "fixture-only",
+  "origin": "https://riffology-m0-model-proxy-staging.jihe-gao.workers.dev",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "scriptName": "riffology-m0-model-proxy-staging",
+  "versionId": "06e097f1-cb6d-4349-8cf5-af4472ba0079",
+  "bundleSha256": "5892f2b2aaf2795abd66b0d4472fcee9369212ef82cbeae7e5e66aac97510d10",
+  "verifiedAtMs": 1788613113455,
+  "sourceFiles": [
+    {
+      "path": "infra/wrangler.m0-model-proxy.jsonc",
+      "sha256": "f5666d6084497adc33fc0c473324fe2e5a3446da321e6ccb0a2c19bd350ff841"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+    },
+    {
+      "path": "package.json",
+      "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+    },
+    {
+      "path": "spikes/m0-cloud/auth.ts",
+      "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+    },
+    {
+      "path": "spikes/m0-model-proxy/authority.ts",
+      "sha256": "f40c99799093823ab305086f9f828027a813b4c79a740c6d8c27b20bbc1eef96"
+    },
+    {
+      "path": "spikes/m0-model-proxy/capability.ts",
+      "sha256": "c853943e0ac94cb7a7e2b093b7b948444f7db69bdcf2434fc3f6d44743876748"
+    },
+    {
+      "path": "spikes/m0-model-proxy/cloud-env.d.ts",
+      "sha256": "61202c19410810bea9abe89f84e9082276d7218900c2e37ff410eb834212e657"
+    },
+    {
+      "path": "spikes/m0-model-proxy/cloud.ts",
+      "sha256": "4a6616372ca6edf5c2ceba895a46128dbc3c350459978b9654035434eadfb821"
+    },
+    {
+      "path": "spikes/m0-model-proxy/durable-store.ts",
+      "sha256": "cac26996d95df9ec386ad8e17304286603088d212da77873b5ef9cfcdfec2557"
+    },
+    {
+      "path": "spikes/m0-model-proxy/gateway-auth.ts",
+      "sha256": "7951a009e5f315bc81ee2eda880d49af357a498df2ae7b996dfec8eff20d6303"
+    },
+    {
+      "path": "spikes/m0-model-proxy/index.ts",
+      "sha256": "584be0a96783b7075cd99b1237d0b458610a10dce7f67df221f198ed5d61e83f"
+    },
+    {
+      "path": "spikes/m0-model-proxy/policy.ts",
+      "sha256": "3f7e8011bc7dafac7f58e5ff0748bb0b32196a99fd1a315f4309dfd9cbc92ce3"
+    },
+    {
+      "path": "spikes/m0-model-proxy/stream.ts",
+      "sha256": "47950527358764fd77624d12aa745e973001738167584adf5c0526cb87adf59b"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+    }
+  ],
+  "checks": {
+    "allApi200": true,
+    "account": true,
+    "version": true,
+    "sole100Version": true,
+    "compat": true,
+    "cpu": true,
+    "onlyExpectedBindings": true,
+    "fixedVars": true,
+    "routing": true,
+    "build": true
+  },
+  "cloudGatePassed": false
+}

@@ -1,0 +1,79 @@
+{
+  "startedAt": "2026-09-05T10:08:30.711Z",
+  "finishedAt": "2026-09-05T10:08:36.556Z",
+  "command": [
+    "wrangler",
+    "deploy",
+    "--config",
+    "/Users/gaojihe/apps/riffology-cloud/infra/wrangler.m0.jsonc",
+    "--env",
+    "staging",
+    "--secrets-file",
+    "/Users/gaojihe/apps/riffology-cloud/.local/cloud-staging/boundary.secrets.json",
+    "--var",
+    "M0_EXECUTION_ENVIRONMENT:cloudflare-vm",
+    "--outdir",
+    "/Users/gaojihe/apps/riffology-cloud/.local/m0-boundary-staging-20260905100830706",
+    "--dry-run"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "version": null,
+  "urls": [],
+  "sourceStable": true,
+  "sourceInputs": [
+    {
+      "path": "spikes/m0-cloud/index.ts",
+      "sha256": "b5238242c6d12765b202c41a7f627c891c174a748d7ce2abc55041b8cf77bd2e"
+    },
+    {
+      "path": "spikes/m0-cloud/auth.ts",
+      "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+    },
+    {
+      "path": "spikes/m0-cloud/worker.ts",
+      "sha256": "ea17468402298172aed804c7a4a470f511d4e73a53d685dadd42c214efa74b36"
+    },
+    {
+      "path": "spikes/m0-cloud/runtime.ts",
+      "sha256": "7de4f33b4874ae166061bb82e7c7dae1a42906f674b00e9a85ece696630b6173"
+    },
+    {
+      "path": "infra/wrangler.m0.jsonc",
+      "sha256": "05cc50aa14f617b4b4cda8adc043d370c4e0aa29d0f1096041ccdaddd2f8b6c2"
+    },
+    {
+      "path": "infra/m0-trusted.Dockerfile",
+      "sha256": "6dbcfa128b0bcc5a3ca5b6ddde6c45d13ca2dc45ec7124b4dba72e461321663c"
+    },
+    {
+      "path": "infra/m0-project.Dockerfile",
+      "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+    },
+    {
+      "path": ".dockerignore",
+      "sha256": "46c6ff40eef5d467e276eb0c86c512e25a4f8f4913be33dc094449365aa9f6ab"
+    },
+    {
+      "path": "package.json",
+      "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+    },
+    {
+      "path": "services/runtime/controlled-pi.mjs",
+      "sha256": "8effdc9f441480dc56f8fda2cf59c31d010f0e6add3fcd0e2544b0e990dfc523"
+    },
+    {
+      "path": "services/runtime/pi-probe-evidence.mjs",
+      "sha256": "bb8395477543d6a52c9a4faa830b0dab5fcbecf487f3d2abf571e514041c96cf"
+    },
+    {
+      "path": "scripts/m0/pi-live-probe.mjs",
+      "sha256": "0b0a268c177f7a1c929f89c8bf094275d32077400a672ff12b386fd7217594d3"
+    }
+  ],
+  "gateAccepted": false
+}

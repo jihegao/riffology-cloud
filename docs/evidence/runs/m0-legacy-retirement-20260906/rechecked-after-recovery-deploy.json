@@ -1,0 +1,50 @@
+{
+  "observedAt": "2026-09-06T06:04:57.373Z",
+  "workers": [
+    "2048-challenge-platform",
+    "cadence-ai-riff-studio",
+    "reflexive-poker-demo",
+    "riffology-m0-files-staging",
+    "riffology-m0-model-proxy-staging",
+    "riffology-m0-preview-staging",
+    "riffology-m0-probe-staging",
+    "riffology-m0-recovery-staging",
+    "riffology-m0-storage-staging",
+    "riffology-m0-tenancy-staging"
+  ],
+  "routes": [
+    {
+      "id": "5765090d6e6448ec8dbc1573e69e3d86",
+      "pattern": "*.preview.riff-demo.gaojihe.cn/*",
+      "script": "riffology-m0-preview-staging",
+      "request_limit_fail_open": false
+    }
+  ],
+  "dns": [
+    {
+      "name": "*.preview.riff-demo.gaojihe.cn",
+      "type": "AAAA",
+      "content": "100::",
+      "proxied": true
+    },
+    {
+      "name": "preview.riff-demo.gaojihe.cn",
+      "type": "AAAA",
+      "content": "100::",
+      "proxied": true
+    },
+    {
+      "name": "riff-demo.gaojihe.cn",
+      "type": "AAAA",
+      "content": "100::",
+      "proxied": true
+    }
+  ],
+  "dnsResultInfo": {
+    "page": 1,
+    "per_page": 100,
+    "count": 3,
+    "total_count": 3,
+    "total_pages": 1
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "observedAt": "2026-09-05T07:12:21.713Z",
+  "scope": "Only this M0 recovery run Wrangler development proxy helpers; probe Sandbox cleanup is separately recorded.",
+  "records": [
+    {
+      "name": "workerd-riffology-m0-recovery-staging-RecoveryTrustedSandbox-d87520283b7d1af4f303b8852f242010019046929e3788346e2f30dc8261649d-proxy",
+      "image": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "runningAfter": false
+    },
+    {
+      "name": "workerd-riffology-m0-recovery-staging-RecoveryTrustedSandbox-75a7a8d6059fbf76a5715754becc4f6f070c4bd28622983e01af0d82f170c9e9-proxy",
+      "image": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "runningAfter": false
+    },
+    {
+      "name": "workerd-riffology-m0-recovery-staging-RecoveryTrustedSandbox-329458a2caa8116f7ba9b63878fd13f723dd6384a130d070b532d52c3e606aac-proxy",
+      "image": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "runningAfter": false
+    },
+    {
+      "name": "workerd-riffology-m0-recovery-staging-RecoveryTrustedSandbox-b0dd45b335dfbf92d8b90040cbc2550d0aa856eb674002f82f1c36f2ef6104d3-proxy",
+      "image": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "runningAfter": false
+    },
+    {
+      "name": "workerd-riffology-m0-recovery-staging-RecoveryTrustedSandbox-8349e50b34d503bc6df026f5d662bff143fdcaf3f5ab064a04c85634b24e7a9f-proxy",
+      "image": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "runningAfter": false
+    }
+  ]
+}

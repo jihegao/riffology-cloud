@@ -1,0 +1,27 @@
+{
+  "observedAt": "2026-09-05T06:37:51.056Z",
+  "environment": "local",
+  "deployed": false,
+  "bundles": [
+    {
+      "name": "boundary",
+      "path": ".local/m0-build-20260905063357356/boundary/index.js",
+      "sha256": "1f525c98b67b2277f77125203b46ddab82cd7de4b0b5c9aeb748d22ccba5ce47"
+    },
+    {
+      "name": "storage",
+      "path": ".local/m0-build-20260905063357356/storage/index.js",
+      "sha256": "f726ed146b1ebaae257bb88e673746f1011506eb3b93d79e88a19b2f1fc23337"
+    },
+    {
+      "name": "files",
+      "path": ".local/m0-build-20260905063357356/files/index.js",
+      "sha256": "f08a839d6fe6ac5fe71da74580290465df36f9d14ec7650c9483dc4572300564"
+    },
+    {
+      "name": "preview",
+      "path": ".local/m0-build-20260905063357356/preview/index.js",
+      "sha256": "3558364c055615d848c84f8325d3df55f198fcfb528afe618567e212b9ba953e"
+    }
+  ]
+}

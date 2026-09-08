@@ -1,0 +1,37 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "riffology-m0-preview",
+  "main": "../spikes/m0-preview/index.ts",
+  "compatibility_date": "2026-09-05",
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_do_not_populate_process_env"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": false },
+  "env": {
+    "staging": {
+      "name": "riffology-m0-preview-staging",
+      "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+      "workers_dev": true,
+      "routes": [
+        { "pattern": "riff-demo.gaojihe.cn", "custom_domain": true },
+        { "pattern": "preview.riff-demo.gaojihe.cn", "custom_domain": true },
+        { "pattern": "*.preview.riff-demo.gaojihe.cn/*", "zone_id": "c97b548800561fada1a912c234696db1" }
+      ],
+      "vars": { "ENVIRONMENT": "staging", "PROTOCOL_VERSION": "m0-v1", "M0_CONTROL_ORIGIN": "https://riff-demo.gaojihe.cn", "M0_PREVIEW_ORIGIN": "https://preview.riff-demo.gaojihe.cn" },
+      "secrets": { "required": ["M0_PROBE_TOKEN", "M0_PREVIEW_SIGNING_KEY"] },
+      "containers": [
+        { "name": "riffology-m0-preview-staging", "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e", "instance_type": "basic", "max_instances": 2 }
+      ],
+      "exports": {
+        "PreviewSandbox": { "type": "durable-object", "storage": "sqlite", "container": "riffology-m0-preview-staging" },
+        "M0PreviewCoordinator": { "type": "durable-object", "storage": "sqlite" }
+      },
+      "durable_objects": {
+        "bindings": [
+          { "name": "PreviewSandbox", "class_name": "PreviewSandbox" },
+          { "name": "PREVIEW", "class_name": "M0PreviewCoordinator" }
+        ]
+      }
+    }
+  }
+}

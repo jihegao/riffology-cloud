@@ -1,0 +1,49 @@
+{
+  "reviewedAt": "2026-09-05T15:43:36.255Z",
+  "reviewer": "primary-agent",
+  "independentReview": "m0_storage_gate_review: final source, receipts, process failure facts and checks reviewed; no blocking findings",
+  "acceptedLocalEvidence": true,
+  "cloudGatePassed": false,
+  "gateDecision": "not_evaluated",
+  "G0StagingPassed": 1,
+  "G0Total": 10,
+  "sourceSha256": "4b24ae17f65791b644d7e468da14fc9ce4d65717ee925e9de512174f0111d614",
+  "sourceFiles": 120,
+  "localChecks": {
+    "path": "../m0-local-20260905153633789/local-checks.json",
+    "sha256": "9c94bfd6415586a28367ee563fcb98dc1b5e8c61df1e0eb333e6b898c8b81d0d",
+    "passed": 192,
+    "skipped": 1,
+    "selfTestsPassed": 2
+  },
+  "probeSha256": "8ad5723058d8c2f92fe9aba2e0036e881d1d01faed7631669c242007f9721499",
+  "checkpointVerified": true,
+  "allWireHashesMatchDurableReceipts": true,
+  "cleanup": {
+    "wrapperTerminalExitCode": 143,
+    "wrapperTermination": "configured-300-second-lifetime",
+    "ownedPidsAbsent": [
+      13227,
+      13228,
+      22446,
+      22457,
+      22462
+    ],
+    "port8794Listening": false,
+    "temporaryDirectoriesRemaining": [],
+    "uiPid": 88606,
+    "uiPort": 4173
+  },
+  "workerdLog": {
+    "path": "workerd-redacted.log",
+    "sha256": "f8afd9bbc16dc93f48e0fd182328c0ddcc49f132608b695e78286a1bfc58c537",
+    "knownDiagnosticErrorsRetained": true
+  },
+  "limitations": [
+    "local-only fixture; no real model calls",
+    "synthetic identity and usage; no semantic memory proof",
+    "no VM security or cloud Pi acceptance",
+    "not included in previous frozen images",
+    "connection-loss-only cancellation remains unproven"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "observedAt": "2026-09-06T06:42:06.114Z",
+  "deployments": {
+    "deployments": [
+      {
+        "id": "77540da9-b5d9-4733-9134-8c5455f8da4a",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "author_email": "jihe.gao@gmail.com",
+        "annotations": {
+          "workers/message": "Automatic deployment on upload.",
+          "workers/triggered_by": "upload"
+        },
+        "versions": [
+          {
+            "version_id": "b30e9f9d-dc60-4ea3-985c-6c6291f20513",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-09-06T06:38:52.682023Z"
+      }
+    ]
+  },
+  "instances": {
+    "instances": [
+      {
+        "id": "a8edf99daa96f30cccae58b346f0989e4333029a4cd194d8ded2cd54381ea197",
+        "application_id": "a0321718-f17e-4ccf-974a-fd447dde5920",
+        "status": {
+          "state": "inactive",
+          "updated_at": "2026-09-06T06:40:56Z"
+        },
+        "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "name": "m0-ph-resource-loading-20260906-s"
+      }
+    ]
+  }
+}

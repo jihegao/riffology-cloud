@@ -1,0 +1,25 @@
+{
+  "observedAt": "2026-09-05T06:37:51.052Z",
+  "environment": "local-docker",
+  "deployed": false,
+  "images": [
+    {
+      "role": "trusted-pi",
+      "id": "sha256:2261756cea6c4432229982ed0c4280a94cf1ca01b9e088b2b8c540055e005597",
+      "tags": [
+        "riffology-m0-trusted-staging:worker"
+      ],
+      "architecture": "amd64"
+    },
+    {
+      "role": "project",
+      "id": "sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+      "tags": [
+        "cloudflare-dev/fileprojectsandbox:7a2bbc40",
+        "riffology-m0-preview-staging:worker",
+        "riffology-m0-project-staging:worker"
+      ],
+      "architecture": "amd64"
+    }
+  ]
+}

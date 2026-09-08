@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-09-06T05:36:27.527Z",
+  "authenticated": false,
+  "vmCalls": 0,
+  "results": [
+    {
+      "mode": "direct",
+      "startedAt": "2026-09-06T05:36:12.121Z",
+      "passed": false,
+      "errorName": "TimeoutError",
+      "networkError": "navigation-or-launch-failed",
+      "finishedAt": "2026-09-06T05:36:22.682Z"
+    },
+    {
+      "mode": "configured-loopback-proxy",
+      "startedAt": "2026-09-06T05:36:22.682Z",
+      "status": 401,
+      "finalUrl": "https://riffology-m0-recovery-staging.jihe-gao.workers.dev/probe/rc-network-check/report",
+      "passed": true,
+      "finishedAt": "2026-09-06T05:36:27.527Z"
+    }
+  ]
+}

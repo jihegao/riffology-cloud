@@ -1,0 +1,57 @@
+{
+  "observedAt": "2026-09-05T10:49:55.771746+00:00",
+  "scope": "Local checks and current documentation; cloud T06 has its own frozen deployment review",
+  "localChecks": {
+    "passed": true,
+    "testsPassed": 120,
+    "testsSkipped": 1,
+    "evidenceSelfTestsPassed": 2,
+    "sourceStable": true
+  },
+  "documentation": {
+    "localLinksChecked": 147,
+    "missingLinks": 0,
+    "files": [
+      {
+        "path": "README.md",
+        "sha256": "1d6c0a6b664ff491cc9848d9d767487258360d2710e635ab0d203a4a5c36af33"
+      },
+      {
+        "path": "docs/development-status.md",
+        "sha256": "2c0944eab7083c99e65e0b098a381aa022ec7927f3135318a0803b6cfe5142d3"
+      },
+      {
+        "path": "docs/m0-staging-resources.md",
+        "sha256": "cee82bff0252a724a8b4fcfd4bc80d7cd849c6aa0973e9ee26f34addaca6bf7d"
+      },
+      {
+        "path": "docs/m0-remaining-work.md",
+        "sha256": "cdf22d1a6a036c9a9c9ded3f2f284703297bc8105881648c401896402d69b46d"
+      },
+      {
+        "path": "docs/m0-local-runbook.md",
+        "sha256": "9206f5e130d5b8a1162fba21ecb20f6d12fe29328f0ecc74a0698df2949ffb0b"
+      },
+      {
+        "path": "docs/development-deployment-plan.md",
+        "sha256": "b2a2a16880845ffb29e6fd42b0ecd5b4b7421dea8430c1981ec02df16e4dffe7"
+      },
+      {
+        "path": "spikes/m0-preview/README.md",
+        "sha256": "bfb06bf37c2dde33d8df11d5fe4713b20e43da7ac2fda7e387aef6a5635fa600"
+      }
+    ]
+  },
+  "previewLocalBrowserRegression": "pending separate run, no claim from unit tests",
+  "g0": {
+    "stagingPassed": [
+      "G0-T06"
+    ],
+    "overallAccepted": false
+  },
+  "git": {
+    "base": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+    "uncommitted": true,
+    "remoteConfigured": false
+  }
+}

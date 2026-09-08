@@ -1,0 +1,88 @@
+{
+  "recordedAt": "2026-09-06T00:33:49.112903+00:00",
+  "source": "user confirmation plus read-only Cloudflare API and HTTPS checks in current turn",
+  "authorization": {
+    "dockerHubPublicScope": "docs/m0-pi-proxy-image.md",
+    "approved": true,
+    "testDomain": "riff-demo.gaojihe.cn",
+    "totalUsageBudgetUSD": 5,
+    "modelUsageBudgetUSD": 1
+  },
+  "dockerHub": {
+    "namespaceObservedInBrowserTab": "jihegao",
+    "cliLogin": "device authorization pending",
+    "pushed": false
+  },
+  "go": {
+    "subscriptionActive": true,
+    "remaining5hWeeklyMonthly": "each near 100 percent",
+    "source": "user-reported",
+    "useBalance": "unknown",
+    "newModelCalls": 0
+  },
+  "domain": {
+    "zoneId": "c97b548800561fada1a912c234696db1",
+    "zoneStatus": "active",
+    "dns": {
+      "id": "fec726a7b47cd68f367db51731435cd0",
+      "type": "CNAME",
+      "name": "riff-demo.gaojihe.cn",
+      "content": "1580dcb4-51a3-492a-9825-8b524f433117.cfargotunnel.com",
+      "proxied": true
+    },
+    "route": {
+      "id": "807e9f94a77b4021bd88bc735226590c",
+      "pattern": "riff-demo.gaojihe.cn/*",
+      "script": "riffology-demo"
+    },
+    "customDomainsAtExactHost": [],
+    "https": {
+      "status": 302,
+      "location": "https://riff-demo.gaojihe.cn/login",
+      "curlSslVerifyResult": 0
+    },
+    "certificatePacks": [
+      {
+        "type": "advanced",
+        "status": "active",
+        "hosts": [
+          "*.2048.gaojihe.cn",
+          "gaojihe.cn",
+          "2048.gaojihe.cn"
+        ]
+      },
+      {
+        "type": "advanced",
+        "status": "active",
+        "hosts": [
+          "gaojihe.cn",
+          "poker.gaojihe.cn",
+          "*.poker.gaojihe.cn"
+        ]
+      },
+      {
+        "type": "universal",
+        "status": "active",
+        "hosts": [
+          "gaojihe.cn",
+          "*.gaojihe.cn"
+        ]
+      }
+    ],
+    "advancedQuota": {
+      "allocated": 0,
+      "used": 2
+    },
+    "previewWildcardCovered": false,
+    "mutations": 0
+  },
+  "gateChanges": [],
+  "followUp": {
+    "recordedAt": "2026-09-06T00:36:31.338927+00:00",
+    "dockerLoginExitCode": 0,
+    "dockerLoginOutput": "Login Succeeded",
+    "goUseBalance": "off",
+    "goUseBalanceSource": "user-reported",
+    "credentialConfigMode": "0600"
+  }
+}

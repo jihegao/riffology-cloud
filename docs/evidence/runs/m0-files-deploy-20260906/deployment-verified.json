@@ -1,0 +1,21 @@
+{
+  "worker": "riffology-m0-files-staging",
+  "sourceSha256": "8d368e8965d9f37651cc1d32bf606906e9c79a51c295137b9c5a7e56bfd45810",
+  "bundleSha256": "30aad7810b5a1019e28c977989fd5a881bfd8e2d9836b197902016a3803d8fbc",
+  "configSha256": "b0849afa2f240aabdedeba26116f0c9bae061004cdcbce284505a41fb748c234",
+  "createdAt": "2026-09-06T03:14:33.841Z",
+  "localCheck": "m0-local-20260906031327004",
+  "version": "98cc1d73-0efe-4d6f-9e43-7616f841b8c3",
+  "deploymentId": "abc2d0a1-a53e-4896-8cb1-31774254217a",
+  "observedAt": "2026-09-06T03:16:52.451Z",
+  "application": {
+    "id": "a03c0d4b-d529-4d81-a2b6-bfb901222a18",
+    "name": "riffology-m0-files-project-staging",
+    "state": "provisioning",
+    "instances": 2,
+    "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+    "version": 1,
+    "updated_at": "2026-09-06T03:15:27.580999936Z",
+    "created_at": "2026-09-06T03:15:26.598000128Z"
+  }
+}

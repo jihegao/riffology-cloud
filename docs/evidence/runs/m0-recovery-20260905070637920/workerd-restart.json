@@ -1,0 +1,29 @@
+{
+  "observedAt": "2026-09-05T07:11:36.258Z",
+  "operation": "read-after-workerd-process-restart",
+  "environment": "local-workerd",
+  "records": [
+    {
+      "scenario": "disconnect",
+      "httpStatus": 200,
+      "stateReceiptsEventsIdentical": true,
+      "eventCount": 9,
+      "currentRevision": "ca1bbddf96bf146619ee3813310e37048b291b35c08cb7c83a1dc29c073e5ae3"
+    },
+    {
+      "scenario": "process",
+      "httpStatus": 200,
+      "stateReceiptsEventsIdentical": true,
+      "eventCount": 17,
+      "currentRevision": "9b134931107c8f1d5967adf62a50670ee515197638d8ccd0a0fb4f512feada41"
+    },
+    {
+      "scenario": "container",
+      "httpStatus": 200,
+      "stateReceiptsEventsIdentical": true,
+      "eventCount": 17,
+      "currentRevision": "0ea8f50609b103fd4d91e7bade76fb773898af23abc63677333fa20e580e1e01"
+    }
+  ],
+  "cloudGatePassed": false
+}

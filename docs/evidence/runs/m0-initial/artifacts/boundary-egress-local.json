@@ -1,0 +1,79 @@
+{
+  "environment": "local-docker-workerd",
+  "unauthenticatedStatus": 401,
+  "httpStatus": 200,
+  "report": {
+    "schema_version": 1,
+    "protocol": "m0-v1",
+    "run_id": "m0-egress-1788585283717",
+    "operation": "G0-T09",
+    "observed_at": "2026-09-05T05:14:45.158Z",
+    "status": "observations_collected",
+    "gate_decision": "not_evaluated",
+    "observations": {
+      "trusted_runtime_observations": {
+        "http_attempts": [
+          {
+            "destination": "http://m0-control.invalid/health",
+            "http_status": 200,
+            "transport_error": false
+          },
+          {
+            "destination": "http://m0-control.invalid/billing/credit",
+            "http_status": 403,
+            "transport_error": false
+          },
+          {
+            "destination": "https://example.com/",
+            "http_status": null,
+            "transport_error": true
+          }
+        ]
+      },
+      "untrusted_project_observations": {
+        "http_attempts": [
+          {
+            "destination": "http://m0-control.invalid/health",
+            "http_status": 520,
+            "transport_error": false
+          },
+          {
+            "destination": "http://m0-control.invalid/billing/credit",
+            "http_status": 520,
+            "transport_error": false
+          },
+          {
+            "destination": "https://example.com/",
+            "http_status": null,
+            "transport_error": true
+          },
+          {
+            "destination": "http://1.1.1.1/",
+            "http_status": 520,
+            "transport_error": false
+          }
+        ],
+        "public_raw_tcp_connected": true,
+        "dns_exfiltration_tested": false
+      },
+      "worker_policy": {
+        "trusted_allowlist": [
+          "m0-control.invalid"
+        ],
+        "project_allowlist": [],
+        "default_internet": false,
+        "credentials_injected": false,
+        "privileged_routes_implemented": false
+      },
+      "limits": [
+        "Runtime output does not substitute for independent policy/traffic review.",
+        "Model proxy and dependency allowlist are not implemented.",
+        "DNS exfiltration and all protocol variants are not covered."
+      ]
+    },
+    "cleanup": {
+      "trusted": "destroy_acknowledged",
+      "alpha": "destroy_acknowledged"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "command": [
+    "node_modules/.bin/wrangler",
+    "deploy",
+    "--config",
+    "infra/wrangler.m0.jsonc",
+    "--env",
+    "staging",
+    "--secrets-file",
+    "/Users/gaojihe/apps/riffology-cloud/.local/cloud-staging/boundary.secrets.json",
+    "--outdir",
+    "/Users/gaojihe/apps/riffology-cloud/.local/m0-boundary-dockerhub-deploy-20260906/deployed-bundle"
+  ],
+  "startedAt": "2026-09-06T01:38:23.030711+00:00",
+  "timeoutSeconds": 180
+}

@@ -1,0 +1,1465 @@
+{
+  "schemaVersion": 1,
+  "runId": "m0-registry-alternative-local-20260905125524016",
+  "environment": "local-image-build-only",
+  "startedAt": "2026-09-05T12:55:24.344652+00:00",
+  "status": "built",
+  "context": {
+    "path": ".local/m0-registry-alternative-local-20260905125524016/context.tar",
+    "sha256": "d516a6bf7ff01c583eb195eb3f7ac332c17c3e93948a5e7fc45209fdb2428b14",
+    "bytes": 245760,
+    "members": [
+      ".dockerignore",
+      "infra/m0-project.Dockerfile",
+      "infra/m0-trusted.Dockerfile",
+      "package.json",
+      "package-lock.json",
+      "services/runtime/controlled-pi.mjs",
+      "services/runtime/pi-probe-evidence.mjs",
+      "scripts/m0/pi-live-probe.mjs"
+    ],
+    "sourceFiles": [
+      {
+        "path": ".dockerignore",
+        "bytes": 226,
+        "sha256": "46c6ff40eef5d467e276eb0c86c512e25a4f8f4913be33dc094449365aa9f6ab"
+      },
+      {
+        "path": "infra/m0-project.Dockerfile",
+        "bytes": 453,
+        "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+      },
+      {
+        "path": "infra/m0-trusted.Dockerfile",
+        "bytes": 876,
+        "sha256": "6dbcfa128b0bcc5a3ca5b6ddde6c45d13ca2dc45ec7124b4dba72e461321663c"
+      },
+      {
+        "path": "package.json",
+        "bytes": 2162,
+        "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+      },
+      {
+        "path": "package-lock.json",
+        "bytes": 200073,
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "services/runtime/controlled-pi.mjs",
+        "bytes": 16221,
+        "sha256": "8425ecbf88efe34e5132a6c2e26f53ccaea738fe3a20587d60b08067b271a157"
+      },
+      {
+        "path": "services/runtime/pi-probe-evidence.mjs",
+        "bytes": 2227,
+        "sha256": "bb8395477543d6a52c9a4faa830b0dab5fcbecf487f3d2abf571e514041c96cf"
+      },
+      {
+        "path": "scripts/m0/pi-live-probe.mjs",
+        "bytes": 5106,
+        "sha256": "0b0a268c177f7a1c929f89c8bf094275d32077400a672ff12b386fd7217594d3"
+      }
+    ],
+    "sourceSha256": "41d7c7bcc93e1a31b7ec8815f04979a2f89389cff79158949fbda4d945e465ac",
+    "method": "explicit whitelist tar; no excluded directory content read",
+    "dockerignoreExactWhitelistVerified": true,
+    "secretPathsIncluded": false,
+    "directoryPath": ".local/m0-registry-alternative-local-20260905125524016/context",
+    "directoryFilesVerified": true,
+    "stdinTarFirstAttemptRejected": true,
+    "packageLockResolvedCheck": {
+      "entries": 384,
+      "onlyPublicNpmHttps": true,
+      "embeddedCredentialsOrQuery": false
+    }
+  },
+  "basePreflight": [
+    {
+      "kind": "trusted",
+      "reference": "docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe",
+      "inspect": {
+        "args": [
+          "image",
+          "inspect",
+          "docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe",
+          "--format",
+          "{{json .Id}} {{json .RepoDigests}} {{json .Os}} {{json .Architecture}}"
+        ],
+        "exitCode": 1,
+        "stdout": "\n",
+        "stderr": "Error response from daemon: No such image: cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe\n"
+      },
+      "buildkitRecords": [
+        {
+          "CreatedAt": "2026-09-05 05:12:11.904682615 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe",
+          "ID": "qsyk2t6x7e72l553pnr4314fv",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "2nk6evjhqq9ui3wsynpw4ryn6"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "4.128kB",
+          "Type": "regular",
+          "UsageCount": 2
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:11.907127324 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe",
+          "ID": "913bnzifp4tcp17kllwabar8u",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "qsyk2t6x7e72l553pnr4314fv"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "8.291kB",
+          "Type": "regular",
+          "UsageCount": 2
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:11.877002532 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe",
+          "ID": "x9s69fttzd78wtfw8lhxnoz64",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "rmmuj6in3fn6mic7z4pishek4"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "8.323kB",
+          "Type": "regular",
+          "UsageCount": 2
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:11.874286032 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe",
+          "ID": "rmmuj6in3fn6mic7z4pishek4",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "n42euo0vnq3euphi2jrqtdh7t"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "12.78kB",
+          "Type": "regular",
+          "UsageCount": 2
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:11.885368657 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe",
+          "ID": "aasz609dq5yz963kwoyeyubzk",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "e5idmzuhnhddsvfy0q7dzmyby"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "16.59kB",
+          "Type": "regular",
+          "UsageCount": 2
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:11.895020865 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe",
+          "ID": "kh443vk6vrf505tnnfqwoz8ju",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "yozek0sw1gk8bmrsj06ntbk5b"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "188.7kB",
+          "Type": "regular",
+          "UsageCount": 2
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:11.897538782 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe",
+          "ID": "5wf1pn92xj8sx2mnucu4to5it",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "kh443vk6vrf505tnnfqwoz8ju"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "348.3kB",
+          "Type": "regular",
+          "UsageCount": 2
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:11.88290399 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe",
+          "ID": "e5idmzuhnhddsvfy0q7dzmyby",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "99wcicikbzpz6p1coq29z95tb"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "22.28MB",
+          "Type": "regular",
+          "UsageCount": 2
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:11.89987449 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe",
+          "ID": "kulonmycdmftkcs3fi22v81bv",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "5wf1pn92xj8sx2mnucu4to5it"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "59.25MB",
+          "Type": "regular",
+          "UsageCount": 2
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:11.86874724 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe",
+          "ID": "p21ic7l4jifbzgim2i1ixfaum",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": null,
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "118.4MB",
+          "Type": "regular",
+          "UsageCount": 2
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:11.887899824 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe",
+          "ID": "972iowk3uwhiym0959y9dcfeu",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "aasz609dq5yz963kwoyeyubzk"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "139.1MB",
+          "Type": "regular",
+          "UsageCount": 2
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:11.890267657 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe",
+          "ID": "gltry9ruxhve2gbgghiydmu07",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "972iowk3uwhiym0959y9dcfeu"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "139.5MB",
+          "Type": "regular",
+          "UsageCount": 2
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:11.880061449 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe",
+          "ID": "99wcicikbzpz6p1coq29z95tb",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "x9s69fttzd78wtfw8lhxnoz64"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "170.1MB",
+          "Type": "regular",
+          "UsageCount": 2
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:11.871270615 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9@sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe",
+          "ID": "n42euo0vnq3euphi2jrqtdh7t",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "p21ic7l4jifbzgim2i1ixfaum"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "201MB",
+          "Type": "regular",
+          "UsageCount": 2
+        }
+      ]
+    },
+    {
+      "kind": "project",
+      "reference": "docker.io/cloudflare/sandbox:0.12.9-python@sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806",
+      "inspect": {
+        "args": [
+          "image",
+          "inspect",
+          "docker.io/cloudflare/sandbox:0.12.9-python@sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806",
+          "--format",
+          "{{json .Id}} {{json .RepoDigests}} {{json .Os}} {{json .Architecture}}"
+        ],
+        "exitCode": 1,
+        "stdout": "\n",
+        "stderr": "Error response from daemon: No such image: cloudflare/sandbox:0.12.9-python@sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806\n"
+      },
+      "buildkitRecords": [
+        {
+          "CreatedAt": "2026-09-05 05:12:38.458344545 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9-python@sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806",
+          "ID": "rb52h9knnluhqj3r18993sja1",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "4hiqft0yp7ef2e9msb547no97"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "961B",
+          "Type": "regular",
+          "UsageCount": 1
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:38.463672961 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9-python@sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806",
+          "ID": "v82wu3fl6y03rf839i0nwajvv",
+          "LastUsedAt": "2 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "1hc9a7qez7hr0cj339wbp5gez"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "2.979kB",
+          "Type": "regular",
+          "UsageCount": 22
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:38.455701086 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9-python@sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806",
+          "ID": "4hiqft0yp7ef2e9msb547no97",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "xphsbx8d3gwfkg86jxu0edan0"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "4.49kB",
+          "Type": "regular",
+          "UsageCount": 1
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:38.453631086 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9-python@sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806",
+          "ID": "xphsbx8d3gwfkg86jxu0edan0",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "913bnzifp4tcp17kllwabar8u"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "47.93MB",
+          "Type": "regular",
+          "UsageCount": 1
+        },
+        {
+          "CreatedAt": "2026-09-05 05:12:38.461013586 +0000 UTC",
+          "Description": "pulled from docker.io/cloudflare/sandbox:0.12.9-python@sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806",
+          "ID": "1hc9a7qez7hr0cj339wbp5gez",
+          "LastUsedAt": "8 hours ago",
+          "Mutable": false,
+          "Parents": [
+            "rb52h9knnluhqj3r18993sja1"
+          ],
+          "Reclaimable": true,
+          "Shared": true,
+          "Size": "88.9MB",
+          "Type": "regular",
+          "UsageCount": 1
+        }
+      ]
+    }
+  ],
+  "existingImages": [
+    {
+      "Containers": "0",
+      "CreatedAt": "2026-09-05 16:24:27 +0800 CST",
+      "CreatedSince": "5 hours ago",
+      "Digest": "<none>",
+      "ID": "sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721",
+      "Repository": "riffology-m0-trusted-staging",
+      "SharedSize": "N/A",
+      "Size": "1.2GB",
+      "Tag": "61647393",
+      "UniqueSize": "N/A"
+    },
+    {
+      "Containers": "0",
+      "CreatedAt": "2026-09-05 16:24:27 +0800 CST",
+      "CreatedSince": "5 hours ago",
+      "Digest": "<none>",
+      "ID": "sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721",
+      "Repository": "riffology-m0-trusted-staging",
+      "SharedSize": "N/A",
+      "Size": "1.2GB",
+      "Tag": "66c7def0",
+      "UniqueSize": "N/A"
+    },
+    {
+      "Containers": "0",
+      "CreatedAt": "2026-09-05 16:24:27 +0800 CST",
+      "CreatedSince": "5 hours ago",
+      "Digest": "<none>",
+      "ID": "sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721",
+      "Repository": "riffology-m0-trusted-staging",
+      "SharedSize": "N/A",
+      "Size": "1.2GB",
+      "Tag": "worker",
+      "UniqueSize": "N/A"
+    },
+    {
+      "Containers": "0",
+      "CreatedAt": "2026-09-05 16:24:27 +0800 CST",
+      "CreatedSince": "5 hours ago",
+      "Digest": "sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721",
+      "ID": "sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721",
+      "Repository": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m0-trusted-staging",
+      "SharedSize": "N/A",
+      "Size": "1.2GB",
+      "Tag": "61647393",
+      "UniqueSize": "N/A"
+    },
+    {
+      "Containers": "0",
+      "CreatedAt": "2026-09-05 16:24:27 +0800 CST",
+      "CreatedSince": "5 hours ago",
+      "Digest": "sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721",
+      "ID": "sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721",
+      "Repository": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m0-trusted-staging",
+      "SharedSize": "N/A",
+      "Size": "1.2GB",
+      "Tag": "66c7def0",
+      "UniqueSize": "N/A"
+    },
+    {
+      "Containers": "0",
+      "CreatedAt": "2026-09-05 16:24:27 +0800 CST",
+      "CreatedSince": "5 hours ago",
+      "Digest": "<none>",
+      "ID": "sha256:65d88f5c0338d6b2c948147dbcbeddaaa2d3f0a09f1b09eb7395091d784e0721",
+      "Repository": "cloudflare-dev/trustedsandbox",
+      "SharedSize": "N/A",
+      "Size": "1.2GB",
+      "Tag": "54743ab9",
+      "UniqueSize": "N/A"
+    },
+    {
+      "Containers": "0",
+      "CreatedAt": "2026-09-05 15:55:38 +0800 CST",
+      "CreatedSince": "5 hours ago",
+      "Digest": "sha256:168637ae5031c5a44a1bae5f66f3a48f1e9789e0318a4ef9031f5c8155001887",
+      "ID": "sha256:168637ae5031c5a44a1bae5f66f3a48f1e9789e0318a4ef9031f5c8155001887",
+      "Repository": "cloudflare-dev/trustedsandbox",
+      "SharedSize": "N/A",
+      "Size": "1.2GB",
+      "Tag": "e5bc7ef6",
+      "UniqueSize": "N/A"
+    },
+    {
+      "Containers": "0",
+      "CreatedAt": "2026-09-05 15:01:15 +0800 CST",
+      "CreatedSince": "6 hours ago",
+      "Digest": "sha256:7fdfeeae723428c05d9e0c07d02d05fd2b88d880f18d887e5c191cd3301a6714",
+      "ID": "sha256:7fdfeeae723428c05d9e0c07d02d05fd2b88d880f18d887e5c191cd3301a6714",
+      "Repository": "cloudflare-dev/recoverytrustedsandbox",
+      "SharedSize": "N/A",
+      "Size": "1.2GB",
+      "Tag": "aee4de34",
+      "UniqueSize": "N/A"
+    },
+    {
+      "Containers": "0",
+      "CreatedAt": "2026-09-05 13:25:38 +0800 CST",
+      "CreatedSince": "7 hours ago",
+      "Digest": "sha256:a42bfa96d942f3d520481bc349103cd1f0f84807f550a5cb30ff6dd5abe724ad",
+      "ID": "sha256:a42bfa96d942f3d520481bc349103cd1f0f84807f550a5cb30ff6dd5abe724ad",
+      "Repository": "cloudflare-dev/trustedsandbox",
+      "SharedSize": "N/A",
+      "Size": "1.2GB",
+      "Tag": "dc0c33d6",
+      "UniqueSize": "N/A"
+    },
+    {
+      "Containers": "0",
+      "CreatedAt": "2026-09-05 13:12:37 +0800 CST",
+      "CreatedSince": "8 hours ago",
+      "Digest": "sha256:9e87b167e21f234d4816217cfbc1f1ecc42db61bc3825118c426904ca4b510f3",
+      "ID": "sha256:9e87b167e21f234d4816217cfbc1f1ecc42db61bc3825118c426904ca4b510f3",
+      "Repository": "cloudflare-dev/trustedsandbox",
+      "SharedSize": "N/A",
+      "Size": "850MB",
+      "Tag": "cc1a1e86",
+      "UniqueSize": "N/A"
+    },
+    {
+      "Containers": "0",
+      "CreatedAt": "2026-08-25 18:15:56 +0800 CST",
+      "CreatedSince": "11 days ago",
+      "Digest": "<none>",
+      "ID": "sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+      "Repository": "cloudflare-dev/previewsandbox",
+      "SharedSize": "N/A",
+      "Size": "1.48GB",
+      "Tag": "836a1cdf",
+      "UniqueSize": "N/A"
+    },
+    {
+      "Containers": "0",
+      "CreatedAt": "2026-08-25 18:15:56 +0800 CST",
+      "CreatedSince": "11 days ago",
+      "Digest": "<none>",
+      "ID": "sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+      "Repository": "riffology-m0-preview-staging",
+      "SharedSize": "N/A",
+      "Size": "1.48GB",
+      "Tag": "worker",
+      "UniqueSize": "N/A"
+    },
+    {
+      "Containers": "0",
+      "CreatedAt": "2026-08-25 18:15:56 +0800 CST",
+      "CreatedSince": "11 days ago",
+      "Digest": "sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+      "ID": "sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+      "Repository": "riffology-m0-project-staging",
+      "SharedSize": "N/A",
+      "Size": "1.48GB",
+      "Tag": "worker",
+      "UniqueSize": "N/A"
+    },
+    {
+      "Containers": "18",
+      "CreatedAt": "2026-03-13 08:16:02 +0800 CST",
+      "CreatedSince": "5 months ago",
+      "Digest": "sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "ID": "sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "Repository": "cloudflare/proxy-everything",
+      "SharedSize": "N/A",
+      "Size": "31.1MB",
+      "Tag": "<none>",
+      "UniqueSize": "N/A"
+    }
+  ],
+  "runningContainersBefore": [],
+  "builds": [
+    {
+      "kind": "trusted",
+      "tag": "riffology-m0-trusted-alternative:20260905125524016",
+      "command": [
+        "docker",
+        "buildx",
+        "build",
+        "--load",
+        "--platform=linux/amd64",
+        "--network=none",
+        "--pull=false",
+        "--provenance=false",
+        "--progress=plain",
+        "--metadata-file",
+        "/Users/gaojihe/apps/riffology-cloud/docs/evidence/runs/m0-registry-alternative-local-20260905125524016/trusted-build-metadata.json",
+        "--iidfile",
+        "/Users/gaojihe/apps/riffology-cloud/docs/evidence/runs/m0-registry-alternative-local-20260905125524016/trusted-image-id.txt",
+        "-f",
+        "infra/m0-trusted.Dockerfile",
+        "-t",
+        "riffology-m0-trusted-alternative:20260905125524016",
+        "-"
+      ],
+      "startedAtEpochMs": 1788613034314,
+      "timeoutMs": 120000,
+      "exitCode": 1,
+      "timedOut": false,
+      "baseDownloadDetected": false,
+      "registryPush": false,
+      "networkModeForRun": "none",
+      "elapsedMs": 416,
+      "logPath": "docs/evidence/runs/m0-registry-alternative-local-20260905125524016/trusted-build.log",
+      "logSha256": "573e0a8296ac15f5b1ff87595d7046552a3542c57ee06e0542647225e8c9e5d0"
+    },
+    {
+      "kind": "project",
+      "tag": "riffology-m0-project-alternative:20260905125524016",
+      "command": [
+        "docker",
+        "buildx",
+        "build",
+        "--load",
+        "--platform=linux/amd64",
+        "--network=none",
+        "--pull=false",
+        "--provenance=false",
+        "--progress=plain",
+        "--metadata-file",
+        "/Users/gaojihe/apps/riffology-cloud/docs/evidence/runs/m0-registry-alternative-local-20260905125524016/project-build-metadata.json",
+        "--iidfile",
+        "/Users/gaojihe/apps/riffology-cloud/docs/evidence/runs/m0-registry-alternative-local-20260905125524016/project-image-id.txt",
+        "-f",
+        "infra/m0-project.Dockerfile",
+        "-t",
+        "riffology-m0-project-alternative:20260905125524016",
+        "-"
+      ],
+      "startedAtEpochMs": 1788613034733,
+      "timeoutMs": 120000,
+      "exitCode": 1,
+      "timedOut": false,
+      "baseDownloadDetected": false,
+      "registryPush": false,
+      "networkModeForRun": "none",
+      "elapsedMs": 74,
+      "logPath": "docs/evidence/runs/m0-registry-alternative-local-20260905125524016/project-build.log",
+      "logSha256": "573e0a8296ac15f5b1ff87595d7046552a3542c57ee06e0542647225e8c9e5d0"
+    },
+    {
+      "kind": "trusted",
+      "attempt": 2,
+      "tag": "riffology-m0-trusted-alternative:20260905125524016-a2",
+      "command": [
+        "docker",
+        "buildx",
+        "build",
+        "--load",
+        "--platform=linux/amd64",
+        "--network=none",
+        "--pull=false",
+        "--provenance=false",
+        "--progress=plain",
+        "--metadata-file",
+        "/Users/gaojihe/apps/riffology-cloud/docs/evidence/runs/m0-registry-alternative-local-20260905125524016/trusted-a2-build-metadata.json",
+        "--iidfile",
+        "/Users/gaojihe/apps/riffology-cloud/docs/evidence/runs/m0-registry-alternative-local-20260905125524016/trusted-a2-image-id.txt",
+        "-f",
+        "/Users/gaojihe/apps/riffology-cloud/.local/m0-registry-alternative-local-20260905125524016/context/infra/m0-trusted.Dockerfile",
+        "-t",
+        "riffology-m0-trusted-alternative:20260905125524016-a2",
+        "/Users/gaojihe/apps/riffology-cloud/.local/m0-registry-alternative-local-20260905125524016/context"
+      ],
+      "startedAtEpochMs": 1788613138694,
+      "timeoutMs": 120000,
+      "exitCode": 1,
+      "timedOut": false,
+      "baseDownloadDetected": false,
+      "registryPush": false,
+      "networkModeForRun": "none",
+      "elapsedMs": 75378,
+      "logPath": "docs/evidence/runs/m0-registry-alternative-local-20260905125524016/trusted-a2-build.log",
+      "logSha256": "9187311844c0cbb28c4054a10e8610649147de9f70248891ad36db5549b9cb94"
+    },
+    {
+      "kind": "project",
+      "attempt": 2,
+      "tag": "riffology-m0-project-alternative:20260905125524016-a2",
+      "command": [
+        "docker",
+        "buildx",
+        "build",
+        "--load",
+        "--platform=linux/amd64",
+        "--network=none",
+        "--pull=false",
+        "--provenance=false",
+        "--progress=plain",
+        "--metadata-file",
+        "/Users/gaojihe/apps/riffology-cloud/docs/evidence/runs/m0-registry-alternative-local-20260905125524016/project-a2-build-metadata.json",
+        "--iidfile",
+        "/Users/gaojihe/apps/riffology-cloud/docs/evidence/runs/m0-registry-alternative-local-20260905125524016/project-a2-image-id.txt",
+        "-f",
+        "/Users/gaojihe/apps/riffology-cloud/.local/m0-registry-alternative-local-20260905125524016/context/infra/m0-project.Dockerfile",
+        "-t",
+        "riffology-m0-project-alternative:20260905125524016-a2",
+        "/Users/gaojihe/apps/riffology-cloud/.local/m0-registry-alternative-local-20260905125524016/context"
+      ],
+      "startedAtEpochMs": 1788613214076,
+      "timeoutMs": 120000,
+      "exitCode": 0,
+      "timedOut": false,
+      "baseDownloadDetected": false,
+      "registryPush": false,
+      "networkModeForRun": "none",
+      "elapsedMs": 307,
+      "logPath": "docs/evidence/runs/m0-registry-alternative-local-20260905125524016/project-a2-build.log",
+      "logSha256": "c5e11fa6816107251878d566a17b41a8aa10a85aaeae74d8795fd0722598e812",
+      "buildMetadata": {
+        "buildx.build.provenance": {
+          "builder": {
+            "id": ""
+          },
+          "buildType": "https://mobyproject.org/buildkit@v1",
+          "materials": [
+            {
+              "uri": "pkg:docker/cloudflare/sandbox@0.12.9-python?digest=sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806&platform=linux%2Famd64",
+              "digest": {
+                "sha256": "f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806"
+              }
+            }
+          ],
+          "invocation": {
+            "configSource": {
+              "entryPoint": "m0-project.Dockerfile"
+            },
+            "parameters": {
+              "frontend": "dockerfile.v0",
+              "args": {
+                "force-network-mode": "none"
+              },
+              "locals": [
+                {
+                  "name": "context"
+                },
+                {
+                  "name": "dockerfile"
+                }
+              ],
+              "root": {
+                "configSource": {
+                  "path": "m0-project.Dockerfile"
+                },
+                "request": {
+                  "args": {
+                    "force-network-mode": "none",
+                    "vcs:localdir:context": ".local/m0-registry-alternative-local-20260905125524016/context",
+                    "vcs:localdir:dockerfile": ".local/m0-registry-alternative-local-20260905125524016/context/infra",
+                    "vcs:revision": "16219ffcaea7c83b8b89a2e542717eeada6fe275"
+                  }
+                }
+              },
+              "compatibilityVersion": 20
+            },
+            "environment": {
+              "dockerfileVersion": "1.24.0",
+              "platform": "linux/arm64"
+            }
+          }
+        },
+        "buildx.build.ref": "default/default/8rvt1efabmm3bcpz12midao5k",
+        "containerimage.descriptor": {
+          "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+          "digest": "sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+          "size": 4425,
+          "platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          }
+        },
+        "containerimage.digest": "sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+        "image.name": "docker.io/library/riffology-m0-project-alternative:20260905125524016-a2"
+      },
+      "inspectExitCode": 0,
+      "image": {
+        "id": "sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+        "repoDigests": [
+          "cloudflare-dev/previewsandbox@sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+          "riffology-m0-preview-staging@sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+          "riffology-m0-project-alternative@sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+          "riffology-m0-project-staging@sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda"
+        ],
+        "os": "linux",
+        "architecture": "amd64",
+        "bytes": 361837458,
+        "rootfsDiffIds": [
+          "sha256:c0359c5b6ede84d4a083d06d35ee77f0b338dfb17423771854d007d89953fb3e",
+          "sha256:3d65b9874032d7fcc188f6bdfaf5b13788ab5b0bbefa77f4a5ac28c598bf1941",
+          "sha256:0576eb869f395313a1aa5f621268dfb9b5682ec97cf15fe71e371483f5c80fba",
+          "sha256:15ded8de01e6eca481f1a339c99bb4cfda5d23b1dfbc82a4cebb24c5c9a017a8",
+          "sha256:86a3be679e01b1fcee6c778834a25689e30f6071f66576d25fbffc5fce5aa98e",
+          "sha256:f334ab63d20359b7cffc52ca264dd415747a8d4ff7bfbb6149008b8683965dee",
+          "sha256:9b70e64f8f280bd9fa74b9185f0bf19604eaef611dd83c275886a24799d154e5",
+          "sha256:713264a10ffa9ed08c39191b9e03b8f298baa0a1d87f6e58589c8990a25743f3",
+          "sha256:1e82d0f1454bb6187960082585b9b98906b7a52f6ae24fdf1f51fe9e6e91e0e6",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:55394ae40b31c896ec476b35271dc2785c15c370ba8395e115d5a8b20a095f61",
+          "sha256:703eb6bf565d44cb0066bd69bf4b74dd6d5160e55cb1728bc0b1abb242c1a489",
+          "sha256:b7cb327a353f555554a14193e784b45adaf249df9b105bbbe7fd1632fc8bf515",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:6996f5cb764794f926da271d756055e0885640baf700c5467fe6cd5a86623b0e",
+          "sha256:4e52759b8746781db6506ca2dcbacd24e6930e844e72f84bbed3dcf84095e8cf",
+          "sha256:d046221a87ad549a2b8c422442c599d884fada666e0ad514529248a68264533f",
+          "sha256:a07f0fd21a039d53d1a8b570dba45f06e2105dbe09387f538cd64ec206f2037a",
+          "sha256:987f78f14e7466e79ca69151b1ffe93521e6d767de288c6ecdec7ab5de0a7608",
+          "sha256:9eec22a452a78c5b6c09e7876a35359c561543a57864b81ea686db90d12edb8d"
+        ],
+        "config": {
+          "workingDir": "/container-server",
+          "entrypoint": [
+            "/container-server/sandbox"
+          ],
+          "cmd": null,
+          "environmentNames": [
+            "PATH",
+            "DEBIAN_FRONTEND",
+            "SANDBOX_VERSION",
+            "PYTHON_POOL_MIN_SIZE",
+            "JAVASCRIPT_POOL_MIN_SIZE",
+            "TYPESCRIPT_POOL_MIN_SIZE"
+          ]
+        }
+      },
+      "cacheObservation": {
+        "baseLayersDownloaded": false,
+        "npmCiCached": false,
+        "importCheckRan": false
+      }
+    },
+    {
+      "kind": "trusted",
+      "attempt": 3,
+      "tag": "riffology-m0-trusted-alternative:20260905125524016-a3",
+      "command": [
+        "docker",
+        "buildx",
+        "build",
+        "--load",
+        "--platform=linux/amd64",
+        "--network=default",
+        "--pull=false",
+        "--provenance=false",
+        "--progress=plain",
+        "--metadata-file",
+        "/Users/gaojihe/apps/riffology-cloud/docs/evidence/runs/m0-registry-alternative-local-20260905125524016/trusted-a3-build-metadata.json",
+        "--iidfile",
+        "/Users/gaojihe/apps/riffology-cloud/docs/evidence/runs/m0-registry-alternative-local-20260905125524016/trusted-a3-image-id.txt",
+        "-f",
+        "/Users/gaojihe/apps/riffology-cloud/.local/m0-registry-alternative-local-20260905125524016/context/infra/m0-trusted.Dockerfile",
+        "-t",
+        "riffology-m0-trusted-alternative:20260905125524016-a3",
+        "/Users/gaojihe/apps/riffology-cloud/.local/m0-registry-alternative-local-20260905125524016/context"
+      ],
+      "startedAtEpochMs": 1788613360040,
+      "timeoutMs": 120000,
+      "exitCode": 0,
+      "timedOut": false,
+      "registryPush": false,
+      "networkModeForRun": "default",
+      "authorization": "parent permits one default-network build with same frozen context after offline npm failure",
+      "elapsedMs": 2194,
+      "logPath": "docs/evidence/runs/m0-registry-alternative-local-20260905125524016/trusted-a3-build.log",
+      "logSha256": "39f09d8e3b915f57a86ffbdd447538c3f56979e900f9b4eb1fce8bac6fc70c3c",
+      "baseLayerDownloadsObserved": false,
+      "buildMetadata": {
+        "buildx.build.provenance": {
+          "builder": {
+            "id": ""
+          },
+          "buildType": "https://mobyproject.org/buildkit@v1",
+          "materials": [
+            {
+              "uri": "pkg:docker/cloudflare/sandbox@0.12.9?digest=sha256:4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe&platform=linux%2Famd64",
+              "digest": {
+                "sha256": "4a56a37a3cfd9b38d65bb4b5d0b341e6490a3a4c0226274ae4c1cca4948e85fe"
+              }
+            }
+          ],
+          "invocation": {
+            "configSource": {
+              "entryPoint": "m0-trusted.Dockerfile"
+            },
+            "parameters": {
+              "frontend": "dockerfile.v0",
+              "locals": [
+                {
+                  "name": "context"
+                },
+                {
+                  "name": "dockerfile"
+                }
+              ],
+              "root": {
+                "configSource": {
+                  "path": "m0-trusted.Dockerfile"
+                },
+                "request": {
+                  "args": {
+                    "vcs:localdir:context": ".local/m0-registry-alternative-local-20260905125524016/context",
+                    "vcs:localdir:dockerfile": ".local/m0-registry-alternative-local-20260905125524016/context/infra",
+                    "vcs:revision": "16219ffcaea7c83b8b89a2e542717eeada6fe275"
+                  }
+                }
+              },
+              "compatibilityVersion": 20
+            },
+            "environment": {
+              "dockerfileVersion": "1.24.0",
+              "platform": "linux/arm64"
+            }
+          }
+        },
+        "buildx.build.ref": "default/default/qyahm524fgzepaqag4qkr25gl",
+        "containerimage.descriptor": {
+          "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+          "digest": "sha256:eab5723438fe6e5bc6482b79502b5e097639f1a14066ae3ac224e501904f41ac",
+          "size": 4615,
+          "platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          }
+        },
+        "containerimage.digest": "sha256:eab5723438fe6e5bc6482b79502b5e097639f1a14066ae3ac224e501904f41ac",
+        "image.name": "docker.io/library/riffology-m0-trusted-alternative:20260905125524016-a3"
+      },
+      "inspectExitCode": 0,
+      "image": {
+        "id": "sha256:eab5723438fe6e5bc6482b79502b5e097639f1a14066ae3ac224e501904f41ac",
+        "repoDigests": [
+          "riffology-m0-trusted-alternative@sha256:eab5723438fe6e5bc6482b79502b5e097639f1a14066ae3ac224e501904f41ac"
+        ],
+        "os": "linux",
+        "architecture": "amd64",
+        "bytes": 272346586,
+        "rootfsDiffIds": [
+          "sha256:c0359c5b6ede84d4a083d06d35ee77f0b338dfb17423771854d007d89953fb3e",
+          "sha256:3d65b9874032d7fcc188f6bdfaf5b13788ab5b0bbefa77f4a5ac28c598bf1941",
+          "sha256:0576eb869f395313a1aa5f621268dfb9b5682ec97cf15fe71e371483f5c80fba",
+          "sha256:15ded8de01e6eca481f1a339c99bb4cfda5d23b1dfbc82a4cebb24c5c9a017a8",
+          "sha256:86a3be679e01b1fcee6c778834a25689e30f6071f66576d25fbffc5fce5aa98e",
+          "sha256:f334ab63d20359b7cffc52ca264dd415747a8d4ff7bfbb6149008b8683965dee",
+          "sha256:9b70e64f8f280bd9fa74b9185f0bf19604eaef611dd83c275886a24799d154e5",
+          "sha256:713264a10ffa9ed08c39191b9e03b8f298baa0a1d87f6e58589c8990a25743f3",
+          "sha256:1e82d0f1454bb6187960082585b9b98906b7a52f6ae24fdf1f51fe9e6e91e0e6",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:55394ae40b31c896ec476b35271dc2785c15c370ba8395e115d5a8b20a095f61",
+          "sha256:703eb6bf565d44cb0066bd69bf4b74dd6d5160e55cb1728bc0b1abb242c1a489",
+          "sha256:b7cb327a353f555554a14193e784b45adaf249df9b105bbbe7fd1632fc8bf515",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:6996f5cb764794f926da271d756055e0885640baf700c5467fe6cd5a86623b0e",
+          "sha256:41637d6d0ae7218db0e6b6224089bc8cb8c1ec4319a4b999d6fb611606ef60d0",
+          "sha256:cf3025d2e215bb80009804f64ba5fd485bca0f349052d186a8050fb5cb93733c",
+          "sha256:d4b3cb048462969ab4e281b4cc26db860d4d2db608c108e381774f4466ddd745",
+          "sha256:633c814bee33cf8afc7e9e44c6c936f5f8e295fde4a56b4009dbcd9bf73a0a70",
+          "sha256:ced03c769afe2490cec5370059aac5331ef33564d43b4e4ed2c341ce980e9f08",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+        ],
+        "config": {
+          "workingDir": "/opt/riffology",
+          "entrypoint": [
+            "/container-server/sandbox"
+          ],
+          "cmd": null,
+          "environmentNames": [
+            "PATH",
+            "DEBIAN_FRONTEND",
+            "SANDBOX_VERSION",
+            "PYTHON_POOL_MIN_SIZE",
+            "JAVASCRIPT_POOL_MIN_SIZE",
+            "TYPESCRIPT_POOL_MIN_SIZE"
+          ]
+        }
+      },
+      "cacheObservation": {
+        "baseLayersDownloaded": false,
+        "npmCiCached": true,
+        "importCheckRan": true
+      }
+    }
+  ],
+  "cloudUploadAttempts": 0,
+  "registryLoginAttempts": 0,
+  "cloudResourcesCreated": 0,
+  "applicationContainersStarted": 0,
+  "modelRequests": 0,
+  "sourcesAfter": [
+    {
+      "path": ".dockerignore",
+      "bytes": 226,
+      "sha256": "46c6ff40eef5d467e276eb0c86c512e25a4f8f4913be33dc094449365aa9f6ab"
+    },
+    {
+      "path": "infra/m0-project.Dockerfile",
+      "bytes": 453,
+      "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+    },
+    {
+      "path": "infra/m0-trusted.Dockerfile",
+      "bytes": 876,
+      "sha256": "6dbcfa128b0bcc5a3ca5b6ddde6c45d13ca2dc45ec7124b4dba72e461321663c"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2162,
+      "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 200073,
+      "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+    },
+    {
+      "path": "services/runtime/controlled-pi.mjs",
+      "bytes": 16221,
+      "sha256": "8425ecbf88efe34e5132a6c2e26f53ccaea738fe3a20587d60b08067b271a157"
+    },
+    {
+      "path": "services/runtime/pi-probe-evidence.mjs",
+      "bytes": 2227,
+      "sha256": "bb8395477543d6a52c9a4faa830b0dab5fcbecf487f3d2abf571e514041c96cf"
+    },
+    {
+      "path": "scripts/m0/pi-live-probe.mjs",
+      "bytes": 5106,
+      "sha256": "0b0a268c177f7a1c929f89c8bf094275d32077400a672ff12b386fd7217594d3"
+    }
+  ],
+  "sourceStableDuringRun": true,
+  "runningContainersAfter": [],
+  "selectedBuilds": {
+    "trusted": {
+      "attempt": 3,
+      "tag": "riffology-m0-trusted-alternative:20260905125524016-a3",
+      "manifestDigest": "sha256:eab5723438fe6e5bc6482b79502b5e097639f1a14066ae3ac224e501904f41ac",
+      "configDigest": "sha256:6e79b2421d7c11638694e50dae871328105c946756a111258af7936dbbbe487f",
+      "manifestPath": "docs/evidence/runs/m0-registry-alternative-local-20260905125524016/trusted-manifest.json",
+      "layerDescriptors": [
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3",
+          "size": 30649033
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:f81f4a720b08330f7bfb48beaa1aa3ef420da9a925ff2f955897c6c8a02dc7ec",
+          "size": 47505857
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:2be099879e773021b91e149ca103715b48341d4c7088c2612c5a0081dd22797a",
+          "size": 493
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:17abb60538b761810d4643c6439e5fc006d93e8317294795aa416fc8b709524f",
+          "size": 131
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:5f06475c22fdc31cfe5f04907f567ef4b821980741c9f3c3a46e9c2fe81fb2a1",
+          "size": 45212329
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:7d96278bc0645dc77b944562ec87469247c9f1dcfa9feb95eb2d279d5220d914",
+          "size": 2988033
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:64934db2d8a2bcf4576fb90ad2dbe43ece4e7d9864dcb1a70d6e4d9fedac819a",
+          "size": 203
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:71b7e662ea744409a3224e890b8b71b5711ac23078fd9048851453629b34cd6d",
+          "size": 39446577
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:17d90541aea3975a0648cc43d64dd715dcdcfe3fe0853b20185ad753057e8c89",
+          "size": 39518258
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "size": 32
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:769135a6efef25c9eb2d9f612e0d9da76b19dce79eace0b4ed9ba5b7677bb618",
+          "size": 37179
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:c4e9406357ab6ba9cc171d9c6da018aba5aaa4eec0fa4e9ca34e89e9ec07d98c",
+          "size": 69744
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:fbf7c7028dc238451a8fd40c9675ecba3e7733555646a2db53bafb48fab35c37",
+          "size": 19560637
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "size": 32
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "size": 32
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:92c5c475ab3917d5c0943d1aceb2395f99b1265caa64aa1a379725040559be33",
+          "size": 99
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:026b1188033f65fde6c1fbe32e061ad885cdd101639359d7b80ba12196a2c165",
+          "size": 116
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:66f758c785bbbc752b6db927c9f6065591fea86fb4d8a226ad3f9be25e6c7117",
+          "size": 41721
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:66ffba5a7573966afbf9466bb673db8e8ad840be64a648c90433781830628997",
+          "size": 47294130
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:948aa8912c61116be681530bbccd2978634e3cd5328e5e77e4a8449cb5d87a44",
+          "size": 6126
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:863f858f73c677e4b2ad56edf3b0ad1e24b83b4d7af484d3882efa122886de04",
+          "size": 2313
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "size": 32
+        }
+      ],
+      "compressedLayerBytes": 272333107,
+      "configVerifiedByLocalContentSha256": true,
+      "manifestVerifiedByLocalContentSha256": true,
+      "configSummary": {
+        "os": "linux",
+        "architecture": "amd64",
+        "environmentNames": [
+          "PATH",
+          "DEBIAN_FRONTEND",
+          "SANDBOX_VERSION",
+          "PYTHON_POOL_MIN_SIZE",
+          "JAVASCRIPT_POOL_MIN_SIZE",
+          "TYPESCRIPT_POOL_MIN_SIZE"
+        ],
+        "rootfsDiffIds": [
+          "sha256:c0359c5b6ede84d4a083d06d35ee77f0b338dfb17423771854d007d89953fb3e",
+          "sha256:3d65b9874032d7fcc188f6bdfaf5b13788ab5b0bbefa77f4a5ac28c598bf1941",
+          "sha256:0576eb869f395313a1aa5f621268dfb9b5682ec97cf15fe71e371483f5c80fba",
+          "sha256:15ded8de01e6eca481f1a339c99bb4cfda5d23b1dfbc82a4cebb24c5c9a017a8",
+          "sha256:86a3be679e01b1fcee6c778834a25689e30f6071f66576d25fbffc5fce5aa98e",
+          "sha256:f334ab63d20359b7cffc52ca264dd415747a8d4ff7bfbb6149008b8683965dee",
+          "sha256:9b70e64f8f280bd9fa74b9185f0bf19604eaef611dd83c275886a24799d154e5",
+          "sha256:713264a10ffa9ed08c39191b9e03b8f298baa0a1d87f6e58589c8990a25743f3",
+          "sha256:1e82d0f1454bb6187960082585b9b98906b7a52f6ae24fdf1f51fe9e6e91e0e6",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:55394ae40b31c896ec476b35271dc2785c15c370ba8395e115d5a8b20a095f61",
+          "sha256:703eb6bf565d44cb0066bd69bf4b74dd6d5160e55cb1728bc0b1abb242c1a489",
+          "sha256:b7cb327a353f555554a14193e784b45adaf249df9b105bbbe7fd1632fc8bf515",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:6996f5cb764794f926da271d756055e0885640baf700c5467fe6cd5a86623b0e",
+          "sha256:41637d6d0ae7218db0e6b6224089bc8cb8c1ec4319a4b999d6fb611606ef60d0",
+          "sha256:cf3025d2e215bb80009804f64ba5fd485bca0f349052d186a8050fb5cb93733c",
+          "sha256:d4b3cb048462969ab4e281b4cc26db860d4d2db608c108e381774f4466ddd745",
+          "sha256:633c814bee33cf8afc7e9e44c6c936f5f8e295fde4a56b4009dbcd9bf73a0a70",
+          "sha256:ced03c769afe2490cec5370059aac5331ef33564d43b4e4ed2c341ce980e9f08",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+        ],
+        "historyEntries": 35
+      }
+    },
+    "project": {
+      "attempt": 2,
+      "tag": "riffology-m0-project-alternative:20260905125524016-a2",
+      "manifestDigest": "sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda",
+      "configDigest": "sha256:ffa7f77ec007ce13c193e9280e3c06a9d46b37cbbd3aafca4c8c38f745eda3d0",
+      "manifestPath": "docs/evidence/runs/m0-registry-alternative-local-20260905125524016/project-manifest.json",
+      "layerDescriptors": [
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:1317dd93c0c3b4562b5180bc49726f743cc1622f5fd1327aa883d8d8968012e3",
+          "size": 30649033
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:f81f4a720b08330f7bfb48beaa1aa3ef420da9a925ff2f955897c6c8a02dc7ec",
+          "size": 47505857
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:2be099879e773021b91e149ca103715b48341d4c7088c2612c5a0081dd22797a",
+          "size": 493
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:17abb60538b761810d4643c6439e5fc006d93e8317294795aa416fc8b709524f",
+          "size": 131
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:5f06475c22fdc31cfe5f04907f567ef4b821980741c9f3c3a46e9c2fe81fb2a1",
+          "size": 45212329
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:7d96278bc0645dc77b944562ec87469247c9f1dcfa9feb95eb2d279d5220d914",
+          "size": 2988033
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:64934db2d8a2bcf4576fb90ad2dbe43ece4e7d9864dcb1a70d6e4d9fedac819a",
+          "size": 203
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:71b7e662ea744409a3224e890b8b71b5711ac23078fd9048851453629b34cd6d",
+          "size": 39446577
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:17d90541aea3975a0648cc43d64dd715dcdcfe3fe0853b20185ad753057e8c89",
+          "size": 39518258
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "size": 32
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:769135a6efef25c9eb2d9f612e0d9da76b19dce79eace0b4ed9ba5b7677bb618",
+          "size": 37179
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:c4e9406357ab6ba9cc171d9c6da018aba5aaa4eec0fa4e9ca34e89e9ec07d98c",
+          "size": 69744
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:fbf7c7028dc238451a8fd40c9675ecba3e7733555646a2db53bafb48fab35c37",
+          "size": 19560637
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "size": 32
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "size": 32
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:92c5c475ab3917d5c0943d1aceb2395f99b1265caa64aa1a379725040559be33",
+          "size": 99
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:1b4746a07dcbaf6316c454c0bae0d0f30f132675f0eb54c7f84aa21a8070c752",
+          "size": 47930478
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:d1c591b43542de5c747b967902d527f55a3039a7422d000474165140557b8737",
+          "size": 4490
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:c1f7df5d26c03be3ee67dcaa370517b5cac7eba2089d4b9ed172b2b8451dbdc2",
+          "size": 961
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:ff8f22125ad2050cff8b203caf65951b85b3f668f18a5bdd11c75dd85608f0f5",
+          "size": 88896392
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "digest": "sha256:411141593df7ad34cd15563653a7f747d63e7db29dd3350d83de1d4eda4717c0",
+          "size": 2979
+        }
+      ],
+      "compressedLayerBytes": 361823969,
+      "configVerifiedByLocalContentSha256": true,
+      "manifestVerifiedByLocalContentSha256": true,
+      "configSummary": {
+        "os": "linux",
+        "architecture": "amd64",
+        "environmentNames": [
+          "PATH",
+          "DEBIAN_FRONTEND",
+          "SANDBOX_VERSION",
+          "PYTHON_POOL_MIN_SIZE",
+          "JAVASCRIPT_POOL_MIN_SIZE",
+          "TYPESCRIPT_POOL_MIN_SIZE"
+        ],
+        "rootfsDiffIds": [
+          "sha256:c0359c5b6ede84d4a083d06d35ee77f0b338dfb17423771854d007d89953fb3e",
+          "sha256:3d65b9874032d7fcc188f6bdfaf5b13788ab5b0bbefa77f4a5ac28c598bf1941",
+          "sha256:0576eb869f395313a1aa5f621268dfb9b5682ec97cf15fe71e371483f5c80fba",
+          "sha256:15ded8de01e6eca481f1a339c99bb4cfda5d23b1dfbc82a4cebb24c5c9a017a8",
+          "sha256:86a3be679e01b1fcee6c778834a25689e30f6071f66576d25fbffc5fce5aa98e",
+          "sha256:f334ab63d20359b7cffc52ca264dd415747a8d4ff7bfbb6149008b8683965dee",
+          "sha256:9b70e64f8f280bd9fa74b9185f0bf19604eaef611dd83c275886a24799d154e5",
+          "sha256:713264a10ffa9ed08c39191b9e03b8f298baa0a1d87f6e58589c8990a25743f3",
+          "sha256:1e82d0f1454bb6187960082585b9b98906b7a52f6ae24fdf1f51fe9e6e91e0e6",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:55394ae40b31c896ec476b35271dc2785c15c370ba8395e115d5a8b20a095f61",
+          "sha256:703eb6bf565d44cb0066bd69bf4b74dd6d5160e55cb1728bc0b1abb242c1a489",
+          "sha256:b7cb327a353f555554a14193e784b45adaf249df9b105bbbe7fd1632fc8bf515",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:6996f5cb764794f926da271d756055e0885640baf700c5467fe6cd5a86623b0e",
+          "sha256:4e52759b8746781db6506ca2dcbacd24e6930e844e72f84bbed3dcf84095e8cf",
+          "sha256:d046221a87ad549a2b8c422442c599d884fada666e0ad514529248a68264533f",
+          "sha256:a07f0fd21a039d53d1a8b570dba45f06e2105dbe09387f538cd64ec206f2037a",
+          "sha256:987f78f14e7466e79ca69151b1ffe93521e6d767de288c6ecdec7ab5de0a7608",
+          "sha256:9eec22a452a78c5b6c09e7876a35359c561543a57864b81ea686db90d12edb8d"
+        ],
+        "historyEntries": 35
+      }
+    }
+  },
+  "localMetadataReads": [
+    {
+      "command": [
+        "colima",
+        "ssh",
+        "--profile",
+        "riffology-m0",
+        "--",
+        "sudo",
+        "ctr",
+        "--namespace",
+        "moby",
+        "content",
+        "get",
+        "sha256:eab5723438fe6e5bc6482b79502b5e097639f1a14066ae3ac224e501904f41ac"
+      ],
+      "exitCode": 0,
+      "bytes": 4615,
+      "digestVerified": true
+    },
+    {
+      "command": [
+        "colima",
+        "ssh",
+        "--profile",
+        "riffology-m0",
+        "--",
+        "sudo",
+        "ctr",
+        "--namespace",
+        "moby",
+        "content",
+        "get",
+        "sha256:6e79b2421d7c11638694e50dae871328105c946756a111258af7936dbbbe487f"
+      ],
+      "exitCode": 0,
+      "bytes": 8864,
+      "digestVerified": true
+    },
+    {
+      "command": [
+        "colima",
+        "ssh",
+        "--profile",
+        "riffology-m0",
+        "--",
+        "sudo",
+        "ctr",
+        "--namespace",
+        "moby",
+        "content",
+        "get",
+        "sha256:dd7b4210a2c28bada26ef0aca1cb4cfae82918602b96cc2916c9a5045f39fdda"
+      ],
+      "exitCode": 0,
+      "bytes": 4425,
+      "digestVerified": true
+    },
+    {
+      "command": [
+        "colima",
+        "ssh",
+        "--profile",
+        "riffology-m0",
+        "--",
+        "sudo",
+        "ctr",
+        "--namespace",
+        "moby",
+        "content",
+        "get",
+        "sha256:ffa7f77ec007ce13c193e9280e3c06a9d46b37cbbd3aafca4c8c38f745eda3d0"
+      ],
+      "exitCode": 0,
+      "bytes": 9064,
+      "digestVerified": true
+    }
+  ],
+  "registryReadOrUploadVerification": "not_run",
+  "finalized": true,
+  "trustedCopyLayerVerification": {
+    "allFiveSourceFilesMatch": true,
+    "fileSha256": {
+      "opt/riffology/package-lock.json": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb",
+      "opt/riffology/package.json": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e",
+      "opt/riffology/services/runtime/controlled-pi.mjs": "8425ecbf88efe34e5132a6c2e26f53ccaea738fe3a20587d60b08067b271a157",
+      "opt/riffology/services/runtime/pi-probe-evidence.mjs": "bb8395477543d6a52c9a4faa830b0dab5fcbecf487f3d2abf571e514041c96cf",
+      "opt/riffology/scripts/m0/pi-live-probe.mjs": "0b0a268c177f7a1c929f89c8bf094275d32077400a672ff12b386fd7217594d3"
+    },
+    "localLayerReads": [
+      {
+        "layerDigest": "sha256:66f758c785bbbc752b6db927c9f6065591fea86fb4d8a226ad3f9be25e6c7117",
+        "bytes": 41721,
+        "digestVerified": true,
+        "regularFiles": [
+          "opt/riffology/package-lock.json",
+          "opt/riffology/package.json"
+        ],
+        "exitCode": 0
+      },
+      {
+        "layerDigest": "sha256:948aa8912c61116be681530bbccd2978634e3cd5328e5e77e4a8449cb5d87a44",
+        "bytes": 6126,
+        "digestVerified": true,
+        "regularFiles": [
+          "opt/riffology/services/runtime/controlled-pi.mjs",
+          "opt/riffology/services/runtime/pi-probe-evidence.mjs"
+        ],
+        "exitCode": 0
+      },
+      {
+        "layerDigest": "sha256:863f858f73c677e4b2ad56edf3b0ad1e24b83b4d7af484d3882efa122886de04",
+        "bytes": 2313,
+        "digestVerified": true,
+        "regularFiles": [
+          "opt/riffology/scripts/m0/pi-live-probe.mjs"
+        ],
+        "exitCode": 0
+      }
+    ],
+    "noContainerStart": true
+  }
+}

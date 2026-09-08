@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T05:17:39.252Z",
+  "cwd": "/Users/gaojihe/apps/riffology-cloud",
+  "mode": "cloud",
+  "checks": [
+    {
+      "name": "node",
+      "status": "passed",
+      "version": "25.3.0",
+      "requirement": ">=22.19"
+    },
+    {
+      "name": "dependencies",
+      "status": "passed",
+      "versions": {
+        "@earendil-works/pi-coding-agent": {
+          "expected": "0.85.0",
+          "lock": "0.85.0",
+          "installed": "0.85.0"
+        },
+        "@cloudflare/sandbox": {
+          "expected": "0.12.9",
+          "lock": "0.12.9",
+          "installed": "0.12.9"
+        },
+        "wrangler": {
+          "expected": "4.129.0",
+          "lock": "4.129.0",
+          "installed": "4.129.0"
+        },
+        "typescript": {
+          "expected": "7.0.2",
+          "lock": "7.0.2",
+          "installed": "7.0.2"
+        }
+      },
+      "mismatches": []
+    },
+    {
+      "name": "docker",
+      "status": "passed",
+      "serverVersion": "29.5.2"
+    },
+    {
+      "name": "git",
+      "status": "passed",
+      "head": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+      "dirty": true,
+      "packageLockSha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+    }
+  ],
+  "cloud": {
+    "enabled": true,
+    "checks": [
+      {
+        "name": "whoami",
+        "success": true,
+        "status": "passed",
+        "exitCode": 0,
+        "accountId": null,
+        "errorType": null
+      },
+      {
+        "name": "containers",
+        "success": false,
+        "status": "blocked",
+        "exitCode": 1,
+        "accountId": null,
+        "errorType": "paid-plan-required",
+        "stderr": "\u001b[33m▲ \u001b[43;33m[\u001b[43;30mWARNING\u001b[43;33m]\u001b[0m \u001b[1mProxy environment variables detected. We'll use your proxy for fetch requests.\u001b[0m\n\n\n"
+      },
+      {
+        "name": "r2",
+        "success": false,
+        "status": "blocked",
+        "exitCode": 1,
+        "accountId": null,
+        "errorType": "r2-disabled",
+        "stderr": "\u001b[33m▲ \u001b[43;33m[\u001b[43;30mWARNING\u001b[43;33m]\u001b[0m \u001b[1mProxy environment variables detected. We'll use your proxy for fetch requests.\u001b[0m\n\n\n\u001b[31m✘ \u001b[41;31m[\u001b[41;97mERROR\u001b[41;31m]\u001b[0m \u001b[1mA request to the Cloudflare API (/accounts/[redacted]/r2/bu"
+      }
+    ]
+  },
+  "overallStatus": "blocked"
+}

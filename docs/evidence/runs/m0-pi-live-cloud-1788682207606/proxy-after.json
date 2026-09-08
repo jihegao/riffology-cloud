@@ -1,0 +1,129 @@
+{
+  "at": "2026-09-06T08:16:24.006Z",
+  "status": 200,
+  "body": {
+    "runId": "go-live-g0-20260906",
+    "mode": "go-live-only",
+    "initialized": true,
+    "tenantId": "m0-alpha",
+    "workspaceId": "m0-alpha-go-live-g0-20260906",
+    "revoked": true,
+    "instanceNonce": "9f32a4ef-e5f0-4120-bb0c-4d8e5f22bf39",
+    "ledger": {
+      "approval": "{\"kind\":\"trusted-pi\",\"principal\":\"m0-trusted-pi\",\"tenantId\":\"m0-alpha\",\"workspaceId\":\"m0-alpha-go-live-g0-20260906\",\"runId\":\"go-live-g0-20260906\",\"expiresAtMs\":1788682833055,\"provider\":\"opencode-go\",\"model\":\"deepseek-v4-flash\",\"budgetProfile\":\"go-flash-context-20260906\",\"maxRunMicrousd\":923424,\"rate\":{\"provider\":\"opencode-go\",\"model\":\"deepseek-v4-flash\",\"version\":\"go-peak-public-tariff-20260906\",\"source\":\"https://opencode.ai/docs/go/\",\"verifiedAtMs\":1788652800000,\"expiresAtMs\":1788682833055,\"inputMicrousdPerMillion\":440000,\"outputMicrousdPerMillion\":1320000,\"boundsAllBillableTokens\":true}}",
+      "heldMicrousd": 923424,
+      "dispatchCount": 2,
+      "calls": {
+        "call-1": {
+          "invocation": {
+            "kind": "trusted-pi",
+            "principal": "m0-trusted-pi",
+            "tenantId": "m0-alpha",
+            "workspaceId": "m0-alpha-go-live-g0-20260906",
+            "runId": "go-live-g0-20260906",
+            "callId": "call-1",
+            "expiresAtMs": 1788682833055
+          },
+          "platformRequestId": "ef86510c-f162-478f-8548-be22dface1a6",
+          "payloadHash": "58ee83195b7123ce395bef08f6fcd3226ac4f000fead4f9588a0a62a1c24fe54",
+          "provider": "opencode-go",
+          "model": "deepseek-v4-flash",
+          "inputTokenUpperBound": 1048576,
+          "maxOutputTokens": 256,
+          "inputBoundVersion": "go-flash-context-20260906",
+          "reservationMicrousd": 461712,
+          "rateVersion": "go-peak-public-tariff-20260906",
+          "state": "terminal",
+          "dispatchOrdinal": 1,
+          "facts": {
+            "outcome": "completed",
+            "errorCode": null,
+            "upstreamHttpStatus": 200,
+            "upstreamRequestId": null,
+            "upstreamRequestIdHeader": null,
+            "upstreamResponseId": "334a0284-0d81-4eb8-8132-fff02c269441",
+            "responseBytes": 6265,
+            "usage": {
+              "status": "known",
+              "reason": "provider-terminal-usage",
+              "observedTokens": {
+                "input": 81,
+                "output": 24,
+                "total": 105,
+                "cacheRead": 0,
+                "cacheWrite": null,
+                "reasoning": null
+              },
+              "billingAmount": null,
+              "billingStatus": "held-for-review"
+            }
+          },
+          "billingStatus": "held-for-review",
+          "billingAmount": null
+        },
+        "call-2": {
+          "invocation": {
+            "kind": "trusted-pi",
+            "principal": "m0-trusted-pi",
+            "tenantId": "m0-alpha",
+            "workspaceId": "m0-alpha-go-live-g0-20260906",
+            "runId": "go-live-g0-20260906",
+            "callId": "call-2",
+            "expiresAtMs": 1788682833055
+          },
+          "platformRequestId": "7e12bbe6-6cf7-438f-8c73-c7b61cfefc13",
+          "payloadHash": "f1ecd5e79c52c302903e44becc9a9b053d268f622c83e454d7d1aa4750054832",
+          "provider": "opencode-go",
+          "model": "deepseek-v4-flash",
+          "inputTokenUpperBound": 1048576,
+          "maxOutputTokens": 256,
+          "inputBoundVersion": "go-flash-context-20260906",
+          "reservationMicrousd": 461712,
+          "rateVersion": "go-peak-public-tariff-20260906",
+          "state": "terminal",
+          "dispatchOrdinal": 2,
+          "facts": {
+            "outcome": "cancelled",
+            "errorCode": "proxy-cancelled",
+            "upstreamHttpStatus": 200,
+            "upstreamRequestId": null,
+            "upstreamRequestIdHeader": null,
+            "upstreamResponseId": "03fe7be4-f019-4116-b317-9270ae627d1f",
+            "responseBytes": 7284,
+            "usage": {
+              "status": "unknown",
+              "reason": "non-final-cancelled",
+              "observedTokens": {
+                "input": null,
+                "output": null,
+                "total": null,
+                "cacheRead": null,
+                "cacheWrite": null,
+                "reasoning": null
+              },
+              "billingAmount": null,
+              "billingStatus": "held-for-review"
+            }
+          },
+          "billingStatus": "held-for-review",
+          "billingAmount": null
+        }
+      }
+    },
+    "fixtureDispatches": 0,
+    "cancelledCalls": [
+      "call-2"
+    ],
+    "activeRequests": 0,
+    "realProviderCalls": null,
+    "liveEnabled": true,
+    "budgetBasis": "public-contract-token-value-upper-bound",
+    "budgetProfile": "go-flash-context-20260906",
+    "maxPlatformDispatches": 2,
+    "upstreamDispatchIntents": 2,
+    "rawTokenValueReservedMicrousd": 923424,
+    "GoQuotaDelta": null,
+    "cashCharge": null,
+    "absoluteCashCapProven": false
+  }
+}

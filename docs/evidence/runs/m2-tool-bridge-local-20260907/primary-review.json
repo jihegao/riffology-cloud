@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-tool-bridge-local-20260907",
+  "observedAt": "2026-09-06T17:46:39Z",
+  "environment": "local-workerd-colima",
+  "decision": "accepted-as-local-durable-tool-bridge-to-project-sandbox-candidate",
+  "source": {
+    "toolLedgerSha256": "deeac8412f70c79fb84e414ad3ae9be6eefa3a9c7ee89e6697933d83ed1fc153",
+    "toolDispatcherSha256": "175443d9be6f7c992845a4ebb11b1dcfd000d9d50fb84510a44cf56815970038",
+    "projectSandboxEffectsSha256": "a6038f98ea94e587d9620fefd74c2c798e27b20a7e5178e7d3fe98e9e98fa5f6",
+    "toolBridgeDurableSha256": "02f35e5a258224c71661c47f7f1773f18fbe845600d3e3a94adadb4885a2aca4",
+    "sandboxPolicySha256": "a4b77143284be486d27c4d625fef85a0f80db276c18b9e294876932d0fe49c1e",
+    "capabilitySha256": "4e6e3ce1d5cd77abe164316fa8e53bef97180be77c5c98d2f85fbd70dab2e69a",
+    "sandboxClassesSha256": "8e5a497a597f5f094bea5b337c831e50491ddf51ef1c9437fc51e2814a661296",
+    "nativeAdapterSha256": "db6fd73bc2df4079789668da89bc022c2ee39c4f0015fe19e0586c326c429e36",
+    "probeSha256": "6dcbe5f4360f865f92a4cbafb406adfd44e49e734b38038924901a7a2fbb6583",
+    "wranglerConfigSha256": "45d94aa84890320565ce65b46074f68b781d3b9b86812a52070b9c4b446b37a2",
+    "adapterTestSha256": "057a87872dcc0d0ed67b8005ea590933a8c8cc5b803135e3dc5f7ff51388c41d"
+  },
+  "runtime": {
+    "wranglerVersion": "4.129.0",
+    "sandboxSdkVersion": "0.12.9",
+    "dockerServerVersion": "29.5.2",
+    "workerMode": "local",
+    "compatibilityDate": "2026-09-06",
+    "dryRunBundlePassed": true,
+    "dryRunBoundClasses": ["ToolBridgeAgent", "ProjectToolSandbox"],
+    "dryRunCapabilityValueHidden": true,
+    "repositoryCapabilityKeyHits": 0,
+    "imageCapabilityKeyAbsent": true,
+    "productionSecretProvisioned": false
+  },
+  "toolBridgeProbe": {
+    "endpoint": "http://127.0.0.1:8796/local-tool-bridge-probe",
+    "requestMethod": "POST",
+    "runs": 2,
+    "httpStatus": [200, 200],
+    "ledger": "sqlite-durable-object-local",
+    "actorSelection": {
+      "toolBridgeDerivedFromScopeTurnDispatch": true,
+      "projectSandboxDerivedFromScopeTurnDispatch": true,
+      "wrongToolBridgeActorRejectedBeforeLedgerOrEffect": true
+    },
+    "idempotency": {
+      "terminalReplayStable": true,
+      "changedPayloadWithSameCommandIdRejected": true,
+      "effectIds": [
+        "d9dcc2d1-82e5-4def-be8a-7de2c8aaeb54",
+        "83405af8-13fb-4864-9622-6d41165747c8"
+      ]
+    },
+    "turnIds": [
+      "turn-d3fe386a-f1a0-4614-9869-cca47d00c57b",
+      "turn-261e1b50-683a-4403-9d97-0572ed379965"
+    ],
+    "terminal": {
+      "status": "completed",
+      "commandPayloadStripped": true,
+      "operation": "write",
+      "path": "native-probe.txt",
+      "bytes": 14,
+      "sha256": "6a48f6c8476f678074895b9c6bfb040ff68234c23e5aa282426044eafb00b280",
+      "readBackPath": "/workspace/native-probe.txt",
+      "readBackContent": "sandbox-rpc-ok"
+    }
+  },
+  "fullChecks": {
+    "path": "../m1-local-20260906174359199/local-checks.json",
+    "sha256": "f6d3a64420c5c5bff14969b3d302785d9079f8a6e657f4aed37bcd89fa734e6d",
+    "logSha256": "4e02037e7e87a0d9ca55a2b68c17460731d374466d432c1a7af94f1ef285db2e",
+    "passed": true,
+    "sourceStableDuringCheck": true,
+    "sourceCount": 284,
+    "sourceSha256": "3606bc1be1a5ca35e9ad6cf0268c1060ae8d38899100aabf01f8e7e6ab30440a",
+    "m0": { "pass": 348, "skip": 1, "fail": 0 },
+    "m1": { "pass": 108, "skip": 0, "fail": 0 },
+    "m2": { "pass": 96, "skip": 0, "fail": 0 }
+  },
+  "validationNotes": {
+    "priorFullCheck": "m1-local-20260906174222428",
+    "priorFullCheckFailure": "one existing M0 concurrent-process timing assertion observed zero rather than one dispatch",
+    "focusedM0ReleaseProbeRerun": { "pass": 11, "fail": 0 },
+    "finalFullCheckPassed": true
+  },
+  "independentReview": {
+    "initialP0": 0,
+    "initialP1": 1,
+    "fixedP1": ["the local Wrangler config committed a plaintext fixture capability key"],
+    "finalP0": 0,
+    "finalP1": 0
+  },
+  "cleanup": {
+    "wranglerStopped": true,
+    "port8796Listening": false,
+    "matchingRunningContainers": 0
+  },
+  "acceptedProperties": [
+    "A local SQLite Tool Ledger grants one dispatch before the platform adapter issues a capability or calls the Project Sandbox.",
+    "Tool Bridge and Project Sandbox actor names are derived from normalized scope, Turn and dispatch identity; the caller does not supply either actor name.",
+    "The Project Sandbox validates the signed actor-bound capability again before the native file effect.",
+    "A completed command is replayed from the durable Ledger with the same effect and result; changed payload under the same command id is rejected.",
+    "The terminal Ledger row strips the command payload while retaining bounded result evidence.",
+    "The repository and local Wrangler config contain no capability signing key; the final local run injected an ephemeral fixture and Wrangler displayed it as hidden."
+  ],
+  "notAccepted": [
+    "authenticated internal HTTP Tool Bridge endpoint called by Trusted Pi",
+    "WorkspaceAgent ownership check and Turn dispatch wiring",
+    "production Wrangler secret provisioning or rotation",
+    "cloud deployment or real Cloudflare Container application",
+    "cross-tenant, cross-workspace and old-generation cloud rejection",
+    "Bash process registry, cancellation and watchdog",
+    "large-result immutable artifact channel",
+    "R2 Revision and Pi Session checkpoint"
+  ],
+  "mutations": {
+    "localImageBuild": true,
+    "localWorkerdRpc": true,
+    "cloudDeploy": false,
+    "cloudResourceCreate": false,
+    "modelCalls": 0,
+    "commit": false,
+    "push": false
+  }
+}

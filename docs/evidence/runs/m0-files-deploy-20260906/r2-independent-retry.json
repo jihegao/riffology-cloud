@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-09-06T03:19:55.948464+00:00",
+  "firstAttempt": "r2-independent-read.json",
+  "retryReason": "Two read-only GETs failed with fetch failed; no mutation replay",
+  "objects": [
+    {
+      "key": "m0-files/7c849ca453c9752320dce47d6630ad123baec30fe4f764f3a25e563f229b5df4/blobs/180b5296454abd65109c10e110cd7def953eefc73ffb78898cd41193e0e949a5",
+      "exitCode": 0,
+      "bytes": 30,
+      "sha256": "180b5296454abd65109c10e110cd7def953eefc73ffb78898cd41193e0e949a5",
+      "matches": true
+    },
+    {
+      "key": "m0-files/7c849ca453c9752320dce47d6630ad123baec30fe4f764f3a25e563f229b5df4/blobs/36b547e0042cbabffb96e68bb3d14f616ef6ebfdbafb0edc25ac44ec780acbe1",
+      "exitCode": 0,
+      "bytes": 61,
+      "sha256": "36b547e0042cbabffb96e68bb3d14f616ef6ebfdbafb0edc25ac44ec780acbe1",
+      "matches": true
+    }
+  ],
+  "allTenVerified": true
+}

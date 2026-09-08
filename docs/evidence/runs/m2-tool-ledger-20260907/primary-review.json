@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-tool-ledger-20260907",
+  "observedAt": "2026-09-06T16:05:05Z",
+  "environment": "local-plus-read-only-cloud",
+  "decision": "accepted-as-domain-layer-only",
+  "source": {
+    "toolLedgerSha256": "deeac8412f70c79fb84e414ad3ae9be6eefa3a9c7ee89e6697933d83ed1fc153",
+    "toolDispatcherSha256": "aab2ad9cde299fb5cdcb355e388d01913256c7d8c238d7a33cb081a986be62fd",
+    "sandboxPolicySha256": "a4b77143284be486d27c4d625fef85a0f80db276c18b9e294876932d0fe49c1e",
+    "sandboxClassesSha256": "13e442efcf85c819c8508ced583d5e4952ffc9ffd2bab7cf4c13c23d2c77e38a"
+  },
+  "fullChecks": {
+    "path": "../m0-local-20260906160327811/local-checks.json",
+    "sha256": "3d81b054a9b61cae8c5989ea75948a31e574ab4cdef7356c01eb979e5cbae245",
+    "passed": true,
+    "sourceStableDuringCheck": true,
+    "sourceCount": 267,
+    "sourceSha256": "e56b4f620e4f43ff7cbb82cb325d81bb6c7cb7f6d723774a27c241fc5e123520",
+    "m0": { "pass": 348, "skip": 1, "fail": 0 },
+    "m1": { "pass": 107, "skip": 0, "fail": 0 },
+    "m2": { "pass": 61, "skip": 0, "fail": 0 }
+  },
+  "independentReview": {
+    "p0": 0,
+    "p1Found": 1,
+    "p1Fixed": 1,
+    "fixedIssue": "Trusted Pi internal target host was derived from a binding name and differed from the allowlisted host; forwarding now uses the fixed host constants and the test asserts destination-host equality."
+  },
+  "acceptedProperties": [
+    "A command intent is persisted before any project effect authorization.",
+    "Only the first accepted-to-dispatched transition can authorize execute.",
+    "Transport uncertainty and absent effects are observed under the same effectId and never auto-reexecuted.",
+    "Runtime receipts bind scope, turn, dispatch, command and effect before mutation.",
+    "Terminal command payloads are stripped while digest and bounded result evidence remain.",
+    "Trusted Pi and project Sandbox actor IDs are distinct deterministic full-SHA-256 derivations.",
+    "Trusted Pi outbound is restricted to two exact internal POST routes with rebuilt identity headers; project outbound is denied."
+  ],
+  "notAccepted": [
+    "WorkspaceAgent alarm or TurnDispatcher production wiring",
+    "real Pi Runtime",
+    "Project Sandbox effect executor or bash watchdog",
+    "real dual-Sandbox environment and image inspection",
+    "R2 Revision and Pi Session checkpoint",
+    "authenticated cloud SSE or user workbench flow"
+  ],
+  "cloudReadOnlyCheck": {
+    "legacyWorker": "riffology-demo",
+    "legacyWorkerApiCode": 10007,
+    "legacyWorkerExists": false,
+    "legacyDnsName": "riffology-demo.gaojihe.cn",
+    "legacyDnsRecordCount": 0,
+    "currentRoute": "https://m1.riff-demo.gaojihe.cn/",
+    "currentRouteHttpStatus": 200
+  },
+  "mutations": {
+    "cloudDeploy": false,
+    "cloudResourceCreate": false,
+    "modelCalls": 0,
+    "commit": false,
+    "push": false
+  }
+}

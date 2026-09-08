@@ -1,0 +1,21 @@
+{
+  "operation": "stop-leftover-local-wrangler-proxy-helpers",
+  "observedAt": "2026-09-05T06:37:05.947Z",
+  "environment": "local-docker",
+  "records": [
+    {
+      "name": "workerd-riffology-m0-preview-staging-PreviewSandbox-e9e666b3820ef2dd7b8e5985ad196283e3618f342f3c32597ccb8b56e6bc6eb7-proxy",
+      "image": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "runningBefore": true,
+      "runningAfter": false
+    },
+    {
+      "name": "workerd-riffology-m0-preview-staging-PreviewSandbox-cc43f4fc7096deeddf38117da4ecd22534a40b7eaadee0d3401f52ed91ec4305-proxy",
+      "image": "cloudflare/proxy-everything:3cb1195@sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "runningBefore": true,
+      "runningAfter": false
+    }
+  ],
+  "scope": "Sandbox destroy receipts do not cover Wrangler development proxy helper lifetime",
+  "cloudGatePassed": false
+}

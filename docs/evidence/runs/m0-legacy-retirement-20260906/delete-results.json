@@ -1,0 +1,48 @@
+{
+  "results": [
+    {
+      "kind": "delete-legacy-main-dns",
+      "path": "/zones/c97b548800561fada1a912c234696db1/dns_records/fec726a7b47cd68f367db51731435cd0",
+      "observedAt": "2026-09-06T01:34:04.573Z",
+      "status": 200,
+      "success": true,
+      "result": {
+        "id": "fec726a7b47cd68f367db51731435cd0"
+      },
+      "errors": []
+    },
+    {
+      "kind": "delete-legacy-preview-dns",
+      "path": "/zones/c97b548800561fada1a912c234696db1/dns_records/cf976826e3c74f2239b43891ac37a723",
+      "observedAt": "2026-09-06T01:34:04.833Z",
+      "status": 200,
+      "success": true,
+      "result": {
+        "id": "cf976826e3c74f2239b43891ac37a723"
+      },
+      "errors": []
+    },
+    {
+      "kind": "delete-legacy-route",
+      "path": "/zones/c97b548800561fada1a912c234696db1/workers/routes/807e9f94a77b4021bd88bc735226590c",
+      "observedAt": "2026-09-06T01:34:05.238Z",
+      "status": 200,
+      "success": true,
+      "result": {
+        "id": "807e9f94a77b4021bd88bc735226590c"
+      },
+      "errors": []
+    },
+    {
+      "kind": "delete-legacy-worker",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-demo",
+      "observedAt": "2026-09-06T01:34:05.625Z",
+      "status": 200,
+      "success": true,
+      "result": {
+        "id": "9d8cf317df2b4abb8feb4864ab8bb377"
+      },
+      "errors": []
+    }
+  ]
+}

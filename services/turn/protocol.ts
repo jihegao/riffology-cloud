@@ -1,0 +1,100 @@
+import { initialWorkspaceReference, type InitialWorkspaceReference } from '../turn-runtime/initial-workspace.ts';
+export type TurnScope = { tenantId:string; projectId:string; workspaceId:string; workspaceGeneration:number };
+export type TurnActor = { userId:string; authVersion:number };
+export type TurnStatus = 'queued'|'running'|'cancelling'|'checkpointing'|'completed'|'failed'|'cancelled'|'interrupted';
+export type RuntimeEventType = 'assistant.delta'|'assistant.message'|'tool.started'|'tool.updated'|'tool.completed'|'provider.status';
+export type TurnEventType = 'turn.queued'|'turn.started'|'turn.cancel_requested'|'turn.checkpointing'|'turn.completed'|'turn.failed'|'turn.cancelled'|'turn.interrupted'|RuntimeEventType;
+export type CheckpointReceipt = { revisionId:string; objectKey:string; filesSha256:string; sessionSha256:string; committedAt:number };
+export type InitialWorkspaceBase = { reference:InitialWorkspaceReference; filesSha256:string };
+export type TurnBaseCheckpoints = { workspace:CheckpointReceipt|null; session:CheckpointReceipt|null; initial?:InitialWorkspaceBase };
+export type SessionRecord = { id:string; scope:TurnScope; actorUserId:string; actorAuthVersion:number; title:string; createdAt:number; updatedAt:number; head:CheckpointReceipt|null };
+export type TurnRecord = {
+  id:string; sessionId:string; scope:TurnScope; actor:TurnActor; requestKey:string; payloadSha256:string; message:string;
+  status:TurnStatus; createdAt:number; updatedAt:number; startedAt:number|null; finishedAt:number|null;
+  startedSequence:number|null; terminalSequence:number|null;
+  dispatchId:string|null; runtimeGeneration:number|null; cancelRequestedAt:number|null;
+  base:TurnBaseCheckpoints|null;
+  executionOutcome:'completed'|'failed'|'cancelled'|'interrupted'|null; errorCode:string|null;
+  persistenceOutcome:'saved'|'failed'|null; persistenceErrorCode:string|null; checkpoint:CheckpointReceipt|null;
+};
+export type TurnEvent = { sequence:number; eventId:string; turnId:string; workspaceId:string; runtimeGeneration:number; type:TurnEventType; at:number; payload:Record<string,unknown> };
+export type TurnJournalState = {
+  schemaVersion:3; scope:TurnScope; nextSequence:number; oldestSequence:number; retentionBytes:number; activeTurnId:string|null; workspaceHead:CheckpointReceipt|null;
+  sessions:Record<string,SessionRecord>; turns:Record<string,TurnRecord>;
+  sessionIntents:Record<string,{payloadSha256:string;sessionId:string}>;
+  turnIntents:Record<string,{payloadSha256:string;turnId:string}>;
+  eventReceipts:Record<string,{payloadSha256:string;sequence:number;event:TurnEvent}>; events:TurnEvent[];
+};
+export type PublicSessionRecord = Omit<SessionRecord,'actorUserId'|'actorAuthVersion'>;
+export type PublicTurnRecord = Omit<TurnRecord,'requestKey'|'payloadSha256'|'dispatchId'|'base'|'startedSequence'|'terminalSequence'>;
+export type TurnJournalView = {
+  schemaVersion:1; scope:TurnScope; nextSequence:number; activeTurnId:string|null;
+  sessions:Record<string,PublicSessionRecord>; turns:Record<string,PublicTurnRecord>;
+};
+
+export const TURN_EVENT_LIMIT=2048;
+export const TURN_EVENT_BYTES_LIMIT=4*1024*1024;
+export const TURN_EVENT_RECEIPT_LIMIT=4096;
+const ID=/^[A-Za-z0-9_-]{1,128}$/;
+const SHA=/^[a-f0-9]{64}$/;
+export function turnId(value:unknown):string{if(typeof value!=='string'||!ID.test(value))throw Error('invalid-turn-identifier');return value;}
+export function positive(value:unknown):number{if(!Number.isSafeInteger(value)||(value as number)<1)throw Error('invalid-turn-integer');return value as number;}
+export function scope(value:unknown):TurnScope{
+  if(!value||typeof value!=='object'||Array.isArray(value))throw Error('invalid-turn-scope');
+  const v=value as Record<string,unknown>,keys=['tenantId','projectId','workspaceId','workspaceGeneration'];
+  if(Object.keys(v).length!==keys.length||keys.some(key=>!Object.hasOwn(v,key)))throw Error('invalid-turn-scope');
+  return {tenantId:turnId(v.tenantId),projectId:turnId(v.projectId),workspaceId:turnId(v.workspaceId),workspaceGeneration:positive(v.workspaceGeneration)};
+}
+export function actor(value:unknown):TurnActor{
+  if(!value||typeof value!=='object'||Array.isArray(value))throw Error('invalid-turn-actor');
+  const v=value as Record<string,unknown>;
+  if(Object.keys(v).length!==2||!Object.hasOwn(v,'userId')||!Object.hasOwn(v,'authVersion'))throw Error('invalid-turn-actor');
+  return {userId:turnId(v.userId),authVersion:positive(v.authVersion)};
+}
+export function message(value:unknown):string{
+  if(typeof value!=='string'||value.length<1||value.length>16000||/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u.test(value))throw Error('invalid-turn-message');
+  return value;
+}
+export function title(value:unknown):string{
+  if(typeof value!=='string'||!value.trim()||value.trim().length>120||/[\u0000-\u001f\u007f]/u.test(value))throw Error('invalid-session-title');
+  return value.trim();
+}
+export function sha(value:unknown):string{if(typeof value!=='string'||!SHA.test(value))throw Error('invalid-turn-sha');return value;}
+export function checkpointObjectKey(value:unknown):string{
+  if(typeof value!=='string'||value.length<1||value.length>1024||/[^A-Za-z0-9._\/-]/u.test(value)||value.startsWith('/')||value.endsWith('/')||value.includes('//'))throw Error('invalid-checkpoint-object-key');
+  const parts=value.split('/');if(parts.some(part=>!part||part==='.'||part==='..'))throw Error('invalid-checkpoint-object-key');return value;
+}
+export function checkpointReceipt(value:unknown):CheckpointReceipt{
+  if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype)throw Error('invalid-checkpoint-receipt');
+  const receipt=value as Record<string,unknown>,keys=['revisionId','objectKey','filesSha256','sessionSha256','committedAt'];
+  if(Object.keys(receipt).length!==keys.length||keys.some(key=>!Object.hasOwn(receipt,key)))throw Error('invalid-checkpoint-receipt');
+  return {revisionId:turnId(receipt.revisionId),objectKey:checkpointObjectKey(receipt.objectKey),filesSha256:sha(receipt.filesSha256),sessionSha256:sha(receipt.sessionSha256),committedAt:positive(receipt.committedAt)};
+}
+export function initialWorkspaceBase(value:unknown):InitialWorkspaceBase{
+  if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype)throw Error('invalid-initial-workspace-base');
+  const raw=value as Record<string,unknown>;
+  if(Object.keys(raw).length!==2||!Object.hasOwn(raw,'reference')||!Object.hasOwn(raw,'filesSha256'))throw Error('invalid-initial-workspace-base');
+  return {reference:initialWorkspaceReference(raw.reference),filesSha256:sha(raw.filesSha256)};
+}
+export function turnBaseCheckpoints(value:unknown):TurnBaseCheckpoints{
+  if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype)throw Error('invalid-turn-base-checkpoints');
+  const base=value as Record<string,unknown>,keys=Object.hasOwn(value,'initial')?['workspace','session','initial']:['workspace','session'];
+  if(Object.keys(base).length!==keys.length||keys.some(key=>!Object.hasOwn(base,key)))throw Error('invalid-turn-base-checkpoints');
+  const workspace=base.workspace===null?null:checkpointReceipt(base.workspace),session=base.session===null?null:checkpointReceipt(base.session);
+  if(session!==null&&workspace===null)throw Error('invalid-turn-base-checkpoints');
+  if(Object.hasOwn(base,'initial')){if(workspace!==null||session!==null)throw Error('invalid-turn-base-checkpoints');return {workspace,session,initial:initialWorkspaceBase(base.initial)};}
+  return {workspace,session};
+}
+export function jsonPayload(value:unknown):Record<string,unknown>{
+  if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype)throw Error('invalid-event-payload');
+  let text:string;
+  try{text=JSON.stringify(value);}catch{throw Error('invalid-event-payload');}
+  if(new TextEncoder().encode(text).byteLength>16384||text.includes('__proto__'))throw Error('invalid-event-payload');
+  const parsed=JSON.parse(text);
+  return parsed;
+}
+export async function turnDigest(value:unknown):Promise<string>{
+  const text=JSON.stringify(value),bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
+  return [...new Uint8Array(bytes)].map(n=>n.toString(16).padStart(2,'0')).join('');
+}
+export function sameScope(a:TurnScope,b:TurnScope):boolean{return a.tenantId===b.tenantId&&a.projectId===b.projectId&&a.workspaceId===b.workspaceId&&a.workspaceGeneration===b.workspaceGeneration;}

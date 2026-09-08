@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-shared-alarm-local-20260907",
+  "observedAt": "2026-09-06T18:21:43Z",
+  "environment": "local-workerd",
+  "decision": "accepted-as-local-shared-workspace-alarm-and-turn-engine-candidate",
+  "source": {
+    "sharedAlarmSha256": "c5ba621c24ffc5eb6f68e6eba4b863a54e332976295f26987f5fdde78c584750",
+    "turnAlarmSha256": "49938324d94de2c0e7a57b8ace6d71b5dd6b68663879b8a2954933707b3c9fc2",
+    "workspaceStoreSha256": "6cef51044aad55a5e02cd5877322609c44a07410d251e1eac658e9b8776bf1dc",
+    "workspaceTurnEngineSha256": "7408ca572106db1d993e02106ffe9f59a28ca08999be0890957c22894e464266",
+    "turnJournalSha256": "1c4aa490480d0071191977e09b8bb8abc42b5ed9687d415e15c053488b7a0a7b",
+    "turnDispatcherSha256": "9634222966db6ad95585cbc51189b28ea97bf656c95bb79cc3b4e337bb971b3e",
+    "sharedAlarmTestSha256": "0367ee9ab56ea5c8ea27dc3308da8cefc9e6155c2adf2c2272c64196aab22158",
+    "workspaceTurnEngineTestSha256": "bd05ff0dc7456e5a763ad40c3fe4c44184973f5ff502ffddfc42b1e941ded05c",
+    "turnDispatcherTestSha256": "1de47bb915c8368ebf7b1c421bdff4334dfec9c9d7b73027f2b082e0f55a782e",
+    "workerdProbeSha256": "af19cc66af499f8f5cb63837cc14435073dc955d737d4623e025ee9e5637a55a",
+    "wranglerConfigSha256": "ed87f5fa755927c684a61708fa160a3b2ac199bcd2331530e0e2437eaa19aefd"
+  },
+  "workerdProbe": {
+    "endpoint": "http://127.0.0.1:8797/probe",
+    "durableObjectStorage": "real-local-sqlite",
+    "runs": 2,
+    "httpStatus": [200, 200],
+    "observations": [
+      {
+        "now": 1788718811863,
+        "workspaceAt": 1788718871863,
+        "turnFirst": 1788718841863,
+        "turnLast": 1788718901863,
+        "workspaceOnly": 1788718871863,
+        "turnEarlier": 1788718841863,
+        "turnCleared": 1788718871863,
+        "workspaceEarlier": 1788718871863,
+        "workspaceCleared": 1788718901863,
+        "allCleared": null
+      },
+      {
+        "now": 1788718818971,
+        "workspaceAt": 1788718878971,
+        "turnFirst": 1788718848971,
+        "turnLast": 1788718908971,
+        "workspaceOnly": 1788718878971,
+        "turnEarlier": 1788718848971,
+        "turnCleared": 1788718878971,
+        "workspaceEarlier": 1788718878971,
+        "workspaceCleared": 1788718908971,
+        "allCleared": null
+      }
+    ],
+    "allExpectedTransitionsMatched": true
+  },
+  "focusedChecks": {
+    "m2": { "pass": 107, "skip": 0, "fail": 0 },
+    "sharedAlarmCoversEarliestDeadline": true,
+    "turnClearRestoresWorkspaceAlarm": true,
+    "workspaceClearPreservesTurnAlarm": true,
+    "storageReopenReconstructsDeadlines": true,
+    "failedAlarmArmPreventsTurnCommit": true,
+    "concurrentCancellationCallsRuntimeCancelOnce": true
+  },
+  "fullChecks": {
+    "path": "../m1-local-20260906182108295/local-checks.json",
+    "sha256": "15fade3cf73deb8cd51967c31fdc4afd85940ea0f4b519094e20a087b6f684c9",
+    "logSha256": "a5c4f278ff035cc56a1b3f15cd6dc2b5f528e7413169563c50f512ba06161cfb",
+    "passed": true,
+    "sourceStableDuringCheck": true,
+    "sourceCount": 296,
+    "sourceSha256": "8cf8482a7f37ae9498e0d5e253a70907e000fe45906bd51b28a1a03178b58a8e",
+    "m0": { "pass": 348, "skip": 1, "fail": 0 },
+    "m1": { "pass": 108, "skip": 0, "fail": 0 },
+    "m2": { "pass": 107, "skip": 0, "fail": 0 }
+  },
+  "review": {
+    "initialP0": "Workspace provisioning and Turn scheduling shared one physical Durable Object alarm and could overwrite or delete each other's wake-up.",
+    "initialP0ResolvedAtComponentLevel": true,
+    "openP0InFrozenSlice": 0,
+    "openP1InFrozenSlice": 0,
+    "integrationConstraint": "WorkspaceAgent must not accept product Turns until a deployable product TurnRuntimePort is bound and the merged alarm handler invokes both due paths."
+  },
+  "acceptedProperties": [
+    "Workspace provisioning and Turn reconciliation persist separate logical deadlines and program the one physical Durable Object alarm to their minimum.",
+    "Clearing one logical deadline recomputes the physical alarm and preserves the other domain's deadline.",
+    "Workspace state updates and Turn wake updates reconstruct the physical alarm from durable storage after object restart.",
+    "WorkspaceTurnEngine arms the Turn alarm before committing a queued Turn or cancellation intent.",
+    "A failed alarm arm produces no durable Turn or intent acknowledgement.",
+    "Only the atomic cancellation transaction winner invokes runtime.cancel; concurrent followers observe the same dispatch.",
+    "Two real local Workerd runs exercised SQLite-backed setAlarm, getAlarm and deleteAlarm transitions with matching results."
+  ],
+  "notAccepted": [
+    "WorkspaceAgent installation of WorkspaceTurnEngine",
+    "deployable product TurnRuntimePort",
+    "Pi Session restoration, model execution or tool orchestration",
+    "R2 Revision and Checkpoint integration",
+    "staging or cloud Durable Object alarm behavior",
+    "end-to-end user Turn execution"
+  ],
+  "cleanup": {
+    "wranglerStopped": true,
+    "port8797Listening": false,
+    "uiPort4173Touched": false,
+    "uiPort4173StillListening": true
+  },
+  "mutations": {
+    "localWorkerdRpc": true,
+    "cloudDeploy": false,
+    "cloudResourceCreate": false,
+    "modelCalls": 0,
+    "commit": false,
+    "push": false
+  }
+}

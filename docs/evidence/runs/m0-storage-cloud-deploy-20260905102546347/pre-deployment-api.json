@@ -1,0 +1,12 @@
+{
+  "observedAt": "2026-09-05T10:28:13.228Z",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "script": "riffology-m0-storage-staging",
+  "method": "GET",
+  "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m0-storage-staging/deployments",
+  "httpStatus": 200,
+  "success": true,
+  "deploymentId": "d6d576ba-d53f-4b2f-8614-338b7e4c7afb",
+  "versions": [{ "version_id": "c2dd3dd5-ac4c-4ce3-afa6-74f90369000b", "percentage": 100 }],
+  "createdOn": "2026-09-05T10:01:34.906587Z"
+}

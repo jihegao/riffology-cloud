@@ -1,0 +1,58 @@
+{
+  "worker": "riffology-m0-probe-staging",
+  "createdAt": "2026-09-06T03:56:59.058Z",
+  "scope": "Boundary runtime/config/dependencies and worker tests; parallel unrelated tenancy files excluded",
+  "files": [
+    {
+      "path": "infra/wrangler.m0.jsonc",
+      "sha256": "90f87013d8699c63d929dd2ca537f52ce1859f05f618926bb623aa495e8c5f34"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+    },
+    {
+      "path": "package.json",
+      "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+    },
+    {
+      "path": "spikes/m0-cloud/auth.ts",
+      "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+    },
+    {
+      "path": "spikes/m0-cloud/env.d.ts",
+      "sha256": "1917c8a371bb116a4107b048c282c15a7307cdc4ecbfc90bac8e52372a1a7eda"
+    },
+    {
+      "path": "spikes/m0-cloud/index.ts",
+      "sha256": "cf0a5ea05597b4fceaa6d63ebef980351309a84fd497ec91ecaa4eab8afa3719"
+    },
+    {
+      "path": "spikes/m0-cloud/runtime.test.ts",
+      "sha256": "165ce90493a619d65d79f423b581a2b4c2e758f37a600473c5c20125f4186d6c"
+    },
+    {
+      "path": "spikes/m0-cloud/runtime.ts",
+      "sha256": "1f950668429ecf3b3ff027ad085dcad15b8dfd6d459215ec8909933e237f56de"
+    },
+    {
+      "path": "spikes/m0-cloud/worker.test.ts",
+      "sha256": "459a8bf8236e8b1f954af7c14338f07ef51764f3dbad8be813d96c8619b8abea"
+    },
+    {
+      "path": "spikes/m0-cloud/worker.ts",
+      "sha256": "36e1c5c1e6ea776870e6fa223c632df494ca08ad25662721a53a89f79219d71e"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+    }
+  ],
+  "sourceSha256": "bd2c27f5073138b3ccae459add25f7c7fa8c5071832559a50866db77477e7a48",
+  "bundleSha256": "7d2f55826967fceec9c59b4da9502b5f1f6f956cba9bbe0ac64b4b7804384ffd",
+  "configSha256": "90f87013d8699c63d929dd2ca537f52ce1859f05f618926bb623aa495e8c5f34",
+  "checks": "runtime and worker tests plus TypeScript passed; full repository check follows tenancy freeze",
+  "version": "f43bcfe0-03c3-4d76-9662-9deeacc750d6",
+  "deploymentId": "66273205-e4f5-4f94-92eb-20f33e7b0ccd",
+  "observedAt": "2026-09-06T03:58:54.768Z"
+}

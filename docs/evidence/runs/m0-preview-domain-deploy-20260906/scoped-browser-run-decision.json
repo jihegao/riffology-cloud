@@ -1,0 +1,9 @@
+{
+  "observedAt": "2026-09-06T02:17:38.038Z",
+  "purpose": "Independent custom-domain browser observations while full alternate-ingress run remains failed",
+  "excludedIngress": "https://riffology-m0-preview-staging.jihe-gao.workers.dev",
+  "exclusionReason": "Two full ingress attempts failed at this transport; preserve both failures, do not weaken assertions or claim full T07 coverage",
+  "fullCloudGatePassed": false,
+  "workerConfigChanged": false,
+  "driverAssertionsChanged": false
+}

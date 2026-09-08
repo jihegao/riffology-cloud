@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "at": "2026-09-06T08:24:59.276Z",
+  "gate": "G0-T09",
+  "summarySha256": "66131675c9b4785ebb8335e120d8163bec868f4482c98d7a1a45b3ed6be395aa",
+  "reviewer": "boundary_deadline_review",
+  "accepted": true,
+  "conclusion": "Original G0-T09 accepted: real cloud HTTP allowlist, fixed dependency wheel integrity and offline install/import, management/charging/address override denial, TLS validation, and fixed secret names absent in both VMs. Two real model calls provide the trusted proxy positive control. SDK host rejection and fixed handler rejection are distinct.",
+  "limitations": [
+    "DNS answers through 8.8.8.8 and TEST-NET do not authenticate actual resolver destination",
+    "TCP8443 timeout remains unconfirmed; not proof of all-protocol blocking",
+    "Fixed environment key absence is not a complete filesystem secret audit; T02 covers separate execution domains",
+    "Monetary settlement unknown"
+  ]
+}

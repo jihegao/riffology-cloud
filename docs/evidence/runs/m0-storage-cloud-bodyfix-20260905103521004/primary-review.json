@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-05T10:43:54.877Z",
+  "gateId": "G0-T06",
+  "decision": "passed",
+  "scope": "Temporary staging R2/DO persistence, controlled instance-crash, observer replay and run-scoped GC primitives allowed by development-deployment-plan section 3. Not M2/M5 product acceptance.",
+  "reviewers": [
+    "root primary review of raw evidence and frozen artifacts",
+    "independent m0_runbook_refresh read-only review"
+  ],
+  "workerVersion": "e0d311aa-ab18-4b55-9fd8-0c188376041b",
+  "bundleSha256": "787a8590badf3f3881066ebaa55e63857bbd1eee589fe17ae5445139d76c42a4",
+  "scopedSourceSha256": "253cca7bc58e222467fc83d5a2c586956e36000a7e9bd8faa8b32027afc9b098",
+  "provenanceChecks": {
+    "frozenBundleAndConfigHashes": true,
+    "deploymentEvidenceFileHashes": true,
+    "scopedSourceChain": true,
+    "actionJournalHashAndAllRows": true,
+    "primaryCloudApiRecheckAt": "2026-09-05T10:42:14.532Z",
+    "primaryActiveVersionMatched": true,
+    "privateR2AndDONamespaceMatched": true
+  },
+  "cases": {
+    "actualSinglePutInterruption": {
+      "status": "passed",
+      "consumedBytes": 65536,
+      "declaredBytes": 262144,
+      "rejected": true,
+      "objectAbsent": true,
+      "committedPointerUnchanged": true
+    },
+    "precommitInstanceCrash": {
+      "status": "passed",
+      "httpStatus": 500,
+      "newInstanceNonce": true,
+      "candidateObjectsPresent": true,
+      "committedPointerAndEvent1Preserved": true
+    },
+    "postcommitBeforeObserverDelivery": {
+      "status": "passed",
+      "httpStatus": 500,
+      "newInstanceNonce": true,
+      "durableSequence": 2,
+      "exactlyOneStoredEvent2": true,
+      "observerDisconnectedBeforeMutation": true
+    },
+    "sseReconnect": {
+      "status": "passed",
+      "cursor1ReplayedSequence2": true,
+      "repeatedCursor1ConsumerIgnoredDuplicate": true,
+      "cursor2NoEvents": true,
+      "appliedSequences": [
+        1,
+        2
+      ],
+      "transportExactlyOnceClaimed": false
+    },
+    "orphanGC": {
+      "status": "passed",
+      "graceMilliseconds": 3000,
+      "deleted": 3,
+      "retained": 5,
+      "committedVersionsRestored": 2,
+      "secondSweepDeleted": 0
+    }
+  },
+  "usage": {
+    "requests": 21,
+    "receivedBytes": 74848,
+    "elapsedMilliseconds": 31669,
+    "containerInstancesStarted": 0,
+    "modelRequests": 0,
+    "actualBilledDollars": null
+  },
+  "limitations": [
+    "fixed synthetic entries and session, generation 1",
+    "controlled ctx.abort; no regional outage claim",
+    "run-scoped sealed writes and exact GC roots; no production concurrent GC claim",
+    "working tree source is uncommitted; git base alone does not identify deployed code",
+    "all ten gates still require consistent final candidate review before M1"
+  ],
+  "overallG0Accepted": false
+}

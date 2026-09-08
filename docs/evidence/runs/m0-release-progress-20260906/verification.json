@@ -1,0 +1,12 @@
+{
+  "at": "2026-09-06T09:44:52.429Z",
+  "sourceSha256": "97c129827a57b960eab06e1e10664d65ae445bc6128ffcd94ff663f2d784a999",
+  "sourceStable": true,
+  "checkedEvidenceHashes": 124,
+  "checkedDocumentLinks": 190,
+  "stagingPassedCount": 9,
+  "t10Accepted": false,
+  "fullGoalComplete": false,
+  "finalCandidateAccepted": false,
+  "latestCheck": "m0-local-20260906092132818/local-checks.json"
+}

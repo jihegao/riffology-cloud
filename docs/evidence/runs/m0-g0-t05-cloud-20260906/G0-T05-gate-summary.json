@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "run_id": "m0-g0-t05-cloud-20260906",
+  "recorded_at": "2026-09-06T03:23:50.713Z",
+  "gate_id": "G0-T05",
+  "case_id": "gate-summary",
+  "status": "passed",
+  "observed_at": "2026-09-06T03:17:14.684Z",
+  "environment": "staging",
+  "git_sha": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+  "versions": {
+    "wrangler": "4.129.0",
+    "worker_version": "98cc1d73-0efe-4d6f-9e43-7616f841b8c3",
+    "protocol": "m0-v1",
+    "image_digest": "sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+    "source_sha256": "8d368e8965d9f37651cc1d32bf606906e9c79a51c295137b9c5a7e56bfd45810",
+    "bundle_sha256": "30aad7810b5a1019e28c977989fd5a881bfd8e2d9836b197902016a3803d8fbc",
+    "source_state": "uncommitted working tree; frozen source hashes authoritative"
+  },
+  "command": "node --use-env-proxy scripts/m0/files-cloud.mjs with verified deployment; independent Wrangler remote R2 GET and primary review",
+  "evidence_paths": [
+    "m0-files-deploy-20260906/primary-review.json",
+    "m0-files-1788664612564-25cdd006/files-cloud.json",
+    "m0-files-deploy-20260906/deployment-verified.json",
+    "m0-files-deploy-20260906/build.json",
+    "m0-files-deploy-20260906/deploy-result.json",
+    "m0-files-deploy-20260906/deployments-final.json",
+    "m0-files-deploy-20260906/apps-final.json",
+    "m0-files-deploy-20260906/apps-final-retry.json",
+    "m0-files-deploy-20260906/instances-final.json",
+    "m0-files-deploy-20260906/r2-independent-read.json",
+    "m0-files-deploy-20260906/r2-independent-retry.json",
+    "m0-local-20260906031327004/local-checks.json"
+  ],
+  "evidence_sha256": [
+    "8126a592c5842d4a68221aa46f7569308144ef2d3383dee2d3507cc8a7270982",
+    "ed19b59c9e63d7a664b6cdd0e9ab9aecbd0029fdd1f74957e4d2b80410930aa0",
+    "468f296004dd452a8a520e3e35fcee77f0e068788a5f9bdc54c9681590b5aed2",
+    "1a0027ced9303a794ee03419c8f034bbd6d88ebdb5e70df28423655420cc3e49",
+    "bdd9c5f1bb29eec9e4694a97f06b0e9ea801072064b103b914d6887af15cdd56",
+    "d8fe9329027e97ee2fa599b91421f67b78594436bb0f913445dcb54bbe7a547a",
+    "db4e0b923649aeb421db1e8ca63f48f1142a0e52317c16d67d3e3e305c7d2840",
+    "e370314489af141798b59da408563d7b1f533c7227e5c3a42b0f2b2bc8606876",
+    "789294a6b542cfd843499998af7f406523fc38af8b36674ffea26823e1542ec2",
+    "f39613ed992c8ab96df9ecb32c53db92946a4c9ef553a7e59a5d52cd34aa1e85",
+    "9484e4f3c8b4c30c8e79f4abdd766d0b1ce18610c3bd2663c162f7301d13ae2e",
+    "58125d5cf6e248c0bfedfffa2892028251888ae2cfe6555f14cde5bad9657c8e"
+  ],
+  "conclusion": "G0-T05 staging filesystem primitives passed: 20 real operations, changed guest boot, committed R2 restore with identical paths/content/modes/deletions, restored write/rename/delete, two generation receipts and stale write rejection. All 10 R2 objects independently read and hashed; bounded read-only retries retained. Project instance inactive. Synthetic Session is explicit and does not close real Pi or full G0."
+}

@@ -1,0 +1,12 @@
+{
+  "files": 10,
+  "localLinksChecked": 133,
+  "missing": [
+    {
+      "source": "docs/mvp-system-design.md",
+      "target": "chatgpt-conversation://6a9a2984-6dc4-83ec-af1f-c17ad1f0b4bb"
+    }
+  ],
+  "passed": false,
+  "scope": "Local file targets only; remote URLs and heading anchors excluded."
+}

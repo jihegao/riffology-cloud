@@ -1,0 +1,31 @@
+{
+  "at": "2026-09-06T08:17:03.818Z",
+  "remote": true,
+  "results": [
+    {
+      "label": "manifest",
+      "key": "manifests/551f2d188098e68234ad5ec3504ccd5bc32e3966acbe4491db00d934385efc06",
+      "startedAt": "2026-09-06T08:16:59.150Z",
+      "finishedAt": "2026-09-06T08:17:01.332Z",
+      "code": 0,
+      "signal": null,
+      "sha256": "551f2d188098e68234ad5ec3504ccd5bc32e3966acbe4491db00d934385efc06",
+      "expectedSha256": "551f2d188098e68234ad5ec3504ccd5bc32e3966acbe4491db00d934385efc06",
+      "bytes": 160,
+      "verified": true
+    },
+    {
+      "label": "session",
+      "key": "blobs/3bc99a96dfcaf7292c583acbd9407157da4c3ae4e641d428eb66cf8758481b22",
+      "startedAt": "2026-09-06T08:16:59.152Z",
+      "finishedAt": "2026-09-06T08:17:03.818Z",
+      "code": 0,
+      "signal": null,
+      "sha256": "3bc99a96dfcaf7292c583acbd9407157da4c3ae4e641d428eb66cf8758481b22",
+      "expectedSha256": "3bc99a96dfcaf7292c583acbd9407157da4c3ae4e641d428eb66cf8758481b22",
+      "bytes": 1416,
+      "verified": true
+    }
+  ],
+  "verified": true
+}

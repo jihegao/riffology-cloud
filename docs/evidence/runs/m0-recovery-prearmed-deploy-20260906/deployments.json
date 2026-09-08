@@ -1,0 +1,44 @@
+{
+  "observedAt": "2026-09-06T05:52:35.261Z",
+  "status": 200,
+  "success": true,
+  "result": {
+    "deployments": [
+      {
+        "id": "ac120319-78f5-4e77-8f0b-3953a7c65d82",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "author_email": "jihe.gao@gmail.com",
+        "annotations": {
+          "workers/message": "Automatic deployment on upload.",
+          "workers/triggered_by": "upload"
+        },
+        "versions": [
+          {
+            "version_id": "5fef2b3a-a064-4162-b1c3-6b0ce25c098d",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-09-06T05:51:48.980484Z"
+      },
+      {
+        "id": "842d6e95-6423-4d84-93d1-28d822901f57",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "author_email": "jihe.gao@gmail.com",
+        "annotations": {
+          "workers/message": "Automatic deployment on upload.",
+          "workers/triggered_by": "upload"
+        },
+        "versions": [
+          {
+            "version_id": "612a2e93-04cd-4184-a803-bee0a47e0f3a",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-09-06T05:20:53.315106Z"
+      }
+    ]
+  },
+  "errors": []
+}

@@ -1,0 +1,37 @@
+{
+  "status": "accepted-local-primitives-only",
+  "reviewer": "root",
+  "sourceSha256": "f62490bc7b01c1dd0373ec8a55ee25ce135967724f5611d0f33312242e9ca330",
+  "fullCheck": "local-checks.json",
+  "testResults": { "passed": 152, "skipped": 1, "failed": 0, "selfTestsPassed": 2 },
+  "newCoverage": { "proxy": 21, "realSdkOfflineWire": 7, "controlledHostFinalPayload": 4 },
+  "reviewedChanges": [
+    "spikes/m0-model-proxy",
+    "tests/m0/model-proxy.test.ts",
+    "services/runtime/controlled-pi.mjs",
+    "services/runtime/controlled-pi.d.mts",
+    "tests/m0/pi/controlled-pi.test.mjs",
+    "tests/m0/pi/model-wire.test.mjs"
+  ],
+  "reviewFixesVerified": [
+    "invalid approval expiry rejected, expiry after committed dispatch intent blocks transport",
+    "early or conflicting usage cannot become final known billing evidence",
+    "final platform payload callback follows SDK option merging and uses canonical model metadata",
+    "cancellation consumes late callback resolution/rejection and sends zero HTTP requests",
+    "same call and payload never redispatches, unknown outcomes retain the reservation"
+  ],
+  "independentHostHookReview": "m0_preview_probe",
+  "newRealProviderCalls": 0,
+  "cloudDeploymentPerformedForTheseChanges": false,
+  "existingTrustedImagePredatesTheseChanges": true,
+  "liveEntryPointPolicyInstalled": false,
+  "missingIntegration": [
+    "trusted cloud caller identity and per-run Durable Object transaction adapter",
+    "verified real input token upper bound and current account billing settings",
+    "full controlled Pi Session through deployed proxy and provider",
+    "cloud Container trust boundary, egress and remaining G0 evidence"
+  ],
+  "stagingPassed": ["G0-T06"],
+  "cloudG0Accepted": false,
+  "canEnterM1": false
+}

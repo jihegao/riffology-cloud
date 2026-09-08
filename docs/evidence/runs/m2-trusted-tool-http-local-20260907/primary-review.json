@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-trusted-tool-http-local-20260907",
+  "observedAt": "2026-09-06T18:06:16Z",
+  "environment": "local-workerd-colima",
+  "decision": "accepted-as-local-authenticated-trusted-pi-to-project-sandbox-candidate",
+  "source": {
+    "toolIdentitySha256": "d0ef39c8b1e6a3b9a6635ebe0cb33a24176e187e5349f2a67f5a21cc406b1cd9",
+    "requestAuthenticationSha256": "504487a731f9463a2f22150e35dc871f9ccb1b231c540e83323586753fe41593",
+    "toolHttpSha256": "191b92b1e2f2130440690b253095239d32acf5ef11b7ffddef1016e9abafea89",
+    "toolServiceSha256": "5e29c70782ac04657776543356ed2d1325205e6952e2e2028411ea323b8210fb",
+    "toolBridgeDurableSha256": "4c0fe270e91753fdef451baace38b066efeb4550d3716c0380b2d937c8eea05c",
+    "sandboxPolicySha256": "bc5fb5584bf0be4323e035501e839885da1d61f4416def5dacbd990ba842f2d4",
+    "sandboxClassesSha256": "eb91cf6f668dab185a58fefccf03bcd654a2d1930c4783598b10adec58c689df",
+    "probeSha256": "194395aa8a4435aba822b7fdaa0818f86b051a602fd08d695e03cb29a8913271",
+    "wranglerConfigSha256": "8d8ef5a99a6148d0250e130da958672a6cfb9bc5943458272517ff05a04edfac",
+    "toolHttpTestSha256": "1ed6494ece99d9d86669f6506b21fb6035f04e67e20b3c72af2e839af5bfc461",
+    "sandboxPolicyTestSha256": "fea91980ae3eea0d6ae518fa7b735f22da63f6da1abc8a6f3f5c8ee7526a7562"
+  },
+  "runtime": {
+    "wranglerVersion": "4.129.0",
+    "sandboxSdkVersion": "0.12.9",
+    "dockerServerVersion": "29.5.2",
+    "workerMode": "local",
+    "compatibilityDate": "2026-09-06",
+    "dryRunBundlePassed": true,
+    "dryRunBindings": [
+      "TrustedPiSandbox",
+      "ToolBridgeService",
+      "ToolBridgeAgent",
+      "ProjectToolSandbox"
+    ],
+    "dryRunSecretsHidden": true,
+    "repositoryRuntimeSecretValueHits": 0,
+    "productionSecretProvisioned": false
+  },
+  "sdkIdentityProof": {
+    "pinnedVersion": "@cloudflare/sandbox 0.12.9",
+    "getSandboxBehavior": "getSandbox sanitizes the supplied lowercase actor name and calls getContainer(namespace, effectiveId)",
+    "getContainerBehavior": "getContainer calls namespace.idFromName(name)",
+    "outboundBehavior": "Container outbound context receives this.ctx.id.toString()",
+    "comparison": "TRUSTED_PI_SANDBOX.idFromName(derivedActorName).toString() equals outbound context.containerId",
+    "normalizeIdEnabled": false,
+    "upgradeGateRequired": true
+  },
+  "toolHttpProbe": {
+    "endpoint": "http://127.0.0.1:8796/local-tool-http-probe",
+    "requestMethod": "POST",
+    "runs": 2,
+    "httpStatus": [200, 200],
+    "rawResponseSha256": [
+      "e567779a3f1eb6be782283408dfb0b559a2e7d182f59d31dbf3650e3d255902b",
+      "794871cdb0bdbb99b31f256ad91b00a78f7e3390b834d49f040b6a1c3123177c"
+    ],
+    "requestAuthentication": {
+      "algorithm": "HMAC-SHA-256",
+      "bodyDigestBound": true,
+      "containerIdBound": true,
+      "requestTimeBound": true,
+      "maxAgeMs": 30000,
+      "piSuppliedIdentityHeadersStripped": true
+    },
+    "actorSelection": {
+      "trustedPiDerivedFromScopeTurnDispatch": true,
+      "toolBridgeDerivedFromScopeTurnDispatch": true,
+      "projectSandboxDerivedFromScopeTurnDispatch": true,
+      "crossScopeCommandFromSameTrustedPiContainerRejected": true
+    },
+    "idempotency": {
+      "terminalReplayStable": [true, true],
+      "effectIds": [
+        "ee178038-f7fb-4137-a89d-8f910b21ec5f",
+        "9b6376b9-4748-44bf-bd8d-ea6e94f3a1d4"
+      ]
+    },
+    "turnIds": [
+      "turn-98997f6b-1a4a-4eb1-81d9-7ea5527bb527",
+      "turn-dfef0a1f-9d73-4144-aeb0-2dcae00d6f5e"
+    ],
+    "terminal": {
+      "status": "completed",
+      "operation": "write",
+      "path": "native-probe.txt",
+      "bytes": 14,
+      "sha256": "6a48f6c8476f678074895b9c6bfb040ff68234c23e5aa282426044eafb00b280",
+      "readBackPath": "/workspace/native-probe.txt",
+      "readBackContent": "sandbox-rpc-ok"
+    }
+  },
+  "focusedChecks": {
+    "typecheckPassed": true,
+    "toolHttpAndSandboxTests": { "pass": 11, "fail": 0 },
+    "m0GoPiProbeRerun": { "pass": 9, "fail": 0 },
+    "m0ReleaseProbeRerun": { "pass": 11, "fail": 0 }
+  },
+  "fullChecks": {
+    "path": "../m1-local-20260906180515300/local-checks.json",
+    "sha256": "14bfe35a6a3f5c8add83436089f2aebc53d7d04047da65dab5fa0dca856d6663",
+    "logSha256": "3203c3dc8005043f7d96c19058682b91083c0d900c2293e1799b64f3ba7b5ae6",
+    "passed": true,
+    "sourceStableDuringCheck": true,
+    "sourceCount": 289,
+    "sourceSha256": "39fbb64acfd0577796f6af2e68b61dc11c12ed04c234c482d6a8999508afb61b",
+    "m0": { "pass": 348, "skip": 1, "fail": 0 },
+    "m1": { "pass": 108, "skip": 0, "fail": 0 },
+    "m2": { "pass": 99, "skip": 0, "fail": 0 }
+  },
+  "validationNotes": {
+    "priorFullCheck": "m1-local-20260906180401103",
+    "priorFullCheckSha256": "eecd17d7755085b1810727b3269fc1957d431482a1975a2e725332bc446c8b02",
+    "priorFailure": "one M0 Pi SDK test exceeded its 10 second test timeout under load, cascading the file-level run lock; the known concurrent release counter timing assertion also observed zero rather than one",
+    "focusedRerunsPassed": true,
+    "finalFullCheckPassed": true
+  },
+  "independentReview": {
+    "initialIdentityConclusionCorrected": true,
+    "finalP0": 0,
+    "finalP1": 0,
+    "cloudIntegrationStillRequired": true
+  },
+  "cleanup": {
+    "wranglerStopped": true,
+    "port8796Listening": false,
+    "matchingRunningContainers": 0,
+    "uiPort4173Touched": false
+  },
+  "acceptedProperties": [
+    "The default/public Worker handler does not expose /v1/tool; a named service entrypoint owns the internal route.",
+    "The Trusted Pi outbound interceptor rebuilds headers and signs the exact container id, request time and body digest with a Worker-only key.",
+    "The internal handler derives the expected named Trusted Pi Durable Object id from command scope, Turn and dispatch identity before calling the Tool Ledger.",
+    "A cross-scope command sent by the same Trusted Pi container is rejected before the Tool Bridge ledger or project effect.",
+    "Two local Workerd runs traversed Trusted Pi container, HTTPS interception, service binding, Tool Bridge Durable Object, capability verification and Project Sandbox native write/readback.",
+    "Repeated identical commands returned the same terminal effect; the terminal Tool Ledger row stripped the input command payload."
+  ],
+  "notAccepted": [
+    "WorkspaceAgent ownership check and Turn dispatch wiring",
+    "production Wrangler secret provisioning or rotation",
+    "cloud deployment or real Cloudflare Container application",
+    "cross-tenant, cross-workspace and old-generation cloud rejection",
+    "Trusted Pi product image and Pi Session restoration",
+    "Bash process registry, cancellation and watchdog",
+    "large-result immutable artifact channel",
+    "R2 Revision and Pi Session checkpoint"
+  ],
+  "mutations": {
+    "localImageBuild": true,
+    "localWorkerdRpc": true,
+    "cloudDeploy": false,
+    "cloudResourceCreate": false,
+    "modelCalls": 0,
+    "commit": false,
+    "push": false
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "runId": "m1-admin-20260906130122",
+  "environment": "local",
+  "scope": "operator API, local D1 migration, static Worker assets and real Chrome behavior; fixture sessions only; no Google, cloud, email or provider calls",
+  "migration": {
+    "name": "0004_operator_invitations.sql",
+    "appliedTo": "riffology-catalog-local",
+    "remote": false,
+    "remainingAfterApply": 0,
+    "verificationLog": "migrations.log",
+    "verificationLogSha256": "29a8028a8b8a394dd0650dfe2241eb5dad31b724338785f5d46f88deba5426dc"
+  },
+  "workerObservation": {
+    "origin": "http://127.0.0.1:8795",
+    "adminHtmlStatus": 200,
+    "adminJsStatus": 200,
+    "adminCssStatus": 200,
+    "adminApiWithoutAuthConfiguration": {
+      "status": 503,
+      "error": "authentication_not_configured"
+    }
+  },
+  "browserObservation": {
+    "engine": "installed Chrome through Playwright plus Codex in-app browser",
+    "cases": [
+      "authenticated tenant owner without operator role sees no management data",
+      "two failed invitation requests retry the exact idempotency key and payload",
+      "successful first response shows the plaintext token once",
+      "replayed success with token null never invents a plaintext token",
+      "pending invitation revocation refreshes metadata",
+      "mobile viewport has no document-level horizontal overflow",
+      "admin request trace contains no tenant project-content API"
+    ],
+    "passed": true
+  },
+  "fullCheck": {
+    "evidence": "../m1-local-20260906131137415/local-checks.json",
+    "m0": { "passed": 348, "skipped": 1, "failed": 0 },
+    "m1": { "passed": 97, "skipped": 0, "failed": 0 },
+    "sourceFiles": 239,
+    "sourceSha256": "98879c7ed9f6cb17462e0caec5b024b121c2c57a55e6b3f1e2a499adedd884c8",
+    "sourceStableDuringCheck": true
+  },
+  "cloudGatePassed": false,
+  "remaining": [
+    "audited first-operator offline bootstrap",
+    "real Google OAuth client and callback",
+    "two real identities in staging",
+    "cloud failure reconciliation and independent G1 review"
+  ]
+}

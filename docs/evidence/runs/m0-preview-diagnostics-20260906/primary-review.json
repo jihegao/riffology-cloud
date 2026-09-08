@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T02:56:37.166Z",
+  "reviewer": "root with independent boundary_deadline_review assessment",
+  "decision": "G0-T07 staging technical primitives passed",
+  "evidencePath": "preview-cloud-1788662851221/artifacts/preview-cloud.json",
+  "evidenceSha256": "96a5af0c455e09a280a4f09be3846753db4a6a2e8153e1f5a343971580b3771c",
+  "runtimeFilesUnchangedSinceDeployment": 12,
+  "scopedFilesCurrentAndStable": 29,
+  "worker": {
+    "name": "riffology-m0-preview-staging",
+    "versionId": "5e5f3e22-69b2-460a-b03b-354d9d803c1d",
+    "deploymentId": "23f0ba54-8306-4a76-ab8e-f55bea0fc9bb"
+  },
+  "app": {
+    "id": "a0332851-f795-46df-9f8e-ee0ddc220095",
+    "name": "riffology-m0-preview-staging",
+    "state": "ready",
+    "instances": 2,
+    "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+    "version": 1,
+    "updated_at": "2026-09-06T02:03:20.455000064Z",
+    "created_at": "2026-09-06T02:03:18.961999872Z"
+  },
+  "instances": {
+    "count": 11,
+    "allInactive": true,
+    "paginationComplete": true
+  },
+  "caseCount": 15,
+  "ingressRows": 46,
+  "credentialRows": 29,
+  "cookieWireEvidence": {
+    "preview": {
+      "http_status": 200,
+      "expected_marker": true,
+      "no_redirect": true,
+      "principal_cookie_sent": false,
+      "preview_cookie_sent": true
+    },
+    "control": {
+      "http_status": 200,
+      "expected_marker": true,
+      "no_redirect": true,
+      "principal_cookie_sent": true,
+      "preview_cookie_sent": false
+    }
+  },
+  "requirements": {
+    "rawEntrypoints": "46 denied/validated HTTP and WS rows including workers.dev",
+    "subresources": "29 credential rows and authenticated HTTP/JS/API/WS",
+    "revocation": "logout, actual expiry and generation replacement",
+    "redirects": "constrained relative redirect; external/control denied",
+    "cookieOrigin": "real Cookie wire positive and negative controls; CDP CSRF denial",
+    "sdkBypass": "getExposedPorts=0 and deployed code has no exposePort path; absent URL replay not applicable"
+  },
+  "scope": "M0 controlled staging identity; same-site distinct origins; M1 production identity revalidation remains required",
+  "nonGateFollowups": [
+    "production login and logout integration",
+    "cross-site third-party-cookie product support if introduced",
+    "cloud bill reconciliation",
+    "runtime error attribution investigation"
+  ],
+  "priorFailedRunsRetained": true,
+  "fullG0Passed": false
+}

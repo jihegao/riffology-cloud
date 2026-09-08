@@ -1,0 +1,27 @@
+{
+  "at": "2026-09-06T07:51:22.455Z",
+  "status": 200,
+  "body": {
+    "runId": "go-live-g0-20260906",
+    "mode": "go-live-only",
+    "initialized": false,
+    "tenantId": null,
+    "workspaceId": null,
+    "revoked": false,
+    "instanceNonce": "7b6e9ddc-cabe-40db-a3d0-37b0955e4421",
+    "ledger": null,
+    "fixtureDispatches": 0,
+    "cancelledCalls": [],
+    "activeRequests": 0,
+    "realProviderCalls": null,
+    "liveEnabled": true,
+    "budgetBasis": "public-contract-token-value-upper-bound",
+    "budgetProfile": "go-flash-context-20260906",
+    "maxPlatformDispatches": 2,
+    "upstreamDispatchIntents": 0,
+    "rawTokenValueReservedMicrousd": 0,
+    "GoQuotaDelta": null,
+    "cashCharge": null,
+    "absoluteCashCapProven": false
+  }
+}

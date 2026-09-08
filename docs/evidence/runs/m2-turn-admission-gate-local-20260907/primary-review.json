@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-turn-admission-gate-local-20260907",
+  "environment": "local",
+  "result": "passed",
+  "decision": "M2 Turn submission remains disabled until ProductTurnRuntime and the WorkspaceAgent alarm owner are wired; disabled admission returns 503 before resolving a WorkspaceAgent actor or persisting a queued turn.",
+  "checks": {
+    "disabledValues": "undefined, null, boolean false, false, TRUE and 1 all reject with turn_runtime_not_ready/503",
+    "mutationFence": "disabled submit resolves WorkspaceAgent zero times",
+    "enabledForwarding": "the explicit true value derives the scoped WorkspaceAgent and forwards one exact request",
+    "stagingPreflight": "requires M2_TURNS_ENABLED=false",
+    "trustedPiSnapshot": "the host always supplies the verified input snapshot value, including explicit undefined, after release options",
+    "fullLocalCheck": {
+      "evidence": "../m1-local-20260906193012384/local-checks.json",
+      "sourceSha256": "287aa8c5350da2244889bcf873fabf26a210646de7a8bfa981996e88444f5c66",
+      "sourceFiles": 317,
+      "sourceStableDuringCheck": true,
+      "logSha256": "8541e4cfc16ef1e24e1f479080a9e11f6c8d1d9217813b8639b08de1b186f903",
+      "m0": { "tests": 349, "passed": 348, "failed": 0, "skipped": 1 },
+      "m1": { "tests": 108, "passed": 108, "failed": 0, "skipped": 0 },
+      "m2": { "tests": 155, "passed": 155, "failed": 0, "skipped": 0 }
+    }
+  },
+  "sourceSha256": {
+    "services/gateway/turn-runtime-gate.ts": "8ef78c2a1111db02c21e0c1eb58d05336a65a188e1a02550b4cde66c226753c7",
+    "services/gateway/turn-services.ts": "2c6bda10b81c1a7f50ec4dca76373b89702296072b55b93b75699ccf253acb9c",
+    "services/gateway/index.ts": "6e023e279f49ac50753faf2ef4dbdd2d21a3e158014c13975c81b7324acbf1cd",
+    "services/gateway/env.d.ts": "1eadefe28a42800745b46fb61f7a64fe94088596407da758a7fcc71d271f2262",
+    "infra/wrangler.gateway-local.jsonc": "ce10abd3f902b2b3a94926cd3f1210433639b448b8097fa5dcb142912ab8795f",
+    "infra/wrangler.gateway-staging.jsonc": "7f06c7d7fff9f5fe596a0e908e77ca7bef112dd80829ab7684b8c5cf0383ca07",
+    "services/trusted-pi/trusted-pi-turn-host.mjs": "309054936b7fc9643476b74342a196b18d1acd5718a5bab9fbd27f75ead8fb2c"
+  },
+  "externalActions": {
+    "cloudDeployments": 0,
+    "cloudMutations": 0,
+    "modelCalls": 0,
+    "emailsOrInvitations": 0
+  },
+  "limitations": [
+    "The gate is a local source and configuration candidate; the currently deployed Worker version is unchanged.",
+    "ProductTurnRuntime Durable Object binding, WorkspaceAgent engine wiring and product release policy remain incomplete.",
+    "The Trusted Pi image still lacks a real Docker or cloud VM build and execution record."
+  ]
+}

@@ -1,0 +1,89 @@
+[
+  {
+    "name": "boundary",
+    "command": [
+      "npx",
+      "wrangler",
+      "deploy",
+      "--config",
+      "infra/wrangler.m0.jsonc",
+      "--env",
+      "staging",
+      "--dry-run",
+      "--outdir",
+      "/Users/gaojihe/apps/riffology-cloud/.local/m0-build-20260905063357356/boundary"
+    ],
+    "startedAt": "2026-09-05T06:33:57.358Z",
+    "finishedAt": "2026-09-05T06:35:24.045Z",
+    "exitCode": 0,
+    "error": null,
+    "environment": "local",
+    "deployed": false
+  },
+  {
+    "name": "storage",
+    "command": [
+      "npx",
+      "wrangler",
+      "deploy",
+      "--config",
+      "infra/wrangler.m0-storage.jsonc",
+      "--env",
+      "staging",
+      "--dry-run",
+      "--outdir",
+      "/Users/gaojihe/apps/riffology-cloud/.local/m0-build-20260905063357356/storage",
+      "--containers-rollout=none"
+    ],
+    "startedAt": "2026-09-05T06:35:24.046Z",
+    "finishedAt": "2026-09-05T06:35:26.415Z",
+    "exitCode": 0,
+    "error": null,
+    "environment": "local",
+    "deployed": false
+  },
+  {
+    "name": "files",
+    "command": [
+      "npx",
+      "wrangler",
+      "deploy",
+      "--config",
+      "infra/wrangler.m0-files.jsonc",
+      "--env",
+      "staging",
+      "--dry-run",
+      "--outdir",
+      "/Users/gaojihe/apps/riffology-cloud/.local/m0-build-20260905063357356/files",
+      "--containers-rollout=none"
+    ],
+    "startedAt": "2026-09-05T06:35:26.416Z",
+    "finishedAt": "2026-09-05T06:35:28.988Z",
+    "exitCode": 0,
+    "error": null,
+    "environment": "local",
+    "deployed": false
+  },
+  {
+    "name": "preview",
+    "command": [
+      "npx",
+      "wrangler",
+      "deploy",
+      "--config",
+      "infra/wrangler.m0-preview.jsonc",
+      "--env",
+      "staging",
+      "--dry-run",
+      "--outdir",
+      "/Users/gaojihe/apps/riffology-cloud/.local/m0-build-20260905063357356/preview",
+      "--containers-rollout=none"
+    ],
+    "startedAt": "2026-09-05T06:35:28.988Z",
+    "finishedAt": "2026-09-05T06:35:31.270Z",
+    "exitCode": 0,
+    "error": null,
+    "environment": "local",
+    "deployed": false
+  }
+]

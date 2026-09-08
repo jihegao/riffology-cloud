@@ -1,0 +1,6 @@
+{"action":"report","method":"GET","at":"2026-09-06T09:31:16.309Z","outcome":"unknown"}
+{"action":"report","method":"GET","at":"2026-09-06T09:31:21.322Z","outcome":"response","status":200,"sha256":"fa48b822c6f9a3b596c34e2d8ee5799b434487a38b55872cd2bc7d11a03907c1"}
+{"action":"startup-failure","method":"POST","at":"2026-09-06T09:31:24.097Z","outcome":"response","status":202,"sha256":"789b10dc622c96c2bcab96644f59077b704803ec427ef61025bfa19a284c0f6a"}
+{"action":"report","method":"GET","at":"2026-09-06T09:31:24.338Z","outcome":"response","status":200,"sha256":"4791d9d5607464c7a71db031e84b781d2d4f4acad2566d29e0a78d29b27f22f9"}
+{"action":"cleanup","method":"POST","at":"2026-09-06T09:31:28.060Z","outcome":"response","status":202,"sha256":"4791d9d5607464c7a71db031e84b781d2d4f4acad2566d29e0a78d29b27f22f9"}
+{"action":"report","method":"GET","at":"2026-09-06T09:31:29.609Z","outcome":"response","status":200,"sha256":"4791d9d5607464c7a71db031e84b781d2d4f4acad2566d29e0a78d29b27f22f9"}

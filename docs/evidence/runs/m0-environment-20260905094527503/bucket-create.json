@@ -1,0 +1,18 @@
+{
+  "observedAt": "2026-09-05T09:46:33.883Z",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "command": [
+    "wrangler",
+    "r2",
+    "bucket",
+    "create",
+    "riffology-m0-checkpoints-staging",
+    "--config",
+    "infra/wrangler.m0-storage.jsonc",
+    "--env",
+    "staging",
+    "--update-config=false"
+  ],
+  "exitCode": 0,
+  "output": "▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.\n\n\n\n ⛅️ wrangler 4.129.0\n────────────────────\nCreating bucket 'riffology-m0-checkpoints-staging'...\n✅ Created bucket 'riffology-m0-checkpoints-staging' with default storage class of Standard.\nTo access your new R2 Bucket in your Worker, add the following snippet to your configuration file in the \"staging\" environment:\n{\n  \"r2_buckets\": [\n    {\n      \"bucket_name\": \"riffology-m0-checkpoints-staging\",\n      \"binding\": \"riffology_m0_checkpoints_staging\"\n    }\n  ]\n}\n"
+}

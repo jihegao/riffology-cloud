@@ -1,0 +1,10 @@
+{
+  "observedAt": "2026-09-05T10:35:23.234Z",
+  "httpStatus": 200,
+  "success": true,
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "worker": "riffology-m0-storage-staging",
+  "deploymentId": "e376a536-8973-4313-acb8-b7af862b95a9",
+  "versions": [{ "version_id": "91f94ed8-227d-4360-afdf-f610ab749de6", "percentage": 100 }],
+  "createdOn": "2026-09-05T10:29:02.389144Z"
+}

@@ -1,0 +1,25 @@
+{
+  "observedAt": "2026-09-06T04:49:54.615Z",
+  "runId": "tc-1788669993268-0899e615",
+  "priorEvidence": "docs/evidence/runs/m0-tenancy-cloud-1788669993268-0899e615/tenancy-cloud.json",
+  "priorSha256": "4be989d895a5251241779132219cd2747f41b3237038e23f2fe8b58a117f4e54",
+  "versionId": "00f869d8-8229-42d8-83e1-cb661f5cadfb",
+  "operation": "separate-idempotent-cleanup-reconciliation",
+  "requestLimit": 1,
+  "deadlineMs": 15000,
+  "passed": true,
+  "httpStatus": 200,
+  "body": {
+    "run_id": "tc-1788669993268-0899e615",
+    "deleted_keys": [
+      "m0-tenancy/tc-1788669993268-0899e615/alpha/workspace/fixture-alpha-workspace",
+      "m0-tenancy/tc-1788669993268-0899e615/alpha/artifact/fixture-alpha-artifact",
+      "m0-tenancy/tc-1788669993268-0899e615/bravo/workspace/fixture-bravo-workspace",
+      "m0-tenancy/tc-1788669993268-0899e615/bravo/artifact/fixture-bravo-artifact"
+    ],
+    "r2_remaining": 0,
+    "cleanup": "r2-prefix-and-sqlite-state-deleted"
+  },
+  "responseBytes": 431,
+  "finishedAt": "2026-09-06T04:49:56.705Z"
+}

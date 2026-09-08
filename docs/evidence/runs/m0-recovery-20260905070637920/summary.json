@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-09-05T07:07:57.918Z",
+  "environment": "local-docker-workerd",
+  "results": [
+    {
+      "scenario": "disconnect",
+      "passed": true,
+      "error": null
+    },
+    {
+      "scenario": "process",
+      "passed": true,
+      "error": null
+    },
+    {
+      "scenario": "container",
+      "passed": true,
+      "error": null
+    }
+  ],
+  "passed": true,
+  "cloudGatePassed": false
+}

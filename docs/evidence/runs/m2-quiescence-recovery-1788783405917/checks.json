@@ -1,0 +1,14 @@
+[
+  {
+    "command": "node scripts/m2/check-project-quiescence-local.mjs",
+    "exitCode": 0,
+    "stdout": "{\"passed\":true,\"checks\":[\"exited-wrapper-descendant\",\"detached-session\",\"TERM-ignore\",\"live-effect-stop\",\"persistent-seal\",\"late-write-denied\",\"root-survives\",\"sealed-freeze\",\"late-restore-denied\",\"missing-restore-marker-denied\",\"unsealed-freeze-denied\",\"six-reserved-starts-race-seal\",\"no-delayed-writes-after-proof\",\"stable-frozen-digest\"]}\n",
+    "stderr": ""
+  },
+  {
+    "command": "node scripts/m2/check-supervisor-quiescence-local.ts",
+    "exitCode": 0,
+    "stdout": "{\"passed\":true,\"transport\":\"Docker SDK-shaped adapter; not Cloudflare Sandbox SDK\",\"effectStarts\":1,\"sealStarts\":2,\"archiveBytes\":10240,\"checks\":[\"real-effect-running-before-start-response-loss\",\"stop-proof-response-loss\",\"sqlite-close-reopen\",\"persistent-admission-fence\",\"no-second-effect-execution\",\"unknown-outcome-preserved\",\"fresh-quiescence-proof\",\"real-archive-freeze\",\"writes-stopped\"]}\n",
+    "stderr": "(node:70245) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+  }
+]

@@ -1,0 +1,7 @@
+{
+  "startedAt": "2026-09-06T02:41:02.490529+00:00",
+  "retryReason": "Previous upload authentication error; read-only reconciliation confirms old deployment remains active and OAuth account/scopes are valid",
+  "priorVersion": "de139207-4562-4545-a0ea-32de625710d2",
+  "exitCode": 0,
+  "finishedAt": "2026-09-06T02:41:19.101879+00:00"
+}

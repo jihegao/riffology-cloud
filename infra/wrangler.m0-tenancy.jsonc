@@ -1,0 +1,22 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "riffology-m0-tenancy",
+  "main": "../spikes/m0-tenancy/index.ts",
+  "compatibility_date": "2026-09-05",
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_do_not_populate_process_env"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": true },
+  "env": {
+    "staging": {
+      "name": "riffology-m0-tenancy-staging",
+      "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+      "workers_dev": true,
+      "vars": { "ENVIRONMENT": "staging", "PROTOCOL_VERSION": "m0-v1" },
+      "secrets": { "required": ["M0_PROBE_TOKEN"] },
+      "r2_buckets": [{ "binding": "CHECKPOINTS", "bucket_name": "riffology-m0-checkpoints-staging" }],
+      "exports": { "TenancyCoordinator": { "type": "durable-object", "storage": "sqlite" } },
+      "durable_objects": { "bindings": [{ "name": "TENANCY", "class_name": "TenancyCoordinator" }] }
+    }
+  }
+}

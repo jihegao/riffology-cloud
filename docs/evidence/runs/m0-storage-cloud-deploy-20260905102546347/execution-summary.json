@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-05T10:32:39.699Z",
+  "deploymentVerified": true,
+  "versionId": "91f94ed8-227d-4360-afdf-f610ab749de6",
+  "deploymentId": "e376a536-8973-4313-acb8-b7af862b95a9",
+  "bundleSha256": "0dcb394f8d32dd57fb516da457a55e6f4ba0fa827741316355f0ad408c2ad4c4",
+  "probeRunId": "storage-cloud-20260905103046065",
+  "cloudCheckPassed": false,
+  "gateChanged": false,
+  "processExitCode": 1,
+  "timedOut": false,
+  "requestCount": 8,
+  "receivedBytes": 4235,
+  "sourceStableDuringProbe": true,
+  "failure": "init did not reach its durable phase; no mutation replayed\n+ actual - expected\n\n+ undefined\n- 'initialized'\n",
+  "observedFailure": {
+    "action": "init",
+    "method": "POST",
+    "httpStatus": 404,
+    "statusReadHttpStatuses": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "state": null,
+    "current": null,
+    "events": [],
+    "objects": []
+  },
+  "interpretation": "Failure is before checkpoint initialization. The request parser rejects any non-null body; a zero-byte cloud POST body represented as a stream is a hypothesis requiring a controlled transport fix/verification. No upload or instance-abort mechanism was changed or exercised.",
+  "resources": {
+    "worker": "riffology-m0-storage-staging",
+    "r2Bucket": "riffology-m0-checkpoints-staging",
+    "doInstancePrefix": "m0-storage-faults/4caa57fb3d3f17e0a806bfa5f5609a76abbf46ae46ec3f1a918400f5404f21a3/",
+    "newContainers": 0,
+    "llmCalls": 0,
+    "confirmedCheckpointObjects": 0
+  },
+  "residue": "Existing Worker now uses the new verified version. One empty fault-run DO identity was read; no checkpoint objects or events are present in its status. Committed baseline objects are retained.",
+  "sanitizedEvidenceScan": {
+    "files": 19,
+    "secretMatches": 0
+  },
+  "evidence": [
+    {
+      "path": "storage-cloud.json",
+      "sha256": "8eedbd503ba1e93c11bacc3abc85e29094a66a4f164d2656c1035ebf1d6b3996"
+    },
+    {
+      "path": "cloud-runner.json",
+      "sha256": "f0fbf068431d064a675cf1def97470a6e1a4503d94512b1f2fd7a6cb053ce4cb"
+    },
+    {
+      "path": "deployment-verified.json",
+      "sha256": "f174e818185094c76fc410b888e3cb754b6453d0ca4897933e620c7484a5ac31"
+    }
+  ]
+}

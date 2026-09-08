@@ -1,0 +1,47 @@
+{
+  "observedAt": "2026-09-05T08:46:05.706Z",
+  "credentialScan": {
+    "checkedFiles": 30,
+    "fixtureSecretCount": 3,
+    "matchingFiles": [],
+    "scope": "Exact local M0 fixture secrets only; not a comprehensive credential audit."
+  },
+  "docker": {
+    "exitCode": 0,
+    "running": []
+  },
+  "ports": [
+    {
+      "port": 4173,
+      "httpStatus": "200",
+      "exitCode": 0
+    },
+    {
+      "port": 8788,
+      "httpStatus": "000",
+      "exitCode": 7
+    },
+    {
+      "port": 8789,
+      "httpStatus": "000",
+      "exitCode": 7
+    },
+    {
+      "port": 8790,
+      "httpStatus": "000",
+      "exitCode": 7
+    },
+    {
+      "port": 8791,
+      "httpStatus": "000",
+      "exitCode": 7
+    },
+    {
+      "port": 8793,
+      "httpStatus": "000",
+      "exitCode": 7
+    }
+  ],
+  "uiPreserved": true,
+  "m0HTTPServicesNotReachable": true
+}

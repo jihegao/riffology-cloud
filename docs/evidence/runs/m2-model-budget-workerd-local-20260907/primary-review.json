@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-model-budget-workerd-local-20260907",
+  "reviewedAt": "2026-09-06T22:06:27Z",
+  "environment": "local-workerd-miniflare-sqlite",
+  "decision": "accepted-as-local-tenant-model-budget-durable-object-rpc-candidate",
+  "priorContractReview": {
+    "record": "../m2-model-budget-local-20260907/primary-review.json",
+    "recordSha256": "001214e7ba10002a47f207e4828cbcf143b1708530fe9400278f6e008d8bf087",
+    "immutable": true
+  },
+  "scope": [
+    "real local Workerd Durable Object RPC",
+    "tenant-derived actor naming and cross-tenant rejection",
+    "concurrent reservation replay and exactly-once dispatch authorization",
+    "SQLite persistence across Workerd disposal and reconstruction",
+    "persisted policy mismatch and independent second-tenant storage"
+  ],
+  "observations": {
+    "wrongActorRejectedBeforeCore": true,
+    "crossTenantMethodArgumentRejected": true,
+    "concurrentIdenticalReservations": { "newRows": 1, "replays": 1 },
+    "concurrentDispatch": { "authorizations": 1 },
+    "unknownBeforeRestart": { "pending": 1 },
+    "restart": {
+      "persistentSqliteObserved": true,
+      "dispatchReplayObserveOnly": true,
+      "verifiedUsageReconciled": true,
+      "attempts": 1,
+      "dispatchedCalls": 1,
+      "accountedTokens": 15
+    },
+    "changedPolicy": { "configuredPolicyMatches": false, "newReservationRejected": true },
+    "secondTenant": { "separateActor": true, "attempts": 1 },
+    "publicDefaultRouteStatus": 404,
+    "outboundNetwork": "disabled"
+  },
+  "verification": {
+    "focusedCommand": "node --test tests/m2/model-budget-workerd.test.mjs",
+    "focusedPassed": 1,
+    "fullCheck": {
+      "record": "../m1-local-20260906220540913/local-checks.json",
+      "recordSha256": "c676e9e73799ac12ccfd3dd031937c1508b934caa263a94e2a02036c149837f3",
+      "log": "../m1-local-20260906220540913/local-checks.log",
+      "logSha256": "e2ea37eed8deec5cde2fd138aca556cd45b67be1cdc520cedfcdcce572a9ad7c",
+      "passed": true,
+      "sourceStableDuringCheck": true,
+      "sourceFiles": 346,
+      "sourceSha256": "5f9373abf96742c3bbd578d1d923c9d81d038c37108e443799dff3aaf65f670a",
+      "m0": { "passed": 348, "failed": 0, "skipped": 1 },
+      "m1": { "passed": 108, "failed": 0, "skipped": 0 },
+      "m2": { "passed": 224, "failed": 0, "skipped": 0 }
+    },
+    "modelCalls": 0,
+    "cloudMutations": 0,
+    "cloudDeployments": 0
+  },
+  "sourceHashes": {
+    "services/model-budget/core.ts": "d76be1a861d2105daa20f56dce2c860aec4ad66a229675aa1036d9c7899174b7",
+    "services/model-budget/durable.ts": "8ce5a19c824f438366b61a23d656ffbf05902c40487f02b2d980bffdc853ef46",
+    "services/model-proxy/http.ts": "072d08715bb9841bb5ea0c8643a349d94dde11020539626fb5cc2bbf6ef791b0",
+    "tests/m2/model-budget.test.ts": "a0af66cb9acc86464c43d0b3c68440f1e017592a13eaedefde0728780b2c99c4",
+    "tests/m2/model-proxy-http.test.ts": "94db9c0378039bfadda8a628349b5059f84c1387fce6afffaa493d91da31447e",
+    "tests/m2/model-budget-workerd.test.mjs": "104a8ad72e15014ed26942fa2e6fd81ba84a33b11d06a6c75fb33891f833a906"
+  },
+  "notAccepted": [
+    "production provider adapter, provider credentials or real model execution",
+    "staging Wrangler binding, durable object migration or ModelProxyService binding",
+    "cloud Trusted Pi to Model Proxy to TenantModelBudget validation",
+    "production capability issuance from ProductTurnRuntime release",
+    "prices, balance, payment, refund or TenantBilling settlement",
+    "M2 staging deployment or enabling M2_TURNS_ENABLED"
+  ],
+  "mutations": {
+    "localWorkerd": true,
+    "cloudDeploy": false,
+    "cloudResourceCreate": false,
+    "modelCalls": 0,
+    "commit": false,
+    "push": false
+  }
+}

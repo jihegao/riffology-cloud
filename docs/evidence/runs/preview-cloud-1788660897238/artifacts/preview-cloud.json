@@ -1,0 +1,485 @@
+{
+  "schema_version": 2,
+  "operation": "G0-T07-cloud-browser",
+  "run_id": "preview-cloud-1788660897238",
+  "observed_at": "2026-09-06T02:14:57.247Z",
+  "execution_environment": "staging-cloud-workerd-container-chrome-https",
+  "identity_provider": "server-owned-synthetic-principals-not-product-login",
+  "origin_model": "same-site-different-origin",
+  "gate_decision": "not_evaluated",
+  "cloud_browser_matrix": "not_run",
+  "cross_site_third_party_cookie_matrix": "not_run",
+  "product_login": "not_run",
+  "tls": {
+    "system_ca": true,
+    "bundled_public_ca": true,
+    "real_dns": true,
+    "port": 443,
+    "dedicated_ca": false,
+    "spki_allowlist_only": false,
+    "global_tls_verification_disabled": false,
+    "system_trust_modified": false
+  },
+  "deployment_manifest": {
+    "schemaVersion": 1,
+    "environment": "staging",
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "controlOrigin": "https://riff-demo.gaojihe.cn",
+    "previewBaseOrigin": "https://preview.riff-demo.gaojihe.cn",
+    "registrableSite": "gaojihe.cn",
+    "managementOrigins": [
+      "https://riff-demo.gaojihe.cn"
+    ],
+    "ingressOrigins": [
+      "https://riffology-m0-preview-staging.jihe-gao.workers.dev"
+    ],
+    "worker": {
+      "name": "riffology-m0-preview-staging",
+      "versionId": "5e5f3e22-69b2-460a-b03b-354d9d803c1d",
+      "deploymentId": "23f0ba54-8306-4a76-ab8e-f55bea0fc9bb"
+    },
+    "container": {
+      "applicationName": "riffology-m0-preview-staging",
+      "imageDigest": "sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e"
+    },
+    "deploymentSourceSha256": "6e84b44bc67ac14248b929fd6834581a2a6c5f2ca524a93925f2e93c0a8b6069"
+  },
+  "deployment_manifest_sha256": "2a0545facac0e046e426138256e0b0c61a598a62faa5dc851b50503f80c6bf55",
+  "deployment_binding": "operator-verified-manifest; runner does not query account deployment APIs",
+  "sdk_exception_investigation": {
+    "status": "not_run",
+    "runtime_error_free": "unknown",
+    "known_local_symptom": "Network connection lost during close; SDK attribution unconfirmed",
+    "raw_tail_persisted": false
+  },
+  "ingress_matrix": [
+    {
+      "ingress": "control",
+      "path": "/",
+      "transport": "https",
+      "credential": "none",
+      "status": "passed",
+      "http_status": 403
+    },
+    {
+      "ingress": "control",
+      "path": "/api/state",
+      "transport": "https",
+      "credential": "none",
+      "status": "passed",
+      "http_status": 403
+    },
+    {
+      "ingress": "control",
+      "path": "/proxy/8080/",
+      "transport": "https",
+      "credential": "none",
+      "status": "passed",
+      "http_status": 403
+    },
+    {
+      "ingress": "control",
+      "path": "/proxy/8080/",
+      "transport": "websocket-handshake",
+      "credential": "none",
+      "status": "passed",
+      "http_status": 403
+    },
+    {
+      "ingress": "control",
+      "path": "/__sandbox/8080/",
+      "transport": "https",
+      "credential": "none",
+      "status": "passed",
+      "http_status": 403
+    },
+    {
+      "ingress": "control",
+      "path": "/ws",
+      "transport": "https",
+      "credential": "none",
+      "status": "passed",
+      "http_status": 403
+    },
+    {
+      "ingress": "control",
+      "path": "/ws",
+      "transport": "websocket-handshake",
+      "credential": "none",
+      "status": "passed",
+      "http_status": 403
+    },
+    {
+      "ingress": "control",
+      "path": "/m0/preview/preview-cloud-1788660897238/alpha/status",
+      "transport": "https",
+      "credential": "none",
+      "status": "passed",
+      "http_status": 401
+    },
+    {
+      "ingress": "preview-base",
+      "path": "/",
+      "transport": "https",
+      "credential": "none",
+      "status": "passed",
+      "http_status": 403
+    },
+    {
+      "ingress": "preview-base",
+      "path": "/api/state",
+      "transport": "https",
+      "credential": "none",
+      "status": "passed",
+      "http_status": 403
+    },
+    {
+      "ingress": "preview-base",
+      "path": "/proxy/8080/",
+      "transport": "https",
+      "credential": "none",
+      "status": "passed",
+      "http_status": 403
+    },
+    {
+      "ingress": "preview-base",
+      "path": "/proxy/8080/",
+      "transport": "websocket-handshake",
+      "credential": "none",
+      "status": "passed",
+      "http_status": 403
+    },
+    {
+      "ingress": "preview-base",
+      "path": "/__sandbox/8080/",
+      "transport": "https",
+      "credential": "none",
+      "status": "passed",
+      "http_status": 403
+    },
+    {
+      "ingress": "preview-base",
+      "path": "/ws",
+      "transport": "https",
+      "credential": "none",
+      "status": "passed",
+      "http_status": 403
+    },
+    {
+      "ingress": "preview-base",
+      "path": "/ws",
+      "transport": "websocket-handshake",
+      "credential": "none",
+      "status": "passed",
+      "http_status": 403
+    },
+    {
+      "ingress": "preview-base",
+      "path": "/m0/preview/preview-cloud-1788660897238/alpha/status",
+      "transport": "https",
+      "credential": "none",
+      "status": "passed",
+      "http_status": 403
+    },
+    {
+      "ingress": "known-staging-workers-dev",
+      "path": "/",
+      "transport": "https",
+      "credential": "none",
+      "status": "incomplete"
+    }
+  ],
+  "credential_matrix": [],
+  "sdk_port_exposure": "not_run",
+  "missing_matrix": {
+    "cross_site_third_party_cookies": "not_run",
+    "product_login_and_production_logout": "not_run",
+    "cloud_instance_stop_and_billing": "not_run",
+    "cloud_error_tail_phase_attribution": "not_run",
+    "SDK_capability_URL_live_replay": "not_run-no-port-will-be-exposed",
+    "worker_version_preview_URLs": "not_applicable-to-this-DO-container-worker",
+    "alternate_ingress": "scheduled"
+  },
+  "cases": {
+    "cloud_declared_ingresses_use_real_DNS_TLS_and_reject_raw_paths": {
+      "status": "failed",
+      "elapsed_ms": 9332,
+      "error_type": "Error"
+    }
+  },
+  "cleanup": [],
+  "sourcesBefore": {
+    "sha256": "6e84b44bc67ac14248b929fd6834581a2a6c5f2ca524a93925f2e93c0a8b6069",
+    "files": [
+      {
+        "path": ".dockerignore",
+        "sha256": "0bcd7d5c53d25898b250020a2fd04a7033b7034c730f6dfe9465cfd8d09a20f9"
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "ebd2febbc682177605c565d0086c3c2949fafc7400c8f657318204a9a18790ab"
+      },
+      {
+        "path": "infra/m0-project.Dockerfile",
+        "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+      },
+      {
+        "path": "infra/wrangler.m0-preview.jsonc",
+        "sha256": "d65b6cb56bc8d4d2b0ec68463fb622eb61e3964109381bcd0946cc942fc14cb5"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+      },
+      {
+        "path": "scripts/m0/preview-browser.mjs",
+        "sha256": "cd9ded80ec09e79618bfdd495b65b5954c078c6a8d0be4c9fdd5544c97462a41"
+      },
+      {
+        "path": "scripts/m0/preview-budget.mjs",
+        "sha256": "0d4f9a8f4524603b02a959c7a15f9edb8f6a151cd227ddce8ff489b96283a7c8"
+      },
+      {
+        "path": "scripts/m0/preview-budget.test.mjs",
+        "sha256": "2ae0dfdef45082180c963d575b0e9a6f5d2ecd8f2477769519bb14517741463e"
+      },
+      {
+        "path": "scripts/m0/preview-cloud.mjs",
+        "sha256": "205e8e603a69d40f6f6f38b640643f34d16af42e7a602daa554cea686a2c4a75"
+      },
+      {
+        "path": "scripts/m0/preview-manifest.mjs",
+        "sha256": "60a8170d6e488db70be49af61a41fff444a9599de9bc75a3389d4e5fd8da16d6"
+      },
+      {
+        "path": "scripts/m0/preview-manifest.test.mjs",
+        "sha256": "4977af00b4842d338b95f569112ff5f5b3f9a5f39615b71e1fef340fb5922cfa"
+      },
+      {
+        "path": "scripts/m0/preview-tls.mjs",
+        "sha256": "5a0b93336e443e762d9f310f73832e5286b721d54ff093c213f7ef909ce93a45"
+      },
+      {
+        "path": "scripts/m0/source-inventory.mjs",
+        "sha256": "1afeab93162678265a0372d57b2404902192efdc17fbe0a063e62f5a63460c6e"
+      },
+      {
+        "path": "spikes/m0-cloud/auth.ts",
+        "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+      },
+      {
+        "path": "spikes/m0-preview/README.md",
+        "sha256": "e408ac27042d9433104d88bc64bb1ee0e2f6e73b9211d3ba727f7fcca23b40a0"
+      },
+      {
+        "path": "spikes/m0-preview/browser.test.ts",
+        "sha256": "dde576880a2ed19ad8bd7bbb4c8f6bf2aac655171cf3e89005f7dbdb6e9aab4d"
+      },
+      {
+        "path": "spikes/m0-preview/browser.ts",
+        "sha256": "768d5312adc354df1b2e52fb60d7794513cd5156ee2f427680433ed7ff9761d4"
+      },
+      {
+        "path": "spikes/m0-preview/env.d.ts",
+        "sha256": "8a45521d5be85d24a0c1faf01abdfd5771ce3e50d363e105bf1e4b3fefb209d9"
+      },
+      {
+        "path": "spikes/m0-preview/index.ts",
+        "sha256": "a2d5c6535b33734b235fae397f4934d60c44f7bf78ed3314d4f3805b347d2ab8"
+      },
+      {
+        "path": "spikes/m0-preview/lifecycle.ts",
+        "sha256": "7a34e172408615c37a181ec50f320f2d72e40172c0b48d4a96e76dcf21c28fcd"
+      },
+      {
+        "path": "spikes/m0-preview/policy.test.ts",
+        "sha256": "ee53f8bc6bf3e39d10b662cdec6a8bfd97e30fd1e4a4d431b1b75c28f2eba378"
+      },
+      {
+        "path": "spikes/m0-preview/policy.ts",
+        "sha256": "7208238e836ae32348fa7dd3167c2dfa1208819e88b8e4588fdc6bb4737414d7"
+      },
+      {
+        "path": "spikes/m0-preview/protocol.test.ts",
+        "sha256": "7438c1912cccc87feea678e250097597c7cf3f1268ceda4128ca0b0772bce200"
+      },
+      {
+        "path": "spikes/m0-preview/runtime.ts",
+        "sha256": "67b1d3e27a0e2a285dc9ca02398f93b2ef23c76d63ea13380b88e5ea85cfa39f"
+      },
+      {
+        "path": "tests/m0/preview-driver.test.ts",
+        "sha256": "d90490be069f23ec522b375b1e81925c2171173da1dc891e862e84fcb75d6a74"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+      }
+    ],
+    "repositorySourceSha256": "b9469e63c4b5086a7fb9500a69b02f79ad73e584a25d37fa9d4f42d6406d1782"
+  },
+  "budgets": {
+    "business": {
+      "limits": {
+        "milliseconds": 300000,
+        "requests": 600,
+        "responseBytes": 8388608
+      },
+      "elapsed_ms": 9333,
+      "requests": 17,
+      "response_bytes": 556,
+      "failure": null,
+      "finished": true
+    },
+    "cleanup": {
+      "limits": {
+        "milliseconds": 45000,
+        "requests": 3,
+        "responseBytes": 262144
+      },
+      "elapsed_ms": 0,
+      "requests": 0,
+      "response_bytes": 0,
+      "failure": null,
+      "finished": true
+    },
+    "browser_accounting": {
+      "completed_responses": 0,
+      "failed_requests": 0,
+      "received_websocket_frames": 0,
+      "mode": "passive-completed-response-wire-size-and-websocket-payload; aborted-response-bytes-may-be-unavailable"
+    },
+    "mutations": {
+      "attempts": 0,
+      "unknown_acknowledgments": 0,
+      "automatic_replays": 0
+    },
+    "hard_process_deadline_ms": 360000
+  },
+  "status": "failed",
+  "failure": {
+    "case": "cloud_declared_ingresses_use_real_DNS_TLS_and_reject_raw_paths",
+    "error_type": "Error"
+  },
+  "browser_closed": true,
+  "sourcesAfter": {
+    "sha256": "6e84b44bc67ac14248b929fd6834581a2a6c5f2ca524a93925f2e93c0a8b6069",
+    "files": [
+      {
+        "path": ".dockerignore",
+        "sha256": "0bcd7d5c53d25898b250020a2fd04a7033b7034c730f6dfe9465cfd8d09a20f9"
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "ebd2febbc682177605c565d0086c3c2949fafc7400c8f657318204a9a18790ab"
+      },
+      {
+        "path": "infra/m0-project.Dockerfile",
+        "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+      },
+      {
+        "path": "infra/wrangler.m0-preview.jsonc",
+        "sha256": "d65b6cb56bc8d4d2b0ec68463fb622eb61e3964109381bcd0946cc942fc14cb5"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+      },
+      {
+        "path": "scripts/m0/preview-browser.mjs",
+        "sha256": "cd9ded80ec09e79618bfdd495b65b5954c078c6a8d0be4c9fdd5544c97462a41"
+      },
+      {
+        "path": "scripts/m0/preview-budget.mjs",
+        "sha256": "0d4f9a8f4524603b02a959c7a15f9edb8f6a151cd227ddce8ff489b96283a7c8"
+      },
+      {
+        "path": "scripts/m0/preview-budget.test.mjs",
+        "sha256": "2ae0dfdef45082180c963d575b0e9a6f5d2ecd8f2477769519bb14517741463e"
+      },
+      {
+        "path": "scripts/m0/preview-cloud.mjs",
+        "sha256": "205e8e603a69d40f6f6f38b640643f34d16af42e7a602daa554cea686a2c4a75"
+      },
+      {
+        "path": "scripts/m0/preview-manifest.mjs",
+        "sha256": "60a8170d6e488db70be49af61a41fff444a9599de9bc75a3389d4e5fd8da16d6"
+      },
+      {
+        "path": "scripts/m0/preview-manifest.test.mjs",
+        "sha256": "4977af00b4842d338b95f569112ff5f5b3f9a5f39615b71e1fef340fb5922cfa"
+      },
+      {
+        "path": "scripts/m0/preview-tls.mjs",
+        "sha256": "5a0b93336e443e762d9f310f73832e5286b721d54ff093c213f7ef909ce93a45"
+      },
+      {
+        "path": "scripts/m0/source-inventory.mjs",
+        "sha256": "1afeab93162678265a0372d57b2404902192efdc17fbe0a063e62f5a63460c6e"
+      },
+      {
+        "path": "spikes/m0-cloud/auth.ts",
+        "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+      },
+      {
+        "path": "spikes/m0-preview/README.md",
+        "sha256": "e408ac27042d9433104d88bc64bb1ee0e2f6e73b9211d3ba727f7fcca23b40a0"
+      },
+      {
+        "path": "spikes/m0-preview/browser.test.ts",
+        "sha256": "dde576880a2ed19ad8bd7bbb4c8f6bf2aac655171cf3e89005f7dbdb6e9aab4d"
+      },
+      {
+        "path": "spikes/m0-preview/browser.ts",
+        "sha256": "768d5312adc354df1b2e52fb60d7794513cd5156ee2f427680433ed7ff9761d4"
+      },
+      {
+        "path": "spikes/m0-preview/env.d.ts",
+        "sha256": "8a45521d5be85d24a0c1faf01abdfd5771ce3e50d363e105bf1e4b3fefb209d9"
+      },
+      {
+        "path": "spikes/m0-preview/index.ts",
+        "sha256": "a2d5c6535b33734b235fae397f4934d60c44f7bf78ed3314d4f3805b347d2ab8"
+      },
+      {
+        "path": "spikes/m0-preview/lifecycle.ts",
+        "sha256": "7a34e172408615c37a181ec50f320f2d72e40172c0b48d4a96e76dcf21c28fcd"
+      },
+      {
+        "path": "spikes/m0-preview/policy.test.ts",
+        "sha256": "ee53f8bc6bf3e39d10b662cdec6a8bfd97e30fd1e4a4d431b1b75c28f2eba378"
+      },
+      {
+        "path": "spikes/m0-preview/policy.ts",
+        "sha256": "7208238e836ae32348fa7dd3167c2dfa1208819e88b8e4588fdc6bb4737414d7"
+      },
+      {
+        "path": "spikes/m0-preview/protocol.test.ts",
+        "sha256": "7438c1912cccc87feea678e250097597c7cf3f1268ceda4128ca0b0772bce200"
+      },
+      {
+        "path": "spikes/m0-preview/runtime.ts",
+        "sha256": "67b1d3e27a0e2a285dc9ca02398f93b2ef23c76d63ea13380b88e5ea85cfa39f"
+      },
+      {
+        "path": "tests/m0/preview-driver.test.ts",
+        "sha256": "d90490be069f23ec522b375b1e81925c2171173da1dc891e862e84fcb75d6a74"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+      }
+    ],
+    "repositorySourceSha256": "b9469e63c4b5086a7fb9500a69b02f79ad73e584a25d37fa9d4f42d6406d1782"
+  },
+  "probeSourceStableDuringRun": true,
+  "completed_at": "2026-09-06T02:15:06.603Z"
+}

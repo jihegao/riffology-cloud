@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-09-06T06:05:54.956Z",
+  "reviewer": "/root/m0_storage_gate_review",
+  "role": "independent read-only review of frozen final artifacts and coordinator; reviewer previously contributed initial driver",
+  "gate": "G0-T08",
+  "decision": "accept original fixed staging recovery primitive",
+  "checksPassed": true,
+  "versionId": "5fef2b3a-a064-4162-b1c3-6b0ce25c098d",
+  "checks": [
+    "76 actions match journal and response body hashes; 19 scoped and 140 full source hashes plus bundle and deployment 100% match.",
+    "Browser and page closed at 05:53:31.605Z; independent GET still ready-wait and producer completed at 05:53:51.674Z.",
+    "Process and container fault confirmations were 2395 and 2407 ms after first streaming delta; actual running, streaming and finalAbsent observed.",
+    "Both fault cases interrupted, then new g2 physical sandbox restored same seed with exactly one new fixture request.",
+    "Four stale event and Authority writes rejected 409 stale-generation with independent unchanged state, pointer and event readback.",
+    "Three runs closed, effect_intent null, destroy fulfilled; seven saved instance records inactive. Earlier failures remain false."
+  ],
+  "limitations": [
+    "Installed Sandbox SDK killProcess ignores signal argument: receipt SIGKILL is requested signal only. Evidence proves SDK kill and killed process status, not independently verified OS SIGKILL.",
+    "Real Pi SDK with local SSE fixture, no actual supplier calls; no T01, production Turn or full G0 acceptance.",
+    "One bounded GET timeout retry; no unknown mutation replay. R2 and DO audit retained."
+  ]
+}

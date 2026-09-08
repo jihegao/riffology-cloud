@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "operation": "G0-T10-v1-independent-diagnosis",
+  "reviewedAt": "2026-09-06T09:20:09.003988+00:00",
+  "reviewer": "boundary_deadline_review",
+  "reviewMode": "offline-evidence-and-source-only",
+  "cloudRequestsPerformed": 0,
+  "sourceFilesModified": false,
+  "gateDecision": "v1-partial-evidence-full-G0-T10-not-passed",
+  "originalUpgradePassed": false,
+  "originalEvidencePreserved": true,
+  "evidence": [
+    {
+      "role": "baseline",
+      "path": "docs/evidence/runs/m0-release-baseline-1788685542377/summary.json",
+      "sha256": "ca2e6362e2277f75b2faa1c774a7bce8a70cee487f3b74117fb6bcc3857149ce"
+    },
+    {
+      "role": "compatibility",
+      "path": "docs/evidence/runs/m0-release-compatibility-1788685624236/summary.json",
+      "sha256": "42f573742c22d3ea68f55063e57d903b086eea371d06764453e2855ae0dce952"
+    },
+    {
+      "role": "hold",
+      "path": "docs/evidence/runs/m0-release-hold-1788685652291/summary.json",
+      "sha256": "040d9ed2e88ee16dd6f240862254fdc8fe5ca32e4a6aeda12861cd9f4343e572"
+    },
+    {
+      "role": "old_instance_during_rollout",
+      "path": "docs/evidence/runs/m0-release-hold-1788685652291/instances-during-rollout.json",
+      "sha256": "6c5681bb9413363e5e1d07ec1444c1b79ff9ddb6db59cda0f35fddba4141f1b7"
+    },
+    {
+      "role": "rollout_deploy",
+      "path": "docs/evidence/runs/m0-release-deploy-w2-rollout-1788685658684/deploy.json",
+      "sha256": "20dceed335774c01b8e14f46ca0a368521ca5a6c0a678fd2911677eb6e5f7906"
+    },
+    {
+      "role": "rollout_initial_api",
+      "path": "docs/evidence/runs/m0-release-deploy-w2-rollout-1788685658684/api.json",
+      "sha256": "3c23c4ce1bfae4545818350e0ad40200b8201857cbb3e701b8448c56c2914c20"
+    },
+    {
+      "role": "rollout_converged_api",
+      "path": "docs/evidence/runs/m0-release-deploy-w2-rollout-1788685658684/api-converged.json",
+      "sha256": "7a3e91cbd4a261cd855067c77ac12a6f798c00b781f966e301367e08bb2b6b6d"
+    },
+    {
+      "role": "rollout_verified_deployment",
+      "path": "docs/evidence/runs/m0-release-deploy-w2-rollout-1788685658684/deployment-verified.json",
+      "sha256": "095b1ce80820e1417b7c56515c56c23da2dfc6925e9625fc301148625e044c07"
+    },
+    {
+      "role": "upgrade_summary",
+      "path": "docs/evidence/runs/m0-release-upgrade-1788685843685/summary.json",
+      "sha256": "820a7e67932dc665ff3b0c258b55cfaf08c2cf2def92c931af9a1ace0e26a420"
+    },
+    {
+      "role": "upgrade_journal",
+      "path": "docs/evidence/runs/m0-release-upgrade-1788685843685/actions.ndjson",
+      "sha256": "8d389a9f327e5e6bb2b34ca76bdc88bd6f966a665b6c6791714be501d760cd63"
+    },
+    {
+      "role": "report_after",
+      "path": "docs/evidence/runs/m0-release-upgrade-1788685843685/report-after.json",
+      "sha256": "4aced7ea8240f8449c56ad65fa27d254c975696a2795a5abcadb09d7edccf5b2"
+    },
+    {
+      "role": "worker_rollback_api",
+      "path": "docs/evidence/runs/m0-release-v1-worker-rollback-20260906/api.json",
+      "sha256": "23204fe0b1f3b42d970e3907252e92d39e69891cfec77a773e1ff03fecae7887"
+    },
+    {
+      "role": "v1_deployed_bundle",
+      "path": "docs/evidence/runs/m0-release-deploy-w2-rollout-1788685658684/bundle/cloud-w2.js",
+      "sha256": "b03c74ae93b5fe7509acf2f7160e4081f5e823020635ac6b51adb9299a3b0a9a"
+    }
+  ],
+  "verifiedFacts": {
+    "completedPhases": [
+      {
+        "phase": "baseline",
+        "passed": true,
+        "sourceStable": true,
+        "workerVersionId": "cafb1c33-c559-4245-9fdf-707dd28120f0",
+        "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67"
+      },
+      {
+        "phase": "compatibility",
+        "passed": true,
+        "sourceStable": true,
+        "workerVersionId": "e9f81c50-aa01-41e0-9356-abb1cef9beb2",
+        "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67"
+      },
+      {
+        "phase": "hold",
+        "passed": true,
+        "sourceStable": true,
+        "workerVersionId": "e9f81c50-aa01-41e0-9356-abb1cef9beb2",
+        "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67"
+      }
+    ],
+    "checkpoint": {
+      "revision": "7359ed1104f1af0b3dc31e28cd4223ab8e44a341d2848d798f794a438c715af1",
+      "generation": 1,
+      "sequence": 1
+    },
+    "checkpointCounter": 1,
+    "compatibility": {
+      "unknownProtocolFromChild": "m0-unknown",
+      "unknownFormatFromChild": 999,
+      "bothRejected": true,
+      "businessDispatches": 0,
+      "counterBefore": 1,
+      "counterAfter": 1,
+      "stateHashUnchanged": true
+    },
+    "hold": {
+      "processId": "proc_1788685656635_5hpd81",
+      "pid": 94,
+      "observedRunningBeforeRollout": true,
+      "finalProcessOutcome": "unconfirmed"
+    },
+    "rollout": {
+      "deployExitCode": 0,
+      "workerVersionId": "fa130c14-76ca-4252-9aa9-6c1137ab2cf5",
+      "deployFinishedAt": "2026-09-06T09:08:29.778Z",
+      "initialApiAt": "2026-09-06T09:09:00.342Z",
+      "initialApplicationVersion": 1,
+      "initialImage": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+      "convergedApiAt": "2026-09-06T09:10:42.640Z",
+      "convergedApplicationVersion": 2,
+      "convergedImage": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+      "newImageBusinessExecutionVerified": false
+    },
+    "upgrade": {
+      "requests": 1,
+      "getReportRequests": 1,
+      "postRequests": 0,
+      "preflightBodyRecoveredByHashMatch": true,
+      "responseBodySha256": "f1c248cb641e7fd8078ff65950ea943a3858871def4b07c5b92bde0347df1867",
+      "reportClosed": true,
+      "reportCleanup": "confirmed",
+      "operation": null,
+      "phaseWasNeverAccepted": true
+    },
+    "workerOnlyRollback": {
+      "exactPriorWorkerVersionId": "cafb1c33-c559-4245-9fdf-707dd28120f0",
+      "percentage": 100,
+      "imageAfterRollback": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+      "imageWasRolledBack": false,
+      "newTaskAfterRollbackExecuted": false
+    },
+    "cleanup": {
+      "coordinatorConfirmed": true,
+      "allocated": [
+        "old"
+      ],
+      "destroyed": [
+        "old"
+      ],
+      "independentInstanceCount": 1,
+      "allRecordedInstancesInactive": true,
+      "instanceReadAt": "2026-09-06T09:14:55.128Z"
+    },
+    "modelDispatches": 0
+  },
+  "failureDiagnosis": {
+    "classification": "diagnostic-idle-window-expired-before-upgrade-dispatch",
+    "confidence": "strongly-supported-inference-from-deployed-code-timing-and-hash-matched-response",
+    "explanation": "v1 将每阶段接受后的空闲清理窗口设为 180 秒；外部部署及应用配置收敛核对占用了该窗口。upgrade 的唯一 GET 已看到 closed=true 与 cleanup=confirmed，因此前置检查终止，未发送 upgrade POST。",
+    "holdPhaseStartedAtMs": 1788685656591,
+    "v1IdleWindowMs": 180000,
+    "estimatedAlarmDueAtMs": 1788685836591,
+    "upgradeGetAtMs": 1788685843686,
+    "getAfterEstimatedDueMs": 7095,
+    "exactAlarmCallbackTimestamp": null,
+    "timingLimit": "实际 setAlarm 在 phase startedAt 之后的持久化步骤设置；这里的到期时间是近似值，没有编造 alarm 回调时间。",
+    "notEstablished": [
+      "upgrade 恢复逻辑执行失败",
+      "新镜像启动或协议不兼容",
+      "hold 由 rollout 强杀而非自行完成",
+      "SDK effect 的 45 秒超时失效"
+    ]
+  },
+  "v1CanEstablish": [
+    "W1/I1 云上真实初始化、加一及已提交 R2 checkpoint。",
+    "新 W2 与旧 I1 的实际混合窗口兼容；真实子进程产生的未知协议和格式被拒，计数及状态摘要不变。",
+    "固定 hold 进程在 rollout 前已真实运行且活动标记已写入。",
+    "Worker 先更新、应用镜像随后由 I1/v1 收敛至 I2/v2；deploy 成功不代表镜像立即收敛。",
+    "精确旧 Worker 版本回退至 100%，而镜像仍是 I2；代码回退与镜像回退分离。",
+    "旧诊断关闭并清理；独立 API 中本 run 的全部实例已 inactive。"
+  ],
+  "v1CannotEstablish": [
+    "I2 新运行时恢复 R2 并完成加一、读回及下一 checkpoint。",
+    "固定启动失败确实发生并观察到退出码 42。",
+    "镜像回退 I1，以及回退后新实例恢复和写读闭环。",
+    "held 进程的最终退出码、结束时间、停止原因或无损排空。",
+    "完整 G0-T10 通过；不能将 preserved passed=false 改成 true。"
+  ],
+  "v2Assessment": {
+    "decision": "reasonable-bounded-new-diagnostic-attempt-not-a-retroactive-v1-pass",
+    "fixedRunId": "release-g0-v2-20260906",
+    "phaseIdleWindowMs": 600000,
+    "sdkEffectDeadlineMs": 45000,
+    "cleanupEffectDeadlineMs": 20000,
+    "sourceSnapshot": [
+      {
+        "path": "spikes/m0-release/cloud-host.ts",
+        "sha256": "304f40d3873fbf3b121fe85dace57860be2dca8b0fdb718ae7229436b7a8f54b"
+      },
+      {
+        "path": "spikes/m0-release/cloud-policy.ts",
+        "sha256": "961331dc5e3a955803ab3e25599e538972578d410a1526c53ff63589f2cf1e3a"
+      },
+      {
+        "path": "infra/wrangler.m0-release.jsonc",
+        "sha256": "96a62fa71b98d8e4daf73505a8e50af57f28a580631039d9334f72417d034b96"
+      }
+    ],
+    "rationale": [
+      "使用新的固定 run 同时隔离 HOST、VM 身份及 R2 前缀，不复活已 closed 的 v1。",
+      "600 秒窗口用于等待外部部署/收敛；45 秒单次 effect 期限与未知 RPC 所有权规则未放宽。",
+      "onStop 只持久化有界观察字段，并在 finally 调用 SDK 清理；releaseLifecycle 读取 Container 状态，观察本身不启动 VM。",
+      "回调 observedAt 仅是观察时间，不能冒充信号或进程退出的准确时间；退出原因仍须与独立 rollout/实例记录关联。"
+    ],
+    "remainingRequirements": [
+      "新 attempt 仍须独立验证完整升级、启动失败、精确 Worker 和镜像回退、恢复后真实写读与最终 inactive。",
+      "继续保留无模型绑定及有界实例/运行时间；本复核未执行 v2 云调用，也未签收其门禁。"
+    ]
+  }
+}

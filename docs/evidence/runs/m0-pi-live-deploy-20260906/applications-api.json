@@ -1,0 +1,125 @@
+{
+  "at": "2026-09-06T07:46:22.348Z",
+  "status": 200,
+  "success": true,
+  "applications": [
+    {
+      "id": "a039ed42-159d-43db-be13-69315bce5189",
+      "created_at": "2026-09-06T07:45:07.272999936Z",
+      "updated_at": "2026-09-06T07:45:08.560999936Z",
+      "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+      "name": "riffology-m0-pi-live-project-staging",
+      "version": 1,
+      "scheduling_policy": "default",
+      "instances": 1,
+      "max_instances": 1,
+      "configuration": {
+        "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+        "vcpu": 0.25,
+        "memory": "1GiB",
+        "memory_mib": 1024,
+        "disk": {
+          "size_mb": 4000,
+          "size": "4GB"
+        },
+        "network": {
+          "assign_ipv6": "none",
+          "assign_ipv4": "none",
+          "mode": "private"
+        },
+        "command": [],
+        "entrypoint": [],
+        "runtime": "firecracker",
+        "observability": {
+          "logs": {
+            "enabled": true
+          }
+        }
+      },
+      "constraints": {
+        "tiers": [
+          1,
+          2
+        ]
+      },
+      "durable_objects": {
+        "namespace_id": "2217a2e7507d46ddb766164f94c678f7"
+      },
+      "rollout_active_grace_period": 0,
+      "health": {
+        "errors": [],
+        "instances": {
+          "active": 0,
+          "assigned": 0,
+          "healthy": 1,
+          "stopped": 0,
+          "failed": 0,
+          "scheduling": 0,
+          "starting": 0
+        }
+      },
+      "network": {
+        "bandwidth_limit_mbps": 250
+      }
+    },
+    {
+      "id": "a03ddc7e-1c6e-4cea-93ec-ac03d7b0073a",
+      "created_at": "2026-09-06T07:45:04.328Z",
+      "updated_at": "2026-09-06T07:45:05.288999936Z",
+      "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+      "name": "riffology-m0-pi-live-trusted-staging",
+      "version": 1,
+      "scheduling_policy": "default",
+      "instances": 1,
+      "max_instances": 1,
+      "configuration": {
+        "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "vcpu": 0.25,
+        "memory": "1GiB",
+        "memory_mib": 1024,
+        "disk": {
+          "size_mb": 4000,
+          "size": "4GB"
+        },
+        "network": {
+          "assign_ipv6": "none",
+          "assign_ipv4": "none",
+          "mode": "private"
+        },
+        "command": [],
+        "entrypoint": [],
+        "runtime": "firecracker",
+        "observability": {
+          "logs": {
+            "enabled": true
+          }
+        }
+      },
+      "constraints": {
+        "tiers": [
+          1,
+          2
+        ]
+      },
+      "durable_objects": {
+        "namespace_id": "81dab5c2d43c44fa8a7e2fa7518ea389"
+      },
+      "rollout_active_grace_period": 0,
+      "health": {
+        "errors": [],
+        "instances": {
+          "active": 0,
+          "assigned": 0,
+          "healthy": 1,
+          "stopped": 0,
+          "failed": 0,
+          "scheduling": 0,
+          "starting": 0
+        }
+      },
+      "network": {
+        "bandwidth_limit_mbps": 250
+      }
+    }
+  ]
+}

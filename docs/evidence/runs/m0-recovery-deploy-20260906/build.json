@@ -1,0 +1,73 @@
+{
+  "observedAt": "2026-09-06T05:17:36.432Z",
+  "runtimeSources": [
+    {
+      "path": "infra/wrangler.m0-recovery.jsonc",
+      "sha256": "5339942554b2ddc9549bfb4e279bdae91abb1c9699378c750574814aa58bcdf7"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+    },
+    {
+      "path": "package.json",
+      "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+    },
+    {
+      "path": "spikes/m0-cloud/auth.ts",
+      "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+    },
+    {
+      "path": "spikes/m0-recovery/README.md",
+      "sha256": "c1add875ace2fea9743799dc71e2865155740559d692baeeaed42a8a6e15ef3b"
+    },
+    {
+      "path": "spikes/m0-recovery/bounded-effect.ts",
+      "sha256": "0c8b8e66bfbd435d8c95200c7eb5446fd64ae3ca58edf301d221b40be90915e3"
+    },
+    {
+      "path": "spikes/m0-recovery/coordinator.test.ts",
+      "sha256": "fb082196fa5d2d3ff11f944b40fa83852f1886a6e5e541e2dee17f75c43e45ee"
+    },
+    {
+      "path": "spikes/m0-recovery/env.d.ts",
+      "sha256": "03f21a249506a6b949e2bfb56fc36eea4f39aa200acf7c5181d965921eb95d59"
+    },
+    {
+      "path": "spikes/m0-recovery/index.ts",
+      "sha256": "5c71ccbfe9667a6959cae066a701555de86a2d478193fd5d2cf79848068ca3a5"
+    },
+    {
+      "path": "spikes/m0-recovery/runtime.test.ts",
+      "sha256": "dbcb7860a38712ea3f2ef3a4c0685ee0a2ef469710619df9e7f2e0e390d1d813"
+    },
+    {
+      "path": "spikes/m0-recovery/runtime.ts",
+      "sha256": "9bf1c17d4011ce829e0cea9b42f16bec69a8477ab7902102fcede66863278d39"
+    },
+    {
+      "path": "spikes/m0-recovery/worker.test.ts",
+      "sha256": "d4ae23aadf684ebf4c585d42252d3a8d2e21705dd26927eaa2410999082b7531"
+    },
+    {
+      "path": "spikes/m0-recovery/worker.ts",
+      "sha256": "dfbf00e08e222e4bb07a1102015604e4740ac71d77b05e3aa14e95af724b6f8c"
+    },
+    {
+      "path": "spikes/m0-storage/adapters.ts",
+      "sha256": "2216554bd0979a8798eb20d517e74c7dc9affcf0e141efc853c3beafcfb0f490"
+    },
+    {
+      "path": "spikes/m0-storage/checkpoint.ts",
+      "sha256": "74bd5c364ca5e5d51ad3f46256cda910c5807c26b5fd7cb3b488e91fb13ed73a"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+    }
+  ],
+  "runtimeSourceSha256": "10d44c34b063c4d72c055803ec4aa62e4de2e4b36723a964139d2b3e80c41897",
+  "bundleSha256": "74ec9872fd88b621f20c5fab7702df41e0752694096aa4f33771907baec25ee1",
+  "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+  "probeDriver": "pending separate scoped verification before cloud run"
+}

@@ -1,0 +1,27 @@
+{
+  "observedAt": "2026-09-05T11:34:17.838Z",
+  "localChecksPassed": true,
+  "sourceStableSinceCheck": true,
+  "sourceSha256": "f62490bc7b01c1dd0373ec8a55ee25ce135967724f5611d0f33312242e9ca330",
+  "sourceFiles": 102,
+  "localChecksLogHashMatches": true,
+  "previewScopedSourceSha256": "f5c38924dbb30aefece17c91e53806f2cfbeab6d9d68ed409a7a23ee28754597",
+  "previewScopedSourceMatchesPreviousBrowserRun": true,
+  "previewBrowserNotRerunThisTurn": true,
+  "docs": {
+    "files": 23,
+    "links": 254,
+    "missing": [
+      {
+        "file": "docs/mvp-system-design.md",
+        "target": "chatgpt-conversation://6a9a2984-6dc4-83ec-af1f-c17ad1f0b4bb"
+      }
+    ]
+  },
+  "gitDiffCheck": "separately exit 0",
+  "cloudG0Accepted": false,
+  "stagingPassed": [
+    "G0-T06"
+  ],
+  "newRealProviderCalls": 0
+}

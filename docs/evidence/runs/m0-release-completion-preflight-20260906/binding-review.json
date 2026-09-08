@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-06T10:04:18.717816+00:00",
+  "reviewer": "independent-boundary-deadline-review",
+  "scope": "Offline cross-script binding and completion-host review; no deployment, cloud API or model requests.",
+  "conclusion": "Configuration and installed SDK support invoking the existing ReleaseSandbox namespace through a separate completion Worker without rebuilding or redeploying its owning W1 Worker. Offline host tests pass. This is not cloud completion or G0-T10 acceptance.",
+  "binding": {
+    "name": "RevertedSandbox",
+    "class_name": "ReleaseSandbox",
+    "script_name": "riffology-m0-release-staging"
+  },
+  "configurationConstraints": [
+    "Configure the binding explicitly in env.staging; Durable Object bindings are not inherited between named environments.",
+    "The owner script and class must already exist in the same account. script_name is the actual deployed Worker name including -staging. Omit environment: staging; installed Wrangler states service environments were removed and named environments are separate Workers.",
+    "Do not export, migrate, rename, transfer, or attach a new container to remote ReleaseSandbox from the consumer. Consumer exports only its own CompletionHost and NativeFault; only NativeFault has the new container app.",
+    "Use either modern exports or legacy migrations, never both. Current completion config uses exports.",
+    "getSandbox uses getContainer, which calls the provided namespace idFromName and get. Subsequent Sandbox methods and configuration run as RPC on the original owner class; a type-only import does not package that class into the completion Worker.",
+    "The binding references a namespace, not an immutable Worker version or image digest. Independent before/after owner deployment, bundle, namespace and app-I1 evidence is necessary to establish the actual runtime identity.",
+    "Use the fixed fresh completion restore identity. Do not reopen the already-closed original ReleaseHost or reuse an ambiguous previous VM.",
+    "The completion supervisor reads the fixed source R2 revision and validates its manifest/session hash before allocating the restore VM, then initializes 2, increments once to 3 and reads 3. It writes checkpoints only to m0-release-completion/release-completion-20260906.",
+    "The new dedicated native fault app is cleaned and its own exit evidence accepted before the remote I1 restoration begins. The remote original app remains under its original owner configuration."
+  ],
+  "evidenceBoundaries": [
+    "A new supervisor driving existing W1 Sandbox RPCs proves the fixed container/runtime rollback restoration primitive when cloud evidence succeeds; it does not demonstrate that the old, closed W1 ReleaseHost coordinator resumed.",
+    "Sandbox configuration, VM files and DO runtime state may change through authorized RPC; unchanged W1 bundle means unchanged deployed code, not a read-only execution.",
+    "The seven host tests use real completion host, FixedPipeline, checkpoint adapters and verifier with mocked platform RPC/R2 transport. Historical source manifest and state bytes and the real fixed runtime-source hash are used. These tests do not execute a Cloudflare VM.",
+    "No provider/service binding appears in the completion config and no model call was made by this review. modelDispatches:0 is fixed probe metadata, not account-wide financial audit."
+  ],
+  "localReferences": [
+    {
+      "path": "node_modules/wrangler/config-schema.json",
+      "lines": "5840-5874",
+      "finding": "External script_name and optional service environment fields; name and class_name required."
+    },
+    {
+      "path": "node_modules/wrangler/wrangler-dist/cli.js",
+      "lines": "191589-191599",
+      "finding": "Different script_name partitions binding as remote."
+    },
+    {
+      "path": "node_modules/wrangler/wrangler-dist/cli.js",
+      "lines": "175700-175711",
+      "finding": "Only local DO bindings require a class export in consumer entrypoint."
+    },
+    {
+      "path": "node_modules/wrangler/wrangler-dist/cli.js",
+      "lines": "191278-191309",
+      "finding": "Container class must be owned by the same script; remote DO container configuration is rejected."
+    },
+    {
+      "path": "node_modules/wrangler/wrangler-dist/cli.js",
+      "lines": "20017",
+      "finding": "Named environments now use separate Worker names; service environments removed."
+    },
+    {
+      "path": "node_modules/@cloudflare/sandbox/dist/sandbox-D0rNqxlr.js",
+      "lines": "7409-7440",
+      "finding": "SDK takes supplied namespace and invokes its stub; does not deploy classes."
+    },
+    {
+      "path": "node_modules/@cloudflare/containers/dist/lib/utils.js",
+      "lines": "33-36",
+      "finding": "getContainer resolves namespace idFromName then get."
+    }
+  ],
+  "officialReferences": [
+    {
+      "url": "https://developers.cloudflare.com/workers/wrangler/configuration/#durable-objects",
+      "finding": "External script_name selects the Worker defining a DO. Exports describe locally exported classes; exports and migrations are mutually exclusive."
+    },
+    {
+      "url": "https://developers.cloudflare.com/durable-objects/reference/durable-objects-migrations/",
+      "finding": "Official class-export documentation demonstrates consumers targeting another Worker using script_name; namespace transfer is a separate lifecycle operation and is not required here."
+    }
+  ],
+  "checks": {
+    "hostTests": {
+      "command": "node --test tests/m0/release-completion-host.test.ts",
+      "passed": 7,
+      "failed": 0,
+      "driverPositiveControl": true,
+      "driverTamperNegativeControls": 5
+    },
+    "typecheck": {
+      "command": "npm run typecheck",
+      "exitCode": 0
+    }
+  },
+  "inputHashes": {
+    "infra/wrangler.m0-release-completion.jsonc": "ee3c295a071fdf171aef4ab597e5fefd489f7d555f25e25d5cbf634422e60f87",
+    "spikes/m0-release-completion/index.ts": "2b9ded3a091fca2572d4b7fe8e8bf702f8b1758c6395b110782cd92e6b9f7d0f",
+    "spikes/m0-release/cloud-w1.ts": "4283275c27fc0b9b0bdc2dfb075fe7ecfd9d4766a4aacd8be4db13a11daacb98",
+    "infra/wrangler.m0-release.jsonc": "96a62fa71b98d8e4daf73505a8e50af57f28a580631039d9334f72417d034b96",
+    "tests/m0/release-completion-host.test.ts": "7faa9daedf91fa381c738cb1d9059b3b2fa61f125c5568216676cd7497d9c453",
+    "node_modules/wrangler/config-schema.json": "3bfa003469906de7d3543c671ab1d8618577aa6d46bdf7e27efc4e5cfed74b92",
+    "node_modules/@cloudflare/sandbox/dist/sandbox-D0rNqxlr.js": "400b77a826a9fb441e795af23bfdc4b6ba9f97b57b15f0b358fb92bc6fcb3648",
+    "node_modules/@cloudflare/containers/dist/lib/utils.js": "22f96e63b873b10081fc15216bffc8d23a4614516efcb64be99db87372d4011c"
+  }
+}

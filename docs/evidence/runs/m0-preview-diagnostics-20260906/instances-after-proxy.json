@@ -1,0 +1,73 @@
+{
+    "instances": [
+        {
+            "id": "81a8993e9c28e3a346328809d303baa890e8ff287109cfa57b1c2bb3565885b5",
+            "name": "m0-preview-alpha-a5a069af8d3c48d18f4ee8d0cd196d2c",
+            "state": "stopped",
+            "location": "kix04",
+            "version": 1,
+            "created": "2026-09-06T02:03:29.575000064Z"
+        },
+        {
+            "id": "018e0e1603cd6ae7e79636922be2697d20268b3c75ac8c1349ef5db3ca6dd138",
+            "name": "m0-preview-alpha-bc30cc4d0ce546f0b9cd48fbca290ff7",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T02:38:01Z"
+        },
+        {
+            "id": "1267e6a3f46db556d6cdd5f79681c50f3bb1134ce52db693c1f1b7cae3ca7a0a",
+            "name": "m0-preview-alpha-9d04d768ee2d48779ec9a1165fc6997f",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T02:43:40Z"
+        },
+        {
+            "id": "a8fbc070d2cb8fcf10d280879e568ff325a8b61b2cf70d0ff07a13c46e57e44d",
+            "name": "m0-preview-alpha-b9fe62f1563a4403add6da18b1cd9594",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T02:42:49Z"
+        },
+        {
+            "id": "bdb46d26fe38d5209f48cc22e2c84b29bd5d848180d5d9ede11a3374974dea9c",
+            "name": "m0-preview-bravo-0dfe91d9bbfd422392f9e178ce61437a",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T02:43:15Z"
+        },
+        {
+            "id": "c98275e00bd82279c3a65ce18365810de33063fae4694870d6fdd944a3260225",
+            "name": "m0-preview-alpha-4376bc232a844de4a9127bd2dae3ddb8",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T02:29:16Z"
+        },
+        {
+            "id": "df92de4e6bc432ef4841e2edb0165ff6086408ac208587f8755a8e143ce37866",
+            "name": "m0-preview-alpha-9e5179c554f649a79a8f269f3592e89d",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T02:18:11Z"
+        },
+        {
+            "id": "e3401edd23f1d6e04e40ed06f85d5070e8ad54d322ab80ccf7b9aebb1e7f182b",
+            "name": "m0-preview-alpha-be619f482a0a49c9bc1df400f308b868",
+            "state": "inactive",
+            "location": null,
+            "version": null,
+            "created": "2026-09-06T02:43:40Z"
+        }
+    ],
+    "result_info": {
+        "per_page": 30,
+        "page_token": null,
+        "next_page_token": null
+    }
+}

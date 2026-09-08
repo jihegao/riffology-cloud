@@ -1,0 +1,499 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-09-05T08:30:26.091Z",
+  "environment": "local-docker-workerd",
+  "origin": "http://127.0.0.1:8789",
+  "gate_decision": "not_evaluated",
+  "cloudGatePassed": false,
+  "passed": true,
+  "sourcesBefore": {
+    "sha256": "54289b066397223231c0fb0ea8a96de7e0b434fc041f5c16cf04e9420f064b77",
+    "files": [
+      {
+        "path": ".dockerignore",
+        "sha256": "46c6ff40eef5d467e276eb0c86c512e25a4f8f4913be33dc094449365aa9f6ab"
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "ebd2febbc682177605c565d0086c3c2949fafc7400c8f657318204a9a18790ab"
+      },
+      {
+        "path": "infra/m0-project.Dockerfile",
+        "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+      },
+      {
+        "path": "infra/m0-trusted.Dockerfile",
+        "sha256": "6dbcfa128b0bcc5a3ca5b6ddde6c45d13ca2dc45ec7124b4dba72e461321663c"
+      },
+      {
+        "path": "infra/wrangler.m0.jsonc",
+        "sha256": "05cc50aa14f617b4b4cda8adc043d370c4e0aa29d0f1096041ccdaddd2f8b6c2"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+      },
+      {
+        "path": "scripts/m0/boundary-local.mjs",
+        "sha256": "4f27d4a82dc727c83d51665501ea927203272201d32235f7ceda4cc70004f248"
+      },
+      {
+        "path": "scripts/m0/source-inventory.mjs",
+        "sha256": "1afeab93162678265a0372d57b2404902192efdc17fbe0a063e62f5a63460c6e"
+      },
+      {
+        "path": "services/runtime/controlled-pi.d.mts",
+        "sha256": "8c92fbd06faf16e4be8e51ea728935257fc28a544f2d58ee5c7103897b185e0b"
+      },
+      {
+        "path": "services/runtime/controlled-pi.mjs",
+        "sha256": "8effdc9f441480dc56f8fda2cf59c31d010f0e6add3fcd0e2544b0e990dfc523"
+      },
+      {
+        "path": "services/runtime/pi-probe-evidence.mjs",
+        "sha256": "bb8395477543d6a52c9a4faa830b0dab5fcbecf487f3d2abf571e514041c96cf"
+      },
+      {
+        "path": "spikes/m0-cloud/README.md",
+        "sha256": "c6ef5cad20f0d3a594d643c332e51441a8a274b5c1f39a93102033b550599a3e"
+      },
+      {
+        "path": "spikes/m0-cloud/auth.ts",
+        "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+      },
+      {
+        "path": "spikes/m0-cloud/env.d.ts",
+        "sha256": "1917c8a371bb116a4107b048c282c15a7307cdc4ecbfc90bac8e52372a1a7eda"
+      },
+      {
+        "path": "spikes/m0-cloud/index.ts",
+        "sha256": "b5238242c6d12765b202c41a7f627c891c174a748d7ce2abc55041b8cf77bd2e"
+      },
+      {
+        "path": "spikes/m0-cloud/runtime.test.ts",
+        "sha256": "aa5707f7e9517b90fb93633dbdb5c98138238d421b20816afd240b4f8c54496b"
+      },
+      {
+        "path": "spikes/m0-cloud/runtime.ts",
+        "sha256": "7de4f33b4874ae166061bb82e7c7dae1a42906f674b00e9a85ece696630b6173"
+      },
+      {
+        "path": "spikes/m0-cloud/worker.test.ts",
+        "sha256": "2329cd7aadb5eaffd0db35215ecb666f9d2b25fb048d95b22830f82a633370f3"
+      },
+      {
+        "path": "spikes/m0-cloud/worker.ts",
+        "sha256": "ea17468402298172aed804c7a4a470f511d4e73a53d685dadd42c214efa74b36"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+      }
+    ],
+    "repositorySourceSha256": "bb81217b27ca93eec5c5d90bfd20b009fff81e60dc2ca3ecd7bd6e589b63610d"
+  },
+  "cases": [
+    {
+      "name": "missing-auth",
+      "expectedStatus": 401,
+      "response": {
+        "httpStatus": 401,
+        "body": {
+          "error": "unauthorized"
+        }
+      }
+    },
+    {
+      "name": "wrong-auth",
+      "expectedStatus": 401,
+      "response": {
+        "httpStatus": 401,
+        "body": {
+          "error": "unauthorized"
+        }
+      }
+    },
+    {
+      "name": "query",
+      "expectedStatus": 400,
+      "response": {
+        "httpStatus": 400,
+        "body": {
+          "error": "query_parameters_not_supported"
+        }
+      }
+    },
+    {
+      "name": "extra-field",
+      "expectedStatus": 400,
+      "response": {
+        "httpStatus": 400,
+        "body": {
+          "error": "unexpected_field"
+        }
+      }
+    },
+    {
+      "name": "overlong-id",
+      "expectedStatus": 400,
+      "response": {
+        "httpStatus": 400,
+        "body": {
+          "error": "invalid_run_id"
+        }
+      }
+    },
+    {
+      "name": "malformed-json",
+      "expectedStatus": 400,
+      "response": {
+        "httpStatus": 400,
+        "body": {
+          "error": "invalid_body"
+        }
+      }
+    },
+    {
+      "name": "complete-body-positive-control",
+      "expectedStatus": 200,
+      "response": {
+        "httpStatus": 200,
+        "fixtureOnly": true,
+        "capabilityIssued": true
+      }
+    },
+    {
+      "name": "streaming-body-deadline",
+      "expectedStatus": 400,
+      "response": {
+        "httpStatus": 400,
+        "body": {
+          "error": "invalid_body"
+        },
+        "elapsedMs": 2108,
+        "uploadCompletionDelayMs": 2100,
+        "responseDeliveryBeforeUploadEndRequired": false
+      }
+    },
+    {
+      "name": "isolation",
+      "runId": "boundary-20260905083026073-fa2fa0cf749574d8be3d-",
+      "response": {
+        "httpStatus": 200,
+        "body": {
+          "schema_version": 1,
+          "protocol": "m0-v1",
+          "run_id": "boundary-20260905083026073-fa2fa0cf749574d8be3d-",
+          "operation": "G0-T02",
+          "observed_at": "2026-09-05T08:30:31.988Z",
+          "status": "observations_collected",
+          "gate_decision": "not_evaluated",
+          "observations": {
+            "isolation_observation_version": 2,
+            "execution_environment": "local-docker-workerd",
+            "topology": "separate_trusted_and_project_sandbox_instances",
+            "worker_verified": {
+              "trusted_canary_unchanged": true,
+              "synthetic_session_unchanged": true,
+              "trusted_service_status": "running",
+              "trusted_service_running": true,
+              "expected_canary_sha256": "c53189261e8e235e7273fba3ef487d683a1cdd5699407999b923716d56337f8e",
+              "signal_positive_control_delivered": true,
+              "trusted_signal_count_before": 1,
+              "trusted_signal_count_after": 1,
+              "trusted_signal_count_unchanged": true,
+              "trusted_control_mutation_count_unchanged": true,
+              "trusted_service_instance_unchanged": true,
+              "trusted_service_health_matches": true,
+              "trusted_cross_scope_file_unchanged": true,
+              "trusted_attack_marker_absent": true,
+              "project_sdk_positive_control_observed": true,
+              "project_forged_scope_write_confined": true,
+              "project_foreign_session_write_confined": true,
+              "expected_positive_marker_sha256": "d18c6c70093c2024e91e7c15c60835176a8dbf6ce95320e52ff47947937d2a85",
+              "expected_attack_marker_sha256": "4acb6f7022409fcdc646ec855c40686a3b96d496ccbcee72a0db66c6bf943d77",
+              "observed_canary_sha256": "c53189261e8e235e7273fba3ef487d683a1cdd5699407999b923716d56337f8e",
+              "observed_cross_scope_sha256": "c53189261e8e235e7273fba3ef487d683a1cdd5699407999b923716d56337f8e",
+              "observed_positive_marker_sha256": "d18c6c70093c2024e91e7c15c60835176a8dbf6ce95320e52ff47947937d2a85",
+              "observed_forged_marker_sha256": "4acb6f7022409fcdc646ec855c40686a3b96d496ccbcee72a0db66c6bf943d77",
+              "observed_foreign_session_marker_sha256": "4acb6f7022409fcdc646ec855c40686a3b96d496ccbcee72a0db66c6bf943d77"
+            },
+            "untrusted_project_observations": {
+              "isolation_observation_version": 2,
+              "trusted_paths_readable": [],
+              "trusted_marker_in_process_environment": false,
+              "trusted_marker_in_process_command": false,
+              "platform_secret_variable_names_present": [],
+              "trusted_ipc_connectable": false,
+              "trusted_loopback_control_connectable": false,
+              "control_http_attempts": [
+                {
+                  "name": "trusted_loopback_control",
+                  "http_status": null,
+                  "application_response_received": false
+                },
+                {
+                  "name": "cross_domain_control_rpc",
+                  "http_status": 520,
+                  "application_response_received": true
+                }
+              ],
+              "raw_signal": {
+                "signal": "SIGUSR1",
+                "attempted": false,
+                "outcome": "target_not_addressable",
+                "identity_matched": false
+              },
+              "sdk_control_attempts": [
+                {
+                  "name": "own_sdk_write",
+                  "method": "POST",
+                  "path": "/api/write",
+                  "http_status": 200,
+                  "response_bytes": 99,
+                  "response_truncated": false,
+                  "sdk_success": true,
+                  "trusted_marker_returned": false
+                },
+                {
+                  "name": "foreign_session_read",
+                  "method": "POST",
+                  "path": "/api/read",
+                  "http_status": 404,
+                  "response_bytes": 331,
+                  "response_truncated": false,
+                  "sdk_success": null,
+                  "trusted_marker_returned": false
+                },
+                {
+                  "name": "foreign_session_write",
+                  "method": "POST",
+                  "path": "/api/write",
+                  "http_status": 200,
+                  "response_bytes": 102,
+                  "response_truncated": false,
+                  "sdk_success": true,
+                  "trusted_marker_returned": false
+                },
+                {
+                  "name": "forged_sandbox_write",
+                  "method": "POST",
+                  "path": "/api/write",
+                  "http_status": 200,
+                  "response_bytes": 98,
+                  "response_truncated": false,
+                  "sdk_success": true,
+                  "trusted_marker_returned": false
+                },
+                {
+                  "name": "foreign_process_read",
+                  "method": "GET",
+                  "path": "/api/process/m0-t02-f61132faa6df4e80bd01aaffa9023d18",
+                  "http_status": 404,
+                  "response_bytes": 307,
+                  "response_truncated": false,
+                  "sdk_success": null,
+                  "trusted_marker_returned": false
+                },
+                {
+                  "name": "foreign_process_signal_rpc",
+                  "method": "DELETE",
+                  "path": "/api/process/m0-t02-f61132faa6df4e80bd01aaffa9023d18",
+                  "http_status": 404,
+                  "response_bytes": 307,
+                  "response_truncated": false,
+                  "sdk_success": null,
+                  "trusted_marker_returned": false
+                }
+              ],
+              "own_sdk_control_http_reachable": true
+            },
+            "script_sha256": "708b8de18aadcd0deba14dde78fa4474476ea413d77bc001370da80bf0636330",
+            "limits": [
+              "Synthetic session only; not the Pi restore test.",
+              "Project output and project SDK state are diagnostic; trusted-VM capability readback is independent.",
+              "Actual SIGUSR1 positive control and fixed foreign process-ID signal RPC are covered; raw POSIX signals are sent only after exact owned-process identity matching, otherwise target_not_addressable is explicit.",
+              "A numeric PID is not a cross-VM capability; the probe never guesses PIDs or signals unrelated processes.",
+              "Fixed localhost SDK requests and one synthetic cross-domain control route do not prove a production Tool Bridge or a compromised SDK daemon secure.",
+              "Local Docker/Workerd results cannot close the cloud isolation gate."
+            ]
+          },
+          "cleanup": {
+            "trusted": "destroy_acknowledged",
+            "alpha": "destroy_acknowledged"
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "name": "tenancy",
+      "runId": "boundary-20260905083026073-f14def53f6db29281d07-",
+      "response": {
+        "httpStatus": 200,
+        "body": {
+          "schema_version": 1,
+          "protocol": "m0-v1",
+          "run_id": "boundary-20260905083026073-f14def53f6db29281d07-",
+          "operation": "G0-T04-vm-files",
+          "observed_at": "2026-09-05T08:30:33.137Z",
+          "status": "observations_collected",
+          "gate_decision": "not_evaluated",
+          "observations": {
+            "worker_verified": {
+              "alpha_content_matches": true,
+              "bravo_content_matches": true,
+              "contents_differ": true
+            },
+            "limits": [
+              "Scoped capability fixtures are a separate HTTP probe.",
+              "No production login, service URL, WebSocket or Artifact store is implemented here."
+            ]
+          },
+          "cleanup": {
+            "alpha": "destroy_acknowledged",
+            "bravo": "destroy_acknowledged"
+          }
+        }
+      },
+      "passed": true
+    }
+  ],
+  "cleanup": [
+    {
+      "runId": "boundary-20260905083026073-fa2fa0cf749574d8be3d-",
+      "response": {
+        "httpStatus": 200,
+        "body": {
+          "run_id": "boundary-20260905083026073-fa2fa0cf749574d8be3d-",
+          "operation": "cleanup",
+          "gate_decision": "not_evaluated",
+          "cleanup": {
+            "trusted": "destroy_acknowledged",
+            "alpha": "destroy_acknowledged",
+            "bravo": "destroy_acknowledged"
+          }
+        }
+      }
+    },
+    {
+      "runId": "boundary-20260905083026073-f14def53f6db29281d07-",
+      "response": {
+        "httpStatus": 200,
+        "body": {
+          "run_id": "boundary-20260905083026073-f14def53f6db29281d07-",
+          "operation": "cleanup",
+          "gate_decision": "not_evaluated",
+          "cleanup": {
+            "trusted": "destroy_acknowledged",
+            "alpha": "destroy_acknowledged",
+            "bravo": "destroy_acknowledged"
+          }
+        }
+      }
+    }
+  ],
+  "sourcesAfter": {
+    "sha256": "54289b066397223231c0fb0ea8a96de7e0b434fc041f5c16cf04e9420f064b77",
+    "files": [
+      {
+        "path": ".dockerignore",
+        "sha256": "46c6ff40eef5d467e276eb0c86c512e25a4f8f4913be33dc094449365aa9f6ab"
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "ebd2febbc682177605c565d0086c3c2949fafc7400c8f657318204a9a18790ab"
+      },
+      {
+        "path": "infra/m0-project.Dockerfile",
+        "sha256": "f8e01de7bcc782d082e65961bb916ae33419d3336354ef8fa6e1fa57a19a69ec"
+      },
+      {
+        "path": "infra/m0-trusted.Dockerfile",
+        "sha256": "6dbcfa128b0bcc5a3ca5b6ddde6c45d13ca2dc45ec7124b4dba72e461321663c"
+      },
+      {
+        "path": "infra/wrangler.m0.jsonc",
+        "sha256": "05cc50aa14f617b4b4cda8adc043d370c4e0aa29d0f1096041ccdaddd2f8b6c2"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "523f6c68af87c318e07fdf6fac3b351366a5966149e4f304115da6a9d6baf6eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "cb8387dff98b8324b0dfa28734dad5be913c2e1516d6a95518ddd2dad885079e"
+      },
+      {
+        "path": "scripts/m0/boundary-local.mjs",
+        "sha256": "4f27d4a82dc727c83d51665501ea927203272201d32235f7ceda4cc70004f248"
+      },
+      {
+        "path": "scripts/m0/source-inventory.mjs",
+        "sha256": "1afeab93162678265a0372d57b2404902192efdc17fbe0a063e62f5a63460c6e"
+      },
+      {
+        "path": "services/runtime/controlled-pi.d.mts",
+        "sha256": "8c92fbd06faf16e4be8e51ea728935257fc28a544f2d58ee5c7103897b185e0b"
+      },
+      {
+        "path": "services/runtime/controlled-pi.mjs",
+        "sha256": "8effdc9f441480dc56f8fda2cf59c31d010f0e6add3fcd0e2544b0e990dfc523"
+      },
+      {
+        "path": "services/runtime/pi-probe-evidence.mjs",
+        "sha256": "bb8395477543d6a52c9a4faa830b0dab5fcbecf487f3d2abf571e514041c96cf"
+      },
+      {
+        "path": "spikes/m0-cloud/README.md",
+        "sha256": "c6ef5cad20f0d3a594d643c332e51441a8a274b5c1f39a93102033b550599a3e"
+      },
+      {
+        "path": "spikes/m0-cloud/auth.ts",
+        "sha256": "3a3323939d72e23e6874b56877ca5cb86dd4b84900e267b8e74fc3ceaa7963e5"
+      },
+      {
+        "path": "spikes/m0-cloud/env.d.ts",
+        "sha256": "1917c8a371bb116a4107b048c282c15a7307cdc4ecbfc90bac8e52372a1a7eda"
+      },
+      {
+        "path": "spikes/m0-cloud/index.ts",
+        "sha256": "b5238242c6d12765b202c41a7f627c891c174a748d7ce2abc55041b8cf77bd2e"
+      },
+      {
+        "path": "spikes/m0-cloud/runtime.test.ts",
+        "sha256": "aa5707f7e9517b90fb93633dbdb5c98138238d421b20816afd240b4f8c54496b"
+      },
+      {
+        "path": "spikes/m0-cloud/runtime.ts",
+        "sha256": "7de4f33b4874ae166061bb82e7c7dae1a42906f674b00e9a85ece696630b6173"
+      },
+      {
+        "path": "spikes/m0-cloud/worker.test.ts",
+        "sha256": "2329cd7aadb5eaffd0db35215ecb666f9d2b25fb048d95b22830f82a633370f3"
+      },
+      {
+        "path": "spikes/m0-cloud/worker.ts",
+        "sha256": "ea17468402298172aed804c7a4a470f511d4e73a53d685dadd42c214efa74b36"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "03809951d75370134b3aaae38177c3db561f2ecb6004f6dbc67f6f6a3c2d07f0"
+      }
+    ],
+    "repositorySourceSha256": "bb81217b27ca93eec5c5d90bfd20b009fff81e60dc2ca3ecd7bd6e589b63610d"
+  },
+  "probeSourceStableDuringRun": true,
+  "finishedAt": "2026-09-05T08:30:33.169Z",
+  "limits": [
+    "Local Docker/Workerd is not a cloud VM isolation gate.",
+    "Project reports are diagnostic; the Worker performs independent preservation checks.",
+    "Cleanup acknowledgement does not prove a timed-out operation or all development proxy helpers have terminated.",
+    "This probe uses synthetic sessions and identities, with no paid model or production login.",
+    "The local HTTP proxy delivers the body-deadline rejection after upload completion; early response delivery is not established."
+  ]
+}

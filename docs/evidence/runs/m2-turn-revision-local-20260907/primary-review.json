@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "runId": "m2-turn-revision-local-20260907",
+  "createdAt": "2026-09-06T18:54:02Z",
+  "environment": "local",
+  "status": "passed",
+  "accepted": true,
+  "scope": "M2 immutable Revision materialization and Workspace TurnJournal commit boundary",
+  "git": {
+    "head": "16219ffcaea7c83b8b89a2e542717eeada6fe275",
+    "branch": "codex/m0-runtime-foundation",
+    "dirty": true,
+    "committed": false,
+    "pushed": false,
+    "remoteConfigured": false
+  },
+  "sourceHashes": {
+    "services/turn-runtime/revision.ts": "6a27939b7f8e224d27480da732dbd58dd863ce126a7e77ba64f0ff07850c5f3c",
+    "services/turn-runtime/core.ts": "314ffe929699aab38b8d8d7d8e32e110b2ec5c05ecca621503907139c56fe95f",
+    "services/turn/dispatcher.ts": "876c2b01fd93a645d0eefa3524b81f241b532c31e52fd97b2c16857373de6f17",
+    "tests/m2/turn-revision.test.ts": "135540e285631ee3514b425e06576f15b16ff0610d7c0d280e47cbb8c6822746",
+    "tests/m2/turn-dispatcher.test.ts": "06ea5ad6effa39d5c2a1a54fe8a4551c8c4154352804b38d88ca0fa6dadbd6a0",
+    "spikes/m2-turn-revision/index.ts": "238753e5f45678d81ec5135151c044b868493a670a902039e992f90afdd9d0d1",
+    "infra/wrangler.m2-turn-revision-local.jsonc": "fb83360b307e2c79f32e5e2807b1255084e5a89db568961d39239b42d4ad4559"
+  },
+  "review": {
+    "independentAgent": "/root/m2_turn_gap_review",
+    "initialFinding": "P1: R2 manifest presence must not be treated as the authoritative saved Turn before Workspace journal commit",
+    "resolution": [
+      "R2 adapter contract now explicitly returns a verified materialization receipt for later journal commit",
+      "Workspace TurnJournal remains the only product authority for persistenceOutcome=saved",
+      "failure before journal commit leaves checkpointing and a retry observes the same runtime receipt",
+      "lost response after journal commit leaves the durable saved Turn authoritative and does not dispatch again"
+    ],
+    "remainingP0": 0,
+    "remainingP1": 0
+  },
+  "unitAndIntegration": {
+    "focused": {
+      "command": "node --test tests/m2/turn-revision.test.ts tests/m2/turn-dispatcher.test.ts",
+      "tests": 24,
+      "passed": 24,
+      "failed": 0
+    },
+    "m2": {
+      "command": "npm run test:m2",
+      "tests": 128,
+      "passed": 128,
+      "failed": 0
+    },
+    "coverage": [
+      "full runtime identity and generation binding",
+      "content-addressed files and Pi Session blobs",
+      "immutable identity manifest with parent and execution outcome",
+      "put response loss and readback reconciliation",
+      "interrupted blob upload without manifest",
+      "corrupt, missing, forged-key and empty object rejection",
+      "concurrent terminal manifest conflict",
+      "journal commit failure and journal response loss"
+    ]
+  },
+  "workerd": {
+    "config": "infra/wrangler.m2-turn-revision-local.jsonc",
+    "mode": "local",
+    "durableObjectStorage": "SQLite",
+    "bucket": "local R2 binding",
+    "firstRun": {
+      "httpStatus": 200,
+      "executionStarts": 1,
+      "snapshotFreezes": 1,
+      "objectCount": 3,
+      "objectKinds": ["files blob", "Pi Session blob", "identity manifest"]
+    },
+    "sameProcessObserve": {
+      "executionStarts": 1,
+      "snapshotFreezes": 1,
+      "receiptUnchanged": true,
+      "objectsUnchanged": true
+    },
+    "processRestartObserve": {
+      "executionStarts": 1,
+      "snapshotFreezes": 1,
+      "receiptUnchanged": true,
+      "objectsUnchanged": true
+    },
+    "revisionId": "39f8f8e63fdefc497f4e504071cc6cb173bdb3b48fab2129b395e746906d88f7",
+    "filesSha256": "0a834470c24c9ef96f871e9d0683f6dae7a2f3f5e78b7b6b69cc95b313d2d71b",
+    "sessionSha256": "f1f64e7479778fb20cbbf139fa39d13ec92f4f3c1bba76be1cb0353ad074fc9c",
+    "serverStopped": true,
+    "port8798ListeningAfter": false
+  },
+  "fullRepositoryCheck": {
+    "record": "docs/evidence/runs/m1-local-20260906185257160/local-checks.json",
+    "recordSha256": "9d1d08bb636147d2a1f07079ca54d9342b0db6ff99e128393a8238d30daaa1b7",
+    "passed": true,
+    "timedOut": false,
+    "sourceStableDuringCheck": true,
+    "sourceCount": 303,
+    "sourceSha256": "b789f70cbaea08e893f2ae15e1fad6473adc4a9b6ffc6a034e2d450b0d8d542f",
+    "logSha256": "70faa5de712f52ab7769b798aff496147afe729778f2798bfbacca3c676abfe2",
+    "results": {
+      "m0": {"tests": 349, "passed": 348, "failed": 0, "skipped": 1},
+      "m1": {"tests": 108, "passed": 108, "failed": 0, "skipped": 0},
+      "m2": {"tests": 128, "passed": 128, "failed": 0, "skipped": 0}
+    }
+  },
+  "boundaries": {
+    "productPlatform": [
+      "runtime identity, immutable objects, receipt validation and authoritative journal commit are platform functions",
+      "project files and Pi Session are opaque frozen inputs and cannot author platform receipts or terminal state"
+    ],
+    "notAccepted": [
+      "real Workspace canonical archive production",
+      "real Pi Session export or restore",
+      "ProductTurnRuntime production Durable Object binding",
+      "WorkspaceAgent wiring",
+      "cloud R2 or cloud Sandbox validation",
+      "M2 or G2 completion"
+    ],
+    "fixture": true,
+    "modelCalls": 0,
+    "cloudDeployments": 0,
+    "cloudMutations": 0,
+    "legacyRiffologyDemoRestored": false,
+    "ui4173Preserved": true
+  }
+}
