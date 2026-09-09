@@ -44,6 +44,8 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
 
   async writeFile(path,content){await this.ctx.storage.put('file:'+path,content);if(path.endsWith('.input.json'))await this.ctx.storage.put('control',{path,content});}
   async diagnostics(){return {commands:await this.ctx.storage.get('commands')??[],control:await this.ctx.storage.get('control')??null};}
+  async destroy(){await this.ctx.storage.put('destroy-count',(await this.ctx.storage.get('destroy-count')??0)+1);}
+  async destroyCount(){return await this.ctx.storage.get('destroy-count')??0;}
   async exec(command,options){
    const commands=await this.ctx.storage.get('commands')??[];commands.push({command,options});await this.ctx.storage.put('commands',commands);
    const parts=command.split(' '),token=parts[1]==='/opt/riffology/service_upload.py'?parts[2]:parts.at(-1);let result;
@@ -89,6 +91,7 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
    else if(b.method==='releaseHeaders')value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input)).releaseHeaders();
    else if(b.method==='forwards')value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input)).forwards();
    else if(b.method==='diagnostics')value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input)).diagnostics();
+   else if(b.method==='destroyCount')value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input)).destroyCount();
    else if(['start','observe','stop'].includes(b.method))value=await env.SERVICE_RUNTIME.getByName(b.name??await serviceRuntimeActorName(b.input))[b.method](b.input);
    else return new Response(null,{status:404});
    return Response.json({ok:true,value});
@@ -199,7 +202,7 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
   const message=new Promise(resolve=>sockets[0].addEventListener('message',event=>resolve(event.data),{once:true}));sockets[0].send('runtime-ws');assert.equal(await message,'runtime-ws');
   const closed=Promise.all(sockets.map(ws=>new Promise(resolve=>ws.addEventListener('close',resolve,{once:true}))));
   const stopped=await call('stop',{input});assert.equal(stopped.status,'stopped');await assert.rejects(call('forward',{input}),/forward-denied/);assert.equal((await call('forwards',{input})).length,1);assert.equal(stopped.stop.fenced,true);await closed;const stoppedSocket=await socket(input);assert.equal(stoppedSocket.status,403);await stoppedSocket.text();
-  assert.deepEqual(await call('stop',{input}),stopped);assert.deepEqual(await call('observe',{input}),stopped);
+  assert.equal(await call('destroyCount',{input}),1);assert.deepEqual(await call('stop',{input}),stopped);assert.equal(await call('destroyCount',{input}),2);assert.deepEqual(await call('observe',{input}),stopped);
   assert.equal((await mf.dispatchFetch('http://test/')).status,404);
  }finally{await mf?.dispose();await rm(directory,{recursive:true,force:true});}
 });

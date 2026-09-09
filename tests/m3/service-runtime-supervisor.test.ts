@@ -5,7 +5,8 @@ import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import type {ServiceRunStorage,ServiceRunSpec,ServiceRuntimeReference} from '../../services/run/service.ts';
-import {SqlServiceRuntimeSupervisor,type ServiceNativeBackend} from '../../services/run/runtime-supervisor.ts';
+import {SqlServiceRuntimeSupervisor,type ServiceNativeBackend,type ServiceRuntimeRelease} from '../../services/run/runtime-supervisor.ts';
+import {serviceNativeToken} from '../../services/run/native.ts';
 import type {ServiceRuntimeInput,ServiceRuntimeObservation} from '../../services/run/runtime-protocol.ts';
 const scope={tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1};
 const actor={userId:'user-a',authVersion:1};
@@ -15,9 +16,9 @@ function fixture(t:{after(fn:()=>void):void}){
  const dir=mkdtempSync(join(tmpdir(),'m3-service-')),path=join(dir,'state.sqlite');let db=new DatabaseSync(path),now=1000,fail=false;
  const storage={sql:{exec(query:string,...args:(string|number|null)[]){if(query.includes('CREATE TABLE')){db.exec(query);return {toArray:()=>[]};}const statement=db.prepare(query);const rows=statement.columns().length?statement.all(...args):(statement.run(...args),[]);return {toArray:()=>structuredClone(rows)};}},transactionSync<T>(fn:()=>T){db.exec('BEGIN IMMEDIATE');try{const result=fn();db.exec('COMMIT');return result;}catch(e){db.exec('ROLLBACK');throw e;}},async sync(){if(fail){fail=false;throw Error('injected-ack-loss');}}} as unknown as ServiceRunStorage;
  t.after(()=>{db.close();rmSync(dir,{recursive:true,force:true});});
- return {host:(backend:ServiceNativeBackend)=>new SqlServiceRuntimeSupervisor(storage,scope,backend,()=>now),storage,get db(){return db;},set now(n:number){now=n;},failNextSync(){fail=true;},reopen(){db.close();db=new DatabaseSync(path);}};
+ return {host:(backend:ServiceNativeBackend,release?:ServiceRuntimeRelease)=>new SqlServiceRuntimeSupervisor(storage,scope,backend,()=>now,release),storage,get db(){return db;},set now(n:number){now=n;},failNextSync(){fail=true;},reopen(){db.close();db=new DatabaseSync(path);}};
 }
-function input():ServiceRuntimeInput{const ref=reference('run-a');return {reference:ref,scope,spec:spec(),lease:{tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,generation:1,operation:'service-run',operationId:ref.dispatchId,deadlineAt:ref.deadlineAt,runId:ref.runId,leaseId:ref.leaseId}};}
+function input(runId='run-a'):ServiceRuntimeInput{const ref={...reference(runId),runtimeId:'runtime-'+runId,dispatchId:'dispatch-'+runId,leaseId:'lease-'+runId};return {reference:ref,scope,spec:spec(),lease:{tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,generation:1,operation:'service-run',operationId:ref.dispatchId,deadlineAt:ref.deadlineAt,runId:ref.runId,leaseId:ref.leaseId}};}
 function observation(i:ServiceRuntimeInput,status:ServiceRuntimeObservation['status']):ServiceRuntimeObservation{return {reference:i.reference,scope:i.scope,status,stop:status==='stopped'?{reference:i.reference,scope:i.scope,confirmationId:'stop-a',observedAt:1000,fenced:true}:null};}
 function backend(){let starts=0,stops=0;return {get starts(){return starts;},get stops(){return stops;},async start(i:ServiceRuntimeInput){starts++;return observation(i,'healthy');},async observe(i:ServiceRuntimeInput){return observation(i,'absent');},async fenceAndStop(i:ServiceRuntimeInput){stops++;return observation(i,'stopped');}};}
 test('start is persisted once across concurrent calls, lost backend ack and reconstruction',async t=>{
@@ -38,7 +39,7 @@ test('stop does not wait for a hung start and late healthy ack cannot resurrect 
  assert.equal((await h.stop(input())).status,'stopped');resolve(observation(input(),'healthy'));assert.equal((await pending).status,'stopped');
 });
 test('absent or failed native stop retains fence without inventing stop proof',async t=>{
- const f=fixture(t),b=backend(),h=f.host(b);b.fenceAndStop=async i=>observation(i,'absent');assert.equal((await h.stop(input())).status,'unknown');assert.equal((await h.start(input())).status,'unknown');assert.equal(b.starts,0);
+ const f=fixture(t),b=backend();let releases=0;const h=f.host(b,async()=>{releases++;});b.fenceAndStop=async i=>observation(i,'absent');assert.equal((await h.stop(input())).status,'unknown');assert.equal((await h.start(input())).status,'unknown');assert.equal(b.starts,0);assert.equal(releases,0);
  b.fenceAndStop=async()=>{throw Error('native-stop-unavailable');};await assert.rejects(h.stop(input()),/unavailable/);f.reopen();assert.equal((await f.host(b).start(input())).status,'unknown');
 });
 test('full immutable identity includes scope, lease, image and source bytes',async t=>{
@@ -72,4 +73,27 @@ test('failed SQLite start transaction can retry only because no native dispatch 
 test('caller mutation after invocation cannot replace frozen source',async t=>{
  const f=fixture(t),b=backend(),h=f.host(b),original=input();let seen:ServiceRuntimeInput|undefined;b.start=async i=>{seen=i;return observation(i,'healthy');};
  const work=h.start(original);original.spec.plan.entrypointSha256='0'.repeat(64);original.reference.runtimeId='changed';assert.equal((await work).status,'healthy');assert.deepEqual(seen,input());
+});
+test('two distinct run actors at capacity one release only after durable stop proof and retry teardown',async t=>{
+ const first=fixture(t),second=fixture(t),a=input('run-a'),b=input('run-b');
+ const aKey=await serviceNativeToken(a),bKey=await serviceNativeToken(b);assert.notEqual(aKey,bKey);
+ let occupied:string|null=null,failSecondRelease=true,firstStops=0,secondStops=0;
+ const backendFor=(key:string,counter:()=>void):ServiceNativeBackend=>({
+  async start(i){if(occupied!==null&&occupied!==key)throw Error('max-container-instances-exceeded');occupied=key;return observation(i,'healthy');},
+  async observe(i){return observation(i,occupied===key?'healthy':'absent');},
+  async fenceAndStop(i){counter();return observation(i,'stopped');},
+ });
+ const releaseFor=(f:ReturnType<typeof fixture>,key:string,failOnce=false):ServiceRuntimeRelease=>async()=>{
+  const row=f.storage.sql.exec<{receipt_json:string|null}>('SELECT receipt_json FROM service_runtime_fence WHERE singleton=1').toArray()[0];
+  assert.ok(row?.receipt_json,'release must follow the synced durable stop receipt');
+  if(failOnce&&failSecondRelease){failSecondRelease=false;throw Error('injected-container-release-timeout');}
+  assert.equal(occupied,key);occupied=null;
+ };
+ const firstRuntime=first.host(backendFor(aKey,()=>{firstStops++;}),releaseFor(first,aKey));
+ assert.equal((await firstRuntime.start(a)).status,'healthy');assert.equal(occupied,aKey);
+ assert.equal((await firstRuntime.stop(a)).status,'stopped');assert.equal(occupied,null);assert.equal(firstStops,1);
+ const secondRuntime=second.host(backendFor(bKey,()=>{secondStops++;}),releaseFor(second,bKey,true));
+ assert.equal((await secondRuntime.start(b)).status,'healthy');assert.equal(occupied,bKey);
+ await assert.rejects(secondRuntime.stop(b),/release-timeout/);assert.equal(occupied,bKey);assert.equal(secondStops,1);
+ assert.equal((await secondRuntime.stop(b)).status,'stopped');assert.equal(occupied,null);assert.equal(secondStops,1,'saved proof retries only teardown');
 });
