@@ -1,4 +1,16 @@
-import {initialWorkspaceReferenceFromReady,isInitialWorkspaceSourceFailure} from '../turn-runtime/initial-workspace.ts';
+import {ObserverCancellation,type ObserverCancellationPort} from '../preview/observer-cancellation.ts';
+import {createObserverFetchSession} from '../preview/observer-fetch.ts';
+import {observerHttpPolicy,type ObserverHttpPolicy} from '../preview/observer-http.ts';
+import {observerRuntimePublicRequest,type ObserverRuntimeRequest} from '../preview/observer-runtime.ts';
+import {ObserverCallHost} from '../preview/observer-host.ts';
+import type {ObserverExecutionTarget} from '../preview/observer-execution.ts';
+import {ObserverExecutorCapability,ObserverArtifactReadCapability,observerExecutorActorName,type ObserverExecutorNamespace} from '../preview/observer-executor-rpc.ts';
+import {readObserverArtifact,observerArtifactReadInput,type ObserverArtifactReadInput} from './observer-artifact-read.ts';
+import {WorkspaceObserverHost} from './observer-host.ts';
+import {PreviewRoutes} from '../preview/routes.ts';
+import {previewHostOrigin} from '../preview/origin.ts';
+import {sha} from '../turn/protocol.ts';
+import {initialWorkspaceReference,initialWorkspaceReferenceFromReady,isInitialWorkspaceSourceFailure} from '../turn-runtime/initial-workspace.ts';
 import {workspaceFileIndex} from '../turn-runtime/workspace-file-index.ts';
 import { DurableObject } from 'cloudflare:workers';
 import { catalogDatabase } from '../catalog/database.ts';
@@ -9,7 +21,26 @@ import type { ProductTurnRuntime } from '../turn-runtime/durable.ts';
 import { ProductTurnRuntimeClient } from '../turn-runtime/client.ts';
 import { WorkspaceCoordinator } from './coordinator.ts';
 import { DurableWorkspaceStore } from './store.ts';
-import { DurableTurnAlarmPort } from './turn-alarm.ts';
+import {WorkspaceServiceHost} from './service-host.ts';
+import type {ServiceIntentRequest,ServiceSourceCandidate} from './service-intents.ts';
+import {serviceRunActorName,type ServiceRunTask} from '../run/host.ts';
+import {readServiceRun} from '../run/view.ts';
+import {SqlPreviewBindings} from '../preview/bindings.ts';
+import {resolvePreviewTarget} from '../preview/target.ts';
+import {SqlPreviewTickets} from '../preview/tickets.ts';
+import {requirePreviewSession,type PreviewBrowserPrincipal} from '../preview/session.ts';
+import {previewRuntimeInput} from '../preview/runtime-input.ts';
+import {serviceHttpRequest} from '../preview/http.ts';
+import {privateWebSocketRequest,readPrivateWebSocketRequest} from '../preview/websocket-protocol.ts';
+import {connectPreviewWebSocket,boundedWebSocketHandshake} from '../preview/websocket-connect.ts';
+import {serviceRuntimeActorName} from '../run/durable.ts';
+import {turnRuntimeActorName} from '../turn-runtime/identity.ts';
+import {authorizeObserver} from '../preview/observer-authority.ts';
+import {validateObserverCommand,type ObserverCommand} from '../preview/observer-protocol.ts';
+import {ProjectCatalog} from '../catalog/projects.ts';
+import type {ServiceRuntimeInput} from '../run/runtime-protocol.ts';
+import {WORKSPACE_LAYOUT} from './protocol.ts';
+import { DurableObserverAlarmPort, DurableServiceAlarmPort, DurableTurnAlarmPort } from './turn-alarm.ts';
 import { routeWorkspaceAlarm } from './alarm-router.ts';
 import { WorkspaceTurnEngine } from './turns.ts';
 import { runtimeName, validateWorkspaceTask, workspaceAgentName, type WorkspaceTask } from './protocol.ts';
@@ -29,11 +60,47 @@ export interface WorkspaceAgentEnv {
   REVISION_STORE: RevisionStoreNamespace;
   TOOL_ARTIFACT_STORE: ToolArtifactStoreNamespace;
   M2_TURNS_ENABLED: unknown;
+  M3_SERVICE_ENABLED?:unknown;
+  M3_PREVIEW_ENABLED?:unknown;
+  M3_PREVIEW_WS_ENABLED?:unknown;
+  M3_OBSERVER_ENABLED?:unknown;
+  OBSERVER_EXECUTOR?:ObserverExecutorNamespace;
+  M3_PREVIEW_ORIGIN?:string;
+  APP_ORIGIN?:string;
+  M3_SERVICE_IMAGE?:string;
+  SERVICE_RUNTIME?:{getByName(name:string):{forwardHttp(input:ServiceRuntimeInput,request:Request):Promise<Response>;forwardObserverHttp?(input:ObserverRuntimeRequest,request:Request,cancellation:ObserverCancellationPort):Promise<Response>;fetch?(request:Request):Promise<Response>}};
+  SERVICE_RUN?:{getByName(name:string):{
+    accept(task:ServiceRunTask):Promise<unknown>;
+    acceptStopped(task:ServiceRunTask):Promise<unknown>;
+    stop():Promise<unknown>;
+    snapshot():Promise<unknown>;
+  }};
   CATALOG: D1Database;
 }
-/** Private platform RPC. No fetch, tenant/header credentials or user supplied
- * endpoint can enter this actor. The gateway must first authorize its caller. */
+/** Private platform RPC and a single internal WebSocket fetch endpoint. The
+ * fetch transport still verifies the access session and authoritative target. */
 export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
+  readonly #webSockets=new Set<AbortController>();
+  #observerHost:WorkspaceObserverHost|null=null;
+  async fetch(request:Request):Promise<Response>{
+    let controller:AbortController|undefined;
+    try{
+      if(this.env.M3_PREVIEW_WS_ENABLED!=='true')throw Error('preview-ws-disabled');
+      const incoming=readPrivateWebSocketRequest(request,'workspace'),raw=incoming.input as {scope:TurnScope;previewId:string;access:string};
+      if(!raw||typeof raw!=='object'||Object.keys(raw).length!==3||!Object.hasOwn(raw,'scope')||!Object.hasOwn(raw,'previewId')||!Object.hasOwn(raw,'access'))throw Error('preview-ws-denied');
+      const scope=this.#ready(raw.scope),input={scope,previewId:raw.previewId,access:raw.access};
+      if(this.#webSockets.size>=8)throw Error('preview-ws-capacity');
+      controller=new AbortController();this.#webSockets.add(controller);
+      const held=controller;
+      return await boundedWebSocketHandshake(held,async()=>{
+      const authorize=async()=>{if(this.env.M3_PREVIEW_WS_ENABLED!=='true')throw Error('preview-ws-disabled');const value=await this.authorizePreviewAccess(input);return {expiresAt:value.expiresAt};};
+      await authorize();
+      const target=await this.previewTarget({scope,previewId:input.previewId}),runtime=previewRuntimeInput(target);
+      const stub=this.env.SERVICE_RUNTIME?.getByName(await serviceRuntimeActorName(runtime));if(!stub?.fetch)throw Error('preview-ws-not-configured');
+      return await connectPreviewWebSocket(incoming.request,{authorize,signal:held.signal,finish:()=>{this.#webSockets.delete(held);},connect:clean=>stub.fetch!(privateWebSocketRequest('runtime',runtime,clean))});
+      });
+    }catch{if(controller){controller.abort();this.#webSockets.delete(controller);}return new Response('preview unavailable',{status:403});}
+  }
   #store = new DurableWorkspaceStore(this.ctx.storage);
   #coordinator: WorkspaceCoordinator | null = null;
   #turns = new TurnJournal(new DurableTurnStore(this.ctx.storage),Date.now,async scope=>{
@@ -43,6 +110,256 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   });
   #turnAlarm = new DurableTurnAlarmPort(this.ctx.storage);
   #turnEngine: WorkspaceTurnEngine | null = null;
+  #serviceAlarm = new DurableServiceAlarmPort(this.ctx.storage);
+  #observerAlarm = new DurableObserverAlarmPort(this.ctx.storage);
+  #serviceHost:WorkspaceServiceHost|null=null;
+  #previewBindings:SqlPreviewBindings|null=null;
+  #previewTickets:SqlPreviewTickets|null=null;
+  #tickets(scope:TurnScope){
+    this.#ready(scope);
+    if(this.env.M3_PREVIEW_ENABLED!=='true')throw Error('preview-disabled');
+    return this.#previewTickets??=new SqlPreviewTickets(this.ctx.storage,scope,{
+      session:(principal,s)=>requirePreviewSession(catalogDatabase(this.env.CATALOG),principal,s),
+      target:async previewId=>(await this.previewTarget({scope,previewId})).binding,
+    });
+  }
+  #previews(scope:TurnScope){this.#maintenanceScope(scope);return this.#previewBindings??=new SqlPreviewBindings(this.ctx.storage,scope);}
+  #services(scope:TurnScope){
+    this.#maintenanceScope(scope);
+    return this.#serviceHost??=new WorkspaceServiceHost(this.ctx.storage,scope,{
+      resolve:source=>{
+        this.#ready(scope);
+        if(!this.env.REVISION_STORE?.getByName)throw Error('revision-store-not-configured');
+        const store=this.env.REVISION_STORE.getByName(REVISION_STORE_ACTOR);
+        return source.kind==='saved-turn'?store.previewPlan(source):store.initialPreviewPlan(source.reference,scope);
+      },
+      accept:async task=>{this.#ready(scope);if(this.env.M3_SERVICE_ENABLED!=='true')throw Error('service-run-disabled');return (await this.#serviceRun(task)).accept(task);},
+      acceptStopped:async task=>(await this.#serviceRun(task)).acceptStopped(task),
+      stop:async task=>(await this.#serviceRun(task)).stop(),
+      hold:promise=>this.ctx.waitUntil(promise),
+    });
+  }
+  async #serviceRun(task:ServiceRunTask){
+    if(!this.env.SERVICE_RUN?.getByName)throw Error('service-run-not-configured');
+    return this.env.SERVICE_RUN.getByName(await serviceRunActorName(task));
+  }
+  #freezeService(scope:TurnScope):ServiceSourceCandidate{
+    this.#ready(scope);
+    const revision=this.#turns.workspaceRevisionSnapshot(scope);
+    if(revision)return {kind:'saved-turn',identity:revision.identity,revision:revision.receipt};
+    const state=this.#store.read();
+    if(!state?.identity||!state.runtimeReceipt)throw Error('workspace-initial-source-missing');
+    if(state.runtimeReceipt.layoutVersion!==WORKSPACE_LAYOUT)throw Error('initial-workspace-layout-mismatch');
+    return {kind:'initial-workspace',reference:initialWorkspaceReference({schemaVersion:1,scope,task:state.task,runtime:state.identity,markerNonce:state.markerNonce,markerSha256:state.runtimeReceipt.markerSha256,checkpointRevision:state.runtimeReceipt.checkpointRevision})};
+  }
+  async submitService(input:{scope:TurnScope;actor:TurnActor;key:string;request:ServiceIntentRequest}){
+    const scope=this.#ready(input.scope);
+    if(this.env.M3_SERVICE_ENABLED!=='true')throw Error('service-run-disabled');
+    return this.#services(scope).submit(input.actor,input.key,input.request,()=>{
+      if(input.request.runtimeImage!==this.env.M3_SERVICE_IMAGE)throw Error('service-runtime-image-conflict');
+      return this.#freezeService(scope);
+    });
+  }
+  async stopService(input:{scope:TurnScope;runId:string}){
+    const scope=this.#maintenanceScope(input.scope);
+    return this.#services(scope).stop(input.runId);
+  }
+  async submitServiceRequest(input:{scope:TurnScope;actor:TurnActor;key:string;body:{maxDurationMs:number}}){
+    const scope=this.#ready(input.scope);
+    if(this.env.M3_SERVICE_ENABLED!=='true')throw Error('service-run-disabled');
+    return this.#services(scope).submitFromPolicy(input.actor,input.key,input.body,this.env.M3_SERVICE_IMAGE??'',()=>this.#freezeService(scope));
+  }
+  async listServices(input:{scope:TurnScope;before?:{createdAt:number;runId:string};limit?:number}){
+    const scope=this.#maintenanceScope(input.scope);
+    return this.#services(scope).list({...(input.before===undefined?{}:{before:input.before}),...(input.limit===undefined?{}:{limit:input.limit})});
+  }
+  async serviceView(input:{scope:TurnScope;runId:string}){
+    const scope=this.#maintenanceScope(input.scope),intent=await this.#services(scope).snapshot(input.runId);
+    if(intent.task===null||intent.deliveryClaimedAt===null)return {intent,run:null};
+    const task=intent.task;
+    const run=await readServiceRun(task,async()=>(await this.#serviceRun(task)).snapshot(),promise=>this.ctx.waitUntil(promise));
+    this.#maintenanceScope(scope);
+    return {intent,run};
+  }
+  async bindPreview(input:{scope:TurnScope;actor:TurnActor;key:string;runId:string;expectedPreviewId:string|null}){
+    const scope=this.#ready(input.scope);
+    if(this.env.M3_PREVIEW_ENABLED!=='true')throw Error('preview-disabled');
+    const view=await this.serviceView({scope,runId:input.runId});
+    this.#ready(scope);
+    if(!view.run)throw Error('preview-run-unavailable');
+    return this.#previews(scope).bind(input.actor,input.key,{intent:view.intent,run:view.run},input.expectedPreviewId);
+  }
+  async currentPreview(input:{scope:TurnScope}){return this.#previews(this.#maintenanceScope(input.scope)).current();}
+  async revokePreview(input:{scope:TurnScope;previewId:string;reason:'stopped'|'replaced'|'operator'|'workspace-retired'}){
+    return this.#previews(this.#maintenanceScope(input.scope)).revoke(input.previewId,input.reason);
+  }
+  async previewTarget(input:{scope:TurnScope;previewId:string}){
+    const scope=this.#ready(input.scope);
+    if(this.env.M3_PREVIEW_ENABLED!=='true')throw Error('preview-disabled');
+    const target=await resolvePreviewTarget({binding:id=>this.#previews(scope).authorizeTarget(id),view:runId=>this.serviceView({scope,runId})},input.previewId);
+    this.#ready(scope);return target;
+  }
+  /** Private trusted-call authority only; no browser cookie or caller actor.
+   * The execution endpoint remains unconfigured until its separate gate passes. */
+  async authorizeObserverCommand(raw:ObserverCommand){
+    const command=validateObserverCommand(raw),scope=this.#ready(command.scope);
+    const enabled=()=>this.env.M3_OBSERVER_ENABLED==='true'&&this.env.M3_PREVIEW_ENABLED==='true'&&this.env.M2_TURNS_ENABLED==='true';
+    if(!enabled())throw Error('observer-disabled');
+    return authorizeObserver(command,{
+      enabled,
+      caller:value=>{this.#ready(scope);return this.#turns.observerCaller(value);},
+      membership:async actor=>{const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(actor,scope.workspaceId);if(!sameScope(actual,scope))throw Error('observer-scope-denied');},
+      runtime:async identity=>{const target=this.env.PRODUCT_TURN_RUNTIME.getByName(await turnRuntimeActorName(identity));return target.currentObserverExecution(identity);},
+      target:previewId=>this.previewTarget({scope,previewId}),
+      current:binding=>{this.#ready(scope);return this.#previews(scope).matchesCurrent(binding);},
+    });
+  }
+  #observers(rawScope:TurnScope){
+    const scope=this.#maintenanceScope(rawScope);
+    return this.#observerHost??=new WorkspaceObserverHost(this.ctx.storage,scope,{
+      shouldStop:async command=>{try{await this.#observerTarget(command);return false;}catch{return true;}},
+      stop:async command=>{
+        this.#maintenanceScope(scope);
+        const namespace=this.env.OBSERVER_EXECUTOR;if(!namespace?.getByName)throw Error('observer-executor-not-configured');
+        return namespace.getByName(await observerExecutorActorName(command)).stop(command);
+      },
+    });
+  }
+  async #observerTarget(command:ObserverCommand):Promise<ObserverExecutionTarget>{
+    const grant=await this.authorizeObserverCommand(command);
+    if(!this.env.M3_PREVIEW_ORIGIN||!this.env.APP_ORIGIN)throw Error('observer-origin-not-configured');
+    const route=await new PreviewRoutes(catalogDatabase(this.env.CATALOG)).get(command.previewId);
+    if(!route||!sameScope(route.scope,command.scope)||route.expiresAt!==grant.binding.expiresAt)throw Error('observer-route-denied');
+    const policy=observerHttpPolicy({origin:previewHostOrigin(this.env.M3_PREVIEW_ORIGIN,route.hostLabel,this.env.APP_ORIGIN),...grant.paths});
+    this.#ready(command.scope);this.#turns.observerCaller(command);
+    if(!this.#previews(command.scope).matchesCurrent(grant.binding))throw Error('observer-target-stale');
+    return {binding:grant.binding,runtime:grant.runtime,policy,targetDigest:grant.targetDigest,expiresAt:grant.expiresAt};
+  }
+  /** Private trusted execution entry. Its namespace is deliberately optional:
+   * no call is accepted until the separate executor is configured and gated. */
+  async observePreview(raw:ObserverCommand){
+    const command=validateObserverCommand(raw),scope=this.#ready(command.scope);
+    if(this.env.M3_OBSERVER_ENABLED!=='true'||this.env.M3_PREVIEW_ENABLED!=='true'||this.env.M2_TURNS_ENABLED!=='true')throw Error('observer-disabled');
+    const namespace=this.env.OBSERVER_EXECUTOR;
+    if(!namespace?.getByName)throw Error('observer-executor-not-configured');
+    const executor=namespace.getByName(await observerExecutorActorName(command));
+    let policy:ObserverHttpPolicy|undefined;
+    const authorize=async()=>{
+      if(this.env.OBSERVER_EXECUTOR!==namespace)throw Error('observer-executor-not-configured');
+      const target=await this.#observerTarget(command);
+      if(policy&&JSON.stringify(target.policy)!==JSON.stringify(policy))throw Error('observer-target-stale');
+      policy=target.policy;return target;
+    };
+    const journal=this.#observers(scope).calls;
+    return new ObserverCallHost(journal,{
+      authorize,
+      execute:async(_command,context)=>{
+        const fresh=async()=>{
+          const grant=await context.authorize(),target=await authorize();
+          if(context.signal.aborted)throw Error('observer-cancelled');
+          if(target.targetDigest!==grant.targetDigest)throw Error('observer-target-stale');
+          return {...target,expiresAt:Math.min(grant.expiresAt,target.expiresAt)};
+        };
+        const capability=new ObserverExecutorCapability({
+          authorize:fresh,
+          forward:async request=>{
+            const target=await fresh();
+            const clean=observerRuntimePublicRequest(request,target.policy);
+            // This Request stays local; AbortSignal is never serialized over RPC.
+            return this.forwardObserverHttp({command,targetDigest:target.targetDigest},new Request(clean,{signal:context.signal}));
+          },
+          cancelled:async()=>{if(context.signal.aborted)return true;try{await fresh();return context.signal.aborted;}catch{return true;}},
+        });
+        return executor.execute(command,capability);
+      },
+      stop:()=>executor.stop(command),
+    }).run(command);
+  }
+  /** Resource transport for an already durably running observation. It does not
+   * accept/start calls or grant a browser cookie. The executor separately owns
+   * the cumulative budget across resources and the observation result. */
+  async forwardObserverHttp(raw:{command:ObserverCommand;targetDigest:string},request:Request):Promise<Response>{
+    if(!raw||Object.getPrototypeOf(raw)!==Object.prototype)throw Error('observer-forward-denied');
+    const fields=Object.getOwnPropertyDescriptors(raw);
+    if(Reflect.ownKeys(fields).length!==2||['command','targetDigest'].some(k=>!fields[k]?.enumerable||!Object.hasOwn(fields[k]!,'value')))throw Error('observer-forward-denied');
+    const command=validateObserverCommand(raw.command),targetDigest=sha(raw.targetDigest),scope=this.#ready(command.scope);
+    const controller=new AbortController(),abort=()=>controller.abort();
+    const expired=new Promise<never>((_,reject)=>controller.signal.addEventListener('abort',()=>reject(Error('observer-timeout')),{once:true}));void expired.catch(()=>{});
+    const timer=setTimeout(abort,Math.max(1,command.deadlineAt-Date.now()));
+    request.signal.addEventListener('abort',abort,{once:true});if(request.signal.aborted)abort();
+    const live=()=>{if(controller.signal.aborted||Date.now()>=command.deadlineAt)throw Error('observer-timeout');};
+    const wait=async<T,>(promise:Promise<T>):Promise<T>=>{const value=await Promise.race([promise,expired]);live();return value;};
+    let session:ReturnType<typeof createObserverFetchSession>|undefined,expectedPolicy:ObserverHttpPolicy|undefined;
+    try{
+      const authorize=async()=>{
+        live();const grant=await wait(this.authorizeObserverCommand(command));
+        if(grant.targetDigest!==targetDigest)throw Error('observer-target-stale');
+        if(!this.env.M3_PREVIEW_ORIGIN||!this.env.APP_ORIGIN)throw Error('observer-origin-not-configured');
+        const route=await wait(new PreviewRoutes(catalogDatabase(this.env.CATALOG)).get(command.previewId));
+        if(!route||!sameScope(route.scope,scope)||route.expiresAt!==grant.binding.expiresAt)throw Error('observer-route-denied');
+        const policy=observerHttpPolicy({origin:previewHostOrigin(this.env.M3_PREVIEW_ORIGIN,route.hostLabel,this.env.APP_ORIGIN),...grant.paths});
+        if(expectedPolicy&&JSON.stringify(policy)!==JSON.stringify(expectedPolicy))throw Error('observer-target-stale');
+        const record=await wait(this.#observers(scope).calls.snapshot(command));
+        if(!record||record.status!=='running'||record.targetDigest!==targetDigest)throw Error('observer-call-not-running');
+        this.#ready(scope);this.#turns.observerCaller(command);
+        if(!this.#previews(scope).matchesCurrent(grant.binding))throw Error('observer-target-stale');
+        return {grant,policy};
+      };
+      const initial=await authorize();expectedPolicy=initial.policy;
+      if(!this.env.SERVICE_RUNTIME?.getByName)throw Error('observer-forward-not-configured');
+      const runtime=this.env.SERVICE_RUNTIME.getByName(await wait(serviceRuntimeActorName(initial.grant.runtime)));
+      if(!runtime.forwardObserverHttp)throw Error('observer-forward-not-configured');
+      session=createObserverFetchSession(initial.policy,{
+        authorize:async()=>({expiresAt:(await authorize()).grant.expiresAt}),
+        forward:(clean,signal)=>{live();if(signal.aborted)throw Error('observer-cancelled');return runtime.forwardObserverHttp!({purpose:'observer',runtime:initial.grant.runtime,policy:initial.policy,deadlineAt:initial.grant.expiresAt},clean,new ObserverCancellation(async()=>{if(signal.aborted)return true;await authorize();return signal.aborted;}));},
+      },{deadlineAt:initial.grant.expiresAt,signal:controller.signal});
+      return await session.fetch(request);
+    }finally{session?.close();clearTimeout(timer);controller.abort();request.signal.removeEventListener('abort',abort);}
+  }
+  async issuePreviewTicket(input:{scope:TurnScope;principal:PreviewBrowserPrincipal;previewId:string;nonce:string}){
+    const scope=this.#ready(input.scope);
+    const ticket=await this.#tickets(scope).issue(input.principal,input.previewId,input.nonce);
+    this.#ready(scope);return ticket;
+  }
+  async redeemPreviewTicket(input:{scope:TurnScope;ticket:string;nonce:string}){
+    const scope=this.#ready(input.scope);
+    const claims=await this.#tickets(scope).redeem(input.ticket,input.nonce);
+    this.#ready(scope);return claims;
+  }
+  async exchangePreviewTicket(input:{scope:TurnScope;ticket:string;nonce:string;previewId:string}){
+    const scope=this.#ready(input.scope);
+    const previewId=input.previewId;
+    if(typeof previewId!=='string'||!previewId)throw Error('preview-ticket-denied');
+    const access=await this.#tickets(scope).exchange(input.ticket,input.nonce,previewId);
+    this.#ready(scope);return access;
+  }
+  async authorizePreviewAccess(input:{scope:TurnScope;access:string;previewId:string}){
+    const scope=this.#ready(input.scope);
+    const claims=await this.#tickets(scope).access(input.access,input.previewId);
+    this.#ready(scope);return claims;
+  }
+  async forwardPreviewHttp(input:{scope:TurnScope;access:string;previewId:string},request:Request):Promise<Response>{
+    const scope=this.#ready(input.scope),clean=await serviceHttpRequest(request);
+    await this.authorizePreviewAccess(input);
+    const target=await this.previewTarget({scope,previewId:input.previewId}),runtime=previewRuntimeInput(target);
+    if(!this.env.SERVICE_RUNTIME?.getByName)throw Error('service-forward-not-configured');
+    const stub=this.env.SERVICE_RUNTIME.getByName(await serviceRuntimeActorName(runtime));
+    const access=await this.authorizePreviewAccess(input);
+    if(JSON.stringify(access.binding)!==JSON.stringify(target.binding))throw Error('preview-target-unavailable');
+    this.#ready(scope);return stub.forwardHttp(runtime,clean);
+  }
+  async revokePreviewAccess(input:{scope:TurnScope;access:string}){
+    const scope=this.#maintenanceScope(input.scope);
+    // Revocation remains available when execution and Preview gates are closed.
+    const journal=new SqlPreviewTickets(this.ctx.storage,scope,{
+      session:async()=>{throw Error('preview-disabled');},target:async()=>{throw Error('preview-disabled');},
+    });
+    await journal.revokeAccess(input.access);
+  }
+  async serviceSnapshot(input:{scope:TurnScope;runId:string}){
+    const scope=this.#maintenanceScope(input.scope);
+    return this.#services(scope).snapshot(input.runId);
+  }
   #engine(): WorkspaceTurnEngine {
     if (!this.env.PRODUCT_TURN_RUNTIME?.getByName) throw Error('product-turn-runtime-not-configured');
     if (!this.env.TOOL_ARTIFACT_STORE?.getByName) throw Error('tool-artifact-store-not-configured');
@@ -121,6 +438,18 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   async turnSnapshot(input: { scope: TurnScope }) {
     return this.#turns.view(this.#ready(input.scope));
   }
+  /** Private plan selection. A future submit intent must freeze this source
+   * durably with its idempotency key; this read does not create or start a Run. */
+  async previewPlan(input:{scope:TurnScope}){
+    const scope=this.#ready(input.scope),revision=this.#turns.workspaceRevisionSnapshot(scope);
+    if(!this.env.REVISION_STORE?.getByName)throw Error('revision-store-not-configured');
+    const store=this.env.REVISION_STORE.getByName(REVISION_STORE_ACTOR);
+    if(revision){const plan=await store.previewPlan({kind:'saved-turn',identity:revision.identity,revision:revision.receipt});this.#ready(scope);return plan;}
+    const state=this.#store.read();
+    if(!state?.identity||!state.runtimeReceipt)throw Error('workspace-initial-source-missing');
+    const reference=await initialWorkspaceReferenceFromReady({scope,task:state.task,runtime:state.identity,markerNonce:state.markerNonce,ready:state.runtimeReceipt});
+    const plan=await store.initialPreviewPlan(reference,scope);this.#ready(scope);return plan;
+  }
   async listFiles(input:{scope:TurnScope}){
     const scope=this.#ready(input.scope),revision=await this.#turns.workspaceRevision(scope);
     if(!revision){const initial=await this.#initialWorkspace(scope);return {schemaVersion:1,revision:null,files:workspaceFileIndex(initial.filesArchive).files};}
@@ -133,6 +462,23 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     if(!revision)return {schemaVersion:1,revision:null,baseRevisionId:null,summary:{added:0,modified:0,deleted:0},changes:[]};
     if(!this.env.REVISION_STORE?.getByName)throw Error('revision-store-not-configured');const store=this.env.REVISION_STORE.getByName(REVISION_STORE_ACTOR),result=await store.diff(revision.identity,revision.receipt);
     return {schemaVersion:1,revision:{revisionId:revision.receipt.revisionId,filesSha256:revision.receipt.filesSha256,committedAt:revision.receipt.committedAt},summary:result.summary,changes:result.changes};
+  }
+  async readObserverArtifact(raw:ObserverArtifactReadInput){
+    const input=observerArtifactReadInput(raw);
+    this.#maintenanceScope(input.scope);
+    const namespace=this.env.OBSERVER_EXECUTOR;
+    if(!namespace?.getByName)throw Error('observer-executor-not-configured');
+    return readObserverArtifact(input,{
+      authorize:async(scope,actor,turnId)=>{
+        this.#ready(scope);
+        const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(actor,scope.workspaceId);
+        if(!sameScope(actual,scope)||this.env.OBSERVER_EXECUTOR!==namespace)throw Error('observer-artifact-read-denied');
+        this.#ready(scope);
+        return this.#turns.observerHistoryIdentity(scope,actor,turnId);
+      },
+      lookup:reference=>this.#observers(input.scope).calls.lookup(reference),
+      read:async({command,receipt},authorize)=>namespace.getByName(await observerExecutorActorName(command)).readArtifact(command,receipt,new ObserverArtifactReadCapability(authorize)),
+    });
   }
   async readArtifact(input:{scope:TurnScope;artifactId:string}){
     const scope=this.#ready(input.scope);
@@ -150,6 +496,16 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   }
   async alarm() {
     await routeWorkspaceAlarm({
+      observer:{
+        readWake:()=>this.#observerAlarm.read(),
+        defer:at=>this.#observerAlarm.schedule(at),
+        advance:async scope=>{await this.#observers(scope).alarm();},
+      },
+      service:{
+        readWake:()=>this.#serviceAlarm.read(),
+        defer:at=>this.#serviceAlarm.schedule(at),
+        advance:async scope=>{await this.#services(this.#maintenanceScope(scope)).alarm();},
+      },
       readWorkspace: () => this.#store.read(),
       readTurnWake: () => this.#turnAlarm.read(),
       runWorkspace: task => this.#for(task).alarm(),

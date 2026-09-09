@@ -39,10 +39,12 @@ class IdentityBoundTrustedPiSandbox implements TrustedPiSandboxProcessApi{
   async readFile(...args:Parameters<TrustedPiSandboxProcessApi['readFile']>){return (await this.#target()).readFile(...args);}
   async startProcess(...args:Parameters<TrustedPiSandboxProcessApi['startProcess']>){return (await this.#target()).startProcess(...args);}
   async getProcess(...args:Parameters<TrustedPiSandboxProcessApi['getProcess']>){return (await this.#target()).getProcess(...args);}
+  async queryObserverExecution(raw:TurnRuntimeIdentity){const identity=bound(raw,this.#identity),target=await this.#target();if(!target.queryObserverExecution)reject('trusted-pi-observer-reader-required');return target.queryObserverExecution(identity);}
 }
 
 function bindExecution(expected:TurnRuntimeIdentity,delegate:TurnExecutionPort):TurnExecutionPort{return {
-  async start(input:TurnRuntimeIdentity&{actor:TurnActor;message:string;base:TurnBaseCheckpoints}){bound({scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation},expected);return delegate.start(input);},
+  async start(input:TurnRuntimeIdentity&{actor:TurnActor;message:string;base:TurnBaseCheckpoints;executionDeadlineAt?:number}){bound({scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation},expected);return delegate.start(input);},
+  async currentObserverExecution(raw:TurnRuntimeIdentity){const identity=bound(raw,expected);if(!delegate.currentObserverExecution)reject('product-turn-observer-denied');return delegate.currentObserverExecution(identity);},
   async observe(identity:TurnRuntimeIdentity){return delegate.observe(bound(identity,expected));},
   async cancel(identity:TurnRuntimeIdentity){return delegate.cancel(bound(identity,expected));},
 };}

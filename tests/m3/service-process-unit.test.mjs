@@ -5,7 +5,7 @@ import { spawnSync } from 'node:child_process';
 test('service wrapper validates immutable input and fences stop replay without host project processes', () => {
   const script = String.raw`
 import sys, pathlib, tempfile, unittest, json, hashlib, contextlib
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
 sys.path[:0] = [str(pathlib.Path('services/run').resolve()), str(pathlib.Path('services/project-tools').resolve())]
 import service_process as s
 T = 'a' * 52
@@ -59,6 +59,17 @@ class Cases(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError,'service-dependency-version-mismatch'): s.verify_tree(c)
             with patch.object(s.importlib.metadata,'version',side_effect=s.importlib.metadata.PackageNotFoundError('simpy')):
                 with self.assertRaises(s.importlib.metadata.PackageNotFoundError): s.verify_tree(c)
+    def test_only_runtime_results_root_is_writable(self):
+        with tempfile.TemporaryDirectory() as d, patch.object(s,'WORKSPACE',pathlib.Path(d)), patch.object(s.os,'chown'):
+            root=pathlib.Path(d); (root/'app').mkdir(); (root/'results').mkdir()
+            c=control(); (root/c['entrypoint']).write_text('print(1)')
+            declaration={k:c[k] for k in ['schemaVersion','entrypoint','dependencyLock','healthPath']}|{'runtime':'python','port':8080}
+            (root/'app/preview.json').write_text(json.dumps(declaration)); (root/c['dependencyLock']).write_text(json.dumps({'schemaVersion':1,'packages':{}})); (root/'results/saved.csv').write_text('saved')
+            for name,path in [('entrypointSha256',c['entrypoint']),('dependencyLockSha256',c['dependencyLock']),('declarationSha256','app/preview.json')]: c[name]=s.archive.file_sha256(root/path)
+            s.verify_tree(c)
+            self.assertEqual((root/'results').stat().st_mode & 0o7777,0o1777)
+            self.assertEqual((root/'results/saved.csv').stat().st_mode & 0o777,0o444)
+            self.assertEqual((root/'app').stat().st_mode & 0o777,0o555)
     def test_no_new_privileges_fails_closed(self):
         from unittest.mock import MagicMock
         libc=MagicMock(); libc.prctl.return_value=0
@@ -67,6 +78,16 @@ class Cases(unittest.TestCase):
             libc.prctl.assert_called_once_with(38,1,0,0,0)
             libc.prctl.return_value=-1
             with self.assertRaises(RuntimeError): s.no_new_privileges()
+    def test_locked_vertical_marker_accepts_only_cross_arch_seccomp_cancel(self):
+        status='NoNewPrivs:\t1\nSeccomp:\t2\n'
+        with patch.object(s.project_network_fence,'install',side_effect=RuntimeError('project-network-seccomp-load-failed:-125')), patch.dict(s.os.environ,{s.PLATFORM_EGRESS_ENV:s.PLATFORM_EGRESS_MARKER}), patch('builtins.open',mock_open(read_data=status)):
+            s.install_child_network_fence()
+        with patch.dict(s.os.environ,{s.PLATFORM_EGRESS_ENV:s.PLATFORM_EGRESS_MARKER}), patch('builtins.open',mock_open(read_data=status)):
+            for message in ('project-network-seccomp-load-failed:-1','project-network-seccomp-rule-failed'):
+                with patch.object(s.project_network_fence,'install',side_effect=RuntimeError(message)):
+                    with self.assertRaisesRegex(RuntimeError,message): s.install_child_network_fence()
+        with patch.object(s.project_network_fence,'install',side_effect=RuntimeError('project-network-seccomp-load-failed:-125')), patch.dict(s.os.environ,{s.PLATFORM_EGRESS_ENV:s.PLATFORM_EGRESS_MARKER}), patch('builtins.open',mock_open(read_data='NoNewPrivs:\t0\nSeccomp:\t2\n')):
+            with self.assertRaisesRegex(RuntimeError,'-125'): s.install_child_network_fence()
     def test_probe_no_redirects_or_response_body(self):
         from unittest.mock import MagicMock
         connection=MagicMock(); connection.getresponse.return_value.status=302

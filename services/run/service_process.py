@@ -17,6 +17,7 @@ import time
 import unicodedata
 
 import process_quiescence as fence
+import project_network_fence
 import workspace_archive as archive
 
 CONTROL = Path('/var/lib/riffology/services')
@@ -25,6 +26,8 @@ WORKSPACE = Path('/workspace')
 TOKEN = re.compile(r'^[a-f0-9]{52}$')
 SHA = re.compile(r'^[a-f0-9]{64}$')
 FIELDS = {'schemaVersion', 'token', 'entrypoint', 'dependencyLock', 'filesSha256', 'declarationSha256', 'entrypointSha256', 'dependencyLockSha256', 'deadlineAt', 'healthPath'}
+PLATFORM_EGRESS_MARKER = 'workerd-deny-all-v1'
+PLATFORM_EGRESS_ENV = 'RIFFOLOGY_SERVICE_PLATFORM_EGRESS_FENCE'
 
 
 def now():
@@ -152,6 +155,13 @@ def observe(token):
 
 
 def verify_tree(control):
+    output = WORKSPACE / 'results'
+    try:
+        output_info = output.lstat()
+        if not stat.S_ISDIR(output_info.st_mode):
+            raise ValueError('invalid-service-output-root')
+    except FileNotFoundError:
+        output.mkdir(mode=0o755)
     for path, digest, limit in [(control['entrypoint'], control['entrypointSha256'], 1024 * 1024), (control['dependencyLock'], control['dependencyLockSha256'], 65536), ('app/preview.json', control['declarationSha256'], 16384)]:
         file = WORKSPACE / path
         if file.stat().st_size > limit or archive.file_sha256(file) != digest:
@@ -186,6 +196,12 @@ def verify_tree(control):
             os.chmod(path, 0o555)
     os.chown(WORKSPACE, 0, 0)
     os.chmod(WORKSPACE, 0o555)
+    # The immutable Revision stays root-owned and read-only. Runtime-created
+    # results are ephemeral to this Service instance and are never imported
+    # into a Revision implicitly. Sticky mode lets uid 10001 create and update
+    # its own outputs without replacing restored root-owned result files.
+    os.chown(output, 0, 0, follow_symlinks=False)
+    os.chmod(output, 0o1777, follow_symlinks=False)
 
 
 def no_new_privileges():
@@ -198,11 +214,33 @@ def no_new_privileges():
         raise RuntimeError('service-no-new-privileges-unproven')
 
 
+def platform_egress_fence_active():
+    if os.environ.get(PLATFORM_EGRESS_ENV) != PLATFORM_EGRESS_MARKER:
+        return False
+    try:
+        fields = dict(
+            line.split(':', 1) for line in open('/proc/self/status', encoding='ascii')
+            if line.startswith(('NoNewPrivs:', 'Seccomp:'))
+        )
+    except (OSError, ValueError):
+        return False
+    return fields.get('NoNewPrivs', '').strip() == '1' and fields.get('Seccomp', '').strip() == '2'
+
+
+def install_child_network_fence():
+    try:
+        project_network_fence.install()
+    except RuntimeError as error:
+        # The locked local vertical image may rely on Workerd's deny-all
+        # container egress boundary only when translated amd64 libseccomp
+        # returns -ECANCELED. Production images remain fail closed.
+        if str(error) != 'project-network-seccomp-load-failed:-125' or not platform_egress_fence_active():
+            raise
+
+
 def child_setup():
     no_new_privileges()
-    # Import the fixed root-owned helper before project code can execute.
-    import project_network_fence
-    project_network_fence.install()
+    install_child_network_fence()
     os.setgroups([])
     os.setgid(10001)
     os.setuid(10001)

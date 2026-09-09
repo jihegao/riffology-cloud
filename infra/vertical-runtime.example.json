@@ -1,0 +1,19 @@
+{
+  "APP_ORIGIN": "https://app.local.riffology.gaojihe.cn:8797",
+  "M3_PREVIEW_ORIGIN": "https://preview.local.riffology.gaojihe.cn:8797",
+  "CONTAINER_IMAGES": {
+    "ProjectRuntime": { "reference": "docker.io/library/riffology-project-runtime:replace-with-built-tag", "digest": "sha256:replace-with-64-hex-image-id" },
+    "ProjectToolSandbox": { "reference": "docker.io/library/riffology-project-tools:replace-with-built-tag", "digest": "sha256:replace-with-64-hex-image-id" },
+    "TrustedPiSandbox": { "reference": "docker.io/library/riffology-trusted-pi-vertical:replace-with-built-tag", "digest": "sha256:replace-with-64-hex-image-id" },
+    "ServiceSandbox": { "reference": "docker.io/library/riffology-service:replace-with-built-tag", "digest": "sha256:replace-with-64-hex-image-id" }
+  },
+  "M3_SERVICE_IMAGE": "local/riffology-service@sha256:replace-with-the-64-hex-docker-image-id",
+  "HTTPS_CERT_PATH": ".local/tls/app-and-preview.pem",
+  "HTTPS_KEY_PATH": ".local/tls/app-and-preview-key.pem",
+  "M2_TURNS_ENABLED": "true",
+  "M2_MODEL_PROVIDER_ENABLED": "true",
+  "M3_SERVICE_ENABLED": "true",
+  "M3_PREVIEW_ENABLED": "true",
+  "M3_PREVIEW_WS_ENABLED": "true",
+  "M3_OBSERVER_ENABLED": "false"
+}

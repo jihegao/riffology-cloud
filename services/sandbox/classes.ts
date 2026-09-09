@@ -1,5 +1,7 @@
 import { ContainerProxy, Sandbox } from '@cloudflare/sandbox';
 import { MODEL_PROXY_HOST, TOOL_BRIDGE_HOST, projectSandboxOutbound, sandboxActorIds, trustedPiOutbound, type InternalSandboxServices } from './policy.ts';
+import {createObserverNativeReader} from '../turn-runtime/observer-native-read.ts';
+import {readCurrentObserverExecution} from '../turn-runtime/pi-native.ts';
 import { turnRuntimeIdentity } from '../turn-runtime/identity.ts';
 import { turnBaseCheckpoints } from '../turn/protocol.ts';
 import { ProjectFileEffectPort } from '../project-tools/effect.ts';
@@ -20,6 +22,13 @@ export class TrustedPiSandbox extends Sandbox<M2SandboxEnv>{
   override allowedHosts=[MODEL_PROXY_HOST,TOOL_BRIDGE_HOST];
   override sleepAfter='5m';
   override envVars={};
+  /** Private, identity-bound read path. Ordinary SDK reads may create a session
+   * or start a container and must not be used for Observer authorization. */
+  async queryObserverExecution(raw:Parameters<typeof turnRuntimeIdentity>[0]){
+    const identity=turnRuntimeIdentity(raw);
+    if(!this.ctx.id.name||(await sandboxActorIds(identity.scope,identity.turnId,identity.dispatchId)).trustedPi!==this.ctx.id.name)throw Error('trusted-pi-native-scope-denied');
+    return readCurrentObserverExecution(createObserverNativeReader(this.ctx.container,Date.now()+5000),identity);
+  }
 }
 /** Project code owns /workspace but receives no Pi session, model capability,
  * service binding or public network. */

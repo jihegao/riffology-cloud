@@ -48,7 +48,7 @@ const EVENT_TYPES=new Set<TurnRuntimeEvent['type']>(['assistant.delta','assistan
 const PHASES=new Set<TurnRuntimeReceipt['phase']>(['accepted','absent','unknown','running','terminal']);
 const OUTCOMES=new Set<NonNullable<TurnRuntimeReceipt['outcome']>>(['completed','failed','cancelled','interrupted']);
 const RECONCILABLE_PERSISTENCE_ERRORS=new Set(['turn-checkpoint-unknown']);
-const NON_PERSISTABLE_EXECUTION_ERRORS=new Set(['turn-base-unavailable']);
+const NON_PERSISTABLE_EXECUTION_ERRORS=new Set(['turn-base-unavailable','turn-native-execution-absent']);
 
 function optionalCode(value:unknown):string|null{return value==null?null:turnId(value);}
 function checkpoint(value:unknown):CheckpointReceipt|null{

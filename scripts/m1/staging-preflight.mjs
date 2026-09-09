@@ -64,7 +64,7 @@ export function validateStagingConfig(config, dockerfile, migrationNames = []) {
       && /\nUSER node\n/.test(dockerfile) && /\nWORKDIR \/workspace\n/.test(dockerfile)),
     check('catalog-migrations', same(migrationNames, [
       '0001_catalog.sql', '0002_auth.sql', '0003_provisioning.sql',
-      '0004_operator_invitations.sql', '0005_initial_operator.sql', '0006_model_catalog.sql','0007_model_content_checks.sql',
+      '0004_operator_invitations.sql', '0005_initial_operator.sql', '0006_model_catalog.sql','0007_model_content_checks.sql','0008_preview_routes.sql',
     ])),
   ];
 }

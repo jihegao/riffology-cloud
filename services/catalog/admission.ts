@@ -1,7 +1,7 @@
 import { statement as sql, type Database } from './database.ts';
 import { CatalogError, digest, type Principal } from './contracts.ts';
 
-export interface VerifiedIdentity { subject: string; email: string; emailVerified: boolean; platformVersion: number }
+export interface VerifiedIdentity { subject: string; email: string; emailVerified: boolean; platformVersion: number; browserSession?:{sessionId:string;expiresAt:number} }
 const issuer = 'better-auth';
 export function normalizedEmail(email: string): string {
   const normalized = email.trim().toLowerCase();

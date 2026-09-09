@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node ui/serve.mjs",
     "check": "npm run check:ui && npm run typecheck && npm run test:m0 && npm run test:m1 && npm run test:m2 && npm run test:m3",
-    "check:ui": "node --check ui/app.js && node --check ui/workspace.js && node --check ui/user-pages.js && node --check ui/admin.js && node --check ui/shared.js && node --check services/web/app.js && node --check services/web/admin.js",
+    "check:ui": "node --check ui/app.js && node --check ui/workspace.js && node --check ui/user-pages.js && node --check ui/admin.js && node --check ui/shared.js && node --check services/web/app.js && node --check services/web/services.js && node --check services/web/previews.js && node --check services/web/admin.js",
     "typecheck": "tsc --noEmit",
     "test:m0": "node --test tests/m0/*.test.ts tests/m0/*.test.mjs tests/m0/pi/*.test.mjs spikes/m0-cloud/*.test.ts spikes/m0-files/*.test.ts spikes/m0-preview/*.test.ts spikes/m0-recovery/*.test.ts spikes/m0-release/*.test.ts scripts/m0/release-manifest.test.mjs && node scripts/evidence/self-test.mjs && node scripts/m0/preflight-self-test.mjs",
     "m0:preflight": "node scripts/m0/preflight.mjs",
@@ -27,20 +27,25 @@
     "m1:model-package": "node scripts/m1/model-package.mjs",
     "m1:model-content:local": "node scripts/m1/check-workspace-local.mjs",
     "m1:preflight:staging": "node scripts/m1/staging-preflight.mjs",
-    "m2:product-turn:local": "node scripts/m2/check-product-turn-local.mjs"
+    "m2:product-turn:local": "node scripts/m2/check-product-turn-local.mjs",
+    "m3:vertical:preflight": "node scripts/m3/vertical-runtime-preflight.mjs",
+    "m3:vertical:start": "node scripts/m3/vertical-runtime-preflight.mjs --launch",
+    "m3:vertical:preflight:staging": "node scripts/m3/vertical-staging-preflight.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "5.20260905.1",
     "@types/node": "25.3.0",
     "playwright": "^1.63.0",
     "typescript": "7.0.2",
-    "wrangler": "4.129.0"
+    "wrangler": "4.129.0",
+    "ws": "8.21.0"
   },
   "dependencies": {
     "@cloudflare/sandbox": "0.12.9",
     "@earendil-works/pi-coding-agent": "0.85.0",
     "@earendil-works/pi-server": "0.85.0",
-    "better-auth": "1.7.3"
+    "better-auth": "1.7.3",
+    "undici": "7.29.0"
   },
   "engines": {
     "node": ">=22.19.0"

@@ -20,16 +20,18 @@ export type TrustedPiHostObservation={
   stopped:TurnStopReceipt|null;
 };
 export interface TrustedPiHostPort{
-  start(input:TurnRuntimeIdentity&{actor:TurnActor;message:string;base:TurnBaseCheckpoints}):Promise<TrustedPiHostObservation>;
+  start(input:TurnRuntimeIdentity&{actor:TurnActor;message:string;base:TurnBaseCheckpoints;executionDeadlineAt?:number}):Promise<TrustedPiHostObservation>;
+  currentObserverExecution?(identity:TurnRuntimeIdentity):Promise<{expiresAt:number}>;
   observe(identity:TurnRuntimeIdentity):Promise<TrustedPiHostObservation>;
   cancel(identity:TurnRuntimeIdentity):Promise<TrustedPiHostObservation>;
 }
 
-const MAX_EVENTS=2048,MAX_TEXT=15_000,TOOL=/^project_[a-z0-9_]{1,64}$/;
+const MAX_EVENTS=2048,MAX_TEXT=15_000,TOOL=/^project_[a-z0-9_]{1,64}$/,TOOL_CALL_ID=/^[A-Za-z0-9_-]{1,128}(?:\|[A-Za-z0-9_-]{1,128})?$/;
 function reject(code:string):never{throw Error(code);}
 function exact(value:unknown,keys:string[],code:string):asserts value is Record<string,unknown>{if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype||Object.keys(value).length!==keys.length||keys.some(key=>!Object.hasOwn(value,key)))reject(code);}
 function text(value:unknown,allowEmpty=false):string{if(typeof value!=='string'||(!allowEmpty&&!value.length)||new TextEncoder().encode(value).byteLength>MAX_TEXT||/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u.test(value))reject('invalid-trusted-pi-host-event');return value;}
 function tool(value:unknown):string{if(typeof value!=='string'||!TOOL.test(value))reject('invalid-trusted-pi-host-event');return value;}
+function toolCallId(value:unknown):string{if(typeof value!=='string'||!TOOL_CALL_ID.test(value))reject('invalid-trusted-pi-host-event');return value;}
 function artifact(value:unknown):ToolArtifactReceipt{try{return toolArtifactReceipt(value);}catch{return reject('invalid-trusted-pi-host-event');}}
 function requestId(value:unknown):string|null{if(value===null)return null;if(typeof value!=='string'||!/^[A-Za-z0-9._:-]{1,128}$/.test(value))reject('invalid-trusted-pi-host-event');return value;}
 function status(value:unknown):number|null{if(value===null)return null;if(!Number.isSafeInteger(value)||(value as number)<100||(value as number)>599)reject('invalid-trusted-pi-host-event');return value as number;}
@@ -37,9 +39,9 @@ function hostEvent(value:unknown):TrustedPiHostEvent{
   if(!value||typeof value!=='object'||Array.isArray(value))reject('invalid-trusted-pi-host-event');const raw=value as Record<string,unknown>,sequence=positive(raw.sequence),at=positive(raw.at),kind=raw.kind;
   if(kind==='assistant.delta'){exact(raw,['sequence','at','kind','text'],'invalid-trusted-pi-host-event');return {sequence,at,kind,text:text(raw.text)};}
   if(kind==='assistant.message'){exact(raw,['sequence','at','kind','text','stopReason'],'invalid-trusted-pi-host-event');return {sequence,at,kind,text:text(raw.text,true),stopReason:raw.stopReason===null?null:turnId(raw.stopReason)};}
-  if(kind==='tool.started'){exact(raw,['sequence','at','kind','toolCallId','name'],'invalid-trusted-pi-host-event');return {sequence,at,kind,toolCallId:turnId(raw.toolCallId),name:tool(raw.name)};}
-  if(kind==='tool.updated'){exact(raw,['sequence','at','kind','toolCallId','name','summary'],'invalid-trusted-pi-host-event');return {sequence,at,kind,toolCallId:turnId(raw.toolCallId),name:tool(raw.name),summary:text(raw.summary,true)};}
-  if(kind==='tool.completed'){exact(raw,['sequence','at','kind','toolCallId','name','isError','artifact'],'invalid-trusted-pi-host-event');if(typeof raw.isError!=='boolean'||(raw.isError&&raw.artifact!==null))reject('invalid-trusted-pi-host-event');return {sequence,at,kind,toolCallId:turnId(raw.toolCallId),name:tool(raw.name),isError:raw.isError,artifact:raw.artifact===null?null:artifact(raw.artifact)};}
+  if(kind==='tool.started'){exact(raw,['sequence','at','kind','toolCallId','name'],'invalid-trusted-pi-host-event');return {sequence,at,kind,toolCallId:toolCallId(raw.toolCallId),name:tool(raw.name)};}
+  if(kind==='tool.updated'){exact(raw,['sequence','at','kind','toolCallId','name','summary'],'invalid-trusted-pi-host-event');return {sequence,at,kind,toolCallId:toolCallId(raw.toolCallId),name:tool(raw.name),summary:text(raw.summary,true)};}
+  if(kind==='tool.completed'){exact(raw,['sequence','at','kind','toolCallId','name','isError','artifact'],'invalid-trusted-pi-host-event');if(typeof raw.isError!=='boolean'||(raw.isError&&raw.artifact!==null))reject('invalid-trusted-pi-host-event');return {sequence,at,kind,toolCallId:toolCallId(raw.toolCallId),name:tool(raw.name),isError:raw.isError,artifact:raw.artifact===null?null:artifact(raw.artifact)};}
   if(kind==='provider.status'){exact(raw,['sequence','at','kind','state','status','requestId'],'invalid-trusted-pi-host-event');if(!['requesting','responding','error'].includes(raw.state as string))reject('invalid-trusted-pi-host-event');const state=raw.state as TrustedPiHostEvent&string;return {sequence,at,kind,state:state as 'requesting'|'responding'|'error',status:status(raw.status),requestId:requestId(raw.requestId)};}
   reject('invalid-trusted-pi-host-event');
 }
@@ -70,7 +72,8 @@ export class TrustedPiExecutionAdapter implements TurnExecutionPort{
   readonly #host:TrustedPiHostPort;
   constructor(host:TrustedPiHostPort){if(!host?.start||!host.observe||!host.cancel)reject('trusted-pi-host-required');this.#host=host;}
   async #map(raw:unknown,identity:TurnRuntimeIdentity):Promise<TurnExecutionObservation>{const value=observation(raw,identity),events=await Promise.all(value.events.map(item=>runtimeEvent(identity,item)));return {identity,phase:value.phase==='starting'?'running':value.phase,outcome:value.outcome,executionErrorCode:value.executionErrorCode,events,stopped:value.stopped};}
-  async start(input:TurnRuntimeIdentity&{actor:TurnActor;message:string;base:TurnBaseCheckpoints}){const identity=turnRuntimeIdentity({scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation}),actor=validateActor(input.actor),base=turnBaseCheckpoints(input.base);return this.#map(await this.#host.start({...identity,actor,message:input.message,base}),identity);}
+  async start(input:TurnRuntimeIdentity&{actor:TurnActor;message:string;base:TurnBaseCheckpoints;executionDeadlineAt?:number}){const identity=turnRuntimeIdentity({scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation}),actor=validateActor(input.actor),base=turnBaseCheckpoints(input.base);return this.#map(await this.#host.start({...identity,actor,message:input.message,base,...(input.executionDeadlineAt===undefined?{}:{executionDeadlineAt:positive(input.executionDeadlineAt)})}),identity);}
+  async currentObserverExecution(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);if(!this.#host.currentObserverExecution)reject('product-turn-observer-denied');return this.#host.currentObserverExecution(identity);}
   async observe(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);return this.#map(await this.#host.observe(identity),identity);}
   async cancel(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);return this.#map(await this.#host.cancel(identity),identity);}
 }

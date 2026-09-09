@@ -4,6 +4,7 @@ import { TURN_EVENT_BYTES_LIMIT, TURN_EVENT_LIMIT, TURN_EVENT_RECEIPT_LIMIT, act
 import type { AtomicTurnStore } from './store.ts';
 import type { TurnRuntimeIdentity } from '../turn-runtime/identity.ts';
 import { toolArtifactReference, type ToolArtifactReferenceInput } from '../artifacts/protocol.ts';
+import {validateObserverCommand,type ObserverCommand} from '../preview/observer-protocol.ts';
 
 const terminal=(status:TurnRecord['status'])=>['completed','failed','cancelled','interrupted'].includes(status);
 const intent=(userId:string,key:string)=>`${userId}|${turnId(key)}`;
@@ -151,6 +152,26 @@ export class TurnJournal{
     const state=requireState(this.#store.read(),s);if(afterSequence>=state.nextSequence)throw Error('invalid-event-cursor');const gap=afterSequence<state.oldestSequence-1;if(gap)return {events:[],nextSequence:state.nextSequence,hasMore:false,oldestSequence:state.oldestSequence,snapshotRequired:true};const events=state.events.filter(row=>row.sequence>afterSequence).slice(0,limit);return {events,nextSequence:events.at(-1)?.sequence??afterSequence,hasMore:state.events.some(row=>row.sequence>(events.at(-1)?.sequence??afterSequence)),oldestSequence:state.oldestSequence,snapshotRequired:false};}
   async compact(rawScope:TurnScope,maxCount=TURN_EVENT_LIMIT,maxBytes=TURN_EVENT_BYTES_LIMIT){const s=scope(rawScope);return this.#store.transact(current=>{const state=requireState(current,s);pruneTerminalEventReceipts(state);const retained=retainEventWindow(state.events,maxCount,maxBytes);state.events=retained.events;state.oldestSequence=retained.oldestSequence;state.retentionBytes=retained.retentionBytes;return {state,value:{oldestSequence:state.oldestSequence,retentionBytes:state.retentionBytes,removed:state.nextSequence-1-state.events.length}};});}
   async snapshot(rawScope:TurnScope){const s=scope(rawScope);return requireState(this.#store.read(),s);}
+  /** Local current-call anchor. Runtime lease, plugin, Catalog and Preview
+   * authority are checked separately; this does not mint a browser grant. */
+  observerCaller(raw:ObserverCommand):{actor:TurnActor;identity:TurnRuntimeIdentity}{
+    const command=validateObserverCommand(raw,this.#clock()),state=requireState(this.#store.read(),command.scope);
+    const turn=state.turns[command.turnId],session=state.sessions[command.sessionId];
+    if(state.activeTurnId!==command.turnId||!turn||!session||turn.status!=='running'||turn.cancelRequestedAt!==null||turn.finishedAt!==null||
+      turn.sessionId!==command.sessionId||turn.dispatchId!==command.dispatchId||turn.runtimeGeneration!==command.scope.workspaceGeneration||
+      !sameScope(session.scope,command.scope)||session.actorUserId!==turn.actor.userId||session.actorAuthVersion!==turn.actor.authVersion)throw Error('observer-turn-denied');
+    return {actor:actor(turn.actor),identity:{scope:scope(command.scope),sessionId:command.sessionId,turnId:command.turnId,dispatchId:command.dispatchId,generation:turn.runtimeGeneration}};
+  }
+  /** Resolve a historical turn's runtime identity for Workspace ACL checks.
+   * This deliberately does not require a live lease or compare the caller's
+   * current auth version with the historical turn. */
+  observerHistoryIdentity(rawScope:TurnScope,rawActor:TurnActor,rawTurnId:string):TurnRuntimeIdentity{
+    const s=scope(rawScope),a=actor(rawActor),tid=turnId(rawTurnId),state=requireState(this.#store.read(),s),turn=state.turns[tid];
+    if(!turn||turn.id!==tid||!sameScope(turn.scope,s)||!turn.dispatchId||turn.runtimeGeneration!==s.workspaceGeneration||turn.actor.userId!==a.userId)throw Error('observer-turn-denied');
+    const session=state.sessions[turn.sessionId];
+    if(!session||!sameScope(session.scope,s)||session.id!==turn.sessionId||session.actorUserId!==a.userId||session.actorAuthVersion!==turn.actor.authVersion)throw Error('observer-turn-denied');
+    return {scope:s,sessionId:session.id,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration};
+  }
   /** Read-only prerequisite for releasing a journal event reference. This does
    * not authorize object deletion: ledger and saved Session references remain. */
   async artifactEventReleaseEligibility(raw:ToolArtifactReferenceInput):Promise<{eligible:boolean;reason:'turn-active'|'event-retained'|'event-retired'}>{
@@ -162,11 +183,14 @@ export class TurnJournal{
     if(state.events.some(item=>item.eventId===reference.referenceId)||Object.hasOwn(state.eventReceipts,reference.referenceId))return {eligible:false,reason:'event-retained'};
     return {eligible:true,reason:'event-retired'};
   }
-  async workspaceRevision(rawScope:TurnScope):Promise<{identity:TurnRuntimeIdentity;receipt:CheckpointReceipt}|null>{const s=scope(rawScope),state=requireState(this.#store.read(),s),receipt=state.workspaceHead;if(!receipt)return null;
+  /** Synchronous read for a caller's storage transaction that freezes a Run
+   * intent with the authoritative saved head. Never performs external I/O. */
+  workspaceRevisionSnapshot(rawScope:TurnScope):{identity:TurnRuntimeIdentity;receipt:CheckpointReceipt}|null{const s=scope(rawScope),state=requireState(this.#store.read(),s),receipt=state.workspaceHead;if(!receipt)return null;
     const turn=Object.values(state.turns).filter(row=>row.persistenceOutcome==='saved'&&row.checkpoint&&equal(row.checkpoint,receipt)).sort((a,b)=>(b.terminalSequence??0)-(a.terminalSequence??0))[0];
     if(!turn||!turn.dispatchId||turn.runtimeGeneration!==s.workspaceGeneration)throw Error('invalid-persisted-turn-journal');
     return {identity:{scope:s,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration},receipt:structuredClone(receipt)};
   }
+  async workspaceRevision(rawScope:TurnScope){return this.workspaceRevisionSnapshot(rawScope);}
   async view(rawScope:TurnScope):Promise<TurnJournalView>{const state=await this.snapshot(rawScope),turns:TurnJournalView['turns']={};
     for(const [id,turn] of Object.entries(state.turns)){const {requestKey:_,payloadSha256:__,dispatchId:___,base:____,startedSequence:_____,terminalSequence:______,...safe}=turn;turns[id]=safe;}
     const sessions:TurnJournalView['sessions']={};for(const [id,session] of Object.entries(state.sessions)){const {actorUserId:_,actorAuthVersion:__,...safe}=session;sessions[id]=safe;}

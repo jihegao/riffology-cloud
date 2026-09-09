@@ -5,9 +5,21 @@ import type { TurnRecord, TurnScope } from '../turn/protocol.ts';
 export type WorkspaceAlarmResult = {
   workspace: 'absent' | 'waiting' | 'advanced';
   turn: 'absent' | 'waiting' | 'deferred' | 'advanced' | 'orphan-cleared';
+  service?: 'absent' | 'waiting' | 'deferred' | 'advanced';
+  observer?: 'absent' | 'waiting' | 'deferred' | 'advanced';
 };
 
 export interface WorkspaceAlarmRouterPorts {
+  service?: {
+    readWake(): number | null;
+    advance(scope: TurnScope): Promise<void>;
+    defer(at: number): Promise<void>;
+  };
+  observer?: {
+    readWake(): number | null;
+    advance(scope: TurnScope): Promise<void>;
+    defer(at: number): Promise<void>;
+  };
   readWorkspace(): WorkspaceState | null;
   readTurnWake(): number | null;
   runWorkspace(task: WorkspaceTask): Promise<void>;
@@ -37,7 +49,7 @@ function readyScope(state: WorkspaceState): TurnScope | null {
  * deadlines. Provisioning runs first because it can make a workspace ready;
  * the state is then re-read before a Turn may cross the runtime boundary.
  */
-export async function routeWorkspaceAlarm(
+async function routeWorkspaceAndTurnAlarm(
   ports: WorkspaceAlarmRouterPorts,
   now = Date.now(),
   retryMs = 2_000,
@@ -99,6 +111,46 @@ export async function routeWorkspaceAlarm(
     turn = 'advanced';
     return { workspace, turn };
   } finally {
-    await ports.reconcile();
+    // The outer router reconciles after every activity domain has been visited.
+  }
+}
+
+/** Each maintenance domain gets a delivery attempt even when an earlier domain
+ * fails. Persist a future wake before crossing the external runtime boundary. */
+async function routeMaintenance(
+  ports:WorkspaceAlarmRouterPorts,
+  domain:'service'|'observer',
+  observedAt:number,
+  retryAt:number,
+  result:WorkspaceAlarmResult|undefined,
+):Promise<void>{
+  const activity=ports[domain];
+  if(!activity)return;
+  const wake=activity.readWake();
+  let status:NonNullable<WorkspaceAlarmResult['service']>='waiting';
+  if(wake===null)status='absent';
+  else if(wake<=observedAt){
+    await activity.defer(retryAt);
+    const state=ports.readWorkspace();
+    // Stop and reconcile are allowed for non-ready workspaces, but never with
+    // a scope inferred from request data when the persisted task is absent.
+    if(state){
+      await activity.advance({tenantId:state.task.tenantId,projectId:state.task.projectId,workspaceId:state.task.workspaceId,workspaceGeneration:state.task.generation});
+      status='advanced';
+    }else status='deferred';
+  }
+  if(result)result[domain]=status;
+}
+
+export async function routeWorkspaceAlarm(ports:WorkspaceAlarmRouterPorts,now=Date.now(),retryMs=2000):Promise<WorkspaceAlarmResult>{
+  const observedAt=positive(now),retryAt=positive(observedAt+positive(retryMs));
+  let result:WorkspaceAlarmResult|undefined;
+  try{return result=await routeWorkspaceAndTurnAlarm(ports,observedAt,retryMs);}
+  finally{
+    try{await routeMaintenance(ports,'service',observedAt,retryAt,result);}
+    finally{
+      try{await routeMaintenance(ports,'observer',observedAt,retryAt,result);}
+      finally{await ports.reconcile();}
+    }
   }
 }

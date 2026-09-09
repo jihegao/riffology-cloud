@@ -26,6 +26,7 @@ const release=(ctx:DurableObjectState,rawEnv:ProductTurnRuntimeHostEnv,identity:
 export class ProductTurnRuntime extends DurableObject<ProductTurnRuntimeEnv>{
   #host=new ProductTurnRuntimeHost(this.ctx,this.env,release);
   async accept(input:Parameters<TurnRuntimePort['accept']>[0]){return this.#host.accept(input);}
+  async currentObserverExecution(input:Parameters<ProductTurnRuntimeHost['currentObserverExecution']>[0]){return this.#host.currentObserverExecution(input);}
   async observe(input:Parameters<TurnRuntimePort['observe']>[0]){return this.#host.observe(input);}
   async cancel(input:Parameters<TurnRuntimePort['cancel']>[0]){return this.#host.cancel(input);}
 }

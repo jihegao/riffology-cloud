@@ -95,6 +95,10 @@ test('Workerd drives one durable Turn through the independent runtime actor', { 
     }
 
     export class RevisionStoreFixture extends DurableObject {
+      // Selection fixture only; real declaration/content validation is covered
+      // independently by RevisionStore Workerd tests.
+      async previewPlan(source){return {selectionFixture:true,source};}
+      async initialPreviewPlan(reference,scope){const initial=await this.resolveInitial(reference,scope);return this.previewPlan({kind:'initial-workspace',reference:initial.reference,filesSha256:initial.filesSha256});}
       async resolveInitial(reference,scope){return new InitialWorkspaceResolver(this.env.WORKSPACE_CHECKPOINTS).resolve(reference,scope);}
       async files(identity,receipt){return {schemaVersion:1,files:[{path:'model/'+identity.turnId+'.py',type:'file',size:17,mode:420}]};}
       async diff(identity,receipt){return {schemaVersion:1,summary:{added:1,modified:0,deleted:0},changes:[{path:'model/'+identity.turnId+'.py',change:'added',type:'file',size:17,mode:420}]};}
@@ -116,6 +120,7 @@ test('Workerd drives one durable Turn through the independent runtime actor', { 
         if(input.method==='cancelTurn')return Response.json({ok:true,value:await stub.cancelTurn({scope:input.scope,actor:input.actor,turnId:input.turnId})});
         if(input.method==='runAlarm'){await stub.runAlarmForTest();return Response.json({ok:true,value:true});}
         if(input.method==='snapshot')return Response.json({ok:true,value:await stub.turnSnapshot({scope:input.scope})});
+        if(input.method==='previewPlan')return Response.json({ok:true,value:await stub.previewPlan({scope:input.scope})});
         if(input.method==='files')return Response.json({ok:true,value:await stub.listFiles({scope:input.scope})});
         if(input.method==='diff')return Response.json({ok:true,value:await stub.diffFiles({scope:input.scope})});
         if(input.method==='artifact'){const value=await stub.readArtifact({scope:input.scope,artifactId:input.artifactId});return Response.json({ok:true,value:{receipt:value.receipt,content:new TextDecoder().decode(value.content)}});}
@@ -182,9 +187,12 @@ test('Workerd drives one durable Turn through the independent runtime actor', { 
     const initialFiles=await rpc('files',{task,scope});
     assert.equal(initialFiles.revision,null);
     assert.deepEqual(initialFiles.files.map(file=>file.path),['README.md','app','docs','experiments','model','results']);
+    const initialPlan=await rpc('previewPlan',{task,scope});assert.equal(initialPlan.source.kind,'initial-workspace');assert.deepEqual(initialPlan.source.reference.scope,scope);assert.equal(Object.hasOwn(initialPlan.source,'identity'),false);
+    await assert.rejects(rpc('previewPlan',{task,scope:{...scope,projectId:'other-project'}}),/scope-denied/);
     const { session } = await rpc('createSession', { task, scope, actor, key: 'session-key', title: 'First session' });
     const initialBucket=await mf.getR2Bucket('WORKSPACE_CHECKPOINTS',workerName),initialKey=checkpointKey(readyWorkspace.identity);
     const initialText=await (await initialBucket.get(initialKey)).text();await initialBucket.delete(initialKey);
+    await assert.rejects(rpc('previewPlan',{task,scope}),/checkpoint-missing/);
     const unavailable=await rpc('submitTurn',{task,scope,actor,sessionId:session.id,key:'missing-initial-turn',message:'Missing initial source'});
     const failedView=await until(()=>rpc('snapshot',{task,scope}),value=>value.turns[unavailable.turn.id]?.status==='failed');
     assert.equal(failedView.turns[unavailable.turn.id].errorCode,'turn-initial-base-unavailable');
@@ -207,6 +215,7 @@ test('Workerd drives one durable Turn through the independent runtime actor', { 
     const artifactReferences=await rpc('artifactReferences',{scope,artifactId});assert.deepEqual(artifactReferences.map(item=>[item.kind,item.referenceId,item.releasedAt]),[['tool_effect','effect-'+first.turn.id,null],['turn_event','tool-'+first.turn.id,null]]);
     await assert.rejects(rpc('artifact',{task,actorName:workspaceAgentName(scope.tenantId,scope.workspaceId),scope:{...scope,tenantId:'tenant-other'},artifactId}),/workspace-actor-scope-denied/);
     assert.deepEqual(await rpc('calls', { turnId: first.turn.id }), { turn_id: first.turn.id, accept_count: 1, observe_count: 0, cancel_count: 0 });
+    const savedPlan=await rpc('previewPlan',{task,scope});assert.equal(savedPlan.source.kind,'saved-turn');assert.equal(savedPlan.source.identity.turnId,first.turn.id);assert.deepEqual(savedPlan.source.revision,snapshot.turns[first.turn.id].checkpoint);
     const files=await rpc('files',{task,scope});assert.deepEqual(files,{schemaVersion:1,revision:{revisionId:'revision-'+first.turn.id,filesSha256:'b'.repeat(64),committedAt:snapshot.turns[first.turn.id].checkpoint.committedAt},files:[{path:'model/'+first.turn.id+'.py',type:'file',size:17,mode:420}]});
     const diff=await rpc('diff',{task,scope});assert.deepEqual(diff,{schemaVersion:1,revision:files.revision,summary:{added:1,modified:0,deleted:0},changes:[{path:'model/'+first.turn.id+'.py',change:'added',type:'file',size:17,mode:420}]});
 
@@ -216,6 +225,7 @@ test('Workerd drives one durable Turn through the independent runtime actor', { 
     await assert.rejects(rpc('retireArtifact',{task,scope,reference:{...eventReference,scope:{...scope,tenantId:'other-tenant'}}}),/workspace-actor-scope-denied/);
     await rpc('readiness',{task,scope,confirmed:false});
     await assert.rejects(rpc('artifact',{task,scope,artifactId}),/workspace-not-ready/);
+    await assert.rejects(rpc('previewPlan',{task,scope}),/workspace-not-ready/);
     const nextSweep=await rpc('sweepArtifacts',{task,scope});assert.ok(nextSweep>Date.now(),'independent ArtifactStore alarm remains armed');
     const sweptRefs=await rpc('artifactReferences',{scope,artifactId});assert.equal(typeof sweptRefs.find(r=>r.kind==='turn_event').releasedAt,'number','alarm must release event without manual retirement');
     const retired=await rpc('retireArtifact',{task,scope,reference:eventReference});assert.equal(retired.released,true);assert.equal(typeof retired.receipt.releasedAt,'number');

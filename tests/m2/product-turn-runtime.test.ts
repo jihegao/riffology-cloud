@@ -21,16 +21,16 @@ const event={eventId:'event-a',type:'assistant.message' as const,at:1002,payload
 const terminal=(id:TurnRuntimeIdentity=identity,outcome:'completed'|'failed'|'cancelled'|'interrupted'='completed'):TurnExecutionObservation=>({identity:id,phase:'terminal',outcome,executionErrorCode:outcome==='completed'?null:'fixture-failure',events:[event],stopped:stop});
 
 function fixture(t:TestContext){
-  const dir=mkdtempSync(join(tmpdir(),'m2-turn-runtime-')),file=join(dir,'state.db');t.after(()=>rmSync(dir,{recursive:true,force:true}));let db=new DatabaseSync(file),now=1000,starts=0,observes=0,cancels=0,prepares=0,commits=0,checkpointObserves=0;
+  const dir=mkdtempSync(join(tmpdir(),'m2-turn-runtime-')),file=join(dir,'state.db');t.after(()=>rmSync(dir,{recursive:true,force:true}));let db=new DatabaseSync(file),now=1000,starts=0,observes=0,cancels=0,prepares=0,commits=0,checkpointObserves=0,writes=0,syncs=0;
   let startResult:TurnExecutionObservation={identity,phase:'running',outcome:null,events:[event]},observeResult:TurnExecutionObservation={identity,phase:'running',outcome:null},cancelResult:TurnExecutionObservation=terminal(identity,'cancelled'),startError=false,dynamicTerminal=false,commitError=false,observedCheckpoint:CheckpointReceipt|null=null;
   const configure=()=>db.exec('PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;');configure();
-  const storage={sql:{exec(query:string,...bindings:(string|number|null)[]){if(query.includes('CREATE TABLE')){db.exec(query);return {toArray:()=>[]};}const statement=db.prepare(query),rows=statement.columns().length?statement.all(...bindings):(statement.run(...bindings),[]);return {toArray:()=>structuredClone(rows)};}},transactionSync<T>(fn:()=>T){db.exec('BEGIN IMMEDIATE');try{const value=fn();db.exec('COMMIT');return value;}catch(error){db.exec('ROLLBACK');throw error;}},async sync(){}} as unknown as ProductTurnRuntimeStorage;
-  const execution:TurnExecutionPort={async start(input){starts++;assert.equal(input.message,'Build model');assert.deepEqual(input.actor,actor);if(startError)throw Error('lost-start-response');const {actor:_,message:__,base:___,...runtimeIdentity}=input;return structuredClone(dynamicTerminal?terminal(runtimeIdentity):startResult);},async observe(){observes++;return structuredClone(observeResult);},async cancel(){cancels++;return structuredClone(cancelResult);}};
+  const storage={sql:{exec(query:string,...bindings:(string|number|null)[]){if(!query.startsWith('SELECT'))writes++;if(query.includes('CREATE TABLE')){db.exec(query);return {toArray:()=>[]};}const statement=db.prepare(query),rows=statement.columns().length?statement.all(...bindings):(statement.run(...bindings),[]);return {toArray:()=>structuredClone(rows)};}},transactionSync<T>(fn:()=>T){db.exec('BEGIN IMMEDIATE');try{const value=fn();db.exec('COMMIT');return value;}catch(error){db.exec('ROLLBACK');throw error;}},async sync(){syncs++;}} as unknown as ProductTurnRuntimeStorage;
+  const execution:TurnExecutionPort={async start(input){starts++;assert.equal(input.message,'Build model');assert.deepEqual(input.actor,actor);if(startError)throw Error('lost-start-response');const {actor:_,message:__,base:___,executionDeadlineAt:____,...runtimeIdentity}=input;return structuredClone(dynamicTerminal?terminal(runtimeIdentity):startResult);},async observe(){observes++;return structuredClone(observeResult);},async cancel(){cancels++;return structuredClone(cancelResult);}};
   const receipt=():CheckpointReceipt=>({revisionId:'revision-a',objectKey:'turns/tenant-a/workspace-a/2/turn-a/dispatch-a.json',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:1005});
   const checkpointIntent=(value:TurnRuntimeIdentity)=>({operationId:turnCheckpointOperationId(value),inputSha256:'c'.repeat(64)});
   const checkpoints:TurnCheckpointPort={async prepare(input){prepares++;return checkpointIntent(input.identity);},async commit(input,intent){commits++;assert.deepEqual(intent,checkpointIntent(input.identity));if(commitError)throw Error('lost-checkpoint-response');return receipt();},async reconcile(value,intent){checkpointObserves++;assert.deepEqual(intent,checkpointIntent(value));return structuredClone(observedCheckpoint);}};
   const host=()=>new ProductTurnRuntimeCore(storage,execution,checkpoints,()=>++now);
-  return {host,get starts(){return starts;},get observes(){return observes;},get cancels(){return cancels;},get prepares(){return prepares;},get commits(){return commits;},get checkpointObserves(){return checkpointObserves;},start(v:TurnExecutionObservation){startResult=v;},dynamicTerminal(v=true){dynamicTerminal=v;},observe(v:TurnExecutionObservation){observeResult=v;},cancel(v:TurnExecutionObservation){cancelResult=v;},startError(v:boolean){startError=v;},commitError(v:boolean){commitError=v;},observedCheckpoint(v:CheckpointReceipt|null){observedCheckpoint=v;},sql(query:string){db.exec(query);},reopen(){db.close();db=new DatabaseSync(file);configure();}};
+  return {host,execution,get writes(){return writes;},get syncs(){return syncs;},clock(v:number){now=v;},row(){return JSON.parse(db.prepare('SELECT value FROM product_turn_runtime').get()!.value as string);},get starts(){return starts;},get observes(){return observes;},get cancels(){return cancels;},get prepares(){return prepares;},get commits(){return commits;},get checkpointObserves(){return checkpointObserves;},start(v:TurnExecutionObservation){startResult=v;},dynamicTerminal(v=true){dynamicTerminal=v;},observe(v:TurnExecutionObservation){observeResult=v;},cancel(v:TurnExecutionObservation){cancelResult=v;},startError(v:boolean){startError=v;},commitError(v:boolean){commitError=v;},observedCheckpoint(v:CheckpointReceipt|null){observedCheckpoint=v;},sql(query:string){db.exec(query);},reopen(){db.close();db=new DatabaseSync(file);configure();}};
 }
 
 test('terminal accept reserves one execution and returns one immutable hierarchical checkpoint',async t=>{
@@ -62,6 +62,15 @@ test('cancel fence calls native cancel once and rejects a late completed receipt
   const other=fixture(t),otherHost=other.host();await otherHost.accept(request());other.cancel(terminal(identity,'completed'));await assert.rejects(otherHost.cancel(identity),/cancellation-not-honored/);const reconciled=await otherHost.observe(identity);assert.equal(reconciled.outcome,null);assert.notEqual(reconciled.phase,'terminal');
 });
 
+test('a fenced cancellation reconciles an absent native execution without checkpoint allocation',async t=>{
+  const f=fixture(t),host=f.host();await host.accept(request());f.cancel({identity,phase:'unknown',outcome:null});
+  const first=await host.cancel(identity);assert.equal(first.phase,'unknown');assert.equal(f.cancels,1);
+  f.observe({identity,phase:'absent',outcome:null});f.cancel({...terminal(identity,'interrupted'),executionErrorCode:'turn-native-execution-absent',events:[]});
+  const settled=await host.observe(identity);assert.equal(settled.phase,'terminal');assert.equal(settled.outcome,'interrupted');assert.equal(settled.executionErrorCode,'turn-native-execution-absent');assert.equal(settled.persistenceErrorCode,'turn-checkpoint-unknown');
+  assert.equal(f.observes,1);assert.equal(f.cancels,2);assert.equal(f.prepares,0);assert.equal(f.commits,0);assert.equal(f.checkpointObserves,0);
+  assert.deepEqual(await host.observe(identity),settled);assert.equal(f.cancels,2);
+});
+
 test('checkpoint response loss reconciles immutable receipt and unresolved persistence remains observable',async t=>{
   const f=fixture(t);f.start(terminal());f.commitError(true);f.observedCheckpoint({revisionId:'revision-a',objectKey:'turns/tenant-a/workspace-a/2/turn-a/dispatch-a.json',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:1100});const recovered=await f.host().accept(request());assert.equal(recovered.checkpoint?.revisionId,'revision-a');assert.equal(recovered.persistenceErrorCode,null);assert.equal(f.commits,1);assert.equal(f.checkpointObserves,1);
   const other=fixture(t);other.start(terminal());other.commitError(true);const unknown=await other.host().accept(request());assert.equal(unknown.checkpoint,null);assert.equal(unknown.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(unknown.outcome,'completed');
@@ -80,7 +89,7 @@ test('an unavailable base never allocates checkpoint materialization, including 
 });
 
 test('legacy checkpoint reservation without an exact descriptor remains fail closed',async t=>{
- const f=fixture(t);f.start(terminal());const completed=await f.host().accept(request());assert.ok(completed.checkpoint);f.sql("UPDATE product_turn_runtime SET value=json_set(value,'$.schemaVersion',1,'$.checkpointReserved',json('true'),'$.checkpoint',json('null'))");f.sql("UPDATE product_turn_runtime SET value=json_remove(value,'$.checkpointIntent','$.checkpointCommitReserved','$.legacyCheckpointUnknown')");
+ const f=fixture(t);f.start(terminal());const completed=await f.host().accept(request());assert.ok(completed.checkpoint);f.sql("UPDATE product_turn_runtime SET value=json_set(value,'$.schemaVersion',1,'$.checkpointReserved',json('true'),'$.checkpoint',json('null'))");f.sql("UPDATE product_turn_runtime SET value=json_remove(value,'$.checkpointIntent','$.checkpointCommitReserved','$.legacyCheckpointUnknown','$.executionDeadlineAt')");
  f.reopen();const unknown=await f.host().observe(identity);assert.equal(unknown.checkpoint,null);assert.equal(unknown.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(f.prepares,1);assert.equal(f.commits,1);
 });
 
@@ -116,4 +125,38 @@ test('product runtime completes the existing dispatcher contract without a model
 
 test('product runtime module imports no Pi SDK, provider, network or M0 probe implementation',()=>{
   const source=readFileSync(new URL('../../services/turn-runtime/core.ts',import.meta.url),'utf8'),imports=source.split('\n').filter(line=>line.startsWith('import ')).join('\n');assert.doesNotMatch(imports,/pi-coding-agent|pi-server|fetch|provider|m0-/i);
+});
+
+
+test('observer deadline persists across replay and reopen; authority performs zero durable writes or reconciliation',async t=>{
+ const f=fixture(t),host=f.host();let deadline:number|undefined;const start=f.execution.start;f.execution.start=async input=>{deadline=input.executionDeadlineAt;return start(input);};
+ await host.accept(request());assert.equal(deadline,601001);const before=f.row();assert.equal(before.schemaVersion,3);let queries=0;f.execution.currentObserverExecution=async id=>{assert.deepEqual(id,identity);queries++;return {expiresAt:deadline!};};
+ const operations=[f.starts,f.observes,f.prepares,f.commits,f.writes,f.syncs];assert.deepEqual(await host.currentObserverExecution(identity),{expiresAt:deadline});assert.deepEqual(f.row(),before);assert.deepEqual([f.starts,f.observes,f.prepares,f.commits,f.writes,f.syncs],operations);
+ f.reopen();const recovered=f.host();assert.deepEqual(await recovered.currentObserverExecution(identity),{expiresAt:deadline});await recovered.accept(request());assert.equal(f.starts,1);assert.equal(f.row().executionDeadlineAt,deadline);assert.equal(queries,2);
+});
+
+test('observer authority denies absent, legacy, unknown, terminal, cancelled and mismatched identities',async t=>{
+ for(const kind of ['absent','legacy','unknown','terminal','cancelled','identity']){
+  const f=fixture(t),host=f.host();let queried=0;f.execution.currentObserverExecution=async()=>{queried++;return {expiresAt:601001};};
+  if(kind!=='absent')await host.accept(request());
+  if(kind==='legacy')f.sql("UPDATE product_turn_runtime SET value=json_remove(json_set(value,'$.schemaVersion',2),'$.executionDeadlineAt')");
+  if(kind==='unknown')f.sql("UPDATE product_turn_runtime SET value=json_set(value,'$.phase','unknown')");
+  if(kind==='terminal')await host.cancel(identity);
+  if(kind==='cancelled')f.sql("UPDATE product_turn_runtime SET value=json_set(value,'$.cancelRequestedAt',1002)");
+  const before=kind==='absent'?null:f.row();await assert.rejects(host.currentObserverExecution(kind==='identity'?{...identity,dispatchId:'other'}:identity));assert.equal(queried,0);if(before)assert.deepEqual(f.row(),before);
+  if(kind==='legacy'){await host.observe(identity);assert.equal(f.row().schemaVersion,2);assert.equal(f.row().executionDeadlineAt,undefined);}
+ }
+});
+
+test('observer authority rejects missing native query, expiry mismatch and cancellation or deadline during await',async t=>{
+ for(const kind of ['missing','mismatch','expired','late-expiry','late-cancel']){
+  const f=fixture(t),host=f.host();await host.accept(request());
+  if(kind==='expired')f.clock(601001);
+  if(kind!=='missing')f.execution.currentObserverExecution=async()=>{if(kind==='late-expiry')f.clock(601001);if(kind==='late-cancel')await host.cancel(identity);return {expiresAt:kind==='mismatch'?601002:601001};};
+  await assert.rejects(host.currentObserverExecution(identity),/observer-denied/);
+ }
+});
+
+test('schema 3 invalid absolute deadline fails closed before native calls',async t=>{
+ const f=fixture(t),host=f.host();await host.accept(request());f.sql("UPDATE product_turn_runtime SET value=json_set(value,'$.executionDeadlineAt',700000)");let queried=false;f.execution.currentObserverExecution=async()=>{queried=true;return {expiresAt:700000};};await assert.rejects(host.currentObserverExecution(identity),/invalid-persisted/);assert.equal(queried,false);
 });

@@ -7,7 +7,7 @@ import {join} from 'node:path';
 import {SqlServiceRunJournal,type ServiceRunStorage,type ServiceRunSpec,type ServiceRuntimeReference} from '../../services/run/service.ts';
 const scope={tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1};
 const actor={userId:'user-a',authVersion:1};
-function spec():ServiceRunSpec{return {plan:{schemaVersion:1,kind:'service',identity:{scope,sessionId:'session-a',turnId:'turn-a',dispatchId:'turn-dispatch',generation:1},revision:{revisionId:'revision-a',objectKey:'saved/revision',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:1},declaration:{schemaVersion:1,runtime:'python',entrypoint:'app/main.py',dependencyLock:'app/requirements.lock',port:8080,healthPath:'/health'},declarationSha256:'c'.repeat(64),entrypointSha256:'d'.repeat(64),dependencyLockSha256:'e'.repeat(64)},runtimeImage:'registry.example/runtime@sha256:'+'f'.repeat(64),maxDurationMs:5000};}
+function spec():ServiceRunSpec{return {plan:{schemaVersion:1,kind:'service',source:{kind:'saved-turn',identity:{scope,sessionId:'session-a',turnId:'turn-a',dispatchId:'turn-dispatch',generation:1},revision:{revisionId:'revision-a',objectKey:'saved/revision',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:1}},declaration:{schemaVersion:1,runtime:'python',entrypoint:'app/main.py',dependencyLock:'app/requirements.lock',port:8080,healthPath:'/health'},declarationSha256:'c'.repeat(64),entrypointSha256:'d'.repeat(64),dependencyLockSha256:'e'.repeat(64)},runtimeImage:'registry.example/runtime@sha256:'+'f'.repeat(64),maxDurationMs:5000};}
 function reference(runId:string):ServiceRuntimeReference{return {runId,runtimeId:'runtime-a',dispatchId:'dispatch-a',leaseId:'lease-a',generation:1,deadlineAt:5000};}
 function fixture(t:{after(fn:()=>void):void}){
  const dir=mkdtempSync(join(tmpdir(),'m3-service-')),path=join(dir,'state.sqlite');let db=new DatabaseSync(path),now=1000,fail=false,seq=0;
@@ -19,7 +19,7 @@ test('service creation freezes source/image and durable intent across reopen',as
  const f=fixture(t),h=f.host(),input=spec(),r=await h.create(actor,'key-a',input);input.plan.declaration.entrypoint='app/changed.py';
  assert.equal(r.spec.plan.declaration.entrypoint,'app/main.py');f.reopen();const h2=f.host();assert.deepEqual(await h2.create(actor,'key-a',spec()),r);
  await assert.rejects(h2.create(actor,'key-a',input),/intent-conflict/);
- const invalid=spec();invalid.plan.identity.scope={...scope,tenantId:'tenant-b'};await assert.rejects(h2.create(actor,'cross',invalid),/scope-denied/);
+ const invalid=spec();if(invalid.plan.source.kind!=='saved-turn')throw Error('fixture');invalid.plan.source.identity.scope={...scope,tenantId:'tenant-b'};await assert.rejects(h2.create(actor,'cross',invalid),/scope-denied/);
  assert.throws(()=>new SqlServiceRunJournal(f.storage,{...scope,projectId:'other'}),/scope-denied/);
  await assert.rejects(h2.create(actor,'mutable-image',{...spec(),runtimeImage:'runtime:latest'}),/runtime-image/);
 });

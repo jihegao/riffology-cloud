@@ -24,17 +24,20 @@ export function createProductModelTransport(raw,options={}){
   exact(raw,['identity','actor','provider','model','maxInputTokensPerCall','maxOutputTokensPerCall','requestTimeoutMs'],'invalid-product-model-transport');
   const identityValue=identity(raw.identity),actorValue=actor(raw.actor),provider=text(raw.provider,PROVIDER),model=text(raw.model,MODEL),maxInputTokensPerCall=positive(raw.maxInputTokensPerCall,1_048_576),maxOutputTokensPerCall=positive(raw.maxOutputTokensPerCall,131_072),requestTimeoutMs=positive(raw.requestTimeoutMs,15*60_000),fetchImpl=options.fetchImpl??globalThis.fetch,clock=options.clock??Date.now;
   if(typeof fetchImpl!=='function'||typeof clock!=='function')fail('invalid-product-model-transport');let sequence=0;
+  const executionDeadlineAt=options.executionDeadlineAt===undefined?null:positive(options.executionDeadlineAt);
+  const checkDeadline=()=>{const observed=positive(clock());if(executionDeadlineAt!==null&&observed>=executionDeadlineAt)fail('product-model-execution-expired');return observed;};
   const onProviderPayload=({payload,model:selected,signal})=>{
     signal?.throwIfAborted();if(!selected||selected.provider!==provider||selected.id!==model||selected.api!=='openai-responses'||selected.baseUrl!=='https://model-proxy.riffology.internal/v1')fail('product-model-selection-conflict');
     const approved=jsonObject(payload);if(approved.model!==model||approved.stream!==true||approved.store!==false)fail('invalid-product-model-payload');for(const key of ['provider','apiKey','api_key','authorization','baseURL','base_url','background'])if(Object.hasOwn(approved,key))fail('model-provider-authority-field-denied');textOnly(approved);approved.max_output_tokens=maxOutputTokensPerCall;return approved;
   };
   const providerFetch=async(input,init)=>{
-    const request=new Request(input,init),url=new URL(request.url);if(request.method!=='POST'||url.href!==PRODUCT_MODEL_PROXY_URL||request.headers.get('content-type')?.split(';')[0].trim()!=='application/json')fail('product-model-transport-route-denied');request.signal.throwIfAborted();
+    const request=new Request(input,init),url=new URL(request.url);if(request.method!=='POST'||url.href!==PRODUCT_MODEL_PROXY_URL||request.headers.get('content-type')?.split(';')[0].trim()!=='application/json')fail('product-model-transport-route-denied');request.signal.throwIfAborted();checkDeadline();
     const approved=await requestBody(request);if(approved.model!==model||approved.stream!==true||approved.store!==false||approved.max_output_tokens!==maxOutputTokensPerCall)fail('product-model-payload-policy-denied');textOnly(approved);
     const payload={...approved};delete payload.model;delete payload.max_output_tokens;const payloadBytes=encoder.encode(JSON.stringify(payload)),inputTokenUpperBound=payloadBytes.byteLength+4096;if(inputTokenUpperBound>maxInputTokensPerCall)fail('product-model-input-bound-denied');
-    const index=++sequence,observed=positive(clock()),callId=`call-${token(identityValue,actorValue,index,'product-model-call')}`,requestId=`request-${token(identityValue,actorValue,index,'product-model-request')}`,deadlineAt=observed+requestTimeoutMs;if(!Number.isSafeInteger(deadlineAt))fail('invalid-product-model-transport');
-    const envelope={schemaVersion:1,identity:identityValue,actor:actorValue,callId,requestId,deadlineAt,inputTokenUpperBound,inputBoundVersion:PRODUCT_MODEL_INPUT_BOUND_VERSION,maxOutputTokens:maxOutputTokensPerCall,payload};
-    return fetchImpl(PRODUCT_MODEL_PROXY_URL,{method:'POST',headers:{'content-type':'application/json','accept':'text/event-stream'},body:JSON.stringify(envelope),signal:request.signal});
+    const index=++sequence,observed=checkDeadline(),callId=`call-${token(identityValue,actorValue,index,'product-model-call')}`,requestId=`request-${token(identityValue,actorValue,index,'product-model-request')}`,relativeDeadlineAt=observed+requestTimeoutMs;if(!Number.isSafeInteger(relativeDeadlineAt))fail('invalid-product-model-transport');
+    const deadlineAt=Math.min(relativeDeadlineAt,executionDeadlineAt??relativeDeadlineAt),envelope={schemaVersion:1,identity:identityValue,actor:actorValue,callId,requestId,deadlineAt,inputTokenUpperBound,inputBoundVersion:PRODUCT_MODEL_INPUT_BOUND_VERSION,maxOutputTokens:maxOutputTokensPerCall,payload};
+    const body=JSON.stringify(envelope);request.signal.throwIfAborted();checkDeadline();
+    return fetchImpl(PRODUCT_MODEL_PROXY_URL,{method:'POST',headers:{'content-type':'application/json','accept':'text/event-stream'},body,signal:request.signal});
   };
   return Object.freeze({
     resolveCredential:async(requestedProvider,{signal}={})=>{signal?.throwIfAborted();if(requestedProvider!==provider)fail('product-model-selection-conflict');return 'riffology-internal-transport';},

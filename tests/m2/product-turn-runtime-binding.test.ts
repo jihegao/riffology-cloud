@@ -43,3 +43,11 @@ test('production binding has an explicit fail-closed release and imports no M1 r
   assert.match(durable,/release-gated/);assert.match(release,/M2_TURNS_ENABLED!=='true'/);assert.match(release,/product-turn-runtime-release-not-configured/);
   const imports=`${durable}\n${host}\n${release}`.split('\n').filter(line=>line.startsWith('import ')).join('\n');assert.doesNotMatch(imports,/\.\.\/runtime\/durable|\bProjectRuntime\b/);
 });
+
+
+test('cold observer on absent actor reads schema only and never initializes storage or release',async()=>{
+ const expected=await turnRuntimeActorName(identity),right=namespace(expected),queries:string[]=[];let releases=0;
+ const ctx={...right.ctx,storage:{sql:{exec(query:string){queries.push(query);return {toArray:()=>[]};}},transactionSync(){throw Error('unexpected write');},async sync(){throw Error('unexpected sync');}}} as unknown as DurableObjectState;
+ const host=new ProductTurnRuntimeHost(ctx,{PRODUCT_TURN_RUNTIME:right as never},()=>{releases++;throw Error('unexpected release');});
+ await assert.rejects(host.currentObserverExecution(identity),/observer-denied/);assert.equal(releases,0);assert.equal(queries.length,1);assert.match(queries[0]!,/^SELECT name FROM sqlite_master/);
+});

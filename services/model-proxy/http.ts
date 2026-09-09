@@ -26,6 +26,7 @@ export interface ModelProxyHttpEnv {
 export type ProductModelProviderInput = {
   provider: string;
   model: string;
+  providerSessionId: string;
   idempotencyKey: string;
   payload: Record<string, unknown>;
   inputTokenUpperBound:number;
@@ -42,6 +43,7 @@ export type ProductModelProviderResult = {
   responseBody: Uint8Array;
 };
 export interface ProductModelProvider { dispatch(input: ProductModelProviderInput): Promise<ProductModelProviderResult> }
+export type ProductModelTelemetry = (event: Record<string, unknown>) => void;
 
 type Envelope = {
   schemaVersion: 1;
@@ -105,6 +107,8 @@ async function readBody(request: Request): Promise<ArrayBuffer> {
 }
 function denied(): Response { return Response.json({ error: 'model_request_denied' }, { status: 403, headers: { 'cache-control': 'no-store' } }); }
 function unavailable(): Response { return Response.json({ error: 'model_provider_unavailable' }, { status: 503, headers: { 'cache-control': 'no-store' } }); }
+function emit(telemetry:ProductModelTelemetry|undefined,event:Record<string,unknown>){try{telemetry?.(event);}catch{}}
+function failureCode(error:unknown):string{const message=error instanceof Error?error.message:'';if(/^(?:opencode-go|invalid-opencode-go|model-call|invalid-model)[a-z0-9-]{0,96}$/.test(message))return message;if(error instanceof DOMException&&['AbortError','TimeoutError'].includes(error.name))return `provider-${error.name.toLowerCase()}`;return 'unclassified';}
 function conflict(error: string, status?: string): Response {
   return Response.json({ error, ...(status ? { status } : {}) }, { status: 409, headers: { 'cache-control': 'no-store' } });
 }
@@ -123,7 +127,7 @@ function normalizedProviderResult(value: unknown, claims: ModelTurnCapabilityCla
 
 /** Private service-binding gate. Provider/model authority comes only from the
  * signed Turn capability; the caller payload cannot select credentials or a model. */
-export async function handleModelProxyRequest(request: Request, env: ModelProxyHttpEnv, provider: ProductModelProvider | null, now = Date.now): Promise<Response> {
+export async function handleModelProxyRequest(request: Request, env: ModelProxyHttpEnv, provider: ProductModelProvider | null, now = Date.now, telemetry?:ProductModelTelemetry): Promise<Response> {
   const url = new URL(request.url);
   if (request.method !== 'POST' || url.protocol !== 'https:' || url.hostname !== 'model-proxy.riffology.internal'
     || url.pathname !== '/v1/responses' || url.search || url.hash) return new Response('not found', { status: 404 });
@@ -165,11 +169,14 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
   } catch { return conflict('model_call_rejected'); }
 
   let result: ProductModelProviderResult;
+  let stage='provider-dispatch',started=now();
   try {
+    const providerSessionId=`ses_${(await turnDigest({schemaVersion:1,purpose:'opencode-go-provider-session',scope:claims.identity.scope,sessionId:claims.identity.sessionId})).slice(0,26)}`;
     result = normalizedProviderResult(await provider.dispatch({
-      provider: claims.provider, model: claims.model, idempotencyKey: parsed.requestId,
+      provider: claims.provider, model: claims.model, providerSessionId, idempotencyKey: parsed.requestId,
       payload: parsed.payload,inputTokenUpperBound:parsed.inputTokenUpperBound,maxOutputTokens:parsed.maxOutputTokens,deadlineAt:parsed.deadlineAt,signal:request.signal,
     }), claims, parsed);
+    emit(telemetry,{event:'provider-dispatch-result',status:result.status,contentType:result.responseContentType,requestIdPresent:result.providerRequestId!==null,usagePresent:result.inputTokens!==null&&result.outputTokens!==null,durationMs:now()-started});
     const usage=result.inputTokens===null||result.outputTokens===null
       ? {kind:'unknown' as const,observedAt:positive(now())}
       : {kind:'verified' as const,inputTokens:result.inputTokens,outputTokens:result.outputTokens,source:'provider-usage',observedAt:positive(now())};
@@ -179,8 +186,11 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
       providerRequestId: result.providerRequestId,
       usage,
     };
+    stage='budget-finish';started=now();
     await budget.finish(tenantId, reference, terminal);
-  } catch {
+    emit(telemetry,{event:'budget-finish-result',outcome:'committed',durationMs:now()-started});
+  } catch(error) {
+    emit(telemetry,{event:'model-call-failure',stage,errorCode:failureCode(error),durationMs:now()-started});
     await budget.markUnknown(tenantId, reference).catch(() => {});
     return unavailable();
   }

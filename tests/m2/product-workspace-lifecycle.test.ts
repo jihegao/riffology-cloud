@@ -5,6 +5,14 @@ import type { TurnExecutionObservation, TurnExecutionPort } from '../../services
 import type { TurnRuntimeIdentity } from '../../services/turn-runtime/identity.ts';
 import { ProjectWorkspaceLifecycle, TurnBaseUnavailableError, WorkspacePreparedExecutionPort, type ProjectWorkspaceRpc, type WorkspaceRevisionSource } from '../../services/turn-runtime/workspace.ts';
 
+test('prepared execution freezes its absolute deadline before awaiting restoration',async()=>{
+ let release!:()=>void,started!:()=>void,observed:number|undefined;
+ const waiting=new Promise<void>(r=>{started=r;}),restored=new Promise<void>(r=>{release=r;});
+ const port=new WorkspacePreparedExecutionPort({async prepare(){started();await restored;}} as never,{async start(input){observed=input.executionDeadlineAt;return running;},async observe(){return running;},async cancel(){return running;}});
+ const input={...identity,actor,message:'Build',base,executionDeadlineAt:5000};
+ const pending=port.start(input);await waiting;input.executionDeadlineAt=9000;release();await pending;assert.equal(observed,5000);
+});
+
 const identity:TurnRuntimeIdentity={scope:{tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:2},sessionId:'session-a',turnId:'turn-a',dispatchId:'dispatch-a',generation:2};
 const actor={userId:'user-a',authVersion:1};
 const checkpoint={revisionId:'revision-a',objectKey:'turns/a.json',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:1},base={workspace:checkpoint,session:null},archive=new Uint8Array([1,2,3]);

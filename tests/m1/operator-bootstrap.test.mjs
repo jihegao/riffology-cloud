@@ -93,5 +93,6 @@ test('bootstrap fails closed if an operator appears, and purpose/bootstrap metad
 
 test('bootstrap CLI requires one explicit database location and never accepts the token as an argument',()=>{
   assert.deepEqual(parseBootstrapArgs(['invite','--email',' Initial@Example.Test ','--database','catalog','--config','infra/config.jsonc','--local']),{mode:'invite',email:'initial@example.test',database:'catalog',config:'infra/config.jsonc',location:'local'});
-  for(const args of [[],['invite','--email',email],['invite','--email',email,'--database','db','--config','x','--local','--remote'],['invite','--email',email,'--database','db','--config','x','--token',token,'--local']])assert.throws(()=>parseBootstrapArgs(args));
+  assert.deepEqual(parseBootstrapArgs(['invite','--email',' Initial@Example.Test ','--database','catalog','--config','infra/config.jsonc','--local','--persist-to','.local/m3-vertical-runtime']),{mode:'invite',email:'initial@example.test',database:'catalog',config:'infra/config.jsonc',persistTo:'.local/m3-vertical-runtime',location:'local'});
+  for(const args of [[],['invite','--email',email],['invite','--email',email,'--database','db','--config','x','--local','--remote'],['invite','--email',email,'--database','db','--config','x','--token',token,'--local'],['invite','--email',email,'--database','db','--config','x','--remote','--persist-to','.local/test']])assert.throws(()=>parseBootstrapArgs(args));
 });

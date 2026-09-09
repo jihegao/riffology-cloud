@@ -7,6 +7,7 @@ export const CONTROL_ROOT = '/var/lib/riffology/turns';
 export const RELEASE_MODULE = '/opt/riffology/trusted-pi/trusted-pi-release.mjs';
 const TOKEN = /^[a-f0-9]{52}$/;
 const ID = /^[A-Za-z0-9_-]{1,128}$/;
+const TOOL_CALL_ID = /^[A-Za-z0-9_-]{1,128}(?:\|[A-Za-z0-9_-]{1,128})?$/;
 const SHA = /^[a-f0-9]{64}$/;
 const ARTIFACT_ID = /^artifact-[a-f0-9]{60}$/;
 const ARTIFACT_OPERATIONS = new Set(['read', 'list', 'search']);
@@ -26,6 +27,7 @@ function exact(value, keys, code) {
     || keys.some((key) => !Object.hasOwn(value, key))) fail(code);
 }
 function id(value) { if (typeof value !== 'string' || !ID.test(value)) fail('invalid-trusted-pi-control'); return value; }
+function toolCallId(value) { if (typeof value !== 'string' || !TOOL_CALL_ID.test(value)) fail('invalid-trusted-pi-tool-call-id'); return value; }
 function positive(value) { if (!Number.isSafeInteger(value) || value < 1) fail('invalid-trusted-pi-control'); return value; }
 function boundedText(value, allowEmpty = false) {
   if (typeof value !== 'string' || (!allowEmpty && !value.length)
@@ -73,13 +75,14 @@ function actor(value) {
   return { userId: id(value.userId), authVersion: positive(value.authVersion) };
 }
 function control(value) {
-  exact(value, ['schemaVersion', 'identity', 'actor', 'message', 'inputSessionSha256'], 'invalid-trusted-pi-control');
-  if (value.schemaVersion !== 1 || typeof value.message !== 'string' || value.message.length < 1
+  const version=value?.schemaVersion;
+  exact(value, ['schemaVersion', 'identity', 'actor', 'message', 'inputSessionSha256',...(version===2?['executionDeadlineAt']:[])], 'invalid-trusted-pi-control');
+  if (![1,2].includes(version) || typeof value.message !== 'string' || value.message.length < 1
     || value.message.length > 16000 || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u.test(value.message)
     || (value.inputSessionSha256 !== null && (typeof value.inputSessionSha256 !== 'string' || !SHA.test(value.inputSessionSha256)))) {
     fail('invalid-trusted-pi-control');
   }
-  return { schemaVersion: 1, identity: identity(value.identity), actor: actor(value.actor), message: value.message, inputSessionSha256: value.inputSessionSha256 };
+  return { schemaVersion: version, identity: identity(value.identity), actor: actor(value.actor), message: value.message, inputSessionSha256: value.inputSessionSha256,...(version===2?{executionDeadlineAt:positive(value.executionDeadlineAt)}:{}) };
 }
 function same(a, b) { return JSON.stringify(a) === JSON.stringify(b); }
 function sha(bytes) { return createHash('sha256').update(bytes).digest('hex'); }
@@ -136,6 +139,9 @@ export async function runTrustedPiTurnHost(token, release, options = {}) {
   let parsed;
   try { parsed = control(JSON.parse(rawControl.toString('utf8'))); } catch (error) { if (error instanceof SyntaxError) fail('invalid-trusted-pi-control'); throw error; }
   if (nativeToken(parsed.identity) !== token) fail('trusted-pi-native-token-mismatch');
+  const executionDeadlineAt=parsed.executionDeadlineAt;
+  const deadlinePassed=()=>executionDeadlineAt!==undefined&&executionDeadlineAt<=clock();
+  if(deadlinePassed()||(executionDeadlineAt!==undefined&&executionDeadlineAt>clock()+600000))fail('trusted-pi-execution-expired');
   let snapshot;
   if (parsed.inputSessionSha256 !== null) {
     const bytes = await readBounded(location.input, MAX_SESSION_BYTES);
@@ -149,6 +155,8 @@ export async function runTrustedPiTurnHost(token, release, options = {}) {
   let cancelRequested = false;
   let cancelling;
   let terminationTimer;
+  let deadlineTimer;
+  let deadlineExceeded=false;
   const persist = async (terminal = null) => {
     const value = terminal ?? { schemaVersion: 1, identity: parsed.identity, phase: 'running', outcome: null, executionErrorCode: null, events, outputSessionSha256: null };
     const encoded = JSON.stringify(value);
@@ -172,9 +180,12 @@ export async function runTrustedPiTurnHost(token, release, options = {}) {
   process.once('SIGTERM', signal);
   process.once('SIGINT', signal);
   try {
+    if(executionDeadlineAt!==undefined)deadlineTimer=setTimeout(()=>{deadlineExceeded=true;void cancel();},Math.max(1,executionDeadlineAt-clock()));
+    if(deadlinePassed())fail('trusted-pi-execution-expired');
     await persist();
-    const fixed = await release.resolveOptions({ identity: structuredClone(parsed.identity), actor: structuredClone(parsed.actor) });
+    const fixed = await release.resolveOptions({ identity: structuredClone(parsed.identity), actor: structuredClone(parsed.actor),...(executionDeadlineAt===undefined?{}:{executionDeadlineAt}) });
     if (!fixed || typeof fixed !== 'object' || Array.isArray(fixed)) fail('invalid-trusted-pi-release');
+    if(deadlinePassed()||deadlineExceeded)fail('trusted-pi-execution-expired');
     const releaseResponse = fixed.onProviderResponse;
     const releasePayload = fixed.onProviderPayload;
     host = await createSession({
@@ -183,14 +194,18 @@ export async function runTrustedPiTurnHost(token, release, options = {}) {
       scope: { tenantId: parsed.identity.scope.tenantId, projectId: parsed.identity.scope.projectId, sessionId: parsed.identity.sessionId },
       snapshot,
       onProviderPayload: async (request) => {
+        if(deadlinePassed()||deadlineExceeded)fail('trusted-pi-execution-expired');
         await emit({ kind: 'provider.status', state: 'requesting', status: null, requestId: null });
-        return releasePayload ? releasePayload(request) : request.payload;
+        const payload=releasePayload?await releasePayload(request):request.payload;
+        if(deadlinePassed()||deadlineExceeded)fail('trusted-pi-execution-expired');
+        return payload;
       },
       onProviderResponse: async (response) => {
         await emit({ kind: 'provider.status', state: response.status >= 400 ? 'error' : 'responding', status: response.status, requestId: requestId(response.headers) });
         await releaseResponse?.(response);
       },
     });
+    if(deadlinePassed()) {deadlineExceeded=true;cancel();}
     if (cancelRequested) cancelling ??= Promise.resolve().then(() => host.cancel());
     const unsubscribe = host.subscribe((event) => {
       if (event.type === 'message_update' && event.assistantMessageEvent?.type === 'text_delta') {
@@ -198,16 +213,16 @@ export async function runTrustedPiTurnHost(token, release, options = {}) {
       } else if (event.type === 'message_end' && event.message?.role === 'assistant') {
         void emit({ kind: 'assistant.message', text: assistantText(event.message), stopReason: event.message.stopReason ? id(event.message.stopReason) : null });
       } else if (event.type === 'tool_execution_start') {
-        void emit({ kind: 'tool.started', toolCallId: id(event.toolCallId), name: toolName(event.toolName) });
+        void emit({ kind: 'tool.started', toolCallId: toolCallId(event.toolCallId), name: toolName(event.toolName) });
       } else if (event.type === 'tool_execution_update') {
-        void emit({ kind: 'tool.updated', toolCallId: id(event.toolCallId), name: toolName(event.toolName), summary: 'Tool is running.' });
+        void emit({ kind: 'tool.updated', toolCallId: toolCallId(event.toolCallId), name: toolName(event.toolName), summary: 'Tool is running.' });
       } else if (event.type === 'tool_execution_end') {
         const isError = event.isError === true;
-        void emit({ kind: 'tool.completed', toolCallId: id(event.toolCallId), name: toolName(event.toolName), isError, artifact: isError ? null : artifactFromToolResult(event.result) });
+        void emit({ kind: 'tool.completed', toolCallId: toolCallId(event.toolCallId), name: toolName(event.toolName), isError, artifact: isError ? null : artifactFromToolResult(event.result) });
       }
     });
     let promptResult;
-    try { promptResult = await host.prompt(parsed.message); }
+    try { promptResult = cancelRequested?{outcome:'aborted',stopReason:'aborted'}:await host.prompt(parsed.message); }
     catch { promptResult = { outcome: cancelRequested ? 'aborted' : 'failed', stopReason: cancelRequested ? 'aborted' : 'error' }; }
     finally { unsubscribe(); }
     await cancelling;
@@ -217,21 +232,20 @@ export async function runTrustedPiTurnHost(token, release, options = {}) {
     if (frozenBytes.byteLength < 1 || frozenBytes.byteLength > MAX_SESSION_BYTES) fail('invalid-trusted-pi-session-file');
     parseSnapshot(frozenBytes, parsed.identity);
     await atomicWrite(location.output, frozenBytes.toString('base64'));
-    const outcome = promptResult.outcome === 'completed' ? 'completed'
+    const outcome = deadlineExceeded||deadlinePassed() ? 'cancelled' : promptResult.outcome === 'completed' ? 'completed'
       : promptResult.outcome === 'failed' ? 'failed'
         : cancelRequested ? 'cancelled' : 'interrupted';
     const terminal = {
       schemaVersion: 1, identity: parsed.identity, phase: 'terminal', outcome,
-      executionErrorCode: outcome === 'completed' ? null : outcome === 'failed' ? 'pi-turn-failed' : outcome === 'cancelled' ? 'pi-turn-cancelled' : 'pi-turn-interrupted',
+      executionErrorCode: deadlineExceeded||deadlinePassed()?'pi-turn-deadline-exceeded':outcome === 'completed' ? null : outcome === 'failed' ? 'pi-turn-failed' : outcome === 'cancelled' ? 'pi-turn-cancelled' : 'pi-turn-interrupted',
       events, outputSessionSha256: sha(frozenBytes),
     };
     await persist(terminal);
     return terminal;
   } finally {
-    if (terminationTimer) clearTimeout(terminationTimer);
     process.off('SIGTERM', signal);
     process.off('SIGINT', signal);
-    if (host) await host.dispose();
+    try{if (host) await host.dispose();}finally{clearTimeout(deadlineTimer);clearTimeout(terminationTimer);}
   }
 }
 

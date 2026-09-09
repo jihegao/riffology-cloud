@@ -18,6 +18,8 @@ WORKSPACE = "/workspace"
 MAX_CONTROL_BYTES = 1_100_512
 ID = re.compile(r"^[A-Za-z0-9_-]{1,128}$")
 ENV = {"LANG": "C.UTF-8", "PATH": "/usr/bin:/bin", "RIFFOLOGY_WORKSPACE_ROOT": WORKSPACE}
+PLATFORM_EGRESS_MARKER = "workerd-deny-all-v1"
+PLATFORM_EGRESS_ENV = "RIFFOLOGY_PROJECT_PLATFORM_EGRESS_FENCE"
 
 
 def fail() -> "NoReturn":
@@ -25,11 +27,36 @@ def fail() -> "NoReturn":
     raise SystemExit(4)
 
 
+def platform_egress_fence_active() -> bool:
+    if os.environ.get(PLATFORM_EGRESS_ENV) != PLATFORM_EGRESS_MARKER:
+        return False
+    try:
+        fields = dict(
+            line.split(":", 1) for line in open("/proc/self/status", encoding="ascii")
+            if line.startswith(("NoNewPrivs:", "Seccomp:"))
+        )
+    except (OSError, ValueError):
+        return False
+    return fields.get("NoNewPrivs", "").strip() == "1" and fields.get("Seccomp", "").strip() == "2"
+
+
+def install_child_network_fence() -> None:
+    try:
+        project_network_fence.install()
+    except RuntimeError as error:
+        # linux/amd64 containers translated on an arm64 local Docker VM cannot
+        # stack even an empty seccomp filter (libseccomp returns -ECANCELED).
+        # Only the locked vertical image may rely on Workerd's deny-all
+        # container egress boundary; production images remain fail closed.
+        if str(error) != "project-network-seccomp-load-failed:-125" or not platform_egress_fence_active():
+            raise
+
+
 def drop_to_project() -> None:
     account = pwd.getpwnam("project")
     if account.pw_uid != PROJECT_UID:
         raise RuntimeError("project-account-invalid")
-    project_network_fence.install()
+    install_child_network_fence()
     os.setgroups([])
     os.setgid(account.pw_gid)
     os.setuid(account.pw_uid)

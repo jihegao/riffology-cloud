@@ -1,0 +1,21 @@
+FROM docker.io/cloudflare/sandbox:0.12.9-python@sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806
+
+USER root
+RUN mkdir -p /opt/riffology/runtime /opt/riffology/trusted-pi /var/lib/riffology/pi /var/lib/riffology/turns \
+    && chown -R root:root /opt/riffology /var/lib/riffology \
+    && chmod 0755 /opt/riffology /opt/riffology/runtime /opt/riffology/trusted-pi /var/lib/riffology /var/lib/riffology/pi \
+    && chmod 0700 /var/lib/riffology/turns
+
+COPY --chown=root:root services/trusted-pi/package.json services/trusted-pi/package-lock.json /opt/riffology/
+RUN cd /opt/riffology \
+    && npm ci --omit=dev --ignore-scripts \
+    && npm cache clean --force
+
+COPY --chown=root:root --chmod=0444 services/runtime/controlled-pi.mjs /opt/riffology/runtime/controlled-pi.mjs
+COPY --chown=root:root --chmod=0555 services/trusted-pi/trusted-pi-turn-host.mjs /opt/riffology/trusted-pi/trusted-pi-turn-host.mjs
+COPY --chown=root:root --chmod=0444 services/trusted-pi/product-model-transport.mjs /opt/riffology/trusted-pi/product-model-transport.mjs
+COPY --chown=root:root --chmod=0444 services/trusted-pi/product-tool-bridge.mjs /opt/riffology/trusted-pi/product-tool-bridge.mjs
+COPY --chown=root:root --chmod=0444 services/trusted-pi/release-candidate.mjs /opt/riffology/trusted-pi/release-candidate.mjs
+COPY --chown=root:root --chmod=0444 services/trusted-pi/release-candidate.mjs /opt/riffology/trusted-pi/trusted-pi-release.mjs
+
+LABEL cn.gaojihe.riffology.release-profile="product-candidate-v1"

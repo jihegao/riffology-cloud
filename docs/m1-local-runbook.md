@@ -15,7 +15,7 @@ M1 的 node:sqlite 测试执行真实 SQL 与事务，Workerd 测试执行本地
 
 ## 首次初始化本地数据库
 
-本地 `riffology-catalog-local` 是测试名称，不是现有云数据库 ID。七个 schema 在同一个迁移目录，Wrangler 按 `0001_catalog.sql` → `0002_auth.sql` → `0003_provisioning.sql` → `0004_operator_invitations.sql` → `0005_initial_operator.sql` → `0006_model_catalog.sql` → `0007_model_content_checks.sql` 顺序应用，并记录已经执行的迁移。
+本地 `riffology-catalog-local` 是测试名称，不是现有云数据库 ID。八个 schema 在同一个迁移目录，Wrangler 按 `0001_catalog.sql` → `0002_auth.sql` → `0003_provisioning.sql` → `0004_operator_invitations.sql` → `0005_initial_operator.sql` → `0006_model_catalog.sql` → `0007_model_content_checks.sql` → `0008_preview_routes.sql` 顺序应用，并记录已经执行的迁移。新增 Preview 路由迁移尚未应用到云；迁移完成也不代表 Preview 代理和门禁可启用。
 
 ```sh
 npx wrangler d1 migrations apply riffology-catalog-local --local --config infra/wrangler.gateway-local.jsonc

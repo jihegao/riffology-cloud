@@ -53,6 +53,14 @@ export class SqlServiceRuntimeSupervisor implements ServiceRuntimePort {
    return observation;
   });
  }
+ /** Read-only forwarding gate; never allocates a runtime or contacts native code. */
+ #forwardInput(raw:ServiceRuntimeInput):void{
+  const input=this.#input(raw);
+  const row=this.#storage.sql.exec<Row>('SELECT input_json,attempted,fenced_at,receipt_json FROM service_runtime_fence WHERE singleton=1').toArray()[0];
+  if(!row||row.input_json!==JSON.stringify(input)||row.attempted!==1||row.fenced_at!==null||row.receipt_json!==null||input.reference.deadlineAt<=this.#now())throw Error('service-forward-denied');
+ }
+ async requireForward(raw:ServiceRuntimeInput):Promise<void>{await this.#ready;this.#forwardInput(raw);}
+ async forward<T>(raw:ServiceRuntimeInput,invoke:()=>Promise<T>):Promise<T>{await this.#ready;this.#forwardInput(raw);return invoke();}
  async start(raw:ServiceRuntimeInput):Promise<ServiceRuntimeObservation>{
   const input=this.#input(raw);
   const dispatch=await this.#change(input,row=>{

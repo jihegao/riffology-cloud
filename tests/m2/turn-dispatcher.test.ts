@@ -121,6 +121,12 @@ test('a deterministic missing base remains terminal because no checkpoint can ap
   const f=fixture();await queued(f);f.setAccept(async input=>receipt(input,{phase:'terminal',outcome:'failed',executionErrorCode:'turn-base-unavailable',stopped:stop,persistenceErrorCode:'turn-checkpoint-unknown'}));
   const failed=await new TurnDispatcher(f.journal,f.runtime).tick(scope,1);assert.equal(failed?.status,'failed');assert.equal(failed?.errorCode,'turn-base-unavailable');assert.equal(failed?.persistenceOutcome,'failed');assert.equal(failed?.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(f.store.snapshot()!.activeTurnId,null);
 });
+test('an absent native execution after cancellation fails terminally and releases the active turn',async()=>{
+  const f=fixture();const turn=await queued(f),dispatcher=new TurnDispatcher(f.journal,f.runtime);await dispatcher.tick(scope,1);
+  f.setCancel(async input=>receipt(input,{phase:'terminal',outcome:'interrupted',executionErrorCode:'turn-native-execution-absent',stopped:stop,persistenceErrorCode:'turn-checkpoint-unknown'}));
+  const failed=await dispatcher.cancel(scope,actor,f.store.snapshot()!.turns[turn.id]!);
+  assert.equal(failed.status,'failed');assert.equal(failed.executionOutcome,'interrupted');assert.equal(failed.errorCode,'turn-native-execution-absent');assert.equal(failed.persistenceOutcome,'failed');assert.equal(failed.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(f.store.snapshot()!.activeTurnId,null);
+});
 test('runtime execution errors and checkpoint errors are not conflated',async()=>{
   const f=fixture();await queued(f);f.setAccept(async input=>receipt(input,{phase:'terminal',outcome:'failed',executionErrorCode:'provider-timeout',stopped:stop,checkpoint}));
   const result=await new TurnDispatcher(f.journal,f.runtime).tick(scope,1);assert.equal(result?.status,'failed');assert.equal(result?.errorCode,'provider-timeout');assert.equal(result?.persistenceOutcome,'saved');assert.equal(result?.persistenceErrorCode,null);

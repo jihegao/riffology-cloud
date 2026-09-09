@@ -1,3 +1,4 @@
+import {previewSourceScope} from '../preview/source.ts';
 import {sameScope,scope,positive,turnId,type TurnScope} from '../turn/protocol.ts';
 import {serviceRunSpec,serviceRuntimeReference,type ServiceRunSpec,type ServiceRuntimeReference} from './service.ts';
 import type {LeaseReference} from '../quota/core.ts';
@@ -19,7 +20,7 @@ function exact(raw:unknown,keys:string[]):asserts raw is Record<string,unknown>{
 export function serviceRuntimeInput(raw:unknown):ServiceRuntimeInput{
  exact(raw,['reference','scope','spec','lease']);const reference=serviceRuntimeReference(raw.reference),s=scope(raw.scope),spec=serviceRunSpec(raw.spec),l=raw.lease;
  exact(l,['tenantId','projectId','workspaceId','generation','operation','operationId','deadlineAt','runId','leaseId']);
- if(l.operation!=='service-run'||l.generation!==reference.generation||l.tenantId!==s.tenantId||l.projectId!==s.projectId||l.workspaceId!==s.workspaceId||l.runId!==reference.runId||l.leaseId!==reference.leaseId||l.operationId!==reference.dispatchId||l.deadlineAt!==reference.deadlineAt||!sameScope(spec.plan.identity.scope,s))throw Error('service-runtime-scope-denied');
+ if(l.operation!=='service-run'||l.generation!==reference.generation||l.tenantId!==s.tenantId||l.projectId!==s.projectId||l.workspaceId!==s.workspaceId||l.runId!==reference.runId||l.leaseId!==reference.leaseId||l.operationId!==reference.dispatchId||l.deadlineAt!==reference.deadlineAt||!sameScope(previewSourceScope(spec.plan.source),s))throw Error('service-runtime-scope-denied');
  const lease:LeaseReference={tenantId:s.tenantId,projectId:s.projectId,workspaceId:s.workspaceId,generation:reference.generation,operation:'service-run',operationId:reference.dispatchId,deadlineAt:reference.deadlineAt,runId:reference.runId,leaseId:reference.leaseId};
  return {reference,scope:s,spec,lease};
 }

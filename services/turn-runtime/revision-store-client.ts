@@ -1,4 +1,4 @@
-import type {ResolvedPreviewPlan} from '../preview/source.ts';
+import type {ResolvedPreviewPlan,PreviewSource} from '../preview/source.ts';
 import type { InitialWorkspaceReference, ResolvedInitialWorkspace } from './initial-workspace.ts';
 import type { CheckpointReceipt, TurnBaseCheckpoints, TurnScope } from '../turn/protocol.ts';
 import { turnBaseCheckpoints, turnDigest } from '../turn/protocol.ts';
@@ -14,8 +14,9 @@ export type RevisionGcInput=TurnRevisionGcOptions&{operationId:string};
 export type RevisionGcReconcileInput={operationId:string;inputSha256:string};
 export type RevisionCommitReconcileInput={operationId:string;identity:TurnRuntimeIdentity;inputSha256:string};
 export interface RevisionStoreRpc{
-  previewPlan(identity:TurnRuntimeIdentity,receipt:CheckpointReceipt):Promise<ResolvedPreviewPlan>;
-  serviceFiles(identity:TurnRuntimeIdentity,receipt:CheckpointReceipt):Promise<Uint8Array>;
+  previewPlan(source:PreviewSource):Promise<ResolvedPreviewPlan>;
+  serviceFiles(source:PreviewSource):Promise<Uint8Array>;
+  initialPreviewPlan(reference:InitialWorkspaceReference,scope:TurnScope):Promise<ResolvedPreviewPlan>;
   resolveInitial(reference:InitialWorkspaceReference,scope:TurnScope):Promise<ResolvedInitialWorkspace>;
   commit(input:RevisionCommitInput):Promise<CheckpointReceipt>;
   reconcileCommit(input:RevisionCommitReconcileInput):Promise<CheckpointReceipt|null>;

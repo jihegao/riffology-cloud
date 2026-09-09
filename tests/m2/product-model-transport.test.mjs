@@ -28,3 +28,19 @@ test('route, final model policy, input bound and cancellation fail before intern
 test('transport accepts no credential, provider URL or authority field in release input',()=>{
   assert.throws(()=>createProductModelTransport({...config,credential:'secret'}),/invalid-product-model-transport/);assert.throws(()=>createProductModelTransport({...config,provider:'../bad'}),/invalid-product-model-transport/);assert.throws(()=>createProductModelTransport({...config,requestTimeoutMs:900001}),/invalid-product-model-transport/);
 });
+
+test('absolute execution cutoff clips model deadlines without extending the relative bound',async()=>{
+  const request={method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({...payload(),max_output_tokens:128})};
+  for(const [absolute,expected] of [[now+1000,now+1000],[now+200000,now+60000]]){
+    const sent=[],transport=createProductModelTransport(config,{clock:()=>now,executionDeadlineAt:absolute,fetchImpl:async(_,init)=>{sent.push(JSON.parse(init.body));return new Response();}});
+    await transport.providerFetch(PRODUCT_MODEL_PROXY_URL,request);assert.equal(sent[0].deadlineAt,expected);
+  }
+  for(const executionDeadlineAt of [null,0,-1,1.1,Infinity,Number.MAX_SAFE_INTEGER+1])assert.throws(()=>createProductModelTransport(config,{executionDeadlineAt}),/invalid-product-model-transport/);
+});
+test('model cutoff rejects before body consumption and after asynchronous body reading',async()=>{
+  let calls=0;const request={method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({...payload(),max_output_tokens:128})};
+  for(const time of [now,now+1]){const transport=createProductModelTransport(config,{clock:()=>time,executionDeadlineAt:now,fetchImpl:async()=>{calls++;}});await assert.rejects(transport.providerFetch(PRODUCT_MODEL_PROXY_URL,request),/execution-expired/);}
+  // The second clock check runs after await requestBody; the third is immediately before fetch.
+  for(const cutoffCheck of [2,3]){let ticks=0;const transport=createProductModelTransport(config,{clock:()=>++ticks<cutoffCheck?now:now+1,executionDeadlineAt:now+1,fetchImpl:async()=>{calls++;}});await assert.rejects(transport.providerFetch(PRODUCT_MODEL_PROXY_URL,request),/execution-expired/);}
+  assert.equal(calls,0);
+});

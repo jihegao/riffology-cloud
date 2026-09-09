@@ -26,8 +26,9 @@ class Store implements RevisionStoreRpc{
   readonly bucket:Bucket;
   constructor(bucket:Bucket){this.bucket=bucket;}
   resolveInitial(...args:Parameters<RevisionStoreRpc['resolveInitial']>){return new InitialWorkspaceResolver(this.bucket as never).resolve(...args);}
-  previewPlan(...args:Parameters<RevisionStoreRpc['previewPlan']>){return new PreviewPlanResolver(this.#reader()).resolve(...args);}
-  serviceFiles(...args:Parameters<RevisionStoreRpc['serviceFiles']>){return this.#reader().files(...args);}
+  previewPlan(...args:Parameters<RevisionStoreRpc['previewPlan']>){return new PreviewPlanResolver({files:source=>this.serviceFiles(source)}).resolve(...args);}
+  serviceFiles(...args:Parameters<RevisionStoreRpc['serviceFiles']>){const [source]=args;if(source.kind!=='saved-turn')throw Error('fixture-source');return this.#reader().files(source.identity,source.revision);}
+  async initialPreviewPlan(...args:Parameters<RevisionStoreRpc['initialPreviewPlan']>){const resolved=await this.resolveInitial(...args);return new PreviewPlanResolver({async files(){return resolved.filesArchive;}}).resolve({kind:'initial-workspace',reference:resolved.reference,filesSha256:resolved.filesSha256});}
   #reader(){return new R2TurnRevisionReader(this.bucket as never);}
   async commit(input:RevisionCommitInput){return new R2TurnRevisionPort(this.bucket as never,{async freeze(){return input.snapshot;}},()=>1000).commit(input);}
   async reconcileCommit(input:Parameters<RevisionStoreRpc['reconcileCommit']>[0]){return (await this.#reader().inspect(input.identity))?.receipt??null;}
@@ -50,6 +51,17 @@ class PiSandbox implements TrustedPiSandboxProcessApi{
     assert.ok(token);return {id:options.processId,status:'completed',exitCode:0,async getStatus(){return 'completed';},async kill(){throw Error('must-not-kill');}} as TrustedPiProcessView;
   }
   async getProcess(id:string){this.calls.push('pi.process');return {id,status:'completed',exitCode:0,async getStatus(){return 'completed';},async kill(){throw Error('must-not-kill');}} as TrustedPiProcessView;}
+}
+
+class ObserverPiSandbox implements TrustedPiSandboxProcessApi{
+  readonly calls:string[]=[];
+  readonly query:NonNullable<TrustedPiSandboxProcessApi['queryObserverExecution']>;
+  constructor(query:NonNullable<TrustedPiSandboxProcessApi['queryObserverExecution']>){this.query=query;}
+  async writeFile():Promise<never>{throw Error('ordinary-pi-write-must-not-run');}
+  async readFile():Promise<never>{throw Error('ordinary-pi-read-must-not-run');}
+  async startProcess():Promise<never>{throw Error('ordinary-pi-start-must-not-run');}
+  async getProcess():Promise<never>{throw Error('ordinary-pi-process-must-not-run');}
+  async queryObserverExecution(identity:TurnRuntimeIdentity){this.calls.push('pi.queryObserverExecution');return this.query(identity);}
 }
 
 function fixture(outcome:'completed'|'failed'|'cancelled'|'interrupted'='completed'){
@@ -83,6 +95,51 @@ test('assembly and both returned ports reject missing dependencies or a differen
   const bucket=new Bucket(),release=assembleProductTurnRuntimeRelease(identity,{revisions:new Store(bucket),resolveProjectSandbox(){resolved++;return {} as never;},resolveTrustedPiSandbox(){resolved++;return {} as never;}});
   const other={...identity,dispatchId:'dispatch-b'};
   await assert.rejects(release.execution.observe(other),/release-scope-denied/);await assert.rejects(release.checkpoints.reconcile(other,{operationId:'commit:x',inputSha256:'a'.repeat(64)}),/release-scope-denied/);assert.equal(resolved,0);assert.equal(bucket.objects.size,0);
+});
+
+test('currentObserverExecution uses only the derived Trusted Pi observer RPC',async()=>{
+  const calls:string[]=[],sandbox=new ObserverPiSandbox(async value=>{
+    calls.push(`query:${value.turnId}`);assert.deepEqual(value,identity);return {expiresAt:2000};
+  }),expected=await sandboxActorIds(identity.scope,identity.turnId,identity.dispatchId),bucket=new Bucket(),store=new Store(bucket);
+  store.load=async()=>{throw Error('revision-load-must-not-run');};
+  store.restore=async()=>{throw Error('revision-restore-must-not-run');};
+  const release=assembleProductTurnRuntimeRelease(identity,{revisions:store,resolveProjectSandbox(){calls.push('project.resolve');throw Error('project-must-not-resolve');},resolveTrustedPiSandbox(name){calls.push(`trusted.resolve:${name}`);assert.equal(name,expected.trustedPi);return sandbox;},clock:()=>1000});
+  assert.ok(release.execution.currentObserverExecution);
+  assert.deepEqual(await release.execution.currentObserverExecution(identity),{expiresAt:2000});
+  assert.deepEqual(calls,[`trusted.resolve:${expected.trustedPi}`,'query:turn-a']);
+  assert.deepEqual(sandbox.calls,['pi.queryObserverExecution']);
+  assert.equal(bucket.objects.size,0);
+});
+
+test('currentObserverExecution rejects a scope mismatch before resolving the Trusted Pi Sandbox',async()=>{
+  let resolved=0;const release=assembleProductTurnRuntimeRelease(identity,{revisions:new Store(new Bucket()),resolveProjectSandbox(){throw Error('project-must-not-resolve');},resolveTrustedPiSandbox(){resolved++;throw Error('trusted-must-not-resolve');},clock:()=>1000});
+  assert.ok(release.execution.currentObserverExecution);
+  await assert.rejects(release.execution.currentObserverExecution({...identity,dispatchId:'dispatch-b'}),/release-scope-denied/);
+  assert.equal(resolved,0);
+});
+
+test('currentObserverExecution rejects without the dedicated RPC and never falls back to ordinary SDK methods',async()=>{
+  const sandbox={
+    writeFile:async()=>{throw Error('ordinary-pi-write-must-not-run');},
+    readFile:async()=>{throw Error('ordinary-pi-read-must-not-run');},
+    startProcess:async()=>{throw Error('ordinary-pi-start-must-not-run');},
+    getProcess:async()=>{throw Error('ordinary-pi-process-must-not-run');},
+  } satisfies TrustedPiSandboxProcessApi;
+  const release=assembleProductTurnRuntimeRelease(identity,{revisions:new Store(new Bucket()),resolveProjectSandbox(){throw Error('project-must-not-resolve');},resolveTrustedPiSandbox(){return sandbox;},clock:()=>1000});
+  assert.ok(release.execution.currentObserverExecution);
+  await assert.rejects(release.execution.currentObserverExecution(identity),/trusted-pi-observer-reader-required/);
+});
+
+test('currentObserverExecution rejects RPC errors and expired deadlines',async()=>{
+  for(const query of [
+    async()=>{throw Error('observer-query-failed');},
+    async()=>({expiresAt:1000}),
+  ]){
+    const sandbox=new ObserverPiSandbox(query),release=assembleProductTurnRuntimeRelease(identity,{revisions:new Store(new Bucket()),resolveProjectSandbox(){throw Error('project-must-not-resolve');},resolveTrustedPiSandbox(){return sandbox;},clock:()=>1000});
+    assert.ok(release.execution.currentObserverExecution);
+  await assert.rejects(release.execution.currentObserverExecution(identity),/observer-query-failed|trusted-pi-observer-denied/);
+    assert.deepEqual(sandbox.calls,['pi.queryObserverExecution']);
+  }
 });
 
 test('candidate assembly imports no M0 probe, legacy runtime, pricing or provider implementation',()=>{

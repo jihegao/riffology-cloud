@@ -6,7 +6,8 @@ import { sameTurnRuntimeIdentity, turnRuntimeIdentity, type TurnRuntimeIdentity 
 export type ProductTurnRuntimeStorage=Pick<DurableObjectStorage,'sql'|'transactionSync'|'sync'>;
 export type TurnExecutionObservation={identity:TurnRuntimeIdentity;phase:'absent'|'unknown'|'running'|'terminal';outcome:'completed'|'failed'|'cancelled'|'interrupted'|null;executionErrorCode?:string|null;events?:TurnRuntimeEvent[];stopped?:TurnStopReceipt|null};
 export interface TurnExecutionPort{
-  start(input:TurnRuntimeIdentity&{actor:TurnActor;message:string;base:TurnBaseCheckpoints}):Promise<TurnExecutionObservation>;
+  start(input:TurnRuntimeIdentity&{actor:TurnActor;message:string;base:TurnBaseCheckpoints;executionDeadlineAt?:number}):Promise<TurnExecutionObservation>;
+  currentObserverExecution?(identity:TurnRuntimeIdentity):Promise<{expiresAt:number}>;
   observe(identity:TurnRuntimeIdentity):Promise<TurnExecutionObservation>;
   cancel(identity:TurnRuntimeIdentity):Promise<TurnExecutionObservation>;
 }
@@ -21,14 +22,14 @@ export interface TurnCheckpointPort{
   commit(input:TurnCheckpointInput,intent:TurnCheckpointIntent):Promise<CheckpointReceipt>;
   reconcile(identity:TurnRuntimeIdentity,intent:TurnCheckpointIntent):Promise<CheckpointReceipt|null>;
 }
-type State={schemaVersion:2;identity:TurnRuntimeIdentity;base:TurnBaseCheckpoints;messageSha256:string;message:string|null;phase:'running'|'unknown'|'terminal';outcome:'completed'|'failed'|'cancelled'|'interrupted'|null;executionErrorCode:string|null;acceptReserved:true;executionReserved:true;cancelRequestedAt:number|null;startedAt:number;settledAt:number|null;events:TurnRuntimeEvent[];checkpointIntent:TurnCheckpointIntent|null;checkpointCommitReserved:boolean;legacyCheckpointUnknown:boolean;checkpoint:CheckpointReceipt|null;persistenceErrorCode:string|null;stopped:TurnStopReceipt|null};
+type State={schemaVersion:2|3;executionDeadlineAt?:number;identity:TurnRuntimeIdentity;base:TurnBaseCheckpoints;messageSha256:string;message:string|null;phase:'running'|'unknown'|'terminal';outcome:'completed'|'failed'|'cancelled'|'interrupted'|null;executionErrorCode:string|null;acceptReserved:true;executionReserved:true;cancelRequestedAt:number|null;startedAt:number;settledAt:number|null;events:TurnRuntimeEvent[];checkpointIntent:TurnCheckpointIntent|null;checkpointCommitReserved:boolean;legacyCheckpointUnknown:boolean;checkpoint:CheckpointReceipt|null;persistenceErrorCode:string|null;stopped:TurnStopReceipt|null};
 type Row=Record<string,SqlStorageValue>;
 const EVENT_TYPES=new Set<TurnRuntimeEvent['type']>(['assistant.delta','assistant.message','tool.started','tool.updated','tool.completed','provider.status']);
 const OUTCOMES=new Set<NonNullable<State['outcome']>>(['completed','failed','cancelled','interrupted']);
 // These failures prove that no valid input state exists to freeze. Attempting
 // checkpoint preparation would allocate fresh Sandboxes and could turn an
 // input-integrity failure into new project-side effects.
-const NON_PERSISTABLE_EXECUTION_ERRORS=new Set(['turn-base-unavailable']);
+const NON_PERSISTABLE_EXECUTION_ERRORS=new Set(['turn-base-unavailable','turn-native-execution-absent']);
 const MAX_RUNTIME_EVENT_BYTES=2*1024*1024,encoder=new TextEncoder();
 function reject(code:string):never{throw Error(code);}
 function exact(value:unknown,keys:string[],code:string):asserts value is Record<string,unknown>{if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype||Object.keys(value).length!==keys.length||keys.some(key=>!Object.hasOwn(value,key)))reject(code);}
@@ -45,9 +46,10 @@ function migrateStored(value:unknown):unknown{
 }
 function stored(value:unknown):State{
   try{
-    value=migrateStored(value);exact(value,['schemaVersion','identity','base','messageSha256','message','phase','outcome','executionErrorCode','acceptReserved','executionReserved','cancelRequestedAt','startedAt','settledAt','events','checkpointIntent','checkpointCommitReserved','legacyCheckpointUnknown','checkpoint','persistenceErrorCode','stopped'],'invalid-product-turn-runtime-state');
-    if(value.schemaVersion!==2||value.acceptReserved!==true||value.executionReserved!==true||!['running','unknown','terminal'].includes(value.phase as string)||typeof value.checkpointCommitReserved!=='boolean'||typeof value.legacyCheckpointUnknown!=='boolean')reject('invalid-product-turn-runtime-state');
+    value=migrateStored(value);const version=(value as Record<string,unknown>)?.schemaVersion;exact(value,[...(version===3?['executionDeadlineAt']:[]),'schemaVersion','identity','base','messageSha256','message','phase','outcome','executionErrorCode','acceptReserved','executionReserved','cancelRequestedAt','startedAt','settledAt','events','checkpointIntent','checkpointCommitReserved','legacyCheckpointUnknown','checkpoint','persistenceErrorCode','stopped'],'invalid-product-turn-runtime-state');
+    if((value.schemaVersion!==2&&value.schemaVersion!==3)||value.acceptReserved!==true||value.executionReserved!==true||!['running','unknown','terminal'].includes(value.phase as string)||typeof value.checkpointCommitReserved!=='boolean'||typeof value.legacyCheckpointUnknown!=='boolean')reject('invalid-product-turn-runtime-state');
     const identity=turnRuntimeIdentity(value.identity),base=turnBaseCheckpoints(value.base),messageSha256=sha(value.messageSha256),startedAt=positive(value.startedAt),settledAt=value.settledAt===null?null:positive(value.settledAt),cancelRequestedAt=value.cancelRequestedAt===null?null:positive(value.cancelRequestedAt);
+    const executionDeadlineAt=value.schemaVersion===3?positive(value.executionDeadlineAt):undefined;if(executionDeadlineAt!==undefined&&executionDeadlineAt!==startedAt+600000)reject('invalid-product-turn-runtime-state');
     if(value.message!==null)message(value.message);if(!Array.isArray(value.events))reject('invalid-product-turn-runtime-state');const events=boundedEvents(value.events.map(event)),ids=new Set(events.map(item=>item.eventId));if(ids.size!==events.length)reject('invalid-product-turn-runtime-state');
     const outcome=value.outcome===null?null:OUTCOMES.has(value.outcome as NonNullable<State['outcome']>)?value.outcome as NonNullable<State['outcome']>:reject('invalid-product-turn-runtime-state'),executionErrorCode=optionalCode(value.executionErrorCode),persistenceErrorCode=optionalCode(value.persistenceErrorCode),stopped=stop(value.stopped),saved=checkpoint(value.checkpoint,settledAt),checkpointIntent=intent(value.checkpointIntent,identity),checkpointCommitReserved=value.checkpointCommitReserved as boolean,legacyCheckpointUnknown=value.legacyCheckpointUnknown as boolean;
     if(value.phase==='terminal'){
@@ -55,7 +57,7 @@ function stored(value:unknown):State{
       if(outcome==='completed'&&executionErrorCode!==null)reject('invalid-product-turn-runtime-state');
     }else if(outcome!==null||settledAt!==null||stopped!==null||saved!==null||persistenceErrorCode!==null||checkpointIntent!==null||checkpointCommitReserved||legacyCheckpointUnknown)reject('invalid-product-turn-runtime-state');
     if(legacyCheckpointUnknown&&(!checkpointCommitReserved||checkpointIntent!==null||saved!==null))reject('invalid-product-turn-runtime-state');if(checkpointCommitReserved&&checkpointIntent===null&&!legacyCheckpointUnknown&&saved===null)reject('invalid-product-turn-runtime-state');
-    return {schemaVersion:2,identity,base,messageSha256,message:value.message as string|null,phase:value.phase as State['phase'],outcome,executionErrorCode,acceptReserved:true,executionReserved:true,cancelRequestedAt,startedAt,settledAt,events,checkpointIntent,checkpointCommitReserved,legacyCheckpointUnknown,checkpoint:saved,persistenceErrorCode,stopped};
+    return {schemaVersion:value.schemaVersion as 2|3,...(executionDeadlineAt===undefined?{}:{executionDeadlineAt}),identity,base,messageSha256,message:value.message as string|null,phase:value.phase as State['phase'],outcome,executionErrorCode,acceptReserved:true,executionReserved:true,cancelRequestedAt,startedAt,settledAt,events,checkpointIntent,checkpointCommitReserved,legacyCheckpointUnknown,checkpoint:saved,persistenceErrorCode,stopped};
   }catch{reject('invalid-persisted-product-turn-runtime');}
 }
 function execution(value:unknown,expected:TurnRuntimeIdentity):TurnExecutionObservation{
@@ -71,8 +73,9 @@ function execution(value:unknown,expected:TurnRuntimeIdentity):TurnExecutionObse
  * first external await and never starts again after an uncertain boundary. */
 export class ProductTurnRuntimeCore implements TurnRuntimePort{
   readonly #storage:ProductTurnRuntimeStorage;readonly #execution:TurnExecutionPort;readonly #checkpoints:TurnCheckpointPort;readonly #clock:()=>number;readonly #ready:Promise<void>;
-  constructor(storage:ProductTurnRuntimeStorage,executionPort:TurnExecutionPort,checkpointPort:TurnCheckpointPort,clock:()=>number=Date.now){
+  constructor(storage:ProductTurnRuntimeStorage,executionPort:TurnExecutionPort,checkpointPort:TurnCheckpointPort,clock:()=>number=Date.now,existingOnly=false){
     if(!storage?.sql?.exec||!storage.transactionSync||!storage.sync)reject('sqlite-product-turn-runtime-required');this.#storage=storage;this.#execution=executionPort;this.#checkpoints=checkpointPort;this.#clock=clock;
+    if(existingOnly){this.#ready=Promise.resolve();return;}
     storage.transactionSync(()=>storage.sql.exec('CREATE TABLE IF NOT EXISTS product_turn_runtime (singleton INTEGER PRIMARY KEY CHECK(singleton=1), value TEXT NOT NULL) STRICT;'));this.#ready=storage.sync();
   }
   ready(){return this.#ready;}
@@ -83,12 +86,26 @@ export class ProductTurnRuntimeCore implements TurnRuntimePort{
   async accept(raw:Parameters<TurnRuntimePort['accept']>[0]):Promise<TurnRuntimeReceipt>{
     await this.#ready;const identity=turnRuntimeIdentity({scope:raw.scope,sessionId:raw.sessionId,turnId:raw.turnId,dispatchId:raw.dispatchId,generation:raw.generation}),actor=validateActor(raw.actor),text=message(raw.message),base=turnBaseCheckpoints(raw.base),messageSha256=await turnDigest({actor,message:text,base}),prior=this.#checked(identity);
     if(prior){if(prior.messageSha256!==messageSha256)reject('product-turn-runtime-idempotency-conflict');return this.observe(identity);}
-    const now=positive(this.#clock());for(const receipt of [base.workspace,base.session])if(receipt&&receipt.committedAt>now)reject('product-turn-runtime-base-time');const state:State={schemaVersion:2,identity,base,messageSha256,message:text,phase:'running',outcome:null,executionErrorCode:null,acceptReserved:true,executionReserved:true,cancelRequestedAt:null,startedAt:now,settledAt:null,events:[],checkpointIntent:null,checkpointCommitReserved:false,legacyCheckpointUnknown:false,checkpoint:null,persistenceErrorCode:null,stopped:null};await this.#write(state);
-    try{return await this.#consume(identity,await this.#execution.start({...identity,actor,message:text,base}));}catch(error){await this.#unknown(identity);throw error;}
+    const now=positive(this.#clock());for(const receipt of [base.workspace,base.session])if(receipt&&receipt.committedAt>now)reject('product-turn-runtime-base-time');const state:State={schemaVersion:3,executionDeadlineAt:positive(now+600000),identity,base,messageSha256,message:text,phase:'running',outcome:null,executionErrorCode:null,acceptReserved:true,executionReserved:true,cancelRequestedAt:null,startedAt:now,settledAt:null,events:[],checkpointIntent:null,checkpointCommitReserved:false,legacyCheckpointUnknown:false,checkpoint:null,persistenceErrorCode:null,stopped:null};await this.#write(state);
+    try{return await this.#consume(identity,await this.#execution.start({...identity,actor,message:text,base,executionDeadlineAt:state.executionDeadlineAt}));}catch(error){await this.#unknown(identity);throw error;}
+  }
+  /** Read-only authority: never reconciles execution or prepares a checkpoint. */
+  async currentObserverExecution(raw:TurnRuntimeIdentity):Promise<{expiresAt:number}>{
+    await this.#ready;const identity=turnRuntimeIdentity(raw);
+    const current=()=>{const state=this.#checked(identity);if(!state||state.phase!=='running'||state.cancelRequestedAt!==null||state.executionDeadlineAt===undefined||state.executionDeadlineAt<=positive(this.#clock()))reject('product-turn-observer-denied');return state.executionDeadlineAt;};
+    const deadline=current();if(!this.#execution.currentObserverExecution)reject('product-turn-observer-denied');
+    const native=await this.#execution.currentObserverExecution(identity);exact(native,['expiresAt'],'product-turn-observer-denied');
+    if(current()!==deadline||native.expiresAt!==deadline)reject('product-turn-observer-denied');return {expiresAt:deadline};
   }
   async observe(raw:Parameters<TurnRuntimePort['observe']>[0]):Promise<TurnRuntimeReceipt>{
     await this.#ready;const identity=turnRuntimeIdentity(raw),state=this.#checked(identity);if(!state)return {scope:identity.scope,sessionId:identity.sessionId,turnId:identity.turnId,dispatchId:identity.dispatchId,generation:identity.generation,phase:'absent',outcome:null,events:[]};if(state.phase==='terminal')return this.#finishCheckpoint(identity);
-    try{return await this.#consume(identity,await this.#execution.observe(identity));}catch(error){await this.#unknown(identity);throw error;}
+    try{
+      const observed=execution(await this.#execution.observe(identity),identity);
+      // A prior Stop may have lost its native response with the container.
+      // Only a durable cancellation fence plus an absent observation may
+      // retry the idempotent native cancel reconciliation.
+      return await this.#consume(identity,state.cancelRequestedAt!==null&&observed.phase==='absent'?await this.#execution.cancel(identity):observed);
+    }catch(error){await this.#unknown(identity);throw error;}
   }
   async cancel(raw:Parameters<TurnRuntimePort['cancel']>[0]):Promise<TurnRuntimeReceipt>{
     await this.#ready;const identity=turnRuntimeIdentity(raw),state=this.#checked(identity);if(!state)return {scope:identity.scope,sessionId:identity.sessionId,turnId:identity.turnId,dispatchId:identity.dispatchId,generation:identity.generation,phase:'absent',outcome:null,events:[]};if(state.phase==='terminal')return this.#finishCheckpoint(identity);

@@ -11,5 +11,6 @@ coverage/
 .dev.vars.*
 !.dev.vars.example
 .local/
+infra/.vertical-runtime-*.jsonc
 __pycache__/
 .venv/

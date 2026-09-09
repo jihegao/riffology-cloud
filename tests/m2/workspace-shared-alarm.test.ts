@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { DurableWorkspaceStore } from '../../services/workspace/store.ts';
-import { nextWorkspaceAlarm, TURN_WAKE_KEY, WORKSPACE_STATE_KEY } from '../../services/workspace/shared-alarm.ts';
-import { DurableTurnAlarmPort } from '../../services/workspace/turn-alarm.ts';
+import { nextWorkspaceAlarm, TURN_WAKE_KEY, SERVICE_WAKE_KEY, OBSERVER_WAKE_KEY, WORKSPACE_STATE_KEY } from '../../services/workspace/shared-alarm.ts';
+import { DurableTurnAlarmPort, DurableServiceAlarmPort, DurableObserverAlarmPort } from '../../services/workspace/turn-alarm.ts';
 import type { WorkspaceState } from '../../services/workspace/coordinator.ts';
 
 class Storage{
@@ -49,4 +49,51 @@ test('failed alarm write commits neither logical deadline nor workspace transiti
   assert.equal(turnStorage.syncs,0);assert.equal(turnStorage.values.has(TURN_WAKE_KEY),false);
   const workspaceStorage=new Storage();workspaceStorage.failAlarm=true;const workspace=new DurableWorkspaceStore(workspaceStorage as unknown as DurableObjectStorage);
   await assert.rejects(workspace.update(()=>state(3000)),/alarm-storage-failed/);assert.equal(workspaceStorage.syncs,0);assert.equal(workspaceStorage.values.has(WORKSPACE_STATE_KEY),false);
+});
+
+
+test('service delivery alarm survives turn and provisioning completion and reopen',async()=>{
+ const storage=new Storage(),typed=storage as unknown as DurableObjectStorage,workspace=new DurableWorkspaceStore(typed),turn=new DurableTurnAlarmPort(typed),service=new DurableServiceAlarmPort(typed);
+ await workspace.update(()=>state(1000));await turn.schedule(2000);await service.schedule(1500);
+ assert.equal(storage.alarm,1000);await workspace.update(s=>({...s!,wakeAt:null}));assert.equal(storage.alarm,1500);
+ await turn.clear();assert.equal(storage.alarm,1500);assert.equal(new DurableServiceAlarmPort(typed).read(),1500);
+ assert.equal(await new DurableTurnAlarmPort(typed).reconcile(),1500);
+ await turn.schedule(1200);await service.clear();assert.equal(storage.alarm,1200);
+ await turn.clear();assert.equal(storage.alarm,null);assert.equal(storage.values.has(SERVICE_WAKE_KEY),false);
+});
+
+test('failed service alarm mutations roll back without destroying other domains',async()=>{
+ const storage=new Storage(),typed=storage as unknown as DurableObjectStorage,turn=new DurableTurnAlarmPort(typed),service=new DurableServiceAlarmPort(typed);
+ await turn.schedule(2000);storage.failAlarm=true;await assert.rejects(service.schedule(1000),/alarm-storage-failed/);
+ assert.equal(service.read(),null);assert.equal(turn.read(),2000);assert.equal(storage.alarm,2000);
+ storage.failAlarm=false;await service.schedule(1000);storage.failAlarm=true;
+ await assert.rejects(service.clear(),/alarm-storage-failed/);assert.equal(service.read(),1000);assert.equal(storage.alarm,1000);
+});
+
+
+test('four domains preserve Observer through provisioning, Turn and Service completion',async()=>{
+ const storage=new Storage(),typed=storage as unknown as DurableObjectStorage;
+ const workspace=new DurableWorkspaceStore(typed),turn=new DurableTurnAlarmPort(typed),service=new DurableServiceAlarmPort(typed),observer=new DurableObserverAlarmPort(typed);
+ assert.equal(nextWorkspaceAlarm(4000,3000,2000,1000),1000);
+ assert.throws(()=>nextWorkspaceAlarm(null,null,null,0),/invalid-workspace-alarm-time/);
+ await observer.schedule(4000);await workspace.update(()=>state(1000));await turn.schedule(2000);await service.schedule(3000);
+ assert.equal(storage.alarm,1000);
+ await workspace.update(s=>({...s!,wakeAt:null}));assert.equal(storage.alarm,2000);
+ await turn.clear();assert.equal(storage.alarm,3000);
+ await service.clear();assert.equal(storage.alarm,4000);
+ assert.equal(new DurableObserverAlarmPort(typed).read(),4000);
+ assert.equal(await turn.reconcile(),4000);assert.equal(await service.reconcile(),4000);
+ await observer.clear();assert.equal(storage.alarm,null);assert.equal(storage.values.has(OBSERVER_WAKE_KEY),false);
+});
+
+test('Observer clear and failed mutation preserve other durable activity wakes',async()=>{
+ const storage=new Storage(),typed=storage as unknown as DurableObjectStorage;
+ const turn=new DurableTurnAlarmPort(typed),service=new DurableServiceAlarmPort(typed),observer=new DurableObserverAlarmPort(typed);
+ await turn.schedule(3000);await service.schedule(2000);await observer.schedule(1000);
+ storage.failAlarm=true;await assert.rejects(observer.clear(),/alarm-storage-failed/);
+ assert.equal(observer.read(),1000);assert.equal(storage.alarm,1000);
+ storage.failAlarm=false;await observer.clear();assert.equal(storage.alarm,2000);
+ assert.equal(turn.read(),3000);assert.equal(service.read(),2000);
+ storage.failAlarm=true;await assert.rejects(observer.schedule(1500),/alarm-storage-failed/);
+ assert.equal(observer.read(),null);assert.equal(storage.alarm,2000);
 });

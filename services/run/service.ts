@@ -1,7 +1,5 @@
-import {actor,checkpointReceipt,positive,sameScope,scope,sha,turnId,type TurnActor,type TurnScope} from '../turn/protocol.ts';
-import {turnRuntimeIdentity} from '../turn-runtime/identity.ts';
-import {parsePreviewDeclaration} from '../preview/declaration.ts';
-import type {ResolvedPreviewPlan} from '../preview/source.ts';
+import {actor,positive,sameScope,scope,turnId,type TurnActor,type TurnScope} from '../turn/protocol.ts';
+import {resolvedPreviewPlan,previewSourceScope,type ResolvedPreviewPlan} from '../preview/source.ts';
 
 export type ServiceRunStorage=Pick<DurableObjectStorage,'sql'|'transactionSync'|'sync'>;
 export type ServiceRunSpec={plan:ResolvedPreviewPlan;runtimeImage:string;maxDurationMs:number};
@@ -17,9 +15,7 @@ function exact(raw:unknown,keys:string[]):asserts raw is Record<string,unknown>{
 }
 export function serviceRunSpec(raw:unknown):ServiceRunSpec{
  exact(raw,['plan','runtimeImage','maxDurationMs']);const p=raw.plan;
- exact(p,['schemaVersion','kind','identity','revision','declaration','declarationSha256','entrypointSha256','dependencyLockSha256']);
- if(p.schemaVersion!==1||p.kind!=='service')throw Error('invalid-service-run-plan');
- const plan:ResolvedPreviewPlan={schemaVersion:1,kind:'service',identity:turnRuntimeIdentity(p.identity),revision:checkpointReceipt(p.revision),declaration:parsePreviewDeclaration(p.declaration),declarationSha256:sha(p.declarationSha256),entrypointSha256:sha(p.entrypointSha256),dependencyLockSha256:sha(p.dependencyLockSha256)};
+ const plan=resolvedPreviewPlan(p);
  if(typeof raw.runtimeImage!=='string'||raw.runtimeImage.length>300||! /^[a-z0-9][a-z0-9._/-]*@sha256:[a-f0-9]{64}$/.test(raw.runtimeImage)||raw.runtimeImage.split('@')[0]!.split('/').some(part=>!part||part==='.'||part==='..'))throw Error('invalid-service-runtime-image');
  const maxDurationMs=positive(raw.maxDurationMs);if(maxDurationMs>15*60_000)throw Error('invalid-service-duration');
  return {plan,runtimeImage:raw.runtimeImage,maxDurationMs};
@@ -49,7 +45,7 @@ export class SqlServiceRunJournal{
  #row(id:string){const row=this.#rows('SELECT * FROM service_runs WHERE id=?',turnId(id))[0];if(!row)throw Error('service-run-not-found');return row;}
  #record(row:Row):ServiceRunRecord{
   const r=JSON.parse(row.record_json as string) as ServiceRunRecord;
-  if(r.id!==row.id||r.kind!=='service'||!sameScope(scope(r.scope),this.#scope)||!sameScope(serviceRunSpec(r.spec).plan.identity.scope,this.#scope))throw Error('invalid-persisted-service-run');
+  if(r.id!==row.id||r.kind!=='service'||!sameScope(scope(r.scope),this.#scope)||!sameScope(previewSourceScope(serviceRunSpec(r.spec).plan.source),this.#scope))throw Error('invalid-persisted-service-run');
   return r;
  }
  #write(r:ServiceRunRecord){this.#storage.sql.exec('UPDATE service_runs SET record_json=? WHERE id=?',JSON.stringify(r),r.id);}
@@ -57,7 +53,7 @@ export class SqlServiceRunJournal{
  async get(id:string){await this.#ready;return this.#record(this.#row(id));}
  async create(rawActor:TurnActor,requestKey:string,rawSpec:ServiceRunSpec):Promise<ServiceRunRecord>{
   const who=actor(rawActor),key=turnId(requestKey),spec=serviceRunSpec(rawSpec);
-  if(!sameScope(spec.plan.identity.scope,this.#scope))throw Error('service-run-scope-denied');
+  if(!sameScope(previewSourceScope(spec.plan.source),this.#scope))throw Error('service-run-scope-denied');
   const intent=JSON.stringify([who.userId,key]),input=JSON.stringify({actor:who,spec});
   return this.#change(()=>{
    const old=this.#rows('SELECT * FROM service_runs WHERE intent_key=?',intent)[0];

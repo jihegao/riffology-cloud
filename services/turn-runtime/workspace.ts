@@ -1,5 +1,5 @@
 import { sandboxActorIds } from '../sandbox/policy.ts';
-import { actor as validateActor, checkpointReceipt, message, sameScope, turnBaseCheckpoints, turnDigest, type CheckpointReceipt, type TurnActor, type TurnBaseCheckpoints, type TurnScope } from '../turn/protocol.ts';
+import { actor as validateActor, checkpointReceipt, message, positive, sameScope, turnBaseCheckpoints, turnDigest, type CheckpointReceipt, type TurnActor, type TurnBaseCheckpoints, type TurnScope } from '../turn/protocol.ts';
 import type { TurnExecutionObservation, TurnExecutionPort } from './core.ts';
 import { sameTurnRuntimeIdentity, turnRuntimeIdentity, type TurnRuntimeIdentity } from './identity.ts';
 import { initialWorkspaceReference, type InitialWorkspaceReference, type ResolvedInitialWorkspace } from './initial-workspace.ts';
@@ -74,8 +74,9 @@ export class WorkspacePreparedExecutionPort implements TurnExecutionPort{
   readonly #workspace:Pick<ProjectWorkspaceLifecycle,'prepare'>;readonly #execution:TurnExecutionPort;
   #startKey:string|null=null;#startPromise:Promise<TurnExecutionObservation>|null=null;
   constructor(workspace:Pick<ProjectWorkspaceLifecycle,'prepare'>,execution:TurnExecutionPort){if(!workspace?.prepare||!execution?.start||!execution.observe||!execution.cancel)reject('workspace-prepared-execution-required');this.#workspace=workspace;this.#execution=execution;}
-  async start(input:TurnRuntimeIdentity&{actor:TurnActor;message:string;base:TurnBaseCheckpoints}):Promise<TurnExecutionObservation>{
-    const identity=turnRuntimeIdentity({scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation}),actor=validateActor(input.actor),base=turnBaseCheckpoints(input.base),text=message(input.message),key=await turnDigest({identity,actor,base,message:text});
+  async start(input:TurnRuntimeIdentity&{actor:TurnActor;message:string;base:TurnBaseCheckpoints;executionDeadlineAt?:number}):Promise<TurnExecutionObservation>{
+    const executionDeadlineAt=input.executionDeadlineAt===undefined?undefined:positive(input.executionDeadlineAt);
+    const identity=turnRuntimeIdentity({scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation}),actor=validateActor(input.actor),base=turnBaseCheckpoints(input.base),text=message(input.message),key=await turnDigest({identity,actor,base,message:text,...(executionDeadlineAt===undefined?{}:{executionDeadlineAt})});
     if(this.#startPromise){if(this.#startKey!==key)reject('workspace-prepared-execution-conflict');return this.#startPromise;}
     this.#startKey=key;this.#startPromise=(async()=>{
       try{await this.#workspace.prepare(identity,base);}catch(error){
@@ -83,9 +84,10 @@ export class WorkspacePreparedExecutionPort implements TurnExecutionPort{
         const confirmationId=`base-${(await turnDigest({schemaVersion:1,identity,reason:'turn-base-unavailable'})).slice(0,64)}`;
         return {identity,phase:'terminal',outcome:'failed',executionErrorCode:'turn-base-unavailable',events:[],stopped:{confirmationId,observedAt:Date.now(),nativeRunning:false,fenced:true}};
       }
-      return this.#execution.start({...identity,actor,message:text,base});
+      return this.#execution.start({...identity,actor,message:text,base,...(executionDeadlineAt===undefined?{}:{executionDeadlineAt})});
     })();return this.#startPromise;
   }
+  async currentObserverExecution(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);if(!this.#execution.currentObserverExecution)reject('product-turn-observer-denied');return this.#execution.currentObserverExecution(identity);}
   observe(raw:TurnRuntimeIdentity){return this.#execution.observe(turnRuntimeIdentity(raw));}
   cancel(raw:TurnRuntimeIdentity){return this.#execution.cancel(turnRuntimeIdentity(raw));}
 }

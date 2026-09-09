@@ -10,6 +10,7 @@ const identity = { scope: { tenantId: 'tenant-a', projectId: 'project-a', worksp
 const actor = { userId: 'user-a', authVersion: 1 };
 const snapshot = { format: 'riffology-pi-session-v1', scope: { tenantId: 'tenant-a', projectId: 'project-a', sessionId: 'session-a' }, createdAt: '2026-09-07T00:00:00.000Z', entries: [], leafId: null };
 const artifact = { schemaVersion: 1, artifactId: `artifact-${'a'.repeat(60)}`, operation: 'list', mediaType: 'application/json', bytes: 20000, sha256: 'b'.repeat(64), createdAt: 1000 };
+const providerToolCallId = `fc_${'a'.repeat(26)}|call_${'b'.repeat(48)}`;
 const sha = (value) => createHash('sha256').update(value).digest('hex');
 const token = () => sha(Buffer.from(JSON.stringify({ schemaVersion: 1, purpose: 'trusted-pi-native', identity }))).slice(0, 52);
 async function fixture(t, restored = false, toolResult = { content: [{ type: 'text', text: JSON.stringify({ kind: 'artifact', artifact }) }], details: { operation: 'list', status: 'completed' } }) {
@@ -24,9 +25,9 @@ async function fixture(t, restored = false, toolResult = { content: [{ type: 'te
     async prompt(message) {
       calls.push(message);
       for (const listener of listeners) listener({ type: 'message_update', assistantMessageEvent: { type: 'text_delta', delta: 'done' } });
-      for (const listener of listeners) listener({ type: 'tool_execution_start', toolCallId: 'call-a', toolName: 'project_list' });
-      for (const listener of listeners) listener({ type: 'tool_execution_update', toolCallId: 'call-a', toolName: 'project_list' });
-      for (const listener of listeners) listener({ type: 'tool_execution_end', toolCallId: 'call-a', toolName: 'project_list', isError: false, result: toolResult });
+      for (const listener of listeners) listener({ type: 'tool_execution_start', toolCallId: providerToolCallId, toolName: 'project_list' });
+      for (const listener of listeners) listener({ type: 'tool_execution_update', toolCallId: providerToolCallId, toolName: 'project_list' });
+      for (const listener of listeners) listener({ type: 'tool_execution_end', toolCallId: providerToolCallId, toolName: 'project_list', isError: false, result: toolResult });
       for (const listener of listeners) listener({ type: 'message_end', message: { role: 'assistant', content: [{ type: 'text', text: 'done' }], stopReason: 'stop' } });
       return { outcome: 'completed', stopReason: 'stop' };
     },
@@ -36,7 +37,7 @@ async function fixture(t, restored = false, toolResult = { content: [{ type: 'te
   const created = [];
   const release = { async resolveOptions(input) { assert.deepEqual(input, { identity, actor }); return { selectedModel: { provider: 'release', id: 'fixed' }, allowedModels: [{ provider: 'release', id: 'fixed' }], resolveCredential: async () => 'injected', systemPrompt: 'fixed' }; } };
   const createSession = async (options) => { created.push(options); return host; };
-  return { root, id, prefix, calls, created, release, createSession };
+  return { root, id, prefix, calls, created, release, createSession,host };
 }
 
 test('runs one controlled facade turn and writes terminal result after frozen session', async (t) => {
@@ -47,6 +48,7 @@ test('runs one controlled facade turn and writes terminal result after frozen se
   const result = JSON.parse(await readFile(`${f.prefix}.result.json`, 'utf8'));
   assert.deepEqual(result.events.map((event) => event.kind), ['assistant.delta', 'tool.started', 'tool.updated', 'tool.completed', 'assistant.message']);
   assert.deepEqual(result.events.map((event) => event.sequence), [1, 2, 3, 4, 5]);
+  assert.deepEqual(result.events.filter((event) => event.toolCallId).map((event) => event.toolCallId), [providerToolCallId, providerToolCallId, providerToolCallId]);
   assert.deepEqual(result.events[3].artifact, artifact);
   const output = Buffer.from(await readFile(`${f.prefix}.output-session.json`, 'utf8'), 'base64');
   assert.equal(sha(output), result.outputSessionSha256); assert.deepEqual(JSON.parse(output), snapshot);
@@ -121,4 +123,36 @@ test('module uses only the controlled Pi facade and no M0 probe or proxy impleme
   const source = await readFile(new URL('../../services/trusted-pi/trusted-pi-turn-host.mjs', import.meta.url), 'utf8');
   assert.match(source, /createControlledPiSession/);
   assert.doesNotMatch(source, /proxy-pi|go-pi-probe|M0_|OPENCODE_API_KEY|OPENAI_API_KEY|ANTHROPIC_API_KEY/);
+});
+
+async function withDeadline(f,executionDeadlineAt){
+ const file=`${f.prefix}.control.json`,value=JSON.parse(await readFile(file,'utf8'));
+ await writeFile(file,JSON.stringify({...value,schemaVersion:2,executionDeadlineAt}));
+}
+test('absolute deadline rejects expired startup before release or Pi creation',async t=>{
+ const f=await fixture(t);await withDeadline(f,1000);let releases=0;
+ await assert.rejects(runTrustedPiTurnHost(f.id,{resolveOptions:async()=>{releases++;return {};}},{controlRoot:f.root,clock:()=>1000,createSession:f.createSession}),/trusted-pi-execution-expired/);
+ assert.equal(releases,0);assert.equal(f.created.length,0);
+});
+test('slow release resolution cannot launch Pi after the persisted cutoff',async t=>{
+ const f=await fixture(t);await withDeadline(f,2000);let now=1000;
+ await assert.rejects(runTrustedPiTurnHost(f.id,{resolveOptions:async input=>{assert.equal(input.executionDeadlineAt,2000);now=2000;return {};}},{controlRoot:f.root,clock:()=>now,createSession:f.createSession}),/trusted-pi-execution-expired/);
+ assert.equal(f.created.length,0);assert.equal(f.calls.length,0);
+});
+test('expiration during Pi creation cancels the host and never submits a prompt',async t=>{
+ const f=await fixture(t);await withDeadline(f,2000);let now=1000,cancels=0,disposed=0;
+ f.host.cancel=async()=>{cancels++;};f.host.dispose=async()=>{disposed++;};
+ const result=await runTrustedPiTurnHost(f.id,{resolveOptions:async()=>({})},{controlRoot:f.root,clock:()=>now,createSession:async()=>{now=2000;return f.host;}});
+ assert.equal(f.calls.length,0);assert.equal(cancels,1);assert.equal(disposed,1);assert.equal(result.outcome,'cancelled');assert.equal(result.executionErrorCode,'pi-turn-deadline-exceeded');
+});
+test('absolute deadline timer cancels a pending prompt and a late completed reply cannot claim success',async t=>{
+ const f=await fixture(t);await withDeadline(f,1010);let now=1000,cancels=0,disposed=0,resolvePrompt,started;
+ const ready=new Promise(resolve=>{started=resolve;});
+ f.host.prompt=async()=>{started();return new Promise(resolve=>{resolvePrompt=resolve;});};
+ f.host.cancel=async()=>{cancels++;now=1010;resolvePrompt({outcome:'completed',stopReason:'stop'});};
+ f.host.dispose=async()=>{disposed++;};
+ t.mock.timers.enable({apis:['setTimeout']});
+ const run=runTrustedPiTurnHost(f.id,{resolveOptions:async input=>{assert.equal(input.executionDeadlineAt,1010);return {};}},{controlRoot:f.root,clock:()=>now,createSession:async()=>f.host});
+ await ready;t.mock.timers.tick(10);const result=await run;
+ assert.equal(cancels,1);assert.equal(disposed,1);assert.equal(result.outcome,'cancelled');assert.equal(result.executionErrorCode,'pi-turn-deadline-exceeded');
 });

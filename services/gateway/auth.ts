@@ -1,6 +1,7 @@
 import { betterAuth, type BetterAuthOptions } from 'better-auth';
 import { statement as sql, type Database } from '../catalog/database.ts';
 import { normalizedEmail } from '../catalog/admission.ts';
+import {googleOAuthEgressPlugin,type GoogleOAuthEgressConfiguration} from './google-oauth-egress.ts';
 
 export interface AuthConfiguration {
   database: NonNullable<BetterAuthOptions['database']>;
@@ -9,6 +10,7 @@ export interface AuthConfiguration {
   secret: string;
   googleClientId: string;
   googleClientSecret: string;
+  googleOAuthEgress?: GoogleOAuthEgressConfiguration;
 }
 /** No email/password endpoint, public signup bypass, cookie session cache or account linking. */
 export function authOptions(config: AuthConfiguration) {
@@ -20,11 +22,13 @@ export function authOptions(config: AuthConfiguration) {
     const rows=await config.catalog.query(sql(`SELECT 1 FROM catalog_invitations WHERE normalized_email=? AND state='pending' AND expires_at>? LIMIT 1`,normalizedEmail(email),Date.now()));
     return rows.length>0;
   }
+  const google={clientId:config.googleClientId,clientSecret:config.googleClientSecret,accessType:'online' as const,includeGrantedScopes:false};
   return {
     appName:'Riffology', database:config.database, secret:config.secret,
     baseURL:config.origin, basePath:'/api/auth', trustedOrigins:[config.origin],
     emailAndPassword:{enabled:false},
-    socialProviders:{google:{clientId:config.googleClientId,clientSecret:config.googleClientSecret,accessType:'online' as const,includeGrantedScopes:false}},
+    socialProviders:config.googleOAuthEgress?{}:{google},
+    plugins:config.googleOAuthEgress?[googleOAuthEgressPlugin({clientId:config.googleClientId,clientSecret:config.googleClientSecret,egress:config.googleOAuthEgress})]:[],
     user:{modelName:'auth_user',changeEmail:{enabled:false},deleteUser:{enabled:false}},
     account:{modelName:'auth_account',accountLinking:{enabled:false},encryptOAuthTokens:true,storeStateStrategy:'database' as const},
     verification:{modelName:'auth_verification'},

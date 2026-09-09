@@ -1,4 +1,4 @@
-import { applyWorkspaceAlarm, alarmTime, TURN_WAKE_KEY, WORKSPACE_STATE_KEY } from './shared-alarm.ts';
+import { applyWorkspaceAlarm, alarmTime, TURN_WAKE_KEY, SERVICE_WAKE_KEY, OBSERVER_WAKE_KEY, WORKSPACE_STATE_KEY } from './shared-alarm.ts';
 
 type WorkspaceWakeRecord={wakeAt:unknown};
 function workspaceWake(value:unknown):number|null{
@@ -7,36 +7,40 @@ function workspaceWake(value:unknown):number|null{
   return alarmTime((value as WorkspaceWakeRecord).wakeAt);
 }
 
-/** Persists the Turn domain's logical deadline and projects the earliest of
- * provisioning and Turn deadlines onto the Durable Object's single alarm. */
-export class DurableTurnAlarmPort{
+/** A logical activity deadline sharing the Workspace's physical alarm.
+ * Every mutation reads all domains inside the same storage transaction. */
+class DurableActivityAlarmPort{
   readonly #storage:DurableObjectStorage;
-  constructor(storage:DurableObjectStorage){
+  readonly #key:typeof TURN_WAKE_KEY|typeof SERVICE_WAKE_KEY|typeof OBSERVER_WAKE_KEY;
+  constructor(storage:DurableObjectStorage,key:typeof TURN_WAKE_KEY|typeof SERVICE_WAKE_KEY|typeof OBSERVER_WAKE_KEY){
     if(!storage?.kv||typeof storage.transaction!=='function'||typeof storage.sync!=='function')throw Error('sqlite-workspace-alarm-storage-required');
-    this.#storage=storage;
+    this.#storage=storage;this.#key=key;
   }
-  read():number|null{return alarmTime(this.#storage.kv.get<unknown>(TURN_WAKE_KEY));}
-  async schedule(at:number):Promise<void>{const turnWake=alarmTime(at)!;
-    await this.#storage.transaction(async transaction=>{
-      const workspace=await transaction.get<unknown>(WORKSPACE_STATE_KEY);
-      await transaction.put(TURN_WAKE_KEY,turnWake);
-      await applyWorkspaceAlarm(transaction,workspaceWake(workspace),turnWake);
-    });
+  read():number|null{return alarmTime(this.#storage.kv.get<unknown>(this.#key));}
+  async #apply(transaction:DurableObjectTransaction){
+    const workspace=await transaction.get<unknown>(WORKSPACE_STATE_KEY),turn=await transaction.get<unknown>(TURN_WAKE_KEY),service=await transaction.get<unknown>(SERVICE_WAKE_KEY),observer=await transaction.get<unknown>(OBSERVER_WAKE_KEY);
+    return applyWorkspaceAlarm(transaction,workspaceWake(workspace),turn,service,observer);
+  }
+  async schedule(at:number):Promise<void>{const wake=alarmTime(at)!;
+    await this.#storage.transaction(async transaction=>{await transaction.put(this.#key,wake);await this.#apply(transaction);});
     await this.#storage.sync();
   }
   async clear():Promise<void>{
-    await this.#storage.transaction(async transaction=>{
-      const workspace=await transaction.get<unknown>(WORKSPACE_STATE_KEY);
-      await transaction.delete(TURN_WAKE_KEY);
-      await applyWorkspaceAlarm(transaction,workspaceWake(workspace),null);
-    });
+    await this.#storage.transaction(async transaction=>{await transaction.delete(this.#key);await this.#apply(transaction);});
     await this.#storage.sync();
   }
-  async reconcile():Promise<number|null>{let next:number|null=null;
-    await this.#storage.transaction(async transaction=>{
-      const workspace=await transaction.get<unknown>(WORKSPACE_STATE_KEY),turnWake=await transaction.get<unknown>(TURN_WAKE_KEY);
-      next=await applyWorkspaceAlarm(transaction,workspaceWake(workspace),turnWake);
-    });
+  async reconcile():Promise<number|null>{
+    const next=await this.#storage.transaction(transaction=>this.#apply(transaction));
     await this.#storage.sync();return next;
   }
+}
+export class DurableTurnAlarmPort extends DurableActivityAlarmPort{
+  constructor(storage:DurableObjectStorage){super(storage,TURN_WAKE_KEY);}
+}
+export class DurableServiceAlarmPort extends DurableActivityAlarmPort{
+  constructor(storage:DurableObjectStorage){super(storage,SERVICE_WAKE_KEY);}
+}
+
+export class DurableObserverAlarmPort extends DurableActivityAlarmPort{
+  constructor(storage:DurableObjectStorage){super(storage,OBSERVER_WAKE_KEY);}
 }

@@ -9,6 +9,7 @@ test('RevisionStore is the sole workerd RPC authority for immutable R2 revisions
   const entry=`
     import {RevisionStore as BaseRevisionStore} from './services/turn-runtime/revision-store.ts';
     import {initialWorkspaceReferenceFromReady,InitialWorkspaceResolver} from './services/turn-runtime/initial-workspace.ts';
+    import {modelContentKey,verifyModelContent} from './services/runtime/content.ts';
     import {initialCheckpoint} from './services/runtime/starter.ts';
     import {initialWorkspaceArchive} from './services/turn-runtime/initial-workspace-archive.ts';
     import {checkpointKey} from './services/runtime/core.ts';
@@ -18,7 +19,7 @@ test('RevisionStore is the sole workerd RPC authority for immutable R2 revisions
         let lost=false;const bucket=new Proxy(env.WORKSPACE_CHECKPOINTS,{get(target,property){
           if(property==='delete')return async key=>{await target.delete(key);if(!lost&&String(key).endsWith('${'d'.repeat(64)}')){lost=true;throw Error('injected-delete-ack-loss')}};
           const value=target[property];return typeof value==='function'?value.bind(target):value;
-        }});super(ctx,{REVISION_STORE:env.REVISION_STORE,WORKSPACE_CHECKPOINTS:bucket});
+        }});super(ctx,{REVISION_STORE:env.REVISION_STORE,WORKSPACE_CHECKPOINTS:bucket,MODEL_CONTENT:env.MODEL_CONTENT});
       }
     }
     export default {async fetch(request,env){
@@ -27,19 +28,28 @@ test('RevisionStore is the sole workerd RPC authority for immutable R2 revisions
       try{
         if(body.action==='seedInitial'){
           const scope=body.identity.scope,task={id:'initial-task',tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,generation:scope.workspaceGeneration,starterVersion:'blank-v1',authVersion:1,createdAt:1000,deadlineAt:2000},runtime={taskId:task.id,tenantId:task.tenantId,projectId:task.projectId,workspaceId:task.workspaceId,generation:task.generation,runtimeId:'initial-runtime',leaseId:'initial-lease'},markerNonce='initial-nonce';
-          const checkpoint=await initialCheckpoint({task,identity:runtime,markerNonce});await env.WORKSPACE_CHECKPOINTS.put(checkpointKey(runtime),checkpoint.text);
+          let model=null;
+          if(body.model){
+            const sourceFiles={'app/preview.json':JSON.stringify({schemaVersion:1,runtime:'python',entrypoint:'app/preview.py',dependencyLock:'app/requirements.lock',port:8080,healthPath:'/healthz'}),'app/preview.py':'print(1)','app/requirements.lock':'{"schemaVersion":1,"packages":{}}'};
+            const files=[];for(const [path,text] of Object.entries(sourceFiles))files.push({path,bytes:new TextEncoder().encode(text).length,sha256:await workspaceDigest(text),contentBase64:btoa(text)});
+            const serialized=JSON.stringify({schemaVersion:1,files});task.modelContent={modelVersionId:'model-version-a',modelId:'queue',version:'1',contentRef:'queue-v1.json',contentSha256:await workspaceDigest(serialized)};
+            await env.MODEL_CONTENT.put(modelContentKey(task.modelContent),serialized);model=await verifyModelContent(task.modelContent,await env.MODEL_CONTENT.get(modelContentKey(task.modelContent)));
+          }
+          const checkpoint=await initialCheckpoint({task,identity:runtime,markerNonce},model?.receipt);await env.WORKSPACE_CHECKPOINTS.put(checkpointKey(runtime),checkpoint.text);
           const ready={receiptId:'receipt-initial',initializedAt:1500,layoutVersion:'m1-empty-v1',markerSha256:await workspaceDigest(canonicalWorkspaceMarker(runtime,markerNonce)),checkpointRevision:checkpoint.revision};
           const reference=await initialWorkspaceReferenceFromReady({scope,task,runtime,markerNonce,ready}),resolved=await stub.resolveInitial(reference,scope);
           return Response.json({ok:true,value:{reference,filesSha256:resolved.filesSha256},key:checkpointKey(runtime)});
         }
+        if(body.action==='initialPreviewPlan')return Response.json({ok:true,value:await stub.initialPreviewPlan(body.reference,body.scope)});
+        if(body.action==='sourceFiles')return Response.json({ok:true,value:Array.from(await stub.serviceFiles(body.source))});
         if(body.action==='resolveInitial')return Response.json({ok:true,value:await stub.resolveInitial(body.initial.reference,body.identity.scope)});
         if(body.action==='diff')return Response.json({ok:true,value:await stub.diff(body.identity,body.receipt)});
         if(body.action==='initialCommit'){
           const resolved=await stub.resolveInitial(body.initial.reference,body.identity.scope),snapshot={identity:body.identity,filesArchive:body.modified?initialWorkspaceArchive({'README.md':new TextEncoder().encode('Updated README'),'model/main.py':new TextEncoder().encode('print(1)')}):resolved.filesArchive,piSession:new TextEncoder().encode('session')};
           return Response.json({ok:true,value:await stub.commit({identity:body.identity,outcome:'completed',executionErrorCode:null,base:{workspace:null,session:null,initial:body.initial},snapshot})});
         }
-        if(body.action==='previewPlan')return Response.json({ok:true,value:await stub.previewPlan(body.identity,body.receipt)});
-        if(body.action==='serviceFiles')return Response.json({ok:true,value:Array.from(await stub.serviceFiles(body.identity,body.receipt))});
+        if(body.action==='previewPlan')return Response.json({ok:true,value:await stub.previewPlan({kind:'saved-turn',identity:body.identity,revision:body.receipt})});
+        if(body.action==='serviceFiles')return Response.json({ok:true,value:Array.from(await stub.serviceFiles({kind:'saved-turn',identity:body.identity,revision:body.receipt}))});
         if(body.action==='previewCommit'){
           const encode=value=>new TextEncoder().encode(value);
           const filesArchive=initialWorkspaceArchive({'app/preview.json':encode(JSON.stringify({schemaVersion:1,runtime:'python',entrypoint:'app/preview.py',dependencyLock:'app/requirements.lock',port:8080,healthPath:'/healthz'})),'app/preview.py':encode('print(1)'),'app/requirements.lock':encode('# stdlib')});
@@ -54,7 +64,7 @@ test('RevisionStore is the sole workerd RPC authority for immutable R2 revisions
       }catch(error){return Response.json({ok:false,error:error.message});}
     }};`;
   const bundle=await build({stdin:{contents:entry,sourcefile:'revision-store-test.ts',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'neutral',target:'es2024',external:['cloudflare:workers'],logLevel:'silent'});
-  const worker='revision-store-local',mf=new Miniflare({host:'127.0.0.1',port:0,inspectorPort:0,cf:{},telemetry:{enabled:false},logRequests:false,workers:[{config:{type:'worker',name:worker,compatibilityDate:'2026-09-06',manifest:{mainModule:'worker.mjs',modules:{'worker.mjs':{type:'esm',contents:bundle.outputFiles[0].text}}},env:{REVISION_STORE:{type:'durable-object',worker,exportName:'RevisionStore'},WORKSPACE_CHECKPOINTS:{type:'r2',name:'revision-store-test'}},exports:{RevisionStore:{type:'durable-object',storage:'sqlite'}}},dev:{unsafeRegisterWorker:false,outboundService:{type:'fetcher',handler:()=>new Response('outbound-disabled',{status:403})}}}]});
+  const worker='revision-store-local',mf=new Miniflare({host:'127.0.0.1',port:0,inspectorPort:0,cf:{},telemetry:{enabled:false},logRequests:false,workers:[{config:{type:'worker',name:worker,compatibilityDate:'2026-09-06',manifest:{mainModule:'worker.mjs',modules:{'worker.mjs':{type:'esm',contents:bundle.outputFiles[0].text}}},env:{REVISION_STORE:{type:'durable-object',worker,exportName:'RevisionStore'},WORKSPACE_CHECKPOINTS:{type:'r2',name:'revision-store-test'},MODEL_CONTENT:{type:'r2',name:'preview-model-test'}},exports:{RevisionStore:{type:'durable-object',storage:'sqlite'}}},dev:{unsafeRegisterWorker:false,outboundService:{type:'fetcher',handler:()=>new Response('outbound-disabled',{status:403})}}}]});
   const identity={scope:{tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1},sessionId:'session-a',turnId:'turn-a',dispatchId:'dispatch-a',generation:1};
   const call=async body=>{const response=await mf.dispatchFetch('http://revision.test/',{method:'POST',body:JSON.stringify(body)});assert.equal(response.status,200);return response.json();};
   try{
@@ -90,10 +100,19 @@ test('RevisionStore is the sole workerd RPC authority for immutable R2 revisions
     const changes=await call({action:'diff',identity:modifiedIdentity,receipt:modified.value});assert.equal(changes.ok,true);assert.deepEqual(changes.value.summary,{added:1,modified:1,deleted:0});
     await bucket.delete(seed.key);
     const unavailable=await call({action:'diff',identity:initialIdentity,receipt:first.value});assert.equal(unavailable.ok,false);assert.match(unavailable.error,/checkpoint-missing/);
+    const modelIdentity={...identity,scope:{...identity.scope,workspaceId:'model-workspace'}},modelSeed=await call({action:'seedInitial',identity:modelIdentity,model:true});assert.equal(modelSeed.ok,true);
+    const initialPlan=await call({action:'initialPreviewPlan',reference:modelSeed.value.reference,scope:modelIdentity.scope});assert.equal(initialPlan.ok,true);assert.equal(initialPlan.value.source.kind,'initial-workspace');assert.equal('identity' in initialPlan.value,false);assert.equal('revision' in initialPlan.value,false);
+    const initialFiles=await call({action:'sourceFiles',source:initialPlan.value.source});assert.equal(initialFiles.ok,true);assert.equal(await digest(Uint8Array.from(initialFiles.value)),initialPlan.value.source.filesSha256);
+    assert.equal((await call({action:'initialPreviewPlan',wrong:true,reference:modelSeed.value.reference,scope:modelIdentity.scope})).ok,false);
+    assert.equal((await call({action:'initialPreviewPlan',reference:modelSeed.value.reference,scope:{...modelIdentity.scope,tenantId:'tenant-b'}})).ok,false);
+    assert.equal((await call({action:'sourceFiles',source:{...initialPlan.value.source,filesSha256:'0'.repeat(64)}})).ok,false);
+    const modelBucket=await mf.getR2Bucket('MODEL_CONTENT',worker),modelKeys=await modelBucket.list();assert.equal(modelKeys.objects.length,1);await modelBucket.put(modelKeys.objects[0].key,'corrupt');
+    assert.equal((await call({action:'initialPreviewPlan',reference:modelSeed.value.reference,scope:modelIdentity.scope})).ok,false);
+    assert.equal((await call({action:'sourceFiles',source:initialPlan.value.source})).ok,false);
     const previewIdentity={...identity,turnId:'preview-turn',dispatchId:'preview-dispatch'};
     const previewSaved=await call({action:'previewCommit',identity:previewIdentity});assert.equal(previewSaved.ok,true);
     const plan=await call({action:'previewPlan',identity:previewIdentity,receipt:previewSaved.value});assert.equal(plan.ok,true);
-    assert.equal(plan.value.kind,'service');assert.deepEqual(plan.value.revision,previewSaved.value);
+    assert.equal(plan.value.kind,'service');assert.deepEqual(plan.value.source.revision,previewSaved.value);
     assert.equal(plan.value.entrypointSha256,await digest('print(1)'));assert.equal(plan.value.dependencyLockSha256,await digest('# stdlib'));
     assert.equal(JSON.stringify(plan).includes('private-session'),false);
     assert.deepEqual(await call({action:'previewPlan',wrong:true,identity:previewIdentity,receipt:previewSaved.value}),{ok:false,error:'revision-store-actor-scope-denied'});

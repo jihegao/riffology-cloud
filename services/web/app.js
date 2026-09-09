@@ -1,4 +1,8 @@
+import {createServicePanel} from './services.js';
+import {createPreviewPanel} from './previews.js';
 const $ = selector => document.querySelector(selector);
+const previewPanel=createPreviewPanel({root:$('#workspace-preview'),api});
+const servicePanel=createServicePanel({root:$('#workspace-services'),api,onPreviewRun:runId=>previewPanel.openRun(runId)});
 const notice = $('#notice');
 const dialog = $('#project-dialog');
 let tenant = null;
@@ -106,7 +110,8 @@ async function api(path, options = {}) {
     headers: { 'Content-Type': 'application/json', ...options.headers },
   });
   if (!response.ok) {
-    const messages = { 400: '请求内容无效', 401: '请先登录', 404: '当前账号尚未获得访问权限', 409: '状态已变化，请刷新后重试', 503: '服务暂不可用，请稍后再试' };
+    const projectLimit = response.status === 429 && path.startsWith('/api/workspaces/');
+    const messages = { 400: '请求内容无效', 401: '请先登录', 403: '登录或项目权限已变化，请刷新后重试', 404: '当前账号尚未获得访问权限', 409: '状态已变化，请刷新后重试', 429: projectLimit ? '本项目已达到当前费用或运行上限' : '请求过于频繁，请稍后重试', 503: '服务暂不可用，请稍后再试' };
     throw Object.assign(new Error(messages[response.status] || '请求失败，请稍后重试'), { status: response.status });
   }
   return response.status === 204 ? null : response.json();
@@ -125,6 +130,7 @@ function stopEventStream() {
 }
 
 function accountView() {
+  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();}
   $('#login').hidden = authenticated;
   const workspaceRoutePending = Boolean(workspaceProjectIdFromHash()) && !activeProject;
   $('#app').hidden = !tenant || Boolean(activeProject) || workspaceRoutePending;
@@ -362,6 +368,7 @@ function connectEventStream(workspaceId, cursor, generation) {
 
 async function refreshWorkspace(generation = viewGeneration) {
   if (!activeProject || generation !== viewGeneration) return;
+  if(activeProject.status!=='ready')return;
   const workspaceId = activeProject.workspace_id;
   try {
     const [snapshot, replay] = await Promise.all([api(`/api/workspaces/${encodeURIComponent(workspaceId)}`), readWorkspaceEvents(workspaceId)]);
@@ -381,7 +388,7 @@ async function refreshWorkspace(generation = viewGeneration) {
 }
 
 function openWorkspace(project) {
-  if (project.status !== 'ready' || !project.workspace_id) return;
+  if (!project.workspace_id) return;
   stopPolling();
   stopEventStream();
   viewGeneration++;
@@ -400,13 +407,20 @@ function openWorkspace(project) {
   $('#new-session').textContent = '新建 Session';
   if (location.hash !== `#/workspace/${encodeURIComponent(project.id)}`) history.replaceState(null, '', `#/workspace/${encodeURIComponent(project.id)}`);
   $('#workspace-title').textContent = project.title;
-  $('#workspace-meta').textContent = '状态已保存 · 浏览器只是观察者';
+  const ready=project.status==='ready';
+  $('#workspace-meta').textContent = ready?'状态已保存 · 浏览器只是观察者':'项目暂未就绪 · 仍可查看和停止独立服务';
+  $('#message-input').disabled=!ready;$('#message-submit').disabled=!ready;$('#new-session').disabled=!ready;
+  $('#session-select').disabled=!ready;$('#cancel-turn').hidden=true;
+  $('#files-refresh').disabled=!ready;$('#files-tab').disabled=!ready;$('#diff-tab').disabled=!ready;
   $('#message-error').textContent = '';
   accountView();
   renderWorkspace();
   renderWorkspaceFiles();
   renderWorkspaceDiff();
   selectArtifactPanel('files');
+  previewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,canOpen:ready});
+  servicePanel.open({workspaceId:project.workspace_id,tenantId:tenant.id,canStart:ready});
+  if(!ready){$('#turns').replaceChildren();appendTurnCard('system','项目暂未就绪。会话与文件恢复后可继续使用；独立服务可在下方管理。');$('#files-meta').textContent='项目暂未就绪';$('#workspace-files').replaceChildren();}
   void refreshWorkspace(viewGeneration);
 }
 
@@ -423,7 +437,7 @@ async function renderProjects() {
     const projects = [...data.projects];
     const requestedProjectId = workspaceProjectIdFromHash();
     if (requestedProjectId) {
-      const requested = projects.find(project => project.id === requestedProjectId && project.status === 'ready' && project.workspace_id);
+      const requested = projects.find(project => project.id === requestedProjectId && project.workspace_id);
       if (requested) { openWorkspace(requested); return; }
       history.replaceState(null, '', location.pathname + location.search);
       if (activeProject) {
@@ -460,8 +474,8 @@ async function renderProjects() {
       const open = document.createElement('button');
       open.className = 'project-open';
       open.type = 'button';
-      open.disabled = project.status !== 'ready' || !project.workspace_id;
-      open.setAttribute('aria-label', project.status === 'ready' ? `打开项目 ${project.title}` : `${project.title} 尚未就绪`);
+      open.disabled = !project.workspace_id;
+      open.setAttribute('aria-label', project.status === 'ready' ? `打开项目 ${project.title}` : `管理项目 ${project.title}`);
       const title = document.createElement('h2');
       title.textContent = project.title;
       const status = document.createElement('span');
@@ -509,6 +523,7 @@ function workspaceProjectIdFromHash() {
 }
 
 async function load() {
+  servicePanel.close();previewPanel.leave();
   const generation = ++viewGeneration;
   stopPolling();
   stopEventStream();
@@ -546,6 +561,8 @@ $('#google').onclick = async () => {
 
 $('#sign-out').onclick = async () => {
   viewGeneration++;
+  servicePanel.close();previewPanel.leave();
+  stopEventStream();
   stopPolling();
   const button = $('#sign-out');
   button.disabled = true;
@@ -569,7 +586,7 @@ $('#sign-out').onclick = async () => {
     $('#projects').replaceChildren();
     accountView();
     show('已退出登录。');
-  } catch (error) { show(error.message, true); }
+  } catch (error) { if(authenticated&&tenant&&activeProject){previewPanel.enter({workspaceId:activeProject.workspace_id,tenantId:tenant.id,canOpen:activeProject.status==='ready'});servicePanel.open({workspaceId:activeProject.workspace_id,tenantId:tenant.id,canStart:activeProject.status==='ready'});void refreshWorkspace(viewGeneration);}show(error.message, true); }
   finally { button.disabled = false; }
 };
 
@@ -617,7 +634,7 @@ $('#files-tab').onclick=()=>selectArtifactPanel('files');
 $('#diff-tab').onclick=()=>selectArtifactPanel('diff');
 
 $('#new-session').onclick = async () => {
-  if (!activeProject || creatingSession) return;
+  if (!activeProject || activeProject.status!=='ready' || creatingSession) return;
   const workspaceId = activeProject.workspace_id;
   sessionIntent ??= { key: crypto.randomUUID(), title: `Session ${Object.keys(workspaceSnapshot?.sessions || {}).length + 1}` };
   const current = sessionIntent;
@@ -630,12 +647,12 @@ $('#new-session').onclick = async () => {
     button.textContent = '新建 Session';
     await refreshWorkspace(viewGeneration);
   } catch (error) { if (activeProject?.workspace_id === workspaceId) { $('#message-error').textContent = error.message; button.textContent = '重试新建 Session'; } }
-  finally { creatingSession = false; button.disabled = false; }
+  finally { creatingSession = false; button.disabled = activeProject?.status!=='ready'; }
 };
 
 $('#message-form').onsubmit = async event => {
   event.preventDefault();
-  if (sendingMessage || !activeProject) return;
+  if (sendingMessage || !activeProject || activeProject.status!=='ready') return;
   const text = $('#message-input').value.trim();
   if (!text) return;
   const generation = viewGeneration;
@@ -665,7 +682,7 @@ $('#message-form').onsubmit = async event => {
     $('#message-submit').textContent = '重试';
   } finally {
     sendingMessage = false;
-    $('#message-submit').disabled = false;
+    $('#message-submit').disabled = activeProject?.status!=='ready';
   }
 };
 

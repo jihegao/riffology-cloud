@@ -11,6 +11,12 @@ import { HttpError, json, readJson, requireOrigin } from './http.ts';
 import type { TurnActor, TurnScope } from '../turn/protocol.ts';
 import { turnEventStream } from './events.ts';
 import { toolArtifactReceipt } from '../artifacts/protocol.ts';
+import type {GatewayServiceRuns,ServiceCursor} from './service-services.ts';
+import type {GatewayPreviews} from './preview-services.ts';
+import {browserPrincipal} from '../preview/session.ts';
+import {observerRpcData} from '../preview/observer-rpc-data.ts';
+import {observerArtifactReceipt} from '../preview/observer-artifacts.ts';
+import type {GatewayObservations} from './observer-services.ts';
 
 export interface GatewayServices {
   origin:string;
@@ -19,6 +25,9 @@ export interface GatewayServices {
   modelUpload?:ModelContentUploadPort;
   identity(request:Request):Promise<VerifiedIdentity|null>;
   provision?(principal:Principal,tenantId:string,projectId:string):Promise<void>;
+  serviceRuns?:GatewayServiceRuns;
+  previews?:GatewayPreviews;
+  observations?:GatewayObservations;
   turns?:{
     createSession(scope:TurnScope,actor:TurnActor,key:string,body:{title:unknown}):Promise<unknown>;
     submit(scope:TurnScope,actor:TurnActor,sessionId:string,key:string,body:{message:unknown}):Promise<unknown>;
@@ -29,6 +38,13 @@ export interface GatewayServices {
     diff(scope:TurnScope):Promise<unknown>;
     artifact(scope:TurnScope,artifactId:string):Promise<unknown>;
   };
+}
+async function serviceCall<T>(operation:()=>Promise<T>):Promise<T>{
+ try{return await operation();}catch(error){const code=error instanceof Error?error.message:'';
+  if(code==='service-intent-conflict')throw new CatalogError('idempotency_conflict');
+  if(code==='service-intent-not-found'||code==='workspace-actor-scope-denied')throw new CatalogError('not_found');
+  throw error;
+ }
 }
 async function turnCall<T>(operation:()=>Promise<T>):Promise<T>{
   try{return await operation();}catch(error){const code=error instanceof Error?error.message:'';
@@ -53,6 +69,15 @@ async function artifactContent(value:unknown):Promise<Response>{
   if(!(result.content instanceof Uint8Array)||result.content.byteLength!==receipt.bytes)throw Error('invalid-tool-artifact-read');
   const digest=await crypto.subtle.digest('SHA-256',Uint8Array.from(result.content)),sha256=[...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join('');if(sha256!==receipt.sha256)throw Error('invalid-tool-artifact-read');
   return new Response(result.content.slice().buffer,{headers:{'content-type':`${receipt.mediaType}; charset=utf-8`,'content-length':String(receipt.bytes),'cache-control':'no-store','x-content-type-options':'nosniff','etag':`"${receipt.sha256}"`,'x-riffology-artifact-id':receipt.artifactId,'x-riffology-artifact-sha256':receipt.sha256}});
+}
+async function observerArtifactContent(value:unknown):Promise<Response>{
+ const data=observerRpcData(value as object) as Record<string,unknown>,keys=['receipt','content'];
+ if(Object.keys(data).length!==keys.length||keys.some(key=>!Object.hasOwn(data,key)))throw Error('invalid-observer-artifact-read');
+ const receipt=observerArtifactReceipt(data.receipt),content=data.content;
+ if(!(content instanceof Uint8Array)||content.byteLength!==receipt.bytes)throw Error('invalid-observer-artifact-read');
+ const bytes=Uint8Array.from(content),digest=await crypto.subtle.digest('SHA-256',bytes),sha256=[...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join('');
+ if(sha256!==receipt.sha256)throw Error('invalid-observer-artifact-read');
+ return new Response(bytes.buffer,{headers:{'content-type':receipt.mediaType,'content-length':String(receipt.bytes),'cache-control':'no-store','x-content-type-options':'nosniff','content-security-policy':"default-src 'none'; sandbox",'x-riffology-observation-state':'historical'}});
 }
 /** Authentication is supplied by the server entrypoint, never a request identity header. */
 export async function gateway(request:Request, services:GatewayServices):Promise<Response> {
@@ -94,6 +119,61 @@ export async function gateway(request:Request, services:GatewayServices):Promise
         JOIN catalog_users u ON u.id=t.owner_user_id WHERE t.owner_user_id=? AND t.status='active' AND m.status='active' AND u.status='active' AND u.auth_version=?`,principal.userId,principal.authVersion));
       return json({userId:principal.userId,tenants});
     }
+    const previewRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/previews(?:\/([A-Za-z0-9_-]{1,128})\/(tickets))?$/.exec(url.pathname);
+    if(previewRoute){
+      if(request.method!=='POST'&&!(request.method==='GET'&&!previewRoute[2]))throw new CatalogError('not_found');
+      if(url.search!=='')throw new CatalogError('invalid_input');
+      const scope=await new ProjectCatalog(services.database,new Set(['blank-v1']),models).workspace(principal,previewRoute[1]!);
+      if(!identity.browserSession)throw new HttpError('authentication_required',401);
+      const browser=browserPrincipal(identity,principal);
+      if(!services.previews)throw Error('preview-not-configured');
+      if(request.method==='GET')return json(await services.previews.current(scope,principal));
+      const previewId=previewRoute[2];
+      if(previewId){
+        const body=bodyOnly(await readJson(request),'nonce');
+        if(typeof body.nonce!=='string'||! /^[a-f0-9]{64}$/.test(body.nonce))throw new CatalogError('invalid_input');
+        return json(await services.previews.ticket(scope,browser,previewId,body.nonce));
+      }
+      const body=await readJson(request) as {runId?:unknown;expectedPreviewId?:unknown};
+      if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).length!==2||!Object.hasOwn(body,'runId')||!Object.hasOwn(body,'expectedPreviewId')||typeof body.runId!=='string'||! /^[A-Za-z0-9_-]{1,128}$/.test(body.runId)||!(body.expectedPreviewId===null||typeof body.expectedPreviewId==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(body.expectedPreviewId)))throw new CatalogError('invalid_input');
+      try{return json(await services.previews.open(scope,principal,idempotencyKey(request),{runId:body.runId,expectedPreviewId:body.expectedPreviewId as string|null}));}
+      catch(error){if(error instanceof Error&&['preview-binding-cas-conflict','preview-binding-intent-conflict'].includes(error.message))throw new CatalogError('idempotency_conflict');throw error;}
+    }
+    const serviceRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/services(?:\/([A-Za-z0-9_-]{1,128})(?:\/(stop))?)?$/.exec(url.pathname);
+    if(serviceRoute){
+      const [,workspaceId,runId,stop]=serviceRoute;
+      const creating=request.method==='POST'&&!runId;
+      const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models);
+      const scope=creating?await catalog.workspace(principal,workspaceId!):await catalog.maintenanceWorkspace(principal,workspaceId!);
+      if(!services.serviceRuns)throw Error('service-runs-not-configured');
+      if(creating){
+        if(url.search!=='')throw new CatalogError('invalid_input');
+        const body=bodyOnly(await readJson(request),'maxDurationMs'),duration=body.maxDurationMs;
+        if(!Number.isSafeInteger(duration)||(duration as number)<1||(duration as number)>900000)throw new CatalogError('invalid_input');
+        const result=await serviceCall(()=>services.serviceRuns!.submit(scope,principal,idempotencyKey(request),{maxDurationMs:duration as number}));return json(result,202);
+      }
+      if(runId&&stop&&request.method==='POST'){
+        if(url.search!=='')throw new CatalogError('invalid_input');
+        const body=await readJson(request);if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).length)throw new CatalogError('invalid_input');
+        return json(await serviceCall(()=>services.serviceRuns!.stop(scope,runId)),202);
+      }
+      if(runId&&!stop&&request.method==='GET'){
+        if(url.search!=='')throw new CatalogError('invalid_input');
+        return json(await serviceCall(()=>services.serviceRuns!.view(scope,runId)));
+      }
+      if(!runId&&request.method==='GET'){
+        if([...url.searchParams.keys()].some(key=>!['limit','before_created_at','before_run_id'].includes(key)))throw new CatalogError('invalid_input');
+        const limit=cursor(url,'limit',20,50);if(limit<1)throw new CatalogError('invalid_input');
+        let before:ServiceCursor|undefined;
+        if(url.searchParams.has('before_created_at')||url.searchParams.has('before_run_id')){
+          const ids=url.searchParams.getAll('before_run_id'),createdAt=cursor(url,'before_created_at',0,Number.MAX_SAFE_INTEGER);
+          if(createdAt<1||ids.length!==1||!/^[A-Za-z0-9_-]{1,128}$/.test(ids[0]!))throw new CatalogError('invalid_input');
+          before={createdAt,runId:ids[0]!};
+        }
+        return json(await serviceCall(()=>services.serviceRuns!.list(scope,{limit,...(before?{before}:{})})));
+      }
+      throw new CatalogError('not_found');
+    }
     const workspace=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})$/.exec(url.pathname);
     const files=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/files$/.exec(url.pathname);
     const diff=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/diff$/.exec(url.pathname);
@@ -102,6 +182,15 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     const turns=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/sessions\/([A-Za-z0-9_-]{1,128})\/turns$/.exec(url.pathname);
     const cancel=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/turns\/([A-Za-z0-9_-]{1,128})\/cancel$/.exec(url.pathname);
     const events=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/events$/.exec(url.pathname);
+    const observationArtifact=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/turns\/([A-Za-z0-9_-]{1,128})\/observations\/([A-Za-z0-9_-]{1,128})\/artifacts\/(state|view)$/.exec(url.pathname);
+    if(observationArtifact){
+      if(request.method!=='GET')throw new CatalogError('not_found');
+      if(url.search!=='')throw new CatalogError('invalid_input');
+      const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),turnScope=await catalog.workspace(principal,observationArtifact[1]!);
+      if(!services.observations)throw Error('observer-services-not-configured');
+      const caller={userId:principal.userId,authVersion:principal.authVersion};
+      return await observerArtifactContent(await turnCall(()=>services.observations!.artifact(turnScope,caller,observationArtifact[2]!,observationArtifact[3]!,observationArtifact[4]! as 'state'|'view')));
+    }
     const turnMatch=workspace??files??diff??artifact??sessions??turns??cancel??events;
     if(turnMatch){
       if(!services.turns)throw Error('turn-service-not-configured');

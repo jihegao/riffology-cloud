@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { TrustedPiExecutionAdapter, trustedPiExecutionLimits, type TrustedPiHostObservation, type TrustedPiHostPort } from '../../services/turn-runtime/pi-execution.ts';
+import { WorkspacePreparedExecutionPort } from '../../services/turn-runtime/workspace.ts';
 import type { TurnRuntimeIdentity } from '../../services/turn-runtime/identity.ts';
 
 const identity:TurnRuntimeIdentity={scope:{tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:2},sessionId:'session-a',turnId:'turn-a',dispatchId:'dispatch-a',generation:2};
@@ -8,6 +9,7 @@ const actor={userId:'user-a',authVersion:1};
 const base={workspace:null,session:null};
 const stop={confirmationId:'stop-a',observedAt:1010,nativeRunning:false as const,fenced:true as const};
 const artifact={schemaVersion:1 as const,artifactId:`artifact-${'a'.repeat(60)}`,operation:'list' as const,mediaType:'application/json' as const,bytes:20000,sha256:'b'.repeat(64),createdAt:1000};
+const providerToolCallId=`fc_${'a'.repeat(26)}|call_${'b'.repeat(48)}`;
 function running(overrides:Partial<TrustedPiHostObservation>={}):TrustedPiHostObservation{return {identity,phase:'running',outcome:null,executionErrorCode:null,events:[],stopped:null,...overrides};}
 function fixture(){const calls:string[]=[];let start=running(),observe=running(),cancel=running();const host:TrustedPiHostPort={async start(){calls.push('start');return start;},async observe(){calls.push('observe');return observe;},async cancel(){calls.push('cancel');return cancel;}};return {calls,adapter:new TrustedPiExecutionAdapter(host),setStart(v:TrustedPiHostObservation){start=v;},setObserve(v:TrustedPiHostObservation){observe=v;},setCancel(v:TrustedPiHostObservation){cancel=v;}};}
 
@@ -15,15 +17,15 @@ test('maps bounded Trusted Pi events to deterministic product runtime events',as
   const f=fixture();f.setStart(running({events:[
     {sequence:1,at:1001,kind:'provider.status',state:'requesting',status:null,requestId:null},
     {sequence:2,at:1002,kind:'assistant.delta',text:'hello'},
-    {sequence:3,at:1003,kind:'tool.started',toolCallId:'call-a',name:'project_list'},
-    {sequence:4,at:1004,kind:'tool.updated',toolCallId:'call-a',name:'project_list',summary:'reading'},
-    {sequence:5,at:1005,kind:'tool.completed',toolCallId:'call-a',name:'project_list',isError:false,artifact},
+    {sequence:3,at:1003,kind:'tool.started',toolCallId:providerToolCallId,name:'project_list'},
+    {sequence:4,at:1004,kind:'tool.updated',toolCallId:providerToolCallId,name:'project_list',summary:'reading'},
+    {sequence:5,at:1005,kind:'tool.completed',toolCallId:providerToolCallId,name:'project_list',isError:false,artifact},
     {sequence:6,at:1006,kind:'assistant.message',text:'done',stopReason:'stop'},
     {sequence:7,at:1007,kind:'provider.status',state:'responding',status:200,requestId:'request-a'},
   ]}));
   const one=await f.adapter.start({...identity,actor,message:'build',base}),two=await f.adapter.start({...identity,actor,message:'build',base});
   assert.deepEqual(one.events!.map(item=>item.type),['provider.status','assistant.delta','tool.started','tool.updated','tool.completed','assistant.message','provider.status']);assert.deepEqual(two.events,one.events);assert.match(one.events![0]!.eventId,/^pi-[a-f0-9]{64}$/);assert.deepEqual(f.calls,['start','start']);
-  assert.deepEqual(one.events![4]!.payload,{toolCallId:'call-a',name:'project_list',isError:false,artifact});
+  assert.deepEqual(one.events![4]!.payload,{toolCallId:providerToolCallId,name:'project_list',isError:false,artifact});
   f.setObserve(running({events:[{sequence:2,at:1002,kind:'assistant.delta',text:'changed'}]}));const changed=await f.adapter.observe(identity);assert.equal(changed.events![0]!.eventId,one.events![1]!.eventId);assert.notDeepEqual(changed.events![0]!.payload,one.events![1]!.payload);
 });
 
@@ -51,4 +53,13 @@ test('rejects forged tool names, oversized text, excessive events and events on 
 test('module is isolated from M0 probes, provider configuration and project filesystem',async()=>{
   const source=await import('node:fs/promises').then(fs=>fs.readFile(new URL('../../services/turn-runtime/pi-execution.ts',import.meta.url),'utf8'));
   assert.doesNotMatch(source,/proxy-pi|go-pi-probe|m0-|providerDefinitions|resolveCredential|\/workspace|globalThis\.fetch/);
+});
+
+
+test('workspace and Pi adapters pass deadline but readonly observer never prepares or observes',async()=>{
+ const calls:string[]=[];const host:TrustedPiHostPort={async start(input){calls.push('start');assert.equal(input.executionDeadlineAt,601000);return running();},async observe(){calls.push('observe');return running();},async cancel(){calls.push('cancel');return running();},async currentObserverExecution(id){assert.deepEqual(id,identity);calls.push('authority');return {expiresAt:601000};}};
+ const execution=new WorkspacePreparedExecutionPort({async prepare(){calls.push('prepare');return {} as never;}},new TrustedPiExecutionAdapter(host));
+ assert.deepEqual(await execution.currentObserverExecution(identity),{expiresAt:601000});assert.deepEqual(calls,['authority']);
+ await execution.start({...identity,actor,message:'build',base,executionDeadlineAt:601000});assert.deepEqual(calls,['authority','prepare','start']);await assert.rejects(execution.start({...identity,actor,message:'build',base,executionDeadlineAt:601001}),/conflict/);
+ delete host.currentObserverExecution;await assert.rejects(execution.currentObserverExecution(identity),/observer-denied/);assert.deepEqual(calls,['authority','prepare','start']);
 });

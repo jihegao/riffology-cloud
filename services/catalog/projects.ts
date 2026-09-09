@@ -36,15 +36,23 @@ export class ProjectCatalog {
     return rows[0];
   }
 
-  async workspace(principal:Principal,workspaceId:string):Promise<TurnScope>{
+  private async resolveWorkspace(principal:Principal,workspaceId:string,requireReady:boolean):Promise<TurnScope>{
     opaqueId(workspaceId);
-    const rows=await this.db.query<{tenantId:string;projectId:string;workspaceId:string;workspaceGeneration:number;projectStatus:string;workspaceStatus:string}>(sql(`SELECT p.tenant_id AS tenantId,p.id AS projectId,w.id AS workspaceId,
-      w.generation AS workspaceGeneration,p.status AS projectStatus,w.status AS workspaceStatus
+    const rows=await this.db.query<{tenantId:string;projectId:string;workspaceId:string;workspaceGeneration:number;projectGeneration:number;projectStatus:string;workspaceStatus:string}>(sql(`SELECT p.tenant_id AS tenantId,p.id AS projectId,w.id AS workspaceId,
+      w.generation AS workspaceGeneration,p.generation AS projectGeneration,p.status AS projectStatus,w.status AS workspaceStatus
       FROM catalog_workspaces w JOIN catalog_projects p ON p.id=w.project_id AND p.tenant_id=w.tenant_id AND p.workspace_id=w.id
-      WHERE w.id=? AND EXISTS (${correlatedOwnership})`,workspaceId,principal.userId,principal.authVersion));
+      WHERE w.id=? AND p.generation=w.generation AND EXISTS (${correlatedOwnership})`,workspaceId,principal.userId,principal.authVersion));
     const row=rows[0];if(!row)throw new CatalogError('not_found');
-    if(row.projectStatus!=='ready'||row.workspaceStatus!=='ready')throw new CatalogError('not_ready');
+    if(requireReady&&(row.projectStatus!=='ready'||row.workspaceStatus!=='ready'))throw new CatalogError('not_ready');
     return {tenantId:row.tenantId,projectId:row.projectId,workspaceId:row.workspaceId,workspaceGeneration:row.workspaceGeneration};
+  }
+
+  async workspace(principal:Principal,workspaceId:string):Promise<TurnScope>{
+    return this.resolveWorkspace(principal,workspaceId,true);
+  }
+
+  async maintenanceWorkspace(principal:Principal,workspaceId:string):Promise<TurnScope>{
+    return this.resolveWorkspace(principal,workspaceId,false);
   }
 
   async create(principal: Principal, tenantId: string, key: string, body: unknown): Promise<{ project: Project; replayed: boolean }> {

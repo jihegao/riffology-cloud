@@ -66,7 +66,8 @@ test('private model endpoint binds MAC, capability, container and tenant budget 
   const response = await handleModelProxyRequest(await signedRequest(), environment(ledger), provider(calls), () => now);
   assert.equal(response.status, 200); assert.match(await response.text(),/response\.completed/);assert.equal(response.headers.get('content-type'),'text/event-stream');
   assert.equal(calls.length, 1); assert.equal(ledger.reserves.length, 1); assert.equal(ledger.dispatches, 1);
-  assert.deepEqual(Object.keys(calls[0] as Record<string, unknown>).sort(), ['deadlineAt','idempotencyKey','inputTokenUpperBound','maxOutputTokens','model','payload','provider','signal']);
+  assert.deepEqual(Object.keys(calls[0] as Record<string, unknown>).sort(), ['deadlineAt','idempotencyKey','inputTokenUpperBound','maxOutputTokens','model','payload','provider','providerSessionId','signal']);
+  assert.match((calls[0] as {providerSessionId:string}).providerSessionId,/^ses_[a-f0-9]{26}$/);
   assert.equal(ledger.reserves[0]!.provider, 'provider-a'); assert.equal(ledger.reserves[0]!.model, 'model-a');
   assert.equal(ledger.reserves[0]!.budgetPolicyVersion, 'policy-v1'); assert.equal(ledger.terminals[0]!.usage.kind, 'verified');
 });
@@ -112,6 +113,13 @@ test('unconfigured provider fails before reservation and provider uncertainty is
   assert.equal(ledger.unknown, 1);
   assert.equal((await handleModelProxyRequest(await signedRequest(), env, provider(calls), () => now)).status, 409);
   assert.equal(calls.length, 1);
+});
+
+test('vertical telemetry distinguishes provider dispatch from budget finish failure without request content',async()=>{
+  const ledger=log(),calls:unknown[]=[],events:Record<string,unknown>[]=[],env=environment(ledger),original=env.TENANT_MODEL_BUDGET.getByName;
+  env.TENANT_MODEL_BUDGET={getByName(name){const budget=original(name);return {...budget,async finish(){throw Error('model-call-finish-unavailable');}};}};
+  const response=await handleModelProxyRequest(await signedRequest(),env,provider(calls),()=>now,event=>events.push(event));assert.equal(response.status,503);assert.equal(ledger.unknown,1);
+  assert.deepEqual(events.map(event=>event.event),['provider-dispatch-result','model-call-failure']);assert.equal(events[0]!.status,200);assert.equal(events[1]!.stage,'budget-finish');assert.equal(events[1]!.errorCode,'model-call-finish-unavailable');assert.doesNotMatch(JSON.stringify(events),/hello|capability|request-a/);
 });
 
 test('route variants are absent and capability bounds reject before the budget', async () => {

@@ -76,7 +76,10 @@ function fixture(t: { after(fn: () => void): void }) {
       },
     }, runtime: () => runtime, hold(_promise: Promise<unknown>) {},
   };
-  let host = new WorkspaceCoordinator(store, ports, () => now, { rpcMs: 10, pollMs: 1, cleanupMs: 100, maxCalls: 40 });
+  // Real WebCrypto and file-backed SQLite run under the full-suite load.
+  // The logical deadline clock remains controlled; 10 ms caused incidental
+  // transport timeouts in the success path, unrelated to injected failures.
+  let host = new WorkspaceCoordinator(store, ports, () => now, { rpcMs: 1000, pollMs: 1, cleanupMs: 100, maxCalls: 40 });
   async function drain(max = 50) { for (let i = 0; i < max && host.report()?.wakeAt !== null; i++) await host.alarm(); return host.report()!; }
   return { task, store, quota, calls, projections, ports, runtime, drain,
     get host() { return host; }, get initializeCount() { return initializeCount; }, get stopCount() { return stopCount; },
@@ -85,7 +88,7 @@ function fixture(t: { after(fn: () => void): void }) {
     lose(kind: 'initialize' | 'acquire' | 'dispatch' | 'release' | 'stop') { if (kind === 'initialize') loseInitialize = true; if (kind === 'acquire') loseAcquire = true; if (kind === 'dispatch') loseDispatch = true; if (kind === 'release') loseRelease = true; if (kind === 'stop') loseStop = true; },
     setPending() { pending = true; }, unconfirmedStop(value = true) { stopUnconfirmed = value; }, forgeMarker() { forgedMarker = true; }, forgeModelReceipt() { forgedModelReceipt = true; },
     failProjects(count: number) { projectFailures = count; }, failFlush(value: boolean) { failFlush = value; }, failEffect(kind: 'acquire' | 'release' | null) { failEffect = kind; },
-    reopen() { db.close(); db = new DatabaseSync(filename); setup(); host = new WorkspaceCoordinator(store, ports, () => now, { rpcMs: 10, pollMs: 1, cleanupMs: 100, maxCalls: 40 }); },
+    reopen() { db.close(); db = new DatabaseSync(filename); setup(); host = new WorkspaceCoordinator(store, ports, () => now, { rpcMs: 1000, pollMs: 1, cleanupMs: 100, maxCalls: 40 }); },
   };
 }
 

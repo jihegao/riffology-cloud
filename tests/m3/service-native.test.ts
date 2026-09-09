@@ -7,7 +7,7 @@ import type {ServiceRuntimeInput} from '../../services/run/runtime-protocol.ts';
 import {spec,scope,reference} from './run-fixture.ts';
 async function fixture(){
  const s=spec(),encoder=new TextEncoder(),archive=initialWorkspaceArchive({'app/preview.json':encoder.encode(JSON.stringify(s.plan.declaration)),'app/main.py':encoder.encode('print(1)'),'app/requirements.lock':encoder.encode('{"schemaVersion":1,"packages":{}}'),'docs/padding':new Uint8Array(700000)});
- s.plan.revision.filesSha256=[...new Uint8Array(await crypto.subtle.digest('SHA-256',Uint8Array.from(archive)))].map(x=>x.toString(16).padStart(2,'0')).join('');const source={async files(){return archive;}};s.plan=await new PreviewPlanResolver(source).resolve(s.plan.identity,s.plan.revision);
+ s.plan.source.revision.filesSha256=[...new Uint8Array(await crypto.subtle.digest('SHA-256',Uint8Array.from(archive)))].map(x=>x.toString(16).padStart(2,'0')).join('');const source={async files(){return archive;}};s.plan=await new PreviewPlanResolver(source).resolve(s.plan.source) as typeof s.plan;
  const ref=reference('run-a'),input:ServiceRuntimeInput={reference:ref,scope,spec:s,lease:{tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,operation:'service-run',runId:ref.runId,operationId:ref.dispatchId,deadlineAt:ref.deadlineAt,generation:1,leaseId:ref.leaseId}};
  const chunks:Uint8Array[]=[],controls:string[]=[],commands:string[]=[];
  const files=new Map<string,string>();
@@ -24,7 +24,7 @@ async function fixture(){
 }
 test('native adapter revalidates fixed source and uploads bounded chunks without shell interpolation',async()=>{
  const f=await fixture();assert.equal((await f.backend.start(f.input)).status,'healthy');assert.ok(f.chunks.length>=3);assert.ok(f.chunks.every(x=>x.length<=256*1024));assert.deepEqual(Buffer.concat(f.chunks),Buffer.from(f.archive));
- const control=JSON.parse(f.controls[0]!);assert.equal(control.filesSha256,f.input.spec.plan.revision.filesSha256);assert.equal(control.entrypointSha256,f.input.spec.plan.entrypointSha256);assert.equal(f.controls[0]!.includes(f.input.spec.plan.revision.objectKey),false);
+ const control=JSON.parse(f.controls[0]!);assert.equal(control.filesSha256,(f.input.spec.plan.source.kind==='saved-turn'?f.input.spec.plan.source.revision.filesSha256:null));assert.equal(control.entrypointSha256,f.input.spec.plan.entrypointSha256);assert.equal(f.controls[0]!.includes('saved/revision'),false);
 });
 test('wrong pinned source or image fails before uploading or executing',async()=>{
  const f=await fixture();await assert.rejects(f.backend.start({...f.input,spec:{...f.input.spec,plan:{...f.input.spec.plan,entrypointSha256:'0'.repeat(64)}}}),/source-conflict/);
@@ -39,4 +39,13 @@ test('failed private chunk write never executes upload or native start',async()=
  const f=await fixture(),api={...f.api,async writeFile(){throw Error('write-ack-lost');}};
  await assert.rejects(new SandboxServiceNativeBackend(api,f.source,f.input.spec.runtimeImage,()=>1000).start(f.input),/write-ack-lost/);
  assert.equal(f.commands.length,0);assert.equal(f.controls.length,0);
+});
+
+test('native adapter accepts initial-workspace provenance without a Turn or session receipt',async()=>{
+ const f=await fixture(),saved=f.input.spec.plan.source;assert.equal(saved.kind,'saved-turn');if(saved.kind!=='saved-turn')throw Error('fixture');
+ const task={id:'initial-task',tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,generation:1,starterVersion:'blank-v1' as const,authVersion:1,createdAt:1,deadlineAt:2000};
+ // The R2 verification of this reference is exercised by RevisionStore Workerd tests;
+ // this fixture isolates the native adapter's source union transport contract.
+ f.input.spec.plan.source={kind:'initial-workspace',filesSha256:saved.revision.filesSha256,reference:{schemaVersion:1,scope,task,runtime:{taskId:task.id,tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,generation:1,runtimeId:'initial-runtime',leaseId:'initial-lease'},markerNonce:'initial-nonce',markerSha256:'a'.repeat(64),checkpointRevision:'b'.repeat(64)}};
+ assert.equal((await f.backend.start(f.input)).status,'healthy');assert.equal(JSON.parse(f.controls[0]!).filesSha256,saved.revision.filesSha256);assert.equal(f.controls[0]!.includes('initial-runtime'),false);assert.deepEqual(Buffer.concat(f.chunks),Buffer.from(f.archive));
 });

@@ -5,7 +5,7 @@ import { spawnSync } from 'node:child_process';
 test('project connection fence requires every syscall rule and fails closed', () => {
   const script = String.raw`
 import sys, pathlib, unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, mock_open
 sys.path.insert(0,str(pathlib.Path('services/project-tools').resolve()))
 import project_network_fence as f
 import effect_wrapper as effect
@@ -47,6 +47,20 @@ class Cases(unittest.TestCase):
         with patch.object(effect.pwd,'getpwnam',return_value=account), patch.object(f,'install',side_effect=RuntimeError('fence')), patch.object(effect.os,'setuid') as uid:
             with self.assertRaises(RuntimeError): effect.drop_to_project()
             uid.assert_not_called()
+    def test_locked_vertical_marker_allows_only_cross_arch_cancel_then_drops_uid(self):
+        account=MagicMock(pw_uid=10001,pw_gid=10001)
+        status='NoNewPrivs:\t1\nSeccomp:\t2\n'
+        with patch.object(effect.pwd,'getpwnam',return_value=account), patch.object(f,'install',side_effect=RuntimeError('project-network-seccomp-load-failed:-125')), patch.dict(effect.os.environ,{effect.PLATFORM_EGRESS_ENV:effect.PLATFORM_EGRESS_MARKER}), patch('builtins.open',mock_open(read_data=status)), patch.object(effect.os,'setgroups') as groups, patch.object(effect.os,'setgid') as gid, patch.object(effect.os,'setuid') as uid:
+            effect.drop_to_project()
+        groups.assert_called_once_with([]);gid.assert_called_once_with(10001);uid.assert_called_once_with(10001)
+    def test_vertical_marker_does_not_accept_other_seccomp_or_runtime_failures(self):
+        status='NoNewPrivs:\t1\nSeccomp:\t2\n'
+        with patch.dict(effect.os.environ,{effect.PLATFORM_EGRESS_ENV:effect.PLATFORM_EGRESS_MARKER}), patch('builtins.open',mock_open(read_data=status)):
+            for message in ('project-network-seccomp-load-failed:-1','project-network-seccomp-rule-failed'):
+                with patch.object(f,'install',side_effect=RuntimeError(message)):
+                    with self.assertRaisesRegex(RuntimeError,message): effect.install_child_network_fence()
+        with patch.object(f,'install',side_effect=RuntimeError('project-network-seccomp-load-failed:-125')), patch.dict(effect.os.environ,{effect.PLATFORM_EGRESS_ENV:effect.PLATFORM_EGRESS_MARKER}), patch('builtins.open',mock_open(read_data='NoNewPrivs:\t0\nSeccomp:\t2\n')):
+            with self.assertRaisesRegex(RuntimeError,'-125'): effect.install_child_network_fence()
 unittest.main(argv=['tests'])
 `;
   const result = spawnSync('python3', ['-B', '-c', script], { encoding: 'utf8' });

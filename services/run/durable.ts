@@ -35,6 +35,7 @@ export class ServiceRun extends DurableObject<ServiceRunEnv>{
   this.#host=new ServiceRunHost(ctx.storage,{quota,runtime:{start:runtime('start'),observe:runtime('observe'),stop:runtime('stop')},hold:p=>ctx.waitUntil(p),owns:async task=>env.SERVICE_RUN.idFromName(await serviceRunActorName(task)).equals(ctx.id)});
  }
  accept(task:ServiceRunTask){if(this.env.M3_SERVICE_ENABLED!=='true')throw Error('service-run-disabled');return this.#host.accept(task);}
+ acceptStopped(task:ServiceRunTask){return this.#host.acceptStopped(task);}
  snapshot(){return this.#host.snapshot();}
  stop(){return this.#host.stop();}
  async alarm(){await this.#host.alarm();}

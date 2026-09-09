@@ -1,5 +1,5 @@
 import {turnDigest} from '../turn/protocol.ts';
-import {PreviewPlanResolver,type PreviewRevisionSource} from '../preview/source.ts';
+import {PreviewPlanResolver,previewSourceFilesSha256,type PreviewRevisionSource} from '../preview/source.ts';
 import {serviceRuntimeInput,serviceRuntimeObservation,type ServiceRuntimeInput,type ServiceRuntimeObservation} from './runtime-protocol.ts';
 import type {ServiceNativeBackend} from './runtime-supervisor.ts';
 export interface ServiceSandboxApi{
@@ -29,10 +29,10 @@ export class SandboxServiceNativeBackend implements ServiceNativeBackend{
  async start(raw:ServiceRuntimeInput):Promise<ServiceRuntimeObservation>{
   const input=this.#input(raw),token=await serviceNativeToken(input);
   if(input.reference.deadlineAt<=this.#clock())return this.fenceAndStop(input);
-  const archive=await this.#source.files(input.spec.plan.identity,input.spec.plan.revision);
-  const actual=await new PreviewPlanResolver({async files(){return archive;}}).resolve(input.spec.plan.identity,input.spec.plan.revision);
+  const archive=await this.#source.files(input.spec.plan.source);
+  const actual=await new PreviewPlanResolver({async files(){return archive;}}).resolve(input.spec.plan.source);
   if(JSON.stringify(actual)!==JSON.stringify(input.spec.plan))throw Error('service-native-source-conflict');
-  const d=input.spec.plan.declaration,control={schemaVersion:1,token,entrypoint:d.entrypoint,dependencyLock:d.dependencyLock,filesSha256:input.spec.plan.revision.filesSha256,declarationSha256:input.spec.plan.declarationSha256,entrypointSha256:input.spec.plan.entrypointSha256,dependencyLockSha256:input.spec.plan.dependencyLockSha256,deadlineAt:input.reference.deadlineAt,healthPath:d.healthPath};
+  const d=input.spec.plan.declaration,control={schemaVersion:1,token,entrypoint:d.entrypoint,dependencyLock:d.dependencyLock,filesSha256:previewSourceFilesSha256(input.spec.plan.source),declarationSha256:input.spec.plan.declarationSha256,entrypointSha256:input.spec.plan.entrypointSha256,dependencyLockSha256:input.spec.plan.dependencyLockSha256,deadlineAt:input.reference.deadlineAt,healthPath:d.healthPath};
   for(let offset=0;offset<archive.length;offset+=256*1024){
    const chunk=archive.subarray(offset,Math.min(offset+256*1024,archive.length));
    // The pinned SDK 0.12.9 does not forward exec stdin. Transfer data via

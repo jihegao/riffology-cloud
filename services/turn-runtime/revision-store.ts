@@ -1,4 +1,4 @@
-import {PreviewPlanResolver} from '../preview/source.ts';
+import {PreviewPlanResolver,previewSource,type PreviewSource} from '../preview/source.ts';
 import { DurableObject } from 'cloudflare:workers';
 import { InitialWorkspaceResolver, type InitialWorkspaceReference, type ResolvedInitialWorkspace } from './initial-workspace.ts';
 import type { CheckpointReceipt, TurnScope } from '../turn/protocol.ts';
@@ -95,8 +95,16 @@ export class RevisionStore extends DurableObject<RevisionStoreEnv> implements Re
       throw error;
     }
   });}
-  previewPlan(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt){return this.#serial(async()=>{this.#owned();this.#assertReadable();return new PreviewPlanResolver(new R2TurnRevisionReader(this.env.WORKSPACE_CHECKPOINTS)).resolve(raw,receipt);});}
-  serviceFiles(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt):Promise<Uint8Array>{return this.#serial(async()=>{this.#owned();this.#assertReadable();return new R2TurnRevisionReader(this.env.WORKSPACE_CHECKPOINTS).files(turnRuntimeIdentity(raw),receipt);});}
+  async #previewFiles(raw:PreviewSource):Promise<Uint8Array>{
+    const source=previewSource(raw);
+    if(source.kind==='saved-turn')return new R2TurnRevisionReader(this.env.WORKSPACE_CHECKPOINTS).files(source.identity,source.revision);
+    const resolved=await new InitialWorkspaceResolver(this.env.WORKSPACE_CHECKPOINTS,this.env.MODEL_CONTENT).resolve(source.reference,source.reference.scope);
+    if(resolved.filesSha256!==source.filesSha256)throw Error('preview-revision-mismatch');
+    return resolved.filesArchive;
+  }
+  previewPlan(raw:PreviewSource){return this.#serial(async()=>{this.#owned();this.#assertReadable();return new PreviewPlanResolver({files:s=>this.#previewFiles(s)}).resolve(raw);});}
+  serviceFiles(raw:PreviewSource):Promise<Uint8Array>{return this.#serial(async()=>{this.#owned();this.#assertReadable();return this.#previewFiles(raw);});}
+  initialPreviewPlan(reference:InitialWorkspaceReference,expectedScope:TurnScope){const source=previewSource({kind:'initial-workspace',reference,filesSha256:'0'.repeat(64)});if(source.kind!=='initial-workspace')throw Error('invalid-preview-source');return this.#serial(async()=>{this.#owned();this.#assertReadable();const resolved=await new InitialWorkspaceResolver(this.env.WORKSPACE_CHECKPOINTS,this.env.MODEL_CONTENT).resolve(source.reference,expectedScope);return new PreviewPlanResolver({async files(){return resolved.filesArchive;}}).resolve({kind:'initial-workspace',reference:resolved.reference,filesSha256:resolved.filesSha256});});}
   observe(raw:TurnRuntimeIdentity):Promise<CheckpointReceipt|null>{return this.#serial(async()=>{this.#owned();this.#assertReadable();const identity=turnRuntimeIdentity(raw),reader=new R2TurnRevisionPort(this.env.WORKSPACE_CHECKPOINTS as TurnRevisionBucket,{async freeze(){reject('revision-store-observe-cannot-freeze');}});return reader.observe(identity);});}
   reconcileCommit(raw:RevisionCommitReconcileInput):Promise<CheckpointReceipt|null>{return this.#serial(async()=>{this.#owned();const identity=turnRuntimeIdentity(raw.identity),operationId=typeof raw.operationId==='string'?raw.operationId:reject('revision-store-reconcile-conflict'),inputSha256=sha(raw.inputSha256),key=commitKey(identity);if(operationId!==key)reject('revision-store-reconcile-conflict');const active=this.#active();if(active&&(active.kind!=='commit'||active.key!==operationId||active.inputSha256!==inputSha256))reject('revision-store-reconcile-conflict');if(active?.phase==='reserved')reject('revision-store-operation-in-progress');const saved=await new R2TurnRevisionReader(this.env.WORKSPACE_CHECKPOINTS).inspect(identity);if(!saved)return null;const actual=revisionCommitDigestInput({identity,outcome:saved.outcome,executionErrorCode:saved.executionErrorCode,base:saved.base},saved.files.sha256,saved.files.size,saved.piSession.sha256,saved.piSession.size),actualSha256=await sha256(JSON.stringify(actual));if(actualSha256!==inputSha256)reject('revision-store-reconcile-conflict');if(active){const expected=JSON.parse(active.payloadJson) as Record<string,unknown>;if(JSON.stringify(actual)!==JSON.stringify(expected))reject('revision-store-reconcile-conflict');await this.#clear();}return saved.receipt;});}
   resolveInitial(reference:InitialWorkspaceReference,scope:TurnScope):Promise<ResolvedInitialWorkspace>{return this.#serial(async()=>{this.#owned();this.#assertReadable();return new InitialWorkspaceResolver(this.env.WORKSPACE_CHECKPOINTS,this.env.MODEL_CONTENT).resolve(reference,scope);});}

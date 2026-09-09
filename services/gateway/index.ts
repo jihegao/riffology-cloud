@@ -1,6 +1,6 @@
 import {R2ModelContentUploadPort} from '../runtime/model-upload.ts';
 // Optional until the model-content binding is configured for an environment.
-type GatewayRuntimeEnv=GatewayEnv & {MODEL_CONTENT?:R2Bucket};
+type GatewayRuntimeEnv=GatewayEnv & {MODEL_CONTENT?:R2Bucket;M3_SERVICE_ENABLED?:unknown;M3_PREVIEW_ENABLED?:unknown;M3_PREVIEW_WS_ENABLED?:unknown;M3_PREVIEW_ORIGIN?:string;M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?:string};
 import {R2ModelContentPort} from '../runtime/content.ts';
 import { createAuth } from './auth.ts';
 import { catalogDatabase } from '../catalog/database.ts';
@@ -10,6 +10,11 @@ import { CatalogError } from '../catalog/contracts.ts';
 import { ProvisioningCatalog } from '../catalog/provisioning.ts';
 import { workspaceAgentName, type WorkspaceTask } from '../workspace/protocol.ts';
 import { createGatewayTurnServices } from './turn-services.ts';
+import { createGatewayServiceServices } from './service-services.ts';
+import {previewHost} from './preview-host.ts';
+import {createGatewayPreviewServices,previewFrameSource} from './preview-services.ts';
+import {createGatewayObserverServices} from './observer-services.ts';
+import { sessionIdentity } from './session-identity.ts';
 export { TenantQuota } from '../quota/durable.ts';
 export { TenantModelBudget } from '../model-budget/durable.ts';
 export { ProjectRuntime } from '../runtime/durable.ts';
@@ -17,6 +22,10 @@ export { WorkspaceAgent } from '../workspace/durable.ts';
 export { ProductTurnRuntime } from '../turn-runtime/durable.ts';
 export { RevisionStore } from '../turn-runtime/revision-store.ts';
 export { ToolArtifactStore } from '../artifacts/durable.ts';
+export { ObserverExecutor } from '../preview/observer-executor-durable.ts';
+export { ServiceRun } from '../run/durable.ts';
+export { ServiceRuntime } from '../run/runtime-durable.ts';
+export { ServiceSandbox } from '../run/service-sandbox.ts';
 export { ModelProxyService } from '../model-proxy/service.ts';
 export { ContainerProxy, ProjectToolSandbox, TrustedPiSandbox } from '../sandbox/classes.ts';
 export { ToolBridgeAgent } from '../tools/durable.ts';
@@ -31,22 +40,23 @@ export default {
   async fetch(request:Request,env:GatewayRuntimeEnv):Promise<Response>{
     try {
     const url=new URL(request.url);
-    if(url.origin!==env.APP_ORIGIN)return json({error:'origin_denied'},403);
+    if(url.origin!==env.APP_ORIGIN)return previewHost(request,env,catalogDatabase(env.CATALOG));
     if(!url.pathname.startsWith('/api/')){
       if(request.method!=='GET'&&request.method!=='HEAD')return json({error:'not_found'},404);
-      if(!['/','/index.html','/app.js','/styles.css','/workspace.css','/admin','/admin.html','/admin.js','/admin.css'].includes(url.pathname))return json({error:'not_found'},404);
+      if(!['/','/index.html','/app.js','/services.js','/previews.js','/styles.css','/workspace.css','/admin','/admin.html','/admin.js','/admin.css'].includes(url.pathname))return json({error:'not_found'},404);
       if(!env.ASSETS)return json({error:'assets_not_configured'},503);
       const assetRequest=url.pathname==='/admin'
         ? new Request(new URL('/admin.html',url),{method:request.method,headers:request.headers})
         : request;
       const asset=await env.ASSETS.fetch(assetRequest),headers=new Headers(asset.headers);
-      headers.set('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");
+      headers.set('Content-Security-Policy',`default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; frame-src ${previewFrameSource(env)}; frame-ancestors 'none'; base-uri 'none'; form-action 'self'`);
       headers.set('X-Content-Type-Options','nosniff');headers.set('Referrer-Policy','same-origin');
       headers.set('Cache-Control','no-store');return new Response(asset.body,{status:asset.status,headers});
     }
     if(!env.BETTER_AUTH_SECRET||!env.GOOGLE_CLIENT_ID||!env.GOOGLE_CLIENT_SECRET)return json({error:'authentication_not_configured'},503);
     const database=catalogDatabase(env.CATALOG);
-    const auth=createAuth({database:env.CATALOG,catalog:database,origin:env.APP_ORIGIN,secret:env.BETTER_AUTH_SECRET,googleClientId:env.GOOGLE_CLIENT_ID,googleClientSecret:env.GOOGLE_CLIENT_SECRET});
+    const googleOAuthEgress=env.M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?{capability:env.M1_GOOGLE_OAUTH_EGRESS_CAPABILITY}:undefined;
+    const auth=createAuth({database:env.CATALOG,catalog:database,origin:env.APP_ORIGIN,secret:env.BETTER_AUTH_SECRET,googleClientId:env.GOOGLE_CLIENT_ID,googleClientSecret:env.GOOGLE_CLIENT_SECRET,googleOAuthEgress});
     if(new URL(request.url).origin!==env.APP_ORIGIN)return json({error:'origin_denied'},403);
     if(new URL(request.url).pathname.startsWith('/api/auth/')){
       const path=new URL(request.url).pathname;
@@ -64,10 +74,9 @@ export default {
       provision:async(principal,tenantId,projectId)=>{
         const item=await new ProvisioningCatalog(database).kickProject(principal,tenantId,projectId);
         if(item)await dispatch(env,item);
-      },turns:createGatewayTurnServices(env),identity:async req=>{
+      },turns:createGatewayTurnServices(env),serviceRuns:createGatewayServiceServices(env),previews:createGatewayPreviewServices(env,database),observations:createGatewayObserverServices(env),identity:async req=>{
       const value=await auth.api.getSession({headers:req.headers,query:{disableCookieCache:true}});
-      if(!value)return null;
-      return {subject:value.user.id,email:value.user.email,emailVerified:value.user.emailVerified,platformVersion:value.session.platformVersion};
+      return sessionIdentity(value);
     }});
     }catch(error){
       if(error instanceof HttpError||error instanceof CatalogError)return json({error:error.message},error.status);

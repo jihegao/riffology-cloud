@@ -71,6 +71,7 @@ try{
  import {leaseReference} from './services/quota/core.ts';
  import {initialWorkspaceArchive} from './services/turn-runtime/initial-workspace-archive.ts';
  export {ServiceRuntime};
+ export {ContainerProxy} from '@cloudflare/containers';
  export {ServiceSandbox} from './services/run/service-sandbox.ts';
  export {TenantQuota} from './services/quota/durable.ts';
  export {RevisionStore} from './services/turn-runtime/revision-store.ts';
@@ -86,7 +87,7 @@ try{
      'docs/transport-padding.txt':new Uint8Array(700000).fill(65)});
     const store=env.REVISION_STORE.getByName('workspace-revisions-v1');
     const receipt=await store.commit({identity,outcome:'completed',executionErrorCode:null,base:{workspace:null,session:null},snapshot:{identity,filesArchive,piSession:encode('private-session-not-project-content')}});
-    value=await store.previewPlan(identity,receipt);
+    value=await store.previewPlan({kind:'saved-turn',identity,revision:receipt});
    }else if(b.method==='acquire'){
     const r=await env.TENANT_QUOTA.getByName('tenant-quota:'+b.request.tenantId).acquire(b.request);
     if(!r.lease)throw Error('fixture-acquire-denied');value=leaseReference(r.lease);

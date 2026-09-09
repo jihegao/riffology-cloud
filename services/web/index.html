@@ -32,6 +32,8 @@
         </div>
         <aside class="files-panel" aria-labelledby="files-heading"><div class="files-heading"><div><p class="eyebrow">SAVED REVISION</p><h2 id="files-heading">项目文件</h2></div><button id="files-refresh" class="button compact" type="button">刷新</button></div><div class="artifact-tabs" role="tablist" aria-label="版本视图"><button id="files-tab" role="tab" aria-selected="true" aria-controls="workspace-files" type="button">Files</button><button id="diff-tab" role="tab" aria-selected="false" aria-controls="workspace-diff" type="button">Diff</button></div><section id="files-view"><p id="files-meta" class="meta"></p><div id="workspace-files" class="file-list" role="tabpanel" aria-labelledby="files-tab" aria-live="polite"></div></section><section id="diff-view" hidden><p id="diff-meta" class="meta"></p><div id="workspace-diff" class="file-list" role="tabpanel" aria-labelledby="diff-tab" aria-live="polite"></div></section></aside>
       </div>
+      <section id="workspace-services" class="service-panel" aria-label="项目服务"></section>
+      <section id="workspace-preview" class="service-panel preview-panel" aria-label="项目预览"></section>
     </section>
     <section id="invitation" class="invite card" hidden><div><h2>启用个人空间</h2><p>输入收到的邀请码。</p></div><form id="invite-form"><label class="sr-only" for="invite-token">邀请码</label><input id="invite-token" autocomplete="off" placeholder="粘贴邀请码" required><button class="button" type="submit">接受邀请</button></form></section>
   </main>

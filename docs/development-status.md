@@ -1,5 +1,329 @@
 # 开发执行状态
 
+## 2026-09-08 Observer Artifact 写入清单与原子引用（本地候选）
+
+生产 Executor 存储路径接入每次观察独立的持久写入清单。完整 command/receipt 在 R2 put 前登记并同步；同一收据仅首次认领派发，重放和重启只读回。持久同步后、put 之前再次同步检查停止栅栏。写请求确认和内容验证分别存储，丢失写响应但读回成功时仍保留 uncertain 状态。Executor 完成结果与其 Artifact 引用在同一事务提交。
+
+主控完成实现、R2 替身与真实 SQLite 的故障测试；子 agent 补真实 Workerd/SQLite/R2 的两项清单和引用断言，低成本子 agent 补清单协议测试。覆盖丢失 claim 确认时零写入、重启不再次派发、登记等待期间停止、未验证对象拒绝引用、结果提交故障回滚引用，以及实际执行重启重放后对象与浏览器次数不增加。[完整冻结检查](evidence/runs/m0-local-20260908135058232/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 409 pass、M3 365 pass，合计 **1307 pass / 1 skip**。云门禁仍为 false。
+
+此增量只完成可恢复清单与引用保留，尚不提供引用释放或物理删除。pending/uncertain 写入、未被结果引用的对象及缺少清单的历史对象继续保守保留；不能以浏览器已停止推断 R2 写入不会迟到。未部署、迁移、修改远程资源、启动 Docker 或调用模型，云门禁继续关闭。
+
+首次冻结检查[保留为失败证据](evidence/runs/m0-local-20260908134631947/local-checks.json)：历史 Artifact 测试的保存替身缺少新增 inventory，另有 Chrome 资源预算测试超时并导致总检查超时。已把替身接入真实 inventory，相关 Artifact/Chrome 定向测试 10/10 通过；Chrome 超时单独复现未出现，未放宽截止或跳过测试。
+
+## 2026-09-08 历史 Observer Artifact 私有读取与用户 ACL（本地候选）
+
+Gateway 新增历史 state/view 读取入口，Workspace 按当前 Catalog 项目权限、原 Turn/Session 用户归属及完整执行身份选择已完成记录中的收据。Executor 再核对自身持久完成记录，只允许读取其附带对象；不创建缺失执行记录，不启动浏览器。历史读取不依赖执行门禁或活跃 Preview，但项目及 Workspace 仍须 ready。
+
+单次读取最长 5 秒，授权在异步访问前后复核；超时取消 R2 流，迟到的 RPC 授权在读取结束后失效。返回字节经过长度与 SHA-256 检查，HTTP 响应固定 JSON/PNG 类型、禁止缓存和嗅探，并明确标记为历史观察。认证版本轮换后，当前版本身份仍能读取自己旧会话的结果，旧版本身份不能继续访问。
+
+主控完成 Workspace 授权编排与集成复核；子 agent 完成 Executor/R2 读取及真实 Workerd 验证，低成本子 agent 完成身份查询与 Gateway。主控另补身份损坏和 Gateway 桥接参数测试，并修复授权超时后迟到 RPC 返回值未显式释放的问题：先给原始 Promise 附加数据拆包与释放，再参与截止竞争。Gateway 使用真实 Catalog 和明确 Workspace 替身；Workspace 使用真实 journal/Catalog 和明确 Executor 字节替身；Executor 使用真实 Workerd/SQLite/R2 和明确授权替身。这些分层测试不替代云端完整产品验收。[最终冻结检查](evidence/runs/m0-local-20260908133911540/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 409 pass、M3 356 pass，合计 **1298 pass / 1 skip**。云门禁仍为 false。
+
+Artifact 引用保留与回收、用户界面和 Pi 工具接入、原生 Browser 网络隔离与退出证明仍待完成。未部署、迁移、修改远程资源、启动 Docker 或调用模型，云门禁继续关闭。
+
+检查异常保留：[迟到 RPC 清理修正后的首次冻结检查](evidence/runs/m0-local-20260908121826940/local-checks.json)超时，日志停在 M0 Pi SDK 测试，`passed=false`、源码稳定，不能作为成功证据。确认无残留检查进程后，相关离线测试单独运行 9/9 通过；其 transport 为固定替身，外部 fetch 被拒绝。超时原因未确定，未放宽测试截止或跳过测试。
+
+## 2026-09-08 Observer 后台维护与四域共享 alarm（本地候选）
+
+Workspace 新增 Observer 逻辑闹钟，和初始化、Turn、Service 共用一个物理 alarm。所有域的事务更新均保留其他域，Service 维护失败后仍会访问 Observer 并重新计算物理闹钟。维护依据已保存的 Workspace scope 执行，即使工作区不再 ready、访问撤销或插件门禁关闭，也可递送停止；不重新派发观察。
+
+`WorkspaceObserverHost` 将调用账本变更和逻辑/物理闹钟更新置于同一存储事务，避免接受调用后没有唤醒，或 idle 清理擦除并发新调用的唤醒。活动观察最多 5 秒后再次检查，授权失效、期限到达或 unknown 会请求停止对账；未获得真实退出证明则保留槽位与未来重试，确认后才清理该域闹钟。
+
+主控完成原子投影、Workspace 维护接线、Service 投影补充与真实 Workerd 验证；子 agent 完成第四闹钟域和路由器，低成本子 agent 补事务提交与活动记录测试。新测试覆盖投影失败回滚 accepted、并发 idle 清理不丢 wake、重启后 unknown 重试、取消后 accepted 收敛及关闭门禁后停止。自动唤醒测试不手动调用 alarm：重启 Workerd 后约 6 秒内由已保存闹钟完成维护，执行次数保持 1。
+
+[完整冻结检查](evidence/runs/m0-local-20260908120155175/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 409 pass、M3 329 pass，合计 **1271 pass / 1 skip**。实际停止端为明确执行器夹具，自动本地 alarm 不替代原生进程退出或云验收。原生浏览器隔离与停止、Artifact 读取 ACL/生命周期及 Pi 工具仍待完成。未部署、迁移、修改远程资源、启动 Docker 或调用模型。
+
+## 2026-09-08 Observer Executor DO、持久防重复与停止栅栏（本地候选）
+
+新增 `ObserverExecutor` 并加入 Gateway 导出；生产尚未配置 namespace、浏览器 Runtime 或 Artifact 绑定。执行器按完整命令持久认领，首次派发前确认存储；不确定调用不能因重启重试。停止先持久封禁，再向独立浏览器 Runtime 请求持久封禁与资源退出证明；确认丢失不返回已停止。停止不依赖正在挂起的执行，也不受执行门禁关闭或命令过期限制。
+
+执行器持久绑定目标摘要及路由策略；内部执行授权必须与初始目标一致，避免初始授权 A、内部切换 B 后把 B 的结果存到 A 下。整个 RPC 调用含前后授权、取消查询、执行和结果公开都受绝对截止限制。Artifact 使用实际 R2 内容层；浏览器只获得执行器持有的累计资源预算 RPC，迟到请求失效。执行器不以本机不存在句柄推断原生进程已退出。
+
+主控完成 DO、浏览器资源 RPC、期限与目标绑定；子 agent 完成持久监督器和真实 Workerd 集成。Workerd 暴露返回聚合对象附带 Symbol.dispose，主控增加仅剥离该 RPC 元数据并释放包装的处理，其他符号和 getter 仍拒绝；测试没有在夹具端清洗数据掩盖问题。另修复调用账本数组校验中的越界数字属性，避免 sparse array 被序列化成不同内容。
+
+[完整冻结检查](evidence/runs/m0-local-20260908115341908/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 403 pass、M3 321 pass，合计 **1257 pass / 1 skip**。15 项监督器 SQLite 测试覆盖并发、重建、停止先到、迟到结果、确认丢失及损坏；5 项 Workerd 测试使用真实 Executor/SQLite/R2 和明确浏览器、授权夹具，覆盖重启重放、停止、迟到资源能力、授权挂起及目标切换。原生浏览器 Runtime、实际网络隔离与进程退出、Workspace 维护调度、Artifact 读取 ACL/生命周期和 Pi 工具仍待完成。未部署、迁移、启动 Docker 或调用模型。
+
+## 2026-09-08 Workspace 私有 Observer 执行入口与 RPC 能力（本地候选）
+
+Workspace 新增 `observePreview`，通过真实权限、登记路由和目标校验后持久认领，再调用独立执行器。未配置 `OBSERVER_EXECUTOR` 或门禁关闭时，在接受调用前拒绝。每个调用获得独立、不可持久保存的 RPC capability，只提供重新授权、受控资源转发和取消查询；完成或未知终态后，迟到回调不能继续授权或转发。
+
+主控实现执行器身份协议、RPC capability 和浏览器侧消费适配器；子 agent 完成 Workspace 接线及真实 Workerd 验证。Workerd 使用明确执行器夹具验证完成/unknown 在实例重启后重放，执行计数保持 1，未知停止继续占槽。主控另以真实 Chrome 验证 capability 消费、页面/state 采样和 Artifact，以及取消查询断连、挂起和串行轮询；该 Chrome capability 传输是本地夹具，不是远程浏览器部署。
+
+[完整冻结检查](evidence/runs/m0-local-20260908114602092/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 403 pass、M3 298 pass，合计 **1234 pass / 1 skip**。实际执行器 DO/容器与持久停止栅栏、Workspace 维护对账、Artifact 生产绑定和读取 ACL、Pi 工具仍待完成；生产没有配置该 namespace，也未打开门禁。未部署、迁移、修改远程资源、启动 Docker 或调用模型。
+
+## 2026-09-08 Observer 持久账本与浏览器执行组合（本地候选）
+
+新增 `observerCoordinator`，将真实执行器接入 `ObserverCallHost`。每次执行授权同时受当前 host 生命周期与新鲜目标校验约束；传输方法显式转发以保留原型方法和 receiver。主控将真实 Chrome 测试升级为 SQLite 认领、截图和 state Artifact 提交、数据库重开后收据重放；重放未再次导航或写对象。浏览器失败且 stop 不确认时保持 unknown，重开后仍阻止新调用，只有独立停止对账成功才释放槽位。
+
+低成本子 agent 只读复核取消和停止边界。主控另验证 accepted 已提交而 start 到期的恢复窗口：重启后 accepted 仍占槽，需维护入口调用 reconcile，并获得真实停止证明。首次测试把初始化 sync 误当成 accept 提交，已调整注入点并通过。不能以命令到期、取消信号或本机查不到任务替代停止证明。
+
+[完整冻结检查](evidence/runs/m0-local-20260908114041342/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 403 pass、M3 290 pass，合计 **1226 pass / 1 skip**。组合目前是本地模块，尚未挂入生产 Workspace RPC 或启动真实隔离浏览器宿主；维护调度、执行器持久停止栅栏、Artifact 读取授权和 Pi 工具仍待连接。未部署、迁移、修改远程资源、运行 Docker 或调用模型。
+
+## 2026-09-08 Observer 浏览器执行、累计预算与私有 Artifact（本地候选）
+
+新增 `executeObserver`，将浏览器导航、reload、子资源和后续 state 请求接入同一次资源预算；总执行期限随授权缩短且不延长。浏览器确认临时 context 关闭后才接收结果。收据绑定 Preview、Run、文件摘要和运行代次；页面/state 分别记录采样窗口，明确非原子采样，业务副作用未验证。
+
+浏览器适配器固定 snapshot/screenshot/console/reload，使用独立 context，资源经授权转发，拒绝额外 frame、下载与 WebSocket。私有 R2 内容层提供 state/view/PNG 收据、不可变条件写、读回核验与丢失确认恢复；截图不内嵌在回合 JSON 中。PNG 校验只涵盖基本头部，未宣称完整像素解码。
+
+主控复核并修复较早授权期限的总取消、采样窗口和 state 媒体类型检查；子 agent 分别实现浏览器适配与 Artifact 层，低成本子 agent 补执行器测试。主控新增真实 Chrome → 执行器 → Artifact 保存/读回贯通测试，通过实际 PNG 尺寸、状态内容、窗口顺序及 context 回收验证。授权、Runtime HTTP 和 R2 传输仍为明确夹具，不能替代生产接线。
+
+[完整本地检查](evidence/runs/m0-local-20260908113627208/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 403 pass、M3 289 pass，合计 **1225 pass / 1 skip**。本轮新增 21 项通过，包括真实 Chrome 的适配器测试及执行/Artifact 贯通测试。Workspace 持久编排与实际浏览器宿主、停止对账、Artifact 读取 ACL/引用生命周期/GC、Pi 工具和真实网络隔离尚待接通验收。没有云部署、迁移、远程修改、Docker 或模型调用；整体目标未完成，云门禁关闭。
+
+## 2026-09-08 Observer 私有资源转发与跨 RPC 取消（本地候选）
+
+Workspace 新增独立 Observer 资源入口，要求持久调用为 running、目标摘要一致，并复核当前 Turn、成员权限、Preview 及 D1 登记路由。请求 origin 由平台配置与已登记 host 推导，不采用调用方 URL 授权。Runtime 独立校验运行计划中的两条观察路径、租约和停止栅栏；ServiceSandbox 直接转发到已运行容器的固定 8080 端口，重新生成只读标记。普通用户 Preview 转发仍剥离同名头，未开放任意路径或公共 Observer API。
+
+真实 Workerd 首次接线暴露 AbortSignal 不能按当前稳定配置跨 RPC 序列化。主控改为临时取消专用 RpcTarget；最终端口在发送前和等待期间串行查询取消，Runtime/Workspace 分别重验自己的权限来源。撤销租约或取消 Turn 时，即使响应体挂起，也能取消最终端口读取；项目服务不因一次观察取消而停止。实验性 enable_abortsignal_rpc 未启用。主控另修复初始化失败的控制器回收、补充 Runtime 等待期间的租约检查，并将过短真实定时测试改为 1 秒期限及相应等待，避免环境偶发失效。
+
+主控负责协议、Workspace/Runtime/Sandbox 接线和 Workspace 集成；子 agent 实现最终端口及真实 Runtime/Quota 测试，低成本子 agent 补描述符和请求协议测试。Workerd 验证包括未认领/未运行/已结束调用、登记路由、目标摘要、默认关闭、错误路径/期限、取消 Turn、撤销租约和停止。挂起期间撤销租约的测试使用 14 秒请求期限，要求 5 秒内拒绝，排除仅靠期限到达通过；最终响应体被取消，服务仍 healthy。
+
+[完整本地检查](evidence/runs/m0-local-20260908112450195/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 403 pass、M3 268 pass，合计 **1204 pass / 1 skip**。本轮真实 Workerd 覆盖平台绑定与取消传输，最终容器端口为显式替身；没有原生容器、真实浏览器 Observer 或云全链路验收。
+
+下一步连接 Workspace 持久执行编排与浏览器执行器，落实跨全部资源的单次观察总预算、结果收据、Artifact 和 Pi 工具。当前资源入口不会自行开始观察或产出完整观察结果。未部署、迁移、修改远程资源、启动 Docker 或调用模型；M3 与整体开发目标未完成，云门禁保持关闭。
+
+## 2026-09-08 Observer 查询绕过 SDK 自动启动（本地候选）
+
+复核实际锁定的 Sandbox 0.12.9 后确认：普通 readFile 会创建默认 Session，普通文件与进程读取会通过 containerFetch 自动启动未运行的容器。因此上一轮 Native 夹具的“未显式调用 startProcess”不足以证明查询无启动副作用。
+
+现改为派生 actor 校验后的私有 queryObserverExecution。专用 reader 直接检查 container.running 并访问固定 3000 端口，只能读当前控制/结果文件和进程状态，使用显式 sessionless 协议、读取上限与共用 5 秒期限；停止、过期、重定向或状态不符时拒绝并回收响应。没有专用 RPC 时不退回 SDK。主控完成 Native/发布组装/Sandbox 接线，子 agent 追踪发布源码并实现传输与 13 项测试，低成本子 agent 补 4 项发布组装测试；主控补缺失入口测试、同步异常回收与类型修正，并将真实定时测试留出 1 秒启动余量，避免过短期限引入环境偶发失败。
+
+[完整本地检查](evidence/runs/m0-local-20260908111357766/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 403 pass、M3 245 pass，合计 **1181 pass / 1 skip**。当前证据是生产组装加显式端口夹具；发布源码协议已核对，真实镜像内 daemon、原生容器行为及严格零副作用要求仍未验收。Sandbox/Container 基类可能维护调度表/alarm，daemon 可能调用 MIME 辅助命令，不能宣称整个 SDK 零写入或零辅助进程。详见 [Observer 契约](m3-observer-contract.md)。
+
+未部署、迁移、修改远程资源、启动 Docker 或调用模型。Observer 实际执行器、私有转发、Artifact/Pi 工具及完整纵向验证仍待完成；M3 与整体目标保持未完成，云门禁关闭。
+
+## 2026-09-08 Runtime 绝对截止与 Workspace Observer 授权（本地候选）
+
+Runtime 新记录持久保存首次 startedAt + 600000 的绝对执行截止；重放不延长。Trusted Pi 控制文件携带同一期限，进程启动使用剩余时间，Node 宿主在到期时取消并保留退出兜底，模型和工具请求均受总期限限制。Workspace 恢复前复制输入期限，防止异步恢复期间调用方修改期限。旧记录缺少期限时拒绝 Observer 授权。
+
+新增专用 currentObserverExecution，不经过会消费状态和保存 checkpoint 的 observe。Workspace 私有授权入口已组合真实 TurnJournal、Catalog、Runtime 查询和当前 Preview 绑定；默认 Observer 开关仍关闭。真实 Workerd 测试覆盖错误 dispatch、取消、成员撤销和 Preview 替换，Runtime 返回值为显式夹具。Native、Node 宿主和模型/工具桥另有定向测试；这不证明真实 Sandbox 的退出、重启后停止对账或 SDK 查询无容器启动副作用，后者正在单独核对。
+
+主控实现 Native 与 Node 截止、输入快照和 Workspace 接线并复核；子 agent 完成 Runtime 持久期限、桥接及 Workerd 测试，低成本子 agent 补 Native 拒绝与竞态测试。[完整本地检查](evidence/runs/m0-local-20260908110608094/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 385 pass、M3 245 pass，合计 **1163 pass / 1 skip**。
+
+实际 Observer 执行器、私有转发、Artifact 和 Pi 工具仍待接入。未部署、迁移、修改远程资源、启动 Docker 或调用模型；M3 与整体开发目标未完成，云门禁保持关闭。
+
+## 2026-09-08 Observer 执行编排与 Runtime 接线缺口（本地候选）
+
+新增 ObserverCallHost，将真实持久账本与必需的授权/执行器端口组合：认领后再授权，结果必须确认资源退出，再次核对目标才能写成功，返回前继续复核权限。执行失败先请求停止，最多等待 2 秒；无法确认退出则写 unknown 并继续占槽，由维护入口显式对账。并发、重建、迟到结果及确认丢失均不触发重复执行。成功已持久化但最终授权失败时，保留历史记录并拒绝返回，不将其覆盖为新失败。
+
+主控实现编排并修复执行结束后授权回调仍可能被使用的问题：上下文关闭后回调立即拒绝，不再查询权限。低成本子 agent 补测试，主控校正故障注入时机、异步等待和持久状态断言。新增 10 项定向测试通过。
+
+首轮[完整检查](evidence/runs/m0-local-20260908105551567/local-checks.json)保留失败：已有 WS 固定端口测试用真实时钟构造超限 1 ms 的输入，构造 Request 的耗时使该输入可能回到有效区间。现仅固定测试 Date 时钟，验证等于当前时间拒绝、最大期限接受、超过 1 ms 拒绝；未改变生产期限。修复后[完整回归](evidence/runs/m0-local-20260908105746043/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 360 pass、M3 243 pass，合计 **1136 pass / 1 skip**。
+
+子 agent 只读调查确认真实 Runtime 授权的前置缺口：ProductTurnRuntime State 与 Trusted Pi 控制文件尚无持久绝对执行截止，startProcess 的相对 timeout:600_000 不能作为跨重启租约；现有 observe 可能写状态及保存 checkpoint，不适合作为只读授权查询。修复顺序已写入 [Observer 契约](m3-observer-contract.md)：先持久化并在执行端落实绝对截止，再新增零副作用的 currentObserverExecution，之后连接 Workspace 与执行器。没有添加假定成功的授权或开放入口。
+
+本轮编排测试使用真实本地 SQLite，授权与执行器为明确夹具，不能证明浏览器/原生 Runtime 已接通。未部署、迁移、修改远程资源、启动 Docker 或调用模型；M3 与整体开发目标未完成。下一步优先修复 Runtime 绝对截止及只读授权来源。
+
+## 2026-09-08 Observer 当前 Turn 校验与持久调用（本地候选）
+
+TurnJournal 新增同步 observerCaller，仅接受当前 running Turn、匹配 Session 所有者/dispatch/generation 且未取消的观察命令；返回独立副本，不采用模型传入的用户身份。授权组合要求插件、Catalog、实际 Runtime 租约和 Preview 目标均有效，截止取最小值；再次检查远程权限后同步确认当前 Turn 与绑定，替换或取消时拒绝。此组合仍通过明确端口取得权限，没有新增公开端点或真实运行端的默认授权。
+
+SQLite 观察调用账本保存完整命令和目标摘要。只有首次持久认领获得执行许可，并发、重启和确认丢失均不产生第二次许可；未知状态保持工作区占槽，等待明确对账。完成结果精确重放但不能改写，过期禁止新成功；结果最多 64 KiB。读取时验证闭合记录、scope/key、摘要、状态及时间顺序，损坏记录导致拒绝。当前历史上限 256 条，不自动删除，长期保留/归档与幂等墓碑仍待落实。
+
+主控实现 Turn 校验、授权组合与竞态验证；子 agent 实现账本及重启/故障测试，低成本子 agent 完成真实 TurnJournal 状态测试。主控复核发现持久记录校验不足，已补齐并加入 20 种损坏记录变体。新增定向 20 项通过。[完整本地回归](evidence/runs/m0-local-20260908104914766/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 360 pass、M3 233 pass，合计 **1126 pass / 1 skip**。
+
+当前证据为真实本地 SQLite/TurnJournal 加权限、租约及 Preview 端口夹具；尚未将账本、授权组合、Workspace 调用入口和 Observer 执行器连成产品链路，不能宣称 Agent 已能观察。下一步接真实 Runtime 授权、Workspace 持久调度及私有观察转发，再接浏览器与 Artifact/Pi 工具。未部署、迁移、修改远程资源、启动 Docker 或调用模型，M3 与整体目标继续保持未完成。
+
+## 2026-09-08 Observer 协议与受限传输基础（本地候选）
+
+新增闭合 Observer 命令，固定 observer 用途、Workspace/Session/Turn/dispatch/call/Preview 和操作，拒绝附加 URL、未知字段、访问器及异常递归对象；只做规范化与最长 15 秒截止检查，不授予权限。状态解析器在 64 KiB 字节上限内使用严格 UTF-8、闭合 envelope、128 字节状态 ID、非负安全序号和最多 32 层 JSON，领域内容不作为平台身份。
+
+请求策略只允许已给定 Preview origin 的 pagePath/statePath，固定内部 8080 端口及 GET/HEAD，拒绝写入、升级、其他来源、路径和 URL 编码绕行。用户头部全部丢弃，生成最小只读标记；响应剥离 Cookie/CORS/Refresh 等元数据，重定向限于同一策略路径并保留逐跳授权。传输会话逐请求、响应头后及每次分块读取前后授权，累计最多 32 请求、8 MiB、4096 数据块，状态接口另限 64 KiB；取消、超时、超限或撤权关闭会话并回收迟到响应。授权与实际转发目前仍是显式端口，尚未连接运行中的产品调用链。
+
+主控实现 HTTP 策略、会话预算与撤权生命周期并复核；子 agent 实现命令/状态协议及故障测试，低成本子 agent 补请求策略测试。新增定向 20 项通过。[完整本地回归](evidence/runs/m0-local-20260908104405776/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 360 pass、M3 213 pass，合计 **1106 pass / 1 skip**。
+
+实现边界已写入 [Observer 契约](m3-observer-contract.md)：Workspace 持久调用与权限、Runtime 独立 Observer 转发、浏览器执行器、Artifact、Pi 工具及 UI 均待接入。普通 forwardHttp 会剥离 Observer 标记，后续必须在独立受信入口重建身份，不能开放公共自报头。截图、console 和文本限制目前仅有常量，没有执行器验证。
+
+本轮未部署、迁移、修改远程资源、启动 Docker 或调用模型。M3 与整体目标未完成；下一步接入持久观察调用和当前 Turn/Preview 授权，继续原生容器与云验收。
+
+## 2026-09-08 真实 Chrome WSS 与 Observer 实施契约（本地）
+
+新增 Chrome 真实 HTTPS/WSS 网络测试：浏览器域名通过测试进程的 resolver 映射至回环 TLS 适配器，再将 HTTP/Upgrade 交给真实 Gateway/Workspace Workerd。使用临时自签名证书，浏览器仅在该测试上下文忽略证书错误；没有改动系统 DNS 或信任库。身份和项目 Runtime 仍是显式夹具，不能作为公共 DNS/TLS、真实 Google 登录或原生 Sandbox 的验收。`ws` 8.21.0 从现有缓存离线声明为直接测试依赖，避免依赖传递安装偶然可用。
+
+真实浏览器握手验证 Origin、HttpOnly Cookie、子协议、文本及二进制回显。现有生产 CSP 的 `connect-src 'self'` 在本次 Chrome 中允许同源 WSS；异源 WSS 产生真实 securitypolicyviolation，且适配器没有收到第二个升级请求，因此无需放宽策略。删除本地 D1 登录后，浏览器空闲连接以 1008 关闭；Runtime 未收到浏览器 Cookie。此结果不推断其他浏览器的行为。
+
+[完整本地回归](evidence/runs/m0-local-20260908103912354/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 360 pass、M3 193 pass，合计 **1086 pass / 1 skip**。主控复核适配器和依赖变更并执行完整回归，子 agent 实现 Chrome WSS 测试。
+
+新增 [Observer 实施契约](m3-observer-contract.md)，明确独立授权、真实 Pi 工具接入、受控网络、不可变版本收据、资源上限、插件禁用停止对账及完整纵向验收。低成本子 agent 复核文档，主控补齐版本、限额、生命周期与 reload 验收缺口。文档内的 Observer 能力和限额尚待实现，不能作为已开放能力的证明。
+
+本轮未部署、迁移、修改远程资源、启动 Docker 或调用模型。下一步落实 Observer 接线，并继续原生容器与云链路门禁；WS 开关保持关闭，M3 和整体开发目标未完成。
+
+## 2026-09-08 WebSocket 私有传输与主动撤权（本地候选）
+
+新增默认关闭的 `M3_PREVIEW_WS_ENABLED`。Gateway 验证公开 Origin 和 Cookie 后，经私有 fetch 将升级交给 Workspace、ServiceRuntime 与 ServiceSandbox。真实 Workerd 探针发现普通 RPC 返回 WebSocket 或携带 WebSocket 的 Response 均不能序列化；DO.fetch 和 Service Binding.fetch 则完成 101/echo/close，因此没有强行复用 HTTP RPC。
+
+Workspace 与 Runtime 主动持有连接，每消息发送前重新授权，空闲时每次检查完成约 1 秒后再查，权限查询最多等 1 秒。Workspace 检查具体登录、ACL、绑定与 Run，Runtime 检查停止栅栏及 dispatched 租约；运行停止中止现有连接，授权截止不续期。每 actor 最多 8 个连接；握手包含前置读取最多 10 秒，迟到升级也关闭。单消息 64 KiB、队列 32 条/1 MiB、累计 16 MiB，二进制显式采用 ArrayBuffer。固定端口 8080，不自动启动容器；子协议白名单与私有 Unicode 信封校验已接入。
+
+[完整本地回归](evidence/runs/m0-local-20260908103244377/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 360 pass、M3 192 pass，合计 **1085 pass / 1 skip**。新增 17 项覆盖协议、消息桥、握手、固定端口、RPC/fetch 探针及真实 Workerd Gateway/Workspace 连接；扩展真实 ServiceRuntime/Quota/持久栅栏测试验证 8 个连接上限、echo、stop 关闭及停止后拒绝。Gateway 纵向验证文本/二进制、凭据剥离、错误来源拒绝以及 D1 删除登录后的空闲连接 1008 关闭。
+
+主控实现连接生命周期及各层接线、总超时和运行停止验证；子 agent 完成 fetch 探针、协议及 Gateway/Workspace 测试，低成本子 agent 完成消息桥/固定端口测试。连接登记是非休眠的内存状态，权限依据持久化；实际部署重建断连仍待验证。运行端和端口测试仍有明确替身，不能宣称真实 Python/Chrome WebSocket 或完整原生链路已验收。
+
+未部署、迁移、修改远程资源、启动 Docker 或调用模型。下一步验证真实浏览器 wss/CSP 与原生容器，并评估轮询鉴权负载；Observer 继续按独立用途与权限实现。WS 开关与云门禁保持关闭，M3 和整体开发目标未完成。
+
+## 2026-09-08 浏览器至 Workspace 的 Preview 纵向验证（本地）
+
+新增真实 Chrome → 用户 Preview 面板 → 生产 Gateway/Preview host → Workspace 的纵向测试。ServiceRun、Quota、RevisionStore、票据/访问会话及本地 D1/R2 使用真实实现；服务器身份返回值、控制页静态外壳和项目 Runtime HTML/JSON 是显式夹具。测试验证真实 nonce 引导、一次票据兑换、Host-only HttpOnly Cookie、项目 HTTP 访问及凭据剥离。
+
+刷新恢复不增加 Preview 创建 POST 或 Runtime 启动次数。直接删除本地 D1 登录会话后，仍持有 Cookie 的浏览器请求得到 403，Runtime 转发计数不再增加；无 Cookie 访问已注册主机也被拒绝。新增独立 Chrome 测试在旧 iframe 的票据请求已发出且等待时关闭并重建窗口，验证旧回包不交给新 iframe。
+
+定向纵向测试 1/1、面板测试 6/6 通过。[完整本地回归](evidence/runs/m0-local-20260908102331049/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 360 pass、M3 175 pass，合计 **1068 pass / 1 skip**。主控编写浏览器纵向测试并复核证据，子 agent 建立真实 Workerd/D1/R2 夹具，低成本子 agent 补旧 iframe 票据回包测试。两次初始定位超时来自测试与夹具的标题约定未同步，各阶段已返回 200；统一约定后完整流程通过。
+
+本轮没有修改生产功能、部署、迁移、调用模型或启动 Docker。当前证明的是 Gateway/Workspace 平台链路，不证明真实 ServiceRuntime/Sandbox、Google OAuth、公共 DNS/TLS 或 WebSocket。原生容器隔离复验、WS 与 Observer 继续按计划推进；M3 和整体目标未完成，云门禁关闭。
+
+## 2026-09-08 用户 Preview 面板与恢复 API（本地候选）
+
+工作台已接选择运行中服务、打开/恢复/关闭 Preview 和刷新状态。打开请求保存原幂等键与 runId/expectedPreviewId，未知结果按原请求重试，确定 409 后重新读取。只读 GET 返回最小 current 与 available；过期或撤销的 current ID 保留供 CAS，只有当前有效目标及已注册主机才返回访问入口。GET 不创建绑定或注册路由，并在异步查询前后复核 Catalog 权限。
+
+面板校验独立 HTTPS 引导地址与精确 iframe 窗口/origin，再签发并交接短期票据；票据不进入本地存储或 URL。稳定 DOM 避免普通状态渲染重载 iframe，关闭/过期/离开工作区卸载视图且不停止独立服务。非 ready 项目不发起 Preview 请求。静态资源白名单已加入 previews.js；控制页 frame-src 默认 none，仅在明确启用及校验独立基域后放行。
+
+[完整本地回归](evidence/runs/m0-local-20260908101603078/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 183 pass、M2 360 pass、M3 173 pass，合计 **1066 pass / 1 skip**。新增 3 项恢复 API、1 项 CSP 域名策略、5 项真实 Chrome 面板测试和 1 项桌面/手机整页测试。Chrome 面板测试使用 HTTP/API 替身验证消息协议、伪造来源拒绝、原请求重试、409、上下文切换、iframe 状态保留及关闭/过期。
+
+主控已查看[桌面截图](evidence/runs/m3-preview-ui-20260908181454/preview-desktop.png)和[手机截图](evidence/runs/m3-preview-ui-20260908181454/preview-mobile.png)，修复继承 flex 样式导致说明与按钮挤排；[视觉记录](evidence/runs/m3-preview-ui-20260908181454/visual-review.json)保存源文件和截图摘要。整页截图仅展示选择与打开入口，其 POST 是 503 替身，不证明真实容器页面加载。主控负责 API、最终面板实现、集成和质量复核，子 agent 负责测试与截图。
+
+未进行云部署、迁移、远程资源变更或模型调用。下一步继续补实际浏览器至 Gateway/Workspace/Runtime 的纵向验证、原生容器、WebSocket 和 Observer；M3 与整体开发目标保持未完成，云门禁关闭。
+
+## 2026-09-08 Gateway 授权 HTTP 接线与上传撤权（本地候选）
+
+项目 HTTP 已接 access Cookie → Gateway 持续授权 → Workspace.forwardPreviewHttp → 私有 ServiceRuntime。Workspace 从当前权威 Run/Preview 目标构造固定 spec、reference 和 lease，拒绝客户端选择执行参数；无访问 Cookie 不查询运行目标。请求凭据在进入项目前剥离，响应应用固定隔离策略。
+
+上传分段读取前后、发送前、响应头返回前及响应分段读取前后复核会话；取消或权限失效后不转发后续数据，迟到响应会取消并清理。请求总期限最多 15 秒且不超过访问期限，上传最多 1 MiB/5 秒、响应最多 8 MiB。子 agent 的定向测试发现原实现上传期间缺少复核，主控修复后新增等待期间撤权/取消验证；流夹具关闭预取，以区分源预取与实际读取。
+
+[完整本地回归](evidence/runs/m0-local-20260908100527111/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 182 pass、M2 360 pass、M3 164 pass，合计 **1056 pass / 1 skip**。包含 8 项授权流测试、3 项目标到运行参数测试和新增主机 HTTP 测试；扩展真实 Workerd/D1 验证 Workspace 到 Runtime 替身转发、固定输入及会话删除/错误实例/关闭门禁/未 ready 时拒绝，转发不重复启动服务。
+
+本轮只做本地代码、测试和文档工作，未部署、迁移、修改远程资源或调用模型。原生 Sandbox 端口纵向验证、云 bindings、WebSocket、Observer 和用户 Preview 面板仍待完成；M3 与整体目标未完成，云门禁关闭。主控负责接线、修复和完整录证，子 agent 完成参数转换、Workerd/授权流测试及契约同步。
+
+## 2026-09-08 私有 HTTP 转发与停止边界（本地候选）
+
+ServiceRuntime 已接私有 HTTP 转发，要求正确 actor/input、已尝试启动、未停止、未过期及当前 dispatched 租约；最后同步栅栏检查与发送之间不插入 await。ServiceSandbox 只使用已运行容器的固定 8080 端口，不调用自动启动方法。停止中止等待中的请求，响应流持续检查停止栅栏，单次最多 15 秒、响应 8 MiB。HTTP 策略限制 1 MiB 请求体并剥离 Cookie、Authorization 和平台控制头；响应策略限制重定向并覆盖 Cookie/CORS/CSP。
+
+[完整本地回归](evidence/runs/m0-local-20260908095648576/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 182 pass、M2 360 pass、M3 152 pass，合计 1044 pass / 1 skip。新增 4 项只读栅栏、4 项 HTTP 策略、4 项固定端口测试；扩展真实 Workerd 验证 Runtime/配额/持久栅栏与 Sandbox RPC 替身的正常转发和 stop 中断响应头等待。原生端口仍使用替身，未启动 Docker。
+
+真实 Workerd 最初拒绝跨 RPC AbortSignal 序列化；现改为传递明确截止，由 Runtime 与 Sandbox 各自处理中止，无新增兼容性旗标。主控实现转发接线与期限/资源清理，子 agent 实现持久栅栏及 Workerd 测试，低成本子 agent 完成请求策略和端口边界测试。
+
+Gateway 项目路径尚未连接此转发，仍返回代理未就绪；公开访问的会话撤销传播、WebSocket、服务面板与原生 x86 容器验收仍待完成。本轮无云部署、远程资源变更或模型调用，整体目标和云门禁继续保持未完成。
+
+## 2026-09-08 Preview 主机映射与控制端 API（本地候选）
+
+Gateway 已接打开 Preview、签发票据及独立主机引导路由。控制端按当前登录和 Catalog owner/ready scope 授权，返回白名单元数据；新 `0008_preview_routes.sql` 固定 Preview → Workspace/generation/期限及摘要主机标签。非控制源只接受配置基域中的已注册完整 origin，复核当前目标后进入 bootstrap/exchange。兑换必须匹配主机对应的 previewId，错误实例不消费票据。项目应用路径仍返回代理未就绪。
+
+[完整回归](evidence/runs/m0-local-20260908094751732/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 182 pass、M2 360 pass、M3 140 pass，合计 1032 pass / 1 skip。新增 4 项真实 SQLite 路由测试、3 项 Gateway API 测试、3 项主机路由测试和 1 项错误 Preview 兑换测试；Workspace/运行端为明确替身，原 Workerd 调用已同步验证。
+
+两次失败记录保留：[迁移预检旧清单](evidence/runs/m0-local-20260908094445491/local-checks.json)拒绝新增 0008，现已显式加入并保留未知迁移拒绝；[既有 Workspace 成功路径](evidence/runs/m0-local-20260908094606321/local-checks.json)在并行全检中失败，单独运行通过。该夹具的真实异步摘要/SQLite RPC 预算仅 10 ms，现调整为 1000 ms，受控逻辑截止、故障注入及生产超时不变，16 项相关测试和完整检查通过。
+
+主控实现 Gateway 接线、主机分支、实例绑定及全检修复；子 agent 实现路由注册和接口测试，低成本子 agent 审查并测试主机边界。只读 SDK 调查确认公共 containerFetch 会自动启动容器，后续代理不能直接使用它；固定端口、租约和停止栅栏方案已记入 M3 计划。
+
+本轮无云迁移、部署、远程资源变更或模型调用。服务面板、控制页 iframe CSP、实际 HTTP/WS 代理、撤销传播及原生容器验收仍未完成，整体目标和云门禁保持未完成。
+
+## 2026-09-08 Preview 访问会话与浏览器引导（本地候选）
+
+Workspace 已接票据兑换为独立访问会话、逐次授权和维护撤销。访问最多 5 分钟且不超过原登录/Run 截止，只保存 access 摘要，读取不续期；异步授权后再次核对持久撤销状态。关闭 Preview 开关或 Workspace 未 ready 时仍可撤销。
+
+新增独立 HTTPS 源的 bootstrap/exchange 处理器，nonce 仅从 Host-only Cookie 取回，脚本严格核对控制源与父窗口。成功设置 Secure/HttpOnly 访问 Cookie 并清除 nonce，凭据不放入 URL 或响应正文。真实 Chrome 验证 iframe 兑换跳转、实际 Cookie 隔离、错误 origin/窗口来源拒绝；HTTP 兑换和项目页为替身。另以真实 Workerd/本地 D1 验证 Workspace access RPC、重启、撤销、会话删除和门禁。
+
+[完整本地回归](evidence/runs/m0-local-20260908093425151/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 182 pass、M2 360 pass、M3 129 pass，合计 1021 pass / 1 skip。主控实现访问会话、Workspace 接线及引导处理器，子 agent 完成访问/Workerd/Chrome 测试，低成本子 agent 完成协议边界测试。
+
+主机名映射、生产控制端票据 API、用户面板、实际 HTTP/WS 容器代理和长连接撤销传播尚未接通，因此没有开放 Preview 或宣布 M3 完成。本轮无云部署、远程资源修改或模型调用，整体目标继续。
+
+## 2026-09-08 Preview 私有短期票据（本地候选）
+
+Workspace 已接 browser 用途的短期票据签发与一次兑换。票据绑定具体登录、Workspace、Preview/Run 来源和 runtime，最长 30 秒且受登录/运行截止约束，只持久化票据及 nonce 摘要。兑换复核主库会话和当前 Run/绑定后，以条件更新原子消费；并发、重启或持久确认丢失不能成功兑换第二次。每个 Workspace 最多保留 256 条未过期记录，签发时清理过期项。
+
+[完整本地回归](evidence/runs/m0-local-20260908092632542/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 182 pass、M2 360 pass、M3 120 pass，合计 1012 pass / 1 skip。新增 8 项 SQLite 票据测试；扩展真实 Workerd/本地 D1 测试验证生产 Workspace 签发与兑换、门禁、删 session、重启及未 ready 拒绝。D1 身份是明确 fixture，Runtime 仍为替身，没有真实 Google 或容器代理。
+
+主控实现票据与 Workspace 接线，子 agent 完成票据及 Workerd 测试，低成本子 agent 审查并补容量和异步过期测试。公开 nonce Cookie/引导入口、访问会话、HTTP/WS 代理和撤销传播仍待实现；票据 claims 不能直接当成持续访问授权。本轮无云部署、远程资源修改或模型调用，整体目标和 M3 云门禁未完成。
+
+## 2026-09-08 Preview 登录会话校验（本地候选）
+
+Gateway 已从真实 Better Auth 服务器结果提取私有 session 上下文。Preview 权限检查以主数据库 JOIN 同时验证具体登录、认证版本、owner 成员关系、项目和 Workspace 状态及 generation；查询返回后再检查截止，拒绝慢查询期间已过期的登录。公开响应不暴露 session id 或 token。
+
+[完整回归](evidence/runs/m0-local-20260908091200130/local-checks.json)通过且源码稳定。新增四项真实本地 Better Auth/SQLite 测试覆盖签名 Cookie、当前登录退出、独立第二会话保留、过期、权限变化、错误 scope 和公开响应；可控时钟覆盖查询期间过期。主控实现生产身份接线与期限检查，子 agent 完成真实身份测试和只读复核。
+
+本轮没有真实 Google OAuth 交换、模型调用、云部署或远程资源变更。登录校验尚未接入公开 Preview 访问入口；短期票据、HTTP/WS 代理、用户/Observer 分权及连接撤销传播继续按 M3 计划实现。实际原生 x86 SDK/容器复验仍未完成，整体目标与云门禁保持未完成。
+
+## 2026-09-08 Preview 持久绑定与内部目标校验（本地候选）
+
+新增 Workspace 内的 `SqlPreviewBindings`，固定 Preview、Run、来源和 runtime reference；同键重放不另建，当前相同目标可复用，替换需 CAS 匹配当前 ID，并原子撤销旧绑定。撤销不可被迟到重放清除，过期绑定不能用于目标解析。Workspace 从自身 serviceView 获取候选，绑定期间不创建第二套服务进程。
+
+`previewTarget` 查询固定 Run 后再次检查当前绑定，拒绝替换、撤销、停止意图、过期或不匹配来源/runtime 的响应。它是内部瞬时路由目标，不是浏览器访问授权，也不保证连接存续期间的健康或权限。独立 M3_PREVIEW_ENABLED 开关默认未启用。
+
+[完整回归](evidence/runs/m0-local-20260908090554379/local-checks.json)通过且源码稳定：M0 **350 pass / 1 skip**、M1 **182 pass**、M2 **360 pass**、M3 **108 pass**，合计 **1000 pass / 1 skip**。新增 5 项真实 SQLite 绑定测试及 4 项目标解析测试；扩展真实 Workerd 验证 Workspace/Run/绑定持久存储、重启、内部目标和未 ready 时维护撤销，Runtime 仍为替身。
+
+主控完成私有 Workspace 接线、目标解析、复核和完整录证；子 agent 完成绑定 journal 与测试，低成本子 agent 完成目标测试及真实 session 接线审查。后续须从 Better Auth 取得私有 session 上下文，完成短期票据兑换、用户/Observer 分权、HTTP/WS 代理和登出/替换/停止的撤销传播；M0 合成身份和固定应用不迁入产品。步骤已写入 [M3 计划](m3-execution-plan.md)。本轮没有公开 Preview URL、云部署、远程资源修改或模型调用，真实 SDK/容器链路仍待验收。
+
+## 2026-09-08 用户端服务面板与浏览器验收（本地候选）
+
+生产静态工作台已接服务列表、分页、启动时限、详情、停止和刷新恢复。列表区分交付与运行状态，详情显示最近确认时间；超时或读取失败明确标记未知及旧确认时间。默认 15 秒网络等待，未确认启动保留原幂等键和时限，页面刷新后仍可复用；隐藏页面暂停读取，切换项目/退出登录清理请求并拒绝迟到响应。项目非 ready 时允许进入维护界面，禁用新建和 Turn/文件操作，仍可查询和停止独立服务。
+
+[完整回归](evidence/runs/m0-local-20260908085925597/local-checks.json)通过且源码稳定：M0 **350 pass / 1 skip**、M1 **182 pass**、M2 **360 pass**、M3 **99 pass**，合计 **991 pass / 1 skip**。新增 6 项面板 Chrome 测试覆盖状态、幂等恢复、异步隔离、隐藏轮询和请求超时；新增 2 项整页浏览器测试验证桌面/手机刷新及停止、非 ready 维护不派发 Turn/文件请求。
+
+[独立视觉记录](evidence/runs/m3-service-ui-20260908085908852/browser.json)包含 [桌面](evidence/runs/m3-service-ui-20260908085908852/service-desktop.png) 与 [手机](evidence/runs/m3-service-ui-20260908085908852/service-mobile.png) 截图，主控已查看布局和长 ID 换行，测试检查无横向溢出。页面为生产静态文件，API 使用明确 HTTP 替身；不证明真实服务健康、云端授权或容器退出。先前英文时间格式的截图保留，最终版本使用中文时间显示并明确列表加载态。
+
+主控完成页面生命周期、非 ready 维护入口、样式、整页测试和视觉/完整录证；子 agent 实现独立面板及测试，低成本子 agent 只读复核生命周期。尚无 Preview URL/iframe、日志或 Observer；下一步连接 Preview 网关与观察契约，并继续完成原生 x86 SDK 和完整纵向验收。本轮无云部署、远程资源修改或模型调用，执行门禁保持关闭。
+
+## 2026-09-08 用户 Service API 与持久运行视图（本地候选）
+
+Gateway 已接 service 创建、列表、详情和停止入口。每次请求先执行真实身份/Admission/Catalog 授权；创建要求 ready，维护入口使用共享 ownership 查询但允许非 ready，保留 authVersion、租户成员、项目关联和 generation 校验。严格限制 body、查询游标和 Origin；只向 Workspace 传入服务器 scope/actor 与用户时限，不接受客户端镜像或来源配置。
+
+新增 `createFromPolicy`，用户请求与平台镜像分别处理，同键镜像升级返回原意图，原严格私有入口与新入口共享唯一表。列表用 SQL 索引和创建时间/runId 游标，默认 20、最大 50 条。详情由 Workspace 查询固定 task 对应的 Run，校验身份、配置、时间与状态组合，5 秒超时返回不可用而非停止。公开响应使用白名单，区分 deliveryStatus 与 runStatus；列表/创建/停止的 runStatus 为 null，不能推断服务未运行。内部错误和执行引用不暴露。
+
+[完整回归](evidence/runs/m0-local-20260908085038815/local-checks.json)通过且源码稳定：M0 **350 pass / 1 skip**、M1 **180 pass**、M2 **360 pass**、M3 **93 pass**，合计 **983 pass / 1 skip**。新增 16 项覆盖策略重放/分页、维护权限、运行回执及超时、真实 Gateway/Catalog/生产客户端的授权和投影；扩展 Workerd 验证策略入口镜像变更重放、列表恢复、门禁关闭时的真实 Run journal 查询。Gateway 测试的 Workspace RPC 与 Workerd 测试的 Runtime 分别为明确替身，尚未证明完整公开 HTTP→实际容器链路。
+
+主控完成 Gateway/Workspace 接口、运行回执校验与完整录证；子 agent 完成 journal/接口测试，低成本子 agent 完成维护权限和定向校验测试，并独立指出已修复的时间/状态组合缺口。下一步接用户端服务列表、详情和控制，再接 Preview 网关、观察与实际容器验收。本轮未部署、修改远程资源或调用模型，生产 bindings 与执行门禁未启用。
+
+## 2026-09-08 Workspace 服务提交与自动交付（本地候选）
+
+已接通 Workspace 私有提交、停止和意图查询，首次请求同步冻结权威版本；意图 SQL、service 逻辑唤醒与三域物理 alarm 在同一事务提交。共享路由不再因初始化或 Turn 分支提前返回而遗漏 service。审查修正了未 ready 时停止无法转交、镜像配置升级后原请求不能重放的问题：停止使用 maintenance scope，正常来源解析与新建仍检查 ready；镜像校验仅在首次冻结时执行。
+
+[完整回归](evidence/runs/m0-local-20260908084221825/local-checks.json)通过且源码稳定：M0 **350 pass / 1 skip**、M1 **180 pass**、M2 **360 pass**、M3 **77 pass**，合计 **967 pass / 1 skip**。新增真实 Workerd 集成使用生产 Workspace/ServiceRun/Quota/RevisionStore 和 R2，证明已保存来源冻结、事务失败共同回滚、无手工唤醒的交付、重启恢复、跨 scope 拒绝、私有镜像变更重放，以及门禁关闭且 Workspace 非 ready 时的停止和配额释放。另新增 3 项 service 路由测试。
+
+集成测试预置已确认 Workspace 和保存回合，Runtime 是明确替身；不证明 M1 初始化、初始模型提交、Python 容器执行或公开 Preview 完整链路。`serviceSnapshot` 当前仅是持久意图，不能当作运行健康。主控复核生产改动与测试边界，两名子 agent 分别完成接线和集成测试；独立只读审查确定下一步 Gateway 所需的维护权限、公开字段投影、镜像升级幂等和列表恢复要求，已写入 [M3 执行计划](m3-execution-plan.md)。
+
+下一步接用户 Gateway/API、实际运行状态投影与列表，再接 Preview 网关/UI。原生 x86 容器 SDK 全链路仍待验收；本轮无云部署、远程资源变更或模型调用，M2/M3 执行门禁继续关闭。
+
+## 2026-09-08 请求交付恢复与原子停止接收（本地候选）
+
+新增 `ServiceIntentDelivery`，把持久请求按冻结来源解析成任务，经已有 ServiceRun Host 交付。先持久 claim，再派发；超时或冲突回执保持未知并复用同任务。解析/接受期间的取消都会继续处理，停止未确认时保留恢复唤醒。迟到 RPC 响应不会被当作成功，并释放传输对象。此引擎不复制租约、进程或健康状态机。
+
+新增 `ServiceRun.acceptStopped(task)`：在同一存储事务固定任务、永久 STOP 和首次 alarm，再补建/停止 journal。首次交付未知而用户取消时，恢复入口不采用先 accept 再 stop；普通迟到 accept 不会清除已保存 STOP。stop 本身也保存 STOP，使 journal 创建失败后的重启仍能恢复取消。新建门禁关闭时保留清理入口。
+
+[完整回归](evidence/runs/m0-local-20260908072102293/local-checks.json)通过且源码稳定：M0 **350 pass / 1 skip**、M1 **180 pass**、M2 **357 pass**、M3 **76 pass**，合计 **963 pass / 1 skip**。新增 7 项交付测试使用真实 SQLite 与端口替身，验证确认丢失、两处取消竞态、错误回执、超时迟到响应释放和未确认停止。扩展真实 Workerd 验证首次 acceptStopped 零配额/Runtime 派发，关闭门禁后取消已运行任务、故障重启及普通 accept 不复活；Runtime 仍为替身。测试中还修正了多个运行错误共用停止确认 ID 的 fixture，不放宽生产配额校验。
+
+主控实现交付引擎并审查回执/超时处理，子 agent 实现 Host 原子停止与 Workerd 验证。下一步连接 Workspace 意图与首次 alarm、服务投递 handler、Gateway/API/UI；当前没有产品提交入口，也没有通过真实 x86 容器 SDK 的剩余验收。本轮无云部署或模型调用，执行门禁保持关闭。详见 [交付契约](m3-service-run-contract.md)。
+
+## 2026-09-08 持久运行请求与共享唤醒（本地候选）
+
+新增 Workspace 的 `SqlServiceIntentJournal`：首次请求在同步 SQL 事务内冻结权威来源、主体/请求键、平台配置和固定 runId；重放不再次读 head，确认丢失后可按原请求恢复。初始来源候选无需伪造归档摘要，解析后固定完整不可变任务。交付前先保存未知状态；投递截止固定且与实际运行时限区分。取消、解析、交付与停止转交分别记录，不把 Host 接受解释为进程运行或停止。
+
+主控扩展共享 alarm 为初始化、Turn、service 投递三个逻辑域，在事务内保留最早截止；子 agent 实现意图 journal 和真实 SQLite 测试。主控审查修复两处迟到重放问题：已转交停止的请求不重新挂唤醒，已交付请求不被迟到失败重试复活。SQL 内执行到期筛选/排序/LIMIT 与 MIN，避免反序列化全部历史任务。
+
+[完整回归](evidence/runs/m0-local-20260908071621369/local-checks.json)通过且源码稳定：M0 **350 pass / 1 skip**、M1 **180 pass**、M2 **357 pass**、M3 **69 pass**，合计 **956 pass / 1 skip**。10 项新 journal 测试使用真实 SQLite，覆盖来源冻结、重放/重启、写入确认丢失、取消、任务篡改、固定投递截止和停止转交；真实 Workerd 验证三域 alarm 重建与交错清理，定向测试覆盖失败回滚。
+
+当前是待接线基础，尚未在 Workspace 提交入口原子安排意图与首次唤醒，也未添加 service 投递 alarm handler、Gateway 创建/停止入口或 UI。下一步必须补齐这些交付路径，尤其不能让共享 alarm router 提前返回漏掉服务请求。本轮无云部署、容器或模型调用；先前原生 x86 容器完整 SDK 验收限制仍在，执行门禁保持关闭。详见 [运行契约](m3-service-run-contract.md)。
+
+## 2026-09-08 Preview 双来源与 Workspace 权威选择（本地候选）
+
+Preview 计划现统一采用 source：`saved-turn` 保留真实回合身份与保存收据；`initial-workspace` 使用确认的初始空间引用和归档摘要。官方模型初始版本不再需要虚构 Turn 或调用模型才能进入计划解析。Run/Runtime/Native 已适配两种来源，启动前按原来源重新读取并校验文件；私有归档接口不传 Pi Session。
+
+Workspace 新增私有 previewPlan，仅从自己的已确认初始化状态或已保存 head 选择来源。TurnJournal 提供同步、与日志分离的 workspaceRevisionSnapshot，供下一步在同一存储事务内冻结运行意图；活动回合尚未保存的文件不成为 head。主控负责 Workspace 接线与验证，子 agent 完成来源契约、真实 R2 测试和消费者适配。
+
+[完整回归](evidence/runs/m0-local-20260908065849321/local-checks.json)通过且源码稳定：M0 **350 pass / 1 skip**、M1 **180 pass**、M2 **355 pass**、M3 **58 pass**，合计 **943 pass / 1 skip**。真实 RevisionStore Workerd/R2 覆盖初始模型计划、纯归档、错误 actor/scope/hash 和损坏模型包拒绝；Workspace Workerd 以明确的解析替身验证初始/保存来源选择、缺失初始化检查点与未 ready 拒绝。Native 初始来源测试为传输替身，未重新证明真实容器执行。
+
+[首次完整检查失败](evidence/runs/m0-local-20260908065620242/local-checks.json)保留：已有 M0 真实 Pi 流式测试等待完成阶段超时，未修改其超时阈值；单独复验 15 项通过，随后同源码完整回归通过。超时根因未确认。
+
+下一步仍是持久提交意图、幂等 runId、共享 alarm 交付、Gateway 权限和停止入口，以及用户 UI。当前读取计划不会创建 Run，也不等于初始项目已能在产品中打开 Preview。seccomp/原生 x86 容器完整 SDK 验收门禁继续关闭；本轮未部署云端或调用模型。见 [运行契约](m3-service-run-contract.md)和 [执行计划](m3-execution-plan.md)。
+
+## 2026-09-08 控制端口隔离修复与真实 SDK 验证（未通过完整运行门禁）
+
+[漏洞复现](evidence/runs/m3-sdk-loopback-discovery-202609071528/discovery.json)确认旧测试镜像的 UID 10001 项目进程可经本机 Sandbox daemon 请求以 root 执行 `id -u`。禁止外网、目录权限和 UID 降权不能覆盖这一内网控制接口，因此旧隔离证据不支持完整权限隔离结论。
+
+修复候选在 Service 和 Project effect 的 child 中共同安装 NoNewPrivs/seccomp，拒绝主动 connect 与 io_uring，规则缺失或加载失败则拒绝启动。主控复现并复核，子 agent 实现共享防护与定向测试，另一子 agent 完成真实 SDK 验证脚本；低成本子 agent 核对文档当前状态表述。没有移除防护来适配测试环境。
+
+[原生 x86 Linux 验证](evidence/runs/m3-network-fence-native-20260907225924821/native-network-fence.json)通过且源码稳定：过滤前 IPv4 连接可用，过滤后 IPv4/IPv6/Unix 主动连接与三个 io_uring 调用返回 EPERM；fork/exec 后代继承，过滤后监听、accept 与 HTTP 200 响应正常。远端临时目录和测试进程已清理。该证据使用 AMD128 普通 UID 1000，只证明内核行为，不代表容器 UID 10001 或 Cloudflare SDK 全链路。
+
+[真实 Workerd/SDK 重试](evidence/runs/m3-service-sdk-20260908045836545/service-sdk.json)构建并使用实际 ServiceSandbox 镜像，完成三次私有分块上传，服务 start 返回失败。同一容器诊断显示 seccomp_load=-125，项目进程为零；Mac ARM VM 的 x86 镜像环境目前无法完成服务验收。源码稳定，测试服务和出口代理容器全部清理。[SDK 日志](evidence/runs/m3-service-sdk-20260908045836545/sdk.log)保存具体调用结果。此前[第一次失败](evidence/runs/m3-service-sdk-20260907225925246/service-sdk.json)由测试 Worker 缺少 ContainerProxy 导出导致，已修正后另起运行记录，未覆盖失败证据。
+
+[当前完整回归](evidence/runs/m0-local-20260908063559173/local-checks.json)通过且源码稳定：M0 350 pass / 1 skip、M1 180 pass、M2 354 pass、M3 56 pass，合计 **940 pass / 1 skip**。回归通过不消除上述真实容器验收失败。
+
+后续需在支持该内核防护的原生 x86 容器环境重跑实际 SDK 链路，包括精确控制接口拒绝、正常 Preview、启动重放和停止。该环境限制不阻止 Workspace 权威版本、Run 入口和网关的本地开发，但 M2/M3 执行发布门禁继续关闭。本轮没有云部署、模型调用或修改远端系统配置。
+
 ## 2026-09-07 私有 ServiceRuntime 接线与 SDK 传输修正（本地候选）
 
 已连接 `ServiceRuntime` DO、TenantQuota、RevisionStore 和原生适配器。启动前验证完整 actor 身份、固定镜像及有效 dispatched 租约；supervisor 的持久启动/停止标记在重启后继续生效。关闭新建门禁不阻止观察和停止。新增纯 Workspace 归档接口 `serviceFiles`，避免误把 `load` 返回的 Pi Session 传入服务容器。

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
-import { SandboxTrustedPiHostPort, TRUSTED_PI_HOST_PROGRAM, TRUSTED_PI_NODE, type TrustedPiProcessView, type TrustedPiSandboxProcessApi } from '../../services/turn-runtime/pi-native.ts';
+import { SandboxTrustedPiHostPort, readCurrentObserverExecution, TRUSTED_PI_HOST_PROGRAM, TRUSTED_PI_NODE, type TrustedPiProcessView, type TrustedPiSandboxProcessApi } from '../../services/turn-runtime/pi-native.ts';
 import type { TurnRuntimeIdentity } from '../../services/turn-runtime/identity.ts';
 
 const identity:TurnRuntimeIdentity={scope:{tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:2},sessionId:'session-a',turnId:'turn-a',dispatchId:'dispatch-a',generation:2},encoder=new TextEncoder();
@@ -11,19 +11,22 @@ const checkpoint={revisionId:'revision-a',objectKey:'turns/tenant-a/project-a/wo
 const base={workspace:checkpoint,session:checkpoint};
 const input=(message='Build model')=>({...identity,actor,message,base});
 async function digest(bytes:Uint8Array){const value=await crypto.subtle.digest('SHA-256',Uint8Array.from(bytes));return [...new Uint8Array(value)].map(byte=>byte.toString(16).padStart(2,'0')).join('');}
-class Process implements TrustedPiProcessView{id:string;status='running';exitCode?:number;kills=0;killCompletes=true;constructor(id:string){this.id=id;}async getStatus(){return this.status;}async kill(){this.kills++;if(this.killCompletes){this.status='completed';this.exitCode=0;}}}
+class Process implements TrustedPiProcessView{id:string;status='running';exitCode?:number;kills=0;statusReads=0;killCompletes=true;onStatus?:()=>void;constructor(id:string){this.id=id;}async getStatus(){this.statusReads++;this.onStatus?.();return this.status;}async kill(){this.kills++;if(this.killCompletes){this.status='completed';this.exitCode=0;}}}
 class Sandbox implements TrustedPiSandboxProcessApi{
-  files=new Map<string,string>();process:Process|null=null;starts=0;loseStart=false;lastCommand='';lastOptions:any;
-  async writeFile(path:string,content:string){this.files.set(path,content);return {success:true,path};}
-  async readFile(path:string){const content=this.files.get(path);if(content===undefined)throw Error('ENOENT not found');return {success:true,path,content};}
+  clock:()=>number=()=>1003;
+  queryObserverExecution(identity:TurnRuntimeIdentity){return readCurrentObserverExecution(this,identity,this.clock);}
+  files=new Map<string,string>();process:Process|null=null;starts=0;writes=0;reads=0;loseStart=false;lastCommand='';lastOptions:any;onRead?:(path:string,read:number)=>void;onGetProcess?:()=>void;
+  async writeFile(path:string,content:string){this.writes++;this.files.set(path,content);return {success:true,path};}
+  async readFile(path:string){this.reads++;this.onRead?.(path,this.reads);const content=this.files.get(path);if(content===undefined)throw Error('ENOENT not found');return {success:true,path,content};}
   async startProcess(command:string,options:any){this.starts++;this.lastCommand=command;this.lastOptions=options;this.process=new Process(options.processId);if(this.loseStart)throw Error('lost-native-start-response');return this.process;}
-  async getProcess(id:string){return this.process?.id===id?this.process:null;}
+  async getProcess(id:string){this.onGetProcess?.();return this.process?.id===id?this.process:null;}
   prefix(){const control=[...this.files.keys()].find(key=>key.endsWith('.control.json'));assert.ok(control);return control.slice(0,-'.control.json'.length);}
+  running(){const prefix=this.prefix();this.files.set(`${prefix}.result.json`,JSON.stringify({schemaVersion:1,identity,phase:'running',outcome:null,executionErrorCode:null,events:[],outputSessionSha256:null}));}
   async settle(outcome:'completed'|'failed'|'cancelled'|'interrupted'='completed',output=snapshot()){
     const prefix=this.prefix(),sessionSha=await digest(output);this.files.set(`${prefix}.output-session.json`,Buffer.from(output).toString('base64'));this.files.set(`${prefix}.result.json`,JSON.stringify({schemaVersion:1,identity,phase:'terminal',outcome,executionErrorCode:outcome==='completed'?null:'fixture-failure',events:[{sequence:1,at:1002,kind:'assistant.message',text:'done',stopReason:'stop'}],outputSessionSha256:sessionSha}));if(this.process){this.process.status='completed';this.process.exitCode=0;}
   }
 }
-function fixture(input:Uint8Array|null=snapshot()){const sandbox=new Sandbox(),host=new SandboxTrustedPiHostPort(sandbox,{async load(){return input;}},()=>1003);return {sandbox,host};}
+function fixture(input:Uint8Array|null=snapshot(),clock:()=>number=()=>1003){const sandbox=new Sandbox();sandbox.clock=clock;let loads=0;const host=new SandboxTrustedPiHostPort(sandbox,{async load(){loads++;return input;}},clock);return {sandbox,host,get sessionLoads(){return loads;}};}
 
 test('writes scoped session and control before one fixed Trusted Pi process start',async()=>{
   assert.equal(TRUSTED_PI_HOST_PROGRAM,'/opt/riffology/trusted-pi/trusted-pi-turn-host.mjs');
@@ -76,5 +79,68 @@ test('genesis and restored session bytes must exactly match the claimed base che
 });
 
 test('observe never creates a process and empty native state is absent',async()=>{const f=fixture();assert.equal((await f.host.observe(identity)).phase,'absent');assert.equal(f.sandbox.starts,0);});
+
+test('explicit cancel settles an absent native execution as an interrupted fenced stop',async()=>{
+  const f=fixture(),cancelled=await f.host.cancel(identity);
+  assert.equal(cancelled.phase,'terminal');assert.equal(cancelled.outcome,'interrupted');assert.equal(cancelled.executionErrorCode,'turn-native-execution-absent');
+  assert.deepEqual(cancelled.events,[]);assert.equal(cancelled.stopped?.nativeRunning,false);assert.equal(cancelled.stopped?.fenced,true);assert.equal(f.sandbox.starts,0);
+  assert.deepEqual(await f.host.cancel(identity),cancelled);
+});
+
+test('schema 2 control is persisted and native start receives the remaining timeout',async()=>{
+  const f=fixture();await f.host.start({...input(),executionDeadlineAt:1103});
+  const control=JSON.parse(f.sandbox.files.get(`${f.sandbox.prefix()}.control.json`)!);
+  assert.equal(control.schemaVersion,2);assert.equal(control.executionDeadlineAt,1103);assert.equal(f.sandbox.lastOptions.timeout,100);
+});
+
+test('expired deadline is rejected before any native state is written',async()=>{
+  const f=fixture();await assert.rejects(f.host.start({...input(),executionDeadlineAt:1003}),/trusted-pi-execution-expired/);
+  assert.equal(f.sandbox.writes,0);assert.equal(f.sandbox.starts,0);assert.equal(f.sessionLoads,0);
+});
+
+test('deadline expiry after control write rejects before a zero-timeout process start',async()=>{
+  let reads=0;const f=fixture(snapshot(),()=>reads++<2?1003:1103);
+  await assert.rejects(f.host.start({...input(),executionDeadlineAt:1103}),/trusted-pi-execution-expired/);
+  assert.equal(f.sandbox.starts,0);assert.ok([...f.sandbox.files.keys()].some(key=>key.endsWith('.control.json')));assert.equal(f.sandbox.writes,2);
+});
+
+test('unchanged schema 2 deadline replay observes the existing process without a new start',async()=>{
+  const f=fixture(),request={...input(),executionDeadlineAt:1103};await f.host.start(request);const writes=f.sandbox.writes;
+  assert.equal((await f.host.start(request)).phase,'starting');assert.equal(f.sandbox.starts,1);assert.equal(f.sandbox.writes,writes);assert.equal(f.sessionLoads,2);
+});
+
+test('observer refuses an ordinary SDK without a dedicated reader before native I/O',async()=>{
+  let calls=0;const forbidden=async()=>{calls++;throw Error('ordinary-sdk-called');};
+  const host=new SandboxTrustedPiHostPort({writeFile:forbidden,readFile:forbidden,startProcess:forbidden,getProcess:forbidden},{load:forbidden},()=>1003);
+  await assert.rejects(host.currentObserverExecution(identity),/observer-reader-required/);assert.equal(calls,0);
+});
+
+test('legacy schema 1 control cannot establish observer execution authority',async()=>{
+  const f=fixture();await f.host.start(input());await assert.rejects(f.host.currentObserverExecution(identity),/trusted-pi-observer-denied/);
+});
+
+test('observer execution requires real starting, absent, or terminal state to be rejected',async()=>{
+  const absent=fixture();await assert.rejects(absent.host.currentObserverExecution(identity),/trusted-pi-observer-denied/);
+  const starting=fixture();await starting.host.start({...input(),executionDeadlineAt:1103});await assert.rejects(starting.host.currentObserverExecution(identity),/trusted-pi-observer-denied/);
+  const terminal=fixture();await terminal.host.start({...input(),executionDeadlineAt:1103});await terminal.sandbox.settle();await assert.rejects(terminal.host.currentObserverExecution(identity),/trusted-pi-observer-denied/);
+});
+
+test('read-only observer query returns the exact persisted deadline and denies at expiry',async()=>{
+  let now=1003;const f=fixture(snapshot(),()=>now),request={...input(),executionDeadlineAt:1103};await f.host.start(request);f.sandbox.running();
+  const writes=f.sandbox.writes,starts=f.sandbox.starts,loads=f.sessionLoads;assert.deepEqual(await f.host.currentObserverExecution(identity),{expiresAt:1103});
+  assert.equal(f.sandbox.writes,writes);assert.equal(f.sandbox.starts,starts);assert.equal(f.sessionLoads,loads);
+  now=1103;await assert.rejects(f.host.currentObserverExecution(identity),/trusted-pi-observer-denied/);assert.equal(f.sandbox.writes,writes);assert.equal(f.sandbox.starts,starts);assert.equal(f.sessionLoads,loads);
+});
+
+test('observer query fails closed when awaited process status reaches the deadline',async()=>{
+  let now=1003;const f=fixture(snapshot(),()=>now),request={...input(),executionDeadlineAt:1103};await f.host.start(request);f.sandbox.running();f.sandbox.process!.onStatus=()=>{now=1103;};
+  await assert.rejects(f.host.currentObserverExecution(identity),/trusted-pi-observer-denied/);
+});
+
+test('observer query fails closed when the persisted control changes during the read sequence',async()=>{
+  const f=fixture(snapshot(),()=>1003),request={...input(),executionDeadlineAt:1103};await f.host.start(request);
+  f.sandbox.running();f.sandbox.onGetProcess=()=>{const key=`${f.sandbox.prefix()}.control.json`;const changed=JSON.parse(f.sandbox.files.get(key)!);changed.executionDeadlineAt=1104;f.sandbox.files.set(key,JSON.stringify(changed));};
+  await assert.rejects(f.host.currentObserverExecution(identity),/trusted-pi-observer-denied/);
+});
 
 test('native adapter imports no M0 provider, token or probe implementation',async()=>{const source=await import('node:fs/promises').then(fs=>fs.readFile(new URL('../../services/turn-runtime/pi-native.ts',import.meta.url),'utf8'));assert.doesNotMatch(source,/proxy-pi|go-pi-probe|m0-|providerDefinitions|resolveCredential|globalThis\.fetch/);});

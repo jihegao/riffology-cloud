@@ -1,0 +1,104 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "riffology-m1-gateway-staging",
+  "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+  "main": "../services/gateway/index.ts",
+  "compatibility_date": "2026-09-09",
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_do_not_populate_process_env"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "m1.riff-demo.gaojihe.cn", "custom_domain": true },
+    { "pattern": "preview.m1.riff-demo.gaojihe.cn", "custom_domain": true },
+    { "pattern": "*.preview.m1.riff-demo.gaojihe.cn/*", "zone_name": "riff-demo.gaojihe.cn" }
+  ],
+  "assets": { "directory": "../services/web", "binding": "ASSETS", "run_worker_first": true },
+  "secrets": {
+    "required": [
+      "BETTER_AUTH_SECRET",
+      "GOOGLE_CLIENT_ID",
+      "GOOGLE_CLIENT_SECRET",
+      "M2_MODEL_PROXY_REQUEST_KEY",
+      "M2_TOOL_BRIDGE_REQUEST_KEY",
+      "M2_MODEL_TURN_CAPABILITY_KEY",
+      "M2_PROJECT_EFFECT_CAPABILITY_KEY",
+      "M2_OPENCODE_GO_API_KEY"
+    ]
+  },
+  "vars": {
+    "APP_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
+    "M3_PREVIEW_ORIGIN": "https://preview.m1.riff-demo.gaojihe.cn",
+    "TENANT_QUOTA_CAPACITY": "1",
+    "TENANT_QUOTA_POLICY_VERSION": "m1-v1",
+    "M2_TURNS_ENABLED": "false",
+    "M2_MODEL_PROVIDER_ENABLED": "false",
+    "M3_SERVICE_ENABLED": "false",
+    "M3_PREVIEW_ENABLED": "false",
+    "M3_PREVIEW_WS_ENABLED": "false",
+    "M3_OBSERVER_ENABLED": "false",
+    "M2_MODEL_BUDGET_POLICY_VERSION": "m2-token-vertical-v2",
+    "M2_MODEL_PROVIDER": "opencode-go",
+    "M2_MODEL_ID": "gpt-5.6-luna",
+    "M2_MODEL_MAX_INPUT_TOKENS_PER_CALL": "262144",
+    "M2_MODEL_MAX_OUTPUT_TOKENS_PER_CALL": "4096",
+    "M2_MODEL_CAPABILITY_TTL_MS": "120000",
+    "MODEL_BUDGET_POLICY_VERSION": "m2-token-vertical-v2",
+    "MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN": "8",
+    "MODEL_BUDGET_MAX_DISPATCHED_CALLS_PER_TURN": "8",
+    "MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL": "262144",
+    "MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL": "4096",
+    "MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN": "532480",
+    "M3_SERVICE_IMAGE": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:605d689b14bd8ba4af62cef02167ad944def09ea68cbaf2f7b04ec1b7eed5762"
+  },
+  "d1_databases": [
+    { "binding": "CATALOG", "database_name": "riffology-catalog-staging", "database_id": "993f2fd9-a135-4a93-9caa-10828dec6635", "migrations_dir": "../services/catalog/migrations" }
+  ],
+  "durable_objects": {
+    "bindings": [
+      { "name": "TENANT_QUOTA", "class_name": "TenantQuota" },
+      { "name": "WORKSPACE_AGENT", "class_name": "WorkspaceAgent" },
+      { "name": "PROJECT_RUNTIME", "class_name": "ProjectRuntime" },
+      { "name": "PRODUCT_TURN_RUNTIME", "class_name": "ProductTurnRuntime" },
+      { "name": "REVISION_STORE", "class_name": "RevisionStore" },
+      { "name": "TOOL_ARTIFACT_STORE", "class_name": "ToolArtifactStore" },
+      { "name": "TENANT_MODEL_BUDGET", "class_name": "TenantModelBudget" },
+      { "name": "PROJECT_SANDBOX", "class_name": "ProjectToolSandbox" },
+      { "name": "TRUSTED_PI_SANDBOX", "class_name": "TrustedPiSandbox" },
+      { "name": "TOOL_BRIDGE_AGENT", "class_name": "ToolBridgeAgent" },
+      { "name": "SERVICE_RUN", "class_name": "ServiceRun" },
+      { "name": "SERVICE_RUNTIME", "class_name": "ServiceRuntime" },
+      { "name": "SERVICE_SANDBOX", "class_name": "ServiceSandbox" }
+    ]
+  },
+  "services": [
+    { "binding": "TOOL_BRIDGE", "service": "riffology-m1-gateway-staging", "entrypoint": "ToolBridgeService" },
+    { "binding": "MODEL_PROXY", "service": "riffology-m1-gateway-staging", "entrypoint": "ModelProxyService" }
+  ],
+  "containers": [
+    { "name": "riffology-m1-project-staging", "class_name": "ProjectRuntime", "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m1-project-staging@sha256:bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00", "instance_type": "basic", "max_instances": 1 },
+    { "name": "riffology-m3-project-tools-staging", "class_name": "ProjectToolSandbox", "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-project-tools-staging@sha256:9b6ed2844548507a67ef019fc34a1af9ecbb5e3e7810a026e76fdeb0f138410a", "instance_type": "basic", "max_instances": 1 },
+    { "name": "riffology-m3-trusted-pi-staging", "class_name": "TrustedPiSandbox", "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:946f087c381024a5b11d0c93fc0b5b13513b5cda5a38f3d12b198219ba837a51", "instance_type": "basic", "max_instances": 1 },
+    { "name": "riffology-m3-service-staging", "class_name": "ServiceSandbox", "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:605d689b14bd8ba4af62cef02167ad944def09ea68cbaf2f7b04ec1b7eed5762", "instance_type": "basic", "max_instances": 1 }
+  ],
+  "exports": {
+    "TenantQuota": { "type": "durable-object", "storage": "sqlite" },
+    "WorkspaceAgent": { "type": "durable-object", "storage": "sqlite" },
+    "ProductTurnRuntime": { "type": "durable-object", "storage": "sqlite" },
+    "RevisionStore": { "type": "durable-object", "storage": "sqlite" },
+    "ToolArtifactStore": { "type": "durable-object", "storage": "sqlite" },
+    "TenantModelBudget": { "type": "durable-object", "storage": "sqlite" },
+    "ToolBridgeAgent": { "type": "durable-object", "storage": "sqlite" },
+    "ServiceRun": { "type": "durable-object", "storage": "sqlite" },
+    "ServiceRuntime": { "type": "durable-object", "storage": "sqlite" },
+    "ProjectRuntime": { "type": "durable-object", "storage": "sqlite", "container": "riffology-m1-project-staging" },
+    "ProjectToolSandbox": { "type": "durable-object", "storage": "sqlite", "container": "riffology-m3-project-tools-staging" },
+    "TrustedPiSandbox": { "type": "durable-object", "storage": "sqlite", "container": "riffology-m3-trusted-pi-staging" },
+    "ServiceSandbox": { "type": "durable-object", "storage": "sqlite", "container": "riffology-m3-service-staging" }
+  },
+  "r2_buckets": [
+    { "binding": "WORKSPACE_CHECKPOINTS", "bucket_name": "riffology-m1-workspace-checkpoints-staging" },
+    { "binding": "MODEL_CONTENT", "bucket_name": "riffology-m3-model-content-staging" }
+  ],
+  "triggers": { "crons": ["* * * * *"] },
+  "observability": { "enabled": true }
+}

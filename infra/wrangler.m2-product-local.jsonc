@@ -25,6 +25,10 @@
     "TENANT_QUOTA_POLICY_VERSION": "m1-v1",
     "M2_TURNS_ENABLED": "false",
     "M2_MODEL_PROVIDER_ENABLED": "false",
+    "M3_SERVICE_ENABLED": "false",
+    "M3_PREVIEW_ENABLED": "false",
+    "M3_PREVIEW_WS_ENABLED": "false",
+    "M3_OBSERVER_ENABLED": "false",
     "M2_MODEL_BUDGET_POLICY_VERSION": "m2-token-v1",
     "M2_MODEL_PROVIDER": "opencode-go",
     "M2_MODEL_ID": "gpt-5.6-luna",
@@ -52,7 +56,10 @@
       { "name": "TENANT_MODEL_BUDGET", "class_name": "TenantModelBudget" },
       { "name": "PROJECT_SANDBOX", "class_name": "ProjectToolSandbox" },
       { "name": "TRUSTED_PI_SANDBOX", "class_name": "TrustedPiSandbox" },
-      { "name": "TOOL_BRIDGE_AGENT", "class_name": "ToolBridgeAgent" }
+      { "name": "TOOL_BRIDGE_AGENT", "class_name": "ToolBridgeAgent" },
+      { "name": "SERVICE_RUN", "class_name": "ServiceRun" },
+      { "name": "SERVICE_RUNTIME", "class_name": "ServiceRuntime" },
+      { "name": "SERVICE_SANDBOX", "class_name": "ServiceSandbox" }
     ]
   },
   "services": [
@@ -62,7 +69,8 @@
   "containers": [
     { "name": "riffology-project-local", "class_name": "ProjectRuntime", "image": "../services/runtime/Dockerfile.cloud", "instance_type": "lite", "max_instances": 1 },
     { "name": "riffology-m2-project-sandbox-local", "class_name": "ProjectToolSandbox", "image": "../services/project-tools/Dockerfile.cloud", "instance_type": "lite", "max_instances": 1 },
-    { "name": "riffology-m2-trusted-pi-local", "class_name": "TrustedPiSandbox", "image": "../Dockerfile.trusted-pi.cloud", "instance_type": "lite", "max_instances": 1 }
+    { "name": "riffology-m2-trusted-pi-local", "class_name": "TrustedPiSandbox", "image": "../Dockerfile.trusted-pi.cloud", "instance_type": "lite", "max_instances": 1 },
+    { "name": "riffology-m3-service-local", "class_name": "ServiceSandbox", "image": "../services/run/Dockerfile.service", "image_build_context": "..", "instance_type": "lite", "max_instances": 1 }
   ],
   "exports": {
     "TenantQuota": { "type": "durable-object", "storage": "sqlite" },
@@ -72,9 +80,12 @@
     "ToolArtifactStore": { "type": "durable-object", "storage": "sqlite" },
     "TenantModelBudget": { "type": "durable-object", "storage": "sqlite" },
     "ToolBridgeAgent": { "type": "durable-object", "storage": "sqlite" },
+    "ServiceRun": { "type": "durable-object", "storage": "sqlite" },
+    "ServiceRuntime": { "type": "durable-object", "storage": "sqlite" },
     "ProjectRuntime": { "type": "durable-object", "storage": "sqlite", "container": "riffology-project-local" },
     "ProjectToolSandbox": { "type": "durable-object", "storage": "sqlite", "container": "riffology-m2-project-sandbox-local" },
-    "TrustedPiSandbox": { "type": "durable-object", "storage": "sqlite", "container": "riffology-m2-trusted-pi-local" }
+    "TrustedPiSandbox": { "type": "durable-object", "storage": "sqlite", "container": "riffology-m2-trusted-pi-local" },
+    "ServiceSandbox": { "type": "durable-object", "storage": "sqlite", "container": "riffology-m3-service-local" }
   },
   "r2_buckets": [
     { "binding": "WORKSPACE_CHECKPOINTS", "bucket_name": "riffology-workspace-local" }

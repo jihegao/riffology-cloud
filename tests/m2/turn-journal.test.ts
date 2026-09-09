@@ -124,3 +124,19 @@ test('event append automatically compacts by retained bytes before the journal b
  for(let index=0;index<320;index++)await f.journal.appendRuntime(scope,{turnId:turn.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,eventId:`byte-event-${index}`,type:'assistant.delta',at:claim.startedAt!,payload});
  const state=f.store.snapshot()!;assert.ok(state.events.length<322);assert.ok(state.oldestSequence>1);assert.ok(state.retentionBytes<=TURN_EVENT_BYTES_LIMIT);assert.equal((await f.journal.replay(scope,0,10)).snapshotRequired,true);
 });
+
+test('synchronous saved-head snapshot excludes active work and is detached for intent freezing',async()=>{
+ const f=fixture();assert.equal(f.journal.workspaceRevisionSnapshot(scope),null);
+ const first=await queued(f.journal),claim=(await f.journal.claim(scope,1))!.turn;
+ const pending=await f.journal.beginCheckpoint(scope,{turnId:first.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,outcome:'completed'});
+ const receipt={revisionId:'head-one',objectKey:'turns/head-one.json',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:pending.updatedAt};
+ assert.equal(f.journal.workspaceRevisionSnapshot(scope),null);
+ await f.journal.commitCheckpoint(scope,{turnId:first.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,checkpoint:receipt});
+ const frozen=f.journal.workspaceRevisionSnapshot(scope)!;assert.equal(frozen instanceof Promise,false);
+ await f.journal.submit(scope,actor,first.sessionId,'next-head',{message:'next edit'});await f.journal.claim(scope,1);
+ assert.deepEqual(f.journal.workspaceRevisionSnapshot(scope),frozen);
+ frozen.receipt.filesSha256='c'.repeat(64);frozen.identity.scope.projectId='other-project';
+ assert.equal(f.journal.workspaceRevisionSnapshot(scope)!.receipt.filesSha256,receipt.filesSha256);
+ assert.equal(f.journal.workspaceRevisionSnapshot(scope)!.identity.scope.projectId,scope.projectId);
+ assert.throws(()=>f.journal.workspaceRevisionSnapshot({...scope,workspaceId:'other-workspace'}),/scope/);
+});
