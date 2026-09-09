@@ -82,4 +82,6 @@ test('staging turn admission telemetry emits only its fixed schema and redacts u
   assert.deepEqual(JSON.parse(lines[0].slice('turn-admission '.length)),{route:'turn.submit',stage:'gateway',transportSuccess:false,errorCode:'unclassified'});
   assert.equal(lines[0].includes('opaque-private-value'),false);assert.equal(lines[0].includes('private prompt'),false);assert.equal(lines[0].includes('session-sensitive'),false);
   assert.equal(turnAdmissionErrorCode(Error('turn_runtime_not_ready')),'turn_runtime_not_ready');assert.equal(turnAdmissionErrorCode(Error('workspace-not-ready')),'workspace-not-ready');
+  const identifier=['a1234567','89ab','4cde','8fab',['012345','6789ab'].join('')].join('-');
+  for(const value of ['session-sensitive','private-secret','tenant-a',identifier,'arbitrary-short-slug'])assert.equal(turnAdmissionErrorCode(Error(value)),'unclassified');
 });
