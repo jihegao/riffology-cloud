@@ -41,7 +41,7 @@ const command=(bin,args,timeout=60_000)=>spawnSync(bin,args,{encoding:'utf8',tim
 const json=path=>JSON.parse(readFileSync(path,'utf8'));
 
 export function validateStagingTopology(config,migrations){
-  const routes=config.routes??[],custom=routes.filter(value=>value?.custom_domain===true),control=custom.find(value=>value.pattern===new URL(CONTROL_ORIGIN).hostname),previewBase=custom.find(value=>value.pattern===new URL(PREVIEW_ORIGIN).hostname),preview=routes.find(value=>value?.zone_name==='riff-demo.gaojihe.cn');
+  const routes=config.routes??[],custom=routes.filter(value=>value?.custom_domain===true),control=custom.find(value=>value.pattern===new URL(CONTROL_ORIGIN).hostname),previewBase=custom.find(value=>value.pattern===new URL(PREVIEW_ORIGIN).hostname),preview=routes.find(value=>value?.zone_name==='gaojihe.cn');
   const bindings=(config.durable_objects?.bindings??[]).map(value=>value.name);
   const exports=Object.keys(config.exports??{}).filter(name=>config.exports[name]?.type==='durable-object');
   const containers=config.containers??[],classes=containers.map(value=>value.class_name);
