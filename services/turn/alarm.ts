@@ -9,6 +9,7 @@ export interface TurnAlarmPort {
   clear():Promise<void>;
 }
 export type TurnAlarmTiming={pollMs:number;retryMs:number};
+export type TurnAdmissionAlarmTrace=(stage:'alarm'|'journal',transportSuccess:boolean,error?:unknown)=>void;
 const DEFAULT_TIMING:TurnAlarmTiming={pollMs:1000,retryMs:2000};
 const TERMINAL=new Set<TurnRecord['status']>(['completed','failed','cancelled','interrupted']);
 function positive(value:unknown):number{if(!Number.isSafeInteger(value)||(value as number)<1)throw Error('invalid-turn-alarm-timing');return value as number;}
@@ -28,9 +29,11 @@ export class TurnAlarmLoop {
   }
   /** Arm durable work before committing a queued Turn. If arming is uncertain,
    * mutation is not invoked; an extra empty alarm is safe. */
-  async enqueue<T>(mutation:()=>Promise<T>):Promise<T>{
-    await this.#alarm.schedule(positive(this.#clock())+1);
-    return mutation();
+  async enqueue<T>(mutation:()=>Promise<T>,trace?:TurnAdmissionAlarmTrace):Promise<T>{
+    try{await this.#alarm.schedule(positive(this.#clock())+1);trace?.('alarm',true);}
+    catch(error){trace?.('alarm',false,error);throw error;}
+    try{const value=await mutation();trace?.('journal',true);return value;}
+    catch(error){trace?.('journal',false,error);throw error;}
   }
   async alarm(scope:TurnScope,generation:number):Promise<TurnRecord|null>{
     if(this.#active)return this.#active;

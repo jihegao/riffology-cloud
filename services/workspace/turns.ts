@@ -1,4 +1,4 @@
-import { TurnAlarmLoop, type TurnAlarmPort, type TurnAlarmTiming } from '../turn/alarm.ts';
+import { TurnAlarmLoop, type TurnAdmissionAlarmTrace, type TurnAlarmPort, type TurnAlarmTiming } from '../turn/alarm.ts';
 import { TurnDispatcher, type TurnArtifactReferencePort, type TurnRuntimePort } from '../turn/dispatcher.ts';
 import { TurnJournal } from '../turn/journal.ts';
 import { turnId, type TurnActor, type TurnRecord, type TurnScope } from '../turn/protocol.ts';
@@ -11,8 +11,8 @@ export class WorkspaceTurnEngine{
   constructor(journal:TurnJournal,runtime:TurnRuntimePort,alarm:TurnAlarmPort,clock=Date.now,timing:Partial<TurnAlarmTiming>={},artifactReferences:TurnArtifactReferencePort|null=null){
     this.#journal=journal;this.#loop=new TurnAlarmLoop(new TurnDispatcher(journal,runtime,artifactReferences),alarm,clock,timing);
   }
-  submit(scope:TurnScope,actor:TurnActor,sessionId:string,key:string,body:{message:unknown}){
-    return this.#loop.enqueue(()=>this.#journal.submit(scope,actor,sessionId,key,body));
+  submit(scope:TurnScope,actor:TurnActor,sessionId:string,key:string,body:{message:unknown},trace?:TurnAdmissionAlarmTrace){
+    return this.#loop.enqueue(()=>this.#journal.submit(scope,actor,sessionId,key,body),trace);
   }
   async cancel(scope:TurnScope,actor:TurnActor,rawTurnId:string):Promise<TurnRecord>{
     const id=turnId(rawTurnId),state=await this.#journal.snapshot(scope),turn=state.turns[id];

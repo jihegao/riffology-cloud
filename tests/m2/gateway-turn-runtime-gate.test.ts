@@ -3,6 +3,7 @@ import test from 'node:test';
 import { requireTurnRuntime } from '../../services/gateway/turn-runtime-gate.ts';
 import { HttpError } from '../../services/gateway/http.ts';
 import { createGatewayTurnServices } from '../../services/gateway/turn-services.ts';
+import {turnAdmissionErrorCode} from '../../services/turn/admission-telemetry.ts';
 
 const scope = { tenantId: 'tenant-a', projectId: 'project-a', workspaceId: 'workspace-a', workspaceGeneration: 1 };
 const actor = { userId: 'user-a', authVersion: 1 };
@@ -69,4 +70,16 @@ test('enabled admission derives the workspace actor and forwards one exact reque
 test('saved Files and Artifacts remain readable through the derived workspace actor while new Turn admission is disabled',async()=>{
   const calls:unknown[]=[];const services=createGatewayTurnServices({M2_TURNS_ENABLED:'false',WORKSPACE_AGENT:{getByName(name){calls.push(name);return {async listFiles(input){calls.push(['files',input]);return {schemaVersion:1,revision:null,files:[]};},async diffFiles(input){calls.push(['diff',input]);return {schemaVersion:1,revision:null,summary:{added:0,modified:0,deleted:0},changes:[]};},async readArtifact(input){calls.push(['artifact',input]);return {receipt:{artifactId:'artifact-a'},content:new Uint8Array()};},async createSession(){throw Error('unused');},async submitTurn(){throw Error('unused');},async cancelTurn(){throw Error('unused');},async replayTurnEvents(){throw Error('unused');},async turnSnapshot(){throw Error('unused');}};}}});
   assert.deepEqual(await services.files(scope),{schemaVersion:1,revision:null,files:[]});assert.deepEqual(await services.diff(scope),{schemaVersion:1,revision:null,summary:{added:0,modified:0,deleted:0},changes:[]});assert.deepEqual(await services.artifact(scope,'artifact-a'),{receipt:{artifactId:'artifact-a'},content:new Uint8Array()});assert.deepEqual(calls,['workspace:tenant-a:workspace-a',['files',{scope}],'workspace:tenant-a:workspace-a',['diff',{scope}],'workspace:tenant-a:workspace-a',['artifact',{scope,artifactId:'artifact-a'}]]);
+});
+
+test('staging turn admission telemetry emits only its fixed schema and redacts unstructured errors',async()=>{
+  const lines:string[]=[];const original=console.error;console.error=(value?:unknown)=>{lines.push(String(value));};
+  try{
+    const services=createGatewayTurnServices({M2_TURNS_ENABLED:'true',M2_TURN_ADMISSION_TELEMETRY:'true',WORKSPACE_AGENT:{getByName(){return {async submitTurn(){throw Error('upstream included opaque-private-value');},async createSession(){throw Error('unused');},async cancelTurn(){throw Error('unused');},async replayTurnEvents(){throw Error('unused');},async turnSnapshot(){throw Error('unused');},async listFiles(){throw Error('unused');},async diffFiles(){throw Error('unused');},async readArtifact(){throw Error('unused');}};}}});
+    await assert.rejects(services.submit(scope,actor,'session-sensitive','request-sensitive',{message:'private prompt'}));
+  }finally{console.error=original;}
+  assert.equal(lines.length,1);assert.equal(lines[0].startsWith('turn-admission '),true);
+  assert.deepEqual(JSON.parse(lines[0].slice('turn-admission '.length)),{route:'turn.submit',stage:'gateway',transportSuccess:false,errorCode:'unclassified'});
+  assert.equal(lines[0].includes('opaque-private-value'),false);assert.equal(lines[0].includes('private prompt'),false);assert.equal(lines[0].includes('session-sensitive'),false);
+  assert.equal(turnAdmissionErrorCode(Error('turn_runtime_not_ready')),'turn_runtime_not_ready');assert.equal(turnAdmissionErrorCode(Error('workspace-not-ready')),'workspace-not-ready');
 });

@@ -1,6 +1,7 @@
 import type { TurnActor, TurnScope } from '../turn/protocol.ts';
 import { workspaceAgentName } from '../workspace/protocol.ts';
 import { requireTurnRuntime } from './turn-runtime-gate.ts';
+import {traceTurnAdmission} from '../turn/admission-telemetry.ts';
 
 interface WorkspaceTurnActor {
   createSession(input: { scope: TurnScope; actor: TurnActor; key: string; body: { title: unknown } }): Promise<unknown>;
@@ -15,6 +16,7 @@ interface WorkspaceTurnActor {
 
 interface TurnServicesEnv {
   M2_TURNS_ENABLED: unknown;
+  M2_TURN_ADMISSION_TELEMETRY?:unknown;
   WORKSPACE_AGENT: { getByName(name: string): WorkspaceTurnActor };
 }
 
@@ -25,8 +27,11 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
       return actor(scope).createSession({ scope, actor: caller, key, body });
     },
     async submit(scope: TurnScope, caller: TurnActor, sessionId: string, key: string, body: { message: unknown }) {
-      requireTurnRuntime(env.M2_TURNS_ENABLED);
-      return actor(scope).submitTurn({ scope, actor: caller, sessionId, key, body });
+      try{
+        requireTurnRuntime(env.M2_TURNS_ENABLED);
+        const result=await actor(scope).submitTurn({scope,actor:caller,sessionId,key,body});
+        traceTurnAdmission(env.M2_TURN_ADMISSION_TELEMETRY,'gateway',true);return result;
+      }catch(error){traceTurnAdmission(env.M2_TURN_ADMISSION_TELEMETRY,'gateway',false,error);throw error;}
     },
     async cancel(scope: TurnScope, caller: TurnActor, turnId: string) {
       return actor(scope).cancelTurn({ scope, actor: caller, turnId });

@@ -17,6 +17,18 @@ test('submission arms durable alarm before committing the queued mutation',async
   const f=fixture();let mutated=false;await f.loop.enqueue(async()=>{mutated=true;return 'accepted';});assert.equal(mutated,true);assert.deepEqual(f.scheduled,[1001]);
   const failed=fixture();failed.failSchedule(true);let unsafe=false;await assert.rejects(failed.loop.enqueue(async()=>{unsafe=true;}),/alarm-storage-failed/);assert.equal(unsafe,false);
 });
+test('submission telemetry separates alarm transport from journal mutation without request data',async()=>{
+  const events:Array<{stage:string;transportSuccess:boolean;error:string|null}>=[];
+  const record=(stage:string,transportSuccess:boolean,error?:unknown):void=>{events.push({stage,transportSuccess,error:error instanceof Error?error.message:null});};const f=fixture();
+  await f.loop.enqueue(async()=>true,record);
+  assert.deepEqual(events,[{stage:'alarm',transportSuccess:true,error:null},{stage:'journal',transportSuccess:true,error:null}]);
+  const alarmFailed=fixture();alarmFailed.failSchedule(true);events.length=0;
+  await assert.rejects(alarmFailed.loop.enqueue(async()=>true,record),/alarm-storage-failed/);
+  assert.deepEqual(events,[{stage:'alarm',transportSuccess:false,error:'alarm-storage-failed'}]);
+  const journalFailed=fixture();events.length=0;
+  await assert.rejects(journalFailed.loop.enqueue(async()=>{throw Error('journal-write-failed');},record),/journal-write-failed/);
+  assert.deepEqual(events,[{stage:'alarm',transportSuccess:true,error:null},{stage:'journal',transportSuccess:false,error:'journal-write-failed'}]);
+});
 test('running observation pre-arms reconciliation before dispatch and then selects its poll',async()=>{
   const f=fixture();const result=await f.loop.alarm(scope,1);
   assert.equal(result?.status,'running');assert.deepEqual(f.scheduled,[1020,1010]);

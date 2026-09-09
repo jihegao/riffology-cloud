@@ -51,6 +51,7 @@ import { sameScope, initialWorkspaceBase, scope as validateTurnScope } from '../
 import { REVISION_STORE_ACTOR, type RevisionStoreNamespace } from '../turn-runtime/revision-store-client.ts';
 import { TOOL_ARTIFACT_STORE_ACTOR, type ToolArtifactStoreNamespace, type ToolArtifactReferenceInput } from '../artifacts/protocol.ts';
 import { releaseRetiredArtifactEvent } from '../artifacts/event-retirement.ts';
+import {traceTurnAdmission,type TurnAdmissionStage} from '../turn/admission-telemetry.ts';
 
 export interface WorkspaceAgentEnv {
   WORKSPACE_AGENT: DurableObjectNamespace<WorkspaceAgent>;
@@ -60,6 +61,7 @@ export interface WorkspaceAgentEnv {
   REVISION_STORE: RevisionStoreNamespace;
   TOOL_ARTIFACT_STORE: ToolArtifactStoreNamespace;
   M2_TURNS_ENABLED: unknown;
+  M2_TURN_ADMISSION_TELEMETRY?:unknown;
   M3_SERVICE_ENABLED?:unknown;
   M3_PREVIEW_ENABLED?:unknown;
   M3_PREVIEW_WS_ENABLED?:unknown;
@@ -425,9 +427,13 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return this.#turns.createSession(this.#ready(input.scope), input.actor, input.key, input.body);
   }
   async submitTurn(input: { scope: TurnScope; actor: TurnActor; sessionId: string; key: string; body: { message: unknown } }) {
-    const scope = this.#ready(input.scope);
-    if (this.env.M2_TURNS_ENABLED !== 'true') throw Error('turn-runtime-not-ready');
-    return this.#engine().submit(scope, input.actor, input.sessionId, input.key, input.body);
+    const trace=(stage:TurnAdmissionStage,transportSuccess:boolean,error?:unknown)=>traceTurnAdmission(this.env.M2_TURN_ADMISSION_TELEMETRY,stage,transportSuccess,error);
+    let scope:TurnScope;
+    try{scope=this.#ready(input.scope);trace('ready',true);}catch(error){trace('ready',false,error);throw error;}
+    try{if(this.env.M2_TURNS_ENABLED!=='true')throw Error('turn-runtime-not-ready');trace('gate',true);}catch(error){trace('gate',false,error);throw error;}
+    let engine:WorkspaceTurnEngine;
+    try{engine=this.#engine();trace('engine',true);}catch(error){trace('engine',false,error);throw error;}
+    return engine.submit(scope,input.actor,input.sessionId,input.key,input.body,trace);
   }
   async cancelTurn(input: { scope: TurnScope; actor: TurnActor; turnId: string }) {
     return this.#engine().cancel(this.#ready(input.scope), input.actor, input.turnId);
