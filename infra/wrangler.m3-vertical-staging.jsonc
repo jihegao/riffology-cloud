@@ -48,7 +48,7 @@
     "MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL": "262144",
     "MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL": "4096",
     "MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN": "532480",
-    "M3_SERVICE_IMAGE": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:605d689b14bd8ba4af62cef02167ad944def09ea68cbaf2f7b04ec1b7eed5762"
+    "M3_SERVICE_IMAGE": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8"
   },
   "d1_databases": [
     { "binding": "CATALOG", "database_name": "riffology-catalog-staging", "database_id": "993f2fd9-a135-4a93-9caa-10828dec6635", "migrations_dir": "../services/catalog/migrations" }
@@ -76,9 +76,9 @@
   ],
   "containers": [
     { "name": "riffology-m1-project-staging", "class_name": "ProjectRuntime", "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m1-project-staging@sha256:bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00", "instance_type": "basic", "max_instances": 1 },
-    { "name": "riffology-m3-project-tools-staging", "class_name": "ProjectToolSandbox", "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-project-tools-staging@sha256:9b6ed2844548507a67ef019fc34a1af9ecbb5e3e7810a026e76fdeb0f138410a", "instance_type": "basic", "max_instances": 1 },
-    { "name": "riffology-m3-trusted-pi-staging", "class_name": "TrustedPiSandbox", "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:946f087c381024a5b11d0c93fc0b5b13513b5cda5a38f3d12b198219ba837a51", "instance_type": "basic", "max_instances": 1 },
-    { "name": "riffology-m3-service-staging", "class_name": "ServiceSandbox", "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:605d689b14bd8ba4af62cef02167ad944def09ea68cbaf2f7b04ec1b7eed5762", "instance_type": "basic", "max_instances": 1 }
+    { "name": "riffology-m3-project-tools-staging", "class_name": "ProjectToolSandbox", "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-project-tools-staging@sha256:6e1c51f984b0a6786483c09c327118722e35597f0ab421d54a27b264a0446a58", "instance_type": "basic", "max_instances": 1 },
+    { "name": "riffology-m3-trusted-pi-staging", "class_name": "TrustedPiSandbox", "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:bef98ae4098f8f1ea5a229a1d0e39a690a502623af88c433790309d95f9fc8d4", "instance_type": "basic", "max_instances": 1 },
+    { "name": "riffology-m3-service-staging", "class_name": "ServiceSandbox", "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8", "instance_type": "basic", "max_instances": 1 }
   ],
   "exports": {
     "TenantQuota": { "type": "durable-object", "storage": "sqlite" },
