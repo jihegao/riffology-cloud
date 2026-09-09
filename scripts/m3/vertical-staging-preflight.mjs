@@ -40,20 +40,23 @@ const same=(a,b)=>JSON.stringify([...a].sort())===JSON.stringify([...b].sort());
 const command=(bin,args,timeout=60_000)=>spawnSync(bin,args,{encoding:'utf8',timeout,maxBuffer:4*1024*1024});
 const json=path=>JSON.parse(readFileSync(path,'utf8'));
 
-export function validateStagingTopology(config,migrations){
+export function validateStagingTopology(config,migrations,{release=false}={}){
   const routes=config.routes??[],custom=routes.filter(value=>value?.custom_domain===true),control=custom.find(value=>value.pattern===new URL(CONTROL_ORIGIN).hostname),previewBase=custom.find(value=>value.pattern===new URL(PREVIEW_ORIGIN).hostname),preview=routes.find(value=>value?.zone_name==='gaojihe.cn');
   const bindings=(config.durable_objects?.bindings??[]).map(value=>value.name);
   const exports=Object.keys(config.exports??{}).filter(name=>config.exports[name]?.type==='durable-object');
   const containers=config.containers??[],classes=containers.map(value=>value.class_name);
   const images=containers.every(value=>typeof value.image==='string'&&value.image.startsWith(REGISTRY)&&DIGEST.test(value.image.split('@')[1]??'')&&value.instance_type==='basic'&&value.max_instances===1);
   const services=config.services??[],serviceBindings=services.map(value=>value.binding);
-  const closed=['M2_TURNS_ENABLED','M2_MODEL_PROVIDER_ENABLED','M3_SERVICE_ENABLED','M3_PREVIEW_ENABLED','M3_PREVIEW_WS_ENABLED','M3_OBSERVER_ENABLED'].every(name=>config.vars?.[name]==='false');
+  const releaseGates=['M2_TURNS_ENABLED','M2_MODEL_PROVIDER_ENABLED','M3_SERVICE_ENABLED','M3_PREVIEW_ENABLED','M3_PREVIEW_WS_ENABLED'];
+  const gatesValid=release
+    ? releaseGates.every(name=>config.vars?.[name]==='true')&&config.vars?.M3_OBSERVER_ENABLED==='false'
+    : [...releaseGates,'M3_OBSERVER_ENABLED'].every(name=>config.vars?.[name]==='false');
   const budget=config.vars?.M2_MODEL_BUDGET_POLICY_VERSION==='m2-token-vertical-v2'&&config.vars?.MODEL_BUDGET_POLICY_VERSION==='m2-token-vertical-v2'&&config.vars?.MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN==='8'&&config.vars?.MODEL_BUDGET_MAX_DISPATCHED_CALLS_PER_TURN==='8'&&config.vars?.MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL==='262144'&&config.vars?.MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL==='4096'&&config.vars?.MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN==='532480';
   const r2=config.r2_buckets??[],service=containers.find(value=>value.class_name==='ServiceSandbox');
   return [
     check('worker-identity',config.name===WORKER_NAME&&config.account_id===ACCOUNT_ID&&config.workers_dev===false&&config.preview_urls===false,'use-existing-dedicated-staging-worker'),
     check('staging-origins',config.vars?.APP_ORIGIN===CONTROL_ORIGIN&&config.vars?.M3_PREVIEW_ORIGIN===PREVIEW_ORIGIN&&routes.length===3&&control&&previewBase&&preview?.pattern===PREVIEW_ROUTE,'declare-control-and-preview-base-custom-domains-plus-the-preview-wildcard-route'),
-    check('execution-gates-closed',closed,'initial-staging-deploy-must-keep-all-execution-gates-false'),
+    check(release?'execution-gates-controlled-release':'execution-gates-closed',gatesValid,release?'release-requires-five-vertical-gates-true-and-observer-false':'foundation-requires-all-six-execution-gates-false'),
     check('tenant-capacity',config.vars?.TENANT_QUOTA_CAPACITY==='1'&&containers.every(value=>value.max_instances===1),'retain-single-tenant-runtime-capacity'),
     check('model-budget',budget,'retain-reviewed-token-and-turn-budget'),
     check('required-secrets',same(config.secrets?.required??[],REQUIRED_SECRETS),'declare-only-the-eight-reviewed-secrets'),
@@ -133,7 +136,7 @@ function dryRun(root){const out=mkdtempSync(resolve(tmpdir(),'riffology-m3-stagi
 export async function runPreflight({root=resolve(fileURLToPath(new URL('../..',import.meta.url))),cloud=false,dryRunEnabled=false,release=false,secretFiles=[],opencodeAuthFile=null}={}){
   const config=json(resolve(root,STAGING_CONFIG));
   const migrationNames=(await import('node:fs')).readdirSync(resolve(root,'services/catalog/migrations')).filter(name=>name.endsWith('.sql'));
-  const checks=validateStagingTopology(config,migrationNames);
+  const checks=validateStagingTopology(config,migrationNames,{release});
   checks.push(validateSecretSources(secretFiles.map(path=>resolve(root,path)),opencodeAuthFile?resolve(root,opencodeAuthFile):null));
   if(dryRunEnabled){const result=dryRun(root);checks.push(check('wrangler-dry-run',result.status===0,result.status===0?undefined:'wrangler-dry-run-failed'));}
   if(cloud)checks.push(...await cloudChecks(root,config,release));

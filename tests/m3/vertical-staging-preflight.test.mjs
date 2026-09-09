@@ -6,19 +6,29 @@ import {inspectManagedImage,validateStagingTopology} from '../../scripts/m3/vert
 const config=()=>JSON.parse(readFileSync(new URL('../../infra/wrangler.m3-vertical-staging.jsonc',import.meta.url),'utf8'));
 const migrations=()=>readdirSync(new URL('../../services/catalog/migrations',import.meta.url)).filter(name=>name.endsWith('.sql'));
 
-test('staging vertical topology is complete, immutable and initially closed',()=>{
-  const checks=validateStagingTopology(config(),migrations());
-  assert.equal(checks.length,15);
-  assert.deepEqual(checks.filter(value=>value.status!=='passed'),[]);
+test('staging vertical topology is complete, immutable and release gated',()=>{
+  const releaseChecks=validateStagingTopology(config(),migrations(),{release:true});
+  assert.equal(releaseChecks.length,15);
+  assert.deepEqual(releaseChecks.filter(value=>value.status!=='passed'),[]);
+  assert.deepEqual(validateStagingTopology(config(),migrations()).filter(value=>value.status!=='passed').map(value=>value.name),['execution-gates-closed']);
 });
 
-test('staging topology rejects early execution, local images and storage sharing',()=>{
+test('foundation mode requires all six execution gates closed',()=>{
   const value=config();
-  value.vars.M2_TURNS_ENABLED='true';
+  for(const name of ['M2_TURNS_ENABLED','M2_MODEL_PROVIDER_ENABLED','M3_SERVICE_ENABLED','M3_PREVIEW_ENABLED','M3_PREVIEW_WS_ENABLED'])value.vars[name]='false';
+  assert.deepEqual(validateStagingTopology(value,migrations()).filter(item=>item.status!=='passed'),[]);
+  value.vars.M3_OBSERVER_ENABLED='true';
+  assert.deepEqual(validateStagingTopology(value,migrations()).filter(item=>item.status!=='passed').map(item=>item.name),['execution-gates-closed']);
+});
+
+test('release mode rejects mixed gates, observer enablement, local images and storage sharing',()=>{
+  const value=config();
+  value.vars.M2_TURNS_ENABLED='false';
+  value.vars.M3_OBSERVER_ENABLED='true';
   value.containers[1].image='127.0.0.1:5000/project:latest';
   value.r2_buckets[1].bucket_name=value.r2_buckets[0].bucket_name;
-  const failed=new Set(validateStagingTopology(value,migrations()).filter(item=>item.status!=='passed').map(item=>item.name));
-  assert.deepEqual(failed,new Set(['execution-gates-closed','container-images','dedicated-storage','no-local-runtime-inputs']));
+  const failed=new Set(validateStagingTopology(value,migrations(),{release:true}).filter(item=>item.status!=='passed').map(item=>item.name));
+  assert.deepEqual(failed,new Set(['execution-gates-controlled-release','container-images','dedicated-storage','no-local-runtime-inputs']));
 });
 
 test('managed image inspection binds exact manifest and linux amd64 config',async()=>{
