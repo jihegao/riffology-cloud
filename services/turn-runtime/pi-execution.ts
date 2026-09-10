@@ -24,6 +24,7 @@ export interface TrustedPiHostPort{
   currentObserverExecution?(identity:TurnRuntimeIdentity):Promise<{expiresAt:number}>;
   observe(identity:TurnRuntimeIdentity):Promise<TrustedPiHostObservation>;
   cancel(identity:TurnRuntimeIdentity):Promise<TrustedPiHostObservation>;
+  release(identity:TurnRuntimeIdentity):Promise<{running:boolean}>;
 }
 
 const MAX_EVENTS=2048,MAX_TEXT=15_000,TOOL=/^project_[a-z0-9_]{1,64}$/,TOOL_CALL_ID=/^[A-Za-z0-9_-]{1,128}(?:\|[A-Za-z0-9_-]{1,128})?$/;
@@ -70,12 +71,13 @@ async function runtimeEvent(identity:TurnRuntimeIdentity,event:TrustedPiHostEven
  * translates its durable observations into ProductTurnRuntime receipts. */
 export class TrustedPiExecutionAdapter implements TurnExecutionPort{
   readonly #host:TrustedPiHostPort;
-  constructor(host:TrustedPiHostPort){if(!host?.start||!host.observe||!host.cancel)reject('trusted-pi-host-required');this.#host=host;}
+  constructor(host:TrustedPiHostPort){if(!host?.start||!host.observe||!host.cancel||!host.release)reject('trusted-pi-host-required');this.#host=host;}
   async #map(raw:unknown,identity:TurnRuntimeIdentity):Promise<TurnExecutionObservation>{const value=observation(raw,identity),events=await Promise.all(value.events.map(item=>runtimeEvent(identity,item)));return {identity,phase:value.phase==='starting'?'running':value.phase,outcome:value.outcome,executionErrorCode:value.executionErrorCode,events,stopped:value.stopped};}
   async start(input:TurnRuntimeIdentity&{actor:TurnActor;message:string;base:TurnBaseCheckpoints;executionDeadlineAt?:number}){const identity=turnRuntimeIdentity({scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation}),actor=validateActor(input.actor),base=turnBaseCheckpoints(input.base);return this.#map(await this.#host.start({...identity,actor,message:input.message,base,...(input.executionDeadlineAt===undefined?{}:{executionDeadlineAt:positive(input.executionDeadlineAt)})}),identity);}
   async currentObserverExecution(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);if(!this.#host.currentObserverExecution)reject('product-turn-observer-denied');return this.#host.currentObserverExecution(identity);}
   async observe(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);return this.#map(await this.#host.observe(identity),identity);}
   async cancel(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);return this.#map(await this.#host.cancel(identity),identity);}
+  async release(raw:TurnRuntimeIdentity){return this.#host.release(turnRuntimeIdentity(raw));}
 }
 
 export const trustedPiExecutionLimits={maxEvents:MAX_EVENTS,maxTextBytes:MAX_TEXT};

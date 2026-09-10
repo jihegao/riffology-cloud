@@ -20,17 +20,17 @@ const stop={confirmationId:'stop-a',observedAt:1002,nativeRunning:false as const
 const event={eventId:'event-a',type:'assistant.message' as const,at:1002,payload:{text:'fixture result'}};
 const terminal=(id:TurnRuntimeIdentity=identity,outcome:'completed'|'failed'|'cancelled'|'interrupted'='completed'):TurnExecutionObservation=>({identity:id,phase:'terminal',outcome,executionErrorCode:outcome==='completed'?null:'fixture-failure',events:[event],stopped:stop});
 
-function fixture(t:TestContext){
-  const dir=mkdtempSync(join(tmpdir(),'m2-turn-runtime-')),file=join(dir,'state.db');t.after(()=>rmSync(dir,{recursive:true,force:true}));let db=new DatabaseSync(file),now=1000,starts=0,observes=0,cancels=0,prepares=0,commits=0,checkpointObserves=0,writes=0,syncs=0;
+function fixture(t:TestContext,releaseTiming={retryMs:0,assignmentGuardMs:0,quietMs:0}){
+  const dir=mkdtempSync(join(tmpdir(),'m2-turn-runtime-')),file=join(dir,'state.db');t.after(()=>rmSync(dir,{recursive:true,force:true}));let db=new DatabaseSync(file),now=1000,starts=0,observes=0,cancels=0,releases=0,prepares=0,commits=0,checkpointObserves=0,writes=0,syncs=0,releaseError=false,releaseRunning=false,alarmFails=false,alarm:number|null=null;
   let startResult:TurnExecutionObservation={identity,phase:'running',outcome:null,events:[event]},observeResult:TurnExecutionObservation={identity,phase:'running',outcome:null},cancelResult:TurnExecutionObservation=terminal(identity,'cancelled'),startError=false,dynamicTerminal=false,commitError=false,observedCheckpoint:CheckpointReceipt|null=null;
   const configure=()=>db.exec('PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;');configure();
-  const storage={sql:{exec(query:string,...bindings:(string|number|null)[]){if(!query.startsWith('SELECT'))writes++;if(query.includes('CREATE TABLE')){db.exec(query);return {toArray:()=>[]};}const statement=db.prepare(query),rows=statement.columns().length?statement.all(...bindings):(statement.run(...bindings),[]);return {toArray:()=>structuredClone(rows)};}},transactionSync<T>(fn:()=>T){db.exec('BEGIN IMMEDIATE');try{const value=fn();db.exec('COMMIT');return value;}catch(error){db.exec('ROLLBACK');throw error;}},async sync(){syncs++;}} as unknown as ProductTurnRuntimeStorage;
-  const execution:TurnExecutionPort={async start(input){starts++;assert.equal(input.message,'Build model');assert.deepEqual(input.actor,actor);if(startError)throw Error('lost-start-response');const {actor:_,message:__,base:___,executionDeadlineAt:____,...runtimeIdentity}=input;return structuredClone(dynamicTerminal?terminal(runtimeIdentity):startResult);},async observe(){observes++;return structuredClone(observeResult);},async cancel(){cancels++;return structuredClone(cancelResult);}};
+  const storage={sql:{exec(query:string,...bindings:(string|number|null)[]){if(!query.startsWith('SELECT'))writes++;if(query.includes('CREATE TABLE')){db.exec(query);return {toArray:()=>[]};}const statement=db.prepare(query),rows=statement.columns().length?statement.all(...bindings):(statement.run(...bindings),[]);return {toArray:()=>structuredClone(rows)};}},transactionSync<T>(fn:()=>T){db.exec('BEGIN IMMEDIATE');try{const value=fn();db.exec('COMMIT');return value;}catch(error){db.exec('ROLLBACK');throw error;}},async sync(){syncs++;},async setAlarm(at:number){if(alarmFails)throw Error('lost-release-alarm-write');alarm=at;},async deleteAlarm(){alarm=null;}} as unknown as ProductTurnRuntimeStorage;
+  const execution:TurnExecutionPort={async start(input){starts++;assert.equal(input.message,'Build model');assert.deepEqual(input.actor,actor);if(startError)throw Error('lost-start-response');const {actor:_,message:__,base:___,executionDeadlineAt:____,...runtimeIdentity}=input;return structuredClone(dynamicTerminal?terminal(runtimeIdentity):startResult);},async observe(){observes++;return structuredClone(observeResult);},async cancel(){cancels++;return structuredClone(cancelResult);},async release(){releases++;if(releaseError)throw Error('lost-release-response');return {running:releaseRunning};}};
   const receipt=():CheckpointReceipt=>({revisionId:'revision-a',objectKey:'turns/tenant-a/workspace-a/2/turn-a/dispatch-a.json',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:1005});
   const checkpointIntent=(value:TurnRuntimeIdentity)=>({operationId:turnCheckpointOperationId(value),inputSha256:'c'.repeat(64)});
   const checkpoints:TurnCheckpointPort={async prepare(input){prepares++;return checkpointIntent(input.identity);},async commit(input,intent){commits++;assert.deepEqual(intent,checkpointIntent(input.identity));if(commitError)throw Error('lost-checkpoint-response');return receipt();},async reconcile(value,intent){checkpointObserves++;assert.deepEqual(intent,checkpointIntent(value));return structuredClone(observedCheckpoint);}};
-  const host=()=>new ProductTurnRuntimeCore(storage,execution,checkpoints,()=>++now);
-  return {host,execution,get writes(){return writes;},get syncs(){return syncs;},clock(v:number){now=v;},row(){return JSON.parse(db.prepare('SELECT value FROM product_turn_runtime').get()!.value as string);},get starts(){return starts;},get observes(){return observes;},get cancels(){return cancels;},get prepares(){return prepares;},get commits(){return commits;},get checkpointObserves(){return checkpointObserves;},start(v:TurnExecutionObservation){startResult=v;},dynamicTerminal(v=true){dynamicTerminal=v;},observe(v:TurnExecutionObservation){observeResult=v;},cancel(v:TurnExecutionObservation){cancelResult=v;},startError(v:boolean){startError=v;},commitError(v:boolean){commitError=v;},observedCheckpoint(v:CheckpointReceipt|null){observedCheckpoint=v;},sql(query:string){db.exec(query);},reopen(){db.close();db=new DatabaseSync(file);configure();}};
+  const host=()=>new ProductTurnRuntimeCore(storage,execution,checkpoints,()=>++now,false,releaseTiming);
+  return {host,execution,get writes(){return writes;},get syncs(){return syncs;},clock(v:number){now=v;},row(){return JSON.parse(db.prepare('SELECT value FROM product_turn_runtime').get()!.value as string);},releaseRow(){const row=db.prepare('SELECT value FROM product_turn_release').get();return row?JSON.parse(row.value as string):null;},get alarm(){return alarm;},alarmFails(v:boolean){alarmFails=v;},get starts(){return starts;},get observes(){return observes;},get cancels(){return cancels;},get releases(){return releases;},get prepares(){return prepares;},get commits(){return commits;},get checkpointObserves(){return checkpointObserves;},start(v:TurnExecutionObservation){startResult=v;},dynamicTerminal(v=true){dynamicTerminal=v;},observe(v:TurnExecutionObservation){observeResult=v;},cancel(v:TurnExecutionObservation){cancelResult=v;},startError(v:boolean){startError=v;},releaseError(v:boolean){releaseError=v;},releaseRunning(v:boolean){releaseRunning=v;},commitError(v:boolean){commitError=v;},observedCheckpoint(v:CheckpointReceipt|null){observedCheckpoint=v;},sql(query:string){db.exec(query);},reopen(){db.close();db=new DatabaseSync(file);configure();}};
 }
 
 test('terminal accept reserves one execution and returns one immutable hierarchical checkpoint',async t=>{
@@ -74,7 +74,7 @@ test('a fenced cancellation reconciles an absent native execution without checkp
 test('checkpoint response loss reconciles immutable receipt and unresolved persistence remains observable',async t=>{
   const f=fixture(t);f.start(terminal());f.commitError(true);f.observedCheckpoint({revisionId:'revision-a',objectKey:'turns/tenant-a/workspace-a/2/turn-a/dispatch-a.json',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:1100});const recovered=await f.host().accept(request());assert.equal(recovered.checkpoint?.revisionId,'revision-a');assert.equal(recovered.persistenceErrorCode,null);assert.equal(f.commits,1);assert.equal(f.checkpointObserves,1);
   const other=fixture(t);other.start(terminal());other.commitError(true);const unknown=await other.host().accept(request());assert.equal(unknown.checkpoint,null);assert.equal(unknown.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(unknown.outcome,'completed');
-  assert.equal((await other.host().observe(identity)).persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(other.commits,1);assert.equal(other.checkpointObserves,2);
+  assert.equal(other.releases,0);assert.equal((await other.host().observe(identity)).persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(other.commits,1);assert.equal(other.checkpointObserves,2);assert.equal(other.releases,0);
   other.observedCheckpoint({revisionId:'revision-a',objectKey:'turns/tenant-a/workspace-a/2/turn-a/dispatch-a.json',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:1100});const late=await other.host().observe(identity);assert.equal(late.checkpoint?.revisionId,'revision-a');assert.equal(late.persistenceErrorCode,null);assert.equal(other.commits,1);assert.equal(other.checkpointObserves,3);
 });
 
@@ -83,9 +83,32 @@ test('checkpoint descriptor survives reopen and prevents a second materializatio
  f.reopen();f.observedCheckpoint({revisionId:'revision-a',objectKey:'turns/tenant-a/workspace-a/2/turn-a/dispatch-a.json',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:1100});const recovered=await f.host().observe(identity);assert.equal(recovered.checkpoint?.revisionId,'revision-a');assert.equal(f.prepares,1);assert.equal(f.commits,1);assert.equal(f.checkpointObserves,2);
 });
 
+test('checkpoint commit durably precedes exact Sandbox release and requires a quiet absent observation',async t=>{
+ const f=fixture(t,{retryMs:5,assignmentGuardMs:20,quietMs:10});f.start(terminal());const host=f.host(),first=await host.accept(request());
+ assert.equal(first.phase,'terminal');assert.equal(f.commits,1);assert.equal(f.releases,1);assert.ok(f.row().checkpoint);const intent=f.releaseRow();assert.equal(intent.attempts,1);assert.ok(intent.absentSince);assert.equal(f.alarm,intent.nextAttemptAt);
+ f.clock(Math.max(intent.begunAt+20,intent.absentSince+10));const settled=await host.observe(identity);assert.equal(settled.phase,'terminal');assert.equal(settled.checkpoint?.revisionId,'revision-a');assert.equal(f.releases,2);assert.ok(f.releaseRow().confirmedAt);assert.equal(f.alarm,null);assert.equal(f.starts,1);assert.equal(f.commits,1);
+});
+
+test('lost release response retries only destroy observation after the saved checkpoint',async t=>{
+ const f=fixture(t);f.start(terminal());f.releaseError(true);const host=f.host();assert.equal((await host.accept(request())).phase,'terminal');
+ assert.ok(f.row().checkpoint);assert.equal(f.releases,1);assert.equal(f.starts,1);assert.equal(f.commits,1);f.releaseError(false);f.reopen();
+ const settled=await f.host().observe(identity);assert.equal(settled.phase,'terminal');assert.equal(f.releases,2);assert.equal(f.starts,1);assert.equal(f.commits,1);
+});
+
+test('release alarm is durable before intent and a failed arm performs no destroy or orphaned intent',async t=>{
+ const f=fixture(t,{retryMs:5,assignmentGuardMs:20,quietMs:10});f.start(terminal());f.alarmFails(true);const host=f.host();await assert.rejects(host.accept(request()),/lost-release-alarm-write/);
+ assert.ok(f.row().checkpoint);assert.equal(f.releaseRow(),null);assert.equal(f.releases,0);f.alarmFails(false);
+ assert.equal((await host.observe(identity)).phase,'terminal');assert.ok(f.releaseRow());assert.equal(f.releases,1);assert.ok(f.alarm);
+});
+
+test('a running post-destroy probe stays pending and a later absent probe completes the same release',async t=>{
+ const f=fixture(t);f.start(terminal());f.releaseRunning(true);const host=f.host();assert.equal((await host.accept(request())).phase,'terminal');assert.equal(f.releaseRow().absentSince,null);
+ f.releaseRunning(false);const settled=await host.observe(identity);assert.equal(settled.phase,'terminal');assert.equal(f.releases,2);assert.equal(f.starts,1);
+});
+
 test('an unavailable base never allocates checkpoint materialization, including after reopen',async t=>{
  const f=fixture(t);f.start({...terminal(identity,'failed'),executionErrorCode:'turn-base-unavailable',events:[]});const first=await f.host().accept(request());assert.equal(first.phase,'terminal');assert.equal(first.outcome,'failed');assert.equal(first.executionErrorCode,'turn-base-unavailable');assert.equal(first.checkpoint,null);assert.equal(first.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(f.prepares,0);assert.equal(f.commits,0);assert.equal(f.checkpointObserves,0);
- f.reopen();const replay=await f.host().observe(identity);assert.deepEqual(replay,first);assert.equal(f.prepares,0);assert.equal(f.commits,0);assert.equal(f.checkpointObserves,0);
+ assert.equal(f.releases,0);f.reopen();const replay=await f.host().observe(identity);assert.deepEqual(replay,first);assert.equal(f.prepares,0);assert.equal(f.commits,0);assert.equal(f.checkpointObserves,0);assert.equal(f.releases,0);
 });
 
 test('legacy checkpoint reservation without an exact descriptor remains fail closed',async t=>{

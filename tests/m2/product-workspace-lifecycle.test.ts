@@ -8,7 +8,7 @@ import { ProjectWorkspaceLifecycle, TurnBaseUnavailableError, WorkspacePreparedE
 test('prepared execution freezes its absolute deadline before awaiting restoration',async()=>{
  let release!:()=>void,started!:()=>void,observed:number|undefined;
  const waiting=new Promise<void>(r=>{started=r;}),restored=new Promise<void>(r=>{release=r;});
- const port=new WorkspacePreparedExecutionPort({async prepare(){started();await restored;}} as never,{async start(input){observed=input.executionDeadlineAt;return running;},async observe(){return running;},async cancel(){return running;}});
+ const port=new WorkspacePreparedExecutionPort({async prepare(){started();await restored;}} as never,{async start(input){observed=input.executionDeadlineAt;return running;},async observe(){return running;},async cancel(){return running;},async release(){return {running:false};}});
  const input={...identity,actor,message:'Build',base,executionDeadlineAt:5000};
  const pending=port.start(input);await waiting;input.executionDeadlineAt=9000;release();await pending;assert.equal(observed,5000);
 });
@@ -32,7 +32,7 @@ test('genesis restore supplies no archive and a forged source receipt fails befo
 });
 
 test('verified base corruption becomes a terminal pre-execution failure while transport uncertainty remains unknown',async()=>{
-  let starts=0,resolved=0;const execution:TurnExecutionPort={async start(){starts++;return running;},async observe(){return running;},async cancel(){return running;}};
+  let starts=0,resolved=0;const execution:TurnExecutionPort={async start(){starts++;return running;},async observe(){return running;},async cancel(){return running;},async release(){return {running:false};}};
   const corrupted=new ProjectWorkspaceLifecycle({async restore(){throw Error('turn-revision-object-conflict');}},()=>{resolved++;throw Error('unused');});
   const terminal=await new WorkspacePreparedExecutionPort(corrupted,execution).start({...identity,actor,message:'Build',base});
   assert.equal(terminal.phase,'terminal');assert.equal(terminal.outcome,'failed');assert.equal(terminal.executionErrorCode,'turn-base-unavailable');assert.equal(terminal.stopped?.nativeRunning,false);assert.equal(terminal.stopped?.fenced,true);assert.equal(starts,0);assert.equal(resolved,0);
@@ -41,7 +41,7 @@ test('verified base corruption becomes a terminal pre-execution failure while tr
 });
 
 test('prepared execution restores exactly once before native start and never from observe or cancel',async()=>{
-  const calls:string[]=[],workspace={async prepare(){calls.push('prepare');}},execution:TurnExecutionPort={async start(){calls.push('start');return running;},async observe(){calls.push('observe');return running;},async cancel(){calls.push('cancel');return running;}},port=new WorkspacePreparedExecutionPort(workspace as never,execution);
+  const calls:string[]=[],workspace={async prepare(){calls.push('prepare');}},execution:TurnExecutionPort={async start(){calls.push('start');return running;},async observe(){calls.push('observe');return running;},async cancel(){calls.push('cancel');return running;},async release(){calls.push('release');return {running:false};}},port=new WorkspacePreparedExecutionPort(workspace as never,execution);
   const accepted=await Promise.all([port.start({...identity,actor,message:'Build',base}),port.start({...identity,actor,message:'Build',base})]);assert.deepEqual(accepted,[running,running]);assert.deepEqual(calls,['prepare','start']);await assert.rejects(port.start({...identity,actor,message:'Different',base}),/execution-conflict/);await port.observe(identity);await port.cancel(identity);assert.deepEqual(calls,['prepare','start','observe','cancel']);
   const failed=new WorkspacePreparedExecutionPort({async prepare(){throw Error('restore-failed');}} as never,execution);await assert.rejects(failed.start({...identity,actor,message:'Build',base}),/restore-failed/);assert.equal(calls.filter(value=>value==='start').length,1);
 });

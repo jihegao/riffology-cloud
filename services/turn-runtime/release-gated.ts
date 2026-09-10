@@ -20,16 +20,15 @@ export interface ProductTurnRuntimeSandboxResolver{
 
 function configured(raw:ProductTurnRuntimeHostEnv):ProductTurnRuntimeReleaseEnv{
   const env=raw as ProductTurnRuntimeReleaseEnv;
-  if(env.M2_TURNS_ENABLED!=='true')throw Error('product-turn-runtime-release-not-configured');
   if(!env.REVISION_STORE?.getByName
     ||!env.PROJECT_SANDBOX?.idFromName||!env.PROJECT_SANDBOX?.getByName
     ||!env.TRUSTED_PI_SANDBOX?.idFromName||!env.TRUSTED_PI_SANDBOX?.getByName)throw Error('product-turn-runtime-release-dependencies-required');
   return env;
 }
 
-/** Production release assembly is reachable only behind the exact Turn gate.
- * Sandbox actors are resolved lazily from the immutable Turn identity; merely
- * constructing the Durable Object cannot allocate a container or touch R2. */
+/** Production ports require every authority binding, while the admission gate
+ * remains in ProductTurnRuntimeHost. Existing identity-bound actors must keep
+ * checkpoint and Sandbox-release maintenance during a gate-off rollback. */
 export function productTurnRuntimeRelease(
   _ctx:DurableObjectState,
   rawEnv:ProductTurnRuntimeHostEnv,

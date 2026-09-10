@@ -11,7 +11,7 @@ const stop={confirmationId:'stop-a',observedAt:1010,nativeRunning:false as const
 const artifact={schemaVersion:1 as const,artifactId:`artifact-${'a'.repeat(60)}`,operation:'list' as const,mediaType:'application/json' as const,bytes:20000,sha256:'b'.repeat(64),createdAt:1000};
 const providerToolCallId=`fc_${'a'.repeat(26)}|call_${'b'.repeat(48)}`;
 function running(overrides:Partial<TrustedPiHostObservation>={}):TrustedPiHostObservation{return {identity,phase:'running',outcome:null,executionErrorCode:null,events:[],stopped:null,...overrides};}
-function fixture(){const calls:string[]=[];let start=running(),observe=running(),cancel=running();const host:TrustedPiHostPort={async start(){calls.push('start');return start;},async observe(){calls.push('observe');return observe;},async cancel(){calls.push('cancel');return cancel;}};return {calls,adapter:new TrustedPiExecutionAdapter(host),setStart(v:TrustedPiHostObservation){start=v;},setObserve(v:TrustedPiHostObservation){observe=v;},setCancel(v:TrustedPiHostObservation){cancel=v;}};}
+function fixture(){const calls:string[]=[];let start=running(),observe=running(),cancel=running();const host:TrustedPiHostPort={async start(){calls.push('start');return start;},async observe(){calls.push('observe');return observe;},async cancel(){calls.push('cancel');return cancel;},async release(){calls.push('release');return {running:false};}};return {calls,adapter:new TrustedPiExecutionAdapter(host),setStart(v:TrustedPiHostObservation){start=v;},setObserve(v:TrustedPiHostObservation){observe=v;},setCancel(v:TrustedPiHostObservation){cancel=v;}};}
 
 test('maps bounded Trusted Pi events to deterministic product runtime events',async()=>{
   const f=fixture();f.setStart(running({events:[
@@ -57,7 +57,7 @@ test('module is isolated from M0 probes, provider configuration and project file
 
 
 test('workspace and Pi adapters pass deadline but readonly observer never prepares or observes',async()=>{
- const calls:string[]=[];const host:TrustedPiHostPort={async start(input){calls.push('start');assert.equal(input.executionDeadlineAt,601000);return running();},async observe(){calls.push('observe');return running();},async cancel(){calls.push('cancel');return running();},async currentObserverExecution(id){assert.deepEqual(id,identity);calls.push('authority');return {expiresAt:601000};}};
+ const calls:string[]=[];const host:TrustedPiHostPort={async start(input){calls.push('start');assert.equal(input.executionDeadlineAt,601000);return running();},async observe(){calls.push('observe');return running();},async cancel(){calls.push('cancel');return running();},async release(){calls.push('release');return {running:false};},async currentObserverExecution(id){assert.deepEqual(id,identity);calls.push('authority');return {expiresAt:601000};}};
  const execution=new WorkspacePreparedExecutionPort({async prepare(){calls.push('prepare');return {} as never;}},new TrustedPiExecutionAdapter(host));
  assert.deepEqual(await execution.currentObserverExecution(identity),{expiresAt:601000});assert.deepEqual(calls,['authority']);
  await execution.start({...identity,actor,message:'build',base,executionDeadlineAt:601000});assert.deepEqual(calls,['authority','prepare','start']);await assert.rejects(execution.start({...identity,actor,message:'build',base,executionDeadlineAt:601001}),/conflict/);

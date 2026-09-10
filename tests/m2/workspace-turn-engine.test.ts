@@ -34,6 +34,19 @@ test('engine cancellation persists the fence before one runtime cancel',async()=
   assert.equal(cancelled.status,'cancelled');assert.equal(f.calls.cancelCalls,1);assert.equal(f.store.snapshot()!.turns[submitted.turn.id]!.cancelRequestedAt!==null,true);
 });
 
+test('authenticated repeat cancel on a saved terminal turn only nudges its exact runtime release',async()=>{
+  const f=fixture(),session=(await f.journal.createSession(scope,actor,'session-key',{title:'Session'})).session,submitted=await f.engine.submit(scope,actor,session.id,'turn-key',{message:'Build model'});
+  const saved=await f.engine.alarm(scope,1);assert.equal(saved?.status,'completed');const before=structuredClone(f.store.snapshot());
+  assert.equal((await f.engine.cancel(scope,actor,submitted.turn.id)).status,'completed');assert.equal(f.calls.observeCalls,1);assert.equal(f.calls.cancelCalls,0);assert.deepEqual(f.store.snapshot(),before);
+  await assert.rejects(f.engine.cancel(scope,{userId:'user-b',authVersion:1},submitted.turn.id),/turn-not-found/);assert.equal(f.calls.observeCalls,1);
+});
+
+test('repeat cancel never destroys for a terminal turn without a saved checkpoint',async()=>{
+  const f=fixture(),session=(await f.journal.createSession(scope,actor,'session-key',{title:'Session'})).session,submitted=await f.engine.submit(scope,actor,session.id,'turn-key',{message:'Build model'}),claimed=(await f.journal.claim(scope,1))!.turn;
+  await f.journal.beginCheckpoint(scope,{turnId:claimed.id,dispatchId:claimed.dispatchId!,runtimeGeneration:1,outcome:'failed',errorCode:'fixture-failed'});await f.journal.failCheckpoint(scope,{turnId:claimed.id,dispatchId:claimed.dispatchId!,runtimeGeneration:1,errorCode:'turn-checkpoint-unknown'});
+  assert.equal((await f.engine.cancel(scope,actor,submitted.turn.id)).persistenceOutcome,'failed');assert.equal(f.calls.observeCalls,0);assert.equal(f.calls.cancelCalls,0);
+});
+
 test('engine keeps polling an unknown checkpoint and wakes the queue only after recovery',async()=>{
   let now=1000,observeCalls=0,available=false;const scheduled:number[]=[];const store=new MemoryTurnStore(),journal=new TurnJournal(store,()=>now),runtime:TurnRuntimePort={
     async accept(input){return {scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,phase:'terminal',outcome:'completed',events:[],persistenceErrorCode:'turn-checkpoint-unknown',stopped:{confirmationId:'stop-one',observedAt:now,nativeRunning:false,fenced:true}};},

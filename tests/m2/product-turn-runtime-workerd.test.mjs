@@ -19,7 +19,7 @@ test('production ProductTurnRuntime binding validates its actor and fails closed
   const mf = new Miniflare({ host: '127.0.0.1', port: 0, inspectorPort: 0, cf: {}, telemetry: { enabled: false }, logRequests: false,
     workers: [{ config: { type: 'worker', name: workerName, compatibilityDate: '2026-09-06',
       manifest: { mainModule: 'runtime.mjs', modules: { 'runtime.mjs': { type: 'esm', contents: bundle.outputFiles[0].text } } },
-      env: { PRODUCT_TURN_RUNTIME: { type: 'durable-object', worker: workerName, exportName: 'ProductTurnRuntime' } },
+      env: { M2_TURNS_ENABLED:{type:'text',value:'false'},PRODUCT_TURN_RUNTIME: { type: 'durable-object', worker: workerName, exportName: 'ProductTurnRuntime' } },
       exports: { ProductTurnRuntime: { type: 'durable-object', storage: 'sqlite' } },
     }, dev: { unsafeRegisterWorker: false, outboundService: { type: 'fetcher', handler: () => new Response('outbound-disabled', { status: 403 }) } } }],
   });

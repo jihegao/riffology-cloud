@@ -29,4 +29,5 @@ export class ProductTurnRuntime extends DurableObject<ProductTurnRuntimeEnv>{
   async currentObserverExecution(input:Parameters<ProductTurnRuntimeHost['currentObserverExecution']>[0]){return this.#host.currentObserverExecution(input);}
   async observe(input:Parameters<TurnRuntimePort['observe']>[0]){return this.#host.observe(input);}
   async cancel(input:Parameters<TurnRuntimePort['cancel']>[0]){return this.#host.cancel(input);}
+  async alarm(){return this.#host.alarm();}
 }

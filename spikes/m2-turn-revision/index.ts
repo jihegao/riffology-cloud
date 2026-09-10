@@ -18,6 +18,7 @@ class FixtureExecution implements TurnExecutionPort{
   async start(input:TurnRuntimeIdentity&{actor:typeof actor;message:string}){this.#increment('start');await this.#storage.sync();return this.#terminal(input);}
   async observe(expected:TurnRuntimeIdentity){this.#increment('observe');await this.#storage.sync();return this.#terminal(expected);}
   async cancel(expected:TurnRuntimeIdentity){this.#increment('cancel');await this.#storage.sync();return this.#terminal(expected);}
+  async release(){this.#increment('release');await this.#storage.sync();return {running:false};}
 }
 
 export class TurnRevisionProbe extends DurableObject<Env>{
@@ -26,7 +27,7 @@ export class TurnRevisionProbe extends DurableObject<Env>{
       async prepare(input){return revisionCommitIntent(input,await snapshots.freeze(input.identity,input.base));},
       async commit(input,intent){const snapshot=await snapshots.freeze(input.identity,input.base),actual=await revisionCommitIntent(input,snapshot);if(JSON.stringify(actual)!==JSON.stringify(intent))throw Error('revision-probe-intent-conflict');return new R2TurnRevisionPort(env.TURN_REVISIONS,{async freeze(){return snapshot;}}).commit(input);},
       async reconcile(expected,intent){const saved=await reader.inspect(expected);if(!saved)return null;const digest=await turnDigest(revisionCommitDigestInput({identity:expected,outcome:saved.outcome,executionErrorCode:saved.executionErrorCode,base:saved.base},saved.files.sha256,saved.files.size,saved.piSession.sha256,saved.piSession.size));if(digest!==intent.inputSha256)throw Error('revision-probe-intent-conflict');return saved.receipt;},
-    };this.#runtime=new ProductTurnRuntimeCore(storage,execution,checkpoints);}
+    };this.#runtime=new ProductTurnRuntimeCore(storage,execution,checkpoints,Date.now,false,{retryMs:0,assignmentGuardMs:0,quietMs:0});}
   #counts(){const rows=this.ctx.storage.sql.exec<{name:string;value:number}>('SELECT name,value FROM probe_counts ORDER BY name').toArray();return Object.fromEntries(rows.map(row=>[row.name,row.value]));}
   async accept(){const result=await this.#runtime.accept({...identity,actor,message:'Build the local revision fixture',base:{workspace:null,session:null}}),objects=await this.env.TURN_REVISIONS.list();return {result,counts:this.#counts(),objects:objects.objects.map(item=>({key:item.key,size:item.size})).sort((a,b)=>a.key.localeCompare(b.key))};}
   async observe(){const result=await this.#runtime.observe(identity),objects=await this.env.TURN_REVISIONS.list();return {result,counts:this.#counts(),objects:objects.objects.map(item=>({key:item.key,size:item.size})).sort((a,b)=>a.key.localeCompare(b.key))};}

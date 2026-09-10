@@ -15,11 +15,13 @@ class Process implements TrustedPiProcessView{id:string;status='running';exitCod
 class Sandbox implements TrustedPiSandboxProcessApi{
   clock:()=>number=()=>1003;
   queryObserverExecution(identity:TurnRuntimeIdentity){return readCurrentObserverExecution(this,identity,this.clock);}
-  files=new Map<string,string>();process:Process|null=null;starts=0;writes=0;reads=0;loseStart=false;lastCommand='';lastOptions:any;onRead?:(path:string,read:number)=>void;onGetProcess?:()=>void;
+  files=new Map<string,string>();process:Process|null=null;starts=0;writes=0;reads=0;destroys=0;releaseRunning=false;loseStart=false;lastCommand='';lastOptions:any;onRead?:(path:string,read:number)=>void;onGetProcess?:()=>void;
   async writeFile(path:string,content:string){this.writes++;this.files.set(path,content);return {success:true,path};}
   async readFile(path:string){this.reads++;this.onRead?.(path,this.reads);const content=this.files.get(path);if(content===undefined)throw Error('ENOENT not found');return {success:true,path,content};}
   async startProcess(command:string,options:any){this.starts++;this.lastCommand=command;this.lastOptions=options;this.process=new Process(options.processId);if(this.loseStart)throw Error('lost-native-start-response');return this.process;}
   async getProcess(id:string){this.onGetProcess?.();return this.process?.id===id?this.process:null;}
+  async destroy(){this.destroys++;}
+  async releaseState(){return {running:this.releaseRunning};}
   prefix(){const control=[...this.files.keys()].find(key=>key.endsWith('.control.json'));assert.ok(control);return control.slice(0,-'.control.json'.length);}
   running(){const prefix=this.prefix();this.files.set(`${prefix}.result.json`,JSON.stringify({schemaVersion:1,identity,phase:'running',outcome:null,executionErrorCode:null,events:[],outputSessionSha256:null}));}
   async settle(outcome:'completed'|'failed'|'cancelled'|'interrupted'='completed',output=snapshot()){
@@ -87,6 +89,12 @@ test('explicit cancel settles an absent native execution as an interrupted fence
   assert.deepEqual(await f.host.cancel(identity),cancelled);
 });
 
+test('release destroys only the identity-bound Sandbox and reports its post-destroy running state',async()=>{
+  const f=fixture();assert.deepEqual(await f.host.release(identity),{running:false});assert.equal(f.sandbox.destroys,1);
+  f.sandbox.releaseRunning=true;assert.deepEqual(await f.host.release(identity),{running:true});assert.equal(f.sandbox.destroys,2);
+  await assert.rejects(f.host.release({...identity,dispatchId:''}),/turn-identifier/);assert.equal(f.sandbox.destroys,2);
+});
+
 test('schema 2 control is persisted and native start receives the remaining timeout',async()=>{
   const f=fixture();await f.host.start({...input(),executionDeadlineAt:1103});
   const control=JSON.parse(f.sandbox.files.get(`${f.sandbox.prefix()}.control.json`)!);
@@ -111,7 +119,7 @@ test('unchanged schema 2 deadline replay observes the existing process without a
 
 test('observer refuses an ordinary SDK without a dedicated reader before native I/O',async()=>{
   let calls=0;const forbidden=async()=>{calls++;throw Error('ordinary-sdk-called');};
-  const host=new SandboxTrustedPiHostPort({writeFile:forbidden,readFile:forbidden,startProcess:forbidden,getProcess:forbidden},{load:forbidden},()=>1003);
+  const host=new SandboxTrustedPiHostPort({writeFile:forbidden,readFile:forbidden,startProcess:forbidden,getProcess:forbidden,destroy:forbidden,releaseState:forbidden},{load:forbidden},()=>1003);
   await assert.rejects(host.currentObserverExecution(identity),/observer-reader-required/);assert.equal(calls,0);
 });
 

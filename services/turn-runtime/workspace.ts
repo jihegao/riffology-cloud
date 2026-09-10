@@ -73,7 +73,7 @@ export class ProjectWorkspaceLifecycle implements WorkspaceFilesFreezePort{
 export class WorkspacePreparedExecutionPort implements TurnExecutionPort{
   readonly #workspace:Pick<ProjectWorkspaceLifecycle,'prepare'>;readonly #execution:TurnExecutionPort;
   #startKey:string|null=null;#startPromise:Promise<TurnExecutionObservation>|null=null;
-  constructor(workspace:Pick<ProjectWorkspaceLifecycle,'prepare'>,execution:TurnExecutionPort){if(!workspace?.prepare||!execution?.start||!execution.observe||!execution.cancel)reject('workspace-prepared-execution-required');this.#workspace=workspace;this.#execution=execution;}
+  constructor(workspace:Pick<ProjectWorkspaceLifecycle,'prepare'>,execution:TurnExecutionPort){if(!workspace?.prepare||!execution?.start||!execution.observe||!execution.cancel||!execution.release)reject('workspace-prepared-execution-required');this.#workspace=workspace;this.#execution=execution;}
   async start(input:TurnRuntimeIdentity&{actor:TurnActor;message:string;base:TurnBaseCheckpoints;executionDeadlineAt?:number}):Promise<TurnExecutionObservation>{
     const executionDeadlineAt=input.executionDeadlineAt===undefined?undefined:positive(input.executionDeadlineAt);
     const identity=turnRuntimeIdentity({scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation}),actor=validateActor(input.actor),base=turnBaseCheckpoints(input.base),text=message(input.message),key=await turnDigest({identity,actor,base,message:text,...(executionDeadlineAt===undefined?{}:{executionDeadlineAt})});
@@ -90,4 +90,5 @@ export class WorkspacePreparedExecutionPort implements TurnExecutionPort{
   async currentObserverExecution(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);if(!this.#execution.currentObserverExecution)reject('product-turn-observer-denied');return this.#execution.currentObserverExecution(identity);}
   observe(raw:TurnRuntimeIdentity){return this.#execution.observe(turnRuntimeIdentity(raw));}
   cancel(raw:TurnRuntimeIdentity){return this.#execution.cancel(turnRuntimeIdentity(raw));}
+  release(raw:TurnRuntimeIdentity){return this.#execution.release(turnRuntimeIdentity(raw));}
 }
