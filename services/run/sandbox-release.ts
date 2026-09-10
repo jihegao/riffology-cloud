@@ -5,7 +5,7 @@ export interface ServiceSandboxReleasePort{
  destroy():Promise<void>;
 }
 export type ServiceSandboxReleaseStorage=Pick<DurableObjectStorage,'sql'|'transactionSync'|'sync'|'setAlarm'|'deleteAlarm'>;
-type Row={input_json:string;begun_at:number;quiet_since:number|null;last_running_at:number|null;attempts:number;completed_at:number|null};
+type Row={input_json:string;begun_at:number;quiet_since:number|null;last_running_at:number|null;attempts:number;destroyed_at:number|null;completed_at:number|null};
 export type ServiceSandboxReleaseOptions={retryMs?:number;assignmentGuardMs?:number;quietMs?:number;rpcMs?:number};
 
 /** A stopped service's container may still have a pending platform assignment.
@@ -16,10 +16,14 @@ export class SqlServiceSandboxRelease{
  constructor(storage:ServiceSandboxReleaseStorage,port:(input:ServiceRuntimeInput)=>Promise<ServiceSandboxReleasePort>,clock=Date.now,options:ServiceSandboxReleaseOptions={}){
   this.#storage=storage;this.#port=port;this.#clock=clock;this.#retryMs=options.retryMs??5000;this.#assignmentGuardMs=options.assignmentGuardMs??360000;this.#quietMs=options.quietMs??30000;this.#rpcMs=options.rpcMs??4000;
   for(const value of [this.#retryMs,this.#assignmentGuardMs,this.#quietMs,this.#rpcMs])if(!Number.isSafeInteger(value)||value<1)throw Error('invalid-service-sandbox-release-policy');
-  storage.transactionSync(()=>storage.sql.exec(`CREATE TABLE IF NOT EXISTS service_sandbox_release(singleton INTEGER PRIMARY KEY CHECK(singleton=1),input_json TEXT NOT NULL,begun_at INTEGER NOT NULL,quiet_since INTEGER,last_running_at INTEGER,attempts INTEGER NOT NULL,completed_at INTEGER) STRICT`));this.#ready=storage.sync();
+  storage.transactionSync(()=>{
+   storage.sql.exec(`CREATE TABLE IF NOT EXISTS service_sandbox_release(singleton INTEGER PRIMARY KEY CHECK(singleton=1),input_json TEXT NOT NULL,begun_at INTEGER NOT NULL,quiet_since INTEGER,last_running_at INTEGER,attempts INTEGER NOT NULL,destroyed_at INTEGER,completed_at INTEGER) STRICT`);
+   const columns=storage.sql.exec<{name:string}>('PRAGMA table_info(service_sandbox_release)').toArray();
+   if(!columns.some(column=>column.name==='destroyed_at'))storage.sql.exec('ALTER TABLE service_sandbox_release ADD COLUMN destroyed_at INTEGER');
+  });this.#ready=storage.sync();
  }
  #now(){const now=this.#clock();if(!Number.isSafeInteger(now)||now<1)throw Error('invalid-service-sandbox-release-time');return now;}
- #row():Row|null{return this.#storage.sql.exec<Row>('SELECT input_json,begun_at,quiet_since,last_running_at,attempts,completed_at FROM service_sandbox_release WHERE singleton=1').toArray()[0]??null;}
+ #row():Row|null{return this.#storage.sql.exec<Row>('SELECT input_json,begun_at,quiet_since,last_running_at,attempts,destroyed_at,completed_at FROM service_sandbox_release WHERE singleton=1').toArray()[0]??null;}
  #input(row:Row){const input=serviceRuntimeInput(JSON.parse(row.input_json));if(JSON.stringify(input)!==row.input_json)throw Error('invalid-persisted-service-sandbox-release');return input;}
  async #change(fn:(row:Row|null)=>void){await this.#ready;this.#storage.transactionSync(()=>fn(this.#row()));await this.#storage.sync();}
  async #bounded<T>(operation:()=>Promise<T>):Promise<T>{
@@ -33,7 +37,7 @@ export class SqlServiceSandboxRelease{
   await this.#storage.setAlarm(now+1);await this.#storage.sync();
   await this.#change(row=>{
    if(row&&row.input_json!==encoded)throw Error('service-sandbox-release-identity-conflict');
-   if(!row)this.#storage.sql.exec('INSERT INTO service_sandbox_release VALUES(1,?,?,NULL,NULL,0,NULL)',encoded,now);
+   if(!row)this.#storage.sql.exec('INSERT INTO service_sandbox_release(singleton,input_json,begun_at,quiet_since,last_running_at,attempts,destroyed_at,completed_at) VALUES(1,?,?,NULL,NULL,0,NULL,NULL)',encoded,now);
   });
   return this.reconcile();
  }
@@ -60,7 +64,7 @@ export class SqlServiceSandboxRelease{
    const attempts=row.attempts+1;
    const quietSince=!confirmed||after?null:seenRunning||row.quiet_since===null?observedAt:row.quiet_since;
    complete=confirmed&&!after&&quietSince!==null&&observedAt-row.begun_at>=this.#assignmentGuardMs&&observedAt-quietSince>=this.#quietMs;
-   this.#storage.sql.exec('UPDATE service_sandbox_release SET quiet_since=?,last_running_at=?,attempts=?,completed_at=? WHERE singleton=1',quietSince,seenRunning?observedAt:row.last_running_at,attempts,complete?observedAt:null);
+   this.#storage.sql.exec('UPDATE service_sandbox_release SET quiet_since=?,last_running_at=?,attempts=?,destroyed_at=COALESCE(destroyed_at,?),completed_at=? WHERE singleton=1',quietSince,seenRunning?observedAt:row.last_running_at,attempts,destroyed?observedAt:null,complete?observedAt:null);
   });
   if(complete){await this.#storage.deleteAlarm();await this.#storage.sync();}
   return complete;

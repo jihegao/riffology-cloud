@@ -21,7 +21,7 @@ test('real SQLite journal and tenant quota coordinate one start and release only
  assert.equal((await c.reconcile(run.id)).status,'running');assert.equal(x.starts,1);assert.equal((await x.quota.snapshot()).occupied,1);
  assert.equal((await c.reconcile(run.id)).status,'running');assert.equal(x.starts,1);
  x.stopUnknown=true;assert.equal((await c.requestStop(run.id)).status,'stopping');assert.equal((await x.quota.snapshot()).occupied,1);
- x.stopUnknown=false;assert.equal((await c.reconcile(run.id)).status,'stopped');assert.equal((await x.quota.snapshot()).occupied,0);assert.equal((await c.state(run.id))?.released,true);
+ x.stopUnknown=false;x.f.now=11000;assert.equal((await c.reconcile(run.id)).status,'stopped');assert.equal((await x.quota.snapshot()).occupied,0);assert.equal((await c.state(run.id))?.released,true);
  assert.equal((await x.coordinator().reconcile(run.id)).status,'stopped');assert.equal(x.starts,1);
 });
 test('acquisition and release acknowledgement loss reconcile the same persisted operation',async t=>{

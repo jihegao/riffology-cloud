@@ -5,9 +5,10 @@ import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import type {ServiceRunStorage,ServiceRunSpec,ServiceRuntimeReference} from '../../services/run/service.ts';
-import {SqlServiceRuntimeSupervisor,type ServiceNativeBackend,type ServiceRuntimeRelease} from '../../services/run/runtime-supervisor.ts';
+import {SqlServiceRuntimeSupervisor,type ServiceNativeBackend,type ServiceRuntimeRelease,type ServiceRuntimeSupervisorOptions} from '../../services/run/runtime-supervisor.ts';
 import {serviceNativeToken} from '../../services/run/native.ts';
 import type {ServiceRuntimeInput,ServiceRuntimeObservation} from '../../services/run/runtime-protocol.ts';
+import {turnDigest} from '../../services/turn/protocol.ts';
 const scope={tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1};
 const actor={userId:'user-a',authVersion:1};
 function spec():ServiceRunSpec{return {plan:{schemaVersion:1,kind:'service',source:{kind:'saved-turn',identity:{scope,sessionId:'session-a',turnId:'turn-a',dispatchId:'turn-dispatch',generation:1},revision:{revisionId:'revision-a',objectKey:'saved/revision',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:1}},declaration:{schemaVersion:1,runtime:'python',entrypoint:'app/main.py',dependencyLock:'app/requirements.lock',port:8080,healthPath:'/health'},declarationSha256:'c'.repeat(64),entrypointSha256:'d'.repeat(64),dependencyLockSha256:'e'.repeat(64)},runtimeImage:'registry.example/runtime@sha256:'+'f'.repeat(64),maxDurationMs:5000};}
@@ -16,7 +17,7 @@ function fixture(t:{after(fn:()=>void):void}){
  const dir=mkdtempSync(join(tmpdir(),'m3-service-')),path=join(dir,'state.sqlite');let db=new DatabaseSync(path),now=1000,fail=false;
  const storage={sql:{exec(query:string,...args:(string|number|null)[]){if(query.includes('CREATE TABLE')){db.exec(query);return {toArray:()=>[]};}const statement=db.prepare(query);const rows=statement.columns().length?statement.all(...args):(statement.run(...args),[]);return {toArray:()=>structuredClone(rows)};}},transactionSync<T>(fn:()=>T){db.exec('BEGIN IMMEDIATE');try{const result=fn();db.exec('COMMIT');return result;}catch(e){db.exec('ROLLBACK');throw e;}},async sync(){if(fail){fail=false;throw Error('injected-ack-loss');}}} as unknown as ServiceRunStorage;
  t.after(()=>{db.close();rmSync(dir,{recursive:true,force:true});});
- return {host:(backend:ServiceNativeBackend,release?:ServiceRuntimeRelease)=>new SqlServiceRuntimeSupervisor(storage,scope,backend,()=>now,release),storage,get db(){return db;},set now(n:number){now=n;},failNextSync(){fail=true;},reopen(){db.close();db=new DatabaseSync(path);}};
+ return {host:(backend:ServiceNativeBackend,release?:ServiceRuntimeRelease,options?:ServiceRuntimeSupervisorOptions)=>new SqlServiceRuntimeSupervisor(storage,scope,backend,()=>now,release,options),storage,get db(){return db;},set now(n:number){now=n;},failNextSync(){fail=true;},reopen(){db.close();db=new DatabaseSync(path);}};
 }
 function input(runId='run-a'):ServiceRuntimeInput{const ref={...reference(runId),runtimeId:'runtime-'+runId,dispatchId:'dispatch-'+runId,leaseId:'lease-'+runId};return {reference:ref,scope,spec:spec(),lease:{tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,generation:1,operation:'service-run',operationId:ref.dispatchId,deadlineAt:ref.deadlineAt,runId:ref.runId,leaseId:ref.leaseId}};}
 function observation(i:ServiceRuntimeInput,status:ServiceRuntimeObservation['status']):ServiceRuntimeObservation{return {reference:i.reference,scope:i.scope,status,stop:status==='stopped'?{reference:i.reference,scope:i.scope,confirmationId:'stop-a',observedAt:1000,fenced:true}:null};}
@@ -40,12 +41,13 @@ test('stop does not wait for a hung start and late healthy ack cannot resurrect 
 });
 test('an unproven native stop is dispatched once and later calls only recover proof',async t=>{
  const f=fixture(t),b=backend();let releases=0;const h=f.host(b,async()=>{releases++;});b.fenceAndStop=async i=>observation(i,'absent');assert.equal((await h.stop(input())).status,'unknown');assert.equal((await h.start(input())).status,'unknown');assert.equal(b.starts,0);assert.equal(releases,0);
- b.fenceAndStop=async()=>{throw Error('native-stop-must-not-repeat');};assert.equal((await h.stop(input())).status,'unknown');assert.equal(b.recoveries,1);f.reopen();assert.equal((await f.host(b).start(input())).status,'unknown');
+ b.fenceAndStop=async()=>{throw Error('native-stop-must-not-repeat');};assert.equal((await h.stop(input())).status,'unknown');assert.equal(b.recoveries,0,'five-second reconciliation does not refresh the Sandbox');f.now=11000;assert.equal((await h.stop(input())).status,'unknown');assert.equal(b.recoveries,1);f.reopen();assert.equal((await f.host(b).start(input())).status,'unknown');
 });
 test('a lost native stop response recovers durable proof without replaying stop',async t=>{
  const f=fixture(t),b=backend(),h=f.host(b);let nativeStops=0,recoveries=0;b.fenceAndStop=async()=>{nativeStops++;throw Error('lost-native-stop-response');};
  await assert.rejects(h.stop(input()),/lost-native-stop-response/);
  b.fenceAndStop=async()=>{nativeStops++;throw Error('native-stop-must-not-repeat');};b.recoverStop=async i=>{recoveries++;return observation(i,'stopped');};
+ f.now=11000;
  assert.equal((await h.stop(input())).status,'stopped');assert.equal(nativeStops,1);assert.equal(recoveries,1);
  const row=f.storage.sql.exec<{stop_attempted:number;receipt_json:string|null}>('SELECT stop_attempted,receipt_json FROM service_runtime_fence WHERE singleton=1').toArray()[0];assert.equal(row?.stop_attempted,1);assert.ok(row?.receipt_json);
 });
@@ -54,6 +56,25 @@ test('legacy fenced rows migrate to read-only stop recovery',async t=>{
  b.fenceAndStop=async()=>{throw Error('legacy-native-stop-must-not-repeat');};b.recoverStop=async current=>observation(current,'stopped');
  const h=f.host(b);assert.equal((await h.stop(i)).status,'stopped');
  const row=f.storage.sql.exec<{stop_attempted:number;receipt_json:string|null}>('SELECT stop_attempted,receipt_json FROM service_runtime_fence WHERE singleton=1').toArray()[0];assert.equal(row?.stop_attempted,1);assert.ok(row?.receipt_json);
+});
+test('missing native proof authorizes exact platform destroy only after durable grace and proof',async t=>{
+ const f=fixture(t),b=backend(),i=input();let releases=0;
+ b.fenceAndStop=async current=>{return observation(current,'unknown');};
+ const release:ServiceRuntimeRelease=async(current,context)=>{
+  if(context.kind!=='platform-destroy')return null;releases++;
+  if(releases===1)return null;
+  const observedAt=context.authorizedAt!+1,confirmationId='platform-'+(await turnDigest({schemaVersion:1,purpose:'service-platform-destroy',input:current,fencedAt:context.fencedAt,authorizedAt:context.authorizedAt,confirmedAbsentAt:observedAt})).slice(0,52);
+  return {reference:current.reference,scope:current.scope,status:'stopped',stop:{reference:current.reference,scope:current.scope,confirmationId,observedAt,fenced:true}};
+ };
+ const h=f.host(b,release,{stopRecoveryMs:5,hardDestroyGraceMs:20});
+ assert.equal((await h.stop(i)).status,'unknown');assert.equal(b.stops,0);
+ f.now=1004;assert.equal((await h.stop(i)).status,'unknown');assert.equal(b.recoveries,0);assert.equal(releases,0);
+ f.now=1005;assert.equal((await h.stop(i)).status,'unknown');assert.equal(b.recoveries,1);assert.equal(releases,0);
+ f.now=1010;assert.equal((await h.stop(i)).status,'unknown');assert.equal(b.recoveries,2);assert.equal(releases,0);
+ f.now=1020;assert.equal((await h.stop(i)).status,'unknown');assert.equal(releases,1);
+ const authority=f.storage.sql.exec<{hard_destroy_authorized_at:number|null;receipt_json:string|null}>('SELECT hard_destroy_authorized_at,receipt_json FROM service_runtime_fence WHERE singleton=1').toArray()[0];assert.equal(authority?.hard_destroy_authorized_at,1020);assert.equal(authority?.receipt_json,null);
+ f.now=1021;const stopped=await h.stop(i);assert.equal(stopped.status,'stopped');assert.equal(releases,2);assert.equal(b.recoveries,2);
+ const row=f.storage.sql.exec<{receipt_json:string|null;platform_proof_json:string|null}>('SELECT receipt_json,platform_proof_json FROM service_runtime_fence WHERE singleton=1').toArray()[0];assert.ok(row?.receipt_json);const proof=JSON.parse(row!.platform_proof_json!);assert.equal(proof.kind,'platform-destroy');assert.equal(proof.confirmedAbsentAt,1021);assert.equal(proof.inputSha256,await turnDigest(i));
 });
 test('full immutable identity includes scope, lease, image and source bytes',async t=>{
  const f=fixture(t),b=backend(),h=f.host(b);await h.observe(input());
@@ -69,7 +90,7 @@ test('unfenced, foreign, future and pre-fence proofs fail closed',async t=>{
 });
 test('durability ack loss never sends an unacknowledged start and preserves stop fence',async t=>{
  const f=fixture(t),b=backend(),h=f.host(b);await h.observe(input());f.failNextSync();await assert.rejects(h.start(input()),/ack-loss/);assert.equal(b.starts,0);await h.start(input());assert.equal(b.starts,0);
- f.failNextSync();await assert.rejects(h.stop(input()),/ack-loss/);assert.equal(b.stops,0);await h.start(input());assert.equal(b.starts,0);assert.equal((await h.stop(input())).status,'unknown');assert.equal(b.recoveries,1);
+ f.failNextSync();await assert.rejects(h.stop(input()),/ack-loss/);assert.equal(b.stops,0);await h.start(input());assert.equal(b.starts,0);assert.equal((await h.stop(input())).status,'unknown');assert.equal(b.recoveries,0);f.now=11000;assert.equal((await h.stop(input())).status,'unknown');assert.equal(b.recoveries,1);
 });
 test('expired dispatch is never sent to native start',async t=>{const f=fixture(t),b=backend(),h=f.host(b);f.now=5000;assert.equal((await h.start(input())).status,'unknown');assert.equal(b.starts,0);});
 test('stop committed during start durability wait suppresses native dispatch',async t=>{

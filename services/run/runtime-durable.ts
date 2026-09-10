@@ -13,6 +13,7 @@ import {serviceRuntimeInput,type ServiceRuntimeInput} from './runtime-protocol.t
 import {serviceRuntimeActorName} from './durable.ts';
 import {tenantQuotaName,type TenantQuota} from '../quota/durable.ts';
 import {leaseReference} from '../quota/core.ts';
+import {turnDigest} from '../turn/protocol.ts';
 import {REVISION_STORE_ACTOR} from '../turn-runtime/revision-store-client.ts';
 import type {RevisionStore} from '../turn-runtime/revision-store.ts';
 export interface ServiceRuntimeEnv{
@@ -59,14 +60,21 @@ export class ServiceRuntime extends DurableObject<ServiceRuntimeEnv>{
  async #supervisor(input:ServiceRuntimeInput){
   const sandbox=this.env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(input));
   const source={files:async(source:ServiceRuntimeInput['spec']['plan']['source'])=>this.env.REVISION_STORE.getByName(REVISION_STORE_ACTOR).serviceFiles(source)};
-  return new SqlServiceRuntimeSupervisor(this.ctx.storage,input.scope,new SandboxServiceNativeBackend(sandbox,source,input.spec.runtimeImage),Date.now,async()=>{await this.#release(input);});
+  return new SqlServiceRuntimeSupervisor(this.ctx.storage,input.scope,new SandboxServiceNativeBackend(sandbox,source,input.spec.runtimeImage),Date.now,async(_,context)=>this.#release(input,context));
  }
- async #release(input?:ServiceRuntimeInput){
+ async #release(input?:ServiceRuntimeInput,context?:{kind:'native-stop'|'platform-destroy';fencedAt:number;authorizedAt:number|null}){
   const resolver=async(current:ServiceRuntimeInput):Promise<ServiceSandboxReleasePort>=>{
    const sandbox=this.env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(current));
    return {destroy:()=>sandbox.destroy(),running:async()=>{const state=await sandbox.releaseState();if(!state||typeof state!=='object'||Object.keys(state).join(',')!=='running'||typeof state.running!=='boolean')throw Error('invalid-service-sandbox-release-state');return state.running;}};
   };
-  const work=this.#releaseTail.catch(()=>{}).then(()=>{const release=new SqlServiceSandboxRelease(this.ctx.storage,resolver);return input?release.begin(input):release.reconcile();});this.#releaseTail=work;return work;
+  const work=this.#releaseTail.catch(()=>{}).then(async()=>{
+   const release=new SqlServiceSandboxRelease(this.ctx.storage,resolver),complete=input?await release.begin(input):await release.reconcile();
+   if(!complete||!input||context?.kind!=='platform-destroy'||context.authorizedAt===null)return null;
+   const row=await release.snapshot(),confirmedAbsentAt=row?.completed_at;
+   if(confirmedAbsentAt===null||confirmedAbsentAt===undefined||confirmedAbsentAt<context.authorizedAt)throw Error('invalid-service-platform-release-proof');
+   const confirmationId='platform-'+(await turnDigest({schemaVersion:1,purpose:'service-platform-destroy',input,fencedAt:context.fencedAt,authorizedAt:context.authorizedAt,confirmedAbsentAt})).slice(0,52);
+   return {reference:structuredClone(input.reference),scope:structuredClone(input.scope),status:'stopped' as const,stop:{reference:structuredClone(input.reference),scope:structuredClone(input.scope),confirmationId,observedAt:confirmedAbsentAt,fenced:true as const}};
+  });this.#releaseTail=work;return work;
  }
  async alarm(){await this.#release();}
  async start(raw:ServiceRuntimeInput){

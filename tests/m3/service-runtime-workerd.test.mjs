@@ -20,7 +20,13 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
  import {leaseReference} from './services/quota/core.ts';
  import {privateWebSocketRequest,readPrivateWebSocketRequest} from './services/preview/websocket-protocol.ts';
  import {initialWorkspaceArchive} from './services/turn-runtime/initial-workspace-archive.ts';
- export class ServiceRuntime extends BaseServiceRuntime {async wakeRelease(){await this.alarm();}}
+ export class ServiceRuntime extends BaseServiceRuntime {
+  async wakeRelease(){await this.alarm();}
+  dueStopRecovery(){this.ctx.storage.sql.exec('UPDATE service_runtime_fence SET next_recover_at=1 WHERE singleton=1');}
+  ageStopFence(){this.ctx.storage.sql.exec('UPDATE service_runtime_fence SET fenced_at=1,next_recover_at=0 WHERE singleton=1');}
+  ageRelease(){this.ctx.storage.sql.exec('UPDATE service_sandbox_release SET begun_at=1,quiet_since=1 WHERE singleton=1');}
+  runtimeDiagnostics(){return this.ctx.storage.sql.exec('SELECT stop_attempted,recover_attempts,next_recover_at,hard_destroy_authorized_at,receipt_json,platform_proof_json FROM service_runtime_fence WHERE singleton=1').toArray()[0]??null;}
+ }
  export {TenantQuota} from './services/quota/durable.ts';
  export {RevisionStore} from './services/turn-runtime/revision-store.ts';
  export class SandboxFixture extends DurableObject {
@@ -45,6 +51,7 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
   async writeFile(path,content){await this.ctx.storage.put('file:'+path,content);if(path.endsWith('.input.json'))await this.ctx.storage.put('control',{path,content});}
   async diagnostics(){return {commands:await this.ctx.storage.get('commands')??[],control:await this.ctx.storage.get('control')??null};}
   async loseNextStopResponse(){await this.ctx.storage.put('lose-stop-response',true);}
+  async loseNextStopProofAndResponse(){await this.ctx.storage.put('lose-stop-proof-response',true);}
   async destroy(){await this.ctx.storage.put('destroy-count',(await this.ctx.storage.get('destroy-count')??0)+1);await this.ctx.storage.put('container-running',false);}
   async destroyCount(){return await this.ctx.storage.get('destroy-count')??0;}
   async releaseState(){return {running:await this.ctx.storage.get('container-running')===true};}
@@ -63,10 +70,12 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
    }else{
     if(parts[1]!=='/opt/riffology/service_process.py')throw Error('unexpected-native-program');
     const action=parts[2];let stop=await this.ctx.storage.get('stop');
-    if(action==='stop'&&!stop){stop={confirmationId:'fixture-stop',observedAt:Date.now(),fenced:true};await this.ctx.storage.put('stop',stop);}
+    const loseProof=action==='stop'&&await this.ctx.storage.get('lose-stop-proof-response')===true;
+    if(action==='stop'&&!stop&&!loseProof){stop={confirmationId:'fixture-stop',observedAt:Date.now(),fenced:true};await this.ctx.storage.put('stop',stop);}
     if(action==='start'&&!stop){await this.ctx.storage.put('started',true);await this.ctx.storage.put('container-running',true);}
     result={schemaVersion:1,token,status:stop?'stopped':await this.ctx.storage.get('started')?'healthy':'absent',stop:stop??null};
     if(action==='stop'&&await this.ctx.storage.get('lose-stop-response')){await this.ctx.storage.delete('lose-stop-response');return {success:true,exitCode:0,stdout:'lost-response'};}
+    if(loseProof){await this.ctx.storage.delete('lose-stop-proof-response');return {success:true,exitCode:0,stdout:'lost-proof-response'};}
    }
    return {success:true,exitCode:0,stdout:JSON.stringify(result)};
   }
@@ -93,13 +102,15 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
     const response=await env.SERVICE_RUNTIME.getByName(await serviceRuntimeActorName(b.input)).forwardObserverHttp(descriptor,new Request(b.url??'http://localhost:8080/observe',{headers:{cookie:'secret','x-riff-observer':'forged'}}),new CancellationFixture(env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input))));
     value={status:response.status,body:await response.text(),headers:Object.fromEntries(response.headers)};
    }else if(b.method==='quotaUnknown')value=await env.TENANT_QUOTA.getByName('tenant-quota:'+b.lease.tenantId).markUnknown(b.lease);
-   else if(['observerDiagnostics','holdObserver','cancelUpstream','loseNextStopResponse'].includes(b.method))value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input))[b.method]();
+   else if(b.method==='quotaStopped')value=await env.TENANT_QUOTA.getByName('tenant-quota:'+b.input.lease.tenantId).confirmStopped(b.input.lease,{kind:'runtime-stopped',confirmationId:b.stop.confirmationId,observedAt:b.stop.observedAt});
+   else if(['observerDiagnostics','holdObserver','cancelUpstream','loseNextStopResponse','loseNextStopProofAndResponse'].includes(b.method))value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input))[b.method]();
    else if(b.method==='releaseHeaders')value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input)).releaseHeaders();
    else if(b.method==='forwards')value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input)).forwards();
    else if(b.method==='diagnostics')value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input)).diagnostics();
    else if(b.method==='destroyCount')value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input)).destroyCount();
    else if(b.method==='lateStart')value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input)).lateStart();
    else if(b.method==='wakeRelease')value=await env.SERVICE_RUNTIME.getByName(await serviceRuntimeActorName(b.input)).wakeRelease();
+   else if(['dueStopRecovery','ageStopFence','ageRelease','runtimeDiagnostics'].includes(b.method))value=await env.SERVICE_RUNTIME.getByName(await serviceRuntimeActorName(b.input))[b.method]();
    else if(['start','observe','stop'].includes(b.method))value=await env.SERVICE_RUNTIME.getByName(b.name??await serviceRuntimeActorName(b.input))[b.method](b.input);
    else return new Response(null,{status:404});
    return Response.json({ok:true,value});
@@ -204,7 +215,13 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
   const fenced=await call('diagnostics',{input:before});assert.equal(fenced.control,null);assert.equal(fenced.commands.length,1);assert.match(fenced.commands[0].command,/service_process.py stop/);
   const recovery=await make('stop-recovery');await call('dispatch',{lease:recovery.lease});await call('start',{input:recovery});await call('loseNextStopResponse',{input:recovery});await assert.rejects(call('stop',{input:recovery}),/invalid-service-native-result/);
   assert.equal((await call('diagnostics',{input:recovery})).commands.filter(c=>c.command.includes('service_process.py stop')).length,1);
-  assert.equal((await call('stop',{input:recovery})).status,'stopped');const recoveredCommands=(await call('diagnostics',{input:recovery})).commands;assert.equal(recoveredCommands.filter(c=>c.command.includes('service_process.py stop')).length,1);assert.equal(recoveredCommands.filter(c=>c.command.startsWith("python3 -c 'import hashlib,json,os,stat,sys")).length,1);
+  await call('dueStopRecovery',{input:recovery});const recovered=await call('stop',{input:recovery});assert.equal(recovered.status,'stopped');const recoveredCommands=(await call('diagnostics',{input:recovery})).commands;assert.equal(recoveredCommands.filter(c=>c.command.includes('service_process.py stop')).length,1);assert.equal(recoveredCommands.filter(c=>c.command.startsWith("python3 -c 'import hashlib,json,os,stat,sys")).length,1);await call('quotaStopped',{input:recovery,stop:recovered.stop});
+  const hard=await make('hard-stop');await call('dispatch',{lease:hard.lease});await call('start',{input:hard});await call('loseNextStopProofAndResponse',{input:hard});await assert.rejects(call('stop',{input:hard}),/invalid-service-native-result/);
+  await call('ageStopFence',{input:hard});assert.equal((await call('stop',{input:hard})).status,'unknown');assert.equal(await call('destroyCount',{input:hard}),1);
+  let hardState=await call('runtimeDiagnostics',{input:hard});assert.equal(hardState.stop_attempted,1);assert.ok(hardState.hard_destroy_authorized_at);assert.equal(hardState.receipt_json,null);
+  await call('ageRelease',{input:hard});const hardStopped=await call('stop',{input:hard});assert.equal(hardStopped.status,'stopped');assert.match(hardStopped.stop.confirmationId,/^platform-[a-f0-9]{52}$/);assert.equal(await call('destroyCount',{input:hard}),2);
+  hardState=await call('runtimeDiagnostics',{input:hard});assert.ok(hardState.receipt_json);assert.equal(JSON.parse(hardState.platform_proof_json).kind,'platform-destroy');const hardCommands=(await call('diagnostics',{input:hard})).commands;assert.equal(hardCommands.filter(c=>c.command.includes('service_process.py stop')).length,1);assert.equal(hardCommands.filter(c=>c.command.startsWith("python3 -c 'import hashlib,json,os,stat,sys")).length,0);
+  await call('quotaStopped',{input:hard,stop:hardStopped.stop});
   await mf.dispose();mf=new Miniflare(options('false'));
   await assert.rejects(call('start',{input}),/start-disabled/);
   assert.equal((await call('observe',{input})).status,'healthy');
