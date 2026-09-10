@@ -4,6 +4,8 @@ import {fixture,scope,actor,spec} from './run-fixture.ts';
 import {SqlServiceIntentJournal} from '../../services/workspace/service-intents.ts';
 import {ServiceIntentDelivery,type ServiceDeliveryPorts} from '../../services/workspace/service-delivery.ts';
 import type {ServiceRunTask} from '../../services/run/host.ts';
+import {SqlServiceRuntimeSupervisor,type ServiceNativeBackend} from '../../services/run/runtime-supervisor.ts';
+import type {ServiceRuntimeInput,ServiceRuntimeObservation} from '../../services/run/runtime-protocol.ts';
 function ack(task:ServiceRunTask,stopping=false){return {id:task.runId,scope:task.scope,actor:task.actor,spec:task.spec,status:stopping?'cancelled':'queued',stopRequestedAt:stopping?1000:null};}
 async function setup(t:Parameters<typeof fixture>[0]){
  const f=fixture(t),j=new SqlServiceIntentJournal(f.storage,scope,()=>f.now,()=> 'intent-a'),s=spec();
@@ -63,4 +65,21 @@ test('timeout retains unknown intent and disposes a late RPC result without sett
 test('unconfirmed stop acknowledgement retains the cleanup wakeup',async t=>{
  const f=await setup(t);await f.engine().advance();await f.j.requestStop(f.intent.runId);f.ports.stop=async task=>ack(task);
  await f.engine().advance();assert.equal((await f.j.get(f.intent.runId)).stopForwardedAt,null);assert.notEqual(await f.j.nextWake(),null);
+});
+test('repeated stop after forwarding invokes only the existing Host teardown path',async t=>{
+ const f=await setup(t);await f.engine().advance();await f.j.requestStop(f.intent.runId);await f.engine().advance();
+ assert.deepEqual(f.calls,['resolve','accept','stop']);assert.notEqual((await f.j.get(f.intent.runId)).stopForwardedAt,null);
+ await f.j.requestStop(f.intent.runId);assert.notEqual(await f.j.nextWake(),null);await f.engine().advance();
+ assert.deepEqual(f.calls,['resolve','accept','stop','stop']);assert.equal(await f.j.nextWake(),null);
+});
+test('old forwarded stop reaches a saved runtime receipt and retries only sandbox teardown',async t=>{
+ const f=await setup(t);await f.engine().advance();const task=f.tasks[0]!;
+ const reference={runId:task.runId,runtimeId:'runtime-a',dispatchId:'dispatch-a',leaseId:'lease-a',generation:1 as const,deadlineAt:6000};
+ const input:ServiceRuntimeInput={reference,scope:task.scope,spec:task.spec,lease:{tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,generation:1,operation:'service-run',operationId:reference.dispatchId,deadlineAt:reference.deadlineAt,runId:reference.runId,leaseId:reference.leaseId}};
+ let nativeStops=0,destroys=0;const stopped=(i:ServiceRuntimeInput):ServiceRuntimeObservation=>({scope:i.scope,reference:i.reference,status:'stopped',stop:{scope:i.scope,reference:i.reference,confirmationId:'stopped-a',observedAt:f.f.now,fenced:true}});
+ const backend:ServiceNativeBackend={async start(i){return {...stopped(i),status:'unknown',stop:null};},async observe(i){return {...stopped(i),status:'unknown',stop:null};},async fenceAndStop(i){nativeStops++;return stopped(i);}};
+ const runtime=new SqlServiceRuntimeSupervisor(f.f.storage,scope,backend,()=>f.f.now,async()=>{destroys++;});
+ f.ports.stop=async current=>{await runtime.stop(input);return ack(current,true);};
+ await f.j.requestStop(f.intent.runId);await f.engine().advance();assert.equal(nativeStops,1);assert.equal(destroys,1);
+ await f.j.requestStop(f.intent.runId);await f.engine().advance();assert.equal(nativeStops,1,'saved receipt must not repeat native stop');assert.equal(destroys,2,'repeated authenticated stop retries sandbox teardown');
 });

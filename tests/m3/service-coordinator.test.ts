@@ -10,11 +10,11 @@ function setup(t:Parameters<typeof fixture>[0]){
  let starts=0,stops=0,healthy=false,fenced=false,stopUnknown=false,delayStart:Promise<void>|null=null;
  const observation=(input:ServiceRuntimeInput,status:ServiceRuntimeObservation['status']):ServiceRuntimeObservation=>({scope:input.scope,reference:input.reference,status,stop:status==='stopped'?{scope:input.scope,reference:input.reference,confirmationId:'stop-a',observedAt:f.now,fenced:true}:null});
  const backend:ServiceNativeBackend={async start(input){starts++;if(delayStart)await delayStart;if(fenced)return observation(input,'stopped');healthy=true;return observation(input,'healthy');},async observe(input){return observation(input,fenced?'stopped':healthy?'healthy':'absent');},async fenceAndStop(input){stops++;fenced=true;healthy=false;return observation(input,stopUnknown?'unknown':'stopped');}};
- const runtime=new SqlServiceRuntimeSupervisor(f.storage,scope,backend,()=>f.now);
+ let releases=0;const runtime=new SqlServiceRuntimeSupervisor(f.storage,scope,backend,()=>f.now,async()=>{releases++;});
  let lostAcquire=false,lostDispatch=false,lostRelease=false;
  const ports:ServiceQuotaPort={lookup:op=>quota.lookup(op),async acquire(request){const result=await quota.acquire(request);if(lostAcquire){lostAcquire=false;throw Error('lost-acquire');}return result;},async dispatch(ref){const result=await quota.dispatch(ref);if(lostDispatch){lostDispatch=false;throw Error('lost-dispatch');}return result;},markUnknown:ref=>quota.markUnknown(ref),async confirmStopped(ref,proof){const result=await quota.confirmStopped(ref,proof);if(lostRelease){lostRelease=false;throw Error('lost-release');}return result;}};
  const hold=(p:Promise<unknown>)=>{void p;};
- return {f,journal,quota,backend,runtime,ports,coordinator:()=>new ServiceRunCoordinator(f.storage,journal,ports,runtime,hold,()=>f.now,20),get starts(){return starts;},get stops(){return stops;},get healthy(){return healthy;},set lostAcquire(v:boolean){lostAcquire=v;},set lostDispatch(v:boolean){lostDispatch=v;},set lostRelease(v:boolean){lostRelease=v;},set stopUnknown(v:boolean){stopUnknown=v;},set delayStart(v:Promise<void>|null){delayStart=v;}};
+ return {f,journal,quota,backend,runtime,ports,coordinator:()=>new ServiceRunCoordinator(f.storage,journal,ports,runtime,hold,()=>f.now,20),get starts(){return starts;},get stops(){return stops;},get releases(){return releases;},get healthy(){return healthy;},set lostAcquire(v:boolean){lostAcquire=v;},set lostDispatch(v:boolean){lostDispatch=v;},set lostRelease(v:boolean){lostRelease=v;},set stopUnknown(v:boolean){stopUnknown=v;},set delayStart(v:Promise<void>|null){delayStart=v;}};
 }
 test('real SQLite journal and tenant quota coordinate one start and release only after fenced stop',async t=>{
  const x=setup(t),c=x.coordinator(),run=await x.journal.create(actor,'request-a',spec());
@@ -30,6 +30,11 @@ test('acquisition and release acknowledgement loss reconcile the same persisted 
  assert.equal((await x.coordinator().reconcile(run.id)).status,'running');assert.equal(x.starts,1);
  x.lostRelease=true;assert.equal((await c.requestStop(run.id)).status,'stopped');assert.equal((await c.state(run.id))?.released,false);assert.equal((await x.quota.snapshot()).occupied,0);
  await x.coordinator().reconcile(run.id);assert.equal((await c.state(run.id))?.released,true);
+});
+test('saved stop proof re-enters only runtime teardown reconciliation',async t=>{
+ const x=setup(t),run=await x.journal.create(actor,'request-a',spec()),c=x.coordinator();await c.reconcile(run.id);
+ assert.equal((await c.requestStop(run.id)).status,'stopped');assert.equal(x.stops,1);assert.equal(x.releases,1);
+ assert.equal((await x.coordinator().reconcile(run.id)).status,'stopped');assert.equal(x.stops,1,'native stop receipt is not replayed');assert.equal(x.releases,2,'saved receipt retries teardown release');
 });
 test('lost dispatch acknowledgement cannot cause a second dispatch or early quota release',async t=>{
  const x=setup(t),c=x.coordinator(),run=await x.journal.create(actor,'request-a',spec());x.lostDispatch=true;

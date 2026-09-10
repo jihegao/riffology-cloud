@@ -65,7 +65,13 @@ export class ServiceRunCoordinator{
    state=await this.#update(id,current=>{if(!current)throw Error('service-coordinator-missing');if(current.lease&&!equal(current.lease,ref))throw Error('service-coordinator-lease-conflict');current.lease=ref;current.acquiredAt=acquiredAt;return {state:current,value:current};});
   }
   const input=this.#input(run,state);run=await this.#journal.get(id);
-  if(state.stop)return this.#finish(run,state,input,state.stop);
+  if(state.stop){
+   // A repeated authenticated Stop is also a teardown reconciliation signal.
+   // Runtime replays its durable receipt and release hook without repeating the
+   // native stop; this coordinator retains the already validated stop proof.
+   const observation=await this.#observe(input,'stop');
+   return this.#finish(run,state,input,observation?.stop??state.stop);
+  }
   if(terminal(run)||run.stopRequestedAt!==null||input.reference.deadlineAt<=this.#clock()){
    if(!terminal(run)&&run.stopRequestedAt===null){state=await this.#update(id,current=>{if(!current)throw Error('service-coordinator-missing');current.failureReason='service-deadline';return {state:current,value:current};});run=await this.#journal.requestStop(id);}
    const observation=await this.#observe(input,'stop');if(observation?.stop)return this.#finish(run,state,input,observation.stop);

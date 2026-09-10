@@ -83,7 +83,7 @@ export class ServiceIntentDelivery{
    acknowledge(response,task,stopping);intent=await this.#journal.delivered(id);
    if(stopping&&intent.stopRequestedAt!==null){await this.#journal.stopForwarded(id);return;}
   }
-  if(intent.status==='delivered'&&intent.stopRequestedAt!==null&&intent.stopForwardedAt===null){
+  if(intent.status==='delivered'&&intent.stopRequestedAt!==null){
    const response=await this.#call(()=>this.#ports.stop(structuredClone(intent.task!)));
    acknowledge(response,intent.task!,true);await this.#journal.stopForwarded(id);
   }
