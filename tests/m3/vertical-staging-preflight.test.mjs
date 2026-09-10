@@ -6,11 +6,11 @@ import {inspectManagedImage,validateStagingTopology} from '../../scripts/m3/vert
 const config=()=>JSON.parse(readFileSync(new URL('../../infra/wrangler.m3-vertical-staging.jsonc',import.meta.url),'utf8'));
 const migrations=()=>readdirSync(new URL('../../services/catalog/migrations',import.meta.url)).filter(name=>name.endsWith('.sql'));
 
-test('staging vertical topology is complete, immutable and release gated',()=>{
-  const releaseChecks=validateStagingTopology(config(),migrations(),{release:true});
-  assert.equal(releaseChecks.length,15);
-  assert.deepEqual(releaseChecks.filter(value=>value.status!=='passed'),[]);
-  assert.deepEqual(validateStagingTopology(config(),migrations()).filter(value=>value.status!=='passed').map(value=>value.name),['execution-gates-closed']);
+test('staging vertical topology is complete, immutable and paused at foundation',()=>{
+  const foundationChecks=validateStagingTopology(config(),migrations());
+  assert.equal(foundationChecks.length,15);
+  assert.deepEqual(foundationChecks.filter(value=>value.status!=='passed'),[]);
+  assert.deepEqual(validateStagingTopology(config(),migrations(),{release:true}).filter(value=>value.status!=='passed').map(value=>value.name),['execution-gates-controlled-release']);
 });
 
 test('foundation mode requires all six execution gates closed',()=>{
