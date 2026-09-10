@@ -29,5 +29,5 @@ test('destroy no-op followed by a late assignment is destroyed again before capa
 test('uncertain probes retain the persistent alarm and never claim stable absence',async t=>{
  const f=fixture(t);let now=1000,destroys=0;
  const release=new SqlServiceSandboxRelease(f.storage,async()=>({async running(){throw Error('control-unavailable');},async destroy(){destroys++;}}),()=>now,{retryMs:5,assignmentGuardMs:10,quietMs:5,rpcMs:50});
- assert.equal(await release.begin(input('a')),false);now=1100;assert.equal(await release.reconcile(),false);assert.equal(destroys,0);assert.equal((await release.snapshot())?.quiet_since,null);assert.ok(f.alarm!==null);
+ assert.equal(await release.begin(input('a')),false);now=1100;assert.equal(await release.reconcile(),false);assert.equal(destroys,2,'legacy missing releaseState does not block exact-actor destroy');assert.equal((await release.snapshot())?.quiet_since,null);assert.ok(f.alarm!==null);
 });

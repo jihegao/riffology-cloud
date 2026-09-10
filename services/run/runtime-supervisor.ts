@@ -11,9 +11,10 @@ export interface ServiceNativeBackend {
  start(input:ServiceRuntimeInput):Promise<ServiceRuntimeObservation>;
  observe(input:ServiceRuntimeInput):Promise<ServiceRuntimeObservation>;
  fenceAndStop(input:ServiceRuntimeInput):Promise<ServiceRuntimeObservation>;
+ recoverStop?(input:ServiceRuntimeInput):Promise<ServiceRuntimeObservation>;
 }
 export type ServiceRuntimeRelease=(input:ServiceRuntimeInput)=>Promise<void>;
-type Row={input_json:string;attempted:number;fenced_at:number|null;receipt_json:string|null};
+type Row={input_json:string;attempted:number;fenced_at:number|null;receipt_json:string|null;stop_attempted:number};
 /** One private supervisor per immutable service runtime. No retries of a start
  * with an uncertain outcome; observation and irreversible stop remain available.
  * Stop is deliberately not queued behind a possibly hung native start. */
@@ -23,7 +24,14 @@ export class SqlServiceRuntimeSupervisor implements ServiceRuntimePort {
   this.#storage=storage;this.#scope=scope(rawScope);this.#backend=backend;this.#clock=clock;this.#release=release;
   storage.transactionSync(()=>{
    storage.sql.exec(`CREATE TABLE IF NOT EXISTS service_runtime_owner(singleton INTEGER PRIMARY KEY CHECK(singleton=1),scope_json TEXT NOT NULL);
-   CREATE TABLE IF NOT EXISTS service_runtime_fence(singleton INTEGER PRIMARY KEY CHECK(singleton=1),input_json TEXT NOT NULL,attempted INTEGER NOT NULL,fenced_at INTEGER,receipt_json TEXT);`);
+   CREATE TABLE IF NOT EXISTS service_runtime_fence(singleton INTEGER PRIMARY KEY CHECK(singleton=1),input_json TEXT NOT NULL,attempted INTEGER NOT NULL,fenced_at INTEGER,receipt_json TEXT,stop_attempted INTEGER NOT NULL DEFAULT 0);`);
+   const columns=storage.sql.exec<{name:string}>('PRAGMA table_info(service_runtime_fence)').toArray();
+   if(!columns.some(column=>column.name==='stop_attempted')){
+    storage.sql.exec('ALTER TABLE service_runtime_fence ADD COLUMN stop_attempted INTEGER NOT NULL DEFAULT 0');
+    // A fence written by an older build may already have dispatched native stop.
+    // Recover its proof read-only; never infer that replaying the mutation is safe.
+    storage.sql.exec('UPDATE service_runtime_fence SET stop_attempted=1 WHERE fenced_at IS NOT NULL AND receipt_json IS NULL');
+   }
    const rows=storage.sql.exec<{scope_json:string}>('SELECT scope_json FROM service_runtime_owner WHERE singleton=1').toArray();
    if(rows[0]&&rows[0].scope_json!==JSON.stringify(this.#scope))throw Error('service-runtime-scope-denied');
    if(!rows[0])storage.sql.exec('INSERT INTO service_runtime_owner VALUES(1,?)',JSON.stringify(this.#scope));
@@ -32,9 +40,9 @@ export class SqlServiceRuntimeSupervisor implements ServiceRuntimePort {
  #now(){return positive(this.#clock());}
  #input(raw:ServiceRuntimeInput){const input=serviceRuntimeInput(raw);if(!sameScope(input.scope,this.#scope))throw Error('service-runtime-scope-denied');return input;}
  #row(input:ServiceRuntimeInput):Row {
-  let row=this.#storage.sql.exec<Row>('SELECT input_json,attempted,fenced_at,receipt_json FROM service_runtime_fence WHERE singleton=1').toArray()[0];
+  let row=this.#storage.sql.exec<Row>('SELECT input_json,attempted,fenced_at,receipt_json,stop_attempted FROM service_runtime_fence WHERE singleton=1').toArray()[0];
   const encoded=JSON.stringify(input);
-  if(!row){this.#storage.sql.exec('INSERT INTO service_runtime_fence VALUES(1,?,0,NULL,NULL)',encoded);row={input_json:encoded,attempted:0,fenced_at:null,receipt_json:null};}
+  if(!row){this.#storage.sql.exec('INSERT INTO service_runtime_fence(singleton,input_json,attempted,fenced_at,receipt_json,stop_attempted) VALUES(1,?,0,NULL,NULL,0)',encoded);row={input_json:encoded,attempted:0,fenced_at:null,receipt_json:null,stop_attempted:0};}
   if(row.input_json!==encoded)throw Error('service-runtime-identity-conflict');return row;
  }
  async #change<T>(input:ServiceRuntimeInput,fn:(row:Row)=>T):Promise<T>{await this.#ready;const result=this.#storage.transactionSync(()=>fn(this.#row(input)));await this.#storage.sync();return result;}
@@ -57,7 +65,7 @@ export class SqlServiceRuntimeSupervisor implements ServiceRuntimePort {
  /** Read-only forwarding gate; never allocates a runtime or contacts native code. */
  #forwardInput(raw:ServiceRuntimeInput):void{
   const input=this.#input(raw);
-  const row=this.#storage.sql.exec<Row>('SELECT input_json,attempted,fenced_at,receipt_json FROM service_runtime_fence WHERE singleton=1').toArray()[0];
+  const row=this.#storage.sql.exec<Row>('SELECT input_json,attempted,fenced_at,receipt_json,stop_attempted FROM service_runtime_fence WHERE singleton=1').toArray()[0];
   if(!row||row.input_json!==JSON.stringify(input)||row.attempted!==1||row.fenced_at!==null||row.receipt_json!==null||input.reference.deadlineAt<=this.#now())throw Error('service-forward-denied');
  }
  async requireForward(raw:ServiceRuntimeInput):Promise<void>{await this.#ready;this.#forwardInput(raw);}
@@ -79,11 +87,16 @@ export class SqlServiceRuntimeSupervisor implements ServiceRuntimePort {
   return this.#accept(input,await this.#backend.observe(structuredClone(input)));
  }
  async stop(raw:ServiceRuntimeInput):Promise<ServiceRuntimeObservation>{
-  const input=this.#input(raw),saved=await this.#change(input,row=>{
+  const input=this.#input(raw),decision=await this.#change(input,row=>{
    const receipt=this.#receipt(input,row);if(receipt)return receipt;
-   if(row.fenced_at===null)this.#storage.sql.exec('UPDATE service_runtime_fence SET fenced_at=? WHERE singleton=1',this.#now());return null;
+   if(row.stop_attempted===0){
+    this.#storage.sql.exec('UPDATE service_runtime_fence SET fenced_at=COALESCE(fenced_at,?),stop_attempted=1 WHERE singleton=1',this.#now());
+    return true;
+   }
+   return false;
   });
-  const stopped=saved??await this.#accept(input,await this.#backend.fenceAndStop(structuredClone(input)));
+  const recovered=decision||!this.#backend.recoverStop?null:await this.#backend.recoverStop(structuredClone(input));
+  const stopped=typeof decision==='object'?decision:recovered?await this.#accept(input,recovered):decision?await this.#accept(input,await this.#backend.fenceAndStop(structuredClone(input))):this.#unknown(input);
   // The durable receipt is committed and synced before container teardown.
   // A failed teardown is retried from the saved receipt on the next stop call;
   // unknown or unproven native outcomes never reach this release hook.

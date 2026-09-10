@@ -20,7 +20,7 @@ function fixture(t:{after(fn:()=>void):void}){
 }
 function input(runId='run-a'):ServiceRuntimeInput{const ref={...reference(runId),runtimeId:'runtime-'+runId,dispatchId:'dispatch-'+runId,leaseId:'lease-'+runId};return {reference:ref,scope,spec:spec(),lease:{tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,generation:1,operation:'service-run',operationId:ref.dispatchId,deadlineAt:ref.deadlineAt,runId:ref.runId,leaseId:ref.leaseId}};}
 function observation(i:ServiceRuntimeInput,status:ServiceRuntimeObservation['status']):ServiceRuntimeObservation{return {reference:i.reference,scope:i.scope,status,stop:status==='stopped'?{reference:i.reference,scope:i.scope,confirmationId:'stop-a',observedAt:1000,fenced:true}:null};}
-function backend(){let starts=0,stops=0;return {get starts(){return starts;},get stops(){return stops;},async start(i:ServiceRuntimeInput){starts++;return observation(i,'healthy');},async observe(i:ServiceRuntimeInput){return observation(i,'absent');},async fenceAndStop(i:ServiceRuntimeInput){stops++;return observation(i,'stopped');}};}
+function backend(){let starts=0,stops=0,recoveries=0;return {get starts(){return starts;},get stops(){return stops;},get recoveries(){return recoveries;},async start(i:ServiceRuntimeInput){starts++;return observation(i,'healthy');},async observe(i:ServiceRuntimeInput){return observation(i,'absent');},async fenceAndStop(i:ServiceRuntimeInput){stops++;return observation(i,'stopped');},async recoverStop(i:ServiceRuntimeInput){recoveries++;return observation(i,'unknown');}};}
 test('start is persisted once across concurrent calls, lost backend ack and reconstruction',async t=>{
  const f=fixture(t),b=backend(),h=f.host(b);await Promise.all([h.start(input()),h.start(input())]);assert.equal(b.starts,1);
  f.reopen();await f.host(b).start(input());assert.equal(b.starts,1);
@@ -38,9 +38,22 @@ test('stop does not wait for a hung start and late healthy ack cannot resurrect 
  b.start=async()=>{entered();return new Promise(r=>resolve=r);};const h=f.host(b),pending=h.start(input());await enteredPromise;
  assert.equal((await h.stop(input())).status,'stopped');resolve(observation(input(),'healthy'));assert.equal((await pending).status,'stopped');
 });
-test('absent or failed native stop retains fence without inventing stop proof',async t=>{
+test('an unproven native stop is dispatched once and later calls only recover proof',async t=>{
  const f=fixture(t),b=backend();let releases=0;const h=f.host(b,async()=>{releases++;});b.fenceAndStop=async i=>observation(i,'absent');assert.equal((await h.stop(input())).status,'unknown');assert.equal((await h.start(input())).status,'unknown');assert.equal(b.starts,0);assert.equal(releases,0);
- b.fenceAndStop=async()=>{throw Error('native-stop-unavailable');};await assert.rejects(h.stop(input()),/unavailable/);f.reopen();assert.equal((await f.host(b).start(input())).status,'unknown');
+ b.fenceAndStop=async()=>{throw Error('native-stop-must-not-repeat');};assert.equal((await h.stop(input())).status,'unknown');assert.equal(b.recoveries,1);f.reopen();assert.equal((await f.host(b).start(input())).status,'unknown');
+});
+test('a lost native stop response recovers durable proof without replaying stop',async t=>{
+ const f=fixture(t),b=backend(),h=f.host(b);let nativeStops=0,recoveries=0;b.fenceAndStop=async()=>{nativeStops++;throw Error('lost-native-stop-response');};
+ await assert.rejects(h.stop(input()),/lost-native-stop-response/);
+ b.fenceAndStop=async()=>{nativeStops++;throw Error('native-stop-must-not-repeat');};b.recoverStop=async i=>{recoveries++;return observation(i,'stopped');};
+ assert.equal((await h.stop(input())).status,'stopped');assert.equal(nativeStops,1);assert.equal(recoveries,1);
+ const row=f.storage.sql.exec<{stop_attempted:number;receipt_json:string|null}>('SELECT stop_attempted,receipt_json FROM service_runtime_fence WHERE singleton=1').toArray()[0];assert.equal(row?.stop_attempted,1);assert.ok(row?.receipt_json);
+});
+test('legacy fenced rows migrate to read-only stop recovery',async t=>{
+ const f=fixture(t),b=backend(),i=input(),encoded=JSON.stringify(i);f.host(b);f.db.exec('DROP TABLE service_runtime_fence; CREATE TABLE service_runtime_fence(singleton INTEGER PRIMARY KEY CHECK(singleton=1),input_json TEXT NOT NULL,attempted INTEGER NOT NULL,fenced_at INTEGER,receipt_json TEXT)');f.db.prepare('INSERT INTO service_runtime_fence VALUES(1,?,1,900,NULL)').run(encoded);
+ b.fenceAndStop=async()=>{throw Error('legacy-native-stop-must-not-repeat');};b.recoverStop=async current=>observation(current,'stopped');
+ const h=f.host(b);assert.equal((await h.stop(i)).status,'stopped');
+ const row=f.storage.sql.exec<{stop_attempted:number;receipt_json:string|null}>('SELECT stop_attempted,receipt_json FROM service_runtime_fence WHERE singleton=1').toArray()[0];assert.equal(row?.stop_attempted,1);assert.ok(row?.receipt_json);
 });
 test('full immutable identity includes scope, lease, image and source bytes',async t=>{
  const f=fixture(t),b=backend(),h=f.host(b);await h.observe(input());
@@ -49,14 +62,14 @@ test('full immutable identity includes scope, lease, image and source bytes',asy
  assert.throws(()=>new SqlServiceRuntimeSupervisor(f.storage,{...scope,tenantId:'other'},b),/scope-denied/);
 });
 test('unfenced, foreign, future and pre-fence proofs fail closed',async t=>{
- const f=fixture(t),b=backend(),h=f.host(b);b.observe=async i=>observation(i,'stopped');await assert.rejects(h.observe(input()),/unfenced-stop/);
- b.fenceAndStop=async i=>({...observation(i,'stopped'),scope:{...scope,projectId:'other'}});await assert.rejects(h.stop(input()),/scope-denied/);
- b.fenceAndStop=async i=>{const o=observation(i,'stopped');o.stop!.observedAt=1001;return o;};await assert.rejects(h.stop(input()),/stop-receipt/);
- b.fenceAndStop=async i=>{const o=observation(i,'stopped');o.stop!.observedAt=999;return o;};await assert.rejects(h.stop(input()),/unfenced-stop/);
+ const one=fixture(t),a=backend();a.observe=async i=>observation(i,'stopped');await assert.rejects(one.host(a).observe(input()),/unfenced-stop/);
+ const two=fixture(t),b=backend();b.fenceAndStop=async i=>({...observation(i,'stopped'),scope:{...scope,projectId:'other'}});await assert.rejects(two.host(b).stop(input()),/scope-denied/);
+ const three=fixture(t),c=backend();c.fenceAndStop=async i=>{const o=observation(i,'stopped');o.stop!.observedAt=1001;return o;};await assert.rejects(three.host(c).stop(input()),/stop-receipt/);
+ const four=fixture(t),d=backend();d.fenceAndStop=async i=>{const o=observation(i,'stopped');o.stop!.observedAt=999;return o;};await assert.rejects(four.host(d).stop(input()),/unfenced-stop/);
 });
 test('durability ack loss never sends an unacknowledged start and preserves stop fence',async t=>{
  const f=fixture(t),b=backend(),h=f.host(b);await h.observe(input());f.failNextSync();await assert.rejects(h.start(input()),/ack-loss/);assert.equal(b.starts,0);await h.start(input());assert.equal(b.starts,0);
- f.failNextSync();await assert.rejects(h.stop(input()),/ack-loss/);assert.equal(b.stops,0);await h.start(input());assert.equal(b.starts,0);assert.equal((await h.stop(input())).status,'stopped');
+ f.failNextSync();await assert.rejects(h.stop(input()),/ack-loss/);assert.equal(b.stops,0);await h.start(input());assert.equal(b.starts,0);assert.equal((await h.stop(input())).status,'unknown');assert.equal(b.recoveries,1);
 });
 test('expired dispatch is never sent to native start',async t=>{const f=fixture(t),b=backend(),h=f.host(b);f.now=5000;assert.equal((await h.start(input())).status,'unknown');assert.equal(b.starts,0);});
 test('stop committed during start durability wait suppresses native dispatch',async t=>{

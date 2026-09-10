@@ -18,6 +18,10 @@ async function fixture(){
   assert.equal(Object.hasOwn(options,'stdin'),false);commands.push(command);
   const upload=/^python3 \/opt\/riffology\/service_upload\.py ([a-f0-9]{52}) < (\/var\/lib\/riffology\/archives\/\1\.[0-9]+\.chunk\.json)$/.exec(command);
   if(upload){const token=upload[1]!,raw=JSON.parse(files.get(upload[2]!)!),bytes=Buffer.from(raw.data,'base64');chunks.push(bytes);return {success:true,exitCode:0,stdout:JSON.stringify({schemaVersion:1,token,offset:raw.offset,bytes:bytes.length,total:raw.total,complete:raw.offset+bytes.length===raw.total})};}
+  if(command.startsWith("python3 -c 'import hashlib,json,os,stat,sys\n")){
+   const token=command.split(' ').at(-1)!;assert.match(token,/^[a-f0-9]{52}$/);const confirmationId=Buffer.from(await crypto.subtle.digest('SHA-256',new TextEncoder().encode('service-stop:'+token))).toString('hex');
+   return {success:true,exitCode:0,stdout:JSON.stringify({schemaVersion:1,token,status:'stopped',stop:{confirmationId,observedAt:1000,fenced:true}})};
+  }
   assert.match(command,/^python3 \/opt\/riffology\/service_process\.py (?:start|observe|stop) [a-f0-9]{52}$/);const token=command.split(' ').at(-1)!;
   return {success:true,exitCode:0,stdout:JSON.stringify({schemaVersion:1,token,status:'healthy',stop:null})};}};
  return {input,archive,source,api,chunks,controls,commands,backend:new SandboxServiceNativeBackend(api,source,s.runtimeImage,()=>1000)};
@@ -48,4 +52,8 @@ test('native adapter accepts initial-workspace provenance without a Turn or sess
  // this fixture isolates the native adapter's source union transport contract.
  f.input.spec.plan.source={kind:'initial-workspace',filesSha256:saved.revision.filesSha256,reference:{schemaVersion:1,scope,task,runtime:{taskId:task.id,tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,generation:1,runtimeId:'initial-runtime',leaseId:'initial-lease'},markerNonce:'initial-nonce',markerSha256:'a'.repeat(64),checkpointRevision:'b'.repeat(64)}};
  assert.equal((await f.backend.start(f.input)).status,'healthy');assert.equal(JSON.parse(f.controls[0]!).filesSha256,saved.revision.filesSha256);assert.equal(f.controls[0]!.includes('initial-runtime'),false);assert.deepEqual(Buffer.concat(f.chunks),Buffer.from(f.archive));
+});
+test('native adapter recovers a root-owned stop proof with a fixed read-only command',async()=>{
+ const f=await fixture(),recovered=await f.backend.recoverStop(f.input);assert.equal(recovered.status,'stopped');assert.equal(recovered.stop?.fenced,true);
+ assert.equal(f.commands.filter(command=>command.includes('service_process.py stop')).length,0);const command=f.commands.at(-1)!;assert.match(command,/^python3 -c 'import hashlib,json,os,stat,sys[\s\S]+' [a-f0-9]{52}$/);assert.equal(command.includes(f.input.scope.tenantId),false);assert.equal(command.includes(f.input.reference.runId),false);
 });

@@ -44,6 +44,7 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
 
   async writeFile(path,content){await this.ctx.storage.put('file:'+path,content);if(path.endsWith('.input.json'))await this.ctx.storage.put('control',{path,content});}
   async diagnostics(){return {commands:await this.ctx.storage.get('commands')??[],control:await this.ctx.storage.get('control')??null};}
+  async loseNextStopResponse(){await this.ctx.storage.put('lose-stop-response',true);}
   async destroy(){await this.ctx.storage.put('destroy-count',(await this.ctx.storage.get('destroy-count')??0)+1);await this.ctx.storage.put('container-running',false);}
   async destroyCount(){return await this.ctx.storage.get('destroy-count')??0;}
   async releaseState(){return {running:await this.ctx.storage.get('container-running')===true};}
@@ -57,12 +58,15 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
     commands[commands.length-1].upload=upload;await this.ctx.storage.put('commands',commands);
     if(parts[4]!=='/var/lib/riffology/archives/'+token+'.'+upload.offset+'.chunk.json')throw Error('unexpected-upload-path');
     result={schemaVersion:1,token,offset:upload.offset,bytes,total:upload.total,complete:upload.offset+bytes===upload.total};
+   }else if(parts[1]==='-c'){
+    const stop=await this.ctx.storage.get('stop');result={schemaVersion:1,token,status:stop?'stopped':'unknown',stop:stop??null};
    }else{
     if(parts[1]!=='/opt/riffology/service_process.py')throw Error('unexpected-native-program');
     const action=parts[2];let stop=await this.ctx.storage.get('stop');
     if(action==='stop'&&!stop){stop={confirmationId:'fixture-stop',observedAt:Date.now(),fenced:true};await this.ctx.storage.put('stop',stop);}
     if(action==='start'&&!stop){await this.ctx.storage.put('started',true);await this.ctx.storage.put('container-running',true);}
     result={schemaVersion:1,token,status:stop?'stopped':await this.ctx.storage.get('started')?'healthy':'absent',stop:stop??null};
+    if(action==='stop'&&await this.ctx.storage.get('lose-stop-response')){await this.ctx.storage.delete('lose-stop-response');return {success:true,exitCode:0,stdout:'lost-response'};}
    }
    return {success:true,exitCode:0,stdout:JSON.stringify(result)};
   }
@@ -89,7 +93,7 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
     const response=await env.SERVICE_RUNTIME.getByName(await serviceRuntimeActorName(b.input)).forwardObserverHttp(descriptor,new Request(b.url??'http://localhost:8080/observe',{headers:{cookie:'secret','x-riff-observer':'forged'}}),new CancellationFixture(env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input))));
     value={status:response.status,body:await response.text(),headers:Object.fromEntries(response.headers)};
    }else if(b.method==='quotaUnknown')value=await env.TENANT_QUOTA.getByName('tenant-quota:'+b.lease.tenantId).markUnknown(b.lease);
-   else if(['observerDiagnostics','holdObserver','cancelUpstream'].includes(b.method))value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input))[b.method]();
+   else if(['observerDiagnostics','holdObserver','cancelUpstream','loseNextStopResponse'].includes(b.method))value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input))[b.method]();
    else if(b.method==='releaseHeaders')value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input)).releaseHeaders();
    else if(b.method==='forwards')value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input)).forwards();
    else if(b.method==='diagnostics')value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input)).diagnostics();
@@ -198,6 +202,9 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
   const stoppedBefore=await call('stop',{input:before});assert.equal(stoppedBefore.status,'stopped');
   assert.deepEqual(await call('start',{input:before}),stoppedBefore);
   const fenced=await call('diagnostics',{input:before});assert.equal(fenced.control,null);assert.equal(fenced.commands.length,1);assert.match(fenced.commands[0].command,/service_process.py stop/);
+  const recovery=await make('stop-recovery');await call('dispatch',{lease:recovery.lease});await call('start',{input:recovery});await call('loseNextStopResponse',{input:recovery});await assert.rejects(call('stop',{input:recovery}),/invalid-service-native-result/);
+  assert.equal((await call('diagnostics',{input:recovery})).commands.filter(c=>c.command.includes('service_process.py stop')).length,1);
+  assert.equal((await call('stop',{input:recovery})).status,'stopped');const recoveredCommands=(await call('diagnostics',{input:recovery})).commands;assert.equal(recoveredCommands.filter(c=>c.command.includes('service_process.py stop')).length,1);assert.equal(recoveredCommands.filter(c=>c.command.startsWith("python3 -c 'import hashlib,json,os,stat,sys")).length,1);
   await mf.dispose();mf=new Miniflare(options('false'));
   await assert.rejects(call('start',{input}),/start-disabled/);
   assert.equal((await call('observe',{input})).status,'healthy');

@@ -44,17 +44,20 @@ export class SqlServiceSandboxRelease{
   const input=this.#input(initial),now=this.#now();
   // Arm first so eviction or a bounded control-plane failure cannot lose work.
   await this.#storage.setAlarm(now+this.#retryMs);await this.#storage.sync();
-  let before=false,after=false,confirmed=false;
+  let before=false,after=false,confirmed=false,destroyed=false,seenRunning=false;
   try{
    const port=await this.#port(structuredClone(input));
-   before=await this.#bounded(()=>port.running());
-   await this.#bounded(()=>port.destroy());
-   after=await this.#bounded(()=>port.running());confirmed=true;
+   try{before=await this.#bounded(()=>port.running());seenRunning=before;}catch{}
+   // begin() is reachable only after Runtime has durably validated the exact
+   // run's fenced stop receipt. A legacy Sandbox may not expose running(), but
+   // that must not block destroy() for this deterministically derived actor.
+   try{await this.#bounded(()=>port.destroy());destroyed=true;}catch{}
+   if(destroyed)try{after=await this.#bounded(()=>port.running());confirmed=true;seenRunning ||= after;}catch{}
   }catch{}
   const observedAt=this.#now();let complete=false;
   await this.#change(row=>{
    if(!row||row.input_json!==JSON.stringify(input)||row.completed_at!==null)return;
-   const attempts=row.attempts+1,seenRunning=confirmed&&(before||after);
+   const attempts=row.attempts+1;
    const quietSince=!confirmed||after?null:seenRunning||row.quiet_since===null?observedAt:row.quiet_since;
    complete=confirmed&&!after&&quietSince!==null&&observedAt-row.begun_at>=this.#assignmentGuardMs&&observedAt-quietSince>=this.#quietMs;
    this.#storage.sql.exec('UPDATE service_sandbox_release SET quiet_since=?,last_running_at=?,attempts=?,completed_at=? WHERE singleton=1',quietSince,seenRunning?observedAt:row.last_running_at,attempts,complete?observedAt:null);
