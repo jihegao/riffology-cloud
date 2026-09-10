@@ -4,6 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {chromium} from 'playwright';
 import {createPreviewVerticalFixture} from './preview-vertical-fixture.mjs';
 import {PREVIEW_ACCESS_COOKIE,PREVIEW_NONCE_COOKIE} from '../../services/preview/browser.ts';
+import {previewFrameSource} from '../../services/gateway/preview-services.ts';
 const control='https://app.example.test';
 // Real browser + production Gateway/Workspace/journals/D1/R2. Identity exchange,
 // static control shell and the project Runtime are explicit local fixtures.
@@ -19,7 +20,12 @@ test('browser Preview opens through production Gateway and durable Workspace, re
   if(url.origin===control&&!url.pathname.startsWith('/api/')){
    if(url.pathname==='/previews.js')return route.fulfill({contentType:'application/javascript',body:panel});
    if(url.pathname==='/panel.js')return route.fulfill({contentType:'application/javascript',body:client});
-   if(url.pathname==='/')return route.fulfill({headers:{'content-type':'text/html','content-security-policy':"default-src 'self'; script-src 'self'; connect-src 'self'; frame-src https://*.preview.example.test; frame-ancestors 'none'"},body:'<!doctype html><div id="root"></div><script type="module" src="/panel.js"></script>'});
+   if(url.pathname==='/'){
+    // The shell can outlive a gates-false foundation deployment. Its narrowly
+    // configured frame source must still permit Preview after the API gate opens.
+    const frameSource=previewFrameSource({APP_ORIGIN:control,M3_PREVIEW_ORIGIN:'https://preview.example.test',M3_PREVIEW_ENABLED:'false'});
+    return route.fulfill({headers:{'content-type':'text/html','content-security-policy':`default-src 'self'; script-src 'self'; connect-src 'self'; frame-src ${frameSource}; frame-ancestors 'none'`},body:'<!doctype html><div id="root"></div><script type="module" src="/panel.js"></script>'});
+   }
    return route.fulfill({status:404,body:''});
   }
   if(url.origin!==control&&!/^p-[a-f0-9]{40}\.preview\.example\.test$/.test(url.hostname))return route.abort();

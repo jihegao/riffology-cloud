@@ -22,8 +22,12 @@ export interface PreviewWorkspace{
  issuePreviewTicket(input:{scope:TurnScope;principal:PreviewBrowserPrincipal;previewId:string;nonce:string}):Promise<{ticket:string;expiresAt:number}>;
 }
 export type PreviewGatewayEnv={M3_PREVIEW_ENABLED?:unknown;M3_PREVIEW_ORIGIN?:string;APP_ORIGIN:string;WORKSPACE_AGENT:{getByName(name:string):PreviewWorkspace}};
+/** The document CSP must remain valid for the lifetime of an open control page.
+ * Execution gates can change while that page is open, so framing authority is
+ * derived only from the validated, deployment-owned Preview origin. Preview
+ * APIs and host routing still enforce M3_PREVIEW_ENABLED independently. */
 export function previewFrameSource(env:Pick<PreviewGatewayEnv,'M3_PREVIEW_ENABLED'|'M3_PREVIEW_ORIGIN'|'APP_ORIGIN'>):string{
- if(env.M3_PREVIEW_ENABLED!=='true'||!env.M3_PREVIEW_ORIGIN)return "'none'";
+ if(!env.M3_PREVIEW_ORIGIN)return "'none'";
  previewHostOrigin(env.M3_PREVIEW_ORIGIN,'p-'+'0'.repeat(40),env.APP_ORIGIN);
  const url=new URL(env.M3_PREVIEW_ORIGIN);return `https://*.${url.host}`;
 }
