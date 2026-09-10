@@ -13,6 +13,7 @@ export class ServiceSandbox extends Sandbox implements ServiceSandboxApi{
  override allowedHosts:string[]=[];
  override envVars={};
  override sleepAfter='20m';
+ async releaseState(){return {running:this.ctx.container?.running===true};}
  override async fetch(request:Request):Promise<Response>{
   try{const incoming=readPrivateWebSocketRequest(request,'sandbox'),input=incoming.input as {deadlineAt:number};if(!input||typeof input!=='object'||Object.keys(input).length!==1||!Object.hasOwn(input,'deadlineAt'))throw Error('service-ws-denied');return await forwardRunningWebSocket(this.ctx.container,incoming.request,input.deadlineAt);}
   catch{return new Response('preview unavailable',{status:403});}

@@ -8,6 +8,7 @@ import {connectPreviewWebSocket,boundedWebSocketHandshake} from '../preview/webs
 import {DurableObject} from 'cloudflare:workers';
 import {SqlServiceRuntimeSupervisor} from './runtime-supervisor.ts';
 import {SandboxServiceNativeBackend,serviceNativeToken,type ServiceSandboxApi} from './native.ts';
+import {SqlServiceSandboxRelease,type ServiceSandboxReleasePort} from './sandbox-release.ts';
 import {serviceRuntimeInput,type ServiceRuntimeInput} from './runtime-protocol.ts';
 import {serviceRuntimeActorName} from './durable.ts';
 import {tenantQuotaName,type TenantQuota} from '../quota/durable.ts';
@@ -16,7 +17,7 @@ import {REVISION_STORE_ACTOR} from '../turn-runtime/revision-store-client.ts';
 import type {RevisionStore} from '../turn-runtime/revision-store.ts';
 export interface ServiceRuntimeEnv{
  SERVICE_RUNTIME:DurableObjectNamespace<ServiceRuntime>;
- SERVICE_SANDBOX:{getByName(name:string):ServiceSandboxApi&{destroy():Promise<void>;forwardHttp?(request:Request,deadlineAt:number):Promise<Response>;forwardObserverHttp?(request:Request,policy:ObserverHttpPolicy,deadlineAt:number,cancellation:ObserverCancellationPort):Promise<Response>;fetch?(request:Request):Promise<Response>}};
+ SERVICE_SANDBOX:{getByName(name:string):ServiceSandboxApi&{destroy():Promise<void>;releaseState():Promise<{running:boolean}>;forwardHttp?(request:Request,deadlineAt:number):Promise<Response>;forwardObserverHttp?(request:Request,policy:ObserverHttpPolicy,deadlineAt:number,cancellation:ObserverCancellationPort):Promise<Response>;fetch?(request:Request):Promise<Response>}};
  REVISION_STORE:DurableObjectNamespace<RevisionStore>;
  TENANT_QUOTA:DurableObjectNamespace<TenantQuota>;
  M3_SERVICE_ENABLED?:string;
@@ -26,19 +27,13 @@ export interface ServiceRuntimeEnv{
  M3_SERVICE_IMAGE?:string;
 }
 export async function serviceSandboxActorName(input:ServiceRuntimeInput){return 'm3-s-'+await serviceNativeToken(input);}
-const SERVICE_SANDBOX_RELEASE_TIMEOUT_MS=4000;
-async function releaseServiceSandbox(sandbox:{destroy():Promise<void>}){
- let timer:ReturnType<typeof setTimeout>|undefined;
- const destroy=Promise.resolve().then(()=>sandbox.destroy());
- try{await Promise.race([destroy,new Promise<never>((_,reject)=>{timer=setTimeout(()=>reject(Error('service-sandbox-release-timeout')),SERVICE_SANDBOX_RELEASE_TIMEOUT_MS);})]);}
- finally{if(timer!==undefined)clearTimeout(timer);}
-}
 function leaseMatches(input:ServiceRuntimeInput,raw:ReturnType<typeof leaseReference>){return Object.keys(input.lease).length===Object.keys(raw).length&&Object.entries(input.lease).every(([key,value])=>raw[key as keyof typeof raw]===value);}
 /** Private platform actor; start requires a current dispatched tenant lease.
  * Closing the start gate does not prevent observation or irreversible stop. */
 export class ServiceRuntime extends DurableObject<ServiceRuntimeEnv>{
  readonly #requests=new Set<AbortController>();
  readonly #webSockets=new Set<AbortController>();
+ #releaseTail:Promise<unknown>=Promise.resolve();
  async fetch(request:Request):Promise<Response>{
   let controller:AbortController|undefined;
   try{
@@ -64,8 +59,16 @@ export class ServiceRuntime extends DurableObject<ServiceRuntimeEnv>{
  async #supervisor(input:ServiceRuntimeInput){
   const sandbox=this.env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(input));
   const source={files:async(source:ServiceRuntimeInput['spec']['plan']['source'])=>this.env.REVISION_STORE.getByName(REVISION_STORE_ACTOR).serviceFiles(source)};
-  return new SqlServiceRuntimeSupervisor(this.ctx.storage,input.scope,new SandboxServiceNativeBackend(sandbox,source,input.spec.runtimeImage),Date.now,()=>releaseServiceSandbox(sandbox));
+  return new SqlServiceRuntimeSupervisor(this.ctx.storage,input.scope,new SandboxServiceNativeBackend(sandbox,source,input.spec.runtimeImage),Date.now,async()=>{await this.#release(input);});
  }
+ async #release(input?:ServiceRuntimeInput){
+  const resolver=async(current:ServiceRuntimeInput):Promise<ServiceSandboxReleasePort>=>{
+   const sandbox=this.env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(current));
+   return {destroy:()=>sandbox.destroy(),running:async()=>{const state=await sandbox.releaseState();if(!state||typeof state!=='object'||Object.keys(state).join(',')!=='running'||typeof state.running!=='boolean')throw Error('invalid-service-sandbox-release-state');return state.running;}};
+  };
+  const work=this.#releaseTail.catch(()=>{}).then(()=>{const release=new SqlServiceSandboxRelease(this.ctx.storage,resolver);return input?release.begin(input):release.reconcile();});this.#releaseTail=work;return work;
+ }
+ async alarm(){await this.#release();}
  async start(raw:ServiceRuntimeInput){
   const input=await this.#input(raw);
   if(this.env.M3_SERVICE_ENABLED!=='true'||input.spec.runtimeImage!==this.env.M3_SERVICE_IMAGE)throw Error('service-runtime-start-disabled');

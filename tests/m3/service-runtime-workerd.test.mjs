@@ -15,12 +15,12 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
  import {DurableObject,RpcTarget} from 'cloudflare:workers';
  import {forwardRunningObserver} from './services/run/observer-forward.ts';
  class CancellationFixture extends RpcTarget {constructor(sandbox){super();this.sandbox=sandbox;}async cancelled(){return this.sandbox.upstreamCancelled();}}
- import {ServiceRuntime,serviceSandboxActorName} from './services/run/runtime-durable.ts';
+ import {ServiceRuntime as BaseServiceRuntime,serviceSandboxActorName} from './services/run/runtime-durable.ts';
  import {serviceRuntimeActorName} from './services/run/durable.ts';
  import {leaseReference} from './services/quota/core.ts';
  import {privateWebSocketRequest,readPrivateWebSocketRequest} from './services/preview/websocket-protocol.ts';
  import {initialWorkspaceArchive} from './services/turn-runtime/initial-workspace-archive.ts';
- export {ServiceRuntime};
+ export class ServiceRuntime extends BaseServiceRuntime {async wakeRelease(){await this.alarm();}}
  export {TenantQuota} from './services/quota/durable.ts';
  export {RevisionStore} from './services/turn-runtime/revision-store.ts';
  export class SandboxFixture extends DurableObject {
@@ -44,8 +44,10 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
 
   async writeFile(path,content){await this.ctx.storage.put('file:'+path,content);if(path.endsWith('.input.json'))await this.ctx.storage.put('control',{path,content});}
   async diagnostics(){return {commands:await this.ctx.storage.get('commands')??[],control:await this.ctx.storage.get('control')??null};}
-  async destroy(){await this.ctx.storage.put('destroy-count',(await this.ctx.storage.get('destroy-count')??0)+1);}
+  async destroy(){await this.ctx.storage.put('destroy-count',(await this.ctx.storage.get('destroy-count')??0)+1);await this.ctx.storage.put('container-running',false);}
   async destroyCount(){return await this.ctx.storage.get('destroy-count')??0;}
+  async releaseState(){return {running:await this.ctx.storage.get('container-running')===true};}
+  async lateStart(){await this.ctx.storage.put('container-running',true);}
   async exec(command,options){
    const commands=await this.ctx.storage.get('commands')??[];commands.push({command,options});await this.ctx.storage.put('commands',commands);
    const parts=command.split(' '),token=parts[1]==='/opt/riffology/service_upload.py'?parts[2]:parts.at(-1);let result;
@@ -59,7 +61,7 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
     if(parts[1]!=='/opt/riffology/service_process.py')throw Error('unexpected-native-program');
     const action=parts[2];let stop=await this.ctx.storage.get('stop');
     if(action==='stop'&&!stop){stop={confirmationId:'fixture-stop',observedAt:Date.now(),fenced:true};await this.ctx.storage.put('stop',stop);}
-    if(action==='start'&&!stop)await this.ctx.storage.put('started',true);
+    if(action==='start'&&!stop){await this.ctx.storage.put('started',true);await this.ctx.storage.put('container-running',true);}
     result={schemaVersion:1,token,status:stop?'stopped':await this.ctx.storage.get('started')?'healthy':'absent',stop:stop??null};
    }
    return {success:true,exitCode:0,stdout:JSON.stringify(result)};
@@ -92,6 +94,8 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
    else if(b.method==='forwards')value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input)).forwards();
    else if(b.method==='diagnostics')value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input)).diagnostics();
    else if(b.method==='destroyCount')value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input)).destroyCount();
+   else if(b.method==='lateStart')value=await env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(b.input)).lateStart();
+   else if(b.method==='wakeRelease')value=await env.SERVICE_RUNTIME.getByName(await serviceRuntimeActorName(b.input)).wakeRelease();
    else if(['start','observe','stop'].includes(b.method))value=await env.SERVICE_RUNTIME.getByName(b.name??await serviceRuntimeActorName(b.input))[b.method](b.input);
    else return new Response(null,{status:404});
    return Response.json({ok:true,value});
@@ -202,7 +206,8 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
   const message=new Promise(resolve=>sockets[0].addEventListener('message',event=>resolve(event.data),{once:true}));sockets[0].send('runtime-ws');assert.equal(await message,'runtime-ws');
   const closed=Promise.all(sockets.map(ws=>new Promise(resolve=>ws.addEventListener('close',resolve,{once:true}))));
   const stopped=await call('stop',{input});assert.equal(stopped.status,'stopped');await assert.rejects(call('forward',{input}),/forward-denied/);assert.equal((await call('forwards',{input})).length,1);assert.equal(stopped.stop.fenced,true);await closed;const stoppedSocket=await socket(input);assert.equal(stoppedSocket.status,403);await stoppedSocket.text();
-  assert.equal(await call('destroyCount',{input}),1);assert.deepEqual(await call('stop',{input}),stopped);assert.equal(await call('destroyCount',{input}),2);assert.deepEqual(await call('observe',{input}),stopped);
+  assert.equal(await call('destroyCount',{input}),1);await call('lateStart',{input});await call('wakeRelease',{input});assert.equal(await call('destroyCount',{input}),2,'persistent release alarm destroys a late assignment');
+  assert.deepEqual(await call('stop',{input}),stopped);assert.equal(await call('destroyCount',{input}),3);assert.deepEqual(await call('observe',{input}),stopped);
   assert.equal((await mf.dispatchFetch('http://test/')).status,404);
  }finally{await mf?.dispose();await rm(directory,{recursive:true,force:true});}
 });
