@@ -31,7 +31,8 @@ class Store implements RevisionStoreRpc{
   async initialPreviewPlan(...args:Parameters<RevisionStoreRpc['initialPreviewPlan']>){const resolved=await this.resolveInitial(...args);return new PreviewPlanResolver({async files(){return resolved.filesArchive;}}).resolve({kind:'initial-workspace',reference:resolved.reference,filesSha256:resolved.filesSha256});}
   #reader(){return new R2TurnRevisionReader(this.bucket as never);}
   async commit(input:RevisionCommitInput){return new R2TurnRevisionPort(this.bucket as never,{async freeze(){return input.snapshot;}},()=>1000).commit(input);}
-  async reconcileCommit(input:Parameters<RevisionStoreRpc['reconcileCommit']>[0]){return (await this.#reader().inspect(input.identity))?.receipt??null;}
+  async reconcileCommit(input:Parameters<RevisionStoreRpc['reconcileCommit']>[0]){const saved=await this.#reader().inspect(input.identity);return saved?{status:'committed' as const,receipt:saved.receipt}:{status:'absent' as const};}
+  async abandonCommit(input:Parameters<RevisionStoreRpc['abandonCommit']>[0]){return this.reconcileCommit(input);}
   async observe(value:TurnRuntimeIdentity){return new R2TurnRevisionPort(this.bucket as never,{async freeze(){throw Error('must-not-freeze');}},()=>1000).observe(value);}
   restore(...args:Parameters<RevisionStoreRpc['restore']>){return this.#reader().restore(...args);}
   async files(...args:Parameters<RevisionStoreRpc['files']>){await this.#reader().files(args[0],args[1]);return {schemaVersion:1 as const,files:[]};}
@@ -85,14 +86,14 @@ test('release restores the derived Project Sandbox before starting one derived T
   assert.equal(result.phase,'terminal');assert.equal(result.outcome,'completed');assert.deepEqual(f.projectActors,[expected.project]);assert.deepEqual(f.trustedActors,[expected.trustedPi]);
   assert.ok(f.calls.indexOf('workspace.restore')<f.calls.indexOf('pi.start'));
   const input={identity,outcome:'completed' as const,executionErrorCode:null,base},intent=await f.release.checkpoints.prepare(input),receipt=await f.release.checkpoints.commit(input,intent);
-  assert.equal(receipt.objectKey,'turns/tenant-a/project-a/workspace-a/2/session-a/turn-a/dispatch-a.json');assert.equal(f.calls.filter(value=>value==='workspace.freeze').length,2);assert.deepEqual(await f.release.checkpoints.reconcile(identity,intent),receipt);
+  assert.equal(receipt.objectKey,'turns/tenant-a/project-a/workspace-a/2/session-a/turn-a/dispatch-a.json');assert.equal(f.calls.filter(value=>value==='workspace.freeze').length,1);assert.deepEqual(await f.release.checkpoints.reconcile(identity,intent),receipt);
   assert.deepEqual(await f.release.execution.release(identity),{running:false});assert.deepEqual(f.calls.slice(-2),['pi.destroy','pi.releaseState']);assert.deepEqual(f.trustedActors,[expected.trustedPi]);
   await f.release.execution.start({...identity,actor,message:'Build model',base});assert.equal(f.calls.filter(value=>value==='workspace.restore').length,1);assert.equal(f.calls.filter(value=>value==='pi.start').length,1);
 });
 
 for(const outcome of ['failed','cancelled','interrupted'] as const)test(`release preserves ${outcome} terminal outcome while materializing recoverable artifacts`,async()=>{
   const f=fixture(outcome),result=await f.release.execution.start({...identity,actor,message:'Build model',base});assert.equal(result.outcome,outcome);assert.equal(result.executionErrorCode,'fixture-failure');
-  const input={identity,outcome,executionErrorCode:'fixture-failure',base},intent=await f.release.checkpoints.prepare(input),receipt=await f.release.checkpoints.commit(input,intent);assert.ok(f.bucket.objects.has(receipt.objectKey));assert.equal(f.calls.filter(value=>value==='workspace.freeze').length,2);
+  const input={identity,outcome,executionErrorCode:'fixture-failure',base},intent=await f.release.checkpoints.prepare(input),receipt=await f.release.checkpoints.commit(input,intent);assert.ok(f.bucket.objects.has(receipt.objectKey));assert.equal(f.calls.filter(value=>value==='workspace.freeze').length,1);
 });
 
 test('assembly and both returned ports reject missing dependencies or a different identity before external work',async()=>{

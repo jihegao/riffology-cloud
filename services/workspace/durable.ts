@@ -48,7 +48,7 @@ import { TurnJournal } from '../turn/journal.ts';
 import { DurableTurnStore } from '../turn/store.ts';
 import type { TurnActor, TurnScope } from '../turn/protocol.ts';
 import { sameScope, initialWorkspaceBase, scope as validateTurnScope } from '../turn/protocol.ts';
-import { REVISION_STORE_ACTOR, type RevisionStoreNamespace } from '../turn-runtime/revision-store-client.ts';
+import { revisionStoreActorName, type RevisionStoreNamespace } from '../turn-runtime/revision-store-client.ts';
 import { TOOL_ARTIFACT_STORE_ACTOR, type ToolArtifactStoreNamespace, type ToolArtifactReferenceInput } from '../artifacts/protocol.ts';
 import { releaseRetiredArtifactEvent } from '../artifacts/event-retirement.ts';
 import {traceTurnAdmission,type TurnAdmissionStage} from '../turn/admission-telemetry.ts';
@@ -132,7 +132,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       resolve:source=>{
         this.#ready(scope);
         if(!this.env.REVISION_STORE?.getByName)throw Error('revision-store-not-configured');
-        const store=this.env.REVISION_STORE.getByName(REVISION_STORE_ACTOR);
+        const store=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope));
         return source.kind==='saved-turn'?store.previewPlan(source):store.initialPreviewPlan(source.reference,scope);
       },
       accept:async task=>{this.#ready(scope);if(this.env.M3_SERVICE_ENABLED!=='true')throw Error('service-run-disabled');return (await this.#serviceRun(task)).accept(task);},
@@ -421,7 +421,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     if(!state?.identity||!state.runtimeReceipt)throw Error('workspace-initial-source-missing');
     if(!this.env.REVISION_STORE?.getByName)throw Error('revision-store-not-configured');
     const reference=await initialWorkspaceReferenceFromReady({scope,task:state.task,runtime:state.identity,markerNonce:state.markerNonce,ready:state.runtimeReceipt});
-    return this.env.REVISION_STORE.getByName(REVISION_STORE_ACTOR).resolveInitial(reference,scope);
+    return this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).resolveInitial(reference,scope);
   }
   async createSession(input: { scope: TurnScope; actor: TurnActor; key: string; body: { title: unknown } }) {
     return this.#turns.createSession(this.#ready(input.scope), input.actor, input.key, input.body);
@@ -449,7 +449,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   async previewPlan(input:{scope:TurnScope}){
     const scope=this.#ready(input.scope),revision=this.#turns.workspaceRevisionSnapshot(scope);
     if(!this.env.REVISION_STORE?.getByName)throw Error('revision-store-not-configured');
-    const store=this.env.REVISION_STORE.getByName(REVISION_STORE_ACTOR);
+    const store=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope));
     if(revision){const plan=await store.previewPlan({kind:'saved-turn',identity:revision.identity,revision:revision.receipt});this.#ready(scope);return plan;}
     const state=this.#store.read();
     if(!state?.identity||!state.runtimeReceipt)throw Error('workspace-initial-source-missing');
@@ -460,13 +460,13 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const scope=this.#ready(input.scope),revision=await this.#turns.workspaceRevision(scope);
     if(!revision){const initial=await this.#initialWorkspace(scope);return {schemaVersion:1,revision:null,files:workspaceFileIndex(initial.filesArchive).files};}
     if(!this.env.REVISION_STORE?.getByName)throw Error('revision-store-not-configured');
-    const index=await this.env.REVISION_STORE.getByName(REVISION_STORE_ACTOR).files(revision.identity,revision.receipt);
+    const index=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).files(revision.identity,revision.receipt);
     return {schemaVersion:1,revision:{revisionId:revision.receipt.revisionId,filesSha256:revision.receipt.filesSha256,committedAt:revision.receipt.committedAt},files:index.files};
   }
   async diffFiles(input:{scope:TurnScope}){
     const scope=this.#ready(input.scope),revision=await this.#turns.workspaceRevision(scope);
     if(!revision)return {schemaVersion:1,revision:null,baseRevisionId:null,summary:{added:0,modified:0,deleted:0},changes:[]};
-    if(!this.env.REVISION_STORE?.getByName)throw Error('revision-store-not-configured');const store=this.env.REVISION_STORE.getByName(REVISION_STORE_ACTOR),result=await store.diff(revision.identity,revision.receipt);
+    if(!this.env.REVISION_STORE?.getByName)throw Error('revision-store-not-configured');const store=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)),result=await store.diff(revision.identity,revision.receipt);
     return {schemaVersion:1,revision:{revisionId:revision.receipt.revisionId,filesSha256:revision.receipt.filesSha256,committedAt:revision.receipt.committedAt},summary:result.summary,changes:result.changes};
   }
   async readObserverArtifact(raw:ObserverArtifactReadInput){

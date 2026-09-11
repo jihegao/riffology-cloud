@@ -70,6 +70,7 @@ try{
  import {serviceRuntimeActorName} from './services/run/durable.ts';
  import {leaseReference} from './services/quota/core.ts';
  import {initialWorkspaceArchive} from './services/turn-runtime/initial-workspace-archive.ts';
+ import {revisionStoreActorName} from './services/turn-runtime/revision-store-client.ts';
  export {ServiceRuntime};
  export {ContainerProxy} from '@cloudflare/containers';
  export {ServiceSandbox} from './services/run/service-sandbox.ts';
@@ -85,7 +86,7 @@ try{
      'app/main.py':encode(${JSON.stringify(program)}),
      'app/requirements.lock':encode(JSON.stringify({schemaVersion:1,packages:{simpy:'4.1.1'}})),
      'docs/transport-padding.txt':new Uint8Array(700000).fill(65)});
-    const store=env.REVISION_STORE.getByName('workspace-revisions-v1');
+    const store=env.REVISION_STORE.getByName(revisionStoreActorName(identity.scope));
     const receipt=await store.commit({identity,outcome:'completed',executionErrorCode:null,base:{workspace:null,session:null},snapshot:{identity,filesArchive,piSession:encode('private-session-not-project-content')}});
     value=await store.previewPlan({kind:'saved-turn',identity,revision:receipt});
    }else if(b.method==='acquire'){

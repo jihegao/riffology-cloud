@@ -77,6 +77,12 @@ test('checkpoint intent and persistence failure are idempotent and preserve exec
  const failureReplay=await f.journal.failCheckpoint(scope,{turnId:turn.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,errorCode:'r2-write-failed'});assert.deepEqual(failureReplay,failed);
  await assert.rejects(f.journal.failCheckpoint(scope,{turnId:turn.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,errorCode:'different'}),/checkpoint-conflict/);
 });
+test('recovery hold ends the active spinner, rejects new turns and exposes only redacted recovery state',async()=>{
+ const f=fixture(),turn=await queued(f.journal),claim=(await f.journal.claim(scope,1))!.turn;await f.journal.beginCheckpoint(scope,{turnId:turn.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,outcome:'completed'});
+ const failed=await f.journal.failCheckpoint(scope,{turnId:turn.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,errorCode:'turn-checkpoint-recovery-hold'});assert.equal(failed.status,'failed');assert.equal(f.store.snapshot()!.activeTurnId,null);assert.equal(await f.journal.claim(scope,1),null);
+ await assert.rejects(f.journal.submit(scope,actor,turn.sessionId,'blocked',{message:'blocked'}),/workspace-recovery-hold/);const view=await f.journal.view(scope);assert.equal(view.schemaVersion,2);assert.deepEqual(Object.keys(view.recoveryHold??{}),['status','reasonCode','since','nextAttemptAt']);assert.equal((view.recoveryHold as any).turnId,undefined);
+ assert.ok(f.journal.recovery(scope));await f.journal.advanceRecovery(scope,'aborted');assert.equal((await f.journal.view(scope)).recoveryHold,null);
+});
 test('public view excludes idempotency hashes, dispatch capability and actor auth version',async()=>{
  const f=fixture(),turn=await queued(f.journal),claim=(await f.journal.claim(scope,1))!.turn,view=await f.journal.view(scope);const publicTurn=view.turns[turn.id] as any,publicSession=view.sessions[turn.sessionId] as any;
  assert.equal(publicTurn.requestKey,undefined);assert.equal(publicTurn.payloadSha256,undefined);assert.equal(publicTurn.dispatchId,undefined);assert.equal(publicTurn.base,undefined);assert.equal(publicTurn.startedSequence,undefined);assert.equal(publicTurn.terminalSequence,undefined);assert.equal(publicSession.actorUserId,undefined);assert.equal(publicSession.actorAuthVersion,undefined);
@@ -91,13 +97,13 @@ test('actor version, session ownership, generation and malformed payloads fail c
  await assert.rejects(f.journal.cancel(scope,{...actor,userId:'other'},t.id),/not-found/);
 });
 
-test('v3 compaction preserves terminal state and requires a snapshot for expired cursors',async()=>{
+test('v4 compaction preserves terminal state and requires a snapshot for expired cursors',async()=>{
  const f=fixture(),turn=await queued(f.journal),claim=(await f.journal.claim(scope,1))!.turn;
  const runtimeInput={turnId:turn.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,eventId:'event-before-compaction',type:'assistant.message' as const,at:claim.startedAt!,payload:{text:'saved response'}};const original=await f.journal.appendRuntime(scope,runtimeInput);
  await f.journal.beginCheckpoint(scope,{turnId:turn.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,outcome:'completed'});
  const checkpoint={revisionId:'revision-v3',objectKey:'turns/v3.json',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:claim.startedAt!+1};
  await f.journal.commitCheckpoint(scope,{turnId:turn.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,checkpoint});
- const compacted=await f.journal.compact(scope,1);assert.equal(compacted.removed,4);const state=f.store.snapshot()!;assert.equal(state.schemaVersion,3);assert.equal(state.oldestSequence,state.nextSequence-1);assert.equal(state.turns[turn.id]!.status,'completed');assert.deepEqual(state.workspaceHead,checkpoint);assert.deepEqual(state.sessions[turn.sessionId]!.head,checkpoint);assert.ok(state.turns[turn.id]!.startedSequence!<state.turns[turn.id]!.terminalSequence!);
+ const compacted=await f.journal.compact(scope,1);assert.equal(compacted.removed,4);const state=f.store.snapshot()!;assert.equal(state.schemaVersion,4);assert.equal(state.oldestSequence,state.nextSequence-1);assert.equal(state.turns[turn.id]!.status,'completed');assert.deepEqual(state.workspaceHead,checkpoint);assert.deepEqual(state.sessions[turn.sessionId]!.head,checkpoint);assert.ok(state.turns[turn.id]!.startedSequence!<state.turns[turn.id]!.terminalSequence!);
  assert.equal(state.eventReceipts[runtimeInput.eventId],undefined);const sequence=state.nextSequence;await assert.rejects(f.journal.appendRuntime(scope,runtimeInput),/scope-denied/);assert.equal(f.store.snapshot()!.nextSequence,sequence);assert.equal(original.event.sequence,3);
  const expired=await f.journal.replay(scope,0,10);assert.equal(expired.snapshotRequired,true);assert.equal(expired.events.length,0);const page=await f.journal.replay(scope,state.oldestSequence-1,10);assert.equal(page.snapshotRequired,false);assert.equal(page.events.length,1);
 });

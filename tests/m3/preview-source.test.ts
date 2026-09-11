@@ -28,7 +28,7 @@ test('saved revision produces a service plan pinned to declaration, entrypoint a
 });
 test('scope and corrupted saved archive are rejected before producing a plan',async()=>{
  const f=await fixture();await assert.rejects(f.resolver.resolve({kind:'saved-turn',identity:{...identity,scope:{...identity.scope,tenantId:'tenant-b'}},revision:f.receipt}),/scope-denied/);
- for(const key of f.bucket.objects.keys())if(key.startsWith('turn-blobs/files/'))f.bucket.objects.set(key,encode('corrupt'));
+ for(const key of f.bucket.objects.keys())if(key.includes('/files/'))f.bucket.objects.set(key,encode('corrupt'));
  await assert.rejects(f.resolver.resolve({kind:'saved-turn',identity,revision:f.receipt}),/object-conflict/);
  const other=await fixture();await assert.rejects(new PreviewPlanResolver({async files(){return other.archive;}}).resolve({kind:'saved-turn',identity,revision:{...other.receipt,filesSha256:'a'.repeat(64)}}),/revision-mismatch/);
 });

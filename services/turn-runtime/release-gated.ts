@@ -3,7 +3,7 @@ import type { ProductTurnRuntimeHostEnv } from './host.ts';
 import type { TurnRuntimeIdentity } from './identity.ts';
 import type { ProjectWorkspaceRpc } from './workspace.ts';
 import type { TrustedPiSandboxProcessApi } from './pi-native.ts';
-import { REVISION_STORE_ACTOR, type RevisionStoreNamespace } from './revision-store-client.ts';
+import { revisionStoreActorName, type RevisionStoreNamespace } from './revision-store-client.ts';
 
 export type { ProductTurnRuntimeRelease } from './release.ts';
 
@@ -38,7 +38,7 @@ export function productTurnRuntimeRelease(
   const env=configured(rawEnv);
   if(!sandboxes||typeof sandboxes.project!=='function'||typeof sandboxes.trustedPi!=='function')throw Error('product-turn-runtime-release-dependencies-required');
   return assembleProductTurnRuntimeRelease(identity,{
-    revisions:env.REVISION_STORE.getByName(REVISION_STORE_ACTOR),
+    revisions:env.REVISION_STORE.getByName(revisionStoreActorName(identity.scope)),
     resolveProjectSandbox(actorId){return sandboxes.project(env,actorId);},
     resolveTrustedPiSandbox(actorId){return sandboxes.trustedPi(env,actorId);},
   });

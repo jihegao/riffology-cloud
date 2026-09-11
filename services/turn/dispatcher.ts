@@ -40,6 +40,8 @@ export interface TurnDispatcherJournal {
   commitCheckpoint(scope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;checkpoint:CheckpointReceipt}):Promise<TurnRecord>;
   failCheckpoint(scope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;errorCode:string}):Promise<TurnRecord>;
   cancelWithDisposition(scope:TurnScope,actor:TurnActor,id:string):Promise<{turn:TurnRecord;cancelRequested:boolean}>;
+  recovery?(scope:TurnScope):{hold:{nextAttemptAt:number};turn:TurnRecord;identity:ExpectedReceipt}|null;
+  advanceRecovery?(scope:TurnScope,resolution:'committed'|'aborted'|'pending'):Promise<unknown>;
 }
 export type TurnArtifactReferencePort=Pick<ToolArtifactStoreRpc,'retain'>;
 
@@ -105,6 +107,8 @@ export class TurnDispatcher {
     if(retained.artifactId!==reference.artifactId||retained.kind!==reference.kind||retained.referenceId!==reference.referenceId||retained.releasedAt!==null)throw Error('tool-artifact-reference-receipt-conflict');
   }
 
+  nextWakeAt(scope:TurnScope){return this.journal.recovery?.(scope)?.hold.nextAttemptAt??null;}
+
   private async apply(turn:TurnRecord,receipt:TurnRuntimeReceipt):Promise<TurnRecord>{
     const dispatchId=turn.dispatchId!,generation=turn.runtimeGeneration!,scope=turn.scope;
     for(const item of receipt.events??[]){await this.retainArtifact(scope,turn.id,dispatchId,item);await this.journal.appendRuntime(scope,{turnId:turn.id,dispatchId,runtimeGeneration:generation,...item});}
@@ -118,6 +122,7 @@ export class TurnDispatcher {
   async tick(rawScope:TurnScope,generation:number):Promise<TurnRecord|null>{
     const scope=validateScope(rawScope),runtimeGeneration=positive(generation);
     if(scope.workspaceGeneration!==runtimeGeneration)throw Error('turn-runtime-generation-conflict');
+    const recovery=this.journal.recovery?.(scope);if(recovery){if(!this.journal.advanceRecovery)throw Error('turn-recovery-journal-required');const receipt=validateReceipt(await this.runtime.observe(recovery.identity),recovery.identity);if(receipt.phase==='terminal'&&receipt.checkpoint)await this.journal.advanceRecovery(scope,'committed');else if(receipt.phase==='terminal'&&receipt.persistenceErrorCode==='turn-checkpoint-aborted')await this.journal.advanceRecovery(scope,'aborted');else await this.journal.advanceRecovery(scope,'pending');return recovery.turn;}
     const claim=await this.journal.claim(scope,runtimeGeneration);
     if(!claim)return null;
     const turn=claim.turn;

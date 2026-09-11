@@ -20,6 +20,7 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
  import {leaseReference} from './services/quota/core.ts';
  import {privateWebSocketRequest,readPrivateWebSocketRequest} from './services/preview/websocket-protocol.ts';
  import {initialWorkspaceArchive} from './services/turn-runtime/initial-workspace-archive.ts';
+ import {revisionStoreActorName} from './services/turn-runtime/revision-store-client.ts';
  export class ServiceRuntime extends BaseServiceRuntime {
   async wakeRelease(){await this.alarm();}
   dueStopRecovery(){this.ctx.storage.sql.exec('UPDATE service_runtime_fence SET next_recover_at=1 WHERE singleton=1');}
@@ -89,7 +90,7 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
     const identity=b.identity,encode=s=>new TextEncoder().encode(s),filesArchive=initialWorkspaceArchive({
      'app/preview.json':encode(JSON.stringify({schemaVersion:1,runtime:'python',entrypoint:'app/main.py',dependencyLock:'app/requirements.lock',port:8080,healthPath:'/healthz',observation:{pagePath:'/observe',statePath:'/state'}})),
      'app/main.py':encode('print(1)'), 'app/requirements.lock':encode(JSON.stringify({schemaVersion:1,packages:{}}))});
-    const store=env.REVISION_STORE.getByName('workspace-revisions-v1');
+    const store=env.REVISION_STORE.getByName(revisionStoreActorName(identity.scope));
     const receipt=await store.commit({identity,outcome:'completed',executionErrorCode:null,base:{workspace:null,session:null},snapshot:{identity,filesArchive,piSession:encode('private-pi-session')}});
     value=await store.previewPlan({kind:'saved-turn',identity,revision:receipt});
    }else if(b.method==='acquire'){

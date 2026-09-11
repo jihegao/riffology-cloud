@@ -17,7 +17,7 @@ const equal=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
 function pruneTerminalEventReceipts(state:TurnJournalState){
   for(const [eventId,receipt] of Object.entries(state.eventReceipts)){const turn=state.turns[receipt.event.turnId];if(turn&&terminal(turn.status))delete state.eventReceipts[eventId];}
 }
-function fresh(s:TurnScope):TurnJournalState{return {schemaVersion:3,scope:s,nextSequence:1,oldestSequence:1,retentionBytes:0,activeTurnId:null,workspaceHead:null,sessions:{},turns:{},sessionIntents:{},turnIntents:{},eventReceipts:{},events:[]};}
+function fresh(s:TurnScope):TurnJournalState{return {schemaVersion:4,scope:s,nextSequence:1,oldestSequence:1,retentionBytes:0,activeTurnId:null,workspaceHead:null,recoveryHold:null,sessions:{},turns:{},sessionIntents:{},turnIntents:{},eventReceipts:{},events:[]};}
 export function retainEventWindow(events:TurnEvent[],maxCount=TURN_EVENT_LIMIT,maxBytes=TURN_EVENT_BYTES_LIMIT){
   if(!Number.isSafeInteger(maxCount)||maxCount<1||!Number.isSafeInteger(maxBytes)||maxBytes<1)throw Error('invalid-event-retention');
   let bytes=0,start=events.length;
@@ -55,7 +55,7 @@ export class TurnJournal{
   }
   async submit(rawScope:TurnScope,rawActor:TurnActor,sessionId:string,key:string,input:{message:unknown}){
     const s=scope(rawScope),a=actor(rawActor),sid=turnId(sessionId),normalized={message:message(input?.message)},payloadSha256=await turnDigest(normalized),id=crypto.randomUUID(),at=nowValid(this.#clock()),ik=`${intent(a.userId,key)}|${sid}`;
-    return this.#store.transact(current=>{const state=requireState(current,s),session=sessionOf(state,sid,s);if(session.actorUserId!==a.userId||session.actorAuthVersion!==a.authVersion)throw Error('turn-session-not-found');
+    return this.#store.transact(current=>{const state=requireState(current,s);if(state.recoveryHold)throw Error('workspace-recovery-hold');const session=sessionOf(state,sid,s);if(session.actorUserId!==a.userId||session.actorAuthVersion!==a.authVersion)throw Error('turn-session-not-found');
       const prior=state.turnIntents[ik];if(prior){if(prior.payloadSha256!==payloadSha256)throw Error('turn-idempotency-conflict');return {state,value:{turn:state.turns[prior.turnId]!,replayed:true}};}
       const turn:TurnRecord={id,sessionId:session.id,scope:s,actor:a,requestKey:key,payloadSha256,message:normalized.message,status:'queued',createdAt:at,updatedAt:at,startedAt:null,finishedAt:null,startedSequence:null,terminalSequence:null,dispatchId:null,runtimeGeneration:null,cancelRequestedAt:null,base:null,executionOutcome:null,errorCode:null,persistenceOutcome:null,persistenceErrorCode:null,checkpoint:null};
       state.turns[id]=turn;state.turnIntents[ik]={payloadSha256,turnId:id};event(state,turn,'turn.queued',at,{});return {state,value:{turn,replayed:false}};});
@@ -75,7 +75,7 @@ export class TurnJournal{
       if(!prepared&&this.#initial){try{prepared=initialWorkspaceBase(await this.#initial(s));}catch(error){if(!(error instanceof Error)||error.message!=='turn-initial-base-unavailable')throw error;initialUnavailable=true;}}
       if(prepared&&!sameScope(prepared.reference.scope,s))throw Error('initial-workspace-scope-denied');
     }
-    return this.#store.transact(current=>{const state=requireState(current,s);pruneTerminalEventReceipts(state);
+    return this.#store.transact(current=>{const state=requireState(current,s);pruneTerminalEventReceipts(state);if(state.recoveryHold)return {state,value:null};
       if(state.activeTurnId){const active=state.turns[state.activeTurnId];if(!active||terminal(active.status))throw Error('invalid-persisted-turn-journal');return {state,value:{turn:active,replayed:true}};}
       const next=Object.values(state.turns).filter(turn=>turn.status==='queued').sort((a,b)=>a.createdAt-b.createdAt||a.id.localeCompare(b.id))[0];if(!next)return {state,value:null};
       const at=nowValid(this.#clock());
@@ -144,7 +144,7 @@ export class TurnJournal{
         throw Error('turn-checkpoint-conflict');
       }
       if(turn.status!=='checkpointing')throw Error('turn-runtime-scope-denied');
-      turn.persistenceOutcome='failed';turn.persistenceErrorCode=errorCode;turn.status='failed';turn.finishedAt=at;turn.updatedAt=at;state.activeTurnId=null;
+      turn.persistenceOutcome='failed';turn.persistenceErrorCode=errorCode;turn.status='failed';turn.finishedAt=at;turn.updatedAt=at;state.activeTurnId=null;if(errorCode==='turn-checkpoint-recovery-hold')state.recoveryHold={status:'reconciling',reasonCode:errorCode,since:at,nextAttemptAt:at+60_000,turnId:turn.id,dispatchId,runtimeGeneration:generation};
       turn.terminalSequence=event(state,turn,'turn.failed',at,{saved:false,executionOutcome:turn.executionOutcome,persistenceErrorCode:errorCode}).sequence;pruneTerminalEventReceipts(state);return {state,value:turn};
     });
   }
@@ -152,6 +152,8 @@ export class TurnJournal{
     const state=requireState(this.#store.read(),s);if(afterSequence>=state.nextSequence)throw Error('invalid-event-cursor');const gap=afterSequence<state.oldestSequence-1;if(gap)return {events:[],nextSequence:state.nextSequence,hasMore:false,oldestSequence:state.oldestSequence,snapshotRequired:true};const events=state.events.filter(row=>row.sequence>afterSequence).slice(0,limit);return {events,nextSequence:events.at(-1)?.sequence??afterSequence,hasMore:state.events.some(row=>row.sequence>(events.at(-1)?.sequence??afterSequence)),oldestSequence:state.oldestSequence,snapshotRequired:false};}
   async compact(rawScope:TurnScope,maxCount=TURN_EVENT_LIMIT,maxBytes=TURN_EVENT_BYTES_LIMIT){const s=scope(rawScope);return this.#store.transact(current=>{const state=requireState(current,s);pruneTerminalEventReceipts(state);const retained=retainEventWindow(state.events,maxCount,maxBytes);state.events=retained.events;state.oldestSequence=retained.oldestSequence;state.retentionBytes=retained.retentionBytes;return {state,value:{oldestSequence:state.oldestSequence,retentionBytes:state.retentionBytes,removed:state.nextSequence-1-state.events.length}};});}
   async snapshot(rawScope:TurnScope){const s=scope(rawScope);return requireState(this.#store.read(),s);}
+  recovery(rawScope:TurnScope){const s=scope(rawScope),state=requireState(this.#store.read(),s);if(!state.recoveryHold)return null;const turn=state.turns[state.recoveryHold.turnId];if(!turn||!turn.dispatchId||turn.runtimeGeneration===null)throw Error('invalid-persisted-turn-journal');return {hold:structuredClone(state.recoveryHold),turn:structuredClone(turn),identity:{scope:s,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration}};}
+  async advanceRecovery(rawScope:TurnScope,resolution:'committed'|'aborted'|'pending'){const s=scope(rawScope),next=nowValid(this.#clock())+60_000;return this.#store.transact(current=>{const state=requireState(current,s),hold=state.recoveryHold;if(!hold)return {state,value:null};if(resolution==='pending'){hold.nextAttemptAt=Math.max(hold.nextAttemptAt,next);return {state,value:structuredClone(hold)};}state.recoveryHold=null;return {state,value:null};});}
   /** Local current-call anchor. Runtime lease, plugin, Catalog and Preview
    * authority are checked separately; this does not mint a browser grant. */
   observerCaller(raw:ObserverCommand):{actor:TurnActor;identity:TurnRuntimeIdentity}{
@@ -194,6 +196,6 @@ export class TurnJournal{
   async view(rawScope:TurnScope):Promise<TurnJournalView>{const state=await this.snapshot(rawScope),turns:TurnJournalView['turns']={};
     for(const [id,turn] of Object.entries(state.turns)){const {requestKey:_,payloadSha256:__,dispatchId:___,base:____,startedSequence:_____,terminalSequence:______,...safe}=turn;turns[id]=safe;}
     const sessions:TurnJournalView['sessions']={};for(const [id,session] of Object.entries(state.sessions)){const {actorUserId:_,actorAuthVersion:__,...safe}=session;sessions[id]=safe;}
-    return {schemaVersion:1,scope:state.scope,nextSequence:state.nextSequence,activeTurnId:state.activeTurnId,sessions,turns};
+    const recoveryHold=state.recoveryHold&&{status:state.recoveryHold.status,reasonCode:state.recoveryHold.reasonCode,since:state.recoveryHold.since,nextAttemptAt:state.recoveryHold.nextAttemptAt};return {schemaVersion:2,scope:state.scope,nextSequence:state.nextSequence,activeTurnId:state.activeTurnId,recoveryHold,sessions,turns};
   }
 }

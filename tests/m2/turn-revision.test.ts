@@ -80,7 +80,7 @@ test('restore bounds aggregate blobs and verifies bytes after storage metadata',
 
 test('forged blob keys and empty frozen artifacts fail closed',async()=>{
   const f=fixture(),port=f.port(),receipt=await port.commit(commitInput()),bytes=f.bucket.objects.get(receipt.objectKey)!,manifest=JSON.parse(new TextDecoder().decode(bytes));
-  manifest.files.objectKey='turn-blobs/sessions/'+manifest.files.sha256;f.bucket.objects.set(receipt.objectKey,new TextEncoder().encode(JSON.stringify(manifest)));
+  manifest.files.objectKey='turn-blobs-v3/tenant-a/project-a/workspace-a/sessions/'+manifest.files.sha256;f.bucket.objects.set(receipt.objectKey,new TextEncoder().encode(JSON.stringify(manifest)));
   await assert.rejects(port.observe(identity),/invalid-turn-revision-manifest/);
   for(const empty of ['files','session'] as const){
     const bucket=new Bucket(),snapshots:FrozenTurnSnapshotPort={async freeze(runtimeIdentity){return {identity:runtimeIdentity,filesArchive:empty==='files'?new Uint8Array():f.files,piSession:empty==='session'?new Uint8Array():f.session};}};

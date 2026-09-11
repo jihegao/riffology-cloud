@@ -14,7 +14,7 @@ import {serviceRuntimeActorName} from './durable.ts';
 import {tenantQuotaName,type TenantQuota} from '../quota/durable.ts';
 import {leaseReference} from '../quota/core.ts';
 import {turnDigest} from '../turn/protocol.ts';
-import {REVISION_STORE_ACTOR} from '../turn-runtime/revision-store-client.ts';
+import {revisionStoreActorName} from '../turn-runtime/revision-store-client.ts';
 import type {RevisionStore} from '../turn-runtime/revision-store.ts';
 export interface ServiceRuntimeEnv{
  SERVICE_RUNTIME:DurableObjectNamespace<ServiceRuntime>;
@@ -59,7 +59,7 @@ export class ServiceRuntime extends DurableObject<ServiceRuntimeEnv>{
  async #input(raw:ServiceRuntimeInput){const input=serviceRuntimeInput(raw);if(!this.env.SERVICE_RUNTIME.idFromName(await serviceRuntimeActorName(input)).equals(this.ctx.id))throw Error('service-runtime-actor-scope-denied');return input;}
  async #supervisor(input:ServiceRuntimeInput){
   const sandbox=this.env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(input));
-  const source={files:async(source:ServiceRuntimeInput['spec']['plan']['source'])=>this.env.REVISION_STORE.getByName(REVISION_STORE_ACTOR).serviceFiles(source)};
+  const source={files:async(source:ServiceRuntimeInput['spec']['plan']['source'])=>{const scope=source.kind==='saved-turn'?source.identity.scope:source.reference.scope;return this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source);}};
   return new SqlServiceRuntimeSupervisor(this.ctx.storage,input.scope,new SandboxServiceNativeBackend(sandbox,source,input.spec.runtimeImage),Date.now,async(_,context)=>this.#release(input,context));
  }
  async #release(input?:ServiceRuntimeInput,context?:{kind:'native-stop'|'platform-destroy';fencedAt:number;authorizedAt:number|null}){

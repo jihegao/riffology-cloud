@@ -16,6 +16,7 @@ export async function createPreviewVerticalFixture({observer=false,observerExecu
  import {PreviewRoutes} from './services/preview/routes.ts';
  import {TurnJournal} from './services/turn/journal.ts';import {DurableTurnStore} from './services/turn/store.ts';
  import {initialWorkspaceArchive} from './services/turn-runtime/initial-workspace-archive.ts';
+ import {revisionStoreActorName} from './services/turn-runtime/revision-store-client.ts';
  import {serviceRunActorName} from './services/run/host.ts';import {serviceRuntimeActorName} from './services/run/durable.ts';
  export {ServiceRun} from './services/run/durable.ts';export {TenantQuota} from './services/quota/durable.ts';export {RevisionStore} from './services/turn-runtime/revision-store.ts';
  export class WorkspaceAgent extends Base{
@@ -26,7 +27,7 @@ export async function createPreviewVerticalFixture({observer=false,observerExecu
    await j.submit(scope,actor,session.id,'turn-'+key,{message:'Create fixture'});const turn=(await j.claim(scope,1)).turn;
    const identity={scope,sessionId:session.id,turnId:turn.id,dispatchId:turn.dispatchId,generation:1},encode=v=>new TextEncoder().encode(v);
    const filesArchive=initialWorkspaceArchive({'app/preview.json':encode(JSON.stringify({schemaVersion:1,runtime:'python',entrypoint:'app/main.py',dependencyLock:'app/requirements.lock',port:8080,healthPath:'/health',...(${observer}?{observation:{pagePath:'/observe',statePath:'/state'}}:{})})),'app/main.py':encode('print('+JSON.stringify(key)+')'),'app/requirements.lock':encode(JSON.stringify({schemaVersion:1,packages:{}}))});
-   const receipt=await this.env.REVISION_STORE.getByName('workspace-revisions-v1').commit({identity,base:turn.base,outcome:'completed',executionErrorCode:null,snapshot:{identity,filesArchive,piSession:encode('private-session')}});
+   const receipt=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).commit({identity,base:turn.base,outcome:'completed',executionErrorCode:null,snapshot:{identity,filesArchive,piSession:encode('private-session')}});
    await j.beginCheckpoint(scope,{turnId:turn.id,dispatchId:turn.dispatchId,runtimeGeneration:1,outcome:'completed'});
    await j.commitCheckpoint(scope,{turnId:turn.id,dispatchId:turn.dispatchId,runtimeGeneration:1,checkpoint:receipt});
    return {identity,revision:receipt};

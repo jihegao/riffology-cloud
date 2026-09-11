@@ -3,6 +3,7 @@ import type { TurnActor, TurnRecord, TurnScope } from './protocol.ts';
 export interface TurnAlarmDispatcher {
   tick(scope:TurnScope,generation:number):Promise<TurnRecord|null>;
   cancel(scope:TurnScope,actor:TurnActor,turn:TurnRecord):Promise<TurnRecord>;
+  nextWakeAt?(scope:TurnScope):number|null;
 }
 export interface TurnAlarmPort {
   schedule(at:number):Promise<void>;
@@ -55,8 +56,9 @@ export class TurnAlarmLoop {
     await this.#alarm.schedule(positive(this.#clock())+this.#timing.retryMs);
     let result:TurnRecord|null;
     try{result=await this.#dispatcher.tick(scope,generation);}catch(error){throw error;}
-    if(!result){await this.#alarm.clear();return null;}
-    await this.#alarm.schedule(positive(this.#clock())+(TERMINAL.has(result.status)?1:this.#timing.pollMs));
+    const recoveryWake=this.#dispatcher.nextWakeAt?.(scope)??null;
+    if(!result&&!recoveryWake){await this.#alarm.clear();return null;}
+    await this.#alarm.schedule(recoveryWake??(positive(this.#clock())+(result&&TERMINAL.has(result.status)?1:this.#timing.pollMs)));
     return result;
   }
 }
