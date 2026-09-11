@@ -188,6 +188,10 @@ async function validatePreviewDomain(release){
   ];
 }
 function parseJsonOutput(result){if(result.status!==0)throw Error('cloud-command-failed');return JSON.parse(result.stdout);}
+export async function retryJsonCommand(runner,bin,args,{attempts=3,sleepFn=ms=>new Promise(resolve=>setTimeout(resolve,ms)),retryMs=2_000}={}){
+  if(typeof runner!=='function'||typeof bin!=='string'||!Array.isArray(args)||!Number.isSafeInteger(attempts)||attempts<1||attempts>5||typeof sleepFn!=='function'||!Number.isSafeInteger(retryMs)||retryMs<0||retryMs>30_000)throw Error('cloud-command-retry-input-invalid');
+  for(let attempt=1;attempt<=attempts;attempt++){try{return parseJsonOutput(runner(bin,args));}catch{if(attempt===attempts)throw Error('cloud-command-retries-exhausted');await sleepFn(retryMs);}}
+}
 async function cloudChecks(root,config,release,releaseManifest,workerVersionId,configPath,releasePhase=null){
   const wrangler=resolve(root,'node_modules/.bin/wrangler'),args=['--config',configPath];
   const checks=[];
@@ -215,15 +219,15 @@ async function cloudChecks(root,config,release,releaseManifest,workerVersionId,c
   }
   if(releasePhase==='predeploy'){
     try{
-      const deployment=parseJsonOutput(command(wrangler,['deployments','status','--json',...args])),versions=deployment?.versions??[],activeId=versions.length===1&&versions[0]?.percentage===100?versions[0]?.version_id:null;
+      const deployment=await retryJsonCommand(command,wrangler,['deployments','status','--json',...args]),versions=deployment?.versions??[],activeId=versions.length===1&&versions[0]?.percentage===100?versions[0]?.version_id:null;
       if(!WORKER_VERSION_ID.test(activeId??''))checks.push(check('predeploy-turn-gate-closed',false,'release-predeploy-requires-one-active-worker-version'));
-      else{const version=parseJsonOutput(command(wrangler,['versions','view',activeId,'--json',...args]));checks.push(validatePredeployGateClosed(version,deployment));}
+      else{const version=await retryJsonCommand(command,wrangler,['versions','view',activeId,'--json',...args]);checks.push(validatePredeployGateClosed(version,deployment));}
     }catch{checks.push(check('predeploy-turn-gate-closed',false,'current-worker-version-query-failed'));}
   }
   if(releasePhase==='postdeploy'){
     if(!WORKER_VERSION_ID.test(workerVersionId??''))checks.push(check('deployed-worker-version',false,'release-cloud-check-requires---worker-version-id'));
     else try{
-      const version=parseJsonOutput(command(wrangler,['versions','view',workerVersionId,'--json',...args])),deployment=parseJsonOutput(command(wrangler,['deployments','status','--json',...args]));
+      const version=await retryJsonCommand(command,wrangler,['versions','view',workerVersionId,'--json',...args]),deployment=await retryJsonCommand(command,wrangler,['deployments','status','--json',...args]);
       checks.push(validateDeployedWorkerVersion(releaseManifest,version,deployment));
     }catch{checks.push(check('deployed-worker-version',false,'worker-version-or-deployment-query-failed'));}
   }

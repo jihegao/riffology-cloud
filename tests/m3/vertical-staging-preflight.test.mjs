@@ -6,7 +6,7 @@ import {EventEmitter} from 'node:events';
 import {fileURLToPath} from 'node:url';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
-import {WORKER_VERSION_METADATA_BINDING,buildReleaseManifest,createStagingConfigOverlay,inspectManagedImage,inspectTrustedPiImageContent,runPreflight,validateDeployedWorkerVersion,validatePredeployGateClosed,validateReleaseManifest,validateStagingTopology,validateWorkerSource} from '../../scripts/m3/vertical-staging-preflight.mjs';
+import {WORKER_VERSION_METADATA_BINDING,buildReleaseManifest,createStagingConfigOverlay,inspectManagedImage,inspectTrustedPiImageContent,retryJsonCommand,runPreflight,validateDeployedWorkerVersion,validatePredeployGateClosed,validateReleaseManifest,validateStagingTopology,validateWorkerSource} from '../../scripts/m3/vertical-staging-preflight.mjs';
 import {activeWorkerVersionId,deploymentArgs,runControlledRelease,verifyPausedContainerQuiet} from '../../scripts/m3/vertical-staging-release.mjs';
 import {PRODUCT_TOOL_BRIDGE_SHA256,PRODUCT_TOOL_LEDGER_SCHEMA_SHA256,PRODUCT_TOOL_LEDGER_SCHEMA_VERSION,PRODUCT_TOOL_PROTOCOL_VERSION} from '../../scripts/m3/vertical-runtime-preflight.mjs';
 
@@ -101,6 +101,11 @@ test('release predeploy independently proves the currently deployed turn gate is
   assert.deepEqual(validatePredeployGateClosed(version,deployment),{name:'predeploy-turn-gate-closed',status:'passed'});
   assert.equal(validatePredeployGateClosed({...version,resources:{bindings:[{name:'M2_TURNS_ENABLED',type:'plain_text',text:'true'}]}},deployment).status,'blocked');
   assert.equal(validatePredeployGateClosed(version,{versions:[{version_id:id,percentage:99}]}).status,'blocked');
+});
+
+test('release control-plane JSON reads retry boundedly without accepting failed or malformed output',async()=>{
+  let calls=0,sleeps=0;const value=await retryJsonCommand(()=>{calls+=1;return calls<3?{status:1,stdout:''}:{status:0,stdout:'{"ok":true}'};},'wrangler',['deployments','status'],{sleepFn:async()=>{sleeps+=1;},retryMs:0});assert.deepEqual(value,{ok:true});assert.equal(calls,3);assert.equal(sleeps,2);
+  calls=0;await assert.rejects(()=>retryJsonCommand(()=>{calls+=1;return {status:0,stdout:'not-json'};},'wrangler',['versions','view'],{attempts:2,sleepFn:async()=>{},retryMs:0}),/cloud-command-retries-exhausted/);assert.equal(calls,2);
 });
 
 test('release predeploy creates a temporary enabled overlay while the checked config remains paused',async()=>{
