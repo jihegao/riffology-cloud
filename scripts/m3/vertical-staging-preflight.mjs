@@ -14,6 +14,9 @@ export const WORKER_NAME='riffology-m1-gateway-staging';
 export const CONTROL_ORIGIN='https://m1.riff-demo.gaojihe.cn';
 export const PREVIEW_ORIGIN='https://preview.m1.riff-demo.gaojihe.cn';
 export const PREVIEW_ROUTE='*.preview.m1.riff-demo.gaojihe.cn/*';
+export const STAGING_DATABASE=Object.freeze({name:'riffology-catalog-staging-v3-20260911',id:'f122099b-8eaa-4eca-83a0-755de0f8b46b'});
+export const STAGING_CHECKPOINT_BUCKET='riffology-workspace-checkpoints-staging-v3-20260911';
+export const STAGING_MODEL_BUCKET='riffology-m3-model-content-staging';
 export const REQUIRED_SECRETS=Object.freeze([
   'BETTER_AUTH_SECRET','GOOGLE_CLIENT_ID','GOOGLE_CLIENT_SECRET','M2_MODEL_PROXY_REQUEST_KEY',
   'M2_TOOL_BRIDGE_REQUEST_KEY','M2_MODEL_TURN_CAPABILITY_KEY','M2_PROJECT_EFFECT_CAPABILITY_KEY',
@@ -65,7 +68,7 @@ export function validateStagingTopology(config,migrations,{release=false}={}){
     check('container-images',same(classes,REQUIRED_CONTAINERS)&&images,'use-four-account-registry-digest-pinned-linux-amd64-images'),
     check('service-image-pin',typeof config.vars?.M3_SERVICE_IMAGE==='string'&&config.vars.M3_SERVICE_IMAGE===service?.image,'service-policy-must-pin-deployed-service-image'),
     check('private-services',same(serviceBindings,['MODEL_PROXY','TOOL_BRIDGE'])&&services.every(value=>value.service===WORKER_NAME)&&services.find(value=>value.binding==='MODEL_PROXY')?.entrypoint==='ModelProxyService'&&services.find(value=>value.binding==='TOOL_BRIDGE')?.entrypoint==='ToolBridgeService','use-only-two-self-bound-private-services'),
-    check('dedicated-storage',config.d1_databases?.length===1&&config.d1_databases[0]?.database_name==='riffology-catalog-staging'&&config.d1_databases[0]?.database_id==='993f2fd9-a135-4a93-9caa-10828dec6635'&&r2.some(value=>value.binding==='WORKSPACE_CHECKPOINTS'&&value.bucket_name==='riffology-m1-workspace-checkpoints-staging')&&r2.some(value=>value.binding==='MODEL_CONTENT'&&value.bucket_name==='riffology-m3-model-content-staging'),'use-dedicated-staging-d1-and-r2-buckets'),
+    check('dedicated-storage',config.d1_databases?.length===1&&config.d1_databases[0]?.database_name===STAGING_DATABASE.name&&config.d1_databases[0]?.database_id===STAGING_DATABASE.id&&r2.length===2&&r2.some(value=>value.binding==='WORKSPACE_CHECKPOINTS'&&value.bucket_name===STAGING_CHECKPOINT_BUCKET)&&r2.some(value=>value.binding==='MODEL_CONTENT'&&value.bucket_name===STAGING_MODEL_BUCKET)&&STAGING_CHECKPOINT_BUCKET!==STAGING_MODEL_BUCKET,'use-dedicated-staging-d1-and-r2-buckets'),
     check('recovery-cron',same(config.triggers?.crons??[],['* * * * *']),'retain-one-bounded-staging-recovery-sweep'),
     check('catalog-migrations',same(migrations,REQUIRED_MIGRATIONS),'include-catalog-migrations-0001-through-0008'),
     check('no-local-runtime-inputs',!JSON.stringify(config).includes('127.0.0.1')&&!JSON.stringify(config).includes('localhost')&&!Object.hasOwn(config.vars??{},'M1_GOOGLE_OAUTH_EGRESS_CAPABILITY')&&!Object.keys(config.vars??{}).some(name=>name.startsWith('M3_VERTICAL_')),'remove-loopback-local-proxy-and-vertical-telemetry-inputs'),
@@ -112,10 +115,10 @@ function parseJsonOutput(result){if(result.status!==0)throw Error('cloud-command
 async function cloudChecks(root,config,release){
   const wrangler=resolve(root,'node_modules/.bin/wrangler'),args=['--config',resolve(root,STAGING_CONFIG)];
   const checks=[];
-  try{const rows=parseJsonOutput(command(wrangler,['d1','list','--json',...args]));checks.push(check('cloud-d1',rows.some(value=>value.name==='riffology-catalog-staging'&&value.uuid==='993f2fd9-a135-4a93-9caa-10828dec6635'),'create-reviewed-staging-d1'));}catch{checks.push(check('cloud-d1',false,'cloud-d1-query-failed'));}
-  for(const bucket of ['riffology-m1-workspace-checkpoints-staging','riffology-m3-model-content-staging']){const result=command(wrangler,['r2','bucket','info',bucket,...args]);checks.push(check(`cloud-r2:${bucket}`,result.status===0,`create-r2-bucket:${bucket}`));}
+  try{const rows=parseJsonOutput(command(wrangler,['d1','list','--json',...args]));checks.push(check('cloud-d1',rows.some(value=>value.name===STAGING_DATABASE.name&&value.uuid===STAGING_DATABASE.id),'create-reviewed-staging-d1'));}catch{checks.push(check('cloud-d1',false,'cloud-d1-query-failed'));}
+  for(const bucket of [STAGING_CHECKPOINT_BUCKET,STAGING_MODEL_BUCKET]){const result=command(wrangler,['r2','bucket','info',bucket,...args]);checks.push(check(`cloud-r2:${bucket}`,result.status===0,`create-r2-bucket:${bucket}`));}
   try{const rows=parseJsonOutput(command(wrangler,['secret','list','--format','json',...args]));const names=rows.map(value=>value.name);checks.push(check('cloud-secrets',REQUIRED_SECRETS.every(name=>names.includes(name)),`upload-missing-worker-secrets:${REQUIRED_SECRETS.filter(name=>!names.includes(name)).join(',')}`));}catch{checks.push(check('cloud-secrets',false,'cloud-secret-query-failed'));}
-  const migrations=command(wrangler,['d1','migrations','list','riffology-catalog-staging','--remote',...args]);
+  const migrations=command(wrangler,['d1','migrations','list',STAGING_DATABASE.name,'--remote',...args]);
   const pending=migrations.status===0?[...migrations.stdout.matchAll(/\b(\d{4}_[A-Za-z0-9_.-]+\.sql)\b/g)].map(value=>value[1]):[];
   checks.push(check('cloud-catalog-migrations',migrations.status===0&&pending.length===0,pending.length?`apply-remote-migrations:${[...new Set(pending)].join(',')}`:'remote-migration-query-failed'));
   const credentials=command(wrangler,['containers','registries','credentials','registry.cloudflare.com','--pull','--expiration-minutes','5','--json',...args]);
