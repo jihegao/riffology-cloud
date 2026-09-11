@@ -57,6 +57,8 @@ class PiSandbox implements TrustedPiSandboxActorApi{
   readTurnFile(value:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['readFile']>){assert.deepEqual(value,identity);return this.readFile(...input);}
   startTurnProcess(value:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['startProcess']>){assert.deepEqual(value,identity);return this.startProcess(...input);}
   getTurnProcess(value:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['getProcess']>){assert.deepEqual(value,identity);return this.getProcess(...input);}
+  async startTurnProcessSnapshot(value:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['startProcess']>){assert.deepEqual(value,identity);const process=await this.startProcess(...input);return {id:process.id,status:await process.getStatus(),...(Number.isSafeInteger(process.exitCode)?{exitCode:process.exitCode}: {})};}
+  async getTurnProcessSnapshot(value:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['getProcess']>){assert.deepEqual(value,identity);const process=await this.getProcess(...input);return process===null?null:{id:process.id,status:await process.getStatus(),...(Number.isSafeInteger(process.exitCode)?{exitCode:process.exitCode}: {})};}
   async cancelTurnProcess(value:TurnRuntimeIdentity){assert.deepEqual(value,identity);this.calls.push('pi.cancel');return {dispatched:true};}
 }
 
@@ -72,6 +74,8 @@ class ObserverPiSandbox implements TrustedPiSandboxActorApi{
   readTurnFile():Promise<never>{throw Error('ordinary-pi-read-must-not-run');}
   startTurnProcess():Promise<never>{throw Error('ordinary-pi-start-must-not-run');}
   getTurnProcess():Promise<never>{throw Error('ordinary-pi-process-must-not-run');}
+  startTurnProcessSnapshot():Promise<never>{throw Error('ordinary-pi-start-must-not-run');}
+  getTurnProcessSnapshot():Promise<never>{throw Error('ordinary-pi-process-must-not-run');}
   cancelTurnProcess():Promise<never>{throw Error('ordinary-pi-cancel-must-not-run');}
   async destroyAndReleaseState():Promise<never>{throw Error('ordinary-pi-release-must-not-run');}
   async queryObserverExecution(identity:TurnRuntimeIdentity){this.calls.push('pi.queryObserverExecution');return this.query(identity);}
@@ -86,7 +90,7 @@ function fixture(outcome:'completed'|'failed'|'cancelled'|'interrupted'='complet
     resolveTrustedPiSandbox(name){trustedActors.push(name);return sandbox;},
     clock:()=>1000,
   };
-  return {calls,bucket,workspaceArchive,projectActors,trustedActors,release:assembleProductTurnRuntimeRelease(identity,dependencies)};
+  return {calls,bucket,workspaceArchive,projectActors,trustedActors,sandbox,release:assembleProductTurnRuntimeRelease(identity,dependencies)};
 }
 
 test('release restores the derived Project Sandbox before starting one derived Trusted Pi Sandbox and freezes one Revision',async()=>{
@@ -109,6 +113,12 @@ test('assembly and both returned ports reject missing dependencies or a differen
   const bucket=new Bucket(),release=assembleProductTurnRuntimeRelease(identity,{revisions:new Store(bucket),resolveProjectSandbox(){resolved++;return {} as never;},resolveTrustedPiSandbox(){resolved++;return {} as never;}});
   const other={...identity,dispatchId:'dispatch-b'};
   await assert.rejects(release.execution.observe(other),/release-scope-denied/);await assert.rejects(release.execution.release(other),/release-scope-denied/);await assert.rejects(release.checkpoints.reconcile(other,{operationId:'commit:x',inputSha256:'a'.repeat(64)}),/release-scope-denied/);assert.equal(resolved,0);assert.equal(bucket.objects.size,0);
+});
+
+test('cross-DO process snapshots must be plain and closed before runtime observation',async()=>{
+  const f=fixture();f.sandbox.startTurnProcessSnapshot=async()=>({id:'pi-invalid',status:'running',extra:'rpc-target-shape'} as never);
+  await assert.rejects(f.release.execution.start({...identity,actor,message:'Build model',base}),/invalid-trusted-pi-process-snapshot/);
+  assert.equal(f.calls.filter(value=>value==='pi.start').length,0);
 });
 
 test('currentObserverExecution uses only the derived Trusted Pi observer RPC',async()=>{
@@ -138,6 +148,8 @@ test('currentObserverExecution rejects without the dedicated RPC and never falls
     readTurnFile:async()=>{throw Error('ordinary-pi-read-must-not-run');},
     startTurnProcess:async()=>{throw Error('ordinary-pi-start-must-not-run');},
     getTurnProcess:async()=>{throw Error('ordinary-pi-process-must-not-run');},
+    startTurnProcessSnapshot:async()=>{throw Error('ordinary-pi-start-must-not-run');},
+    getTurnProcessSnapshot:async()=>{throw Error('ordinary-pi-process-must-not-run');},
     cancelTurnProcess:async()=>{throw Error('ordinary-pi-cancel-must-not-run');},
     destroyAndReleaseState:async()=>{throw Error('ordinary-pi-release-must-not-run');},
   } satisfies TrustedPiSandboxActorApi;

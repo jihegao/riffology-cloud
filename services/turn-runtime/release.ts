@@ -1,6 +1,6 @@
 import type { TurnCheckpointPort, TurnExecutionPort } from './core.ts';
 import { sameTurnRuntimeIdentity, turnRuntimeIdentity, type TurnRuntimeIdentity } from './identity.ts';
-import { SandboxTrustedPiHostPort, type TrustedPiSandboxActorApi, type TrustedPiSandboxProcessApi } from './pi-native.ts';
+import { SandboxTrustedPiHostPort, type TrustedPiProcessSnapshot, type TrustedPiProcessView, type TrustedPiSandboxActorApi, type TrustedPiSandboxProcessApi } from './pi-native.ts';
 import { TrustedPiExecutionAdapter } from './pi-execution.ts';
 import { RevisionStoreCheckpointPort, type RevisionStoreRpc } from './revision-store-client.ts';
 import { ProductTurnSnapshotPort } from './snapshot.ts';
@@ -30,7 +30,13 @@ function project(value:unknown):ProjectWorkspaceRpc{
 }
 function trusted(value:unknown):TrustedPiSandboxActorApi{
   const actor=value as TrustedPiSandboxActorApi;
-  if(!value||typeof value!=='object'||typeof actor.writeTurnFile!=='function'||typeof actor.readTurnFile!=='function'||typeof actor.startTurnProcess!=='function'||typeof actor.getTurnProcess!=='function'||typeof actor.cancelTurnProcess!=='function'||typeof actor.destroyAndReleaseState!=='function')reject('product-turn-release-trusted-pi-sandbox-required');return actor;
+  if(!value||typeof value!=='object'||typeof actor.writeTurnFile!=='function'||typeof actor.readTurnFile!=='function'||typeof actor.startTurnProcess!=='function'||typeof actor.getTurnProcess!=='function'||typeof actor.startTurnProcessSnapshot!=='function'||typeof actor.getTurnProcessSnapshot!=='function'||typeof actor.cancelTurnProcess!=='function'||typeof actor.destroyAndReleaseState!=='function')reject('product-turn-release-trusted-pi-sandbox-required');return actor;
+}
+function processSnapshot(value:unknown,cancel:(id:string,signal?:string)=>Promise<void>):TrustedPiProcessView{
+  const raw=value as TrustedPiProcessSnapshot,keys=raw&&typeof raw==='object'&&!Array.isArray(raw)&&Number.isSafeInteger(raw.exitCode)?['id','status','exitCode']:['id','status'];
+  if(!raw||typeof raw!=='object'||Array.isArray(raw)||Object.getPrototypeOf(raw)!==Object.prototype||Object.keys(raw).length!==keys.length||keys.some(key=>!Object.hasOwn(raw,key))||typeof raw.id!=='string'||raw.id.length<1||typeof raw.status!=='string'||raw.status.length<1||(Object.hasOwn(raw,'exitCode')&&!Number.isSafeInteger(raw.exitCode)))reject('invalid-trusted-pi-process-snapshot');
+  const snapshot={id:raw.id,status:raw.status,...(Object.hasOwn(raw,'exitCode')?{exitCode:raw.exitCode}: {})};
+  return {...snapshot,async getStatus(){return snapshot.status;},async kill(signal?:string){await cancel(snapshot.id,signal);}};
 }
 
 /** Resolves one Trusted Pi Sandbox lazily because the actor name uses Web
@@ -42,8 +48,8 @@ class IdentityBoundTrustedPiSandbox implements TrustedPiSandboxProcessApi{
   #target():Promise<TrustedPiSandboxActorApi>{return this.#resolved??=sandboxActorIds(this.#identity.scope,this.#identity.turnId,this.#identity.dispatchId).then(ids=>trusted(this.#resolve(ids.trustedPi)));}
   async writeFile(...args:Parameters<TrustedPiSandboxProcessApi['writeFile']>){return (await this.#target()).writeTurnFile(this.#identity,...args);}
   async readFile(...args:Parameters<TrustedPiSandboxProcessApi['readFile']>){return (await this.#target()).readTurnFile(this.#identity,...args);}
-  async startProcess(...args:Parameters<TrustedPiSandboxProcessApi['startProcess']>){return (await this.#target()).startTurnProcess(this.#identity,...args);}
-  async getProcess(...args:Parameters<TrustedPiSandboxProcessApi['getProcess']>){return (await this.#target()).getTurnProcess(this.#identity,...args);}
+  async startProcess(...args:Parameters<TrustedPiSandboxProcessApi['startProcess']>){const target=await this.#target();return processSnapshot(await target.startTurnProcessSnapshot(this.#identity,...args),async(id,signal)=>{if(signal!==undefined&&signal!=='SIGTERM')reject('trusted-pi-native-cancel-signal-invalid');await target.cancelTurnProcess(this.#identity,id);});}
+  async getProcess(...args:Parameters<TrustedPiSandboxProcessApi['getProcess']>){const target=await this.#target(),value=await target.getTurnProcessSnapshot(this.#identity,...args);return value===null?null:processSnapshot(value,async(id,signal)=>{if(signal!==undefined&&signal!=='SIGTERM')reject('trusted-pi-native-cancel-signal-invalid');await target.cancelTurnProcess(this.#identity,id);});}
   async cancelProcessOnce(id:string){return (await this.#target()).cancelTurnProcess(this.#identity,id);}
   async destroyAndReleaseState(){return (await this.#target()).destroyAndReleaseState(this.#identity);}
   async queryObserverExecution(raw:TurnRuntimeIdentity){const identity=bound(raw,this.#identity),target=await this.#target();if(!target.queryObserverExecution)reject('trusted-pi-observer-reader-required');return target.queryObserverExecution(identity);}

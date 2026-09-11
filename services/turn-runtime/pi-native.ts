@@ -25,8 +25,8 @@ export interface TrustedPiSandboxActorApi{
   readTurnFile(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['readFile']>):ReturnType<TrustedPiSandboxProcessApi['readFile']>;
   startTurnProcess(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['startProcess']>):ReturnType<TrustedPiSandboxProcessApi['startProcess']>;
   getTurnProcess(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['getProcess']>):ReturnType<TrustedPiSandboxProcessApi['getProcess']>;
-  startTurnProcessSnapshot?(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['startProcess']>):Promise<TrustedPiProcessSnapshot>;
-  getTurnProcessSnapshot?(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['getProcess']>):Promise<TrustedPiProcessSnapshot|null>;
+  startTurnProcessSnapshot(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['startProcess']>):Promise<TrustedPiProcessSnapshot>;
+  getTurnProcessSnapshot(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['getProcess']>):Promise<TrustedPiProcessSnapshot|null>;
   cancelTurnProcess(identity:TurnRuntimeIdentity,id:string):Promise<{dispatched:boolean}>;
   destroyAndReleaseState(identity:TurnRuntimeIdentity):Promise<{running:boolean}>;
   queryObserverExecution?(identity:TurnRuntimeIdentity):Promise<{expiresAt:number}>;
