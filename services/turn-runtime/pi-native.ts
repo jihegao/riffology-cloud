@@ -13,8 +13,7 @@ export interface TrustedPiSandboxProcessApi{
   readFile(path:string,options?:{encoding?:'utf8'|'base64'}):Promise<{success:boolean;path:string;content:string}>;
   startProcess(command:string,options:{processId:string;autoCleanup:false;timeout:number;cwd:string;encoding:'utf8';env:Record<string,string>}):Promise<TrustedPiProcessView>;
   getProcess(id:string):Promise<TrustedPiProcessView|null>;
-  destroy():Promise<void>;
-  releaseState():Promise<{running:boolean}>;
+  destroyAndReleaseState():Promise<{running:boolean}>;
   /** Must bypass SDK session initialization and container auto-start. */
   queryObserverExecution?(identity:TurnRuntimeIdentity):Promise<{expiresAt:number}>;
 }
@@ -59,7 +58,7 @@ export async function readCurrentObserverExecution(reader:Pick<TrustedPiSandboxP
  * start with an existing control file does not dispatch another Pi process. */
 export class SandboxTrustedPiHostPort implements TrustedPiHostPort,TrustedPiSessionFreezePort{
   readonly #sandbox:TrustedPiSandboxProcessApi;readonly #sessions:TrustedPiSessionSource;readonly #clock:()=>number;
-  constructor(sandbox:TrustedPiSandboxProcessApi,sessions:TrustedPiSessionSource,clock:()=>number=Date.now){if(!sandbox?.writeFile||!sandbox.readFile||!sandbox.startProcess||!sandbox.getProcess||!sandbox.destroy||!sandbox.releaseState||!sessions?.load)reject('trusted-pi-native-required');this.#sandbox=sandbox;this.#sessions=sessions;this.#clock=clock;}
+  constructor(sandbox:TrustedPiSandboxProcessApi,sessions:TrustedPiSessionSource,clock:()=>number=Date.now){if(!sandbox?.writeFile||!sandbox.readFile||!sandbox.startProcess||!sandbox.getProcess||!sandbox.destroyAndReleaseState||!sessions?.load)reject('trusted-pi-native-required');this.#sandbox=sandbox;this.#sessions=sessions;this.#clock=clock;}
   async start(raw:TurnRuntimeIdentity&{actor:TurnActor;message:string;base:TurnBaseCheckpoints;executionDeadlineAt?:number}):Promise<TrustedPiHostObservation>{
     const executionDeadlineAt=raw.executionDeadlineAt===undefined?undefined:positive(raw.executionDeadlineAt);
     if(executionDeadlineAt!==undefined&&(executionDeadlineAt<=this.#clock()||executionDeadlineAt>this.#clock()+600000))reject('trusted-pi-execution-expired');
@@ -94,7 +93,7 @@ export class SandboxTrustedPiHostPort implements TrustedPiHostPort,TrustedPiSess
     return observed;
   }
   async release(raw:TurnRuntimeIdentity):Promise<{running:boolean}>{
-    turnRuntimeIdentity(raw);await this.#sandbox.destroy();const state=await this.#sandbox.releaseState();
+    turnRuntimeIdentity(raw);const state=await this.#sandbox.destroyAndReleaseState();
     exact(state,['running'],'invalid-trusted-pi-release-state');if(typeof state.running!=='boolean')reject('invalid-trusted-pi-release-state');return {running:state.running};
   }
   async frozenSession(raw:TurnRuntimeIdentity):Promise<Uint8Array>{const identity=turnRuntimeIdentity(raw),location=await paths(identity),observation=await this.observe(identity);if(observation.phase!=='terminal')reject('trusted-pi-session-not-frozen');const resultText=await readText(this.#sandbox,location.result,MAX_RESULT_BYTES);if(!resultText)reject('trusted-pi-session-not-frozen');const saved=result(JSON.parse(resultText),identity),encoded=await readText(this.#sandbox,location.outputSession,Math.ceil(MAX_SESSION_BYTES*4/3)+4);if(!encoded)reject('trusted-pi-session-not-frozen');const bytes=unbase64(encoded);if(bytes.byteLength<1||bytes.byteLength>MAX_SESSION_BYTES||await digest(bytes)!==saved.outputSessionSha256)reject('invalid-trusted-pi-session-file');return Uint8Array.from(sessionSnapshot(bytes,identity));}

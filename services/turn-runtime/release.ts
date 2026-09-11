@@ -25,7 +25,7 @@ function project(value:unknown):ProjectWorkspaceRpc{
   if(!value||typeof value!=='object'||typeof (value as ProjectWorkspaceRpc).restoreWorkspace!=='function'||typeof (value as ProjectWorkspaceRpc).freezeWorkspace!=='function'||typeof (value as ProjectWorkspaceRpc).abortWorkspace!=='function')reject('product-turn-release-project-sandbox-required');return value as ProjectWorkspaceRpc;
 }
 function trusted(value:unknown):TrustedPiSandboxProcessApi{
-  if(!value||typeof value!=='object'||typeof (value as TrustedPiSandboxProcessApi).writeFile!=='function'||typeof (value as TrustedPiSandboxProcessApi).readFile!=='function'||typeof (value as TrustedPiSandboxProcessApi).startProcess!=='function'||typeof (value as TrustedPiSandboxProcessApi).getProcess!=='function'||typeof (value as TrustedPiSandboxProcessApi).destroy!=='function'||typeof (value as TrustedPiSandboxProcessApi).releaseState!=='function')reject('product-turn-release-trusted-pi-sandbox-required');return value as TrustedPiSandboxProcessApi;
+  if(!value||typeof value!=='object'||typeof (value as TrustedPiSandboxProcessApi).writeFile!=='function'||typeof (value as TrustedPiSandboxProcessApi).readFile!=='function'||typeof (value as TrustedPiSandboxProcessApi).startProcess!=='function'||typeof (value as TrustedPiSandboxProcessApi).getProcess!=='function'||typeof (value as TrustedPiSandboxProcessApi).destroyAndReleaseState!=='function')reject('product-turn-release-trusted-pi-sandbox-required');return value as TrustedPiSandboxProcessApi;
 }
 
 /** Resolves one Trusted Pi Sandbox lazily because the actor name uses Web
@@ -39,8 +39,7 @@ class IdentityBoundTrustedPiSandbox implements TrustedPiSandboxProcessApi{
   async readFile(...args:Parameters<TrustedPiSandboxProcessApi['readFile']>){return (await this.#target()).readFile(...args);}
   async startProcess(...args:Parameters<TrustedPiSandboxProcessApi['startProcess']>){return (await this.#target()).startProcess(...args);}
   async getProcess(...args:Parameters<TrustedPiSandboxProcessApi['getProcess']>){return (await this.#target()).getProcess(...args);}
-  async destroy(){return (await this.#target()).destroy();}
-  async releaseState(){return (await this.#target()).releaseState();}
+  async destroyAndReleaseState(){return (await this.#target()).destroyAndReleaseState();}
   async queryObserverExecution(raw:TurnRuntimeIdentity){const identity=bound(raw,this.#identity),target=await this.#target();if(!target.queryObserverExecution)reject('trusted-pi-observer-reader-required');return target.queryObserverExecution(identity);}
 }
 
