@@ -102,7 +102,7 @@ export async function runControlledRelease({
   if(!WORKER_SHA.test(workerSha??''))throw Error('controlled-release-requires-worker-sha');
   const enabled=createStagingConfigOverlay(root,{turnsEnabled:true}),paused=createStagingConfigOverlay(root,{turnsEnabled:false});
   const wrangler=resolve(root,'node_modules/.bin/wrangler'),pausedDryRun=mkdtempSync(resolve(tmpdir(),'riffology-m3-paused-forward-dry-run-'));
-  let openAttempted=false,closePromise=null,signalClosing=false,interruptedSignal=null,cleaned=false;
+  let openAttempted=false,closePromise=null,signalClosing=false,interruptedSignal=null,cleaned=false,releaseContext={};
   const cleanup=()=>{if(cleaned)return;cleaned=true;enabled.remove();paused.remove();rmSync(pausedDryRun,{recursive:true,force:true});};
   const performClose=async()=>{
     if(gateCloseRunner!==null){
@@ -129,14 +129,18 @@ export async function runControlledRelease({
 
     const pausedDeploy=runner(wrangler,deploymentArgs(paused.path,workerSha),300_000);if(pausedDeploy.status!==0)throw Error('paused-candidate-deploy-failed-or-unconfirmed');
     const pausedActive=inspectDeployment(wrangler,paused.path,predeploy.releaseManifest,false,runner);if(pausedActive.check.status!=='passed')throw Error('paused-candidate-deployment-unconfirmed');
+    releaseContext={predeploy,pausedCandidateVersionId:pausedActive.versionId};
     const platformProbeResult=await probeRunner({root,release:{workerSourceSha:workerSha,workerVersionId:pausedActive.versionId}});
     if(platformProbeResult?.status!=='passed')return {schemaVersion:1,status:'blocked',phase:'platform-probe',reasonCode:platformProbeResult?.reasonCode??'paused-candidate-platform-probe-blocked',pausedCandidateVersionId:pausedActive.versionId,predeploy,platformProbe:platformProbeResult};
     const platformProbe=validatePlatformProbe(platformProbeResult);
+    releaseContext={...releaseContext,platformProbe};
     ensureNotInterrupted();
     if(platformProbe.workerSourceSha!==workerSha||platformProbe.workerVersionId!==pausedActive.versionId)throw Error('paused-candidate-platform-probe-mismatch');
     const preOpenQuiet=validatePausedContainerQuiet(await quietRunner({root,config:paused.config,runner}),predeploy.releaseManifest.containerImages);
+    releaseContext={...releaseContext,preOpenQuiet};
     ensureNotInterrupted();
     const rechecked=inspectDeployment(wrangler,paused.path,predeploy.releaseManifest,false,runner),pausedCandidateRecheck={observedAt:Date.now(),workerVersionId:rechecked.versionId,check:rechecked.check};
+    releaseContext={...releaseContext,pausedCandidateRecheck};
     if(rechecked.versionId!==pausedActive.versionId||rechecked.check.status!=='passed'||pausedCandidateRecheck.observedAt<preOpenQuiet.observations.at(-1).observedAt)throw Error('paused-candidate-post-quiet-recheck-failed');
     await new Promise(resolve=>setImmediate(resolve));
     ensureNotInterrupted();
@@ -146,6 +150,7 @@ export async function runControlledRelease({
     if(deployed.status!==0)throw Error('turn-gate-open-deploy-failed-or-unconfirmed');
     const active=inspectDeployment(wrangler,enabled.path,predeploy.releaseManifest,true,runner);
     if(active.check.status!=='passed')throw Error('turn-gate-open-deployment-unconfirmed');
+    releaseContext={...releaseContext,workerVersionId:active.versionId};
     const postdeploy=await preflightRunner({root,cloud:true,releasePhase:'postdeploy',workerSha,workerVersionId:active.versionId,secretFiles,opencodeAuthFile,stagingConfigPath:enabled.path});
     ensureNotInterrupted();
     if(postdeploy.status!=='passed')throw Object.assign(Error('turn-gate-open-postdeploy-check-failed'),{postdeploy});
@@ -153,7 +158,7 @@ export async function runControlledRelease({
   }catch(error){
     if(!openAttempted&&!signalClosing&&!shouldAbort())throw error;
     const closed=await closeGate();
-    return {schemaVersion:1,status:'blocked',phase:openAttempted?'postdeploy':'interrupted',reason:error instanceof Error?error.message:'controlled-release-failed',gateCloseConfirmed:closed.gateCloseConfirmed,closedVersionId:closed.closedVersionId,checks:closed.checks,...((error&&typeof error==='object'&&'postdeploy'in error)?{postdeploy:error.postdeploy}:{})};
+    return {schemaVersion:1,status:'blocked',phase:openAttempted?'postdeploy':'interrupted',reason:error instanceof Error?error.message:'controlled-release-failed',...releaseContext,gateCloseConfirmed:closed.gateCloseConfirmed,closedVersionId:closed.closedVersionId,checks:closed.checks,...((error&&typeof error==='object'&&'postdeploy'in error)?{postdeploy:error.postdeploy}:{})};
   }finally{
     for(const [name,handler] of handlers)signalSource?.removeListener(name,handler);
     cleanup();

@@ -163,7 +163,7 @@ test('controlled release uses one enabled overlay and forward-deploys the same S
   };
   const preflightRunner=async input=>{preflights.push(input);const profile=JSON.parse(readFileSync(input.stagingConfigPath,'utf8'));return input.releasePhase==='predeploy'?{status:'passed',releaseManifest:buildReleaseManifest(profile,sha)}:{status:'blocked'};};
   const result=await runControlledRelease({root:directory,workerSha:sha,execute:true,runner,preflightRunner,probeRunner:async()=>({...probeEvidence(sha),workerVersionId:closedId}),quietRunner:async()=>quietEvidence(config())});
-  assert.equal(result.status,'blocked');assert.equal(result.gateCloseConfirmed,true);assert.equal(result.closedVersionId,closedId);assert.equal(preflights.length,2);assert.equal(preflights[0].stagingConfigPath,preflights[1].stagingConfigPath);
+  assert.equal(result.status,'blocked');assert.equal(result.gateCloseConfirmed,true);assert.equal(result.closedVersionId,closedId);assert.equal(result.workerVersionId,openId);assert.equal(result.pausedCandidateVersionId,closedId);assert.equal(result.platformProbe.status,'passed');assert.equal(result.preOpenQuiet.status,'passed');assert.equal(result.pausedCandidateRecheck.workerVersionId,closedId);assert.equal(preflights.length,2);assert.equal(preflights[0].stagingConfigPath,preflights[1].stagingConfigPath);
   const deploys=calls.filter(args=>args[0]==='deploy'&&!args.includes('--dry-run'));assert.equal(deploys.length,3);assert.ok(deploys.every(args=>args.includes(`source-${sha}`)&&args.includes('--containers-rollout=none')));
   assert.equal(existsSync(preflights[0].stagingConfigPath),false);assert.equal(JSON.parse(readFileSync(join(directory,'infra','wrangler.m3-vertical-staging.jsonc'),'utf8')).vars.M2_TURNS_ENABLED,'false');
 });
