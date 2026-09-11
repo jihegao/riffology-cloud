@@ -1,0 +1,446 @@
+{
+  "schemaVersion": 1,
+  "status": "blocked",
+  "phase": "platform-probe",
+  "reasonCode": "platform-probe-start-observation-deadline",
+  "pausedCandidateVersionId": "5efc93e3-0999-4623-b239-9aa9a4f1bbfc",
+  "predeploy": {
+    "schemaVersion": 1,
+    "observedAt": "2026-09-11T22:15:42.413Z",
+    "phase": "release-predeploy",
+    "status": "passed",
+    "releaseManifest": {
+      "schemaVersion": 1,
+      "workerSourceSha": "9dba377db97601a50ec142f03974707a111c18ea",
+      "workerVersionTag": "source-9dba377db97601a50ec142f03974707a111c18ea",
+      "workerVersionMetadataBinding": "CF_VERSION_METADATA",
+      "toolBridgeSha256": "a416c28c1ad19b149cdf1aa399ff4bb3cb3a06ea0198abaddcb5796157dbc0e7",
+      "toolProtocolVersion": "2",
+      "toolLedgerSchemaVersion": "1",
+      "toolLedgerSchemaSha256": "95b73690b776ecc6dba05a7c481bfe6c015b948a57ad88e0ae65b31c420e587a",
+      "containerImages": [
+        {
+          "name": "ProjectRuntime",
+          "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m1-project-staging@sha256:bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00"
+        },
+        {
+          "name": "ProjectToolSandbox",
+          "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-project-tools-staging@sha256:6e1c51f984b0a6786483c09c327118722e35597f0ab421d54a27b264a0446a58"
+        },
+        {
+          "name": "TrustedPiSandbox",
+          "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2"
+        },
+        {
+          "name": "ServiceSandbox",
+          "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8"
+        }
+      ]
+    },
+    "checks": [
+      {
+        "name": "checked-config-default-closed",
+        "status": "passed"
+      },
+      {
+        "name": "worker-identity",
+        "status": "passed"
+      },
+      {
+        "name": "staging-origins",
+        "status": "passed"
+      },
+      {
+        "name": "execution-gates-controlled-release",
+        "status": "passed"
+      },
+      {
+        "name": "tenant-capacity",
+        "status": "passed"
+      },
+      {
+        "name": "turn-operation-telemetry",
+        "status": "passed"
+      },
+      {
+        "name": "worker-version-metadata",
+        "status": "passed"
+      },
+      {
+        "name": "model-budget",
+        "status": "passed"
+      },
+      {
+        "name": "required-secrets",
+        "status": "passed"
+      },
+      {
+        "name": "durable-bindings",
+        "status": "passed"
+      },
+      {
+        "name": "durable-exports",
+        "status": "passed"
+      },
+      {
+        "name": "container-images",
+        "status": "passed"
+      },
+      {
+        "name": "service-image-pin",
+        "status": "passed"
+      },
+      {
+        "name": "private-services",
+        "status": "passed"
+      },
+      {
+        "name": "dedicated-storage",
+        "status": "passed"
+      },
+      {
+        "name": "recovery-cron",
+        "status": "passed"
+      },
+      {
+        "name": "catalog-migrations",
+        "status": "passed"
+      },
+      {
+        "name": "no-local-runtime-inputs",
+        "status": "passed"
+      },
+      {
+        "name": "worker-source-sha",
+        "status": "passed"
+      },
+      {
+        "name": "candidate-release-manifest",
+        "status": "passed"
+      },
+      {
+        "name": "runtime-secrets",
+        "status": "passed"
+      },
+      {
+        "name": "wrangler-dry-run",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-d1",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-r2:riffology-workspace-checkpoints-staging-v3-20260911",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-r2:riffology-m3-model-content-staging",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-secrets",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-catalog-migrations",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-container-image:ProjectRuntime",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-container-image:ProjectToolSandbox",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-container-image:TrustedPiSandbox",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-container-image:ServiceSandbox",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-trusted-pi-bridge-content",
+        "status": "passed"
+      },
+      {
+        "name": "predeploy-turn-gate-closed",
+        "status": "passed"
+      },
+      {
+        "name": "preview-dns",
+        "status": "passed"
+      },
+      {
+        "name": "preview-tls-san",
+        "status": "passed"
+      }
+    ]
+  },
+  "platformProbe": {
+    "schemaVersion": 1,
+    "status": "blocked",
+    "reasonCode": "platform-probe-start-observation-deadline",
+    "workerSourceSha": "9dba377db97601a50ec142f03974707a111c18ea",
+    "workerVersionId": "5efc93e3-0999-4623-b239-9aa9a4f1bbfc",
+    "probeWorker": {
+      "name": "riffology-issues-probe-dd6789874855826f9d359c76",
+      "origin": "https://m1.riff-demo.gaojihe.cn/__riffology-internal/issues-probe/dd6789874855826f9d359c76",
+      "pathPrefix": "/__riffology-internal/issues-probe/dd6789874855826f9d359c76",
+      "versionId": "9f0285c0-fc36-4426-ba71-dd3c259345d5",
+      "versionTag": "probe-dd6789874855826f9d359c76",
+      "capabilityBindingVerified": true,
+      "pathBindingVerified": true,
+      "binding": {
+        "name": "TRUSTED_PI_SANDBOX",
+        "type": "durable_object_namespace",
+        "className": "TrustedPiSandbox",
+        "scriptName": "riffology-m1-gateway-staging"
+      }
+    },
+    "containerApp": {
+      "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+      "name": "riffology-m3-trusted-pi-staging",
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2",
+      "version": 2
+    },
+    "actorA": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+    "actorB": "m2-t-ywzn2huutfujmxly2s6egj2tcnh67tqiijr2bguci6eah2cwxlrq",
+    "failure": {
+      "stage": "start-a-confirmed",
+      "action": "start",
+      "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+      "requestTimeoutMs": 180000,
+      "delivery": "confirmed",
+      "observedAt": 1789165009970
+    },
+    "progress": {
+      "startedAt": 1789164957811,
+      "timeline": [
+        {
+          "stage": "control-plane-read",
+          "action": null,
+          "actor": null,
+          "requestTimeoutMs": null,
+          "delivery": "not-applicable",
+          "observedAt": 1789164957811
+        },
+        {
+          "stage": "actors-derived",
+          "action": null,
+          "actor": null,
+          "requestTimeoutMs": null,
+          "delivery": "not-applicable",
+          "observedAt": 1789164960306
+        },
+        {
+          "stage": "probe-worker-confirmed",
+          "action": null,
+          "actor": null,
+          "requestTimeoutMs": null,
+          "delivery": "not-applicable",
+          "observedAt": 1789164974568
+        },
+        {
+          "stage": "probe-health",
+          "action": "health",
+          "actor": null,
+          "requestTimeoutMs": 20000,
+          "delivery": "unknown",
+          "observedAt": 1789164974568
+        },
+        {
+          "stage": "probe-health-confirmed",
+          "action": "health",
+          "actor": null,
+          "requestTimeoutMs": 20000,
+          "delivery": "confirmed",
+          "observedAt": 1789165005532
+        },
+        {
+          "stage": "start-a",
+          "action": "start",
+          "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+          "requestTimeoutMs": 180000,
+          "delivery": "unknown",
+          "observedAt": 1789165005532
+        },
+        {
+          "stage": "start-a-confirmed",
+          "action": "start",
+          "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+          "requestTimeoutMs": 180000,
+          "delivery": "confirmed",
+          "observedAt": 1789165009970
+        }
+      ]
+    },
+    "cleanup": {
+      "status": "passed",
+      "workerName": "riffology-issues-probe-dd6789874855826f9d359c76",
+      "identityVerifiedBeforeDelete": true,
+      "deleteAttempted": true,
+      "deleteExitConfirmed": true,
+      "absenceConfirmed": true,
+      "routeFallbackConfirmed": true,
+      "absenceDurationMs": 34707,
+      "recoveryRequired": false,
+      "observedAt": 1789165345497,
+      "actorCleanup": [
+        {
+          "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+          "status": "absent",
+          "quietMs": 30000,
+          "confirmedAt": 1789165292858,
+          "internalLifecycle": [
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165195490
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165202910
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165213392
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165223296
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165231072
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165245028
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165253546
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165261823
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165269029
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165278144
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165285472
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165292858
+            }
+          ],
+          "externalLifecycle": [
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165197216,
+              "instanceId": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487"
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165207657,
+              "instanceId": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487"
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165217533,
+              "instanceId": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487"
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "stopped",
+              "observedAt": 1789165225415,
+              "instanceId": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487"
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "stopped",
+              "observedAt": 1789165238642,
+              "instanceId": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487"
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "stopped",
+              "observedAt": 1789165247740,
+              "instanceId": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487"
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165256016,
+              "instanceId": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487"
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165263293,
+              "instanceId": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487"
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165272326,
+              "instanceId": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487"
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165279797,
+              "instanceId": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487"
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165287221,
+              "instanceId": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487"
+            },
+            {
+              "actor": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "absent",
+              "observedAt": 1789165295564,
+              "instanceId": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487"
+            }
+          ]
+        },
+        {
+          "actor": "m2-t-ywzn2huutfujmxly2s6egj2tcnh67tqiijr2bguci6eah2cwxlrq",
+          "status": "never-started",
+          "quietMs": 30000,
+          "confirmedAt": null,
+          "internalLifecycle": [],
+          "externalLifecycle": []
+        }
+      ]
+    }
+  }
+}
