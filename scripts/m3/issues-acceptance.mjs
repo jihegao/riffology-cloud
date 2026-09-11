@@ -86,7 +86,7 @@ async function waitTerminal(auth,turnId,{pollMs=5_000,deadlineMs=15*60_000,onTra
 export async function driveTenTurns(auth,{runToken=`r${randomBytes(8).toString('hex')}`,pollMs=5_000,deadlineMs=15*60_000,recordProgress=async()=>{}}={}){
   const turns=[];let previousTerminalSnapshot=null;
   for(let index=1;index<=10;index++){
-    const suffix=String(index).padStart(2,'0'),nonce=randomBytes(16).toString('hex'),filePath=`docs/acceptance/${runToken}-turn-${suffix}.txt`,key=`accept-${runToken}-${suffix}`;
+    const suffix=String(index).padStart(2,'0'),nonce=randomBytes(16).toString('hex'),filePath=`acceptance-${runToken}-turn-${suffix}.txt`,key=`accept-${runToken}-${suffix}`;
     const message=`Acceptance contract: make exactly one successful project_write call to create ${filePath} with the exact content ${nonce}. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include ${nonce}. If any tool call fails, report the failure and stop without retrying.`;
     const submitted=await requestJson(`${auth.origin}/api/workspaces/${auth.workspaceId}/sessions/${auth.sessionId}/turns`,{cookie:auth.cookie,method:'POST',key,body:{message}}),turnId=submitted?.turn?.id;
     if(!ID.test(turnId??''))fail('acceptance-turn-submit-invalid');
