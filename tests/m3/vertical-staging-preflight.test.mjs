@@ -6,16 +6,15 @@ import {inspectManagedImage,validateStagingTopology} from '../../scripts/m3/vert
 const config=()=>JSON.parse(readFileSync(new URL('../../infra/wrangler.m3-vertical-staging.jsonc',import.meta.url),'utf8'));
 const migrations=()=>readdirSync(new URL('../../services/catalog/migrations',import.meta.url)).filter(name=>name.endsWith('.sql'));
 
-test('staging vertical topology is complete for the controlled release',()=>{
-  const foundationChecks=validateStagingTopology(config(),migrations(),{release:true});
+test('staging vertical topology is complete with turn admission paused',()=>{
+  const foundationChecks=validateStagingTopology(config(),migrations());
   assert.equal(foundationChecks.length,15);
   assert.deepEqual(foundationChecks.filter(value=>value.status!=='passed'),[]);
-  assert.deepEqual(validateStagingTopology(config(),migrations()).filter(value=>value.status!=='passed').map(value=>value.name),['turn-admission-paused']);
+  assert.deepEqual(validateStagingTopology(config(),migrations(),{release:true}).filter(value=>value.status!=='passed').map(value=>value.name),['execution-gates-controlled-release']);
 });
 
 test('paused mode closes turn admission while retaining read and preview gates',()=>{
   const value=config();
-  value.vars.M2_TURNS_ENABLED='false';
   assert.deepEqual(validateStagingTopology(value,migrations()).filter(item=>item.status!=='passed'),[]);
   value.vars.M3_PREVIEW_ENABLED='false';
   assert.deepEqual(validateStagingTopology(value,migrations()).filter(item=>item.status!=='passed').map(item=>item.name),['turn-admission-paused']);
