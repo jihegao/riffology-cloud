@@ -60,16 +60,32 @@ test('acceptance transport retries reads and same-key mutations without changing
   const value=await requestJson('https://m1.riff-demo.gaojihe.cn/api/example',{cookie:'private-cookie',method:'POST',key:'stable-key',body:{value:1},attempts:3,retryDelayMs:0});
   assert.deepEqual(value,{ok:true});assert.equal(calls.length,3);assert.deepEqual(new Set(calls.map(call=>call.key)),new Set(['stable-key']));assert.deepEqual(new Set(calls.map(call=>call.body)),new Set(['{"value":1}']));
   attempt=0;calls.length=0;await assert.rejects(()=>requestJson('https://m1.riff-demo.gaojihe.cn/api/example',{cookie:'private-cookie',method:'POST',body:{value:1},attempts:3,retryDelayMs:0}),/transient-network/);assert.equal(calls.length,1);
+  let aborted=false;calls.length=0;globalThis.fetch=async(_url,init)=>{calls.push(init);return new Promise((_,reject)=>init.signal.addEventListener('abort',()=>reject(Error('aborted')),{once:true}));};setTimeout(()=>{aborted=true;},5);await assert.rejects(()=>requestJson('https://m1.riff-demo.gaojihe.cn/api/example',{cookie:'private-cookie',shouldAbort:()=>aborted,timeoutMs:1_000}),/acceptance-request-interrupted/);assert.equal(calls.length,1);
 });
 
 test('outstanding turn cleanup proves an exact queued turn was cancelled before start',async t=>{
-  const originalFetch=globalThis.fetch,calls=[];globalThis.fetch=async(url,init)=>{calls.push({url:String(url),method:init?.method??'GET',key:init?.headers?.['idempotency-key']??null});if(String(url).endsWith('/cancel'))return Response.json({id:'turn-pending',status:'cancelled',cancelDisposition:'cancelled',dispatchId:null,checkpoint:null});return Response.json({activeTurnId:null,resourceWait:null,releaseHold:{status:'release-pending'},recoveryHold:null,turns:{'turn-pending':{id:'turn-pending',status:'cancelled',cancelDisposition:'cancelled',dispatchId:null,checkpoint:null}}});};t.after(()=>{globalThis.fetch=originalFetch;});
+  const originalFetch=globalThis.fetch,calls=[];globalThis.fetch=async(url,init)=>{calls.push({url:String(url),method:init?.method??'GET',key:init?.headers?.['idempotency-key']??null});if(String(url).endsWith('/cancel'))return Response.json({id:'turn-pending',status:'cancelled',cancelDisposition:'cancelled',checkpoint:null});return Response.json({schemaVersion:3,activeTurnId:null,resourceWait:null,releaseHold:null,recoveryHold:null,sessions:{'session-a':{}},turns:{'turn-pending':{id:'turn-pending',sessionId:'session-a',message:'message-a',status:'cancelled',cancelDisposition:'cancelled',startedAt:null,runtimeGeneration:null,checkpoint:null}}});};t.after(()=>{globalThis.fetch=originalFetch;});
   const auth={origin:'https://m1.riff-demo.gaojihe.cn',workspaceId:'workspace-a',sessionId:'session-a',cookie:'private-cookie'},result=await cancelOutstandingTurn(auth,{index:1,turnId:'turn-pending'},{pollMs:0,deadlineMs:1_000});
   assert.equal(result.status,'passed');assert.equal(result.turnId,'turn-pending');assert.equal(result.terminal.neverStarted,true);assert.equal(calls.filter(call=>call.method==='POST').length,1);assert.equal(calls[0].key,'acceptance-cleanup-turn-pending');assert.equal(JSON.stringify(result).includes(auth.cookie),false);
 });
 
+test('cleanup recovers a lost submission response from the ungated snapshot and waits for release quiescence',async t=>{
+  const originalFetch=globalThis.fetch,calls=[];let reads=0;const message='exact original message';globalThis.fetch=async(url,init)=>{calls.push({url:String(url),method:init?.method??'GET',key:init?.headers?.['idempotency-key']??null,body:init?.body??null});if(String(url).endsWith('/turns'))return Response.json({error:'turn_runtime_not_ready'},{status:503});if(String(url).endsWith('/cancel'))return Response.json({id:'turn-recovered',status:'cancelled',cancelDisposition:'cancelled'});reads++;return Response.json({schemaVersion:3,activeTurnId:null,resourceWait:null,releaseHold:reads===2?{status:'release-pending'}:null,recoveryHold:null,sessions:{'session-a':{}},turns:{'turn-recovered':{id:'turn-recovered',sessionId:'session-a',message,status:reads===1?'queued':'cancelled',cancelDisposition:reads===1?null:'cancelled',startedAt:null,runtimeGeneration:null,checkpoint:null}}});};t.after(()=>{globalThis.fetch=originalFetch;});
+  const auth={origin:'https://m1.riff-demo.gaojihe.cn',workspaceId:'workspace-a',sessionId:'session-a',cookie:'private-cookie'},result=await cancelOutstandingTurn(auth,{index:1,turnId:null,requestKey:'accept-original-key',message,submitStarted:true},{pollMs:0,deadlineMs:1_000});
+  assert.equal(result.status,'passed');assert.equal(result.recoveredFromSnapshot,true);assert.equal(reads,3);const posts=calls.filter(call=>call.method==='POST');assert.equal(posts.length,1);assert.equal(posts[0].key,'acceptance-cleanup-turn-recovered');assert.equal(calls.some(call=>call.url.endsWith('/turns')),false);
+});
+
+test('cleanup cannot report success while a terminal turn still has a resource hold',async t=>{
+  const originalFetch=globalThis.fetch;globalThis.fetch=async(url)=>String(url).endsWith('/cancel')?Response.json({id:'turn-held',status:'cancelled'}):Response.json({schemaVersion:3,activeTurnId:null,resourceWait:null,releaseHold:{status:'release-pending'},recoveryHold:null,sessions:{'session-a':{}},turns:{'turn-held':{id:'turn-held',sessionId:'session-a',message:'message-held',status:'cancelled',cancelDisposition:'cancelled',startedAt:1,runtimeGeneration:1,checkpoint:null}}});t.after(()=>{globalThis.fetch=originalFetch;});
+  const result=await cancelOutstandingTurn({origin:'https://m1.riff-demo.gaojihe.cn',workspaceId:'workspace-a',sessionId:'session-a',cookie:'private-cookie'},{turnId:'turn-held'},{pollMs:0,deadlineMs:5});assert.equal(result.status,'blocked');assert.equal(result.reasonCode,'acceptance-outstanding-turn-cleanup-unconfirmed');assert.equal(result.last.workspace.releaseHold.status,'release-pending');
+});
+
+test('malformed workspace snapshots cannot prove a lost submission absent',async t=>{
+  const originalFetch=globalThis.fetch;globalThis.fetch=async()=>Response.json({});t.after(()=>{globalThis.fetch=originalFetch;});const result=await cancelOutstandingTurn({origin:'https://m1.riff-demo.gaojihe.cn',workspaceId:'workspace-a',sessionId:'session-a',cookie:'private-cookie'},{turnId:null,message:'message-a',submitStarted:true},{pollMs:0,deadlineMs:5,absenceQuietMs:0});assert.equal(result.status,'blocked');assert.equal(result.reasonCode,'acceptance-outstanding-turn-recovery-unconfirmed');
+});
+
 test('real turn driver requires successful write and read events and records redacted terminal evidence before blocking',async t=>{
-  const originalFetch=globalThis.fetch,originalNow=Date.now,calls=[],progress=[];let workspaceReads=0;Date.now=()=>10_000;
+  const originalFetch=globalThis.fetch,originalNow=Date.now,calls=[],progress=[],outstanding=[];let workspaceReads=0;Date.now=()=>10_000;
   globalThis.fetch=async(url,init)=>{
     calls.push({url:String(url),method:init?.method??'GET',body:init?.body??null});
     if(String(url).endsWith('/turns'))return Response.json({turn:{id:'turn-a',status:'queued'}});
@@ -78,9 +94,10 @@ test('real turn driver requires successful write and read events and records red
   };
   t.after(()=>{globalThis.fetch=originalFetch;Date.now=originalNow;});
   const auth={origin:'https://m1.riff-demo.gaojihe.cn',workspaceId:'workspace-a',sessionId:'session-a',cookie:'private-cookie'};
-  await assert.rejects(()=>driveTenTurns(auth,{runToken:'run-a',pollMs:0,recordProgress:async(name,value)=>progress.push({name,value})}),/acceptance-required-tool-event-missing/);
+  await assert.rejects(()=>driveTenTurns(auth,{runToken:'run-a',pollMs:0,recordProgress:async(name,value)=>progress.push({name,value}),onOutstanding:async value=>outstanding.push(value)}),/acceptance-required-tool-event-missing/);
   assert.equal(workspaceReads,2);assert.equal(progress.length,3);assert.deepEqual(progress.map(item=>item.name),['turn-01-submitted.json','turn-01-terminal.json','turn-01-events.json']);assert.equal(progress[2].value.toolEvents[0].isError,true);assert.equal(JSON.stringify(progress).includes(auth.cookie),false);
   assert.deepEqual(progress[1].value.transitions.map(item=>item.observedAt),[10_000,10_001]);
+  assert.deepEqual(outstanding.map(value=>value?.turnId??null),[null,null,'turn-a',null]);assert.deepEqual(outstanding.slice(0,3).map(value=>value.submitStarted),[false,true,true]);assert.equal(outstanding[0].requestKey,'accept-run-a-01');assert.equal(outstanding[0].message,outstanding[2].message);
   const submitted=JSON.parse(calls.find(call=>call.url.endsWith('/turns')).body);assert.match(submitted.message,/exactly one successful project_write/);assert.match(submitted.message,/stop without retrying/);
   assert.match(submitted.message,/create acceptance-run-a-turn-01\.txt/);assert.doesNotMatch(submitted.message,/docs\/acceptance/);
   globalThis.fetch=async(url)=>String(url).endsWith('/turns')?Response.json({turn:{id:'turn-b',status:'queued'}}):String(url).includes('/events?')?Response.json({events:[]}):Response.json({activeTurnId:null,resourceWait:null,releaseHold:null,recoveryHold:null,turns:{'turn-b':{id:'turn-b',status:'completed',executionOutcome:'completed',persistenceOutcome:'saved',errorCode:null,checkpoint:{revisionId:'b'.repeat(64)}}}});
@@ -91,6 +108,12 @@ test('real turn driver requires successful write and read events and records red
   await assert.rejects(()=>driveTenTurns(auth,{runToken:'run-d',pollMs:0}),/acceptance-event-cursor-invalid/);
   globalThis.fetch=async(url)=>String(url).endsWith('/turns')?Response.json({turn:{id:'turn-e',status:'queued'}}):String(url).includes('/events?')?Response.json({events:[{sequence:1,eventId:'event-one',workspaceId:'workspace-a',turnId:'turn-e',runtimeGeneration:1,type:'tool.started',payload:{name:'project_write'},at:1},{sequence:3,eventId:'event-three',workspaceId:'workspace-a',turnId:'turn-e',runtimeGeneration:1,type:'tool.completed',payload:{name:'project_write',isError:false},at:3}],nextSequence:3,hasMore:false,oldestSequence:1,snapshotRequired:false}):Response.json({activeTurnId:null,resourceWait:null,releaseHold:null,recoveryHold:null,turns:{'turn-e':{id:'turn-e',status:'completed',executionOutcome:'completed',persistenceOutcome:'saved',errorCode:null,checkpoint:{revisionId:'e'.repeat(64)}}}});
   await assert.rejects(()=>driveTenTurns(auth,{runToken:'run-e',pollMs:0}),/acceptance-event-page-invalid/);
+});
+
+test('abort after provisional registration clears the intent before any submission starts',async t=>{
+  const originalFetch=globalThis.fetch,states=[];let aborted=false,calls=0;globalThis.fetch=async()=>{calls++;throw Error('submission-must-not-start');};t.after(()=>{globalThis.fetch=originalFetch;});
+  await assert.rejects(()=>driveTenTurns({origin:'https://m1.riff-demo.gaojihe.cn',workspaceId:'workspace-a',sessionId:'session-a',cookie:'private-cookie'},{runToken:'abort-a',onOutstanding:async value=>{states.push(value);if(value?.submitStarted===false)aborted=true;},shouldAbort:()=>aborted}),/acceptance-turn-wait-interrupted/);
+  assert.equal(calls,0);assert.equal(states.length,2);assert.equal(states[0].submitStarted,false);assert.equal(states[1],null);
 });
 
 test('provider-free probe derives the production actor and requires an exact app and instance',async()=>{

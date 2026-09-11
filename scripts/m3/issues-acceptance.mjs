@@ -47,21 +47,21 @@ export function validateAuthInput(value){
 export function unavailableProviderFreeProbe(){return {schemaVersion:1,status:'blocked',reasonCode:'provider-free-exact-actor-probe-unavailable',conclusion:'No product-only operator path exposes exact TrustedPi actor lifecycle. Application-level container counts and a single stopped or inactive record are insufficient release proof.'};}
 
 function turnSummary(snapshot,turnId,priorObservedAt=null){const turn=snapshot?.turns?.[turnId],wall=Date.now(),observedAt=Number.isSafeInteger(priorObservedAt)&&wall<=priorObservedAt?priorObservedAt+1:wall;return {observedAt,turnStatus:turn?.status??null,activeTurnId:snapshot?.activeTurnId??null,resourceWait:snapshot?.resourceWait??null,releaseHold:snapshot?.releaseHold??null,recoveryHold:snapshot?.recoveryHold??null};}
-export async function requestJson(url,{cookie,method='GET',body=null,key=null,timeoutMs=20_000,attempts=3,retryDelayMs=1_000}={}){
+export async function requestJson(url,{cookie,method='GET',body=null,key=null,timeoutMs=20_000,attempts=3,retryDelayMs=1_000,shouldAbort=()=>false}={}){
   if(!Number.isSafeInteger(attempts)||attempts<1||attempts>5||!Number.isSafeInteger(retryDelayMs)||retryDelayMs<0||retryDelayMs>10_000)fail('acceptance-request-retry-invalid');
   const encodedBody=body===null?undefined:JSON.stringify(body),headers={'accept':'application/json','cache-control':'no-cache','cookie':cookie,'origin':new URL(url).origin};if(body!==null)headers['content-type']='application/json';if(key!==null)headers['idempotency-key']=key;
   const retrySafe=method==='GET'||key!==null;
   for(let attempt=1;attempt<=attempts;attempt++){
-    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
+    if(shouldAbort())fail('acceptance-request-interrupted');const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs),abortPoll=setInterval(()=>{if(shouldAbort())controller.abort();},50);
     try{
       const response=await fetch(url,{method,headers,body:encodedBody,signal:controller.signal,redirect:'error'}),retryableStatus=response.status===408||response.status===425||response.status===429||response.status>=500;
       if(!response.ok){if(!retrySafe||!retryableStatus||attempt===attempts)fail(`acceptance-http-${response.status}`);}
       else{try{return await response.json();}catch{if(!retrySafe||attempt===attempts)fail('acceptance-response-invalid');}}
     }catch(error){
       const code=error instanceof Error?error.message:'';
-      if(code.startsWith('acceptance-http-')||code==='acceptance-response-invalid'||!retrySafe)throw error;
+      if(shouldAbort())fail('acceptance-request-interrupted');if(code.startsWith('acceptance-http-')||code==='acceptance-response-invalid'||!retrySafe)throw error;
       if(attempt===attempts)fail('acceptance-transport-unavailable');
-    }finally{clearTimeout(timer);}
+    }finally{clearTimeout(timer);clearInterval(abortPoll);}
     await sleep(retryDelayMs*Math.min(2**(attempt-1),4));
   }
   fail('acceptance-transport-unavailable');
@@ -77,10 +77,10 @@ async function allEvents(auth){
     if(!value.hasMore)return events;after=value.nextSequence;
   }fail('acceptance-event-pages-exceeded');
 }
-async function workspace(auth){return requestJson(`${auth.origin}/api/workspaces/${auth.workspaceId}`,{cookie:auth.cookie});}
+async function workspace(auth,options={}){return requestJson(`${auth.origin}/api/workspaces/${auth.workspaceId}`,{cookie:auth.cookie,...options});}
 async function waitTerminal(auth,turnId,{pollMs=5_000,deadlineMs=15*60_000,initialSummary=null,onTransition=()=>{},shouldAbort=()=>false}={}){
   const end=Date.now()+deadlineMs,transitions=initialSummary===null?[]:[jsonClone(initialSummary)];let prior=initialSummary===null?'':JSON.stringify({...initialSummary,observedAt:0}),priorObservedAt=initialSummary?.observedAt??null;
-  while(Date.now()<end){if(shouldAbort())fail('acceptance-turn-wait-interrupted');const snapshot=await workspace(auth),summary=turnSummary(snapshot,turnId,priorObservedAt),encoded=JSON.stringify({...summary,observedAt:0});if(encoded!==prior){prior=encoded;priorObservedAt=summary.observedAt;transitions.push(summary);onTransition(summary);}const turn=snapshot?.turns?.[turnId];if(TERMINAL.has(turn?.status))return {turn,snapshot,transitions};await sleep(pollMs);}fail('acceptance-turn-deadline');
+  while(Date.now()<end){if(shouldAbort())fail('acceptance-turn-wait-interrupted');const snapshot=await workspace(auth,{shouldAbort}),summary=turnSummary(snapshot,turnId,priorObservedAt),encoded=JSON.stringify({...summary,observedAt:0});if(encoded!==prior){prior=encoded;priorObservedAt=summary.observedAt;transitions.push(summary);onTransition(summary);}const turn=snapshot?.turns?.[turnId];if(TERMINAL.has(turn?.status))return {turn,snapshot,transitions};await sleep(pollMs);}fail('acceptance-turn-deadline');
 }
 
 export async function driveTenTurns(auth,{runToken=`r${randomBytes(8).toString('hex')}`,pollMs=5_000,deadlineMs=15*60_000,recordProgress=async()=>{},onOutstanding=async()=>{},shouldAbort=()=>false}={}){
@@ -89,12 +89,16 @@ export async function driveTenTurns(auth,{runToken=`r${randomBytes(8).toString('
     if(shouldAbort())fail('acceptance-turn-wait-interrupted');
     const suffix=String(index).padStart(2,'0'),nonce=randomBytes(16).toString('hex'),filePath=`acceptance-${runToken}-turn-${suffix}.txt`,key=`accept-${runToken}-${suffix}`;
     const message=`Acceptance contract: make exactly one successful project_write call to create ${filePath} with the exact content ${nonce}. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include ${nonce}. If any tool call fails, report the failure and stop without retrying.`;
-    const submitted=await requestJson(`${auth.origin}/api/workspaces/${auth.workspaceId}/sessions/${auth.sessionId}/turns`,{cookie:auth.cookie,method:'POST',key,body:{message}}),turnId=submitted?.turn?.id;
+    await onOutstanding({index,turnId:null,requestKey:key,message,submitStarted:false});
+    if(shouldAbort()){await onOutstanding(null);fail('acceptance-turn-wait-interrupted');}
+    await onOutstanding({index,turnId:null,requestKey:key,message,submitStarted:true});
+    if(shouldAbort()){await onOutstanding(null);fail('acceptance-turn-wait-interrupted');}
+    const submitted=await requestJson(`${auth.origin}/api/workspaces/${auth.workspaceId}/sessions/${auth.sessionId}/turns`,{cookie:auth.cookie,method:'POST',key,body:{message},shouldAbort}),turnId=submitted?.turn?.id;
     if(!ID.test(turnId??''))fail('acceptance-turn-submit-invalid');
-    await onOutstanding({index,turnId});
+    await onOutstanding({index,turnId,requestKey:key,message,submitStarted:true});
     await recordProgress(`turn-${suffix}-submitted.json`,{schemaVersion:1,index,turnId,filePath,nonce,messageSha256:digest(message),submittedStatus:submitted.turn.status});
-    const initial=await workspace(auth),initialSummary=turnSummary(initial,turnId),observedTransitions=[initialSummary];let terminal;
-    try{terminal=await waitTerminal(auth,turnId,{pollMs,deadlineMs,initialSummary,onTransition:value=>observedTransitions.push(value),shouldAbort});}catch(error){let latest=null;try{latest=turnSummary(await workspace(auth),turnId,observedTransitions.at(-1)?.observedAt??initialSummary.observedAt);}catch{}await recordProgress(`turn-${suffix}-wait-error.json`,{schemaVersion:1,index,turnId,stage:'wait-terminal',reasonCode:error instanceof Error?error.message:'acceptance-turn-wait-failed',latest,transitions:observedTransitions});throw error;}const turn=terminal.turn;
+    const initial=await workspace(auth,{shouldAbort}),initialSummary=turnSummary(initial,turnId),observedTransitions=[initialSummary];let terminal;
+    try{terminal=await waitTerminal(auth,turnId,{pollMs,deadlineMs,initialSummary,onTransition:value=>observedTransitions.push(value),shouldAbort});}catch(error){let latest=null;if(!shouldAbort())try{latest=turnSummary(await workspace(auth),turnId,observedTransitions.at(-1)?.observedAt??initialSummary.observedAt);}catch{}await recordProgress(`turn-${suffix}-wait-error.json`,{schemaVersion:1,index,turnId,stage:'wait-terminal',reasonCode:error instanceof Error?error.message:'acceptance-turn-wait-failed',latest,transitions:observedTransitions});throw error;}const turn=terminal.turn;
     await onOutstanding(null);
     await recordProgress(`turn-${suffix}-terminal.json`,{schemaVersion:1,index,turnId,filePath,submittedStatus:submitted.turn.status,terminal:{status:turn?.status??null,executionOutcome:turn?.executionOutcome??null,persistenceOutcome:turn?.persistenceOutcome??null,errorCode:turn?.errorCode??null,checkpoint:turn?.checkpoint??null},transitions:terminal.transitions});
     let events;try{events=await allEvents(auth);}catch(error){await recordProgress(`turn-${suffix}-events-error.json`,{schemaVersion:1,index,turnId,stage:'events',reasonCode:error instanceof Error?error.message:'acceptance-events-failed'});throw error;}const toolEvents=events.filter(event=>event.turnId===turnId&&event.type==='tool.completed').map(event=>({sequence:event.sequence,eventId:event.eventId,toolCallId:event.payload?.toolCallId,name:event.payload?.name,isError:event.payload?.isError})),assistantNonceConfirmation=events.some(event=>event.turnId===turnId&&event.type==='assistant.message'&&JSON.stringify(event.payload).includes(nonce));
@@ -113,7 +117,7 @@ export async function driveTenTurns(auth,{runToken=`r${randomBytes(8).toString('
     previousTerminalSnapshot=terminal.snapshot;
   }
   const end=Date.now()+15*60_000;let finalSnapshot;
-  do{finalSnapshot=await workspace(auth);if(finalSnapshot.activeTurnId===null&&finalSnapshot.resourceWait===null&&finalSnapshot.releaseHold===null&&finalSnapshot.recoveryHold===null)break;await sleep(pollMs);}while(Date.now()<end);
+  do{if(shouldAbort())fail('acceptance-turn-wait-interrupted');finalSnapshot=await workspace(auth,{shouldAbort});if(finalSnapshot.activeTurnId===null&&finalSnapshot.resourceWait===null&&finalSnapshot.releaseHold===null&&finalSnapshot.recoveryHold===null)break;await sleep(pollMs);}while(Date.now()<end);
   return {schemaVersion:1,status:'passed',runToken,turns,finalSnapshot};
 }
 
@@ -131,11 +135,19 @@ export function validateTenTurnEvidence(value){
   return jsonClone(value);
 }
 
-export async function cancelOutstandingTurn(auth,outstanding,{pollMs=2_000,deadlineMs=120_000}={}){
-  const turnId=outstanding?.turnId;if(!ID.test(turnId??''))return {schemaVersion:1,status:'blocked',reasonCode:'acceptance-outstanding-turn-identity-invalid'};
-  let response;try{response=await requestJson(`${auth.origin}/api/workspaces/${auth.workspaceId}/turns/${turnId}/cancel`,{cookie:auth.cookie,method:'POST',key:`acceptance-cleanup-${turnId}`,body:{}});}catch(error){return {schemaVersion:1,status:'blocked',turnId,reasonCode:error instanceof Error?error.message:'acceptance-outstanding-turn-cancel-failed'};}
-  const end=Date.now()+deadlineMs;while(Date.now()<end){try{const snapshot=await workspace(auth),turn=snapshot?.turns?.[turnId];if(TERMINAL.has(turn?.status))return {schemaVersion:1,status:'passed',turnId,cancelResponse:{status:response?.status??null,cancelDisposition:response?.cancelDisposition??null},terminal:{status:turn.status,cancelDisposition:turn.cancelDisposition??null,dispatchId:turn.dispatchId??null,checkpoint:turn.checkpoint??null,neverStarted:turn.dispatchId===null&&turn.checkpoint===null},workspace:{activeTurnId:snapshot.activeTurnId??null,resourceWait:snapshot.resourceWait??null,releaseHold:snapshot.releaseHold??null,recoveryHold:snapshot.recoveryHold??null}};}catch{}await sleep(pollMs);}
-  return {schemaVersion:1,status:'blocked',turnId,reasonCode:'acceptance-outstanding-turn-cancel-unconfirmed'};
+function cleanupWorkspaceSnapshot(value,sessionId){
+  const object=input=>input&&typeof input==='object'&&!Array.isArray(input)&&Object.getPrototypeOf(input)===Object.prototype,required=['activeTurnId','resourceWait','releaseHold','recoveryHold','sessions','turns'];if(!object(value)||value.schemaVersion!==3||required.some(key=>!Object.hasOwn(value,key))||value.activeTurnId!==null&&!ID.test(value.activeTurnId??'')||!object(value.sessions)||!object(value.turns)||!Object.hasOwn(value.sessions,sessionId)||!object(value.sessions[sessionId])||['resourceWait','releaseHold','recoveryHold'].some(key=>value[key]!==null&&!object(value[key])))fail('acceptance-cleanup-workspace-snapshot-invalid');
+  for(const [id,turn] of Object.entries(value.turns))if(!ID.test(id)||!object(turn)||turn.id!==id||!ID.test(turn.sessionId??'')||typeof turn.message!=='string'||!Object.hasOwn(turn,'startedAt')||!Object.hasOwn(turn,'runtimeGeneration')||!Object.hasOwn(turn,'checkpoint'))fail('acceptance-cleanup-workspace-snapshot-invalid');return value;
+}
+
+export async function cancelOutstandingTurn(auth,outstanding,{pollMs=5_000,deadlineMs=15*60_000,absenceQuietMs=30_000}={}){
+  if(!Number.isSafeInteger(absenceQuietMs)||absenceQuietMs<0||absenceQuietMs>60_000)return {schemaVersion:1,status:'blocked',reasonCode:'acceptance-outstanding-turn-cleanup-policy-invalid'};
+  let turnId=outstanding?.turnId,recoveredFromSnapshot=false,absenceSince=null,last=null;const end=Date.now()+deadlineMs,state=snapshot=>({activeTurnId:snapshot?.activeTurnId??null,resourceWait:snapshot?.resourceWait??null,releaseHold:snapshot?.releaseHold??null,recoveryHold:snapshot?.recoveryHold??null}),quiescent=value=>Object.values(value).every(item=>item===null);
+  if(turnId===null){if(outstanding?.submitStarted!==true||typeof outstanding?.message!=='string'||outstanding.message.length===0)return {schemaVersion:1,status:'blocked',reasonCode:'acceptance-outstanding-turn-identity-invalid'};while(Date.now()<end){try{const snapshot=cleanupWorkspaceSnapshot(await workspace(auth),auth.sessionId),workspaceState=state(snapshot),matches=Object.values(snapshot.turns).filter(turn=>turn.sessionId===auth.sessionId&&turn.message===outstanding.message);last={workspace:workspaceState,matchingTurns:matches.length};if(matches.length>1)return {schemaVersion:1,status:'blocked',reasonCode:'acceptance-outstanding-turn-recovery-conflict',last};if(matches.length===1){turnId=matches[0].id;recoveredFromSnapshot=true;break;}if(quiescent(workspaceState)){absenceSince??=Date.now();if(Date.now()-absenceSince>=absenceQuietMs)return {schemaVersion:1,status:'passed',turnId:null,recoveredFromSnapshot:false,submissionAbsent:true,workspace:workspaceState};}else absenceSince=null;}catch{absenceSince=null;}await sleep(pollMs);}if(turnId===null)return {schemaVersion:1,status:'blocked',reasonCode:'acceptance-outstanding-turn-recovery-unconfirmed',last};}
+  if(!ID.test(turnId??''))return {schemaVersion:1,status:'blocked',reasonCode:'acceptance-outstanding-turn-identity-invalid'};
+  let response;try{response=await requestJson(`${auth.origin}/api/workspaces/${auth.workspaceId}/turns/${turnId}/cancel`,{cookie:auth.cookie,method:'POST',key:`acceptance-cleanup-${turnId}`,body:{}});}catch(error){return {schemaVersion:1,status:'blocked',turnId,recoveredFromSnapshot,reasonCode:error instanceof Error?error.message:'acceptance-outstanding-turn-cancel-failed'};}
+  while(Date.now()<end){try{const snapshot=cleanupWorkspaceSnapshot(await workspace(auth),auth.sessionId),turn=snapshot.turns[turnId],workspaceState=state(snapshot),terminal=TERMINAL.has(turn?.status)?{status:turn.status,cancelDisposition:turn.cancelDisposition??null,startedAt:turn.startedAt??null,runtimeGeneration:turn.runtimeGeneration??null,checkpoint:turn.checkpoint??null,neverStarted:turn.startedAt===null&&turn.runtimeGeneration===null&&turn.checkpoint===null}:null;last={terminal,workspace:workspaceState};if(terminal!==null&&quiescent(workspaceState))return {schemaVersion:1,status:'passed',turnId,recoveredFromSnapshot,cancelResponse:{status:response?.status??null,cancelDisposition:response?.cancelDisposition??null},terminal,workspace:workspaceState};}catch{}await sleep(pollMs);}
+  return {schemaVersion:1,status:'blocked',turnId,recoveredFromSnapshot,reasonCode:'acceptance-outstanding-turn-cleanup-unconfirmed',last};
 }
 
 export function unavailableInventory(){return {schemaVersion:1,status:'blocked',reasonCode:'exact-actor-and-storage-inventory-unavailable',conclusion:'Public Workspace APIs and application-level container counts cannot prove exact actor absence, R2 receipt equality, or D1 provisioning uniqueness.'};}
