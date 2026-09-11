@@ -56,10 +56,10 @@ test('runtime actor and durable row bind full scope, dispatch, generation and me
   assert.notEqual(await turnRuntimeActorName(identity),await turnRuntimeActorName({...identity,sessionId:'session-b'}));
 });
 
-test('cancel fence calls native cancel once and rejects a late completed receipt',async t=>{
+test('cancel fence calls native cancel once and accepts an already completed natural receipt',async t=>{
   const f=fixture(t),host=f.host();await host.accept(request());const cancelled=await host.cancel(identity);assert.equal(cancelled.outcome,'cancelled');assert.equal(f.cancels,1);
   assert.deepEqual(await host.cancel(identity),cancelled);assert.equal(f.cancels,1);
-  const other=fixture(t),otherHost=other.host();await otherHost.accept(request());other.cancel(terminal(identity,'completed'));await assert.rejects(otherHost.cancel(identity),/cancellation-not-honored/);const reconciled=await otherHost.observe(identity);assert.equal(reconciled.outcome,null);assert.notEqual(reconciled.phase,'terminal');
+  const other=fixture(t),otherHost=other.host();await otherHost.accept(request());other.cancel(terminal(identity,'completed'));const natural=await otherHost.cancel(identity);assert.equal(natural.phase,'terminal');assert.equal(natural.outcome,'completed');assert.ok(natural.checkpoint);assert.deepEqual(await otherHost.observe(identity),natural);
 });
 
 test('a fenced cancellation reconciles an absent native execution without checkpoint allocation',async t=>{

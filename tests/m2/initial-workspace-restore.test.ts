@@ -22,7 +22,7 @@ async function fixture(){
 test('initial source is verified before native resolution and supplied intact to restore',async()=>{
  const {resolved,base}=await fixture(),calls:string[]=[];
  const source:WorkspaceRevisionSource={async restore(){throw Error('saved source must not run');},async resolveInitial(reference,scope){assert.deepEqual(reference,base.initial.reference);assert.deepEqual(scope,identity.scope);calls.push('source');return resolved;}};
- const target:ProjectWorkspaceRpc={async restoreWorkspace(value,claimed,bytes){calls.push('restore');assert.deepEqual(value,identity);assert.deepEqual(claimed,base);assert.deepEqual(bytes,resolved.filesArchive);return {sha256:resolved.filesSha256,bytes:bytes!.length};},async freezeWorkspace(){throw Error('unused');}};
+ const target:ProjectWorkspaceRpc={async restoreWorkspace(value,claimed,bytes){calls.push('restore');assert.deepEqual(value,identity);assert.deepEqual(claimed,base);assert.deepEqual(bytes,resolved.filesArchive);return {sha256:resolved.filesSha256,bytes:bytes!.length};},async freezeWorkspace(){throw Error('unused');},async abortWorkspace(){throw Error('unused');}};
  await new ProjectWorkspaceLifecycle(source,()=>{calls.push('native');return target;}).prepare(identity,base);assert.deepEqual(calls,['source','native','restore']);
 });
 test('initial corruption, missing source and substituted receipts fail without native allocation',async()=>{

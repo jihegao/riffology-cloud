@@ -46,9 +46,13 @@ test('terminal result requires exited process and matching frozen session digest
   const bad=fixture();await bad.host.start(input());await bad.sandbox.settle('completed',snapshot('session-b'));await assert.rejects(bad.host.observe(identity),/scope-denied/);
 });
 
-test('terminal file while process runs fails closed and nonzero exit is unknown',async()=>{
+test('terminal file while process runs fails closed and nonzero exit is a proven execution failure',async()=>{
   const f=fixture();await f.host.start(input());await f.sandbox.settle();f.sandbox.process!.status='running';f.sandbox.process!.exitCode=undefined;await assert.rejects(f.host.observe(identity),/terminal-process-running/);
-  f.sandbox.process!.status='failed';f.sandbox.process!.exitCode=7;assert.equal((await f.host.observe(identity)).phase,'unknown');
+  f.sandbox.process!.status='failed';f.sandbox.process!.exitCode=7;const failed=await f.host.observe(identity);assert.equal(failed.phase,'terminal');assert.equal(failed.outcome,'failed');assert.equal(failed.executionErrorCode,'turn-native-exit-failed');assert.equal(failed.stopped?.fenced,true);
+});
+
+test('zero exit without a terminal result is a proven nonpersistable failure',async()=>{
+ const f=fixture();await f.host.start(input());f.sandbox.process!.status='completed';f.sandbox.process!.exitCode=0;const failed=await f.host.observe(identity);assert.equal(failed.phase,'terminal');assert.equal(failed.executionErrorCode,'turn-native-result-missing');assert.equal(failed.stopped?.nativeRunning,false);
 });
 
 test('terminal files without a process registry entry cannot prove native stop',async()=>{

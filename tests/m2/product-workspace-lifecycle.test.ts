@@ -8,7 +8,7 @@ import { ProjectWorkspaceLifecycle, TurnBaseUnavailableError, WorkspacePreparedE
 test('prepared execution freezes its absolute deadline before awaiting restoration',async()=>{
  let release!:()=>void,started!:()=>void,observed:number|undefined;
  const waiting=new Promise<void>(r=>{started=r;}),restored=new Promise<void>(r=>{release=r;});
- const port=new WorkspacePreparedExecutionPort({async prepare(){started();await restored;}} as never,{async start(input){observed=input.executionDeadlineAt;return running;},async observe(){return running;},async cancel(){return running;},async release(){return {running:false};}});
+ const port=new WorkspacePreparedExecutionPort({async prepare(){started();await restored;},async abort(){}} as never,{async start(input){observed=input.executionDeadlineAt;return running;},async observe(){return running;},async cancel(){return running;},async release(){return {running:false};}});
  const input={...identity,actor,message:'Build',base,executionDeadlineAt:5000};
  const pending=port.start(input);await waiting;input.executionDeadlineAt=9000;release();await pending;assert.equal(observed,5000);
 });
@@ -19,13 +19,13 @@ const checkpoint={revisionId:'revision-a',objectKey:'turns/a.json',filesSha256:'
 const running:TurnExecutionObservation={identity,phase:'running',outcome:null,events:[]};
 
 test('workspace lifecycle restores the verified R2 files into the derived Project actor and freezes that actor',async()=>{
-  const calls:unknown[]=[],source:WorkspaceRevisionSource={async restore(value,receipt,sessionBound){calls.push(['source',value,receipt,sessionBound]);return {identity:{...identity,turnId:'parent',dispatchId:'parent-dispatch'},receipt,filesArchive:archive,piSession:new Uint8Array([9])};}},sandbox:ProjectWorkspaceRpc={async restoreWorkspace(value,claimed,bytes){calls.push(['restore',value,claimed,bytes]);return {sha256:checkpoint.filesSha256,bytes:3};},async freezeWorkspace(value,claimed){calls.push(['freeze',value,claimed]);return archive;}};
+  const calls:unknown[]=[],source:WorkspaceRevisionSource={async restore(value,receipt,sessionBound){calls.push(['source',value,receipt,sessionBound]);return {identity:{...identity,turnId:'parent',dispatchId:'parent-dispatch'},receipt,filesArchive:archive,piSession:new Uint8Array([9])};}},sandbox:ProjectWorkspaceRpc={async restoreWorkspace(value,claimed,bytes){calls.push(['restore',value,claimed,bytes]);return {sha256:checkpoint.filesSha256,bytes:3};},async freezeWorkspace(value,claimed){calls.push(['freeze',value,claimed]);return archive;},async abortWorkspace(){calls.push(['abort']);return {running:false,fenced:true};}};
   let actor='';const lifecycle=new ProjectWorkspaceLifecycle(source,value=>{actor=value;return sandbox;});await lifecycle.prepare(identity,base);const frozen=await lifecycle.frozenFiles(identity,base);
   assert.equal(actor,(await sandboxActorIds(identity.scope,identity.turnId,identity.dispatchId)).project);assert.deepEqual(frozen,archive);assert.deepEqual(calls,[['source',identity,checkpoint,false],['restore',identity,base,archive],['freeze',identity,base]]);
 });
 
 test('genesis restore supplies no archive and a forged source receipt fails before resolving a Sandbox',async()=>{
-  let resolved=0;const sandbox:ProjectWorkspaceRpc={async restoreWorkspace(_identity,_base,bytes){assert.equal(bytes,null);return {sha256:'x',bytes:1};},async freezeWorkspace(){return archive;}};
+  let resolved=0;const sandbox:ProjectWorkspaceRpc={async restoreWorkspace(_identity,_base,bytes){assert.equal(bytes,null);return {sha256:'x',bytes:1};},async freezeWorkspace(){return archive;},async abortWorkspace(){return {running:false,fenced:true};}};
   const source:WorkspaceRevisionSource={async restore(_identity,receipt){return {identity,receipt:{...receipt,revisionId:'forged'},filesArchive:archive,piSession:new Uint8Array([9])};}},lifecycle=new ProjectWorkspaceLifecycle(source,()=>{resolved++;return sandbox;});
   await lifecycle.prepare(identity,{workspace:null,session:null});assert.equal(resolved,1);
   await assert.rejects(lifecycle.prepare(identity,base),TurnBaseUnavailableError);assert.equal(resolved,1);
@@ -41,7 +41,13 @@ test('verified base corruption becomes a terminal pre-execution failure while tr
 });
 
 test('prepared execution restores exactly once before native start and never from observe or cancel',async()=>{
-  const calls:string[]=[],workspace={async prepare(){calls.push('prepare');}},execution:TurnExecutionPort={async start(){calls.push('start');return running;},async observe(){calls.push('observe');return running;},async cancel(){calls.push('cancel');return running;},async release(){calls.push('release');return {running:false};}},port=new WorkspacePreparedExecutionPort(workspace as never,execution);
+  const calls:string[]=[],workspace={async prepare(){calls.push('prepare');},async abort(){calls.push('abort');}},execution:TurnExecutionPort={async start(){calls.push('start');return running;},async observe(){calls.push('observe');return running;},async cancel(){calls.push('cancel');return running;},async release(){calls.push('release');return {running:false};}},port=new WorkspacePreparedExecutionPort(workspace as never,execution);
   const accepted=await Promise.all([port.start({...identity,actor,message:'Build',base}),port.start({...identity,actor,message:'Build',base})]);assert.deepEqual(accepted,[running,running]);assert.deepEqual(calls,['prepare','start']);await assert.rejects(port.start({...identity,actor,message:'Different',base}),/execution-conflict/);await port.observe(identity);await port.cancel(identity);assert.deepEqual(calls,['prepare','start','observe','cancel']);
-  const failed=new WorkspacePreparedExecutionPort({async prepare(){throw Error('restore-failed');}} as never,execution);await assert.rejects(failed.start({...identity,actor,message:'Build',base}),/restore-failed/);assert.equal(calls.filter(value=>value==='start').length,1);
+  const failed=new WorkspacePreparedExecutionPort({async prepare(){throw Error('restore-failed');},async abort(){}} as never,execution);await assert.rejects(failed.start({...identity,actor,message:'Build',base}),/restore-failed/);assert.equal(calls.filter(value=>value==='start').length,1);
+});
+
+test('confirmed abnormal native termination releases the project sandbox before returning terminal',async()=>{
+ const calls:string[]=[],failed:TurnExecutionObservation={...running,phase:'terminal',outcome:'failed',executionErrorCode:'turn-native-exit-failed',stopped:{confirmationId:'stop-a',observedAt:1,nativeRunning:false,fenced:true}};
+ const port=new WorkspacePreparedExecutionPort({async prepare(){},async abort(){calls.push('abort');}},{async start(){return running;},async observe(){calls.push('observe');return failed;},async cancel(){return failed;},async release(){return {running:false};}});
+ assert.deepEqual(await port.observe(identity),failed);assert.deepEqual(calls,['observe','abort']);
 });

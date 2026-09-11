@@ -70,7 +70,7 @@ class ObserverPiSandbox implements TrustedPiSandboxProcessApi{
 
 function fixture(outcome:'completed'|'failed'|'cancelled'|'interrupted'='completed'){
   const calls:string[]=[],bucket=new Bucket(),store=new Store(bucket),workspaceArchive=encoder.encode('canonical-workspace-archive'),sandbox=new PiSandbox(calls,outcome);
-  const project:ProjectWorkspaceRpc={async restoreWorkspace(value,claimed,archive){calls.push('workspace.restore');assert.deepEqual(value,identity);assert.deepEqual(claimed,base);assert.equal(archive,null);return {sha256:await digest(workspaceArchive),bytes:workspaceArchive.byteLength};},async freezeWorkspace(value,claimed){calls.push('workspace.freeze');assert.deepEqual(value,identity);assert.deepEqual(claimed,base);return workspaceArchive;}};
+  const project:ProjectWorkspaceRpc={async restoreWorkspace(value,claimed,archive){calls.push('workspace.restore');assert.deepEqual(value,identity);assert.deepEqual(claimed,base);assert.equal(archive,null);return {sha256:await digest(workspaceArchive),bytes:workspaceArchive.byteLength};},async freezeWorkspace(value,claimed){calls.push('workspace.freeze');assert.deepEqual(value,identity);assert.deepEqual(claimed,base);return workspaceArchive;},async abortWorkspace(){calls.push('workspace.abort');return {running:false,fenced:true};}};
   const projectActors:string[]=[],trustedActors:string[]=[],dependencies:ProductTurnRuntimeReleaseDependencies={
     revisions:store,
     resolveProjectSandbox(name){projectActors.push(name);return project;},
