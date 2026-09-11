@@ -77,17 +77,19 @@ async function waitTerminal(auth,turnId,{pollMs=5_000,deadlineMs=15*60_000}={}){
   while(Date.now()<end){const snapshot=await workspace(auth),summary=turnSummary(snapshot,turnId),encoded=JSON.stringify({...summary,observedAt:0});if(encoded!==prior){prior=encoded;transitions.push(summary);}const turn=snapshot?.turns?.[turnId];if(TERMINAL.has(turn?.status))return {turn,snapshot,transitions};await sleep(pollMs);}fail('acceptance-turn-deadline');
 }
 
-export async function driveTenTurns(auth,{runToken=`r${randomBytes(8).toString('hex')}`,pollMs=5_000,deadlineMs=15*60_000}={}){
+export async function driveTenTurns(auth,{runToken=`r${randomBytes(8).toString('hex')}`,pollMs=5_000,deadlineMs=15*60_000,recordProgress=async()=>{}}={}){
   const turns=[];let previousTerminalSnapshot=null;
   for(let index=1;index<=10;index++){
     const suffix=String(index).padStart(2,'0'),nonce=randomBytes(16).toString('hex'),filePath=`docs/acceptance/${runToken}-turn-${suffix}.txt`,key=`accept-${runToken}-${suffix}`;
-    const message=`Use project_write to create ${filePath} with the exact content ${nonce}. Then use project_read to read that same file and verify the content. Do not modify any other file.`;
+    const message=`Acceptance contract: make exactly one successful project_write call to create ${filePath} with the exact content ${nonce}. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Your final response must include ${nonce}. If either tool call fails, report the failure and stop without retrying. Do not modify any other file.`;
     const submitted=await requestJson(`${auth.origin}/api/workspaces/${auth.workspaceId}/sessions/${auth.sessionId}/turns`,{cookie:auth.cookie,method:'POST',key,body:{message}}),turnId=submitted?.turn?.id;
     if(!ID.test(turnId??''))fail('acceptance-turn-submit-invalid');
     const initial=await workspace(auth),terminal=await waitTerminal(auth,turnId,{pollMs,deadlineMs}),turn=terminal.turn;
-    if(turn.status!=='completed'||turn.executionOutcome!=='completed'||turn.persistenceOutcome!=='saved'||!turn.checkpoint?.revisionId)fail('acceptance-turn-not-saved-completed');
     const events=await allEvents(auth),toolEvents=events.filter(event=>event.turnId===turnId&&event.type==='tool.completed').map(event=>({sequence:event.sequence,eventId:event.eventId,name:event.payload?.name,isError:event.payload?.isError})),assistantNonceConfirmation=events.some(event=>event.turnId===turnId&&event.type==='assistant.message'&&JSON.stringify(event.payload).includes(nonce));
+    await recordProgress(`turn-${suffix}-terminal.json`,{schemaVersion:1,index,turnId,filePath,submittedStatus:submitted.turn.status,terminal:{status:turn?.status??null,executionOutcome:turn?.executionOutcome??null,persistenceOutcome:turn?.persistenceOutcome??null,errorCode:turn?.errorCode??null,checkpoint:turn?.checkpoint??null},assistantNonceConfirmation,toolEvents,events:events.filter(event=>event.turnId===turnId&&['assistant.message','tool.started','tool.completed','provider.status'].includes(event.type)).map(event=>({sequence:event.sequence,eventId:event.eventId,type:event.type,...(event.type.startsWith('tool.')?{name:event.payload?.name??null,isError:event.payload?.isError??null}:{}),...(event.type==='assistant.message'?{stopReason:event.payload?.stopReason??null,containsNonce:JSON.stringify(event.payload).includes(nonce)}:{}),...(event.type==='provider.status'?{state:event.payload?.state??null,status:event.payload?.status??null}:{})})),transitions:[turnSummary(initial,turnId),...terminal.transitions]});
+    if(turn.status!=='completed'||turn.executionOutcome!=='completed'||turn.persistenceOutcome!=='saved'||!turn.checkpoint?.revisionId)fail('acceptance-turn-not-saved-completed');
     if(!toolEvents.some(event=>event.name==='project_write'&&event.isError===false)||!toolEvents.some(event=>event.name==='project_read'&&event.isError===false))fail('acceptance-required-tool-event-missing');
+    if(!assistantNonceConfirmation)fail('acceptance-assistant-nonce-missing');
     const files=await requestJson(`${auth.origin}/api/workspaces/${auth.workspaceId}/files`,{cookie:auth.cookie}),diff=await requestJson(`${auth.origin}/api/workspaces/${auth.workspaceId}/diff`,{cookie:auth.cookie});
     if(files?.revision?.revisionId!==turn.checkpoint.revisionId||!files.files?.some(entry=>entry.path===filePath&&entry.type==='file')||diff?.revision?.revisionId!==turn.checkpoint.revisionId)fail('acceptance-files-diff-refresh-mismatch');
     const queuedBehindRelease=index===1?null:previousTerminalSnapshot?.releaseHold!==null&&submitted.turn.status==='queued'&&initial?.turns?.[turnId]?.status==='queued';
@@ -148,7 +150,7 @@ export async function runIssuesAcceptance({
       const readiness=await inventoryPreflight({root,release,auth,probe:checkedProbe});ensureNotInterrupted();await evidence(directory.path,'inventory-preflight.json',readiness);ensureNotInterrupted();
       if(readiness.status!=='passed')result={schemaVersion:1,status:'blocked',phase:'inventory-preflight',reasonCode:readiness.reasonCode??'inventory-preflight-blocked'};
       else{
-        ensureNotInterrupted();const turns=await turnRunner(auth,{runToken:directory.name.replaceAll('-','').slice(-32)});ensureNotInterrupted();turns.sessionId=auth.sessionId;validateTenTurnEvidence(turns);await evidence(directory.path,'ten-turns.json',turns);ensureNotInterrupted();
+        ensureNotInterrupted();const turns=await turnRunner(auth,{runToken:directory.name.replaceAll('-','').slice(-32),recordProgress:(name,value)=>evidence(directory.path,name,value)});ensureNotInterrupted();turns.sessionId=auth.sessionId;validateTenTurnEvidence(turns);await evidence(directory.path,'ten-turns.json',turns);ensureNotInterrupted();
         const inventory=await inventoryRunner({root,release,auth,probe:checkedProbe,turns,readiness});ensureNotInterrupted();await evidence(directory.path,'final-inventory.json',inventory);ensureNotInterrupted();
         if(inventory.status!=='passed')result={schemaVersion:1,status:'blocked',phase:'final-inventory',reasonCode:inventory.reasonCode??'final-inventory-blocked'};
         else{validateFinalInventory(inventory,turns.turns[9].revisionId,release);result={schemaVersion:1,status:'passed',phase:'accepted',workerVersionId:release.workerVersionId,turnCount:10};}

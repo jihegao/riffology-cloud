@@ -8,7 +8,11 @@ const KEY='turn-sandbox-fence-v1';
 
 function reject(code:string):never{throw Error(code);}
 function dispatch(raw:Pick<TurnRuntimeIdentity,'scope'|'turnId'|'dispatchId'>):DispatchIdentity{
-  const identity=turnRuntimeIdentity({...raw,sessionId:'sandbox-fence',generation:raw.scope.workspaceGeneration});
+  // `runDispatch()` receives verified capability claims in production. Those
+  // claims intentionally contain command/effect fields in addition to the
+  // dispatch identity, while turnRuntimeIdentity() accepts an exact shape.
+  // Project only the three dispatch fields instead of spreading the caller.
+  const identity=turnRuntimeIdentity({scope:raw.scope,sessionId:'sandbox-fence',turnId:raw.turnId,dispatchId:raw.dispatchId,generation:raw.scope.workspaceGeneration});
   return {scope:identity.scope,turnId:identity.turnId,dispatchId:identity.dispatchId,generation:identity.generation};
 }
 function sameDispatch(a:DispatchIdentity,b:DispatchIdentity):boolean{return JSON.stringify(a)===JSON.stringify(b);}

@@ -76,8 +76,9 @@ export async function collectStagingInventoryPreflight({root,release,auth,probe,
   try{
     if(!release||!WORKER_SHA.test(release.workerSourceSha??'')||!VERSION.test(release.workerVersionId??'')||probe?.status!=='passed')fail('acceptance-inventory-preflight-input-invalid');
     const workspace=await requestWorkspace(auth),snapshot=inventory(root,runner,release),observedAt=Date.now(),application=summary(snapshot,observedAt);
+    if(workspace.activeTurnId!==null||workspace.resourceWait!==null||workspace.releaseHold!==null||workspace.recoveryHold!==null)fail('acceptance-inventory-workspace-not-quiescent');
     if(application.nonInactive!==0)fail('acceptance-inventory-preflight-not-quiescent');
-    return {schemaVersion:1,status:'passed',workerSourceSha:release.workerSourceSha,workerVersionId:release.workerVersionId,scope:workspace.scope,sessionId:auth.sessionId,apps:snapshot.apps,baselineInstances:Object.fromEntries(snapshot.apps.map(app=>[app.className,snapshot.instances[app.className].map(item=>item.name).sort()])),applicationObservation:application};
+    return {schemaVersion:1,status:'passed',workerSourceSha:release.workerSourceSha,workerVersionId:release.workerVersionId,scope:workspace.scope,sessionId:auth.sessionId,baselineWorkspace:{head:workspace.head,activeTurnId:null,resourceWait:null,releaseHold:null,recoveryHold:null},apps:snapshot.apps,baselineInstances:Object.fromEntries(snapshot.apps.map(app=>[app.className,snapshot.instances[app.className].map(item=>item.name).sort()])),applicationObservation:application};
   }catch(error){return {schemaVersion:1,status:'blocked',reasonCode:error instanceof Error?error.message:'acceptance-inventory-preflight-failed'};}
 }
 

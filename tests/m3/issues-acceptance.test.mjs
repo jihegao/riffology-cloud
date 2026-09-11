@@ -6,7 +6,7 @@ import {spawnSync} from 'node:child_process';
 import {EventEmitter} from 'node:events';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
-import {requestJson,runIssuesAcceptance,unavailableInventory,unavailableProviderFreeProbe,validateFinalInventory,validatePlatformProbe,validateReleaseResult,validateTenTurnEvidence} from '../../scripts/m3/issues-acceptance.mjs';
+import {driveTenTurns,requestJson,runIssuesAcceptance,unavailableInventory,unavailableProviderFreeProbe,validateFinalInventory,validatePlatformProbe,validateReleaseResult,validateTenTurnEvidence} from '../../scripts/m3/issues-acceptance.mjs';
 import {forwardCloseTurnGate} from '../../scripts/m3/vertical-staging-release.mjs';
 import {WORKER_VERSION_METADATA_BINDING} from '../../scripts/m3/vertical-staging-preflight.mjs';
 import {exactInstance,instanceRows,selectTrustedPiApp,trustedPiProbeActor} from '../../scripts/m3/trusted-pi-platform-probe.mjs';
@@ -52,6 +52,21 @@ test('acceptance transport retries reads and same-key mutations without changing
   attempt=0;calls.length=0;await assert.rejects(()=>requestJson('https://m1.riff-demo.gaojihe.cn/api/example',{cookie:'private-cookie',method:'POST',body:{value:1},attempts:3,retryDelayMs:0}),/transient-network/);assert.equal(calls.length,1);
 });
 
+test('real turn driver requires successful write and read events and records redacted terminal evidence before blocking',async t=>{
+  const originalFetch=globalThis.fetch,calls=[],progress=[];let workspaceReads=0;
+  globalThis.fetch=async(url,init)=>{
+    calls.push({url:String(url),method:init?.method??'GET',body:init?.body??null});
+    if(String(url).endsWith('/turns'))return Response.json({turn:{id:'turn-a',status:'queued'}});
+    if(String(url).includes('/events?'))return Response.json({events:[{sequence:1,eventId:'event-a',turnId:'turn-a',type:'tool.started',payload:{name:'project_write',toolCallId:'call-a'}},{sequence:2,eventId:'event-b',turnId:'turn-a',type:'tool.completed',payload:{name:'project_write',toolCallId:'call-a',isError:true,artifact:null}},{sequence:3,eventId:'event-c',turnId:'turn-a',type:'assistant.message',payload:{stopReason:'end_turn',text:'tool failed'}}],hasMore:false});
+    workspaceReads++;return Response.json({activeTurnId:null,resourceWait:null,releaseHold:{status:'release-pending',reasonCode:'assignment-guard',since:1,nextAttemptAt:2},recoveryHold:null,turns:{'turn-a':{id:'turn-a',status:'completed',executionOutcome:'completed',persistenceOutcome:'saved',errorCode:null,checkpoint:{revisionId:'a'.repeat(64)}}}});
+  };
+  t.after(()=>{globalThis.fetch=originalFetch;});
+  const auth={origin:'https://m1.riff-demo.gaojihe.cn',workspaceId:'workspace-a',sessionId:'session-a',cookie:'private-cookie'};
+  await assert.rejects(()=>driveTenTurns(auth,{runToken:'run-a',pollMs:0,recordProgress:async(name,value)=>progress.push({name,value})}),/acceptance-required-tool-event-missing/);
+  assert.equal(workspaceReads,2);assert.equal(progress.length,1);assert.equal(progress[0].name,'turn-01-terminal.json');assert.equal(progress[0].value.toolEvents[0].isError,true);assert.equal(JSON.stringify(progress).includes(auth.cookie),false);
+  const submitted=JSON.parse(calls.find(call=>call.url.endsWith('/turns')).body);assert.match(submitted.message,/exactly one successful project_write/);assert.match(submitted.message,/stop without retrying/);
+});
+
 test('provider-free probe derives the production actor and requires an exact app and instance',async()=>{
   const scope={tenantId:'probe-a',projectId:'probe-a',workspaceId:'probe-a',workspaceGeneration:1},expected=(await sandboxActorIds(scope,'turn-a','dispatch-a')).trustedPi;assert.equal(trustedPiProbeActor(scope,'turn-a','dispatch-a'),expected);
   assert.deepEqual(selectTrustedPiApp([{id:'app-a',name:'riffology-m3-trusted-pi-staging',image:'image-a',version:2}],'image-a'),{id:'app-a',name:'riffology-m3-trusted-pi-staging',image:'image-a',version:2});assert.throws(()=>selectTrustedPiApp([], 'image-a'),/app-mismatch/);
@@ -71,8 +86,9 @@ test('default final collector binds public receipts to R2 bytes, exact actors, D
   for(const app of apps)instances[app.id]=[];
   assert.deepEqual(acceptanceActorIds(scope,'turn-1','dispatch-1'),await sandboxActorIds(scope,'turn-1','dispatch-1'));
   const calls=[],runner=(_bin,args)=>{calls.push(args);if(args[0]==='deployments')return {status:0,stdout:JSON.stringify({versions:[{version_id:versionId,percentage:100}]})};if(args[0]==='containers'&&args[1]==='list')return {status:0,stdout:JSON.stringify(listed)};if(args[0]==='containers'&&args[1]==='instances')return {status:0,stdout:JSON.stringify({instances:instances[args[2]],result_info:{next_page_token:null}})};if(args[0]==='r2'){const key=args[3].slice(args[3].indexOf('/')+1),bytes=objects.get(key);if(!bytes)return {status:1,stdout:''};writeFileSync(args[args.indexOf('--file')+1],bytes);return {status:0,stdout:''};}if(args[0]==='d1')return {status:0,stdout:JSON.stringify([{success:true,results:[{workspace_rows:1,provision_rows:1,receipt_rows:4,duplicate_provision_keys:0}]}])};return {status:1,stdout:''};};
-  const originalFetch=globalThis.fetch;globalThis.fetch=async()=>Response.json({schemaVersion:3,scope,activeTurnId:null,resourceWait:null,releaseHold:null,recoveryHold:null,sessions:{'session-a':{head:{revisionId:turns[9].revisionId}}}});t.after(()=>{globalThis.fetch=originalFetch;});
+  const originalFetch=globalThis.fetch;let workspaceHold=null;globalThis.fetch=async()=>Response.json({schemaVersion:3,scope,activeTurnId:null,resourceWait:null,releaseHold:workspaceHold,recoveryHold:null,sessions:{'session-a':{head:{revisionId:turns[9].revisionId}}}});t.after(()=>{globalThis.fetch=originalFetch;});
   const release={workerSourceSha:sha,workerVersionId:versionId},auth={origin:'https://m1.riff-demo.gaojihe.cn',workspaceId:'workspace-a',sessionId:'session-a',cookie:'private-cookie'},readiness=await collectStagingInventoryPreflight({root,release,auth,probe:{status:'passed'},runner}),turnEvidence={turns,finalSnapshot:{scope}};assert.equal(readiness.status,'passed');assert.equal(readiness.applicationObservation.nonInactive,0);
+  assert.equal(readiness.baselineWorkspace.head.revisionId,turns[9].revisionId);workspaceHold={status:'release-pending',reasonCode:'assignment-guard',since:1,nextAttemptAt:2};const blockedPreflight=await collectStagingInventoryPreflight({root,release,auth,probe:{status:'passed'},runner});assert.equal(blockedPreflight.status,'blocked');assert.equal(blockedPreflight.reasonCode,'acceptance-inventory-workspace-not-quiescent');workspaceHold=null;
   for(const turn of turns){const saved=JSON.parse(objects.get(turn.checkpoint.objectKey)),ids=acceptanceActorIds(scope,turn.turnId,saved.identity.dispatchId);instances[apps.find(app=>app.className==='TrustedPiSandbox').id].push({id:`instance-t-${turn.index}`,name:ids.trustedPi,state:'inactive'});instances[apps.find(app=>app.className==='ProjectToolSandbox').id].push({id:`instance-p-${turn.index}`,name:ids.project,state:'inactive'});}
   const result=await collectStagingFinalInventory({root,release,auth,turns:turnEvidence,readiness,runner,quietMs:0,pollMs:0,deadlineMs:1_000});assert.equal(result.status,'passed');assert.equal(result.exactActors.length,20);assert.equal(result.manifests.length,10);assert.equal(result.r2Objects.length,20);assert.equal(result.d1.receiptRows,4);assert.equal(result.applicationObservations[0].nonInactive,0);assert.equal(JSON.stringify(result).includes(auth.cookie),false);assert.equal(calls.filter(args=>args[0]==='r2').length,30);
   objects.set(turns[0].checkpoint.objectKey,Buffer.from('tampered'));const blocked=await collectStagingFinalInventory({root,release,auth,turns:turnEvidence,readiness,runner,quietMs:0,pollMs:0,deadlineMs:1_000});assert.equal(blocked.status,'blocked');assert.equal(blocked.reasonCode,'acceptance-inventory-manifest-receipt-mismatch');

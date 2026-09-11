@@ -82,6 +82,12 @@ test('legacy Project dispatches bind without a session and an exact release upgr
  await assert.rejects(f.reopen().runDispatch(dispatch,async()=>++ran,async()=>({running:false})),/turn-sandbox-fenced/);assert.equal(ran,1);
 });
 
+test('Project dispatch projects identity from complete verified capability claims',async()=>{
+ const gate=fixture().reopen(),claims={schemaVersion:1,purpose:'project-file-effect',actorId:'m2-p-actor',scope:identity.scope,turnId:identity.turnId,dispatchId:identity.dispatchId,commandId:'command-a',effectId:'effect-a',commandDigest:'a'.repeat(64),expiresAt:1_800_000_060_000};
+ assert.equal(await gate.runDispatch(claims,async()=>42,async()=>({running:false})),42);
+ assert.equal(gate.isDispatchFenced(claims),false);
+});
+
 test('a deferred Project dispatch cannot return across abort and keeps release pending until cleanup',async()=>{
  const f=fixture(),gate=f.reopen(),dispatch={scope:identity.scope,turnId:identity.turnId,dispatchId:identity.dispatchId};let begin!:()=>void,finish!:()=>void,cleanups=0;
  const started=new Promise<void>(resolve=>{begin=resolve;}),deferred=new Promise<void>(resolve=>{finish=resolve;});
