@@ -40,12 +40,18 @@ function inspectDeployment(wrangler,configPath,manifest,turnsEnabled,runner){
   return {versionId,check:validateDeployedWorkerVersion(manifest,version,deployment,{turnsEnabled})};
 }
 
-export async function verifyPausedContainerQuiet({root,config,runner=run,quietMs=30_000,pollMs=5_000,deadlineMs=5*60_000,sleepFn=ms=>new Promise(resolve=>setTimeout(resolve,ms))}={}){
-  const wrangler=resolve(root,'node_modules/.bin/wrangler'),cloud=['--config',resolve(root,'infra/wrangler.m3-vertical-staging.jsonc')],listed=parseJson(runner(wrangler,['containers','list','--json',...cloud],60_000)),apps=(config?.containers??[]).map(expected=>{const matches=listed.filter(item=>item?.name===expected.name&&item?.image===expected.image&&typeof item?.id==='string');if(matches.length!==1)throw Error('paused-container-app-mismatch');return {className:expected.class_name,id:matches[0].id,name:matches[0].name,image:matches[0].image};});
+export async function verifyPausedContainerQuiet({root,config,runner=run,quietMs=30_000,pollMs=5_000,deadlineMs=5*60_000,sleepFn=ms=>new Promise(resolve=>setTimeout(resolve,ms)),nowFn=Date.now}={}){
+  const wrangler=resolve(root,'node_modules/.bin/wrangler'),cloud=['--config',resolve(root,'infra/wrangler.m3-vertical-staging.jsonc')],end=nowFn()+deadlineMs;
+  let listed=null;
+  while(nowFn()<end&&listed===null){try{listed=parseJson(runner(wrangler,['containers','list','--json',...cloud],60_000));}catch{await sleepFn(pollMs);}}
+  if(listed===null)throw Error('paused-container-list-unavailable');
+  const apps=(config?.containers??[]).map(expected=>{const matches=listed.filter(item=>item?.name===expected.name&&item?.image===expected.image&&typeof item?.id==='string');if(matches.length!==1)throw Error('paused-container-app-mismatch');return {className:expected.class_name,id:matches[0].id,name:matches[0].name,image:matches[0].image};});
   if(apps.length!==4)throw Error('paused-container-app-mismatch');
-  const observations=[];let quietSince=null;const end=Date.now()+deadlineMs;
-  while(Date.now()<end){
-    const observedAt=Date.now(),instances=[];for(const app of apps){const value=parseJson(runner(wrangler,['containers','instances',app.id,'--json','--per-page','100',...cloud],60_000)),next=value?.result_info?.next_page_token??value?.next_page_token??null,rows=Array.isArray(value)?value:value?.instances;if(!Array.isArray(rows)||next!==null)throw Error('paused-container-instance-page-incomplete');for(const row of rows){if(typeof row?.id!=='string'||typeof row?.name!=='string'||typeof row?.state!=='string')throw Error('paused-container-instance-invalid');instances.push({className:app.className,id:row.id,name:row.name,state:row.state});}}
+  const observations=[];let quietSince=null;
+  while(nowFn()<end){
+    const observedAt=nowFn(),instances=[];let unavailable=false;
+    try{for(const app of apps){const value=parseJson(runner(wrangler,['containers','instances',app.id,'--json','--per-page','100',...cloud],60_000)),next=value?.result_info?.next_page_token??value?.next_page_token??null,rows=Array.isArray(value)?value:value?.instances;if(!Array.isArray(rows)||next!==null)throw Error('paused-container-instance-page-incomplete');for(const row of rows){if(typeof row?.id!=='string'||typeof row?.name!=='string'||typeof row?.state!=='string')throw Error('paused-container-instance-invalid');instances.push({className:app.className,id:row.id,name:row.name,state:row.state});}}}catch{unavailable=true;}
+    if(unavailable){observations.push({observedAt,nonInactive:null,total:null,instances:[],reason:'instance-query-unavailable'});quietSince=null;await sleepFn(pollMs);continue;}
     instances.sort((a,b)=>a.className.localeCompare(b.className)||a.name.localeCompare(b.name)||a.id.localeCompare(b.id));const nonInactive=instances.filter(item=>item.state!=='inactive').length;observations.push({observedAt,nonInactive,total:instances.length,instances});if(nonInactive===0){quietSince??=observedAt;if(observedAt-quietSince>=quietMs)return {schemaVersion:1,status:'passed',quietMs,apps,observations};}else quietSince=null;await sleepFn(pollMs);
   }
   return {schemaVersion:1,status:'blocked',reasonCode:'paused-container-quiet-deadline',quietMs,apps,observations};

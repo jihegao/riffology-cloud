@@ -7,7 +7,7 @@ import {fileURLToPath} from 'node:url';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {WORKER_VERSION_METADATA_BINDING,buildReleaseManifest,createStagingConfigOverlay,inspectManagedImage,inspectTrustedPiImageContent,runPreflight,validateDeployedWorkerVersion,validatePredeployGateClosed,validateReleaseManifest,validateStagingTopology,validateWorkerSource} from '../../scripts/m3/vertical-staging-preflight.mjs';
-import {activeWorkerVersionId,deploymentArgs,runControlledRelease} from '../../scripts/m3/vertical-staging-release.mjs';
+import {activeWorkerVersionId,deploymentArgs,runControlledRelease,verifyPausedContainerQuiet} from '../../scripts/m3/vertical-staging-release.mjs';
 import {PRODUCT_TOOL_BRIDGE_SHA256,PRODUCT_TOOL_LEDGER_SCHEMA_SHA256,PRODUCT_TOOL_LEDGER_SCHEMA_VERSION,PRODUCT_TOOL_PROTOCOL_VERSION} from '../../scripts/m3/vertical-runtime-preflight.mjs';
 
 const config=()=>JSON.parse(readFileSync(new URL('../../infra/wrangler.m3-vertical-staging.jsonc',import.meta.url),'utf8'));
@@ -138,6 +138,12 @@ test('controlled release identifies only one exact 100 percent active version',(
   assert.equal(activeWorkerVersionId({versions:[{version_id:id,percentage:100}]}),id);
   assert.equal(activeWorkerVersionId({versions:[{version_id:id,percentage:99}]}),null);
   assert.equal(activeWorkerVersionId({versions:[{version_id:id,percentage:100},{version_id:'22345678-1234-1234-1234-123456789abc',percentage:0}]}),null);
+});
+
+test('paused global quiet resets its proof window after a transient instance query failure',async()=>{
+  const value=config(),listed=value.containers.map((item,index)=>({id:`app-${index}`,name:item.name,image:item.image}));let time=0,instanceReads=0;
+  const runner=(_bin,args)=>{if(args[0]==='containers'&&args[1]==='list')return {status:0,stdout:JSON.stringify(listed)};if(args[0]==='containers'&&args[1]==='instances'){instanceReads+=1;if(instanceReads===5)return {status:1,stdout:'',stderr:'temporary control-plane failure'};return {status:0,stdout:JSON.stringify({instances:[],result_info:{next_page_token:null}})};}return {status:1,stdout:'',stderr:'unexpected command'};};
+  const result=await verifyPausedContainerQuiet({root,config:value,runner,quietMs:30_000,pollMs:5_000,deadlineMs:100_000,sleepFn:async ms=>{time+=ms;},nowFn:()=>time});assert.equal(result.status,'passed');assert.equal(result.observations.some(item=>item.reason==='instance-query-unavailable'&&item.nonInactive===null),true);const suffix=result.observations.slice(result.observations.findLastIndex(item=>item.reason==='instance-query-unavailable')+1);assert.ok(suffix.at(-1).observedAt-suffix[0].observedAt>=30_000);
 });
 
 test('controlled release uses one enabled overlay and forward-deploys the same SHA closed when postdeploy fails',async t=>{
