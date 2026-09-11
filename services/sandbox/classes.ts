@@ -32,6 +32,18 @@ export class TrustedPiSandbox extends Sandbox<M2SandboxEnv>{
   async writeTurnFile(raw:Parameters<typeof turnRuntimeIdentity>[0],...input:Parameters<Sandbox<M2SandboxEnv>['writeFile']>){const identity=turnRuntimeIdentity(raw);await this.#assertActor(identity);return this.#turnFence.run(identity,()=>super.writeFile(...input),()=>this.#destroyForFence());}
   async readTurnFile(raw:Parameters<typeof turnRuntimeIdentity>[0],...input:Parameters<Sandbox<M2SandboxEnv>['readFile']>){const identity=turnRuntimeIdentity(raw);await this.#assertActor(identity);return this.#turnFence.run(identity,()=>super.readFile(...input),()=>this.#destroyForFence());}
   async startTurnProcess(raw:Parameters<typeof turnRuntimeIdentity>[0],...input:Parameters<Sandbox<M2SandboxEnv>['startProcess']>){const identity=turnRuntimeIdentity(raw);await this.#assertActor(identity);return this.#turnFence.run(identity,()=>super.startProcess(...input),()=>this.#destroyForFence());}
+  /** Provider-free release probe. Keep the SDK Process handle inside this DO
+   * and return only plain data so the caller is not coupled to an RPC target's
+   * lifetime. The command and all execution options are fixed here. */
+  async startLifecycleProbe(raw:Parameters<typeof turnRuntimeIdentity>[0],processId:string){
+    const identity=turnRuntimeIdentity(raw);await this.#assertActor(identity);
+    if(!/^probe-[a-f0-9]{24}$/.test(processId))throw Error('trusted-pi-lifecycle-probe-process-invalid');
+    return this.#turnFence.run(identity,async()=>{
+      const process=await super.startProcess('/bin/sleep 300',{processId,autoCleanup:false,timeout:300000,cwd:'/tmp',encoding:'utf8',env:{LANG:'C.UTF-8',PATH:'/usr/local/bin:/usr/bin:/bin'}});
+      if(!process||process.id!==processId)throw Error('trusted-pi-lifecycle-probe-start-invalid');
+      return {processId:process.id};
+    },()=>this.#destroyForFence());
+  }
   async getTurnProcess(raw:Parameters<typeof turnRuntimeIdentity>[0],...input:Parameters<Sandbox<M2SandboxEnv>['getProcess']>){const identity=turnRuntimeIdentity(raw);await this.#assertActor(identity);return this.#turnFence.run(identity,()=>super.getProcess(...input),()=>this.#destroyForFence());}
   async cancelTurnProcess(raw:Parameters<typeof turnRuntimeIdentity>[0],id:string){const identity=turnRuntimeIdentity(raw);await this.#assertActor(identity);if(id!==await trustedPiProcessId(identity))throw Error('trusted-pi-native-process-mismatch');return this.#turnFence.cancelOnce(identity,async()=>{const process=await super.getProcess(id);if(!process||process.id!==id||!['starting','running'].includes(await process.getStatus()))return false;await process.kill('SIGTERM');return true;});}
   /** Keep teardown and its immediate platform observation in one DO RPC.
