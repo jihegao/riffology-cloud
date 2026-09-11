@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
 import {chmodSync,mkdirSync,mkdtempSync,readFileSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import test from 'node:test';
-import {AUTH_SOURCE_SECRETS,CONTAINER_CLASSES,LOCAL_GENERATED_SECRETS,LOCAL_OAUTH_EGRESS_SECRET,RUNTIME_KEYS,SANDBOX_CONTAINER_CLASSES,areLoopbackAddresses,buildLaunchConfig,catalogAdmissionFromWrangler,dockerCapacityFromInfo,isAllowedDockerReference,runVerticalPreflight,validateRuntimeFile,validateSecretSources,validateTls,verticalModelBudgetState} from '../../scripts/m3/vertical-runtime-preflight.mjs';
+import {AUTH_SOURCE_SECRETS,CONTAINER_CLASSES,LOCAL_GENERATED_SECRETS,LOCAL_OAUTH_EGRESS_SECRET,PRODUCT_TOOL_BRIDGE_SHA256,RUNTIME_KEYS,SANDBOX_CONTAINER_CLASSES,areLoopbackAddresses,buildLaunchConfig,catalogAdmissionFromWrangler,dockerCapacityFromInfo,isAllowedDockerReference,runVerticalPreflight,validateRuntimeFile,validateSecretSources,validateTls,verticalModelBudgetState} from '../../scripts/m3/vertical-runtime-preflight.mjs';
 
 const imageDigest=value=>'sha256:'+value.repeat(64).slice(0,64);
 const containerImages=()=>Object.fromEntries(CONTAINER_CLASSES.map((name,index)=>[name,{reference:`docker.io/library/riffology-${name.toLowerCase()}:test`,digest:imageDigest(String(index+1))}]));
@@ -66,6 +67,14 @@ test('vertical Service image declares the exact platform deny-all fallback marke
   const dockerfile=readFileSync(new URL('../../services/run/Dockerfile.vertical',import.meta.url),'utf8');
   assert.match(dockerfile,/^ENV RIFFOLOGY_SERVICE_PLATFORM_EGRESS_FENCE=workerd-deny-all-v1$/m);
   assert.match(dockerfile,/cloudflare\/sandbox:0\.12\.9-python@sha256:[a-f0-9]{64}/);
+});
+
+test('vertical TrustedPi release preflight binds the image to the checked-out Tool Bridge source',()=>{
+  const source=readFileSync(new URL('../../services/trusted-pi/product-tool-bridge.mjs',import.meta.url));
+  assert.equal(PRODUCT_TOOL_BRIDGE_SHA256,createHash('sha256').update(source).digest('hex'));
+  const preflight=readFileSync(new URL('../../scripts/m3/vertical-runtime-preflight.mjs',import.meta.url),'utf8');
+  assert.match(preflight,/product-tool-bridge\.mjs/);
+  assert.match(preflight,/bridgeSha!==/);
 });
 
 test('vertical model loop budget accepts only an idle exact base-to-vertical migration',()=>{

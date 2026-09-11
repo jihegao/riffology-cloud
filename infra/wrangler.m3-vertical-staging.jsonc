@@ -78,7 +78,7 @@
   "containers": [
     { "name": "riffology-m1-project-staging", "class_name": "ProjectRuntime", "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m1-project-staging@sha256:bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00", "instance_type": "basic", "max_instances": 1 },
     { "name": "riffology-m3-project-tools-staging", "class_name": "ProjectToolSandbox", "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-project-tools-staging@sha256:6e1c51f984b0a6786483c09c327118722e35597f0ab421d54a27b264a0446a58", "instance_type": "basic", "max_instances": 1 },
-    { "name": "riffology-m3-trusted-pi-staging", "class_name": "TrustedPiSandbox", "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:bef98ae4098f8f1ea5a229a1d0e39a690a502623af88c433790309d95f9fc8d4", "instance_type": "basic", "max_instances": 1 },
+    { "name": "riffology-m3-trusted-pi-staging", "class_name": "TrustedPiSandbox", "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2", "instance_type": "basic", "max_instances": 1 },
     { "name": "riffology-m3-service-staging", "class_name": "ServiceSandbox", "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8", "instance_type": "basic", "max_instances": 1 }
   ],
   "exports": {
