@@ -52,7 +52,7 @@
     "M3_SERVICE_IMAGE": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8"
   },
   "d1_databases": [
-    { "binding": "CATALOG", "database_name": "riffology-catalog-staging", "database_id": "993f2fd9-a135-4a93-9caa-10828dec6635", "migrations_dir": "../services/catalog/migrations" }
+    { "binding": "CATALOG", "database_name": "riffology-catalog-staging-v3-20260911", "database_id": "f122099b-8eaa-4eca-83a0-755de0f8b46b", "migrations_dir": "../services/catalog/migrations" }
   ],
   "durable_objects": {
     "bindings": [
@@ -97,7 +97,7 @@
     "ServiceSandbox": { "type": "durable-object", "storage": "sqlite", "container": "riffology-m3-service-staging" }
   },
   "r2_buckets": [
-    { "binding": "WORKSPACE_CHECKPOINTS", "bucket_name": "riffology-m1-workspace-checkpoints-staging" },
+    { "binding": "WORKSPACE_CHECKPOINTS", "bucket_name": "riffology-workspace-checkpoints-staging-v3-20260911" },
     { "binding": "MODEL_CONTENT", "bucket_name": "riffology-m3-model-content-staging" }
   ],
   "triggers": { "crons": ["* * * * *"] },
