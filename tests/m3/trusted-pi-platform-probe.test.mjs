@@ -18,7 +18,7 @@ import {
 
 const token='0123456789abcdef01234567',capability='a'.repeat(64),workerName=`riffology-issues-probe-${token}`,workerVersionId='12345678-1234-1234-1234-123456789abc',probeVersionId='22345678-1234-1234-1234-123456789abc';
 
-function setup(t,{controlReadFailures=0,deployLoss=false,deployCreatesWorker=true,eventualWorkerAppearance=false,healthInstability=false,startVisibilityDelay=0,startState='running',failAfterAStart=false,interloper=false,deleteAckLoss=false,deleteFailure=false,predeployFallbackFailure=false,routePropagationFailure=false,routeAbsenceFailure=false}={}){
+function setup(t,{controlReadFailures=0,deployLoss=false,deployCreatesWorker=true,eventualWorkerAppearance=false,healthInstability=false,startVisibilityDelay=0,startState='running',startTimeout=false,failAfterAStart=false,interloper=false,deleteAckLoss=false,deleteFailure=false,predeployFallbackFailure=false,routePropagationFailure=false,routeAbsenceFailure=false}={}){
   const root=mkdtempSync(join(tmpdir(),'riffology-deployed-probe-test-'));t.after(()=>rmSync(root,{recursive:true,force:true}));mkdirSync(join(root,'infra'),{recursive:true});
   const config=JSON.parse(readFileSync(new URL('../../infra/wrangler.m3-vertical-staging.jsonc',import.meta.url),'utf8'));writeFileSync(join(root,'infra','wrangler.m3-vertical-staging.jsonc'),`${JSON.stringify(config,null,2)}\n`);
   const trusted=config.containers.find(item=>item.class_name==='TrustedPiSandbox'),calls=[],requests=[],instances=new Map(),pendingInstances=new Map(),origin=probeWorkerOrigin(workerName),pathPrefix=probeWorkerPath(workerName);let deployed=false,created=false,routeActive=predeployFallbackFailure,lastConfigPath=null,time=0,aStarted=false,versionViews=0,namedChecksAfterDeploy=0,authorizedHealthCalls=0;
@@ -35,15 +35,15 @@ function setup(t,{controlReadFailures=0,deployLoss=false,deployCreatesWorker=tru
     return {status:1,stdout:'',stderr:'unexpected command'};
   };
   const fetcher=async(url,init)=>{
-    requests.push({url,method:init.method,capability:init.headers?.['x-probe-capability']??null});if(failAfterAStart&&aStarted)throw Error('platform-probe-fetch-failed');
+    const body=init.method==='POST'?JSON.parse(init.body):null;requests.push({url,method:init.method,action:body?.action??'health',capability:init.headers?.['x-probe-capability']??null});if(failAfterAStart&&aStarted)throw Error('platform-probe-fetch-failed');
     const requestUrl=new URL(url),hasCapability=init.headers?.['x-probe-capability']===capability;
     if(!routeActive)return Response.json({error:'not_found'},{status:404});
     if(!hasCapability)return new Response(null,{status:404});
     if(requestUrl.origin!==new URL(origin).origin||!requestUrl.pathname.startsWith(`${pathPrefix}/`))return new Response(null,{status:404});
     if(init.method==='GET'){authorizedHealthCalls+=1;if(healthInstability&&authorizedHealthCalls===2)return Response.json({error:'not_found'},{status:404});return Response.json({ok:true});}
-    const body=JSON.parse(init.body),actor=body.actor;if(body.action==='start'){const row={id:`instance-${instances.size+pendingInstances.size+1}`,name:actor,state:startState};if(startVisibilityDelay>0)pendingInstances.set(actor,{row,remaining:startVisibilityDelay});else instances.set(actor,row);if(body.identity.turnId.endsWith('-a'))aStarted=true;return Response.json({ok:true,processId:probeProcessId(workerName)});}if(body.action==='destroy'){const prior=instances.get(actor);if(prior)instances.set(actor,{...prior,state:'inactive'});pendingInstances.delete(actor);return Response.json({ok:true,value:{running:false}});}return Response.json({ok:false},{status:400});
+    const actor=body.actor;if(body.action==='start'){const row={id:`instance-${instances.size+pendingInstances.size+1}`,name:actor,state:startState};if(startVisibilityDelay>0)pendingInstances.set(actor,{row,remaining:startVisibilityDelay});else instances.set(actor,row);if(body.identity.turnId.endsWith('-a'))aStarted=true;if(startTimeout)return new Promise((_,reject)=>init.signal.addEventListener('abort',()=>reject(init.signal.reason),{once:true}));return Response.json({ok:true,processId:probeProcessId(workerName)});}if(body.action==='destroy'){const prior=instances.get(actor);if(prior)instances.set(actor,{...prior,state:'inactive'});pendingInstances.delete(actor);return Response.json({ok:true,value:{running:false}});}return Response.json({ok:false},{status:400});
   };
-  const run=()=>runTrustedPiPlatformProbe({root,release:{workerSourceSha:'b'.repeat(40),workerVersionId},runner,fetcher,now:()=>time+=10_000,sleepFn:async()=>{},quietMs:30_000,pollMs:0,deadlineMs:1_000_000,cleanupDeadlineMs:100_000,deploymentSettlementMs:300_000,deploymentVisibilityDeadlineMs:100_000,healthDeadlineMs:100_000,healthStableMs:30_000,tokenFactory:()=>token,capabilityFactory:()=>capability});
+  const run=()=>runTrustedPiPlatformProbe({root,release:{workerSourceSha:'b'.repeat(40),workerVersionId},runner,fetcher,now:()=>time+=10_000,sleepFn:async()=>{},quietMs:30_000,pollMs:0,deadlineMs:1_000_000,cleanupDeadlineMs:100_000,deploymentSettlementMs:300_000,deploymentVisibilityDeadlineMs:100_000,healthDeadlineMs:100_000,healthStableMs:30_000,requestTimeoutMs:{health:20,start:5,destroy:20},tokenFactory:()=>token,capabilityFactory:()=>capability});
   return {root,run,calls,requests,get recoveryPath(){return join(root,'.wrangler','issues-probe-recovery',`${workerName}.json`);},get lastConfigPath(){return lastConfigPath;},get deployed(){return deployed;}};
 }
 
@@ -59,6 +59,11 @@ test('deployed provider-free probe verifies A and B then deletes only its owned 
 
 test('start acknowledgement waits for eventual exact platform actor visibility',async t=>{
   const fixture=setup(t,{startVisibilityDelay:2}),result=await fixture.run();assert.equal(result.status,'passed');assert.equal(validatePlatformProbe(result).status,'passed');assert.ok(fixture.calls.filter(args=>args[0]==='containers'&&args[1]==='instances').length>=8);
+});
+
+test('lost start acknowledgement is action-specific and is never retried',async t=>{
+  const fixture=setup(t,{startTimeout:true}),result=await fixture.run();assert.equal(result.status,'blocked');assert.equal(result.reasonCode,'platform-probe-start-timeout');assert.equal(result.failure.stage,'start-a');assert.equal(result.failure.action,'start');assert.equal(result.failure.requestTimeoutMs,5);assert.equal(result.failure.delivery,'unknown');assert.match(result.probeWorker.name,/^riffology-issues-probe-/);assert.equal(result.containerApp.id,'trusted-app');assert.equal(result.actorA.startsWith('m2-t-'),true);assert.equal(result.actorB.startsWith('m2-t-'),true);assert.equal(result.progress.timeline.length>3,true);assert.equal(result.cleanup.status,'passed');assert.equal(fixture.requests.filter(item=>item.method==='POST').length>=1,true);
+  const starts=fixture.requests.filter(item=>item.action==='start');assert.equal(starts.length,1);
 });
 
 test('start proof accepts only the explicit running platform state',async t=>{

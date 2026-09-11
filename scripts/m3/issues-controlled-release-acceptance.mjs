@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import {mkdtempSync,rmSync,writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {chmodSync,mkdirSync,mkdtempSync,readFileSync,readdirSync,rmSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -8,6 +9,15 @@ import {forwardCloseTurnGate,runControlledRelease} from './vertical-staging-rele
 
 const SHA=/^[a-f0-9]{40}$/;
 const fail=code=>{throw Error(code);};
+const digest=value=>createHash('sha256').update(value).digest('hex');
+
+function writePreopenFailureEvidence(root,workerSha,now,result,release,close){
+  const stamp=now.toISOString().replace(/[-:.]/g,''),directory=resolve(root,'docs/evidence/runs',`issues-1-6-21-${stamp}-${workerSha.slice(0,8)}`);mkdirSync(resolve(root,'docs/evidence/runs'),{recursive:true});mkdirSync(directory,{mode:0o700});chmodSync(directory,0o700);
+  const values={'release-result.json':release,'gate-close.json':close,'orchestration-result.json':{...result,evidenceDirectory:directory}},names=[];
+  for(const [name,value] of Object.entries(values)){writeFileSync(resolve(directory,name),`${JSON.stringify(value,null,2)}\n`,{encoding:'utf8',mode:0o600,flag:'wx'});chmodSync(resolve(directory,name),0o600);names.push(name);}
+  const sums=names.sort().map(name=>`${digest(readFileSync(resolve(directory,name)))}  ${name}`).join('\n');writeFileSync(resolve(directory,'SHA256SUMS'),`${sums}\n`,{encoding:'utf8',mode:0o600,flag:'wx'});chmodSync(resolve(directory,'SHA256SUMS'),0o600);
+  if(readdirSync(directory).length!==4)fail('controlled-release-failure-evidence-invalid');return directory;
+}
 
 export async function runControlledReleaseAcceptance({
   root=resolve(fileURLToPath(new URL('../..',import.meta.url))),workerSha,authInputPath,secretFiles=[],opencodeAuthFile=null,execute=false,releaseRunner=runControlledRelease,acceptanceRunner=runIssuesAcceptance,closeRunner=forwardCloseTurnGate,signalSource=null,signalExit=null,now=new Date(),
@@ -44,6 +54,7 @@ export async function runControlledReleaseAcceptance({
     for(const [name,handler] of handlers)signalSource?.removeListener(name,handler);
     if(close.status!=='passed')result={schemaVersion:1,status:'blocked',phase:'gate-close',reasonCode:'turn-gate-close-unconfirmed',priorResult:result,release,acceptance};
     result={...result,gateClose:close};
+    if(result.status!=='passed'&&!acceptance?.evidenceDirectory){const evidenceDirectory=writePreopenFailureEvidence(root,workerSha,now,result,release,close);result={...result,evidenceDirectory};}
     rmSync(handoffDirectory,{recursive:true,force:true});
   }
   return result;

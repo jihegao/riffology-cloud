@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {EventEmitter} from 'node:events';
-import {mkdtempSync,readFileSync,rmSync,statSync} from 'node:fs';
+import {existsSync,mkdtempSync,readFileSync,readdirSync,rmSync,statSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {runControlledReleaseAcceptance} from '../../scripts/m3/issues-controlled-release-acceptance.mjs';
@@ -24,6 +24,12 @@ test('acceptance failure cannot leave the opened gate behind and outer close rem
   const root=mkdtempSync(join(tmpdir(),'riffology-unified-failure-'));t.after(()=>rmSync(root,{recursive:true,force:true}));let gateOpen=false,closes=0;
   const result=await runControlledReleaseAcceptance({root,workerSha,authInputPath:join(root,'auth.json'),execute:true,releaseRunner:async()=>{gateOpen=true;return release;},acceptanceRunner:async()=>{throw Error('injected-acceptance-failure');},closeRunner:async()=>{closes++;gateOpen=false;return {schemaVersion:1,status:'passed',gateCloseConfirmed:true};}});
   assert.equal(result.status,'blocked');assert.equal(result.phase,'orchestration');assert.equal(result.reasonCode,'injected-acceptance-failure');assert.equal(gateOpen,false);assert.equal(closes,1);
+});
+
+test('blocked pre-open release preserves probe diagnostics in immutable checksummed evidence',async t=>{
+  const root=mkdtempSync(join(tmpdir(),'riffology-unified-preopen-failure-'));t.after(()=>rmSync(root,{recursive:true,force:true}));const failure={stage:'start-a',action:'start',actor:'m2-t-probe-a',requestTimeoutMs:180_000,delivery:'unknown',observedAt:1_000},blocked={schemaVersion:1,status:'blocked',phase:'platform-probe',reasonCode:'platform-probe-start-timeout',platformProbe:{schemaVersion:1,status:'blocked',reasonCode:'platform-probe-start-timeout',probeWorker:{name:'riffology-issues-probe-0123456789abcdef01234567'},actorA:'m2-t-probe-a',actorB:'m2-t-probe-b',failure,progress:{startedAt:900,timeline:[failure]},cleanup:{status:'passed'}}},close={schemaVersion:1,status:'passed',gateCloseConfirmed:true,workerVersionId:'22345678-1234-1234-1234-123456789abc'};
+  const result=await runControlledReleaseAcceptance({root,workerSha,authInputPath:join(root,'auth.json'),execute:true,releaseRunner:async()=>blocked,acceptanceRunner:async()=>{throw Error('acceptance-must-not-run');},closeRunner:async()=>close,now:new Date('2026-09-12T00:00:00.000Z')});
+  assert.equal(result.status,'blocked');assert.equal(result.phase,'release');assert.equal(result.reasonCode,'platform-probe-start-timeout');assert.deepEqual(result.release,blocked);assert.equal(result.gateClose.gateCloseConfirmed,true);assert.equal(result.evidenceDirectory,join(root,'docs/evidence/runs',`issues-1-6-21-20260912T000000000Z-${workerSha.slice(0,8)}`));assert.equal(existsSync(result.evidenceDirectory),true);assert.deepEqual(readdirSync(result.evidenceDirectory).sort(),['SHA256SUMS','gate-close.json','orchestration-result.json','release-result.json']);for(const name of readdirSync(result.evidenceDirectory))assert.equal(statSync(join(result.evidenceDirectory,name)).mode&0o777,0o600);assert.equal(statSync(result.evidenceDirectory).mode&0o777,0o700);assert.deepEqual(JSON.parse(readFileSync(join(result.evidenceDirectory,'release-result.json'),'utf8')).platformProbe.failure,failure);assert.deepEqual(JSON.parse(readFileSync(join(result.evidenceDirectory,'orchestration-result.json'),'utf8')).release.platformProbe.progress.timeline,[failure]);assert.match(readFileSync(join(result.evidenceDirectory,'SHA256SUMS'),'utf8'),/release-result\.json/);
 });
 
 test('signal in the former release-to-acceptance gap closes before exit and cannot start acceptance',async t=>{
