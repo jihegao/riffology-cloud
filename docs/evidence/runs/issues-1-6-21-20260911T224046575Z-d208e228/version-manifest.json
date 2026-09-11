@@ -1,0 +1,2292 @@
+{
+  "schemaVersion": 1,
+  "workerSourceSha": "d208e228d8f3c1d1008f45d98354e4b0f17db78e",
+  "workerVersionId": "f43ccedb-fe35-43d9-b159-044c7f006ab7",
+  "pausedCandidateVersionId": "fc470fc3-d318-43d1-8be2-51bd9b710f6f",
+  "pausedCandidateRecheck": {
+    "observedAt": 1789166866774,
+    "workerVersionId": "fc470fc3-d318-43d1-8be2-51bd9b710f6f",
+    "check": {
+      "name": "deployed-worker-version",
+      "status": "passed"
+    }
+  },
+  "workerVersionTag": "source-d208e228d8f3c1d1008f45d98354e4b0f17db78e",
+  "toolBridgeSha256": "a416c28c1ad19b149cdf1aa399ff4bb3cb3a06ea0198abaddcb5796157dbc0e7",
+  "toolProtocolVersion": "2",
+  "toolLedgerSchemaVersion": "1",
+  "toolLedgerSchemaSha256": "95b73690b776ecc6dba05a7c481bfe6c015b948a57ad88e0ae65b31c420e587a",
+  "containerImages": [
+    {
+      "name": "ProjectRuntime",
+      "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m1-project-staging@sha256:bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00"
+    },
+    {
+      "name": "ProjectToolSandbox",
+      "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-project-tools-staging@sha256:6e1c51f984b0a6786483c09c327118722e35597f0ab421d54a27b264a0446a58"
+    },
+    {
+      "name": "TrustedPiSandbox",
+      "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2"
+    },
+    {
+      "name": "ServiceSandbox",
+      "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8"
+    }
+  ],
+  "platformProbe": {
+    "schemaVersion": 1,
+    "status": "passed",
+    "workerSourceSha": "d208e228d8f3c1d1008f45d98354e4b0f17db78e",
+    "workerVersionId": "fc470fc3-d318-43d1-8be2-51bd9b710f6f",
+    "probeWorker": {
+      "name": "riffology-issues-probe-d1fe1eb431b11798b0133437",
+      "origin": "https://m1.riff-demo.gaojihe.cn/__riffology-internal/issues-probe/d1fe1eb431b11798b0133437",
+      "pathPrefix": "/__riffology-internal/issues-probe/d1fe1eb431b11798b0133437",
+      "versionId": "64883136-dafe-4ca6-afae-e280bb5e0134",
+      "versionTag": "probe-d1fe1eb431b11798b0133437",
+      "capabilityBindingVerified": true,
+      "pathBindingVerified": true,
+      "binding": {
+        "name": "TRUSTED_PI_SANDBOX",
+        "type": "durable_object_namespace",
+        "className": "TrustedPiSandbox",
+        "scriptName": "riffology-m1-gateway-staging"
+      }
+    },
+    "containerApp": {
+      "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+      "name": "riffology-m3-trusted-pi-staging",
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2",
+      "version": 2
+    },
+    "actorA": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+    "actorB": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+    "actorAStarted": {
+      "processId": "probe-d1fe1eb431b11798b0133437",
+      "processStatus": "running",
+      "containerRunning": true,
+      "observedAt": 1789166532845
+    },
+    "actorAStartExternal": {
+      "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+      "state": "stopped",
+      "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7",
+      "applicationInstances": [
+        {
+          "id": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7",
+          "name": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+          "state": "stopped"
+        },
+        {
+          "id": "01e7b42cdad08f493befab6cce09a7925afc9b8f65c8c087d4fed1938259a9c6",
+          "name": "m2-t-qr7etqpmnduqotvhd33tfn3xyfr5rjuwiiwmfg6vjuv4ytyvhxfa",
+          "state": "inactive"
+        },
+        {
+          "id": "05e863d46a8c1d2d6c8194a546b81f72aa3a79ba986574fdf6c188c7411745f5",
+          "name": "m2-t-uiasr25buhhzisnawbnjlfcd7nkj36n44kdxa4ipwribtjogjjta",
+          "state": "inactive"
+        },
+        {
+          "id": "0c87ada11768769325efd1385661e7e12d10a52f0f5bea6991746ae8a07b5875",
+          "name": "m2-t-ijypr7kniclc5i3plyvthh4ywikyldpvrd5yjsbqfktp3kzipcsa",
+          "state": "inactive"
+        },
+        {
+          "id": "230637d8bdea28f73243cfa6c214617d3d3cab25486f3e09010c5c34fbf1c833",
+          "name": "m2-t-xbh4xw3opwgezdxdv3ccynm4avbmth7rpz6h2w5qntp2xp262vha",
+          "state": "inactive"
+        },
+        {
+          "id": "2585df0b9672231ecf859ac63a107f009539dca8135dfeab058ab16418c8eae6",
+          "name": "m2-t-27uvwpgscwfup65a5cvvkibux7p4tgwlo7dmehqflluzazowuxba",
+          "state": "inactive"
+        },
+        {
+          "id": "26f0317e83152356e00f313f6296b8ca506aa1aaa479ab3e9bf8962f4a8cf5ab",
+          "name": "m2-t-qbqswny772jj6vfot7jfe6bxbnr23e5i6gc3gklug6nrxd7wt4pa",
+          "state": "inactive"
+        },
+        {
+          "id": "37738d675f441bbe3e247d1d25864ae6c6118d80f8cd13d329f1c24a89b4f998",
+          "name": "m2-t-w6i3qd7pkpcmczyi63nv7rtfsylrkuktnfsbahvhkkcr5e6oqzpa",
+          "state": "inactive"
+        },
+        {
+          "id": "3785369cd0fc877ed6546113e8e620cfa6411a84f66e6f13cdc1062d2772ade0",
+          "name": "m2-t-xrr437nrhr34zh4xg4ibvruoedwflwbln26tymehfvin6wcska2a",
+          "state": "inactive"
+        },
+        {
+          "id": "3d2fadb02517581eb3e93037a4ba1b133337b469670af54c29498fbff9634fe4",
+          "name": "m2-t-fdub36xqg2vnvy4djljziyth5fcyrr5lnik3enenmysbsokepwnq",
+          "state": "inactive"
+        },
+        {
+          "id": "437f9c06761d76779efe9c1ea2afe5d26a81fbc592514d2dc4d10322a50cb94a",
+          "name": "m2-t-2yhw633pb7jnfpmxqnmdu4szzrdbuos5vma7jqxqgzf5h5arrxpq",
+          "state": "inactive"
+        },
+        {
+          "id": "48a9215d6f6ee908a9155fc971a74284748d6daa9952ade5f3a8eb230d6885ba",
+          "name": "m2-t-rqjx2atoqndbsbjy7a62g7ebp44q5af6md2nl3oc2gf4y6x7aova",
+          "state": "inactive"
+        },
+        {
+          "id": "48a98edc4ff899a9d9a574a62d1e7c1b231f2bca534a9ee19ec3a54e96e65259",
+          "name": "m2-t-vkhopuei4np332gffrojo5huovrskgef4xg2iswcyjvu3n4hzjxa",
+          "state": "inactive"
+        },
+        {
+          "id": "543540389add7e7167ba0cadcf763c03d2ba7f4a326862b28c69b65d490662bd",
+          "name": "m2-t-kkb63rv5wzordqt34icbatsiosz5occn5x633swzqppsivrxkqua",
+          "state": "inactive"
+        },
+        {
+          "id": "58fe3b06daf22d13c8af23e939b0955e20432d826d7a00970a65f7b10f243c4a",
+          "name": "m2-t-5mtdqdkuzvg45ovljhj6dvfehfvfilk2ganapowfkh5lytmzc6qa",
+          "state": "inactive"
+        },
+        {
+          "id": "66953cf869359569d78c53859ccd608c2a3a1400e12d27475955e4efb71a3bb9",
+          "name": "m2-t-w6go5yq4wdihigmnoaqibqusoe2qpzjn7yvm4q5uqh35cncj7t5a",
+          "state": "inactive"
+        },
+        {
+          "id": "6af524548e38bbfdd501447f3aba77839fb01af7240647518a413495d193262f",
+          "name": "m2-t-cxk5vodsobhvawdjrwbbbafeoyz7gubklyxeonuboi4xuwu3odya",
+          "state": "inactive"
+        },
+        {
+          "id": "6d95c3983ff2375f69256c6d079430081e00b472d682034ecd38fb0c7f0738f2",
+          "name": "m2-t-2yqffmmqjnyxt4sedbmzn3cgw2tgalttcvobfezmbjvp75v4mida",
+          "state": "inactive"
+        },
+        {
+          "id": "6f0b507136485d3aaad7b256b47de9887c53e50ac060b87d8112c291c2a8c0ba",
+          "name": "m2-t-ilsitgyqgpfvudqbxq6nhpo7uebwffxynkitnq3tka6gduma7jra",
+          "state": "inactive"
+        },
+        {
+          "id": "7bc2801e7990208fc3355c1b3ed64f2963f013ec053553e63fa1304cc180ab5d",
+          "name": "m2-t-bv4doqrkczx5chvgglf4gg34izg3e6ev6bwm6yylzxifpz7ne4yq",
+          "state": "inactive"
+        },
+        {
+          "id": "80b4d5751845b7f7d9be0efdc6be543b48c250b1af03a781230b06d50849f8e7",
+          "name": "m2-t-ev4jyzwxc5dkyraoc5c5x7jleqwkqzyldwrrs6l5bnl53522s5va",
+          "state": "inactive"
+        },
+        {
+          "id": "8506ad56e96ad2d6f3a99c63d440df7e4ca070bcacc98544be15a1960a2b7180",
+          "name": "m2-t-gtxfad66kcr7yndtxtumm623l3ytacubftpzxe7wcboqecxzbeuq",
+          "state": "inactive"
+        },
+        {
+          "id": "8710f756f72b20fec3dc25779378679464646923538723e6259b90ccd9cf1465",
+          "name": "m2-t-wkcruo2nekdj4acs5npsfh7yhqycwj6rbrwmnfnysdjsuwnwk7ma",
+          "state": "inactive"
+        },
+        {
+          "id": "8e57ec06c051f2f89cb0d0d6a2c7ef1452ad9be215a3e279ca82dcfc4aa6011b",
+          "name": "m2-t-b2idrm5hn3xkvezo3ah653jtcdrtdfcw6fyk4xezawbcvynksqbq",
+          "state": "inactive"
+        },
+        {
+          "id": "ae06c431c65073ec024c2ef8bcd5ad60e010d9d8ce5ef6f8343ad52068f0cf31",
+          "name": "m2-t-d7qtipmyxb2z4z6tq63h6ka7msmk46bnhfbtt7wewauztnfs5edq",
+          "state": "inactive"
+        },
+        {
+          "id": "bbaa2eb567ede49dab86db13a124d126bd0700f8adc647de5d957a3c5fe3585d",
+          "name": "m2-t-i7hhady4ge7t4vsfpyxpyp4a2jzlzz5c74cghfjuklahy75yzdpa",
+          "state": "inactive"
+        },
+        {
+          "id": "bea4a38d597348a9d42e582f46ad8473cadc045ff66ad773322a30b88c3d8a9e",
+          "name": "m2-t-hqiugc34ku4mz6cohp4xznh7domfq5inid2uasc6viyulvw4dfyq",
+          "state": "inactive"
+        },
+        {
+          "id": "c886ee2900efeb0a186a747de3f1779a2b5456451aaca763413c5f61f51fde73",
+          "name": "m2-t-7dbgya7lcafcb5z6ocemo3hyr6r55og5fttq7c5kyz356kbcigsa",
+          "state": "inactive"
+        },
+        {
+          "id": "c9424683be2d875b18dee2b001bf38f0d4547cd05e27741ee12bdc0df993bfc9",
+          "name": "m2-t-kxk2jbttfunvsxl5etlilgpxgqvepr2q33z7m3czsatuddp3npaa",
+          "state": "inactive"
+        },
+        {
+          "id": "ca880ed069d2f8ef8f0ed071ca77c3c814d219fb40e3534ea917d1524cec2662",
+          "name": "m2-t-dchtmba6x4cnzhwfduncjztbsza5itz2n667kh22djnk7ias7y2q",
+          "state": "inactive"
+        },
+        {
+          "id": "cba4be48173f7d2e28a557107f7684b442a4e769396f8e13707ce3f33c362716",
+          "name": "m2-t-ttmeodk4osbuovv66u7flrb6f6bytzb25ljzu3h7ezzvxdkusyfq",
+          "state": "inactive"
+        },
+        {
+          "id": "d8805283a86a3de10fb35943c77ae2348aed7b233d83d9f86d3055da2bfb34ab",
+          "name": "m2-t-tie423dp4ue4vo6ygx4vdhfjbtwzjrzoginx7x3qkk3sq2meylqq",
+          "state": "inactive"
+        },
+        {
+          "id": "e3c8a4d0ecd7a0a09207bba42170965838e5ae271227abd206357347f31082f5",
+          "name": "m2-t-vf3dcwusczt5gcpsdbnhjpqu3bcellyxmn2gcwsy5ihi56atwr3q",
+          "state": "inactive"
+        },
+        {
+          "id": "ef0e7735773b5124441ce3b619096509299859476e187908e761dc63bf4248e7",
+          "name": "m2-t-hdwsncaxcavfass6to7bvs6vsstlmxwh5axw34glqzuzj44bzrpq",
+          "state": "inactive"
+        },
+        {
+          "id": "ef1b6a944da200350af4b100cf3a312155fc6d1dfbeb2287850c4711fde9de07",
+          "name": "m2-t-sqlbe625mbk4ct6ex4hklrn5hinxjiqgzlzyrxqwk6ynmrhoh25q",
+          "state": "inactive"
+        },
+        {
+          "id": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487",
+          "name": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+          "state": "inactive"
+        },
+        {
+          "id": "f40e5262a44047b3e07fd6fab0a78e1654422091a1d57fffd3c6348b2fdf4d40",
+          "name": "m2-t-b32iwmgolykuvukmuts7qof7otg2x7wfmrlqo4f3h5ap4h5lk6lq",
+          "state": "inactive"
+        },
+        {
+          "id": "fd3289d026e66bdc9cf18c0bce05a278953d7b9d165912f7e07839db52d5c516",
+          "name": "m2-t-3wapeujt32opuyss25gidcmpcw5tzxb7uzalwaxbqmhkyigzlota",
+          "state": "inactive"
+        }
+      ],
+      "observedAt": 1789166536139
+    },
+    "actorBStarted": {
+      "processId": "probe-d1fe1eb431b11798b0133437",
+      "processStatus": "running",
+      "containerRunning": true,
+      "observedAt": 1789166657361
+    },
+    "actorBStartExternal": {
+      "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+      "state": "inactive",
+      "instanceId": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf",
+      "applicationInstances": [
+        {
+          "id": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf",
+          "name": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+          "state": "inactive"
+        },
+        {
+          "id": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7",
+          "name": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+          "state": "inactive"
+        },
+        {
+          "id": "01e7b42cdad08f493befab6cce09a7925afc9b8f65c8c087d4fed1938259a9c6",
+          "name": "m2-t-qr7etqpmnduqotvhd33tfn3xyfr5rjuwiiwmfg6vjuv4ytyvhxfa",
+          "state": "inactive"
+        },
+        {
+          "id": "05e863d46a8c1d2d6c8194a546b81f72aa3a79ba986574fdf6c188c7411745f5",
+          "name": "m2-t-uiasr25buhhzisnawbnjlfcd7nkj36n44kdxa4ipwribtjogjjta",
+          "state": "inactive"
+        },
+        {
+          "id": "0c87ada11768769325efd1385661e7e12d10a52f0f5bea6991746ae8a07b5875",
+          "name": "m2-t-ijypr7kniclc5i3plyvthh4ywikyldpvrd5yjsbqfktp3kzipcsa",
+          "state": "inactive"
+        },
+        {
+          "id": "230637d8bdea28f73243cfa6c214617d3d3cab25486f3e09010c5c34fbf1c833",
+          "name": "m2-t-xbh4xw3opwgezdxdv3ccynm4avbmth7rpz6h2w5qntp2xp262vha",
+          "state": "inactive"
+        },
+        {
+          "id": "2585df0b9672231ecf859ac63a107f009539dca8135dfeab058ab16418c8eae6",
+          "name": "m2-t-27uvwpgscwfup65a5cvvkibux7p4tgwlo7dmehqflluzazowuxba",
+          "state": "inactive"
+        },
+        {
+          "id": "26f0317e83152356e00f313f6296b8ca506aa1aaa479ab3e9bf8962f4a8cf5ab",
+          "name": "m2-t-qbqswny772jj6vfot7jfe6bxbnr23e5i6gc3gklug6nrxd7wt4pa",
+          "state": "inactive"
+        },
+        {
+          "id": "37738d675f441bbe3e247d1d25864ae6c6118d80f8cd13d329f1c24a89b4f998",
+          "name": "m2-t-w6i3qd7pkpcmczyi63nv7rtfsylrkuktnfsbahvhkkcr5e6oqzpa",
+          "state": "inactive"
+        },
+        {
+          "id": "3785369cd0fc877ed6546113e8e620cfa6411a84f66e6f13cdc1062d2772ade0",
+          "name": "m2-t-xrr437nrhr34zh4xg4ibvruoedwflwbln26tymehfvin6wcska2a",
+          "state": "inactive"
+        },
+        {
+          "id": "3d2fadb02517581eb3e93037a4ba1b133337b469670af54c29498fbff9634fe4",
+          "name": "m2-t-fdub36xqg2vnvy4djljziyth5fcyrr5lnik3enenmysbsokepwnq",
+          "state": "inactive"
+        },
+        {
+          "id": "437f9c06761d76779efe9c1ea2afe5d26a81fbc592514d2dc4d10322a50cb94a",
+          "name": "m2-t-2yhw633pb7jnfpmxqnmdu4szzrdbuos5vma7jqxqgzf5h5arrxpq",
+          "state": "inactive"
+        },
+        {
+          "id": "48a9215d6f6ee908a9155fc971a74284748d6daa9952ade5f3a8eb230d6885ba",
+          "name": "m2-t-rqjx2atoqndbsbjy7a62g7ebp44q5af6md2nl3oc2gf4y6x7aova",
+          "state": "inactive"
+        },
+        {
+          "id": "48a98edc4ff899a9d9a574a62d1e7c1b231f2bca534a9ee19ec3a54e96e65259",
+          "name": "m2-t-vkhopuei4np332gffrojo5huovrskgef4xg2iswcyjvu3n4hzjxa",
+          "state": "inactive"
+        },
+        {
+          "id": "543540389add7e7167ba0cadcf763c03d2ba7f4a326862b28c69b65d490662bd",
+          "name": "m2-t-kkb63rv5wzordqt34icbatsiosz5occn5x633swzqppsivrxkqua",
+          "state": "inactive"
+        },
+        {
+          "id": "58fe3b06daf22d13c8af23e939b0955e20432d826d7a00970a65f7b10f243c4a",
+          "name": "m2-t-5mtdqdkuzvg45ovljhj6dvfehfvfilk2ganapowfkh5lytmzc6qa",
+          "state": "inactive"
+        },
+        {
+          "id": "66953cf869359569d78c53859ccd608c2a3a1400e12d27475955e4efb71a3bb9",
+          "name": "m2-t-w6go5yq4wdihigmnoaqibqusoe2qpzjn7yvm4q5uqh35cncj7t5a",
+          "state": "inactive"
+        },
+        {
+          "id": "6af524548e38bbfdd501447f3aba77839fb01af7240647518a413495d193262f",
+          "name": "m2-t-cxk5vodsobhvawdjrwbbbafeoyz7gubklyxeonuboi4xuwu3odya",
+          "state": "inactive"
+        },
+        {
+          "id": "6d95c3983ff2375f69256c6d079430081e00b472d682034ecd38fb0c7f0738f2",
+          "name": "m2-t-2yqffmmqjnyxt4sedbmzn3cgw2tgalttcvobfezmbjvp75v4mida",
+          "state": "inactive"
+        },
+        {
+          "id": "6f0b507136485d3aaad7b256b47de9887c53e50ac060b87d8112c291c2a8c0ba",
+          "name": "m2-t-ilsitgyqgpfvudqbxq6nhpo7uebwffxynkitnq3tka6gduma7jra",
+          "state": "inactive"
+        },
+        {
+          "id": "7bc2801e7990208fc3355c1b3ed64f2963f013ec053553e63fa1304cc180ab5d",
+          "name": "m2-t-bv4doqrkczx5chvgglf4gg34izg3e6ev6bwm6yylzxifpz7ne4yq",
+          "state": "inactive"
+        },
+        {
+          "id": "80b4d5751845b7f7d9be0efdc6be543b48c250b1af03a781230b06d50849f8e7",
+          "name": "m2-t-ev4jyzwxc5dkyraoc5c5x7jleqwkqzyldwrrs6l5bnl53522s5va",
+          "state": "inactive"
+        },
+        {
+          "id": "8506ad56e96ad2d6f3a99c63d440df7e4ca070bcacc98544be15a1960a2b7180",
+          "name": "m2-t-gtxfad66kcr7yndtxtumm623l3ytacubftpzxe7wcboqecxzbeuq",
+          "state": "inactive"
+        },
+        {
+          "id": "8710f756f72b20fec3dc25779378679464646923538723e6259b90ccd9cf1465",
+          "name": "m2-t-wkcruo2nekdj4acs5npsfh7yhqycwj6rbrwmnfnysdjsuwnwk7ma",
+          "state": "inactive"
+        },
+        {
+          "id": "8e57ec06c051f2f89cb0d0d6a2c7ef1452ad9be215a3e279ca82dcfc4aa6011b",
+          "name": "m2-t-b2idrm5hn3xkvezo3ah653jtcdrtdfcw6fyk4xezawbcvynksqbq",
+          "state": "inactive"
+        },
+        {
+          "id": "ae06c431c65073ec024c2ef8bcd5ad60e010d9d8ce5ef6f8343ad52068f0cf31",
+          "name": "m2-t-d7qtipmyxb2z4z6tq63h6ka7msmk46bnhfbtt7wewauztnfs5edq",
+          "state": "inactive"
+        },
+        {
+          "id": "bbaa2eb567ede49dab86db13a124d126bd0700f8adc647de5d957a3c5fe3585d",
+          "name": "m2-t-i7hhady4ge7t4vsfpyxpyp4a2jzlzz5c74cghfjuklahy75yzdpa",
+          "state": "inactive"
+        },
+        {
+          "id": "bea4a38d597348a9d42e582f46ad8473cadc045ff66ad773322a30b88c3d8a9e",
+          "name": "m2-t-hqiugc34ku4mz6cohp4xznh7domfq5inid2uasc6viyulvw4dfyq",
+          "state": "inactive"
+        },
+        {
+          "id": "c886ee2900efeb0a186a747de3f1779a2b5456451aaca763413c5f61f51fde73",
+          "name": "m2-t-7dbgya7lcafcb5z6ocemo3hyr6r55og5fttq7c5kyz356kbcigsa",
+          "state": "inactive"
+        },
+        {
+          "id": "c9424683be2d875b18dee2b001bf38f0d4547cd05e27741ee12bdc0df993bfc9",
+          "name": "m2-t-kxk2jbttfunvsxl5etlilgpxgqvepr2q33z7m3czsatuddp3npaa",
+          "state": "inactive"
+        },
+        {
+          "id": "ca880ed069d2f8ef8f0ed071ca77c3c814d219fb40e3534ea917d1524cec2662",
+          "name": "m2-t-dchtmba6x4cnzhwfduncjztbsza5itz2n667kh22djnk7ias7y2q",
+          "state": "inactive"
+        },
+        {
+          "id": "cba4be48173f7d2e28a557107f7684b442a4e769396f8e13707ce3f33c362716",
+          "name": "m2-t-ttmeodk4osbuovv66u7flrb6f6bytzb25ljzu3h7ezzvxdkusyfq",
+          "state": "inactive"
+        },
+        {
+          "id": "d8805283a86a3de10fb35943c77ae2348aed7b233d83d9f86d3055da2bfb34ab",
+          "name": "m2-t-tie423dp4ue4vo6ygx4vdhfjbtwzjrzoginx7x3qkk3sq2meylqq",
+          "state": "inactive"
+        },
+        {
+          "id": "e3c8a4d0ecd7a0a09207bba42170965838e5ae271227abd206357347f31082f5",
+          "name": "m2-t-vf3dcwusczt5gcpsdbnhjpqu3bcellyxmn2gcwsy5ihi56atwr3q",
+          "state": "inactive"
+        },
+        {
+          "id": "ef0e7735773b5124441ce3b619096509299859476e187908e761dc63bf4248e7",
+          "name": "m2-t-hdwsncaxcavfass6to7bvs6vsstlmxwh5axw34glqzuzj44bzrpq",
+          "state": "inactive"
+        },
+        {
+          "id": "ef1b6a944da200350af4b100cf3a312155fc6d1dfbeb2287850c4711fde9de07",
+          "name": "m2-t-sqlbe625mbk4ct6ex4hklrn5hinxjiqgzlzyrxqwk6ynmrhoh25q",
+          "state": "inactive"
+        },
+        {
+          "id": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487",
+          "name": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+          "state": "inactive"
+        },
+        {
+          "id": "f40e5262a44047b3e07fd6fab0a78e1654422091a1d57fffd3c6348b2fdf4d40",
+          "name": "m2-t-b32iwmgolykuvukmuts7qof7otg2x7wfmrlqo4f3h5ap4h5lk6lq",
+          "state": "inactive"
+        },
+        {
+          "id": "fd3289d026e66bdc9cf18c0bce05a278953d7b9d165912f7e07839db52d5c516",
+          "name": "m2-t-3wapeujt32opuyss25gidcmpcw5tzxb7uzalwaxbqmhkyigzlota",
+          "state": "inactive"
+        }
+      ],
+      "observedAt": 1789166660967
+    },
+    "actorBReleasedAt": 1789166697308,
+    "actorBInternalLifecycle": [
+      {
+        "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+        "state": "absent",
+        "observedAt": 1789166662240
+      },
+      {
+        "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+        "state": "absent",
+        "observedAt": 1789166671436
+      },
+      {
+        "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+        "state": "absent",
+        "observedAt": 1789166679548
+      },
+      {
+        "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+        "state": "absent",
+        "observedAt": 1789166689537
+      },
+      {
+        "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+        "state": "absent",
+        "observedAt": 1789166697308
+      }
+    ],
+    "actorBExternalLifecycle": [
+      {
+        "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+        "state": "absent",
+        "observedAt": 1789166665556,
+        "instanceId": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf"
+      },
+      {
+        "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+        "state": "absent",
+        "observedAt": 1789166673877,
+        "instanceId": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf"
+      },
+      {
+        "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+        "state": "absent",
+        "observedAt": 1789166683648,
+        "instanceId": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf"
+      },
+      {
+        "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+        "state": "absent",
+        "observedAt": 1789166691657,
+        "instanceId": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf"
+      },
+      {
+        "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+        "state": "absent",
+        "observedAt": 1789166698854,
+        "instanceId": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf"
+      }
+    ],
+    "actorBStartedAt": 1789166657361,
+    "internalLifecycle": [
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166537276
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166550260
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166557614
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166566107
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166575344
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166583263
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166590567
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166601056
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166608650
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166618079
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166626143
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166634070
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166641801
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166649485
+      }
+    ],
+    "externalLifecycle": [
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166543516,
+        "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "stopped",
+        "observedAt": 1789166551733,
+        "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "stopped",
+        "observedAt": 1789166560412,
+        "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "stopped",
+        "observedAt": 1789166569711,
+        "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "stopped",
+        "observedAt": 1789166577624,
+        "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "stopped",
+        "observedAt": 1789166584838,
+        "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "stopped",
+        "observedAt": 1789166595173,
+        "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "stopped",
+        "observedAt": 1789166603006,
+        "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166612454,
+        "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166620507,
+        "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166628377,
+        "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166636089,
+        "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166643658,
+        "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+      },
+      {
+        "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+        "state": "absent",
+        "observedAt": 1789166652595,
+        "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+      }
+    ],
+    "stopProof": {
+      "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+      "proofId": "proof-edceabf37f75b65989257e482897da3b98fa147073a78efb",
+      "observedAt": 1789166649485
+    },
+    "cleanup": {
+      "status": "passed",
+      "workerName": "riffology-issues-probe-d1fe1eb431b11798b0133437",
+      "identityVerifiedBeforeDelete": true,
+      "deleteAttempted": true,
+      "deleteExitConfirmed": true,
+      "absenceConfirmed": true,
+      "routeFallbackConfirmed": true,
+      "absenceDurationMs": 35228,
+      "recoveryRequired": false,
+      "observedAt": 1789166821584,
+      "actorCleanup": [
+        {
+          "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+          "status": "absent",
+          "quietMs": 30000,
+          "confirmedAt": 1789166748844,
+          "internalLifecycle": [
+            {
+              "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+              "state": "absent",
+              "observedAt": 1789166703036
+            },
+            {
+              "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+              "state": "absent",
+              "observedAt": 1789166718326
+            },
+            {
+              "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+              "state": "absent",
+              "observedAt": 1789166730497
+            },
+            {
+              "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+              "state": "absent",
+              "observedAt": 1789166748844
+            }
+          ],
+          "externalLifecycle": [
+            {
+              "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+              "state": "absent",
+              "observedAt": 1789166707708,
+              "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+            },
+            {
+              "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+              "state": "absent",
+              "observedAt": 1789166721789,
+              "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+            },
+            {
+              "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+              "state": "absent",
+              "observedAt": 1789166735814,
+              "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+            },
+            {
+              "actor": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+              "state": "absent",
+              "observedAt": 1789166750873,
+              "instanceId": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7"
+            }
+          ]
+        },
+        {
+          "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+          "status": "absent",
+          "quietMs": 30000,
+          "confirmedAt": 1789166777440,
+          "internalLifecycle": [
+            {
+              "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+              "state": "absent",
+              "observedAt": 1789166708501
+            },
+            {
+              "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+              "state": "absent",
+              "observedAt": 1789166722892
+            },
+            {
+              "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+              "state": "absent",
+              "observedAt": 1789166736585
+            },
+            {
+              "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+              "state": "absent",
+              "observedAt": 1789166751672
+            },
+            {
+              "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+              "state": "absent",
+              "observedAt": 1789166758656
+            },
+            {
+              "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+              "state": "absent",
+              "observedAt": 1789166766256
+            },
+            {
+              "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+              "state": "absent",
+              "observedAt": 1789166777440
+            }
+          ],
+          "externalLifecycle": [
+            {
+              "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+              "state": "absent",
+              "observedAt": 1789166712447,
+              "instanceId": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf"
+            },
+            {
+              "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+              "state": "stopped",
+              "observedAt": 1789166724757,
+              "instanceId": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf"
+            },
+            {
+              "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+              "state": "absent",
+              "observedAt": 1789166743134,
+              "instanceId": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf"
+            },
+            {
+              "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+              "state": "absent",
+              "observedAt": 1789166753025,
+              "instanceId": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf"
+            },
+            {
+              "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+              "state": "absent",
+              "observedAt": 1789166760618,
+              "instanceId": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf"
+            },
+            {
+              "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+              "state": "absent",
+              "observedAt": 1789166771667,
+              "instanceId": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf"
+            },
+            {
+              "actor": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+              "state": "absent",
+              "observedAt": 1789166779052,
+              "instanceId": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "preOpenQuiet": {
+    "schemaVersion": 1,
+    "status": "passed",
+    "quietMs": 30000,
+    "apps": [
+      {
+        "className": "ProjectRuntime",
+        "id": "a035c941-2207-406e-97aa-a42ab6e9d249",
+        "name": "riffology-m1-project-staging",
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m1-project-staging@sha256:bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00"
+      },
+      {
+        "className": "ProjectToolSandbox",
+        "id": "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650",
+        "name": "riffology-m3-project-tools-staging",
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-project-tools-staging@sha256:6e1c51f984b0a6786483c09c327118722e35597f0ab421d54a27b264a0446a58"
+      },
+      {
+        "className": "TrustedPiSandbox",
+        "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+        "name": "riffology-m3-trusted-pi-staging",
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2"
+      },
+      {
+        "className": "ServiceSandbox",
+        "id": "a03c0a4c-7533-4190-ba2b-ff4fecaabb48",
+        "name": "riffology-m3-service-staging",
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8"
+      }
+    ],
+    "observations": [
+      {
+        "observedAt": 1789166822972,
+        "nonInactive": 0,
+        "total": 61,
+        "instances": [
+          {
+            "className": "ProjectRuntime",
+            "id": "2b0754a6eebaff571f9666368461616f4f709efe2747aec62f3323f6fce1d384",
+            "name": "1d03c571-fa2e-4909-80da-b4f4114c80cd",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectRuntime",
+            "id": "7b13bc23e8086ccdc3f4ca72cfea2870d86e9ad541c184106d6b4dc967bba950",
+            "name": "dc13accc-c1eb-4149-85bd-b818fb4e69d0",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectRuntime",
+            "id": "42c35995f01f28cbacd70656f2f665d80e57711ae392ef3b3218a91a9e8ee138",
+            "name": "f23bd206-e9a6-4cac-849b-98076b7c5230",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectRuntime",
+            "id": "f75cde8f5660d9f879f6e1fc2ee24fdb144dc1560b78a511548a27cdac219dcf",
+            "name": "fbd79978-b6c9-428f-a576-f76bd17d5400",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "44567f2f245974658834625893647fe46a43c19db5715a41f15fccc6244a88ca",
+            "name": "m2-p-d7qtipmyxb2z4z6tq63h6ka7msmk46bnhfbtt7wewauztnfs5edq",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "ee521ce489384b8e831f728f8b50220dd17f56c169559543c69114560553d01b",
+            "name": "m2-p-ev4jyzwxc5dkyraoc5c5x7jleqwkqzyldwrrs6l5bnl53522s5va",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "49d04a64a94d9923522bcb0f8b53e0efcf7375f9ee94b7aa784a012aaab12284",
+            "name": "m2-p-gtxfad66kcr7yndtxtumm623l3ytacubftpzxe7wcboqecxzbeuq",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "9beabb184ce0b70238d0d86c66ad895fd33990ea4b71f52c4de26b32cba13bf8",
+            "name": "m2-p-hqiugc34ku4mz6cohp4xznh7domfq5inid2uasc6viyulvw4dfyq",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "ba2b4f0ebb954c1a9aab086980100bfff199d99157450a408751582ba71908a7",
+            "name": "m2-p-i7hhady4ge7t4vsfpyxpyp4a2jzlzz5c74cghfjuklahy75yzdpa",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "af45d7091e6add61ce2b9b0d3fa29465c572d328a0b87eda93da74f0879f5dc8",
+            "name": "m2-p-kkb63rv5wzordqt34icbatsiosz5occn5x633swzqppsivrxkqua",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "c898e66046d45bd13419d36f0f5a2fbc5a15a5a0ffc30adaa520c48930200ac1",
+            "name": "m2-p-qr7etqpmnduqotvhd33tfn3xyfr5rjuwiiwmfg6vjuv4ytyvhxfa",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "cb1cb8bba1a8579a8519a7c40c44cc21481a6aa385244f5fb326c57baa18e233",
+            "name": "m2-p-rqjx2atoqndbsbjy7a62g7ebp44q5af6md2nl3oc2gf4y6x7aova",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "5c1e868ddc7c21b81dc0208ec25c33becaba2264a896b266a72912503b67ba78",
+            "name": "m2-p-tie423dp4ue4vo6ygx4vdhfjbtwzjrzoginx7x3qkk3sq2meylqq",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "d5ebd9d00c03ab85f9769da13db6e74f1be34d0a82ddcc46436574bc12abdc6f",
+            "name": "m2-p-vkhopuei4np332gffrojo5huovrskgef4xg2iswcyjvu3n4hzjxa",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "c2913f8fe967737749b4be62e29ebc448591bb52fff61569364d1990cade2e5b",
+            "name": "m2-p-xrr437nrhr34zh4xg4ibvruoedwflwbln26tymehfvin6wcska2a",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "f5403a66121af170d60a8dcbeceef08ce8fbb2b03478f1c0b940986a8cb7f1b2",
+            "name": "m3-s-2df923d3739748c776fd319428df85692b3749641ebe2ba94822",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "06ee5b4aa78456badeb63fbc5a4dd7df94a8c0454dd06a0ba3139fd8dc3b5545",
+            "name": "m3-s-7dd32a79edbedaef8939711166f3fc4166d1438d040e4757928b",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "0be8ff1b83b22759230973f81152b4ed8608841ea2824aa08e10c0381ee7ba59",
+            "name": "m3-s-7f7aeb6668dd0e72bd488d589d74c973ddcfc7ce296bd80b538f",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "9e9a5297294b98e76739f99adfd3db3e7958851dea08e98dd08ee826bfc0c793",
+            "name": "m3-s-a46ffc4c255dc45a8bec2eb9f6cf049cb76745277d69b9ff5440",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "218496b700a5b80697793f7ec6dde15e978db2375e773ab246765633685feffb",
+            "name": "m3-s-ea4eb783d965253fe9ffb7d2e0059bb38d7211abbb4f83cf222e",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "d4d82740b34bba988ccde6d030fe13fdc33b14fe23dfaba8da7c33b67e641b49",
+            "name": "m3-s-efd4548d0e87ae1f68daa27b3d23c593182551210667d6146d56",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "71a4b2abf390961d6f7a0c33964116ebe84ee4817416bf24e01ea90a53d6106b",
+            "name": "m3-s-fc41bf30e0fd51acc2f37ce201239d679814f864fa929a65d950",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "2585df0b9672231ecf859ac63a107f009539dca8135dfeab058ab16418c8eae6",
+            "name": "m2-t-27uvwpgscwfup65a5cvvkibux7p4tgwlo7dmehqflluzazowuxba",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "437f9c06761d76779efe9c1ea2afe5d26a81fbc592514d2dc4d10322a50cb94a",
+            "name": "m2-t-2yhw633pb7jnfpmxqnmdu4szzrdbuos5vma7jqxqgzf5h5arrxpq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "6d95c3983ff2375f69256c6d079430081e00b472d682034ecd38fb0c7f0738f2",
+            "name": "m2-t-2yqffmmqjnyxt4sedbmzn3cgw2tgalttcvobfezmbjvp75v4mida",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "fd3289d026e66bdc9cf18c0bce05a278953d7b9d165912f7e07839db52d5c516",
+            "name": "m2-t-3wapeujt32opuyss25gidcmpcw5tzxb7uzalwaxbqmhkyigzlota",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "58fe3b06daf22d13c8af23e939b0955e20432d826d7a00970a65f7b10f243c4a",
+            "name": "m2-t-5mtdqdkuzvg45ovljhj6dvfehfvfilk2ganapowfkh5lytmzc6qa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "c886ee2900efeb0a186a747de3f1779a2b5456451aaca763413c5f61f51fde73",
+            "name": "m2-t-7dbgya7lcafcb5z6ocemo3hyr6r55og5fttq7c5kyz356kbcigsa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "8e57ec06c051f2f89cb0d0d6a2c7ef1452ad9be215a3e279ca82dcfc4aa6011b",
+            "name": "m2-t-b2idrm5hn3xkvezo3ah653jtcdrtdfcw6fyk4xezawbcvynksqbq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "f40e5262a44047b3e07fd6fab0a78e1654422091a1d57fffd3c6348b2fdf4d40",
+            "name": "m2-t-b32iwmgolykuvukmuts7qof7otg2x7wfmrlqo4f3h5ap4h5lk6lq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "7bc2801e7990208fc3355c1b3ed64f2963f013ec053553e63fa1304cc180ab5d",
+            "name": "m2-t-bv4doqrkczx5chvgglf4gg34izg3e6ev6bwm6yylzxifpz7ne4yq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "6af524548e38bbfdd501447f3aba77839fb01af7240647518a413495d193262f",
+            "name": "m2-t-cxk5vodsobhvawdjrwbbbafeoyz7gubklyxeonuboi4xuwu3odya",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "ae06c431c65073ec024c2ef8bcd5ad60e010d9d8ce5ef6f8343ad52068f0cf31",
+            "name": "m2-t-d7qtipmyxb2z4z6tq63h6ka7msmk46bnhfbtt7wewauztnfs5edq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "ca880ed069d2f8ef8f0ed071ca77c3c814d219fb40e3534ea917d1524cec2662",
+            "name": "m2-t-dchtmba6x4cnzhwfduncjztbsza5itz2n667kh22djnk7ias7y2q",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "80b4d5751845b7f7d9be0efdc6be543b48c250b1af03a781230b06d50849f8e7",
+            "name": "m2-t-ev4jyzwxc5dkyraoc5c5x7jleqwkqzyldwrrs6l5bnl53522s5va",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "3d2fadb02517581eb3e93037a4ba1b133337b469670af54c29498fbff9634fe4",
+            "name": "m2-t-fdub36xqg2vnvy4djljziyth5fcyrr5lnik3enenmysbsokepwnq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "8506ad56e96ad2d6f3a99c63d440df7e4ca070bcacc98544be15a1960a2b7180",
+            "name": "m2-t-gtxfad66kcr7yndtxtumm623l3ytacubftpzxe7wcboqecxzbeuq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "ef0e7735773b5124441ce3b619096509299859476e187908e761dc63bf4248e7",
+            "name": "m2-t-hdwsncaxcavfass6to7bvs6vsstlmxwh5axw34glqzuzj44bzrpq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "bea4a38d597348a9d42e582f46ad8473cadc045ff66ad773322a30b88c3d8a9e",
+            "name": "m2-t-hqiugc34ku4mz6cohp4xznh7domfq5inid2uasc6viyulvw4dfyq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "bbaa2eb567ede49dab86db13a124d126bd0700f8adc647de5d957a3c5fe3585d",
+            "name": "m2-t-i7hhady4ge7t4vsfpyxpyp4a2jzlzz5c74cghfjuklahy75yzdpa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "0c87ada11768769325efd1385661e7e12d10a52f0f5bea6991746ae8a07b5875",
+            "name": "m2-t-ijypr7kniclc5i3plyvthh4ywikyldpvrd5yjsbqfktp3kzipcsa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "6f0b507136485d3aaad7b256b47de9887c53e50ac060b87d8112c291c2a8c0ba",
+            "name": "m2-t-ilsitgyqgpfvudqbxq6nhpo7uebwffxynkitnq3tka6gduma7jra",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "543540389add7e7167ba0cadcf763c03d2ba7f4a326862b28c69b65d490662bd",
+            "name": "m2-t-kkb63rv5wzordqt34icbatsiosz5occn5x633swzqppsivrxkqua",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "c9424683be2d875b18dee2b001bf38f0d4547cd05e27741ee12bdc0df993bfc9",
+            "name": "m2-t-kxk2jbttfunvsxl5etlilgpxgqvepr2q33z7m3czsatuddp3npaa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "26f0317e83152356e00f313f6296b8ca506aa1aaa479ab3e9bf8962f4a8cf5ab",
+            "name": "m2-t-qbqswny772jj6vfot7jfe6bxbnr23e5i6gc3gklug6nrxd7wt4pa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "01e7b42cdad08f493befab6cce09a7925afc9b8f65c8c087d4fed1938259a9c6",
+            "name": "m2-t-qr7etqpmnduqotvhd33tfn3xyfr5rjuwiiwmfg6vjuv4ytyvhxfa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "48a9215d6f6ee908a9155fc971a74284748d6daa9952ade5f3a8eb230d6885ba",
+            "name": "m2-t-rqjx2atoqndbsbjy7a62g7ebp44q5af6md2nl3oc2gf4y6x7aova",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487",
+            "name": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "ef1b6a944da200350af4b100cf3a312155fc6d1dfbeb2287850c4711fde9de07",
+            "name": "m2-t-sqlbe625mbk4ct6ex4hklrn5hinxjiqgzlzyrxqwk6ynmrhoh25q",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "d8805283a86a3de10fb35943c77ae2348aed7b233d83d9f86d3055da2bfb34ab",
+            "name": "m2-t-tie423dp4ue4vo6ygx4vdhfjbtwzjrzoginx7x3qkk3sq2meylqq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "cba4be48173f7d2e28a557107f7684b442a4e769396f8e13707ce3f33c362716",
+            "name": "m2-t-ttmeodk4osbuovv66u7flrb6f6bytzb25ljzu3h7ezzvxdkusyfq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7",
+            "name": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "05e863d46a8c1d2d6c8194a546b81f72aa3a79ba986574fdf6c188c7411745f5",
+            "name": "m2-t-uiasr25buhhzisnawbnjlfcd7nkj36n44kdxa4ipwribtjogjjta",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "e3c8a4d0ecd7a0a09207bba42170965838e5ae271227abd206357347f31082f5",
+            "name": "m2-t-vf3dcwusczt5gcpsdbnhjpqu3bcellyxmn2gcwsy5ihi56atwr3q",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "48a98edc4ff899a9d9a574a62d1e7c1b231f2bca534a9ee19ec3a54e96e65259",
+            "name": "m2-t-vkhopuei4np332gffrojo5huovrskgef4xg2iswcyjvu3n4hzjxa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "66953cf869359569d78c53859ccd608c2a3a1400e12d27475955e4efb71a3bb9",
+            "name": "m2-t-w6go5yq4wdihigmnoaqibqusoe2qpzjn7yvm4q5uqh35cncj7t5a",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "37738d675f441bbe3e247d1d25864ae6c6118d80f8cd13d329f1c24a89b4f998",
+            "name": "m2-t-w6i3qd7pkpcmczyi63nv7rtfsylrkuktnfsbahvhkkcr5e6oqzpa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "8710f756f72b20fec3dc25779378679464646923538723e6259b90ccd9cf1465",
+            "name": "m2-t-wkcruo2nekdj4acs5npsfh7yhqycwj6rbrwmnfnysdjsuwnwk7ma",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf",
+            "name": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "230637d8bdea28f73243cfa6c214617d3d3cab25486f3e09010c5c34fbf1c833",
+            "name": "m2-t-xbh4xw3opwgezdxdv3ccynm4avbmth7rpz6h2w5qntp2xp262vha",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "3785369cd0fc877ed6546113e8e620cfa6411a84f66e6f13cdc1062d2772ade0",
+            "name": "m2-t-xrr437nrhr34zh4xg4ibvruoedwflwbln26tymehfvin6wcska2a",
+            "state": "inactive"
+          }
+        ]
+      },
+      {
+        "observedAt": 1789166839172,
+        "nonInactive": 0,
+        "total": 61,
+        "instances": [
+          {
+            "className": "ProjectRuntime",
+            "id": "2b0754a6eebaff571f9666368461616f4f709efe2747aec62f3323f6fce1d384",
+            "name": "1d03c571-fa2e-4909-80da-b4f4114c80cd",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectRuntime",
+            "id": "7b13bc23e8086ccdc3f4ca72cfea2870d86e9ad541c184106d6b4dc967bba950",
+            "name": "dc13accc-c1eb-4149-85bd-b818fb4e69d0",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectRuntime",
+            "id": "42c35995f01f28cbacd70656f2f665d80e57711ae392ef3b3218a91a9e8ee138",
+            "name": "f23bd206-e9a6-4cac-849b-98076b7c5230",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectRuntime",
+            "id": "f75cde8f5660d9f879f6e1fc2ee24fdb144dc1560b78a511548a27cdac219dcf",
+            "name": "fbd79978-b6c9-428f-a576-f76bd17d5400",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "44567f2f245974658834625893647fe46a43c19db5715a41f15fccc6244a88ca",
+            "name": "m2-p-d7qtipmyxb2z4z6tq63h6ka7msmk46bnhfbtt7wewauztnfs5edq",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "ee521ce489384b8e831f728f8b50220dd17f56c169559543c69114560553d01b",
+            "name": "m2-p-ev4jyzwxc5dkyraoc5c5x7jleqwkqzyldwrrs6l5bnl53522s5va",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "49d04a64a94d9923522bcb0f8b53e0efcf7375f9ee94b7aa784a012aaab12284",
+            "name": "m2-p-gtxfad66kcr7yndtxtumm623l3ytacubftpzxe7wcboqecxzbeuq",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "9beabb184ce0b70238d0d86c66ad895fd33990ea4b71f52c4de26b32cba13bf8",
+            "name": "m2-p-hqiugc34ku4mz6cohp4xznh7domfq5inid2uasc6viyulvw4dfyq",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "ba2b4f0ebb954c1a9aab086980100bfff199d99157450a408751582ba71908a7",
+            "name": "m2-p-i7hhady4ge7t4vsfpyxpyp4a2jzlzz5c74cghfjuklahy75yzdpa",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "af45d7091e6add61ce2b9b0d3fa29465c572d328a0b87eda93da74f0879f5dc8",
+            "name": "m2-p-kkb63rv5wzordqt34icbatsiosz5occn5x633swzqppsivrxkqua",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "c898e66046d45bd13419d36f0f5a2fbc5a15a5a0ffc30adaa520c48930200ac1",
+            "name": "m2-p-qr7etqpmnduqotvhd33tfn3xyfr5rjuwiiwmfg6vjuv4ytyvhxfa",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "cb1cb8bba1a8579a8519a7c40c44cc21481a6aa385244f5fb326c57baa18e233",
+            "name": "m2-p-rqjx2atoqndbsbjy7a62g7ebp44q5af6md2nl3oc2gf4y6x7aova",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "5c1e868ddc7c21b81dc0208ec25c33becaba2264a896b266a72912503b67ba78",
+            "name": "m2-p-tie423dp4ue4vo6ygx4vdhfjbtwzjrzoginx7x3qkk3sq2meylqq",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "d5ebd9d00c03ab85f9769da13db6e74f1be34d0a82ddcc46436574bc12abdc6f",
+            "name": "m2-p-vkhopuei4np332gffrojo5huovrskgef4xg2iswcyjvu3n4hzjxa",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "c2913f8fe967737749b4be62e29ebc448591bb52fff61569364d1990cade2e5b",
+            "name": "m2-p-xrr437nrhr34zh4xg4ibvruoedwflwbln26tymehfvin6wcska2a",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "f5403a66121af170d60a8dcbeceef08ce8fbb2b03478f1c0b940986a8cb7f1b2",
+            "name": "m3-s-2df923d3739748c776fd319428df85692b3749641ebe2ba94822",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "06ee5b4aa78456badeb63fbc5a4dd7df94a8c0454dd06a0ba3139fd8dc3b5545",
+            "name": "m3-s-7dd32a79edbedaef8939711166f3fc4166d1438d040e4757928b",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "0be8ff1b83b22759230973f81152b4ed8608841ea2824aa08e10c0381ee7ba59",
+            "name": "m3-s-7f7aeb6668dd0e72bd488d589d74c973ddcfc7ce296bd80b538f",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "9e9a5297294b98e76739f99adfd3db3e7958851dea08e98dd08ee826bfc0c793",
+            "name": "m3-s-a46ffc4c255dc45a8bec2eb9f6cf049cb76745277d69b9ff5440",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "218496b700a5b80697793f7ec6dde15e978db2375e773ab246765633685feffb",
+            "name": "m3-s-ea4eb783d965253fe9ffb7d2e0059bb38d7211abbb4f83cf222e",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "d4d82740b34bba988ccde6d030fe13fdc33b14fe23dfaba8da7c33b67e641b49",
+            "name": "m3-s-efd4548d0e87ae1f68daa27b3d23c593182551210667d6146d56",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "71a4b2abf390961d6f7a0c33964116ebe84ee4817416bf24e01ea90a53d6106b",
+            "name": "m3-s-fc41bf30e0fd51acc2f37ce201239d679814f864fa929a65d950",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "2585df0b9672231ecf859ac63a107f009539dca8135dfeab058ab16418c8eae6",
+            "name": "m2-t-27uvwpgscwfup65a5cvvkibux7p4tgwlo7dmehqflluzazowuxba",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "437f9c06761d76779efe9c1ea2afe5d26a81fbc592514d2dc4d10322a50cb94a",
+            "name": "m2-t-2yhw633pb7jnfpmxqnmdu4szzrdbuos5vma7jqxqgzf5h5arrxpq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "6d95c3983ff2375f69256c6d079430081e00b472d682034ecd38fb0c7f0738f2",
+            "name": "m2-t-2yqffmmqjnyxt4sedbmzn3cgw2tgalttcvobfezmbjvp75v4mida",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "fd3289d026e66bdc9cf18c0bce05a278953d7b9d165912f7e07839db52d5c516",
+            "name": "m2-t-3wapeujt32opuyss25gidcmpcw5tzxb7uzalwaxbqmhkyigzlota",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "58fe3b06daf22d13c8af23e939b0955e20432d826d7a00970a65f7b10f243c4a",
+            "name": "m2-t-5mtdqdkuzvg45ovljhj6dvfehfvfilk2ganapowfkh5lytmzc6qa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "c886ee2900efeb0a186a747de3f1779a2b5456451aaca763413c5f61f51fde73",
+            "name": "m2-t-7dbgya7lcafcb5z6ocemo3hyr6r55og5fttq7c5kyz356kbcigsa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "8e57ec06c051f2f89cb0d0d6a2c7ef1452ad9be215a3e279ca82dcfc4aa6011b",
+            "name": "m2-t-b2idrm5hn3xkvezo3ah653jtcdrtdfcw6fyk4xezawbcvynksqbq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "f40e5262a44047b3e07fd6fab0a78e1654422091a1d57fffd3c6348b2fdf4d40",
+            "name": "m2-t-b32iwmgolykuvukmuts7qof7otg2x7wfmrlqo4f3h5ap4h5lk6lq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "7bc2801e7990208fc3355c1b3ed64f2963f013ec053553e63fa1304cc180ab5d",
+            "name": "m2-t-bv4doqrkczx5chvgglf4gg34izg3e6ev6bwm6yylzxifpz7ne4yq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "6af524548e38bbfdd501447f3aba77839fb01af7240647518a413495d193262f",
+            "name": "m2-t-cxk5vodsobhvawdjrwbbbafeoyz7gubklyxeonuboi4xuwu3odya",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "ae06c431c65073ec024c2ef8bcd5ad60e010d9d8ce5ef6f8343ad52068f0cf31",
+            "name": "m2-t-d7qtipmyxb2z4z6tq63h6ka7msmk46bnhfbtt7wewauztnfs5edq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "ca880ed069d2f8ef8f0ed071ca77c3c814d219fb40e3534ea917d1524cec2662",
+            "name": "m2-t-dchtmba6x4cnzhwfduncjztbsza5itz2n667kh22djnk7ias7y2q",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "80b4d5751845b7f7d9be0efdc6be543b48c250b1af03a781230b06d50849f8e7",
+            "name": "m2-t-ev4jyzwxc5dkyraoc5c5x7jleqwkqzyldwrrs6l5bnl53522s5va",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "3d2fadb02517581eb3e93037a4ba1b133337b469670af54c29498fbff9634fe4",
+            "name": "m2-t-fdub36xqg2vnvy4djljziyth5fcyrr5lnik3enenmysbsokepwnq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "8506ad56e96ad2d6f3a99c63d440df7e4ca070bcacc98544be15a1960a2b7180",
+            "name": "m2-t-gtxfad66kcr7yndtxtumm623l3ytacubftpzxe7wcboqecxzbeuq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "ef0e7735773b5124441ce3b619096509299859476e187908e761dc63bf4248e7",
+            "name": "m2-t-hdwsncaxcavfass6to7bvs6vsstlmxwh5axw34glqzuzj44bzrpq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "bea4a38d597348a9d42e582f46ad8473cadc045ff66ad773322a30b88c3d8a9e",
+            "name": "m2-t-hqiugc34ku4mz6cohp4xznh7domfq5inid2uasc6viyulvw4dfyq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "bbaa2eb567ede49dab86db13a124d126bd0700f8adc647de5d957a3c5fe3585d",
+            "name": "m2-t-i7hhady4ge7t4vsfpyxpyp4a2jzlzz5c74cghfjuklahy75yzdpa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "0c87ada11768769325efd1385661e7e12d10a52f0f5bea6991746ae8a07b5875",
+            "name": "m2-t-ijypr7kniclc5i3plyvthh4ywikyldpvrd5yjsbqfktp3kzipcsa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "6f0b507136485d3aaad7b256b47de9887c53e50ac060b87d8112c291c2a8c0ba",
+            "name": "m2-t-ilsitgyqgpfvudqbxq6nhpo7uebwffxynkitnq3tka6gduma7jra",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "543540389add7e7167ba0cadcf763c03d2ba7f4a326862b28c69b65d490662bd",
+            "name": "m2-t-kkb63rv5wzordqt34icbatsiosz5occn5x633swzqppsivrxkqua",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "c9424683be2d875b18dee2b001bf38f0d4547cd05e27741ee12bdc0df993bfc9",
+            "name": "m2-t-kxk2jbttfunvsxl5etlilgpxgqvepr2q33z7m3czsatuddp3npaa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "26f0317e83152356e00f313f6296b8ca506aa1aaa479ab3e9bf8962f4a8cf5ab",
+            "name": "m2-t-qbqswny772jj6vfot7jfe6bxbnr23e5i6gc3gklug6nrxd7wt4pa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "01e7b42cdad08f493befab6cce09a7925afc9b8f65c8c087d4fed1938259a9c6",
+            "name": "m2-t-qr7etqpmnduqotvhd33tfn3xyfr5rjuwiiwmfg6vjuv4ytyvhxfa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "48a9215d6f6ee908a9155fc971a74284748d6daa9952ade5f3a8eb230d6885ba",
+            "name": "m2-t-rqjx2atoqndbsbjy7a62g7ebp44q5af6md2nl3oc2gf4y6x7aova",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487",
+            "name": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "ef1b6a944da200350af4b100cf3a312155fc6d1dfbeb2287850c4711fde9de07",
+            "name": "m2-t-sqlbe625mbk4ct6ex4hklrn5hinxjiqgzlzyrxqwk6ynmrhoh25q",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "d8805283a86a3de10fb35943c77ae2348aed7b233d83d9f86d3055da2bfb34ab",
+            "name": "m2-t-tie423dp4ue4vo6ygx4vdhfjbtwzjrzoginx7x3qkk3sq2meylqq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "cba4be48173f7d2e28a557107f7684b442a4e769396f8e13707ce3f33c362716",
+            "name": "m2-t-ttmeodk4osbuovv66u7flrb6f6bytzb25ljzu3h7ezzvxdkusyfq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7",
+            "name": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "05e863d46a8c1d2d6c8194a546b81f72aa3a79ba986574fdf6c188c7411745f5",
+            "name": "m2-t-uiasr25buhhzisnawbnjlfcd7nkj36n44kdxa4ipwribtjogjjta",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "e3c8a4d0ecd7a0a09207bba42170965838e5ae271227abd206357347f31082f5",
+            "name": "m2-t-vf3dcwusczt5gcpsdbnhjpqu3bcellyxmn2gcwsy5ihi56atwr3q",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "48a98edc4ff899a9d9a574a62d1e7c1b231f2bca534a9ee19ec3a54e96e65259",
+            "name": "m2-t-vkhopuei4np332gffrojo5huovrskgef4xg2iswcyjvu3n4hzjxa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "66953cf869359569d78c53859ccd608c2a3a1400e12d27475955e4efb71a3bb9",
+            "name": "m2-t-w6go5yq4wdihigmnoaqibqusoe2qpzjn7yvm4q5uqh35cncj7t5a",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "37738d675f441bbe3e247d1d25864ae6c6118d80f8cd13d329f1c24a89b4f998",
+            "name": "m2-t-w6i3qd7pkpcmczyi63nv7rtfsylrkuktnfsbahvhkkcr5e6oqzpa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "8710f756f72b20fec3dc25779378679464646923538723e6259b90ccd9cf1465",
+            "name": "m2-t-wkcruo2nekdj4acs5npsfh7yhqycwj6rbrwmnfnysdjsuwnwk7ma",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf",
+            "name": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "230637d8bdea28f73243cfa6c214617d3d3cab25486f3e09010c5c34fbf1c833",
+            "name": "m2-t-xbh4xw3opwgezdxdv3ccynm4avbmth7rpz6h2w5qntp2xp262vha",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "3785369cd0fc877ed6546113e8e620cfa6411a84f66e6f13cdc1062d2772ade0",
+            "name": "m2-t-xrr437nrhr34zh4xg4ibvruoedwflwbln26tymehfvin6wcska2a",
+            "state": "inactive"
+          }
+        ]
+      },
+      {
+        "observedAt": 1789166854713,
+        "nonInactive": 0,
+        "total": 61,
+        "instances": [
+          {
+            "className": "ProjectRuntime",
+            "id": "2b0754a6eebaff571f9666368461616f4f709efe2747aec62f3323f6fce1d384",
+            "name": "1d03c571-fa2e-4909-80da-b4f4114c80cd",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectRuntime",
+            "id": "7b13bc23e8086ccdc3f4ca72cfea2870d86e9ad541c184106d6b4dc967bba950",
+            "name": "dc13accc-c1eb-4149-85bd-b818fb4e69d0",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectRuntime",
+            "id": "42c35995f01f28cbacd70656f2f665d80e57711ae392ef3b3218a91a9e8ee138",
+            "name": "f23bd206-e9a6-4cac-849b-98076b7c5230",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectRuntime",
+            "id": "f75cde8f5660d9f879f6e1fc2ee24fdb144dc1560b78a511548a27cdac219dcf",
+            "name": "fbd79978-b6c9-428f-a576-f76bd17d5400",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "44567f2f245974658834625893647fe46a43c19db5715a41f15fccc6244a88ca",
+            "name": "m2-p-d7qtipmyxb2z4z6tq63h6ka7msmk46bnhfbtt7wewauztnfs5edq",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "ee521ce489384b8e831f728f8b50220dd17f56c169559543c69114560553d01b",
+            "name": "m2-p-ev4jyzwxc5dkyraoc5c5x7jleqwkqzyldwrrs6l5bnl53522s5va",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "49d04a64a94d9923522bcb0f8b53e0efcf7375f9ee94b7aa784a012aaab12284",
+            "name": "m2-p-gtxfad66kcr7yndtxtumm623l3ytacubftpzxe7wcboqecxzbeuq",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "9beabb184ce0b70238d0d86c66ad895fd33990ea4b71f52c4de26b32cba13bf8",
+            "name": "m2-p-hqiugc34ku4mz6cohp4xznh7domfq5inid2uasc6viyulvw4dfyq",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "ba2b4f0ebb954c1a9aab086980100bfff199d99157450a408751582ba71908a7",
+            "name": "m2-p-i7hhady4ge7t4vsfpyxpyp4a2jzlzz5c74cghfjuklahy75yzdpa",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "af45d7091e6add61ce2b9b0d3fa29465c572d328a0b87eda93da74f0879f5dc8",
+            "name": "m2-p-kkb63rv5wzordqt34icbatsiosz5occn5x633swzqppsivrxkqua",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "c898e66046d45bd13419d36f0f5a2fbc5a15a5a0ffc30adaa520c48930200ac1",
+            "name": "m2-p-qr7etqpmnduqotvhd33tfn3xyfr5rjuwiiwmfg6vjuv4ytyvhxfa",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "cb1cb8bba1a8579a8519a7c40c44cc21481a6aa385244f5fb326c57baa18e233",
+            "name": "m2-p-rqjx2atoqndbsbjy7a62g7ebp44q5af6md2nl3oc2gf4y6x7aova",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "5c1e868ddc7c21b81dc0208ec25c33becaba2264a896b266a72912503b67ba78",
+            "name": "m2-p-tie423dp4ue4vo6ygx4vdhfjbtwzjrzoginx7x3qkk3sq2meylqq",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "d5ebd9d00c03ab85f9769da13db6e74f1be34d0a82ddcc46436574bc12abdc6f",
+            "name": "m2-p-vkhopuei4np332gffrojo5huovrskgef4xg2iswcyjvu3n4hzjxa",
+            "state": "inactive"
+          },
+          {
+            "className": "ProjectToolSandbox",
+            "id": "c2913f8fe967737749b4be62e29ebc448591bb52fff61569364d1990cade2e5b",
+            "name": "m2-p-xrr437nrhr34zh4xg4ibvruoedwflwbln26tymehfvin6wcska2a",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "f5403a66121af170d60a8dcbeceef08ce8fbb2b03478f1c0b940986a8cb7f1b2",
+            "name": "m3-s-2df923d3739748c776fd319428df85692b3749641ebe2ba94822",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "06ee5b4aa78456badeb63fbc5a4dd7df94a8c0454dd06a0ba3139fd8dc3b5545",
+            "name": "m3-s-7dd32a79edbedaef8939711166f3fc4166d1438d040e4757928b",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "0be8ff1b83b22759230973f81152b4ed8608841ea2824aa08e10c0381ee7ba59",
+            "name": "m3-s-7f7aeb6668dd0e72bd488d589d74c973ddcfc7ce296bd80b538f",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "9e9a5297294b98e76739f99adfd3db3e7958851dea08e98dd08ee826bfc0c793",
+            "name": "m3-s-a46ffc4c255dc45a8bec2eb9f6cf049cb76745277d69b9ff5440",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "218496b700a5b80697793f7ec6dde15e978db2375e773ab246765633685feffb",
+            "name": "m3-s-ea4eb783d965253fe9ffb7d2e0059bb38d7211abbb4f83cf222e",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "d4d82740b34bba988ccde6d030fe13fdc33b14fe23dfaba8da7c33b67e641b49",
+            "name": "m3-s-efd4548d0e87ae1f68daa27b3d23c593182551210667d6146d56",
+            "state": "inactive"
+          },
+          {
+            "className": "ServiceSandbox",
+            "id": "71a4b2abf390961d6f7a0c33964116ebe84ee4817416bf24e01ea90a53d6106b",
+            "name": "m3-s-fc41bf30e0fd51acc2f37ce201239d679814f864fa929a65d950",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "2585df0b9672231ecf859ac63a107f009539dca8135dfeab058ab16418c8eae6",
+            "name": "m2-t-27uvwpgscwfup65a5cvvkibux7p4tgwlo7dmehqflluzazowuxba",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "437f9c06761d76779efe9c1ea2afe5d26a81fbc592514d2dc4d10322a50cb94a",
+            "name": "m2-t-2yhw633pb7jnfpmxqnmdu4szzrdbuos5vma7jqxqgzf5h5arrxpq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "6d95c3983ff2375f69256c6d079430081e00b472d682034ecd38fb0c7f0738f2",
+            "name": "m2-t-2yqffmmqjnyxt4sedbmzn3cgw2tgalttcvobfezmbjvp75v4mida",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "fd3289d026e66bdc9cf18c0bce05a278953d7b9d165912f7e07839db52d5c516",
+            "name": "m2-t-3wapeujt32opuyss25gidcmpcw5tzxb7uzalwaxbqmhkyigzlota",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "58fe3b06daf22d13c8af23e939b0955e20432d826d7a00970a65f7b10f243c4a",
+            "name": "m2-t-5mtdqdkuzvg45ovljhj6dvfehfvfilk2ganapowfkh5lytmzc6qa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "c886ee2900efeb0a186a747de3f1779a2b5456451aaca763413c5f61f51fde73",
+            "name": "m2-t-7dbgya7lcafcb5z6ocemo3hyr6r55og5fttq7c5kyz356kbcigsa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "8e57ec06c051f2f89cb0d0d6a2c7ef1452ad9be215a3e279ca82dcfc4aa6011b",
+            "name": "m2-t-b2idrm5hn3xkvezo3ah653jtcdrtdfcw6fyk4xezawbcvynksqbq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "f40e5262a44047b3e07fd6fab0a78e1654422091a1d57fffd3c6348b2fdf4d40",
+            "name": "m2-t-b32iwmgolykuvukmuts7qof7otg2x7wfmrlqo4f3h5ap4h5lk6lq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "7bc2801e7990208fc3355c1b3ed64f2963f013ec053553e63fa1304cc180ab5d",
+            "name": "m2-t-bv4doqrkczx5chvgglf4gg34izg3e6ev6bwm6yylzxifpz7ne4yq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "6af524548e38bbfdd501447f3aba77839fb01af7240647518a413495d193262f",
+            "name": "m2-t-cxk5vodsobhvawdjrwbbbafeoyz7gubklyxeonuboi4xuwu3odya",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "ae06c431c65073ec024c2ef8bcd5ad60e010d9d8ce5ef6f8343ad52068f0cf31",
+            "name": "m2-t-d7qtipmyxb2z4z6tq63h6ka7msmk46bnhfbtt7wewauztnfs5edq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "ca880ed069d2f8ef8f0ed071ca77c3c814d219fb40e3534ea917d1524cec2662",
+            "name": "m2-t-dchtmba6x4cnzhwfduncjztbsza5itz2n667kh22djnk7ias7y2q",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "80b4d5751845b7f7d9be0efdc6be543b48c250b1af03a781230b06d50849f8e7",
+            "name": "m2-t-ev4jyzwxc5dkyraoc5c5x7jleqwkqzyldwrrs6l5bnl53522s5va",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "3d2fadb02517581eb3e93037a4ba1b133337b469670af54c29498fbff9634fe4",
+            "name": "m2-t-fdub36xqg2vnvy4djljziyth5fcyrr5lnik3enenmysbsokepwnq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "8506ad56e96ad2d6f3a99c63d440df7e4ca070bcacc98544be15a1960a2b7180",
+            "name": "m2-t-gtxfad66kcr7yndtxtumm623l3ytacubftpzxe7wcboqecxzbeuq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "ef0e7735773b5124441ce3b619096509299859476e187908e761dc63bf4248e7",
+            "name": "m2-t-hdwsncaxcavfass6to7bvs6vsstlmxwh5axw34glqzuzj44bzrpq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "bea4a38d597348a9d42e582f46ad8473cadc045ff66ad773322a30b88c3d8a9e",
+            "name": "m2-t-hqiugc34ku4mz6cohp4xznh7domfq5inid2uasc6viyulvw4dfyq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "bbaa2eb567ede49dab86db13a124d126bd0700f8adc647de5d957a3c5fe3585d",
+            "name": "m2-t-i7hhady4ge7t4vsfpyxpyp4a2jzlzz5c74cghfjuklahy75yzdpa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "0c87ada11768769325efd1385661e7e12d10a52f0f5bea6991746ae8a07b5875",
+            "name": "m2-t-ijypr7kniclc5i3plyvthh4ywikyldpvrd5yjsbqfktp3kzipcsa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "6f0b507136485d3aaad7b256b47de9887c53e50ac060b87d8112c291c2a8c0ba",
+            "name": "m2-t-ilsitgyqgpfvudqbxq6nhpo7uebwffxynkitnq3tka6gduma7jra",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "543540389add7e7167ba0cadcf763c03d2ba7f4a326862b28c69b65d490662bd",
+            "name": "m2-t-kkb63rv5wzordqt34icbatsiosz5occn5x633swzqppsivrxkqua",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "c9424683be2d875b18dee2b001bf38f0d4547cd05e27741ee12bdc0df993bfc9",
+            "name": "m2-t-kxk2jbttfunvsxl5etlilgpxgqvepr2q33z7m3czsatuddp3npaa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "26f0317e83152356e00f313f6296b8ca506aa1aaa479ab3e9bf8962f4a8cf5ab",
+            "name": "m2-t-qbqswny772jj6vfot7jfe6bxbnr23e5i6gc3gklug6nrxd7wt4pa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "01e7b42cdad08f493befab6cce09a7925afc9b8f65c8c087d4fed1938259a9c6",
+            "name": "m2-t-qr7etqpmnduqotvhd33tfn3xyfr5rjuwiiwmfg6vjuv4ytyvhxfa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "48a9215d6f6ee908a9155fc971a74284748d6daa9952ade5f3a8eb230d6885ba",
+            "name": "m2-t-rqjx2atoqndbsbjy7a62g7ebp44q5af6md2nl3oc2gf4y6x7aova",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487",
+            "name": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "ef1b6a944da200350af4b100cf3a312155fc6d1dfbeb2287850c4711fde9de07",
+            "name": "m2-t-sqlbe625mbk4ct6ex4hklrn5hinxjiqgzlzyrxqwk6ynmrhoh25q",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "d8805283a86a3de10fb35943c77ae2348aed7b233d83d9f86d3055da2bfb34ab",
+            "name": "m2-t-tie423dp4ue4vo6ygx4vdhfjbtwzjrzoginx7x3qkk3sq2meylqq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "cba4be48173f7d2e28a557107f7684b442a4e769396f8e13707ce3f33c362716",
+            "name": "m2-t-ttmeodk4osbuovv66u7flrb6f6bytzb25ljzu3h7ezzvxdkusyfq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7",
+            "name": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "05e863d46a8c1d2d6c8194a546b81f72aa3a79ba986574fdf6c188c7411745f5",
+            "name": "m2-t-uiasr25buhhzisnawbnjlfcd7nkj36n44kdxa4ipwribtjogjjta",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "e3c8a4d0ecd7a0a09207bba42170965838e5ae271227abd206357347f31082f5",
+            "name": "m2-t-vf3dcwusczt5gcpsdbnhjpqu3bcellyxmn2gcwsy5ihi56atwr3q",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "48a98edc4ff899a9d9a574a62d1e7c1b231f2bca534a9ee19ec3a54e96e65259",
+            "name": "m2-t-vkhopuei4np332gffrojo5huovrskgef4xg2iswcyjvu3n4hzjxa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "66953cf869359569d78c53859ccd608c2a3a1400e12d27475955e4efb71a3bb9",
+            "name": "m2-t-w6go5yq4wdihigmnoaqibqusoe2qpzjn7yvm4q5uqh35cncj7t5a",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "37738d675f441bbe3e247d1d25864ae6c6118d80f8cd13d329f1c24a89b4f998",
+            "name": "m2-t-w6i3qd7pkpcmczyi63nv7rtfsylrkuktnfsbahvhkkcr5e6oqzpa",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "8710f756f72b20fec3dc25779378679464646923538723e6259b90ccd9cf1465",
+            "name": "m2-t-wkcruo2nekdj4acs5npsfh7yhqycwj6rbrwmnfnysdjsuwnwk7ma",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf",
+            "name": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "230637d8bdea28f73243cfa6c214617d3d3cab25486f3e09010c5c34fbf1c833",
+            "name": "m2-t-xbh4xw3opwgezdxdv3ccynm4avbmth7rpz6h2w5qntp2xp262vha",
+            "state": "inactive"
+          },
+          {
+            "className": "TrustedPiSandbox",
+            "id": "3785369cd0fc877ed6546113e8e620cfa6411a84f66e6f13cdc1062d2772ade0",
+            "name": "m2-t-xrr437nrhr34zh4xg4ibvruoedwflwbln26tymehfvin6wcska2a",
+            "state": "inactive"
+          }
+        ]
+      }
+    ]
+  },
+  "deploymentChecks": {
+    "predeploy": [
+      {
+        "name": "checked-config-default-closed",
+        "status": "passed"
+      },
+      {
+        "name": "worker-identity",
+        "status": "passed"
+      },
+      {
+        "name": "staging-origins",
+        "status": "passed"
+      },
+      {
+        "name": "execution-gates-controlled-release",
+        "status": "passed"
+      },
+      {
+        "name": "tenant-capacity",
+        "status": "passed"
+      },
+      {
+        "name": "turn-operation-telemetry",
+        "status": "passed"
+      },
+      {
+        "name": "worker-version-metadata",
+        "status": "passed"
+      },
+      {
+        "name": "model-budget",
+        "status": "passed"
+      },
+      {
+        "name": "required-secrets",
+        "status": "passed"
+      },
+      {
+        "name": "durable-bindings",
+        "status": "passed"
+      },
+      {
+        "name": "durable-exports",
+        "status": "passed"
+      },
+      {
+        "name": "container-images",
+        "status": "passed"
+      },
+      {
+        "name": "service-image-pin",
+        "status": "passed"
+      },
+      {
+        "name": "private-services",
+        "status": "passed"
+      },
+      {
+        "name": "dedicated-storage",
+        "status": "passed"
+      },
+      {
+        "name": "recovery-cron",
+        "status": "passed"
+      },
+      {
+        "name": "catalog-migrations",
+        "status": "passed"
+      },
+      {
+        "name": "no-local-runtime-inputs",
+        "status": "passed"
+      },
+      {
+        "name": "worker-source-sha",
+        "status": "passed"
+      },
+      {
+        "name": "candidate-release-manifest",
+        "status": "passed"
+      },
+      {
+        "name": "runtime-secrets",
+        "status": "passed"
+      },
+      {
+        "name": "wrangler-dry-run",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-d1",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-r2:riffology-workspace-checkpoints-staging-v3-20260911",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-r2:riffology-m3-model-content-staging",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-secrets",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-catalog-migrations",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-container-image:ProjectRuntime",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-container-image:ProjectToolSandbox",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-container-image:TrustedPiSandbox",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-container-image:ServiceSandbox",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-trusted-pi-bridge-content",
+        "status": "passed"
+      },
+      {
+        "name": "predeploy-turn-gate-closed",
+        "status": "passed"
+      },
+      {
+        "name": "preview-dns",
+        "status": "passed"
+      },
+      {
+        "name": "preview-tls-san",
+        "status": "passed"
+      }
+    ],
+    "postdeploy": [
+      {
+        "name": "checked-config-default-closed",
+        "status": "passed"
+      },
+      {
+        "name": "worker-identity",
+        "status": "passed"
+      },
+      {
+        "name": "staging-origins",
+        "status": "passed"
+      },
+      {
+        "name": "execution-gates-controlled-release",
+        "status": "passed"
+      },
+      {
+        "name": "tenant-capacity",
+        "status": "passed"
+      },
+      {
+        "name": "turn-operation-telemetry",
+        "status": "passed"
+      },
+      {
+        "name": "worker-version-metadata",
+        "status": "passed"
+      },
+      {
+        "name": "model-budget",
+        "status": "passed"
+      },
+      {
+        "name": "required-secrets",
+        "status": "passed"
+      },
+      {
+        "name": "durable-bindings",
+        "status": "passed"
+      },
+      {
+        "name": "durable-exports",
+        "status": "passed"
+      },
+      {
+        "name": "container-images",
+        "status": "passed"
+      },
+      {
+        "name": "service-image-pin",
+        "status": "passed"
+      },
+      {
+        "name": "private-services",
+        "status": "passed"
+      },
+      {
+        "name": "dedicated-storage",
+        "status": "passed"
+      },
+      {
+        "name": "recovery-cron",
+        "status": "passed"
+      },
+      {
+        "name": "catalog-migrations",
+        "status": "passed"
+      },
+      {
+        "name": "no-local-runtime-inputs",
+        "status": "passed"
+      },
+      {
+        "name": "worker-source-sha",
+        "status": "passed"
+      },
+      {
+        "name": "candidate-release-manifest",
+        "status": "passed"
+      },
+      {
+        "name": "runtime-secrets",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-d1",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-r2:riffology-workspace-checkpoints-staging-v3-20260911",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-r2:riffology-m3-model-content-staging",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-secrets",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-catalog-migrations",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-container-image:ProjectRuntime",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-container-image:ProjectToolSandbox",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-container-image:TrustedPiSandbox",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-container-image:ServiceSandbox",
+        "status": "passed"
+      },
+      {
+        "name": "cloud-trusted-pi-bridge-content",
+        "status": "passed"
+      },
+      {
+        "name": "deployed-worker-version",
+        "status": "passed"
+      },
+      {
+        "name": "preview-dns",
+        "status": "passed"
+      },
+      {
+        "name": "preview-tls-san",
+        "status": "passed"
+      }
+    ]
+  }
+}

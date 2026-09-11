@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "index": 1,
+  "turnId": "54293f5a-0c03-4029-879e-ee7e190d7d69",
+  "assistantNonceConfirmation": true,
+  "toolEvents": [
+    {
+      "sequence": 385,
+      "eventId": "pi-1a67c03dc7a5244f3cdbef680e799bc4d8877460e9163719205b3ddf8d730ea3",
+      "toolCallId": "call_bHo4R1oEgzJcGonKLcwJxK0W|fc_020fdb76186cad68016aa48583900887d2aec83baea687707d",
+      "name": "project_write",
+      "isError": true
+    }
+  ],
+  "events": [
+    {
+      "sequence": 381,
+      "eventId": "pi-01b941fd0e025ef3a49ed450b380068c0fb14f17e5b1893d7041ffd30c040dbc",
+      "type": "provider.status",
+      "state": "requesting",
+      "status": null
+    },
+    {
+      "sequence": 382,
+      "eventId": "pi-64d8f339bbf0c30f60919cb1b185eee3316a541620f3c3425be26432730b5568",
+      "type": "provider.status",
+      "state": "responding",
+      "status": 200
+    },
+    {
+      "sequence": 383,
+      "eventId": "pi-49c664c7f9554e11aff5f2c22ab67d1a02440bdf84de4a7e9643da04acf5a54d",
+      "type": "assistant.message",
+      "stopReason": "toolUse",
+      "containsNonce": false
+    },
+    {
+      "sequence": 384,
+      "eventId": "pi-420c7cd88cbf75e421c2d07f3e39177e270ea8e911b560e062b5e88790de4ae0",
+      "type": "tool.started",
+      "name": "project_write",
+      "isError": null
+    },
+    {
+      "sequence": 385,
+      "eventId": "pi-1a67c03dc7a5244f3cdbef680e799bc4d8877460e9163719205b3ddf8d730ea3",
+      "type": "tool.completed",
+      "name": "project_write",
+      "isError": true
+    },
+    {
+      "sequence": 386,
+      "eventId": "pi-86988ea51076855dde32fb58af50cec3c79bae01d3ae2802900278e9ab9e906a",
+      "type": "provider.status",
+      "state": "requesting",
+      "status": null
+    },
+    {
+      "sequence": 387,
+      "eventId": "pi-d9fd77dad7ad783ae638228cca181157506f226eae48172798c17c5e46f4b2c2",
+      "type": "provider.status",
+      "state": "responding",
+      "status": 200
+    },
+    {
+      "sequence": 440,
+      "eventId": "pi-5269af38107724adf5ae6a0650fefaec5b6139ca55c64777c91d8e868bf8abed",
+      "type": "assistant.message",
+      "stopReason": "stop",
+      "containsNonce": true
+    }
+  ]
+}
