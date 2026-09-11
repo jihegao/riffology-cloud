@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "status": "blocked",
+  "phase": "release",
+  "reasonCode": "controlled-release-blocked",
+  "release": {
+    "schemaVersion": 1,
+    "status": "blocked",
+    "phase": "predeploy",
+    "predeploy": {
+      "schemaVersion": 1,
+      "observedAt": "2026-09-11T22:38:10.906Z",
+      "phase": "release-predeploy",
+      "status": "blocked",
+      "releaseManifest": {
+        "schemaVersion": 1,
+        "workerSourceSha": "174199c7639a12056178fc8e0ad8d2a73e977e3c",
+        "workerVersionTag": "source-174199c7639a12056178fc8e0ad8d2a73e977e3c",
+        "workerVersionMetadataBinding": "CF_VERSION_METADATA",
+        "toolBridgeSha256": "a416c28c1ad19b149cdf1aa399ff4bb3cb3a06ea0198abaddcb5796157dbc0e7",
+        "toolProtocolVersion": "2",
+        "toolLedgerSchemaVersion": "1",
+        "toolLedgerSchemaSha256": "95b73690b776ecc6dba05a7c481bfe6c015b948a57ad88e0ae65b31c420e587a",
+        "containerImages": [
+          {
+            "name": "ProjectRuntime",
+            "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m1-project-staging@sha256:bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00"
+          },
+          {
+            "name": "ProjectToolSandbox",
+            "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-project-tools-staging@sha256:6e1c51f984b0a6786483c09c327118722e35597f0ab421d54a27b264a0446a58"
+          },
+          {
+            "name": "TrustedPiSandbox",
+            "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2"
+          },
+          {
+            "name": "ServiceSandbox",
+            "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8"
+          }
+        ]
+      },
+      "checks": [
+        {
+          "name": "checked-config-default-closed",
+          "status": "passed"
+        },
+        {
+          "name": "worker-identity",
+          "status": "passed"
+        },
+        {
+          "name": "staging-origins",
+          "status": "passed"
+        },
+        {
+          "name": "execution-gates-controlled-release",
+          "status": "passed"
+        },
+        {
+          "name": "tenant-capacity",
+          "status": "passed"
+        },
+        {
+          "name": "turn-operation-telemetry",
+          "status": "passed"
+        },
+        {
+          "name": "worker-version-metadata",
+          "status": "passed"
+        },
+        {
+          "name": "model-budget",
+          "status": "passed"
+        },
+        {
+          "name": "required-secrets",
+          "status": "passed"
+        },
+        {
+          "name": "durable-bindings",
+          "status": "passed"
+        },
+        {
+          "name": "durable-exports",
+          "status": "passed"
+        },
+        {
+          "name": "container-images",
+          "status": "passed"
+        },
+        {
+          "name": "service-image-pin",
+          "status": "passed"
+        },
+        {
+          "name": "private-services",
+          "status": "passed"
+        },
+        {
+          "name": "dedicated-storage",
+          "status": "passed"
+        },
+        {
+          "name": "recovery-cron",
+          "status": "passed"
+        },
+        {
+          "name": "catalog-migrations",
+          "status": "passed"
+        },
+        {
+          "name": "no-local-runtime-inputs",
+          "status": "passed"
+        },
+        {
+          "name": "worker-source-sha",
+          "status": "passed"
+        },
+        {
+          "name": "candidate-release-manifest",
+          "status": "passed"
+        },
+        {
+          "name": "runtime-secrets",
+          "status": "blocked",
+          "detail": "missing-existing-auth-secrets:BETTER_AUTH_SECRET,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET"
+        },
+        {
+          "name": "wrangler-dry-run",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-d1",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-r2:riffology-workspace-checkpoints-staging-v3-20260911",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-r2:riffology-m3-model-content-staging",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-secrets",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-catalog-migrations",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-container-image:ProjectRuntime",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-container-image:ProjectToolSandbox",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-container-image:TrustedPiSandbox",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-container-image:ServiceSandbox",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-trusted-pi-bridge-content",
+          "status": "passed"
+        },
+        {
+          "name": "predeploy-turn-gate-closed",
+          "status": "passed"
+        },
+        {
+          "name": "preview-dns",
+          "status": "passed"
+        },
+        {
+          "name": "preview-tls-san",
+          "status": "passed"
+        }
+      ]
+    }
+  },
+  "gateClose": {
+    "schemaVersion": 1,
+    "status": "passed",
+    "phase": "gate-close-postdeploy",
+    "deployExitConfirmed": true,
+    "gateCloseConfirmed": true,
+    "workerVersionId": "96835f82-36fd-44c6-b8ac-a224c2193ddf",
+    "checks": [
+      {
+        "name": "gate-close-dry-run",
+        "status": "passed"
+      },
+      {
+        "name": "deployed-worker-version",
+        "status": "passed"
+      }
+    ]
+  },
+  "evidenceDirectory": "/Users/gaojihe/apps/riffology-cloud/docs/evidence/runs/issues-1-6-21-20260911T223746838Z-174199c7"
+}
