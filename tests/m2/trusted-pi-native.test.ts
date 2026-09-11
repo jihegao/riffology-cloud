@@ -20,8 +20,7 @@ class Sandbox implements TrustedPiSandboxProcessApi{
   async readFile(path:string){this.reads++;this.onRead?.(path,this.reads);const content=this.files.get(path);if(content===undefined)throw Error('ENOENT not found');return {success:true,path,content};}
   async startProcess(command:string,options:any){this.starts++;this.lastCommand=command;this.lastOptions=options;this.process=new Process(options.processId);if(this.loseStart)throw Error('lost-native-start-response');return this.process;}
   async getProcess(id:string){this.onGetProcess?.();return this.process?.id===id?this.process:null;}
-  async destroy(){this.destroys++;}
-  async releaseState(){return {running:this.releaseRunning};}
+  async destroyAndReleaseState(){this.destroys++;return {running:this.releaseRunning};}
   prefix(){const control=[...this.files.keys()].find(key=>key.endsWith('.control.json'));assert.ok(control);return control.slice(0,-'.control.json'.length);}
   running(){const prefix=this.prefix();this.files.set(`${prefix}.result.json`,JSON.stringify({schemaVersion:1,identity,phase:'running',outcome:null,executionErrorCode:null,events:[],outputSessionSha256:null}));}
   async settle(outcome:'completed'|'failed'|'cancelled'|'interrupted'='completed',output=snapshot()){
@@ -123,7 +122,7 @@ test('unchanged schema 2 deadline replay observes the existing process without a
 
 test('observer refuses an ordinary SDK without a dedicated reader before native I/O',async()=>{
   let calls=0;const forbidden=async()=>{calls++;throw Error('ordinary-sdk-called');};
-  const host=new SandboxTrustedPiHostPort({writeFile:forbidden,readFile:forbidden,startProcess:forbidden,getProcess:forbidden,destroy:forbidden,releaseState:forbidden},{load:forbidden},()=>1003);
+  const host=new SandboxTrustedPiHostPort({writeFile:forbidden,readFile:forbidden,startProcess:forbidden,getProcess:forbidden,destroyAndReleaseState:forbidden},{load:forbidden},()=>1003);
   await assert.rejects(host.currentObserverExecution(identity),/observer-reader-required/);assert.equal(calls,0);
 });
 

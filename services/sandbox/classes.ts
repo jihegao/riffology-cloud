@@ -22,7 +22,13 @@ export class TrustedPiSandbox extends Sandbox<M2SandboxEnv>{
   override allowedHosts=[MODEL_PROXY_HOST,TOOL_BRIDGE_HOST];
   override sleepAfter='5m';
   override envVars={};
-  async releaseState(){return {running:this.ctx.container?.running===true};}
+  /** Keep teardown and its immediate platform observation in one DO RPC.
+   * Splitting these across two stub calls leaves an activation boundary
+   * between destroy and the proof used by ProductTurnRuntime. */
+  async destroyAndReleaseState(){
+    await this.destroy();
+    return {running:this.ctx.container?.running===true};
+  }
   /** Private, identity-bound read path. Ordinary SDK reads may create a session
    * or start a container and must not be used for Observer authorization. */
   async queryObserverExecution(raw:Parameters<typeof turnRuntimeIdentity>[0]){
