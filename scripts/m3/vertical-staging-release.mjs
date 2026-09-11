@@ -129,7 +129,9 @@ export async function runControlledRelease({
 
     const pausedDeploy=runner(wrangler,deploymentArgs(paused.path,workerSha),300_000);if(pausedDeploy.status!==0)throw Error('paused-candidate-deploy-failed-or-unconfirmed');
     const pausedActive=inspectDeployment(wrangler,paused.path,predeploy.releaseManifest,false,runner);if(pausedActive.check.status!=='passed')throw Error('paused-candidate-deployment-unconfirmed');
-    const platformProbe=validatePlatformProbe(await probeRunner({root,release:{workerSourceSha:workerSha,workerVersionId:pausedActive.versionId}}));
+    const platformProbeResult=await probeRunner({root,release:{workerSourceSha:workerSha,workerVersionId:pausedActive.versionId}});
+    if(platformProbeResult?.status!=='passed')throw Error(platformProbeResult?.reasonCode??'paused-candidate-platform-probe-blocked');
+    const platformProbe=validatePlatformProbe(platformProbeResult);
     ensureNotInterrupted();
     if(platformProbe.workerSourceSha!==workerSha||platformProbe.workerVersionId!==pausedActive.versionId)throw Error('paused-candidate-platform-probe-mismatch');
     const preOpenQuiet=validatePausedContainerQuiet(await quietRunner({root,config:paused.config,runner}),predeploy.releaseManifest.containerImages);
