@@ -1,9 +1,10 @@
-import type { ToolCommand } from './protocol.ts';
+import type { ToolCommand, ToolCommandIntent } from './protocol.ts';
 import { toolCommandReference, type ToolCommandRecord, type ToolCommandReference, type ToolEffectReceipt } from './ledger.ts';
 import type { ToolResultMaterializer } from '../artifacts/materializer.ts';
 
 export interface ToolLedgerPort{
   accept(value:unknown):Promise<{record:ToolCommandRecord;replayed:boolean}>;
+  acceptIntent?(value:unknown):Promise<{record:ToolCommandRecord;replayed:boolean}>;
   dispatch(commandId:string):Promise<{authorized:boolean;observeOnly:boolean;record:ToolCommandRecord}>;
   markUnknown(reference:ToolCommandReference):Promise<ToolCommandRecord>;
   applyEffect(receipt:unknown):Promise<ToolCommandRecord>;
@@ -35,6 +36,17 @@ export class ToolDispatcher{
   }
   async run(command:unknown):Promise<ToolCommandRecord>{
     const accepted=await this.#ledger.accept(command),delivery=await this.#ledger.dispatch(accepted.record.commandId),record=delivery.record;
+    return this.#deliver(record,delivery);
+  }
+  async runIntent(intent:ToolCommandIntent):Promise<ToolCommandRecord>{
+    if(!this.#ledger.acceptIntent)throw Error('tool-command-intent-not-supported');const accepted=await this.#ledger.acceptIntent(intent),delivery=await this.#ledger.dispatch(accepted.record.commandId),record=delivery.record;
+    return this.#deliver(record,delivery);
+  }
+  async runIntentUntilSettled(intent:ToolCommandIntent,options:{clock?:()=>number;wait?:()=>Promise<void>}={}):Promise<ToolCommandRecord>{
+    const clock=options.clock??Date.now,wait=options.wait??(()=>new Promise<void>(resolve=>setTimeout(resolve,100)));let record=await this.runIntent(intent);
+    for(let attempt=0;attempt<1200&&!['completed','failed','cancelled'].includes(record.status);attempt++){if(clock()>=record.deadlineAt)return record;await wait();record=await this.runIntent(intent);}return record;
+  }
+  async #deliver(record:ToolCommandRecord,delivery:{authorized:boolean;observeOnly:boolean;record:ToolCommandRecord}):Promise<ToolCommandRecord>{
     if(!delivery.authorized&&!delivery.observeOnly)return record;
     const reference=toolCommandReference(record);
     try{

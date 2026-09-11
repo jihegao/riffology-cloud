@@ -5,10 +5,11 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { SqlToolLedger, toolCommandReference, type ToolEffectReceipt, type ToolLedgerStorage } from '../../services/tools/ledger.ts';
-import type { ToolCommand } from '../../services/tools/protocol.ts';
+import type { ToolCommand, ToolCommandIntent } from '../../services/tools/protocol.ts';
 
 const scope={tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1};
 const command=(commandId='command-a',operation:ToolCommand['operation']='write'):ToolCommand=>({schemaVersion:1,scope,turnId:'turn-a',dispatchId:'dispatch-a',commandId,deadlineAt:2_000,operation,arguments:operation==='write'?{path:'model/main.py',content:'print(1)'}:operation==='read'?{path:'model/main.py'}:{script:'python model/main.py',timeoutMs:1_000}});
+const intent=(commandId='command-a'):ToolCommandIntent=>({schemaVersion:2,scope,turnId:'turn-a',dispatchId:'dispatch-a',commandId,executionDeadlineAt:10_000,operation:'write',arguments:{path:'model/main.py',content:'print(1)'}});
 function fixture(t:{after(fn:()=>void):void}){
   const directory=mkdtempSync(join(tmpdir(),'m2-tool-ledger-')),filename=join(directory,'ledger.sqlite');let database=new DatabaseSync(filename),now=1_000,failSync=false,id=0;
   const configure=()=>database.exec('PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;');configure();
@@ -24,6 +25,10 @@ const receipt=(record:Awaited<ReturnType<SqlToolLedger['lookup']>>,overrides:Par
 test('identical command retries replay one durable row and a changed payload conflicts',async t=>{
   const f=fixture(t),h=f.host(),first=await h.accept(command());assert.equal(first.replayed,false);assert.equal((await h.accept(command())).replayed,true);
   await assert.rejects(h.accept({...command(),arguments:{path:'model/main.py',content:'changed'}}),/idempotency-conflict/);assert.equal((await h.lookup('command-a'))?.command?.arguments.content,'print(1)');
+});
+test('server assigns one durable deadline and replays the same intent after clock drift and expiry',async t=>{
+ const f=fixture(t),first=await f.host().acceptIntent(intent());assert.equal(first.replayed,false);assert.equal(first.record.deadlineAt,10_000);f.advance(20_000);f.reopen();const replay=await f.host().acceptIntent(intent());assert.equal(replay.replayed,true);assert.equal(replay.record.deadlineAt,first.record.deadlineAt);
+ await assert.rejects(f.host().acceptIntent({...intent(),arguments:{path:'model/main.py',content:'changed'}}),/idempotency-conflict/);
 });
 test('only one active command is admitted for a turn until the first becomes terminal',async t=>{
   const f=fixture(t),h=f.host();await h.accept(command());await assert.rejects(h.accept(command('command-b','read')),/active-command/);

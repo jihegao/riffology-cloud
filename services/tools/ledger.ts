@@ -1,6 +1,6 @@
 import type { TurnScope } from '../turn/protocol.ts';
 import { jsonPayload, positive, sameScope, scope as validateScope, sha, turnDigest, turnId } from '../turn/protocol.ts';
-import { normalizeToolCommand, toolCommandDigest, type ToolCommand, type ToolOperation } from './protocol.ts';
+import { normalizeToolCommand, normalizeToolCommandIntent, toolCommandDigest, toolCommandIntentDigest, type ToolCommand, type ToolCommandIntent, type ToolOperation } from './protocol.ts';
 
 export type ToolCommandStatus='accepted'|'dispatched'|'unknown'|'completed'|'failed'|'cancelled';
 export type ToolCommandReference={scope:TurnScope;turnId:string;dispatchId:string;commandId:string;digest:string;effectId:string};
@@ -63,7 +63,8 @@ export class SqlToolLedger{
       CHECK((status IN ('completed','failed','cancelled') AND finished_at IS NOT NULL AND outcome=status AND command_json IS NULL AND result_json IS NOT NULL AND receipt_digest IS NOT NULL) OR
             (status NOT IN ('completed','failed','cancelled') AND finished_at IS NULL AND outcome IS NULL AND error_code IS NULL AND result_json IS NULL AND receipt_digest IS NULL AND command_json IS NOT NULL))
     ) STRICT;
-    CREATE UNIQUE INDEX IF NOT EXISTS tool_one_active_per_turn ON tool_commands(turn_id) WHERE status IN ('accepted','dispatched','unknown');`));
+    CREATE UNIQUE INDEX IF NOT EXISTS tool_one_active_per_turn ON tool_commands(turn_id) WHERE status IN ('accepted','dispatched','unknown');
+    CREATE TABLE IF NOT EXISTS tool_command_intents (command_id TEXT PRIMARY KEY, intent_digest TEXT NOT NULL) STRICT;`));
     this.#ready=storage.sync();
   }
   ready(){return this.#ready;}
@@ -97,7 +98,22 @@ export class SqlToolLedger{
       const now=this.#now();if(command.deadlineAt<=now||command.deadlineAt-now>120_000)reject('invalid-tool-deadline');
       const active=this.#rows("SELECT command_id FROM tool_commands WHERE turn_id=? AND status IN ('accepted','dispatched','unknown')",command.turnId)[0];if(active)reject('tool-turn-active-command');
       this.#storage.sql.exec("INSERT INTO tool_commands VALUES (?,?,?,?,?,?,?,?,'accepted',NULL,?,?,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)",command.commandId,command.turnId,command.dispatchId,canonical(command.scope),digest,command.deadlineAt,command.operation,canonical(command),now,now);
+      this.#storage.sql.exec('INSERT INTO tool_command_intents VALUES(?,?)',command.commandId,digest);
       return {record:this.#row(this.#get(command.commandId)!),replayed:false};
+    });
+    await this.#storage.sync();return structuredClone(result);
+  }
+  async acceptIntent(value:unknown,deadlineMs=115_000):Promise<{record:ToolCommandRecord;replayed:boolean}>{
+    const intent=normalizeToolCommandIntent(value),intentDigest=await toolCommandIntentDigest(intent);if(!Number.isSafeInteger(deadlineMs)||deadlineMs<1||deadlineMs>120_000)reject('invalid-tool-deadline');await this.#ready;
+    const existing=this.#get(intent.commandId);if(existing){const saved=this.#rows('SELECT intent_digest FROM tool_command_intents WHERE command_id=?',intent.commandId)[0];if(!saved||saved.intent_digest!==intentDigest)reject('tool-idempotency-conflict');return {record:structuredClone(this.#row(existing)),replayed:true};}
+    const acceptedAt=this.#now();if(intent.executionDeadlineAt<=acceptedAt||intent.executionDeadlineAt-acceptedAt>600_000)reject('invalid-tool-deadline');
+    const command:ToolCommand={schemaVersion:1,scope:intent.scope,turnId:intent.turnId,dispatchId:intent.dispatchId,commandId:intent.commandId,deadlineAt:Math.min(acceptedAt+deadlineMs,intent.executionDeadlineAt),operation:intent.operation,arguments:intent.arguments},digest=await toolCommandDigest(command);
+    const result=this.#storage.transactionSync(()=>{
+      const prior=this.#get(intent.commandId);if(prior){const saved=this.#rows('SELECT intent_digest FROM tool_command_intents WHERE command_id=?',intent.commandId)[0];if(!saved||saved.intent_digest!==intentDigest)reject('tool-idempotency-conflict');return {record:this.#row(prior),replayed:true};}
+      const now=this.#now();if(command.deadlineAt<=now)reject('invalid-tool-deadline');
+      const active=this.#rows("SELECT command_id FROM tool_commands WHERE turn_id=? AND status IN ('accepted','dispatched','unknown')",intent.turnId)[0];if(active)reject('tool-turn-active-command');
+      this.#storage.sql.exec("INSERT INTO tool_commands VALUES (?,?,?,?,?,?,?,?,'accepted',NULL,?,?,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)",command.commandId,command.turnId,command.dispatchId,canonical(command.scope),digest,command.deadlineAt,command.operation,canonical(command),now,now);
+      this.#storage.sql.exec('INSERT INTO tool_command_intents VALUES(?,?)',command.commandId,intentDigest);return {record:this.#row(this.#get(command.commandId)!),replayed:false};
     });
     await this.#storage.sync();return structuredClone(result);
   }
