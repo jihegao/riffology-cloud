@@ -10,7 +10,7 @@ import type { TurnRuntimePort, TurnRuntimeReceipt } from '../../services/turn/di
 
 const identity:TurnRuntimeIdentity={scope:{tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:2},sessionId:'session-a',turnId:'turn-a',dispatchId:'dispatch-a',generation:2};
 const request={...identity,actor:{userId:'user-a',authVersion:1},message:'Build model',base:{workspace:null,session:null}};
-const absent=(input:TurnRuntimeIdentity):TurnRuntimeReceipt=>({scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,phase:'absent',outcome:null});
+const absent=(input:TurnRuntimeIdentity):TurnRuntimeReceipt=>({scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,phase:'absent',outcome:null,executionErrorCode:null,events:[],checkpoint:null,persistenceErrorCode:null,stopped:null,resourceDisposition:{status:'released',operationId:'legacy',leaseId:'legacy',turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,proofId:'runtime-absent',releasedAt:1}});
 
 function namespace(ctxName:string,calls:string[]=[]){return {idFromName(name:string){calls.push(name);return {equals(other:unknown){return !!other&&typeof other==='object'&&(other as {name?:unknown}).name===name;}};},ctx:{id:{name:ctxName},storage:{}} as unknown as DurableObjectState};}
 function sqliteState(name:string){const db=new DatabaseSync(':memory:'),storage={sql:{exec(query:string,...bindings:(string|number|null)[]){if(query.includes('CREATE TABLE')){db.exec(query);return {toArray:()=>[]};}const statement=db.prepare(query),rows=statement.columns().length?statement.all(...bindings):(statement.run(...bindings),[]);return {toArray:()=>structuredClone(rows)};}},transactionSync<T>(fn:()=>T){db.exec('BEGIN IMMEDIATE');try{const value=fn();db.exec('COMMIT');return value;}catch(error){db.exec('ROLLBACK');throw error;}},async sync(){},async setAlarm(){},async deleteAlarm(){}} as unknown as ProductTurnRuntimeStorage;return {db,ctx:{id:{name},storage} as unknown as DurableObjectState};}
@@ -56,7 +56,7 @@ test('gate false rejects a fresh actor but permits maintenance of an existing sa
   assert.equal((await enabled.accept(request)).phase,'terminal');
   existing.db.exec("UPDATE product_turn_release SET value=json_set(value,'$.begunAt',1,'$.nextAttemptAt',1,'$.absentSince',1)");
   let maintenanceReleases=0;const paused=new ProductTurnRuntimeHost(existing.ctx,{PRODUCT_TURN_RUNTIME:{idFromName(){return {equals(){return true;}};}},M2_TURNS_ENABLED:'false'},()=>{const value=ports();value.execution.release=async()=>{maintenanceReleases++;return {running:false};};return value;});
-  await paused.alarm();assert.equal(maintenanceReleases,1);assert.ok(JSON.parse(existing.db.prepare('SELECT value FROM product_turn_release').get()!.value as string).confirmedAt);
+  await paused.alarm();assert.equal(maintenanceReleases,1);const released=JSON.parse(existing.db.prepare('SELECT value FROM product_turn_release').get()!.value as string);assert.ok(released.releasedAt);assert.equal(released.status,'released');
 });
 
 test('fresh admission requires exact true before factory or SQLite mutation',async()=>{

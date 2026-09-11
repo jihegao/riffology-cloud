@@ -7,13 +7,15 @@ import { ProductTurnSnapshotPort } from './snapshot.ts';
 import { ProjectWorkspaceLifecycle, WorkspacePreparedExecutionPort, type ProjectWorkspaceRpc } from './workspace.ts';
 import { sandboxActorIds } from '../sandbox/identity.ts';
 import type { TurnActor, TurnBaseCheckpoints } from '../turn/protocol.ts';
+import type { TrustedPiCapacityPort } from '../capacity/client.ts';
 
-export type ProductTurnRuntimeRelease={execution:TurnExecutionPort;checkpoints:TurnCheckpointPort};
+export type ProductTurnRuntimeRelease={execution:TurnExecutionPort;checkpoints:TurnCheckpointPort;capacity?:TrustedPiCapacityPort|null};
 
 export interface ProductTurnRuntimeReleaseDependencies{
   revisions:RevisionStoreRpc;
   resolveProjectSandbox(actorId:string):ProjectWorkspaceRpc;
   resolveTrustedPiSandbox(actorId:string):TrustedPiSandboxProcessApi;
+  capacity?:TrustedPiCapacityPort|null;
   clock?:()=>number;
 }
 
@@ -54,6 +56,7 @@ function bindCheckpoints(expected:TurnRuntimeIdentity,delegate:TurnCheckpointPor
   async prepare(input){bound(input.identity,expected);return delegate.prepare(input);},
   async commit(input,intent){bound(input.identity,expected);return delegate.commit(input,intent);},
   async reconcile(identity,intent){return delegate.reconcile(bound(identity,expected),intent);},
+  async abandon(identity,intent){const verified=bound(identity,expected);if(!delegate.abandon)reject('product-turn-checkpoint-abandon-required');return delegate.abandon(verified,intent);},
 };}
 
 /** Candidate production assembly for one identity-bound ProductTurnRuntime.
@@ -65,7 +68,7 @@ export function assembleProductTurnRuntimeRelease(
   dependencies:ProductTurnRuntimeReleaseDependencies,
 ):ProductTurnRuntimeRelease{
   const identity=turnRuntimeIdentity(rawIdentity);
-  if(!dependencies||typeof dependencies!=='object'||!dependencies.revisions?.restore||!dependencies.revisions.load||!dependencies.revisions.reconcileCommit||!dependencies.revisions.commit||typeof dependencies.resolveProjectSandbox!=='function'||typeof dependencies.resolveTrustedPiSandbox!=='function'||(dependencies.clock!==undefined&&typeof dependencies.clock!=='function'))reject('product-turn-runtime-release-dependencies-required');
+  if(!dependencies||typeof dependencies!=='object'||!dependencies.revisions?.restore||!dependencies.revisions.load||!dependencies.revisions.reconcileCommit||!dependencies.revisions.commit||typeof dependencies.resolveProjectSandbox!=='function'||typeof dependencies.resolveTrustedPiSandbox!=='function'||(dependencies.capacity!==undefined&&dependencies.capacity!==null&&(!dependencies.capacity.lookup||!dependencies.capacity.dispatch||!dependencies.capacity.confirmReleased))||(dependencies.clock!==undefined&&typeof dependencies.clock!=='function'))reject('product-turn-runtime-release-dependencies-required');
   const clock=dependencies.clock??Date.now,reader=dependencies.revisions;
   const workspace=new ProjectWorkspaceLifecycle(reader,actorId=>project(dependencies.resolveProjectSandbox(actorId)));
   const trustedSandbox=new IdentityBoundTrustedPiSandbox(identity,dependencies.resolveTrustedPiSandbox);
@@ -73,5 +76,5 @@ export function assembleProductTurnRuntimeRelease(
   const execution=new WorkspacePreparedExecutionPort(workspace,new TrustedPiExecutionAdapter(trustedHost));
   const snapshots=new ProductTurnSnapshotPort(workspace,trustedHost);
   const checkpoints=new RevisionStoreCheckpointPort(dependencies.revisions,snapshots);
-  return {execution:bindExecution(identity,execution),checkpoints:bindCheckpoints(identity,checkpoints)};
+  return {execution:bindExecution(identity,execution),checkpoints:bindCheckpoints(identity,checkpoints),capacity:dependencies.capacity??null};
 }

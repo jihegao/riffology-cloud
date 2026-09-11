@@ -17,6 +17,7 @@ import {createGatewayObserverServices} from './observer-services.ts';
 import { sessionIdentity } from './session-identity.ts';
 export { TenantQuota } from '../quota/durable.ts';
 export { TenantModelBudget } from '../model-budget/durable.ts';
+export { TrustedPiCapacity } from '../capacity/durable.ts';
 export { ProjectRuntime } from '../runtime/durable.ts';
 export { WorkspaceAgent } from '../workspace/durable.ts';
 export { ProductTurnRuntime } from '../turn-runtime/durable.ts';

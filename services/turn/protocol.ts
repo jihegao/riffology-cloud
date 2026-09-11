@@ -7,19 +7,27 @@ export type TurnEventType = 'turn.queued'|'turn.started'|'turn.cancel_requested'
 export type CheckpointReceipt = { revisionId:string; objectKey:string; filesSha256:string; sessionSha256:string; committedAt:number };
 export type InitialWorkspaceBase = { reference:InitialWorkspaceReference; filesSha256:string };
 export type TurnBaseCheckpoints = { workspace:CheckpointReceipt|null; session:CheckpointReceipt|null; initial?:InitialWorkspaceBase };
+export type TurnResourceLease = { operationId:string; leaseId:string };
+export type TurnResourceDisposition =
+  | { status:'active'; operationId:string; leaseId:string; turnId:string; dispatchId:string; generation:number }
+  | { status:'release-pending'|'recovery-hold'; operationId:string; leaseId:string; turnId:string; dispatchId:string; generation:number; reasonCode:string; since:number; nextAttemptAt:number }
+  | { status:'released'; operationId:string; leaseId:string; turnId:string; dispatchId:string; generation:number; proofId:string; releasedAt:number };
+export type TurnResourceWait = { status:'waiting'; reasonCode:string; since:number; nextAttemptAt:number; turnId:string; ticketId:string|null; operationId:string; leaseId:null };
+export type TurnReleaseHold = { status:'release-pending'|'recovery-hold'; reasonCode:string; since:number; nextAttemptAt:number; turnId:string; dispatchId:string; generation:number; operationId:string; leaseId:string };
 export type SessionRecord = { id:string; scope:TurnScope; actorUserId:string; actorAuthVersion:number; title:string; createdAt:number; updatedAt:number; head:CheckpointReceipt|null };
 export type TurnRecord = {
   id:string; sessionId:string; scope:TurnScope; actor:TurnActor; requestKey:string; payloadSha256:string; message:string;
   status:TurnStatus; createdAt:number; updatedAt:number; startedAt:number|null; finishedAt:number|null;
   startedSequence:number|null; terminalSequence:number|null;
   dispatchId:string|null; runtimeGeneration:number|null; cancelRequestedAt:number|null;
-  base:TurnBaseCheckpoints|null;
+  base:TurnBaseCheckpoints|null; resourceLease:TurnResourceLease|null;
   executionOutcome:'completed'|'failed'|'cancelled'|'interrupted'|null; errorCode:string|null;
   persistenceOutcome:'saved'|'failed'|null; persistenceErrorCode:string|null; checkpoint:CheckpointReceipt|null;
 };
 export type TurnEvent = { sequence:number; eventId:string; turnId:string; workspaceId:string; runtimeGeneration:number; type:TurnEventType; at:number; payload:Record<string,unknown> };
 export type TurnJournalState = {
-  schemaVersion:4; scope:TurnScope; nextSequence:number; oldestSequence:number; retentionBytes:number; activeTurnId:string|null; workspaceHead:CheckpointReceipt|null;
+  schemaVersion:5; scope:TurnScope; nextSequence:number; oldestSequence:number; retentionBytes:number; activeTurnId:string|null; workspaceHead:CheckpointReceipt|null;
+  resourceWait:TurnResourceWait|null; releaseHold:TurnReleaseHold|null;
   recoveryHold:null|{status:'reconciling';reasonCode:string;since:number;nextAttemptAt:number;turnId:string;dispatchId:string;runtimeGeneration:number};
   sessions:Record<string,SessionRecord>; turns:Record<string,TurnRecord>;
   sessionIntents:Record<string,{payloadSha256:string;sessionId:string}>;
@@ -27,9 +35,11 @@ export type TurnJournalState = {
   eventReceipts:Record<string,{payloadSha256:string;sequence:number;event:TurnEvent}>; events:TurnEvent[];
 };
 export type PublicSessionRecord = Omit<SessionRecord,'actorUserId'|'actorAuthVersion'>;
-export type PublicTurnRecord = Omit<TurnRecord,'requestKey'|'payloadSha256'|'dispatchId'|'base'|'startedSequence'|'terminalSequence'>;
+export type PublicTurnRecord = Omit<TurnRecord,'requestKey'|'payloadSha256'|'dispatchId'|'base'|'resourceLease'|'startedSequence'|'terminalSequence'>;
 export type TurnJournalView = {
-  schemaVersion:2; scope:TurnScope; nextSequence:number; activeTurnId:string|null;
+  schemaVersion:3; scope:TurnScope; nextSequence:number; activeTurnId:string|null;
+  resourceWait:null|{status:'waiting';reasonCode:string;since:number;nextAttemptAt:number};
+  releaseHold:null|{status:'release-pending'|'recovery-hold';reasonCode:string;since:number;nextAttemptAt:number};
   recoveryHold:null|{status:'reconciling';reasonCode:string;since:number;nextAttemptAt:number};
   sessions:Record<string,PublicSessionRecord>; turns:Record<string,PublicTurnRecord>;
 };
@@ -62,6 +72,18 @@ export function title(value:unknown):string{
   return value.trim();
 }
 export function sha(value:unknown):string{if(typeof value!=='string'||!SHA.test(value))throw Error('invalid-turn-sha');return value;}
+export function resourceDisposition(value:unknown):TurnResourceDisposition{
+  if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype)throw Error('invalid-turn-resource-disposition');
+  const raw=value as Record<string,unknown>,status=raw.status;
+  const base=['status','operationId','leaseId','turnId','dispatchId','generation'];
+  const keys=status==='active'?base:status==='release-pending'||status==='recovery-hold'?[...base,'reasonCode','since','nextAttemptAt']:status==='released'?[...base,'proofId','releasedAt']:null;
+  if(!keys||Object.keys(raw).length!==keys.length||keys.some(key=>!Object.hasOwn(raw,key)))throw Error('invalid-turn-resource-disposition');
+  const common={operationId:turnId(raw.operationId),leaseId:turnId(raw.leaseId),turnId:turnId(raw.turnId),dispatchId:turnId(raw.dispatchId),generation:positive(raw.generation)};
+  if(status==='active')return {status:'active',...common};
+  if(status==='released')return {status:'released',...common,proofId:turnId(raw.proofId),releasedAt:positive(raw.releasedAt)};
+  const since=positive(raw.since),nextAttemptAt=positive(raw.nextAttemptAt);if(nextAttemptAt<since)throw Error('invalid-turn-resource-disposition');
+  return {status:status as 'release-pending'|'recovery-hold',...common,reasonCode:turnId(raw.reasonCode),since,nextAttemptAt};
+}
 export function checkpointObjectKey(value:unknown):string{
   if(typeof value!=='string'||value.length<1||value.length>1024||/[^A-Za-z0-9._\/-]/u.test(value)||value.startsWith('/')||value.endsWith('/')||value.includes('//'))throw Error('invalid-checkpoint-object-key');
   const parts=value.split('/');if(parts.some(part=>!part||part==='.'||part==='..'))throw Error('invalid-checkpoint-object-key');return value;

@@ -27,6 +27,8 @@ test('Workerd drives one durable Turn through the independent runtime actor', { 
       async dispatchForTest(scope,id){return (await new TurnJournal(new DurableTurnStore(this.ctx.storage)).snapshot(scope)).turns[id].dispatchId;}
     }
     export {TenantQuota} from './services/quota/durable.ts';
+    export {TrustedPiCapacity} from './services/capacity/durable.ts';
+    import {trustedPiCapacityActorName} from './services/capacity/client.ts';
     import {ToolArtifactStore as ProductionArtifactStore} from './services/artifacts/durable.ts';
     export class ToolArtifactStore extends ProductionArtifactStore {async sweepForTest(){await this.alarm();return this.ctx.storage.getAlarm();}}
     import {catalogDatabase} from './services/catalog/database.ts';
@@ -55,21 +57,30 @@ test('Workerd drives one durable Turn through the independent runtime actor', { 
     }
 
     export class ProductTurnReceiptFixture extends DurableObject {
+      async capacity(input,finish){
+        const port=this.env.TRUSTED_PI_CAPACITY.getByName(trustedPiCapacityActorName()),identity={tenantId:input.scope.tenantId,projectId:input.scope.projectId,workspaceId:input.scope.workspaceId,sessionId:input.sessionId,operationId:input.capacityLease.operationId,turnId:input.turnId,generation:input.generation};
+        const found=await port.lookup(identity);if(!found||found.ticket.leaseId!==input.capacityLease.leaseId)throw Error('fixture-capacity-lease-missing');
+        const reference={...identity,ticketId:found.ticket.ticketId,leaseId:input.capacityLease.leaseId,dispatchId:input.dispatchId};await port.dispatch(reference);
+        if(!finish)return {status:'active',operationId:identity.operationId,leaseId:input.capacityLease.leaseId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation};
+        const releasedAt=Date.now(),proofId='release-'+input.turnId;await port.confirmReleased(reference,{kind:'runtime-released',proofId,observedAt:releasedAt});
+        return {status:'released',operationId:identity.operationId,leaseId:input.capacityLease.leaseId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,proofId,releasedAt};
+      }
       async accept(input) {
         const prior=await this.ctx.storage.get('receipt');if(prior)return prior;
         const mode=input.message==='drop-accept'?'drop-accept':input.message==='running-cancel'?'running-cancel':'normal';
         await this.ctx.storage.put('mode',mode);
         if(mode==='running-cancel'){
+          await this.ctx.storage.put('capacityLease',input.capacityLease);
           await this.env.CATALOG.prepare('INSERT INTO fixture_turn_calls(turn_id,accept_count) VALUES(?,1) ON CONFLICT(turn_id) DO UPDATE SET accept_count=accept_count+1').bind(input.turnId).run();
-          return {...input,phase:'running',outcome:null};
+          return {...input,phase:'running',outcome:null,executionErrorCode:null,events:[],checkpoint:null,persistenceErrorCode:null,stopped:null,resourceDisposition:await this.capacity(input,false)};
         }
         const now=Date.now(),artifact=mode==='normal'?(await this.env.TOOL_ARTIFACT_STORE.getByName(TOOL_ARTIFACT_STORE_ACTOR).materialize({identity:{scope:input.scope,turnId:input.turnId,dispatchId:input.dispatchId,commandId:'command-'+input.turnId,effectId:'effect-'+input.turnId,operation:'list'},mediaType:'application/json',content:new TextEncoder().encode(JSON.stringify({kind:'list',entries:['x'.repeat(17000)]}))})).receipt:null,
           events=[{eventId:'assistant-'+input.turnId,type:'assistant.message',at:now,payload:{text:'fixture complete'}}];
         if(artifact)events.push({eventId:'tool-'+input.turnId,type:'tool.completed',at:now,payload:{toolCallId:'call-'+input.turnId,name:'project_list',isError:false,artifact}});
         const receipt={scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,
-          phase:'terminal',outcome:'completed',events,
+          phase:'terminal',outcome:'completed',executionErrorCode:null,events,
           checkpoint:{revisionId:'revision-'+input.turnId,objectKey:'checkpoint-'+input.turnId,filesSha256:'b'.repeat(64),sessionSha256:'c'.repeat(64),committedAt:now},
-          stopped:{confirmationId:'stop-'+input.turnId,observedAt:now,nativeRunning:false,fenced:true}};
+          persistenceErrorCode:null,stopped:{confirmationId:'stop-'+input.turnId,observedAt:now,nativeRunning:false,fenced:true},resourceDisposition:await this.capacity(input,true)};
         await this.ctx.storage.put('receipt',receipt);await this.ctx.storage.sync();
         await this.env.CATALOG.prepare('INSERT INTO fixture_turn_calls(turn_id,accept_count) VALUES(?,1) ON CONFLICT(turn_id) DO UPDATE SET accept_count=accept_count+1').bind(input.turnId).run();
         if(mode==='drop-accept')throw Error('fixture-dropped-accept-response');
@@ -86,8 +97,8 @@ test('Workerd drives one durable Turn through the independent runtime actor', { 
         const mode=await this.ctx.storage.get('mode');
         if(mode!=='running-cancel')return this.observe(input);
         const now=Date.now(),receipt={scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,
-          phase:'terminal',outcome:'cancelled',events:[],checkpoint:{revisionId:'revision-'+input.turnId,objectKey:'checkpoint-'+input.turnId,filesSha256:'b'.repeat(64),sessionSha256:'c'.repeat(64),committedAt:now},
-          stopped:{confirmationId:'stop-'+input.turnId,observedAt:now,nativeRunning:false,fenced:true}};
+          phase:'terminal',outcome:'cancelled',executionErrorCode:null,events:[],checkpoint:{revisionId:'revision-'+input.turnId,objectKey:'checkpoint-'+input.turnId,filesSha256:'b'.repeat(64),sessionSha256:'c'.repeat(64),committedAt:now},
+          persistenceErrorCode:null,stopped:{confirmationId:'stop-'+input.turnId,observedAt:now,nativeRunning:false,fenced:true},resourceDisposition:await this.capacity({...input,capacityLease:(await this.ctx.storage.get('capacityLease'))},true)};
         await this.ctx.storage.put('receipt',receipt);await this.ctx.storage.sync();
         await this.env.CATALOG.prepare('INSERT INTO fixture_turn_calls(turn_id,cancel_count) VALUES(?,1) ON CONFLICT(turn_id) DO UPDATE SET cancel_count=cancel_count+1').bind(input.turnId).run();
         throw Error('fixture-dropped-cancel-response');
@@ -139,7 +150,7 @@ test('Workerd drives one durable Turn through the independent runtime actor', { 
     write: false, format: 'esm', platform: 'neutral', target: 'es2024', external: ['cloudflare:workers'], logLevel: 'silent' });
   const workerName = 'm2-workspace-turn-local';
   const classes = {
-    WORKSPACE_AGENT: 'WorkspaceAgent', TENANT_QUOTA: 'TenantQuota', PROJECT_RUNTIME: 'WorkspaceReceiptFixture', PRODUCT_TURN_RUNTIME: 'ProductTurnReceiptFixture', REVISION_STORE:'RevisionStoreFixture',
+    WORKSPACE_AGENT: 'WorkspaceAgent', TENANT_QUOTA: 'TenantQuota', TRUSTED_PI_CAPACITY:'TrustedPiCapacity', PROJECT_RUNTIME: 'WorkspaceReceiptFixture', PRODUCT_TURN_RUNTIME: 'ProductTurnReceiptFixture', REVISION_STORE:'RevisionStoreFixture',
     TOOL_ARTIFACT_STORE:'ToolArtifactStore',
   };
   const options = {
@@ -149,6 +160,7 @@ test('Workerd drives one durable Turn through the independent runtime actor', { 
       env: { CATALOG: { type: 'd1', id: 'turn-catalog', name: 'turn-catalog' }, M2_TURNS_ENABLED: { type: 'text', value: 'true' },
         WORKSPACE_CHECKPOINTS: { type: 'r2', name: 'turn-checkpoints' },
         TENANT_QUOTA_CAPACITY: { type: 'text', value: '1' }, TENANT_QUOTA_POLICY_VERSION: { type: 'text', value: 'm2-test' },
+        TRUSTED_PI_CAPACITY_LIMIT: { type: 'text', value: '1' }, TRUSTED_PI_CAPACITY_POLICY_VERSION: { type: 'text', value: 'm2-test' },
         ...Object.fromEntries(Object.entries(classes).map(([binding, exportName]) => [binding, { type: 'durable-object', worker: workerName, exportName }])) },
       exports: Object.fromEntries(Object.values(classes).map(name => [name, { type: 'durable-object', storage: 'sqlite' }])),
     }, dev: { unsafeRegisterWorker: false, outboundService: { type: 'fetcher', handler: () => new Response('outbound-disabled', { status: 403 }) } } }],

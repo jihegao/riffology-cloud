@@ -52,12 +52,15 @@ import { revisionStoreActorName, type RevisionStoreNamespace } from '../turn-run
 import { TOOL_ARTIFACT_STORE_ACTOR, type ToolArtifactStoreNamespace, type ToolArtifactReferenceInput } from '../artifacts/protocol.ts';
 import { releaseRetiredArtifactEvent } from '../artifacts/event-retirement.ts';
 import {traceTurnAdmission,type TurnAdmissionStage} from '../turn/admission-telemetry.ts';
+import { TrustedPiTurnCapacity } from '../capacity/turn.ts';
+import type { TrustedPiCapacityNamespace } from '../capacity/client.ts';
 
 export interface WorkspaceAgentEnv {
   WORKSPACE_AGENT: DurableObjectNamespace<WorkspaceAgent>;
   TENANT_QUOTA: DurableObjectNamespace<TenantQuota>;
   PROJECT_RUNTIME: DurableObjectNamespace<ProjectRuntime>;
   PRODUCT_TURN_RUNTIME: DurableObjectNamespace<ProductTurnRuntime>;
+  TRUSTED_PI_CAPACITY: TrustedPiCapacityNamespace;
   REVISION_STORE: RevisionStoreNamespace;
   TOOL_ARTIFACT_STORE: ToolArtifactStoreNamespace;
   M2_TURNS_ENABLED: unknown;
@@ -365,6 +368,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   #engine(): WorkspaceTurnEngine {
     if (!this.env.PRODUCT_TURN_RUNTIME?.getByName) throw Error('product-turn-runtime-not-configured');
     if (!this.env.TOOL_ARTIFACT_STORE?.getByName) throw Error('tool-artifact-store-not-configured');
+    if (!this.env.TRUSTED_PI_CAPACITY?.getByName) throw Error('trusted-pi-capacity-binding-required');
     return this.#turnEngine ??= new WorkspaceTurnEngine(
       this.#turns,
       new ProductTurnRuntimeClient(this.env.PRODUCT_TURN_RUNTIME),
@@ -372,6 +376,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       Date.now,
       {},
       this.env.TOOL_ARTIFACT_STORE.getByName(TOOL_ARTIFACT_STORE_ACTOR),
+      new TrustedPiTurnCapacity(this.env.TRUSTED_PI_CAPACITY),
     );
   }
   #for(input: WorkspaceTask): WorkspaceCoordinator {

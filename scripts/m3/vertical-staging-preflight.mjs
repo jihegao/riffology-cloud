@@ -23,12 +23,12 @@ export const REQUIRED_SECRETS=Object.freeze([
   'M2_OPENCODE_GO_API_KEY',
 ]);
 export const REQUIRED_BINDINGS=Object.freeze([
-  'TENANT_QUOTA','WORKSPACE_AGENT','PROJECT_RUNTIME','PRODUCT_TURN_RUNTIME','REVISION_STORE',
+  'TENANT_QUOTA','TRUSTED_PI_CAPACITY','WORKSPACE_AGENT','PROJECT_RUNTIME','PRODUCT_TURN_RUNTIME','REVISION_STORE',
   'TOOL_ARTIFACT_STORE','TENANT_MODEL_BUDGET','PROJECT_SANDBOX','TRUSTED_PI_SANDBOX',
   'TOOL_BRIDGE_AGENT','SERVICE_RUN','SERVICE_RUNTIME','SERVICE_SANDBOX',
 ]);
 export const REQUIRED_EXPORTS=Object.freeze([
-  'TenantQuota','WorkspaceAgent','ProjectRuntime','ProductTurnRuntime','RevisionStore','ToolArtifactStore',
+  'TenantQuota','TrustedPiCapacity','WorkspaceAgent','ProjectRuntime','ProductTurnRuntime','RevisionStore','ToolArtifactStore',
   'TenantModelBudget','ProjectToolSandbox','TrustedPiSandbox','ToolBridgeAgent','ServiceRun','ServiceRuntime','ServiceSandbox',
 ]);
 export const REQUIRED_CONTAINERS=Object.freeze(['ProjectRuntime','ProjectToolSandbox','TrustedPiSandbox','ServiceSandbox']);
@@ -60,7 +60,7 @@ export function validateStagingTopology(config,migrations,{release=false}={}){
     check('worker-identity',config.name===WORKER_NAME&&config.account_id===ACCOUNT_ID&&config.workers_dev===false&&config.preview_urls===false,'use-existing-dedicated-staging-worker'),
     check('staging-origins',config.vars?.APP_ORIGIN===CONTROL_ORIGIN&&config.vars?.M3_PREVIEW_ORIGIN===PREVIEW_ORIGIN&&routes.length===3&&control&&previewBase&&preview?.pattern===PREVIEW_ROUTE,'declare-control-and-preview-base-custom-domains-plus-the-preview-wildcard-route'),
     check(release?'execution-gates-controlled-release':'turn-admission-paused',gatesValid,release?'release-requires-five-vertical-gates-true-and-observer-false':'maintenance-requires-turn-admission-false-with-read-and-preview-gates-retained'),
-    check('tenant-capacity',config.vars?.TENANT_QUOTA_CAPACITY==='1'&&containers.every(value=>value.max_instances===1),'retain-single-tenant-runtime-capacity'),
+    check('tenant-capacity',config.vars?.TENANT_QUOTA_CAPACITY==='1'&&config.vars?.TRUSTED_PI_CAPACITY_LIMIT==='1'&&config.vars?.TRUSTED_PI_CAPACITY_POLICY_VERSION==='m2-trusted-pi-v1'&&containers.every(value=>value.max_instances===1),'retain-single-tenant-and-application-trusted-pi-capacity'),
     check('model-budget',budget,'retain-reviewed-token-and-turn-budget'),
     check('required-secrets',same(config.secrets?.required??[],REQUIRED_SECRETS),'declare-only-the-eight-reviewed-secrets'),
     check('durable-bindings',same(bindings,REQUIRED_BINDINGS),'declare-complete-m2-m3-durable-bindings'),

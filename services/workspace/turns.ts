@@ -1,5 +1,5 @@
 import { TurnAlarmLoop, type TurnAdmissionAlarmTrace, type TurnAlarmPort, type TurnAlarmTiming } from '../turn/alarm.ts';
-import { TurnDispatcher, type TurnArtifactReferencePort, type TurnRuntimePort } from '../turn/dispatcher.ts';
+import { TurnDispatcher, type TurnArtifactReferencePort, type TurnCapacityPort, type TurnRuntimePort } from '../turn/dispatcher.ts';
 import { TurnJournal } from '../turn/journal.ts';
 import { turnId, type TurnActor, type TurnRecord, type TurnScope } from '../turn/protocol.ts';
 
@@ -9,8 +9,8 @@ export class WorkspaceTurnEngine{
   readonly #journal:TurnJournal;
   readonly #runtime:TurnRuntimePort;
   readonly #loop:TurnAlarmLoop;
-  constructor(journal:TurnJournal,runtime:TurnRuntimePort,alarm:TurnAlarmPort,clock=Date.now,timing:Partial<TurnAlarmTiming>={},artifactReferences:TurnArtifactReferencePort|null=null){
-    this.#journal=journal;this.#runtime=runtime;this.#loop=new TurnAlarmLoop(new TurnDispatcher(journal,runtime,artifactReferences),alarm,clock,timing);
+  constructor(journal:TurnJournal,runtime:TurnRuntimePort,alarm:TurnAlarmPort,clock=Date.now,timing:Partial<TurnAlarmTiming>={},artifactReferences:TurnArtifactReferencePort|null=null,capacity:TurnCapacityPort|null=null){
+    this.#journal=journal;this.#runtime=runtime;this.#loop=new TurnAlarmLoop(new TurnDispatcher(journal,runtime,artifactReferences,capacity),alarm,clock,timing);
   }
   submit(scope:TurnScope,actor:TurnActor,sessionId:string,key:string,body:{message:unknown},trace?:TurnAdmissionAlarmTrace){
     return this.#loop.enqueue(()=>this.#journal.submit(scope,actor,sessionId,key,body),trace);

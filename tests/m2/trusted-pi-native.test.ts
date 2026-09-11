@@ -98,6 +98,11 @@ test('release destroys only the identity-bound Sandbox and reports its post-dest
   await assert.rejects(f.host.release({...identity,dispatchId:''}),/turn-identifier/);assert.equal(f.sandbox.destroys,2);
 });
 
+test('release bounds a stuck destroy RPC by the configured wall timeout',async()=>{
+  const stuck=new Sandbox();stuck.destroyAndReleaseState=async()=>new Promise<{running:boolean}>(()=>{});const host=new SandboxTrustedPiHostPort(stuck,{async load(){return snapshot();}},()=>1003,5),started=Date.now();
+  await assert.rejects(host.release(identity),/trusted-pi-release-timeout/);assert.ok(Date.now()-started<1000);
+});
+
 test('schema 2 control is persisted and native start receives the remaining timeout',async()=>{
   const f=fixture();await f.host.start({...input(),executionDeadlineAt:1103});
   const control=JSON.parse(f.sandbox.files.get(`${f.sandbox.prefix()}.control.json`)!);

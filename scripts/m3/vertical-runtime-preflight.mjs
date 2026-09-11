@@ -27,12 +27,12 @@ export const RUNTIME_KEYS=Object.freeze([
 ]);
 const REQUIRED_BINDINGS=Object.freeze([
   'PROJECT_RUNTIME','PROJECT_SANDBOX','PRODUCT_TURN_RUNTIME','REVISION_STORE','SERVICE_RUN','SERVICE_RUNTIME',
-  'SERVICE_SANDBOX','TENANT_MODEL_BUDGET','TENANT_QUOTA','TOOL_ARTIFACT_STORE',
+  'SERVICE_SANDBOX','TENANT_MODEL_BUDGET','TENANT_QUOTA','TRUSTED_PI_CAPACITY','TOOL_ARTIFACT_STORE',
   'TOOL_BRIDGE_AGENT','TRUSTED_PI_SANDBOX','WORKSPACE_AGENT',
 ]);
 const REQUIRED_EXPORTS=Object.freeze([
   'ProjectRuntime','ProjectToolSandbox','ProductTurnRuntime','RevisionStore','ServiceRun','ServiceRuntime',
-  'ServiceSandbox','TenantModelBudget','TenantQuota','ToolArtifactStore','ToolBridgeAgent',
+  'ServiceSandbox','TenantModelBudget','TenantQuota','TrustedPiCapacity','ToolArtifactStore','ToolBridgeAgent',
   'TrustedPiSandbox','WorkspaceAgent',
 ]);
 const DIGEST=/^[a-z0-9][a-z0-9._/-]*@sha256:[a-f0-9]{64}$/;
@@ -71,7 +71,7 @@ export function validateProductTopology(config,migrations){
   return [
     check('product-config',config.name==='riffology-m2-product-local'),
     check('execution-defaults-closed',['M2_TURNS_ENABLED','M2_MODEL_PROVIDER_ENABLED','M3_SERVICE_ENABLED','M3_PREVIEW_ENABLED','M3_PREVIEW_WS_ENABLED','M3_OBSERVER_ENABLED'].every(name=>config.vars?.[name]==='false')),
-    check('vertical-bindings',REQUIRED_BINDINGS.every(name=>bindings.includes(name))),
+    check('vertical-bindings',REQUIRED_BINDINGS.every(name=>bindings.includes(name))&&config.vars?.TRUSTED_PI_CAPACITY_LIMIT==='1'&&config.vars?.TRUSTED_PI_CAPACITY_POLICY_VERSION==='m2-trusted-pi-v1'),
     check('vertical-exports',REQUIRED_EXPORTS.every(name=>exports.includes(name))),
     check('service-container',service?.image==='../services/run/Dockerfile.service'&&service?.image_build_context==='..'&&service?.max_instances===1),
     check('preview-route-migration',migrations.includes('0008_preview_routes.sql')),

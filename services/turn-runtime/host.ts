@@ -1,4 +1,4 @@
-import { actor, message, turnBaseCheckpoints } from '../turn/protocol.ts';
+import { actor, message, turnBaseCheckpoints, type TurnResourceLease } from '../turn/protocol.ts';
 import type { TurnRuntimePort } from '../turn/dispatcher.ts';
 import { ProductTurnRuntimeCore, storedProductTurnRuntimeIdentity, type ProductTurnRuntimeStorage } from './core.ts';
 import { sameTurnRuntimeIdentity, turnRuntimeActorName, turnRuntimeIdentity, type TurnRuntimeIdentity } from './identity.ts';
@@ -27,10 +27,10 @@ export class ProductTurnRuntimeHost implements TurnRuntimePort{
     if(existingOnly&&!this.#ctx.storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='product_turn_runtime'").toArray().length)throw Error('product-turn-observer-denied');
     const ports=this.#release(this.#ctx,this.#env,identity);
     if(!ports?.execution||!ports.checkpoints)throw Error('product-turn-runtime-release-not-configured');
-    const value=new ProductTurnRuntimeCore(this.#ctx.storage as ProductTurnRuntimeStorage,ports.execution,ports.checkpoints,Date.now,existingOnly,{retryMs:5000,assignmentGuardMs:360000,quietMs:30000});
+    const value=new ProductTurnRuntimeCore(this.#ctx.storage as ProductTurnRuntimeStorage,ports.execution,ports.checkpoints,Date.now,existingOnly,{retryMs:5000,assignmentGuardMs:360000,quietMs:30000,deadlineMs:600000,holdRetryMs:60000},ports.capacity??null);
     this.#core={identity,value};return value;
   }
-  async accept(raw:Parameters<TurnRuntimePort['accept']>[0]){
+  async accept(raw:Omit<Parameters<TurnRuntimePort['accept']>[0],'capacityLease'>&{capacityLease?:TurnResourceLease}){
     const identity=turnRuntimeIdentity({scope:raw.scope,sessionId:raw.sessionId,turnId:raw.turnId,dispatchId:raw.dispatchId,generation:raw.generation});
     await this.#assertActor(identity);
     if(this.#env.M2_TURNS_ENABLED!=='true'){
@@ -39,7 +39,7 @@ export class ProductTurnRuntimeHost implements TurnRuntimePort{
       const exists=table&&this.#ctx.storage.sql.exec('SELECT singleton FROM product_turn_runtime WHERE singleton=1').toArray().length;
       if(!exists)throw Error('product-turn-runtime-release-not-configured');
     }
-    const input={...identity,actor:actor(raw.actor),message:message(raw.message),base:turnBaseCheckpoints(raw.base)};
+    const input={...identity,actor:actor(raw.actor),message:message(raw.message),base:turnBaseCheckpoints(raw.base),...(raw.capacityLease===undefined?{}:{capacityLease:raw.capacityLease})};
     return (await this.#for(identity)).accept(input);
   }
   async currentObserverExecution(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);return (await this.#for(identity,true)).currentObserverExecution(identity);}

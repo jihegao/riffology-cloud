@@ -30,6 +30,8 @@
     "M3_PREVIEW_ORIGIN": "https://preview.m1.riff-demo.gaojihe.cn",
     "TENANT_QUOTA_CAPACITY": "1",
     "TENANT_QUOTA_POLICY_VERSION": "m1-v1",
+    "TRUSTED_PI_CAPACITY_LIMIT": "1",
+    "TRUSTED_PI_CAPACITY_POLICY_VERSION": "m2-trusted-pi-v1",
     "M2_TURNS_ENABLED": "false",
     "M2_TURN_ADMISSION_TELEMETRY": "true",
     "M2_MODEL_PROVIDER_ENABLED": "true",
@@ -57,6 +59,7 @@
   "durable_objects": {
     "bindings": [
       { "name": "TENANT_QUOTA", "class_name": "TenantQuota" },
+      { "name": "TRUSTED_PI_CAPACITY", "class_name": "TrustedPiCapacity" },
       { "name": "WORKSPACE_AGENT", "class_name": "WorkspaceAgent" },
       { "name": "PROJECT_RUNTIME", "class_name": "ProjectRuntime" },
       { "name": "PRODUCT_TURN_RUNTIME", "class_name": "ProductTurnRuntime" },
@@ -83,6 +86,7 @@
   ],
   "exports": {
     "TenantQuota": { "type": "durable-object", "storage": "sqlite" },
+    "TrustedPiCapacity": { "type": "durable-object", "storage": "sqlite" },
     "WorkspaceAgent": { "type": "durable-object", "storage": "sqlite" },
     "ProductTurnRuntime": { "type": "durable-object", "storage": "sqlite" },
     "RevisionStore": { "type": "durable-object", "storage": "sqlite" },
