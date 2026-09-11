@@ -136,13 +136,18 @@ test('persistence failure is terminal but preserves the execution result separat
   const result=await new TurnDispatcher(f.journal,f.runtime).tick(scope,1);assert.equal(result?.status,'failed');assert.equal(result?.executionOutcome,'completed');assert.equal(result?.persistenceOutcome,'failed');assert.equal(result?.persistenceErrorCode,'r2-write-failed');
 });
 test('recovery hold observes a late commit only to release the workspace and never rewrites the failed turn',async()=>{
-  const f=fixture(),turn=await queued(f),claim=await f.journal.claim(scope,1);
+  const f=fixture(),dispatcher=new TurnDispatcher(f.journal,f.runtime),savedTurn=await queued(f,'saved-head');
+  f.setAccept(async input=>receipt(input,{phase:'terminal',outcome:'completed',stopped:stop,checkpoint}));
+  const saved=await dispatcher.tick(scope,1);assert.equal(saved?.id,savedTurn.id);assert.deepEqual(f.store.snapshot()!.workspaceHead,checkpoint);
+  const turn=await queued(f,'late-commit'),claim=await f.journal.claim(scope,1);
   await f.journal.beginCheckpoint(scope,{turnId:turn.id,dispatchId:claim!.turn.dispatchId!,runtimeGeneration:1,outcome:'completed'});
   await f.journal.failCheckpoint(scope,{turnId:turn.id,dispatchId:claim!.turn.dispatchId!,runtimeGeneration:1,errorCode:'turn-checkpoint-recovery-hold'});
-  f.setObserve(async input=>receipt(input,{phase:'terminal',outcome:'completed',stopped:stop,checkpoint,resourceDisposition:{status:'released',...claim!.turn.resourceLease!,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,proofId:'late-release-proof',releasedAt:1006}}));
-  const dispatcher=new TurnDispatcher(f.journal,f.runtime),observed=await dispatcher.tick(scope,1);
+  const lateCheckpoint={...checkpoint,revisionId:'revision-late',objectKey:'checkpoint-late',committedAt:1010};
+  f.setObserve(async input=>receipt(input,{phase:'terminal',outcome:'completed',stopped:stop,checkpoint:lateCheckpoint,resourceDisposition:{status:'released',...claim!.turn.resourceLease!,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,proofId:'late-release-proof',releasedAt:1011}}));
+  const observed=await dispatcher.tick(scope,1);
   assert.equal(observed?.status,'failed');assert.equal(observed?.checkpoint,null);assert.equal(f.journal.recovery(scope),null);
-  const accepted=await f.journal.submit(scope,actor,turn.sessionId,'after-hold',{message:'new work'});assert.equal(accepted.turn.status,'queued');assert.deepEqual(f.calls,['observe']);
+  assert.deepEqual(f.store.snapshot()!.workspaceHead,checkpoint);assert.equal(f.store.snapshot()!.sessions[turn.sessionId]!.head,null);
+  const accepted=await f.journal.submit(scope,actor,turn.sessionId,'after-hold',{message:'new work'});assert.equal(accepted.turn.status,'queued');assert.deepEqual(f.calls,['accept','observe']);
 });
 test('unknown checkpoint stays active and a later immutable receipt completes the same turn',async()=>{
   const f=fixture();const turn=await queued(f),dispatcher=new TurnDispatcher(f.journal,f.runtime);f.setAccept(async input=>receipt(input,{phase:'terminal',outcome:'completed',stopped:stop,persistenceErrorCode:'turn-checkpoint-unknown'}));

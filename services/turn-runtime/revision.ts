@@ -20,7 +20,7 @@ export function turnRevisionObjectKey(raw:TurnRuntimeIdentity):string{const id=t
 export function turnRevisionManifestPrefix(raw:TurnRuntimeIdentity['scope']):string{const scope=turnScope(raw);return `turns/${scope.tenantId}/${scope.projectId}/${scope.workspaceId}/`;}
 export function turnRevisionBlobPrefix(raw:TurnRuntimeIdentity['scope']):string{const scope=turnScope(raw);return `turn-blobs-v3/${scope.tenantId}/${scope.projectId}/${scope.workspaceId}/`;}
 function blobKey(scope:TurnRuntimeIdentity['scope'],kind:'files'|'sessions',value:string):string{return checkpointObjectKey(`${turnRevisionBlobPrefix(scope)}${kind}/${sha(value)}`);}
-function frozen(value:unknown,expected:TurnRuntimeIdentity):FrozenTurnSnapshot{
+export function frozenTurnSnapshot(value:unknown,expected:TurnRuntimeIdentity):FrozenTurnSnapshot{
   exact(value,['identity','filesArchive','piSession'],'invalid-frozen-turn-snapshot');const identity=turnRuntimeIdentity(value.identity);if(!sameTurnRuntimeIdentity(identity,expected))reject('turn-revision-scope-denied');
   if(!(value.filesArchive instanceof Uint8Array)||!(value.piSession instanceof Uint8Array)||value.filesArchive.byteLength<1||value.piSession.byteLength<1||value.filesArchive.byteLength>MAX_BLOB_BYTES||value.piSession.byteLength>MAX_BLOB_BYTES||value.filesArchive.byteLength+value.piSession.byteLength>MAX_BLOB_BYTES)reject('invalid-frozen-turn-snapshot');
   return {identity,filesArchive:Uint8Array.from(value.filesArchive),piSession:Uint8Array.from(value.piSession)};
@@ -87,7 +87,7 @@ export class R2TurnRevisionPort{
     const prior=await this.#readManifest(identity);if(prior){if(prior.manifest.outcome!==input.outcome||prior.manifest.executionErrorCode!==executionErrorCode||!same(prior.manifest.base,base))reject('turn-revision-conflict');return prior.receipt;}
     if(base.workspace)await this.#verifyBase(base.workspace,identity,false);if(base.session)await this.#verifyBase(base.session,identity,true);
     if(base.initial){const initial=await new InitialWorkspaceResolver(this.#bucket as R2Bucket,this.#modelBucket).resolve(base.initial.reference,identity.scope);if(initial.filesSha256!==base.initial.filesSha256)reject('initial-workspace-files-mismatch');}
-    const snapshot=frozen(await this.#snapshots.freeze(identity,base),identity),filesSha256=await digest(snapshot.filesArchive),sessionSha256=await digest(snapshot.piSession),filesKey=blobKey(identity.scope,'files',filesSha256),sessionKey=blobKey(identity.scope,'sessions',sessionSha256);
+    const snapshot=frozenTurnSnapshot(await this.#snapshots.freeze(identity,base),identity),filesSha256=await digest(snapshot.filesArchive),sessionSha256=await digest(snapshot.piSession),filesKey=blobKey(identity.scope,'files',filesSha256),sessionKey=blobKey(identity.scope,'sessions',sessionSha256);
     await this.#putVerified(filesKey,snapshot.filesArchive,filesSha256);await this.#putVerified(sessionKey,snapshot.piSession,sessionSha256);
     const value:Manifest={schemaVersion:3,identity,base,outcome:input.outcome,executionErrorCode,files:{objectKey:filesKey,sha256:filesSha256,size:snapshot.filesArchive.byteLength},piSession:{objectKey:sessionKey,sha256:sessionSha256,size:snapshot.piSession.byteLength},committedAt:positive(this.#clock())};
     const bytes=encoder.encode(JSON.stringify(value)),revisionId=await digest(bytes),objectKey=turnRevisionObjectKey(identity);await this.#putVerified(objectKey,bytes,revisionId);
