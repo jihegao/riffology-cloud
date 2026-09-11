@@ -5,6 +5,7 @@ import { MemoryTurnStore } from '../../services/turn/store.ts';
 import { TurnJournal } from '../../services/turn/journal.ts';
 import type { TurnBaseCheckpoints, TurnScope } from '../../services/turn/protocol.ts';
 import type { ToolArtifactReferenceInput, ToolArtifactReferenceReceipt } from '../../services/artifacts/protocol.ts';
+import type { TurnOperationTelemetryEvent } from '../../services/turn/operation-telemetry.ts';
 
 const scope:TurnScope={tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1};
 const actor={userId:'user-a',authVersion:1};
@@ -36,6 +37,12 @@ test('dispatcher reconciles an exact release hold before it claims queued work',
   assert.equal((await dispatcher.tick(scope,1))?.id,first.id);assert.equal(f.store.snapshot()!.turns[second.id]!.status,'queued');assert.deepEqual(f.calls,['accept','observe']);released=true;f.setAccept(async input=>receipt(input));
   const next=await dispatcher.tick(scope,1);assert.equal(next?.id,second.id);assert.equal(next?.status,'running');assert.equal(f.store.snapshot()!.releaseHold,null);assert.deepEqual(f.calls,['accept','observe','observe','accept']);
 });
+test('dispatcher emits independent checkpoint, hold age, blocked start and release metrics',async()=>{
+  const f=fixture();await queued(f,'release-metrics');let released=false;f.setAccept(async input=>receipt(input,{phase:'terminal',outcome:'completed',stopped:stop,checkpoint,resourceDisposition:{status:'release-pending',...input.capacityLease!,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,reasonCode:'trusted-pi-release-pending',since:1005,nextAttemptAt:2000}}));
+  f.setObserve(async input=>receipt(input,{phase:'terminal',outcome:'completed',stopped:stop,checkpoint,resourceDisposition:released?{status:'released',...input.capacityLease!,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,proofId:'release-proof',releasedAt:2001}:{status:'release-pending',...input.capacityLease!,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,reasonCode:'trusted-pi-release-pending',since:1005,nextAttemptAt:2000}}));
+  const events:TurnOperationTelemetryEvent[]=[],dispatcher=new TurnDispatcher(f.journal,f.runtime,null,null,()=>2001,event=>events.push(event));await dispatcher.tick(scope,1);await queued(f,'release-metrics-second');released=true;f.setAccept(async input=>receipt(input));await dispatcher.tick(scope,1);
+  assert.deepEqual(events.map(event=>event.metric),['checkpoint_result','release_hold_count','release_hold_age','hold_start_attempts','queued_behind_release','release_result','release_confirmation_delay']);assert.equal(events.find(event=>event.metric==='hold_start_attempts')?.value,0);assert.equal(events.find(event=>event.metric==='queued_behind_release')?.value,1);assert.equal(events.find(event=>event.metric==='release_hold_age')?.durationMs,996);assert.equal(events.find(event=>event.metric==='release_confirmation_delay')?.reasonCategory,'release_confirmed');assert.equal(new Set(events.map(event=>event.correlationId)).size,1);
+});
 test('capacity wait persists opaque admission state and acquired lease is consumed with the FIFO claim',async()=>{
   const f=fixture(),turn=await queued(f,'capacity-first');let available=false;const capacity:TurnCapacityPort={
     async acquire(input){return available?{status:'acquired',turnId:input.turnId,generation:input.generation,ticketId:'ticket-one',operationId:input.operationId!,leaseId:'lease-one'}:{status:'waiting',turnId:input.turnId,generation:input.generation,ticketId:'ticket-one',operationId:input.operationId!,reasonCode:'trusted-pi-capacity-unavailable',since:1005,nextAttemptAt:2000};},
@@ -51,6 +58,21 @@ test('capacity acquire transport loss reuses the operation reserved before RPC',
   },dispatcher=new TurnDispatcher(f.journal,f.runtime,null,capacity);
   await assert.rejects(dispatcher.tick(scope,1),/capacity-response-lost/);const reserved=f.store.snapshot()!.resourceWait!;assert.equal(reserved.turnId,turn.id);assert.equal(reserved.ticketId,null);assert.ok(reserved.operationId);
   const running=await dispatcher.tick(scope,1);assert.equal(running?.id,turn.id);assert.deepEqual(operations,[reserved.operationId,reserved.operationId]);assert.deepEqual(running?.resourceLease,{operationId:reserved.operationId,leaseId:'lease-transport'});
+});
+test('queued Stop persists a tombstone until exact never-started capacity cleanup is acknowledged',async()=>{
+  const f=fixture(),turn=await queued(f,'capacity-cancel'),released:any[]=[];let lose=true;const capacity:TurnCapacityPort={
+    async acquire(input){return {status:'waiting',turnId:input.turnId,generation:input.generation,ticketId:'ticket-cancel',operationId:input.operationId!,reasonCode:'trusted-pi-capacity-unavailable',since:1001,nextAttemptAt:2000};},
+    async releaseNeverStarted(input){released.push(structuredClone(input));if(lose){lose=false;throw Error('capacity-cancel-response-lost');}return {proofId:'never-started-proof',releasedAt:2001};},
+  },dispatcher=new TurnDispatcher(f.journal,f.runtime,null,capacity);
+  await dispatcher.tick(scope,1);await assert.rejects(dispatcher.cancel(scope,actor,turn),/capacity-cancel-response-lost/);let state=f.store.snapshot()!;assert.equal(state.turns[turn.id]!.status,'queued');assert.ok(state.turns[turn.id]!.cancelRequestedAt);assert.equal(state.resourceWait?.operationId,released[0].operationId);assert.deepEqual(f.calls,[]);
+  const cancelled=await dispatcher.tick(scope,1);state=f.store.snapshot()!;assert.equal(cancelled?.status,'cancelled');assert.equal(state.resourceWait,null);assert.equal(state.turns[turn.id]!.cancelDisposition,'cancelled');assert.equal(released.length,2);assert.deepEqual(released[1],released[0]);assert.deepEqual(f.calls,[]);
+});
+test('claimed lease plus absent Runtime cancels capacity without accepting or starting Pi',async()=>{
+  const f=fixture(),turn=await queued(f,'capacity-claimed-cancel'),released:any[]=[];const capacity:TurnCapacityPort={
+    async acquire(input){return {status:'acquired',turnId:input.turnId,generation:input.generation,ticketId:'ticket-held',operationId:input.operationId!,leaseId:'lease-held'};},
+    async releaseNeverStarted(input){released.push(structuredClone(input));return {proofId:'never-started-held',releasedAt:2001};},
+  },dispatcher=new TurnDispatcher(f.journal,f.runtime,null,capacity);f.setAccept(async()=>{throw Error('runtime-accept-not-delivered');});await assert.rejects(dispatcher.tick(scope,1),/runtime-accept-not-delivered/);f.setCancel(async input=>receipt(input,{phase:'absent'}));
+  const cancelled=await dispatcher.cancel(scope,actor,turn);assert.equal(cancelled.status,'cancelled');assert.equal(cancelled.cancelDisposition,'cancelled');assert.equal(cancelled.errorCode,'turn-native-never-started');assert.equal(cancelled.persistenceOutcome,null);assert.equal(f.store.snapshot()!.activeTurnId,null);assert.deepEqual(f.calls,['accept','cancel']);assert.deepEqual(released,[{scope,sessionId:turn.sessionId,turnId:turn.id,generation:1,ticketId:null,operationId:cancelled.resourceLease!.operationId,leaseId:'lease-held',reasonCode:'turn-cancelled-before-runtime-accept',observedAt:cancelled.cancelRequestedAt}]);
 });
 test('R2 receipt materialization is reconciled after a journal commit failure',async()=>{
   const f=fixture();await queued(f);f.setAccept(async input=>receipt(input,{phase:'terminal',outcome:'completed',stopped:stop,checkpoint}));
@@ -158,6 +180,10 @@ test('a deterministic missing base remains terminal because no checkpoint can ap
   const f=fixture();await queued(f);f.setAccept(async input=>receipt(input,{phase:'terminal',outcome:'failed',executionErrorCode:'turn-base-unavailable',stopped:stop,persistenceErrorCode:'turn-checkpoint-unknown'}));
   const failed=await new TurnDispatcher(f.journal,f.runtime).tick(scope,1);assert.equal(failed?.status,'failed');assert.equal(failed?.errorCode,'turn-base-unavailable');assert.equal(failed?.persistenceOutcome,'failed');assert.equal(failed?.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(f.store.snapshot()!.activeTurnId,null);
 });
+test('an unresolved native start fails without checkpoint materialization and establishes the exact release hold',async()=>{
+  const f=fixture();const turn=await queued(f,'native-start-unresolved');f.setAccept(async input=>receipt(input,{phase:'terminal',outcome:'failed',executionErrorCode:'turn-native-start-unresolved',stopped:stop,persistenceErrorCode:'turn-checkpoint-unknown',resourceDisposition:{status:'recovery-hold',...input.capacityLease!,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,reasonCode:'project-workspace-release-unconfirmed',since:1005,nextAttemptAt:61_005}}));
+  const failed=await new TurnDispatcher(f.journal,f.runtime).tick(scope,1),state=f.store.snapshot()!;assert.equal(failed?.status,'failed');assert.equal(failed?.errorCode,'turn-native-start-unresolved');assert.equal(failed?.persistenceOutcome,'failed');assert.equal(failed?.checkpoint,null);assert.equal(state.activeTurnId,null);assert.equal(state.releaseHold?.turnId,turn.id);assert.equal(state.releaseHold?.status,'recovery-hold');assert.equal(state.recoveryHold,null);
+});
 test('an absent native execution after cancellation fails terminally and releases the active turn',async()=>{
   const f=fixture();const turn=await queued(f),dispatcher=new TurnDispatcher(f.journal,f.runtime);await dispatcher.tick(scope,1);
   f.setCancel(async input=>receipt(input,{phase:'terminal',outcome:'interrupted',executionErrorCode:'turn-native-execution-absent',stopped:stop,persistenceErrorCode:'turn-checkpoint-unknown'}));
@@ -171,25 +197,36 @@ test('runtime execution errors and checkpoint errors are not conflated',async()=
 test('cancellation returns the committed terminal record and requires stop proof',async()=>{
   const f=fixture();const turn=await queued(f),dispatcher=new TurnDispatcher(f.journal,f.runtime);await dispatcher.tick(scope,1);
   f.setCancel(async input=>receipt(input,{phase:'terminal',outcome:'cancelled',stopped:stop,checkpoint}));const result=await dispatcher.cancel(scope,actor,f.store.snapshot()!.turns[turn.id]!);
-  assert.equal(result.status,'cancelled');assert.equal(result.persistenceOutcome,'saved');assert.deepEqual(f.calls,['accept','cancel']);
+  assert.equal(result.status,'cancelled');assert.equal(result.cancelDisposition,'cancelled');assert.equal(result.persistenceOutcome,'saved');assert.deepEqual(f.calls,['accept','cancel']);
 });
-test('unknown cancellation is sent once and later calls reconcile without accept or duplicate cancel',async()=>{
+test('a natural terminal receipt racing Stop persists already-terminal with one checkpoint and no replayed side effect',async()=>{
+ for(const outcome of ['completed','failed'] as const){const f=fixture();const turn=await queued(f),dispatcher=new TurnDispatcher(f.journal,f.runtime);await dispatcher.tick(scope,1);f.setCancel(async input=>receipt(input,{phase:'terminal',outcome,executionErrorCode:outcome==='failed'?'native-failed':null,stopped:stop,checkpoint}));const result=await dispatcher.cancel(scope,actor,f.store.snapshot()!.turns[turn.id]!);assert.equal(result.cancelDisposition,'already-terminal');assert.equal(f.store.snapshot()!.events.filter(row=>row.turnId===turn.id&&row.type===`turn.${outcome}`).length,1);assert.deepEqual(f.calls,['accept','cancel']);const replay=await dispatcher.cancel(scope,actor,result);assert.equal(replay.cancelDisposition,'already-terminal');assert.deepEqual(f.calls,['accept','cancel']);}
+});
+test('unknown cancellation is replayed through the Runtime-owned once-only fence',async()=>{
   const f=fixture();const turn=await queued(f),dispatcher=new TurnDispatcher(f.journal,f.runtime);await dispatcher.tick(scope,1);
   const first=await dispatcher.cancel(scope,actor,f.store.snapshot()!.turns[turn.id]!);assert.equal(first.status,'cancelling');
   const second=await dispatcher.cancel(scope,actor,f.store.snapshot()!.turns[turn.id]!);assert.equal(second.status,'cancelling');
-  await dispatcher.tick(scope,1);assert.deepEqual(f.calls,['accept','cancel','observe','observe']);
+  await dispatcher.tick(scope,1);assert.deepEqual(f.calls,['accept','cancel','cancel','cancel']);
 });
-test('concurrent cancellation requests send one runtime cancel and the stale follower only observes',async()=>{
+test('concurrent cancellation requests replay the same Runtime cancel intent',async()=>{
   const f=fixture();const turn=await queued(f),dispatcher=new TurnDispatcher(f.journal,f.runtime);await dispatcher.tick(scope,1);
   let release!:()=>void;const blocked=new Promise<void>(resolve=>{release=resolve;});f.setCancel(async input=>{await blocked;return receipt(input,{phase:'unknown'});});
   const stale=f.store.snapshot()!.turns[turn.id]!,first=dispatcher.cancel(scope,actor,stale),second=dispatcher.cancel(scope,actor,stale);
-  for(let attempt=0;attempt<20&&!f.calls.includes('observe');attempt++)await new Promise(resolve=>setTimeout(resolve,1));
-  assert.deepEqual(f.calls,['accept','cancel','observe']);release();assert.equal((await first).status,'cancelling');assert.equal((await second).status,'cancelling');
+  for(let attempt=0;attempt<20&&f.calls.filter(call=>call==='cancel').length<2;attempt++)await new Promise(resolve=>setTimeout(resolve,1));
+  assert.deepEqual(f.calls,['accept','cancel','cancel']);release();assert.equal((await first).status,'cancelling');assert.equal((await second).status,'cancelling');
 });
-test('an absent runtime is never reaccepted after a cancellation fence',async()=>{
-  const f=fixture();const turn=await queued(f),dispatcher=new TurnDispatcher(f.journal,f.runtime);await dispatcher.tick(scope,1);await dispatcher.cancel(scope,actor,f.store.snapshot()!.turns[turn.id]!);
-  f.setObserve(async input=>receipt(input,{phase:'absent'}));const result=await dispatcher.tick(scope,1);
-  assert.equal(result?.status,'cancelling');assert.deepEqual(f.calls,['accept','cancel','observe']);
+test('a crash after persisting Stop but before its first Runtime RPC recreates only the exact accept and cancels it',async()=>{
+  const f=fixture(),turn=await queued(f),claimed=(await f.journal.claim(scope,1))!.turn;
+  await f.journal.cancelWithDisposition(scope,actor,turn.id);let cancels=0;f.setCancel(async input=>++cancels===1?receipt(input,{phase:'absent'}):receipt(input,{phase:'terminal',outcome:'cancelled',stopped:stop,checkpoint}));
+  const result=await new TurnDispatcher(f.journal,f.runtime).tick(scope,1);
+  assert.equal(claimed.status,'running');assert.equal(result?.status,'cancelled');assert.equal(result?.cancelDisposition,'cancelled');assert.deepEqual(f.calls,['cancel','accept','cancel']);assert.equal(f.acceptedInputs.length,1);
+});
+test('Stop racing the first pending accept cannot leave a naturally running Turn',async()=>{
+  const f=fixture(),turn=await queued(f),dispatcher=new TurnDispatcher(f.journal,f.runtime);let accepts=0,releaseFirst!:()=>void;const blocked=new Promise<void>(resolve=>{releaseFirst=resolve;});
+  f.setAccept(async input=>{accepts++;if(accepts===1)await blocked;return receipt(input);});let cancels=0;f.setCancel(async input=>++cancels===1?receipt(input,{phase:'absent'}):receipt(input,{phase:'terminal',outcome:'cancelled',stopped:stop,checkpoint}));
+  const accepting=dispatcher.tick(scope,1);for(let attempt=0;attempt<20&&!f.calls.includes('accept');attempt++)await new Promise(resolve=>setTimeout(resolve,1));
+  const cancelled=await dispatcher.cancel(scope,actor,f.store.snapshot()!.turns[turn.id]!);releaseFirst();await accepting;
+  assert.equal(cancelled.status,'cancelled');assert.equal(f.store.snapshot()!.turns[turn.id]!.status,'cancelled');assert.deepEqual(f.calls,['accept','cancel','accept','cancel']);
 });
 test('generation mismatch and queued cancellation never call the runtime',async()=>{
   const f=fixture();const turn=await queued(f),dispatcher=new TurnDispatcher(f.journal,f.runtime);await assert.rejects(dispatcher.tick(scope,2),/generation-conflict/);

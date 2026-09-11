@@ -19,9 +19,9 @@ type NeverStartedInput = {
   sessionId: string;
   turnId: string;
   generation: number;
-  ticketId: string;
+  ticketId: string | null;
   operationId: string;
-  leaseId: string;
+  leaseId: string | null;
   reasonCode: string;
   observedAt: number;
 };
@@ -50,8 +50,8 @@ function matches(ticket: TrustedPiCapacityTicket, expected: TrustedPiCapacityIde
     && ticket.generation === expected.generation;
 }
 
-async function neverStartedProofId(leaseId: string): Promise<string> {
-  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(leaseId));
+async function neverStartedProofId(operationId: string): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(operationId));
   return `never-started-${Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('')}`;
 }
 
@@ -86,16 +86,20 @@ export class TrustedPiTurnCapacity implements TurnCapacityPort {
     throw Error('turn-capacity-ticket-not-admissible');
   }
 
-  async releaseNeverStarted(input: NeverStartedInput): Promise<void> {
-    const expected = identity(input), ticketId = turnId(input.ticketId), leaseId = turnId(input.leaseId);
-    turnId(input.reasonCode); const observedAt = positive(input.observedAt);
-    const found = await this.#capacity.lookup(expected), ticket = found?.ticket;
-    if (!ticket || !matches(ticket, expected) || ticket.ticketId !== ticketId || ticket.leaseId !== leaseId || ticket.dispatchId !== null || ticket.acquiredAt === null) throw Error('turn-capacity-reference-denied');
-    if (ticket.status !== 'held' && ticket.status !== 'cancelled') throw Error('turn-capacity-never-started-not-confirmed');
+  async releaseNeverStarted(input: NeverStartedInput): Promise<{proofId:string;releasedAt:number}> {
+    const expected = identity(input), expectedTicketId = input.ticketId===null?null:turnId(input.ticketId), expectedLeaseId=input.leaseId===null?null:turnId(input.leaseId);
+    turnId(input.reasonCode); const requestedObservation = positive(input.observedAt);
+    // Reissuing the exact request closes the race where Workspace persisted its
+    // cancellation tombstone while the original capacity RPC was still in flight.
+    const found = await this.#capacity.request(expected), ticket = found.ticket;
+    if (!matches(ticket, expected) || (expectedTicketId!==null&&ticket.ticketId!==expectedTicketId) || (expectedLeaseId!==null&&ticket.leaseId!==expectedLeaseId) || ticket.dispatchId !== null) throw Error('turn-capacity-reference-denied');
+    if (!['queued','held','cancelled'].includes(ticket.status)) throw Error('turn-capacity-never-started-not-confirmed');
+    const observedAt=Math.max(requestedObservation,positive(ticket.requestedAt)),proofId=await neverStartedProofId(expected.operationId);
     const result = await this.#capacity.cancelNeverStarted(
-      { ...expected, ticketId, leaseId },
-      { kind: 'never-started', proofId: await neverStartedProofId(leaseId), observedAt },
+      ticket.leaseId===null?{ ...expected, ticketId:turnId(ticket.ticketId) }:{ ...expected, ticketId:turnId(ticket.ticketId), leaseId:turnId(ticket.leaseId) },
+      { kind: 'never-started', proofId, observedAt },
     );
-    if (!matches(result.ticket, expected) || result.ticket.ticketId !== ticketId || result.ticket.leaseId !== leaseId || result.ticket.status !== 'cancelled') throw Error('invalid-turn-capacity-release-receipt');
+    if (!matches(result.ticket, expected) || result.ticket.ticketId !== ticket.ticketId || result.ticket.leaseId !== ticket.leaseId || result.ticket.status !== 'cancelled'||result.ticket.finishedAt===null) throw Error('invalid-turn-capacity-release-receipt');
+    return {proofId,releasedAt:positive(result.ticket.finishedAt)};
   }
 }

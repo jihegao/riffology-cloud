@@ -5,12 +5,13 @@ import { checkpointReceipt, scope as turnScope, turnBaseCheckpoints, turnDigest 
 import { turnCheckpointOperationId, type TurnCheckpointInput, type TurnCheckpointIntent, type TurnCheckpointPort, type TurnCheckpointResolution } from './core.ts';
 import { turnRuntimeIdentity, type TurnRuntimeIdentity } from './identity.ts';
 import { frozenTurnSnapshot, type FrozenTurnSnapshot, type FrozenTurnSnapshotPort, type RestoredTurnRevision } from './revision.ts';
-import type { TurnRevisionGcOptions, TurnRevisionGcResult } from './revision-gc.ts';
+import type { TurnRevisionGcOptions, TurnRevisionGcResolution } from './revision-gc.ts';
 import type { WorkspaceFileDiff, WorkspaceFileIndex } from './workspace-file-index.ts';
 
 export function revisionStoreActorName(raw:TurnScope):string{const scope=turnScope(raw);return `workspace-revisions-v3:${scope.tenantId}:${scope.projectId}:${scope.workspaceId}`;}
 export type RevisionCommitInput={identity:TurnRuntimeIdentity;outcome:'completed'|'failed'|'cancelled'|'interrupted';executionErrorCode:string|null;base:TurnBaseCheckpoints;snapshot:FrozenTurnSnapshot};
 export type RevisionGcInput=TurnRevisionGcOptions&{operationId:string;scope:TurnScope};
+export type RevisionGcMaintenanceInput=TurnRevisionGcOptions&{scope:TurnScope};
 export type RevisionGcReconcileInput={operationId:string;inputSha256:string;scope:TurnScope};
 export type RevisionCommitReconcileInput={operationId:string;identity:TurnRuntimeIdentity;inputSha256:string};
 export type RevisionCommitResolution=TurnCheckpointResolution;
@@ -27,8 +28,9 @@ export interface RevisionStoreRpc{
   files(identity:TurnRuntimeIdentity,receipt:CheckpointReceipt):Promise<WorkspaceFileIndex>;
   diff(identity:TurnRuntimeIdentity,receipt:CheckpointReceipt):Promise<WorkspaceFileDiff>;
   load(identity:TurnRuntimeIdentity,receipt:CheckpointReceipt|null):Promise<Uint8Array|null>;
-  gc(input:RevisionGcInput):Promise<TurnRevisionGcResult|null>;
-  reconcileGc?(input:RevisionGcReconcileInput):Promise<TurnRevisionGcResult|null>;
+  gc(input:RevisionGcInput):Promise<TurnRevisionGcResolution>;
+  reconcileGc?(input:RevisionGcReconcileInput):Promise<TurnRevisionGcResolution>;
+  maintainGc?(input:RevisionGcMaintenanceInput):Promise<TurnRevisionGcResolution>;
 }
 export interface RevisionStoreNamespace{getByName(name:string):RevisionStoreRpc}
 function reject(code:string):never{throw Error(code);}

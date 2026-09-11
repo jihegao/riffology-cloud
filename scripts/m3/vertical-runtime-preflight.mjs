@@ -7,6 +7,7 @@ import {googleOAuthEgress} from './google-oauth-egress.mjs';
 import {resolve} from 'node:path';
 import {homedir,tmpdir} from 'node:os';
 import {fileURLToPath} from 'node:url';
+import {TOOL_LEDGER_SCHEMA} from '../../services/tools/ledger-schema.ts';
 
 export const PRODUCT_CONFIG='infra/wrangler.m2-product-local.jsonc';
 export const LOCAL_GENERATED_SECRETS=Object.freeze([
@@ -22,6 +23,7 @@ export const CONTAINER_CLASSES=Object.freeze(['ProjectRuntime','ProjectToolSandb
 export const SANDBOX_CONTAINER_CLASSES=Object.freeze(['ProjectToolSandbox','TrustedPiSandbox','ServiceSandbox']);
 export const RUNTIME_KEYS=Object.freeze([
   'APP_ORIGIN','M3_PREVIEW_ORIGIN','CONTAINER_IMAGES','M3_SERVICE_IMAGE',
+  'M2_WORKER_SOURCE_SHA','M2_TOOL_BRIDGE_SHA256','M2_TOOL_PROTOCOL_VERSION','M2_TOOL_LEDGER_SCHEMA_VERSION',
   'HTTPS_CERT_PATH','HTTPS_KEY_PATH','M2_TURNS_ENABLED','M2_MODEL_PROVIDER_ENABLED',
   'M3_SERVICE_ENABLED','M3_PREVIEW_ENABLED','M3_PREVIEW_WS_ENABLED','M3_OBSERVER_ENABLED',
 ]);
@@ -47,6 +49,11 @@ const PREVIOUS_VERTICAL_MODEL_BUDGET=Object.freeze({...BASE_MODEL_BUDGET,policy_
 const VERTICAL_MODEL_BUDGET=Object.freeze({...BASE_MODEL_BUDGET,policy_version:'m2-token-vertical-v2',max_reservation_attempts_per_turn:8,max_dispatched_calls_per_turn:8});
 const BOOTSTRAP_OPERATOR_ACTION='set-RIFFOLOGY_INITIAL_OPERATOR_TOKEN-then-run:node scripts/m1/bootstrap-operator.mjs invite --email <authorized-email> --database riffology-catalog-local --config infra/wrangler.m2-product-local.jsonc --local --persist-to .local/m3-vertical-runtime';
 export const PRODUCT_TOOL_BRIDGE_SHA256=createHash('sha256').update(readFileSync(new URL('../../services/trusted-pi/product-tool-bridge.mjs',import.meta.url))).digest('hex');
+export const PRODUCT_TOOL_PROTOCOL_VERSION='2';
+export const PRODUCT_TOOL_LEDGER_SCHEMA_VERSION=String(TOOL_LEDGER_SCHEMA.version);
+export const PRODUCT_TOOL_LEDGER_SCHEMA_SHA256=createHash('sha256').update(TOOL_LEDGER_SCHEMA.sql).digest('hex');
+const gitHead=spawnSync('git',['rev-parse','HEAD'],{cwd:resolve(fileURLToPath(new URL('../..',import.meta.url))),encoding:'utf8',timeout:5000});
+export const WORKER_SOURCE_SHA=gitHead.status===0&&/^[a-f0-9]{40}$/.test(gitHead.stdout.trim())?gitHead.stdout.trim():null;
 
 const check=(name,passed,detail)=>({name,status:passed?'passed':'failed',...(passed||!detail?{}:{detail})});
 const sorted=value=>[...value].sort();
@@ -73,6 +80,7 @@ export function validateProductTopology(config,migrations){
     check('execution-defaults-closed',['M2_TURNS_ENABLED','M2_MODEL_PROVIDER_ENABLED','M3_SERVICE_ENABLED','M3_PREVIEW_ENABLED','M3_PREVIEW_WS_ENABLED','M3_OBSERVER_ENABLED'].every(name=>config.vars?.[name]==='false')),
     check('vertical-bindings',REQUIRED_BINDINGS.every(name=>bindings.includes(name))&&config.vars?.TRUSTED_PI_CAPACITY_LIMIT==='1'&&config.vars?.TRUSTED_PI_CAPACITY_POLICY_VERSION==='m2-trusted-pi-v1'),
     check('vertical-exports',REQUIRED_EXPORTS.every(name=>exports.includes(name))),
+    check('tool-release-metadata',config.vars?.M2_TOOL_PROTOCOL_VERSION===PRODUCT_TOOL_PROTOCOL_VERSION&&config.vars?.M2_TOOL_LEDGER_SCHEMA_VERSION===PRODUCT_TOOL_LEDGER_SCHEMA_VERSION&&config.exports?.ToolBridgeAgent?.storage==='sqlite'&&config.services?.some(value=>value.binding==='TOOL_BRIDGE'&&value.service===config.name&&value.entrypoint==='ToolBridgeService'),'tool-protocol-ledger-schema-sqlite-export-and-private-service-must-match'),
     check('service-container',service?.image==='../services/run/Dockerfile.service'&&service?.image_build_context==='..'&&service?.max_instances===1),
     check('preview-route-migration',migrations.includes('0008_preview_routes.sql')),
   ];
@@ -117,11 +125,13 @@ export function validateRuntimeFile(path){
       return item&&typeof item==='object'&&!Array.isArray(item)&&same(Object.keys(item).sort(),['digest','reference'])&&isAllowedDockerReference(item.reference)&&IMAGE_DIGEST.test(item.digest);
     });
     const serviceImage=typeof value.M3_SERVICE_IMAGE==='string'&&DIGEST.test(value.M3_SERVICE_IMAGE)&&images&&value.M3_SERVICE_IMAGE.endsWith('@'+value.CONTAINER_IMAGES.ServiceSandbox.digest);
+    const releaseMetadata=value.M2_WORKER_SOURCE_SHA===WORKER_SOURCE_SHA&&value.M2_TOOL_BRIDGE_SHA256===PRODUCT_TOOL_BRIDGE_SHA256&&value.M2_TOOL_PROTOCOL_VERSION===PRODUCT_TOOL_PROTOCOL_VERSION&&value.M2_TOOL_LEDGER_SCHEMA_VERSION===PRODUCT_TOOL_LEDGER_SCHEMA_VERSION;
     if(!gates)return {check:check('runtime-profile',false,'enable-m2-and-m3-gates;keep-M3_OBSERVER_ENABLED=false'),value:null};
     if(!origins)return {check:check('runtime-profile',false,'APP_ORIGIN-and-M3_PREVIEW_ORIGIN-must-be-distinct-HTTPS-origins-on-the-same-port'),value:null};
     if(!paths)return {check:check('runtime-profile',false,'HTTPS_CERT_PATH-and-HTTPS_KEY_PATH-required'),value:null};
     if(!images)return {check:check('runtime-profile',false,'CONTAINER_IMAGES-must-name-every-runtime-container-with-a-fully-qualified-docker.io-or-127.0.0.1-reference-and-sha256-digest'),value:null};
     if(!serviceImage)return {check:check('runtime-profile',false,'M3_SERVICE_IMAGE-must-use-the-ServiceSandbox-image-digest'),value:null};
+    if(!releaseMetadata)return {check:check('runtime-profile',false,'worker-source-bridge-protocol-or-ledger-schema-release-metadata-mismatch'),value:null};
     return {check:check('runtime-profile',true),value};
   }catch{return {check:{name:'runtime-profile',status:'blocked',detail:'runtime-file-unreadable'},value:null};}
 }

@@ -2,10 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { TurnAlarmLoop, type TurnAlarmDispatcher } from '../../services/turn/alarm.ts';
 import type { TurnActor, TurnRecord, TurnScope } from '../../services/turn/protocol.ts';
+import type { TurnOperationTelemetryEvent } from '../../services/turn/operation-telemetry.ts';
 
 const scope:TurnScope={tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1};
 const actor:TurnActor={userId:'user-a',authVersion:1};
-function turn(status:TurnRecord['status']='running'):TurnRecord{return {id:'turn-one',sessionId:'session-one',scope,actor,requestKey:'request-one',payloadSha256:'a'.repeat(64),message:'Build',status,createdAt:1,updatedAt:1,startedAt:1,finishedAt:null,startedSequence:1,terminalSequence:null,dispatchId:'dispatch-one',runtimeGeneration:1,cancelRequestedAt:null,base:{workspace:null,session:null},resourceLease:{operationId:'operation-one',leaseId:'lease-one'},executionOutcome:null,errorCode:null,persistenceOutcome:null,persistenceErrorCode:null,checkpoint:null};}
+function turn(status:TurnRecord['status']='running'):TurnRecord{return {id:'turn-one',sessionId:'session-one',scope,actor,requestKey:'request-one',payloadSha256:'a'.repeat(64),message:'Build',status,createdAt:1,updatedAt:1,startedAt:1,finishedAt:null,startedSequence:1,terminalSequence:null,dispatchId:'dispatch-one',runtimeGeneration:1,cancelRequestedAt:null,cancelDisposition:null,base:{workspace:null,session:null},resourceLease:{operationId:'operation-one',leaseId:'lease-one'},executionOutcome:null,errorCode:null,persistenceOutcome:null,persistenceErrorCode:null,checkpoint:null};}
 function fixture(){
   let now=1000,tick:()=>Promise<TurnRecord|null>=async()=>turn(),cancel:()=>Promise<TurnRecord>=async()=>turn('cancelling'),scheduleFails=false,cleared=0;const scheduled:number[]=[];
   const dispatcher:TurnAlarmDispatcher={tick:()=>tick(),cancel:()=>cancel()};
@@ -37,6 +38,10 @@ test('lost dispatcher response schedules reconciliation before surfacing the err
   const f=fixture();f.setTick(async()=>{throw Error('runtime-transport-unknown');});
   await assert.rejects(f.loop.alarm(scope,1),/transport-unknown/);assert.deepEqual(f.scheduled,[1020]);
   f.setTick(async()=>turn('running'));await f.loop.alarm(scope,1);assert.deepEqual(f.scheduled,[1020,1020,1010]);
+});
+test('dispatcher uncertainty emits one bounded alarm retry metric',async()=>{
+  const events:TurnOperationTelemetryEvent[]=[],dispatcher:TurnAlarmDispatcher={tick:async()=>{throw Error('private-runtime-detail');},cancel:async()=>turn()},loop=new TurnAlarmLoop(dispatcher,{schedule:async()=>{},clear:async()=>{}},()=>1000,{retryMs:20},event=>events.push(event));
+  await assert.rejects(loop.alarm(scope,1),/private-runtime-detail/);assert.equal(events.length,1);assert.deepEqual({...events[0],correlationId:'opaque'}, {route:'turn.operation',metric:'alarm_retry',stage:'alarm',reasonCategory:'alarm_transport',attempt:0,durationMs:null,value:1,correlationId:'opaque'});assert.equal(JSON.stringify(events).includes('private-runtime-detail'),false);
 });
 test('terminal result wakes immediately to claim the next queued turn and an empty queue stops',async()=>{
   const f=fixture();f.setTick(async()=>turn('completed'));await f.loop.alarm(scope,1);assert.deepEqual(f.scheduled,[1020,1001]);

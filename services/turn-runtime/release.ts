@@ -1,6 +1,6 @@
 import type { TurnCheckpointPort, TurnExecutionPort } from './core.ts';
 import { sameTurnRuntimeIdentity, turnRuntimeIdentity, type TurnRuntimeIdentity } from './identity.ts';
-import { SandboxTrustedPiHostPort, type TrustedPiSandboxProcessApi } from './pi-native.ts';
+import { SandboxTrustedPiHostPort, type TrustedPiSandboxActorApi, type TrustedPiSandboxProcessApi } from './pi-native.ts';
 import { TrustedPiExecutionAdapter } from './pi-execution.ts';
 import { RevisionStoreCheckpointPort, type RevisionStoreRpc } from './revision-store-client.ts';
 import { ProductTurnSnapshotPort } from './snapshot.ts';
@@ -8,15 +8,17 @@ import { ProjectWorkspaceLifecycle, WorkspacePreparedExecutionPort, type Project
 import { sandboxActorIds } from '../sandbox/identity.ts';
 import type { TurnActor, TurnBaseCheckpoints } from '../turn/protocol.ts';
 import type { TrustedPiCapacityPort } from '../capacity/client.ts';
+import type { TurnOperationTrace } from '../turn/operation-telemetry.ts';
 
-export type ProductTurnRuntimeRelease={execution:TurnExecutionPort;checkpoints:TurnCheckpointPort;capacity?:TrustedPiCapacityPort|null};
+export type ProductTurnRuntimeRelease={execution:TurnExecutionPort;checkpoints:TurnCheckpointPort;capacity?:TrustedPiCapacityPort|null;trace?:TurnOperationTrace};
 
 export interface ProductTurnRuntimeReleaseDependencies{
   revisions:RevisionStoreRpc;
   resolveProjectSandbox(actorId:string):ProjectWorkspaceRpc;
-  resolveTrustedPiSandbox(actorId:string):TrustedPiSandboxProcessApi;
+  resolveTrustedPiSandbox(actorId:string):TrustedPiSandboxActorApi;
   capacity?:TrustedPiCapacityPort|null;
   clock?:()=>number;
+  trace?:TurnOperationTrace;
 }
 
 function reject(code:string):never{throw Error(code);}
@@ -26,22 +28,24 @@ function bound(raw:TurnRuntimeIdentity,expected:TurnRuntimeIdentity):TurnRuntime
 function project(value:unknown):ProjectWorkspaceRpc{
   if(!value||typeof value!=='object'||typeof (value as ProjectWorkspaceRpc).restoreWorkspace!=='function'||typeof (value as ProjectWorkspaceRpc).freezeWorkspace!=='function'||typeof (value as ProjectWorkspaceRpc).abortWorkspace!=='function')reject('product-turn-release-project-sandbox-required');return value as ProjectWorkspaceRpc;
 }
-function trusted(value:unknown):TrustedPiSandboxProcessApi{
-  if(!value||typeof value!=='object'||typeof (value as TrustedPiSandboxProcessApi).writeFile!=='function'||typeof (value as TrustedPiSandboxProcessApi).readFile!=='function'||typeof (value as TrustedPiSandboxProcessApi).startProcess!=='function'||typeof (value as TrustedPiSandboxProcessApi).getProcess!=='function'||typeof (value as TrustedPiSandboxProcessApi).destroyAndReleaseState!=='function')reject('product-turn-release-trusted-pi-sandbox-required');return value as TrustedPiSandboxProcessApi;
+function trusted(value:unknown):TrustedPiSandboxActorApi{
+  const actor=value as TrustedPiSandboxActorApi;
+  if(!value||typeof value!=='object'||typeof actor.writeTurnFile!=='function'||typeof actor.readTurnFile!=='function'||typeof actor.startTurnProcess!=='function'||typeof actor.getTurnProcess!=='function'||typeof actor.cancelTurnProcess!=='function'||typeof actor.destroyAndReleaseState!=='function')reject('product-turn-release-trusted-pi-sandbox-required');return actor;
 }
 
 /** Resolves one Trusted Pi Sandbox lazily because the actor name uses Web
  * Crypto while the Durable Object release gate must remain synchronous. The
  * first verified resolution is reused for every native operation. */
 class IdentityBoundTrustedPiSandbox implements TrustedPiSandboxProcessApi{
-  readonly #identity:TurnRuntimeIdentity;readonly #resolve:(actorId:string)=>TrustedPiSandboxProcessApi;#resolved:Promise<TrustedPiSandboxProcessApi>|null=null;
-  constructor(identity:TurnRuntimeIdentity,resolve:(actorId:string)=>TrustedPiSandboxProcessApi){this.#identity=identity;this.#resolve=resolve;}
-  #target():Promise<TrustedPiSandboxProcessApi>{return this.#resolved??=sandboxActorIds(this.#identity.scope,this.#identity.turnId,this.#identity.dispatchId).then(ids=>trusted(this.#resolve(ids.trustedPi)));}
-  async writeFile(...args:Parameters<TrustedPiSandboxProcessApi['writeFile']>){return (await this.#target()).writeFile(...args);}
-  async readFile(...args:Parameters<TrustedPiSandboxProcessApi['readFile']>){return (await this.#target()).readFile(...args);}
-  async startProcess(...args:Parameters<TrustedPiSandboxProcessApi['startProcess']>){return (await this.#target()).startProcess(...args);}
-  async getProcess(...args:Parameters<TrustedPiSandboxProcessApi['getProcess']>){return (await this.#target()).getProcess(...args);}
-  async destroyAndReleaseState(){return (await this.#target()).destroyAndReleaseState();}
+  readonly #identity:TurnRuntimeIdentity;readonly #resolve:(actorId:string)=>TrustedPiSandboxActorApi;#resolved:Promise<TrustedPiSandboxActorApi>|null=null;
+  constructor(identity:TurnRuntimeIdentity,resolve:(actorId:string)=>TrustedPiSandboxActorApi){this.#identity=identity;this.#resolve=resolve;}
+  #target():Promise<TrustedPiSandboxActorApi>{return this.#resolved??=sandboxActorIds(this.#identity.scope,this.#identity.turnId,this.#identity.dispatchId).then(ids=>trusted(this.#resolve(ids.trustedPi)));}
+  async writeFile(...args:Parameters<TrustedPiSandboxProcessApi['writeFile']>){return (await this.#target()).writeTurnFile(this.#identity,...args);}
+  async readFile(...args:Parameters<TrustedPiSandboxProcessApi['readFile']>){return (await this.#target()).readTurnFile(this.#identity,...args);}
+  async startProcess(...args:Parameters<TrustedPiSandboxProcessApi['startProcess']>){return (await this.#target()).startTurnProcess(this.#identity,...args);}
+  async getProcess(...args:Parameters<TrustedPiSandboxProcessApi['getProcess']>){return (await this.#target()).getTurnProcess(this.#identity,...args);}
+  async cancelProcessOnce(id:string){return (await this.#target()).cancelTurnProcess(this.#identity,id);}
+  async destroyAndReleaseState(){return (await this.#target()).destroyAndReleaseState(this.#identity);}
   async queryObserverExecution(raw:TurnRuntimeIdentity){const identity=bound(raw,this.#identity),target=await this.#target();if(!target.queryObserverExecution)reject('trusted-pi-observer-reader-required');return target.queryObserverExecution(identity);}
 }
 
@@ -50,6 +54,7 @@ function bindExecution(expected:TurnRuntimeIdentity,delegate:TurnExecutionPort):
   async currentObserverExecution(raw:TurnRuntimeIdentity){const identity=bound(raw,expected);if(!delegate.currentObserverExecution)reject('product-turn-observer-denied');return delegate.currentObserverExecution(identity);},
   async observe(identity:TurnRuntimeIdentity){return delegate.observe(bound(identity,expected));},
   async cancel(identity:TurnRuntimeIdentity){return delegate.cancel(bound(identity,expected));},
+  async fenceUnresolvedStart(identity:TurnRuntimeIdentity,outcome:'failed'|'interrupted'){return delegate.fenceUnresolvedStart(bound(identity,expected),outcome);},
   async release(identity:TurnRuntimeIdentity){return delegate.release(bound(identity,expected));},
 };}
 function bindCheckpoints(expected:TurnRuntimeIdentity,delegate:TurnCheckpointPort):TurnCheckpointPort{return {
@@ -72,9 +77,9 @@ export function assembleProductTurnRuntimeRelease(
   const clock=dependencies.clock??Date.now,reader=dependencies.revisions;
   const workspace=new ProjectWorkspaceLifecycle(reader,actorId=>project(dependencies.resolveProjectSandbox(actorId)));
   const trustedSandbox=new IdentityBoundTrustedPiSandbox(identity,dependencies.resolveTrustedPiSandbox);
-  const trustedHost=new SandboxTrustedPiHostPort(trustedSandbox,reader,clock);
+  const trustedHost=new SandboxTrustedPiHostPort(trustedSandbox,reader,clock,undefined,dependencies.trace);
   const execution=new WorkspacePreparedExecutionPort(workspace,new TrustedPiExecutionAdapter(trustedHost));
   const snapshots=new ProductTurnSnapshotPort(workspace,trustedHost);
   const checkpoints=new RevisionStoreCheckpointPort(dependencies.revisions,snapshots);
-  return {execution:bindExecution(identity,execution),checkpoints:bindCheckpoints(identity,checkpoints),capacity:dependencies.capacity??null};
+  return {execution:bindExecution(identity,execution),checkpoints:bindCheckpoints(identity,checkpoints),capacity:dependencies.capacity??null,trace:dependencies.trace};
 }

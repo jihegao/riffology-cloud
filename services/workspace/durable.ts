@@ -54,6 +54,7 @@ import { releaseRetiredArtifactEvent } from '../artifacts/event-retirement.ts';
 import {traceTurnAdmission,type TurnAdmissionStage} from '../turn/admission-telemetry.ts';
 import { TrustedPiTurnCapacity } from '../capacity/turn.ts';
 import type { TrustedPiCapacityNamespace } from '../capacity/client.ts';
+import { turnOperationTracer } from '../turn/operation-telemetry.ts';
 
 export interface WorkspaceAgentEnv {
   WORKSPACE_AGENT: DurableObjectNamespace<WorkspaceAgent>;
@@ -65,6 +66,7 @@ export interface WorkspaceAgentEnv {
   TOOL_ARTIFACT_STORE: ToolArtifactStoreNamespace;
   M2_TURNS_ENABLED: unknown;
   M2_TURN_ADMISSION_TELEMETRY?:unknown;
+  M2_TURN_OPERATION_TELEMETRY?:unknown;
   M3_SERVICE_ENABLED?:unknown;
   M3_PREVIEW_ENABLED?:unknown;
   M3_PREVIEW_WS_ENABLED?:unknown;
@@ -377,6 +379,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       {},
       this.env.TOOL_ARTIFACT_STORE.getByName(TOOL_ARTIFACT_STORE_ACTOR),
       new TrustedPiTurnCapacity(this.env.TRUSTED_PI_CAPACITY),
+      turnOperationTracer(this.env.M2_TURN_OPERATION_TELEMETRY),
     );
   }
   #for(input: WorkspaceTask): WorkspaceCoordinator {

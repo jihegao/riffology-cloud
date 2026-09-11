@@ -257,9 +257,10 @@ function renderWorkspace() {
     const detail = workspaceSnapshot.releaseHold.status === 'recovery-hold'
       ? '资源释放仍未确认，系统会继续安全恢复；文件和差异仍可读取。'
       : '释放确认完成后，下一轮会自动开始。';
-    appendTurnCard('system', '上一轮已保存，正在等待执行资源释放。', detail);
+    appendTurnCard('system', '上一轮已结束，正在等待执行资源释放。', detail);
   } else if (workspaceSnapshot.resourceWait) {
-    appendTurnCard('system', '回合已排队，正在等待执行资源。', '获得应用运行许可后会自动开始。');
+    const cleanup = workspaceSnapshot.resourceWait.status === 'release-pending';
+    appendTurnCard('system', cleanup ? '回合未启动，正在释放执行许可。' : '回合已排队，正在等待执行资源。', cleanup ? '释放确认后，队列会自动继续。' : '获得应用运行许可后会自动开始。');
   }
   const turns = Object.values(workspaceSnapshot.turns || {}).filter(turn => turn.sessionId === selectedSessionId).sort((a, b) => a.createdAt - b.createdAt);
   if (!turns.length) {

@@ -27,7 +27,7 @@ export class ProductTurnRuntimeHost implements TurnRuntimePort{
     if(existingOnly&&!this.#ctx.storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='product_turn_runtime'").toArray().length)throw Error('product-turn-observer-denied');
     const ports=this.#release(this.#ctx,this.#env,identity);
     if(!ports?.execution||!ports.checkpoints)throw Error('product-turn-runtime-release-not-configured');
-    const value=new ProductTurnRuntimeCore(this.#ctx.storage as ProductTurnRuntimeStorage,ports.execution,ports.checkpoints,Date.now,existingOnly,{retryMs:5000,assignmentGuardMs:360000,quietMs:30000,deadlineMs:600000,holdRetryMs:60000},ports.capacity??null);
+    const value=new ProductTurnRuntimeCore(this.#ctx.storage as ProductTurnRuntimeStorage,ports.execution,ports.checkpoints,Date.now,existingOnly,{retryMs:5000,assignmentGuardMs:360000,quietMs:30000,deadlineMs:600000,holdRetryMs:60000},ports.capacity??null,ports.trace);
     this.#core={identity,value};return value;
   }
   async accept(raw:Omit<Parameters<TurnRuntimePort['accept']>[0],'capacityLease'>&{capacityLease?:TurnResourceLease}){
@@ -43,8 +43,8 @@ export class ProductTurnRuntimeHost implements TurnRuntimePort{
     return (await this.#for(identity)).accept(input);
   }
   async currentObserverExecution(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);return (await this.#for(identity,true)).currentObserverExecution(identity);}
-  async observe(raw:Parameters<TurnRuntimePort['observe']>[0]){const identity=turnRuntimeIdentity(raw);return (await this.#for(identity)).observe(identity);}
-  async cancel(raw:Parameters<TurnRuntimePort['cancel']>[0]){const identity=turnRuntimeIdentity(raw);return (await this.#for(identity)).cancel(identity);}
+  async observe(raw:Parameters<TurnRuntimePort['observe']>[0]){const identity=turnRuntimeIdentity({scope:raw.scope,sessionId:raw.sessionId,turnId:raw.turnId,dispatchId:raw.dispatchId,generation:raw.generation});return (await this.#for(identity)).observe({...identity,...(raw.capacityLease===undefined?{}:{capacityLease:raw.capacityLease})});}
+  async cancel(raw:Parameters<TurnRuntimePort['cancel']>[0]){const identity=turnRuntimeIdentity({scope:raw.scope,sessionId:raw.sessionId,turnId:raw.turnId,dispatchId:raw.dispatchId,generation:raw.generation});return (await this.#for(identity)).cancel({...identity,...(raw.capacityLease===undefined?{}:{capacityLease:raw.capacityLease})});}
   async alarm(){
     if(!this.#ctx.storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='product_turn_runtime'").toArray().length)return;
     const row=this.#ctx.storage.sql.exec<{value:string}>('SELECT value FROM product_turn_runtime WHERE singleton=1').toArray()[0];if(!row)return;

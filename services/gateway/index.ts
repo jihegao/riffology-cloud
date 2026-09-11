@@ -15,6 +15,8 @@ import {previewHost} from './preview-host.ts';
 import {createGatewayPreviewServices,previewFrameSource} from './preview-services.ts';
 import {createGatewayObserverServices} from './observer-services.ts';
 import { sessionIdentity } from './session-identity.ts';
+import {runRevisionGcMaintenance} from './revision-gc-maintenance.ts';
+import {runGatewayScheduledDomains} from './scheduled.ts';
 export { TenantQuota } from '../quota/durable.ts';
 export { TenantModelBudget } from '../model-budget/durable.ts';
 export { TrustedPiCapacity } from '../capacity/durable.ts';
@@ -85,8 +87,7 @@ export default {
     }
   },
   async scheduled(_event:ScheduledController,env:GatewayRuntimeEnv):Promise<void>{
-    const work=await new ProvisioningCatalog(catalogDatabase(env.CATALOG)).sweep(10);
-    const results=await Promise.allSettled(work.map(item=>dispatch(env,item)));
-    if(results.some(result=>result.status==='rejected'))throw Error('workspace-dispatch-incomplete');
+    const database=catalogDatabase(env.CATALOG);
+    await runGatewayScheduledDomains(async()=>{const work=await new ProvisioningCatalog(database).sweep(10),results=await Promise.allSettled(work.map(item=>dispatch(env,item)));if(results.some(result=>result.status==='rejected'))throw Error('workspace-dispatch-incomplete');},()=>runRevisionGcMaintenance(database,env.REVISION_STORE));
   },
 } satisfies ExportedHandler<GatewayRuntimeEnv>;

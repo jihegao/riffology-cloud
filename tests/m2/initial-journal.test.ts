@@ -1,4 +1,4 @@
-import { TurnDispatcher, type TurnRuntimePort } from '../../services/turn/dispatcher.ts';
+import { TurnDispatcher, type TurnCapacityPort, type TurnRuntimePort } from '../../services/turn/dispatcher.ts';
 import { TurnAlarmLoop } from '../../services/turn/alarm.ts';
 import assert from 'node:assert/strict';
 import test from 'node:test';
@@ -64,6 +64,17 @@ test('stable initial failure is durable, idempotent, undispatched and advances t
  const replay=await rebuilt.submit(scope,actor,session.id,'one',{message:'Build'});assert.equal(replay.replayed,true);assert.deepEqual(replay.turn,failed);
  const events=(await rebuilt.replay(scope)).events;assert.equal(events.filter(row=>row.type==='turn.failed').length,2);assert.equal(events.filter(row=>row.type==='turn.started').length,0);assert.equal((await rebuilt.view(scope)).turns[first.id]!.errorCode,'turn-initial-base-unavailable');assert.equal(await rebuilt.workspaceRevision(scope),null);
  await assert.rejects(store.transact(state=>{state!.turns[first.id]!.errorCode='arbitrary-error';return {state:state!,value:null};}),/invalid-persisted-turn-journal/);
+});
+test('acquired capacity survives initial-base failure response loss and an alarm reopen releases the exact lease',async()=>{
+ let now=1000,releases:any[]=[],lose=true;const store=new MemoryTurnStore(),journal=new TurnJournal(store,()=>++now,async()=>{throw Error('turn-initial-base-unavailable');}),turn=await queue(journal,'capacity-base-failure');
+ const runtime:TurnRuntimePort={async accept(){throw Error('unexpected accept');},async observe(){throw Error('unexpected observe');},async cancel(){throw Error('unexpected cancel');}};
+ const capacity:TurnCapacityPort={async acquire(input){return {status:'acquired',turnId:input.turnId,generation:input.generation,ticketId:'ticket-base',operationId:input.operationId!,leaseId:'lease-base'};},async releaseNeverStarted(input){releases.push(structuredClone(input));if(lose){lose=false;throw Error('capacity-release-response-lost');}return {proofId:'proof-base',releasedAt:2000};}};
+ const alarm={async schedule(_at:number){},async clear(){throw Error('unexpected clear');}};
+ await assert.rejects(new TurnAlarmLoop(new TurnDispatcher(journal,runtime,null,capacity),alarm,()=>now,{retryMs:20}).alarm(scope,1),/capacity-release-response-lost/);
+ const pending=store.snapshot()!.resourceWait!,failedBeforeCancel=store.snapshot()!.turns[turn.id]!;assert.equal(failedBeforeCancel.status,'failed');assert.deepEqual(pending,{status:'release-pending',reasonCode:'turn-initial-base-unavailable',since:1004,nextAttemptAt:2004,turnId:turn.id,ticketId:'ticket-base',operationId:releases[0].operationId,leaseId:'lease-base'});
+ const rebuilt=new TurnJournal(store,()=>++now,async()=>{throw Error('must not resolve initial source again');});assert.deepEqual(await rebuilt.cancel(scope,actor,turn.id),failedBeforeCancel);assert.deepEqual(store.snapshot()!.resourceWait,pending);
+ const result=await new TurnAlarmLoop(new TurnDispatcher(rebuilt,runtime,null,capacity),alarm,()=>now,{retryMs:20}).alarm(scope,1);
+ assert.equal(result?.status,'failed');assert.equal(store.snapshot()!.resourceWait,null);assert.equal(releases.length,2);assert.deepEqual(releases[1],releases[0]);assert.equal(releases[1].ticketId,'ticket-base');assert.equal(releases[1].leaseId,'lease-base');assert.deepEqual(await rebuilt.cancel(scope,actor,turn.id),result);
 });
 test('transient initial transport error retains queued intent and scheduled retry',async()=>{
  const store=new MemoryTurnStore(),journal=new TurnJournal(store,()=>1000,async()=>{throw Error('rpc-transport-unavailable');});const queued=await queue(journal,'one');let calls=0;

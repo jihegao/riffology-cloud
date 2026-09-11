@@ -7,6 +7,7 @@
   "compatibility_flags": ["nodejs_compat", "nodejs_compat_do_not_populate_process_env"],
   "workers_dev": false,
   "preview_urls": false,
+  "version_metadata": { "binding": "CF_VERSION_METADATA" },
   "routes": [
     { "pattern": "m1.riff-demo.gaojihe.cn", "custom_domain": true },
     { "pattern": "preview.m1.riff-demo.gaojihe.cn", "custom_domain": true },
@@ -34,6 +35,7 @@
     "TRUSTED_PI_CAPACITY_POLICY_VERSION": "m2-trusted-pi-v1",
     "M2_TURNS_ENABLED": "false",
     "M2_TURN_ADMISSION_TELEMETRY": "true",
+    "M2_TURN_OPERATION_TELEMETRY": "true",
     "M2_MODEL_PROVIDER_ENABLED": "true",
     "M3_SERVICE_ENABLED": "true",
     "M3_PREVIEW_ENABLED": "true",

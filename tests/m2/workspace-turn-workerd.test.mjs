@@ -262,12 +262,13 @@ test('Workerd drives one durable Turn through the independent runtime actor', { 
     const running = await rpc('submitTurn', { task, scope, actor, sessionId: session.id, key: 'running-cancel-key', message: 'running-cancel' });
     await until(() => rpc('snapshot', { task, scope }), value => value.turns[running.turn.id]?.status === 'running', 10_000);
     await assert.rejects(rpc('cancelTurn', { task, scope, actor, turnId: running.turn.id }), /fixture-dropped-cancel-response/);
+    await mf.dispose();mf=new Miniflare(options);await mf.ready;
     await rpc('runAlarm', { task, scope });
     const cancelled = await until(() => rpc('snapshot', { task, scope }), value => value.turns[running.turn.id]?.status === 'cancelled', 20_000);
     assert.equal(cancelled.turns[running.turn.id].persistenceOutcome, 'saved');
-    assert.deepEqual(await rpc('calls', { turnId: running.turn.id }), { turn_id: running.turn.id, accept_count: 1, observe_count: 1, cancel_count: 1 });
+    assert.deepEqual(await rpc('calls', { turnId: running.turn.id }), { turn_id: running.turn.id, accept_count: 1, observe_count: 0, cancel_count: 1 });
     assert.equal((await rpc('cancelTurn', { task, scope, actor, turnId: running.turn.id })).status, 'cancelled');
-    assert.deepEqual(await rpc('calls', { turnId: running.turn.id }), { turn_id: running.turn.id, accept_count: 1, observe_count: 2, cancel_count: 1 },'terminal repeat Stop observes only its exact runtime for release maintenance');
+    assert.deepEqual(await rpc('calls', { turnId: running.turn.id }), { turn_id: running.turn.id, accept_count: 1, observe_count: 1, cancel_count: 1 },'terminal repeat Stop observes only its exact runtime for release maintenance');
     await assert.rejects(rpc('snapshot', { task, scope: { ...scope, workspaceGeneration: 3 } }), /workspace-actor-scope-denied/);
     assert.equal((await mf.dispatchFetch('http://workspace-turn.test/')).status, 404);
   } finally {

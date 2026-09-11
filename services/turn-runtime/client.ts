@@ -14,6 +14,6 @@ export class ProductTurnRuntimeClient implements TurnRuntimePort{
   async accept(raw:Omit<Parameters<TurnRuntimePort['accept']>[0],'capacityLease'>&{capacityLease?:TurnResourceLease}){
     const identity=turnRuntimeIdentity({scope:raw.scope,sessionId:raw.sessionId,turnId:raw.turnId,dispatchId:raw.dispatchId,generation:raw.generation}),input={...identity,actor:actor(raw.actor),message:message(raw.message),base:turnBaseCheckpoints(raw.base),...(raw.capacityLease===undefined?{}:{capacityLease:raw.capacityLease})},stub=await this.#stub(identity);return stub.accept(input as Parameters<TurnRuntimePort['accept']>[0]);
   }
-  async observe(raw:Parameters<TurnRuntimePort['observe']>[0]){const identity=turnRuntimeIdentity(raw),stub=await this.#stub(identity);return stub.observe(identity);}
-  async cancel(raw:Parameters<TurnRuntimePort['cancel']>[0]){const identity=turnRuntimeIdentity(raw),stub=await this.#stub(identity);return stub.cancel(identity);}
+  async observe(raw:Parameters<TurnRuntimePort['observe']>[0]){const identity=turnRuntimeIdentity({scope:raw.scope,sessionId:raw.sessionId,turnId:raw.turnId,dispatchId:raw.dispatchId,generation:raw.generation}),stub=await this.#stub(identity);return stub.observe({...identity,...(raw.capacityLease===undefined?{}:{capacityLease:raw.capacityLease})});}
+  async cancel(raw:Parameters<TurnRuntimePort['cancel']>[0]){const identity=turnRuntimeIdentity({scope:raw.scope,sessionId:raw.sessionId,turnId:raw.turnId,dispatchId:raw.dispatchId,generation:raw.generation}),stub=await this.#stub(identity);return stub.cancel({...identity,...(raw.capacityLease===undefined?{}:{capacityLease:raw.capacityLease})});}
 }

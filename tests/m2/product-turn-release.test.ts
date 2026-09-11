@@ -6,7 +6,7 @@ import test from 'node:test';
 import { sandboxActorIds } from '../../services/sandbox/policy.ts';
 import { assembleProductTurnRuntimeRelease, type ProductTurnRuntimeReleaseDependencies } from '../../services/turn-runtime/release.ts';
 import type { TurnRuntimeIdentity } from '../../services/turn-runtime/identity.ts';
-import type { TrustedPiProcessView, TrustedPiSandboxProcessApi } from '../../services/turn-runtime/pi-native.ts';
+import type { TrustedPiProcessView, TrustedPiSandboxActorApi, TrustedPiSandboxProcessApi } from '../../services/turn-runtime/pi-native.ts';
 import type { ProjectWorkspaceRpc } from '../../services/turn-runtime/workspace.ts';
 import { R2TurnRevisionPort, R2TurnRevisionReader } from '../../services/turn-runtime/revision.ts';
 import type { RevisionCommitInput, RevisionStoreRpc } from '../../services/turn-runtime/revision-store-client.ts';
@@ -40,11 +40,11 @@ class Store implements RevisionStoreRpc{
   load(...args:Parameters<RevisionStoreRpc['load']>){return this.#reader().load(...args);}
   async gc():ReturnType<RevisionStoreRpc['gc']>{throw Error('must-not-gc');}
 }
-class PiSandbox implements TrustedPiSandboxProcessApi{
+class PiSandbox implements TrustedPiSandboxActorApi{
   files=new Map<string,string>();calls:string[];outcome:'completed'|'failed'|'cancelled'|'interrupted';
   constructor(calls:string[],outcome:'completed'|'failed'|'cancelled'|'interrupted'){this.calls=calls;this.outcome=outcome;}
-  async writeFile(path:string,content:string){this.calls.push(`pi.write:${path}`);this.files.set(path,content);return {success:true,path,bytesWritten:encoder.encode(content).byteLength};}
-  async readFile(path:string){this.calls.push(`pi.read:${path}`);if(!this.files.has(path))throw Error('not found');return {success:true,path,content:this.files.get(path)!};}
+  async writeFile(path:string,content:string,_options?:{encoding?:'utf8'|'base64'}){this.calls.push(`pi.write:${path}`);this.files.set(path,content);return {success:true,path,bytesWritten:encoder.encode(content).byteLength};}
+  async readFile(path:string,_options?:{encoding?:'utf8'|'base64'}){this.calls.push(`pi.read:${path}`);if(!this.files.has(path))throw Error('not found');return {success:true,path,content:this.files.get(path)!};}
   async startProcess(_command:string,options:{processId:string}){
     this.calls.push('pi.start');const controlPath=[...this.files.keys()].find(path=>path.endsWith('.control.json'))!,control=JSON.parse(this.files.get(controlPath)!);
     const token=controlPath.match(/\/([^/]+)\.control\.json$/)![1]!,root=controlPath.slice(0,-'.control.json'.length),session=encoder.encode(JSON.stringify({format:'riffology-pi-session-v1',scope:{tenantId:control.identity.scope.tenantId,projectId:control.identity.scope.projectId,sessionId:control.identity.sessionId},createdAt:'2026-09-07T00:00:00.000Z',entries:[],leafId:null}));
@@ -52,10 +52,15 @@ class PiSandbox implements TrustedPiSandboxProcessApi{
     assert.ok(token);return {id:options.processId,status:'completed',exitCode:0,async getStatus(){return 'completed';},async kill(){throw Error('must-not-kill');}} as TrustedPiProcessView;
   }
   async getProcess(id:string){this.calls.push('pi.process');return {id,status:'completed',exitCode:0,async getStatus(){return 'completed';},async kill(){throw Error('must-not-kill');}} as TrustedPiProcessView;}
-  async destroyAndReleaseState(){this.calls.push('pi.destroyAndReleaseState');return {running:false};}
+  async destroyAndReleaseState(value:TurnRuntimeIdentity){assert.deepEqual(value,identity);this.calls.push('pi.destroyAndReleaseState');return {running:false};}
+  writeTurnFile(value:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['writeFile']>){assert.deepEqual(value,identity);return this.writeFile(...input);}
+  readTurnFile(value:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['readFile']>){assert.deepEqual(value,identity);return this.readFile(...input);}
+  startTurnProcess(value:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['startProcess']>){assert.deepEqual(value,identity);return this.startProcess(...input);}
+  getTurnProcess(value:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['getProcess']>){assert.deepEqual(value,identity);return this.getProcess(...input);}
+  async cancelTurnProcess(value:TurnRuntimeIdentity){assert.deepEqual(value,identity);this.calls.push('pi.cancel');return {dispatched:true};}
 }
 
-class ObserverPiSandbox implements TrustedPiSandboxProcessApi{
+class ObserverPiSandbox implements TrustedPiSandboxActorApi{
   readonly calls:string[]=[];
   readonly query:NonNullable<TrustedPiSandboxProcessApi['queryObserverExecution']>;
   constructor(query:NonNullable<TrustedPiSandboxProcessApi['queryObserverExecution']>){this.query=query;}
@@ -63,6 +68,11 @@ class ObserverPiSandbox implements TrustedPiSandboxProcessApi{
   async readFile():Promise<never>{throw Error('ordinary-pi-read-must-not-run');}
   async startProcess():Promise<never>{throw Error('ordinary-pi-start-must-not-run');}
   async getProcess():Promise<never>{throw Error('ordinary-pi-process-must-not-run');}
+  writeTurnFile():Promise<never>{throw Error('ordinary-pi-write-must-not-run');}
+  readTurnFile():Promise<never>{throw Error('ordinary-pi-read-must-not-run');}
+  startTurnProcess():Promise<never>{throw Error('ordinary-pi-start-must-not-run');}
+  getTurnProcess():Promise<never>{throw Error('ordinary-pi-process-must-not-run');}
+  cancelTurnProcess():Promise<never>{throw Error('ordinary-pi-cancel-must-not-run');}
   async destroyAndReleaseState():Promise<never>{throw Error('ordinary-pi-release-must-not-run');}
   async queryObserverExecution(identity:TurnRuntimeIdentity){this.calls.push('pi.queryObserverExecution');return this.query(identity);}
 }
@@ -85,7 +95,7 @@ test('release restores the derived Project Sandbox before starting one derived T
   assert.ok(f.calls.indexOf('workspace.restore')<f.calls.indexOf('pi.start'));
   const input={identity,outcome:'completed' as const,executionErrorCode:null,base},intent=await f.release.checkpoints.prepare(input),resolution=await f.release.checkpoints.commit(input,intent);assert.equal(resolution.status,'committed');if(resolution.status!=='committed')throw Error('fixture-commit-failed');const receipt=resolution.receipt;
   assert.equal(receipt.objectKey,'turns/tenant-a/project-a/workspace-a/2/session-a/turn-a/dispatch-a.json');assert.equal(f.calls.filter(value=>value==='workspace.freeze').length,1);assert.deepEqual(await f.release.checkpoints.reconcile(identity,intent),{status:'committed',receipt});
-  assert.deepEqual(await f.release.execution.release(identity),{running:false});assert.equal(f.calls.at(-1),'pi.destroyAndReleaseState');assert.deepEqual(f.trustedActors,[expected.trustedPi]);
+  assert.deepEqual(await f.release.execution.release(identity),{running:false});assert.deepEqual(f.calls.slice(-2),['pi.destroyAndReleaseState','workspace.abort']);assert.deepEqual(f.trustedActors,[expected.trustedPi]);
   await f.release.execution.start({...identity,actor,message:'Build model',base});assert.equal(f.calls.filter(value=>value==='workspace.restore').length,1);assert.equal(f.calls.filter(value=>value==='pi.start').length,1);
 });
 
@@ -124,12 +134,13 @@ test('currentObserverExecution rejects a scope mismatch before resolving the Tru
 
 test('currentObserverExecution rejects without the dedicated RPC and never falls back to ordinary SDK methods',async()=>{
   const sandbox={
-    writeFile:async()=>{throw Error('ordinary-pi-write-must-not-run');},
-    readFile:async()=>{throw Error('ordinary-pi-read-must-not-run');},
-    startProcess:async()=>{throw Error('ordinary-pi-start-must-not-run');},
-    getProcess:async()=>{throw Error('ordinary-pi-process-must-not-run');},
+    writeTurnFile:async()=>{throw Error('ordinary-pi-write-must-not-run');},
+    readTurnFile:async()=>{throw Error('ordinary-pi-read-must-not-run');},
+    startTurnProcess:async()=>{throw Error('ordinary-pi-start-must-not-run');},
+    getTurnProcess:async()=>{throw Error('ordinary-pi-process-must-not-run');},
+    cancelTurnProcess:async()=>{throw Error('ordinary-pi-cancel-must-not-run');},
     destroyAndReleaseState:async()=>{throw Error('ordinary-pi-release-must-not-run');},
-  } satisfies TrustedPiSandboxProcessApi;
+  } satisfies TrustedPiSandboxActorApi;
   const release=assembleProductTurnRuntimeRelease(identity,{revisions:new Store(new Bucket()),resolveProjectSandbox(){throw Error('project-must-not-resolve');},resolveTrustedPiSandbox(){return sandbox;},clock:()=>1000});
   assert.ok(release.execution.currentObserverExecution);
   await assert.rejects(release.execution.currentObserverExecution(identity),/trusted-pi-observer-reader-required/);

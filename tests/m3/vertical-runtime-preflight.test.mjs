@@ -5,16 +5,17 @@ import {chmodSync,mkdirSync,mkdtempSync,readFileSync,writeFileSync} from 'node:f
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import test from 'node:test';
-import {AUTH_SOURCE_SECRETS,CONTAINER_CLASSES,LOCAL_GENERATED_SECRETS,LOCAL_OAUTH_EGRESS_SECRET,PRODUCT_TOOL_BRIDGE_SHA256,RUNTIME_KEYS,SANDBOX_CONTAINER_CLASSES,areLoopbackAddresses,buildLaunchConfig,catalogAdmissionFromWrangler,dockerCapacityFromInfo,isAllowedDockerReference,runVerticalPreflight,validateRuntimeFile,validateSecretSources,validateTls,verticalModelBudgetState} from '../../scripts/m3/vertical-runtime-preflight.mjs';
+import {AUTH_SOURCE_SECRETS,CONTAINER_CLASSES,LOCAL_GENERATED_SECRETS,LOCAL_OAUTH_EGRESS_SECRET,PRODUCT_TOOL_BRIDGE_SHA256,PRODUCT_TOOL_LEDGER_SCHEMA_SHA256,PRODUCT_TOOL_LEDGER_SCHEMA_VERSION,PRODUCT_TOOL_PROTOCOL_VERSION,RUNTIME_KEYS,SANDBOX_CONTAINER_CLASSES,WORKER_SOURCE_SHA,areLoopbackAddresses,buildLaunchConfig,catalogAdmissionFromWrangler,dockerCapacityFromInfo,isAllowedDockerReference,runVerticalPreflight,validateRuntimeFile,validateSecretSources,validateTls,verticalModelBudgetState} from '../../scripts/m3/vertical-runtime-preflight.mjs';
+import {TOOL_LEDGER_SCHEMA} from '../../services/tools/ledger-schema.ts';
 
 const imageDigest=value=>'sha256:'+value.repeat(64).slice(0,64);
 const containerImages=()=>Object.fromEntries(CONTAINER_CLASSES.map((name,index)=>[name,{reference:`docker.io/library/riffology-${name.toLowerCase()}:test`,digest:imageDigest(String(index+1))}]));
-const validProfile=()=>{const images=containerImages();return {APP_ORIGIN:'https://app.local.riffology.gaojihe.cn:8797',M3_PREVIEW_ORIGIN:'https://preview.local.riffology.gaojihe.cn:8797',CONTAINER_IMAGES:images,M3_SERVICE_IMAGE:'local/riffology-service@'+images.ServiceSandbox.digest,HTTPS_CERT_PATH:'private/cert.pem',HTTPS_KEY_PATH:'private/key.pem',M2_TURNS_ENABLED:'true',M2_MODEL_PROVIDER_ENABLED:'true',M3_SERVICE_ENABLED:'true',M3_PREVIEW_ENABLED:'true',M3_PREVIEW_WS_ENABLED:'true',M3_OBSERVER_ENABLED:'false'};};
+const validProfile=()=>{const images=containerImages();return {APP_ORIGIN:'https://app.local.riffology.gaojihe.cn:8797',M3_PREVIEW_ORIGIN:'https://preview.local.riffology.gaojihe.cn:8797',CONTAINER_IMAGES:images,M3_SERVICE_IMAGE:'local/riffology-service@'+images.ServiceSandbox.digest,M2_WORKER_SOURCE_SHA:WORKER_SOURCE_SHA,M2_TOOL_BRIDGE_SHA256:PRODUCT_TOOL_BRIDGE_SHA256,M2_TOOL_PROTOCOL_VERSION:PRODUCT_TOOL_PROTOCOL_VERSION,M2_TOOL_LEDGER_SCHEMA_VERSION:PRODUCT_TOOL_LEDGER_SCHEMA_VERSION,HTTPS_CERT_PATH:'private/cert.pem',HTTPS_KEY_PATH:'private/key.pem',M2_TURNS_ENABLED:'true',M2_MODEL_PROVIDER_ENABLED:'true',M3_SERVICE_ENABLED:'true',M3_PREVIEW_ENABLED:'true',M3_PREVIEW_WS_ENABLED:'true',M3_OBSERVER_ENABLED:'false'};};
 
 test('vertical runtime preflight proves topology while missing private inputs block before launch',()=>{
   const result=runVerticalPreflight({system:false});
   assert.equal(result.status,'blocked');
-  assert.ok(result.checks.filter(value=>['product-config','execution-defaults-closed','vertical-bindings','vertical-exports','service-container','preview-route-migration'].includes(value.name)).every(value=>value.status==='passed'));
+  assert.ok(result.checks.filter(value=>['product-config','execution-defaults-closed','vertical-bindings','vertical-exports','tool-release-metadata','service-container','preview-route-migration'].includes(value.name)).every(value=>value.status==='passed'));
   assert.deepEqual(result.checks.filter(value=>value.status==='blocked').map(value=>value.name),['runtime-secrets','runtime-profile','oauth-redirect']);
 });
 
@@ -31,6 +32,7 @@ test('private credentials and fixed images generate the complete launch topology
   const lockedImages=join(directory,'locked-images');mkdirSync(lockedImages);
   const base=JSON.parse(readFileSync(new URL('../../infra/wrangler.m2-product-local.jsonc',import.meta.url),'utf8')),generated=buildLaunchConfig(base,profile,lockedImages);
   assert.equal(generated.vars.M2_TURNS_ENABLED,'true');assert.equal(generated.vars.M3_SERVICE_ENABLED,'true');assert.equal(generated.vars.M3_PREVIEW_ENABLED,'true');assert.equal(generated.vars.M3_VERTICAL_MODEL_TELEMETRY,'true');assert.equal(generated.vars.M3_VERTICAL_PREVIEW_TELEMETRY,'true');
+  assert.equal(generated.vars.M2_WORKER_SOURCE_SHA,WORKER_SOURCE_SHA);assert.equal(generated.vars.M2_TOOL_BRIDGE_SHA256,PRODUCT_TOOL_BRIDGE_SHA256);assert.equal(generated.vars.M2_TOOL_PROTOCOL_VERSION,'2');assert.equal(generated.vars.M2_TOOL_LEDGER_SCHEMA_VERSION,'1');
   assert.equal(generated.vars.M2_MODEL_BUDGET_POLICY_VERSION,'m2-token-vertical-v2');assert.equal(generated.vars.MODEL_BUDGET_POLICY_VERSION,'m2-token-vertical-v2');assert.equal(generated.vars.MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN,'8');assert.equal(generated.vars.MODEL_BUDGET_MAX_DISPATCHED_CALLS_PER_TURN,'8');
   assert.equal(generated.vars.TRUSTED_PI_CAPACITY_LIMIT,'1');assert.equal(generated.vars.TRUSTED_PI_CAPACITY_POLICY_VERSION,'m2-trusted-pi-v1');assert.equal(generated.durable_objects.bindings.some(item=>item.name==='TRUSTED_PI_CAPACITY'),true);assert.ok(generated.exports.TrustedPiCapacity);
   assert.deepEqual(generated.secrets.required,[...base.secrets.required,LOCAL_OAUTH_EGRESS_SECRET]);assert.equal(base.secrets.required.includes(LOCAL_OAUTH_EGRESS_SECRET),false);
@@ -76,6 +78,13 @@ test('vertical TrustedPi release preflight binds the image to the checked-out To
   const preflight=readFileSync(new URL('../../scripts/m3/vertical-runtime-preflight.mjs',import.meta.url),'utf8');
   assert.match(preflight,/product-tool-bridge\.mjs/);
   assert.match(preflight,/bridgeSha!==/);
+  assert.match(WORKER_SOURCE_SHA,/^[a-f0-9]{40}$/);assert.equal(PRODUCT_TOOL_PROTOCOL_VERSION,'2');assert.equal(PRODUCT_TOOL_LEDGER_SCHEMA_VERSION,String(TOOL_LEDGER_SCHEMA.version));assert.equal(PRODUCT_TOOL_LEDGER_SCHEMA_SHA256,createHash('sha256').update(TOOL_LEDGER_SCHEMA.sql).digest('hex'));
+});
+
+test('runtime release metadata rejects a different Worker, Bridge, protocol, or ledger schema',()=>{
+  for(const [key,value] of [['M2_WORKER_SOURCE_SHA','0'.repeat(40)],['M2_TOOL_BRIDGE_SHA256','0'.repeat(64)],['M2_TOOL_PROTOCOL_VERSION','1'],['M2_TOOL_LEDGER_SCHEMA_VERSION','2']]){
+    const directory=mkdtempSync(join(tmpdir(),'riffology-release-metadata-')),runtime=join(directory,'runtime.json'),profile=validProfile();profile[key]=value;writeFileSync(runtime,JSON.stringify(profile));const result=validateRuntimeFile(runtime);assert.equal(result.check.status,'failed');assert.equal(result.value,null);
+  }
 });
 
 test('vertical model loop budget accepts only an idle exact base-to-vertical migration',()=>{
