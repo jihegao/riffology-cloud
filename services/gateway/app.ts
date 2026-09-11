@@ -49,6 +49,7 @@ async function serviceCall<T>(operation:()=>Promise<T>):Promise<T>{
 async function turnCall<T>(operation:()=>Promise<T>):Promise<T>{
   try{return await operation();}catch(error){const code=error instanceof Error?error.message:'';
     if(code.includes('idempotency-conflict'))throw new CatalogError('idempotency_conflict');
+    if(code==='workspace-recovery-hold')throw new HttpError(code,409);
     if(code.includes('not-found'))throw new CatalogError('not_found');
     if(code.startsWith('invalid-'))throw new CatalogError('invalid_input');throw error;}
 }

@@ -8,6 +8,7 @@ async function digest(value){const bytes=typeof value==='string'?encoder.encode(
 test('RevisionStore is the sole workerd RPC authority for immutable R2 revisions', {timeout:30_000}, async()=>{
   const entry=`
     import {RevisionStore as BaseRevisionStore} from './services/turn-runtime/revision-store.ts';
+    import {revisionStoreActorName} from './services/turn-runtime/revision-store-client.ts';
     import {initialWorkspaceReferenceFromReady,InitialWorkspaceResolver} from './services/turn-runtime/initial-workspace.ts';
     import {modelContentKey,verifyModelContent} from './services/runtime/content.ts';
     import {initialCheckpoint} from './services/runtime/starter.ts';
@@ -17,6 +18,7 @@ test('RevisionStore is the sole workerd RPC authority for immutable R2 revisions
     export class RevisionStore extends BaseRevisionStore {
       constructor(ctx,env){
         let lost=false;const bucket=new Proxy(env.WORKSPACE_CHECKPOINTS,{get(target,property){
+          if(property==='put')return async(key,value,options)=>{const bytes=value instanceof Uint8Array?value:new Uint8Array(await new Response(value).arrayBuffer());if(new TextDecoder().decode(bytes)==='fail-before-r2')throw Error('injected-put-failure');return target.put(key,bytes,options)};
           if(property==='delete')return async key=>{await target.delete(key);if(!lost&&String(key).endsWith('${'d'.repeat(64)}')){lost=true;throw Error('injected-delete-ack-loss')}};
           const value=target[property];return typeof value==='function'?value.bind(target):value;
         }});super(ctx,{REVISION_STORE:env.REVISION_STORE,WORKSPACE_CHECKPOINTS:bucket,MODEL_CONTENT:env.MODEL_CONTENT});
@@ -24,7 +26,7 @@ test('RevisionStore is the sole workerd RPC authority for immutable R2 revisions
     }
     export default {async fetch(request,env){
       if(request.method!=='POST')return new Response(null,{status:404});
-      const body=await request.json(),actor=body.wrong?'wrong-store':'workspace-revisions-v1',stub=env.REVISION_STORE.getByName(actor);
+      const body=await request.json(),actorScope=body.identity?.scope??body.scope??body.reference?.scope??(body.source?.kind==='saved-turn'?body.source.identity.scope:body.source?.reference?.scope),actor=body.wrong?'wrong-store':revisionStoreActorName(actorScope),stub=env.REVISION_STORE.getByName(actor);
       try{
         if(body.action==='seedInitial'){
           const scope=body.identity.scope,task={id:'initial-task',tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,generation:scope.workspaceGeneration,starterVersion:'blank-v1',authVersion:1,createdAt:1000,deadlineAt:2000},runtime={taskId:task.id,tenantId:task.tenantId,projectId:task.projectId,workspaceId:task.workspaceId,generation:task.generation,runtimeId:'initial-runtime',leaseId:'initial-lease'},markerNonce='initial-nonce';
@@ -57,8 +59,9 @@ test('RevisionStore is the sole workerd RPC authority for immutable R2 revisions
         }
         if(body.action==='observe')return Response.json({ok:true,value:await stub.observe(body.identity)});
         if(body.action==='reconcile')return Response.json({ok:true,value:await stub.reconcileCommit({identity:body.identity,operationId:body.operationId,inputSha256:body.inputSha256})});
-        if(body.action==='gc')return Response.json({ok:true,value:await stub.gc({operationId:body.operationId,now:body.now,minAgeMs:body.minAgeMs,pageSize:body.pageSize,maxObjects:body.maxObjects})});
-        if(body.action==='reconcileGc')return Response.json({ok:true,value:await stub.reconcileGc({operationId:body.operationId,inputSha256:body.inputSha256})});
+        if(body.action==='abandon')return Response.json({ok:true,value:await stub.abandonCommit({identity:body.identity,operationId:body.operationId,inputSha256:body.inputSha256})});
+        if(body.action==='gc')return Response.json({ok:true,value:await stub.gc({scope:body.identity.scope,operationId:body.operationId,now:body.now,minAgeMs:body.minAgeMs,pageSize:body.pageSize,maxObjects:body.maxObjects})});
+        if(body.action==='reconcileGc')return Response.json({ok:true,value:await stub.reconcileGc({scope:body.identity.scope,operationId:body.operationId,inputSha256:body.inputSha256})});
         const snapshot={identity:body.identity,filesArchive:new TextEncoder().encode(body.files),piSession:new TextEncoder().encode(body.session)};
         return Response.json({ok:true,value:await stub.commit({identity:body.identity,outcome:body.outcome,executionErrorCode:body.error,base:{workspace:null,session:null},snapshot})});
       }catch(error){return Response.json({ok:false,error:error.message});}
@@ -72,25 +75,36 @@ test('RevisionStore is the sole workerd RPC authority for immutable R2 revisions
     const saved=await call({action:'commit',identity,outcome:'completed',error:null,files:'files',session:'session'});assert.equal(saved.ok,true);assert.equal(saved.value.objectKey,'turns/tenant-a/project-a/workspace-a/1/session-a/turn-a/dispatch-a.json');
     assert.deepEqual(await call({action:'observe',identity}),saved);
     const operationId='commit:tenant-a:project-a:workspace-a:1:session-a:turn-a:dispatch-a',inputSha256=await digest(JSON.stringify({identity,outcome:'completed',executionErrorCode:null,base:{workspace:null,session:null},filesSha256:await digest('files'),filesBytes:5,sessionSha256:await digest('session'),sessionBytes:7}));
-    assert.deepEqual(await call({action:'reconcile',identity,operationId,inputSha256}),saved);
-    const wrongDigest=await call({action:'reconcile',identity,operationId,inputSha256:'0'.repeat(64)});assert.equal(wrongDigest.ok,false);assert.match(wrongDigest.error,/reconcile-conflict/);
-    const missingIdentity={...identity,turnId:'turn-missing',dispatchId:'dispatch-missing'},missing=await call({action:'reconcile',identity:missingIdentity,operationId:'commit:tenant-a:project-a:workspace-a:1:session-a:turn-missing:dispatch-missing',inputSha256:'1'.repeat(64)});assert.deepEqual(missing,{ok:true,value:null});
+    assert.deepEqual(await call({action:'reconcile',identity,operationId,inputSha256}),{ok:true,value:{status:'committed',receipt:saved.value}});
+    const wrongDigest=await call({action:'reconcile',identity,operationId,inputSha256:'0'.repeat(64)});assert.deepEqual(wrongDigest,{ok:true,value:{status:'conflict'}});
+    const missingIdentity={...identity,turnId:'turn-missing',dispatchId:'dispatch-missing'},missingOperation='commit:tenant-a:project-a:workspace-a:1:session-a:turn-missing:dispatch-missing',missing=await call({action:'reconcile',identity:missingIdentity,operationId:missingOperation,inputSha256:'1'.repeat(64)});assert.deepEqual(missing,{ok:true,value:{status:'absent'}});
+    assert.deepEqual(await call({action:'abandon',identity:missingIdentity,operationId:missingOperation,inputSha256:'1'.repeat(64)}),{ok:true,value:{status:'aborted'}});
+    assert.deepEqual(await call({action:'reconcile',identity:missingIdentity,operationId:missingOperation,inputSha256:'1'.repeat(64)}),{ok:true,value:{status:'aborted'}});
     const conflict=await call({action:'commit',identity,outcome:'failed',error:'provider-failed',files:'files',session:'session'});assert.equal(conflict.ok,false);assert.match(conflict.error,/turn-revision-conflict/);
+    const failedIdentity={...identity,turnId:'turn-r2-failure',dispatchId:'dispatch-r2-failure'},failed=await call({action:'commit',identity:failedIdentity,outcome:'completed',error:null,files:'fail-before-r2',session:'session'});assert.deepEqual(failed,{ok:false,error:'injected-put-failure'});
+    assert.deepEqual(await call({action:'observe',identity}),saved,'an unresolved write must not block immutable reads in its workspace shard');
+    const blocked=await call({action:'commit',identity:{...identity,turnId:'turn-blocked',dispatchId:'dispatch-blocked'},outcome:'completed',error:null,files:'other',session:'session'});assert.equal(blocked.ok,false);assert.match(blocked.error,/operation-unknown/);
+    const otherWorkspace={...identity,scope:{...identity.scope,workspaceId:'workspace-b'},turnId:'turn-b',dispatchId:'dispatch-b'},otherSaved=await call({action:'commit',identity:otherWorkspace,outcome:'completed',error:null,files:'other',session:'session'});assert.equal(otherSaved.ok,true,'another workspace shard must remain writable');
+    const failedOperation='commit:tenant-a:project-a:workspace-a:1:session-a:turn-r2-failure:dispatch-r2-failure',failedSha=await digest(JSON.stringify({identity:failedIdentity,outcome:'completed',executionErrorCode:null,base:{workspace:null,session:null},filesSha256:await digest('fail-before-r2'),filesBytes:14,sessionSha256:await digest('session'),sessionBytes:7}));
+    assert.deepEqual(await call({action:'abandon',identity:failedIdentity,operationId:failedOperation,inputSha256:failedSha}),{ok:true,value:{status:'aborted'}});
+    const late=await call({action:'commit',identity:failedIdentity,outcome:'completed',error:null,files:'fail-before-r2',session:'session'});assert.equal(late.ok,false);assert.match(late.error,/commit-aborted/);
     const bucket=await mf.getR2Bucket('WORKSPACE_CHECKPOINTS',worker);assert.ok(await bucket.get(saved.value.objectKey));
-    const orphanKey='turn-blobs/files/'+'c'.repeat(64);await bucket.put(orphanKey,new TextEncoder().encode('orphan'));
+    const orphanKey='turn-blobs-v3/tenant-a/project-a/workspace-a/files/'+'c'.repeat(64);await bucket.put(orphanKey,new TextEncoder().encode('orphan'));
     const gcOptions={operationId:'gc-a',now:Date.now()+1000,minAgeMs:1,pageSize:1,maxObjects:100};
-    const gc=await call({action:'gc',...gcOptions});assert.deepEqual(gc.value,{scannedManifests:1,scannedBlobs:3,deletedBlobs:1,retainedBlobs:2});assert.equal(await bucket.get(orphanKey),null);
+    const gc=await call({action:'gc',identity,...gcOptions});assert.deepEqual(gc.value,{scannedManifests:1,scannedBlobs:3,deletedBlobs:1,retainedBlobs:2});assert.equal(await bucket.get(orphanKey),null);
     assert.deepEqual(await call({action:'observe',identity}),saved);
     const gcDigest=await digest(JSON.stringify({now:gcOptions.now,minAgeMs:gcOptions.minAgeMs,pageSize:1,maxObjects:100}));
-    assert.deepEqual(await call({action:'reconcileGc',operationId:'gc-a',inputSha256:gcDigest}),gc);
-    const gcConflict=await call({action:'reconcileGc',operationId:'gc-a',inputSha256:'0'.repeat(64)});assert.equal(gcConflict.ok,false);assert.match(gcConflict.error,/gc-reconcile-conflict/);
-    const lostAckKey='turn-blobs/files/'+'d'.repeat(64);await bucket.put(lostAckKey,new TextEncoder().encode('lost-ack-orphan'));
+    assert.deepEqual(await call({action:'reconcileGc',identity,operationId:'gc-a',inputSha256:gcDigest}),gc);
+    const gcConflict=await call({action:'reconcileGc',identity,operationId:'gc-a',inputSha256:'0'.repeat(64)});assert.equal(gcConflict.ok,false);assert.match(gcConflict.error,/gc-reconcile-conflict/);
+    const lostAckKey='turn-blobs-v3/tenant-a/project-a/workspace-a/files/'+'d'.repeat(64);await bucket.put(lostAckKey,new TextEncoder().encode('lost-ack-orphan'));
     const lostAckOptions={operationId:'gc-lost-ack',now:Date.now()+2000,minAgeMs:1,pageSize:1,maxObjects:100};
-    const lostAck=await call({action:'gc',...lostAckOptions});assert.equal(lostAck.ok,false);assert.equal(lostAck.error,'injected-delete-ack-loss');assert.equal(await bucket.get(lostAckKey),null,'the external delete applied before its acknowledgement was lost');
+    const lostAck=await call({action:'gc',identity,...lostAckOptions});assert.equal(lostAck.ok,false);assert.equal(lostAck.error,'injected-delete-ack-loss');assert.equal(await bucket.get(lostAckKey),null,'the external delete applied before its acknowledgement was lost');
     const lostAckDigest=await digest(JSON.stringify({now:lostAckOptions.now,minAgeMs:lostAckOptions.minAgeMs,pageSize:1,maxObjects:100}));
-    const reconciled=await call({action:'reconcileGc',operationId:'gc-lost-ack',inputSha256:lostAckDigest});assert.deepEqual(reconciled.value,{scannedManifests:1,scannedBlobs:3,deletedBlobs:1,retainedBlobs:2});
-    assert.deepEqual(await call({action:'reconcileGc',operationId:'gc-lost-ack',inputSha256:lostAckDigest}),reconciled);
+    const reconciled=await call({action:'reconcileGc',identity,operationId:'gc-lost-ack',inputSha256:lostAckDigest});assert.deepEqual(reconciled.value,{scannedManifests:1,scannedBlobs:3,deletedBlobs:1,retainedBlobs:2});
+    assert.deepEqual(await call({action:'reconcileGc',identity,operationId:'gc-lost-ack',inputSha256:lostAckDigest}),reconciled);
     assert.deepEqual(await call({action:'observe',identity}),saved);
+    const budgetKey='turn-blobs-v3/tenant-a/project-a/workspace-a/files/'+'e'.repeat(64);await bucket.put(budgetKey,new TextEncoder().encode('budget-orphan'));
+    const budgetOptions={operationId:'gc-budget',now:Date.now()+3000,minAgeMs:1,pageSize:100,maxObjects:1};let budget=await call({action:'gc',identity,...budgetOptions});assert.equal(budget.value,null);const budgetDigest=await digest(JSON.stringify({now:budgetOptions.now,minAgeMs:budgetOptions.minAgeMs,pageSize:100,maxObjects:1}));for(let attempts=0;budget.value===null&&attempts<20;attempts++)budget=await call({action:'reconcileGc',identity,operationId:'gc-budget',inputSha256:budgetDigest});assert.equal(budget.ok,true);assert.ok(budget.value);assert.equal(await bucket.get(budgetKey),null);
     const initialIdentity={...identity,turnId:'initial-turn',dispatchId:'initial-dispatch'},seed=await call({action:'seedInitial',identity:initialIdentity});assert.equal(seed.ok,true);
     assert.deepEqual(await call({action:'resolveInitial',wrong:true,identity:initialIdentity,initial:seed.value}),{ok:false,error:'revision-store-actor-scope-denied'});
     const cross=await call({action:'resolveInitial',identity:{...initialIdentity,scope:{...identity.scope,tenantId:'tenant-b'}},initial:seed.value});assert.equal(cross.ok,false);assert.match(cross.error,/scope-denied/);
@@ -118,14 +132,14 @@ test('RevisionStore is the sole workerd RPC authority for immutable R2 revisions
     assert.deepEqual(await call({action:'previewPlan',wrong:true,identity:previewIdentity,receipt:previewSaved.value}),{ok:false,error:'revision-store-actor-scope-denied'});
     const crossPreview=await call({action:'previewPlan',identity:{...previewIdentity,scope:{...identity.scope,tenantId:'tenant-b'}},receipt:previewSaved.value});assert.equal(crossPreview.ok,false);assert.match(crossPreview.error,/scope-denied/);
     const invalidPreview=await call({action:'previewPlan',identity,receipt:saved.value});assert.equal(invalidPreview.ok,false);
-    await bucket.delete('turn-blobs/sessions/'+await digest('private-session'));
+    await bucket.delete('turn-blobs-v3/tenant-a/project-a/workspace-a/sessions/'+await digest('private-session'));
     const serviceFiles=await call({action:'serviceFiles',identity:previewIdentity,receipt:previewSaved.value});assert.equal(serviceFiles.ok,true,'service restore must not depend on the private Pi session blob');
     const serviceArchive=Uint8Array.from(serviceFiles.value);assert.equal(await digest(serviceArchive),previewSaved.value.filesSha256);
     assert.equal(new TextDecoder().decode(serviceArchive.slice(257,262)),'ustar');
     assert.equal(new TextDecoder().decode(serviceArchive).includes('private-session'),false);
     assert.deepEqual(await call({action:'serviceFiles',wrong:true,identity:previewIdentity,receipt:previewSaved.value}),{ok:false,error:'revision-store-actor-scope-denied'});
     const crossService=await call({action:'serviceFiles',identity:{...previewIdentity,scope:{...identity.scope,tenantId:'tenant-b'}},receipt:previewSaved.value});assert.equal(crossService.ok,false);assert.match(crossService.error,/scope-denied/);
-    await bucket.put('turn-blobs/files/'+previewSaved.value.filesSha256,encoder.encode('corrupt archive'));
+    await bucket.put('turn-blobs-v3/tenant-a/project-a/workspace-a/files/'+previewSaved.value.filesSha256,encoder.encode('corrupt archive'));
     const corruptService=await call({action:'serviceFiles',identity:previewIdentity,receipt:previewSaved.value});assert.equal(corruptService.ok,false);
     assert.equal((await mf.dispatchFetch('http://revision.test/')).status,404);
   }finally{await mf.dispose();}

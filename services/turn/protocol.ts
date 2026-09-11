@@ -19,7 +19,8 @@ export type TurnRecord = {
 };
 export type TurnEvent = { sequence:number; eventId:string; turnId:string; workspaceId:string; runtimeGeneration:number; type:TurnEventType; at:number; payload:Record<string,unknown> };
 export type TurnJournalState = {
-  schemaVersion:3; scope:TurnScope; nextSequence:number; oldestSequence:number; retentionBytes:number; activeTurnId:string|null; workspaceHead:CheckpointReceipt|null;
+  schemaVersion:4; scope:TurnScope; nextSequence:number; oldestSequence:number; retentionBytes:number; activeTurnId:string|null; workspaceHead:CheckpointReceipt|null;
+  recoveryHold:null|{status:'reconciling';reasonCode:string;since:number;nextAttemptAt:number;turnId:string;dispatchId:string;runtimeGeneration:number};
   sessions:Record<string,SessionRecord>; turns:Record<string,TurnRecord>;
   sessionIntents:Record<string,{payloadSha256:string;sessionId:string}>;
   turnIntents:Record<string,{payloadSha256:string;turnId:string}>;
@@ -28,7 +29,8 @@ export type TurnJournalState = {
 export type PublicSessionRecord = Omit<SessionRecord,'actorUserId'|'actorAuthVersion'>;
 export type PublicTurnRecord = Omit<TurnRecord,'requestKey'|'payloadSha256'|'dispatchId'|'base'|'startedSequence'|'terminalSequence'>;
 export type TurnJournalView = {
-  schemaVersion:1; scope:TurnScope; nextSequence:number; activeTurnId:string|null;
+  schemaVersion:2; scope:TurnScope; nextSequence:number; activeTurnId:string|null;
+  recoveryHold:null|{status:'reconciling';reasonCode:string;since:number;nextAttemptAt:number};
   sessions:Record<string,PublicSessionRecord>; turns:Record<string,PublicTurnRecord>;
 };
 

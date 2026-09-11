@@ -70,10 +70,11 @@ function migrateV2(value:unknown):unknown{
     for(const [id,receipt] of Object.entries(state.eventReceipts)){if(!record(receipt))throw Error('legacy-receipt');const event=events.find(row=>record(row)&&row.eventId===id);if(!event)throw Error('legacy-receipt-event');receipt.event=structuredClone(event);}
     return state;}catch{throw Error('invalid-persisted-turn-journal');}
 }
+function migrateV3(value:unknown):unknown{if(!record(value)||value.schemaVersion!==3)return value;const state=structuredClone(value) as Record<string,unknown>;state.schemaVersion=4;state.recoveryHold=null;return state;}
 function valid(value:unknown):asserts value is TurnJournalState{
   try{
-    exact(value,['schemaVersion','scope','nextSequence','oldestSequence','retentionBytes','activeTurnId','workspaceHead','sessions','turns','sessionIntents','turnIntents','eventReceipts','events']);
-    if(value.schemaVersion!==3)throw Error('version');const stateScope=scope(value.scope),nextSequence=positive(value.nextSequence),oldestSequence=positive(value.oldestSequence),retentionRaw=value.retentionBytes;if(oldestSequence>nextSequence||!Number.isSafeInteger(retentionRaw)||(retentionRaw as number)<0||(retentionRaw as number)>TURN_EVENT_BYTES_LIMIT)throw Error('retention-window');const retentionBytes=retentionRaw as number;if(value.activeTurnId!==null)turnId(value.activeTurnId);const workspaceHead=maybeCheckpoint(value.workspaceHead);
+    exact(value,['schemaVersion','scope','nextSequence','oldestSequence','retentionBytes','activeTurnId','workspaceHead','recoveryHold','sessions','turns','sessionIntents','turnIntents','eventReceipts','events']);
+    if(value.schemaVersion!==4)throw Error('version');const stateScope=scope(value.scope),nextSequence=positive(value.nextSequence),oldestSequence=positive(value.oldestSequence),retentionRaw=value.retentionBytes;if(oldestSequence>nextSequence||!Number.isSafeInteger(retentionRaw)||(retentionRaw as number)<0||(retentionRaw as number)>TURN_EVENT_BYTES_LIMIT)throw Error('retention-window');const retentionBytes=retentionRaw as number;if(value.activeTurnId!==null)turnId(value.activeTurnId);const workspaceHead=maybeCheckpoint(value.workspaceHead);
     for(const name of ['sessions','turns','sessionIntents','turnIntents','eventReceipts'] as const)if(!record(value[name]))throw Error('map');if(!Array.isArray(value.events)||value.events.length>TURN_EVENT_LIMIT)throw Error('events');
     const sessions=value.sessions as TurnJournalState['sessions'],turns=value.turns as TurnJournalState['turns'],events=value.events as TurnJournalState['events'];
     for(const [id,row] of Object.entries(sessions)){
@@ -119,6 +120,7 @@ function valid(value:unknown):asserts value is TurnJournalState{
       if(base.session&&!prior.some(item=>item.sessionId===row.sessionId&&same(item.checkpoint,base.session)))throw Error('turn-base');
     }
     const active=Object.values(turns).filter(row=>['running','cancelling','checkpointing'].includes(row.status));if(active.length>1||(active[0]?.id??null)!==value.activeTurnId)throw Error('active');
+    if(value.recoveryHold!==null){exact(value.recoveryHold,['status','reasonCode','since','nextAttemptAt','turnId','dispatchId','runtimeGeneration']);if(value.recoveryHold.status!=='reconciling'||turnId(value.recoveryHold.reasonCode)!=='turn-checkpoint-recovery-hold'||positive(value.recoveryHold.nextAttemptAt)<positive(value.recoveryHold.since))throw Error('recovery-hold');const held=turns[turnId(value.recoveryHold.turnId)];if(!held||held.status!=='failed'||held.persistenceErrorCode!=='turn-checkpoint-recovery-hold'||held.dispatchId!==turnId(value.recoveryHold.dispatchId)||held.runtimeGeneration!==positive(value.recoveryHold.runtimeGeneration)||value.activeTurnId!==null)throw Error('recovery-hold');}
   }catch{throw Error('invalid-persisted-turn-journal');}
 }
 function preserveInitialBases(previous:TurnJournalState|null,next:TurnJournalState){
@@ -136,10 +138,10 @@ export class DurableTurnStore implements AtomicTurnStore{
     if(!storage||typeof storage.transactionSync!=='function'||typeof storage.sync!=='function'||!storage.kv)throw Error('sqlite-turn-storage-required');
     this.#storage=storage;
   }
-  read():TurnJournalState|null{const saved=this.#storage.kv.get<unknown>(KEY);if(saved===undefined)return null;const current=migrateV2(migrate(saved));valid(current);return structuredClone(current);}
+  read():TurnJournalState|null{const saved=this.#storage.kv.get<unknown>(KEY);if(saved===undefined)return null;const current=migrateV3(migrateV2(migrate(saved)));valid(current);return structuredClone(current);}
   async transact<T>(operation:(current:TurnJournalState|null)=>{state:TurnJournalState;value:T}):Promise<T>{
     const result=this.#storage.transactionSync(()=>{
-      const saved=this.#storage.kv.get<unknown>(KEY),current=saved===undefined?null:migrateV2(migrate(saved));if(current!==null)valid(current);
+      const saved=this.#storage.kv.get<unknown>(KEY),current=saved===undefined?null:migrateV3(migrateV2(migrate(saved)));if(current!==null)valid(current);
       const output=operation(current===null?null:structuredClone(current));
       if(!output||typeof output!=='object'||output instanceof Promise)throw Error('turn-journal-operation-must-be-synchronous');
       valid(output.state);preserveInitialBases(current,output.state);const state=structuredClone(output.state),value=structuredClone(output.value);

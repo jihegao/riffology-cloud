@@ -112,6 +112,15 @@ test('persistence failure is terminal but preserves the execution result separat
   const f=fixture();await queued(f);f.setAccept(async input=>receipt(input,{phase:'terminal',outcome:'completed',stopped:stop,persistenceErrorCode:'r2-write-failed'}));
   const result=await new TurnDispatcher(f.journal,f.runtime).tick(scope,1);assert.equal(result?.status,'failed');assert.equal(result?.executionOutcome,'completed');assert.equal(result?.persistenceOutcome,'failed');assert.equal(result?.persistenceErrorCode,'r2-write-failed');
 });
+test('recovery hold observes a late commit only to release the workspace and never rewrites the failed turn',async()=>{
+  const f=fixture(),turn=await queued(f),claim=await f.journal.claim(scope,1);
+  await f.journal.beginCheckpoint(scope,{turnId:turn.id,dispatchId:claim!.turn.dispatchId!,runtimeGeneration:1,outcome:'completed'});
+  await f.journal.failCheckpoint(scope,{turnId:turn.id,dispatchId:claim!.turn.dispatchId!,runtimeGeneration:1,errorCode:'turn-checkpoint-recovery-hold'});
+  f.setObserve(async input=>receipt(input,{phase:'terminal',outcome:'completed',stopped:stop,checkpoint}));
+  const dispatcher=new TurnDispatcher(f.journal,f.runtime),observed=await dispatcher.tick(scope,1);
+  assert.equal(observed?.status,'failed');assert.equal(observed?.checkpoint,null);assert.equal(f.journal.recovery(scope),null);
+  const accepted=await f.journal.submit(scope,actor,turn.sessionId,'after-hold',{message:'new work'});assert.equal(accepted.turn.status,'queued');assert.deepEqual(f.calls,['observe']);
+});
 test('unknown checkpoint stays active and a later immutable receipt completes the same turn',async()=>{
   const f=fixture();const turn=await queued(f),dispatcher=new TurnDispatcher(f.journal,f.runtime);f.setAccept(async input=>receipt(input,{phase:'terminal',outcome:'completed',stopped:stop,persistenceErrorCode:'turn-checkpoint-unknown'}));
   const pending=await dispatcher.tick(scope,1);assert.equal(pending?.status,'checkpointing');assert.equal(pending?.executionOutcome,'completed');assert.equal(pending?.persistenceOutcome,null);assert.equal(f.store.snapshot()!.activeTurnId,turn.id);
