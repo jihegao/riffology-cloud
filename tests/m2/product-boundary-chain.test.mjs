@@ -3,7 +3,6 @@ import test from 'node:test';
 import { handleModelProxyRequest } from '../../services/model-proxy/http.ts';
 import { sandboxActorIds, trustedPiOutbound } from '../../services/sandbox/policy.ts';
 import { handleToolBridgeRequest } from '../../services/tools/http.ts';
-import { toolCommandDigest } from '../../services/tools/protocol.ts';
 import { createProductModelTransport, PRODUCT_MODEL_PROXY_URL } from '../../services/trusted-pi/product-model-transport.mjs';
 import { createProductToolBridge } from '../../services/trusted-pi/product-tool-bridge.mjs';
 
@@ -38,8 +37,8 @@ test('Pi model transport, Sandbox outbound, capability, tenant budget and provid
 });
 
 test('Pi remote tool crosses the signed Sandbox boundary and reaches only the derived Tool Bridge actor',async()=>{
-  const actors=[],commands=[],toolEnv={TRUSTED_PI_SANDBOX:namespace,TOOL_BRIDGE_AGENT:{getByName(name){actors.push(name);return {async run(command){commands.push(command);const digest=await toolCommandDigest(command);return {schemaVersion:1,scope:command.scope,turnId:command.turnId,dispatchId:command.dispatchId,commandId:command.commandId,digest,deadlineAt:command.deadlineAt,operation:command.operation,status:'completed',effectId:'effect-a',acceptedAt:now,updatedAt:now,dispatchedAt:now,unknownAt:null,finishedAt:now,lastObservedAt:now,outcome:'completed',errorCode:null,result:{entries:['model/main.py']},command:null};}};}},M2_TOOL_BRIDGE_REQUEST_KEY:toolKey};
+  const actors=[],commands=[],toolEnv={TRUSTED_PI_SANDBOX:namespace,TOOL_BRIDGE_AGENT:{getByName(name){actors.push(name);return {async run(command){commands.push(command);return {schemaVersion:1,scope:command.scope,turnId:command.turnId,dispatchId:command.dispatchId,commandId:command.commandId,digest:'a'.repeat(64),deadlineAt:Math.min(now+115000,command.executionDeadlineAt),operation:command.operation,status:'completed',effectId:'effect-a',acceptedAt:now,updatedAt:now,dispatchedAt:now,unknownAt:null,finishedAt:now,lastObservedAt:now,outcome:'completed',errorCode:null,result:{entries:['model/main.py']},command:null};}};}},M2_TOOL_BRIDGE_REQUEST_KEY:toolKey};
   const services={MODEL_PROXY:{fetch(){throw Error('wrong-service');}},TOOL_BRIDGE:{fetch:request=>handleToolBridgeRequest(request,toolEnv,()=>now)},TRUSTED_PI_SANDBOX:namespace,M2_MODEL_PROXY_REQUEST_KEY:requestKey,M2_TOOL_BRIDGE_REQUEST_KEY:toolKey,M2_MODEL_TURN_CAPABILITY_KEY:capabilityKey,M2_MODEL_BUDGET_POLICY_VERSION:'m2-token-v1',M2_MODEL_PROVIDER:'opencode-go',M2_MODEL_ID:'gpt-5.6-luna',M2_MODEL_MAX_INPUT_TOKENS_PER_CALL:'262144',M2_MODEL_MAX_OUTPUT_TOKENS_PER_CALL:'4096',M2_MODEL_CAPABILITY_TTL_MS:'120000'};
-  const trustedContainer=await containerId(),bridge=createProductToolBridge(identity,{clock:()=>now,fetchImpl:(input,init)=>trustedPiOutbound(new Request(input,init),services,trustedContainer,()=>now)}),result=await bridge.execute({scope:{tenantId:'tenant-a',projectId:'project-a',sessionId:'session-a'},name:'project_list',toolCallId:'provider-call-a',args:{path:''}});
+  const trustedContainer=await containerId(),bridge=createProductToolBridge(identity,{clock:()=>now,executionDeadlineAt:now+600000,fetchImpl:(input,init)=>trustedPiOutbound(new Request(input,init),services,trustedContainer,()=>now)}),result=await bridge.execute({scope:{tenantId:'tenant-a',projectId:'project-a',sessionId:'session-a'},name:'project_list',toolCallId:'provider-call-a',args:{path:''}});
   assert.deepEqual(result.content,[{type:'text',text:'{"entries":["model/main.py"]}'}]);assert.equal(actors.length,1);assert.match(actors[0],/^m2-b-/);assert.equal(commands.length,1);assert.equal(commands[0].operation,'list');assert.deepEqual(commands[0].scope,identity.scope);
 });

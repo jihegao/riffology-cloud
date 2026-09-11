@@ -12,6 +12,16 @@ export type ToolCommand={
   operation:ToolOperation;
   arguments:Record<string,unknown>;
 };
+export type ToolCommandIntent={
+  schemaVersion:2;
+  scope:TurnScope;
+  turnId:string;
+  dispatchId:string;
+  commandId:string;
+  executionDeadlineAt:number;
+  operation:ToolOperation;
+  arguments:Record<string,unknown>;
+};
 const OPERATIONS=new Set<ToolOperation>(['read','read_page','write','edit','list','search','bash']);
 const encoder=new TextEncoder();
 function plain(value:unknown):Record<string,unknown>{
@@ -80,6 +90,15 @@ export function normalizeToolCommand(value:unknown):ToolCommand{
   const deadlineAt=positive(input.deadlineAt);
   const operation=input.operation as ToolOperation;
   return {schemaVersion:1,scope:validateScope(input.scope),turnId:turnId(input.turnId),dispatchId:turnId(input.dispatchId),commandId:turnId(input.commandId),deadlineAt,operation,arguments:args(operation,input.arguments)};
+}
+export function normalizeToolCommandIntent(value:unknown):ToolCommandIntent{
+  const input=plain(value),keys=['schemaVersion','scope','turnId','dispatchId','commandId','executionDeadlineAt','operation','arguments'];
+  exact(input,keys);if(input.schemaVersion!==2||typeof input.operation!=='string'||!OPERATIONS.has(input.operation as ToolOperation))throw Error('invalid-tool-command-intent');
+  const operation=input.operation as ToolOperation;
+  return {schemaVersion:2,scope:validateScope(input.scope),turnId:turnId(input.turnId),dispatchId:turnId(input.dispatchId),commandId:turnId(input.commandId),executionDeadlineAt:positive(input.executionDeadlineAt),operation,arguments:args(operation,input.arguments)};
+}
+export async function toolCommandIntentDigest(intent:ToolCommandIntent):Promise<string>{
+  return turnDigest({schemaVersion:intent.schemaVersion,scope:intent.scope,turnId:intent.turnId,dispatchId:intent.dispatchId,commandId:intent.commandId,executionDeadlineAt:intent.executionDeadlineAt,operation:intent.operation,arguments:intent.arguments});
 }
 export async function toolCommandDigest(command:ToolCommand):Promise<string>{
   return turnDigest({schemaVersion:command.schemaVersion,scope:command.scope,turnId:command.turnId,dispatchId:command.dispatchId,commandId:command.commandId,deadlineAt:command.deadlineAt,operation:command.operation,arguments:command.arguments});
