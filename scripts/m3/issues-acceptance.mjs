@@ -46,7 +46,7 @@ export function validateAuthInput(value){
 
 export function unavailableProviderFreeProbe(){return {schemaVersion:1,status:'blocked',reasonCode:'provider-free-exact-actor-probe-unavailable',conclusion:'No product-only operator path exposes exact TrustedPi actor lifecycle. Application-level container counts and a single stopped or inactive record are insufficient release proof.'};}
 
-function turnSummary(snapshot,turnId){const turn=snapshot?.turns?.[turnId];return {observedAt:Date.now(),turnStatus:turn?.status??null,activeTurnId:snapshot?.activeTurnId??null,resourceWait:snapshot?.resourceWait??null,releaseHold:snapshot?.releaseHold??null,recoveryHold:snapshot?.recoveryHold??null};}
+function turnSummary(snapshot,turnId,priorObservedAt=null){const turn=snapshot?.turns?.[turnId],wall=Date.now(),observedAt=Number.isSafeInteger(priorObservedAt)&&wall<=priorObservedAt?priorObservedAt+1:wall;return {observedAt,turnStatus:turn?.status??null,activeTurnId:snapshot?.activeTurnId??null,resourceWait:snapshot?.resourceWait??null,releaseHold:snapshot?.releaseHold??null,recoveryHold:snapshot?.recoveryHold??null};}
 export async function requestJson(url,{cookie,method='GET',body=null,key=null,timeoutMs=20_000,attempts=3,retryDelayMs=1_000}={}){
   if(!Number.isSafeInteger(attempts)||attempts<1||attempts>5||!Number.isSafeInteger(retryDelayMs)||retryDelayMs<0||retryDelayMs>10_000)fail('acceptance-request-retry-invalid');
   const encodedBody=body===null?undefined:JSON.stringify(body),headers={'accept':'application/json','cache-control':'no-cache','cookie':cookie,'origin':new URL(url).origin};if(body!==null)headers['content-type']='application/json';if(key!==null)headers['idempotency-key']=key;
@@ -78,22 +78,25 @@ async function allEvents(auth){
   }fail('acceptance-event-pages-exceeded');
 }
 async function workspace(auth){return requestJson(`${auth.origin}/api/workspaces/${auth.workspaceId}`,{cookie:auth.cookie});}
-async function waitTerminal(auth,turnId,{pollMs=5_000,deadlineMs=15*60_000,onTransition=()=>{}}={}){
-  const end=Date.now()+deadlineMs,transitions=[];let prior='';
-  while(Date.now()<end){const snapshot=await workspace(auth),summary=turnSummary(snapshot,turnId),encoded=JSON.stringify({...summary,observedAt:0});if(encoded!==prior){prior=encoded;transitions.push(summary);onTransition(summary);}const turn=snapshot?.turns?.[turnId];if(TERMINAL.has(turn?.status))return {turn,snapshot,transitions};await sleep(pollMs);}fail('acceptance-turn-deadline');
+async function waitTerminal(auth,turnId,{pollMs=5_000,deadlineMs=15*60_000,initialSummary=null,onTransition=()=>{},shouldAbort=()=>false}={}){
+  const end=Date.now()+deadlineMs,transitions=initialSummary===null?[]:[jsonClone(initialSummary)];let prior=initialSummary===null?'':JSON.stringify({...initialSummary,observedAt:0}),priorObservedAt=initialSummary?.observedAt??null;
+  while(Date.now()<end){if(shouldAbort())fail('acceptance-turn-wait-interrupted');const snapshot=await workspace(auth),summary=turnSummary(snapshot,turnId,priorObservedAt),encoded=JSON.stringify({...summary,observedAt:0});if(encoded!==prior){prior=encoded;priorObservedAt=summary.observedAt;transitions.push(summary);onTransition(summary);}const turn=snapshot?.turns?.[turnId];if(TERMINAL.has(turn?.status))return {turn,snapshot,transitions};await sleep(pollMs);}fail('acceptance-turn-deadline');
 }
 
-export async function driveTenTurns(auth,{runToken=`r${randomBytes(8).toString('hex')}`,pollMs=5_000,deadlineMs=15*60_000,recordProgress=async()=>{}}={}){
+export async function driveTenTurns(auth,{runToken=`r${randomBytes(8).toString('hex')}`,pollMs=5_000,deadlineMs=15*60_000,recordProgress=async()=>{},onOutstanding=async()=>{},shouldAbort=()=>false}={}){
   const turns=[];let previousTerminalSnapshot=null;
   for(let index=1;index<=10;index++){
+    if(shouldAbort())fail('acceptance-turn-wait-interrupted');
     const suffix=String(index).padStart(2,'0'),nonce=randomBytes(16).toString('hex'),filePath=`acceptance-${runToken}-turn-${suffix}.txt`,key=`accept-${runToken}-${suffix}`;
     const message=`Acceptance contract: make exactly one successful project_write call to create ${filePath} with the exact content ${nonce}. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include ${nonce}. If any tool call fails, report the failure and stop without retrying.`;
     const submitted=await requestJson(`${auth.origin}/api/workspaces/${auth.workspaceId}/sessions/${auth.sessionId}/turns`,{cookie:auth.cookie,method:'POST',key,body:{message}}),turnId=submitted?.turn?.id;
     if(!ID.test(turnId??''))fail('acceptance-turn-submit-invalid');
+    await onOutstanding({index,turnId});
     await recordProgress(`turn-${suffix}-submitted.json`,{schemaVersion:1,index,turnId,filePath,nonce,messageSha256:digest(message),submittedStatus:submitted.turn.status});
-    const initial=await workspace(auth),observedTransitions=[];let terminal;
-    try{terminal=await waitTerminal(auth,turnId,{pollMs,deadlineMs,onTransition:value=>observedTransitions.push(value)});}catch(error){let latest=null;try{latest=turnSummary(await workspace(auth),turnId);}catch{}await recordProgress(`turn-${suffix}-wait-error.json`,{schemaVersion:1,index,turnId,stage:'wait-terminal',reasonCode:error instanceof Error?error.message:'acceptance-turn-wait-failed',latest,transitions:[turnSummary(initial,turnId),...observedTransitions]});throw error;}const turn=terminal.turn;
-    await recordProgress(`turn-${suffix}-terminal.json`,{schemaVersion:1,index,turnId,filePath,submittedStatus:submitted.turn.status,terminal:{status:turn?.status??null,executionOutcome:turn?.executionOutcome??null,persistenceOutcome:turn?.persistenceOutcome??null,errorCode:turn?.errorCode??null,checkpoint:turn?.checkpoint??null},transitions:[turnSummary(initial,turnId),...terminal.transitions]});
+    const initial=await workspace(auth),initialSummary=turnSummary(initial,turnId),observedTransitions=[initialSummary];let terminal;
+    try{terminal=await waitTerminal(auth,turnId,{pollMs,deadlineMs,initialSummary,onTransition:value=>observedTransitions.push(value),shouldAbort});}catch(error){let latest=null;try{latest=turnSummary(await workspace(auth),turnId,observedTransitions.at(-1)?.observedAt??initialSummary.observedAt);}catch{}await recordProgress(`turn-${suffix}-wait-error.json`,{schemaVersion:1,index,turnId,stage:'wait-terminal',reasonCode:error instanceof Error?error.message:'acceptance-turn-wait-failed',latest,transitions:observedTransitions});throw error;}const turn=terminal.turn;
+    await onOutstanding(null);
+    await recordProgress(`turn-${suffix}-terminal.json`,{schemaVersion:1,index,turnId,filePath,submittedStatus:submitted.turn.status,terminal:{status:turn?.status??null,executionOutcome:turn?.executionOutcome??null,persistenceOutcome:turn?.persistenceOutcome??null,errorCode:turn?.errorCode??null,checkpoint:turn?.checkpoint??null},transitions:terminal.transitions});
     let events;try{events=await allEvents(auth);}catch(error){await recordProgress(`turn-${suffix}-events-error.json`,{schemaVersion:1,index,turnId,stage:'events',reasonCode:error instanceof Error?error.message:'acceptance-events-failed'});throw error;}const toolEvents=events.filter(event=>event.turnId===turnId&&event.type==='tool.completed').map(event=>({sequence:event.sequence,eventId:event.eventId,toolCallId:event.payload?.toolCallId,name:event.payload?.name,isError:event.payload?.isError})),assistantNonceConfirmation=events.some(event=>event.turnId===turnId&&event.type==='assistant.message'&&JSON.stringify(event.payload).includes(nonce));
     await recordProgress(`turn-${suffix}-events.json`,{schemaVersion:1,index,turnId,assistantNonceConfirmation,toolEvents,events:events.filter(event=>event.turnId===turnId&&['assistant.message','tool.started','tool.completed','provider.status'].includes(event.type)).map(event=>({sequence:event.sequence,eventId:event.eventId,type:event.type,...(event.type.startsWith('tool.')?{name:event.payload?.name??null,isError:event.payload?.isError??null}:{}),...(event.type==='assistant.message'?{stopReason:event.payload?.stopReason??null,containsNonce:JSON.stringify(event.payload).includes(nonce)}:{}),...(event.type==='provider.status'?{state:event.payload?.state??null,status:event.payload?.status??null}:{})}))});
     if(turn.status!=='completed'||turn.executionOutcome!=='completed'||turn.persistenceOutcome!=='saved'||!turn.checkpoint?.revisionId)fail('acceptance-turn-not-saved-completed');
@@ -106,7 +109,7 @@ export async function driveTenTurns(auth,{runToken=`r${randomBytes(8).toString('
     await recordProgress(`turn-${suffix}-material.json`,{schemaVersion:1,index,turnId,filesRevision:files?.revision??null,file:files?.files?.find(entry=>entry.path===filePath)??null,diffRevision:diff?.revision??null,diffSummary:diff?.summary??null,diffChanges:diff?.changes??null});
     const expectedChange=diff?.changes?.[0];if(files?.revision?.revisionId!==turn.checkpoint.revisionId||!files.files?.some(entry=>entry.path===filePath&&entry.type==='file')||diff?.revision?.revisionId!==turn.checkpoint.revisionId||diff?.summary?.added!==1||diff.summary.modified!==0||diff.summary.deleted!==0||diff.changes.length!==1||expectedChange?.path!==filePath||expectedChange?.change!=='added'||expectedChange?.type!=='file'||expectedChange?.size!==Buffer.byteLength(nonce))fail('acceptance-files-diff-refresh-mismatch');
     const queuedBehindRelease=index===1?null:previousTerminalSnapshot?.releaseHold!==null&&submitted.turn.status==='queued'&&initial?.turns?.[turnId]?.status==='queued';
-    turns.push({index,turnId,filePath,nonce,messageSha256:digest(message),assistantNonceConfirmation,revisionId:turn.checkpoint.revisionId,checkpoint:turn.checkpoint,toolEvents,submittedStatus:submitted.turn.status,queuedBehindRelease,transitions:[turnSummary(initial,turnId),...terminal.transitions],filesRefresh:{revision:files.revision,file:{...files.files.find(entry=>entry.path===filePath)}},diffRefresh:{revision:diff.revision,summary:diff.summary,changes:diff.changes.map(value=>({...value}))}});
+    turns.push({index,turnId,filePath,nonce,messageSha256:digest(message),assistantNonceConfirmation,revisionId:turn.checkpoint.revisionId,checkpoint:turn.checkpoint,toolEvents,submittedStatus:submitted.turn.status,queuedBehindRelease,transitions:terminal.transitions,filesRefresh:{revision:files.revision,file:{...files.files.find(entry=>entry.path===filePath)}},diffRefresh:{revision:diff.revision,summary:diff.summary,changes:diff.changes.map(value=>({...value}))}});
     previousTerminalSnapshot=terminal.snapshot;
   }
   const end=Date.now()+15*60_000;let finalSnapshot;
@@ -121,10 +124,18 @@ export function validateTenTurnEvidence(value){
     const checkpoint=turn.checkpoint,toolEvents=turn.toolEvents,targetEvents=toolEvents?.filter(event=>event.name==='project_write'||event.name==='project_read')??[],writes=targetEvents.filter(event=>event.name==='project_write'&&event.isError===false),reads=targetEvents.filter(event=>event.name==='project_read'&&event.isError===false);
     if(turn.index!==offset+1||!ID.test(turn.turnId??'')||turnIds.has(turn.turnId)||!/^[a-f0-9]{64}$/.test(turn.revisionId??'')||revisions.has(turn.revisionId)||checkpoint?.revisionId!==turn.revisionId||typeof checkpoint?.objectKey!=='string'||objectKeys.has(checkpoint.objectKey)||!/^[a-f0-9]{64}$/.test(checkpoint?.filesSha256??'')||!/^[a-f0-9]{64}$/.test(checkpoint?.sessionSha256??'')||!Number.isSafeInteger(checkpoint?.committedAt)||checkpoint.committedAt<1||typeof turn.filePath!=='string'||paths.has(turn.filePath)||!/^[a-f0-9]{32}$/.test(turn.nonce??'')||nonces.has(turn.nonce)||!/^[a-f0-9]{64}$/.test(turn.messageSha256??''))fail('acceptance-ten-turn-identity-invalid');
     const change=turn.diffRefresh?.changes?.[0];if(turn.assistantNonceConfirmation!==true||toolEvents?.some(event=>!TOOL_CALL_ID.test(event.toolCallId??'')||event.isError!==false||event.name!=='project_write'&&event.name!=='project_read'&&!ACCEPTANCE_READ_ONLY_TOOLS.has(event.name))||targetEvents.length!==2||writes.length!==1||reads.length!==1||!Number.isSafeInteger(writes[0].sequence)||!Number.isSafeInteger(reads[0].sequence)||writes[0].sequence>=reads[0].sequence||turn.filesRefresh?.revision?.revisionId!==turn.revisionId||turn.filesRefresh?.revision?.filesSha256!==checkpoint.filesSha256||turn.filesRefresh?.file?.path!==turn.filePath||turn.diffRefresh?.revision?.revisionId!==turn.revisionId||turn.diffRefresh?.revision?.filesSha256!==checkpoint.filesSha256||turn.diffRefresh?.summary?.added!==1||turn.diffRefresh.summary.modified!==0||turn.diffRefresh.summary.deleted!==0||turn.diffRefresh.changes.length!==1||change?.path!==turn.filePath||change?.change!=='added'||change?.type!=='file'||change?.size!==Buffer.byteLength(turn.nonce))fail('acceptance-ten-turn-material-invalid');
-    if(offset>0&&(turn.queuedBehindRelease!==true||!turn.transitions?.some(item=>item?.turnStatus==='queued'&&item?.releaseHold!==null)))fail('acceptance-release-queue-transition-missing');turnIds.add(turn.turnId);revisions.add(turn.revisionId);objectKeys.add(checkpoint.objectKey);paths.add(turn.filePath);nonces.add(turn.nonce);
+    const transitions=turn.transitions;if(!Array.isArray(transitions)||transitions.length<2||transitions.some((item,index)=>!Number.isSafeInteger(item?.observedAt)||item.observedAt<1||index>0&&item.observedAt<=transitions[index-1].observedAt)||transitions.slice(0,-1).some(item=>TERMINAL.has(item?.turnStatus))||transitions.at(-1)?.turnStatus!=='completed'||transitions.at(-1)?.activeTurnId!==null)fail('acceptance-turn-transition-invalid');
+    if(offset>0){const queued=transitions.findIndex(item=>item?.turnStatus==='queued'&&item?.releaseHold!==null),running=transitions.findIndex(item=>item?.turnStatus==='running');if(turn.queuedBehindRelease!==true||queued<0||running<0||queued>=running)fail('acceptance-release-queue-transition-missing');}turnIds.add(turn.turnId);revisions.add(turn.revisionId);objectKeys.add(checkpoint.objectKey);paths.add(turn.filePath);nonces.add(turn.nonce);
   }
   const final=value.finalSnapshot;if(final?.activeTurnId!==null||final?.resourceWait!==null||final?.releaseHold!==null||final?.recoveryHold!==null||final?.sessions?.[value.sessionId]?.head?.revisionId!==value.turns[9].revisionId)fail('acceptance-final-workspace-not-quiescent');
   return jsonClone(value);
+}
+
+export async function cancelOutstandingTurn(auth,outstanding,{pollMs=2_000,deadlineMs=120_000}={}){
+  const turnId=outstanding?.turnId;if(!ID.test(turnId??''))return {schemaVersion:1,status:'blocked',reasonCode:'acceptance-outstanding-turn-identity-invalid'};
+  let response;try{response=await requestJson(`${auth.origin}/api/workspaces/${auth.workspaceId}/turns/${turnId}/cancel`,{cookie:auth.cookie,method:'POST',key:`acceptance-cleanup-${turnId}`,body:{}});}catch(error){return {schemaVersion:1,status:'blocked',turnId,reasonCode:error instanceof Error?error.message:'acceptance-outstanding-turn-cancel-failed'};}
+  const end=Date.now()+deadlineMs;while(Date.now()<end){try{const snapshot=await workspace(auth),turn=snapshot?.turns?.[turnId];if(TERMINAL.has(turn?.status))return {schemaVersion:1,status:'passed',turnId,cancelResponse:{status:response?.status??null,cancelDisposition:response?.cancelDisposition??null},terminal:{status:turn.status,cancelDisposition:turn.cancelDisposition??null,dispatchId:turn.dispatchId??null,checkpoint:turn.checkpoint??null,neverStarted:turn.dispatchId===null&&turn.checkpoint===null},workspace:{activeTurnId:snapshot.activeTurnId??null,resourceWait:snapshot.resourceWait??null,releaseHold:snapshot.releaseHold??null,recoveryHold:snapshot.recoveryHold??null}};}catch{}await sleep(pollMs);}
+  return {schemaVersion:1,status:'blocked',turnId,reasonCode:'acceptance-outstanding-turn-cancel-unconfirmed'};
 }
 
 export function unavailableInventory(){return {schemaVersion:1,status:'blocked',reasonCode:'exact-actor-and-storage-inventory-unavailable',conclusion:'Public Workspace APIs and application-level container counts cannot prove exact actor absence, R2 receipt equality, or D1 provisioning uniqueness.'};}
@@ -143,14 +154,14 @@ async function evidence(path,name,value){if(!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test
 async function checksums(path){const names=(await readdir(path)).filter(name=>name!=='SHA256SUMS').sort(),lines=[];for(const name of names)lines.push(`${digest(await readFile(resolve(path,name)))}  ${name}`);await writeFile(resolve(path,'SHA256SUMS'),`${lines.join('\n')}\n`,{encoding:'utf8',mode:0o600,flag:'wx'});}
 
 export async function runIssuesAcceptance({
-  root=resolve(fileURLToPath(new URL('../..',import.meta.url))),workerSha,releaseResultPath,authInputPath,execute=false,turnRunner=driveTenTurns,inventoryPreflight=collectStagingInventoryPreflight,inventoryRunner=collectStagingFinalInventory,closeRunner=forwardCloseTurnGate,shouldAbort=()=>false,now=new Date(),signalSource=null,signalExit=null,
+  root=resolve(fileURLToPath(new URL('../..',import.meta.url))),workerSha,releaseResultPath,authInputPath,execute=false,turnRunner=driveTenTurns,inventoryPreflight=collectStagingInventoryPreflight,inventoryRunner=collectStagingFinalInventory,closeRunner=forwardCloseTurnGate,cancelRunner=cancelOutstandingTurn,shouldAbort=()=>false,now=new Date(),signalSource=null,signalExit=null,
 }={}){
   if(!execute)fail('issues-acceptance-requires-explicit-execute');
   if(!SHA.test(workerSha??''))fail('issues-acceptance-requires-worker-sha');
-  let release=null,auth,directory=null,result={schemaVersion:1,status:'blocked',phase:'initializing',reasonCode:'acceptance-not-started'},close,closePromise=null,signalClosing=false;
+  let release=null,auth,directory=null,result={schemaVersion:1,status:'blocked',phase:'initializing',reasonCode:'acceptance-not-started'},close,cleanup=null,outstanding=null,closePromise=null,signalClosing=false,signalCode=null;
   const closeGate=()=>{if(closePromise===null){try{closePromise=Promise.resolve(closeRunner({root,workerSha,execute:true})).catch(error=>({schemaVersion:1,status:'blocked',reasonCode:error instanceof Error?error.message:'gate-close-failed'}));}catch(error){closePromise=Promise.resolve({schemaVersion:1,status:'blocked',reasonCode:error instanceof Error?error.message:'gate-close-failed'});}}return closePromise;};
   const ensureNotInterrupted=()=>{if(signalClosing||shouldAbort())fail('issues-acceptance-interrupted');};
-  const exitCodes={SIGINT:130,SIGTERM:143,SIGHUP:129},handlers=new Map(Object.entries(exitCodes).map(([name,code])=>[name,()=>{if(signalClosing)return;signalClosing=true;void closeGate().then(value=>signalExit?.(value?.status==='passed'?code:1));}]));
+  const exitCodes={SIGINT:130,SIGTERM:143,SIGHUP:129},handlers=new Map(Object.entries(exitCodes).map(([name,code])=>[name,()=>{if(signalClosing)return;signalClosing=true;signalCode=code;void closeGate();}]));
   for(const [name,handler] of handlers)signalSource?.once(name,handler);
   try{
     ensureNotInterrupted();
@@ -163,7 +174,7 @@ export async function runIssuesAcceptance({
       const readiness=await inventoryPreflight({root,release,auth,probe:checkedProbe});ensureNotInterrupted();await evidence(directory.path,'inventory-preflight.json',readiness);ensureNotInterrupted();
       if(readiness.status!=='passed')result={schemaVersion:1,status:'blocked',phase:'inventory-preflight',reasonCode:readiness.reasonCode??'inventory-preflight-blocked'};
       else{
-        ensureNotInterrupted();const turns=await turnRunner(auth,{runToken:directory.name.replaceAll('-','').slice(-32),recordProgress:(name,value)=>evidence(directory.path,name,value)});ensureNotInterrupted();turns.sessionId=auth.sessionId;validateTenTurnEvidence(turns);await evidence(directory.path,'ten-turns.json',turns);ensureNotInterrupted();
+        ensureNotInterrupted();const turns=await turnRunner(auth,{runToken:directory.name.replaceAll('-','').slice(-32),recordProgress:(name,value)=>evidence(directory.path,name,value),onOutstanding:value=>{outstanding=value;},shouldAbort:()=>signalClosing||shouldAbort()});ensureNotInterrupted();turns.sessionId=auth.sessionId;validateTenTurnEvidence(turns);await evidence(directory.path,'ten-turns.json',turns);ensureNotInterrupted();
         const inventory=await inventoryRunner({root,release,auth,probe:checkedProbe,turns,readiness});ensureNotInterrupted();await evidence(directory.path,'final-inventory.json',inventory);ensureNotInterrupted();
         if(inventory.status!=='passed')result={schemaVersion:1,status:'blocked',phase:'final-inventory',reasonCode:inventory.reasonCode??'final-inventory-blocked'};
         else{validateFinalInventory(inventory,turns.turns[9].revisionId,release);result={schemaVersion:1,status:'passed',phase:'accepted',workerVersionId:release.workerVersionId,turnCount:10};}
@@ -173,10 +184,12 @@ export async function runIssuesAcceptance({
   finally{
     close=await closeGate();
     for(const [name,handler] of handlers)signalSource?.removeListener(name,handler);
+    if(outstanding!==null&&auth){cleanup=await cancelRunner(auth,outstanding);if(directory)await evidence(directory.path,'outstanding-turn-cleanup.json',cleanup);if(cleanup?.status!=='passed')result={schemaVersion:1,status:'blocked',phase:'outstanding-turn-cleanup',reasonCode:'outstanding-turn-cleanup-unconfirmed',priorResult:result};}
     if(close?.status!=='passed')result={schemaVersion:1,status:'blocked',phase:'gate-close',reasonCode:'turn-gate-close-unconfirmed',priorResult:result};
     if(directory){await evidence(directory.path,'gate-close.json',close);await evidence(directory.path,'acceptance-result.json',result);await checksums(directory.path);}
+    if(signalCode!==null)signalExit?.(close?.status==='passed'&&(cleanup===null||cleanup?.status==='passed')?signalCode:1);
   }
-  return {...result,evidenceDirectory:directory?.path??null,gateClose:close};
+  return {...result,evidenceDirectory:directory?.path??null,gateClose:close,outstandingTurnCleanup:cleanup};
 }
 
 async function main(){

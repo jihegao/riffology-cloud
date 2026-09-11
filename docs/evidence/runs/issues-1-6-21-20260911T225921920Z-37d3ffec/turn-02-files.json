@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "index": 2,
+  "turnId": "1d3a4c5b-7b53-4aaf-b76a-361da04636c4",
+  "filesRevision": {
+    "revisionId": "c923f1d7056e2d795df2b5b22992bb6afc2074f21b2adcccdaa1ad5a614bd392",
+    "filesSha256": "ec43946a693d7f69475866b7b177c0fdae14d09fcc46a0665e2b9cea3a04b234",
+    "committedAt": 1789168655963
+  },
+  "file": {
+    "path": "acceptance-s162120260911T225921920Z37d3ffec-turn-02.txt",
+    "type": "file",
+    "size": 32,
+    "mode": 384
+  }
+}

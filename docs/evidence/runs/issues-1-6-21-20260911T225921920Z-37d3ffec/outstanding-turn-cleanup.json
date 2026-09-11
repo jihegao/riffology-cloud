@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "turnId": "1dc56275-a60f-49f5-bbdb-8e9d31111ef9",
+  "terminal": {
+    "status": "cancelled",
+    "cancelDisposition": "cancelled",
+    "dispatchId": null,
+    "checkpoint": null,
+    "neverStarted": true
+  },
+  "workspace": {
+    "observedAt": 1789169760203,
+    "activeTurnId": null,
+    "resourceWait": null,
+    "releaseHold": null,
+    "recoveryHold": null
+  }
+}
