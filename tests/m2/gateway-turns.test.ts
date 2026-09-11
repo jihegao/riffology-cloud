@@ -74,14 +74,14 @@ test('workspace turn routes fail closed on ownership, revocation, CSRF, shape an
  }finally{f.db.sqlite.close();}
 });
 
-test('workspace recovery hold returns the stable 409 contract while read APIs remain available',async()=>{
+test('workspace recovery hold accepts new queued work while read APIs remain available',async()=>{
  const f=await fixture();try{f.ready();
   const session=await (await f.post(`/api/workspaces/${f.workspaceId}/sessions`,'hold-session',{title:'Hold'})).json() as any;
   const submitted=await (await f.post(`/api/workspaces/${f.workspaceId}/sessions/${session.session.id}/turns`,'hold-turn',{message:'Build'})).json() as any;
   const claim=await f.journal.claim(session.session.scope,1),dispatchId=claim!.turn.dispatchId!;
   await f.journal.beginCheckpoint(session.session.scope,{turnId:submitted.turn.id,dispatchId,runtimeGeneration:1,outcome:'completed'});
   await f.journal.failCheckpoint(session.session.scope,{turnId:submitted.turn.id,dispatchId,runtimeGeneration:1,errorCode:'turn-checkpoint-recovery-hold'});
-  const blocked=await f.post(`/api/workspaces/${f.workspaceId}/sessions/${session.session.id}/turns`,'blocked-turn',{message:'Blocked'});assert.equal(blocked.status,409);assert.deepEqual(await blocked.json(),{error:'workspace-recovery-hold'});
+  const queued=await f.post(`/api/workspaces/${f.workspaceId}/sessions/${session.session.id}/turns`,'blocked-turn',{message:'Queued behind recovery'});assert.equal(queued.status,202);assert.equal((await queued.json() as any).turn.status,'queued');
   assert.equal((await f.get(`/api/workspaces/${f.workspaceId}`)).status,200);assert.equal((await f.get(`/api/workspaces/${f.workspaceId}/files`)).status,200);
  }finally{f.db.sqlite.close();}
 });

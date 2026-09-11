@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { TurnDispatcher, type TurnRuntimePort, type TurnRuntimeReceipt } from '../../services/turn/dispatcher.ts';
+import { TurnDispatcher, type TurnCapacityPort, type TurnRuntimePort, type TurnRuntimeReceipt } from '../../services/turn/dispatcher.ts';
 import { MemoryTurnStore } from '../../services/turn/store.ts';
 import { TurnJournal } from '../../services/turn/journal.ts';
 import type { TurnBaseCheckpoints, TurnScope } from '../../services/turn/protocol.ts';
@@ -11,15 +11,15 @@ const actor={userId:'user-a',authVersion:1};
 const checkpoint={revisionId:'revision-one',objectKey:'checkpoint-one',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:1005};
 const stop={confirmationId:'stop-one',observedAt:1004,nativeRunning:false as const,fenced:true as const};
 const artifact={schemaVersion:1 as const,artifactId:`artifact-${'a'.repeat(60)}`,operation:'list' as const,mediaType:'application/json' as const,bytes:20_000,sha256:'c'.repeat(64),createdAt:1002};
-type RuntimeInput={scope:TurnScope;sessionId:string;turnId:string;dispatchId:string;generation:number;message?:string;base?:TurnBaseCheckpoints};
-function receipt(input:RuntimeInput,overrides:Partial<TurnRuntimeReceipt>={}):TurnRuntimeReceipt{return {scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,phase:'running',outcome:null,...overrides};}
+type RuntimeInput={scope:TurnScope;sessionId:string;turnId:string;dispatchId:string;generation:number;message?:string;base?:TurnBaseCheckpoints;capacityLease?:{operationId:string;leaseId:string}};
+function receipt(input:RuntimeInput,overrides:Record<string,unknown>={}):TurnRuntimeReceipt{const phase=(overrides.phase??'running') as TurnRuntimeReceipt['phase'],lease=input.capacityLease??{operationId:`operation-${input.dispatchId}`,leaseId:`lease-${input.dispatchId}`},resourceDisposition=overrides.resourceDisposition??(phase==='terminal'||phase==='absent'?{status:'released',...lease,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,proofId:`proof-${input.dispatchId}`,releasedAt:1006}:{status:'active',...lease,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation});return {scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,phase:'running',outcome:null,executionErrorCode:null,events:[],checkpoint:null,persistenceErrorCode:null,stopped:null,resourceDisposition,...overrides} as unknown as TurnRuntimeReceipt;}
 function fixture(){
   let now=1000;
-  const store=new MemoryTurnStore(),journal=new TurnJournal(store,()=>++now),calls:string[]=[],acceptedInputs:RuntimeInput[]=[];
+  const store=new MemoryTurnStore(),journal=new TurnJournal(store,()=>++now),calls:string[]=[],acceptedInputs:RuntimeInput[]=[],leases=new Map<string,{operationId:string;leaseId:string}>();
   let accept=(input:RuntimeInput):Promise<TurnRuntimeReceipt>=>Promise.resolve(receipt(input));
   let observe=(input:RuntimeInput):Promise<TurnRuntimeReceipt>=>Promise.resolve(receipt(input,{phase:'unknown'}));
   let cancel=(input:RuntimeInput):Promise<TurnRuntimeReceipt>=>Promise.resolve(receipt(input,{phase:'unknown'}));
-  const runtime:TurnRuntimePort={accept:async input=>{calls.push('accept');acceptedInputs.push(structuredClone(input));return accept(input);},observe:async input=>{calls.push('observe');return observe(input);},cancel:async input=>{calls.push('cancel');return cancel(input);}};
+  const runtime:TurnRuntimePort={accept:async input=>{calls.push('accept');leases.set(input.dispatchId,input.capacityLease);acceptedInputs.push(structuredClone(input));return accept(input);},observe:async input=>{calls.push('observe');return observe({...input,capacityLease:leases.get(input.dispatchId)??store.snapshot()?.turns[input.turnId]?.resourceLease??undefined});},cancel:async input=>{calls.push('cancel');return cancel({...input,capacityLease:leases.get(input.dispatchId)??store.snapshot()?.turns[input.turnId]?.resourceLease??undefined});}};
   return {store,journal,calls,acceptedInputs,runtime,setAccept(value:typeof accept){accept=value;},setObserve(value:typeof observe){observe=value;},setCancel(value:typeof cancel){cancel=value;}};
 }
 async function queued(f:ReturnType<typeof fixture>,key='turn-key'){const session=(await f.journal.createSession(scope,actor,`session-${key}`,{title:'Session'})).session;return (await f.journal.submit(scope,actor,session.id,key,{message:'Build model'})).turn;}
@@ -28,6 +28,29 @@ test('dispatcher commits a terminal receipt only after native stop and checkpoin
   const f=fixture();await queued(f);f.setAccept(async input=>receipt(input,{phase:'terminal',outcome:'completed',stopped:stop,checkpoint}));
   const result=await new TurnDispatcher(f.journal,f.runtime).tick(scope,1);
   assert.equal(result?.status,'completed');assert.equal(result?.persistenceOutcome,'saved');assert.deepEqual(f.calls,['accept']);assert.deepEqual(f.acceptedInputs[0]!.base,{workspace:null,session:null});assert.equal(f.store.snapshot()!.activeTurnId,null);
+});
+test('dispatcher reconciles an exact release hold before it claims queued work',async()=>{
+  const f=fixture(),first=await queued(f,'release-first');let released=false;f.setAccept(async input=>receipt(input,{phase:'terminal',outcome:'completed',stopped:stop,checkpoint,resourceDisposition:{status:'release-pending',...input.capacityLease!,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,reasonCode:'trusted-pi-release-pending',since:1005,nextAttemptAt:2000}}));
+  f.setObserve(async input=>receipt(input,{phase:'terminal',outcome:'completed',stopped:stop,checkpoint,resourceDisposition:released?{status:'released',...input.capacityLease!,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,proofId:'release-proof',releasedAt:2001}:{status:'release-pending',...input.capacityLease!,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,reasonCode:'trusted-pi-release-pending',since:1005,nextAttemptAt:2000}}));
+  const dispatcher=new TurnDispatcher(f.journal,f.runtime);await dispatcher.tick(scope,1);const second=await queued(f,'release-second');assert.equal(f.store.snapshot()!.releaseHold?.turnId,first.id);assert.equal(dispatcher.nextWakeAt(scope),2000);
+  assert.equal((await dispatcher.tick(scope,1))?.id,first.id);assert.equal(f.store.snapshot()!.turns[second.id]!.status,'queued');assert.deepEqual(f.calls,['accept','observe']);released=true;f.setAccept(async input=>receipt(input));
+  const next=await dispatcher.tick(scope,1);assert.equal(next?.id,second.id);assert.equal(next?.status,'running');assert.equal(f.store.snapshot()!.releaseHold,null);assert.deepEqual(f.calls,['accept','observe','observe','accept']);
+});
+test('capacity wait persists opaque admission state and acquired lease is consumed with the FIFO claim',async()=>{
+  const f=fixture(),turn=await queued(f,'capacity-first');let available=false;const capacity:TurnCapacityPort={
+    async acquire(input){return available?{status:'acquired',turnId:input.turnId,generation:input.generation,ticketId:'ticket-one',operationId:input.operationId!,leaseId:'lease-one'}:{status:'waiting',turnId:input.turnId,generation:input.generation,ticketId:'ticket-one',operationId:input.operationId!,reasonCode:'trusted-pi-capacity-unavailable',since:1005,nextAttemptAt:2000};},
+    async releaseNeverStarted(){throw Error('unexpected-never-started');},
+  },dispatcher=new TurnDispatcher(f.journal,f.runtime,null,capacity);
+  assert.equal(await dispatcher.tick(scope,1),null);assert.equal(f.store.snapshot()!.resourceWait?.ticketId,'ticket-one');assert.equal(dispatcher.nextWakeAt(scope),2000);assert.deepEqual(f.calls,[]);
+  const operationId=f.store.snapshot()!.resourceWait!.operationId;available=true;const running=await dispatcher.tick(scope,1);assert.equal(running?.id,turn.id);assert.deepEqual(running?.resourceLease,{operationId,leaseId:'lease-one'});assert.equal(f.store.snapshot()!.resourceWait,null);assert.deepEqual(f.acceptedInputs[0]!.capacityLease,{operationId,leaseId:'lease-one'});
+});
+test('capacity acquire transport loss reuses the operation reserved before RPC',async()=>{
+  const f=fixture(),turn=await queued(f,'capacity-transport'),operations:string[]=[],capacity:TurnCapacityPort={
+    async acquire(input){operations.push(input.operationId!);if(operations.length===1)throw Error('capacity-response-lost');return {status:'acquired',turnId:input.turnId,generation:input.generation,ticketId:'ticket-transport',operationId:input.operationId!,leaseId:'lease-transport'};},
+    async releaseNeverStarted(){throw Error('unexpected-never-started');},
+  },dispatcher=new TurnDispatcher(f.journal,f.runtime,null,capacity);
+  await assert.rejects(dispatcher.tick(scope,1),/capacity-response-lost/);const reserved=f.store.snapshot()!.resourceWait!;assert.equal(reserved.turnId,turn.id);assert.equal(reserved.ticketId,null);assert.ok(reserved.operationId);
+  const running=await dispatcher.tick(scope,1);assert.equal(running?.id,turn.id);assert.deepEqual(operations,[reserved.operationId,reserved.operationId]);assert.deepEqual(running?.resourceLease,{operationId:reserved.operationId,leaseId:'lease-transport'});
 });
 test('R2 receipt materialization is reconciled after a journal commit failure',async()=>{
   const f=fixture();await queued(f);f.setAccept(async input=>receipt(input,{phase:'terminal',outcome:'completed',stopped:stop,checkpoint}));
@@ -116,7 +139,7 @@ test('recovery hold observes a late commit only to release the workspace and nev
   const f=fixture(),turn=await queued(f),claim=await f.journal.claim(scope,1);
   await f.journal.beginCheckpoint(scope,{turnId:turn.id,dispatchId:claim!.turn.dispatchId!,runtimeGeneration:1,outcome:'completed'});
   await f.journal.failCheckpoint(scope,{turnId:turn.id,dispatchId:claim!.turn.dispatchId!,runtimeGeneration:1,errorCode:'turn-checkpoint-recovery-hold'});
-  f.setObserve(async input=>receipt(input,{phase:'terminal',outcome:'completed',stopped:stop,checkpoint}));
+  f.setObserve(async input=>receipt(input,{phase:'terminal',outcome:'completed',stopped:stop,checkpoint,resourceDisposition:{status:'released',...claim!.turn.resourceLease!,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,proofId:'late-release-proof',releasedAt:1006}}));
   const dispatcher=new TurnDispatcher(f.journal,f.runtime),observed=await dispatcher.tick(scope,1);
   assert.equal(observed?.status,'failed');assert.equal(observed?.checkpoint,null);assert.equal(f.journal.recovery(scope),null);
   const accepted=await f.journal.submit(scope,actor,turn.sessionId,'after-hold',{message:'new work'});assert.equal(accepted.turn.status,'queued');assert.deepEqual(f.calls,['observe']);

@@ -1,6 +1,6 @@
-import { TURN_EVENT_BYTES_LIMIT, TURN_EVENT_LIMIT, TURN_EVENT_RECEIPT_LIMIT, actor, checkpointReceipt, initialWorkspaceBase, jsonPayload, message, positive, sameScope, scope, title, turnDigest, turnId,
+import { TURN_EVENT_BYTES_LIMIT, TURN_EVENT_LIMIT, TURN_EVENT_RECEIPT_LIMIT, actor, checkpointReceipt, initialWorkspaceBase, jsonPayload, message, positive, resourceDisposition, sameScope, scope, title, turnDigest, turnId,
   type CheckpointReceipt, type InitialWorkspaceBase, type RuntimeEventType, type SessionRecord, type TurnActor, type TurnEvent,
-  type TurnEventType, type TurnJournalState, type TurnJournalView, type TurnRecord, type TurnScope } from './protocol.ts';
+  type TurnEventType, type TurnJournalState, type TurnJournalView, type TurnRecord, type TurnResourceDisposition, type TurnScope } from './protocol.ts';
 import type { AtomicTurnStore } from './store.ts';
 import type { TurnRuntimeIdentity } from '../turn-runtime/identity.ts';
 import { toolArtifactReference, type ToolArtifactReferenceInput } from '../artifacts/protocol.ts';
@@ -17,7 +17,7 @@ const equal=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
 function pruneTerminalEventReceipts(state:TurnJournalState){
   for(const [eventId,receipt] of Object.entries(state.eventReceipts)){const turn=state.turns[receipt.event.turnId];if(turn&&terminal(turn.status))delete state.eventReceipts[eventId];}
 }
-function fresh(s:TurnScope):TurnJournalState{return {schemaVersion:4,scope:s,nextSequence:1,oldestSequence:1,retentionBytes:0,activeTurnId:null,workspaceHead:null,recoveryHold:null,sessions:{},turns:{},sessionIntents:{},turnIntents:{},eventReceipts:{},events:[]};}
+function fresh(s:TurnScope):TurnJournalState{return {schemaVersion:5,scope:s,nextSequence:1,oldestSequence:1,retentionBytes:0,activeTurnId:null,workspaceHead:null,resourceWait:null,releaseHold:null,recoveryHold:null,sessions:{},turns:{},sessionIntents:{},turnIntents:{},eventReceipts:{},events:[]};}
 export function retainEventWindow(events:TurnEvent[],maxCount=TURN_EVENT_LIMIT,maxBytes=TURN_EVENT_BYTES_LIMIT){
   if(!Number.isSafeInteger(maxCount)||maxCount<1||!Number.isSafeInteger(maxBytes)||maxBytes<1)throw Error('invalid-event-retention');
   let bytes=0,start=events.length;
@@ -38,6 +38,23 @@ function sessionOf(state:TurnJournalState,id:string,expected:TurnScope):SessionR
   const found=state.sessions[turnId(id)];if(!found||!sameScope(found.scope,expected))throw Error('turn-session-not-found');return found;
 }
 function owned(turn:TurnRecord,a:TurnActor){if(turn.actor.userId!==a.userId||turn.actor.authVersion!==a.authVersion)throw Error('turn-not-found');}
+function checkedResource(turn:TurnRecord,value:unknown):Exclude<TurnResourceDisposition,{status:'active'}>{
+  const disposition=resourceDisposition(value);if(disposition.status==='active')throw Error('turn-resource-disposition-conflict');
+  if(turn.dispatchId!==disposition.dispatchId||turn.runtimeGeneration!==disposition.generation||turn.id!==disposition.turnId||turn.resourceLease?.operationId!==disposition.operationId||turn.resourceLease?.leaseId!==disposition.leaseId)throw Error('turn-resource-disposition-conflict');
+  return disposition;
+}
+function terminalResourceInput(turn:TurnRecord,value:TurnResourceDisposition|undefined,at:number):Exclude<TurnResourceDisposition,{status:'active'}>{
+  if(value!==undefined)return checkedResource(turn,value);
+  if(!turn.dispatchId||turn.runtimeGeneration===null||!turn.resourceLease)throw Error('turn-resource-disposition-conflict');
+  return {status:'released',operationId:turn.resourceLease.operationId,leaseId:turn.resourceLease.leaseId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration,proofId:`journal-release-${turn.dispatchId}`,releasedAt:at};
+}
+function applyReleaseDisposition(state:TurnJournalState,turn:TurnRecord,disposition:Exclude<TurnResourceDisposition,{status:'active'}>){
+  const current=state.releaseHold;
+  if(current&&(current.turnId!==disposition.turnId||current.dispatchId!==disposition.dispatchId||current.generation!==disposition.generation||current.operationId!==disposition.operationId||current.leaseId!==disposition.leaseId))throw Error('turn-resource-disposition-conflict');
+  if(disposition.status==='released'){if(current&&disposition.releasedAt<current.since)throw Error('turn-resource-disposition-conflict');state.releaseHold=null;return;}
+  if(current&&(disposition.since!==current.since||disposition.nextAttemptAt<current.nextAttemptAt||(current.status==='recovery-hold'&&disposition.status==='release-pending')))throw Error('turn-resource-disposition-conflict');
+  state.releaseHold={status:disposition.status,reasonCode:disposition.reasonCode,since:disposition.since,nextAttemptAt:disposition.nextAttemptAt,turnId:disposition.turnId,dispatchId:disposition.dispatchId,generation:disposition.generation,operationId:disposition.operationId,leaseId:disposition.leaseId};
+}
 
 export class TurnJournal{
   #store:AtomicTurnStore;#clock:()=>number;
@@ -55,16 +72,16 @@ export class TurnJournal{
   }
   async submit(rawScope:TurnScope,rawActor:TurnActor,sessionId:string,key:string,input:{message:unknown}){
     const s=scope(rawScope),a=actor(rawActor),sid=turnId(sessionId),normalized={message:message(input?.message)},payloadSha256=await turnDigest(normalized),id=crypto.randomUUID(),at=nowValid(this.#clock()),ik=`${intent(a.userId,key)}|${sid}`;
-    return this.#store.transact(current=>{const state=requireState(current,s);if(state.recoveryHold)throw Error('workspace-recovery-hold');const session=sessionOf(state,sid,s);if(session.actorUserId!==a.userId||session.actorAuthVersion!==a.authVersion)throw Error('turn-session-not-found');
+    return this.#store.transact(current=>{const state=requireState(current,s);const session=sessionOf(state,sid,s);if(session.actorUserId!==a.userId||session.actorAuthVersion!==a.authVersion)throw Error('turn-session-not-found');
       const prior=state.turnIntents[ik];if(prior){if(prior.payloadSha256!==payloadSha256)throw Error('turn-idempotency-conflict');return {state,value:{turn:state.turns[prior.turnId]!,replayed:true}};}
-      const turn:TurnRecord={id,sessionId:session.id,scope:s,actor:a,requestKey:key,payloadSha256,message:normalized.message,status:'queued',createdAt:at,updatedAt:at,startedAt:null,finishedAt:null,startedSequence:null,terminalSequence:null,dispatchId:null,runtimeGeneration:null,cancelRequestedAt:null,base:null,executionOutcome:null,errorCode:null,persistenceOutcome:null,persistenceErrorCode:null,checkpoint:null};
+      const turn:TurnRecord={id,sessionId:session.id,scope:s,actor:a,requestKey:key,payloadSha256,message:normalized.message,status:'queued',createdAt:at,updatedAt:at,startedAt:null,finishedAt:null,startedSequence:null,terminalSequence:null,dispatchId:null,runtimeGeneration:null,cancelRequestedAt:null,base:null,resourceLease:null,executionOutcome:null,errorCode:null,persistenceOutcome:null,persistenceErrorCode:null,checkpoint:null};
       state.turns[id]=turn;state.turnIntents[ik]={payloadSha256,turnId:id};event(state,turn,'turn.queued',at,{});return {state,value:{turn,replayed:false}};});
   }
   async claim(rawScope:TurnScope,runtimeGeneration:number){
     const result=this.#claimTail.then(()=>this.#claim(rawScope,runtimeGeneration));
     this.#claimTail=result.catch(()=>{});return result;
   }
-  async #claim(rawScope:TurnScope,runtimeGeneration:number){
+  async #claim(rawScope:TurnScope,runtimeGeneration:number,capacity?:{turnId:string;ticketId:string;operationId:string;leaseId:string}){
     const s=scope(rawScope),generation=positive(runtimeGeneration);if(generation!==s.workspaceGeneration)throw Error('turn-runtime-generation-conflict');
     // Resolve outside the synchronous SQLite transaction; the transaction
     // below rechecks authoritative heads before freezing a source into a Turn.
@@ -75,21 +92,27 @@ export class TurnJournal{
       if(!prepared&&this.#initial){try{prepared=initialWorkspaceBase(await this.#initial(s));}catch(error){if(!(error instanceof Error)||error.message!=='turn-initial-base-unavailable')throw error;initialUnavailable=true;}}
       if(prepared&&!sameScope(prepared.reference.scope,s))throw Error('initial-workspace-scope-denied');
     }
-    return this.#store.transact(current=>{const state=requireState(current,s);pruneTerminalEventReceipts(state);if(state.recoveryHold)return {state,value:null};
+    return this.#store.transact(current=>{const state=requireState(current,s);pruneTerminalEventReceipts(state);if(state.recoveryHold||state.releaseHold||(!capacity&&state.resourceWait))return {state,value:null};
       if(state.activeTurnId){const active=state.turns[state.activeTurnId];if(!active||terminal(active.status))throw Error('invalid-persisted-turn-journal');return {state,value:{turn:active,replayed:true}};}
       const next=Object.values(state.turns).filter(turn=>turn.status==='queued').sort((a,b)=>a.createdAt-b.createdAt||a.id.localeCompare(b.id))[0];if(!next)return {state,value:null};
+      if(capacity){const wait=state.resourceWait;if(next.id!==capacity.turnId||(wait&&(wait.turnId!==capacity.turnId||(wait.ticketId!==null&&wait.ticketId!==capacity.ticketId)||wait.operationId!==capacity.operationId)))throw Error('turn-resource-wait-conflict');}
       const at=nowValid(this.#clock());
       const initial=state.workspaceHead?undefined:this.#frozenInitial(state)??prepared;
       if(initialUnavailable&&!state.workspaceHead&&!initial){
         next.status='failed';next.executionOutcome='failed';next.errorCode='turn-initial-base-unavailable';next.updatedAt=at;next.finishedAt=at;
+        state.resourceWait=null;
         next.terminalSequence=event(state,next,'turn.failed',at,{queued:true,stage:'initial-workspace',saved:false,errorCode:next.errorCode}).sequence;
         return {state,value:{turn:next,replayed:false}};
       }
-      next.status='running';next.startedAt=at;next.updatedAt=at;next.dispatchId=crypto.randomUUID();next.runtimeGeneration=generation;
+      next.status='running';next.startedAt=at;next.updatedAt=at;next.dispatchId=crypto.randomUUID();next.runtimeGeneration=generation;next.resourceLease=capacity?{operationId:turnId(capacity.operationId),leaseId:turnId(capacity.leaseId)}:{operationId:crypto.randomUUID(),leaseId:crypto.randomUUID()};
       if(initial&&!sameScope(initial.reference.scope,s))throw Error('initial-workspace-scope-denied');
       next.base=structuredClone({workspace:state.workspaceHead,session:state.sessions[next.sessionId]!.head,...(initial?{initial}: {})});
-      state.activeTurnId=next.id;next.startedSequence=event(state,next,'turn.started',at,{}).sequence;return {state,value:{turn:next,replayed:false}};});
+      state.resourceWait=null;state.activeTurnId=next.id;next.startedSequence=event(state,next,'turn.started',at,{}).sequence;return {state,value:{turn:next,replayed:false}};});
   }
+  admissionCandidate(rawScope:TurnScope){const s=scope(rawScope),state=requireState(this.#store.read(),s);if(state.activeTurnId||state.recoveryHold||state.releaseHold)return null;const turn=Object.values(state.turns).filter(row=>row.status==='queued').sort((a,b)=>a.createdAt-b.createdAt||a.id.localeCompare(b.id))[0];if(!turn)return null;if(state.resourceWait&&state.resourceWait.turnId!==turn.id)throw Error('invalid-persisted-turn-journal');return {turn:structuredClone(turn),wait:structuredClone(state.resourceWait)};}
+  activeTurn(rawScope:TurnScope){const s=scope(rawScope),state=requireState(this.#store.read(),s);if(!state.activeTurnId)return null;const turn=state.turns[state.activeTurnId];if(!turn||terminal(turn.status))throw Error('invalid-persisted-turn-journal');return structuredClone(turn);}
+  async beginResourceWait(rawScope:TurnScope,input:{turnId:string;ticketId?:string|null;operationId:string;reasonCode?:string;since?:number;nextAttemptAt?:number}){const s=scope(rawScope),at=nowValid(this.#clock()),since=positive(input.since??at),nextAttemptAt=positive(input.nextAttemptAt??(at+1000)),normalized={status:'waiting' as const,turnId:turnId(input.turnId),ticketId:input.ticketId==null?null:turnId(input.ticketId),operationId:turnId(input.operationId),leaseId:null,reasonCode:turnId(input.reasonCode??'trusted-pi-capacity-requesting'),since,nextAttemptAt};if(normalized.nextAttemptAt<normalized.since)throw Error('invalid-turn-resource-wait');return this.#store.transact(current=>{const state=requireState(current,s);if(state.activeTurnId||state.recoveryHold||state.releaseHold)throw Error('turn-resource-wait-conflict');const next=Object.values(state.turns).filter(row=>row.status==='queued').sort((a,b)=>a.createdAt-b.createdAt||a.id.localeCompare(b.id))[0];if(!next||next.id!==normalized.turnId)throw Error('turn-resource-wait-conflict');const currentWait=state.resourceWait;if(currentWait){if(currentWait.turnId!==normalized.turnId||currentWait.operationId!==normalized.operationId||(currentWait.ticketId!==null&&currentWait.ticketId!==normalized.ticketId))throw Error('turn-resource-wait-conflict');normalized.ticketId=currentWait.ticketId??normalized.ticketId;normalized.since=currentWait.since;}state.resourceWait=normalized;return {state,value:structuredClone(normalized)};});}
+  async consumeResourceLeaseAndClaim(rawScope:TurnScope,runtimeGeneration:number,input:{turnId:string;ticketId:string;operationId:string;leaseId:string}){const normalized={turnId:turnId(input.turnId),ticketId:turnId(input.ticketId),operationId:turnId(input.operationId),leaseId:turnId(input.leaseId)};return this.#claim(rawScope,runtimeGeneration,normalized);}
   async appendRuntime(rawScope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;eventId:string;type:RuntimeEventType;at:number;payload:unknown}){
     const s=scope(rawScope),tid=turnId(input.turnId),dispatchId=turnId(input.dispatchId),generation=positive(input.runtimeGeneration),eid=turnId(input.eventId),at=nowValid(input.at),observedAt=nowValid(this.#clock()),payload=jsonPayload(input.payload);
     if(!['assistant.delta','assistant.message','tool.started','tool.updated','tool.completed','provider.status'].includes(input.type))throw Error('invalid-runtime-event-type');
@@ -119,13 +142,13 @@ export class TurnJournal{
       const cancellationDisposition=turn.status==='cancelling'&&!['cancelled','interrupted'].includes(input.outcome)?'already-terminal':null;
       turn.status='checkpointing';turn.executionOutcome=input.outcome;turn.errorCode=input.errorCode??null;turn.persistenceOutcome=null;turn.persistenceErrorCode=null;turn.updatedAt=at;event(state,turn,'turn.checkpointing',at,{executionOutcome:input.outcome,errorCode:turn.errorCode,...(cancellationDisposition?{cancellationDisposition}:{})});return {state,value:turn};});
   }
-  async commitCheckpoint(rawScope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;checkpoint:CheckpointReceipt}){
+  async commitCheckpoint(rawScope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;checkpoint:CheckpointReceipt;resourceDisposition?:TurnResourceDisposition}){
     const s=scope(rawScope),tid=turnId(input.turnId),dispatchId=turnId(input.dispatchId),generation=positive(input.runtimeGeneration),at=nowValid(this.#clock()),c=input.checkpoint;
     const checkpoint=checkpointReceipt(c);
     if(checkpoint.committedAt>at)throw Error('invalid-checkpoint-receipt');
-    return this.#store.transact(current=>{const state=requireState(current,s),turn=state.turns[tid];if(!turn||turn.dispatchId!==dispatchId||turn.runtimeGeneration!==generation||!turn.executionOutcome)throw Error('turn-runtime-scope-denied');
+    return this.#store.transact(current=>{const state=requireState(current,s),turn=state.turns[tid];if(!turn||turn.dispatchId!==dispatchId||turn.runtimeGeneration!==generation||!turn.executionOutcome)throw Error('turn-runtime-scope-denied');const disposition=terminalResourceInput(turn,input.resourceDisposition,at);
       if(terminal(turn.status)){
-        if(turn.persistenceOutcome==='saved'&&turn.checkpoint&&equal(turn.checkpoint,checkpoint)){pruneTerminalEventReceipts(state);return {state,value:turn};}
+        if(turn.persistenceOutcome==='saved'&&turn.checkpoint&&equal(turn.checkpoint,checkpoint)){applyReleaseDisposition(state,turn,disposition);pruneTerminalEventReceipts(state);return {state,value:turn};}
         throw Error('turn-checkpoint-conflict');
       }
       if(turn.status!=='checkpointing')throw Error('turn-runtime-scope-denied');
@@ -133,18 +156,18 @@ export class TurnJournal{
       // ProductTurnRuntime materializes R2 before WorkspaceAgent records its
       // checkpointing intent, so its committedAt can legitimately precede the
       // local checkpointing event. It may not precede execution evidence.
-      if(checkpoint.committedAt<lastExecutionAt)throw Error('invalid-checkpoint-receipt');if(turn.checkpoint&&!equal(turn.checkpoint,checkpoint))throw Error('turn-checkpoint-conflict');turn.checkpoint=checkpoint;turn.persistenceOutcome='saved';turn.persistenceErrorCode=null;turn.status=turn.executionOutcome;turn.finishedAt=at;turn.updatedAt=at;state.workspaceHead=structuredClone(checkpoint);const session=state.sessions[turn.sessionId]!;session.head=structuredClone(checkpoint);session.updatedAt=at;state.activeTurnId=null;
+      if(checkpoint.committedAt<lastExecutionAt)throw Error('invalid-checkpoint-receipt');if(turn.checkpoint&&!equal(turn.checkpoint,checkpoint))throw Error('turn-checkpoint-conflict');turn.checkpoint=checkpoint;turn.persistenceOutcome='saved';turn.persistenceErrorCode=null;turn.status=turn.executionOutcome;turn.finishedAt=at;turn.updatedAt=at;state.workspaceHead=structuredClone(checkpoint);const session=state.sessions[turn.sessionId]!;session.head=structuredClone(checkpoint);session.updatedAt=at;state.activeTurnId=null;applyReleaseDisposition(state,turn,disposition);
       const type=`turn.${turn.status}` as TurnEventType;turn.terminalSequence=event(state,turn,type,at,{revisionId:checkpoint.revisionId,saved:true,errorCode:turn.errorCode}).sequence;pruneTerminalEventReceipts(state);return {state,value:turn};});
   }
-  async failCheckpoint(rawScope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;errorCode:string}){
+  async failCheckpoint(rawScope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;errorCode:string;resourceDisposition?:TurnResourceDisposition}){
     const s=scope(rawScope),tid=turnId(input.turnId),dispatchId=turnId(input.dispatchId),generation=positive(input.runtimeGeneration),errorCode=turnId(input.errorCode),at=nowValid(this.#clock());
-    return this.#store.transact(current=>{const state=requireState(current,s),turn=state.turns[tid];if(!turn||turn.dispatchId!==dispatchId||turn.runtimeGeneration!==generation||!turn.executionOutcome)throw Error('turn-runtime-scope-denied');
+    return this.#store.transact(current=>{const state=requireState(current,s),turn=state.turns[tid];if(!turn||turn.dispatchId!==dispatchId||turn.runtimeGeneration!==generation||!turn.executionOutcome)throw Error('turn-runtime-scope-denied');const disposition=terminalResourceInput(turn,input.resourceDisposition,at);
       if(terminal(turn.status)){
-        if(turn.persistenceOutcome==='failed'&&turn.persistenceErrorCode===errorCode){pruneTerminalEventReceipts(state);return {state,value:turn};}
+        if(turn.persistenceOutcome==='failed'&&turn.persistenceErrorCode===errorCode){applyReleaseDisposition(state,turn,disposition);pruneTerminalEventReceipts(state);return {state,value:turn};}
         throw Error('turn-checkpoint-conflict');
       }
       if(turn.status!=='checkpointing')throw Error('turn-runtime-scope-denied');
-      turn.persistenceOutcome='failed';turn.persistenceErrorCode=errorCode;turn.status='failed';turn.finishedAt=at;turn.updatedAt=at;state.activeTurnId=null;if(errorCode==='turn-checkpoint-recovery-hold')state.recoveryHold={status:'reconciling',reasonCode:errorCode,since:at,nextAttemptAt:at+60_000,turnId:turn.id,dispatchId,runtimeGeneration:generation};
+      turn.persistenceOutcome='failed';turn.persistenceErrorCode=errorCode;turn.status='failed';turn.finishedAt=at;turn.updatedAt=at;state.activeTurnId=null;applyReleaseDisposition(state,turn,disposition);if(errorCode==='turn-checkpoint-recovery-hold')state.recoveryHold={status:'reconciling',reasonCode:errorCode,since:at,nextAttemptAt:at+60_000,turnId:turn.id,dispatchId,runtimeGeneration:generation};
       turn.terminalSequence=event(state,turn,'turn.failed',at,{saved:false,executionOutcome:turn.executionOutcome,persistenceErrorCode:errorCode}).sequence;pruneTerminalEventReceipts(state);return {state,value:turn};
     });
   }
@@ -152,7 +175,9 @@ export class TurnJournal{
     const state=requireState(this.#store.read(),s);if(afterSequence>=state.nextSequence)throw Error('invalid-event-cursor');const gap=afterSequence<state.oldestSequence-1;if(gap)return {events:[],nextSequence:state.nextSequence,hasMore:false,oldestSequence:state.oldestSequence,snapshotRequired:true};const events=state.events.filter(row=>row.sequence>afterSequence).slice(0,limit);return {events,nextSequence:events.at(-1)?.sequence??afterSequence,hasMore:state.events.some(row=>row.sequence>(events.at(-1)?.sequence??afterSequence)),oldestSequence:state.oldestSequence,snapshotRequired:false};}
   async compact(rawScope:TurnScope,maxCount=TURN_EVENT_LIMIT,maxBytes=TURN_EVENT_BYTES_LIMIT){const s=scope(rawScope);return this.#store.transact(current=>{const state=requireState(current,s);pruneTerminalEventReceipts(state);const retained=retainEventWindow(state.events,maxCount,maxBytes);state.events=retained.events;state.oldestSequence=retained.oldestSequence;state.retentionBytes=retained.retentionBytes;return {state,value:{oldestSequence:state.oldestSequence,retentionBytes:state.retentionBytes,removed:state.nextSequence-1-state.events.length}};});}
   async snapshot(rawScope:TurnScope){const s=scope(rawScope);return requireState(this.#store.read(),s);}
-  recovery(rawScope:TurnScope){const s=scope(rawScope),state=requireState(this.#store.read(),s);if(!state.recoveryHold)return null;const turn=state.turns[state.recoveryHold.turnId];if(!turn||!turn.dispatchId||turn.runtimeGeneration===null)throw Error('invalid-persisted-turn-journal');return {hold:structuredClone(state.recoveryHold),turn:structuredClone(turn),identity:{scope:s,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration}};}
+  recovery(rawScope:TurnScope){const s=scope(rawScope),state=requireState(this.#store.read(),s);if(!state.recoveryHold)return null;const turn=state.turns[state.recoveryHold.turnId];if(!turn||!turn.dispatchId||turn.runtimeGeneration===null||!turn.resourceLease)throw Error('invalid-persisted-turn-journal');return {hold:structuredClone(state.recoveryHold),turn:structuredClone(turn),identity:{scope:s,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration},resourceLease:structuredClone(turn.resourceLease)};}
+  releaseRecovery(rawScope:TurnScope){const s=scope(rawScope),state=requireState(this.#store.read(),s);if(!state.releaseHold)return null;const turn=state.turns[state.releaseHold.turnId];if(!turn||!turn.dispatchId||turn.runtimeGeneration===null||!turn.resourceLease)throw Error('invalid-persisted-turn-journal');return {hold:structuredClone(state.releaseHold),turn:structuredClone(turn),identity:{scope:s,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration},resourceLease:structuredClone(turn.resourceLease)};}
+  async advanceRelease(rawScope:TurnScope,rawDisposition:TurnResourceDisposition){const s=scope(rawScope),disposition=resourceDisposition(rawDisposition);if(disposition.status==='active')throw Error('turn-resource-disposition-conflict');return this.#store.transact(current=>{const state=requireState(current,s),hold=state.releaseHold;if(!hold)throw Error('turn-resource-hold-not-found');const turn=state.turns[hold.turnId];if(!turn||!terminal(turn.status))throw Error('invalid-persisted-turn-journal');const checked=checkedResource(turn,disposition);applyReleaseDisposition(state,turn,checked);return {state,value:structuredClone(state.releaseHold)};});}
   async advanceRecovery(rawScope:TurnScope,resolution:'committed'|'aborted'|'pending'){const s=scope(rawScope),next=nowValid(this.#clock())+60_000;return this.#store.transact(current=>{const state=requireState(current,s),hold=state.recoveryHold;if(!hold)return {state,value:null};if(resolution==='pending'){hold.nextAttemptAt=Math.max(hold.nextAttemptAt,next);return {state,value:structuredClone(hold)};}state.recoveryHold=null;return {state,value:null};});}
   /** Local current-call anchor. Runtime lease, plugin, Catalog and Preview
    * authority are checked separately; this does not mint a browser grant. */
@@ -194,8 +219,8 @@ export class TurnJournal{
   }
   async workspaceRevision(rawScope:TurnScope){return this.workspaceRevisionSnapshot(rawScope);}
   async view(rawScope:TurnScope):Promise<TurnJournalView>{const state=await this.snapshot(rawScope),turns:TurnJournalView['turns']={};
-    for(const [id,turn] of Object.entries(state.turns)){const {requestKey:_,payloadSha256:__,dispatchId:___,base:____,startedSequence:_____,terminalSequence:______,...safe}=turn;turns[id]=safe;}
+    for(const [id,turn] of Object.entries(state.turns)){const {requestKey:_,payloadSha256:__,dispatchId:___,base:____,resourceLease:_____,startedSequence:______,terminalSequence:_______,...safe}=turn;turns[id]=safe;}
     const sessions:TurnJournalView['sessions']={};for(const [id,session] of Object.entries(state.sessions)){const {actorUserId:_,actorAuthVersion:__,...safe}=session;sessions[id]=safe;}
-    const recoveryHold=state.recoveryHold&&{status:state.recoveryHold.status,reasonCode:state.recoveryHold.reasonCode,since:state.recoveryHold.since,nextAttemptAt:state.recoveryHold.nextAttemptAt};return {schemaVersion:2,scope:state.scope,nextSequence:state.nextSequence,activeTurnId:state.activeTurnId,recoveryHold,sessions,turns};
+    const resourceWait=state.resourceWait&&{status:state.resourceWait.status,reasonCode:state.resourceWait.reasonCode,since:state.resourceWait.since,nextAttemptAt:state.resourceWait.nextAttemptAt},releaseHold=state.releaseHold&&{status:state.releaseHold.status,reasonCode:state.releaseHold.reasonCode,since:state.releaseHold.since,nextAttemptAt:state.releaseHold.nextAttemptAt},recoveryHold=state.recoveryHold&&{status:state.recoveryHold.status,reasonCode:state.recoveryHold.reasonCode,since:state.recoveryHold.since,nextAttemptAt:state.recoveryHold.nextAttemptAt};return {schemaVersion:3,scope:state.scope,nextSequence:state.nextSequence,activeTurnId:state.activeTurnId,resourceWait,releaseHold,recoveryHold,sessions,turns};
   }
 }

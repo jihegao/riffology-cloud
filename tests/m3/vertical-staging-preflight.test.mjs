@@ -23,6 +23,14 @@ test('paused mode closes turn admission while retaining read and preview gates',
   assert.deepEqual(validateStagingTopology(value,migrations()).filter(item=>item.status!=='passed').map(item=>item.name),['turn-admission-paused']);
 });
 
+test('staging topology requires the application TrustedPi capacity singleton and fixed policy',()=>{
+  const value=config();
+  value.durable_objects.bindings=value.durable_objects.bindings.filter(item=>item.name!=='TRUSTED_PI_CAPACITY');
+  delete value.exports.TrustedPiCapacity;value.vars.TRUSTED_PI_CAPACITY_LIMIT='2';
+  const failed=new Set(validateStagingTopology(value,migrations()).filter(item=>item.status!=='passed').map(item=>item.name));
+  assert.deepEqual(failed,new Set(['tenant-capacity','durable-bindings','durable-exports']));
+});
+
 test('release mode rejects mixed gates, observer enablement, local images and storage sharing',()=>{
   const value=config();
   value.vars.M2_TURNS_ENABLED='true';

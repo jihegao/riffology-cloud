@@ -5,7 +5,7 @@ import type { TurnActor, TurnRecord, TurnScope } from '../../services/turn/proto
 
 const scope:TurnScope={tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1};
 const actor:TurnActor={userId:'user-a',authVersion:1};
-function turn(status:TurnRecord['status']='running'):TurnRecord{return {id:'turn-one',sessionId:'session-one',scope,actor,requestKey:'request-one',payloadSha256:'a'.repeat(64),message:'Build',status,createdAt:1,updatedAt:1,startedAt:1,finishedAt:null,startedSequence:1,terminalSequence:null,dispatchId:'dispatch-one',runtimeGeneration:1,cancelRequestedAt:null,base:{workspace:null,session:null},executionOutcome:null,errorCode:null,persistenceOutcome:null,persistenceErrorCode:null,checkpoint:null};}
+function turn(status:TurnRecord['status']='running'):TurnRecord{return {id:'turn-one',sessionId:'session-one',scope,actor,requestKey:'request-one',payloadSha256:'a'.repeat(64),message:'Build',status,createdAt:1,updatedAt:1,startedAt:1,finishedAt:null,startedSequence:1,terminalSequence:null,dispatchId:'dispatch-one',runtimeGeneration:1,cancelRequestedAt:null,base:{workspace:null,session:null},resourceLease:{operationId:'operation-one',leaseId:'lease-one'},executionOutcome:null,errorCode:null,persistenceOutcome:null,persistenceErrorCode:null,checkpoint:null};}
 function fixture(){
   let now=1000,tick:()=>Promise<TurnRecord|null>=async()=>turn(),cancel:()=>Promise<TurnRecord>=async()=>turn('cancelling'),scheduleFails=false,cleared=0;const scheduled:number[]=[];
   const dispatcher:TurnAlarmDispatcher={tick:()=>tick(),cancel:()=>cancel()};

@@ -4,6 +4,7 @@ import type { TurnRuntimeIdentity } from './identity.ts';
 import type { ProjectWorkspaceRpc } from './workspace.ts';
 import type { TrustedPiSandboxProcessApi } from './pi-native.ts';
 import { revisionStoreActorName, type RevisionStoreNamespace } from './revision-store-client.ts';
+import { trustedPiCapacityClient, type TrustedPiCapacityNamespace } from '../capacity/client.ts';
 
 export type { ProductTurnRuntimeRelease } from './release.ts';
 
@@ -12,6 +13,7 @@ export interface ProductTurnRuntimeReleaseEnv extends ProductTurnRuntimeHostEnv 
   REVISION_STORE: RevisionStoreNamespace;
   PROJECT_SANDBOX: {idFromName(name:string):unknown;getByName(name:string):unknown};
   TRUSTED_PI_SANDBOX: {idFromName(name:string):unknown;getByName(name:string):unknown};
+  TRUSTED_PI_CAPACITY: TrustedPiCapacityNamespace;
 }
 export interface ProductTurnRuntimeSandboxResolver{
   project(env:ProductTurnRuntimeReleaseEnv,actorId:string):ProjectWorkspaceRpc;
@@ -22,7 +24,8 @@ function configured(raw:ProductTurnRuntimeHostEnv):ProductTurnRuntimeReleaseEnv{
   const env=raw as ProductTurnRuntimeReleaseEnv;
   if(!env.REVISION_STORE?.getByName
     ||!env.PROJECT_SANDBOX?.idFromName||!env.PROJECT_SANDBOX?.getByName
-    ||!env.TRUSTED_PI_SANDBOX?.idFromName||!env.TRUSTED_PI_SANDBOX?.getByName)throw Error('product-turn-runtime-release-dependencies-required');
+    ||!env.TRUSTED_PI_SANDBOX?.idFromName||!env.TRUSTED_PI_SANDBOX?.getByName
+    ||!env.TRUSTED_PI_CAPACITY?.getByName)throw Error('product-turn-runtime-release-dependencies-required');
   return env;
 }
 
@@ -41,5 +44,6 @@ export function productTurnRuntimeRelease(
     revisions:env.REVISION_STORE.getByName(revisionStoreActorName(identity.scope)),
     resolveProjectSandbox(actorId){return sandboxes.project(env,actorId);},
     resolveTrustedPiSandbox(actorId){return sandboxes.trustedPi(env,actorId);},
+    capacity:trustedPiCapacityClient(env.TRUSTED_PI_CAPACITY),
   });
 }

@@ -7,11 +7,14 @@ interface __BaseEnv_GatewayEnv {
 	APP_ORIGIN: "http://127.0.0.1:8795";
 	TENANT_QUOTA_CAPACITY: "1";
 	TENANT_QUOTA_POLICY_VERSION: "m1-v1";
+	TRUSTED_PI_CAPACITY_LIMIT: "1";
+	TRUSTED_PI_CAPACITY_POLICY_VERSION: "m2-trusted-pi-v1";
 	M2_TURNS_ENABLED: "false";
 	BETTER_AUTH_SECRET: string;
 	GOOGLE_CLIENT_ID: string;
 	GOOGLE_CLIENT_SECRET: string;
 	TENANT_QUOTA: DurableObjectNamespace<import("./index").TenantQuota>;
+	TRUSTED_PI_CAPACITY: DurableObjectNamespace<import("./index").TrustedPiCapacity>;
 	WORKSPACE_AGENT: DurableObjectNamespace<import("./index").WorkspaceAgent>;
 	PROJECT_RUNTIME: DurableObjectNamespace<import("./index").ProjectRuntime>;
 	PRODUCT_TURN_RUNTIME: DurableObjectNamespace<import("./index").ProductTurnRuntime>;
@@ -20,7 +23,7 @@ interface __BaseEnv_GatewayEnv {
 declare namespace Cloudflare {
 	interface GlobalProps {
 		mainModule: typeof import("./index");
-		durableNamespaces: "TenantQuota" | "WorkspaceAgent" | "ProjectRuntime" | "ProductTurnRuntime" | "RevisionStore";
+		durableNamespaces: "TenantQuota" | "TrustedPiCapacity" | "WorkspaceAgent" | "ProjectRuntime" | "ProductTurnRuntime" | "RevisionStore";
 	}
 	interface Env extends __BaseEnv_GatewayEnv {}
 }

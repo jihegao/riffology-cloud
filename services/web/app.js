@@ -36,6 +36,12 @@ let workspaceArtifactPanel = 'files';
 const POLL_WINDOW_MS = 300000;
 const TERMINAL_TURNS = new Set(['completed', 'failed', 'cancelled', 'interrupted']);
 
+function workspaceNeedsTurnUpdates(snapshot = workspaceSnapshot) {
+  if (!snapshot) return false;
+  if (snapshot.activeTurnId || snapshot.resourceWait || snapshot.releaseHold || snapshot.recoveryHold) return true;
+  return Object.values(snapshot.turns || {}).some(turn => turn?.status === 'queued');
+}
+
 function show(message, error = false, action = null) {
   notice.replaceChildren();
   const text = document.createElement('span');
@@ -247,6 +253,14 @@ function renderWorkspace() {
     sessionSelect.value = selectedSessionId || '';
     sessionSelect.disabled = !sessions.length;
   }
+  if (workspaceSnapshot.releaseHold) {
+    const detail = workspaceSnapshot.releaseHold.status === 'recovery-hold'
+      ? '资源释放仍未确认，系统会继续安全恢复；文件和差异仍可读取。'
+      : '释放确认完成后，下一轮会自动开始。';
+    appendTurnCard('system', '上一轮已保存，正在等待执行资源释放。', detail);
+  } else if (workspaceSnapshot.resourceWait) {
+    appendTurnCard('system', '回合已排队，正在等待执行资源。', '获得应用运行许可后会自动开始。');
+  }
   const turns = Object.values(workspaceSnapshot.turns || {}).filter(turn => turn.sessionId === selectedSessionId).sort((a, b) => a.createdAt - b.createdAt);
   if (!turns.length) {
     const empty = document.createElement('p');
@@ -331,7 +345,7 @@ async function readWorkspaceEvents(workspaceId) {
 
 function connectEventStream(workspaceId, cursor, generation) {
   stopEventStream();
-  if (!workspaceSnapshot?.activeTurnId || document.hidden || generation !== viewGeneration) return;
+  if (!workspaceNeedsTurnUpdates() || document.hidden || generation !== viewGeneration) return;
   const source = new EventSource(`/api/workspaces/${encodeURIComponent(workspaceId)}/events?after_sequence=${cursor}`);
   eventSource = source;
   const eventTypes = ['turn.queued', 'turn.started', 'turn.cancel_requested', 'turn.checkpointing', 'turn.completed', 'turn.failed', 'turn.cancelled', 'turn.interrupted', 'assistant.delta', 'assistant.message', 'tool.started', 'tool.updated', 'tool.completed', 'provider.status'];
