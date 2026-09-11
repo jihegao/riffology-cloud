@@ -16,19 +16,21 @@ export interface TurnExecutionPort{
 }
 export type TurnCheckpointInput={identity:TurnRuntimeIdentity;outcome:'completed'|'failed'|'cancelled'|'interrupted';executionErrorCode:string|null;base:TurnBaseCheckpoints};
 export type TurnCheckpointIntent={operationId:string;inputSha256:string};
+export type TurnCheckpointResolution={status:'committed';receipt:CheckpointReceipt}|{status:'absent'|'pending'|'unavailable'|'conflict'|'aborted'};
 export function turnCheckpointOperationId(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);return `commit:${identity.scope.tenantId}:${identity.scope.projectId}:${identity.scope.workspaceId}:${identity.generation}:${identity.sessionId}:${identity.turnId}:${identity.dispatchId}`;}
 /** Materializes immutable checkpoint objects and returns their verified
  * receipt. The Workspace TurnJournal remains the authoritative product commit
  * and must durably record this receipt before a Turn is reported as saved. */
 export interface TurnCheckpointPort{
   prepare(input:TurnCheckpointInput):Promise<TurnCheckpointIntent>;
-  commit(input:TurnCheckpointInput,intent:TurnCheckpointIntent):Promise<CheckpointReceipt>;
-  reconcile(identity:TurnRuntimeIdentity,intent:TurnCheckpointIntent):Promise<CheckpointReceipt|null>;
-  abandon?(identity:TurnRuntimeIdentity,intent:TurnCheckpointIntent):Promise<{status:'committed';receipt:CheckpointReceipt}|{status:'aborted'|'pending'|'unavailable'|'conflict'}>;
+  commit(input:TurnCheckpointInput,intent:TurnCheckpointIntent):Promise<TurnCheckpointResolution>;
+  reconcile(identity:TurnRuntimeIdentity,intent:TurnCheckpointIntent):Promise<TurnCheckpointResolution>;
+  abandon?(identity:TurnRuntimeIdentity,intent:TurnCheckpointIntent):Promise<TurnCheckpointResolution>;
 }
 type State={schemaVersion:2|3|4;executionDeadlineAt?:number;identity:TurnRuntimeIdentity;actor:TurnActor|null;base:TurnBaseCheckpoints;messageSha256:string;message:string|null;phase:'running'|'unknown'|'terminal';outcome:'completed'|'failed'|'cancelled'|'interrupted'|null;executionErrorCode:string|null;acceptReserved:true;executionReserved:true;resourceLease:TurnResourceLease;capacityManaged:boolean;capacityDispatchReserved:boolean;capacityDispatchConfirmed:boolean;nativeStartReserved:boolean;cancelRequestedAt:number|null;startedAt:number;settledAt:number|null;events:TurnRuntimeEvent[];checkpointIntent:TurnCheckpointIntent|null;checkpointCommitReserved:boolean;legacyCheckpointUnknown:boolean;checkpoint:CheckpointReceipt|null;persistenceErrorCode:string|null;stopped:TurnStopReceipt|null};
 type ReleaseState={schemaVersion:2;operationId:string;leaseId:string;begunAt:number;deadlineAt:number;attempts:number;nextAttemptAt:number;absentSince:number|null;status:'release-pending'|'recovery-hold'|'released';reasonCode:string;proof:TrustedPiCapacityStopProof|null;releasedAt:number|null};
-type CheckpointRecoveryState={schemaVersion:1;operationId:string;firstFailedAt:number;attempts:number;lastErrorCode:string;nextAttemptAt:number;deadlineAt:number};
+type CheckpointRecoveryStage='prepare'|'commit'|'reconcile'|'abandon';
+type CheckpointRecoveryState={schemaVersion:2;stage:CheckpointRecoveryStage;operationId:string|null;inputSha256:string|null;attempts:number;lastReason:string;nextAttemptAt:number;deadlineAt:number};
 export type ProductTurnReleaseTiming={retryMs:number;assignmentGuardMs:number;quietMs:number;deadlineMs:number;holdRetryMs:number};
 type Row=Record<string,SqlStorageValue>;
 const EVENT_TYPES=new Set<TurnRuntimeEvent['type']>(['assistant.delta','assistant.message','tool.started','tool.updated','tool.completed','provider.status']);
@@ -37,7 +39,7 @@ const OUTCOMES=new Set<NonNullable<State['outcome']>>(['completed','failed','can
 // checkpoint preparation would allocate fresh Sandboxes and could turn an
 // input-integrity failure into new project-side effects.
 const NON_PERSISTABLE_EXECUTION_ERRORS=new Set(['turn-base-unavailable','turn-native-execution-absent','turn-native-exit-failed','turn-native-result-missing']);
-const MAX_RUNTIME_EVENT_BYTES=2*1024*1024,DEFAULT_RELEASE_TIMING:ProductTurnReleaseTiming={retryMs:5000,assignmentGuardMs:360000,quietMs:30000,deadlineMs:600000,holdRetryMs:60000},encoder=new TextEncoder();
+const MAX_RUNTIME_EVENT_BYTES=2*1024*1024,CHECKPOINT_RECOVERY_MS=120_000,CHECKPOINT_HOLD_RETRY_MS=60_000,DEFAULT_RELEASE_TIMING:ProductTurnReleaseTiming={retryMs:5000,assignmentGuardMs:360000,quietMs:30000,deadlineMs:600000,holdRetryMs:60000},encoder=new TextEncoder();
 function reject(code:string):never{throw Error(code);}
 function exact(value:unknown,keys:string[],code:string):asserts value is Record<string,unknown>{if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype||Object.keys(value).length!==keys.length||keys.some(key=>!Object.hasOwn(value,key)))reject(code);}
 function optionalCode(value:unknown):string|null{return value===null?null:turnId(value);}
@@ -59,7 +61,35 @@ function releaseState(value:unknown,identity:TurnRuntimeIdentity,lease:TurnResou
   if(value.status==='released'){if(!proof||releasedAt===null||releasedAt<proof.observedAt||nextAttemptAt!==releasedAt)reject('invalid-product-turn-release-state');}else if(releasedAt!==null)reject('invalid-product-turn-release-state');
   return {schemaVersion:2,operationId:lease.operationId,leaseId:lease.leaseId,begunAt,deadlineAt,attempts,nextAttemptAt,absentSince,status:value.status as ReleaseState['status'],reasonCode,proof,releasedAt};
 }
-function checkpointRecovery(value:unknown,identity:TurnRuntimeIdentity):CheckpointRecoveryState{exact(value,['schemaVersion','operationId','firstFailedAt','attempts','lastErrorCode','nextAttemptAt','deadlineAt'],'invalid-product-turn-checkpoint-recovery');if(value.schemaVersion!==1||value.operationId!==turnCheckpointOperationId(identity))reject('invalid-product-turn-checkpoint-recovery');const firstFailedAt=positive(value.firstFailedAt),attempts=positive(value.attempts),nextAttemptAt=positive(value.nextAttemptAt),deadlineAt=positive(value.deadlineAt),lastErrorCode=turnId(value.lastErrorCode);if(deadlineAt!==firstFailedAt+120_000||nextAttemptAt<firstFailedAt)reject('invalid-product-turn-checkpoint-recovery');return {schemaVersion:1,operationId:value.operationId,firstFailedAt,attempts,lastErrorCode,nextAttemptAt,deadlineAt};}
+function checkpointRecovery(value:unknown,identity:TurnRuntimeIdentity,prepared:TurnCheckpointIntent|null,settledAt:number):CheckpointRecoveryState{
+  if(value&&typeof value==='object'&&!Array.isArray(value)&&(value as Record<string,unknown>).schemaVersion===1){
+    exact(value,['schemaVersion','operationId','firstFailedAt','attempts','lastErrorCode','nextAttemptAt','deadlineAt'],'invalid-product-turn-checkpoint-recovery');
+    if(!prepared||value.operationId!==prepared.operationId||value.operationId!==turnCheckpointOperationId(identity))reject('invalid-product-turn-checkpoint-recovery');
+    const firstFailedAt=positive(value.firstFailedAt),attempts=positive(value.attempts),nextAttemptAt=positive(value.nextAttemptAt),deadlineAt=positive(value.deadlineAt),lastReason=turnId(value.lastErrorCode);
+    if(deadlineAt!==firstFailedAt+CHECKPOINT_RECOVERY_MS||nextAttemptAt<firstFailedAt)reject('invalid-product-turn-checkpoint-recovery');
+    return {schemaVersion:2,stage:'reconcile',operationId:prepared.operationId,inputSha256:prepared.inputSha256,attempts,lastReason,nextAttemptAt,deadlineAt};
+  }
+  exact(value,['schemaVersion','stage','operationId','inputSha256','attempts','lastReason','nextAttemptAt','deadlineAt'],'invalid-product-turn-checkpoint-recovery');
+  if(value.schemaVersion!==2||!['prepare','commit','reconcile','abandon'].includes(value.stage as string))reject('invalid-product-turn-checkpoint-recovery');
+  const stage=value.stage as CheckpointRecoveryStage,attempts=nonnegative(value.attempts,'invalid-product-turn-checkpoint-recovery'),lastReason=turnId(value.lastReason),nextAttemptAt=positive(value.nextAttemptAt),deadlineAt=positive(value.deadlineAt);
+  if(deadlineAt!==settledAt+CHECKPOINT_RECOVERY_MS||stage!=='abandon'&&nextAttemptAt>deadlineAt)reject('invalid-product-turn-checkpoint-recovery');
+  if(stage==='prepare'){
+    if(value.operationId!==null||value.inputSha256!==null)reject('invalid-product-turn-checkpoint-recovery');
+    // A crash may land after the immutable descriptor and runtime row are
+    // durable but before the recovery row advances. Recover that transition
+    // from the exact descriptor; never call prepare again.
+    if(prepared)return {schemaVersion:2,stage:'commit',operationId:prepared.operationId,inputSha256:prepared.inputSha256,attempts:0,lastReason:'checkpoint-prepared',nextAttemptAt,deadlineAt};
+    return {schemaVersion:2,stage,operationId:null,inputSha256:null,attempts,lastReason,nextAttemptAt,deadlineAt};
+  }
+  if(!prepared||value.operationId!==prepared.operationId||value.operationId!==turnCheckpointOperationId(identity)||value.inputSha256!==prepared.inputSha256)reject('invalid-product-turn-checkpoint-recovery');
+  return {schemaVersion:2,stage,operationId:prepared.operationId,inputSha256:prepared.inputSha256,attempts,lastReason,nextAttemptAt,deadlineAt};
+}
+function checkpointResolution(value:unknown):TurnCheckpointResolution{
+  if(!value||typeof value!=='object'||Array.isArray(value))reject('invalid-product-turn-checkpoint-resolution');
+  const status=(value as Record<string,unknown>).status;if(status==='committed'){exact(value,['status','receipt'],'invalid-product-turn-checkpoint-resolution');return {status,receipt:(value as {receipt:CheckpointReceipt}).receipt};}
+  exact(value,['status'],'invalid-product-turn-checkpoint-resolution');if(!['absent','pending','unavailable','conflict','aborted'].includes(status as string))reject('invalid-product-turn-checkpoint-resolution');return {status:status as Exclude<TurnCheckpointResolution['status'],'committed'>};
+}
+function checkpointBackoff(attempts:number){return Math.min(30_000,1000*2**Math.min(10,Math.max(0,attempts-1)));}
 function stop(value:unknown):TurnStopReceipt|null{if(value===null)return null;exact(value,['confirmationId','observedAt','nativeRunning','fenced'],'invalid-product-turn-runtime-state');if(value.nativeRunning!==false||value.fenced!==true)reject('invalid-product-turn-runtime-state');return {confirmationId:turnId(value.confirmationId),observedAt:positive(value.observedAt),nativeRunning:false,fenced:true};}
 function event(value:unknown):TurnRuntimeEvent{exact(value,['eventId','type','at','payload'],'invalid-product-turn-runtime-event');if(typeof value.type!=='string'||!EVENT_TYPES.has(value.type as TurnRuntimeEvent['type']))reject('invalid-product-turn-runtime-event');return {eventId:turnId(value.eventId),type:value.type as TurnRuntimeEvent['type'],at:positive(value.at),payload:jsonPayload(value.payload)};}
 function boundedEvents(events:TurnRuntimeEvent[]):TurnRuntimeEvent[]{if(events.length>TURN_EVENT_LIMIT||encoder.encode(JSON.stringify(events)).byteLength>MAX_RUNTIME_EVENT_BYTES)reject('product-turn-runtime-event-limit');return events;}
@@ -114,13 +144,13 @@ export class ProductTurnRuntimeCore implements TurnRuntimePort{
   ready(){return this.#ready;}
   #read():State|null{const row=this.#storage.sql.exec<Row>('SELECT value FROM product_turn_runtime WHERE singleton=1').toArray()[0];return row?stored(JSON.parse(row.value as string)):null;}
   async #write(state:State){stored(state);this.#storage.transactionSync(()=>this.#storage.sql.exec('INSERT INTO product_turn_runtime VALUES(1,?) ON CONFLICT(singleton) DO UPDATE SET value=excluded.value',JSON.stringify(state)));await this.#storage.sync();}
-  #readRelease(identity:TurnRuntimeIdentity):ReleaseState|null{const row=this.#storage.sql.exec<Row>('SELECT value FROM product_turn_release WHERE singleton=1').toArray()[0];if(!row)return null;const runtime=this.#checked(identity)??reject('product-turn-runtime-not-found'),value=JSON.parse(row.value as string) as Record<string,unknown>;if(value.schemaVersion===1){exact(value,['schemaVersion','operationId','begunAt','attempts','nextAttemptAt','absentSince','confirmedAt'],'invalid-product-turn-release-state');const begunAt=positive(value.begunAt),confirmedAt=value.confirmedAt===null?null:positive(value.confirmedAt),proof=confirmedAt===null?null:{kind:'runtime-released' as const,proofId:'legacy-release',observedAt:confirmedAt};return {schemaVersion:2,operationId:runtime.resourceLease.operationId,leaseId:runtime.resourceLease.leaseId,begunAt,deadlineAt:begunAt+this.#releaseTiming.deadlineMs,attempts:positive(value.attempts),nextAttemptAt:confirmedAt??positive(value.nextAttemptAt),absentSince:value.absentSince===null?null:positive(value.absentSince),status:confirmedAt===null?'release-pending':'released',reasonCode:confirmedAt===null?'trusted-pi-release-pending':'trusted-pi-release-confirmed',proof,releasedAt:confirmedAt};}return releaseState(value,identity,runtime.resourceLease);}
+  #readRelease(identity:TurnRuntimeIdentity):ReleaseState|null{if(!this.#storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='product_turn_release'").toArray().length)return null;const row=this.#storage.sql.exec<Row>('SELECT value FROM product_turn_release WHERE singleton=1').toArray()[0];if(!row)return null;const runtime=this.#checked(identity)??reject('product-turn-runtime-not-found'),value=JSON.parse(row.value as string) as Record<string,unknown>;if(value.schemaVersion===1){exact(value,['schemaVersion','operationId','begunAt','attempts','nextAttemptAt','absentSince','confirmedAt'],'invalid-product-turn-release-state');const begunAt=positive(value.begunAt),confirmedAt=value.confirmedAt===null?null:positive(value.confirmedAt),proof=confirmedAt===null?null:{kind:'runtime-released' as const,proofId:'legacy-release',observedAt:confirmedAt};return {schemaVersion:2,operationId:runtime.resourceLease.operationId,leaseId:runtime.resourceLease.leaseId,begunAt,deadlineAt:begunAt+this.#releaseTiming.deadlineMs,attempts:positive(value.attempts),nextAttemptAt:confirmedAt??positive(value.nextAttemptAt),absentSince:value.absentSince===null?null:positive(value.absentSince),status:confirmedAt===null?'release-pending':'released',reasonCode:confirmedAt===null?'trusted-pi-release-pending':'trusted-pi-release-confirmed',proof,releasedAt:confirmedAt};}return releaseState(value,identity,runtime.resourceLease);}
   async #writeRelease(identity:TurnRuntimeIdentity,state:ReleaseState){const runtime=this.#checked(identity);if(!runtime)reject('product-turn-runtime-not-found');releaseState(state,identity,runtime.resourceLease);this.#storage.transactionSync(()=>this.#storage.sql.exec('INSERT INTO product_turn_release VALUES(1,?) ON CONFLICT(singleton) DO UPDATE SET value=excluded.value',JSON.stringify(state)));await this.#storage.sync();}
   async #ensureReleaseTable(){if(this.#releaseTableReady)return;this.#storage.transactionSync(()=>this.#storage.sql.exec('CREATE TABLE IF NOT EXISTS product_turn_release (singleton INTEGER PRIMARY KEY CHECK(singleton=1), value TEXT NOT NULL) STRICT;'));await this.#storage.sync();this.#releaseTableReady=true;}
-  async #armRelease(at:number){if(this.#storage.setAlarm){await this.#storage.setAlarm(at);await this.#storage.sync();}}
-  async #clearRelease(){if(this.#storage.deleteAlarm){await this.#storage.deleteAlarm();await this.#storage.sync();}}
-  #readCheckpointRecovery(identity:TurnRuntimeIdentity):CheckpointRecoveryState|null{if(!this.#storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='product_turn_checkpoint_recovery'").toArray().length)return null;const row=this.#storage.sql.exec<Row>('SELECT value FROM product_turn_checkpoint_recovery WHERE singleton=1').toArray()[0];return row?checkpointRecovery(JSON.parse(row.value as string),identity):null;}
-  async #writeCheckpointRecovery(identity:TurnRuntimeIdentity,state:CheckpointRecoveryState){checkpointRecovery(state,identity);this.#storage.transactionSync(()=>{this.#storage.sql.exec('CREATE TABLE IF NOT EXISTS product_turn_checkpoint_recovery (singleton INTEGER PRIMARY KEY CHECK(singleton=1), value TEXT NOT NULL) STRICT;');this.#storage.sql.exec('INSERT INTO product_turn_checkpoint_recovery VALUES(1,?) ON CONFLICT(singleton) DO UPDATE SET value=excluded.value',JSON.stringify(state));});await this.#storage.sync();if(this.#storage.setAlarm){await this.#storage.setAlarm(state.nextAttemptAt);await this.#storage.sync();}}
+  async #armRelease(at:number){if(this.#storage.setAlarm){const runtime=this.#read(),recovery=runtime?this.#readCheckpointRecovery(runtime.identity,runtime):null;await this.#storage.setAlarm(Math.min(at,recovery?.nextAttemptAt??at));await this.#storage.sync();}}
+  async #clearRelease(){if(this.#storage.deleteAlarm){await this.#storage.deleteAlarm();await this.#storage.sync();const runtime=this.#read(),recovery=runtime?this.#readCheckpointRecovery(runtime.identity,runtime):null;if(recovery){await this.#storage.setAlarm!(recovery.nextAttemptAt);await this.#storage.sync();}}}
+  #readCheckpointRecovery(identity:TurnRuntimeIdentity,runtime:State|null=this.#checked(identity)):CheckpointRecoveryState|null{if(!this.#storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='product_turn_checkpoint_recovery'").toArray().length)return null;const row=this.#storage.sql.exec<Row>('SELECT value FROM product_turn_checkpoint_recovery WHERE singleton=1').toArray()[0];return row?checkpointRecovery(JSON.parse(row.value as string),identity,runtime?.checkpointIntent??null,runtime?.settledAt??reject('invalid-product-turn-checkpoint-recovery')):null;}
+  async #writeCheckpointRecovery(identity:TurnRuntimeIdentity,state:CheckpointRecoveryState){const runtime=this.#checked(identity)??reject('product-turn-runtime-not-found');checkpointRecovery(state,identity,runtime.checkpointIntent,runtime.settledAt??reject('invalid-product-turn-checkpoint-recovery'));this.#storage.transactionSync(()=>{this.#storage.sql.exec('CREATE TABLE IF NOT EXISTS product_turn_checkpoint_recovery (singleton INTEGER PRIMARY KEY CHECK(singleton=1), value TEXT NOT NULL) STRICT;');this.#storage.sql.exec('INSERT INTO product_turn_checkpoint_recovery VALUES(1,?) ON CONFLICT(singleton) DO UPDATE SET value=excluded.value',JSON.stringify(state));});await this.#storage.sync();if(this.#storage.setAlarm){const release=this.#readRelease(identity);await this.#storage.setAlarm(Math.min(state.nextAttemptAt,release?.nextAttemptAt??state.nextAttemptAt));await this.#storage.sync();}}
   async #clearCheckpointRecovery(){if(!this.#storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='product_turn_checkpoint_recovery'").toArray().length)return;this.#storage.transactionSync(()=>this.#storage.sql.exec('DELETE FROM product_turn_checkpoint_recovery WHERE singleton=1'));await this.#storage.sync();}
   #checked(identity:TurnRuntimeIdentity):State|null{const state=this.#read();if(state&&!sameTurnRuntimeIdentity(state.identity,identity))reject('product-turn-runtime-scope-denied');return state;}
   #resourceDisposition(state:State):TurnResourceDisposition{
@@ -177,7 +207,7 @@ export class ProductTurnRuntimeCore implements TurnRuntimePort{
     await this.#ready;const identity=turnRuntimeIdentity(raw),state=this.#checked(identity);if(!state)return {scope:identity.scope,sessionId:identity.sessionId,turnId:identity.turnId,dispatchId:identity.dispatchId,generation:identity.generation,phase:'absent',outcome:null,executionErrorCode:null,events:[],checkpoint:null,persistenceErrorCode:null,stopped:null,resourceDisposition:{status:'released',operationId:'legacy',leaseId:'legacy',turnId:identity.turnId,dispatchId:identity.dispatchId,generation:identity.generation,proofId:'runtime-absent',releasedAt:positive(this.#clock())}};if(state.phase==='terminal')return this.#finishCheckpoint(identity);
     const first=state.cancelRequestedAt===null;if(first){state.cancelRequestedAt=positive(this.#clock());await this.#write(state);}try{let current=this.#checked(identity)!;if(!current.capacityDispatchConfirmed)await this.#authorizeCapacity(identity);current=this.#checked(identity)!;if(!current.nativeStartReserved){current.nativeStartReserved=true;current.actor=null;await this.#write(current);}return await this.#consume(identity,first?await this.#execution.cancel(identity):await this.#execution.observe(identity));}catch(error){await this.#unknown(identity);throw error;}
   }
-  async maintenance(raw:TurnRuntimeIdentity):Promise<void>{await this.#ready;const identity=turnRuntimeIdentity(raw),state=this.#checked(identity);if(state?.phase==='terminal'){if(this.#releaseEligible(state))await this.#release(identity);else await this.#finishCheckpoint(identity);}}
+  async maintenance(raw:TurnRuntimeIdentity):Promise<void>{await this.#ready;const identity=turnRuntimeIdentity(raw),state=this.#checked(identity);if(state?.phase==='terminal')await this.#finishCheckpoint(identity);}
   async #unknown(identity:TurnRuntimeIdentity){const state=this.#checked(identity);if(state&&state.phase!=='terminal'){state.phase='unknown';await this.#write(state);}}
   async #release(identity:TurnRuntimeIdentity):Promise<void>{
     if(this.#activeRelease)return this.#activeRelease;
@@ -221,22 +251,77 @@ export class ProductTurnRuntimeCore implements TurnRuntimePort{
     state.phase='terminal';state.outcome=observed.outcome;state.executionErrorCode=observed.executionErrorCode??null;state.stopped=observed.stopped!;state.settledAt=observedAt;state.message=null;await this.#write(state);return this.#finishCheckpoint(identity);
   }
   async #finishCheckpoint(identity:TurnRuntimeIdentity):Promise<TurnRuntimeReceipt>{
-    let state=this.#checked(identity)!;if(state.checkpoint){await this.#clearCheckpointRecovery();await this.#release(identity);return this.#receipt(state);}if(state.persistenceErrorCode==='turn-checkpoint-aborted'){await this.#release(identity);return this.#receipt(state);}if(NON_PERSISTABLE_EXECUTION_ERRORS.has(state.executionErrorCode??'')){state.persistenceErrorCode='turn-checkpoint-unknown';await this.#write(state);await this.#release(identity);return this.#receipt(state);}if(state.legacyCheckpointUnknown){state.persistenceErrorCode='turn-checkpoint-unknown';await this.#write(state);return this.#receipt(state);}let receipt:CheckpointReceipt|null=null;
+    let state=this.#checked(identity)!;
+    if(state.checkpoint){await this.#clearCheckpointRecovery();await this.#release(identity);return this.#receipt(state);}
+    if(state.persistenceErrorCode==='turn-checkpoint-aborted'||state.persistenceErrorCode==='turn-checkpoint-prepare-failed'){await this.#release(identity);return this.#receipt(state);}
+    if(NON_PERSISTABLE_EXECUTION_ERRORS.has(state.executionErrorCode??'')){state.persistenceErrorCode='turn-checkpoint-unknown';await this.#write(state);await this.#release(identity);return this.#receipt(state);}
+    if(state.legacyCheckpointUnknown){state.persistenceErrorCode='turn-checkpoint-unknown';await this.#write(state);return this.#receipt(state);}
     const input:TurnCheckpointInput={identity,outcome:state.outcome!,executionErrorCode:state.executionErrorCode,base:state.base};
-    if(!state.checkpointIntent){
-      let prepared:TurnCheckpointIntent;try{prepared=await this.#checkpoints.prepare(input);}catch{state=this.#checked(identity)!;state.persistenceErrorCode='turn-checkpoint-unknown';await this.#write(state);return this.#receipt(state);}
-      state=this.#checked(identity)!;const validated=intent(prepared,identity)!;if(state.checkpointIntent&&JSON.stringify(state.checkpointIntent)!==JSON.stringify(validated))reject('product-turn-checkpoint-intent-conflict');state.checkpointIntent??=validated;state.persistenceErrorCode=null;await this.#write(state);
+    let recovery=this.#readCheckpointRecovery(identity,state);
+    if(!recovery){
+      const enteredAt=state.settledAt!,now=positive(this.#clock()),prepared=state.checkpointIntent;
+      recovery={schemaVersion:2,stage:prepared?(state.checkpointCommitReserved?'reconcile':'commit'):'prepare',operationId:prepared?.operationId??null,inputSha256:prepared?.inputSha256??null,attempts:0,lastReason:'checkpoint-entered',nextAttemptAt:now,deadlineAt:positive(enteredAt+CHECKPOINT_RECOVERY_MS)};
+      await this.#writeCheckpointRecovery(identity,recovery);
     }
-    state=this.#checked(identity)!;const prepared=state.checkpointIntent!;
-    if(!state.checkpointCommitReserved){state.checkpointCommitReserved=true;await this.#write(state);try{receipt=await this.#checkpoints.commit(input,prepared);}catch{/* exact reconcile below */}}
-    if(!receipt)try{receipt=await this.#checkpoints.reconcile(identity,prepared);}catch{/* immutable outcome remains unknown */}
-    state=this.#checked(identity)!;if(receipt){state.checkpoint=checkpoint(receipt,state.settledAt);state.persistenceErrorCode=null;await this.#clearCheckpointRecovery();}else{
-      const now=positive(this.#clock()),prior=this.#readCheckpointRecovery(identity),attempts=(prior?.attempts??0)+1,firstFailedAt=prior?.firstFailedAt??now,deadlineAt=prior?.deadlineAt??firstFailedAt+120_000;
-      if(now>=deadlineAt){let resolution:{status:'committed';receipt:CheckpointReceipt}|{status:'aborted'|'pending'|'unavailable'|'conflict'}={status:'unavailable'};try{if(this.#checkpoints.abandon)resolution=await this.#checkpoints.abandon(identity,prepared);}catch{/* recovery hold */}if(resolution.status==='committed'){state.checkpoint=checkpoint(resolution.receipt,state.settledAt);state.persistenceErrorCode=null;await this.#clearCheckpointRecovery();}else if(resolution.status==='aborted'){state.persistenceErrorCode='turn-checkpoint-aborted';await this.#clearCheckpointRecovery();}else{state.persistenceErrorCode='turn-checkpoint-recovery-hold';await this.#writeCheckpointRecovery(identity,{schemaVersion:1,operationId:prepared.operationId,firstFailedAt,attempts,lastErrorCode:`revision-${resolution.status}`,nextAttemptAt:now+60_000,deadlineAt});}}
-      else{const delay=Math.min(30_000,1000*2**Math.min(10,attempts-1));state.persistenceErrorCode='turn-checkpoint-unknown';await this.#writeCheckpointRecovery(identity,{schemaVersion:1,operationId:prepared.operationId,firstFailedAt,attempts,lastErrorCode:'revision-unresolved',nextAttemptAt:Math.min(deadlineAt,now+delay),deadlineAt});}
-    }await this.#write(state);if(state.checkpoint)await this.#release(identity);else if(state.persistenceErrorCode==='turn-checkpoint-aborted')await this.#release(identity);return this.#receipt(state);
+    let now=positive(this.#clock());
+    if(now<recovery.nextAttemptAt){if(this.#releaseEligible(state))await this.#release(identity);return this.#receipt(state);}
+
+    if(recovery.stage==='prepare'){
+      if(now>=recovery.deadlineAt){state.persistenceErrorCode='turn-checkpoint-prepare-failed';await this.#clearCheckpointRecovery();await this.#write(state);await this.#release(identity);return this.#receipt(state);}
+      try{
+        const prepared=intent(await this.#checkpoints.prepare(input),identity)!;state=this.#checked(identity)!;
+        if(state.checkpointIntent&&JSON.stringify(state.checkpointIntent)!==JSON.stringify(prepared))reject('product-turn-checkpoint-intent-conflict');
+        state.checkpointIntent??=prepared;state.persistenceErrorCode=null;await this.#write(state);
+        recovery={schemaVersion:2,stage:'commit',operationId:prepared.operationId,inputSha256:prepared.inputSha256,attempts:0,lastReason:'checkpoint-prepared',nextAttemptAt:now,deadlineAt:recovery.deadlineAt};await this.#writeCheckpointRecovery(identity,recovery);
+      }catch(error){
+        state=this.#checked(identity)!;const attempts=recovery.attempts+1;state.persistenceErrorCode='turn-checkpoint-unknown';
+        recovery={...recovery,attempts,lastReason:'checkpoint-prepare-failed',nextAttemptAt:Math.min(recovery.deadlineAt,positive(now+checkpointBackoff(attempts)))};await this.#writeCheckpointRecovery(identity,recovery);await this.#write(state);return this.#receipt(state);
+      }
+    }
+
+    state=this.#checked(identity)!;recovery=this.#readCheckpointRecovery(identity,state)!;now=positive(this.#clock());
+    if(recovery.stage==='commit'){
+      const prepared=state.checkpointIntent??reject('product-turn-checkpoint-intent-missing');
+      if(now>=recovery.deadlineAt){recovery={...recovery,stage:'abandon',attempts:0,lastReason:'checkpoint-deadline-exceeded',nextAttemptAt:now};await this.#writeCheckpointRecovery(identity,recovery);}
+      else if(state.checkpointCommitReserved){recovery={...recovery,stage:'reconcile',attempts:0,lastReason:'checkpoint-commit-reserved',nextAttemptAt:now};await this.#writeCheckpointRecovery(identity,recovery);}
+      else{
+        state.checkpointCommitReserved=true;await this.#write(state);
+        let resolution:TurnCheckpointResolution;try{resolution=checkpointResolution(await this.#checkpoints.commit(input,prepared));}catch{resolution={status:'unavailable'};}
+        state=this.#checked(identity)!;
+        if(resolution.status==='committed'){state.checkpoint=checkpoint(resolution.receipt,state.settledAt);state.persistenceErrorCode=null;await this.#clearCheckpointRecovery();await this.#write(state);await this.#release(identity);return this.#receipt(state);}
+        if(resolution.status==='aborted'){state.persistenceErrorCode='turn-checkpoint-aborted';await this.#clearCheckpointRecovery();await this.#write(state);await this.#release(identity);return this.#receipt(state);}
+        const attempts=1;state.persistenceErrorCode='turn-checkpoint-unknown';recovery={...recovery,stage:'reconcile',attempts,lastReason:`revision-${resolution.status}`,nextAttemptAt:Math.min(recovery.deadlineAt,positive(now+checkpointBackoff(attempts)))};await this.#writeCheckpointRecovery(identity,recovery);await this.#write(state);return this.#receipt(state);
+      }
+    }
+
+    state=this.#checked(identity)!;recovery=this.#readCheckpointRecovery(identity,state)!;now=positive(this.#clock());
+    if(now<recovery.nextAttemptAt){if(this.#releaseEligible(state))await this.#release(identity);return this.#receipt(state);}
+    if(recovery.stage==='reconcile'){
+      const prepared=state.checkpointIntent??reject('product-turn-checkpoint-intent-missing');
+      if(now>=recovery.deadlineAt){recovery={...recovery,stage:'abandon',attempts:0,lastReason:'checkpoint-deadline-exceeded',nextAttemptAt:now};await this.#writeCheckpointRecovery(identity,recovery);}
+      else{
+        let resolution:TurnCheckpointResolution;try{resolution=checkpointResolution(await this.#checkpoints.reconcile(identity,prepared));}catch{resolution={status:'unavailable'};}
+        state=this.#checked(identity)!;
+        if(resolution.status==='committed'){state.checkpoint=checkpoint(resolution.receipt,state.settledAt);state.persistenceErrorCode=null;await this.#clearCheckpointRecovery();await this.#write(state);await this.#release(identity);return this.#receipt(state);}
+        if(resolution.status==='aborted'){state.persistenceErrorCode='turn-checkpoint-aborted';await this.#clearCheckpointRecovery();await this.#write(state);await this.#release(identity);return this.#receipt(state);}
+        const attempts=recovery.attempts+1;state.persistenceErrorCode='turn-checkpoint-unknown';recovery={...recovery,attempts,lastReason:`revision-${resolution.status}`,nextAttemptAt:Math.min(recovery.deadlineAt,positive(now+checkpointBackoff(attempts)))};await this.#writeCheckpointRecovery(identity,recovery);await this.#write(state);return this.#receipt(state);
+      }
+    }
+
+    state=this.#checked(identity)!;recovery=this.#readCheckpointRecovery(identity,state)!;now=positive(this.#clock());
+    if(recovery.stage!=='abandon')reject('invalid-product-turn-checkpoint-recovery');
+    if(now<recovery.nextAttemptAt){if(this.#releaseEligible(state))await this.#release(identity);return this.#receipt(state);}
+    const prepared=state.checkpointIntent??reject('product-turn-checkpoint-intent-missing'),attempts=recovery.attempts+1;
+    state.persistenceErrorCode='turn-checkpoint-recovery-hold';recovery={...recovery,attempts,lastReason:'checkpoint-abandon-pending',nextAttemptAt:positive(now+CHECKPOINT_HOLD_RETRY_MS)};await this.#write(state);await this.#writeCheckpointRecovery(identity,recovery);
+    let resolution:TurnCheckpointResolution;try{resolution=this.#checkpoints.abandon?checkpointResolution(await this.#checkpoints.abandon(identity,prepared)):{status:'unavailable'};}catch{resolution={status:'unavailable'};}
+    state=this.#checked(identity)!;
+    if(resolution.status==='committed'){
+      state.checkpoint=checkpoint(resolution.receipt,state.settledAt);state.persistenceErrorCode=null;await this.#clearCheckpointRecovery();await this.#write(state);
+    }else if(resolution.status==='aborted'){state.persistenceErrorCode='turn-checkpoint-aborted';await this.#clearCheckpointRecovery();await this.#write(state);}
+    else{recovery={...recovery,lastReason:`revision-${resolution.status}`};await this.#writeCheckpointRecovery(identity,recovery);}
+    if(this.#releaseEligible(state))await this.#release(identity);return this.#receipt(state);
   }
-  #releaseEligible(state:State):boolean{return state.phase==='terminal'&&(state.checkpoint!==null||state.persistenceErrorCode==='turn-checkpoint-aborted'||NON_PERSISTABLE_EXECUTION_ERRORS.has(state.executionErrorCode??''));}
+  #releaseEligible(state:State):boolean{return state.phase==='terminal'&&(state.checkpoint!==null||state.persistenceErrorCode==='turn-checkpoint-aborted'||state.persistenceErrorCode==='turn-checkpoint-prepare-failed'||state.persistenceErrorCode==='turn-checkpoint-recovery-hold'||NON_PERSISTABLE_EXECUTION_ERRORS.has(state.executionErrorCode??''));}
 }
 
 export const productTurnRuntimeLimits={maxEvents:TURN_EVENT_LIMIT,maxEventBytes:MAX_RUNTIME_EVENT_BYTES};

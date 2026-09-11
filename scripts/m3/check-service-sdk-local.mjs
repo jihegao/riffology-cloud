@@ -87,7 +87,8 @@ try{
      'app/requirements.lock':encode(JSON.stringify({schemaVersion:1,packages:{simpy:'4.1.1'}})),
      'docs/transport-padding.txt':new Uint8Array(700000).fill(65)});
     const store=env.REVISION_STORE.getByName(revisionStoreActorName(identity.scope));
-    const receipt=await store.commit({identity,outcome:'completed',executionErrorCode:null,base:{workspace:null,session:null},snapshot:{identity,filesArchive,piSession:encode('private-session-not-project-content')}});
+    const resolution=await store.commit({identity,outcome:'completed',executionErrorCode:null,base:{workspace:null,session:null},snapshot:{identity,filesArchive,piSession:encode('private-session-not-project-content')}});
+    if(resolution.status!=='committed')throw Error('fixture-revision-commit-'+resolution.status);const receipt=resolution.receipt;
     value=await store.previewPlan({kind:'saved-turn',identity,revision:receipt});
    }else if(b.method==='acquire'){
     const r=await env.TENANT_QUOTA.getByName('tenant-quota:'+b.request.tenantId).acquire(b.request);

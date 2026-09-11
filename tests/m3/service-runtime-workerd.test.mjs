@@ -91,7 +91,8 @@ test('ServiceRuntime Workerd wiring checks dispatched leases and preserves stop 
      'app/preview.json':encode(JSON.stringify({schemaVersion:1,runtime:'python',entrypoint:'app/main.py',dependencyLock:'app/requirements.lock',port:8080,healthPath:'/healthz',observation:{pagePath:'/observe',statePath:'/state'}})),
      'app/main.py':encode('print(1)'), 'app/requirements.lock':encode(JSON.stringify({schemaVersion:1,packages:{}}))});
     const store=env.REVISION_STORE.getByName(revisionStoreActorName(identity.scope));
-    const receipt=await store.commit({identity,outcome:'completed',executionErrorCode:null,base:{workspace:null,session:null},snapshot:{identity,filesArchive,piSession:encode('private-pi-session')}});
+    const resolution=await store.commit({identity,outcome:'completed',executionErrorCode:null,base:{workspace:null,session:null},snapshot:{identity,filesArchive,piSession:encode('private-pi-session')}});
+    if(resolution.status!=='committed')throw Error('fixture-revision-commit-'+resolution.status);const receipt=resolution.receipt;
     value=await store.previewPlan({kind:'saved-turn',identity,revision:receipt});
    }else if(b.method==='acquire'){
     const result=await env.TENANT_QUOTA.getByName('tenant-quota:'+b.request.tenantId).acquire(b.request);
