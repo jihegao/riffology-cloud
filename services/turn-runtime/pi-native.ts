@@ -9,6 +9,7 @@ export const TRUSTED_PI_NODE='/usr/local/bin/node';
 const MAX_RESULT_BYTES=2*1024*1024,MAX_SESSION_BYTES=8*1024*1024,DESTROY_WALL_TIMEOUT_MS=30000,ACTIVE=new Set(['starting','running']),EXITED=new Set(['completed','failed']),encoder=new TextEncoder(),decoder=new TextDecoder('utf-8',{fatal:true});
 
 export interface TrustedPiProcessView{readonly id:string;readonly status:string;readonly exitCode?:number;getStatus():Promise<string>;kill(signal?:string):Promise<void>}
+export interface TrustedPiProcessSnapshot{readonly id:string;readonly status:string;readonly exitCode?:number}
 export interface TrustedPiSandboxProcessApi{
   writeFile(path:string,content:string,options?:{encoding?:'utf8'|'base64'}):Promise<{success:boolean;path:string;bytesWritten?:number}>;
   readFile(path:string,options?:{encoding?:'utf8'|'base64'}):Promise<{success:boolean;path:string;content:string}>;
@@ -24,6 +25,8 @@ export interface TrustedPiSandboxActorApi{
   readTurnFile(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['readFile']>):ReturnType<TrustedPiSandboxProcessApi['readFile']>;
   startTurnProcess(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['startProcess']>):ReturnType<TrustedPiSandboxProcessApi['startProcess']>;
   getTurnProcess(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['getProcess']>):ReturnType<TrustedPiSandboxProcessApi['getProcess']>;
+  startTurnProcessSnapshot?(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['startProcess']>):Promise<TrustedPiProcessSnapshot>;
+  getTurnProcessSnapshot?(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['getProcess']>):Promise<TrustedPiProcessSnapshot|null>;
   cancelTurnProcess(identity:TurnRuntimeIdentity,id:string):Promise<{dispatched:boolean}>;
   destroyAndReleaseState(identity:TurnRuntimeIdentity):Promise<{running:boolean}>;
   queryObserverExecution?(identity:TurnRuntimeIdentity):Promise<{expiresAt:number}>;
