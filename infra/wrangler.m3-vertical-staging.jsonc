@@ -30,7 +30,7 @@
     "M3_PREVIEW_ORIGIN": "https://preview.m1.riff-demo.gaojihe.cn",
     "TENANT_QUOTA_CAPACITY": "1",
     "TENANT_QUOTA_POLICY_VERSION": "m1-v1",
-    "M2_TURNS_ENABLED": "false",
+    "M2_TURNS_ENABLED": "true",
     "M2_TURN_ADMISSION_TELEMETRY": "true",
     "M2_MODEL_PROVIDER_ENABLED": "true",
     "M3_SERVICE_ENABLED": "true",
