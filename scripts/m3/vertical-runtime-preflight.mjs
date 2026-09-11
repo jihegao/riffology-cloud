@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import {lstatSync,mkdtempSync,readFileSync,readdirSync,rmSync,unlinkSync,writeFileSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
 import {unstable_startWorker} from 'wrangler';
 import {googleOAuthEgress} from './google-oauth-egress.mjs';
 import {resolve} from 'node:path';
@@ -45,6 +46,7 @@ const BASE_MODEL_BUDGET=Object.freeze({policy_version:'m2-token-v1',max_reservat
 const PREVIOUS_VERTICAL_MODEL_BUDGET=Object.freeze({...BASE_MODEL_BUDGET,policy_version:'m2-token-vertical-v1',max_reservation_attempts_per_turn:6,max_dispatched_calls_per_turn:6});
 const VERTICAL_MODEL_BUDGET=Object.freeze({...BASE_MODEL_BUDGET,policy_version:'m2-token-vertical-v2',max_reservation_attempts_per_turn:8,max_dispatched_calls_per_turn:8});
 const BOOTSTRAP_OPERATOR_ACTION='set-RIFFOLOGY_INITIAL_OPERATOR_TOKEN-then-run:node scripts/m1/bootstrap-operator.mjs invite --email <authorized-email> --database riffology-catalog-local --config infra/wrangler.m2-product-local.jsonc --local --persist-to .local/m3-vertical-runtime';
+export const PRODUCT_TOOL_BRIDGE_SHA256=createHash('sha256').update(readFileSync(new URL('../../services/trusted-pi/product-tool-bridge.mjs',import.meta.url))).digest('hex');
 
 const check=(name,passed,detail)=>({name,status:passed?'passed':'failed',...(passed||!detail?{}:{detail})});
 const sorted=value=>[...value].sort();
@@ -205,8 +207,8 @@ export function validateDockerImages(runtime){
     }
     catch{checks.push(check(`container-image:${name}`,false,'docker-image-inspection-invalid'));}
   }
-  const trusted=runtime.CONTAINER_IMAGES.TrustedPiSandbox,result=command('docker',['run','--rm','--platform','linux/amd64','--network','none','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges','--entrypoint','node',trusted.reference,'--input-type=module','-e',"const m=await import('/opt/riffology/trusted-pi/trusted-pi-release.mjs');const identity={scope:{tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1},sessionId:'session-a',turnId:'turn-a',dispatchId:'dispatch-a',generation:1},actor={userId:'user-a',authVersion:1};const o=await m.resolveOptions({identity,actor,executionDeadlineAt:Date.now()+60000});if(o.selectedModel?.provider!=='riffology-product'||typeof o.providerFetch!=='function'||typeof o.resolveCredential!=='function'||!o.bridge)process.exit(2)"],60000);
-  checks.push(check('trusted-pi-release',result.status===0,'active-release-module-must-resolve-the-product-policy-with-network-disabled'));
+  const trusted=runtime.CONTAINER_IMAGES.TrustedPiSandbox,result=command('docker',['run','--rm','--platform','linux/amd64','--network','none','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges','--entrypoint','node',trusted.reference,'--input-type=module','-e',`const{readFile}=await import('node:fs/promises');const{createHash}=await import('node:crypto');const bridgeSha=createHash('sha256').update(await readFile('/opt/riffology/trusted-pi/product-tool-bridge.mjs')).digest('hex');const m=await import('/opt/riffology/trusted-pi/trusted-pi-release.mjs');const identity={scope:{tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1},sessionId:'session-a',turnId:'turn-a',dispatchId:'dispatch-a',generation:1},actor={userId:'user-a',authVersion:1};const o=await m.resolveOptions({identity,actor,executionDeadlineAt:Date.now()+60000});if(bridgeSha!=='${PRODUCT_TOOL_BRIDGE_SHA256}'||o.selectedModel?.provider!=='riffology-product'||typeof o.providerFetch!=='function'||typeof o.resolveCredential!=='function'||!o.bridge)process.exit(2)`],60000);
+  checks.push(check('trusted-pi-release',result.status===0,'active-release-and-product-tool-bridge-must-match-the-checked-out-source-with-network-disabled'));
   const project=runtime.CONTAINER_IMAGES.ProjectToolSandbox,probe=command('docker',['run','--rm','--platform','linux/amd64','--network','none','--read-only','--cap-drop','ALL','--cap-add','SETUID','--cap-add','SETGID','--entrypoint','python3',immutableImageReference(project),'-B','-c',String.raw`import os,socket,sys
 sys.path.insert(0,'/opt/riffology')
 import effect_wrapper as effect
