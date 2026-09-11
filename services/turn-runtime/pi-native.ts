@@ -106,7 +106,12 @@ export class SandboxTrustedPiHostPort implements TrustedPiHostPort,TrustedPiSess
     // supplies an explicit exit observation.
     if(!initial){if(!controlText&&!saved)return empty(identity,'absent');return empty(identity,'unknown');}
     if(initial.id!==location.processId)reject('trusted-pi-native-process-mismatch');const state=await initial.getStatus();if(ACTIVE.has(state)){if(saved?.phase==='terminal')reject('trusted-pi-native-terminal-process-running');return saved?{identity,phase:'running',outcome:null,executionErrorCode:null,events:saved.events,stopped:null}:empty(identity,'starting');}
-    if(!EXITED.has(state)||!Number.isSafeInteger(initial.exitCode)||initial.exitCode!==0||saved?.phase!=='terminal')return empty(identity,'unknown');return this.#terminal(identity,saved,location);
+    if(!EXITED.has(state)||!Number.isSafeInteger(initial.exitCode))return empty(identity,'unknown');
+    if(initial.exitCode!==0||saved?.phase!=='terminal'){
+      const reason=initial.exitCode!==0?'turn-native-exit-failed':'turn-native-result-missing',observedAt=positive(this.#clock());
+      return {identity,phase:'terminal',outcome:'failed',executionErrorCode:reason,events:[],stopped:{confirmationId:`stop-${location.id}`,observedAt,nativeRunning:false,fenced:true}};
+    }
+    return this.#terminal(identity,saved,location);
   }
   async #terminal(identity:TurnRuntimeIdentity,saved:Result,location:Awaited<ReturnType<typeof paths>>):Promise<TrustedPiHostObservation>{const encoded=await readText(this.#sandbox,location.outputSession,Math.ceil(MAX_SESSION_BYTES*4/3)+4);if(!encoded)reject('trusted-pi-session-not-frozen');const bytes=unbase64(encoded);if(bytes.byteLength<1||bytes.byteLength>MAX_SESSION_BYTES||await digest(bytes)!==saved.outputSessionSha256)reject('invalid-trusted-pi-session-file');sessionSnapshot(bytes,identity);const observedAt=positive(this.#clock());return {identity,phase:'terminal',outcome:saved.outcome,executionErrorCode:saved.executionErrorCode,events:saved.events,stopped:{confirmationId:`stop-${location.id}`,observedAt,nativeRunning:false,fenced:true}};}
 }

@@ -58,7 +58,7 @@ test('module is isolated from M0 probes, provider configuration and project file
 
 test('workspace and Pi adapters pass deadline but readonly observer never prepares or observes',async()=>{
  const calls:string[]=[];const host:TrustedPiHostPort={async start(input){calls.push('start');assert.equal(input.executionDeadlineAt,601000);return running();},async observe(){calls.push('observe');return running();},async cancel(){calls.push('cancel');return running();},async release(){calls.push('release');return {running:false};},async currentObserverExecution(id){assert.deepEqual(id,identity);calls.push('authority');return {expiresAt:601000};}};
- const execution=new WorkspacePreparedExecutionPort({async prepare(){calls.push('prepare');return {} as never;}},new TrustedPiExecutionAdapter(host));
+ const execution=new WorkspacePreparedExecutionPort({async prepare(){calls.push('prepare');return {} as never;},async abort(){calls.push('abort');}},new TrustedPiExecutionAdapter(host));
  assert.deepEqual(await execution.currentObserverExecution(identity),{expiresAt:601000});assert.deepEqual(calls,['authority']);
  await execution.start({...identity,actor,message:'build',base,executionDeadlineAt:601000});assert.deepEqual(calls,['authority','prepare','start']);await assert.rejects(execution.start({...identity,actor,message:'build',base,executionDeadlineAt:601001}),/conflict/);
  delete host.currentObserverExecution;await assert.rejects(execution.currentObserverExecution(identity),/observer-denied/);assert.deepEqual(calls,['authority','prepare','start']);

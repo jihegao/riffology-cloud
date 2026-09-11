@@ -32,7 +32,7 @@ const OUTCOMES=new Set<NonNullable<State['outcome']>>(['completed','failed','can
 // These failures prove that no valid input state exists to freeze. Attempting
 // checkpoint preparation would allocate fresh Sandboxes and could turn an
 // input-integrity failure into new project-side effects.
-const NON_PERSISTABLE_EXECUTION_ERRORS=new Set(['turn-base-unavailable','turn-native-execution-absent']);
+const NON_PERSISTABLE_EXECUTION_ERRORS=new Set(['turn-base-unavailable','turn-native-execution-absent','turn-native-exit-failed','turn-native-result-missing']);
 const MAX_RUNTIME_EVENT_BYTES=2*1024*1024,DEFAULT_RELEASE_TIMING:ProductTurnReleaseTiming={retryMs:5000,assignmentGuardMs:360000,quietMs:30000},encoder=new TextEncoder();
 function reject(code:string):never{throw Error(code);}
 function exact(value:unknown,keys:string[],code:string):asserts value is Record<string,unknown>{if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype||Object.keys(value).length!==keys.length||keys.some(key=>!Object.hasOwn(value,key)))reject(code);}
@@ -156,7 +156,10 @@ export class ProductTurnRuntimeCore implements TurnRuntimePort{
     boundedEvents(state.events);
     if(observed.phase!=='terminal'){state.phase=observed.phase==='running'?'running':'unknown';await this.#write(state);return this.#receipt(state);}
     if(observed.stopped!.observedAt<state.startedAt||observed.stopped!.observedAt>observedAt)reject('product-turn-runtime-stop-time');
-    if(state.cancelRequestedAt!==null&&!['cancelled','interrupted'].includes(observed.outcome!)){state.phase='unknown';await this.#write(state);reject('product-turn-cancellation-not-honored');}
+    // Stop is best effort. A terminal receipt with fenced stop proof may have
+    // been produced immediately before the cancellation request reached the
+    // native adapter. Preserve that immutable natural outcome instead of
+    // turning a completed execution into an unrecoverable unknown state.
     state.phase='terminal';state.outcome=observed.outcome;state.executionErrorCode=observed.executionErrorCode??null;state.stopped=observed.stopped!;state.settledAt=observedAt;state.message=null;await this.#write(state);return this.#finishCheckpoint(identity);
   }
   async #finishCheckpoint(identity:TurnRuntimeIdentity):Promise<TurnRuntimeReceipt>{

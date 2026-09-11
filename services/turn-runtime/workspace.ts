@@ -13,6 +13,7 @@ export interface WorkspaceRevisionSource{
 export interface ProjectWorkspaceRpc{
   restoreWorkspace(identity:TurnRuntimeIdentity,base:TurnBaseCheckpoints,archive:Uint8Array|null):Promise<{sha256:string;bytes:number}>;
   freezeWorkspace(identity:TurnRuntimeIdentity,base:TurnBaseCheckpoints):Promise<Uint8Array>;
+  abortWorkspace(identity:TurnRuntimeIdentity):Promise<{running:boolean;fenced:true}>;
 }
 type Resolver=(actorId:string)=>ProjectWorkspaceRpc;
 function reject(code:string):never{throw Error(code);}
@@ -66,14 +67,18 @@ export class ProjectWorkspaceLifecycle implements WorkspaceFilesFreezePort{
     const archive=await (await this.#target(identity)).freezeWorkspace(identity,base);
     if(!(archive instanceof Uint8Array)||archive.byteLength<1)reject('invalid-project-workspace-archive');return Uint8Array.from(archive);
   }
+  async abort(raw:TurnRuntimeIdentity):Promise<void>{
+    const identity=turnRuntimeIdentity(raw),result=await (await this.#target(identity)).abortWorkspace(identity);
+    if(!result||typeof result!=='object'||Object.keys(result).sort().join(',')!=='fenced,running'||result.fenced!==true||result.running!==false)reject('project-workspace-release-unconfirmed');
+  }
 }
 
 /** Executes Workspace restore only on ProductTurnRuntime's once-only start
  * path. Observe and cancel never recreate or re-restore a Project Sandbox. */
 export class WorkspacePreparedExecutionPort implements TurnExecutionPort{
-  readonly #workspace:Pick<ProjectWorkspaceLifecycle,'prepare'>;readonly #execution:TurnExecutionPort;
+  readonly #workspace:Pick<ProjectWorkspaceLifecycle,'prepare'|'abort'>;readonly #execution:TurnExecutionPort;
   #startKey:string|null=null;#startPromise:Promise<TurnExecutionObservation>|null=null;
-  constructor(workspace:Pick<ProjectWorkspaceLifecycle,'prepare'>,execution:TurnExecutionPort){if(!workspace?.prepare||!execution?.start||!execution.observe||!execution.cancel||!execution.release)reject('workspace-prepared-execution-required');this.#workspace=workspace;this.#execution=execution;}
+  constructor(workspace:Pick<ProjectWorkspaceLifecycle,'prepare'|'abort'>,execution:TurnExecutionPort){if(!workspace?.prepare||!workspace.abort||!execution?.start||!execution.observe||!execution.cancel||!execution.release)reject('workspace-prepared-execution-required');this.#workspace=workspace;this.#execution=execution;}
   async start(input:TurnRuntimeIdentity&{actor:TurnActor;message:string;base:TurnBaseCheckpoints;executionDeadlineAt?:number}):Promise<TurnExecutionObservation>{
     const executionDeadlineAt=input.executionDeadlineAt===undefined?undefined:positive(input.executionDeadlineAt);
     const identity=turnRuntimeIdentity({scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation}),actor=validateActor(input.actor),base=turnBaseCheckpoints(input.base),text=message(input.message),key=await turnDigest({identity,actor,base,message:text,...(executionDeadlineAt===undefined?{}:{executionDeadlineAt})});
@@ -84,11 +89,12 @@ export class WorkspacePreparedExecutionPort implements TurnExecutionPort{
         const confirmationId=`base-${(await turnDigest({schemaVersion:1,identity,reason:'turn-base-unavailable'})).slice(0,64)}`;
         return {identity,phase:'terminal',outcome:'failed',executionErrorCode:'turn-base-unavailable',events:[],stopped:{confirmationId,observedAt:Date.now(),nativeRunning:false,fenced:true}};
       }
-      return this.#execution.start({...identity,actor,message:text,base,...(executionDeadlineAt===undefined?{}:{executionDeadlineAt})});
+      return this.#settle(identity,this.#execution.start({...identity,actor,message:text,base,...(executionDeadlineAt===undefined?{}:{executionDeadlineAt})}));
     })();return this.#startPromise;
   }
   async currentObserverExecution(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);if(!this.#execution.currentObserverExecution)reject('product-turn-observer-denied');return this.#execution.currentObserverExecution(identity);}
-  observe(raw:TurnRuntimeIdentity){return this.#execution.observe(turnRuntimeIdentity(raw));}
-  cancel(raw:TurnRuntimeIdentity){return this.#execution.cancel(turnRuntimeIdentity(raw));}
+  async #settle(identity:TurnRuntimeIdentity,promise:Promise<TurnExecutionObservation>){const result=await promise;if(result.phase==='terminal'&&['turn-native-exit-failed','turn-native-result-missing'].includes(result.executionErrorCode??''))await this.#workspace.abort(identity);return result;}
+  observe(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);return this.#settle(identity,this.#execution.observe(identity));}
+  cancel(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);return this.#settle(identity,this.#execution.cancel(identity));}
   release(raw:TurnRuntimeIdentity){return this.#execution.release(turnRuntimeIdentity(raw));}
 }

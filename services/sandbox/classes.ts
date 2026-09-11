@@ -69,6 +69,13 @@ export class ProjectToolSandbox extends Sandbox<M2SandboxEnv>{
     await this.#supervisor.sealForCheckpoint();
     return this.#workspace.frozenFiles(...input);
   }
+  async abortWorkspace(raw:Parameters<typeof turnRuntimeIdentity>[0]){
+    const identity=turnRuntimeIdentity(raw);
+    if((await sandboxActorIds(identity.scope,identity.turnId,identity.dispatchId)).project!==this.#actorId)throw Error('project-workspace-actor-scope-denied');
+    await this.#supervisor.sealForCheckpoint();
+    await this.destroy();
+    return {running:this.ctx.container?.running===true,fenced:true as const};
+  }
 }
 
 TrustedPiSandbox.outbound=(request,env,context)=>trustedPiOutbound(request,env as unknown as M2SandboxEnv,context.containerId);

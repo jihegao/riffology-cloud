@@ -116,8 +116,8 @@ export class TurnJournal{
         return {state,value:turn};
       }
       if(!['running','cancelling'].includes(turn.status))throw Error('turn-runtime-scope-denied');
-      if(turn.status==='cancelling'&&input.outcome!=='cancelled'&&input.outcome!=='interrupted')throw Error('turn-cancellation-not-honored');
-      turn.status='checkpointing';turn.executionOutcome=input.outcome;turn.errorCode=input.errorCode??null;turn.persistenceOutcome=null;turn.persistenceErrorCode=null;turn.updatedAt=at;event(state,turn,'turn.checkpointing',at,{executionOutcome:input.outcome,errorCode:turn.errorCode});return {state,value:turn};});
+      const cancellationDisposition=turn.status==='cancelling'&&!['cancelled','interrupted'].includes(input.outcome)?'already-terminal':null;
+      turn.status='checkpointing';turn.executionOutcome=input.outcome;turn.errorCode=input.errorCode??null;turn.persistenceOutcome=null;turn.persistenceErrorCode=null;turn.updatedAt=at;event(state,turn,'turn.checkpointing',at,{executionOutcome:input.outcome,errorCode:turn.errorCode,...(cancellationDisposition?{cancellationDisposition}:{})});return {state,value:turn};});
   }
   async commitCheckpoint(rawScope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;checkpoint:CheckpointReceipt}){
     const s=scope(rawScope),tid=turnId(input.turnId),dispatchId=turnId(input.dispatchId),generation=positive(input.runtimeGeneration),at=nowValid(this.#clock()),c=input.checkpoint;

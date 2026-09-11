@@ -26,11 +26,12 @@ test('runtime events are scoped, deduplicated and assigned durable monotonic seq
  await assert.rejects(f.journal.appendRuntime(scope,{...input,eventId:'event-two',dispatchId:'wrong'}),/scope-denied/);
  const replay=await f.journal.replay(scope,1,10);assert.deepEqual(replay.events.map(item=>item.sequence),[2,3]);assert.equal(replay.hasMore,false);
 });
-test('queued cancellation never dispatches; running cancellation persists a fence before checkpoint',async()=>{
+test('queued cancellation never dispatches; running cancellation accepts a raced natural terminal outcome',async()=>{
  const f=fixture(),first=await queued(f.journal,'one'),s2=await session(f.journal,'session-two'),second=(await f.journal.submit(scope,actor,s2.id,'two',{message:'two'})).turn;
  await f.journal.cancel(scope,actor,first.id);assert.equal(f.store.snapshot()!.turns[first.id]!.status,'cancelled');const claim=(await f.journal.claim(scope,1))!.turn;assert.equal(claim.id,second.id);
  const cancelling=await f.journal.cancel(scope,actor,second.id);assert.equal(cancelling.status,'cancelling');assert.ok(cancelling.cancelRequestedAt);
- await assert.rejects(f.journal.beginCheckpoint(scope,{turnId:second.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,outcome:'completed'}),/cancellation-not-honored/);
+ const pending=await f.journal.beginCheckpoint(scope,{turnId:second.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,outcome:'completed'});assert.equal(pending.status,'checkpointing');
+ const checkpointing=f.store.snapshot()!.events.at(-1)!;assert.equal(checkpointing.type,'turn.checkpointing');assert.equal(checkpointing.payload.cancellationDisposition,'already-terminal');
 });
 test('execution result is not a saved terminal result until immutable checkpoint commit',async()=>{
  const f=fixture(),turn=await queued(f.journal),claim=(await f.journal.claim(scope,1))!.turn;

@@ -22,7 +22,7 @@ function bound(raw:TurnRuntimeIdentity,expected:TurnRuntimeIdentity):TurnRuntime
   const identity=turnRuntimeIdentity(raw);if(!sameTurnRuntimeIdentity(identity,expected))reject('product-turn-release-scope-denied');return identity;
 }
 function project(value:unknown):ProjectWorkspaceRpc{
-  if(!value||typeof value!=='object'||typeof (value as ProjectWorkspaceRpc).restoreWorkspace!=='function'||typeof (value as ProjectWorkspaceRpc).freezeWorkspace!=='function')reject('product-turn-release-project-sandbox-required');return value as ProjectWorkspaceRpc;
+  if(!value||typeof value!=='object'||typeof (value as ProjectWorkspaceRpc).restoreWorkspace!=='function'||typeof (value as ProjectWorkspaceRpc).freezeWorkspace!=='function'||typeof (value as ProjectWorkspaceRpc).abortWorkspace!=='function')reject('product-turn-release-project-sandbox-required');return value as ProjectWorkspaceRpc;
 }
 function trusted(value:unknown):TrustedPiSandboxProcessApi{
   if(!value||typeof value!=='object'||typeof (value as TrustedPiSandboxProcessApi).writeFile!=='function'||typeof (value as TrustedPiSandboxProcessApi).readFile!=='function'||typeof (value as TrustedPiSandboxProcessApi).startProcess!=='function'||typeof (value as TrustedPiSandboxProcessApi).getProcess!=='function'||typeof (value as TrustedPiSandboxProcessApi).destroy!=='function'||typeof (value as TrustedPiSandboxProcessApi).releaseState!=='function')reject('product-turn-release-trusted-pi-sandbox-required');return value as TrustedPiSandboxProcessApi;
