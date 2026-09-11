@@ -6,7 +6,7 @@ import {spawnSync} from 'node:child_process';
 import {EventEmitter} from 'node:events';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
-import {runIssuesAcceptance,unavailableInventory,unavailableProviderFreeProbe,validateFinalInventory,validatePlatformProbe,validateReleaseResult,validateTenTurnEvidence} from '../../scripts/m3/issues-acceptance.mjs';
+import {requestJson,runIssuesAcceptance,unavailableInventory,unavailableProviderFreeProbe,validateFinalInventory,validatePlatformProbe,validateReleaseResult,validateTenTurnEvidence} from '../../scripts/m3/issues-acceptance.mjs';
 import {forwardCloseTurnGate} from '../../scripts/m3/vertical-staging-release.mjs';
 import {WORKER_VERSION_METADATA_BINDING} from '../../scripts/m3/vertical-staging-preflight.mjs';
 import {exactInstance,instanceRows,selectTrustedPiApp,trustedPiProbeActor} from '../../scripts/m3/trusted-pi-platform-probe.mjs';
@@ -41,6 +41,15 @@ test('release, platform, turn, and final inventory validators require the comple
 
 test('the production provider-free probe fails closed instead of treating app instance counts as actor proof',()=>{
   const result=unavailableProviderFreeProbe();assert.equal(result.status,'blocked');assert.equal(result.reasonCode,'provider-free-exact-actor-probe-unavailable');assert.match(result.conclusion,/single stopped or inactive record/);
+});
+
+test('acceptance transport retries reads and same-key mutations without changing request identity',async t=>{
+  const originalFetch=globalThis.fetch,calls=[];let attempt=0;
+  globalThis.fetch=async(url,init)=>{calls.push({url,method:init.method,key:init.headers['idempotency-key'],body:init.body});attempt++;if(attempt===1)throw Error('transient-network');if(attempt===2)return new Response('temporary',{status:503});return Response.json({ok:true});};
+  t.after(()=>{globalThis.fetch=originalFetch;});
+  const value=await requestJson('https://m1.riff-demo.gaojihe.cn/api/example',{cookie:'private-cookie',method:'POST',key:'stable-key',body:{value:1},attempts:3,retryDelayMs:0});
+  assert.deepEqual(value,{ok:true});assert.equal(calls.length,3);assert.deepEqual(new Set(calls.map(call=>call.key)),new Set(['stable-key']));assert.deepEqual(new Set(calls.map(call=>call.body)),new Set(['{"value":1}']));
+  attempt=0;calls.length=0;await assert.rejects(()=>requestJson('https://m1.riff-demo.gaojihe.cn/api/example',{cookie:'private-cookie',method:'POST',body:{value:1},attempts:3,retryDelayMs:0}),/transient-network/);assert.equal(calls.length,1);
 });
 
 test('provider-free probe derives the production actor and requires an exact app and instance',async()=>{

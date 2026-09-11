@@ -45,13 +45,24 @@ export function validateAuthInput(value){
 export function unavailableProviderFreeProbe(){return {schemaVersion:1,status:'blocked',reasonCode:'provider-free-exact-actor-probe-unavailable',conclusion:'No product-only operator path exposes exact TrustedPi actor lifecycle. Application-level container counts and a single stopped or inactive record are insufficient release proof.'};}
 
 function turnSummary(snapshot,turnId){const turn=snapshot?.turns?.[turnId];return {observedAt:Date.now(),turnStatus:turn?.status??null,activeTurnId:snapshot?.activeTurnId??null,resourceWait:snapshot?.resourceWait??null,releaseHold:snapshot?.releaseHold??null,recoveryHold:snapshot?.recoveryHold??null};}
-async function requestJson(url,{cookie,method='GET',body=null,key=null,timeoutMs=20_000}={}){
-  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
-  try{
-    const headers={'accept':'application/json','cache-control':'no-cache','cookie':cookie,'origin':new URL(url).origin};if(body!==null)headers['content-type']='application/json';if(key!==null)headers['idempotency-key']=key;
-    const response=await fetch(url,{method,headers,body:body===null?undefined:JSON.stringify(body),signal:controller.signal,redirect:'error'});
-    if(!response.ok)fail(`acceptance-http-${response.status}`);return await response.json();
-  }finally{clearTimeout(timer);}
+export async function requestJson(url,{cookie,method='GET',body=null,key=null,timeoutMs=20_000,attempts=3,retryDelayMs=1_000}={}){
+  if(!Number.isSafeInteger(attempts)||attempts<1||attempts>5||!Number.isSafeInteger(retryDelayMs)||retryDelayMs<0||retryDelayMs>10_000)fail('acceptance-request-retry-invalid');
+  const encodedBody=body===null?undefined:JSON.stringify(body),headers={'accept':'application/json','cache-control':'no-cache','cookie':cookie,'origin':new URL(url).origin};if(body!==null)headers['content-type']='application/json';if(key!==null)headers['idempotency-key']=key;
+  const retrySafe=method==='GET'||key!==null;
+  for(let attempt=1;attempt<=attempts;attempt++){
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
+    try{
+      const response=await fetch(url,{method,headers,body:encodedBody,signal:controller.signal,redirect:'error'}),retryableStatus=response.status===408||response.status===425||response.status===429||response.status>=500;
+      if(!response.ok){if(!retrySafe||!retryableStatus||attempt===attempts)fail(`acceptance-http-${response.status}`);}
+      else{try{return await response.json();}catch{if(!retrySafe||attempt===attempts)fail('acceptance-response-invalid');}}
+    }catch(error){
+      const code=error instanceof Error?error.message:'';
+      if(code.startsWith('acceptance-http-')||code==='acceptance-response-invalid'||!retrySafe)throw error;
+      if(attempt===attempts)fail('acceptance-transport-unavailable');
+    }finally{clearTimeout(timer);}
+    await sleep(retryDelayMs*Math.min(2**(attempt-1),4));
+  }
+  fail('acceptance-transport-unavailable');
 }
 async function allEvents(auth){
   const events=[];let after=0;
