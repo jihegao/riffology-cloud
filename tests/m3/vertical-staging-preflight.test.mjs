@@ -6,24 +6,26 @@ import {inspectManagedImage,validateStagingTopology} from '../../scripts/m3/vert
 const config=()=>JSON.parse(readFileSync(new URL('../../infra/wrangler.m3-vertical-staging.jsonc',import.meta.url),'utf8'));
 const migrations=()=>readdirSync(new URL('../../services/catalog/migrations',import.meta.url)).filter(name=>name.endsWith('.sql'));
 
-test('staging vertical topology is complete, immutable and paused at foundation',()=>{
+test('staging vertical topology is complete with turn admission paused',()=>{
   const foundationChecks=validateStagingTopology(config(),migrations());
   assert.equal(foundationChecks.length,15);
   assert.deepEqual(foundationChecks.filter(value=>value.status!=='passed'),[]);
   assert.deepEqual(validateStagingTopology(config(),migrations(),{release:true}).filter(value=>value.status!=='passed').map(value=>value.name),['execution-gates-controlled-release']);
 });
 
-test('foundation mode requires all six execution gates closed',()=>{
+test('paused mode closes turn admission while retaining read and preview gates',()=>{
   const value=config();
-  for(const name of ['M2_TURNS_ENABLED','M2_MODEL_PROVIDER_ENABLED','M3_SERVICE_ENABLED','M3_PREVIEW_ENABLED','M3_PREVIEW_WS_ENABLED'])value.vars[name]='false';
   assert.deepEqual(validateStagingTopology(value,migrations()).filter(item=>item.status!=='passed'),[]);
+  value.vars.M3_PREVIEW_ENABLED='false';
+  assert.deepEqual(validateStagingTopology(value,migrations()).filter(item=>item.status!=='passed').map(item=>item.name),['turn-admission-paused']);
+  value.vars.M3_PREVIEW_ENABLED='true';
   value.vars.M3_OBSERVER_ENABLED='true';
-  assert.deepEqual(validateStagingTopology(value,migrations()).filter(item=>item.status!=='passed').map(item=>item.name),['execution-gates-closed']);
+  assert.deepEqual(validateStagingTopology(value,migrations()).filter(item=>item.status!=='passed').map(item=>item.name),['turn-admission-paused']);
 });
 
 test('release mode rejects mixed gates, observer enablement, local images and storage sharing',()=>{
   const value=config();
-  value.vars.M2_TURNS_ENABLED='false';
+  value.vars.M2_TURNS_ENABLED='true';
   value.vars.M3_OBSERVER_ENABLED='true';
   value.containers[1].image='127.0.0.1:5000/project:latest';
   value.r2_buckets[1].bucket_name=value.r2_buckets[0].bucket_name;

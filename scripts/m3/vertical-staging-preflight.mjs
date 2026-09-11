@@ -50,13 +50,13 @@ export function validateStagingTopology(config,migrations,{release=false}={}){
   const releaseGates=['M2_TURNS_ENABLED','M2_MODEL_PROVIDER_ENABLED','M3_SERVICE_ENABLED','M3_PREVIEW_ENABLED','M3_PREVIEW_WS_ENABLED'];
   const gatesValid=release
     ? releaseGates.every(name=>config.vars?.[name]==='true')&&config.vars?.M3_OBSERVER_ENABLED==='false'
-    : [...releaseGates,'M3_OBSERVER_ENABLED'].every(name=>config.vars?.[name]==='false');
+    : config.vars?.M2_TURNS_ENABLED==='false'&&releaseGates.slice(1).every(name=>config.vars?.[name]==='true')&&config.vars?.M3_OBSERVER_ENABLED==='false';
   const budget=config.vars?.M2_MODEL_BUDGET_POLICY_VERSION==='m2-token-vertical-v2'&&config.vars?.MODEL_BUDGET_POLICY_VERSION==='m2-token-vertical-v2'&&config.vars?.MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN==='8'&&config.vars?.MODEL_BUDGET_MAX_DISPATCHED_CALLS_PER_TURN==='8'&&config.vars?.MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL==='262144'&&config.vars?.MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL==='4096'&&config.vars?.MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN==='532480';
   const r2=config.r2_buckets??[],service=containers.find(value=>value.class_name==='ServiceSandbox');
   return [
     check('worker-identity',config.name===WORKER_NAME&&config.account_id===ACCOUNT_ID&&config.workers_dev===false&&config.preview_urls===false,'use-existing-dedicated-staging-worker'),
     check('staging-origins',config.vars?.APP_ORIGIN===CONTROL_ORIGIN&&config.vars?.M3_PREVIEW_ORIGIN===PREVIEW_ORIGIN&&routes.length===3&&control&&previewBase&&preview?.pattern===PREVIEW_ROUTE,'declare-control-and-preview-base-custom-domains-plus-the-preview-wildcard-route'),
-    check(release?'execution-gates-controlled-release':'execution-gates-closed',gatesValid,release?'release-requires-five-vertical-gates-true-and-observer-false':'foundation-requires-all-six-execution-gates-false'),
+    check(release?'execution-gates-controlled-release':'turn-admission-paused',gatesValid,release?'release-requires-five-vertical-gates-true-and-observer-false':'maintenance-requires-turn-admission-false-with-read-and-preview-gates-retained'),
     check('tenant-capacity',config.vars?.TENANT_QUOTA_CAPACITY==='1'&&containers.every(value=>value.max_instances===1),'retain-single-tenant-runtime-capacity'),
     check('model-budget',budget,'retain-reviewed-token-and-turn-budget'),
     check('required-secrets',same(config.secrets?.required??[],REQUIRED_SECRETS),'declare-only-the-eight-reviewed-secrets'),
@@ -140,7 +140,7 @@ export async function runPreflight({root=resolve(fileURLToPath(new URL('../..',i
   checks.push(validateSecretSources(secretFiles.map(path=>resolve(root,path)),opencodeAuthFile?resolve(root,opencodeAuthFile):null));
   if(dryRunEnabled){const result=dryRun(root);checks.push(check('wrangler-dry-run',result.status===0,result.status===0?undefined:'wrangler-dry-run-failed'));}
   if(cloud)checks.push(...await cloudChecks(root,config,release));
-  return {schemaVersion:1,observedAt:new Date().toISOString(),phase:release?'release':'foundation',status:checks.some(value=>value.status==='blocked')?'blocked':'passed',checks};
+  return {schemaVersion:1,observedAt:new Date().toISOString(),phase:release?'release':'paused',status:checks.some(value=>value.status==='blocked')?'blocked':'passed',checks};
 }
 
 async function main(){
