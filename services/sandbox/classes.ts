@@ -36,13 +36,17 @@ export class TrustedPiSandbox extends Sandbox<M2SandboxEnv>{
   /** Provider-free release probe. Keep the SDK Process handle inside this DO
    * and return only plain data so the caller is not coupled to an RPC target's
    * lifetime. The command and all execution options are fixed here. */
-  async startLifecycleProbe(raw:Parameters<typeof turnRuntimeIdentity>[0],processId:string){
+  async startLifecycleProbe(raw:Parameters<typeof turnRuntimeIdentity>[0]){
     const identity=turnRuntimeIdentity(raw);await this.#assertActor(identity);
-    if(!/^probe-[a-f0-9]{24}$/.test(processId))throw Error('trusted-pi-lifecycle-probe-process-invalid');
+    const match=/^probe-([a-f0-9]{24})$/.exec(identity.scope.tenantId),token=match?.[1],suffix=identity.turnId.endsWith('-a')?'a':identity.turnId.endsWith('-b')?'b':null;
+    if(!token||!suffix||identity.scope.projectId!==`probe-${token}`||identity.scope.workspaceId!==`probe-${token}`||identity.scope.workspaceGeneration!==1||identity.sessionId!==`session-${token}`||identity.turnId!==`turn-${token}-${suffix}`||identity.dispatchId!==`dispatch-${token}-${suffix}`||identity.generation!==1)throw Error('trusted-pi-lifecycle-probe-identity-invalid');
+    const processId=`probe-${token}`;
     return this.#turnFence.run(identity,async()=>{
       const process=await super.startProcess('/bin/sleep 300',{processId,autoCleanup:false,timeout:300000,cwd:'/tmp',encoding:'utf8',env:{LANG:'C.UTF-8',PATH:'/usr/local/bin:/usr/bin:/bin'}});
       if(!process||process.id!==processId)throw Error('trusted-pi-lifecycle-probe-start-invalid');
-      return {processId:process.id};
+      const status=await process.getStatus(),containerRunning=this.ctx.container?.running===true;
+      if(status!=='running'||!containerRunning)throw Error('trusted-pi-lifecycle-probe-start-unconfirmed');
+      return {processId:process.id,status,containerRunning};
     },()=>this.#destroyForFence());
   }
   async getTurnProcess(raw:Parameters<typeof turnRuntimeIdentity>[0],...input:Parameters<Sandbox<M2SandboxEnv>['getProcess']>){const identity=turnRuntimeIdentity(raw);await this.#assertActor(identity);return this.#turnFence.run(identity,()=>super.getProcess(...input),()=>this.#destroyForFence());}
