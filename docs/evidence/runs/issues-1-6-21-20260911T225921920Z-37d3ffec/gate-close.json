@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "gateCloseConfirmed": true,
+  "workerVersionId": "74a8f6ff-d7a6-444d-94f4-5eecc16020e1",
+  "workerSourceSha": "37d3ffec08be734cbd041f9d13df1076beebf2c6",
+  "turnsEnabled": false,
+  "observedAt": "2026-09-11T23:28:36.000Z"
+}

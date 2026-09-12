@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "status": "blocked",
+  "phase": "evidence-validation",
+  "reasonCode": "acceptance-turn-transition-order-invalid",
+  "gateCloseConfirmed": true,
+  "outstandingTurnCleanupConfirmed": true,
+  "turnCount": 3
+}

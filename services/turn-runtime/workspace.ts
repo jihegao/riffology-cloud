@@ -16,6 +16,7 @@ export interface ProjectWorkspaceRpc{
   abortWorkspace(identity:TurnRuntimeIdentity):Promise<{running:boolean;fenced:true}>;
 }
 type Resolver=(actorId:string)=>ProjectWorkspaceRpc;
+export const PROJECT_WORKSPACE_ABORT_TIMEOUT_MS=30_000;
 function reject(code:string):never{throw Error(code);}
 function same(a:unknown,b:unknown):boolean{return JSON.stringify(a)===JSON.stringify(b);}
 const UNUSABLE_BASE_ERRORS=new Set([
@@ -33,8 +34,8 @@ function unusableBase(error:unknown):boolean{return error instanceof Error&&UNUS
  * only a verified R2 Workspace base and later freezes the same actor for the
  * Revision adapter. Pi never receives either archive or actor id. */
 export class ProjectWorkspaceLifecycle implements WorkspaceFilesFreezePort{
-  readonly #source:WorkspaceRevisionSource;readonly #resolve:Resolver;
-  constructor(source:WorkspaceRevisionSource,resolve:Resolver){if(!source?.restore||typeof resolve!=='function')reject('project-workspace-lifecycle-required');this.#source=source;this.#resolve=resolve;}
+  readonly #source:WorkspaceRevisionSource;readonly #resolve:Resolver;readonly #abortTimeoutMs:number;
+  constructor(source:WorkspaceRevisionSource,resolve:Resolver,abortTimeoutMs=PROJECT_WORKSPACE_ABORT_TIMEOUT_MS){if(!source?.restore||typeof resolve!=='function')reject('project-workspace-lifecycle-required');if(!Number.isSafeInteger(abortTimeoutMs)||abortTimeoutMs<1)reject('invalid-project-workspace-abort-timeout');this.#source=source;this.#resolve=resolve;this.#abortTimeoutMs=abortTimeoutMs;}
   async #target(identity:TurnRuntimeIdentity){const actorId=(await sandboxActorIds(identity.scope,identity.turnId,identity.dispatchId)).project;return this.#resolve(actorId);}
   async prepare(raw:TurnRuntimeIdentity,rawBase:TurnBaseCheckpoints):Promise<void>{
     const identity=turnRuntimeIdentity(raw),base=turnBaseCheckpoints(rawBase);let archive:Uint8Array|null=null;
@@ -68,8 +69,9 @@ export class ProjectWorkspaceLifecycle implements WorkspaceFilesFreezePort{
     if(!(archive instanceof Uint8Array)||archive.byteLength<1)reject('invalid-project-workspace-archive');return Uint8Array.from(archive);
   }
   async abort(raw:TurnRuntimeIdentity):Promise<void>{
-    const identity=turnRuntimeIdentity(raw),result=await (await this.#target(identity)).abortWorkspace(identity);
-    if(!result||typeof result!=='object'||Object.keys(result).sort().join(',')!=='fenced,running'||result.fenced!==true||result.running!==false)reject('project-workspace-release-unconfirmed');
+    const identity=turnRuntimeIdentity(raw);let timer:ReturnType<typeof setTimeout>|undefined;try{const cleanup=(async()=>{const target=await this.#target(identity);return target.abortWorkspace(identity);})(),result=await Promise.race([cleanup,new Promise<never>((_,rejectTimeout)=>{timer=setTimeout(()=>rejectTimeout(Error('project-workspace-release-timeout')),this.#abortTimeoutMs);})]);
+      if(!result||typeof result!=='object'||Object.keys(result).sort().join(',')!=='fenced,running'||result.fenced!==true||result.running!==false)reject('project-workspace-release-unconfirmed');
+    }catch{reject('project-workspace-release-unconfirmed');}finally{if(timer!==undefined)clearTimeout(timer);}
   }
 }
 
@@ -78,7 +80,7 @@ export class ProjectWorkspaceLifecycle implements WorkspaceFilesFreezePort{
 export class WorkspacePreparedExecutionPort implements TurnExecutionPort{
   readonly #workspace:Pick<ProjectWorkspaceLifecycle,'prepare'|'abort'>;readonly #execution:TurnExecutionPort;
   #startKey:string|null=null;#startPromise:Promise<TurnExecutionObservation>|null=null;
-  constructor(workspace:Pick<ProjectWorkspaceLifecycle,'prepare'|'abort'>,execution:TurnExecutionPort){if(!workspace?.prepare||!workspace.abort||!execution?.start||!execution.observe||!execution.cancel||!execution.release)reject('workspace-prepared-execution-required');this.#workspace=workspace;this.#execution=execution;}
+  constructor(workspace:Pick<ProjectWorkspaceLifecycle,'prepare'|'abort'>,execution:TurnExecutionPort){if(!workspace?.prepare||!workspace.abort||!execution?.start||!execution.observe||!execution.cancel||!execution.fenceUnresolvedStart||!execution.release)reject('workspace-prepared-execution-required');this.#workspace=workspace;this.#execution=execution;}
   async start(input:TurnRuntimeIdentity&{actor:TurnActor;message:string;base:TurnBaseCheckpoints;executionDeadlineAt?:number}):Promise<TurnExecutionObservation>{
     const executionDeadlineAt=input.executionDeadlineAt===undefined?undefined:positive(input.executionDeadlineAt);
     const identity=turnRuntimeIdentity({scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation}),actor=validateActor(input.actor),base=turnBaseCheckpoints(input.base),text=message(input.message),key=await turnDigest({identity,actor,base,message:text,...(executionDeadlineAt===undefined?{}:{executionDeadlineAt})});
@@ -93,8 +95,9 @@ export class WorkspacePreparedExecutionPort implements TurnExecutionPort{
     })();return this.#startPromise;
   }
   async currentObserverExecution(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);if(!this.#execution.currentObserverExecution)reject('product-turn-observer-denied');return this.#execution.currentObserverExecution(identity);}
-  async #settle(identity:TurnRuntimeIdentity,promise:Promise<TurnExecutionObservation>){const result=await promise;if(result.phase==='terminal'&&['turn-native-exit-failed','turn-native-result-missing'].includes(result.executionErrorCode??''))await this.#workspace.abort(identity);return result;}
+  async #settle(_identity:TurnRuntimeIdentity,promise:Promise<TurnExecutionObservation>){return promise;}
   observe(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);return this.#settle(identity,this.#execution.observe(identity));}
   cancel(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);return this.#settle(identity,this.#execution.cancel(identity));}
-  release(raw:TurnRuntimeIdentity){return this.#execution.release(turnRuntimeIdentity(raw));}
+  fenceUnresolvedStart(raw:TurnRuntimeIdentity,outcome:'failed'|'interrupted'){const identity=turnRuntimeIdentity(raw);return this.#execution.fenceUnresolvedStart(identity,outcome);}
+  async release(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw),released=await this.#execution.release(identity);if(released.running)return released;await this.#workspace.abort(identity);return released;}
 }

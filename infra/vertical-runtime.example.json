@@ -8,6 +8,10 @@
     "ServiceSandbox": { "reference": "docker.io/library/riffology-service:replace-with-built-tag", "digest": "sha256:replace-with-64-hex-image-id" }
   },
   "M3_SERVICE_IMAGE": "local/riffology-service@sha256:replace-with-the-64-hex-docker-image-id",
+  "M2_WORKER_SOURCE_SHA": "replace-with-the-40-hex-git-commit-sha",
+  "M2_TOOL_BRIDGE_SHA256": "replace-with-the-64-hex-product-tool-bridge-sha256",
+  "M2_TOOL_PROTOCOL_VERSION": "2",
+  "M2_TOOL_LEDGER_SCHEMA_VERSION": "1",
   "HTTPS_CERT_PATH": ".local/tls/app-and-preview.pem",
   "HTTPS_KEY_PATH": ".local/tls/app-and-preview-key.pem",
   "M2_TURNS_ENABLED": "true",

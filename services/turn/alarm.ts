@@ -1,9 +1,11 @@
 import type { TurnActor, TurnRecord, TurnScope } from './protocol.ts';
+import type { TurnOperationTrace } from './operation-telemetry.ts';
 
 export interface TurnAlarmDispatcher {
   tick(scope:TurnScope,generation:number):Promise<TurnRecord|null>;
   cancel(scope:TurnScope,actor:TurnActor,turn:TurnRecord):Promise<TurnRecord>;
   nextWakeAt?(scope:TurnScope):number|null;
+  alarmCorrelationId?(scope:TurnScope):string|null;
 }
 export interface TurnAlarmPort {
   schedule(at:number):Promise<void>;
@@ -23,10 +25,11 @@ export class TurnAlarmLoop {
   readonly #alarm:TurnAlarmPort;
   readonly #clock:()=>number;
   readonly #timing:TurnAlarmTiming;
+  readonly #operationTrace:TurnOperationTrace|undefined;
   #active:Promise<TurnRecord|null>|null=null;
-  constructor(dispatcher:TurnAlarmDispatcher,alarm:TurnAlarmPort,clock=Date.now,timing:Partial<TurnAlarmTiming>={}){
+  constructor(dispatcher:TurnAlarmDispatcher,alarm:TurnAlarmPort,clock=Date.now,timing:Partial<TurnAlarmTiming>={},operationTrace?:TurnOperationTrace){
     this.#dispatcher=dispatcher;this.#alarm=alarm;this.#clock=clock;
-    this.#timing={pollMs:positive(timing.pollMs??DEFAULT_TIMING.pollMs),retryMs:positive(timing.retryMs??DEFAULT_TIMING.retryMs)};
+    this.#timing={pollMs:positive(timing.pollMs??DEFAULT_TIMING.pollMs),retryMs:positive(timing.retryMs??DEFAULT_TIMING.retryMs)};this.#operationTrace=operationTrace;
   }
   /** Arm durable work before committing a queued Turn. If arming is uncertain,
    * mutation is not invoked; an extra empty alarm is safe. */
@@ -54,8 +57,8 @@ export class TurnAlarmLoop {
     // The current alarm is considered consumed while its handler runs. Set the
     // reconciliation alarm before any journal or external runtime transition.
     await this.#alarm.schedule(positive(this.#clock())+this.#timing.retryMs);
-    let result:TurnRecord|null;
-    try{result=await this.#dispatcher.tick(scope,generation);}catch(error){throw error;}
+    let result:TurnRecord|null;const correlationId=this.#dispatcher.alarmCorrelationId?.(scope)??crypto.randomUUID();
+    try{result=await this.#dispatcher.tick(scope,generation);}catch(error){try{this.#operationTrace?.({route:'turn.operation',metric:'alarm_retry',stage:'alarm',reasonCategory:'alarm_transport',attempt:0,durationMs:null,value:1,correlationId});}catch{}throw error;}
     const recoveryWake=this.#dispatcher.nextWakeAt?.(scope)??null;
     if(!result&&!recoveryWake){await this.#alarm.clear();return null;}
     await this.#alarm.schedule(recoveryWake??(positive(this.#clock())+(result&&TERMINAL.has(result.status)?1:this.#timing.pollMs)));

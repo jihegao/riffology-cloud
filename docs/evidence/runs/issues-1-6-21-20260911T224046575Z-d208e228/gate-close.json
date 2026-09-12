@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "phase": "gate-close-postdeploy",
+  "deployExitConfirmed": true,
+  "gateCloseConfirmed": true,
+  "workerVersionId": "cbd66e66-b874-4ebf-b2a8-0bcf28f9f37f",
+  "checks": [
+    {
+      "name": "gate-close-dry-run",
+      "status": "passed"
+    },
+    {
+      "name": "deployed-worker-version",
+      "status": "passed"
+    }
+  ]
+}

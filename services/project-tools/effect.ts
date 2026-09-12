@@ -16,6 +16,9 @@ export interface ProjectEffectSupervisorPort{
    * A transport error after this call begins must never be interpreted as absent. */
   start(input:ProjectEffectStart):Promise<ProjectEffectProcessObservation>;
   observe(effectId:string):Promise<ProjectEffectProcessObservation>;
+  /** Reads only a terminal SQLite result. It must never inspect or start the
+   * native container and is used for retained receipts after actor teardown. */
+  observePersistedTerminal?(effectId:string):Promise<ProjectEffectProcessObservation|null>;
 }
 
 const PROJECT_OPERATIONS=new Set<ProjectOperation>(['read','read_page','write','edit','list','search','bash']);
@@ -101,6 +104,14 @@ export class ProjectFileEffectPort implements ToolEffectPort{
     if(command.turnId!==base.turnId||command.dispatchId!==base.dispatchId||command.commandId!==base.commandId||!sameScope(command.scope,base.scope)||await toolCommandDigest(command)!==input.reference.digest)reject('project-effect-command-mismatch');
     if(!PROJECT_OPERATIONS.has(command.operation as ProjectOperation))return terminal(base,positive(this.#clock()),'failed','project-tool-operation-unsupported',{});
     const raw=await this.#supervisor.observe(base.effectId);
+    return this.#receipt(base,command.operation as ProjectOperation,raw,true);
+  }
+  async observePersistedTerminal(input:{reference:ToolCommandReference;command:ToolCommand}):Promise<ToolEffectReceipt>{
+    const command=normalizeToolCommand(input.command),base=identity(input.reference);
+    if(command.turnId!==base.turnId||command.dispatchId!==base.dispatchId||command.commandId!==base.commandId||!sameScope(command.scope,base.scope)||await toolCommandDigest(command)!==input.reference.digest)reject('project-effect-command-mismatch');
+    if(!this.#supervisor.observePersistedTerminal)reject('project-effect-terminal-reader-required');
+    const raw=await this.#supervisor.observePersistedTerminal(base.effectId);
+    if(!raw||raw.phase!=='exited')reject('project-effect-not-terminal');
     return this.#receipt(base,command.operation as ProjectOperation,raw,true);
   }
   #receipt(base:ReturnType<typeof identity>,operation:ProjectOperation|null,raw:unknown,observing:boolean):ToolEffectReceipt{

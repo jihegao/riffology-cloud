@@ -8,7 +8,7 @@ import { ProjectWorkspaceLifecycle, TurnBaseUnavailableError, WorkspacePreparedE
 test('prepared execution freezes its absolute deadline before awaiting restoration',async()=>{
  let release!:()=>void,started!:()=>void,observed:number|undefined;
  const waiting=new Promise<void>(r=>{started=r;}),restored=new Promise<void>(r=>{release=r;});
- const port=new WorkspacePreparedExecutionPort({async prepare(){started();await restored;},async abort(){}} as never,{async start(input){observed=input.executionDeadlineAt;return running;},async observe(){return running;},async cancel(){return running;},async release(){return {running:false};}});
+ const port=new WorkspacePreparedExecutionPort({async prepare(){started();await restored;},async abort(){}} as never,{async start(input){observed=input.executionDeadlineAt;return running;},async observe(){return running;},async cancel(){return running;},async fenceUnresolvedStart(){return running;},async release(){return {running:false};}});
  const input={...identity,actor,message:'Build',base,executionDeadlineAt:5000};
  const pending=port.start(input);await waiting;input.executionDeadlineAt=9000;release();await pending;assert.equal(observed,5000);
 });
@@ -32,7 +32,7 @@ test('genesis restore supplies no archive and a forged source receipt fails befo
 });
 
 test('verified base corruption becomes a terminal pre-execution failure while transport uncertainty remains unknown',async()=>{
-  let starts=0,resolved=0;const execution:TurnExecutionPort={async start(){starts++;return running;},async observe(){return running;},async cancel(){return running;},async release(){return {running:false};}};
+  let starts=0,resolved=0;const execution:TurnExecutionPort={async start(){starts++;return running;},async observe(){return running;},async cancel(){return running;},async fenceUnresolvedStart(){return running;},async release(){return {running:false};}};
   const corrupted=new ProjectWorkspaceLifecycle({async restore(){throw Error('turn-revision-object-conflict');}},()=>{resolved++;throw Error('unused');});
   const terminal=await new WorkspacePreparedExecutionPort(corrupted,execution).start({...identity,actor,message:'Build',base});
   assert.equal(terminal.phase,'terminal');assert.equal(terminal.outcome,'failed');assert.equal(terminal.executionErrorCode,'turn-base-unavailable');assert.equal(terminal.stopped?.nativeRunning,false);assert.equal(terminal.stopped?.fenced,true);assert.equal(starts,0);assert.equal(resolved,0);
@@ -41,13 +41,28 @@ test('verified base corruption becomes a terminal pre-execution failure while tr
 });
 
 test('prepared execution restores exactly once before native start and never from observe or cancel',async()=>{
-  const calls:string[]=[],workspace={async prepare(){calls.push('prepare');},async abort(){calls.push('abort');}},execution:TurnExecutionPort={async start(){calls.push('start');return running;},async observe(){calls.push('observe');return running;},async cancel(){calls.push('cancel');return running;},async release(){calls.push('release');return {running:false};}},port=new WorkspacePreparedExecutionPort(workspace as never,execution);
+  const calls:string[]=[],workspace={async prepare(){calls.push('prepare');},async abort(){calls.push('abort');}},execution:TurnExecutionPort={async start(){calls.push('start');return running;},async observe(){calls.push('observe');return running;},async cancel(){calls.push('cancel');return running;},async fenceUnresolvedStart(){calls.push('fence');return running;},async release(){calls.push('release');return {running:false};}},port=new WorkspacePreparedExecutionPort(workspace as never,execution);
   const accepted=await Promise.all([port.start({...identity,actor,message:'Build',base}),port.start({...identity,actor,message:'Build',base})]);assert.deepEqual(accepted,[running,running]);assert.deepEqual(calls,['prepare','start']);await assert.rejects(port.start({...identity,actor,message:'Different',base}),/execution-conflict/);await port.observe(identity);await port.cancel(identity);assert.deepEqual(calls,['prepare','start','observe','cancel']);
   const failed=new WorkspacePreparedExecutionPort({async prepare(){throw Error('restore-failed');},async abort(){}} as never,execution);await assert.rejects(failed.start({...identity,actor,message:'Build',base}),/restore-failed/);assert.equal(calls.filter(value=>value==='start').length,1);
 });
 
-test('confirmed abnormal native termination releases the project sandbox before returning terminal',async()=>{
+test('confirmed abnormal native termination returns first and defers Project cleanup to the release state machine',async()=>{
  const calls:string[]=[],failed:TurnExecutionObservation={...running,phase:'terminal',outcome:'failed',executionErrorCode:'turn-native-exit-failed',stopped:{confirmationId:'stop-a',observedAt:1,nativeRunning:false,fenced:true}};
- const port=new WorkspacePreparedExecutionPort({async prepare(){},async abort(){calls.push('abort');}},{async start(){return running;},async observe(){calls.push('observe');return failed;},async cancel(){return failed;},async release(){return {running:false};}});
- assert.deepEqual(await port.observe(identity),failed);assert.deepEqual(calls,['observe','abort']);
+ const port=new WorkspacePreparedExecutionPort({async prepare(){},async abort(){calls.push('abort');}},{async start(){return running;},async observe(){calls.push('observe');return failed;},async cancel(){return failed;},async fenceUnresolvedStart(){return failed;},async release(){calls.push('release');return {running:false};}});
+ assert.deepEqual(await port.observe(identity),failed);assert.deepEqual(calls,['observe']);await port.release(identity);assert.deepEqual(calls,['observe','release','abort']);
+});
+
+test('combined release requires Trusted Pi absence and then exact Project cleanup',async()=>{
+ const calls:string[]=[],workspace={async prepare(){},async abort(){calls.push('project.abort');}},execution:TurnExecutionPort={async start(){return running;},async observe(){return running;},async cancel(){return running;},async fenceUnresolvedStart(){return running;},async release(){calls.push('trusted.release');return {running:false};}},port=new WorkspacePreparedExecutionPort(workspace,execution);
+ assert.deepEqual(await port.release(identity),{running:false});assert.deepEqual(calls,['trusted.release','project.abort']);
+ const stillRunning=new WorkspacePreparedExecutionPort({async prepare(){},async abort(){calls.push('must-not-abort');}},{...execution,async release(){calls.push('trusted.running');return {running:true};}});assert.deepEqual(await stillRunning.release(identity),{running:true});assert.equal(calls.includes('must-not-abort'),false);
+});
+
+test('Project cleanup transport or proof uncertainty is normalized for a resource recovery hold',async()=>{
+ for(const behavior of ['throw','running'] as const){const sandbox:ProjectWorkspaceRpc={async restoreWorkspace(){throw Error('unused');},async freezeWorkspace(){throw Error('unused');},async abortWorkspace(){if(behavior==='throw')throw Error('opaque-transport-detail');return {running:true,fenced:true};}},lifecycle=new ProjectWorkspaceLifecycle({async restore(){throw Error('unused');}},()=>sandbox);await assert.rejects(lifecycle.abort(identity),/project-workspace-release-unconfirmed/);}
+});
+
+test('a hung Project cleanup is bounded and normalized for resource recovery',async()=>{
+ const sandbox:ProjectWorkspaceRpc={async restoreWorkspace(){throw Error('unused');},async freezeWorkspace(){throw Error('unused');},async abortWorkspace(){return new Promise<never>(()=>{});}},lifecycle=new ProjectWorkspaceLifecycle({async restore(){throw Error('unused');}},()=>sandbox,5),started=Date.now();
+ await assert.rejects(lifecycle.abort(identity),/project-workspace-release-unconfirmed/);assert.ok(Date.now()-started<1000);
 });

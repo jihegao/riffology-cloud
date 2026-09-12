@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "index": 1,
+  "turnId": "54293f5a-0c03-4029-879e-ee7e190d7d69",
+  "filePath": "docs/acceptance/s162120260911T224046575Zd208e228-turn-01.txt",
+  "submittedStatus": "queued",
+  "terminal": {
+    "status": "completed",
+    "executionOutcome": "completed",
+    "persistenceOutcome": "saved",
+    "errorCode": null,
+    "checkpoint": {
+      "revisionId": "8d8d97f6787ffc918d5d9453b508084a0aac3309fbdc514498c9a56166fde30c",
+      "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/54293f5a-0c03-4029-879e-ee7e190d7d69/a650e51c-3a38-4cbd-b065-4c74c7db39fa.json",
+      "filesSha256": "89abc9419be02dd672a669e848e7ee21b3f4612cc4ef4bf774286bdc0dae2d66",
+      "sessionSha256": "c1de77e3b110eba8c6a0251e1c621f50b7a014f8b656a54e97edb4268d1a5107",
+      "committedAt": 1789166996482
+    }
+  },
+  "transitions": [
+    {
+      "observedAt": 1789167006911,
+      "turnStatus": "running",
+      "activeTurnId": "54293f5a-0c03-4029-879e-ee7e190d7d69",
+      "resourceWait": null,
+      "releaseHold": null,
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789166966877,
+      "turnStatus": "running",
+      "activeTurnId": "54293f5a-0c03-4029-879e-ee7e190d7d69",
+      "resourceWait": null,
+      "releaseHold": null,
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789167006911,
+      "turnStatus": "completed",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789166998304,
+        "nextAttemptAt": 1789167005649
+      },
+      "recoveryHold": null
+    }
+  ]
+}

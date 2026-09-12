@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "status": "blocked",
+  "phase": "gate-close-fallback",
+  "gateClosed": false,
+  "gateCloseConfirmed": false,
+  "forwardConformant": false,
+  "reasonCode": "paused-candidate-proof-missing",
+  "checks": [
+    {
+      "name": "worker-identity",
+      "status": "passed"
+    },
+    {
+      "name": "staging-origins",
+      "status": "passed"
+    },
+    {
+      "name": "turn-admission-paused",
+      "status": "passed"
+    },
+    {
+      "name": "tenant-capacity",
+      "status": "passed"
+    },
+    {
+      "name": "turn-operation-telemetry",
+      "status": "passed"
+    },
+    {
+      "name": "worker-version-metadata",
+      "status": "passed"
+    },
+    {
+      "name": "model-budget",
+      "status": "passed"
+    },
+    {
+      "name": "required-secrets",
+      "status": "passed"
+    },
+    {
+      "name": "durable-bindings",
+      "status": "passed"
+    },
+    {
+      "name": "durable-exports",
+      "status": "passed"
+    },
+    {
+      "name": "container-images",
+      "status": "passed"
+    },
+    {
+      "name": "service-image-pin",
+      "status": "passed"
+    },
+    {
+      "name": "private-services",
+      "status": "passed"
+    },
+    {
+      "name": "dedicated-storage",
+      "status": "passed"
+    },
+    {
+      "name": "recovery-cron",
+      "status": "passed"
+    },
+    {
+      "name": "catalog-migrations",
+      "status": "passed"
+    },
+    {
+      "name": "no-local-runtime-inputs",
+      "status": "passed"
+    },
+    {
+      "name": "worker-source-sha",
+      "status": "blocked",
+      "detail": "release-requires-clean-index-and-tracked-worktree-at-exact-worker-sha"
+    }
+  ]
+}

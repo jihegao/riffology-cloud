@@ -2,9 +2,10 @@ import { assembleProductTurnRuntimeRelease, type ProductTurnRuntimeRelease } fro
 import type { ProductTurnRuntimeHostEnv } from './host.ts';
 import type { TurnRuntimeIdentity } from './identity.ts';
 import type { ProjectWorkspaceRpc } from './workspace.ts';
-import type { TrustedPiSandboxProcessApi } from './pi-native.ts';
+import type { TrustedPiSandboxActorApi } from './pi-native.ts';
 import { revisionStoreActorName, type RevisionStoreNamespace } from './revision-store-client.ts';
 import { trustedPiCapacityClient, type TrustedPiCapacityNamespace } from '../capacity/client.ts';
+import { turnOperationTracer } from '../turn/operation-telemetry.ts';
 
 export type { ProductTurnRuntimeRelease } from './release.ts';
 
@@ -14,10 +15,11 @@ export interface ProductTurnRuntimeReleaseEnv extends ProductTurnRuntimeHostEnv 
   PROJECT_SANDBOX: {idFromName(name:string):unknown;getByName(name:string):unknown};
   TRUSTED_PI_SANDBOX: {idFromName(name:string):unknown;getByName(name:string):unknown};
   TRUSTED_PI_CAPACITY: TrustedPiCapacityNamespace;
+  M2_TURN_OPERATION_TELEMETRY?:unknown;
 }
 export interface ProductTurnRuntimeSandboxResolver{
   project(env:ProductTurnRuntimeReleaseEnv,actorId:string):ProjectWorkspaceRpc;
-  trustedPi(env:ProductTurnRuntimeReleaseEnv,actorId:string):TrustedPiSandboxProcessApi;
+  trustedPi(env:ProductTurnRuntimeReleaseEnv,actorId:string):TrustedPiSandboxActorApi;
 }
 
 function configured(raw:ProductTurnRuntimeHostEnv):ProductTurnRuntimeReleaseEnv{
@@ -45,5 +47,6 @@ export function productTurnRuntimeRelease(
     resolveProjectSandbox(actorId){return sandboxes.project(env,actorId);},
     resolveTrustedPiSandbox(actorId){return sandboxes.trustedPi(env,actorId);},
     capacity:trustedPiCapacityClient(env.TRUSTED_PI_CAPACITY),
+    trace:turnOperationTracer(env.M2_TURN_OPERATION_TELEMETRY),
   });
 }

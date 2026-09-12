@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "workerSourceSha": "37d3ffec08be734cbd041f9d13df1076beebf2c6",
+  "workerVersionId": "8269725f-f938-4323-bc46-970f905665e6",
+  "scope": {
+    "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+    "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+    "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+    "workspaceGeneration": 1
+  },
+  "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+  "baselineWorkspace": {
+    "workspaceHead": {
+      "revisionId": "8d8d97f6787ffc918d5d9453b508084a0aac3309fbdc514498c9a56166fde30c",
+      "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/54293f5a-0c03-4029-879e-ee7e190d7d69/a650e51c-3a38-4cbd-b065-4c74c7db39fa.json",
+      "filesSha256": "89abc9419be02dd672a669e848e7ee21b3f4612cc4ef4bf774286bdc0dae2d66",
+      "sessionSha256": "c1de77e3b110eba8c6a0251e1c621f50b7a014f8b656a54e97edb4268d1a5107",
+      "committedAt": 1789166996482
+    },
+    "sessionHead": {
+      "revisionId": "8d8d97f6787ffc918d5d9453b508084a0aac3309fbdc514498c9a56166fde30c",
+      "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/54293f5a-0c03-4029-879e-ee7e190d7d69/a650e51c-3a38-4cbd-b065-4c74c7db39fa.json",
+      "filesSha256": "89abc9419be02dd672a669e848e7ee21b3f4612cc4ef4bf774286bdc0dae2d66",
+      "sessionSha256": "c1de77e3b110eba8c6a0251e1c621f50b7a014f8b656a54e97edb4268d1a5107",
+      "committedAt": 1789166996482
+    },
+    "activeTurnId": null,
+    "resourceWait": null,
+    "releaseHold": null,
+    "recoveryHold": null
+  },
+  "apps": [
+    {
+      "className": "ProjectRuntime",
+      "id": "a035c941-2207-406e-97aa-a42ab6e9d249",
+      "name": "riffology-m1-project-staging",
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m1-project-staging@sha256:bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00"
+    },
+    {
+      "className": "ProjectToolSandbox",
+      "id": "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650",
+      "name": "riffology-m3-project-tools-staging",
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-project-tools-staging@sha256:6e1c51f984b0a6786483c09c327118722e35597f0ab421d54a27b264a0446a58"
+    },
+    {
+      "className": "TrustedPiSandbox",
+      "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+      "name": "riffology-m3-trusted-pi-staging",
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2"
+    },
+    {
+      "className": "ServiceSandbox",
+      "id": "a03c0a4c-7533-4190-ba2b-ff4fecaabb48",
+      "name": "riffology-m3-service-staging",
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8"
+    }
+  ],
+  "baselineInstances": {
+    "ProjectRuntime": [
+      "1d03c571-fa2e-4909-80da-b4f4114c80cd",
+      "dc13accc-c1eb-4149-85bd-b818fb4e69d0",
+      "f23bd206-e9a6-4cac-849b-98076b7c5230",
+      "fbd79978-b6c9-428f-a576-f76bd17d5400"
+    ],
+    "ProjectToolSandbox": [
+      "m2-p-d7qtipmyxb2z4z6tq63h6ka7msmk46bnhfbtt7wewauztnfs5edq",
+      "m2-p-ev4jyzwxc5dkyraoc5c5x7jleqwkqzyldwrrs6l5bnl53522s5va",
+      "m2-p-gtxfad66kcr7yndtxtumm623l3ytacubftpzxe7wcboqecxzbeuq",
+      "m2-p-hqiugc34ku4mz6cohp4xznh7domfq5inid2uasc6viyulvw4dfyq",
+      "m2-p-htc2za2bli6vsg3n2eywbcvnoxa5r4t5xkytappwzpcqsyrleppa",
+      "m2-p-i7hhady4ge7t4vsfpyxpyp4a2jzlzz5c74cghfjuklahy75yzdpa",
+      "m2-p-kkb63rv5wzordqt34icbatsiosz5occn5x633swzqppsivrxkqua",
+      "m2-p-qr7etqpmnduqotvhd33tfn3xyfr5rjuwiiwmfg6vjuv4ytyvhxfa",
+      "m2-p-rqjx2atoqndbsbjy7a62g7ebp44q5af6md2nl3oc2gf4y6x7aova",
+      "m2-p-tie423dp4ue4vo6ygx4vdhfjbtwzjrzoginx7x3qkk3sq2meylqq",
+      "m2-p-vkhopuei4np332gffrojo5huovrskgef4xg2iswcyjvu3n4hzjxa",
+      "m2-p-xrr437nrhr34zh4xg4ibvruoedwflwbln26tymehfvin6wcska2a"
+    ],
+    "TrustedPiSandbox": [
+      "m2-t-27uvwpgscwfup65a5cvvkibux7p4tgwlo7dmehqflluzazowuxba",
+      "m2-t-2yhw633pb7jnfpmxqnmdu4szzrdbuos5vma7jqxqgzf5h5arrxpq",
+      "m2-t-2yqffmmqjnyxt4sedbmzn3cgw2tgalttcvobfezmbjvp75v4mida",
+      "m2-t-3wapeujt32opuyss25gidcmpcw5tzxb7uzalwaxbqmhkyigzlota",
+      "m2-t-5mtdqdkuzvg45ovljhj6dvfehfvfilk2ganapowfkh5lytmzc6qa",
+      "m2-t-7dbgya7lcafcb5z6ocemo3hyr6r55og5fttq7c5kyz356kbcigsa",
+      "m2-t-7eaf72rei6v27az6elhgy74wztfzyaozpof4yfgwmhcthrjqu35a",
+      "m2-t-b2idrm5hn3xkvezo3ah653jtcdrtdfcw6fyk4xezawbcvynksqbq",
+      "m2-t-b32iwmgolykuvukmuts7qof7otg2x7wfmrlqo4f3h5ap4h5lk6lq",
+      "m2-t-bv4doqrkczx5chvgglf4gg34izg3e6ev6bwm6yylzxifpz7ne4yq",
+      "m2-t-cxk5vodsobhvawdjrwbbbafeoyz7gubklyxeonuboi4xuwu3odya",
+      "m2-t-d7qtipmyxb2z4z6tq63h6ka7msmk46bnhfbtt7wewauztnfs5edq",
+      "m2-t-dchtmba6x4cnzhwfduncjztbsza5itz2n667kh22djnk7ias7y2q",
+      "m2-t-ev4jyzwxc5dkyraoc5c5x7jleqwkqzyldwrrs6l5bnl53522s5va",
+      "m2-t-fdub36xqg2vnvy4djljziyth5fcyrr5lnik3enenmysbsokepwnq",
+      "m2-t-gtxfad66kcr7yndtxtumm623l3ytacubftpzxe7wcboqecxzbeuq",
+      "m2-t-hdwsncaxcavfass6to7bvs6vsstlmxwh5axw34glqzuzj44bzrpq",
+      "m2-t-hqiugc34ku4mz6cohp4xznh7domfq5inid2uasc6viyulvw4dfyq",
+      "m2-t-htc2za2bli6vsg3n2eywbcvnoxa5r4t5xkytappwzpcqsyrleppa",
+      "m2-t-i7hhady4ge7t4vsfpyxpyp4a2jzlzz5c74cghfjuklahy75yzdpa",
+      "m2-t-ijypr7kniclc5i3plyvthh4ywikyldpvrd5yjsbqfktp3kzipcsa",
+      "m2-t-ilsitgyqgpfvudqbxq6nhpo7uebwffxynkitnq3tka6gduma7jra",
+      "m2-t-kkb63rv5wzordqt34icbatsiosz5occn5x633swzqppsivrxkqua",
+      "m2-t-kxk2jbttfunvsxl5etlilgpxgqvepr2q33z7m3czsatuddp3npaa",
+      "m2-t-qbqswny772jj6vfot7jfe6bxbnr23e5i6gc3gklug6nrxd7wt4pa",
+      "m2-t-qr7etqpmnduqotvhd33tfn3xyfr5rjuwiiwmfg6vjuv4ytyvhxfa",
+      "m2-t-rqjx2atoqndbsbjy7a62g7ebp44q5af6md2nl3oc2gf4y6x7aova",
+      "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+      "m2-t-sqlbe625mbk4ct6ex4hklrn5hinxjiqgzlzyrxqwk6ynmrhoh25q",
+      "m2-t-tie423dp4ue4vo6ygx4vdhfjbtwzjrzoginx7x3qkk3sq2meylqq",
+      "m2-t-ttmeodk4osbuovv66u7flrb6f6bytzb25ljzu3h7ezzvxdkusyfq",
+      "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+      "m2-t-uiasr25buhhzisnawbnjlfcd7nkj36n44kdxa4ipwribtjogjjta",
+      "m2-t-vf3dcwusczt5gcpsdbnhjpqu3bcellyxmn2gcwsy5ihi56atwr3q",
+      "m2-t-vkhopuei4np332gffrojo5huovrskgef4xg2iswcyjvu3n4hzjxa",
+      "m2-t-w466lislhucix27u4qdfbpkuh6afumeat6zloadoqdnmryzan24q",
+      "m2-t-w6go5yq4wdihigmnoaqibqusoe2qpzjn7yvm4q5uqh35cncj7t5a",
+      "m2-t-w6i3qd7pkpcmczyi63nv7rtfsylrkuktnfsbahvhkkcr5e6oqzpa",
+      "m2-t-wkcruo2nekdj4acs5npsfh7yhqycwj6rbrwmnfnysdjsuwnwk7ma",
+      "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+      "m2-t-xbh4xw3opwgezdxdv3ccynm4avbmth7rpz6h2w5qntp2xp262vha",
+      "m2-t-xrr437nrhr34zh4xg4ibvruoedwflwbln26tymehfvin6wcska2a"
+    ],
+    "ServiceSandbox": [
+      "m3-s-2df923d3739748c776fd319428df85692b3749641ebe2ba94822",
+      "m3-s-7dd32a79edbedaef8939711166f3fc4166d1438d040e4757928b",
+      "m3-s-7f7aeb6668dd0e72bd488d589d74c973ddcfc7ce296bd80b538f",
+      "m3-s-a46ffc4c255dc45a8bec2eb9f6cf049cb76745277d69b9ff5440",
+      "m3-s-ea4eb783d965253fe9ffb7d2e0059bb38d7211abbb4f83cf222e",
+      "m3-s-efd4548d0e87ae1f68daa27b3d23c593182551210667d6146d56",
+      "m3-s-fc41bf30e0fd51acc2f37ce201239d679814f864fa929a65d950"
+    ]
+  },
+  "applicationObservation": {
+    "observedAt": 1789168209179,
+    "active": 0,
+    "live": 0,
+    "assigned": 0,
+    "failed": 0,
+    "nonInactive": 0,
+    "total": 65
+  }
+}

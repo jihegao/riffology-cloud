@@ -46,6 +46,13 @@ test('observe never starts again and recovers a terminal result using the bound 
   const absent=fixture({schemaVersion:1,effectId:'effect-a',phase:'absent',exitCode:null,stdout:null,stderr:null});assert.equal((await absent.port.observe(input)).phase,'absent');
 });
 
+test('persisted terminal observation never falls back to native observation',async()=>{
+  const input=await reference(),terminal=exited(0,{ok:true,result:{kind:'write'}}),supervisor:ProjectEffectSupervisorPort={
+    async start(){throw Error('native-start-must-not-run');},async observe(){throw Error('native-observe-must-not-run');},async observePersistedTerminal(){return terminal;},
+  };
+  const receipt=await new ProjectFileEffectPort(supervisor,()=>1_000).observePersistedTerminal(input);assert.equal(receipt.phase,'terminal');assert.equal(receipt.outcome,'completed');
+});
+
 test('observe rejects a command that does not match the durable reference digest',async()=>{const input=await reference('read'),f=fixture(exited(0,{ok:true,result:{}}));await assert.rejects(f.port.observe({...input,command:command('list')}),/project-effect-command-mismatch/);assert.equal(f.observed,0);});
 
 test('supervisor identity mismatch and unbounded transport output fail closed',async()=>{

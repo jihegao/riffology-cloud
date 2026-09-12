@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "index": 3,
+  "turnId": "0b1141aa-84d8-4733-b67b-3f0e55a61136",
+  "assistantNonceConfirmation": true,
+  "toolEvents": [
+    {
+      "sequence": 922,
+      "eventId": "pi-3703a632ae234f35a9586b7077140273aef20770964c1d09c0d1841dc0419082",
+      "toolCallId": "call_jiZL8cCDGtHm3iepR6vz6wYR|fc_020fdb76186cad68016aa49ba74a1c87d2a144fcc12bb2d811",
+      "name": "project_write",
+      "isError": false
+    },
+    {
+      "sequence": 927,
+      "eventId": "pi-8bf6b72c9f77997f6cfbe570ccffc8b75deb330da0a5c6c92589a764341ce99e",
+      "toolCallId": "call_105QHk520ds7MjqqPFK3sULw|fc_020fdb76186cad68016aa49bacd4d487d282f017fc4bacf99d",
+      "name": "project_read",
+      "isError": false
+    }
+  ],
+  "events": [
+    {
+      "sequence": 918,
+      "eventId": "pi-e0b351352c6984f5ac012396321e2e8ae11e4dcc428ed22f4acc477e9ded4bba",
+      "type": "provider.status",
+      "state": "requesting",
+      "status": null
+    },
+    {
+      "sequence": 919,
+      "eventId": "pi-ffa5be4541706294f8b2d9880e06b9a47038d61ae72f4269d23b5227924757da",
+      "type": "provider.status",
+      "state": "responding",
+      "status": 200
+    },
+    {
+      "sequence": 920,
+      "eventId": "pi-261f1cf139b2f5fde2c624c007242b52b09d2d016889684bf823a2b2a0876780",
+      "type": "assistant.message",
+      "stopReason": "toolUse",
+      "containsNonce": false
+    },
+    {
+      "sequence": 921,
+      "eventId": "pi-6655402ba329893c10008f9ab30824c623a45b2bcbf0afbfe8171fce272946e1",
+      "type": "tool.started",
+      "name": "project_write",
+      "isError": null
+    },
+    {
+      "sequence": 922,
+      "eventId": "pi-3703a632ae234f35a9586b7077140273aef20770964c1d09c0d1841dc0419082",
+      "type": "tool.completed",
+      "name": "project_write",
+      "isError": false
+    },
+    {
+      "sequence": 923,
+      "eventId": "pi-3bcdd9d6f5bcd18dc81eaede998073ffcbb63e949a9d2579377331c907f49f47",
+      "type": "provider.status",
+      "state": "requesting",
+      "status": null
+    },
+    {
+      "sequence": 924,
+      "eventId": "pi-81603b9f36c0707f520aed886ddae7c583d2495d35d92b2fe6eec34e7b936a88",
+      "type": "provider.status",
+      "state": "responding",
+      "status": 200
+    },
+    {
+      "sequence": 925,
+      "eventId": "pi-fd04ca4cdd0e747bf7c3327309f46bd04d5ec15a1887eedb57f8d6732e3d45e1",
+      "type": "assistant.message",
+      "stopReason": "toolUse",
+      "containsNonce": false
+    },
+    {
+      "sequence": 926,
+      "eventId": "pi-19ff50118ce066ce058e8607d8579cae31241afc4dcb581e243803d135864938",
+      "type": "tool.started",
+      "name": "project_read",
+      "isError": null
+    },
+    {
+      "sequence": 927,
+      "eventId": "pi-8bf6b72c9f77997f6cfbe570ccffc8b75deb330da0a5c6c92589a764341ce99e",
+      "type": "tool.completed",
+      "name": "project_read",
+      "isError": false
+    },
+    {
+      "sequence": 928,
+      "eventId": "pi-aa19abadbbfdd2cc81b323c6d73913c4d59ac3cefd9f1f9e46eca12c7c702083",
+      "type": "provider.status",
+      "state": "requesting",
+      "status": null
+    },
+    {
+      "sequence": 929,
+      "eventId": "pi-5d3d3f1ea294d80c38c27c5a52a7223897ff3db207e24951846767527583af11",
+      "type": "provider.status",
+      "state": "responding",
+      "status": 200
+    },
+    {
+      "sequence": 1006,
+      "eventId": "pi-b1d8706883bbcc15361e43941f5855e0ad98c2a58297c2faf2a3bf0f7bb8f880",
+      "type": "assistant.message",
+      "stopReason": "stop",
+      "containsNonce": true
+    }
+  ]
+}

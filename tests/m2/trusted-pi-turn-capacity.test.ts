@@ -65,7 +65,7 @@ test('never-started release uses a stable exact proof and rejects dispatched lea
   await f.adapter.releaseNeverStarted(input);
   assert.deepEqual(f.cancelled, [{
     reference: { ...expected, ticketId: 'ticket-a', leaseId: 'lease-a' },
-    proof: { kind: 'never-started', proofId: 'never-started-cfdd1a8f80ac95cc58a31db8e57a69c78884706daeb1cefeb5b69c304f022486', observedAt: 1_500 },
+    proof: { kind: 'never-started', proofId: 'never-started-ce1320a1b6ff2e4231a1f795bbbcea7b06ae19df330997ba21b135687461a113', observedAt: 1_500 },
   }]);
   await f.adapter.releaseNeverStarted(input);
   assert.equal(f.cancelled.length, 2);
@@ -73,4 +73,10 @@ test('never-started release uses a stable exact proof and rejects dispatched lea
 
   const dispatched = fixture(ticket({ status: 'dispatched', dispatchId: 'dispatch-a', dispatchedAt: 1_002 }));
   await assert.rejects(dispatched.adapter.releaseNeverStarted(input), /reference-denied|never-started-not-confirmed/);
+});
+
+test('never-started cleanup recovers a queued or newly promoted ticket from only its exact operation identity',async()=>{
+  const queued=fixture(ticket({status:'queued',leaseId:null,acquiredAt:null})),proof=await queued.adapter.releaseNeverStarted({...acquire,ticketId:null,leaseId:null,reasonCode:'turn-cancelled-before-capacity-dispatch',observedAt:1_500});
+  assert.match(proof.proofId,/^never-started-/);assert.equal(proof.releasedAt,2_000);assert.deepEqual(queued.cancelled[0]!.reference,{...expected,ticketId:'ticket-a'});
+  const held=fixture();await held.adapter.releaseNeverStarted({...acquire,ticketId:null,leaseId:null,reasonCode:'turn-cancelled-before-capacity-dispatch',observedAt:1_500});assert.deepEqual(held.cancelled[0]!.reference,{...expected,ticketId:'ticket-a',leaseId:'lease-a'});
 });

@@ -92,6 +92,12 @@ test('explicit cancel settles an absent native execution as an interrupted fence
   assert.deepEqual(await f.host.cancel(identity),cancelled);
 });
 
+test('deadline owner can fence an unobservable exact native start only after destroy proves absent',async()=>{
+ const f=fixture();await f.host.start({...input(),executionDeadlineAt:1103});f.sandbox.process=null;const failed=await f.host.fenceUnresolvedStart(identity,'failed');assert.equal(failed.phase,'terminal');assert.equal(failed.outcome,'failed');assert.equal(failed.executionErrorCode,'turn-native-start-unresolved');assert.match(failed.stopped!.confirmationId,/^start-fence-[a-f0-9]{52}$/);assert.equal(failed.stopped?.nativeRunning,false);assert.equal(f.sandbox.destroys,1);
+ const running=fixture();running.sandbox.releaseRunning=true;const unknown=await running.host.fenceUnresolvedStart(identity,'interrupted');assert.equal(unknown.phase,'unknown');assert.equal(unknown.stopped,null);assert.equal(running.sandbox.destroys,1);
+ await assert.rejects(f.host.fenceUnresolvedStart({...identity,dispatchId:''},'failed'),/turn-identifier/);assert.equal(f.sandbox.destroys,1);
+});
+
 test('release destroys only the identity-bound Sandbox and reports its post-destroy running state',async()=>{
   const f=fixture();assert.deepEqual(await f.host.release(identity),{running:false});assert.equal(f.sandbox.destroys,1);
   f.sandbox.releaseRunning=true;assert.deepEqual(await f.host.release(identity),{running:true});assert.equal(f.sandbox.destroys,2);
@@ -99,8 +105,14 @@ test('release destroys only the identity-bound Sandbox and reports its post-dest
 });
 
 test('release bounds a stuck destroy RPC by the configured wall timeout',async()=>{
-  const stuck=new Sandbox();stuck.destroyAndReleaseState=async()=>new Promise<{running:boolean}>(()=>{});const host=new SandboxTrustedPiHostPort(stuck,{async load(){return snapshot();}},()=>1003,5),started=Date.now();
+  const stuck=new Sandbox(),events:any[]=[];stuck.destroyAndReleaseState=async()=>new Promise<{running:boolean}>(()=>{});const host=new SandboxTrustedPiHostPort(stuck,{async load(){return snapshot();}},()=>1003,5,event=>events.push(event)),started=Date.now();
   await assert.rejects(host.release(identity),/trusted-pi-release-timeout/);assert.ok(Date.now()-started<1000);
+  assert.equal(events.length,1);assert.deepEqual({metric:events[0].metric,stage:events[0].stage,reasonCategory:events[0].reasonCategory,value:events[0].value},{metric:'destroy_timeout',stage:'destroy',reasonCategory:'destroy_timed_out',value:1});assert.match(events[0].correlationId,/^destroy-[a-f0-9]{52}$/);
+});
+
+test('a throwing telemetry sink cannot replace the destroy timeout',async()=>{
+ const stuck=new Sandbox();stuck.destroyAndReleaseState=async()=>new Promise<{running:boolean}>(()=>{});const host=new SandboxTrustedPiHostPort(stuck,{async load(){return snapshot();}},()=>1003,5,()=>{throw Error('telemetry-must-not-escape');});
+ await assert.rejects(host.release(identity),error=>error instanceof Error&&error.message==='trusted-pi-release-timeout');
 });
 
 test('schema 2 control is persisted and native start receives the remaining timeout',async()=>{

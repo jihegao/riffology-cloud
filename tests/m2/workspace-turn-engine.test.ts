@@ -35,10 +35,10 @@ test('engine cancellation persists the fence before one runtime cancel',async()=
   assert.equal(cancelled.status,'cancelled');assert.equal(f.calls.cancelCalls,1);assert.equal(f.store.snapshot()!.turns[submitted.turn.id]!.cancelRequestedAt!==null,true);
 });
 
-test('authenticated repeat cancel on a saved terminal turn only nudges its exact runtime release',async()=>{
+test('authenticated repeat cancel on a saved terminal turn records already-terminal and nudges its exact runtime release',async()=>{
   const f=fixture(),session=(await f.journal.createSession(scope,actor,'session-key',{title:'Session'})).session,submitted=await f.engine.submit(scope,actor,session.id,'turn-key',{message:'Build model'});
   const saved=await f.engine.alarm(scope,1);assert.equal(saved?.status,'completed');const before=structuredClone(f.store.snapshot());
-  assert.equal((await f.engine.cancel(scope,actor,submitted.turn.id)).status,'completed');assert.equal(f.calls.observeCalls,1);assert.equal(f.calls.cancelCalls,0);assert.deepEqual(f.store.snapshot(),before);
+  const stopped=await f.engine.cancel(scope,actor,submitted.turn.id);assert.equal(stopped.status,'completed');assert.equal(stopped.cancelDisposition,'already-terminal');assert.equal(f.calls.observeCalls,1);assert.equal(f.calls.cancelCalls,0);const after=structuredClone(f.store.snapshot())!;const expected=structuredClone(before)!;expected.turns[submitted.turn.id]!.cancelRequestedAt=1000;expected.turns[submitted.turn.id]!.cancelDisposition='already-terminal';assert.deepEqual(after,expected);
   await assert.rejects(f.engine.cancel(scope,{userId:'user-b',authVersion:1},submitted.turn.id),/turn-not-found/);assert.equal(f.calls.observeCalls,1);
 });
 

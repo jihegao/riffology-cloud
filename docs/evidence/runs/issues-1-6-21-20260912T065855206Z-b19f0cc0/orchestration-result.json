@@ -1,0 +1,970 @@
+{
+  "schemaVersion": 1,
+  "status": "blocked",
+  "phase": "release",
+  "reasonCode": "fetch failed",
+  "release": {
+    "schemaVersion": 1,
+    "status": "blocked",
+    "phase": "platform-probe",
+    "reasonCode": "fetch failed",
+    "pausedCandidateVersionId": "09051236-5273-44cf-8a3f-36c0e6f1ace0",
+    "predeploy": {
+      "schemaVersion": 1,
+      "observedAt": "2026-09-12T06:59:29.929Z",
+      "phase": "release-predeploy",
+      "status": "passed",
+      "releaseManifest": {
+        "schemaVersion": 1,
+        "workerSourceSha": "b19f0cc06ef09dabfaa2324e9b05e2ee120a4a74",
+        "workerVersionTag": "source-b19f0cc06ef09dabfaa2324e9b05e2ee120a4a74",
+        "workerVersionMetadataBinding": "CF_VERSION_METADATA",
+        "toolBridgeSha256": "a416c28c1ad19b149cdf1aa399ff4bb3cb3a06ea0198abaddcb5796157dbc0e7",
+        "toolProtocolVersion": "2",
+        "toolLedgerSchemaVersion": "1",
+        "toolLedgerSchemaSha256": "95b73690b776ecc6dba05a7c481bfe6c015b948a57ad88e0ae65b31c420e587a",
+        "containerImages": [
+          {
+            "name": "ProjectRuntime",
+            "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m1-project-staging@sha256:bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00"
+          },
+          {
+            "name": "ProjectToolSandbox",
+            "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-project-tools-staging@sha256:6e1c51f984b0a6786483c09c327118722e35597f0ab421d54a27b264a0446a58"
+          },
+          {
+            "name": "TrustedPiSandbox",
+            "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2"
+          },
+          {
+            "name": "ServiceSandbox",
+            "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8"
+          }
+        ],
+        "deployedResources": {
+          "bindings": [
+            {
+              "name": "APP_ORIGIN",
+              "type": "plain_text",
+              "text": "https://m1.riff-demo.gaojihe.cn"
+            },
+            {
+              "name": "ASSETS",
+              "type": "assets"
+            },
+            {
+              "name": "BETTER_AUTH_SECRET",
+              "type": "secret_text"
+            },
+            {
+              "name": "CATALOG",
+              "type": "d1",
+              "databaseId": "f122099b-8eaa-4eca-83a0-755de0f8b46b"
+            },
+            {
+              "name": "CF_VERSION_METADATA",
+              "type": "version_metadata"
+            },
+            {
+              "name": "GOOGLE_CLIENT_ID",
+              "type": "secret_text"
+            },
+            {
+              "name": "GOOGLE_CLIENT_SECRET",
+              "type": "secret_text"
+            },
+            {
+              "name": "M2_MODEL_BUDGET_POLICY_VERSION",
+              "type": "plain_text",
+              "text": "m2-token-vertical-v2"
+            },
+            {
+              "name": "M2_MODEL_CAPABILITY_TTL_MS",
+              "type": "plain_text",
+              "text": "120000"
+            },
+            {
+              "name": "M2_MODEL_ID",
+              "type": "plain_text",
+              "text": "gpt-5.6-luna"
+            },
+            {
+              "name": "M2_MODEL_MAX_INPUT_TOKENS_PER_CALL",
+              "type": "plain_text",
+              "text": "262144"
+            },
+            {
+              "name": "M2_MODEL_MAX_OUTPUT_TOKENS_PER_CALL",
+              "type": "plain_text",
+              "text": "4096"
+            },
+            {
+              "name": "M2_MODEL_PROVIDER",
+              "type": "plain_text",
+              "text": "opencode-go"
+            },
+            {
+              "name": "M2_MODEL_PROVIDER_ENABLED",
+              "type": "plain_text",
+              "text": "true"
+            },
+            {
+              "name": "M2_MODEL_PROXY_REQUEST_KEY",
+              "type": "secret_text"
+            },
+            {
+              "name": "M2_MODEL_TURN_CAPABILITY_KEY",
+              "type": "secret_text"
+            },
+            {
+              "name": "M2_OPENCODE_GO_API_KEY",
+              "type": "secret_text"
+            },
+            {
+              "name": "M2_PROJECT_EFFECT_CAPABILITY_KEY",
+              "type": "secret_text"
+            },
+            {
+              "name": "M2_TOOL_BRIDGE_REQUEST_KEY",
+              "type": "secret_text"
+            },
+            {
+              "name": "M2_TOOL_BRIDGE_SHA256",
+              "type": "plain_text",
+              "text": "a416c28c1ad19b149cdf1aa399ff4bb3cb3a06ea0198abaddcb5796157dbc0e7"
+            },
+            {
+              "name": "M2_TOOL_LEDGER_SCHEMA_SHA256",
+              "type": "plain_text",
+              "text": "95b73690b776ecc6dba05a7c481bfe6c015b948a57ad88e0ae65b31c420e587a"
+            },
+            {
+              "name": "M2_TOOL_LEDGER_SCHEMA_VERSION",
+              "type": "plain_text",
+              "text": "1"
+            },
+            {
+              "name": "M2_TOOL_PROTOCOL_VERSION",
+              "type": "plain_text",
+              "text": "2"
+            },
+            {
+              "name": "M2_TURN_ADMISSION_TELEMETRY",
+              "type": "plain_text",
+              "text": "true"
+            },
+            {
+              "name": "M2_TURN_OPERATION_TELEMETRY",
+              "type": "plain_text",
+              "text": "true"
+            },
+            {
+              "name": "M2_TURNS_ENABLED",
+              "type": "plain_text",
+              "text": "true"
+            },
+            {
+              "name": "M2_WORKER_SOURCE_SHA",
+              "type": "plain_text",
+              "text": "b19f0cc06ef09dabfaa2324e9b05e2ee120a4a74"
+            },
+            {
+              "name": "M3_OBSERVER_ENABLED",
+              "type": "plain_text",
+              "text": "false"
+            },
+            {
+              "name": "M3_PREVIEW_ENABLED",
+              "type": "plain_text",
+              "text": "true"
+            },
+            {
+              "name": "M3_PREVIEW_ORIGIN",
+              "type": "plain_text",
+              "text": "https://preview.m1.riff-demo.gaojihe.cn"
+            },
+            {
+              "name": "M3_PREVIEW_WS_ENABLED",
+              "type": "plain_text",
+              "text": "true"
+            },
+            {
+              "name": "M3_SERVICE_ENABLED",
+              "type": "plain_text",
+              "text": "true"
+            },
+            {
+              "name": "M3_SERVICE_IMAGE",
+              "type": "plain_text",
+              "text": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8"
+            },
+            {
+              "name": "MODEL_BUDGET_MAX_DISPATCHED_CALLS_PER_TURN",
+              "type": "plain_text",
+              "text": "8"
+            },
+            {
+              "name": "MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL",
+              "type": "plain_text",
+              "text": "262144"
+            },
+            {
+              "name": "MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL",
+              "type": "plain_text",
+              "text": "4096"
+            },
+            {
+              "name": "MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN",
+              "type": "plain_text",
+              "text": "8"
+            },
+            {
+              "name": "MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN",
+              "type": "plain_text",
+              "text": "532480"
+            },
+            {
+              "name": "MODEL_BUDGET_POLICY_VERSION",
+              "type": "plain_text",
+              "text": "m2-token-vertical-v2"
+            },
+            {
+              "name": "MODEL_CONTENT",
+              "type": "r2_bucket",
+              "bucketName": "riffology-m3-model-content-staging"
+            },
+            {
+              "name": "MODEL_PROXY",
+              "type": "service",
+              "service": "riffology-m1-gateway-staging",
+              "entrypoint": "ModelProxyService",
+              "environment": "production"
+            },
+            {
+              "name": "PRODUCT_TURN_RUNTIME",
+              "type": "durable_object_namespace",
+              "className": "ProductTurnRuntime"
+            },
+            {
+              "name": "PROJECT_RUNTIME",
+              "type": "durable_object_namespace",
+              "className": "ProjectRuntime"
+            },
+            {
+              "name": "PROJECT_SANDBOX",
+              "type": "durable_object_namespace",
+              "className": "ProjectToolSandbox"
+            },
+            {
+              "name": "REVISION_STORE",
+              "type": "durable_object_namespace",
+              "className": "RevisionStore"
+            },
+            {
+              "name": "SERVICE_RUN",
+              "type": "durable_object_namespace",
+              "className": "ServiceRun"
+            },
+            {
+              "name": "SERVICE_RUNTIME",
+              "type": "durable_object_namespace",
+              "className": "ServiceRuntime"
+            },
+            {
+              "name": "SERVICE_SANDBOX",
+              "type": "durable_object_namespace",
+              "className": "ServiceSandbox"
+            },
+            {
+              "name": "TENANT_MODEL_BUDGET",
+              "type": "durable_object_namespace",
+              "className": "TenantModelBudget"
+            },
+            {
+              "name": "TENANT_QUOTA",
+              "type": "durable_object_namespace",
+              "className": "TenantQuota"
+            },
+            {
+              "name": "TENANT_QUOTA_CAPACITY",
+              "type": "plain_text",
+              "text": "1"
+            },
+            {
+              "name": "TENANT_QUOTA_POLICY_VERSION",
+              "type": "plain_text",
+              "text": "m1-v1"
+            },
+            {
+              "name": "TOOL_ARTIFACT_STORE",
+              "type": "durable_object_namespace",
+              "className": "ToolArtifactStore"
+            },
+            {
+              "name": "TOOL_BRIDGE",
+              "type": "service",
+              "service": "riffology-m1-gateway-staging",
+              "entrypoint": "ToolBridgeService",
+              "environment": "production"
+            },
+            {
+              "name": "TOOL_BRIDGE_AGENT",
+              "type": "durable_object_namespace",
+              "className": "ToolBridgeAgent"
+            },
+            {
+              "name": "TRUSTED_PI_CAPACITY",
+              "type": "durable_object_namespace",
+              "className": "TrustedPiCapacity"
+            },
+            {
+              "name": "TRUSTED_PI_CAPACITY_LIMIT",
+              "type": "plain_text",
+              "text": "1"
+            },
+            {
+              "name": "TRUSTED_PI_CAPACITY_POLICY_VERSION",
+              "type": "plain_text",
+              "text": "m2-trusted-pi-v1"
+            },
+            {
+              "name": "TRUSTED_PI_SANDBOX",
+              "type": "durable_object_namespace",
+              "className": "TrustedPiSandbox"
+            },
+            {
+              "name": "WORKSPACE_AGENT",
+              "type": "durable_object_namespace",
+              "className": "WorkspaceAgent"
+            },
+            {
+              "name": "WORKSPACE_CHECKPOINTS",
+              "type": "r2_bucket",
+              "bucketName": "riffology-workspace-checkpoints-staging-v3-20260911"
+            }
+          ],
+          "exports": [
+            {
+              "name": "ProductTurnRuntime",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "ProjectRuntime",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": "riffology-m1-project-staging"
+            },
+            {
+              "name": "ProjectToolSandbox",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": "riffology-m3-project-tools-staging"
+            },
+            {
+              "name": "RevisionStore",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "ServiceRun",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "ServiceRuntime",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "ServiceSandbox",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": "riffology-m3-service-staging"
+            },
+            {
+              "name": "TenantModelBudget",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "TenantQuota",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "ToolArtifactStore",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "ToolBridgeAgent",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "TrustedPiCapacity",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "TrustedPiSandbox",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": "riffology-m3-trusted-pi-staging"
+            },
+            {
+              "name": "WorkspaceAgent",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            }
+          ],
+          "containers": [
+            {
+              "name": "riffology-m1-project-staging",
+              "className": "ProjectRuntime"
+            },
+            {
+              "name": "riffology-m3-project-tools-staging",
+              "className": "ProjectToolSandbox"
+            },
+            {
+              "name": "riffology-m3-service-staging",
+              "className": "ServiceSandbox"
+            },
+            {
+              "name": "riffology-m3-trusted-pi-staging",
+              "className": "TrustedPiSandbox"
+            }
+          ],
+          "handlers": [
+            {
+              "name": "ModelProxyService",
+              "handler": "fetch"
+            },
+            {
+              "name": "ProductTurnRuntime",
+              "handler": "class"
+            },
+            {
+              "name": "ProjectRuntime",
+              "handler": "class"
+            },
+            {
+              "name": "ProjectToolSandbox",
+              "handler": "class"
+            },
+            {
+              "name": "RevisionStore",
+              "handler": "class"
+            },
+            {
+              "name": "ServiceRun",
+              "handler": "class"
+            },
+            {
+              "name": "ServiceRuntime",
+              "handler": "class"
+            },
+            {
+              "name": "ServiceSandbox",
+              "handler": "class"
+            },
+            {
+              "name": "TenantModelBudget",
+              "handler": "class"
+            },
+            {
+              "name": "TenantQuota",
+              "handler": "class"
+            },
+            {
+              "name": "ToolArtifactStore",
+              "handler": "class"
+            },
+            {
+              "name": "ToolBridgeAgent",
+              "handler": "class"
+            },
+            {
+              "name": "ToolBridgeService",
+              "handler": "fetch"
+            },
+            {
+              "name": "TrustedPiCapacity",
+              "handler": "class"
+            },
+            {
+              "name": "TrustedPiSandbox",
+              "handler": "class"
+            },
+            {
+              "name": "WorkspaceAgent",
+              "handler": "class"
+            }
+          ]
+        }
+      },
+      "checks": [
+        {
+          "name": "checked-config-default-closed",
+          "status": "passed"
+        },
+        {
+          "name": "worker-identity",
+          "status": "passed"
+        },
+        {
+          "name": "staging-origins",
+          "status": "passed"
+        },
+        {
+          "name": "execution-gates-controlled-release",
+          "status": "passed"
+        },
+        {
+          "name": "tenant-capacity",
+          "status": "passed"
+        },
+        {
+          "name": "turn-operation-telemetry",
+          "status": "passed"
+        },
+        {
+          "name": "worker-version-metadata",
+          "status": "passed"
+        },
+        {
+          "name": "model-budget",
+          "status": "passed"
+        },
+        {
+          "name": "required-secrets",
+          "status": "passed"
+        },
+        {
+          "name": "durable-bindings",
+          "status": "passed"
+        },
+        {
+          "name": "durable-exports",
+          "status": "passed"
+        },
+        {
+          "name": "container-images",
+          "status": "passed"
+        },
+        {
+          "name": "service-image-pin",
+          "status": "passed"
+        },
+        {
+          "name": "private-services",
+          "status": "passed"
+        },
+        {
+          "name": "dedicated-storage",
+          "status": "passed"
+        },
+        {
+          "name": "recovery-cron",
+          "status": "passed"
+        },
+        {
+          "name": "catalog-migrations",
+          "status": "passed"
+        },
+        {
+          "name": "no-local-runtime-inputs",
+          "status": "passed"
+        },
+        {
+          "name": "worker-source-sha",
+          "status": "passed"
+        },
+        {
+          "name": "candidate-release-manifest",
+          "status": "passed"
+        },
+        {
+          "name": "runtime-secrets",
+          "status": "passed"
+        },
+        {
+          "name": "wrangler-dry-run",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-d1",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-r2:riffology-workspace-checkpoints-staging-v3-20260911",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-r2:riffology-m3-model-content-staging",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-secrets",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-catalog-migrations",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-container-image:ProjectRuntime",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-container-image:ProjectToolSandbox",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-container-image:TrustedPiSandbox",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-container-image:ServiceSandbox",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-trusted-pi-bridge-content",
+          "status": "passed"
+        },
+        {
+          "name": "predeploy-turn-gate-closed",
+          "status": "passed"
+        },
+        {
+          "name": "preview-dns",
+          "status": "passed"
+        },
+        {
+          "name": "preview-tls-san",
+          "status": "passed"
+        }
+      ]
+    },
+    "platformProbe": {
+      "schemaVersion": 1,
+      "status": "blocked",
+      "reasonCode": "fetch failed",
+      "workerSourceSha": "b19f0cc06ef09dabfaa2324e9b05e2ee120a4a74",
+      "workerVersionId": "09051236-5273-44cf-8a3f-36c0e6f1ace0",
+      "probeWorker": {
+        "name": "riffology-issues-probe-930d8c5b34a802a3fc5ce13b",
+        "origin": "https://m1.riff-demo.gaojihe.cn/__riffology-internal/issues-probe/930d8c5b34a802a3fc5ce13b",
+        "pathPrefix": "/__riffology-internal/issues-probe/930d8c5b34a802a3fc5ce13b",
+        "versionId": "57b5c054-9215-47ee-af3d-754f5e7a6317",
+        "versionTag": "probe-930d8c5b34a802a3fc5ce13b",
+        "capabilityBindingVerified": true,
+        "pathBindingVerified": true,
+        "binding": {
+          "name": "TRUSTED_PI_SANDBOX",
+          "type": "durable_object_namespace",
+          "className": "TrustedPiSandbox",
+          "scriptName": "riffology-m1-gateway-staging"
+        }
+      },
+      "containerApp": {
+        "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+        "name": "riffology-m3-trusted-pi-staging",
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2",
+        "version": 2
+      },
+      "actorA": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+      "actorB": "m2-t-3sum5pjkm7imzzqccoaiprqw4ze3idjhfvqlreiid5c64wh2vyxa",
+      "failure": {
+        "stage": "release-a",
+        "action": "destroy",
+        "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+        "requestTimeoutMs": 30000,
+        "delivery": "reconciling",
+        "observedAt": 1789196507495
+      },
+      "progress": {
+        "startedAt": 1789196438553,
+        "timeline": [
+          {
+            "stage": "control-plane-read",
+            "action": null,
+            "actor": null,
+            "requestTimeoutMs": null,
+            "delivery": "not-applicable",
+            "observedAt": 1789196438553
+          },
+          {
+            "stage": "actors-derived",
+            "action": null,
+            "actor": null,
+            "requestTimeoutMs": null,
+            "delivery": "not-applicable",
+            "observedAt": 1789196443479
+          },
+          {
+            "stage": "probe-worker-confirmed",
+            "action": null,
+            "actor": null,
+            "requestTimeoutMs": null,
+            "delivery": "not-applicable",
+            "observedAt": 1789196463719
+          },
+          {
+            "stage": "probe-health",
+            "action": "health",
+            "actor": null,
+            "requestTimeoutMs": 20000,
+            "delivery": "unknown",
+            "observedAt": 1789196463719
+          },
+          {
+            "stage": "probe-health-confirmed",
+            "action": "health",
+            "actor": null,
+            "requestTimeoutMs": 20000,
+            "delivery": "confirmed",
+            "observedAt": 1789196495945
+          },
+          {
+            "stage": "start-a",
+            "action": "start",
+            "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+            "requestTimeoutMs": 180000,
+            "delivery": "unknown",
+            "observedAt": 1789196495945
+          },
+          {
+            "stage": "start-a-confirmed",
+            "action": "start",
+            "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+            "requestTimeoutMs": 180000,
+            "delivery": "confirmed",
+            "observedAt": 1789196504123
+          },
+          {
+            "stage": "release-a",
+            "action": "destroy",
+            "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+            "requestTimeoutMs": 30000,
+            "delivery": "reconciling",
+            "observedAt": 1789196507495
+          }
+        ]
+      },
+      "cleanup": {
+        "status": "passed",
+        "workerName": "riffology-issues-probe-930d8c5b34a802a3fc5ce13b",
+        "identityVerifiedBeforeDelete": true,
+        "deleteAttempted": true,
+        "deleteExitConfirmed": true,
+        "absenceConfirmed": true,
+        "routeFallbackConfirmed": true,
+        "absenceDurationMs": 34834,
+        "recoveryRequired": false,
+        "observedAt": 1789196726703,
+        "actorCleanup": [
+          {
+            "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+            "status": "absent",
+            "quietMs": 30000,
+            "confirmedAt": 1789196676592,
+            "internalLifecycle": [
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196569787
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196578068
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196586073
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196595791
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196604393
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "unknown",
+                "observedAt": 1789196622620
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196631079
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196639321
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196648406
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196658345
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196667800
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196676592
+              }
+            ],
+            "externalLifecycle": [
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196572092,
+                "instanceId": "c7b72654023b8a2c32ebb0e98c5432f2f06815ece714a6e05a9e96002abc550a"
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "stopped",
+                "observedAt": 1789196580335,
+                "instanceId": "c7b72654023b8a2c32ebb0e98c5432f2f06815ece714a6e05a9e96002abc550a"
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "stopped",
+                "observedAt": 1789196590089,
+                "instanceId": "c7b72654023b8a2c32ebb0e98c5432f2f06815ece714a6e05a9e96002abc550a"
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "stopped",
+                "observedAt": 1789196598407,
+                "instanceId": "c7b72654023b8a2c32ebb0e98c5432f2f06815ece714a6e05a9e96002abc550a"
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "stopped",
+                "observedAt": 1789196607101,
+                "instanceId": "c7b72654023b8a2c32ebb0e98c5432f2f06815ece714a6e05a9e96002abc550a"
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "stopped",
+                "observedAt": 1789196624998,
+                "instanceId": "c7b72654023b8a2c32ebb0e98c5432f2f06815ece714a6e05a9e96002abc550a"
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "stopped",
+                "observedAt": 1789196633535,
+                "instanceId": "c7b72654023b8a2c32ebb0e98c5432f2f06815ece714a6e05a9e96002abc550a"
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196642668,
+                "instanceId": "c7b72654023b8a2c32ebb0e98c5432f2f06815ece714a6e05a9e96002abc550a"
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196652585,
+                "instanceId": "c7b72654023b8a2c32ebb0e98c5432f2f06815ece714a6e05a9e96002abc550a"
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196662046,
+                "instanceId": "c7b72654023b8a2c32ebb0e98c5432f2f06815ece714a6e05a9e96002abc550a"
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196670820,
+                "instanceId": "c7b72654023b8a2c32ebb0e98c5432f2f06815ece714a6e05a9e96002abc550a"
+              },
+              {
+                "actor": "m2-t-ln2whhgowlnirh3ieahmpdtagrtvcpylyi6tv542m7uj4pw3maja",
+                "state": "absent",
+                "observedAt": 1789196678450,
+                "instanceId": "c7b72654023b8a2c32ebb0e98c5432f2f06815ece714a6e05a9e96002abc550a"
+              }
+            ]
+          },
+          {
+            "actor": "m2-t-3sum5pjkm7imzzqccoaiprqw4ze3idjhfvqlreiid5c64wh2vyxa",
+            "status": "never-started",
+            "quietMs": 30000,
+            "confirmedAt": null,
+            "internalLifecycle": [],
+            "externalLifecycle": []
+          }
+        ]
+      }
+    }
+  },
+  "gateClose": {
+    "schemaVersion": 1,
+    "status": "passed",
+    "phase": "gate-close-postdeploy",
+    "attemptCount": 1,
+    "deploymentAttempts": [
+      {
+        "attempt": 1,
+        "deployExitConfirmed": true,
+        "observed": "closed-same-sha",
+        "workerVersionId": "3e075d9f-0354-4495-8be7-60a4926e0183",
+        "reconciliationAttempts": [
+          {
+            "attempt": 1,
+            "classification": "closed-same-sha",
+            "versionId": "3e075d9f-0354-4495-8be7-60a4926e0183"
+          }
+        ]
+      }
+    ],
+    "deployExitConfirmed": true,
+    "gateClosed": true,
+    "gateCloseConfirmed": true,
+    "forwardConformant": true,
+    "workerVersionId": "3e075d9f-0354-4495-8be7-60a4926e0183",
+    "checks": [
+      {
+        "name": "gate-close-dry-run",
+        "status": "passed"
+      },
+      {
+        "name": "deployed-worker-version",
+        "status": "passed"
+      }
+    ]
+  },
+  "evidenceDirectory": "/Users/gaojihe/apps/riffology-cloud/docs/evidence/runs/issues-1-6-21-20260912T065855206Z-b19f0cc0"
+}

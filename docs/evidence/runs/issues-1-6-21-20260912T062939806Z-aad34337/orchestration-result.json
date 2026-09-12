@@ -1,0 +1,3484 @@
+{
+  "schemaVersion": 1,
+  "status": "blocked",
+  "phase": "gate-close",
+  "reasonCode": "turn-gate-close-unconfirmed",
+  "priorResult": {
+    "schemaVersion": 1,
+    "status": "blocked",
+    "phase": "release",
+    "reasonCode": "platform-probe-worker-cleanup-unconfirmed",
+    "release": {
+      "schemaVersion": 1,
+      "status": "blocked",
+      "phase": "platform-probe",
+      "reasonCode": "platform-probe-worker-cleanup-unconfirmed",
+      "pausedCandidateVersionId": "f061c048-f9c0-4165-8f6a-a32001b7997a",
+      "predeploy": {
+        "schemaVersion": 1,
+        "observedAt": "2026-09-12T06:30:27.888Z",
+        "phase": "release-predeploy",
+        "status": "passed",
+        "releaseManifest": {
+          "schemaVersion": 1,
+          "workerSourceSha": "aad343378b2d003db9daefd89407b625dd4f6343",
+          "workerVersionTag": "source-aad343378b2d003db9daefd89407b625dd4f6343",
+          "workerVersionMetadataBinding": "CF_VERSION_METADATA",
+          "toolBridgeSha256": "a416c28c1ad19b149cdf1aa399ff4bb3cb3a06ea0198abaddcb5796157dbc0e7",
+          "toolProtocolVersion": "2",
+          "toolLedgerSchemaVersion": "1",
+          "toolLedgerSchemaSha256": "95b73690b776ecc6dba05a7c481bfe6c015b948a57ad88e0ae65b31c420e587a",
+          "containerImages": [
+            {
+              "name": "ProjectRuntime",
+              "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m1-project-staging@sha256:bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00"
+            },
+            {
+              "name": "ProjectToolSandbox",
+              "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-project-tools-staging@sha256:6e1c51f984b0a6786483c09c327118722e35597f0ab421d54a27b264a0446a58"
+            },
+            {
+              "name": "TrustedPiSandbox",
+              "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2"
+            },
+            {
+              "name": "ServiceSandbox",
+              "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8"
+            }
+          ],
+          "deployedResources": {
+            "bindings": [
+              {
+                "name": "APP_ORIGIN",
+                "type": "plain_text",
+                "text": "https://m1.riff-demo.gaojihe.cn"
+              },
+              {
+                "name": "ASSETS",
+                "type": "assets"
+              },
+              {
+                "name": "BETTER_AUTH_SECRET",
+                "type": "secret_text"
+              },
+              {
+                "name": "CATALOG",
+                "type": "d1",
+                "databaseId": "f122099b-8eaa-4eca-83a0-755de0f8b46b"
+              },
+              {
+                "name": "CF_VERSION_METADATA",
+                "type": "version_metadata"
+              },
+              {
+                "name": "GOOGLE_CLIENT_ID",
+                "type": "secret_text"
+              },
+              {
+                "name": "GOOGLE_CLIENT_SECRET",
+                "type": "secret_text"
+              },
+              {
+                "name": "M2_MODEL_BUDGET_POLICY_VERSION",
+                "type": "plain_text",
+                "text": "m2-token-vertical-v2"
+              },
+              {
+                "name": "M2_MODEL_CAPABILITY_TTL_MS",
+                "type": "plain_text",
+                "text": "120000"
+              },
+              {
+                "name": "M2_MODEL_ID",
+                "type": "plain_text",
+                "text": "gpt-5.6-luna"
+              },
+              {
+                "name": "M2_MODEL_MAX_INPUT_TOKENS_PER_CALL",
+                "type": "plain_text",
+                "text": "262144"
+              },
+              {
+                "name": "M2_MODEL_MAX_OUTPUT_TOKENS_PER_CALL",
+                "type": "plain_text",
+                "text": "4096"
+              },
+              {
+                "name": "M2_MODEL_PROVIDER",
+                "type": "plain_text",
+                "text": "opencode-go"
+              },
+              {
+                "name": "M2_MODEL_PROVIDER_ENABLED",
+                "type": "plain_text",
+                "text": "true"
+              },
+              {
+                "name": "M2_MODEL_PROXY_REQUEST_KEY",
+                "type": "secret_text"
+              },
+              {
+                "name": "M2_MODEL_TURN_CAPABILITY_KEY",
+                "type": "secret_text"
+              },
+              {
+                "name": "M2_OPENCODE_GO_API_KEY",
+                "type": "secret_text"
+              },
+              {
+                "name": "M2_PROJECT_EFFECT_CAPABILITY_KEY",
+                "type": "secret_text"
+              },
+              {
+                "name": "M2_TOOL_BRIDGE_REQUEST_KEY",
+                "type": "secret_text"
+              },
+              {
+                "name": "M2_TOOL_BRIDGE_SHA256",
+                "type": "plain_text",
+                "text": "a416c28c1ad19b149cdf1aa399ff4bb3cb3a06ea0198abaddcb5796157dbc0e7"
+              },
+              {
+                "name": "M2_TOOL_LEDGER_SCHEMA_SHA256",
+                "type": "plain_text",
+                "text": "95b73690b776ecc6dba05a7c481bfe6c015b948a57ad88e0ae65b31c420e587a"
+              },
+              {
+                "name": "M2_TOOL_LEDGER_SCHEMA_VERSION",
+                "type": "plain_text",
+                "text": "1"
+              },
+              {
+                "name": "M2_TOOL_PROTOCOL_VERSION",
+                "type": "plain_text",
+                "text": "2"
+              },
+              {
+                "name": "M2_TURN_ADMISSION_TELEMETRY",
+                "type": "plain_text",
+                "text": "true"
+              },
+              {
+                "name": "M2_TURN_OPERATION_TELEMETRY",
+                "type": "plain_text",
+                "text": "true"
+              },
+              {
+                "name": "M2_TURNS_ENABLED",
+                "type": "plain_text",
+                "text": "true"
+              },
+              {
+                "name": "M2_WORKER_SOURCE_SHA",
+                "type": "plain_text",
+                "text": "aad343378b2d003db9daefd89407b625dd4f6343"
+              },
+              {
+                "name": "M3_OBSERVER_ENABLED",
+                "type": "plain_text",
+                "text": "false"
+              },
+              {
+                "name": "M3_PREVIEW_ENABLED",
+                "type": "plain_text",
+                "text": "true"
+              },
+              {
+                "name": "M3_PREVIEW_ORIGIN",
+                "type": "plain_text",
+                "text": "https://preview.m1.riff-demo.gaojihe.cn"
+              },
+              {
+                "name": "M3_PREVIEW_WS_ENABLED",
+                "type": "plain_text",
+                "text": "true"
+              },
+              {
+                "name": "M3_SERVICE_ENABLED",
+                "type": "plain_text",
+                "text": "true"
+              },
+              {
+                "name": "M3_SERVICE_IMAGE",
+                "type": "plain_text",
+                "text": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8"
+              },
+              {
+                "name": "MODEL_BUDGET_MAX_DISPATCHED_CALLS_PER_TURN",
+                "type": "plain_text",
+                "text": "8"
+              },
+              {
+                "name": "MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL",
+                "type": "plain_text",
+                "text": "262144"
+              },
+              {
+                "name": "MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL",
+                "type": "plain_text",
+                "text": "4096"
+              },
+              {
+                "name": "MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN",
+                "type": "plain_text",
+                "text": "8"
+              },
+              {
+                "name": "MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN",
+                "type": "plain_text",
+                "text": "532480"
+              },
+              {
+                "name": "MODEL_BUDGET_POLICY_VERSION",
+                "type": "plain_text",
+                "text": "m2-token-vertical-v2"
+              },
+              {
+                "name": "MODEL_CONTENT",
+                "type": "r2_bucket",
+                "bucketName": "riffology-m3-model-content-staging"
+              },
+              {
+                "name": "MODEL_PROXY",
+                "type": "service",
+                "service": "riffology-m1-gateway-staging",
+                "entrypoint": "ModelProxyService",
+                "environment": "production"
+              },
+              {
+                "name": "PRODUCT_TURN_RUNTIME",
+                "type": "durable_object_namespace",
+                "className": "ProductTurnRuntime"
+              },
+              {
+                "name": "PROJECT_RUNTIME",
+                "type": "durable_object_namespace",
+                "className": "ProjectRuntime"
+              },
+              {
+                "name": "PROJECT_SANDBOX",
+                "type": "durable_object_namespace",
+                "className": "ProjectToolSandbox"
+              },
+              {
+                "name": "REVISION_STORE",
+                "type": "durable_object_namespace",
+                "className": "RevisionStore"
+              },
+              {
+                "name": "SERVICE_RUN",
+                "type": "durable_object_namespace",
+                "className": "ServiceRun"
+              },
+              {
+                "name": "SERVICE_RUNTIME",
+                "type": "durable_object_namespace",
+                "className": "ServiceRuntime"
+              },
+              {
+                "name": "SERVICE_SANDBOX",
+                "type": "durable_object_namespace",
+                "className": "ServiceSandbox"
+              },
+              {
+                "name": "TENANT_MODEL_BUDGET",
+                "type": "durable_object_namespace",
+                "className": "TenantModelBudget"
+              },
+              {
+                "name": "TENANT_QUOTA",
+                "type": "durable_object_namespace",
+                "className": "TenantQuota"
+              },
+              {
+                "name": "TENANT_QUOTA_CAPACITY",
+                "type": "plain_text",
+                "text": "1"
+              },
+              {
+                "name": "TENANT_QUOTA_POLICY_VERSION",
+                "type": "plain_text",
+                "text": "m1-v1"
+              },
+              {
+                "name": "TOOL_ARTIFACT_STORE",
+                "type": "durable_object_namespace",
+                "className": "ToolArtifactStore"
+              },
+              {
+                "name": "TOOL_BRIDGE",
+                "type": "service",
+                "service": "riffology-m1-gateway-staging",
+                "entrypoint": "ToolBridgeService",
+                "environment": "production"
+              },
+              {
+                "name": "TOOL_BRIDGE_AGENT",
+                "type": "durable_object_namespace",
+                "className": "ToolBridgeAgent"
+              },
+              {
+                "name": "TRUSTED_PI_CAPACITY",
+                "type": "durable_object_namespace",
+                "className": "TrustedPiCapacity"
+              },
+              {
+                "name": "TRUSTED_PI_CAPACITY_LIMIT",
+                "type": "plain_text",
+                "text": "1"
+              },
+              {
+                "name": "TRUSTED_PI_CAPACITY_POLICY_VERSION",
+                "type": "plain_text",
+                "text": "m2-trusted-pi-v1"
+              },
+              {
+                "name": "TRUSTED_PI_SANDBOX",
+                "type": "durable_object_namespace",
+                "className": "TrustedPiSandbox"
+              },
+              {
+                "name": "WORKSPACE_AGENT",
+                "type": "durable_object_namespace",
+                "className": "WorkspaceAgent"
+              },
+              {
+                "name": "WORKSPACE_CHECKPOINTS",
+                "type": "r2_bucket",
+                "bucketName": "riffology-workspace-checkpoints-staging-v3-20260911"
+              }
+            ],
+            "exports": [
+              {
+                "name": "ProductTurnRuntime",
+                "type": "durable-object",
+                "storage": "sqlite",
+                "container": null
+              },
+              {
+                "name": "ProjectRuntime",
+                "type": "durable-object",
+                "storage": "sqlite",
+                "container": "riffology-m1-project-staging"
+              },
+              {
+                "name": "ProjectToolSandbox",
+                "type": "durable-object",
+                "storage": "sqlite",
+                "container": "riffology-m3-project-tools-staging"
+              },
+              {
+                "name": "RevisionStore",
+                "type": "durable-object",
+                "storage": "sqlite",
+                "container": null
+              },
+              {
+                "name": "ServiceRun",
+                "type": "durable-object",
+                "storage": "sqlite",
+                "container": null
+              },
+              {
+                "name": "ServiceRuntime",
+                "type": "durable-object",
+                "storage": "sqlite",
+                "container": null
+              },
+              {
+                "name": "ServiceSandbox",
+                "type": "durable-object",
+                "storage": "sqlite",
+                "container": "riffology-m3-service-staging"
+              },
+              {
+                "name": "TenantModelBudget",
+                "type": "durable-object",
+                "storage": "sqlite",
+                "container": null
+              },
+              {
+                "name": "TenantQuota",
+                "type": "durable-object",
+                "storage": "sqlite",
+                "container": null
+              },
+              {
+                "name": "ToolArtifactStore",
+                "type": "durable-object",
+                "storage": "sqlite",
+                "container": null
+              },
+              {
+                "name": "ToolBridgeAgent",
+                "type": "durable-object",
+                "storage": "sqlite",
+                "container": null
+              },
+              {
+                "name": "TrustedPiCapacity",
+                "type": "durable-object",
+                "storage": "sqlite",
+                "container": null
+              },
+              {
+                "name": "TrustedPiSandbox",
+                "type": "durable-object",
+                "storage": "sqlite",
+                "container": "riffology-m3-trusted-pi-staging"
+              },
+              {
+                "name": "WorkspaceAgent",
+                "type": "durable-object",
+                "storage": "sqlite",
+                "container": null
+              }
+            ],
+            "containers": [
+              {
+                "name": "riffology-m1-project-staging",
+                "className": "ProjectRuntime"
+              },
+              {
+                "name": "riffology-m3-project-tools-staging",
+                "className": "ProjectToolSandbox"
+              },
+              {
+                "name": "riffology-m3-service-staging",
+                "className": "ServiceSandbox"
+              },
+              {
+                "name": "riffology-m3-trusted-pi-staging",
+                "className": "TrustedPiSandbox"
+              }
+            ],
+            "handlers": [
+              {
+                "name": "ModelProxyService",
+                "handler": "fetch"
+              },
+              {
+                "name": "ProductTurnRuntime",
+                "handler": "class"
+              },
+              {
+                "name": "ProjectRuntime",
+                "handler": "class"
+              },
+              {
+                "name": "ProjectToolSandbox",
+                "handler": "class"
+              },
+              {
+                "name": "RevisionStore",
+                "handler": "class"
+              },
+              {
+                "name": "ServiceRun",
+                "handler": "class"
+              },
+              {
+                "name": "ServiceRuntime",
+                "handler": "class"
+              },
+              {
+                "name": "ServiceSandbox",
+                "handler": "class"
+              },
+              {
+                "name": "TenantModelBudget",
+                "handler": "class"
+              },
+              {
+                "name": "TenantQuota",
+                "handler": "class"
+              },
+              {
+                "name": "ToolArtifactStore",
+                "handler": "class"
+              },
+              {
+                "name": "ToolBridgeAgent",
+                "handler": "class"
+              },
+              {
+                "name": "ToolBridgeService",
+                "handler": "fetch"
+              },
+              {
+                "name": "TrustedPiCapacity",
+                "handler": "class"
+              },
+              {
+                "name": "TrustedPiSandbox",
+                "handler": "class"
+              },
+              {
+                "name": "WorkspaceAgent",
+                "handler": "class"
+              }
+            ]
+          }
+        },
+        "checks": [
+          {
+            "name": "checked-config-default-closed",
+            "status": "passed"
+          },
+          {
+            "name": "worker-identity",
+            "status": "passed"
+          },
+          {
+            "name": "staging-origins",
+            "status": "passed"
+          },
+          {
+            "name": "execution-gates-controlled-release",
+            "status": "passed"
+          },
+          {
+            "name": "tenant-capacity",
+            "status": "passed"
+          },
+          {
+            "name": "turn-operation-telemetry",
+            "status": "passed"
+          },
+          {
+            "name": "worker-version-metadata",
+            "status": "passed"
+          },
+          {
+            "name": "model-budget",
+            "status": "passed"
+          },
+          {
+            "name": "required-secrets",
+            "status": "passed"
+          },
+          {
+            "name": "durable-bindings",
+            "status": "passed"
+          },
+          {
+            "name": "durable-exports",
+            "status": "passed"
+          },
+          {
+            "name": "container-images",
+            "status": "passed"
+          },
+          {
+            "name": "service-image-pin",
+            "status": "passed"
+          },
+          {
+            "name": "private-services",
+            "status": "passed"
+          },
+          {
+            "name": "dedicated-storage",
+            "status": "passed"
+          },
+          {
+            "name": "recovery-cron",
+            "status": "passed"
+          },
+          {
+            "name": "catalog-migrations",
+            "status": "passed"
+          },
+          {
+            "name": "no-local-runtime-inputs",
+            "status": "passed"
+          },
+          {
+            "name": "worker-source-sha",
+            "status": "passed"
+          },
+          {
+            "name": "candidate-release-manifest",
+            "status": "passed"
+          },
+          {
+            "name": "runtime-secrets",
+            "status": "passed"
+          },
+          {
+            "name": "wrangler-dry-run",
+            "status": "passed"
+          },
+          {
+            "name": "cloud-d1",
+            "status": "passed"
+          },
+          {
+            "name": "cloud-r2:riffology-workspace-checkpoints-staging-v3-20260911",
+            "status": "passed"
+          },
+          {
+            "name": "cloud-r2:riffology-m3-model-content-staging",
+            "status": "passed"
+          },
+          {
+            "name": "cloud-secrets",
+            "status": "passed"
+          },
+          {
+            "name": "cloud-catalog-migrations",
+            "status": "passed"
+          },
+          {
+            "name": "cloud-container-image:ProjectRuntime",
+            "status": "passed"
+          },
+          {
+            "name": "cloud-container-image:ProjectToolSandbox",
+            "status": "passed"
+          },
+          {
+            "name": "cloud-container-image:TrustedPiSandbox",
+            "status": "passed"
+          },
+          {
+            "name": "cloud-container-image:ServiceSandbox",
+            "status": "passed"
+          },
+          {
+            "name": "cloud-trusted-pi-bridge-content",
+            "status": "passed"
+          },
+          {
+            "name": "predeploy-turn-gate-closed",
+            "status": "passed"
+          },
+          {
+            "name": "preview-dns",
+            "status": "passed"
+          },
+          {
+            "name": "preview-tls-san",
+            "status": "passed"
+          }
+        ]
+      },
+      "platformProbe": {
+        "schemaVersion": 1,
+        "status": "blocked",
+        "workerSourceSha": "aad343378b2d003db9daefd89407b625dd4f6343",
+        "workerVersionId": "f061c048-f9c0-4165-8f6a-a32001b7997a",
+        "probeWorker": {
+          "name": "riffology-issues-probe-9a9762fbc1ef070daa65d292",
+          "origin": "https://m1.riff-demo.gaojihe.cn/__riffology-internal/issues-probe/9a9762fbc1ef070daa65d292",
+          "pathPrefix": "/__riffology-internal/issues-probe/9a9762fbc1ef070daa65d292",
+          "versionId": "9a9341e7-3241-4f78-a9fd-08b9058640b0",
+          "versionTag": "probe-9a9762fbc1ef070daa65d292",
+          "capabilityBindingVerified": true,
+          "pathBindingVerified": true,
+          "binding": {
+            "name": "TRUSTED_PI_SANDBOX",
+            "type": "durable_object_namespace",
+            "className": "TrustedPiSandbox",
+            "scriptName": "riffology-m1-gateway-staging"
+          }
+        },
+        "containerApp": {
+          "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+          "name": "riffology-m3-trusted-pi-staging",
+          "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2",
+          "version": 2
+        },
+        "actorA": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+        "actorB": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+        "actorAStarted": {
+          "processId": "probe-9a9762fbc1ef070daa65d292",
+          "processStatus": "running",
+          "containerRunning": true,
+          "observedAt": 1789194861643
+        },
+        "actorAStartExternal": {
+          "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+          "state": "stopped",
+          "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd",
+          "applicationInstances": [
+            {
+              "id": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd",
+              "name": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+              "state": "stopped"
+            },
+            {
+              "id": "01e7b42cdad08f493befab6cce09a7925afc9b8f65c8c087d4fed1938259a9c6",
+              "name": "m2-t-qr7etqpmnduqotvhd33tfn3xyfr5rjuwiiwmfg6vjuv4ytyvhxfa",
+              "state": "inactive"
+            },
+            {
+              "id": "05e863d46a8c1d2d6c8194a546b81f72aa3a79ba986574fdf6c188c7411745f5",
+              "name": "m2-t-uiasr25buhhzisnawbnjlfcd7nkj36n44kdxa4ipwribtjogjjta",
+              "state": "inactive"
+            },
+            {
+              "id": "0c87ada11768769325efd1385661e7e12d10a52f0f5bea6991746ae8a07b5875",
+              "name": "m2-t-ijypr7kniclc5i3plyvthh4ywikyldpvrd5yjsbqfktp3kzipcsa",
+              "state": "inactive"
+            },
+            {
+              "id": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf",
+              "name": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+              "state": "inactive"
+            },
+            {
+              "id": "230637d8bdea28f73243cfa6c214617d3d3cab25486f3e09010c5c34fbf1c833",
+              "name": "m2-t-xbh4xw3opwgezdxdv3ccynm4avbmth7rpz6h2w5qntp2xp262vha",
+              "state": "inactive"
+            },
+            {
+              "id": "2585df0b9672231ecf859ac63a107f009539dca8135dfeab058ab16418c8eae6",
+              "name": "m2-t-27uvwpgscwfup65a5cvvkibux7p4tgwlo7dmehqflluzazowuxba",
+              "state": "inactive"
+            },
+            {
+              "id": "26f0317e83152356e00f313f6296b8ca506aa1aaa479ab3e9bf8962f4a8cf5ab",
+              "name": "m2-t-qbqswny772jj6vfot7jfe6bxbnr23e5i6gc3gklug6nrxd7wt4pa",
+              "state": "inactive"
+            },
+            {
+              "id": "2776f5b441af3576e6ab955b89a806355b770b8f2ffaf38b7f0314f14376e563",
+              "name": "m2-t-dwxxva5ob6n5p3i5t256uckk46tghpdle64cetrrfwzi6o6urbba",
+              "state": "inactive"
+            },
+            {
+              "id": "2fa2a19c4690fb50296aec769c27534ca3b569163a0141cf0d2b0e9b383d1827",
+              "name": "m2-t-re5axt3n5xxo323afbwga4gwnk6cq7dbvxfvwao4v4atlaqgcceq",
+              "state": "inactive"
+            },
+            {
+              "id": "37738d675f441bbe3e247d1d25864ae6c6118d80f8cd13d329f1c24a89b4f998",
+              "name": "m2-t-w6i3qd7pkpcmczyi63nv7rtfsylrkuktnfsbahvhkkcr5e6oqzpa",
+              "state": "inactive"
+            },
+            {
+              "id": "3785369cd0fc877ed6546113e8e620cfa6411a84f66e6f13cdc1062d2772ade0",
+              "name": "m2-t-xrr437nrhr34zh4xg4ibvruoedwflwbln26tymehfvin6wcska2a",
+              "state": "inactive"
+            },
+            {
+              "id": "3d2fadb02517581eb3e93037a4ba1b133337b469670af54c29498fbff9634fe4",
+              "name": "m2-t-fdub36xqg2vnvy4djljziyth5fcyrr5lnik3enenmysbsokepwnq",
+              "state": "inactive"
+            },
+            {
+              "id": "437f9c06761d76779efe9c1ea2afe5d26a81fbc592514d2dc4d10322a50cb94a",
+              "name": "m2-t-2yhw633pb7jnfpmxqnmdu4szzrdbuos5vma7jqxqgzf5h5arrxpq",
+              "state": "inactive"
+            },
+            {
+              "id": "48a9215d6f6ee908a9155fc971a74284748d6daa9952ade5f3a8eb230d6885ba",
+              "name": "m2-t-rqjx2atoqndbsbjy7a62g7ebp44q5af6md2nl3oc2gf4y6x7aova",
+              "state": "inactive"
+            },
+            {
+              "id": "48a98edc4ff899a9d9a574a62d1e7c1b231f2bca534a9ee19ec3a54e96e65259",
+              "name": "m2-t-vkhopuei4np332gffrojo5huovrskgef4xg2iswcyjvu3n4hzjxa",
+              "state": "inactive"
+            },
+            {
+              "id": "532d88dee4d2bda57483374da14fe1661366aa2e1a485b3293749aa1c4465dd7",
+              "name": "m2-t-pdh2ugvbptr6neqim3cxfsensp5aavgcvdksvlpmpr7quqzbah3a",
+              "state": "inactive"
+            },
+            {
+              "id": "540d32c423965aa6970c84d7a983f0c1ecf63d2b60d1a97da0cd80577f5bd79c",
+              "name": "m2-t-trra4zpdcvuevzcgk3r4rajpk47hhfhrjxdre7mmknjmc5dhnxsa",
+              "state": "inactive"
+            },
+            {
+              "id": "543540389add7e7167ba0cadcf763c03d2ba7f4a326862b28c69b65d490662bd",
+              "name": "m2-t-kkb63rv5wzordqt34icbatsiosz5occn5x633swzqppsivrxkqua",
+              "state": "inactive"
+            },
+            {
+              "id": "58fe3b06daf22d13c8af23e939b0955e20432d826d7a00970a65f7b10f243c4a",
+              "name": "m2-t-5mtdqdkuzvg45ovljhj6dvfehfvfilk2ganapowfkh5lytmzc6qa",
+              "state": "inactive"
+            },
+            {
+              "id": "66939562e79631cdf82e42ab1434d44ca8284550878d6ad7dcadb1465779c1f4",
+              "name": "m2-t-obzeh5hsyoncf2zibepeea3pr4shp3udt3lomni746zx4wl4l6ga",
+              "state": "inactive"
+            },
+            {
+              "id": "66953cf869359569d78c53859ccd608c2a3a1400e12d27475955e4efb71a3bb9",
+              "name": "m2-t-w6go5yq4wdihigmnoaqibqusoe2qpzjn7yvm4q5uqh35cncj7t5a",
+              "state": "inactive"
+            },
+            {
+              "id": "6af524548e38bbfdd501447f3aba77839fb01af7240647518a413495d193262f",
+              "name": "m2-t-cxk5vodsobhvawdjrwbbbafeoyz7gubklyxeonuboi4xuwu3odya",
+              "state": "inactive"
+            },
+            {
+              "id": "6d95c3983ff2375f69256c6d079430081e00b472d682034ecd38fb0c7f0738f2",
+              "name": "m2-t-2yqffmmqjnyxt4sedbmzn3cgw2tgalttcvobfezmbjvp75v4mida",
+              "state": "inactive"
+            },
+            {
+              "id": "6f0b507136485d3aaad7b256b47de9887c53e50ac060b87d8112c291c2a8c0ba",
+              "name": "m2-t-ilsitgyqgpfvudqbxq6nhpo7uebwffxynkitnq3tka6gduma7jra",
+              "state": "inactive"
+            },
+            {
+              "id": "7bc2801e7990208fc3355c1b3ed64f2963f013ec053553e63fa1304cc180ab5d",
+              "name": "m2-t-bv4doqrkczx5chvgglf4gg34izg3e6ev6bwm6yylzxifpz7ne4yq",
+              "state": "inactive"
+            },
+            {
+              "id": "80446302e4012f9dc4b5e85e2077d68ea6fbd0050ae320cc19d3b87f89f9a1f4",
+              "name": "m2-t-ys4rldxzg3hvzl4f233npps6gul3rw7mm6utujkl2oe47qlji32q",
+              "state": "inactive"
+            },
+            {
+              "id": "80b4d5751845b7f7d9be0efdc6be543b48c250b1af03a781230b06d50849f8e7",
+              "name": "m2-t-ev4jyzwxc5dkyraoc5c5x7jleqwkqzyldwrrs6l5bnl53522s5va",
+              "state": "inactive"
+            },
+            {
+              "id": "8390c84b7759e8e63efe21e1df369363537319bdf06624e4cfe6536625c7a686",
+              "name": "m2-t-u7ouo2fik4muktuzsianudpwfxstrxabx6likuegb6vq4jxijk6q",
+              "state": "inactive"
+            },
+            {
+              "id": "8506ad56e96ad2d6f3a99c63d440df7e4ca070bcacc98544be15a1960a2b7180",
+              "name": "m2-t-gtxfad66kcr7yndtxtumm623l3ytacubftpzxe7wcboqecxzbeuq",
+              "state": "inactive"
+            },
+            {
+              "id": "8710f756f72b20fec3dc25779378679464646923538723e6259b90ccd9cf1465",
+              "name": "m2-t-wkcruo2nekdj4acs5npsfh7yhqycwj6rbrwmnfnysdjsuwnwk7ma",
+              "state": "inactive"
+            },
+            {
+              "id": "8e57ec06c051f2f89cb0d0d6a2c7ef1452ad9be215a3e279ca82dcfc4aa6011b",
+              "name": "m2-t-b2idrm5hn3xkvezo3ah653jtcdrtdfcw6fyk4xezawbcvynksqbq",
+              "state": "inactive"
+            },
+            {
+              "id": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7",
+              "name": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+              "state": "inactive"
+            },
+            {
+              "id": "911cebd0480e528de1178d023436ebcae1f5b7a73e57339a74e717bfb444cf87",
+              "name": "m2-t-snfrcoefkmlb66e4uxgd3oi6sh2dh7skk4poyllvjp7qci24iyqq",
+              "state": "inactive"
+            },
+            {
+              "id": "ab89688267b1f4d41454da511250b9c27deb32f7461a47c8ff9146725744e1e3",
+              "name": "m2-t-uiuumdnzhmdqz2pggnijsk5g6yuexwlfjs5dliv2wneusbbwojmq",
+              "state": "inactive"
+            },
+            {
+              "id": "ae06c431c65073ec024c2ef8bcd5ad60e010d9d8ce5ef6f8343ad52068f0cf31",
+              "name": "m2-t-d7qtipmyxb2z4z6tq63h6ka7msmk46bnhfbtt7wewauztnfs5edq",
+              "state": "inactive"
+            },
+            {
+              "id": "b49362a33571d39824cc8ac00dd8b85f56d6b861270b179ea9122e564c84b875",
+              "name": "m2-t-i46jlurryh5obh44n4dh2xt67gcz24aslv5sdixzjkik4xlswxpa",
+              "state": "inactive"
+            },
+            {
+              "id": "b4b3efa07cd85831cecf985a7ec7e331dfa5195690fba2f722fffeca5e371ce4",
+              "name": "m2-t-dqym3nxqz5mg55etaymhbf2nvt5yeulbuvzcqjr465aamfqzmn7q",
+              "state": "inactive"
+            },
+            {
+              "id": "bbaa2eb567ede49dab86db13a124d126bd0700f8adc647de5d957a3c5fe3585d",
+              "name": "m2-t-i7hhady4ge7t4vsfpyxpyp4a2jzlzz5c74cghfjuklahy75yzdpa",
+              "state": "inactive"
+            },
+            {
+              "id": "bea4a38d597348a9d42e582f46ad8473cadc045ff66ad773322a30b88c3d8a9e",
+              "name": "m2-t-hqiugc34ku4mz6cohp4xznh7domfq5inid2uasc6viyulvw4dfyq",
+              "state": "inactive"
+            },
+            {
+              "id": "c886ee2900efeb0a186a747de3f1779a2b5456451aaca763413c5f61f51fde73",
+              "name": "m2-t-7dbgya7lcafcb5z6ocemo3hyr6r55og5fttq7c5kyz356kbcigsa",
+              "state": "inactive"
+            },
+            {
+              "id": "c9424683be2d875b18dee2b001bf38f0d4547cd05e27741ee12bdc0df993bfc9",
+              "name": "m2-t-kxk2jbttfunvsxl5etlilgpxgqvepr2q33z7m3czsatuddp3npaa",
+              "state": "inactive"
+            },
+            {
+              "id": "ca880ed069d2f8ef8f0ed071ca77c3c814d219fb40e3534ea917d1524cec2662",
+              "name": "m2-t-dchtmba6x4cnzhwfduncjztbsza5itz2n667kh22djnk7ias7y2q",
+              "state": "inactive"
+            },
+            {
+              "id": "cba4be48173f7d2e28a557107f7684b442a4e769396f8e13707ce3f33c362716",
+              "name": "m2-t-ttmeodk4osbuovv66u7flrb6f6bytzb25ljzu3h7ezzvxdkusyfq",
+              "state": "inactive"
+            },
+            {
+              "id": "cbf980d106357659a10dd07a0028127c2b37d0dd1a1f9caab23dc043b75b8190",
+              "name": "m2-t-2qbkyidmglfitty2ketgk3ja7pwnitdf3ypngj3juhguyz2xwy2a",
+              "state": "inactive"
+            },
+            {
+              "id": "ce0147dbd291952ab81cd4ad79ffd4886a28194bdda3f192452499a10ee195ed",
+              "name": "m2-t-mvo2bzlt5lrxzuchv3jq4gduj27qhz67vi75v5ytnjxoasrl47vq",
+              "state": "inactive"
+            },
+            {
+              "id": "d59534a5adb0989971a7a2f07e89c3c3c3d73e4674f874987753d0d416c6f9c1",
+              "name": "m2-t-htc2za2bli6vsg3n2eywbcvnoxa5r4t5xkytappwzpcqsyrleppa",
+              "state": "inactive"
+            },
+            {
+              "id": "d8805283a86a3de10fb35943c77ae2348aed7b233d83d9f86d3055da2bfb34ab",
+              "name": "m2-t-tie423dp4ue4vo6ygx4vdhfjbtwzjrzoginx7x3qkk3sq2meylqq",
+              "state": "inactive"
+            },
+            {
+              "id": "dc1c5ea4167d84d0c5acd120c83513905347f6bd9f0da14fde0c2969a7fc1eb7",
+              "name": "m2-t-s4g7nkxf4337af26qkooihel7pnpatbtrbxljtooit4x4msijxiq",
+              "state": "inactive"
+            },
+            {
+              "id": "de1e76a5dbfbf05d5a6a4221422a78ae481e20dc79a755933380d5ceab4c0b5d",
+              "name": "m2-t-tnbmdoftonx6uyx5ruyeemouyzky3o52b6bwv7czevkddlvcwq6q",
+              "state": "inactive"
+            },
+            {
+              "id": "e3c8a4d0ecd7a0a09207bba42170965838e5ae271227abd206357347f31082f5",
+              "name": "m2-t-vf3dcwusczt5gcpsdbnhjpqu3bcellyxmn2gcwsy5ihi56atwr3q",
+              "state": "inactive"
+            },
+            {
+              "id": "e5cee0a2dee079c31770a9c8aba665ab235d5e0983b2c1a5e373e579acc7519f",
+              "name": "m2-t-jor36zpin5krlg7lfciq4gxanf3cgx7unw2vvqceax3zugut5poq",
+              "state": "inactive"
+            },
+            {
+              "id": "e8754ce4a4154645b988bf4d800083defb9fd1be30ec31e700eff13ae1df198b",
+              "name": "m2-t-w466lislhucix27u4qdfbpkuh6afumeat6zloadoqdnmryzan24q",
+              "state": "inactive"
+            },
+            {
+              "id": "ef0e7735773b5124441ce3b619096509299859476e187908e761dc63bf4248e7",
+              "name": "m2-t-hdwsncaxcavfass6to7bvs6vsstlmxwh5axw34glqzuzj44bzrpq",
+              "state": "inactive"
+            },
+            {
+              "id": "ef1b6a944da200350af4b100cf3a312155fc6d1dfbeb2287850c4711fde9de07",
+              "name": "m2-t-sqlbe625mbk4ct6ex4hklrn5hinxjiqgzlzyrxqwk6ynmrhoh25q",
+              "state": "inactive"
+            },
+            {
+              "id": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487",
+              "name": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "inactive"
+            },
+            {
+              "id": "f40e5262a44047b3e07fd6fab0a78e1654422091a1d57fffd3c6348b2fdf4d40",
+              "name": "m2-t-b32iwmgolykuvukmuts7qof7otg2x7wfmrlqo4f3h5ap4h5lk6lq",
+              "state": "inactive"
+            },
+            {
+              "id": "f4591badb87f234b11ab68705720d78e3200425234455f2d4bbcce205dd8a1ba",
+              "name": "m2-t-7eaf72rei6v27az6elhgy74wztfzyaozpof4yfgwmhcthrjqu35a",
+              "state": "inactive"
+            },
+            {
+              "id": "fd3289d026e66bdc9cf18c0bce05a278953d7b9d165912f7e07839db52d5c516",
+              "name": "m2-t-3wapeujt32opuyss25gidcmpcw5tzxb7uzalwaxbqmhkyigzlota",
+              "state": "inactive"
+            }
+          ],
+          "observedAt": 1789194865773
+        },
+        "actorBStarted": {
+          "processId": "probe-9a9762fbc1ef070daa65d292",
+          "processStatus": "running",
+          "containerRunning": true,
+          "observedAt": 1789194916218
+        },
+        "actorBStartExternal": {
+          "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+          "state": "inactive",
+          "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf",
+          "applicationInstances": [
+            {
+              "id": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd",
+              "name": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+              "state": "inactive"
+            },
+            {
+              "id": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf",
+              "name": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+              "state": "inactive"
+            },
+            {
+              "id": "01e7b42cdad08f493befab6cce09a7925afc9b8f65c8c087d4fed1938259a9c6",
+              "name": "m2-t-qr7etqpmnduqotvhd33tfn3xyfr5rjuwiiwmfg6vjuv4ytyvhxfa",
+              "state": "inactive"
+            },
+            {
+              "id": "05e863d46a8c1d2d6c8194a546b81f72aa3a79ba986574fdf6c188c7411745f5",
+              "name": "m2-t-uiasr25buhhzisnawbnjlfcd7nkj36n44kdxa4ipwribtjogjjta",
+              "state": "inactive"
+            },
+            {
+              "id": "0c87ada11768769325efd1385661e7e12d10a52f0f5bea6991746ae8a07b5875",
+              "name": "m2-t-ijypr7kniclc5i3plyvthh4ywikyldpvrd5yjsbqfktp3kzipcsa",
+              "state": "inactive"
+            },
+            {
+              "id": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf",
+              "name": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+              "state": "inactive"
+            },
+            {
+              "id": "230637d8bdea28f73243cfa6c214617d3d3cab25486f3e09010c5c34fbf1c833",
+              "name": "m2-t-xbh4xw3opwgezdxdv3ccynm4avbmth7rpz6h2w5qntp2xp262vha",
+              "state": "inactive"
+            },
+            {
+              "id": "2585df0b9672231ecf859ac63a107f009539dca8135dfeab058ab16418c8eae6",
+              "name": "m2-t-27uvwpgscwfup65a5cvvkibux7p4tgwlo7dmehqflluzazowuxba",
+              "state": "inactive"
+            },
+            {
+              "id": "26f0317e83152356e00f313f6296b8ca506aa1aaa479ab3e9bf8962f4a8cf5ab",
+              "name": "m2-t-qbqswny772jj6vfot7jfe6bxbnr23e5i6gc3gklug6nrxd7wt4pa",
+              "state": "inactive"
+            },
+            {
+              "id": "2776f5b441af3576e6ab955b89a806355b770b8f2ffaf38b7f0314f14376e563",
+              "name": "m2-t-dwxxva5ob6n5p3i5t256uckk46tghpdle64cetrrfwzi6o6urbba",
+              "state": "inactive"
+            },
+            {
+              "id": "2fa2a19c4690fb50296aec769c27534ca3b569163a0141cf0d2b0e9b383d1827",
+              "name": "m2-t-re5axt3n5xxo323afbwga4gwnk6cq7dbvxfvwao4v4atlaqgcceq",
+              "state": "inactive"
+            },
+            {
+              "id": "37738d675f441bbe3e247d1d25864ae6c6118d80f8cd13d329f1c24a89b4f998",
+              "name": "m2-t-w6i3qd7pkpcmczyi63nv7rtfsylrkuktnfsbahvhkkcr5e6oqzpa",
+              "state": "inactive"
+            },
+            {
+              "id": "3785369cd0fc877ed6546113e8e620cfa6411a84f66e6f13cdc1062d2772ade0",
+              "name": "m2-t-xrr437nrhr34zh4xg4ibvruoedwflwbln26tymehfvin6wcska2a",
+              "state": "inactive"
+            },
+            {
+              "id": "3d2fadb02517581eb3e93037a4ba1b133337b469670af54c29498fbff9634fe4",
+              "name": "m2-t-fdub36xqg2vnvy4djljziyth5fcyrr5lnik3enenmysbsokepwnq",
+              "state": "inactive"
+            },
+            {
+              "id": "437f9c06761d76779efe9c1ea2afe5d26a81fbc592514d2dc4d10322a50cb94a",
+              "name": "m2-t-2yhw633pb7jnfpmxqnmdu4szzrdbuos5vma7jqxqgzf5h5arrxpq",
+              "state": "inactive"
+            },
+            {
+              "id": "48a9215d6f6ee908a9155fc971a74284748d6daa9952ade5f3a8eb230d6885ba",
+              "name": "m2-t-rqjx2atoqndbsbjy7a62g7ebp44q5af6md2nl3oc2gf4y6x7aova",
+              "state": "inactive"
+            },
+            {
+              "id": "48a98edc4ff899a9d9a574a62d1e7c1b231f2bca534a9ee19ec3a54e96e65259",
+              "name": "m2-t-vkhopuei4np332gffrojo5huovrskgef4xg2iswcyjvu3n4hzjxa",
+              "state": "inactive"
+            },
+            {
+              "id": "532d88dee4d2bda57483374da14fe1661366aa2e1a485b3293749aa1c4465dd7",
+              "name": "m2-t-pdh2ugvbptr6neqim3cxfsensp5aavgcvdksvlpmpr7quqzbah3a",
+              "state": "inactive"
+            },
+            {
+              "id": "540d32c423965aa6970c84d7a983f0c1ecf63d2b60d1a97da0cd80577f5bd79c",
+              "name": "m2-t-trra4zpdcvuevzcgk3r4rajpk47hhfhrjxdre7mmknjmc5dhnxsa",
+              "state": "inactive"
+            },
+            {
+              "id": "543540389add7e7167ba0cadcf763c03d2ba7f4a326862b28c69b65d490662bd",
+              "name": "m2-t-kkb63rv5wzordqt34icbatsiosz5occn5x633swzqppsivrxkqua",
+              "state": "inactive"
+            },
+            {
+              "id": "58fe3b06daf22d13c8af23e939b0955e20432d826d7a00970a65f7b10f243c4a",
+              "name": "m2-t-5mtdqdkuzvg45ovljhj6dvfehfvfilk2ganapowfkh5lytmzc6qa",
+              "state": "inactive"
+            },
+            {
+              "id": "66939562e79631cdf82e42ab1434d44ca8284550878d6ad7dcadb1465779c1f4",
+              "name": "m2-t-obzeh5hsyoncf2zibepeea3pr4shp3udt3lomni746zx4wl4l6ga",
+              "state": "inactive"
+            },
+            {
+              "id": "66953cf869359569d78c53859ccd608c2a3a1400e12d27475955e4efb71a3bb9",
+              "name": "m2-t-w6go5yq4wdihigmnoaqibqusoe2qpzjn7yvm4q5uqh35cncj7t5a",
+              "state": "inactive"
+            },
+            {
+              "id": "6af524548e38bbfdd501447f3aba77839fb01af7240647518a413495d193262f",
+              "name": "m2-t-cxk5vodsobhvawdjrwbbbafeoyz7gubklyxeonuboi4xuwu3odya",
+              "state": "inactive"
+            },
+            {
+              "id": "6d95c3983ff2375f69256c6d079430081e00b472d682034ecd38fb0c7f0738f2",
+              "name": "m2-t-2yqffmmqjnyxt4sedbmzn3cgw2tgalttcvobfezmbjvp75v4mida",
+              "state": "inactive"
+            },
+            {
+              "id": "6f0b507136485d3aaad7b256b47de9887c53e50ac060b87d8112c291c2a8c0ba",
+              "name": "m2-t-ilsitgyqgpfvudqbxq6nhpo7uebwffxynkitnq3tka6gduma7jra",
+              "state": "inactive"
+            },
+            {
+              "id": "7bc2801e7990208fc3355c1b3ed64f2963f013ec053553e63fa1304cc180ab5d",
+              "name": "m2-t-bv4doqrkczx5chvgglf4gg34izg3e6ev6bwm6yylzxifpz7ne4yq",
+              "state": "inactive"
+            },
+            {
+              "id": "80446302e4012f9dc4b5e85e2077d68ea6fbd0050ae320cc19d3b87f89f9a1f4",
+              "name": "m2-t-ys4rldxzg3hvzl4f233npps6gul3rw7mm6utujkl2oe47qlji32q",
+              "state": "inactive"
+            },
+            {
+              "id": "80b4d5751845b7f7d9be0efdc6be543b48c250b1af03a781230b06d50849f8e7",
+              "name": "m2-t-ev4jyzwxc5dkyraoc5c5x7jleqwkqzyldwrrs6l5bnl53522s5va",
+              "state": "inactive"
+            },
+            {
+              "id": "8390c84b7759e8e63efe21e1df369363537319bdf06624e4cfe6536625c7a686",
+              "name": "m2-t-u7ouo2fik4muktuzsianudpwfxstrxabx6likuegb6vq4jxijk6q",
+              "state": "inactive"
+            },
+            {
+              "id": "8506ad56e96ad2d6f3a99c63d440df7e4ca070bcacc98544be15a1960a2b7180",
+              "name": "m2-t-gtxfad66kcr7yndtxtumm623l3ytacubftpzxe7wcboqecxzbeuq",
+              "state": "inactive"
+            },
+            {
+              "id": "8710f756f72b20fec3dc25779378679464646923538723e6259b90ccd9cf1465",
+              "name": "m2-t-wkcruo2nekdj4acs5npsfh7yhqycwj6rbrwmnfnysdjsuwnwk7ma",
+              "state": "inactive"
+            },
+            {
+              "id": "8e57ec06c051f2f89cb0d0d6a2c7ef1452ad9be215a3e279ca82dcfc4aa6011b",
+              "name": "m2-t-b2idrm5hn3xkvezo3ah653jtcdrtdfcw6fyk4xezawbcvynksqbq",
+              "state": "inactive"
+            },
+            {
+              "id": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7",
+              "name": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+              "state": "inactive"
+            },
+            {
+              "id": "911cebd0480e528de1178d023436ebcae1f5b7a73e57339a74e717bfb444cf87",
+              "name": "m2-t-snfrcoefkmlb66e4uxgd3oi6sh2dh7skk4poyllvjp7qci24iyqq",
+              "state": "inactive"
+            },
+            {
+              "id": "ab89688267b1f4d41454da511250b9c27deb32f7461a47c8ff9146725744e1e3",
+              "name": "m2-t-uiuumdnzhmdqz2pggnijsk5g6yuexwlfjs5dliv2wneusbbwojmq",
+              "state": "inactive"
+            },
+            {
+              "id": "ae06c431c65073ec024c2ef8bcd5ad60e010d9d8ce5ef6f8343ad52068f0cf31",
+              "name": "m2-t-d7qtipmyxb2z4z6tq63h6ka7msmk46bnhfbtt7wewauztnfs5edq",
+              "state": "inactive"
+            },
+            {
+              "id": "b49362a33571d39824cc8ac00dd8b85f56d6b861270b179ea9122e564c84b875",
+              "name": "m2-t-i46jlurryh5obh44n4dh2xt67gcz24aslv5sdixzjkik4xlswxpa",
+              "state": "inactive"
+            },
+            {
+              "id": "b4b3efa07cd85831cecf985a7ec7e331dfa5195690fba2f722fffeca5e371ce4",
+              "name": "m2-t-dqym3nxqz5mg55etaymhbf2nvt5yeulbuvzcqjr465aamfqzmn7q",
+              "state": "inactive"
+            },
+            {
+              "id": "bbaa2eb567ede49dab86db13a124d126bd0700f8adc647de5d957a3c5fe3585d",
+              "name": "m2-t-i7hhady4ge7t4vsfpyxpyp4a2jzlzz5c74cghfjuklahy75yzdpa",
+              "state": "inactive"
+            },
+            {
+              "id": "bea4a38d597348a9d42e582f46ad8473cadc045ff66ad773322a30b88c3d8a9e",
+              "name": "m2-t-hqiugc34ku4mz6cohp4xznh7domfq5inid2uasc6viyulvw4dfyq",
+              "state": "inactive"
+            },
+            {
+              "id": "c886ee2900efeb0a186a747de3f1779a2b5456451aaca763413c5f61f51fde73",
+              "name": "m2-t-7dbgya7lcafcb5z6ocemo3hyr6r55og5fttq7c5kyz356kbcigsa",
+              "state": "inactive"
+            },
+            {
+              "id": "c9424683be2d875b18dee2b001bf38f0d4547cd05e27741ee12bdc0df993bfc9",
+              "name": "m2-t-kxk2jbttfunvsxl5etlilgpxgqvepr2q33z7m3czsatuddp3npaa",
+              "state": "inactive"
+            },
+            {
+              "id": "ca880ed069d2f8ef8f0ed071ca77c3c814d219fb40e3534ea917d1524cec2662",
+              "name": "m2-t-dchtmba6x4cnzhwfduncjztbsza5itz2n667kh22djnk7ias7y2q",
+              "state": "inactive"
+            },
+            {
+              "id": "cba4be48173f7d2e28a557107f7684b442a4e769396f8e13707ce3f33c362716",
+              "name": "m2-t-ttmeodk4osbuovv66u7flrb6f6bytzb25ljzu3h7ezzvxdkusyfq",
+              "state": "inactive"
+            },
+            {
+              "id": "cbf980d106357659a10dd07a0028127c2b37d0dd1a1f9caab23dc043b75b8190",
+              "name": "m2-t-2qbkyidmglfitty2ketgk3ja7pwnitdf3ypngj3juhguyz2xwy2a",
+              "state": "inactive"
+            },
+            {
+              "id": "ce0147dbd291952ab81cd4ad79ffd4886a28194bdda3f192452499a10ee195ed",
+              "name": "m2-t-mvo2bzlt5lrxzuchv3jq4gduj27qhz67vi75v5ytnjxoasrl47vq",
+              "state": "inactive"
+            },
+            {
+              "id": "d59534a5adb0989971a7a2f07e89c3c3c3d73e4674f874987753d0d416c6f9c1",
+              "name": "m2-t-htc2za2bli6vsg3n2eywbcvnoxa5r4t5xkytappwzpcqsyrleppa",
+              "state": "inactive"
+            },
+            {
+              "id": "d8805283a86a3de10fb35943c77ae2348aed7b233d83d9f86d3055da2bfb34ab",
+              "name": "m2-t-tie423dp4ue4vo6ygx4vdhfjbtwzjrzoginx7x3qkk3sq2meylqq",
+              "state": "inactive"
+            },
+            {
+              "id": "dc1c5ea4167d84d0c5acd120c83513905347f6bd9f0da14fde0c2969a7fc1eb7",
+              "name": "m2-t-s4g7nkxf4337af26qkooihel7pnpatbtrbxljtooit4x4msijxiq",
+              "state": "inactive"
+            },
+            {
+              "id": "de1e76a5dbfbf05d5a6a4221422a78ae481e20dc79a755933380d5ceab4c0b5d",
+              "name": "m2-t-tnbmdoftonx6uyx5ruyeemouyzky3o52b6bwv7czevkddlvcwq6q",
+              "state": "inactive"
+            },
+            {
+              "id": "e3c8a4d0ecd7a0a09207bba42170965838e5ae271227abd206357347f31082f5",
+              "name": "m2-t-vf3dcwusczt5gcpsdbnhjpqu3bcellyxmn2gcwsy5ihi56atwr3q",
+              "state": "inactive"
+            },
+            {
+              "id": "e5cee0a2dee079c31770a9c8aba665ab235d5e0983b2c1a5e373e579acc7519f",
+              "name": "m2-t-jor36zpin5krlg7lfciq4gxanf3cgx7unw2vvqceax3zugut5poq",
+              "state": "inactive"
+            },
+            {
+              "id": "e8754ce4a4154645b988bf4d800083defb9fd1be30ec31e700eff13ae1df198b",
+              "name": "m2-t-w466lislhucix27u4qdfbpkuh6afumeat6zloadoqdnmryzan24q",
+              "state": "inactive"
+            },
+            {
+              "id": "ef0e7735773b5124441ce3b619096509299859476e187908e761dc63bf4248e7",
+              "name": "m2-t-hdwsncaxcavfass6to7bvs6vsstlmxwh5axw34glqzuzj44bzrpq",
+              "state": "inactive"
+            },
+            {
+              "id": "ef1b6a944da200350af4b100cf3a312155fc6d1dfbeb2287850c4711fde9de07",
+              "name": "m2-t-sqlbe625mbk4ct6ex4hklrn5hinxjiqgzlzyrxqwk6ynmrhoh25q",
+              "state": "inactive"
+            },
+            {
+              "id": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487",
+              "name": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+              "state": "inactive"
+            },
+            {
+              "id": "f40e5262a44047b3e07fd6fab0a78e1654422091a1d57fffd3c6348b2fdf4d40",
+              "name": "m2-t-b32iwmgolykuvukmuts7qof7otg2x7wfmrlqo4f3h5ap4h5lk6lq",
+              "state": "inactive"
+            },
+            {
+              "id": "f4591badb87f234b11ab68705720d78e3200425234455f2d4bbcce205dd8a1ba",
+              "name": "m2-t-7eaf72rei6v27az6elhgy74wztfzyaozpof4yfgwmhcthrjqu35a",
+              "state": "inactive"
+            },
+            {
+              "id": "fd3289d026e66bdc9cf18c0bce05a278953d7b9d165912f7e07839db52d5c516",
+              "name": "m2-t-3wapeujt32opuyss25gidcmpcw5tzxb7uzalwaxbqmhkyigzlota",
+              "state": "inactive"
+            }
+          ],
+          "observedAt": 1789194918449
+        },
+        "actorBReleasedAt": 1789194959102,
+        "actorBInternalLifecycle": [
+          {
+            "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+            "state": "absent",
+            "observedAt": 1789194924613
+          },
+          {
+            "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+            "state": "absent",
+            "observedAt": 1789194935227
+          },
+          {
+            "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+            "state": "absent",
+            "observedAt": 1789194943896
+          },
+          {
+            "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+            "state": "absent",
+            "observedAt": 1789194959102
+          }
+        ],
+        "actorBExternalLifecycle": [
+          {
+            "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+            "state": "absent",
+            "observedAt": 1789194927903,
+            "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+          },
+          {
+            "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+            "state": "absent",
+            "observedAt": 1789194938086,
+            "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+          },
+          {
+            "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+            "state": "absent",
+            "observedAt": 1789194947594,
+            "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+          },
+          {
+            "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+            "state": "absent",
+            "observedAt": 1789194961394,
+            "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+          }
+        ],
+        "actorBStartedAt": 1789194916218,
+        "internalLifecycle": [
+          {
+            "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+            "state": "absent",
+            "observedAt": 1789194866914
+          },
+          {
+            "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+            "state": "absent",
+            "observedAt": 1789194876688
+          },
+          {
+            "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+            "state": "absent",
+            "observedAt": 1789194884691
+          },
+          {
+            "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+            "state": "absent",
+            "observedAt": 1789194893665
+          },
+          {
+            "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+            "state": "absent",
+            "observedAt": 1789194902737
+          }
+        ],
+        "externalLifecycle": [
+          {
+            "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+            "state": "absent",
+            "observedAt": 1789194870942,
+            "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+          },
+          {
+            "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+            "state": "absent",
+            "observedAt": 1789194878917,
+            "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+          },
+          {
+            "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+            "state": "absent",
+            "observedAt": 1789194887931,
+            "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+          },
+          {
+            "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+            "state": "absent",
+            "observedAt": 1789194896999,
+            "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+          },
+          {
+            "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+            "state": "absent",
+            "observedAt": 1789194910658,
+            "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+          }
+        ],
+        "stopProof": {
+          "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+          "proofId": "proof-90f38edda1ac40dc086bee3c4a0ab8712e1ddf558bf7085d",
+          "observedAt": 1789194902737
+        },
+        "reasonCode": "platform-probe-worker-cleanup-unconfirmed",
+        "priorReasonCode": null,
+        "cleanup": {
+          "status": "blocked",
+          "reasonCode": "platform-probe-worker-delete-unconfirmed",
+          "workerName": "riffology-issues-probe-9a9762fbc1ef070daa65d292",
+          "identityVerifiedBeforeDelete": true,
+          "deleteAttempted": true,
+          "deleteExitConfirmed": false,
+          "absenceConfirmed": false,
+          "routeFallbackConfirmed": false,
+          "absenceDurationMs": 0,
+          "recoveryRequired": true,
+          "actorCleanup": [
+            {
+              "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+              "status": "absent",
+              "quietMs": 30000,
+              "confirmedAt": 1789195153344,
+              "internalLifecycle": [
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789194967092
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789194980530
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789194994594
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789195005395
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "unknown",
+                  "observedAt": 1789195029067
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789195041148
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789195060476
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789195088681
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789195108424
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789195124561
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789195139619
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789195153344
+                }
+              ],
+              "externalLifecycle": [
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789194970293,
+                  "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789194984611,
+                  "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789194996466,
+                  "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "stopped",
+                  "observedAt": 1789195009950,
+                  "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "unknown",
+                  "observedAt": 1789195031991,
+                  "instanceId": null
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "stopped",
+                  "observedAt": 1789195049506,
+                  "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789195064509,
+                  "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "unknown",
+                  "observedAt": 1789195091211,
+                  "instanceId": null
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789195113581,
+                  "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789195128759,
+                  "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789195143545,
+                  "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+                },
+                {
+                  "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                  "state": "absent",
+                  "observedAt": 1789195158376,
+                  "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+                }
+              ]
+            },
+            {
+              "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+              "status": "absent",
+              "quietMs": 30000,
+              "confirmedAt": 1789195144419,
+              "internalLifecycle": [
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789194971390
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789194985553
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789194997284
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789195010778
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789195032814
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789195050475
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "unknown",
+                  "observedAt": 1789195075026
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789195095606
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789195114584
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789195130496
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789195144419
+                }
+              ],
+              "externalLifecycle": [
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "stopped",
+                  "observedAt": 1789194974617,
+                  "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789194988775,
+                  "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789194999514,
+                  "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "unknown",
+                  "observedAt": 1789195013541,
+                  "instanceId": null
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789195035086,
+                  "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789195053596,
+                  "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789195080332,
+                  "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789195101086,
+                  "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789195118643,
+                  "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789195133813,
+                  "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+                },
+                {
+                  "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                  "state": "absent",
+                  "observedAt": 1789195147441,
+                  "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "release": {
+    "schemaVersion": 1,
+    "status": "blocked",
+    "phase": "platform-probe",
+    "reasonCode": "platform-probe-worker-cleanup-unconfirmed",
+    "pausedCandidateVersionId": "f061c048-f9c0-4165-8f6a-a32001b7997a",
+    "predeploy": {
+      "schemaVersion": 1,
+      "observedAt": "2026-09-12T06:30:27.888Z",
+      "phase": "release-predeploy",
+      "status": "passed",
+      "releaseManifest": {
+        "schemaVersion": 1,
+        "workerSourceSha": "aad343378b2d003db9daefd89407b625dd4f6343",
+        "workerVersionTag": "source-aad343378b2d003db9daefd89407b625dd4f6343",
+        "workerVersionMetadataBinding": "CF_VERSION_METADATA",
+        "toolBridgeSha256": "a416c28c1ad19b149cdf1aa399ff4bb3cb3a06ea0198abaddcb5796157dbc0e7",
+        "toolProtocolVersion": "2",
+        "toolLedgerSchemaVersion": "1",
+        "toolLedgerSchemaSha256": "95b73690b776ecc6dba05a7c481bfe6c015b948a57ad88e0ae65b31c420e587a",
+        "containerImages": [
+          {
+            "name": "ProjectRuntime",
+            "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m1-project-staging@sha256:bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00"
+          },
+          {
+            "name": "ProjectToolSandbox",
+            "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-project-tools-staging@sha256:6e1c51f984b0a6786483c09c327118722e35597f0ab421d54a27b264a0446a58"
+          },
+          {
+            "name": "TrustedPiSandbox",
+            "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2"
+          },
+          {
+            "name": "ServiceSandbox",
+            "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8"
+          }
+        ],
+        "deployedResources": {
+          "bindings": [
+            {
+              "name": "APP_ORIGIN",
+              "type": "plain_text",
+              "text": "https://m1.riff-demo.gaojihe.cn"
+            },
+            {
+              "name": "ASSETS",
+              "type": "assets"
+            },
+            {
+              "name": "BETTER_AUTH_SECRET",
+              "type": "secret_text"
+            },
+            {
+              "name": "CATALOG",
+              "type": "d1",
+              "databaseId": "f122099b-8eaa-4eca-83a0-755de0f8b46b"
+            },
+            {
+              "name": "CF_VERSION_METADATA",
+              "type": "version_metadata"
+            },
+            {
+              "name": "GOOGLE_CLIENT_ID",
+              "type": "secret_text"
+            },
+            {
+              "name": "GOOGLE_CLIENT_SECRET",
+              "type": "secret_text"
+            },
+            {
+              "name": "M2_MODEL_BUDGET_POLICY_VERSION",
+              "type": "plain_text",
+              "text": "m2-token-vertical-v2"
+            },
+            {
+              "name": "M2_MODEL_CAPABILITY_TTL_MS",
+              "type": "plain_text",
+              "text": "120000"
+            },
+            {
+              "name": "M2_MODEL_ID",
+              "type": "plain_text",
+              "text": "gpt-5.6-luna"
+            },
+            {
+              "name": "M2_MODEL_MAX_INPUT_TOKENS_PER_CALL",
+              "type": "plain_text",
+              "text": "262144"
+            },
+            {
+              "name": "M2_MODEL_MAX_OUTPUT_TOKENS_PER_CALL",
+              "type": "plain_text",
+              "text": "4096"
+            },
+            {
+              "name": "M2_MODEL_PROVIDER",
+              "type": "plain_text",
+              "text": "opencode-go"
+            },
+            {
+              "name": "M2_MODEL_PROVIDER_ENABLED",
+              "type": "plain_text",
+              "text": "true"
+            },
+            {
+              "name": "M2_MODEL_PROXY_REQUEST_KEY",
+              "type": "secret_text"
+            },
+            {
+              "name": "M2_MODEL_TURN_CAPABILITY_KEY",
+              "type": "secret_text"
+            },
+            {
+              "name": "M2_OPENCODE_GO_API_KEY",
+              "type": "secret_text"
+            },
+            {
+              "name": "M2_PROJECT_EFFECT_CAPABILITY_KEY",
+              "type": "secret_text"
+            },
+            {
+              "name": "M2_TOOL_BRIDGE_REQUEST_KEY",
+              "type": "secret_text"
+            },
+            {
+              "name": "M2_TOOL_BRIDGE_SHA256",
+              "type": "plain_text",
+              "text": "a416c28c1ad19b149cdf1aa399ff4bb3cb3a06ea0198abaddcb5796157dbc0e7"
+            },
+            {
+              "name": "M2_TOOL_LEDGER_SCHEMA_SHA256",
+              "type": "plain_text",
+              "text": "95b73690b776ecc6dba05a7c481bfe6c015b948a57ad88e0ae65b31c420e587a"
+            },
+            {
+              "name": "M2_TOOL_LEDGER_SCHEMA_VERSION",
+              "type": "plain_text",
+              "text": "1"
+            },
+            {
+              "name": "M2_TOOL_PROTOCOL_VERSION",
+              "type": "plain_text",
+              "text": "2"
+            },
+            {
+              "name": "M2_TURN_ADMISSION_TELEMETRY",
+              "type": "plain_text",
+              "text": "true"
+            },
+            {
+              "name": "M2_TURN_OPERATION_TELEMETRY",
+              "type": "plain_text",
+              "text": "true"
+            },
+            {
+              "name": "M2_TURNS_ENABLED",
+              "type": "plain_text",
+              "text": "true"
+            },
+            {
+              "name": "M2_WORKER_SOURCE_SHA",
+              "type": "plain_text",
+              "text": "aad343378b2d003db9daefd89407b625dd4f6343"
+            },
+            {
+              "name": "M3_OBSERVER_ENABLED",
+              "type": "plain_text",
+              "text": "false"
+            },
+            {
+              "name": "M3_PREVIEW_ENABLED",
+              "type": "plain_text",
+              "text": "true"
+            },
+            {
+              "name": "M3_PREVIEW_ORIGIN",
+              "type": "plain_text",
+              "text": "https://preview.m1.riff-demo.gaojihe.cn"
+            },
+            {
+              "name": "M3_PREVIEW_WS_ENABLED",
+              "type": "plain_text",
+              "text": "true"
+            },
+            {
+              "name": "M3_SERVICE_ENABLED",
+              "type": "plain_text",
+              "text": "true"
+            },
+            {
+              "name": "M3_SERVICE_IMAGE",
+              "type": "plain_text",
+              "text": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8"
+            },
+            {
+              "name": "MODEL_BUDGET_MAX_DISPATCHED_CALLS_PER_TURN",
+              "type": "plain_text",
+              "text": "8"
+            },
+            {
+              "name": "MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL",
+              "type": "plain_text",
+              "text": "262144"
+            },
+            {
+              "name": "MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL",
+              "type": "plain_text",
+              "text": "4096"
+            },
+            {
+              "name": "MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN",
+              "type": "plain_text",
+              "text": "8"
+            },
+            {
+              "name": "MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN",
+              "type": "plain_text",
+              "text": "532480"
+            },
+            {
+              "name": "MODEL_BUDGET_POLICY_VERSION",
+              "type": "plain_text",
+              "text": "m2-token-vertical-v2"
+            },
+            {
+              "name": "MODEL_CONTENT",
+              "type": "r2_bucket",
+              "bucketName": "riffology-m3-model-content-staging"
+            },
+            {
+              "name": "MODEL_PROXY",
+              "type": "service",
+              "service": "riffology-m1-gateway-staging",
+              "entrypoint": "ModelProxyService",
+              "environment": "production"
+            },
+            {
+              "name": "PRODUCT_TURN_RUNTIME",
+              "type": "durable_object_namespace",
+              "className": "ProductTurnRuntime"
+            },
+            {
+              "name": "PROJECT_RUNTIME",
+              "type": "durable_object_namespace",
+              "className": "ProjectRuntime"
+            },
+            {
+              "name": "PROJECT_SANDBOX",
+              "type": "durable_object_namespace",
+              "className": "ProjectToolSandbox"
+            },
+            {
+              "name": "REVISION_STORE",
+              "type": "durable_object_namespace",
+              "className": "RevisionStore"
+            },
+            {
+              "name": "SERVICE_RUN",
+              "type": "durable_object_namespace",
+              "className": "ServiceRun"
+            },
+            {
+              "name": "SERVICE_RUNTIME",
+              "type": "durable_object_namespace",
+              "className": "ServiceRuntime"
+            },
+            {
+              "name": "SERVICE_SANDBOX",
+              "type": "durable_object_namespace",
+              "className": "ServiceSandbox"
+            },
+            {
+              "name": "TENANT_MODEL_BUDGET",
+              "type": "durable_object_namespace",
+              "className": "TenantModelBudget"
+            },
+            {
+              "name": "TENANT_QUOTA",
+              "type": "durable_object_namespace",
+              "className": "TenantQuota"
+            },
+            {
+              "name": "TENANT_QUOTA_CAPACITY",
+              "type": "plain_text",
+              "text": "1"
+            },
+            {
+              "name": "TENANT_QUOTA_POLICY_VERSION",
+              "type": "plain_text",
+              "text": "m1-v1"
+            },
+            {
+              "name": "TOOL_ARTIFACT_STORE",
+              "type": "durable_object_namespace",
+              "className": "ToolArtifactStore"
+            },
+            {
+              "name": "TOOL_BRIDGE",
+              "type": "service",
+              "service": "riffology-m1-gateway-staging",
+              "entrypoint": "ToolBridgeService",
+              "environment": "production"
+            },
+            {
+              "name": "TOOL_BRIDGE_AGENT",
+              "type": "durable_object_namespace",
+              "className": "ToolBridgeAgent"
+            },
+            {
+              "name": "TRUSTED_PI_CAPACITY",
+              "type": "durable_object_namespace",
+              "className": "TrustedPiCapacity"
+            },
+            {
+              "name": "TRUSTED_PI_CAPACITY_LIMIT",
+              "type": "plain_text",
+              "text": "1"
+            },
+            {
+              "name": "TRUSTED_PI_CAPACITY_POLICY_VERSION",
+              "type": "plain_text",
+              "text": "m2-trusted-pi-v1"
+            },
+            {
+              "name": "TRUSTED_PI_SANDBOX",
+              "type": "durable_object_namespace",
+              "className": "TrustedPiSandbox"
+            },
+            {
+              "name": "WORKSPACE_AGENT",
+              "type": "durable_object_namespace",
+              "className": "WorkspaceAgent"
+            },
+            {
+              "name": "WORKSPACE_CHECKPOINTS",
+              "type": "r2_bucket",
+              "bucketName": "riffology-workspace-checkpoints-staging-v3-20260911"
+            }
+          ],
+          "exports": [
+            {
+              "name": "ProductTurnRuntime",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "ProjectRuntime",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": "riffology-m1-project-staging"
+            },
+            {
+              "name": "ProjectToolSandbox",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": "riffology-m3-project-tools-staging"
+            },
+            {
+              "name": "RevisionStore",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "ServiceRun",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "ServiceRuntime",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "ServiceSandbox",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": "riffology-m3-service-staging"
+            },
+            {
+              "name": "TenantModelBudget",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "TenantQuota",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "ToolArtifactStore",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "ToolBridgeAgent",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "TrustedPiCapacity",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            },
+            {
+              "name": "TrustedPiSandbox",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": "riffology-m3-trusted-pi-staging"
+            },
+            {
+              "name": "WorkspaceAgent",
+              "type": "durable-object",
+              "storage": "sqlite",
+              "container": null
+            }
+          ],
+          "containers": [
+            {
+              "name": "riffology-m1-project-staging",
+              "className": "ProjectRuntime"
+            },
+            {
+              "name": "riffology-m3-project-tools-staging",
+              "className": "ProjectToolSandbox"
+            },
+            {
+              "name": "riffology-m3-service-staging",
+              "className": "ServiceSandbox"
+            },
+            {
+              "name": "riffology-m3-trusted-pi-staging",
+              "className": "TrustedPiSandbox"
+            }
+          ],
+          "handlers": [
+            {
+              "name": "ModelProxyService",
+              "handler": "fetch"
+            },
+            {
+              "name": "ProductTurnRuntime",
+              "handler": "class"
+            },
+            {
+              "name": "ProjectRuntime",
+              "handler": "class"
+            },
+            {
+              "name": "ProjectToolSandbox",
+              "handler": "class"
+            },
+            {
+              "name": "RevisionStore",
+              "handler": "class"
+            },
+            {
+              "name": "ServiceRun",
+              "handler": "class"
+            },
+            {
+              "name": "ServiceRuntime",
+              "handler": "class"
+            },
+            {
+              "name": "ServiceSandbox",
+              "handler": "class"
+            },
+            {
+              "name": "TenantModelBudget",
+              "handler": "class"
+            },
+            {
+              "name": "TenantQuota",
+              "handler": "class"
+            },
+            {
+              "name": "ToolArtifactStore",
+              "handler": "class"
+            },
+            {
+              "name": "ToolBridgeAgent",
+              "handler": "class"
+            },
+            {
+              "name": "ToolBridgeService",
+              "handler": "fetch"
+            },
+            {
+              "name": "TrustedPiCapacity",
+              "handler": "class"
+            },
+            {
+              "name": "TrustedPiSandbox",
+              "handler": "class"
+            },
+            {
+              "name": "WorkspaceAgent",
+              "handler": "class"
+            }
+          ]
+        }
+      },
+      "checks": [
+        {
+          "name": "checked-config-default-closed",
+          "status": "passed"
+        },
+        {
+          "name": "worker-identity",
+          "status": "passed"
+        },
+        {
+          "name": "staging-origins",
+          "status": "passed"
+        },
+        {
+          "name": "execution-gates-controlled-release",
+          "status": "passed"
+        },
+        {
+          "name": "tenant-capacity",
+          "status": "passed"
+        },
+        {
+          "name": "turn-operation-telemetry",
+          "status": "passed"
+        },
+        {
+          "name": "worker-version-metadata",
+          "status": "passed"
+        },
+        {
+          "name": "model-budget",
+          "status": "passed"
+        },
+        {
+          "name": "required-secrets",
+          "status": "passed"
+        },
+        {
+          "name": "durable-bindings",
+          "status": "passed"
+        },
+        {
+          "name": "durable-exports",
+          "status": "passed"
+        },
+        {
+          "name": "container-images",
+          "status": "passed"
+        },
+        {
+          "name": "service-image-pin",
+          "status": "passed"
+        },
+        {
+          "name": "private-services",
+          "status": "passed"
+        },
+        {
+          "name": "dedicated-storage",
+          "status": "passed"
+        },
+        {
+          "name": "recovery-cron",
+          "status": "passed"
+        },
+        {
+          "name": "catalog-migrations",
+          "status": "passed"
+        },
+        {
+          "name": "no-local-runtime-inputs",
+          "status": "passed"
+        },
+        {
+          "name": "worker-source-sha",
+          "status": "passed"
+        },
+        {
+          "name": "candidate-release-manifest",
+          "status": "passed"
+        },
+        {
+          "name": "runtime-secrets",
+          "status": "passed"
+        },
+        {
+          "name": "wrangler-dry-run",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-d1",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-r2:riffology-workspace-checkpoints-staging-v3-20260911",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-r2:riffology-m3-model-content-staging",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-secrets",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-catalog-migrations",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-container-image:ProjectRuntime",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-container-image:ProjectToolSandbox",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-container-image:TrustedPiSandbox",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-container-image:ServiceSandbox",
+          "status": "passed"
+        },
+        {
+          "name": "cloud-trusted-pi-bridge-content",
+          "status": "passed"
+        },
+        {
+          "name": "predeploy-turn-gate-closed",
+          "status": "passed"
+        },
+        {
+          "name": "preview-dns",
+          "status": "passed"
+        },
+        {
+          "name": "preview-tls-san",
+          "status": "passed"
+        }
+      ]
+    },
+    "platformProbe": {
+      "schemaVersion": 1,
+      "status": "blocked",
+      "workerSourceSha": "aad343378b2d003db9daefd89407b625dd4f6343",
+      "workerVersionId": "f061c048-f9c0-4165-8f6a-a32001b7997a",
+      "probeWorker": {
+        "name": "riffology-issues-probe-9a9762fbc1ef070daa65d292",
+        "origin": "https://m1.riff-demo.gaojihe.cn/__riffology-internal/issues-probe/9a9762fbc1ef070daa65d292",
+        "pathPrefix": "/__riffology-internal/issues-probe/9a9762fbc1ef070daa65d292",
+        "versionId": "9a9341e7-3241-4f78-a9fd-08b9058640b0",
+        "versionTag": "probe-9a9762fbc1ef070daa65d292",
+        "capabilityBindingVerified": true,
+        "pathBindingVerified": true,
+        "binding": {
+          "name": "TRUSTED_PI_SANDBOX",
+          "type": "durable_object_namespace",
+          "className": "TrustedPiSandbox",
+          "scriptName": "riffology-m1-gateway-staging"
+        }
+      },
+      "containerApp": {
+        "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+        "name": "riffology-m3-trusted-pi-staging",
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2",
+        "version": 2
+      },
+      "actorA": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+      "actorB": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+      "actorAStarted": {
+        "processId": "probe-9a9762fbc1ef070daa65d292",
+        "processStatus": "running",
+        "containerRunning": true,
+        "observedAt": 1789194861643
+      },
+      "actorAStartExternal": {
+        "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+        "state": "stopped",
+        "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd",
+        "applicationInstances": [
+          {
+            "id": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd",
+            "name": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+            "state": "stopped"
+          },
+          {
+            "id": "01e7b42cdad08f493befab6cce09a7925afc9b8f65c8c087d4fed1938259a9c6",
+            "name": "m2-t-qr7etqpmnduqotvhd33tfn3xyfr5rjuwiiwmfg6vjuv4ytyvhxfa",
+            "state": "inactive"
+          },
+          {
+            "id": "05e863d46a8c1d2d6c8194a546b81f72aa3a79ba986574fdf6c188c7411745f5",
+            "name": "m2-t-uiasr25buhhzisnawbnjlfcd7nkj36n44kdxa4ipwribtjogjjta",
+            "state": "inactive"
+          },
+          {
+            "id": "0c87ada11768769325efd1385661e7e12d10a52f0f5bea6991746ae8a07b5875",
+            "name": "m2-t-ijypr7kniclc5i3plyvthh4ywikyldpvrd5yjsbqfktp3kzipcsa",
+            "state": "inactive"
+          },
+          {
+            "id": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf",
+            "name": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+            "state": "inactive"
+          },
+          {
+            "id": "230637d8bdea28f73243cfa6c214617d3d3cab25486f3e09010c5c34fbf1c833",
+            "name": "m2-t-xbh4xw3opwgezdxdv3ccynm4avbmth7rpz6h2w5qntp2xp262vha",
+            "state": "inactive"
+          },
+          {
+            "id": "2585df0b9672231ecf859ac63a107f009539dca8135dfeab058ab16418c8eae6",
+            "name": "m2-t-27uvwpgscwfup65a5cvvkibux7p4tgwlo7dmehqflluzazowuxba",
+            "state": "inactive"
+          },
+          {
+            "id": "26f0317e83152356e00f313f6296b8ca506aa1aaa479ab3e9bf8962f4a8cf5ab",
+            "name": "m2-t-qbqswny772jj6vfot7jfe6bxbnr23e5i6gc3gklug6nrxd7wt4pa",
+            "state": "inactive"
+          },
+          {
+            "id": "2776f5b441af3576e6ab955b89a806355b770b8f2ffaf38b7f0314f14376e563",
+            "name": "m2-t-dwxxva5ob6n5p3i5t256uckk46tghpdle64cetrrfwzi6o6urbba",
+            "state": "inactive"
+          },
+          {
+            "id": "2fa2a19c4690fb50296aec769c27534ca3b569163a0141cf0d2b0e9b383d1827",
+            "name": "m2-t-re5axt3n5xxo323afbwga4gwnk6cq7dbvxfvwao4v4atlaqgcceq",
+            "state": "inactive"
+          },
+          {
+            "id": "37738d675f441bbe3e247d1d25864ae6c6118d80f8cd13d329f1c24a89b4f998",
+            "name": "m2-t-w6i3qd7pkpcmczyi63nv7rtfsylrkuktnfsbahvhkkcr5e6oqzpa",
+            "state": "inactive"
+          },
+          {
+            "id": "3785369cd0fc877ed6546113e8e620cfa6411a84f66e6f13cdc1062d2772ade0",
+            "name": "m2-t-xrr437nrhr34zh4xg4ibvruoedwflwbln26tymehfvin6wcska2a",
+            "state": "inactive"
+          },
+          {
+            "id": "3d2fadb02517581eb3e93037a4ba1b133337b469670af54c29498fbff9634fe4",
+            "name": "m2-t-fdub36xqg2vnvy4djljziyth5fcyrr5lnik3enenmysbsokepwnq",
+            "state": "inactive"
+          },
+          {
+            "id": "437f9c06761d76779efe9c1ea2afe5d26a81fbc592514d2dc4d10322a50cb94a",
+            "name": "m2-t-2yhw633pb7jnfpmxqnmdu4szzrdbuos5vma7jqxqgzf5h5arrxpq",
+            "state": "inactive"
+          },
+          {
+            "id": "48a9215d6f6ee908a9155fc971a74284748d6daa9952ade5f3a8eb230d6885ba",
+            "name": "m2-t-rqjx2atoqndbsbjy7a62g7ebp44q5af6md2nl3oc2gf4y6x7aova",
+            "state": "inactive"
+          },
+          {
+            "id": "48a98edc4ff899a9d9a574a62d1e7c1b231f2bca534a9ee19ec3a54e96e65259",
+            "name": "m2-t-vkhopuei4np332gffrojo5huovrskgef4xg2iswcyjvu3n4hzjxa",
+            "state": "inactive"
+          },
+          {
+            "id": "532d88dee4d2bda57483374da14fe1661366aa2e1a485b3293749aa1c4465dd7",
+            "name": "m2-t-pdh2ugvbptr6neqim3cxfsensp5aavgcvdksvlpmpr7quqzbah3a",
+            "state": "inactive"
+          },
+          {
+            "id": "540d32c423965aa6970c84d7a983f0c1ecf63d2b60d1a97da0cd80577f5bd79c",
+            "name": "m2-t-trra4zpdcvuevzcgk3r4rajpk47hhfhrjxdre7mmknjmc5dhnxsa",
+            "state": "inactive"
+          },
+          {
+            "id": "543540389add7e7167ba0cadcf763c03d2ba7f4a326862b28c69b65d490662bd",
+            "name": "m2-t-kkb63rv5wzordqt34icbatsiosz5occn5x633swzqppsivrxkqua",
+            "state": "inactive"
+          },
+          {
+            "id": "58fe3b06daf22d13c8af23e939b0955e20432d826d7a00970a65f7b10f243c4a",
+            "name": "m2-t-5mtdqdkuzvg45ovljhj6dvfehfvfilk2ganapowfkh5lytmzc6qa",
+            "state": "inactive"
+          },
+          {
+            "id": "66939562e79631cdf82e42ab1434d44ca8284550878d6ad7dcadb1465779c1f4",
+            "name": "m2-t-obzeh5hsyoncf2zibepeea3pr4shp3udt3lomni746zx4wl4l6ga",
+            "state": "inactive"
+          },
+          {
+            "id": "66953cf869359569d78c53859ccd608c2a3a1400e12d27475955e4efb71a3bb9",
+            "name": "m2-t-w6go5yq4wdihigmnoaqibqusoe2qpzjn7yvm4q5uqh35cncj7t5a",
+            "state": "inactive"
+          },
+          {
+            "id": "6af524548e38bbfdd501447f3aba77839fb01af7240647518a413495d193262f",
+            "name": "m2-t-cxk5vodsobhvawdjrwbbbafeoyz7gubklyxeonuboi4xuwu3odya",
+            "state": "inactive"
+          },
+          {
+            "id": "6d95c3983ff2375f69256c6d079430081e00b472d682034ecd38fb0c7f0738f2",
+            "name": "m2-t-2yqffmmqjnyxt4sedbmzn3cgw2tgalttcvobfezmbjvp75v4mida",
+            "state": "inactive"
+          },
+          {
+            "id": "6f0b507136485d3aaad7b256b47de9887c53e50ac060b87d8112c291c2a8c0ba",
+            "name": "m2-t-ilsitgyqgpfvudqbxq6nhpo7uebwffxynkitnq3tka6gduma7jra",
+            "state": "inactive"
+          },
+          {
+            "id": "7bc2801e7990208fc3355c1b3ed64f2963f013ec053553e63fa1304cc180ab5d",
+            "name": "m2-t-bv4doqrkczx5chvgglf4gg34izg3e6ev6bwm6yylzxifpz7ne4yq",
+            "state": "inactive"
+          },
+          {
+            "id": "80446302e4012f9dc4b5e85e2077d68ea6fbd0050ae320cc19d3b87f89f9a1f4",
+            "name": "m2-t-ys4rldxzg3hvzl4f233npps6gul3rw7mm6utujkl2oe47qlji32q",
+            "state": "inactive"
+          },
+          {
+            "id": "80b4d5751845b7f7d9be0efdc6be543b48c250b1af03a781230b06d50849f8e7",
+            "name": "m2-t-ev4jyzwxc5dkyraoc5c5x7jleqwkqzyldwrrs6l5bnl53522s5va",
+            "state": "inactive"
+          },
+          {
+            "id": "8390c84b7759e8e63efe21e1df369363537319bdf06624e4cfe6536625c7a686",
+            "name": "m2-t-u7ouo2fik4muktuzsianudpwfxstrxabx6likuegb6vq4jxijk6q",
+            "state": "inactive"
+          },
+          {
+            "id": "8506ad56e96ad2d6f3a99c63d440df7e4ca070bcacc98544be15a1960a2b7180",
+            "name": "m2-t-gtxfad66kcr7yndtxtumm623l3ytacubftpzxe7wcboqecxzbeuq",
+            "state": "inactive"
+          },
+          {
+            "id": "8710f756f72b20fec3dc25779378679464646923538723e6259b90ccd9cf1465",
+            "name": "m2-t-wkcruo2nekdj4acs5npsfh7yhqycwj6rbrwmnfnysdjsuwnwk7ma",
+            "state": "inactive"
+          },
+          {
+            "id": "8e57ec06c051f2f89cb0d0d6a2c7ef1452ad9be215a3e279ca82dcfc4aa6011b",
+            "name": "m2-t-b2idrm5hn3xkvezo3ah653jtcdrtdfcw6fyk4xezawbcvynksqbq",
+            "state": "inactive"
+          },
+          {
+            "id": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7",
+            "name": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+            "state": "inactive"
+          },
+          {
+            "id": "911cebd0480e528de1178d023436ebcae1f5b7a73e57339a74e717bfb444cf87",
+            "name": "m2-t-snfrcoefkmlb66e4uxgd3oi6sh2dh7skk4poyllvjp7qci24iyqq",
+            "state": "inactive"
+          },
+          {
+            "id": "ab89688267b1f4d41454da511250b9c27deb32f7461a47c8ff9146725744e1e3",
+            "name": "m2-t-uiuumdnzhmdqz2pggnijsk5g6yuexwlfjs5dliv2wneusbbwojmq",
+            "state": "inactive"
+          },
+          {
+            "id": "ae06c431c65073ec024c2ef8bcd5ad60e010d9d8ce5ef6f8343ad52068f0cf31",
+            "name": "m2-t-d7qtipmyxb2z4z6tq63h6ka7msmk46bnhfbtt7wewauztnfs5edq",
+            "state": "inactive"
+          },
+          {
+            "id": "b49362a33571d39824cc8ac00dd8b85f56d6b861270b179ea9122e564c84b875",
+            "name": "m2-t-i46jlurryh5obh44n4dh2xt67gcz24aslv5sdixzjkik4xlswxpa",
+            "state": "inactive"
+          },
+          {
+            "id": "b4b3efa07cd85831cecf985a7ec7e331dfa5195690fba2f722fffeca5e371ce4",
+            "name": "m2-t-dqym3nxqz5mg55etaymhbf2nvt5yeulbuvzcqjr465aamfqzmn7q",
+            "state": "inactive"
+          },
+          {
+            "id": "bbaa2eb567ede49dab86db13a124d126bd0700f8adc647de5d957a3c5fe3585d",
+            "name": "m2-t-i7hhady4ge7t4vsfpyxpyp4a2jzlzz5c74cghfjuklahy75yzdpa",
+            "state": "inactive"
+          },
+          {
+            "id": "bea4a38d597348a9d42e582f46ad8473cadc045ff66ad773322a30b88c3d8a9e",
+            "name": "m2-t-hqiugc34ku4mz6cohp4xznh7domfq5inid2uasc6viyulvw4dfyq",
+            "state": "inactive"
+          },
+          {
+            "id": "c886ee2900efeb0a186a747de3f1779a2b5456451aaca763413c5f61f51fde73",
+            "name": "m2-t-7dbgya7lcafcb5z6ocemo3hyr6r55og5fttq7c5kyz356kbcigsa",
+            "state": "inactive"
+          },
+          {
+            "id": "c9424683be2d875b18dee2b001bf38f0d4547cd05e27741ee12bdc0df993bfc9",
+            "name": "m2-t-kxk2jbttfunvsxl5etlilgpxgqvepr2q33z7m3czsatuddp3npaa",
+            "state": "inactive"
+          },
+          {
+            "id": "ca880ed069d2f8ef8f0ed071ca77c3c814d219fb40e3534ea917d1524cec2662",
+            "name": "m2-t-dchtmba6x4cnzhwfduncjztbsza5itz2n667kh22djnk7ias7y2q",
+            "state": "inactive"
+          },
+          {
+            "id": "cba4be48173f7d2e28a557107f7684b442a4e769396f8e13707ce3f33c362716",
+            "name": "m2-t-ttmeodk4osbuovv66u7flrb6f6bytzb25ljzu3h7ezzvxdkusyfq",
+            "state": "inactive"
+          },
+          {
+            "id": "cbf980d106357659a10dd07a0028127c2b37d0dd1a1f9caab23dc043b75b8190",
+            "name": "m2-t-2qbkyidmglfitty2ketgk3ja7pwnitdf3ypngj3juhguyz2xwy2a",
+            "state": "inactive"
+          },
+          {
+            "id": "ce0147dbd291952ab81cd4ad79ffd4886a28194bdda3f192452499a10ee195ed",
+            "name": "m2-t-mvo2bzlt5lrxzuchv3jq4gduj27qhz67vi75v5ytnjxoasrl47vq",
+            "state": "inactive"
+          },
+          {
+            "id": "d59534a5adb0989971a7a2f07e89c3c3c3d73e4674f874987753d0d416c6f9c1",
+            "name": "m2-t-htc2za2bli6vsg3n2eywbcvnoxa5r4t5xkytappwzpcqsyrleppa",
+            "state": "inactive"
+          },
+          {
+            "id": "d8805283a86a3de10fb35943c77ae2348aed7b233d83d9f86d3055da2bfb34ab",
+            "name": "m2-t-tie423dp4ue4vo6ygx4vdhfjbtwzjrzoginx7x3qkk3sq2meylqq",
+            "state": "inactive"
+          },
+          {
+            "id": "dc1c5ea4167d84d0c5acd120c83513905347f6bd9f0da14fde0c2969a7fc1eb7",
+            "name": "m2-t-s4g7nkxf4337af26qkooihel7pnpatbtrbxljtooit4x4msijxiq",
+            "state": "inactive"
+          },
+          {
+            "id": "de1e76a5dbfbf05d5a6a4221422a78ae481e20dc79a755933380d5ceab4c0b5d",
+            "name": "m2-t-tnbmdoftonx6uyx5ruyeemouyzky3o52b6bwv7czevkddlvcwq6q",
+            "state": "inactive"
+          },
+          {
+            "id": "e3c8a4d0ecd7a0a09207bba42170965838e5ae271227abd206357347f31082f5",
+            "name": "m2-t-vf3dcwusczt5gcpsdbnhjpqu3bcellyxmn2gcwsy5ihi56atwr3q",
+            "state": "inactive"
+          },
+          {
+            "id": "e5cee0a2dee079c31770a9c8aba665ab235d5e0983b2c1a5e373e579acc7519f",
+            "name": "m2-t-jor36zpin5krlg7lfciq4gxanf3cgx7unw2vvqceax3zugut5poq",
+            "state": "inactive"
+          },
+          {
+            "id": "e8754ce4a4154645b988bf4d800083defb9fd1be30ec31e700eff13ae1df198b",
+            "name": "m2-t-w466lislhucix27u4qdfbpkuh6afumeat6zloadoqdnmryzan24q",
+            "state": "inactive"
+          },
+          {
+            "id": "ef0e7735773b5124441ce3b619096509299859476e187908e761dc63bf4248e7",
+            "name": "m2-t-hdwsncaxcavfass6to7bvs6vsstlmxwh5axw34glqzuzj44bzrpq",
+            "state": "inactive"
+          },
+          {
+            "id": "ef1b6a944da200350af4b100cf3a312155fc6d1dfbeb2287850c4711fde9de07",
+            "name": "m2-t-sqlbe625mbk4ct6ex4hklrn5hinxjiqgzlzyrxqwk6ynmrhoh25q",
+            "state": "inactive"
+          },
+          {
+            "id": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487",
+            "name": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+            "state": "inactive"
+          },
+          {
+            "id": "f40e5262a44047b3e07fd6fab0a78e1654422091a1d57fffd3c6348b2fdf4d40",
+            "name": "m2-t-b32iwmgolykuvukmuts7qof7otg2x7wfmrlqo4f3h5ap4h5lk6lq",
+            "state": "inactive"
+          },
+          {
+            "id": "f4591badb87f234b11ab68705720d78e3200425234455f2d4bbcce205dd8a1ba",
+            "name": "m2-t-7eaf72rei6v27az6elhgy74wztfzyaozpof4yfgwmhcthrjqu35a",
+            "state": "inactive"
+          },
+          {
+            "id": "fd3289d026e66bdc9cf18c0bce05a278953d7b9d165912f7e07839db52d5c516",
+            "name": "m2-t-3wapeujt32opuyss25gidcmpcw5tzxb7uzalwaxbqmhkyigzlota",
+            "state": "inactive"
+          }
+        ],
+        "observedAt": 1789194865773
+      },
+      "actorBStarted": {
+        "processId": "probe-9a9762fbc1ef070daa65d292",
+        "processStatus": "running",
+        "containerRunning": true,
+        "observedAt": 1789194916218
+      },
+      "actorBStartExternal": {
+        "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+        "state": "inactive",
+        "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf",
+        "applicationInstances": [
+          {
+            "id": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd",
+            "name": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+            "state": "inactive"
+          },
+          {
+            "id": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf",
+            "name": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+            "state": "inactive"
+          },
+          {
+            "id": "01e7b42cdad08f493befab6cce09a7925afc9b8f65c8c087d4fed1938259a9c6",
+            "name": "m2-t-qr7etqpmnduqotvhd33tfn3xyfr5rjuwiiwmfg6vjuv4ytyvhxfa",
+            "state": "inactive"
+          },
+          {
+            "id": "05e863d46a8c1d2d6c8194a546b81f72aa3a79ba986574fdf6c188c7411745f5",
+            "name": "m2-t-uiasr25buhhzisnawbnjlfcd7nkj36n44kdxa4ipwribtjogjjta",
+            "state": "inactive"
+          },
+          {
+            "id": "0c87ada11768769325efd1385661e7e12d10a52f0f5bea6991746ae8a07b5875",
+            "name": "m2-t-ijypr7kniclc5i3plyvthh4ywikyldpvrd5yjsbqfktp3kzipcsa",
+            "state": "inactive"
+          },
+          {
+            "id": "1ad924e3da8754f193d41064eadb9faf53a8d913095eec389cd05257e6d27dbf",
+            "name": "m2-t-x3fdzn7vcf4fj5pnmyikxx47yl3iebecphvlqbzwzn5cipyqwkuq",
+            "state": "inactive"
+          },
+          {
+            "id": "230637d8bdea28f73243cfa6c214617d3d3cab25486f3e09010c5c34fbf1c833",
+            "name": "m2-t-xbh4xw3opwgezdxdv3ccynm4avbmth7rpz6h2w5qntp2xp262vha",
+            "state": "inactive"
+          },
+          {
+            "id": "2585df0b9672231ecf859ac63a107f009539dca8135dfeab058ab16418c8eae6",
+            "name": "m2-t-27uvwpgscwfup65a5cvvkibux7p4tgwlo7dmehqflluzazowuxba",
+            "state": "inactive"
+          },
+          {
+            "id": "26f0317e83152356e00f313f6296b8ca506aa1aaa479ab3e9bf8962f4a8cf5ab",
+            "name": "m2-t-qbqswny772jj6vfot7jfe6bxbnr23e5i6gc3gklug6nrxd7wt4pa",
+            "state": "inactive"
+          },
+          {
+            "id": "2776f5b441af3576e6ab955b89a806355b770b8f2ffaf38b7f0314f14376e563",
+            "name": "m2-t-dwxxva5ob6n5p3i5t256uckk46tghpdle64cetrrfwzi6o6urbba",
+            "state": "inactive"
+          },
+          {
+            "id": "2fa2a19c4690fb50296aec769c27534ca3b569163a0141cf0d2b0e9b383d1827",
+            "name": "m2-t-re5axt3n5xxo323afbwga4gwnk6cq7dbvxfvwao4v4atlaqgcceq",
+            "state": "inactive"
+          },
+          {
+            "id": "37738d675f441bbe3e247d1d25864ae6c6118d80f8cd13d329f1c24a89b4f998",
+            "name": "m2-t-w6i3qd7pkpcmczyi63nv7rtfsylrkuktnfsbahvhkkcr5e6oqzpa",
+            "state": "inactive"
+          },
+          {
+            "id": "3785369cd0fc877ed6546113e8e620cfa6411a84f66e6f13cdc1062d2772ade0",
+            "name": "m2-t-xrr437nrhr34zh4xg4ibvruoedwflwbln26tymehfvin6wcska2a",
+            "state": "inactive"
+          },
+          {
+            "id": "3d2fadb02517581eb3e93037a4ba1b133337b469670af54c29498fbff9634fe4",
+            "name": "m2-t-fdub36xqg2vnvy4djljziyth5fcyrr5lnik3enenmysbsokepwnq",
+            "state": "inactive"
+          },
+          {
+            "id": "437f9c06761d76779efe9c1ea2afe5d26a81fbc592514d2dc4d10322a50cb94a",
+            "name": "m2-t-2yhw633pb7jnfpmxqnmdu4szzrdbuos5vma7jqxqgzf5h5arrxpq",
+            "state": "inactive"
+          },
+          {
+            "id": "48a9215d6f6ee908a9155fc971a74284748d6daa9952ade5f3a8eb230d6885ba",
+            "name": "m2-t-rqjx2atoqndbsbjy7a62g7ebp44q5af6md2nl3oc2gf4y6x7aova",
+            "state": "inactive"
+          },
+          {
+            "id": "48a98edc4ff899a9d9a574a62d1e7c1b231f2bca534a9ee19ec3a54e96e65259",
+            "name": "m2-t-vkhopuei4np332gffrojo5huovrskgef4xg2iswcyjvu3n4hzjxa",
+            "state": "inactive"
+          },
+          {
+            "id": "532d88dee4d2bda57483374da14fe1661366aa2e1a485b3293749aa1c4465dd7",
+            "name": "m2-t-pdh2ugvbptr6neqim3cxfsensp5aavgcvdksvlpmpr7quqzbah3a",
+            "state": "inactive"
+          },
+          {
+            "id": "540d32c423965aa6970c84d7a983f0c1ecf63d2b60d1a97da0cd80577f5bd79c",
+            "name": "m2-t-trra4zpdcvuevzcgk3r4rajpk47hhfhrjxdre7mmknjmc5dhnxsa",
+            "state": "inactive"
+          },
+          {
+            "id": "543540389add7e7167ba0cadcf763c03d2ba7f4a326862b28c69b65d490662bd",
+            "name": "m2-t-kkb63rv5wzordqt34icbatsiosz5occn5x633swzqppsivrxkqua",
+            "state": "inactive"
+          },
+          {
+            "id": "58fe3b06daf22d13c8af23e939b0955e20432d826d7a00970a65f7b10f243c4a",
+            "name": "m2-t-5mtdqdkuzvg45ovljhj6dvfehfvfilk2ganapowfkh5lytmzc6qa",
+            "state": "inactive"
+          },
+          {
+            "id": "66939562e79631cdf82e42ab1434d44ca8284550878d6ad7dcadb1465779c1f4",
+            "name": "m2-t-obzeh5hsyoncf2zibepeea3pr4shp3udt3lomni746zx4wl4l6ga",
+            "state": "inactive"
+          },
+          {
+            "id": "66953cf869359569d78c53859ccd608c2a3a1400e12d27475955e4efb71a3bb9",
+            "name": "m2-t-w6go5yq4wdihigmnoaqibqusoe2qpzjn7yvm4q5uqh35cncj7t5a",
+            "state": "inactive"
+          },
+          {
+            "id": "6af524548e38bbfdd501447f3aba77839fb01af7240647518a413495d193262f",
+            "name": "m2-t-cxk5vodsobhvawdjrwbbbafeoyz7gubklyxeonuboi4xuwu3odya",
+            "state": "inactive"
+          },
+          {
+            "id": "6d95c3983ff2375f69256c6d079430081e00b472d682034ecd38fb0c7f0738f2",
+            "name": "m2-t-2yqffmmqjnyxt4sedbmzn3cgw2tgalttcvobfezmbjvp75v4mida",
+            "state": "inactive"
+          },
+          {
+            "id": "6f0b507136485d3aaad7b256b47de9887c53e50ac060b87d8112c291c2a8c0ba",
+            "name": "m2-t-ilsitgyqgpfvudqbxq6nhpo7uebwffxynkitnq3tka6gduma7jra",
+            "state": "inactive"
+          },
+          {
+            "id": "7bc2801e7990208fc3355c1b3ed64f2963f013ec053553e63fa1304cc180ab5d",
+            "name": "m2-t-bv4doqrkczx5chvgglf4gg34izg3e6ev6bwm6yylzxifpz7ne4yq",
+            "state": "inactive"
+          },
+          {
+            "id": "80446302e4012f9dc4b5e85e2077d68ea6fbd0050ae320cc19d3b87f89f9a1f4",
+            "name": "m2-t-ys4rldxzg3hvzl4f233npps6gul3rw7mm6utujkl2oe47qlji32q",
+            "state": "inactive"
+          },
+          {
+            "id": "80b4d5751845b7f7d9be0efdc6be543b48c250b1af03a781230b06d50849f8e7",
+            "name": "m2-t-ev4jyzwxc5dkyraoc5c5x7jleqwkqzyldwrrs6l5bnl53522s5va",
+            "state": "inactive"
+          },
+          {
+            "id": "8390c84b7759e8e63efe21e1df369363537319bdf06624e4cfe6536625c7a686",
+            "name": "m2-t-u7ouo2fik4muktuzsianudpwfxstrxabx6likuegb6vq4jxijk6q",
+            "state": "inactive"
+          },
+          {
+            "id": "8506ad56e96ad2d6f3a99c63d440df7e4ca070bcacc98544be15a1960a2b7180",
+            "name": "m2-t-gtxfad66kcr7yndtxtumm623l3ytacubftpzxe7wcboqecxzbeuq",
+            "state": "inactive"
+          },
+          {
+            "id": "8710f756f72b20fec3dc25779378679464646923538723e6259b90ccd9cf1465",
+            "name": "m2-t-wkcruo2nekdj4acs5npsfh7yhqycwj6rbrwmnfnysdjsuwnwk7ma",
+            "state": "inactive"
+          },
+          {
+            "id": "8e57ec06c051f2f89cb0d0d6a2c7ef1452ad9be215a3e279ca82dcfc4aa6011b",
+            "name": "m2-t-b2idrm5hn3xkvezo3ah653jtcdrtdfcw6fyk4xezawbcvynksqbq",
+            "state": "inactive"
+          },
+          {
+            "id": "90d8af55d5a1ce8539c34e3f684e9b3f4136f54818d7bea485c44d177055faf7",
+            "name": "m2-t-ufyokcy45lh7ndnevnbfif2hajupwvmgxojozy7zcu4fa2sincya",
+            "state": "inactive"
+          },
+          {
+            "id": "911cebd0480e528de1178d023436ebcae1f5b7a73e57339a74e717bfb444cf87",
+            "name": "m2-t-snfrcoefkmlb66e4uxgd3oi6sh2dh7skk4poyllvjp7qci24iyqq",
+            "state": "inactive"
+          },
+          {
+            "id": "ab89688267b1f4d41454da511250b9c27deb32f7461a47c8ff9146725744e1e3",
+            "name": "m2-t-uiuumdnzhmdqz2pggnijsk5g6yuexwlfjs5dliv2wneusbbwojmq",
+            "state": "inactive"
+          },
+          {
+            "id": "ae06c431c65073ec024c2ef8bcd5ad60e010d9d8ce5ef6f8343ad52068f0cf31",
+            "name": "m2-t-d7qtipmyxb2z4z6tq63h6ka7msmk46bnhfbtt7wewauztnfs5edq",
+            "state": "inactive"
+          },
+          {
+            "id": "b49362a33571d39824cc8ac00dd8b85f56d6b861270b179ea9122e564c84b875",
+            "name": "m2-t-i46jlurryh5obh44n4dh2xt67gcz24aslv5sdixzjkik4xlswxpa",
+            "state": "inactive"
+          },
+          {
+            "id": "b4b3efa07cd85831cecf985a7ec7e331dfa5195690fba2f722fffeca5e371ce4",
+            "name": "m2-t-dqym3nxqz5mg55etaymhbf2nvt5yeulbuvzcqjr465aamfqzmn7q",
+            "state": "inactive"
+          },
+          {
+            "id": "bbaa2eb567ede49dab86db13a124d126bd0700f8adc647de5d957a3c5fe3585d",
+            "name": "m2-t-i7hhady4ge7t4vsfpyxpyp4a2jzlzz5c74cghfjuklahy75yzdpa",
+            "state": "inactive"
+          },
+          {
+            "id": "bea4a38d597348a9d42e582f46ad8473cadc045ff66ad773322a30b88c3d8a9e",
+            "name": "m2-t-hqiugc34ku4mz6cohp4xznh7domfq5inid2uasc6viyulvw4dfyq",
+            "state": "inactive"
+          },
+          {
+            "id": "c886ee2900efeb0a186a747de3f1779a2b5456451aaca763413c5f61f51fde73",
+            "name": "m2-t-7dbgya7lcafcb5z6ocemo3hyr6r55og5fttq7c5kyz356kbcigsa",
+            "state": "inactive"
+          },
+          {
+            "id": "c9424683be2d875b18dee2b001bf38f0d4547cd05e27741ee12bdc0df993bfc9",
+            "name": "m2-t-kxk2jbttfunvsxl5etlilgpxgqvepr2q33z7m3czsatuddp3npaa",
+            "state": "inactive"
+          },
+          {
+            "id": "ca880ed069d2f8ef8f0ed071ca77c3c814d219fb40e3534ea917d1524cec2662",
+            "name": "m2-t-dchtmba6x4cnzhwfduncjztbsza5itz2n667kh22djnk7ias7y2q",
+            "state": "inactive"
+          },
+          {
+            "id": "cba4be48173f7d2e28a557107f7684b442a4e769396f8e13707ce3f33c362716",
+            "name": "m2-t-ttmeodk4osbuovv66u7flrb6f6bytzb25ljzu3h7ezzvxdkusyfq",
+            "state": "inactive"
+          },
+          {
+            "id": "cbf980d106357659a10dd07a0028127c2b37d0dd1a1f9caab23dc043b75b8190",
+            "name": "m2-t-2qbkyidmglfitty2ketgk3ja7pwnitdf3ypngj3juhguyz2xwy2a",
+            "state": "inactive"
+          },
+          {
+            "id": "ce0147dbd291952ab81cd4ad79ffd4886a28194bdda3f192452499a10ee195ed",
+            "name": "m2-t-mvo2bzlt5lrxzuchv3jq4gduj27qhz67vi75v5ytnjxoasrl47vq",
+            "state": "inactive"
+          },
+          {
+            "id": "d59534a5adb0989971a7a2f07e89c3c3c3d73e4674f874987753d0d416c6f9c1",
+            "name": "m2-t-htc2za2bli6vsg3n2eywbcvnoxa5r4t5xkytappwzpcqsyrleppa",
+            "state": "inactive"
+          },
+          {
+            "id": "d8805283a86a3de10fb35943c77ae2348aed7b233d83d9f86d3055da2bfb34ab",
+            "name": "m2-t-tie423dp4ue4vo6ygx4vdhfjbtwzjrzoginx7x3qkk3sq2meylqq",
+            "state": "inactive"
+          },
+          {
+            "id": "dc1c5ea4167d84d0c5acd120c83513905347f6bd9f0da14fde0c2969a7fc1eb7",
+            "name": "m2-t-s4g7nkxf4337af26qkooihel7pnpatbtrbxljtooit4x4msijxiq",
+            "state": "inactive"
+          },
+          {
+            "id": "de1e76a5dbfbf05d5a6a4221422a78ae481e20dc79a755933380d5ceab4c0b5d",
+            "name": "m2-t-tnbmdoftonx6uyx5ruyeemouyzky3o52b6bwv7czevkddlvcwq6q",
+            "state": "inactive"
+          },
+          {
+            "id": "e3c8a4d0ecd7a0a09207bba42170965838e5ae271227abd206357347f31082f5",
+            "name": "m2-t-vf3dcwusczt5gcpsdbnhjpqu3bcellyxmn2gcwsy5ihi56atwr3q",
+            "state": "inactive"
+          },
+          {
+            "id": "e5cee0a2dee079c31770a9c8aba665ab235d5e0983b2c1a5e373e579acc7519f",
+            "name": "m2-t-jor36zpin5krlg7lfciq4gxanf3cgx7unw2vvqceax3zugut5poq",
+            "state": "inactive"
+          },
+          {
+            "id": "e8754ce4a4154645b988bf4d800083defb9fd1be30ec31e700eff13ae1df198b",
+            "name": "m2-t-w466lislhucix27u4qdfbpkuh6afumeat6zloadoqdnmryzan24q",
+            "state": "inactive"
+          },
+          {
+            "id": "ef0e7735773b5124441ce3b619096509299859476e187908e761dc63bf4248e7",
+            "name": "m2-t-hdwsncaxcavfass6to7bvs6vsstlmxwh5axw34glqzuzj44bzrpq",
+            "state": "inactive"
+          },
+          {
+            "id": "ef1b6a944da200350af4b100cf3a312155fc6d1dfbeb2287850c4711fde9de07",
+            "name": "m2-t-sqlbe625mbk4ct6ex4hklrn5hinxjiqgzlzyrxqwk6ynmrhoh25q",
+            "state": "inactive"
+          },
+          {
+            "id": "f11c30c7b36de5078a42a148361d780f23fe526e2a94a654e627c5c4ed1e0487",
+            "name": "m2-t-sazbdmkiet6tzzo5rqe7rie55gmvcesau7z6dza7feppqo7ykama",
+            "state": "inactive"
+          },
+          {
+            "id": "f40e5262a44047b3e07fd6fab0a78e1654422091a1d57fffd3c6348b2fdf4d40",
+            "name": "m2-t-b32iwmgolykuvukmuts7qof7otg2x7wfmrlqo4f3h5ap4h5lk6lq",
+            "state": "inactive"
+          },
+          {
+            "id": "f4591badb87f234b11ab68705720d78e3200425234455f2d4bbcce205dd8a1ba",
+            "name": "m2-t-7eaf72rei6v27az6elhgy74wztfzyaozpof4yfgwmhcthrjqu35a",
+            "state": "inactive"
+          },
+          {
+            "id": "fd3289d026e66bdc9cf18c0bce05a278953d7b9d165912f7e07839db52d5c516",
+            "name": "m2-t-3wapeujt32opuyss25gidcmpcw5tzxb7uzalwaxbqmhkyigzlota",
+            "state": "inactive"
+          }
+        ],
+        "observedAt": 1789194918449
+      },
+      "actorBReleasedAt": 1789194959102,
+      "actorBInternalLifecycle": [
+        {
+          "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+          "state": "absent",
+          "observedAt": 1789194924613
+        },
+        {
+          "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+          "state": "absent",
+          "observedAt": 1789194935227
+        },
+        {
+          "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+          "state": "absent",
+          "observedAt": 1789194943896
+        },
+        {
+          "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+          "state": "absent",
+          "observedAt": 1789194959102
+        }
+      ],
+      "actorBExternalLifecycle": [
+        {
+          "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+          "state": "absent",
+          "observedAt": 1789194927903,
+          "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+        },
+        {
+          "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+          "state": "absent",
+          "observedAt": 1789194938086,
+          "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+        },
+        {
+          "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+          "state": "absent",
+          "observedAt": 1789194947594,
+          "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+        },
+        {
+          "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+          "state": "absent",
+          "observedAt": 1789194961394,
+          "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+        }
+      ],
+      "actorBStartedAt": 1789194916218,
+      "internalLifecycle": [
+        {
+          "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+          "state": "absent",
+          "observedAt": 1789194866914
+        },
+        {
+          "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+          "state": "absent",
+          "observedAt": 1789194876688
+        },
+        {
+          "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+          "state": "absent",
+          "observedAt": 1789194884691
+        },
+        {
+          "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+          "state": "absent",
+          "observedAt": 1789194893665
+        },
+        {
+          "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+          "state": "absent",
+          "observedAt": 1789194902737
+        }
+      ],
+      "externalLifecycle": [
+        {
+          "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+          "state": "absent",
+          "observedAt": 1789194870942,
+          "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+        },
+        {
+          "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+          "state": "absent",
+          "observedAt": 1789194878917,
+          "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+        },
+        {
+          "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+          "state": "absent",
+          "observedAt": 1789194887931,
+          "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+        },
+        {
+          "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+          "state": "absent",
+          "observedAt": 1789194896999,
+          "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+        },
+        {
+          "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+          "state": "absent",
+          "observedAt": 1789194910658,
+          "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+        }
+      ],
+      "stopProof": {
+        "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+        "proofId": "proof-90f38edda1ac40dc086bee3c4a0ab8712e1ddf558bf7085d",
+        "observedAt": 1789194902737
+      },
+      "reasonCode": "platform-probe-worker-cleanup-unconfirmed",
+      "priorReasonCode": null,
+      "cleanup": {
+        "status": "blocked",
+        "reasonCode": "platform-probe-worker-delete-unconfirmed",
+        "workerName": "riffology-issues-probe-9a9762fbc1ef070daa65d292",
+        "identityVerifiedBeforeDelete": true,
+        "deleteAttempted": true,
+        "deleteExitConfirmed": false,
+        "absenceConfirmed": false,
+        "routeFallbackConfirmed": false,
+        "absenceDurationMs": 0,
+        "recoveryRequired": true,
+        "actorCleanup": [
+          {
+            "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+            "status": "absent",
+            "quietMs": 30000,
+            "confirmedAt": 1789195153344,
+            "internalLifecycle": [
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789194967092
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789194980530
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789194994594
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789195005395
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "unknown",
+                "observedAt": 1789195029067
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789195041148
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789195060476
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789195088681
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789195108424
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789195124561
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789195139619
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789195153344
+              }
+            ],
+            "externalLifecycle": [
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789194970293,
+                "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789194984611,
+                "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789194996466,
+                "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "stopped",
+                "observedAt": 1789195009950,
+                "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "unknown",
+                "observedAt": 1789195031991,
+                "instanceId": null
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "stopped",
+                "observedAt": 1789195049506,
+                "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789195064509,
+                "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "unknown",
+                "observedAt": 1789195091211,
+                "instanceId": null
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789195113581,
+                "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789195128759,
+                "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789195143545,
+                "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+              },
+              {
+                "actor": "m2-t-5x7hua5knl5fafwdc6g67ecupoj7nndkpyq5nk33jqakaqzrq3wq",
+                "state": "absent",
+                "observedAt": 1789195158376,
+                "instanceId": "18f4b88387030200f90653e41e64f2d7d449f53271c00258a5cd3cb7577776fd"
+              }
+            ]
+          },
+          {
+            "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+            "status": "absent",
+            "quietMs": 30000,
+            "confirmedAt": 1789195144419,
+            "internalLifecycle": [
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789194971390
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789194985553
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789194997284
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789195010778
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789195032814
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789195050475
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "unknown",
+                "observedAt": 1789195075026
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789195095606
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789195114584
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789195130496
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789195144419
+              }
+            ],
+            "externalLifecycle": [
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "stopped",
+                "observedAt": 1789194974617,
+                "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789194988775,
+                "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789194999514,
+                "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "unknown",
+                "observedAt": 1789195013541,
+                "instanceId": null
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789195035086,
+                "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789195053596,
+                "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789195080332,
+                "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789195101086,
+                "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789195118643,
+                "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789195133813,
+                "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+              },
+              {
+                "actor": "m2-t-46zporrazszl3cn4zy72qr3vmba2pgbhnxsl2cmc3ezzzaas2mjq",
+                "state": "absent",
+                "observedAt": 1789195147441,
+                "instanceId": "3a4d54528124db518bef7322f26fe0f3a6907c0a534d77c13ecfb703a0a4beaf"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "acceptance": null,
+  "gateClose": {
+    "schemaVersion": 1,
+    "status": "blocked",
+    "phase": "gate-close-postdeploy",
+    "attemptCount": 1,
+    "deploymentAttempts": [
+      {
+        "attempt": 1,
+        "deployExitConfirmed": false,
+        "observed": "unavailable",
+        "workerVersionId": null,
+        "reconciliationAttempts": [
+          {
+            "attempt": 1,
+            "classification": "unavailable",
+            "versionId": null
+          },
+          {
+            "attempt": 2,
+            "classification": "unavailable",
+            "versionId": null
+          },
+          {
+            "attempt": 3,
+            "classification": "unavailable",
+            "versionId": null
+          }
+        ]
+      }
+    ],
+    "deployExitConfirmed": false,
+    "gateClosed": false,
+    "gateCloseConfirmed": false,
+    "forwardConformant": false,
+    "workerVersionId": null,
+    "checks": [
+      {
+        "name": "gate-close-dry-run",
+        "status": "passed"
+      },
+      {
+        "name": "gate-close-forward-deploy",
+        "status": "blocked",
+        "detail": "gate-close-unavailable"
+      }
+    ],
+    "reasonCode": "turn-gate-close-unconfirmed"
+  },
+  "evidenceDirectory": "/Users/gaojihe/apps/riffology-cloud/docs/evidence/runs/issues-1-6-21-20260912T062939806Z-aad34337"
+}

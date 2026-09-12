@@ -4,7 +4,7 @@ import type { TurnRuntimePort } from '../turn/dispatcher.ts';
 import { ProductTurnRuntimeHost, type ProductTurnRuntimeHostEnv } from './host.ts';
 import { productTurnRuntimeRelease, type ProductTurnRuntimeReleaseEnv } from './release-gated.ts';
 import type { ProjectWorkspaceRpc } from './workspace.ts';
-import type { TrustedPiSandboxProcessApi } from './pi-native.ts';
+import type { TrustedPiSandboxActorApi } from './pi-native.ts';
 import type { RevisionStore } from './revision-store.ts';
 
 export interface ProductTurnRuntimeEnv extends ProductTurnRuntimeReleaseEnv{
@@ -18,7 +18,7 @@ const release=(ctx:DurableObjectState,rawEnv:ProductTurnRuntimeHostEnv,identity:
   // Both Sandbox classes fix their own sleep policy. Direct named RPC keeps
   // this control-plane wrapper independent from SDK client enhancements.
   project(configured,actorId){return configured.PROJECT_SANDBOX.getByName(actorId) as ProjectWorkspaceRpc;},
-  trustedPi(configured,actorId){return configured.TRUSTED_PI_SANDBOX.getByName(actorId) as TrustedPiSandboxProcessApi;},
+  trustedPi(configured,actorId){return configured.TRUSTED_PI_SANDBOX.getByName(actorId) as unknown as TrustedPiSandboxActorApi;},
 });
 
 /** Private RPC only. There is no fetch handler and no fallback to M1

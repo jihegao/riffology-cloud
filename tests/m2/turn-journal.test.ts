@@ -28,10 +28,18 @@ test('runtime events are scoped, deduplicated and assigned durable monotonic seq
 });
 test('queued cancellation never dispatches; running cancellation accepts a raced natural terminal outcome',async()=>{
  const f=fixture(),first=await queued(f.journal,'one'),s2=await session(f.journal,'session-two'),second=(await f.journal.submit(scope,actor,s2.id,'two',{message:'two'})).turn;
- await f.journal.cancel(scope,actor,first.id);assert.equal(f.store.snapshot()!.turns[first.id]!.status,'cancelled');const claim=(await f.journal.claim(scope,1))!.turn;assert.equal(claim.id,second.id);
+ await f.journal.cancel(scope,actor,first.id);assert.equal(f.store.snapshot()!.turns[first.id]!.status,'cancelled');assert.equal(f.store.snapshot()!.turns[first.id]!.cancelDisposition,'cancelled');const claim=(await f.journal.claim(scope,1))!.turn;assert.equal(claim.id,second.id);
  const cancelling=await f.journal.cancel(scope,actor,second.id);assert.equal(cancelling.status,'cancelling');assert.ok(cancelling.cancelRequestedAt);
  const pending=await f.journal.beginCheckpoint(scope,{turnId:second.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,outcome:'completed'});assert.equal(pending.status,'checkpointing');
- const checkpointing=f.store.snapshot()!.events.at(-1)!;assert.equal(checkpointing.type,'turn.checkpointing');assert.equal(checkpointing.payload.cancellationDisposition,'already-terminal');
+ const checkpointing=f.store.snapshot()!.events.at(-1)!;assert.equal(checkpointing.type,'turn.checkpointing');assert.equal(checkpointing.payload.cancelDisposition,'already-terminal');assert.equal(pending.cancelDisposition,'already-terminal');
+});
+test('cancel disposition covers every fenced outcome and a late Stop does not duplicate terminal state',async()=>{
+ for(const [outcome,disposition] of [['cancelled','cancelled'],['interrupted','interrupted'],['completed','already-terminal'],['failed','already-terminal']] as const){
+  const f=fixture(),turn=await queued(f.journal,`fenced-${outcome}`),claim=(await f.journal.claim(scope,1))!.turn;await f.journal.cancel(scope,actor,turn.id);
+  const pending=await f.journal.beginCheckpoint(scope,{turnId:turn.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,outcome,...(outcome==='failed'?{errorCode:'native-failed'}:{})});assert.equal(pending.cancelDisposition,disposition);
+ }
+ const f=fixture(),turn=await queued(f.journal,'late-stop'),claim=(await f.journal.claim(scope,1))!.turn;await f.journal.beginCheckpoint(scope,{turnId:turn.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,outcome:'completed'});const checkpoint={revisionId:'late-stop-revision',objectKey:'turns/late-stop.json',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:claim.startedAt!};await f.journal.commitCheckpoint(scope,{turnId:turn.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,checkpoint});const terminalEvents=()=>f.store.snapshot()!.events.filter(row=>row.turnId===turn.id&&row.type==='turn.completed').length;
+ assert.equal(terminalEvents(),1);const stopped=await f.journal.cancel(scope,actor,turn.id);assert.equal(stopped.cancelDisposition,'already-terminal');assert.equal(terminalEvents(),1);assert.equal((await f.journal.cancel(scope,actor,turn.id)).cancelDisposition,'already-terminal');assert.equal(terminalEvents(),1);
 });
 test('execution result is not a saved terminal result until immutable checkpoint commit',async()=>{
  const f=fixture(),turn=await queued(f.journal),claim=(await f.journal.claim(scope,1))!.turn;
@@ -99,7 +107,7 @@ test('resource wait blocks ordinary claim and an exact atomic lease consume star
 });
 test('public view excludes idempotency hashes, dispatch capability and actor auth version',async()=>{
  const f=fixture(),turn=await queued(f.journal),claim=(await f.journal.claim(scope,1))!.turn,view=await f.journal.view(scope);const publicTurn=view.turns[turn.id] as any,publicSession=view.sessions[turn.sessionId] as any;
- assert.equal(publicTurn.requestKey,undefined);assert.equal(publicTurn.payloadSha256,undefined);assert.equal(publicTurn.dispatchId,undefined);assert.equal(publicTurn.base,undefined);assert.equal(publicTurn.startedSequence,undefined);assert.equal(publicTurn.terminalSequence,undefined);assert.equal(publicSession.actorUserId,undefined);assert.equal(publicSession.actorAuthVersion,undefined);
+ assert.equal(publicTurn.requestKey,undefined);assert.equal(publicTurn.payloadSha256,undefined);assert.equal(publicTurn.dispatchId,undefined);assert.equal(publicTurn.base,undefined);assert.equal(publicTurn.startedSequence,undefined);assert.equal(publicTurn.terminalSequence,undefined);assert.deepEqual(publicTurn.actor,{userId:'user-a'});assert.equal(publicSession.actorUserId,undefined);assert.equal(publicSession.actorAuthVersion,undefined);
  const started=(await f.journal.replay(scope,0,10)).events.find(row=>row.type==='turn.started')!;assert.deepEqual(started.payload,{});assert.ok(claim.dispatchId);
 });
 test('actor version, session ownership, generation and malformed payloads fail closed',async()=>{
@@ -111,13 +119,13 @@ test('actor version, session ownership, generation and malformed payloads fail c
  await assert.rejects(f.journal.cancel(scope,{...actor,userId:'other'},t.id),/not-found/);
 });
 
-test('v5 compaction preserves terminal state and requires a snapshot for expired cursors',async()=>{
+test('v6 compaction preserves terminal state and requires a snapshot for expired cursors',async()=>{
  const f=fixture(),turn=await queued(f.journal),claim=(await f.journal.claim(scope,1))!.turn;
  const runtimeInput={turnId:turn.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,eventId:'event-before-compaction',type:'assistant.message' as const,at:claim.startedAt!,payload:{text:'saved response'}};const original=await f.journal.appendRuntime(scope,runtimeInput);
  await f.journal.beginCheckpoint(scope,{turnId:turn.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,outcome:'completed'});
  const checkpoint={revisionId:'revision-v3',objectKey:'turns/v3.json',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:claim.startedAt!+1};
  await f.journal.commitCheckpoint(scope,{turnId:turn.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,checkpoint});
- const compacted=await f.journal.compact(scope,1);assert.equal(compacted.removed,4);const state=f.store.snapshot()!;assert.equal(state.schemaVersion,5);assert.equal(state.oldestSequence,state.nextSequence-1);assert.equal(state.turns[turn.id]!.status,'completed');assert.deepEqual(state.workspaceHead,checkpoint);assert.deepEqual(state.sessions[turn.sessionId]!.head,checkpoint);assert.ok(state.turns[turn.id]!.startedSequence!<state.turns[turn.id]!.terminalSequence!);
+ const compacted=await f.journal.compact(scope,1);assert.equal(compacted.removed,4);const state=f.store.snapshot()!;assert.equal(state.schemaVersion,7);assert.equal(state.oldestSequence,state.nextSequence-1);assert.equal(state.turns[turn.id]!.status,'completed');assert.deepEqual(state.workspaceHead,checkpoint);assert.deepEqual(state.sessions[turn.sessionId]!.head,checkpoint);assert.ok(state.turns[turn.id]!.startedSequence!<state.turns[turn.id]!.terminalSequence!);
  assert.equal(state.eventReceipts[runtimeInput.eventId],undefined);const sequence=state.nextSequence;await assert.rejects(f.journal.appendRuntime(scope,runtimeInput),/scope-denied/);assert.equal(f.store.snapshot()!.nextSequence,sequence);assert.equal(original.event.sequence,3);
  const expired=await f.journal.replay(scope,0,10);assert.equal(expired.snapshotRequired,true);assert.equal(expired.events.length,0);const page=await f.journal.replay(scope,state.oldestSequence-1,10);assert.equal(page.snapshotRequired,false);assert.equal(page.events.length,1);
 });

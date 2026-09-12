@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "status": "blocked",
+  "phase": "gate-close",
+  "reasonCode": "turn-gate-close-unconfirmed",
+  "priorResult": {
+    "schemaVersion": 1,
+    "status": "blocked",
+    "phase": "final-inventory",
+    "reasonCode": "acceptance-inventory-r2-manifest-read-failed"
+  }
+}

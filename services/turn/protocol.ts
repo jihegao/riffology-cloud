@@ -2,6 +2,7 @@ import { initialWorkspaceReference, type InitialWorkspaceReference } from '../tu
 export type TurnScope = { tenantId:string; projectId:string; workspaceId:string; workspaceGeneration:number };
 export type TurnActor = { userId:string; authVersion:number };
 export type TurnStatus = 'queued'|'running'|'cancelling'|'checkpointing'|'completed'|'failed'|'cancelled'|'interrupted';
+export type TurnCancelDisposition = 'cancelled'|'interrupted'|'already-terminal';
 export type RuntimeEventType = 'assistant.delta'|'assistant.message'|'tool.started'|'tool.updated'|'tool.completed'|'provider.status';
 export type TurnEventType = 'turn.queued'|'turn.started'|'turn.cancel_requested'|'turn.checkpointing'|'turn.completed'|'turn.failed'|'turn.cancelled'|'turn.interrupted'|RuntimeEventType;
 export type CheckpointReceipt = { revisionId:string; objectKey:string; filesSha256:string; sessionSha256:string; committedAt:number };
@@ -12,21 +13,23 @@ export type TurnResourceDisposition =
   | { status:'active'; operationId:string; leaseId:string; turnId:string; dispatchId:string; generation:number }
   | { status:'release-pending'|'recovery-hold'; operationId:string; leaseId:string; turnId:string; dispatchId:string; generation:number; reasonCode:string; since:number; nextAttemptAt:number }
   | { status:'released'; operationId:string; leaseId:string; turnId:string; dispatchId:string; generation:number; proofId:string; releasedAt:number };
-export type TurnResourceWait = { status:'waiting'; reasonCode:string; since:number; nextAttemptAt:number; turnId:string; ticketId:string|null; operationId:string; leaseId:null };
+export type TurnResourceWait =
+  | { status:'waiting'; reasonCode:string; since:number; nextAttemptAt:number; turnId:string; ticketId:string|null; operationId:string; leaseId:null }
+  | { status:'release-pending'; reasonCode:'turn-initial-base-unavailable'; since:number; nextAttemptAt:number; turnId:string; ticketId:string; operationId:string; leaseId:string };
 export type TurnReleaseHold = { status:'release-pending'|'recovery-hold'; reasonCode:string; since:number; nextAttemptAt:number; turnId:string; dispatchId:string; generation:number; operationId:string; leaseId:string };
 export type SessionRecord = { id:string; scope:TurnScope; actorUserId:string; actorAuthVersion:number; title:string; createdAt:number; updatedAt:number; head:CheckpointReceipt|null };
 export type TurnRecord = {
   id:string; sessionId:string; scope:TurnScope; actor:TurnActor; requestKey:string; payloadSha256:string; message:string;
   status:TurnStatus; createdAt:number; updatedAt:number; startedAt:number|null; finishedAt:number|null;
   startedSequence:number|null; terminalSequence:number|null;
-  dispatchId:string|null; runtimeGeneration:number|null; cancelRequestedAt:number|null;
+  dispatchId:string|null; runtimeGeneration:number|null; cancelRequestedAt:number|null; cancelDisposition:TurnCancelDisposition|null;
   base:TurnBaseCheckpoints|null; resourceLease:TurnResourceLease|null;
   executionOutcome:'completed'|'failed'|'cancelled'|'interrupted'|null; errorCode:string|null;
   persistenceOutcome:'saved'|'failed'|null; persistenceErrorCode:string|null; checkpoint:CheckpointReceipt|null;
 };
 export type TurnEvent = { sequence:number; eventId:string; turnId:string; workspaceId:string; runtimeGeneration:number; type:TurnEventType; at:number; payload:Record<string,unknown> };
 export type TurnJournalState = {
-  schemaVersion:5; scope:TurnScope; nextSequence:number; oldestSequence:number; retentionBytes:number; activeTurnId:string|null; workspaceHead:CheckpointReceipt|null;
+  schemaVersion:7; scope:TurnScope; nextSequence:number; oldestSequence:number; retentionBytes:number; activeTurnId:string|null; workspaceHead:CheckpointReceipt|null;
   resourceWait:TurnResourceWait|null; releaseHold:TurnReleaseHold|null;
   recoveryHold:null|{status:'reconciling';reasonCode:string;since:number;nextAttemptAt:number;turnId:string;dispatchId:string;runtimeGeneration:number};
   sessions:Record<string,SessionRecord>; turns:Record<string,TurnRecord>;
@@ -35,10 +38,10 @@ export type TurnJournalState = {
   eventReceipts:Record<string,{payloadSha256:string;sequence:number;event:TurnEvent}>; events:TurnEvent[];
 };
 export type PublicSessionRecord = Omit<SessionRecord,'actorUserId'|'actorAuthVersion'>;
-export type PublicTurnRecord = Omit<TurnRecord,'requestKey'|'payloadSha256'|'dispatchId'|'base'|'resourceLease'|'startedSequence'|'terminalSequence'>;
+export type PublicTurnRecord = Omit<TurnRecord,'actor'|'requestKey'|'payloadSha256'|'dispatchId'|'base'|'resourceLease'|'startedSequence'|'terminalSequence'>&{actor:{userId:string}};
 export type TurnJournalView = {
   schemaVersion:3; scope:TurnScope; nextSequence:number; activeTurnId:string|null;
-  resourceWait:null|{status:'waiting';reasonCode:string;since:number;nextAttemptAt:number};
+  resourceWait:null|{status:'waiting'|'release-pending';reasonCode:string;since:number;nextAttemptAt:number};
   releaseHold:null|{status:'release-pending'|'recovery-hold';reasonCode:string;since:number;nextAttemptAt:number};
   recoveryHold:null|{status:'reconciling';reasonCode:string;since:number;nextAttemptAt:number};
   sessions:Record<string,PublicSessionRecord>; turns:Record<string,PublicTurnRecord>;

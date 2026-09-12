@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "status": "blocked",
+  "phase": "gate-close-postdeploy",
+  "deployExitConfirmed": false,
+  "gateCloseConfirmed": false,
+  "workerVersionId": null,
+  "checks": [
+    {
+      "name": "gate-close-dry-run",
+      "status": "passed"
+    },
+    {
+      "name": "gate-close-forward-deploy",
+      "status": "blocked",
+      "detail": "gate-close-forward-deploy-failed-or-unconfirmed"
+    }
+  ],
+  "reasonCode": "turn-gate-close-unconfirmed"
+}

@@ -18,6 +18,7 @@ class FixtureExecution implements TurnExecutionPort{
   async start(input:TurnRuntimeIdentity&{actor:typeof actor;message:string}){this.#increment('start');await this.#storage.sync();return this.#terminal(input);}
   async observe(expected:TurnRuntimeIdentity){this.#increment('observe');await this.#storage.sync();return this.#terminal(expected);}
   async cancel(expected:TurnRuntimeIdentity){this.#increment('cancel');await this.#storage.sync();return this.#terminal(expected);}
+  async fenceUnresolvedStart(expected:TurnRuntimeIdentity){this.#increment('fence');await this.#storage.sync();return {...this.#terminal(expected),outcome:'failed' as const,executionErrorCode:'turn-native-start-unresolved',events:[]};}
   async release(){this.#increment('release');await this.#storage.sync();return {running:false};}
 }
 

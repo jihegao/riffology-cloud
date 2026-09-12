@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "status": "blocked",
+  "reasonCode": "acceptance-turn-transition-order-invalid",
+  "conclusion": "Run 16 cannot be used as final acceptance evidence because the initial workspace snapshot was timestamped after terminal observation. Existing evidence files were not rewritten or reordered.",
+  "completedTurns": 3,
+  "verifiedFacts": {
+    "completedSavedTurns": 3,
+    "exactlyOnceWriteThenRead": true,
+    "assistantNonceConfirmed": true,
+    "filesAndDiffMatchCheckpoint": true,
+    "queuedBehindReleaseObserved": true
+  },
+  "outstandingTurnId": "1dc56275-a60f-49f5-bbdb-8e9d31111ef9"
+}

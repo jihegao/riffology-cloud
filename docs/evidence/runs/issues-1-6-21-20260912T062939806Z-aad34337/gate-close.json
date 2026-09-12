@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "status": "blocked",
+  "phase": "gate-close-postdeploy",
+  "attemptCount": 1,
+  "deploymentAttempts": [
+    {
+      "attempt": 1,
+      "deployExitConfirmed": false,
+      "observed": "unavailable",
+      "workerVersionId": null,
+      "reconciliationAttempts": [
+        {
+          "attempt": 1,
+          "classification": "unavailable",
+          "versionId": null
+        },
+        {
+          "attempt": 2,
+          "classification": "unavailable",
+          "versionId": null
+        },
+        {
+          "attempt": 3,
+          "classification": "unavailable",
+          "versionId": null
+        }
+      ]
+    }
+  ],
+  "deployExitConfirmed": false,
+  "gateClosed": false,
+  "gateCloseConfirmed": false,
+  "forwardConformant": false,
+  "workerVersionId": null,
+  "checks": [
+    {
+      "name": "gate-close-dry-run",
+      "status": "passed"
+    },
+    {
+      "name": "gate-close-forward-deploy",
+      "status": "blocked",
+      "detail": "gate-close-unavailable"
+    }
+  ],
+  "reasonCode": "turn-gate-close-unconfirmed"
+}

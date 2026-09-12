@@ -79,6 +79,11 @@ export class SqlProjectEffectSupervisor implements ProjectEffectSupervisorPort{
     try{return await this.#commit(effectId,await this.#native.observe(effectId));}
     catch(error){await this.#unknown(effectId);throw error;}
   }
+  async observePersistedTerminal(rawEffectId:string):Promise<ProjectEffectProcessObservation|null>{
+    const effectId=turnId(rawEffectId);await this.#ready;const prior=this.#get(effectId);
+    if(!prior)return null;const stored=this.#read(prior);
+    return stored.phase==='exited'?cloneObservation(stored.observation):null;
+  }
   /** The container fence covers even native starts already reserved in SQLite.
    * Quiescence is independent of effect outcomes: killing a writer does not
    * prove whether its filesystem operation completed. Recheck on every call. */

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "workerSourceSha": "aad343378b2d003db9daefd89407b625dd4f6343",
+  "priorRun": "docs/evidence/runs/issues-1-6-21-20260912T062939806Z-aad34337",
+  "reason": "The controlled run was blocked after its probe cleanup and gate-close control-plane reads were temporarily unavailable. This append-only record captures the later exact reconciliation without altering the original blocked evidence.",
+  "gate": {
+    "workerVersionId": "f061c048-f9c0-4165-8f6a-a32001b7997a",
+    "percentage": 100,
+    "workerVersionTag": "source-aad343378b2d003db9daefd89407b625dd4f6343",
+    "m2TurnsEnabled": false,
+    "sourceShaMatches": true,
+    "observedAt": "2026-09-12T06:53:00Z"
+  },
+  "probe": {
+    "workerName": "riffology-issues-probe-9a9762fbc1ef070daa65d292",
+    "workerVersionId": "9a9341e7-3241-4f78-a9fd-08b9058640b0",
+    "identityRevalidatedBeforeDelete": {
+      "version": true,
+      "tag": true,
+      "capability": true,
+      "path": true,
+      "durableObjectBinding": true
+    },
+    "actorQuietEvidence": "docs/evidence/runs/issues-1-6-21-20260912T062939806Z-aad34337/release-result.json#/platformProbe/cleanup/actorCleanup",
+    "actorCleanupStatuses": [
+      "absent",
+      "absent"
+    ],
+    "deleteExitConfirmed": true,
+    "absenceObservations": [
+      {
+        "workerMissingCode": 10007,
+        "routeStatus": 404,
+        "routeBody": {
+          "error": "not_found"
+        },
+        "observedAt": "2026-09-12T06:54:19Z"
+      },
+      {
+        "workerMissingCode": 10007,
+        "routeStatus": 404,
+        "routeBody": {
+          "error": "not_found"
+        },
+        "observedAt": "2026-09-12T06:55:22Z"
+      }
+    ],
+    "continuousAbsenceMs": 63000,
+    "privateRecoveryFileRemoved": true
+  },
+  "reconciledAt": "2026-09-12T06:55:44Z"
+}

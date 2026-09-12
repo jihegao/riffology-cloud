@@ -10,6 +10,7 @@ import { TurnDispatcher } from '../../services/turn/dispatcher.ts';
 import { TurnJournal } from '../../services/turn/journal.ts';
 import { MemoryTurnStore } from '../../services/turn/store.ts';
 import type { CheckpointReceipt, TurnScope } from '../../services/turn/protocol.ts';
+import type { TurnOperationTelemetryEvent, TurnOperationTrace } from '../../services/turn/operation-telemetry.ts';
 import type { TrustedPiCapacityPort } from '../../services/capacity/client.ts';
 
 const scope:TurnScope={tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:2};
@@ -21,21 +22,21 @@ const stop={confirmationId:'stop-a',observedAt:1002,nativeRunning:false as const
 const event={eventId:'event-a',type:'assistant.message' as const,at:1002,payload:{text:'fixture result'}};
 const terminal=(id:TurnRuntimeIdentity=identity,outcome:'completed'|'failed'|'cancelled'|'interrupted'='completed'):TurnExecutionObservation=>({identity:id,phase:'terminal',outcome,executionErrorCode:outcome==='completed'?null:'fixture-failure',events:[event],stopped:stop});
 
-function fixture(t:TestContext,releaseTiming:Partial<ProductTurnReleaseTiming>={retryMs:0,assignmentGuardMs:0,quietMs:0},capacity:TrustedPiCapacityPort|null=null){
-  const dir=mkdtempSync(join(tmpdir(),'m2-turn-runtime-')),file=join(dir,'state.db');t.after(()=>rmSync(dir,{recursive:true,force:true}));let db=new DatabaseSync(file),now=1000,starts=0,observes=0,cancels=0,releases=0,prepares=0,commits=0,checkpointObserves=0,abandons=0,writes=0,syncs=0,releaseError=false,releaseRunning=false,alarmCalls=0,alarmFailsAfter:number|null=null,alarm:number|null=null,abandonStatus:'committed'|'aborted'|'pending'|'unavailable'|'conflict'='aborted';
-  let startResult:TurnExecutionObservation={identity,phase:'running',outcome:null,events:[event]},observeResult:TurnExecutionObservation={identity,phase:'running',outcome:null},cancelResult:TurnExecutionObservation=terminal(identity,'cancelled'),startError=false,dynamicTerminal=false,prepareError=false,commitError=false,observedCheckpoint:CheckpointReceipt|null=null;
+function fixture(t:TestContext,releaseTiming:Partial<ProductTurnReleaseTiming>={retryMs:0,assignmentGuardMs:0,quietMs:0},capacity:TrustedPiCapacityPort|null=null,trace?:TurnOperationTrace){
+  const dir=mkdtempSync(join(tmpdir(),'m2-turn-runtime-')),file=join(dir,'state.db'),telemetry:TurnOperationTelemetryEvent[]=[];t.after(()=>rmSync(dir,{recursive:true,force:true}));let db=new DatabaseSync(file),now=1000,starts=0,observes=0,cancels=0,fences=0,releases=0,prepares=0,commits=0,checkpointObserves=0,abandons=0,writes=0,syncs=0,releaseError=false,projectReleaseError=false,releaseRunning=false,fenceUnknown=false,alarmCalls=0,alarmFailsAfter:number|null=null,alarm:number|null=null,abandonStatus:'committed'|'aborted'|'pending'|'unavailable'|'conflict'='aborted';
+  let startResult:TurnExecutionObservation={identity,phase:'running',outcome:null,events:[event]},observeResult:TurnExecutionObservation={identity,phase:'running',outcome:null},cancelResult:TurnExecutionObservation=terminal(identity,'cancelled'),cancelWait:Promise<void>|null=null,fenceWait:Promise<void>|null=null,startError=false,dynamicTerminal=false,prepareError=false,commitError=false,commitAbsent=false,observedCheckpoint:CheckpointReceipt|null=null;
   const configure=()=>db.exec('PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;');configure();
   const storage={sql:{exec(query:string,...bindings:(string|number|null)[]){if(!query.startsWith('SELECT'))writes++;if(query.includes('CREATE TABLE')){db.exec(query);return {toArray:()=>[]};}const statement=db.prepare(query),rows=statement.columns().length?statement.all(...bindings):(statement.run(...bindings),[]);return {toArray:()=>structuredClone(rows)};}},transactionSync<T>(fn:()=>T){db.exec('BEGIN IMMEDIATE');try{const value=fn();db.exec('COMMIT');return value;}catch(error){db.exec('ROLLBACK');throw error;}},async sync(){syncs++;},async setAlarm(at:number){alarmCalls++;if(alarmFailsAfter!==null&&alarmCalls>alarmFailsAfter)throw Error('lost-release-alarm-write');alarm=at;},async deleteAlarm(){alarm=null;}} as unknown as ProductTurnRuntimeStorage;
-  const execution:TurnExecutionPort={async start(input){starts++;assert.equal(input.message,'Build model');assert.deepEqual(input.actor,actor);if(startError)throw Error('lost-start-response');const {actor:_,message:__,base:___,executionDeadlineAt:____,...runtimeIdentity}=input;return structuredClone(dynamicTerminal?terminal(runtimeIdentity):startResult);},async observe(){observes++;return structuredClone(observeResult);},async cancel(){cancels++;return structuredClone(cancelResult);},async release(){releases++;if(releaseError)throw Error('lost-release-response');return {running:releaseRunning};}};
-  const receipt=():CheckpointReceipt=>({revisionId:'revision-a',objectKey:'turns/tenant-a/workspace-a/2/turn-a/dispatch-a.json',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:1005});
+  const execution:TurnExecutionPort={async start(input){starts++;assert.equal(input.message,'Build model');assert.deepEqual(input.actor,actor);if(startError)throw Error('lost-start-response');const {actor:_,message:__,base:___,executionDeadlineAt:____,...runtimeIdentity}=input;return structuredClone(dynamicTerminal?terminal(runtimeIdentity):startResult);},async observe(){observes++;return structuredClone(observeResult);},async cancel(){cancels++;if(cancelWait)await cancelWait;return structuredClone(cancelResult);},async fenceUnresolvedStart(id,outcome){fences++;assert.deepEqual(id,identity);if(fenceWait)await fenceWait;return fenceUnknown?{identity:id,phase:'unknown',outcome:null}:{...terminal(id,outcome),executionErrorCode:'turn-native-start-unresolved',events:[]};},async release(){releases++;if(projectReleaseError)throw Error('project-workspace-release-unconfirmed');if(releaseError)throw Error('lost-release-response');return {running:releaseRunning};}};
+  const receipt=():CheckpointReceipt=>({revisionId:'revision-a',objectKey:'turns/tenant-a/workspace-a/2/turn-a/dispatch-a.json',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:Math.max(1005,now+1)});
   const checkpointIntent=(value:TurnRuntimeIdentity)=>({operationId:turnCheckpointOperationId(value),inputSha256:'c'.repeat(64)});
-  const checkpoints:TurnCheckpointPort={async prepare(input){prepares++;if(prepareError)throw Error('checkpoint-prepare-unavailable');return checkpointIntent(input.identity);},async commit(input,intent){commits++;assert.deepEqual(intent,checkpointIntent(input.identity));if(commitError)throw Error('lost-checkpoint-response');return {status:'committed',receipt:receipt()};},async reconcile(value,intent){checkpointObserves++;assert.deepEqual(intent,checkpointIntent(value));return structuredClone(observedCheckpoint?{status:'committed',receipt:observedCheckpoint}:{status:'absent'}) as TurnCheckpointResolution;},async abandon(value,intent){abandons++;assert.deepEqual(intent,checkpointIntent(value));return abandonStatus==='committed'?{status:'committed',receipt:receipt()}:{status:abandonStatus};}};
-  const host=()=>new ProductTurnRuntimeCore(storage,execution,checkpoints,()=>++now,false,releaseTiming,capacity);
-  return {host,execution,get writes(){return writes;},get syncs(){return syncs;},clock(v:number){now=v;},row(){return JSON.parse(db.prepare('SELECT value FROM product_turn_runtime').get()!.value as string);},releaseRow(){const row=db.prepare('SELECT value FROM product_turn_release').get();return row?JSON.parse(row.value as string):null;},recoveryRow(){const row=db.prepare("SELECT value FROM product_turn_checkpoint_recovery WHERE singleton=1").get();return row?JSON.parse(row.value as string):null;},get alarm(){return alarm;},alarmFails(v:boolean){alarmFailsAfter=v?alarmCalls+2:null;},get starts(){return starts;},get observes(){return observes;},get cancels(){return cancels;},get releases(){return releases;},get prepares(){return prepares;},get commits(){return commits;},get checkpointObserves(){return checkpointObserves;},get abandons(){return abandons;},abandonStatus(v:typeof abandonStatus){abandonStatus=v;},start(v:TurnExecutionObservation){startResult=v;},dynamicTerminal(v=true){dynamicTerminal=v;},observe(v:TurnExecutionObservation){observeResult=v;},cancel(v:TurnExecutionObservation){cancelResult=v;},startError(v:boolean){startError=v;},prepareError(v:boolean){prepareError=v;},releaseError(v:boolean){releaseError=v;},releaseRunning(v:boolean){releaseRunning=v;},commitError(v:boolean){commitError=v;},observedCheckpoint(v:CheckpointReceipt|null){observedCheckpoint=v;},sql(query:string){db.exec(query);},reopen(){db.close();db=new DatabaseSync(file);configure();}};
+  const checkpoints:TurnCheckpointPort={async prepare(input){prepares++;if(prepareError)throw Error('checkpoint-prepare-unavailable');return checkpointIntent(input.identity);},async commit(input,intent){commits++;assert.deepEqual(intent,checkpointIntent(input.identity));if(commitError)throw Error('lost-checkpoint-response');if(commitAbsent)return {status:'absent'};return {status:'committed',receipt:receipt()};},async reconcile(value,intent){checkpointObserves++;assert.deepEqual(intent,checkpointIntent(value));return structuredClone(observedCheckpoint?{status:'committed',receipt:observedCheckpoint}:{status:'absent'}) as TurnCheckpointResolution;},async abandon(value,intent){abandons++;assert.deepEqual(intent,checkpointIntent(value));return abandonStatus==='committed'?{status:'committed',receipt:receipt()}:{status:abandonStatus};}};
+  const host=()=>new ProductTurnRuntimeCore(storage,execution,checkpoints,()=>++now,false,releaseTiming,capacity,trace??(event=>telemetry.push(event)));
+  return {host,execution,telemetry,get writes(){return writes;},get syncs(){return syncs;},get currentTime(){return now;},clock(v:number){now=v;},row(){return JSON.parse(db.prepare('SELECT value FROM product_turn_runtime').get()!.value as string);},runtimeRow(){const row=db.prepare('SELECT value FROM product_turn_runtime').get();return row?JSON.parse(row.value as string):null;},releaseRow(){const row=db.prepare('SELECT value FROM product_turn_release').get();return row?JSON.parse(row.value as string):null;},recoveryRow(){const row=db.prepare("SELECT value FROM product_turn_checkpoint_recovery WHERE singleton=1").get();return row?JSON.parse(row.value as string):null;},setRecovery(value:unknown){db.prepare('UPDATE product_turn_checkpoint_recovery SET value=? WHERE singleton=1').run(JSON.stringify(value));},get alarm(){return alarm;},alarmFails(v:boolean){alarmFailsAfter=v?alarmCalls+2:null;},get starts(){return starts;},get observes(){return observes;},get cancels(){return cancels;},get fences(){return fences;},get releases(){return releases;},get prepares(){return prepares;},get commits(){return commits;},get checkpointObserves(){return checkpointObserves;},get abandons(){return abandons;},abandonStatus(v:typeof abandonStatus){abandonStatus=v;},start(v:TurnExecutionObservation){startResult=v;},dynamicTerminal(v=true){dynamicTerminal=v;},observe(v:TurnExecutionObservation){observeResult=v;},cancel(v:TurnExecutionObservation){cancelResult=v;},waitCancel(v:Promise<void>|null){cancelWait=v;},waitFence(v:Promise<void>|null){fenceWait=v;},startError(v:boolean){startError=v;},fenceUnknown(v:boolean){fenceUnknown=v;},prepareError(v:boolean){prepareError=v;},releaseError(v:boolean){releaseError=v;},projectReleaseError(v:boolean){projectReleaseError=v;},releaseRunning(v:boolean){releaseRunning=v;},commitError(v:boolean){commitError=v;},commitAbsent(v:boolean){commitAbsent=v;},observedCheckpoint(v:CheckpointReceipt|null){observedCheckpoint=v;},sql(query:string){db.exec(query);},reopen(){db.close();db=new DatabaseSync(file);configure();}};
 }
 
 function capacityFixture(){
-  const calls:string[]=[],lease={operationId:'capacity-operation-a',leaseId:'capacity-lease-a'},ticket={tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,sessionId:identity.sessionId,operationId:lease.operationId,turnId:identity.turnId,generation:identity.generation,ticketId:'capacity-ticket-a',leaseId:lease.leaseId,dispatchId:null as string|null,status:'held' as 'held'|'dispatched'|'released',requestedAt:900,acquiredAt:901,dispatchedAt:null as number|null,finishedAt:null as number|null};let loseDispatch=false;
+  const calls:string[]=[],lease={operationId:'capacity-operation-a',leaseId:'capacity-lease-a'},ticket={tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,sessionId:identity.sessionId,operationId:lease.operationId,turnId:identity.turnId,generation:identity.generation,ticketId:'capacity-ticket-a',leaseId:lease.leaseId,dispatchId:null as string|null,status:'held' as 'held'|'dispatched'|'released'|'cancelled',requestedAt:900,acquiredAt:901,dispatchedAt:null as number|null,finishedAt:null as number|null};let loseDispatch=false;
   const capacity={
     async lookup(){calls.push('capacity.lookup');return {outcome:'replayed' as const,ticket:structuredClone(ticket)};},
     async dispatch(reference:any){calls.push('capacity.dispatch');assert.equal(reference.dispatchId,identity.dispatchId);ticket.status='dispatched';ticket.dispatchId=identity.dispatchId;ticket.dispatchedAt=902;if(loseDispatch)throw Error('lost-capacity-dispatch-response');return {authorized:true,ticket:structuredClone(ticket)};},
@@ -47,6 +48,11 @@ function capacityFixture(){
 test('terminal accept reserves one execution and returns one immutable hierarchical checkpoint',async t=>{
   const f=fixture(t);f.start(terminal());const host=f.host(),first=await host.accept(request()),replay=await host.accept(request());
   assert.equal(first.phase,'terminal');assert.equal(first.outcome,'completed');assert.equal(first.checkpoint?.objectKey,'turns/tenant-a/workspace-a/2/turn-a/dispatch-a.json');assert.deepEqual(replay,first);assert.equal(f.starts,1);assert.equal(f.commits,1);
+});
+
+test('known absent commit enters restart-safe reconcile without requiring the in-memory snapshot',async t=>{
+  const f=fixture(t);f.start(terminal());f.commitAbsent(true);const host=f.host(),waiting=await host.accept(request()),recovery=f.recoveryRow();assert.equal(waiting.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(recovery.stage,'reconcile');assert.equal(f.row().checkpointCommitReserved,true);assert.equal(f.commits,1);assert.equal(f.checkpointObserves,0);
+  f.reopen();f.observedCheckpoint({revisionId:'revision-a',objectKey:'turns/tenant-a/workspace-a/2/turn-a/dispatch-a.json',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:1100});f.clock(recovery.nextAttemptAt-1);const saved=await f.host().observe(identity);assert.ok(saved.checkpoint);assert.equal(f.commits,1);assert.equal(f.checkpointObserves,1);
 });
 
 test('capacity dispatch is confirmed before native start and exact release proof frees the same lease',async t=>{
@@ -64,9 +70,65 @@ test('capacity ticket identity mismatch is rejected before native start',async t
   await assert.rejects(f.host().accept({...request(),capacityLease:c.lease}),/capacity-scope-denied/);assert.equal(f.starts,0);assert.equal(c.calls.includes('capacity.dispatch'),false);
 });
 
+test('late accept after exact capacity cancellation leaves no orphan Runtime row',async t=>{
+  const c=capacityFixture();c.ticket.status='cancelled';c.ticket.finishedAt=999;const f=fixture(t,{retryMs:0,assignmentGuardMs:0,quietMs:0},c.capacity),host=f.host();
+  await assert.rejects(host.accept({...request(),capacityLease:c.lease}),/capacity-dispatch-unconfirmed/);assert.equal(f.starts,0);assert.equal(f.runtimeRow(),null);
+  const absent=await f.host().observe({...identity,capacityLease:c.lease});assert.equal(absent.phase,'absent');assert.deepEqual({operationId:absent.resourceDisposition.operationId,leaseId:absent.resourceDisposition.leaseId,status:absent.resourceDisposition.status},{...c.lease,status:'released'});
+});
+
 test('lost start response persists unknown and reopen observes without another start',async t=>{
   const f=fixture(t);f.startError(true);const host=f.host();await assert.rejects(host.accept(request()),/lost-start-response/);assert.equal(f.starts,1);
   f.reopen();f.startError(false);f.observe(terminal());const recovered=await f.host().observe(identity);assert.equal(recovered.phase,'terminal');assert.equal(recovered.outcome,'completed');assert.equal(f.starts,1);assert.equal(f.observes,1);
+});
+test('schema 4 runtime migrates conservatively and preserves exact identity without another start',async t=>{
+ const f=fixture(t),host=f.host();await host.accept(request());f.sql("UPDATE product_turn_runtime SET value=json_remove(json_set(value,'$.schemaVersion',4),'$.nativeProcessObservedAt','$.nativeStartFenceReserved')");f.reopen();f.observe({identity,phase:'running',outcome:null});const recovered=await f.host().observe(identity);assert.equal(recovered.phase,'running');assert.equal(f.starts,1);assert.equal(f.observes,1);assert.equal(f.fences,0);assert.equal(f.row().schemaVersion,5);assert.ok(f.row().nativeProcessObservedAt);await assert.rejects(f.host().observe({...identity,dispatchId:'dispatch-b'}),/scope-denied/);assert.equal(f.observes,1);
+});
+test('unobservable native start stays fail closed until its fixed deadline then fences without checkpoint allocation',async t=>{
+ const f=fixture(t),host=f.host();f.startError(true);await assert.rejects(host.accept(request()),/lost-start-response/);const deadline=f.row().executionDeadlineAt;assert.equal(f.row().nativeStartReserved,true);assert.equal(f.row().nativeProcessObservedAt,null);assert.equal(f.fences,0);
+ f.observe({identity,phase:'unknown',outcome:null});f.clock(deadline-2);const waiting=await host.observe(identity);assert.equal(waiting.phase,'unknown');assert.equal(f.observes,1);assert.equal(f.fences,0);assert.equal(f.starts,1);
+ f.reopen();f.clock(deadline-1);const ended=await f.host().observe(identity);assert.equal(ended.phase,'terminal');assert.equal(ended.outcome,'failed');assert.equal(ended.executionErrorCode,'turn-native-start-unresolved');assert.equal(ended.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(ended.stopped?.fenced,true);assert.equal(f.fences,1);assert.equal(f.starts,1);assert.equal(f.prepares,0);assert.equal(f.commits,0);assert.equal(f.row().nativeStartFenceReserved,true);
+ assert.deepEqual(f.telemetry.map(({metric,stage,reasonCategory,value,correlationId})=>({metric,stage,reasonCategory,value,correlationId})),[{metric:'native_start_fence',stage:'native-start',reasonCategory:'native_start_unresolved',value:1,correlationId:'legacy'}]);
+ assert.deepEqual(await f.host().observe(identity),ended);assert.equal(f.fences,1);
+});
+
+test('a previously observed execution becomes execution-unresolved at its fixed deadline without checkpoint allocation',async t=>{
+ const f=fixture(t),host=f.host();await host.accept(request());const deadline=f.row().executionDeadlineAt;assert.ok(f.row().nativeProcessObservedAt);f.observe({identity,phase:'unknown',outcome:null});
+ f.clock(deadline-2);const waiting=await host.observe(identity);assert.equal(waiting.phase,'unknown');assert.equal(f.observes,1);assert.equal(f.fences,0);
+ f.reopen();f.clock(deadline-1);const ended=await f.host().observe(identity);assert.equal(ended.phase,'terminal');assert.equal(ended.outcome,'failed');assert.equal(ended.executionErrorCode,'turn-native-execution-unresolved');assert.equal(ended.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(ended.checkpoint,null);assert.equal(ended.stopped?.fenced,true);assert.equal(f.fences,1);assert.equal(f.starts,1);assert.equal(f.prepares,0);assert.equal(f.commits,0);assert.equal(f.row().nativeStartFenceReserved,true);assert.ok(f.row().nativeProcessObservedAt);
+ assert.deepEqual(f.telemetry.map(({metric,stage,reasonCategory,value})=>({metric,stage,reasonCategory,value})),[{metric:'native_execution_fence',stage:'native-execution',reasonCategory:'native_execution_unresolved',value:1}]);
+ assert.deepEqual(await f.host().observe(identity),ended);assert.equal(f.fences,1);
+});
+
+test('an unconfirmed execution deadline fence stays unknown across reopen and retries the exact actor',async t=>{
+ const f=fixture(t),host=f.host();await host.accept(request());const deadline=f.row().executionDeadlineAt;f.fenceUnknown(true);f.clock(deadline-1);const waiting=await host.observe(identity);assert.equal(waiting.phase,'unknown');assert.equal(waiting.executionErrorCode,null);assert.equal(f.fences,1);assert.equal(f.prepares,0);assert.equal(f.row().nativeStartFenceReserved,true);assert.ok(f.row().nativeProcessObservedAt);
+ f.reopen();f.fenceUnknown(false);f.clock(deadline);const ended=await f.host().observe(identity);assert.equal(ended.phase,'terminal');assert.equal(ended.executionErrorCode,'turn-native-execution-unresolved');assert.equal(ended.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(ended.checkpoint,null);assert.equal(f.fences,2);assert.equal(f.starts,1);assert.equal(f.prepares,0);assert.equal(f.commits,0);
+ assert.deepEqual(f.telemetry.map(({metric,reasonCategory,value})=>({metric,reasonCategory,value})),[{metric:'native_execution_fence',reasonCategory:'native_execution_unresolved',value:0},{metric:'native_execution_fence',reasonCategory:'native_execution_unresolved',value:1}]);
+});
+
+test('concurrent deadline observations coalesce one exact execution fence',async t=>{
+ const f=fixture(t),host=f.host();await host.accept(request());const deadline=f.row().executionDeadlineAt;let release!:()=>void;const blocked=new Promise<void>(resolve=>{release=resolve;});f.waitFence(blocked);f.clock(deadline-1);const first=host.observe(identity);for(let attempt=0;attempt<20&&f.fences===0;attempt++)await new Promise(resolve=>setTimeout(resolve,1));const follower=host.observe(identity);assert.equal(f.fences,1);release();const [a,b]=await Promise.all([first,follower]);assert.equal(a.executionErrorCode,'turn-native-execution-unresolved');assert.deepEqual(b,a);assert.equal(f.fences,1);assert.equal(f.prepares,0);assert.equal(f.commits,0);
+});
+
+test('Stop on a previously observed execution preserves interrupted through the deadline fence',async t=>{
+ const f=fixture(t),host=f.host();await host.accept(request());const deadline=f.row().executionDeadlineAt;f.cancel({identity,phase:'unknown',outcome:null});const waiting=await host.cancel(identity);assert.equal(waiting.phase,'unknown');assert.equal(f.cancels,1);assert.equal(f.fences,0);
+ f.reopen();f.clock(deadline-1);const ended=await f.host().cancel(identity);assert.equal(ended.phase,'terminal');assert.equal(ended.outcome,'interrupted');assert.equal(ended.executionErrorCode,'turn-native-execution-unresolved');assert.equal(ended.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(ended.checkpoint,null);assert.equal(f.fences,1);assert.equal(f.cancels,1);assert.equal(f.prepares,0);assert.equal(f.commits,0);
+});
+
+test('Stop on an unresolved native start settles interrupted at the same deadline and Project uncertainty holds release',async t=>{
+ const f=fixture(t,{retryMs:0,assignmentGuardMs:0,quietMs:0,holdRetryMs:60}),host=f.host();f.startError(true);await assert.rejects(host.accept(request()),/lost-start-response/);const deadline=f.row().executionDeadlineAt;f.cancel({identity,phase:'unknown',outcome:null});const stopping=await host.cancel(identity);assert.equal(stopping.phase,'unknown');assert.equal(f.cancels,1);assert.equal(f.fences,0);
+ f.projectReleaseError(true);f.clock(deadline-1);const held=await host.observe(identity);assert.equal(held.outcome,'interrupted');assert.equal(held.executionErrorCode,'turn-native-start-unresolved');assert.equal(held.resourceDisposition.status,'recovery-hold');assert.equal(f.releaseRow().reasonCode,'project-workspace-release-unconfirmed');assert.equal(f.prepares,0);assert.equal(f.fences,1);
+ assert.deepEqual(f.telemetry.map(({metric,stage,reasonCategory,value})=>({metric,stage,reasonCategory,value})),[{metric:'release_result',stage:'release',reasonCategory:'project_cleanup_unconfirmed',value:0},{metric:'native_start_fence',stage:'native-start',reasonCategory:'native_start_unresolved',value:1}]);
+ const retry=f.releaseRow().nextAttemptAt;f.projectReleaseError(false);f.clock(retry-1);const released=await host.observe(identity);assert.equal(released.resourceDisposition.status,'released');assert.equal(f.fences,1);assert.equal(f.starts,1);
+});
+
+test('a throwing operation telemetry sink cannot change unresolved-start terminal state',async t=>{
+ const f=fixture(t,{retryMs:0,assignmentGuardMs:0,quietMs:0},null,()=>{throw Error('telemetry-must-not-escape');}),host=f.host();f.startError(true);await assert.rejects(host.accept(request()),/lost-start-response/);const deadline=f.row().executionDeadlineAt;f.clock(deadline-1);
+ const ended=await host.observe(identity);assert.equal(ended.phase,'terminal');assert.equal(ended.executionErrorCode,'turn-native-start-unresolved');assert.equal(f.fences,1);
+});
+
+test('a throwing operation telemetry sink cannot prevent Project recovery hold',async t=>{
+ const f=fixture(t,{retryMs:0,assignmentGuardMs:0,quietMs:0,holdRetryMs:60},null,()=>{throw Error('telemetry-must-not-escape');}),host=f.host();f.start(terminal());f.projectReleaseError(true);
+ const ended=await host.accept(request());assert.equal(ended.phase,'terminal');assert.equal(ended.resourceDisposition.status,'recovery-hold');assert.equal(f.releaseRow().reasonCode,'project-workspace-release-unconfirmed');
 });
 
 test('runtime actor and durable row bind full scope, dispatch, generation and message digest',async t=>{
@@ -88,12 +150,23 @@ test('cancel fence calls native cancel once and accepts an already completed nat
   const other=fixture(t),otherHost=other.host();await otherHost.accept(request());other.cancel(terminal(identity,'completed'));const natural=await otherHost.cancel(identity);assert.equal(natural.phase,'terminal');assert.equal(natural.outcome,'completed');assert.ok(natural.checkpoint);assert.deepEqual(await otherHost.observe(identity),natural);
 });
 
+test('concurrent Runtime cancel calls coalesce while crash recovery can replay the exact lower-level fence',async t=>{
+  const f=fixture(t),host=f.host();await host.accept(request());let release!:()=>void;const blocked=new Promise<void>(resolve=>{release=resolve;});f.waitCancel(blocked);
+  const first=host.cancel(identity);for(let attempt=0;attempt<20&&f.cancels===0;attempt++)await new Promise(resolve=>setTimeout(resolve,1));const follower=host.cancel(identity);
+  assert.equal(f.cancels,1);release();const [a,b]=await Promise.all([first,follower]);assert.equal(a.outcome,'cancelled');assert.deepEqual(b,a);assert.equal(f.cancels,1);assert.equal(f.observes,0);
+});
+
+test('a nonterminal Stop observation is retried after Runtime reopen until the durable native fence proves terminal',async t=>{
+  const f=fixture(t),host=f.host();await host.accept(request());f.cancel({identity,phase:'running',outcome:null});assert.equal((await host.cancel(identity)).phase,'running');assert.equal(f.cancels,1);
+  f.reopen();f.cancel(terminal(identity,'cancelled'));assert.equal((await f.host().cancel(identity)).outcome,'cancelled');assert.equal(f.cancels,2);
+});
+
 test('a fenced cancellation reconciles an absent native execution without checkpoint allocation',async t=>{
   const f=fixture(t),host=f.host();await host.accept(request());f.cancel({identity,phase:'unknown',outcome:null});
   const first=await host.cancel(identity);assert.equal(first.phase,'unknown');assert.equal(f.cancels,1);
   f.observe({identity,phase:'absent',outcome:null});f.cancel({...terminal(identity,'interrupted'),executionErrorCode:'turn-native-execution-absent',events:[]});
   const settled=await host.observe(identity);assert.equal(settled.phase,'terminal');assert.equal(settled.outcome,'interrupted');assert.equal(settled.executionErrorCode,'turn-native-execution-absent');assert.equal(settled.persistenceErrorCode,'turn-checkpoint-unknown');
-  assert.equal(f.observes,1);assert.equal(f.cancels,2);assert.equal(f.prepares,0);assert.equal(f.commits,0);assert.equal(f.checkpointObserves,0);
+  assert.equal(f.observes,0);assert.equal(f.cancels,2);assert.equal(f.prepares,0);assert.equal(f.commits,0);assert.equal(f.checkpointObserves,0);
   assert.deepEqual(await host.observe(identity),settled);assert.equal(f.cancels,2);
 });
 
@@ -112,6 +185,12 @@ test('checkpoint descriptor survives reopen and prevents a second materializatio
 test('checkpoint recovery has a two minute user deadline and persists exact abandonment',async t=>{
  const f=fixture(t);f.start(terminal());f.commitError(true);const host=f.host(),first=await host.accept(request()),recovery=f.recoveryRow();assert.equal(first.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(recovery.schemaVersion,2);assert.equal(recovery.stage,'reconcile');assert.equal(recovery.deadlineAt,f.row().settledAt+120000);assert.ok(recovery.nextAttemptAt<=recovery.deadlineAt);
  f.clock(recovery.deadlineAt-1);const ended=await host.observe(identity);assert.equal(ended.persistenceErrorCode,'turn-checkpoint-aborted');assert.equal(f.abandons,1);assert.equal(f.recoveryRow(),null);
+});
+
+test('legacy checkpoint recovery normalizes its deadline to the persisted terminal boundary',async t=>{
+ const f=fixture(t);f.start(terminal());f.commitError(true);await f.host().accept(request());const runtime=f.row(),current=f.recoveryRow(),firstFailedAt=runtime.settledAt+5000;
+ f.setRecovery({schemaVersion:1,operationId:current.operationId,firstFailedAt,attempts:current.attempts,lastErrorCode:current.lastReason,nextAttemptAt:firstFailedAt+1000,deadlineAt:firstFailedAt+120000});
+ f.reopen();const migratedDeadline=runtime.settledAt+120000;f.clock(migratedDeadline-1);const ended=await f.host().observe(identity);assert.equal(ended.persistenceErrorCode,'turn-checkpoint-aborted');assert.equal(f.recoveryRow(),null);assert.equal(f.abandons,1);
 });
 
 test('unavailable abandonment ends the user wait but retains durable recovery maintenance',async t=>{
@@ -170,9 +249,10 @@ test('an unavailable base never allocates checkpoint materialization, including 
  assert.equal(f.releases,1);f.reopen();const replay=await f.host().observe(identity);assert.deepEqual(replay,first);assert.equal(f.prepares,0);assert.equal(f.commits,0);assert.equal(f.checkpointObserves,0);assert.equal(f.releases,1);
 });
 
-test('legacy checkpoint reservation without an exact descriptor remains fail closed',async t=>{
- const f=fixture(t);f.start(terminal());const completed=await f.host().accept(request());assert.ok(completed.checkpoint);f.sql("UPDATE product_turn_runtime SET value=json_set(value,'$.schemaVersion',1,'$.checkpointReserved',json('true'),'$.checkpoint',json('null'))");f.sql("UPDATE product_turn_runtime SET value=json_remove(value,'$.checkpointIntent','$.checkpointCommitReserved','$.legacyCheckpointUnknown','$.executionDeadlineAt','$.actor','$.resourceLease','$.capacityManaged','$.capacityDispatchReserved','$.capacityDispatchConfirmed','$.nativeStartReserved')");f.sql('DELETE FROM product_turn_release');
- f.reopen();const unknown=await f.host().observe(identity);assert.equal(unknown.checkpoint,null);assert.equal(unknown.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(f.prepares,1);assert.equal(f.commits,1);
+test('legacy checkpoint reservation without an exact descriptor terminates in a recovery hold and releases execution capacity',async t=>{
+ const f=fixture(t);f.start(terminal());const completed=await f.host().accept(request());assert.ok(completed.checkpoint);f.sql("UPDATE product_turn_runtime SET value=json_set(value,'$.schemaVersion',1,'$.checkpointReserved',json('true'),'$.checkpoint',json('null'))");f.sql("UPDATE product_turn_runtime SET value=json_remove(value,'$.checkpointIntent','$.checkpointCommitReserved','$.legacyCheckpointUnknown','$.executionDeadlineAt','$.actor','$.resourceLease','$.capacityManaged','$.capacityDispatchReserved','$.capacityDispatchConfirmed','$.nativeStartReserved','$.nativeProcessObservedAt','$.nativeStartFenceReserved')");f.sql('DELETE FROM product_turn_release');
+ f.reopen();const held=await f.host().observe(identity);assert.equal(held.checkpoint,null);assert.equal(held.persistenceErrorCode,'turn-checkpoint-recovery-hold');assert.equal(f.prepares,1);assert.equal(f.commits,1);assert.equal(f.releases,2);
+ const replay=await f.host().observe(identity);assert.equal(replay.persistenceErrorCode,'turn-checkpoint-recovery-hold');assert.equal(f.prepares,1);assert.equal(f.commits,1);
 });
 
 test('running events replay stably and conflicting event ids fail closed',async t=>{
@@ -201,7 +281,7 @@ test('corrupted durable runtime state fails closed before native observation',as
 });
 
 test('product runtime completes the existing dispatcher contract without a model call',async t=>{
-  const f=fixture(t);f.dynamicTerminal();const journal=new TurnJournal(new MemoryTurnStore(),(()=>{let n=999;return()=>++n;})()),session=(await journal.createSession(scope,actor,'session-key',{title:'Session'})).session;await journal.submit(scope,actor,session.id,'turn-key',{message:'Build model'});
+  const f=fixture(t);f.dynamicTerminal();let journalNow=998;const journal=new TurnJournal(new MemoryTurnStore(),()=>journalNow=Math.max(journalNow+1,f.currentTime)),session=(await journal.createSession(scope,actor,'session-key',{title:'Session'})).session;await journal.submit(scope,actor,session.id,'turn-key',{message:'Build model'});
   const result=await new TurnDispatcher(journal,f.host()).tick(scope,2);assert.equal(result?.status,'completed');assert.equal(result?.persistenceOutcome,'saved');assert.equal(f.starts,1);
 });
 
@@ -212,7 +292,7 @@ test('product runtime module imports no Pi SDK, provider, network or M0 probe im
 
 test('observer deadline persists across replay and reopen; authority performs zero durable writes or reconciliation',async t=>{
  const f=fixture(t),host=f.host();let deadline:number|undefined;const start=f.execution.start;f.execution.start=async input=>{deadline=input.executionDeadlineAt;return start(input);};
- await host.accept(request());assert.equal(deadline,601001);const before=f.row();assert.equal(before.schemaVersion,4);let queries=0;f.execution.currentObserverExecution=async id=>{assert.deepEqual(id,identity);queries++;return {expiresAt:deadline!};};
+ await host.accept(request());assert.equal(deadline,601001);const before=f.row();assert.equal(before.schemaVersion,5);let queries=0;f.execution.currentObserverExecution=async id=>{assert.deepEqual(id,identity);queries++;return {expiresAt:deadline!};};
  const operations=[f.starts,f.observes,f.prepares,f.commits,f.writes,f.syncs];assert.deepEqual(await host.currentObserverExecution(identity),{expiresAt:deadline});assert.deepEqual(f.row(),before);assert.deepEqual([f.starts,f.observes,f.prepares,f.commits,f.writes,f.syncs],operations);
  f.reopen();const recovered=f.host();assert.deepEqual(await recovered.currentObserverExecution(identity),{expiresAt:deadline});await recovered.accept(request());assert.equal(f.starts,1);assert.equal(f.row().executionDeadlineAt,deadline);assert.equal(queries,2);
 });
@@ -221,19 +301,20 @@ test('observer authority denies absent, legacy, unknown, terminal, cancelled and
  for(const kind of ['absent','legacy','unknown','terminal','cancelled','identity']){
   const f=fixture(t),host=f.host();let queried=0;f.execution.currentObserverExecution=async()=>{queried++;return {expiresAt:601001};};
   if(kind!=='absent')await host.accept(request());
-  if(kind==='legacy')f.sql("UPDATE product_turn_runtime SET value=json_remove(json_set(value,'$.schemaVersion',2),'$.executionDeadlineAt','$.actor','$.resourceLease','$.capacityManaged','$.capacityDispatchReserved','$.capacityDispatchConfirmed','$.nativeStartReserved')");
+  if(kind==='legacy')f.sql("UPDATE product_turn_runtime SET value=json_remove(json_set(value,'$.schemaVersion',2),'$.executionDeadlineAt','$.actor','$.resourceLease','$.capacityManaged','$.capacityDispatchReserved','$.capacityDispatchConfirmed','$.nativeStartReserved','$.nativeProcessObservedAt','$.nativeStartFenceReserved')");
   if(kind==='unknown')f.sql("UPDATE product_turn_runtime SET value=json_set(value,'$.phase','unknown')");
   if(kind==='terminal')await host.cancel(identity);
   if(kind==='cancelled')f.sql("UPDATE product_turn_runtime SET value=json_set(value,'$.cancelRequestedAt',1002)");
   const before=kind==='absent'?null:f.row();await assert.rejects(host.currentObserverExecution(kind==='identity'?{...identity,dispatchId:'other'}:identity));assert.equal(queried,0);if(before)assert.deepEqual(f.row(),before);
-  if(kind==='legacy'){await host.observe(identity);assert.equal(f.row().schemaVersion,4);assert.equal(f.row().executionDeadlineAt,undefined);}
+  if(kind==='legacy'){await host.observe(identity);assert.equal(f.row().schemaVersion,5);assert.equal(f.row().executionDeadlineAt,undefined);}
  }
 });
 
 test('observer authority rejects missing native query, expiry mismatch and cancellation or deadline during await',async t=>{
  for(const kind of ['missing','mismatch','expired','late-expiry','late-cancel']){
-  const f=fixture(t),host=f.host();await host.accept(request());
+ const f=fixture(t),host=f.host();await host.accept(request());
   if(kind==='expired')f.clock(601001);
+  if(kind==='late-cancel')f.cancel({identity,phase:'unknown',outcome:null});
   if(kind!=='missing')f.execution.currentObserverExecution=async()=>{if(kind==='late-expiry')f.clock(601001);if(kind==='late-cancel')await host.cancel(identity);return {expiresAt:kind==='mismatch'?601002:601001};};
   await assert.rejects(host.currentObserverExecution(identity),/observer-denied/);
  }

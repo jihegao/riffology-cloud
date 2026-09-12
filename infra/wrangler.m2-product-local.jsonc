@@ -31,6 +31,8 @@
     "M3_PREVIEW_ENABLED": "false",
     "M3_PREVIEW_WS_ENABLED": "false",
     "M3_OBSERVER_ENABLED": "false",
+    "M2_TOOL_PROTOCOL_VERSION": "2",
+    "M2_TOOL_LEDGER_SCHEMA_VERSION": "1",
     "M2_MODEL_BUDGET_POLICY_VERSION": "m2-token-v1",
     "M2_MODEL_PROVIDER": "opencode-go",
     "M2_MODEL_ID": "gpt-5.6-luna",

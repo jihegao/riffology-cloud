@@ -1,6 +1,7 @@
 import { actor as validateActor, message, positive, sha, turnBaseCheckpoints, turnDigest, turnId, type CheckpointReceipt, type TurnActor, type TurnBaseCheckpoints } from '../turn/protocol.ts';
 import { sameTurnRuntimeIdentity, turnRuntimeIdentity, type TurnRuntimeIdentity } from './identity.ts';
 import type { TrustedPiHostEvent, TrustedPiHostObservation, TrustedPiHostPort } from './pi-execution.ts';
+import type { TurnOperationTrace } from '../turn/operation-telemetry.ts';
 
 export const TRUSTED_PI_CONTROL_ROOT='/var/lib/riffology/turns';
 export const TRUSTED_PI_HOST_PROGRAM='/opt/riffology/trusted-pi/trusted-pi-turn-host.mjs';
@@ -8,13 +9,26 @@ export const TRUSTED_PI_NODE='/usr/local/bin/node';
 const MAX_RESULT_BYTES=2*1024*1024,MAX_SESSION_BYTES=8*1024*1024,DESTROY_WALL_TIMEOUT_MS=30000,ACTIVE=new Set(['starting','running']),EXITED=new Set(['completed','failed']),encoder=new TextEncoder(),decoder=new TextDecoder('utf-8',{fatal:true});
 
 export interface TrustedPiProcessView{readonly id:string;readonly status:string;readonly exitCode?:number;getStatus():Promise<string>;kill(signal?:string):Promise<void>}
+export interface TrustedPiProcessSnapshot{readonly id:string;readonly status:string;readonly exitCode?:number}
 export interface TrustedPiSandboxProcessApi{
   writeFile(path:string,content:string,options?:{encoding?:'utf8'|'base64'}):Promise<{success:boolean;path:string;bytesWritten?:number}>;
   readFile(path:string,options?:{encoding?:'utf8'|'base64'}):Promise<{success:boolean;path:string;content:string}>;
   startProcess(command:string,options:{processId:string;autoCleanup:false;timeout:number;cwd:string;encoding:'utf8';env:Record<string,string>}):Promise<TrustedPiProcessView>;
   getProcess(id:string):Promise<TrustedPiProcessView|null>;
+  cancelProcessOnce?(id:string):Promise<{dispatched:boolean}>;
   destroyAndReleaseState():Promise<{running:boolean}>;
   /** Must bypass SDK session initialization and container auto-start. */
+  queryObserverExecution?(identity:TurnRuntimeIdentity):Promise<{expiresAt:number}>;
+}
+export interface TrustedPiSandboxActorApi{
+  writeTurnFile(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['writeFile']>):ReturnType<TrustedPiSandboxProcessApi['writeFile']>;
+  readTurnFile(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['readFile']>):ReturnType<TrustedPiSandboxProcessApi['readFile']>;
+  startTurnProcess(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['startProcess']>):ReturnType<TrustedPiSandboxProcessApi['startProcess']>;
+  getTurnProcess(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['getProcess']>):ReturnType<TrustedPiSandboxProcessApi['getProcess']>;
+  startTurnProcessSnapshot(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['startProcess']>):Promise<TrustedPiProcessSnapshot>;
+  getTurnProcessSnapshot(identity:TurnRuntimeIdentity,...input:Parameters<TrustedPiSandboxProcessApi['getProcess']>):Promise<TrustedPiProcessSnapshot|null>;
+  cancelTurnProcess(identity:TurnRuntimeIdentity,id:string):Promise<{dispatched:boolean}>;
+  destroyAndReleaseState(identity:TurnRuntimeIdentity):Promise<{running:boolean}>;
   queryObserverExecution?(identity:TurnRuntimeIdentity):Promise<{expiresAt:number}>;
 }
 export interface TrustedPiSessionSource{load(identity:TurnRuntimeIdentity,checkpoint:CheckpointReceipt|null):Promise<Uint8Array|null>}
@@ -30,6 +44,7 @@ function unbase64(value:string):Uint8Array{let binary:string;try{binary=atob(val
 function sessionSnapshot(bytes:Uint8Array,identity:TurnRuntimeIdentity):Uint8Array{let parsed:unknown;try{parsed=JSON.parse(decoder.decode(bytes));}catch{reject('invalid-trusted-pi-session-file');}exact(parsed,['format','scope','createdAt','entries','leafId'],'invalid-trusted-pi-session-file');if(parsed.format!=='riffology-pi-session-v1'||!Array.isArray(parsed.entries)||typeof parsed.createdAt!=='string'||(parsed.leafId!==null&&typeof parsed.leafId!=='string'))reject('invalid-trusted-pi-session-file');exact(parsed.scope,['tenantId','projectId','sessionId'],'invalid-trusted-pi-session-file');if(parsed.scope.tenantId!==identity.scope.tenantId||parsed.scope.projectId!==identity.scope.projectId||parsed.scope.sessionId!==identity.sessionId)reject('trusted-pi-native-scope-denied');return bytes;}
 async function token(identity:TurnRuntimeIdentity):Promise<string>{return (await turnDigest({schemaVersion:1,purpose:'trusted-pi-native',identity:turnRuntimeIdentity(identity)})).slice(0,52);}
 async function paths(identity:TurnRuntimeIdentity){const id=await token(identity),root=`${TRUSTED_PI_CONTROL_ROOT}/${id}`;return {id,control:`${root}.control.json`,inputSession:`${root}.input-session.json`,result:`${root}.result.json`,outputSession:`${root}.output-session.json`,processId:`pi-${id}`};}
+export async function trustedPiProcessId(raw:TurnRuntimeIdentity):Promise<string>{return (await paths(turnRuntimeIdentity(raw))).processId;}
 function missing(error:unknown):boolean{return error instanceof Error&&/(not found|missing|enoent|404)/i.test(error.message);}
 async function readText(sandbox:Pick<TrustedPiSandboxProcessApi,'readFile'>,path:string,max:number):Promise<string|null>{let value;try{value=await sandbox.readFile(path,{encoding:'utf8'});}catch(error){if(missing(error))return null;throw error;}if(value.success!==true||value.path!==path||typeof value.content!=='string'||encoder.encode(value.content).byteLength>max)reject('invalid-trusted-pi-native-file');return value.content;}
 async function writeVerified(sandbox:TrustedPiSandboxProcessApi,path:string,content:string,encoding:'utf8'|'base64'){const saved=await sandbox.writeFile(path,content,{encoding});if(saved.success!==true||saved.path!==path)reject('trusted-pi-native-write-mismatch');const read=await sandbox.readFile(path,{encoding});if(read.success!==true||read.path!==path||read.content!==content)reject('trusted-pi-native-write-mismatch');}
@@ -57,8 +72,9 @@ export async function readCurrentObserverExecution(reader:Pick<TrustedPiSandboxP
  * only the dedicated Observer reader avoids container auto-start. Repeated
  * start with an existing control file does not dispatch another Pi process. */
 export class SandboxTrustedPiHostPort implements TrustedPiHostPort,TrustedPiSessionFreezePort{
-  readonly #sandbox:TrustedPiSandboxProcessApi;readonly #sessions:TrustedPiSessionSource;readonly #clock:()=>number;readonly #destroyTimeoutMs:number;
-  constructor(sandbox:TrustedPiSandboxProcessApi,sessions:TrustedPiSessionSource,clock:()=>number=Date.now,destroyTimeoutMs:number=DESTROY_WALL_TIMEOUT_MS){if(!sandbox?.writeFile||!sandbox.readFile||!sandbox.startProcess||!sandbox.getProcess||!sandbox.destroyAndReleaseState||!sessions?.load)reject('trusted-pi-native-required');if(!Number.isSafeInteger(destroyTimeoutMs)||destroyTimeoutMs<1)reject('invalid-trusted-pi-destroy-timeout');this.#sandbox=sandbox;this.#sessions=sessions;this.#clock=clock;this.#destroyTimeoutMs=destroyTimeoutMs;}
+  readonly #sandbox:TrustedPiSandboxProcessApi;readonly #sessions:TrustedPiSessionSource;readonly #clock:()=>number;readonly #destroyTimeoutMs:number;readonly #trace:TurnOperationTrace|undefined;
+  constructor(sandbox:TrustedPiSandboxProcessApi,sessions:TrustedPiSessionSource,clock:()=>number=Date.now,destroyTimeoutMs:number=DESTROY_WALL_TIMEOUT_MS,trace?:TurnOperationTrace){if(!sandbox?.writeFile||!sandbox.readFile||!sandbox.startProcess||!sandbox.getProcess||!sandbox.destroyAndReleaseState||!sessions?.load)reject('trusted-pi-native-required');if(!Number.isSafeInteger(destroyTimeoutMs)||destroyTimeoutMs<1)reject('invalid-trusted-pi-destroy-timeout');this.#sandbox=sandbox;this.#sessions=sessions;this.#clock=clock;this.#destroyTimeoutMs=destroyTimeoutMs;this.#trace=trace;}
+  #emit(event:Parameters<NonNullable<TurnOperationTrace>>[0]){try{this.#trace?.(event);}catch{}}
   async start(raw:TurnRuntimeIdentity&{actor:TurnActor;message:string;base:TurnBaseCheckpoints;executionDeadlineAt?:number}):Promise<TrustedPiHostObservation>{
     const executionDeadlineAt=raw.executionDeadlineAt===undefined?undefined:positive(raw.executionDeadlineAt);
     if(executionDeadlineAt!==undefined&&(executionDeadlineAt<=this.#clock()||executionDeadlineAt>this.#clock()+600000))reject('trusted-pi-execution-expired');
@@ -81,8 +97,9 @@ export class SandboxTrustedPiHostPort implements TrustedPiHostPort,TrustedPiSess
   }
   async observe(raw:TurnRuntimeIdentity):Promise<TrustedPiHostObservation>{const identity=turnRuntimeIdentity(raw),location=await paths(identity),process=await this.#sandbox.getProcess(location.processId);return this.#observe(identity,process,location);}
   async cancel(raw:TurnRuntimeIdentity):Promise<TrustedPiHostObservation>{
-    const identity=turnRuntimeIdentity(raw),location=await paths(identity),process=await this.#sandbox.getProcess(location.processId);
-    if(process){const state=await process.getStatus();if(ACTIVE.has(state))await process.kill('SIGTERM');}
+    const identity=turnRuntimeIdentity(raw),location=await paths(identity);let process:TrustedPiProcessView|null;
+    if(this.#sandbox.cancelProcessOnce){await this.#sandbox.cancelProcessOnce(location.processId);process=await this.#sandbox.getProcess(location.processId);}
+    else{process=await this.#sandbox.getProcess(location.processId);if(process){const state=await process.getStatus();if(ACTIVE.has(state))await process.kill('SIGTERM');}}
     const observed=await this.#observe(identity,process,location);
     // ProductTurnRuntime supplies the durable cancellation fence. When the
     // fenced native process and all of its control files are absent, there is
@@ -92,8 +109,13 @@ export class SandboxTrustedPiHostPort implements TrustedPiHostPort,TrustedPiSess
     if(observed.phase==='absent')return {identity,phase:'terminal',outcome:'interrupted',executionErrorCode:'turn-native-execution-absent',events:[],stopped:{confirmationId:`stop-${location.id}`,observedAt:positive(this.#clock()),nativeRunning:false,fenced:true}};
     return observed;
   }
+  async fenceUnresolvedStart(raw:TurnRuntimeIdentity,outcome:'failed'|'interrupted'):Promise<TrustedPiHostObservation>{
+    const identity=turnRuntimeIdentity(raw);if(outcome!=='failed'&&outcome!=='interrupted')reject('invalid-trusted-pi-start-fence-outcome');const location=await paths(identity),released=await this.release(identity);
+    if(released.running)return empty(identity,'unknown');
+    return {identity,phase:'terminal',outcome,executionErrorCode:'turn-native-start-unresolved',events:[],stopped:{confirmationId:`start-fence-${location.id}`,observedAt:positive(this.#clock()),nativeRunning:false,fenced:true}};
+  }
   async release(raw:TurnRuntimeIdentity):Promise<{running:boolean}>{
-    turnRuntimeIdentity(raw);let timer:ReturnType<typeof setTimeout>|undefined;const state=await Promise.race([this.#sandbox.destroyAndReleaseState(),new Promise<never>((_,rejectTimeout)=>{timer=setTimeout(()=>rejectTimeout(Error('trusted-pi-release-timeout')),this.#destroyTimeoutMs);})]).finally(()=>{if(timer!==undefined)clearTimeout(timer);});
+    const identity=turnRuntimeIdentity(raw),location=await paths(identity),started=Date.now();let timer:ReturnType<typeof setTimeout>|undefined,state:{running:boolean};try{state=await Promise.race([this.#sandbox.destroyAndReleaseState(),new Promise<never>((_,rejectTimeout)=>{timer=setTimeout(()=>rejectTimeout(Error('trusted-pi-release-timeout')),this.#destroyTimeoutMs);})]);}catch(error){if(error instanceof Error&&error.message==='trusted-pi-release-timeout')this.#emit({route:'turn.operation',metric:'destroy_timeout',stage:'destroy',reasonCategory:'destroy_timed_out',attempt:1,durationMs:Date.now()-started,value:1,correlationId:`destroy-${location.id}`});throw error;}finally{if(timer!==undefined)clearTimeout(timer);}
     exact(state,['running'],'invalid-trusted-pi-release-state');if(typeof state.running!=='boolean')reject('invalid-trusted-pi-release-state');return {running:state.running};
   }
   async frozenSession(raw:TurnRuntimeIdentity):Promise<Uint8Array>{const identity=turnRuntimeIdentity(raw),location=await paths(identity),observation=await this.observe(identity);if(observation.phase!=='terminal')reject('trusted-pi-session-not-frozen');const resultText=await readText(this.#sandbox,location.result,MAX_RESULT_BYTES);if(!resultText)reject('trusted-pi-session-not-frozen');const saved=result(JSON.parse(resultText),identity),encoded=await readText(this.#sandbox,location.outputSession,Math.ceil(MAX_SESSION_BYTES*4/3)+4);if(!encoded)reject('trusted-pi-session-not-frozen');const bytes=unbase64(encoded);if(bytes.byteLength<1||bytes.byteLength>MAX_SESSION_BYTES||await digest(bytes)!==saved.outputSessionSha256)reject('invalid-trusted-pi-session-file');return Uint8Array.from(sessionSnapshot(bytes,identity));}
