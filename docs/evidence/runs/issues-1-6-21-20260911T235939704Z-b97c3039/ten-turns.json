@@ -1,0 +1,4530 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "runToken": "s162120260911T235939704Zb97c3039",
+  "turns": [
+    {
+      "index": 1,
+      "turnId": "580b6093-4b4a-47ea-b033-e70de12006ca",
+      "filePath": "acceptance-s162120260911T235939704Zb97c3039-turn-01.txt",
+      "nonce": "e6189011de0d8b16fb8791dba0118f79",
+      "messageSha256": "e66e4e838f6efe9ed07a771b2d540797cc4f9bf5a0753f5aaf3d893d670902ec",
+      "assistantNonceConfirmation": true,
+      "revisionId": "5cd2bfaf55540725fd5aaf1f2b61bd6a510fc283d7ccff0e30489d28b11cab49",
+      "checkpoint": {
+        "revisionId": "5cd2bfaf55540725fd5aaf1f2b61bd6a510fc283d7ccff0e30489d28b11cab49",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/580b6093-4b4a-47ea-b033-e70de12006ca/c622daa7-1111-4c43-838c-d19deaa9dad1.json",
+        "filesSha256": "e89739e376ee923e4136109f99c2ea9fc63c936fd66e60d55c261a4b9066f5d8",
+        "sessionSha256": "035e161bc6ad0a544dbe17ede3f9a1ddbc6714c04d06bf63e3e3ef24911415be",
+        "committedAt": 1789171842454
+      },
+      "toolEvents": [
+        {
+          "sequence": 737,
+          "eventId": "pi-2548705846f37039f11fdc6d0be3f294a1bc988701f6cd762a5dd10fe619e519",
+          "toolCallId": "call_XGrxhNMc2hE9uC9bd7BQCxBA|fc_020fdb76186cad68016aa4986d71e087d2b642c2e54df55d38",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 742,
+          "eventId": "pi-554d0ddf700638a399babc25c37acbb5efdc45ef6d4638abcde9a625858d0ecb",
+          "toolCallId": "call_NZRWL9QSUyJHnXSxuZUplbM8|fc_020fdb76186cad68016aa49872bbcc87d2b15fad3d53b4baae",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": null,
+      "transitions": [
+        {
+          "observedAt": 1789171805826,
+          "turnStatus": "running",
+          "activeTurnId": "580b6093-4b4a-47ea-b033-e70de12006ca",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789171855756,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789171851889
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "5cd2bfaf55540725fd5aaf1f2b61bd6a510fc283d7ccff0e30489d28b11cab49",
+          "filesSha256": "e89739e376ee923e4136109f99c2ea9fc63c936fd66e60d55c261a4b9066f5d8",
+          "committedAt": 1789171842454
+        },
+        "file": {
+          "path": "acceptance-s162120260911T235939704Zb97c3039-turn-01.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "5cd2bfaf55540725fd5aaf1f2b61bd6a510fc283d7ccff0e30489d28b11cab49",
+          "filesSha256": "e89739e376ee923e4136109f99c2ea9fc63c936fd66e60d55c261a4b9066f5d8",
+          "committedAt": 1789171842454
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260911T235939704Zb97c3039-turn-01.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "turnId": "e1e24492-6790-4520-968d-f50db8af774b",
+      "filePath": "acceptance-s162120260911T235939704Zb97c3039-turn-02.txt",
+      "nonce": "ce29c419c3e226eda1f07e34fb348bc0",
+      "messageSha256": "2411759b6086b4ad06b13bd94ac66b7b1f630bc3967bca9c7ce99c6b39c39aef",
+      "assistantNonceConfirmation": true,
+      "revisionId": "f2321690d973af736160cfcb8ed88c4901b2c6db378655076fe059454f454d06",
+      "checkpoint": {
+        "revisionId": "f2321690d973af736160cfcb8ed88c4901b2c6db378655076fe059454f454d06",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/e1e24492-6790-4520-968d-f50db8af774b/d4b8f8fc-83f7-49f2-ac26-681084494a2d.json",
+        "filesSha256": "719070f65f665bc0e164cbe1938f1d721ea73ff03ba9cb682609ccb493184517",
+        "sessionSha256": "58e90e91bba73cbf7d033cb71058f4a36df94fe605d79fb29635177ed49460c2",
+        "committedAt": 1789172257371
+      },
+      "toolEvents": [
+        {
+          "sequence": 830,
+          "eventId": "pi-dae9de1ed22419cc8d382a80c772ad6d215316fb4c15559ee24cb0daa02eea43",
+          "toolCallId": "call_3xXLbWhHL6A6uzQpMyXJeQpO|fc_020fdb76186cad68016aa49a0d24b087d2abe4c4115f2ea198",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 835,
+          "eventId": "pi-0aaca6b6c906d281e1ebc9923116bb28b0b392594544de75cd9eb625ac268248",
+          "toolCallId": "call_FLNV10ddLhnvbFnJ0FhNiYR1|fc_020fdb76186cad68016aa49a12d8c487d2bce2b64ced4010b5",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789171868949,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789171867527
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789171876898,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789171878538
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789171897004,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789171896460
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789171911318,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789171908961
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789171919281,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789171920830
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789171935429,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789171939514
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789171952756,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789171950901
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789171966865,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789171968991
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789171980798,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789171980970
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789171996227,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789171993829
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172010078,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789172012697
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172024297,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789172024771
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172038030,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789172039008
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172051552,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789172054104
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172065528,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789172065280
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172085754,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789172084676
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172092521,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789172096201
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172106482,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789172109143
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172120018,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789172122977
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172134034,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789172135722
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172155730,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789172154599
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172162623,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789172165686
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172176018,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789172176910
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172196244,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789172197353
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172209619,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789171844592,
+            "nextAttemptAt": 1789172209238
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172223292,
+          "turnStatus": "running",
+          "activeTurnId": "e1e24492-6790-4520-968d-f50db8af774b",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172270958,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172266447
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "f2321690d973af736160cfcb8ed88c4901b2c6db378655076fe059454f454d06",
+          "filesSha256": "719070f65f665bc0e164cbe1938f1d721ea73ff03ba9cb682609ccb493184517",
+          "committedAt": 1789172257371
+        },
+        "file": {
+          "path": "acceptance-s162120260911T235939704Zb97c3039-turn-02.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "f2321690d973af736160cfcb8ed88c4901b2c6db378655076fe059454f454d06",
+          "filesSha256": "719070f65f665bc0e164cbe1938f1d721ea73ff03ba9cb682609ccb493184517",
+          "committedAt": 1789172257371
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260911T235939704Zb97c3039-turn-02.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 3,
+      "turnId": "0b1141aa-84d8-4733-b67b-3f0e55a61136",
+      "filePath": "acceptance-s162120260911T235939704Zb97c3039-turn-03.txt",
+      "nonce": "c837d7e97048f96d0814f6b13773973d",
+      "messageSha256": "26363886812494c7f62ca4d0335814d39c8c96d4933babf2e74b0fa11dd4cc32",
+      "assistantNonceConfirmation": true,
+      "revisionId": "16442180462eae77a255f139b1d91d3902868a952dd4eb0a5042ad4f8fccb500",
+      "checkpoint": {
+        "revisionId": "16442180462eae77a255f139b1d91d3902868a952dd4eb0a5042ad4f8fccb500",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/0b1141aa-84d8-4733-b67b-3f0e55a61136/c6a1c0a6-a440-47cb-87bd-878053393f09.json",
+        "filesSha256": "134510fe8cca711239a3b2543aaaac96a6be66c8b2ac6a1e08e584b3fcd5c505",
+        "sessionSha256": "8d0555eab1f1975c75cf2f999df6ba164d99a0e680f6758d4abd1622b431392b",
+        "committedAt": 1789172666798
+      },
+      "toolEvents": [
+        {
+          "sequence": 922,
+          "eventId": "pi-3703a632ae234f35a9586b7077140273aef20770964c1d09c0d1841dc0419082",
+          "toolCallId": "call_jiZL8cCDGtHm3iepR6vz6wYR|fc_020fdb76186cad68016aa49ba74a1c87d2a144fcc12bb2d811",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 927,
+          "eventId": "pi-8bf6b72c9f77997f6cfbe570ccffc8b75deb330da0a5c6c92589a764341ce99e",
+          "toolCallId": "call_105QHk520ds7MjqqPFK3sULw|fc_020fdb76186cad68016aa49bacd4d487d282f017fc4bacf99d",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789172284988,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172277052
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172286365,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172290660
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172299831,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172302786
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172313625,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172315251
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172327433,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172329141
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172334157,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172338922
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172347595,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172350655
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172361193,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172363236
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172375054,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172376489
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172388400,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172388203
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172401863,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172401941
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172415708,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172415494
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172422443,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172427237
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172443019,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172446205
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172456858,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172457912
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172470816,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172470528
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172491275,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172490138
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172497981,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172502708
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172511942,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172516309
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172532286,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172535399
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172545717,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172546678
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172559232,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172559773
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172565980,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172570693
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172579396,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172582979
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172593033,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172595626
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172613787,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172259306,
+            "nextAttemptAt": 1789172618055
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172627189,
+          "turnStatus": "running",
+          "activeTurnId": "0b1141aa-84d8-4733-b67b-3f0e55a61136",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172681475,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172675862
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "16442180462eae77a255f139b1d91d3902868a952dd4eb0a5042ad4f8fccb500",
+          "filesSha256": "134510fe8cca711239a3b2543aaaac96a6be66c8b2ac6a1e08e584b3fcd5c505",
+          "committedAt": 1789172666798
+        },
+        "file": {
+          "path": "acceptance-s162120260911T235939704Zb97c3039-turn-03.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "16442180462eae77a255f139b1d91d3902868a952dd4eb0a5042ad4f8fccb500",
+          "filesSha256": "134510fe8cca711239a3b2543aaaac96a6be66c8b2ac6a1e08e584b3fcd5c505",
+          "committedAt": 1789172666798
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260911T235939704Zb97c3039-turn-03.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 4,
+      "turnId": "c82fd905-f1d1-45f2-a659-d870921d9491",
+      "filePath": "acceptance-s162120260911T235939704Zb97c3039-turn-04.txt",
+      "nonce": "0e46e9281c50b903ad528f04e150bbf5",
+      "messageSha256": "e1a1896041676835c1111bdaea886d0041f8147f3ea828c9cf3dbc15d3e16b67",
+      "assistantNonceConfirmation": true,
+      "revisionId": "abdee53870a842d22d83fd129c0fc2d68320f00b746d9e255ea35d0241a8f9ca",
+      "checkpoint": {
+        "revisionId": "abdee53870a842d22d83fd129c0fc2d68320f00b746d9e255ea35d0241a8f9ca",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/c82fd905-f1d1-45f2-a659-d870921d9491/c61554fd-9d3f-466f-989f-9f544a61ba9b.json",
+        "filesSha256": "5bf9bab7c30c94a6edaa60947d20714528e1d0713ae9c98519b0f0743ef7de87",
+        "sessionSha256": "f81b1988a99df4f845942805cba23c894f7bbe7af2e7252f1581dc91ac829c1e",
+        "committedAt": 1789173085409
+      },
+      "toolEvents": [
+        {
+          "sequence": 1015,
+          "eventId": "pi-c510e36c7020043f9a1abdc0578328340ff27bdca07e0292edd69c76aedea2b8",
+          "toolCallId": "call_CQkNEm0X73kiQoVd2KbRHqSQ|fc_020fdb76186cad68016aa49d498ed887d2bd640174ad66abf9",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 1020,
+          "eventId": "pi-993fea9c01157c5df09d6fbd82aa908db40021f6d2a7d89e9480d4088426f7d6",
+          "toolCallId": "call_v5MHofwm4Eq0P9ePmFwbGW8P|fc_020fdb76186cad68016aa49d4ec97087d28cd0e2be0fc85ce0",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789172696254,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172690059
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172697562,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172702422
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172711181,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172715958
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172724603,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172728191
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172738257,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172740370
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172751651,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172752550
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172764996,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172765791
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172778436,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172777906
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172791801,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172790264
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172798441,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172801887
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172818817,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172822183
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172852304,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172855194
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172866163,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172866173
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172886273,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172886587
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172899716,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172898970
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172907464,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172911216
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172927569,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172931745
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172941086,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172943410
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172954483,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172955079
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172975494,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172975353
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172983261,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172986900
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789172996895,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789172998372
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173017051,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789173018384
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173030686,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789172668691,
+            "nextAttemptAt": 1789173029351
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173037410,
+          "turnStatus": "running",
+          "activeTurnId": "c82fd905-f1d1-45f2-a659-d870921d9491",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173099334,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173094396
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "abdee53870a842d22d83fd129c0fc2d68320f00b746d9e255ea35d0241a8f9ca",
+          "filesSha256": "5bf9bab7c30c94a6edaa60947d20714528e1d0713ae9c98519b0f0743ef7de87",
+          "committedAt": 1789173085409
+        },
+        "file": {
+          "path": "acceptance-s162120260911T235939704Zb97c3039-turn-04.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "abdee53870a842d22d83fd129c0fc2d68320f00b746d9e255ea35d0241a8f9ca",
+          "filesSha256": "5bf9bab7c30c94a6edaa60947d20714528e1d0713ae9c98519b0f0743ef7de87",
+          "committedAt": 1789173085409
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260911T235939704Zb97c3039-turn-04.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 5,
+      "turnId": "4bbd78c9-f110-4150-9c1c-145133fba916",
+      "filePath": "acceptance-s162120260911T235939704Zb97c3039-turn-05.txt",
+      "nonce": "33467a66e1a9e381a55ace2199c7374d",
+      "messageSha256": "5abe2d62c102d89b35142c5e5c21e2443f3b0ca7db8f702834de4025e6aa70f4",
+      "assistantNonceConfirmation": true,
+      "revisionId": "6ff1d069d0840b2d9fe94fce2137b37d830ce69619b277be50cee95e53a29b06",
+      "checkpoint": {
+        "revisionId": "6ff1d069d0840b2d9fe94fce2137b37d830ce69619b277be50cee95e53a29b06",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/4bbd78c9-f110-4150-9c1c-145133fba916/a178c6c2-96e3-48d4-868b-a2a7d1e17925.json",
+        "filesSha256": "2ef520df85abd96a29c8746ceca00304bdb82dae7b56c6c49dc0618f4aa1ca09",
+        "sessionSha256": "08c245f6be9d5fbece4c2d61702aa13c3e67be815ed5741ef92440506e56e259",
+        "committedAt": 1789173494301
+      },
+      "toolEvents": [
+        {
+          "sequence": 1108,
+          "eventId": "pi-dec40a644cf49f82a88c4c0b105109265cc0239811c3319c0b876de19f3b81ca",
+          "toolCallId": "call_Fv62ZWFv0P41EKB0essA8lN6|fc_020fdb76186cad68016aa49ee3a62c87d2978a6ae913b6e917",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 1113,
+          "eventId": "pi-c6c2c016c1e6d26efa0b4f35e121db2ffb800d85564133c310c01d0829762b22",
+          "toolCallId": "call_v0dkt9Ex3WFZZjSfzzJVUCyb|fc_020fdb76186cad68016aa49ee8f0ec87d2bc46f2782143136c",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789173113722,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173109540
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173121720,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173120152
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173141757,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173141883
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173155206,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173154788
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173168607,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173166810
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173188668,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173187791
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173202197,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173200493
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173208889,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173213377
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173229258,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173228228
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173235914,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173238629
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173249304,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173251251
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173262720,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173264694
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173283431,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173285696
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173296951,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173298637
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173310354,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173311326
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173323795,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173326033
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173337455,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173338302
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173350917,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173349603
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173357798,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173361746
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173391555,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173390522
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173398205,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173402487
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173411577,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173414433
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173424950,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173425695
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173445797,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173087090,
+            "nextAttemptAt": 1789173447833
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173459494,
+          "turnStatus": "running",
+          "activeTurnId": "4bbd78c9-f110-4150-9c1c-145133fba916",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173506450,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173503167
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "6ff1d069d0840b2d9fe94fce2137b37d830ce69619b277be50cee95e53a29b06",
+          "filesSha256": "2ef520df85abd96a29c8746ceca00304bdb82dae7b56c6c49dc0618f4aa1ca09",
+          "committedAt": 1789173494301
+        },
+        "file": {
+          "path": "acceptance-s162120260911T235939704Zb97c3039-turn-05.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "6ff1d069d0840b2d9fe94fce2137b37d830ce69619b277be50cee95e53a29b06",
+          "filesSha256": "2ef520df85abd96a29c8746ceca00304bdb82dae7b56c6c49dc0618f4aa1ca09",
+          "committedAt": 1789173494301
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260911T235939704Zb97c3039-turn-05.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 6,
+      "turnId": "80467596-11a4-44ee-9b6f-eeaf41d11a90",
+      "filePath": "acceptance-s162120260911T235939704Zb97c3039-turn-06.txt",
+      "nonce": "16f6bb9cf9e2fde8437966f1789a1e89",
+      "messageSha256": "126ce47142d6cf05bc4c29a6cbeaafb9670d6a7b39b023108bc97b679cdf7813",
+      "assistantNonceConfirmation": true,
+      "revisionId": "6e8e29e89012dfced51a6e10f3f80b732efdc42d8621432a9ccfa824753c610f",
+      "checkpoint": {
+        "revisionId": "6e8e29e89012dfced51a6e10f3f80b732efdc42d8621432a9ccfa824753c610f",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/80467596-11a4-44ee-9b6f-eeaf41d11a90/fc063dcc-c056-49f1-828f-745f2d884396.json",
+        "filesSha256": "ad20ce0ef3ee98e6dea4157a3004a0be3b7f86e83d40fd1333c711303773e207",
+        "sessionSha256": "ee4ec05be48b087b1a8f68e5cf7daeaec74c30b1c5b273583e714aa4b7579ff7",
+        "committedAt": 1789173909688
+      },
+      "toolEvents": [
+        {
+          "sequence": 1201,
+          "eventId": "pi-6bebf9f8e876795d695a053410a332e4e28d13700d78d9ff6c9e5d3ba9616f86",
+          "toolCallId": "call_yLNK7plPmSFiQBuOjyVYTviw|fc_020fdb76186cad68016aa4a082046887d2b5dda102ec9dde04",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 1206,
+          "eventId": "pi-92c7ede3563842828ac47c2b77f74c95ba5e6af630de8d3803bab74c181745d2",
+          "toolCallId": "call_aw2F1R0kZFJGBpMiauEo05Xh|fc_020fdb76186cad68016aa4a0872f7887d28b2cd3d62a576df2",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789173521798,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173525396
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173537902,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173536902
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173544610,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173548618
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173566062,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173568367
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173579688,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173579305
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173586440,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173590196
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173599845,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173603040
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173613204,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173616268
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173626917,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173628424
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173640790,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173640208
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173654456,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173653032
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173667849,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173667075
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173681146,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173679679
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173687855,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173690640
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173701208,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173704118
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173714670,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173715880
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173728267,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173727999
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173742096,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173740286
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173756555,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173754394
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173763286,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173765328
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173776992,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173776718
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173783885,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173788255
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173797323,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173801194
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173810850,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173813669
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173824371,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173825290
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173837835,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173836956
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173851311,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173496067,
+            "nextAttemptAt": 1789173851270
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173871933,
+          "turnStatus": "running",
+          "activeTurnId": "80467596-11a4-44ee-9b6f-eeaf41d11a90",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173919549,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789173919093
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "6e8e29e89012dfced51a6e10f3f80b732efdc42d8621432a9ccfa824753c610f",
+          "filesSha256": "ad20ce0ef3ee98e6dea4157a3004a0be3b7f86e83d40fd1333c711303773e207",
+          "committedAt": 1789173909688
+        },
+        "file": {
+          "path": "acceptance-s162120260911T235939704Zb97c3039-turn-06.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "6e8e29e89012dfced51a6e10f3f80b732efdc42d8621432a9ccfa824753c610f",
+          "filesSha256": "ad20ce0ef3ee98e6dea4157a3004a0be3b7f86e83d40fd1333c711303773e207",
+          "committedAt": 1789173909688
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260911T235939704Zb97c3039-turn-06.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 7,
+      "turnId": "08efdd3e-f91b-4e27-bb8b-71c9fbcba411",
+      "filePath": "acceptance-s162120260911T235939704Zb97c3039-turn-07.txt",
+      "nonce": "dfd7494cbd9e8445d767a8289aef1060",
+      "messageSha256": "aa27702b3e0e1069ec5f38a699a0cb082ecf98b80a396d2ab9d73f66db9c588a",
+      "assistantNonceConfirmation": true,
+      "revisionId": "e3fbf0ba42d833e79a54537be5ade49cdbf48834c158427f254d91c64debe352",
+      "checkpoint": {
+        "revisionId": "e3fbf0ba42d833e79a54537be5ade49cdbf48834c158427f254d91c64debe352",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/08efdd3e-f91b-4e27-bb8b-71c9fbcba411/38e99e90-696f-4220-bdfe-2aa7bb0c6b17.json",
+        "filesSha256": "30657864b6653296b9390e51ed783574eb1d3b9c7df04d4de91074e7ee26a438",
+        "sessionSha256": "eb4c983d023b285d620a24c381fe13902e7c963edb61c57d35a891b0b930ad52",
+        "committedAt": 1789174317331
+      },
+      "toolEvents": [
+        {
+          "sequence": 1295,
+          "eventId": "pi-e4ba0f4ec34fa66bc0028bc5dff6e344238272abc7537b0dabc7671bd2cec9a5",
+          "toolCallId": "call_wUkkM9fIETwiPlE8VRnTQMX5|fc_020fdb76186cad68016aa4a21aede087d2bf6e45a36270e9bd",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 1300,
+          "eventId": "pi-e4a2d12250edff7c194e6beb34221859edbcf8bbbdb7034018a2f4b07722f633",
+          "toolCallId": "call_4EEIRs64NKYNXlS6gV4mOJw6|fc_020fdb76186cad68016aa4a21fef7887d2abb351e3152c81f0",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789173935369,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789173931701
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173943545,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789173947477
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173956978,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789173959864
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173970594,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789173971807
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173984958,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789173984434
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789173998356,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174000304
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174011809,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174012602
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174025177,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174023692
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174031984,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174034656
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174045508,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174045739
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174065697,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174069157
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174079128,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174080821
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174092810,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174092605
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174099503,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174104321
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174126624,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174125623
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174133324,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174137644
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174146715,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174150618
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174160069,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174163805
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174173587,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174176930
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174187121,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174189332
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174200552,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174201494
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174213940,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174214518
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174227498,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174226535
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174234338,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174238399
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174247832,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174250439
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174261514,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789173911876,
+            "nextAttemptAt": 1789174261200
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174281623,
+          "turnStatus": "running",
+          "activeTurnId": "08efdd3e-f91b-4e27-bb8b-71c9fbcba411",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174329772,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174326483
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "e3fbf0ba42d833e79a54537be5ade49cdbf48834c158427f254d91c64debe352",
+          "filesSha256": "30657864b6653296b9390e51ed783574eb1d3b9c7df04d4de91074e7ee26a438",
+          "committedAt": 1789174317331
+        },
+        "file": {
+          "path": "acceptance-s162120260911T235939704Zb97c3039-turn-07.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "e3fbf0ba42d833e79a54537be5ade49cdbf48834c158427f254d91c64debe352",
+          "filesSha256": "30657864b6653296b9390e51ed783574eb1d3b9c7df04d4de91074e7ee26a438",
+          "committedAt": 1789174317331
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260911T235939704Zb97c3039-turn-07.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 8,
+      "turnId": "2b465ac0-9b15-49b2-ab2b-2ee21a121f66",
+      "filePath": "acceptance-s162120260911T235939704Zb97c3039-turn-08.txt",
+      "nonce": "1dab5cc56d9146b24f6fe59e5d1a43f3",
+      "messageSha256": "ee1c5c96cc05b2b1ac05ae9da61ffadae84c078b90e726a55fea7633412a72a7",
+      "assistantNonceConfirmation": true,
+      "revisionId": "08345106d8bd9957646caee8458d14f6380dd701962537d605f7882fb00b97a6",
+      "checkpoint": {
+        "revisionId": "08345106d8bd9957646caee8458d14f6380dd701962537d605f7882fb00b97a6",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/2b465ac0-9b15-49b2-ab2b-2ee21a121f66/9fa46084-5ebd-4e67-8f63-09bdd68a299c.json",
+        "filesSha256": "6d4f35710730da3986f6e3c0c88b5822c0e51f2bc9fb8761ec9879ddf0c1e671",
+        "sessionSha256": "c13ec24e31c6129c725aaa99b433558f680f449b6fe4d94332a9268baf81ea61",
+        "committedAt": 1789174720574
+      },
+      "toolEvents": [
+        {
+          "sequence": 1388,
+          "eventId": "pi-f00469133e697f8e409f543e3fa0b3b8b4ba2a289e6225b0e2602c46c915c053",
+          "toolCallId": "call_rG5kmtKuC2kiiJhwUJJviaBq|fc_020fdb76186cad68016aa4a3ae752487d28742ea698986751e",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 1393,
+          "eventId": "pi-f887b3744af193425bfe4ad13665de9cfda32242ffb70f66ed0e72a5a9c50271",
+          "toolCallId": "call_ogq9SWlVRbrgvEjwIeFWeg9P|fc_020fdb76186cad68016aa4a3b3217c87d289a1bd21ef35dcca",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789174345491,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174349156
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174374415,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174372538
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174381185,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174384356
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174394776,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174396075
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174408541,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174407375
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174428806,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174427361
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174435494,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174439222
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174449094,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174453382
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174462790,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174466398
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174483189,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174481889
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174489988,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174494120
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174504467,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174505703
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174517915,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174519946
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174538584,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174541262
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174552066,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174553045
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174565586,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174564051
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174579033,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174578463
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174599423,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174601087
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174613148,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174614443
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174626585,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174626224
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174640145,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174639548
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174660334,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174662500
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174674016,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174319173,
+            "nextAttemptAt": 1789174674513
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174689126,
+          "turnStatus": "running",
+          "activeTurnId": "2b465ac0-9b15-49b2-ab2b-2ee21a121f66",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174730401,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174729400
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "08345106d8bd9957646caee8458d14f6380dd701962537d605f7882fb00b97a6",
+          "filesSha256": "6d4f35710730da3986f6e3c0c88b5822c0e51f2bc9fb8761ec9879ddf0c1e671",
+          "committedAt": 1789174720574
+        },
+        "file": {
+          "path": "acceptance-s162120260911T235939704Zb97c3039-turn-08.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "08345106d8bd9957646caee8458d14f6380dd701962537d605f7882fb00b97a6",
+          "filesSha256": "6d4f35710730da3986f6e3c0c88b5822c0e51f2bc9fb8761ec9879ddf0c1e671",
+          "committedAt": 1789174720574
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260911T235939704Zb97c3039-turn-08.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 9,
+      "turnId": "c2010e92-1d28-4891-9adb-7890bc008c2b",
+      "filePath": "acceptance-s162120260911T235939704Zb97c3039-turn-09.txt",
+      "nonce": "94aa2d950a9c8393b738838988c62d1d",
+      "messageSha256": "2f13b0f612bfddaddcfe9779e23b8b12f2cc410dd22f6253db74e3ec18bc967a",
+      "assistantNonceConfirmation": true,
+      "revisionId": "8362a4e3b7e3f229088d61fe858329a6102e387ad3cb21debd9fa55a0dca5b7f",
+      "checkpoint": {
+        "revisionId": "8362a4e3b7e3f229088d61fe858329a6102e387ad3cb21debd9fa55a0dca5b7f",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/c2010e92-1d28-4891-9adb-7890bc008c2b/ead66e62-bd9c-4070-bca7-1ea0988ec3e2.json",
+        "filesSha256": "9906ab6a889f4672ada4d130a04e7aa346b1d38858699f3be47d7a0a6fa3ff23",
+        "sessionSha256": "c76f270a8b21b8d688a5acb69c857d99a708ade096f98fba1e705ec6779ed1ed",
+        "committedAt": 1789175126906
+      },
+      "toolEvents": [
+        {
+          "sequence": 1484,
+          "eventId": "pi-4edf8240cd9df0f1e01c9373e33f312db7e1da8ff7acf5ed9f6356425b134a67",
+          "toolCallId": "call_okl6VgLmYepW4V0sgiYrWXVB|fc_020fdb76186cad68016aa4a543ada487d2ae0b60b6f3eb950e",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 1489,
+          "eventId": "pi-8f4a9f786ff59e447e6d949ba52aafc03a7538dca82383798303b40e11264abc",
+          "toolCallId": "call_oOGJbl7Z2ObTnjcYHB6lkMuW|fc_020fdb76186cad68016aa4a548dde087d287e2c59d54fb4bcd",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789174748015,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174752790
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174762874,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174764278
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174776279,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174776554
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174789905,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174790971
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174805692,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174803839
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174819177,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174818848
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174826126,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174830662
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174839836,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174841783
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174853267,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174853420
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174873515,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174876139
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174887230,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174886962
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174893930,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174897816
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174907838,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174909809
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174922074,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174922813
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174935624,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174939048
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174949155,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174952979
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174962547,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174964731
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174976787,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174975705
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789174990401,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789174988600
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175003946,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789175005464
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175017435,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789175018229
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175031958,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789175029815
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175038729,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789175041314
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175065976,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789175067429
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175079539,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789174722306,
+            "nextAttemptAt": 1789175078936
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175093372,
+          "turnStatus": "running",
+          "activeTurnId": "c2010e92-1d28-4891-9adb-7890bc008c2b",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175140795,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175136208
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "8362a4e3b7e3f229088d61fe858329a6102e387ad3cb21debd9fa55a0dca5b7f",
+          "filesSha256": "9906ab6a889f4672ada4d130a04e7aa346b1d38858699f3be47d7a0a6fa3ff23",
+          "committedAt": 1789175126906
+        },
+        "file": {
+          "path": "acceptance-s162120260911T235939704Zb97c3039-turn-09.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "8362a4e3b7e3f229088d61fe858329a6102e387ad3cb21debd9fa55a0dca5b7f",
+          "filesSha256": "9906ab6a889f4672ada4d130a04e7aa346b1d38858699f3be47d7a0a6fa3ff23",
+          "committedAt": 1789175126906
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260911T235939704Zb97c3039-turn-09.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 10,
+      "turnId": "c3f9783c-ad8b-4506-8a90-90bf2656ce80",
+      "filePath": "acceptance-s162120260911T235939704Zb97c3039-turn-10.txt",
+      "nonce": "5b07002ebd8986bc0bd11cf765cab8a6",
+      "messageSha256": "595d1ee37478ae6c432ab3fdcf47bb17eb2b4e8bf8a6ba45601322994beae5d3",
+      "assistantNonceConfirmation": true,
+      "revisionId": "cdde1295e073d94bc9d014946e120eea7f101f529dfbcb157ba848fa52658008",
+      "checkpoint": {
+        "revisionId": "cdde1295e073d94bc9d014946e120eea7f101f529dfbcb157ba848fa52658008",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/c3f9783c-ad8b-4506-8a90-90bf2656ce80/702cb41d-a03b-40de-97dd-f168fcdaffeb.json",
+        "filesSha256": "f2de71c4a9b988df2f9144f7fd5d20b9c9d1c4fd789c33b2d899074aaf106d15",
+        "sessionSha256": "35387831b1a312d23f462624c3515b85748f4dd55b236181cb70e3aafaf511bd",
+        "committedAt": 1789175532941
+      },
+      "toolEvents": [
+        {
+          "sequence": 1577,
+          "eventId": "pi-83ad5db66a4b0529e085b6c5b6976db03ebf745c146d01eaa05887a15cef1082",
+          "toolCallId": "call_8uPRxMGMqngunqSSu7V89Fma|fc_020fdb76186cad68016aa4a6d8b9fc87d2b4b5219ac04e6286",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 1582,
+          "eventId": "pi-1a55baba6582fe49325f5b9f84b4a537bb65f7f34b358fcd1efd0a30a51186ad",
+          "toolCallId": "call_hpmZwlmGSC72WbVRcAQZmUdb|fc_020fdb76186cad68016aa4a6ddf95c87d2a10d82d24205f263",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789175158994,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175150805
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175166998,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175168019
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175187322,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175187231
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175201093,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175203614
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175235250,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175238082
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175249674,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175248546
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175256820,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175259641
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175270200,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175270778
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175304232,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175305823
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175331595,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175330707
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175338349,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175342361
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175352168,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175354709
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175365653,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175366470
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175392854,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175392217
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175399649,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175404066
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175413063,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175415319
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175426971,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175427174
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175440698,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175440183
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175454123,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175456148
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175469161,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175468911
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175482731,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175128964,
+            "nextAttemptAt": 1789175483714
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175496298,
+          "turnStatus": "running",
+          "activeTurnId": "c3f9783c-ad8b-4506-8a90-90bf2656ce80",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789175544650,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789175534752,
+            "nextAttemptAt": 1789175542262
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "cdde1295e073d94bc9d014946e120eea7f101f529dfbcb157ba848fa52658008",
+          "filesSha256": "f2de71c4a9b988df2f9144f7fd5d20b9c9d1c4fd789c33b2d899074aaf106d15",
+          "committedAt": 1789175532941
+        },
+        "file": {
+          "path": "acceptance-s162120260911T235939704Zb97c3039-turn-10.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "cdde1295e073d94bc9d014946e120eea7f101f529dfbcb157ba848fa52658008",
+          "filesSha256": "f2de71c4a9b988df2f9144f7fd5d20b9c9d1c4fd789c33b2d899074aaf106d15",
+          "committedAt": 1789175532941
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260911T235939704Zb97c3039-turn-10.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    }
+  ],
+  "finalSnapshot": {
+    "schemaVersion": 3,
+    "scope": {
+      "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+      "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+      "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+      "workspaceGeneration": 1
+    },
+    "nextSequence": 1663,
+    "activeTurnId": null,
+    "resourceWait": null,
+    "releaseHold": null,
+    "recoveryHold": null,
+    "sessions": {
+      "352f9b24-724c-4a6e-9338-c7354f3df7cd": {
+        "id": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "title": "Session 1",
+        "createdAt": 1789114833461,
+        "updatedAt": 1789175542029,
+        "head": {
+          "revisionId": "cdde1295e073d94bc9d014946e120eea7f101f529dfbcb157ba848fa52658008",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/c3f9783c-ad8b-4506-8a90-90bf2656ce80/702cb41d-a03b-40de-97dd-f168fcdaffeb.json",
+          "filesSha256": "f2de71c4a9b988df2f9144f7fd5d20b9c9d1c4fd789c33b2d899074aaf106d15",
+          "sessionSha256": "35387831b1a312d23f462624c3515b85748f4dd55b236181cb70e3aafaf511bd",
+          "committedAt": 1789175532941
+        }
+      }
+    },
+    "turns": {
+      "1b9bfc57-ed8d-4d08-be33-f4062c431425": {
+        "id": "1b9bfc57-ed8d-4d08-be33-f4062c431425",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "创建一个最小但可运行的 Python 单服务台排队仿真项目。使用固定随机种子 42，生成 requirements.txt、main.py、preview.json 和 README.md；main.py 运行后输出可复现的平均等待时间，preview.json 声明可启动的网页预览。请实际写入文件并运行必要检查。",
+        "status": "completed",
+        "createdAt": 1789114876256,
+        "updatedAt": 1789114934772,
+        "startedAt": 1789114876514,
+        "finishedAt": 1789114934772,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "f1ded14bd9043361a75f24c0b8671dab3271794ea43a16f5772ea8918804a6fa",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/1b9bfc57-ed8d-4d08-be33-f4062c431425/08526765-640f-40df-826c-113e2c4075a6.json",
+          "filesSha256": "4cd9e7ff1673c4017068c831e9b232cbf82719cbe92796a1d25758292487cda8",
+          "sessionSha256": "51c3f648a2b632e434856a8fca6711976de04535fed3508ab7b8ffaaa8556d72",
+          "committedAt": 1789114931214
+        },
+        "cancelDisposition": null,
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "dd941e01-83fc-4f2a-acca-a004f123f542": {
+        "id": "dd941e01-83fc-4f2a-acca-a004f123f542",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "修复验证：请创建或覆盖 tool-bridge-v2-smoke.txt，内容必须精确为 TOOL_BRIDGE_V2_OK；然后读取该文件确认内容，并运行一个只读命令验证文件 SHA-256。请在回复中报告实际完成的步骤。",
+        "status": "completed",
+        "createdAt": 1789116657350,
+        "updatedAt": 1789116729608,
+        "startedAt": 1789116657350,
+        "finishedAt": 1789116729608,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "474d0b9966d0cca19c6268e1e76a9bd63fe3174f3cee9ad4de5ebadef9b3ee60",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/dd941e01-83fc-4f2a-acca-a004f123f542/c575ec5c-1b01-495a-8e78-c3517d5c969c.json",
+          "filesSha256": "5bcf29d970bf585af8a3e403722ef36c0ec882e5c119809b7369642e57685ad7",
+          "sessionSha256": "00fa41dd4f1759e46c078db2dd69361b597693db6e3397183f000c28aaadfd01",
+          "committedAt": 1789116726983
+        },
+        "cancelDisposition": null,
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "b19aee67-983c-4af2-b534-fdbb0e78522f": {
+        "id": "b19aee67-983c-4af2-b534-fdbb0e78522f",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "连续验收 2/10：创建 acceptance-turn-02.txt，内容精确为 PASS_02；读取确认内容后结束。",
+        "status": "failed",
+        "createdAt": 1789116774904,
+        "updatedAt": 1789117043076,
+        "startedAt": 1789116774904,
+        "finishedAt": 1789117043076,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": 1789117042306,
+        "executionOutcome": "interrupted",
+        "errorCode": "turn-native-execution-absent",
+        "persistenceOutcome": "failed",
+        "persistenceErrorCode": "turn-checkpoint-unknown",
+        "checkpoint": null,
+        "cancelDisposition": "interrupted",
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "767407ce-ddaf-4dc9-93b6-5bfac1e15915": {
+        "id": "767407ce-ddaf-4dc9-93b6-5bfac1e15915",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "连续验收 1/10（原子释放修复后）：创建 acceptance-atomic-01.txt，内容精确为 ATOMIC_PASS_01；读取确认内容后结束。",
+        "status": "completed",
+        "createdAt": 1789118268736,
+        "updatedAt": 1789118328458,
+        "startedAt": 1789118268736,
+        "finishedAt": 1789118328458,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "6dc7e5a75310596e1312bca2e40b41b43e1db25dc5bf7019aca9a7b24865c270",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/767407ce-ddaf-4dc9-93b6-5bfac1e15915/28d510fc-270c-4bf0-bd1b-ec47e278b6a0.json",
+          "filesSha256": "89abc9419be02dd672a669e848e7ee21b3f4612cc4ef4bf774286bdc0dae2d66",
+          "sessionSha256": "63167e43ac44f8c084d052660bb6e15f52d080ff7beea56f5446ed8c68661a2c",
+          "committedAt": 1789118325202
+        },
+        "cancelDisposition": null,
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "e1247315-259b-48b1-b12f-b5c3de91581f": {
+        "id": "e1247315-259b-48b1-b12f-b5c3de91581f",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "连续验收 2/10（原子释放修复后）：创建 acceptance-atomic-02.txt，内容精确为 ATOMIC_PASS_02；读取确认内容后结束。",
+        "status": "failed",
+        "createdAt": 1789118433366,
+        "updatedAt": 1789118697101,
+        "startedAt": 1789118433366,
+        "finishedAt": 1789118697101,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": 1789118696236,
+        "executionOutcome": "interrupted",
+        "errorCode": "turn-native-execution-absent",
+        "persistenceOutcome": "failed",
+        "persistenceErrorCode": "turn-checkpoint-unknown",
+        "checkpoint": null,
+        "cancelDisposition": "interrupted",
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "636081f7-f1ab-463c-9cd0-f819f15bb34c": {
+        "id": "636081f7-f1ab-463c-9cd0-f819f15bb34c",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Use project_write to create docs/acceptance/s162120260911T200131602Z6a30e3b9-turn-01.txt with the exact content 45bc61790e3f339fd91ab8be5c664a9c. Then use project_read to read that same file and verify the content. Do not modify any other file.",
+        "status": "failed",
+        "createdAt": 1789157528745,
+        "updatedAt": 1789158379763,
+        "startedAt": 1789157529389,
+        "finishedAt": 1789158379763,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "failed",
+        "errorCode": "turn-native-start-unresolved",
+        "persistenceOutcome": "failed",
+        "persistenceErrorCode": "turn-checkpoint-unknown",
+        "checkpoint": null,
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "400bb447-572b-441b-9216-3ea82382dcc6": {
+        "id": "400bb447-572b-441b-9216-3ea82382dcc6",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Use project_write to create docs/acceptance/s162120260911T204141427Z3addec62-turn-01.txt with the exact content 46b6ff848323f70bb98b5a6eb5b39d04. Then use project_read to read that same file and verify the content. Do not modify any other file.",
+        "status": "completed",
+        "createdAt": 1789159811707,
+        "updatedAt": 1789159851838,
+        "startedAt": 1789159812238,
+        "finishedAt": 1789159851838,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "848c16b692041c266ecfadc8880a83e2c084720cbb4e9a240272d8fdaf90cbcc",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/400bb447-572b-441b-9216-3ea82382dcc6/613a29d2-47d6-49e7-b253-6ac6139e5b47.json",
+          "filesSha256": "89abc9419be02dd672a669e848e7ee21b3f4612cc4ef4bf774286bdc0dae2d66",
+          "sessionSha256": "30cdbe4959fa937d45bcb9c20b0de9ff4ccbec44bea0d30cd2fa62c7b539aa19",
+          "committedAt": 1789159845861
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "54293f5a-0c03-4029-879e-ee7e190d7d69": {
+        "id": "54293f5a-0c03-4029-879e-ee7e190d7d69",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create docs/acceptance/s162120260911T224046575Zd208e228-turn-01.txt with the exact content d1551c9a3cd7444720a543e4996c4741. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include d1551c9a3cd7444720a543e4996c4741. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789166964306,
+        "updatedAt": 1789167001995,
+        "startedAt": 1789166964688,
+        "finishedAt": 1789167001995,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "8d8d97f6787ffc918d5d9453b508084a0aac3309fbdc514498c9a56166fde30c",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/54293f5a-0c03-4029-879e-ee7e190d7d69/a650e51c-3a38-4cbd-b065-4c74c7db39fa.json",
+          "filesSha256": "89abc9419be02dd672a669e848e7ee21b3f4612cc4ef4bf774286bdc0dae2d66",
+          "sessionSha256": "c1de77e3b110eba8c6a0251e1c621f50b7a014f8b656a54e97edb4268d1a5107",
+          "committedAt": 1789166996482
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "e8ea0f9d-d16e-45ac-9aef-eda59b5e3ec7": {
+        "id": "e8ea0f9d-d16e-45ac-9aef-eda59b5e3ec7",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T225921920Z37d3ffec-turn-01.txt with the exact content f41be14a6c88662c2b1288b0c66eaff0. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include f41be14a6c88662c2b1288b0c66eaff0. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789168211146,
+        "updatedAt": 1789168252902,
+        "startedAt": 1789168211676,
+        "finishedAt": 1789168252902,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "84db26a2469c0850beda893465564035a92b076d69768f23e1b0136e0c870e2d",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/e8ea0f9d-d16e-45ac-9aef-eda59b5e3ec7/d8db8f0a-6c00-425f-b64f-7b4b13e7e85a.json",
+          "filesSha256": "5eaed3fbc0684e1c61562250a3651e04c6c7fbe4d7f4685cc446335c06ba928e",
+          "sessionSha256": "5dfb126c9c3adf913594f1acc3500aa2a04dfc64d33372a0ec70525dbe1ca87a",
+          "committedAt": 1789168246762
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "1d3a4c5b-7b53-4aaf-b76a-361da04636c4": {
+        "id": "1d3a4c5b-7b53-4aaf-b76a-361da04636c4",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T225921920Z37d3ffec-turn-02.txt with the exact content 2da5e72ff2a4ee52a6088bec1d6102bf. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 2da5e72ff2a4ee52a6088bec1d6102bf. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789168297489,
+        "updatedAt": 1789168662746,
+        "startedAt": 1789168614953,
+        "finishedAt": 1789168662746,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "c923f1d7056e2d795df2b5b22992bb6afc2074f21b2adcccdaa1ad5a614bd392",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/1d3a4c5b-7b53-4aaf-b76a-361da04636c4/fb0ae9a9-f40c-4c58-854d-75804833d994.json",
+          "filesSha256": "ec43946a693d7f69475866b7b177c0fdae14d09fcc46a0665e2b9cea3a04b234",
+          "sessionSha256": "395309fb78947e11223dd6a8da82ce457ba6371fc82420d8b2ff4926d0e7d82c",
+          "committedAt": 1789168655963
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "94428f2e-2e1b-4238-a880-274ff96e261f": {
+        "id": "94428f2e-2e1b-4238-a880-274ff96e261f",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T225921920Z37d3ffec-turn-03.txt with the exact content 4c2ca2ac06dc1f1d1e8fd30fabdb8d61. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 4c2ca2ac06dc1f1d1e8fd30fabdb8d61. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789168677512,
+        "updatedAt": 1789169083500,
+        "startedAt": 1789169031924,
+        "finishedAt": 1789169083500,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "559bad50ae473d47df0ff9815a66fadff91a042ba00bf9322226fd47ff2dba7d",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/94428f2e-2e1b-4238-a880-274ff96e261f/7eebc0cc-6722-4eaa-8ef9-ee182eb330b1.json",
+          "filesSha256": "473574a44d81058f2585b8af4087de3a3c66876fa9deccf9ae648530f7767b7e",
+          "sessionSha256": "4d6dd1cd324a4c4ceed60c5454712a6d276bd1e7d92397003382843eee033651",
+          "committedAt": 1789169077080
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "1dc56275-a60f-49f5-bbdb-8e9d31111ef9": {
+        "id": "1dc56275-a60f-49f5-bbdb-8e9d31111ef9",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T225921920Z37d3ffec-turn-04.txt with the exact content 0648da7a0dda3674b0828e0ba3bfa09f. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 0648da7a0dda3674b0828e0ba3bfa09f. If any tool call fails, report the failure and stop without retrying.",
+        "status": "cancelled",
+        "createdAt": 1789169097011,
+        "updatedAt": 1789169398350,
+        "startedAt": null,
+        "finishedAt": 1789169398350,
+        "runtimeGeneration": null,
+        "cancelRequestedAt": 1789169398350,
+        "cancelDisposition": "cancelled",
+        "executionOutcome": "cancelled",
+        "errorCode": null,
+        "persistenceOutcome": null,
+        "persistenceErrorCode": null,
+        "checkpoint": null,
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "580b6093-4b4a-47ea-b033-e70de12006ca": {
+        "id": "580b6093-4b4a-47ea-b033-e70de12006ca",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-01.txt with the exact content e6189011de0d8b16fb8791dba0118f79. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include e6189011de0d8b16fb8791dba0118f79. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789171804208,
+        "updatedAt": 1789171849341,
+        "startedAt": 1789171805569,
+        "finishedAt": 1789171849341,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "5cd2bfaf55540725fd5aaf1f2b61bd6a510fc283d7ccff0e30489d28b11cab49",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/580b6093-4b4a-47ea-b033-e70de12006ca/c622daa7-1111-4c43-838c-d19deaa9dad1.json",
+          "filesSha256": "e89739e376ee923e4136109f99c2ea9fc63c936fd66e60d55c261a4b9066f5d8",
+          "sessionSha256": "035e161bc6ad0a544dbe17ede3f9a1ddbc6714c04d06bf63e3e3ef24911415be",
+          "committedAt": 1789171842454
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "e1e24492-6790-4520-968d-f50db8af774b": {
+        "id": "e1e24492-6790-4520-968d-f50db8af774b",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-02.txt with the exact content ce29c419c3e226eda1f07e34fb348bc0. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include ce29c419c3e226eda1f07e34fb348bc0. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789171867605,
+        "updatedAt": 1789172264347,
+        "startedAt": 1789172217378,
+        "finishedAt": 1789172264347,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "f2321690d973af736160cfcb8ed88c4901b2c6db378655076fe059454f454d06",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/e1e24492-6790-4520-968d-f50db8af774b/d4b8f8fc-83f7-49f2-ac26-681084494a2d.json",
+          "filesSha256": "719070f65f665bc0e164cbe1938f1d721ea73ff03ba9cb682609ccb493184517",
+          "sessionSha256": "58e90e91bba73cbf7d033cb71058f4a36df94fe605d79fb29635177ed49460c2",
+          "committedAt": 1789172257371
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "0b1141aa-84d8-4733-b67b-3f0e55a61136": {
+        "id": "0b1141aa-84d8-4733-b67b-3f0e55a61136",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-03.txt with the exact content c837d7e97048f96d0814f6b13773973d. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include c837d7e97048f96d0814f6b13773973d. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789172283524,
+        "updatedAt": 1789172674359,
+        "startedAt": 1789172626912,
+        "finishedAt": 1789172674359,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "16442180462eae77a255f139b1d91d3902868a952dd4eb0a5042ad4f8fccb500",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/0b1141aa-84d8-4733-b67b-3f0e55a61136/c6a1c0a6-a440-47cb-87bd-878053393f09.json",
+          "filesSha256": "134510fe8cca711239a3b2543aaaac96a6be66c8b2ac6a1e08e584b3fcd5c505",
+          "sessionSha256": "8d0555eab1f1975c75cf2f999df6ba164d99a0e680f6758d4abd1622b431392b",
+          "committedAt": 1789172666798
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "c82fd905-f1d1-45f2-a659-d870921d9491": {
+        "id": "c82fd905-f1d1-45f2-a659-d870921d9491",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-04.txt with the exact content 0e46e9281c50b903ad528f04e150bbf5. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 0e46e9281c50b903ad528f04e150bbf5. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789172694858,
+        "updatedAt": 1789173092372,
+        "startedAt": 1789173036322,
+        "finishedAt": 1789173092372,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "abdee53870a842d22d83fd129c0fc2d68320f00b746d9e255ea35d0241a8f9ca",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/c82fd905-f1d1-45f2-a659-d870921d9491/c61554fd-9d3f-466f-989f-9f544a61ba9b.json",
+          "filesSha256": "5bf9bab7c30c94a6edaa60947d20714528e1d0713ae9c98519b0f0743ef7de87",
+          "sessionSha256": "f81b1988a99df4f845942805cba23c894f7bbe7af2e7252f1581dc91ac829c1e",
+          "committedAt": 1789173085409
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "4bbd78c9-f110-4150-9c1c-145133fba916": {
+        "id": "4bbd78c9-f110-4150-9c1c-145133fba916",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-05.txt with the exact content 33467a66e1a9e381a55ace2199c7374d. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 33467a66e1a9e381a55ace2199c7374d. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789173112406,
+        "updatedAt": 1789173501042,
+        "startedAt": 1789173455405,
+        "finishedAt": 1789173501042,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "6ff1d069d0840b2d9fe94fce2137b37d830ce69619b277be50cee95e53a29b06",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/4bbd78c9-f110-4150-9c1c-145133fba916/a178c6c2-96e3-48d4-868b-a2a7d1e17925.json",
+          "filesSha256": "2ef520df85abd96a29c8746ceca00304bdb82dae7b56c6c49dc0618f4aa1ca09",
+          "sessionSha256": "08c245f6be9d5fbece4c2d61702aa13c3e67be815ed5741ef92440506e56e259",
+          "committedAt": 1789173494301
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "80467596-11a4-44ee-9b6f-eeaf41d11a90": {
+        "id": "80467596-11a4-44ee-9b6f-eeaf41d11a90",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-06.txt with the exact content 16f6bb9cf9e2fde8437966f1789a1e89. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 16f6bb9cf9e2fde8437966f1789a1e89. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789173520383,
+        "updatedAt": 1789173917332,
+        "startedAt": 1789173867362,
+        "finishedAt": 1789173917332,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "6e8e29e89012dfced51a6e10f3f80b732efdc42d8621432a9ccfa824753c610f",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/80467596-11a4-44ee-9b6f-eeaf41d11a90/fc063dcc-c056-49f1-828f-745f2d884396.json",
+          "filesSha256": "ad20ce0ef3ee98e6dea4157a3004a0be3b7f86e83d40fd1333c711303773e207",
+          "sessionSha256": "ee4ec05be48b087b1a8f68e5cf7daeaec74c30b1c5b273583e714aa4b7579ff7",
+          "committedAt": 1789173909688
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "08efdd3e-f91b-4e27-bb8b-71c9fbcba411": {
+        "id": "08efdd3e-f91b-4e27-bb8b-71c9fbcba411",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-07.txt with the exact content dfd7494cbd9e8445d767a8289aef1060. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include dfd7494cbd9e8445d767a8289aef1060. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789173934011,
+        "updatedAt": 1789174324887,
+        "startedAt": 1789174279526,
+        "finishedAt": 1789174324887,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "e3fbf0ba42d833e79a54537be5ade49cdbf48834c158427f254d91c64debe352",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/08efdd3e-f91b-4e27-bb8b-71c9fbcba411/38e99e90-696f-4220-bdfe-2aa7bb0c6b17.json",
+          "filesSha256": "30657864b6653296b9390e51ed783574eb1d3b9c7df04d4de91074e7ee26a438",
+          "sessionSha256": "eb4c983d023b285d620a24c381fe13902e7c963edb61c57d35a891b0b930ad52",
+          "committedAt": 1789174317331
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "2b465ac0-9b15-49b2-ab2b-2ee21a121f66": {
+        "id": "2b465ac0-9b15-49b2-ab2b-2ee21a121f66",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-08.txt with the exact content 1dab5cc56d9146b24f6fe59e5d1a43f3. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 1dab5cc56d9146b24f6fe59e5d1a43f3. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789174344114,
+        "updatedAt": 1789174728931,
+        "startedAt": 1789174681729,
+        "finishedAt": 1789174728931,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "08345106d8bd9957646caee8458d14f6380dd701962537d605f7882fb00b97a6",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/2b465ac0-9b15-49b2-ab2b-2ee21a121f66/9fa46084-5ebd-4e67-8f63-09bdd68a299c.json",
+          "filesSha256": "6d4f35710730da3986f6e3c0c88b5822c0e51f2bc9fb8761ec9879ddf0c1e671",
+          "sessionSha256": "c13ec24e31c6129c725aaa99b433558f680f449b6fe4d94332a9268baf81ea61",
+          "committedAt": 1789174720574
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "c2010e92-1d28-4891-9adb-7890bc008c2b": {
+        "id": "c2010e92-1d28-4891-9adb-7890bc008c2b",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-09.txt with the exact content 94aa2d950a9c8393b738838988c62d1d. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 94aa2d950a9c8393b738838988c62d1d. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789174746567,
+        "updatedAt": 1789175135943,
+        "startedAt": 1789175086244,
+        "finishedAt": 1789175135943,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "8362a4e3b7e3f229088d61fe858329a6102e387ad3cb21debd9fa55a0dca5b7f",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/c2010e92-1d28-4891-9adb-7890bc008c2b/ead66e62-bd9c-4070-bca7-1ea0988ec3e2.json",
+          "filesSha256": "9906ab6a889f4672ada4d130a04e7aa346b1d38858699f3be47d7a0a6fa3ff23",
+          "sessionSha256": "c76f270a8b21b8d688a5acb69c857d99a708ade096f98fba1e705ec6779ed1ed",
+          "committedAt": 1789175126906
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "c3f9783c-ad8b-4506-8a90-90bf2656ce80": {
+        "id": "c3f9783c-ad8b-4506-8a90-90bf2656ce80",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-10.txt with the exact content 5b07002ebd8986bc0bd11cf765cab8a6. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 5b07002ebd8986bc0bd11cf765cab8a6. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789175157564,
+        "updatedAt": 1789175542029,
+        "startedAt": 1789175490198,
+        "finishedAt": 1789175542029,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "cdde1295e073d94bc9d014946e120eea7f101f529dfbcb157ba848fa52658008",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/c3f9783c-ad8b-4506-8a90-90bf2656ce80/702cb41d-a03b-40de-97dd-f168fcdaffeb.json",
+          "filesSha256": "f2de71c4a9b988df2f9144f7fd5d20b9c9d1c4fd789c33b2d899074aaf106d15",
+          "sessionSha256": "35387831b1a312d23f462624c3515b85748f4dd55b236181cb70e3aafaf511bd",
+          "committedAt": 1789175532941
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      }
+    }
+  },
+  "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd"
+}

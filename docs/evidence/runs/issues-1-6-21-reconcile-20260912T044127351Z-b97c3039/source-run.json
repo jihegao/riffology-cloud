@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "sourceRun": "issues-1-6-21-20260911T235939704Z-b97c3039",
+  "sourceChecksumsSha256": "37cd8f7bca92233b00e74a0481a91db35a23b882db4b034d4cee67bc1c00c953",
+  "workerSourceSha": "b97c30396aac24918d634a88c244916cf45ca38d",
+  "acceptanceWorkerVersionId": "b4abf488-a4d6-4914-9229-7f062e8344f7",
+  "auditWorkerVersionId": "9477f42f-b89c-4b55-b818-425507ed8ace"
+}

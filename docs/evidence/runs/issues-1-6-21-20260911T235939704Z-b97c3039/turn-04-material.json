@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "index": 4,
+  "turnId": "c82fd905-f1d1-45f2-a659-d870921d9491",
+  "filesRevision": {
+    "revisionId": "abdee53870a842d22d83fd129c0fc2d68320f00b746d9e255ea35d0241a8f9ca",
+    "filesSha256": "5bf9bab7c30c94a6edaa60947d20714528e1d0713ae9c98519b0f0743ef7de87",
+    "committedAt": 1789173085409
+  },
+  "file": {
+    "path": "acceptance-s162120260911T235939704Zb97c3039-turn-04.txt",
+    "type": "file",
+    "size": 32,
+    "mode": 384
+  },
+  "diffRevision": {
+    "revisionId": "abdee53870a842d22d83fd129c0fc2d68320f00b746d9e255ea35d0241a8f9ca",
+    "filesSha256": "5bf9bab7c30c94a6edaa60947d20714528e1d0713ae9c98519b0f0743ef7de87",
+    "committedAt": 1789173085409
+  },
+  "diffSummary": {
+    "added": 1,
+    "modified": 0,
+    "deleted": 0
+  },
+  "diffChanges": [
+    {
+      "path": "acceptance-s162120260911T235939704Zb97c3039-turn-04.txt",
+      "change": "added",
+      "type": "file",
+      "size": 32,
+      "mode": 384
+    }
+  ]
+}
