@@ -26,10 +26,16 @@ export async function runControlledReleaseAcceptance({
   if(!SHA.test(workerSha??''))fail('controlled-release-acceptance-requires-worker-sha');
   const handoffDirectory=mkdtempSync(resolve(tmpdir(),'riffology-m3-release-acceptance-')),releaseResultPath=resolve(handoffDirectory,'release-result.json');
   let interruptedSignal=null,interruptedCode=null,closePromise=null,release=null,acceptance=null,result={schemaVersion:1,status:'blocked',phase:'initializing',reasonCode:'controlled-release-acceptance-not-started'};
-  const closeGate=()=>{
+  let closeContext=null,closeRetriedWithCandidate=false;
+  const invokeClose=candidate=>Promise.resolve(closeRunner({root,workerSha,execute:true,...candidate})).then(value=>value?.status==='passed'&&value?.gateCloseConfirmed===true?value:{...value,status:'blocked',gateCloseConfirmed:false,reasonCode:value?.reasonCode??'turn-gate-close-unconfirmed'}).catch(error=>({schemaVersion:1,status:'blocked',gateCloseConfirmed:false,reasonCode:error instanceof Error?error.message:'turn-gate-close-failed'}));
+  const closeGate=input=>{
+    if(input&&typeof input==='object')closeContext={...closeContext,...input};
     if(closePromise===null){
-      try{closePromise=Promise.resolve(closeRunner({root,workerSha,execute:true})).then(value=>value?.status==='passed'&&value?.gateCloseConfirmed===true?value:{...value,status:'blocked',gateCloseConfirmed:false,reasonCode:value?.reasonCode??'turn-gate-close-unconfirmed'}).catch(error=>({schemaVersion:1,status:'blocked',gateCloseConfirmed:false,reasonCode:error instanceof Error?error.message:'turn-gate-close-failed'}));}
+      const candidate=closeContext??{pausedCandidateVersionId:release?.pausedCandidateVersionId??null,pausedCandidateManifest:release?.predeploy?.releaseManifest??null};
+      try{closePromise=invokeClose(candidate);}
       catch(error){closePromise=Promise.resolve({schemaVersion:1,status:'blocked',gateCloseConfirmed:false,reasonCode:error instanceof Error?error.message:'turn-gate-close-failed'});}
+    }else if(input&&typeof input==='object'&&!closeRetriedWithCandidate){
+      closeRetriedWithCandidate=true;closePromise=closePromise.then(value=>value?.gateCloseConfirmed===true?value:invokeClose(closeContext));
     }
     return closePromise;
   };
@@ -38,7 +44,7 @@ export async function runControlledReleaseAcceptance({
   const exitCodes={SIGINT:130,SIGTERM:143,SIGHUP:129},handlers=new Map(Object.entries(exitCodes).map(([name,code])=>[name,()=>{if(interruptedSignal!==null)return;interruptedSignal=name;interruptedCode=code;void closeGate();}]));
   for(const [name,handler] of handlers)signalSource?.once(name,handler);
   try{
-    release=await releaseRunner({root,workerSha,secretFiles,opencodeAuthFile,execute:true,gateCloseRunner:()=>closeGate(),shouldAbort,signalSource:null,signalExit:null});
+    release=await releaseRunner({root,workerSha,secretFiles,opencodeAuthFile,execute:true,gateCloseRunner:input=>closeGate(input),shouldAbort,signalSource:null,signalExit:null});
     ensureNotInterrupted();
     if(release?.status!=='passed')result={schemaVersion:1,status:'blocked',phase:'release',reasonCode:release?.reason??release?.reasonCode??'controlled-release-blocked',release};
     else{
@@ -53,6 +59,7 @@ export async function runControlledReleaseAcceptance({
     const close=await closeGate();
     for(const [name,handler] of handlers)signalSource?.removeListener(name,handler);
     if(close.status!=='passed')result={schemaVersion:1,status:'blocked',phase:'gate-close',reasonCode:'turn-gate-close-unconfirmed',priorResult:result,release,acceptance};
+    else if(close.forwardConformant===false)result={schemaVersion:1,status:'blocked',phase:'gate-close-conformance',reasonCode:'turn-gate-closed-by-paused-candidate-fallback',priorResult:result,release,acceptance};
     result={...result,gateClose:close};
     if(result.status!=='passed'&&!acceptance?.evidenceDirectory){const evidenceDirectory=writePreopenFailureEvidence(root,workerSha,now,result,release,close);result={...result,evidenceDirectory};}
     rmSync(handoffDirectory,{recursive:true,force:true});

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {EventEmitter} from 'node:events';
-import {existsSync,mkdtempSync,readFileSync,readdirSync,rmSync,statSync} from 'node:fs';
+import {existsSync,mkdirSync,mkdtempSync,readFileSync,readdirSync,rmSync,statSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {runControlledReleaseAcceptance} from '../../scripts/m3/issues-controlled-release-acceptance.mjs';
@@ -36,4 +36,10 @@ test('signal in the former release-to-acceptance gap closes before exit and cann
   const root=mkdtempSync(join(tmpdir(),'riffology-unified-signal-'));t.after(()=>rmSync(root,{recursive:true,force:true}));const source=new EventEmitter();let gateOpen=false,closes=0,acceptanceCalls=0,openedResolve,releaseResolve,closeResolve,exitResolve;const opened=new Promise(resolve=>{openedResolve=resolve;}),releaseDone=new Promise(resolve=>{releaseResolve=resolve;}),closeDone=new Promise(resolve=>{closeResolve=resolve;}),exited=new Promise(resolve=>{exitResolve=resolve;});
   const running=runControlledReleaseAcceptance({root,workerSha,authInputPath:join(root,'auth.json'),execute:true,signalSource:source,signalExit:code=>exitResolve(code),releaseRunner:async()=>{gateOpen=true;openedResolve();await releaseDone;return release;},acceptanceRunner:async()=>{acceptanceCalls++;return {status:'passed'};},closeRunner:async()=>{closes++;gateOpen=false;await closeDone;return {schemaVersion:1,status:'passed',gateCloseConfirmed:true};}});
   await opened;source.emit('SIGTERM');source.emit('SIGINT');assert.equal(closes,1);assert.equal(gateOpen,false);releaseResolve();closeResolve();assert.equal(await exited,143);const result=await running;assert.equal(result.status,'blocked');assert.equal(result.phase,'interrupted');assert.equal(result.reasonCode,'controlled-release-acceptance-interrupted');assert.equal(result.gateClose.gateCloseConfirmed,true);assert.equal(acceptanceCalls,0);assert.equal(closes,1);
+});
+
+test('a paused-candidate emergency close proves the gate closed without satisfying forward-close acceptance',async t=>{
+  const root=mkdtempSync(join(tmpdir(),'riffology-unified-fallback-close-'));t.after(()=>rmSync(root,{recursive:true,force:true}));const evidence=join(root,'existing-evidence');mkdirSync(evidence);
+  const result=await runControlledReleaseAcceptance({root,workerSha,authInputPath:join(root,'auth.json'),execute:true,releaseRunner:async()=>release,acceptanceRunner:async()=>({schemaVersion:1,status:'passed',evidenceDirectory:evidence}),closeRunner:async()=>({schemaVersion:1,status:'passed',gateClosed:true,gateCloseConfirmed:true,forwardConformant:false,workerVersionId:'22345678-1234-1234-1234-123456789abc'})});
+  assert.equal(result.status,'blocked');assert.equal(result.phase,'gate-close-conformance');assert.equal(result.reasonCode,'turn-gate-closed-by-paused-candidate-fallback');assert.equal(result.gateClose.gateCloseConfirmed,true);assert.equal(result.gateClose.forwardConformant,false);
 });

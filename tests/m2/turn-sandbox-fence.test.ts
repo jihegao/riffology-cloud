@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {TurnSandboxFence} from '../../services/sandbox/turn-fence.ts';
 import type {TurnRuntimeIdentity} from '../../services/turn-runtime/identity.ts';
@@ -32,6 +33,43 @@ test('native cancel confirmation persists across actor rebuild and replays only 
  assert.deepEqual(await gate.cancelOnce(identity,async()=>{signals++;return true;}),{dispatched:true});assert.equal(signals,1);
  assert.deepEqual(await f.reopen().cancelOnce(identity,async()=>{signals++;return true;}),{dispatched:false});assert.equal(signals,1);
  await assert.rejects(f.reopen().cancelOnce({...identity,dispatchId:'dispatch-b'},async()=>{signals++;return true;}),/scope-denied/);assert.equal(signals,1);
+});
+
+test('a cancel confirmed before native start durably closes only the start path',async()=>{
+ const f=fixture(),gate=f.reopen();let starts=0,observations=0,cancelObservations=0;
+ assert.deepEqual(await gate.cancelOnce(identity,async()=>{cancelObservations++;return false;}),{dispatched:false});
+ await assert.rejects(gate.runStart(identity,async()=>{starts++;},async()=>({running:false})),/turn-sandbox-cancelled/);
+ await assert.rejects(f.reopen().runStart(identity,async()=>{starts++;},async()=>({running:false})),/turn-sandbox-cancelled/);
+ assert.equal(await f.reopen().run(identity,async()=>++observations,async()=>({running:false})),1);
+ assert.deepEqual(await f.reopen().cancelOnce(identity,async()=>{cancelObservations++;return true;}),{dispatched:false});
+ assert.equal(starts,0);assert.equal(observations,1);assert.equal(cancelObservations,1);
+});
+
+test('cancel interleaved with a reserved native start forces cleanup before start can return',async()=>{
+ const f=fixture(),gate=f.reopen();let entered!:()=>void,finish!:()=>void,registered=false,inspections=0,signals=0,cleanups=0;
+ const started=new Promise<void>(resolve=>{entered=resolve;}),blocked=new Promise<void>(resolve=>{finish=resolve;});
+ const starting=gate.runStart(identity,async()=>{entered();await blocked;registered=true;return 'started';},async()=>{cleanups++;registered=false;return {running:false};});await started;
+ assert.deepEqual(await gate.cancelOnce(identity,async()=>{inspections++;if(!registered)return false;signals++;registered=false;return true;}),{dispatched:false});
+ assert.equal(inspections,1);assert.equal(signals,0);
+ finish();await assert.rejects(starting,/turn-sandbox-cancelled/);assert.equal(cleanups,1);assert.equal(registered,false);
+ assert.deepEqual(await gate.cancelOnce(identity,async()=>{inspections++;if(!registered)return false;signals++;registered=false;return true;}),{dispatched:false});
+ assert.deepEqual(await f.reopen().cancelOnce(identity,async()=>{inspections++;return true;}),{dispatched:false});
+ assert.equal(inspections,2);assert.equal(signals,0);
+});
+
+test('an ambiguous native start failure remains reserved across rebuild until exact cancellation succeeds',async()=>{
+ const f=fixture();let starts=0,inspections=0,signals=0;
+ await assert.rejects(f.reopen().runStart(identity,async()=>{starts++;throw Error('lost-start-response');},async()=>({running:false})),/lost-start-response/);
+ assert.deepEqual(await f.reopen().cancelOnce(identity,async()=>{inspections++;return false;}),{dispatched:false});
+ await assert.rejects(f.reopen().runStart(identity,async()=>{starts++;},async()=>({running:false})),/turn-sandbox-cancelled/);
+ assert.deepEqual(await f.reopen().cancelOnce(identity,async()=>{inspections++;signals++;return true;}),{dispatched:true});
+ assert.equal(starts,1);assert.equal(inspections,2);assert.equal(signals,1);
+});
+
+test('both Trusted Pi product start RPCs use durable start-specific admission',()=>{
+ const source=readFileSync(new URL('../../services/sandbox/classes.ts',import.meta.url),'utf8');
+ assert.match(source,/async startTurnProcess\([^\n]+#turnFence\.runStart\(/);
+ assert.match(source,/async startTurnProcessSnapshot\([^\n]+#turnFence\.runStart\(/);
 });
 
 test('native cancel pending state retries a failure before signal delivery',async()=>{

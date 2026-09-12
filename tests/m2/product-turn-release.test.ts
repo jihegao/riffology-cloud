@@ -9,7 +9,7 @@ import type { TurnRuntimeIdentity } from '../../services/turn-runtime/identity.t
 import type { TrustedPiProcessView, TrustedPiSandboxActorApi, TrustedPiSandboxProcessApi } from '../../services/turn-runtime/pi-native.ts';
 import type { ProjectWorkspaceRpc } from '../../services/turn-runtime/workspace.ts';
 import { R2TurnRevisionPort, R2TurnRevisionReader } from '../../services/turn-runtime/revision.ts';
-import type { RevisionCommitInput, RevisionStoreRpc } from '../../services/turn-runtime/revision-store-client.ts';
+import { revisionCommitIntent, type RevisionCommitInput, type RevisionStoreRpc } from '../../services/turn-runtime/revision-store-client.ts';
 
 const encoder=new TextEncoder();
 const identity:TurnRuntimeIdentity={scope:{tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:2},sessionId:'session-a',turnId:'turn-a',dispatchId:'dispatch-a',generation:2};
@@ -23,13 +23,15 @@ class Bucket{
   async get(key:string){const value=this.objects.get(key);if(!value)return null;const bytes=Uint8Array.from(value);return {size:bytes.byteLength,body:new ReadableStream({start(controller){controller.enqueue(bytes);controller.close();}}),async arrayBuffer(){return bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);}};}
 }
 class Store implements RevisionStoreRpc{
-  readonly bucket:Bucket;
+  readonly bucket:Bucket;readonly prepared=new Map<string,RevisionCommitInput>();
   constructor(bucket:Bucket){this.bucket=bucket;}
   resolveInitial(...args:Parameters<RevisionStoreRpc['resolveInitial']>){return new InitialWorkspaceResolver(this.bucket as never).resolve(...args);}
   previewPlan(...args:Parameters<RevisionStoreRpc['previewPlan']>){return new PreviewPlanResolver({files:source=>this.serviceFiles(source)}).resolve(...args);}
   serviceFiles(...args:Parameters<RevisionStoreRpc['serviceFiles']>){const [source]=args;if(source.kind!=='saved-turn')throw Error('fixture-source');return this.#reader().files(source.identity,source.revision);}
   async initialPreviewPlan(...args:Parameters<RevisionStoreRpc['initialPreviewPlan']>){const resolved=await this.resolveInitial(...args);return new PreviewPlanResolver({async files(){return resolved.filesArchive;}}).resolve({kind:'initial-workspace',reference:resolved.reference,filesSha256:resolved.filesSha256});}
   #reader(){return new R2TurnRevisionReader(this.bucket as never);}
+  async prepareCommit(input:RevisionCommitInput){const intent=await revisionCommitIntent(input,input.snapshot);this.prepared.set(intent.operationId,input);return intent;}
+  async commitPrepared(input:Parameters<RevisionStoreRpc['commitPrepared']>[0]){const saved=this.prepared.get(input.operationId);if(!saved)return {status:'absent' as const};return this.commit(saved);}
   async commit(input:RevisionCommitInput){return {status:'committed' as const,receipt:await new R2TurnRevisionPort(this.bucket as never,{async freeze(){return input.snapshot;}},()=>1000).commit(input)};}
   async reconcileCommit(input:Parameters<RevisionStoreRpc['reconcileCommit']>[0]){const saved=await this.#reader().inspect(input.identity);return saved?{status:'committed' as const,receipt:saved.receipt}:{status:'absent' as const};}
   async abandonCommit(input:Parameters<RevisionStoreRpc['abandonCommit']>[0]){return this.reconcileCommit(input);}

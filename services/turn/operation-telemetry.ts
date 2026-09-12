@@ -3,6 +3,7 @@ export type TurnOperationMetric=
   |'release_hold_age'
   |'release_confirmation_delay'
   |'destroy_timeout'
+  |'native_execution_fence'
   |'native_start_fence'
   |'capacity_wait_count'
   |'queued_behind_release'
@@ -11,7 +12,7 @@ export type TurnOperationMetric=
   |'checkpoint_result'
   |'release_result';
 
-export type TurnOperationStage='capacity'|'checkpoint'|'release'|'destroy'|'native-start'|'alarm';
+export type TurnOperationStage='capacity'|'checkpoint'|'release'|'destroy'|'native-execution'|'native-start'|'alarm';
 export type TurnOperationReason=
   |'none'
   |'capacity_wait'
@@ -23,6 +24,7 @@ export type TurnOperationReason=
   |'release_recovery_hold'
   |'release_confirmed'
   |'destroy_timed_out'
+  |'native_execution_unresolved'
   |'native_start_unresolved'
   |'project_cleanup_unconfirmed'
   |'alarm_transport';
@@ -40,9 +42,9 @@ export type TurnOperationTelemetryEvent={
 
 export type TurnOperationTrace=(event:TurnOperationTelemetryEvent)=>void;
 
-const METRICS=new Set<TurnOperationMetric>(['release_hold_count','release_hold_age','release_confirmation_delay','destroy_timeout','native_start_fence','capacity_wait_count','queued_behind_release','hold_start_attempts','alarm_retry','checkpoint_result','release_result']);
-const STAGES=new Set<TurnOperationStage>(['capacity','checkpoint','release','destroy','native-start','alarm']);
-const REASONS=new Set<TurnOperationReason>(['none','capacity_wait','checkpoint_committed','checkpoint_aborted','checkpoint_pending','checkpoint_unavailable','release_pending','release_recovery_hold','release_confirmed','destroy_timed_out','native_start_unresolved','project_cleanup_unconfirmed','alarm_transport']);
+const METRICS=new Set<TurnOperationMetric>(['release_hold_count','release_hold_age','release_confirmation_delay','destroy_timeout','native_execution_fence','native_start_fence','capacity_wait_count','queued_behind_release','hold_start_attempts','alarm_retry','checkpoint_result','release_result']);
+const STAGES=new Set<TurnOperationStage>(['capacity','checkpoint','release','destroy','native-execution','native-start','alarm']);
+const REASONS=new Set<TurnOperationReason>(['none','capacity_wait','checkpoint_committed','checkpoint_aborted','checkpoint_pending','checkpoint_unavailable','release_pending','release_recovery_hold','release_confirmed','destroy_timed_out','native_execution_unresolved','native_start_unresolved','project_cleanup_unconfirmed','alarm_transport']);
 const OPAQUE=/^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 
 function count(value:unknown):number{

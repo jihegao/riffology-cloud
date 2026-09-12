@@ -197,9 +197,10 @@ export async function runIssuesAcceptance({
     close=await closeGate();
     for(const [name,handler] of handlers)signalSource?.removeListener(name,handler);
     if(outstanding!==null&&auth){cleanup=await cancelRunner(auth,outstanding);if(directory)await evidence(directory.path,'outstanding-turn-cleanup.json',cleanup);if(cleanup?.status!=='passed')result={schemaVersion:1,status:'blocked',phase:'outstanding-turn-cleanup',reasonCode:'outstanding-turn-cleanup-unconfirmed',priorResult:result};}
-    if(close?.status!=='passed')result={schemaVersion:1,status:'blocked',phase:'gate-close',reasonCode:'turn-gate-close-unconfirmed',priorResult:result};
+    const closeConfirmed=close?.status==='passed'&&close?.gateCloseConfirmed===true;
+    if(!closeConfirmed)result={schemaVersion:1,status:'blocked',phase:'gate-close',reasonCode:'turn-gate-close-unconfirmed',priorResult:result};
     if(directory){await evidence(directory.path,'gate-close.json',close);await evidence(directory.path,'acceptance-result.json',result);await checksums(directory.path);}
-    if(signalCode!==null)signalExit?.(close?.status==='passed'&&(cleanup===null||cleanup?.status==='passed')?signalCode:1);
+    if(signalCode!==null)signalExit?.(closeConfirmed&&(cleanup===null||cleanup?.status==='passed')?signalCode:1);
   }
   return {...result,evidenceDirectory:directory?.path??null,gateClose:close,outstandingTurnCleanup:cleanup};
 }

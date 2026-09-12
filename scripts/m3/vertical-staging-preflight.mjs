@@ -47,14 +47,30 @@ const DIGEST=/^sha256:[a-f0-9]{64}$/;
 const WORKER_SHA=/^[a-f0-9]{40}$/;
 const WORKER_VERSION_ID=/^[a-f0-9-]{36}$/;
 export const WORKER_VERSION_METADATA_BINDING='CF_VERSION_METADATA';
+export const RELEASE_METADATA_VARS=Object.freeze({
+  workerSourceSha:'M2_WORKER_SOURCE_SHA',
+  toolBridgeSha256:'M2_TOOL_BRIDGE_SHA256',
+  toolProtocolVersion:'M2_TOOL_PROTOCOL_VERSION',
+  toolLedgerSchemaVersion:'M2_TOOL_LEDGER_SCHEMA_VERSION',
+  toolLedgerSchemaSha256:'M2_TOOL_LEDGER_SCHEMA_SHA256',
+});
 const check=(name,ok,detail)=>({name,status:ok?'passed':'blocked',...(ok||!detail?{}:{detail})});
 const same=(a,b)=>JSON.stringify([...a].sort())===JSON.stringify([...b].sort());
 const command=(bin,args,timeout=60_000)=>spawnSync(bin,args,{encoding:'utf8',timeout,maxBuffer:4*1024*1024});
 const json=path=>JSON.parse(readFileSync(path,'utf8'));
 
-export function createStagingConfigOverlay(root,{turnsEnabled=true}={}){
+export function createStagingConfigOverlay(root,{turnsEnabled=true,workerSha=null}={}){
   const sourcePath=resolve(root,STAGING_CONFIG),config=json(sourcePath);
   config.vars={...config.vars,M2_TURNS_ENABLED:turnsEnabled?'true':'false'};
+  if(workerSha!==null){
+    config.vars={...config.vars,
+      [RELEASE_METADATA_VARS.workerSourceSha]:workerSha,
+      [RELEASE_METADATA_VARS.toolBridgeSha256]:PRODUCT_TOOL_BRIDGE_SHA256,
+      [RELEASE_METADATA_VARS.toolProtocolVersion]:PRODUCT_TOOL_PROTOCOL_VERSION,
+      [RELEASE_METADATA_VARS.toolLedgerSchemaVersion]:PRODUCT_TOOL_LEDGER_SCHEMA_VERSION,
+      [RELEASE_METADATA_VARS.toolLedgerSchemaSha256]:PRODUCT_TOOL_LEDGER_SCHEMA_SHA256,
+    };
+  }
   const path=resolve(root,'infra',`.vertical-runtime-${turnsEnabled?'release':'paused'}-${crypto.randomUUID()}.jsonc`);
   writeFileSync(path,`${JSON.stringify(config,null,2)}\n`,{encoding:'utf8',mode:0o600,flag:'wx'});
   let removed=false;
@@ -104,6 +120,50 @@ export function validateWorkerSource(root,workerSha,{release=false}={}){
   const current=head.status===0?head.stdout.trim():null,trackedClean=dirty.status===0&&dirty.stdout.trim()==='';
   return check('worker-source-sha',typeof workerSha==='string'&&WORKER_SHA.test(workerSha)&&WORKER_SHA.test(current??'')&&workerSha===current&&trackedClean,'release-requires-clean-index-and-tracked-worktree-at-exact-worker-sha');
 }
+const byName=(a,b)=>String(a.name).localeCompare(String(b.name))||JSON.stringify(a).localeCompare(JSON.stringify(b));
+export function canonicalDeployedResources(config){
+  const bindings=[];
+  for(const [name,text] of Object.entries(config.vars??{}))bindings.push({name,type:'plain_text',text:String(text)});
+  for(const name of config.secrets?.required??[])bindings.push({name,type:'secret_text'});
+  if(typeof config.assets?.binding==='string')bindings.push({name:config.assets.binding,type:'assets'});
+  if(typeof config.version_metadata?.binding==='string')bindings.push({name:config.version_metadata.binding,type:'version_metadata'});
+  for(const value of config.d1_databases??[])bindings.push({name:value.binding,type:'d1',databaseId:value.database_id});
+  for(const value of config.r2_buckets??[])bindings.push({name:value.binding,type:'r2_bucket',bucketName:value.bucket_name});
+  for(const value of config.services??[])bindings.push({name:value.binding,type:'service',service:value.service,entrypoint:value.entrypoint,environment:value.environment??'production'});
+  for(const value of config.durable_objects?.bindings??[])bindings.push({name:value.name,type:'durable_object_namespace',className:value.class_name});
+  const exports=Object.entries(config.exports??{}).map(([name,value])=>({name,type:value.type,storage:value.storage??null,container:value.container??null})).sort(byName);
+  const containers=(config.containers??[]).map(value=>({name:value.name,className:value.class_name})).sort(byName);
+  const handlers=[...Object.keys(config.exports??{}).map(name=>({name,handler:'class'})),...(config.services??[]).map(value=>({name:value.entrypoint,handler:'fetch'}))].sort(byName);
+  return {bindings:bindings.sort(byName),exports,containers,handlers};
+}
+function observedDeployedResources(version){
+  const resources=version?.resources,rawBindings=resources?.bindings,rawExports=resources?.script_runtime?.exports,rawContainers=resources?.script_runtime?.containers,rawHandlers=resources?.script?.named_handlers;
+  if(!Array.isArray(rawBindings)||!rawExports||typeof rawExports!=='object'||Array.isArray(rawExports)||!Array.isArray(rawContainers)||!Array.isArray(rawHandlers))return null;
+  const bindings=[];
+  for(const value of rawBindings){
+    if(!value||typeof value.name!=='string'||typeof value.type!=='string')return null;
+    if(value.type==='plain_text')bindings.push({name:value.name,type:value.type,text:value.text});
+    else if(value.type==='secret_text'||value.type==='assets'||value.type==='version_metadata')bindings.push({name:value.name,type:value.type});
+    else if(value.type==='d1')bindings.push({name:value.name,type:value.type,databaseId:value.database_id??value.id});
+    else if(value.type==='r2_bucket')bindings.push({name:value.name,type:value.type,bucketName:value.bucket_name});
+    else if(value.type==='service')bindings.push({name:value.name,type:value.type,service:value.service,entrypoint:value.entrypoint,environment:value.environment??'production'});
+    else if(value.type==='durable_object_namespace')bindings.push({name:value.name,type:value.type,className:value.class_name});
+    else return null;
+  }
+  const exports=Object.entries(rawExports).map(([name,value])=>({name,type:value?.type,storage:value?.storage??null,container:value?.container??null})).sort(byName);
+  const containers=rawContainers.map(value=>({name:value?.name,className:value?.class_name})).sort(byName);
+  const handlers=[];for(const value of rawHandlers){if(typeof value?.name!=='string'||!Array.isArray(value.handlers))return null;for(const handler of value.handlers)handlers.push({name:value.name,handler});}
+  return {bindings:bindings.sort(byName),exports,containers,handlers:handlers.sort(byName)};
+}
+function containerImagesMatch(manifest,containerApps){
+  if(!Array.isArray(containerApps))return false;
+  const expected=manifest?.containerImages??[];
+  if(!Array.isArray(expected)||expected.length!==REQUIRED_CONTAINERS.length)return false;
+  return expected.every(image=>{
+    const configured=(manifest?.deployedResources?.containers??[]).find(value=>value.className===image.name),matches=containerApps.filter(value=>value?.name===configured?.name);
+    return matches.length===1&&typeof matches[0]?.id==='string'&&matches[0].id.length>0&&matches[0]?.image===image.reference;
+  });
+}
 export function buildReleaseManifest(config,workerSha){
   return {
     schemaVersion:1,
@@ -115,19 +175,28 @@ export function buildReleaseManifest(config,workerSha){
     toolLedgerSchemaVersion:PRODUCT_TOOL_LEDGER_SCHEMA_VERSION,
     toolLedgerSchemaSha256:PRODUCT_TOOL_LEDGER_SCHEMA_SHA256,
     containerImages:configuredImages(config),
+    deployedResources:canonicalDeployedResources(config),
   };
 }
 export function validateReleaseManifest(config,manifest){
   const expectedImages=configuredImages(config);
   const toolBridge=config.services?.find(value=>value.binding==='TOOL_BRIDGE');
-  const valid=manifest?.schemaVersion===1&&WORKER_SHA.test(manifest?.workerSourceSha??'')&&manifest?.workerVersionTag===workerVersionTag(manifest?.workerSourceSha)&&manifest?.workerVersionMetadataBinding===WORKER_VERSION_METADATA_BINDING&&config.version_metadata?.binding===WORKER_VERSION_METADATA_BINDING&&manifest?.toolBridgeSha256===PRODUCT_TOOL_BRIDGE_SHA256&&manifest?.toolProtocolVersion===PRODUCT_TOOL_PROTOCOL_VERSION&&manifest?.toolLedgerSchemaVersion===PRODUCT_TOOL_LEDGER_SCHEMA_VERSION&&manifest?.toolLedgerSchemaSha256===PRODUCT_TOOL_LEDGER_SCHEMA_SHA256&&same((manifest?.containerImages??[]).map(value=>`${value.name}:${value.reference}`),expectedImages.map(value=>`${value.name}:${value.reference}`))&&expectedImages.every(value=>typeof value.reference==='string'&&DIGEST.test(value.reference.split('@')[1]??''))&&config.exports?.ToolBridgeAgent?.storage==='sqlite'&&toolBridge?.service===config.name&&toolBridge?.entrypoint==='ToolBridgeService';
+  const releaseMetadata=config.vars?.[RELEASE_METADATA_VARS.workerSourceSha]===manifest?.workerSourceSha&&config.vars?.[RELEASE_METADATA_VARS.toolBridgeSha256]===PRODUCT_TOOL_BRIDGE_SHA256&&config.vars?.[RELEASE_METADATA_VARS.toolProtocolVersion]===PRODUCT_TOOL_PROTOCOL_VERSION&&config.vars?.[RELEASE_METADATA_VARS.toolLedgerSchemaVersion]===PRODUCT_TOOL_LEDGER_SCHEMA_VERSION&&config.vars?.[RELEASE_METADATA_VARS.toolLedgerSchemaSha256]===PRODUCT_TOOL_LEDGER_SCHEMA_SHA256;
+  const valid=manifest?.schemaVersion===1&&WORKER_SHA.test(manifest?.workerSourceSha??'')&&manifest?.workerVersionTag===workerVersionTag(manifest?.workerSourceSha)&&manifest?.workerVersionMetadataBinding===WORKER_VERSION_METADATA_BINDING&&config.version_metadata?.binding===WORKER_VERSION_METADATA_BINDING&&manifest?.toolBridgeSha256===PRODUCT_TOOL_BRIDGE_SHA256&&manifest?.toolProtocolVersion===PRODUCT_TOOL_PROTOCOL_VERSION&&manifest?.toolLedgerSchemaVersion===PRODUCT_TOOL_LEDGER_SCHEMA_VERSION&&manifest?.toolLedgerSchemaSha256===PRODUCT_TOOL_LEDGER_SCHEMA_SHA256&&same((manifest?.containerImages??[]).map(value=>`${value.name}:${value.reference}`),expectedImages.map(value=>`${value.name}:${value.reference}`))&&expectedImages.every(value=>typeof value.reference==='string'&&DIGEST.test(value.reference.split('@')[1]??''))&&JSON.stringify(manifest?.deployedResources)===JSON.stringify(canonicalDeployedResources(config))&&releaseMetadata&&config.exports?.ToolBridgeAgent?.storage==='sqlite'&&toolBridge?.service===config.name&&toolBridge?.entrypoint==='ToolBridgeService';
   return check('candidate-release-manifest',valid,'bridge-hash-protocol-ledger-schema-container-digests-or-tool-bridge-wiring-mismatch');
 }
-export function validateDeployedWorkerVersion(manifest,version,deployment,{turnsEnabled=true}={}){
-  const id=version?.id,bindings=version?.resources?.bindings??[],versions=deployment?.versions??[];
-  const expectedGate=turnsEnabled?'true':'false';
-  const valid=WORKER_VERSION_ID.test(id??'')&&version?.annotations?.['workers/tag']===manifest?.workerVersionTag&&bindings.some(value=>value?.type==='version_metadata'&&value?.name===WORKER_VERSION_METADATA_BINDING)&&bindings.some(value=>value?.type==='plain_text'&&value?.name==='M2_TURNS_ENABLED'&&value?.text===expectedGate)&&versions.length===1&&versions[0]?.version_id===id&&versions[0]?.percentage===100;
-  return check('deployed-worker-version',valid,`release-requires-tagged-turns-${turnsEnabled?'enabled':'disabled'}-worker-version-at-100-percent-with-version-metadata-binding`);
+export function validateWorkerVersionResources(manifest,version,{turnsEnabled=true,containerApps=null}={}){
+  const id=version?.id,observed=observedDeployedResources(version),expected=structuredClone(manifest?.deployedResources??null),expectedGate=turnsEnabled?'true':'false';
+  if(expected?.bindings){const gate=expected.bindings.find(value=>value.name==='M2_TURNS_ENABLED'&&value.type==='plain_text');if(gate)gate.text=expectedGate;}
+  const handlersValid=expected!==null&&observed!==null&&expected.handlers.every(required=>observed.handlers.some(value=>JSON.stringify(value)===JSON.stringify(required)));
+  const resourcesValid=expected!==null&&observed!==null&&JSON.stringify({...observed,handlers:undefined})===JSON.stringify({...expected,handlers:undefined})&&handlersValid;
+  const valid=WORKER_VERSION_ID.test(id??'')&&version?.annotations?.['workers/tag']===manifest?.workerVersionTag&&resourcesValid&&containerImagesMatch(manifest,containerApps);
+  return check('worker-version-resources',valid,`candidate-requires-exact-tagged-turns-${turnsEnabled?'enabled':'disabled'}-resources-and-container-images`);
+}
+export function validateDeployedWorkerVersion(manifest,version,deployment,{turnsEnabled=true,containerApps=null}={}){
+  const id=version?.id,versions=deployment?.versions??[],resources=validateWorkerVersionResources(manifest,version,{turnsEnabled,containerApps});
+  const valid=resources.status==='passed'&&versions.length===1&&versions[0]?.version_id===id&&versions[0]?.percentage===100;
+  return check('deployed-worker-version',valid,`release-requires-exact-tagged-turns-${turnsEnabled?'enabled':'disabled'}-resources-container-images-and-sole-100-percent-version`);
 }
 export function validatePredeployGateClosed(version,deployment){
   const id=version?.id,versions=deployment?.versions??[],bindings=version?.resources?.bindings??[];
@@ -227,8 +296,8 @@ async function cloudChecks(root,config,release,releaseManifest,workerVersionId,c
   if(releasePhase==='postdeploy'){
     if(!WORKER_VERSION_ID.test(workerVersionId??''))checks.push(check('deployed-worker-version',false,'release-cloud-check-requires---worker-version-id'));
     else try{
-      const version=await retryJsonCommand(command,wrangler,['versions','view',workerVersionId,'--json',...args]),deployment=await retryJsonCommand(command,wrangler,['deployments','status','--json',...args]);
-      checks.push(validateDeployedWorkerVersion(releaseManifest,version,deployment));
+      const version=await retryJsonCommand(command,wrangler,['versions','view',workerVersionId,'--json',...args]),deployment=await retryJsonCommand(command,wrangler,['deployments','status','--json',...args]),containerApps=await retryJsonCommand(command,wrangler,['containers','list','--json',...args]);
+      checks.push(validateDeployedWorkerVersion(releaseManifest,version,deployment,{containerApps}));
     }catch{checks.push(check('deployed-worker-version',false,'worker-version-or-deployment-query-failed'));}
   }
   checks.push(...await validatePreviewDomain(release));
@@ -244,7 +313,7 @@ export async function runPreflight({root=resolve(fileURLToPath(new URL('../..',i
   if(effectiveReleasePhase==='postdeploy'&&!WORKER_VERSION_ID.test(workerVersionId??''))throw Error('postdeploy-release-requires-worker-version-id');
   if(!releaseEnabled&&workerSha!==null)throw Error('worker-sha-release-only');
   if(!releaseEnabled&&workerVersionId!==null)throw Error('worker-version-id-release-only');
-  const ownedOverlay=releaseEnabled&&stagingConfigPath===null?createStagingConfigOverlay(root,{turnsEnabled:true}):null;
+  const ownedOverlay=releaseEnabled&&stagingConfigPath===null?createStagingConfigOverlay(root,{turnsEnabled:true,workerSha}):null;
   const configPath=stagingConfigPath===null?(ownedOverlay?.path??resolve(root,STAGING_CONFIG)):resolve(stagingConfigPath);
   try{
     const baseConfig=json(resolve(root,STAGING_CONFIG)),config=json(configPath);

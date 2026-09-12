@@ -37,8 +37,8 @@ test('restore rejects a valid manifest copied to a noncanonical receipt key',asy
   await assert.rejects(reader.restore(identity,{...checkpoint,objectKey:forgedKey}),/base-scope-denied/);
 });
 
-test('manifest put response loss is recovered only by observe and never refreezes the snapshot',async()=>{
-  const f=fixture();f.bucket.loseAt=3;const port=f.port();await assert.rejects(port.commit(commitInput()),/lost-put-response/);const recovered=await port.observe(identity);assert.equal(recovered?.objectKey,turnRevisionObjectKey(identity));assert.equal(f.freezes,1);assert.equal(f.bucket.puts.length,3);
+test('manifest put response loss is recovered by exact readback without refreezing the snapshot',async()=>{
+  const f=fixture();f.bucket.loseAt=3;const port=f.port(),recovered=await port.commit(commitInput());assert.equal(recovered.objectKey,turnRevisionObjectKey(identity));assert.deepEqual(await port.observe(identity),recovered);assert.equal(f.freezes,1);assert.equal(f.bucket.puts.length,3);
 });
 
 test('revision lineage accepts only existing scope-bound workspace and session heads',async()=>{

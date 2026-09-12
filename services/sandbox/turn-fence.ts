@@ -3,7 +3,8 @@ import { sameTurnRuntimeIdentity, turnRuntimeIdentity, type TurnRuntimeIdentity 
 export type TurnSandboxFenceStorage=Pick<DurableObjectStorage,'kv'|'transactionSync'|'sync'>;
 type DispatchIdentity=Pick<TurnRuntimeIdentity,'scope'|'turnId'|'dispatchId'|'generation'>;
 type CancelState='idle'|'pending'|'confirmed';
-type FenceState={identity:TurnRuntimeIdentity|null;dispatch:DispatchIdentity;fenced:boolean;cancelState:CancelState};
+type StartState='idle'|'pending'|'confirmed';
+type FenceState={identity:TurnRuntimeIdentity|null;dispatch:DispatchIdentity;fenced:boolean;cancelState:CancelState;startState:StartState};
 const KEY='turn-sandbox-fence-v1';
 
 function reject(code:string):never{throw Error(code);}
@@ -22,14 +23,16 @@ function state(value:unknown):FenceState|null{
   const raw=value as Record<string,unknown>;
   if(raw.schemaVersion===1){
     const keys=['schemaVersion','identity','fenced'];if(Object.keys(raw).length!==keys.length||keys.some(key=>!Object.hasOwn(raw,key))||typeof raw.fenced!=='boolean')reject('invalid-turn-sandbox-fence');
-    const identity=turnRuntimeIdentity(raw.identity);return {identity,dispatch:dispatch(identity),fenced:raw.fenced,cancelState:'idle'};
+    const identity=turnRuntimeIdentity(raw.identity);return {identity,dispatch:dispatch(identity),fenced:raw.fenced,cancelState:'idle',startState:'pending'};
   }
-  const version=raw.schemaVersion,keys=version===2?['schemaVersion','dispatch','sessionId','fenced']:version===3?['schemaVersion','dispatch','sessionId','fenced','cancelReserved']:['schemaVersion','dispatch','sessionId','fenced','cancelState'];
-  if((version!==2&&version!==3&&version!==4)||Object.keys(raw).length!==keys.length||keys.some(key=>!Object.hasOwn(raw,key))||typeof raw.fenced!=='boolean'||(version===3&&typeof raw.cancelReserved!=='boolean')||(version===4&&!['idle','pending','confirmed'].includes(raw.cancelState as string))||(raw.sessionId!==null&&typeof raw.sessionId!=='string'))reject('invalid-turn-sandbox-fence');
+  const version=raw.schemaVersion,keys=version===2?['schemaVersion','dispatch','sessionId','fenced']:version===3?['schemaVersion','dispatch','sessionId','fenced','cancelReserved']:version===4?['schemaVersion','dispatch','sessionId','fenced','cancelState']:['schemaVersion','dispatch','sessionId','fenced','cancelState','startState'];
+  if((version!==2&&version!==3&&version!==4&&version!==5)||Object.keys(raw).length!==keys.length||keys.some(key=>!Object.hasOwn(raw,key))||typeof raw.fenced!=='boolean'||(version===3&&typeof raw.cancelReserved!=='boolean')||((version===4||version===5)&&!['idle','pending','confirmed'].includes(raw.cancelState as string))||(version===5&&!['idle','pending','confirmed'].includes(raw.startState as string))||(raw.sessionId!==null&&typeof raw.sessionId!=='string'))reject('invalid-turn-sandbox-fence');
   const bound=dispatch(raw.dispatch as DispatchIdentity),identity=raw.sessionId===null?null:turnRuntimeIdentity({...bound,sessionId:raw.sessionId});
   // Schema 3 persisted intent before attempting SIGTERM, so a reserved bit is
   // only evidence of unresolved delivery and must remain retryable.
-  return {identity,dispatch:bound,fenced:raw.fenced,cancelState:version===4?raw.cancelState as CancelState:version===3&&raw.cancelReserved?'pending':'idle'};
+  // Pre-v5 state has no proof that native start delivery settled. Preserve that
+  // ambiguity as pending so an upgrade can never admit a duplicate late start.
+  return {identity,dispatch:bound,fenced:raw.fenced,cancelState:(version===4||version===5)?raw.cancelState as CancelState:version===3&&raw.cancelReserved?'pending':'idle',startState:version===5?raw.startState as StartState:'pending'};
 }
 function release(value:unknown):{running:boolean}{
   if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).length!==1||typeof (value as {running?:unknown}).running!=='boolean')reject('invalid-turn-sandbox-release');
@@ -50,7 +53,7 @@ export class TurnSandboxFence{
   }
   async #bind(raw:TurnRuntimeIdentity,fenced:boolean):Promise<TurnRuntimeIdentity>{
     const identity=turnRuntimeIdentity(raw);
-    this.#storage.transactionSync(()=>{const saved=this.#read(identity);if(saved?.fenced&&!fenced)reject('turn-sandbox-fenced');if(!saved)this.#storage.kv.put(KEY,{schemaVersion:4,dispatch:dispatch(identity),sessionId:identity.sessionId,fenced,cancelState:'idle'});else if(saved.identity===null||fenced&&!saved.fenced||saved.cancelState!=='idle')this.#storage.kv.put(KEY,{schemaVersion:4,dispatch:saved.dispatch,sessionId:identity.sessionId,fenced:fenced||saved.fenced,cancelState:saved.cancelState});});
+    this.#storage.transactionSync(()=>{const saved=this.#read(identity);if(saved?.fenced&&!fenced)reject('turn-sandbox-fenced');if(!saved)this.#storage.kv.put(KEY,{schemaVersion:5,dispatch:dispatch(identity),sessionId:identity.sessionId,fenced,cancelState:'idle',startState:'idle'});else if(saved.identity===null||fenced&&!saved.fenced||saved.cancelState!=='idle')this.#storage.kv.put(KEY,{schemaVersion:5,dispatch:saved.dispatch,sessionId:identity.sessionId,fenced:fenced||saved.fenced,cancelState:saved.cancelState,startState:saved.startState});});
     await this.#storage.sync();return identity;
   }
   async #cleanup<T>(operation:()=>Promise<T>):Promise<T>{
@@ -65,9 +68,9 @@ export class TurnSandboxFence{
     const pending=this.#reconcileCancel(identity,operation).finally(()=>{if(this.#activeCancel===pending)this.#activeCancel=null;});this.#activeCancel=pending;return pending;
   }
   async #reconcileCancel(identity:TurnRuntimeIdentity,operation:()=>Promise<boolean>):Promise<{dispatched:boolean}>{
-    this.#storage.transactionSync(()=>{const saved=this.#read(identity)!;if(saved.fenced)reject('turn-sandbox-fenced');if(saved.cancelState==='idle')this.#storage.kv.put(KEY,{schemaVersion:4,dispatch:saved.dispatch,sessionId:identity.sessionId,fenced:false,cancelState:'pending'});});await this.#storage.sync();
+    this.#storage.transactionSync(()=>{const saved=this.#read(identity)!;if(saved.fenced)reject('turn-sandbox-fenced');if(saved.cancelState==='idle')this.#storage.kv.put(KEY,{schemaVersion:5,dispatch:saved.dispatch,sessionId:identity.sessionId,fenced:false,cancelState:'pending',startState:saved.startState});});await this.#storage.sync();
     if(this.#read(identity)?.fenced)reject('turn-sandbox-fenced');this.#inFlight++;
-    try{const dispatched=await operation();this.#storage.transactionSync(()=>{const saved=this.#read(identity)!;if(saved.fenced)reject('turn-sandbox-fenced');this.#storage.kv.put(KEY,{schemaVersion:4,dispatch:saved.dispatch,sessionId:identity.sessionId,fenced:false,cancelState:'confirmed'});});await this.#storage.sync();return {dispatched};}
+    try{const dispatched=await operation();this.#storage.transactionSync(()=>{const saved=this.#read(identity)!;if(saved.fenced)reject('turn-sandbox-fenced');this.#storage.kv.put(KEY,{schemaVersion:5,dispatch:saved.dispatch,sessionId:identity.sessionId,fenced:false,cancelState:dispatched||saved.startState!=='pending'?'confirmed':'pending',startState:saved.startState});});await this.#storage.sync();return {dispatched};}
     finally{this.#inFlight--;}
   }
   identityForDispatch(raw:Pick<TurnRuntimeIdentity,'scope'|'turnId'|'dispatchId'>):TurnRuntimeIdentity{
@@ -79,7 +82,7 @@ export class TurnSandboxFence{
     const expected=dispatch(raw),saved=this.#read();if(!saved)return false;if(!sameDispatch(saved.dispatch,expected))reject('turn-sandbox-fence-scope-denied');return saved.fenced;
   }
   async runDispatch<T>(raw:Pick<TurnRuntimeIdentity,'scope'|'turnId'|'dispatchId'>,operation:()=>Promise<T>,cleanup:()=>Promise<{running:boolean}>):Promise<T>{
-    const expected=dispatch(raw);this.#storage.transactionSync(()=>{const saved=this.#read();if(saved&&!sameDispatch(saved.dispatch,expected))reject('turn-sandbox-fence-scope-denied');if(saved?.fenced)reject('turn-sandbox-fenced');if(!saved)this.#storage.kv.put(KEY,{schemaVersion:4,dispatch:expected,sessionId:null,fenced:false,cancelState:'idle'});});await this.#storage.sync();
+    const expected=dispatch(raw);this.#storage.transactionSync(()=>{const saved=this.#read();if(saved&&!sameDispatch(saved.dispatch,expected))reject('turn-sandbox-fence-scope-denied');if(saved?.fenced)reject('turn-sandbox-fenced');if(!saved)this.#storage.kv.put(KEY,{schemaVersion:5,dispatch:expected,sessionId:null,fenced:false,cancelState:'idle',startState:'idle'});});await this.#storage.sync();
     const saved=this.#read();if(!saved||!sameDispatch(saved.dispatch,expected)||saved.fenced)reject('turn-sandbox-fenced');this.#inFlight++;
     let value:T,fenced=false;try{value=await operation();fenced=this.#read()?.fenced===true;}finally{if(this.#read()?.fenced)try{await this.#cleanup(cleanup);}catch{}this.#inFlight--;}
     if(fenced)reject('turn-sandbox-fenced');return value!;
@@ -96,6 +99,15 @@ export class TurnSandboxFence{
       this.#inFlight--;
     }
     if(fenced)reject('turn-sandbox-fenced');return value!;
+  }
+  /** Native start has its own durable admission state. Cancellation closes this
+   * path without preventing exact process/file observation needed to settle it. */
+  async runStart<T>(raw:TurnRuntimeIdentity,operation:()=>Promise<T>,cleanup:()=>Promise<{running:boolean}>):Promise<T>{
+    const identity=turnRuntimeIdentity(raw);
+    this.#storage.transactionSync(()=>{const saved=this.#read(identity);if(saved?.fenced)reject('turn-sandbox-fenced');if(saved&&saved.cancelState!=='idle')reject('turn-sandbox-cancelled');if(saved&&saved.startState!=='idle')reject('turn-sandbox-start-reserved');this.#storage.kv.put(KEY,{schemaVersion:5,dispatch:saved?.dispatch??dispatch(identity),sessionId:identity.sessionId,fenced:false,cancelState:'idle',startState:'pending'});});await this.#storage.sync();
+    let saved=this.#read(identity);if(!saved||saved.fenced)reject('turn-sandbox-fenced');if(saved.startState!=='pending')reject('turn-sandbox-start-reserved');if(saved.cancelState!=='idle'){this.#storage.transactionSync(()=>{const current=this.#read(identity)!;if(current.startState==='pending')this.#storage.kv.put(KEY,{schemaVersion:5,dispatch:current.dispatch,sessionId:identity.sessionId,fenced:current.fenced,cancelState:current.cancelState,startState:'idle'});});await this.#storage.sync();reject('turn-sandbox-cancelled');}this.#inFlight++;
+    const attempt=(async()=>{let value:T,closed:'fenced'|'cancelled'|null=null;try{value=await operation();this.#storage.transactionSync(()=>{const current=this.#read(identity)!;this.#storage.kv.put(KEY,{schemaVersion:5,dispatch:current.dispatch,sessionId:identity.sessionId,fenced:current.fenced,cancelState:current.cancelState,startState:'confirmed'});});await this.#storage.sync();saved=this.#read(identity)!;closed=saved.fenced?'fenced':saved.cancelState!=='idle'?'cancelled':null;}finally{if(closed!==null||this.#read(identity)?.fenced||this.#read(identity)?.cancelState!=='idle')try{await this.#cleanup(cleanup);}catch{}this.#inFlight--;}if(closed==='fenced')reject('turn-sandbox-fenced');if(closed==='cancelled')reject('turn-sandbox-cancelled');return value!;})();
+    return attempt;
   }
   async fence(raw:TurnRuntimeIdentity,cleanup:()=>Promise<{running:boolean}>):Promise<{running:boolean}>{
     const identity=await this.#bind(raw,true),observed=release(await this.#cleanup(cleanup));this.#read(identity);

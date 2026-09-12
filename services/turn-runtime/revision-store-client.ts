@@ -10,6 +10,7 @@ import type { WorkspaceFileDiff, WorkspaceFileIndex } from './workspace-file-ind
 
 export function revisionStoreActorName(raw:TurnScope):string{const scope=turnScope(raw);return `workspace-revisions-v3:${scope.tenantId}:${scope.projectId}:${scope.workspaceId}`;}
 export type RevisionCommitInput={identity:TurnRuntimeIdentity;outcome:'completed'|'failed'|'cancelled'|'interrupted';executionErrorCode:string|null;base:TurnBaseCheckpoints;snapshot:FrozenTurnSnapshot};
+export type RevisionCommitPreparedInput={identity:TurnRuntimeIdentity;outcome:RevisionCommitInput['outcome'];executionErrorCode:string|null;base:TurnBaseCheckpoints;operationId:string;inputSha256:string};
 export type RevisionGcInput=TurnRevisionGcOptions&{operationId:string;scope:TurnScope};
 export type RevisionGcMaintenanceInput=TurnRevisionGcOptions&{scope:TurnScope};
 export type RevisionGcReconcileInput={operationId:string;inputSha256:string;scope:TurnScope};
@@ -20,6 +21,8 @@ export interface RevisionStoreRpc{
   serviceFiles(source:PreviewSource):Promise<Uint8Array>;
   initialPreviewPlan(reference:InitialWorkspaceReference,scope:TurnScope):Promise<ResolvedPreviewPlan>;
   resolveInitial(reference:InitialWorkspaceReference,scope:TurnScope):Promise<ResolvedInitialWorkspace>;
+  prepareCommit(input:RevisionCommitInput):Promise<TurnCheckpointIntent>;
+  commitPrepared(input:RevisionCommitPreparedInput):Promise<RevisionCommitResolution>;
   commit(input:RevisionCommitInput):Promise<RevisionCommitResolution>;
   reconcileCommit(input:RevisionCommitReconcileInput):Promise<RevisionCommitResolution>;
   abandonCommit(input:RevisionCommitReconcileInput):Promise<RevisionCommitResolution>;
@@ -42,17 +45,17 @@ export function revisionCommitResolution(value:unknown):RevisionCommitResolution
   if(raw.status==='committed'){if(Object.keys(raw).length!==2||!Object.hasOwn(raw,'receipt'))reject('invalid-revision-store-commit-resolution');return {status:'committed',receipt:checkpointReceipt(raw.receipt)};}
   if(!['absent','pending','unavailable','conflict','aborted'].includes(String(raw.status))||Object.keys(raw).length!==1)reject('invalid-revision-store-commit-resolution');return {status:raw.status as Exclude<RevisionCommitResolution,{status:'committed'}>['status']};
 }
+export function revisionCommitPreparedInput(input:TurnCheckpointInput,intent:TurnCheckpointIntent):RevisionCommitPreparedInput{const identity=turnRuntimeIdentity(input.identity),base=turnBaseCheckpoints(input.base);if(intent.operationId!==turnCheckpointOperationId(identity))reject('revision-store-checkpoint-intent-conflict');return {identity,outcome:input.outcome,executionErrorCode:input.executionErrorCode,base,operationId:intent.operationId,inputSha256:turnDigestValue(intent.inputSha256)};}
+function turnDigestValue(value:unknown):string{if(typeof value!=='string'||!/^[a-f0-9]{64}$/.test(value))reject('revision-store-checkpoint-intent-conflict');return value;}
 
 /** Freezes Sandbox state without R2 access, then delegates immutable bytes to
  * the private RevisionStore authority. */
 export class RevisionStoreCheckpointPort implements TurnCheckpointPort{
-  readonly #store:RevisionStoreRpc;readonly #snapshots:FrozenTurnSnapshotPort;readonly #prepared=new Map<string,{intent:TurnCheckpointIntent;snapshot:FrozenTurnSnapshot}>();
-  constructor(store:RevisionStoreRpc,snapshots:FrozenTurnSnapshotPort){if(!store?.commit||!store.reconcileCommit||!store.abandonCommit||!snapshots?.freeze)reject('revision-store-required');this.#store=store;this.#snapshots=snapshots;}
-  async prepare(input:TurnCheckpointInput){const identity=turnRuntimeIdentity(input.identity),base=turnBaseCheckpoints(input.base),snapshot=frozenTurnSnapshot(await this.#snapshots.freeze(identity,base),identity),prepared=await revisionCommitIntent({...input,identity,base},snapshot);this.#prepared.set(prepared.operationId,{intent:prepared,snapshot});return prepared;}
-  async commit(input:TurnCheckpointInput,intent:TurnCheckpointIntent){
-    const identity=turnRuntimeIdentity(input.identity),base=turnBaseCheckpoints(input.base),saved=this.#prepared.get(intent.operationId);if(!saved)reject('revision-store-checkpoint-snapshot-unavailable');
-    if(JSON.stringify(saved.intent)!==JSON.stringify(intent))reject('revision-store-checkpoint-intent-conflict');return revisionCommitResolution(await this.#store.commit({...input,identity,base,snapshot:saved.snapshot}));
-  }
+  readonly #store:RevisionStoreRpc;readonly #snapshots:FrozenTurnSnapshotPort;
+  constructor(store:RevisionStoreRpc,snapshots:FrozenTurnSnapshotPort){if(!store?.prepareCommit||!store.commitPrepared||!store.reconcileCommit||!store.abandonCommit||!snapshots?.freeze)reject('revision-store-required');this.#store=store;this.#snapshots=snapshots;}
+  async prepare(input:TurnCheckpointInput){const identity=turnRuntimeIdentity(input.identity),base=turnBaseCheckpoints(input.base),snapshot=frozenTurnSnapshot(await this.#snapshots.freeze(identity,base),identity);return intentValue(await this.#store.prepareCommit({...input,identity,base,snapshot}),identity);}
+  async commit(input:TurnCheckpointInput,intent:TurnCheckpointIntent){return revisionCommitResolution(await this.#store.commitPrepared(revisionCommitPreparedInput(input,intent)));}
   async reconcile(identity:TurnRuntimeIdentity,intent:TurnCheckpointIntent){return revisionCommitResolution(await this.#store.reconcileCommit({...intent,identity:turnRuntimeIdentity(identity)}));}
   async abandon(identity:TurnRuntimeIdentity,intent:TurnCheckpointIntent){return revisionCommitResolution(await this.#store.abandonCommit({...intent,identity:turnRuntimeIdentity(identity)}));}
 }
+function intentValue(value:unknown,identity:TurnRuntimeIdentity):TurnCheckpointIntent{if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype||Object.keys(value).length!==2)reject('invalid-revision-store-commit-intent');const raw=value as Record<string,unknown>;if(raw.operationId!==turnCheckpointOperationId(identity))reject('invalid-revision-store-commit-intent');return {operationId:raw.operationId,inputSha256:turnDigestValue(raw.inputSha256)};}

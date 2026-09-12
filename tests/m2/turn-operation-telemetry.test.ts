@@ -6,6 +6,7 @@ const event={route:'turn.operation' as const,metric:'release_hold_age' as const,
 
 test('turn operation telemetry accepts only the bounded metric schema',()=>{
   assert.deepEqual(turnOperationEvent(event),event);
+  const executionFence={...event,metric:'native_execution_fence' as const,stage:'native-execution' as const,reasonCategory:'native_execution_unresolved' as const};assert.deepEqual(turnOperationEvent(executionFence),executionFence);
   for(const invalid of [{...event,tenantId:'tenant-secret'},{...event,reasonCategory:'raw-upstream-failure'},{...event,correlationId:'contains whitespace'},{...event,value:-1},{...event,durationMs:1.5}])assert.throws(()=>turnOperationEvent(invalid),/invalid-turn-operation-telemetry/);
 });
 
