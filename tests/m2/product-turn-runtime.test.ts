@@ -249,9 +249,10 @@ test('an unavailable base never allocates checkpoint materialization, including 
  assert.equal(f.releases,1);f.reopen();const replay=await f.host().observe(identity);assert.deepEqual(replay,first);assert.equal(f.prepares,0);assert.equal(f.commits,0);assert.equal(f.checkpointObserves,0);assert.equal(f.releases,1);
 });
 
-test('legacy checkpoint reservation without an exact descriptor remains fail closed',async t=>{
+test('legacy checkpoint reservation without an exact descriptor terminates in a recovery hold and releases execution capacity',async t=>{
  const f=fixture(t);f.start(terminal());const completed=await f.host().accept(request());assert.ok(completed.checkpoint);f.sql("UPDATE product_turn_runtime SET value=json_set(value,'$.schemaVersion',1,'$.checkpointReserved',json('true'),'$.checkpoint',json('null'))");f.sql("UPDATE product_turn_runtime SET value=json_remove(value,'$.checkpointIntent','$.checkpointCommitReserved','$.legacyCheckpointUnknown','$.executionDeadlineAt','$.actor','$.resourceLease','$.capacityManaged','$.capacityDispatchReserved','$.capacityDispatchConfirmed','$.nativeStartReserved','$.nativeProcessObservedAt','$.nativeStartFenceReserved')");f.sql('DELETE FROM product_turn_release');
- f.reopen();const unknown=await f.host().observe(identity);assert.equal(unknown.checkpoint,null);assert.equal(unknown.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(f.prepares,1);assert.equal(f.commits,1);
+ f.reopen();const held=await f.host().observe(identity);assert.equal(held.checkpoint,null);assert.equal(held.persistenceErrorCode,'turn-checkpoint-recovery-hold');assert.equal(f.prepares,1);assert.equal(f.commits,1);assert.equal(f.releases,2);
+ const replay=await f.host().observe(identity);assert.equal(replay.persistenceErrorCode,'turn-checkpoint-recovery-hold');assert.equal(f.prepares,1);assert.equal(f.commits,1);
 });
 
 test('running events replay stably and conflicting event ids fail closed',async t=>{

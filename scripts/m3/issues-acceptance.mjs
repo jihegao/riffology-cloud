@@ -78,6 +78,7 @@ async function allEvents(auth){
   }fail('acceptance-event-pages-exceeded');
 }
 async function workspace(auth,options={}){return requestJson(`${auth.origin}/api/workspaces/${auth.workspaceId}`,{cookie:auth.cookie,...options});}
+export function workspaceQuiescent(snapshot){return snapshot?.activeTurnId===null&&snapshot?.resourceWait===null&&snapshot?.releaseHold===null&&snapshot?.recoveryHold===null;}
 async function waitTerminal(auth,turnId,{pollMs=5_000,deadlineMs=15*60_000,initialSummary=null,onTransition=()=>{},shouldAbort=()=>false}={}){
   const end=Date.now()+deadlineMs,transitions=initialSummary===null?[]:[jsonClone(initialSummary)];let prior=initialSummary===null?'':JSON.stringify({...initialSummary,observedAt:0}),priorObservedAt=initialSummary?.observedAt??null;
   while(Date.now()<end){if(shouldAbort())fail('acceptance-turn-wait-interrupted');const snapshot=await workspace(auth,{shouldAbort}),summary=turnSummary(snapshot,turnId,priorObservedAt),encoded=JSON.stringify({...summary,observedAt:0});if(encoded!==prior){prior=encoded;priorObservedAt=summary.observedAt;transitions.push(summary);onTransition(summary);}const turn=snapshot?.turns?.[turnId];if(TERMINAL.has(turn?.status))return {turn,snapshot,transitions};await sleep(pollMs);}fail('acceptance-turn-deadline');
@@ -117,7 +118,8 @@ export async function driveTenTurns(auth,{runToken=`r${randomBytes(8).toString('
     previousTerminalSnapshot=terminal.snapshot;
   }
   const end=Date.now()+15*60_000;let finalSnapshot;
-  do{if(shouldAbort())fail('acceptance-turn-wait-interrupted');finalSnapshot=await workspace(auth,{shouldAbort});if(finalSnapshot.activeTurnId===null&&finalSnapshot.resourceWait===null&&finalSnapshot.releaseHold===null&&finalSnapshot.recoveryHold===null)break;await sleep(pollMs);}while(Date.now()<end);
+  do{if(shouldAbort())fail('acceptance-turn-wait-interrupted');finalSnapshot=await workspace(auth,{shouldAbort});if(workspaceQuiescent(finalSnapshot))break;await sleep(pollMs);}while(Date.now()<end);
+  if(!workspaceQuiescent(finalSnapshot))fail('acceptance-final-workspace-not-quiescent');
   return {schemaVersion:1,status:'passed',runToken,turns,finalSnapshot};
 }
 

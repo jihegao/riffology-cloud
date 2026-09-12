@@ -6,7 +6,7 @@ import {spawnSync} from 'node:child_process';
 import {EventEmitter} from 'node:events';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
-import {cancelOutstandingTurn,driveTenTurns,requestJson,runIssuesAcceptance,unavailableInventory,unavailableProviderFreeProbe,validateFinalInventory,validatePlatformProbe,validateReleaseResult,validateTenTurnEvidence} from '../../scripts/m3/issues-acceptance.mjs';
+import {cancelOutstandingTurn,driveTenTurns,requestJson,runIssuesAcceptance,unavailableInventory,unavailableProviderFreeProbe,validateFinalInventory,validatePlatformProbe,validateReleaseResult,validateTenTurnEvidence,workspaceQuiescent} from '../../scripts/m3/issues-acceptance.mjs';
 import {forwardCloseTurnGate} from '../../scripts/m3/vertical-staging-release.mjs';
 import {buildReleaseManifest,WORKER_VERSION_METADATA_BINDING} from '../../scripts/m3/vertical-staging-preflight.mjs';
 import {exactInstance,instanceRows,selectTrustedPiApp,trustedPiProbeActor} from '../../scripts/m3/trusted-pi-platform-probe.mjs';
@@ -53,6 +53,12 @@ test('release, platform, turn, and final inventory validators require the comple
 
 test('the production provider-free probe fails closed instead of treating app instance counts as actor proof',()=>{
   const result=unavailableProviderFreeProbe();assert.equal(result.status,'blocked');assert.equal(result.reasonCode,'provider-free-exact-actor-probe-unavailable');assert.match(result.conclusion,/single stopped or inactive record/);
+});
+
+test('workspace quiescence requires every execution and recovery gate to be empty',()=>{
+  const empty={activeTurnId:null,resourceWait:null,releaseHold:null,recoveryHold:null};assert.equal(workspaceQuiescent(empty),true);
+  for(const field of Object.keys(empty))assert.equal(workspaceQuiescent({...empty,[field]:{status:'pending'}}),false);
+  assert.equal(workspaceQuiescent(undefined),false);
 });
 
 test('acceptance transport retries reads and same-key mutations without changing request identity',async t=>{

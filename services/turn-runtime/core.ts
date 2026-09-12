@@ -278,9 +278,9 @@ export class ProductTurnRuntimeCore implements TurnRuntimePort{
   async #finishCheckpoint(identity:TurnRuntimeIdentity):Promise<TurnRuntimeReceipt>{
     let state=this.#checked(identity)!;
     if(state.checkpoint){await this.#clearCheckpointRecovery();await this.#release(identity);return this.#receipt(state);}
-    if(state.persistenceErrorCode==='turn-checkpoint-aborted'||state.persistenceErrorCode==='turn-checkpoint-prepare-failed'){await this.#release(identity);return this.#receipt(state);}
+    if(state.persistenceErrorCode==='turn-checkpoint-aborted'||state.persistenceErrorCode==='turn-checkpoint-prepare-failed'||state.persistenceErrorCode==='turn-checkpoint-recovery-hold'&&state.legacyCheckpointUnknown){await this.#release(identity);return this.#receipt(state);}
     if(NON_PERSISTABLE_EXECUTION_ERRORS.has(state.executionErrorCode??'')){state.persistenceErrorCode='turn-checkpoint-unknown';await this.#write(state);await this.#release(identity);return this.#receipt(state);}
-    if(state.legacyCheckpointUnknown){state.persistenceErrorCode='turn-checkpoint-unknown';await this.#write(state);return this.#receipt(state);}
+    if(state.legacyCheckpointUnknown){state.persistenceErrorCode='turn-checkpoint-recovery-hold';await this.#write(state);await this.#release(identity);return this.#receipt(state);}
     const input:TurnCheckpointInput={identity,outcome:state.outcome!,executionErrorCode:state.executionErrorCode,base:state.base};
     let recovery=this.#readCheckpointRecovery(identity,state);
     if(!recovery){
