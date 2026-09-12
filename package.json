@@ -32,7 +32,8 @@
     "m3:vertical:start": "node scripts/m3/vertical-runtime-preflight.mjs --launch",
     "m3:vertical:preflight:staging": "node scripts/m3/vertical-staging-preflight.mjs",
     "m3:vertical:release:staging": "node scripts/m3/vertical-staging-release.mjs",
-    "m3:issues:acceptance:staging": "node scripts/m3/issues-controlled-release-acceptance.mjs"
+    "m3:issues:acceptance:staging": "node scripts/m3/issues-controlled-release-acceptance.mjs",
+    "m3:issues:reconcile:staging": "node scripts/m3/issues-acceptance-reconcile.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "5.20260905.1",

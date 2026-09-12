@@ -40,6 +40,27 @@ function inspectDeployment(wrangler,configPath,manifest,turnsEnabled,runner){
   return {versionId,check:validateDeployedWorkerVersion(manifest,version,deployment,{turnsEnabled})};
 }
 
+function inspectGateState(wrangler,configPath,manifest,runner){
+  try{
+    const deployment=parseJson(runner(wrangler,['deployments','status','--json','--config',configPath],60_000)),versionId=activeWorkerVersionId(deployment);
+    if(versionId===null)return {classification:'conflict',versionId:null};
+    const version=parseJson(runner(wrangler,['versions','view',versionId,'--json','--config',configPath],60_000));
+    if(validateDeployedWorkerVersion(manifest,version,deployment,{turnsEnabled:false}).status==='passed')return {classification:'closed-same-sha',versionId};
+    if(validateDeployedWorkerVersion(manifest,version,deployment,{turnsEnabled:true}).status==='passed')return {classification:'open-same-sha',versionId};
+    return {classification:'conflict',versionId};
+  }catch{return {classification:'unavailable',versionId:null};}
+}
+
+async function inspectGateStateWithRetry(wrangler,configPath,manifest,runner,{attempts,retryDelayMs}){
+  const observations=[];let observed={classification:'unavailable',versionId:null};
+  for(let attempt=1;attempt<=attempts;attempt++){
+    observed=inspectGateState(wrangler,configPath,manifest,runner);observations.push({attempt,...observed});
+    if(observed.classification!=='unavailable')break;
+    if(attempt<attempts)await new Promise(done=>setTimeout(done,retryDelayMs*Math.min(2**(attempt-1),4)));
+  }
+  return {...observed,observations};
+}
+
 export async function verifyPausedContainerQuiet({root,config,runner=run,quietMs=30_000,pollMs=5_000,deadlineMs=5*60_000,sleepFn=ms=>new Promise(resolve=>setTimeout(resolve,ms)),nowFn=Date.now}={}){
   const wrangler=resolve(root,'node_modules/.bin/wrangler'),cloud=['--config',resolve(root,'infra/wrangler.m3-vertical-staging.jsonc')],end=nowFn()+deadlineMs;
   let listed=null;
@@ -76,10 +97,11 @@ export function validatePausedContainerQuiet(value,containerImages){
 }
 
 export async function forwardCloseTurnGate({
-  root=resolve(fileURLToPath(new URL('../..',import.meta.url))),workerSha,execute=false,runner=run,
+  root=resolve(fileURLToPath(new URL('../..',import.meta.url))),workerSha,execute=false,runner=run,attempts=3,retryDelayMs=1_000,
 }={}){
   if(!execute)throw Error('gate-close-requires-explicit-execute');
   if(!WORKER_SHA.test(workerSha??''))throw Error('gate-close-requires-worker-sha');
+  if(!Number.isSafeInteger(attempts)||attempts<1||attempts>5||!Number.isSafeInteger(retryDelayMs)||retryDelayMs<0||retryDelayMs>10_000)throw Error('gate-close-retry-policy-invalid');
   const paused=createStagingConfigOverlay(root,{turnsEnabled:false}),outdir=mkdtempSync(resolve(tmpdir(),'riffology-m3-gate-close-dry-run-'));
   const wrangler=resolve(root,'node_modules/.bin/wrangler');
   try{
@@ -87,11 +109,15 @@ export async function forwardCloseTurnGate({
     const topology=validateStagingTopology(paused.config,migrations),source=validateWorkerSource(root,workerSha,{release:true});
     if(topology.some(value=>value.status!=='passed')||source?.status!=='passed')return {schemaVersion:1,status:'blocked',phase:'gate-close-predeploy',checks:[...topology,source]};
     const dry=runner(wrangler,deploymentArgs(paused.path,workerSha,{dryRun:true,outdir}),180_000),dryCheck={name:'gate-close-dry-run',status:dry.status===0?'passed':'blocked'};
-    const deployed=runner(wrangler,deploymentArgs(paused.path,workerSha),300_000);
-    let inspected;
-    try{inspected=inspectDeployment(wrangler,paused.path,buildReleaseManifest(paused.config,workerSha),false,runner);}catch{}
-    const confirmed=inspected?.check.status==='passed';
-    return {schemaVersion:1,status:confirmed?'passed':'blocked',phase:'gate-close-postdeploy',deployExitConfirmed:deployed.status===0,gateCloseConfirmed:confirmed,workerVersionId:inspected?.versionId??null,checks:[dryCheck,inspected?.check??{name:'gate-close-forward-deploy',status:'blocked',detail:'gate-close-forward-deploy-failed-or-unconfirmed'}]};
+    const manifest=buildReleaseManifest(paused.config,workerSha),deploymentAttempts=[];let observed={classification:'unavailable',versionId:null};
+    for(let attempt=1;attempt<=attempts;attempt++){
+      const deployed=runner(wrangler,deploymentArgs(paused.path,workerSha),300_000);
+      observed=await inspectGateStateWithRetry(wrangler,paused.path,manifest,runner,{attempts,retryDelayMs});deploymentAttempts.push({attempt,deployExitConfirmed:deployed?.status===0,observed:observed.classification,workerVersionId:observed.versionId,reconciliationAttempts:observed.observations});
+      if(observed.classification==='closed-same-sha'||observed.classification==='conflict'||observed.classification==='unavailable')break;
+      if(attempt<attempts)await new Promise(done=>setTimeout(done,retryDelayMs*Math.min(2**(attempt-1),4)));
+    }
+    const confirmed=observed.classification==='closed-same-sha',attemptCount=deploymentAttempts.length,deployExitConfirmed=deploymentAttempts.some(item=>item.deployExitConfirmed),closeCheck=confirmed?{name:'deployed-worker-version',status:'passed'}:{name:'gate-close-forward-deploy',status:'blocked',detail:`gate-close-${observed.classification}`};
+    return {schemaVersion:1,status:confirmed?'passed':'blocked',phase:'gate-close-postdeploy',attemptCount,deploymentAttempts,deployExitConfirmed,gateCloseConfirmed:confirmed,workerVersionId:observed.versionId,checks:[dryCheck,closeCheck]};
   }finally{paused.remove();rmSync(outdir,{recursive:true,force:true});}
 }
 
