@@ -83,9 +83,9 @@ export function validatePhase1Inventory({ config, version, deployment, apps, ins
   const actualApps = Array.isArray(apps) ? apps : null;
   const appCheck = containers !== null && actualApps !== null && containers.every(container => {
     const matches = actualApps.filter(app => app?.name === container.name);
-    return matches.length === 1 && typeof matches[0]?.id === 'string' && matches[0].id.length > 0 && matches[0].image === container.image;
+    return matches.length === 1 && typeof matches[0]?.id === 'string' && matches[0].id.length > 0 && matches[0].max_instances === 1 && matches[0].configuration?.image === container.image && matches[0].configuration.vcpu === 0.25 && matches[0].configuration.memory_mib === 1024 && matches[0].configuration.disk?.size_mb === 4000;
   }) && actualApps.length === containers.length;
-  checks.push(check('container-apps', appCheck, 'each-configured-container-must-match-one-unique-app-name-and-image'));
+  checks.push(check('container-apps', appCheck, 'each-configured-container-must-match-one-app-image-and-basic-resource-limits'));
   const appIds = new Set(actualApps?.map(app => app?.id).filter(value => typeof value === 'string') ?? []);
   const instanceResult = validateInstances(instances, appIds, requireInactive === true);
   checks.push(instanceResult.check);

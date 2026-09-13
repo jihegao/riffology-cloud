@@ -16,7 +16,7 @@ const make = () => {
   config.durable_objects.bindings = [{ name: 'SIMULATION_SANDBOX', class_name: 'SimulationSandbox' }];
   const containers = config.containers.map(row => ({ name: row.name, class_name: row.class_name, image: row.image }));
   const bindings = [...Object.entries(config.vars).map(([name, text]) => ({ name, type: 'plain_text', text })), ...config.durable_objects.bindings.map(row => ({ name: row.name, type: 'durable_object_namespace', class_name: row.class_name })), ...config.r2_buckets.map(row => ({ name: row.binding, type: 'r2_bucket', bucket_name: row.bucket_name }))];
-  const apps = containers.map((row, i) => ({ id: `app-${i}`, name: row.name, image: row.image }));
+  const apps = containers.map((row, i) => ({ id: `app-${i}`, name: row.name, max_instances:1, configuration:{image:row.image,vcpu:0.25,memory_mib:1024,disk:{size_mb:4000}} }));
   return { config, version: { id: 'v1', annotations: { 'workers/tag': `source-${'b'.repeat(40)}` }, resources: { bindings, script_runtime: { containers, exports: { SimulationSandbox: { type: 'durable-object', storage: 'sqlite', container: 'riffology-phase1-simulation' } } } } }, apps, instances: { apps: apps.map((app, i) => ({ appId: app.id, pages: [{ instances: [{ state: i === 0 ? 'active' : 'inactive' }], result_info: { page_token: null, next_page_token: null } }] })) } };
 };
 
@@ -48,3 +48,5 @@ test('requireInactive blocks a live instance while normal inventory accepts it',
  const input=make();const group=input.instances.apps[0];group.pages=[{instances:[],result_info:{page_token:null,next_page_token:null}},{instances:[],result_info:{page_token:null,next_page_token:null}}];
  const result=validatePhase1Inventory({...input,deployment:{versions:[{version_id:'v1',percentage:100}]},workerSha:'b'.repeat(40),gatesOpen:false});assert.equal(result.status,'blocked');
  });
+
+test('rejects live app resource expansion despite unchanged local config',()=>{const input=make();input.apps[0].max_instances=2;const result=validatePhase1Inventory({...input,deployment:{versions:[{version_id:'v1',percentage:100}]},workerSha:'b'.repeat(40),gatesOpen:false});assert.equal(result.status,'blocked');assert.equal(result.checks.find(x=>x.name==='container-apps').status,'blocked');});
