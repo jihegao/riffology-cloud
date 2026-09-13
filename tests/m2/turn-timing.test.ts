@@ -39,3 +39,21 @@ test('tool completion cannot project a running turn as completed',()=>{
  const timing=deriveTurnTiming(turn,[{turnId:'t',type:'provider.status',at:3,sequence:1,payload:{state:'requesting'}},{turnId:'t',type:'tool.completed',at:4,sequence:2,payload:{}}] as any,5);
  assert.equal(timing.stage,'executing');assert.equal(timing.executingMs,2);
 });
+
+for (const status of ['failed', 'cancelled', 'interrupted'] as const) {
+  test(`${status} closes the final retained execution phase at finishedAt`, () => {
+    const value = deriveTurnTiming(turn({ status, startedAt: 200, finishedAt: 600 }), [event('turn.started', 200), event('provider.status', 300, { state: 'requesting' }), event(`turn.${status}`, 600)], 999);
+    assert.deepEqual(value, { stage: status === 'cancelled' ? 'cancelled' : 'failed', queuedMs: 100, preparingMs: 100, executingMs: 300, savingMs: null });
+  });
+  test(`${status} closes preparation only with its retained start boundary`, () => {
+    const value = deriveTurnTiming(turn({ status, startedAt: 200, finishedAt: 600 }), [event('turn.started', 200), event(`turn.${status}`, 600)], 999);
+    assert.deepEqual(value, { stage: status === 'cancelled' ? 'cancelled' : 'failed', queuedMs: 100, preparingMs: 400, executingMs: null, savingMs: null });
+    const cropped = deriveTurnTiming(turn({ status, startedAt: 200, finishedAt: 600 }), [event(`turn.${status}`, 600)], 999);
+    assert.equal(cropped.preparingMs, null);
+    assert.equal(cropped.executingMs, null);
+  });
+}
+test('terminal timing never uses now when both terminal endpoints are missing', () => {
+  const value = deriveTurnTiming(turn({status:'failed',startedAt:200}), [event('turn.started',200),event('provider.status',300,{state:'requesting'})],999);
+  assert.equal(value.preparingMs,100);assert.equal(value.executingMs,null);
+});
