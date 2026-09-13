@@ -28,7 +28,7 @@ export function deriveTurnTiming(turn: TurnRecord, events: readonly TurnEvent[],
   const created = finiteTime(turn.createdAt);
   const checkpointing = rows.find(event => event.type === 'turn.checkpointing');
   const requesting = rows.find(event => event.type === 'provider.status' && event.payload?.state === 'requesting');
-  const terminal = rows.find(event => terminalStages.has(event.type.slice('turn.'.length)));
+  const terminal = rows.find(event => event.type.startsWith('turn.') && terminalStages.has(event.type.slice('turn.'.length)));
   const finished = finiteTime(turn.finishedAt) ?? finiteTime(terminal?.at);
   const observed = finiteTime(now);
   const end = finished ?? observed;

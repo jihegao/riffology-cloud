@@ -34,3 +34,8 @@ test('reports an in-flight saving observation without a terminal event', () => {
   const value = deriveTurnTiming(turn({ status: 'checkpointing', startedAt: 110 }), [event('provider.status', 125, { state: 'requesting' }), event('turn.checkpointing', 160)], 175);
   assert.deepEqual(value, { stage: 'saving', queuedMs: 10, preparingMs: 15, executingMs: 35, savingMs: 15 });
 });
+test('tool completion cannot project a running turn as completed',()=>{
+ const turn={id:'t',status:'running',createdAt:1,startedAt:2,finishedAt:null} as any;
+ const timing=deriveTurnTiming(turn,[{turnId:'t',type:'provider.status',at:3,sequence:1,payload:{state:'requesting'}},{turnId:'t',type:'tool.completed',at:4,sequence:2,payload:{}}] as any,5);
+ assert.equal(timing.stage,'executing');assert.equal(timing.executingMs,2);
+});

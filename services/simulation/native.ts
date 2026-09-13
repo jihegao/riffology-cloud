@@ -21,17 +21,24 @@ export class SimulationNative{
   return {status:raw.status,result:raw.result,stop:raw.stop};
  }
  async start(bytes:Uint8Array){
-  const input=this.input,token=await simulationToken(input),actual=await simulationPlan(input.plan.source,bytes);
+  const input=this.input;let stage="source";
+  try{
+  const token=await simulationToken(input),actual=await simulationPlan(input.plan.source,bytes);
   if(JSON.stringify(actual)!==JSON.stringify(input.plan))throw Error('simulation-source-mismatch');
   for(let offset=0;offset<bytes.length;offset+=262144){
    const chunk=bytes.subarray(offset,offset+262144);let binary='';for(let i=0;i<chunk.length;i+=8192)binary+=String.fromCharCode(...chunk.subarray(i,i+8192));
+   stage="archive-write";
    const path=`/var/lib/riffology/archives/${token}.${offset}.chunk.json`;
    await this.sandbox.writeFile(path,JSON.stringify({offset,total:bytes.length,sha256:previewSourceFilesSha256(input.plan.source),data:btoa(binary)}));
+   stage="archive-upload";
    const result=await this.sandbox.exec(`python3 /opt/riffology/service_upload.py ${token} < ${path}`,{timeout:15000,cwd:'/var/lib/riffology',env:{PATH:'/usr/local/bin:/usr/bin:/bin'}});
    if(!result.success||result.exitCode!==0)throw Error('simulation-upload-unconfirmed');
    const receipt=JSON.parse(result.stdout);if(receipt.token!==token||receipt.offset!==offset||receipt.bytes!==chunk.length||receipt.total!==bytes.length||offset+chunk.length===bytes.length&&receipt.complete!==true)throw Error('simulation-upload-invalid');
   }
+  stage="control-write";
   await this.sandbox.writeFile(`/var/lib/riffology/services/${token}.input.json`,JSON.stringify({schemaVersion:1,token,runId:input.runId,filesSha256:previewSourceFilesSha256(input.plan.source),specSha256:input.plan.specSha256,entrypoint:input.plan.spec.execution.entrypoint,entrypointSha256:input.plan.entrypointSha256,dependencyLock:input.plan.spec.execution.dependencyLock,dependencyLockSha256:input.plan.dependencyLockSha256,parameters:input.parameters,seed:input.seed,deadlineAt:input.deadlineAt}));
-  return this.operation('start');
+  stage="native-start";
+  return await this.operation('start');
+  }catch(error){const message=error instanceof Error?error.message:'';console.error('simulation-start-unconfirmed',{runId:input.runId,stage,code:/^[a-z0-9-]{1,100}$/.test(message)?message:'transport-error'});throw error;}
  }
 }
