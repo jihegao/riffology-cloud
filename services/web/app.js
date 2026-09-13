@@ -1,8 +1,10 @@
 import {createServicePanel} from './services.js';
 import {createPreviewPanel} from './previews.js';
+import {createSimulationPanel} from './simulation.js';
 const $ = selector => document.querySelector(selector);
 const previewPanel=createPreviewPanel({root:$('#workspace-preview'),api});
 const servicePanel=createServicePanel({root:$('#workspace-services'),api,onPreviewRun:runId=>previewPanel.openRun(runId)});
+const simulationPanel=createSimulationPanel({root:$('#workspace-simulation'),api});
 const notice = $('#notice');
 const dialog = $('#project-dialog');
 let tenant = null;
@@ -117,8 +119,11 @@ async function api(path, options = {}) {
   });
   if (!response.ok) {
     const projectLimit = response.status === 429 && path.startsWith('/api/workspaces/');
+    let code = null;
+    try { const body = await response.clone().json(); if (typeof body?.error === 'string') code = body.error; } catch {}
     const messages = { 400: '请求内容无效', 401: '请先登录', 403: '登录或项目权限已变化，请刷新后重试', 404: '当前账号尚未获得访问权限', 409: '状态已变化，请刷新后重试', 429: projectLimit ? '本项目已达到当前费用或运行上限' : '请求过于频繁，请稍后重试', 503: '服务暂不可用，请稍后再试' };
-    throw Object.assign(new Error(messages[response.status] || '请求失败，请稍后重试'), { status: response.status });
+    if (code === 'turn_runtime_not_ready') messages[503] = '当前环境暂停接收新任务，请稍后查看状态。';
+    throw Object.assign(new Error(messages[response.status] || '请求失败，请稍后重试'), { status: response.status, code, retryable: code !== 'turn_runtime_not_ready' });
   }
   return response.status === 204 ? null : response.json();
 }
@@ -136,7 +141,7 @@ function stopEventStream() {
 }
 
 function accountView() {
-  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();}
+  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();simulationPanel.leave();}
   $('#login').hidden = authenticated;
   const workspaceRoutePending = Boolean(workspaceProjectIdFromHash()) && !activeProject;
   $('#app').hidden = !tenant || Boolean(activeProject) || workspaceRoutePending;
@@ -243,6 +248,14 @@ function renderWorkspace() {
     box.append(loading);
     return;
   }
+  const admission = workspaceSnapshot.admission;
+  const unavailable = admission?.state === 'unavailable';
+  const maintenance = admission?.state === 'maintenance';
+  if (maintenance) appendTurnCard('system', '当前环境暂停接收新任务。', '草稿会保留；已接收回合仍可继续观察、取消和读取保存结果。');
+  if (unavailable) appendTurnCard('system', '当前执行环境暂不可用。', '平台正在恢复运行资源，请稍后重试；草稿会保留。');
+  $('#message-input').disabled = maintenance || unavailable;
+  $('#message-submit').disabled = maintenance || unavailable || sendingMessage;
+  $('#new-session').disabled = maintenance || unavailable;
   const sessions = Object.values(workspaceSnapshot.sessions || {}).sort((a, b) => (b.updatedAt ?? b.createdAt) - (a.updatedAt ?? a.createdAt));
   if (!selectedSessionId || !workspaceSnapshot.sessions?.[selectedSessionId]) selectedSessionId = sessions[0]?.id || null;
   const sessionSelect = $('#session-select');
@@ -271,6 +284,7 @@ function renderWorkspace() {
   }
   for (const turn of turns) {
     appendTurnCard('user', turn.message, turnStatus(turn));
+    if(turn.timing){const labels={queuedMs:'排队',preparingMs:'准备',executingMs:'执行',savingMs:'保存'};const durations=Object.entries(labels).filter(([k])=>turn.timing[k]!==null).map(([k,v])=>`${v} ${(turn.timing[k]/1000).toFixed(1)} 秒`);if(durations.length)appendTurnCard('system',durations.join(' · '));}
     const events = workspaceEvents.filter(event => event.turnId === turn.id);
     appendAssistantMessage(events);
     appendToolCards(events, turn.id);
@@ -435,6 +449,7 @@ function openWorkspace(project) {
   selectArtifactPanel('files');
   previewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,canOpen:ready});
   servicePanel.open({workspaceId:project.workspace_id,tenantId:tenant.id,canStart:ready});
+  if(ready)void simulationPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});else simulationPanel.leave();
   if(!ready){$('#turns').replaceChildren();appendTurnCard('system','项目暂未就绪。会话与文件恢复后可继续使用；独立服务可在下方管理。');$('#files-meta').textContent='项目暂未就绪';$('#workspace-files').replaceChildren();}
   void refreshWorkspace(viewGeneration);
 }
@@ -538,7 +553,7 @@ function workspaceProjectIdFromHash() {
 }
 
 async function load() {
-  servicePanel.close();previewPanel.leave();
+  servicePanel.close();previewPanel.leave();simulationPanel.leave();
   const generation = ++viewGeneration;
   stopPolling();
   stopEventStream();
@@ -576,7 +591,7 @@ $('#google').onclick = async () => {
 
 $('#sign-out').onclick = async () => {
   viewGeneration++;
-  servicePanel.close();previewPanel.leave();
+  servicePanel.close();previewPanel.leave();simulationPanel.leave();
   stopEventStream();
   stopPolling();
   const button = $('#sign-out');

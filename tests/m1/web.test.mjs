@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 import { renderWorkspace } from '../../ui/workspace.js';
 
-const files = Object.fromEntries(await Promise.all(['index.html', 'app.js', 'services.js', 'previews.js', 'styles.css', 'workspace.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
+const files = Object.fromEntries(await Promise.all(['index.html', 'app.js', 'services.js', 'previews.js', 'simulation.js', 'styles.css', 'workspace.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
 const workspaceUiSource = await readFile(new URL('../../ui/workspace.js', import.meta.url), 'utf8');
 let browser;
 before(async () => { browser = await chromium.launch({ headless: true, channel: process.env.M1_BROWSER_CHANNEL || 'chrome' }); });
@@ -26,6 +26,8 @@ async function pageFixture(t, handle, options = {}) {
       if (url.pathname === '/api/me') return json(route, { tenants: [{ id: 'tenant-a' }] });
       if (url.pathname === '/api/models') return json(route, { models: [] });
       if (url.pathname === '/api/tenants/tenant-a/projects') return json(route, { projects: [] });
+      if (/^\/api\/workspaces\/[^/]+\/model$/.test(url.pathname)) return json(route, { version: null, spec: null, reasonCode: 'model_not_saved', canRun: false });
+      if (/^\/api\/workspaces\/[^/]+\/experiments$/.test(url.pathname)) return json(route, { items: [], nextCursor: null });
       if (/^\/api\/workspaces\/[^/]+\/previews$/.test(url.pathname) && route.request().method() === 'GET') return json(route, {current:null,available:null});
       if (/^\/api\/workspaces\/[^/]+\/files$/.test(url.pathname)) return json(route, { schemaVersion: 1, revision: null, files: [] });
       if (/^\/api\/workspaces\/[^/]+\/diff$/.test(url.pathname)) return json(route, { schemaVersion: 1, revision: null, summary: { added: 0, modified: 0, deleted: 0 }, changes: [] });

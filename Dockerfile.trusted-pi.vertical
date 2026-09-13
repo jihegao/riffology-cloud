@@ -19,3 +19,5 @@ COPY --chown=root:root --chmod=0444 services/trusted-pi/release-candidate.mjs /o
 COPY --chown=root:root --chmod=0444 services/trusted-pi/release-candidate.mjs /opt/riffology/trusted-pi/trusted-pi-release.mjs
 
 LABEL cn.gaojihe.riffology.release-profile="product-candidate-v1"
+
+COPY --chown=root:root --chmod=0444 services/trusted-pi/research-context.mjs /opt/riffology/trusted-pi/research-context.mjs

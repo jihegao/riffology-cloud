@@ -31,6 +31,7 @@ export function createServicePanel({ root, api, onPreviewRun, requestTimeoutMs =
     if (selected) {
       const box = element('section'); box.append(element('h4', `服务详情 ${selected}`));
       box.append(element('p', detailError || (detail ? `${deliveryLabels[detail.deliveryStatus] || '交付状态未知'}；${runLabels[detail.runStatus] || '尚未确认运行状态'}` : '正在读取详情…')));
+      if(detail?.version)box.append(element('p',`模型版本：${detail.version.revisionId} · ${detail.version.filesSha256.slice(0,12)}`));
       if (detail?.updatedAt) box.append(element('p', `${detailError ? '上次确认时间（旧状态）' : '最近确认时间'}：${new Date(detail.updatedAt).toLocaleString('zh-CN', { hour12: false })}`));
       if (!detailError && detail?.stopRequestedAt) box.append(element('p', terminalRuns.has(detail.runStatus) ? '运行端已确认结束。' : '已请求停止，等待运行端确认。'));
       if (detail?.errorCode) box.append(element('p', '服务发生错误，请刷新详情。'));
@@ -67,10 +68,10 @@ export function createServicePanel({ root, api, onPreviewRun, requestTimeoutMs =
     render(); schedule();
   }
   async function start() {
-    if (!current?.canStart || posting) return; const context = current, token = generation;
-    if (!pending) { pending = { key: crypto.randomUUID(), maxDurationMs: duration }; if (!save(context, pending)) { message = '无法保存启动请求，请检查浏览器存储后重试。'; pending = null; render(); return; } }
+    if (!current?.canStart || posting) return; const context = current, token = generation; posting=true;render();
+    if (!pending) { let saved;try{saved=await read(`/api/workspaces/${encodeURIComponent(context.workspaceId)}/files`);}catch{if(token===generation){posting=false;message='无法确认已保存版本，请刷新后重试。';render();}return;}if(token!==generation)return;pending = { key: crypto.randomUUID(), maxDurationMs: duration,...(saved.revision?.revisionId?{expectedRevisionId:saved.revision.revisionId}:{}) }; if (!save(context, pending)) { message = '无法保存启动请求，请检查浏览器存储后重试。'; pending = null; posting=false;render(); return; } }
     const attempt = pending; posting = true; message = '正在提交启动请求…'; render();
-    try { const result = await request(base(context), { method: 'POST', headers: { 'Idempotency-Key': attempt.key }, body: JSON.stringify({ maxDurationMs: attempt.maxDurationMs }) });
+    try { const result = await request(base(context), { method: 'POST', headers: { 'Idempotency-Key': attempt.key }, body: JSON.stringify({ maxDurationMs: attempt.maxDurationMs,...(attempt.expectedRevisionId?{expectedRevisionId:attempt.expectedRevisionId}:{}) }) });
       if (restore(context)?.key === attempt.key) save(context, null); if (token !== generation) return; pending = null; message = '启动请求已接收，运行状态请查看详情。'; selected = result.runId; detail = result; detailError = ''; await load(); await refreshDetail();
     } catch (error) { if (token === generation) message = error?.status && error.status < 500 ? `无法启动服务：${error.message}` : '启动结果尚未确认。重试将使用同一请求和原运行时限。'; }
     finally { if (token === generation) { posting = false; render(); } }
