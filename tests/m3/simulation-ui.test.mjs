@@ -51,6 +51,7 @@ test('simulation panel renders typed parameters, retries one pending request and
   await page.getByText('重试实验',{exact:true}).waitFor();assert.equal(posts,1);
   assert.equal(await page.locator('#workspace-simulation input[name="servers"]').inputValue(),'2');
   assert.equal(await page.locator('#workspace-simulation input[name="servers"]').isDisabled(),true);
+  assert.match(await page.locator('#workspace-simulation').innerText(),/revision r.*files f.*spec s.*seed 42/);
   await page.reload();
   await page.getByText('重试实验',{exact:true}).waitFor();
   assert.equal(await page.locator('#workspace-simulation input[name="servers"]').inputValue(),'2');
