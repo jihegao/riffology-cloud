@@ -1,12 +1,18 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { requireTurnRuntime } from '../../services/gateway/turn-runtime-gate.ts';
+import { requireTurnRuntime, turnAdmissionStatus } from '../../services/gateway/turn-runtime-gate.ts';
 import { HttpError } from '../../services/gateway/http.ts';
 import { createGatewayTurnServices } from '../../services/gateway/turn-services.ts';
 import {turnAdmissionErrorCode} from '../../services/turn/admission-telemetry.ts';
 
 const scope = { tenantId: 'tenant-a', projectId: 'project-a', workspaceId: 'workspace-a', workspaceGeneration: 1 };
 const actor = { userId: 'user-a', authVersion: 1 };
+
+test('admission projection makes the closed gate explicit and non-retryable', () => {
+  assert.deepEqual(turnAdmissionStatus('false'), { state: 'maintenance', reasonCode: 'turn_runtime_not_ready', retryable: false });
+  assert.deepEqual(turnAdmissionStatus('true'), { state: 'enabled', reasonCode: null, retryable: true });
+  assert.deepEqual(turnAdmissionStatus('true', false), { state: 'unavailable', reasonCode: 'turn_runtime_unavailable', retryable: true });
+});
 
 test('turn admission fails closed unless the product runtime is explicitly enabled', () => {
   for (const value of [undefined, null, false, 'false', 'TRUE', '1']) {
@@ -65,6 +71,17 @@ test('enabled admission derives the workspace actor and forwards one exact reque
     'workspace:tenant-a:workspace-a',
     { scope, actor, sessionId: 'session-a', key: 'request-a', body: { message: 'Build model' } },
   ]);
+});
+
+test('workspace snapshot carries admission without changing the private actor payload', async () => {
+  const calls: unknown[] = [];
+  const services = createGatewayTurnServices({ M2_TURNS_ENABLED: 'false', WORKSPACE_AGENT: { getByName() {
+    return { async turnSnapshot(input) { calls.push(input); return { schemaVersion: 3, sessions: {}, turns: {} }; },
+      async createSession() { throw Error('unused'); }, async submitTurn() { throw Error('unused'); }, async cancelTurn() { throw Error('unused'); },
+      async replayTurnEvents() { throw Error('unused'); }, async listFiles() { throw Error('unused'); }, async diffFiles() { throw Error('unused'); }, async readArtifact() { throw Error('unused'); } };
+  } } });
+  assert.deepEqual(await services.snapshot(scope), { schemaVersion: 3, sessions: {}, turns: {}, admission: { state: 'maintenance', reasonCode: 'turn_runtime_not_ready', retryable: false } });
+  assert.deepEqual(calls, [{ scope }]);
 });
 
 test('saved Files and Artifacts remain readable through the derived workspace actor while new Turn admission is disabled',async()=>{

@@ -44,7 +44,7 @@ export type TurnJournalView = {
   resourceWait:null|{status:'waiting'|'release-pending';reasonCode:string;since:number;nextAttemptAt:number};
   releaseHold:null|{status:'release-pending'|'recovery-hold';reasonCode:string;since:number;nextAttemptAt:number};
   recoveryHold:null|{status:'reconciling';reasonCode:string;since:number;nextAttemptAt:number};
-  sessions:Record<string,PublicSessionRecord>; turns:Record<string,PublicTurnRecord>;
+  sessions:Record<string,PublicSessionRecord>; turns:Record<string,PublicTurnRecord & {timing?:import('./timing.ts').TurnTiming}>;
 };
 
 export const TURN_EVENT_LIMIT=2048;
