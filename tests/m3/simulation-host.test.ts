@@ -60,3 +60,37 @@ test('explicit quota dispatch refusal never starts Python and retains release ac
 test('lost acquire acknowledgement plus cancellation reconciles the original lease',async t=>{
  const f=setup(t),acquire=f.ports.quota.acquire;let lose=true;f.ports.quota.acquire=async r=>{const reply=await acquire(r);if(lose){lose=false;throw Error('lost-acquire');}return reply;};const h=f.host(),run=await h.submit(actor,'acquire-lost',f.request,plan,'image',()=>true);await h.alarm();assert.equal((await h.get(run.runId)).released,false);await h.cancel(run.runId);f.reopen();await f.host().alarm();const final=await f.host().get(run.runId);assert.equal(final.released,true);assert.ok(final.lease);assert.equal(f.starts,0);
 });
+for(const consumed of [false,true])test(`dispatch exception (${consumed?'consumed grant':'before grant'}) fails without any native operation after reopen`,async t=>{
+ const f=setup(t),dispatch=f.ports.quota.dispatch;let dispatches=0,nativeCalls=0;
+ f.ports.quota.dispatch=async lease=>{dispatches++;if(consumed)await dispatch(lease);throw Error('dispatch-ack-lost');};
+ for(const op of ['start','observe','stop','destroy','running'] as const)f.ports[op]=async()=>{nativeCalls++;throw Error('native-must-not-be-called');};
+ const h=f.host(),r=await h.submit(actor,'dispatch-error',f.request,plan,'image',()=>true);await h.alarm();
+ assert.equal((await h.get(r.runId)).dispatchClaimed,true);assert.equal((await h.get(r.runId)).startClaimed,false);
+ f.loseRelease();f.reopen();await f.host().alarm();assert.equal((await h.get(r.runId)).released,false);
+ const proof=(await h.get(r.runId)).releaseProof;f.reopen();await f.host().alarm();await f.host().alarm();
+ const final=await h.get(r.runId);assert.equal(final.status,'failed');assert.equal(final.errorCode,'simulation-dispatch-unconfirmed');assert.equal(final.released,true);assert.deepEqual(final.releaseProof,proof);
+ assert.equal(dispatches,1);assert.equal(nativeCalls,0);assert.equal((await f.ports.quota.lookup(scope.tenantId,`sim-${r.runId}-0`))?.lease?.status,'stopped');
+});
+test('dispatch timeout releases without native work even when the grant arrives later',async t=>{
+ const f=setup(t),dispatch=f.ports.quota.dispatch;let dispatches=0,resolve!:(v:Awaited<ReturnType<typeof dispatch>>)=>void,entered!:()=>void;
+ const reached=new Promise<void>(r=>{entered=r;});let grant:Awaited<ReturnType<typeof dispatch>>;
+ f.ports.quota.dispatch=async lease=>{dispatches++;grant=await dispatch(lease);entered();return new Promise(r=>{resolve=r;});};
+ const h=f.host(),r=await h.submit(actor,'dispatch-timeout',f.request,plan,'image',()=>true);
+ t.mock.timers.enable({apis:['setTimeout']});const advance=h.alarm();await reached;t.mock.timers.tick(15001);await advance;
+ assert.equal((await h.get(r.runId)).startClaimed,false);f.reopen();await f.host().alarm();assert.equal((await h.get(r.runId)).released,true);
+ resolve(grant!);await Promise.resolve();await f.host().alarm();assert.equal(dispatches,1);assert.equal(f.starts,0);assert.equal(f.observes,0);assert.equal(f.stops,0);
+});
+test('dispatch intent survives storage acknowledgement loss without acquiring a fresh authorization',async t=>{
+ const f=setup(t),acquire=f.ports.quota.acquire;let dispatches=0;f.ports.quota.dispatch=async()=>{dispatches++;throw Error('must-not-dispatch');};
+ const h=f.host(),r=await h.submit(actor,'dispatch-sync',f.request,plan,'image',()=>true);
+ const lease=(await acquire({tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,generation:scope.workspaceGeneration,operation:'simulation-run',operationId:`sim-${r.runId}-0`,runId:r.runId,deadlineAt:r.input.deadlineAt})).lease!;
+ const {leaseReference}=await import('../../services/quota/core.ts');await f.storage.put('simulation:run:'+r.runId,{...r,lease:leaseReference(lease),quotaClaimed:true});
+ f.loseSync();await h.alarm();f.reopen();await f.host().alarm();assert.equal((await h.get(r.runId)).released,true);assert.equal(dispatches,0);assert.equal(f.starts,0);assert.equal(f.observes,0);
+});
+test('legacy ambiguous start intent remains observation-only rather than claiming no native start',async t=>{
+ const f=setup(t),h=f.host(),r=await h.submit(actor,'legacy',f.request,plan,'image',()=>true);f.loseStart();await h.alarm();const legacy=await h.get(r.runId);delete legacy.dispatchClaimed;await f.storage.put('simulation:run:'+r.runId,legacy);f.reopen();await f.host().alarm();assert.equal(f.starts,1);assert.equal(f.observes,1);assert.equal((await h.get(r.runId)).released,false);
+});
+test('cancel during quota dispatch settles without native start or observe',async t=>{
+ const f=setup(t),dispatch=f.ports.quota.dispatch,h=f.host(),r=await h.submit(actor,'cancel-dispatch',f.request,plan,'image',()=>true);
+ f.ports.quota.dispatch=async lease=>{const response=await dispatch(lease);await h.cancel(r.runId);return response;};await h.alarm();f.reopen();await f.host().alarm();assert.equal((await h.get(r.runId)).status,'cancelled');assert.equal((await h.get(r.runId)).released,true);assert.equal(f.starts,0);assert.equal(f.observes,0);assert.equal(f.stops,0);
+});

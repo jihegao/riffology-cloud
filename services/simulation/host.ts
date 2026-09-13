@@ -7,7 +7,7 @@ import type {SimulationInput,NativeObservation} from './native.ts';
 import {applyWorkspaceAlarm,SIMULATION_WAKE_KEY,WORKSPACE_STATE_KEY,TURN_WAKE_KEY,SERVICE_WAKE_KEY,OBSERVER_WAKE_KEY} from '../workspace/shared-alarm.ts';
 export type ExperimentRequest={revisionId:string|null;filesSha256:string;specSha256:string;parameters:ParameterValues;seed:number};
 type Status='queued'|'waiting_for_capacity'|'preparing'|'running'|'finalizing'|'stopping'|'unknown'|'completed'|'failed'|'cancelled';
-export type SimulationRecord={experimentId:string;runId:string;scope:TurnScope;actor:TurnActor;key:string;requestJson:string;input:SimulationInput;status:Status;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null;attempt:number;quotaClaimed:boolean;releaseProof:StopConfirmation|null;lease:LeaseReference|null;startClaimed:boolean;stop:NativeObservation['stop'];result:null|{metrics:Record<string,number>;artifactSha256:string;outputs?:SimulationOutput[]};releaseBegunAt:number|null;quietSince:number|null;released:boolean};
+export type SimulationRecord={experimentId:string;runId:string;scope:TurnScope;actor:TurnActor;key:string;requestJson:string;input:SimulationInput;status:Status;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null;attempt:number;quotaClaimed:boolean;releaseProof:StopConfirmation|null;lease:LeaseReference|null;dispatchClaimed?:boolean;startClaimed:boolean;stop:NativeObservation['stop'];result:null|{metrics:Record<string,number>;artifactSha256:string;outputs?:SimulationOutput[]};releaseBegunAt:number|null;quietSince:number|null;released:boolean};
 export interface SimulationPorts{
  quota:{acquire(request:LeaseRequest):Promise<Acquisition>;lookup(tenantId:string,operationId:string):Promise<Acquisition|null>;dispatch(lease:LeaseReference):Promise<{authorized:boolean;lease:unknown}>;confirmStopped(lease:LeaseReference,proof:StopConfirmation):Promise<unknown>};
  start(input:SimulationInput):Promise<NativeObservation>;
@@ -55,7 +55,7 @@ export class SimulationHost{
   if(!image||image.length>512)throw Error('simulation-unavailable');
   const version=modelVersion(plan);if(JSON.stringify(version)!==JSON.stringify({revisionId:request.revisionId,filesSha256:request.filesSha256,specSha256:request.specSha256}))throw Error('simulation-model-stale');
   const parameters=resolveParameters(plan.spec,request.parameters),now=this.clock(),runId=crypto.randomUUID(),intent=INTENT+await digest(JSON.stringify([actor.userId,key]));
-  const record:SimulationRecord={experimentId:runId,runId,scope:this.scope,actor:checkedActor(actor),key,requestJson:JSON.stringify(request),input:{runId,plan,parameters,seed:request.seed,deadlineAt:now+this.policy.durationMs,runtimeImage:image},status:'queued',createdAt:now,updatedAt:now,cancelledAt:null,errorCode:null,attempt:0,quotaClaimed:false,releaseProof:null,lease:null,startClaimed:false,stop:null,result:null,releaseBegunAt:null,quietSince:null,released:false};
+  const record:SimulationRecord={experimentId:runId,runId,scope:this.scope,actor:checkedActor(actor),key,requestJson:JSON.stringify(request),input:{runId,plan,parameters,seed:request.seed,deadlineAt:now+this.policy.durationMs,runtimeImage:image},status:'queued',createdAt:now,updatedAt:now,cancelledAt:null,errorCode:null,attempt:0,quotaClaimed:false,releaseProof:null,lease:null,dispatchClaimed:false,startClaimed:false,stop:null,result:null,releaseBegunAt:null,quietSince:null,released:false};
   const result=await this.storage.transaction(async tx=>{
    const existing=await tx.get<string>(intent);if(existing){const r=(await tx.get<SimulationRecord>(PREFIX+existing))!;if(r.requestJson!==record.requestJson)throw Error('simulation-idempotency-conflict');return r;}
    if(!stillCurrent())throw Error('simulation-model-stale');
@@ -67,13 +67,17 @@ export class SimulationHost{
  async #bounded<T>(operation:()=>Promise<T>):Promise<T>{let timer:ReturnType<typeof setTimeout>|undefined;const pending=Promise.resolve().then(operation);this.ports.hold(pending.catch(()=>{}));try{return await Promise.race([pending,new Promise<never>((_,reject)=>{timer=setTimeout(()=>reject(Error('simulation-operation-unconfirmed')),15000);})]);}finally{clearTimeout(timer);}}
  async alarm(){
   if(this.#advancing)return;this.#advancing=true;
-  try{const records=[...(await this.storage.list<SimulationRecord>({prefix:PREFIX})).values()].filter(r=>!r.released);for(const r of records){try{await this.#advance(r.runId);}catch{await this.#change(r.runId,current=>{if(!TERMINAL.has(current.status)){current.status='unknown';current.errorCode='simulation-operation-unconfirmed';}});}}}
+  try{const records=[...(await this.storage.list<SimulationRecord>({prefix:PREFIX})).values()].filter(r=>!r.released);for(const r of records){try{await this.#advance(r.runId);}catch{await this.#change(r.runId,current=>{if(!TERMINAL.has(current.status)){current.status='unknown';current.errorCode=current.dispatchClaimed&&!current.startClaimed?'simulation-dispatch-unconfirmed':'simulation-operation-unconfirmed';}});}}}
   finally{this.#advancing=false;await this.storage.transaction(tx=>this.#project(tx));await this.storage.sync();}
  }
  async #advance(id:string){
   let r=await this.get(id);
   if(r.released)return;
   if(r.stop){await this.#release(r);return;}
+  // A durable dispatch attempt without a native-start intent can never be
+  // replayed as authorization. Even observe/stop may wake a Sandbox, so this
+  // recovery path must settle the lease without touching native resources.
+  if(r.dispatchClaimed&&!r.startClaimed){await this.#releaseNeverStarted(r);return;}
   const allowed=await this.#bounded(()=>this.ports.authorize(r.actor));
   if(!allowed&&!r.cancelledAt)r=await this.#change(id,v=>{v.cancelledAt=this.clock();v.errorCode='simulation-access-revoked';});
   const expired=this.clock()>=r.input.deadlineAt;
@@ -93,23 +97,24 @@ export class SimulationHost{
   }
   r=await this.get(id);
   if((r.cancelledAt||this.clock()>=r.input.deadlineAt)&&!r.startClaimed){
-   r=await this.#change(id,v=>{v.releaseProof??={kind:'runtime-stopped',confirmationId:`never-${v.runId}`,observedAt:this.clock()};});
-   await this.#bounded(()=>this.ports.quota.confirmStopped(r.lease!,r.releaseProof!));
-   await this.#change(id,v=>{v.status=v.cancelledAt?'cancelled':'failed';v.errorCode??='simulation-deadline';v.released=true;});return;
+   await this.#releaseNeverStarted(r);return;
   }
   let observation:NativeObservation;
   if(!r.startClaimed){
-   r=await this.#change(id,v=>{if(!v.cancelledAt){v.startClaimed=true;v.status='preparing';}});
-   if(!r.startClaimed)return;
+   r=await this.#change(id,v=>{if(!v.cancelledAt){v.dispatchClaimed=true;v.status='preparing';}});
+   if(!r.dispatchClaimed)return;
    const dispatched=await this.#bounded(()=>this.ports.quota.dispatch(r.lease!));
    if(dispatched?.authorized!==true){
     // No native start has been attempted. Keep the acquired lease visible
     // until the root's no-start proof has been acknowledged by quota.
-    await this.#change(id,v=>{v.startClaimed=false;v.cancelledAt??=this.clock();v.errorCode='simulation-quota-denied';v.status='stopping';});return;
+    await this.#change(id,v=>{v.errorCode='simulation-quota-denied';v.status='stopping';});return;
    }
    if(JSON.stringify(leaseReference(dispatched.lease as Parameters<typeof leaseReference>[0]))!==JSON.stringify(r.lease))throw Error('simulation-quota-unconfirmed');
-   r=await this.get(id);
-   if(r.cancelledAt)return;
+   // Only a confirmed, matching one-shot grant may create the native intent.
+   // Legacy records lacking dispatchClaimed keep their conservative old
+   // startClaimed interpretation; they cannot prove native was never called.
+   r=await this.#change(id,v=>{if(!v.cancelledAt&&this.clock()<v.input.deadlineAt)v.startClaimed=true;});
+   if(!r.startClaimed)return;
    observation=await this.#bounded(()=>this.ports.start(r.input));
   }else if(r.cancelledAt||this.clock()>=r.input.deadlineAt){observation=await this.#bounded(()=>this.ports.stop(r.input));}
   else observation=await this.#bounded(()=>this.ports.observe(r.input));
@@ -122,6 +127,17 @@ export class SimulationHost{
    try{result=await this.#bounded(()=>this.ports.publish(r,observation.result));}catch(error){if(error instanceof Error&&error.message==='simulation-result-invalid')errorCode='simulation-result-invalid';else throw error;}
   }else errorCode=r.cancelledAt?null:'simulation-execution-failed';
   await this.#change(id,v=>{v.stop=observation.stop;v.result=v.cancelledAt?null:result;v.status=v.cancelledAt?'cancelled':result?'completed':'failed';v.errorCode=errorCode;v.releaseBegunAt=this.clock();});
+ }
+ async #releaseNeverStarted(r:SimulationRecord){
+  r=await this.#change(r.runId,v=>{
+   v.errorCode??=v.cancelledAt?null:this.clock()>=v.input.deadlineAt?'simulation-deadline':'simulation-dispatch-unconfirmed';
+   // This root proves no native intent exists. runtime-stopped is required
+   // even if quota consumed dispatch before losing its response; quota's
+   // never-started proof type only accepts an untouched held lease.
+   v.releaseProof??={kind:'runtime-stopped',confirmationId:`never-${v.runId}`,observedAt:this.clock()};
+  });
+  await this.#bounded(()=>this.ports.quota.confirmStopped(r.lease!,r.releaseProof!));
+  await this.#change(r.runId,v=>{v.status=v.cancelledAt?'cancelled':'failed';v.released=true;});
  }
  async #release(r:SimulationRecord){
   // Same bounded assignment guard as existing ServiceSandbox release. A single
