@@ -735,7 +735,7 @@ test('preacceptance turn errors release the frozen intent while preserving an ed
       if (path === `/api/tenants/tenant-a/projects`) { await json(route, { projects: [{ id: `project-preaccept-${status}`, workspace_id: workspaceId, title: '请求校验', status: 'ready' }] }); return true; }
       if (path === `/api/workspaces/${workspaceId}`) { await json(route, { schemaVersion: 1, sessions: { [sessionId]: { id: sessionId, title: '主对话', createdAt: 1 } }, turns: {}, activeTurnId: null }); return true; }
       if (path.endsWith('/events')) { await json(route, { events: [], nextSequence: 0, hasMore: false, snapshotRequired: false }); return true; }
-      if (path === `/api/workspaces/${workspaceId}/sessions/${sessionId}/turns`) { attempts.push({ key: route.request().headers()['idempotency-key'], body: route.request().postData() }); await json(route, { error: 'body_too_large' }, attempts.length === 1 ? status : 202); return true; }
+      if (path === `/api/workspaces/${workspaceId}/sessions/${sessionId}/turns`) { attempts.push({ key: route.request().headers()['idempotency-key'], body: route.request().postData() }); await json(route, { error: status === 400 ? 'invalid_input' : 'body_too_large' }, attempts.length === 1 ? status : 202); return true; }
     });
     await page.goto(`https://ui.test/#/workspace/project-preaccept-${status}`);
     await page.locator('#message-input').fill('原始草稿'); await page.locator('#message-submit').click();
@@ -784,4 +784,21 @@ test('turn request limit counts UTF-8 JSON bytes before creating a request', asy
   await page.locator('#message-input').fill('界'.repeat(3000)); await page.locator('#message-submit').click();
   assert.equal(posts, 0); assert.match(await page.locator('#message-error').innerText(), /8192/);
   assert.equal(await page.locator('#message-input').isEditable(), true);
+});
+
+test('a persisted oversized message intent is released before retry preflight', async t => {
+  const workspaceId = 'workspace-old-oversized-intent', sessionId = 'session-old-oversized-intent'; let posts = 0;
+  const page = await pageFixture(t, async (route, path) => {
+    if (path === `/api/tenants/tenant-a/projects`) { await json(route, { projects: [{ id: 'project-old-oversized-intent', workspace_id: workspaceId, title: '旧请求', status: 'ready' }] }); return true; }
+    if (path === `/api/workspaces/${workspaceId}`) { await json(route, { schemaVersion: 1, sessions: { [sessionId]: { id: sessionId, title: '主对话', createdAt: 1 } }, turns: {}, activeTurnId: null }); return true; }
+    if (path.endsWith('/events')) { await json(route, { events: [], nextSequence: 0, hasMore: false, snapshotRequired: false }); return true; }
+    if (path.includes('/turns')) { posts++; await json(route, {}); return true; }
+  });
+  const message = '界'.repeat(3000);
+  await page.addInitScript(({ key, message: value, sessionId: sid }) => sessionStorage.setItem(key, JSON.stringify({ schemaVersion: 1, draft: value, messageIntent: { key: 'old-key', sessionId: sid, message: value } })), { key: `riffology:conversation:tenant-a:${workspaceId}`, message, sessionId });
+  await page.goto('https://ui.test/#/workspace/project-old-oversized-intent');
+  await page.locator('#message-submit:not([disabled])').waitFor(); await page.locator('#message-submit').click();
+  assert.equal(posts, 0); assert.equal(await page.locator('#message-input').isEditable(), true);
+  await page.locator('#message-input').fill('缩短后的请求'); await page.locator('#message-submit').click();
+  await waitFor(() => posts === 1);
 });

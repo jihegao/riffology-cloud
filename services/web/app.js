@@ -725,6 +725,16 @@ $('#message-form').onsubmit = async event => {
   if (sendingMessage || !canSubmitConversation()) return;
   const text = messageIntent?.message ?? $('#message-input').value.trim();
   if (!text) return;
+  if (messageIntent && encodedTurnRequestBytes(text) > TURN_REQUEST_MAX_BYTES) {
+    const oversized = messageIntent;
+    saveConversation(recoveryKey(activeProject.workspace_id), {messageIntent:null, selectedSessionId:oversized.sessionId, draft:oversized.message});
+    messageIntent = null;
+    $('#message-input').value = oversized.message;
+    $('#message-input').readOnly = false;
+    $('#message-submit').textContent = '发送';
+    $('#message-error').textContent = `请求内容过大，请缩短后重试（最多 ${TURN_REQUEST_MAX_BYTES} 字节）。`;
+    return;
+  }
   if (encodedTurnRequestBytes(text) > TURN_REQUEST_MAX_BYTES) {
     $('#message-error').textContent = `请求内容过大，请缩短后重试（最多 ${TURN_REQUEST_MAX_BYTES} 字节）。`;
     return;
@@ -732,6 +742,7 @@ $('#message-form').onsubmit = async event => {
   const generation = viewGeneration;
   const workspaceId = activeProject.workspace_id, savedKey = recoveryKey(workspaceId);
   let attemptedIntent = messageIntent;
+  let turnAccepted = false;
   sendingMessage = true;
   $('#message-submit').disabled = true;
   $('#message-error').textContent = '';
@@ -752,15 +763,16 @@ $('#message-form').onsubmit = async event => {
     saveConversation(savedKey, {messageIntent:current, selectedSessionId:current.sessionId, draft:current.message});
     $('#message-input').readOnly = true;
     await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/sessions/${encodeURIComponent(current.sessionId)}/turns`, { method: 'POST', headers: { 'Idempotency-Key': current.key }, body: JSON.stringify({ message: current.message }) });
+    turnAccepted = true;
     if (readConversation(savedKey).messageIntent?.key === current.key) saveConversation(savedKey, {messageIntent:null,draft:''});
-    if (generation !== viewGeneration) return;
     messageIntent = null;
+    if (generation !== viewGeneration) return;
     $('#message-input').value = '';
     $('#message-submit').textContent = '发送';
     await refreshWorkspace(generation);
   } catch (error) {
     if (generation !== viewGeneration) return;
-    if ([400, 413].includes(error.status) && attemptedIntent && messageIntent?.key === attemptedIntent.key) {
+    if (!turnAccepted && ((error.status === 400 && error.code === 'invalid_input') || (error.status === 413 && error.code === 'body_too_large')) && attemptedIntent && messageIntent?.key === attemptedIntent.key) {
       saveConversation(savedKey, {messageIntent:null, selectedSessionId:attemptedIntent.sessionId, draft:attemptedIntent.message});
       messageIntent = null;
     }
