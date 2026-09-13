@@ -726,3 +726,62 @@ test('lost Session creation response recovers its original key after reload', as
   await page.goto('https://ui.test/#/workspace/session-ack-project');await page.locator('#message-input').fill('恢复 Session 接收收据');await page.locator('#message-submit').click();await waitFor(()=>sessionPosts.length===1);await page.locator('#message-submit:not([disabled])').waitFor();assert.equal(turnPosts.length,0);
   await page.reload();await page.locator('#message-submit:not([disabled])').waitFor();assert.equal(await page.locator('#message-input').inputValue(),'恢复 Session 接收收据');assert.equal(sessionPosts.length,1);await page.locator('#message-submit').click();await waitFor(()=>turnPosts.length===1);assert.equal(sessionPosts.length,2);assert.deepEqual(sessionPosts[0],sessionPosts[1]);
 });
+
+test('preacceptance turn errors release the frozen intent while preserving an editable draft', async t => {
+  for (const status of [400, 413]) {
+    const workspaceId = `workspace-preaccept-${status}`, sessionId = `session-preaccept-${status}`;
+    const attempts = [];
+    const page = await pageFixture(t, async (route, path) => {
+      if (path === `/api/tenants/tenant-a/projects`) { await json(route, { projects: [{ id: `project-preaccept-${status}`, workspace_id: workspaceId, title: '请求校验', status: 'ready' }] }); return true; }
+      if (path === `/api/workspaces/${workspaceId}`) { await json(route, { schemaVersion: 1, sessions: { [sessionId]: { id: sessionId, title: '主对话', createdAt: 1 } }, turns: {}, activeTurnId: null }); return true; }
+      if (path.endsWith('/events')) { await json(route, { events: [], nextSequence: 0, hasMore: false, snapshotRequired: false }); return true; }
+      if (path === `/api/workspaces/${workspaceId}/sessions/${sessionId}/turns`) { attempts.push({ key: route.request().headers()['idempotency-key'], body: route.request().postData() }); await json(route, { error: 'body_too_large' }, attempts.length === 1 ? status : 202); return true; }
+    });
+    await page.goto(`https://ui.test/#/workspace/project-preaccept-${status}`);
+    await page.locator('#message-input').fill('原始草稿'); await page.locator('#message-submit').click();
+    await page.locator('#message-submit:not([disabled])').waitFor();
+    assert.equal(await page.locator('#message-input').isEditable(), true);
+    assert.equal(await page.locator('#message-input').inputValue(), '原始草稿');
+    await page.reload(); await page.locator('#message-submit:not([disabled])').waitFor();
+    assert.equal(await page.locator('#message-input').inputValue(), '原始草稿');
+    await page.locator('#message-input').fill('修改后的草稿'); await page.locator('#message-submit').click();
+    await waitFor(() => attempts.length === 2);
+    assert.equal(JSON.parse(attempts[1].body).message, '修改后的草稿');
+    await page.close();
+  }
+});
+
+test('unknown turn errors and conflicts retain the original frozen request across reload', async t => {
+  for (const status of [409, 500]) {
+    const workspaceId = `workspace-frozen-${status}`, sessionId = `session-frozen-${status}`, attempts = [];
+    const page = await pageFixture(t, async (route, path) => {
+      if (path === `/api/tenants/tenant-a/projects`) { await json(route, { projects: [{ id: `project-frozen-${status}`, workspace_id: workspaceId, title: '请求恢复', status: 'ready' }] }); return true; }
+      if (path === `/api/workspaces/${workspaceId}`) { await json(route, { schemaVersion: 1, sessions: { [sessionId]: { id: sessionId, title: '主对话', createdAt: 1 } }, turns: {}, activeTurnId: null }); return true; }
+      if (path.endsWith('/events')) { await json(route, { events: [], nextSequence: 0, hasMore: false, snapshotRequired: false }); return true; }
+      if (path === `/api/workspaces/${workspaceId}/sessions/${sessionId}/turns`) { attempts.push({ key: route.request().headers()['idempotency-key'], body: route.request().postData() }); await json(route, { error: 'fixture' }, status); return true; }
+    });
+    await page.goto(`https://ui.test/#/workspace/project-frozen-${status}`);
+    await page.locator('#message-input').fill('不可替换的请求'); await page.locator('#message-submit').click();
+    await page.locator('#message-submit:not([disabled])').waitFor();
+    assert.equal(await page.locator('#message-input').isEditable(), false);
+    await page.reload(); await page.locator('#message-submit:not([disabled])').waitFor();
+    assert.equal(await page.locator('#message-input').isEditable(), false);
+    await page.locator('#message-submit').click(); await waitFor(() => attempts.length === 2);
+    assert.deepEqual(attempts[1], attempts[0]);
+    await page.close();
+  }
+});
+
+test('turn request limit counts UTF-8 JSON bytes before creating a request', async t => {
+  const workspaceId = 'workspace-byte-limit', sessionId = 'session-byte-limit'; let posts = 0;
+  const page = await pageFixture(t, async (route, path) => {
+    if (path === `/api/tenants/tenant-a/projects`) { await json(route, { projects: [{ id: 'project-byte-limit', workspace_id: workspaceId, title: '字节限制', status: 'ready' }] }); return true; }
+    if (path === `/api/workspaces/${workspaceId}`) { await json(route, { schemaVersion: 1, sessions: { [sessionId]: { id: sessionId, title: '主对话', createdAt: 1 } }, turns: {}, activeTurnId: null }); return true; }
+    if (path.endsWith('/events')) { await json(route, { events: [], nextSequence: 0, hasMore: false, snapshotRequired: false }); return true; }
+    if (path === `/api/workspaces/${workspaceId}/sessions/${sessionId}/turns`) { posts++; await json(route, {}); return true; }
+  });
+  await page.goto('https://ui.test/#/workspace/project-byte-limit');
+  await page.locator('#message-input').fill('界'.repeat(3000)); await page.locator('#message-submit').click();
+  assert.equal(posts, 0); assert.match(await page.locator('#message-error').innerText(), /8192/);
+  assert.equal(await page.locator('#message-input').isEditable(), true);
+});

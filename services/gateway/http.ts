@@ -1,4 +1,5 @@
 import { CatalogError } from '../catalog/contracts.ts';
+export const JSON_REQUEST_MAX_BYTES = 8192;
 export function json(value: unknown, status = 200): Response {
   return Response.json(value,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
 }
@@ -11,7 +12,7 @@ export class HttpError extends Error {
 }
 export async function readJson(request:Request):Promise<unknown> {
   if(request.headers.get('content-type')?.split(';')[0].trim()!=='application/json')throw new HttpError('json_required',415);
-  if(Number(request.headers.get('content-length'))>8192)throw new HttpError('body_too_large',413);
+  if(Number(request.headers.get('content-length'))>JSON_REQUEST_MAX_BYTES)throw new HttpError('body_too_large',413);
   if(!request.body)throw new CatalogError('invalid_input');
   const reader=request.body.getReader();let bytes=0;const parts:Uint8Array[]=[];
   let timer:ReturnType<typeof setTimeout>|undefined;
@@ -22,7 +23,7 @@ export async function readJson(request:Request):Promise<unknown> {
         const all=new Uint8Array(bytes);let offset=0;for(const part of parts){all.set(part,offset);offset+=part.length;}
         try{return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(all));}catch{throw new CatalogError('invalid_input');}
       }
-      bytes+=item.value.length;if(bytes>8192)throw new HttpError('body_too_large',413);parts.push(item.value);
+      bytes+=item.value.length;if(bytes>JSON_REQUEST_MAX_BYTES)throw new HttpError('body_too_large',413);parts.push(item.value);
     }
     throw new HttpError('body_too_large',413);
   }finally{clearTimeout(timer);void reader.cancel().catch(()=>{});reader.releaseLock();}

@@ -59,6 +59,8 @@ let workspaceDiffError = '';
 let workspaceArtifactPanel = 'files';
 const POLL_WINDOW_MS = 300000;
 const TERMINAL_TURNS = new Set(['completed', 'failed', 'cancelled', 'interrupted']);
+const TURN_REQUEST_MAX_BYTES = 8192;
+const encodedTurnRequestBytes = message => new TextEncoder().encode(JSON.stringify({message})).byteLength;
 
 function workspaceNeedsTurnUpdates(snapshot = workspaceSnapshot) {
   if (!snapshot) return false;
@@ -143,7 +145,7 @@ async function api(path, options = {}) {
     const projectLimit = response.status === 429 && path.startsWith('/api/workspaces/');
     let code = null;
     try { const body = await response.clone().json(); if (typeof body?.error === 'string') code = body.error; } catch {}
-    const messages = { 400: '请求内容无效', 401: '请先登录', 403: '登录或项目权限已变化，请刷新后重试', 404: '当前账号尚未获得访问权限', 409: '状态已变化，请刷新后重试', 429: projectLimit ? '本项目已达到当前费用或运行上限' : '请求过于频繁，请稍后重试', 503: '服务暂不可用，请稍后再试' };
+    const messages = { 400: '请求内容无效', 401: '请先登录', 403: '登录或项目权限已变化，请刷新后重试', 404: '当前账号尚未获得访问权限', 409: '状态已变化，请刷新后重试', 413: '请求内容过大，请缩短后重试', 429: projectLimit ? '本项目已达到当前费用或运行上限' : '请求过于频繁，请稍后重试', 503: '服务暂不可用，请稍后再试' };
     if (code === 'turn_runtime_not_ready') messages[503] = '当前环境暂停接收新任务，请稍后查看状态。';
     throw Object.assign(new Error(messages[response.status] || '请求失败，请稍后重试'), { status: response.status, code, retryable: code !== 'turn_runtime_not_ready' });
   }
@@ -723,8 +725,13 @@ $('#message-form').onsubmit = async event => {
   if (sendingMessage || !canSubmitConversation()) return;
   const text = messageIntent?.message ?? $('#message-input').value.trim();
   if (!text) return;
+  if (encodedTurnRequestBytes(text) > TURN_REQUEST_MAX_BYTES) {
+    $('#message-error').textContent = `请求内容过大，请缩短后重试（最多 ${TURN_REQUEST_MAX_BYTES} 字节）。`;
+    return;
+  }
   const generation = viewGeneration;
   const workspaceId = activeProject.workspace_id, savedKey = recoveryKey(workspaceId);
+  let attemptedIntent = messageIntent;
   sendingMessage = true;
   $('#message-submit').disabled = true;
   $('#message-error').textContent = '';
@@ -741,6 +748,7 @@ $('#message-form').onsubmit = async event => {
     }
     messageIntent ??= { key: crypto.randomUUID(), sessionId: selectedSessionId, message: text };
     const current = messageIntent;
+    attemptedIntent = current;
     saveConversation(savedKey, {messageIntent:current, selectedSessionId:current.sessionId, draft:current.message});
     $('#message-input').readOnly = true;
     await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/sessions/${encodeURIComponent(current.sessionId)}/turns`, { method: 'POST', headers: { 'Idempotency-Key': current.key }, body: JSON.stringify({ message: current.message }) });
@@ -752,8 +760,12 @@ $('#message-form').onsubmit = async event => {
     await refreshWorkspace(generation);
   } catch (error) {
     if (generation !== viewGeneration) return;
+    if ([400, 413].includes(error.status) && attemptedIntent && messageIntent?.key === attemptedIntent.key) {
+      saveConversation(savedKey, {messageIntent:null, selectedSessionId:attemptedIntent.sessionId, draft:attemptedIntent.message});
+      messageIntent = null;
+    }
     $('#message-error').textContent = error.message;
-    $('#message-submit').textContent = '重试';
+    $('#message-submit').textContent = messageIntent ? '重试' : '发送';
   } finally {
     sendingMessage = false;
     $('#message-input').readOnly = Boolean(messageIntent);
