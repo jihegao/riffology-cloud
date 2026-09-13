@@ -21,3 +21,5 @@ COPY --chown=root:root --chmod=0444 services/trusted-pi/release-unconfigured.mjs
 # The default release is deliberately inert. Product release assembly replaces
 # trusted-pi/trusted-pi-release.mjs only after model budget and Tool Bridge authority are
 # bound. The Sandbox API service remains the image entrypoint.
+
+COPY --chown=root:root --chmod=0444 services/trusted-pi/research-context.mjs /opt/riffology/trusted-pi/research-context.mjs

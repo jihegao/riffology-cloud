@@ -9,6 +9,7 @@ export { sandboxActorIds } from './identity.ts';
 
 export const MODEL_PROXY_HOST='model-proxy.riffology.internal';
 export const TOOL_BRIDGE_HOST='tool-bridge.riffology.internal';
+export const RESEARCH_CONTEXT_HOST=TOOL_BRIDGE_HOST;
 const MAX_OUTBOUND_BODY=1_100_000,encoder=new TextEncoder();
 type IdentityNamespace={idFromName(name:string):{toString():string}};
 export type InternalSandboxServices={
@@ -51,7 +52,7 @@ async function body(request:Request):Promise<ArrayBuffer>{
 function target(request:Request):{binding:'MODEL_PROXY'|'TOOL_BRIDGE';host:string;path:string}{
   const url=new URL(request.url);if(url.protocol!=='https:'||url.username||url.password||url.port||url.search||url.hash||request.method!=='POST')throw Error('sandbox-outbound-denied');
   if(url.hostname===MODEL_PROXY_HOST&&url.pathname==='/v1/responses')return {binding:'MODEL_PROXY',host:MODEL_PROXY_HOST,path:'/v1/responses'};
-  if(url.hostname===TOOL_BRIDGE_HOST&&url.pathname==='/v1/tool')return {binding:'TOOL_BRIDGE',host:TOOL_BRIDGE_HOST,path:'/v1/tool'};
+  if(url.hostname===TOOL_BRIDGE_HOST&&(url.pathname==='/v1/tool'||url.pathname==='/v1/research'))return {binding:'TOOL_BRIDGE',host:TOOL_BRIDGE_HOST,path:url.pathname};
   throw Error('sandbox-outbound-denied');
 }
 /** Outbound requests are rebuilt rather than forwarded so Pi-controlled
