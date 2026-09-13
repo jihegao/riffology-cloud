@@ -6,7 +6,7 @@ import {spawnSync} from 'node:child_process';
 import {EventEmitter} from 'node:events';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
-import {cancelOutstandingTurn,driveTenTurns,requestJson,runIssuesAcceptance,unavailableInventory,unavailableProviderFreeProbe,validateFinalInventory,validatePlatformProbe,validateReleaseResult,validateTenTurnEvidence,workspaceQuiescent} from '../../scripts/m3/issues-acceptance.mjs';
+import {allEvents,cancelOutstandingTurn,driveTenTurns,requestJson,runIssuesAcceptance,unavailableInventory,unavailableProviderFreeProbe,validateFinalInventory,validatePlatformProbe,validateReleaseResult,validateTenTurnEvidence,workspaceQuiescent} from '../../scripts/m3/issues-acceptance.mjs';
 import {forwardCloseTurnGate} from '../../scripts/m3/vertical-staging-release.mjs';
 import {buildReleaseManifest,WORKER_VERSION_METADATA_BINDING} from '../../scripts/m3/vertical-staging-preflight.mjs';
 import {exactInstance,instanceRows,selectTrustedPiApp,trustedPiProbeActor} from '../../scripts/m3/trusted-pi-platform-probe.mjs';
@@ -69,6 +69,19 @@ test('acceptance transport retries reads and same-key mutations without changing
   assert.deepEqual(value,{ok:true});assert.equal(calls.length,3);assert.deepEqual(new Set(calls.map(call=>call.key)),new Set(['stable-key']));assert.deepEqual(new Set(calls.map(call=>call.body)),new Set(['{"value":1}']));
   attempt=0;calls.length=0;await assert.rejects(()=>requestJson('https://m1.riff-demo.gaojihe.cn/api/example',{cookie:'private-cookie',method:'POST',body:{value:1},attempts:3,retryDelayMs:0}),/transient-network/);assert.equal(calls.length,1);
   let aborted=false;calls.length=0;globalThis.fetch=async(_url,init)=>{calls.push(init);return new Promise((_,reject)=>init.signal.addEventListener('abort',()=>reject(Error('aborted')),{once:true}));};setTimeout(()=>{aborted=true;},5);await assert.rejects(()=>requestJson('https://m1.riff-demo.gaojihe.cn/api/example',{cookie:'private-cookie',shouldAbort:()=>aborted,timeoutMs:1_000}),/acceptance-request-interrupted/);assert.equal(calls.length,1);
+});
+
+test('acceptance event reader rebases once to the oldest retained event window',async t=>{
+  const originalFetch=globalThis.fetch,cursors=[];
+  globalThis.fetch=async url=>{
+    const after=Number(new URL(String(url)).searchParams.get('after_sequence'));cursors.push(after);
+    if(after===0)return Response.json({events:[],nextSequence:75,hasMore:false,oldestSequence:42,snapshotRequired:true});
+    if(after===41)return Response.json({events:[{sequence:42,eventId:'event-retained',workspaceId:'workspace-a',turnId:'turn-a',runtimeGeneration:1,type:'assistant.message',payload:{text:'retained'},at:1}],nextSequence:42,hasMore:false,oldestSequence:42,snapshotRequired:false});
+    throw Error('unexpected-event-cursor');
+  };
+  t.after(()=>{globalThis.fetch=originalFetch;});
+  const events=await allEvents({origin:'https://m1.riff-demo.gaojihe.cn',workspaceId:'workspace-a',cookie:'private-cookie'});
+  assert.deepEqual(cursors,[0,41]);assert.equal(events.length,1);assert.equal(events[0].sequence,42);
 });
 
 test('outstanding turn cleanup proves an exact queued turn was cancelled before start',async t=>{
