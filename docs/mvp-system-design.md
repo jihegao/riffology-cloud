@@ -203,7 +203,9 @@ Run 是执行记录，首版类型为 `command`、`simulation`、`experiment` �
 
 项目提供模型入口、参数 schema、实验计划、种子清单和领域指标；平台验证并固化计划，负责资源检查、调度、进度确认、停止与产物发布。Runs Panel 消费通用 Run 记录，不包含机场等特定模型的固定业务参数。`simctl` 的受控入口和协议由平台实现，具体领域计算代码来自绑定 Revision 的项目。
 
-Simulation Skill 定义 Python + SimPy 的项目规范与 `simctl` 命令契约：
+Simulation Skill 保留 Python + SimPy 的项目约定、可复现要求、建模假设与有效性边界，不规定每次任务必须执行的固定建模步骤。既有项目沿用现有结构；新项目使用 `model/`、`app/`、`experiments/`、`results/` 和 `docs/`。通用验证与结果报告要求由 system prompt 统一承载。
+
+`simctl` 实现时，Skill 仅说明适用场景与完成条件，参数 schema、详细协议和示例由工具描述及按需参考文档承载，执行约束由平台校验。拟实现的命令契约如下：
 
 | 命令 | 责任 |
 |---|---|
