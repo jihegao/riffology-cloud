@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "profile": "isolated-acceptance",
+  "checks": [
+    {
+      "name": "schema",
+      "status": "passed"
+    },
+    {
+      "name": "source",
+      "status": "passed"
+    },
+    {
+      "name": "final-gates",
+      "status": "passed"
+    },
+    {
+      "name": "stages",
+      "status": "passed"
+    },
+    {
+      "name": "workspace-lineage",
+      "status": "passed"
+    },
+    {
+      "name": "experiment-lineage",
+      "status": "passed"
+    },
+    {
+      "name": "refresh-no-rerun",
+      "status": "passed"
+    },
+    {
+      "name": "preview-lineage",
+      "status": "passed"
+    },
+    {
+      "name": "refresh-identities",
+      "status": "passed"
+    },
+    {
+      "name": "post-cleanup-smoke",
+      "status": "passed"
+    },
+    {
+      "name": "no-fixtures",
+      "status": "passed"
+    }
+  ]
+}

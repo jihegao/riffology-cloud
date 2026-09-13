@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "checks": [
+    {
+      "name": "config-containers",
+      "status": "passed"
+    },
+    {
+      "name": "worker-sha",
+      "status": "passed"
+    },
+    {
+      "name": "deployment",
+      "status": "passed"
+    },
+    {
+      "name": "gates",
+      "status": "passed"
+    },
+    {
+      "name": "simulation-image",
+      "status": "passed"
+    },
+    {
+      "name": "quota",
+      "status": "passed"
+    },
+    {
+      "name": "simulation-binding",
+      "status": "passed"
+    },
+    {
+      "name": "r2",
+      "status": "passed"
+    },
+    {
+      "name": "version-containers",
+      "status": "passed"
+    },
+    {
+      "name": "container-apps",
+      "status": "passed"
+    },
+    {
+      "name": "instances",
+      "status": "passed"
+    }
+  ],
+  "workerVersionId": "1b6592e8-0049-4268-9553-516227f7030b",
+  "observedAt": 1789318670188,
+  "instances": {
+    "nonInactive": 0,
+    "apps": [
+      {
+        "appId": "a035c941-2207-406e-97aa-a42ab6e9d249",
+        "pages": 1,
+        "total": 4,
+        "nonInactive": 0,
+        "paginationComplete": true
+      },
+      {
+        "appId": "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650",
+        "pages": 1,
+        "total": 44,
+        "nonInactive": 0,
+        "paginationComplete": true
+      },
+      {
+        "appId": "a03628c4-f032-461f-a65b-612ccac11a06",
+        "pages": 1,
+        "total": 98,
+        "nonInactive": 0,
+        "paginationComplete": true
+      },
+      {
+        "appId": "a03c0a4c-7533-4190-ba2b-ff4fecaabb48",
+        "pages": 1,
+        "total": 10,
+        "nonInactive": 0,
+        "paginationComplete": true
+      },
+      {
+        "appId": "a03836ca-d275-4f7d-898f-bc16d0875089",
+        "pages": 1,
+        "total": 5,
+        "nonInactive": 0,
+        "paginationComplete": true
+      }
+    ]
+  },
+  "apps": [
+    {
+      "id": "a035c941-2207-406e-97aa-a42ab6e9d249",
+      "name": "riffology-m1-project-staging",
+      "max_instances": 1,
+      "configuration": {
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m1-project-staging@sha256:bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00",
+        "vcpu": 0.25,
+        "memory_mib": 1024,
+        "disk": {
+          "size_mb": 4000,
+          "size": "4GB"
+        }
+      }
+    },
+    {
+      "id": "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650",
+      "name": "riffology-m3-project-tools-staging",
+      "max_instances": 1,
+      "configuration": {
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-project-tools-staging@sha256:6e1c51f984b0a6786483c09c327118722e35597f0ab421d54a27b264a0446a58",
+        "vcpu": 0.25,
+        "memory_mib": 1024,
+        "disk": {
+          "size_mb": 4000,
+          "size": "4GB"
+        }
+      }
+    },
+    {
+      "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+      "name": "riffology-m3-trusted-pi-staging",
+      "max_instances": 1,
+      "configuration": {
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-phase1-pi@sha256:b100b228503c8c1a1b38f9b6f87ab82bf6b0db9abd437def201c7e3875054e3f",
+        "vcpu": 0.25,
+        "memory_mib": 1024,
+        "disk": {
+          "size_mb": 4000,
+          "size": "4GB"
+        }
+      }
+    },
+    {
+      "id": "a03c0a4c-7533-4190-ba2b-ff4fecaabb48",
+      "name": "riffology-m3-service-staging",
+      "max_instances": 1,
+      "configuration": {
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8",
+        "vcpu": 0.25,
+        "memory_mib": 1024,
+        "disk": {
+          "size_mb": 4000,
+          "size": "4GB"
+        }
+      }
+    },
+    {
+      "id": "a03836ca-d275-4f7d-898f-bc16d0875089",
+      "name": "riffology-phase1-simulation",
+      "max_instances": 1,
+      "configuration": {
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-phase1-simulation@sha256:be02d18823ae778f3eb3d73e87772e90549c4f2a5a2e22777067ea5e6775f888",
+        "vcpu": 0.25,
+        "memory_mib": 1024,
+        "disk": {
+          "size_mb": 4000,
+          "size": "4GB"
+        }
+      }
+    }
+  ]
+}

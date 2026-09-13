@@ -1,5 +1,7 @@
 # Phase 1 local validation
 
+This is the pre-deployment record. Subsequent authorized cloud deployment, ordinary-user acceptance, final test counts and cleanup are recorded in [Phase 1 live validation](phase1-live-validation.md); the historical “not yet performed” statements below no longer describe current status.
+
 Baseline: `98d231909871c2b13909c5e351c746c1aea02d28`.
 
 Local implementation covers admission projection, Model Spec validation, durable finite experiments, native Python execution, immutable metrics and bounded output artifacts, Preview revision pinning, parameter controls, and persisted Pi research context.
