@@ -49,6 +49,12 @@ test('simulation panel renders typed parameters, retries one pending request and
   await page.locator('#workspace-simulation input[name="servers"]').fill('2');
   await page.locator('#workspace-simulation button[type="submit"]').click();
   await page.getByText('重试实验',{exact:true}).waitFor();assert.equal(posts,1);
+  assert.equal(await page.locator('#workspace-simulation input[name="servers"]').inputValue(),'2');
+  assert.equal(await page.locator('#workspace-simulation input[name="servers"]').isDisabled(),true);
+  await page.reload();
+  await page.getByText('重试实验',{exact:true}).waitFor();
+  assert.equal(await page.locator('#workspace-simulation input[name="servers"]').inputValue(),'2');
+  assert.equal(await page.locator('#workspace-simulation input[name="servers"]').isDisabled(),true);
   await page.getByText('重试实验',{exact:true}).click();
   await page.locator('#workspace-simulation').getByText(/completed/).waitFor();assert.equal(posts,2);assert.deepEqual(attempts[0],attempts[1]);
   await page.getByText('刷新模型与实验',{exact:true}).click();
