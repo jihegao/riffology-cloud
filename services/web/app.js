@@ -759,14 +759,14 @@ $('#message-form').onsubmit = async event => {
     }
     messageIntent ??= { key: crypto.randomUUID(), sessionId: selectedSessionId, message: text };
     const current = messageIntent;
-    attemptedIntent = current;
     saveConversation(savedKey, {messageIntent:current, selectedSessionId:current.sessionId, draft:current.message});
     $('#message-input').readOnly = true;
+    attemptedIntent = current;
     await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/sessions/${encodeURIComponent(current.sessionId)}/turns`, { method: 'POST', headers: { 'Idempotency-Key': current.key }, body: JSON.stringify({ message: current.message }) });
     turnAccepted = true;
     if (readConversation(savedKey).messageIntent?.key === current.key) saveConversation(savedKey, {messageIntent:null,draft:''});
-    messageIntent = null;
     if (generation !== viewGeneration) return;
+    messageIntent = null;
     $('#message-input').value = '';
     $('#message-submit').textContent = '发送';
     await refreshWorkspace(generation);
