@@ -1,3 +1,5 @@
+import {experimentRequest} from '../simulation/host.ts';
+import type {GatewaySimulations} from './simulation-services.ts';
 import type {ModelContentUploadPort} from '../runtime/model-upload.ts';
 import {readModelUpload} from './model-upload-body.ts';
 import type {ModelContentPort} from '../runtime/content.ts';
@@ -19,6 +21,7 @@ import {observerArtifactReceipt} from '../preview/observer-artifacts.ts';
 import type {GatewayObservations} from './observer-services.ts';
 
 export interface GatewayServices {
+  simulations?:GatewaySimulations;
   origin:string;
   database:Database;
   modelContent?:ModelContentPort;
@@ -120,6 +123,32 @@ export async function gateway(request:Request, services:GatewayServices):Promise
         JOIN catalog_users u ON u.id=t.owner_user_id WHERE t.owner_user_id=? AND t.status='active' AND m.status='active' AND u.status='active' AND u.auth_version=?`,principal.userId,principal.authVersion));
       return json({userId:principal.userId,tenants});
     }
+    const simulationRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/(model|experiments|simulation-runs)(?:\/([A-Za-z0-9_-]{1,128})(?:\/(cancel))?)?$/.exec(url.pathname);
+    if(simulationRoute){
+      const [,workspaceId,resource,id,action]=simulationRoute;
+      const creating=request.method==='POST'&&resource==='experiments'&&!id;
+      const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models);
+      const scope=creating?await catalog.workspace(principal,workspaceId!):await catalog.maintenanceWorkspace(principal,workspaceId!);
+      if(!services.simulations)throw new HttpError('simulation-unavailable',503);
+      try{
+        if(resource==='model'&&!id&&request.method==='GET'&&!url.search)return json(await services.simulations.model(scope));
+        if(creating&&!url.search)return json(await services.simulations.submit(scope,principal,idempotencyKey(request),experimentRequest(await readJson(request))),202);
+        if(resource==='experiments'&&request.method==='GET'&&!action){
+          if(id&&!url.search)return json(await services.simulations.view(scope,id));
+          if(!id){if([...url.searchParams.keys()].some(k=>k!=='before')||url.searchParams.getAll('before').length>1)throw new HttpError('simulation-input-invalid',400);return json(await services.simulations.list(scope,url.searchParams.get('before')??undefined));}
+        }
+        if(resource==='simulation-runs'&&id&&action==='cancel'&&request.method==='POST'&&!url.search){const body=await readJson(request);if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).length)throw new HttpError('simulation-input-invalid',400);return json(await services.simulations.cancel(scope,id),202);}
+        throw new CatalogError('not_found');
+      }catch(error){
+        if(error instanceof HttpError||error instanceof CatalogError)throw error;
+        const code=error instanceof Error?error.message:'';
+        if(['simulation-idempotency-conflict','simulation-model-stale'].includes(code))throw new HttpError(code,409);
+        if(code==='simulation-not-found')throw new HttpError(code,404);
+        if(code==='simulation-capacity')throw new HttpError(code,429);
+        if(['simulation-input-invalid','invalid-model-spec','model-spec-missing','model-spec-invalid','model-contract-mismatch','model-dependencies-invalid','model-dependencies-unsupported'].includes(code))throw new HttpError(code,400);
+        throw new HttpError('simulation-unavailable',503);
+      }
+    }
     const previewRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/previews(?:\/([A-Za-z0-9_-]{1,128})\/(tickets))?$/.exec(url.pathname);
     if(previewRoute){
       if(request.method!=='POST'&&!(request.method==='GET'&&!previewRoute[2]))throw new CatalogError('not_found');
@@ -149,9 +178,9 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       if(!services.serviceRuns)throw Error('service-runs-not-configured');
       if(creating){
         if(url.search!=='')throw new CatalogError('invalid_input');
-        const body=bodyOnly(await readJson(request),'maxDurationMs'),duration=body.maxDurationMs;
+        const body=await readJson(request) as Record<string,unknown>;if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).some(k=>!['maxDurationMs','expectedRevisionId'].includes(k))||!Object.hasOwn(body,'maxDurationMs')||body.expectedRevisionId!==undefined&&(typeof body.expectedRevisionId!=='string'||!/^[A-Za-z0-9_-]{1,128}$/.test(body.expectedRevisionId)))throw new CatalogError('invalid_input');const duration=body.maxDurationMs;
         if(!Number.isSafeInteger(duration)||(duration as number)<1||(duration as number)>900000)throw new CatalogError('invalid_input');
-        const result=await serviceCall(()=>services.serviceRuns!.submit(scope,principal,idempotencyKey(request),{maxDurationMs:duration as number}));return json(result,202);
+        const result=await serviceCall(()=>services.serviceRuns!.submit(scope,principal,idempotencyKey(request),{maxDurationMs:duration as number,...(body.expectedRevisionId===undefined?{}:{expectedRevisionId:body.expectedRevisionId as string})}));return json(result,202);
       }
       if(runId&&stop&&request.method==='POST'){
         if(url.search!=='')throw new CatalogError('invalid_input');

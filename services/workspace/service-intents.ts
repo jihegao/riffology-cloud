@@ -7,7 +7,7 @@ export type ServiceSourceCandidate=Extract<PreviewSource,{kind:'saved-turn'}>|{k
 export type ServiceIntentCommit=<T>(operation:()=>T)=>Promise<T>;
 export type ServiceIntentCursor={createdAt:number;runId:string};
 export type ServiceIntentListOptions={before?:ServiceIntentCursor;limit?:number};
-export type ServiceIntentUserRequest={maxDurationMs:number};
+export type ServiceIntentUserRequest={maxDurationMs:number;expectedRevisionId?:string};
 export type ServiceIntentRequest={runtimeImage:string;maxDurationMs:number};
 export type ServiceIntentRecord={runId:string;scope:TurnScope;actor:TurnActor;requestKey:string;request:ServiceIntentRequest;source:ServiceSourceCandidate;task:ServiceRunTask|null;status:'resolving'|'ready'|'delivery-unknown'|'delivered'|'cancelled'|'failed';createdAt:number;updatedAt:number;deliveryDeadlineAt:number;nextAttemptAt:number|null;deliveryClaimedAt:number|null;stopRequestedAt:number|null;stopForwardedAt:number|null;errorCode:string|null};
 function data(raw:unknown):void{if(raw===null||typeof raw!=='object')return;if(Object.getPrototypeOf(raw)!==Object.prototype)throw Error('invalid-service-intent');for(const key of Reflect.ownKeys(raw)){const d=Object.getOwnPropertyDescriptor(raw,key)!;if(typeof key!=='string'||!d.enumerable||!('value'in d))throw Error('invalid-service-intent');data(d.value);}}
@@ -33,13 +33,13 @@ export class SqlServiceIntentJournal{
   const req=request(rawRequest);return this.#create(rawActor,requestKey,req.maxDurationMs,()=>req,freeze,true);
  }
  async createFromPolicy(rawActor:TurnActor,requestKey:string,userRequest:ServiceIntentUserRequest,runtimeImage:string,freeze:()=>ServiceSourceCandidate){
-  exact(userRequest,['maxDurationMs']);const duration=positive(userRequest.maxDurationMs);if(duration>900000)throw Error('invalid-service-duration');
-  return this.#create(rawActor,requestKey,duration,()=>request({runtimeImage,maxDurationMs:duration}),freeze,false);
+  exact(userRequest,Object.hasOwn(userRequest,'expectedRevisionId')?['maxDurationMs','expectedRevisionId']:['maxDurationMs']);const expectedRevisionId=userRequest.expectedRevisionId===undefined?undefined:turnId(userRequest.expectedRevisionId);const duration=positive(userRequest.maxDurationMs);if(duration>900000)throw Error('invalid-service-duration');
+  return this.#create(rawActor,requestKey,duration,()=>request({runtimeImage,maxDurationMs:duration}),freeze,false,expectedRevisionId);
  }
- async #create(rawActor:TurnActor,requestKey:string,duration:number,configured:()=>ServiceIntentRequest,freeze:()=>ServiceSourceCandidate,strictImage:boolean){
+ async #create(rawActor:TurnActor,requestKey:string,duration:number,configured:()=>ServiceIntentRequest,freeze:()=>ServiceSourceCandidate,strictImage:boolean,expectedRevisionId?:string){
   data(rawActor);const who=actor(rawActor),key=turnId(requestKey),intent=JSON.stringify([who.userId,key]);
-  return this.#change(()=>{const old=this.#rows('SELECT * FROM service_intents WHERE intent_key=?',intent)[0];if(old){const record=this.#decode(old);if(encoded(record.actor)!==encoded(who)||record.request.maxDurationMs!==duration||(strictImage&&encoded(record.request)!==encoded(configured())))throw Error('service-intent-conflict');return record;}
-   const req=configured(),input=encoded({actor:who,request:req}),source=serviceSourceCandidate(freeze()),s=source.kind==='saved-turn'?source.identity.scope:source.reference.scope;if(!sameScope(s,this.#scope))throw Error('service-intent-source-scope-denied');const now=this.#now(),deliveryDeadlineAt=positive(now+req.maxDurationMs);
+  return this.#change(()=>{const old=this.#rows('SELECT * FROM service_intents WHERE intent_key=?',intent)[0];if(old){const record=this.#decode(old);if(encoded(record.actor)!==encoded(who)||record.request.maxDurationMs!==duration||(strictImage&&encoded(record.request)!==encoded(configured())))throw Error('service-intent-conflict');if(expectedRevisionId!==undefined&&(record.source.kind!=='saved-turn'||record.source.revision.revisionId!==expectedRevisionId))throw Error('service-intent-conflict');return record;}
+   const req=configured(),input=encoded({actor:who,request:req}),source=serviceSourceCandidate(freeze()),s=source.kind==='saved-turn'?source.identity.scope:source.reference.scope;if(!sameScope(s,this.#scope))throw Error('service-intent-source-scope-denied');if(expectedRevisionId!==undefined&&(source.kind!=='saved-turn'||source.revision.revisionId!==expectedRevisionId))throw Error('service-intent-conflict');const now=this.#now(),deliveryDeadlineAt=positive(now+req.maxDurationMs);
    const r:ServiceIntentRecord={runId:turnId(this.#id()),scope:this.#scope,actor:who,requestKey:key,request:req,source,task:null,status:'resolving',createdAt:now,updatedAt:now,deliveryDeadlineAt,nextAttemptAt:now,deliveryClaimedAt:null,stopRequestedAt:null,stopForwardedAt:null,errorCode:null};this.#storage.sql.exec('INSERT INTO service_intents VALUES(?,?,?,?)',r.runId,intent,input,JSON.stringify(r));return r;});
  }
  async list(options:ServiceIntentListOptions={}){

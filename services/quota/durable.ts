@@ -4,6 +4,7 @@ export interface TenantQuotaEnv {
   TENANT_QUOTA: DurableObjectNamespace<TenantQuota>;
   TENANT_QUOTA_CAPACITY: string;
   TENANT_QUOTA_POLICY_VERSION: string;
+  TENANT_QUOTA_UPGRADE_FROM?:string;
 }
 export function tenantQuotaName(tenantId: string): string { quotaIdentifier(tenantId); return `tenant-quota:${tenantId}`; }
 
@@ -25,7 +26,7 @@ export class TenantQuota extends DurableObject<TenantQuotaEnv> {
     }
     return this.#core;
   }
-  async acquire(request: LeaseRequest) { return this.#forTenant(request.tenantId).acquire(request); }
+  async acquire(request: LeaseRequest) { const core=this.#forTenant(request.tenantId);if(this.env.TENANT_QUOTA_UPGRADE_FROM)await core.upgradePolicyFrom(this.env.TENANT_QUOTA_UPGRADE_FROM);return core.acquire(request); }
   async dispatch(reference: LeaseReference) { return this.#forTenant(reference.tenantId).dispatch(reference); }
   async markUnknown(reference: LeaseReference) { return this.#forTenant(reference.tenantId).markUnknown(reference); }
   async confirmStopped(reference: LeaseReference, confirmation: StopConfirmation) { return this.#forTenant(reference.tenantId).confirmStopped(reference, confirmation); }
