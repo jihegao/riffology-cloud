@@ -741,7 +741,7 @@ $('#message-form').onsubmit = async event => {
   }
   const generation = viewGeneration;
   const workspaceId = activeProject.workspace_id, savedKey = recoveryKey(workspaceId);
-  let attemptedIntent = messageIntent;
+  let attemptedIntent = null;
   let turnAccepted = false;
   sendingMessage = true;
   $('#message-submit').disabled = true;

@@ -2,6 +2,7 @@ import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
+import { JSON_REQUEST_MAX_BYTES } from '../../services/gateway/http.ts';
 import { renderWorkspace } from '../../ui/workspace.js';
 
 const files = Object.fromEntries(await Promise.all(['index.html', 'app.js', 'services.js', 'previews.js', 'simulation.js', 'styles.css', 'workspace.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
@@ -781,9 +782,14 @@ test('turn request limit counts UTF-8 JSON bytes before creating a request', asy
     if (path === `/api/workspaces/${workspaceId}/sessions/${sessionId}/turns`) { posts++; await json(route, {}); return true; }
   });
   await page.goto('https://ui.test/#/workspace/project-byte-limit');
-  await page.locator('#message-input').fill('界'.repeat(3000)); await page.locator('#message-submit').click();
-  assert.equal(posts, 0); assert.match(await page.locator('#message-error').innerText(), /8192/);
-  assert.equal(await page.locator('#message-input').isEditable(), true);
+  for (const message of ['a'.repeat(9000), '界'.repeat(3000), '"'.repeat(5000)]) {
+    await page.locator('#message-input').fill(message); await page.locator('#message-submit').click();
+    assert.equal(posts, 0); assert.match(await page.locator('#message-error').innerText(), new RegExp(String(JSON_REQUEST_MAX_BYTES)));
+    assert.equal(await page.locator('#message-input').isEditable(), true);
+  }
+  const exact = 'a'.repeat(JSON_REQUEST_MAX_BYTES - Buffer.byteLength(JSON.stringify({message:''})));
+  await page.locator('#message-input').fill(exact); await page.locator('#message-submit').click();
+  await waitFor(() => posts === 1);
 });
 
 test('a persisted oversized message intent is released before retry preflight', async t => {
