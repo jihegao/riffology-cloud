@@ -1,0 +1,641 @@
+{
+  "schemaVersion": 1,
+  "status": "blocked",
+  "reasonCode": "platform-probe-destroy-transport-retries-exhausted",
+  "workerSourceSha": "7de0e6418b2e4066ef4fe0f791ff4e8c8ea48566",
+  "workerVersionId": "8c895424-3253-45f1-aa22-14a016332d24",
+  "probeWorker": {
+    "name": "riffology-issues-probe-37ffbdc5a3d4497bf24dc02f",
+    "origin": "https://m1.riff-demo.gaojihe.cn/__riffology-internal/issues-probe/37ffbdc5a3d4497bf24dc02f",
+    "pathPrefix": "/__riffology-internal/issues-probe/37ffbdc5a3d4497bf24dc02f",
+    "versionId": "4337b2c6-7ff8-4c99-afe7-649e92f5296e",
+    "versionTag": "probe-37ffbdc5a3d4497bf24dc02f",
+    "capabilityBindingVerified": true,
+    "pathBindingVerified": true,
+    "receiptBindingVerified": true,
+    "binding": {
+      "name": "TRUSTED_PI_SANDBOX",
+      "type": "durable_object_namespace",
+      "className": "TrustedPiSandbox",
+      "scriptName": "riffology-m1-gateway-staging"
+    },
+    "receiptBinding": {
+      "name": "PROBE_FAULT_RECEIPT",
+      "type": "durable_object_namespace",
+      "className": "ProbeFaultReceipt"
+    }
+  },
+  "containerApp": {
+    "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+    "name": "riffology-m3-trusted-pi-staging",
+    "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2",
+    "version": 2
+  },
+  "actorA": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+  "actorB": "m2-t-dv2tgkvqaib34bpvce42zk55aswmte64i5zeq2hxu4dboolliwja",
+  "failure": {
+    "stage": "release-a",
+    "action": "destroy",
+    "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+    "requestTimeoutMs": 30000,
+    "delivery": "reconciling",
+    "observedAt": 1789273754535
+  },
+  "progress": {
+    "startedAt": 1789273697613,
+    "timeline": [
+      {
+        "stage": "control-plane-read",
+        "action": null,
+        "actor": null,
+        "requestTimeoutMs": null,
+        "delivery": "not-applicable",
+        "observedAt": 1789273697613
+      },
+      {
+        "stage": "actors-derived",
+        "action": null,
+        "actor": null,
+        "requestTimeoutMs": null,
+        "delivery": "not-applicable",
+        "observedAt": 1789273701271
+      },
+      {
+        "stage": "probe-worker-confirmed",
+        "action": null,
+        "actor": null,
+        "requestTimeoutMs": null,
+        "delivery": "not-applicable",
+        "observedAt": 1789273716179
+      },
+      {
+        "stage": "probe-health",
+        "action": "health",
+        "actor": null,
+        "requestTimeoutMs": 20000,
+        "delivery": "unknown",
+        "observedAt": 1789273716179
+      },
+      {
+        "stage": "probe-health-confirmed",
+        "action": "health",
+        "actor": null,
+        "requestTimeoutMs": 20000,
+        "delivery": "confirmed",
+        "observedAt": 1789273748405
+      },
+      {
+        "stage": "start-a",
+        "action": "start",
+        "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+        "requestTimeoutMs": 180000,
+        "delivery": "unknown",
+        "observedAt": 1789273748405
+      },
+      {
+        "stage": "start-a-confirmed",
+        "action": "start",
+        "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+        "requestTimeoutMs": 180000,
+        "delivery": "confirmed",
+        "observedAt": 1789273752574
+      },
+      {
+        "stage": "release-a",
+        "action": "destroy",
+        "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+        "requestTimeoutMs": 30000,
+        "delivery": "reconciling",
+        "observedAt": 1789273754535
+      }
+    ]
+  },
+  "internalLifecycle": [
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "unknown",
+      "observedAt": 1789273765053
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273776079
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273784125
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273792108
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273800351
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "unknown",
+      "observedAt": 1789273820641
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273832850
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "unknown",
+      "observedAt": 1789273851824
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273870309
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273879107
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273896196
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273906352
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273914370
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "unknown",
+      "observedAt": 1789273937253
+    }
+  ],
+  "externalLifecycle": [
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "stopped",
+      "observedAt": 1789273769847,
+      "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273778497,
+      "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273785898,
+      "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273794653,
+      "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273805117,
+      "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273826744,
+      "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273836302,
+      "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "stopped",
+      "observedAt": 1789273863510,
+      "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "stopped",
+      "observedAt": 1789273872476,
+      "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "unknown",
+      "observedAt": 1789273880960,
+      "instanceId": null
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273900151,
+      "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273908743,
+      "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273921733,
+      "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+    },
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "state": "absent",
+      "observedAt": 1789273941319,
+      "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+    }
+  ],
+  "actorBInternalLifecycle": [],
+  "actorBExternalLifecycle": [],
+  "destroyAttempts": [
+    {
+      "stage": "release-a",
+      "action": "destroy",
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "attempt": 1,
+      "faultInjected": true,
+      "faultKind": "withhold-destroy-response-after-release",
+      "startedAt": 1789273754535,
+      "observedAt": 1789273765053,
+      "durationMs": 10518,
+      "requestTimeoutMs": 30000,
+      "reasonCode": "platform-probe-destroy-transport-failed",
+      "classification": "transport-error",
+      "delivery": "unknown",
+      "httpStatus": null,
+      "transportCode": "UND_ERR_CONNECT_TIMEOUT",
+      "retryable": true,
+      "state": "unknown"
+    },
+    {
+      "stage": "release-a",
+      "action": "destroy",
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "attempt": 2,
+      "faultInjected": false,
+      "faultKind": null,
+      "startedAt": 1789273774849,
+      "observedAt": 1789273776079,
+      "durationMs": 1230,
+      "requestTimeoutMs": 30000,
+      "reasonCode": null,
+      "classification": "confirmed",
+      "delivery": "confirmed",
+      "httpStatus": null,
+      "transportCode": null,
+      "retryable": false,
+      "state": "absent"
+    },
+    {
+      "stage": "release-a",
+      "action": "destroy",
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "attempt": 3,
+      "faultInjected": false,
+      "faultKind": null,
+      "startedAt": 1789273783499,
+      "observedAt": 1789273784125,
+      "durationMs": 626,
+      "requestTimeoutMs": 30000,
+      "reasonCode": null,
+      "classification": "confirmed",
+      "delivery": "confirmed",
+      "httpStatus": null,
+      "transportCode": null,
+      "retryable": false,
+      "state": "absent"
+    },
+    {
+      "stage": "release-a",
+      "action": "destroy",
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "attempt": 4,
+      "faultInjected": false,
+      "faultKind": null,
+      "startedAt": 1789273790901,
+      "observedAt": 1789273792108,
+      "durationMs": 1207,
+      "requestTimeoutMs": 30000,
+      "reasonCode": null,
+      "classification": "confirmed",
+      "delivery": "confirmed",
+      "httpStatus": null,
+      "transportCode": null,
+      "retryable": false,
+      "state": "absent"
+    },
+    {
+      "stage": "release-a",
+      "action": "destroy",
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "attempt": 5,
+      "faultInjected": false,
+      "faultKind": null,
+      "startedAt": 1789273799654,
+      "observedAt": 1789273800351,
+      "durationMs": 697,
+      "requestTimeoutMs": 30000,
+      "reasonCode": null,
+      "classification": "confirmed",
+      "delivery": "confirmed",
+      "httpStatus": null,
+      "transportCode": null,
+      "retryable": false,
+      "state": "absent"
+    },
+    {
+      "stage": "release-a",
+      "action": "destroy",
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "attempt": 6,
+      "faultInjected": false,
+      "faultKind": null,
+      "startedAt": 1789273810119,
+      "observedAt": 1789273820641,
+      "durationMs": 10522,
+      "requestTimeoutMs": 30000,
+      "reasonCode": "platform-probe-destroy-transport-failed",
+      "classification": "transport-error",
+      "delivery": "unknown",
+      "httpStatus": null,
+      "transportCode": "UND_ERR_CONNECT_TIMEOUT",
+      "retryable": true,
+      "state": "unknown"
+    },
+    {
+      "stage": "release-a",
+      "action": "destroy",
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "attempt": 7,
+      "faultInjected": false,
+      "faultKind": null,
+      "startedAt": 1789273831745,
+      "observedAt": 1789273832850,
+      "durationMs": 1105,
+      "requestTimeoutMs": 30000,
+      "reasonCode": null,
+      "classification": "confirmed",
+      "delivery": "confirmed",
+      "httpStatus": null,
+      "transportCode": null,
+      "retryable": false,
+      "state": "absent"
+    },
+    {
+      "stage": "release-a",
+      "action": "destroy",
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "attempt": 8,
+      "faultInjected": false,
+      "faultKind": null,
+      "startedAt": 1789273841305,
+      "observedAt": 1789273851824,
+      "durationMs": 10519,
+      "requestTimeoutMs": 30000,
+      "reasonCode": "platform-probe-destroy-transport-failed",
+      "classification": "transport-error",
+      "delivery": "unknown",
+      "httpStatus": null,
+      "transportCode": "UND_ERR_CONNECT_TIMEOUT",
+      "retryable": true,
+      "state": "unknown"
+    },
+    {
+      "stage": "release-a",
+      "action": "destroy",
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "attempt": 9,
+      "faultInjected": false,
+      "faultKind": null,
+      "startedAt": 1789273868511,
+      "observedAt": 1789273870309,
+      "durationMs": 1798,
+      "requestTimeoutMs": 30000,
+      "reasonCode": null,
+      "classification": "confirmed",
+      "delivery": "confirmed",
+      "httpStatus": null,
+      "transportCode": null,
+      "retryable": false,
+      "state": "absent"
+    },
+    {
+      "stage": "release-a",
+      "action": "destroy",
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "attempt": 10,
+      "faultInjected": false,
+      "faultKind": null,
+      "startedAt": 1789273877477,
+      "observedAt": 1789273879107,
+      "durationMs": 1630,
+      "requestTimeoutMs": 30000,
+      "reasonCode": null,
+      "classification": "confirmed",
+      "delivery": "confirmed",
+      "httpStatus": null,
+      "transportCode": null,
+      "retryable": false,
+      "state": "absent"
+    },
+    {
+      "stage": "release-a",
+      "action": "destroy",
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "attempt": 11,
+      "faultInjected": false,
+      "faultKind": null,
+      "startedAt": 1789273885963,
+      "observedAt": 1789273896196,
+      "durationMs": 10233,
+      "requestTimeoutMs": 30000,
+      "reasonCode": null,
+      "classification": "confirmed",
+      "delivery": "confirmed",
+      "httpStatus": null,
+      "transportCode": null,
+      "retryable": false,
+      "state": "absent"
+    },
+    {
+      "stage": "release-a",
+      "action": "destroy",
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "attempt": 12,
+      "faultInjected": false,
+      "faultKind": null,
+      "startedAt": 1789273905153,
+      "observedAt": 1789273906352,
+      "durationMs": 1199,
+      "requestTimeoutMs": 30000,
+      "reasonCode": null,
+      "classification": "confirmed",
+      "delivery": "confirmed",
+      "httpStatus": null,
+      "transportCode": null,
+      "retryable": false,
+      "state": "absent"
+    },
+    {
+      "stage": "release-a",
+      "action": "destroy",
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "attempt": 13,
+      "faultInjected": false,
+      "faultKind": null,
+      "startedAt": 1789273913745,
+      "observedAt": 1789273914370,
+      "durationMs": 625,
+      "requestTimeoutMs": 30000,
+      "reasonCode": null,
+      "classification": "confirmed",
+      "delivery": "confirmed",
+      "httpStatus": null,
+      "transportCode": null,
+      "retryable": false,
+      "state": "absent"
+    },
+    {
+      "stage": "release-a",
+      "action": "destroy",
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "attempt": 14,
+      "faultInjected": false,
+      "faultKind": null,
+      "startedAt": 1789273926734,
+      "observedAt": 1789273937253,
+      "durationMs": 10519,
+      "requestTimeoutMs": 30000,
+      "reasonCode": "platform-probe-destroy-transport-failed",
+      "classification": "transport-error",
+      "delivery": "unknown",
+      "httpStatus": null,
+      "transportCode": "UND_ERR_CONNECT_TIMEOUT",
+      "retryable": true,
+      "state": "unknown"
+    }
+  ],
+  "faultInjection": {
+    "kind": "withhold-destroy-response-after-release",
+    "stage": "release-a",
+    "delayMs": 45000,
+    "requestTimeoutMs": 30000,
+    "receipt": null
+  },
+  "destroyPolicy": {
+    "maxTransportRetries": 3,
+    "maxObservations": 120,
+    "deadlineMs": 600000,
+    "quietMs": 30000
+  },
+  "cleanup": {
+    "status": "passed",
+    "workerName": "riffology-issues-probe-37ffbdc5a3d4497bf24dc02f",
+    "identityVerifiedBeforeDelete": true,
+    "deleteAttempted": true,
+    "deleteExitConfirmed": true,
+    "absenceConfirmed": true,
+    "routeFallbackConfirmed": true,
+    "absenceDurationMs": 30176,
+    "recoveryRequired": false,
+    "observedAt": 1789274052691,
+    "actorCleanup": [
+      {
+        "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+        "status": "absent",
+        "quietMs": 30000,
+        "confirmedAt": 1789273983340,
+        "internalLifecycle": [
+          {
+            "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+            "state": "absent",
+            "observedAt": 1789273945415
+          },
+          {
+            "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+            "state": "absent",
+            "observedAt": 1789273955099
+          },
+          {
+            "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+            "state": "absent",
+            "observedAt": 1789273964821
+          },
+          {
+            "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+            "state": "absent",
+            "observedAt": 1789273972561
+          },
+          {
+            "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+            "state": "absent",
+            "observedAt": 1789273983340
+          }
+        ],
+        "externalLifecycle": [
+          {
+            "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+            "state": "absent",
+            "observedAt": 1789273949218,
+            "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+          },
+          {
+            "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+            "state": "absent",
+            "observedAt": 1789273959076,
+            "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+          },
+          {
+            "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+            "state": "absent",
+            "observedAt": 1789273966973,
+            "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+          },
+          {
+            "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+            "state": "absent",
+            "observedAt": 1789273977641,
+            "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+          },
+          {
+            "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+            "state": "absent",
+            "observedAt": 1789273986938,
+            "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+          }
+        ]
+      },
+      {
+        "actor": "m2-t-dv2tgkvqaib34bpvce42zk55aswmte64i5zeq2hxu4dboolliwja",
+        "status": "never-started",
+        "quietMs": 30000,
+        "confirmedAt": null,
+        "internalLifecycle": [],
+        "externalLifecycle": []
+      }
+    ]
+  }
+}

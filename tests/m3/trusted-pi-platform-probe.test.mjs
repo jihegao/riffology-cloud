@@ -11,6 +11,7 @@ import {
   probeWorkerName,
   probeWorkerOrigin,
   probeWorkerPath,
+  probeWorkerSource,
   probeProcessId,
   runTrustedPiPlatformProbe,
   validatePlatformProbe,
@@ -18,10 +19,10 @@ import {
 
 const token='0123456789abcdef01234567',capability='a'.repeat(64),workerName=`riffology-issues-probe-${token}`,workerVersionId='12345678-1234-1234-1234-123456789abc',probeVersionId='22345678-1234-1234-1234-123456789abc';
 
-function setup(t,{controlReadFailures=0,instanceReadFailureAt=0,deployLoss=false,deployCreatesWorker=true,eventualWorkerAppearance=false,healthInstability=false,startVisibilityDelay=0,startState='running',processStatus='running',startTimeout=false,failAfterAStart=false,interloper=false,deleteAckLoss=false,deleteFailure=false,predeployFallbackFailure=false,routePropagationFailure=false,routeAbsenceFailure=false}={}){
+function setup(t,{controlReadFailures=0,instanceReadFailureAt=0,deployLoss=false,deployCreatesWorker=true,eventualWorkerAppearance=false,healthInstability=false,startVisibilityDelay=0,startState='running',processStatus='running',startTimeout=false,failAfterAStart=false,interloper=false,deleteAckLoss=false,deleteFailure=false,predeployFallbackFailure=false,routePropagationFailure=false,routeAbsenceFailure=false,destroyFaults=[],destroyFaultActor='a',releaseDeadlineMs=1_000_000,faultInjection=null}={}){
   const root=mkdtempSync(join(tmpdir(),'riffology-deployed-probe-test-'));t.after(()=>rmSync(root,{recursive:true,force:true}));mkdirSync(join(root,'infra'),{recursive:true});
   const config=JSON.parse(readFileSync(new URL('../../infra/wrangler.m3-vertical-staging.jsonc',import.meta.url),'utf8'));writeFileSync(join(root,'infra','wrangler.m3-vertical-staging.jsonc'),`${JSON.stringify(config,null,2)}\n`);
-  const trusted=config.containers.find(item=>item.class_name==='TrustedPiSandbox'),calls=[],requests=[],instances=new Map(),pendingInstances=new Map(),origin=probeWorkerOrigin(workerName),pathPrefix=probeWorkerPath(workerName);let deployed=false,created=false,routeActive=predeployFallbackFailure,lastConfigPath=null,time=0,aStarted=false,versionViews=0,namedChecksAfterDeploy=0,authorizedHealthCalls=0,instanceReads=0;
+  const trusted=config.containers.find(item=>item.class_name==='TrustedPiSandbox'),calls=[],requests=[],instances=new Map(),pendingInstances=new Map(),origin=probeWorkerOrigin(workerName),pathPrefix=probeWorkerPath(workerName);let deployed=false,created=false,routeActive=predeployFallbackFailure,lastConfigPath=null,time=0,aStarted=false,versionViews=0,namedChecksAfterDeploy=0,authorizedHealthCalls=0,instanceReads=0,faultReceipt=null;
   const missing=()=>({status:1,stdout:'',stderr:'Cloudflare API request failed [code: 10007]'});
   const runner=(_bin,args)=>{
     calls.push([...args]);const nameIndex=args.indexOf('--name'),named=nameIndex>=0?args[nameIndex+1]:null,configIndex=args.indexOf('--config');if(configIndex>=0)lastConfigPath=args[configIndex+1];
@@ -30,26 +31,45 @@ function setup(t,{controlReadFailures=0,instanceReadFailureAt=0,deployLoss=false
     if(args[0]==='containers'&&args[1]==='list')return {status:0,stdout:JSON.stringify([{id:'trusted-app',name:trusted.name,image:trusted.image,version:1}])};
     if(args[0]==='containers'&&args[1]==='instances'){instanceReads+=1;if(instanceReadFailureAt===instanceReads)return {status:1,stdout:'',stderr:'temporary instance read failure'};for(const [actor,pending] of pendingInstances){if(pending.remaining<=0){instances.set(actor,pending.row);pendingInstances.delete(actor);}else pending.remaining-=1;}return {status:0,stdout:JSON.stringify({instances:[...instances.values()],result_info:{next_page_token:null}})};}
     if(args[0]==='deploy'){created=deployCreatesWorker;deployed=deployCreatesWorker&&!eventualWorkerAppearance;routeActive=deployed&&!routePropagationFailure;return {status:deployLoss?1:0,stdout:'',stderr:deployLoss?'upload response lost':''};}
-    if(args[0]==='versions'){versionViews++;return {status:0,stdout:JSON.stringify({id:probeVersionId,annotations:{'workers/tag':`probe-${token}`},resources:{bindings:[{name:'TRUSTED_PI_SANDBOX',type:'durable_object_namespace',class_name:'TrustedPiSandbox',script_name:'riffology-m1-gateway-staging'},{name:'PROBE_CAPABILITY',type:'plain_text',text:interloper&&versionViews>=3?'b'.repeat(64):capability},{name:'PROBE_PATH_PREFIX',type:'plain_text',text:pathPrefix}]}})};}
+    if(args[0]==='versions'){versionViews++;return {status:0,stdout:JSON.stringify({id:probeVersionId,annotations:{'workers/tag':`probe-${token}`},resources:{bindings:[{name:'TRUSTED_PI_SANDBOX',type:'durable_object_namespace',class_name:'TrustedPiSandbox',script_name:'riffology-m1-gateway-staging'},{name:'PROBE_FAULT_RECEIPT',type:'durable_object_namespace',class_name:'ProbeFaultReceipt'},{name:'PROBE_CAPABILITY',type:'plain_text',text:interloper&&versionViews>=3?'b'.repeat(64):capability},{name:'PROBE_PATH_PREFIX',type:'plain_text',text:pathPrefix}]}})};}
     if(args[0]==='delete'){if(deleteFailure)return {status:1,stdout:'',stderr:'delete failed'};deployed=false;created=false;routeActive=routeAbsenceFailure;return {status:deleteAckLoss?1:0,stdout:'',stderr:deleteAckLoss?'delete response lost':''};}
     return {status:1,stdout:'',stderr:'unexpected command'};
   };
   const fetcher=async(url,init)=>{
-    const body=init.method==='POST'?JSON.parse(init.body):null;requests.push({url,method:init.method,action:body?.action??'health',capability:init.headers?.['x-probe-capability']??null});if(failAfterAStart&&aStarted)throw Error('platform-probe-fetch-failed');
+    const body=init.method==='POST'?JSON.parse(init.body):null;requests.push({url,method:init.method,action:body?.action??'health',body:init.body,capability:init.headers?.['x-probe-capability']??null});if(failAfterAStart&&aStarted)throw new TypeError('fetch failed',{cause:{code:'ECONNRESET'}});
     const requestUrl=new URL(url),hasCapability=init.headers?.['x-probe-capability']===capability;
     if(!routeActive)return Response.json({error:'not_found'},{status:404});
     if(!hasCapability)return new Response(null,{status:404});
     if(requestUrl.origin!==new URL(origin).origin||!requestUrl.pathname.startsWith(`${pathPrefix}/`))return new Response(null,{status:404});
     if(init.method==='GET'){authorizedHealthCalls+=1;if(healthInstability&&authorizedHealthCalls===2)return Response.json({error:'not_found'},{status:404});return Response.json({ok:true});}
-    const actor=body.actor;if(body.action==='start'){const row={id:`instance-${instances.size+pendingInstances.size+1}`,name:actor,state:startState};if(startVisibilityDelay>0)pendingInstances.set(actor,{row,remaining:startVisibilityDelay});else instances.set(actor,row);if(body.identity.turnId.endsWith('-a'))aStarted=true;if(startTimeout)return new Promise((_,reject)=>init.signal.addEventListener('abort',()=>reject(init.signal.reason),{once:true}));return Response.json({ok:true,processId:probeProcessId(workerName),processStatus,containerRunning:true});}if(body.action==='destroy'){const prior=instances.get(actor);if(prior)instances.set(actor,{...prior,state:'inactive'});pendingInstances.delete(actor);return Response.json({ok:true,value:{running:false}});}return Response.json({ok:false},{status:400});
+    const actor=body.actor;if(body.action==='receipt')return Response.json({ok:true,value:faultReceipt});if(body.action==='start'){const row={id:`instance-${instances.size+pendingInstances.size+1}`,name:actor,state:startState};if(startVisibilityDelay>0)pendingInstances.set(actor,{row,remaining:startVisibilityDelay});else instances.set(actor,row);if(body.identity.turnId.endsWith('-a'))aStarted=true;if(startTimeout)return new Promise((_,reject)=>init.signal.addEventListener('abort',()=>reject(init.signal.reason),{once:true}));return Response.json({ok:true,processId:probeProcessId(workerName),processStatus,containerRunning:true});}if(body.action==='destroy'){
+      const fault=body.identity.turnId.endsWith(`-${destroyFaultActor}`)?destroyFaults.shift():null;
+      if(fault==='transport-before')throw new TypeError('fetch failed');
+      if(fault==='redirect')throw new TypeError('fetch failed',{cause:Error('unexpected redirect')});
+      if(fault==='request-error')throw Error(`private failure ${capability}`);
+      if(fault?.startsWith('http-'))return Response.json({ok:false},{status:Number(fault.slice(5))});
+      if(fault==='invalid-json')return new Response('not JSON',{status:200});
+      if(fault==='invalid-running')return Response.json({ok:true,value:{running:'false'}});
+      if(fault==='body-transport')return {ok:true,status:200,json:async()=>{throw new TypeError('terminated',{cause:{code:'UND_ERR_SOCKET'}});}};
+      const prior=instances.get(actor);if(prior)instances.set(actor,{...prior,state:'inactive'});pendingInstances.delete(actor);
+      if(body.probeFault?.kind==='withhold-destroy-response-after-release'){if(faultReceipt)return Response.json({ok:true,value:{running:false}});faultReceipt={schemaVersion:1,kind:body.probeFault.kind,actor,running:false,observedAt:time};return new Promise((_,reject)=>init.signal.addEventListener('abort',()=>reject(init.signal.reason),{once:true}));}
+      if(fault==='transport-after')throw new TypeError('fetch failed',{cause:{code:'ECONNRESET'}});
+      if(fault==='timeout-after')return new Promise((_,reject)=>init.signal.addEventListener('abort',()=>reject(init.signal.reason),{once:true}));
+      return Response.json({ok:true,value:{running:false}});
+    }return Response.json({ok:false},{status:400});
   };
-  const run=()=>runTrustedPiPlatformProbe({root,release:{workerSourceSha:'b'.repeat(40),workerVersionId},runner,fetcher,now:()=>time+=10_000,sleepFn:async()=>{},quietMs:30_000,pollMs:0,deadlineMs:1_000_000,cleanupDeadlineMs:100_000,deploymentSettlementMs:300_000,deploymentVisibilityDeadlineMs:100_000,healthDeadlineMs:100_000,healthStableMs:30_000,requestTimeoutMs:{health:20,start:5,destroy:20},tokenFactory:()=>token,capabilityFactory:()=>capability});
-  return {root,run,calls,requests,get recoveryPath(){return join(root,'.wrangler','issues-probe-recovery',`${workerName}.json`);},get lastConfigPath(){return lastConfigPath;},get deployed(){return deployed;}};
+  const sleeps=[];
+  const run=()=>runTrustedPiPlatformProbe({root,release:{workerSourceSha:'b'.repeat(40),workerVersionId},runner,fetcher,now:()=>time+=10_000,sleepFn:async ms=>{sleeps.push(ms);},quietMs:30_000,pollMs:0,deadlineMs:releaseDeadlineMs,cleanupDeadlineMs:100_000,deploymentSettlementMs:300_000,deploymentVisibilityDeadlineMs:100_000,healthDeadlineMs:100_000,healthStableMs:30_000,requestTimeoutMs:{health:20,start:5,destroy:20},faultInjection,tokenFactory:()=>token,capabilityFactory:()=>capability});
+  return {root,run,calls,requests,sleeps,get recoveryPath(){return join(root,'.wrangler','issues-probe-recovery',`${workerName}.json`);},get lastConfigPath(){return lastConfigPath;},get deployed(){return deployed;}};
 }
 
 test('deployed probe name, random custom-host route, config, deploy and exact delete args are closed',()=>{
-  const name=probeWorkerName(token),path=probeWorkerPath(name),origin=probeWorkerOrigin(name),config=probeWorkerConfig('/tmp/probe.mjs',capability,name);assert.equal(name,workerName);assert.equal(path,`/__riffology-internal/issues-probe/${token}`);assert.equal(origin,`https://m1.riff-demo.gaojihe.cn${path}`);assert.equal(probeProcessId(name),`probe-${token}`);assert.equal(config.workers_dev,false);assert.equal(config.preview_urls,false);assert.deepEqual(config.routes,[{pattern:`m1.riff-demo.gaojihe.cn${path}/*`,zone_name:'gaojihe.cn'}]);assert.deepEqual(config.vars,{PROBE_CAPABILITY:capability,PROBE_PATH_PREFIX:path});assert.deepEqual(config.durable_objects.bindings,[{name:'TRUSTED_PI_SANDBOX',class_name:'TrustedPiSandbox',script_name:'riffology-m1-gateway-staging'}]);assert.deepEqual(probeDeploymentArgs('/tmp/probe.jsonc',`probe-${token}`),['deploy','--config','/tmp/probe.jsonc','--tag',`probe-${token}`,'--strict']);assert.deepEqual(probeDeleteArgs(name,'/tmp/probe.jsonc'),['delete',name,'--config','/tmp/probe.jsonc']);assert.throws(()=>probeWorkerName('../wrong'),/token-invalid/);assert.throws(()=>probeWorkerOrigin('other-worker'),/name-invalid/);assert.throws(()=>probeDeleteArgs('other-worker','/tmp/probe.jsonc'),/delete-args-invalid/);
+  const name=probeWorkerName(token),path=probeWorkerPath(name),origin=probeWorkerOrigin(name),config=probeWorkerConfig('/tmp/probe.mjs',capability,name);assert.equal(name,workerName);assert.equal(path,`/__riffology-internal/issues-probe/${token}`);assert.equal(origin,`https://m1.riff-demo.gaojihe.cn${path}`);assert.equal(probeProcessId(name),`probe-${token}`);assert.equal(config.workers_dev,false);assert.equal(config.preview_urls,false);assert.deepEqual(config.routes,[{pattern:`m1.riff-demo.gaojihe.cn${path}/*`,zone_name:'gaojihe.cn'}]);assert.deepEqual(config.vars,{PROBE_CAPABILITY:capability,PROBE_PATH_PREFIX:path});assert.deepEqual(config.durable_objects.bindings,[{name:'TRUSTED_PI_SANDBOX',class_name:'TrustedPiSandbox',script_name:'riffology-m1-gateway-staging'},{name:'PROBE_FAULT_RECEIPT',class_name:'ProbeFaultReceipt'}]);assert.deepEqual(config.migrations,[{tag:'v1',new_sqlite_classes:['ProbeFaultReceipt']}]);assert.deepEqual(probeDeploymentArgs('/tmp/probe.jsonc',`probe-${token}`),['deploy','--config','/tmp/probe.jsonc','--tag',`probe-${token}`,'--strict']);assert.deepEqual(probeDeleteArgs(name,'/tmp/probe.jsonc'),['delete',name,'--config','/tmp/probe.jsonc']);assert.throws(()=>probeWorkerName('../wrong'),/token-invalid/);assert.throws(()=>probeWorkerOrigin('other-worker'),/name-invalid/);assert.throws(()=>probeDeleteArgs('other-worker','/tmp/probe.jsonc'),/delete-args-invalid/);
   assert.equal(probeWorkerMissing({status:1,stderr:'request failed [code: 10007]'}),true);assert.equal(probeWorkerMissing({status:1,stderr:'network timeout'}),false);assert.equal(probeWorkerMissing({status:0,stdout:'{}'}),false);
+});
+
+test('generated receipt Durable Object uses the private fetch protocol',()=>{
+  const source=probeWorkerSource();assert.match(source,/extends DurableObject/);assert.match(source,/async fetch\(request\)/);assert.match(source,/getByName\(input\.actor\)\.fetch\('https:\/\/receipt\.invalid\/receipt'/);assert.doesNotMatch(source,/\.recordOnce\(/);assert.doesNotMatch(source,/\.read\(\)/);
 });
 
 test('deployed provider-free probe verifies A and B then deletes only its owned Worker with absence proof',async t=>{
@@ -64,6 +84,85 @@ test('internal process proof does not depend on delayed control-plane start visi
 test('lost start acknowledgement is action-specific and is never retried',async t=>{
   const fixture=setup(t,{startTimeout:true}),result=await fixture.run();assert.equal(result.status,'blocked');assert.equal(result.reasonCode,'platform-probe-start-timeout');assert.equal(result.failure.stage,'start-a');assert.equal(result.failure.action,'start');assert.equal(result.failure.requestTimeoutMs,5);assert.equal(result.failure.delivery,'unknown');assert.match(result.probeWorker.name,/^riffology-issues-probe-/);assert.equal(result.containerApp.id,'trusted-app');assert.equal(result.actorA.startsWith('m2-t-'),true);assert.equal(result.actorB.startsWith('m2-t-'),true);assert.equal(result.progress.timeline.length>3,true);assert.equal(result.cleanup.status,'passed');assert.equal(fixture.requests.filter(item=>item.method==='POST').length>=1,true);
   const starts=fixture.requests.filter(item=>item.action==='start');assert.equal(starts.length,1);
+});
+
+for(const fault of ['transport-before','transport-after','timeout-after'])test(`destroy ${fault} reconciles the exact request and requires a fresh quiet window`,async t=>{
+  const fixture=setup(t,{destroyFaults:[null,fault]}),result=await fixture.run();
+  assert.equal(result.status,'passed');assert.equal(validatePlatformProbe(result).status,'passed');
+  const attempts=result.destroyAttempts.filter(item=>item.actor===result.actorA);
+  assert.equal(attempts[1].delivery,'unknown');assert.equal(attempts[1].state,'unknown');assert.equal(attempts[1].retryable,true);
+  assert.equal(attempts[1].classification,fault==='timeout-after'?'timeout':'transport-error');
+  assert.equal(result.internalLifecycle[1].state,'unknown');
+  assert.equal(result.externalLifecycle[1].state,'absent');
+  const quietStart=Math.max(result.internalLifecycle[2].observedAt,result.externalLifecycle[2].observedAt);
+  assert.ok(result.stopProof.observedAt-quietStart>=30_000);assert.ok(result.actorBStartedAt>result.stopProof.observedAt);
+  const aRequests=fixture.requests.filter(item=>item.action==='destroy'&&JSON.parse(item.body).actor===result.actorA);
+  assert.equal(new Set(aRequests.map(item=>item.body)).size,1);assert.equal(new Set(aRequests.map(item=>item.url)).size,1);
+  assert.equal(fixture.requests.filter(item=>item.action==='start').length,2);assert.ok(fixture.sleeps.includes(1_000));
+  assert.equal(JSON.stringify(result).includes(capability),false);
+});
+
+test('destroy transport failure before execution retains a running external observation',async t=>{
+  const fixture=setup(t,{destroyFaults:['transport-before']}),result=await fixture.run();
+  assert.equal(result.status,'passed');assert.equal(result.internalLifecycle[0].state,'unknown');assert.equal(result.externalLifecycle[0].state,'running');
+});
+
+test('explicit cloud fault withholds the first A acknowledgement after release and proves recovery',async t=>{
+  const faultInjection={kind:'withhold-destroy-response-after-release',stage:'release-a',delayMs:40},fixture=setup(t,{faultInjection}),result=await fixture.run();
+  assert.equal(result.status,'passed');assert.equal(validatePlatformProbe(result).status,'passed');
+  const missingReceiptBinding=structuredClone(result);delete missingReceiptBinding.probeWorker.receiptBinding;assert.throws(()=>validatePlatformProbe(missingReceiptBinding),/fault-invalid/);
+  assert.equal(result.faultInjection.kind,faultInjection.kind);assert.equal(result.faultInjection.stage,'release-a');assert.equal(result.faultInjection.delayMs,40);assert.equal(result.faultInjection.requestTimeoutMs,20);assert.deepEqual(result.faultInjection.receipt,{schemaVersion:1,kind:faultInjection.kind,actor:result.actorA,running:false,observedAt:result.faultInjection.receipt.observedAt});
+  const attempts=result.destroyAttempts.filter(item=>item.stage==='release-a');
+  assert.equal(attempts[0].faultInjected,true);assert.equal(attempts[0].faultKind,faultInjection.kind);assert.equal(attempts[0].classification,'timeout');assert.equal(attempts[0].delivery,'unknown');assert.equal(attempts[0].retryable,true);assert.equal(attempts[0].state,'unknown');
+  assert.equal(attempts.slice(1).some(item=>item.classification==='confirmed'&&item.state==='absent'),true);
+  const requests=fixture.requests.filter(item=>item.action==='destroy'&&JSON.parse(item.body).actor===result.actorA),logical=value=>{const parsed=JSON.parse(value.body);delete parsed.probeFault;return JSON.stringify({url:value.url,body:parsed});};
+  assert.equal(new Set(requests.map(logical)).size,1);assert.equal(JSON.parse(requests[0].body).probeFault.kind,faultInjection.kind);assert.equal(JSON.parse(requests[1].body).probeFault,undefined);
+  assert.ok(result.actorBStartedAt>result.stopProof.observedAt);assert.equal(JSON.stringify(result).includes(capability),false);
+});
+
+test('fault injection must exceed the destroy timeout and use a closed stage and kind',async t=>{
+  await assert.rejects(setup(t,{faultInjection:{kind:'withhold-destroy-response-after-release',stage:'release-a',delayMs:20}}).run(),/fault-injection-invalid/);
+  await assert.rejects(setup(t,{faultInjection:{kind:'other',stage:'release-a',delayMs:40}}).run(),/fault-injection-invalid/);
+  await assert.rejects(setup(t,{faultInjection:{kind:'withhold-destroy-response-after-release',stage:'release-c',delayMs:40}}).run(),/fault-injection-invalid/);
+});
+
+test('B uses the same bounded destroy reconciliation after A release proof',async t=>{
+  const fixture=setup(t,{destroyFaults:['transport-after'],destroyFaultActor:'b'}),result=await fixture.run();
+  assert.equal(result.status,'passed');assert.equal(validatePlatformProbe(result).status,'passed');
+  assert.equal(result.actorBInternalLifecycle[0].state,'unknown');
+  assert.equal(result.destroyAttempts.find(item=>item.actor===result.actorB).stage,'release-b');
+});
+
+test('four ambiguous destroy deliveries exhaust three retries even when the instance is absent',async t=>{
+  const fixture=setup(t,{destroyFaults:Array(4).fill('transport-after')}),result=await fixture.run();
+  assert.equal(result.status,'blocked');assert.equal(result.reasonCode,'platform-probe-destroy-transport-retries-exhausted');
+  assert.equal(result.failure.stage,'release-a');assert.equal(result.destroyAttempts.length,4);
+  assert.ok(result.internalLifecycle.every(item=>item.state==='unknown'));assert.ok(result.externalLifecycle.every(item=>item.state==='absent'));
+  assert.equal(fixture.requests.filter(item=>item.action==='start').length,1);assert.equal(result.cleanup.status,'passed');
+  assert.equal(result.cleanup.actorCleanup.find(item=>item.actor===result.actorB).status,'never-started');
+  assert.deepEqual(fixture.sleeps.filter(ms=>ms>=1_000),[1_000,2_000,4_000]);
+  assert.equal(result.stopProof,undefined);
+});
+
+test('confirmed destroy observations reset the consecutive transport failure budget',async t=>{
+  const fixture=setup(t,{destroyFaults:['transport-after',null,'transport-after',null,'transport-after',null,'transport-after']}),result=await fixture.run();
+  assert.equal(result.status,'passed');assert.equal(validatePlatformProbe(result).status,'passed');assert.equal(result.destroyAttempts.filter(item=>item.retryable).length,4);assert.equal(result.destroyAttempts.some(item=>item.attempt>7&&item.classification==='confirmed'),true);
+});
+
+for(const fault of ['http-403','http-404','http-409','http-500','invalid-json','invalid-running','body-transport','redirect','request-error'])test(`destroy ${fault} is terminal in acceptance while cleanup remains independent`,async t=>{
+  const fixture=setup(t,{destroyFaults:[fault]}),result=await fixture.run();
+  assert.equal(result.status,'blocked');assert.equal(result.destroyAttempts.length,1);assert.equal(result.destroyAttempts[0].retryable,false);
+  assert.equal(result.internalLifecycle[0].state,'unknown');assert.equal(result.externalLifecycle.length,1);
+  assert.equal(fixture.requests.filter(item=>item.action==='start').length,1);assert.equal(result.cleanup.status,'passed');
+  assert.equal(JSON.stringify(result).includes(capability),false);
+  if(fault.startsWith('http-'))assert.equal(result.destroyAttempts[0].httpStatus,Number(fault.slice(5)));
+});
+
+test('release deadline blocks late absence evidence and never starts B',async t=>{
+  const fixture=setup(t,{releaseDeadlineMs:30_000}),result=await fixture.run();
+  assert.equal(result.status,'blocked');assert.equal(result.reasonCode,'platform-probe-release-deadline');
+  assert.equal(result.destroyAttempts.length,1);assert.equal(result.stopProof,undefined);
+  assert.equal(fixture.requests.filter(item=>item.action==='start').length,1);assert.equal(result.cleanup.status,'passed');
 });
 
 test('start proof accepts only an explicit running internal process and container',async t=>{

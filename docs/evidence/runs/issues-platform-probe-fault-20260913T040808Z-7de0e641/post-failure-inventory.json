@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "observedAt": "2026-09-13T04:13:10.871Z",
+  "failedProbeStatus": "blocked",
+  "failedProbeReasonCode": "platform-probe-start-transport-failed",
+  "failedBeforeFaultInjection": true,
+  "workerVersionId": "8c895424-3253-45f1-aa22-14a016332d24",
+  "workerSourceSha": "7de0e6418b2e4066ef4fe0f791ff4e8c8ea48566",
+  "gateClosed": true,
+  "probeWorkerMissing": true,
+  "recoveryFiles": [],
+  "actors": [
+    {
+      "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+      "matchCount": 1,
+      "state": "inactive",
+      "instanceId": "50ac14b546cad78bf60f36aa4ed3bdeca2decd077b646d5cb0e05f40198a1e18"
+    },
+    {
+      "actor": "m2-t-6eudhxhnidwxtm7tz4lae6pmsjjp3uqldskogf5qfmfgw7kh5jga",
+      "matchCount": 0,
+      "state": "absent",
+      "instanceId": null
+    }
+  ]
+}

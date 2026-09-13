@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "observedAt": "2026-09-13T04:36:30.899Z",
+  "probeStatus": "blocked",
+  "reasonCode": "platform-probe-destroy-transport-retries-exhausted",
+  "serverFaultReceiptPresent": false,
+  "retryableTransportFailures": 4,
+  "workerVersionId": "8c895424-3253-45f1-aa22-14a016332d24",
+  "workerSourceSha": "7de0e6418b2e4066ef4fe0f791ff4e8c8ea48566",
+  "gateClosed": true,
+  "probeWorkerMissing": true,
+  "recoveryFiles": [],
+  "actors": [
+    {
+      "actor": "m2-t-o5npdmzaxc5cvushoyyw2otkdetehhxjnooth4jgdznxknsax2ka",
+      "matchCount": 1,
+      "state": "inactive",
+      "instanceId": "c716c8aecee92308fee3b8db261ddd7aab82a577ab1e97688542f84066f0fa45"
+    },
+    {
+      "actor": "m2-t-dv2tgkvqaib34bpvce42zk55aswmte64i5zeq2hxu4dboolliwja",
+      "matchCount": 0,
+      "state": "absent",
+      "instanceId": null
+    }
+  ]
+}

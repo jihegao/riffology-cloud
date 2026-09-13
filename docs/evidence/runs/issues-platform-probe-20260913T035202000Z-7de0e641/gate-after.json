@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "observedAt": "2026-09-13T04:00:31.702Z",
+  "workerVersionId": "8c895424-3253-45f1-aa22-14a016332d24",
+  "workerSourceSha": "7de0e6418b2e4066ef4fe0f791ff4e8c8ea48566",
+  "gateName": "M2_TURNS_ENABLED",
+  "gateValue": "false",
+  "gateClosed": true
+}
