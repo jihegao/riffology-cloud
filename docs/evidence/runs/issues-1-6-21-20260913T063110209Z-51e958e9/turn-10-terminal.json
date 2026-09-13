@@ -1,0 +1,272 @@
+{
+  "schemaVersion": 1,
+  "index": 10,
+  "turnId": "1af6857e-d55a-4550-a351-c4f03867b95a",
+  "filePath": "acceptance-s162120260913T063110209Z51e958e9-turn-10.txt",
+  "submittedStatus": "queued",
+  "terminal": {
+    "status": "completed",
+    "executionOutcome": "completed",
+    "persistenceOutcome": "saved",
+    "errorCode": null,
+    "checkpoint": {
+      "revisionId": "41ce853d54ff28a60527272c40eadda1d1b10910c1a224ed43b7e26ab20398fd",
+      "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/1af6857e-d55a-4550-a351-c4f03867b95a/75f84f6e-1d76-450d-8dd5-b36076029353.json",
+      "filesSha256": "ca1b98008f446d8b0eac291f12306cc69f265b8ca95d46e6d736b406c1bc490a",
+      "sessionSha256": "643e5491000edd58d65929ec63eeb7a445f58473e07d474a3b8f95b586f70562",
+      "committedAt": 1789285605290
+    }
+  },
+  "transitions": [
+    {
+      "observedAt": 1789285218866,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285222000
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285246627,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285244546
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285276854,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285262973
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285284139,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285280651
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285304883,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285304530
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285318259,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285322021
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285338907,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285339387
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285359446,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285363296
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285397998,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285380673
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285405854,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285399320
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285421431,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285422343
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285438745,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285438538
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285454618,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285454788
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285476975,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285478506
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285496533,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285495333
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285510115,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285513313
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285532655,
+      "turnStatus": "queued",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285178444,
+        "nextAttemptAt": 1789285535525
+      },
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285553813,
+      "turnStatus": "running",
+      "activeTurnId": "1af6857e-d55a-4550-a351-c4f03867b95a",
+      "resourceWait": null,
+      "releaseHold": null,
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285622658,
+      "turnStatus": "checkpointing",
+      "activeTurnId": "1af6857e-d55a-4550-a351-c4f03867b95a",
+      "resourceWait": null,
+      "releaseHold": null,
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789285631958,
+      "turnStatus": "completed",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789285613496,
+        "nextAttemptAt": 1789285620749
+      },
+      "recoveryHold": null
+    }
+  ]
+}

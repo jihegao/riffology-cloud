@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "phase": "gate-close-postdeploy",
+  "attemptCount": 1,
+  "deploymentAttempts": [
+    {
+      "attempt": 1,
+      "deployExitConfirmed": true,
+      "observed": "closed-same-sha",
+      "workerVersionId": "a293c252-20f9-47e7-af3a-163cd93a6062",
+      "reconciliationAttempts": [
+        {
+          "attempt": 1,
+          "classification": "closed-same-sha",
+          "versionId": "a293c252-20f9-47e7-af3a-163cd93a6062"
+        }
+      ]
+    }
+  ],
+  "deployExitConfirmed": true,
+  "gateClosed": true,
+  "gateCloseConfirmed": true,
+  "forwardConformant": true,
+  "workerVersionId": "a293c252-20f9-47e7-af3a-163cd93a6062",
+  "checks": [
+    {
+      "name": "gate-close-dry-run",
+      "status": "passed"
+    },
+    {
+      "name": "deployed-worker-version",
+      "status": "passed"
+    }
+  ]
+}

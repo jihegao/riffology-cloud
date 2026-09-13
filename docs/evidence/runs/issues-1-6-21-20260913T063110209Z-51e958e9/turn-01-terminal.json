@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "index": 1,
+  "turnId": "2a08a56b-1e63-463d-9167-c0a2b33a650e",
+  "filePath": "acceptance-s162120260913T063110209Z51e958e9-turn-01.txt",
+  "submittedStatus": "queued",
+  "terminal": {
+    "status": "completed",
+    "executionOutcome": "completed",
+    "persistenceOutcome": "saved",
+    "errorCode": null,
+    "checkpoint": {
+      "revisionId": "357473521fa8037d9968ec11c630e3030a59dddf3d59827a8c30ee8a313adc7c",
+      "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/2a08a56b-1e63-463d-9167-c0a2b33a650e/72898bd6-7c18-4a5e-88d5-934eaa92c934.json",
+      "filesSha256": "3c59127fbe3961c22d06b03dc23b80be55a15f2c55aa8fc56250ae31a8d493ba",
+      "sessionSha256": "c6ea9bee24673cd27c07ce2f03d220a6cf219406e08aa9a78d88d4e5b3545f3e",
+      "committedAt": 1789281676889
+    }
+  },
+  "transitions": [
+    {
+      "observedAt": 1789281644526,
+      "turnStatus": "running",
+      "activeTurnId": "2a08a56b-1e63-463d-9167-c0a2b33a650e",
+      "resourceWait": null,
+      "releaseHold": null,
+      "recoveryHold": null
+    },
+    {
+      "observedAt": 1789281703828,
+      "turnStatus": "completed",
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": {
+        "status": "release-pending",
+        "reasonCode": "trusted-pi-release-assignment-guard",
+        "since": 1789281685140,
+        "nextAttemptAt": 1789281692397
+      },
+      "recoveryHold": null
+    }
+  ]
+}
