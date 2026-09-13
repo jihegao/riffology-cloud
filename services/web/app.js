@@ -326,7 +326,7 @@ async function refreshWorkspaceFiles(generation = viewGeneration) {
   if (!activeProject || generation !== viewGeneration) return;
   const workspaceId = activeProject.workspace_id;
   workspaceFilesError = ''; renderWorkspaceFiles();
-  try { const value = await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/files`); if (generation !== viewGeneration || activeProject?.workspace_id !== workspaceId) return; workspaceFiles = value; }
+  try { const value = await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/files`); if (generation !== viewGeneration || activeProject?.workspace_id !== workspaceId) return; workspaceFiles = value; servicePanel.savedRevision(workspaceId, value.revision); }
   catch (error) { if (generation !== viewGeneration) return; workspaceFilesError = error.message; }
   renderWorkspaceFiles();
 }
