@@ -1,6 +1,6 @@
 import type { TurnActor, TurnScope } from '../turn/protocol.ts';
 import { workspaceAgentName } from '../workspace/protocol.ts';
-import { requireTurnRuntime } from './turn-runtime-gate.ts';
+import { requireTurnRuntime, turnAdmissionStatus } from './turn-runtime-gate.ts';
 import {traceTurnAdmission} from '../turn/admission-telemetry.ts';
 
 interface WorkspaceTurnActor {
@@ -16,6 +16,7 @@ interface WorkspaceTurnActor {
 
 interface TurnServicesEnv {
   M2_TURNS_ENABLED: unknown;
+  M2_TURN_RUNTIME_CONFIGURED?: unknown;
   M2_TURN_ADMISSION_TELEMETRY?:unknown;
   WORKSPACE_AGENT: { getByName(name: string): WorkspaceTurnActor };
 }
@@ -28,7 +29,7 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
     },
     async submit(scope: TurnScope, caller: TurnActor, sessionId: string, key: string, body: { message: unknown }) {
       try{
-        requireTurnRuntime(env.M2_TURNS_ENABLED);
+        requireTurnRuntime(env.M2_TURNS_ENABLED,env.M2_TURN_RUNTIME_CONFIGURED!==false);
         const result=await actor(scope).submitTurn({scope,actor:caller,sessionId,key,body});
         traceTurnAdmission(env.M2_TURN_ADMISSION_TELEMETRY,'gateway',true);return result;
       }catch(error){traceTurnAdmission(env.M2_TURN_ADMISSION_TELEMETRY,'gateway',false,error);throw error;}
@@ -40,7 +41,9 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
       return actor(scope).replayTurnEvents({ scope, afterSequence, limit });
     },
     async snapshot(scope: TurnScope) {
-      return actor(scope).turnSnapshot({ scope });
+      const value = await actor(scope).turnSnapshot({ scope });
+      if (!value || typeof value !== 'object' || Array.isArray(value)) return value;
+      return { ...(value as Record<string, unknown>), admission: turnAdmissionStatus(env.M2_TURNS_ENABLED, env.M2_TURN_RUNTIME_CONFIGURED !== false) };
     },
     async files(scope:TurnScope){return actor(scope).listFiles({scope});},
     async diff(scope:TurnScope){return actor(scope).diffFiles({scope});},

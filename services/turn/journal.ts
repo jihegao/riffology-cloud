@@ -1,3 +1,4 @@
+import {deriveTurnTiming} from './timing.ts';
 import { TURN_EVENT_BYTES_LIMIT, TURN_EVENT_LIMIT, TURN_EVENT_RECEIPT_LIMIT, actor, checkpointReceipt, initialWorkspaceBase, jsonPayload, message, positive, resourceDisposition, sameScope, scope, title, turnDigest, turnId,
   type CheckpointReceipt, type InitialWorkspaceBase, type RuntimeEventType, type SessionRecord, type TurnActor, type TurnEvent,
   type TurnEventType, type TurnJournalState, type TurnJournalView, type TurnRecord, type TurnResourceDisposition, type TurnScope } from './protocol.ts';
@@ -226,7 +227,7 @@ export class TurnJournal{
   }
   async workspaceRevision(rawScope:TurnScope){return this.workspaceRevisionSnapshot(rawScope);}
   async view(rawScope:TurnScope):Promise<TurnJournalView>{const state=await this.snapshot(rawScope),turns:TurnJournalView['turns']={};
-    for(const [id,turn] of Object.entries(state.turns)){const {actor:privateActor,requestKey:_,payloadSha256:__,dispatchId:___,base:____,resourceLease:_____,startedSequence:______,terminalSequence:_______,...safe}=turn;turns[id]={...safe,actor:{userId:privateActor.userId}};}
+    for(const [id,turn] of Object.entries(state.turns)){const {actor:privateActor,requestKey:_,payloadSha256:__,dispatchId:___,base:____,resourceLease:_____,startedSequence:______,terminalSequence:_______,...safe}=turn;turns[id]={...safe,actor:{userId:privateActor.userId},timing:deriveTurnTiming(turn,state.events,Date.now())};}
     const sessions:TurnJournalView['sessions']={};for(const [id,session] of Object.entries(state.sessions)){const {actorUserId:_,actorAuthVersion:__,...safe}=session;sessions[id]=safe;}
     const resourceWait=state.resourceWait&&{status:state.resourceWait.status,reasonCode:state.resourceWait.reasonCode,since:state.resourceWait.since,nextAttemptAt:state.resourceWait.nextAttemptAt},releaseHold=state.releaseHold&&{status:state.releaseHold.status,reasonCode:state.releaseHold.reasonCode,since:state.releaseHold.since,nextAttemptAt:state.releaseHold.nextAttemptAt},recoveryHold=state.recoveryHold&&{status:state.recoveryHold.status,reasonCode:state.recoveryHold.reasonCode,since:state.recoveryHold.since,nextAttemptAt:state.recoveryHold.nextAttemptAt};return {schemaVersion:3,scope:state.scope,nextSequence:state.nextSequence,activeTurnId:state.activeTurnId,resourceWait,releaseHold,recoveryHold,sessions,turns};
   }
