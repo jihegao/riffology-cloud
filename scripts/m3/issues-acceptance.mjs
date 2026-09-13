@@ -66,13 +66,16 @@ export async function requestJson(url,{cookie,method='GET',body=null,key=null,ti
   }
   fail('acceptance-transport-unavailable');
 }
-async function allEvents(auth){
-  const events=[];let after=0;
+export async function allEvents(auth){
+  const events=[];let after=0,windowRebased=false;
   for(let page=0;page<32;page++){
     const value=await requestJson(`${auth.origin}/api/workspaces/${auth.workspaceId}/events?after_sequence=${after}&limit=200`,{cookie:auth.cookie}),keys=['events','nextSequence','hasMore','oldestSequence','snapshotRequired'];
     if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype||Object.keys(value).length!==keys.length||keys.some(key=>!Object.hasOwn(value,key))||!Array.isArray(value.events)||typeof value.hasMore!=='boolean'||typeof value.snapshotRequired!=='boolean'||!Number.isSafeInteger(value.nextSequence)||value.nextSequence<after||!Number.isSafeInteger(value.oldestSequence)||value.oldestSequence<1)fail('acceptance-event-page-invalid');
     let last=after;for(const event of value.events){const eventKeys=['sequence','eventId','workspaceId','turnId','runtimeGeneration','type','payload','at'];if(!event||typeof event!=='object'||Array.isArray(event)||Object.getPrototypeOf(event)!==Object.prototype||Object.keys(event).length!==eventKeys.length||eventKeys.some(key=>!Object.hasOwn(event,key))||!Number.isSafeInteger(event.sequence)||event.sequence!==last+1||!ID.test(event.eventId??'')||event.workspaceId!==auth.workspaceId||!ID.test(event.turnId??'')||!Number.isSafeInteger(event.runtimeGeneration)||event.runtimeGeneration<1||typeof event.type!=='string'||!event.payload||typeof event.payload!=='object'||Array.isArray(event.payload)||!Number.isSafeInteger(event.at)||event.at<1)fail('acceptance-event-page-invalid');last=event.sequence;}
-    if(value.snapshotRequired)fail('acceptance-event-window-retired');
+    if(value.snapshotRequired){
+      if(windowRebased||value.events.length!==0||after>=value.oldestSequence-1)fail('acceptance-event-window-retired');
+      after=value.oldestSequence-1;windowRebased=true;continue;
+    }
     if(after<value.oldestSequence-1||value.nextSequence!==last||(value.hasMore&&value.events.length===0))fail('acceptance-event-cursor-invalid');events.push(...value.events);
     if(!value.hasMore)return events;after=value.nextSequence;
   }fail('acceptance-event-pages-exceeded');
