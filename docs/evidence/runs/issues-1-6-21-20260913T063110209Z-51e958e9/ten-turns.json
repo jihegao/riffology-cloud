@@ -1,0 +1,3941 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "runToken": "s162120260913T063110209Z51e958e9",
+  "turns": [
+    {
+      "index": 1,
+      "turnId": "2a08a56b-1e63-463d-9167-c0a2b33a650e",
+      "filePath": "acceptance-s162120260913T063110209Z51e958e9-turn-01.txt",
+      "nonce": "efafc77539da316c4e96d2faf8af0ca5",
+      "messageSha256": "1819f5fb96e120202736f7750577617dac96daaf3cdc9fb9ceff97c15753363d",
+      "assistantNonceConfirmation": true,
+      "revisionId": "357473521fa8037d9968ec11c630e3030a59dddf3d59827a8c30ee8a313adc7c",
+      "checkpoint": {
+        "revisionId": "357473521fa8037d9968ec11c630e3030a59dddf3d59827a8c30ee8a313adc7c",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/2a08a56b-1e63-463d-9167-c0a2b33a650e/72898bd6-7c18-4a5e-88d5-934eaa92c934.json",
+        "filesSha256": "3c59127fbe3961c22d06b03dc23b80be55a15f2c55aa8fc56250ae31a8d493ba",
+        "sessionSha256": "c6ea9bee24673cd27c07ce2f03d220a6cf219406e08aa9a78d88d4e5b3545f3e",
+        "committedAt": 1789281676889
+      },
+      "toolEvents": [
+        {
+          "sequence": 2129,
+          "eventId": "pi-dd2e7618a6dc0888a42183581a8c5e5175f5ad00841adff0a94e4f2b0fe77203",
+          "toolCallId": "call_5dniJy9yAQtXAah3otiRKpul|fc_020fdb76186cad68016aa645737d6c87d296290dea6c8a8183",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 2134,
+          "eventId": "pi-25f89731e0a8e8e884e8338afb5339236ad7408bee0cf81102f357230f957813",
+          "toolCallId": "call_vvYWUekKbjtSRCSlmz6hoGvL|fc_020fdb76186cad68016aa6457b277887d284c1df86d7a18195",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": null,
+      "transitions": [
+        {
+          "observedAt": 1789281644526,
+          "turnStatus": "running",
+          "activeTurnId": "2a08a56b-1e63-463d-9167-c0a2b33a650e",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789281703828,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789281685140,
+            "nextAttemptAt": 1789281692397
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "357473521fa8037d9968ec11c630e3030a59dddf3d59827a8c30ee8a313adc7c",
+          "filesSha256": "3c59127fbe3961c22d06b03dc23b80be55a15f2c55aa8fc56250ae31a8d493ba",
+          "committedAt": 1789281676889
+        },
+        "file": {
+          "path": "acceptance-s162120260913T063110209Z51e958e9-turn-01.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "357473521fa8037d9968ec11c630e3030a59dddf3d59827a8c30ee8a313adc7c",
+          "filesSha256": "3c59127fbe3961c22d06b03dc23b80be55a15f2c55aa8fc56250ae31a8d493ba",
+          "committedAt": 1789281676889
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260913T063110209Z51e958e9-turn-01.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "turnId": "d1e6b2d8-9a78-4fde-9a65-1882e2274e68",
+      "filePath": "acceptance-s162120260913T063110209Z51e958e9-turn-02.txt",
+      "nonce": "16ef9fabf7279733041a3932405ce2df",
+      "messageSha256": "ac104eb8e959caf62015efc38aabbf59c7932c3116835fbb5bdb83a4d942576d",
+      "assistantNonceConfirmation": true,
+      "revisionId": "dde3a821503203b8a8cacc890683e9bd8d8332a192bfa183c17699bb4bc2df38",
+      "checkpoint": {
+        "revisionId": "dde3a821503203b8a8cacc890683e9bd8d8332a192bfa183c17699bb4bc2df38",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/d1e6b2d8-9a78-4fde-9a65-1882e2274e68/95f61f02-2b5f-4554-960d-7daf3a15b082.json",
+        "filesSha256": "0325e98bfe5b22b8dffeee3b8e915b0bb8a158c78eb21da61585d7cd74738e2e",
+        "sessionSha256": "4c6fe7e4c0432c1885e55c9cb9d423be5318eb1ec8cd52894d5150d2c5fd41c2",
+        "committedAt": 1789282142824
+      },
+      "toolEvents": [
+        {
+          "sequence": 2222,
+          "eventId": "pi-0c7f9ea94a43c813f23d5266e672658bc3b6fa8f09fd8429270c8730ab7bf5a0",
+          "toolCallId": "call_vnH1UPgPVAKt5xPyA7kOWT49|fc_020fdb76186cad68016aa6474e34a487d28858bb3dbbb6b5ef",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 2227,
+          "eventId": "pi-0e182aa47dc83b94ffa803213ee026e8e91c87c9081bdecb755c2a978e6804ad",
+          "toolCallId": "call_tggv5fITDFDGXD57yIutNmFk|fc_020fdb76186cad68016aa647540dfc87d294645a7ae55f68a4",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789281729426,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789281685140,
+            "nextAttemptAt": 1789281727963
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789281750151,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789281685140,
+            "nextAttemptAt": 1789281746619
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789281765116,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789281685140,
+            "nextAttemptAt": 1789281765807
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789281778741,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789281685140,
+            "nextAttemptAt": 1789281782456
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789281800817,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789281685140,
+            "nextAttemptAt": 1789281802406
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789281821707,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789281685140,
+            "nextAttemptAt": 1789281823144
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789281846140,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789281685140,
+            "nextAttemptAt": 1789281843591
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789281859667,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789281685140,
+            "nextAttemptAt": 1789281862334
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789281894956,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "recovery-hold",
+            "reasonCode": "project-workspace-release-unconfirmed",
+            "since": 1789281685140,
+            "nextAttemptAt": 1789281952499
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789281961553,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "recovery-hold",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789281685140,
+            "nextAttemptAt": 1789282019008
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282026024,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "recovery-hold",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789281685140,
+            "nextAttemptAt": 1789282084796
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282097802,
+          "turnStatus": "running",
+          "activeTurnId": "d1e6b2d8-9a78-4fde-9a65-1882e2274e68",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282169521,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282151897,
+            "nextAttemptAt": 1789282159343
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "dde3a821503203b8a8cacc890683e9bd8d8332a192bfa183c17699bb4bc2df38",
+          "filesSha256": "0325e98bfe5b22b8dffeee3b8e915b0bb8a158c78eb21da61585d7cd74738e2e",
+          "committedAt": 1789282142824
+        },
+        "file": {
+          "path": "acceptance-s162120260913T063110209Z51e958e9-turn-02.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "dde3a821503203b8a8cacc890683e9bd8d8332a192bfa183c17699bb4bc2df38",
+          "filesSha256": "0325e98bfe5b22b8dffeee3b8e915b0bb8a158c78eb21da61585d7cd74738e2e",
+          "committedAt": 1789282142824
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260913T063110209Z51e958e9-turn-02.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 3,
+      "turnId": "20a2fa19-9d32-493f-96b6-5a2d60cc0419",
+      "filePath": "acceptance-s162120260913T063110209Z51e958e9-turn-03.txt",
+      "nonce": "e0ef2c2faac41ead91727c097ba1d552",
+      "messageSha256": "593382a5497a89f161c10edcad425ff3c83e6034e22ddc7d4daf9f4b2410cd73",
+      "assistantNonceConfirmation": true,
+      "revisionId": "d311cc9686ec6b844f64c0a82b52f01baccd3e3d4d4a1e37250b1734474f652c",
+      "checkpoint": {
+        "revisionId": "d311cc9686ec6b844f64c0a82b52f01baccd3e3d4d4a1e37250b1734474f652c",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/20a2fa19-9d32-493f-96b6-5a2d60cc0419/a339a8ae-4bcd-4a0a-8c76-da1cfd114d1d.json",
+        "filesSha256": "86b7a2221bb7afe6862b36ea5d7aa8f30a53b2612386af9445e4cd53b87c48d2",
+        "sessionSha256": "caa0e01aa9df9a61ae83d75d337307cab154f4b879206cd6cade3fc486a1b970",
+        "committedAt": 1789282590346
+      },
+      "toolEvents": [
+        {
+          "sequence": 2312,
+          "eventId": "pi-0c06947fd75ee9f2ad8deb5102c25c9b58c167b1ee7bcd69b7c8d710e55511b8",
+          "toolCallId": "call_Dmk4PfYaHnm8NwqeS6eXTYsf|fc_020fdb76186cad68016aa6490a014c87d2bfa11ce8a955dcbe",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 2317,
+          "eventId": "pi-9fde52f75e8ec858171e1c290e41cfe0c84f168c23f907bee58a1e5f013a50dd",
+          "toolCallId": "call_kkJeUmhDP4nBPogOOgHaKBEg|fc_020fdb76186cad68016aa6491201e087d2b40a85a80469c530",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789282195370,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282151897,
+            "nextAttemptAt": 1789282195999
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282217170,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282151897,
+            "nextAttemptAt": 1789282216155
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282246534,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282151897,
+            "nextAttemptAt": 1789282233134
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282259396,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282151897,
+            "nextAttemptAt": 1789282254175
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282273628,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282151897,
+            "nextAttemptAt": 1789282275540
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282289808,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282151897,
+            "nextAttemptAt": 1789282291733
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282310523,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282151897,
+            "nextAttemptAt": 1789282308632
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282324666,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282151897,
+            "nextAttemptAt": 1789282327234
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282344131,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282151897,
+            "nextAttemptAt": 1789282344334
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282357751,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282151897,
+            "nextAttemptAt": 1789282362237
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282385704,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282151897,
+            "nextAttemptAt": 1789282378192
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282399431,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282151897,
+            "nextAttemptAt": 1789282399059
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282413123,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282151897,
+            "nextAttemptAt": 1789282415371
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282433313,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282151897,
+            "nextAttemptAt": 1789282432507
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282468545,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "recovery-hold",
+            "reasonCode": "project-workspace-release-unconfirmed",
+            "since": 1789282151897,
+            "nextAttemptAt": 1789282522669
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282538881,
+          "turnStatus": "running",
+          "activeTurnId": "20a2fa19-9d32-493f-96b6-5a2d60cc0419",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282617489,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282605691
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "d311cc9686ec6b844f64c0a82b52f01baccd3e3d4d4a1e37250b1734474f652c",
+          "filesSha256": "86b7a2221bb7afe6862b36ea5d7aa8f30a53b2612386af9445e4cd53b87c48d2",
+          "committedAt": 1789282590346
+        },
+        "file": {
+          "path": "acceptance-s162120260913T063110209Z51e958e9-turn-03.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "d311cc9686ec6b844f64c0a82b52f01baccd3e3d4d4a1e37250b1734474f652c",
+          "filesSha256": "86b7a2221bb7afe6862b36ea5d7aa8f30a53b2612386af9445e4cd53b87c48d2",
+          "committedAt": 1789282590346
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260913T063110209Z51e958e9-turn-03.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 4,
+      "turnId": "1a0c3a86-2fc2-4f58-a39f-669224cc1a22",
+      "filePath": "acceptance-s162120260913T063110209Z51e958e9-turn-04.txt",
+      "nonce": "2d29aca2cc1d37b951ad40f1f4daf205",
+      "messageSha256": "44d92c06d225fc967cf007bcdf06d24fc08080d2b6168b8fe42527fabf8aa204",
+      "assistantNonceConfirmation": true,
+      "revisionId": "7ce653f27c7de2d85c4e38662e4cef7411c6eec24e20a095ad9f16773a191afd",
+      "checkpoint": {
+        "revisionId": "7ce653f27c7de2d85c4e38662e4cef7411c6eec24e20a095ad9f16773a191afd",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/1a0c3a86-2fc2-4f58-a39f-669224cc1a22/bf187139-7605-4773-8239-19f9163415fc.json",
+        "filesSha256": "e5f5053f49d72a544eab6959460e49c10cab15d323b8cf596eb1cb69828aa3a7",
+        "sessionSha256": "6e0a08e86e7fd212251483a7a12106f42808b31535ac859ad3f822965f6053a9",
+        "committedAt": 1789283020848
+      },
+      "toolEvents": [
+        {
+          "sequence": 2404,
+          "eventId": "pi-206c8112c8a85216e8bbe2a890688cf10a338a00a083f5849ec161aae1f3ad32",
+          "toolCallId": "call_N2n7k2qsxFXBYNoDQZ3BlXPw|fc_020fdb76186cad68016aa64ab8541487d2a302ae19c041dcce",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 2409,
+          "eventId": "pi-babf8dc7baf1be9bf0dbbb0ad7cdcb1ee71094443dec221482e709e7e10d1894",
+          "toolCallId": "call_MQHqkx39awomytz579ArOmut|fc_020fdb76186cad68016aa64abf377087d2a8b59f7a66bbf97b",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789282643753,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282640421
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282659468,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282660192
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282673425,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282676193
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282694159,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282693218
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282718274,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282712644
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282730404,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282729243
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282755625,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282751984
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282773696,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282770698
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282787787,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282787232
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282808831,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282803772
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282822343,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282825704
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282843569,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282845138
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282859266,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282862735
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282883409,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282883823
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282901884,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282904348
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282920978,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282920276
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282934493,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282936531
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282952110,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789282598377,
+            "nextAttemptAt": 1789282954923
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789282972846,
+          "turnStatus": "running",
+          "activeTurnId": "1a0c3a86-2fc2-4f58-a39f-669224cc1a22",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283050265,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283029051,
+            "nextAttemptAt": 1789283036313
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "7ce653f27c7de2d85c4e38662e4cef7411c6eec24e20a095ad9f16773a191afd",
+          "filesSha256": "e5f5053f49d72a544eab6959460e49c10cab15d323b8cf596eb1cb69828aa3a7",
+          "committedAt": 1789283020848
+        },
+        "file": {
+          "path": "acceptance-s162120260913T063110209Z51e958e9-turn-04.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "7ce653f27c7de2d85c4e38662e4cef7411c6eec24e20a095ad9f16773a191afd",
+          "filesSha256": "e5f5053f49d72a544eab6959460e49c10cab15d323b8cf596eb1cb69828aa3a7",
+          "committedAt": 1789283020848
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260913T063110209Z51e958e9-turn-04.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 5,
+      "turnId": "32836c53-2516-4cf7-ab59-e033146a7966",
+      "filePath": "acceptance-s162120260913T063110209Z51e958e9-turn-05.txt",
+      "nonce": "f11807a04b72a8a192f31b5c1ddf669b",
+      "messageSha256": "82e2ad8507afea7d84fae73d3ed9ce90b213b3ca2c440c41f95b322075e713d4",
+      "assistantNonceConfirmation": true,
+      "revisionId": "12ff9751aa6373af75d939278096ad354cce8b694530e06f868e042977dcc862",
+      "checkpoint": {
+        "revisionId": "12ff9751aa6373af75d939278096ad354cce8b694530e06f868e042977dcc862",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/32836c53-2516-4cf7-ab59-e033146a7966/56460f67-7629-4282-a583-cd31d3c29e7b.json",
+        "filesSha256": "da2d20c9795673384d09fd2a6b9e2a1f542c02a47fe80b4e2bee93605ec7a64c",
+        "sessionSha256": "8fb3ceb2aeb1f1ccedc176266523a720ac54734d534b7b59b2a609ca0c954fad",
+        "committedAt": 1789283441299
+      },
+      "toolEvents": [
+        {
+          "sequence": 2497,
+          "eventId": "pi-ff4a72b47b6c88a18749c58a76c9f71c3fae0f5a225d06fd87d1f92fe2a5a031",
+          "toolCallId": "call_oI3SeGYlufFd2I9UDJXEbPNB|fc_020fdb76186cad68016aa64c5f008487d28a9d7088512e632d",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 2502,
+          "eventId": "pi-0ff3257a4d1bbbe59d0ec5595ad51d1d7842ed2bcce98dd0396ec96ab648a25e",
+          "toolCallId": "call_HFd4t1rSqlr40Efr7u8dSA2R|fc_020fdb76186cad68016aa64c653cf887d2bb10d58c72e7847b",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789283140520,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283029051,
+            "nextAttemptAt": 1789283141154
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283161036,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283029051,
+            "nextAttemptAt": 1789283158909
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283181108,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283029051,
+            "nextAttemptAt": 1789283178810
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283198074,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283029051,
+            "nextAttemptAt": 1789283193928
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283213250,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283029051,
+            "nextAttemptAt": 1789283211916
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283227682,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283029051,
+            "nextAttemptAt": 1789283230510
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283255610,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283029051,
+            "nextAttemptAt": 1789283246206
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283263637,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283029051,
+            "nextAttemptAt": 1789283266783
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283299230,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283029051,
+            "nextAttemptAt": 1789283300474
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283322836,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283029051,
+            "nextAttemptAt": 1789283315682
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283329455,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283029051,
+            "nextAttemptAt": 1789283331833
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283365586,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283029051,
+            "nextAttemptAt": 1789283364962
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283387427,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283029051,
+            "nextAttemptAt": 1789283381821
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283403654,
+          "turnStatus": "running",
+          "activeTurnId": "32836c53-2516-4cf7-ab59-e033146a7966",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283473931,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283474323
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "12ff9751aa6373af75d939278096ad354cce8b694530e06f868e042977dcc862",
+          "filesSha256": "da2d20c9795673384d09fd2a6b9e2a1f542c02a47fe80b4e2bee93605ec7a64c",
+          "committedAt": 1789283441299
+        },
+        "file": {
+          "path": "acceptance-s162120260913T063110209Z51e958e9-turn-05.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "12ff9751aa6373af75d939278096ad354cce8b694530e06f868e042977dcc862",
+          "filesSha256": "da2d20c9795673384d09fd2a6b9e2a1f542c02a47fe80b4e2bee93605ec7a64c",
+          "committedAt": 1789283441299
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260913T063110209Z51e958e9-turn-05.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 6,
+      "turnId": "e148a00e-89d0-4c51-821f-3aa34b947f5d",
+      "filePath": "acceptance-s162120260913T063110209Z51e958e9-turn-06.txt",
+      "nonce": "d12580da766a6bd501705b2e8e4db9e2",
+      "messageSha256": "9ed436cd7784a71a247b27db9f56a5ba30fbbd1790ef048371abb69a714973e4",
+      "assistantNonceConfirmation": true,
+      "revisionId": "d7ed47d03297aee05312b4319cce6fbb3960e2157e744d161c25ed81688821ae",
+      "checkpoint": {
+        "revisionId": "d7ed47d03297aee05312b4319cce6fbb3960e2157e744d161c25ed81688821ae",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/e148a00e-89d0-4c51-821f-3aa34b947f5d/b875db81-2178-4049-9df2-1abfd28752e4.json",
+        "filesSha256": "99d257f9c2efbd17881aa8a2b61e42596b9371bca466232568e29bd99c9aa2e3",
+        "sessionSha256": "1924d4ecf35267fcaf9baa95e137060ef20b0eefb53c37bf92588b9f2cd5e444",
+        "committedAt": 1789283874773
+      },
+      "toolEvents": [
+        {
+          "sequence": 2592,
+          "eventId": "pi-1625808b39aef5db5b8a37f8b1dfb35a5c43df83cdfd199615305cb154bd1b2d",
+          "toolCallId": "call_egk4CZGIzNWQvHT5gQ0OrmGG|fc_020fdb76186cad68016aa64e10f64487d28e79abe7141daca0",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 2597,
+          "eventId": "pi-2a8452b508159614a60768d1c1641d72d89fd2f5be38bb65253be1836845987b",
+          "toolCallId": "call_oqc54s7qdMisMbee9SegUNXp|fc_020fdb76186cad68016aa64e16f9f487d29206149f5fc1d7f1",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789283507993,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283511426
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283524593,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283529413
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283549092,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283545181
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283570577,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283563038
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283577419,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283580784
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283598209,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283597388
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283617065,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283614602
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283630875,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283633410
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283652612,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283650165
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283666613,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283666425
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283688124,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283683096
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283706239,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283699434
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283724064,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283718208
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283737398,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283737030
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283750803,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283755621
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283771254,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283772768
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283801135,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283795150
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283810126,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283449658,
+            "nextAttemptAt": 1789283811261
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283834883,
+          "turnStatus": "running",
+          "activeTurnId": "e148a00e-89d0-4c51-821f-3aa34b947f5d",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283905143,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283883112,
+            "nextAttemptAt": 1789283890374
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "d7ed47d03297aee05312b4319cce6fbb3960e2157e744d161c25ed81688821ae",
+          "filesSha256": "99d257f9c2efbd17881aa8a2b61e42596b9371bca466232568e29bd99c9aa2e3",
+          "committedAt": 1789283874773
+        },
+        "file": {
+          "path": "acceptance-s162120260913T063110209Z51e958e9-turn-06.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "d7ed47d03297aee05312b4319cce6fbb3960e2157e744d161c25ed81688821ae",
+          "filesSha256": "99d257f9c2efbd17881aa8a2b61e42596b9371bca466232568e29bd99c9aa2e3",
+          "committedAt": 1789283874773
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260913T063110209Z51e958e9-turn-06.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 7,
+      "turnId": "6a30331f-e0cf-456b-b6a4-983f4fc56732",
+      "filePath": "acceptance-s162120260913T063110209Z51e958e9-turn-07.txt",
+      "nonce": "2447b09184b688059d301177a8d3517f",
+      "messageSha256": "0c5cbec5122c325f711c6e7359fcc7ef455b56b25d43d26f84c7f15a3d3987dd",
+      "assistantNonceConfirmation": true,
+      "revisionId": "199d631e0bf6cccc05051310a3d1bc2dc2bf2a048df3b460cd20440cfd575d30",
+      "checkpoint": {
+        "revisionId": "199d631e0bf6cccc05051310a3d1bc2dc2bf2a048df3b460cd20440cfd575d30",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/6a30331f-e0cf-456b-b6a4-983f4fc56732/8faae977-9dc7-4780-8232-df1468b0d6ec.json",
+        "filesSha256": "b81c64affdacebae448fddda74ff71d805a438134a558717fceb40df921def61",
+        "sessionSha256": "462cb992dc970c4a13fcfb920bfd336a458f356b0b394acce07807ee783f725d",
+        "committedAt": 1789284306978
+      },
+      "toolEvents": [
+        {
+          "sequence": 2686,
+          "eventId": "pi-2132fed3fce6e5b175153786dbf7f78a303e3a1b97eb4ec2643e3e99f388fd3c",
+          "toolCallId": "call_jAw5WxBlB2aMwqqClwsuVFPA|fc_020fdb76186cad68016aa64fc1101c87d2a1c2e622e79d623a",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 2691,
+          "eventId": "pi-e4ac21656c300b85afb142490ad918e9f994b2a303c7b579fa8c613de3225913",
+          "toolCallId": "call_bhONY9r7W2s5ZBotaWogt2Yj|fc_020fdb76186cad68016aa64fc72cf087d2a0612b3d738ad229",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789283975029,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283883112,
+            "nextAttemptAt": 1789283968019
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789283992165,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283883112,
+            "nextAttemptAt": 1789283985529
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284006132,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283883112,
+            "nextAttemptAt": 1789284004440
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284020654,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283883112,
+            "nextAttemptAt": 1789284023072
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284042734,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283883112,
+            "nextAttemptAt": 1789284041947
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284069246,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283883112,
+            "nextAttemptAt": 1789284059835
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284112035,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283883112,
+            "nextAttemptAt": 1789284091746
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284125757,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283883112,
+            "nextAttemptAt": 1789284125322
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284160795,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283883112,
+            "nextAttemptAt": 1789284163527
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284176300,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283883112,
+            "nextAttemptAt": 1789284180366
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284207833,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283883112,
+            "nextAttemptAt": 1789284199294
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284214429,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283883112,
+            "nextAttemptAt": 1789284217149
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284237547,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789283883112,
+            "nextAttemptAt": 1789284239709
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284253186,
+          "turnStatus": "running",
+          "activeTurnId": "6a30331f-e0cf-456b-b6a4-983f4fc56732",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284347223,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284315261,
+            "nextAttemptAt": 1789284340959
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "199d631e0bf6cccc05051310a3d1bc2dc2bf2a048df3b460cd20440cfd575d30",
+          "filesSha256": "b81c64affdacebae448fddda74ff71d805a438134a558717fceb40df921def61",
+          "committedAt": 1789284306978
+        },
+        "file": {
+          "path": "acceptance-s162120260913T063110209Z51e958e9-turn-07.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "199d631e0bf6cccc05051310a3d1bc2dc2bf2a048df3b460cd20440cfd575d30",
+          "filesSha256": "b81c64affdacebae448fddda74ff71d805a438134a558717fceb40df921def61",
+          "committedAt": 1789284306978
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260913T063110209Z51e958e9-turn-07.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 8,
+      "turnId": "181eac21-f8df-4b9f-baf2-7fbdbad68824",
+      "filePath": "acceptance-s162120260913T063110209Z51e958e9-turn-08.txt",
+      "nonce": "70c6c3954937a7d138623c25c21a5fb3",
+      "messageSha256": "dc3bcb77a21e42e87e485ba35aa0f6c2413b00c9345c0f4282772c094434cdcd",
+      "assistantNonceConfirmation": true,
+      "revisionId": "3974339bc31e304815e7210a1e01d9fa03e0318d029d20241f96e15eab009882",
+      "checkpoint": {
+        "revisionId": "3974339bc31e304815e7210a1e01d9fa03e0318d029d20241f96e15eab009882",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/181eac21-f8df-4b9f-baf2-7fbdbad68824/f0b5c399-6063-4588-b441-3710e29a7984.json",
+        "filesSha256": "6e76164a45048e35a00e4dcffcfc785e5ff6b68e46430bdd4e4fbfe31ed51682",
+        "sessionSha256": "21880013c7f116352b87b0e8eb632e067cb5d0387b7c5a9cc389f828d760c97c",
+        "committedAt": 1789284748554
+      },
+      "toolEvents": [
+        {
+          "sequence": 2777,
+          "eventId": "pi-884610b381e2e9ee75d2fbf943db182bb5f4aa959b63273d6033f6ab76f550c1",
+          "toolCallId": "call_Igf6McToqroDGVaOATiTxU0E|fc_020fdb76186cad68016aa65177669887d2b4b059645d95d3fe",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 2782,
+          "eventId": "pi-7739b9c5d813970c98f3395c3d0722b3a1fc0dd1d97887d6c3c26f9d6572cda7",
+          "toolCallId": "call_iWZA55uSRRc0oqDBcmgYtIks|fc_020fdb76186cad68016aa6517fcde487d2a84798c52121d027",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789284407732,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284315261,
+            "nextAttemptAt": 1789284394958
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284423564,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284315261,
+            "nextAttemptAt": 1789284415914
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284430544,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284315261,
+            "nextAttemptAt": 1789284433129
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284462867,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284315261,
+            "nextAttemptAt": 1789284453481
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284474049,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284315261,
+            "nextAttemptAt": 1789284471438
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284487987,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284315261,
+            "nextAttemptAt": 1789284488038
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284529243,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284315261,
+            "nextAttemptAt": 1789284531141
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284543020,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284315261,
+            "nextAttemptAt": 1789284547880
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284563471,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284315261,
+            "nextAttemptAt": 1789284566000
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284578817,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284315261,
+            "nextAttemptAt": 1789284582196
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284608389,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284315261,
+            "nextAttemptAt": 1789284604725
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284625536,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284315261,
+            "nextAttemptAt": 1789284623205
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284639163,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284315261,
+            "nextAttemptAt": 1789284640391
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284660094,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284315261,
+            "nextAttemptAt": 1789284659013
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284680630,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284315261,
+            "nextAttemptAt": 1789284677015
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284702118,
+          "turnStatus": "running",
+          "activeTurnId": "181eac21-f8df-4b9f-baf2-7fbdbad68824",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284772962,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789284764129
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "3974339bc31e304815e7210a1e01d9fa03e0318d029d20241f96e15eab009882",
+          "filesSha256": "6e76164a45048e35a00e4dcffcfc785e5ff6b68e46430bdd4e4fbfe31ed51682",
+          "committedAt": 1789284748554
+        },
+        "file": {
+          "path": "acceptance-s162120260913T063110209Z51e958e9-turn-08.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "3974339bc31e304815e7210a1e01d9fa03e0318d029d20241f96e15eab009882",
+          "filesSha256": "6e76164a45048e35a00e4dcffcfc785e5ff6b68e46430bdd4e4fbfe31ed51682",
+          "committedAt": 1789284748554
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260913T063110209Z51e958e9-turn-08.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 9,
+      "turnId": "fd5586a5-1fba-4175-bf27-388cdb941ae9",
+      "filePath": "acceptance-s162120260913T063110209Z51e958e9-turn-09.txt",
+      "nonce": "d891853ef8405d3f12e3a642ed1b972f",
+      "messageSha256": "25baf27b0d5e22ec01fb911992c13e6569c0ad6992415c2f888e6b567927799b",
+      "assistantNonceConfirmation": true,
+      "revisionId": "294bc1474aeed92812f1f1fbcdf833dd7e05829b9ba0ce6acb3bff4c1e436e19",
+      "checkpoint": {
+        "revisionId": "294bc1474aeed92812f1f1fbcdf833dd7e05829b9ba0ce6acb3bff4c1e436e19",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/fd5586a5-1fba-4175-bf27-388cdb941ae9/dda7197f-0496-4d8e-b6be-9bbda2a3cb45.json",
+        "filesSha256": "9884336b615c2c53ad6610e5ed917b0fa62808e324673f1cd90254cafeb756c0",
+        "sessionSha256": "29b80a9d66f77dc515bd8c1e8887a20a5b37b7ab27f29ee458d5877b953918eb",
+        "committedAt": 1789285170193
+      },
+      "toolEvents": [
+        {
+          "sequence": 2871,
+          "eventId": "pi-5ea529ae68ade64393cd8c6c67312abd42da3b3158e49f2d4ffff71d52b5598c",
+          "toolCallId": "call_KXeHh9SAwnB5717CsmvWiQtE|fc_020fdb76186cad68016aa6531f792887d28c3e493ccadcbffe",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 2876,
+          "eventId": "pi-f2d49a992639916e069c5f36b05acd955bccdf03beefc355ef775b539fd6d5b0",
+          "toolCallId": "call_NbEvNlpQxdj9vWtLuMyEcXES|fc_020fdb76186cad68016aa6532670b087d29c326ecc73729999",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789284798910,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789284801233
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284825615,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789284818384
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284839326,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789284840534
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284853718,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789284857340
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284881897,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789284875092
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284896775,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789284894074
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284914240,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789284912035
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284927860,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789284931780
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284950588,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789284951276
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284965428,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789284968236
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789284989910,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789284992762
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285010207,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789285010788
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285031775,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789285029243
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285053962,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789285052962
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285068187,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789285070077
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285089198,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789285089198
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285110792,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789284756687,
+            "nextAttemptAt": 1789285108900
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285128684,
+          "turnStatus": "running",
+          "activeTurnId": "fd5586a5-1fba-4175-bf27-388cdb941ae9",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285193906,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285186401
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "294bc1474aeed92812f1f1fbcdf833dd7e05829b9ba0ce6acb3bff4c1e436e19",
+          "filesSha256": "9884336b615c2c53ad6610e5ed917b0fa62808e324673f1cd90254cafeb756c0",
+          "committedAt": 1789285170193
+        },
+        "file": {
+          "path": "acceptance-s162120260913T063110209Z51e958e9-turn-09.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "294bc1474aeed92812f1f1fbcdf833dd7e05829b9ba0ce6acb3bff4c1e436e19",
+          "filesSha256": "9884336b615c2c53ad6610e5ed917b0fa62808e324673f1cd90254cafeb756c0",
+          "committedAt": 1789285170193
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260913T063110209Z51e958e9-turn-09.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    },
+    {
+      "index": 10,
+      "turnId": "1af6857e-d55a-4550-a351-c4f03867b95a",
+      "filePath": "acceptance-s162120260913T063110209Z51e958e9-turn-10.txt",
+      "nonce": "ecaa324bfafbc957453091aeeea0b52d",
+      "messageSha256": "056955d622f5c5483b0b66ec16092964cf49e24e035150d2dcbd3999ebdb5566",
+      "assistantNonceConfirmation": true,
+      "revisionId": "41ce853d54ff28a60527272c40eadda1d1b10910c1a224ed43b7e26ab20398fd",
+      "checkpoint": {
+        "revisionId": "41ce853d54ff28a60527272c40eadda1d1b10910c1a224ed43b7e26ab20398fd",
+        "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/1af6857e-d55a-4550-a351-c4f03867b95a/75f84f6e-1d76-450d-8dd5-b36076029353.json",
+        "filesSha256": "ca1b98008f446d8b0eac291f12306cc69f265b8ca95d46e6d736b406c1bc490a",
+        "sessionSha256": "643e5491000edd58d65929ec63eeb7a445f58473e07d474a3b8f95b586f70562",
+        "committedAt": 1789285605290
+      },
+      "toolEvents": [
+        {
+          "sequence": 2964,
+          "eventId": "pi-1b4ae150ebee52f437851b0a3192ce5b05f1889188455adb1b73bf4e2abebeed",
+          "toolCallId": "call_iyEZMhmY6z1SP5Th1DMCQr3v|fc_020fdb76186cad68016aa654c741f887d2860e0931853395e8",
+          "name": "project_write",
+          "isError": false
+        },
+        {
+          "sequence": 2969,
+          "eventId": "pi-389a5670889a4d4bae39438c7edc3e05350489274ccc0e21aa1787dd319a8f4a",
+          "toolCallId": "call_TQQvTAPaU103VBL1AdCR2uF5|fc_020fdb76186cad68016aa654ce0d1887d2aefe732e4fef88b2",
+          "name": "project_read",
+          "isError": false
+        }
+      ],
+      "submittedStatus": "queued",
+      "queuedBehindRelease": true,
+      "transitions": [
+        {
+          "observedAt": 1789285218866,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285222000
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285246627,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285244546
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285276854,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285262973
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285284139,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285280651
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285304883,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285304530
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285318259,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285322021
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285338907,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285339387
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285359446,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285363296
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285397998,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285380673
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285405854,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285399320
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285421431,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285422343
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285438745,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285438538
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285454618,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285454788
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285476975,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285478506
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285496533,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285495333
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285510115,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285513313
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285532655,
+          "turnStatus": "queued",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285178444,
+            "nextAttemptAt": 1789285535525
+          },
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285553813,
+          "turnStatus": "running",
+          "activeTurnId": "1af6857e-d55a-4550-a351-c4f03867b95a",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285622658,
+          "turnStatus": "checkpointing",
+          "activeTurnId": "1af6857e-d55a-4550-a351-c4f03867b95a",
+          "resourceWait": null,
+          "releaseHold": null,
+          "recoveryHold": null
+        },
+        {
+          "observedAt": 1789285631958,
+          "turnStatus": "completed",
+          "activeTurnId": null,
+          "resourceWait": null,
+          "releaseHold": {
+            "status": "release-pending",
+            "reasonCode": "trusted-pi-release-assignment-guard",
+            "since": 1789285613496,
+            "nextAttemptAt": 1789285620749
+          },
+          "recoveryHold": null
+        }
+      ],
+      "filesRefresh": {
+        "revision": {
+          "revisionId": "41ce853d54ff28a60527272c40eadda1d1b10910c1a224ed43b7e26ab20398fd",
+          "filesSha256": "ca1b98008f446d8b0eac291f12306cc69f265b8ca95d46e6d736b406c1bc490a",
+          "committedAt": 1789285605290
+        },
+        "file": {
+          "path": "acceptance-s162120260913T063110209Z51e958e9-turn-10.txt",
+          "type": "file",
+          "size": 32,
+          "mode": 384
+        }
+      },
+      "diffRefresh": {
+        "revision": {
+          "revisionId": "41ce853d54ff28a60527272c40eadda1d1b10910c1a224ed43b7e26ab20398fd",
+          "filesSha256": "ca1b98008f446d8b0eac291f12306cc69f265b8ca95d46e6d736b406c1bc490a",
+          "committedAt": 1789285605290
+        },
+        "summary": {
+          "added": 1,
+          "modified": 0,
+          "deleted": 0
+        },
+        "changes": [
+          {
+            "path": "acceptance-s162120260913T063110209Z51e958e9-turn-10.txt",
+            "change": "added",
+            "type": "file",
+            "size": 32,
+            "mode": 384
+          }
+        ]
+      }
+    }
+  ],
+  "finalSnapshot": {
+    "schemaVersion": 3,
+    "scope": {
+      "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+      "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+      "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+      "workspaceGeneration": 1
+    },
+    "nextSequence": 3048,
+    "activeTurnId": null,
+    "resourceWait": null,
+    "releaseHold": null,
+    "recoveryHold": null,
+    "sessions": {
+      "352f9b24-724c-4a6e-9338-c7354f3df7cd": {
+        "id": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "title": "Session 1",
+        "createdAt": 1789114833461,
+        "updatedAt": 1789285622529,
+        "head": {
+          "revisionId": "41ce853d54ff28a60527272c40eadda1d1b10910c1a224ed43b7e26ab20398fd",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/1af6857e-d55a-4550-a351-c4f03867b95a/75f84f6e-1d76-450d-8dd5-b36076029353.json",
+          "filesSha256": "ca1b98008f446d8b0eac291f12306cc69f265b8ca95d46e6d736b406c1bc490a",
+          "sessionSha256": "643e5491000edd58d65929ec63eeb7a445f58473e07d474a3b8f95b586f70562",
+          "committedAt": 1789285605290
+        }
+      }
+    },
+    "turns": {
+      "1b9bfc57-ed8d-4d08-be33-f4062c431425": {
+        "id": "1b9bfc57-ed8d-4d08-be33-f4062c431425",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "创建一个最小但可运行的 Python 单服务台排队仿真项目。使用固定随机种子 42，生成 requirements.txt、main.py、preview.json 和 README.md；main.py 运行后输出可复现的平均等待时间，preview.json 声明可启动的网页预览。请实际写入文件并运行必要检查。",
+        "status": "completed",
+        "createdAt": 1789114876256,
+        "updatedAt": 1789114934772,
+        "startedAt": 1789114876514,
+        "finishedAt": 1789114934772,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "f1ded14bd9043361a75f24c0b8671dab3271794ea43a16f5772ea8918804a6fa",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/1b9bfc57-ed8d-4d08-be33-f4062c431425/08526765-640f-40df-826c-113e2c4075a6.json",
+          "filesSha256": "4cd9e7ff1673c4017068c831e9b232cbf82719cbe92796a1d25758292487cda8",
+          "sessionSha256": "51c3f648a2b632e434856a8fca6711976de04535fed3508ab7b8ffaaa8556d72",
+          "committedAt": 1789114931214
+        },
+        "cancelDisposition": null,
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "dd941e01-83fc-4f2a-acca-a004f123f542": {
+        "id": "dd941e01-83fc-4f2a-acca-a004f123f542",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "修复验证：请创建或覆盖 tool-bridge-v2-smoke.txt，内容必须精确为 TOOL_BRIDGE_V2_OK；然后读取该文件确认内容，并运行一个只读命令验证文件 SHA-256。请在回复中报告实际完成的步骤。",
+        "status": "completed",
+        "createdAt": 1789116657350,
+        "updatedAt": 1789116729608,
+        "startedAt": 1789116657350,
+        "finishedAt": 1789116729608,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "474d0b9966d0cca19c6268e1e76a9bd63fe3174f3cee9ad4de5ebadef9b3ee60",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/dd941e01-83fc-4f2a-acca-a004f123f542/c575ec5c-1b01-495a-8e78-c3517d5c969c.json",
+          "filesSha256": "5bcf29d970bf585af8a3e403722ef36c0ec882e5c119809b7369642e57685ad7",
+          "sessionSha256": "00fa41dd4f1759e46c078db2dd69361b597693db6e3397183f000c28aaadfd01",
+          "committedAt": 1789116726983
+        },
+        "cancelDisposition": null,
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "b19aee67-983c-4af2-b534-fdbb0e78522f": {
+        "id": "b19aee67-983c-4af2-b534-fdbb0e78522f",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "连续验收 2/10：创建 acceptance-turn-02.txt，内容精确为 PASS_02；读取确认内容后结束。",
+        "status": "failed",
+        "createdAt": 1789116774904,
+        "updatedAt": 1789117043076,
+        "startedAt": 1789116774904,
+        "finishedAt": 1789117043076,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": 1789117042306,
+        "executionOutcome": "interrupted",
+        "errorCode": "turn-native-execution-absent",
+        "persistenceOutcome": "failed",
+        "persistenceErrorCode": "turn-checkpoint-unknown",
+        "checkpoint": null,
+        "cancelDisposition": "interrupted",
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "767407ce-ddaf-4dc9-93b6-5bfac1e15915": {
+        "id": "767407ce-ddaf-4dc9-93b6-5bfac1e15915",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "连续验收 1/10（原子释放修复后）：创建 acceptance-atomic-01.txt，内容精确为 ATOMIC_PASS_01；读取确认内容后结束。",
+        "status": "completed",
+        "createdAt": 1789118268736,
+        "updatedAt": 1789118328458,
+        "startedAt": 1789118268736,
+        "finishedAt": 1789118328458,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "6dc7e5a75310596e1312bca2e40b41b43e1db25dc5bf7019aca9a7b24865c270",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/767407ce-ddaf-4dc9-93b6-5bfac1e15915/28d510fc-270c-4bf0-bd1b-ec47e278b6a0.json",
+          "filesSha256": "89abc9419be02dd672a669e848e7ee21b3f4612cc4ef4bf774286bdc0dae2d66",
+          "sessionSha256": "63167e43ac44f8c084d052660bb6e15f52d080ff7beea56f5446ed8c68661a2c",
+          "committedAt": 1789118325202
+        },
+        "cancelDisposition": null,
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "e1247315-259b-48b1-b12f-b5c3de91581f": {
+        "id": "e1247315-259b-48b1-b12f-b5c3de91581f",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "连续验收 2/10（原子释放修复后）：创建 acceptance-atomic-02.txt，内容精确为 ATOMIC_PASS_02；读取确认内容后结束。",
+        "status": "failed",
+        "createdAt": 1789118433366,
+        "updatedAt": 1789118697101,
+        "startedAt": 1789118433366,
+        "finishedAt": 1789118697101,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": 1789118696236,
+        "executionOutcome": "interrupted",
+        "errorCode": "turn-native-execution-absent",
+        "persistenceOutcome": "failed",
+        "persistenceErrorCode": "turn-checkpoint-unknown",
+        "checkpoint": null,
+        "cancelDisposition": "interrupted",
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "636081f7-f1ab-463c-9cd0-f819f15bb34c": {
+        "id": "636081f7-f1ab-463c-9cd0-f819f15bb34c",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Use project_write to create docs/acceptance/s162120260911T200131602Z6a30e3b9-turn-01.txt with the exact content 45bc61790e3f339fd91ab8be5c664a9c. Then use project_read to read that same file and verify the content. Do not modify any other file.",
+        "status": "failed",
+        "createdAt": 1789157528745,
+        "updatedAt": 1789158379763,
+        "startedAt": 1789157529389,
+        "finishedAt": 1789158379763,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "failed",
+        "errorCode": "turn-native-start-unresolved",
+        "persistenceOutcome": "failed",
+        "persistenceErrorCode": "turn-checkpoint-unknown",
+        "checkpoint": null,
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "400bb447-572b-441b-9216-3ea82382dcc6": {
+        "id": "400bb447-572b-441b-9216-3ea82382dcc6",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Use project_write to create docs/acceptance/s162120260911T204141427Z3addec62-turn-01.txt with the exact content 46b6ff848323f70bb98b5a6eb5b39d04. Then use project_read to read that same file and verify the content. Do not modify any other file.",
+        "status": "completed",
+        "createdAt": 1789159811707,
+        "updatedAt": 1789159851838,
+        "startedAt": 1789159812238,
+        "finishedAt": 1789159851838,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "848c16b692041c266ecfadc8880a83e2c084720cbb4e9a240272d8fdaf90cbcc",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/400bb447-572b-441b-9216-3ea82382dcc6/613a29d2-47d6-49e7-b253-6ac6139e5b47.json",
+          "filesSha256": "89abc9419be02dd672a669e848e7ee21b3f4612cc4ef4bf774286bdc0dae2d66",
+          "sessionSha256": "30cdbe4959fa937d45bcb9c20b0de9ff4ccbec44bea0d30cd2fa62c7b539aa19",
+          "committedAt": 1789159845861
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "54293f5a-0c03-4029-879e-ee7e190d7d69": {
+        "id": "54293f5a-0c03-4029-879e-ee7e190d7d69",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create docs/acceptance/s162120260911T224046575Zd208e228-turn-01.txt with the exact content d1551c9a3cd7444720a543e4996c4741. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include d1551c9a3cd7444720a543e4996c4741. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789166964306,
+        "updatedAt": 1789167001995,
+        "startedAt": 1789166964688,
+        "finishedAt": 1789167001995,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "8d8d97f6787ffc918d5d9453b508084a0aac3309fbdc514498c9a56166fde30c",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/54293f5a-0c03-4029-879e-ee7e190d7d69/a650e51c-3a38-4cbd-b065-4c74c7db39fa.json",
+          "filesSha256": "89abc9419be02dd672a669e848e7ee21b3f4612cc4ef4bf774286bdc0dae2d66",
+          "sessionSha256": "c1de77e3b110eba8c6a0251e1c621f50b7a014f8b656a54e97edb4268d1a5107",
+          "committedAt": 1789166996482
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "e8ea0f9d-d16e-45ac-9aef-eda59b5e3ec7": {
+        "id": "e8ea0f9d-d16e-45ac-9aef-eda59b5e3ec7",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T225921920Z37d3ffec-turn-01.txt with the exact content f41be14a6c88662c2b1288b0c66eaff0. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include f41be14a6c88662c2b1288b0c66eaff0. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789168211146,
+        "updatedAt": 1789168252902,
+        "startedAt": 1789168211676,
+        "finishedAt": 1789168252902,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "84db26a2469c0850beda893465564035a92b076d69768f23e1b0136e0c870e2d",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/e8ea0f9d-d16e-45ac-9aef-eda59b5e3ec7/d8db8f0a-6c00-425f-b64f-7b4b13e7e85a.json",
+          "filesSha256": "5eaed3fbc0684e1c61562250a3651e04c6c7fbe4d7f4685cc446335c06ba928e",
+          "sessionSha256": "5dfb126c9c3adf913594f1acc3500aa2a04dfc64d33372a0ec70525dbe1ca87a",
+          "committedAt": 1789168246762
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "1d3a4c5b-7b53-4aaf-b76a-361da04636c4": {
+        "id": "1d3a4c5b-7b53-4aaf-b76a-361da04636c4",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T225921920Z37d3ffec-turn-02.txt with the exact content 2da5e72ff2a4ee52a6088bec1d6102bf. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 2da5e72ff2a4ee52a6088bec1d6102bf. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789168297489,
+        "updatedAt": 1789168662746,
+        "startedAt": 1789168614953,
+        "finishedAt": 1789168662746,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "c923f1d7056e2d795df2b5b22992bb6afc2074f21b2adcccdaa1ad5a614bd392",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/1d3a4c5b-7b53-4aaf-b76a-361da04636c4/fb0ae9a9-f40c-4c58-854d-75804833d994.json",
+          "filesSha256": "ec43946a693d7f69475866b7b177c0fdae14d09fcc46a0665e2b9cea3a04b234",
+          "sessionSha256": "395309fb78947e11223dd6a8da82ce457ba6371fc82420d8b2ff4926d0e7d82c",
+          "committedAt": 1789168655963
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "94428f2e-2e1b-4238-a880-274ff96e261f": {
+        "id": "94428f2e-2e1b-4238-a880-274ff96e261f",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T225921920Z37d3ffec-turn-03.txt with the exact content 4c2ca2ac06dc1f1d1e8fd30fabdb8d61. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 4c2ca2ac06dc1f1d1e8fd30fabdb8d61. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789168677512,
+        "updatedAt": 1789169083500,
+        "startedAt": 1789169031924,
+        "finishedAt": 1789169083500,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "559bad50ae473d47df0ff9815a66fadff91a042ba00bf9322226fd47ff2dba7d",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/94428f2e-2e1b-4238-a880-274ff96e261f/7eebc0cc-6722-4eaa-8ef9-ee182eb330b1.json",
+          "filesSha256": "473574a44d81058f2585b8af4087de3a3c66876fa9deccf9ae648530f7767b7e",
+          "sessionSha256": "4d6dd1cd324a4c4ceed60c5454712a6d276bd1e7d92397003382843eee033651",
+          "committedAt": 1789169077080
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "1dc56275-a60f-49f5-bbdb-8e9d31111ef9": {
+        "id": "1dc56275-a60f-49f5-bbdb-8e9d31111ef9",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T225921920Z37d3ffec-turn-04.txt with the exact content 0648da7a0dda3674b0828e0ba3bfa09f. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 0648da7a0dda3674b0828e0ba3bfa09f. If any tool call fails, report the failure and stop without retrying.",
+        "status": "cancelled",
+        "createdAt": 1789169097011,
+        "updatedAt": 1789169398350,
+        "startedAt": null,
+        "finishedAt": 1789169398350,
+        "runtimeGeneration": null,
+        "cancelRequestedAt": 1789169398350,
+        "cancelDisposition": "cancelled",
+        "executionOutcome": "cancelled",
+        "errorCode": null,
+        "persistenceOutcome": null,
+        "persistenceErrorCode": null,
+        "checkpoint": null,
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "580b6093-4b4a-47ea-b033-e70de12006ca": {
+        "id": "580b6093-4b4a-47ea-b033-e70de12006ca",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-01.txt with the exact content e6189011de0d8b16fb8791dba0118f79. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include e6189011de0d8b16fb8791dba0118f79. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789171804208,
+        "updatedAt": 1789171849341,
+        "startedAt": 1789171805569,
+        "finishedAt": 1789171849341,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "5cd2bfaf55540725fd5aaf1f2b61bd6a510fc283d7ccff0e30489d28b11cab49",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/580b6093-4b4a-47ea-b033-e70de12006ca/c622daa7-1111-4c43-838c-d19deaa9dad1.json",
+          "filesSha256": "e89739e376ee923e4136109f99c2ea9fc63c936fd66e60d55c261a4b9066f5d8",
+          "sessionSha256": "035e161bc6ad0a544dbe17ede3f9a1ddbc6714c04d06bf63e3e3ef24911415be",
+          "committedAt": 1789171842454
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "e1e24492-6790-4520-968d-f50db8af774b": {
+        "id": "e1e24492-6790-4520-968d-f50db8af774b",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-02.txt with the exact content ce29c419c3e226eda1f07e34fb348bc0. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include ce29c419c3e226eda1f07e34fb348bc0. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789171867605,
+        "updatedAt": 1789172264347,
+        "startedAt": 1789172217378,
+        "finishedAt": 1789172264347,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "f2321690d973af736160cfcb8ed88c4901b2c6db378655076fe059454f454d06",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/e1e24492-6790-4520-968d-f50db8af774b/d4b8f8fc-83f7-49f2-ac26-681084494a2d.json",
+          "filesSha256": "719070f65f665bc0e164cbe1938f1d721ea73ff03ba9cb682609ccb493184517",
+          "sessionSha256": "58e90e91bba73cbf7d033cb71058f4a36df94fe605d79fb29635177ed49460c2",
+          "committedAt": 1789172257371
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "0b1141aa-84d8-4733-b67b-3f0e55a61136": {
+        "id": "0b1141aa-84d8-4733-b67b-3f0e55a61136",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-03.txt with the exact content c837d7e97048f96d0814f6b13773973d. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include c837d7e97048f96d0814f6b13773973d. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789172283524,
+        "updatedAt": 1789172674359,
+        "startedAt": 1789172626912,
+        "finishedAt": 1789172674359,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "16442180462eae77a255f139b1d91d3902868a952dd4eb0a5042ad4f8fccb500",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/0b1141aa-84d8-4733-b67b-3f0e55a61136/c6a1c0a6-a440-47cb-87bd-878053393f09.json",
+          "filesSha256": "134510fe8cca711239a3b2543aaaac96a6be66c8b2ac6a1e08e584b3fcd5c505",
+          "sessionSha256": "8d0555eab1f1975c75cf2f999df6ba164d99a0e680f6758d4abd1622b431392b",
+          "committedAt": 1789172666798
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "c82fd905-f1d1-45f2-a659-d870921d9491": {
+        "id": "c82fd905-f1d1-45f2-a659-d870921d9491",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-04.txt with the exact content 0e46e9281c50b903ad528f04e150bbf5. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 0e46e9281c50b903ad528f04e150bbf5. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789172694858,
+        "updatedAt": 1789173092372,
+        "startedAt": 1789173036322,
+        "finishedAt": 1789173092372,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "abdee53870a842d22d83fd129c0fc2d68320f00b746d9e255ea35d0241a8f9ca",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/c82fd905-f1d1-45f2-a659-d870921d9491/c61554fd-9d3f-466f-989f-9f544a61ba9b.json",
+          "filesSha256": "5bf9bab7c30c94a6edaa60947d20714528e1d0713ae9c98519b0f0743ef7de87",
+          "sessionSha256": "f81b1988a99df4f845942805cba23c894f7bbe7af2e7252f1581dc91ac829c1e",
+          "committedAt": 1789173085409
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "4bbd78c9-f110-4150-9c1c-145133fba916": {
+        "id": "4bbd78c9-f110-4150-9c1c-145133fba916",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-05.txt with the exact content 33467a66e1a9e381a55ace2199c7374d. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 33467a66e1a9e381a55ace2199c7374d. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789173112406,
+        "updatedAt": 1789173501042,
+        "startedAt": 1789173455405,
+        "finishedAt": 1789173501042,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "6ff1d069d0840b2d9fe94fce2137b37d830ce69619b277be50cee95e53a29b06",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/4bbd78c9-f110-4150-9c1c-145133fba916/a178c6c2-96e3-48d4-868b-a2a7d1e17925.json",
+          "filesSha256": "2ef520df85abd96a29c8746ceca00304bdb82dae7b56c6c49dc0618f4aa1ca09",
+          "sessionSha256": "08c245f6be9d5fbece4c2d61702aa13c3e67be815ed5741ef92440506e56e259",
+          "committedAt": 1789173494301
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "80467596-11a4-44ee-9b6f-eeaf41d11a90": {
+        "id": "80467596-11a4-44ee-9b6f-eeaf41d11a90",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-06.txt with the exact content 16f6bb9cf9e2fde8437966f1789a1e89. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 16f6bb9cf9e2fde8437966f1789a1e89. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789173520383,
+        "updatedAt": 1789173917332,
+        "startedAt": 1789173867362,
+        "finishedAt": 1789173917332,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "6e8e29e89012dfced51a6e10f3f80b732efdc42d8621432a9ccfa824753c610f",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/80467596-11a4-44ee-9b6f-eeaf41d11a90/fc063dcc-c056-49f1-828f-745f2d884396.json",
+          "filesSha256": "ad20ce0ef3ee98e6dea4157a3004a0be3b7f86e83d40fd1333c711303773e207",
+          "sessionSha256": "ee4ec05be48b087b1a8f68e5cf7daeaec74c30b1c5b273583e714aa4b7579ff7",
+          "committedAt": 1789173909688
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "08efdd3e-f91b-4e27-bb8b-71c9fbcba411": {
+        "id": "08efdd3e-f91b-4e27-bb8b-71c9fbcba411",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-07.txt with the exact content dfd7494cbd9e8445d767a8289aef1060. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include dfd7494cbd9e8445d767a8289aef1060. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789173934011,
+        "updatedAt": 1789174324887,
+        "startedAt": 1789174279526,
+        "finishedAt": 1789174324887,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "e3fbf0ba42d833e79a54537be5ade49cdbf48834c158427f254d91c64debe352",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/08efdd3e-f91b-4e27-bb8b-71c9fbcba411/38e99e90-696f-4220-bdfe-2aa7bb0c6b17.json",
+          "filesSha256": "30657864b6653296b9390e51ed783574eb1d3b9c7df04d4de91074e7ee26a438",
+          "sessionSha256": "eb4c983d023b285d620a24c381fe13902e7c963edb61c57d35a891b0b930ad52",
+          "committedAt": 1789174317331
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "2b465ac0-9b15-49b2-ab2b-2ee21a121f66": {
+        "id": "2b465ac0-9b15-49b2-ab2b-2ee21a121f66",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-08.txt with the exact content 1dab5cc56d9146b24f6fe59e5d1a43f3. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 1dab5cc56d9146b24f6fe59e5d1a43f3. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789174344114,
+        "updatedAt": 1789174728931,
+        "startedAt": 1789174681729,
+        "finishedAt": 1789174728931,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "08345106d8bd9957646caee8458d14f6380dd701962537d605f7882fb00b97a6",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/2b465ac0-9b15-49b2-ab2b-2ee21a121f66/9fa46084-5ebd-4e67-8f63-09bdd68a299c.json",
+          "filesSha256": "6d4f35710730da3986f6e3c0c88b5822c0e51f2bc9fb8761ec9879ddf0c1e671",
+          "sessionSha256": "c13ec24e31c6129c725aaa99b433558f680f449b6fe4d94332a9268baf81ea61",
+          "committedAt": 1789174720574
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "c2010e92-1d28-4891-9adb-7890bc008c2b": {
+        "id": "c2010e92-1d28-4891-9adb-7890bc008c2b",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-09.txt with the exact content 94aa2d950a9c8393b738838988c62d1d. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 94aa2d950a9c8393b738838988c62d1d. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789174746567,
+        "updatedAt": 1789175135943,
+        "startedAt": 1789175086244,
+        "finishedAt": 1789175135943,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "8362a4e3b7e3f229088d61fe858329a6102e387ad3cb21debd9fa55a0dca5b7f",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/c2010e92-1d28-4891-9adb-7890bc008c2b/ead66e62-bd9c-4070-bca7-1ea0988ec3e2.json",
+          "filesSha256": "9906ab6a889f4672ada4d130a04e7aa346b1d38858699f3be47d7a0a6fa3ff23",
+          "sessionSha256": "c76f270a8b21b8d688a5acb69c857d99a708ade096f98fba1e705ec6779ed1ed",
+          "committedAt": 1789175126906
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "c3f9783c-ad8b-4506-8a90-90bf2656ce80": {
+        "id": "c3f9783c-ad8b-4506-8a90-90bf2656ce80",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260911T235939704Zb97c3039-turn-10.txt with the exact content 5b07002ebd8986bc0bd11cf765cab8a6. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 5b07002ebd8986bc0bd11cf765cab8a6. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789175157564,
+        "updatedAt": 1789175542029,
+        "startedAt": 1789175490198,
+        "finishedAt": 1789175542029,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "cdde1295e073d94bc9d014946e120eea7f101f529dfbcb157ba848fa52658008",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/c3f9783c-ad8b-4506-8a90-90bf2656ce80/702cb41d-a03b-40de-97dd-f168fcdaffeb.json",
+          "filesSha256": "f2de71c4a9b988df2f9144f7fd5d20b9c9d1c4fd789c33b2d899074aaf106d15",
+          "sessionSha256": "35387831b1a312d23f462624c3515b85748f4dd55b236181cb70e3aafaf511bd",
+          "committedAt": 1789175532941
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "4b201923-611f-4e41-af78-9cd3d1bea2ca": {
+        "id": "4b201923-611f-4e41-af78-9cd3d1bea2ca",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260913T054522727Z580ff99c-turn-01.txt with the exact content 0aecf371d1b3949fa23951eac7eeed52. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 0aecf371d1b3949fa23951eac7eeed52. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789278944901,
+        "updatedAt": 1789279000727,
+        "startedAt": 1789278945643,
+        "finishedAt": 1789279000727,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "c5718f11b7414aab6d5d49977f8675afa93c9ebc373f2ab63ef2def7fc44f606",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/4b201923-611f-4e41-af78-9cd3d1bea2ca/b3f3d48c-7e2b-4849-8a07-eb4f158e6ae4.json",
+          "filesSha256": "f164f7960beef0b48a2614303d6a7546bcf2b6098bdf0d561db4cf4b92627f21",
+          "sessionSha256": "bf2bf9011afa583e3602a74cb7ed8823526b92aea1c980d26db9f4ed204f8e78",
+          "committedAt": 1789278983472
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "9986bc72-c7d9-49e8-b717-70868832980c": {
+        "id": "9986bc72-c7d9-49e8-b717-70868832980c",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260913T054522727Z580ff99c-turn-02.txt with the exact content 9e257131f932851bac4d3f51d6531019. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 9e257131f932851bac4d3f51d6531019. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789279037948,
+        "updatedAt": 1789279418817,
+        "startedAt": 1789279355765,
+        "finishedAt": 1789279418817,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "400044cb9cc810db12632e582c9e9f0b389926580f774d144c8d15fedf54107a",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/9986bc72-c7d9-49e8-b717-70868832980c/80d52b5d-2d5d-47a6-a39d-dd2d9df8770a.json",
+          "filesSha256": "e219b7f0deb508f577f498fe7e800e6b0f21b31489a6f7329af11232b410f857",
+          "sessionSha256": "7f58a6d375d6c2575a8d679a5cd455cc05702695d3e9e59407a3d716f7ce8b02",
+          "committedAt": 1789279401098
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "56caac86-339e-41a6-b64b-d02b52f94695": {
+        "id": "56caac86-339e-41a6-b64b-d02b52f94695",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260913T054522727Z580ff99c-turn-03.txt with the exact content f29b444f0d60cc288e08cf15831dd90a. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include f29b444f0d60cc288e08cf15831dd90a. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789279454990,
+        "updatedAt": 1789279844604,
+        "startedAt": 1789279782897,
+        "finishedAt": 1789279844604,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "e4536c2907c6a56dc35bb172a6b7605cbbae068970832ef227843cf15a7b59ab",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/56caac86-339e-41a6-b64b-d02b52f94695/bf5b7b4b-e627-4830-b0cc-09f5925d8bba.json",
+          "filesSha256": "e027aa81cba1401f1fd72be346c652340c05dec2c1cb28d74b8d8be42a1d756a",
+          "sessionSha256": "3452bc3a0ec0ac4ae6b25c91e3418a375105d486402df13d4cb647084392f390",
+          "committedAt": 1789279824997
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "513aade6-eea7-451d-b046-5e3a69a04e54": {
+        "id": "513aade6-eea7-451d-b046-5e3a69a04e54",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260913T054522727Z580ff99c-turn-04.txt with the exact content 5f7f1b8dc6492a85bc12601b0f5e0d04. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 5f7f1b8dc6492a85bc12601b0f5e0d04. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789279877005,
+        "updatedAt": 1789280285891,
+        "startedAt": 1789280214786,
+        "finishedAt": 1789280285891,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "feab45d32e363c1b57735ac00441082c9f4ce818532a57c40c8661d847f9f088",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/513aade6-eea7-451d-b046-5e3a69a04e54/3fdadd60-d236-41bf-a188-7dedf3541581.json",
+          "filesSha256": "2b27b362e658bfa75051186bff85a6debc718cfa836dfe01736348abacdd60a7",
+          "sessionSha256": "b2c0b0f91c40fb4a0eea10c264d6e455890fe57bdab99ba5b34331b4c59e00bf",
+          "committedAt": 1789280268171
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "ba782adf-f72d-4789-b1be-66c7ff6d700c": {
+        "id": "ba782adf-f72d-4789-b1be-66c7ff6d700c",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260913T054522727Z580ff99c-turn-05.txt with the exact content ebdc7b2005d7502acd1e94ffb9a98714. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include ebdc7b2005d7502acd1e94ffb9a98714. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789280323018,
+        "updatedAt": 1789280744402,
+        "startedAt": 1789280675602,
+        "finishedAt": 1789280744402,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "b61e7a6c6d7b3bd1686c91a3196ad5d689abe81f8865ea528fd346004ccec5ba",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/ba782adf-f72d-4789-b1be-66c7ff6d700c/df652c58-4fee-4ec3-ae3a-d25dd7f1ce9c.json",
+          "filesSha256": "74965c1e1fc73bf79d92936e461d228cbbac1f87652ad6ad94ad59c8c1e7d5e1",
+          "sessionSha256": "46f3e284f2f81b7b13a776f7a8b29f196fec807172bf577963715734747a2bdd",
+          "committedAt": 1789280725152
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "2a08a56b-1e63-463d-9167-c0a2b33a650e": {
+        "id": "2a08a56b-1e63-463d-9167-c0a2b33a650e",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260913T063110209Z51e958e9-turn-01.txt with the exact content efafc77539da316c4e96d2faf8af0ca5. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include efafc77539da316c4e96d2faf8af0ca5. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789281629725,
+        "updatedAt": 1789281696271,
+        "startedAt": 1789281630054,
+        "finishedAt": 1789281696271,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "357473521fa8037d9968ec11c630e3030a59dddf3d59827a8c30ee8a313adc7c",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/2a08a56b-1e63-463d-9167-c0a2b33a650e/72898bd6-7c18-4a5e-88d5-934eaa92c934.json",
+          "filesSha256": "3c59127fbe3961c22d06b03dc23b80be55a15f2c55aa8fc56250ae31a8d493ba",
+          "sessionSha256": "c6ea9bee24673cd27c07ce2f03d220a6cf219406e08aa9a78d88d4e5b3545f3e",
+          "committedAt": 1789281676889
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "d1e6b2d8-9a78-4fde-9a65-1882e2274e68": {
+        "id": "d1e6b2d8-9a78-4fde-9a65-1882e2274e68",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260913T063110209Z51e958e9-turn-02.txt with the exact content 16ef9fabf7279733041a3932405ce2df. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 16ef9fabf7279733041a3932405ce2df. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789281727200,
+        "updatedAt": 1789282163714,
+        "startedAt": 1789282092121,
+        "finishedAt": 1789282163714,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "dde3a821503203b8a8cacc890683e9bd8d8332a192bfa183c17699bb4bc2df38",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/d1e6b2d8-9a78-4fde-9a65-1882e2274e68/95f61f02-2b5f-4554-960d-7daf3a15b082.json",
+          "filesSha256": "0325e98bfe5b22b8dffeee3b8e915b0bb8a158c78eb21da61585d7cd74738e2e",
+          "sessionSha256": "4c6fe7e4c0432c1885e55c9cb9d423be5318eb1ec8cd52894d5150d2c5fd41c2",
+          "committedAt": 1789282142824
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "20a2fa19-9d32-493f-96b6-5a2d60cc0419": {
+        "id": "20a2fa19-9d32-493f-96b6-5a2d60cc0419",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260913T063110209Z51e958e9-turn-03.txt with the exact content e0ef2c2faac41ead91727c097ba1d552. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include e0ef2c2faac41ead91727c097ba1d552. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789282193743,
+        "updatedAt": 1789282610125,
+        "startedAt": 1789282528190,
+        "finishedAt": 1789282610125,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "d311cc9686ec6b844f64c0a82b52f01baccd3e3d4d4a1e37250b1734474f652c",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/20a2fa19-9d32-493f-96b6-5a2d60cc0419/a339a8ae-4bcd-4a0a-8c76-da1cfd114d1d.json",
+          "filesSha256": "86b7a2221bb7afe6862b36ea5d7aa8f30a53b2612386af9445e4cd53b87c48d2",
+          "sessionSha256": "caa0e01aa9df9a61ae83d75d337307cab154f4b879206cd6cade3fc486a1b970",
+          "committedAt": 1789282590346
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "1a0c3a86-2fc2-4f58-a39f-669224cc1a22": {
+        "id": "1a0c3a86-2fc2-4f58-a39f-669224cc1a22",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260913T063110209Z51e958e9-turn-04.txt with the exact content 2d29aca2cc1d37b951ad40f1f4daf205. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 2d29aca2cc1d37b951ad40f1f4daf205. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789282641873,
+        "updatedAt": 1789283039779,
+        "startedAt": 1789282971068,
+        "finishedAt": 1789283039779,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "7ce653f27c7de2d85c4e38662e4cef7411c6eec24e20a095ad9f16773a191afd",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/1a0c3a86-2fc2-4f58-a39f-669224cc1a22/bf187139-7605-4773-8239-19f9163415fc.json",
+          "filesSha256": "e5f5053f49d72a544eab6959460e49c10cab15d323b8cf596eb1cb69828aa3a7",
+          "sessionSha256": "6e0a08e86e7fd212251483a7a12106f42808b31535ac859ad3f822965f6053a9",
+          "committedAt": 1789283020848
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "32836c53-2516-4cf7-ab59-e033146a7966": {
+        "id": "32836c53-2516-4cf7-ab59-e033146a7966",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260913T063110209Z51e958e9-turn-05.txt with the exact content f11807a04b72a8a192f31b5c1ddf669b. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include f11807a04b72a8a192f31b5c1ddf669b. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789283131098,
+        "updatedAt": 1789283461768,
+        "startedAt": 1789283395848,
+        "finishedAt": 1789283461768,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "12ff9751aa6373af75d939278096ad354cce8b694530e06f868e042977dcc862",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/32836c53-2516-4cf7-ab59-e033146a7966/56460f67-7629-4282-a583-cd31d3c29e7b.json",
+          "filesSha256": "da2d20c9795673384d09fd2a6b9e2a1f542c02a47fe80b4e2bee93605ec7a64c",
+          "sessionSha256": "8fb3ceb2aeb1f1ccedc176266523a720ac54734d534b7b59b2a609ca0c954fad",
+          "committedAt": 1789283441299
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "e148a00e-89d0-4c51-821f-3aa34b947f5d": {
+        "id": "e148a00e-89d0-4c51-821f-3aa34b947f5d",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260913T063110209Z51e958e9-turn-06.txt with the exact content d12580da766a6bd501705b2e8e4db9e2. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include d12580da766a6bd501705b2e8e4db9e2. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789283506451,
+        "updatedAt": 1789283894660,
+        "startedAt": 1789283829049,
+        "finishedAt": 1789283894660,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "d7ed47d03297aee05312b4319cce6fbb3960e2157e744d161c25ed81688821ae",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/e148a00e-89d0-4c51-821f-3aa34b947f5d/b875db81-2178-4049-9df2-1abfd28752e4.json",
+          "filesSha256": "99d257f9c2efbd17881aa8a2b61e42596b9371bca466232568e29bd99c9aa2e3",
+          "sessionSha256": "1924d4ecf35267fcaf9baa95e137060ef20b0eefb53c37bf92588b9f2cd5e444",
+          "committedAt": 1789283874773
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "6a30331f-e0cf-456b-b6a4-983f4fc56732": {
+        "id": "6a30331f-e0cf-456b-b6a4-983f4fc56732",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260913T063110209Z51e958e9-turn-07.txt with the exact content 2447b09184b688059d301177a8d3517f. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 2447b09184b688059d301177a8d3517f. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789283968587,
+        "updatedAt": 1789284326829,
+        "startedAt": 1789284251944,
+        "finishedAt": 1789284326829,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "199d631e0bf6cccc05051310a3d1bc2dc2bf2a048df3b460cd20440cfd575d30",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/6a30331f-e0cf-456b-b6a4-983f4fc56732/8faae977-9dc7-4780-8232-df1468b0d6ec.json",
+          "filesSha256": "b81c64affdacebae448fddda74ff71d805a438134a558717fceb40df921def61",
+          "sessionSha256": "462cb992dc970c4a13fcfb920bfd336a458f356b0b394acce07807ee783f725d",
+          "committedAt": 1789284306978
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "181eac21-f8df-4b9f-baf2-7fbdbad68824": {
+        "id": "181eac21-f8df-4b9f-baf2-7fbdbad68824",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260913T063110209Z51e958e9-turn-08.txt with the exact content 70c6c3954937a7d138623c25c21a5fb3. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include 70c6c3954937a7d138623c25c21a5fb3. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789284402321,
+        "updatedAt": 1789284769151,
+        "startedAt": 1789284695505,
+        "finishedAt": 1789284769151,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "3974339bc31e304815e7210a1e01d9fa03e0318d029d20241f96e15eab009882",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/181eac21-f8df-4b9f-baf2-7fbdbad68824/f0b5c399-6063-4588-b441-3710e29a7984.json",
+          "filesSha256": "6e76164a45048e35a00e4dcffcfc785e5ff6b68e46430bdd4e4fbfe31ed51682",
+          "sessionSha256": "21880013c7f116352b87b0e8eb632e067cb5d0387b7c5a9cc389f828d760c97c",
+          "committedAt": 1789284748554
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "fd5586a5-1fba-4175-bf27-388cdb941ae9": {
+        "id": "fd5586a5-1fba-4175-bf27-388cdb941ae9",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260913T063110209Z51e958e9-turn-09.txt with the exact content d891853ef8405d3f12e3a642ed1b972f. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include d891853ef8405d3f12e3a642ed1b972f. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789284796730,
+        "updatedAt": 1789285190431,
+        "startedAt": 1789285122446,
+        "finishedAt": 1789285190431,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "294bc1474aeed92812f1f1fbcdf833dd7e05829b9ba0ce6acb3bff4c1e436e19",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/fd5586a5-1fba-4175-bf27-388cdb941ae9/dda7197f-0496-4d8e-b6be-9bbda2a3cb45.json",
+          "filesSha256": "9884336b615c2c53ad6610e5ed917b0fa62808e324673f1cd90254cafeb756c0",
+          "sessionSha256": "29b80a9d66f77dc515bd8c1e8887a20a5b37b7ab27f29ee458d5877b953918eb",
+          "committedAt": 1789285170193
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      },
+      "1af6857e-d55a-4550-a351-c4f03867b95a": {
+        "id": "1af6857e-d55a-4550-a351-c4f03867b95a",
+        "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd",
+        "scope": {
+          "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+          "projectId": "5fb69203-f50d-446d-9a25-bd4063e59d11",
+          "workspaceId": "f08ef085-14ea-4c53-8191-adab04aa3baf",
+          "workspaceGeneration": 1
+        },
+        "message": "Acceptance contract: make exactly one successful project_write call to create acceptance-s162120260913T063110209Z51e958e9-turn-10.txt with the exact content ecaa324bfafbc957453091aeeea0b52d. After it succeeds, make exactly one successful project_read call for that same file and verify the exact content. Read-only inspection tools are allowed, but do not make any other mutation. Your final response must include ecaa324bfafbc957453091aeeea0b52d. If any tool call fails, report the failure and stop without retrying.",
+        "status": "completed",
+        "createdAt": 1789285217048,
+        "updatedAt": 1789285622529,
+        "startedAt": 1789285547680,
+        "finishedAt": 1789285622529,
+        "runtimeGeneration": 1,
+        "cancelRequestedAt": null,
+        "cancelDisposition": null,
+        "executionOutcome": "completed",
+        "errorCode": null,
+        "persistenceOutcome": "saved",
+        "persistenceErrorCode": null,
+        "checkpoint": {
+          "revisionId": "41ce853d54ff28a60527272c40eadda1d1b10910c1a224ed43b7e26ab20398fd",
+          "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/5fb69203-f50d-446d-9a25-bd4063e59d11/f08ef085-14ea-4c53-8191-adab04aa3baf/1/352f9b24-724c-4a6e-9338-c7354f3df7cd/1af6857e-d55a-4550-a351-c4f03867b95a/75f84f6e-1d76-450d-8dd5-b36076029353.json",
+          "filesSha256": "ca1b98008f446d8b0eac291f12306cc69f265b8ca95d46e6d736b406c1bc490a",
+          "sessionSha256": "643e5491000edd58d65929ec63eeb7a445f58473e07d474a3b8f95b586f70562",
+          "committedAt": 1789285605290
+        },
+        "actor": {
+          "userId": "84dd349b-e9dd-43dd-814f-1f0072bee9a4"
+        }
+      }
+    }
+  },
+  "sessionId": "352f9b24-724c-4a6e-9338-c7354f3df7cd"
+}
