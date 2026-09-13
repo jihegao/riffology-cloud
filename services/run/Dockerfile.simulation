@@ -1,0 +1,17 @@
+FROM docker.io/cloudflare/sandbox:0.12.9-python@sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806
+USER root
+RUN useradd --create-home --uid 10001 --shell /usr/sbin/nologin project \
+    && mkdir -p /workspace /opt/riffology /var/lib/riffology/archives /var/lib/riffology/services /var/lib/riffology/effects /run-output \
+    && chown root:root /workspace /opt/riffology /var/lib/riffology /var/lib/riffology/archives /var/lib/riffology/services /var/lib/riffology/effects \
+    && chown project:project /run-output && chmod 0700 /run-output /var/lib/riffology/archives /var/lib/riffology/services
+RUN python3 -m pip install --no-cache-dir --no-deps simpy==4.1.1
+COPY --chown=root:root --chmod=0555 services/project-tools/process_quiescence.py /opt/riffology/process_quiescence.py
+COPY --chown=root:root --chmod=0555 services/project-tools/workspace_archive.py /opt/riffology/workspace_archive.py
+COPY --chown=root:root --chmod=0555 services/project-tools/project_network_fence.py /opt/riffology/project_network_fence.py
+COPY --chown=root:root --chmod=0555 services/run/simulation_process.py /opt/riffology/simulation_process.py
+
+COPY --chown=root:root --chmod=0555 services/run/service_process.py /opt/riffology/service_process.py
+COPY --chown=root:root --chmod=0555 services/run/service_upload.py /opt/riffology/service_upload.py
+RUN chmod 0700 /var/lib/riffology/effects && python3 -c "import ctypes; ctypes.CDLL('libseccomp.so.2')"
+
+COPY --chown=root:root --chmod=0555 services/run/simulation_artifacts.py /opt/riffology/simulation_artifacts.py

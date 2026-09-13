@@ -1,3 +1,9 @@
+import {turnRuntimeIdentity,type TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
+import {SimulationHost,experimentRequest,publicExperiment,publishSimulationResult,type ExperimentRequest} from '../simulation/host.ts';
+import {SimulationNative,simulationToken,type SimulationSandboxApi,type SimulationInput} from '../simulation/native.ts';
+import {simulationPlan,modelVersion} from '../simulation/source.ts';
+import type {PreviewSource} from '../preview/source.ts';
+import {DurableSimulationAlarmPort} from './turn-alarm.ts';
 import {ObserverCancellation,type ObserverCancellationPort} from '../preview/observer-cancellation.ts';
 import {createObserverFetchSession} from '../preview/observer-fetch.ts';
 import {observerHttpPolicy,type ObserverHttpPolicy} from '../preview/observer-http.ts';
@@ -67,6 +73,10 @@ export interface WorkspaceAgentEnv {
   M2_TURNS_ENABLED: unknown;
   M2_TURN_ADMISSION_TELEMETRY?:unknown;
   M2_TURN_OPERATION_TELEMETRY?:unknown;
+  M4_SIMULATION_ENABLED?:unknown;
+  M4_SIMULATION_IMAGE?:string;
+  SIMULATION_SANDBOX?:{getByName(name:string):SimulationSandboxApi};
+  WORKSPACE_CHECKPOINTS?:R2Bucket;
   M3_SERVICE_ENABLED?:unknown;
   M3_PREVIEW_ENABLED?:unknown;
   M3_PREVIEW_WS_ENABLED?:unknown;
@@ -87,6 +97,83 @@ export interface WorkspaceAgentEnv {
 /** Private platform RPC and a single internal WebSocket fetch endpoint. The
  * fetch transport still verifies the access session and authoritative target. */
 export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
+  #simulationHost:SimulationHost|null=null;
+  #simulationAlarm=new DurableSimulationAlarmPort(this.ctx.storage);
+  #simulations(scope:TurnScope){
+    return this.#simulationHost??=new SimulationHost(this.ctx.storage,scope,{
+      quota:this.env.TENANT_QUOTA.getByName(tenantQuotaName(scope.tenantId)),
+      start:async input=>{
+        if(input.runtimeImage!==this.env.M4_SIMULATION_IMAGE)throw Error('simulation-image-changed');
+        const sandbox=await this.#simulationSandbox(input);
+        const bytes=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(input.plan.source);
+        return new SimulationNative(sandbox,input).start(bytes);
+      },
+      observe:async input=>new SimulationNative(await this.#simulationSandbox(input),input).operation('observe'),
+      stop:async input=>new SimulationNative(await this.#simulationSandbox(input),input).operation('stop'),
+      destroy:async input=>{await (await this.#simulationSandbox(input)).destroy();},
+      running:async input=>{const state=await (await this.#simulationSandbox(input)).releaseState();if(!state||typeof state.running!=='boolean')throw Error('simulation-release-unconfirmed');return state.running;},
+      publish:async(record,result)=>{if(!this.env.WORKSPACE_CHECKPOINTS)throw Error('simulation-unavailable');return publishSimulationResult(this.env.WORKSPACE_CHECKPOINTS,record,result);},
+      authorize:async actor=>{try{const current=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(actor,scope.workspaceId);return sameScope(current,scope);}catch{return false;}},
+      hold:promise=>this.ctx.waitUntil(promise),
+    });
+  }
+  async #simulationSandbox(input:SimulationInput){
+    if(!this.env.SIMULATION_SANDBOX?.getByName)throw Error('simulation-unavailable');
+    return this.env.SIMULATION_SANDBOX.getByName('simulation-'+await simulationToken(input));
+  }
+  async #simulationSource(scope:TurnScope):Promise<PreviewSource>{
+    const revision=this.#turns.workspaceRevisionSnapshot(scope);
+    if(revision)return {kind:'saved-turn',identity:revision.identity,revision:revision.receipt};
+    const initial=await this.#initialWorkspace(scope);
+    return {kind:'initial-workspace',reference:initial.reference,filesSha256:initial.filesSha256};
+  }
+  #simulationCanRun(){return this.env.M4_SIMULATION_ENABLED==='true'&&!!this.env.SIMULATION_SANDBOX?.getByName&&!!this.env.M4_SIMULATION_IMAGE&&!!this.env.WORKSPACE_CHECKPOINTS;}
+  async researchContext(input:{identity:TurnRuntimeIdentity;executionDeadlineAt:number}){
+    const identity=turnRuntimeIdentity(input.identity),scope=this.#ready(identity.scope);
+    const authorize=async()=>{
+      if(!Number.isSafeInteger(input.executionDeadlineAt)||input.executionDeadlineAt<=Date.now())throw Error('research-context-expired');
+      const state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
+      if(state.activeTurnId!==identity.turnId||!turn||!['starting','running'].includes(turn.status)||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation||turn.cancelRequestedAt!==null||turn.finishedAt!==null)throw Error('research-context-turn-denied');
+      const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(turn.actor,scope.workspaceId);
+      if(!sameScope(allowed,scope))throw Error('research-context-denied');
+      return turn;
+    };
+    await authorize();
+    const model=await this.modelSpec({scope}),page=await this.listExperiments({scope}),experiments=page.items.slice(0,5);
+    const result={model,experiments};
+    while(experiments.length&&new TextEncoder().encode(JSON.stringify(result)).byteLength>60000)experiments.pop();
+    await authorize();return result;
+  }
+  async modelSpec(input:{scope:TurnScope}){
+    const scope=this.#ready(input.scope),source=await this.#simulationSource(scope);
+    try{const plan=await simulationPlan(source,await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source));this.#ready(scope);return {version:modelVersion(plan),spec:plan.spec,reasonCode:null,canRun:this.#simulationCanRun()};}
+    catch(error){const code=error instanceof Error?error.message:'';if(['model-spec-missing','model-spec-invalid','model-contract-mismatch','model-dependencies-invalid','model-dependencies-unsupported'].includes(code))return {version:null,spec:null,reasonCode:code,canRun:false};throw error;}
+  }
+  async submitExperiment(input:{scope:TurnScope;actor:TurnActor;key:string;body:ExperimentRequest}){
+    const scope=this.#ready(input.scope),host=this.#simulations(scope),request=experimentRequest(input.body);
+    const prior=await host.replay(input.actor,input.key,request);
+    if(prior)return publicExperiment(prior,this.#turns.workspaceRevisionSnapshot(scope)?.receipt.filesSha256??null);
+    if(!this.#simulationCanRun())throw Error('simulation-unavailable');
+    const source=await this.#simulationSource(scope),store=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope));
+    const plan=await simulationPlan(source,await store.serviceFiles(source));
+    const record=await host.submit(input.actor,input.key,request,plan,this.env.M4_SIMULATION_IMAGE!,()=>{
+      this.#ready(scope);const latest=this.#turns.workspaceRevisionSnapshot(scope);
+      return source.kind==='saved-turn'?latest?.receipt.revisionId===source.revision.revisionId:latest===null;
+    });
+    return publicExperiment(record,modelVersion(plan).filesSha256);
+  }
+  async listExperiments(input:{scope:TurnScope;before?:string}){
+    const scope=this.#maintenanceScope(input.scope),page=await this.#simulations(scope).list(input.before),head=this.#turns.workspaceRevisionSnapshot(scope);
+    return {items:page.items.map(r=>publicExperiment(r,head?.receipt.filesSha256??null)),nextCursor:page.nextCursor};
+  }
+  async experiment(input:{scope:TurnScope;runId:string}){
+    const scope=this.#maintenanceScope(input.scope),r=await this.#simulations(scope).get(input.runId),head=this.#turns.workspaceRevisionSnapshot(scope);
+    return publicExperiment(r,head?.receipt.filesSha256??null);
+  }
+  async cancelSimulation(input:{scope:TurnScope;runId:string}){
+    const scope=this.#maintenanceScope(input.scope),r=await this.#simulations(scope).cancel(input.runId),head=this.#turns.workspaceRevisionSnapshot(scope);
+    return publicExperiment(r,head?.receipt.filesSha256??null);
+  }
   readonly #webSockets=new Set<AbortController>();
   #observerHost:WorkspaceObserverHost|null=null;
   async fetch(request:Request):Promise<Response>{
@@ -171,7 +258,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const scope=this.#maintenanceScope(input.scope);
     return this.#services(scope).stop(input.runId);
   }
-  async submitServiceRequest(input:{scope:TurnScope;actor:TurnActor;key:string;body:{maxDurationMs:number}}){
+  async submitServiceRequest(input:{scope:TurnScope;actor:TurnActor;key:string;body:{maxDurationMs:number;expectedRevisionId?:string}}){
     const scope=this.#ready(input.scope);
     if(this.env.M3_SERVICE_ENABLED!=='true')throw Error('service-run-disabled');
     return this.#services(scope).submitFromPolicy(input.actor,input.key,input.body,this.env.M3_SERVICE_IMAGE??'',()=>this.#freezeService(scope));
@@ -510,6 +597,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   }
   async alarm() {
     await routeWorkspaceAlarm({
+      simulation:{readWake:()=>this.#simulationAlarm.read(),defer:at=>this.#simulationAlarm.schedule(at),advance:async scope=>{await this.#simulations(this.#maintenanceScope(scope)).alarm();}},
       observer:{
         readWake:()=>this.#observerAlarm.read(),
         defer:at=>this.#observerAlarm.schedule(at),

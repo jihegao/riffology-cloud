@@ -4,7 +4,7 @@ type LeaseRequestBase = {
   tenantId: string; projectId: string; workspaceId: string; generation: number;
   operationId: string; deadlineAt: number;
 };
-export type LeaseRequest = LeaseRequestBase & ({ operation: 'workspace-runtime' } | { operation: 'service-run'; runId: string });
+export type LeaseRequest = LeaseRequestBase & ({ operation: 'workspace-runtime' } | { operation: 'service-run' | 'simulation-run'; runId: string });
 export type LeaseReference = LeaseRequest & { leaseId: string };
 export type StopConfirmation = { kind: 'runtime-stopped' | 'never-started'; confirmationId: string; observedAt: number };
 export type Lease = LeaseReference & {
@@ -33,21 +33,21 @@ function integer(value: unknown): asserts value is number {
   if (!Number.isSafeInteger(value) || (value as number) < 1) reject('invalid-quota-integer');
 }
 function requestValue(value: unknown, reference = false): LeaseRequest {
-  const service = !!value && typeof value === 'object' && (value as {operation?: unknown}).operation === 'service-run';
+  const service = !!value && typeof value === 'object' && ['service-run','simulation-run'].includes(String((value as {operation?: unknown}).operation));
   const keys = service ? [...REQUEST_KEYS, 'runId'] : REQUEST_KEYS;
   exact(value, reference ? [...keys, 'leaseId'] : keys);
   if (service) quotaIdentifier(value.runId);
   for (const key of ['tenantId', 'projectId', 'workspaceId', 'operationId']) quotaIdentifier(value[key]);
   if (reference) quotaIdentifier(value.leaseId);
   integer(value.generation); integer(value.deadlineAt);
-  if (value.operation !== 'workspace-runtime' && value.operation !== 'service-run') reject('invalid-quota-operation');
+  if (value.operation !== 'workspace-runtime' && value.operation !== 'service-run' && value.operation !== 'simulation-run') reject('invalid-quota-operation');
   return { tenantId: value.tenantId as string, projectId: value.projectId as string, workspaceId: value.workspaceId as string,
     generation: value.generation as number, operation: value.operation as LeaseRequest['operation'], operationId: value.operationId as string, deadlineAt: value.deadlineAt as number,
     ...(service ? {runId: value.runId as string} : {}) } as LeaseRequest;
 }
 export function leaseReference(lease: Lease): LeaseReference {
   return { tenantId: lease.tenantId, projectId: lease.projectId, workspaceId: lease.workspaceId,
-    generation: lease.generation, operation: lease.operation, operationId: lease.operationId, deadlineAt: lease.deadlineAt, leaseId: lease.leaseId, ...(lease.operation === 'service-run' ? {runId: lease.runId} : {}) } as LeaseReference;
+    generation: lease.generation, operation: lease.operation, operationId: lease.operationId, deadlineAt: lease.deadlineAt, leaseId: lease.leaseId, ...(lease.operation !== 'workspace-runtime' ? {runId: lease.runId} : {}) } as LeaseReference;
 }
 
 /** Private platform primitive: no identity assertion in these arguments grants
@@ -107,6 +107,15 @@ export class SqlTenantQuota {
     });
     this.#ready = storage.sync();
   }
+  /** Explicit, increase-only release migration. Existing leases, operation
+   * receipts and unknown execution fences remain untouched. */
+  async upgradePolicyFrom(expectedVersion:string):Promise<void>{
+    quotaIdentifier(expectedVersion);await this.#ready;
+    this.#storage.transactionSync(()=>{const meta=this.#meta();if(this.#policyMatches())return;
+      if(meta.policy_version!==expectedVersion||this.#policy.capacity<Number(meta.capacity))throw Error('quota-policy-upgrade-denied');
+      this.#storage.sql.exec('UPDATE quota_meta SET capacity=?,policy_version=? WHERE singleton=1',this.#policy.capacity,this.#policy.version);
+    });await this.#storage.sync();
+  }
   ready(): Promise<void> { return this.#ready; }
   #rows(query: string, ...bindings: (string | number | null)[]): Row[] { return this.#storage.sql.exec<Row>(query, ...bindings).toArray(); }
   #now(): number { const now = this.#clock(); integer(now); return now; }
@@ -152,7 +161,7 @@ export class SqlTenantQuota {
       if (prior) { if (prior.request_json !== canonical) reject('quota-idempotency-conflict'); return this.#lookup(request.operationId, now)!; }
       if (!this.#policyMatches()) reject('quota-policy-conflict');
       if (request.deadlineAt <= now || request.deadlineAt - now > MAX_LEASE_MS) reject('invalid-quota-deadline');
-      const resourceKey = request.operation === 'service-run' ? `run:${request.runId}` : `workspace:${request.workspaceId}`;
+      const resourceKey = request.operation !== 'workspace-runtime' ? `run:${request.runId}` : `workspace:${request.workspaceId}`;
       const owner = this.#rows('SELECT * FROM quota_workspace_owners WHERE workspace_id=?', request.workspaceId)[0];
       if (owner && owner.project_id !== request.projectId) reject('quota-workspace-owner-conflict');
       const resource = this.#rows('SELECT * FROM quota_resources WHERE resource_key=?', resourceKey)[0];
@@ -160,7 +169,7 @@ export class SqlTenantQuota {
       if (resource && request.generation < (resource.generation as number)) reject('quota-stale-generation');
       const held = this.#rows("SELECT lease_id FROM quota_leases WHERE resource_key=? AND status!='stopped'", resourceKey)[0];
       if (!held && resource && request.generation === resource.generation) reject('quota-generation-reused');
-      const denial = held ? (request.operation === 'service-run' ? 'run-held' : 'workspace-held') : this.#snapshot(now).available === 0 ? 'quota-exhausted' : null;
+      const denial = held ? (request.operation !== 'workspace-runtime' ? 'run-held' : 'workspace-held') : this.#snapshot(now).available === 0 ? 'quota-exhausted' : null;
       if (denial) {
         this.#storage.sql.exec('INSERT INTO quota_operations VALUES (?,?,NULL,?)', request.operationId, canonical, denial);
         return { outcome: 'denied', lease: null, denial };

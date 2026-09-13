@@ -6,13 +6,13 @@ import {HttpError} from './http.ts';
 
 export type ServiceCursor={createdAt:number;runId:string};
 export interface GatewayServiceRuns{
- submit(scope:TurnScope,actor:TurnActor,key:string,body:{maxDurationMs:number}):Promise<unknown>;
+ submit(scope:TurnScope,actor:TurnActor,key:string,body:{maxDurationMs:number;expectedRevisionId?:string}):Promise<unknown>;
  stop(scope:TurnScope,runId:string):Promise<unknown>;
  view(scope:TurnScope,runId:string):Promise<unknown>;
  list(scope:TurnScope,options:{before?:ServiceCursor;limit?:number}):Promise<unknown>;
 }
 interface WorkspaceServices{
- submitServiceRequest(input:{scope:TurnScope;actor:TurnActor;key:string;body:{maxDurationMs:number}}):Promise<ServiceIntentRecord>;
+ submitServiceRequest(input:{scope:TurnScope;actor:TurnActor;key:string;body:{maxDurationMs:number;expectedRevisionId?:string}}):Promise<ServiceIntentRecord>;
  stopService(input:{scope:TurnScope;runId:string}):Promise<ServiceIntentRecord>;
  serviceView(input:{scope:TurnScope;runId:string}):Promise<{intent:ServiceIntentRecord;run:ServiceRunRecord|null}>;
  listServices(input:{scope:TurnScope;before?:ServiceCursor;limit?:number}):Promise<{items:ServiceIntentRecord[];nextCursor:ServiceCursor|null}>;
@@ -20,7 +20,8 @@ interface WorkspaceServices{
 const publicErrors=new Set(['service-delivery-unconfirmed','service-delivery-deadline','service-deadline','service-start-failed','service-runtime-failed','service-quota-denied','service-preview-declaration-missing','service-preview-declaration-invalid','service-preview-files-missing','service-preview-files-invalid','service-preview-source-invalid']);
 function publicService(intent:ServiceIntentRecord,run:ServiceRunRecord|null=null){
  const error=run?.errorCode??intent.errorCode;
- return {runId:intent.runId,kind:'service',deliveryStatus:intent.status,runStatus:run?.status??null,
+ const source=intent.task?.spec.plan.source??intent.source;
+ return {runId:intent.runId,version:source.kind==='saved-turn'?{revisionId:source.revision.revisionId,filesSha256:source.revision.filesSha256}:null,kind:'service',deliveryStatus:intent.status,runStatus:run?.status??null,
   createdAt:intent.createdAt,updatedAt:Math.max(intent.updatedAt,run?.updatedAt??0),stopRequestedAt:intent.stopRequestedAt??run?.stopRequestedAt??null,
   errorCode:error===null?null:publicErrors.has(error)?error:'service-unavailable'};
 }
