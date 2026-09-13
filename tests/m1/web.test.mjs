@@ -639,3 +639,90 @@ test('ready running service selects the Preview panel while maintenance project 
  await page.locator('#workspace-back').click();await page.getByRole('button',{name:'管理项目 预览故障项目'}).click();await page.locator('[data-service-action=select]').click();await page.waitForFunction(()=>document.querySelector('#workspace-services')?.textContent.includes('运行中'));const denied=page.locator('[data-service-action=preview]');if(await denied.count())assert.equal(await denied.isDisabled(),true);const disabledOpen=page.locator('[data-preview-action=open]');if(await disabledOpen.count())assert.equal(await disabledOpen.isDisabled(),true);assert.equal(previewPosts,1);await page.close();
  }
 });
+
+test('workspace controls stay closed until the first authoritative snapshot resolves', async t => {
+  const workspaceId = 'workspace-slow'; let release;
+  const blocked = new Promise(resolve => { release = resolve; });
+  let sessionPosts = 0, turnPosts = 0;
+  const page = await pageFixture(t, async (route, path) => {
+    if (path === '/api/tenants/tenant-a/projects') { await json(route, { projects: [{ id: 'project-slow', workspace_id: workspaceId, title: '慢快照', status: 'ready' }] }); return true; }
+    if (path === `/api/workspaces/${workspaceId}`) { await blocked; await json(route, { schemaVersion: 1, sessions: {}, turns: {}, activeTurnId: null }); return true; }
+    if (path === `/api/workspaces/${workspaceId}/events`) { await json(route, { events: [], nextSequence: 0, hasMore: false, snapshotRequired: false }); return true; }
+    if (path === `/api/workspaces/${workspaceId}/sessions`) { sessionPosts++; await json(route, { session: { id: 'unexpected' } }, 201); return true; }
+    if (path.includes('/turns')) { turnPosts++; await json(route, {}); return true; }
+  });
+  await page.goto('https://ui.test/#/workspace/project-slow');
+  await page.locator('#workspace:not([hidden])').waitFor();
+  await page.locator('#message-input').fill('草稿');
+  assert.equal(await page.locator('#message-submit').isDisabled(), true);
+  assert.equal(await page.locator('#new-session').isDisabled(), true);
+  await page.locator('#message-form').evaluate(form => form.requestSubmit());
+  assert.equal(sessionPosts, 0); assert.equal(turnPosts, 0);
+  release();
+  await page.locator('#message-submit:not([disabled])').waitFor();
+  assert.equal(await page.locator('#message-input').inputValue(), '草稿');
+});
+
+test('selected session survives reload and remains user controlled', async t => {
+  const workspaceId = 'workspace-select';
+  const sessions = { a: { id: 'a', title: 'A', createdAt: 1 }, b: { id: 'b', title: 'B', createdAt: 2 } };
+  const page = await pageFixture(t, async (route, path) => {
+    if (path === '/api/tenants/tenant-a/projects') { await json(route, { projects: [{ id: 'project-select', workspace_id: workspaceId, title: '选择', status: 'ready' }] }); return true; }
+    if (path === `/api/workspaces/${workspaceId}`) { await json(route, { schemaVersion: 1, sessions, turns: {}, activeTurnId: null }); return true; }
+    if (path === `/api/workspaces/${workspaceId}/events`) { await json(route, { events: [], nextSequence: 0, hasMore: false, snapshotRequired: false }); return true; }
+  });
+  await page.goto('https://ui.test/#/workspace/project-select');
+  await page.locator('#session-select').waitFor();
+  await page.locator('#session-select').selectOption('a');
+  await page.reload();
+  await page.locator('#session-select').waitFor();
+  assert.equal(await page.locator('#session-select').inputValue(), 'a');
+});
+
+test('response loss survives reload and explicit retry reuses session, key and body', async t => {
+  const workspaceId = 'workspace-loss', sessionId = 'session-loss';
+  let sessionPosts = [], turnPosts = [], abortOnce = true, sessionCreated = false;
+  const page = await pageFixture(t, async (route, path) => {
+    if (path === '/api/tenants/tenant-a/projects') { await json(route, { projects: [{ id: 'project-loss', workspace_id: workspaceId, title: '响应恢复', status: 'ready' }] }); return true; }
+    if (path === `/api/workspaces/${workspaceId}`) {
+      await json(route, { schemaVersion: 1, sessions: sessionCreated ? { [sessionId]: { id: sessionId, title: '主对话', createdAt: 1 } } : {}, turns: {}, activeTurnId: null }); return true;
+    }
+    if (path === `/api/workspaces/${workspaceId}/events`) { await json(route, { events: [], nextSequence: 0, hasMore: false, snapshotRequired: false }); return true; }
+    if (path === `/api/workspaces/${workspaceId}/sessions` && route.request().method() === 'POST') {
+      sessionPosts.push({ key: route.request().headers()['idempotency-key'], body: route.request().postData() }); sessionCreated = true;
+      await json(route, { session: { id: sessionId, title: '主对话' } }, 201); return true;
+    }
+    if (path === `/api/workspaces/${workspaceId}/sessions/${sessionId}/turns`) {
+      const request = { key: route.request().headers()['idempotency-key'], body: route.request().postData() }; turnPosts.push(request);
+      if (abortOnce) { abortOnce = false; await route.abort('failed'); } else await json(route, { turn: { id: 'turn-loss', status: 'queued' } }, 202);
+      return true;
+    }
+  });
+  await page.goto('https://ui.test/#/workspace/project-loss');
+  await page.locator('#message-input').fill('保留这条消息');
+  await page.locator('#message-submit').click();
+  await page.locator('#message-submit:not([disabled])').waitFor();
+  assert.equal(sessionPosts.length, 1); assert.equal(turnPosts.length, 1);
+  const first = turnPosts[0];
+  await page.reload();
+  await page.locator('#message-submit').waitFor();
+  assert.equal(await page.locator('#message-input').inputValue(), '保留这条消息');
+  assert.equal(turnPosts.length, 1, 'reload must not replay the request');
+  await page.locator('#message-submit').click();
+  await waitFor(() => turnPosts.length === 2);
+  assert.deepEqual(turnPosts[1], first);
+  assert.equal(sessionPosts.length, 1, 'retry must keep the original Session');
+});
+
+test('lost Session creation response recovers its original key after reload', async t => {
+  let created=false, lose=true;const sessionPosts=[],turnPosts=[];
+  const page=await pageFixture(t,async(route,path)=>{
+    if(path==='/api/tenants/tenant-a/projects'){await json(route,{projects:[{id:'session-ack-project',workspace_id:'session-ack-workspace',title:'Session ack',status:'ready'}]});return true;}
+    if(path==='/api/workspaces/session-ack-workspace'){await json(route,{sessions:created?{known:{id:'known',title:'主对话',createdAt:1}}:{},turns:{},activeTurnId:null});return true;}
+    if(path.endsWith('/events')){await json(route,{events:[],nextSequence:0,hasMore:false});return true;}
+    if(path==='/api/workspaces/session-ack-workspace/sessions'){sessionPosts.push({key:route.request().headers()['idempotency-key'],body:route.request().postData()});created=true;if(lose){lose=false;await route.abort('failed');}else await json(route,{session:{id:'known',title:'主对话'}},201);return true;}
+    if(path==='/api/workspaces/session-ack-workspace/sessions/known/turns'){turnPosts.push(route.request().postData());await json(route,{turn:{id:'turn-known',status:'queued'}},202);return true;}
+  });
+  await page.goto('https://ui.test/#/workspace/session-ack-project');await page.locator('#message-input').fill('恢复 Session 接收收据');await page.locator('#message-submit').click();await waitFor(()=>sessionPosts.length===1);await page.locator('#message-submit:not([disabled])').waitFor();assert.equal(turnPosts.length,0);
+  await page.reload();await page.locator('#message-submit:not([disabled])').waitFor();assert.equal(await page.locator('#message-input').inputValue(),'恢复 Session 接收收据');assert.equal(sessionPosts.length,1);await page.locator('#message-submit').click();await waitFor(()=>turnPosts.length===1);assert.equal(sessionPosts.length,2);assert.deepEqual(sessionPosts[0],sessionPosts[1]);
+});
