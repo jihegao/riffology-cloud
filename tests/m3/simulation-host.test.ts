@@ -94,3 +94,9 @@ test('cancel during quota dispatch settles without native start or observe',asyn
  const f=setup(t),dispatch=f.ports.quota.dispatch,h=f.host(),r=await h.submit(actor,'cancel-dispatch',f.request,plan,'image',()=>true);
  f.ports.quota.dispatch=async lease=>{const response=await dispatch(lease);await h.cancel(r.runId);return response;};await h.alarm();f.reopen();await f.host().alarm();assert.equal((await h.get(r.runId)).status,'cancelled');assert.equal((await h.get(r.runId)).released,true);assert.equal(f.starts,0);assert.equal(f.observes,0);assert.equal(f.stops,0);
 });
+test('overlapping alarms on the Workspace-owned host cannot dispatch twice',async t=>{
+ const f=setup(t),h=f.host(),dispatch=f.ports.quota.dispatch;let dispatches=0,resolve!:(v:Awaited<ReturnType<typeof dispatch>>)=>void,entered!:()=>void;
+ const reached=new Promise<void>(r=>{entered=r;});let grant:Awaited<ReturnType<typeof dispatch>>;
+ f.ports.quota.dispatch=async lease=>{dispatches++;grant=await dispatch(lease);entered();return new Promise(r=>{resolve=r;});};
+ const r=await h.submit(actor,'overlapping-alarm',f.request,plan,'image',()=>true),first=h.alarm();await reached;await h.alarm();assert.equal(dispatches,1);assert.equal(f.starts,0);assert.equal(f.observes,0);resolve(grant!);await first;assert.equal(f.starts,1);assert.equal((await h.get(r.runId)).startClaimed,true);
+});
