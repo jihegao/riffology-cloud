@@ -60,6 +60,8 @@ export class SandboxServiceNativeBackend implements ServiceNativeBackend{
  async start(raw:ServiceRuntimeInput):Promise<ServiceRuntimeObservation>{
   const input=this.#input(raw),token=await serviceNativeToken(input);
   if(input.reference.deadlineAt<=this.#clock())return this.fenceAndStop(input);
+  let stage="source";
+  try{
   const archive=await this.#source.files(input.spec.plan.source);
   const actual=await new PreviewPlanResolver({async files(){return archive;}}).resolve(input.spec.plan.source);
   if(JSON.stringify(actual)!==JSON.stringify(input.spec.plan))throw Error('service-native-source-conflict');
@@ -69,13 +71,18 @@ export class SandboxServiceNativeBackend implements ServiceNativeBackend{
    // The pinned SDK 0.12.9 does not forward exec stdin. Transfer data via
    // writeFile into the root-only directory; only validated token/offset enter
    // the command. Distinct chunk paths also isolate delayed command reads.
+   stage="archive-write";
    const path=`/var/lib/riffology/archives/${token}.${offset}.chunk.json`;
    await this.#sandbox.writeFile(path,JSON.stringify({offset,total:archive.length,sha256:control.filesSha256,data:base64(chunk)}));
+   stage="archive-upload";
    const result=await this.#exec(`python3 ${UPLOAD} ${token} < ${path}`);
    if(result.schemaVersion!==1||result.token!==token||result.offset!==offset||result.bytes!==chunk.length||result.total!==archive.length||typeof result.complete!=='boolean'||(offset+chunk.length===archive.length&&!result.complete))throw Error('invalid-service-upload-receipt');
   }
+  stage="control-write";
   await this.#sandbox.writeFile(`/var/lib/riffology/services/${token}.input.json`,JSON.stringify(control));
-  return this.#operation(input,'start');
+  stage="native-start";
+  return await this.#operation(input,'start');
+  }catch(error){const message=error instanceof Error?error.message:'';console.error('service-start-unconfirmed',{runId:input.reference.runId,stage,code:/^[a-z0-9-]{1,100}$/.test(message)?message:'transport-error'});throw error;}
  }
  observe(raw:ServiceRuntimeInput){return this.#operation(this.#input(raw),'observe');}
  fenceAndStop(raw:ServiceRuntimeInput){return this.#operation(this.#input(raw),'stop');}

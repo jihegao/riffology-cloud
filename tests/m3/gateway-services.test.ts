@@ -56,3 +56,8 @@ test('gateway maps private failures without leaking internals and disposes sanit
  f.setError(null);f.intent.errorCode='private-runtime-secret';const response=await f.get(f.base+'/run-a'),view=await response.json() as any;assert.equal(view.errorCode,'service-unavailable');assert.equal(JSON.stringify(view).includes('private-runtime-secret'),false);assert.equal(f.disposed,1);
  f.db.sqlite.prepare("UPDATE catalog_users SET auth_version=2 WHERE id='user-a'").run();const count=f.calls.length;assert.equal((await f.get()).status,404);assert.equal((await f.post()).status,404);assert.equal(f.calls.length,count);
 });
+
+test('stale saved revision has a specific definite rejection rather than an idempotency error',async t=>{
+ const f=await fixture(t);f.ready();f.setError('service-revision-changed');const r=await f.post();assert.equal(r.status,409);assert.deepEqual(await r.json(),{error:'service_revision_changed'});
+ f.setError('service-intent-conflict');const conflict=await f.post();assert.equal(conflict.status,409);assert.deepEqual(await conflict.json(),{error:'idempotency_conflict'});
+});

@@ -1,0 +1,15 @@
+FROM python:3.11-slim-bookworm@sha256:528257d48c1da0dcecc2e725d1ae34498d60c965f1241e39cd6a85a8859bdf84
+RUN python3 -c "import ctypes; ctypes.CDLL('libseccomp.so.2')" \
+    && useradd --create-home --uid 10001 --shell /usr/sbin/nologin project \
+    && mkdir -p /workspace /opt/riffology /var/lib/riffology/archives /var/lib/riffology/services /var/lib/riffology/effects /run-output \
+    && chown root:root /workspace /opt/riffology /var/lib/riffology /var/lib/riffology/archives /var/lib/riffology/services /var/lib/riffology/effects \
+    && chown project:project /run-output && chmod 0700 /run-output /var/lib/riffology/archives /var/lib/riffology/services /var/lib/riffology/effects
+RUN pip install --no-cache-dir --no-deps simpy==4.1.1
+COPY services/project-tools/process_quiescence.py /opt/riffology/process_quiescence.py
+COPY services/project-tools/project_network_fence.py /opt/riffology/project_network_fence.py
+COPY services/project-tools/workspace_archive.py /opt/riffology/workspace_archive.py
+COPY services/run/service_process.py /opt/riffology/service_process.py
+COPY services/run/simulation_process.py /opt/riffology/simulation_process.py
+ENTRYPOINT ["/bin/sh"]
+
+COPY services/run/simulation_artifacts.py /opt/riffology/simulation_artifacts.py

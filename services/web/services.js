@@ -5,7 +5,7 @@ const id = value => typeof value === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(v
 export function createServicePanel({ root, api, onPreviewRun, requestTimeoutMs = 15000 }) {
   if (!Number.isSafeInteger(requestTimeoutMs) || requestTimeoutMs < 1) throw Error('invalid-service-request-timeout');
   const doc = root.ownerDocument;
-  let current = null, generation = 0, listVersion = 0, detailVersion = 0, rows = [], cursor = null, selected = null, detail = null;
+  let current = null, generation = 0, listVersion = 0, detailVersion = 0, rows = [], cursor = null, selected = null, detail = null, savedRevision = null;
   let listError = '', listLoading = false, detailError = '', message = '', pending = null, posting = false, stopping = false, duration = 300000, timer = null, listening = false;
   const reads = new Set(), requests = new Set();
   const keyFor = context => `riffology:service-intent:${context.tenantId}:${context.workspaceId}`;
@@ -35,6 +35,7 @@ export function createServicePanel({ root, api, onPreviewRun, requestTimeoutMs =
       if (detail?.updatedAt) box.append(element('p', `${detailError ? '上次确认时间（旧状态）' : '最近确认时间'}：${new Date(detail.updatedAt).toLocaleString('zh-CN', { hour12: false })}`));
       if (!detailError && detail?.stopRequestedAt) box.append(element('p', terminalRuns.has(detail.runStatus) ? '运行端已确认结束。' : '已请求停止，等待运行端确认。'));
       if (detail?.errorCode) box.append(element('p', '服务发生错误，请刷新详情。'));
+      if (detail?.version?.filesSha256 && savedRevision?.filesSha256 && detail.version.filesSha256 !== savedRevision.filesSha256) box.append(element('p', '项目已保存新版本；此服务仍使用旧版本，请启动新服务预览更新。'));
       box.append(button('刷新详情', 'detail'), button(stopping ? '正在请求停止…' : '停止服务', 'stop', stopping || Boolean(!detailError && detail && isSettled(detail))));
       if(onPreviewRun)box.append(button('打开此服务的 Preview','preview',!current.canStart||Boolean(detailError)||detail?.runStatus!=='running'||Boolean(detail?.stopRequestedAt)));
       contents.push(box);
@@ -73,7 +74,14 @@ export function createServicePanel({ root, api, onPreviewRun, requestTimeoutMs =
     const attempt = pending; posting = true; message = '正在提交启动请求…'; render();
     try { const result = await request(base(context), { method: 'POST', headers: { 'Idempotency-Key': attempt.key }, body: JSON.stringify({ maxDurationMs: attempt.maxDurationMs,...(attempt.expectedRevisionId?{expectedRevisionId:attempt.expectedRevisionId}:{}) }) });
       if (restore(context)?.key === attempt.key) save(context, null); if (token !== generation) return; pending = null; message = '启动请求已接收，运行状态请查看详情。'; selected = result.runId; detail = result; detailError = ''; await load(); await refreshDetail();
-    } catch (error) { if (token === generation) message = error?.status && error.status < 500 ? `无法启动服务：${error.message}` : '启动结果尚未确认。重试将使用同一请求和原运行时限。'; }
+    } catch (error) {
+      if (token !== generation) return;
+      if (error?.status === 409 && error.code === 'service_revision_changed') {
+        if (restore(context)?.key === attempt.key) save(context, null);
+        pending = null;
+        message = '项目已保存新版本，原启动请求已失效；请重新启动服务预览更新。';
+      } else message = error?.status && error.status < 500 ? `无法启动服务：${error.message}` : '启动结果尚未确认。重试将使用同一请求和原运行时限。';
+    }
     finally { if (token === generation) { posting = false; render(); } }
   }
   async function stop() {
@@ -86,6 +94,7 @@ export function createServicePanel({ root, api, onPreviewRun, requestTimeoutMs =
   function change(event) { if (event.target.matches?.('[data-service-duration]') && !pending) duration = Number(event.target.value); }
   function visibility() { clearTimer(); if (doc.hidden) { detailVersion++; for (const controller of reads) controller.abort(); } else if (selected) void refreshDetail(); }
   function close() { generation++; listVersion++; detailVersion++; current = null; clearTimer(); for (const controller of requests) controller.abort(); requests.clear(); reads.clear(); if (listening) { root.removeEventListener('click', click); root.removeEventListener('change', change); doc.removeEventListener('visibilitychange', visibility); listening = false; } root.replaceChildren(); }
-  function open(context) { close(); current = { ...context }; rows = []; cursor = null; selected = null; detail = null; listError = ''; detailError = ''; pending = restore(current); posting = false; stopping = false; message = pending ? '存在未确认的启动请求，请使用原请求重试。' : ''; if (!listening) { root.addEventListener('click', click); root.addEventListener('change', change); doc.addEventListener('visibilitychange', visibility); listening = true; } render(); return load(); }
-  return { open, close };
+  function open(context) { close(); current = { ...context }; savedRevision = null; rows = []; cursor = null; selected = null; detail = null; listError = ''; detailError = ''; pending = restore(current); posting = false; stopping = false; message = pending ? '存在未确认的启动请求，请使用原请求重试。' : ''; if (!listening) { root.addEventListener('click', click); root.addEventListener('change', change); doc.addEventListener('visibilitychange', visibility); listening = true; } render(); return load(); }
+  function updateSavedRevision(workspaceId, revision) { if (current?.workspaceId !== workspaceId) return; savedRevision = revision && typeof revision === 'object' ? { ...revision } : null; render(); }
+  return { open, close, savedRevision: updateSavedRevision };
 }

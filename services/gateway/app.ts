@@ -45,6 +45,7 @@ export interface GatewayServices {
 async function serviceCall<T>(operation:()=>Promise<T>):Promise<T>{
  try{return await operation();}catch(error){const code=error instanceof Error?error.message:'';
   if(code==='service-intent-conflict')throw new CatalogError('idempotency_conflict');
+  if(code==='service-revision-changed')throw new HttpError('service_revision_changed',409);
   if(code==='service-intent-not-found'||code==='workspace-actor-scope-denied')throw new CatalogError('not_found');
   throw error;
  }

@@ -1,0 +1,124 @@
+[
+  {
+    "experimentId": "2979c6a7-b6bc-4408-8338-59db0ee02def",
+    "runId": "2979c6a7-b6bc-4408-8338-59db0ee02def",
+    "version": {
+      "revisionId": "478f32e7cb57196a8ed1a6adc4792388f71f92957a7583bf9723d1901a154baf",
+      "filesSha256": "68a356fdf49a649fd8ff10eae1dab56c2a1795d80fc1377f9e5a4ef6cdaaa37e",
+      "specSha256": "8751d786702d2e9ff5932ff1961d572454c435fbc7f4f547d8be5a5b2d2e1bfc"
+    },
+    "parameters": {
+      "servers": 1,
+      "customers": 40,
+      "arrival_rate": 1,
+      "service_rate": 1
+    },
+    "seed": 42,
+    "status": "completed",
+    "createdAt": 1789315429419,
+    "updatedAt": 1789315460085,
+    "errorCode": null,
+    "result": {
+      "metrics": {
+        "completed": 40,
+        "mean_wait": 0.898589750002442
+      },
+      "artifactSha256": "b5835a5b192529f48caa2917ec74be5ffc1e80023351db520b1969873096e086"
+    },
+    "stale": false
+  },
+  {
+    "experimentId": "4dd0a90e-50c5-4b90-83a2-9e5336c32d53",
+    "runId": "4dd0a90e-50c5-4b90-83a2-9e5336c32d53",
+    "version": {
+      "revisionId": "478f32e7cb57196a8ed1a6adc4792388f71f92957a7583bf9723d1901a154baf",
+      "filesSha256": "68a356fdf49a649fd8ff10eae1dab56c2a1795d80fc1377f9e5a4ef6cdaaa37e",
+      "specSha256": "8751d786702d2e9ff5932ff1961d572454c435fbc7f4f547d8be5a5b2d2e1bfc"
+    },
+    "parameters": {
+      "servers": 2,
+      "customers": 40,
+      "arrival_rate": 1,
+      "service_rate": 1
+    },
+    "seed": 42,
+    "status": "completed",
+    "createdAt": 1789316612436,
+    "updatedAt": 1789316622537,
+    "errorCode": null,
+    "result": {
+      "metrics": {
+        "completed": 40,
+        "mean_wait": 0.059786256452770824
+      },
+      "artifactSha256": "3a26d8b610379953284d7d62b4a8a18f8439835a5167968667616868b1546828"
+    },
+    "stale": false
+  },
+  {
+    "experimentId": "e03e2236-3387-4ea2-b4fc-e07e6aa694c7",
+    "runId": "e03e2236-3387-4ea2-b4fc-e07e6aa694c7",
+    "version": {
+      "revisionId": "478f32e7cb57196a8ed1a6adc4792388f71f92957a7583bf9723d1901a154baf",
+      "filesSha256": "68a356fdf49a649fd8ff10eae1dab56c2a1795d80fc1377f9e5a4ef6cdaaa37e",
+      "specSha256": "8751d786702d2e9ff5932ff1961d572454c435fbc7f4f547d8be5a5b2d2e1bfc"
+    },
+    "parameters": {
+      "servers": 2,
+      "customers": 40,
+      "arrival_rate": 1,
+      "service_rate": 1
+    },
+    "seed": 42,
+    "status": "completed",
+    "createdAt": 1789316756723,
+    "updatedAt": 1789316852369,
+    "errorCode": null,
+    "result": {
+      "metrics": {
+        "completed": 40,
+        "mean_wait": 0.059786256452770824
+      },
+      "artifactSha256": "b48666e6d9268944835e81a8c51a62c63d73dc4fdbb4115c14c562fdf2727d67"
+    },
+    "stale": false
+  },
+  {
+    "experimentId": "0a096737-6787-4061-b6dc-a44559b423fa",
+    "runId": "0a096737-6787-4061-b6dc-a44559b423fa",
+    "version": {
+      "revisionId": "e0c62ce162b06319e2fb3ca0453c51df44e921dd87820cf88da96fd064e76217",
+      "filesSha256": "67b3aea0ace5079e56bfbe1c28b77cce6c177da7edb112f419fafca4f0647cb8",
+      "specSha256": "7de67f530ee24483ff5dbf2eb9ee14b69f92bda37009fd1dbdaab57ef169fae6"
+    },
+    "parameters": {
+      "servers": 2,
+      "customers": 40,
+      "arrival_rate": 1,
+      "service_rate": 1,
+      "setup_time": 0.1
+    },
+    "seed": 42,
+    "status": "completed",
+    "createdAt": 1789317054241,
+    "updatedAt": 1789317265476,
+    "errorCode": null,
+    "result": {
+      "metrics": {
+        "completed": 40,
+        "max_wait": 1.448813572472595,
+        "mean_wait": 0.07228625645277101
+      },
+      "artifactSha256": "247861f3ae2f80a45660810f4a7e050ecda8d0df7216550747a99a020ae87e9c",
+      "outputs": [
+        {
+          "path": "customers.csv",
+          "sha256": "5d715e0b0e6d1d65dd1342cfca5a8ea3aaca28a470adec54118d94e3a369dc6f",
+          "size": 3415,
+          "mediaType": "text/csv"
+        }
+      ]
+    },
+    "stale": false
+  }
+]

@@ -27,6 +27,28 @@ let sessionIntent = null;
 let creatingSession = false;
 let messageIntent = null;
 let sendingMessage = false;
+const recoveryId = value => typeof value === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(value);
+const recoveryKey = workspaceId => `riffology:conversation:${tenant.id}:${workspaceId}`;
+function readConversation(key) {
+  try {
+    const value = JSON.parse(sessionStorage.getItem(key) || 'null');
+    if (!value || value.schemaVersion !== 1) return {};
+    return {
+      selectedSessionId: recoveryId(value.selectedSessionId) ? value.selectedSessionId : null,
+      draft: typeof value.draft === 'string' ? value.draft : '',
+      messageIntent: value.messageIntent && recoveryId(value.messageIntent.key) && recoveryId(value.messageIntent.sessionId) && typeof value.messageIntent.message === 'string' ? {key:value.messageIntent.key,sessionId:value.messageIntent.sessionId,message:value.messageIntent.message} : null,
+      sessionIntent: value.sessionIntent && recoveryId(value.sessionIntent.key) && typeof value.sessionIntent.title === 'string' ? {key:value.sessionIntent.key,title:value.sessionIntent.title} : null,
+    };
+  } catch { return {}; }
+}
+function saveConversation(key, patch) {
+  try { sessionStorage.setItem(key, JSON.stringify({schemaVersion:1,...readConversation(key),...patch})); }
+  catch { throw Error('无法保存待确认请求，请检查浏览器存储后重试。'); }
+}
+function canSubmitConversation() {
+  return Boolean(activeProject?.status === 'ready' && workspaceSnapshot && !['maintenance','unavailable'].includes(workspaceSnapshot.admission?.state));
+}
+
 let eventSource = null;
 let eventRetryTimer = null;
 let snapshotRecovery = false;
@@ -37,6 +59,8 @@ let workspaceDiffError = '';
 let workspaceArtifactPanel = 'files';
 const POLL_WINDOW_MS = 300000;
 const TERMINAL_TURNS = new Set(['completed', 'failed', 'cancelled', 'interrupted']);
+const TURN_REQUEST_MAX_BYTES = 8192;
+const encodedTurnRequestBytes = message => new TextEncoder().encode(JSON.stringify({message})).byteLength;
 
 function workspaceNeedsTurnUpdates(snapshot = workspaceSnapshot) {
   if (!snapshot) return false;
@@ -121,7 +145,7 @@ async function api(path, options = {}) {
     const projectLimit = response.status === 429 && path.startsWith('/api/workspaces/');
     let code = null;
     try { const body = await response.clone().json(); if (typeof body?.error === 'string') code = body.error; } catch {}
-    const messages = { 400: '请求内容无效', 401: '请先登录', 403: '登录或项目权限已变化，请刷新后重试', 404: '当前账号尚未获得访问权限', 409: '状态已变化，请刷新后重试', 429: projectLimit ? '本项目已达到当前费用或运行上限' : '请求过于频繁，请稍后重试', 503: '服务暂不可用，请稍后再试' };
+    const messages = { 400: '请求内容无效', 401: '请先登录', 403: '登录或项目权限已变化，请刷新后重试', 404: '当前账号尚未获得访问权限', 409: '状态已变化，请刷新后重试', 413: '请求内容过大，请缩短后重试', 429: projectLimit ? '本项目已达到当前费用或运行上限' : '请求过于频繁，请稍后重试', 503: '服务暂不可用，请稍后再试' };
     if (code === 'turn_runtime_not_ready') messages[503] = '当前环境暂停接收新任务，请稍后查看状态。';
     throw Object.assign(new Error(messages[response.status] || '请求失败，请稍后重试'), { status: response.status, code, retryable: code !== 'turn_runtime_not_ready' });
   }
@@ -242,6 +266,8 @@ function renderWorkspace() {
   const box = $('#turns');
   box.replaceChildren();
   if (!workspaceSnapshot) {
+    $('#message-submit').disabled = true; $('#new-session').disabled = true; $('#session-select').disabled = true;
+    $('#message-input').readOnly = Boolean(messageIntent);
     const loading = document.createElement('p');
     loading.className = 'turn-empty';
     loading.textContent = '正在读取项目状态…';
@@ -255,9 +281,14 @@ function renderWorkspace() {
   if (unavailable) appendTurnCard('system', '当前执行环境暂不可用。', '平台正在恢复运行资源，请稍后重试；草稿会保留。');
   $('#message-input').disabled = maintenance || unavailable;
   $('#message-submit').disabled = maintenance || unavailable || sendingMessage;
-  $('#new-session').disabled = maintenance || unavailable;
+  $('#new-session').disabled = maintenance || unavailable || creatingSession || Boolean(messageIntent);
+  $('#message-input').readOnly = Boolean(messageIntent);
+  $('#message-submit').textContent = messageIntent ? '重试上次请求' : '发送';
+  $('#session-select').disabled = maintenance || unavailable || Boolean(messageIntent) || Boolean(sessionIntent);
   const sessions = Object.values(workspaceSnapshot.sessions || {}).sort((a, b) => (b.updatedAt ?? b.createdAt) - (a.updatedAt ?? a.createdAt));
-  if (!selectedSessionId || !workspaceSnapshot.sessions?.[selectedSessionId]) selectedSessionId = sessions[0]?.id || null;
+  if (messageIntent) selectedSessionId = messageIntent.sessionId;
+  else if (!selectedSessionId || !workspaceSnapshot.sessions?.[selectedSessionId]) selectedSessionId = sessions[0]?.id || null;
+  try { saveConversation(recoveryKey(activeProject.workspace_id), {selectedSessionId}); } catch (error) { $('#message-error').textContent = error.message; }
   const sessionSelect = $('#session-select');
   if (sessionSelect) {
     sessionSelect.replaceChildren(...sessions.map(session => {
@@ -326,7 +357,7 @@ async function refreshWorkspaceFiles(generation = viewGeneration) {
   if (!activeProject || generation !== viewGeneration) return;
   const workspaceId = activeProject.workspace_id;
   workspaceFilesError = ''; renderWorkspaceFiles();
-  try { const value = await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/files`); if (generation !== viewGeneration || activeProject?.workspace_id !== workspaceId) return; workspaceFiles = value; }
+  try { const value = await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/files`); if (generation !== viewGeneration || activeProject?.workspace_id !== workspaceId) return; workspaceFiles = value; servicePanel.savedRevision(workspaceId, value.revision); }
   catch (error) { if (generation !== viewGeneration) return; workspaceFilesError = error.message; }
   renderWorkspaceFiles();
 }
@@ -429,16 +460,18 @@ function openWorkspace(project) {
   workspaceDiff = null;
   workspaceDiffError = '';
   workspaceArtifactPanel = 'files';
-  selectedSessionId = null;
-  sessionIntent = null;
+  const recovery = readConversation(recoveryKey(project.workspace_id));
+  selectedSessionId = recovery.selectedSessionId || null;
+  sessionIntent = recovery.sessionIntent || null;
   creatingSession = false;
-  messageIntent = null;
-  $('#new-session').textContent = '新建 Session';
+  messageIntent = recovery.messageIntent || null;
+  $('#message-input').value = messageIntent?.message ?? recovery.draft ?? '';
+  $('#new-session').textContent = sessionIntent ? '重试新建 Session' : '新建 Session';
   if (location.hash !== `#/workspace/${encodeURIComponent(project.id)}`) history.replaceState(null, '', `#/workspace/${encodeURIComponent(project.id)}`);
   $('#workspace-title').textContent = project.title;
   const ready=project.status==='ready';
   $('#workspace-meta').textContent = ready?'状态已保存 · 浏览器只是观察者':'项目暂未就绪 · 仍可查看和停止独立服务';
-  $('#message-input').disabled=!ready;$('#message-submit').disabled=!ready;$('#new-session').disabled=!ready;
+  $('#message-input').disabled=!ready;$('#message-submit').disabled=true;$('#new-session').disabled=true;
   $('#session-select').disabled=!ready;$('#cancel-turn').hidden=true;
   $('#files-refresh').disabled=!ready;$('#files-tab').disabled=!ready;$('#diff-tab').disabled=!ready;
   $('#message-error').textContent = '';
@@ -653,8 +686,13 @@ $('#workspace-back').onclick = () => {
   void renderProjects();
 };
 
+$('#message-input').addEventListener('input', () => {
+  if (!activeProject || !tenant || messageIntent) return;
+  try { saveConversation(recoveryKey(activeProject.workspace_id), {draft:$('#message-input').value}); } catch (error) { $('#message-error').textContent = error.message; }
+});
+
 $('#session-select').onchange = () => {
-  if (!workspaceSnapshot?.sessions?.[$('#session-select').value]) return;
+  if (messageIntent || sessionIntent || !workspaceSnapshot?.sessions?.[$('#session-select').value]) return;
   selectedSessionId = $('#session-select').value;
   renderWorkspace();
 };
@@ -664,43 +702,69 @@ $('#files-tab').onclick=()=>selectArtifactPanel('files');
 $('#diff-tab').onclick=()=>selectArtifactPanel('diff');
 
 $('#new-session').onclick = async () => {
-  if (!activeProject || activeProject.status!=='ready' || creatingSession) return;
+  if (!canSubmitConversation() || creatingSession || messageIntent) return;
   const workspaceId = activeProject.workspace_id;
   sessionIntent ??= { key: crypto.randomUUID(), title: `Session ${Object.keys(workspaceSnapshot?.sessions || {}).length + 1}` };
-  const current = sessionIntent;
+  const current = sessionIntent, savedKey = recoveryKey(workspaceId);
   const button = $('#new-session'); creatingSession = true; button.disabled = true;
   $('#message-error').textContent = '';
   try {
+    saveConversation(savedKey, {sessionIntent:current, draft:$('#message-input').value});
     const created = await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/sessions`, { method: 'POST', headers: { 'Idempotency-Key': current.key }, body: JSON.stringify({ title: current.title }) });
     if (activeProject?.workspace_id !== workspaceId) return;
+    saveConversation(savedKey, {selectedSessionId:created.session.id, sessionIntent:null});
     selectedSessionId = created.session.id; sessionIntent = null;
     button.textContent = '新建 Session';
     await refreshWorkspace(viewGeneration);
   } catch (error) { if (activeProject?.workspace_id === workspaceId) { $('#message-error').textContent = error.message; button.textContent = '重试新建 Session'; } }
-  finally { creatingSession = false; button.disabled = activeProject?.status!=='ready'; }
+  finally { creatingSession = false; button.disabled = !canSubmitConversation() || Boolean(messageIntent); }
 };
 
 $('#message-form').onsubmit = async event => {
   event.preventDefault();
-  if (sendingMessage || !activeProject || activeProject.status!=='ready') return;
-  const text = $('#message-input').value.trim();
+  if (sendingMessage || !canSubmitConversation()) return;
+  const text = messageIntent?.message ?? $('#message-input').value.trim();
   if (!text) return;
+  if (messageIntent && encodedTurnRequestBytes(text) > TURN_REQUEST_MAX_BYTES) {
+    const oversized = messageIntent;
+    saveConversation(recoveryKey(activeProject.workspace_id), {messageIntent:null, selectedSessionId:oversized.sessionId, draft:oversized.message});
+    messageIntent = null;
+    $('#message-input').value = oversized.message;
+    $('#message-input').readOnly = false;
+    $('#message-submit').textContent = '发送';
+    $('#message-error').textContent = `请求内容过大，请缩短后重试（最多 ${TURN_REQUEST_MAX_BYTES} 字节）。`;
+    return;
+  }
+  if (encodedTurnRequestBytes(text) > TURN_REQUEST_MAX_BYTES) {
+    $('#message-error').textContent = `请求内容过大，请缩短后重试（最多 ${TURN_REQUEST_MAX_BYTES} 字节）。`;
+    return;
+  }
   const generation = viewGeneration;
-  const workspaceId = activeProject.workspace_id;
+  const workspaceId = activeProject.workspace_id, savedKey = recoveryKey(workspaceId);
+  let attemptedIntent = null;
+  let turnAccepted = false;
   sendingMessage = true;
   $('#message-submit').disabled = true;
   $('#message-error').textContent = '';
   try {
-    if (!selectedSessionId) {
+    saveConversation(savedKey, {draft:text});
+    if (!messageIntent && (sessionIntent || !selectedSessionId)) {
       sessionIntent ??= { key: crypto.randomUUID(), title: '主对话' };
+      saveConversation(savedKey, {sessionIntent});
       const created = await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/sessions`, { method: 'POST', headers: { 'Idempotency-Key': sessionIntent.key }, body: JSON.stringify({ title: sessionIntent.title }) });
       if (generation !== viewGeneration) return;
+      saveConversation(savedKey, {selectedSessionId:created.session.id, sessionIntent:null});
       selectedSessionId = created.session.id;
       sessionIntent = null;
     }
     messageIntent ??= { key: crypto.randomUUID(), sessionId: selectedSessionId, message: text };
     const current = messageIntent;
+    saveConversation(savedKey, {messageIntent:current, selectedSessionId:current.sessionId, draft:current.message});
+    $('#message-input').readOnly = true;
+    attemptedIntent = current;
     await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/sessions/${encodeURIComponent(current.sessionId)}/turns`, { method: 'POST', headers: { 'Idempotency-Key': current.key }, body: JSON.stringify({ message: current.message }) });
+    turnAccepted = true;
+    if (readConversation(savedKey).messageIntent?.key === current.key) saveConversation(savedKey, {messageIntent:null,draft:''});
     if (generation !== viewGeneration) return;
     messageIntent = null;
     $('#message-input').value = '';
@@ -708,11 +772,16 @@ $('#message-form').onsubmit = async event => {
     await refreshWorkspace(generation);
   } catch (error) {
     if (generation !== viewGeneration) return;
+    if (!turnAccepted && ((error.status === 400 && error.code === 'invalid_input') || (error.status === 413 && error.code === 'body_too_large')) && attemptedIntent && messageIntent?.key === attemptedIntent.key) {
+      saveConversation(savedKey, {messageIntent:null, selectedSessionId:attemptedIntent.sessionId, draft:attemptedIntent.message});
+      messageIntent = null;
+    }
     $('#message-error').textContent = error.message;
-    $('#message-submit').textContent = '重试';
+    $('#message-submit').textContent = messageIntent ? '重试' : '发送';
   } finally {
     sendingMessage = false;
-    $('#message-submit').disabled = activeProject?.status!=='ready';
+    $('#message-input').readOnly = Boolean(messageIntent);
+    $('#message-submit').disabled = !canSubmitConversation();
   }
 };
 
