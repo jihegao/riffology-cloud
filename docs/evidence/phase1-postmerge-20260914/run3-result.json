@@ -1,0 +1,40 @@
+{
+  "experimentId": "2c5b5f13-436a-4f01-b817-dc900c712347",
+  "runId": "2c5b5f13-436a-4f01-b817-dc900c712347",
+  "version": {
+    "revisionId": "d20609f49c51fa3a6e0b10bffac2c595b17d6cf63b71738ca978fc1014b106cf",
+    "filesSha256": "b01c7d649506b2071d237f779acf9a73ff4743dc8f310c6b6e80013bb7e887cc",
+    "specSha256": "d57288d6e3e60387c26f0b8b1b07fbebde873661c86446b4d0947dceb8b5207e"
+  },
+  "parameters": {
+    "servers": 2,
+    "customers": 40,
+    "arrival_rate": 1,
+    "arrival_scale": 1.25,
+    "service_rate": 1,
+    "setup_time": 0.1
+  },
+  "seed": 99,
+  "status": "completed",
+  "createdAt": 1789340014754,
+  "updatedAt": 1789340337155,
+  "errorCode": null,
+  "result": {
+    "metrics": {
+      "completed": 40,
+      "max_wait": 1.7281589727325652,
+      "mean_sojourn": 1.2627332307622823,
+      "mean_wait": 0.3016503470531185
+    },
+    "artifactSha256": "fc55e67823d072b48103700ea274f8824194aafc08c05f443f2089a331c3c665",
+    "outputs": [
+      {
+        "path": "customers.csv",
+        "sha256": "c51961b68888eadaaca9a27b9b8864462ad08f3edf3ac3c30356002dd18bb368",
+        "size": 4319,
+        "mediaType": "text/csv"
+      }
+    ]
+  },
+  "stale": false
+}

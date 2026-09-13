@@ -1,0 +1,61 @@
+{
+  "finalSmoke": {
+    "at": 1789340707571,
+    "automaticRunPosts": 0,
+    "sessionId": "4274eab3-70f5-4c1a-8a93-8f540cd6dce4",
+    "restored": {
+      "servers": 2,
+      "seed": 99,
+      "arrival_scale": 1.25
+    },
+    "rejected": {
+      "status": 503,
+      "body": {
+        "error": "turn_runtime_not_ready"
+      }
+    }
+  },
+  "turnCounts": {
+    "before": 5,
+    "after": 5
+  },
+  "admission": {
+    "state": "maintenance",
+    "reasonCode": "turn_runtime_not_ready",
+    "retryable": false
+  },
+  "releaseHold": null,
+  "savedRunId": "2c5b5f13-436a-4f01-b817-dc900c712347",
+  "savedRunStatus": "completed",
+  "filesRevision": {
+    "revisionId": "d20609f49c51fa3a6e0b10bffac2c595b17d6cf63b71738ca978fc1014b106cf",
+    "filesSha256": "b01c7d649506b2071d237f779acf9a73ff4743dc8f310c6b6e80013bb7e887cc",
+    "committedAt": 1789339691558
+  },
+  "turnRecovery": {
+    "at": 1789339625035,
+    "status": 200,
+    "turnId": "65cf26f1-bdc7-4ea8-a207-693c88a2173a",
+    "sessionId": "4274eab3-70f5-4c1a-8a93-8f540cd6dce4",
+    "beforeCount": 4,
+    "afterCount": 5,
+    "noAutoPost": true,
+    "identicalKeyAndBody": true
+  },
+  "experimentRecovery": {
+    "at": 1789339845845,
+    "status": 202,
+    "currentModel": {
+      "revisionId": "d20609f49c51fa3a6e0b10bffac2c595b17d6cf63b71738ca978fc1014b106cf",
+      "filesSha256": "b01c7d649506b2071d237f779acf9a73ff4743dc8f310c6b6e80013bb7e887cc",
+      "specSha256": "d57288d6e3e60387c26f0b8b1b07fbebde873661c86446b4d0947dceb8b5207e"
+    },
+    "originalModel": {
+      "revisionId": "91d8a44bf7981c00343fe5a4b176ff797ccfae9c4a004620d8aae2b09e42ca13",
+      "filesSha256": "67b3aea0ace5079e56bfbe1c28b77cce6c177da7edb112f419fafca4f0647cb8",
+      "specSha256": "7de67f530ee24483ff5dbf2eb9ee14b69f92bda37009fd1dbdaab57ef169fae6"
+    },
+    "noNewExperiment": true,
+    "identicalKeyAndBody": true
+  }
+}

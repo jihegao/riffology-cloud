@@ -1,0 +1,52 @@
+[
+  {
+    "baseRefName": "main",
+    "headRefOid": "422919e51ec7aaf958d03bf0ef5c6ba68b788091",
+    "mergeCommit": {
+      "oid": "5affab3cd46ba96239dc402fcc209453b4f84e02"
+    },
+    "mergedAt": "2026-09-13T22:42:17Z",
+    "number": 38,
+    "state": "MERGED"
+  },
+  {
+    "baseRefName": "main",
+    "headRefOid": "f355b23096a76753879b275857be32317070c596",
+    "mergeCommit": {
+      "oid": "0bcccc28c2d8ee1c1ea45f4fe53b67efda473abf"
+    },
+    "mergedAt": "2026-09-13T22:42:26Z",
+    "number": 39,
+    "state": "MERGED"
+  },
+  {
+    "baseRefName": "main",
+    "headRefOid": "263edc89b3b67553df2e2e96d8e061113a6c2097",
+    "mergeCommit": {
+      "oid": "d72e1842978cafdd06dc354fbbe800b7638a8d31"
+    },
+    "mergedAt": "2026-09-13T22:42:36Z",
+    "number": 40,
+    "state": "MERGED"
+  },
+  {
+    "baseRefName": "main",
+    "headRefOid": "f9f49f330c972681a98c816351330341a1ea855f",
+    "mergeCommit": {
+      "oid": "3703e9ae7738878b6266adec41fbf444510d60e9"
+    },
+    "mergedAt": "2026-09-13T22:42:45Z",
+    "number": 41,
+    "state": "MERGED"
+  },
+  {
+    "baseRefName": "main",
+    "headRefOid": "a38a0a1823084df39f22edd72eb0c1eb49431a9a",
+    "mergeCommit": {
+      "oid": "4fc90de7d4d5663e2d8c38091ffc146bbf38f36a"
+    },
+    "mergedAt": "2026-09-13T22:42:55Z",
+    "number": 42,
+    "state": "MERGED"
+  }
+]

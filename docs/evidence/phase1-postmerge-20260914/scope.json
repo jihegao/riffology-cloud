@@ -1,0 +1,15 @@
+{
+  "sourceSha": "4fc90de7d4d5663e2d8c38091ffc146bbf38f36a",
+  "scope": "Post-merge focused live reacceptance using an existing ordinary-user project; not another blank-project acceptance.",
+  "localTests": {
+    "fullPassed": 1633,
+    "fullSkipped": 6,
+    "freshBackendPassed": 31,
+    "freshBrowserPassed": 39
+  },
+  "limitations": [
+    "Live quota dispatch failure was not deliberately injected; local regression tests cover it.",
+    "No same-Revision parameter intervention pair was added in this post-merge run; phase1-release-profile experiment-lineage validation is not claimed for this record.",
+    "Initial old Preview health probe returned 403 before later root and health 200; exact cause remains unproven."
+  ]
+}

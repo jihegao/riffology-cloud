@@ -1,0 +1,17 @@
+{
+  "runId": "806206fb-a970-49da-861c-3cfc803ce028",
+  "rowCount": 40,
+  "csvSha256": "c51961b68888eadaaca9a27b9b8864462ad08f3edf3ac3c30356002dd18bb368",
+  "recomputed": {
+    "completed": 40,
+    "mean_wait": 0.3016503470531185,
+    "max_wait": 1.7281589727325652,
+    "mean_sojourn": 1.2627332307622823
+  },
+  "saved": {
+    "completed": 40,
+    "max_wait": 1.7281589727325652,
+    "mean_sojourn": 1.2627332307622823,
+    "mean_wait": 0.3016503470531185
+  }
+}
