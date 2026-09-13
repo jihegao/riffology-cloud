@@ -28,10 +28,10 @@ export function deriveTurnTiming(turn: TurnRecord, events: readonly TurnEvent[],
   const created = finiteTime(turn.createdAt);
   const checkpointing = rows.find(event => event.type === 'turn.checkpointing');
   const requesting = rows.find(event => event.type === 'provider.status' && event.payload?.state === 'requesting');
-  const terminal = rows.find(event => terminalStages.has(event.type.slice('turn.'.length)));
+  const terminal = rows.find(event => event.type.startsWith('turn.') && terminalStages.has(event.type.slice('turn.'.length)));
   const finished = finiteTime(turn.finishedAt) ?? finiteTime(terminal?.at);
   const observed = finiteTime(now);
-  const end = finished ?? observed;
+  const end = finished ?? (terminalStages.has(turn.status) || terminal ? null : observed);
   const terminalStatus = turn.status === 'completed' || turn.status === 'cancelled' || turn.status === 'failed' || turn.status === 'interrupted'
     ? turn.status : terminal?.type.slice('turn.'.length);
 
@@ -47,9 +47,13 @@ export function deriveTurnTiming(turn: TurnRecord, events: readonly TurnEvent[],
   // The first boundary is durable (createdAt/startedAt), so queue time stays
   // available even after the corresponding event has been compacted.
   const queuedMs = started !== null ? elapsed(created, started) : stage === 'queued' ? elapsed(created, observed) : null;
-  const preparingEnd = requesting ? requesting.at : (stage === 'preparing' ? end : null);
+  // Journal retention removes a prefix, never a hole: a retained start proves
+  // that a later requesting boundary was not cropped. Terminal state alone
+  // cannot prove preparation lasted until finishedAt.
+  const retainedStart = rows.some(event => event.type === 'turn.started' && event.at === started);
+  const preparingEnd = requesting ? requesting.at : (!checkpointing && (stage === 'preparing' || terminalStatus && retainedStart) ? end : null);
   const preparingMs = elapsed(started, preparingEnd);
-  const executingEnd = checkpointing ? checkpointing.at : (stage === 'executing' ? end : null);
+  const executingEnd = checkpointing ? checkpointing.at : (requesting ? end : null);
   const executingMs = elapsed(finiteTime(requesting?.at), executingEnd);
   // A saving duration requires the checkpointing event. A completed record
   // with that event retained can use its durable finishedAt; an in-flight save
