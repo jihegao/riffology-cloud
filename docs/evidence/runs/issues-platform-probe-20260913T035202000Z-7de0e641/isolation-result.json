@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "observedAt": "2026-09-13T04:00:39.513Z",
+  "scope": "provider-free-platform-probe-only",
+  "userTurnsEnabled": false,
+  "userTurnsSubmitted": 0,
+  "modelCalls": 0,
+  "deployedWorkerChanged": false,
+  "workerVersionId": "8c895424-3253-45f1-aa22-14a016332d24",
+  "workerSourceSha": "7de0e6418b2e4066ef4fe0f791ff4e8c8ea48566",
+  "preflight": {
+    "status": "blocked",
+    "blockedChecks": [
+      {
+        "name": "worker-source-sha",
+        "status": "blocked",
+        "detail": "release-requires-clean-index-and-tracked-worktree-at-exact-worker-sha"
+      },
+      {
+        "name": "runtime-secrets",
+        "status": "blocked",
+        "detail": "use---opencode-auth-file-to-reference-the-existing-provider-credential"
+      }
+    ],
+    "relevantCloudChecksPassed": true
+  },
+  "platformProbe": {
+    "status": "passed",
+    "validationStatus": "passed",
+    "probeWorker": "riffology-issues-probe-717241f88aa732ef2a99b846",
+    "actorA": "m2-t-ped7y3hq22wna7mm23be5gkm6z4pmfb3w3hdbw7hhumnxcd2vteq",
+    "actorB": "m2-t-2xxzn6bdkiw7ssn5nhb2bjjpdl7zazg2b25ov6eplctli7xvygcq",
+    "destroyAttemptCount": 10,
+    "transportRetryCount": 0,
+    "cleanupStatus": "passed",
+    "workerAbsenceConfirmed": true,
+    "routeFallbackConfirmed": true
+  },
+  "gateAfter": {
+    "schemaVersion": 1,
+    "status": "passed",
+    "observedAt": "2026-09-13T04:00:31.702Z",
+    "workerVersionId": "8c895424-3253-45f1-aa22-14a016332d24",
+    "workerSourceSha": "7de0e6418b2e4066ef4fe0f791ff4e8c8ea48566",
+    "gateName": "M2_TURNS_ENABLED",
+    "gateValue": "false",
+    "gateClosed": true
+  },
+  "finalInventoryStatus": "passed"
+}

@@ -1,0 +1,325 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "observedAt": "2026-09-13T05:07:50.965Z",
+  "validation": {
+    "platformProbeValidated": true,
+    "serverReceiptPresent": true,
+    "receiptRunning": false,
+    "firstDestroy": {
+      "classification": "timeout",
+      "delivery": "unknown",
+      "retryable": true,
+      "durationMs": 30007,
+      "faultInjected": true,
+      "faultReceiptObserved": true
+    },
+    "firstConfirmedRecovery": {
+      "attempt": 2,
+      "state": "absent",
+      "durationMs": 856
+    },
+    "naturalTransportErrors": [
+      {
+        "stage": "release-a",
+        "attempt": 5,
+        "transportCode": "UND_ERR_CONNECT_TIMEOUT"
+      },
+      {
+        "stage": "release-a",
+        "attempt": 6,
+        "transportCode": "UND_ERR_CONNECT_TIMEOUT"
+      },
+      {
+        "stage": "release-b",
+        "attempt": 7,
+        "transportCode": "UND_ERR_CONNECT_TIMEOUT"
+      },
+      {
+        "stage": "release-b",
+        "attempt": 9,
+        "transportCode": "UND_ERR_CONNECT_TIMEOUT"
+      }
+    ],
+    "actorABeforeB": true
+  },
+  "cleanup": {
+    "status": "passed",
+    "workerName": "riffology-issues-probe-7b749ba84b0f94115b7f1229",
+    "identityVerifiedBeforeDelete": true,
+    "deleteAttempted": true,
+    "deleteExitConfirmed": true,
+    "absenceConfirmed": true,
+    "routeFallbackConfirmed": true,
+    "absenceDurationMs": 32945,
+    "recoveryRequired": false,
+    "observedAt": 1789276020183,
+    "actorCleanup": [
+      {
+        "actor": "m2-t-x3ihqdhbvzwoz4fxgtd27l4bgcnsxck6bjlvqu45w6hr35dojl4q",
+        "status": "absent",
+        "quietMs": 30000,
+        "confirmedAt": 1789275851457,
+        "internalLifecycle": [
+          {
+            "actor": "m2-t-x3ihqdhbvzwoz4fxgtd27l4bgcnsxck6bjlvqu45w6hr35dojl4q",
+            "state": "absent",
+            "observedAt": 1789275792183
+          },
+          {
+            "actor": "m2-t-x3ihqdhbvzwoz4fxgtd27l4bgcnsxck6bjlvqu45w6hr35dojl4q",
+            "state": "absent",
+            "observedAt": 1789275803378
+          },
+          {
+            "actor": "m2-t-x3ihqdhbvzwoz4fxgtd27l4bgcnsxck6bjlvqu45w6hr35dojl4q",
+            "state": "absent",
+            "observedAt": 1789275814802
+          },
+          {
+            "actor": "m2-t-x3ihqdhbvzwoz4fxgtd27l4bgcnsxck6bjlvqu45w6hr35dojl4q",
+            "state": "absent",
+            "observedAt": 1789275829142
+          },
+          {
+            "actor": "m2-t-x3ihqdhbvzwoz4fxgtd27l4bgcnsxck6bjlvqu45w6hr35dojl4q",
+            "state": "absent",
+            "observedAt": 1789275851457
+          }
+        ],
+        "externalLifecycle": [
+          {
+            "actor": "m2-t-x3ihqdhbvzwoz4fxgtd27l4bgcnsxck6bjlvqu45w6hr35dojl4q",
+            "state": "absent",
+            "observedAt": 1789275794676,
+            "instanceId": "fc4e2048ff721c5c71dfc3c4faa2e4fea4fe79a6835f19478d7fbb161f89eed7"
+          },
+          {
+            "actor": "m2-t-x3ihqdhbvzwoz4fxgtd27l4bgcnsxck6bjlvqu45w6hr35dojl4q",
+            "state": "unknown",
+            "observedAt": 1789275805428,
+            "instanceId": null
+          },
+          {
+            "actor": "m2-t-x3ihqdhbvzwoz4fxgtd27l4bgcnsxck6bjlvqu45w6hr35dojl4q",
+            "state": "absent",
+            "observedAt": 1789275819490,
+            "instanceId": "fc4e2048ff721c5c71dfc3c4faa2e4fea4fe79a6835f19478d7fbb161f89eed7"
+          },
+          {
+            "actor": "m2-t-x3ihqdhbvzwoz4fxgtd27l4bgcnsxck6bjlvqu45w6hr35dojl4q",
+            "state": "absent",
+            "observedAt": 1789275832580,
+            "instanceId": "fc4e2048ff721c5c71dfc3c4faa2e4fea4fe79a6835f19478d7fbb161f89eed7"
+          },
+          {
+            "actor": "m2-t-x3ihqdhbvzwoz4fxgtd27l4bgcnsxck6bjlvqu45w6hr35dojl4q",
+            "state": "absent",
+            "observedAt": 1789275853550,
+            "instanceId": "fc4e2048ff721c5c71dfc3c4faa2e4fea4fe79a6835f19478d7fbb161f89eed7"
+          }
+        ]
+      },
+      {
+        "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+        "status": "absent",
+        "quietMs": 30000,
+        "confirmedAt": 1789275968437,
+        "internalLifecycle": [
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275794917
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275806115
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275820209
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "unknown",
+            "observedAt": 1789275843102
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275854415
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "unknown",
+            "observedAt": 1789275871655
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275882335
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "unknown",
+            "observedAt": 1789275900164
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275913187
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275921237
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275929408
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275937941
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275968437
+          }
+        ],
+        "externalLifecycle": [
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275797608,
+            "instanceId": "4104cbf78797840a14f016b685ee65f6e9a88380a416cfbb8350c82d0886f3e1"
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275809037,
+            "instanceId": "4104cbf78797840a14f016b685ee65f6e9a88380a416cfbb8350c82d0886f3e1"
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275823369,
+            "instanceId": "4104cbf78797840a14f016b685ee65f6e9a88380a416cfbb8350c82d0886f3e1"
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275845602,
+            "instanceId": "4104cbf78797840a14f016b685ee65f6e9a88380a416cfbb8350c82d0886f3e1"
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275856135,
+            "instanceId": "4104cbf78797840a14f016b685ee65f6e9a88380a416cfbb8350c82d0886f3e1"
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275876414,
+            "instanceId": "4104cbf78797840a14f016b685ee65f6e9a88380a416cfbb8350c82d0886f3e1"
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275884639,
+            "instanceId": "4104cbf78797840a14f016b685ee65f6e9a88380a416cfbb8350c82d0886f3e1"
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275907509,
+            "instanceId": "4104cbf78797840a14f016b685ee65f6e9a88380a416cfbb8350c82d0886f3e1"
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275915512,
+            "instanceId": "4104cbf78797840a14f016b685ee65f6e9a88380a416cfbb8350c82d0886f3e1"
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275923682,
+            "instanceId": "4104cbf78797840a14f016b685ee65f6e9a88380a416cfbb8350c82d0886f3e1"
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275932331,
+            "instanceId": "4104cbf78797840a14f016b685ee65f6e9a88380a416cfbb8350c82d0886f3e1"
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275939733,
+            "instanceId": "4104cbf78797840a14f016b685ee65f6e9a88380a416cfbb8350c82d0886f3e1"
+          },
+          {
+            "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+            "state": "absent",
+            "observedAt": 1789275970586,
+            "instanceId": "4104cbf78797840a14f016b685ee65f6e9a88380a416cfbb8350c82d0886f3e1"
+          }
+        ]
+      }
+    ]
+  },
+  "inventory": {
+    "schemaVersion": 1,
+    "status": "passed",
+    "observedAt": "2026-09-13T05:07:50.965Z",
+    "probeWorker": {
+      "name": "riffology-issues-probe-7b749ba84b0f94115b7f1229",
+      "missing": true,
+      "routeFallbackConfirmed": true,
+      "fallbackStatus": 404,
+      "fallbackContentType": "application/json"
+    },
+    "containerApp": {
+      "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+      "name": "riffology-m3-trusted-pi-staging",
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2",
+      "version": 2
+    },
+    "actors": [
+      {
+        "actor": "m2-t-x3ihqdhbvzwoz4fxgtd27l4bgcnsxck6bjlvqu45w6hr35dojl4q",
+        "matchCount": 1,
+        "state": "inactive",
+        "instanceId": "fc4e2048ff721c5c71dfc3c4faa2e4fea4fe79a6835f19478d7fbb161f89eed7"
+      },
+      {
+        "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+        "matchCount": 1,
+        "state": "inactive",
+        "instanceId": "4104cbf78797840a14f016b685ee65f6e9a88380a416cfbb8350c82d0886f3e1"
+      }
+    ],
+    "recoveryFiles": []
+  },
+  "gateAfter": {
+    "schemaVersion": 1,
+    "status": "passed",
+    "observedAt": "2026-09-13T05:07:50.965Z",
+    "workerVersionId": "8c895424-3253-45f1-aa22-14a016332d24",
+    "workerSourceSha": "7de0e6418b2e4066ef4fe0f791ff4e8c8ea48566",
+    "gateName": "M2_TURNS_ENABLED",
+    "gateValue": "false",
+    "gateClosed": true
+  },
+  "mainWorkerDeploymentChanged": false,
+  "userTurnsOpened": false,
+  "userTurnsCreated": 0,
+  "modelCalls": 0
+}

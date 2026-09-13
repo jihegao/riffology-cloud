@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "observedAt": "2026-09-13T04:56:33.555Z",
+  "failedProbe": {
+    "reasonCode": "platform-probe-start-timeout",
+    "workerName": "riffology-issues-probe-14e5b002bc1f2b434d3ea9b6",
+    "workerMissing": true,
+    "routeFallbackConfirmed": true,
+    "fallbackStatus": 404
+  },
+  "mainWorker": {
+    "versionId": "8c895424-3253-45f1-aa22-14a016332d24",
+    "sourceTag": "source-7de0e6418b2e4066ef4fe0f791ff4e8c8ea48566",
+    "gateName": "M2_TURNS_ENABLED",
+    "gateValue": "false",
+    "gateClosed": true
+  },
+  "actors": [
+    {
+      "actor": "m2-t-ikigkg23bdltpozfkobsamdo5aybftqei7xupdfzi4agju7r3b4q",
+      "matchCount": 1,
+      "state": "inactive",
+      "instanceId": "ae254a04fc4f71a3658c4f38aa2e8ffd5d99900495f76a86edbbdb4b1c3fd1a1"
+    },
+    {
+      "actor": "m2-t-tireymh7z376kam7gjco4c7klfqhwoixq5d7wykaqglqspr6it2q",
+      "matchCount": 0,
+      "state": "absent",
+      "instanceId": null
+    }
+  ],
+  "recoveryFiles": []
+}

@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "observedAt": "2026-09-13T04:27:54.608Z",
+  "probeStatus": "passed",
+  "clientRecoveryPassed": true,
+  "serverFaultReceiptPresent": false,
+  "sufficientForInjectedTransportClaim": false,
+  "reason": "probe-protocol-did-not-persist-server-side-fault-receipt",
+  "workerVersionId": "8c895424-3253-45f1-aa22-14a016332d24",
+  "workerSourceSha": "7de0e6418b2e4066ef4fe0f791ff4e8c8ea48566",
+  "gateClosed": true,
+  "probeWorkerMissing": true,
+  "recoveryFiles": [],
+  "transportObservations": [
+    {
+      "stage": "release-a",
+      "attempt": 1,
+      "faultInjected": true,
+      "classification": "transport-error",
+      "transportCode": "UND_ERR_CONNECT_TIMEOUT",
+      "state": "unknown"
+    },
+    {
+      "stage": "release-a",
+      "attempt": 2,
+      "faultInjected": false,
+      "classification": "transport-error",
+      "transportCode": "UND_ERR_CONNECT_TIMEOUT",
+      "state": "unknown"
+    },
+    {
+      "stage": "release-a",
+      "attempt": 9,
+      "faultInjected": false,
+      "classification": "transport-error",
+      "transportCode": "UND_ERR_CONNECT_TIMEOUT",
+      "state": "unknown"
+    },
+    {
+      "stage": "release-b",
+      "attempt": 5,
+      "faultInjected": false,
+      "classification": "transport-error",
+      "transportCode": "UND_ERR_CONNECT_TIMEOUT",
+      "state": "unknown"
+    },
+    {
+      "stage": "release-b",
+      "attempt": 9,
+      "faultInjected": false,
+      "classification": "transport-error",
+      "transportCode": "UND_ERR_CONNECT_TIMEOUT",
+      "state": "unknown"
+    }
+  ],
+  "actors": [
+    {
+      "actor": "m2-t-g37c4sruia6nz7kfpled3xgvy6relmsebr4rmloasgbt24rr56va",
+      "matchCount": 1,
+      "state": "inactive",
+      "instanceId": "9cb20989a4db6bfdc8c18b66df908513ba105d1533a573a7551405209c77bf8a"
+    },
+    {
+      "actor": "m2-t-z5ipq5acmefpxnj4smspnnniylbplsqzem4hbhwihqnewjjsfurq",
+      "matchCount": 1,
+      "state": "inactive",
+      "instanceId": "561141cf5867c2e2000c2479ee557eeb7b31f6184d5706b5c3c9e19de1239c89"
+    }
+  ]
+}

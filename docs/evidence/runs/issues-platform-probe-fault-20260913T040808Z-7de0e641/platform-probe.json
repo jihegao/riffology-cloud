@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "status": "blocked",
+  "reasonCode": "platform-probe-start-transport-failed",
+  "workerSourceSha": "7de0e6418b2e4066ef4fe0f791ff4e8c8ea48566",
+  "workerVersionId": "8c895424-3253-45f1-aa22-14a016332d24",
+  "probeWorker": {
+    "name": "riffology-issues-probe-b05fb3bcb91fd06dc62de76c",
+    "origin": "https://m1.riff-demo.gaojihe.cn/__riffology-internal/issues-probe/b05fb3bcb91fd06dc62de76c",
+    "pathPrefix": "/__riffology-internal/issues-probe/b05fb3bcb91fd06dc62de76c",
+    "versionId": "d30a8403-1bda-4d38-afe6-c4901899ed07",
+    "versionTag": "probe-b05fb3bcb91fd06dc62de76c",
+    "capabilityBindingVerified": true,
+    "pathBindingVerified": true,
+    "binding": {
+      "name": "TRUSTED_PI_SANDBOX",
+      "type": "durable_object_namespace",
+      "className": "TrustedPiSandbox",
+      "scriptName": "riffology-m1-gateway-staging"
+    }
+  },
+  "containerApp": {
+    "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+    "name": "riffology-m3-trusted-pi-staging",
+    "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2",
+    "version": 2
+  },
+  "actorA": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+  "actorB": "m2-t-6eudhxhnidwxtm7tz4lae6pmsjjp3uqldskogf5qfmfgw7kh5jga",
+  "failure": {
+    "stage": "start-a",
+    "action": "start",
+    "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+    "requestTimeoutMs": 180000,
+    "delivery": "unknown",
+    "observedAt": 1789272567834
+  },
+  "progress": {
+    "startedAt": 1789272503641,
+    "timeline": [
+      {
+        "stage": "control-plane-read",
+        "action": null,
+        "actor": null,
+        "requestTimeoutMs": null,
+        "delivery": "not-applicable",
+        "observedAt": 1789272503641
+      },
+      {
+        "stage": "actors-derived",
+        "action": null,
+        "actor": null,
+        "requestTimeoutMs": null,
+        "delivery": "not-applicable",
+        "observedAt": 1789272507133
+      },
+      {
+        "stage": "probe-worker-confirmed",
+        "action": null,
+        "actor": null,
+        "requestTimeoutMs": null,
+        "delivery": "not-applicable",
+        "observedAt": 1789272524388
+      },
+      {
+        "stage": "probe-health",
+        "action": "health",
+        "actor": null,
+        "requestTimeoutMs": 20000,
+        "delivery": "unknown",
+        "observedAt": 1789272524388
+      },
+      {
+        "stage": "probe-health-confirmed",
+        "action": "health",
+        "actor": null,
+        "requestTimeoutMs": 20000,
+        "delivery": "confirmed",
+        "observedAt": 1789272567834
+      },
+      {
+        "stage": "start-a",
+        "action": "start",
+        "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+        "requestTimeoutMs": 180000,
+        "delivery": "unknown",
+        "observedAt": 1789272567834
+      }
+    ]
+  },
+  "internalLifecycle": [],
+  "externalLifecycle": [],
+  "actorBInternalLifecycle": [],
+  "actorBExternalLifecycle": [],
+  "destroyAttempts": [],
+  "faultInjection": {
+    "kind": "withhold-destroy-response-after-release",
+    "stage": "release-a",
+    "delayMs": 45000,
+    "requestTimeoutMs": 30000
+  },
+  "destroyPolicy": {
+    "maxTransportRetries": 3,
+    "maxObservations": 120,
+    "deadlineMs": 600000,
+    "quietMs": 30000
+  },
+  "cleanup": {
+    "status": "passed",
+    "workerName": "riffology-issues-probe-b05fb3bcb91fd06dc62de76c",
+    "identityVerifiedBeforeDelete": true,
+    "deleteAttempted": true,
+    "deleteExitConfirmed": true,
+    "absenceConfirmed": true,
+    "routeFallbackConfirmed": true,
+    "absenceDurationMs": 36848,
+    "recoveryRequired": false,
+    "observedAt": 1789272739608,
+    "actorCleanup": [
+      {
+        "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+        "status": "absent",
+        "quietMs": 30000,
+        "confirmedAt": 1789272643761,
+        "internalLifecycle": [
+          {
+            "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+            "state": "absent",
+            "observedAt": 1789272583490
+          },
+          {
+            "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+            "state": "absent",
+            "observedAt": 1789272596120
+          },
+          {
+            "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+            "state": "absent",
+            "observedAt": 1789272605984
+          },
+          {
+            "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+            "state": "absent",
+            "observedAt": 1789272615441
+          },
+          {
+            "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+            "state": "absent",
+            "observedAt": 1789272623232
+          },
+          {
+            "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+            "state": "absent",
+            "observedAt": 1789272635491
+          },
+          {
+            "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+            "state": "absent",
+            "observedAt": 1789272643761
+          }
+        ],
+        "externalLifecycle": [
+          {
+            "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+            "state": "stopped",
+            "observedAt": 1789272590004,
+            "instanceId": "50ac14b546cad78bf60f36aa4ed3bdeca2decd077b646d5cb0e05f40198a1e18"
+          },
+          {
+            "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+            "state": "stopped",
+            "observedAt": 1789272600170,
+            "instanceId": "50ac14b546cad78bf60f36aa4ed3bdeca2decd077b646d5cb0e05f40198a1e18"
+          },
+          {
+            "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+            "state": "absent",
+            "observedAt": 1789272609800,
+            "instanceId": "50ac14b546cad78bf60f36aa4ed3bdeca2decd077b646d5cb0e05f40198a1e18"
+          },
+          {
+            "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+            "state": "absent",
+            "observedAt": 1789272617361,
+            "instanceId": "50ac14b546cad78bf60f36aa4ed3bdeca2decd077b646d5cb0e05f40198a1e18"
+          },
+          {
+            "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+            "state": "absent",
+            "observedAt": 1789272629732,
+            "instanceId": "50ac14b546cad78bf60f36aa4ed3bdeca2decd077b646d5cb0e05f40198a1e18"
+          },
+          {
+            "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+            "state": "absent",
+            "observedAt": 1789272638131,
+            "instanceId": "50ac14b546cad78bf60f36aa4ed3bdeca2decd077b646d5cb0e05f40198a1e18"
+          },
+          {
+            "actor": "m2-t-mmopuailoetjs4jytfju3hjzow5wp5vdru33xwpd6ppb7a5jy5qq",
+            "state": "absent",
+            "observedAt": 1789272645780,
+            "instanceId": "50ac14b546cad78bf60f36aa4ed3bdeca2decd077b646d5cb0e05f40198a1e18"
+          }
+        ]
+      },
+      {
+        "actor": "m2-t-6eudhxhnidwxtm7tz4lae6pmsjjp3uqldskogf5qfmfgw7kh5jga",
+        "status": "never-started",
+        "quietMs": 30000,
+        "confirmedAt": null,
+        "internalLifecycle": [],
+        "externalLifecycle": []
+      }
+    ]
+  }
+}

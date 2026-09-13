@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "observedAt": "2026-09-13T05:07:50.965Z",
+  "probeWorker": {
+    "name": "riffology-issues-probe-7b749ba84b0f94115b7f1229",
+    "missing": true,
+    "routeFallbackConfirmed": true,
+    "fallbackStatus": 404,
+    "fallbackContentType": "application/json"
+  },
+  "containerApp": {
+    "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+    "name": "riffology-m3-trusted-pi-staging",
+    "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-trusted-pi-staging@sha256:5a42060aefe928240601fd6de9214ac1187638985e7a4f70e0a52ef59cb794a2",
+    "version": 2
+  },
+  "actors": [
+    {
+      "actor": "m2-t-x3ihqdhbvzwoz4fxgtd27l4bgcnsxck6bjlvqu45w6hr35dojl4q",
+      "matchCount": 1,
+      "state": "inactive",
+      "instanceId": "fc4e2048ff721c5c71dfc3c4faa2e4fea4fe79a6835f19478d7fbb161f89eed7"
+    },
+    {
+      "actor": "m2-t-m2aozt76jqd3mrkrhqqfx7722vbkcekbl2lsdaxyw7nihm3dil4q",
+      "matchCount": 1,
+      "state": "inactive",
+      "instanceId": "4104cbf78797840a14f016b685ee65f6e9a88380a416cfbb8350c82d0886f3e1"
+    }
+  ],
+  "recoveryFiles": []
+}

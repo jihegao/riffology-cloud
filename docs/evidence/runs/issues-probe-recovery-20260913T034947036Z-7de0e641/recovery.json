@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "phase": "completed",
+  "workerName": "riffology-issues-probe-e76b2487874eed51977dfa1f",
+  "startedAt": "2026-09-13T03:49:47.036Z",
+  "identityBefore": {
+    "status": "exact",
+    "versionId": "dae8166d-db9f-4276-8e36-a9e28f25d5c3"
+  },
+  "actors": [
+    "m2-t-re5axt3n5xxo323afbwga4gwnk6cq7dbvxfvwao4v4atlaqgcceq",
+    "m2-t-oalpru65dhxoxh6erjsr3s6uz6bvnkeai6amayn2wygwp3iohdsa"
+  ],
+  "finishedAt": "2026-09-13T03:51:51.028Z",
+  "actorCleanup": [
+    {
+      "actor": "m2-t-re5axt3n5xxo323afbwga4gwnk6cq7dbvxfvwao4v4atlaqgcceq",
+      "status": "absent",
+      "quietMs": 30000,
+      "confirmedAt": 1789271469452,
+      "internalLifecycle": [
+        {
+          "attempt": 1,
+          "state": "absent",
+          "reasonCode": null,
+          "observedAt": 1789271395512
+        },
+        {
+          "attempt": 2,
+          "state": "unknown",
+          "reasonCode": "transport-error",
+          "observedAt": 1789271413999
+        },
+        {
+          "attempt": 3,
+          "state": "absent",
+          "reasonCode": null,
+          "observedAt": 1789271426777
+        },
+        {
+          "attempt": 4,
+          "state": "absent",
+          "reasonCode": null,
+          "observedAt": 1789271435882
+        },
+        {
+          "attempt": 5,
+          "state": "absent",
+          "reasonCode": null,
+          "observedAt": 1789271444590
+        },
+        {
+          "attempt": 6,
+          "state": "absent",
+          "reasonCode": null,
+          "observedAt": 1789271453683
+        },
+        {
+          "attempt": 7,
+          "state": "absent",
+          "reasonCode": null,
+          "observedAt": 1789271469452
+        }
+      ],
+      "externalLifecycle": [
+        {
+          "attempt": 1,
+          "state": "absent",
+          "instanceId": "2fa2a19c4690fb50296aec769c27534ca3b569163a0141cf0d2b0e9b383d1827",
+          "observedAt": 1789271395512
+        },
+        {
+          "attempt": 2,
+          "state": "absent",
+          "instanceId": "2fa2a19c4690fb50296aec769c27534ca3b569163a0141cf0d2b0e9b383d1827",
+          "observedAt": 1789271413999
+        },
+        {
+          "attempt": 3,
+          "state": "absent",
+          "instanceId": "2fa2a19c4690fb50296aec769c27534ca3b569163a0141cf0d2b0e9b383d1827",
+          "observedAt": 1789271426777
+        },
+        {
+          "attempt": 4,
+          "state": "absent",
+          "instanceId": "2fa2a19c4690fb50296aec769c27534ca3b569163a0141cf0d2b0e9b383d1827",
+          "observedAt": 1789271435882
+        },
+        {
+          "attempt": 5,
+          "state": "absent",
+          "instanceId": "2fa2a19c4690fb50296aec769c27534ca3b569163a0141cf0d2b0e9b383d1827",
+          "observedAt": 1789271444590
+        },
+        {
+          "attempt": 6,
+          "state": "absent",
+          "instanceId": "2fa2a19c4690fb50296aec769c27534ca3b569163a0141cf0d2b0e9b383d1827",
+          "observedAt": 1789271453683
+        },
+        {
+          "attempt": 7,
+          "state": "absent",
+          "instanceId": "2fa2a19c4690fb50296aec769c27534ca3b569163a0141cf0d2b0e9b383d1827",
+          "observedAt": 1789271469452
+        }
+      ]
+    },
+    {
+      "actor": "m2-t-oalpru65dhxoxh6erjsr3s6uz6bvnkeai6amayn2wygwp3iohdsa",
+      "status": "absent",
+      "quietMs": 30000,
+      "confirmedAt": 1789271469452,
+      "internalLifecycle": [
+        {
+          "attempt": 1,
+          "state": "absent",
+          "reasonCode": null,
+          "observedAt": 1789271395512
+        },
+        {
+          "attempt": 2,
+          "state": "absent",
+          "reasonCode": null,
+          "observedAt": 1789271413999
+        },
+        {
+          "attempt": 3,
+          "state": "absent",
+          "reasonCode": null,
+          "observedAt": 1789271426777
+        },
+        {
+          "attempt": 4,
+          "state": "absent",
+          "reasonCode": null,
+          "observedAt": 1789271435882
+        },
+        {
+          "attempt": 5,
+          "state": "absent",
+          "reasonCode": null,
+          "observedAt": 1789271444590
+        },
+        {
+          "attempt": 6,
+          "state": "absent",
+          "reasonCode": null,
+          "observedAt": 1789271453683
+        },
+        {
+          "attempt": 7,
+          "state": "absent",
+          "reasonCode": null,
+          "observedAt": 1789271469452
+        }
+      ],
+      "externalLifecycle": [
+        {
+          "attempt": 1,
+          "state": "stopped",
+          "instanceId": "603a9f7831005ac2157681de1f24c57917d6b8af3baf14c8dbbb118603115a99",
+          "observedAt": 1789271395512
+        },
+        {
+          "attempt": 2,
+          "state": "stopped",
+          "instanceId": "603a9f7831005ac2157681de1f24c57917d6b8af3baf14c8dbbb118603115a99",
+          "observedAt": 1789271413999
+        },
+        {
+          "attempt": 3,
+          "state": "stopped",
+          "instanceId": "603a9f7831005ac2157681de1f24c57917d6b8af3baf14c8dbbb118603115a99",
+          "observedAt": 1789271426777
+        },
+        {
+          "attempt": 4,
+          "state": "absent",
+          "instanceId": "603a9f7831005ac2157681de1f24c57917d6b8af3baf14c8dbbb118603115a99",
+          "observedAt": 1789271435882
+        },
+        {
+          "attempt": 5,
+          "state": "absent",
+          "instanceId": "603a9f7831005ac2157681de1f24c57917d6b8af3baf14c8dbbb118603115a99",
+          "observedAt": 1789271444590
+        },
+        {
+          "attempt": 6,
+          "state": "absent",
+          "instanceId": "603a9f7831005ac2157681de1f24c57917d6b8af3baf14c8dbbb118603115a99",
+          "observedAt": 1789271453683
+        },
+        {
+          "attempt": 7,
+          "state": "absent",
+          "instanceId": "603a9f7831005ac2157681de1f24c57917d6b8af3baf14c8dbbb118603115a99",
+          "observedAt": 1789271469452
+        }
+      ]
+    }
+  ],
+  "predelete": {
+    "status": "exact",
+    "versionId": "dae8166d-db9f-4276-8e36-a9e28f25d5c3"
+  },
+  "deleteAttempted": true,
+  "deleteExitConfirmed": true,
+  "workerAbsenceConfirmed": true,
+  "routeFallbackConfirmed": true,
+  "absenceDurationMs": 31651,
+  "observedAt": 1789271511028
+}
