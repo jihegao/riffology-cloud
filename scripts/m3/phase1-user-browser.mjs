@@ -37,7 +37,7 @@ try{
    if(!page.url().endsWith('/'+project.id))await page.goto(origin+'/#/workspace/'+project.id);
    await page.locator('#session-select').waitFor({timeout:60000});
    if(command==='snapshot'){
-    const workspace=await api(base);save(label,{at:Date.now(),workspace,model:await api(base+'/model'),experiments:await api(base+'/experiments'),services:await api(base+'/services'),files:await api(base+'/files')});await page.screenshot({path:path.join(dir,label+'.png'),fullPage:true});console.log({turns:workspace.turns.map(t=>({id:t.id,status:t.status})),admission:workspace.admission,releaseHold:workspace.releaseHold});
+    const workspace=await api(base);save(label,{at:Date.now(),workspace,model:await api(base+'/model'),experiments:await api(base+'/experiments'),services:await api(base+'/services'),files:await api(base+'/files')});await page.screenshot({path:path.join(dir,label+'.png'),fullPage:true});console.log({turns:Object.values(workspace.turns).map(t=>({id:t.id,status:t.status})),admission:workspace.admission,releaseHold:workspace.releaseHold});
    }else if(command==='turn'){
     await page.locator('#message-submit:not([disabled])').waitFor({timeout:60000});const id=await page.locator('#session-select').inputValue();assert(id);if(fs.existsSync(file('session')))assert.equal(id,read('session').id);else save('session',{id});
     save(label+'-before',await api(base));const prompt=fs.readFileSync(argument,'utf8');await page.locator('#message-input').fill(prompt);const r=await mutation(base+`/sessions/${id}/turns`,()=>page.locator('#message-submit').click());console.log({turnId:r.turn.id,status:r.turn.status});

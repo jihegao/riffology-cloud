@@ -44,6 +44,7 @@ export interface TurnDispatcherJournal {
   beginResourceWait?(scope:TurnScope,input:{turnId:string;ticketId?:string|null;operationId:string;reasonCode?:string;since?:number;nextAttemptAt?:number}):Promise<unknown>;
   consumeResourceLeaseAndClaim?(scope:TurnScope,generation:number,input:{turnId:string;ticketId:string;operationId:string;leaseId:string}):Promise<{turn:TurnRecord;replayed:boolean}|null>;
   appendRuntime(scope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;eventId:string;type:TurnRuntimeEvent['type'];at:number;payload:unknown}):Promise<unknown>;
+  appendRuntimeBatch?(scope:TurnScope,inputs:ReadonlyArray<{turnId:string;dispatchId:string;runtimeGeneration:number;eventId:string;type:TurnRuntimeEvent['type'];at:number;payload:unknown}>):Promise<unknown>;
   beginCheckpoint(scope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;outcome:'completed'|'failed'|'cancelled'|'interrupted';errorCode?:string|null}):Promise<TurnRecord>;
   commitCheckpoint(scope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;checkpoint:CheckpointReceipt;resourceDisposition:TurnResourceDisposition}):Promise<TurnRecord>;
   failCheckpoint(scope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;errorCode:string;resourceDisposition:TurnResourceDisposition}):Promise<TurnRecord>;
@@ -154,7 +155,22 @@ export class TurnDispatcher {
 
   private async apply(turn:TurnRecord,receipt:TurnRuntimeReceipt):Promise<TurnRecord>{
     const dispatchId=turn.dispatchId!,generation=turn.runtimeGeneration!,scope=turn.scope;
-    for(const item of receipt.events??[]){await this.retainArtifact(scope,turn.id,dispatchId,item);await this.journal.appendRuntime(scope,{turnId:turn.id,dispatchId,runtimeGeneration:generation,...item});}
+    const append=async(events:TurnRuntimeEvent[])=>{
+      if(!events.length)return;
+      const inputs=events.map(item=>({turnId:turn.id,dispatchId,runtimeGeneration:generation,...item}));
+      if(this.journal.appendRuntimeBatch)await this.journal.appendRuntimeBatch(scope,inputs);
+      else for(const input of inputs)await this.journal.appendRuntime(scope,input);
+    };
+    let buffered:TurnRuntimeEvent[]=[];
+    for(const item of receipt.events??[]){
+      if(item.type==='tool.completed'&&item.payload.artifact!=null){
+        // Preserve the retain -> durable event boundary before retaining the
+        // next artifact. Ordinary streamed deltas can share one transaction.
+        await append(buffered);buffered=[];
+        await this.retainArtifact(scope,turn.id,dispatchId,item);await append([item]);
+      }else buffered.push(item);
+    }
+    await append(buffered);
     if(receipt.phase!=='terminal')return turn;
     const pending=await this.journal.beginCheckpoint(scope,{turnId:turn.id,dispatchId,runtimeGeneration:generation,outcome:receipt.outcome!,errorCode:receipt.executionErrorCode??null});
     if(receipt.checkpoint){this.emit({route:'turn.operation',metric:'checkpoint_result',stage:'checkpoint',reasonCategory:'checkpoint_committed',attempt:1,durationMs:null,value:1,correlationId:turn.resourceLease!.operationId});return this.journal.commitCheckpoint(scope,{turnId:turn.id,dispatchId,runtimeGeneration:generation,checkpoint:receipt.checkpoint,resourceDisposition:receipt.resourceDisposition});}

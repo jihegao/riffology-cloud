@@ -113,3 +113,33 @@ test('saved heads and claimed bases cannot roll back or cross sessions',async()=
  ];
  for(const mutate of corruptions){const target=fixture(),bad=structuredClone(good);mutate(bad);target.seed(bad);await assert.rejects(target.store().transact(state=>({state:state!,value:null})),/invalid-persisted/);}
 });
+
+test('large runtime receipts append and replay atomically with one durable write per batch',async()=>{
+ const f=fixture(),journal=new TurnJournal(f.store(),()=>1000);
+ const session=(await journal.createSession(scope,actor,'batch-session',{title:'Batch'})).session;
+ await journal.submit(scope,actor,session.id,'batch-turn',{message:'Build a model'});
+ const turn=(await journal.claim(scope,1))!.turn;
+ const inputs=Array.from({length:700},(_,i)=>({turnId:turn.id,dispatchId:turn.dispatchId!,runtimeGeneration:1,eventId:`delta-${i}`,type:'assistant.delta' as const,at:1000,payload:{text:`output ${i}`}}));
+ f.events.length=0;const added=await journal.appendRuntimeBatch(scope,inputs);
+ assert.equal(added.length,700);assert(added.every(row=>!row.replayed));
+ assert.equal(f.events.filter(e=>e==='put').length,1);assert.equal(f.events.filter(e=>e==='sync').length,1);
+ const before=f.peek();const rebuilt=new TurnJournal(f.store(),()=>1000);
+ f.events.length=0;const replayed=await rebuilt.appendRuntimeBatch(scope,inputs);
+ assert(replayed.every(row=>row.replayed));assert.deepEqual(f.peek(),before);assert.equal(f.events.filter(e=>e==='put').length,1);
+ const page=await rebuilt.replay(scope,0,200);assert.equal(page.events.length,200);assert.equal(page.hasMore,true);
+ const conflict=[{...inputs[0]!,eventId:'new-before-conflict'}, {...inputs[699]!,payload:{text:'conflicting output'}}];
+ await assert.rejects(rebuilt.appendRuntimeBatch(scope,conflict),/turn-event-conflict/);assert.deepEqual(f.peek(),before);
+ await assert.rejects(rebuilt.appendRuntimeBatch(scope,[{...inputs[0]!,eventId:'wrong-dispatch',dispatchId:'other'}]),/turn-runtime-scope-denied/);assert.deepEqual(f.peek(),before);
+});
+
+test('runtime batch never acknowledges before sync and replays after lost durability acknowledgement',async()=>{
+ const f=fixture(),journal=new TurnJournal(f.store(),()=>1000);
+ const session=(await journal.createSession(scope,actor,'session',{title:'Session'})).session;
+ await journal.submit(scope,actor,session.id,'turn',{message:'Message'});const turn=(await journal.claim(scope,1))!.turn;
+ const input={turnId:turn.id,dispatchId:turn.dispatchId!,runtimeGeneration:1,eventId:'delta',type:'assistant.delta' as const,at:1000,payload:{text:'hello'}};
+ f.hold(true);let resolved=false;const pending=journal.appendRuntimeBatch(scope,[input]).then(r=>{resolved=true;return r;});
+ for(let i=0;i<20&&f.pending.length===0;i++)await new Promise<void>(resolve=>setImmediate(resolve));
+ assert.equal(resolved,false);f.pending[0]!.commit();await pending;assert.equal(resolved,true);
+ f.hold(false);f.failSync(true);await assert.rejects(journal.appendRuntimeBatch(scope,[{...input,eventId:'delta-2'}]),/sync-failure/);
+ f.failSync(false);const replay=await new TurnJournal(f.store(),()=>1000).appendRuntimeBatch(scope,[{...input,eventId:'delta-2'}]);assert.equal(replay[0]!.replayed,true);
+});
