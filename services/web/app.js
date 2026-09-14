@@ -85,7 +85,7 @@ function canSubmitConversation() {
 let eventSource = null;
 let eventRetryTimer = null;
 let snapshotRecovery = false;
-let workspaceFiles = null;
+let workspaceFiles = null, filesReadEpoch = 0, diffReadEpoch = 0;
 let workspaceFilesError = '';
 let workspaceDiff = null;
 let workspaceDiffError = '';
@@ -377,7 +377,7 @@ function renderWorkspaceFiles() {
   if (!workspaceFiles) { meta.textContent = '正在读取最新已保存版本…'; const loading = document.createElement('p'); loading.className = 'file-empty'; loading.textContent = '正在加载文件清单'; box.append(loading); return; }
   const files = Array.isArray(workspaceFiles.files) ? workspaceFiles.files : [];
   if (!workspaceFiles.revision) { meta.textContent = '尚无 Turn 保存版本'; const empty = document.createElement('p'); empty.className = 'file-empty'; empty.textContent = '项目完成首个回合并保存后，文件会显示在这里。'; box.append(empty); return; }
-  meta.textContent = `${files.length} 项 · 保存于 ${new Date(workspaceFiles.revision.committedAt).toLocaleString('zh-CN', { hour12: false })}`;
+  meta.textContent = `版本 ${workspaceFiles.revision.revisionId} · ${files.length} 项 · 保存于 ${new Date(workspaceFiles.revision.committedAt).toLocaleString('zh-CN', { hour12: false })}`;
   for (const item of files) {
     if (!item || typeof item.path !== 'string' || !['file', 'directory'].includes(item.type)) continue;
     const row = document.createElement('div'); row.className = `file-entry ${item.type}`;
@@ -390,11 +390,14 @@ function renderWorkspaceFiles() {
 
 async function refreshWorkspaceFiles(generation = viewGeneration) {
   if (!activeProject || generation !== viewGeneration) return;
-  const workspaceId = activeProject.workspace_id;
-  workspaceFilesError = ''; renderWorkspaceFiles();
-  try { const value = await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/files`); if (generation !== viewGeneration || activeProject?.workspace_id !== workspaceId) return; const changed=workspaceFiles?.revision?.filesSha256!==value.revision?.filesSha256;workspaceFiles = value; servicePanel.savedRevision(workspaceId, value.revision);if(changed){void simulationPanel.reload();void comparisonPanel.reload();} }
-  catch (error) { if (generation !== viewGeneration) return; workspaceFilesError = error.message; }
-  renderWorkspaceFiles();
+  const workspaceId=activeProject.workspace_id,epoch=++filesReadEpoch,valid=()=>generation===viewGeneration&&activeProject?.workspace_id===workspaceId&&epoch===filesReadEpoch;
+  workspaceFilesError='';renderWorkspaceFiles();
+  try{const value=await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/files`);if(!valid())return;
+    const changed=workspaceFiles?.revision?.filesSha256!==value.revision?.filesSha256||workspaceFiles?.revision?.revisionId!==value.revision?.revisionId;
+    workspaceFiles=value;servicePanel.savedRevision(workspaceId,value.revision);
+    if(changed){diffReadEpoch++;workspaceDiff=null;workspaceDiffError='';renderWorkspaceDiff();if(workspaceArtifactPanel==='diff')void refreshWorkspaceDiff(generation);void simulationPanel.reload();void comparisonPanel.reload();}
+  }catch(error){if(!valid())return;workspaceFilesError=error.message;}
+  if(valid())renderWorkspaceFiles();
 }
 
 function renderWorkspaceDiff() {
@@ -407,7 +410,10 @@ function renderWorkspaceDiff() {
   if(!box.childElementCount){const empty=document.createElement('p');empty.className='file-empty';empty.textContent='与父版本相比没有文件变化。';box.append(empty);}
 }
 
-async function refreshWorkspaceDiff(generation=viewGeneration){if(!activeProject||generation!==viewGeneration)return;const workspaceId=activeProject.workspace_id;workspaceDiffError='';renderWorkspaceDiff();try{const value=await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/diff`);if(generation!==viewGeneration||activeProject?.workspace_id!==workspaceId)return;workspaceDiff=value;}catch(error){if(generation!==viewGeneration)return;workspaceDiffError=error.message;}renderWorkspaceDiff();}
+async function refreshWorkspaceDiff(generation=viewGeneration){
+  if(!activeProject||generation!==viewGeneration)return;const workspaceId=activeProject.workspace_id,epoch=++diffReadEpoch,valid=()=>generation===viewGeneration&&activeProject?.workspace_id===workspaceId&&epoch===diffReadEpoch;
+  workspaceDiffError='';renderWorkspaceDiff();try{const value=await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/diff`);if(!valid())return;workspaceDiff=value;}catch(error){if(!valid())return;workspaceDiffError=error.message;}if(valid())renderWorkspaceDiff();
+}
 
 function selectArtifactPanel(panel){workspaceArtifactPanel=panel==='diff'?'diff':'files';const diff=workspaceArtifactPanel==='diff';$('#files-tab').setAttribute('aria-selected',String(!diff));$('#diff-tab').setAttribute('aria-selected',String(diff));$('#files-view').hidden=diff;$('#diff-view').hidden=!diff;if(diff&&!workspaceDiff&&!workspaceDiffError)void refreshWorkspaceDiff(viewGeneration);}
 
