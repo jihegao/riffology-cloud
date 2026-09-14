@@ -16,6 +16,45 @@ from contextlib import contextmanager
 
 CONTROL_ROOT = "/var/lib/riffology/runtime-control"
 PI_UID = 10002
+PLATFORM_CA = "/etc/cloudflare/certs/cloudflare-containers-ca.crt"
+
+
+def child_environment():
+    """Allow only the immutable platform CA, never an ambient trust-store path."""
+    supplied = os.environ.get('NODE_EXTRA_CA_CERTS')
+    if supplied is not None and supplied != PLATFORM_CA:
+        raise RuntimeError('trustedpi-platform-ca-path-denied')
+    env = {'LANG': 'C.UTF-8', 'PATH': '/usr/local/bin:/usr/bin:/bin',
+           'HOME': '/var/lib/riffology/pi'}
+    directory = os.open('/', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        # Walk using held directory descriptors, including the root directory.
+        # No untrusted process can replace any checked path component.
+        for part in ['etc', 'cloudflare', 'certs']:
+            info = os.fstat(directory)
+            if info.st_uid != 0 or not stat.S_ISDIR(info.st_mode) or info.st_mode & 0o022 or not info.st_mode & 0o001:
+                raise RuntimeError('trustedpi-platform-ca-directory-denied')
+            next_directory = os.open(part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=directory)
+            os.close(directory)
+            directory = next_directory
+        info = os.fstat(directory)
+        if info.st_uid != 0 or not stat.S_ISDIR(info.st_mode) or info.st_mode & 0o022 or not info.st_mode & 0o001:
+            raise RuntimeError('trustedpi-platform-ca-directory-denied')
+        certificate = os.open('cloudflare-containers-ca.crt', os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory)
+        try:
+            info = os.fstat(certificate)
+            if info.st_uid != 0 or not stat.S_ISREG(info.st_mode) or info.st_mode & 0o022 or info.st_size < 1 or not info.st_mode & 0o004:
+                raise RuntimeError('trustedpi-platform-ca-file-denied')
+        finally:
+            os.close(certificate)
+        env['NODE_EXTRA_CA_CERTS'] = PLATFORM_CA
+    except FileNotFoundError:
+        if supplied is not None:
+            raise RuntimeError('trustedpi-platform-ca-missing')
+        # Bare offline process fixtures have no platform CA installed.
+    finally:
+        os.close(directory)
+    return env
 
 
 def validate_account():
@@ -269,6 +308,7 @@ def spawn(epoch, argv):
             state = read_state(directory)
             if not state or state['epoch'] != epoch or state['status'] != 'active' or state['spawnToken'] is not None or stopped:
                 raise RuntimeError('spawn-denied')
+            environment = child_environment()
             state['spawnToken'] = argv[2]
             write_state(directory, state)  # At-most-once even if fork/exec/ACK fails.
             ready_r, ready_w = os.pipe2(os.O_CLOEXEC)
@@ -294,8 +334,7 @@ def spawn(epoch, argv):
                     if os.read(gate_r, 1) != b'G':
                         os._exit(4)
                     os.close(gate_r)
-                    os.execve(NODE, argv, {'LANG': 'C.UTF-8', 'PATH': '/usr/local/bin:/usr/bin:/bin',
-                                          'HOME': '/var/lib/riffology/pi'})
+                    os.execve(NODE, argv, environment)
                 except BaseException:
                     os._exit(4)
             os.close(ready_w)
