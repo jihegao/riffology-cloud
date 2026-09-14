@@ -1,3 +1,4 @@
+import {createEvidencePanel} from './evidence.js';
 import {createServicePanel} from './services.js';
 import {createPreviewPanel} from './previews.js';
 import {createComparisonPanel} from './comparison.js';
@@ -6,6 +7,7 @@ const $ = selector => document.querySelector(selector);
 const previewPanel=createPreviewPanel({root:$('#workspace-preview'),api});
 const servicePanel=createServicePanel({root:$('#workspace-services'),api,onPreviewRun:runId=>previewPanel.openRun(runId)});
 const comparisonPanel=createComparisonPanel({root:$('#workspace-comparison'),api});
+const evidencePanel=createEvidencePanel({root:$('#workspace-evidence'),api,onAssessment:()=>{void comparisonPanel.reload();void simulationPanel.reload();}});
 const simulationPanel=createSimulationPanel({root:$('#workspace-simulation'),api});
 const notice = $('#notice');
 const dialog = $('#project-dialog');
@@ -168,7 +170,7 @@ function stopEventStream() {
 }
 
 function accountView() {
-  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();}
+  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();evidencePanel.leave();}
   $('#login').hidden = authenticated;
   const workspaceRoutePending = Boolean(workspaceProjectIdFromHash()) && !activeProject;
   $('#app').hidden = !tenant || Boolean(activeProject) || workspaceRoutePending;
@@ -187,6 +189,7 @@ function turnStatus(turn) {
 function appendTurnCard(kind, text, detail = '') {
   const card = document.createElement('article');
   card.className = `turn-card ${kind}`;
+  if(kind==='assistant'||kind==='user'){const origin=document.createElement('strong');origin.textContent=kind==='assistant'?'Agent 解释 · 未核验测量':'用户提供内容 · 未核验事实';card.append(origin);}
   const body = document.createElement('p');
   body.textContent = text;
   card.append(body);
@@ -502,7 +505,8 @@ function openWorkspace(project) {
   selectArtifactPanel('files');
   previewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,canOpen:ready});
   servicePanel.open({workspaceId:project.workspace_id,tenantId:tenant.id,canStart:ready});
-  if(ready){void simulationPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});void comparisonPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});}else{simulationPanel.leave();comparisonPanel.leave();}
+  if(ready){void simulationPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});void comparisonPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});}else{simulationPanel.leave();comparisonPanel.leave();evidencePanel.leave();}
+  void evidencePanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});
   if(!ready){$('#turns').replaceChildren();appendTurnCard('system','项目暂未就绪。会话与文件恢复后可继续使用；独立服务可在下方管理。');$('#files-meta').textContent='项目暂未就绪';$('#workspace-files').replaceChildren();}
   void refreshWorkspace(viewGeneration);
 }
@@ -606,7 +610,7 @@ function workspaceProjectIdFromHash() {
 }
 
 async function load() {
-  servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();
+  servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();evidencePanel.leave();
   const generation = ++viewGeneration;
   stopPolling();
   stopEventStream();
@@ -644,7 +648,7 @@ $('#google').onclick = async () => {
 
 $('#sign-out').onclick = async () => {
   viewGeneration++;
-  servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();
+  servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();evidencePanel.leave();
   stopEventStream();
   stopPolling();
   const button = $('#sign-out');

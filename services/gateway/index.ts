@@ -48,7 +48,7 @@ export default {
     if(url.origin!==env.APP_ORIGIN)return previewHost(request,env,catalogDatabase(env.CATALOG));
     if(!url.pathname.startsWith('/api/')){
       if(request.method!=='GET'&&request.method!=='HEAD')return json({error:'not_found'},404);
-      if(!['/','/index.html','/app.js','/services.js','/previews.js','/simulation.js','/comparison.js','/styles.css','/workspace.css','/admin','/admin.html','/admin.js','/admin.css'].includes(url.pathname))return json({error:'not_found'},404);
+      if(!['/','/index.html','/app.js','/services.js','/previews.js','/simulation.js','/comparison.js','/evidence.js','/evidence.css','/styles.css','/workspace.css','/admin','/admin.html','/admin.js','/admin.css'].includes(url.pathname))return json({error:'not_found'},404);
       if(!env.ASSETS)return json({error:'assets_not_configured'},503);
       const assetRequest=url.pathname==='/admin'
         ? new Request(new URL('/admin.html',url),{method:request.method,headers:request.headers})
