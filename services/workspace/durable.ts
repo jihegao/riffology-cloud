@@ -1,3 +1,5 @@
+import {preparePublication,type PublicationVersion} from '../publication/readiness.ts';
+import {R2PublicationArtifacts} from '../publication/artifacts.ts';
 import {normalizeToolCommand,type ToolCommand} from '../tools/protocol.ts';
 import {researchSnapshot,buildResearchExport} from '../research/export.ts';
 import {EvidenceLedger,evidenceGroup,assessmentForRun,evidenceAssessments} from '../simulation/evidence-adapter.ts';
@@ -199,6 +201,20 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
         try{if(object.size>maxBytes)throw Error('export-too-large');const bytes=new Uint8Array(await object.arrayBuffer());if(bytes.byteLength!==object.size||bytes.byteLength>maxBytes)throw Error('export-source-mismatch');return bytes;}finally{await object.body?.cancel().catch(()=>{});}
       }});
       return new Response(result.bytes,{headers:{'content-type':'application/zip','content-disposition':`attachment; filename="${result.filename}"`,'cache-control':'no-store','x-content-type-options':'nosniff','x-riffology-export-sha256':result.sha256}});
+    }finally{this.#exporting=false;}
+  }
+  async publicationPrepare(input:{scope:TurnScope;actor:TurnActor;expected?:PublicationVersion;freeze?:boolean}){
+    const scope=this.#maintenanceScope(input.scope);if(this.#exporting)throw Error('publication-busy');this.#exporting=true;
+    try{
+      const authorize=async()=>{this.#maintenanceScope(scope);const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(input.actor,scope.workspaceId);if(!sameScope(actual,scope))throw Error('publication-access-denied');this.#maintenanceScope(scope);};
+      await authorize();const bucket=this.env.WORKSPACE_CHECKPOINTS;if(!bucket)throw Error('publication-unavailable');const current=await this.#simulationSource(scope);
+      const currentCheck=()=>{this.#maintenanceScope(scope);const latest=this.#turns.workspaceRevisionSnapshot(scope);if(current.kind==='saved-turn'?latest?.receipt.revisionId!==current.revision.revisionId:latest!==null)throw Error('publication-model-stale');};
+      const snapshot=await researchSnapshot(this.ctx.storage,scope,current,currentCheck),active=this.#turns.publicationHasActiveTurn(scope);
+      const result=await preparePublication(snapshot,{authorize,source:(source,maxBytes)=>this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source,maxBytes),artifact:async(key,maxBytes)=>{const object=await bucket.get(key);if(!object)return null;try{if(object.size>maxBytes)throw Error('export-too-large');const bytes=new Uint8Array(await object.arrayBuffer());if(bytes.length!==object.size)throw Error('export-source-mismatch');return bytes;}finally{await object.body?.cancel().catch(()=>{});}}},active);
+      await authorize();currentCheck();if(result.readiness.ready&&this.#turns.publicationHasActiveTurn(scope))throw Error('publication-model-stale');if(!input.freeze)return {readiness:result.readiness};
+      if(!result.frozen||!result.readiness.ready)throw Error('publication-not-ready');if(JSON.stringify(input.expected)!==JSON.stringify(result.readiness.version))throw Error('publication-model-stale');
+      const beforeWrite=async()=>{await authorize();currentCheck();if(this.#turns.publicationHasActiveTurn(scope))throw Error('publication-model-stale');};
+      const stored=await new R2PublicationArtifacts(bucket).put(result.frozen,beforeWrite);await beforeWrite();return {readiness:result.readiness,stored};
     }finally{this.#exporting=false;}
   }
   #evidence(scope:TurnScope){

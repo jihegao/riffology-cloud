@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node ui/serve.mjs",
     "check": "npm run check:ui && npm run typecheck && npm run test:m0 && npm run test:m1 && npm run test:m2 && npm run test:m3",
-    "check:ui": "node --check ui/app.js && node --check ui/workspace.js && node --check ui/user-pages.js && node --check ui/admin.js && node --check ui/shared.js && node --check services/web/app.js && node --check services/web/layout.js && node --check services/web/services.js && node --check services/web/previews.js && node --check services/web/admin.js && node --check services/web/simulation.js && node --check services/web/comparison.js && node --check services/web/export.js && node --check services/web/evidence.js",
+    "check:ui": "node --check ui/app.js && node --check ui/workspace.js && node --check ui/user-pages.js && node --check ui/admin.js && node --check ui/shared.js && node --check services/web/app.js && node --check services/web/layout.js && node --check services/web/services.js && node --check services/web/previews.js && node --check services/web/admin.js && node --check services/web/simulation.js && node --check services/web/comparison.js && node --check services/web/export.js && node --check services/web/publication.js && node --check services/web/evidence.js",
     "typecheck": "tsc --noEmit",
     "test:m0": "node --test tests/m0/*.test.ts tests/m0/*.test.mjs tests/m0/pi/*.test.mjs spikes/m0-cloud/*.test.ts spikes/m0-files/*.test.ts spikes/m0-preview/*.test.ts spikes/m0-recovery/*.test.ts spikes/m0-release/*.test.ts scripts/m0/release-manifest.test.mjs && node scripts/evidence/self-test.mjs && node scripts/m0/preflight-self-test.mjs",
     "m0:preflight": "node scripts/m0/preflight.mjs",
