@@ -42,18 +42,20 @@ export class SandboxProjectWorkspacePort implements WorkspaceFilesFreezePort,Wor
   readonly #sandbox:ProjectWorkspaceSandboxApi;readonly #actorId:string;
   constructor(sandbox:ProjectWorkspaceSandboxApi,actorId:string){if(!sandbox?.writeFile||!sandbox.readFile||!sandbox.startProcess)reject('project-workspace-sandbox-required');this.#sandbox=sandbox;this.#actorId=actorId;}
   async #target(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw),actorId=(await sandboxActorIds(identity.scope,identity.turnId,identity.dispatchId)).project;if(actorId!==this.#actorId)reject('project-workspace-actor-scope-denied');return {identity,token:await archiveToken(identity)};}
-  async #run(operation:Report['operation'],token:string):Promise<Report>{
-    const attempt=crypto.randomUUID().replaceAll('-','').slice(0,8),processId=`ws-${operation[0]}-${token.slice(0,40)}-${attempt}`,process=await this.#sandbox.startProcess(`/usr/bin/python3 ${PROJECT_WORKSPACE_ARCHIVE_PROGRAM} ${operation} ${token}`,{processId,autoCleanup:false,timeout:120_000,cwd:'/',encoding:'utf8',env:{LANG:'C.UTF-8',PATH:'/usr/bin:/bin',RIFFOLOGY_WORKSPACE_ROOT:'/workspace',RIFFOLOGY_ARCHIVE_ROOT:PROJECT_WORKSPACE_ARCHIVE_ROOT}});
-    if(process.id!==processId)reject('project-workspace-process-mismatch');const result=await process.waitForExit(120_000),logs=await process.getLogs();
+  async #run(operation:Report['operation'],token:string,deadlineAt?:number):Promise<Report>{
+    const remaining=()=>{const timeout=deadlineAt===undefined?120_000:Math.min(120_000,deadlineAt-Date.now());if(!Number.isSafeInteger(timeout)||timeout<=0)reject('project-workspace-deadline-exceeded');return timeout;};
+    const attempt=crypto.randomUUID().replaceAll('-','').slice(0,8),processId=`ws-${operation[0]}-${token.slice(0,40)}-${attempt}`,process=await this.#sandbox.startProcess(`/usr/bin/python3 ${PROJECT_WORKSPACE_ARCHIVE_PROGRAM} ${operation} ${token}`,{processId,autoCleanup:false,timeout:remaining(),cwd:'/',encoding:'utf8',env:{LANG:'C.UTF-8',PATH:'/usr/bin:/bin',RIFFOLOGY_WORKSPACE_ROOT:'/workspace',RIFFOLOGY_ARCHIVE_ROOT:PROJECT_WORKSPACE_ARCHIVE_ROOT}});
+    if(process.id!==processId)reject('project-workspace-process-mismatch');const result=await process.waitForExit(remaining()),logs=await process.getLogs();
     if(!Number.isSafeInteger(result.exitCode)||result.exitCode!==0||typeof logs.stdout!=='string'||typeof logs.stderr!=='string'||logs.stderr.length)reject('project-workspace-archive-process-failed');return report(logs.stdout,operation);
   }
-  async restoreFiles(raw:TurnRuntimeIdentity,rawBase:TurnBaseCheckpoints,rawArchive:Uint8Array|null){
+  async restoreFiles(raw:TurnRuntimeIdentity,rawBase:TurnBaseCheckpoints,rawArchive:Uint8Array|null,deadlineAt?:number){
     const {identity,token}=await this.#target(raw),base=turnBaseCheckpoints(rawBase);if(base.initial&&!sameScope(base.initial.reference.scope,identity.scope))reject('project-workspace-base-mismatch');let archive:Uint8Array;
     if(base.workspace===null&&!base.initial){if(rawArchive!==null)reject('project-workspace-base-mismatch');archive=new Uint8Array(EMPTY_TAR_BYTES);}
     else{if(!(rawArchive instanceof Uint8Array)||rawArchive.byteLength<1||rawArchive.byteLength>MAX_ARCHIVE_BYTES)reject('invalid-project-workspace-archive');archive=Uint8Array.from(rawArchive);if(await digest(archive)!==(base.workspace?.filesSha256??base.initial!.filesSha256))reject('project-workspace-base-mismatch');}
+    if(deadlineAt!==undefined&&(!Number.isSafeInteger(deadlineAt)||deadlineAt<=Date.now()))reject('project-workspace-deadline-exceeded');
     const path=`${PROJECT_WORKSPACE_ARCHIVE_ROOT}/${token}.input.tar`,encoded=base64(archive),written=await this.#sandbox.writeFile(path,encoded,{encoding:'base64'});if(written.success!==true||written.path!==path||(written.bytesWritten!==undefined&&written.bytesWritten!==archive.byteLength))reject('project-workspace-archive-write-mismatch');
     const saved=await this.#sandbox.readFile(path,{encoding:'base64'});if(saved.success!==true||saved.path!==path||!saved.content||await digest(unbase64(saved.content))!==await digest(archive))reject('project-workspace-archive-write-mismatch');
-    const completed=await this.#run('restore',token);if(completed.bytes!==archive.byteLength||completed.sha256!==await digest(archive))reject('project-workspace-archive-result-mismatch');return {sha256:completed.sha256,bytes:completed.bytes};
+    const completed=await this.#run('restore',token,deadlineAt);if(completed.bytes!==archive.byteLength||completed.sha256!==await digest(archive))reject('project-workspace-archive-result-mismatch');return {sha256:completed.sha256,bytes:completed.bytes};
   }
   async frozenFiles(raw:TurnRuntimeIdentity,rawBase:TurnBaseCheckpoints):Promise<Uint8Array>{
     const {identity,token}=await this.#target(raw),base=turnBaseCheckpoints(rawBase);if(base.initial&&!sameScope(base.initial.reference.scope,identity.scope))reject('project-workspace-base-mismatch');const completed=await this.#run('freeze',token),path=`${PROJECT_WORKSPACE_ARCHIVE_ROOT}/${token}.output.tar`,saved=await this.#sandbox.readFile(path,{encoding:'base64'});

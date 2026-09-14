@@ -1,3 +1,4 @@
+import type {ToolCommand} from '../tools/protocol.ts';
 import { actor, message, turnBaseCheckpoints, type TurnResourceLease } from '../turn/protocol.ts';
 import type { TurnRuntimePort } from '../turn/dispatcher.ts';
 import { ProductTurnRuntimeCore, storedProductTurnRuntimeIdentity, type ProductTurnRuntimeStorage } from './core.ts';
@@ -13,7 +14,7 @@ export type ProductTurnRuntimeReleaseFactory=(ctx:DurableObjectState,env:Product
  * pre-mutation release gates can be verified independently. */
 export class ProductTurnRuntimeHost implements TurnRuntimePort{
   readonly #ctx:DurableObjectState;readonly #env:ProductTurnRuntimeHostEnv;readonly #release:ProductTurnRuntimeReleaseFactory;
-  #core:{identity:TurnRuntimeIdentity;value:ProductTurnRuntimeCore}|null=null;
+  #core:{identity:TurnRuntimeIdentity;value:ProductTurnRuntimeCore;project:ProductTurnRuntimeRelease['project']}|null=null;
   constructor(ctx:DurableObjectState,env:ProductTurnRuntimeHostEnv,release:ProductTurnRuntimeReleaseFactory){
     if(!ctx?.storage||!env?.PRODUCT_TURN_RUNTIME?.idFromName||typeof release!=='function')throw Error('product-turn-runtime-host-required');
     this.#ctx=ctx;this.#env=env;this.#release=release;
@@ -28,7 +29,7 @@ export class ProductTurnRuntimeHost implements TurnRuntimePort{
     const ports=this.#release(this.#ctx,this.#env,identity);
     if(!ports?.execution||!ports.checkpoints)throw Error('product-turn-runtime-release-not-configured');
     const value=new ProductTurnRuntimeCore(this.#ctx.storage as ProductTurnRuntimeStorage,ports.execution,ports.checkpoints,Date.now,existingOnly,{retryMs:5000,assignmentGuardMs:360000,quietMs:30000,deadlineMs:600000,holdRetryMs:60000},ports.capacity??null,ports.trace);
-    this.#core={identity,value};return value;
+    this.#core={identity,value,project:ports.project};return value;
   }
   async accept(raw:Omit<Parameters<TurnRuntimePort['accept']>[0],'capacityLease'>&{capacityLease?:TurnResourceLease}){
     const identity=turnRuntimeIdentity({scope:raw.scope,sessionId:raw.sessionId,turnId:raw.turnId,dispatchId:raw.dispatchId,generation:raw.generation});
@@ -41,6 +42,15 @@ export class ProductTurnRuntimeHost implements TurnRuntimePort{
     }
     const input={...identity,actor:actor(raw.actor),message:message(raw.message),base:turnBaseCheckpoints(raw.base),...(raw.capacityLease===undefined?{}:{capacityLease:raw.capacityLease})};
     return (await this.#for(identity)).accept(input);
+  }
+  async projectPreparationRequired(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);await (await this.#for(identity,true)).ready();return this.#core?.project?.lazy===true;}
+  async prepareProjectTool(input:{identity:TurnRuntimeIdentity;command:ToolCommand;observeOnly:boolean}){
+    const identity=turnRuntimeIdentity(input.identity),core=await this.#for(identity,true);await core.ready();
+    if(!this.#core?.project?.lazy)return {ready:true as const};
+    const authorize=()=>{core.projectToolAuthority(identity,input.command);};const deadline=core.projectToolAuthority(identity,input.command);
+    if(typeof input.observeOnly!=='boolean')throw Error('project-preparation-denied');
+    if(this.#core?.project)await this.#core.project.ensure(deadline,input.observeOnly,authorize);
+    authorize();return {ready:true as const};
   }
   async currentObserverExecution(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);return (await this.#for(identity,true)).currentObserverExecution(identity);}
   async observe(raw:Parameters<TurnRuntimePort['observe']>[0]){const identity=turnRuntimeIdentity({scope:raw.scope,sessionId:raw.sessionId,turnId:raw.turnId,dispatchId:raw.dispatchId,generation:raw.generation});return (await this.#for(identity)).observe({...identity,...(raw.capacityLease===undefined?{}:{capacityLease:raw.capacityLease})});}

@@ -83,10 +83,11 @@ class ObserverPiSandbox implements TrustedPiSandboxActorApi{
   async queryObserverExecution(identity:TurnRuntimeIdentity){this.calls.push('pi.queryObserverExecution');return this.query(identity);}
 }
 
-function fixture(outcome:'completed'|'failed'|'cancelled'|'interrupted'='completed'){
+function fixture(outcome:'completed'|'failed'|'cancelled'|'interrupted'='completed',lazy=false){
   const calls:string[]=[],bucket=new Bucket(),store=new Store(bucket),workspaceArchive=encoder.encode('canonical-workspace-archive'),sandbox=new PiSandbox(calls,outcome);
   const project:ProjectWorkspaceRpc={async restoreWorkspace(value,claimed,archive){calls.push('workspace.restore');assert.deepEqual(value,identity);assert.deepEqual(claimed,base);assert.equal(archive,null);return {sha256:await digest(workspaceArchive),bytes:workspaceArchive.byteLength};},async freezeWorkspace(value,claimed){calls.push('workspace.freeze');assert.deepEqual(value,identity);assert.deepEqual(claimed,base);return workspaceArchive;},async abortWorkspace(){calls.push('workspace.abort');return {running:false,fenced:true};}};
   const projectActors:string[]=[],trustedActors:string[]=[],dependencies:ProductTurnRuntimeReleaseDependencies={
+    ...(lazy?{projectPreparation:{enabled:true,storage:(()=>{const kv=new Map();return {kv:{get(key:string){return structuredClone(kv.get(key));},put(key:string,value:unknown){kv.set(key,structuredClone(value));}},sql:{exec(){return {toArray:()=>[]};}},transactionSync(fn:()=>unknown){return fn();},async sync(){}} as never;})()}}:{}),
     revisions:store,
     resolveProjectSandbox(name){projectActors.push(name);return project;},
     resolveTrustedPiSandbox(name){trustedActors.push(name);return sandbox;},
@@ -176,3 +177,5 @@ test('candidate assembly imports no M0 probe, legacy runtime, pricing or provide
   const source=readFileSync(new URL('../../services/turn-runtime/release.ts',import.meta.url),'utf8'),imports=source.split('\n').filter(line=>line.startsWith('import ')).join('\n');
   assert.doesNotMatch(imports,/spikes|m0-|proxy-pi|go-pi-probe|pricing|model-proxy|provider/i);assert.doesNotMatch(source,/microusd|resolveCredential|providerDefinitions|R2TurnRevision|WORKSPACE_CHECKPOINTS/i);
 });
+
+test('actual release assembly saves Session and canonical archive with no Project actor on a lazy conversation',async()=>{const f=fixture('completed',true);const result=await f.release.execution.start({...identity,actor,message:'Discuss assumptions',base});assert.equal(result.outcome,'completed');const input={identity,outcome:'completed' as const,executionErrorCode:null,base},intent=await f.release.checkpoints.prepare(input),resolution=await f.release.checkpoints.commit(input,intent);assert.equal(resolution.status,'committed');if(resolution.status!=='committed')throw Error('missing');const manifest=JSON.parse(new TextDecoder().decode(f.bucket.objects.get(resolution.receipt.objectKey)));assert.equal(manifest.files.sha256,await digest(new Uint8Array(10240)));assert.ok(f.bucket.objects.has(manifest.piSession.objectKey));await f.release.execution.release(identity);assert.deepEqual(f.projectActors,[]);assert.equal(f.calls.filter(v=>v.startsWith('workspace.')).length,0);assert.equal(f.calls.filter(v=>v==='pi.start').length,1);});
