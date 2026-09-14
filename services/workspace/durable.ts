@@ -1,5 +1,6 @@
 import {preparePublication,type PublicationVersion} from '../publication/readiness.ts';
 import {R2PublicationArtifacts} from '../publication/artifacts.ts';
+import {normalizeToolCommand,type ToolCommand} from '../tools/protocol.ts';
 import {researchSnapshot,buildResearchExport} from '../research/export.ts';
 import {EvidenceLedger,evidenceGroup,assessmentForRun,evidenceAssessments} from '../simulation/evidence-adapter.ts';
 import {evidenceRequest,type EvidenceHead} from '../simulation/evidence.ts';
@@ -225,6 +226,18 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   }
   async researchEvidenceExport(input:{scope:TurnScope;actor:TurnActor}){
     const scope=this.#maintenanceScope(input.scope);await this.#evidenceAccess(scope,input.actor);const result=await this.#evidence(scope).exportRecords();await this.#evidenceAccess(scope,input.actor);return result;
+  }
+  async prepareProjectTool(input:{command:ToolCommand;observeOnly:boolean}){
+    const command=normalizeToolCommand(input.command),scope=this.#ready(command.scope);
+    const saved=(await this.#turns.snapshot(scope)).turns[command.turnId];if(!saved||saved.dispatchId!==command.dispatchId)throw Error('project-preparation-denied');
+    const identity=turnRuntimeIdentity({scope,sessionId:saved.sessionId,turnId:command.turnId,dispatchId:command.dispatchId,generation:scope.workspaceGeneration}),runtime=this.env.PRODUCT_TURN_RUNTIME.getByName(await turnRuntimeActorName(identity));
+    if(!await runtime.projectPreparationRequired(identity))return {ready:true as const};
+    const authorize=async()=>{const state=await this.#turns.snapshot(scope),turn=state.turns[command.turnId];
+      if(state.activeTurnId!==command.turnId||!turn||!['starting','running'].includes(turn.status)||turn.dispatchId!==command.dispatchId||turn.cancelRequestedAt!==null||turn.finishedAt!==null||command.deadlineAt<=Date.now())throw Error('project-preparation-denied');
+      const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('project-preparation-denied');return turn;
+    };
+    await authorize();
+    const result=await runtime.prepareProjectTool({identity,command,observeOnly:input.observeOnly});await authorize();return result;
   }
   async researchContext(input:{identity:TurnRuntimeIdentity;executionDeadlineAt:number}){
     const identity=turnRuntimeIdentity(input.identity),scope=this.#ready(identity.scope);

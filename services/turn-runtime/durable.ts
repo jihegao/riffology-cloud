@@ -1,3 +1,4 @@
+import type {TurnRuntimeIdentity} from './identity.ts';
 import { DurableObject } from 'cloudflare:workers';
 import type { ProjectToolSandbox, TrustedPiSandbox } from '../sandbox/classes.ts';
 import type { TurnRuntimePort } from '../turn/dispatcher.ts';
@@ -26,6 +27,8 @@ const release=(ctx:DurableObjectState,rawEnv:ProductTurnRuntimeHostEnv,identity:
 export class ProductTurnRuntime extends DurableObject<ProductTurnRuntimeEnv>{
   #host=new ProductTurnRuntimeHost(this.ctx,this.env,release);
   async accept(input:Parameters<TurnRuntimePort['accept']>[0]){return this.#host.accept(input);}
+  async projectPreparationRequired(identity:TurnRuntimeIdentity){return this.#host.projectPreparationRequired(identity);}
+  async prepareProjectTool(input:Parameters<ProductTurnRuntimeHost['prepareProjectTool']>[0]){return this.#host.prepareProjectTool(input);}
   async currentObserverExecution(input:Parameters<ProductTurnRuntimeHost['currentObserverExecution']>[0]){return this.#host.currentObserverExecution(input);}
   async observe(input:Parameters<TurnRuntimePort['observe']>[0]){return this.#host.observe(input);}
   async cancel(input:Parameters<TurnRuntimePort['cancel']>[0]){return this.#host.cancel(input);}

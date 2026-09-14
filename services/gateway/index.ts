@@ -96,3 +96,5 @@ export default {
     await runGatewayScheduledDomains(async()=>{const work=await new ProvisioningCatalog(database).sweep(10),results=await Promise.allSettled(work.map(item=>dispatch(env,item)));if(results.some(result=>result.status==='rejected'))throw Error('workspace-dispatch-incomplete');},()=>runRevisionGcMaintenance(database,env.REVISION_STORE));
   },
 } satisfies ExportedHandler<GatewayRuntimeEnv>;
+
+export { ProductionModelBudget } from '../model-budget/production-durable.ts';
