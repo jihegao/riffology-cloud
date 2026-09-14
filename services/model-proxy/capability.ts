@@ -1,10 +1,11 @@
+import { warmTrustedPiActorId } from '../sandbox/warm-authority.ts';
+import { workspaceBindingLease,workspaceTurnBinding,sameScope,type WorkspaceBindingLease,type WorkspaceTurnBinding } from '../turn/protocol.ts';
 import { sandboxActorIds } from '../sandbox/identity.ts';
 import { actor as validateActor, positive, turnId, type TurnActor } from '../turn/protocol.ts';
 import { turnRuntimeIdentity, type TurnRuntimeIdentity } from '../turn-runtime/identity.ts';
 
 export const MAX_MODEL_CAPABILITY_MS = 15 * 60_000;
-export type ModelTurnCapabilityClaims = {
-  schemaVersion: 1;
+type ModelCapabilityBase = {
   purpose: 'product-model-turn';
   capabilityId: string;
   identity: TurnRuntimeIdentity;
@@ -19,8 +20,9 @@ export type ModelTurnCapabilityClaims = {
   expiresAt: number;
 };
 
+export type ModelTurnCapabilityClaims = ModelCapabilityBase & ({schemaVersion:1}|{schemaVersion:2;runtimeLease:WorkspaceBindingLease;runtimeBinding:WorkspaceTurnBinding});
 const encoder = new TextEncoder();
-const TOKEN = /^m2m1\.([A-Za-z0-9_-]{64,3072})\.([a-f0-9]{64})$/;
+const TOKEN = /^m2m([12])\.([A-Za-z0-9_-]{64,6144})\.([a-f0-9]{64})$/;
 const PROVIDER = /^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/;
 const MODEL = /^[A-Za-z0-9][A-Za-z0-9._\/-]{0,149}$/;
 function reject(code: string): never { throw Error(code); }
@@ -63,15 +65,18 @@ function signatureBytes(value: string): ArrayBuffer {
   return Uint8Array.from(value.match(/../gu)!.map(pair => Number.parseInt(pair, 16))).buffer as ArrayBuffer;
 }
 async function normalized(value: unknown): Promise<ModelTurnCapabilityClaims> {
-  exact(value, ['schemaVersion', 'purpose', 'capabilityId', 'identity', 'actor', 'trustedPiActorId', 'budgetPolicyVersion', 'provider', 'model', 'maxInputTokensPerCall', 'maxOutputTokensPerCall', 'issuedAt', 'expiresAt']);
-  if (value.schemaVersion !== 1 || value.purpose !== 'product-model-turn') reject('invalid-model-capability');
+  const version=value&&typeof value==='object'?(value as {schemaVersion?:unknown}).schemaVersion:undefined;
+  exact(value, [...(version===2?['runtimeLease','runtimeBinding']:[]),'schemaVersion', 'purpose', 'capabilityId', 'identity', 'actor', 'trustedPiActorId', 'budgetPolicyVersion', 'provider', 'model', 'maxInputTokensPerCall', 'maxOutputTokensPerCall', 'issuedAt', 'expiresAt']);
+  if ((value.schemaVersion !== 1&&value.schemaVersion!==2) || value.purpose !== 'product-model-turn') reject('invalid-model-capability');
   const identity = turnRuntimeIdentity(value.identity), actor = validateActor(value.actor);
   const trustedPiActorId = turnId(value.trustedPiActorId);
-  if (trustedPiActorId !== (await sandboxActorIds(identity.scope, identity.turnId, identity.dispatchId)).trustedPi) reject('model-capability-actor-scope-denied');
+  const runtime=value.schemaVersion===2?{schemaVersion:2 as const,runtimeLease:workspaceBindingLease(value.runtimeLease),runtimeBinding:workspaceTurnBinding(value.runtimeBinding)}:{schemaVersion:1 as const};
+  if(runtime.schemaVersion===2){if(!sameScope(runtime.runtimeLease.scope,identity.scope)||runtime.runtimeBinding.sessionId!==identity.sessionId||runtime.runtimeBinding.turnId!==identity.turnId||runtime.runtimeBinding.dispatchId!==identity.dispatchId||trustedPiActorId!==await warmTrustedPiActorId(runtime.runtimeLease))reject('model-capability-actor-scope-denied');}
+  else if (trustedPiActorId !== (await sandboxActorIds(identity.scope, identity.turnId, identity.dispatchId)).trustedPi) reject('model-capability-actor-scope-denied');
   if (typeof value.provider !== 'string' || !PROVIDER.test(value.provider)
     || typeof value.model !== 'string' || !MODEL.test(value.model)) reject('invalid-model-capability');
   return {
-    schemaVersion: 1,
+    ...runtime,
     purpose: 'product-model-turn',
     capabilityId: turnId(value.capabilityId),
     identity,
@@ -98,7 +103,7 @@ export async function issueModelTurnCapability(secret: string, value: unknown, n
   const claims = await normalized(structuredClone(value));
   time(claims, now);
   const encoded = base64url(encoder.encode(JSON.stringify(claims)));
-  const prefix = `m2m1.${encoded}`;
+  const prefix = `m2m${claims.schemaVersion}.${encoded}`;
   const mac = await crypto.subtle.sign('HMAC', await key(secret), encoder.encode(prefix));
   return `${prefix}.${hex(mac)}`;
 }
@@ -106,19 +111,20 @@ export async function issueModelTurnCapability(secret: string, value: unknown, n
 export async function verifyModelTurnCapability(secret: string, token: unknown, expectedTrustedPiActorId: unknown | undefined, now = Date.now()): Promise<ModelTurnCapabilityClaims> {
   if (typeof token !== 'string') reject('invalid-model-capability');
   const match = TOKEN.exec(token);
-  if (!match) reject('invalid-model-capability');
-  const valid = await crypto.subtle.verify('HMAC', await key(secret), signatureBytes(match[2]!), encoder.encode(`m2m1.${match[1]}`));
+  if (!match || match[1]==='1'&&match[2]!.length>3072) reject('invalid-model-capability');
+  const valid = await crypto.subtle.verify('HMAC', await key(secret), signatureBytes(match[3]!), encoder.encode(`m2m${match[1]}.${match[2]}`));
   if (!valid) reject('invalid-model-capability-signature');
   let decoded: unknown;
-  try { decoded = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(unbase64url(match[1]!))); }
+  try { decoded = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(unbase64url(match[2]!))); }
   catch { reject('invalid-model-capability'); }
   const claims = await normalized(decoded);
+  if(String(claims.schemaVersion)!==match[1])reject('invalid-model-capability');
   time(claims, now);
   if (expectedTrustedPiActorId !== undefined && claims.trustedPiActorId !== turnId(expectedTrustedPiActorId)) reject('model-capability-container-denied');
   return structuredClone(claims);
 }
 
 export function modelCapabilityHeader(value: unknown): string {
-  if (typeof value !== 'string' || !TOKEN.test(value)) reject('invalid-model-capability');
+  if (typeof value !== 'string') reject('invalid-model-capability');const match=TOKEN.exec(value);if(!match||match[1]==='1'&&match[2]!.length>3072)reject('invalid-model-capability');
   return value;
 }

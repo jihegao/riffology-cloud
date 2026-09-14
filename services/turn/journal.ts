@@ -1,5 +1,5 @@
 import {deriveTurnTiming} from './timing.ts';
-import { TURN_EVENT_BYTES_LIMIT, TURN_EVENT_LIMIT, TURN_EVENT_RECEIPT_LIMIT, actor, checkpointReceipt, initialWorkspaceBase, jsonPayload, message, positive, resourceDisposition, sameScope, scope, title, turnDigest, turnId,
+import { TURN_EVENT_BYTES_LIMIT, TURN_EVENT_LIMIT, TURN_EVENT_RECEIPT_LIMIT, actor, checkpointReceipt, initialWorkspaceBase, jsonPayload, message, positive, resourceDisposition, verifyHandoffProof, sameScope, scope, title, turnDigest, turnId,
   type CheckpointReceipt, type InitialWorkspaceBase, type RuntimeEventType, type SessionRecord, type TurnActor, type TurnEvent,
   type TurnEventType, type TurnJournalState, type TurnJournalView, type TurnRecord, type TurnResourceDisposition, type TurnScope } from './protocol.ts';
 import type { AtomicTurnStore } from './store.ts';
@@ -49,9 +49,14 @@ function terminalResourceInput(turn:TurnRecord,value:TurnResourceDisposition|und
   if(!turn.dispatchId||turn.runtimeGeneration===null||!turn.resourceLease)throw Error('turn-resource-disposition-conflict');
   return {status:'released',operationId:turn.resourceLease.operationId,leaseId:turn.resourceLease.leaseId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration,proofId:`journal-release-${turn.dispatchId}`,releasedAt:at};
 }
+function checkedHandoff(turn:TurnRecord,disposition:TurnResourceDisposition,checkpoint:CheckpointReceipt|null,at:number){
+  if(disposition.status!=='handed-off')return;
+  if(turn.executionOutcome!=='completed'||!sameScope(disposition.lease.scope,turn.scope)||disposition.binding.sessionId!==turn.sessionId||!checkpoint||!equal(disposition.checkpoint,checkpoint)||disposition.handedOffAt>at)throw Error('turn-handoff-conflict');
+}
 function applyReleaseDisposition(state:TurnJournalState,turn:TurnRecord,disposition:Exclude<TurnResourceDisposition,{status:'active'}>){
   const current=state.releaseHold;
   if(current&&(current.turnId!==disposition.turnId||current.dispatchId!==disposition.dispatchId||current.generation!==disposition.generation||current.operationId!==disposition.operationId||current.leaseId!==disposition.leaseId))throw Error('turn-resource-disposition-conflict');
+  if(disposition.status==='handed-off'){if(turn.persistenceOutcome!=='saved'||!turn.checkpoint||!equal(turn.checkpoint,disposition.checkpoint)||(current&&disposition.handedOffAt<current.since))throw Error('turn-handoff-conflict');state.releaseHold=null;return;}
   if(disposition.status==='released'){if(current&&disposition.releasedAt<current.since)throw Error('turn-resource-disposition-conflict');state.releaseHold=null;return;}
   if(current&&(disposition.since!==current.since||disposition.nextAttemptAt<current.nextAttemptAt||(current.status==='recovery-hold'&&disposition.status==='release-pending')))throw Error('turn-resource-disposition-conflict');
   state.releaseHold={status:disposition.status,reasonCode:disposition.reasonCode,since:disposition.since,nextAttemptAt:disposition.nextAttemptAt,turnId:disposition.turnId,dispatchId:disposition.dispatchId,generation:disposition.generation,operationId:disposition.operationId,leaseId:disposition.leaseId};
@@ -178,7 +183,8 @@ export class TurnJournal{
     const s=scope(rawScope),tid=turnId(input.turnId),dispatchId=turnId(input.dispatchId),generation=positive(input.runtimeGeneration),at=nowValid(this.#clock()),c=input.checkpoint;
     const checkpoint=checkpointReceipt(c);
     if(checkpoint.committedAt>at)throw Error('invalid-checkpoint-receipt');
-    return this.#store.transact(current=>{const state=requireState(current,s),turn=state.turns[tid];if(!turn||turn.dispatchId!==dispatchId||turn.runtimeGeneration!==generation||!turn.executionOutcome)throw Error('turn-runtime-scope-denied');const disposition=terminalResourceInput(turn,input.resourceDisposition,at);
+    const normalizedDisposition=input.resourceDisposition===undefined?undefined:resourceDisposition(input.resourceDisposition);if(normalizedDisposition)await verifyHandoffProof(normalizedDisposition);
+    return this.#store.transact(current=>{const state=requireState(current,s),turn=state.turns[tid];if(!turn||turn.dispatchId!==dispatchId||turn.runtimeGeneration!==generation||!turn.executionOutcome)throw Error('turn-runtime-scope-denied');const disposition=terminalResourceInput(turn,normalizedDisposition,at);checkedHandoff(turn,disposition,checkpoint,at);
       if(terminal(turn.status)){
         if(turn.persistenceOutcome==='saved'&&turn.checkpoint&&equal(turn.checkpoint,checkpoint)){applyReleaseDisposition(state,turn,disposition);pruneTerminalEventReceipts(state);return {state,value:turn};}
         throw Error('turn-checkpoint-conflict');
@@ -193,7 +199,7 @@ export class TurnJournal{
   }
   async failCheckpoint(rawScope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;errorCode:string;resourceDisposition?:TurnResourceDisposition}){
     const s=scope(rawScope),tid=turnId(input.turnId),dispatchId=turnId(input.dispatchId),generation=positive(input.runtimeGeneration),errorCode=turnId(input.errorCode),at=nowValid(this.#clock());
-    return this.#store.transact(current=>{const state=requireState(current,s),turn=state.turns[tid];if(!turn||turn.dispatchId!==dispatchId||turn.runtimeGeneration!==generation||!turn.executionOutcome)throw Error('turn-runtime-scope-denied');const disposition=terminalResourceInput(turn,input.resourceDisposition,at);
+    return this.#store.transact(current=>{const state=requireState(current,s),turn=state.turns[tid];if(!turn||turn.dispatchId!==dispatchId||turn.runtimeGeneration!==generation||!turn.executionOutcome)throw Error('turn-runtime-scope-denied');const disposition=terminalResourceInput(turn,input.resourceDisposition,at);if(disposition.status==='handed-off')throw Error('turn-handoff-conflict');
       if(terminal(turn.status)){
         if(turn.persistenceOutcome==='failed'&&turn.persistenceErrorCode===errorCode){applyReleaseDisposition(state,turn,disposition);pruneTerminalEventReceipts(state);return {state,value:turn};}
         throw Error('turn-checkpoint-conflict');
@@ -209,7 +215,14 @@ export class TurnJournal{
   async snapshot(rawScope:TurnScope){const s=scope(rawScope);return requireState(this.#store.read(),s);}
   recovery(rawScope:TurnScope){const s=scope(rawScope),state=requireState(this.#store.read(),s);if(!state.recoveryHold)return null;const turn=state.turns[state.recoveryHold.turnId];if(!turn||!turn.dispatchId||turn.runtimeGeneration===null||!turn.resourceLease)throw Error('invalid-persisted-turn-journal');return {hold:structuredClone(state.recoveryHold),turn:structuredClone(turn),identity:{scope:s,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration},resourceLease:structuredClone(turn.resourceLease)};}
   releaseRecovery(rawScope:TurnScope){const s=scope(rawScope),state=requireState(this.#store.read(),s);if(!state.releaseHold)return null;const turn=state.turns[state.releaseHold.turnId];if(!turn||!turn.dispatchId||turn.runtimeGeneration===null||!turn.resourceLease)throw Error('invalid-persisted-turn-journal');return {hold:structuredClone(state.releaseHold),turn:structuredClone(turn),identity:{scope:s,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration},resourceLease:structuredClone(turn.resourceLease)};}
-  async advanceRelease(rawScope:TurnScope,rawDisposition:TurnResourceDisposition){const s=scope(rawScope),disposition=resourceDisposition(rawDisposition);if(disposition.status==='active')throw Error('turn-resource-disposition-conflict');return this.#store.transact(current=>{const state=requireState(current,s),hold=state.releaseHold;if(!hold)throw Error('turn-resource-hold-not-found');const turn=state.turns[hold.turnId];if(!turn||!terminal(turn.status))throw Error('invalid-persisted-turn-journal');const checked=checkedResource(turn,disposition);applyReleaseDisposition(state,turn,checked);return {state,value:structuredClone(state.releaseHold)};});}
+  async advanceRelease(rawScope:TurnScope,rawDisposition:TurnResourceDisposition){
+    const s=scope(rawScope),disposition=resourceDisposition(rawDisposition);if(disposition.status==='active')throw Error('turn-resource-disposition-conflict');await verifyHandoffProof(disposition);
+    return this.#store.transact(current=>{const state=requireState(current,s),hold=state.releaseHold,turn=state.turns[hold?.turnId??disposition.turnId];
+      if(!turn||!terminal(turn.status))throw Error('turn-resource-hold-not-found');const checked=checkedResource(turn,disposition);checkedHandoff(turn,checked,turn.checkpoint,nowValid(this.#clock()));
+      if(!hold){if(checked.status==='handed-off'&&turn.persistenceOutcome==='saved')return {state,value:null};throw Error('turn-resource-hold-not-found');}
+      applyReleaseDisposition(state,turn,checked);return {state,value:structuredClone(state.releaseHold)};
+    });
+  }
   async advanceRecovery(rawScope:TurnScope,resolution:'committed'|'aborted'|'pending'){const s=scope(rawScope),next=nowValid(this.#clock())+60_000;return this.#store.transact(current=>{const state=requireState(current,s),hold=state.recoveryHold;if(!hold)return {state,value:null};if(resolution==='pending'){hold.nextAttemptAt=Math.max(hold.nextAttemptAt,next);return {state,value:structuredClone(hold)};}state.recoveryHold=null;return {state,value:null};});}
   /** Local current-call anchor. Runtime lease, plugin, Catalog and Preview
    * authority are checked separately; this does not mint a browser grant. */

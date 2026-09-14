@@ -6,7 +6,7 @@ import os
 import pwd
 import re
 import stat
-import subprocess
+import select
 import sys
 
 from process_quiescence import spawn_lock, require_unsealed, PROJECT_UID
@@ -63,7 +63,7 @@ def drop_to_project() -> None:
     os.umask(0o077)
 
 
-def main() -> int:
+def run_effect(directory) -> tuple[int, int, str]:
     if len(sys.argv) != 2 or not ID.fullmatch(sys.argv[1]):
         fail()
     effect_id = sys.argv[1]
@@ -102,14 +102,52 @@ def main() -> int:
     request = envelope["request"]
     if len(request.encode("utf-8")) > 1_100_000:
         fail()
+    input_r, input_w = os.pipe2(os.O_CLOEXEC)
+    ready_r, ready_w = os.pipe2(os.O_CLOEXEC)
+    gate_r, gate_w = os.pipe2(os.O_CLOEXEC)
+    child = os.fork()
+    if child == 0:
+        try:
+            os.dup2(input_r, 0)
+            for item in os.listdir('/proc/self/fd'):
+                fd = int(item)
+                if fd > 2 and fd not in {ready_w, gate_r}:
+                    try: os.close(fd)
+                    except OSError: pass
+            os.chdir(WORKSPACE)
+            drop_to_project()
+            os.write(ready_w, b'R')
+            os.close(ready_w)
+            if os.read(gate_r, 1) != b'G': os._exit(4)
+            os.close(gate_r)
+            os.execve(sys.executable, [sys.executable, HELPER], ENV)
+        except BaseException:
+            os._exit(4)
+    os.close(input_r); os.close(ready_w); os.close(gate_r)
+    try:
+        if not select.select([ready_r], [], [], 2)[0] or os.read(ready_r, 1) != b'R':
+            raise RuntimeError('project-spawn-drop-unproven')
+        os.write(gate_w, b'G')
+    except BaseException:
+        os.close(input_w)
+        raise
+    finally:
+        os.close(ready_r); os.close(gate_w)
+    return child, input_w, request
+
+
+def main() -> int:
     with spawn_lock() as directory:
-        require_unsealed(directory)
-        process = subprocess.Popen(
-            ["python3", HELPER], stdin=subprocess.PIPE, cwd=WORKSPACE,
-            env=ENV, preexec_fn=drop_to_project,
-        )
-    process.communicate(input=request.encode("utf-8"))
-    return process.returncode
+        require_unsealed(directory)  # Check before even consuming a staged control.
+        child, input_w, request = run_effect(directory)
+    try:
+        with os.fdopen(input_w, 'wb') as target:
+            target.write(request.encode('utf-8'))
+    except BrokenPipeError:
+        pass
+    _, status = os.waitpid(child, 0)
+    result = os.waitstatus_to_exitcode(status)
+    return result if result >= 0 else 128 - result
 
 
 if __name__ == "__main__":
