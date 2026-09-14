@@ -85,6 +85,7 @@ for(const fault of ['configure','write'])test('actual Workspace cleanup after '+
   assert.equal((await f.rpc('pairedSnapshot',[],{target:'capacity'})).active.status,'releasing');
   await f.restart();await f.rpc('drainRuntimeLease',[{ref}],{scope});const recovered=await f.rpc('stats',[],{target:'native-stats',scope,identity});assert.ok(recovered.calls.filter(call=>call.method==='destroy-lease').length>=2);assert.equal(recovered.calls.filter(call=>call.method==='write').length,1);assert.equal(recovered.calls.filter(call=>call.method==='start').length,0);assert.equal(recovered.calls.filter(call=>call.method==='configure').length,1,'cleanup must not reactivate configuration');assert.equal((await f.rpc('pairedSnapshot',[],{target:'capacity'})).active.status,'releasing','real release guard is not shortened by the fixture');
  }
+ const journal=await f.rpc('fixtureJournal',[scope],{scope});assert.equal(journal.turns[identity.turnId].checkpoint,null);assert.notEqual(journal.turns[identity.turnId].persistenceOutcome,'saved');assert.equal(journal.workspaceHead,null);
 });
 
 for(const legacy of [false,true])test('gate-off pair cancellation persists before delayed admission'+(legacy?' alongside an unchanged legacy ticket':''),{timeout:60000},async t=>{
