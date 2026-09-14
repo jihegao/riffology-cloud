@@ -31,3 +31,9 @@ Issue #37 的容器复用仍是独立 ADR：先测量 cold start、容量等待�
 历史 Revision 的保护沿用现有 GC 的保守策略：所有持久 Revision manifest 引用的 files/sessions blob 均保留，GC 不删除 manifest；Experiment 固定完整 source 引用。将来若引入 manifest 删除，必须先添加 Experiment 引用检查。R2 结果使用独立 simulation-results-v1 前缀，不属于现有 Turn blob GC 范围。
 
 本地复核命令：`npm run check`。原生 Linux Docker 执行验收：构建 `tests/fixtures/simulation/Dockerfile.native` 后设置 `M4_SIMULATION_DOCKER_TEST=1 M4_SIMULATION_TEST_IMAGE=<本地镜像>` 运行 `node --test tests/m3/simulation-docker.test.mjs`。显式启用该测试而缺少镜像时应先构建，不把 skip 作为通过证据。
+
+## Repeatable ordinary-user browser steps
+
+`scripts/m3/phase1-user-browser.mjs` attaches to an already logged-in Chrome CDP session (default `http://127.0.0.1:9237`) and uses normal product controls. Set `PHASE1_EVIDENCE_DIR` to a private, ignored directory. `inspect` checks authentication; `create <label> <title>` creates one blank project; `turn <label> <prompt-file>`, `run <label> <servers>`, and `service <label>` submit bounded operations. `preview <label> <service-label>` records the actual iframe and safe network statuses; `stop <label> <service-label>` explicitly stops the recorded service. `reopen <label>` closes/reopens the page and verifies no automatic execution POST. `snapshot <label>` captures durable state and a screenshot.
+
+Every mutation records its outgoing intent and receipt. A label with an existing intent cannot submit again: inspect its receipt and query the original durable identity before taking a recovery action. Use distinct labels only for intentionally new experiments or Turns. These commands do not deploy, open gates, create authentication tokens, or declare acceptance complete. Raw records may contain user prompts; only sanitized evidence belongs in commits. The existing release validator and independent final cloud readback remain mandatory for user-preview signoff.
