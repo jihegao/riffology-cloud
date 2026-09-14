@@ -55,7 +55,7 @@ has been inferred from provider-disabled timing.
 Run `node scripts/m2/check-product-turn-local.mjs --lazy` for provider-disabled
 persistence/recovery, or add `--crud` for the deterministic native file-tool path.
 These are local runtime checks, not cloud acceptance or real-model quality tests.
-The CRUD acceptance record is added after its bounded run completes.
+The completed CRUD acceptance is recorded below.
 
 On an arm64 Docker VM translating the amd64 SDK image, use the explicit
 `--vertical-project` local fixture option. It selects the existing
@@ -71,3 +71,30 @@ A separate no-network probe of that exact Project image identified
 limitation. Both failed raw records remain preserved; neither proves successful
 CRUD or authorizes replaying its unknown tool operations. The local fixture
 option above changes only the environment for a new acceptance run.
+
+
+## Final milestone B review
+
+The [final native CRUD record](evidence/runs/m2-product-turn-lazy-crud-fixture-20260914090031764/primary-review.json)
+passed on code commit `4a67f28342f95a49d75558179cac9d07b1a4088b` with identical
+before/after source digest. Its 21 first-turn tool operations (directory setup
+plus 20 mutations) and four restored reads succeeded. Each Turn prepared Project
+exactly once; two Project and two TrustedPi containers were observed across the
+intentional container-loss recovery. Saved file hashes matched, Session hashes
+advanced, and actual Workerd restart preserved both checkpoints. Corrupt-base
+rejection, queued cancellation, tenant separation and seven identity mutations
+passed. External fetches and model dispatches were zero; cleanup left no running
+containers. This used the explicitly recorded local vertical image boundary and
+an 8 GiB Docker VM, not production-kernel or model-quality acceptance.
+
+The preceding vertical-image attempt completed both tool/save paths but exposed
+a release race: sealing during destroy could restart a container already removed
+by the recovery fixture. Project teardown now relies on the durable admission
+fence and SDK destroy/absence checks without launching a sealing process.
+Snapshot freeze still requires the native seal. Independent actual-class Workerd
+review covered teardown acknowledgement loss, restart, rejected late preparation
+and unchanged snapshot sealing. The full `npm run check` on the frozen final code
+passed with 1,748 tests passed and 6 skipped. This final evidence-only update does
+not change that tested code. Earlier failed records are retained locally and are
+not counted as successful acceptance. Workspace reuse remains a separate stage;
+no online gate was changed.
