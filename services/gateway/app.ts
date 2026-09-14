@@ -1,3 +1,4 @@
+import type {GatewayResearchExports} from './research-export-services.ts';
 import {experimentGroupRequest} from '../simulation/groups.ts';
 import {experimentRequest} from '../simulation/host.ts';
 import type {GatewaySimulations} from './simulation-services.ts';
@@ -22,6 +23,7 @@ import {observerArtifactReceipt} from '../preview/observer-artifacts.ts';
 import type {GatewayObservations} from './observer-services.ts';
 
 export interface GatewayServices {
+  researchExports?:GatewayResearchExports;
   simulations?:GatewaySimulations;
   origin:string;
   database:Database;
@@ -124,6 +126,20 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       const tenants=await services.database.query<{id:string}>(sql(`SELECT t.id FROM catalog_tenants t JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=t.owner_user_id
         JOIN catalog_users u ON u.id=t.owner_user_id WHERE t.owner_user_id=? AND t.status='active' AND m.status='active' AND u.status='active' AND u.auth_version=?`,principal.userId,principal.authVersion));
       return json({userId:principal.userId,tenants});
+    }
+    const exportRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/research-export$/.exec(url.pathname);
+    if(exportRoute){
+      if(request.method!=='GET'||url.search)throw new HttpError('export-input-invalid',400);
+      const scope=await new ProjectCatalog(services.database,new Set(['blank-v1']),models).maintenanceWorkspace(principal,exportRoute[1]!);
+      if(!services.researchExports)throw new HttpError('export-unavailable',503);
+      try{return await services.researchExports.download(scope,principal);}catch(error){const code=error instanceof Error?error.message:'';
+        if(code==='export-access-denied')throw new HttpError(code,403);
+        if(code==='export-busy')throw new HttpError(code,429);
+        if(code==='export-too-large'||code==='turn-revision-object-too-large')throw new HttpError('export-too-large',413);
+        if(['export-model-changed','export-model-spec-invalid','export-dependencies-invalid','export-sensitive-file'].includes(code))throw new HttpError(code,409);
+        if(['export-source-mismatch','export-result-missing','export-evidence-mismatch'].includes(code))throw new HttpError(code,409);
+        throw new HttpError('export-unavailable',503);
+      }
     }
     const simulationRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/(model|experiments|experiment-groups|simulation-runs)(?:\/([A-Za-z0-9_-]{1,128})(?:\/(cancel))?)?$/.exec(url.pathname);
     if(simulationRoute){

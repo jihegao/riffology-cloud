@@ -59,7 +59,16 @@ export async function buildResearchExport(snapshot:ResearchSnapshot,ports:Export
    validateMetrics(run.input.plan.spec,raw.metrics);resultPath=`results/${run.runId}/result.json`;files.add(resultPath,bytes);
    for(const output of run.result.outputs||[]){const value=await ports.artifact(`${prefix}/outputs/${output.sha256}`,16384);if(!value||value.byteLength!==output.size||await digest(value)!==output.sha256)fail();files.add(`results/${run.runId}/outputs/${output.path}`,value);}
   }
-  runs.push({runId:run.runId,experimentId:run.experimentId,status:run.status,recordPath,resultPath});
+  runs.push({runId:run.runId,experimentId:run.experimentId,status:run.status,recordPath,resultPath,resultAvailability:resultPath?'included':'not-produced-at-snapshot'});
+ }
+ for(const claim of snapshot.claims){
+  if(!Array.isArray(claim.references))fail('export-evidence-mismatch');
+  for(const reference of claim.references){const ref=reference as Record<string,unknown>,run=snapshot.runs.find(r=>r.runId===ref.runId);
+   if(!run?.result||ref.experimentId!==run.experimentId||!same(ref.version,modelVersion(run.input.plan))||ref.seed!==run.input.seed||ref.artifactSha256!==run.result.artifactSha256||typeof ref.metric!=='string'||ref.value!==run.result.metrics[ref.metric]||(ref.parameters!==undefined&&!same(ref.parameters,run.input.parameters)))fail('export-evidence-mismatch');
+  }
+ }
+ for(const assessment of snapshot.assessments){const version=assessment.version as {filesSha256?:unknown;specSha256?:unknown}|undefined;
+  if(!version||!sources.some(source=>source.filesSha256===version.filesSha256&&source.specSha256===version.specSha256)||(assessment.scope==='run'&&!snapshot.runs.some(run=>run.runId===assessment.runId)))fail('export-evidence-mismatch');
  }
  const groups=snapshot.groups.map(group=>{const path=`experiments/${group.groupId}.json`;files.add(path,json({schemaVersion:1,groupId:group.groupId,version:modelVersion(group.plan),sourceKey:previewSourceFilesSha256(group.plan.source),hypothesis:group.hypothesis,configurations:group.configurations,seeds:group.seeds,status:group.status,createdAt:group.createdAt,updatedAt:group.updatedAt,cancelledAt:group.cancelledAt,errorCode:group.errorCode,runs:group.children}));return {groupId:group.groupId,path};});
  files.add('evidence/claims.json',json(snapshot.claims.map(c=>evidence(c,CLAIM_KEYS))));files.add('evidence/assessments.json',json(snapshot.assessments.map(c=>evidence(c,ASSESSMENT_KEYS))));files.add('README.md',encode(EXPORT_README));files.add('replay.py',encode(REPLAY_PY));
