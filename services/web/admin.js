@@ -1,4 +1,6 @@
+import {createPublicationPanel} from './publication.js';
 const $ = selector => document.querySelector(selector);
+const publicationPanel=createPublicationPanel({root:$('#model-submissions'),api,admin:true});
 const notice = $('#notice');
 let authenticated = false;
 let operator = false;
@@ -34,6 +36,7 @@ function accountView() {
   $('#admin-login').hidden = authenticated;
   $('#admin-denied').hidden = !authenticated || operator;
   $('#admin-app').hidden = !operator;
+  if(operator)publicationPanel.enter();else publicationPanel.leave();
   $('#sign-out').hidden = !authenticated;
 }
 

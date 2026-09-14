@@ -249,6 +249,7 @@ export class TurnJournal{
     if(!turn||!turn.dispatchId||turn.runtimeGeneration!==s.workspaceGeneration)throw Error('invalid-persisted-turn-journal');
     return {identity:{scope:s,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration},receipt:structuredClone(receipt)};
   }
+  publicationHasActiveTurn(rawScope:TurnScope):boolean{return requireState(this.#store.read(),scope(rawScope)).activeTurnId!==null;}
   async workspaceRevision(rawScope:TurnScope){return this.workspaceRevisionSnapshot(rawScope);}
   async view(rawScope:TurnScope):Promise<TurnJournalView>{const state=await this.snapshot(rawScope),turns:TurnJournalView['turns']={};
     for(const [id,turn] of Object.entries(state.turns)){const {actor:privateActor,requestKey:_,payloadSha256:__,dispatchId:___,base:____,resourceLease:_____,startedSequence:______,terminalSequence:_______,...safe}=turn;turns[id]={...safe,actor:{userId:privateActor.userId},timing:deriveTurnTiming(turn,state.events,Date.now())};}

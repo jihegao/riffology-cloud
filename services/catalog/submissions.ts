@@ -1,6 +1,7 @@
 import {statement as sql,type Database} from './database.ts';
 import {CatalogError,digest,opaqueId,modelReference,type Principal} from './contracts.ts';
 import {OperatorCatalog} from './admin.ts';
+import {ProjectCatalog} from './projects.ts';
 import {ModelCatalog} from './models.ts';
 import type {TurnScope} from '../turn/protocol.ts';
 import type {StoredPublication,PublicationArtifacts} from '../publication/artifacts.ts';
@@ -15,7 +16,7 @@ export function submissionInput(raw:unknown):SubmissionInput{
  if(typeof r.title!=='string'||!r.title.trim()||r.title.length>160||typeof r.description!=='string'||!r.description.trim()||r.description.length>4000||!r.source||Object.keys(r.source).sort().join(',')!=='filesSha256,revisionId,specSha256'||typeof r.source.revisionId!=='string'||!r.source.revisionId||!/^[a-f0-9]{64}$/.test(r.source.filesSha256)||!/^[a-f0-9]{64}$/.test(r.source.specSha256))throw new CatalogError('invalid_input');
  return {modelId:modelReference(r.modelId),version:modelReference(r.version,64),title:r.title.trim(),description:r.description,source:{revisionId:r.source.revisionId,filesSha256:r.source.filesSha256,specSha256:r.source.specSha256}};
 }
-export const submissionView=(row:ModelSubmission)=>{const {snapshot_json,last_intent_id:_,...rest}=row;return {...rest,snapshot:JSON.parse(snapshot_json)as StoredPublication};};
+export const submissionView=(row:ModelSubmission)=>{const {snapshot_json,last_intent_id:_,...rest}=row;const {exportKey:privateExportKey,contentKey:privateContentKey,...snapshot}=JSON.parse(snapshot_json)as StoredPublication;return {...rest,snapshot};};
 /** SQL predicates repeat primary authorization at every state transition. */
 export class SubmissionCatalog{
  readonly db:Database;readonly models:ModelCatalog;readonly artifacts:PublicationArtifacts;readonly clock:()=>number;
@@ -23,7 +24,7 @@ export class SubmissionCatalog{
  async requireOwner(p:Principal,scope:TurnScope){if(!(await this.db.query(sql(owner,...args(scope,p)))).length)throw new CatalogError('not_found');}
  async list(p:Principal,scope:TurnScope,before?:string){if(before)opaqueId(before);await this.requireOwner(p,scope);const items=await this.db.query<ModelSubmission>(sql(`SELECT * FROM catalog_model_submissions WHERE project_id=? AND (? IS NULL OR id<?) AND EXISTS (${owner}) ORDER BY id DESC LIMIT 21`,scope.projectId,before??null,before??null,...args(scope,p)));return {items:items.slice(0,20).map(submissionView),nextCursor:items.length>20?items[19]!.id:null};}
  async reviewList(p:Principal,before?:string){if(before)opaqueId(before);await new OperatorCatalog(this.db).require(p);const items=await this.db.query<ModelSubmission>(sql(`SELECT * FROM catalog_model_submissions WHERE (? IS NULL OR id<?) AND EXISTS (${operator}) ORDER BY id DESC LIMIT 21`,before??null,before??null,p.userId,p.authVersion));return {items:items.slice(0,20).map(submissionView),nextCursor:items.length>20?items[19]!.id:null};}
- async get(p:Principal,id:string,admin=false){opaqueId(id);const rows=await this.db.query<ModelSubmission>(sql('SELECT * FROM catalog_model_submissions WHERE id=?',id));const row=rows[0];if(!row)throw new CatalogError('not_found');if(admin)await new OperatorCatalog(this.db).require(p);else await this.requireOwner(p,{tenantId:row.tenant_id,projectId:row.project_id,workspaceId:row.workspace_id,workspaceGeneration:row.workspace_generation});return row;}
+ async get(p:Principal,id:string,admin=false){opaqueId(id);const rows=await this.db.query<ModelSubmission>(sql('SELECT * FROM catalog_model_submissions WHERE id=?',id));const row=rows[0];if(!row)throw new CatalogError('not_found');if(admin)await new OperatorCatalog(this.db).require(p);else {const current=await new ProjectCatalog(this.db,new Set()).maintenanceWorkspace(p,row.workspace_id);if(current.tenantId!==row.tenant_id||current.projectId!==row.project_id)throw new CatalogError('not_found');}return row;}
  async prior(p:Principal,operation:string,key:string,hash:string){const items=await this.db.query<{submission_id:string;payload_hash:string}>(sql('SELECT submission_id,payload_hash FROM catalog_submission_intents WHERE actor_user_id=? AND operation=? AND idempotency_key=?',p.userId,operation,key));if(!items[0])return null;if(items[0].payload_hash!==hash)throw new CatalogError('idempotency_conflict');return items[0].submission_id;}
  async submit(p:Principal,scope:TurnScope,key:string,raw:unknown,freeze:(source:PublicationVersion)=>Promise<StoredPublication>){
   opaqueId(key);const input=submissionInput(raw),hash=await digest(JSON.stringify({scope,input})),operation='submission.submit';await this.requireOwner(p,scope);const prior=await this.prior(p,operation,key,hash);if(prior)return {...submissionView(await this.get(p,prior)),replayed:true};
