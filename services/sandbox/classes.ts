@@ -132,7 +132,7 @@ export class ProjectToolSandbox extends Sandbox<M2SandboxEnv>{
     return this.#turnFence.runDispatch(claims,()=>{this.#preparation.assertDispatchUsable(claims);return this.#effects.execute(input);},()=>this.#destroyForFence());
   }
   async observeFileEffect(input:{reference:ToolCommandReference;command:ToolCommand;capability:ProjectEffectCapability}){
-    if(this.#warm.warm)return (await this.#warm.forDispatch(input.command)).observeFileEffect(input);
+    if(this.#warm.warm)return (await this.#warm.forDispatch(input.command,true)).observeFileEffect(input);
     const claims=await verifyProjectEffectCapability(this.#capabilityKey,this.#actorId,input.command,input.reference.effectId,input.capability);
     await this.#assertDispatch(claims);
     if(this.#turnFence.isDispatchFenced(claims))return this.#effects.observePersistedTerminal(input);
@@ -142,7 +142,7 @@ export class ProjectToolSandbox extends Sandbox<M2SandboxEnv>{
     identity=turnRuntimeIdentity(identity);if(this.#warm.warm)return (await this.#warm.forIdentity(identity)).prepareWorkspaceOnce(identity,base,archive,operationId,deadlineAt);await this.#assertActor(identity);
     return this.#turnFence.run(identity,()=>this.#preparation.prepare(identity,base,operationId,deadlineAt,()=>this.#workspace.restoreFiles(identity,base,archive,deadlineAt)),()=>this.#destroyForFence());
   }
-  async observeWorkspacePreparation(raw:ReturnType<typeof turnRuntimeIdentity>,operationId:string){const identity=turnRuntimeIdentity(raw);if(this.#warm.warm)return (await this.#warm.forIdentity(identity)).observeWorkspacePreparation(identity,operationId);await this.#assertActor(identity);return this.#preparation.observe(identity,operationId);}
+  async observeWorkspacePreparation(raw:ReturnType<typeof turnRuntimeIdentity>,operationId:string){const identity=turnRuntimeIdentity(raw);if(this.#warm.warm)return (await this.#warm.forIdentity(identity,true)).observeWorkspacePreparation(identity,operationId);await this.#assertActor(identity);return this.#preparation.observe(identity,operationId);}
   async restoreWorkspace(...input:Parameters<SandboxProjectWorkspacePort['restoreFiles']>){const identity=turnRuntimeIdentity(input[0]);if(this.#warm.warm)return (await this.#warm.forIdentity(identity)).restoreWorkspace(identity,input[1],input[2]);await this.#assertActor(identity);return this.#turnFence.run(identity,()=>this.#workspace.restoreFiles(...input),()=>this.#destroyForFence());}
   async freezeWorkspace(...input:Parameters<SandboxProjectWorkspacePort['frozenFiles']>){
     const identity=turnRuntimeIdentity(input[0]);turnBaseCheckpoints(input[1]);

@@ -53,6 +53,7 @@ export class WorkspaceRuntimeLeases implements TurnCapacityPort{
    if(!saved){value={...await this.#fresh(value),requestReserved:true};await this.#write(value);lease=await this.#pair.requestPair(value.scope,value.requestId);value=await this.#fresh(value);saved={...lease.ref,runtimeVersion:value.runtimeVersion!};value={...value,lease:saved};await this.#write(value);this.#storage.kv.put(CURRENT,{lease:saved,requestId:value.requestId});await this.#storage.sync();}
   }
   if(!lease)throw Error('workspace-runtime-lease-unavailable');await this.#fresh(value);
+  if(lease.status!=='bound'&&(!this.#enabled()||this.#version()!==value.lease!.runtimeVersion)){await this.#pair.retirePair(lease.ref,this.#version()!==value.lease!.runtimeVersion?'runtime-changed':'gate-disabled');throw Error('workspace-runtime-binding-retired');}
   if(['held','idle'].includes(lease.status))return {status:'acquired',turnId:value.turnId,generation:value.scope.workspaceGeneration,ticketId:value.operationId,operationId:value.operationId,leaseId:lease.ref.leaseId};
   if(lease.status==='bound'&&lease.binding?.turnId===value.turnId)return {status:'acquired',turnId:value.turnId,generation:value.scope.workspaceGeneration,ticketId:value.operationId,operationId:value.operationId,leaseId:lease.ref.leaseId};
   if(lease.status==='queued'||lease.status==='releasing')return this.#waiting(value,lease);
@@ -80,7 +81,9 @@ export class WorkspaceRuntimeLeases implements TurnCapacityPort{
   if(!Number.isSafeInteger(deadlineAt)||deadlineAt<=this.#clock())throw Error('workspace-runtime-deadline-denied');
   if(value.deadlineAt!==null&&value.deadlineAt!==deadlineAt)throw Error('workspace-runtime-deadline-conflict');
   const prior=await this.#pair.lookupPair(value.scope,value.requestId);if(!prior||!equal(prior.ref,pairReference(value.lease)))throw Error('workspace-runtime-lease-conflict');
-  const binding=value.binding??{sessionId:identity.sessionId,turnId:identity.turnId,dispatchId:identity.dispatchId,bindingEpoch:(prior.binding?.bindingEpoch??0)+1};
+  const alreadyBound=prior.status==='bound'&&prior.binding?.sessionId===identity.sessionId&&prior.binding.turnId===identity.turnId&&prior.binding.dispatchId===identity.dispatchId&&(!value.binding||equal(prior.binding,value.binding));
+  if(!alreadyBound&&(!this.#enabled()||this.#version()!==value.lease.runtimeVersion)){await this.#pair.retirePair(prior.ref,this.#version()!==value.lease.runtimeVersion?'runtime-changed':'gate-disabled');throw Error('workspace-runtime-binding-retired');}
+  const binding=value.binding??(alreadyBound?prior.binding!:{sessionId:identity.sessionId,turnId:identity.turnId,dispatchId:identity.dispatchId,bindingEpoch:(prior.binding?.bindingEpoch??0)+1});
   if(binding.dispatchId!==identity.dispatchId||binding.sessionId!==identity.sessionId)throw Error('workspace-runtime-binding-conflict');
   value={...await this.#fresh(value),binding,deadlineAt};await this.#write(value);
   const result=await this.#pair.bind(pairReference(value.lease!),binding);if(result.status!=='bound'||!equal(result.binding,binding))throw Error('workspace-runtime-binding-unavailable');

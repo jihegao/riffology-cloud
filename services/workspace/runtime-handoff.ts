@@ -34,12 +34,14 @@ export class WorkspaceRuntimeHandoff{
   }
   if(lease.status==='releasing'&&!lease.handoffProofs&&state.decision!=='destroy'){state.decision='destroy';await save();}
   if(state.decision==='waiting'){
-   const closure=await this.deps.close(input.identity);
+   let closure:{settled:Settlement[]}|null=null;try{closure=await this.deps.close(input.identity);}catch{state.decision='destroy';await save();}
+   if(closure){
    if(closure.settled.length!==3||closure.settled.some(s=>!same(s.identity,input.identity)||!s.closed))throw Error('workspace-runtime-settlement-denied');
    if(input.outcome!=='completed'||!input.checkpoint||turn.cancelRequestedAt!==null||closure.settled.some(s=>s.pending!==0||s.active!==0||s.unknown!==0))state.decision='destroy';
    else if(turn.persistenceOutcome!=='saved'||!same(turn.checkpoint,input.checkpoint)){if(this.clock()-state.since<600000)return pending('workspace-runtime-awaiting-workspace-checkpoint');state.decision='destroy';}
    else if(turn.executionOutcome!=='completed'||!lease.bindingClaims.trustedPi)state.decision='destroy';
    else state.decision='reuse';await save();
+   }
   }
   if(state.decision==='reuse'){
    try{
