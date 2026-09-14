@@ -1,6 +1,7 @@
 import {digest,modelVersion,simulationPlan,type SimulationPlan} from './source.ts';
 import {validateMetrics} from './model-spec.ts';
 import {scope as checkedScope,actor as checkedActor,turnId,type TurnScope,type TurnActor} from '../turn/protocol.ts';
+import {previewSourceScope} from '../preview/source.ts';
 import type {SimulationRecord} from './host.ts';
 
 export type EvidenceVersion=ReturnType<typeof modelVersion>;
@@ -32,7 +33,7 @@ export function evidenceRequest(raw:unknown):EvidenceRequest{
 function artifactKey(scope:TurnScope,runId:string,sha:string){return `simulation-results-v1/${scope.tenantId}/${scope.projectId}/${scope.workspaceId}/${runId}/${sha}.json`;}
 type VerificationPorts=EvidencePorts&{checkedPlan(source:SimulationPlan['source']):Promise<SimulationPlan>};
 async function checkedReference(scope:TurnScope,ports:VerificationPorts,run:SimulationRecord,metric:string,armId:string|null):Promise<EvidenceReference>{
- if(!equal(run.scope,scope)||run.runId!==run.input.runId)fail('evidence-source-mismatch');
+ if(!equal(run.scope,scope)||!equal(previewSourceScope(run.input.plan.source),scope)||run.runId!==run.input.runId)fail('evidence-source-mismatch');
  if(run.status!=='completed'||!run.result||run.errorCode!==null)fail('evidence-run-ineligible');
  let verifiedPlan:SimulationPlan;try{verifiedPlan=await ports.checkedPlan(run.input.plan.source);}catch{fail('evidence-source-mismatch');}if(!equal(verifiedPlan,run.input.plan))fail('evidence-source-mismatch');
  const v=version(modelVersion(run.input.plan)),hash=run.result.artifactSha256;if(!SHA.test(hash))fail('evidence-source-mismatch');
@@ -75,7 +76,7 @@ export class EvidenceLedger{
  }
  async get(claimId:string,current:EvidenceVersion|null,recheck=true):Promise<EvidenceView>{
   const ports=this.#verificationPorts();if(!SHA.test(claimId))fail();const claim=await this.storage.get<EvidenceClaim>(CLAIM+claimId);if(!claim)fail('evidence-not-found');let assessments=this.#rejections(await this.assessments(),claim.references);let evidenceValidity:EvidenceView['evidenceValidity']=assessments.length?'rejected':recheck?'verified':'recorded',reasonCode:string|null=assessments.length?'evidence-source-rejected':null;
-  if(recheck&&!assessments.length)try{for(const ref of claim.references){const run=await this.ports.run(ref.runId),checked=await checkedReference(this.scope,ports,run,claim.metric,ref.armId);if(!equal(checked,ref))fail('evidence-source-mismatch');}}catch(error){evidenceValidity='unavailable';const code=error instanceof Error?error.message:'';reasonCode=/^evidence-[a-z-]+$/.test(code)?code:'evidence-artifact-unavailable';}
+  if(recheck&&!assessments.length)try{if(claim.kind!=='run'){const group=await this.ports.group(claim.experimentId);if(group.experimentId!==claim.experimentId||!equal(group.version,claim.version))fail('evidence-group-mismatch');for(const ref of claim.references){const arm=group.arms.find(a=>a.armId===ref.armId);if(!arm?.runIds.includes(ref.runId)||!equal(group.inputs[ref.runId],{parameters:ref.parameters,seed:ref.seed}))fail('evidence-group-mismatch');}}for(const ref of claim.references){const run=await this.ports.run(ref.runId),checked=await checkedReference(this.scope,ports,run,claim.metric,ref.armId);if(!equal(checked,ref))fail('evidence-source-mismatch');}}catch(error){evidenceValidity='unavailable';const code=error instanceof Error?error.message:'';reasonCode=/^evidence-[a-z-]+$/.test(code)?code:'evidence-artifact-unavailable';}
   assessments=this.#rejections(await this.assessments(),claim.references);if(assessments.length){evidenceValidity='rejected';reasonCode='evidence-source-rejected';}
   return {...claim,currentScientificValidity:assessments.some(a=>a.scope==='model')?'rejected':'unassessed',evidenceValidity,reasonCode,stale:current===null||!sameModel(current,claim.version),olderRevision:current===null||current.revisionId!==claim.version.revisionId,assessments};
  }
