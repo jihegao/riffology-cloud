@@ -1,3 +1,4 @@
+import {ExperimentGroupHost,experimentGroupRequest,type ExperimentGroupRequest} from '../simulation/groups.ts';
 import {turnRuntimeIdentity,type TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
 import {SimulationHost,experimentRequest,publicExperiment,publishSimulationResult,type ExperimentRequest} from '../simulation/host.ts';
 import {SimulationNative,simulationToken,type SimulationSandboxApi,type SimulationInput} from '../simulation/native.ts';
@@ -117,6 +118,33 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       hold:promise=>this.ctx.waitUntil(promise),
     });
   }
+  #experimentGroupHost:ExperimentGroupHost|null=null;
+  #experimentGroups(scope:TurnScope){return this.#experimentGroupHost??=new ExperimentGroupHost(this.ctx.storage,scope,this.#simulations(scope),()=>this.#simulationCanRun());}
+  async submitExperimentGroup(input:{scope:TurnScope;actor:TurnActor;key:string;body:ExperimentGroupRequest}){
+    const scope=this.#ready(input.scope),host=this.#experimentGroups(scope),request=experimentGroupRequest(input.body);
+    const prior=await host.replay(input.actor,input.key,request);
+    if(prior)return host.view(prior,this.#turns.workspaceRevisionSnapshot(scope)?.receipt.filesSha256??null);
+    if(!this.#simulationCanRun())throw Error('simulation-unavailable');
+    const source=await this.#simulationSource(scope),store=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope));
+    const plan=await simulationPlan(source,await store.serviceFiles(source));
+    const group=await host.submit(input.actor,input.key,request,plan,this.env.M4_SIMULATION_IMAGE!,()=>{
+      this.#ready(scope);const latest=this.#turns.workspaceRevisionSnapshot(scope);
+      return source.kind==='saved-turn'?latest?.receipt.revisionId===source.revision.revisionId:latest===null;
+    });
+    return host.view(group,modelVersion(plan).filesSha256);
+  }
+  async experimentGroup(input:{scope:TurnScope;groupId:string}){
+    const scope=this.#maintenanceScope(input.scope),host=this.#experimentGroups(scope);
+    return host.view(await host.get(input.groupId),this.#turns.workspaceRevisionSnapshot(scope)?.receipt.filesSha256??null);
+  }
+  async listExperimentGroups(input:{scope:TurnScope;before?:string}){
+    const scope=this.#maintenanceScope(input.scope);
+    return this.#experimentGroups(scope).list(this.#turns.workspaceRevisionSnapshot(scope)?.receipt.filesSha256??null,input.before);
+  }
+  async cancelExperimentGroup(input:{scope:TurnScope;groupId:string}){
+    const scope=this.#maintenanceScope(input.scope),host=this.#experimentGroups(scope);
+    return host.view(await host.cancel(input.groupId),this.#turns.workspaceRevisionSnapshot(scope)?.receipt.filesSha256??null);
+  }
   async #simulationSandbox(input:SimulationInput){
     if(!this.env.SIMULATION_SANDBOX?.getByName)throw Error('simulation-unavailable');
     return this.env.SIMULATION_SANDBOX.getByName('simulation-'+await simulationToken(input));
@@ -140,7 +168,9 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     };
     await authorize();
     const model=await this.modelSpec({scope}),page=await this.listExperiments({scope}),experiments=page.items.slice(0,5);
-    const result={model,experiments};
+    const experimentGroups=(await this.listExperimentGroups({scope})).items.slice(0,2);
+    const result={model,experiments,experimentGroups};
+    while(experimentGroups.length&&new TextEncoder().encode(JSON.stringify(result)).byteLength>60000)experimentGroups.pop();
     while(experiments.length&&new TextEncoder().encode(JSON.stringify(result)).byteLength>60000)experiments.pop();
     await authorize();return result;
   }
@@ -597,7 +627,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   }
   async alarm() {
     await routeWorkspaceAlarm({
-      simulation:{readWake:()=>this.#simulationAlarm.read(),defer:at=>this.#simulationAlarm.schedule(at),advance:async scope=>{await this.#simulations(this.#maintenanceScope(scope)).alarm();}},
+      simulation:{readWake:()=>this.#simulationAlarm.read(),defer:at=>this.#simulationAlarm.schedule(at),advance:async scope=>{const owned=this.#maintenanceScope(scope);await this.#simulations(owned).alarm();await this.#experimentGroups(owned).alarm();}},
       observer:{
         readWake:()=>this.#observerAlarm.read(),
         defer:at=>this.#observerAlarm.schedule(at),
