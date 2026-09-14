@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "researchQuestion": "How does a non-preemptive priority single-queue multi-server system perform under configurable Poisson arrivals and exponential service times?",
+  "scope": "Finite discrete-event simulation of one priority queue feeding 1-4 identical servers.",
+  "entities": ["customers", "servers", "single waiting queue"],
+  "mechanisms": ["Poisson inter-arrivals", "exponential service times", "non-preemptive priority queue", "high priority before regular priority", "arrival-order tie breaking within priority", "immediate assignment to any idle server"],
+  "assumptions": ["Arrivals, priorities, and service durations are independently generated from the fixed seed", "Servers are identical and continuously available", "A service already in progress is never interrupted", "No abandonment, blocking, setup time, or finite capacity", "All times are in arbitrary time units"],
+  "limitations": ["This is a stochastic teaching model, not calibrated real-world evidence", "Finite samples can be noisy and do not establish steady-state performance", "Exponential distributions and binary priority may not represent a particular operation", "High priority can increase regular-customer waits and starvation is possible", "Results depend on the supplied seed and parameters"],
+  "parameters": {
+    "servers": {"type": "integer", "default": 1, "minimum": 1, "maximum": 4, "unit": "servers"},
+    "customers": {"type": "integer", "default": 40, "minimum": 1, "maximum": 100, "unit": "customers"},
+    "arrival_rate": {"type": "number", "default": 1, "minimum": 0.1, "maximum": 5, "unit": "per time unit"},
+    "service_rate": {"type": "number", "default": 1, "minimum": 0.1, "maximum": 5, "unit": "per time unit"},
+    "high_priority_fraction": {"type": "number", "default": 0.3, "minimum": 0, "maximum": 1, "unit": "fraction"}
+  },
+  "metrics": {
+    "completed": {"unit": "customers", "description": "Customers completing service"},
+    "mean_wait": {"unit": "time units", "description": "Mean time from arrival until service starts"},
+    "max_wait": {"unit": "time units", "description": "Maximum time from arrival until service starts"},
+    "mean_sojourn": {"unit": "time units", "description": "Mean time from arrival until service completion"},
+    "mean_wait_high": {"unit": "time units", "description": "Mean wait for high-priority customers"},
+    "mean_wait_regular": {"unit": "time units", "description": "Mean wait for regular-priority customers"}
+  },
+  "execution": {"entrypoint": "model/run.py", "dependencyLock": "app/requirements.lock"}
+}

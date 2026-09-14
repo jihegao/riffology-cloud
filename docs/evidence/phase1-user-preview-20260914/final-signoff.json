@@ -1,0 +1,696 @@
+{
+  "status": "passed",
+  "observedAt": 1789362764221,
+  "source": {
+    "workerSha": "2c464df88286506a37b1f84139600286bdfc8b48",
+    "workerVersionId": "85cb008e-f831-4456-877c-10e137fbb1e4"
+  },
+  "gates": {
+    "M2_TURNS_ENABLED": true,
+    "M3_SERVICE_ENABLED": true,
+    "M3_PREVIEW_ENABLED": true,
+    "M4_SIMULATION_ENABLED": true
+  },
+  "workspace": {
+    "at": 1789362670643,
+    "workspaceId": "90ac1208-d4bc-4925-b3f0-d02e9a864cb6",
+    "admission": {
+      "state": "enabled",
+      "reasonCode": null,
+      "retryable": true
+    },
+    "releaseHold": null,
+    "activeTurnId": null,
+    "turns": [
+      {
+        "id": "1c7305e2-bfae-4686-9ca1-7403a6b676cb",
+        "status": "completed",
+        "persistenceOutcome": "saved",
+        "timing": {
+          "stage": "completed",
+          "queuedMs": 522,
+          "preparingMs": null,
+          "executingMs": null,
+          "savingMs": null
+        }
+      },
+      {
+        "id": "63760447-ddfc-4744-a8e8-154a42e56261",
+        "status": "completed",
+        "persistenceOutcome": "saved",
+        "timing": {
+          "stage": "completed",
+          "queuedMs": 347,
+          "preparingMs": null,
+          "executingMs": null,
+          "savingMs": null
+        }
+      },
+      {
+        "id": "59b325fd-7138-4bc2-bc44-814b3ebc1a20",
+        "status": "completed",
+        "persistenceOutcome": "saved",
+        "timing": {
+          "stage": "completed",
+          "queuedMs": 20159,
+          "preparingMs": null,
+          "executingMs": null,
+          "savingMs": null
+        }
+      },
+      {
+        "id": "36d7b4ff-efd2-4303-a2e6-70ff3ff0fd28",
+        "status": "completed",
+        "persistenceOutcome": "saved",
+        "timing": {
+          "stage": "completed",
+          "queuedMs": 145331,
+          "preparingMs": null,
+          "executingMs": null,
+          "savingMs": 99
+        }
+      },
+      {
+        "id": "b2b7679e-2f86-44ef-ad82-0cbc1718fb1b",
+        "status": "completed",
+        "persistenceOutcome": "saved",
+        "timing": {
+          "stage": "completed",
+          "queuedMs": 548,
+          "preparingMs": 26686,
+          "executingMs": 54780,
+          "savingMs": 71
+        }
+      },
+      {
+        "id": "d7f11aa1-b486-4f6a-9db9-b6f8fec01f49",
+        "status": "completed",
+        "persistenceOutcome": "saved",
+        "timing": {
+          "stage": "completed",
+          "queuedMs": 188,
+          "preparingMs": 21198,
+          "executingMs": 42963,
+          "savingMs": 115
+        }
+      },
+      {
+        "id": "191005b8-dde1-400c-8a19-72d498ac6112",
+        "status": "completed",
+        "persistenceOutcome": "saved",
+        "timing": {
+          "stage": "completed",
+          "queuedMs": 129,
+          "preparingMs": 21058,
+          "executingMs": 20645,
+          "savingMs": 145
+        }
+      },
+      {
+        "id": "b1c54d19-86d1-41ea-b399-d39c99ad09cd",
+        "status": "completed",
+        "persistenceOutcome": "saved",
+        "timing": {
+          "stage": "completed",
+          "queuedMs": 317047,
+          "preparingMs": 31438,
+          "executingMs": 20490,
+          "savingMs": 179
+        }
+      }
+    ]
+  },
+  "public": {
+    "at": 1789362350707,
+    "services": {
+      "items": [
+        {
+          "runId": "50b26fb0-db05-4900-a168-f7ceda9bef4b",
+          "version": {
+            "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+            "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da"
+          },
+          "kind": "service",
+          "deliveryStatus": "delivered",
+          "runStatus": null,
+          "createdAt": 1789360880279,
+          "updatedAt": 1789361313721,
+          "stopRequestedAt": 1789361313597,
+          "errorCode": null
+        },
+        {
+          "runId": "69b89080-b4db-4b02-8acd-400cd08b5003",
+          "version": {
+            "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+            "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da"
+          },
+          "kind": "service",
+          "deliveryStatus": "delivered",
+          "runStatus": null,
+          "createdAt": 1789360056653,
+          "updatedAt": 1789360257136,
+          "stopRequestedAt": 1789360247123,
+          "errorCode": null
+        },
+        {
+          "runId": "68bdb489-1b2a-43a2-af60-22a94958c166",
+          "version": {
+            "revisionId": "dc1a4c70a007f7d58277426e8c5da8fb653dbc5807d2c0c1c00d41a3ee7d8617",
+            "filesSha256": "1a7d205816a5adca47c2829a12e72d630e3c90acda47d7a59fd45341c7c9553e"
+          },
+          "kind": "service",
+          "deliveryStatus": "delivered",
+          "runStatus": null,
+          "createdAt": 1789359550079,
+          "updatedAt": 1789359691562,
+          "stopRequestedAt": 1789359691316,
+          "errorCode": null
+        },
+        {
+          "runId": "7c85fea1-28e2-4c0f-ae91-fbd8623a1dfc",
+          "version": {
+            "revisionId": "3fd857e5d90f9d16ab956343356a0c294a1fd0b3abfde85e8a4d959738ca53a2",
+            "filesSha256": "0be284355378fdab5066e3aa431af90f306c34f084753cfb7587d051ffbf48e0"
+          },
+          "kind": "service",
+          "deliveryStatus": "delivered",
+          "runStatus": null,
+          "createdAt": 1789359263210,
+          "updatedAt": 1789359352082,
+          "stopRequestedAt": 1789359349606,
+          "errorCode": null
+        },
+        {
+          "runId": "5cbf4d0c-eca0-486d-b890-b8ae1a79f579",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42"
+          },
+          "kind": "service",
+          "deliveryStatus": "delivered",
+          "runStatus": null,
+          "createdAt": 1789358522847,
+          "updatedAt": 1789358688926,
+          "stopRequestedAt": 1789358688755,
+          "errorCode": null
+        }
+      ],
+      "nextCursor": null
+    },
+    "model": {
+      "version": {
+        "revisionId": "ce7e1f740b86fbffa8626c74a4d543623c9d5d3d290eee7a656432e7b4c7fada",
+        "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+        "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+      },
+      "spec": {
+        "schemaVersion": 1,
+        "researchQuestion": "How does a non-preemptive priority single-queue multi-server system perform under configurable Poisson arrivals and exponential service times?",
+        "scope": "Finite discrete-event simulation of one priority queue feeding 1-4 identical servers.",
+        "entities": [
+          "customers",
+          "servers",
+          "single waiting queue"
+        ],
+        "mechanisms": [
+          "Poisson inter-arrivals",
+          "exponential service times",
+          "non-preemptive priority queue",
+          "high priority before regular priority",
+          "arrival-order tie breaking within priority",
+          "immediate assignment to any idle server"
+        ],
+        "assumptions": [
+          "Arrivals, priorities, and service durations are independently generated from the fixed seed",
+          "Servers are identical and continuously available",
+          "A service already in progress is never interrupted",
+          "No abandonment, blocking, setup time, or finite capacity",
+          "All times are in arbitrary time units"
+        ],
+        "parameters": {
+          "servers": {
+            "type": "integer",
+            "default": 1,
+            "unit": "servers",
+            "minimum": 1,
+            "maximum": 4
+          },
+          "customers": {
+            "type": "integer",
+            "default": 40,
+            "unit": "customers",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "arrival_rate": {
+            "type": "number",
+            "default": 1,
+            "unit": "per time unit",
+            "minimum": 0.1,
+            "maximum": 5
+          },
+          "service_rate": {
+            "type": "number",
+            "default": 1,
+            "unit": "per time unit",
+            "minimum": 0.1,
+            "maximum": 5
+          },
+          "high_priority_fraction": {
+            "type": "number",
+            "default": 0.3,
+            "unit": "fraction",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "metrics": {
+          "completed": {
+            "unit": "customers",
+            "description": "Customers completing service"
+          },
+          "mean_wait": {
+            "unit": "time units",
+            "description": "Mean time from arrival until service starts"
+          },
+          "max_wait": {
+            "unit": "time units",
+            "description": "Maximum time from arrival until service starts"
+          },
+          "mean_sojourn": {
+            "unit": "time units",
+            "description": "Mean time from arrival until service completion"
+          },
+          "mean_wait_high": {
+            "unit": "time units",
+            "description": "Mean wait for high-priority customers"
+          },
+          "mean_wait_regular": {
+            "unit": "time units",
+            "description": "Mean wait for regular-priority customers"
+          }
+        },
+        "limitations": [
+          "This is a stochastic teaching model, not calibrated real-world evidence",
+          "Finite samples can be noisy and do not establish steady-state performance",
+          "Exponential distributions and binary priority may not represent a particular operation",
+          "High priority can increase regular-customer waits and starvation is possible",
+          "Results depend on the supplied seed and parameters"
+        ],
+        "execution": {
+          "entrypoint": "model/run.py",
+          "dependencyLock": "app/requirements.lock"
+        }
+      },
+      "reasonCode": null,
+      "canRun": true
+    },
+    "experiments": {
+      "items": [
+        {
+          "experimentId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+          "runId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+          "version": {
+            "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+            "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789360050064,
+          "updatedAt": 1789360437351,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 1.2006952817443448,
+              "mean_sojourn": 1.1552382279925575,
+              "mean_wait": 0.18736144944864538,
+              "mean_wait_high": 0.13288366251953743,
+              "mean_wait_regular": 0.2236799740680507
+            },
+            "artifactSha256": "a50b15e85f4669ca29d95411271ce54eaedae62b68f3acae119e2e688e66c4e3",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+                "size": 2477,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": false
+        },
+        {
+          "experimentId": "6609252a-a70b-48d5-9c6d-aed51eaa4e88",
+          "runId": "6609252a-a70b-48d5-9c6d-aed51eaa4e88",
+          "version": {
+            "revisionId": "dc1a4c70a007f7d58277426e8c5da8fb653dbc5807d2c0c1c00d41a3ee7d8617",
+            "filesSha256": "1a7d205816a5adca47c2829a12e72d630e3c90acda47d7a59fd45341c7c9553e",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789359522693,
+          "updatedAt": 1789359918518,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 1.2006952817443448,
+              "mean_sojourn": 1.1552382279925575,
+              "mean_wait": 0.18736144944864538,
+              "mean_wait_high": 0.13288366251953743,
+              "mean_wait_regular": 0.2236799740680507
+            },
+            "artifactSha256": "4457fb219c6266cda44ca5e2d6d75ddc5fdd1aa1c5824180222a843c6f727dc3",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+                "size": 2477,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "73da2349-23b7-4a1f-bd43-0e348e2cc848",
+          "runId": "73da2349-23b7-4a1f-bd43-0e348e2cc848",
+          "version": {
+            "revisionId": "3fd857e5d90f9d16ab956343356a0c294a1fd0b3abfde85e8a4d959738ca53a2",
+            "filesSha256": "0be284355378fdab5066e3aa431af90f306c34f084753cfb7587d051ffbf48e0",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789359243711,
+          "updatedAt": 1789359632477,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 7.19683062716155,
+              "mean_sojourn": 2.7499082831724535,
+              "mean_wait": 1.7820315046285415,
+              "mean_wait_high": 0.015037024746970218,
+              "mean_wait_regular": 2.9600278245495897
+            },
+            "artifactSha256": "bd0e29c62b7a4c4f43626c4461c63219eb0274de313ba85a08b1c4f2b7df095a",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "dc191edd700f667f3b6921dbb64c44a1e9ebbbd42b8f658c969ab37d431f7a63",
+                "size": 2479,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+          "runId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358759625,
+          "updatedAt": 1789359261950,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 2.7744723310529484,
+              "mean_sojourn": 1.1822530813822227,
+              "mean_wait": 0.36016908269074116
+            },
+            "artifactSha256": "3c89e7ab4ccf43eda502fb749db43489d0de2b18729d57e3ec847df8065edf50"
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+          "runId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358548210,
+          "updatedAt": 1789359065132,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 2.7744723310529484,
+              "mean_sojourn": 1.1822530813822227,
+              "mean_wait": 0.36016908269074116
+            },
+            "artifactSha256": "8b016b096155416e0b45a321ebde77fd217bcb68e8b72db9e969f249e19a42d3"
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+          "runId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 1,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358504466,
+          "updatedAt": 1789358877086,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 8.081178189502857,
+              "mean_sojourn": 3.3153717180277837,
+              "mean_wait": 2.4932877193363012
+            },
+            "artifactSha256": "56877b6c11f62db7befa896988a418a885e12c8e725762ef68568fd8ca08e697"
+          },
+          "stale": true
+        }
+      ],
+      "nextCursor": null
+    },
+    "preview": {
+      "current": {
+        "previewId": "576305cc-3ddc-462a-9f3d-e94fd50e7797",
+        "runId": "50b26fb0-db05-4900-a168-f7ceda9bef4b",
+        "expiresAt": 1789361790366,
+        "revokedAt": null
+      },
+      "available": null
+    },
+    "serviceDetails": [
+      {
+        "runId": "50b26fb0-db05-4900-a168-f7ceda9bef4b",
+        "version": {
+          "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+          "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da"
+        },
+        "kind": "service",
+        "deliveryStatus": "delivered",
+        "runStatus": "stopped",
+        "createdAt": 1789360880279,
+        "updatedAt": 1789361315189,
+        "stopRequestedAt": 1789361313597,
+        "errorCode": null
+      },
+      {
+        "runId": "69b89080-b4db-4b02-8acd-400cd08b5003",
+        "version": {
+          "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+          "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da"
+        },
+        "kind": "service",
+        "deliveryStatus": "delivered",
+        "runStatus": "stopped",
+        "createdAt": 1789360056653,
+        "updatedAt": 1789360258740,
+        "stopRequestedAt": 1789360247123,
+        "errorCode": null
+      },
+      {
+        "runId": "68bdb489-1b2a-43a2-af60-22a94958c166",
+        "version": {
+          "revisionId": "dc1a4c70a007f7d58277426e8c5da8fb653dbc5807d2c0c1c00d41a3ee7d8617",
+          "filesSha256": "1a7d205816a5adca47c2829a12e72d630e3c90acda47d7a59fd45341c7c9553e"
+        },
+        "kind": "service",
+        "deliveryStatus": "delivered",
+        "runStatus": "failed",
+        "createdAt": 1789359550079,
+        "updatedAt": 1789359691562,
+        "stopRequestedAt": 1789359691316,
+        "errorCode": "service-unavailable"
+      },
+      {
+        "runId": "7c85fea1-28e2-4c0f-ae91-fbd8623a1dfc",
+        "version": {
+          "revisionId": "3fd857e5d90f9d16ab956343356a0c294a1fd0b3abfde85e8a4d959738ca53a2",
+          "filesSha256": "0be284355378fdab5066e3aa431af90f306c34f084753cfb7587d051ffbf48e0"
+        },
+        "kind": "service",
+        "deliveryStatus": "delivered",
+        "runStatus": "stopped",
+        "createdAt": 1789359263210,
+        "updatedAt": 1789359353660,
+        "stopRequestedAt": 1789359349606,
+        "errorCode": null
+      },
+      {
+        "runId": "5cbf4d0c-eca0-486d-b890-b8ae1a79f579",
+        "version": {
+          "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+          "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42"
+        },
+        "kind": "service",
+        "deliveryStatus": "delivered",
+        "runStatus": "stopped",
+        "createdAt": 1789358522847,
+        "updatedAt": 1789358690473,
+        "stopRequestedAt": 1789358688755,
+        "errorCode": null
+      }
+    ]
+  },
+  "cloudValidation": {
+    "schemaVersion": 1,
+    "status": "passed",
+    "checks": [
+      {
+        "name": "config-containers",
+        "status": "passed"
+      },
+      {
+        "name": "worker-sha",
+        "status": "passed"
+      },
+      {
+        "name": "deployment",
+        "status": "passed"
+      },
+      {
+        "name": "gates",
+        "status": "passed"
+      },
+      {
+        "name": "simulation-image",
+        "status": "passed"
+      },
+      {
+        "name": "quota",
+        "status": "passed"
+      },
+      {
+        "name": "simulation-binding",
+        "status": "passed"
+      },
+      {
+        "name": "r2",
+        "status": "passed"
+      },
+      {
+        "name": "version-containers",
+        "status": "passed"
+      },
+      {
+        "name": "container-apps",
+        "status": "passed"
+      },
+      {
+        "name": "instances",
+        "status": "passed"
+      }
+    ],
+    "instances": {
+      "nonInactive": 0,
+      "appCount": 5,
+      "observedInstanceCount": 195
+    }
+  },
+  "cloudObservedAt": 1789362756018,
+  "postCleanupSmokeTurnIds": [
+    "191005b8-dde1-400c-8a19-72d498ac6112",
+    "b1c54d19-86d1-41ea-b399-d39c99ad09cd"
+  ],
+  "tenantQuotaObservation": {
+    "at": 1789361719402,
+    "quota": {
+      "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+      "capacity": 2,
+      "policyVersion": "phase1-preview-simulation-v1",
+      "configuredPolicyMatches": true,
+      "occupied": 0,
+      "available": 2,
+      "unknown": 0,
+      "leases": []
+    }
+  },
+  "quotaScope": "TenantQuota read before probe deletion. Only TrustedPiCapacity-based Pi Turns follow; no further TenantQuota-funded simulations or services.",
+  "diagnostics": {
+    "name": "riffology-user-preview-probe-023fcd093b40ad1f",
+    "deleted": true,
+    "independentReadbackCode": 10007,
+    "observedAt": 1789361764997
+  },
+  "tailStopped": true,
+  "limitations": [
+    "Recent chat display has bounded retention; full persisted session remains available to Pi.",
+    "Assignment release guard can queue work for several minutes.",
+    "First final-candidate Preview root returned 503; explicit UI recovery succeeded on same Service.",
+    "Agent first omitted final B then mixed historical fields; latest persisted context transport confirmed, evidence-bound conclusions remain #31.",
+    "Two scientifically invalid model runs retained and excluded from acceptance."
+  ]
+}

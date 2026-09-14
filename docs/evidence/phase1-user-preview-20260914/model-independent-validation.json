@@ -1,0 +1,269 @@
+{
+  "schemaVersion": 1,
+  "artifact": "model-verified.tar",
+  "validation": "local-only-independent-csv-checker",
+  "seed": 20260914,
+  "repetitions": 2,
+  "config_count": 9,
+  "all_checks_pass": false,
+  "results": [
+    {
+      "config": {
+        "servers": 1,
+        "customers": 1,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0
+      },
+      "repeated_csv_equal": true,
+      "csv_sha256": "15dea4c4e05a0c125e5a7c35a68d7fcbf5e7455a1c708d333d8c85f8ceb6f616",
+      "checker": [
+        {
+          "returncode": 0,
+          "output": [
+            "PASS rows=1 servers=1 eps=1e-07"
+          ]
+        },
+        {
+          "returncode": 0,
+          "output": [
+            "PASS rows=1 servers=1 eps=1e-07"
+          ]
+        }
+      ],
+      "metrics_equal": true
+    },
+    {
+      "config": {
+        "servers": 1,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0.3
+      },
+      "repeated_csv_equal": true,
+      "csv_sha256": "0c01c011c287abacf195d503340b9bc9712127de169ba64b7a075d3278ed584a",
+      "checker": [
+        {
+          "returncode": 1,
+          "output": [
+            "FAIL 8",
+            "customer 10: priority/FIFO dispatch violates arrived waiting set at 12.798356566"
+          ]
+        },
+        {
+          "returncode": 1,
+          "output": [
+            "FAIL 8",
+            "customer 10: priority/FIFO dispatch violates arrived waiting set at 12.798356566"
+          ]
+        }
+      ],
+      "metrics_equal": true
+    },
+    {
+      "config": {
+        "servers": 1,
+        "customers": 100,
+        "arrival_rate": 5,
+        "service_rate": 0.1,
+        "high_priority_fraction": 1
+      },
+      "repeated_csv_equal": true,
+      "csv_sha256": "cac5df4f51b475905b8911b26f7bcdabb1aaf9d37aa5839c20e6dcb67c63718e",
+      "checker": [
+        {
+          "returncode": 0,
+          "output": [
+            "PASS rows=100 servers=1 eps=1e-07"
+          ]
+        },
+        {
+          "returncode": 0,
+          "output": [
+            "PASS rows=100 servers=1 eps=1e-07"
+          ]
+        }
+      ],
+      "metrics_equal": true
+    },
+    {
+      "config": {
+        "servers": 2,
+        "customers": 1,
+        "arrival_rate": 5,
+        "service_rate": 5,
+        "high_priority_fraction": 0.3
+      },
+      "repeated_csv_equal": true,
+      "csv_sha256": "3bccf95ac0c7e56363769d2b5e7c15fd114092b9391c808d87e869f61b341651",
+      "checker": [
+        {
+          "returncode": 0,
+          "output": [
+            "PASS rows=1 servers=2 eps=1e-07"
+          ]
+        },
+        {
+          "returncode": 0,
+          "output": [
+            "PASS rows=1 servers=2 eps=1e-07"
+          ]
+        }
+      ],
+      "metrics_equal": true
+    },
+    {
+      "config": {
+        "servers": 2,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0.3
+      },
+      "repeated_csv_equal": true,
+      "csv_sha256": "04b52bfb51c1429854dca0fb10466fc688a8ee597269a8f845150482e4d3e70c",
+      "checker": [
+        {
+          "returncode": 0,
+          "output": [
+            "PASS rows=40 servers=2 eps=1e-07"
+          ]
+        },
+        {
+          "returncode": 0,
+          "output": [
+            "PASS rows=40 servers=2 eps=1e-07"
+          ]
+        }
+      ],
+      "metrics_equal": true
+    },
+    {
+      "config": {
+        "servers": 2,
+        "customers": 100,
+        "arrival_rate": 0.1,
+        "service_rate": 5,
+        "high_priority_fraction": 0.7
+      },
+      "repeated_csv_equal": true,
+      "csv_sha256": "1d114ba12d527ae0b85b8744b43c142e88f50affdb097423ba591c4132ca76e4",
+      "checker": [
+        {
+          "returncode": 0,
+          "output": [
+            "PASS rows=100 servers=2 eps=1e-07"
+          ]
+        },
+        {
+          "returncode": 0,
+          "output": [
+            "PASS rows=100 servers=2 eps=1e-07"
+          ]
+        }
+      ],
+      "metrics_equal": true
+    },
+    {
+      "config": {
+        "servers": 4,
+        "customers": 1,
+        "arrival_rate": 0.1,
+        "service_rate": 0.1,
+        "high_priority_fraction": 1
+      },
+      "repeated_csv_equal": true,
+      "csv_sha256": "b2b8721d26fcbf7b6c6a583e91d5dd9231fc3b7a86f123e63d2dcdda5973ecdf",
+      "checker": [
+        {
+          "returncode": 0,
+          "output": [
+            "PASS rows=1 servers=4 eps=1e-07"
+          ]
+        },
+        {
+          "returncode": 0,
+          "output": [
+            "PASS rows=1 servers=4 eps=1e-07"
+          ]
+        }
+      ],
+      "metrics_equal": true
+    },
+    {
+      "config": {
+        "servers": 4,
+        "customers": 40,
+        "arrival_rate": 5,
+        "service_rate": 0.1,
+        "high_priority_fraction": 0
+      },
+      "repeated_csv_equal": true,
+      "csv_sha256": "443df524940e029f9ac8b7b6666cbc2f13aef5d18979b5deab7e12de4a80fc64",
+      "checker": [
+        {
+          "returncode": 0,
+          "output": [
+            "PASS rows=40 servers=4 eps=1e-07"
+          ]
+        },
+        {
+          "returncode": 0,
+          "output": [
+            "PASS rows=40 servers=4 eps=1e-07"
+          ]
+        }
+      ],
+      "metrics_equal": true
+    },
+    {
+      "config": {
+        "servers": 4,
+        "customers": 100,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0.5
+      },
+      "repeated_csv_equal": true,
+      "csv_sha256": "acd6d3784ec9ced56b068e677da97fe8117723a940a35d5c0a3a7efa15d4bf14",
+      "checker": [
+        {
+          "returncode": 0,
+          "output": [
+            "PASS rows=100 servers=4 eps=1e-07"
+          ]
+        },
+        {
+          "returncode": 0,
+          "output": [
+            "PASS rows=100 servers=4 eps=1e-07"
+          ]
+        }
+      ],
+      "metrics_equal": true
+    }
+  ],
+  "static_review": {
+    "status": "FAIL",
+    "reason": "model/run.py only extends waiting through arrivals[next_i] <= now where now is the next arrival; it does not enqueue all arrivals <= the selected server availability before priority selection",
+    "counterexample": {
+      "config": {
+        "servers": 1,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0.3
+      },
+      "seed": 20260914,
+      "customer_started": 10,
+      "customer_started_at": 12.798356566,
+      "customer_started_priority": "regular",
+      "waiting_higher_priority_customer": 12,
+      "waiting_customer_arrival": 12.683061992,
+      "waiting_customer_priority": "high"
+    },
+    "impact": "priority discipline is violated for an already-arrived high customer; output is not valid non-preemptive priority scheduling"
+  },
+  "conclusion": "BLOCKED_MODEL_IMPLEMENTATION"
+}

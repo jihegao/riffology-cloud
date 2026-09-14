@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "profile": "user-preview",
+  "source": {
+    "workerSha": "2c464df88286506a37b1f84139600286bdfc8b48",
+    "workerVersionId": "85cb008e-f831-4456-877c-10e137fbb1e4"
+  },
+  "final": {
+    "workerVersionId": "85cb008e-f831-4456-877c-10e137fbb1e4",
+    "gates": {
+      "M2_TURNS_ENABLED": true,
+      "M3_SERVICE_ENABLED": true,
+      "M3_PREVIEW_ENABLED": true,
+      "M4_SIMULATION_ENABLED": true
+    }
+  },
+  "stages": {
+    "source": {
+      "status": "passed",
+      "observedAt": 1789360769419
+    },
+    "preflight": {
+      "status": "passed",
+      "observedAt": 1789360769419
+    },
+    "deployment": {
+      "status": "passed",
+      "observedAt": 1789360859004
+    },
+    "user-smoke": {
+      "status": "passed",
+      "observedAt": 1789361745418
+    },
+    "cleanup": {
+      "status": "passed",
+      "observedAt": 1789361798560
+    },
+    "final-inventory": {
+      "status": "passed",
+      "observedAt": 1789361810131
+    }
+  },
+  "workspace": {
+    "workspaceId": "90ac1208-d4bc-4925-b3f0-d02e9a864cb6",
+    "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+    "beforeRevision": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+    "afterRevision": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676"
+  },
+  "experiments": [
+    {
+      "experimentId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+      "runId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+      "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+      "parameters": {
+        "servers": 1,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1
+      },
+      "seed": 99,
+      "resultSha256": "56877b6c11f62db7befa896988a418a885e12c8e725762ef68568fd8ca08e697",
+      "status": "completed"
+    },
+    {
+      "experimentId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+      "runId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+      "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+      "parameters": {
+        "servers": 2,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1
+      },
+      "seed": 99,
+      "resultSha256": "8b016b096155416e0b45a321ebde77fd217bcb68e8b72db9e969f249e19a42d3",
+      "status": "completed"
+    },
+    {
+      "experimentId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+      "runId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+      "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+      "parameters": {
+        "servers": 2,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1
+      },
+      "seed": 99,
+      "resultSha256": "3c89e7ab4ccf43eda502fb749db43489d0de2b18729d57e3ec847df8065edf50",
+      "status": "completed"
+    },
+    {
+      "experimentId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+      "runId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+      "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+      "parameters": {
+        "servers": 2,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0.3
+      },
+      "seed": 99,
+      "resultSha256": "a50b15e85f4669ca29d95411271ce54eaedae62b68f3acae119e2e688e66c4e3",
+      "status": "completed"
+    }
+  ],
+  "preview": {
+    "beforeRevisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+    "afterRevisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+    "changed": true
+  },
+  "liveChecks": {
+    "refreshNoRerun": true,
+    "sameRunId": true,
+    "sameExperimentId": true,
+    "beforeRefresh": {
+      "workspaceId": "90ac1208-d4bc-4925-b3f0-d02e9a864cb6",
+      "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+      "runId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+      "experimentId": "cf76eabb-3d21-4a4a-870d-3074ab3198de"
+    },
+    "afterRefresh": {
+      "workspaceId": "90ac1208-d4bc-4925-b3f0-d02e9a864cb6",
+      "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+      "runId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+      "experimentId": "cf76eabb-3d21-4a4a-870d-3074ab3198de"
+    },
+    "finalSmokeAt": 1789362290668,
+    "fixture": false,
+    "testToken": false,
+    "observedByOrdinaryUser": true
+  }
+}

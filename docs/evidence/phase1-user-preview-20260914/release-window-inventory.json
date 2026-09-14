@@ -1,0 +1,61 @@
+{
+  "inventoryCompletedAt": 1789362656415,
+  "workspaceClearObservedAt": 1789362670643,
+  "validation": {
+    "schemaVersion": 1,
+    "status": "blocked",
+    "checks": [
+      {
+        "name": "config-containers",
+        "status": "passed"
+      },
+      {
+        "name": "worker-sha",
+        "status": "passed"
+      },
+      {
+        "name": "deployment",
+        "status": "passed"
+      },
+      {
+        "name": "gates",
+        "status": "passed"
+      },
+      {
+        "name": "simulation-image",
+        "status": "passed"
+      },
+      {
+        "name": "quota",
+        "status": "passed"
+      },
+      {
+        "name": "simulation-binding",
+        "status": "passed"
+      },
+      {
+        "name": "r2",
+        "status": "passed"
+      },
+      {
+        "name": "version-containers",
+        "status": "passed"
+      },
+      {
+        "name": "container-apps",
+        "status": "passed"
+      },
+      {
+        "name": "instances",
+        "status": "blocked",
+        "detail": "non-inactive-container-instance"
+      }
+    ],
+    "instances": {
+      "nonInactive": 1,
+      "appCount": 5,
+      "observedInstanceCount": 195
+    }
+  },
+  "assessment": "Rejected sign-off snapshot: collected before Workspace release hold cleared. A fresh complete inventory is required after release confirmation."
+}

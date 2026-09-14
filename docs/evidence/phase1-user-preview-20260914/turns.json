@@ -1,0 +1,218 @@
+[
+  {
+    "label": "build",
+    "id": "1c7305e2-bfae-4686-9ca1-7403a6b676cb",
+    "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+    "status": "completed",
+    "createdAt": 1789357250770,
+    "startedAt": 1789357251292,
+    "finishedAt": 1789357759226,
+    "executionOutcome": "completed",
+    "persistenceOutcome": "saved",
+    "errorCode": null,
+    "persistenceErrorCode": null,
+    "checkpoint": {
+      "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+      "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/d0657c9e-fe49-4b28-8ea8-6b4a4cb6a4de/90ac1208-d4bc-4925-b3f0-d02e9a864cb6/1/8205988d-4b2f-4474-aafd-b8f1e16f854d/1c7305e2-bfae-4686-9ca1-7403a6b676cb/40f3fa7a-d097-4c43-8127-e0fa87cea1c4.json",
+      "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+      "sessionSha256": "f9385412109cb64775a66bbd5584d61a28ae5eba9d579b1eea241589a8fdd3a4",
+      "committedAt": 1789357404855
+    },
+    "timing": {
+      "stage": "completed",
+      "queuedMs": 522,
+      "preparingMs": 16404,
+      "executingMs": 458745,
+      "savingMs": 32785
+    }
+  },
+  {
+    "label": "priority",
+    "id": "63760447-ddfc-4744-a8e8-154a42e56261",
+    "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+    "status": "completed",
+    "createdAt": 1789358913528,
+    "startedAt": 1789358913875,
+    "finishedAt": 1789359028324,
+    "executionOutcome": "completed",
+    "persistenceOutcome": "saved",
+    "errorCode": null,
+    "persistenceErrorCode": null,
+    "checkpoint": {
+      "revisionId": "3fd857e5d90f9d16ab956343356a0c294a1fd0b3abfde85e8a4d959738ca53a2",
+      "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/d0657c9e-fe49-4b28-8ea8-6b4a4cb6a4de/90ac1208-d4bc-4925-b3f0-d02e9a864cb6/1/8205988d-4b2f-4474-aafd-b8f1e16f854d/63760447-ddfc-4744-a8e8-154a42e56261/cb2d53e6-7340-479b-b58e-adca99defadb.json",
+      "filesSha256": "0be284355378fdab5066e3aa431af90f306c34f084753cfb7587d051ffbf48e0",
+      "sessionSha256": "c9257bb16bde54bf1b6b1061c697160b33e9202811d5a9cf2f64a121e3184af7",
+      "committedAt": 1789359017701
+    },
+    "timing": {
+      "stage": "completed",
+      "queuedMs": 347,
+      "preparingMs": 18454,
+      "executingMs": 95922,
+      "savingMs": 73
+    }
+  },
+  {
+    "label": "priority-fix",
+    "id": "59b325fd-7138-4bc2-bc44-814b3ebc1a20",
+    "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+    "status": "completed",
+    "createdAt": 1789359375598,
+    "startedAt": 1789359395757,
+    "finishedAt": 1789359495508,
+    "executionOutcome": "completed",
+    "persistenceOutcome": "saved",
+    "errorCode": null,
+    "persistenceErrorCode": null,
+    "checkpoint": {
+      "revisionId": "dc1a4c70a007f7d58277426e8c5da8fb653dbc5807d2c0c1c00d41a3ee7d8617",
+      "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/d0657c9e-fe49-4b28-8ea8-6b4a4cb6a4de/90ac1208-d4bc-4925-b3f0-d02e9a864cb6/1/8205988d-4b2f-4474-aafd-b8f1e16f854d/59b325fd-7138-4bc2-bc44-814b3ebc1a20/93921d77-cdeb-4939-bced-8927d1f30c29.json",
+      "filesSha256": "1a7d205816a5adca47c2829a12e72d630e3c90acda47d7a59fd45341c7c9553e",
+      "sessionSha256": "537799a0c4bac4b0960b0988f84b9b5548f916f7a48e86ec21cfcba46289e8be",
+      "committedAt": 1789359484241
+    },
+    "timing": {
+      "stage": "completed",
+      "queuedMs": 20159,
+      "preparingMs": 27796,
+      "executingMs": 71859,
+      "savingMs": 96
+    }
+  },
+  {
+    "label": "priority-correct",
+    "id": "36d7b4ff-efd2-4303-a2e6-70ff3ff0fd28",
+    "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+    "status": "completed",
+    "createdAt": 1789359718781,
+    "startedAt": 1789359864112,
+    "finishedAt": 1789359983126,
+    "executionOutcome": "completed",
+    "persistenceOutcome": "saved",
+    "errorCode": null,
+    "persistenceErrorCode": null,
+    "checkpoint": {
+      "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+      "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/d0657c9e-fe49-4b28-8ea8-6b4a4cb6a4de/90ac1208-d4bc-4925-b3f0-d02e9a864cb6/1/8205988d-4b2f-4474-aafd-b8f1e16f854d/36d7b4ff-efd2-4303-a2e6-70ff3ff0fd28/ebd7b5c1-1e2c-4664-ad03-15b18d170d97.json",
+      "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+      "sessionSha256": "14ebbb6d0bfaa0ba08af62f06a2e8ae3870be9f7258adaf6d9140a01e56a93c6",
+      "committedAt": 1789359972200
+    },
+    "timing": {
+      "stage": "completed",
+      "queuedMs": 145331,
+      "preparingMs": 24283,
+      "executingMs": 94632,
+      "savingMs": 99
+    }
+  },
+  {
+    "label": "continue",
+    "id": "b2b7679e-2f86-44ef-ad82-0cbc1718fb1b",
+    "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+    "status": "completed",
+    "createdAt": 1789360872973,
+    "startedAt": 1789360873521,
+    "finishedAt": 1789360955058,
+    "executionOutcome": "completed",
+    "persistenceOutcome": "saved",
+    "errorCode": null,
+    "persistenceErrorCode": null,
+    "checkpoint": {
+      "revisionId": "133e63973572f64335ac89ab655e9903d87f1ac9730a707b3d9c1d7736ec7a1e",
+      "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/d0657c9e-fe49-4b28-8ea8-6b4a4cb6a4de/90ac1208-d4bc-4925-b3f0-d02e9a864cb6/1/8205988d-4b2f-4474-aafd-b8f1e16f854d/b2b7679e-2f86-44ef-ad82-0cbc1718fb1b/d73e3283-49e8-4490-bf9a-c7b5fd57dfc8.json",
+      "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+      "sessionSha256": "3a9691f8a938eda89814b30a2b4c220fef4a754bfe46af9e1c412cbf5c7bcb60",
+      "committedAt": 1789360944879
+    },
+    "timing": {
+      "stage": "completed",
+      "queuedMs": 548,
+      "preparingMs": 26686,
+      "executingMs": 54780,
+      "savingMs": 71
+    }
+  },
+  {
+    "label": "context-audit",
+    "id": "d7f11aa1-b486-4f6a-9db9-b6f8fec01f49",
+    "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+    "status": "completed",
+    "createdAt": 1789361349880,
+    "startedAt": 1789361350068,
+    "finishedAt": 1789361414344,
+    "executionOutcome": "completed",
+    "persistenceOutcome": "saved",
+    "errorCode": null,
+    "persistenceErrorCode": null,
+    "checkpoint": {
+      "revisionId": "350823a16e87a113556abe544b5b203d57ceac30ce70df7aaec86f671e48e80b",
+      "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/d0657c9e-fe49-4b28-8ea8-6b4a4cb6a4de/90ac1208-d4bc-4925-b3f0-d02e9a864cb6/1/8205988d-4b2f-4474-aafd-b8f1e16f854d/d7f11aa1-b486-4f6a-9db9-b6f8fec01f49/ec184476-27b1-4357-93bc-6221f60b4cc2.json",
+      "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+      "sessionSha256": "31054fed0a8f3db91fc2d7af2b529e2e90441cedd9a1d9ac668f2984cddd813b",
+      "committedAt": 1789361403767
+    },
+    "timing": {
+      "stage": "completed",
+      "queuedMs": 188,
+      "preparingMs": 21198,
+      "executingMs": 42963,
+      "savingMs": 115
+    }
+  },
+  {
+    "label": "smoke1",
+    "id": "191005b8-dde1-400c-8a19-72d498ac6112",
+    "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+    "status": "completed",
+    "createdAt": 1789361828155,
+    "startedAt": 1789361828284,
+    "finishedAt": 1789361870132,
+    "executionOutcome": "completed",
+    "persistenceOutcome": "saved",
+    "errorCode": null,
+    "persistenceErrorCode": null,
+    "checkpoint": {
+      "revisionId": "7f7d9a80d8464bcd061179628e91a3b688889d107f6606aeda9bcc855566a2a4",
+      "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/d0657c9e-fe49-4b28-8ea8-6b4a4cb6a4de/90ac1208-d4bc-4925-b3f0-d02e9a864cb6/1/8205988d-4b2f-4474-aafd-b8f1e16f854d/191005b8-dde1-400c-8a19-72d498ac6112/3e34bdda-7c25-45c6-93a6-be6ea48f53b7.json",
+      "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+      "sessionSha256": "9318eca679d85f400b042427e038f870fdb4715076e845c244d6ca3a293f2bc6",
+      "committedAt": 1789361860088
+    },
+    "timing": {
+      "stage": "completed",
+      "queuedMs": 129,
+      "preparingMs": 21058,
+      "executingMs": 20645,
+      "savingMs": 145
+    }
+  },
+  {
+    "label": "smoke2",
+    "id": "b1c54d19-86d1-41ea-b399-d39c99ad09cd",
+    "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+    "status": "completed",
+    "createdAt": 1789361921514,
+    "startedAt": 1789362238561,
+    "finishedAt": 1789362290668,
+    "executionOutcome": "completed",
+    "persistenceOutcome": "saved",
+    "errorCode": null,
+    "persistenceErrorCode": null,
+    "checkpoint": {
+      "revisionId": "ce7e1f740b86fbffa8626c74a4d543623c9d5d3d290eee7a656432e7b4c7fada",
+      "objectKey": "turns/8410ae67-fc66-46a6-9364-5d70cc0f66b5/d0657c9e-fe49-4b28-8ea8-6b4a4cb6a4de/90ac1208-d4bc-4925-b3f0-d02e9a864cb6/1/8205988d-4b2f-4474-aafd-b8f1e16f854d/b1c54d19-86d1-41ea-b399-d39c99ad09cd/15eb2bd5-f43e-4775-8491-a36eb62915fe.json",
+      "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+      "sessionSha256": "167c3b58ce60a40caf646f221fc3213148ff7b2cbf275d0bde2ce1ba49151db6",
+      "committedAt": 1789362280065
+    },
+    "timing": {
+      "stage": "completed",
+      "queuedMs": 317047,
+      "preparingMs": 31438,
+      "executingMs": 20490,
+      "savingMs": 179
+    }
+  }
+]

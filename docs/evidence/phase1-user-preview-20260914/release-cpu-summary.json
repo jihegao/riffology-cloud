@@ -1,0 +1,30 @@
+{
+  "since": 1789358461000,
+  "eventCount": 10607,
+  "workspaceEventCount": 3783,
+  "workspaceExceededCpu": 0,
+  "workspaceMaxCpuMs": 13223,
+  "workspaceRpcMaxCpuMs": {
+    "authorizePreviewAccess": 286,
+    "bindPreview": 5,
+    "currentPreview": 12,
+    "diffFiles": 58,
+    "exchangePreviewTicket": 210,
+    "experiment": 56,
+    "forwardPreviewHttp": 24,
+    "issuePreviewTicket": 19,
+    "listExperiments": 145,
+    "listFiles": 89,
+    "listServices": 11,
+    "modelSpec": 65,
+    "previewTarget": 265,
+    "replayTurnEvents": 13223,
+    "researchContext": 173,
+    "serviceView": 260,
+    "stopService": 2,
+    "submitExperiment": 76,
+    "submitServiceRequest": 59,
+    "submitTurn": 560,
+    "turnSnapshot": 360
+  }
+}

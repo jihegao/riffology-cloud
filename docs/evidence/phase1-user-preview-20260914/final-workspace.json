@@ -1,0 +1,109 @@
+{
+  "at": 1789362670643,
+  "workspaceId": "90ac1208-d4bc-4925-b3f0-d02e9a864cb6",
+  "admission": {
+    "state": "enabled",
+    "reasonCode": null,
+    "retryable": true
+  },
+  "releaseHold": null,
+  "activeTurnId": null,
+  "turns": [
+    {
+      "id": "1c7305e2-bfae-4686-9ca1-7403a6b676cb",
+      "status": "completed",
+      "persistenceOutcome": "saved",
+      "timing": {
+        "stage": "completed",
+        "queuedMs": 522,
+        "preparingMs": null,
+        "executingMs": null,
+        "savingMs": null
+      }
+    },
+    {
+      "id": "63760447-ddfc-4744-a8e8-154a42e56261",
+      "status": "completed",
+      "persistenceOutcome": "saved",
+      "timing": {
+        "stage": "completed",
+        "queuedMs": 347,
+        "preparingMs": null,
+        "executingMs": null,
+        "savingMs": null
+      }
+    },
+    {
+      "id": "59b325fd-7138-4bc2-bc44-814b3ebc1a20",
+      "status": "completed",
+      "persistenceOutcome": "saved",
+      "timing": {
+        "stage": "completed",
+        "queuedMs": 20159,
+        "preparingMs": null,
+        "executingMs": null,
+        "savingMs": null
+      }
+    },
+    {
+      "id": "36d7b4ff-efd2-4303-a2e6-70ff3ff0fd28",
+      "status": "completed",
+      "persistenceOutcome": "saved",
+      "timing": {
+        "stage": "completed",
+        "queuedMs": 145331,
+        "preparingMs": null,
+        "executingMs": null,
+        "savingMs": 99
+      }
+    },
+    {
+      "id": "b2b7679e-2f86-44ef-ad82-0cbc1718fb1b",
+      "status": "completed",
+      "persistenceOutcome": "saved",
+      "timing": {
+        "stage": "completed",
+        "queuedMs": 548,
+        "preparingMs": 26686,
+        "executingMs": 54780,
+        "savingMs": 71
+      }
+    },
+    {
+      "id": "d7f11aa1-b486-4f6a-9db9-b6f8fec01f49",
+      "status": "completed",
+      "persistenceOutcome": "saved",
+      "timing": {
+        "stage": "completed",
+        "queuedMs": 188,
+        "preparingMs": 21198,
+        "executingMs": 42963,
+        "savingMs": 115
+      }
+    },
+    {
+      "id": "191005b8-dde1-400c-8a19-72d498ac6112",
+      "status": "completed",
+      "persistenceOutcome": "saved",
+      "timing": {
+        "stage": "completed",
+        "queuedMs": 129,
+        "preparingMs": 21058,
+        "executingMs": 20645,
+        "savingMs": 145
+      }
+    },
+    {
+      "id": "b1c54d19-86d1-41ea-b399-d39c99ad09cd",
+      "status": "completed",
+      "persistenceOutcome": "saved",
+      "timing": {
+        "stage": "completed",
+        "queuedMs": 317047,
+        "preparingMs": 31438,
+        "executingMs": 20490,
+        "savingMs": 179
+      }
+    }
+  ]
+}

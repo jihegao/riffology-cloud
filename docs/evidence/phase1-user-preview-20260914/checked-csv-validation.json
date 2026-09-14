@@ -1,0 +1,17 @@
+{
+  "at": 1789360191299,
+  "runId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+  "csvSha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+  "rows": 40,
+  "metricsRecomputed": {
+    "completed": 40,
+    "mean_wait": 0.18736144942500002,
+    "max_wait": 1.200695282,
+    "mean_sojourn": 1.1552382279250002,
+    "mean_wait_high": 0.13288366249999997,
+    "mean_wait_regular": 0.2236799740416667
+  },
+  "absoluteTolerance": 1e-07,
+  "checker": "PASS rows=40 servers=2 eps=1e-07",
+  "status": "passed"
+}

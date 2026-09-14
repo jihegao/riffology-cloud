@@ -1,0 +1,69 @@
+{
+  "at": 1789361137416,
+  "before": {
+    "current": {
+      "previewId": "576305cc-3ddc-462a-9f3d-e94fd50e7797",
+      "runId": "50b26fb0-db05-4900-a168-f7ceda9bef4b",
+      "expiresAt": 1789361790366,
+      "revokedAt": null
+    },
+    "available": {
+      "previewId": "576305cc-3ddc-462a-9f3d-e94fd50e7797",
+      "runId": "50b26fb0-db05-4900-a168-f7ceda9bef4b",
+      "expiresAt": 1789361790366,
+      "bootstrapUrl": "https://p-d4586e3029b22242614070ed7c327d0c64c23c0e.preview.m1.riff-demo.gaojihe.cn/__riff/bootstrap"
+    }
+  },
+  "after": {
+    "current": {
+      "previewId": "576305cc-3ddc-462a-9f3d-e94fd50e7797",
+      "runId": "50b26fb0-db05-4900-a168-f7ceda9bef4b",
+      "expiresAt": 1789361790366,
+      "revokedAt": null
+    },
+    "available": {
+      "previewId": "576305cc-3ddc-462a-9f3d-e94fd50e7797",
+      "runId": "50b26fb0-db05-4900-a168-f7ceda9bef4b",
+      "expiresAt": 1789361790366,
+      "bootstrapUrl": "https://p-d4586e3029b22242614070ed7c327d0c64c23c0e.preview.m1.riff-demo.gaojihe.cn/__riff/bootstrap"
+    }
+  },
+  "view": {
+    "url": "https://p-d4586e3029b22242614070ed7c327d0c64c23c0e.preview.m1.riff-demo.gaojihe.cn/",
+    "title": "Queue Priority B checked",
+    "health": 200
+  },
+  "automaticExecutionPosts": 0,
+  "network": [
+    {
+      "at": 1789361125521,
+      "path": "/__riff/bootstrap",
+      "status": 200
+    },
+    {
+      "at": 1789361125758,
+      "path": "/cdn-cgi/rum",
+      "status": 204
+    },
+    {
+      "at": 1789361127438,
+      "path": "/api/workspaces/90ac1208-d4bc-4925-b3f0-d02e9a864cb6/previews/576305cc-3ddc-462a-9f3d-e94fd50e7797/tickets",
+      "status": 200
+    },
+    {
+      "at": 1789361128635,
+      "path": "/__riff/exchange",
+      "status": 200
+    },
+    {
+      "at": 1789361132545,
+      "path": "/",
+      "status": 200
+    },
+    {
+      "at": 1789361135484,
+      "path": "/health",
+      "status": 200
+    }
+  ]
+}

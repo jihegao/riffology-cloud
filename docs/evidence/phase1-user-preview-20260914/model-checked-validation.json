@@ -1,0 +1,1113 @@
+{
+  "schemaVersion": 1,
+  "artifact": "model-checked.tar",
+  "tarSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+  "validation": "local-only-independent-csv-checker",
+  "observedAt": 1789360029694,
+  "repetitions": 2,
+  "perRunTimeoutSeconds": 10,
+  "configurationCount": 22,
+  "allChecksPass": true,
+  "cases": [
+    {
+      "seed": 99,
+      "parameters": {
+        "servers": 1,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=1 eps=1e-07"
+          ],
+          "csvSha256": "7b9791778afe654f6b501d9e369318b4c8521758fe470dcaeba7cb9e1c428819",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 1.425019660131616,
+            "max_wait": 4.187847223063287,
+            "mean_sojourn": 2.392896438675528,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 1.425019660131616
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=1 eps=1e-07"
+          ],
+          "csvSha256": "7b9791778afe654f6b501d9e369318b4c8521758fe470dcaeba7cb9e1c428819",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 1.425019660131616,
+            "max_wait": 4.187847223063287,
+            "mean_sojourn": 2.392896438675528,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 1.425019660131616
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 20260914,
+      "parameters": {
+        "servers": 1,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=1 eps=1e-07"
+          ],
+          "csvSha256": "a4bf08444972086909fe47bfc7eab0ba559a5a6ef6e0e3973eb1f03b18ba71d7",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 1.506409102069571,
+            "max_wait": 4.547426599609732,
+            "mean_sojourn": 2.222519133151292,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 1.506409102069571
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=1 eps=1e-07"
+          ],
+          "csvSha256": "a4bf08444972086909fe47bfc7eab0ba559a5a6ef6e0e3973eb1f03b18ba71d7",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 1.506409102069571,
+            "max_wait": 4.547426599609732,
+            "mean_sojourn": 2.222519133151292,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 1.506409102069571
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 99,
+      "parameters": {
+        "servers": 1,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0.3
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=1 eps=1e-07"
+          ],
+          "csvSha256": "3ffc4ec5550cac68a285350ffbcb9cd3d80f9f075c42eb86b8a3734ec8055e80",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 1.2702651317322735,
+            "max_wait": 4.187847223063287,
+            "mean_sojourn": 2.2381419102761857,
+            "mean_wait_high": 0.8485166142826828,
+            "mean_wait_regular": 1.5514308100320005
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=1 eps=1e-07"
+          ],
+          "csvSha256": "3ffc4ec5550cac68a285350ffbcb9cd3d80f9f075c42eb86b8a3734ec8055e80",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 1.2702651317322735,
+            "max_wait": 4.187847223063287,
+            "mean_sojourn": 2.2381419102761857,
+            "mean_wait_high": 0.8485166142826828,
+            "mean_wait_regular": 1.5514308100320005
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 20260914,
+      "parameters": {
+        "servers": 1,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0.3
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=1 eps=1e-07"
+          ],
+          "csvSha256": "eff0181a0fbc276afa6a1dab124c2ae7cd4a8e51de0b835dced967e216a9a662",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 1.5921253146019858,
+            "max_wait": 4.730410539757649,
+            "mean_sojourn": 2.308235345683707,
+            "mean_wait_high": 0.07327572541929703,
+            "mean_wait_regular": 2.033081646945347
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=1 eps=1e-07"
+          ],
+          "csvSha256": "eff0181a0fbc276afa6a1dab124c2ae7cd4a8e51de0b835dced967e216a9a662",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 1.5921253146019858,
+            "max_wait": 4.730410539757649,
+            "mean_sojourn": 2.308235345683707,
+            "mean_wait_high": 0.07327572541929703,
+            "mean_wait_regular": 2.033081646945347
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 99,
+      "parameters": {
+        "servers": 1,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 1
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=1 eps=1e-07"
+          ],
+          "csvSha256": "f7452cc2488d1ac1faace83cebba2fdb25d1a4d95c26a6ed80e7bc3b682c6f9c",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 1.425019660131616,
+            "max_wait": 4.187847223063287,
+            "mean_sojourn": 2.392896438675528,
+            "mean_wait_high": 1.425019660131616,
+            "mean_wait_regular": 0.0
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=1 eps=1e-07"
+          ],
+          "csvSha256": "f7452cc2488d1ac1faace83cebba2fdb25d1a4d95c26a6ed80e7bc3b682c6f9c",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 1.425019660131616,
+            "max_wait": 4.187847223063287,
+            "mean_sojourn": 2.392896438675528,
+            "mean_wait_high": 1.425019660131616,
+            "mean_wait_regular": 0.0
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 20260914,
+      "parameters": {
+        "servers": 1,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 1
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=1 eps=1e-07"
+          ],
+          "csvSha256": "38c13af7d69f35e985624e1346c2ea8f98fe4e5617640908ba6b2fb88b7d0738",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 1.506409102069571,
+            "max_wait": 4.547426599609732,
+            "mean_sojourn": 2.222519133151292,
+            "mean_wait_high": 1.506409102069571,
+            "mean_wait_regular": 0.0
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=1 eps=1e-07"
+          ],
+          "csvSha256": "38c13af7d69f35e985624e1346c2ea8f98fe4e5617640908ba6b2fb88b7d0738",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 1.506409102069571,
+            "max_wait": 4.547426599609732,
+            "mean_sojourn": 2.222519133151292,
+            "mean_wait_high": 1.506409102069571,
+            "mean_wait_regular": 0.0
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 99,
+      "parameters": {
+        "servers": 2,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=2 eps=1e-07"
+          ],
+          "csvSha256": "ff1212a025a0fa6441917ab7150949a76143a11b58271111c8784915989218f1",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.18736144944864538,
+            "max_wait": 1.2006952817443448,
+            "mean_sojourn": 1.1552382279925575,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.18736144944864538
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=2 eps=1e-07"
+          ],
+          "csvSha256": "ff1212a025a0fa6441917ab7150949a76143a11b58271111c8784915989218f1",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.18736144944864538,
+            "max_wait": 1.2006952817443448,
+            "mean_sojourn": 1.1552382279925575,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.18736144944864538
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 20260914,
+      "parameters": {
+        "servers": 2,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=2 eps=1e-07"
+          ],
+          "csvSha256": "a85a41a95e28b8c042b6ed878b0e1fbb63fb48897e6bed58279fa3f275bc575e",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.07854809266430904,
+            "max_wait": 0.9713125214691338,
+            "mean_sojourn": 0.7946581237460302,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.07854809266430904
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=2 eps=1e-07"
+          ],
+          "csvSha256": "a85a41a95e28b8c042b6ed878b0e1fbb63fb48897e6bed58279fa3f275bc575e",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.07854809266430904,
+            "max_wait": 0.9713125214691338,
+            "mean_sojourn": 0.7946581237460302,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.07854809266430904
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 99,
+      "parameters": {
+        "servers": 2,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0.3
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=2 eps=1e-07"
+          ],
+          "csvSha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.18736144944864538,
+            "max_wait": 1.2006952817443448,
+            "mean_sojourn": 1.1552382279925575,
+            "mean_wait_high": 0.13288366251953743,
+            "mean_wait_regular": 0.2236799740680507
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=2 eps=1e-07"
+          ],
+          "csvSha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.18736144944864538,
+            "max_wait": 1.2006952817443448,
+            "mean_sojourn": 1.1552382279925575,
+            "mean_wait_high": 0.13288366251953743,
+            "mean_wait_regular": 0.2236799740680507
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 20260914,
+      "parameters": {
+        "servers": 2,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0.3
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=2 eps=1e-07"
+          ],
+          "csvSha256": "04b52bfb51c1429854dca0fb10466fc688a8ee597269a8f845150482e4d3e70c",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.07854809266430904,
+            "max_wait": 0.9713125214691338,
+            "mean_sojourn": 0.7946581237460302,
+            "mean_wait_high": 0.07596209320496033,
+            "mean_wait_regular": 0.07929886670089416
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=2 eps=1e-07"
+          ],
+          "csvSha256": "04b52bfb51c1429854dca0fb10466fc688a8ee597269a8f845150482e4d3e70c",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.07854809266430904,
+            "max_wait": 0.9713125214691338,
+            "mean_sojourn": 0.7946581237460302,
+            "mean_wait_high": 0.07596209320496033,
+            "mean_wait_regular": 0.07929886670089416
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 99,
+      "parameters": {
+        "servers": 2,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 1
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=2 eps=1e-07"
+          ],
+          "csvSha256": "01661cd0a5784ad93d8c371c629d18649db3aafd237bbad29309ea77eb3fa2ae",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.18736144944864538,
+            "max_wait": 1.2006952817443448,
+            "mean_sojourn": 1.1552382279925575,
+            "mean_wait_high": 0.18736144944864538,
+            "mean_wait_regular": 0.0
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=2 eps=1e-07"
+          ],
+          "csvSha256": "01661cd0a5784ad93d8c371c629d18649db3aafd237bbad29309ea77eb3fa2ae",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.18736144944864538,
+            "max_wait": 1.2006952817443448,
+            "mean_sojourn": 1.1552382279925575,
+            "mean_wait_high": 0.18736144944864538,
+            "mean_wait_regular": 0.0
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 20260914,
+      "parameters": {
+        "servers": 2,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 1
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=2 eps=1e-07"
+          ],
+          "csvSha256": "92247b7f79b4b00e1eefd1a2138e92917631d904c80a804fe6c117c1b1df025a",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.07854809266430904,
+            "max_wait": 0.9713125214691338,
+            "mean_sojourn": 0.7946581237460302,
+            "mean_wait_high": 0.07854809266430904,
+            "mean_wait_regular": 0.0
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=2 eps=1e-07"
+          ],
+          "csvSha256": "92247b7f79b4b00e1eefd1a2138e92917631d904c80a804fe6c117c1b1df025a",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.07854809266430904,
+            "max_wait": 0.9713125214691338,
+            "mean_sojourn": 0.7946581237460302,
+            "mean_wait_high": 0.07854809266430904,
+            "mean_wait_regular": 0.0
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 99,
+      "parameters": {
+        "servers": 4,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=4 eps=1e-07"
+          ],
+          "csvSha256": "d7d7dd1d0697387a19aadf7eb7f9888fe13e9aff4c8dc102bd316802f12d7cd1",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.0002791004771992789,
+            "max_wait": 0.011164019087971155,
+            "mean_sojourn": 0.9681558790211116,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.0002791004771992789
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=4 eps=1e-07"
+          ],
+          "csvSha256": "d7d7dd1d0697387a19aadf7eb7f9888fe13e9aff4c8dc102bd316802f12d7cd1",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.0002791004771992789,
+            "max_wait": 0.011164019087971155,
+            "mean_sojourn": 0.9681558790211116,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.0002791004771992789
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 20260914,
+      "parameters": {
+        "servers": 4,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=4 eps=1e-07"
+          ],
+          "csvSha256": "3ca06591f18908b5404e9cd75d02d8b8e7b56acc922d92f6d8afb52cb2de1323",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.0,
+            "max_wait": 0.0,
+            "mean_sojourn": 0.7161100310817211,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.0
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=4 eps=1e-07"
+          ],
+          "csvSha256": "3ca06591f18908b5404e9cd75d02d8b8e7b56acc922d92f6d8afb52cb2de1323",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.0,
+            "max_wait": 0.0,
+            "mean_sojourn": 0.7161100310817211,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.0
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 99,
+      "parameters": {
+        "servers": 4,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0.3
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=4 eps=1e-07"
+          ],
+          "csvSha256": "6460c460a97f1b86d993cd223b965a3d9db671c1b2ac37e929bd119d042108e9",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.0002791004771992789,
+            "max_wait": 0.011164019087971155,
+            "mean_sojourn": 0.9681558790211116,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.00046516746199879816
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=4 eps=1e-07"
+          ],
+          "csvSha256": "6460c460a97f1b86d993cd223b965a3d9db671c1b2ac37e929bd119d042108e9",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.0002791004771992789,
+            "max_wait": 0.011164019087971155,
+            "mean_sojourn": 0.9681558790211116,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.00046516746199879816
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 20260914,
+      "parameters": {
+        "servers": 4,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 0.3
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=4 eps=1e-07"
+          ],
+          "csvSha256": "1986fcfc36ee0a186d78cf7b62a6b78724c00a4ad7ea69d5e8953b2847345856",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.0,
+            "max_wait": 0.0,
+            "mean_sojourn": 0.7161100310817211,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.0
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=4 eps=1e-07"
+          ],
+          "csvSha256": "1986fcfc36ee0a186d78cf7b62a6b78724c00a4ad7ea69d5e8953b2847345856",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.0,
+            "max_wait": 0.0,
+            "mean_sojourn": 0.7161100310817211,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.0
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 99,
+      "parameters": {
+        "servers": 4,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 1
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=4 eps=1e-07"
+          ],
+          "csvSha256": "aa45e8292467a0a0587da31e471154852e98820dc860ee38c29d26c426411230",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.0002791004771992789,
+            "max_wait": 0.011164019087971155,
+            "mean_sojourn": 0.9681558790211116,
+            "mean_wait_high": 0.0002791004771992789,
+            "mean_wait_regular": 0.0
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=4 eps=1e-07"
+          ],
+          "csvSha256": "aa45e8292467a0a0587da31e471154852e98820dc860ee38c29d26c426411230",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.0002791004771992789,
+            "max_wait": 0.011164019087971155,
+            "mean_sojourn": 0.9681558790211116,
+            "mean_wait_high": 0.0002791004771992789,
+            "mean_wait_regular": 0.0
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 20260914,
+      "parameters": {
+        "servers": 4,
+        "customers": 40,
+        "arrival_rate": 1,
+        "service_rate": 1,
+        "high_priority_fraction": 1
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=4 eps=1e-07"
+          ],
+          "csvSha256": "9c5c7a25f3e9ce89fbd61608860f68f475ed04e9dad4233a029dc9fa5e62e112",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.0,
+            "max_wait": 0.0,
+            "mean_sojourn": 0.7161100310817211,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.0
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=40 servers=4 eps=1e-07"
+          ],
+          "csvSha256": "9c5c7a25f3e9ce89fbd61608860f68f475ed04e9dad4233a029dc9fa5e62e112",
+          "metrics": {
+            "completed": 40.0,
+            "mean_wait": 0.0,
+            "max_wait": 0.0,
+            "mean_sojourn": 0.7161100310817211,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.0
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 99,
+      "parameters": {
+        "servers": 1,
+        "customers": 1,
+        "arrival_rate": 0.1,
+        "service_rate": 5,
+        "high_priority_fraction": 0
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=1 servers=1 eps=1e-07"
+          ],
+          "csvSha256": "1e929dbff023748d37df550626625cdce7d5df8971f58335c8d93324e7e84dee",
+          "metrics": {
+            "completed": 1.0,
+            "mean_wait": 0.0,
+            "max_wait": 0.0,
+            "mean_sojourn": 0.03939828393792766,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.0
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=1 servers=1 eps=1e-07"
+          ],
+          "csvSha256": "1e929dbff023748d37df550626625cdce7d5df8971f58335c8d93324e7e84dee",
+          "metrics": {
+            "completed": 1.0,
+            "mean_wait": 0.0,
+            "max_wait": 0.0,
+            "mean_sojourn": 0.03939828393792766,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.0
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 20260914,
+      "parameters": {
+        "servers": 4,
+        "customers": 1,
+        "arrival_rate": 5,
+        "service_rate": 0.1,
+        "high_priority_fraction": 1
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=1 servers=4 eps=1e-07"
+          ],
+          "csvSha256": "f8947330a22dd5016e0acf85ee4a9584f45466eb9df07c287bd8a10beada7809",
+          "metrics": {
+            "completed": 1.0,
+            "mean_wait": 0.0,
+            "max_wait": 0.0,
+            "mean_sojourn": 10.997875409400383,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.0
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=1 servers=4 eps=1e-07"
+          ],
+          "csvSha256": "f8947330a22dd5016e0acf85ee4a9584f45466eb9df07c287bd8a10beada7809",
+          "metrics": {
+            "completed": 1.0,
+            "mean_wait": 0.0,
+            "max_wait": 0.0,
+            "mean_sojourn": 10.997875409400383,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.0
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 99,
+      "parameters": {
+        "servers": 1,
+        "customers": 100,
+        "arrival_rate": 5,
+        "service_rate": 0.1,
+        "high_priority_fraction": 0.3
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=100 servers=1 eps=1e-07"
+          ],
+          "csvSha256": "e21d9dde68a5c7217e397a279da9cb09afb4f7af30ca620a9179a8194add111c",
+          "metrics": {
+            "completed": 100.0,
+            "mean_wait": 383.0344487657375,
+            "max_wait": 812.8846516172998,
+            "mean_sojourn": 391.34989613146905,
+            "mean_wait_high": 64.95324962566629,
+            "mean_wait_regular": 483.48114323102317
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=100 servers=1 eps=1e-07"
+          ],
+          "csvSha256": "e21d9dde68a5c7217e397a279da9cb09afb4f7af30ca620a9179a8194add111c",
+          "metrics": {
+            "completed": 100.0,
+            "mean_wait": 383.0344487657375,
+            "max_wait": 812.8846516172998,
+            "mean_sojourn": 391.34989613146905,
+            "mean_wait_high": 64.95324962566629,
+            "mean_wait_regular": 483.48114323102317
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    },
+    {
+      "seed": 20260914,
+      "parameters": {
+        "servers": 4,
+        "customers": 100,
+        "arrival_rate": 0.1,
+        "service_rate": 5,
+        "high_priority_fraction": 0.7
+      },
+      "runs": [
+        {
+          "repetition": 1,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=100 servers=4 eps=1e-07"
+          ],
+          "csvSha256": "1d114ba12d527ae0b85b8744b43c142e88f50affdb097423ba591c4132ca76e4",
+          "metrics": {
+            "completed": 100.0,
+            "mean_wait": 0.0,
+            "max_wait": 0.0,
+            "mean_sojourn": 0.21312664532778466,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.0
+          }
+        },
+        {
+          "repetition": 2,
+          "exitCode": 0,
+          "status": "pass",
+          "checkerExitCode": 0,
+          "checkerFirstLine": [
+            "PASS rows=100 servers=4 eps=1e-07"
+          ],
+          "csvSha256": "1d114ba12d527ae0b85b8744b43c142e88f50affdb097423ba591c4132ca76e4",
+          "metrics": {
+            "completed": 100.0,
+            "mean_wait": 0.0,
+            "max_wait": 0.0,
+            "mean_sojourn": 0.21312664532778466,
+            "mean_wait_high": 0.0,
+            "mean_wait_regular": 0.0
+          }
+        }
+      ],
+      "repeatCsvEqual": true,
+      "repeatMetricsEqual": true
+    }
+  ]
+}

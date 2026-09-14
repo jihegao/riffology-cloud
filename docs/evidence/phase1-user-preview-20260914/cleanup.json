@@ -1,0 +1,113 @@
+{
+  "at": 1789361825218,
+  "quota": {
+    "at": 1789361719402,
+    "quota": {
+      "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+      "capacity": 2,
+      "policyVersion": "phase1-preview-simulation-v1",
+      "configuredPolicyMatches": true,
+      "occupied": 0,
+      "available": 2,
+      "unknown": 0,
+      "leases": []
+    }
+  },
+  "workspace": {
+    "at": 1789361798560,
+    "workspaceId": "90ac1208-d4bc-4925-b3f0-d02e9a864cb6",
+    "admission": {
+      "state": "enabled",
+      "reasonCode": null,
+      "retryable": true
+    },
+    "releaseHold": null,
+    "activeTurnId": null,
+    "turns": [
+      {
+        "id": "1c7305e2-bfae-4686-9ca1-7403a6b676cb",
+        "status": "completed",
+        "persistenceOutcome": "saved",
+        "timing": {
+          "stage": "completed",
+          "queuedMs": 522,
+          "preparingMs": null,
+          "executingMs": null,
+          "savingMs": null
+        }
+      },
+      {
+        "id": "63760447-ddfc-4744-a8e8-154a42e56261",
+        "status": "completed",
+        "persistenceOutcome": "saved",
+        "timing": {
+          "stage": "completed",
+          "queuedMs": 347,
+          "preparingMs": null,
+          "executingMs": null,
+          "savingMs": null
+        }
+      },
+      {
+        "id": "59b325fd-7138-4bc2-bc44-814b3ebc1a20",
+        "status": "completed",
+        "persistenceOutcome": "saved",
+        "timing": {
+          "stage": "completed",
+          "queuedMs": 20159,
+          "preparingMs": null,
+          "executingMs": null,
+          "savingMs": null
+        }
+      },
+      {
+        "id": "36d7b4ff-efd2-4303-a2e6-70ff3ff0fd28",
+        "status": "completed",
+        "persistenceOutcome": "saved",
+        "timing": {
+          "stage": "completed",
+          "queuedMs": 145331,
+          "preparingMs": null,
+          "executingMs": null,
+          "savingMs": 99
+        }
+      },
+      {
+        "id": "b2b7679e-2f86-44ef-ad82-0cbc1718fb1b",
+        "status": "completed",
+        "persistenceOutcome": "saved",
+        "timing": {
+          "stage": "completed",
+          "queuedMs": 548,
+          "preparingMs": 26686,
+          "executingMs": 54780,
+          "savingMs": 71
+        }
+      },
+      {
+        "id": "d7f11aa1-b486-4f6a-9db9-b6f8fec01f49",
+        "status": "completed",
+        "persistenceOutcome": "saved",
+        "timing": {
+          "stage": "completed",
+          "queuedMs": 188,
+          "preparingMs": 21198,
+          "executingMs": 42963,
+          "savingMs": 115
+        }
+      }
+    ]
+  },
+  "diagnosticWorker": {
+    "name": "riffology-user-preview-probe-023fcd093b40ad1f",
+    "deleted": true,
+    "independentReadbackCode": 10007,
+    "observedAt": 1789361764997
+  },
+  "tailStopped": true,
+  "nativeInventory": {
+    "status": "passed",
+    "observedAt": 1789361810131
+  },
+  "scope": "TenantQuota read before probe deletion. Only TrustedPiCapacity-based Pi Turns follow; no further TenantQuota-funded simulations or services."
+}

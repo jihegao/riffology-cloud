@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "researchQuestion": "How do FCFS single-queue multi-server systems perform under configurable Poisson arrivals and exponential service times?",
+  "scope": "Finite discrete-event simulation of one FCFS queue feeding 1-4 identical servers.",
+  "entities": ["customers", "servers", "single waiting queue"],
+  "mechanisms": ["Poisson inter-arrivals", "exponential service times", "FCFS queue discipline", "immediate assignment to any idle server"],
+  "assumptions": ["Arrivals and service durations are independent", "Servers are identical and continuously available", "No abandonment, priorities, blocking, setup time, or finite capacity", "All times are in arbitrary time units"],
+  "limitations": ["This is a stochastic teaching model, not calibrated real-world evidence", "Finite samples can be noisy and do not establish steady-state performance", "Exponential distributions may not represent a particular operation", "Results depend on the supplied seed and parameters"],
+  "parameters": {
+    "servers": {"type": "integer", "default": 1, "minimum": 1, "maximum": 4, "unit": "servers"},
+    "customers": {"type": "integer", "default": 40, "minimum": 1, "maximum": 100, "unit": "customers"},
+    "arrival_rate": {"type": "number", "default": 1, "minimum": 0.1, "maximum": 5, "unit": "per time unit"},
+    "service_rate": {"type": "number", "default": 1, "minimum": 0.1, "maximum": 5, "unit": "per time unit"}
+  },
+  "metrics": {
+    "completed": {"unit": "customers", "description": "Customers completing service"},
+    "mean_wait": {"unit": "time units", "description": "Mean time from arrival until service starts"},
+    "max_wait": {"unit": "time units", "description": "Maximum time from arrival until service starts"},
+    "mean_sojourn": {"unit": "time units", "description": "Mean time from arrival until service completion"}
+  },
+  "execution": {"entrypoint": "model/run.py", "dependencyLock": "app/requirements.lock"}
+}

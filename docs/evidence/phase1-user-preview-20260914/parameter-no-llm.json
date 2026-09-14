@@ -1,0 +1,38 @@
+[
+  {
+    "label": "baseline",
+    "turnIds": [
+      "1c7305e2-bfae-4686-9ca1-7403a6b676cb"
+    ],
+    "runId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+    "version": {
+      "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+      "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+      "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+    }
+  },
+  {
+    "label": "intervention",
+    "turnIds": [
+      "1c7305e2-bfae-4686-9ca1-7403a6b676cb"
+    ],
+    "runId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+    "version": {
+      "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+      "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+      "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+    }
+  },
+  {
+    "label": "repetition",
+    "turnIds": [
+      "1c7305e2-bfae-4686-9ca1-7403a6b676cb"
+    ],
+    "runId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+    "version": {
+      "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+      "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+      "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+    }
+  }
+]

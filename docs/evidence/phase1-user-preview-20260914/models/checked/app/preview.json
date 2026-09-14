@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "runtime": "python",
+  "entrypoint": "app/main.py",
+  "dependencyLock": "app/requirements.lock",
+  "port": 8080,
+  "healthPath": "/health"
+}

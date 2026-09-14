@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "checks": [
+    {
+      "name": "config-containers",
+      "status": "passed"
+    },
+    {
+      "name": "worker-sha",
+      "status": "passed"
+    },
+    {
+      "name": "deployment",
+      "status": "passed"
+    },
+    {
+      "name": "gates",
+      "status": "passed"
+    },
+    {
+      "name": "simulation-image",
+      "status": "passed"
+    },
+    {
+      "name": "quota",
+      "status": "passed"
+    },
+    {
+      "name": "simulation-binding",
+      "status": "passed"
+    },
+    {
+      "name": "r2",
+      "status": "passed"
+    },
+    {
+      "name": "version-containers",
+      "status": "passed"
+    },
+    {
+      "name": "container-apps",
+      "status": "passed"
+    },
+    {
+      "name": "instances",
+      "status": "passed"
+    }
+  ],
+  "instances": {
+    "nonInactive": 0,
+    "appCount": 5,
+    "observedInstanceCount": 195
+  }
+}

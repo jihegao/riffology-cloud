@@ -1,0 +1,38 @@
+{
+  "at": 1789358637644,
+  "before": {
+    "current": {
+      "previewId": "e16237dd-7691-4325-9ac1-54667810463b",
+      "runId": "5cbf4d0c-eca0-486d-b890-b8ae1a79f579",
+      "expiresAt": 1789359424144,
+      "revokedAt": null
+    },
+    "available": {
+      "previewId": "e16237dd-7691-4325-9ac1-54667810463b",
+      "runId": "5cbf4d0c-eca0-486d-b890-b8ae1a79f579",
+      "expiresAt": 1789359424144,
+      "bootstrapUrl": "https://p-21eeabd8a7d112dea15756b840264ee97c163fe7.preview.m1.riff-demo.gaojihe.cn/__riff/bootstrap"
+    }
+  },
+  "after": {
+    "current": {
+      "previewId": "e16237dd-7691-4325-9ac1-54667810463b",
+      "runId": "5cbf4d0c-eca0-486d-b890-b8ae1a79f579",
+      "expiresAt": 1789359424144,
+      "revokedAt": null
+    },
+    "available": {
+      "previewId": "e16237dd-7691-4325-9ac1-54667810463b",
+      "runId": "5cbf4d0c-eca0-486d-b890-b8ae1a79f579",
+      "expiresAt": 1789359424144,
+      "bootstrapUrl": "https://p-21eeabd8a7d112dea15756b840264ee97c163fe7.preview.m1.riff-demo.gaojihe.cn/__riff/bootstrap"
+    }
+  },
+  "serviceStartPosts": 0,
+  "refreshRestored": true,
+  "expiredTicketDelayedInBrowser": true,
+  "explicitRecovery": {
+    "status": 200,
+    "title": "Queue FCFS A"
+  }
+}

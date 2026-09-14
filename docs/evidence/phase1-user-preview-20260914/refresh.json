@@ -1,0 +1,1507 @@
+[
+  {
+    "label": "checked-live-refresh",
+    "at": 1789360225997,
+    "automaticExecutionPosts": 0,
+    "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+    "view": {
+      "title": "Queue Priority B checked",
+      "health": 200
+    },
+    "uiResultText": "completed · cf76eabb-3d21-4a4a-870d-3074ab3198de · 版本 ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676 · seed 99 · 参数 {\"servers\":2,\"customers\":40,\"arrival_rate\":1,\"service_rate\":1,\"high_priority_fraction\":0.3}{\"completed\":40,\"max_wait\":1.2006952817443448,\"mean_sojourn\":1.1552382279925575,\"mean_wait\":0.18736144944864538,\"mean_wait_high\":0.13288366251953743,\"mean_wait_regular\":0.2236799740680507}",
+    "before": {
+      "workspaceId": "90ac1208-d4bc-4925-b3f0-d02e9a864cb6",
+      "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+      "admission": {
+        "state": "enabled",
+        "reasonCode": null,
+        "retryable": true
+      },
+      "modelVersion": {
+        "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+        "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+        "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+      },
+      "experiments": [
+        {
+          "experimentId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+          "runId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+          "version": {
+            "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+            "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789360050064,
+          "updatedAt": 1789360193530,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 1.2006952817443448,
+              "mean_sojourn": 1.1552382279925575,
+              "mean_wait": 0.18736144944864538,
+              "mean_wait_high": 0.13288366251953743,
+              "mean_wait_regular": 0.2236799740680507
+            },
+            "artifactSha256": "a50b15e85f4669ca29d95411271ce54eaedae62b68f3acae119e2e688e66c4e3",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+                "size": 2477,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": false
+        },
+        {
+          "experimentId": "6609252a-a70b-48d5-9c6d-aed51eaa4e88",
+          "runId": "6609252a-a70b-48d5-9c6d-aed51eaa4e88",
+          "version": {
+            "revisionId": "dc1a4c70a007f7d58277426e8c5da8fb653dbc5807d2c0c1c00d41a3ee7d8617",
+            "filesSha256": "1a7d205816a5adca47c2829a12e72d630e3c90acda47d7a59fd45341c7c9553e",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789359522693,
+          "updatedAt": 1789359918518,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 1.2006952817443448,
+              "mean_sojourn": 1.1552382279925575,
+              "mean_wait": 0.18736144944864538,
+              "mean_wait_high": 0.13288366251953743,
+              "mean_wait_regular": 0.2236799740680507
+            },
+            "artifactSha256": "4457fb219c6266cda44ca5e2d6d75ddc5fdd1aa1c5824180222a843c6f727dc3",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+                "size": 2477,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "73da2349-23b7-4a1f-bd43-0e348e2cc848",
+          "runId": "73da2349-23b7-4a1f-bd43-0e348e2cc848",
+          "version": {
+            "revisionId": "3fd857e5d90f9d16ab956343356a0c294a1fd0b3abfde85e8a4d959738ca53a2",
+            "filesSha256": "0be284355378fdab5066e3aa431af90f306c34f084753cfb7587d051ffbf48e0",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789359243711,
+          "updatedAt": 1789359632477,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 7.19683062716155,
+              "mean_sojourn": 2.7499082831724535,
+              "mean_wait": 1.7820315046285415,
+              "mean_wait_high": 0.015037024746970218,
+              "mean_wait_regular": 2.9600278245495897
+            },
+            "artifactSha256": "bd0e29c62b7a4c4f43626c4461c63219eb0274de313ba85a08b1c4f2b7df095a",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "dc191edd700f667f3b6921dbb64c44a1e9ebbbd42b8f658c969ab37d431f7a63",
+                "size": 2479,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+          "runId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358759625,
+          "updatedAt": 1789359261950,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 2.7744723310529484,
+              "mean_sojourn": 1.1822530813822227,
+              "mean_wait": 0.36016908269074116
+            },
+            "artifactSha256": "3c89e7ab4ccf43eda502fb749db43489d0de2b18729d57e3ec847df8065edf50"
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+          "runId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358548210,
+          "updatedAt": 1789359065132,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 2.7744723310529484,
+              "mean_sojourn": 1.1822530813822227,
+              "mean_wait": 0.36016908269074116
+            },
+            "artifactSha256": "8b016b096155416e0b45a321ebde77fd217bcb68e8b72db9e969f249e19a42d3"
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+          "runId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 1,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358504466,
+          "updatedAt": 1789358877086,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 8.081178189502857,
+              "mean_sojourn": 3.3153717180277837,
+              "mean_wait": 2.4932877193363012
+            },
+            "artifactSha256": "56877b6c11f62db7befa896988a418a885e12c8e725762ef68568fd8ca08e697"
+          },
+          "stale": true
+        }
+      ],
+      "preview": {
+        "current": {
+          "previewId": "72ce362a-4c15-42a0-a5d5-00fa37f77c23",
+          "runId": "69b89080-b4db-4b02-8acd-400cd08b5003",
+          "expiresAt": 1789360972458,
+          "revokedAt": null
+        },
+        "available": {
+          "previewId": "72ce362a-4c15-42a0-a5d5-00fa37f77c23",
+          "runId": "69b89080-b4db-4b02-8acd-400cd08b5003",
+          "expiresAt": 1789360972458,
+          "bootstrapUrl": "https://p-e7d18b7c32e88f1f26a096c2501a5dd721b0c495.preview.m1.riff-demo.gaojihe.cn/__riff/bootstrap"
+        }
+      },
+      "turnIds": [
+        "1c7305e2-bfae-4686-9ca1-7403a6b676cb",
+        "63760447-ddfc-4744-a8e8-154a42e56261",
+        "59b325fd-7138-4bc2-bc44-814b3ebc1a20",
+        "36d7b4ff-efd2-4303-a2e6-70ff3ff0fd28"
+      ]
+    },
+    "after": {
+      "workspaceId": "90ac1208-d4bc-4925-b3f0-d02e9a864cb6",
+      "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+      "admission": {
+        "state": "enabled",
+        "reasonCode": null,
+        "retryable": true
+      },
+      "modelVersion": {
+        "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+        "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+        "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+      },
+      "experiments": [
+        {
+          "experimentId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+          "runId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+          "version": {
+            "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+            "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789360050064,
+          "updatedAt": 1789360222169,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 1.2006952817443448,
+              "mean_sojourn": 1.1552382279925575,
+              "mean_wait": 0.18736144944864538,
+              "mean_wait_high": 0.13288366251953743,
+              "mean_wait_regular": 0.2236799740680507
+            },
+            "artifactSha256": "a50b15e85f4669ca29d95411271ce54eaedae62b68f3acae119e2e688e66c4e3",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+                "size": 2477,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": false
+        },
+        {
+          "experimentId": "6609252a-a70b-48d5-9c6d-aed51eaa4e88",
+          "runId": "6609252a-a70b-48d5-9c6d-aed51eaa4e88",
+          "version": {
+            "revisionId": "dc1a4c70a007f7d58277426e8c5da8fb653dbc5807d2c0c1c00d41a3ee7d8617",
+            "filesSha256": "1a7d205816a5adca47c2829a12e72d630e3c90acda47d7a59fd45341c7c9553e",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789359522693,
+          "updatedAt": 1789359918518,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 1.2006952817443448,
+              "mean_sojourn": 1.1552382279925575,
+              "mean_wait": 0.18736144944864538,
+              "mean_wait_high": 0.13288366251953743,
+              "mean_wait_regular": 0.2236799740680507
+            },
+            "artifactSha256": "4457fb219c6266cda44ca5e2d6d75ddc5fdd1aa1c5824180222a843c6f727dc3",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+                "size": 2477,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "73da2349-23b7-4a1f-bd43-0e348e2cc848",
+          "runId": "73da2349-23b7-4a1f-bd43-0e348e2cc848",
+          "version": {
+            "revisionId": "3fd857e5d90f9d16ab956343356a0c294a1fd0b3abfde85e8a4d959738ca53a2",
+            "filesSha256": "0be284355378fdab5066e3aa431af90f306c34f084753cfb7587d051ffbf48e0",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789359243711,
+          "updatedAt": 1789359632477,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 7.19683062716155,
+              "mean_sojourn": 2.7499082831724535,
+              "mean_wait": 1.7820315046285415,
+              "mean_wait_high": 0.015037024746970218,
+              "mean_wait_regular": 2.9600278245495897
+            },
+            "artifactSha256": "bd0e29c62b7a4c4f43626c4461c63219eb0274de313ba85a08b1c4f2b7df095a",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "dc191edd700f667f3b6921dbb64c44a1e9ebbbd42b8f658c969ab37d431f7a63",
+                "size": 2479,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+          "runId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358759625,
+          "updatedAt": 1789359261950,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 2.7744723310529484,
+              "mean_sojourn": 1.1822530813822227,
+              "mean_wait": 0.36016908269074116
+            },
+            "artifactSha256": "3c89e7ab4ccf43eda502fb749db43489d0de2b18729d57e3ec847df8065edf50"
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+          "runId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358548210,
+          "updatedAt": 1789359065132,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 2.7744723310529484,
+              "mean_sojourn": 1.1822530813822227,
+              "mean_wait": 0.36016908269074116
+            },
+            "artifactSha256": "8b016b096155416e0b45a321ebde77fd217bcb68e8b72db9e969f249e19a42d3"
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+          "runId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 1,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358504466,
+          "updatedAt": 1789358877086,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 8.081178189502857,
+              "mean_sojourn": 3.3153717180277837,
+              "mean_wait": 2.4932877193363012
+            },
+            "artifactSha256": "56877b6c11f62db7befa896988a418a885e12c8e725762ef68568fd8ca08e697"
+          },
+          "stale": true
+        }
+      ],
+      "preview": {
+        "current": {
+          "previewId": "72ce362a-4c15-42a0-a5d5-00fa37f77c23",
+          "runId": "69b89080-b4db-4b02-8acd-400cd08b5003",
+          "expiresAt": 1789360972458,
+          "revokedAt": null
+        },
+        "available": {
+          "previewId": "72ce362a-4c15-42a0-a5d5-00fa37f77c23",
+          "runId": "69b89080-b4db-4b02-8acd-400cd08b5003",
+          "expiresAt": 1789360972458,
+          "bootstrapUrl": "https://p-e7d18b7c32e88f1f26a096c2501a5dd721b0c495.preview.m1.riff-demo.gaojihe.cn/__riff/bootstrap"
+        }
+      },
+      "turnIds": [
+        "1c7305e2-bfae-4686-9ca1-7403a6b676cb",
+        "63760447-ddfc-4744-a8e8-154a42e56261",
+        "59b325fd-7138-4bc2-bc44-814b3ebc1a20",
+        "36d7b4ff-efd2-4303-a2e6-70ff3ff0fd28"
+      ]
+    }
+  },
+  {
+    "label": "checked-stopped-refresh",
+    "at": 1789360323376,
+    "automaticExecutionPosts": 0,
+    "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+    "view": null,
+    "uiResultText": "completed · cf76eabb-3d21-4a4a-870d-3074ab3198de · 版本 ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676 · seed 99 · 参数 {\"servers\":2,\"customers\":40,\"arrival_rate\":1,\"service_rate\":1,\"high_priority_fraction\":0.3}{\"completed\":40,\"max_wait\":1.2006952817443448,\"mean_sojourn\":1.1552382279925575,\"mean_wait\":0.18736144944864538,\"mean_wait_high\":0.13288366251953743,\"mean_wait_regular\":0.2236799740680507}",
+    "before": {
+      "workspaceId": "90ac1208-d4bc-4925-b3f0-d02e9a864cb6",
+      "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+      "admission": {
+        "state": "enabled",
+        "reasonCode": null,
+        "retryable": true
+      },
+      "modelVersion": {
+        "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+        "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+        "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+      },
+      "experiments": [
+        {
+          "experimentId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+          "runId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+          "version": {
+            "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+            "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789360050064,
+          "updatedAt": 1789360305677,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 1.2006952817443448,
+              "mean_sojourn": 1.1552382279925575,
+              "mean_wait": 0.18736144944864538,
+              "mean_wait_high": 0.13288366251953743,
+              "mean_wait_regular": 0.2236799740680507
+            },
+            "artifactSha256": "a50b15e85f4669ca29d95411271ce54eaedae62b68f3acae119e2e688e66c4e3",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+                "size": 2477,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": false
+        },
+        {
+          "experimentId": "6609252a-a70b-48d5-9c6d-aed51eaa4e88",
+          "runId": "6609252a-a70b-48d5-9c6d-aed51eaa4e88",
+          "version": {
+            "revisionId": "dc1a4c70a007f7d58277426e8c5da8fb653dbc5807d2c0c1c00d41a3ee7d8617",
+            "filesSha256": "1a7d205816a5adca47c2829a12e72d630e3c90acda47d7a59fd45341c7c9553e",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789359522693,
+          "updatedAt": 1789359918518,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 1.2006952817443448,
+              "mean_sojourn": 1.1552382279925575,
+              "mean_wait": 0.18736144944864538,
+              "mean_wait_high": 0.13288366251953743,
+              "mean_wait_regular": 0.2236799740680507
+            },
+            "artifactSha256": "4457fb219c6266cda44ca5e2d6d75ddc5fdd1aa1c5824180222a843c6f727dc3",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+                "size": 2477,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "73da2349-23b7-4a1f-bd43-0e348e2cc848",
+          "runId": "73da2349-23b7-4a1f-bd43-0e348e2cc848",
+          "version": {
+            "revisionId": "3fd857e5d90f9d16ab956343356a0c294a1fd0b3abfde85e8a4d959738ca53a2",
+            "filesSha256": "0be284355378fdab5066e3aa431af90f306c34f084753cfb7587d051ffbf48e0",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789359243711,
+          "updatedAt": 1789359632477,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 7.19683062716155,
+              "mean_sojourn": 2.7499082831724535,
+              "mean_wait": 1.7820315046285415,
+              "mean_wait_high": 0.015037024746970218,
+              "mean_wait_regular": 2.9600278245495897
+            },
+            "artifactSha256": "bd0e29c62b7a4c4f43626c4461c63219eb0274de313ba85a08b1c4f2b7df095a",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "dc191edd700f667f3b6921dbb64c44a1e9ebbbd42b8f658c969ab37d431f7a63",
+                "size": 2479,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+          "runId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358759625,
+          "updatedAt": 1789359261950,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 2.7744723310529484,
+              "mean_sojourn": 1.1822530813822227,
+              "mean_wait": 0.36016908269074116
+            },
+            "artifactSha256": "3c89e7ab4ccf43eda502fb749db43489d0de2b18729d57e3ec847df8065edf50"
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+          "runId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358548210,
+          "updatedAt": 1789359065132,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 2.7744723310529484,
+              "mean_sojourn": 1.1822530813822227,
+              "mean_wait": 0.36016908269074116
+            },
+            "artifactSha256": "8b016b096155416e0b45a321ebde77fd217bcb68e8b72db9e969f249e19a42d3"
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+          "runId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 1,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358504466,
+          "updatedAt": 1789358877086,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 8.081178189502857,
+              "mean_sojourn": 3.3153717180277837,
+              "mean_wait": 2.4932877193363012
+            },
+            "artifactSha256": "56877b6c11f62db7befa896988a418a885e12c8e725762ef68568fd8ca08e697"
+          },
+          "stale": true
+        }
+      ],
+      "preview": {
+        "current": {
+          "previewId": "72ce362a-4c15-42a0-a5d5-00fa37f77c23",
+          "runId": "69b89080-b4db-4b02-8acd-400cd08b5003",
+          "expiresAt": 1789360972458,
+          "revokedAt": null
+        },
+        "available": null
+      },
+      "turnIds": [
+        "1c7305e2-bfae-4686-9ca1-7403a6b676cb",
+        "63760447-ddfc-4744-a8e8-154a42e56261",
+        "59b325fd-7138-4bc2-bc44-814b3ebc1a20",
+        "36d7b4ff-efd2-4303-a2e6-70ff3ff0fd28"
+      ]
+    },
+    "after": {
+      "workspaceId": "90ac1208-d4bc-4925-b3f0-d02e9a864cb6",
+      "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+      "admission": {
+        "state": "enabled",
+        "reasonCode": null,
+        "retryable": true
+      },
+      "modelVersion": {
+        "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+        "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+        "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+      },
+      "experiments": [
+        {
+          "experimentId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+          "runId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+          "version": {
+            "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+            "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789360050064,
+          "updatedAt": 1789360319680,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 1.2006952817443448,
+              "mean_sojourn": 1.1552382279925575,
+              "mean_wait": 0.18736144944864538,
+              "mean_wait_high": 0.13288366251953743,
+              "mean_wait_regular": 0.2236799740680507
+            },
+            "artifactSha256": "a50b15e85f4669ca29d95411271ce54eaedae62b68f3acae119e2e688e66c4e3",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+                "size": 2477,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": false
+        },
+        {
+          "experimentId": "6609252a-a70b-48d5-9c6d-aed51eaa4e88",
+          "runId": "6609252a-a70b-48d5-9c6d-aed51eaa4e88",
+          "version": {
+            "revisionId": "dc1a4c70a007f7d58277426e8c5da8fb653dbc5807d2c0c1c00d41a3ee7d8617",
+            "filesSha256": "1a7d205816a5adca47c2829a12e72d630e3c90acda47d7a59fd45341c7c9553e",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789359522693,
+          "updatedAt": 1789359918518,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 1.2006952817443448,
+              "mean_sojourn": 1.1552382279925575,
+              "mean_wait": 0.18736144944864538,
+              "mean_wait_high": 0.13288366251953743,
+              "mean_wait_regular": 0.2236799740680507
+            },
+            "artifactSha256": "4457fb219c6266cda44ca5e2d6d75ddc5fdd1aa1c5824180222a843c6f727dc3",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+                "size": 2477,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "73da2349-23b7-4a1f-bd43-0e348e2cc848",
+          "runId": "73da2349-23b7-4a1f-bd43-0e348e2cc848",
+          "version": {
+            "revisionId": "3fd857e5d90f9d16ab956343356a0c294a1fd0b3abfde85e8a4d959738ca53a2",
+            "filesSha256": "0be284355378fdab5066e3aa431af90f306c34f084753cfb7587d051ffbf48e0",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789359243711,
+          "updatedAt": 1789359632477,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 7.19683062716155,
+              "mean_sojourn": 2.7499082831724535,
+              "mean_wait": 1.7820315046285415,
+              "mean_wait_high": 0.015037024746970218,
+              "mean_wait_regular": 2.9600278245495897
+            },
+            "artifactSha256": "bd0e29c62b7a4c4f43626c4461c63219eb0274de313ba85a08b1c4f2b7df095a",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "dc191edd700f667f3b6921dbb64c44a1e9ebbbd42b8f658c969ab37d431f7a63",
+                "size": 2479,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+          "runId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358759625,
+          "updatedAt": 1789359261950,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 2.7744723310529484,
+              "mean_sojourn": 1.1822530813822227,
+              "mean_wait": 0.36016908269074116
+            },
+            "artifactSha256": "3c89e7ab4ccf43eda502fb749db43489d0de2b18729d57e3ec847df8065edf50"
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+          "runId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358548210,
+          "updatedAt": 1789359065132,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 2.7744723310529484,
+              "mean_sojourn": 1.1822530813822227,
+              "mean_wait": 0.36016908269074116
+            },
+            "artifactSha256": "8b016b096155416e0b45a321ebde77fd217bcb68e8b72db9e969f249e19a42d3"
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+          "runId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 1,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358504466,
+          "updatedAt": 1789358877086,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 8.081178189502857,
+              "mean_sojourn": 3.3153717180277837,
+              "mean_wait": 2.4932877193363012
+            },
+            "artifactSha256": "56877b6c11f62db7befa896988a418a885e12c8e725762ef68568fd8ca08e697"
+          },
+          "stale": true
+        }
+      ],
+      "preview": {
+        "current": {
+          "previewId": "72ce362a-4c15-42a0-a5d5-00fa37f77c23",
+          "runId": "69b89080-b4db-4b02-8acd-400cd08b5003",
+          "expiresAt": 1789360972458,
+          "revokedAt": null
+        },
+        "available": null
+      },
+      "turnIds": [
+        "1c7305e2-bfae-4686-9ca1-7403a6b676cb",
+        "63760447-ddfc-4744-a8e8-154a42e56261",
+        "59b325fd-7138-4bc2-bc44-814b3ebc1a20",
+        "36d7b4ff-efd2-4303-a2e6-70ff3ff0fd28"
+      ]
+    }
+  },
+  {
+    "label": "final-stopped-refresh",
+    "at": 1789361745418,
+    "automaticExecutionPosts": 0,
+    "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+    "view": null,
+    "uiResultText": "completed · cf76eabb-3d21-4a4a-870d-3074ab3198de · 版本 ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676 · seed 99 · 参数 {\"servers\":2,\"customers\":40,\"arrival_rate\":1,\"service_rate\":1,\"high_priority_fraction\":0.3}{\"completed\":40,\"max_wait\":1.2006952817443448,\"mean_sojourn\":1.1552382279925575,\"mean_wait\":0.18736144944864538,\"mean_wait_high\":0.13288366251953743,\"mean_wait_regular\":0.2236799740680507}",
+    "before": {
+      "workspaceId": "90ac1208-d4bc-4925-b3f0-d02e9a864cb6",
+      "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+      "admission": {
+        "state": "enabled",
+        "reasonCode": null,
+        "retryable": true
+      },
+      "modelVersion": {
+        "revisionId": "350823a16e87a113556abe544b5b203d57ceac30ce70df7aaec86f671e48e80b",
+        "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+        "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+      },
+      "experiments": [
+        {
+          "experimentId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+          "runId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+          "version": {
+            "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+            "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789360050064,
+          "updatedAt": 1789360437351,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 1.2006952817443448,
+              "mean_sojourn": 1.1552382279925575,
+              "mean_wait": 0.18736144944864538,
+              "mean_wait_high": 0.13288366251953743,
+              "mean_wait_regular": 0.2236799740680507
+            },
+            "artifactSha256": "a50b15e85f4669ca29d95411271ce54eaedae62b68f3acae119e2e688e66c4e3",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+                "size": 2477,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": false
+        },
+        {
+          "experimentId": "6609252a-a70b-48d5-9c6d-aed51eaa4e88",
+          "runId": "6609252a-a70b-48d5-9c6d-aed51eaa4e88",
+          "version": {
+            "revisionId": "dc1a4c70a007f7d58277426e8c5da8fb653dbc5807d2c0c1c00d41a3ee7d8617",
+            "filesSha256": "1a7d205816a5adca47c2829a12e72d630e3c90acda47d7a59fd45341c7c9553e",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789359522693,
+          "updatedAt": 1789359918518,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 1.2006952817443448,
+              "mean_sojourn": 1.1552382279925575,
+              "mean_wait": 0.18736144944864538,
+              "mean_wait_high": 0.13288366251953743,
+              "mean_wait_regular": 0.2236799740680507
+            },
+            "artifactSha256": "4457fb219c6266cda44ca5e2d6d75ddc5fdd1aa1c5824180222a843c6f727dc3",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+                "size": 2477,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "73da2349-23b7-4a1f-bd43-0e348e2cc848",
+          "runId": "73da2349-23b7-4a1f-bd43-0e348e2cc848",
+          "version": {
+            "revisionId": "3fd857e5d90f9d16ab956343356a0c294a1fd0b3abfde85e8a4d959738ca53a2",
+            "filesSha256": "0be284355378fdab5066e3aa431af90f306c34f084753cfb7587d051ffbf48e0",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789359243711,
+          "updatedAt": 1789359632477,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 7.19683062716155,
+              "mean_sojourn": 2.7499082831724535,
+              "mean_wait": 1.7820315046285415,
+              "mean_wait_high": 0.015037024746970218,
+              "mean_wait_regular": 2.9600278245495897
+            },
+            "artifactSha256": "bd0e29c62b7a4c4f43626c4461c63219eb0274de313ba85a08b1c4f2b7df095a",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "dc191edd700f667f3b6921dbb64c44a1e9ebbbd42b8f658c969ab37d431f7a63",
+                "size": 2479,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+          "runId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358759625,
+          "updatedAt": 1789359261950,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 2.7744723310529484,
+              "mean_sojourn": 1.1822530813822227,
+              "mean_wait": 0.36016908269074116
+            },
+            "artifactSha256": "3c89e7ab4ccf43eda502fb749db43489d0de2b18729d57e3ec847df8065edf50"
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+          "runId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358548210,
+          "updatedAt": 1789359065132,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 2.7744723310529484,
+              "mean_sojourn": 1.1822530813822227,
+              "mean_wait": 0.36016908269074116
+            },
+            "artifactSha256": "8b016b096155416e0b45a321ebde77fd217bcb68e8b72db9e969f249e19a42d3"
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+          "runId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 1,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358504466,
+          "updatedAt": 1789358877086,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 8.081178189502857,
+              "mean_sojourn": 3.3153717180277837,
+              "mean_wait": 2.4932877193363012
+            },
+            "artifactSha256": "56877b6c11f62db7befa896988a418a885e12c8e725762ef68568fd8ca08e697"
+          },
+          "stale": true
+        }
+      ],
+      "preview": {
+        "current": {
+          "previewId": "576305cc-3ddc-462a-9f3d-e94fd50e7797",
+          "runId": "50b26fb0-db05-4900-a168-f7ceda9bef4b",
+          "expiresAt": 1789361790366,
+          "revokedAt": null
+        },
+        "available": null
+      },
+      "turnIds": [
+        "1c7305e2-bfae-4686-9ca1-7403a6b676cb",
+        "63760447-ddfc-4744-a8e8-154a42e56261",
+        "59b325fd-7138-4bc2-bc44-814b3ebc1a20",
+        "36d7b4ff-efd2-4303-a2e6-70ff3ff0fd28",
+        "b2b7679e-2f86-44ef-ad82-0cbc1718fb1b",
+        "d7f11aa1-b486-4f6a-9db9-b6f8fec01f49"
+      ]
+    },
+    "after": {
+      "workspaceId": "90ac1208-d4bc-4925-b3f0-d02e9a864cb6",
+      "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+      "admission": {
+        "state": "enabled",
+        "reasonCode": null,
+        "retryable": true
+      },
+      "modelVersion": {
+        "revisionId": "350823a16e87a113556abe544b5b203d57ceac30ce70df7aaec86f671e48e80b",
+        "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+        "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+      },
+      "experiments": [
+        {
+          "experimentId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+          "runId": "cf76eabb-3d21-4a4a-870d-3074ab3198de",
+          "version": {
+            "revisionId": "ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676",
+            "filesSha256": "5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789360050064,
+          "updatedAt": 1789360437351,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 1.2006952817443448,
+              "mean_sojourn": 1.1552382279925575,
+              "mean_wait": 0.18736144944864538,
+              "mean_wait_high": 0.13288366251953743,
+              "mean_wait_regular": 0.2236799740680507
+            },
+            "artifactSha256": "a50b15e85f4669ca29d95411271ce54eaedae62b68f3acae119e2e688e66c4e3",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+                "size": 2477,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": false
+        },
+        {
+          "experimentId": "6609252a-a70b-48d5-9c6d-aed51eaa4e88",
+          "runId": "6609252a-a70b-48d5-9c6d-aed51eaa4e88",
+          "version": {
+            "revisionId": "dc1a4c70a007f7d58277426e8c5da8fb653dbc5807d2c0c1c00d41a3ee7d8617",
+            "filesSha256": "1a7d205816a5adca47c2829a12e72d630e3c90acda47d7a59fd45341c7c9553e",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789359522693,
+          "updatedAt": 1789359918518,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 1.2006952817443448,
+              "mean_sojourn": 1.1552382279925575,
+              "mean_wait": 0.18736144944864538,
+              "mean_wait_high": 0.13288366251953743,
+              "mean_wait_regular": 0.2236799740680507
+            },
+            "artifactSha256": "4457fb219c6266cda44ca5e2d6d75ddc5fdd1aa1c5824180222a843c6f727dc3",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "6ef690306aea522d2f43be7f4ea49458ef81e825fb0fcafb9b40f8ffc17fa1ef",
+                "size": 2477,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "73da2349-23b7-4a1f-bd43-0e348e2cc848",
+          "runId": "73da2349-23b7-4a1f-bd43-0e348e2cc848",
+          "version": {
+            "revisionId": "3fd857e5d90f9d16ab956343356a0c294a1fd0b3abfde85e8a4d959738ca53a2",
+            "filesSha256": "0be284355378fdab5066e3aa431af90f306c34f084753cfb7587d051ffbf48e0",
+            "specSha256": "81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1,
+            "high_priority_fraction": 0.3
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789359243711,
+          "updatedAt": 1789359632477,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 7.19683062716155,
+              "mean_sojourn": 2.7499082831724535,
+              "mean_wait": 1.7820315046285415,
+              "mean_wait_high": 0.015037024746970218,
+              "mean_wait_regular": 2.9600278245495897
+            },
+            "artifactSha256": "bd0e29c62b7a4c4f43626c4461c63219eb0274de313ba85a08b1c4f2b7df095a",
+            "outputs": [
+              {
+                "path": "customers.csv",
+                "sha256": "dc191edd700f667f3b6921dbb64c44a1e9ebbbd42b8f658c969ab37d431f7a63",
+                "size": 2479,
+                "mediaType": "text/csv"
+              }
+            ]
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+          "runId": "2ab1f808-0e58-4a89-ac66-2a5784d00c0e",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358759625,
+          "updatedAt": 1789359261950,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 2.7744723310529484,
+              "mean_sojourn": 1.1822530813822227,
+              "mean_wait": 0.36016908269074116
+            },
+            "artifactSha256": "3c89e7ab4ccf43eda502fb749db43489d0de2b18729d57e3ec847df8065edf50"
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+          "runId": "ac49333f-4322-4457-aa4d-72f061ef1dd8",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 2,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358548210,
+          "updatedAt": 1789359065132,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 2.7744723310529484,
+              "mean_sojourn": 1.1822530813822227,
+              "mean_wait": 0.36016908269074116
+            },
+            "artifactSha256": "8b016b096155416e0b45a321ebde77fd217bcb68e8b72db9e969f249e19a42d3"
+          },
+          "stale": true
+        },
+        {
+          "experimentId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+          "runId": "bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2",
+          "version": {
+            "revisionId": "b06251b86ad24e4ead0b3179c902e3301a72275fae673caff4cf5c304d096733",
+            "filesSha256": "520fff69fec27303188fab3f1722a9bf573ee2e839d41352e1c6b74b9865dc42",
+            "specSha256": "b79092412777240d91c203c99d5f64e452da9431cf1afdbae299ab33ab55b00d"
+          },
+          "parameters": {
+            "servers": 1,
+            "customers": 40,
+            "arrival_rate": 1,
+            "service_rate": 1
+          },
+          "seed": 99,
+          "status": "completed",
+          "createdAt": 1789358504466,
+          "updatedAt": 1789358877086,
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "completed": 40,
+              "max_wait": 8.081178189502857,
+              "mean_sojourn": 3.3153717180277837,
+              "mean_wait": 2.4932877193363012
+            },
+            "artifactSha256": "56877b6c11f62db7befa896988a418a885e12c8e725762ef68568fd8ca08e697"
+          },
+          "stale": true
+        }
+      ],
+      "preview": {
+        "current": {
+          "previewId": "576305cc-3ddc-462a-9f3d-e94fd50e7797",
+          "runId": "50b26fb0-db05-4900-a168-f7ceda9bef4b",
+          "expiresAt": 1789361790366,
+          "revokedAt": null
+        },
+        "available": null
+      },
+      "turnIds": [
+        "1c7305e2-bfae-4686-9ca1-7403a6b676cb",
+        "63760447-ddfc-4744-a8e8-154a42e56261",
+        "59b325fd-7138-4bc2-bc44-814b3ebc1a20",
+        "36d7b4ff-efd2-4303-a2e6-70ff3ff0fd28",
+        "b2b7679e-2f86-44ef-ad82-0cbc1718fb1b",
+        "d7f11aa1-b486-4f6a-9db9-b6f8fec01f49"
+      ]
+    }
+  }
+]

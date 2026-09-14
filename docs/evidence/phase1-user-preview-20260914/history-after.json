@@ -1,0 +1,29 @@
+{
+  "at": 1789360838767,
+  "elapsedMs": 25267,
+  "assistantCards": 4,
+  "latestSavedReplyExact": true,
+  "notice": true,
+  "automaticExecutionPosts": 0,
+  "eventReadCursors": [
+    "0",
+    "616",
+    "816",
+    "1016",
+    "1216",
+    "1416",
+    "1616",
+    "1816",
+    "2016",
+    "2216",
+    "2416",
+    "2616"
+  ],
+  "sessionId": "8205988d-4b2f-4474-aafd-b8f1e16f854d",
+  "admission": {
+    "state": "enabled",
+    "reasonCode": null,
+    "retryable": true
+  },
+  "turnCount": 4
+}

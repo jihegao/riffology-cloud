@@ -1,0 +1,13 @@
+{
+  "at": 1789361719402,
+  "quota": {
+    "tenantId": "8410ae67-fc66-46a6-9364-5d70cc0f66b5",
+    "capacity": 2,
+    "policyVersion": "phase1-preview-simulation-v1",
+    "configuredPolicyMatches": true,
+    "occupied": 0,
+    "available": 2,
+    "unknown": 0,
+    "leases": []
+  }
+}

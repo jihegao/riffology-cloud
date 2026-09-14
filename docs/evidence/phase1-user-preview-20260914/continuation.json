@@ -1,0 +1,30 @@
+[
+  {
+    "label": "continue",
+    "turnId": "b2b7679e-2f86-44ef-ad82-0cbc1718fb1b",
+    "savedSessionSha256": "3a9691f8a938eda89814b30a2b4c220fef4a754bfe46af9e1c412cbf5c7bcb60",
+    "assistantText": "根据当前项目文件和平台提供的实验摘要，当前状态如下。\n\n## 机制区别\n\n### FCFS A\n\nFCFS A 使用：\n\n- 一个共享 FIFO 单队列\n- 顾客按到达顺序服务\n- 空闲服务器立即接收队首顾客\n- 多服务器只改变并行服务能力，不改变队列顺序\n- 无优先级字段\n\n### 非抢占优先级 B\n\n当前保存的模型是 Priority B：\n\n- 一个共享等待集合\n- 高优先级顾客先于普通顾客\n- 同优先级按到达时间和顾客 ID 排序\n- 已经开始的服务不会被抢占\n- 每次分配前吸收所有 `arrival <= now` 的顾客\n- 适用于 1–4 台服务器\n- 参数增加 `high_priority_fraction=0.3`，范围 `0..1`\n- 输出增加 `mean_wait_high` 和 `mean_wait_regular`\n\n同一个 `seed` 在不同结构版本之间不保证生成相同的完整随机样本：版本可能额外生成优先级，改变随机数消耗顺序。因此，FCFS A 和 Priority B 的同 seed 不能自动视为完全相同的到达、服务或顾客样本。\n\n## 实际实验摘要\n\n### FCFS A，servers=1\n\n- Run ID：`bfe772aa-0a30-4795-8a8f-ba62d3c4b0c2`\n- 参数：\n  - `servers=1`\n  - `customers=40`\n  - `arrival_rate=1`\n  - `service_rate=1`\n  - `seed=99`\n- 指标：\n  - `completed=40`\n  - `mean_wait=2.4932877193363012`\n  - `max_wait=8.081178189502857`\n  - `mean_sojourn=3.3153717180277837`\n\n### FCFS A，servers=2\n\n- Run ID：`2ab1f808-0e58-4a89-ac66-2a5784d00c0e`\n- 参数：\n  - `servers=2`\n  - `customers=40`\n  - `arrival_rate=1`\n  - `service_rate=1`\n  - `seed=99`\n- 指标：\n  - `completed=40`\n  - `mean_wait=0.36016908269074116`\n  - `max_wait=2.7744723310529484`\n  - `mean_sojourn=1.1822530813822227`\n\n这两个 Run 支持的是**同一 FCFS A 结构内的 servers=1 与 servers=2 干预比较**。在该次有限样本中，servers=2 的等待和逗留指标更低，但不能仅凭一次随机运行推导普遍改善结论。\n\n## 关于最终 Priority B Run\n\n当前项目文档和可读取的持久摘要中，没有提供一个可核验的、对应当前修复后 Priority B Revision 的已完成平台 Run ID、Revision、参数和指标。因此不能凭浏览器提示或本地检查结果虚构一个最终 B Run，也不能把中间版本 Run 当作有效 B 结果。\n\n已知的中间错误模型 Run：\n\n- `73da2349-23b7-4a1f-bd43-0e348e2cc848`：服务器空闲时错误延迟已到达顾客\n- `dc1a...` 版本：仅在特定双服务器样本下通过，未完成完整到达窗口优先级验证\n\n这些中间版本已在项目文档中标记为错误模型，不能用于政策效果比较。它们也不能与 FCFS A 的真实 Run 进行有效跨结构比较。\n\n本次仅读取必要的 Model Spec、当前 Python 模型和项目文档；没有修改文件、重跑仿真或启动服务。",
+    "assessment": "failed: incorrectly claimed no final B Run"
+  },
+  {
+    "label": "context-audit",
+    "turnId": "d7f11aa1-b486-4f6a-9db9-b6f8fec01f49",
+    "savedSessionSha256": "31054fed0a8f3db91fc2d7af2b529e2e90441cedd9a1d9ac668f2984cddd813b",
+    "assistantText": "experiments[0]\n- runId: `cf76eabb-3d21-4a4a-870d-3074ab3198de`\n- version.revisionId: `ebb99156b8218d98fa2dcf78aeb755c9267e3589406dd08e25f62302b5ce8676`\n- version.filesSha256: `5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da`\n- parameters: `{\"servers\":2,\"customers\":40,\"arrival_rate\":1,\"service_rate\":1,\"high_priority_fraction\":0.3}`\n- seed: `99`\n- status: `completed`\n- result.metrics: `{\"completed\":40,\"max_wait\":1.2006952817443448,\"mean_sojourn\":1.1552382279925575,\"mean_wait\":0.18736144944864538,\"mean_wait_high\":0.13288366251953743,\"mean_wait_regular\":0.2236799740680507}`\n\nexperiments[1]\n- runId: `6609252a-a70b-48d5-9c6d-aed51eaa4e88`\n- version.revisionId: `dc1a4c70a007f7d58277426e8c5da8fb653dbc5807d2c0c1c00d41a3ee7d8617`\n- version.filesSha256: `5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da`\n- parameters: `{\"servers\":2,\"customers\":40,\"arrival_rate\":1,\"service_rate\":1,\"high_priority_fraction\":0.3}`\n- seed: `99`\n- status: `completed`\n- result.metrics: `{\"completed\":40,\"max_wait\":1.2006952817443448,\"mean_sojourn\":1.1552382279925575,\"mean_wait\":0.18736144944864538,\"mean_wait_high\":0.13288366251953743,\"mean_wait_regular\":0.2236799740680507}`\n\ncurrent model.version\n- revisionId: `133e63973572f64335ac89ab655e9903d87f1ac9730a707b3d9c1d7736ec7a1e`\n- filesSha256: `5e6401c19e50a8265aa4a18b7cd394ba78e27e54267bd820f2a247449d5c40da`\n- specSha256: `81c20b1840f56c4b3db0f6565e8e729bcbcf817e3bca14d6608129656fd693d4`\n\n说明：以上内容直接来自本轮提供的持久研究数据；experiments 数组存在，因此并非缺失。",
+    "assessment": "narrow transport pass: latest B exact; second historical entry incorrectly borrows final B files digest and metrics"
+  },
+  {
+    "label": "smoke1",
+    "turnId": "191005b8-dde1-400c-8a19-72d498ac6112",
+    "savedSessionSha256": "9318eca679d85f400b042427e038f870fdb4715076e845c244d6ca3a293f2bc6",
+    "assistantText": "- 当前模型版本 Revision ID：`350823a16e87a113556abe544b5b203d57ceac30ce70df7aaec86f671e48e80b`\n- 最近已完成 Run ID：`cf76eabb-3d21-4a4a-870d-3074ab3198de`",
+    "assessment": "passed: exact current checkpoint/latest Run"
+  },
+  {
+    "label": "smoke2",
+    "turnId": "b1c54d19-86d1-41ea-b399-d39c99ad09cd",
+    "savedSessionSha256": "167c3b58ce60a40caf646f221fc3213148ff7b2cbf275d0bde2ce1ba49151db6",
+    "assistantText": "- 已声明假设：服务器相同且持续可用；服务进行中不会被中断。\n- 已声明限制：这是有限样本的随机教学模型，结果可能有噪声，不能据此建立稳态性能结论。\n- 最近已完成 Run ID：`cf76eabb-3d21-4a4a-870d-3074ab3198de`",
+    "assessment": "passed: persisted assumption and limitation; same latest Run"
+  }
+]

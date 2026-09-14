@@ -1,0 +1,19 @@
+{
+  "source": {
+    "status": "passed",
+    "observedAt": 1789359759333,
+    "sha": "90a14ab125a9dda4aa3eac679f8815c7ed43fd1a",
+    "tree": "79e14499af6467447dcbb1a7cd472cd2b4e46597"
+  },
+  "preflight": {
+    "status": "passed",
+    "observedAt": 1789359759377,
+    "scope": "revalidated prior actual release inventory and frozen-tree full checks"
+  },
+  "deployment": {
+    "status": "passed",
+    "observedAt": 1789359761419,
+    "version": "52029e31-a91f-41db-88ba-49f6890a46db",
+    "createdOn": "2026-09-14T04:01:00.417685Z"
+  }
+}
