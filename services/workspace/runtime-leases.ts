@@ -95,6 +95,29 @@ export class WorkspaceRuntimeLeases implements TurnCapacityPort{
   if(!sameScope(value.scope,identity.scope)||value.sessionId!==identity.sessionId||!value.lease||!value.binding||value.binding.dispatchId!==identity.dispatchId||value.deadlineAt===null)throw Error('workspace-runtime-binding-denied');
   return {lease:value.lease,binding:value.binding,identity,executionDeadlineAt:value.deadlineAt,closing:value.closing||value.cancelled};
  }
+ /** Local binding is an intent, not proof that Capacity accepted it. This is
+  * a terminal-Turn reconciliation entrypoint: callers must validate Runtime
+  * terminal identity first. A mismatched intent permanently closes admission
+  * and cancels the real pair before declaring it unaccepted. The returned
+  * physical binding (possibly the previous Turn) is the only drain authority. */
+ async reconcileBindingForSettlement(raw:TurnRuntimeIdentity):Promise<{status:'accepted'|'unaccepted';current:WorkspaceRuntimeBinding;lease:PairLease}>{
+  const identity=turnRuntimeIdentity(raw),current=await this.current(identity);if(!current)throw Error('workspace-runtime-binding-denied');
+  const value=this.#storage.kv.get<Selection>(key(identity.turnId));
+  let lease=await this.#pair.lookupPair(current.lease.scope,value!.requestId);
+  if(!lease||!equal(lease.ref,pairReference(current.lease)))throw Error('workspace-runtime-lease-conflict');
+  if(equal(lease.binding,current.binding))return {status:'accepted',current,lease};
+  // Fence our delayed bind continuation before cancelling the paired lease.
+  // Capacity serializes cancellation against any already-sent bind RPC.
+  const latest=this.#storage.kv.get<Selection>(key(identity.turnId));
+  if(!latest||!equal(latest.lease,current.lease)||!equal(latest.binding,current.binding))throw Error('workspace-runtime-binding-conflict');
+  await this.#write({...latest,cancelled:true,closing:true});
+  lease=await this.#pair.cancelPair(pairReference(current.lease));
+  if(!equal(lease.ref,pairReference(current.lease))||!['cancelled','releasing','released'].includes(lease.status))throw Error('workspace-runtime-drain-unconfirmed');
+  const closed=await this.current(identity);if(!closed)throw Error('workspace-runtime-binding-denied');
+  // A bind that won the race must be drained under its actual new epoch;
+  // it must never be treated as a never-started previous binding.
+  return {status:equal(lease.binding,current.binding)?'accepted':'unaccepted',current:closed,lease};
+ }
  async leaseForDrain(lease:WorkspaceBindingLease){const saved=this.#storage.kv.get<{lease:WorkspaceBindingLease;requestId:string}>(CURRENT);if(!saved||!equal(saved.lease,lease))throw Error('workspace-runtime-lease-denied');const result=await this.#pair.lookupPair(lease.scope,saved.requestId);if(!result||!equal(result.ref,pairReference(lease))||!['releasing','released'].includes(result.status))throw Error('workspace-runtime-drain-denied');return result;}
  currentLease(){return this.#storage.kv.get<{lease:WorkspaceBindingLease;requestId:string}>(CURRENT)??null;}
  async pairState(raw:TurnRuntimeIdentity){const current=await this.current(raw);if(!current)throw Error('workspace-runtime-binding-denied');const value=this.#storage.kv.get<Selection>(key(current.identity.turnId));const lease=await this.#pair.lookupPair(current.lease.scope,value!.requestId);if(!lease||!equal(lease.ref,pairReference(current.lease))||!equal(lease.binding,current.binding))throw Error('workspace-runtime-binding-denied');return {current,lease};}
