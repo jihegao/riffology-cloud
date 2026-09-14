@@ -63,6 +63,7 @@ export class WorkspaceRuntimeLeases implements TurnCapacityPort{
   let value=await this.#selection(input);if(value.mode==='cold')return this.#cold.releaseNeverStarted(input);
   value={...value,cancelled:true,closing:true};await this.#write(value);
   if(!value.requestReserved&&!value.lease)return {proofId:`workspace-never-started-${value.operationId}`,releasedAt:this.#clock()};
+  if(value.requestReserved&&!value.binding){const cancelled=await this.#pair.cancelPairRequest(value.scope,value.requestId);if(cancelled.lease&&cancelled.lease.status!=='cancelled'&&cancelled.lease.status!=='released')throw Error('workspace-runtime-release-pending');return {proofId:`workspace-never-started-${value.operationId}`,releasedAt:cancelled.cancelledAt};}
   let lease=await this.#pair.lookupPair(value.scope,value.requestId);
   // Exact request closes an acceptance-before-cancellation RPC window. If the
   // gate prevents this reconciliation, keep the caller's hold unresolved.

@@ -31,6 +31,7 @@ export class TrustedPiCapacity extends DurableObject<TrustedPiCapacityEnv>{
  async confirmReleased(ref:TrustedPiCapacityDispatchReference,proof:TrustedPiCapacityStopProof){return this.#changing(()=>this.#ledger().confirmReleased(ref,proof));}
  async snapshot(){return this.#changing(()=>this.#ledger().snapshot());}
  async requestPair(scope:TurnScope,requestId:string){if(this.env.M2_WORKSPACE_RUNTIME_REUSE_ENABLED!=='true')throw Error('workspace-runtime-reuse-disabled');return this.#changing(()=>this.#pairs().requestPair(scope,requestId));}
+ async cancelPairRequest(scope:TurnScope,requestId:string){return this.#changing(()=>this.#pairs().cancelPairRequest(scope,requestId));}
  async lookupPair(scope:TurnScope,requestId:string){return this.#changing(()=>this.#pairs().lookupPair(scope,requestId));}
  async bind(ref:WorkspaceLeaseRef,binding:TurnBinding){return this.#changing(async()=>{const pair=this.#pairs();if(this.env.M2_WORKSPACE_RUNTIME_REUSE_ENABLED!=='true'){const current=(await pair.snapshot()).active;if(!current||current.status!=='bound'||JSON.stringify(current.ref)!==JSON.stringify(ref)||JSON.stringify(current.binding)!==JSON.stringify(binding))throw Error('workspace-runtime-reuse-disabled');await pair.retirePair(ref,'gate-disabled');}return pair.bind(ref,binding);});}
  async claimNativeStart(ref:WorkspaceLeaseRef,binding:TurnBinding,domain:PairDomain){return this.#changing(()=>this.#pairs().claimNativeStart(ref,binding,domain));}

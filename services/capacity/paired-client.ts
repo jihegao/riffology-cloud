@@ -5,6 +5,7 @@ import {TRUSTED_PI_CAPACITY_ACTOR} from './client.ts';
  * implementation must share cold's physical allocator actor and SQLite store. */
 export interface WorkspacePairedCapacityPort{
  requestPair(scope:TurnScope,requestId:string):Promise<PairLease>;
+ cancelPairRequest(scope:TurnScope,requestId:string):Promise<{lease:PairLease|null;cancelledAt:number}>;
  lookupPair(scope:TurnScope,requestId:string):Promise<PairLease|null>;
  bind(ref:WorkspaceLeaseRef,binding:TurnBinding):Promise<PairLease>;
  claimNativeStart(ref:WorkspaceLeaseRef,binding:TurnBinding,domain:PairDomain):Promise<{authorized:boolean;lease:PairLease}>;

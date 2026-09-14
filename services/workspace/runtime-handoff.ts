@@ -1,4 +1,4 @@
-import {workspaceBindingToken,type CheckpointReceipt,type TurnRecord,type TurnResourceDisposition,type TurnResourceLease} from '../turn/protocol.ts';
+import {workspaceBindingToken,turnDigest,type CheckpointReceipt,type TurnRecord,type TurnResourceDisposition,type TurnResourceLease} from '../turn/protocol.ts';
 import type {TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
 import type {WorkspaceRuntimeBinding} from './runtime-leases.ts';
 import {pairReference} from './runtime-leases.ts';
@@ -32,6 +32,7 @@ export class WorkspaceRuntimeHandoff{
   if(state.proofs&&lease.handoffProofs&&same(state.proofs,lease.handoffProofs)){
    state.disposition={status:'handed-off',...common,lease:current.lease,binding:current.binding,checkpoint:input.checkpoint!,proof:{project:state.proofs.project.status==='not-started'?{schemaVersion:1,bindingEpoch:token,status:'not-started',allocation:state.proofs.project.allocation}:{schemaVersion:1,bindingEpoch:token,status:'quiescent',remaining:0},trustedPi:{schemaVersion:1,bindingEpoch:token,status:'quiescent',remaining:0}},handedOffAt:Math.max(input.checkpoint!.committedAt,state.proofs.trustedPi.observedAt)};await save();return state.disposition;
   }
+  if(lease.status==='releasing'&&!lease.handoffProofs&&state.decision!=='destroy'){state.decision='destroy';await save();}
   if(state.decision==='waiting'){
    const closure=await this.deps.close(input.identity);
    if(closure.settled.length!==3||closure.settled.some(s=>!same(s.identity,input.identity)||!s.closed))throw Error('workspace-runtime-settlement-denied');
@@ -51,13 +52,14 @@ export class WorkspaceRuntimeHandoff{
      else project={schemaVersion:1,domain:'project',leaseId:lease.ref.leaseId,leaseEpoch:lease.ref.leaseEpoch,bindingEpoch:current.binding.bindingEpoch,status:'not-started',allocation:lease.startClaims.project===null?'never-started':'retained-sealed',retainedProofId:lease.startClaims.project===null?null:lease.projectSealProofId??null,proofId:`seal-${token}-project`,observedAt};
      const latest=await this.deps.journal(input.identity);if(latest.persistenceOutcome!=='saved'||!same(latest.checkpoint,input.checkpoint))throw Error('workspace-runtime-checkpoint-unconfirmed');
      if(lease.bindingClaims.project)await (await this.deps.native('project',context)).pruneWorkspaceBinding(context,input.checkpoint.filesSha256);
-     const hostToken=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify({schemaVersion:1,purpose:'trusted-pi-native',identity:input.identity})))),n=>n.toString(16).padStart(2,'0')).join('').slice(0,52);
+     const hostToken=(await turnDigest({schemaVersion:1,purpose:'trusted-pi-native',identity:input.identity})).slice(0,52);
      await pi.pruneWorkspaceBinding(context,hostToken);state.proofs={project,trustedPi:make('trustedPi')};await save();
     }
    }catch{state.decision='destroy';await save();}
    if(state.decision==='reuse'){
     // Fixed proof intent is durable before dispatch. An unknown response is
     // observed on retry, never replaced with another proof or binding epoch.
+    const beforeDispatch=await this.deps.binding(input.identity);if(beforeDispatch.lease.status==='releasing'&&!beforeDispatch.lease.handoffProofs){state.decision='destroy';await save();return this.#settle(input);}
     await this.deps.pair.confirmHandoff(pairReference(current.lease),current.binding,state.proofs!);
     return this.#settle(input);
    }
