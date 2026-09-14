@@ -1,3 +1,4 @@
+import {experimentGroupRequest} from '../simulation/groups.ts';
 import {experimentRequest} from '../simulation/host.ts';
 import type {GatewaySimulations} from './simulation-services.ts';
 import type {ModelContentUploadPort} from '../runtime/model-upload.ts';
@@ -124,16 +125,22 @@ export async function gateway(request:Request, services:GatewayServices):Promise
         JOIN catalog_users u ON u.id=t.owner_user_id WHERE t.owner_user_id=? AND t.status='active' AND m.status='active' AND u.status='active' AND u.auth_version=?`,principal.userId,principal.authVersion));
       return json({userId:principal.userId,tenants});
     }
-    const simulationRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/(model|experiments|simulation-runs)(?:\/([A-Za-z0-9_-]{1,128})(?:\/(cancel))?)?$/.exec(url.pathname);
+    const simulationRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/(model|experiments|experiment-groups|simulation-runs)(?:\/([A-Za-z0-9_-]{1,128})(?:\/(cancel))?)?$/.exec(url.pathname);
     if(simulationRoute){
       const [,workspaceId,resource,id,action]=simulationRoute;
-      const creating=request.method==='POST'&&resource==='experiments'&&!id;
+      const creating=request.method==='POST'&&(resource==='experiments'||resource==='experiment-groups')&&!id;
       const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models);
       const scope=creating?await catalog.workspace(principal,workspaceId!):await catalog.maintenanceWorkspace(principal,workspaceId!);
       if(!services.simulations)throw new HttpError('simulation-unavailable',503);
       try{
         if(resource==='model'&&!id&&request.method==='GET'&&!url.search)return json(await services.simulations.model(scope));
+        if(creating&&resource==='experiment-groups'&&!url.search)return json(await services.simulations.submitGroup(scope,principal,idempotencyKey(request),experimentGroupRequest(await readJson(request,32768))),202);
         if(creating&&!url.search)return json(await services.simulations.submit(scope,principal,idempotencyKey(request),experimentRequest(await readJson(request))),202);
+        if(resource==='experiment-groups'&&request.method==='GET'&&!action){
+          if(id&&!url.search)return json(await services.simulations.viewGroup(scope,id));
+          if(!id){if([...url.searchParams.keys()].some(k=>k!=='before')||url.searchParams.getAll('before').length>1)throw new HttpError('simulation-input-invalid',400);return json(await services.simulations.listGroups(scope,url.searchParams.get('before')??undefined));}
+        }
+        if(resource==='experiment-groups'&&id&&action==='cancel'&&request.method==='POST'&&!url.search){const body=await readJson(request);if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).length)throw new HttpError('simulation-input-invalid',400);return json(await services.simulations.cancelGroup(scope,id),202);}
         if(resource==='experiments'&&request.method==='GET'&&!action){
           if(id&&!url.search)return json(await services.simulations.view(scope,id));
           if(!id){if([...url.searchParams.keys()].some(k=>k!=='before')||url.searchParams.getAll('before').length>1)throw new HttpError('simulation-input-invalid',400);return json(await services.simulations.list(scope,url.searchParams.get('before')??undefined));}
