@@ -56,3 +56,18 @@ Run `node scripts/m2/check-product-turn-local.mjs --lazy` for provider-disabled
 persistence/recovery, or add `--crud` for the deterministic native file-tool path.
 These are local runtime checks, not cloud acceptance or real-model quality tests.
 The CRUD acceptance record is added after its bounded run completes.
+
+On an arm64 Docker VM translating the amd64 SDK image, use the explicit
+`--vertical-project` local fixture option. It selects the existing
+`Dockerfile.vertical` and records that image's Workerd deny-all egress boundary;
+the production image and default fixture still require the child seccomp fence.
+The image marker is checked after building. This option does not establish that
+the production native isolation primitives work on the target kernel.
+
+The first CRUD attempt exhausted the local 4 GiB Docker VM. A serial attempt
+with 8 GiB completed Project preparation, then failed its tool-success assertions.
+A separate no-network probe of that exact Project image identified
+`project-network-seccomp-load-failed:-125`, the existing translated-amd64
+limitation. Both failed raw records remain preserved; neither proves successful
+CRUD or authorizes replaying its unknown tool operations. The local fixture
+option above changes only the environment for a new acceptance run.
