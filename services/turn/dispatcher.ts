@@ -118,7 +118,7 @@ function validateReceipt(value:unknown,expected:ExpectedReceipt,expectedLease?:{
   const disposition=resourceDisposition(receipt.resourceDisposition);
   if(disposition.turnId!==expected.turnId||disposition.dispatchId!==expected.dispatchId||disposition.generation!==expected.generation)throw Error('turn-runtime-receipt-scope-denied');
   if(expectedLease&&(disposition.operationId!==expectedLease.operationId||disposition.leaseId!==expectedLease.leaseId))throw Error('turn-runtime-receipt-scope-denied');
-  if(disposition.status==='handed-off'&&(!sameScope(disposition.lease.scope,expected.scope)||disposition.binding.sessionId!==expected.sessionId||!saved||JSON.stringify(disposition.checkpoint)!==JSON.stringify(saved)))throw Error('turn-runtime-receipt-scope-denied');
+  if(disposition.status==='handed-off'&&(outcome!=='completed'||!sameScope(disposition.lease.scope,expected.scope)||disposition.binding.sessionId!==expected.sessionId||!saved||JSON.stringify(disposition.checkpoint)!==JSON.stringify(saved)))throw Error('turn-runtime-receipt-scope-denied');
   if(phase==='terminal'){
     if(!outcome||!stop||disposition.status==='active'||(saved===null)===(saveError===null))throw Error('invalid-turn-runtime-receipt');
     if(outcome==='completed'&&executionError!==null)throw Error('invalid-turn-runtime-receipt');

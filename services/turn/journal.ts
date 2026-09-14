@@ -51,7 +51,7 @@ function terminalResourceInput(turn:TurnRecord,value:TurnResourceDisposition|und
 }
 function checkedHandoff(turn:TurnRecord,disposition:TurnResourceDisposition,checkpoint:CheckpointReceipt|null,at:number){
   if(disposition.status!=='handed-off')return;
-  if(!sameScope(disposition.lease.scope,turn.scope)||disposition.binding.sessionId!==turn.sessionId||!checkpoint||!equal(disposition.checkpoint,checkpoint)||disposition.handedOffAt>at)throw Error('turn-handoff-conflict');
+  if(turn.executionOutcome!=='completed'||!sameScope(disposition.lease.scope,turn.scope)||disposition.binding.sessionId!==turn.sessionId||!checkpoint||!equal(disposition.checkpoint,checkpoint)||disposition.handedOffAt>at)throw Error('turn-handoff-conflict');
 }
 function applyReleaseDisposition(state:TurnJournalState,turn:TurnRecord,disposition:Exclude<TurnResourceDisposition,{status:'active'}>){
   const current=state.releaseHold;
