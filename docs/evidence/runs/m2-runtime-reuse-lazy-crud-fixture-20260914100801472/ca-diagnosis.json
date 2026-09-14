@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "kind": "native-first-turn-diagnosis",
+  "date": "2026-09-14",
+  "failedSourceCommit": "9df08b6f7e1630116a5415bc73066356412bad89",
+  "image": "riffology-m2-trusted-pi-provider-disabled:18c0d8e55137",
+  "runtime": "isolated local x86_64 kernel, actual Sandbox SDK, no product Turn replay",
+  "logSha256": "7e52c997eabaf73f69c696f50dc353aee64ea6e4b6c8806f977c5b9b993fd686",
+  "probes": [
+    {
+      "mode": "root-inherited",
+      "result": {
+        "uid": 0,
+        "gid": 0,
+        "environment": {
+          "NODE_EXTRA_CA_CERTS": "/etc/cloudflare/certs/cloudflare-containers-ca.crt",
+          "SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt",
+          "SSL_CERT_DIR": null,
+          "SANDBOX_INTERCEPT_HTTPS": "1"
+        },
+        "certificates": {
+          "NODE_EXTRA_CA_CERTS": {
+            "path": "/etc/cloudflare/certs/cloudflare-containers-ca.crt",
+            "mode": "644",
+            "uid": 0,
+            "gid": 0,
+            "bytes": 644
+          },
+          "SSL_CERT_FILE": {
+            "path": "/etc/ssl/certs/ca-certificates.crt",
+            "mode": "644",
+            "uid": 0,
+            "gid": 0,
+            "bytes": 182785
+          }
+        },
+        "control": {
+          "readable": true,
+          "uid": 0,
+          "gid": 0,
+          "mode": "644"
+        },
+        "status": 200,
+        "validEmptyResearchContext": true
+      },
+      "intercepted": 1
+    },
+    {
+      "mode": "root-minimal",
+      "result": {
+        "uid": 0,
+        "gid": 0,
+        "environment": {
+          "NODE_EXTRA_CA_CERTS": null,
+          "SSL_CERT_FILE": null,
+          "SSL_CERT_DIR": null,
+          "SANDBOX_INTERCEPT_HTTPS": null
+        },
+        "certificates": {},
+        "control": {
+          "readable": true,
+          "uid": 0,
+          "gid": 0,
+          "mode": "644"
+        },
+        "error": {
+          "name": "TypeError",
+          "message": "fetch failed",
+          "cause": {
+            "code": "SELF_SIGNED_CERT_IN_CHAIN",
+            "message": "self-signed certificate in certificate chain"
+          }
+        }
+      },
+      "intercepted": 1
+    },
+    {
+      "mode": "uid-inherited",
+      "result": {
+        "uid": 10002,
+        "gid": 10002,
+        "environment": {
+          "NODE_EXTRA_CA_CERTS": "/etc/cloudflare/certs/cloudflare-containers-ca.crt",
+          "SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt",
+          "SSL_CERT_DIR": null,
+          "SANDBOX_INTERCEPT_HTTPS": "1"
+        },
+        "certificates": {
+          "NODE_EXTRA_CA_CERTS": {
+            "path": "/etc/cloudflare/certs/cloudflare-containers-ca.crt",
+            "mode": "644",
+            "uid": 0,
+            "gid": 0,
+            "bytes": 644
+          },
+          "SSL_CERT_FILE": {
+            "path": "/etc/ssl/certs/ca-certificates.crt",
+            "mode": "644",
+            "uid": 0,
+            "gid": 0,
+            "bytes": 182785
+          }
+        },
+        "control": {
+          "readable": true,
+          "uid": 0,
+          "gid": 0,
+          "mode": "644"
+        },
+        "status": 200,
+        "validEmptyResearchContext": true
+      },
+      "intercepted": 2
+    },
+    {
+      "mode": "uid-minimal",
+      "result": {
+        "uid": 10002,
+        "gid": 10002,
+        "environment": {
+          "NODE_EXTRA_CA_CERTS": null,
+          "SSL_CERT_FILE": null,
+          "SSL_CERT_DIR": null,
+          "SANDBOX_INTERCEPT_HTTPS": null
+        },
+        "certificates": {},
+        "control": {
+          "readable": true,
+          "uid": 0,
+          "gid": 0,
+          "mode": "644"
+        },
+        "error": {
+          "name": "TypeError",
+          "message": "fetch failed",
+          "cause": {
+            "code": "SELF_SIGNED_CERT_IN_CHAIN",
+            "message": "self-signed certificate in certificate chain"
+          }
+        }
+      },
+      "intercepted": 2
+    }
+  ],
+  "cleanup": "SDK destroyed both diagnostic actors; root removed their two leftover proxy containers; no product Turn capacity proof",
+  "externalBlocked": 0,
+  "realNonrootSdkHost": {
+    "completed": true,
+    "fixtureReads": 4,
+    "fixtureProviderCalls": 2,
+    "paidCalls": 0,
+    "network": "none",
+    "logSha256": "1b7bd032a1c6bce5ea8ccca79e47d58573dd1158dd7f60d4934c3d6dde6f51b5"
+  },
+  "fixedProbe": {
+    "sourceCommit": "e0e0934eace66dc64a571ccdda4185c7e44f09d3",
+    "image": "riffology-pi-ca-diagnostic:e0e0934",
+    "result": {
+      "uid": 10002,
+      "gid": 10002,
+      "environment": {
+        "NODE_EXTRA_CA_CERTS": "/etc/cloudflare/certs/cloudflare-containers-ca.crt",
+        "SSL_CERT_FILE": null,
+        "SSL_CERT_DIR": null,
+        "SANDBOX_INTERCEPT_HTTPS": null
+      },
+      "certificates": {
+        "NODE_EXTRA_CA_CERTS": {
+          "path": "/etc/cloudflare/certs/cloudflare-containers-ca.crt",
+          "mode": "644",
+          "uid": 0,
+          "gid": 0,
+          "bytes": 644
+        }
+      },
+      "control": {
+        "readable": true,
+        "uid": 0,
+        "gid": 0,
+        "mode": "644"
+      },
+      "status": 200,
+      "validEmptyResearchContext": true
+    },
+    "logSha256": "d75678fbb54d733de024520b318996a0775d56df91e4c7cf15a9808af41a8c99"
+  },
+  "finalNativeBoundaryTests": {
+    "sourceCommit": "7b6b05394f1ce41d03d3863ee7d042817c026158",
+    "caCases": 15,
+    "supervisorCases": 14,
+    "failed": 0,
+    "note": "Isolated bare x86_64 Linux kernel fixtures; actual platform CA HTTPS verified separately before final group-permission tightening."
+  }
+}

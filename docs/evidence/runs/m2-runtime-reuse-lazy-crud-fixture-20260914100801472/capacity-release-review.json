@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "review": "independent-read-only",
+  "primarySha256": "3d923fde775f0b0279304ec07f15c660bedcd68297a7c3cbf8a0bd2e5dfd02a7",
+  "sourceSQLite": "/Users/gaojihe/apps/riffology-cloud-runtime-reuse/.local/m2-runtime-reuse-lazy-crud-fixture-20260914100801472/do/m2-runtime-reuse-lazy-crud-fixture-20260914100801472-TrustedPiCapacity/b009beb70f180ddfac428d74af5bdfd145e0f6f4df757b030c60689b6b9a69cb.sqlite",
+  "lease": {
+    "scope": {
+      "tenantId": "dd172e2c-b46a-46a0-9af4-c5233c0e4012",
+      "projectId": "3ea5ad45-595e-4380-85ce-621f2b75ab79",
+      "workspaceId": "ffcbfe83-5346-4367-9025-564bd0c7a9c9",
+      "workspaceGeneration": 1
+    },
+    "leaseId": "eee02753-6555-49dc-8755-b841af71f120",
+    "leaseEpoch": 1,
+    "runtimeVersion": "4675fff49971ba40179cefe266353851276bd478324672d4fc89c443574f999e"
+  },
+  "releaseStatus": "released",
+  "drainAt": 1789381018039,
+  "finishedAt": 1789381381145,
+  "releaseIntervals": {
+    "project": {
+      "guardElapsedMs": 363102,
+      "continuousAbsenceMs": 362500,
+      "proof": {
+        "schemaVersion": 1,
+        "domain": "project",
+        "leaseId": "eee02753-6555-49dc-8755-b841af71f120",
+        "leaseEpoch": 1,
+        "kind": "absent",
+        "proofId": "released-cbf6fb1e4fb9a119a9ea44a66d008261a6ab66a72e33857f850c5f5289391979-project",
+        "observedAt": 1789381381141,
+        "absentSince": 1789381018641
+      }
+    },
+    "trustedPi": {
+      "guardElapsedMs": 363105,
+      "continuousAbsenceMs": 361915,
+      "proof": {
+        "schemaVersion": 1,
+        "domain": "trustedPi",
+        "leaseId": "eee02753-6555-49dc-8755-b841af71f120",
+        "leaseEpoch": 1,
+        "kind": "absent",
+        "proofId": "released-cbf6fb1e4fb9a119a9ea44a66d008261a6ab66a72e33857f850c5f5289391979-trustedPi",
+        "observedAt": 1789381381144,
+        "absentSince": 1789381019229
+      }
+    }
+  },
+  "turns": [
+    {
+      "turn": 1,
+      "turnId": "154cd155-a66b-4097-bed0-ffe47544ec6d",
+      "sessionId": "602b8430-df77-4a17-a4cd-d214b64835a7",
+      "bindingEpoch": 1,
+      "processIdentities": [
+        "103:301084"
+      ],
+      "toolEvents": 21,
+      "checkpoint": "65a0dac6b32ab7512c0fcbe437c6d393b518e21f103a6987b267cc942d232ee8"
+    },
+    {
+      "turn": 2,
+      "turnId": "c57a286f-4de0-476e-bdf3-e15b9b77e4f8",
+      "sessionId": "602b8430-df77-4a17-a4cd-d214b64835a7",
+      "bindingEpoch": 2,
+      "processIdentities": [
+        "418:311411"
+      ],
+      "toolEvents": 4,
+      "checkpoint": "658afc0cb1364a82f8e926ea7662cc803b11dac6ed4d6b4c754020f19299e80a"
+    },
+    {
+      "turn": 3,
+      "turnId": "4870895b-2e91-4631-87d3-95f9d36d25be",
+      "sessionId": "602b8430-df77-4a17-a4cd-d214b64835a7",
+      "bindingEpoch": 3,
+      "processIdentities": [
+        "615:317515"
+      ],
+      "toolEvents": 4,
+      "checkpoint": "fffc6c6bea1789df44985cc7e25d009c9e940912dcfafab2a08fdcf720b5ad04"
+    },
+    {
+      "turn": 4,
+      "turnId": "29e72b5a-729e-4c68-ac1c-6c616578ae04",
+      "sessionId": "602b8430-df77-4a17-a4cd-d214b64835a7",
+      "bindingEpoch": 4,
+      "processIdentities": [
+        "794:320506"
+      ],
+      "toolEvents": 4,
+      "checkpoint": "ecd75f9fc2fffaef64fd592c29703abe765aba847271e4bd21a8251c8e773497"
+    },
+    {
+      "turn": 5,
+      "turnId": "4f4e287a-816a-471b-9f57-d9ff930b674b",
+      "sessionId": "602b8430-df77-4a17-a4cd-d214b64835a7",
+      "bindingEpoch": 5,
+      "processIdentities": [
+        "986:323691"
+      ],
+      "toolEvents": 4,
+      "checkpoint": "b460cc70a331b1decd81f0c29030ea36728860815fb9b3e78928c6010b128ede"
+    },
+    {
+      "turn": 6,
+      "turnId": "f0df45b2-8852-46b4-ab5e-2146f045ba62",
+      "sessionId": "efe47d88-b5e2-4c46-ad29-3a2185c75969",
+      "bindingEpoch": 6,
+      "processIdentities": [
+        "1180:330425"
+      ],
+      "toolEvents": 4,
+      "checkpoint": "bd94423ad116865fa56ff8365a9d11dc46b22cc6f268f8715057bc5637685095"
+    },
+    {
+      "turn": 7,
+      "turnId": "cd3a5cc9-bf83-4ee7-a4fd-06b5bab478a8",
+      "sessionId": "efe47d88-b5e2-4c46-ad29-3a2185c75969",
+      "bindingEpoch": 7,
+      "processIdentities": [
+        "1364:333569"
+      ],
+      "toolEvents": 4,
+      "checkpoint": "87a5e36ac2fbf5f02b982c251ae7e47c771c00c62f4de4fccfad20db4f1a4b17"
+    },
+    {
+      "turn": 8,
+      "turnId": "4ce0c21e-1f52-4fff-876d-fc7ced0db679",
+      "sessionId": "efe47d88-b5e2-4c46-ad29-3a2185c75969",
+      "bindingEpoch": 8,
+      "processIdentities": [
+        "1564:338710"
+      ],
+      "toolEvents": 4,
+      "checkpoint": "30624fec2d1475d3ad887a086e77503d3e3e56ace18e1dc9d841ac6a767fe95c"
+    },
+    {
+      "turn": 9,
+      "turnId": "a970a6b3-0d42-4b72-ad85-f5efbc7ca1e0",
+      "sessionId": "efe47d88-b5e2-4c46-ad29-3a2185c75969",
+      "bindingEpoch": 9,
+      "processIdentities": [
+        "1756:343156"
+      ],
+      "toolEvents": 4,
+      "checkpoint": "e4d572d0e885ca14c525f668af8f04a2c7de4e5c54fb6a0dde07e079c8f403a5"
+    },
+    {
+      "turn": 10,
+      "turnId": "e0cca84b-a200-4464-a71b-0399adf15634",
+      "sessionId": "efe47d88-b5e2-4c46-ad29-3a2185c75969",
+      "bindingEpoch": 10,
+      "processIdentities": [
+        "1941:345986"
+      ],
+      "toolEvents": 4,
+      "checkpoint": "780e9f03cf71eb0dea71c633932aa3712431265ed7a926e4309f0ffd99fdc8e2"
+    }
+  ],
+  "physicalContainers": {
+    "project": "055a887265dd",
+    "trusted": "8c7d7a560457"
+  },
+  "closedLedgersPerTurn": [
+    "model",
+    "money",
+    "tool"
+  ],
+  "modelAndMoneyHaveZeroCallsInFixture": true,
+  "sourceStable": true,
+  "externalWorkerFetches": 0,
+  "finallyCleanup": "two proxy containers only; physical release established independently above",
+  "boundary": "Local native x86 kernel, real product runtime with deterministic provider; not paid model or Cloudflare deployment acceptance."
+}
