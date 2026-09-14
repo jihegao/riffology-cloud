@@ -1,5 +1,5 @@
 import type {TurnScope} from '../turn/protocol.ts';
-import type {WorkspaceLeaseRef,TurnBinding,PairDomain,PairLease,PairSnapshot,QuiescenceProof,DomainReleaseProof} from './paired.ts';
+import type {WorkspaceLeaseRef,TurnBinding,PairDomain,PairLease,PairSnapshot,PairHandoffProofs,DomainReleaseProof} from './paired.ts';
 import {TRUSTED_PI_CAPACITY_ACTOR} from './client.ts';
 /** Versioned separate RPCs; never reinterpret an existing cold ticket. The
  * implementation must share cold's physical allocator actor and SQLite store. */
@@ -8,7 +8,7 @@ export interface WorkspacePairedCapacityPort{
  lookupPair(scope:TurnScope,requestId:string):Promise<PairLease|null>;
  bind(ref:WorkspaceLeaseRef,binding:TurnBinding):Promise<PairLease>;
  claimNativeStart(ref:WorkspaceLeaseRef,binding:TurnBinding,domain:PairDomain):Promise<{authorized:boolean;lease:PairLease}>;
- confirmHandoff(ref:WorkspaceLeaseRef,binding:TurnBinding,proofs:Record<PairDomain,QuiescenceProof>):Promise<PairLease>;
+ confirmHandoff(ref:WorkspaceLeaseRef,binding:TurnBinding,proofs:PairHandoffProofs):Promise<PairLease>;
  retirePair(ref:WorkspaceLeaseRef,reason:'gate-disabled'|'runtime-changed'):Promise<PairLease>;
  cancelPair(ref:WorkspaceLeaseRef):Promise<PairLease>;
  confirmPairReleased(ref:WorkspaceLeaseRef,proofs:Partial<Record<PairDomain,DomainReleaseProof>>):Promise<PairLease>;
