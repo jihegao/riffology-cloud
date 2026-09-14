@@ -24,6 +24,8 @@ export class TenantModelBudget extends DurableObject<TenantModelBudgetEnv>{
     if(!this.#core){const policy:ModelBudgetPolicy={tenantId,version:this.env.MODEL_BUDGET_POLICY_VERSION,maxReservationAttemptsPerTurn:decimal(this.env.MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN),maxDispatchedCallsPerTurn:decimal(this.env.MODEL_BUDGET_MAX_DISPATCHED_CALLS_PER_TURN),maxInputTokensPerCall:decimal(this.env.MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL),maxOutputTokensPerCall:decimal(this.env.MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL),maxReservedTokensPerTurn:decimal(this.env.MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN)};this.#core=new SqlTenantModelBudget(this.ctx.storage,policy);this.#tenantId=tenantId;}
     return this.#core;
   }
+  async closeTurnAdmission(tenantId:string,identity:unknown){return this.#forTenant(tenantId).closeTurnAdmission(identity);}
+  async turnSettlement(tenantId:string,identity:unknown){return this.#forTenant(tenantId).turnSettlement(identity);}
   async reserve(tenantId:string,request:unknown){return this.#forTenant(tenantId).reserve(request);}
   async lookup(tenantId:string,identity:unknown,callId:unknown){return this.#forTenant(tenantId).lookup(identity,callId);}
   async dispatch(tenantId:string,reference:unknown){return this.#forTenant(tenantId).dispatch(reference);}
