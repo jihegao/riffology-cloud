@@ -1,3 +1,4 @@
+import {authorizeWarmOutbound,type WarmAuthorityNamespace} from '../sandbox/warm-authority.ts';
 import { PRODUCTION_MONEY_ACTOR, moneyReference, type ProductionMoneyLedger, type MoneyReference } from '../model-budget/production-money.ts';
 import type { ProductionProfile } from './production-profile.ts';
 import { productionFailure, productionHttpFailure } from './openai-gateway-responses.ts';
@@ -22,6 +23,7 @@ type BudgetStub = {
 type BudgetNamespace = { getByName(name: string): BudgetStub };
 
 export interface ModelProxyHttpEnv {
+  WORKSPACE_AGENT?:WarmAuthorityNamespace;
   TRUSTED_PI_SANDBOX: IdentityNamespace;
   TENANT_MODEL_BUDGET: BudgetNamespace;
   PRODUCTION_MODEL_BUDGET?:{getByName(name:string):Pick<ProductionMoneyLedger,'admit'|'reserve'|'dispatch'|'finish'|'markUnknown'|'releaseUndispatched'|'lookup'>};
@@ -138,10 +140,11 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
     || url.pathname !== '/v1/responses' || url.search || url.hash) return new Response('not found', { status: 404 });
   if (request.headers.get('content-type') !== 'application/json' || request.headers.get('x-riffology-sandbox-role') !== 'trusted-pi') return denied();
 
-  let body: ArrayBuffer, parsed: Envelope, claims: ModelTurnCapabilityClaims, observed: number;
+  let body: ArrayBuffer, parsed: Envelope, claims: ModelTurnCapabilityClaims, observed: number, containerId:string;
+  let checkWarm=async()=>{};
   try {
     body = await readBody(request);
-    const containerId = request.headers.get('x-riffology-sandbox-id') ?? '';
+    containerId = request.headers.get('x-riffology-sandbox-id') ?? '';
     const rawAt = request.headers.get('x-riffology-request-at') ?? '';
     if (!/^\d+$/.test(rawAt)) reject('invalid-model-proxy-request-time');
     const requestAt = Number(rawAt); observed = positive(now());
@@ -153,6 +156,7 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
     parsed = envelope(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(body)));
     if (parsed.deadlineAt <= observed || parsed.deadlineAt > claims.expiresAt
       || parsed.inputTokenUpperBound > claims.maxInputTokensPerCall || parsed.maxOutputTokens > claims.maxOutputTokensPerCall) reject('model-capability-limit-denied');
+    if(claims.schemaVersion===2){const warm=claims;checkWarm=async()=>{const current=await authorizeWarmOutbound(env,{purpose:'model',scope:warm.identity.scope,turnId:warm.identity.turnId,dispatchId:warm.identity.dispatchId,sessionId:warm.identity.sessionId,actor:warm.actor,containerId,deadlineAt:warm.expiresAt},now);if(JSON.stringify(current.lease)!==JSON.stringify(warm.runtimeLease)||JSON.stringify(current.binding)!==JSON.stringify(warm.runtimeBinding)||current.actorId!==warm.trustedPiActorId)reject('model-capability-binding-denied');};await checkWarm();}
   } catch { return denied(); }
   if (!provider) return unavailable();
 
@@ -200,6 +204,7 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
   let stage='provider-dispatch',started=now();
   try {
     const providerSessionId=`ses_${(await turnDigest({schemaVersion:1,purpose:'opencode-go-provider-session',scope:claims.identity.scope,sessionId:claims.identity.sessionId})).slice(0,26)}`;
+    await checkWarm();
     result = normalizedProviderResult(await provider.dispatch({
       provider: claims.provider, model: claims.model, providerSessionId, idempotencyKey: parsed.requestId,
       payload: parsed.payload,inputTokenUpperBound:parsed.inputTokenUpperBound,maxOutputTokens:parsed.maxOutputTokens,deadlineAt:parsed.deadlineAt,signal:request.signal,

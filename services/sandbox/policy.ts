@@ -1,3 +1,4 @@
+import {authorizeWarmOutbound,type WarmAuthorityNamespace} from './warm-authority.ts';
 import { signTrustedToolRequest } from '../tools/internal-auth.ts';
 import { signTrustedModelRequest } from '../model-proxy/internal-auth.ts';
 import { issueModelTurnCapability } from '../model-proxy/capability.ts';
@@ -13,6 +14,7 @@ export const RESEARCH_CONTEXT_HOST=TOOL_BRIDGE_HOST;
 const MAX_OUTBOUND_BODY=1_100_000,encoder=new TextEncoder();
 type IdentityNamespace={idFromName(name:string):{toString():string}};
 export type InternalSandboxServices={
+  WORKSPACE_AGENT?:WarmAuthorityNamespace;
   MODEL_PROXY:Fetcher;TOOL_BRIDGE:Fetcher;TRUSTED_PI_SANDBOX:IdentityNamespace;
   M2_MODEL_PROXY_REQUEST_KEY:string;M2_TOOL_BRIDGE_REQUEST_KEY:string;M2_MODEL_TURN_CAPABILITY_KEY:string;
   M2_MODEL_BUDGET_POLICY_VERSION:string;M2_MODEL_PROVIDER:string;M2_MODEL_ID:string;
@@ -31,13 +33,13 @@ function invocation(bytes:ArrayBuffer):ModelInvocation{
   exact(value,['schemaVersion','identity','actor','callId','requestId','deadlineAt','inputTokenUpperBound','inputBoundVersion','maxOutputTokens','payload'],'invalid-model-invocation');if(value.schemaVersion!==1)throw Error('invalid-model-invocation');
   return {schemaVersion:1,identity:turnRuntimeIdentity(value.identity),actor:validateActor(value.actor),callId:turnId(value.callId),requestId:turnId(value.requestId),deadlineAt:positive(value.deadlineAt),inputTokenUpperBound:bounded(value.inputTokenUpperBound,1_048_576,'invalid-model-invocation'),inputBoundVersion:turnId(value.inputBoundVersion),maxOutputTokens:bounded(value.maxOutputTokens,131_072,'invalid-model-invocation'),payload:jsonObject(value.payload)};
 }
-async function authorizedModelRequest(bytes:ArrayBuffer,env:InternalSandboxServices,containerId:string,requestAt:number):Promise<{body:ArrayBuffer;capability:string}>{
+async function authorizedModelRequest(bytes:ArrayBuffer,env:InternalSandboxServices,containerId:string,requestAt:number,clock:()=>number):Promise<{body:ArrayBuffer;capability:string}>{
   const input=invocation(bytes),policyVersion=turnId(env.M2_MODEL_BUDGET_POLICY_VERSION),provider=name(env.M2_MODEL_PROVIDER,PROVIDER,'invalid-model-release-policy'),model=name(env.M2_MODEL_ID,MODEL,'invalid-model-release-policy'),maxInput=setting(env.M2_MODEL_MAX_INPUT_TOKENS_PER_CALL,1_048_576,'invalid-model-release-policy'),maxOutput=setting(env.M2_MODEL_MAX_OUTPUT_TOKENS_PER_CALL,131_072,'invalid-model-release-policy'),ttl=setting(env.M2_MODEL_CAPABILITY_TTL_MS,15*60_000,'invalid-model-release-policy');
-  const trustedPiActorId=(await sandboxActorIds(input.identity.scope,input.identity.turnId,input.identity.dispatchId)).trustedPi;
-  if(env.TRUSTED_PI_SANDBOX.idFromName(trustedPiActorId).toString()!==containerId)throw Error('model-invocation-container-denied');
+  let trustedPiActorId=(await sandboxActorIds(input.identity.scope,input.identity.turnId,input.identity.dispatchId)).trustedPi;
+  const warm=env.TRUSTED_PI_SANDBOX.idFromName(trustedPiActorId).toString()===containerId?null:await authorizeWarmOutbound(env,{purpose:'model',scope:input.identity.scope,turnId:input.identity.turnId,dispatchId:input.identity.dispatchId,sessionId:input.identity.sessionId,actor:input.actor,containerId,deadlineAt:input.deadlineAt},clock);if(warm)trustedPiActorId=warm.actorId;
   if(input.deadlineAt<=requestAt||input.deadlineAt>requestAt+ttl||input.inputTokenUpperBound>maxInput||input.maxOutputTokens>maxOutput)throw Error('model-invocation-limit-denied');
   const expiresAt=Math.min(input.deadlineAt,requestAt+ttl),capabilityId=`cap-${(await turnDigest({schemaVersion:1,purpose:'model-turn-capability',identity:input.identity,actor:input.actor,policyVersion,provider,model})).slice(0,60)}`;
-  const capability=await issueModelTurnCapability(env.M2_MODEL_TURN_CAPABILITY_KEY,{schemaVersion:1,purpose:'product-model-turn',capabilityId,identity:input.identity,actor:input.actor,trustedPiActorId,budgetPolicyVersion:policyVersion,provider,model,maxInputTokensPerCall:maxInput,maxOutputTokensPerCall:maxOutput,issuedAt:requestAt,expiresAt},requestAt);
+  const capability=await issueModelTurnCapability(env.M2_MODEL_TURN_CAPABILITY_KEY,{...(warm?{schemaVersion:2,runtimeLease:warm.lease,runtimeBinding:warm.binding}:{schemaVersion:1}),purpose:'product-model-turn',capabilityId,identity:input.identity,actor:input.actor,trustedPiActorId,budgetPolicyVersion:policyVersion,provider,model,maxInputTokensPerCall:maxInput,maxOutputTokensPerCall:maxOutput,issuedAt:requestAt,expiresAt},requestAt);
   const projected=encoder.encode(JSON.stringify({schemaVersion:1,callId:input.callId,requestId:input.requestId,deadlineAt:input.deadlineAt,inputTokenUpperBound:input.inputTokenUpperBound,inputBoundVersion:input.inputBoundVersion,maxOutputTokens:input.maxOutputTokens,payload:input.payload}));
   return {body:projected.buffer as ArrayBuffer,capability};
 }
@@ -63,7 +65,7 @@ export async function trustedPiOutbound(request:Request,env:InternalSandboxServi
   const requestAt=positive(clock());headers.set('x-riffology-request-at',String(requestAt));
   if(route.binding==='TOOL_BRIDGE')headers.set('x-riffology-request-mac',await signTrustedToolRequest(env.M2_TOOL_BRIDGE_REQUEST_KEY,containerId,requestAt,payload));
   else{
-    const authorized=await authorizedModelRequest(payload,env,containerId,requestAt);payload=authorized.body;
+    const authorized=await authorizedModelRequest(payload,env,containerId,requestAt,clock);payload=authorized.body;
     headers.set('x-riffology-model-capability',authorized.capability);
     headers.set('x-riffology-request-mac',await signTrustedModelRequest(env.M2_MODEL_PROXY_REQUEST_KEY,containerId,requestAt,authorized.capability,payload));
   }

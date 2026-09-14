@@ -1,0 +1,135 @@
+# TrustedPi native epoch primitive
+
+This is a native foundation, **not an enabled runtime reuse path**. The existing
+TypeScript cold path still starts the host as root. No deployment or runtime gate
+is changed here. The image retains the root Sandbox API service, adds account
+`trustedpi` (UID/GID 10002), and gives that account private writable `pi` and
+`turns` directories. Platform code, SDK and release modules remain root-owned.
+
+Root invokes `/opt/riffology/runtime_supervisor.py` with:
+
+- `activate --epoch TOKEN`: virgin or previously sealed, independently empty UID
+  domain only. Repeated current activation returns its current state; it never
+  removes a seal. Used epochs cannot be activated again. After 1024 epochs a
+  fresh container is required; tombstones are never expired.
+- `spawn --epoch TOKEN -- /usr/local/bin/node /opt/riffology/trusted-pi/trusted-pi-turn-host.mjs HOST_TOKEN`:
+  fixed executable/program and 52-hex host token only. Exactly one launch intent
+  per epoch is persisted before fork. A retry, failed launch or lost response does
+  not launch again. Root wrapper waits for child and forwards TERM/INT by pidfd.
+- `seal --epoch TOKEN`: reject absent/mismatched state; persist sealed status
+  before killing the entire UID domain. Only two empty live-process scans under
+  the common admission lock produce
+  `{"schemaVersion":1,"bindingEpoch":"TOKEN","status":"quiescent","remaining":0}`.
+  Zombies cannot execute and are not counted. A stale seal cannot kill the new
+  binding. Errors produce exit 4 and no JSON proof.
+
+`/var/lib/riffology/runtime-control` is root:root 0700. Lock and atomic journal
+are root-only, nofollow, fsynced files. The child drops supplemental groups,
+UID/GID and enables `no_new_privs` before the root opens its execution gate,
+while holding the same lock as seal. A delayed child whose wrapper dies cannot
+pass the pipe gate. A delayed wrapper must recheck the current epoch. Detached
+children share the killable UID domain; root processes are outside it. Native
+pidfd support is required even for empty-domain activation/seal receipts.
+
+The `turns` directory is application-owned because the existing host atomically
+writes results and checkpoints there. It contains **no epoch authority**. The
+future root orchestration must clean prior Session files and stage validated new
+control/input files only after sealing and quiescence, then activate the next
+binding. It must not accept old native process receipts, parent exits or errors
+as whole-domain proof. Unsupported/unknown native operations require quarantine
+and container destruction/cold fallback, never reuse. This patch does not yet
+implement that orchestration.
+
+## Local validation (2026-09-14)
+
+`node scripts/m2/check-trusted-pi-supervisor-local.mjs` uses cached images only,
+`--pull=never --network=none`, and never calls providers/tools:
+
+1. Native arm64 `python:3.11-slim-bookworm`: 10 actual Linux process tests cover
+   pidfd, independent UID, detached double-fork grandchildren, stale epoch/seal,
+   duplicate starts, concurrent spawn/seal, root wrapper death before drop
+   handshake, malformed/symlink state, nonroot access, virgin nonempty domain,
+   and TERM forwarding. The fixed program is a Python fixture at the prescribed
+   argv paths; this portion is not a Node/SDK test.
+2. Cached `riffology-trusted-pi-vertical:local` amd64 image: current actual host
+   module and cached SDK imports execute with a fake session under root and UID
+   10002. Both read root-staged 0644 control and persist 0600 result/checkpoint.
+   This verifies host file access, not a paid model turn or native reuse.
+
+The amd64 image under this arm64 machine's emulation returns ENOSYS for pidfd;
+production supervisor correctly fails closed there. All cached TrustedPi images
+were amd64. Actual target image/kernel integration remains an acceptance gate;
+these local successes do not establish that Cloudflare native execution supports
+or has enabled this path. Neither production Dockerfile was rebuilt/deployed.
+
+
+## Checkpoint-confirmed pruning
+
+After the coordinator has durably committed the current Session checkpoint,
+root may call `prune --epoch EPOCH --token CURRENT_HOST_TOKEN`. This requires
+current sealed epoch, exact persisted spawn token and two empty UID scans under
+the same admission lock. It removes only other 52-hex token files with platform
+suffixes `control.json`, `input-session.json`, `result.json`,
+`output-session.json` (including their numeric PID temporary suffixes). Current
+Turn files remain available until the next binding is checkpointed. Unknown
+filenames are retained; symlink/hardlink/non-regular candidates fail closed.
+The epoch journal and tombstones are untouched. Response:
+`{schemaVersion:1,bindingEpoch:EPOCH,status:'pruned',removed:COUNT}`; retry is safe
+and may report zero. The native process cannot itself prove remote checkpoint
+commit: the root coordinator must order that commit before this call.
+
+Native coverage now totals 12 tests, adding four-epoch file-count bounds,
+active/stale/wrong-token rejection, replay and symlink-target preservation.
+This pruning does not cover Sandbox SDK process metadata/logs or other image
+cache directories. Their capacity policy and supported SDK cleanup remain
+separate orchestration requirements.
+
+
+## Cross-Session reset before the next activation
+
+After the prior checkpoint is committed and its domain is sealed, root calls
+`reset --epoch OLD_EPOCH --token OLD_HOST_TOKEN` before staging any new Session
+files. It checks the exact persisted spawn token and empty UID domain, deletes
+only that token's known working-file suffixes, fsyncs the directory, then
+persists `filesCleared:true` in the root journal. Receipt is
+`{schemaVersion:1,bindingEpoch:OLD_EPOCH,status:'reset',removed:COUNT}`. Replays
+are idempotent. A subsequent new epoch cannot activate without this durable
+reset proof; activating a new epoch resets that flag to false. Stage the new
+Session only after reset and then activate the new epoch. Current sealed
+activation replay remains sealed, never runnable. A binding with no proven
+spawn token cannot reset; uncertain/cancelled admission must destroy instead.
+
+The native suite now has 13 cases, including retained old Session removal,
+active/stale reset denial, idempotency and rejection of activation before reset.
+The unshipped warm journal adds `filesCleared`; old native images/journals are
+not silently migrated. Pin the new runtime version and drain old actors before
+using this contract. Cold root host execution remains unchanged.
+
+### Platform TLS CA in the warm child environment
+
+The SDK's internal HTTPS transport uses its platform CA at the fixed path
+`/etc/cloudflare/certs/cloudflare-containers-ca.crt`. The warm supervisor now
+adds only `NODE_EXTRA_CA_CERTS` pointing to that constant, alongside LANG, PATH
+and the pinned HOME. It never forwards NODE_OPTIONS, credentials, arbitrary
+trust-store paths or the rest of the parent's environment. TLS verification
+remains enabled. A supplied NODE_EXTRA_CA_CERTS value that differs from the
+constant is rejected before the durable spawn reservation.
+
+Before forking, the root supervisor walks from `/` with directory descriptors,
+O_DIRECTORY and O_NOFOLLOW. Every directory must be root-owned, not writable
+by group/other, and searchable by the unprivileged child (both group and other search bits).
+The CA must be a nonempty regular root-owned file, without group/other write,
+and readable by the child (both group and other read bits). The conservative public-CA modes
+accept the platform's 0755 directories and 0644 file; root-only modes are
+rejected rather than leaving Node to ignore an unreadable CA. Requiring both
+classes avoids Unix group-membership precedence making an other-readable CA
+unreadable to the child when its primary group matches the file group. A symlink at
+any level, FIFO, mutable certificate or mutable parent is rejected.
+
+An offline bare native fixture may omit both the platform file and variable.
+An explicitly declared but missing CA fails closed. Existing invalid files
+are rejected even when the environment variable is absent. The native CA
+boundary suite covers these cases; the process-domain suite additionally
+checks the real spawned child's environment. These tests do not establish
+HTTPS correctness themselves: actual SDK-mediated HTTPS must be verified
+separately with the production platform CA and normal certificate validation.

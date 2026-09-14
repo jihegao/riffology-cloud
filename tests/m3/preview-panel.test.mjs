@@ -28,11 +28,22 @@ async function fixture(t, setup = {}) {
   return { page, calls };
 }
 
+async function readyPreviewFrame(page) {
+  const iframe = page.getByTitle('项目预览');
+  await iframe.waitFor();
+  const handle = await iframe.elementHandle();
+  const frame = await handle.contentFrame();
+  assert.ok(frame);
+  await frame.waitForURL(url => url.origin === preview);
+  await frame.waitForFunction(() => Object.hasOwn(window, 'received'));
+  return frame;
+}
+
 test('normal preview protocol uses CAS body, idempotency key, exact source/origin, and ticket postMessage', async t => {
   const f = await fixture(t); await f.page.evaluate(() => window.panel.enter({ tenantId: 'tenant-a', workspaceId: 'work-a', canOpen: true }));
   await f.page.evaluate(() => window.panel.selectRun('run-a')); await f.page.getByRole('button', { name: '打开预览' }).click();
   await f.page.getByTitle('项目预览').waitFor();
-  const frame = f.page.frames().find(value => value.url().startsWith(preview)); assert.ok(frame);
+  const frame = await readyPreviewFrame(f.page); assert.ok(frame);
   await frame.evaluate(({ n, control }) => parent.postMessage({ type: 'riffology-preview-ready', nonce: n }, control), { n: nonce, control });
   await f.page.waitForFunction(() => window.calls.some(call => call.path.endsWith('/tickets')));
   const calls = await f.page.evaluate(() => window.calls); const post = calls.find(call => call.method === 'POST' && call.path === base); assert.ok(post);
@@ -102,7 +113,7 @@ test('disabled context performs no GET, and close or expiry only removes the loc
 
 test('a late ticket response from an old iframe cannot be posted to a replacement iframe', async t => {
   const f = await fixture(t); await f.page.evaluate(() => window.mode = 'ticket-delay'); await f.page.evaluate(() => window.panel.enter({ tenantId: 'tenant-a', workspaceId: 'work-a', canOpen: true })); await f.page.evaluate(() => window.panel.selectRun('run-a')); await f.page.getByRole('button', { name: '打开预览' }).click(); await f.page.getByTitle('项目预览').waitFor();
-  const oldFrame = f.page.frames().find(value => value.url().startsWith(preview)); assert.ok(oldFrame); await oldFrame.evaluate(({ n, control }) => parent.postMessage({ type: 'riffology-preview-ready', nonce: n }, control), { n: nonce, control }); await f.page.waitForFunction(() => window.calls.some(call => call.path.endsWith('/tickets')));
-  await f.page.getByRole('button', { name: '关闭预览' }).click(); assert.equal(await f.page.locator('iframe').count(), 0); await f.page.getByRole('button', { name: '恢复预览' }).click(); await f.page.getByTitle('项目预览').waitFor(); const newFrame = f.page.frames().find(value => value.url().startsWith(preview)); assert.ok(newFrame); assert.notEqual(newFrame, oldFrame);
+  const oldFrame = await readyPreviewFrame(f.page); assert.ok(oldFrame); await oldFrame.evaluate(({ n, control }) => parent.postMessage({ type: 'riffology-preview-ready', nonce: n }, control), { n: nonce, control }); await f.page.waitForFunction(() => window.calls.some(call => call.path.endsWith('/tickets')));
+  await f.page.getByRole('button', { name: '关闭预览' }).click(); assert.equal(await f.page.locator('iframe').count(), 0); await f.page.getByRole('button', { name: '恢复预览' }).click(); await f.page.getByTitle('项目预览').waitFor(); const newFrame = await readyPreviewFrame(f.page); assert.ok(newFrame); assert.notEqual(newFrame, oldFrame);
   await f.page.evaluate(() => window.releaseTicket()); await f.page.waitForTimeout(30); assert.equal(await newFrame.evaluate(() => window.received), null); assert.equal(await f.page.locator('iframe').count(), 1);
 });

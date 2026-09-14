@@ -1,3 +1,4 @@
+import {turnRuntimeIdentity,type TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
 import type { TurnScope } from '../turn/protocol.ts';
 import { jsonPayload, positive, sameScope, scope as validateScope, sha, turnDigest, turnId } from '../turn/protocol.ts';
 import { normalizeToolCommand, normalizeToolCommandIntent, toolCommandDigest, toolCommandIntentDigest, type ToolCommand, type ToolCommandIntent, type ToolOperation } from './protocol.ts';
@@ -51,7 +52,7 @@ export class SqlToolLedger{
   constructor(storage:ToolLedgerStorage,clock:()=>number=Date.now,id:()=>string=()=>crypto.randomUUID()){
     if(!storage?.sql?.exec||!storage.transactionSync||!storage.sync)reject('sqlite-tool-ledger-required');
     this.#storage=storage;this.#clock=clock;this.#id=id;
-    storage.transactionSync(()=>storage.sql.exec(TOOL_LEDGER_SCHEMA.sql));
+    storage.transactionSync(()=>{storage.sql.exec(TOOL_LEDGER_SCHEMA.sql);storage.sql.exec('CREATE TABLE IF NOT EXISTS tool_turn_admission_closures(binding_key TEXT PRIMARY KEY,identity_json TEXT NOT NULL,closed_at INTEGER NOT NULL) STRICT;');});
     this.#ready=storage.sync();
   }
   ready(){return this.#ready;}
@@ -77,11 +78,22 @@ export class SqlToolLedger{
     const row=this.#get(ref.commandId);if(!row)reject('tool-command-not-found');
     const record=this.#row(row);if(record.digest!==ref.digest||record.turnId!==ref.turnId||record.dispatchId!==ref.dispatchId||record.effectId!==ref.effectId||!sameScope(record.scope,ref.scope))reject('tool-command-scope-denied');return row;
   }
+  #binding(value:{scope:TurnScope;turnId:string;dispatchId:string}){return canonical({scope:validateScope(value.scope),turnId:turnId(value.turnId),dispatchId:turnId(value.dispatchId)});}
+  #closed(value:{scope:TurnScope;turnId:string;dispatchId:string}){return this.#rows('SELECT 1 FROM tool_turn_admission_closures WHERE binding_key=?',this.#binding(value)).length>0;}
+  #settlement(identity:TurnRuntimeIdentity){
+    const closure=this.#rows('SELECT identity_json,closed_at FROM tool_turn_admission_closures WHERE binding_key=?',this.#binding(identity))[0];if(closure&&closure.identity_json!==canonical(identity))reject('tool-turn-settlement-identity-conflict');
+    const row=this.#rows(`SELECT count(*) AS total,coalesce(sum(status IN ('accepted','dispatched','unknown')),0) AS active,coalesce(sum(status='unknown'),0) AS unknown,coalesce(sum(status NOT IN ('completed','failed','cancelled')),0) AS pending FROM tool_commands WHERE scope_json=? AND turn_id=? AND dispatch_id=?`,canonical(identity.scope),identity.turnId,identity.dispatchId)[0]!;
+    for(const key of ['total','active','unknown','pending'])if(!Number.isSafeInteger(row[key])||(row[key] as number)<0)reject('tool-turn-settlement-invalid');
+    return {schemaVersion:1 as const,domain:'tool' as const,identity:structuredClone(identity),closed:!!closure,closedAt:closure?positive(closure.closed_at):null,total:row.total as number,active:row.active as number,unknown:row.unknown as number,pending:row.pending as number};
+  }
+  async closeTurnAdmission(value:unknown){const identity=turnRuntimeIdentity(value);await this.#ready;const result=this.#storage.transactionSync(()=>{this.#settlement(identity);this.#storage.sql.exec('INSERT OR IGNORE INTO tool_turn_admission_closures VALUES(?,?,?)',this.#binding(identity),canonical(identity),this.#now());return this.#settlement(identity);});await this.#storage.sync();return result;}
+  async turnSettlement(value:unknown){const identity=turnRuntimeIdentity(value);await this.#ready;return this.#storage.transactionSync(()=>this.#settlement(identity));}
   async lookup(commandId:string):Promise<ToolCommandRecord|null>{turnId(commandId);await this.#ready;const row=this.#get(commandId);return row?structuredClone(this.#row(row)):null;}
   async accept(value:unknown):Promise<{record:ToolCommandRecord;replayed:boolean}>{
     const command=normalizeToolCommand(value),digest=await toolCommandDigest(command);await this.#ready;
     const result=this.#storage.transactionSync(()=>{
       const prior=this.#get(command.commandId);if(prior){const found=this.#row(prior);if(found.digest!==digest)reject('tool-idempotency-conflict');return {record:found,replayed:true};}
+      if(this.#closed(command))reject('tool-turn-admission-closed');
       const now=this.#now();if(command.deadlineAt<=now||command.deadlineAt-now>120_000)reject('invalid-tool-deadline');
       const active=this.#rows("SELECT command_id FROM tool_commands WHERE turn_id=? AND status IN ('accepted','dispatched','unknown')",command.turnId)[0];if(active)reject('tool-turn-active-command');
       this.#storage.sql.exec("INSERT INTO tool_commands VALUES (?,?,?,?,?,?,?,?,'accepted',NULL,?,?,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)",command.commandId,command.turnId,command.dispatchId,canonical(command.scope),digest,command.deadlineAt,command.operation,canonical(command),now,now);
@@ -97,6 +109,7 @@ export class SqlToolLedger{
     const command:ToolCommand={schemaVersion:1,scope:intent.scope,turnId:intent.turnId,dispatchId:intent.dispatchId,commandId:intent.commandId,deadlineAt:Math.min(acceptedAt+deadlineMs,intent.executionDeadlineAt),operation:intent.operation,arguments:intent.arguments},digest=await toolCommandDigest(command);
     const result=this.#storage.transactionSync(()=>{
       const prior=this.#get(intent.commandId);if(prior){const saved=this.#rows('SELECT intent_digest FROM tool_command_intents WHERE command_id=?',intent.commandId)[0];if(!saved||saved.intent_digest!==intentDigest)reject('tool-idempotency-conflict');return {record:this.#row(prior),replayed:true};}
+      if(this.#closed(command))reject('tool-turn-admission-closed');
       const now=this.#now();if(command.deadlineAt<=now)reject('invalid-tool-deadline');
       const active=this.#rows("SELECT command_id FROM tool_commands WHERE turn_id=? AND status IN ('accepted','dispatched','unknown')",intent.turnId)[0];if(active)reject('tool-turn-active-command');
       this.#storage.sql.exec("INSERT INTO tool_commands VALUES (?,?,?,?,?,?,?,?,'accepted',NULL,?,?,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)",command.commandId,command.turnId,command.dispatchId,canonical(command.scope),digest,command.deadlineAt,command.operation,canonical(command),now,now);
@@ -109,6 +122,7 @@ export class SqlToolLedger{
     const first=this.#storage.transactionSync(()=>{
       const row=this.#get(id);if(!row)reject('tool-command-not-found');const current=this.#row(row),now=this.#now();
       if(current.status!=='accepted')return current;
+      if(this.#closed(current))return current;
       if(current.deadlineAt<=now){this.#storage.sql.exec("UPDATE tool_commands SET status='failed',updated_at=?,finished_at=?,outcome='failed',error_code='tool-deadline-expired',result_json='{}',receipt_digest=?,command_json=NULL WHERE command_id=?",now,now,expiredDigest,id);return this.#row(this.#get(id)!);}
       const effectId=turnId(this.#id());this.#storage.sql.exec("UPDATE tool_commands SET status='dispatched',effect_id=?,updated_at=?,dispatched_at=? WHERE command_id=?",effectId,now,now,id);granted=true;return this.#row(this.#get(id)!);
     });

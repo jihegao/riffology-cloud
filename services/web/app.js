@@ -1,3 +1,4 @@
+import {createPublicationPanel} from './publication.js';
 import {createExportPanel} from './export.js';
 import {createEvidencePanel} from './evidence.js';
 import {createWorkspaceLayout} from './layout.js';
@@ -34,6 +35,7 @@ function renderModelState(){
 const previewPanel=createPreviewPanel({root:$('#workspace-preview'),api,autoRestore:true,onState:value=>{const pinned=value.available?.runId||value.current?.runId;if(pinned)servicePanel.selectRun(pinned);}});
 const servicePanel=createServicePanel({root:$('#workspace-services'),inspectRoot:$('#workspace-runtime-details'),api,workspaceMode:true,onPreparingRun:runId=>previewPanel.prepareRun(runId),onPreviewRun:(runId,options)=>options?.automatic?previewPanel.restoreRun(runId):previewPanel.openRun(runId),onState:detail=>{observedService=detail;renderModelState();if(detail.stopRequestedAt||['stopped','failed','cancelled'].includes(detail.runStatus))previewPanel.stoppedRun(detail.runId);}});
 const comparisonPanel=createComparisonPanel({root:$('#workspace-comparison'),api});
+const publicationPanel=createPublicationPanel({root:$('#workspace-publication'),api});
 const exportPanel=createExportPanel({root:$('#workspace-export')});
 const evidencePanel=createEvidencePanel({root:$('#workspace-evidence'),api,onAssessment:()=>{void comparisonPanel.reload();void simulationPanel.reload();}});
 const simulationPanel=createSimulationPanel({root:$('#workspace-simulation'),modelRoot:$('#workspace-model'),historyRoot:$('#workspace-run-history'),api,onModel:model=>{observedModel=model;renderModelState();}});
@@ -198,7 +200,7 @@ function stopEventStream() {
 }
 
 function accountView() {
-  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();evidencePanel.leave();}
+  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();}
   $('#login').hidden = authenticated;
   const workspaceRoutePending = Boolean(workspaceProjectIdFromHash()) && !activeProject;
   $('#app').hidden = !tenant || Boolean(activeProject) || workspaceRoutePending;
@@ -540,7 +542,7 @@ function openWorkspace(project) {
   previewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,canOpen:ready});
   servicePanel.open({workspaceId:project.workspace_id,tenantId:tenant.id,canStart:ready});
   if(ready){void simulationPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});void comparisonPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});}else{simulationPanel.leave();comparisonPanel.leave();}
-  exportPanel.enter({workspaceId:project.workspace_id});
+  exportPanel.enter({workspaceId:project.workspace_id});publicationPanel.enter({workspaceId:project.workspace_id});
   void evidencePanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});
   if(!ready){$('#turns').replaceChildren();appendTurnCard('system','项目暂未就绪。会话与文件恢复后可继续使用；独立服务可在下方管理。');$('#files-meta').textContent='项目暂未就绪';$('#workspace-files').replaceChildren();}
   void refreshWorkspace(viewGeneration);
@@ -645,7 +647,7 @@ function workspaceProjectIdFromHash() {
 }
 
 async function load() {
-  servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();evidencePanel.leave();
+  servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();
   const generation = ++viewGeneration;
   stopPolling();
   stopEventStream();
@@ -683,7 +685,7 @@ $('#google').onclick = async () => {
 
 $('#sign-out').onclick = async () => {
   viewGeneration++;
-  servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();evidencePanel.leave();
+  servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();
   stopEventStream();
   stopPolling();
   const button = $('#sign-out');

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-14",
+  "taskProfile": "riffology-reuse-kernel-20260914",
+  "taskProfileStoppedAndDeleted": true,
+  "taskContainersAbsentBeforeVmRemoval": true,
+  "defaultDockerContext": "colima",
+  "defaultProfile": {
+    "status": "Running",
+    "architecture": "aarch64",
+    "cpus": 2,
+    "memoryGiB": 4,
+    "diskGiB": 100
+  },
+  "defaultConfigSha256": "82056bd83727f762f9637888d5b2e0bea12e007e45bf779e23e2d7b7f5e35329",
+  "defaultConfigMatchesPreAcceptanceBackup": true,
+  "unrelatedProfilesPreserved": [
+    "riffology-m0",
+    "riffology-staging-amd64"
+  ],
+  "defaultRunningContainers": 0,
+  "scope": "Task-owned local native acceptance resources only; no cloud deployment or remote configuration mutation."
+}

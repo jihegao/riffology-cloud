@@ -1,3 +1,6 @@
+import {SubmissionCatalog} from '../catalog/submissions.ts';
+import type {GatewayPublications} from './publication-services.ts';
+import type {PublicationArtifacts} from '../publication/artifacts.ts';
 import type {GatewayResearchExports} from './research-export-services.ts';
 import {experimentGroupRequest} from '../simulation/groups.ts';
 import {experimentRequest} from '../simulation/host.ts';
@@ -23,6 +26,8 @@ import {observerArtifactReceipt} from '../preview/observer-artifacts.ts';
 import type {GatewayObservations} from './observer-services.ts';
 
 export interface GatewayServices {
+  publications?:GatewayPublications;
+  publicationArtifacts?:PublicationArtifacts;
   researchExports?:GatewayResearchExports;
   simulations?:GatewaySimulations;
   origin:string;
@@ -104,6 +109,26 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     const principal=await admission.principal(identity);
     const admin=new OperatorCatalog(services.database);
     const models=new ModelCatalog(services.database,Date.now,services.modelContent,services.modelUpload);
+    const publicationRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/(publication-readiness|model-submissions)$/.exec(url.pathname),reviewRoute=/^\/api\/admin\/model-submissions(?:\/([A-Za-z0-9_-]{1,128})\/(review|export))?$/.exec(url.pathname),ownerExport=/^\/api\/model-submissions\/([A-Za-z0-9_-]{1,128})\/export$/.exec(url.pathname);
+    if(publicationRoute||reviewRoute||ownerExport){
+      if(!services.publications||!services.publicationArtifacts)throw new HttpError('publication-unavailable',503);
+      const submissions=new SubmissionCatalog(services.database,models,services.publicationArtifacts);
+      if([...url.searchParams.keys()].some(k=>k!=='before')||url.searchParams.getAll('before').length>1)throw new CatalogError('invalid_input');
+      const before=url.searchParams.get('before')??undefined;
+      try{
+        if(publicationRoute){const scope=await new ProjectCatalog(services.database,new Set()).maintenanceWorkspace(principal,publicationRoute[1]!);
+          if(publicationRoute[2]==='publication-readiness'&&request.method==='GET'&&!before)return json(await services.publications.prepare(scope,principal));
+          if(publicationRoute[2]==='model-submissions'&&request.method==='GET')return json(await submissions.list(principal,scope,before));
+          if(publicationRoute[2]==='model-submissions'&&request.method==='POST'&&!before){const result=await submissions.submit(principal,scope,idempotencyKey(request),await readJson(request),version=>services.publications!.freeze(scope,principal,version));return json(result,result.replayed?200:201);}
+        }
+        if(reviewRoute){if(!reviewRoute[1]&&request.method==='GET')return json(await submissions.reviewList(principal,before));
+          if(reviewRoute[2]==='review'&&request.method==='POST'&&!before)return json(await submissions.review(principal,reviewRoute[1]!,idempotencyKey(request),await readJson(request)));
+          if(reviewRoute[2]==='export'&&request.method==='GET'&&!before)return await submissions.download(principal,reviewRoute[1]!,true);
+        }
+        if(ownerExport&&request.method==='GET'&&!before)return await submissions.download(principal,ownerExport[1]!,false);
+        throw new HttpError('method_not_allowed',405);
+      }catch(error){if(error instanceof CatalogError||error instanceof HttpError)throw error;const code=error instanceof Error?error.message:'';if(['publication-not-ready','publication-model-stale','publication-artifact-invalid','publication-artifact-missing'].includes(code))throw new HttpError(code,409);if(code==='publication-access-denied')throw new HttpError(code,403);if(code==='publication-busy')throw new HttpError(code,429);throw new HttpError('publication-unavailable',503);}
+    }
     if(url.pathname==='/api/models'&&request.method==='GET')return json({models:(await models.published()).map(publicModel)});
     const modelDetail=/^\/api\/models\/([A-Za-z0-9._-]{1,128})\/versions\/([A-Za-z0-9._-]{1,64})$/.exec(url.pathname);
     if(modelDetail&&request.method==='GET')return json(publicModel(await models.getPublished(modelDetail[1],modelDetail[2])));

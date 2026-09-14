@@ -285,3 +285,10 @@ test('batching preserves each artifact durable boundary when a later retain fail
  fail=false;await dispatcher.tick(scope,1);
  assert.deepEqual(f.store.snapshot()!.events.filter(e=>events.some(input=>input.eventId===e.eventId)).map(e=>e.eventId),events.map(e=>e.eventId));
 });
+
+test('dispatcher accepts explicit unresolved retirement but rejects forged stop-less terminal variants',async()=>{
+ for(const override of [{}, {retirement:undefined},{outcome:'completed'},{checkpoint},{persistenceErrorCode:null},{stopped:stop}]){
+  const f=fixture();await queued(f);f.setAccept(async input=>receipt(input,{phase:'terminal',outcome:'interrupted',executionErrorCode:'turn-native-execution-unresolved',retirement:'workspace-native-unresolved',persistenceErrorCode:'turn-checkpoint-unknown',...override}));
+  const run=new TurnDispatcher(f.journal,f.runtime).tick(scope,1);if(Object.keys(override).length===0){const result=await run;assert.equal(result?.executionOutcome,'interrupted');assert.notEqual(result?.persistenceOutcome,'saved');}else await assert.rejects(run,/invalid-turn-runtime-(receipt|retirement)/);
+ }
+});

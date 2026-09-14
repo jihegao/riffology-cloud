@@ -18,11 +18,11 @@ const config = {
   r2_buckets:[{binding:'WORKSPACE_CHECKPOINTS',bucket_name:'riffology-m1-workspace-checkpoints-staging'}],
 };
 const dockerfile='FROM node:22.19.0-bookworm-slim@sha256:'+ 'a'.repeat(64)+'\nWORKDIR /workspace\nUSER node\n';
-const migrations=['0001_catalog.sql','0002_auth.sql','0003_provisioning.sql','0004_operator_invitations.sql','0005_initial_operator.sql','0006_model_catalog.sql','0007_model_content_checks.sql','0008_preview_routes.sql'];
+const migrations=['0001_catalog.sql','0002_auth.sql','0003_provisioning.sql','0004_operator_invitations.sql','0005_initial_operator.sql','0006_model_catalog.sql','0007_model_content_checks.sql','0008_preview_routes.sql','0009_model_submissions.sql'];
 
 test('staging contract accepts the isolated M1 topology',()=>{
   assert.equal(validateStagingConfig(config,dockerfile,migrations).every(item=>item.status==='passed'),true);
-  assert.equal(validateStagingConfig(config,dockerfile,[...migrations,'0009_unreviewed.sql']).find(item=>item.name==='catalog-migrations').status,'failed');
+  assert.equal(validateStagingConfig(config,dockerfile,[...migrations,'0010_unreviewed.sql']).find(item=>item.name==='catalog-migrations').status,'failed');
 });
 test('repository staging files pass every check before deployment credentials',()=>{
   const result=runPreflight();
