@@ -1,16 +1,42 @@
 import {createExportPanel} from './export.js';
 import {createEvidencePanel} from './evidence.js';
+import {createWorkspaceLayout} from './layout.js';
 import {createServicePanel} from './services.js';
 import {createPreviewPanel} from './previews.js';
 import {createComparisonPanel} from './comparison.js';
 import {createSimulationPanel} from './simulation.js';
 const $ = selector => document.querySelector(selector);
-const previewPanel=createPreviewPanel({root:$('#workspace-preview'),api});
-const servicePanel=createServicePanel({root:$('#workspace-services'),api,onPreviewRun:runId=>previewPanel.openRun(runId)});
-const exportPanel=createExportPanel({root:$('#workspace-export')});
+const workspaceLayout=createWorkspaceLayout({root:$('#workspace')});
+let observedModel=null,observedService=null;
+function renderModelState(){
+  const status=$('#workspace-model-status');if(!status)return;
+  const active=workspaceSnapshot?.activeTurnId&&workspaceSnapshot.turns?.[workspaceSnapshot.activeTurnId];
+  let state='ready',text='还没有模型预览。请在左侧描述研究问题。';
+  if(active&&!['completed','failed','cancelled','interrupted'].includes(active.status)){
+    state='building';text='正在构建或检查模型；已保存的预览和结果保留各自版本。';
+  }else if(observedService&&['stopped','failed','cancelled'].includes(observedService.runStatus)){
+    state=observedService.runStatus==='failed'?'failed':'stopped';text='交互模型已结束，已保存的参数和结果仍可查看。需要时明确重新运行。';
+  }else if(observedService?.stopRequestedAt||observedService?.runStatus==='stopping'){
+    state='stopping';text='正在停止交互模型；已保存的参数和结果仍可查看。';
+  }else if(observedService?.version?.filesSha256&&observedModel?.version?.filesSha256&&observedService.version.filesSha256!==observedModel.version.filesSha256){
+    state='old';text=`当前预览属于旧版本 ${observedService.version.revisionId}；新版本 ${observedModel.version.revisionId??'初始版本'} 已保存。运行已保存模型后才会切换。`;
+  }else if(observedService?.runStatus==='running'){
+    state='running';text='交互模型正在运行。参数实验与保存结果可在下方查看。';
+  }else if(['queued','starting','unknown'].includes(observedService?.runStatus)){
+    state='starting';text='模型预览正在准备；状态会自动更新。';
+  }else if(observedModel?.reasonCode){
+    state='failed';text='模型尚未通过运行检查，请在 Model 查看说明并继续修改。';
+  }else if(observedModel?.version){
+    text='模型已保存。可以运行交互模型，或直接进行参数实验。';
+  }
+  status.dataset.state=state;status.textContent=text;
+}
+const previewPanel=createPreviewPanel({root:$('#workspace-preview'),api,autoRestore:true,onState:value=>{const pinned=value.available?.runId||value.current?.runId;if(pinned)servicePanel.selectRun(pinned);}});
+const servicePanel=createServicePanel({root:$('#workspace-services'),inspectRoot:$('#workspace-runtime-details'),api,workspaceMode:true,onPreparingRun:runId=>previewPanel.prepareRun(runId),onPreviewRun:(runId,options)=>options?.automatic?previewPanel.restoreRun(runId):previewPanel.openRun(runId),onState:detail=>{observedService=detail;renderModelState();if(detail.stopRequestedAt||['stopped','failed','cancelled'].includes(detail.runStatus))previewPanel.stoppedRun(detail.runId);}});
 const comparisonPanel=createComparisonPanel({root:$('#workspace-comparison'),api});
+const exportPanel=createExportPanel({root:$('#workspace-export')});
 const evidencePanel=createEvidencePanel({root:$('#workspace-evidence'),api,onAssessment:()=>{void comparisonPanel.reload();void simulationPanel.reload();}});
-const simulationPanel=createSimulationPanel({root:$('#workspace-simulation'),api});
+const simulationPanel=createSimulationPanel({root:$('#workspace-simulation'),modelRoot:$('#workspace-model'),historyRoot:$('#workspace-run-history'),api,onModel:model=>{observedModel=model;renderModelState();}});
 const notice = $('#notice');
 const dialog = $('#project-dialog');
 let tenant = null;
@@ -59,7 +85,7 @@ function canSubmitConversation() {
 let eventSource = null;
 let eventRetryTimer = null;
 let snapshotRecovery = false;
-let workspaceFiles = null;
+let workspaceFiles = null, filesReadEpoch = 0, diffReadEpoch = 0;
 let workspaceFilesError = '';
 let workspaceDiff = null;
 let workspaceDiffError = '';
@@ -351,7 +377,7 @@ function renderWorkspaceFiles() {
   if (!workspaceFiles) { meta.textContent = '正在读取最新已保存版本…'; const loading = document.createElement('p'); loading.className = 'file-empty'; loading.textContent = '正在加载文件清单'; box.append(loading); return; }
   const files = Array.isArray(workspaceFiles.files) ? workspaceFiles.files : [];
   if (!workspaceFiles.revision) { meta.textContent = '尚无 Turn 保存版本'; const empty = document.createElement('p'); empty.className = 'file-empty'; empty.textContent = '项目完成首个回合并保存后，文件会显示在这里。'; box.append(empty); return; }
-  meta.textContent = `${files.length} 项 · 保存于 ${new Date(workspaceFiles.revision.committedAt).toLocaleString('zh-CN', { hour12: false })}`;
+  meta.textContent = `版本 ${workspaceFiles.revision.revisionId} · ${files.length} 项 · 保存于 ${new Date(workspaceFiles.revision.committedAt).toLocaleString('zh-CN', { hour12: false })}`;
   for (const item of files) {
     if (!item || typeof item.path !== 'string' || !['file', 'directory'].includes(item.type)) continue;
     const row = document.createElement('div'); row.className = `file-entry ${item.type}`;
@@ -364,11 +390,14 @@ function renderWorkspaceFiles() {
 
 async function refreshWorkspaceFiles(generation = viewGeneration) {
   if (!activeProject || generation !== viewGeneration) return;
-  const workspaceId = activeProject.workspace_id;
-  workspaceFilesError = ''; renderWorkspaceFiles();
-  try { const value = await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/files`); if (generation !== viewGeneration || activeProject?.workspace_id !== workspaceId) return; workspaceFiles = value; servicePanel.savedRevision(workspaceId, value.revision); }
-  catch (error) { if (generation !== viewGeneration) return; workspaceFilesError = error.message; }
-  renderWorkspaceFiles();
+  const workspaceId=activeProject.workspace_id,epoch=++filesReadEpoch,valid=()=>generation===viewGeneration&&activeProject?.workspace_id===workspaceId&&epoch===filesReadEpoch;
+  workspaceFilesError='';renderWorkspaceFiles();
+  try{const value=await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/files`);if(!valid())return;
+    const changed=workspaceFiles?.revision?.filesSha256!==value.revision?.filesSha256||workspaceFiles?.revision?.revisionId!==value.revision?.revisionId;
+    workspaceFiles=value;servicePanel.savedRevision(workspaceId,value.revision);
+    if(changed){diffReadEpoch++;workspaceDiff=null;workspaceDiffError='';renderWorkspaceDiff();if(workspaceArtifactPanel==='diff')void refreshWorkspaceDiff(generation);void simulationPanel.reload();void comparisonPanel.reload();}
+  }catch(error){if(!valid())return;workspaceFilesError=error.message;}
+  if(valid())renderWorkspaceFiles();
 }
 
 function renderWorkspaceDiff() {
@@ -381,7 +410,10 @@ function renderWorkspaceDiff() {
   if(!box.childElementCount){const empty=document.createElement('p');empty.className='file-empty';empty.textContent='与父版本相比没有文件变化。';box.append(empty);}
 }
 
-async function refreshWorkspaceDiff(generation=viewGeneration){if(!activeProject||generation!==viewGeneration)return;const workspaceId=activeProject.workspace_id;workspaceDiffError='';renderWorkspaceDiff();try{const value=await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/diff`);if(generation!==viewGeneration||activeProject?.workspace_id!==workspaceId)return;workspaceDiff=value;}catch(error){if(generation!==viewGeneration)return;workspaceDiffError=error.message;}renderWorkspaceDiff();}
+async function refreshWorkspaceDiff(generation=viewGeneration){
+  if(!activeProject||generation!==viewGeneration)return;const workspaceId=activeProject.workspace_id,epoch=++diffReadEpoch,valid=()=>generation===viewGeneration&&activeProject?.workspace_id===workspaceId&&epoch===diffReadEpoch;
+  workspaceDiffError='';renderWorkspaceDiff();try{const value=await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/diff`);if(!valid())return;workspaceDiff=value;}catch(error){if(!valid())return;workspaceDiffError=error.message;}if(valid())renderWorkspaceDiff();
+}
 
 function selectArtifactPanel(panel){workspaceArtifactPanel=panel==='diff'?'diff':'files';const diff=workspaceArtifactPanel==='diff';$('#files-tab').setAttribute('aria-selected',String(!diff));$('#diff-tab').setAttribute('aria-selected',String(diff));$('#files-view').hidden=diff;$('#diff-view').hidden=!diff;if(diff&&!workspaceDiff&&!workspaceDiffError)void refreshWorkspaceDiff(viewGeneration);}
 
@@ -459,7 +491,7 @@ async function refreshWorkspace(generation = viewGeneration) {
     workspaceSnapshot = snapshot;
     workspaceEvents = replay.events;
     workspaceHistoryTruncated = replay.historyTruncated === true;
-    renderWorkspace();
+    renderWorkspace();renderModelState();
     void refreshWorkspaceFiles(generation);
     workspaceDiff=null;workspaceDiffError='';renderWorkspaceDiff();if(workspaceArtifactPanel==='diff')void refreshWorkspaceDiff(generation);
     connectEventStream(workspaceId, replay.cursor, generation);
@@ -476,7 +508,7 @@ function openWorkspace(project) {
   stopPolling();
   stopEventStream();
   viewGeneration++;
-  activeProject = project;
+  activeProject = project;observedModel=null;observedService=null;workspaceLayout.enter({tenantId:tenant.id,workspaceId:project.workspace_id});
   workspaceSnapshot = null;
   workspaceEvents = [];
   workspaceHistoryTruncated = false;
@@ -491,17 +523,17 @@ function openWorkspace(project) {
   creatingSession = false;
   messageIntent = recovery.messageIntent || null;
   $('#message-input').value = messageIntent?.message ?? recovery.draft ?? '';
-  $('#new-session').textContent = sessionIntent ? '重试新建 Session' : '新建 Session';
+  $('#new-session').textContent = sessionIntent ? '重试新建对话' : '新建对话';
   if (location.hash !== `#/workspace/${encodeURIComponent(project.id)}`) history.replaceState(null, '', `#/workspace/${encodeURIComponent(project.id)}`);
   $('#workspace-title').textContent = project.title;
   const ready=project.status==='ready';
-  $('#workspace-meta').textContent = ready?'状态已保存 · 浏览器只是观察者':'项目暂未就绪 · 仍可查看和停止独立服务';
+  $('#workspace-meta').textContent = ready?'研究工作区 · 模型与结果自动保存':'项目恢复中 · 已保存结果仍可查看';
   $('#message-input').disabled=!ready;$('#message-submit').disabled=true;$('#new-session').disabled=true;
   $('#session-select').disabled=!ready;$('#cancel-turn').hidden=true;
   $('#files-refresh').disabled=!ready;$('#files-tab').disabled=!ready;$('#diff-tab').disabled=!ready;
   $('#message-error').textContent = '';
-  accountView();
-  renderWorkspace();
+  accountView();workspaceLayout.refresh();
+  renderWorkspace();renderModelState();
   renderWorkspaceFiles();
   renderWorkspaceDiff();
   selectArtifactPanel('files');
@@ -541,7 +573,7 @@ async function renderProjects() {
         sessionIntent = null;
         creatingSession = false;
         messageIntent = null;
-        $('#new-session').textContent = '新建 Session';
+        $('#new-session').textContent = '新建对话';
         accountView();
       }
       else accountView();
@@ -669,7 +701,7 @@ $('#sign-out').onclick = async () => {
     sessionIntent = null;
     creatingSession = false;
     messageIntent = null;
-    $('#new-session').textContent = '新建 Session';
+    $('#new-session').textContent = '新建对话';
     pendingProject = null;
     pollDeadline = 0;
     history.replaceState(null, '', location.pathname + location.search);
@@ -705,7 +737,7 @@ $('#workspace-back').onclick = () => {
   sessionIntent = null;
   creatingSession = false;
   messageIntent = null;
-  $('#new-session').textContent = '新建 Session';
+  $('#new-session').textContent = '新建对话';
   history.replaceState(null, '', location.pathname + location.search);
   $('#message-error').textContent = '';
   accountView();
@@ -741,7 +773,7 @@ $('#new-session').onclick = async () => {
     if (activeProject?.workspace_id !== workspaceId) return;
     saveConversation(savedKey, {selectedSessionId:created.session.id, sessionIntent:null});
     selectedSessionId = created.session.id; sessionIntent = null;
-    button.textContent = '新建 Session';
+    button.textContent = '新建对话';
     await refreshWorkspace(viewGeneration);
   } catch (error) { if (activeProject?.workspace_id === workspaceId) { $('#message-error').textContent = error.message; button.textContent = '重试新建 Session'; } }
   finally { creatingSession = false; button.disabled = !canSubmitConversation() || Boolean(messageIntent); }

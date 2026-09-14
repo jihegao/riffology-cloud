@@ -5,7 +5,7 @@ import { chromium } from 'playwright';
 import { JSON_REQUEST_MAX_BYTES } from '../../services/gateway/http.ts';
 import { renderWorkspace } from '../../ui/workspace.js';
 
-const files = Object.fromEntries(await Promise.all(['index.html', 'app.js', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'export.js', 'evidence.js', 'evidence.css', 'styles.css', 'workspace.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
+const files = Object.fromEntries(await Promise.all(['index.html', 'app.js', 'layout.js', 'export.js', 'evidence.js', 'evidence.css', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'styles.css', 'workspace.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
 const workspaceUiSource = await readFile(new URL('../../ui/workspace.js', import.meta.url), 'utf8');
 let browser;
 before(async () => { browser = await chromium.launch({ headless: true, channel: process.env.M1_BROWSER_CHANNEL || 'chrome' }); });
@@ -31,7 +31,7 @@ async function pageFixture(t, handle, options = {}) {
       if (/^\/api\/workspaces\/[^/]+\/evidence$/.test(url.pathname)) return json(route,{items:[],nextCursor:null});
       if (/^\/api\/workspaces\/[^/]+\/experiment-groups$/.test(url.pathname) && route.request().method() === 'GET') return json(route, { items: [], nextCursor: null });
       if (/^\/api\/workspaces\/[^/]+\/experiments$/.test(url.pathname)) return json(route, { items: [], nextCursor: null });
-      if (/^\/api\/workspaces\/[^/]+\/previews$/.test(url.pathname) && route.request().method() === 'GET') return json(route, {current:null,available:null});
+      if (/^\/api\/workspaces\/[^/]+\/previews$/.test(url.pathname)) return route.request().method() === 'GET' ? json(route, {current:null,available:null}) : json(route,{error:'preview_unavailable'},503);
       if (/^\/api\/workspaces\/[^/]+\/files$/.test(url.pathname)) return json(route, { schemaVersion: 1, revision: null, files: [] });
       if (/^\/api\/workspaces\/[^/]+\/diff$/.test(url.pathname)) return json(route, { schemaVersion: 1, revision: null, summary: { added: 0, modified: 0, deleted: 0 }, changes: [] });
       if (/^\/api\/workspaces\/[^/]+\/services$/.test(url.pathname) && route.request().method()==='GET') return json(route, { items: [], nextCursor: null });
@@ -232,8 +232,9 @@ test('ready project opens the real workspace APIs and keeps platform and Pi resp
   await page.locator('.project .meta').filter({ hasText: '官方版本 · 独立副本' }).waitFor();
   await page.locator('.project-open').click();
   await page.locator('#workspace:not([hidden])').waitFor();
-  assert.match(await page.locator('.boundary-note').innerText(), /平台负责身份、Session、Turn、预算、保存与恢复/);
-  assert.match(await page.locator('.boundary-note').innerText(), /项目内 Pi 只通过受控工具/);
+  await page.locator('[data-workspace-depth=inspect]').click();await page.locator('.boundary-note summary').click();
+  assert.match(await page.locator('.boundary-note').innerText(), /平台负责身份、预算、保存和恢复/);
+  assert.match(await page.locator('.boundary-note').innerText(), /模型代码在隔离环境运行/);
   assert.equal(await page.locator('.turn-card.user p').innerText(), '<img src=x onerror=alert(1)>');
   assert.equal(await page.locator('.turn-card.assistant p').innerText(), '<script>alert(1)</script>');
   assert.equal(await page.locator('#workspace img, #workspace script').count(), 0);
@@ -331,6 +332,7 @@ test('authenticated workspace renders Files and lazily reads parent Revision Dif
     if (path === `/api/workspaces/${workspaceId}/events`) { await json(route, { events: [], nextSequence: 0, hasMore: false, oldestSequence: 1, snapshotRequired: false }); return true; }
   });
   await page.goto('https://ui.test/#/workspace/project-files');
+  await page.locator('[data-workspace-depth=inspect]').click();
   await page.locator('.file-entry').nth(1).waitFor();
   assert.equal(fileReads, 1);assert.equal(await page.locator('.file-entry').count(), 2);assert.equal(await page.locator('.file-entry img').count(), 0);
   assert.match(await page.locator('.file-entry').nth(1).innerText(), /<img src=x onerror=alert\(1\)>\.py.*1\.5 KB/s);
@@ -631,20 +633,20 @@ test('workspace service controls use server detail and survive a real page reloa
       if(path.endsWith(`/${runId}/stop`)){stopCalls++;assert.equal(route.request().postData(),'{}');state='stopped';await json(route,record(),202);return true;}
       if(path.endsWith(`/${runId}`)){await json(route,{...record(),runStatus:state});return true;}
     },{mobile});
-    await page.goto('https://ui.test/#/workspace/service-project');
-    await page.locator('[data-service-action=select]').click();
-    await page.waitForFunction(()=>document.querySelector('#workspace-services>section')?.textContent.includes('运行中'));
-    assert.match(await page.locator('#workspace-services').innerText(),/最近确认/);
+    await page.goto('https://ui.test/#/workspace/service-project');if(mobile)await page.locator('[data-mobile-pane=preview]').click();
+    await page.waitForFunction(()=>document.querySelector('[data-service-action=stop]')?.disabled===false);
+    await page.waitForFunction(()=>document.querySelector('#workspace-services')?.textContent.includes('运行中'));
+    assert.match(await page.locator('#workspace-services').innerText(),/运行中/);
     assert.equal(await page.locator('#workspace-services a,#workspace-services iframe').count(),0);
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
     if(process.env.M3_UI_SCREENSHOT_DIR){
       const {mkdir}=await import('node:fs/promises'),{join}=await import('node:path');await mkdir(process.env.M3_UI_SCREENSHOT_DIR,{recursive:true});
       await page.screenshot({path:join(process.env.M3_UI_SCREENSHOT_DIR,mobile?'service-mobile.png':'service-desktop.png'),fullPage:true});
     }
-    await page.reload();await page.locator('[data-service-action=select]').click();
+    await page.reload();await page.waitForFunction(()=>document.querySelector('[data-service-action=stop]')?.disabled===false);
     await page.locator('[data-service-action=stop]').click();
-    await page.locator('[data-service-action=detail]').click();
-    await page.waitForFunction(()=>document.querySelector('#workspace-services>section')?.textContent.includes('已停止'));
+    await page.locator('[data-service-action=refresh]').click();
+    await page.waitForFunction(()=>document.querySelector('#workspace-services')?.textContent.includes('已停止'));
     assert.equal(stopCalls,1);
     await page.locator('#workspace-back').click();assert.equal(await page.locator('#workspace-services').innerText(),'');
     await page.close();
@@ -663,12 +665,12 @@ test('failed project retains service maintenance without making Turn or file req
     if(path.startsWith('/api/workspaces/')){forbidden.push(path);await json(route,{error:'not_ready'},409);return true;}
   });
   await page.goto('https://ui.test/');await page.getByRole('button',{name:'管理项目 故障项目'}).click();
-  await page.locator('[data-service-action=select]').click();
+  await page.waitForFunction(()=>document.querySelector('[data-service-action=stop]')?.disabled===false);
   assert.equal(await page.locator('[data-service-action=start]').isDisabled(),true);
   assert.equal(await page.locator('#message-submit').isDisabled(),true);
   await page.locator('[data-service-action=stop]').click();await waitFor(()=>stopCalls===1);
   assert.deepEqual(forbidden,[]);
-  await page.reload();await page.locator('[data-service-action=select]').waitFor();
+  await page.reload();await page.locator('[data-service-action=start]').waitFor();
   assert.equal(await page.locator('[data-service-action=start]').isDisabled(),true);assert.deepEqual(forbidden,[]);
   await page.close();
 });
@@ -684,8 +686,8 @@ test('ready running service selects the Preview panel while maintenance project 
   if(path.endsWith('/preview-ui-run')){await json(route,{...row,runStatus:'running'});return true;}
   if(path.endsWith('/previews')){if(route.request().method()==='POST'){previewPosts++;assert.deepEqual(JSON.parse(route.request().postData()),{runId:row.runId,expectedPreviewId:null});await json(route,{error:'preview_unavailable'},503);}else await json(route,{current:null,available:null});return true;}
  },{mobile});
- await page.goto('https://ui.test/#/workspace/preview-ui-project');await page.locator('[data-service-action=select]').click();const openPreview=page.locator('[data-service-action=preview]');await page.waitForFunction(()=>document.querySelector('[data-service-action=preview]')?.disabled===false);assert.equal(await openPreview.innerText(),'打开此服务的 Preview');assert.equal(await openPreview.isEnabled(),true);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);if(process.env.M3_UI_SCREENSHOT_DIR){const {mkdir}=await import('node:fs/promises'),{join}=await import('node:path');await mkdir(process.env.M3_UI_SCREENSHOT_DIR,{recursive:true});await page.screenshot({path:join(process.env.M3_UI_SCREENSHOT_DIR,mobile?'preview-mobile.png':'preview-desktop.png'),fullPage:true});}await openPreview.click();await waitFor(()=>previewPosts===1);
- await page.locator('#workspace-back').click();await page.getByRole('button',{name:'管理项目 预览故障项目'}).click();await page.locator('[data-service-action=select]').click();await page.waitForFunction(()=>document.querySelector('#workspace-services')?.textContent.includes('运行中'));const denied=page.locator('[data-service-action=preview]');if(await denied.count())assert.equal(await denied.isDisabled(),true);const disabledOpen=page.locator('[data-preview-action=open]');if(await disabledOpen.count())assert.equal(await disabledOpen.isDisabled(),true);assert.equal(previewPosts,1);await page.close();
+ await page.goto('https://ui.test/#/workspace/preview-ui-project');if(mobile)await page.locator('[data-mobile-pane=preview]').click();await waitFor(()=>previewPosts===1);await page.locator('[data-preview-action=open]').waitFor();assert.equal(await page.locator('[data-preview-action=open]').innerText(),'重试原预览请求');assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+ await page.locator('#workspace-back').click();await page.getByRole('button',{name:'管理项目 预览故障项目'}).click();if(mobile)await page.locator('[data-mobile-pane=preview]').click();await page.waitForFunction(()=>document.querySelector('#workspace-services')?.textContent.includes('运行中'));assert.equal(await page.locator('[data-service-action=start]').isDisabled(),true);const disabledOpen=page.locator('[data-preview-action=open]');if(await disabledOpen.count())assert.equal(await disabledOpen.isDisabled(),true);assert.equal(previewPosts,1);await page.close();
  }
 });
 
