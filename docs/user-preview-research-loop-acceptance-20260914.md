@@ -2,9 +2,9 @@
 
 ## Decision
 
-**Passed.** Commit `81d6b7d6f776e9dbd52480a271979031716005a1` is deployed to `user-preview`, controlled user admission is enabled, and one ordinary-user Research Loop completed with durable, version-bound evidence and an exact-runtime offline replay. The deployment was left open for controlled users.
+**Passed.** Commit `81d6b7d6f776e9dbd52480a271979031716005a1` is deployed to `user-preview`, controlled user admission is enabled, and one ordinary-user Research Loop completed with durable, version-bound evidence and an exact-runtime offline replay. A follow-up acceptance explicitly changed a model assumption, inspected the saved Model Spec, and ran a new version-bound experiment. The deployment was left open for controlled users.
 
-This acceptance supports closing #29, #30, #31, #32, #33, #34, and #45. It also supplies the full-loop evidence needed for #28. No issue was closed during the acceptance; this report is the only intended Git change. #37 remains open because the run observed a Trusted Pi release deadline/recovery event even though bounded recovery subsequently cleared it.
+This acceptance supports closing #29, #30, #31, #32, #33, #34, and #45. It also supplies the full-loop evidence needed for #28. No issue was closed during the acceptance; this report and its sanitized evidence package are the only intended Git changes. #37 remains open because the run observed a Trusted Pi release deadline/recovery event even though bounded recovery subsequently cleared it.
 
 ## Release identity and gates
 
@@ -25,10 +25,13 @@ This acceptance supports closing #29, #30, #31, #32, #33, #34, and #45. It also 
 - Model files SHA-256: `20bb40025bdc15d7edac511eaac4a43d60aac46e2b36a689d2c8b6265d086563`
 - Model Spec SHA-256: `9b08de569de0a2e2a6f88296eebf3aac3866f3e0d1b8e89d49d33c56d46622bb`
 - Final interpretation checkpoint: `1e7a26ad43de7af5f98ab801d41316a53aadebbf07ee7fc6837089c2c9fe2090`; its files and Model Spec hashes are unchanged from the frozen experimental Revision.
+- Assumption-edit Revision: `bab5a9fcdc191f5d7c183527c44d1ef8155260962e6ea3c7b3cf305ea5142708`.
+- Assumption-edit model files SHA-256: `676e756a7737188240addf35ac700396677c532d4d8e70f20e891631b2832c49`.
+- Assumption-edit Model Spec SHA-256: `56127762c33f8d0d1158280e65ddbcf91ba123deddd02ea763f1dbead407b867`.
 
 ## Ordinary-user flow exercised
 
-The browser flow covered sign-in, blank Project creation, an Agent-built Model Spec and Python model, Preview, a structural model change, baseline/intervention comparison with repeated seeds, evidence creation and verification, an evidence-linked Agent conclusion, refresh/reopen without automatic execution, progressive Model/Runs/Inspect navigation, ZIP export, and offline replay.
+The browser flow covered sign-in, blank Project creation, an Agent-built Model Spec and Python model, Preview, a structural model change, baseline/intervention comparison with repeated seeds, evidence creation and verification, an evidence-linked Agent conclusion, refresh/reopen without automatic execution, progressive Model/Runs/Inspect navigation, ZIP export, and offline replay. The follow-up used the same ordinary-user UI to request deterministic rather than exponential service duration, inspect the updated assumption in Model, and launch a comparison from that new Revision.
 
 Desktop split-workspace layout was checked at 1600x900 and mobile tab switching at 390x844. The corrected Preview showed the research question, finite waiting room and balking mechanism, top-level run seed, parameters, six metrics, assumptions, and limitations. Preview health returned HTTP 200 and its service was explicitly stopped.
 
@@ -53,6 +56,28 @@ Accepted Run IDs:
 
 The final Agent answer cited the exact frozen Revision, experiment group, evidence claim, all six Runs, arm means, delta, sample counts, exclusions, evidence state, assumptions, limitations, and one follow-up question. It labeled throughput as a direct Experiment reading rather than fabricating another claim.
 
+## Explicit assumption-edit acceptance for #28
+
+The user requested one scoped scientific-assumption change: replace exponential service duration with deterministic duration `1/service_rate`, while retaining seeded Poisson arrivals, FIFO finite waiting room, balking, the research question, top-level Run seed, and declared `summary.csv` output.
+
+- Turn: `4109637d-06af-49d8-8f8e-d938bf7e6b3c`.
+- The final provider response failed with `pi-turn-failed`, so the conversation is not recorded as a successful Agent response. Its checkpoint persistence independently read `saved` with no persistence error.
+- The exact R2 checkpoint archive SHA-256 matched `676e756a7737188240addf35ac700396677c532d4d8e70f20e891631b2832c49` and resolved to Revision `bab5a9fcdc191f5d7c183527c44d1ef8155260962e6ea3c7b3cf305ea5142708`.
+- The saved Model Spec and Model UI both show `deterministic service duration equal to 1/service_rate`; `model/run.py` uses `service_time = 1.0 / service_rate`.
+- Independent execution of the saved archive was byte-identical for repeated seed 101 in both `result.json` and `summary.csv`; seed 102 changed the result. A capacity-zero finite queue conserved all 80 arrivals as 43 served plus 37 balked.
+
+The subsequent UI comparison was bound to the new Revision and hashes above:
+
+- Experiment group: `3d5369c5-a76a-428d-86fe-18d72610058a`.
+- Baseline: deterministic service, one server; intervention: deterministic service, two servers.
+- Shared seed: 201. This single paired seed is a narrow workflow acceptance, not a general scientific estimate.
+- Terminal state: two of two Runs completed and released; zero failed, cancelled, rejected, or excluded.
+- Baseline mean wait: `1.782928700940174`; intervention mean wait: `0.06446519365117583`; delta: `-1.7184635072889982` time units.
+- Both Runs served 80 customers, observed zero balking, and retained durable `summary.csv` hashes.
+- Evidence claim: `fb667df1c272ffd6766d27a77acc9253022f3234e1ca027c197b66305b36330d`; fresh authenticated verification returned `evidenceValidity=verified`, `stale=false`, and `olderRevision=false`.
+
+This closes the previously missing #28 acceptance transition: user assumption change → updated Model Spec and model → new Revision → later Experiment and verified evidence. It does not expand the scientific conclusion beyond the recorded paired seed.
+
 ## Rejected historical evidence
 
 The first group, `e771e1eb-71dd-47f3-83d8-60fa0477dc1e`, exposed a real model-contract defect: it ignored the platform's top-level Run seed and did not declare its CSV output. It was explicitly rejected under assessment `d48069a8c6a3cce9b430a19fafe7ae9943dc734096006304a7e13f7f04d652c2`; all six Runs are excluded from the accepted conclusion. The corrected model was then saved as the frozen Revision above and rerun from scratch.
@@ -74,12 +99,14 @@ Export artifact: `.local/research-loop-acceptance-20260914-81d6b7d/research-expo
 
 - Controlled admission: `enabled`.
 - Workspace: `activeTurnId=null`, `resourceWait=null`, `releaseHold=null`, `recoveryHold=null`.
-- Current files SHA-256 remains `20bb40025bdc15d7edac511eaac4a43d60aac46e2b36a689d2c8b6265d086563`.
+- Current Revision is the saved assumption-edit Revision `bab5a9fcdc191f5d7c183527c44d1ef8155260962e6ea3c7b3cf305ea5142708`; current files SHA-256 is `676e756a7737188240addf35ac700396677c532d4d8e70f20e891631b2832c49`.
 - Valid experiment remains complete; rejected historical evidence remains version-bound and rejected.
-- Container inventory: Simulation 26/26 inactive, Service 18/18 inactive, Trusted Pi 114/114 inactive, Project Tools 60/60 inactive, Project Runtime 5/5 inactive; total non-inactive instances: 0.
+- Final review readback at `2026-09-14T22:04:26.787Z`: Simulation 31/31 inactive, Service 18/18 inactive, Trusted Pi 118/118 inactive, Project Tools 64/64 inactive, Project Runtime 6/6 inactive; total non-inactive instances: 0.
 
-One Trusted Pi teardown crossed the release deadline and temporarily produced `recovery-hold / trusted-pi-release-deadline-exceeded`. A single bounded recovery observation reconciled the already-inactive cloud instance and cleared the hold. Final Workspace and Cloudflare inventory were then reread independently. This is why the Research Loop is accepted but #37 should remain open for lifecycle/reuse hardening and latency analysis.
+One Trusted Pi teardown crossed the release deadline and temporarily produced `recovery-hold / trusted-pi-release-deadline-exceeded`. A single bounded recovery observation reconciled the already-inactive cloud instance and cleared the hold. The assumption-edit follow-up also observed `trusted-pi-release-assignment-guard` before accepted work and while the next queued Run waited; both Runs eventually released without manual cleanup or resubmission. Final Workspace and Cloudflare inventory were then reread independently. This is why the Research Loop is accepted but #37 should remain open for lifecycle/reuse hardening and latency analysis.
 
 ## Evidence location
 
-Raw request intents, receipts, snapshots, screenshots, model archives, UI captures, and the export are under `.local/research-loop-acceptance-20260914-81d6b7d/`. The final authenticated snapshot is `final-signoff-workspace.json`; the final UI capture is `final-signoff-workspace.png`; the last claim and cloud summaries are `final-evidence-readback.json` and `final-cloud-readback.json`.
+The committed, sanitized evidence package is [`docs/evidence/research-loop-user-preview-20260914/`](evidence/research-loop-user-preview-20260914/). It includes the release and final Cloudflare readbacks, accepted experiment identities and artifact hashes, verified claims, export manifest and exact-runtime replay, the assumption-edit model snapshot, UI captures, final Workspace state, and `SHA256SUMS`.
+
+Raw request intents, receipts, authenticated snapshots, checkpoint archives, browser profiles, and the full export remain under `.local/research-loop-acceptance-20260914-81d6b7d/` and are intentionally excluded from Git. The final local authenticated snapshot after the assumption experiment is `final-review-signoff.json`; the fresh sanitized cloud summary is `final-cloud-review-readback.json`.

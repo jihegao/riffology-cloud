@@ -1,0 +1,28 @@
+{
+  "observedAtMs": 1789423341838,
+  "groupId": "3d5369c5-a76a-428d-86fe-18d72610058a",
+  "hypothesis": "Under deterministic service duration, adding a second server reduces mean waiting time under the same seeded arrival stream.",
+  "version": {
+    "revisionId": "bab5a9fcdc191f5d7c183527c44d1ef8155260962e6ea3c7b3cf305ea5142708",
+    "filesSha256": "676e756a7737188240addf35ac700396677c532d4d8e70f20e891631b2832c49",
+    "specSha256": "56127762c33f8d0d1158280e65ddbcf91ba123deddd02ea763f1dbead407b867"
+  },
+  "status": "completed",
+  "stale": false,
+  "progress": { "rejected": 0, "total": 2, "pending": 0, "active": 0, "completed": 2, "failed": 0, "cancelled": 0 },
+  "seed": 201,
+  "configurations": [
+    { "configurationId": "baseline", "role": "baseline", "label": "Baseline: deterministic service, one server", "parameters": { "servers": 1, "customers": 80, "arrival_rate": 0.8, "service_rate": 1, "queue_capacity": 20 } },
+    { "configurationId": "intervention-1", "role": "intervention", "label": "Intervention: deterministic service, two servers", "parameters": { "servers": 2, "customers": 80, "arrival_rate": 0.8, "service_rate": 1, "queue_capacity": 20 } }
+  ],
+  "summary": {
+    "baseline": { "mean_wait": 1.782928700940174, "throughput": 0.8555090486284521, "utilization": 0.8555090486284521, "served_customers": 80, "balked_customers": 0 },
+    "intervention": { "mean_wait": 0.06446519365117583, "throughput": 0.8555090486284521, "utilization": 0.42775452431422606, "served_customers": 80, "balked_customers": 0 },
+    "delta": { "mean_wait": -1.7184635072889982, "throughput": 0 }
+  },
+  "runs": [
+    { "runId": "83535ff9-ac0a-4c4d-bc80-6b6ddee4ef5d", "arm": "baseline", "status": "completed", "released": true, "artifactSha256": "d4640e2780f9971792d11ce8c0b1d3bf3460c609c7a2a47707ee19bf35c9ad25", "summaryCsvSha256": "d4459a529761c18d57aca7fbb2ee760208ca2db8d090ddb8ad2af297eb1e6c17", "summaryCsvSize": 7106 },
+    { "runId": "c1b956a2-e99e-4e15-917d-8963d1f31fad", "arm": "intervention-1", "status": "completed", "released": true, "artifactSha256": "ac7e941c93d02b1e774e7de7a0804567995937d27168ac6fa1f2edf178e14e35", "summaryCsvSha256": "7926bd7382b942d533aa1eb719c14d0051c1df4fa7bc9c82411cfbcf04a13e35", "summaryCsvSize": 6347 }
+  ],
+  "releaseObservation": "Both Runs completed without execution failure; each waited for the existing release-assignment guard before the next durable state transition."
+}

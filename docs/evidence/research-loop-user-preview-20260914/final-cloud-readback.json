@@ -1,0 +1,31 @@
+{
+  "observedAt": "2026-09-14T22:04:26.787Z",
+  "sourceCommit": "81d6b7d6f776e9dbd52480a271979031716005a1",
+  "worker": {
+    "versionId": "f2a8e4e6-570f-4fef-be53-7bfbbf2cf25e",
+    "trafficPercent": 100,
+    "tag": "source-81d6b7d6f776e9dbd52480a271979031716005a1",
+    "releaseProfile": "user-preview"
+  },
+  "gates": {
+    "M2_TURNS_ENABLED": true,
+    "M3_SERVICE_ENABLED": true,
+    "M3_PREVIEW_ENABLED": true,
+    "M4_SIMULATION_ENABLED": true
+  },
+  "workspace": {
+    "admission": "enabled",
+    "activeTurnId": null,
+    "resourceWait": null,
+    "releaseHold": null,
+    "recoveryHold": null
+  },
+  "containers": {
+    "simulation": { "total": 31, "inactive": 31, "nonInactive": 0 },
+    "service": { "total": 18, "inactive": 18, "nonInactive": 0 },
+    "trustedPi": { "total": 118, "inactive": 118, "nonInactive": 0 },
+    "projectTools": { "total": 64, "inactive": 64, "nonInactive": 0 },
+    "projectRuntime": { "total": 6, "inactive": 6, "nonInactive": 0 },
+    "nonInactiveTotal": 0
+  }
+}

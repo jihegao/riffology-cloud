@@ -1,0 +1,29 @@
+{
+  "requestedChange": "Replace exponential service times with deterministic constant service duration 1/service_rate while retaining seeded Poisson arrivals, FIFO finite queue and balking.",
+  "turnId": "4109637d-06af-49d8-8f8e-d938bf7e6b3c",
+  "turnStatus": "failed",
+  "executionOutcome": "failed",
+  "executionErrorCode": "pi-turn-failed",
+  "persistenceOutcome": "saved",
+  "persistenceErrorCode": null,
+  "savedVersion": {
+    "revisionId": "bab5a9fcdc191f5d7c183527c44d1ef8155260962e6ea3c7b3cf305ea5142708",
+    "filesSha256": "676e756a7737188240addf35ac700396677c532d4d8e70f20e891631b2832c49",
+    "specSha256": "56127762c33f8d0d1158280e65ddbcf91ba123deddd02ea763f1dbead407b867",
+    "committedAtMs": 1789422286649,
+    "canRun": true
+  },
+  "independentArchiveReadback": {
+    "archiveSha256": "676e756a7737188240addf35ac700396677c532d4d8e70f20e891631b2832c49",
+    "changedFiles": ["docs/README.md", "model/model-spec.json", "model/run.py"],
+    "modelCodeChange": "service_time = 1.0 / service_rate",
+    "modelSpecMechanism": "deterministic service duration equal to 1/service_rate"
+  },
+  "independentLocalValidation": {
+    "sameInputSeed101ByteIdentical": { "resultJson": true, "summaryCsv": true },
+    "differentSeed102ChangesResult": true,
+    "finiteQueueCapacityZero": { "servers": 1, "customers": 80, "served": 43, "balked": 37, "conserved": true },
+    "twoServerCapacityTwenty": { "servers": 2, "customers": 80, "served": 80, "balked": 0, "conserved": true },
+    "declaredOutputs": ["summary.csv"]
+  }
+}

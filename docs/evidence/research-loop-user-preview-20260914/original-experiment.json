@@ -1,0 +1,43 @@
+{
+  "observedAtMs": 1789397722492,
+  "groupId": "cecc53d7-3f06-43b4-848a-9d05677a5bcc",
+  "hypothesis": "For the corrected finite-capacity model, adding a second checkout server reduces mean waiting time under matched top-level random seeds while preserving throughput.",
+  "version": {
+    "revisionId": "d4f8894a674fee2fb729cd543b22f64687289b07bac934e15b80032b2a1c5ac8",
+    "filesSha256": "20bb40025bdc15d7edac511eaac4a43d60aac46e2b36a689d2c8b6265d086563",
+    "specSha256": "9b08de569de0a2e2a6f88296eebf3aac3866f3e0d1b8e89d49d33c56d46622bb"
+  },
+  "status": "completed",
+  "staleAtObservation": false,
+  "progress": { "rejected": 0, "total": 6, "pending": 0, "active": 0, "completed": 6, "failed": 0, "cancelled": 0 },
+  "seeds": [101, 102, 103],
+  "configurations": [
+    { "configurationId": "baseline", "role": "baseline", "label": "Baseline: one server", "parameters": { "servers": 1, "customers": 80, "arrival_rate": 0.8, "service_rate": 1, "queue_capacity": 20 } },
+    { "configurationId": "intervention-1", "role": "intervention", "label": "Intervention: two servers", "parameters": { "servers": 2, "customers": 80, "arrival_rate": 0.8, "service_rate": 1, "queue_capacity": 20 } }
+  ],
+  "summary": {
+    "baseline": {
+      "count": 3,
+      "mean_wait": 2.9339407578559347,
+      "throughput": 0.8241556783745478,
+      "served_customers": 80,
+      "balked_customers": 0
+    },
+    "intervention": {
+      "count": 3,
+      "mean_wait": 0.16263220523226252,
+      "throughput": 0.8302734764724886,
+      "served_customers": 80,
+      "balked_customers": 0
+    },
+    "delta": { "mean_wait": -2.771308552623672, "throughput": 0.006117798097940774 }
+  },
+  "runs": [
+    { "runId": "72088110-aa8f-4447-9318-79c22fbef854", "arm": "baseline", "seed": 101, "status": "completed", "released": true, "artifactSha256": "4f410fcfb7cb1a4b380358843d93a0a6915909839d96aa9f9bea8445fb408c8e", "summaryCsvSha256": "cd6dfd7f7f3a0daefab987bd38d273376748d7e0b5621ab7463ce7b17fb37756" },
+    { "runId": "9d975852-7a54-4e02-ad3d-1d3fdeaab5cb", "arm": "intervention", "seed": 101, "status": "completed", "released": true, "artifactSha256": "bdc690778bc4af1c44c12ffec135149154faa3c50515ffd1080776d49d255c82", "summaryCsvSha256": "ecbb437148503affd0d5822db788cf609c072d749638e5148474d61dd69e5656" },
+    { "runId": "48d622a2-9602-4c98-95a7-54bd8f4029e2", "arm": "baseline", "seed": 102, "status": "completed", "released": true, "artifactSha256": "21367fb60ccaadf24c46f0e5b9277aaf13d0e31de5b9fc846a075543c9f937c0", "summaryCsvSha256": "fb480db3e0d233dda95843a82c03da6dc9ecbea608038f0950892a3a5d7b2426" },
+    { "runId": "b1e4ef8f-2ad3-43a8-8df9-ed6f4746cc03", "arm": "intervention", "seed": 102, "status": "completed", "released": true, "artifactSha256": "6f6f4b9aff07cb909bd89f6013ff65d04f2a54862596e8b38a6036087e993564", "summaryCsvSha256": "57bead3000a6ba9225fd50b32bab3b487d855e9c0edecb40a1b966a43a9741c6" },
+    { "runId": "45ca17c3-19ca-4030-9989-457383d7f73c", "arm": "baseline", "seed": 103, "status": "completed", "released": true, "artifactSha256": "963e3f8c3dae73b16466b9f0172230843c1dd63caeffd9bc3cf4f5e7b49b2a93", "summaryCsvSha256": "741c8425dd18bcf73ac45dabdfd0ead0a09b7dfc8296f227a99edb5ebf6345bb" },
+    { "runId": "b494878f-e9f0-4c05-bf5c-bffb86484e27", "arm": "intervention", "seed": 103, "status": "completed", "released": true, "artifactSha256": "a807366a773de4a8ada46861f242baad8753d3c4799b29ac0b412ed82e433089", "summaryCsvSha256": "65651068c29ef5eab33bba00dcf3e64e74853016f10887ad07afc86c229e3ab5" }
+  ]
+}

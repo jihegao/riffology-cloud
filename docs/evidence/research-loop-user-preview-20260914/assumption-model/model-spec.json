@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "researchQuestion": "How does adding a second checkout server change customer waiting time and throughput under the same arrival stream?",
+  "scope": "Finite, reproducible discrete-event queue simulation comparing one and two identical checkout servers with a bounded waiting room and customer balking.",
+  "entities": ["customers", "checkout servers", "waiting room"],
+  "mechanisms": ["Poisson customer arrivals", "FIFO queue", "deterministic service duration equal to 1/service_rate", "FCFS assignment to the first available server", "finite waiting-room capacity", "balking when all servers are busy and the waiting room is full"],
+  "assumptions": ["Arrivals are generated from the top-level seeded Run stream", "Each served customer has deterministic service duration equal to 1/service_rate", "An arriving customer uses a free server immediately", "Waiting customers are served FIFO and a free server is never left idle", "Balked customers receive no service", "The run starts empty and ends after all admitted customers complete service", "No abandonment, priorities, setup time, or blocking"],
+  "limitations": ["This is a theoretical queueing model, not a calibration to observed checkout data", "Exponential interarrival times and deterministic service may not represent a particular store", "Finite-horizon results can be sensitive to the seed and initial empty system", "Waiting-room capacity changes admission as well as congestion, so server comparisons should report balking", "Matched seeds make random generation reproducible but do not imply identical realized trajectories across configurations"],
+  "parameters": {
+    "servers": {"type": "integer", "default": 1, "minimum": 1, "maximum": 8, "unit": "servers"},
+    "customers": {"type": "integer", "default": 1000, "minimum": 1, "maximum": 100000, "unit": "customers"},
+    "arrival_rate": {"type": "number", "default": 0.8, "minimum": 0.0001, "maximum": 1000, "unit": "customers/time"},
+    "service_rate": {"type": "number", "default": 1.0, "minimum": 0.0001, "maximum": 1000, "unit": "services/time"},
+    "queue_capacity": {"type": "integer", "default": 20, "minimum": 0, "maximum": 100000, "unit": "waiting customers"}
+  },
+  "metrics": {
+    "mean_wait": {"unit": "time", "description": "Mean arrival-to-service-start time among served customers."},
+    "throughput": {"unit": "customers/time", "description": "Served customers divided by the completion horizon."},
+    "utilization": {"unit": "fraction", "description": "Aggregate busy server time divided by servers times the completion horizon."},
+    "served_customers": {"unit": "customers", "description": "Number of customers admitted and completed service."},
+    "balked_customers": {"unit": "customers", "description": "Number of arrivals rejected because all servers were busy and the waiting room was full."},
+    "balk_rate": {"unit": "fraction of arrivals", "description": "Balked customers divided by all arriving customers."}
+  },
+  "execution": {"entrypoint": "model/run.py", "dependencyLock": "app/requirements.lock"}
+}

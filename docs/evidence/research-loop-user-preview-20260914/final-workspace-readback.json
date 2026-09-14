@@ -1,0 +1,30 @@
+{
+  "observedAtMs": 1789423486040,
+  "projectId": "f6c050f3-1f97-427c-886f-051b55307da4",
+  "workspaceId": "d18b450c-c1cf-4cd0-95a3-fd5541c23368",
+  "workspaceGeneration": 1,
+  "admission": { "state": "enabled", "reasonCode": null, "retryable": true },
+  "activeTurnId": null,
+  "resourceWait": null,
+  "releaseHold": null,
+  "recoveryHold": null,
+  "model": {
+    "version": {
+      "revisionId": "bab5a9fcdc191f5d7c183527c44d1ef8155260962e6ea3c7b3cf305ea5142708",
+      "filesSha256": "676e756a7737188240addf35ac700396677c532d4d8e70f20e891631b2832c49",
+      "specSha256": "56127762c33f8d0d1158280e65ddbcf91ba123deddd02ea763f1dbead407b867"
+    },
+    "canRun": true
+  },
+  "acceptedAssumptionExperiment": {
+    "groupId": "3d5369c5-a76a-428d-86fe-18d72610058a",
+    "status": "completed",
+    "runIds": [
+      "83535ff9-ac0a-4c4d-bc80-6b6ddee4ef5d",
+      "c1b956a2-e99e-4e15-917d-8963d1f31fad"
+    ],
+    "allRunsCompleted": true,
+    "allRunsHaveSummaryCsv": true
+  },
+  "verifiedAssumptionClaimId": "fb667df1c272ffd6766d27a77acc9253022f3234e1ca027c197b66305b36330d"
+}
