@@ -485,7 +485,47 @@ test('snapshot.required restores retained assistant history and reconnects from 
   await page.locator('#workspace:not([hidden])').waitFor();
   await waitFor(() => streamReads === 2);
   assert.equal(streamReads, 2); assert.ok(workspaceReads >= 2); assert.equal(await page.locator('#message-error').innerText(), '');
-  assert.deepEqual(streamCursors, [2, 2]); assert.match(await page.locator('#turns').innerText(), /保留窗口中的恢复结果/); assert.match(await page.locator('#turns').innerText(), /较早事件已超出保留窗口/);
+  assert.deepEqual(streamCursors, [2, 2]); assert.match(await page.locator('#turns').innerText(), /保留窗口中的恢复结果/); assert.match(await page.locator('#turns').innerText(), /这里只显示近期对话回复/);
+});
+
+test('history truncation reads the full 2048-event retained window within the page bound', async t => {
+  const workspaceId = 'workspace-retained-boundary', turnId = 'turn-retained-boundary'; let reads = 0, mutations = 0;
+  const retained = Array.from({ length: 2048 }, (_, index) => ({ sequence: index + 2, eventId: `delta-${index + 2}`, turnId, type: 'assistant.delta', payload: { text: index === 2047 ? '边界回复' : '.' } }));
+  const page = await pageFixture(t, async (route, path) => {
+    if (route.request().method() !== 'GET') { mutations++; await route.fulfill({ status: 500, body: 'unexpected mutation' }); return true; }
+    if (path === '/api/tenants/tenant-a/projects') { await json(route, { projects: [{ id: 'project-retained-boundary', workspace_id: workspaceId, title: '保留边界', status: 'ready' }] }); return true; }
+    if (path === `/api/workspaces/${workspaceId}`) { await json(route, { schemaVersion: 1, nextSequence: 2050, activeTurnId: null, sessions: { session: { id: 'session', title: '主对话', createdAt: 1 } }, turns: { [turnId]: { id: turnId, sessionId: 'session', message: '读取保留窗口', status: 'completed', persistenceOutcome: 'saved', createdAt: 2 } } }); return true; }
+    if (path === `/api/workspaces/${workspaceId}/events`) {
+      if (route.request().headers().accept?.includes('text/event-stream')) { await route.fulfill({ status: 200, contentType: 'text/event-stream', body: '' }); return true; }
+      reads++; const after = Number(new URL(route.request().url()).searchParams.get('after_sequence') || 0);
+      if (after === 0) await json(route, { events: [], nextSequence: 2049, hasMore: false, oldestSequence: 2, snapshotRequired: true });
+      else { const events = retained.filter(event => event.sequence > after).slice(0, 200); await json(route, { events, nextSequence: events.at(-1)?.sequence ?? after, hasMore: events.at(-1)?.sequence < 2049, oldestSequence: 2, snapshotRequired: false }); }
+      return true;
+    }
+  });
+  await page.goto('https://ui.test/#/workspace/project-retained-boundary'); await page.locator('#workspace:not([hidden])').waitFor();
+  await waitFor(() => reads === 12); assert.equal(reads, 12); assert.equal(mutations, 0); assert.match(await page.locator('#turns').innerText(), /边界回复/); assert.match(await page.locator('#turns').innerText(), /这里只显示近期对话回复/);
+  await page.reload(); await page.locator('#workspace:not([hidden])').waitFor(); await waitFor(() => reads === 24); assert.equal(mutations, 0);
+});
+
+test('history window advances by rereading a retained suffix and rejects no progress', async t => {
+  const workspaceId = 'workspace-retained-progress', turnId = 'turn-retained-progress'; let reads = 0, noProgressReads = 0;
+  const page = await pageFixture(t, async (route, path) => {
+    if (path === '/api/tenants/tenant-a/projects') { await json(route, { projects: [{ id: 'project-retained-progress', workspace_id: workspaceId, title: '窗口前移', status: 'ready' }] }); return true; }
+    if (path === `/api/workspaces/${workspaceId}`) { await json(route, { schemaVersion: 1, nextSequence: 5, activeTurnId: null, sessions: { session: { id: 'session', title: '主对话', createdAt: 1 } }, turns: { [turnId]: { id: turnId, sessionId: 'session', message: '窗口前移', status: 'completed', persistenceOutcome: 'saved', createdAt: 2 } } }); return true; }
+    if (path === `/api/workspaces/${workspaceId}/events`) {
+      const after = Number(new URL(route.request().url()).searchParams.get('after_sequence') || 0); reads++;
+      if (after === 0) await json(route, { events: [], nextSequence: 4, hasMore: false, oldestSequence: 2, snapshotRequired: true });
+      else if (after === 1) await json(route, { events: [{ sequence: 2, eventId: 'old', turnId, type: 'assistant.delta', payload: { text: '旧片段' } }], nextSequence: 2, hasMore: true, oldestSequence: 2, snapshotRequired: false });
+      else if (after === 2) await json(route, { events: [], nextSequence: 5, hasMore: false, oldestSequence: 4, snapshotRequired: true });
+      else await json(route, { events: [{ sequence: 4, eventId: 'new', turnId, type: 'assistant.message', payload: { text: '新片段', stopReason: 'stop' } }], nextSequence: 4, hasMore: false, oldestSequence: 4, snapshotRequired: false });
+      return true;
+    }
+  });
+  await page.goto('https://ui.test/#/workspace/project-retained-progress'); await page.locator('#workspace:not([hidden])').waitFor(); await waitFor(() => reads >= 4); assert.match(await page.locator('#turns').innerText(), /新片段/); assert.equal(await page.locator('#message-error').innerText(), '');
+  noProgressReads = 0;
+  const stalled = await pageFixture(t, async (route, path) => { if (path === '/api/tenants/tenant-a/projects') { await json(route, { projects: [{ id: 'project-stalled', workspace_id: 'workspace-stalled', title: '无进展', status: 'ready' }] }); return true; } if (path === '/api/workspaces/workspace-stalled') { await json(route, { schemaVersion: 1, nextSequence: 3, activeTurnId: null, sessions: {}, turns: {} }); return true; } if (path === '/api/workspaces/workspace-stalled/events') { noProgressReads++; await json(route, { events: [], nextSequence: 3, hasMore: false, oldestSequence: 2, snapshotRequired: true }); return true; } });
+  await stalled.goto('https://ui.test/#/workspace/project-stalled'); await stalled.locator('#workspace:not([hidden])').waitFor(); await waitFor(() => noProgressReads === 2); assert.equal(noProgressReads, 2); assert.match(await stalled.locator('#message-error').innerText(), /无法推进/);
 });
 
 test('assistant deltas merge once per Turn and prefer the final message safely', async t => {

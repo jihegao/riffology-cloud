@@ -23,7 +23,6 @@ let activeProject = null;
 let workspaceSnapshot = null;
 let workspaceEvents = [];
 let workspaceHistoryTruncated = false;
-let workspaceHistoryOldestSequence = null;
 let selectedSessionId = null;
 let sessionIntent = null;
 let creatingSession = false;
@@ -281,7 +280,7 @@ function renderWorkspace() {
   const maintenance = admission?.state === 'maintenance';
   if (maintenance) appendTurnCard('system', '当前环境暂停接收新任务。', '草稿会保留；已接收回合仍可继续观察、取消和读取保存结果。');
   if (unavailable) appendTurnCard('system', '当前执行环境暂不可用。', '平台正在恢复运行资源，请稍后重试；草稿会保留。');
-  if (workspaceHistoryTruncated) appendTurnCard('system', '较早事件已超出保留窗口。', `当前显示从第 ${workspaceHistoryOldestSequence ?? '—'} 条起的可恢复记录，不代表完整历史。`);
+  if (workspaceHistoryTruncated) appendTurnCard('system', '这里只显示近期对话回复。', '较早回复已超出显示保留范围；项目文件和实验结果仍可查看。');
   $('#message-input').disabled = maintenance || unavailable;
   $('#message-submit').disabled = maintenance || unavailable || sendingMessage;
   $('#new-session').disabled = maintenance || unavailable || creatingSession || Boolean(messageIntent);
@@ -388,10 +387,11 @@ async function readWorkspaceEvents(workspaceId) {
   for (let pageNumber = 0; pageNumber < 12; pageNumber++) {
     const page = await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/events?after_sequence=${cursor}&limit=200`);
     if (page.snapshotRequired) {
-      const retainedCursor = Math.max(0, Number(page.oldestSequence || 1) - 1);
-      if (historyTruncated && retainedCursor === cursor) throw new Error('事件保留窗口无法推进，请刷新项目。');
+      if (!Number.isSafeInteger(page.oldestSequence) || page.oldestSequence < 1) throw new Error('事件保留窗口无效，请刷新项目。');
+      const retainedCursor = page.oldestSequence - 1;
+      if (retainedCursor <= cursor) throw new Error('事件保留窗口无法推进，请刷新项目。');
       historyTruncated = true;
-      oldestSequence = Number(page.oldestSequence || 1);
+      oldestSequence = page.oldestSequence;
       cursor = retainedCursor;
       continue;
     }
@@ -452,7 +452,6 @@ async function refreshWorkspace(generation = viewGeneration) {
     workspaceSnapshot = snapshot;
     workspaceEvents = replay.events;
     workspaceHistoryTruncated = replay.historyTruncated === true;
-    workspaceHistoryOldestSequence = replay.oldestSequence ?? null;
     renderWorkspace();
     void refreshWorkspaceFiles(generation);
     workspaceDiff=null;workspaceDiffError='';renderWorkspaceDiff();if(workspaceArtifactPanel==='diff')void refreshWorkspaceDiff(generation);
@@ -474,7 +473,6 @@ function openWorkspace(project) {
   workspaceSnapshot = null;
   workspaceEvents = [];
   workspaceHistoryTruncated = false;
-  workspaceHistoryOldestSequence = null;
   workspaceFiles = null;
   workspaceFilesError = '';
   workspaceDiff = null;
