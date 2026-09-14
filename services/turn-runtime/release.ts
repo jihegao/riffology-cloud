@@ -1,3 +1,4 @@
+import {LazyProjectLifecycle,type LazyProjectRpc} from './lazy-project.ts';
 import type { TurnCheckpointPort, TurnExecutionPort } from './core.ts';
 import { sameTurnRuntimeIdentity, turnRuntimeIdentity, type TurnRuntimeIdentity } from './identity.ts';
 import { SandboxTrustedPiHostPort, type TrustedPiProcessSnapshot, type TrustedPiProcessView, type TrustedPiSandboxActorApi, type TrustedPiSandboxProcessApi } from './pi-native.ts';
@@ -10,9 +11,10 @@ import type { TurnActor, TurnBaseCheckpoints } from '../turn/protocol.ts';
 import type { TrustedPiCapacityPort } from '../capacity/client.ts';
 import type { TurnOperationTrace } from '../turn/operation-telemetry.ts';
 
-export type ProductTurnRuntimeRelease={execution:TurnExecutionPort;checkpoints:TurnCheckpointPort;capacity?:TrustedPiCapacityPort|null;trace?:TurnOperationTrace};
+export type ProductTurnRuntimeRelease={execution:TurnExecutionPort;checkpoints:TurnCheckpointPort;capacity?:TrustedPiCapacityPort|null;trace?:TurnOperationTrace;project?:LazyProjectLifecycle};
 
 export interface ProductTurnRuntimeReleaseDependencies{
+  projectPreparation?:{storage:Pick<DurableObjectStorage,'kv'|'transactionSync'|'sync'|'sql'>;enabled:boolean};
   revisions:RevisionStoreRpc;
   resolveProjectSandbox(actorId:string):ProjectWorkspaceRpc;
   resolveTrustedPiSandbox(actorId:string):TrustedPiSandboxActorApi;
@@ -84,8 +86,9 @@ export function assembleProductTurnRuntimeRelease(
   const workspace=new ProjectWorkspaceLifecycle(reader,actorId=>project(dependencies.resolveProjectSandbox(actorId)));
   const trustedSandbox=new IdentityBoundTrustedPiSandbox(identity,dependencies.resolveTrustedPiSandbox);
   const trustedHost=new SandboxTrustedPiHostPort(trustedSandbox,reader,clock,undefined,dependencies.trace);
-  const execution=new WorkspacePreparedExecutionPort(workspace,new TrustedPiExecutionAdapter(trustedHost));
-  const snapshots=new ProductTurnSnapshotPort(workspace,trustedHost);
+  const preparation=dependencies.projectPreparation?new LazyProjectLifecycle(dependencies.projectPreparation.storage,identity,workspace,actorId=>dependencies.resolveProjectSandbox(actorId) as LazyProjectRpc,dependencies.projectPreparation.enabled,dependencies.trace):null;
+  const execution=new WorkspacePreparedExecutionPort(preparation??workspace,new TrustedPiExecutionAdapter(trustedHost));
+  const snapshots=new ProductTurnSnapshotPort(preparation??workspace,trustedHost);
   const checkpoints=new RevisionStoreCheckpointPort(dependencies.revisions,snapshots);
-  return {execution:bindExecution(identity,execution),checkpoints:bindCheckpoints(identity,checkpoints),capacity:dependencies.capacity??null,trace:dependencies.trace};
+  return {execution:bindExecution(identity,execution),checkpoints:bindCheckpoints(identity,checkpoints),capacity:dependencies.capacity??null,trace:dependencies.trace,...(preparation?{project:preparation}:{})};
 }

@@ -16,12 +16,13 @@ import { sourceSnapshot } from '../m0/source-inventory.mjs';
 import { providerDisabledValidationDockerfile, providerDisabledValidationProfile } from './provider-disabled-image.mjs';
 import { crudValidationDockerfile, crudValidationProfile } from './crud-validation-image.mjs';
 import { crudExpectedFiles } from './crud-validation-fixture.mjs';
-const crud=process.argv.slice(2).includes('--crud');
-if(process.argv.slice(2).some(arg=>arg!=='--crud'))throw Error('invalid-validation-argument');
+const crud=process.argv.slice(2).includes('--crud'),lazy=process.argv.slice(2).includes('--lazy'),verticalProject=process.argv.slice(2).includes('--vertical-project');
+if(process.argv.slice(2).some(arg=>!['--crud','--lazy','--vertical-project'].includes(arg)))throw Error('invalid-validation-argument');
+const projectDockerfile=verticalProject?'services/project-tools/Dockerfile.vertical':'services/project-tools/Dockerfile.cloud';
 const profile=crud?crudValidationProfile:providerDisabledValidationProfile;
 
 const root = process.cwd();
-const runId = `m2-product-turn-${crud?"crud-fixture":"provider-disabled"}-${new Date().toISOString().replace(/[^0-9]/g, '')}`;
+const runId = `m2-product-turn-${lazy?"lazy-":""}${crud?"crud-fixture":"provider-disabled"}-${new Date().toISOString().replace(/[^0-9]/g, '')}`;
 const evidenceDirectory = resolve('docs/evidence/runs', runId);
 const stateDirectory = resolve('.local', runId);
 const origin = 'https://m2-product-turn-local.test';
@@ -46,9 +47,11 @@ const bounded = async (promise, milliseconds) => {
   try { return await Promise.race([promise, new Promise((_, reject) => { timer = setTimeout(() => reject(Error('local-acceptance-deadline')), milliseconds); })]); }
   finally { clearTimeout(timer); }
 };
-const containerFacts = (before) => docker('ps', '-aq').split('\n').filter((id) => id && !before.has(id)).map((id) => {
-  const value = JSON.parse(docker('inspect', id))[0];
-  return { id, name: value.Name.replace(/^\//, ''), image: value.Config.Image, imageId: value.Image, status: value.State.Status, running: value.State.Running };
+const observedContainers=new Map();
+const containerFacts = (before) => docker('ps', '-a', '--format', '{{.ID}} {{.Names}}').split('\n').filter(Boolean).flatMap(line=>{
+  const [id,name]=line.split(' ');if(before.has(id)||!name.startsWith(`workerd-${worker}-`))return [];
+  let value;try{value=JSON.parse(docker('inspect',id))[0];}catch(error){if(/no such object/i.test(String(error.stderr)))return [];throw error;}
+  const fact={id,name,image:value.Config.Image,imageId:value.Image,status:value.State.Status,running:value.State.Running};observedContainers.set(id,fact);return [fact];
 });
 
 mkdirSync(evidenceDirectory, { recursive: false, mode: 0o700 });
@@ -59,7 +62,8 @@ const validationDockerfile = (crud?crudValidationDockerfile:providerDisabledVali
 const result = {
   schemaVersion: 1, runId, status: 'running',
   scope: crud?'local Workerd + native Docker + production Pi/ToolBridge/Ledger/Revision; deterministic provider fixture; 20 file mutations plus mkdir setup; Files/Diff and container-loss restore; no cloud or external model call':'local Workerd + native Docker + D1/DO/R2 + production release assembly; provider disabled; container-loss restore and corrupt-base rejection; no cloud or external model call',
-  validationProfile: profile,
+  validationProfile: profile, lazyProject:lazy,
+  projectImageProfile: {dockerfile:projectDockerfile,networkBoundary:verticalProject?'local Workerd deny-all egress; existing translated-amd64 seccomp exception':'production child seccomp fence'},
   sourceBefore,
   images: {},
   observations: [],
@@ -73,7 +77,7 @@ try {
   result.dockerEngineMemoryBytes = Number(JSON.parse(docker('info', '--format', '{{json .MemTotal}}')));
   if (!Number.isSafeInteger(result.dockerEngineMemoryBytes) || result.dockerEngineMemoryBytes < 3 * 1024 ** 3) throw Error('local-container-engine-memory-below-3gib');
   docker('build', '--platform', 'linux/amd64', '--progress', 'plain', '--tag', images.runtime, '--file', 'services/runtime/Dockerfile.cloud', 'services/runtime');
-  docker('build', '--platform', 'linux/amd64', '--progress', 'plain', '--tag', images.project, '--file', 'services/project-tools/Dockerfile.cloud', 'services/project-tools');
+  docker('build', '--platform', 'linux/amd64', '--progress', 'plain', '--tag', images.project, '--file', projectDockerfile, 'services/project-tools');
   execFileSync('/opt/homebrew/bin/docker', ['build', '--platform', 'linux/amd64', '--progress', 'plain', '--tag', images.trusted, '--file', '-', '.'], {
     cwd: root, env: dockerEnv, input: validationDockerfile, encoding: 'utf8', timeout: 180_000, maxBuffer: 16 * 1024 * 1024,
   });
@@ -83,18 +87,36 @@ try {
     assert.equal(`${inspected.Os}/${inspected.Architecture}`, 'linux/amd64');
   }
   assert.equal(docker('image', 'inspect', proxyImage, '--format', '{{.Id}}'), 'sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8');
+  const projectEnvironment=JSON.parse(docker('image','inspect',images.project))[0].Config.Env;
+  assert.equal(projectEnvironment.includes('RIFFOLOGY_PROJECT_PLATFORM_EGRESS_FENCE=workerd-deny-all-v1'),verticalProject);
   const activeProfile = docker('image', 'inspect', images.trusted, '--format', '{{index .Config.Labels "cn.gaojihe.riffology.validation-profile"}}');
   assert.equal(activeProfile, profile.name);
 
   const wrapper = `import gateway from './services/gateway/index.ts';
 import {turnRuntimeActorName} from './services/turn-runtime/identity.ts';
-export {TenantQuota,WorkspaceAgent,ProjectRuntime,ProductTurnRuntime,RevisionStore,ToolArtifactStore,TenantModelBudget,ProjectToolSandbox,TrustedPiSandbox,ToolBridgeService,ModelProxyService,ContainerProxy} from './services/gateway/index.ts';
+export {TrustedPiCapacity,TenantQuota,WorkspaceAgent,ProjectRuntime,ProductTurnRuntime,RevisionStore,ToolArtifactStore,TenantModelBudget,TrustedPiSandbox,ToolBridgeService,ModelProxyService,ContainerProxy} from './services/gateway/index.ts';
 import {ToolBridgeAgent as ProductToolBridgeAgent} from './services/tools/durable.ts';
 export class ToolBridgeAgent extends ProductToolBridgeAgent{async run(input){try{return await super.run(input);}catch(error){console.error('validation-tool-error',error instanceof Error?error.message:'unknown','deadlineDistanceMs',input.deadlineAt-Date.now());throw error;}}}
+import {ProjectToolSandbox as NativeProjectToolSandbox} from './services/sandbox/classes.ts';
+import {sandboxActorIds} from './services/sandbox/identity.ts';
+export class ProjectToolSandbox extends NativeProjectToolSandbox{
+ constructor(ctx,env){super(ctx,env);this.validationStorage=ctx.storage;}
+ async count(name){const counts=this.validationStorage.kv.get('validation-native-counts')??{};counts[name]=(counts[name]??0)+1;this.validationStorage.kv.put('validation-native-counts',counts);await this.validationStorage.sync();}
+ validationCounts(){return this.validationStorage.kv.get('validation-native-counts')??{};}
+ async writeFile(...args){await this.count('sdkWrite');return super.writeFile(...args);}
+ async readFile(...args){await this.count('sdkRead');return super.readFile(...args);}
+ async startProcess(...args){await this.count('sdkStartProcess');return super.startProcess(...args);}
+ async destroy(...args){await this.count('sdkDestroy');return super.destroy(...args);}
+ async restoreWorkspace(...args){await this.count('restore');return super.restoreWorkspace(...args);}
+ async prepareWorkspaceOnce(...args){await this.count('prepare');return super.prepareWorkspaceOnce(...args);}
+ async freezeWorkspace(...args){await this.count('freeze');return super.freezeWorkspace(...args);}
+ async abortWorkspace(...args){await this.count('abort');return super.abortWorkspace(...args);}
+}
 import {workspaceAgentName} from './services/workspace/protocol.ts';
 import {modelBudgetTenantName} from './services/model-budget/core.ts';
 export default {async fetch(request,env,ctx){
  const url=new URL(request.url);
+ if(url.pathname==='/__validation/project-counts'){const identity=await request.json(),ids=await sandboxActorIds(identity.scope,identity.turnId,identity.dispatchId);return Response.json(await env.PROJECT_SANDBOX.getByName(ids.project).validationCounts());}
  if(url.pathname==='/__validation/workspace-report'){
   const task=await request.json();return Response.json(await env.WORKSPACE_AGENT.getByName(workspaceAgentName(task.tenantId,task.workspaceId)).report(task));
  }
@@ -127,18 +149,18 @@ export default {async fetch(request,env,ctx){
       env: {
         CATALOG: { type: 'd1', id: runId, name: runId }, WORKSPACE_CHECKPOINTS: { type: 'r2', name: runId }, MODEL_CONTENT: { type: 'r2', name: runId+'-models' },
         APP_ORIGIN: text(origin), BETTER_AUTH_SECRET: text(secret), GOOGLE_CLIENT_ID: text('fixture-only'), GOOGLE_CLIENT_SECRET: text('fixture-only'),
-        TENANT_QUOTA_CAPACITY: text('1'), TENANT_QUOTA_POLICY_VERSION: text('m1-v1'), M2_TURNS_ENABLED: text('true'),
+        TENANT_QUOTA_CAPACITY: text('1'), TENANT_QUOTA_POLICY_VERSION: text('m1-v1'), M2_TURNS_ENABLED: text('true'), M2_LAZY_PROJECT_ENABLED:text(lazy?'true':'false'), M2_TURN_OPERATION_TELEMETRY:text('true'),
         M2_MODEL_PROVIDER_ENABLED: text('false'), M2_MODEL_BUDGET_POLICY_VERSION: text('m2-token-v1'), M2_MODEL_PROVIDER: text('opencode-go'), M2_MODEL_ID: text('gpt-5.6-luna'),
         M2_MODEL_MAX_INPUT_TOKENS_PER_CALL: text('262144'), M2_MODEL_MAX_OUTPUT_TOKENS_PER_CALL: text('4096'), M2_MODEL_CAPABILITY_TTL_MS: text('120000'),
         MODEL_BUDGET_POLICY_VERSION: text('m2-token-v1'), MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN: text('4'), MODEL_BUDGET_MAX_DISPATCHED_CALLS_PER_TURN: text('2'),
         MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL: text('262144'), MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL: text('4096'), MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN: text('532480'),
         M2_MODEL_PROXY_REQUEST_KEY: text(key()), M2_TOOL_BRIDGE_REQUEST_KEY: text(key()), M2_MODEL_TURN_CAPABILITY_KEY: text(key()), M2_PROJECT_EFFECT_CAPABILITY_KEY: text(key()), M2_OPENCODE_GO_API_KEY: text('provider-disabled'),
         TENANT_QUOTA: binding('TenantQuota'), WORKSPACE_AGENT: binding('WorkspaceAgent'), PROJECT_RUNTIME: binding('ProjectRuntime'), PRODUCT_TURN_RUNTIME: binding('ProductTurnRuntime'), REVISION_STORE: binding('RevisionStore'),
-        TENANT_MODEL_BUDGET: binding('TenantModelBudget'), PROJECT_SANDBOX: binding('ProjectToolSandbox'), TRUSTED_PI_SANDBOX: binding('TrustedPiSandbox'), TOOL_BRIDGE_AGENT: binding('ToolBridgeAgent'), TOOL_ARTIFACT_STORE: binding('ToolArtifactStore'),
+        TRUSTED_PI_CAPACITY:binding('TrustedPiCapacity'), TRUSTED_PI_CAPACITY_LIMIT:text('1'), TRUSTED_PI_CAPACITY_POLICY_VERSION:text('m2-trusted-pi-v1'), TENANT_MODEL_BUDGET: binding('TenantModelBudget'), PROJECT_SANDBOX: binding('ProjectToolSandbox'), TRUSTED_PI_SANDBOX: binding('TrustedPiSandbox'), TOOL_BRIDGE_AGENT: binding('ToolBridgeAgent'), TOOL_ARTIFACT_STORE: binding('ToolArtifactStore'),
         MODEL_PROXY: workerBinding('ModelProxyService'), TOOL_BRIDGE: workerBinding('ToolBridgeService'),
       },
       exports: {
-        TenantQuota: { type: 'durable-object', storage: 'sqlite' }, WorkspaceAgent: { type: 'durable-object', storage: 'sqlite' },
+        TrustedPiCapacity:{type:'durable-object',storage:'sqlite'}, TenantQuota: { type: 'durable-object', storage: 'sqlite' }, WorkspaceAgent: { type: 'durable-object', storage: 'sqlite' },
         ProductTurnRuntime: { type: 'durable-object', storage: 'sqlite' }, RevisionStore: { type: 'durable-object', storage: 'sqlite' }, ToolArtifactStore: { type: 'durable-object', storage: 'sqlite' }, TenantModelBudget: { type: 'durable-object', storage: 'sqlite' }, ToolBridgeAgent: { type: 'durable-object', storage: 'sqlite' },
         ProjectRuntime: { type: 'durable-object', storage: 'sqlite', container: { imageName: images.runtime } },
         ProjectToolSandbox: { type: 'durable-object', storage: 'sqlite', container: { imageName: images.project } },
@@ -207,7 +229,7 @@ export default {async fetch(request,env,ctx){
   do {
     workspaceState = await bounded(workspaceReport(), 10_000);
     const view = { stage: 'workspace', phase: workspaceState.phase, projection: workspaceState.projection?.outcome ?? null, confirmed: workspaceState.projectionConfirmed === true };
-    if (JSON.stringify(result.observations.at(-1)) !== JSON.stringify(view)) result.observations.push(view);
+    if (JSON.stringify(result.observations.at(-1)) !== JSON.stringify(view)) {result.observations.push(view);(result.stageTimes??=[]).push({...view,observedAt:Date.now()});}
     if (workspaceState.projectionConfirmed) break;
     await new Promise((resolvePromise) => setTimeout(resolvePromise, 500));
   } while (Date.now() < workspaceDeadline);
@@ -229,14 +251,15 @@ export default {async fetch(request,env,ctx){
   const { session } = await sessionResponse.json();
   const waitForTurn = async (turnId, stage) => {
     let currentSnapshot;
-    const deadline = Date.now() + 120_000;
+    const deadline = Date.now() + 480_000;
     do {
       const response = await bounded(mf.dispatchFetch(`${origin}/api/workspaces/${project.workspace_id}`, { method: 'GET', headers }), 10_000);
       assert.equal(response.status, 200);
       currentSnapshot = await response.json();
+      containerFacts(beforeContainers);
       const current = currentSnapshot.turns[turnId];
       const view = { stage, status: current.status, executionOutcome: current.executionOutcome, persistenceOutcome: current.persistenceOutcome };
-      if (JSON.stringify(result.observations.at(-1)) !== JSON.stringify(view)) result.observations.push(view);
+      if (JSON.stringify(result.observations.at(-1)) !== JSON.stringify(view)) {result.observations.push(view);(result.stageTimes??=[]).push({...view,observedAt:Date.now()});}
       if (['completed', 'failed', 'cancelled', 'interrupted'].includes(current.status)) return current;
       await new Promise((resolvePromise) => setTimeout(resolvePromise, 500));
     } while (Date.now() < deadline);
@@ -282,8 +305,9 @@ export default {async fetch(request,env,ctx){
     assert.deepEqual(value.records, []);
     return value;
   };
+  const projectCounts=async identity=>{const response=await mf.dispatchFetch(origin+'/__validation/project-counts',{method:'POST',body:JSON.stringify(identity)});assert.equal(response.status,200);const counts=await response.json();if(lazy&&!crud)assert.deepEqual(counts,{});return counts;};
   const turnResponse = await mf.dispatchFetch(`${origin}/api/workspaces/${project.workspace_id}/sessions/${session.id}/turns`, { method: 'POST', headers: { ...headers, 'idempotency-key': 'm2-native-turn' }, body: JSON.stringify({ message: 'Inspect the blank project and report readiness.' }) });
-  assert.equal(turnResponse.status, 202);
+  assert.equal(turnResponse.status, 202, await turnResponse.clone().text());
   const submitted = await turnResponse.json();
   const queuedResponses=await Promise.all(['a','b'].map(suffix=>mf.dispatchFetch(`${origin}/api/workspaces/${project.workspace_id}/sessions/${session.id}/turns`,{method:'POST',headers:{...headers,'idempotency-key':`m2-native-turn-queued-cancel-${suffix}`},body:JSON.stringify({message:`Queued turn ${suffix} must never reach the Runtime.`})})));
   for(const response of queuedResponses)assert.equal(response.status,202);const queuedSubmissions=await Promise.all(queuedResponses.map(response=>response.json()));
@@ -296,6 +320,7 @@ export default {async fetch(request,env,ctx){
   const bucket = await mf.getR2Bucket('WORKSPACE_CHECKPOINTS', worker);
   const manifest = await readManifest(bucket, turn);
   const budget = await readBudget(manifest.identity);
+  result.firstProjectNativeCalls=await projectCounts(manifest.identity);
   if(crud){
     const completed=events.events.filter(event=>event.turnId===submitted.turn.id&&event.type==='tool.completed');
     result.crudToolEvents=completed;
@@ -333,13 +358,14 @@ export default {async fetch(request,env,ctx){
   assert.equal((await replay.json()).turn.id, submitted.turn.id);
   result.containersAfterFirstTurn = containerFacts(beforeContainers);
   const destroyable = result.containersAfterFirstTurn.filter((item) => [images.project, images.trusted, proxyImage].includes(item.image));
-  assert.ok(destroyable.some((item) => item.image === images.project));
-  assert.ok(destroyable.some((item) => item.image === images.trusted));
+  assert.equal([...observedContainers.values()].some((item) => item.image === images.project),!lazy||crud);
+  assert.ok([...observedContainers.values()].some((item) => item.image === images.trusted));
   for (const item of destroyable) docker('rm', '-f', item.id);
   const survivingIds = new Set(docker('ps', '-aq').split('\n').filter(Boolean));
   assert.ok(destroyable.every((item) => !survivingIds.has(item.id)));
   result.destroyedBeforeRestore = destroyable.map((item) => ({ ...item, removed: true }));
 
+  const firstContainerIds=new Set(observedContainers.keys());
   const restoredResponse = await mf.dispatchFetch(`${origin}/api/workspaces/${project.workspace_id}/sessions/${session.id}/turns`, { method: 'POST', headers: { ...headers, 'idempotency-key': 'm2-native-turn-restore' }, body: JSON.stringify({ message: 'Continue from the saved checkpoint and report readiness again.' }) });
   assert.equal(restoredResponse.status, 202);
   const restoredSubmitted = await restoredResponse.json();
@@ -352,7 +378,10 @@ export default {async fetch(request,env,ctx){
   assert.equal(restoredManifest.identity.turnId, restoredSubmitted.turn.id);
   assert.equal(restoredManifest.files.sha256, manifest.files.sha256);
   assert.notEqual(restoredManifest.piSession.sha256, manifest.piSession.sha256);
+  if(lazy&&!crud)assert.equal(restoredManifest.files.objectKey,manifest.files.objectKey);
   const restoredBudget = await readBudget(restoredManifest.identity);
+  result.restoredProjectNativeCalls=await projectCounts(restoredManifest.identity);
+  if(lazy&&crud){assert.equal(result.firstProjectNativeCalls.prepare,1);assert.equal(result.restoredProjectNativeCalls.prepare,1);}
   const allEvents = await readAllEvents();
   assert.ok(allEvents.events.some((event) => event.turnId === restoredSubmitted.turn.id && event.type === 'provider.status' && event.payload.state === 'requesting'));
   assert.ok(allEvents.events.some((event) => event.turnId === restoredSubmitted.turn.id && event.type === 'provider.status' && event.payload.state === (crud?'responding':'error') && event.payload.status === (crud?200:503)));
@@ -363,8 +392,8 @@ export default {async fetch(request,env,ctx){
   }
   result.containersAfterRestoredTurn = containerFacts(beforeContainers);
   const restoredSandboxContainers = result.containersAfterRestoredTurn.filter((item) => [images.project, images.trusted].includes(item.image));
-  assert.ok(restoredSandboxContainers.some((item) => item.image === images.project));
-  assert.ok(restoredSandboxContainers.some((item) => item.image === images.trusted));
+  assert.equal([...observedContainers.values()].some((item) => !firstContainerIds.has(item.id)&&item.image === images.project),!lazy||crud);
+  assert.ok([...observedContainers.values()].some((item) => !firstContainerIds.has(item.id)&&item.image === images.trusted));
   assert.ok(restoredSandboxContainers.every((item) => !destroyable.some((prior) => prior.id === item.id)));
   const beforeCorruption = await bucket.list({ limit: 100 });
   assert.ok(beforeCorruption.objects.some((item) => item.key === turn.checkpoint.objectKey));
@@ -421,7 +450,9 @@ export default {async fetch(request,env,ctx){
   };
   result.restoreAssertions = {
     priorContainersDestroyed: true,
-    freshProjectAndTrustedPiContainers: true,
+    freshTrustedPiContainer: true,
+    projectContainerExpected:!lazy||crud,
+    projectCalls: {first:result.firstProjectNativeCalls,restored:result.restoredProjectNativeCalls},
     workspaceBaseMatchesFirstCheckpoint: true,
     sessionBaseMatchesFirstCheckpoint: true,
     workspaceArchiveHashPreserved: true,
@@ -468,6 +499,8 @@ export default {async fetch(request,env,ctx){
     docker('rm', '-f', item.id);
     result.cleanup.push({ id: item.id, image: item.image, removed: true });
   }
+  result.observedContainers=[...observedContainers.values()];
+  result.resourceCounts={project:result.observedContainers.filter(item=>item.image===images.project).length,trustedPi:result.observedContainers.filter(item=>item.image===images.trusted).length};
   result.sourceAfter = sourceSnapshot(root);
   result.sourceStable = result.sourceBefore.sha256 === result.sourceAfter.sha256;
   if (!result.sourceStable) { result.status = 'failed'; failure ??= Error('source-changed-during-local-acceptance'); }

@@ -11,6 +11,8 @@ export type { ProductTurnRuntimeRelease } from './release.ts';
 
 export interface ProductTurnRuntimeReleaseEnv extends ProductTurnRuntimeHostEnv {
   M2_TURNS_ENABLED: unknown;
+  M2_LAZY_PROJECT_ENABLED?:unknown;
+  WORKSPACE_AGENT?:{getByName(name:string):unknown};
   REVISION_STORE: RevisionStoreNamespace;
   PROJECT_SANDBOX: {idFromName(name:string):unknown;getByName(name:string):unknown};
   TRUSTED_PI_SANDBOX: {idFromName(name:string):unknown;getByName(name:string):unknown};
@@ -27,7 +29,7 @@ function configured(raw:ProductTurnRuntimeHostEnv):ProductTurnRuntimeReleaseEnv{
   if(!env.REVISION_STORE?.getByName
     ||!env.PROJECT_SANDBOX?.idFromName||!env.PROJECT_SANDBOX?.getByName
     ||!env.TRUSTED_PI_SANDBOX?.idFromName||!env.TRUSTED_PI_SANDBOX?.getByName
-    ||!env.TRUSTED_PI_CAPACITY?.getByName)throw Error('product-turn-runtime-release-dependencies-required');
+    ||!env.TRUSTED_PI_CAPACITY?.getByName||env.M2_LAZY_PROJECT_ENABLED==='true'&&!env.WORKSPACE_AGENT?.getByName)throw Error('product-turn-runtime-release-dependencies-required');
   return env;
 }
 
@@ -43,6 +45,7 @@ export function productTurnRuntimeRelease(
   const env=configured(rawEnv);
   if(!sandboxes||typeof sandboxes.project!=='function'||typeof sandboxes.trustedPi!=='function')throw Error('product-turn-runtime-release-dependencies-required');
   return assembleProductTurnRuntimeRelease(identity,{
+    projectPreparation:{storage:_ctx.storage,enabled:env.M2_LAZY_PROJECT_ENABLED==='true'},
     revisions:env.REVISION_STORE.getByName(revisionStoreActorName(identity.scope)),
     resolveProjectSandbox(actorId){return sandboxes.project(env,actorId);},
     resolveTrustedPiSandbox(actorId){return sandboxes.trustedPi(env,actorId);},

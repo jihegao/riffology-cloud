@@ -1,3 +1,4 @@
+import {normalizeToolCommand,type ToolCommand} from '../tools/protocol.ts';
 import type { CheckpointReceipt, TurnActor, TurnBaseCheckpoints, TurnResourceDisposition, TurnResourceLease } from '../turn/protocol.ts';
 import { TURN_EVENT_LIMIT, actor as validateActor, checkpointObjectKey, jsonPayload, message, positive, sha, turnBaseCheckpoints, turnDigest, turnId } from '../turn/protocol.ts';
 import type { TurnRuntimeEvent, TurnRuntimePort, TurnRuntimeReceipt, TurnStopReceipt } from '../turn/dispatcher.ts';
@@ -191,6 +192,11 @@ export class ProductTurnRuntimeCore implements TurnRuntimePort{
     if(prior){if(prior.messageSha256!==messageSha256)reject('product-turn-runtime-idempotency-conflict');return this.observe(identity);}
     const now=positive(this.#clock());for(const receipt of [base.workspace,base.session])if(receipt&&receipt.committedAt>now)reject('product-turn-runtime-base-time');const managed=this.#capacity!==null,state:State={schemaVersion:5,executionDeadlineAt:positive(now+600000),identity,actor,base,messageSha256,message:text,phase:'running',outcome:null,executionErrorCode:null,acceptReserved:true,executionReserved:true,resourceLease:lease,capacityManaged:managed,capacityDispatchReserved:!managed,capacityDispatchConfirmed:!managed,nativeStartReserved:false,nativeProcessObservedAt:null,nativeStartFenceReserved:false,cancelRequestedAt:null,startedAt:now,settledAt:null,events:[],checkpointIntent:null,checkpointCommitReserved:false,legacyCheckpointUnknown:false,checkpoint:null,persistenceErrorCode:null,stopped:null};await this.#write(state);
     try{return await this.#startOrObserve(identity,actor,text);}catch(error){if(error instanceof Error&&error.message==='product-turn-capacity-dispatch-unconfirmed')await this.#discardUnstarted(identity);else await this.#unknown(identity);throw error;}
+  }
+  projectToolAuthority(raw:TurnRuntimeIdentity,rawCommand:ToolCommand){
+    const identity=turnRuntimeIdentity(raw),command=normalizeToolCommand(rawCommand),state=this.#checked(identity),now=positive(this.#clock());
+    if(!state||state.phase!=='running'||!state.nativeStartReserved||state.cancelRequestedAt!==null||state.executionDeadlineAt===undefined||state.executionDeadlineAt<=now||command.deadlineAt<=now||command.deadlineAt>state.executionDeadlineAt||command.turnId!==identity.turnId||command.dispatchId!==identity.dispatchId||JSON.stringify(command.scope)!==JSON.stringify(identity.scope))reject('project-preparation-denied');
+    return command.deadlineAt;
   }
   /** Read-only authority: never reconciles execution or prepares a checkpoint. */
   async currentObserverExecution(raw:TurnRuntimeIdentity):Promise<{expiresAt:number}>{
