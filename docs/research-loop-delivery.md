@@ -14,6 +14,7 @@
 | 4 · #32 | 完整冻结研究 ZIP、历史源版本与证据、离线校验和 Python 重放 | [PR #54](https://github.com/jihegao/riffology-cloud/pull/54)；候选 `d34b556` 完整检查：1,698 通过、6 跳过、0 失败。主控独立评审通过；合并 `d39e3dd` 的源码树与候选一致。 |
 | 5 · #45 / #34 | 持续双栏工作台、Preview / Model / Runs 与渐进信息层级；恢复不重跑、停止目标与预览身份一致 | [PR #56](https://github.com/jihegao/riffology-cloud/pull/56)；候选 `408608c` 完整检查：1,710 通过、6 跳过、0 失败。独立真实 Gateway 资源图与 Chrome 竞态检查 12 项通过；合并 `f8fc7bb` 的源码树与候选一致。 |
 | 6 · #46 代码候选 | 固定 OpenAI Responses 通道、版本化服务端配置、持久金额预算与未知计费保留；离线有界评估清单 | [PR #57](https://github.com/jihegao/riffology-cloud/pull/57)；候选 `001b317` 完整检查：1,738 通过、6 跳过、0 失败。独立代码评审、实际 Workerd 双预算故障窗口与 Pi SDK 协议检查通过；合并 `2b967da` 的源码树与候选一致。通道默认关闭，未完成真实供应商验收。 |
+| 7a · #37 按需启动 | 首次工具才启动 Project；无工具对话复用冻结文件，持久一次性准备与取消；销毁不重新启动容器 | [PR #58](https://github.com/jihegao/riffology-cloud/pull/58)；代码 `4a67f28` 完整检查：1,748 通过、6 跳过、0 失败；最终 `dc8fa3c` 仅补证据与文档。独立实际 Workerd 评审及本地原生 CRUD/恢复通过，合并 `98b6453` 源码树与最终候选一致。默认关闭，Workspace 复用单独交付。 |
 
 所有完整检查均在独立工作树执行。本仓库这些 PR 未报告 GitHub CI checks；上表是实际本地检查结果。新增工作树首次运行 #29、#32 完整检查时，因缺少测试所需 `.local` 目录失败，创建目录后完整复跑通过。#32 定向检查还暴露既有 Session 选择测试的就绪竞态：改为等待已恢复的选项后断言原选中值，不改变产品行为，最终完整复跑通过。
 
@@ -27,6 +28,8 @@
 - [导出契约](research-export.md)选择完整持久历史，核验原始源文件与结果摘要，超限或完整性不符时明确失败。独立 Python 环境实际重放了种子参考模型的数值和 CSV 摘要；Workerd 中实际 Workspace/Gateway/D1/RevisionStore/R2 接口导出的包也已离线重放，导出前后实验数量和调度状态未变。
 - [工作台](workspace-research-layout.md)复用同一组持久面板；界面偏好不构成运行身份。真实 Gateway 入口检查覆盖静态资源白名单，浏览器拦截式场景只作为 UI 证据。
 - [生产通道](production-model-path.md)在原 token 预算之外保存全局金额约束；响应丢失、取消及缺失计费记录保留预留，不能自动重试或按超时释放。真实账号、默认模型、价格与隐私核验、Gateway 单次请求证明以及普通用户任务评估仍待完成。
+
+- [按需启动](lazy-project-runtime.md)原生记录核对了无工具对话零 Project 调用、21 次文件工具操作、4 次恢复读取、每 Turn 一次准备及 Workerd 重开后的保存身份。CRUD 使用本地 vertical 镜像与临时 8 GiB Docker VM；不替代生产内核隔离或线上验收。临时 VM 内存已恢复原 4 GiB，配置文件摘要和 Docker context 均核对一致。
 
 前四批的**代码与本地集成验证已完成**。上述参考模型与浏览器场景属于本地测试；不能据此把下述完整普通用户线上阶段标为签收。
 
