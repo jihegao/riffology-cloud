@@ -1,0 +1,34 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {gateway} from '../../services/gateway/app.ts';
+import {ProjectCatalog} from '../../services/catalog/projects.ts';
+import {SqliteCatalog} from '../m1/sqlite-database.ts';
+import {experimentGroupRequest} from '../../services/simulation/groups.ts';
+const origin='https://m1.example.test';
+
+test('group HTTP contract scopes read/create/cancel and limits only grouped JSON to 32KiB UTF-8',async t=>{
+ const db=new SqliteCatalog();t.after(()=>db.sqlite.close());const n=Date.now();
+ db.sqlite.prepare("INSERT INTO catalog_users(id,identity_issuer,identity_subject,normalized_email,created_at,updated_at,auth_version,status) VALUES ('u','better-auth','sub','u@example.test',?,?,1,'active')").run(n,n);
+ db.sqlite.prepare("INSERT INTO catalog_tenants(id,owner_user_id,created_at,updated_at) VALUES ('tenant','u',?,?)").run(n,n);
+ db.sqlite.prepare("INSERT INTO catalog_memberships(tenant_id,user_id,created_at,updated_at) VALUES ('tenant','u',?,?)").run(n,n);
+ const actor={userId:'u',authVersion:1},project=await new ProjectCatalog(db,new Set(['blank-v1'])).create(actor,'tenant','p',{title:'P',starterVersion:'blank-v1'});
+ db.sqlite.prepare("UPDATE catalog_projects SET status='ready'").run();db.sqlite.prepare("UPDATE catalog_workspaces SET status='ready'").run();
+ const workspaceId=project.project.workspace_id,calls:unknown[][]=[];
+ const simulations={model:async()=>({}),submit:async()=>{throw Error('unexpected-single-submit');},list:async()=>({items:[],nextCursor:null}),view:async()=>({}),cancel:async()=>({}),submitGroup:async(...args:unknown[])=>{calls.push(args);return {groupId:'g',status:'queued'};},listGroups:async(_scope:unknown,before?:string)=>({items:[],nextCursor:before??null}),viewGroup:async(_scope:unknown,id:string)=>({groupId:id}),cancelGroup:async(_scope:unknown,id:string)=>({groupId:id,status:'cancelled'})};
+ const services={origin,database:db,identity:async()=>({subject:'sub',email:'u@example.test',emailVerified:true,platformVersion:1}),simulations} as Parameters<typeof gateway>[1];
+ const req=(path:string,init:RequestInit={})=>gateway(new Request(origin+path,{...init,headers:new Headers({origin,'content-type':'application/json',...(init.headers??{})})}),services);
+ const base=`/api/workspaces/${workspaceId}/experiment-groups`;
+ const body={revisionId:null,filesSha256:'a'.repeat(64),specSha256:'b'.repeat(64),hypothesis:'q',baseline:{label:'baseline',parameters:{}},interventions:[{label:'alternative',parameters:{}}],seeds:[1,2]};
+ assert.equal((await req(base,{method:'POST',headers:{'idempotency-key':'key'},body:JSON.stringify(body)})).status,202);assert.deepEqual(calls[0]![1],actor);assert.equal((calls[0]![0] as {workspaceId:string}).workspaceId,workspaceId);
+ assert.equal((await req(base)).status,200);assert.equal((await req(base+'/g')).status,200);assert.equal((await req(base+'/g/cancel',{method:'POST',body:'{}'})).status,202);
+ assert.equal((await req(base+'?extra=x')).status,400);assert.equal((await req(base+'?before=a&before=b')).status,400);assert.equal((await req(base+'/g/cancel',{method:'POST',body:'{"extra":1}'})).status,400);
+ const parameters=Object.fromEntries(Array.from({length:64},(_,i)=>[`p${i}`,'x'.repeat(100)]));
+ const large={...body,baseline:{label:'b',parameters},interventions:[{label:'i',parameters}]};const json=JSON.stringify(large);assert.ok(new TextEncoder().encode(json).length>8192);assert.ok(new TextEncoder().encode(json).length<32768);
+ assert.equal((await req(base,{method:'POST',headers:{'idempotency-key':'large'},body:json})).status,202);
+ const multi=Object.fromEntries(Array.from({length:64},(_,i)=>[`p${i}`,'中'.repeat(100)])),oversize={...large,baseline:{label:'b',parameters:multi},interventions:[{label:'i',parameters:multi}]};assert.ok(JSON.stringify(oversize).length<32768);assert.ok(new TextEncoder().encode(JSON.stringify(oversize)).length>32768);
+ assert.equal((await req(base,{method:'POST',headers:{'idempotency-key':'large-utf8'},body:JSON.stringify(oversize)})).status,413);assert.throws(()=>experimentGroupRequest(oversize),/input-invalid/);
+ const single={revisionId:null,filesSha256:'a'.repeat(64),specSha256:'b'.repeat(64),seed:1,parameters:multi};assert.equal((await req(`/api/workspaces/${workspaceId}/experiments`,{method:'POST',headers:{'idempotency-key':'single'},body:JSON.stringify(single)})).status,413);
+ assert.equal(calls.length,2);assert.equal((await req('/api/workspaces/other/experiment-groups')).status,404);
+ db.sqlite.prepare("UPDATE catalog_projects SET status='failed'").run();db.sqlite.prepare("UPDATE catalog_workspaces SET status='failed'").run();
+ assert.equal((await req(base,{method:'POST',headers:{'idempotency-key':'failed'},body:JSON.stringify(body)})).status,409);assert.equal((await req(base)).status,200);assert.equal((await req(base+'/g/cancel',{method:'POST',body:'{}'})).status,202);
+});
