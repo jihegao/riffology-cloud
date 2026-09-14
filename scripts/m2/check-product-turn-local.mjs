@@ -16,8 +16,9 @@ import { sourceSnapshot } from '../m0/source-inventory.mjs';
 import { providerDisabledValidationDockerfile, providerDisabledValidationProfile } from './provider-disabled-image.mjs';
 import { crudValidationDockerfile, crudValidationProfile } from './crud-validation-image.mjs';
 import { crudExpectedFiles } from './crud-validation-fixture.mjs';
-const crud=process.argv.slice(2).includes('--crud'),lazy=process.argv.slice(2).includes('--lazy');
-if(process.argv.slice(2).some(arg=>!['--crud','--lazy'].includes(arg)))throw Error('invalid-validation-argument');
+const crud=process.argv.slice(2).includes('--crud'),lazy=process.argv.slice(2).includes('--lazy'),verticalProject=process.argv.slice(2).includes('--vertical-project');
+if(process.argv.slice(2).some(arg=>!['--crud','--lazy','--vertical-project'].includes(arg)))throw Error('invalid-validation-argument');
+const projectDockerfile=verticalProject?'services/project-tools/Dockerfile.vertical':'services/project-tools/Dockerfile.cloud';
 const profile=crud?crudValidationProfile:providerDisabledValidationProfile;
 
 const root = process.cwd();
@@ -62,6 +63,7 @@ const result = {
   schemaVersion: 1, runId, status: 'running',
   scope: crud?'local Workerd + native Docker + production Pi/ToolBridge/Ledger/Revision; deterministic provider fixture; 20 file mutations plus mkdir setup; Files/Diff and container-loss restore; no cloud or external model call':'local Workerd + native Docker + D1/DO/R2 + production release assembly; provider disabled; container-loss restore and corrupt-base rejection; no cloud or external model call',
   validationProfile: profile, lazyProject:lazy,
+  projectImageProfile: {dockerfile:projectDockerfile,networkBoundary:verticalProject?'local Workerd deny-all egress; existing translated-amd64 seccomp exception':'production child seccomp fence'},
   sourceBefore,
   images: {},
   observations: [],
@@ -75,7 +77,7 @@ try {
   result.dockerEngineMemoryBytes = Number(JSON.parse(docker('info', '--format', '{{json .MemTotal}}')));
   if (!Number.isSafeInteger(result.dockerEngineMemoryBytes) || result.dockerEngineMemoryBytes < 3 * 1024 ** 3) throw Error('local-container-engine-memory-below-3gib');
   docker('build', '--platform', 'linux/amd64', '--progress', 'plain', '--tag', images.runtime, '--file', 'services/runtime/Dockerfile.cloud', 'services/runtime');
-  docker('build', '--platform', 'linux/amd64', '--progress', 'plain', '--tag', images.project, '--file', 'services/project-tools/Dockerfile.cloud', 'services/project-tools');
+  docker('build', '--platform', 'linux/amd64', '--progress', 'plain', '--tag', images.project, '--file', projectDockerfile, 'services/project-tools');
   execFileSync('/opt/homebrew/bin/docker', ['build', '--platform', 'linux/amd64', '--progress', 'plain', '--tag', images.trusted, '--file', '-', '.'], {
     cwd: root, env: dockerEnv, input: validationDockerfile, encoding: 'utf8', timeout: 180_000, maxBuffer: 16 * 1024 * 1024,
   });
@@ -85,6 +87,8 @@ try {
     assert.equal(`${inspected.Os}/${inspected.Architecture}`, 'linux/amd64');
   }
   assert.equal(docker('image', 'inspect', proxyImage, '--format', '{{.Id}}'), 'sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8');
+  const projectEnvironment=JSON.parse(docker('image','inspect',images.project))[0].Config.Env;
+  assert.equal(projectEnvironment.includes('RIFFOLOGY_PROJECT_PLATFORM_EGRESS_FENCE=workerd-deny-all-v1'),verticalProject);
   const activeProfile = docker('image', 'inspect', images.trusted, '--format', '{{index .Config.Labels "cn.gaojihe.riffology.validation-profile"}}');
   assert.equal(activeProfile, profile.name);
 
