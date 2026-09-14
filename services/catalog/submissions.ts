@@ -1,0 +1,64 @@
+import {statement as sql,type Database} from './database.ts';
+import {CatalogError,digest,opaqueId,modelReference,type Principal} from './contracts.ts';
+import {OperatorCatalog} from './admin.ts';
+import {ModelCatalog} from './models.ts';
+import type {TurnScope} from '../turn/protocol.ts';
+import type {StoredPublication,PublicationArtifacts} from '../publication/artifacts.ts';
+import type {PublicationVersion} from '../publication/readiness.ts';
+export type SubmissionInput={modelId:string;version:string;title:string;description:string;source:PublicationVersion};
+export type ModelSubmission={id:string;tenant_id:string;project_id:string;workspace_id:string;workspace_generation:number;created_by:string;model_id:string;version:string;title:string;description:string;snapshot_json:string;status:'submitted'|'changes_requested'|'rejected'|'publishing'|'published';review_note:string|null;reviewed_by:string|null;model_version_id:string|null;created_at:number;updated_at:number;last_intent_id:string};
+const operator=`SELECT 1 FROM catalog_platform_roles r JOIN catalog_users u ON u.id=r.user_id WHERE r.user_id=? AND r.role='operator' AND r.status='active' AND u.status='active' AND u.auth_version=?`;
+const owner=`SELECT 1 FROM catalog_projects p JOIN catalog_workspaces w ON w.id=p.workspace_id AND w.project_id=p.id AND w.tenant_id=p.tenant_id JOIN catalog_memberships m ON m.tenant_id=p.tenant_id JOIN catalog_users u ON u.id=m.user_id JOIN catalog_tenants t ON t.id=p.tenant_id WHERE p.id=? AND p.workspace_id=? AND p.tenant_id=? AND p.generation=? AND w.generation=p.generation AND m.user_id=? AND m.role='owner' AND m.status='active' AND u.status='active' AND u.auth_version=? AND t.status='active' AND t.owner_user_id=u.id`;
+const args=(scope:TurnScope,p:Principal)=>[scope.projectId,scope.workspaceId,scope.tenantId,scope.workspaceGeneration,p.userId,p.authVersion]as const;
+export function submissionInput(raw:unknown):SubmissionInput{
+ if(!raw||typeof raw!=='object'||Array.isArray(raw)||Object.keys(raw).sort().join(',')!=='description,modelId,source,title,version')throw new CatalogError('invalid_input');const r=raw as SubmissionInput;
+ if(typeof r.title!=='string'||!r.title.trim()||r.title.length>160||typeof r.description!=='string'||!r.description.trim()||r.description.length>4000||!r.source||Object.keys(r.source).sort().join(',')!=='filesSha256,revisionId,specSha256'||typeof r.source.revisionId!=='string'||!r.source.revisionId||!/^[a-f0-9]{64}$/.test(r.source.filesSha256)||!/^[a-f0-9]{64}$/.test(r.source.specSha256))throw new CatalogError('invalid_input');
+ return {modelId:modelReference(r.modelId),version:modelReference(r.version,64),title:r.title.trim(),description:r.description,source:{revisionId:r.source.revisionId,filesSha256:r.source.filesSha256,specSha256:r.source.specSha256}};
+}
+export const submissionView=(row:ModelSubmission)=>{const {snapshot_json,last_intent_id:_,...rest}=row;return {...rest,snapshot:JSON.parse(snapshot_json)as StoredPublication};};
+/** SQL predicates repeat primary authorization at every state transition. */
+export class SubmissionCatalog{
+ readonly db:Database;readonly models:ModelCatalog;readonly artifacts:PublicationArtifacts;readonly clock:()=>number;
+ constructor(db:Database,models:ModelCatalog,artifacts:PublicationArtifacts,clock=Date.now){this.db=db;this.models=models;this.artifacts=artifacts;this.clock=clock;}
+ async requireOwner(p:Principal,scope:TurnScope){if(!(await this.db.query(sql(owner,...args(scope,p)))).length)throw new CatalogError('not_found');}
+ async list(p:Principal,scope:TurnScope,before?:string){if(before)opaqueId(before);await this.requireOwner(p,scope);const items=await this.db.query<ModelSubmission>(sql(`SELECT * FROM catalog_model_submissions WHERE project_id=? AND (? IS NULL OR id<?) AND EXISTS (${owner}) ORDER BY id DESC LIMIT 21`,scope.projectId,before??null,before??null,...args(scope,p)));return {items:items.slice(0,20).map(submissionView),nextCursor:items.length>20?items[19]!.id:null};}
+ async reviewList(p:Principal,before?:string){if(before)opaqueId(before);await new OperatorCatalog(this.db).require(p);const items=await this.db.query<ModelSubmission>(sql(`SELECT * FROM catalog_model_submissions WHERE (? IS NULL OR id<?) AND EXISTS (${operator}) ORDER BY id DESC LIMIT 21`,before??null,before??null,p.userId,p.authVersion));return {items:items.slice(0,20).map(submissionView),nextCursor:items.length>20?items[19]!.id:null};}
+ async get(p:Principal,id:string,admin=false){opaqueId(id);const rows=await this.db.query<ModelSubmission>(sql('SELECT * FROM catalog_model_submissions WHERE id=?',id));const row=rows[0];if(!row)throw new CatalogError('not_found');if(admin)await new OperatorCatalog(this.db).require(p);else await this.requireOwner(p,{tenantId:row.tenant_id,projectId:row.project_id,workspaceId:row.workspace_id,workspaceGeneration:row.workspace_generation});return row;}
+ async prior(p:Principal,operation:string,key:string,hash:string){const items=await this.db.query<{submission_id:string;payload_hash:string}>(sql('SELECT submission_id,payload_hash FROM catalog_submission_intents WHERE actor_user_id=? AND operation=? AND idempotency_key=?',p.userId,operation,key));if(!items[0])return null;if(items[0].payload_hash!==hash)throw new CatalogError('idempotency_conflict');return items[0].submission_id;}
+ async submit(p:Principal,scope:TurnScope,key:string,raw:unknown,freeze:(source:PublicationVersion)=>Promise<StoredPublication>){
+  opaqueId(key);const input=submissionInput(raw),hash=await digest(JSON.stringify({scope,input})),operation='submission.submit';await this.requireOwner(p,scope);const prior=await this.prior(p,operation,key,hash);if(prior)return {...submissionView(await this.get(p,prior)),replayed:true};
+  const snapshot=await freeze(input.source);if(!snapshot.readiness.ready||JSON.stringify(snapshot.version)!==JSON.stringify(input.source))throw Error('publication-model-stale');await this.requireOwner(p,scope);
+  const id=crypto.randomUUID(),intent=crypto.randomUUID(),now=this.clock();
+  await this.db.batch([
+   sql(`INSERT INTO catalog_model_submissions(id,tenant_id,project_id,workspace_id,workspace_generation,created_by,model_id,version,title,description,snapshot_json,status,created_at,updated_at,last_intent_id) SELECT ?,?,?,?,?,?,?,?,?,?,?,'submitted',?,?,? WHERE EXISTS (${owner}) AND NOT EXISTS(SELECT 1 FROM catalog_submission_intents WHERE actor_user_id=? AND operation=? AND idempotency_key=?) AND NOT EXISTS(SELECT 1 FROM catalog_model_submissions WHERE project_id=? AND model_id=? AND version=? AND (status IN ('submitted','publishing','published') OR (status='changes_requested' AND json_extract(snapshot_json,'$.version.revisionId')=?)))`,id,scope.tenantId,scope.projectId,scope.workspaceId,scope.workspaceGeneration,p.userId,input.modelId,input.version,input.title,input.description,JSON.stringify(snapshot),now,now,intent,...args(scope,p),p.userId,operation,key,scope.projectId,input.modelId,input.version,input.source.revisionId),
+   sql(`INSERT INTO catalog_submission_intents(id,actor_user_id,operation,idempotency_key,payload_hash,submission_id,created_at) SELECT ?,?,?,?,?,id,? FROM catalog_model_submissions WHERE id=? AND last_intent_id=?`,intent,p.userId,operation,key,hash,now,id,intent),
+  ]);const accepted=await this.prior(p,operation,key,hash);if(!accepted)throw new CatalogError('not_ready');return {...submissionView(await this.get(p,accepted)),replayed:accepted!==id};
+ }
+ async review(p:Principal,id:string,key:string,raw:unknown){
+  opaqueId(id);opaqueId(key);if(!raw||typeof raw!=='object'||Array.isArray(raw)||Object.keys(raw).sort().join(',')!=='decision,note')throw new CatalogError('invalid_input');const {decision,note}=raw as {decision:string;note:string};if(!['approve','request-changes','reject'].includes(decision)||typeof note!=='string'||!note.trim()||note.length>4000)throw new CatalogError('invalid_input');
+  const operation='submission.review',hash=await digest(JSON.stringify({id,decision,note}));await new OperatorCatalog(this.db).require(p);const prior=await this.prior(p,operation,key,hash);let row=await this.get(p,id,true);if(prior&&prior!==id)throw new CatalogError('idempotency_conflict');
+  if(!prior&&!(decision==='approve'&&row.status==='publishing')){
+   if(row.status!=='submitted')throw new CatalogError('not_ready');const intent=crypto.randomUUID(),now=this.clock(),status=decision==='approve'?'publishing':decision==='reject'?'rejected':'changes_requested';
+   await this.db.batch([
+    sql(`UPDATE catalog_model_submissions SET status=?,review_note=?,reviewed_by=?,updated_at=?,last_intent_id=? WHERE id=? AND status='submitted' AND EXISTS (${operator}) AND NOT EXISTS(SELECT 1 FROM catalog_submission_intents WHERE actor_user_id=? AND operation=? AND idempotency_key=?)`,status,note,p.userId,now,intent,id,p.userId,p.authVersion,p.userId,operation,key),
+    ...(decision==='approve'?[sql(`INSERT INTO catalog_model_versions(id,model_id,version,status,title,description,starter_version,content_ref,content_sha256,last_transition_id,created_by,created_at) SELECT id,model_id,version,'draft',title,description,'blank-v1','publication/'||json_extract(snapshot_json,'$.contentSha256'),json_extract(snapshot_json,'$.contentSha256'),?, ?,? FROM catalog_model_submissions WHERE id=? AND last_intent_id=? AND status='publishing'`,intent,p.userId,now,id,intent),sql(`UPDATE catalog_model_submissions SET model_version_id=id WHERE id=? AND status='publishing' AND last_intent_id=?`,id,intent)]:[]),
+    sql(`INSERT INTO catalog_submission_intents(id,actor_user_id,operation,idempotency_key,payload_hash,submission_id,created_at) SELECT ?,?,?,?,?,id,? FROM catalog_model_submissions WHERE id=? AND last_intent_id=?`,intent,p.userId,operation,key,hash,now,id,intent),
+    sql(`INSERT INTO catalog_submission_reviews(id,submission_id,actor_user_id,decision,note,created_at) SELECT id,submission_id,actor_user_id,?,?,created_at FROM catalog_submission_intents WHERE id=?`,decision,note,intent),
+   ]);row=await this.get(p,id,true);if(row.status!==status||row.last_intent_id!==intent){const replay=await this.prior(p,operation,key,hash);if(!replay)throw new CatalogError('not_ready');}
+  }
+  if(!prior&&decision==='approve'&&row.status==='publishing'&&!await this.prior(p,operation,key,hash)){
+   const intent=crypto.randomUUID(),now=this.clock();await this.db.batch([
+    sql(`INSERT INTO catalog_submission_intents(id,actor_user_id,operation,idempotency_key,payload_hash,submission_id,created_at) SELECT ?,?,?,?,?,id,? FROM catalog_model_submissions WHERE id=? AND status='publishing' AND EXISTS (${operator}) AND NOT EXISTS(SELECT 1 FROM catalog_submission_intents WHERE actor_user_id=? AND operation=? AND idempotency_key=?)`,intent,p.userId,operation,key,hash,now,id,p.userId,p.authVersion,p.userId,operation,key),
+    sql(`INSERT INTO catalog_submission_reviews(id,submission_id,actor_user_id,decision,note,created_at) SELECT id,submission_id,actor_user_id,'approve',?,created_at FROM catalog_submission_intents WHERE id=?`,note,intent),
+   ]);if(!await this.prior(p,operation,key,hash))throw new CatalogError('not_found');
+  }
+  if(decision==='approve'&&row.status==='publishing'){
+   const snapshot=JSON.parse(row.snapshot_json)as StoredPublication;await this.artifacts.read(snapshot,'export');const bytes=await this.artifacts.read(snapshot,'content');await new OperatorCatalog(this.db).require(p);
+   let model=await this.models.get(row.model_version_id!);if(model.status==='draft'){await this.models.upload(p,model.id,'submission-upload-'+id,async()=>bytes);model=await this.models.transition(p,model.id,'validated','submission-validate-'+id);}
+   if(model.status==='validated')model=await this.models.transition(p,model.id,'published','submission-publish-'+id);
+   if(model.status!=='published')throw new CatalogError('not_ready');await this.db.batch([sql(`UPDATE catalog_model_submissions SET status='published',updated_at=? WHERE id=? AND status='publishing' AND model_version_id=? AND EXISTS (${operator})`,this.clock(),id,model.id,p.userId,p.authVersion)]);
+  }
+  return {...submissionView(await this.get(p,id,true)),replayed:!!prior};
+ }
+ async download(p:Principal,id:string,admin:boolean){const row=await this.get(p,id,admin),snapshot=JSON.parse(row.snapshot_json)as StoredPublication,bytes=await this.artifacts.read(snapshot,'export');await this.get(p,id,admin);return new Response(bytes.slice().buffer,{headers:{'content-type':'application/zip','content-disposition':`attachment; filename="candidate-${id}.zip"`,'cache-control':'no-store','x-riffology-export-sha256':snapshot.exportSha256}});}
+}

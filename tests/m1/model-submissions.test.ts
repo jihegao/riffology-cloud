@@ -1,0 +1,44 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {SqliteCatalog} from './sqlite-database.ts';
+import {SubmissionCatalog} from '../../services/catalog/submissions.ts';
+import {ModelCatalog} from '../../services/catalog/models.ts';
+import {ProjectCatalog} from '../../services/catalog/projects.ts';
+import {verifyModelContent} from '../../services/runtime/content.ts';
+import {digest} from '../../services/simulation/source.ts';
+import type {StoredPublication,PublicationArtifacts} from '../../services/publication/artifacts.ts';
+const owner={userId:'owner',authVersion:1},admin={userId:'admin',authVersion:1};
+async function fixture(){
+ const db=new SqliteCatalog();db.sqlite.exec(readFileSync(new URL('../../services/catalog/migrations/0009_model_submissions.sql',import.meta.url),'utf8'));for(const id of ['owner','other','admin','admin2'])db.seed(id);db.sqlite.exec("INSERT INTO catalog_platform_roles(user_id,role,status,created_at,updated_at) VALUES ('admin','operator','active',1,1),('admin2','operator','active',1,1)");
+ const project=(await new ProjectCatalog(db,new Set(['blank-v1'])).create(owner,'tenant-owner','project',{title:'User project',starterVersion:'blank-v1'})).project;
+ const scope={tenantId:project.tenant_id,projectId:project.id,workspaceId:project.workspace_id,workspaceGeneration:project.generation};const code='print(1)',bytes=new TextEncoder().encode(JSON.stringify({schemaVersion:1,files:[{path:'model/run.py',bytes:code.length,sha256:await digest(new TextEncoder().encode(code)),contentBase64:btoa(code)}]})),sha=await digest(bytes),version={revisionId:'revision',filesSha256:'a'.repeat(64),specSha256:'b'.repeat(64)};
+ const snapshot:StoredPublication={schemaVersion:1,version,readiness:{schemaVersion:1,ready:true,version,checks:[{code:'test-fixture-only',passed:true}],baselineRunIds:['baseline'],exampleGroupIds:['group'],limitations:['local test fixture only']},exportKey:'publication-v1/export/'+'e'.repeat(64),exportSha256:'e'.repeat(64),exportBytes:3,contentKey:'publication-v1/content/'+sha,contentSha256:sha,contentBytes:bytes.length};
+ const state={freezes:0,failUpload:false,reads:0};const artifacts:PublicationArtifacts={put:async()=>snapshot,read:async()=>{state.reads++;return bytes;}};
+ const content={resolve:async(ref:Parameters<typeof verifyModelContent>[0])=>verifyModelContent(ref,{size:bytes.length,arrayBuffer:async()=>bytes.slice().buffer})};const models=new ModelCatalog(db,()=>Date.now(),content,{upload:async(ref,input,before)=>{await before();if(state.failUpload)throw Error('lost storage ack');return (await verifyModelContent(ref,{size:input.length,arrayBuffer:async()=>input.slice().buffer})).receipt;}});
+ const catalog=new SubmissionCatalog(db,models,artifacts);const input={modelId:'queue',version:'1',title:'Queue',description:'A test model',source:version};const freeze=async()=>{state.freezes++;return structuredClone(snapshot);};return {db,scope,snapshot,input,state,catalog,freeze,models};
+}
+test('ordinary owner submits once; cross-tenant and stale versions reject; immutable snapshot survives source edits',async t=>{
+ const f=await fixture();t.after(()=>f.db.sqlite.close());const candidate=await f.catalog.submit(owner,f.scope,'submit',f.input,f.freeze);assert.equal(candidate.status,'submitted');assert.equal(f.state.freezes,1);assert.equal((await f.catalog.submit(owner,f.scope,'submit',f.input,f.freeze)).replayed,true);assert.equal(f.state.freezes,1);
+ await assert.rejects(f.catalog.submit({userId:'other',authVersion:1},f.scope,'other',f.input,f.freeze),/not_found/);await assert.rejects(f.catalog.submit(owner,f.scope,'submit',{...f.input,title:'Changed'},f.freeze),/idempotency_conflict/);
+ f.snapshot.version={...f.snapshot.version,revisionId:'changed'};assert.equal((await f.catalog.list(owner,f.scope)).items[0]!.snapshot.version.revisionId,'revision');await assert.rejects(f.catalog.submit(owner,f.scope,'new',{...f.input,version:'2'},f.freeze),/model-stale/);
+ assert.throws(()=>f.db.sqlite.prepare('UPDATE catalog_model_submissions SET snapshot_json=? WHERE id=?').run('{}',candidate.id),/snapshot-immutable/);
+});
+test('request changes and rejection are durable reviews; new saved revision is required to resubmit changes',async t=>{
+ const f=await fixture();t.after(()=>f.db.sqlite.close());const c=await f.catalog.submit(owner,f.scope,'submit',f.input,f.freeze);await assert.rejects(f.catalog.review(owner,c.id,'review',{decision:'approve',note:'not operator'}),/not_found/);
+ assert.equal((await f.catalog.review(admin,c.id,'review',{decision:'request-changes',note:'Improve assumptions'})).status,'changes_requested');assert.equal((await f.catalog.review(admin,c.id,'review',{decision:'request-changes',note:'Improve assumptions'})).replayed,true);
+ await assert.rejects(f.catalog.submit(owner,f.scope,'new-submit',f.input,f.freeze),/not_ready/);f.input.source={...f.input.source,revisionId:'revision-2'};f.snapshot.version={...f.input.source};const next=await f.catalog.submit(owner,f.scope,'new-revision',f.input,f.freeze);assert.notEqual(next.id,c.id);assert.equal((await f.catalog.review(admin,next.id,'reject',{decision:'reject',note:'Outside scope'})).status,'rejected');
+});
+test('approval resumes after storage response loss and publishes existing immutable catalog copy source',async t=>{
+ const f=await fixture();t.after(()=>f.db.sqlite.close());const c=await f.catalog.submit(owner,f.scope,'submit',f.input,f.freeze);f.state.failUpload=true;await assert.rejects(f.catalog.review(admin,c.id,'approve',{decision:'approve',note:'Reviewed frozen experiment'}),/not_ready/);assert.equal((await f.catalog.get(admin,c.id,true)).status,'publishing');assert.equal(f.db.count('catalog_model_versions'),1);
+ await assert.rejects(f.catalog.review(admin,c.id,'reverse',{decision:'reject',note:'Too late'}),/not_ready/);f.state.failUpload=false;const result=await f.catalog.review(admin,c.id,'approve',{decision:'approve',note:'Reviewed frozen experiment'});assert.equal(result.status,'published');assert.equal(result.replayed,true);assert.equal(f.db.count('catalog_model_versions'),1);assert.equal((await f.models.published()).length,1);
+ const other={userId:'other',authVersion:1},copy=(await new ProjectCatalog(f.db,new Set(['blank-v1']),f.models).create(other,'tenant-other','copy',{title:'Independent copy',modelId:'queue',modelVersion:'1'})).project;assert.notEqual(copy.id,f.scope.projectId);assert.notEqual(copy.workspace_id,f.scope.workspaceId);assert.equal(copy.source_digest,f.snapshot.contentSha256);
+ assert.equal((await f.catalog.review(admin,c.id,'approve',{decision:'approve',note:'Reviewed frozen experiment'})).status,'published');assert.equal(f.db.count('catalog_submission_reviews'),1);
+});
+test('D1 acknowledgement loss replays original submission and review; revoked operator cannot continue publish',async t=>{
+ const f=await fixture();t.after(()=>f.db.sqlite.close());f.db.loseCommitResponse=true;await assert.rejects(f.catalog.submit(owner,f.scope,'submit',f.input,f.freeze),/lost committed response/);f.db.loseCommitResponse=false;const c=await f.catalog.submit(owner,f.scope,'submit',f.input,f.freeze);assert.equal(f.state.freezes,1);
+ f.db.loseCommitResponse=true;await assert.rejects(f.catalog.review(admin,c.id,'approve',{decision:'approve',note:'Reviewed'}),/lost committed response/);f.db.loseCommitResponse=false;f.db.sqlite.exec("UPDATE catalog_platform_roles SET status='revoked' WHERE user_id='admin'");await assert.rejects(f.catalog.review(admin,c.id,'approve',{decision:'approve',note:'Reviewed'}),/not_found/);assert.equal((await f.models.get(c.id)).status,'draft');
+});
+test('another active operator can resume frozen approval with its own audited idempotency intent',async t=>{
+ const f=await fixture();t.after(()=>f.db.sqlite.close());const c=await f.catalog.submit(owner,f.scope,'submit',f.input,f.freeze);f.state.failUpload=true;await assert.rejects(f.catalog.review(admin,c.id,'approve',{decision:'approve',note:'Initial review'}),/not_ready/);f.state.failUpload=false;f.db.sqlite.exec("UPDATE catalog_platform_roles SET status='revoked' WHERE user_id='admin'");const second={userId:'admin2',authVersion:1};assert.equal((await f.catalog.review(second,c.id,'resume',{decision:'approve',note:'Resume frozen decision'})).status,'published');assert.equal(f.db.count('catalog_submission_reviews'),2);assert.equal((await f.catalog.review(second,c.id,'resume',{decision:'approve',note:'Resume frozen decision'})).replayed,true);await assert.rejects(f.catalog.review(second,c.id,'resume',{decision:'approve',note:'Different body'}),/idempotency_conflict/);
+});

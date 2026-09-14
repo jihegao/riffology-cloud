@@ -40,3 +40,8 @@ test('content adapter rejects unsupported roots and readiness fails on denied or
  const archive=initialWorkspaceArchive({'model/run.py':enc('print(1)'),'other/file':enc('x')});await assert.rejects(publicationContent(archive),/source-path-unsupported/);
  const f=await fixture();await assert.rejects(preparePublication(f.snapshot,{...f.ports,authorize:async()=>{throw Error('denied');}},false),/denied/);
 });
+test('public readiness never returns internal exception messages',async()=>{
+ const f=await fixture(),secret='private/r2/token=SECRET';
+ const source=await preparePublication(f.snapshot,{...f.ports,source:async()=>{throw Error(secret);}},false);assert.equal(JSON.stringify(source).includes(secret),false);assert.ok(source.readiness.checks.some(c=>c.code==='publication-source-unavailable'));
+ const artifact=await preparePublication(f.snapshot,{...f.ports,artifact:async()=>{throw Error(secret);}},false);assert.equal(JSON.stringify(artifact).includes(secret),false);assert.ok(artifact.readiness.checks.some(c=>c.code==='publication-export-unavailable'));
+});

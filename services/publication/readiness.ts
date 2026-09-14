@@ -7,6 +7,7 @@ import {verifyModelContent,MODEL_CONTENT_MAX_BYTES,MODEL_CONTENT_MAX_FILE_BYTES}
 export type PublicationVersion=ReturnType<typeof modelVersion>;
 export type PublicationReadiness={schemaVersion:1;ready:boolean;version:PublicationVersion|null;checks:Array<{code:string;passed:boolean}>;exampleGroupIds:string[];baselineRunIds:string[];limitations:string[]};
 export type FrozenPublication={readiness:PublicationReadiness;manifest:Awaited<ReturnType<typeof buildResearchExport>>['manifest'];exportBytes:Uint8Array;exportSha256:string;contentBytes:Uint8Array;contentSha256:string};
+const publicFailure=(error:unknown,kind:'source'|'export')=>{const code=error instanceof Error?error.message:'';return /^(?:invalid-model-spec|model-spec-(?:missing|too-large)|model-contract-mismatch|simulation-dependencies-invalid|export-(?:source-mismatch|result-missing|dependencies-invalid|model-spec-invalid|evidence-mismatch|sensitive-file|too-large)|publication-(?:source-path-unsupported|content-too-large))$/.test(code)?code:`publication-${kind}-unavailable`;};
 const same=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
 const sameModel=(a:PublicationVersion,b:PublicationVersion)=>a.filesSha256===b.filesSha256&&a.specSha256===b.specSha256;
 
@@ -35,7 +36,7 @@ export async function preparePublication(snapshot:ResearchSnapshot,ports:ExportP
  const check=(code:string,passed:boolean)=>{readiness.checks.push({code,passed});return passed;};
  check('saved-revision',snapshot.current.kind==='saved-turn');check('no-active-unsaved-state',!activeUnsaved);
  await ports.authorize();let archive:Uint8Array,plan;
- try{archive=await ports.source(snapshot.current,MODEL_CONTENT_MAX_BYTES);plan=await simulationPlan(snapshot.current,archive);}catch(error){check(error instanceof Error?error.message:'model-unavailable',false);return {readiness,frozen:null};}
+ try{archive=await ports.source(snapshot.current,MODEL_CONTENT_MAX_BYTES);plan=await simulationPlan(snapshot.current,archive);}catch(error){check(publicFailure(error,'source'),false);return {readiness,frozen:null};}
  const version=readiness.version=modelVersion(plan),spec=plan.spec;readiness.limitations=[...spec.limitations];
  check('persistent-spec',true);check('declared-parameters',Object.keys(spec.parameters).length>0);check('declared-metrics',Object.keys(spec.metrics).length>0);check('limitations-and-scope',spec.limitations.length>0&&!!spec.scope.trim());
  const rejected=(runId:string)=>snapshot.assessments.some(a=>a.scope==='run'?a.runId===runId:a.scope==='model'&&sameModel(a.version as PublicationVersion,version));
@@ -56,7 +57,7 @@ export async function preparePublication(snapshot:ResearchSnapshot,ports:ExportP
  check('successful-baseline',readiness.baselineRunIds.length>0);check('complete-example-comparison',readiness.exampleGroupIds.length>0);
  if(readiness.checks.some(c=>!c.passed))return {readiness,frozen:null};
  let exported,content;
- try{exported=await buildResearchExport(snapshot,ports);content=await publicationContent(archive);}catch(error){check(error instanceof Error?error.message:'export-unavailable',false);return {readiness,frozen:null};}
+ try{exported=await buildResearchExport(snapshot,ports);content=await publicationContent(archive);}catch(error){check(publicFailure(error,'export'),false);return {readiness,frozen:null};}
  check('complete-reproducible-export',true);check('copyable-model-content',true);await ports.authorize();readiness.ready=true;
  return {readiness,frozen:{readiness:structuredClone(readiness),manifest:exported.manifest,exportBytes:exported.bytes,exportSha256:exported.sha256,contentBytes:content.bytes,contentSha256:content.sha256}};
 }
