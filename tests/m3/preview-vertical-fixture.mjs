@@ -2,9 +2,9 @@ import {mkdtemp,rm,readFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';import {join} from 'node:path';import {build} from 'esbuild';import {Miniflare} from 'miniflare';
 /** Real local platform chain; server identity provisioning and Runtime process
  * responses are fixtures. No Google, Docker, cloud calls or external network. */
-export async function createPreviewVerticalFixture({observer=false,observerExecutor=false}={}){
+export async function createPreviewVerticalFixture({observer=false,observerExecutor=false,workspaceExtension="",fixtureMethods=[],modelFiles={}}={}){
  const directory=await mkdtemp(join(tmpdir(),'preview-vertical-')),worker='preview-vertical-test',image='registry.example/service@sha256:'+'f'.repeat(64),expiresAt=Date.now()+600000;
- const entry=`import {gateway} from './services/gateway/app.ts';import {catalogDatabase} from './services/catalog/database.ts';import {createGatewayPreviewServices} from './services/gateway/preview-services.ts';import {previewHost} from './services/gateway/preview-host.ts';
+ const entry=`import {createGatewayResearchExports} from './services/gateway/research-export-services.ts';import {createGatewaySimulationServices} from './services/gateway/simulation-services.ts';import {gateway} from './services/gateway/app.ts';import {catalogDatabase} from './services/catalog/database.ts';import {createGatewayPreviewServices} from './services/gateway/preview-services.ts';import {previewHost} from './services/gateway/preview-host.ts';
  import {turnRuntimeActorName} from './services/turn-runtime/identity.ts';import {DurableObject} from 'cloudflare:workers';import {readPrivateWebSocketRequest} from './services/preview/websocket-protocol.ts';
  import {WorkspaceAgent as Base} from './services/workspace/durable.ts';
  import {forwardRunningObserver} from './services/run/observer-forward.ts';
@@ -20,13 +20,14 @@ export async function createPreviewVerticalFixture({observer=false,observerExecu
  import {serviceRunActorName} from './services/run/host.ts';import {serviceRuntimeActorName} from './services/run/durable.ts';
  export {ServiceRun} from './services/run/durable.ts';export {TenantQuota} from './services/quota/durable.ts';export {RevisionStore} from './services/turn-runtime/revision-store.ts';
  export class WorkspaceAgent extends Base{
+  ${workspaceExtension}
   async seed(scope,actor,key){
    const task={id:'workspace-task',tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,generation:scope.workspaceGeneration,starterVersion:'m1-empty-v1',authVersion:1,createdAt:1,deadlineAt:9000};
    await this.ctx.storage.put('m1:workspace:initialization',{task,wakeAt:null,projection:{outcome:'ready'},projectionConfirmed:true});
    const j=new TurnJournal(new DurableTurnStore(this.ctx.storage));const session=(await j.createSession(scope,actor,'session-'+key,{title:'Fixture'})).session;
    await j.submit(scope,actor,session.id,'turn-'+key,{message:'Create fixture'});const turn=(await j.claim(scope,1)).turn;
    const identity={scope,sessionId:session.id,turnId:turn.id,dispatchId:turn.dispatchId,generation:1},encode=v=>new TextEncoder().encode(v);
-   const filesArchive=initialWorkspaceArchive({'app/preview.json':encode(JSON.stringify({schemaVersion:1,runtime:'python',entrypoint:'app/main.py',dependencyLock:'app/requirements.lock',port:8080,healthPath:'/health',...(${observer}?{observation:{pagePath:'/observe',statePath:'/state'}}:{})})),'app/main.py':encode('print('+JSON.stringify(key)+')'),'app/requirements.lock':encode(JSON.stringify({schemaVersion:1,packages:{}}))});
+   const filesArchive=initialWorkspaceArchive({...Object.fromEntries(Object.entries(${JSON.stringify(modelFiles)}).map(([k,v])=>[k,encode(v)])),'app/preview.json':encode(JSON.stringify({schemaVersion:1,runtime:'python',entrypoint:'app/main.py',dependencyLock:'app/requirements.lock',port:8080,healthPath:'/health',...(${observer}?{observation:{pagePath:'/observe',statePath:'/state'}}:{})})),'app/main.py':encode('print('+JSON.stringify(key)+')'),'app/requirements.lock':encode(JSON.stringify({schemaVersion:1,packages:{}}))});
    const resolution=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).commit({identity,base:turn.base,outcome:'completed',executionErrorCode:null,snapshot:{identity,filesArchive,piSession:encode('private-session')}});
    if(resolution.status!=='committed')throw Error('fixture-revision-commit-'+resolution.status);const receipt=resolution.receipt;
    await j.beginCheckpoint(scope,{turnId:turn.id,dispatchId:turn.dispatchId,runtimeGeneration:1,outcome:'completed'});
@@ -119,7 +120,7 @@ export async function createPreviewVerticalFixture({observer=false,observerExecu
   async stop(input){if(!await this.ctx.storage.get('stop'))await this.ctx.storage.put('stop',{reference:input.reference,scope:input.scope,confirmationId:'stop-'+input.reference.runId,observedAt:Date.now(),fenced:true});return this.value(input);}
  }
  export default {async fetch(req,env){const url=new URL(req.url),database=catalogDatabase(env.CATALOG);
-  if(url.origin==='https://app.example.test'&&url.pathname.startsWith('/api/'))return gateway(req,{origin:env.APP_ORIGIN,database,identity:async()=>({subject:'auth-user-a',email:'fixture@example.test',emailVerified:true,platformVersion:1,browserSession:{sessionId:'auth-session-a',expiresAt:Number(env.FIXTURE_SESSION_EXPIRY)}}),previews:createGatewayPreviewServices(env,database)});
+  if(url.origin==='https://app.example.test'&&url.pathname.startsWith('/api/'))return gateway(req,{origin:env.APP_ORIGIN,database,identity:async()=>({subject:'auth-user-a',email:'fixture@example.test',emailVerified:true,platformVersion:1,browserSession:{sessionId:'auth-session-a',expiresAt:Number(env.FIXTURE_SESSION_EXPIRY)}}),previews:createGatewayPreviewServices(env,database),simulations:createGatewaySimulationServices(env),researchExports:createGatewayResearchExports(env)});
   if(url.protocol==='https:'&&url.hostname.endsWith('.preview.example.test'))return previewHost(req,env,database);
   if(url.origin!=='https://fixture.test'||req.method!=='POST')return new Response(null,{status:404});
   try{const b=await req.json();let value;
@@ -132,7 +133,7 @@ export async function createPreviewVerticalFixture({observer=false,observerExecu
    else if(b.method==='holdObserver')value=await env.SERVICE_RUNTIME.getByName(await serviceRuntimeActorName(b.input)).holdObserver(b.value);
    else if(b.method==='observerCalls')value=await env.PRODUCT_TURN_RUNTIME.getByName(await turnRuntimeActorName(b.input)).calls();
    else if(b.method==='forwarding')value=await env.SERVICE_RUNTIME.getByName(await serviceRuntimeActorName(b.input)).forwarding();
-   else if(['readObserverArtifact','seedObserverArtifact','terminalObserver','corruptTurnWake','observerAccept','observerAlarm','observerMaintenanceDue','unready','seed','submitServiceRequest','serviceSnapshot','serviceView','observePreview','observerRoute','observerRecord','observerTurn','observerClaim','finishObserver','cancelObserver','observerGate','authorizeObserverCommand','bindPreview','revokePreview'].includes(b.method))value=await env.WORKSPACE_AGENT.getByName('workspace:tenant-a:workspace-a')[b.method](...(b.args??[]));
+   else if([...${JSON.stringify(fixtureMethods)},'readObserverArtifact','seedObserverArtifact','terminalObserver','corruptTurnWake','observerAccept','observerAlarm','observerMaintenanceDue','unready','seed','submitServiceRequest','serviceSnapshot','serviceView','observePreview','observerRoute','observerRecord','observerTurn','observerClaim','finishObserver','cancelObserver','observerGate','authorizeObserverCommand','bindPreview','revokePreview'].includes(b.method))value=await env.WORKSPACE_AGENT.getByName('workspace:tenant-a:workspace-a')[b.method](...(b.args??[]));
    else return new Response(null,{status:404});return Response.json({ok:true,value:b.method==='readObserverArtifact'?{...value,content:Array.from(value.content)}:value});
   }catch(e){return Response.json({ok:false,error:e.message});}
  }};`;
