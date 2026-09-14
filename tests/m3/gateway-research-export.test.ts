@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import {gateway} from '../../services/gateway/app.ts';
+import {createGatewayResearchExports} from '../../services/gateway/research-export-services.ts';
+import {ProjectCatalog} from '../../services/catalog/projects.ts';
+import {SqliteCatalog} from '../m1/sqlite-database.ts';
+const origin='https://export.example.test';
+test('export GET authorizes workspace ownership, retains binary response, rejects mutations and maps explicit incomplete-package errors',async t=>{
+ const database=new SqliteCatalog();t.after(()=>database.sqlite.close());const now=Date.now();database.sqlite.prepare("INSERT INTO catalog_users(id,identity_issuer,identity_subject,normalized_email,created_at,updated_at,auth_version,status) VALUES ('u','better-auth','sub','u@example.test',?,?,1,'active')").run(now,now);database.sqlite.prepare("INSERT INTO catalog_tenants(id,owner_user_id,created_at,updated_at) VALUES ('tenant','u',?,?)").run(now,now);database.sqlite.prepare("INSERT INTO catalog_memberships(tenant_id,user_id,created_at,updated_at) VALUES ('tenant','u',?,?)").run(now,now);
+ const actor={userId:'u',authVersion:1},project=await new ProjectCatalog(database,new Set(['blank-v1'])).create(actor,'tenant','p',{title:'P',starterVersion:'blank-v1'});database.sqlite.prepare("UPDATE catalog_projects SET status='ready'").run();database.sqlite.prepare("UPDATE catalog_workspaces SET status='ready'").run();const workspace=project.project.workspace_id;let calls=0,error:string|null=null;
+ const researchExports=createGatewayResearchExports({WORKSPACE_AGENT:{getByName:()=>({researchExport:async input=>{calls++;assert.equal(input.scope.workspaceId,workspace);assert.deepEqual(input.actor,actor);if(error)throw Error(error);return new Response(new Uint8Array([80,75,3,4]),{headers:{'content-type':'application/zip','content-disposition':'attachment; filename="project.zip"','cache-control':'no-store'}});}})}});
+ const services={origin,database,identity:async()=>({subject:'sub',email:'u@example.test',emailVerified:true,platformVersion:1}),researchExports};const path=`/api/workspaces/${workspace}/research-export`,request=(path:string,method='GET')=>gateway(new Request(origin+path,{method,headers:{origin}}),services);
+ const response=await request(path);assert.equal(response.status,200);assert.equal(response.headers.get('content-type'),'application/zip');assert.deepEqual([...new Uint8Array(await response.arrayBuffer())],[80,75,3,4]);assert.equal(calls,1);
+ assert.equal((await request(path+'?source=other')).status,400);assert.equal((await request(path,'POST')).status,400);assert.equal((await request('/api/workspaces/foreign/research-export')).status,404);assert.equal(calls,1);
+ for(const [code,status]of [['export-result-missing',409],['export-source-mismatch',409],['export-sensitive-file',409],['export-too-large',413],['export-busy',429]] as const){error=code;const response=await request(path);assert.equal(response.status,status);assert.equal((await response.json() as {error:string}).error,code);}
+ error=null;database.sqlite.prepare("UPDATE catalog_projects SET status='failed'").run();database.sqlite.prepare("UPDATE catalog_workspaces SET status='failed'").run();assert.equal((await request(path)).status,200);const prior=calls;database.sqlite.prepare("UPDATE catalog_memberships SET status='revoked'").run();assert.equal((await request(path)).status,404);assert.equal(calls,prior);
+});

@@ -5,7 +5,7 @@ import { chromium } from 'playwright';
 import { JSON_REQUEST_MAX_BYTES } from '../../services/gateway/http.ts';
 import { renderWorkspace } from '../../ui/workspace.js';
 
-const files = Object.fromEntries(await Promise.all(['index.html', 'app.js', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'evidence.js', 'evidence.css', 'styles.css', 'workspace.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
+const files = Object.fromEntries(await Promise.all(['index.html', 'app.js', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'export.js', 'evidence.js', 'evidence.css', 'styles.css', 'workspace.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
 const workspaceUiSource = await readFile(new URL('../../ui/workspace.js', import.meta.url), 'utf8');
 let browser;
 before(async () => { browser = await chromium.launch({ headless: true, channel: process.env.M1_BROWSER_CHANNEL || 'chrome' }); });
@@ -724,7 +724,7 @@ test('selected session survives reload and remains user controlled', async t => 
   await page.locator('#session-select').waitFor();
   await page.locator('#session-select').selectOption('a');
   await page.reload();
-  await page.locator('#session-select').waitFor();
+  await page.locator('#session-select option[value="a"]').waitFor({ state: 'attached' });
   assert.equal(await page.locator('#session-select').inputValue(), 'a');
 });
 
