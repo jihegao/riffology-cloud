@@ -1,4 +1,7 @@
-import { modelBudgetTenantName, modelCallReference, type ModelCallRecord, type ModelCallRequest, type ModelCallTerminal } from '../model-budget/core.ts';
+import { PRODUCTION_MONEY_ACTOR, moneyReference, type ProductionMoneyLedger, type MoneyReference } from '../model-budget/production-money.ts';
+import type { ProductionProfile } from './production-profile.ts';
+import { productionFailure, productionHttpFailure } from './openai-gateway-responses.ts';
+import { modelBudgetTenantName, modelCallReference, type ModelCallRecord, type ModelCallRequest, type ModelCallTerminal, type ModelReleaseProof } from '../model-budget/core.ts';
 import { positive, turnDigest, turnId } from '../turn/protocol.ts';
 import { verifyModelTurnCapability, type ModelTurnCapabilityClaims } from './capability.ts';
 import { verifyTrustedModelRequest } from './internal-auth.ts';
@@ -13,6 +16,7 @@ type BudgetStub = {
   reserve(tenantId: string, request: ModelCallRequest): Promise<{ record: ModelCallRecord; replayed: boolean }>;
   dispatch(tenantId: string, reference: ReturnType<typeof modelCallReference>): Promise<{ authorized: boolean; observeOnly: boolean; record: ModelCallRecord }>;
   markUnknown(tenantId: string, reference: ReturnType<typeof modelCallReference>): Promise<ModelCallRecord>;
+  releaseUndispatched?(tenantId:string,reference:ReturnType<typeof modelCallReference>,proof:ModelReleaseProof):Promise<ModelCallRecord>;
   finish(tenantId: string, reference: ReturnType<typeof modelCallReference>, terminal: ModelCallTerminal): Promise<ModelCallRecord>;
 };
 type BudgetNamespace = { getByName(name: string): BudgetStub };
@@ -20,6 +24,7 @@ type BudgetNamespace = { getByName(name: string): BudgetStub };
 export interface ModelProxyHttpEnv {
   TRUSTED_PI_SANDBOX: IdentityNamespace;
   TENANT_MODEL_BUDGET: BudgetNamespace;
+  PRODUCTION_MODEL_BUDGET?:{getByName(name:string):Pick<ProductionMoneyLedger,'admit'|'reserve'|'dispatch'|'finish'|'markUnknown'|'releaseUndispatched'|'lookup'>};
   M2_MODEL_PROXY_REQUEST_KEY: string;
   M2_MODEL_TURN_CAPABILITY_KEY: string;
 }
@@ -42,7 +47,7 @@ export type ProductModelProviderResult = {
   responseContentType: 'text/event-stream' | 'application/json';
   responseBody: Uint8Array;
 };
-export interface ProductModelProvider { dispatch(input: ProductModelProviderInput): Promise<ProductModelProviderResult> }
+export interface ProductModelProvider { readonly productionProfile?:ProductionProfile; dispatch(input: ProductModelProviderInput): Promise<ProductModelProviderResult> }
 export type ProductModelTelemetry = (event: Record<string, unknown>) => void;
 
 type Envelope = {
@@ -153,20 +158,43 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
 
   const tenantId = claims.identity.scope.tenantId;
   const budget = env.TENANT_MODEL_BUDGET.getByName(modelBudgetTenantName(tenantId));
+  const production=provider.productionProfile;
+  if(claims.provider==='openai'&&!production)return unavailable();
+  if(production&&(claims.provider!==production.inferenceProvider||claims.model!==production.model||!env.PRODUCTION_MODEL_BUDGET))return denied();
+  if(production&&(parsed.inputBoundVersion!=='utf8-provider-payload-plus-4096-v1'||parsed.inputTokenUpperBound<new TextEncoder().encode(JSON.stringify(parsed.payload)).byteLength+4096))return denied();
+  const money=production?env.PRODUCTION_MODEL_BUDGET!.getByName(PRODUCTION_MONEY_ACTOR):null;
+  let moneyRef:MoneyReference|undefined;
   let reference: ReturnType<typeof modelCallReference>;
   try {
     const payloadSha256 = await turnDigest({ schemaVersion: 1, purpose: 'product-model-provider-payload', payload: parsed.payload });
-    const reservation = await budget.reserve(tenantId, {
+    const reservationRequest:ModelCallRequest = {
       schemaVersion: 1, identity: claims.identity, actor: claims.actor,
       callId: parsed.callId, requestId: parsed.requestId, deadlineAt: parsed.deadlineAt,
       provider: claims.provider, model: claims.model, payloadSha256,
       inputTokenUpperBound: parsed.inputTokenUpperBound, maxOutputTokens: parsed.maxOutputTokens,
       inputBoundVersion: parsed.inputBoundVersion, budgetPolicyVersion: claims.budgetPolicyVersion,
-    });
+    };
+    // Token admission first: an explicit policy rejection creates no money hold.
+    // Its durable dispatch fence remains untouched until money is authorized.
+    const reservation=await budget.reserve(tenantId,reservationRequest);
     reference = modelCallReference(reservation.record);
+    if(money&&production){
+      const admission=await money.admit({request:reservationRequest,profile:production});
+      if(!admission.accepted){
+        if(reservation.record.dispatchedAt===null)await budget.releaseUndispatched?.(tenantId,reference,{confirmationId:parsed.requestId,reason:'proxy-pre-dispatch-failed',observedAt:positive(now())});
+        return conflict('model_money_admission_denied');
+      }
+      moneyRef=moneyReference(admission.record);
+      if(!(await money.dispatch(moneyRef)).authorized)return conflict('model_call_observe_only');
+    }
     const dispatch = await budget.dispatch(tenantId, reference);
-    if (!dispatch.authorized) return conflict(dispatch.observeOnly ? 'model_call_observe_only' : 'model_call_not_dispatched', dispatch.record.status);
-  } catch { return conflict('model_call_rejected'); }
+    if (!dispatch.authorized) {
+      // A previously dispatched token call may have been sent by an older
+      // release: only the explicit no-dispatch state proves there is no charge.
+      if(money&&moneyRef&&!dispatch.observeOnly&&dispatch.record.dispatchedAt===null)await money.releaseUndispatched(moneyRef,{kind:'token-fence-denied-before-provider',confirmationId:parsed.requestId,tokenReservationId:reference.reservationId,observedAt:positive(now())});
+      return conflict(dispatch.observeOnly ? 'model_call_observe_only' : 'model_call_not_dispatched', dispatch.record.status);
+    }
+  } catch { if(money&&moneyRef)await money.markUnknown(moneyRef,'outcome-unknown').catch(()=>{});return conflict('model_call_rejected'); }
 
   let result: ProductModelProviderResult;
   let stage='provider-dispatch',started=now();
@@ -182,15 +210,20 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
       : {kind:'verified' as const,inputTokens:result.inputTokens,outputTokens:result.outputTokens,source:'provider-usage',observedAt:positive(now())};
     const terminal: ModelCallTerminal = {
       outcome: result.status >= 200 && result.status < 300 ? 'completed' : 'failed',
-      errorCode: result.status >= 200 && result.status < 300 ? null : 'provider-rejected',
+      errorCode: result.status >= 200 && result.status < 300 ? null : production?productionHttpFailure(result.status):'provider-rejected',
       providerRequestId: result.providerRequestId,
       usage,
     };
     stage='budget-finish';started=now();
+    if(money&&moneyRef){
+      if(result.inputTokens!==null&&result.outputTokens!==null&&result.providerRequestId!==null)await money.finish(moneyRef,{inputTokens:result.inputTokens,outputTokens:result.outputTokens,providerRequestId:result.providerRequestId,evidence:'provider-usage-conservative-price'});
+      else await money.markUnknown(moneyRef,productionHttpFailure(result.status));
+    }
     await budget.finish(tenantId, reference, terminal);
     emit(telemetry,{event:'budget-finish-result',outcome:'committed',durationMs:now()-started});
   } catch(error) {
     emit(telemetry,{event:'model-call-failure',stage,errorCode:failureCode(error),durationMs:now()-started});
+    if(money&&moneyRef)await money.markUnknown(moneyRef,productionFailure(error)).catch(()=>{});
     await budget.markUnknown(tenantId, reference).catch(() => {});
     return unavailable();
   }

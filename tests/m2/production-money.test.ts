@@ -4,7 +4,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { ProductionMoneyLedger, moneyReference, type MoneyPolicy } from '../../services/model-budget/production-money.ts';
 import type { ModelBudgetStorage, ModelCallRequest } from '../../services/model-budget/core.ts';
 import { productionProfile, profileDigest, conservativeCost } from '../../services/model-proxy/production-profile.ts';
-const profile=productionProfile({schemaVersion:1,profileVersion:'fixture-v1',inferenceProvider:'openai',model:'fixture-model',protocol:'openai-responses',billing:'platform-byok',gateway:{kind:'cloudflare',accountId:'a'.repeat(32),gatewayId:'fixture'},secrets:{provider:'PRODUCTION_OPENAI_API_KEY',gateway:'PRODUCTION_AI_GATEWAY_TOKEN'},acceptance:{evidenceSha256:'a'.repeat(64),privacyReviewSha256:'b'.repeat(64)},rates:{version:'fixture-rates-v1',currency:'USD',inputNanodollarsPerToken:2,outputNanodollarsPerToken:5},limits:{maxInputTokens:100,maxOutputTokens:100}});
+import { profile } from './production-profile-fixture.ts';
 function request(callId='call-a',userId='user-a',tenantId='tenant-a',turnId='turn-a'):ModelCallRequest{return {schemaVersion:1,identity:{scope:{tenantId,projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1},sessionId:'session-a',turnId,dispatchId:'dispatch-a',generation:1},actor:{userId,authVersion:1},callId,requestId:`request-${callId}`,deadlineAt:10000,provider:'openai',model:'fixture-model',payloadSha256:'f'.repeat(64),inputTokenUpperBound:60,maxOutputTokens:20,inputBoundVersion:'bound-v1',budgetPolicyVersion:'tokens-v1'};}
 async function fixture(t:{after(fn:()=>void):void},caps={turn:1000,user:1000,tenant:1000,global:1000}){
  const db=new DatabaseSync(':memory:'); t.after(()=>db.close());

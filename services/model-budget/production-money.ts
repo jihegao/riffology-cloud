@@ -6,7 +6,8 @@ import { conservativeCost, moneyInteger, productionProfile, profileDigest, type 
 export const PRODUCTION_MONEY_ACTOR = 'production-money-global-v1';
 export type MoneyPolicy = { version: string; period: string; enabled: boolean; profileSha256: string; caps: { turn: number; user: number; tenant: number; global: number } };
 export type MoneyReservation = { request: ModelCallRequest; profile: ProductionProfile };
-export type MoneyRecord = { key: string; digest: string; period: string; policyVersion: string; tenantId: string; userId: string; turnKey: string; request: ModelCallRequest; profile: ProductionProfile; profileSha256: string; reserved: number; accounted: number; state: 'reserved'|'dispatched'|'unknown'|'recorded'|'released'; acceptedAt: number; updatedAt: number; terminal: null | { inputTokens: number; outputTokens: number; providerRequestId: string; evidence: 'provider-usage-conservative-price' }; errorCategory: string|null };
+export type MoneyRecord = { key: string; digest: string; period: string; policyVersion: string; tenantId: string; userId: string; turnKey: string; request: ModelCallRequest; profile: ProductionProfile; profileSha256: string; reserved: number; accounted: number; state: 'reserved'|'dispatched'|'unknown'|'recorded'|'released'; acceptedAt: number; updatedAt: number; terminal: null | { inputTokens: number; outputTokens: number; providerRequestId: string; evidence: 'provider-usage-conservative-price' }; errorCategory: string|null; releaseProof: NoDispatchProof|null };
+export type NoDispatchProof = { confirmationId: string; kind: 'token-fence-denied-before-provider'; tokenReservationId: string; observedAt: number };
 export type MoneyReference = { key: string; digest: string };
 const IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9._-]{0,149}$/;
 function id(value: unknown): string { if (typeof value !== 'string' || !IDENTIFIER.test(value)) throw Error('invalid-production-money-identity'); return value; }
@@ -42,6 +43,14 @@ export class ProductionMoneyLedger {
     if(prior && prior.document!==document) throw Error('production-money-policy-conflict');
     if(!prior)this.#storage.sql.exec('INSERT INTO production_money_policies VALUES (?,?)',this.#policy.version,document);
   }
+  /** Explicit, persisted-RPC rejection response. Transport failures stay throws. */
+  async admit(value:MoneyReservation):Promise<{accepted:true;record:MoneyRecord;replayed:boolean}|{accepted:false;reason:string}>{
+    try{return {accepted:true,...await this.reserve(value)};}catch(error){
+      const reason=error instanceof Error?error.message:'';
+      if(['production-money-cap-exceeded','production-money-profile-denied','production-provider-stopped','production-money-policy-conflict','production-money-call-conflict'].includes(reason))return {accepted:false,reason};
+      throw error;
+    }
+  }
   async reserve(value: MoneyReservation): Promise<{record:MoneyRecord;replayed:boolean}> {
     const p=productionProfile(value.profile), profileSha256=await profileDigest(p), r=value.request;
     const identity=turnRuntimeIdentity(r.identity), attributed=actor(r.actor);
@@ -60,7 +69,7 @@ export class ProductionMoneyLedger {
         let occupied=0n;for(const row of this.#storage.sql.exec<{accounted:number}>(`SELECT accounted FROM production_money_calls WHERE state!='released'${lifetime?'':" AND (state!='recorded' OR period=?)"}${filter}`,...(lifetime?[]:[this.#policy.period]),...args))occupied+=BigInt(row.accounted);
         if(occupied+BigInt(reserved)>BigInt(cap))throw Error('production-money-cap-exceeded');
       }
-      const at=moneyInteger(this.#now(),1),record:MoneyRecord={key,digest,period:this.#policy.period,policyVersion:this.#policy.version,tenantId:identity.scope.tenantId,userId:attributed.userId,turnKey,request,profile:p,profileSha256,reserved,accounted:reserved,state:'reserved',acceptedAt:at,updatedAt:at,terminal:null,errorCategory:null};this.#save(record);return {record,replayed:false};
+      const at=moneyInteger(this.#now(),1),record:MoneyRecord={key,digest,period:this.#policy.period,policyVersion:this.#policy.version,tenantId:identity.scope.tenantId,userId:attributed.userId,turnKey,request,profile:p,profileSha256,reserved,accounted:reserved,state:'reserved',acceptedAt:at,updatedAt:at,terminal:null,errorCategory:null,releaseProof:null};this.#save(record);return {record,replayed:false};
     });await this.#storage.sync();return result;
   }
   async dispatch(reference:MoneyReference):Promise<{authorized:boolean;record:MoneyRecord}>{
@@ -73,6 +82,14 @@ export class ProductionMoneyLedger {
     if(terminal.evidence!=='provider-usage-conservative-price'||typeof terminal.providerRequestId!=='string'||!/^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(terminal.providerRequestId))throw Error('invalid-production-money-evidence');
     const evidence={inputTokens:moneyInteger(terminal.inputTokens),outputTokens:moneyInteger(terminal.outputTokens),providerRequestId:terminal.providerRequestId,evidence:'provider-usage-conservative-price' as const};
     const record=this.#storage.transactionSync(()=>{const r=this.#reference(reference);if(r.state==='recorded'){if(JSON.stringify(r.terminal)!==JSON.stringify(evidence))throw Error('production-money-terminal-conflict');return r;}if(r.state!=='dispatched'&&r.state!=='unknown')throw Error('production-money-not-dispatched');if(evidence.inputTokens>r.request.inputTokenUpperBound||evidence.outputTokens>r.request.maxOutputTokens)throw Error('production-money-usage-bound');r.accounted=conservativeCost(r.profile,evidence.inputTokens,evidence.outputTokens);r.terminal=evidence;r.state='recorded';r.updatedAt=this.#now();r.errorCategory=null;this.#save(r);return r;});await this.#storage.sync();return record;
+  }
+  /** Private proxy proof, only after an explicit token fence denied dispatch.
+   * A thrown RPC / lost ACK is never such proof. The money fence ensures only
+   * that original handler can reach this branch; replays are observe-only. */
+  async releaseUndispatched(reference:MoneyReference,proof:NoDispatchProof):Promise<MoneyRecord>{
+    if(proof.kind!=='token-fence-denied-before-provider')throw Error('invalid-production-release-proof');
+    const normalized:NoDispatchProof={confirmationId:id(proof.confirmationId),kind:proof.kind,tokenReservationId:id(proof.tokenReservationId),observedAt:moneyInteger(proof.observedAt,1)};
+    const record=this.#storage.transactionSync(()=>{const r=this.#reference(reference);if(r.state==='released'){if(JSON.stringify(r.releaseProof)!==JSON.stringify(normalized))throw Error('production-money-release-conflict');return r;}if(r.state!=='dispatched')throw Error('production-money-release-denied');r.state='released';r.accounted=0;r.releaseProof=normalized;r.updatedAt=this.#now();this.#save(r);return r;});await this.#storage.sync();return record;
   }
   async lookup(reference:MoneyReference):Promise<MoneyRecord>{return this.#reference(reference);}
 }

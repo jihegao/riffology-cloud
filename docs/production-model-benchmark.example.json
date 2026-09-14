@@ -1,0 +1,19 @@
+{
+  "profile": null,
+  "profileSha256": null,
+  "runtimeSha256": null,
+  "taskFixturesSha256": null,
+  "privacyEvidenceSha256": null,
+  "gatewayNoRetryEvidenceSha256": null,
+  "operator": null,
+  "accountReference": null,
+  "authorizationReference": null,
+  "rateCardSource": null,
+  "rateCardCheckedAt": null,
+  "deadline": null,
+  "maxCallsPerTask": null,
+  "concurrency": null,
+  "globalCapNanodollars": null,
+  "turnCapNanodollars": null,
+  "targets": { "p95TurnMs": null, "maxCostPerAcceptedTaskNanodollars": null }
+}
