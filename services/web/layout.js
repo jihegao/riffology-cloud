@@ -1,9 +1,10 @@
 /** Presentation preferences only. Panels retain their original execution state. */
-export function createWorkspaceLayout({root,storage=window.localStorage}){
+export function createWorkspaceLayout({root,storage}){
+ if(storage===undefined)try{storage=window.localStorage;}catch{storage=null;}
  const grid=root.querySelector('.workspace-grid'),separator=root.querySelector('[data-workspace-divider]');
  let context=null,ratio=35,depth='explore',view='preview',mobile='chat';
  const key=()=>`riffology:workspace-layout:${context.tenantId}:${context.workspaceId}`;
- const save=()=>{if(context)try{storage.setItem(key(),JSON.stringify({ratio,depth,view,mobile}));}catch{}};
+ const save=()=>{if(context)try{storage?.setItem(key(),JSON.stringify({ratio,depth,view,mobile}));}catch{}};
  function limits(){const width=grid.getBoundingClientRect().width;return {min:Math.max(25,Math.min(45,240/Math.max(1,width)*100)),max:Math.min(60,Math.max(45,(width-340)/Math.max(1,width)*100))};}
  function render(){
   const {min,max}=limits(),shown=Math.min(max,Math.max(min,ratio));grid.style.setProperty('--agent-width',`${shown}%`);separator.setAttribute('aria-valuenow',String(Math.round(shown)));separator.setAttribute('aria-valuemin',String(Math.ceil(min)));separator.setAttribute('aria-valuemax',String(Math.floor(max)));separator.setAttribute('aria-valuetext',`对话 ${Math.round(shown)}%，模型 ${100-Math.round(shown)}%`);
@@ -22,6 +23,6 @@ export function createWorkspaceLayout({root,storage=window.localStorage}){
  separator.addEventListener('pointermove',event=>{if(!dragging)return;const rect=grid.getBoundingClientRect(),{min,max}=limits();ratio=Math.max(min,Math.min(max,(event.clientX-rect.left)/rect.width*100));render();});
  const finish=()=>{if(!dragging)return;dragging=false;root.classList.remove('workspace-resizing');save();};separator.addEventListener('pointerup',finish);separator.addEventListener('pointercancel',finish);separator.addEventListener('lostpointercapture',finish);
  window.addEventListener('resize',render);
- function enter(value){context=value;ratio=window.innerWidth>=1200?35:32;depth='explore';view='preview';mobile='chat';try{const saved=JSON.parse(storage.getItem(key())||'null');if(saved){if(Number.isFinite(saved.ratio))ratio=Math.max(25,Math.min(60,saved.ratio));if(['explore','experiment','inspect'].includes(saved.depth))depth=saved.depth;if(['preview','model','runs','inspect'].includes(saved.view))view=saved.view;if(['chat','preview'].includes(saved.mobile))mobile=saved.mobile;}}catch{}render();}
+ function enter(value){context=value;ratio=window.innerWidth>=1200?35:32;depth='explore';view='preview';mobile='chat';try{const saved=JSON.parse(storage?.getItem(key())||'null');if(saved){if(Number.isFinite(saved.ratio))ratio=Math.max(25,Math.min(60,saved.ratio));if(['explore','experiment','inspect'].includes(saved.depth))depth=saved.depth;if(['preview','model','runs','inspect'].includes(saved.view))view=saved.view;if(['chat','preview'].includes(saved.mobile))mobile=saved.mobile;}}catch{}render();}
  return {enter,select,refresh:render};
 }
