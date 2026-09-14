@@ -3,6 +3,7 @@ const $ = selector => document.querySelector(selector);
 const publicationPanel=createPublicationPanel({root:$('#model-submissions'),api,admin:true});
 const notice = $('#notice');
 let authenticated = false;
+let operatorUserId=null;
 let operator = false;
 let loading = false;
 let issueIntent = null;
@@ -36,7 +37,7 @@ function accountView() {
   $('#admin-login').hidden = authenticated;
   $('#admin-denied').hidden = !authenticated || operator;
   $('#admin-app').hidden = !operator;
-  if(operator)publicationPanel.enter();else publicationPanel.leave();
+  if(operator&&operatorUserId)publicationPanel.enter({workspaceId:'admin',userId:operatorUserId});else publicationPanel.leave();
   $('#sign-out').hidden = !authenticated;
 }
 
@@ -273,6 +274,7 @@ async function load() {
   try {
     const session = await api('/api/auth/get-session');
     if (generation !== viewGeneration) return;
+    operatorUserId=typeof session?.user?.id==='string'?session.user.id:null;
     authenticated = Boolean(session?.user); operator = false; accountView();
     if (!authenticated) return;
     await api('/api/admin/overview');
