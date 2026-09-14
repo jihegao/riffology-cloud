@@ -82,3 +82,25 @@ test('pending experiments unlock only confirmed rejection and preserve ambiguous
   assert.equal(await page.evaluate(()=>sessionStorage.getItem('riffology:simulation-intent:t:w')===null),unlocked);
  }
 });
+
+test('Model view restores persisted semantics, bounds and warnings safely on desktop and mobile',async t=>{
+ const browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||'chrome'});t.after(()=>browser.close());const page=await browser.newPage();
+ const css=await readFile(new URL('../../services/web/workspace.css',import.meta.url),'utf8');
+ await page.route('https://model.test/**',route=>route.fulfill({contentType:route.request().url().endsWith('.js')?'application/javascript':'text/html',body:route.request().url().endsWith('.js')?source:`<style>body{font-family:system-ui;margin:16px;--line:#d8e8de;--muted:#52655b}button,input{padding:8px}.simulation-form{display:grid;gap:12px}${css}</style><div id="panel"></div>`}));
+ await page.goto('https://model.test/');
+ await page.evaluate(async()=>{
+  window.fixture={version:{revisionId:'saved-revision-'+ 'r'.repeat(64),filesSha256:'f'.repeat(64),specSha256:'s'.repeat(64)},canRun:false,reasonCode:null,spec:{schemaVersion:1,researchQuestion:'How does capacity affect waiting?',scope:'Airport check-in, 4 hours',entities:['Passenger','Counter'],mechanisms:['Arrival','Queue','Service'],assumptions:['FCFS','<img src=x onerror=alert(1)>'],limitations:['No abandonment'],parameters:{capacity:{type:'integer',default:2,minimum:1,maximum:8,unit:'counters'},mode:{type:'enum',default:'normal',values:['normal','priority']},priority:{type:'boolean',default:false}},metrics:{wait:{unit:'minutes',description:'Mean waiting time'}},execution:{entrypoint:'model/run.py',dependencyLock:'app/requirements.lock'}}};
+  const {createSimulationPanel}=await import('/simulation.js');window.reads=0;window.panel=createSimulationPanel({root:document.querySelector('#panel'),api:async(path,options)=>{if(options)throw Error('read must not execute');window.reads++;return path.endsWith('/model')?structuredClone(window.fixture):{items:[{experimentId:'e',runId:'invalid-current-'+ 'x'.repeat(64),version:window.fixture.version,status:'failed',parameters:{capacity:2},seed:42,errorCode:'simulation-result-invalid'},{experimentId:'old',runId:'invalid-old',version:{filesSha256:'old',specSha256:'old'},status:'failed',parameters:{capacity:2},seed:42,errorCode:'simulation-result-invalid'}]};}});await window.panel.enter({tenantId:'t',workspaceId:'w'});
+ });
+ const view=page.locator('.model-view');
+ for(const text of ['研究问题','范围与边界','实体与资源','机制与规则','假设','限制与未包含的机制','参数定义','输出指标','最小 1','最大 8','单位 counters','Mean waiting time']){assert.ok((await view.innerText()).includes(text),text);}
+ assert.equal(await view.locator('img').count(),0);assert.equal(await view.locator('details').getAttribute('open'),null);assert.equal(await page.locator('button[type=submit]').isDisabled(),true);
+ assert.match(await view.innerText(),/invalid-current.*未通过契约校验/);assert.doesNotMatch(await view.innerText(),/invalid-old/);
+ await view.locator('summary').click();assert.match(await view.locator('pre').innerText(),/saved-revision/);
+ await page.getByText('刷新模型与实验',{exact:true}).click();await page.waitForFunction(()=>window.reads===4);assert.equal(await view.locator('details').getAttribute('open'),'');
+ await view.locator('summary').click();
+ await page.setViewportSize({width:1280,height:900});await page.screenshot({path:'/tmp/riffology-issue29-model-desktop.png',fullPage:true});
+ await page.setViewportSize({width:390,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);assert.equal(await page.evaluate(()=>[...document.querySelectorAll('.simulation-experiment')].every(row=>{const text=row.querySelector('span').getBoundingClientRect(),warning=row.querySelector('small').getBoundingClientRect();return warning.top>=text.bottom&&warning.bottom<=row.getBoundingClientRect().bottom;})),true);await page.screenshot({path:'/tmp/riffology-issue29-model-mobile.png',fullPage:true});
+ await page.evaluate(async()=>{window.fixture.reasonCode='model-contract-mismatch';await window.panel.reload();});assert.match(await view.innerText(),/执行文件不完整/);assert.match(await view.innerText(),/FCFS/);
+ await page.evaluate(async()=>{window.fixture={spec:null,version:null,reasonCode:'model-spec-missing',canRun:false};await window.panel.reload();});assert.match(await view.innerText(),/尚未保存模型说明/);assert.equal(await view.locator('pre').count(),0);
+});
