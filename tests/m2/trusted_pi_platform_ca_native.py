@@ -63,6 +63,12 @@ class PlatformCA(unittest.TestCase):
     def test_root_only_parent_rejected(self):
         self.valid(); os.chmod(CA.parent, 0o700)
         with self.assertRaisesRegex(RuntimeError, 'directory-denied'): supervisor.child_environment()
+    def test_child_group_cannot_fall_back_to_other_read(self):
+        self.valid(); os.chown(CA, 0, 10002); os.chmod(CA, 0o604)
+        with self.assertRaisesRegex(RuntimeError, 'file-denied'): supervisor.child_environment()
+    def test_child_group_cannot_fall_back_to_other_search(self):
+        self.valid(); os.chown(CA.parent, 0, 10002); os.chmod(CA.parent, 0o701)
+        with self.assertRaisesRegex(RuntimeError, 'directory-denied'): supervisor.child_environment()
     def test_directory_or_fifo_not_accepted_as_certificate(self):
         self.valid(); CA.unlink(); CA.mkdir()
         with self.assertRaisesRegex(RuntimeError, 'file-denied'): supervisor.child_environment()

@@ -32,18 +32,18 @@ def child_environment():
         # No untrusted process can replace any checked path component.
         for part in ['etc', 'cloudflare', 'certs']:
             info = os.fstat(directory)
-            if info.st_uid != 0 or not stat.S_ISDIR(info.st_mode) or info.st_mode & 0o022 or not info.st_mode & 0o001:
+            if info.st_uid != 0 or not stat.S_ISDIR(info.st_mode) or info.st_mode & 0o022 or info.st_mode & 0o011 != 0o011:
                 raise RuntimeError('trustedpi-platform-ca-directory-denied')
             next_directory = os.open(part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=directory)
             os.close(directory)
             directory = next_directory
         info = os.fstat(directory)
-        if info.st_uid != 0 or not stat.S_ISDIR(info.st_mode) or info.st_mode & 0o022 or not info.st_mode & 0o001:
+        if info.st_uid != 0 or not stat.S_ISDIR(info.st_mode) or info.st_mode & 0o022 or info.st_mode & 0o011 != 0o011:
             raise RuntimeError('trustedpi-platform-ca-directory-denied')
         certificate = os.open('cloudflare-containers-ca.crt', os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory)
         try:
             info = os.fstat(certificate)
-            if info.st_uid != 0 or not stat.S_ISREG(info.st_mode) or info.st_mode & 0o022 or info.st_size < 1 or not info.st_mode & 0o004:
+            if info.st_uid != 0 or not stat.S_ISREG(info.st_mode) or info.st_mode & 0o022 or info.st_size < 1 or info.st_mode & 0o044 != 0o044:
                 raise RuntimeError('trustedpi-platform-ca-file-denied')
         finally:
             os.close(certificate)
