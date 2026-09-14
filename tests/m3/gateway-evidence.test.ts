@@ -1,0 +1,18 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {gateway} from '../../services/gateway/app.ts';
+import {ProjectCatalog} from '../../services/catalog/projects.ts';
+import {SqliteCatalog} from '../m1/sqlite-database.ts';
+import {evidenceRequest} from '../../services/simulation/evidence.ts';
+const origin='https://evidence.example.test';
+test('evidence routes derive Catalog scope and actor, reject cross-origin and redact internal failures',async t=>{
+ const db=new SqliteCatalog();t.after(()=>db.sqlite.close());const n=Date.now();db.sqlite.prepare("INSERT INTO catalog_users(id,identity_issuer,identity_subject,normalized_email,created_at,updated_at,auth_version,status) VALUES ('u','better-auth','sub','u@example.test',?,?,1,'active')").run(n,n);db.sqlite.prepare("INSERT INTO catalog_tenants(id,owner_user_id,created_at,updated_at) VALUES ('tenant','u',?,?)").run(n,n);db.sqlite.prepare("INSERT INTO catalog_memberships(tenant_id,user_id,created_at,updated_at) VALUES ('tenant','u',?,?)").run(n,n);
+ const actor={userId:'u',authVersion:1},project=await new ProjectCatalog(db,new Set(['blank-v1'])).create(actor,'tenant','p',{title:'P',starterVersion:'blank-v1'});db.sqlite.prepare("UPDATE catalog_projects SET status='ready'").run();db.sqlite.prepare("UPDATE catalog_workspaces SET status='ready'").run();const w=project.project.workspace_id,calls:unknown[][]=[];let failure=false;
+ const simulations={model:async()=>({}),submit:async()=>({}),list:async()=>({}),view:async()=>({}),cancel:async()=>({}),submitGroup:async()=>({}),listGroups:async()=>({}),viewGroup:async()=>({}),cancelGroup:async()=>({}),createEvidence:async(...args:unknown[])=>{evidenceRequest(args[2]);calls.push(args);return {claimId:'a'.repeat(64)};},listEvidence:async(...args:unknown[])=>{calls.push(args);return {items:[],nextCursor:null};},viewEvidence:async(...args:unknown[])=>{calls.push(args);if(failure)throw Error('secret-private-object-key');return {claimId:args[2]};},rejectEvidence:async(...args:unknown[])=>{calls.push(args);return {assessmentId:'b'.repeat(64)};}};
+ const services={origin,database:db,identity:async()=>({subject:'sub',email:'u@example.test',emailVerified:true,platformVersion:1}),simulations};const request=(path:string,init:RequestInit={})=>gateway(new Request(origin+path,{...init,headers:{origin,'content-type':'application/json',...init.headers}}),services);const base=`/api/workspaces/${w}/evidence`;
+ assert.equal((await request(base)).status,200);assert.equal((await request(base,{method:'POST',body:JSON.stringify({schemaVersion:1,kind:'run',runId:'r',metric:'wait'})})).status,201);assert.deepEqual(calls[1]![1],actor);assert.equal((calls[1]![0] as {workspaceId:string}).workspaceId,w);
+ assert.equal((await request(base,{method:'POST',body:JSON.stringify({schemaVersion:1,kind:'run',runId:'r',metric:'wait',value:999})})).status,400);assert.equal((await request(base+'?extra=1')).status,400);assert.equal((await request('/api/workspaces/other/evidence')).status,404);assert.equal((await request(base,{method:'POST',headers:{origin:'https://evil.test'},body:'{}'})).status,403);
+ assert.equal((await request(`/api/workspaces/${w}/evidence-rejections`,{method:'POST',body:JSON.stringify({scope:'model',runId:'r',reason:'Invalid'})})).status,201);failure=true;const bad=await request(base+'/'+ 'a'.repeat(64));assert.equal(bad.status,503);assert.doesNotMatch(await bad.text(),/secret-private/);
+ db.sqlite.prepare("UPDATE catalog_projects SET status='failed'").run();db.sqlite.prepare("UPDATE catalog_workspaces SET status='failed'").run();assert.equal((await request(base)).status,200);
+ db.sqlite.prepare("DELETE FROM catalog_memberships").run();assert.equal((await request(base)).status,404);
+});

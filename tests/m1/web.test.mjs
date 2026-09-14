@@ -5,7 +5,7 @@ import { chromium } from 'playwright';
 import { JSON_REQUEST_MAX_BYTES } from '../../services/gateway/http.ts';
 import { renderWorkspace } from '../../ui/workspace.js';
 
-const files = Object.fromEntries(await Promise.all(['index.html', 'app.js', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'export.js', 'styles.css', 'workspace.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
+const files = Object.fromEntries(await Promise.all(['index.html', 'app.js', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'export.js', 'evidence.js', 'evidence.css', 'styles.css', 'workspace.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
 const workspaceUiSource = await readFile(new URL('../../ui/workspace.js', import.meta.url), 'utf8');
 let browser;
 before(async () => { browser = await chromium.launch({ headless: true, channel: process.env.M1_BROWSER_CHANNEL || 'chrome' }); });
@@ -28,6 +28,7 @@ async function pageFixture(t, handle, options = {}) {
       if (url.pathname === '/api/models') return json(route, { models: [] });
       if (url.pathname === '/api/tenants/tenant-a/projects') return json(route, { projects: [] });
       if (/^\/api\/workspaces\/[^/]+\/model$/.test(url.pathname)) return json(route, { version: null, spec: null, reasonCode: 'model_not_saved', canRun: false });
+      if (/^\/api\/workspaces\/[^/]+\/evidence$/.test(url.pathname)) return json(route,{items:[],nextCursor:null});
       if (/^\/api\/workspaces\/[^/]+\/experiment-groups$/.test(url.pathname) && route.request().method() === 'GET') return json(route, { items: [], nextCursor: null });
       if (/^\/api\/workspaces\/[^/]+\/experiments$/.test(url.pathname)) return json(route, { items: [], nextCursor: null });
       if (/^\/api\/workspaces\/[^/]+\/previews$/.test(url.pathname) && route.request().method() === 'GET') return json(route, {current:null,available:null});
@@ -655,6 +656,7 @@ test('failed project retains service maintenance without making Turn or file req
   const row={runId:'maintenance-run',kind:'service',deliveryStatus:'delivered',runStatus:null,createdAt:1000,updatedAt:2000,stopRequestedAt:null,errorCode:null};
   const page=await pageFixture(t,async(route,path)=>{
     if(path==='/api/tenants/tenant-a/projects'){await json(route,{projects:[{id:'failed-project',workspace_id:'failed-workspace',title:'故障项目',status:'failed'}]});return true;}
+    if(['/api/workspaces/failed-workspace/evidence','/api/workspaces/failed-workspace/experiments','/api/workspaces/failed-workspace/experiment-groups'].includes(path)){await json(route,{items:[],nextCursor:null});return true;}
     if(path==='/api/workspaces/failed-workspace/services'){await json(route,{items:[row],nextCursor:null});return true;}
     if(path.endsWith('/maintenance-run/stop')){stopCalls++;await json(route,{...row,stopRequestedAt:3000},202);return true;}
     if(path.endsWith('/maintenance-run')){await json(route,{...row,runStatus:stopCalls?'stopping':'running',stopRequestedAt:stopCalls?3000:null});return true;}

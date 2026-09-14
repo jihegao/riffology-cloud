@@ -1,3 +1,4 @@
+import {assessmentForRun,evidenceAssessments} from './evidence-adapter.ts';
 import {actor as checkedActor,scope as checkedScope,turnId,type TurnActor,type TurnScope} from '../turn/protocol.ts';
 import {experimentRequest,projectSimulationWake,type SimulationHost,type SimulationRecord} from './host.ts';
 import {resolveParameters,validateMetrics,type ParameterValues,type MetricDefinition} from './model-spec.ts';
@@ -10,9 +11,9 @@ export type GroupConfiguration=GroupConfigurationInput&{configurationId:string;r
 export type GroupStatus='queued'|'running'|'completed'|'partial'|'failed'|'cancelled';
 type Child={runId:string;configurationId:string;seed:number;cancelled:boolean};
 export type ExperimentGroupRecord={schemaVersion:1;groupId:string;scope:TurnScope;actor:TurnActor;key:string;requestJson:string;plan:SimulationPlan;runtimeImage:string;hypothesis:string;configurations:GroupConfiguration[];seeds:number[];children:Child[];status:GroupStatus;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null};
-export type GroupRun={runId:string;configurationId:string;seed:number;status:SimulationRecord['status']|'pending';errorCode:string|null;result:SimulationRecord['result'];released:boolean};
+export type GroupRun={evidenceRejection?:{assessmentId:string;scope:'run'|'model';reason:string};runId:string;configurationId:string;seed:number;status:SimulationRecord['status']|'pending';errorCode:string|null;result:SimulationRecord['result'];released:boolean};
 export type GroupMetric={count:number;missing:number;mean:number|null;baselineMean:number|null;delta:number|null;errorCode:null|'simulation-metric-overflow'};
-export type ExperimentGroupView={groupId:string;version:ReturnType<typeof modelVersion>;hypothesis:string;configurations:GroupConfiguration[];seeds:number[];repetitions:number;metrics:Record<string,MetricDefinition>;status:GroupStatus;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null;stale:boolean;progress:{total:number;pending:number;active:number;completed:number;failed:number;cancelled:number};runs:GroupRun[];summary:Array<{configurationId:string;metrics:Record<string,GroupMetric>}>};
+export type ExperimentGroupView={groupId:string;version:ReturnType<typeof modelVersion>;hypothesis:string;configurations:GroupConfiguration[];seeds:number[];repetitions:number;metrics:Record<string,MetricDefinition>;status:GroupStatus;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null;stale:boolean;progress:{rejected:number;total:number;pending:number;active:number;completed:number;failed:number;cancelled:number};runs:GroupRun[];summary:Array<{configurationId:string;metrics:Record<string,GroupMetric>}>};
 const FINAL=new Set(['completed','failed','cancelled']);
 function invalid():never{throw Error('simulation-input-invalid');}
 function object(raw:unknown,keys:string[]):Record<string,unknown>{
@@ -79,13 +80,13 @@ export class ExperimentGroupHost{
    return {runId:c.runId,configurationId:c.configurationId,seed:c.seed,status:r?.status??(c.cancelled?'cancelled':'pending'),errorCode:r?.errorCode??null,result:r?.result??null,released:r?.released??c.cancelled};});
  }
  async view(g:ExperimentGroupRecord,currentFilesSha:string|null):Promise<ExperimentGroupView>{
-  const runs=await this.#children(g),progress={total:runs.length,pending:0,active:0,completed:0,failed:0,cancelled:0};
-  for(const r of runs){if(r.status==='pending')progress.pending++;else if(r.status==='completed'||r.status==='failed'||r.status==='cancelled')progress[r.status]++;else progress.active++;}
+  const runs=await this.#children(g),assessments=await evidenceAssessments(this.storage),progress={rejected:0,total:runs.length,pending:0,active:0,completed:0,failed:0,cancelled:0};
+  for(const r of runs){const assessment=assessmentForRun(assessments,r.runId,modelVersion(g.plan));if(assessment){r.evidenceRejection={assessmentId:assessment.assessmentId,scope:assessment.scope,reason:assessment.reason};progress.rejected++;}if(r.status==='pending')progress.pending++;else if(r.status==='completed'||r.status==='failed'||r.status==='cancelled')progress[r.status]++;else progress.active++;}
   const summaries=g.configurations.map(c=>{
    const members=runs.filter(r=>r.configurationId===c.configurationId),metrics:Record<string,GroupMetric>={};
    for(const name of Object.keys(g.plan.spec.metrics)){
     const values:number[]=[];
-    for(const r of members){if(r.status!=='completed'||!r.result)continue;try{const checked=validateMetrics(g.plan.spec,r.result.metrics);values.push(checked[name]!);}catch{}}
+    for(const r of members){if(r.status!=='completed'||!r.result||r.evidenceRejection)continue;try{const checked=validateMetrics(g.plan.spec,r.result.metrics);values.push(checked[name]!);}catch{}}
     // Divide before summing to avoid overflow while keeping declared seed order.
     const mean=values.length?values.reduce((sum,value)=>sum+value/values.length,0):null;
     metrics[name]={count:values.length,missing:members.length-values.length,mean:mean!==null&&Number.isFinite(mean)?mean:null,baselineMean:null,delta:null,errorCode:mean!==null&&!Number.isFinite(mean)?'simulation-metric-overflow':null};

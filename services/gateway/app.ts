@@ -141,6 +141,19 @@ export async function gateway(request:Request, services:GatewayServices):Promise
         throw new HttpError('export-unavailable',503);
       }
     }
+    const evidenceRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/(evidence|evidence-rejections)(?:\/([a-f0-9]{64}))?$/.exec(url.pathname);
+    if(evidenceRoute){
+      const [,workspaceId,resource,claimId]=evidenceRoute,catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),scope=await catalog.maintenanceWorkspace(principal,workspaceId!);
+      if(!services.simulations)throw new HttpError('evidence-unavailable',503);
+      try{
+        if(resource==='evidence'&&request.method==='GET'){
+          if(claimId&&!url.search)return json(await services.simulations.viewEvidence(scope,principal,claimId));
+          if(!claimId){if([...url.searchParams.keys()].some(k=>k!=='before')||url.searchParams.getAll('before').length>1)throw new HttpError('evidence-input-invalid',400);return json(await services.simulations.listEvidence(scope,principal,url.searchParams.get('before')??undefined));}
+        }
+        if(request.method==='POST'&&!claimId&&!url.search){const body=await readJson(request);return json(resource==='evidence'?await services.simulations.createEvidence(scope,principal,body):await services.simulations.rejectEvidence(scope,principal,body),201);}
+        throw new HttpError('evidence-input-invalid',400);
+      }catch(error){if(error instanceof HttpError||error instanceof CatalogError)throw error;const code=error instanceof Error?error.message:'';if(code==='evidence-not-found'||code==='simulation-not-found')throw new HttpError('evidence-not-found',404);if(code==='evidence-capacity')throw new HttpError(code,429);if(code==='evidence-access-denied')throw new HttpError(code,403);if(/^evidence-(?:input-invalid|expectation-mismatch|group-mismatch|metric-missing|no-valid-runs|zero-baseline|number-overflow|source-rejected|run-ineligible)$/.test(code))throw new HttpError(code,400);throw new HttpError('evidence-unavailable',503);}
+    }
     const simulationRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/(model|experiments|experiment-groups|simulation-runs)(?:\/([A-Za-z0-9_-]{1,128})(?:\/(cancel))?)?$/.exec(url.pathname);
     if(simulationRoute){
       const [,workspaceId,resource,id,action]=simulationRoute;

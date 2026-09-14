@@ -1,4 +1,7 @@
 import {researchSnapshot,buildResearchExport} from '../research/export.ts';
+import {EvidenceLedger,evidenceGroup,assessmentForRun,evidenceAssessments} from '../simulation/evidence-adapter.ts';
+import {evidenceRequest,type EvidenceHead} from '../simulation/evidence.ts';
+import {boundedResearchContext} from '../simulation/research-context.ts';
 import {ExperimentGroupHost,experimentGroupRequest,type ExperimentGroupRequest} from '../simulation/groups.ts';
 import {turnRuntimeIdentity,type TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
 import {SimulationHost,experimentRequest,publicExperiment,publishSimulationResult,type ExperimentRequest} from '../simulation/host.ts';
@@ -176,6 +179,37 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       return new Response(result.bytes,{headers:{'content-type':'application/zip','content-disposition':`attachment; filename="${result.filename}"`,'cache-control':'no-store','x-content-type-options':'nosniff','x-riffology-export-sha256':await digest(result.bytes)}});
     }finally{this.#exporting=false;}
   }
+  #evidence(scope:TurnScope){
+    return new EvidenceLedger(this.ctx.storage,scope,{
+      run:id=>this.#simulations(scope).get(id),
+      group:async id=>evidenceGroup(await this.#experimentGroups(scope).get(id),scope),
+      source:source=>this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source),
+      artifact:async key=>{if(!this.env.WORKSPACE_CHECKPOINTS)throw Error('evidence-artifact-unavailable');const object=await this.env.WORKSPACE_CHECKPOINTS.get(key);if(!object)return null;if(object.size>65536)throw Error('evidence-source-mismatch');return new Uint8Array(await object.arrayBuffer());},
+    });
+  }
+  async #evidenceHead(scope:TurnScope):Promise<EvidenceHead|null>{
+    const head=this.#turns.workspaceRevisionSnapshot(scope);if(head)return {revisionId:head.receipt.revisionId,filesSha256:head.receipt.filesSha256};
+    try{const initial=await this.#initialWorkspace(scope);return {revisionId:null,filesSha256:initial.filesSha256};}catch{return null;}
+  }
+  async #evidenceAccess(scope:TurnScope,actor:TurnActor){
+    this.#maintenanceScope(scope);const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('evidence-access-denied');this.#maintenanceScope(scope);
+  }
+  async #finishEvidence(scope:TurnScope,items:import('../simulation/evidence.ts').EvidenceView[]){const result=await this.#evidence(scope).refreshViews(items);this.#maintenanceScope(scope);return result;}
+  async createEvidence(input:{scope:TurnScope;actor:TurnActor;body:unknown}){
+    const scope=this.#maintenanceScope(input.scope);await this.#evidenceAccess(scope,input.actor);const ledger=this.#evidence(scope),claim=await ledger.create(evidenceRequest(input.body),input.actor,()=>this.#evidenceAccess(scope,input.actor));await this.#evidenceAccess(scope,input.actor);const result=await ledger.get(claim.claimId,await this.#evidenceHead(scope));await this.#evidenceAccess(scope,input.actor);return (await this.#finishEvidence(scope,[result]))[0]!;
+  }
+  async listEvidence(input:{scope:TurnScope;actor:TurnActor;before?:string}){
+    const scope=this.#maintenanceScope(input.scope);await this.#evidenceAccess(scope,input.actor);const result=await this.#evidence(scope).list(await this.#evidenceHead(scope),input.before);await this.#evidenceAccess(scope,input.actor);return {...result,items:await this.#finishEvidence(scope,result.items)};
+  }
+  async evidence(input:{scope:TurnScope;actor:TurnActor;claimId:string}){
+    const scope=this.#maintenanceScope(input.scope);await this.#evidenceAccess(scope,input.actor);const ledger=this.#evidence(scope),result=await ledger.get(input.claimId,await this.#evidenceHead(scope));await this.#evidenceAccess(scope,input.actor);return (await this.#finishEvidence(scope,[result]))[0]!;
+  }
+  async rejectEvidence(input:{scope:TurnScope;actor:TurnActor;body:unknown}){
+    const scope=this.#maintenanceScope(input.scope);await this.#evidenceAccess(scope,input.actor);const result=await this.#evidence(scope).reject(input.body,input.actor,()=>this.#evidenceAccess(scope,input.actor));await this.#evidenceAccess(scope,input.actor);return result;
+  }
+  async researchEvidenceExport(input:{scope:TurnScope;actor:TurnActor}){
+    const scope=this.#maintenanceScope(input.scope);await this.#evidenceAccess(scope,input.actor);const result=await this.#evidence(scope).exportRecords();await this.#evidenceAccess(scope,input.actor);return result;
+  }
   async researchContext(input:{identity:TurnRuntimeIdentity;executionDeadlineAt:number}){
     const identity=turnRuntimeIdentity(input.identity),scope=this.#ready(identity.scope);
     const authorize=async()=>{
@@ -188,10 +222,8 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     };
     await authorize();
     const model=await this.modelSpec({scope}),page=await this.listExperiments({scope}),experiments=page.items.slice(0,5);
-    const experimentGroups=(await this.listExperimentGroups({scope})).items.slice(0,2);
-    const result={model,experiments,experimentGroups};
-    while(experimentGroups.length&&new TextEncoder().encode(JSON.stringify(result)).byteLength>60000)experimentGroups.pop();
-    while(experiments.length&&new TextEncoder().encode(JSON.stringify(result)).byteLength>60000)experiments.pop();
+    const groupPage=await this.listExperimentGroups({scope}),evidencePage=await this.#evidence(scope).list(model.version,undefined,3);
+    const result=boundedResearchContext({model,experiments,experimentGroups:groupPage.items,evidence:evidencePage.items,hasMoreExperiments:page.items.length>5||page.nextCursor!==null,hasMoreGroups:groupPage.nextCursor!==null,hasMoreEvidence:evidencePage.nextCursor!==null});
     await authorize();return result;
   }
   async modelSpec(input:{scope:TurnScope}){
@@ -214,15 +246,15 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   }
   async listExperiments(input:{scope:TurnScope;before?:string}){
     const scope=this.#maintenanceScope(input.scope),page=await this.#simulations(scope).list(input.before),head=this.#turns.workspaceRevisionSnapshot(scope);
-    return {items:page.items.map(r=>publicExperiment(r,head?.receipt.filesSha256??null)),nextCursor:page.nextCursor};
+    const assessments=await evidenceAssessments(this.ctx.storage);return {items:page.items.map(r=>({...publicExperiment(r,head?.receipt.filesSha256??null),evidenceRejection:assessmentForRun(assessments,r.runId,modelVersion(r.input.plan))??null})),nextCursor:page.nextCursor};
   }
   async experiment(input:{scope:TurnScope;runId:string}){
     const scope=this.#maintenanceScope(input.scope),r=await this.#simulations(scope).get(input.runId),head=this.#turns.workspaceRevisionSnapshot(scope);
-    return publicExperiment(r,head?.receipt.filesSha256??null);
+    return {...publicExperiment(r,head?.receipt.filesSha256??null),evidenceRejection:assessmentForRun(await evidenceAssessments(this.ctx.storage),r.runId,modelVersion(r.input.plan))??null};
   }
   async cancelSimulation(input:{scope:TurnScope;runId:string}){
     const scope=this.#maintenanceScope(input.scope),r=await this.#simulations(scope).cancel(input.runId),head=this.#turns.workspaceRevisionSnapshot(scope);
-    return publicExperiment(r,head?.receipt.filesSha256??null);
+    return {...publicExperiment(r,head?.receipt.filesSha256??null),evidenceRejection:assessmentForRun(await evidenceAssessments(this.ctx.storage),r.runId,modelVersion(r.input.plan))??null};
   }
   readonly #webSockets=new Set<AbortController>();
   #observerHost:WorkspaceObserverHost|null=null;
