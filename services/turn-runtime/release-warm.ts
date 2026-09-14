@@ -22,15 +22,16 @@ export function assembleWarmRuntime(ctx:DurableObjectState,env:ProductTurnRuntim
  const target=async(domain:'project'|'trustedPi')=>{const current=await requireBound(),actorId=await workspaceSandboxActor(current.context.lease,domain);let result=targets.get(actorId);if(!result){result=(async()=>{const namespace=domain==='project'?env.PROJECT_SANDBOX:env.TRUSTED_PI_SANDBOX;const native=namespace.getByName(actorId) as Native;await native.configureWorkspaceBinding(current);return native;})();targets.set(actorId,result);}return result;};
  const proxy=(domain:'project'|'trustedPi')=>new Proxy({}, {get(_obj,key){if(key==='then')return undefined;return async(...args:unknown[])=>{const native=await target(domain),method=native[key as string];if(typeof method!=='function')throw Error('workspace-native-method-unavailable');return method.apply(native,args);};}});
  const release=assembleProductTurnRuntimeRelease(identity,{projectPreparation:{storage:ctx.storage,enabled:true},revisions:env.REVISION_STORE.getByName(revisionStoreActorName(identity.scope)),resolveProjectSandbox:()=>proxy('project') as ProjectWorkspaceRpc,resolveTrustedPiSandbox:()=>proxy('trustedPi') as TrustedPiSandboxActorApi,capacity:null,trace:turnOperationTracer(env.M2_TURN_OPERATION_TELEMETRY)});
- const original=release.execution;
+ const original=release.execution;const trace=turnOperationTracer(env.M2_TURN_OPERATION_TELEMETRY);
  release.execution={...original,async fenceUnresolvedStart(_identity,outcome){return {identity,phase:'terminal',outcome,executionErrorCode:'turn-native-start-unresolved',events:[],stopped:null};},async start(input){
-   const current=await owner.bindWorkspaceRuntime({identity,executionDeadlineAt:input.executionDeadlineAt!});if(!current)throw Error('workspace-runtime-binding-unavailable');
+   const began=performance.now();const current=await owner.bindWorkspaceRuntime({identity,executionDeadlineAt:input.executionDeadlineAt!});if(!current)throw Error('workspace-runtime-binding-unavailable');
    const filesSha256=input.base.workspace?.filesSha256??input.base.initial?.filesSha256??Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new Uint8Array(10240))),n=>n.toString(16).padStart(2,'0')).join('');
    const next:Bound={context:{lease:current.lease,identity,bindingEpoch:current.binding.bindingEpoch,filesSha256},deadlineAt:current.executionDeadlineAt};
    const saved=ctx.storage.kv.get<Bound>(KEY);if(saved&&JSON.stringify(saved)!==JSON.stringify(next))throw Error('workspace-runtime-binding-input-conflict');ctx.storage.kv.put(KEY,next);await ctx.storage.sync();bound=next;
+   try{trace?.({route:'turn.operation',metric:'workspace_binding_result',stage:'workspace-binding',reasonCategory:'none',attempt:1,durationMs:Math.min(1e9,Math.max(0,Math.floor(performance.now()-began))),value:1,correlationId:current.lease.leaseId});}catch{}
    return original.start(input);
  }};
- release.retention={async settle(input){return owner.settleWorkspaceRuntime(input);}} as TurnRuntimeRetentionPort;
+ release.retention={async settle(input){const began=performance.now(),result=await owner.settleWorkspaceRuntime(input);try{trace?.({route:'turn.operation',metric:'workspace_handoff_result',stage:'workspace-handoff',reasonCategory:result.status==='handed-off'?'none':'release_pending',attempt:1,durationMs:Math.min(1e9,Math.max(0,Math.floor(performance.now()-began))),value:result.status==='handed-off'?1:0,correlationId:input.resourceLease.leaseId});}catch{}return result;}} as TurnRuntimeRetentionPort;
  return release;
 }
 export async function runtimeWorkspaceSelection(env:ProductTurnRuntimeReleaseEnv,identity:TurnRuntimeIdentity){

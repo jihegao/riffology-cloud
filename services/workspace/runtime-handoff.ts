@@ -14,9 +14,10 @@ const same=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
 /** Settlement owns its own durable retry state. Native quiescence is not
  * capacity release, and RevisionStore commit is not Workspace saved state. */
 export class WorkspaceRuntimeHandoff{
- readonly deps:Dependencies;readonly clock:()=>number;
+ readonly deps:Dependencies;readonly clock:()=>number;#inFlight=new Map<string,Promise<TurnResourceDisposition>>();
  constructor(deps:Dependencies){this.deps=deps;this.clock=deps.clock??Date.now;}
- async settle(input:RuntimeSettlementInput,forceDrain=false):Promise<TurnResourceDisposition>{
+ settle(input:RuntimeSettlementInput,forceDrain=false):Promise<TurnResourceDisposition>{const key=`${input.identity.turnId}:${forceDrain}`;let pending=this.#inFlight.get(key);if(!pending){pending=this.#settle(input,forceDrain).finally(()=>{if(this.#inFlight.get(key)===pending)this.#inFlight.delete(key);});this.#inFlight.set(key,pending);}return pending;}
+ async #settle(input:RuntimeSettlementInput,forceDrain=false):Promise<TurnResourceDisposition>{
   const key=forceDrain?`workspace-runtime-drain:${input.resourceLease.leaseId}`:`workspace-runtime-handoff:${input.identity.turnId}`,now=this.clock(),common={...input.resourceLease,turnId:input.identity.turnId,dispatchId:input.identity.dispatchId,generation:input.identity.generation};
   let state=this.deps.storage.kv.get<State>(key)??{since:now,decision:forceDrain?'destroy':'waiting',absence:{},proofs:null,disposition:null};
   if(state.disposition&&(state.disposition.status==='handed-off'||state.disposition.status==='released'))return state.disposition;
@@ -58,7 +59,7 @@ export class WorkspaceRuntimeHandoff{
     // Fixed proof intent is durable before dispatch. An unknown response is
     // observed on retry, never replaced with another proof or binding epoch.
     await this.deps.pair.confirmHandoff(pairReference(current.lease),current.binding,state.proofs!);
-    return this.settle(input);
+    return this.#settle(input);
    }
   }
   let draining=lease.status==='releasing'?lease:await this.deps.pair.cancelPair(pairReference(current.lease));

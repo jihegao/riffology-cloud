@@ -85,7 +85,7 @@ export class WorkspaceRuntimeLeases implements TurnCapacityPort{
   const result=await this.#pair.bind(pairReference(value.lease!),binding);if(result.status!=='bound'||!equal(result.binding,binding))throw Error('workspace-runtime-binding-unavailable');
   await this.#fresh(value);return this.current(identity);
  }
- selection(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw),value=this.#storage.kv.get<Selection>(key(identity.turnId));if(!value)return null;if(!sameScope(value.scope,identity.scope)||value.sessionId!==identity.sessionId)throw Error('workspace-runtime-selection-conflict');return {mode:value.mode,closing:value.closing||value.cancelled};}
+ selection(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw),value=this.#storage.kv.get<Selection>(key(identity.turnId));if(!value)return null;if(!sameScope(value.scope,identity.scope)||value.sessionId!==identity.sessionId)throw Error('workspace-runtime-selection-conflict');return {mode:value.mode,closing:value.closing||value.cancelled,bound:value.binding!==null};}
  async current(raw:TurnRuntimeIdentity):Promise<WorkspaceRuntimeBinding|null>{
   const identity=turnRuntimeIdentity(raw),value=this.#storage.kv.get<Selection>(key(identity.turnId));if(!value||value.mode==='cold')return null;
   if(!sameScope(value.scope,identity.scope)||value.sessionId!==identity.sessionId||!value.lease||!value.binding||value.binding.dispatchId!==identity.dispatchId||value.deadlineAt===null)throw Error('workspace-runtime-binding-denied');
