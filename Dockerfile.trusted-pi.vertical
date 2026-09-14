@@ -1,10 +1,12 @@
 FROM docker.io/cloudflare/sandbox:0.12.9-python@sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806
 
 USER root
-RUN mkdir -p /opt/riffology/runtime /opt/riffology/trusted-pi /var/lib/riffology/pi /var/lib/riffology/turns \
+RUN groupadd -g 10002 trustedpi && useradd -u 10002 -g 10002 -M -s /usr/sbin/nologin trustedpi \
+    && mkdir -p /opt/riffology/runtime /opt/riffology/trusted-pi /var/lib/riffology/pi /var/lib/riffology/turns /var/lib/riffology/runtime-control \
     && chown -R root:root /opt/riffology /var/lib/riffology \
     && chmod 0755 /opt/riffology /opt/riffology/runtime /opt/riffology/trusted-pi /var/lib/riffology /var/lib/riffology/pi \
-    && chmod 0700 /var/lib/riffology/turns
+    && chown trustedpi:trustedpi /var/lib/riffology/pi /var/lib/riffology/turns \
+    && chmod 0700 /var/lib/riffology/pi /var/lib/riffology/turns /var/lib/riffology/runtime-control
 
 COPY --chown=root:root services/trusted-pi/package.json services/trusted-pi/package-lock.json /opt/riffology/
 RUN cd /opt/riffology \
@@ -21,3 +23,5 @@ COPY --chown=root:root --chmod=0444 services/trusted-pi/release-candidate.mjs /o
 LABEL cn.gaojihe.riffology.release-profile="product-candidate-v1"
 
 COPY --chown=root:root --chmod=0444 services/trusted-pi/research-context.mjs /opt/riffology/trusted-pi/research-context.mjs
+
+COPY --chown=root:root --chmod=0555 services/trusted-pi/runtime_supervisor.py /opt/riffology/runtime_supervisor.py
