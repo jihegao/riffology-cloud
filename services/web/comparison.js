@@ -63,7 +63,8 @@ export function createComparisonPanel({root, api}) {
       article.append(node('h3',group.hypothesis),node('p',`${group.status} · ${group.groupId}`),node('p',`版本 ${group.version?.revisionId??'初始模型'} · 每个配置 ${group.repetitions ?? group.seeds?.length} 次`));
       if(group.errorCode)article.append(node('p',`比较状态说明：${group.errorCode}`,'model-warning'));
       if(group.stale)article.append(node('p','模型版本已变化：这些结果属于旧版本，不能与当前模型直接合并。','model-warning'));
-      const p=group.progress||{};article.append(node('p',`共 ${p.total??0} · 等待 ${p.pending??0} · 活跃 ${p.active??0} · 完成 ${p.completed??0} · 失败 ${p.failed??0} · 取消 ${p.cancelled??0}`));
+      const p=group.progress||{};article.append(node('p',`共 ${p.total??0} · 等待 ${p.pending??0} · 活跃 ${p.active??0} · 完成 ${p.completed??0} · 失败 ${p.failed??0} · 取消 ${p.cancelled??0}${p.rejected ? ` · 已否定 ${p.rejected}` : ''}`));
+      if(p.rejected)article.append(node('p','已否定的运行已从比较汇总排除；执行完成不代表证据有效。','model-warning'));
       if(group.status==='partial'||group.status==='failed'||group.status==='cancelled')article.append(node('p','存在失败、取消或缺失运行；下表仅使用各配置已完成且通过契约校验的结果，请检查样本数。','model-warning'));
       const table=node('table');table.append(node('caption','结果比较（差值 = 干预均值 − 基线均值）'));const head=node('tr');for(const text of ['配置 / 指标','有效 / 缺失','均值','基线均值','差值'])head.append(node('th',text));table.append(head);
       const format=value=>typeof value==='number'&&Number.isFinite(value)?String(Number(value.toPrecision(6))):'—';
@@ -71,7 +72,7 @@ export function createComparisonPanel({root, api}) {
       const scroll=node('div',undefined,'comparison-table');scroll.append(table);article.append(scroll);
       if(!TERMINAL.has(group.status))article.append(button('停止此比较',()=>void cancel(group.groupId),busy));
       const detail=node('details');detail.open=rawOpen.has(group.groupId);detail.ontoggle=()=>{if(detail.open)rawOpen.add(group.groupId);else rawOpen.delete(group.groupId);};detail.append(node('summary',`查看 ${group.runs?.length??0} 个 Run 与证据`));
-      for(const run of group.runs||[]){const row=node('section',undefined,'comparison-run');row.append(node('h4',`${run.configurationId} · Seed ${run.seed} · ${run.status}`),node('p',run.runId||'尚未分配 Run'));if(run.errorCode)row.append(node('p',`失败原因：${run.errorCode}`,'model-warning'));row.append(node('pre',JSON.stringify({runId:run.runId,version:group.version,configuration:group.configurations?.find(c=>c.configurationId===run.configurationId),seed:run.seed,status:run.status,errorCode:run.errorCode,result:run.result,released:run.released},null,2)));detail.append(row);}
+      for(const run of group.runs||[]){const row=node('section',undefined,'comparison-run');row.append(node('h4',`${run.configurationId} · Seed ${run.seed} · ${run.status}`),node('p',run.runId||'尚未分配 Run'));if(run.evidenceRejection)row.append(node('p',`已否定：${run.evidenceRejection.reason}`,'model-warning'));if(run.errorCode)row.append(node('p',`失败原因：${run.errorCode}`,'model-warning'));row.append(node('pre',JSON.stringify({runId:run.runId,version:group.version,configuration:group.configurations?.find(c=>c.configurationId===run.configurationId),seed:run.seed,status:run.status,errorCode:run.errorCode,result:run.result,released:run.released,evidenceRejection:run.evidenceRejection},null,2)));detail.append(row);}
       article.append(detail);history.append(article);
     }
     if(cursor)history.append(button('加载更早的比较',()=>void loadMore(),loading));

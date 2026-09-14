@@ -17,3 +17,5 @@ Every child Run has an expandable record containing its group version, configura
 ## Local acceptance
 
 Chrome tests cover all four parameter types, exact-key/body retry after workspace reentry and model change, confirmed rejection, seed validation, defaults, missing samples, stale results, raw evidence, cancel, pagination and focused draft preservation while polling. The actual module and CSS are visually inspected at 1280px desktop and 390px mobile widths. Existing application and single-Run browser suites retain explicit fixture routes for the new read endpoints. This is local UI acceptance; it does not replace a real project/runtime or production acceptance.
+
+When the evidence service returns a Run's `evidenceRejection` and `progress.rejected`, the panel displays the persisted rejection reason and assessment identity without changing execution status. The group backend excludes rejected Runs from its summary; the panel explains this exclusion separately from failed or cancelled execution.
