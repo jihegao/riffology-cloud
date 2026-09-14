@@ -271,6 +271,21 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const runtime=await this.env.PRODUCT_TURN_RUNTIME.getByName(await turnRuntimeActorName(identity)).workspaceRuntimeState(identity);
     if(runtime.phase!=='terminal'||runtime.outcome!==input.outcome||JSON.stringify(runtime.checkpoint)!==JSON.stringify(input.checkpoint)||JSON.stringify(runtime.resourceLease)!==JSON.stringify(input.resourceLease))throw Error('workspace-runtime-handoff-authority-denied');
     const selection=this.#leases().selection(identity);if(selection?.mode==='warm'&&!selection.bound){const released=await this.#leases().releaseNeverStarted({scope:identity.scope,sessionId:identity.sessionId,turnId:identity.turnId,generation:identity.generation,ticketId:input.resourceLease.operationId,operationId:input.resourceLease.operationId,leaseId:input.resourceLease.leaseId,reasonCode:'runtime-never-bound',observedAt:Date.now()});return {status:'released' as const,...input.resourceLease,turnId:identity.turnId,dispatchId:identity.dispatchId,generation:identity.generation,...released};}
+    if(selection?.mode==='warm'){
+      const reconciled=await this.#leases().reconcileBindingForSettlement(identity);
+      if(reconciled.status==='unaccepted'){
+        let physical=reconciled.lease;
+        // A reused lease can still carry the preceding Turn's binding. Drain
+        // that exact physical identity; never mint a new-epoch stop proof.
+        if(physical.status==='releasing'){
+          await this.drainRuntimeLease({ref:physical.ref});
+          physical=await this.#leases().leaseForDrain(reconciled.current.lease);
+        }
+        const common={...input.resourceLease,turnId:identity.turnId,dispatchId:identity.dispatchId,generation:identity.generation};
+        if(physical.status==='cancelled'||physical.status==='released')return {status:'released' as const,...common,proofId:`binding-unaccepted-${physical.ref.leaseId}-${physical.ref.leaseEpoch}`,releasedAt:physical.finishedAt!};
+        return {status:'release-pending' as const,...common,reasonCode:'workspace-runtime-unaccepted-binding-drain',since:physical.drainAt??Date.now(),nextAttemptAt:Date.now()+5000};
+      }
+    }
     return this.#handoff().settle({...input,identity});
   }
   async closeWorkspaceRuntime(input:{identity:TurnRuntimeIdentity}){
