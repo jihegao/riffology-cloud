@@ -11,7 +11,7 @@ import type { TurnActor, TurnBaseCheckpoints } from '../turn/protocol.ts';
 import type { TrustedPiCapacityPort } from '../capacity/client.ts';
 import type { TurnOperationTrace } from '../turn/operation-telemetry.ts';
 
-export type ProductTurnRuntimeRelease={execution:TurnExecutionPort;checkpoints:TurnCheckpointPort;capacity?:TrustedPiCapacityPort|null;trace?:TurnOperationTrace;project?:LazyProjectLifecycle};
+export type ProductTurnRuntimeRelease={execution:TurnExecutionPort;checkpoints:TurnCheckpointPort;capacity?:TrustedPiCapacityPort|null;retention?:import('./core.ts').TurnRuntimeRetentionPort;trace?:TurnOperationTrace;project?:LazyProjectLifecycle};
 
 export interface ProductTurnRuntimeReleaseDependencies{
   projectPreparation?:{storage:Pick<DurableObjectStorage,'kv'|'transactionSync'|'sync'|'sql'>;enabled:boolean};

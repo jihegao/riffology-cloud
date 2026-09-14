@@ -64,6 +64,19 @@ import { revisionStoreActorName, type RevisionStoreNamespace } from '../turn-run
 import { TOOL_ARTIFACT_STORE_ACTOR, type ToolArtifactStoreNamespace, type ToolArtifactReferenceInput } from '../artifacts/protocol.ts';
 import { releaseRetiredArtifactEvent } from '../artifacts/event-retirement.ts';
 import {traceTurnAdmission,type TurnAdmissionStage} from '../turn/admission-telemetry.ts';
+import {WorkspaceRuntimeHandoff,type RuntimeSettlementInput,type NativeHandoffRpc} from './runtime-handoff.ts';
+import type {WorkspaceBindingLease} from '../turn/protocol.ts';
+import {workspaceSandboxActor,type WorkspaceSandboxBinding} from '../sandbox/workspace-binding.ts';
+import type {PairDomain} from '../capacity/paired.ts';
+import {modelBudgetTenantName} from '../model-budget/core.ts';
+import {PRODUCTION_MONEY_ACTOR} from '../model-budget/production-money.ts';
+import type {TenantModelBudget} from '../model-budget/durable.ts';
+import type {ProductionModelBudget} from '../model-budget/production-durable.ts';
+import type {ToolBridgeAgent} from '../tools/durable.ts';
+import {toolBridgeActorName} from '../tools/identity.ts';
+import {WorkspaceRuntimeLeases,pairReference} from './runtime-leases.ts';
+import {workspacePairedCapacityClient,type WorkspacePairedCapacityPort} from '../capacity/paired-client.ts';
+import {warmTrustedPiActorId,type WarmOutboundRequest} from '../sandbox/warm-authority.ts';
 import { TrustedPiTurnCapacity } from '../capacity/turn.ts';
 import type { TrustedPiCapacityNamespace } from '../capacity/client.ts';
 import { turnOperationTracer } from '../turn/operation-telemetry.ts';
@@ -74,9 +87,17 @@ export interface WorkspaceAgentEnv {
   PROJECT_RUNTIME: DurableObjectNamespace<ProjectRuntime>;
   PRODUCT_TURN_RUNTIME: DurableObjectNamespace<ProductTurnRuntime>;
   TRUSTED_PI_CAPACITY: TrustedPiCapacityNamespace;
+  TENANT_MODEL_BUDGET?:DurableObjectNamespace<TenantModelBudget>;
+  PRODUCTION_MODEL_BUDGET?:DurableObjectNamespace<ProductionModelBudget>;
+  TOOL_BRIDGE_AGENT?:DurableObjectNamespace<ToolBridgeAgent>;
   REVISION_STORE: RevisionStoreNamespace;
   TOOL_ARTIFACT_STORE: ToolArtifactStoreNamespace;
   M2_TURNS_ENABLED: unknown;
+  M2_WORKSPACE_RUNTIME_REUSE_ENABLED?:unknown;
+  M2_LAZY_PROJECT_ENABLED?:unknown;
+  M2_WORKSPACE_RUNTIME_VERSION?:unknown;
+  TRUSTED_PI_SANDBOX?:{idFromName(name:string):{toString():string};getByName?(name:string):unknown};
+  PROJECT_SANDBOX?:{getByName(name:string):unknown};
   M2_TURN_ADMISSION_TELEMETRY?:unknown;
   M2_TURN_OPERATION_TELEMETRY?:unknown;
   M4_SIMULATION_ENABLED?:unknown;
@@ -211,6 +232,68 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   async researchEvidenceExport(input:{scope:TurnScope;actor:TurnActor}){
     const scope=this.#maintenanceScope(input.scope);await this.#evidenceAccess(scope,input.actor);const result=await this.#evidence(scope).exportRecords();await this.#evidenceAccess(scope,input.actor);return result;
   }
+  #runtimeLeases:WorkspaceRuntimeLeases|null=null;
+  #leases(){return this.#runtimeLeases??=new WorkspaceRuntimeLeases(this.ctx.storage,workspacePairedCapacityClient(this.env.TRUSTED_PI_CAPACITY as unknown as {getByName(name:string):WorkspacePairedCapacityPort}),new TrustedPiTurnCapacity(this.env.TRUSTED_PI_CAPACITY),()=>this.env.M2_WORKSPACE_RUNTIME_REUSE_ENABLED==='true'&&this.env.M2_LAZY_PROJECT_ENABLED==='true',()=>this.env.M2_WORKSPACE_RUNTIME_VERSION);}
+  async workspaceRuntimeSelection(input:{identity:TurnRuntimeIdentity}){const identity=turnRuntimeIdentity(input.identity);this.#maintenanceScope(identity.scope);return this.#leases().selection(identity);}
+  async workspaceRuntimeBinding(input:{identity:TurnRuntimeIdentity}){const identity=turnRuntimeIdentity(input.identity);this.#maintenanceScope(identity.scope);return this.#leases().current(identity);}
+  async bindWorkspaceRuntime(input:{identity:TurnRuntimeIdentity;executionDeadlineAt:number}){
+    const identity=turnRuntimeIdentity(input.identity),scope=this.#ready(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
+    if(!turn||state.activeTurnId!==identity.turnId||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.cancelRequestedAt!==null)throw Error('workspace-runtime-binding-denied');
+    const runtime=await this.env.PRODUCT_TURN_RUNTIME.getByName(await turnRuntimeActorName(identity)).workspaceRuntimeState(identity);
+    if(runtime.phase!=='running'||runtime.cancelRequestedAt!==null||!runtime.nativeStartReserved||runtime.executionDeadlineAt!==input.executionDeadlineAt||runtime.resourceLease.leaseId!==turn.resourceLease?.leaseId)throw Error('workspace-runtime-binding-denied');
+    return this.#leases().bind(identity,input.executionDeadlineAt);
+  }
+  async workspaceNativeAuthority(input:{context:WorkspaceSandboxBinding;domain:PairDomain}){
+    if(!['project','trustedPi'].includes(input.domain))throw Error('workspace-native-authority-denied');
+    const identity=turnRuntimeIdentity(input.context.identity),scope=this.#maintenanceScope(identity.scope),{current,lease:physicalLease}=await this.#leases().pairState(identity),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
+    const expectedFiles=turn?.base?.workspace?.filesSha256??turn?.base?.initial?.filesSha256??Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new Uint8Array(10240))),n=>n.toString(16).padStart(2,'0')).join('');
+    if(!['bound','idle','releasing'].includes(physicalLease.status)||!turn||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||JSON.stringify(current.lease)!==JSON.stringify(input.context.lease)||current.binding.bindingEpoch!==input.context.bindingEpoch||input.context.filesSha256!==expectedFiles)throw Error('workspace-native-authority-denied');
+    return {...current,leaseStatus:physicalLease.status,actorId:await workspaceSandboxActor(current.lease,input.domain)};
+  }
+  async claimWorkspaceNative(input:{context:WorkspaceSandboxBinding;domain:PairDomain}){
+    const current=await this.workspaceNativeAuthority(input);
+    if(current.closing||current.executionDeadlineAt<=Date.now())throw Error('workspace-native-admission-closed');
+    const runtime=await this.env.PRODUCT_TURN_RUNTIME.getByName(await turnRuntimeActorName(current.identity)).workspaceRuntimeState(current.identity);
+    if(runtime.phase!=='running'||runtime.cancelRequestedAt!==null||runtime.executionDeadlineAt!==current.executionDeadlineAt)throw Error('workspace-native-admission-closed');
+    const latest=await this.#leases().authoritative(current.identity);if(latest.closing)throw Error('workspace-native-admission-closed');
+    return workspacePairedCapacityClient(this.env.TRUSTED_PI_CAPACITY as unknown as {getByName(name:string):WorkspacePairedCapacityPort}).claimNativeStart(pairReference(current.lease),current.binding,input.domain);
+  }
+  #handoff(){return new WorkspaceRuntimeHandoff({storage:this.ctx.storage,pair:workspacePairedCapacityClient(this.env.TRUSTED_PI_CAPACITY as unknown as {getByName(name:string):WorkspacePairedCapacityPort}),binding:identity=>this.#leases().pairState(identity),close:identity=>this.closeWorkspaceRuntime({identity}),journal:async identity=>{const state=await this.#turns.snapshot(identity.scope),turn=state.turns[identity.turnId];if(!turn||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId)throw Error('workspace-runtime-handoff-denied');return turn;},native:async(domain,context)=>{const namespace=domain==='project'?this.env.PROJECT_SANDBOX:this.env.TRUSTED_PI_SANDBOX;if(!namespace?.getByName)throw Error('workspace-native-namespace-required');return namespace.getByName(await workspaceSandboxActor(context.lease,domain)) as NativeHandoffRpc;}});}
+  async authorizeWorkspaceLeaseDrain(input:{lease:WorkspaceBindingLease}){this.#maintenanceScope(input.lease.scope);return this.#leases().leaseForDrain(input.lease);}
+  async drainRuntimeLease(input:{ref:import('../capacity/paired.ts').WorkspaceLeaseRef}){
+    this.#maintenanceScope(input.ref.scope);const current=this.#leases().currentLease();if(!current||JSON.stringify(pairReference(current.lease))!==JSON.stringify(input.ref))throw Error('workspace-runtime-drain-denied');const lease=await this.#leases().leaseForDrain(current.lease);if(lease.status==='released')return;if(!lease.binding)throw Error('workspace-runtime-drain-denied');
+    const identity=turnRuntimeIdentity({scope:lease.ref.scope,sessionId:lease.binding.sessionId,turnId:lease.binding.turnId,dispatchId:lease.binding.dispatchId,generation:lease.ref.scope.workspaceGeneration}),turn=(await this.#turns.snapshot(identity.scope)).turns[identity.turnId];if(!turn?.resourceLease)throw Error('workspace-runtime-drain-denied');
+    return this.#handoff().settle({identity,outcome:turn.executionOutcome??'interrupted',checkpoint:turn.checkpoint,resourceLease:turn.resourceLease},true);
+  }
+  async settleWorkspaceRuntime(input:RuntimeSettlementInput){
+    const identity=turnRuntimeIdentity(input.identity);this.#maintenanceScope(identity.scope);
+    const runtime=await this.env.PRODUCT_TURN_RUNTIME.getByName(await turnRuntimeActorName(identity)).workspaceRuntimeState(identity);
+    if(runtime.phase!=='terminal'||runtime.outcome!==input.outcome||JSON.stringify(runtime.checkpoint)!==JSON.stringify(input.checkpoint)||JSON.stringify(runtime.resourceLease)!==JSON.stringify(input.resourceLease))throw Error('workspace-runtime-handoff-authority-denied');
+    return this.#handoff().settle({...input,identity});
+  }
+  async closeWorkspaceRuntime(input:{identity:TurnRuntimeIdentity}){
+    const identity=turnRuntimeIdentity(input.identity);this.#maintenanceScope(identity.scope);
+    const {current:binding}=await this.#leases().pairState(identity);
+    await this.#leases().close(identity);
+    if(!this.env.TENANT_MODEL_BUDGET||!this.env.PRODUCTION_MODEL_BUDGET||!this.env.TOOL_BRIDGE_AGENT)throw Error('workspace-runtime-settlement-required');
+    const model=this.env.TENANT_MODEL_BUDGET.getByName(modelBudgetTenantName(identity.scope.tenantId)),money=this.env.PRODUCTION_MODEL_BUDGET.getByName(PRODUCTION_MONEY_ACTOR),tool=this.env.TOOL_BRIDGE_AGENT.getByName(await toolBridgeActorName(identity.scope,identity.turnId,identity.dispatchId));
+    const settled=await Promise.all([model.closeTurnAdmission(identity.scope.tenantId,identity),money.closeTurnAdmission(identity),tool.closeTurnAdmission(identity)]);
+    if(settled.some(record=>JSON.stringify(record.identity)!==JSON.stringify(identity)||record.closed!==true))throw Error('workspace-runtime-settlement-denied');
+    return {binding,settled};
+  }
+  async workspaceRuntimeAuthority(input:WarmOutboundRequest){
+    const scope=this.#ready(input.scope),state=await this.#turns.snapshot(scope),turn=state.turns[input.turnId];
+    if(!turn||state.activeTurnId!==input.turnId||!['starting','running'].includes(turn.status)||turn.dispatchId!==input.dispatchId||turn.cancelRequestedAt!==null||turn.finishedAt!==null||input.deadlineAt<=Date.now())throw Error('warm-outbound-authority-denied');
+    const identity=turnRuntimeIdentity({scope,sessionId:turn.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:scope.workspaceGeneration});
+    if(input.sessionId!==undefined&&input.sessionId!==identity.sessionId||input.actor!==undefined&&JSON.stringify(input.actor)!==JSON.stringify(turn.actor))throw Error('warm-outbound-authority-denied');
+    const binding=await this.#leases().authoritative(identity);if(binding.closing||input.deadlineAt>binding.executionDeadlineAt)throw Error('warm-outbound-authority-denied');
+    const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('warm-outbound-authority-denied');
+    const runtime=await this.env.PRODUCT_TURN_RUNTIME.getByName(await turnRuntimeActorName(identity)).workspaceRuntimeState(identity);
+    if(runtime.phase!=='running'||runtime.cancelRequestedAt!==null||!runtime.nativeStartReserved||runtime.executionDeadlineAt!==binding.executionDeadlineAt||runtime.resourceLease.leaseId!==binding.lease.leaseId)throw Error('warm-outbound-authority-denied');
+    const actorId=await warmTrustedPiActorId(binding.lease);if(!this.env.TRUSTED_PI_SANDBOX||this.env.TRUSTED_PI_SANDBOX.idFromName(actorId).toString()!==input.containerId)throw Error('warm-outbound-authority-denied');
+    const latest=await this.#leases().authoritative(identity),end=await this.#turns.snapshot(scope),last=end.turns[identity.turnId];if(latest.closing||this.#leases().selection(identity)?.closing||end.activeTurnId!==identity.turnId||last?.cancelRequestedAt!==null||input.deadlineAt<=Date.now())throw Error('warm-outbound-authority-denied');
+    return {actorId,identity,actor:turn.actor,executionDeadlineAt:binding.executionDeadlineAt,lease:binding.lease,binding:binding.binding};
+  }
   async prepareProjectTool(input:{command:ToolCommand;observeOnly:boolean}){
     const command=normalizeToolCommand(input.command),scope=this.#ready(command.scope);
     const saved=(await this.#turns.snapshot(scope)).turns[command.turnId];if(!saved||saved.dispatchId!==command.dispatchId)throw Error('project-preparation-denied');
@@ -221,7 +304,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('project-preparation-denied');return turn;
     };
     await authorize();
-    const result=await runtime.prepareProjectTool({identity,command,observeOnly:input.observeOnly});await authorize();return result;
+    const result=await runtime.prepareProjectTool({identity,command,observeOnly:input.observeOnly});await authorize();const warm=await this.#leases().current(identity);return warm?{...result,actorId:await workspaceSandboxActor(warm.lease,'project')}:result;
   }
   async researchContext(input:{identity:TurnRuntimeIdentity;executionDeadlineAt:number}){
     const identity=turnRuntimeIdentity(input.identity),scope=this.#ready(identity.scope);
@@ -560,7 +643,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       Date.now,
       {},
       this.env.TOOL_ARTIFACT_STORE.getByName(TOOL_ARTIFACT_STORE_ACTOR),
-      new TrustedPiTurnCapacity(this.env.TRUSTED_PI_CAPACITY),
+      this.#leases(),
       turnOperationTracer(this.env.M2_TURN_OPERATION_TELEMETRY),
     );
   }

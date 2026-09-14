@@ -1,6 +1,6 @@
 import {normalizeToolCommand,type ToolCommand} from '../tools/protocol.ts';
 import type { CheckpointReceipt, TurnActor, TurnBaseCheckpoints, TurnResourceDisposition, TurnResourceLease } from '../turn/protocol.ts';
-import { TURN_EVENT_LIMIT, actor as validateActor, checkpointObjectKey, jsonPayload, message, positive, sha, turnBaseCheckpoints, turnDigest, turnId } from '../turn/protocol.ts';
+import { TURN_EVENT_LIMIT, resourceDisposition as normalizeResourceDisposition, workspaceBindingToken, actor as validateActor, checkpointObjectKey, jsonPayload, message, positive, sha, turnBaseCheckpoints, turnDigest, turnId } from '../turn/protocol.ts';
 import type { TurnRuntimeEvent, TurnRuntimePort, TurnRuntimeReceipt, TurnStopReceipt } from '../turn/dispatcher.ts';
 import type { TrustedPiCapacityPort } from '../capacity/client.ts';
 import type { TrustedPiCapacityDispatchReference, TrustedPiCapacityIdentity, TrustedPiCapacityStopProof, TrustedPiCapacityTicket } from '../capacity/core.ts';
@@ -17,6 +17,7 @@ export interface TurnExecutionPort{
   fenceUnresolvedStart(identity:TurnRuntimeIdentity,outcome:'failed'|'interrupted'):Promise<TurnExecutionObservation>;
   release(identity:TurnRuntimeIdentity):Promise<{running:boolean}>;
 }
+export interface TurnRuntimeRetentionPort{settle(input:{identity:TurnRuntimeIdentity;outcome:'completed'|'failed'|'cancelled'|'interrupted';checkpoint:CheckpointReceipt|null;resourceLease:TurnResourceLease}):Promise<TurnResourceDisposition>;}
 export type TurnCheckpointInput={identity:TurnRuntimeIdentity;outcome:'completed'|'failed'|'cancelled'|'interrupted';executionErrorCode:string|null;base:TurnBaseCheckpoints};
 export type TurnCheckpointIntent={operationId:string;inputSha256:string};
 export type TurnCheckpointResolution={status:'committed';receipt:CheckpointReceipt}|{status:'absent'|'pending'|'unavailable'|'conflict'|'aborted'};
@@ -138,9 +139,9 @@ function execution(value:unknown,expected:TurnRuntimeIdentity):TurnExecutionObse
  * execution/checkpoint implementations. It reserves execution before the
  * first external await and never starts again after an uncertain boundary. */
 export class ProductTurnRuntimeCore implements TurnRuntimePort{
-  readonly #storage:ProductTurnRuntimeStorage;readonly #execution:TurnExecutionPort;readonly #checkpoints:TurnCheckpointPort;readonly #capacity:TrustedPiCapacityPort|null;readonly #clock:()=>number;readonly #releaseTiming:ProductTurnReleaseTiming;readonly #trace:TurnOperationTrace|undefined;readonly #ready:Promise<void>;#releaseTableReady:boolean;#activeRelease:Promise<void>|null=null;#activeCancel:Promise<TurnRuntimeReceipt>|null=null;#activeExecutionFence:Promise<TurnRuntimeReceipt>|null=null;
-  constructor(storage:ProductTurnRuntimeStorage,executionPort:TurnExecutionPort,checkpointPort:TurnCheckpointPort,clock:()=>number=Date.now,existingOnly=false,timing:Partial<ProductTurnReleaseTiming>={},capacity:TrustedPiCapacityPort|null=null,trace?:TurnOperationTrace){
-    if(!storage?.sql?.exec||!storage.transactionSync||!storage.sync||!executionPort?.start||!executionPort.observe||!executionPort.cancel||!executionPort.fenceUnresolvedStart||!executionPort.release)reject('sqlite-product-turn-runtime-required');this.#storage=storage;this.#execution=executionPort;this.#checkpoints=checkpointPort;this.#clock=clock;
+  readonly #retention:TurnRuntimeRetentionPort|null;readonly #storage:ProductTurnRuntimeStorage;readonly #execution:TurnExecutionPort;readonly #checkpoints:TurnCheckpointPort;readonly #capacity:TrustedPiCapacityPort|null;readonly #clock:()=>number;readonly #releaseTiming:ProductTurnReleaseTiming;readonly #trace:TurnOperationTrace|undefined;readonly #ready:Promise<void>;#releaseTableReady:boolean;#activeRelease:Promise<void>|null=null;#activeCancel:Promise<TurnRuntimeReceipt>|null=null;#activeExecutionFence:Promise<TurnRuntimeReceipt>|null=null;
+  constructor(storage:ProductTurnRuntimeStorage,executionPort:TurnExecutionPort,checkpointPort:TurnCheckpointPort,clock:()=>number=Date.now,existingOnly=false,timing:Partial<ProductTurnReleaseTiming>={},capacity:TrustedPiCapacityPort|null=null,trace?:TurnOperationTrace,retention:TurnRuntimeRetentionPort|null=null){
+    if(!storage?.sql?.exec||!storage.transactionSync||!storage.sync||!executionPort?.start||!executionPort.observe||!executionPort.cancel||!executionPort.fenceUnresolvedStart||!executionPort.release)reject('sqlite-product-turn-runtime-required');this.#storage=storage;this.#retention=retention;this.#execution=executionPort;this.#checkpoints=checkpointPort;this.#clock=clock;
     if(capacity!==null&&(!capacity.lookup||!capacity.dispatch||!capacity.confirmReleased))reject('product-turn-capacity-port-required');this.#capacity=capacity;this.#trace=trace;
     this.#releaseTiming=releaseTiming(timing);if((this.#releaseTiming.retryMs||this.#releaseTiming.assignmentGuardMs||this.#releaseTiming.quietMs)&&(!storage.setAlarm||!storage.deleteAlarm))reject('product-turn-release-alarm-required');this.#releaseTableReady=!existingOnly;
     if(existingOnly){this.#ready=Promise.resolve();return;}
@@ -164,6 +165,7 @@ export class ProductTurnRuntimeCore implements TurnRuntimePort{
   #resourceDisposition(state:State):TurnResourceDisposition{
     const binding={operationId:state.resourceLease.operationId,leaseId:state.resourceLease.leaseId,turnId:state.identity.turnId,dispatchId:state.identity.dispatchId,generation:state.identity.generation};
     if(state.phase!=='terminal')return {status:'active',...binding};
+    const retained=this.#retained();if(retained)return retained;
     const release=this.#readRelease(state.identity);if(release?.status==='released')return {status:'released',...binding,proofId:release.proof!.proofId,releasedAt:release.releasedAt!};
     if(release)return {status:release.status,...binding,reasonCode:release.reasonCode,since:release.begunAt,nextAttemptAt:release.nextAttemptAt};
     const recovery=this.#readCheckpointRecovery(state.identity);return {status:'release-pending',...binding,reasonCode:'trusted-pi-release-awaiting-checkpoint',since:state.settledAt!,nextAttemptAt:recovery?.nextAttemptAt??state.settledAt!};
@@ -193,6 +195,7 @@ export class ProductTurnRuntimeCore implements TurnRuntimePort{
     const now=positive(this.#clock());for(const receipt of [base.workspace,base.session])if(receipt&&receipt.committedAt>now)reject('product-turn-runtime-base-time');const managed=this.#capacity!==null,state:State={schemaVersion:5,executionDeadlineAt:positive(now+600000),identity,actor,base,messageSha256,message:text,phase:'running',outcome:null,executionErrorCode:null,acceptReserved:true,executionReserved:true,resourceLease:lease,capacityManaged:managed,capacityDispatchReserved:!managed,capacityDispatchConfirmed:!managed,nativeStartReserved:false,nativeProcessObservedAt:null,nativeStartFenceReserved:false,cancelRequestedAt:null,startedAt:now,settledAt:null,events:[],checkpointIntent:null,checkpointCommitReserved:false,legacyCheckpointUnknown:false,checkpoint:null,persistenceErrorCode:null,stopped:null};await this.#write(state);
     try{return await this.#startOrObserve(identity,actor,text);}catch(error){if(error instanceof Error&&error.message==='product-turn-capacity-dispatch-unconfirmed')await this.#discardUnstarted(identity);else await this.#unknown(identity);throw error;}
   }
+  workspaceRuntimeState(raw:TurnRuntimeIdentity){const state=this.#checked(turnRuntimeIdentity(raw));if(!state)reject('product-turn-runtime-not-found');return structuredClone({identity:state.identity,phase:state.phase,outcome:state.outcome,executionDeadlineAt:state.executionDeadlineAt??null,nativeStartReserved:state.nativeStartReserved,cancelRequestedAt:state.cancelRequestedAt,resourceLease:state.resourceLease,checkpoint:state.checkpoint});}
   projectToolAuthority(raw:TurnRuntimeIdentity,rawCommand:ToolCommand){
     const identity=turnRuntimeIdentity(raw),command=normalizeToolCommand(rawCommand),state=this.#checked(identity),now=positive(this.#clock());
     if(!state||state.phase!=='running'||!state.nativeStartReserved||state.cancelRequestedAt!==null||state.executionDeadlineAt===undefined||state.executionDeadlineAt<=now||command.deadlineAt<=now||command.deadlineAt>state.executionDeadlineAt||command.turnId!==identity.turnId||command.dispatchId!==identity.dispatchId||JSON.stringify(command.scope)!==JSON.stringify(identity.scope))reject('project-preparation-denied');
@@ -244,8 +247,25 @@ export class ProductTurnRuntimeCore implements TurnRuntimePort{
     if(this.#activeRelease)return this.#activeRelease;
     this.#activeRelease=this.#reconcileRelease(identity).finally(()=>{this.#activeRelease=null;});return this.#activeRelease;
   }
+  #retained():TurnResourceDisposition|null{if(!this.#retention||!this.#storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='product_turn_retention'").toArray().length)return null;const row=this.#storage.sql.exec<Row>('SELECT value FROM product_turn_retention WHERE singleton=1').toArray()[0];return row?normalizeResourceDisposition(JSON.parse(row.value as string)):null;}
+  async #retain(runtime:State){
+    const prior=this.#retained();if(prior?.status==='released'||prior?.status==='handed-off'){await this.#clearRelease();return;}
+    const now=positive(this.#clock());if(prior&&(prior.status==='release-pending'||prior.status==='recovery-hold')&&prior.nextAttemptAt>now){await this.#armRelease(prior.nextAttemptAt);return;}
+    // Arm before cross-actor settlement. A lost response never removes the
+    // obligation to reconcile this exact binding and committed checkpoint.
+    await this.#armRelease(now+5000);
+    const result=normalizeResourceDisposition(await this.#retention!.settle({identity:runtime.identity,outcome:runtime.outcome!,checkpoint:runtime.checkpoint,resourceLease:runtime.resourceLease}));
+    if(result.operationId!==runtime.resourceLease.operationId||result.leaseId!==runtime.resourceLease.leaseId||result.turnId!==runtime.identity.turnId||result.dispatchId!==runtime.identity.dispatchId||result.generation!==runtime.identity.generation||result.status==='active')reject('workspace-runtime-disposition-denied');
+    if(result.status==='handed-off'){
+      if(runtime.outcome!=='completed'||runtime.cancelRequestedAt!==null||!runtime.checkpoint||JSON.stringify(result.checkpoint)!==JSON.stringify(runtime.checkpoint)||JSON.stringify(result.lease.scope)!==JSON.stringify(runtime.identity.scope)||result.binding.sessionId!==runtime.identity.sessionId)reject('workspace-runtime-handoff-denied');
+      const token=await workspaceBindingToken(result.lease,result.binding);if(result.proof.project.bindingEpoch!==token||result.proof.trustedPi.bindingEpoch!==token)reject('workspace-runtime-handoff-denied');
+    }
+    this.#storage.transactionSync(()=>{this.#storage.sql.exec('CREATE TABLE IF NOT EXISTS product_turn_retention(singleton INTEGER PRIMARY KEY CHECK(singleton=1),value TEXT NOT NULL) STRICT;');this.#storage.sql.exec('INSERT INTO product_turn_retention VALUES(1,?) ON CONFLICT(singleton) DO UPDATE SET value=excluded.value',JSON.stringify(result));});await this.#storage.sync();
+    if(result.status==='released'||result.status==='handed-off')await this.#clearRelease();else await this.#armRelease(result.nextAttemptAt);
+  }
   async #reconcileRelease(identity:TurnRuntimeIdentity):Promise<void>{
     const runtime=this.#checked(identity);if(!runtime||!this.#releaseEligible(runtime))reject('product-turn-release-before-checkpoint');
+    if(this.#retention){await this.#retain(runtime);return;}
     await this.#ensureReleaseTable();
     const now=positive(this.#clock()),lease=runtime.resourceLease;let state=this.#readRelease(identity)??{schemaVersion:2 as const,operationId:lease.operationId,leaseId:lease.leaseId,begunAt:now,deadlineAt:positive(now+this.#releaseTiming.deadlineMs),attempts:0,nextAttemptAt:now,absentSince:null,status:'release-pending' as const,reasonCode:'trusted-pi-release-pending',proof:null,releasedAt:null};
     if(state.status==='released'){await this.#clearRelease();return;}if(now<state.nextAttemptAt){await this.#armRelease(state.nextAttemptAt);return;}

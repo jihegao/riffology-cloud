@@ -6,7 +6,7 @@ import type {PairLease,WorkspaceLeaseRef} from '../capacity/paired.ts';
 
 type Store=Pick<DurableObjectStorage,'kv'|'transactionSync'|'sync'>;
 type Acquire=Parameters<TurnCapacityPort['acquire']>[0];
-type Selection={schemaVersion:1;scope:TurnScope;sessionId:string;turnId:string;operationId:string;mode:'cold'|'warm';requestId:string;runtimeVersion:string|null;cancelled:boolean;lease:WorkspaceBindingLease|null;binding:WorkspaceTurnBinding|null;closing:boolean;deadlineAt:number|null};
+type Selection={schemaVersion:1;scope:TurnScope;sessionId:string;turnId:string;operationId:string;mode:'cold'|'warm';requestId:string;runtimeVersion:string|null;cancelled:boolean;lease:WorkspaceBindingLease|null;binding:WorkspaceTurnBinding|null;closing:boolean;deadlineAt:number|null;requestReserved:boolean};
 export type WorkspaceRuntimeBinding={lease:WorkspaceBindingLease;binding:WorkspaceTurnBinding;identity:TurnRuntimeIdentity;executionDeadlineAt:number;closing:boolean};
 const key=(turn:string)=>`workspace-runtime-turn:${turnId(turn)}`;
 const CURRENT='workspace-runtime-current';
@@ -26,7 +26,7 @@ export class WorkspaceRuntimeLeases implements TurnCapacityPort{
   // Existing dispatcher tickets are always cold. A gate never reinterprets an
   // accepted legacy execution or an unresolved admission response.
   const version=this.#version(),warm=this.#enabled()&&input.ticketId===null&&typeof version==='string'&&/^[a-f0-9]{64}$/.test(version);
-  const value:Selection={schemaVersion:1,scope,sessionId,turnId:id,operationId,mode:warm?'warm':'cold',requestId:operationId,runtimeVersion:warm?version as string:null,cancelled:false,lease:null,binding:null,closing:false,deadlineAt:null};
+  const value:Selection={schemaVersion:1,scope,sessionId,turnId:id,operationId,mode:warm?'warm':'cold',requestId:operationId,runtimeVersion:warm?version as string:null,cancelled:false,lease:null,binding:null,closing:false,deadlineAt:null,requestReserved:false};
   // get/put are local actor storage, without an external call between them.
   this.#storage.kv.put(key(id),value);await this.#storage.sync();return value;
  }
@@ -50,7 +50,7 @@ export class WorkspaceRuntimeLeases implements TurnCapacityPort{
      else return this.#waiting(value,prior);
     }
    }
-   if(!saved){lease=await this.#pair.requestPair(value.scope,value.requestId);value=await this.#fresh(value);saved={...lease.ref,runtimeVersion:value.runtimeVersion!};value={...value,lease:saved};await this.#write(value);this.#storage.kv.put(CURRENT,{lease:saved,requestId:value.requestId});await this.#storage.sync();}
+   if(!saved){value={...await this.#fresh(value),requestReserved:true};await this.#write(value);lease=await this.#pair.requestPair(value.scope,value.requestId);value=await this.#fresh(value);saved={...lease.ref,runtimeVersion:value.runtimeVersion!};value={...value,lease:saved};await this.#write(value);this.#storage.kv.put(CURRENT,{lease:saved,requestId:value.requestId});await this.#storage.sync();}
   }
   if(!lease)throw Error('workspace-runtime-lease-unavailable');await this.#fresh(value);
   if(['held','idle'].includes(lease.status))return {status:'acquired',turnId:value.turnId,generation:value.scope.workspaceGeneration,ticketId:value.operationId,operationId:value.operationId,leaseId:lease.ref.leaseId};
@@ -62,6 +62,7 @@ export class WorkspaceRuntimeLeases implements TurnCapacityPort{
  async releaseNeverStarted(input:Parameters<TurnCapacityPort['releaseNeverStarted']>[0]){
   let value=await this.#selection(input);if(value.mode==='cold')return this.#cold.releaseNeverStarted(input);
   value={...value,cancelled:true,closing:true};await this.#write(value);
+  if(!value.requestReserved&&!value.lease)return {proofId:`workspace-never-started-${value.operationId}`,releasedAt:this.#clock()};
   let lease=await this.#pair.lookupPair(value.scope,value.requestId);
   // Exact request closes an acceptance-before-cancellation RPC window. If the
   // gate prevents this reconciliation, keep the caller's hold unresolved.
@@ -84,11 +85,15 @@ export class WorkspaceRuntimeLeases implements TurnCapacityPort{
   const result=await this.#pair.bind(pairReference(value.lease!),binding);if(result.status!=='bound'||!equal(result.binding,binding))throw Error('workspace-runtime-binding-unavailable');
   await this.#fresh(value);return this.current(identity);
  }
+ selection(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw),value=this.#storage.kv.get<Selection>(key(identity.turnId));if(!value)return null;if(!sameScope(value.scope,identity.scope)||value.sessionId!==identity.sessionId)throw Error('workspace-runtime-selection-conflict');return {mode:value.mode,closing:value.closing||value.cancelled};}
  async current(raw:TurnRuntimeIdentity):Promise<WorkspaceRuntimeBinding|null>{
   const identity=turnRuntimeIdentity(raw),value=this.#storage.kv.get<Selection>(key(identity.turnId));if(!value||value.mode==='cold')return null;
   if(!sameScope(value.scope,identity.scope)||value.sessionId!==identity.sessionId||!value.lease||!value.binding||value.binding.dispatchId!==identity.dispatchId||value.deadlineAt===null)throw Error('workspace-runtime-binding-denied');
   return {lease:value.lease,binding:value.binding,identity,executionDeadlineAt:value.deadlineAt,closing:value.closing||value.cancelled};
  }
+ async leaseForDrain(lease:WorkspaceBindingLease){const saved=this.#storage.kv.get<{lease:WorkspaceBindingLease;requestId:string}>(CURRENT);if(!saved||!equal(saved.lease,lease))throw Error('workspace-runtime-lease-denied');const result=await this.#pair.lookupPair(lease.scope,saved.requestId);if(!result||!equal(result.ref,pairReference(lease))||!['releasing','released'].includes(result.status))throw Error('workspace-runtime-drain-denied');return result;}
+ currentLease(){return this.#storage.kv.get<{lease:WorkspaceBindingLease;requestId:string}>(CURRENT)??null;}
+ async pairState(raw:TurnRuntimeIdentity){const current=await this.current(raw);if(!current)throw Error('workspace-runtime-binding-denied');const value=this.#storage.kv.get<Selection>(key(current.identity.turnId));const lease=await this.#pair.lookupPair(current.lease.scope,value!.requestId);if(!lease||!equal(lease.ref,pairReference(current.lease))||!equal(lease.binding,current.binding))throw Error('workspace-runtime-binding-denied');return {current,lease};}
  async authoritative(raw:TurnRuntimeIdentity):Promise<WorkspaceRuntimeBinding>{
   const current=await this.current(raw);if(!current)throw Error('workspace-runtime-binding-denied');
   const value=this.#storage.kv.get<Selection>(key(current.identity.turnId));const lease=await this.#pair.lookupPair(current.lease.scope,value!.requestId);

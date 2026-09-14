@@ -17,22 +17,22 @@ export class ProjectSandboxFileEffects implements ToolEffectPort{
   constructor(key:string,resolver:Resolver,clock:()=>number=Date.now,prepare?:(command:ToolCommand,observeOnly:boolean)=>Promise<unknown>){
     this.#key=key;this.#clock=clock;this.#resolve=resolver;this.#prepare=prepare;
   }
-  async #target(commandInput:ToolCommand,effectIdInput:string):Promise<{command:ToolCommand;effectId:string;actorId:string;sandbox:ProjectSandboxRpc;capability:Awaited<ReturnType<typeof issueProjectEffectCapability>>}>{
+  async #target(commandInput:ToolCommand,effectIdInput:string,preparation?:unknown):Promise<{command:ToolCommand;effectId:string;actorId:string;sandbox:ProjectSandboxRpc;capability:Awaited<ReturnType<typeof issueProjectEffectCapability>>}>{
     const command=normalizeToolCommand(commandInput),effectId=turnId(effectIdInput),now=positive(this.#clock());
-    const actorId=(await sandboxActorIds(command.scope,command.turnId,command.dispatchId)).project;
+    const selected=preparation&&typeof preparation==='object'?(preparation as {actorId?:unknown}).actorId:undefined;if(selected!==undefined&&(typeof selected!=='string'||!/^m2-wp-[a-f0-9]{55}$/.test(selected)))throw Error('project-sandbox-warm-target-denied');const actorId=selected as string|undefined??(await sandboxActorIds(command.scope,command.turnId,command.dispatchId)).project;
     const capability=await issueProjectEffectCapability(this.#key,{actorId,command,effectId,expiresAt:now+5*60_000},()=>now);
     return {command,effectId,actorId,sandbox:this.#resolve(actorId),capability};
   }
   async execute(input:{command:ToolCommand;effectId:string}):Promise<ToolEffectReceipt>{
-    await this.#prepare?.(normalizeToolCommand(input.command),false);
-    const target=await this.#target(input.command,input.effectId);
+    const preparation=await this.#prepare?.(normalizeToolCommand(input.command),false);
+    const target=await this.#target(input.command,input.effectId,preparation);
     return target.sandbox.executeFileEffect({command:target.command,effectId:target.effectId,capability:target.capability});
   }
   async observe(input:{reference:ToolCommandReference;command:ToolCommand}):Promise<ToolEffectReceipt>{
     const command=normalizeToolCommand(input.command),reference=input.reference;
     if(reference.turnId!==command.turnId||reference.dispatchId!==command.dispatchId||reference.commandId!==command.commandId||!sameScope(reference.scope,command.scope)||reference.digest!==await toolCommandDigest(command))throw Error('project-sandbox-reference-mismatch');
-    await this.#prepare?.(command,true);
-    const target=await this.#target(command,reference.effectId);
+    const preparation=await this.#prepare?.(command,true);
+    const target=await this.#target(command,reference.effectId,preparation);
     return target.sandbox.observeFileEffect({reference,command:target.command,capability:target.capability});
   }
 }

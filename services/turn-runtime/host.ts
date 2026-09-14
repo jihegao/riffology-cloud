@@ -8,17 +8,19 @@ import type { ProductTurnRuntimeRelease } from './release.ts';
 type RuntimeObjectId={equals(other:unknown):boolean};
 type RuntimeNamespace={idFromName(name:string):RuntimeObjectId};
 export type ProductTurnRuntimeHostEnv={PRODUCT_TURN_RUNTIME:RuntimeNamespace;M2_TURNS_ENABLED?:unknown};
-export type ProductTurnRuntimeReleaseFactory=(ctx:DurableObjectState,env:ProductTurnRuntimeHostEnv,identity:TurnRuntimeIdentity)=>ProductTurnRuntimeRelease;
+export type ProductTurnRuntimeReleaseFactory=(ctx:DurableObjectState,env:ProductTurnRuntimeHostEnv,identity:TurnRuntimeIdentity)=>ProductTurnRuntimeRelease|Promise<ProductTurnRuntimeRelease>;
 
 /** Identity-bound host separated from the Cloudflare wrapper so actor and
  * pre-mutation release gates can be verified independently. */
 export class ProductTurnRuntimeHost implements TurnRuntimePort{
   readonly #ctx:DurableObjectState;readonly #env:ProductTurnRuntimeHostEnv;readonly #release:ProductTurnRuntimeReleaseFactory;
+  #ports:Promise<ProductTurnRuntimeRelease>|null=null;
   #core:{identity:TurnRuntimeIdentity;value:ProductTurnRuntimeCore;project:ProductTurnRuntimeRelease['project']}|null=null;
   constructor(ctx:DurableObjectState,env:ProductTurnRuntimeHostEnv,release:ProductTurnRuntimeReleaseFactory){
     if(!ctx?.storage||!env?.PRODUCT_TURN_RUNTIME?.idFromName||typeof release!=='function')throw Error('product-turn-runtime-host-required');
     this.#ctx=ctx;this.#env=env;this.#release=release;
   }
+  #cachedCore(){return this.#core?.value??null;}
   async #assertActor(identity:TurnRuntimeIdentity){const expected=this.#env.PRODUCT_TURN_RUNTIME.idFromName(await turnRuntimeActorName(identity));if(!expected.equals(this.#ctx.id))throw Error('product-turn-runtime-actor-scope-denied');}
   async #for(raw:TurnRuntimeIdentity,existingOnly=false):Promise<ProductTurnRuntimeCore>{
     const identity=turnRuntimeIdentity(raw);await this.#assertActor(identity);
@@ -26,9 +28,10 @@ export class ProductTurnRuntimeHost implements TurnRuntimePort{
     // The release factory must succeed before ProductTurnRuntimeCore creates
     // its SQLite table or reserves an external execution.
     if(existingOnly&&!this.#ctx.storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='product_turn_runtime'").toArray().length)throw Error('product-turn-observer-denied');
-    const ports=this.#release(this.#ctx,this.#env,identity);
+    let ports:ProductTurnRuntimeRelease;try{ports=await (this.#ports??=Promise.resolve(this.#release(this.#ctx,this.#env,identity)));}catch(error){this.#ports=null;throw error;}
+    const initialized=this.#cachedCore();if(initialized)return initialized;
     if(!ports?.execution||!ports.checkpoints)throw Error('product-turn-runtime-release-not-configured');
-    const value=new ProductTurnRuntimeCore(this.#ctx.storage as ProductTurnRuntimeStorage,ports.execution,ports.checkpoints,Date.now,existingOnly,{retryMs:5000,assignmentGuardMs:360000,quietMs:30000,deadlineMs:600000,holdRetryMs:60000},ports.capacity??null,ports.trace);
+    const value=new ProductTurnRuntimeCore(this.#ctx.storage as ProductTurnRuntimeStorage,ports.execution,ports.checkpoints,Date.now,existingOnly,{retryMs:5000,assignmentGuardMs:360000,quietMs:30000,deadlineMs:600000,holdRetryMs:60000},ports.capacity??null,ports.trace,ports.retention??null);
     this.#core={identity,value,project:ports.project};return value;
   }
   async accept(raw:Omit<Parameters<TurnRuntimePort['accept']>[0],'capacityLease'>&{capacityLease?:TurnResourceLease}){
@@ -43,6 +46,7 @@ export class ProductTurnRuntimeHost implements TurnRuntimePort{
     const input={...identity,actor:actor(raw.actor),message:message(raw.message),base:turnBaseCheckpoints(raw.base),...(raw.capacityLease===undefined?{}:{capacityLease:raw.capacityLease})};
     return (await this.#for(identity)).accept(input);
   }
+  async workspaceRuntimeState(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw),core=await this.#for(identity,true);await core.ready();return core.workspaceRuntimeState(identity);}
   async projectPreparationRequired(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw);await (await this.#for(identity,true)).ready();return this.#core?.project?.lazy===true;}
   async prepareProjectTool(input:{identity:TurnRuntimeIdentity;command:ToolCommand;observeOnly:boolean}){
     const identity=turnRuntimeIdentity(input.identity),core=await this.#for(identity,true);await core.ready();
