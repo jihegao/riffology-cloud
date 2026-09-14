@@ -13,9 +13,9 @@ type Resolver=(actorId:string)=>ProjectSandboxRpc;
  * granted execute or observe. It derives the Project Sandbox actor from the
  * immutable command identity and never accepts an actor id from Pi or users. */
 export class ProjectSandboxFileEffects implements ToolEffectPort{
-  #key:string;#clock:()=>number;#resolve:Resolver;
-  constructor(key:string,resolver:Resolver,clock:()=>number=Date.now){
-    this.#key=key;this.#clock=clock;this.#resolve=resolver;
+  #key:string;#clock:()=>number;#resolve:Resolver;#prepare:((command:ToolCommand,observeOnly:boolean)=>Promise<unknown>)|undefined;
+  constructor(key:string,resolver:Resolver,clock:()=>number=Date.now,prepare?:(command:ToolCommand,observeOnly:boolean)=>Promise<unknown>){
+    this.#key=key;this.#clock=clock;this.#resolve=resolver;this.#prepare=prepare;
   }
   async #target(commandInput:ToolCommand,effectIdInput:string):Promise<{command:ToolCommand;effectId:string;actorId:string;sandbox:ProjectSandboxRpc;capability:Awaited<ReturnType<typeof issueProjectEffectCapability>>}>{
     const command=normalizeToolCommand(commandInput),effectId=turnId(effectIdInput),now=positive(this.#clock());
@@ -24,12 +24,14 @@ export class ProjectSandboxFileEffects implements ToolEffectPort{
     return {command,effectId,actorId,sandbox:this.#resolve(actorId),capability};
   }
   async execute(input:{command:ToolCommand;effectId:string}):Promise<ToolEffectReceipt>{
+    await this.#prepare?.(normalizeToolCommand(input.command),false);
     const target=await this.#target(input.command,input.effectId);
     return target.sandbox.executeFileEffect({command:target.command,effectId:target.effectId,capability:target.capability});
   }
   async observe(input:{reference:ToolCommandReference;command:ToolCommand}):Promise<ToolEffectReceipt>{
     const command=normalizeToolCommand(input.command),reference=input.reference;
     if(reference.turnId!==command.turnId||reference.dispatchId!==command.dispatchId||reference.commandId!==command.commandId||!sameScope(reference.scope,command.scope)||reference.digest!==await toolCommandDigest(command))throw Error('project-sandbox-reference-mismatch');
+    await this.#prepare?.(command,true);
     const target=await this.#target(command,reference.effectId);
     return target.sandbox.observeFileEffect({reference,command:target.command,capability:target.capability});
   }

@@ -37,7 +37,7 @@ export class ProjectWorkspaceLifecycle implements WorkspaceFilesFreezePort{
   readonly #source:WorkspaceRevisionSource;readonly #resolve:Resolver;readonly #abortTimeoutMs:number;
   constructor(source:WorkspaceRevisionSource,resolve:Resolver,abortTimeoutMs=PROJECT_WORKSPACE_ABORT_TIMEOUT_MS){if(!source?.restore||typeof resolve!=='function')reject('project-workspace-lifecycle-required');if(!Number.isSafeInteger(abortTimeoutMs)||abortTimeoutMs<1)reject('invalid-project-workspace-abort-timeout');this.#source=source;this.#resolve=resolve;this.#abortTimeoutMs=abortTimeoutMs;}
   async #target(identity:TurnRuntimeIdentity){const actorId=(await sandboxActorIds(identity.scope,identity.turnId,identity.dispatchId)).project;return this.#resolve(actorId);}
-  async prepare(raw:TurnRuntimeIdentity,rawBase:TurnBaseCheckpoints):Promise<void>{
+  async verifiedBase(raw:TurnRuntimeIdentity,rawBase:TurnBaseCheckpoints):Promise<Uint8Array|null>{
     const identity=turnRuntimeIdentity(raw),base=turnBaseCheckpoints(rawBase);let archive:Uint8Array|null=null;
     if(base.workspace){
       try{
@@ -60,6 +60,10 @@ export class ProjectWorkspaceLifecycle implements WorkspaceFilesFreezePort{
         if(digest!==base.initial.filesSha256)reject('project-workspace-base-conflict');
       }catch(error){if(unusableBase(error))throw new TurnBaseUnavailableError();throw error;}
     }
+    return archive;
+  }
+  async prepare(raw:TurnRuntimeIdentity,rawBase:TurnBaseCheckpoints):Promise<void>{
+    const identity=turnRuntimeIdentity(raw),base=turnBaseCheckpoints(rawBase),archive=await this.verifiedBase(identity,base);
     await (await this.#target(identity)).restoreWorkspace(identity,base,archive);
   }
   async frozenFiles(raw:TurnRuntimeIdentity,rawBase:TurnBaseCheckpoints):Promise<Uint8Array>{

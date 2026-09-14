@@ -1,3 +1,4 @@
+import {ProjectPreparationLedger} from '../project-tools/preparation.ts';
 import { ContainerProxy, Sandbox } from '@cloudflare/sandbox';
 import { MODEL_PROXY_HOST, TOOL_BRIDGE_HOST, projectSandboxOutbound, sandboxActorIds, trustedPiOutbound, type InternalSandboxServices } from './policy.ts';
 import {createObserverNativeReader} from '../turn-runtime/observer-native-read.ts';
@@ -74,6 +75,7 @@ export class ProjectToolSandbox extends Sandbox<M2SandboxEnv>{
   override allowedHosts:string[]=[];
   override sleepAfter='5m';
   override envVars={};
+  #preparation:ProjectPreparationLedger;
   #effects:ProjectFileEffectPort;
   #supervisor:SqlProjectEffectSupervisor;
   #workspace:SandboxProjectWorkspacePort;
@@ -83,6 +85,7 @@ export class ProjectToolSandbox extends Sandbox<M2SandboxEnv>{
   constructor(ctx:DurableObjectState<{}>,env:M2SandboxEnv){
     super(ctx,env);
     if(!ctx.id.name)throw Error('project-sandbox-requires-named-actor');
+    this.#preparation=new ProjectPreparationLedger(ctx.storage,()=>ctx.container?.running===true);
     this.#actorId=ctx.id.name;this.#capabilityKey=env.M2_PROJECT_EFFECT_CAPABILITY_KEY;
     const native=new SandboxNativeProjectEffectPort(this);
     this.#supervisor=new SqlProjectEffectSupervisor(ctx.storage,native);
@@ -107,23 +110,29 @@ export class ProjectToolSandbox extends Sandbox<M2SandboxEnv>{
   async executeFileEffect(input:{command:ToolCommand;effectId:string;capability:ProjectEffectCapability}){
     const claims=await verifyProjectEffectCapability(this.#capabilityKey,this.#actorId,input.command,input.effectId,input.capability);
     await this.#assertDispatch(claims);
-    return this.#turnFence.runDispatch(claims,()=>this.#effects.execute(input),()=>this.#destroyForFence());
+    return this.#turnFence.runDispatch(claims,()=>{this.#preparation.assertDispatchUsable(claims);return this.#effects.execute(input);},()=>this.#destroyForFence());
   }
   async observeFileEffect(input:{reference:ToolCommandReference;command:ToolCommand;capability:ProjectEffectCapability}){
     const claims=await verifyProjectEffectCapability(this.#capabilityKey,this.#actorId,input.command,input.reference.effectId,input.capability);
     await this.#assertDispatch(claims);
     if(this.#turnFence.isDispatchFenced(claims))return this.#effects.observePersistedTerminal(input);
-    return this.#turnFence.runDispatch(claims,()=>this.#effects.observe(input),()=>this.#destroyForFence());
+    return this.#turnFence.runDispatch(claims,()=>{this.#preparation.assertDispatchUsable(claims);return this.#effects.observe(input);},()=>this.#destroyForFence());
   }
+  async prepareWorkspaceOnce(identity:ReturnType<typeof turnRuntimeIdentity>,base:Parameters<SandboxProjectWorkspacePort['restoreFiles']>[1],archive:Uint8Array|null,operationId:string,deadlineAt:number){
+    identity=turnRuntimeIdentity(identity);await this.#assertActor(identity);
+    return this.#turnFence.run(identity,()=>this.#preparation.prepare(identity,base,operationId,deadlineAt,()=>this.#workspace.restoreFiles(identity,base,archive,deadlineAt)),()=>this.#destroyForFence());
+  }
+  async observeWorkspacePreparation(raw:ReturnType<typeof turnRuntimeIdentity>,operationId:string){const identity=turnRuntimeIdentity(raw);await this.#assertActor(identity);return this.#preparation.observe(identity,operationId);}
   async restoreWorkspace(...input:Parameters<SandboxProjectWorkspacePort['restoreFiles']>){const identity=turnRuntimeIdentity(input[0]);await this.#assertActor(identity);return this.#turnFence.run(identity,()=>this.#workspace.restoreFiles(...input),()=>this.#destroyForFence());}
   async freezeWorkspace(...input:Parameters<SandboxProjectWorkspacePort['frozenFiles']>){
     const identity=turnRuntimeIdentity(input[0]);turnBaseCheckpoints(input[1]);
     await this.#assertActor(identity);
-    return this.#turnFence.run(identity,async()=>{await this.#supervisor.sealForCheckpoint();return this.#workspace.frozenFiles(...input);},()=>this.#destroyForFence());
+    return this.#turnFence.run(identity,async()=>{this.#preparation.assertUsable(identity);await this.#supervisor.sealForCheckpoint();return this.#workspace.frozenFiles(...input);},()=>this.#destroyForFence());
   }
   async abortWorkspace(raw:Parameters<typeof turnRuntimeIdentity>[0]){
     const identity=turnRuntimeIdentity(raw);
     await this.#assertActor(identity);
+    await this.#preparation.close(identity);
     const released=await this.#turnFence.fence(identity,()=>this.#destroyForFence());
     return {...released,fenced:true as const};
   }
