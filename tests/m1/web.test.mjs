@@ -724,7 +724,7 @@ test('selected session survives reload and remains user controlled', async t => 
   await page.locator('#session-select').waitFor();
   await page.locator('#session-select').selectOption('a');
   await page.reload();
-  await page.locator('#session-select').waitFor();
+  await page.locator('#session-select option[value="a"]').waitFor({ state: 'attached' });
   assert.equal(await page.locator('#session-select').inputValue(), 'a');
 });
 
