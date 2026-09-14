@@ -5,7 +5,7 @@ const button = (text, action, disabled = false) => { const b = node('button', te
 const defaults = spec => Object.fromEntries(Object.entries(spec?.parameters || {}).map(([key, value]) => [key, value.default]));
 
 export function createComparisonPanel({root, api}) {
-  let context = null, generation = 0, model = null, groups = [], cursor = null, pending = null, timer = null, busy = false, loading = false, message = '';
+  let context = null, generation = 0, readEpoch = 0, model = null, groups = [], cursor = null, pending = null, timer = null, busy = false, loading = false, message = '';
   let draft = null, editor, history, status, rawOpen = new Set();
   const storageKey = () => `riffology:comparison-intent:${context.tenantId}:${context.workspaceId}`;
   const path = suffix => `/api/workspaces/${encodeURIComponent(context.workspaceId)}${suffix}`;
@@ -77,15 +77,21 @@ export function createComparisonPanel({root, api}) {
     }
     if(cursor)history.append(button('加载更早的比较',()=>void loadMore(),loading));
   }
-  function schedule() { clearTimeout(timer);if(!context||!active())return;const token=generation;timer=setTimeout(async()=>{try{const updates=await Promise.all(groups.filter(g=>!TERMINAL.has(g.status)).map(g=>api(path(`/experiment-groups/${encodeURIComponent(g.groupId)}`))));if(token!==generation)return;for(const item of updates)groups=groups.map(g=>g.groupId===item.groupId?item:g);renderHistory();}catch{if(token===generation)mark('比较状态暂时无法更新；可刷新读取，已接收的实验不会重新提交。');}finally{if(token===generation)schedule();}},1500); }
+  function schedule() {
+    clearTimeout(timer);if(!context||loading||!active())return;const token=generation,epoch=readEpoch,valid=()=>token===generation&&epoch===readEpoch;
+    timer=setTimeout(async()=>{try{const updates=await Promise.all(groups.filter(g=>!TERMINAL.has(g.status)).map(g=>api(path(`/experiment-groups/${encodeURIComponent(g.groupId)}`))));if(!valid())return;for(const item of updates)groups=groups.map(g=>g.groupId===item.groupId?item:g);renderHistory();}catch{if(valid())mark('比较状态暂时无法更新；可刷新读取，已接收的实验不会重新提交。');}finally{if(valid())schedule();}},1500);
+  }
   async function load() {
-    if(!context||loading)return;const token=generation;loading=true;renderEditor();
-    try{const [m,page]=await Promise.all([api(path('/model')),api(path('/experiment-groups'))]);if(token!==generation)return;
+    if(!context)return;const token=generation,epoch=++readEpoch,valid=()=>token===generation&&epoch===readEpoch;clearTimeout(timer);loading=true;renderEditor();
+    try{const [m,page]=await Promise.all([api(path('/model')),api(path('/experiment-groups'))]);if(!valid())return;
       if(draft&&model?.version&&(model.version.filesSha256!==m.version?.filesSha256||model.version.specSha256!==m.version?.specSha256)){draft=null;mark('保存的模型已变化，未提交的比较参数已恢复新版本默认值。');}
       model=m;groups=(page.items||[]).filter(g=>safeId(g.groupId));cursor=page.nextCursor||null;
-    }catch(error){if(token===generation)mark(error.message||'无法读取比较，请刷新重试。');}finally{if(token===generation){loading=false;renderEditor();renderHistory();schedule();}}
+    }catch(error){if(valid())mark(error.message||'无法读取比较，请刷新重试。');}finally{if(valid()){loading=false;renderEditor();renderHistory();schedule();}}
   }
-  async function loadMore(){if(!cursor||loading)return;const token=generation;loading=true;renderHistory();try{const page=await api(path(`/experiment-groups?before=${encodeURIComponent(cursor)}`));if(token!==generation)return;groups=[...groups,...(page.items||[]).filter(g=>safeId(g.groupId)&&!groups.some(old=>old.groupId===g.groupId))];cursor=page.nextCursor||null;}catch(error){if(token===generation)mark(error.message||'历史读取失败');}finally{if(token===generation){loading=false;renderHistory();schedule();}}}
+  async function loadMore(){
+    if(!cursor||loading)return;const token=generation,epoch=++readEpoch,valid=()=>token===generation&&epoch===readEpoch;clearTimeout(timer);loading=true;renderHistory();
+    try{const page=await api(path(`/experiment-groups?before=${encodeURIComponent(cursor)}`));if(!valid())return;groups=[...groups,...(page.items||[]).filter(g=>safeId(g.groupId)&&!groups.some(old=>old.groupId===g.groupId))];cursor=page.nextCursor||null;}catch(error){if(valid())mark(error.message||'历史读取失败');}finally{if(valid()){loading=false;renderHistory();schedule();}}
+  }
   async function submit(){
     if(pending)return submitPending();if(busy||loading||!model?.canRun)return;
     const seeds=draft.seeds.trim()?draft.seeds.trim().split(/[\s,，]+/).map(Number):[];

@@ -20,26 +20,32 @@
     </section>
     <section id="workspace" hidden>
       <div class="workspace-head"><button id="workspace-back" class="button" type="button">← 返回项目</button><div><p class="eyebrow">PROJECT WORKSPACE</p><h1 id="workspace-title"></h1><p id="workspace-meta" class="meta"></p></div></div>
-      <div class="boundary-note"><strong>职责边界</strong><span>平台负责身份、Session、Turn、预算、保存与恢复；项目内 Pi 只通过受控工具读写本项目文件并运行仿真。</span></div>
+      <div class="workspace-depths" aria-label="展示深度"><button type="button" data-workspace-depth="explore" aria-pressed="true">Explore · 探索</button><button type="button" data-workspace-depth="experiment" aria-pressed="false">Experiment · 实验</button><button type="button" data-workspace-depth="inspect" aria-pressed="false">Inspect · 检查</button><span>同一个模型，从问题到证据</span></div>
+      <div class="mobile-panes" aria-label="工作区面板"><button type="button" data-mobile-pane="chat" aria-pressed="true">Chat · 对话</button><button type="button" data-mobile-pane="preview" aria-pressed="false">Preview · 模型</button></div>
       <div class="workspace-grid">
-        <div class="workspace-main">
-          <div class="session-controls" aria-label="Session 管理"><label for="session-select">当前 Session</label><select id="session-select"></select><button id="new-session" class="button" type="button">新建 Session</button></div>
+        <section class="workspace-main" id="workspace-agent" aria-label="建模助手">
+          <div class="session-controls" aria-label="对话管理"><label for="session-select">对话</label><select id="session-select"></select><button id="new-session" class="button" type="button">新建对话</button></div>
           <div id="turns" class="turn-list" aria-live="polite"></div>
           <form id="message-form" class="composer">
-            <label for="message-input">告诉 Pi 你想构建或修改什么</label>
+            <label for="message-input">描述你的研究问题或模型修改</label>
             <textarea id="message-input" rows="4" maxlength="16000" required placeholder="例如：创建一个单服务台排队模型，并解释等待时间如何变化。"></textarea>
             <div class="composer-actions"><span id="message-error" role="status"></span><button id="cancel-turn" class="button" type="button" hidden>停止回合</button><button id="message-submit" class="button primary" type="submit">发送</button></div>
           </form>
-        </div>
-        <aside class="files-panel" aria-labelledby="files-heading"><div class="files-heading"><div><p class="eyebrow">SAVED REVISION</p><h2 id="files-heading">项目文件</h2></div><button id="files-refresh" class="button compact" type="button">刷新</button></div><div class="artifact-tabs" role="tablist" aria-label="版本视图"><button id="files-tab" role="tab" aria-selected="true" aria-controls="workspace-files" type="button">Files</button><button id="diff-tab" role="tab" aria-selected="false" aria-controls="workspace-diff" type="button">Diff</button></div><section id="files-view"><p id="files-meta" class="meta"></p><div id="workspace-files" class="file-list" role="tabpanel" aria-labelledby="files-tab" aria-live="polite"></div></section><section id="diff-view" hidden><p id="diff-meta" class="meta"></p><div id="workspace-diff" class="file-list" role="tabpanel" aria-labelledby="diff-tab" aria-live="polite"></div></section></aside>
+        </section>
+        <div class="workspace-divider" data-workspace-divider role="separator" tabindex="0" aria-label="调整对话与模型宽度" aria-orientation="vertical" aria-controls="workspace-agent workspace-canvas" aria-valuemin="25" aria-valuemax="60" aria-valuenow="35"></div>
+        <aside id="workspace-canvas" class="workspace-canvas" aria-label="模型工作区">
+          <nav class="workspace-tabs" role="tablist" aria-label="模型视图"><button id="canvas-preview-tab" type="button" role="tab" data-workspace-tab="preview" aria-selected="true" aria-controls="canvas-preview">Preview</button><button id="canvas-model-tab" type="button" role="tab" data-workspace-tab="model" aria-selected="false" aria-controls="canvas-model" tabindex="-1">Model</button><button id="canvas-runs-tab" type="button" role="tab" data-workspace-tab="runs" aria-selected="false" aria-controls="canvas-runs" tabindex="-1">Runs</button><button id="canvas-inspect-tab" type="button" role="tab" data-workspace-tab="inspect" aria-selected="false" aria-controls="canvas-inspect" tabindex="-1">Inspect</button></nav>
+          <section id="canvas-preview" class="workspace-view" data-workspace-view="preview" role="tabpanel" aria-labelledby="canvas-preview-tab">
+            <p id="workspace-model-status" class="model-state" role="status">还没有模型预览。请在左侧描述研究问题。</p>
+            <section id="workspace-services" class="service-panel" aria-label="运行已保存模型"></section>
+            <section id="workspace-preview" class="service-panel preview-panel" aria-label="项目预览"></section>
+            <section id="workspace-simulation" class="service-panel simulation-panel" aria-label="Simulation 参数实验"></section>
+          </section>
+          <section id="canvas-model" class="workspace-view" data-workspace-view="model" role="tabpanel" aria-labelledby="canvas-model-tab" hidden><section id="workspace-model" aria-label="模型说明"></section><section id="workspace-publication" class="service-panel publication-panel" aria-label="提交为官方模型"></section><section id="workspace-export" class="service-panel export-panel" aria-label="导出研究包"></section></section>
+          <section id="canvas-runs" class="workspace-view" data-workspace-view="runs" role="tabpanel" aria-labelledby="canvas-runs-tab" hidden><section id="workspace-comparison" class="service-panel comparison-panel" aria-label="对照实验"></section><section id="workspace-evidence" class="service-panel" aria-label="Evidence 可核验测量"></section><section id="workspace-run-history" class="service-panel" aria-label="单次实验记录"></section></section>
+          <section id="canvas-inspect" class="workspace-view" data-workspace-view="inspect" role="tabpanel" aria-labelledby="canvas-inspect-tab" hidden><p class="meta">查看相同模型的源文件与版本差异。运行记录和原始结果在 Runs 中。</p>        <aside class="files-panel" aria-labelledby="files-heading"><div class="files-heading"><div><p class="eyebrow">SAVED REVISION</p><h2 id="files-heading">项目文件</h2></div><button id="files-refresh" class="button compact" type="button">刷新</button></div><div class="artifact-tabs" role="tablist" aria-label="版本视图"><button id="files-tab" role="tab" aria-selected="true" aria-controls="workspace-files" type="button">Files</button><button id="diff-tab" role="tab" aria-selected="false" aria-controls="workspace-diff" type="button">Diff</button></div><section id="files-view"><p id="files-meta" class="meta"></p><div id="workspace-files" class="file-list" role="tabpanel" aria-labelledby="files-tab" aria-live="polite"></div></section><section id="diff-view" hidden><p id="diff-meta" class="meta"></p><div id="workspace-diff" class="file-list" role="tabpanel" aria-labelledby="diff-tab" aria-live="polite"></div></section></aside><section id="workspace-runtime-details" class="service-panel" aria-label="交互运行诊断"></section><details class="boundary-note"><summary>执行与保存边界</summary><p>平台负责身份、预算、保存和恢复。模型代码在隔离环境运行；执行完成不代表科学结论有效。</p></details></section>
+        </aside>
       </div>
-      <section id="workspace-services" class="service-panel" aria-label="项目服务"></section>
-      <section id="workspace-preview" class="service-panel preview-panel" aria-label="项目预览"></section>
-      <section id="workspace-publication" class="service-panel publication-panel" aria-label="提交为官方模型"></section>
-      <section id="workspace-export" class="service-panel export-panel" aria-label="导出研究包"></section>
-      <section id="workspace-comparison" class="service-panel comparison-panel" aria-label="对照实验"></section>
-      <section id="workspace-evidence" class="service-panel" aria-label="Evidence 可核验测量"></section>
-      <section id="workspace-simulation" class="service-panel simulation-panel" aria-label="Simulation 参数实验"></section>
     </section>
     <section id="invitation" class="invite card" hidden><div><h2>启用个人空间</h2><p>输入收到的邀请码。</p></div><form id="invite-form"><label class="sr-only" for="invite-token">邀请码</label><input id="invite-token" autocomplete="off" placeholder="粘贴邀请码" required><button class="button" type="submit">接受邀请</button></form></section>
   </main>
