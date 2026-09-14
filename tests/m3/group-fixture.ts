@@ -1,0 +1,31 @@
+import {DatabaseSync} from 'node:sqlite';
+import {mkdtempSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import type {TestContext} from 'node:test';
+import {SimulationHost,type SimulationPorts} from '../../services/simulation/host.ts';
+import {ExperimentGroupHost,type ExperimentGroupRequest} from '../../services/simulation/groups.ts';
+import {modelVersion,type SimulationPlan} from '../../services/simulation/source.ts';
+import {SqlTenantQuota} from '../../services/quota/core.ts';
+import {fixture,scope,actor,spec as serviceSpec} from './run-fixture.ts';
+export {scope,actor};
+export const plan:SimulationPlan={source:serviceSpec().plan.source,spec:{schemaVersion:1,researchQuestion:'Queue?',scope:'One queue',entities:['customer'],mechanisms:['FCFS'],assumptions:[],parameters:{servers:{type:'integer',default:1,minimum:1,maximum:4}},metrics:{wait:{unit:'min'}},limitations:[],execution:{entrypoint:'model/run.py',dependencyLock:'app/requirements.lock'}},specSha256:'1'.repeat(64),entrypointSha256:'2'.repeat(64),dependencyLockSha256:'3'.repeat(64)};
+export function groupFixture(t:TestContext){
+ const q=fixture(t),quota=new SqlTenantQuota(q.storage,{tenantId:scope.tenantId,capacity:1,version:'v1'},()=>q.now);
+ const dir=mkdtempSync(join(tmpdir(),'group-host-')),file=join(dir,'state.db');let db=new DatabaseSync(file),failSync=false;db.exec('CREATE TABLE kv(k TEXT PRIMARY KEY,v TEXT)');
+ const getOne=(key:string)=>{const row=db.prepare('SELECT v FROM kv WHERE k=?').get(key);return row?JSON.parse(String(row.v)):undefined;};
+ const get=async(key:string|string[])=>Array.isArray(key)?new Map(key.filter(k=>getOne(k)!==undefined).map(k=>[k,getOne(k)])):getOne(key);
+ const put=async(key:string,value:unknown)=>{db.prepare('INSERT OR REPLACE INTO kv VALUES(?,?)').run(key,JSON.stringify(value));};
+ const list=async(options:{prefix:string})=>new Map(db.prepare('SELECT k,v FROM kv WHERE substr(k,1,?)=? ORDER BY k').all(options.prefix.length,options.prefix).map(r=>[String(r.k),JSON.parse(String(r.v))]));
+ const tx={get,put,list,delete:async(key:string)=>{db.prepare('DELETE FROM kv WHERE k=?').run(key);},setAlarm:async(at:number)=>put('alarm',at),deleteAlarm:async()=>{db.prepare("DELETE FROM kv WHERE k='alarm'").run();}};
+ let tail=Promise.resolve();
+ const storage={...tx,transaction:<T,>(fn:(transaction:typeof tx)=>Promise<T>)=>{const next=tail.then(async()=>{db.exec('BEGIN IMMEDIATE');try{const value=await fn(tx);db.exec('COMMIT');return value;}catch(e){db.exec('ROLLBACK');throw e;}});tail=next.then(()=>{},()=>{});return next;},sync:async()=>{if(failSync){failSync=false;throw Error('lost-storage-ack');}}} as unknown as DurableObjectStorage;
+ let enabled=true,allowed=true,loseStart=false,loseRelease=false;const starts:string[]=[],observes:string[]=[],completed=new Set<string>(),invalid=new Set<string>();
+ const stopped=(id:string)=>({status:'stopped' as const,stop:{confirmationId:`stop-${id}`,observedAt:q.now,fenced:true as const},result:completed.has(id)?{}:null});
+ const ports:SimulationPorts={quota:{acquire:r=>quota.acquire(r),lookup:(_t,id)=>quota.lookup(id),dispatch:r=>quota.dispatch(r),confirmStopped:async(r,p)=>{const v=await quota.confirmStopped(r,p);if(loseRelease){loseRelease=false;throw Error('lost-release');}return v;}},start:async input=>{starts.push(input.runId);if(loseStart){loseStart=false;throw Error('lost-start');}return {status:'running',result:null,stop:null};},observe:async input=>{observes.push(input.runId);return completed.has(input.runId)?stopped(input.runId):{status:'running',result:null,stop:null};},stop:async input=>stopped(input.runId),destroy:async()=>{},running:async()=>false,publish:async r=>{if(invalid.has(r.runId))throw Error('simulation-result-invalid');return {metrics:{wait:Number(r.input.parameters.servers)*10+r.input.seed},artifactSha256:'9'.repeat(64)};},authorize:async()=>allowed,hold:()=>{}};
+ let host=new SimulationHost(storage,scope,ports,()=>q.now,{durationMs:10000,releaseGuardMs:100,quietMs:50});
+ let groups=new ExperimentGroupHost(storage,scope,host,()=>enabled,()=>q.now);
+ const request:ExperimentGroupRequest={...modelVersion(plan),hypothesis:'More servers reduce waiting?',baseline:{label:'Baseline',parameters:{servers:1}},interventions:[{label:'Two servers',parameters:{servers:2}}],seeds:[1,2]};
+ t.after(()=>{db.close();rmSync(dir,{recursive:true,force:true});});
+ return {q,storage,ports,request,starts,observes,get host(){return host;},get groups(){return groups;},complete(id:string,bad=false){completed.add(id);if(bad)invalid.add(id);},loseStart(){loseStart=true;},loseRelease(){loseRelease=true;},loseSync(){failSync=true;},enable(v:boolean){enabled=v;},authorize(v:boolean){allowed=v;},reopen(){db.close();db=new DatabaseSync(file);host=new SimulationHost(storage,scope,ports,()=>q.now,{durationMs:10000,releaseGuardMs:100,quietMs:50});groups=new ExperimentGroupHost(storage,scope,host,()=>enabled,()=>q.now);},async tick(ms=1){q.now+=ms;await host.alarm();await groups.alarm();}};
+}
