@@ -9,6 +9,7 @@ export interface WorkspacePairedCapacityPort{
  bind(ref:WorkspaceLeaseRef,binding:TurnBinding):Promise<PairLease>;
  claimNativeStart(ref:WorkspaceLeaseRef,binding:TurnBinding,domain:PairDomain):Promise<{authorized:boolean;lease:PairLease}>;
  confirmHandoff(ref:WorkspaceLeaseRef,binding:TurnBinding,proofs:Record<PairDomain,QuiescenceProof>):Promise<PairLease>;
+ retirePair(ref:WorkspaceLeaseRef,reason:'gate-disabled'|'runtime-changed'):Promise<PairLease>;
  cancelPair(ref:WorkspaceLeaseRef):Promise<PairLease>;
  confirmPairReleased(ref:WorkspaceLeaseRef,proofs:Partial<Record<PairDomain,DomainReleaseProof>>):Promise<PairLease>;
  maintainPairs():Promise<PairSnapshot>;
