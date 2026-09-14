@@ -26,7 +26,7 @@ mode=(root/(sys.argv[1]+'.control.json')).read_text().strip()
 denied=False
 try: Path('/var/lib/riffology/runtime-control/binding.json').read_text()
 except PermissionError: denied=True
-(root/'started').write_text(json.dumps({'uid':os.getuid(),'denied':denied,'status':Path('/proc/self/status').read_text()}))
+(root/'started').write_text(json.dumps({'uid':os.getuid(),'denied':denied,'status':Path('/proc/self/status').read_text(),'env':dict(os.environ)}))
 if mode=='detach':
  if os.fork()==0:
   os.setsid()
@@ -234,6 +234,25 @@ class NativeTests(unittest.TestCase):
         cli('activate','B')
         self.assertNotEqual(subprocess.run(args,capture_output=True).returncode,0)
         self.assertFalse(json.loads((ROOT/'binding.json').read_text())['filesCleared'])
+
+    def test_child_receives_only_verified_platform_ca_and_minimal_environment(self):
+        ca = Path('/etc/cloudflare/certs/cloudflare-containers-ca.crt')
+        self.assertFalse(ca.exists(), 'bare fixture must not replace a real platform CA')
+        ca.parent.mkdir(parents=True, exist_ok=True)
+        ca.write_text('offline fixture CA'); os.chmod(ca, 0o644)
+        try:
+            cli('activate')
+            (TURNS/(TOKEN+'.control.json')).write_text('exit')
+            env = dict(os.environ, NODE_EXTRA_CA_CERTS=str(ca), NODE_OPTIONS='--inspect', PRIVATE_API_KEY='not-in-child')
+            run = subprocess.run(['python3',SUP,'spawn','--epoch','A','--','/usr/local/bin/node',HOST,TOKEN],env=env,capture_output=True,text=True,timeout=12)
+            self.assertEqual(run.returncode, 0, run.stderr)
+            received=json.loads((TURNS/'started').read_text())['env']
+            self.assertEqual(received['NODE_EXTRA_CA_CERTS'], str(ca))
+            self.assertEqual(received['HOME'], '/var/lib/riffology/pi')
+            self.assertNotIn('NODE_OPTIONS', received); self.assertNotIn('PRIVATE_API_KEY', received)
+            cli('seal')
+        finally:
+            ca.unlink(missing_ok=True)
 
     def test_fixed_command_only(self):
         cli('activate')

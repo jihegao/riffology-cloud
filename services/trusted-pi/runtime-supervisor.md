@@ -104,3 +104,32 @@ active/stale reset denial, idempotency and rejection of activation before reset.
 The unshipped warm journal adds `filesCleared`; old native images/journals are
 not silently migrated. Pin the new runtime version and drain old actors before
 using this contract. Cold root host execution remains unchanged.
+
+### Platform TLS CA in the warm child environment
+
+The SDK's internal HTTPS transport uses its platform CA at the fixed path
+`/etc/cloudflare/certs/cloudflare-containers-ca.crt`. The warm supervisor now
+adds only `NODE_EXTRA_CA_CERTS` pointing to that constant, alongside LANG, PATH
+and the pinned HOME. It never forwards NODE_OPTIONS, credentials, arbitrary
+trust-store paths or the rest of the parent's environment. TLS verification
+remains enabled. A supplied NODE_EXTRA_CA_CERTS value that differs from the
+constant is rejected before the durable spawn reservation.
+
+Before forking, the root supervisor walks from `/` with directory descriptors,
+O_DIRECTORY and O_NOFOLLOW. Every directory must be root-owned, not writable
+by group/other, and searchable by the unprivileged child (both group and other search bits).
+The CA must be a nonempty regular root-owned file, without group/other write,
+and readable by the child (both group and other read bits). The conservative public-CA modes
+accept the platform's 0755 directories and 0644 file; root-only modes are
+rejected rather than leaving Node to ignore an unreadable CA. Requiring both
+classes avoids Unix group-membership precedence making an other-readable CA
+unreadable to the child when its primary group matches the file group. A symlink at
+any level, FIFO, mutable certificate or mutable parent is rejected.
+
+An offline bare native fixture may omit both the platform file and variable.
+An explicitly declared but missing CA fails closed. Existing invalid files
+are rejected even when the environment variable is absent. The native CA
+boundary suite covers these cases; the process-domain suite additionally
+checks the real spawned child's environment. These tests do not establish
+HTTPS correctness themselves: actual SDK-mediated HTTPS must be verified
+separately with the production platform CA and normal certificate validation.
