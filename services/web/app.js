@@ -22,6 +22,7 @@ let modelsGeneration = 0;
 let activeProject = null;
 let workspaceSnapshot = null;
 let workspaceEvents = [];
+let workspaceHistoryTruncated = false;
 let selectedSessionId = null;
 let sessionIntent = null;
 let creatingSession = false;
@@ -279,6 +280,7 @@ function renderWorkspace() {
   const maintenance = admission?.state === 'maintenance';
   if (maintenance) appendTurnCard('system', '当前环境暂停接收新任务。', '草稿会保留；已接收回合仍可继续观察、取消和读取保存结果。');
   if (unavailable) appendTurnCard('system', '当前执行环境暂不可用。', '平台正在恢复运行资源，请稍后重试；草稿会保留。');
+  if (workspaceHistoryTruncated) appendTurnCard('system', '这里只显示近期对话回复。', '较早回复已超出显示保留范围；项目文件和实验结果仍可查看。');
   $('#message-input').disabled = maintenance || unavailable;
   $('#message-submit').disabled = maintenance || unavailable || sendingMessage;
   $('#new-session').disabled = maintenance || unavailable || creatingSession || Boolean(messageIntent);
@@ -379,12 +381,26 @@ function selectArtifactPanel(panel){workspaceArtifactPanel=panel==='diff'?'diff'
 async function readWorkspaceEvents(workspaceId) {
   const events = [];
   let cursor = 0;
+  let historyTruncated = false;
+  let oldestSequence = null;
+  let lastCursor = -1;
   for (let pageNumber = 0; pageNumber < 12; pageNumber++) {
     const page = await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/events?after_sequence=${cursor}&limit=200`);
-    if (page.snapshotRequired) return { events: [], cursor: Math.max(0, Number(page.nextSequence || 1) - 1), snapshotRequired: true };
+    if (page.snapshotRequired) {
+      if (!Number.isSafeInteger(page.oldestSequence) || page.oldestSequence < 1) throw new Error('事件保留窗口无效，请刷新项目。');
+      const retainedCursor = page.oldestSequence - 1;
+      if (retainedCursor <= cursor) throw new Error('事件保留窗口无法推进，请刷新项目。');
+      historyTruncated = true;
+      oldestSequence = page.oldestSequence;
+      cursor = retainedCursor;
+      continue;
+    }
+    if (page.hasMore && Number(page.nextSequence) <= cursor) throw new Error('事件读取没有进展，请刷新项目。');
     events.push(...page.events);
     cursor = page.nextSequence;
-    if (!page.hasMore) return { events, cursor, snapshotRequired: false };
+    if (!page.hasMore) return { events, cursor, snapshotRequired: false, historyTruncated, oldestSequence };
+    if (cursor <= lastCursor) throw new Error('事件读取没有进展，请刷新项目。');
+    lastCursor = cursor;
   }
   throw new Error('事件过多，请刷新项目后重试');
 }
@@ -435,6 +451,7 @@ async function refreshWorkspace(generation = viewGeneration) {
     if (generation !== viewGeneration || activeProject?.workspace_id !== workspaceId) return;
     workspaceSnapshot = snapshot;
     workspaceEvents = replay.events;
+    workspaceHistoryTruncated = replay.historyTruncated === true;
     renderWorkspace();
     void refreshWorkspaceFiles(generation);
     workspaceDiff=null;workspaceDiffError='';renderWorkspaceDiff();if(workspaceArtifactPanel==='diff')void refreshWorkspaceDiff(generation);
@@ -455,6 +472,7 @@ function openWorkspace(project) {
   activeProject = project;
   workspaceSnapshot = null;
   workspaceEvents = [];
+  workspaceHistoryTruncated = false;
   workspaceFiles = null;
   workspaceFilesError = '';
   workspaceDiff = null;
