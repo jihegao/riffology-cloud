@@ -466,14 +466,18 @@ test('tool events render one safe collapsible card per tool call with lifecycle 
   assert.match(await page.locator('.tool-card').nth(1).innerText(), /<script>alert\(1\)<\/script>/);
 });
 
-test('snapshot.required closes the stale stream and restores from a fresh snapshot cursor once', async t => {
-  const workspaceId = 'workspace-snapshot', turnId = 'turn-snapshot'; let workspaceReads = 0, streamReads = 0;
+test('snapshot.required restores retained assistant history and reconnects from its cursor', async t => {
+  const workspaceId = 'workspace-snapshot', turnId = 'turn-snapshot'; let workspaceReads = 0, streamReads = 0; const streamCursors = [];
   const page = await pageFixture(t, async (route, path) => {
     if (path === '/api/tenants/tenant-a/projects') { await json(route, { projects: [{ id: 'project-snapshot', workspace_id: workspaceId, title: '恢复游标', status: 'ready' }] }); return true; }
     if (path === `/api/workspaces/${workspaceId}`) { workspaceReads++; await json(route, { schemaVersion: 1, nextSequence: 3, activeTurnId: workspaceReads < 3 ? turnId : null, sessions: { session: { id: 'session', title: '主对话', createdAt: 1 } }, turns: { [turnId]: { id: turnId, sessionId: 'session', message: '继续', status: workspaceReads < 3 ? 'running' : 'completed', persistenceOutcome: workspaceReads < 3 ? null : 'saved', createdAt: 2 } } }); return true; }
     if (path === `/api/workspaces/${workspaceId}/events`) {
-      if (route.request().headers().accept?.includes('text/event-stream')) { streamReads++; const body = streamReads === 1 ? 'event: snapshot.required\ndata: {"oldestSequence":2,"nextSequence":3}\n\n' : `id: 2\nevent: turn.completed\ndata: ${JSON.stringify({ sequence: 2, eventId: 'terminal', turnId, type: 'turn.completed', payload: { saved: true } })}\n\n`; await route.fulfill({ status: 200, contentType: 'text/event-stream', body }); }
-      else await json(route, { events: [], nextSequence: 2, hasMore: false, oldestSequence: 2, snapshotRequired: streamReads === 0 });
+      if (route.request().headers().accept?.includes('text/event-stream')) { streamReads++; streamCursors.push(Number(new URL(route.request().url()).searchParams.get('after_sequence') || 0)); const body = streamReads === 1 ? 'event: snapshot.required\ndata: {"oldestSequence":2,"nextSequence":4}\n\n' : `id: 3\nevent: turn.completed\ndata: ${JSON.stringify({ sequence: 3, eventId: 'terminal', turnId, type: 'turn.completed', payload: { saved: true } })}\n\n`; await route.fulfill({ status: 200, contentType: 'text/event-stream', body }); }
+      else {
+        const after = Number(new URL(route.request().url()).searchParams.get('after_sequence') || 0);
+        const retained = { sequence: 2, eventId: 'assistant-retained', turnId, type: 'assistant.message', payload: { text: '保留窗口中的恢复结果', stopReason: 'stop' } };
+        await json(route, { events: after === 1 ? [retained] : [], nextSequence: 2, hasMore: false, oldestSequence: 2, snapshotRequired: after === 0 });
+      }
       return true;
     }
   });
@@ -481,6 +485,7 @@ test('snapshot.required closes the stale stream and restores from a fresh snapsh
   await page.locator('#workspace:not([hidden])').waitFor();
   await waitFor(() => streamReads === 2);
   assert.equal(streamReads, 2); assert.ok(workspaceReads >= 2); assert.equal(await page.locator('#message-error').innerText(), '');
+  assert.deepEqual(streamCursors, [2, 2]); assert.match(await page.locator('#turns').innerText(), /保留窗口中的恢复结果/); assert.match(await page.locator('#turns').innerText(), /较早事件已超出保留窗口/);
 });
 
 test('assistant deltas merge once per Turn and prefer the final message safely', async t => {
