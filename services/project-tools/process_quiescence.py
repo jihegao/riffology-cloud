@@ -298,10 +298,74 @@ def seal():
             time.sleep(0.02)
 
 
+
+def prune(epoch, expected_sha):
+    if not valid_epoch(epoch) or not re.fullmatch('[a-f0-9]{64}', expected_sha):
+        raise RuntimeError('project-prune-invalid')
+    with spawn_lock() as directory:
+        state = read_state(directory)
+        if (not state or state['epoch'] != epoch or state['status'] != 'sealed' or not state['frozen']
+                or state['frozen']['token'] != state['archiveToken'] or state['frozen']['sha256'] != expected_sha):
+            raise RuntimeError('project-prune-binding-denied')
+        probe = pidfd_open(os.getpid()); os.close(probe)
+        require_quiet()
+        import workspace_archive
+        _, archive_root = workspace_archive.roots()
+        archive_fd = os.open(archive_root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        try:
+            info = os.fstat(archive_fd)
+            if info.st_uid != 0 or info.st_mode & 0o077:
+                raise RuntimeError('project-prune-root-invalid')
+            token = state['archiveToken']
+            keep = {f'{token}.restore.json', f'{token}.output.tar'}
+            for name in keep:
+                info = os.stat(name, dir_fd=archive_fd, follow_symlinks=False)
+                if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_uid != 0:
+                    raise RuntimeError('project-prune-proof-invalid')
+            output = archive_root / f'{token}.output.tar'
+            if output.stat().st_size != state['frozen']['bytes'] or workspace_archive.file_sha256(output) != expected_sha:
+                raise RuntimeError('project-prune-proof-invalid')
+            archive_names = []
+            for name in os.listdir(archive_fd):
+                if name in keep or not re.fullmatch(r'[a-f0-9]{52}\.(?:input\.tar|output\.tar|verify\.tar|adopt-verify\.tar|restore\.json|lock)(?:\.tmp-[0-9]+)?', name):
+                    continue
+                info = os.stat(name, dir_fd=archive_fd, follow_symlinks=False)
+                if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_uid != 0:
+                    raise RuntimeError('project-prune-file-invalid')
+                archive_names.append(name)
+            effect_names = []
+            for name in os.listdir(directory):
+                if name == STATE or not re.fullmatch(r'[A-Za-z0-9_-]{1,128}\.json', name):
+                    continue
+                info = os.stat(name, dir_fd=directory, follow_symlinks=False)
+                if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_uid != 0:
+                    raise RuntimeError('project-prune-file-invalid')
+                if info.st_size > 1_100_512:
+                    continue
+                fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=directory)
+                try:
+                    with os.fdopen(os.dup(fd)) as source:
+                        try: envelope = json.load(source)
+                        except (ValueError, UnicodeError): continue
+                finally:
+                    os.close(fd)
+                if (isinstance(envelope, dict) and set(envelope) == {'schemaVersion', 'effectId', 'request'}
+                        and envelope['schemaVersion'] == 1 and envelope['effectId'] == name[:-5]
+                        and isinstance(envelope['request'], str)):
+                    effect_names.append(name)
+            for name in archive_names: os.unlink(name, dir_fd=archive_fd)
+            for name in effect_names: os.unlink(name, dir_fd=directory)
+            os.fsync(archive_fd); os.fsync(directory)
+            return {'schemaVersion': 1, 'bindingEpoch': epoch, 'status': 'pruned', 'removed': len(archive_names) + len(effect_names)}
+        finally:
+            os.close(archive_fd)
+
 if __name__ == "__main__":
     try:
         if len(sys.argv) == 4 and sys.argv[1:3] == ['activate', '--epoch']:
             result = activate(sys.argv[3])
+        elif len(sys.argv) == 6 and sys.argv[1:3] == ['prune', '--epoch'] and sys.argv[4] == '--files-sha256':
+            result = prune(sys.argv[3], sys.argv[5])
         elif sys.argv[1:] == ['seal']:
             result = seal()
         else:

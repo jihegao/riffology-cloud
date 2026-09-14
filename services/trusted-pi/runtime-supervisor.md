@@ -38,7 +38,7 @@ control/input files only after sealing and quiescence, then activate the next
 binding. It must not accept old native process receipts, parent exits or errors
 as whole-domain proof. Unsupported/unknown native operations require quarantine
 and container destruction/cold fallback, never reuse. This patch does not yet
-implement that orchestration or cleanup.
+implement that orchestration.
 
 ## Local validation (2026-09-14)
 
@@ -61,3 +61,25 @@ production supervisor correctly fails closed there. All cached TrustedPi images
 were amd64. Actual target image/kernel integration remains an acceptance gate;
 these local successes do not establish that Cloudflare native execution supports
 or has enabled this path. Neither production Dockerfile was rebuilt/deployed.
+
+
+## Checkpoint-confirmed pruning
+
+After the coordinator has durably committed the current Session checkpoint,
+root may call `prune --epoch EPOCH --token CURRENT_HOST_TOKEN`. This requires
+current sealed epoch, exact persisted spawn token and two empty UID scans under
+the same admission lock. It removes only other 52-hex token files with platform
+suffixes `control.json`, `input-session.json`, `result.json`,
+`output-session.json` (including their numeric PID temporary suffixes). Current
+Turn files remain available until the next binding is checkpointed. Unknown
+filenames are retained; symlink/hardlink/non-regular candidates fail closed.
+The epoch journal and tombstones are untouched. Response:
+`{schemaVersion:1,bindingEpoch:EPOCH,status:'pruned',removed:COUNT}`; retry is safe
+and may report zero. The native process cannot itself prove remote checkpoint
+commit: the root coordinator must order that commit before this call.
+
+Native coverage now totals 12 tests, adding four-epoch file-count bounds,
+active/stale/wrong-token rejection, replay and symlink-target preservation.
+This pruning does not cover Sandbox SDK process metadata/logs or other image
+cache directories. Their capacity policy and supported SDK cleanup remain
+separate orchestration requirements.

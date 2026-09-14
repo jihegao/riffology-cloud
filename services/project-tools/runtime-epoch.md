@@ -58,8 +58,7 @@ The result has the existing restore shape:
 marker. Wrong digest, live processes, workspace drift, missing/tampered proof,
 or another token are denied. Adoption preserves existing workspace inodes; it
 avoids unpacking and rewriting, **not** the read/hash cost. The verification tar
-and historical archives remain root-only. The future orchestrator must bound
-retention/capacity or replace the container; this patch does not clean them.
+and historical archives remain root-only until checkpoint-confirmed pruning.
 
 ## Evidence and limits (2026-09-14)
 
@@ -78,3 +77,27 @@ requires native pidfd, unsupported under the cached AMD64 emulation. Actual
 Cloudflare image/kernel compatibility and full lease/adaptor integration remain
 unverified. Unsupported or unknown operations require quarantine/destruction and
 cold fallback; these native tests alone do not authorize enabling reuse.
+
+
+## Checkpoint-confirmed pruning
+
+After the RevisionStore commit is durably confirmed, root calls
+`process_quiescence.py prune --epoch EPOCH --files-sha256 COMMITTED_SHA`.
+It requires the exact sealed epoch, no live UID-domain processes, and the
+current frozen token/digest. It rechecks the retained output tar bytes/hash
+before deleting anything. Only the current token's `restore.json` and
+`output.tar` survive among strictly named platform archive files; those two
+files support the next binding's immediate-prior adopt proof. Other files whose
+names do not match platform archive suffixes are retained. In the effects
+directory, deletion requires both a valid effect-ID filename and its exact
+platform envelope schema/effectId, so unrelated JSON configuration survives.
+Epoch state, lock and tombstones are never deleted. Matching symlink/hardlink or
+non-regular candidates fail closed. Receipt:
+`{schemaVersion:1,bindingEpoch:EPOCH,status:'pruned',removed:COUNT}`.
+
+Native coverage now totals 11 tests, including five successive committed
+archive sets bounded to two files, active-domain/stale/wrong-hash denial,
+unknown-file preservation and idempotent pruning. Native code cannot observe
+RevisionStore directly; the coordinator must commit before invoking pruning.
+Sandbox SDK process metadata/logs and unknown files are not pruned by this API;
+the coordinator still needs bounded retention or container replacement for them.

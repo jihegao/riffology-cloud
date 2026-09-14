@@ -315,10 +315,43 @@ def spawn(epoch, argv):
             os.close(handle)
 
 
+
+def prune(epoch, token):
+    if not re.fullmatch('[a-f0-9]{52}', token):
+        raise RuntimeError('prune-token-invalid')
+    with spawn_lock() as directory:
+        state = read_state(directory)
+        if not state or state['epoch'] != epoch or state['status'] != 'sealed' or state['spawnToken'] != token:
+            raise RuntimeError('prune-binding-denied')
+        require_quiet()
+        turns = os.open('/var/lib/riffology/turns', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        try:
+            info = os.fstat(turns)
+            if info.st_uid not in {0, PI_UID} or info.st_mode & 0o077:
+                raise RuntimeError('prune-root-invalid')
+            candidates = []
+            for name in os.listdir(turns):
+                matched = re.fullmatch(r'([a-f0-9]{52})\.(?:control\.json|input-session\.json|result\.json|output-session\.json)(?:\.tmp-[0-9]+)?', name)
+                if not matched or matched[1] == token:
+                    continue
+                info = os.stat(name, dir_fd=turns, follow_symlinks=False)
+                if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_uid not in {0, PI_UID}:
+                    raise RuntimeError('prune-file-invalid')
+                candidates.append(name)
+            for name in candidates:
+                os.unlink(name, dir_fd=turns)
+            os.fsync(turns)
+            return {'schemaVersion': 1, 'bindingEpoch': epoch, 'status': 'pruned', 'removed': len(candidates)}
+        finally:
+            os.close(turns)
+
 def main(args):
     if len(args) < 3 or args[1] != '--epoch' or not valid_epoch(args[2]):
         raise RuntimeError('command-invalid')
     command, epoch = args[0], args[2]
+    if command == 'prune' and len(args) == 5 and args[3] == '--token':
+        print(json.dumps(prune(epoch, args[4]), separators=(',', ':')), flush=True)
+        return 0
     if command == 'spawn' and len(args) == 7 and args[3] == '--':
         result = spawn(epoch, args[4:])
         return result if result >= 0 else 128 - result

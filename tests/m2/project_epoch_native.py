@@ -117,6 +117,34 @@ class EpochTests(unittest.TestCase):
         command('process_quiescence',['seal'],ok=False)
         arc('restore',A,ok=False)
 
+    def test_prune_commit_hash_scope_and_archive_bound(self):
+        proof=self.frozen_a(); prior=A
+        def prune(epoch,sha,ok=True):
+            return command('process_quiescence',['prune','--epoch',epoch,'--files-sha256',sha],ok=ok)
+        (EFFECTS/'config.json').write_text('{"retain":true}')
+        stage_effect('leftover','echo unused')
+        prune('old',proof['sha256'],False);prune('A','0'*64,False)
+        prune('A',proof['sha256'])
+        self.assertEqual(len(list(ARCHIVES.iterdir())),2)
+        self.assertTrue((EFFECTS/'config.json').exists());self.assertFalse((EFFECTS/'leftover.json').exists())
+        for index in range(1,5):
+            epoch='prune'+str(index);token='%052x'%index
+            act(epoch);arc('adopt',token,epoch,prior=prior,sha=proof['sha256'])
+            prune(epoch,proof['sha256'],False)
+            seal(epoch);proof=arc('freeze',token,epoch)
+            prune(epoch,proof['sha256'])
+            self.assertEqual(set(p.name for p in ARCHIVES.iterdir()),{token+'.restore.json',token+'.output.tar'})
+            self.assertEqual(prune(epoch,proof['sha256'])['removed'],0)
+            prior=token
+
+    def test_prune_with_active_uid_is_denied(self):
+        proof=self.frozen_a()
+        p=subprocess.Popen(['sleep','20'],user=10001,group=10001)
+        try:
+            command('process_quiescence',['prune','--epoch','A','--files-sha256',proof['sha256']],ok=False)
+            self.assertTrue((ARCHIVES/(A+'.input.tar')).exists())
+        finally:p.kill();p.wait()
+
     def test_no_state_and_absent_restore_fail_closed(self):
         command('process_quiescence',['seal'],'A',ok=False)
         act('A');arc('freeze',A,'A',ok=False)

@@ -180,6 +180,35 @@ class NativeTests(unittest.TestCase):
         cli('seal',ok=False)
         self.assertFalse((ROOT/'binding.json').exists())
 
+    def test_prune_requires_sealed_current_token_and_bounds_files(self):
+        for index in range(4):
+            epoch='prune'+str(index); cli('activate',epoch)
+            p=self.start('exit',epoch); self.assertEqual(p.wait(timeout=3),0)
+            old=('%052x' % (index+1))
+            for suffix in ['control.json','input-session.json','result.json','output-session.json']:
+                (TURNS/(old+'.'+suffix)).write_text('old')
+                (TURNS/(TOKEN+'.'+suffix)).write_text('current')
+            args=['python3',SUP,'prune','--epoch',epoch,'--token',TOKEN]
+            self.assertNotEqual(subprocess.run(args,capture_output=True).returncode,0)
+            cli('seal',epoch)
+            wrong=args.copy();wrong[-1]='b'*52
+            self.assertNotEqual(subprocess.run(wrong,capture_output=True).returncode,0)
+            result=subprocess.run(args,capture_output=True,text=True)
+            self.assertEqual(result.returncode,0,result.stderr)
+            self.assertEqual(json.loads(result.stdout)['removed'],4)
+            self.assertEqual(len([p for p in TURNS.iterdir() if len(p.name)>52 and p.name[52]=='.']),4)
+            self.assertEqual(subprocess.run(args,capture_output=True).returncode,0)
+            if index:
+                stale=args.copy();stale[4]='prune'+str(index-1)
+                self.assertNotEqual(subprocess.run(stale,capture_output=True).returncode,0)
+
+    def test_prune_rejects_symlink_without_touching_target(self):
+        cli('activate');p=self.start('exit');self.assertEqual(p.wait(timeout=3),0);cli('seal')
+        target=TURNS/'unrelated';target.write_text('retain')
+        (TURNS/('b'*52+'.result.json')).symlink_to(target)
+        result=subprocess.run(['python3',SUP,'prune','--epoch','A','--token',TOKEN],capture_output=True)
+        self.assertNotEqual(result.returncode,0);self.assertEqual(target.read_text(),'retain')
+
     def test_fixed_command_only(self):
         cli('activate')
         result=subprocess.run(['python3',SUP,'spawn','--epoch','A','--','/bin/sh','-c','id'],capture_output=True)
