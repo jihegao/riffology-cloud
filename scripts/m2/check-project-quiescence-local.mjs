@@ -21,8 +21,8 @@ def launch(key,script):
     return subprocess.Popen(['python3','/opt/riffology/effect_wrapper.py',key],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 # An already exited wrapper can leave a detached descendant alive.
 orphan=launch('orphan',"setsid python3 -c 'import time,pathlib; pathlib.Path(\"/workspace/model/orphan_ready\").write_text(\"yes\"); time.sleep(2); pathlib.Path(\"/workspace/model/orphan_late\").write_text(\"bad\")' >/dev/null 2>&1 & while [ ! -f model/orphan_ready ]; do sleep 0.01; done")
-orphan.communicate(timeout=3)
-assert orphan.returncode==0
+out,err=orphan.communicate(timeout=3)
+assert orphan.returncode==0,(out,err)
 assert q.live_project_pids()
 # A detached session ignores TERM and would write after stop if UID sweep missed it.
 script="setsid python3 -c 'import signal,time,pathlib; signal.signal(signal.SIGTERM,signal.SIG_IGN); pathlib.Path(\"/workspace/model/ready\").write_text(\"yes\"); time.sleep(2); pathlib.Path(\"/workspace/model/late\").write_text(\"bad\")' >/dev/null 2>&1 & sleep 30"
@@ -84,10 +84,8 @@ with q.spawn_lock():
         request=json.dumps({'deadlineAt':int(time.time()*1000)+60000,'operation':'bash','arguments':{'script':'sleep 1; printf forbidden > model/'+key,'timeoutMs':30000}})
         with open('/var/lib/riffology/effects/'+key+'.json','w') as f: json.dump({'schemaVersion':1,'effectId':key,'request':request},f)
         children.append(subprocess.Popen(['python3','/opt/riffology/effect_wrapper.py',key],stdout=subprocess.PIPE,stderr=subprocess.PIPE))
-    deadline=time.monotonic()+5
-    while any(os.path.exists('/var/lib/riffology/effects/race-'+str(i)+'.json') for i in range(6)):
-        assert time.monotonic()<deadline
-        time.sleep(.01)
+    # Controls now remain unconsumed until the admission lock is acquired.
+    time.sleep(.1)
     stop=subprocess.Popen(['python3','/opt/riffology/process_quiescence.py','seal'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 stdout,stderr=stop.communicate(timeout=12)
 assert stop.returncode==0 and stderr==b''

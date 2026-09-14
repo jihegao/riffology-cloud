@@ -1,5 +1,5 @@
 import { actor, sha, turnDigest } from '../turn/protocol.ts';
-import { turnRuntimeIdentity } from '../turn-runtime/identity.ts';
+import { turnRuntimeIdentity,type TurnRuntimeIdentity } from '../turn-runtime/identity.ts';
 import type { ModelCallRequest, ModelBudgetStorage } from './core.ts';
 import { conservativeCost, moneyInteger, productionProfile, profileDigest, type ProductionProfile } from '../model-proxy/production-profile.ts';
 
@@ -20,12 +20,14 @@ export const moneyReference = (record: MoneyRecord): MoneyReference => ({key:rec
  * count in every period; recorded conservative charges count in their original
  * period. No alarm or deadline ever releases an uncertain upstream charge. */
 export class ProductionMoneyLedger {
-  readonly #storage: ModelBudgetStorage; readonly #policy: MoneyPolicy; readonly #now: () => number;
-  constructor(storage: ModelBudgetStorage, configured: MoneyPolicy, now = Date.now) {
-    this.#storage=storage; this.#policy=policy(configured); this.#now=now;
+  readonly #storage: ModelBudgetStorage; readonly #configured: MoneyPolicy|null; readonly #now: () => number;
+  constructor(storage: ModelBudgetStorage, configured: MoneyPolicy|null, now = Date.now) {
+    this.#storage=storage; this.#configured=configured===null?null:policy(configured); this.#now=now;
     storage.sql.exec(`CREATE TABLE IF NOT EXISTS production_money_calls (key TEXT PRIMARY KEY, digest TEXT NOT NULL, period TEXT NOT NULL, tenant TEXT NOT NULL, user TEXT NOT NULL, turn_key TEXT NOT NULL, state TEXT NOT NULL, accounted INTEGER NOT NULL, record TEXT NOT NULL)`);
+    storage.sql.exec(`CREATE TABLE IF NOT EXISTS production_money_turn_closures(turn_key TEXT PRIMARY KEY,identity_json TEXT NOT NULL,closed_at INTEGER NOT NULL)`);
     storage.sql.exec(`CREATE TABLE IF NOT EXISTS production_money_policies (version TEXT PRIMARY KEY, document TEXT NOT NULL)`);
   }
+  get #policy():MoneyPolicy{if(!this.#configured)throw Error('production-money-unconfigured');return this.#configured;}
   #read(key: string): MoneyRecord|null {
     const rows=this.#storage.sql.exec<{record:string}>('SELECT record FROM production_money_calls WHERE key=?',sha(key)).toArray();
     return rows[0] ? JSON.parse(rows[0].record) as MoneyRecord : null;
@@ -61,6 +63,7 @@ export class ProductionMoneyLedger {
     const digest=await turnDigest({purpose:'production-money-reservation',request,profileSha256}), reserved=conservativeCost(p,request.inputTokenUpperBound,request.maxOutputTokens);
     const result=this.#storage.transactionSync(()=>{
       const prior=this.#read(key); if(prior){if(prior.digest!==digest)throw Error('production-money-call-conflict');return {record:prior,replayed:true};}
+      if(this.#storage.sql.exec('SELECT 1 FROM production_money_turn_closures WHERE turn_key=?',turnKey).toArray().length)throw Error('production-money-turn-admission-closed');
       this.#admit();if(profileSha256!==this.#policy.profileSha256)throw Error('production-money-profile-denied');
       const dimensions:[string,string[],number,boolean][]=[['',[],this.#policy.caps.global,false],[' AND tenant=?',[identity.scope.tenantId],this.#policy.caps.tenant,false],[' AND user=?',[attributed.userId],this.#policy.caps.user,false],[' AND turn_key=?',[turnKey],this.#policy.caps.turn,true]];
       for(const [filter,args,cap,lifetime] of dimensions){
@@ -73,7 +76,7 @@ export class ProductionMoneyLedger {
     });await this.#storage.sync();return result;
   }
   async dispatch(reference:MoneyReference):Promise<{authorized:boolean;record:MoneyRecord}>{
-    const result=this.#storage.transactionSync(()=>{const record=this.#reference(reference);if(record.state!=='reserved')return {authorized:false,record};this.#admit();if(record.profileSha256!==this.#policy.profileSha256)throw Error('production-money-route-changed');if(record.request.deadlineAt<=this.#now())throw Error('production-money-deadline');record.state='dispatched';record.updatedAt=this.#now();this.#save(record);return {authorized:true,record};});await this.#storage.sync();return result;
+    const result=this.#storage.transactionSync(()=>{const record=this.#reference(reference);if(record.state!=='reserved')return {authorized:false,record};if(this.#storage.sql.exec('SELECT 1 FROM production_money_turn_closures WHERE turn_key=?',record.turnKey).toArray().length)return {authorized:false,record};this.#admit();if(record.profileSha256!==this.#policy.profileSha256)throw Error('production-money-route-changed');if(record.request.deadlineAt<=this.#now())throw Error('production-money-deadline');record.state='dispatched';record.updatedAt=this.#now();this.#save(record);return {authorized:true,record};});await this.#storage.sync();return result;
   }
   async markUnknown(reference:MoneyReference,category:string):Promise<MoneyRecord>{
     const record=this.#storage.transactionSync(()=>{const r=this.#reference(reference);if(r.state==='dispatched'||r.state==='unknown'){r.state='unknown';r.errorCategory=id(category);r.updatedAt=this.#now();this.#save(r);}return r;});await this.#storage.sync();return record;
@@ -91,5 +94,14 @@ export class ProductionMoneyLedger {
     const normalized:NoDispatchProof={confirmationId:id(proof.confirmationId),kind:proof.kind,tokenReservationId:id(proof.tokenReservationId),observedAt:moneyInteger(proof.observedAt,1)};
     const record=this.#storage.transactionSync(()=>{const r=this.#reference(reference);if(r.state==='released'){if(JSON.stringify(r.releaseProof)!==JSON.stringify(normalized))throw Error('production-money-release-conflict');return r;}if(r.state!=='dispatched')throw Error('production-money-release-denied');r.state='released';r.accounted=0;r.releaseProof=normalized;r.updatedAt=this.#now();this.#save(r);return r;});await this.#storage.sync();return record;
   }
+  async #turnKey(identity:TurnRuntimeIdentity){return turnDigest({purpose:'production-money-turn',scope:identity.scope,sessionId:identity.sessionId,turnId:identity.turnId,generation:identity.generation});}
+  #settlement(identity:TurnRuntimeIdentity,key:string){
+    const closure=this.#storage.sql.exec<{identity_json:string;closed_at:number}>('SELECT identity_json,closed_at FROM production_money_turn_closures WHERE turn_key=?',key).toArray()[0];if(closure&&closure.identity_json!==JSON.stringify(identity))throw Error('production-money-settlement-identity-conflict');
+    const row=this.#storage.sql.exec<{total:number;active:number;unknown:number;pending:number;invalid:number}>(`SELECT count(*) AS total,coalesce(sum(state IN ('reserved','dispatched','unknown')),0) AS active,coalesce(sum(state='unknown'),0) AS unknown,coalesce(sum(state NOT IN ('recorded','released')),0) AS pending,coalesce(sum(json_extract(record,'$.request.identity') IS NOT ? OR state IS NOT json_extract(record,'$.state')),0) AS invalid FROM production_money_calls WHERE turn_key=?`,JSON.stringify(identity),key).toArray()[0]!;
+    if(row.invalid!==0)throw Error('production-money-settlement-identity-conflict');for(const n of [row.total,row.active,row.unknown,row.pending])if(!Number.isSafeInteger(n)||n<0)throw Error('production-money-settlement-invalid');
+    return {schemaVersion:1 as const,domain:'money' as const,identity:structuredClone(identity),closed:!!closure,closedAt:closure?moneyInteger(closure.closed_at,1):null,total:row.total,active:row.active,unknown:row.unknown,pending:row.pending};
+  }
+  async closeTurnAdmission(value:unknown){const identity=turnRuntimeIdentity(value),key=await this.#turnKey(identity);const result=this.#storage.transactionSync(()=>{this.#settlement(identity,key);this.#storage.sql.exec('INSERT OR IGNORE INTO production_money_turn_closures VALUES(?,?,?)',key,JSON.stringify(identity),moneyInteger(this.#now(),1));return this.#settlement(identity,key);});await this.#storage.sync();return result;}
+  async turnSettlement(value:unknown){const identity=turnRuntimeIdentity(value),key=await this.#turnKey(identity);return this.#storage.transactionSync(()=>this.#settlement(identity,key));}
   async lookup(reference:MoneyReference):Promise<MoneyRecord>{return this.#reference(reference);}
 }

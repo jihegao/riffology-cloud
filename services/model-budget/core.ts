@@ -256,7 +256,8 @@ export class SqlTenantModelBudget {
           (status='not-dispatched' AND dispatched_at IS NULL AND dispatch_ordinal IS NULL AND finished_at IS NOT NULL AND release_id IS NOT NULL AND release_json IS NOT NULL AND release_digest IS NOT NULL AND accounted_tokens=0 AND reconciliation='released'))
       ) STRICT;
       CREATE UNIQUE INDEX IF NOT EXISTS model_one_active_call_per_turn ON model_calls(turn_key) WHERE status IN ('reserved','dispatched','unknown');
-      CREATE INDEX IF NOT EXISTS model_calls_by_turn ON model_calls(turn_key,accepted_at,call_key);`);
+      CREATE INDEX IF NOT EXISTS model_calls_by_turn ON model_calls(turn_key,accepted_at,call_key);
+      CREATE TABLE IF NOT EXISTS model_turn_admission_closures(turn_key TEXT PRIMARY KEY,identity_json TEXT NOT NULL,closed_at INTEGER NOT NULL) STRICT;`);
       const meta = this.#rows('SELECT * FROM model_budget_meta WHERE singleton=1')[0];
       if (meta && meta.tenant_id !== this.#policy.tenantId) reject('model-budget-tenant-conflict');
       if (!meta) this.#storage.sql.exec('INSERT INTO model_budget_meta VALUES (1,?,?,?,?,?,?,?)', this.#policy.tenantId, this.#policy.version, this.#policy.maxReservationAttemptsPerTurn, this.#policy.maxDispatchedCallsPerTurn, this.#policy.maxInputTokensPerCall, this.#policy.maxOutputTokensPerCall, this.#policy.maxReservedTokensPerTurn);
@@ -366,6 +367,7 @@ export class SqlTenantModelBudget {
         if (record.digest !== keys.digest) reject('model-call-idempotency-conflict');
         return { record, replayed: true };
       }
+      if(this.#rows('SELECT 1 FROM model_turn_admission_closures WHERE turn_key=?',keys.turn).length)reject('model-turn-admission-closed');
       if (request.budgetPolicyVersion !== this.#policy.version) reject('model-budget-policy-conflict');
       if (!this.#policyMatches()) reject('model-budget-policy-conflict');
       const now = this.#now();
@@ -420,6 +422,7 @@ export class SqlTenantModelBudget {
         || current.digest !== reference.digest || current.reservationId !== reference.reservationId) reject('model-call-scope-denied');
       if (!this.#policyMatches()) reject('model-budget-policy-conflict');
       if (current.status !== 'reserved') return;
+      if(this.#rows('SELECT 1 FROM model_turn_admission_closures WHERE turn_key=?',current.turnKey).length)return;
       const now = this.#now();
       if (current.deadlineAt <= now) {
         this.#storage.sql.exec("UPDATE model_calls SET status='not-dispatched',reconciliation='released',accounted_tokens=0,updated_at=?,finished_at=?,release_id=?,release_json=?,release_digest=? WHERE call_key=?", now, now, expiryProof.confirmationId, canonical(expiryProof), expiryDigest, key);
@@ -506,6 +509,15 @@ export class SqlTenantModelBudget {
     await this.#storage.sync();
     return structuredClone(result);
   }
+
+  #settlement(identity:TurnRuntimeIdentity,key:string){
+    const closure=this.#rows('SELECT * FROM model_turn_admission_closures WHERE turn_key=?',key)[0];if(closure&&closure.identity_json!==canonical(identity))reject('model-turn-settlement-identity-conflict');
+    const row=this.#rows(`SELECT count(*) AS total,coalesce(sum(status IN ('reserved','dispatched','unknown')),0) AS active,coalesce(sum(status='unknown'),0) AS unknown,coalesce(sum(status IN ('reserved','dispatched','unknown') OR reconciliation='pending'),0) AS pending,coalesce(sum(identity_json!=?),0) AS foreign_identity FROM model_calls WHERE turn_key=?`,canonical(identity),key)[0]!;
+    if(row.foreign_identity!==0)reject('model-turn-settlement-identity-conflict');for(const key of ['total','active','unknown','pending'])if(!Number.isSafeInteger(row[key])||(row[key] as number)<0)reject('model-turn-settlement-invalid');
+    return {schemaVersion:1 as const,domain:'model' as const,identity:structuredClone(identity),closed:!!closure,closedAt:closure?positive(closure.closed_at):null,total:row.total as number,active:row.active as number,unknown:row.unknown as number,pending:row.pending as number};
+  }
+  async closeTurnAdmission(value:unknown){const identity=turnRuntimeIdentity(value);this.#scope(identity);const key=await turnKey(identity);await this.#ready;const result=this.#storage.transactionSync(()=>{this.#settlement(identity,key);this.#storage.sql.exec('INSERT OR IGNORE INTO model_turn_admission_closures VALUES(?,?,?)',key,canonical(identity),this.#now());return this.#settlement(identity,key);});await this.#storage.sync();return result;}
+  async turnSettlement(value:unknown){const identity=turnRuntimeIdentity(value);this.#scope(identity);const key=await turnKey(identity);await this.#ready;return this.#storage.transactionSync(()=>this.#settlement(identity,key));}
 
   async snapshot(identityValue: unknown): Promise<ModelBudgetSnapshot> {
     const identity = turnRuntimeIdentity(identityValue);

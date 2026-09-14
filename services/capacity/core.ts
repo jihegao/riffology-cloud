@@ -66,6 +66,14 @@ export type TrustedPiCapacitySnapshot = {
   queue: TrustedPiCapacityTicket[];
 };
 
+/** Hooks run inside this ledger's existing SQLite transaction. They must be
+ * synchronous and share the exact same storage/allocator domain. */
+export interface TrustedPiAdmissionHook {
+  enqueued(ticketId:string,requestedAt:number):void;
+  beforePromote():void;
+  canPromote(ticketId:string):boolean;
+}
+
 export type TrustedPiCapacityStorage = Pick<DurableObjectStorage, 'sql' | 'transactionSync' | 'sync'>;
 
 type Row = Record<string, SqlStorageValue>;
@@ -142,10 +150,12 @@ export class SqlTrustedPiCapacity {
   readonly #clock: () => number;
   readonly #id: () => string;
   readonly #ready: Promise<void>;
+  readonly #admission: TrustedPiAdmissionHook | undefined;
 
-  constructor(storage: TrustedPiCapacityStorage, policyVersion: string, clock: () => number = Date.now, id: () => string = () => crypto.randomUUID()) {
+  constructor(storage: TrustedPiCapacityStorage, policyVersion: string, clock: () => number = Date.now, id: () => string = () => crypto.randomUUID(), admission?:TrustedPiAdmissionHook) {
     if (!storage?.sql?.exec || !storage.transactionSync || !storage.sync) reject('sqlite-trusted-pi-capacity-storage-required');
     identifier(policyVersion);
+    this.#admission=admission;
     this.#storage = storage; this.#policyVersion = policyVersion; this.#clock = clock; this.#id = id;
     storage.transactionSync(() => {
       storage.sql.exec(`CREATE TABLE IF NOT EXISTS trusted_pi_capacity_meta (
@@ -188,6 +198,9 @@ export class SqlTrustedPiCapacity {
   #policy(): void {
     const meta = this.#rows('SELECT * FROM trusted_pi_capacity_meta WHERE singleton=1')[0];
     if (!meta || meta.capacity !== 1 || meta.policy_version !== this.#policyVersion) reject('trusted-pi-capacity-policy-conflict');
+    // A feature rollback must not make retained paired reservations invisible.
+    // Legacy-only databases never enter this branch.
+    if(!this.#admission && this.#rows("SELECT name FROM sqlite_master WHERE type='table' AND name='paired_capacity_leases'").length && this.#rows("SELECT lease_id FROM paired_capacity_leases WHERE status NOT IN ('released','cancelled') LIMIT 1").length) reject('paired-capacity-admission-required');
   }
   #canonical(identity: TrustedPiCapacityIdentity): string { return JSON.stringify(identity); }
   #newId(): string { const value = this.#id(); identifier(value); return value; }
@@ -218,10 +231,11 @@ export class SqlTrustedPiCapacity {
     return rows[0] ?? null;
   }
   #promote(now: number): TrustedPiCapacityTicket | null {
+    this.#admission?.beforePromote();
     const active = this.#activeRow();
     if (active) return this.#ticket(active);
     const queued = this.#rows("SELECT * FROM trusted_pi_capacity_tickets WHERE status='queued' ORDER BY sequence LIMIT 1")[0];
-    if (!queued) return null;
+    if (!queued || (this.#admission && !this.#admission.canPromote(queued.ticket_id as string))) return null;
     const leaseId = this.#newId();
     this.#storage.sql.exec("UPDATE trusted_pi_capacity_tickets SET status='held',lease_id=?,acquired_at=? WHERE ticket_id=? AND status='queued'", leaseId, now, queued.ticket_id as string);
     return this.#ticket(this.#rows('SELECT * FROM trusted_pi_capacity_tickets WHERE ticket_id=?', queued.ticket_id as string)[0]!);
@@ -249,6 +263,7 @@ export class SqlTrustedPiCapacity {
         VALUES (?,?,?,?,?,?,?,NULL,?,?,NULL,'queued',?,NULL,NULL,NULL,NULL,NULL)`,
       ticketId, identity.operationId, identity.tenantId, identity.projectId, identity.workspaceId, identity.sessionId,
       identity.turnId, identity.generation, canonical, now);
+      this.#admission?.enqueued(ticketId,now);
       this.#promote(now);
       const ticket = this.#ticket(this.#rows('SELECT * FROM trusted_pi_capacity_tickets WHERE ticket_id=?', ticketId)[0]!);
       return { outcome: ticket.status === 'held' ? 'acquired' : 'queued', ticket };
@@ -318,6 +333,10 @@ export class SqlTrustedPiCapacity {
     });
     await this.#storage.sync(); return structuredClone(result);
   }
+
+  /** Internal allocator bridge: caller already owns this storage transaction.
+   * No await, nested transaction, or native operation is permitted here. */
+  promoteWithinTransaction():void {this.#policy();this.#promote(this.#now());}
 
   async snapshot(): Promise<TrustedPiCapacitySnapshot> {
     await this.#ready;
