@@ -1,7 +1,7 @@
 import {turnRuntimeIdentity,type TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
 import {SimulationHost,experimentRequest,publicExperiment,publishSimulationResult,type ExperimentRequest} from '../simulation/host.ts';
 import {SimulationNative,simulationToken,type SimulationSandboxApi,type SimulationInput} from '../simulation/native.ts';
-import {simulationPlan,modelVersion} from '../simulation/source.ts';
+import {simulationPlan,modelVersion,inspectModel} from '../simulation/source.ts';
 import type {PreviewSource} from '../preview/source.ts';
 import {DurableSimulationAlarmPort} from './turn-alarm.ts';
 import {ObserverCancellation,type ObserverCancellationPort} from '../preview/observer-cancellation.ts';
@@ -146,8 +146,8 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   }
   async modelSpec(input:{scope:TurnScope}){
     const scope=this.#ready(input.scope),source=await this.#simulationSource(scope);
-    try{const plan=await simulationPlan(source,await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source));this.#ready(scope);return {version:modelVersion(plan),spec:plan.spec,reasonCode:null,canRun:this.#simulationCanRun()};}
-    catch(error){const code=error instanceof Error?error.message:'';if(['model-spec-missing','model-spec-invalid','model-contract-mismatch','model-dependencies-invalid','model-dependencies-unsupported'].includes(code))return {version:null,spec:null,reasonCode:code,canRun:false};throw error;}
+    const model=await inspectModel(source,await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source),this.#simulationCanRun());
+    this.#ready(scope);return model;
   }
   async submitExperiment(input:{scope:TurnScope;actor:TurnActor;key:string;body:ExperimentRequest}){
     const scope=this.#ready(input.scope),host=this.#simulations(scope),request=experimentRequest(input.body);
