@@ -100,10 +100,10 @@ export class ProjectToolSandbox extends Sandbox<M2SandboxEnv>{
     if((await sandboxActorIds(identity.scope,identity.turnId,identity.dispatchId)).project!==this.#actorId)throw Error('project-workspace-actor-scope-denied');
   }
   async #destroyForFence(){
-    let failure:unknown=null,running=true;
-    try{await this.#supervisor.sealForCheckpoint();}catch(error){failure=error;}
-    try{await this.destroy();running=this.ctx.container?.running===true;}catch(error){failure??=error;}
-    if(failure!==null)throw failure;return {running};
+    // The durable Turn fence already closes admission. Destruction stops the
+    // whole environment; starting a seal process here could recreate an absent
+    // container. Snapshotting separately requires native writer quiescence.
+    await this.destroy();return {running:this.ctx.container?.running===true};
   }
   /** Tool Bridge supplies a short-lived capability only after the durable Tool
    * Ledger authorizes this exact command/effect for this named actor. */
