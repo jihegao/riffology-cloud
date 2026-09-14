@@ -35,6 +35,8 @@ def main():
         raise ValueError('no-completed-run-to-replay')
     run = json.loads(safe(root, selected['recordPath']).read_text())
     expected = json.loads(safe(root, selected['resultPath']).read_text())
+    if selected['runId'] != run['runId'] or expected['runId'] != run['runId'] or expected['experimentId'] != run['experimentId'] or expected['version'] != run['version'] or expected['parameters'] != run['parameters'] or expected['seed'] != run['seed']:
+        raise ValueError('run-identity-mismatch')
     source = next(s for s in manifest['sources'] if s['key'] == run['sourceKey'])
     spec = json.loads(safe(root, source['specPath']).read_text())
     python_version = sys.version.split()[0]
@@ -58,7 +60,13 @@ def main():
         input_path.write_text(json.dumps({'schemaVersion':1, 'runId':run['runId'], 'parameters':run['parameters'], 'seed':run['seed']}))
         result_path = output / 'result.json'
         subprocess.run([sys.executable, '-B', str(safe(model, spec['execution']['entrypoint'])), '--input', str(input_path), '--output', str(result_path)], cwd=model, check=True, timeout=600)
+        if result_path.stat().st_size > 65536: raise ValueError('result-too-large')
         result = json.loads(result_path.read_text())
+        if type(result) is not dict or set(result) not in ({'schemaVersion','metrics'}, {'schemaVersion','metrics','outputs'}) or type(result.get('schemaVersion')) is not int or result['schemaVersion'] != 1 or type(result.get('metrics')) is not dict:
+            raise ValueError('result-contract-mismatch')
+        declared_outputs = result.get('outputs', [])
+        if type(declared_outputs) is not list or any(type(name) is not str for name in declared_outputs) or len(set(declared_outputs)) != len(declared_outputs) or set(declared_outputs) != {item['path'] for item in expected.get('outputs', [])}:
+            raise ValueError('output-contract-mismatch')
         if set(result['metrics']) != set(spec['metrics']) or set(expected['metrics']) != set(spec['metrics']):
             raise ValueError('metric-contract-mismatch')
         comparisons = {}

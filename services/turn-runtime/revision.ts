@@ -53,8 +53,8 @@ async function readReceipt(bucket:TurnRevisionBucket,receipt:CheckpointReceipt,i
   const {expected,parentIdentity,saved}=await readReceiptManifest(bucket,receipt,identity,sessionBound),parts=await readParts(bucket,saved);
   return {identity:parentIdentity,receipt:expected,...parts};
 }
-async function readFilesPart(bucket:TurnRevisionBucket,saved:Manifest):Promise<Uint8Array>{const bytes=await readObject(bucket,saved.files.objectKey,MAX_BLOB_BYTES);if(!bytes||bytes.byteLength!==saved.files.size||await digest(bytes)!==saved.files.sha256)reject('turn-revision-object-conflict');return bytes;}
-async function readFilesReceipt(bucket:TurnRevisionBucket,receipt:CheckpointReceipt,identity:TurnRuntimeIdentity):Promise<Uint8Array>{const {saved}=await readReceiptManifest(bucket,receipt,identity,false);return readFilesPart(bucket,saved);}
+async function readFilesPart(bucket:TurnRevisionBucket,saved:Manifest,maxBytes=MAX_BLOB_BYTES):Promise<Uint8Array>{if(saved.files.size>maxBytes)reject('turn-revision-object-too-large');const bytes=await readObject(bucket,saved.files.objectKey,maxBytes);if(!bytes||bytes.byteLength!==saved.files.size||await digest(bytes)!==saved.files.sha256)reject('turn-revision-object-conflict');return bytes;}
+async function readFilesReceipt(bucket:TurnRevisionBucket,receipt:CheckpointReceipt,identity:TurnRuntimeIdentity,maxBytes=MAX_BLOB_BYTES):Promise<Uint8Array>{if(!Number.isSafeInteger(maxBytes)||maxBytes<1||maxBytes>MAX_BLOB_BYTES)reject('turn-revision-object-too-large');const {saved}=await readReceiptManifest(bucket,receipt,identity,false);return readFilesPart(bucket,saved,maxBytes);}
 
 /** Reads a committed immutable Revision for restore. A caller receives bytes
  * only after the receipt, canonical manifest key, complete scope and both
@@ -63,7 +63,7 @@ export class R2TurnRevisionReader{
   readonly #bucket:TurnRevisionBucket;
   constructor(bucket:TurnRevisionBucket){if(!bucket?.get)reject('r2-turn-revision-required');this.#bucket=bucket;}
   async restore(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt,sessionBound=false):Promise<RestoredTurnRevision>{return readReceipt(this.#bucket,receipt,turnRuntimeIdentity(raw),sessionBound);}
-  async files(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt):Promise<Uint8Array>{return readFilesReceipt(this.#bucket,receipt,turnRuntimeIdentity(raw));}
+  async files(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt,maxBytes=MAX_BLOB_BYTES):Promise<Uint8Array>{return readFilesReceipt(this.#bucket,receipt,turnRuntimeIdentity(raw),maxBytes);}
   async workspaceFiles(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt):Promise<TurnRevisionWorkspaceFiles>{const identity=turnRuntimeIdentity(raw),{saved}=await readReceiptManifest(this.#bucket,receipt,identity,false),filesArchive=await readFilesPart(this.#bucket,saved);return {filesArchive,base:saved.base.workspace,...(saved.base.initial?{initial:saved.base.initial}:{})};}
   async load(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt|null):Promise<Uint8Array|null>{if(receipt===null)return null;return (await this.restore(raw,receipt,true)).piSession;}
   async inspect(raw:TurnRuntimeIdentity):Promise<TurnRevisionObservation|null>{const identity=turnRuntimeIdentity(raw),saved=await readIdentityManifest(this.#bucket,identity);return saved&&{identity,receipt:saved.receipt,outcome:saved.manifest.outcome,executionErrorCode:saved.manifest.executionErrorCode,base:saved.manifest.base,files:{sha256:saved.manifest.files.sha256,size:saved.manifest.files.size},piSession:{sha256:saved.manifest.piSession.sha256,size:saved.manifest.piSession.size}};}

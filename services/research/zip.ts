@@ -7,7 +7,8 @@ export function crc32(bytes:Uint8Array){let crc=0xffffffff;for(const byte of byt
 export function exportPath(path:string){if(!path||path.length>512||path.normalize('NFC')!==path||path.startsWith('/')||/[\\\u0000-\u001f\u007f]/u.test(path)||path.split('/').some(part=>!part||part==='.'||part==='..'))throw Error('export-path-invalid');return path;}
 export class ExportFiles{
  readonly entries:ZipEntry[]=[];#paths=new Set<string>();#size=22;
- constructor(readonly maxBytes=EXPORT_MAX_BYTES){}
+ readonly maxBytes:number;
+ constructor(maxBytes=EXPORT_MAX_BYTES){this.maxBytes=maxBytes;}
  add(path:string,bytes:Uint8Array){exportPath(path);if(this.#paths.has(path)||!(bytes instanceof Uint8Array))throw Error('export-entry-invalid');const overhead=76+2*encoder.encode(path).byteLength;
   if(this.entries.length>=EXPORT_MAX_ENTRIES||this.#size+overhead+bytes.byteLength>this.maxBytes)throw Error('export-too-large');this.#size+=overhead+bytes.byteLength;this.#paths.add(path);this.entries.push({path,bytes});
  }
