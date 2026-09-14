@@ -4,7 +4,7 @@ import {tmpdir} from 'node:os';import {join} from 'node:path';import {build} fro
  * responses are fixtures. No Google, Docker, cloud calls or external network. */
 export async function createPreviewVerticalFixture({observer=false,observerExecutor=false,workspaceExtension="",fixtureMethods=[],modelFiles={}}={}){
  const directory=await mkdtemp(join(tmpdir(),'preview-vertical-')),worker='preview-vertical-test',image='registry.example/service@sha256:'+'f'.repeat(64),expiresAt=Date.now()+600000;
- const entry=`import {createGatewaySimulationServices} from './services/gateway/simulation-services.ts';import {gateway} from './services/gateway/app.ts';import {catalogDatabase} from './services/catalog/database.ts';import {createGatewayPreviewServices} from './services/gateway/preview-services.ts';import {previewHost} from './services/gateway/preview-host.ts';
+ const entry=`import {createGatewayResearchExports} from './services/gateway/research-export-services.ts';import {createGatewaySimulationServices} from './services/gateway/simulation-services.ts';import {gateway} from './services/gateway/app.ts';import {catalogDatabase} from './services/catalog/database.ts';import {createGatewayPreviewServices} from './services/gateway/preview-services.ts';import {previewHost} from './services/gateway/preview-host.ts';
  import {turnRuntimeActorName} from './services/turn-runtime/identity.ts';import {DurableObject} from 'cloudflare:workers';import {readPrivateWebSocketRequest} from './services/preview/websocket-protocol.ts';
  import {WorkspaceAgent as Base} from './services/workspace/durable.ts';
  import {forwardRunningObserver} from './services/run/observer-forward.ts';
@@ -120,7 +120,7 @@ export async function createPreviewVerticalFixture({observer=false,observerExecu
   async stop(input){if(!await this.ctx.storage.get('stop'))await this.ctx.storage.put('stop',{reference:input.reference,scope:input.scope,confirmationId:'stop-'+input.reference.runId,observedAt:Date.now(),fenced:true});return this.value(input);}
  }
  export default {async fetch(req,env){const url=new URL(req.url),database=catalogDatabase(env.CATALOG);
-  if(url.origin==='https://app.example.test'&&url.pathname.startsWith('/api/'))return gateway(req,{origin:env.APP_ORIGIN,database,identity:async()=>({subject:'auth-user-a',email:'fixture@example.test',emailVerified:true,platformVersion:1,browserSession:{sessionId:'auth-session-a',expiresAt:Number(env.FIXTURE_SESSION_EXPIRY)}}),previews:createGatewayPreviewServices(env,database),simulations:createGatewaySimulationServices(env)});
+  if(url.origin==='https://app.example.test'&&url.pathname.startsWith('/api/'))return gateway(req,{origin:env.APP_ORIGIN,database,identity:async()=>({subject:'auth-user-a',email:'fixture@example.test',emailVerified:true,platformVersion:1,browserSession:{sessionId:'auth-session-a',expiresAt:Number(env.FIXTURE_SESSION_EXPIRY)}}),previews:createGatewayPreviewServices(env,database),simulations:createGatewaySimulationServices(env),researchExports:createGatewayResearchExports(env)});
   if(url.protocol==='https:'&&url.hostname.endsWith('.preview.example.test'))return previewHost(req,env,database);
   if(url.origin!=='https://fixture.test'||req.method!=='POST')return new Response(null,{status:404});
   try{const b=await req.json();let value;

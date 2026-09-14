@@ -32,7 +32,7 @@ async function fixture(t:TestContext){
  return {dir,archive,plan,snapshot,objects,bucket,ports,get authorizations(){return authorizations;}};
 }
 test('full project ZIP preserves source/result bytes and independently replays a real seeded Python model in a clean venv',async t=>{
- const f=await fixture(t),result=await buildResearchExport(f.snapshot,f.ports);assert.equal(result.manifest.runs.length,2);assert.equal(result.manifest.sources.length,1);assert.equal(f.authorizations,2);
+ const f=await fixture(t),result=await buildResearchExport(f.snapshot,f.ports);assert.equal(result.manifest.runs.length,2);assert.equal(result.manifest.sources.length,1);assert.equal(f.authorizations,2);assert.equal(result.sha256,await digest(result.bytes));
  const zip=join(f.dir,'project.zip');writeFileSync(zip,result.bytes);const out=join(f.dir,'unpacked');execFileSync('python3',['-c','import zipfile,sys; z=zipfile.ZipFile(sys.argv[1]); assert z.testzip() is None; z.extractall(sys.argv[2])',zip,out]);
  assert.deepEqual(readFileSync(join(out,result.manifest.sources[0]!.archivePath)),Buffer.from(f.archive));assert.equal(await digest(readFileSync(join(out,result.manifest.sources[0]!.specPath))),f.plan.specSha256);
  const text=Buffer.from(result.bytes).toString('utf8');for(const secret of ['PRIVATE_IDEMPOTENCY_SECRET','PRIVATE_REQUEST_CONTROL','private-session-id','private-dispatch','private-revision-manifest','authVersion'])assert.equal(text.includes(secret),false,secret);
@@ -85,4 +85,10 @@ test('bounded saved-source read rejects declared size before buffering archive b
  let fileReads=0;const bucket={...f.bucket,get:async(key:string)=>{if(key.includes('/files/'))fileReads++;return f.bucket.get(key);}} as R2Bucket;
  await assert.rejects(new R2TurnRevisionReader(bucket).files(identity,receipt,1024),/turn-revision-object-too-large/);assert.equal(fileReads,0);
  assert.deepEqual(await new R2TurnRevisionReader(bucket).files(identity,receipt,f.archive.length),f.archive);assert.equal(fileReads,1);
+});
+
+test('authorization runs after the final ZIP digest and can prevent disclosure after revocation',async t=>{
+ const f=await fixture(t),original=crypto.subtle.digest;let zipHashed=false,checks=0;
+ crypto.subtle.digest=async function(algorithm,data){const view=ArrayBuffer.isView(data)?new Uint8Array(data.buffer,data.byteOffset,data.byteLength):new Uint8Array(data);const result=await original.call(crypto.subtle,algorithm,data);if(view[0]===80&&view[1]===75)zipHashed=true;return result;};
+ try{await assert.rejects(buildResearchExport(f.snapshot,{...f.ports,authorize:async()=>{checks++;if(checks===2){assert.equal(zipHashed,true);throw Error('revoked-after-zip-hash');}}}),/revoked-after-zip-hash/);assert.equal(checks,2);}finally{crypto.subtle.digest=original;}
 });

@@ -6,7 +6,7 @@ import {ExperimentGroupHost,experimentGroupRequest,type ExperimentGroupRequest} 
 import {turnRuntimeIdentity,type TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
 import {SimulationHost,experimentRequest,publicExperiment,publishSimulationResult,type ExperimentRequest} from '../simulation/host.ts';
 import {SimulationNative,simulationToken,type SimulationSandboxApi,type SimulationInput} from '../simulation/native.ts';
-import {simulationPlan,modelVersion,inspectModel,digest} from '../simulation/source.ts';
+import {simulationPlan,modelVersion,inspectModel} from '../simulation/source.ts';
 import type {PreviewSource} from '../preview/source.ts';
 import {DurableSimulationAlarmPort} from './turn-alarm.ts';
 import {ObserverCancellation,type ObserverCancellationPort} from '../preview/observer-cancellation.ts';
@@ -165,7 +165,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const scope=this.#maintenanceScope(input.scope);
     if(this.#exporting)throw Error('export-busy');this.#exporting=true;
     try{
-      const authorize=async()=>{this.#maintenanceScope(scope);const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(input.actor,scope.workspaceId);if(!sameScope(actual,scope))throw Error('export-access-denied');};
+      const authorize=async()=>{this.#maintenanceScope(scope);const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(input.actor,scope.workspaceId);if(!sameScope(actual,scope))throw Error('export-access-denied');this.#maintenanceScope(scope);};
       await authorize();if(!this.env.WORKSPACE_CHECKPOINTS)throw Error('export-unavailable');
       const current=await this.#simulationSource(scope),snapshot=await researchSnapshot(this.ctx.storage,scope,current,()=>{
         this.#maintenanceScope(scope);const latest=this.#turns.workspaceRevisionSnapshot(scope);
@@ -176,7 +176,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
         const object=await bucket.get(key);if(!object)return null;
         try{if(object.size>maxBytes)throw Error('export-too-large');const bytes=new Uint8Array(await object.arrayBuffer());if(bytes.byteLength!==object.size||bytes.byteLength>maxBytes)throw Error('export-source-mismatch');return bytes;}finally{await object.body?.cancel().catch(()=>{});}
       }});
-      return new Response(result.bytes,{headers:{'content-type':'application/zip','content-disposition':`attachment; filename="${result.filename}"`,'cache-control':'no-store','x-content-type-options':'nosniff','x-riffology-export-sha256':await digest(result.bytes)}});
+      return new Response(result.bytes,{headers:{'content-type':'application/zip','content-disposition':`attachment; filename="${result.filename}"`,'cache-control':'no-store','x-content-type-options':'nosniff','x-riffology-export-sha256':result.sha256}});
     }finally{this.#exporting=false;}
   }
   #evidence(scope:TurnScope){
