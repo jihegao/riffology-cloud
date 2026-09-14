@@ -6,7 +6,7 @@ The actual Gateway web application in `services/web` keeps the Agent and the mod
 
 - Desktop widths from 1200px start at approximately 35% Agent / 65% model; 768–1199px keeps a narrower resizable Agent. Drag the separator or focus it and use Left/Right, Home/End. Tabs support arrow keys and Home/End.
 - Below 768px, Chat / Preview switches between the same mounted panes. The project-scoped local preference stores pane ratio, depth, selected right view and mobile pane. It stores no model or execution identity.
-- Explore opens Preview, with explicit **Run saved model / Stop**, the existing interactive iframe, parameters and the latest persisted result. Model shows the non-programmer Model Spec. Experiment opens Runs, with baseline/interventions/seeds and existing Run history. Inspect opens source Files/Diff and expandable interaction-run diagnostics; all depths share the original panel instances.
+- Explore opens Preview, with explicit **Run saved model / Stop**, the existing interactive iframe, parameters and the latest persisted result. Model shows the non-programmer Model Spec and the explicit reproducible export action. Experiment opens Runs, with baseline/interventions/seeds, persisted evidence claims and existing Run history. Inspect opens source Files/Diff and expandable interaction-run diagnostics; all depths share the original panel instances.
 - Model versions and results remain authoritative API values. Direct parameter experiments use the existing simulation API and persist their effective parameters, seed and Run identity; the Agent continues to consume the existing persisted research context.
 
 ## Restoration and version transitions

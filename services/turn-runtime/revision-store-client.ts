@@ -18,7 +18,7 @@ export type RevisionCommitReconcileInput={operationId:string;identity:TurnRuntim
 export type RevisionCommitResolution=TurnCheckpointResolution;
 export interface RevisionStoreRpc{
   previewPlan(source:PreviewSource):Promise<ResolvedPreviewPlan>;
-  serviceFiles(source:PreviewSource):Promise<Uint8Array>;
+  serviceFiles(source:PreviewSource,maxBytes?:number):Promise<Uint8Array>;
   initialPreviewPlan(reference:InitialWorkspaceReference,scope:TurnScope):Promise<ResolvedPreviewPlan>;
   resolveInitial(reference:InitialWorkspaceReference,scope:TurnScope):Promise<ResolvedInitialWorkspace>;
   prepareCommit(input:RevisionCommitInput):Promise<TurnCheckpointIntent>;

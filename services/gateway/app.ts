@@ -1,3 +1,4 @@
+import type {GatewayResearchExports} from './research-export-services.ts';
 import {experimentGroupRequest} from '../simulation/groups.ts';
 import {experimentRequest} from '../simulation/host.ts';
 import type {GatewaySimulations} from './simulation-services.ts';
@@ -22,6 +23,7 @@ import {observerArtifactReceipt} from '../preview/observer-artifacts.ts';
 import type {GatewayObservations} from './observer-services.ts';
 
 export interface GatewayServices {
+  researchExports?:GatewayResearchExports;
   simulations?:GatewaySimulations;
   origin:string;
   database:Database;
@@ -124,6 +126,33 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       const tenants=await services.database.query<{id:string}>(sql(`SELECT t.id FROM catalog_tenants t JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=t.owner_user_id
         JOIN catalog_users u ON u.id=t.owner_user_id WHERE t.owner_user_id=? AND t.status='active' AND m.status='active' AND u.status='active' AND u.auth_version=?`,principal.userId,principal.authVersion));
       return json({userId:principal.userId,tenants});
+    }
+    const exportRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/research-export$/.exec(url.pathname);
+    if(exportRoute){
+      if(request.method!=='GET'||url.search)throw new HttpError('export-input-invalid',400);
+      const scope=await new ProjectCatalog(services.database,new Set(['blank-v1']),models).maintenanceWorkspace(principal,exportRoute[1]!);
+      if(!services.researchExports)throw new HttpError('export-unavailable',503);
+      try{return await services.researchExports.download(scope,principal);}catch(error){const code=error instanceof Error?error.message:'';
+        if(code==='export-access-denied')throw new HttpError(code,403);
+        if(code==='export-busy')throw new HttpError(code,429);
+        if(code==='export-too-large'||code==='turn-revision-object-too-large')throw new HttpError('export-too-large',413);
+        if(['export-model-changed','export-model-spec-invalid','export-dependencies-invalid','export-sensitive-file'].includes(code))throw new HttpError(code,409);
+        if(['export-source-mismatch','export-result-missing','export-evidence-mismatch'].includes(code))throw new HttpError(code,409);
+        throw new HttpError('export-unavailable',503);
+      }
+    }
+    const evidenceRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/(evidence|evidence-rejections)(?:\/([a-f0-9]{64}))?$/.exec(url.pathname);
+    if(evidenceRoute){
+      const [,workspaceId,resource,claimId]=evidenceRoute,catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),scope=await catalog.maintenanceWorkspace(principal,workspaceId!);
+      if(!services.simulations)throw new HttpError('evidence-unavailable',503);
+      try{
+        if(resource==='evidence'&&request.method==='GET'){
+          if(claimId&&!url.search)return json(await services.simulations.viewEvidence(scope,principal,claimId));
+          if(!claimId){if([...url.searchParams.keys()].some(k=>k!=='before')||url.searchParams.getAll('before').length>1)throw new HttpError('evidence-input-invalid',400);return json(await services.simulations.listEvidence(scope,principal,url.searchParams.get('before')??undefined));}
+        }
+        if(request.method==='POST'&&!claimId&&!url.search){const body=await readJson(request);return json(resource==='evidence'?await services.simulations.createEvidence(scope,principal,body):await services.simulations.rejectEvidence(scope,principal,body),201);}
+        throw new HttpError('evidence-input-invalid',400);
+      }catch(error){if(error instanceof HttpError||error instanceof CatalogError)throw error;const code=error instanceof Error?error.message:'';if(code==='evidence-not-found'||code==='simulation-not-found')throw new HttpError('evidence-not-found',404);if(code==='evidence-capacity')throw new HttpError(code,429);if(code==='evidence-access-denied')throw new HttpError(code,403);if(/^evidence-(?:input-invalid|expectation-mismatch|group-mismatch|metric-missing|no-valid-runs|zero-baseline|number-overflow|source-rejected|run-ineligible)$/.test(code))throw new HttpError(code,400);throw new HttpError('evidence-unavailable',503);}
     }
     const simulationRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/(model|experiments|experiment-groups|simulation-runs)(?:\/([A-Za-z0-9_-]{1,128})(?:\/(cancel))?)?$/.exec(url.pathname);
     if(simulationRoute){
