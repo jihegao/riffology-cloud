@@ -116,12 +116,36 @@ export class TurnJournal{
   async beginResourceWait(rawScope:TurnScope,input:{turnId:string;ticketId?:string|null;operationId:string;reasonCode?:string;since?:number;nextAttemptAt?:number}){const s=scope(rawScope),at=nowValid(this.#clock()),since=positive(input.since??at),nextAttemptAt=positive(input.nextAttemptAt??(at+1000)),normalized={status:'waiting' as const,turnId:turnId(input.turnId),ticketId:input.ticketId==null?null:turnId(input.ticketId),operationId:turnId(input.operationId),leaseId:null,reasonCode:turnId(input.reasonCode??'trusted-pi-capacity-requesting'),since,nextAttemptAt};if(normalized.nextAttemptAt<normalized.since)throw Error('invalid-turn-resource-wait');return this.#store.transact(current=>{const state=requireState(current,s);if(state.activeTurnId||state.recoveryHold||state.releaseHold)throw Error('turn-resource-wait-conflict');const next=Object.values(state.turns).filter(row=>row.status==='queued').sort((a,b)=>a.createdAt-b.createdAt||a.id.localeCompare(b.id))[0];if(!next||next.id!==normalized.turnId)throw Error('turn-resource-wait-conflict');const currentWait=state.resourceWait;if(currentWait){if(currentWait.status!=='waiting'||currentWait.turnId!==normalized.turnId||currentWait.operationId!==normalized.operationId||(currentWait.ticketId!==null&&currentWait.ticketId!==normalized.ticketId))throw Error('turn-resource-wait-conflict');normalized.ticketId=currentWait.ticketId??normalized.ticketId;normalized.since=currentWait.since;}state.resourceWait=normalized;return {state,value:structuredClone(normalized)};});}
   async consumeResourceLeaseAndClaim(rawScope:TurnScope,runtimeGeneration:number,input:{turnId:string;ticketId:string;operationId:string;leaseId:string}){const normalized={turnId:turnId(input.turnId),ticketId:turnId(input.ticketId),operationId:turnId(input.operationId),leaseId:turnId(input.leaseId)};return this.#claim(rawScope,runtimeGeneration,normalized);}
   async appendRuntime(rawScope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;eventId:string;type:RuntimeEventType;at:number;payload:unknown}){
-    const s=scope(rawScope),tid=turnId(input.turnId),dispatchId=turnId(input.dispatchId),generation=positive(input.runtimeGeneration),eid=turnId(input.eventId),at=nowValid(input.at),observedAt=nowValid(this.#clock()),payload=jsonPayload(input.payload);
-    if(!['assistant.delta','assistant.message','tool.started','tool.updated','tool.completed','provider.status'].includes(input.type))throw Error('invalid-runtime-event-type');
-    const payloadSha256=await turnDigest({tid,dispatchId,generation,type:input.type,at,payload});
-    return this.#store.transact(current=>{const state=requireState(current,s),turn=state.turns[tid];if(!turn||turn.dispatchId!==dispatchId||turn.runtimeGeneration!==generation)throw Error('turn-runtime-scope-denied');
-      const prior=state.eventReceipts[eid];if(prior){if(prior.payloadSha256!==payloadSha256)throw Error('turn-event-conflict');return {state,value:{event:structuredClone(prior.event),replayed:true}};}if(!['running','cancelling'].includes(turn.status))throw Error('turn-runtime-scope-denied');if(!turn.startedAt||at<turn.startedAt||at>observedAt)throw Error('invalid-runtime-event-time');
-      if(Object.keys(state.eventReceipts).length>=TURN_EVENT_RECEIPT_LIMIT)throw Error('turn-event-receipt-archive-required');const row=event(state,turn,input.type,at,payload,eid);state.eventReceipts[eid]={payloadSha256,sequence:row.sequence,event:structuredClone(row)};turn.updatedAt=Math.max(turn.updatedAt,at);return {state,value:{event:row,replayed:false}};});
+    return (await this.appendRuntimeBatch(rawScope,[input]))[0]!;
+  }
+  /** One receipt is one atomic journal update, including replayed events. This
+   * avoids revalidating and rewriting the whole journal once per streamed delta. */
+  async appendRuntimeBatch(rawScope:TurnScope,inputs:ReadonlyArray<{turnId:string;dispatchId:string;runtimeGeneration:number;eventId:string;type:RuntimeEventType;at:number;payload:unknown}>){
+    const s=scope(rawScope),observedAt=nowValid(this.#clock());
+    if(!Array.isArray(inputs)||inputs.length>TURN_EVENT_RECEIPT_LIMIT)throw Error('invalid-runtime-event-batch');
+    if(inputs.length===0)return [];
+    const prepared:Array<{tid:string;dispatchId:string;generation:number;eid:string;at:number;payload:Record<string,unknown>;type:RuntimeEventType;payloadSha256:string}>=[];
+    for(const input of inputs){
+      const tid=turnId(input.turnId),dispatchId=turnId(input.dispatchId),generation=positive(input.runtimeGeneration),eid=turnId(input.eventId),at=nowValid(input.at),payload=jsonPayload(input.payload);
+      if(!['assistant.delta','assistant.message','tool.started','tool.updated','tool.completed','provider.status'].includes(input.type))throw Error('invalid-runtime-event-type');
+      prepared.push({tid,dispatchId,generation,eid,at,payload,type:input.type,payloadSha256:await turnDigest({tid,dispatchId,generation,type:input.type,at,payload})});
+    }
+    return this.#store.transact(current=>{
+      const state=requireState(current,s),value:Array<{event:TurnEvent;replayed:boolean}>=[];
+      let receiptCount=Object.keys(state.eventReceipts).length;
+      for(const input of prepared){
+        const {tid,dispatchId,generation,eid,at,payload,type,payloadSha256}=input,turn=state.turns[tid];
+        if(!turn||turn.dispatchId!==dispatchId||turn.runtimeGeneration!==generation)throw Error('turn-runtime-scope-denied');
+        const prior=state.eventReceipts[eid];
+        if(prior){if(prior.payloadSha256!==payloadSha256)throw Error('turn-event-conflict');value.push({event:structuredClone(prior.event),replayed:true});continue;}
+        if(!['running','cancelling'].includes(turn.status))throw Error('turn-runtime-scope-denied');
+        if(!turn.startedAt||at<turn.startedAt||at>observedAt)throw Error('invalid-runtime-event-time');
+        if(receiptCount>=TURN_EVENT_RECEIPT_LIMIT)throw Error('turn-event-receipt-archive-required');
+        const row=event(state,turn,type,at,payload,eid);state.eventReceipts[eid]={payloadSha256,sequence:row.sequence,event:structuredClone(row)};receiptCount++;
+        turn.updatedAt=Math.max(turn.updatedAt,at);value.push({event:row,replayed:false});
+      }
+      return {state,value};
+    });
   }
   async cancelWithDisposition(rawScope:TurnScope,rawActor:TurnActor,id:string){
     const s=scope(rawScope),a=actor(rawActor),tid=turnId(id),at=nowValid(this.#clock());

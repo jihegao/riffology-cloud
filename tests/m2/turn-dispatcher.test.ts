@@ -133,7 +133,7 @@ test('mismatched Pi session identity is rejected before runtime events mutate th
 test('artifact references are retained before tool completion enters the journal and replay idempotently',async()=>{
   const f=fixture();const turn=await queued(f);f.setAccept(async input=>receipt(input,{events:[{eventId:'event-artifact',type:'tool.completed',at:1003,payload:{toolCallId:'call-a',name:'project_list',isError:false,artifact}}]}));
   const order:string[]=[],references=new Map<string,ToolArtifactReferenceReceipt>();
-  const journal=new Proxy(f.journal,{get(target,key,receiver){if(key!=='appendRuntime'){const value=Reflect.get(target,key,receiver);return typeof value==='function'?value.bind(target):value;}return async (...args:Parameters<TurnJournal['appendRuntime']>)=>{order.push('append');return target.appendRuntime(...args);};}});
+  const journal=new Proxy(f.journal,{get(target,key,receiver){if(key!=='appendRuntimeBatch'){const value=Reflect.get(target,key,receiver);return typeof value==='function'?value.bind(target):value;}return async (...args:Parameters<TurnJournal['appendRuntimeBatch']>)=>{order.push('append');return target.appendRuntimeBatch(...args);};}});
   const port={retain:async(input:ToolArtifactReferenceInput)=>{order.push('retain');const key=`${input.kind}:${input.referenceId}`,prior=references.get(key);if(prior)return prior;const saved={schemaVersion:1 as const,artifactId:input.artifactId,kind:input.kind,referenceId:input.referenceId,retainedAt:1002,releasedAt:null};references.set(key,saved);return saved;}};
   const dispatcher=new TurnDispatcher(journal,f.runtime,port);await dispatcher.tick(scope,1);assert.deepEqual(order,['retain','append']);assert.equal(references.size,1);
   f.setObserve(async input=>receipt(input,{events:[{eventId:'event-artifact',type:'tool.completed',at:1003,payload:{toolCallId:'call-a',name:'project_list',isError:false,artifact}}]}));await dispatcher.tick(scope,1);assert.deepEqual(order,['retain','append','retain','append']);assert.equal(references.size,1);assert.equal(f.store.snapshot()!.turns[turn.id]!.status,'running');
@@ -259,7 +259,7 @@ test('journal failure after artifact retain recovers by observing and retaining 
   const events=[{eventId:'event-artifact',type:'tool.completed' as const,at:1003,payload:{isError:false,artifact}}];
   f.setAccept(async input=>receipt(input,{events}));f.setObserve(async input=>receipt(input,{events}));
   let appends=0;const retained:ToolArtifactReferenceInput[]=[];
-  const journal=new Proxy(f.journal,{get(target,key){if(key==='appendRuntime')return async(...args:Parameters<TurnJournal['appendRuntime']>)=>{if(++appends===1)throw Error('journal-unavailable');return target.appendRuntime(...args);};const value=Reflect.get(target,key);return typeof value==='function'?value.bind(target):value;}});
+  const journal=new Proxy(f.journal,{get(target,key){if(key==='appendRuntimeBatch')return async(...args:Parameters<TurnJournal['appendRuntimeBatch']>)=>{if(++appends===1)throw Error('journal-unavailable');return target.appendRuntimeBatch(...args);};const value=Reflect.get(target,key);return typeof value==='function'?value.bind(target):value;}});
   const port={retain:async(input:ToolArtifactReferenceInput)=>{retained.push(structuredClone(input));return {schemaVersion:1 as const,artifactId:input.artifactId,kind:input.kind,referenceId:input.referenceId,retainedAt:1002,releasedAt:null};}};
   const dispatcher=new TurnDispatcher(journal,f.runtime,port);
   await assert.rejects(dispatcher.tick(scope,1),/journal-unavailable/);
@@ -267,4 +267,21 @@ test('journal failure after artifact retain recovers by observing and retaining 
   await dispatcher.tick(scope,1);
   assert.deepEqual(f.calls,['accept','observe']);assert.deepEqual(retained[0],retained[1]);
   assert.equal(f.store.snapshot()!.events.filter(item=>item.type==='tool.completed').length,1);
+});
+
+test('batching preserves each artifact durable boundary when a later retain fails',async()=>{
+ const f=fixture();await queued(f,'multiple-artifacts');
+ const events=[{eventId:'delta-before',type:'assistant.delta' as const,at:1003,payload:{text:'before'}},{eventId:'artifact-first',type:'tool.completed' as const,at:1003,payload:{toolCallId:'first',name:'project_list',isError:false,artifact}},{eventId:'delta-between',type:'assistant.delta' as const,at:1003,payload:{text:'between'}},{eventId:'artifact-second',type:'tool.completed' as const,at:1003,payload:{toolCallId:'second',name:'project_list',isError:false,artifact}}];
+ f.setAccept(async input=>receipt(input,{events}));f.setObserve(async input=>receipt(input,{events}));let fail=true;
+ const dispatcher=new TurnDispatcher(f.journal,f.runtime,{retain:async input=>{
+  if(input.referenceId==='artifact-second'){
+   assert(f.store.snapshot()!.events.some(e=>e.eventId==='artifact-first'));
+   if(fail)throw Error('later-artifact-unavailable');
+  }
+  return {schemaVersion:1,artifactId:input.artifactId,kind:input.kind,referenceId:input.referenceId,retainedAt:1002,releasedAt:null};
+ }});
+ await assert.rejects(dispatcher.tick(scope,1),/later-artifact-unavailable/);
+ assert.deepEqual(f.store.snapshot()!.events.filter(e=>events.some(input=>input.eventId===e.eventId)).map(e=>e.eventId),['delta-before','artifact-first','delta-between']);
+ fail=false;await dispatcher.tick(scope,1);
+ assert.deepEqual(f.store.snapshot()!.events.filter(e=>events.some(input=>input.eventId===e.eventId)).map(e=>e.eventId),events.map(e=>e.eventId));
 });

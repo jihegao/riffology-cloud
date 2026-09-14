@@ -1,0 +1,11 @@
+# Phase 1 live acceptance: streamed-event CPU recovery
+
+The first ordinary-user blank project in the user-preview acceptance exposed a CPU limit failure in WorkspaceAgent. Cloudflare tail reported `exceededCpu` and Durable Object reset; a `replayTurnEvents` invocation reached 32,500 ms CPU. New submissions were disabled, and the accepted Turn was retained without resubmission. It eventually completed and saved while admission was closed. Container inventory and tenant quota were independently checked; no resources were force-released.
+
+The persisted journal contained 682 events (680 through the runtime stream, then checkpointing/completed), about 210 KB, after terminal receipt pruning. Node measurements on that actual state found roughly 2.3 ms per full read and 4.4 ms per full no-op transaction. This does not identify a single pathological payload. It exposes repeated work: every runtime observation replays cumulative events, and the previous dispatcher performed full journal validation, cloning, writing and sync for each individual event, including already recorded events.
+
+The repair batches consecutive ordinary runtime events into one atomic update. Input validation, payload hashes, dispatch/generation checks, event conflicts, receipt limits, immutable event identity and durability acknowledgements remain enforced. Artifact completions retain their original boundary: preceding events commit first, the artifact reference is retained, and its event commits before the next artifact is retained. No persistent schema or CPU limit changes are required.
+
+Regression checks cover 700 events with one write/sync, replay after store reconstruction, conflict rollback, dispatch rejection, delayed/lost sync acknowledgement and failure on a later artifact retain. This removes the measured per-event full-state write amplification. It does not by itself prove the only cause of the cloud CPU reset; final user-preview acceptance must independently verify CPU/error observations under the repaired release.
+
+Raw journal, browser logs and diagnostic capabilities are private local evidence. The temporary diagnostic RPC is excluded from the repair; its Worker and route must be removed during final cleanup. No user-preview completion is claimed by this document alone.
