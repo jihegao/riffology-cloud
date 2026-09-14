@@ -11,6 +11,7 @@ import signal
 import stat
 import sys
 import time
+import re
 from contextlib import contextmanager
 
 CONTROL_ROOT = "/var/lib/riffology/effects"
@@ -43,12 +44,41 @@ def spawn_lock():
         os.close(directory)
 
 
+def binding_epoch():
+    value = os.environ.get('RIFFOLOGY_BINDING_EPOCH')
+    if value is not None and not valid_epoch(value):
+        raise RuntimeError('project-epoch-invalid')
+    return value
+
+
 def require_unsealed(directory):
+    state = read_state(directory)
+    epoch = binding_epoch()
+    if state:
+        if epoch != state['epoch'] or state['status'] != 'active':
+            raise RuntimeError('project-binding-denied')
+        return state
+    if epoch is not None:
+        raise RuntimeError('project-binding-absent')
     try:
-        os.stat(".sealed", dir_fd=directory, follow_symlinks=False)
+        os.stat('.sealed', dir_fd=directory, follow_symlinks=False)
     except FileNotFoundError:
-        return
-    raise RuntimeError("project-effects-sealed")
+        return None
+    raise RuntimeError('project-effects-sealed')
+
+
+def require_sealed(directory):
+    state = read_state(directory)
+    epoch = binding_epoch()
+    if state:
+        if epoch != state['epoch'] or state['status'] != 'sealed':
+            raise RuntimeError('project-binding-denied')
+        require_quiet()
+        return state
+    if epoch is not None:
+        raise RuntimeError('project-binding-absent')
+    os.stat('.sealed', dir_fd=directory, follow_symlinks=False)
+    return None
 
 
 def live_project_pids():
@@ -144,8 +174,103 @@ def kill_project(pid):
         os.close(handle)
 
 
+STATE = 'binding.json'
+MAX_EPOCHS = 1024  # Exhaustion requires a fresh container, never tombstone eviction.
+
+
+def read_state(directory):
+    try:
+        fd = os.open(STATE, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC, dir_fd=directory)
+    except FileNotFoundError:
+        return None
+    try:
+        info = os.fstat(fd)
+        if not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o077 or info.st_size > 150000:
+            raise RuntimeError('state-invalid')
+        with os.fdopen(os.dup(fd)) as source:
+            state = json.load(source)
+        if (set(state) != {'schemaVersion', 'epoch', 'status', 'used', 'archiveToken', 'frozen', 'previousFrozen'}
+                or state['schemaVersion'] != 1 or state['status'] not in {'active', 'sealed'}
+                or not isinstance(state['used'], list) or not 1 <= len(state['used']) <= MAX_EPOCHS
+                or any(not valid_epoch(e) for e in state['used'])
+                or len(set(state['used'])) != len(state['used']) or state['epoch'] != state['used'][-1]
+                or (state['archiveToken'] is not None and not re.fullmatch('[a-f0-9]{52}', state['archiveToken']))
+                or not valid_frozen(state['frozen']) or not valid_frozen(state['previousFrozen'])):
+            raise RuntimeError('state-invalid')
+        return state
+    finally:
+        os.close(fd)
+
+
+def valid_epoch(epoch):
+    return isinstance(epoch, str) and re.fullmatch('[A-Za-z0-9_-]{1,128}', epoch) is not None
+
+
+def write_state(directory, state):
+    # No in-place writes: a crash leaves either the prior or complete next fence.
+    temporary = f'.state-{os.getpid()}-{os.urandom(8).hex()}'
+    fd = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC, 0o600, dir_fd=directory)
+    try:
+        with os.fdopen(os.dup(fd), 'w') as target:
+            json.dump(state, target, separators=(',', ':'))
+            target.flush()
+            os.fsync(target.fileno())
+        os.rename(temporary, STATE, src_dir_fd=directory, dst_dir_fd=directory)
+        os.fsync(directory)
+    finally:
+        os.close(fd)
+        try:
+            os.unlink(temporary, dir_fd=directory)
+        except FileNotFoundError:
+            pass
+
+
+def require_quiet():
+    for _ in range(2):
+        if live_project_pids():
+            raise RuntimeError('domain-not-quiescent')
+        time.sleep(0.02)
+
+
+
+def valid_frozen(value):
+    return value is None or (isinstance(value, dict) and set(value) == {'token', 'bytes', 'sha256'}
+        and isinstance(value['token'], str) and re.fullmatch('[a-f0-9]{52}', value['token']) is not None
+        and type(value['bytes']) is int and 0 < value['bytes'] <= 56 * 1024 * 1024
+        and isinstance(value['sha256'], str) and re.fullmatch('[a-f0-9]{64}', value['sha256']) is not None)
+
+
+def activate(epoch):
+    if not valid_epoch(epoch):
+        raise RuntimeError('project-epoch-invalid')
+    with spawn_lock() as directory:
+        # Warm leases require native pidfd; cold legacy cleanup keeps its fallback.
+        probe = pidfd_open(os.getpid())
+        os.close(probe)
+        state = read_state(directory)
+        if state and state['epoch'] == epoch:
+            return {'schemaVersion': 1, 'bindingEpoch': epoch, 'status': state['status']}
+        if state and (state['status'] != 'sealed' or epoch in state['used'] or len(state['used']) >= MAX_EPOCHS):
+            raise RuntimeError('project-activation-denied')
+        require_quiet()
+        write_state(directory, {'schemaVersion': 1, 'epoch': epoch, 'status': 'active',
+            'used': (state['used'] if state else []) + [epoch], 'archiveToken': None,
+            'frozen': None, 'previousFrozen': state['frozen'] if state else None})
+        return {'schemaVersion': 1, 'bindingEpoch': epoch, 'status': 'active'}
+
 def seal():
     with spawn_lock() as directory:
+        state = read_state(directory)
+        epoch = binding_epoch()
+        if state:
+            if epoch != state['epoch']:
+                raise RuntimeError('project-binding-denied')
+            probe = pidfd_open(os.getpid())
+            os.close(probe)
+            state['status'] = 'sealed'
+            write_state(directory, state)
+        elif epoch is not None:
+            raise RuntimeError('project-binding-absent')
         marker = os.open(".sealed", os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW | os.O_CLOEXEC, 0o600, dir_fd=directory)
         try:
             info = os.fstat(marker)
@@ -164,7 +289,8 @@ def seal():
             pids = live_project_pids()
             empty_scans = empty_scans + 1 if not pids else 0
             if empty_scans >= 2:
-                return {"schemaVersion": 1, "sealed": True, "quiescent": True, "projectUid": PROJECT_UID}
+                return {"schemaVersion": 1, "sealed": True, "quiescent": True, "projectUid": PROJECT_UID,
+                        **({'bindingEpoch': epoch} if state else {})}
             for pid in pids:
                 kill_project(pid)
             if time.monotonic() >= deadline:
@@ -174,9 +300,13 @@ def seal():
 
 if __name__ == "__main__":
     try:
-        if sys.argv[1:] != ["seal"]:
-            raise RuntimeError("project-control-command-invalid")
-        print(json.dumps(seal(), separators=(",", ":")))
+        if len(sys.argv) == 4 and sys.argv[1:3] == ['activate', '--epoch']:
+            result = activate(sys.argv[3])
+        elif sys.argv[1:] == ['seal']:
+            result = seal()
+        else:
+            raise RuntimeError('project-control-command-invalid')
+        print(json.dumps(result, separators=(',', ':')))
     except Exception:
         print("project-quiescence-unproven", file=sys.stderr)
         raise SystemExit(4)
