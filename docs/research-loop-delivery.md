@@ -20,6 +20,31 @@
 
 #45 在评审中修复了 Gateway 未放行新模块、停止后晚到请求恢复旧 iframe、提交后旧轮询覆盖新 Run、Files/Diff 旧响应覆盖新版本及历史选择改变 Stop 目标的问题。较早候选的通过记录或中断检查不替代上表最终候选的全检。
 
+## 待交付批次（2026-09-14 状态快照）
+
+以下候选不计入已合并批次；后续修复、原生复跑和 PR 状态须由主控补充最终记录。
+
+### 7b · #37 同 Workspace 安全复用
+
+[PR #59](https://github.com/jihegao/riffology-cloud/pull/59) 仍为 draft。候选实现和本地协议测试不等于原生验收通过：首次真实 Sandbox SDK / Linux 10-Turn 验收在第一 Turn 失败，尚未完成 10 Turn，也未合并。
+
+- Workerd 组合候选 `dcdeec82` 与测试提交 `330812a` 源码树一致；实际 Workspace、Runtime、SQLite、D1、R2、三份操作账本与容量账本的 16 项检查全部通过，0 跳过、0 失败。覆盖 checkpoint 提交响应丢失但 Journal 未保存、handoff 响应丢失、旧能力拒绝、未结算操作阻止复用、双域部分释放与 FIFO，以及 configure、写入、pair.bind 的迟到或未知响应。此处 native façade 是可注入故障的测试替身，不证明 Linux 隔离或真实 10-Turn 运行。日志：`/tmp/riffology-warm-workerd-16-final.log`。
+- 首轮原生失败源码为 `9df08b6`，使用镜像 `riffology-m2-trusted-pi-provider-disabled:18c0d8e55137`。Pi 启动后退出码为 1，未产生预期事件，Turn 实际为 `failed` 而非 `completed`。日志：`/tmp/riffology-runtime-reuse-native-ten-turns.log`；原始证据目录：`/Users/gaojihe/apps/riffology-cloud-runtime-reuse/docs/evidence/runs/m2-runtime-reuse-lazy-crud-fixture-20260914094821838`。该次记录显示 `sourceStable: true`、`externalWorkerFetches: 0`；失败记录不得被后续通过结果覆盖。
+- 独立本地网络诊断使用同一镜像与实际 SDK 拦截 HTTPS，只返回受控的空 research context。root 与 UID 10002 继承证书环境时均返回 200；采用 supervisor 的最小环境时均报 `SELF_SIGNED_CERT_IN_CHAIN`。继承环境中的 `NODE_EXTRA_CA_CERTS` 指向 `/etc/cloudflare/certs/cloudflare-containers-ca.crt`；SDK 写入的控制文件为 root 所有、0644，四种组合均可读取。这将故障定位到最小环境丢失拦截 CA 信任，不能据此宣称产品 Turn 已修复。诊断 JSON：`/tmp/riffology-native-first-turn-ca-diagnosis.json`；日志：`/tmp/riffology-sandbox-tls-probe-esm.log`。
+- 独立非 root Pi SDK 初始化探针完成真实 Session、4 次本地读取及 2 次受控 provider 调用，无付费调用；它仅排除该初始化路径，不能替代完整 Turn。日志：`/tmp/riffology-pi-nonroot-sdk-diagnostic-stdin.log`。诊断 actor 已由 SDK 销毁，剩余代理容器由主控清理；这些清理不构成产品 Turn 的容量释放证明。
+
+上述 `/tmp` 日志和工作树证据路径是本机诊断位置，尚非本交付文档提交内的永久归档。仍需完成证书修复评审、修复后完整原生 10-Turn 与释放证据、最终候选验证及 PR 合并；不得用 Workerd 替身测试或独立网络探针替代这些退出条件。
+
+### 8 · #35 官方模型晋升
+
+候选 `9d91312` 已在独立 publication 工作树整合冻结的 #37 C 候选 `dcdeec82`，但尚未运行该组合候选的完整 `npm run check`，也未合并。交付顺序仍为 #37 完成后再合并 #35。
+
+- `npm run typecheck` 通过；readiness、冻结产物、Catalog 审核、Gateway 与实际 Workspace/Python 发布后独立目录运行共 16 项通过；真实 Gateway 静态资源图 1 项通过；Chrome 发布恢复与双栏布局 14 项通过。合计 31 项定向检查通过，0 跳过、0 失败。
+- 对应日志为 `/tmp/riffology-publication-C-core.log`、`/tmp/riffology-publication-C-assets.log`、`/tmp/riffology-publication-C-browser.log`。这些是本地验证，未执行线上发布或真实供应商调用。
+- 普通用户提交冻结当前模型及完整研究历史供管理员审核；私有研究包仅 owner/operator 授权读取，公共 catalog 只包含审定模型内容。管理员权限由服务端 Catalog 核验；审批响应丢失后保留原身份恢复，不因候选已发布或翻页而丢失重试入口。
+
+仍需整合 #37 最终主线、运行完整检查、最终评审及合并。前三个模型从真实普通用户路径创建、审核发布并验证复制后独立运行的验收尚未完成；本地 fixture 不能充当这三项真实交付。
+
 ## 已建立的接口与保护
 
 - [Model 接口](model-spec.md)与[实验分组接口](experiment-groups-api.md)保留历史单次 Run；研究分组在其上建立关联，不修改历史身份。分组先持久化全部子 Run 计划，再有界准入；上一执行终态不替代实际容量释放证明。
