@@ -1,13 +1,14 @@
-import type {ExperimentGroupRequest} from '../simulation/groups.ts';
+import type {ExperimentGroupRequest,ExperimentGroupView} from '../simulation/groups.ts';
 import type {TurnScope,TurnActor} from '../turn/protocol.ts';
 import {workspaceAgentName} from '../workspace/protocol.ts';
+import type {ModelInspection} from '../simulation/source.ts';
 import type {ExperimentRequest} from '../simulation/host.ts';
 interface SimulationWorkspace{
- submitExperimentGroup(input:{scope:TurnScope;actor:TurnActor;key:string;body:ExperimentGroupRequest}):Promise<unknown>;
- listExperimentGroups(input:{scope:TurnScope;before?:string}):Promise<unknown>;
- experimentGroup(input:{scope:TurnScope;groupId:string}):Promise<unknown>;
- cancelExperimentGroup(input:{scope:TurnScope;groupId:string}):Promise<unknown>;
- modelSpec(input:{scope:TurnScope}):Promise<unknown>;
+ submitExperimentGroup(input:{scope:TurnScope;actor:TurnActor;key:string;body:ExperimentGroupRequest}):Promise<ExperimentGroupView>;
+ listExperimentGroups(input:{scope:TurnScope;before?:string}):Promise<{items:ExperimentGroupView[];nextCursor:string|null}>;
+ experimentGroup(input:{scope:TurnScope;groupId:string}):Promise<ExperimentGroupView>;
+ cancelExperimentGroup(input:{scope:TurnScope;groupId:string}):Promise<ExperimentGroupView>;
+ modelSpec(input:{scope:TurnScope}):Promise<ModelInspection>;
  submitExperiment(input:{scope:TurnScope;actor:TurnActor;key:string;body:ExperimentRequest}):Promise<unknown>;
  listExperiments(input:{scope:TurnScope;before?:string}):Promise<unknown>;
  experiment(input:{scope:TurnScope;runId:string}):Promise<unknown>;
