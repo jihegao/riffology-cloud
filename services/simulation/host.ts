@@ -1,3 +1,4 @@
+import {GROUP_RESERVATION,GROUP_WAKE_KEY} from './group-state.ts';
 import {publishOutputs,type SimulationOutput} from './outputs.ts';
 import {actor as checkedActor,scope as checkedScope,turnId,type TurnActor,type TurnScope} from '../turn/protocol.ts';
 import {leaseReference,type LeaseReference,type LeaseRequest,type Acquisition,type StopConfirmation} from '../quota/core.ts';
@@ -7,7 +8,7 @@ import type {SimulationInput,NativeObservation} from './native.ts';
 import {applyWorkspaceAlarm,SIMULATION_WAKE_KEY,WORKSPACE_STATE_KEY,TURN_WAKE_KEY,SERVICE_WAKE_KEY,OBSERVER_WAKE_KEY} from '../workspace/shared-alarm.ts';
 export type ExperimentRequest={revisionId:string|null;filesSha256:string;specSha256:string;parameters:ParameterValues;seed:number};
 type Status='queued'|'waiting_for_capacity'|'preparing'|'running'|'finalizing'|'stopping'|'unknown'|'completed'|'failed'|'cancelled';
-export type SimulationRecord={experimentId:string;runId:string;scope:TurnScope;actor:TurnActor;key:string;requestJson:string;input:SimulationInput;status:Status;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null;attempt:number;quotaClaimed:boolean;releaseProof:StopConfirmation|null;lease:LeaseReference|null;dispatchClaimed?:boolean;startClaimed:boolean;stop:NativeObservation['stop'];result:null|{metrics:Record<string,number>;artifactSha256:string;outputs?:SimulationOutput[]};releaseBegunAt:number|null;quietSince:number|null;released:boolean};
+export type SimulationRecord={experimentId:string;groupId?:string;runId:string;scope:TurnScope;actor:TurnActor;key:string;requestJson:string;input:SimulationInput;status:Status;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null;attempt:number;quotaClaimed:boolean;releaseProof:StopConfirmation|null;lease:LeaseReference|null;dispatchClaimed?:boolean;startClaimed:boolean;stop:NativeObservation['stop'];result:null|{metrics:Record<string,number>;artifactSha256:string;outputs?:SimulationOutput[]};releaseBegunAt:number|null;quietSince:number|null;released:boolean};
 export interface SimulationPorts{
  quota:{acquire(request:LeaseRequest):Promise<Acquisition>;lookup(tenantId:string,operationId:string):Promise<Acquisition|null>;dispatch(lease:LeaseReference):Promise<{authorized:boolean;lease:unknown}>;confirmStopped(lease:LeaseReference,proof:StopConfirmation):Promise<unknown>};
  start(input:SimulationInput):Promise<NativeObservation>;
@@ -28,19 +29,23 @@ export function experimentRequest(raw:unknown):ExperimentRequest{
  return structuredClone(r);
 }
 export function publicExperiment(r:SimulationRecord,currentFilesSha:string|null){return {experimentId:r.experimentId,runId:r.runId,version:modelVersion(r.input.plan),parameters:r.input.parameters,seed:r.input.seed,status:r.status,createdAt:r.createdAt,updatedAt:r.updatedAt,errorCode:r.errorCode,result:r.result,stale:currentFilesSha!==null&&currentFilesSha!==modelVersion(r.input.plan).filesSha256};}
+/** Runs and group admission share one logical simulation wake. */
+export async function projectSimulationWake(tx:DurableObjectTransaction,now:number){
+ const active=[...(await tx.list<SimulationRecord>({prefix:PREFIX})).values()].some(r=>!r.released);
+ const groupWake=await tx.get<number>(GROUP_WAKE_KEY);
+ const wake=active?Math.min(now+2000,groupWake??Infinity):groupWake??null;
+ if(wake===null)await tx.delete(SIMULATION_WAKE_KEY);else await tx.put(SIMULATION_WAKE_KEY,wake);
+ const state=await tx.get<{wakeAt:number|null}>(WORKSPACE_STATE_KEY);
+ await applyWorkspaceAlarm(tx,state?.wakeAt,await tx.get(TURN_WAKE_KEY),await tx.get(SERVICE_WAKE_KEY),await tx.get(OBSERVER_WAKE_KEY),wake);
+}
+export type GroupChildAdmission={runId:string;groupId:string;permit(tx:DurableObjectTransaction):Promise<boolean>};
 /** Workspace-owned intents, state and wake commit together. External effects
  * are fenced in durable state before dispatch. Unknown requests only observe. */
 export class SimulationHost{
  #advancing=false;
  readonly storage:DurableObjectStorage;readonly scope:TurnScope;readonly ports:SimulationPorts;readonly clock:()=>number;readonly policy:{durationMs:number;releaseGuardMs:number;quietMs:number};
  constructor(storage:DurableObjectStorage,scope:TurnScope,ports:SimulationPorts,clock=Date.now,policy={durationMs:600000,releaseGuardMs:360000,quietMs:30000}){this.storage=storage;this.scope=checkedScope(scope);this.ports=ports;this.clock=clock;this.policy=policy;}
- async #project(tx:DurableObjectTransaction){
-  const active=[...(await tx.list<SimulationRecord>({prefix:PREFIX})).values()].some(r=>!r.released);
-  const wake=active?this.clock()+2000:null;
-  if(wake===null)await tx.delete(SIMULATION_WAKE_KEY);else await tx.put(SIMULATION_WAKE_KEY,wake);
-  const state=await tx.get<{wakeAt:number|null}>(WORKSPACE_STATE_KEY);
-  await applyWorkspaceAlarm(tx,state?.wakeAt,await tx.get(TURN_WAKE_KEY),await tx.get(SERVICE_WAKE_KEY),await tx.get(OBSERVER_WAKE_KEY),wake);
- }
+ async #project(tx:DurableObjectTransaction){await projectSimulationWake(tx,this.clock());}
  async #change(id:string,fn:(record:SimulationRecord)=>void){
   const result=await this.storage.transaction(async tx=>{const r=await tx.get<SimulationRecord>(PREFIX+id);if(!r)throw Error('simulation-not-found');fn(r);r.updatedAt=this.clock();await tx.put(PREFIX+id,r);await this.#project(tx);return r;});await this.storage.sync();return result;
  }
@@ -50,21 +55,30 @@ export class SimulationHost{
   checkedActor(actor);turnId(key);const intent=INTENT+await digest(JSON.stringify([actor.userId,key]));const id=await this.storage.get<string>(intent);if(!id)return null;
   const prior=await this.get(id);if(prior.requestJson!==JSON.stringify(request)||prior.actor.authVersion!==actor.authVersion)throw Error('simulation-idempotency-conflict');return prior;
  }
- async submit(actor:TurnActor,key:string,raw:unknown,plan:SimulationPlan,image:string,stillCurrent:()=>boolean){
-  const request=experimentRequest(raw),prior=await this.replay(actor,key,request);if(prior)return prior;
+ async submit(actor:TurnActor,key:string,raw:unknown,plan:SimulationPlan,image:string,stillCurrent:()=>boolean,child?:GroupChildAdmission){
+  const request=experimentRequest(raw);checkedActor(actor);turnId(key);
+  const intent=child?`simulation:child-intent:${turnId(child.groupId)}:${turnId(child.runId)}`:INTENT+await digest(JSON.stringify([actor.userId,key]));
+  const priorId=await this.storage.get<string>(intent);
+  if(priorId){const prior=await this.get(priorId);if(prior.requestJson!==JSON.stringify(request)||prior.actor.userId!==actor.userId||prior.actor.authVersion!==actor.authVersion||(child&&(prior.runId!==child.runId||prior.groupId!==child.groupId||prior.experimentId!==child.groupId)))throw Error('simulation-idempotency-conflict');return prior;}
   if(!image||image.length>512)throw Error('simulation-unavailable');
   const version=modelVersion(plan);if(JSON.stringify(version)!==JSON.stringify({revisionId:request.revisionId,filesSha256:request.filesSha256,specSha256:request.specSha256}))throw Error('simulation-model-stale');
-  const parameters=resolveParameters(plan.spec,request.parameters),now=this.clock(),runId=crypto.randomUUID(),intent=INTENT+await digest(JSON.stringify([actor.userId,key]));
-  const record:SimulationRecord={experimentId:runId,runId,scope:this.scope,actor:checkedActor(actor),key,requestJson:JSON.stringify(request),input:{runId,plan,parameters,seed:request.seed,deadlineAt:now+this.policy.durationMs,runtimeImage:image},status:'queued',createdAt:now,updatedAt:now,cancelledAt:null,errorCode:null,attempt:0,quotaClaimed:false,releaseProof:null,lease:null,dispatchClaimed:false,startClaimed:false,stop:null,result:null,releaseBegunAt:null,quietSince:null,released:false};
+  const parameters=resolveParameters(plan.spec,request.parameters),now=this.clock(),runId=child?turnId(child.runId):crypto.randomUUID();
+  const record:SimulationRecord={experimentId:child?.groupId??runId,...(child?{groupId:child.groupId}:{}),runId,scope:this.scope,actor:checkedActor(actor),key,requestJson:JSON.stringify(request),input:{runId,plan,parameters,seed:request.seed,deadlineAt:now+this.policy.durationMs,runtimeImage:image},status:'queued',createdAt:now,updatedAt:now,cancelledAt:null,errorCode:null,attempt:0,quotaClaimed:false,releaseProof:null,lease:null,dispatchClaimed:false,startClaimed:false,stop:null,result:null,releaseBegunAt:null,quietSince:null,released:false};
   const result=await this.storage.transaction(async tx=>{
-   const existing=await tx.get<string>(intent);if(existing){const r=(await tx.get<SimulationRecord>(PREFIX+existing))!;if(r.requestJson!==record.requestJson)throw Error('simulation-idempotency-conflict');return r;}
+   const existing=await tx.get<string>(intent);if(existing){const r=(await tx.get<SimulationRecord>(PREFIX+existing))!;if(r.requestJson!==record.requestJson||r.actor.authVersion!==actor.authVersion||(child&&(r.runId!==child.runId||r.groupId!==child.groupId||r.experimentId!==child.groupId)))throw Error('simulation-idempotency-conflict');return r;}
    if(!stillCurrent())throw Error('simulation-model-stale');
-   const rows=[...(await tx.list<SimulationRecord>({prefix:PREFIX})).values()];if(rows.length>=1000||rows.filter(r=>!r.released).length>=8)throw Error('simulation-capacity');
+   const reservations=await tx.list<string[]>({prefix:GROUP_RESERVATION});
+   const reserved=[...reservations.values()].reduce((n,ids)=>n+ids.length,0);
+   if(child&&(!(reservations.get(GROUP_RESERVATION+child.groupId)??[]).includes(runId)||!await child.permit(tx)))throw Error('simulation-group-admission-closed');
+   const rows=[...(await tx.list<SimulationRecord>({prefix:PREFIX})).values()];
+   if(rows.length+reserved+(child?0:1)>1000||rows.filter(r=>!r.released).length>=8)throw Error('simulation-capacity');
+   if(child)await tx.put(GROUP_RESERVATION+child.groupId,reservations.get(GROUP_RESERVATION+child.groupId)!.filter(id=>id!==runId));
    await tx.put(PREFIX+runId,record);await tx.put(intent,runId);await this.#project(tx);return record;
   });await this.storage.sync();return result;
  }
  async cancel(id:string){return this.#change(id,r=>{if(!TERMINAL.has(r.status)){r.cancelledAt??=this.clock();r.status='stopping';}});}
  async #bounded<T>(operation:()=>Promise<T>):Promise<T>{let timer:ReturnType<typeof setTimeout>|undefined;const pending=Promise.resolve().then(operation);this.ports.hold(pending.catch(()=>{}));try{return await Promise.race([pending,new Promise<never>((_,reject)=>{timer=setTimeout(()=>reject(Error('simulation-operation-unconfirmed')),15000);})]);}finally{clearTimeout(timer);}}
+ async authorizeActor(actor:TurnActor){return this.#bounded(()=>this.ports.authorize(checkedActor(actor)));}
  async alarm(){
   if(this.#advancing)return;this.#advancing=true;
   try{const records=[...(await this.storage.list<SimulationRecord>({prefix:PREFIX})).values()].filter(r=>!r.released);for(const r of records){try{await this.#advance(r.runId);}catch{await this.#change(r.runId,current=>{if(!TERMINAL.has(current.status)){current.status='unknown';current.errorCode=current.dispatchClaimed&&!current.startClaimed?'simulation-dispatch-unconfirmed':'simulation-operation-unconfirmed';}});}}}
