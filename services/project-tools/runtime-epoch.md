@@ -14,12 +14,24 @@ request or user environment. The child environment does not inherit it.
 
 ## CLI contract
 
-`python3 /opt/riffology/process_quiescence.py activate --epoch TOKEN` accepts a
+`python3 /opt/riffology/process_quiescence.py stage --epoch TOKEN` accepts a
 safe opaque token (1–128 ASCII alphanumeric, underscore or hyphen). It requires
 native pidfd support and a virgin or sealed domain with two empty UID scans.
-A repeated current epoch returns its actual `active` or `sealed` status and
-never unseals. Old epochs are never reactivated; after 1024 bindings use a fresh
-container. Response: `{schemaVersion:1,bindingEpoch:TOKEN,status}`.
+It persists `staging` before archive work. A repeated current epoch returns its
+actual `staging`, `active` or `sealed` state; it never reopens or rewinds it. Old
+epochs are never reactivated; after 1024 bindings use a fresh container.
+Response: `{schemaVersion:1,bindingEpoch:TOKEN,status}`.
+
+`python3 /opt/riffology/process_quiescence.py activate --epoch TOKEN` requires
+the exact current staged epoch, a durable successful restore/adopt proof and
+an independently quiet domain. It recalculates the workspace canonical hash
+against that proof before persisting `active`. Missing preparation, drift or an
+unknown preparation outcome cannot enable effect execution. Repeated current
+active/sealed activation returns its actual status and never clears a seal.
+The coordinator's order is **stage → restore/adopt → verify returned source
+hash → activate → effect**. New-bound source files must not be prepared under
+an already active epoch. A crash after files are installed but before the
+preparation journal is durable leaves staging; retry preparation is required.
 
 `RIFFOLOGY_BINDING_EPOCH=TOKEN python3 /opt/riffology/process_quiescence.py seal`
 checks current epoch, persists its seal before signals, kills the entire
@@ -39,10 +51,12 @@ recheck epoch and cannot consume a new control. The existing effect ledger and
 identity checks remain the TypeScript authority for allowed requests; this
 layer does not infer ACL from the epoch.
 
-`platform_workspace_archive.py restore TOKEN` requires the active epoch;
+`platform_workspace_archive.py restore TOKEN` requires the staging epoch;
 `freeze TOKEN` requires the same sealed epoch, an independently quiet UID domain
 and that epoch's restore/adopt token. Each binding admits one archive token.
-Warm freeze records its exact output token/bytes/SHA256 durably in the journal.
+Successful warm restore/adopt atomically records its exact preparation
+token/bytes/SHA256 after canonical validation. Warm freeze records its exact
+output token/bytes/SHA256 durably in the journal.
 All warm archive operations and checks execute under the same spawn lock.
 Cold restore/freeze retain their existing output shape and root restore-marker
 requirement.
@@ -101,3 +115,17 @@ unknown-file preservation and idempotent pruning. Native code cannot observe
 RevisionStore directly; the coordinator must commit before invoking pruning.
 Sandbox SDK process metadata/logs and unknown files are not pruned by this API;
 the coordinator still needs bounded retention or container replacement for them.
+
+
+## Staging validation
+
+The native test suite additionally exercises unstaged/unprepared activation
+rejection, malformed archive preparation, source drift before activation,
+restored-files/prepared-journal crash and retry, and prohibition on restore after
+activation. Existing late-wrapper and parent-death cases now hand off into
+staging, so stale work cannot execute while the next binding's files are prepared.
+The journal shape adds a `prepared` field. Pre-staging warm journals are not
+silently migrated; runtime-version changes require the old actor to drain and a
+new compatible lease. Unbound cold journals and commands remain unchanged.
+
+Staging native validation passed all 13 Project cases on 2026-09-14.

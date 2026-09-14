@@ -54,6 +54,12 @@ def cli(command, epoch='A', ok=True, **kwargs):
     return result
 
 
+
+def reset(epoch='A',token=TOKEN):
+    result=subprocess.run(['python3',SUP,'reset','--epoch',epoch,'--token',token],capture_output=True,text=True)
+    assert result.returncode==0,result.stderr
+    return json.loads(result.stdout)
+
 def await_file(name):
     until = time.monotonic() + 3
     while time.monotonic() < until:
@@ -95,9 +101,10 @@ class NativeTests(unittest.TestCase):
 
     def test_epoch_fences_and_stale_seal(self):
         cli('activate'); cli('activate','B',ok=False)
+        p=self.start('exit');self.assertEqual(p.wait(timeout=3),0)
         cli('seal'); self.assertEqual(cli('activate')['status'],'sealed')
         self.assertNotEqual(self.start('wait').wait(timeout=3),0)
-        cli('activate','B'); p=self.start('wait','B'); await_file('started')
+        reset();cli('activate','B'); p=self.start('wait','B'); await_file('started')
         cli('seal','A',ok=False); self.assertIsNone(p.poll())
         cli('seal','B'); p.wait(timeout=3)
         cli('activate','A',ok=False)
@@ -129,8 +136,11 @@ class NativeTests(unittest.TestCase):
         for index in range(8):
             epoch='race'+str(index); cli('activate',epoch)
             p=self.start('detach',epoch)
+            until=time.monotonic()+3
+            while json.loads((ROOT/'binding.json').read_text())['spawnToken'] is None and time.monotonic()<until: time.sleep(.001)
             cli('seal',epoch); p.wait(timeout=3)
             self.assertEqual(supervisor.live_trustedpi_pids(),[])
+            reset(epoch)
         before=(TURNS/'writes').read_bytes() if (TURNS/'writes').exists() else b''
         time.sleep(.1)
         self.assertEqual((TURNS/'writes').read_bytes() if (TURNS/'writes').exists() else b'',before)
@@ -169,7 +179,7 @@ class NativeTests(unittest.TestCase):
         self.assertTrue(marker.exists())
         child=int(marker.read_text())
         os.kill(wrapper,signal.SIGKILL); os.waitpid(wrapper,0)
-        cli('seal'); cli('activate','B')
+        cli('seal'); reset(); cli('activate','B')
         os.kill(child,signal.SIGCONT)
         time.sleep(.15)
         self.assertFalse((TURNS/'started').exists())
@@ -201,6 +211,7 @@ class NativeTests(unittest.TestCase):
             if index:
                 stale=args.copy();stale[4]='prune'+str(index-1)
                 self.assertNotEqual(subprocess.run(stale,capture_output=True).returncode,0)
+            reset(epoch)
 
     def test_prune_rejects_symlink_without_touching_target(self):
         cli('activate');p=self.start('exit');self.assertEqual(p.wait(timeout=3),0);cli('seal')
@@ -208,6 +219,21 @@ class NativeTests(unittest.TestCase):
         (TURNS/('b'*52+'.result.json')).symlink_to(target)
         result=subprocess.run(['python3',SUP,'prune','--epoch','A','--token',TOKEN],capture_output=True)
         self.assertNotEqual(result.returncode,0);self.assertEqual(target.read_text(),'retain')
+
+    def test_next_activation_requires_durable_reset(self):
+        cli('activate');p=self.start('exit');self.assertEqual(p.wait(timeout=3),0)
+        (TURNS/(TOKEN+'.input-session.json')).write_text('old session secret')
+        args=['python3',SUP,'reset','--epoch','A','--token',TOKEN]
+        self.assertNotEqual(subprocess.run(args,capture_output=True).returncode,0)
+        cli('seal');cli('activate','B',ok=False)
+        self.assertTrue((TURNS/(TOKEN+'.input-session.json')).exists())
+        first=reset();self.assertGreater(first['removed'],0)
+        self.assertEqual(reset()['removed'],0)
+        self.assertFalse((TURNS/(TOKEN+'.input-session.json')).exists())
+        self.assertTrue(json.loads((ROOT/'binding.json').read_text())['filesCleared'])
+        cli('activate','B')
+        self.assertNotEqual(subprocess.run(args,capture_output=True).returncode,0)
+        self.assertFalse(json.loads((ROOT/'binding.json').read_text())['filesCleared'])
 
     def test_fixed_command_only(self):
         cli('activate')

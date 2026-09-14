@@ -23,7 +23,8 @@ def command(program,args,epoch=None,ok=True,extra=None):
     return p
 
 
-def act(epoch): return command('process_quiescence',['activate','--epoch',epoch])
+def act(epoch): return command('process_quiescence',['stage','--epoch',epoch])
+def activate(epoch,ok=True): return command('process_quiescence',['activate','--epoch',epoch],ok=ok)
 def seal(epoch=None): return command('process_quiescence',['seal'],epoch)
 def arc(op,token,epoch=None,ok=True,prior=None,sha=None):
     return command('platform_workspace_archive',[op,token]+([prior] if prior else []),epoch,ok,{'RIFFOLOGY_EXPECTED_FILES_SHA256':sha} if sha else None)
@@ -46,7 +47,7 @@ class EpochTests(unittest.TestCase):
         for token in (A,B,C): (ARCHIVES/(token+'.input.tar')).write_bytes(bytes(10240))
 
     def frozen_a(self):
-        act('A'); arc('restore',A,'A')
+        act('A'); arc('restore',A,'A'); activate('A')
         (WORKSPACE/'result.txt').write_text('persisted')
         seal('A')
         return arc('freeze',A,'A')
@@ -66,6 +67,7 @@ class EpochTests(unittest.TestCase):
         self.assertEqual(adopted,{**proof,'operation':'restore'})
         self.assertEqual((WORKSPACE/'result.txt').stat().st_ino,inode)
         self.assertEqual(arc('adopt',B,'B',prior=A,sha=proof['sha256']),adopted)
+        activate('B')
         arc('restore',C,'B',ok=False)
         arc('freeze',B,'B',ok=False)
         seal('B'); self.assertEqual(arc('freeze',B,'B')['sha256'],proof['sha256'])
@@ -88,14 +90,14 @@ class EpochTests(unittest.TestCase):
         command('effect_wrapper',['late'],ok=False)
         command('process_quiescence',['seal'],'A',ok=False)
         arc('restore',A,'A',ok=False);arc('freeze',A,'A',ok=False)
-        arc('adopt',B,'B',prior=A,sha=proof['sha256'])
+        arc('adopt',B,'B',prior=A,sha=proof['sha256']);activate('B')
         command('effect_wrapper',['late'],'B')
         self.assertTrue((WORKSPACE/'late.txt').exists())
         seal('B'); self.assertEqual(act('B')['status'],'sealed')
         command('process_quiescence',['activate','--epoch','A'],ok=False)
 
     def test_reserved_old_wrapper_rechecks_after_new_binding(self):
-        act('A');arc('restore',A,'A');stage_effect('queued','printf bad > queued.txt')
+        act('A');arc('restore',A,'A');activate('A');stage_effect('queued','printf bad > queued.txt')
         with q.spawn_lock() as directory:
             p=subprocess.Popen(['python3','/opt/riffology/effect_wrapper.py','queued'],
                 env={**os.environ,'RIFFOLOGY_BINDING_EPOCH':'A'},stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
@@ -103,7 +105,7 @@ class EpochTests(unittest.TestCase):
             self.assertTrue((EFFECTS/'queued.json').exists())
             state=q.read_state(directory);state['status']='sealed';q.write_state(directory,state)
             q.require_quiet()
-            state.update(epoch='B',status='active',used=['A','B'],archiveToken=None)
+            state.update(epoch='B',status='staging',used=['A','B'],archiveToken=None,prepared=None)
             q.write_state(directory,state)
         self.assertNotEqual(p.wait(timeout=3),0)
         self.assertTrue((EFFECTS/'queued.json').exists())
@@ -145,6 +147,40 @@ class EpochTests(unittest.TestCase):
             self.assertTrue((ARCHIVES/(A+'.input.tar')).exists())
         finally:p.kill();p.wait()
 
+    def test_staging_blocks_spawn_and_requires_preparation(self):
+        activate('A',False)
+        self.assertEqual(act('A')['status'],'staging')
+        activate('A',False)
+        stage_effect('notready','printf forbidden > notready.txt')
+        command('effect_wrapper',['notready'],'A',ok=False)
+        self.assertTrue((EFFECTS/'notready.json').exists())
+        (ARCHIVES/(A+'.input.tar')).write_bytes(b'bad tar')
+        arc('restore',A,'A',ok=False);activate('A',False)
+        (ARCHIVES/(A+'.input.tar')).write_bytes(bytes(10240))
+        arc('restore',A,'A')
+        (WORKSPACE/'drift.txt').write_text('drift')
+        activate('A',False)
+        self.assertFalse((WORKSPACE/'notready.txt').exists())
+        (WORKSPACE/'drift.txt').unlink()
+        self.assertEqual(activate('A')['status'],'active')
+        self.assertEqual(activate('A')['status'],'active')
+        self.assertEqual(act('A')['status'],'active')
+        arc('restore',A,'A',ok=False)
+        command('effect_wrapper',['notready'],'A')
+        self.assertTrue((WORKSPACE/'notready.txt').exists())
+        seal('A');self.assertEqual(activate('A')['status'],'sealed')
+        self.assertEqual(act('A')['status'],'sealed')
+
+    def test_prepare_crash_before_journal_cannot_activate(self):
+        act('A')
+        program="import sys;sys.path.insert(0,'/opt/riffology');import platform_workspace_archive as p;p.write_state=lambda *args: (_ for _ in ()).throw(RuntimeError('crash-before-prepared'));p.run(['restore', '"+A+"'])"
+        crashed=subprocess.run(['python3','-c',program],env={**os.environ,'RIFFOLOGY_BINDING_EPOCH':'A'},capture_output=True)
+        self.assertNotEqual(crashed.returncode,0)
+        self.assertTrue((ARCHIVES/(A+'.restore.json')).exists())
+        activate('A',False)
+        arc('restore',A,'A')
+        self.assertEqual(activate('A')['status'],'active')
+
     def test_no_state_and_absent_restore_fail_closed(self):
         command('process_quiescence',['seal'],'A',ok=False)
         act('A');arc('freeze',A,'A',ok=False)
@@ -152,7 +188,7 @@ class EpochTests(unittest.TestCase):
         command('process_quiescence',['seal'],ok=False)
 
     def test_parent_death_before_drop_cannot_run_old_effect(self):
-        act('A');arc('restore',A,'A');stage_effect('delayed','printf bad > delayed.txt')
+        act('A');arc('restore',A,'A');activate('A');stage_effect('delayed','printf bad > delayed.txt')
         marker=EFFECTS/'pre-drop-pid'
         wrapper=os.fork()
         if wrapper==0:
@@ -174,7 +210,7 @@ class EpochTests(unittest.TestCase):
         seal('B');self.assertEqual(q.live_project_pids(),[])
 
     def test_detached_effect_killed_before_handoff(self):
-        act('A');arc('restore',A,'A')
+        act('A');arc('restore',A,'A');activate('A')
         stage_effect('detach',"setsid /usr/local/bin/python3 -c 'import signal,time,pathlib; signal.signal(signal.SIGTERM,signal.SIG_IGN); pathlib.Path(\"ready\").write_text(\"yes\"); time.sleep(1); pathlib.Path(\"late\").write_text(\"bad\")' >/dev/null 2>&1 & while [ ! -f ready ]; do sleep .01; done")
         command('effect_wrapper',['detach'],'A')
         self.assertTrue(q.live_project_pids())

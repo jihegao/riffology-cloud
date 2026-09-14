@@ -152,7 +152,8 @@ def read_state(directory):
             raise RuntimeError('state-invalid')
         with os.fdopen(os.dup(fd)) as source:
             state = json.load(source)
-        if (set(state) != {'schemaVersion', 'epoch', 'status', 'used', 'spawnToken'}
+        if (set(state) != {'schemaVersion', 'epoch', 'status', 'used', 'spawnToken', 'filesCleared'}
+                or type(state['filesCleared']) is not bool
                 or state['schemaVersion'] != 1 or state['status'] not in {'active', 'sealed'}
                 or not isinstance(state['used'], list) or not 1 <= len(state['used']) <= MAX_EPOCHS
                 or any(not valid_epoch(e) for e in state['used'])
@@ -200,11 +201,11 @@ def activate(epoch):
         if state and state['epoch'] == epoch:
             # Retried activation never removes a seal, even after a lost ACK.
             return {'schemaVersion': 1, 'bindingEpoch': epoch, 'status': state['status']}
-        if state and (state['status'] != 'sealed' or epoch in state['used'] or len(state['used']) >= MAX_EPOCHS):
+        if state and (state['status'] != 'sealed' or not state['filesCleared'] or epoch in state['used'] or len(state['used']) >= MAX_EPOCHS):
             raise RuntimeError('activation-denied')
         require_quiet()
         write_state(directory, {'schemaVersion': 1, 'epoch': epoch, 'status': 'active',
-                                'used': (state['used'] if state else []) + [epoch], 'spawnToken': None})
+                                'used': (state['used'] if state else []) + [epoch], 'spawnToken': None, 'filesCleared': False})
         return {'schemaVersion': 1, 'bindingEpoch': epoch, 'status': 'active'}
 
 
@@ -316,7 +317,7 @@ def spawn(epoch, argv):
 
 
 
-def prune(epoch, token):
+def prune(epoch, token, reset=False):
     if not re.fullmatch('[a-f0-9]{52}', token):
         raise RuntimeError('prune-token-invalid')
     with spawn_lock() as directory:
@@ -332,7 +333,7 @@ def prune(epoch, token):
             candidates = []
             for name in os.listdir(turns):
                 matched = re.fullmatch(r'([a-f0-9]{52})\.(?:control\.json|input-session\.json|result\.json|output-session\.json)(?:\.tmp-[0-9]+)?', name)
-                if not matched or matched[1] == token:
+                if not matched or (matched[1] != token if reset else matched[1] == token):
                     continue
                 info = os.stat(name, dir_fd=turns, follow_symlinks=False)
                 if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_uid not in {0, PI_UID}:
@@ -341,7 +342,10 @@ def prune(epoch, token):
             for name in candidates:
                 os.unlink(name, dir_fd=turns)
             os.fsync(turns)
-            return {'schemaVersion': 1, 'bindingEpoch': epoch, 'status': 'pruned', 'removed': len(candidates)}
+            if reset:
+                state['filesCleared'] = True
+                write_state(directory, state)
+            return {'schemaVersion': 1, 'bindingEpoch': epoch, 'status': 'reset' if reset else 'pruned', 'removed': len(candidates)}
         finally:
             os.close(turns)
 
@@ -349,8 +353,8 @@ def main(args):
     if len(args) < 3 or args[1] != '--epoch' or not valid_epoch(args[2]):
         raise RuntimeError('command-invalid')
     command, epoch = args[0], args[2]
-    if command == 'prune' and len(args) == 5 and args[3] == '--token':
-        print(json.dumps(prune(epoch, args[4]), separators=(',', ':')), flush=True)
+    if command in {'prune', 'reset'} and len(args) == 5 and args[3] == '--token':
+        print(json.dumps(prune(epoch, args[4], reset=command == 'reset'), separators=(',', ':')), flush=True)
         return 0
     if command == 'spawn' and len(args) == 7 and args[3] == '--':
         result = spawn(epoch, args[4:])

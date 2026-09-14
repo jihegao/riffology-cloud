@@ -67,6 +67,17 @@ def require_unsealed(directory):
     raise RuntimeError('project-effects-sealed')
 
 
+
+def require_staging(directory):
+    state = read_state(directory)
+    epoch = binding_epoch()
+    if state:
+        if epoch != state['epoch'] or state['status'] != 'staging':
+            raise RuntimeError('project-staging-denied')
+        return state
+    # Unbound cold callers retain the original lifetime fence.
+    return require_unsealed(directory)
+
 def require_sealed(directory):
     state = read_state(directory)
     epoch = binding_epoch()
@@ -189,13 +200,13 @@ def read_state(directory):
             raise RuntimeError('state-invalid')
         with os.fdopen(os.dup(fd)) as source:
             state = json.load(source)
-        if (set(state) != {'schemaVersion', 'epoch', 'status', 'used', 'archiveToken', 'frozen', 'previousFrozen'}
-                or state['schemaVersion'] != 1 or state['status'] not in {'active', 'sealed'}
+        if (set(state) != {'schemaVersion', 'epoch', 'status', 'used', 'archiveToken', 'frozen', 'previousFrozen', 'prepared'}
+                or state['schemaVersion'] != 1 or state['status'] not in {'staging', 'active', 'sealed'}
                 or not isinstance(state['used'], list) or not 1 <= len(state['used']) <= MAX_EPOCHS
                 or any(not valid_epoch(e) for e in state['used'])
                 or len(set(state['used'])) != len(state['used']) or state['epoch'] != state['used'][-1]
                 or (state['archiveToken'] is not None and not re.fullmatch('[a-f0-9]{52}', state['archiveToken']))
-                or not valid_frozen(state['frozen']) or not valid_frozen(state['previousFrozen'])):
+                or not valid_frozen(state['frozen']) or not valid_frozen(state['previousFrozen']) or not valid_frozen(state['prepared'])):
             raise RuntimeError('state-invalid')
         return state
     finally:
@@ -240,7 +251,7 @@ def valid_frozen(value):
         and isinstance(value['sha256'], str) and re.fullmatch('[a-f0-9]{64}', value['sha256']) is not None)
 
 
-def activate(epoch):
+def stage(epoch):
     if not valid_epoch(epoch):
         raise RuntimeError('project-epoch-invalid')
     with spawn_lock() as directory:
@@ -253,9 +264,34 @@ def activate(epoch):
         if state and (state['status'] != 'sealed' or epoch in state['used'] or len(state['used']) >= MAX_EPOCHS):
             raise RuntimeError('project-activation-denied')
         require_quiet()
-        write_state(directory, {'schemaVersion': 1, 'epoch': epoch, 'status': 'active',
+        write_state(directory, {'schemaVersion': 1, 'epoch': epoch, 'status': 'staging',
             'used': (state['used'] if state else []) + [epoch], 'archiveToken': None,
-            'frozen': None, 'previousFrozen': state['frozen'] if state else None})
+            'frozen': None, 'previousFrozen': state['frozen'] if state else None, 'prepared': None})
+        return {'schemaVersion': 1, 'bindingEpoch': epoch, 'status': 'staging'}
+
+
+def activate(epoch):
+    if not valid_epoch(epoch):
+        raise RuntimeError('project-epoch-invalid')
+    with spawn_lock() as directory:
+        probe = pidfd_open(os.getpid()); os.close(probe)
+        state = read_state(directory)
+        if not state or state['epoch'] != epoch:
+            raise RuntimeError('project-activation-unstaged')
+        if state['status'] in {'active', 'sealed'}:
+            return {'schemaVersion': 1, 'bindingEpoch': epoch, 'status': state['status']}
+        proof = state['prepared']
+        if not proof or proof['token'] != state['archiveToken']:
+            raise RuntimeError('project-activation-unprepared')
+        require_quiet()
+        import workspace_archive
+        workspace, archive_root = workspace_archive.roots()
+        # A lost restore ACK is retryable; a changed prepared tree is not active.
+        size, digest = workspace_archive.canonical_tar(workspace, archive_root / f"{proof['token']}.activate-verify.tar")
+        if size != proof['bytes'] or digest != proof['sha256']:
+            raise RuntimeError('project-activation-workspace-drift')
+        state['status'] = 'active'
+        write_state(directory, state)
         return {'schemaVersion': 1, 'bindingEpoch': epoch, 'status': 'active'}
 
 def seal():
@@ -327,7 +363,7 @@ def prune(epoch, expected_sha):
                 raise RuntimeError('project-prune-proof-invalid')
             archive_names = []
             for name in os.listdir(archive_fd):
-                if name in keep or not re.fullmatch(r'[a-f0-9]{52}\.(?:input\.tar|output\.tar|verify\.tar|adopt-verify\.tar|restore\.json|lock)(?:\.tmp-[0-9]+)?', name):
+                if name in keep or not re.fullmatch(r'[a-f0-9]{52}\.(?:input\.tar|output\.tar|verify\.tar|adopt-verify\.tar|activate-verify\.tar|restore\.json|lock)(?:\.tmp-[0-9]+)?', name):
                     continue
                 info = os.stat(name, dir_fd=archive_fd, follow_symlinks=False)
                 if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_uid != 0:
@@ -362,8 +398,8 @@ def prune(epoch, expected_sha):
 
 if __name__ == "__main__":
     try:
-        if len(sys.argv) == 4 and sys.argv[1:3] == ['activate', '--epoch']:
-            result = activate(sys.argv[3])
+        if len(sys.argv) == 4 and sys.argv[1] in {'stage', 'activate'} and sys.argv[2] == '--epoch':
+            result = stage(sys.argv[3]) if sys.argv[1] == 'stage' else activate(sys.argv[3])
         elif len(sys.argv) == 6 and sys.argv[1:3] == ['prune', '--epoch'] and sys.argv[4] == '--files-sha256':
             result = prune(sys.argv[3], sys.argv[5])
         elif sys.argv[1:] == ['seal']:

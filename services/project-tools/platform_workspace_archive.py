@@ -5,7 +5,7 @@ import os
 import re
 import stat
 import sys
-from process_quiescence import spawn_lock, require_unsealed, require_sealed, require_quiet, write_state
+from process_quiescence import spawn_lock, require_staging, require_sealed, require_quiet, write_state
 import workspace_archive
 
 
@@ -56,7 +56,7 @@ def run(args):
     if not workspace_archive.TOKEN.fullmatch(token) or (operation == 'adopt') != (len(args) == 3):
         raise RuntimeError('project-archive-command-invalid')
     with spawn_lock() as directory:
-        state = require_sealed(directory) if operation == 'freeze' else require_unsealed(directory)
+        state = require_sealed(directory) if operation == 'freeze' else require_staging(directory)
         if state:
             require_quiet()
             if state['archiveToken'] not in {None, token} or (operation == 'freeze' and state['archiveToken'] != token):
@@ -101,6 +101,8 @@ def run(args):
             result = workspace_archive.freeze(workspace, archive_root, token)
         if state:
             state['archiveToken'] = token
+            if operation != 'freeze':
+                state['prepared'] = {'token': token, 'bytes': result['bytes'], 'sha256': result['sha256']}
             if operation == 'freeze':
                 output = archive_root / f'{token}.output.tar'
                 fd = os.open(output, os.O_RDONLY | os.O_NOFOLLOW)

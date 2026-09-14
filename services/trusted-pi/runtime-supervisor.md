@@ -83,3 +83,24 @@ active/stale/wrong-token rejection, replay and symlink-target preservation.
 This pruning does not cover Sandbox SDK process metadata/logs or other image
 cache directories. Their capacity policy and supported SDK cleanup remain
 separate orchestration requirements.
+
+
+## Cross-Session reset before the next activation
+
+After the prior checkpoint is committed and its domain is sealed, root calls
+`reset --epoch OLD_EPOCH --token OLD_HOST_TOKEN` before staging any new Session
+files. It checks the exact persisted spawn token and empty UID domain, deletes
+only that token's known working-file suffixes, fsyncs the directory, then
+persists `filesCleared:true` in the root journal. Receipt is
+`{schemaVersion:1,bindingEpoch:OLD_EPOCH,status:'reset',removed:COUNT}`. Replays
+are idempotent. A subsequent new epoch cannot activate without this durable
+reset proof; activating a new epoch resets that flag to false. Stage the new
+Session only after reset and then activate the new epoch. Current sealed
+activation replay remains sealed, never runnable. A binding with no proven
+spawn token cannot reset; uncertain/cancelled admission must destroy instead.
+
+The native suite now has 13 cases, including retained old Session removal,
+active/stale reset denial, idempotency and rejection of activation before reset.
+The unshipped warm journal adds `filesCleared`; old native images/journals are
+not silently migrated. Pin the new runtime version and drain old actors before
+using this contract. Cold root host execution remains unchanged.
