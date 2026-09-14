@@ -9,7 +9,13 @@ export type CheckpointReceipt = { revisionId:string; objectKey:string; filesSha2
 export type InitialWorkspaceBase = { reference:InitialWorkspaceReference; filesSha256:string };
 export type TurnBaseCheckpoints = { workspace:CheckpointReceipt|null; session:CheckpointReceipt|null; initial?:InitialWorkspaceBase };
 export type TurnResourceLease = { operationId:string; leaseId:string };
+export type WorkspaceBindingLease = { scope:TurnScope; leaseId:string; leaseEpoch:number; runtimeVersion:string };
+export type WorkspaceTurnBinding = { sessionId:string; turnId:string; dispatchId:string; bindingEpoch:number };
+export type WorkspaceQuiescence = { schemaVersion:1; bindingEpoch:string; status:'quiescent'; remaining:0 };
+export type WorkspaceProjectNotStarted = { schemaVersion:1; bindingEpoch:string; status:'not-started'; allocation:'never-started'|'retained-sealed' };
+export type TurnHandoffDisposition = { status:'handed-off'; operationId:string; leaseId:string; turnId:string; dispatchId:string; generation:number; lease:WorkspaceBindingLease; binding:WorkspaceTurnBinding; checkpoint:CheckpointReceipt; proof:{project:WorkspaceQuiescence|WorkspaceProjectNotStarted;trustedPi:WorkspaceQuiescence}; handedOffAt:number };
 export type TurnResourceDisposition =
+  | TurnHandoffDisposition
   | { status:'active'; operationId:string; leaseId:string; turnId:string; dispatchId:string; generation:number }
   | { status:'release-pending'|'recovery-hold'; operationId:string; leaseId:string; turnId:string; dispatchId:string; generation:number; reasonCode:string; since:number; nextAttemptAt:number }
   | { status:'released'; operationId:string; leaseId:string; turnId:string; dispatchId:string; generation:number; proofId:string; releasedAt:number };
@@ -79,14 +85,33 @@ export function resourceDisposition(value:unknown):TurnResourceDisposition{
   if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype)throw Error('invalid-turn-resource-disposition');
   const raw=value as Record<string,unknown>,status=raw.status;
   const base=['status','operationId','leaseId','turnId','dispatchId','generation'];
-  const keys=status==='active'?base:status==='release-pending'||status==='recovery-hold'?[...base,'reasonCode','since','nextAttemptAt']:status==='released'?[...base,'proofId','releasedAt']:null;
+  const keys=status==='active'?base:status==='release-pending'||status==='recovery-hold'?[...base,'reasonCode','since','nextAttemptAt']:status==='released'?[...base,'proofId','releasedAt']:status==='handed-off'?[...base,'lease','binding','checkpoint','proof','handedOffAt']:null;
   if(!keys||Object.keys(raw).length!==keys.length||keys.some(key=>!Object.hasOwn(raw,key)))throw Error('invalid-turn-resource-disposition');
   const common={operationId:turnId(raw.operationId),leaseId:turnId(raw.leaseId),turnId:turnId(raw.turnId),dispatchId:turnId(raw.dispatchId),generation:positive(raw.generation)};
+  if(status==='handed-off'){
+    const lease=workspaceBindingLease(raw.lease),binding=workspaceTurnBinding(raw.binding),checkpoint=checkpointReceipt(raw.checkpoint),handedOffAt=positive(raw.handedOffAt);
+    const proof=handoffObject(raw.proof,['project','trustedPi']);
+    if(lease.leaseId!==common.leaseId||lease.scope.workspaceGeneration!==common.generation||binding.turnId!==common.turnId||binding.dispatchId!==common.dispatchId||handedOffAt<checkpoint.committedAt)throw Error('invalid-turn-handoff');
+    return {status:'handed-off',...common,lease,binding,checkpoint,proof:{project:workspaceProjectProof(proof.project),trustedPi:workspaceQuiescence(proof.trustedPi)},handedOffAt};
+  }
   if(status==='active')return {status:'active',...common};
   if(status==='released')return {status:'released',...common,proofId:turnId(raw.proofId),releasedAt:positive(raw.releasedAt)};
   const since=positive(raw.since),nextAttemptAt=positive(raw.nextAttemptAt);if(nextAttemptAt<since)throw Error('invalid-turn-resource-disposition');
   return {status:status as 'release-pending'|'recovery-hold',...common,reasonCode:turnId(raw.reasonCode),since,nextAttemptAt};
 }
+function handoffObject(value:unknown,keys:string[]):Record<string,unknown>{
+  if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype||Object.keys(value).length!==keys.length||keys.some(key=>!Object.hasOwn(value,key)))throw Error('invalid-turn-handoff');return value as Record<string,unknown>;
+}
+export function workspaceBindingLease(value:unknown):WorkspaceBindingLease{const v=handoffObject(value,['scope','leaseId','leaseEpoch','runtimeVersion']);return {scope:scope(v.scope),leaseId:turnId(v.leaseId),leaseEpoch:positive(v.leaseEpoch),runtimeVersion:sha(v.runtimeVersion)};}
+export function workspaceTurnBinding(value:unknown):WorkspaceTurnBinding{const v=handoffObject(value,['sessionId','turnId','dispatchId','bindingEpoch']);return {sessionId:turnId(v.sessionId),turnId:turnId(v.turnId),dispatchId:turnId(v.dispatchId),bindingEpoch:positive(v.bindingEpoch)};}
+function workspaceQuiescence(value:unknown):WorkspaceQuiescence{const v=handoffObject(value,['schemaVersion','bindingEpoch','status','remaining']);if(v.schemaVersion!==1||v.status!=='quiescent'||v.remaining!==0)throw Error('invalid-turn-handoff');return {schemaVersion:1,bindingEpoch:sha(v.bindingEpoch),status:'quiescent',remaining:0};}
+function workspaceProjectProof(value:unknown):WorkspaceQuiescence|WorkspaceProjectNotStarted{
+  if(value&&typeof value==='object'&&(value as {status?:unknown}).status==='not-started'){const v=handoffObject(value,['schemaVersion','bindingEpoch','status','allocation']);if(v.schemaVersion!==1||!['never-started','retained-sealed'].includes(v.allocation as string))throw Error('invalid-turn-handoff');return {schemaVersion:1,bindingEpoch:sha(v.bindingEpoch),status:'not-started',allocation:v.allocation as 'never-started'|'retained-sealed'};}
+  return workspaceQuiescence(value);
+}
+/** Shared native epoch token, independent of file hashes checked by checkpoint authority. */
+export async function workspaceBindingToken(lease:WorkspaceBindingLease,binding:WorkspaceTurnBinding):Promise<string>{return turnDigest({schemaVersion:1,purpose:'workspace-binding',lease:workspaceBindingLease(lease),binding:workspaceTurnBinding(binding)});}
+export async function verifyHandoffProof(disposition:TurnResourceDisposition):Promise<void>{if(disposition.status!=='handed-off')return;const token=await workspaceBindingToken(disposition.lease,disposition.binding);if(disposition.proof.project.bindingEpoch!==token||disposition.proof.trustedPi.bindingEpoch!==token)throw Error('turn-handoff-proof-conflict');}
 export function checkpointObjectKey(value:unknown):string{
   if(typeof value!=='string'||value.length<1||value.length>1024||/[^A-Za-z0-9._\/-]/u.test(value)||value.startsWith('/')||value.endsWith('/')||value.includes('//'))throw Error('invalid-checkpoint-object-key');
   const parts=value.split('/');if(parts.some(part=>!part||part==='.'||part==='..'))throw Error('invalid-checkpoint-object-key');return value;
