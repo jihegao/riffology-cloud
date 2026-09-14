@@ -16,6 +16,7 @@ export type TurnStopReceipt = {
   fenced:true;
 };
 type RuntimeReceiptBase = {
+  retirement?:never;
   scope:TurnScope;
   sessionId:string;
   turnId:string;
@@ -30,7 +31,8 @@ type RuntimeReceiptBase = {
 export type TurnRuntimeReceipt =
   | RuntimeReceiptBase & {phase:'accepted'|'unknown'|'running';outcome:null;resourceDisposition:Extract<TurnResourceDisposition,{status:'active'}>}
   | RuntimeReceiptBase & {phase:'absent';outcome:null;resourceDisposition:Extract<TurnResourceDisposition,{status:'released'}>}
-  | RuntimeReceiptBase & {phase:'terminal';outcome:'completed'|'failed'|'cancelled'|'interrupted';resourceDisposition:Exclude<TurnResourceDisposition,{status:'active'}>};
+  | RuntimeReceiptBase & {phase:'terminal';outcome:'completed'|'failed'|'cancelled'|'interrupted';resourceDisposition:Exclude<TurnResourceDisposition,{status:'active'}>}
+  | Omit<RuntimeReceiptBase,'retirement'|'checkpoint'|'persistenceErrorCode'|'stopped'> & {retirement:'workspace-native-unresolved';phase:'terminal';outcome:'failed'|'interrupted';checkpoint:null;persistenceErrorCode:'turn-checkpoint-unknown';stopped:null;resourceDisposition:Exclude<TurnResourceDisposition,{status:'active'|'handed-off'}>};
 export interface TurnRuntimePort {
   accept(input:{scope:TurnScope;sessionId:string;turnId:string;dispatchId:string;generation:number;actor:TurnActor;message:string;base:TurnBaseCheckpoints;capacityLease:{operationId:string;leaseId:string}}):Promise<TurnRuntimeReceipt>;
   observe(input:{scope:TurnScope;sessionId:string;turnId:string;dispatchId:string;generation:number;capacityLease?:{operationId:string;leaseId:string}}):Promise<TurnRuntimeReceipt>;
@@ -105,7 +107,7 @@ function capacityReceipt(value:unknown):TurnCapacityReceipt{
 function validateReceipt(value:unknown,expected:ExpectedReceipt,expectedLease?:{operationId:string;leaseId:string}):TurnRuntimeReceipt{
   if(!value||typeof value!=='object'||Array.isArray(value))throw Error('invalid-turn-runtime-receipt');
   const receipt=value as Record<string,unknown>,receiptScope=validateScope(receipt.scope);
-  const keys=['scope','sessionId','turnId','dispatchId','generation','phase','outcome','executionErrorCode','events','checkpoint','persistenceErrorCode','stopped','resourceDisposition'];
+  const keys=[...(Object.hasOwn(receipt,'retirement')?['retirement']:[]),'scope','sessionId','turnId','dispatchId','generation','phase','outcome','executionErrorCode','events','checkpoint','persistenceErrorCode','stopped','resourceDisposition'];
   if(Object.keys(receipt).length!==keys.length||keys.some(key=>!Object.hasOwn(receipt,key)))throw Error('invalid-turn-runtime-receipt');
   if(!sameScope(receiptScope,expected.scope)||turnId(receipt.sessionId)!==expected.sessionId||turnId(receipt.turnId)!==expected.turnId||turnId(receipt.dispatchId)!==expected.dispatchId||positive(receipt.generation)!==expected.generation)throw Error('turn-runtime-receipt-scope-denied');
   if(typeof receipt.phase!=='string'||!PHASES.has(receipt.phase as TurnRuntimeReceipt['phase']))throw Error('invalid-turn-runtime-receipt');
@@ -119,14 +121,15 @@ function validateReceipt(value:unknown,expected:ExpectedReceipt,expectedLease?:{
   if(disposition.turnId!==expected.turnId||disposition.dispatchId!==expected.dispatchId||disposition.generation!==expected.generation)throw Error('turn-runtime-receipt-scope-denied');
   if(expectedLease&&(disposition.operationId!==expectedLease.operationId||disposition.leaseId!==expectedLease.leaseId))throw Error('turn-runtime-receipt-scope-denied');
   if(disposition.status==='handed-off'&&(outcome!=='completed'||!sameScope(disposition.lease.scope,expected.scope)||disposition.binding.sessionId!==expected.sessionId||!saved||JSON.stringify(disposition.checkpoint)!==JSON.stringify(saved)))throw Error('turn-runtime-receipt-scope-denied');
+  const retirement=Object.hasOwn(receipt,'retirement')?receipt.retirement:undefined;if(retirement!==undefined&&(retirement!=='workspace-native-unresolved'||phase!=='terminal'||!['failed','interrupted'].includes(outcome as string)||!['turn-native-start-unresolved','turn-native-execution-unresolved'].includes(executionError??'')||saved!==null||saveError!=='turn-checkpoint-unknown'||stop!==null||!['release-pending','recovery-hold','released'].includes(disposition.status)))throw Error('invalid-turn-runtime-retirement');
   if(phase==='terminal'){
-    if(!outcome||!stop||disposition.status==='active'||(saved===null)===(saveError===null))throw Error('invalid-turn-runtime-receipt');
+    if(!outcome||!stop&&!retirement||disposition.status==='active'||(saved===null)===(saveError===null))throw Error('invalid-turn-runtime-receipt');
     if(outcome==='completed'&&executionError!==null)throw Error('invalid-turn-runtime-receipt');
   }else if(outcome!==null||saved!==null||saveError!==null||stop!==null){throw Error('invalid-turn-runtime-receipt');}
   if((phase==='accepted'||phase==='unknown'||phase==='running')&&disposition.status!=='active')throw Error('invalid-turn-runtime-receipt');
   if(phase==='absent'&&disposition.status!=='released')throw Error('invalid-turn-runtime-receipt');
   if((phase==='absent'||phase==='unknown')&&events.length)throw Error('invalid-turn-runtime-receipt');
-  return {scope:receiptScope,sessionId:expected.sessionId,turnId:expected.turnId,dispatchId:expected.dispatchId,generation:expected.generation,phase,outcome,executionErrorCode:executionError,events,checkpoint:saved,persistenceErrorCode:saveError,stopped:stop,resourceDisposition:disposition} as TurnRuntimeReceipt;
+  return {...(retirement?{retirement:'workspace-native-unresolved' as const}:{}),scope:receiptScope,sessionId:expected.sessionId,turnId:expected.turnId,dispatchId:expected.dispatchId,generation:expected.generation,phase,outcome,executionErrorCode:executionError,events,checkpoint:saved,persistenceErrorCode:saveError,stopped:stop,resourceDisposition:disposition} as TurnRuntimeReceipt;
 }
 
 export class TurnDispatcher {

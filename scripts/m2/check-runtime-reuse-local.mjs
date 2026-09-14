@@ -40,7 +40,7 @@ const socketPath = process.env.RIFFOLOGY_DOCKER_SOCKET || 'unix:///Users/gaojihe
 if (!/^unix:\/\/\/[^\0]+\/docker\.sock$/.test(socketPath)) throw new Error('invalid-riffology-docker-socket');
 const dockerEnv = { ...process.env, DOCKER_HOST: socketPath, DOCKER_CONFIG: resolve('.local/docker-empty') };
 const docker = (...args) => execFileSync('/opt/homebrew/bin/docker', args, {
-  cwd: root, env: dockerEnv, encoding: 'utf8', timeout: 180_000, maxBuffer: 8 * 1024 * 1024,
+  cwd: root, env: dockerEnv, encoding: 'utf8', timeout: args[0]==='build'?900_000:180_000, maxBuffer: 8 * 1024 * 1024,
 }).trim();
 const hash = (value) => createHash('sha256').update(value).digest('hex');
 const bounded = async (promise, milliseconds) => {
@@ -80,14 +80,14 @@ try {
   docker('build', '--platform', 'linux/amd64', '--progress', 'plain', '--tag', images.runtime, '--file', 'services/runtime/Dockerfile.cloud', 'services/runtime');
   docker('build', '--platform', 'linux/amd64', '--progress', 'plain', '--tag', images.project, '--file', projectDockerfile, 'services/project-tools');
   execFileSync('/opt/homebrew/bin/docker', ['build', '--platform', 'linux/amd64', '--progress', 'plain', '--tag', images.trusted, '--file', '-', '.'], {
-    cwd: root, env: dockerEnv, input: validationDockerfile, encoding: 'utf8', timeout: 180_000, maxBuffer: 16 * 1024 * 1024,
+    cwd: root, env: dockerEnv, input: validationDockerfile, encoding: 'utf8', timeout: 900_000, maxBuffer: 16 * 1024 * 1024,
   });
   for (const [role, image] of Object.entries(images)) {
     const inspected = JSON.parse(docker('image', 'inspect', image))[0];
     result.images[role] = { tag: image, id: inspected.Id, os: inspected.Os, architecture: inspected.Architecture, sizeBytes: inspected.Size };
     assert.equal(`${inspected.Os}/${inspected.Architecture}`, 'linux/amd64');
   }
-  for(const role of ['project','trusted']){try{docker('run','--rm','--network','none','--entrypoint','python3',images[role],'-c','import os; fd=os.pidfd_open(os.getpid()); os.close(fd)');}catch(error){throw Error('native-pidfd-unsupported:'+role+':'+String(error.stderr??error));}}
+  for(const role of ['project','trusted']){try{const module=role==='project'?'process_quiescence':'runtime_supervisor';docker('run','--rm','--network','none','--entrypoint','python3',images[role],'-c',`import os,sys;sys.path.insert(0,'/opt/riffology');from ${module} import pidfd_open;fd=pidfd_open(os.getpid());os.close(fd)`);}catch(error){throw Error('native-pidfd-unsupported:'+role+':'+String(error.stderr??error));}}
   assert.equal(docker('image', 'inspect', proxyImage, '--format', '{{.Id}}'), 'sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8');
   const projectEnvironment=JSON.parse(docker('image','inspect',images.project))[0].Config.Env;
   assert.equal(projectEnvironment.includes('RIFFOLOGY_PROJECT_PLATFORM_EGRESS_FENCE=workerd-deny-all-v1'),verticalProject);
