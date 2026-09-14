@@ -1,5 +1,5 @@
 """Native Linux project epoch/archive tests, no network or model calls."""
-import json, os, signal, subprocess, sys, time, unittest
+import grp, json, os, pwd, signal, subprocess, sys, time, unittest
 from pathlib import Path
 sys.path.insert(0,'/opt/riffology')
 import process_quiescence as q
@@ -220,9 +220,26 @@ class EpochTests(unittest.TestCase):
         self.assertEqual(q.live_project_pids(),[])
 
 
+def ensure_project_account():
+    # Production images already create this domain; bare Python fixtures do not.
+    try:
+        group = grp.getgrnam('project')
+    except KeyError:
+        subprocess.run(['groupadd','-g','10001','project'],check=True)
+        group = grp.getgrnam('project')
+    if group.gr_gid != 10001 or grp.getgrgid(10001).gr_name != 'project':
+        raise RuntimeError('fixture-project-group-identity-mismatch')
+    try:
+        user = pwd.getpwnam('project')
+    except KeyError:
+        subprocess.run(['useradd','-u','10001','-g','10001','-M','-s','/usr/sbin/nologin','project'],check=True)
+        user = pwd.getpwnam('project')
+    if user.pw_uid != 10001 or user.pw_gid != 10001 or pwd.getpwuid(10001).pw_name != 'project':
+        raise RuntimeError('fixture-project-user-identity-mismatch')
+
+
 if __name__=='__main__':
-    subprocess.run(['groupadd','-g','10001','project'],check=True)
-    subprocess.run(['useradd','-u','10001','-g','10001','-M','-s','/usr/sbin/nologin','project'],check=True)
+    ensure_project_account()
     for root in (EFFECTS,ARCHIVES,WORKSPACE):root.mkdir(parents=True,exist_ok=True);os.chmod(root,0o700 if root!=WORKSPACE else 0o755)
     os.chown(WORKSPACE,10001,10001)
     unittest.main(verbosity=2)
