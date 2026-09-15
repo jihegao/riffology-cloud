@@ -30,8 +30,8 @@ const auth=privateJson(process.env.G4_AUTH_FILE),policy=privateJson(process.env.
 for(const k of ['userId','tenantId']){assert.equal(intent[k],auth[k]);assert.equal(auth[k],policy[k]);}assert.equal(intent.origin,auth.origin);assert.equal(release.ready,true);
 const cli=path.resolve('node_modules/wrangler/bin/wrangler.js');
 async function cloud(args){const r=await execute(process.execPath,[cli,...args,'--json','--config',process.env.G4_APP_CONFIG],{timeout:15000,maxBuffer:1048576});return JSON.parse(r.stdout);}
-const deployment=await cloud(['deployments','status']);assert.equal(deployment.versions.length,1);assert.equal(deployment.versions[0].percentage,100);assert.equal(deployment.versions[0].version_id,release.workerVersionId);
-const version=await cloud(['versions','view',release.workerVersionId]);assert.equal(version.annotations['workers/tag'],release.workerTag);
+const [deployment,version]=await Promise.all([cloud(['deployments','status']),cloud(['versions','view',release.workerVersionId])]);assert.equal(deployment.versions.length,1);assert.equal(deployment.versions[0].percentage,100);assert.equal(deployment.versions[0].version_id,release.workerVersionId);
+assert.equal(version.id,release.workerVersionId);assert.equal(version.annotations['workers/tag'],release.workerTag);
 const vars=Object.fromEntries(version.resources.bindings.filter(b=>b.type==='plain_text').map(b=>[b.name,b.text]));assert.deepEqual(JSON.parse(vars.G4_CONTROLLED_WINDOW_JSON),policy);
 for(const gate of ['M2_TURNS_ENABLED','M4_SIMULATION_ENABLED','M2_MODEL_PROVIDER_ENABLED'])assert.equal(vars[gate],'true');
 const transport=await createReadonlyApi(auth,{cdpUrl:process.env.G4_API_CDP_URL});
