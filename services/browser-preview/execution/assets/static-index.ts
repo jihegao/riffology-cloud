@@ -18,6 +18,34 @@ export const browserPreviewStaticIndex = {
     },
     "assetBaseUrl": "/browser-preview-assets"
   },
+  "versions": {
+    "2a1fb75e77e1e004fa473deddd2ad98eb8f7bf2d22d697e5e280bd8d288fac28": {
+      "hostModule": {
+        "url": "/browser-preview-assets/104ab113c92cfee7fa1a9f3237b1c125f3e793a9c3a4932cbed692029c992728/host.bundle.mjs",
+        "sha256": "104ab113c92cfee7fa1a9f3237b1c125f3e793a9c3a4932cbed692029c992728",
+        "byteLength": 40517
+      },
+      "rendererModule": {
+        "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+        "sha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
+        "byteLength": 6909
+      },
+      "assetBaseUrl": "/browser-preview-assets"
+    },
+    "7d9463f7d7fcc383ed2a04731704e20098bad2438c2aedfbf6ff413a88440ce3": {
+      "hostModule": {
+        "url": "/browser-preview-assets/104ab113c92cfee7fa1a9f3237b1c125f3e793a9c3a4932cbed692029c992728/host.bundle.mjs",
+        "sha256": "104ab113c92cfee7fa1a9f3237b1c125f3e793a9c3a4932cbed692029c992728",
+        "byteLength": 40517
+      },
+      "rendererModule": {
+        "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+        "sha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
+        "byteLength": 6909
+      },
+      "assetBaseUrl": "/browser-preview-assets"
+    }
+  },
   "assets": [
     {
       "url": "/browser-preview-assets/021f0098b6138271b829156ab42cedbe767c06c9a2886252de1ceb3c05948a19/runtime/worker.mjs",
