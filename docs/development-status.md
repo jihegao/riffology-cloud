@@ -2,7 +2,7 @@
 
 ## 2026-09-15 Browser Preview 多阶段开发（实施中）
 
-当前以[多阶段计划](issues-subagent-plan-20260915.md)为准，主线 #64 → #46/#37 → #35；#65 在契约阶段并行修复。主控在独立集成工作树推进，三个 subagent 分别拥有包契约、执行隔离契约和 Workspace UI。提交、测试与阶段门槛见[实施记录](issues-development-log-20260915.md)。G0 尚未签收；本条不表示线上已部署或 issue 已关闭。下方记录保留为历史。
+当前以[多阶段计划](issues-subagent-plan-20260915.md)为准，主线 #64 → #46/#37 → #35。G0/G1已本地签收：#65多项目/租户与三视口回归、固定生产包、真实离线Pyodide与Mesa/Queue同输入完整trace对照通过。主控独立集成验收，subagent动态转入G2构建编排、Workspace面板/生产静态交付与整链准备。提交、测试及本地翻译隔离/原生资源边界见[实施记录](issues-development-log-20260915.md)；逐issue线上关闭条件见[签收矩阵](issues-acceptance-matrix-20260915.md)。G2尚未签收，未部署或关闭issue。下方记录保留为历史。
 
 ## 2026-09-14 研究闭环后续执行计划（规划落盘）
 
