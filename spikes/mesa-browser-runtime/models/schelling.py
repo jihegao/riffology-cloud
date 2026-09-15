@@ -1,5 +1,4 @@
 import json
-import random
 
 from mesa import Agent, Model
 from mesa.space import SingleGrid
@@ -16,7 +15,6 @@ class SchellingModel(Model):
         super().__init__(seed=seed)
         self.grid = SingleGrid(width, height, torus=True)
         self.homophily = float(homophily)
-        self.random = random.Random(seed)
         for cell in self.grid.coord_iter():
             _, pos = cell
             if self.random.random() >= density:
