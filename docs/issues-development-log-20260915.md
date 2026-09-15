@@ -71,6 +71,12 @@ A补丁1f51b4c集成为4c7f563；主控独立19项contract/build/generation测�
 
 服务器镜像本地构建成功，作者报告image sha256:1f9b5bbf70f74fde7764d7eb270e7616e9cf79a38c12418ddef8bb8bb1b1851f。512MiB独立导入探测通过；arm64主机翻译amd64执行时seccomp_load=-125，正常模型在preexec被拒绝，不能签收为真实运行。主控正在只读探测原生AMD128环境；生产fence不放宽。B正在最终资产冻结后重新执行真实浏览器验收，旧metadata和旧通过记录不作为最终候选证明。
 
+最终runtime fd84602/b72ea97集成为2a6589b，作者26项真实Chrome/Pyodide与5项fixture测试通过；主控独立重建和真实验收运行中。两profile摘要为Queue 2a1fb75e77e1e004fa473deddd2ad98eb8f7bf2d22d697e5e280bd8d288fac28、Mesa 7d9463f7d7fcc383ed2a04731704e20098bad2438c2aedfbf6ff413a88440ce3。实际运行asset和host收据均由非更新构建严格核对，不能用旧收据替代。
+
+AMD128原生x86但无Docker/替代container工具/免密sudo，无法无系统修改复现root与固定UID执行器。C测试专用outer fence f401db4集成为ce75b34，默认测试仍使用生产内层fence；显式本地翻译模式以Docker deny-network syscall规则和no-new-privileges证明真实socket/syscall EPERM，才使用既有translated marker。此证据是本地替代隔离，不证明生产内层seccomp。C作者两模型source重算/导出ZIP/Python replay已通过，主控独立两模型加旧五场景运行中；初次ZIP内存R2 shim漏arrayBuffer失败已修复并保留失败边界。
+
+B槽位动态前移G2B，工作树codex/issues-g2-preview基线2a6589b。计划明确允许面板先基于G0契约fixture开发，G1仍等待主控真实验收与registry签收。B独占web面板、相关UI和新增execution-static Worker/config/materializer；A拥有app/Gateway授权资产路由与central build/Verify。G2最终不能以fixture面板签收，仍须实际API和持久恢复证据。生产独立执行站点/部署均未进行。
+
 ## 主控复核与环境记录
 
 - 基线完整检查首轮因新工作树缺少 `.local/` 父目录导致历史测试 mkdtemp ENOENT；补齐 ignored 目录后重跑，日志 `/tmp/riffology-issues-baseline-check-20260915.log`。
