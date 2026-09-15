@@ -141,9 +141,11 @@ B c243014集成为29d8857，主控独立两项离线fixture检查通过：三个
 
 ## G3 资产签入与独占交接
 
-A 367301e/a8d0d9b集成为9e331fb/a12b31e：五配置ASSETS指向verified combined目录，Gateway允许面板module，预检绑定当前web所有字节及平台静态清单原摘要、profiles/versions/delivery/count。作者40资产实际HTTP与真实Chrome模块import、44项preflight及typecheck通过；主控最终组合检查进行中。
+A 367301e/a8d0d9b集成为9e331fb/a12b31e：五配置ASSETS指向verified combined目录，Gateway允许面板module，预检绑定当前web所有字节及平台静态清单原摘要、profiles/versions/delivery/count。作者40资产实际HTTP与真实Chrome模块import、44项preflight及typecheck通过；主控最终组合检查45/45通过（1项真实40资产HTTP/Chrome与44项preflight），typecheck通过；证据g2/assets-final-independent及SHA256SUMS。
 
 中央文件独占A→B交接，B从a12b31e隔离新分支实施可信initial-copy source union，保留legacy saved identity与runtime；不得伪造checkpoint或在GET新建discovery。A停止中央写入，转C完整driver/tail只读审查；C只拥有新增整链driver/testhelper。触发为G2A收尾已提交且复制来源缺口仍阻断G6。G3完整check须在该兼容补丁集成后最终执行，当前真实saved产品链仍单独验收，不等待扩大测试范围。
+
+主控实际查看Queue1600/390截图，发现390宽按钮被压成五列、中文逐字竖排；不能仅凭无横向溢出签视觉通过。A额外获得workspace.css单文件所有权做局部可读性修复；B只写JS初始来源标签，避免CSS冲突。G3 Queue已实际计算，当前harness60秒释放等待不够生产360秒守卫，修正测试等待并按原身份保留/核对释放证据，生产策略不放宽。
 
 ## 主控复核与环境记录
 
