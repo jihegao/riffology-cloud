@@ -20,7 +20,7 @@
     "m0:recovery:dev": "wrangler dev --config infra/wrangler.m0-recovery.jsonc --env staging --local --port 8793 --ip 127.0.0.1 --var M0_EXECUTION_ENVIRONMENT:local-docker-workerd",
     "m0:recovery:integration": "node scripts/m0/recovery-local.mjs",
     "test:m1": "node --test tests/m1/*.test.ts tests/m1/*.test.mjs scripts/m1/model-package.test.mjs",
-    "test:m3": "node --test tests/m3/*.test.ts tests/m3/*.test.mjs && node --test services/browser-preview/runtime/*.test.mjs services/browser-preview/execution/*.test.ts && node --test scripts/m3/phase1-*.test.mjs",
+    "test:m3": "node --test tests/m3/*.test.ts tests/m3/*.test.mjs && node --test services/browser-preview/runtime/*.test.mjs services/browser-preview/execution/*.test.ts && node --test scripts/m3/phase1-*.test.mjs && node --test scripts/model/*.test.mjs",
     "test:m2": "node --test tests/m2/*.test.ts tests/m2/*.test.mjs",
     "m1:dev": "wrangler dev --config infra/wrangler.gateway-local.jsonc --local",
     "m1:bootstrap:operator": "node scripts/m1/bootstrap-operator.mjs",

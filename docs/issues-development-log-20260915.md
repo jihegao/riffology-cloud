@@ -127,6 +127,18 @@ Retry回执056e5dd与资产并发2147a0a已由主控独立6项／7项面板测�
 
 B完成当前G3只读审查后，空闲槽位前移G5离线固定任务fixture：六类任务×三重复、固定seed/对照、故意失败输入及验收引用。触发为B实现与审查已交付，A/C仍推进G2/G3；不抢占central文件、不调用provider、不部署。账号、模型、rate card、预算/隐私与授权仍未选定；离线fixture不是18任务质量实证。
 
+## G2 最终接口复核与 G3 实际资产链
+
+A a6a4a6f 集成为0aec37d，主控17项定向检查与typecheck通过：新Verify采用ready准入，历史读取保持授权；保存源在异步边界重新校验；重试最多三次且崩溃恢复不产生第四次构建；历史版本使用自身冻结profile及对应交付模块。面板并发与未知回执恢复的独立检查为7项，仍不替代实际产品整链。
+
+主控独立实际Miniflare ASSETS控制：最小Worker和真实Gateway，在虚拟origin与实际匹配127.0.0.1监听端口下，dispatchFetch及物理HTTP均得到host module 200/40517字节。端口本身导致失败的猜测已撤回；A此前不同hostname/listener探测尚未确证原因。combined资产目录、当前web摘要及预检补丁待作者提交与主控复核；不得用浏览器route桥接代替物理HTTP产品链。
+
+C两模型真实部分链已增加重启后直接R2后台轮询，先于任何Gateway/Workspace请求；全部五文件字节及冻结runtime/profile/delivery对照通过。full browser→Verify→native→持久Run→导出尾段仍在开发，未签G3。
+
+B c243014集成为29d8857，主控独立两项离线fixture检查通过：三个项目各六项依赖顺序任务、九组配对seed，固定故意失败与修复字节，有限队列守恒/容量/确定性检查。账号/模型/预算/隐私/授权仍为null；provider调用和新增持久项目均为零。正式test:m3纳入该测试。B转初始复制兼容的只读实施设计，central文件继续由A独占。
+
+已形成G4候选发布范围文档；只读Cloudflare元数据确认账号workers.dev子域为jihe-gao、候选独立执行Worker名称未占用。没有启用站点、改DNS、部署、读取后宣称当前门禁通过或发起模型调用。候选源码/生产镜像/预算与回退须在G3完成后冻结。
+
 ## 主控复核与环境记录
 
 Issue逐项关闭条件与本地/线上边界见[签收矩阵](issues-acceptance-matrix-20260915.md)，与本记录同步维护。
