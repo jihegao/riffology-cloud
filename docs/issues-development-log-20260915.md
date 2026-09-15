@@ -27,6 +27,14 @@
 | G5 | 未开始 | #46/#37 账号/预算、账本、故障/复用验收 |
 | G6 | 未开始 | 三模型普通用户→审核→发布→新用户复制 |
 
+## G0 后端契约签收及 G1 前移
+
+集成后端候选：`b995430`。A 契约提交 f6c8761/5a4c8d5；B 提交 649d0b7/7a53584/8fa85a3。A/B 交叉评审，主控独立读取实际 diff 并执行 `node --test tests/m3/browser-preview-contract.test.ts`（4/4）、runtime protocol tests 和 `npm run typecheck`，全部通过。
+
+评审修复：参数数量上限64、requestId严格字符串、统一输入限制；Worker script-src self 的动态 import 外送风险通过单bundle及不允许URL脚本来源的设计修正。真实浏览器隔离仍属于 G1，不作为 G0 实证。
+
+#65 尚待多项目轮询和 pendingProject 租户绑定修复；主控已查看三视口长标题截图，未见横向溢出。根据计划 G0 允许 UI 修复受阻时不阻塞后端契约，G1A/B 从已签收后端候选 b995430 前移，阶段2B仍等UI正式集成。新分支 `codex/issues-g1-package`、`codex/issues-g1-runtime`；A 继续拥有非runtime包模块，B 继续拥有runtime子目录和固定资产脚本/清单。
+
 线上状态未改变；签收时追加提交、命令、证据与明确缺口。
 
 ## 主控复核与环境记录
