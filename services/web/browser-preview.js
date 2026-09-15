@@ -9,10 +9,11 @@ async function verifiedModule(value,request,win){
  const url=new URL(value.url,win.location.href);if(url.origin!==win.location.origin||url.search||url.hash||!url.pathname.startsWith(`/browser-preview-assets/${value.sha256}/`))throw Error('浏览器执行模块来源无效。');
  const bytes=await request(url.pathname,{responseType:'bytes'});if(!(bytes instanceof Uint8Array)||bytes.byteLength!==value.byteLength)throw Error('浏览器执行模块长度不一致。');const actual=[...new Uint8Array(await win.crypto.subtle.digest('SHA-256',bytes))].map(n=>n.toString(16).padStart(2,'0')).join('');if(actual!==value.sha256)throw Error('浏览器执行模块摘要不一致。');return import(url.href);
 }
+export async function loadBrowserPreviewAssets(profile,request){if(!profile||!Array.isArray(profile.assetManifest)||profile.assetManifest.length>128)throw Error('固定资产清单无效。');const assets=profile.assetManifest,results=new Array(assets.length);let next=0,failed=false;async function lane(){while(!failed&&next<assets.length){const index=next++,asset=assets[index];try{const bytes=await request(`/browser-preview-assets/${asset.sha256}/${asset.path}`,{responseType:'bytes'});results[index]={path:asset.path,bytes};}catch(error){failed=true;throw error;}}}await Promise.all(Array.from({length:Math.min(2,assets.length)},()=>lane()));return results;}
 export async function createBrowserPreviewRuntime({delivery,request,win,visualRoot,metricRoot}){
  if(!delivery||delivery.assetBaseUrl!=='/browser-preview-assets')throw Error('本地执行环境尚未配置。');
  const [{BrowserPreviewRuntime},{PreviewPlayer}]=await Promise.all([verifiedModule(delivery.hostModule,request,win),verifiedModule(delivery.rendererModule,request,win)]);
- const runtime=new BrowserPreviewRuntime({executionOrigin:delivery.executionOrigin,assetLoader:profile=>Promise.all(profile.assetManifest.map(async asset=>({path:asset.path,bytes:await request(`${delivery.assetBaseUrl}/${asset.sha256}/${asset.path}`,{responseType:'bytes'})})))});
+ const runtime=new BrowserPreviewRuntime({executionOrigin:delivery.executionOrigin,assetLoader:profile=>loadBrowserPreviewAssets(profile,request)});
  return {runtime,player:new PreviewPlayer(visualRoot,metricRoot)};
 }
 export function createBrowserPreviewPanel({root,api,runtimeFactory=createBrowserPreviewRuntime,requestTimeoutMs=15000,pollMs=1500,onVerified=()=>{}}){
