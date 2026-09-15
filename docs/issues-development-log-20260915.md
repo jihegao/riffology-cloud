@@ -81,6 +81,10 @@ B槽位动态前移G2B，工作树codex/issues-g2-preview基线2a6589b。计划�
 
 可信生产registry 70c7d00集成为b9f81cc，仅静态平台清单可注册verified-platform；正式两模型测试使用真实tar archive摘要→validator→确定性packager，不能把runtime自建fixture的拼接摘要冒充保存archive。A进入G2A，工作树codex/issues-g2-orchestration基线b9f81cc，拥有central journal/store/build/Verify/Gateway/alarm所有调用点。API冻结为只读build view/package/Verify状态与显式Verify提交，GET不写discovery、不启动计算。saved journal+discovery intent+build逻辑wake+物理alarm要求同事务，实际重启且无页面后台恢复仍待实施验收。复制模型initial reference尚无savedTurn，Browser派生支持缺口单独保留，不伪造checkpoint或继承源项目权限。
 
+C额外实际entrypoint探测发现amd64翻译exec后新解释器RLIMIT_AS为(-1,-1)，此前direct setrlimit→依赖导入探测不能证明child继承512MiB。本地outer结果仅签UID/网络/生命周期/同源计算，不签硬AS内存隔离。生产runner不为翻译环境跳过/放宽限制；默认native资源断言仍保留。可另验Docker cgroup resident cap并标为替代边界，原生生产资源继承须G4实证。失败stderr已由C保存在`.local/g1-server-mesa-isolation-debug.log`。
+
+主控核查当前[SQLite storage事务API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/#transaction)，G2A使用异步storage.transaction覆盖journal/intent/wake/物理alarm，内部journal operation保持同步且无外部I/O；transactionSync不能承载异步setAlarm，sync flush不能替代原子关系。具体rollback/eviction/alarm证据仍待实际Workerd测试。
+
 ## 主控复核与环境记录
 
 - 基线完整检查首轮因新工作树缺少 `.local/` 父目录导致历史测试 mkdtemp ENOENT；补齐 ignored 目录后重跑，日志 `/tmp/riffology-issues-baseline-check-20260915.log`。
