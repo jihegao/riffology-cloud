@@ -38,3 +38,15 @@ test('running true never becomes destroy acknowledgement',async()=>{
  const {destroyBounded}=await import('./g4-release-content-probe.mjs');let now=0,calls=0;
  await assert.rejects(destroyBounded(async()=>{},async()=>{calls++;return {ok:true,destroyAcknowledged:true,running:true,nativeStopImmediatelyObserved:true};},{now:()=>now,sleep:async ms=>{now+=ms;},maxAttempts:2}),/destroy-shape/);assert.equal(calls,2);
 });
+
+test('main app uses current fixed-ID detail despite stale aggregate list; namespace and rollout fail closed',async()=>{
+ const {readMainApp,validateMainApp}=await import('./g4-release-content-probe.mjs');
+ const id='a03628c4-f032-461f-a65b-612ccac11a06',namespace='ac0e9a31323e463b9a05696dad1b30d5',name='riffology-m3-trusted-pi-staging';
+ const apps=[{id,name,image:'old-image',version:4}],detail={id,name,version:5,configuration:{image:'new-image'},durable_objects:{namespace_id:namespace},health:{errors:[]}},version={resources:{bindings:[{name:'TRUSTED_PI_SANDBOX',type:'durable_object_namespace',namespace_id:namespace}]}},expected={image:'new-image'},calls=[];
+ const result=readMainApp((args,json)=>{calls.push(args);assert.equal(json,true);return args[1]==='list'?apps:detail;},'/fixed/config',version,expected);
+ assert.equal(result.image,'new-image');assert.equal(result.version,5);assert.deepEqual(calls.map(x=>x.slice(0,3)),[['containers','list','--json'],['containers','info',id]]);
+ for(const bad of [{...detail,configuration:{image:'old-image'}},{...detail,id:'other'},{...detail,durable_objects:{namespace_id:'wrong'}},{...detail,active_rollout_id:'pending'},{...detail,health:{errors:['error']}},{...detail,health:{}}])assert.throws(()=>validateMainApp(apps,bad,version,expected));
+ assert.throws(()=>validateMainApp([...apps,...apps],detail,version,expected),/identity/);
+ assert.throws(()=>validateMainApp(apps,detail,{resources:{bindings:[{...version.resources.bindings[0],namespace_id:'wrong'}]}},expected),/namespace/);
+ assert.throws(()=>readMainApp(()=>[{...apps[0],id:'other'}],'/fixed',version,expected),/identity/);
+});

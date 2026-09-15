@@ -30,6 +30,24 @@ export function validateContent(value,expected){
  for(let i=0;i<6;i++){const row=value.modules[i],want=expected.modules[i];if(row.name!==MODULES[i]||want?.name!==MODULES[i]||row.sha256!==want.sha256||row.byteLength!==want.byteLength||row.uid!==0||row.gid!==0||(row.mode&0o022)!==0)throw Error('module-content-mismatch');}
  if(value.modules[0].sha256!==value.modules[1].sha256||value.adapterSha256!=='fa7987095bbc29f2c6d87e9b0f815415f88c9079ad7070fb7fe8b91e7ebf0898'||value.adapterActualSha256!==value.adapterSha256||JSON.stringify(value.generationContract)!==JSON.stringify(expected.generationContract))throw Error('generation-policy-mismatch');return value;
 }
+export function validateMainApp(apps,detail,version,expected){
+ const name='riffology-m3-trusted-pi-staging',id=expected.appId??'a03628c4-f032-461f-a65b-612ccac11a06',namespace=expected.namespaceId??'ac0e9a31323e463b9a05696dad1b30d5';
+ const matches=Array.isArray(apps)?apps.filter(a=>a.name===name):[];
+ if(matches.length!==1||matches[0].id!==id||detail?.id!==id||detail.name!==name)throw Error('main-app-identity-mismatch');
+ const binding=version?.resources?.bindings?.filter(b=>b.name==='TRUSTED_PI_SANDBOX');
+ if(binding?.length!==1||binding[0].type!=='durable_object_namespace'||binding[0].namespace_id!==namespace||detail.durable_objects?.namespace_id!==namespace)throw Error('main-app-namespace-mismatch');
+ if(detail.configuration?.image!==expected.image||!Number.isSafeInteger(detail.version)||detail.version<1)throw Error('main-image-mismatch');
+ if(detail.active_rollout_id!=null||!Array.isArray(detail.health?.errors)||detail.health.errors.length!==0)throw Error('main-app-rollout-unconfirmed');
+ return {id:detail.id,name:detail.name,image:detail.configuration.image,version:detail.version,namespaceId:namespace,activeRolloutId:null,healthErrors:[]};
+}
+export function readMainApp(command,config,version,expected){
+ const apps=command(['containers','list','--json','--config',config],true),id=expected.appId??'a03628c4-f032-461f-a65b-612ccac11a06';
+ // List identifies the unique fixed app only; its aggregate image/version can lag rollout.
+ const matches=Array.isArray(apps)?apps.filter(a=>a.name==='riffology-m3-trusted-pi-staging'):[];
+ if(matches.length!==1||matches[0].id!==id)throw Error('main-app-identity-mismatch');
+ const detail=command(['containers','info',id,'--json','--config',config],true);
+ return validateMainApp(apps,detail,version,expected);
+}
 /** Execution is opt-in. Persisted intent is reused after transport uncertainty;
  * content is never retried automatically. Root performs full inventory signoff. */
 export async function run({root,config,manifest,directory,resume=false,deleteAfterRootQuiet=false}){
@@ -38,7 +56,7 @@ export async function run({root,config,manifest,directory,resume=false,deleteAft
  const command=(args,json=false)=>{const r=spawnSync(wrangler,args,{cwd:root,encoding:'utf8',timeout:180000,maxBuffer:4*1024*1024});if(r.status!==0)throw Error('cloud-command-unconfirmed');return json?JSON.parse(r.stdout):r.stdout;};
  const save=(name,value)=>writeFileSync(resolve(directory,name),JSON.stringify(value,null,2)+'\n',{mode:0o600});
  const expected=JSON.parse(readFileSync(manifest,'utf8'));if(!/^[a-f0-9-]{36}$/.test(expected.workerVersionId)||!/^source-[a-f0-9]{40}$/.test(expected.workerTag)||!/^registry\.cloudflare\.com\/[^\s]+@sha256:[a-f0-9]{64}$/.test(expected.image))throw Error('expected-release-invalid');
- const checkMain=()=>{const d=command(['deployments','status','--json','--config',config],true);if(d.versions?.length!==1||d.versions[0].percentage!==100||d.versions[0].version_id!==expected.workerVersionId)throw Error('main-version-changed');const v=command(['versions','view',expected.workerVersionId,'--json','--config',config],true);if(v.annotations?.['workers/tag']!==expected.workerTag)throw Error('main-source-changed');const apps=command(['containers','list','--json','--config',config],true),a=apps.filter(x=>x.name==='riffology-m3-trusted-pi-staging'&&x.image===expected.image);if(a.length!==1)throw Error('main-image-mismatch');return {deployment:d,versionId:v.id,tag:v.annotations['workers/tag'],app:{id:a[0].id,name:a[0].name,image:a[0].image,version:a[0].version}};};
+ const checkMain=()=>{const d=command(['deployments','status','--json','--config',config],true);if(d.versions?.length!==1||d.versions[0].percentage!==100||d.versions[0].version_id!==expected.workerVersionId)throw Error('main-version-changed');const v=command(['versions','view',expected.workerVersionId,'--json','--config',config],true);if(v.annotations?.['workers/tag']!==expected.workerTag)throw Error('main-source-changed');if(v.id!==expected.workerVersionId)throw Error('main-version-changed');const app=readMainApp(command,config,v,expected);return {deployment:d,versionId:v.id,tag:v.annotations['workers/tag'],app};};
  const before=checkMain();save('main-before.json',before);
  let intent;if(resume){intent=JSON.parse(readFileSync(resolve(directory,'intent.json'),'utf8'));if(intent.manifestSha256!==hash(readFileSync(manifest)))throw Error('intent-manifest-changed');}else{const token=randomBytes(12).toString('hex'),scope={tenantId:'probe-'+token,projectId:'probe-'+token,workspaceId:'probe-'+token,workspaceGeneration:1};intent={schemaVersion:1,token,name:probeWorkerName(token),...frozenProbe(token),capability:randomBytes(32).toString('hex'),manifestSha256:hash(readFileSync(manifest)),createdAt:Date.now(),stage:'persisted-before-deploy'};writeFileSync(resolve(directory,'intent.json'),JSON.stringify(intent,null,2)+'\n',{mode:0o600,flag:'wx'});}
  const frozen=frozenProbe(intent.token);if(resume&&intent.identity===undefined&&intent.actor===frozen.actor&&intent.name===probeWorkerName(intent.token)){intent.identity=frozen.identity;save('intent.json',intent);}
