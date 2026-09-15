@@ -178,3 +178,12 @@ G0–G3本地门槛已满足。G4发布清单新增只读生成器/严格校验3
 ## G4 显式授权后的发布前进度
 
 按当前用户授权仅执行G4，预算/数据/时间窗见计划末节。新增服务端持久预算提交5667dc8、原生attempt计数5964e5a及scope兼容3118ac9；主控43项定向检查通过。attempt表示调用前计数而非成功执行回执，缺历史instrumentation返回unknown，不伪报零。生产镜像remote amd64 leaf：Pi025a80a809ab2fcf7bfac1dbd2a1ab2c225753fa4881514949cecfd408b7426e；Simulationbdceaa26a9dd4ecf82182327ea6ca07f3e968c4b132d79adf3c0cfac6a58fcf2。保留实际Tools b21324f5而非checked-in旧6e1c51f9。配置dry-run通过，未部署应用候选，未启动普通用户任务，2小时deadline仍null。G4专属R2诊断7d/验收30d规则已PUT后GET验证；原默认multipart规则语义保留。完整正式检查将在最终交叉审查修复集成后执行。
+
+
+## G4 受控准备实测更新
+
+已按本次授权配置不可重置的 US$20/Turn US$5/32上游/16 Run/首次接纳后2小时时窗，仅使用既有普通测试账号与 operator。应用候选以所有任务门禁关闭发布；独立浏览器执行 Worker 已发布并核对固定资产字节。生产 amd64 Pi 与 Simulation 镜像已上传并独立核对远端 digest，五个容器应用实际 rollout 已完成。
+
+普通用户任务尚未接纳，权威窗口 startedAt/deadlineAt 为 null，模型请求和 Run admission 为零。真实 Cloudflare SDK 固定内容探针核对六个模块字节、Adapter 与生成契约通过；云端实际 Pi 实例使用预期镜像且 destroy 后 running=false。两次完整分页库存观察均为238个 inactive、活动实例0；临时探针删除与缺失确认仍在收尾。该探针不调用模型，不代替普通用户 G4 验收或 native Run 资源边界证明。
+
+生产源码1308caa完整正式检查：1994项/1983通过/11条件跳过/0失败。为可靠验证真实构建失败恢复，正在补充仅限本次两个新合成 workspace、最长120秒且自动到期的 private build HOLD；无公共 HTTP 路由，不伪造失败，不影响任务预算。集成后重新冻结生产源码并完成检查，随后才开启普通用户任务。G5/G6仍未授权，任何issue尚未关闭。

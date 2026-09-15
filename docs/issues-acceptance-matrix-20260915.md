@@ -32,3 +32,12 @@
 ## 本地阶段最终结论
 
 G0–G3本地签收。最终正式check exit0，1971项/1960通过/11 opt-in跳过；首失败及fixture修复记录保留。主控G3真实Gateway→重启alarm→Browser→旧版本Verify→native→私有R2→ZIP replay完整链通过，两模型各nativeStart1，冻结local窗口新执行0，三视口无溢出，实际停止及quota历史确认匹配、余额0。测试ARM64 bridge不替代生产x86资源继承，保存producer fixture不替代普通Agent。G4审阅材料、G5离线任务/复用准备和G6initial来源实现已完成，线上G4–G6尚未执行，未关闭任何issue。
+
+
+## G4 受控准备实测更新
+
+已按本次授权配置不可重置的 US$20/Turn US$5/32上游/16 Run/首次接纳后2小时时窗，仅使用既有普通测试账号与 operator。应用候选以所有任务门禁关闭发布；独立浏览器执行 Worker 已发布并核对固定资产字节。生产 amd64 Pi 与 Simulation 镜像已上传并独立核对远端 digest，五个容器应用实际 rollout 已完成。
+
+普通用户任务尚未接纳，权威窗口 startedAt/deadlineAt 为 null，模型请求和 Run admission 为零。真实 Cloudflare SDK 固定内容探针核对六个模块字节、Adapter 与生成契约通过；云端实际 Pi 实例使用预期镜像且 destroy 后 running=false。两次完整分页库存观察均为238个 inactive、活动实例0；临时探针删除与缺失确认仍在收尾。该探针不调用模型，不代替普通用户 G4 验收或 native Run 资源边界证明。
+
+生产源码1308caa完整正式检查：1994项/1983通过/11条件跳过/0失败。为可靠验证真实构建失败恢复，正在补充仅限本次两个新合成 workspace、最长120秒且自动到期的 private build HOLD；无公共 HTTP 路由，不伪造失败，不影响任务预算。集成后重新冻结生产源码并完成检查，随后才开启普通用户任务。G5/G6仍未授权，任何issue尚未关闭。
