@@ -858,3 +858,47 @@ test('a persisted oversized message intent is released before retry preflight', 
   await page.locator('#message-input').fill('缩短后的请求'); await page.locator('#message-submit').click();
   await waitFor(() => posts === 1);
 });
+
+test('another preparing project keeps polling to ready while the first project owns the notice', {timeout:15000}, async t => {
+  const a={id:'prepare-a',title:'准备项目 A',status:'provisioning',workspace_id:'workspace-a'};
+  let b={id:'prepare-b',title:'准备项目 B',status:'provisioning',workspace_id:'workspace-b'},created=false,listReads=0;
+  const posts=[];
+  const page=await pageFixture(t,async(route,path)=>{
+    if(route.request().method()==='POST')posts.push(path);
+    if(path==='/api/tenants/tenant-a/projects'){
+      if(route.request().method()==='POST'){created=true;await json(route,{project:a},202);}
+      else{listReads++;await json(route,{projects:created?[a,b]:[b]});}return true;
+    }
+    if(path==='/api/workspaces/workspace-b'){await json(route,{schemaVersion:3,activeTurnId:null,sessions:{s:{id:'s',title:'B 对话',createdAt:1}},turns:{}});return true;}
+    if(path==='/api/workspaces/workspace-b/events'){await json(route,{events:[],nextSequence:0,hasMore:false});return true;}
+  });
+  page.setDefaultTimeout(8000);await page.goto('https://ui.test/');await page.locator('#new-project').click();await page.locator('#project-title').fill(a.title);await page.locator('#project-submit').click();await page.locator('#notice').filter({hasText:'项目正在准备中'}).waitFor();
+  await page.getByRole('button',{name:'管理项目 '+b.title,exact:true}).click();await page.locator('#workspace-title').filter({hasText:b.title}).waitFor();assert.equal(await page.locator('#message-input').isDisabled(),true);const before=listReads;b={...b,status:'ready'};
+  // No visibility event or manual refresh: the actual scheduled project poll must recover B.
+  await page.locator('#message-input:not([disabled])').waitFor();assert.ok(listReads>before);assert.equal(await page.locator('#workspace-title').innerText(),b.title);assert.match(await page.locator('#notice').innerText(),/项目正在准备中/);assert.deepEqual(posts,['/api/tenants/tenant-a/projects']);
+});
+
+test('authorization reload into another tenant drops the old tenant pending project fallback', {timeout:15000}, async t => {
+  const pending={id:'private-pending-a',title:'旧租户未同步的私有项目',status:'provisioning',workspace_id:'private-workspace-a'};
+  const ready={id:'ready-a',title:'旧租户活动项目',status:'ready',workspace_id:'active-workspace-a'};
+  let tenantId='tenant-a',created=false,streamConnected=false,newTenantReads=0,releaseStream;
+  const streamGate=new Promise(resolve=>releaseStream=resolve);
+  t.after(()=>releaseStream());
+  const page=await pageFixture(t,async(route,path)=>{
+    if(path==='/api/me'){await json(route,{tenants:[{id:tenantId}]});return true;}
+    if(path==='/api/tenants/tenant-a/projects'){
+      if(route.request().method()==='POST'){created=true;await json(route,{project:pending},202);}
+      else await json(route,{projects:[ready]});return true;
+    }
+    if(path==='/api/tenants/tenant-b/projects'){newTenantReads++;await json(route,{projects:[]});return true;}
+    if(path==='/api/workspaces/active-workspace-a'){await json(route,{schemaVersion:3,activeTurnId:'active',sessions:{s:{id:'s',title:'旧会话',createdAt:1}},turns:{active:{id:'active',sessionId:'s',message:'已有任务',status:'running',createdAt:1}}});return true;}
+    if(path==='/api/workspaces/active-workspace-a/events'){
+      if(route.request().headers().accept?.includes('text/event-stream')){streamConnected=true;await streamGate;await route.fulfill({contentType:'text/event-stream',body:'event: stream.closed\ndata: {"reason":"authorization_changed"}\n\n'});}
+      else await json(route,{events:[],nextSequence:0,hasMore:false});return true;
+    }
+  });
+  page.setDefaultTimeout(8000);await page.goto('https://ui.test/');await page.locator('#new-project').click();await page.locator('#project-title').fill(pending.title);await page.locator('#project-submit').click();await page.getByRole('button',{name:'管理项目 '+pending.title,exact:true}).waitFor();assert.equal(created,true);
+  // Old list still omits the newly created project, so its fallback remains pending when opening another Workspace.
+  await page.getByRole('button',{name:'打开项目 '+ready.title,exact:true}).click();await waitFor(()=>streamConnected);tenantId='tenant-b';releaseStream();
+  await waitFor(()=>newTenantReads>0);await page.locator('#app:not([hidden])').waitFor();await page.locator('#projects[aria-busy=false]').waitFor();assert.equal(await page.locator('#projects .project').count(),0);assert.doesNotMatch(await page.locator('#projects').innerText(),/旧租户|private-pending-a/);assert.equal(await page.locator('#workspace').isVisible(),false);
+});
