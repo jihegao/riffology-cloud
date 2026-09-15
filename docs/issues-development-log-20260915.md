@@ -91,6 +91,14 @@ C额外实际entrypoint探测发现amd64翻译exec后新解释器RLIMIT_AS为(-1
 
 G1本地门槛满足：确定性生产包、固定离线runtime、两profile共享renderer、服务端同模型入口及同输入对照。此签收保留前述local outer/资源继承边界；不代表G3实际产品整链或G4普通Agent与原生生产隔离验收。G2A/B继续动态并行，C收尾Mesa实际entrymarker后的deadline/cancel，并转G3整链验收准备。
 
+Mesa live-child边界fcc9ba7集成为3f1d6b6，主控独立3/3通过：实际child marker后取消/deadline、停止UID10001进程树、重复start不复活。translated测试另配置512MiB resident cgroup并实际768MiB分配OOM(exit137/oom_kill1)，根进程仍能以原seal receipt reconcile；此为host cgroup边界，仍不签AS继承。证据见g1/server-boundary-independent与日志摘要。C已交回所有server实现文件，转codex/issues-g3-acceptance独占新增整链driver/tests准备及非作者publication兼容审查。
+
+## G2 持久发现核心
+
+752b62d集成为86147ab。主控实际diff复核后独立35项store/shared-alarm/router及真实Workerd检查通过，typecheck通过。saved journal、discovery intent/index、第六逻辑wake与物理alarm同异步事务；setAlarm后注入失败整体回滚，重启无页面请求仍实际收到alarm。六处alarm合并保留buildwake，maintenance最后推进build域。
+
+核心尚未接生产buildhost/API/constructor，不能称自动ready。主控审查发现discovery重算仅考虑pending discovery会遗漏已有profile retry，已要求A下一提交聚合两类wake并覆盖未来checkpoint时间的新保存，不推迟已有build。G2签收仍待ready/unsupported/failed持久状态、R2补收据、历史权限/Verify与实际UI整链。证据集中g2/discovery-independent.log及SHA256SUMS。
+
 ## 主控复核与环境记录
 
 Issue逐项关闭条件与本地/线上边界见[签收矩阵](issues-acceptance-matrix-20260915.md)，与本记录同步维护。
