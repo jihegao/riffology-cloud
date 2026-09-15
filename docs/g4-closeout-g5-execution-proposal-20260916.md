@@ -85,3 +85,9 @@ G6仍另行确定三模型审核发布范围和预算；本次无提交官方cat
 非作者交叉评审已通过；主控实际typecheck通过、54项定向测试54通过/0失败/0跳过，含现有Evidence/ZIP真实本地重放回归；diff检查通过。未跑全套check或真实Docker/云Native验收，不复用历史2002项结果冒称新候选全套通过。复用collector提交冲突先审查diff后只编辑冲突块解决；整文件restore被自动审批阻止且未执行，没有覆盖其他工作树或main原有脏文档。
 
 已请求用户指定#46实际生产账号/模型/Gateway引用及第二个已授权普通测试用户/tenant；不在聊天收密钥。此信息缺失时不能完成真实价格/token上限预算证明或跨tenant验收。准备实现已交付，线上G4补测/G5尚未执行，#64/#65/#46/#37未新增关闭；G6、推送、合并和官方发布未开展。
+
+### 账号补齐进展
+
+用户提供的OpenAI密钥只读鉴权HTTP200、Luna可用；专属Gateway已创建并独立GET核对，未有推理调用。保守147/168调用预算分别US$10.3563264/11.8358016，满足各US$20候选。Gateway token现已保存，主控只读verify为HTTP200/active；尚不证明Run权限范围或代理调用。第二用户`jihe.gao@theidsa.org`已明确授权，实际userId/tenantId仍待普通登录核对。参见[G5账号/Gateway核验](g5-account-gateway-readiness-20260916.md)。旧G4fence和门禁未重置。
+
+新增[G5服务端窗口守卫](g5-window-guard-implementation.md)已集成本地core/private DO/独立token namespace接口；未绑定任务及未知模型费用跨所有window阻断，policy不可重置，准入跨截止不给创建权，B强制两个不同tenant及user。#37文件journal补入三账本关联及可信校验adapter缺省拒绝，产品终态不能单独解锁。主控在当前集成候选独立typecheck及32项相关测试通过（含2真实本地Workerd、0跳过/失败）；这些是局部本地证据，尚未完成共享接线、部署或真实ledger/native authority。两小时窗口仍未开始。下一步继续审查共享准入与预算dispatch/finish接线，不因密钥可见即开跑。

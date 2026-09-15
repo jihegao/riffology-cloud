@@ -232,3 +232,11 @@ G4本次受控执行结束；#64普通用户主链通过，#65与全部线上负
 ### G4/G5执行准备实现进展（2026-09-16）
 
 三独立subagent实现已集成：#46离线调度compiler、#37只读collector（缺可信暖租约/物理事实，验收保持blocked）、G4原生Run可信preexec观测。主控typecheck与54项定向测试通过；未部署/付费/新Run，线上缺#46生产配置与第二授权测试账号。详情见[G4/G5提案最新进展](g4-closeout-g5-execution-proposal-20260916.md)。这些部分准备不代表完整live driver或issue关闭，原线上门禁和预算fence未重置。
+
+### 账号补齐进展
+
+用户提供的OpenAI密钥只读鉴权HTTP200、Luna可用；专属Gateway已创建并独立GET核对，未有推理调用。保守147/168调用预算分别US$10.3563264/11.8358016，满足各US$20候选。用户随后授权第二测试用户`jihe.gao@theidsa.org`，其真实userId/tenantId尚待登录核对；Gateway Run token与独立G5服务端窗口门禁仍待落实。参见[G5账号/Gateway核验](g5-account-gateway-readiness-20260916.md)。旧G4fence和门禁未重置。
+
+#37实际文件journal已集成5373071：原intent永久保留，独立ACK/terminal reconciliation、wx锁及文件/目录fsync；重启与并发测试验证未知提交不能自动重发。它只证明本地持久化身份，不提供云端native authority，主runner仍保持blocked。独立审查及服务端全局窗口守卫继续进行。
+
+随后已独立核验Gateway token HTTP200/active（仅token状态，不证明Run权限或代理调用）。G5 guard与修复已集成aa32bfd/0cae23d；journal三账本fail-closed修复集成47d656d。主控当前typecheck及32项定向测试通过，含2真实本地Workerd，0失败/跳过。未绑定任务、费用unknown、三账本未齐均不放行；B强制distinct tenant及user。共享生产接线/部署尚未完成，推理0/新Run0/未开始2小时时窗。此前token/第二邮箱缺失记录为历史状态，实际principal核对仍待完成。
