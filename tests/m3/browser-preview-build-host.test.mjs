@@ -47,3 +47,12 @@ test('frozen compatible row becoming unsupported cannot settle with an orphan bu
  const f=await fixture(1),profile=await f.ports.registry();f.storage.values.set('browser-preview:build:revision-a:python-stdlib/v1',{schemaVersion:1,source:f.source,profile:profile.resolve('python-stdlib/v1'),modelSpec:null,receipt:null,state:{status:'building',revisionId:'revision-a',profileId:'python-stdlib/v1',buildIdentity:'a'.repeat(64),attempt:1}});
  await f.host().alarm();assert.equal(f.host().read('revision-a','python-stdlib/v1').state.status,'building');assert.equal(f.storage.values.get(discoveryKey('revision-a')).status,'pending');f.clock(3000);await f.host().alarm();f.clock(7000);await f.host().alarm();assert.equal(f.host().read('revision-a','python-stdlib/v1').state.status,'failed');assert.equal(f.host().read('revision-a','python-stdlib/v1').state.buildIdentity,'a'.repeat(64));assert.equal(f.storage.alarm,null);
 });
+
+for(const index of [0,1])test('source unavailable placeholder recovers matching profile '+index+' without blocking behind unsupported sibling',async()=>{
+ const f=await fixture(index),files=f.ports.files;f.ports.files=async()=>{throw Error('source-unavailable');};
+ await f.host().alarm();f.clock(3000);await f.host().alarm();f.clock(7000);await f.host().alarm();
+ for(const id of ['python-stdlib/v1','mesa-3.5.1/v1']){const failed=f.host().read('revision-a',id);assert.equal(failed.state.status,'failed');assert.equal(failed.profile,null);assert.equal(failed.modelSpec,null);assert.equal(failed.receipt,null);}
+ const id=profiles[index].runtime.profileId,failed=f.host().read('revision-a',id);f.ports.files=files;await f.host().retry('revision-a',id,failed.state.buildIdentity,'retry-source-'+index);await f.host().alarm();
+ const ready=f.host().read('revision-a',id);assert.equal(ready.state.status,'ready');assert.equal(ready.state.revisionId,'revision-a');assert.equal(ready.profile.trust,'verified-platform');assert.equal(f.host().read('revision-a',profiles[1-index].runtime.profileId).state.status,'unsupported');assert.equal(f.puts,1);assert.equal(f.storage.alarm,null);
+ await f.host().retry('revision-a',id,failed.state.buildIdentity,'retry-source-'+index);assert.equal(f.host().read('revision-a',id).state.packageIdentity,ready.state.packageIdentity);assert.equal(f.storage.alarm,null);
+});

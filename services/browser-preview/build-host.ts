@@ -96,8 +96,10 @@ export class BrowserPreviewBuildHost{
     const selected=frozen?.trust==='verified-platform'?await createTrustedPreviewRegistry([frozen]):registry;
     const checked=await validateSavedPreview({projectId:this.scope.projectId,revisionId:sourceRevision(source),filesSha256:sourceFilesSha(source)!},bytes,id,selected);
     if(checked.status==='unsupported'){
-     if(this.read(sourceRevision(source),id))throw Error('browser-preview-source-unavailable');
-     if(!this.read(sourceRevision(source),id))await this.#write(async tx=>{await this.#put(tx,rowKey(sourceRevision(source),id),{schemaVersion:1,source,profile:registry.resolve(id),modelSpec:null,receipt:null,state:{status:'unsupported',revisionId:sourceRevision(source),profileId:id,buildIdentity:await previewSha256(canonicalPreviewJson({revision:frozenSource(source),profileId:id})),reasonCode:checked.reasonCode}} satisfies SavedPreviewBuild,source);},source);continue;
+     const prior=this.read(sourceRevision(source),id),discoveryIdentity=await previewSha256(canonicalPreviewJson({revision:frozenSource(source),profileId:id}));
+     const placeholder=prior!==null&&prior.profile===null&&prior.modelSpec===null&&prior.receipt===null&&(prior.state.status==='failed'||prior.state.status==='building')&&prior.state.buildIdentity===discoveryIdentity;
+     if(prior&&!placeholder)throw Error('browser-preview-source-unavailable');
+     await this.#write(async tx=>{await this.#put(tx,rowKey(sourceRevision(source),id),{schemaVersion:1,source,profile:registry.resolve(id),modelSpec:null,receipt:null,state:{status:'unsupported',revisionId:sourceRevision(source),profileId:id,buildIdentity:await previewSha256(canonicalPreviewJson({revision:frozenSource(source),profileId:id})),reasonCode:checked.reasonCode}} satisfies SavedPreviewBuild,source);},source);continue;
     }
     await this.#guard(source);
     const value=checked.value,prior=this.read(sourceRevision(source),id);

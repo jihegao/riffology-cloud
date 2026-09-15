@@ -27,3 +27,9 @@ dispatch回执提供冻结controlledWindowDeadlineAt，Model Proxy在最后await
 主控报告已回读G4限定范围的R2保留规则：脱敏诊断7天、验收证据30天，相应范围当前对象回读为0。规则只覆盖批准的G4脱敏收集范围，不对checkpoint、其它对象或整个bucket施加清理；0对象是当前范围回读结果，不是后续证据已经写入/到期删除的证明。普通账号cookie、密钥、原始session和未脱敏内容保持私有，不进入验收证据。该R2规则不改变Go上游自身30天保留策略。
 
 G5/G6仍未获得执行授权；本条没有扩大授权，也没有声明G4在线验收完成。
+
+### 后续候选修复：源文件故障恢复
+
+`d780f09` paused上传期间另发现并修复：首次源R2读取失败产生的failed/profile=null占位行，会挡住恢复后另一profile的正常unsupported分类，导致Mesa不能恢复。修复只允许profile、modelSpec、receipt均null、状态failed或building且buildIdentity精确等于原平台discovery身份的占位行重新分类；有实际冻结profile或非原占位identity的行仍按原完整性失败处理，ready行不重算身份。该补丁是后续候选，需主控重新冻结、检查和paused更新；不静默改已冻结部署。
+
+两个真实Workerd/SQLite/R2回归从RevisionStore.commit与TurnJournal保存生成discovery，暂删仅测试scope的files blob，三次受控Builder尝试产生双failed/null；dispose/restart、原字节恢复、显式同Revision retry后分别验证Queue和Mesa ready、另一profile unsupported、原filesSha256及Revision不变、create-only receipt与无剩余alarm。测试使用受控时钟推进Builder，未声称物理在线故障注入或真实native/model运行。既有冻结compatible转unsupported、旧runtime同identity补收据、ready保留及三次尝试上限回归继续覆盖。
