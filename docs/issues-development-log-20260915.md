@@ -174,3 +174,7 @@ Issue逐项关闭条件与本地/线上边界见[签收矩阵](issues-acceptance
 主控G3候选526eee7实际整链exit0/fullGate true；执行开始后的生产代码未变化，只增加fixture、只读发布准备器及文档。Queue/Mesa各nativeStart1，真实私有R2/历史Verify/完整源码trace/ZIP replay/身份与权限均通过。冻结localWindow的新计算增量0、execution Cookie0，六视口截图经非作者复核。保留生产360秒guard与quiet期，逐historical quota.lookup匹配停止确认，两native/初始化均释放，occupied0。证据`.local/issues-20260915/g3/research-chain-independent/`含实际结果、源码摘要、截图、ZIP、日志、SHA256SUMS。ARM64测试bridge与saved-source fixture不是G4普通Agent/x86原生资源证明。
 
 G0–G3本地门槛已满足。G4发布清单新增只读生成器/严格校验3/3主控通过，生成review overlays不修改原生产配置；预算/账号/隐私/null保持blocked。G5离线18任务及runtime-reuse方案准备完成；G6initial可信来源实现已完成，但普通用户三模型→非作者审核→发布→新用户复制未执行。当前5issue仍未关闭，未部署或新增收费请求。
+
+## G4 显式授权后的发布前进度
+
+按当前用户授权仅执行G4，预算/数据/时间窗见计划末节。新增服务端持久预算提交5667dc8、原生attempt计数5964e5a及scope兼容3118ac9；主控43项定向检查通过。attempt表示调用前计数而非成功执行回执，缺历史instrumentation返回unknown，不伪报零。生产镜像remote amd64 leaf：Pi025a80a809ab2fcf7bfac1dbd2a1ab2c225753fa4881514949cecfd408b7426e；Simulationbdceaa26a9dd4ecf82182327ea6ca07f3e968c4b132d79adf3c0cfac6a58fcf2。保留实际Tools b21324f5而非checked-in旧6e1c51f9。配置dry-run通过，未部署应用候选，未启动普通用户任务，2小时deadline仍null。G4专属R2诊断7d/验收30d规则已PUT后GET验证；原默认multipart规则语义保留。完整正式检查将在最终交叉审查修复集成后执行。
