@@ -82,3 +82,5 @@ Mesa实际Group f7c14855…为baseline/intervention×seeds7/8共四个真实Run�
 另已实际PUT及独立GET完全一致的30天最终交付回执：`evidence/final-delivery-receipt.json`，2397字节，SHA256 `b95b965c7a9eed73b47b6003bbde6bae43249712aabf0b3a3d1410be362032d2`。此回执明确localDirectoryCleanupCompleted=false及自动审批拒绝边界，补充原94项dataset，不将其说成本地删除完成。
 
 用户随后以“ok confirmed”明确批准这两个目录清理；主控携带该确认及固定路径尝试一次，PreToolUse仍以 `heredoc.python:shutil_rmtree`（CRITICAL）拒绝，命令未执行。主控未重试或绕过，独立核对两个目录仍存在；当前阻碍是自动审批规则，不是缺少用户授权。需手动清理或由管理员通过正式机制处理规则后再执行。
+
+用户报告已手动删除后，主控独立核对Root本轮采集目录和B脱敏副本目录均不存在、无残留符号链接，本轮两处目录清理已完成。现有账号/profile/operator、产品业务对象及预算fence未纳入清理。最终交付回执已更新为localDirectoryCleanupCompleted=true，实际R2 PUT及独立GET字节一致：2570字节，SHA256 `c4200f881d01a5687f821edeedec4d44fb9052b523667f4696989d0f6a634fa5`，沿用evidence前缀30天生命周期；原诊断7天/验收30天归档保留策略不变。此前审批阻断与待清理记录为历史状态，已由此次用户清理和独立核对解决。G5/G6仍未启动。
