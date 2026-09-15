@@ -1,14 +1,14 @@
 # 多阶段实施与验收记录
 
-日期：2026-09-15。基线：`40aee17`。当前阶段：G0 本地签收，G1 三线实施中。
+日期：2026-09-15。基线：`40aee17`。当前阶段：G0/G1 本地签收；G2 API接线与持久验收推进；G3 非作者评审和真实本地整链并行准备。
 
-集成分支：`codex/issues-20260915-integration`，工作树 `/Users/gaojihe/apps/riffology-cloud-issues-integration`。原 main 文档修改及旧 Mesa detached worktree 保留，不纳入实施提交。GitHub 当前为 5 个开放 issue。
+集成分支：`codex/issues-20260915-integration`，工作树 `/Users/gaojihe/apps/riffology-cloud-issues-integration`。原 main 文档修改及旧 Mesa detached worktree 保留，不纳入实施提交。开工GitHub核对为5个开放issue；本轮未关闭issue。
 
 | 槽位 | 分支 | 文件归属 | 状态 |
 | --- | --- | --- | --- |
-| A | codex/issues-g0-package | 新包 contract/schema/fixture；包契约文档 | G0 实施中 |
-| B | codex/issues-g0-runtime | runtime 子目录协议/fixture；执行隔离文档 | G0 实施中 |
-| C | codex/issues-g0-ui | web app/index/layout/CSS；UI 定向回归 | #65 实施中 |
+| A | codex/issues-g2-orchestration | build/discovery/orchestrator、journal/shared alarm、Workspace/Gateway、combined资产接线与定向测试 | G2 持久/权限验收及补丁 |
+| B | codex/issues-g2-preview | web Browser面板、execution-static Worker/materializer、UI/静态测试；只读审查A与发布兼容 | G2B已集成，G3非作者评审 |
+| C | codex/issues-g3-acceptance | 新本地整链driver/diagnostics、测试专用native bridge；server实现文件已交回 | G3实际SDK两profile与保存→构建→Verify整链 |
 
 ## 冻结决定
 
@@ -21,8 +21,8 @@
 | --- | --- | --- |
 | G0 | 本地通过 | 线上 #65 签收仍待 G4 |
 | G1 | 本地通过 | 原生生产隔离/资源继承仍待G4，不能以翻译环境替代 |
-| G2 | 实施中 | Agent 约定已验证；saved 派生构建、持久 API、Workspace 实施中 |
-| G3 | 未开始 | 非作者评审、真实本地整链、完整 check |
+| G2 | 实施中 | Agent约定、原子发现、buildhost/API与面板已集成；实际Workspace/R2 ready、权限/历史Verify与资产接线验收 |
+| G3 | 实施中 | 非作者评审持续；真实Gateway认证与SDK替代内核隔离通过，真正两模型产品整链/完整check待签收 |
 | G4 | 未开始 | 冻结发布、普通用户两模型、零执行窗口、资源释放 |
 | G5 | 未开始 | #46/#37 账号/预算、账本、故障/复用验收 |
 | G6 | 未开始 | 三模型普通用户→审核→发布→新用户复制 |
