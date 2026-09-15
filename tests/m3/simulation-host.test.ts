@@ -1,3 +1,4 @@
+import {simulationToken} from '../../services/simulation/native.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
@@ -5,7 +6,7 @@ import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {SimulationHost,publicExperiment,publishSimulationResult,type SimulationPorts} from '../../services/simulation/host.ts';
-import {modelVersion,type SimulationPlan} from '../../services/simulation/source.ts';
+import {modelVersion,digest,type SimulationPlan} from '../../services/simulation/source.ts';
 import {SqlTenantQuota} from '../../services/quota/core.ts';
 import {fixture,scope,actor,spec as serviceSpec} from './run-fixture.ts';
 import {SIMULATION_WAKE_KEY,TURN_WAKE_KEY} from '../../services/workspace/shared-alarm.ts';
@@ -99,4 +100,12 @@ test('overlapping alarms on the Workspace-owned host cannot dispatch twice',asyn
  const reached=new Promise<void>(r=>{entered=r;});let grant:Awaited<ReturnType<typeof dispatch>>;
  f.ports.quota.dispatch=async lease=>{dispatches++;grant=await dispatch(lease);entered();return new Promise(r=>{resolve=r;});};
  const r=await h.submit(actor,'overlapping-alarm',f.request,plan,'image',()=>true),first=h.alarm();await reached;await h.alarm();assert.equal(dispatches,1);assert.equal(f.starts,0);assert.equal(f.observes,0);resolve(grant!);await first;assert.equal(f.starts,1);assert.equal((await h.get(r.runId)).startClaimed,true);
+});
+
+test('root native facts persist separately from model outputs and reject absent child or mismatched stop',async t=>{
+ const f=setup(t),r=await f.host().submit(actor,'observed',f.request,plan,'image',()=>true);let body='';const bucket={put:async(_k:string,b:string)=>{body=b;},get:async()=>({size:body.length,text:async()=>body})} as unknown as R2Bucket;
+ const token=await simulationToken(r.input),nativeObservation={schemaVersion:1,runId:r.runId,token,filesSha256:modelVersion(plan).filesSha256,child:{pid:12,startTicks:40,uid:[10001,10001,10001,10001],gid:[10001,10001,10001,10001],noNewPrivileges:1,rlimitAS:[536870912,536870912],rlimitNPROC:[64,64],pidfd:'unobserved',network:{seccompMode:2,childSetupAcknowledged:true,specificFilterObserved:false,platformFallbackConfigured:false}},stop:{confirmationId:await digest('simulation-stop:'+token),observedAt:10,fenced:true},sealed:true,quiescent:true};
+ const raw={exitCode:0,result:{schemaVersion:1,metrics:{wait:2}},pythonVersion:'3.11.1',nativeObservation};await publishSimulationResult(bucket,r,raw);assert.deepEqual(JSON.parse(body).nativeObservation,nativeObservation);
+ for(const bad of [{...nativeObservation,child:null},{...nativeObservation,stop:{...nativeObservation.stop,confirmationId:'f'.repeat(64)}}])await assert.rejects(publishSimulationResult(bucket,r,{...raw,nativeObservation:bad}),/invalid/);
+ await assert.rejects(publishSimulationResult(bucket,r,{exitCode:0,pythonVersion:'3.11.1',result:{...raw.result,nativeObservation}}),/invalid/);
 });

@@ -9,6 +9,7 @@ import workspace_archive as archive
 from service_process import child_setup, write, read_json, project_path
 from contextlib import contextmanager
 import importlib.metadata
+import simulation_observation as observation
 
 CONTROL = Path('/var/lib/riffology/services')
 ARCHIVES = Path('/var/lib/riffology/archives')
@@ -39,8 +40,8 @@ def validate(control, token):
     project_path(control['dependencyLock'], {'app'}, '.lock')
     if control['entrypoint'] == control['dependencyLock'] or type(control['parameters']) is not dict: raise ValueError('invalid-simulation-input')
     return control
-def envelope(exit_code, result, python_version=None):
-    return {'exitCode': int(exit_code), 'result': result, 'pythonVersion': python_version or sys.version.split()[0]}
+def envelope(exit_code, result, python_version=None, native_observation=None):
+    return {'exitCode': int(exit_code), 'result': result, 'pythonVersion': python_version or sys.version.split()[0], **({'nativeObservation': native_observation} if native_observation is not None else {})}
 
 def execution_runtime(control):
     lock = read_json(WORKSPACE / control['dependencyLock']); exact(lock, {'schemaVersion','packages'})
@@ -80,6 +81,7 @@ def stopped(token):
 
 def monitor(token, control):
     code, child, python_version = 4, None, None
+    facts, pidfd = None, None
     try:
         executable, python_version = execution_runtime(control)
         INPUT_ROOT.mkdir(mode=0o755, exist_ok=True)
@@ -95,7 +97,23 @@ def monitor(token, control):
                 return  # a duplicate monitor must not stop the original execution
             write(attempt, {'token': token, 'startedAt': now()})
             with open(CONTROL / (token + '.stdout.log'), 'ab', buffering=0) as stdout, open(CONTROL / (token + '.stderr.log'), 'ab', buffering=0) as stderr:
-                child = subprocess.Popen([executable, '-B', control['entrypoint'], '--input', str(input_path), '--output', str(OUTPUT_ROOT / 'result.json')], cwd=WORKSPACE, env={'PATH':'/usr/local/bin:/usr/bin:/bin','HOME':'/tmp','LANG':'C.UTF-8','PYTHONUNBUFFERED':'1','OPENBLAS_NUM_THREADS':'1','OMP_NUM_THREADS':'1','MKL_NUM_THREADS':'1'}, stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr, close_fds=True, start_new_session=True, preexec_fn=child_setup)
+                read_fd, write_fd = os.pipe()
+                def setup_observed():
+                    child_setup()
+                    observation.report_child(write_fd)
+                try:
+                    child = subprocess.Popen([executable, '-B', control['entrypoint'], '--input', str(input_path), '--output', str(OUTPUT_ROOT / 'result.json')], cwd=WORKSPACE, env={'PATH':'/usr/local/bin:/usr/bin:/bin','HOME':'/tmp','LANG':'C.UTF-8','PYTHONUNBUFFERED':'1','OPENBLAS_NUM_THREADS':'1','OMP_NUM_THREADS':'1','MKL_NUM_THREADS':'1'}, stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr, close_fds=True, start_new_session=True, preexec_fn=setup_observed, pass_fds=(write_fd,))
+                except Exception:
+                    os.close(read_fd)
+                    raise
+                finally:
+                    os.close(write_fd)
+                pidfd, pidfd_state = observation.open_pidfd(child.pid)
+                try:
+                    facts = observation.read_child(read_fd, child.pid)
+                finally:
+                    os.close(read_fd)
+                facts['pidfd'] = pidfd_state
         while child.poll() is None:
             if now() >= control['deadlineAt'] or (CONTROL / (token + '.stop.json')).exists():
                 fence.seal()
@@ -106,6 +124,8 @@ def monitor(token, control):
         code = 4
     # A failed seal never produces a result or a stopped claim. Only the root
     # monitor (not the project) supplies exit status and Python version.
+    if pidfd is not None:
+        os.close(pidfd)
     with operation_lock():
         proof = stopped(token)
         result = None
@@ -120,7 +140,8 @@ def monitor(token, control):
                 code, result = 4, None
         elif code == 0:
             code = 4
-        write(CONTROL / (token + '.result.json'), envelope(code, result, python_version))
+        native_observation = {'schemaVersion':1, 'runId':control['runId'], 'token':token, 'filesSha256':control['filesSha256'], 'child':facts, 'stop':proof['stop'], 'sealed':True, 'quiescent':True}
+        write(CONTROL / (token + '.result.json'), envelope(code, result, python_version, native_observation))
 
 def protect_tree():
     for current, directories, files in os.walk(WORKSPACE, topdown=False, followlinks=False):
@@ -155,7 +176,7 @@ def observe(token):
     proof = CONTROL / (token + '.proof.json')
     if proof.exists():
         reply = stopped(token)
-        if result.exists(): reply['result'] = read_json(result, MAX_JSON + 1024)
+        if result.exists(): reply['result'] = read_json(result, MAX_JSON + 8192)
         return reply
     if (CONTROL / (token + '.stop.json')).exists(): return stopped(token)
     if (CONTROL / (token + '.started.json')).exists():

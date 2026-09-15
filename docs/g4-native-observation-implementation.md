@@ -1,0 +1,13 @@
+# G4逐Run可信原生观测实现
+
+状态：仅本地实现与定向验证；未部署、未调用模型、未接纳云Run。不能追溯补造G4历史七Run的内核事实。
+
+新增root-owned preexec观测模块，在原`child_setup`全部完成、生成模型exec之前读取实际PID/startTicks、四个Uid/Gid、NoNewPrivs、AS/NPROC软硬限制与Seccomp模式。专用pipe报告父进程；载荷不超过4096或实际PIPE_BUF的较小值；FD显式close-on-exec且写后关闭，模型不能继续持有报告写端。父进程实际尝试pidfd_open，成功记opened，缺API记unsupported，失败（含快速退出）记unobserved。进程未reap期间PID不会被复用；pidfd probe不推定持续进程监视。
+
+网络事实仅为Seccomp实际模式、trusted child_setup成功确认、平台fallback配置标记。`specificFilterObserved=false`明确表示没有独立观测具体过滤规则，不能由Seccomp2断言网络过滤全部正确。没有弱化既有网络、uid/gid、rlimit、封口及失败关闭逻辑。设置是preexec时点事实，不宣称模型整个生命周期每时刻不变。
+
+父进程在原`stopped(token)`成功后加入sealed/quiescent与可信stop确认，绑定runId/token/filesSHA。失败封口仍不产生结果或停止声明。成功新nativeObservation必须有非空观测child，并保持固定uid/gid10001、NPP1、AS512MiB和NPROC64；缺事实的失败原生结果可以保留child:null诊断，但不能发布成功测量。host与Evidence分别校验实际run/source/token及token派生stop确认。模型result只能含现有schema/metrics/outputs，不能自报nativeObservation。
+
+新增事实是native envelope的可选顶层字段，由平台写入不可变R2 result artifact；旧无事实历史envelope仍兼容。现有模型结果66560字节限保持，新增事实单独4096字节限；原始Python result读取仍65536，observe仅增加可信包络余量。事实参与结果artifact SHA，不变成科学有效性证明。两个锁定Python profile共用Simulation Dockerfile，新增模块以root-owned0555 COPY入镜像。
+
+验证：typecheck通过；Simulation Host/Evidence/native/observation定向36项全部通过，其中Python本地真实preexec→exec证明模型不能访问报告FD，并拒绝错误身份；TS负向覆盖缺child、错误run/token/source/stop、root uid、NPP0、漂移rlimit、假网络确认及未知私有字段。此本地主机验证不是Linux生产内核验收；具体/proc与网络filter、实际镜像的新真实Run证据仍需后续授权发布窗口签收。

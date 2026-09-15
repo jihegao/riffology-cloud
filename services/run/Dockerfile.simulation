@@ -18,6 +18,7 @@ RUN /opt/riffology/python-mesa/bin/python3 -m pip install --no-cache-dir --no-de
 COPY --chown=root:root --chmod=0555 services/project-tools/process_quiescence.py /opt/riffology/process_quiescence.py
 COPY --chown=root:root --chmod=0555 services/project-tools/workspace_archive.py /opt/riffology/workspace_archive.py
 COPY --chown=root:root --chmod=0555 services/project-tools/project_network_fence.py /opt/riffology/project_network_fence.py
+COPY --chown=root:root --chmod=0555 services/run/simulation_observation.py /opt/riffology/simulation_observation.py
 COPY --chown=root:root --chmod=0555 services/run/simulation_process.py /opt/riffology/simulation_process.py
 
 COPY --chown=root:root --chmod=0555 services/run/service_process.py /opt/riffology/service_process.py

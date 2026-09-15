@@ -1,10 +1,11 @@
+import {checkedNativeObservation} from './native-observation.ts';
 import {GROUP_RESERVATION,GROUP_WAKE_KEY} from './group-state.ts';
 import {publishOutputs,type SimulationOutput} from './outputs.ts';
 import {actor as checkedActor,scope as checkedScope,turnId,type TurnActor,type TurnScope} from '../turn/protocol.ts';
 import {leaseReference,type LeaseReference,type LeaseRequest,type Acquisition,type StopConfirmation} from '../quota/core.ts';
 import {modelVersion,digest,type SimulationPlan} from './source.ts';
 import {resolveParameters,validateMetrics,type ParameterValues} from './model-spec.ts';
-import type {SimulationInput,NativeObservation} from './native.ts';
+import {simulationToken,type SimulationInput,type NativeObservation} from './native.ts';
 import {BROWSER_BUILD_WAKE_KEY,applyWorkspaceAlarm,SIMULATION_WAKE_KEY,WORKSPACE_STATE_KEY,TURN_WAKE_KEY,SERVICE_WAKE_KEY,OBSERVER_WAKE_KEY} from '../workspace/shared-alarm.ts';
 export type ExperimentRequest={revisionId:string|null;filesSha256:string;specSha256:string;parameters:ParameterValues;seed:number};
 type Status='queued'|'waiting_for_capacity'|'preparing'|'running'|'finalizing'|'stopping'|'unknown'|'completed'|'failed'|'cancelled';
@@ -169,15 +170,16 @@ export class SimulationHost{
 /** Only the platform publishes the immutable result envelope, after native
  * exit and process-domain stop proof. Project success strings are ignored. */
 export async function publishSimulationResult(bucket:R2Bucket,record:SimulationRecord,raw:unknown){
- const value=raw as {exitCode?:unknown;result?:unknown;pythonVersion?:unknown};
+ const value=raw as {exitCode?:unknown;result?:unknown;pythonVersion?:unknown;nativeObservation?:unknown};
  if(record.input.plan.executionProfile&&value?.pythonVersion!==record.input.plan.executionProfile.pythonVersion)throw Error('simulation-environment-mismatch');
- if(!value||typeof value!=='object'||Object.keys(value).sort().join(',')!=='exitCode,pythonVersion,result'||value.exitCode!==0||typeof value.pythonVersion!=='string'||!/^3\.[0-9]+\.[0-9]+$/.test(value.pythonVersion))throw Error('simulation-result-invalid');
+ if(!value||typeof value!=='object'||!['exitCode,pythonVersion,result','exitCode,nativeObservation,pythonVersion,result'].includes(Object.keys(value).sort().join(','))||value.exitCode!==0||typeof value.pythonVersion!=='string'||!/^3\.[0-9]+\.[0-9]+$/.test(value.pythonVersion))throw Error('simulation-result-invalid');
+ const nativeObservation=value.nativeObservation===undefined?undefined:checkedNativeObservation(value.nativeObservation,record.runId,modelVersion(record.input.plan).filesSha256,await simulationToken(record.input),await digest('simulation-stop:'+await simulationToken(record.input)));
  const result=value.result as {schemaVersion?:unknown;metrics?:unknown;outputs?:unknown};
  if(!result||typeof result!=='object'||!['metrics,schemaVersion','metrics,outputs,schemaVersion'].includes(Object.keys(result).sort().join(','))||result.schemaVersion!==1)throw Error('simulation-result-invalid');
  let metrics:Record<string,number>;try{metrics=validateMetrics(record.input.plan.spec,result.metrics);}catch{throw Error('simulation-result-invalid');}
  const prefix=`simulation-results-v1/${record.scope.tenantId}/${record.scope.projectId}/${record.scope.workspaceId}/${record.runId}`;
  const outputs=await publishOutputs(bucket,prefix,result.outputs);
- const envelope={...(outputs.length?{outputs}:{}),schemaVersion:1,runId:record.runId,experimentId:record.experimentId,version:modelVersion(record.input.plan),parameters:record.input.parameters,seed:record.input.seed,runtimeImage:record.input.runtimeImage,pythonVersion:value.pythonVersion,metrics};
+ const envelope={...(nativeObservation?{nativeObservation}:{}),...(outputs.length?{outputs}:{}),schemaVersion:1,runId:record.runId,experimentId:record.experimentId,version:modelVersion(record.input.plan),parameters:record.input.parameters,seed:record.input.seed,runtimeImage:record.input.runtimeImage,pythonVersion:value.pythonVersion,metrics};
  const content=JSON.stringify(envelope),artifactSha256=await digest(content),key=`simulation-results-v1/${record.scope.tenantId}/${record.scope.projectId}/${record.scope.workspaceId}/${record.runId}/${artifactSha256}.json`;
  await bucket.put(key,content,{onlyIf:{etagDoesNotMatch:'*'},httpMetadata:{contentType:'application/json'}});
  const stored=await bucket.get(key);if(!stored||stored.size>65536||await digest(await stored.text())!==artifactSha256)throw Error('simulation-result-unconfirmed');

@@ -14,7 +14,10 @@ export class SimulationNative{
   if(!result.success||result.exitCode!==0||typeof result.stdout!=='string'||result.stdout.length>131072)throw Error('simulation-native-unconfirmed');
   const raw=JSON.parse(result.stdout);
   if(!raw||raw.token!==token||raw.schemaVersion!==1||Object.keys(raw).sort().join(',')!=='result,schemaVersion,status,stop,token'||!['absent','running','stopped'].includes(raw.status))throw Error('simulation-native-invalid');
-  if(raw.result!==null&&new TextEncoder().encode(JSON.stringify(raw.result)).byteLength>66560)throw Error('simulation-native-invalid');
+  if(raw.result!==null){
+   const {nativeObservation,...legacy}=raw.result;
+   if(new TextEncoder().encode(JSON.stringify(legacy)).byteLength>66560||nativeObservation!==undefined&&new TextEncoder().encode(JSON.stringify(nativeObservation)).byteLength>4096)throw Error('simulation-native-invalid');
+  }
   if(raw.status==='stopped'){
    const s=raw.stop;if(!s||Object.keys(s).sort().join(',')!=='confirmationId,fenced,observedAt'||s.fenced!==true||typeof s.confirmationId!=='string'||s.confirmationId!==await digest('simulation-stop:'+token)||!Number.isSafeInteger(s.observedAt)||s.observedAt<1||s.observedAt>Date.now())throw Error('simulation-stop-invalid');
   }else if(raw.stop!==null||raw.result!==null)throw Error('simulation-native-invalid');
