@@ -162,7 +162,9 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       if(canonicalPreviewJson(saved)!==canonicalPreviewJson(frozenSource(source)))throw Error('browser-preview-source-unavailable');return;
     }
     const state=this.#store.read();
-    if(!state?.projectionConfirmed||state.projection?.outcome!=='ready'||!state.task.modelContent||!state.identity||!state.runtimeReceipt)throw Error('browser-preview-source-unavailable');
+    if(!state?.task.modelContent||!state.identity||!state.runtimeReceipt)throw Error('browser-preview-source-unavailable');
+    const admitted=this.ctx.storage.kv.get<BrowserBuildSource>('browser-preview:discovery:'+source.revisionId);
+    if(admitted?.kind!=='initial-workspace'||admitted.referenceSha256!==source.referenceSha256||canonicalPreviewJson(admitted.reference)!==canonicalPreviewJson(source.reference)||this.ctx.storage.kv.get<string>('browser-preview:initial-source')!==source.revisionId)throw Error('browser-preview-source-unavailable');
     const actual=initialWorkspaceReference({schemaVersion:1,scope,task:state.task,runtime:state.identity,markerNonce:state.markerNonce,markerSha256:state.runtimeReceipt.markerSha256,checkpointRevision:state.runtimeReceipt.checkpointRevision});
     if(canonicalPreviewJson(actual)!==canonicalPreviewJson(source.reference))throw Error('browser-preview-source-unavailable');
   }

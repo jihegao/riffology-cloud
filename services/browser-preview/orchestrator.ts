@@ -46,7 +46,7 @@ export class BrowserPreviewOrchestrator{
   const result=await readPreviewPackage(this.ports.bucket,{tenantId:this.scope.tenantId,projectId:this.scope.projectId,workspaceId:this.scope.workspaceId},receipt);
   const row=this.ports.builds.read(receipt.revisionId,result.manifest.runtime.profileId);
   try{this.ports.delivery(result.manifest.runtime.assetSha256);}catch{throw Error('browser-preview-source-unavailable');}
-  if(!row?.profile||!eq(row.profile.runtime,result.manifest.runtime))throw Error('browser-preview-source-unavailable');
+  if(!row?.profile||!eq(row.profile.runtime,result.manifest.runtime)||!eq(frozenSource(row.source),frozenSource(saved))||result.manifest.revisionId!==sourceRevision(saved)||result.manifest.filesSha256!==sourceFilesSha(saved))throw Error('browser-preview-source-unavailable');
   await this.#authorize(actor);this.#stillSaved(saved);return result;
  }
  async retry(actor:TurnActor,raw:unknown){
@@ -67,14 +67,14 @@ export class BrowserPreviewOrchestrator{
  async verification(actor:TurnActor,key:string){
   await this.#authorize(actor);const capture=this.storage.kv.get<Capture>(await this.#key(actor,key));await this.#authorize(actor);
   if(!capture)return {verificationId:key,status:'absent',captured:null,experiment:null};
-  if(!eq(capture.scope,this.scope)||!eq(capture.actor,actor))throw Error('browser-preview-access-denied');const saved=this.#saved(capture.input.revisionId);if(capture.source&&!eq(frozenSource(saved),capture.source))throw Error('browser-preview-source-unavailable');
-  const prior=await this.ports.simulations.replay(actor,capture.serverKey,capture.request);await this.#authorize(actor);
+  if(!eq(capture.scope,this.scope)||!eq(capture.actor,actor))throw Error('browser-preview-access-denied');const saved=this.#saved(capture.input.revisionId);if(saved.kind==='initial-workspace'&&!capture.source||capture.request.filesSha256!==sourceFilesSha(saved)||capture.source&&!eq(frozenSource(saved),capture.source))throw Error('browser-preview-source-unavailable');
+  const prior=await this.ports.simulations.replay(actor,capture.serverKey,capture.request);await this.#authorize(actor);this.#stillSaved(saved);
   return {verificationId:key,status:prior?'accepted':'absent',captured:(({idempotencyKey:_,...captured})=>captured)(capture.input),experiment:prior?publicExperiment(prior,this.#currentFilesSha()??null):null};
  }
  async verify(actor:TurnActor,raw:unknown){
   const input=parsePreviewVerifyRequest(raw);await this.#authorizeVerify(actor);const key=await this.#key(actor,input.idempotencyKey),prior=this.storage.kv.get<Capture>(key);
   if(prior&&(!eq(prior.actor,actor)||!eq(prior.scope,this.scope)||!eq(prior.input,input)))throw Error('browser-preview-idempotency-conflict');
-  const saved=this.#saved(input.revisionId);if(prior?.source&&!eq(prior.source,frozenSource(saved)))throw Error('browser-preview-source-unavailable');const pack=await this.bytes(actor,input.packageIdentity);
+  const saved=this.#saved(input.revisionId);if(prior&&(saved.kind==='initial-workspace'&&!prior.source||prior.request.filesSha256!==sourceFilesSha(saved)||prior.source&&!eq(prior.source,frozenSource(saved))))throw Error('browser-preview-source-unavailable');const pack=await this.bytes(actor,input.packageIdentity);
   if(pack.manifest.revisionId!==input.revisionId||pack.manifest.filesSha256!==sourceFilesSha(saved))throw Error('browser-preview-source-unavailable');
   const source:PreviewSource=sourcePreview(saved),bytes=await this.ports.files(source);await this.#authorizeVerify(actor);this.#stillSaved(saved);
   const plan=await simulationPlan(source,bytes),request=experimentRequest({...modelVersion(plan),parameters:input.parameters,seed:input.seed}),capture:Capture={schemaVersion:1,scope:this.scope,actor,input,request,serverKey:'browserverify-'+key.slice(key.lastIndexOf(':')+1),source:frozenSource(saved)};
@@ -83,6 +83,6 @@ export class BrowserPreviewOrchestrator{
   await this.storage.transaction(async tx=>{const existing=await tx.get<Capture>(key);if(existing&&!eq({...existing,source:existing.source??frozenSource(saved)},capture))throw Error('browser-preview-idempotency-conflict');this.#stillSaved(saved);await tx.put(key,capture);});await this.storage.sync();
   const replay=await this.ports.simulations.replay(actor,capture.serverKey,request);await this.#authorizeVerify(actor);this.#stillSaved(saved);
   const experiment=replay??await this.ports.simulations.submit(actor,capture.serverKey,request,plan,this.ports.image,()=>{this.#stillSaved(saved);return true;});
-  await this.#authorizeVerify(actor);return {verificationId:input.idempotencyKey,experiment:publicExperiment(experiment,this.#currentFilesSha()??null)};
+  await this.#authorizeVerify(actor);this.#stillSaved(saved);return {verificationId:input.idempotencyKey,experiment:publicExperiment(experiment,this.#currentFilesSha()??null)};
  }
 }

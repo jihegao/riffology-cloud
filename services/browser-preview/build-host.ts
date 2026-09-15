@@ -37,19 +37,17 @@ export class BrowserPreviewBuildHost{
  initial():PreviewDiscovery|null{const revision=this.storage.kv.get<string>('browser-preview:initial-source');return revision?this.source(revision):null;}
  async #guard(source:PreviewDiscovery){this.ports.checkSource?.(source);const current=await this.storage.get<PreviewDiscovery>(discoveryKey(sourceRevision(source)));if(!current||!equal(current,source))throw Error('preview-discovery-conflict');this.ports.checkSource?.(source);}
  async #checkTransactionSource(tx:DurableObjectTransaction,source:PreviewDiscovery){const current=await tx.get<PreviewDiscovery>(discoveryKey(sourceRevision(source)));this.ports.checkSource?.(source);if(!current||!equal(current,source))throw Error('preview-discovery-conflict');}
- async #write(operation:(tx:DurableObjectTransaction)=>Promise<void>,source?:PreviewDiscovery){await this.storage.transaction(async tx=>{
-   const guarded=source?new Proxy(tx,{get:(target,key)=>key==='put'?async(...args:Parameters<DurableObjectTransaction['put']>)=>{await this.#checkTransactionSource(target,source);return target.put(...args);}:typeof target[key as keyof DurableObjectTransaction]==='function'?(target[key as keyof DurableObjectTransaction] as Function).bind(target):target[key as keyof DurableObjectTransaction]}):tx;
-   await operation(guarded);await project(tx);
-  });await this.storage.sync();}
- async #settle(source:PreviewDiscovery,reason:string|null){await this.#write(async tx=>{const r=await tx.get<PreviewDiscovery>(discoveryKey(sourceRevision(source)));if(!r||!equal(frozenSource(r),frozenSource(source)))throw Error('preview-discovery-conflict');await tx.put(discoveryKey(sourceRevision(source)),{...r,status:'settled',nextAttemptAt:null,reasonCode:reason});},source);}
+ async #put(tx:DurableObjectTransaction,key:string,value:unknown,source:PreviewDiscovery){await this.#checkTransactionSource(tx,source);await tx.put(key,value);}
+ async #write(operation:(tx:DurableObjectTransaction)=>Promise<void>,source?:PreviewDiscovery){await this.storage.transaction(async tx=>{if(source)await this.#checkTransactionSource(tx,source);await operation(tx);await project(tx);});await this.storage.sync();}
+ async #settle(source:PreviewDiscovery,reason:string|null){await this.#write(async tx=>{const r=await tx.get<PreviewDiscovery>(discoveryKey(sourceRevision(source)));if(!r||!equal(frozenSource(r),frozenSource(source)))throw Error('preview-discovery-conflict');await this.#put(tx,discoveryKey(sourceRevision(source)),{...r,status:'settled',nextAttemptAt:null,reasonCode:reason},source);},source);}
  #receipts(source:PreviewDiscovery,profile:TrustedPreviewProfile,spec:ModelSpec):PreviewReceiptPort{
   const scope={tenantId:this.scope.tenantId,projectId:this.scope.projectId,workspaceId:this.scope.workspaceId};
-  return {begin:async intent=>{await this.#guard(source);if(!equal(intent.scope,scope)||intent.revisionId!==sourceRevision(source))throw Error('browser-preview-reference-denied');await this.#write(async tx=>{const key=REFERENCE+intent.buildIdentity,prior=await tx.get<{intent:PreviewBuildIntent;source:FrozenSource}>(key);const ref={intent,source:frozenSource(source)};if(prior&&!equal(prior,ref))throw Error('browser-preview-reference-conflict');await tx.put(key,ref);},source);},persist:async receipt=>{
+  return {begin:async intent=>{await this.#guard(source);if(!equal(intent.scope,scope)||intent.revisionId!==sourceRevision(source))throw Error('browser-preview-reference-denied');await this.#write(async tx=>{const key=REFERENCE+intent.buildIdentity,prior=await tx.get<{intent:PreviewBuildIntent;source:FrozenSource}>(key);const ref={intent,source:frozenSource(source)};if(prior&&!equal(prior,ref))throw Error('browser-preview-reference-conflict');await this.#put(tx,key,ref,source);},source);},persist:async receipt=>{
    await this.#guard(source);let result=receipt;await this.#write(async tx=>{
     const ref=await tx.get<{intent:PreviewBuildIntent;source:FrozenSource}>(REFERENCE+receipt.buildIdentity);if(!ref||!equal(ref.source,frozenSource(source))||!equal(ref.intent,{scope:receipt.scope,revisionId:receipt.revisionId,buildIdentity:receipt.buildIdentity,profileSha256:receipt.profileSha256})||receipt.trust!=='verified-platform')throw Error('browser-preview-reference-denied');
-    const prior=await tx.get<PreviewBuildReceipt>(RECEIPT+receipt.packageIdentity);if(prior){const {verifiedAt:a,...old}=prior,{verifiedAt:b,...fresh}=receipt;if(!equal(old,fresh))throw Error('browser-preview-receipt-conflict');result=prior;}else await tx.put(RECEIPT+receipt.packageIdentity,receipt);
+    const prior=await tx.get<PreviewBuildReceipt>(RECEIPT+receipt.packageIdentity);if(prior){const {verifiedAt:a,...old}=prior,{verifiedAt:b,...fresh}=receipt;if(!equal(old,fresh))throw Error('browser-preview-receipt-conflict');result=prior;}else await this.#put(tx,RECEIPT+receipt.packageIdentity,receipt,source);
     const row:SavedPreviewBuild={schemaVersion:1,source,profile,modelSpec:spec,receipt:result,state:{status:'ready',revisionId:receipt.revisionId,profileId:profile.runtime.profileId,buildIdentity:receipt.buildIdentity,packageIdentity:receipt.packageIdentity,sha256:receipt.sha256,byteLength:receipt.byteLength}};
-    await tx.put(rowKey(receipt.revisionId,profile.runtime.profileId),row);
+    await this.#put(tx,rowKey(receipt.revisionId,profile.runtime.profileId),row,source);
    },source);return structuredClone(result);
   }};
  }
@@ -62,19 +60,20 @@ export class BrowserPreviewBuildHost{
    const row=await tx.get<SavedPreviewBuild>(rowKey(revisionId,profileId));
    if(!row||!sameScope(sourceScope(row.source),this.scope)||row.state.status!=='failed'||row.state.buildIdentity!==buildIdentity)throw Error('browser-preview-retry-conflict');
    const discovery=await tx.get<PreviewDiscovery>(discoveryKey(revisionId));if(!discovery||!equal(frozenSource(discovery),frozenSource(row.source)))throw Error('browser-preview-source-unavailable');
-   await tx.put('browser-preview:retry:'+serverKey,intent);await tx.put(discoveryKey(revisionId),{...discovery,status:'pending',attempts:0,nextAttemptAt:this.now(),reasonCode:null});
-   await tx.put(rowKey(revisionId,profileId),{...row,state:{status:'building',revisionId,profileId,buildIdentity,attempt:0}});
+   const reset:PreviewDiscovery={...discovery,status:'pending',attempts:0,nextAttemptAt:this.now(),reasonCode:null};
+   await this.#put(tx,'browser-preview:retry:'+serverKey,intent,discovery);await this.#put(tx,discoveryKey(revisionId),reset,discovery);
+   await this.#put(tx,rowKey(revisionId,profileId),{...row,state:{status:'building',revisionId,profileId,buildIdentity,attempt:0}},reset);
   });
  }
  /** One source per alarm, three bounded attempts. Intent is rearmed before I/O. */
- async #fail(source:PreviewDiscovery,error:unknown){for(const id of ids){const row=this.read(sourceRevision(source),id);if(row?.state.status==='ready'||row?.state.status==='unsupported')continue;await this.#write(async tx=>{await tx.put(rowKey(sourceRevision(source),id),{schemaVersion:1,source,profile:row?.profile??null,modelSpec:row?.modelSpec??null,receipt:null,state:{status:'failed',revisionId:sourceRevision(source),profileId:id,buildIdentity:row&&'buildIdentity' in row.state?row.state.buildIdentity:await previewSha256(canonicalPreviewJson({revision:frozenSource(source),profileId:id})),reasonCode:error instanceof Error&&error.message==='browser-preview-object-conflict'?'object-conflict':'source-unavailable'}} satisfies SavedPreviewBuild);},source);}await this.#settle(source,'browser-preview-build-failed');}
+ async #fail(source:PreviewDiscovery,error:unknown){for(const id of ids){const row=this.read(sourceRevision(source),id);if(row?.state.status==='ready'||row?.state.status==='unsupported')continue;await this.#write(async tx=>{await this.#put(tx,rowKey(sourceRevision(source),id),{schemaVersion:1,source,profile:row?.profile??null,modelSpec:row?.modelSpec??null,receipt:null,state:{status:'failed',revisionId:sourceRevision(source),profileId:id,buildIdentity:row&&'buildIdentity' in row.state?row.state.buildIdentity:await previewSha256(canonicalPreviewJson({revision:frozenSource(source),profileId:id})),reasonCode:error instanceof Error&&error.message==='browser-preview-object-conflict'?'object-conflict':'source-unavailable'}} satisfies SavedPreviewBuild,source);},source);}await this.#settle(source,'browser-preview-build-failed');}
  #active:Promise<void>|null=null;
  alarm():Promise<void>{if(this.#active)return this.#active;const work=this.#advance();this.#active=work;void work.finally(()=>{if(this.#active===work)this.#active=null;}).catch(()=>{});return work;}
  async #advance():Promise<void>{
-  const due=[...(await this.storage.list<PreviewDiscovery>({prefix:PREVIEW_DISCOVERY_PREFIX})).values()].filter(r=>r.status==='pending'&&r.nextAttemptAt!<=this.now()&&sameScope(sourceScope(r),this.scope)).sort((a,b)=>a.nextAttemptAt!-b.nextAttemptAt!)[0];if(!due)return;
+  const due=[...(await this.storage.list<PreviewDiscovery>({prefix:PREVIEW_DISCOVERY_PREFIX})).values()].filter(r=>r.status==='pending'&&r.nextAttemptAt!<=this.now()&&sameScope(sourceScope(r),this.scope)).sort((a,b)=>a.nextAttemptAt!-b.nextAttemptAt!)[0];if(!due){await this.#write(async()=>{});return;}
   if(due.attempts>=3){await this.#fail(due,Error('browser-preview-attempts-exhausted'));return;}
   let source:PreviewDiscovery={...due,attempts:due.attempts+1,nextAttemptAt:this.now()+Math.min(60000,2000*2**due.attempts)};
-  await this.#write(async tx=>{await tx.put(discoveryKey(sourceRevision(source)),source);},due);
+  await this.#write(async tx=>{await this.#put(tx,discoveryKey(sourceRevision(source)),source,due);},due);
   try{
    const registry=await this.ports.registry();await this.#guard(source);
    let bytes:Uint8Array;
@@ -83,7 +82,7 @@ export class BrowserPreviewBuildHost{
     const resolved=await this.ports.resolveInitial(source);await this.#guard(source);
     if(!equal(resolved.reference,source.reference)||resolved.referenceSha256!==source.referenceSha256||!sameScope(resolved.reference.scope,this.scope)||source.filesSha256!==null&&source.filesSha256!==resolved.filesSha256)throw Error('browser-preview-source-unavailable');
     const next:PreviewDiscovery={...source,filesSha256:resolved.filesSha256};
-    await this.#write(async tx=>{const current=await tx.get<PreviewDiscovery>(discoveryKey(sourceRevision(source)));if(!current||!equal(current,source))throw Error('preview-discovery-conflict');this.ports.checkSource?.(source);await tx.put(discoveryKey(sourceRevision(source)),next);},source);
+    await this.#write(async tx=>{const current=await tx.get<PreviewDiscovery>(discoveryKey(sourceRevision(source)));if(!current||!equal(current,source))throw Error('preview-discovery-conflict');this.ports.checkSource?.(source);await this.#put(tx,discoveryKey(sourceRevision(source)),next,source);},source);
     source=next;bytes=resolved.filesArchive;
    }else{bytes=await this.ports.files(source);await this.#guard(source);}
    const filesSha=sourceFilesSha(source);if(!filesSha)throw Error('browser-preview-source-unavailable');
@@ -98,13 +97,13 @@ export class BrowserPreviewBuildHost{
     const checked=await validateSavedPreview({projectId:this.scope.projectId,revisionId:sourceRevision(source),filesSha256:sourceFilesSha(source)!},bytes,id,selected);
     if(checked.status==='unsupported'){
      if(this.read(sourceRevision(source),id))throw Error('browser-preview-source-unavailable');
-     if(!this.read(sourceRevision(source),id))await this.#write(async tx=>{await tx.put(rowKey(sourceRevision(source),id),{schemaVersion:1,source,profile:registry.resolve(id),modelSpec:null,receipt:null,state:{status:'unsupported',revisionId:sourceRevision(source),profileId:id,buildIdentity:await previewSha256(canonicalPreviewJson({revision:frozenSource(source),profileId:id})),reasonCode:checked.reasonCode}} satisfies SavedPreviewBuild);},source);continue;
+     if(!this.read(sourceRevision(source),id))await this.#write(async tx=>{await this.#put(tx,rowKey(sourceRevision(source),id),{schemaVersion:1,source,profile:registry.resolve(id),modelSpec:null,receipt:null,state:{status:'unsupported',revisionId:sourceRevision(source),profileId:id,buildIdentity:await previewSha256(canonicalPreviewJson({revision:frozenSource(source),profileId:id})),reasonCode:checked.reasonCode}} satisfies SavedPreviewBuild,source);},source);continue;
     }
     await this.#guard(source);
     const value=checked.value,prior=this.read(sourceRevision(source),id);
     if(prior?.profile&&!equal(prior.profile.runtime,value.profile.runtime))throw Error('browser-preview-profile-unavailable');
     const pkg=await packageCompatiblePreview(value);await this.#guard(source);
-    if(!this.read(sourceRevision(source),id)?.receipt)await this.#write(async tx=>{await tx.put(rowKey(sourceRevision(source),id),{schemaVersion:1,source,profile:value.profile,modelSpec:value.spec,receipt:null,state:{status:'building',revisionId:sourceRevision(source),profileId:id,buildIdentity:pkg.manifest.packageIdentity,attempt:source.attempts}} satisfies SavedPreviewBuild);},source);
+    if(!this.read(sourceRevision(source),id)?.receipt)await this.#write(async tx=>{await this.#put(tx,rowKey(sourceRevision(source),id),{schemaVersion:1,source,profile:value.profile,modelSpec:value.spec,receipt:null,state:{status:'building',revisionId:sourceRevision(source),profileId:id,buildIdentity:pkg.manifest.packageIdentity,attempt:source.attempts}} satisfies SavedPreviewBuild,source);},source);
     await storePreviewPackage(this.ports.bucket,this.#receipts(source,value.profile,value.spec),{tenantId:this.scope.tenantId,projectId:this.scope.projectId,workspaceId:this.scope.workspaceId},pkg,{now:this.now});built=true;
    }
    await this.#settle(source,built?null:'browser-preview-unsupported');

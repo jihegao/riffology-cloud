@@ -1,38 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {fixture,Storage} from './browser-preview-test-fixture.mjs';
-import {InitialWorkspaceResolver} from '../../services/turn-runtime/initial-workspace.ts';
-import {verifyModelContent,modelContentKey} from '../../services/runtime/content.ts';
-import {initialCheckpoint} from '../../services/runtime/starter.ts';
-import {checkpointKey} from '../../services/runtime/core.ts';
-import {canonicalWorkspaceMarker,workspaceDigest} from '../../services/workspace/protocol.ts';
-import {previewSha256} from '../../services/browser-preview/contract.ts';
+import {Storage} from './browser-preview-test-fixture.mjs';
 import {projectInitialPreviewDiscovery,discoveryKey} from '../../services/browser-preview/discovery.ts';
 import {BrowserPreviewBuildHost} from '../../services/browser-preview/build-host.ts';
 import {BrowserPreviewOrchestrator} from '../../services/browser-preview/orchestrator.ts';
 import {frozenSource} from '../../services/browser-preview/source.ts';
 import {SimulationHost} from '../../services/simulation/host.ts';
 import {platformPreviewDelivery} from '../../services/browser-preview/platform-delivery.ts';
-import {makeFixture} from '../../services/browser-preview/runtime/fixtures.mjs';
-import profiles from '../../services/browser-preview/runtime/assets/profiles.json' with {type:'json'};
-const encoder=new TextEncoder(),actor={userId:'user-a',authVersion:1};
-const object=bytes=>({size:bytes.length,arrayBuffer:async()=>Uint8Array.from(bytes).buffer});
-async function initial(index=0){
- const f=await fixture(index),model=await makeFixture(profiles[index],index?'mesa':'queue');
- const files=await Promise.all(model.files.map(async row=>{const bytes=Buffer.from(row.base64,'base64');return {path:row.path,bytes:bytes.length,sha256:await previewSha256(bytes),contentBase64:row.base64};}));files.sort((a,b)=>a.path.localeCompare(b.path));
- const content=encoder.encode(JSON.stringify({schemaVersion:1,files})),modelContent={modelVersionId:'version-a',modelId:'model-a',version:1,contentRef:'copy/source.json',contentSha256:await previewSha256(content)};
- const task={id:'task-a',tenantId:f.scope.tenantId,projectId:f.scope.projectId,workspaceId:f.scope.workspaceId,generation:1,starterVersion:'blank-v1',authVersion:1,createdAt:1000,deadlineAt:2000,modelContent};
- const runtime={taskId:task.id,tenantId:task.tenantId,projectId:task.projectId,workspaceId:task.workspaceId,generation:1,runtimeId:'runtime-a',leaseId:'lease-a'},markerNonce='nonce-a';
- const verified=await verifyModelContent(modelContent,object(content)),checkpoint=await initialCheckpoint({task,identity:runtime,markerNonce},verified.receipt);
- const state={schemaVersion:1,task,identity:runtime,markerNonce,runtimeReceipt:{receiptId:'receipt-a',initializedAt:1500,layoutVersion:'m1-empty-v1',markerSha256:await workspaceDigest(canonicalWorkspaceMarker(runtime,markerNonce)),checkpointRevision:checkpoint.revision},projection:{outcome:'ready'},projectionConfirmed:true,wakeAt:null};
- f.storage.values.clear();let resolves=0,scopeValid=true;
- const resolver=new InitialWorkspaceResolver({get:async key=>key===checkpointKey(runtime)?object(encoder.encode(checkpoint.text)):null},{get:async key=>key===modelContentKey(modelContent)?object(content):null});
- await f.storage.transaction(tx=>projectInitialPreviewDiscovery(tx,state,{...state,projectionConfirmed:false}));
- const revision=f.storage.values.get('browser-preview:initial-source'),source=f.storage.values.get(discoveryKey(revision));
- const ports={...f.ports,checkSource:source=>{if(!scopeValid||source.reference?.task.generation!==1)throw Error('browser-preview-source-unavailable');},files:async()=>{throw Error('saved must not resolve');},resolveInitial:async source=>{resolves++;assert.ok(f.storage.alarm!==null,'physical wake rearmed before private source I/O');return resolver.resolve(source.reference,f.scope);}};
- const host=()=>new BrowserPreviewBuildHost(f.storage,f.scope,ports,()=>1000);
- return {f,state,content,checkpoint,resolver,source,revision,ports,host,get resolves(){return resolves;},revoke:()=>{scopeValid=false;}};
-}
+import {createTrustedPreviewRegistry} from '../../services/browser-preview/profiles.ts';
+import {initial} from './browser-preview-initial-fixture.mjs';
+const actor={userId:'user-a',authVersion:1};
 for(const index of [0,1])test(`initial ${index} provenance resolves frozen model bytes and persists before create-only R2 without saved Turn`,async()=>{
  const s=await initial(index);await s.host().alarm();const row=s.host().read(s.revision);assert.equal(row.state.status,'ready');assert.equal(row.source.kind,'initial-workspace');assert.ok(row.source.filesSha256);assert.equal(row.source.revisionId,s.revision);assert.equal(Object.hasOwn(row.source,'identity'),false);assert.equal(Object.hasOwn(row.source,'receipt'),false);assert.equal(s.resolves,1);assert.equal(s.f.puts,1);
  const ref=[...s.f.storage.values].find(([key])=>key.startsWith('browser-preview:reference:'))[1];assert.deepEqual(ref.source,frozenSource(row.source));assert.equal(ref.source.filesSha256,row.source.filesSha256);assert.equal(s.f.storage.values.get(discoveryKey(s.revision)).status,'settled');assert.equal(s.f.storage.alarm,null);
@@ -63,4 +40,41 @@ test('initial resolver tamper and revoked source after await never write private
  const r=await initial();r.ports.resolveInitial=async source=>{const value=await r.resolver.resolve(source.reference,r.f.scope);r.revoke();return value;};await r.host().alarm();assert.equal(r.f.puts,0);assert.equal(r.host().source(r.revision).filesSha256,null);
  assert.throws(()=>new BrowserPreviewBuildHost(r.f.storage,{...r.f.scope,tenantId:'tenant-b'},r.ports).source(r.revision),/read-denied/);
  await assert.rejects(r.resolver.resolve(r.source.reference,{...r.f.scope,tenantId:'tenant-b'}),/scope-denied/);
+});
+test('settled initial reconfirmation cannot mint an orphan browser wake; pending wake remains unchanged',async()=>{
+ const s=await initial();await s.host().alarm();await s.f.storage.transaction(tx=>projectInitialPreviewDiscovery(tx,s.state,{...s.state,projectionConfirmed:false}));assert.equal(s.f.storage.values.has('browser-preview:wake-at'),false);assert.equal(s.f.storage.alarm,null);
+ const wakeKey=(await import('../../services/workspace/shared-alarm.ts')).BROWSER_BUILD_WAKE_KEY;s.f.storage.values.set(wakeKey,500);await s.f.storage.transaction(tx=>projectInitialPreviewDiscovery(tx,s.state,{...s.state,projectionConfirmed:false}));assert.equal(s.f.storage.values.get(wakeKey),500);
+ // Alarm's no-due path also cleans a stale logical wake without source I/O.
+ await s.host().alarm();assert.equal(s.f.storage.values.has(wakeKey),false);assert.equal(s.f.storage.alarm,null);
+});
+test('transaction-local source CAS fences a mutation after begin or persist reference await',async()=>{
+ for(const phase of ['begin','persist']){
+  const s=await initial(),transaction=s.f.storage.transaction;let referenceReads=0,injected=false;
+  s.f.storage.transaction=op=>transaction(tx=>op({...tx,get:async key=>{const value=await tx.get(key);if(key.startsWith('browser-preview:reference:')&&++referenceReads===(phase==='begin'?1:2)){injected=true;const row=s.f.storage.values.get(discoveryKey(s.revision));s.f.storage.values.set(discoveryKey(s.revision),{...row,attempts:row.attempts+1});}return value;}}));
+  await s.host().alarm();assert.equal(injected,true);assert.equal(s.host().read(s.revision)?.state.status==='ready',false);assert.equal([...s.f.storage.values.keys()].filter(k=>k.startsWith('browser-preview:receipt:')).length,0);assert.equal(s.f.puts,phase==='begin'?0:1);
+ }
+});
+test('owned package GET rejects source/receipt mismatch and accepted GET rechecks captured source after replay await',async()=>{
+ const s=await initial();await s.host().alarm();let ready=true,execution=0;
+ const simulations=new SimulationHost(s.f.storage,s.f.scope,{authorize:async()=>true,hold:()=>{},quota:{},start:async()=>{execution++;throw Error('must not execute');},observe:async()=>{},stop:async()=>{},destroy:async()=>{},running:async()=>false,publish:async()=>{}},()=>1000);
+ const ports={authorize:async()=>{},authorizeVerify:async()=>{if(!ready)throw Error('workspace-not-ready');},checkScope:()=>{},checkSource:s.ports.checkSource,head:()=>s.host().initial(),saved:id=>s.host().source(id),builds:s.host(),bucket:s.f.ports.bucket,files:async source=>(await s.resolver.resolve(source.reference,s.f.scope)).filesArchive,simulations,canVerify:()=>true,image:'fixture-image',delivery:hash=>platformPreviewDelivery('http://127.0.0.1:8795','http://localhost:8821',hash)};
+ const service=()=>new BrowserPreviewOrchestrator(s.f.storage,s.f.scope,ports),body={revisionId:s.revision,packageIdentity:s.host().read(s.revision).state.packageIdentity,parameters:{},seed:42,intent:'experiment',idempotencyKey:'maintenance-a'};
+ const a=await service().verify(actor,body);ready=false;
+ for(const outcome of ['stopped','unknown']){s.state.projection={outcome};const before=structuredClone(s.f.storage.values),receipt=await service().verification(actor,body.idempotencyKey);assert.equal(receipt.status,'accepted');assert.equal(receipt.experiment.runId,a.experiment.runId);assert.ok((await service().bytes(actor,body.packageIdentity)).bytes.length);assert.deepEqual(s.f.storage.values,before);await assert.rejects(service().verify(actor,{...body,idempotencyKey:outcome+'-new'}),/not-ready/);assert.equal(execution,0);}
+ const original=simulations.replay.bind(simulations);simulations.replay=async(...args)=>{const result=await original(...args),source=s.host().source(s.revision);s.f.storage.values.set(discoveryKey(s.revision),{...source,filesSha256:'f'.repeat(64)});return result;};
+ await assert.rejects(service().verification(actor,body.idempotencyKey),/source-unavailable/);await assert.rejects(service().bytes(actor,body.packageIdentity),/source-unavailable/);assert.equal(execution,0);
+});
+
+test('pending initial reconfirmation preserves future retry due time and compatible row keeps original runtime',async()=>{
+ const s=await initial(),wakeKey=(await import('../../services/workspace/shared-alarm.ts')).BROWSER_BUILD_WAKE_KEY;
+ s.f.storage.values.set(discoveryKey(s.revision),{...s.source,nextAttemptAt:8000});s.f.storage.values.set(wakeKey,8000);
+ await s.f.storage.transaction(tx=>projectInitialPreviewDiscovery(tx,s.state,{...s.state,projectionConfirmed:false}));assert.equal(s.f.storage.values.get(wakeKey),8000);
+ s.f.storage.values.set(discoveryKey(s.revision),s.source);s.f.storage.failReceipt=true;await s.host().alarm();const frozen=s.host().read(s.revision).profile.runtime;
+ s.ports.registry=async()=>await createTrustedPreviewRegistry([]);s.f.storage.failReceipt=false;
+ await new BrowserPreviewBuildHost(s.f.storage,s.f.scope,s.ports,()=>3000).alarm();assert.equal(s.host().read(s.revision).state.status,'ready');assert.deepEqual(s.host().read(s.revision).profile.runtime,frozen);assert.equal(s.f.puts,1);
+});
+test('retry admission rechecks authoritative source after awaited discovery and creates no intent when scope is revoked',async()=>{
+ const s=await initial();s.ports.resolveInitial=async()=>{throw Error('source-transport-failed');};await s.host().alarm();await new BrowserPreviewBuildHost(s.f.storage,s.f.scope,s.ports,()=>3000).alarm();await new BrowserPreviewBuildHost(s.f.storage,s.f.scope,s.ports,()=>7000).alarm();const row=s.host().read(s.revision),transaction=s.f.storage.transaction;
+ s.f.storage.transaction=op=>transaction(tx=>op({...tx,get:async key=>{const value=await tx.get(key);if(key===discoveryKey(s.revision))s.revoke();return value;}}));
+ const before=structuredClone(s.f.storage.values);await assert.rejects(s.host().retry(s.revision,'python-stdlib/v1',row.state.buildIdentity,'revoked-retry'),/source-unavailable/);assert.deepEqual(s.f.storage.values,before);assert.equal(s.host().retryReceipt('revoked-retry'),null);
 });

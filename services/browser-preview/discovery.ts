@@ -50,6 +50,7 @@ export async function projectInitialPreviewDiscovery(tx:DurableObjectTransaction
  if(prior){const original=frozenSource(prior);if(original.kind!=='initial-workspace'||JSON.stringify({...original,filesSha256:null})!==JSON.stringify(frozenSource(candidate)))throw Error('preview-discovery-conflict');}
  else await tx.put(discoveryKey(revisionId),candidate);
  await tx.put('browser-preview:initial-source',revisionId);
+ if(prior?.status==='settled')return;
  const wake=await tx.get<number>(BROWSER_BUILD_WAKE_KEY);
- await tx.put(BROWSER_BUILD_WAKE_KEY,Math.min(candidate.nextAttemptAt!,wake??Infinity));
+ await tx.put(BROWSER_BUILD_WAKE_KEY,Math.min(prior?.nextAttemptAt??candidate.nextAttemptAt!,wake??Infinity));
 }
