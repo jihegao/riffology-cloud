@@ -1,3 +1,4 @@
+import { frozenSource,sourceScope,type BrowserBuildSource } from '../browser-preview/source.ts';
 import {BrowserPreviewBuildHost} from '../browser-preview/build-host.ts';
 import {BrowserPreviewOrchestrator} from '../browser-preview/orchestrator.ts';
 import {productionPreviewRegistry} from '../browser-preview/production-registry.ts';
@@ -142,19 +143,35 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   #browserBuildHost:BrowserPreviewBuildHost|null=null;
   #browserBuild(scope:TurnScope){
     if(!this.env.WORKSPACE_CHECKPOINTS)throw Error('browser-preview-unavailable');
-    return this.#browserBuildHost??=new BrowserPreviewBuildHost(this.ctx.storage,scope,{registry:productionPreviewRegistry,bucket:this.env.WORKSPACE_CHECKPOINTS,files:async discovery=>{
+    return this.#browserBuildHost??=new BrowserPreviewBuildHost(this.ctx.storage,scope,{registry:productionPreviewRegistry,bucket:this.env.WORKSPACE_CHECKPOINTS,checkSource:source=>this.#checkBrowserSource(scope,source),resolveInitial:async source=>{
+      this.#checkBrowserSource(scope,source);
+      const resolved=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).resolveInitial(source.reference,scope);
+      this.#checkBrowserSource(scope,source);return resolved;
+    },files:async discovery=>{
+      if(discovery.kind==='initial-workspace')throw Error('browser-preview-source-unavailable');
       this.#maintenanceScope(scope);const saved=this.#turns.savedRevisionSnapshot(scope,discovery.receipt.revisionId);
       if(!saved||canonicalPreviewJson(saved.identity)!==canonicalPreviewJson(discovery.identity)||canonicalPreviewJson(saved.receipt)!==canonicalPreviewJson(discovery.receipt))throw Error('browser-preview-source-unavailable');
       const bytes=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles({kind:'saved-turn',identity:saved.identity,revision:saved.receipt},16*1024*1024);
       this.#maintenanceScope(scope);const after=this.#turns.savedRevisionSnapshot(scope,discovery.receipt.revisionId);if(canonicalPreviewJson(after)!==canonicalPreviewJson(saved))throw Error('browser-preview-source-unavailable');return bytes;
     }});
   }
+  #checkBrowserSource(scope:TurnScope,source:BrowserBuildSource){
+    this.#maintenanceScope(scope);if(!sameScope(sourceScope(source),scope))throw Error('browser-preview-source-unavailable');
+    if(source.kind!=='initial-workspace'){
+      const saved=this.#turns.savedRevisionSnapshot(scope,source.receipt.revisionId);
+      if(canonicalPreviewJson(saved)!==canonicalPreviewJson(frozenSource(source)))throw Error('browser-preview-source-unavailable');return;
+    }
+    const state=this.#store.read();
+    if(!state?.projectionConfirmed||state.projection?.outcome!=='ready'||!state.task.modelContent||!state.identity||!state.runtimeReceipt)throw Error('browser-preview-source-unavailable');
+    const actual=initialWorkspaceReference({schemaVersion:1,scope,task:state.task,runtime:state.identity,markerNonce:state.markerNonce,markerSha256:state.runtimeReceipt.markerSha256,checkpointRevision:state.runtimeReceipt.checkpointRevision});
+    if(canonicalPreviewJson(actual)!==canonicalPreviewJson(source.reference))throw Error('browser-preview-source-unavailable');
+  }
   #browser(scope:TurnScope){
     const owned=this.#maintenanceScope(scope);
     return new BrowserPreviewOrchestrator(this.ctx.storage,owned,{builds:this.#browserBuild(owned),bucket:this.env.WORKSPACE_CHECKPOINTS!,registry:productionPreviewRegistry,
       checkScope:()=>{this.#maintenanceScope(owned);},authorize:async actor=>{const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(actor,owned.workspaceId);if(!sameScope(actual,owned))throw Error('browser-preview-access-denied');},
       authorizeVerify:async actor=>{this.#ready(owned);const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(actor,owned.workspaceId);if(!sameScope(actual,owned))throw Error('browser-preview-access-denied');this.#ready(owned);},
-      head:()=>this.#turns.workspaceRevisionSnapshot(owned),saved:revision=>this.#turns.savedRevisionSnapshot(owned,revision),
+      head:()=>this.#turns.workspaceRevisionSnapshot(owned)??this.#browserBuild(owned).initial(),saved:revision=>this.#turns.savedRevisionSnapshot(owned,revision)??this.#browserBuild(owned).source(revision),checkSource:source=>this.#checkBrowserSource(owned,source),
       files:source=>this.env.REVISION_STORE.getByName(revisionStoreActorName(owned)).serviceFiles(source,16*1024*1024),simulations:this.#simulations(owned),canVerify:()=>this.#simulationCanRun(),image:this.env.M4_SIMULATION_IMAGE??'',
       delivery:hash=>platformPreviewDelivery(this.env.APP_ORIGIN,this.env.BROWSER_PREVIEW_EXECUTION_ORIGIN,hash)});
   }
