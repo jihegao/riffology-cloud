@@ -41,3 +41,14 @@ G0–G3本地签收。最终正式check exit0，1971项/1960通过/11 opt-in跳�
 普通用户任务尚未接纳，权威窗口 startedAt/deadlineAt 为 null，模型请求和 Run admission 为零。真实 Cloudflare SDK 固定内容探针核对六个模块字节、Adapter 与生成契约通过；云端实际 Pi 实例使用预期镜像且 destroy 后 running=false。两次完整分页库存观察均为238个 inactive、活动实例0；临时探针删除与缺失确认仍在收尾。该探针不调用模型，不代替普通用户 G4 验收或 native Run 资源边界证明。
 
 生产源码1308caa完整正式检查：1994项/1983通过/11条件跳过/0失败。为可靠验证真实构建失败恢复，正在补充仅限本次两个新合成 workspace、最长120秒且自动到期的 private build HOLD；无公共 HTTP 路由，不伪造失败，不影响任务预算。集成后重新冻结生产源码并完成检查，随后才开启普通用户任务。G5/G6仍未授权，任何issue尚未关闭。
+
+
+### G4 运行中：真实用户包与权限观测（非阶段签收）
+
+- 不可重置窗口：2026-09-15T14:57:10.322Z–16:57:10.322Z。冻结源码0748fb975eec6256992a82a1812c93c2d7c77f52，正式2000项/1989通过/11跳过/0失败。仅G4获授权，G5/G6待另定。
+- 原始Mesa候选实际仅stdlib，明确不通过真实Mesa门槛；普通新Turn修正completed/saved，Revision ccd28c4261894c676be368af49e088fecd2ae12277548f3206856c3e26e3f861、package83b2379d80c90f7e7d280dbe5f48c30a01024a067c199cea330cc3f7f0248376自动ready。R2 source.tar40960B/SHA e706f0e2bb4e9a9546a470126459fcc06b62ca23a3e32df4971940a9a4d04cce；五规范文件逐字节与真实HTTP包一致，wrapper fa7987095bbc29f2c6d87e9b0f815415f88c9079ad7070fb7fe8b91e7ebf0898。
+- 非作者真实禁网离线Docker核对Python3.14.2/Mesa3.5.1源码，正确使用Model/Agent/SingleGrid/AgentSet；默认及h.7/seeds7/8完整7帧18居民约7.2KB、确定性/边界/有限指标通过。此项只签收源码，不代替Browser或CloudRun。
+- 真实GET owner包200，无set-cookie；同用户另一workspace误读此包404；空cookie独立context未认证包401。没有覆盖另一已认证principal，不据此宣称完整多用户ACL矩阵通过。
+- 配置源字节etag087ec0e4b6068d336af59aaeb76afdc49917148c33d23ec893190884f213eec2保持不变；唯一应用version从f8d464f2-de1e-44df-9edd-935b89619304切至3ba32488-1717-49b5-a243-2736f160eb9e，仅将私有HOLD allowlist加入第二实际workspace，14项预算策略不变/100%发布/无容器rollout。
+- 首HOLD过期、未删除源码，临时控制Worker已release/delete、独立API10007缺失和GET404确认；不算构建失败恢复。Queue首Turn普通UI202已接纳，等待冷容量释放。当前12次upstream全部recorded，保守US$0.0592862，无未知charge，serverRuns0。
+- 待实际签收：两本地窗口完整trace/seed/controls/cancel/三视口、计数与全cloudinventory零增量、Verify/旧包/独立R2结果Evidence、真实unsupported/buildfailed恢复、最终停止与配额释放、脱敏验收与SHA256SUMS读回。

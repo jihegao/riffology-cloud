@@ -206,3 +206,8 @@ SDK固定内容探针已停止、完整库存稳定inactive、临时Worker已删
 - Mesa修正UI捕获后guard失败，原请求没有dispatch fence/receipt、服务端没有该Turn，独立只读guard重新通过。主控保留捕获键/body，以普通用户认证API同键恢复202；原UI标记发送前阻断，恢复标记API，不宣称其UI成功。
 - 执行器独立审查定位全局proxy环境删除和30秒子进程deadline两项可失败路径；尚未证明本次精确原因，正在补私有stderr/阻断阶段记录。产品预算/时限不放宽。
 - 首模型实际stdlib而非Mesa是明确验收失败；正在通过新Turn生成真正Mesa Model/Agent，原Revision继续保留。首HOLD过期且未故障注入，不算构建失败恢复。Queue初始计划只离线材料化；本地重跑、Verify、比较、ACL、最终释放和G4签收仍待实际证据。
+
+
+### G4 正确Mesa修正与配置范围固定
+
+真实新Mesa包通过独立离线源码/执行审查，root R2五文件逐字节核对通过；实际本地Browser/nativeRun仍待执行。Queue首Turn普通UI202接纳。operator修复5737e2f经非作者审查、root轻量失败证据测试1通过与两module语法检查，生产源码0748与固定模块字节不变。应用唯一version3ba32488-1717-49b5-a243-2736f160eb9e允许两个实际workspace私有HOLD，独立源etag与14项预算不变；不滚动容器。临时Mesa控制Worker已释放并删除，API独立确认不存在、route404，未发生源码故障。12次真实模型调用保守US$0.0592862全部recorded，serverRuns0。
