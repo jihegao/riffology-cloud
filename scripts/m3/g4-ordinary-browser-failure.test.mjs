@@ -1,0 +1,8 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import{hook}from'./g4-ordinary-browser-helpers.mjs';
+test('failed readonly hook preserves private stderr and stage/exit/signal without returning raw diagnostics',async()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'g4-hook-')),before={command:process.env.G4_TEST_COMMAND,dir:process.env.G4_EVIDENCE_DIR};
+ try{process.env.G4_EVIDENCE_DIR=dir;process.env.G4_TEST_COMMAND=JSON.stringify([process.execPath,'-e',"process.stderr.write('private-diagnostic');process.exit(7)"]);await assert.rejects(hook('G4_TEST_COMMAND',{intentId:'owned-intent',hookPhase:'captured-ui-dispatch-guard'}),e=>!e.message.includes('private-diagnostic'));
+ const files=fs.readdirSync(dir),meta=JSON.parse(fs.readFileSync(path.join(dir,files.find(f=>f.endsWith('.json')))));assert.equal(meta.exitCode,7);assert.equal(meta.signal,null);assert.equal(meta.stage,'captured-ui-dispatch-guard');assert.equal(meta.timedOut,false);assert.equal(fs.readFileSync(meta.stderrFile,'utf8'),'private-diagnostic');for(const f of files)assert.equal(fs.statSync(path.join(dir,f)).mode&0o077,0);
+ process.env.G4_TEST_COMMAND=JSON.stringify([process.execPath,'-e',"process.stdout.write('invalid-json')"]);await assert.rejects(hook('G4_TEST_COMMAND',{phase:'parse-receipt'}));assert.equal(fs.readdirSync(dir).filter(f=>f.endsWith('.json')).length,2);
+ }finally{for(const[k,v]of Object.entries({G4_TEST_COMMAND:before.command,G4_EVIDENCE_DIR:before.dir}))if(v===undefined)delete process.env[k];else process.env[k]=v;fs.rmSync(dir,{recursive:true,force:true});}
+});
