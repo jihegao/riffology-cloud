@@ -50,6 +50,7 @@ let pollDeadline = 0;
 let intent = null;
 let creating = false;
 let pendingProject = null;
+let pendingProjectTenantId = null;
 let models = [];
 let modelsStatus = 'loading';
 let modelsGeneration = 0;
@@ -103,7 +104,9 @@ function workspaceNeedsTurnUpdates(snapshot = workspaceSnapshot) {
   return Object.values(snapshot.turns || {}).some(turn => turn?.status === 'queued');
 }
 
-function show(message, error = false, action = null) {
+let projectNotice = null;
+function show(message, error = false, action = null, project = null) {
+  projectNotice = project ? {...project,tenantId:tenant?.id,kind:project.kind||'preparing'} : null;
   notice.replaceChildren();
   const text = document.createElement('span');
   text.textContent = message;
@@ -117,6 +120,28 @@ function show(message, error = false, action = null) {
   }
   notice.className = `notice${error ? ' error' : ''}`;
   notice.hidden = !message;
+}
+
+function syncProjectNotice(projects) {
+  if (!projectNotice || projectNotice.tenantId !== tenant?.id || projectNotice.kind !== 'preparing') return;
+  const project = projects.find(item => item.id === projectNotice.id);
+  if (!project) return;
+  if (project.status === 'ready') show('');
+  else if (project.status === 'failed') show('项目准备失败。请刷新项目状态后重试。', true, {label:'刷新',run:()=>void renderProjects()});
+}
+function scheduleProjectRefresh(projects) {
+  const preparing = projects.find(project => project.status === 'provisioning');
+  if (!preparing) return;
+  if (notice.hidden) show('项目正在准备中。',false,null,{id:preparing.id});
+  if (Date.now() >= pollDeadline) {
+    // A project timeout must not overwrite an unrelated error or notice.
+    if (!projectNotice || projectNotice.tenantId !== tenant?.id || projectNotice.id !== preparing.id) return;
+    show('项目准备状态确认超时，已停止自动刷新。', false, {label:'刷新',run:()=>{
+      pollDeadline=Date.now()+POLL_WINDOW_MS;
+      show('项目正在准备中。',false,null,{id:preparing.id});
+      void renderProjects();
+    }}, {id:preparing.id,kind:'timeout'});
+  } else if (!document.hidden) pollTimer=setTimeout(renderProjects,3000);
 }
 
 function renderModels() {
@@ -510,6 +535,9 @@ function openWorkspace(project) {
   stopPolling();
   stopEventStream();
   viewGeneration++;
+  if (project.status === 'provisioning' && notice.hidden) show('项目正在准备中。',false,null,{id:project.id});
+  syncProjectNotice([project]);
+  scheduleProjectRefresh([project]);
   activeProject = project;observedModel=null;observedService=null;workspaceLayout.enter({tenantId:tenant.id,workspaceId:project.workspace_id});
   workspaceSnapshot = null;
   workspaceEvents = [];
@@ -528,8 +556,9 @@ function openWorkspace(project) {
   $('#new-session').textContent = sessionIntent ? '重试新建对话' : '新建对话';
   if (location.hash !== `#/workspace/${encodeURIComponent(project.id)}`) history.replaceState(null, '', `#/workspace/${encodeURIComponent(project.id)}`);
   $('#workspace-title').textContent = project.title;
+  $('#workspace-title').title = project.title;
   const ready=project.status==='ready';
-  $('#workspace-meta').textContent = ready?'研究工作区 · 模型与结果自动保存':'项目恢复中 · 已保存结果仍可查看';
+  $('#workspace-meta').textContent = ready?'研究工作区 · 模型与结果自动保存':project.status==='provisioning'?'项目准备中 · 自动刷新状态':'项目恢复中 · 已保存结果仍可查看';
   $('#message-input').disabled=!ready;$('#message-submit').disabled=true;$('#new-session').disabled=true;
   $('#session-select').disabled=!ready;$('#cancel-turn').hidden=true;
   $('#files-refresh').disabled=!ready;$('#files-tab').disabled=!ready;$('#diff-tab').disabled=!ready;
@@ -559,6 +588,9 @@ async function renderProjects() {
     const data = await api(`/api/tenants/${encodeURIComponent(tenant.id)}/projects`);
     if (generation !== viewGeneration || requestNumber !== listGeneration) return;
     const projects = [...data.projects];
+    if (pendingProject && pendingProjectTenantId !== tenant.id) pendingProject = null;
+    syncProjectNotice(projects);
+    if (pendingProject && projects.some(project => project.id === pendingProject.id)) pendingProject = null;
     const requestedProjectId = workspaceProjectIdFromHash();
     if (requestedProjectId) {
       const requested = projects.find(project => project.id === requestedProjectId && project.workspace_id);
@@ -614,17 +646,7 @@ async function renderProjects() {
       card.append(open);
       box.append(card);
     }
-    if (projects.some(project => project.status === 'provisioning')) {
-      if (Date.now() >= pollDeadline) {
-        show('项目仍在准备中，已停止自动刷新。', false, { label: '刷新', run: () => {
-          pollDeadline = Date.now() + POLL_WINDOW_MS;
-          show('');
-          void renderProjects();
-        } });
-      } else if (!document.hidden) {
-        pollTimer = setTimeout(renderProjects, 3000);
-      }
-    }
+    scheduleProjectRefresh(projects);
   } catch (error) {
     if (generation !== viewGeneration || requestNumber !== listGeneration) return;
     if (error.status === 401) {
@@ -718,7 +740,8 @@ document.addEventListener('visibilitychange', () => {
   stopPolling();
   stopEventStream();
   listGeneration++;
-  if (!document.hidden && activeProject) void refreshWorkspace(viewGeneration);
+  if (!document.hidden && activeProject?.status === 'provisioning') void renderProjects();
+  else if (!document.hidden && activeProject) void refreshWorkspace(viewGeneration);
   else if (!document.hidden && tenant) void renderProjects();
 });
 
@@ -913,7 +936,8 @@ $('#project-form').onsubmit = async event => {
     dialog.close();
     intent = null;
     pendingProject = result.project;
-    show(result.project.status === 'provisioning' ? '项目正在准备中。' : '项目已创建。');
+    pendingProjectTenantId = current.tenantId;
+    show(result.project.status === 'provisioning' ? '项目正在准备中。' : '项目已创建。',false,null,result.project.status==='provisioning'?{id:result.project.id}:null);
     pollDeadline = Date.now() + POLL_WINDOW_MS;
     await renderProjects();
   } catch (error) {

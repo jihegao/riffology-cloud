@@ -232,7 +232,7 @@ test('ready project opens the real workspace APIs and keeps platform and Pi resp
   await page.locator('.project .meta').filter({ hasText: '官方版本 · 独立副本' }).waitFor();
   await page.locator('.project-open').click();
   await page.locator('#workspace:not([hidden])').waitFor();
-  await page.locator('[data-workspace-depth=inspect]').click();await page.locator('.boundary-note summary').click();
+  await page.getByRole('tab',{name:'Inspect',exact:true}).click();await page.locator('.boundary-note summary').click();
   assert.match(await page.locator('.boundary-note').innerText(), /平台负责身份、预算、保存和恢复/);
   assert.match(await page.locator('.boundary-note').innerText(), /模型代码在隔离环境运行/);
   assert.equal(await page.locator('.turn-card.user p').innerText(), '<img src=x onerror=alert(1)>');
@@ -332,7 +332,7 @@ test('authenticated workspace renders Files and lazily reads parent Revision Dif
     if (path === `/api/workspaces/${workspaceId}/events`) { await json(route, { events: [], nextSequence: 0, hasMore: false, oldestSequence: 1, snapshotRequired: false }); return true; }
   });
   await page.goto('https://ui.test/#/workspace/project-files');
-  await page.locator('[data-workspace-depth=inspect]').click();
+  await page.getByRole('tab',{name:'Inspect',exact:true}).click();
   await page.locator('.file-entry').nth(1).waitFor();
   assert.equal(fileReads, 1);assert.equal(await page.locator('.file-entry').count(), 2);assert.equal(await page.locator('.file-entry img').count(), 0);
   assert.match(await page.locator('.file-entry').nth(1).innerText(), /<img src=x onerror=alert\(1\)>\.py.*1\.5 KB/s);
@@ -580,7 +580,7 @@ test('delta-only output is deterministic and malformed-only output stays empty',
 test('real browser pauses polling when hidden, resumes one chain and stops after five elapsed minutes', async t => {
   let requests = 0;
   const page = await pageFixture(t, async (route, path) => {
-    if (path.endsWith('/projects')) { requests++; await json(route, { projects: [{ title: 'Initializing', status: 'provisioning' }] }); return true; }
+    if (path.endsWith('/projects')) { requests++; await json(route, { projects: [{ id: 'initializing', title: 'Initializing', status: 'provisioning' }] }); return true; }
   });
   await page.clock.install({ time: new Date('2026-09-06T00:00:00Z') });
   await page.goto('https://ui.test/');
