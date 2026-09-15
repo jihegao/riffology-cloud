@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,rm} from 'node:fs/promises';
+import {join} from 'node:path';
+import {tmpdir} from 'node:os';
+import {build} from 'esbuild';
+import {Miniflare} from 'miniflare';
+import {migrateLocalCatalog,authenticatedTenants} from '../../scripts/m3/g3-local-auth.mjs';
+test('G3 real Gateway signed cookies and invitation tenants enforce owner ACL',{timeout:30000},async t=>{
+ const path=await mkdtemp(join(tmpdir(),'g3-gateway-auth-'));t.after(()=>rm(path,{recursive:true,force:true}));
+ const worker='g3-auth',origin='https://g3-research-local.test',secret=crypto.randomUUID()+crypto.randomUUID();
+ const bundle=await build({entryPoints:['services/gateway/index.ts'],bundle:true,write:false,format:'esm',platform:'neutral',target:'es2024',conditions:['workerd','worker','browser'],external:['cloudflare:workers','node:*'],logLevel:'silent'});
+ const text=value=>({type:'text',value});
+ const mf=new Miniflare({host:'127.0.0.1',port:0,inspectorPort:0,cf:{},telemetry:{enabled:false},resourcePersistencePath:path,workers:[{config:{type:'worker',name:worker,compatibilityDate:'2026-09-06',compatibilityFlags:['nodejs_compat','nodejs_compat_do_not_populate_process_env'],manifest:{mainModule:'gateway.mjs',modules:{'gateway.mjs':{type:'esm',contents:bundle.outputFiles[0].text}}},env:{CATALOG:{type:'d1',id:worker,name:worker},APP_ORIGIN:text(origin),BETTER_AUTH_SECRET:text(secret),GOOGLE_CLIENT_ID:text('fixture-only'),GOOGLE_CLIENT_SECRET:text('fixture-only')}},dev:{unsafeRegisterWorker:false,outboundService:{type:'fetcher',handler:()=>new Response('external-disabled',{status:403})}}}]});t.after(()=>mf.dispose());
+ await mf.ready;await migrateLocalCatalog(await mf.getD1Database('CATALOG',worker));const {owner,outsider}=await authenticatedTenants(mf,worker,{origin,secret});
+ const route=`${origin}/api/tenants/${owner.tenantId}/projects`;
+ assert.equal((await mf.dispatchFetch(route,{headers:owner.headers})).status,200);
+ assert.equal((await mf.dispatchFetch(route,{headers:outsider.headers})).status,404);
+ assert.equal((await mf.dispatchFetch(route)).status,401);
+ const tampered={...owner.headers,cookie:owner.cookie+'tamper'};assert.equal((await mf.dispatchFetch(route,{headers:tampered})).status,401);
+});
