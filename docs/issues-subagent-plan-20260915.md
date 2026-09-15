@@ -12,7 +12,7 @@
 - **5 个开放 issues，0 个开放 PR**；#28、#29、#30、#31、#32、#33、#34、#45 已关闭，不再按旧计划从头开发。
 - [PR #62](https://github.com/jihegao/riffology-cloud/pull/62)已合并研究闭环验收记录；[PR #63](https://github.com/jihegao/riffology-cloud/pull/63)已合并 Mesa/Pyodide spike。前者的线上证据对应其记录的历史发布，后者未接入生产 Workspace。
 - [旧执行计划](research-loop-execution-plan.md)和[旧交付记录](research-loop-delivery.md)保留为历史；当前优先级和待办以本文为准。历史线上签收见[研究闭环验收](user-preview-research-loop-acceptance-20260914.md)。本次未重新核验线上 Worker、门禁或云资源。
-- 已存在两个未提交文档修改：`docs/development-status.md`、`docs/m3-service-run-contract.md`；规划不将它们纳入后续实施提交。另有 detached worktree `../riffology-cloud-mesa-browser-runtime`，开工时重新核查用途。
+- 开工实际核对主工作树有五个既有 tracked 文档修改：`README.md`、`docs/development-status.md`、`docs/m3-service-run-contract.md`、`docs/research-loop-delivery.md`、`docs/research-loop-execution-plan.md`，以及本计划未跟踪文件。它们保持原位，不纳入实施分支提交。另有 detached worktree `../riffology-cloud-mesa-browser-runtime`，保持原位。
 
 | Issue | 当前代码基础 | 本轮应安排的剩余工作 |
 | --- | --- | --- |
@@ -22,7 +22,7 @@
 | [#37 · P1 按需启动与环境复用](https://github.com/jihegao/riffology-cloud/issues/37) | lazy Project、Workspace 租约、原生本地 10-Turn 已交付 | 云端冷/热/恢复对照、低容量公平性、取消/回退、真实释放验收；复核历史 `trusted-pi-release-deadline-exceeded` 事件。 |
 | [#35 · P1 官方模型晋升](https://github.com/jihegao/riffology-cloud/issues/35) | readiness、冻结提交、审核/发布、独立复制已有实现 | Browser Preview 与发布/复制的必要兼容；前三个普通用户模型全流程验收。 |
 
-本次只交付计划及文档导航。表中的开发、提交、合并、部署和 issue 关闭均是后续执行步骤。
+计划编写时只交付计划及导航；2026-09-15 用户已授权按本计划实施多阶段开发和动态 subagent 并行。当前本地实施在独立集成分支推进，阶段4线上范围与阶段5真实账号/预算仍按各阶段门槛形成具体清单后确认。
 
 ## 2. 已发现的依赖，先解决再并行
 
