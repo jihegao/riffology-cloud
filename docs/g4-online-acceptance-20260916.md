@@ -78,3 +78,5 @@ Mesa实际Group f7c14855…为baseline/intervention×seeds7/8共四个真实Run�
 阶段执行完成不等于issue完整关闭：另一已认证principal、全部敌意Python/network/postMessage线上触发、逐Run kernel事实未覆盖；#65错误不误清、Stop与完整旧导航恢复没有全部线上签收。下一次范围/预算仍需另定，G5/G6未获授权。
 
 目录级清理待确认：`/Users/gaojihe/apps/riffology-cloud-issues-integration/.local/issues-20260915/g4` 与 `/Users/gaojihe/apps/riffology-cloud-g4-native-counts/.local/g4-accepted-sanitized`。范围仅本轮已归档临时采集/脱敏数据，不删除现有用户/Chrome profile/全局Cloudflare凭据、产品数据、原有脏文档、G0–G3或预算/幂等fence。自动审核实际只拒绝B目录递归删除；Root未尝试目录级删除，现单列同轮目录供明确批准。
+
+另已实际PUT及独立GET完全一致的30天最终交付回执：`evidence/final-delivery-receipt.json`，2397字节，SHA256 `b95b965c7a9eed73b47b6003bbde6bae43249712aabf0b3a3d1410be362032d2`。此回执明确localDirectoryCleanupCompleted=false及自动审批拒绝边界，补充原94项dataset，不将其说成本地删除完成。
