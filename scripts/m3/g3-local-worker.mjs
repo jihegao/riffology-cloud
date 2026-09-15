@@ -13,7 +13,7 @@ export class ProjectRuntime extends ProductionProjectRuntime{
  async g3Count(name){const counts=await this.ctx.storage.get('g3:runtime-mutations')??{};counts[name]=(counts[name]??0)+1;await this.ctx.storage.put('g3:runtime-mutations',counts);}
  async initialize(input){await this.g3Count('initialize');return super.initialize(input);}
  async stop(input){await this.g3Count('stop');return super.stop(input);}
- async g3Counts(){return await this.ctx.storage.get('g3:runtime-mutations')??{};}
+ async g3Counts(){return {calls:await this.ctx.storage.get('g3:runtime-mutations')??{},nativeRunning:this.ctx.container?.running??null};}
 }
 export class SimulationSandbox extends ProductionSandbox{
  constructor(ctx,env){super(ctx,env);this.testStorage=ctx.storage;}
@@ -24,6 +24,9 @@ export class SimulationSandbox extends ProductionSandbox{
  async g3Counts(){return await this.testStorage.get('g3:sdk-counts')??{};}
 }
 export class WorkspaceAgent extends ProductionWorkspace{
+ constructor(ctx,env){super(ctx,env);this.g3BootNonce=crypto.randomUUID();}
+ async alarm(){const before=[...(await this.ctx.storage.list({prefix:'browser-preview:build:'})).values()];try{return await super.alarm();}finally{const after=[...(await this.ctx.storage.list({prefix:'browser-preview:build:'})).values()];const records=await this.ctx.storage.get('g3:alarm-observations')??[];records.push({bootNonce:this.g3BootNonce,observedAt:Date.now(),before,after});await this.ctx.storage.put('g3:alarm-observations',records);}}
+
  async g3Save(input){return this.ctx.blockConcurrencyWhile(async()=>{
   const {scope,actor,key}=input;
   // This public actor operation checks actual readiness before fixture production.
@@ -43,7 +46,7 @@ export class WorkspaceAgent extends ProductionWorkspace{
   const stored=await this.ctx.storage.list({prefix:'simulation:run:'});const native=[];
   for(const record of stored.values()){const token=await simulationToken(record.input);native.push({runId:record.runId,status:record.status,released:record.released,releaseProof:record.releaseProof,quotaClaimed:record.quotaClaimed,lease:record.lease,counts:await this.env.SIMULATION_SANDBOX.getByName('simulation-'+token).g3Counts()});}
   const state=new DurableTurnStore(this.ctx.storage).read();const m1=await this.ctx.storage.get('m1:workspace:initialization');const runtimeId=m1?.identity?.runtimeId;
-  return {providerEnabled:this.env.M2_MODEL_PROVIDER_ENABLED==='true',projectRuntimeMutationCalls:runtimeId?await this.env.PROJECT_RUNTIME.getByName(runtimeId).g3Counts():null,turnCount:Object.keys(state?.turns??{}).length,savedTurns:Object.values(state?.turns??{}).filter(t=>t.persistenceOutcome==='saved').map(t=>({id:t.id,receipt:t.checkpoint})),runCount:stored.size,native,buildDiscoveries:[...(await this.ctx.storage.list({prefix:'browser-preview:discovery:'})).values()],buildRows:[...(await this.ctx.storage.list({prefix:'browser-preview:build:'})).values()],physicalAlarm:await this.ctx.storage.getAlarm()};
+  return {bootNonce:this.g3BootNonce,alarmObservations:await this.ctx.storage.get('g3:alarm-observations')??[],initialization:{runtimeId,phase:m1?.phase,runtimeReceipt:m1?.runtimeReceipt,stopReceipt:m1?.stopReceipt,quotaReleased:m1?.quotaReleased},providerEnabled:this.env.M2_MODEL_PROVIDER_ENABLED==='true',projectRuntimeMutationCalls:runtimeId?await this.env.PROJECT_RUNTIME.getByName(runtimeId).g3Counts():null,turnCount:Object.keys(state?.turns??{}).length,savedTurns:Object.values(state?.turns??{}).filter(t=>t.persistenceOutcome==='saved').map(t=>({id:t.id,receipt:t.checkpoint})),runCount:stored.size,native,buildDiscoveries:[...(await this.ctx.storage.list({prefix:'browser-preview:discovery:'})).values()],buildRows:[...(await this.ctx.storage.list({prefix:'browser-preview:build:'})).values()],physicalAlarm:await this.ctx.storage.getAlarm()};
  }
 }
 export default {async fetch(request,env,ctx){const url=new URL(request.url);
