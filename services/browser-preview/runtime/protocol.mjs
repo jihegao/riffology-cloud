@@ -13,7 +13,7 @@ function size(v, maximum) {
   if (bytes > maximum) fail('runtime-output-limit');
 }
 export function validateInput(input) {
-  if (!exact(input, ['parameters', 'seed']) || !object(input.parameters)) fail('runtime-input-invalid');
+  if (!exact(input, ['parameters', 'seed']) || !object(input.parameters) || Object.keys(input.parameters).length > 64) fail('runtime-input-invalid');
   if (!Number.isInteger(input.seed) || input.seed < 0 || input.seed > 4294967295) fail('runtime-seed-invalid');
   for (const [name, value] of Object.entries(input.parameters)) {
     if (!/^[A-Za-z][A-Za-z0-9_-]{0,63}$/.test(name) || !(finite(value) && Math.abs(value) <= Number.MAX_SAFE_INTEGER || typeof value === 'boolean' || typeof value === 'string' && value.length <= 1024)) fail('runtime-parameter-invalid');
@@ -23,7 +23,7 @@ export function validateInput(input) {
   return input;
 }
 export function validateRunRequest(request) {
-  if (!exact(request, ['schema', 'type', 'requestId', 'packageIdentity', 'input']) || request.schema !== MESSAGE_SCHEMA || request.type !== 'run' || !/^[A-Za-z0-9_-]{1,128}$/.test(request.requestId) || !digest(request.packageIdentity)) fail('runtime-request-invalid');
+  if (!exact(request, ['schema', 'type', 'requestId', 'packageIdentity', 'input']) || request.schema !== MESSAGE_SCHEMA || request.type !== 'run' || typeof request.requestId !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(request.requestId) || !digest(request.packageIdentity)) fail('runtime-request-invalid');
   validateInput(request.input);
   return request;
 }

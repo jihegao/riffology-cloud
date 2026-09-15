@@ -5,6 +5,8 @@ const request = {schema: MESSAGE_SCHEMA, type: 'run', requestId: 'request-1', pa
 const grid = {model: 'grid', snapshots: [{schemaVersion: VISUAL_SCHEMA, frame: 0, time: 0, space: {type: 'grid', width: 2, height: 2}, agents: [{id: '1', type: 'resident', state: 'happy', x: 0, y: 0}], metrics: {population: 1}}]};
 const lane = {model: 'queue', snapshots: [{schemaVersion: VISUAL_SCHEMA, frame: 0, time: 0, space: {type: 'lane', lanes: ['queue']}, agents: [{id: '1', type: 'customer', state: 'waiting', lane: 'queue', position: 1}], metrics: {completed: 0}}]};
 assert.equal(validateRunRequest(request), request);
+assert.throws(() => validateRunRequest({...request, requestId: 1}), /request-invalid/);
+assert.throws(() => validateInput({parameters: Object.fromEntries(Array.from({length:65}, (_,i) => ['p'+i, 1])), seed: 1}), /input-invalid/);
 for (const seed of [-1, 4294967296, 1.5, '7', true]) assert.throws(() => validateInput({parameters: {}, seed}), /seed-invalid/);
 assert.throws(() => validateInput({...request.input, steps: 40}), /input-invalid/);
 assert.throws(() => validateInput({parameters: {steps: 501}, seed: 1}), /steps-invalid/);
