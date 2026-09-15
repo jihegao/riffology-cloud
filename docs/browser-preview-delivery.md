@@ -17,3 +17,15 @@ Validation: `node --test tests/m3/browser-preview-panel.test.mjs` has four brows
 The static index also retains `versions[runtime.assetSha256]` with the original host and renderer module descriptors. `browserPreviewDelivery(executionOrigin, frozenAssetSha256)` must select the saved package profile's version; an unknown version throws `browser-preview-delivery-version-unavailable`, with no fallback to the current host. Retaining assets without their version map is rejected. Retained descriptor URLs/hash/length must match the verified immutable asset inventory. This preserves the old host's embedded trusted profile registry rather than giving a current host a client-supplied profile.
 
 A real local Wrangler HTTP check ran the production entry with its explicit localhost environment and actual static-assets binding on 127.0.0.1:8792. All three immutable frame/worker paths returned exact receipt lengths/hashes and fixed CSP with no Set-Cookie; query, Cookie, Authorization and a project API path returned 404. Evidence is `.local/browser-preview/g2-evidence/execution-http.json`. The first attempt used compatibility date 2026-09-15 and failed because the pinned workerd supports through 2026-09-10; the checked config now explicitly uses 2026-09-05, matching the repository's existing execution configurations. Request.cf metadata lookup timed out locally and fell back to placeholders; this did not provide any generated-code network source or asset fallback. This HTTP proof covers the static delivery entry, not a complete G2 authenticated research loop or deployment.
+
+Clean checkout prerequisites for formal checks (network is used only by the reviewed fixed dependency preparation script, never by generated Python):
+
+```sh
+npm ci
+mkdir -p .local
+node services/browser-preview/runtime/prepare-assets.mjs
+node services/browser-preview/execution/materialize.mjs
+npm run check
+```
+
+The preparation script downloads pinned upstream bytes into ignored local storage and checks every receipt. Normal preparation and materialization must match committed metadata exactly. `--update-manifest` and `--update-index` are not clean-check options; use them only for a reviewed runtime change with fresh real-browser acceptance. Execution tests deliberately fail when the materialized assets are absent. Failed-build Retry is an explicit POST of the displayed row revision/profile/build identity with a persisted idempotency key; refresh and navigation never retry a build. Verify POST/GET recovery must echo exactly that original verification key before clearing its pending capture.
