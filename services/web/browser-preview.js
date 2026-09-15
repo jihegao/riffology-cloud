@@ -18,7 +18,7 @@ export async function createBrowserPreviewRuntime({delivery,request,win,visualRo
 }
 // Fixed immutable byte assets may have large bodies; metadata retains its shorter budget.
 export async function browserPreviewRequest(api,url,options,requests,{requestTimeoutMs=15000,assetTimeoutMs=120000}={}){
- const fixedAsset=options.responseType==='bytes'&&/^\/browser-preview-assets\/[a-f0-9]{64}\/[^?#]+$/.test(url);
+ const fixedAsset=(options.method??'GET').toUpperCase()==='GET'&&options.responseType==='bytes'&&/^\/browser-preview-assets\/[a-f0-9]{64}\/[^?#]+$/.test(url);
  const timeoutMs=fixedAsset?assetTimeoutMs:requestTimeoutMs,controller=new AbortController();requests.add(controller);let timer;
  const interrupted=new Promise((_,reject)=>{controller.signal.addEventListener('abort',()=>reject(Object.assign(Error('browser-preview-request-aborted'),{name:'AbortError'})),{once:true});timer=setTimeout(()=>{reject(Object.assign(Error('browser-preview-request-timeout'),{name:'TimeoutError'}));controller.abort();},timeoutMs);});
  try{return await Promise.race([Promise.resolve().then(()=>api(url,{...options,signal:controller.signal})),interrupted]);}finally{clearTimeout(timer);requests.delete(controller);}

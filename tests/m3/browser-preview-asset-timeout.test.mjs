@@ -17,6 +17,7 @@ test('immutable fixed asset reads include a slow complete HTTP body beyond metad
  const bytes=await browserPreviewRequest(api,fixed,{responseType:'bytes'},requests,{requestTimeoutMs:50,assetTimeoutMs:1000});
  assert.deepEqual([...bytes],[1,2,3]);assert.deepEqual(stats(),{reads:1,completed:1});assert.equal(requests.size,0);
  await assert.rejects(browserPreviewRequest(api,'/api/workspaces/work/browser-preview',{responseType:'bytes'},requests,{requestTimeoutMs:50,assetTimeoutMs:1000}),{name:'TimeoutError'});assert.equal(requests.size,0);assert.equal(stats().reads,2,'no automatic retry');
+ await assert.rejects(browserPreviewRequest(api,fixed,{method:'POST',responseType:'bytes'},requests,{requestTimeoutMs:50,assetTimeoutMs:1000}),{name:'TimeoutError'});assert.equal(requests.size,0);assert.equal(stats().reads,3,'fixed bytes POST retains metadata budget without retry');
 });
 test('fixed asset body still times out at its bound and scope cancellation aborts promptly',async t=>{
  const {api,stats}=await slowBody(t),requests=new Set();
