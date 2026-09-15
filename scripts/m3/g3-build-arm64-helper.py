@@ -24,10 +24,10 @@ import sys,shutil
 if '--image' in sys.argv:
  context=out/'image';context.mkdir(exist_ok=True)
  shutil.copy2(out/'project-fence',context/'project-fence')
- for src,dst in [('g3-python-kernel-bridge.sh','g3-python-kernel-bridge.sh'),('Dockerfile.g3-native-bridge','Dockerfile')]:shutil.copy2(root/'scripts/m3/fixtures'/src,context/dst)
- image='riffology-g3-native-bridge:local';base='riffology-g1-mesa:local'
+ for src,dst in [('g3-sitecustomize.py','g3-sitecustomize.py'),('g3-python-kernel-bridge.sh','g3-python-kernel-bridge.sh'),('Dockerfile.g3-native-bridge','Dockerfile')]:shutil.copy2(root/'scripts/m3/fixtures'/src,context/dst)
+ image='riffology-g3-native-bridge-queue:local';base='riffology-g1-mesa:local'
  baseFacts=json.loads(subprocess.check_output(['docker','image','inspect',base],text=True))[0]
  subprocess.run(['docker','build','--platform','linux/amd64','-t',image,str(context)],check=True)
  imageFacts=json.loads(subprocess.check_output(['docker','image','inspect',image],text=True))[0]
- receipt={'baseImage':base,'baseImageIdentity':baseFacts['Id'],'testImage':image,'testImageIdentity':imageFacts['Id'],'helper':facts,'wrapperSha256':hashlib.sha256((context/'g3-python-kernel-bridge.sh').read_bytes()).hexdigest(),'dockerfileSha256':hashlib.sha256((context/'Dockerfile').read_bytes()).hexdigest(),'scope':'test-only ARM64 host-kernel bridge; unchanged production files'}
+ receipt={'baseImage':base,'baseImageIdentity':baseFacts['Id'],'testImage':image,'testImageIdentity':imageFacts['Id'],'helper':facts,'rootSitecustomizeSha256':hashlib.sha256((context/'g3-sitecustomize.py').read_bytes()).hexdigest(),'wrapperSha256':hashlib.sha256((context/'g3-python-kernel-bridge.sh').read_bytes()).hexdigest(),'dockerfileSha256':hashlib.sha256((context/'Dockerfile').read_bytes()).hexdigest(),'scope':'test-only ARM64 host-kernel bridge; unchanged production files'}
  (out/'image.json').write_text(json.dumps(receipt,indent=2));print(json.dumps(receipt))
