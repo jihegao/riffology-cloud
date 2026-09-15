@@ -1,0 +1,15 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "riffology-browser-execution",
+  "main": "../services/browser-preview/execution/index.ts",
+  "compatibility_date": "2026-09-15",
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_do_not_populate_process_env"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": {"enabled": true, "head_sampling_rate": 1},
+  "assets": {"directory": "../.local/browser-preview/execution-assets", "binding": "RUNTIME_ASSETS", "run_worker_first": true, "html_handling": "none", "not_found_handling": "none"},
+  "vars": {"APP_ORIGIN": "", "EXECUTION_ORIGIN": "", "ALLOW_LOCALHOST_HTTP": "false"},
+  "env": {
+    "local": {"vars": {"APP_ORIGIN": "http://localhost:8791", "EXECUTION_ORIGIN": "http://127.0.0.1:8792", "ALLOW_LOCALHOST_HTTP": "true"}}
+  }
+}
