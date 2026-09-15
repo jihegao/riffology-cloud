@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {spawn} from 'node:child_process';
-export const COUNTERS=['modelUpstreamDispatches','simulationStarts','projectRuntimeStarts','projectToolDispatches','trustedPiStarts'];
+export const COUNTERS=['modelUpstreamDispatches','simulationStarts','projectRuntimeStarts','projectToolDispatches','trustedPiStarts','trustedPiTaskDispatches'];
 export function privateJson(file){const s=fs.lstatSync(file);assert(s.isFile()&&!s.isSymbolicLink()&&(s.mode&0o077)===0,'private input must be regular mode0600');return JSON.parse(fs.readFileSync(file,'utf8'));}
 export function saveOnce(file,value){fs.writeFileSync(file,JSON.stringify(value,null,2)+'\n',{mode:0o600,flag:'wx'});}
 export function validScope(v){for(const k of ['userId','tenantId'])assert(typeof v[k]==='string'&&v[k]);assert(/^https:\/\//.test(v.origin));return v;}
