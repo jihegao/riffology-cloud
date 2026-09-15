@@ -1,0 +1,14 @@
+# This is a separately identified local acceptance image, never production.
+ARG G3_BASE_IMAGE=riffology-g1-mesa:local
+FROM ${G3_BASE_IMAGE}
+COPY project-fence /opt/g3/project-fence
+COPY g3-python-kernel-bridge.sh /opt/g3/python-kernel-bridge
+RUN chmod 0755 /opt/g3/project-fence /opt/g3/python-kernel-bridge && \
+    mv /usr/local/bin/python3 /usr/local/bin/python3-g3-original && \
+    mv /opt/riffology/python-mesa/bin/python3 /opt/riffology/python-mesa/bin/python3-g3-original && \
+    cp /opt/g3/python-kernel-bridge /usr/local/bin/python3 && \
+    cp /opt/g3/python-kernel-bridge /opt/riffology/python-mesa/bin/python3
+# The unchanged guest preexec fails -125 locally. The platform marker may only
+# be used together with this actual project-specific native kernel bridge.
+ENV RIFFOLOGY_SERVICE_PLATFORM_EGRESS_FENCE=workerd-deny-all-v1
+LABEL cn.gaojihe.riffology.validation-profile=g3-arm64-kernel-bridge-not-production
