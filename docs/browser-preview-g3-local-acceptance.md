@@ -59,3 +59,12 @@ The window proves actual saved checkpoint and new-instance alarm non-ready→rea
 The immutable traffic snapshot, bounded diagnostic state summaries, paced release polling and explicit historical quota lookup additions landed after this author execution; they await the root's independent run of the final candidate. The original author traffic array appended later Verify requests despite its zero-local assertions executing beforehand. It must not be described as an immutable local-only request log. The original 17 MB diagnostic result remains intact, as do the first failed window and its successful same-identity release recovery. Emergency removal of one remaining driver-owned Workerd instance is separate from the proven native/initial-runtime release.
 
 This is local acceptance with a specifically identified test bridge image and a deterministic real checkpoint producer. It does not establish ordinary Agent generation, deployed delivery, copied-initial-model compatibility, or production x86 address-space limit inheritance.
+
+
+## 主控最终独立整链（2026-09-15）
+
+执行候选526eee7，主控自建精确bridge image2fb317359339，完整driver exit0/status passed/fullGate true。Queue Run5db339c8-a6a7-4162-8605-b590d687187c、Mesa Run3c7d0b4f-ea28-4a41-a1fe-91702007df8c各nativeStart=1。Workerd重启后首次Gateway请求前R2对象已ready；三次Browser完整trace一致，旧版本新head后Verify/idempotency/conflict/权限和session撤销均通过。实际R2结果/outputs摘要、Gateway ZIP真Python重放与导出源码完整trace均匹配。
+
+两个冻结localWindow均全部GET且provider关闭，Turn/Run/native及ProjectRuntime新执行增量0，execution Cookie0；allHeaders包含appCookie作为采集阳性控制。两模型三视口实际截图经C只读复核，无横溢。生产360秒release guard与quiet期保持，两native历史quota.lookup的stopped确认逐项匹配releaseProof，初始化同样真实停止，occupied0/available4。dispose后另清除一遗留本地instance，仅记emergencyRemoved，不充当释放证明。
+
+ignored证据路径`.local/issues-20260915/g3/research-chain-independent/`含实际结果、六截图、两私有包/ZIP、source执行摘要和SHA256SUMS。摘要结果SHA为4ddab0dc3c481b056142ca1aa15f271d0569816c176ac736fda764066b6ff97d。最终正式npm run check仍待通过才签收G2/G3；新增G4准备器与fixture修复未改变本次生产执行代码。保存生产器fixture和ARM64 bridge边界保留，不能替代G4普通Agent/x86资源或G6审核发布复制。
