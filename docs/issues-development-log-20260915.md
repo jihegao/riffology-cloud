@@ -87,6 +87,8 @@ C额外实际entrypoint探测发现amd64翻译exec后新解释器RLIMIT_AS为(-1
 
 ## 主控复核与环境记录
 
+Issue逐项关闭条件与本地/线上边界见[签收矩阵](issues-acceptance-matrix-20260915.md)，与本记录同步维护。
+
 - 基线完整检查首轮因新工作树缺少 `.local/` 父目录导致历史测试 mkdtemp ENOENT；补齐 ignored 目录后重跑，日志 `/tmp/riffology-issues-baseline-check-20260915.log`。
 - 已核对 `simulation_process.py` seed 与 Model Spec 参数名称/值类型，发现包与 runtime 初稿存在大小限制差异，已要求双方统一。
 - 共享 alarm 当前合并 Workspace/Turn/Service/Observer/Simulation 五类唤醒。阶段 2 新增 build wake 必须覆盖所有调用点，防止任务结束误删构建 alarm。
