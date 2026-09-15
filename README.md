@@ -5,7 +5,7 @@ Riffology Cloud 是一个多租户、持久化的 AI 仿真建模工作台。
 Browser 作为可选内置插件提供交互预览和 Agent 观察。
 
 MVP 采用极简 Session 界面，以 Cloudflare Workers、Agents SDK / Durable Objects、
-Sandbox、D1 和 R2 构成云端服务；仿真主路径固定为 Python + SimPy。
+Sandbox、D1 和 R2 构成云端服务；本地候选支持 Python 标准库 Queue 与固定 Mesa profile，保留历史 SimPy 路径。
 
 ## 文档
 
@@ -59,3 +59,6 @@ npm run dev
 [受控 Pi 代理客户端](docs/m0-proxy-pi-bridge.md)已通过 13 项本地集成检查，覆盖完整 Session 历史、每调用独立 capability、显式取消、超时和凭据脱敏；另完成真实 Pi 子进程到 Workerd/SQLite DO 的 [10 项本地联调](docs/evidence/runs/m0-proxy-pi-local-1788622591199-4e3a43ff/proxy-pi-local.json)，包括落盘恢复、DO 重启与取消收据；该客户端已进入[新本地镜像](docs/m0-pi-proxy-image.md)，尚未上传或部署；此前冻结镜像保留为历史。
 
 用户登录、生产多租户链路、持久 Turn、项目应用、真实 Run 和计费尚未交付。当前源码未整体部署，候选清单仍禁止推广。详见[开发执行状态](docs/development-status.md)。
+
+
+Browser Preview 本地候选按[多阶段计划](docs/issues-subagent-plan-20260915.md)实施；实际验收与上线边界见[实施记录](docs/issues-development-log-20260915.md)。干净工作树执行 `npm ci` 后创建 `.local`，依次运行 `node services/browser-preview/runtime/prepare-assets.mjs`、`node services/browser-preview/execution/materialize.mjs`、`node scripts/m3/materialize-browser-preview-web.mjs`，再运行 `npm run check`。固定资产必须通过收据核验，当前候选尚未发布。

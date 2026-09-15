@@ -1,14 +1,14 @@
 # 多阶段实施与验收记录
 
-日期：2026-09-15。基线：`40aee17`。当前阶段：G0/G1 本地签收；G2 API接线与持久验收推进；G3 非作者评审和真实本地整链并行准备。
+日期：2026-09-15。基线：`40aee17`。当前阶段：G0/G1 本地签收；G2 实现及 initial 来源兼容已交接；G3 作者整链通过，主控最终独立整链及正式全量检查运行中。
 
 集成分支：`codex/issues-20260915-integration`，工作树 `/Users/gaojihe/apps/riffology-cloud-issues-integration`。原 main 文档修改及旧 Mesa detached worktree 保留，不纳入实施提交。开工GitHub核对为5个开放issue；本轮未关闭issue。
 
 | 槽位 | 分支 | 文件归属 | 状态 |
 | --- | --- | --- | --- |
-| A | codex/issues-g2-orchestration | 中央实现已交B；只读审查C真实链路与证据 | G3非作者评审 |
-| B | 从a12b31e新建initial兼容分支 | A交接的中央Browser/Workspace保存发现、源/构建/Verify与相关测试 | 初始复制可信来源兼容实施；G5离线样本已签 |
-| C | codex/issues-g3-acceptance | 新本地整链driver/diagnostics、测试专用native bridge；server实现文件已交回 | G3实际SDK两profile与保存→构建→Verify整链 |
+| A | codex/issues-m1-assets-preflight | M1严格资产预检已交回；只读审查受控发布清单 | 中央非作者审查通过；预检6/6主控通过 |
+| B | codex/issues-g6-initial | 中央Browser/Workspace、initial来源、构建/Verify及面板已交回 | 主控28项来源/历史/Workerd及8项Chrome面板通过 |
+| C | codex/issues-g3-acceptance | 整链driver/只读诊断及测试bridge已交回 | 作者整链通过；主控独立最终候选验收中 |
 
 ## 冻结决定
 
@@ -156,3 +156,12 @@ Issue逐项关闭条件与本地/线上边界见[签收矩阵](issues-acceptance
 - 共享 alarm 当前合并 Workspace/Turn/Service/Observer/Simulation 五类唤醒。阶段 2 新增 build wake 必须覆盖所有调用点，防止任务结束误删构建 alarm。
 - RevisionStore 现有 `serviceFiles` 可读取文件而不恢复 Pi Session；历史 resolver 必须基于可信保存索引与项目权限，不接受客户端对象路径。
 - 已查阅当前 [R2 Workers API](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/)、[Pyodide Worker](https://pyodide.org/en/stable/usage/webworker.html)及 [Worker CSP](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)。条件写入失败返回 null 与写入应答丢失须分别处理；Worker 需在自身响应执行隔离策略。
+
+
+## 最终集成与独立签收推进
+
+中央 initial 来源7aafb39/eae239f/473a212已集成为b0c66b2/c323979/2a68edc；A实际非作者diff审查通过。主控独立28项定向检查含两项真实Workerd/SQLite回滚与无Turn自动重启打包，以及8项真实Chrome面板回归通过。来源仅在真实确认ready时持久发现，不伪造savedTurn；历史读取、Verify输入与原始ModelContent引用逐项绑定。此实现不代表普通用户审核/发布/复制G6已通过。
+
+正式检查发现两项旧M1 fixture/预检未适配新实际模块与组合资产。98db1a9加入实际browser-preview.js及只读空态API；e703386只允许冻结组合目录、绑定与worker优先次序，实际执行额外只读核验字节收据。主控预检6/6通过，不放宽超时或静态目录约束。最终实施候选526eee7的主控真实G3与npm run check已启动，结果待记录。
+
+文档同步仅覆盖本轮新增14篇文档；同步记录按上次SHA检测原工作树是否被另行修改。原main的5篇已修改跟踪文档保留，不覆盖、不暂存。G4本地生产Pi镜像及实际装载模块已准备，云账号预算/隐私/时限与本次发布范围未授权，未部署。
