@@ -25,7 +25,7 @@ export class SimulationSandbox extends ProductionSandbox{
 }
 export class WorkspaceAgent extends ProductionWorkspace{
  constructor(ctx,env){super(ctx,env);this.g3BootNonce=crypto.randomUUID();}
- async alarm(){const before=[...(await this.ctx.storage.list({prefix:'browser-preview:build:'})).values()];try{return await super.alarm();}finally{const after=[...(await this.ctx.storage.list({prefix:'browser-preview:build:'})).values()];const records=await this.ctx.storage.get('g3:alarm-observations')??[];records.push({bootNonce:this.g3BootNonce,observedAt:Date.now(),before,after});await this.ctx.storage.put('g3:alarm-observations',records);}}
+ async alarm(){const summarize=row=>({state:structuredClone(row.state)});const before=[...(await this.ctx.storage.list({prefix:'browser-preview:build:'})).values()].map(summarize);try{return await super.alarm();}finally{const after=[...(await this.ctx.storage.list({prefix:'browser-preview:build:'})).values()].map(summarize);const records=await this.ctx.storage.get('g3:alarm-observations')??[];records.push({bootNonce:this.g3BootNonce,observedAt:Date.now(),before,after});await this.ctx.storage.put('g3:alarm-observations',records.slice(-256));}}
 
  async g3Save(input){return this.ctx.blockConcurrencyWhile(async()=>{
   const {scope,actor,key}=input;
