@@ -107,6 +107,10 @@ B 的 d3f9862 集成为 8fc51f2，407bc0f 集成为 de6c230。主控独立严格
 
 C 的 64e6572 集成为 a04368f，主控真实 Workerd/Gateway/D1 登录与邀请检查1/1通过：owner 200、跨tenant404、无签名或篡改cookie401。仅认证 fixture 写入身份/邀请；未插入模型、ready build、Experiment 或 Run。诊断实际 Sandbox SDK 通路可用，但 Workerd 拒绝外部出站不足以隔离容器内部 loopback/Unix listener；该观察不签G3。C 正在一次有界测试中验证 ARM64 原生内核 helper 对翻译项目进程施加连接限制，须独立重跑和明确测试镜像边界后才作为本地替代隔离证据。
 
+132b026 集成为 f9f0bca，主控严格重建与4项固定静态交付检查通过，typecheck通过。8dca40e 集成为 af2fb75，主控5项真实Chrome面板fixture通过。构建重试的未知回执恢复和再次耗尽后的新请求仍在修补；这些测试不替代产品API整链。
+
+A rebased 提交 d650e8b/f628835/d35a139 集成为6c4f3de/3a3e6fa/e4e4b95，生产Workspace/Gateway接口可供C进行真正接线。主控独立8项build-host与Workerd检查通过、typecheck通过：真实tar生成包，先持久reference再条件写R2；丢失receipt可在重启后按原object补回；当前registry变更后使用已冻结平台snapshot；unsupported不被另一profile失败覆盖。host tests 的bucket仍为port，真实Workspace后台ready/R2与Gateway权限整链待实际验收。B非作者评审发现第三次rearm后crash可能造成第四次构建，A正在修复；平台旧host SHA传递与combined ASSETS也在补齐。主控证据归档于`.local/issues-20260915/g2/`，含日志摘要。
+
 ## 主控复核与环境记录
 
 Issue逐项关闭条件与本地/线上边界见[签收矩阵](issues-acceptance-matrix-20260915.md)，与本记录同步维护。
