@@ -39,3 +39,50 @@ Cloudflare Deployments读取确认当前100%版本为 `f2a8e4e6-570f-4fef-be53-7
 已按 `Dockerfile.trusted-pi.vertical` 构建linux/amd64生产候选，local image identity为 `sha256:1a1acfa3b308ab6d4d9e3297f19940b63ac242156e55368c6a9b727531054e3d`。在该精确镜像里以无网络Node导入实际 `trusted-pi-release.mjs`，其摘要 `56e13a838baae1a994aff44c8fcb49bda1535332907607e070083239179f942d` 与release-candidate字节相同；六个实际复制模块均对照当前repo原字节。嵌入adapter摘要为 `fa7987095bbc29f2c6d87e9b0f815415f88c9079ad7070fb7fe8b91e7ebf0898`，generation contract包含五文件/两固定profile/500steps/501frames及输出上限。没有调用resolveOptions或provider，没有上传镜像。
 
 生产Simulation候选仍为G1本地image identity `sha256:1f9b5bbf70f74fde7764d7eb270e7616e9cf79a38c12418ddef8bb8bb1b1851f`。这些是本地身份，不是已上传Cloudflare registry digest，不证明线上装载或原生隔离。构建、actual-module probe及独立对照收据保存在ignored `g4/local-image-preparation`，含SHA256SUMS；G4须在上传后重新核对managed image manifest/config和实际SDK装载源码。
+
+## 可复现的G4审阅包（零上游费用）
+
+专用准备器：`node scripts/m3/g4-candidate-readiness.mjs`。默认只读本地源码、Git身份与资产收据，输出审阅检查及阻断项。`node scripts/m3/g4-candidate-readiness.mjs --output-dir=.local/g4-review` 可在**不存在的新目录**生成 `manifest.review.json`、`paused.review.json`、`userPreview.review.json`、`execution.review.json`。不会调用Wrangler、读取secret值、访问账号或Provider、上传镜像或部署。已有配置不变。重复默认运行清单稳定；新提交后必须重生成，不能继续使用旧sourceCommit。
+
+这些JSON是审阅材料，**不是可直接部署的配置**：相对路径以原 `infra` 为基准；两张候选镜像未取得托管digest，overlay仍包含既有镜像。当前生成器故意拒绝把填入的授权/预算或上传digest当成已验证事实。后续执行工具须由主控依据具体审批单另行选择，不通过修改该清单绕过审批。
+
+### 精确配置与门禁
+
+| 项目 | 现有phase1配置 | 同源暂停overlay | user-preview提案 |
+| --- | --- | --- | --- |
+| PHASE1_RELEASE_PROFILE | isolated-acceptance | isolated-acceptance | user-preview |
+| M2_TURNS_ENABLED | false | false | true |
+| M3_SERVICE_ENABLED | false | false | true |
+| M3_PREVIEW_ENABLED | false | false | true |
+| M4_SIMULATION_ENABLED | false | false | true |
+| M2_MODEL_PROVIDER_ENABLED | true | true | true |
+| M3_PREVIEW_WS_ENABLED | true | true | true |
+| M3_OBSERVER_ENABLED | false | false | false |
+| Provider / Model | opencode-go / gpt-5.6-luna | 保持 | 保持；不替换成BYOK |
+| Lazy/reuse/version参数 | 未登记 | 不新增 | 不新增；G5另审 |
+
+应用：`infra/wrangler.phase1-staging.jsonc`，账户 `8b0d70250211aa10d89e20605a1c7e5e`，Worker `riffology-m1-gateway-staging`，既有三个应用/Preview路由不扩展。ASSETS固定 `../.local/browser-preview/gateway-assets`、binding `ASSETS`、`run_worker_first:true`。独立execution提案以 `infra/wrangler.browser-execution.jsonc` 为基准，显式同一账户，`workers_dev:true`、`preview_urls:false`；移除 `env.local`，固定 APP_ORIGIN为上述应用HTTPS，EXECUTION_ORIGIN为上述workers.dev HTTPS，`ALLOW_LOCALHOST_HTTP:false`。仅 `RUNTIME_ASSETS` binding，目录固定 `../.local/browser-preview/execution-assets`，无数据库、容器、Durable Object、Service或项目访问绑定。
+
+### 源、资产、镜像与迁移身份
+
+manifest记录实际生成时Git HEAD/已跟踪改动、两份原配置、两个Dockerfile、TrustedPi release模块、canonical adapter、native Mesa profile/requirements、package-lock、runtime profiles和static-index的SHA256。最终提交必须再次生成并确认工作树清洁。应用资产验证使用现有严格只读验证器，逐项比对当前static-index、40个app资产、当前web全文件清单与实际组合目录字节；缺失资产只会阻断，不伪造通过。
+
+五个容器分别列出checked-in托管引用。ProjectRuntime、ProjectToolSandbox、ServiceSandbox保留原引用；TrustedPiSandbox与SimulationSandbox必须取得本轮**真实上传后的**托管 `@sha256`，当前 `candidateManagedReference:null`。scope中已观察的linux/amd64本地image ID只放在 `localImageId`，标明未由本准备器重新inspect；绝不当成上传digest或生产原生验收。G3 ARM桥接镜像不在候选范围内。
+
+本地迁移清单固定 `0001_catalog.sql` 至 `0009_model_submissions.sql` 的文件SHA。远端已应用ID、待应用差异、回退schema兼容性为null：执行前只读取得实际远端迁移状态，与九项逐项对照。不能因为本地有九个文件就认定远端无需迁移；禁止未审schema回退。五个容器及R2/D1保持既有资源身份，不自动创建替代资源。
+
+### 执行计数与必须由审批确定的参数
+
+提案固定串行两种模型、两个初始Agent任务，每模型三次本地运行与一次显式Verify。本地运行允许的新增云Turn/容器/Experiment数量是零。纠错Agent任务数、追加研究Run数、修改假设任务数保持null，不能由失败重试自动扩展；baseline/intervention Evidence要求仍须完成，具体追加任务及其上限在审批单明确。此提案不是Provider实际call数预测，每个Agent任务可能包含多次Provider调用；现有每Turn八次dispatch/预算约束不等于本轮总调用或美元授权。
+
+以下字段均为null并阻断执行：operator、账号引用、普通用户、entitlement、approvalReference、deadline、maxPaidCalls、maxNanodollars；Provider/Gateway日志、保留期、允许个人数据范围也均null。账号ID只用于核对候选配置，不能替代执行身份、预算账号或批准。G4不得把G5/G6预算合并使用。
+
+### 逐项回退审阅顺序
+
+1. 同候选源码关闭四门禁，重新读取Worker版本和门禁；有delivery-unknown先诊断，不重复收费请求。
+2. Stop本轮资源，等物理释放，再读取五个容器应用库存及租约/费用账本；并记录暂停状态证据。
+3. 刷新前述旧Worker版本/Deployment观察，并逐项确认旧五镜像引用与schema兼容；恢复Worker与恢复镜像是不同动作。
+4. 保留旧host/renderer/frame/worker/依赖字节与平台冻结版本映射，禁止回退时删掉历史Revision依赖；新execution Worker的保留/停用取决于历史包的交付要求，不能直接删除。
+5. 回读应用与execution来源、实际源码版本、门禁、配额、迁移和完整库存。旧版本回退不自动证明新历史包仍可读。
+
+本轮本地定向命令：`node --test tests/m3/g4-candidate-readiness.test.mjs`、`node --check scripts/m3/g4-candidate-readiness.mjs`、默认准备器只读执行。检查证明候选材料可复现、配置不被改写、隔离和空授权约束严格；不证明发布、账号权限、收费额度或远端回退可执行。
