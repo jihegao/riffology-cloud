@@ -1,6 +1,6 @@
 # 多阶段实施与验收记录
 
-日期：2026-09-15。基线：`40aee17`。当前阶段：G0 开发中。
+日期：2026-09-15。基线：`40aee17`。当前阶段：G0 本地签收，G1 三线实施中。
 
 集成分支：`codex/issues-20260915-integration`，工作树 `/Users/gaojihe/apps/riffology-cloud-issues-integration`。原 main 文档修改及旧 Mesa detached worktree 保留，不纳入实施提交。GitHub 当前为 5 个开放 issue。
 
@@ -19,8 +19,8 @@
 
 | 门槛 | 状态 | 剩余条件 |
 | --- | --- | --- |
-| G0 | 实施中 | 契约一致、非作者评审、#65 本地三视口 |
-| G1 | 未开始 | 确定性包、隔离 runtime、server Mesa |
+| G0 | 本地通过 | 线上 #65 签收仍待 G4 |
+| G1 | 实施中 | 确定性包、隔离 runtime、server Mesa |
 | G2 | 未开始 | saved 派生构建、持久 API、Workspace、Agent 约定 |
 | G3 | 未开始 | 非作者评审、真实本地整链、完整 check |
 | G4 | 未开始 | 冻结发布、普通用户两模型、零执行窗口、资源释放 |
@@ -40,6 +40,12 @@
 基线 `npm run check` 最终 exit 0：1879 项，1873 通过，6 项按既有条件跳过；日志 `/tmp/riffology-issues-baseline-check-20260915.log`。该结果为基线验证，不能代替最终集成候选完整检查。runtime 专属 `*.test.mjs` 已加入正式 test:m3，纯包 tests 由既有 m3 glob 覆盖。
 
 主控实际以无网络临时容器核对既有 Simulation 镜像 Python：`riffology-phase1-simulation:4159051` 为 3.11.14；Mesa 3.5.1/SciPy 1.18.0 官方 metadata 要求 >=3.12。因此阶段1C需新增独立版本锁定解释器/profile，保留旧SimPy与历史回放。来源：[Mesa](https://pypi.org/project/Mesa/3.5.1/)、[SciPy](https://pypi.org/project/scipy/1.18.0/)。
+
+## G0 完整本地签收
+
+#65 专用动态回归 bd6a9e1 已集成 af776ae，主控独立执行两项真实 Chrome 回归 2/2，通过实际自动轮询/SSE权限变更确认多项目与跨tenant修复，日志 `/tmp/riffology-g0-ui-two-regressions-20260915.log`。配合50/50 UI回归和三视口视觉检查，G0退出条件满足。UI文件所有权交出；阶段2B开始前统一重新从集成候选创建工作树。
+
+G1C 已派发 `codex/issues-g1-server`（基线 af776ae），独占source/native执行、Python执行器/image、export/replay及通用server adapter与定向回归。A/B继续在G1 package/runtime树实施。三线开发不改变线上门禁与部署。
 
 线上状态未改变；签收时追加提交、命令、证据与明确缺口。
 
