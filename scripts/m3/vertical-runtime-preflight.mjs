@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import {materializeBrowserPreviewWeb,validateBrowserPreviewWebAssets} from './materialize-browser-preview-web.mjs';
 import {lstatSync,mkdtempSync,readFileSync,readdirSync,rmSync,unlinkSync,writeFileSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
@@ -279,7 +280,7 @@ export function runVerticalPreflight({root=resolve(fileURLToPath(new URL('../..'
   const runtimeResult=validateRuntimeFile(runtimeFile?resolve(root,runtimeFile):null);
   const secretPaths=secretsFiles.map(path=>inputPath(root,path)),opencodePath=opencodeAuthFile?inputPath(root,opencodeAuthFile):null;
   const checks=[...validateProductTopology(config,migrations),validateSecretSources(secretPaths,opencodePath),runtimeResult.check,validateOAuthRedirect(runtimeResult.value)];
-  if(system)checks.push(validateLocalCatalogAdmission(root),validateVerticalModelBudget(root),validateLocalDns(runtimeResult.value),...validateTls(root,runtimeResult.value),validateDockerCapacity(runtimeResult.value),...validateDockerImages(runtimeResult.value));
+  if(system)checks.push(validateBrowserPreviewWebAssets(root),validateLocalCatalogAdmission(root),validateVerticalModelBudget(root),validateLocalDns(runtimeResult.value),...validateTls(root,runtimeResult.value),validateDockerCapacity(runtimeResult.value),...validateDockerImages(runtimeResult.value));
   const status=checks.some(value=>value.status==='failed')?'failed':checks.some(value=>value.status==='blocked')?'blocked':'passed';
   return {schemaVersion:1,observedAt:new Date().toISOString(),status,checks};
 }
@@ -301,6 +302,7 @@ export function buildLaunchConfig(config,runtime,lockedImageDirectory){
 }
 
 async function launch(root,secretsFiles,opencodeAuthFile,runtimeFile){
+  await materializeBrowserPreviewWeb(root);
   const current=runVerticalPreflight({root,secretsFiles,opencodeAuthFile,runtimeFile});if(current.status!=='passed')throw Error('runtime-input-changed-after-preflight');
   migrateVerticalModelBudget(root);
   const loaded=loadSecretSources(secretsFiles.map(path=>inputPath(root,path)),inputPath(root,opencodeAuthFile));if(!loaded.values)throw Error('runtime-secrets-unavailable');

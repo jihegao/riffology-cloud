@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import {validateBrowserPreviewWebAssets} from './materialize-browser-preview-web.mjs';
 import {mkdtempSync,readFileSync,rmSync,writeFileSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {resolve} from 'node:path';
@@ -318,7 +319,7 @@ export async function runPreflight({root=resolve(fileURLToPath(new URL('../..',i
   try{
     const baseConfig=json(resolve(root,STAGING_CONFIG)),config=json(configPath);
     const migrationNames=(await import('node:fs')).readdirSync(resolve(root,'services/catalog/migrations')).filter(name=>name.endsWith('.sql'));
-    const checks=[];
+    const checks=[validateBrowserPreviewWebAssets(root)];
     if(releaseEnabled)checks.push(check('checked-config-default-closed',validateStagingTopology(baseConfig,migrationNames).every(value=>value.status==='passed'),'checked-in-staging-config-must-remain-valid-with-turn-admission-false'));
     checks.push(...validateStagingTopology(config,migrationNames,{release:releaseEnabled}));
     let releaseManifest;

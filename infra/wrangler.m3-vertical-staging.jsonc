@@ -13,7 +13,7 @@
     { "pattern": "preview.m1.riff-demo.gaojihe.cn", "custom_domain": true },
     { "pattern": "*.preview.m1.riff-demo.gaojihe.cn/*", "zone_name": "gaojihe.cn" }
   ],
-  "assets": { "directory": "../services/web", "binding": "ASSETS", "run_worker_first": true },
+  "assets": { "directory": "../.local/browser-preview/gateway-assets", "binding": "ASSETS", "run_worker_first": true },
   "secrets": {
     "required": [
       "BETTER_AUTH_SECRET",
@@ -27,6 +27,7 @@
     ]
   },
   "vars": {
+    "BROWSER_PREVIEW_EXECUTION_ORIGIN": "",
     "APP_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
     "M3_PREVIEW_ORIGIN": "https://preview.m1.riff-demo.gaojihe.cn",
     "TENANT_QUOTA_CAPACITY": "1",
