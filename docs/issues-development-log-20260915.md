@@ -35,6 +35,12 @@
 
 #65 尚待多项目轮询和 pendingProject 租户绑定修复；主控已查看三视口长标题截图，未见横向溢出。根据计划 G0 允许 UI 修复受阻时不阻塞后端契约，G1A/B 从已签收后端候选 b995430 前移，阶段2B仍等UI正式集成。新分支 `codex/issues-g1-package`、`codex/issues-g1-runtime`；A 继续拥有非runtime包模块，B 继续拥有runtime子目录和固定资产脚本/清单。
 
+#65 首次候选 ebe1089 已集成为 d9e72b0。主控独立 `node --test tests/m3/workspace-layout.test.mjs tests/m1/web.test.mjs` 50/50 通过，日志 `/tmp/riffology-g0-ui-independent-20260915.log`；专用多项目/跨tenant动态回归待作者补交。UI 上线签收仍待 G4。
+
+基线 `npm run check` 最终 exit 0：1879 项，1873 通过，6 项按既有条件跳过；日志 `/tmp/riffology-issues-baseline-check-20260915.log`。该结果为基线验证，不能代替最终集成候选完整检查。runtime 专属 `*.test.mjs` 已加入正式 test:m3，纯包 tests 由既有 m3 glob 覆盖。
+
+主控实际以无网络临时容器核对既有 Simulation 镜像 Python：`riffology-phase1-simulation:4159051` 为 3.11.14；Mesa 3.5.1/SciPy 1.18.0 官方 metadata 要求 >=3.12。因此阶段1C需新增独立版本锁定解释器/profile，保留旧SimPy与历史回放。来源：[Mesa](https://pypi.org/project/Mesa/3.5.1/)、[SciPy](https://pypi.org/project/scipy/1.18.0/)。
+
 线上状态未改变；签收时追加提交、命令、证据与明确缺口。
 
 ## 主控复核与环境记录
