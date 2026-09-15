@@ -18,10 +18,16 @@ test('repetition dependency schedule, complete admission counts and probe-inclus
  p.taskCap=66;p.productionManifest.globalCapNanodollars=144*9216;
  await assert.rejects(compileSchedule(p),/probe-inclusive-budget-too-small/);
 });
-test('unknown final probe stops; no post-stop admission, no replay, failed normal remains denominator',async()=>{
+test('unknown final probe stops; no post-stop admission, no replay, unqualified predecessor blocks dependencies',async()=>{
  const s=await compileSchedule(await proposal());
- const normal=s.schedule.map(t=>({id:t.fixtureId,status:'failed',dispatches:2}));
+ const normal=s.schedule.map(t=>({id:t.fixtureId,status:'accepted',dispatches:2}));
  assert.equal(nextAdmission(s,normal).next,'missing-usage');
+ const failed=[...normal.slice(0,2),{...normal[2],status:'failed'}];
+ assert.equal(nextAdmission(s,failed).state,'blocked');
+ assert.throws(()=>nextAdmission(s,[...failed,normal[3]]),/admission-after-unqualified-terminal/);
+ const cancelled=[{...normal[0],status:'cancelled'}];
+ assert.equal(nextAdmission(s,cancelled).state,'blocked');
+ assert.equal(nextAdmission(s,[...normal.slice(0,17),{...normal[17],status:'failed'}]).state,'blocked');
  const unknown=[...normal,{id:'missing-usage',status:'unknown',dispatches:1}];
  assert.deepEqual(nextAdmission(s,unknown),{state:'stopped',reason:'unknown-charge',preserveReservation:true});
  assert.throws(()=>nextAdmission(s,[...unknown,{id:'transport-uncertain',status:'failed',dispatches:1}]),/admission-after-stop/);

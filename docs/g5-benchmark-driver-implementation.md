@@ -8,7 +8,7 @@
 
 预算重新用冻结profile的token ceiling和向上取整nanodollar费率计算147*C；既有validator检查8*C的Turn上限，新增检查probe-inclusive全局上限与整数安全。没有真实费率不生成美元预测。测试profile仅为本地合成值，不能复制成执行配置。参考hash与authorizationReference字符串仅验证形状，绝不证明账号授权或证据真实性。
 
-`nextAdmission`纯函数核对终态顺序、单任务8/单probe1 dispatch界限，保留失败/取消终态；正常任务全部终态之后才提出probe。首次unknown或显式stopReason阻断任何其后新准入，reservation保持占用，无清零/重试/replay接口。其结果标记proposal-only：实际driver仍需验证依赖的真实保存状态、source/Revision/工具证据、deadline/caps/stop开关及实际账本，不能把此函数当云端预算权威，也不能因failed后返回下一提案就执行缺失依赖任务。三个probe可能未全部执行；unknown时真实执行必须收尾停止。
+`nextAdmission`纯函数核对终态顺序、单任务8/单probe1 dispatch界限，失败/取消立即blocked并保留记录，禁止后继依赖和probe；仅正常任务全部accepted之后才提出probe。首次unknown或显式stopReason阻断任何其后新准入，reservation保持占用，无清零/重试/replay接口。其结果标记proposal-only：实际driver仍需验证依赖的真实保存状态、source/Revision/工具证据、deadline/caps/stop开关及实际账本，不能把此函数当云端预算权威，也failed/cancelled没有恢复绕过参数，恢复须另行审查真实依赖检查点及修订方案。三个probe可能未全部执行；unknown时真实执行必须收尾停止。
 
 `--execute`无条件拒绝，即便manifest内authorizationReference非空；本阶段不存在可审阅且批准的线上runner/账号配置。模块只读用户指定JSON文件，不读取env/凭据、不建立网络连接、不启动工具/Run。未来线上实现须另行独立审查和具体授权，不能解除该拒绝后就宣布已具完整执行能力。
 

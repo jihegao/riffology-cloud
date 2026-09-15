@@ -63,6 +63,10 @@ export function nextAdmission(compiled, completed) {
       if (index !== completed.length-1) throw Error('admission-after-stop');
       return {state:'stopped',reason:receipt.stopReason || 'unknown-charge',preserveReservation:true};
     }
+    if (receipt.status !== 'accepted') {
+      if (index !== completed.length-1) throw Error('admission-after-unqualified-terminal');
+      return {state:'blocked',reason:'unqualified-predecessor',fixtureId:receipt.id,preserveFailure:true};
+    }
   }
   return completed.length === sequence.length ? {state:'complete'} : {state:'proposal-only',next:sequence[completed.length].id};
 }
