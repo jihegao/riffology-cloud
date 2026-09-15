@@ -10,7 +10,9 @@ import {initialWorkspaceArchive} from '../../services/workspace/initial-archive.
 import {simulationPlan,digest} from '../../services/simulation/source.ts';
 import {publishSimulationResult,type SimulationRecord} from '../../services/simulation/host.ts';
 import {buildResearchExport} from '../../services/research/export.ts';
-import {MESA_SOURCE_PACKAGES} from '../../services/simulation/server-profile.ts';
+import {productionPreviewRegistry} from '../../services/browser-preview/production-registry.ts';
+import {validateSavedPreview} from '../../services/browser-preview/validator.ts';
+import {packageCompatiblePreview,unpackPreviewPackage} from '../../services/browser-preview/packager.ts';
 const enabled=process.env.M4_SIMULATION_DOCKER_TEST==='1',image=process.env.M4_SIMULATION_TEST_IMAGE||'riffology-g1-mesa:local';
 const evidence=process.env.G1_SERVER_EVIDENCE_DIR||'.local/g1-server-docker';
 const encode=(s:string)=>new TextEncoder().encode(s);
@@ -19,16 +21,25 @@ const scope={tenantId:'tenant',projectId:'project',workspaceId:'workspace',works
 for(const name of ['mesa','queue'] as const)test(`real frozen ${name} shared source runs with fenced server profile and independently replays`,{skip:!enabled,timeout:120000},async t=>{
  const imageIdentity=JSON.parse(docker(['image','inspect',image]))[0].Id;
  const {mkdir}=await import('node:fs/promises');await mkdir(evidence,{recursive:true});const root=await mkdtemp(join(tmpdir(),'g1-shared-'));t.after(()=>rm(root,{recursive:true,force:true}));
- const model=await readFile(`tests/m3/fixtures/browser-models/${name}.py`),wrapper=await readFile('services/run/model_run_adapter.py');
- const parameters:ParameterValues=name==='mesa'?{steps:2,width:4,height:4,density:0.5,minority_fraction:0.35,homophily:0.5}:{servers:2,customers:6,arrival_rate:0.8,service_rate:1};
- const metrics=name==='mesa'?{population:{},unhappy:{},happy_fraction:{}}:{queue_length:{},completed:{},mean_wait:{},throughput:{}};
- const spec={schemaVersion:1,researchQuestion:'Same source?',scope:'finite fixture',entities:[],mechanisms:[],assumptions:[],parameters:Object.fromEntries(Object.entries(parameters).map(([key,value])=>[key,{type:Number.isInteger(value)?'integer':'number',default:value}])),metrics,limitations:[],execution:{entrypoint:'model/run.py',dependencyLock:'app/requirements.lock'}};
- const lock={schemaVersion:1,packages:name==='mesa'?MESA_SOURCE_PACKAGES:{}},specBytes=encode(JSON.stringify(spec)),lockBytes=encode(JSON.stringify(lock));
- const archive=initialWorkspaceArchive({'model/model.py':model,'model/run.py':wrapper,'model/model-spec.json':specBytes,'model/visualization.json':encode('{"schemaVersion":1}'),'app/requirements.lock':lockBytes});
+ const fixturePath='../../services/browser-preview/runtime/fixtures.mjs';
+ const {makeFixture}:{makeFixture:(profile:import('../../services/browser-preview/profiles.ts').TrustedPreviewProfile,name:string)=>Promise<{files:{path:string;base64:string}[]}>}=await import(fixturePath);
+ const registry=await productionPreviewRegistry(),profileId=name==='mesa'?'mesa-3.5.1/v1':'python-stdlib/v1';
+ const profile=registry.resolve(profileId);assert.ok(profile);
+ const fixture=await makeFixture(profile,name);
+ const frozenFiles=Object.fromEntries(fixture.files.map((file:{path:string;base64:string})=>[file.path,Buffer.from(file.base64,'base64')]));
+ const archive=initialWorkspaceArchive(frozenFiles);
+ const compatibility=await validateSavedPreview({projectId:scope.projectId,revisionId:'frozen-revision',filesSha256:await digest(archive)},archive,profileId,registry);
+ assert.equal(compatibility.status,'compatible');if(compatibility.status!=='compatible')throw Error('fixture-incompatible');
+ const packaged=await packageCompatiblePreview(compatibility.value),unpacked=await unpackPreviewPackage(packaged.bytes);
+ assert.equal(unpacked.files.size,5);assert.deepEqual(unpacked.files.get('model/model.py'),new Uint8Array(frozenFiles['model/model.py']));
+ const model=frozenFiles['model/model.py'],wrapper=frozenFiles['model/run.py'];
+ assert.equal(await digest(wrapper),await digest(await readFile('services/run/model_run_adapter.py')));
+ const parameters:ParameterValues=name==='mesa'?{steps:12,width:20,height:14,density:0.82,minority_fraction:0.35,homophily:0.5}:{servers:2,customers:30,arrival_rate:0.8,service_rate:1};
+ const spec=JSON.parse(Buffer.from(frozenFiles['model/model-spec.json']).toString()),metrics=spec.metrics;
  const source={kind:'saved-turn' as const,identity:{scope,sessionId:'session',turnId:'turn',dispatchId:'dispatch',generation:1},revision:{revisionId:'frozen-revision',objectKey:'opaque',filesSha256:await digest(archive),sessionSha256:'a'.repeat(64),committedAt:1}};
  const plan=await simulationPlan(source,archive),token='b'.repeat(52),runId=`server-${name}`;
  await writeFile(join(root,'source.tar'),archive);
- const control={schemaVersion:1,token,runId,filesSha256:await digest(archive),specSha256:plan.specSha256,entrypoint:spec.execution.entrypoint,entrypointSha256:plan.entrypointSha256,dependencyLock:spec.execution.dependencyLock,dependencyLockSha256:plan.dependencyLockSha256,parameters,seed:4294967295,deadlineAt:Date.now()+90000};
+ const control={schemaVersion:1,token,runId,filesSha256:await digest(archive),specSha256:plan.specSha256,entrypoint:spec.execution.entrypoint,entrypointSha256:plan.entrypointSha256,dependencyLock:spec.execution.dependencyLock,dependencyLockSha256:plan.dependencyLockSha256,parameters,seed:7,deadlineAt:Date.now()+90000};
  await writeFile(join(root,'control.json'),JSON.stringify(control));const container=docker(['run','-d','--platform','linux/amd64','--network','none',...dockerFenceOptions(),'--entrypoint','/bin/sh',image,'-c','sleep 120']);t.after(()=>{try{docker(['rm','-f',container]);}catch{}});
  if(process.env.G1_DOCKER_OUTER_NETWORK_FENCE==='1'){const probe=JSON.parse(docker(['exec',container,'python3','-c',DOCKER_FENCE_PROBE]));await writeFile(join(evidence,`${name}-kernel-network-fence.json`),JSON.stringify(probe,null,2));}
  docker(['cp',join(root,'source.tar'),`${container}:/var/lib/riffology/archives/${token}.input.tar`]);docker(['cp',join(root,'control.json'),`${container}:/var/lib/riffology/services/${token}.input.json`]);
@@ -48,6 +59,8 @@ for(const name of ['mesa','queue'] as const)test(`real frozen ${name} shared sou
  const repeat=JSON.parse(docker(['exec',container,interpreter,'-c',evaluate,config]));assert.deepEqual(trace,repeat);
  if(name==='queue'){const newer=JSON.parse(docker(['exec',container,'/opt/riffology/python-mesa/bin/python3','-c',evaluate,config]));assert.deepEqual(newer,trace);}
  await writeFile(join(evidence,`${name}-recomputed-trace.json`),JSON.stringify(trace,null,2));
+ if(process.env.G1_BROWSER_TRACE_DIR){const browser=JSON.parse(await readFile(join(process.env.G1_BROWSER_TRACE_DIR,`${name}.json`),'utf8'));assert.deepEqual(trace,browser,'exact same-source same-input real Browser/native trace parity');}
+ await writeFile(join(evidence,`${name}-package.json`),JSON.stringify({manifest:packaged.manifest,packageSha256:packaged.sha256,browserTraceCompared:Boolean(process.env.G1_BROWSER_TRACE_DIR)},null,2));
  const again=JSON.parse(docker(['exec',container,'python3','/opt/riffology/simulation_process.py','start',token]));assert.deepEqual(again.result,observed.result);
  const objects=new Map<string,Uint8Array>();const bucket={put:async(key:string,value:string|Uint8Array)=>{objects.set(key,typeof value==='string'?encode(value):Uint8Array.from(value));},get:async(key:string)=>{const bytes=objects.get(key);return bytes?{size:bytes.byteLength,text:async()=>new TextDecoder().decode(bytes),arrayBuffer:async()=>Uint8Array.from(bytes).buffer}:null;}} as unknown as R2Bucket;
  const record={runId,experimentId:runId,scope,actor:{userId:'user',authVersion:1},key:'intent',requestJson:'{}',input:{runId,plan,parameters,seed:control.seed,deadlineAt:control.deadlineAt,runtimeImage:image},status:'completed',createdAt:1,updatedAt:2,cancelledAt:null,errorCode:null,attempt:0,quotaClaimed:false,releaseProof:null,lease:null,startClaimed:true,stop:null,result:null,releaseBegunAt:null,quietSince:null,released:true} as SimulationRecord;
