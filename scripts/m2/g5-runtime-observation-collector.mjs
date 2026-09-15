@@ -23,6 +23,8 @@ export async function collectProductRuntimeObservation({workspaceId,cookie,fetch
   const checkpoint=value=>{if(value===null)return null;if(!object(value)||!HASH.test(value.revisionId??'')||!HASH.test(value.filesSha256??'')||!HASH.test(value.sessionSha256??'')||!Number.isSafeInteger(value.committedAt)||value.committedAt<1)throw Error('runtime-observation-checkpoint-invalid');return {revisionId:value.revisionId,filesSha256:value.filesSha256,sessionSha256:value.sessionSha256,committedAt:value.committedAt};};
   for(const [turnId,turn] of Object.entries(snapshot.turns)){
     if(!ID.test(turnId)||!object(turn)||turn.id!==turnId||!ID.test(turn.sessionId??'')||!STATUS.has(turn.status)||!Object.hasOwn(turn,'checkpoint')||!Object.hasOwn(turn,'runtimeGeneration')||!(turn.runtimeGeneration===null||Number.isSafeInteger(turn.runtimeGeneration)&&turn.runtimeGeneration>0)||!['completed','failed','cancelled','interrupted',null].includes(turn.executionOutcome)||!['saved','failed',null].includes(turn.persistenceOutcome))throw Error('runtime-observation-turn-invalid');
+    const session=snapshot.sessions[turn.sessionId];
+    if(!object(session)||session.id!==turn.sessionId||session.scope?.workspaceId!==workspaceId||turn.scope?.workspaceId!==workspaceId)throw Error('runtime-observation-session-scope-invalid');
     checkpoint(turn.checkpoint);
   }
   if(shouldAbort())throw Error('runtime-observation-aborted');

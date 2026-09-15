@@ -16,6 +16,7 @@ export function runtimeScenarioPlan(windowId){
 export function reconcileTurnIntent(intent,observation){
   const turns=observation?.product?.turns;
   if(!Array.isArray(turns))throw Error('runtime-reconcile-observation-invalid');
+  if(!intent?.workspaceId||observation?.source?.url!==`${ORIGIN}/api/workspaces/${intent.workspaceId}`)return {state:'blocked',reason:'workspace-identity-mismatch',mayResubmit:false};
   if(!intent?.turnId)return {state:'unknown',reason:'submission-identity-not-reconciled',mayResubmit:false};
   const matches=turns.filter(turn=>turn.turnId===intent.turnId);
   if(matches.length!==1)return {state:'unknown',reason:'turn-identity-absent-or-conflicting',mayResubmit:false};
@@ -31,24 +32,27 @@ export async function prepareRuntimeLiveWindow({windowId,auth,execute=false,fetc
   return {schemaVersion:1,status:'blocked',phase:'authority-preflight',reason:'runtime-authority-not-exposed',admittedTurns:0,plannedTurns:plan.length,observation,cloudAcceptance:false};
 }
 /** Dormant ordinary Turn transport for future reviewed authority adapter. Never retries a POST.
- * Persist-before-send journal methods must durably sync; runtime preflight does not invoke this.
+ * Persist-before-send journal createOnce/update methods must durably sync; runtime preflight does not invoke this.
  * Existing pending/unknown intents block even if HTTP idempotency could deduplicate them. */
 export async function submitOrdinaryTurnOnce({workspaceId,sessionId,cookie,intent,journal,execute=false,fetchImpl=globalThis.fetch,shouldAbort=()=>false}={}){
   if(execute!==true)throw Error('turn-submit-explicit-execute-required');
   if(!UUID.test(workspaceId??'')||!UUID.test(sessionId??'')||typeof cookie!=='string'||cookie.length<8||cookie.length>8192||/[\r\n]/.test(cookie)||typeof intent?.intentKey!=='string'||!/^g5-[A-Za-z0-9_-]{1,150}$/.test(intent.intentKey)||typeof intent.message!=='string'||intent.message.length<1||intent.message.length>16000)throw Error('turn-submit-input-invalid');
-  if(!journal?.read||!journal?.persist)throw Error('turn-submit-durable-journal-required');
-  if(await journal.read(intent.intentKey))return {state:'reconcile-only',mayResubmit:false};
+  if(!journal?.createOnce||!journal?.update)throw Error('turn-submit-durable-journal-required');
   if(shouldAbort())throw Error('turn-submit-aborted');
   const record={intentKey:intent.intentKey,workspaceId,sessionId,messageSha256:digest(intent.message),state:'delivery-unknown',turnId:null};
-  await journal.persist(record); // Failure aborts before network; no replay on uncertain acknowledgement.
+  const created=await journal.createOnce(record); // Atomic unique-key durable create; uncertain acknowledgement aborts before POST.
+  if(created!=='created'){if(created!=='reconcile')throw Error('turn-submit-create-ack-invalid');return {state:'reconcile-only',mayResubmit:false};}
   if(shouldAbort())return {state:'delivery-unknown',mayResubmit:false};
   try{
     const url=`${ORIGIN}/api/workspaces/${workspaceId}/sessions/${sessionId}/turns`;
     const response=await fetchImpl(url,{method:'POST',headers:{cookie,origin:ORIGIN,accept:'application/json','content-type':'application/json','idempotency-key':intent.intentKey},body:JSON.stringify({message:intent.message}),redirect:'error',signal:AbortSignal.timeout(20000)});
     if(response.url&&response.url!==url||![200,202].includes(response.status))throw Error('turn-submit-response-unconfirmed');
-    const body=await response.json();
-    if(!UUID.test(body?.turn?.id??'')||body.turn.sessionId!==sessionId)throw Error('turn-submit-identity-unconfirmed');
-    await journal.persist({...record,state:'submitted',turnId:body.turn.id});
+    if(!response.body)throw Error('turn-submit-body-missing');
+    const reader=response.body.getReader(),chunks=[];let size=0;
+    try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>65536){await reader.cancel();throw Error('turn-submit-response-too-large');}chunks.push(Buffer.from(value));}}finally{reader.releaseLock();}
+    const body=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(chunks,size)));
+    if(!UUID.test(body?.turn?.id??'')||body.turn.sessionId!==sessionId||body.turn.scope?.workspaceId!==workspaceId||body.turn.message!==intent.message||!['queued','running','cancelling','checkpointing','completed','failed','cancelled','interrupted'].includes(body.turn.status))throw Error('turn-submit-identity-unconfirmed');
+    await journal.update({...record,state:'submitted',turnId:body.turn.id});
     return {state:'submitted',turnId:body.turn.id,mayResubmit:false,cloudAcceptance:false};
   }catch{return {state:'delivery-unknown',mayResubmit:false,cloudAcceptance:false};}
 }
