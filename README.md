@@ -9,6 +9,7 @@ Sandbox、D1 和 R2 构成云端服务；仿真主路径固定为 Python + SimPy
 
 ## 文档
 
+- [当前多阶段开发计划](docs/issues-subagent-plan-20260915.md)与[实施验收记录](docs/issues-development-log-20260915.md)：#64 浏览器 Preview、#65 UI、#46/#37 生产验收及 #35 官方模型。
 - [研究闭环 Issues 执行顺序](docs/research-loop-execution-plan.md)：第一阶段签收后的 8 个交付批次、依赖、接口兼容和验收门槛。
 - [MVP 系统概要设计](docs/mvp-system-design.md)：产品范围、功能模块、架构、核心流程、持久化与验收标准。
 - [官方模型库、多租户与 Token 付费设计](docs/model-library-tenancy-billing-design.md)：官方模型版本、项目与账单归属、充值余额、Token 结算和运行额度。
