@@ -11,6 +11,7 @@ export class G5ControlledWindow extends DurableObject<G5WindowEnv>{
  async markUnknown(key:string){return this.#guard().markUnknown(key);}
  async recordUsage(key:string,usage:unknown){return this.#guard().recordUsage(key,usage);}
  async settle(key:string,settlement:unknown){return this.#guard().settle(key,settlement);}
+ async closeTurn(turnKey:string,receipts:unknown){return this.#guard().closeTurn(turnKey,receipts);}
  async closeAdmission(){return this.#guard().closeAdmission();}
  async snapshot(){if(!this.env.G5_WINDOW_GUARD.idFromName(G5_GLOBAL_ACTOR).equals(this.ctx.id))throw Error('g5-window-actor-scope-denied');return readG5WindowSnapshot(this.ctx.storage,g5WindowPolicy(this.env.G5_CONTROLLED_WINDOW_JSON===undefined?undefined:JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON)));}
 }
