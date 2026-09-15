@@ -171,6 +171,7 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
   const money=production?env.PRODUCTION_MODEL_BUDGET!.getByName(PRODUCTION_MONEY_ACTOR):null;
   let moneyRef:MoneyReference|undefined;
   let providerDeadlineAt=parsed.deadlineAt;
+  let controlledWindowDeadlineAt:number|undefined;
   let reference: ReturnType<typeof modelCallReference>;
   try {
     const payloadSha256 = await turnDigest({ schemaVersion: 1, purpose: 'product-model-provider-payload', payload: parsed.payload });
@@ -195,7 +196,8 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
       if(!(await money.dispatch(moneyRef)).authorized)return conflict('model_call_observe_only');
     }
     const dispatch = await budget.dispatch(tenantId, reference);
-    if(dispatch.controlledWindowDeadlineAt!==undefined)providerDeadlineAt=Math.min(providerDeadlineAt,dispatch.controlledWindowDeadlineAt);
+    controlledWindowDeadlineAt=dispatch.controlledWindowDeadlineAt;
+    if(controlledWindowDeadlineAt!==undefined)providerDeadlineAt=Math.min(providerDeadlineAt,controlledWindowDeadlineAt);
     if(env.G4_CONTROLLED_WINDOW_JSON!==undefined&&dispatch.controlledWindowDeadlineAt===undefined)throw Error('g4-window-fence-missing');
     if (!dispatch.authorized) {
       // A previously dispatched token call may have been sent by an older
@@ -213,7 +215,7 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
     if(providerDeadlineAt<=now())throw Error('g4-window-deadline');
     result = normalizedProviderResult(await provider.dispatch({
       provider: claims.provider, model: claims.model, providerSessionId, idempotencyKey: parsed.requestId,
-      payload: parsed.payload,inputTokenUpperBound:parsed.inputTokenUpperBound,maxOutputTokens:parsed.maxOutputTokens,deadlineAt:parsed.deadlineAt,...(providerDeadlineAt===parsed.deadlineAt?{}:{dispatchAdmissionDeadlineAt:providerDeadlineAt}),signal:request.signal,
+      payload: parsed.payload,inputTokenUpperBound:parsed.inputTokenUpperBound,maxOutputTokens:parsed.maxOutputTokens,deadlineAt:parsed.deadlineAt,...(controlledWindowDeadlineAt===undefined?{}:{dispatchAdmissionDeadlineAt:providerDeadlineAt}),signal:request.signal,
     }), claims, parsed);
     emit(telemetry,{event:'provider-dispatch-result',status:result.status,contentType:result.responseContentType,requestIdPresent:result.providerRequestId!==null,usagePresent:result.inputTokens!==null&&result.outputTokens!==null,durationMs:now()-started});
     const usage=result.inputTokens===null||result.outputTokens===null
