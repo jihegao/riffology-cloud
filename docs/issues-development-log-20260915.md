@@ -1,6 +1,6 @@
 # 多阶段实施与验收记录
 
-日期：2026-09-15。基线：`40aee17`。当前阶段：G0/G1 本地签收；G2 实现及 initial 来源兼容已交接；G3 作者整链通过，主控最终独立整链及正式全量检查运行中。
+日期：2026-09-15。基线：`40aee17`。当前阶段：G0–G3 本地签收；G4可审阅发布材料已准备，真实执行范围与账号参数待确认；G5离线准备，G6初始来源兼容已实现。
 
 集成分支：`codex/issues-20260915-integration`，工作树 `/Users/gaojihe/apps/riffology-cloud-issues-integration`。原 main 文档修改及旧 Mesa detached worktree 保留，不纳入实施提交。开工GitHub核对为5个开放issue；本轮未关闭issue。
 
@@ -21,9 +21,9 @@
 | --- | --- | --- |
 | G0 | 本地通过 | 线上 #65 签收仍待 G4 |
 | G1 | 本地通过 | 原生生产隔离/资源继承仍待G4，不能以翻译环境替代 |
-| G2 | 实施中 | Agent约定、原子发现、buildhost/API与面板已集成；实际Workspace/R2 ready、权限/历史Verify与资产接线验收 |
-| G3 | 实施中 | 非作者评审持续；真实Gateway认证与SDK替代内核隔离通过，真正两模型产品整链/完整check待签收 |
-| G4 | 未开始 | 冻结发布、普通用户两模型、零执行窗口、资源释放 |
+| G2 | 本地通过 | 原子保存/initial发现、持久构建/API、物理资产及真实整链已通过；云签收待G4 |
+| G3 | 本地通过 | 作者与主控独立两模型产品整链通过；最终完整check exit0；原生生产资源边界待G4 |
+| G4 | 准备完成、待执行 | 发布review manifest/overlays、镜像模块/资产与回退材料已准备；账号预算隐私、managed digests及本次执行范围待确认 |
 | G5 | 离线准备 | 真实账号/预算、账本、故障/复用生产验收未开始 |
 | G6 | 未开始 | 三模型普通用户→审核→发布→新用户复制 |
 
@@ -165,3 +165,12 @@ Issue逐项关闭条件与本地/线上边界见[签收矩阵](issues-acceptance
 正式检查发现两项旧M1 fixture/预检未适配新实际模块与组合资产。98db1a9加入实际browser-preview.js及只读空态API；e703386只允许冻结组合目录、绑定与worker优先次序，实际执行额外只读核验字节收据。主控预检6/6通过，不放宽超时或静态目录约束。最终实施候选526eee7的主控真实G3与npm run check已启动，结果待记录。
 
 文档同步仅覆盖本轮新增14篇文档；同步记录按上次SHA检测原工作树是否被另行修改。原main的5篇已修改跟踪文档保留，不覆盖、不暂存。G4本地生产Pi镜像及实际装载模块已准备，云账号预算/隐私/时限与本次发布范围未授权，未部署。
+
+
+## G2/G3 本地最终签收
+
+最终实施候选bafc48a（后续仅文档同步）。主控完整`npm run check` exit0：1971项、1960通过、11条件跳过、0失败/取消，日志`/tmp/riffology-issues-final-check-repaired-20260915.log`。11项为既有Python协议opt-in1、既有Docker5，以及本轮新增两模型真实同输入2/Mesa边界3 opt-in；真实执行单列在G1/G3证据，不将默认跳过冒充执行。首轮M3失败日志保留，根因两旧Chrome fixture漏供应实际browser-preview.js；bafc48a仅补真实模块和owned GET空态，作者20/20、主控最终完整检查通过，无放宽deadline或skip。
+
+主控G3候选526eee7实际整链exit0/fullGate true；执行开始后的生产代码未变化，只增加fixture、只读发布准备器及文档。Queue/Mesa各nativeStart1，真实私有R2/历史Verify/完整源码trace/ZIP replay/身份与权限均通过。冻结localWindow的新计算增量0、execution Cookie0，六视口截图经非作者复核。保留生产360秒guard与quiet期，逐historical quota.lookup匹配停止确认，两native/初始化均释放，occupied0。证据`.local/issues-20260915/g3/research-chain-independent/`含实际结果、源码摘要、截图、ZIP、日志、SHA256SUMS。ARM64测试bridge与saved-source fixture不是G4普通Agent/x86原生资源证明。
+
+G0–G3本地门槛已满足。G4发布清单新增只读生成器/严格校验3/3主控通过，生成review overlays不修改原生产配置；预算/账号/隐私/null保持blocked。G5离线18任务及runtime-reuse方案准备完成；G6initial可信来源实现已完成，但普通用户三模型→非作者审核→发布→新用户复制未执行。当前5issue仍未关闭，未部署或新增收费请求。

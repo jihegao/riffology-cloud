@@ -67,4 +67,4 @@ This is local acceptance with a specifically identified test bridge image and a 
 
 两个冻结localWindow均全部GET且provider关闭，Turn/Run/native及ProjectRuntime新执行增量0，execution Cookie0；allHeaders包含appCookie作为采集阳性控制。两模型三视口实际截图经C只读复核，无横溢。生产360秒release guard与quiet期保持，两native历史quota.lookup的stopped确认逐项匹配releaseProof，初始化同样真实停止，occupied0/available4。dispose后另清除一遗留本地instance，仅记emergencyRemoved，不充当释放证明。
 
-ignored证据路径`.local/issues-20260915/g3/research-chain-independent/`含实际结果、六截图、两私有包/ZIP、source执行摘要和SHA256SUMS。摘要结果SHA为4ddab0dc3c481b056142ca1aa15f271d0569816c176ac736fda764066b6ff97d。最终正式npm run check仍待通过才签收G2/G3；新增G4准备器与fixture修复未改变本次生产执行代码。保存生产器fixture和ARM64 bridge边界保留，不能替代G4普通Agent/x86资源或G6审核发布复制。
+ignored证据路径`.local/issues-20260915/g3/research-chain-independent/`含实际结果、六截图、两私有包/ZIP、source执行摘要和SHA256SUMS。摘要结果SHA为4ddab0dc3c481b056142ca1aa15f271d0569816c176ac736fda764066b6ff97d。最终正式npm run check已通过（1971项/1960通过/11 opt-in跳过/0失败），G2/G3本地签收；新增G4准备器与fixture修复未改变本次生产执行代码。保存生产器fixture和ARM64 bridge边界保留，不能替代G4普通Agent/x86资源或G6审核发布复制。

@@ -5,7 +5,7 @@
 | Issue | 本地证据 | 本次剩余签收条件 | 关闭状态 |
 | --- | --- | --- | --- |
 | #65 Workspace | G0三视口视觉检查；50项UI回归；2项真实Chrome多项目/跨tenant回归 | G4实际发布三视口、真实preparing→ready、错误保留、导航/保存/Preview/Stop | 未关闭 |
-| #64 Browser Preview | G1本地通过：真实tar→validator/packager；26项真实Pyodide；两模型同输入完整trace逐项相同、server+ZIP replay；固定生成约定。G2实际Workerd原子发现35项、静态资产4项、面板fixture8项；最终接口17项；G3真实Gateway认证1项及物理HTTP ASSETS控制 | 组合资产物理HTTP/Chrome45项及initial可信来源28项通过；G3作者整链已过，主控独立最终整链与正式全量检查待签；G4普通Agent两模型、原生隔离/资源、零执行local窗口、Evidence与云产物/资源 | 未关闭 |
+| #64 Browser Preview | G1本地通过：真实tar→validator/packager；26项真实Pyodide；两模型同输入完整trace逐项相同、server+ZIP replay；固定生成约定。G2实际Workerd原子发现35项、静态资产4项、面板fixture8项；最终接口17项；G3真实Gateway认证1项及物理HTTP ASSETS控制 | 组合资产物理HTTP/Chrome45项及initial可信来源28项通过；G3作者及主控独立实际整链通过，正式全量检查1971项/1960通过/11条件跳过/0失败；G4普通Agent两模型、原生隔离/资源、零执行local窗口、Evidence与云产物/资源 | 未关闭 |
 | #46 Model supply | 既有Adapter、token/money预算、dispatch-once/unknown保留及定向回归；ADR仍为候选；18项离线任务fixture及2项域检查 | 当前provider/价格/隐私；真实账号/模型/预算/日志；18次任务benchmark；普通用户多轮、全链单次上游、两端账本 | 未关闭 |
 | #37 Runtime reuse | 既有默认关闭lazy/reuse代码、身份/隔离协议与历史本地回归 | 本候选同配置冷/热/恢复；纯对话0 Project；10轮新身份/保存；取消/迟到/Session切换/丢失；低容量公平性、释放与回退 | 未关闭 |
 | #35 Publication | 既有readiness/冻结审核/不可变catalog/复制；五文件白名单兼容 | Browser资产/复制关联；普通用户Queue/Inventory/Maintenance依次建模、baseline+comparison+export→提交→非作者管理员审核→发布→新用户复制运行 | 未关闭 |
@@ -27,3 +27,8 @@
 #35首次三模型必须经普通用户路径，不直接写数据库、不用仓库特殊模型打包或管理员专用内容路径。管理员review不得修改作者项目；修改需求返回作者形成新Revision。
 
 保留失败、unknown账本和未覆盖项。每个issue自身全部要求有本次可信证据才关闭；历史通过不替代本次发布证明。
+
+
+## 本地阶段最终结论
+
+G0–G3本地签收。最终正式check exit0，1971项/1960通过/11 opt-in跳过；首失败及fixture修复记录保留。主控G3真实Gateway→重启alarm→Browser→旧版本Verify→native→私有R2→ZIP replay完整链通过，两模型各nativeStart1，冻结local窗口新执行0，三视口无溢出，实际停止及quota历史确认匹配、余额0。测试ARM64 bridge不替代生产x86资源继承，保存producer fixture不替代普通Agent。G4审阅材料、G5离线任务/复用准备和G6initial来源实现已完成，线上G4–G6尚未执行，未关闭任何issue。
