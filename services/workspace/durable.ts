@@ -1,3 +1,4 @@
+import {G4BrowserBuildHold,g4BuildHoldUntil} from '../browser-preview/g4-build-hold.ts';
 import {sandboxActorIds} from '../sandbox/policy.ts';
 import type {readG4WindowSnapshot} from '../model-budget/g4-window.ts';
 import {g4DurableComputeCounts,readG4NativeSample} from '../model-budget/g4-compute-counts.ts';
@@ -109,6 +110,7 @@ export interface WorkspaceAgentEnv {
   REVISION_STORE: RevisionStoreNamespace;
   TOOL_ARTIFACT_STORE: ToolArtifactStoreNamespace;
   G4_CONTROLLED_WINDOW_JSON?:string;
+  G4_BROWSER_BUILD_HOLD_SCOPES_JSON?:string;
   M2_TURNS_ENABLED: unknown;
   M2_WORKSPACE_RUNTIME_REUSE_ENABLED?:unknown;
   M2_LAZY_PROJECT_ENABLED?:unknown;
@@ -150,7 +152,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   #browserBuildHost:BrowserPreviewBuildHost|null=null;
   #browserBuild(scope:TurnScope){
     if(!this.env.WORKSPACE_CHECKPOINTS)throw Error('browser-preview-unavailable');
-    return this.#browserBuildHost??=new BrowserPreviewBuildHost(this.ctx.storage,scope,{registry:productionPreviewRegistry,bucket:this.env.WORKSPACE_CHECKPOINTS,checkSource:source=>this.#checkBrowserSource(scope,source),resolveInitial:async source=>{
+    return this.#browserBuildHost??=new BrowserPreviewBuildHost(this.ctx.storage,scope,{registry:productionPreviewRegistry,bucket:this.env.WORKSPACE_CHECKPOINTS,holdUntil:source=>g4BuildHoldUntil(this.ctx.storage,source,s=>s.kind==='initial-workspace'?null:new DurableTurnStore(this.ctx.storage).read()?.turns[s.identity.turnId]?.finishedAt??null),checkSource:source=>this.#checkBrowserSource(scope,source),resolveInitial:async source=>{
       this.#checkBrowserSource(scope,source);
       const resolved=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).resolveInitial(source.reference,scope);
       this.#checkBrowserSource(scope,source);return resolved;
@@ -184,6 +186,18 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       files:source=>this.env.REVISION_STORE.getByName(revisionStoreActorName(owned)).serviceFiles(source,16*1024*1024),simulations:this.#simulations(owned),canVerify:()=>this.#simulationCanRun(),image:this.env.M4_SIMULATION_IMAGE??'',
       delivery:hash=>platformPreviewDelivery(this.env.APP_ORIGIN,this.env.BROWSER_PREVIEW_EXECUTION_ORIGIN,hash)});
   }
+  #g4BuildHoldControl(){
+    return new G4BrowserBuildHold(this.ctx.storage,this.env.G4_CONTROLLED_WINDOW_JSON,this.env.G4_BROWSER_BUILD_HOLD_SCOPES_JSON,{
+      checkScope:scope=>{this.#maintenanceScope(scope);},
+      authorize:async(scope,actor,creating)=>{const catalog=new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()),actual=creating?await catalog.workspace(actor,scope.workspaceId):await catalog.maintenanceWorkspace(actor,scope.workspaceId);if(!sameScope(actual,scope))throw Error('g4-build-hold-scope-denied');},
+      window:async()=>{const task=this.#store.read()?.task;if(!task||!this.env.TENANT_MODEL_BUDGET)throw Error('g4-build-hold-window-unavailable');const namespace=this.env.TENANT_MODEL_BUDGET as unknown as {getByName(name:string):{g4WindowSnapshot(tenantId:string):Promise<ReturnType<typeof readG4WindowSnapshot>>}};return namespace.getByName(modelBudgetTenantName(task.tenantId)).g4WindowSnapshot(task.tenantId);},
+      finishedAt:source=>source.kind==='initial-workspace'?null:new DurableTurnStore(this.ctx.storage).read()?.turns[source.identity.turnId]?.finishedAt??null,
+      baseline:()=>{const task=this.#store.read()!.task;return this.#turns.workspaceRevisionSnapshot(this.#maintenanceScope({tenantId:task.tenantId,projectId:task.projectId,workspaceId:task.workspaceId,workspaceGeneration:task.generation}))?.receipt.revisionId??null;},
+      checkSource:source=>this.#checkBrowserSource(sourceScope(source),source),
+    });
+  }
+  g4BrowserBuildHold(input:{scope:TurnScope;actor:TurnActor;durationMs:number}){return this.#g4BuildHoldControl().hold(input);}
+  g4BrowserBuildRelease(input:{scope:TurnScope;actor:TurnActor}){return this.#g4BuildHoldControl().release(input);}
   async g4ComputeCounts(input:{scope:TurnScope;actor:TurnActor}){
     const scope=this.#maintenanceScope(input.scope),catalog=new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set());
     const authorize=async()=>{this.#maintenanceScope(scope);const actual=await catalog.maintenanceWorkspace(input.actor,scope.workspaceId);if(!sameScope(actual,scope))throw Error('g4-compute-counts-scope-denied');this.#maintenanceScope(scope);};

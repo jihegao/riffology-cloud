@@ -1,3 +1,4 @@
+import {projectBrowserBuildAlarm} from './g4-build-hold.ts';
 import type { ModelSpec } from '../simulation/model-spec.ts';
 import type { TurnScope } from '../turn/protocol.ts';
 import {sameScope} from '../turn/protocol.ts';
@@ -7,7 +8,6 @@ import {validateSavedPreview} from './validator.ts';
 import {packageCompatiblePreview} from './packager.ts';
 import {storePreviewPackage,type PreviewObjectBucket,type PreviewBuildIntent,type PreviewBuildReceipt,type PreviewReceiptPort} from './storage.ts';
 import {discoveryKey,PREVIEW_DISCOVERY_PREFIX,type PreviewDiscovery} from './discovery.ts';
-import {BROWSER_BUILD_WAKE_KEY,WORKSPACE_STATE_KEY,TURN_WAKE_KEY,SERVICE_WAKE_KEY,OBSERVER_WAKE_KEY,SIMULATION_WAKE_KEY,applyWorkspaceAlarm} from '../workspace/shared-alarm.ts';
 import {sourceScope,sourceRevision,sourceFilesSha,frozenSource,type BrowserBuildSource,type InitialBrowserSource} from './source.ts';
 import type { ResolvedInitialWorkspace } from '../turn-runtime/initial-workspace.ts';
 type FrozenSource=BrowserBuildSource;
@@ -16,16 +16,10 @@ export interface SavedPreviewBuild {schemaVersion:1;state:PreviewBuildState;sour
 const ids:PreviewRuntime['profileId'][]=['python-stdlib/v1','mesa-3.5.1/v1'];
 function rowKey(revision:string,profile:string){return ROW+revision+':'+profile;}
 function equal(a:unknown,b:unknown){return canonicalPreviewJson(a)===canonicalPreviewJson(b);}
-async function project(tx:DurableObjectTransaction){
- const pending=[...(await tx.list<PreviewDiscovery>({prefix:PREVIEW_DISCOVERY_PREFIX})).values()].filter(r=>r.status==='pending');
- const wake=pending.length?Math.min(...pending.map(r=>r.nextAttemptAt!)):null;
- if(wake===null)await tx.delete(BROWSER_BUILD_WAKE_KEY);else await tx.put(BROWSER_BUILD_WAKE_KEY,wake);
- const ws=await tx.get<{wakeAt:number|null}>(WORKSPACE_STATE_KEY);
- await applyWorkspaceAlarm(tx,ws?.wakeAt??null,await tx.get(TURN_WAKE_KEY),await tx.get(SERVICE_WAKE_KEY),await tx.get(OBSERVER_WAKE_KEY),await tx.get(SIMULATION_WAKE_KEY),wake);
-}
+
 /** Durable references and receipts are written only by server-resolved builds. */
 export class BrowserPreviewBuildHost{
- readonly storage:DurableObjectStorage;readonly scope:TurnScope;readonly ports:{registry:()=>Promise<PreviewProfileRegistry>;files:(source:PreviewDiscovery)=>Promise<Uint8Array>;resolveInitial?:(source:InitialBrowserSource)=>Promise<ResolvedInitialWorkspace>;checkSource?:(source:BrowserBuildSource)=>void;bucket:PreviewObjectBucket};readonly now:()=>number;
+ readonly storage:DurableObjectStorage;readonly scope:TurnScope;readonly ports:{registry:()=>Promise<PreviewProfileRegistry>;files:(source:PreviewDiscovery)=>Promise<Uint8Array>;resolveInitial?:(source:InitialBrowserSource)=>Promise<ResolvedInitialWorkspace>;checkSource?:(source:BrowserBuildSource)=>void;holdUntil?:(source:PreviewDiscovery)=>number|null;bucket:PreviewObjectBucket};readonly now:()=>number;
  constructor(storage:DurableObjectStorage,scope:TurnScope,ports:BrowserPreviewBuildHost['ports'],now=Date.now){this.storage=storage;this.scope=structuredClone(scope);this.ports=ports;this.now=now;}
  read(revision:string,profile?:PreviewRuntime['profileId']):SavedPreviewBuild|null{
   const rows=(profile?[profile]:ids).map(id=>this.storage.kv.get<SavedPreviewBuild>(rowKey(revision,id))).filter((r):r is SavedPreviewBuild=>!!r);
@@ -38,7 +32,7 @@ export class BrowserPreviewBuildHost{
  async #guard(source:PreviewDiscovery){this.ports.checkSource?.(source);const current=await this.storage.get<PreviewDiscovery>(discoveryKey(sourceRevision(source)));if(!current||!equal(current,source))throw Error('preview-discovery-conflict');this.ports.checkSource?.(source);}
  async #checkTransactionSource(tx:DurableObjectTransaction,source:PreviewDiscovery){const current=await tx.get<PreviewDiscovery>(discoveryKey(sourceRevision(source)));this.ports.checkSource?.(source);if(!current||!equal(current,source))throw Error('preview-discovery-conflict');}
  async #put(tx:DurableObjectTransaction,key:string,value:unknown,source:PreviewDiscovery){await this.#checkTransactionSource(tx,source);await tx.put(key,value);}
- async #write(operation:(tx:DurableObjectTransaction)=>Promise<void>,source?:PreviewDiscovery){await this.storage.transaction(async tx=>{if(source)await this.#checkTransactionSource(tx,source);await operation(tx);await project(tx);});await this.storage.sync();}
+ async #write(operation:(tx:DurableObjectTransaction)=>Promise<void>,source?:PreviewDiscovery){await this.storage.transaction(async tx=>{if(source)await this.#checkTransactionSource(tx,source);await operation(tx);await projectBrowserBuildAlarm(tx,this.now());});await this.storage.sync();}
  async #settle(source:PreviewDiscovery,reason:string|null){await this.#write(async tx=>{const r=await tx.get<PreviewDiscovery>(discoveryKey(sourceRevision(source)));if(!r||!equal(frozenSource(r),frozenSource(source)))throw Error('preview-discovery-conflict');await this.#put(tx,discoveryKey(sourceRevision(source)),{...r,status:'settled',nextAttemptAt:null,reasonCode:reason},source);},source);}
  #receipts(source:PreviewDiscovery,profile:TrustedPreviewProfile,spec:ModelSpec):PreviewReceiptPort{
   const scope={tenantId:this.scope.tenantId,projectId:this.scope.projectId,workspaceId:this.scope.workspaceId};
@@ -71,6 +65,7 @@ export class BrowserPreviewBuildHost{
  alarm():Promise<void>{if(this.#active)return this.#active;const work=this.#advance();this.#active=work;void work.finally(()=>{if(this.#active===work)this.#active=null;}).catch(()=>{});return work;}
  async #advance():Promise<void>{
   const due=[...(await this.storage.list<PreviewDiscovery>({prefix:PREVIEW_DISCOVERY_PREFIX})).values()].filter(r=>r.status==='pending'&&r.nextAttemptAt!<=this.now()&&sameScope(sourceScope(r),this.scope)).sort((a,b)=>a.nextAttemptAt!-b.nextAttemptAt!)[0];if(!due){await this.#write(async()=>{});return;}
+  const heldUntil=this.ports.holdUntil?.(due);if(heldUntil!==undefined&&heldUntil!==null&&heldUntil>this.now()){await this.#write(async tx=>{await this.#put(tx,discoveryKey(sourceRevision(due)),{...due,nextAttemptAt:heldUntil},due);},due);return;}
   if(due.attempts>=3){await this.#fail(due,Error('browser-preview-attempts-exhausted'));return;}
   let source:PreviewDiscovery={...due,attempts:due.attempts+1,nextAttemptAt:this.now()+Math.min(60000,2000*2**due.attempts)};
   await this.#write(async tx=>{await this.#put(tx,discoveryKey(sourceRevision(source)),source,due);},due);
