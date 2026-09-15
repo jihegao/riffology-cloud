@@ -99,6 +99,14 @@ Mesa live-child边界fcc9ba7集成为3f1d6b6，主控独立3/3通过：实际chi
 
 核心尚未接生产buildhost/API/constructor，不能称自动ready。主控审查发现discovery重算仅考虑pending discovery会遗漏已有profile retry，已要求A下一提交聚合两类wake并覆盖未来checkpoint时间的新保存，不推迟已有build。G2签收仍待ready/unsupported/failed持久状态、R2补收据、历史权限/Verify与实际UI整链。证据集中g2/discovery-independent.log及SHA256SUMS。
 
+## G2 静态交付、面板与 G3 准备
+
+B 的 d3f9862 集成为 8fc51f2，407bc0f 集成为 de6c230。主控独立严格 materialize 固定清单的43个URL，实际生成字节的交付/CSP/篡改拒绝检查3/3通过。此检查使用文件资产 binding port，尚非真实 Gateway ASSETS 或浏览器 Worker 整链。独立站点 Worker 无项目源码、token 或动态执行能力。历史 profile 对应旧 host bundle 的版本映射仍在补充；只有保留资产不能证明旧运行时可恢复。
+
+面板区分 GET 恢复、浏览器 Run/播放与显式 Verify，按 tenant/project/package 保存参数，按原请求身份恢复未知 Verify。主控已要求补充回执身份严格相等与显式失败构建重试，不以刷新伪造恢复。正式检查入口纳入 execution tests 与新面板语法检查；实际 API 接线和三视口产品验收仍待完成。
+
+C 的 64e6572 集成为 a04368f，主控真实 Workerd/Gateway/D1 登录与邀请检查1/1通过：owner 200、跨tenant404、无签名或篡改cookie401。仅认证 fixture 写入身份/邀请；未插入模型、ready build、Experiment 或 Run。诊断实际 Sandbox SDK 通路可用，但 Workerd 拒绝外部出站不足以隔离容器内部 loopback/Unix listener；该观察不签G3。C 正在一次有界测试中验证 ARM64 原生内核 helper 对翻译项目进程施加连接限制，须独立重跑和明确测试镜像边界后才作为本地替代隔离证据。
+
 ## 主控复核与环境记录
 
 Issue逐项关闭条件与本地/线上边界见[签收矩阵](issues-acceptance-matrix-20260915.md)，与本记录同步维护。
