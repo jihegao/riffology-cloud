@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-09-14T15:55:45Z",
+  "status": 200,
+  "claimId": "26a3721c6a7b83e1bfd9864f5819c06e718f597bc25969b5e11281bf5f74a065",
+  "experimentId": "cecc53d7-3f06-43b4-848a-9d05677a5bcc",
+  "experimentStatus": "completed",
+  "revisionId": "d4f8894a674fee2fb729cd543b22f64687289b07bac934e15b80032b2a1c5ac8",
+  "filesSha256": "20bb40025bdc15d7edac511eaac4a43d60aac46e2b36a689d2c8b6265d086563",
+  "specSha256": "9b08de569de0a2e2a6f88296eebf3aac3866f3e0d1b8e89d49d33c56d46622bb",
+  "metric": "mean_wait",
+  "baselineMean": 2.9339407578559347,
+  "interventionMean": 0.16263220523226252,
+  "delta": -2.771308552623672,
+  "baselineCount": 3,
+  "interventionCount": 3,
+  "plannedCount": 6,
+  "referenceCount": 6,
+  "excludedCount": 0,
+  "evidenceValidity": "verified",
+  "stale": false,
+  "olderRevision": true
+}

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "runId": "offline-assumption-check",
+  "parameters": {
+    "servers": 1,
+    "customers": 80,
+    "arrival_rate": 0.8,
+    "service_rate": 1,
+    "queue_capacity": 20
+  },
+  "seed": 101
+}

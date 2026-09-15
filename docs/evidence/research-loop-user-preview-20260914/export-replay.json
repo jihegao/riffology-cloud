@@ -1,0 +1,23 @@
+{
+  "exportId": "bc5988d7-ac7f-4237-a1a3-9fbcea03b555",
+  "zipSha256": "abb6eae6c311106c8280f2a531bdd7e64181b14cd903ff4959307d91c0b32f8f",
+  "verifyOnly": { "verified": true },
+  "runtime": {
+    "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-phase1-simulation@sha256:be02d18823ae778f3eb3d73e87772e90549c4f2a5a2e22777067ea5e6775f888",
+    "os": "linux",
+    "architecture": "amd64",
+    "pythonVersion": "3.11.14"
+  },
+  "runId": "72088110-aa8f-4447-9318-79c22fbef854",
+  "expectedPythonVersion": "3.11.14",
+  "metrics": {
+    "balk_rate": { "expected": 0, "actual": 0.0, "matches": true },
+    "balked_customers": { "expected": 0, "actual": 0, "matches": true },
+    "mean_wait": { "expected": 5.106427199996526, "actual": 5.106427199996526, "matches": true },
+    "served_customers": { "expected": 80, "actual": 80, "matches": true },
+    "throughput": { "expected": 0.9051345100246816, "actual": 0.9051345100246816, "matches": true },
+    "utilization": { "expected": 0.9177089404907695, "actual": 0.9177089404907695, "matches": true }
+  },
+  "outputs": { "summary.csv": true },
+  "matches": true
+}
