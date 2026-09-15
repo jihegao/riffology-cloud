@@ -7,7 +7,7 @@
 | 槽位 | 分支 | 文件归属 | 状态 |
 | --- | --- | --- | --- |
 | A | codex/issues-g2-orchestration | build/discovery/orchestrator、journal/shared alarm、Workspace/Gateway、combined资产接线与定向测试 | G2 持久/权限验收及补丁 |
-| B | codex/issues-g2-preview | web Browser面板、execution-static Worker/materializer、UI/静态测试；只读审查A与发布兼容 | G2B已集成，G3非作者评审 |
+| B | codex/issues-g2-preview | web Browser面板与execution-static已集成；只读审查A/发布兼容；新增G5离线任务fixture | G3非作者评审结束项交A修复，空闲槽位准备G5 |
 | C | codex/issues-g3-acceptance | 新本地整链driver/diagnostics、测试专用native bridge；server实现文件已交回 | G3实际SDK两profile与保存→构建→Verify整链 |
 
 ## 冻结决定
@@ -24,7 +24,7 @@
 | G2 | 实施中 | Agent约定、原子发现、buildhost/API与面板已集成；实际Workspace/R2 ready、权限/历史Verify与资产接线验收 |
 | G3 | 实施中 | 非作者评审持续；真实Gateway认证与SDK替代内核隔离通过，真正两模型产品整链/完整check待签收 |
 | G4 | 未开始 | 冻结发布、普通用户两模型、零执行窗口、资源释放 |
-| G5 | 未开始 | #46/#37 账号/预算、账本、故障/复用验收 |
+| G5 | 离线准备 | 真实账号/预算、账本、故障/复用生产验收未开始 |
 | G6 | 未开始 | 三模型普通用户→审核→发布→新用户复制 |
 
 ## G0 后端契约签收及 G1 前移
@@ -116,6 +116,16 @@ A rebased 提交 d650e8b/f628835/d35a139 集成为6c4f3de/3a3e6fa/e4e4b95，生�
 C 的8f786c7集成为d1aad05。主控实际审查freestanding ARM64 ELF构造、BPF syscall限制、UID检查、shell bridge与诊断清理，独立重建并通过真实Sandbox SDK探测。主控派生测试镜像为`sha256:14ad4bb7ac8558c482f1abb21bf8e5183d99e7281ea1df774df0872475c4d574`，其原基镜像身份、helper原字节摘要与编译器版本保存在g3/helper-independent。
 
 真实SDK前后均200；child UID/GID10001、groups空、NoNewPrivs1；ARM64内核原始io_uring三调用先返回EPERM，再执行翻译CPython；loopback/Unix/external TCP/UDP connect与UDP sendto全EPERM1，两rootlistener零arrivals。此为独立测试镜像局部隔离签收，不是生产x86镜像证明。guest AS仍无限；Queue空锁经monitor sys.executable的实际bridge路径和完整SimulationHost结果仍待验证。线上原生隔离/资源继承门槛保持G4。
+
+## G3 两解释器路径与动态前移
+
+39e0aa2集成为0a82b17。主控独立重建派生Queue-safe测试镜像`sha256:2fb3173593395a22c276395cf93f01211853ecbe127495ae40349a45a781bae5`，真实Sandbox SDK／生产SimulationNative两解释器路径通过：Queue3.11.14、Mesa3.14.2，完整chunk上传/control/start/observe/fenced seal与root收集proof产物；五类网络操作全EPERM、root listener无arrivals，重复start得到同停止收据。helper与UID0测试hook原字节在实际SDK读取中匹配本次build provenance。证据g3/native-paths-independent含image、两结果与日志摘要。此处仍为有限隔离诊断，不替代真实Gateway持久Run整链或原生生产AS继承。
+
+发布只读设计e319372集成为e0fef6b，见[复制兼容设计](browser-preview-publication-compatibility.md)。主控选择最小方向：从复制项目可信initial source派生新项目包，显式记录新运行时身份并冻结；不自动承诺继承原发布runtime，不扩展catalog receipt字段，不伪造saved Turn。该补丁尚待实施与G6普通用户路径验收。
+
+Retry回执056e5dd与资产并发2147a0a已由主控独立6项／7项面板测试验证；未知请求仅GET恢复、后续耗尽需新的显式intent，固定资产最多2个并发读取且保留完整顺序。B新增审查发现Verify新提交缺少ready admission，A正在按原Simulation准入补齐；旧结果的maintenance读取保持可用。
+
+B完成当前G3只读审查后，空闲槽位前移G5离线固定任务fixture：六类任务×三重复、固定seed/对照、故意失败输入及验收引用。触发为B实现与审查已交付，A/C仍推进G2/G3；不抢占central文件、不调用provider、不部署。账号、模型、rate card、预算/隐私与授权仍未选定；离线fixture不是18任务质量实证。
 
 ## 主控复核与环境记录
 
