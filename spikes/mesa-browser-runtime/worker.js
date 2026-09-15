@@ -4,22 +4,30 @@ const MESA_VERSION = "3.5.1";
 
 let pyodide;
 let runtimePromise;
+let mesaReady = false;
+let running = false;
 
 async function ensureRuntime(needsMesa) {
   if (!runtimePromise) {
     runtimePromise = (async () => {
-      importScripts(`${PYODIDE_INDEX}pyodide.js`);
+      const { loadPyodide } = await import(`${PYODIDE_INDEX}pyodide.mjs`);
       pyodide = await loadPyodide({ indexURL: PYODIDE_INDEX });
       return pyodide;
-    })();
+    })().catch(error => {
+      runtimePromise = undefined;
+      throw error;
+    });
   }
   await runtimePromise;
-  if (needsMesa && !self.__mesaReady) {
-    await pyodide.loadPackage("micropip");
+  if (needsMesa && !mesaReady) {
+    // Mesa 3.5.1 imports networkx even though its wheel lists it as an extra.
+    // Use the package pinned by this Pyodide distribution.
+    await pyodide.loadPackage(["micropip", "networkx"]);
     const micropip = pyodide.pyimport("micropip");
     try {
       await micropip.install(`mesa==${MESA_VERSION}`);
-      self.__mesaReady = true;
+      await pyodide.runPythonAsync("import mesa\nimport networkx");
+      mesaReady = true;
     } finally {
       micropip.destroy();
     }
@@ -29,6 +37,11 @@ async function ensureRuntime(needsMesa) {
 self.addEventListener("message", async (event) => {
   const message = event.data;
   if (!message || message.type !== "run") return;
+  if (running) {
+    self.postMessage({ type: "error", requestId: message.requestId, error: "A local run is already in progress" });
+    return;
+  }
+  running = true;
   const startedAt = performance.now();
   try {
     await ensureRuntime(Boolean(message.needsMesa));
@@ -61,5 +74,6 @@ self.addEventListener("message", async (event) => {
       // A failed Python import can leave the runtime partially initialized; the
       // next request should still surface the original error instead of failing cleanup.
     }
+    running = false;
   }
 });

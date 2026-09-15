@@ -103,7 +103,28 @@
   let frameIndex = 0;
   let timer = null;
   let playing = false;
-  const worker = new Worker('./worker.js');
+  let activeRequestId = null;
+  let worker = createWorker();
+
+  function createWorker() {
+    const next = new Worker('./worker.js', { type: 'module' });
+    next.addEventListener('message', onWorkerMessage);
+    next.addEventListener('error', onWorkerError);
+    return next;
+  }
+
+  function setRunning(running) {
+    runEl.disabled = running;
+    modelEl.disabled = running;
+    seedEl.disabled = running;
+    for (const input of paramsEl.querySelectorAll('input')) input.disabled = running;
+  }
+
+  function clearTrace() {
+    stopPlayback(); trace = null; frameIndex = 0;
+    stageEl.replaceChildren(); metricsEl.replaceChildren();
+    playEl.disabled = true; stepEl.disabled = true; restartEl.disabled = true;
+  }
 
   function renderParameterForm() {
     paramsEl.replaceChildren();
@@ -116,7 +137,7 @@
     }
   }
 
-  function currentConfig() {
+  function currentConfig(definition) {
     const parameters = {};
     for (const input of paramsEl.querySelectorAll('input')) {
       const value = Number(input.value);
@@ -126,7 +147,7 @@
     }
     const seed = Number(seedEl.value);
     if (!Number.isSafeInteger(seed)) throw new Error('seed must be an integer');
-    return { parameters, seed, steps: definitions[modelEl.value].steps };
+    return { parameters, seed, steps: definition.steps };
   }
 
   function stopPlayback() {
@@ -198,12 +219,17 @@
   });
   stepEl.addEventListener('click', () => { stopPlayback(); showFrame(frameIndex + 1); });
   restartEl.addEventListener('click', () => { stopPlayback(); showFrame(0); });
-  modelEl.addEventListener('change', () => { stopPlayback(); trace = null; stageEl.textContent = ''; metricsEl.textContent = ''; renderParameterForm(); });
+  modelEl.addEventListener('change', () => {
+    clearTrace(); renderParameterForm(); statusEl.textContent = 'Ready.';
+  });
 
-  worker.addEventListener('message', event => {
+  function onWorkerMessage(event) {
+    if (event.currentTarget !== worker) return;
     const message = event.data;
+    if (!activeRequestId || message?.requestId !== activeRequestId) return;
     if (message.type === 'error') {
-      runEl.disabled = false; statusEl.textContent = `Run failed: ${message.error}`; return;
+      activeRequestId = null; setRunning(false);
+      statusEl.textContent = `Run failed: ${message.error}`; return;
     }
     if (message.type !== 'result') return;
     try {
@@ -212,17 +238,34 @@
       statusEl.textContent = `Local run ready in ${message.runtime.elapsedMs.toFixed(0)} ms`;
     } catch (error) {
       statusEl.textContent = `Invalid visualization trace: ${error.message}`;
-    } finally { runEl.disabled = false; }
-  });
+    } finally { activeRequestId = null; setRunning(false); }
+  }
+
+  function onWorkerError(event) {
+    if (event.currentTarget !== worker) return;
+    worker.terminate(); worker = null;
+    activeRequestId = null; clearTrace(); setRunning(false);
+    statusEl.textContent = `Run failed: ${event.message || 'Worker could not load. Try running again.'}`;
+  }
 
   runEl.addEventListener('click', async () => {
-    stopPlayback(); runEl.disabled = true; playEl.disabled = true; stepEl.disabled = true; restartEl.disabled = true;
+    if (activeRequestId) return;
+    clearTrace();
+    let requestId;
     try {
       const definition = definitions[modelEl.value];
+      const config = currentConfig(definition);
+      requestId = crypto.randomUUID(); activeRequestId = requestId;
+      worker ??= createWorker();
+      setRunning(true);
       statusEl.textContent = definition.needsMesa ? 'Loading Pyodide + Mesa and running locally…' : 'Loading Pyodide and running locally…';
       const source = await fetch(definition.path).then(response => { if (!response.ok) throw new Error(`model source HTTP ${response.status}`); return response.text(); });
-      worker.postMessage({ type: 'run', requestId: crypto.randomUUID(), source, needsMesa: definition.needsMesa, config: currentConfig() });
-    } catch (error) { runEl.disabled = false; statusEl.textContent = `Run failed: ${error.message}`; }
+      if (activeRequestId !== requestId) return;
+      worker.postMessage({ type: 'run', requestId, source, needsMesa: definition.needsMesa, config });
+    } catch (error) {
+      if (requestId && activeRequestId !== requestId) return;
+      activeRequestId = null; setRunning(false); statusEl.textContent = `Run failed: ${error.message}`;
+    }
   });
 
   renderParameterForm();

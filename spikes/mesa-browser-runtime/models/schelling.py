@@ -34,14 +34,16 @@ class SchellingModel(Model):
         unhappy = [agent for agent in list(self.agents) if not self.is_happy(agent)]
         self.random.shuffle(unhappy)
         for agent in unhappy:
-            empties = list(self.grid.empties)
+            # Stable ordering keeps seeded choices independent of set hashing
+            # on native Python versus Pyodide's wasm runtime.
+            empties = sorted(self.grid.empties)
             if not empties:
                 break
             self.grid.move_agent(agent, self.random.choice(empties))
-        return len(unhappy)
 
 
-def snapshot(model, frame, unhappy):
+def snapshot(model, frame):
+    unhappy = sum(1 for agent in model.agents if not model.is_happy(agent))
     agents = []
     for agent in model.agents:
         x, y = agent.pos
@@ -67,7 +69,7 @@ def snapshot(model, frame, unhappy):
         "metrics": {
             "population": len(agents),
             "unhappy": unhappy,
-            "happy_fraction": (len(agents) - unhappy) / count,
+            "happy_fraction": (len(agents) - unhappy) / count if agents else 1.0,
         },
     }
 
@@ -83,12 +85,11 @@ def run(config):
         homophily=max(0.0, min(float(params.get("homophily", 0.5)), 1.0)),
         seed=int(config.get("seed", 1)),
     )
-    initial_unhappy = sum(1 for agent in model.agents if not model.is_happy(agent))
-    snapshots = [snapshot(model, 0, initial_unhappy)]
+    snapshots = [snapshot(model, 0)]
     for frame in range(1, steps + 1):
-        unhappy = model.step()
-        snapshots.append(snapshot(model, frame, unhappy))
-        if unhappy == 0:
+        model.step()
+        snapshots.append(snapshot(model, frame))
+        if snapshots[-1]["metrics"]["unhappy"] == 0:
             break
     return {"model": "mesa-schelling", "snapshots": snapshots}
 
