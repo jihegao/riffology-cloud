@@ -57,3 +57,8 @@ test('dollar Turn5/global20 caps and policy failures rollback reservation state 
 test('before-first-task budget snapshot is strictly read-only and does not create tables',t=>{const f=fixture(t);const before=f.storage.sql.exec('SELECT name FROM sqlite_master').toArray();assert.equal(readG4WindowSnapshot(f.storage,policy).startedAt,null);assert.deepEqual(f.storage.sql.exec('SELECT name FROM sqlite_master').toArray(),before);});
 
 test('dispatch flush crossing frozen two-hour deadline never authorizes Provider even within call deadline',async t=>{const f=fixture(t),g=f.guard();f.storage.transactionSync(()=>g.taskSync(task('project',1)));f.advance(7100000);const core=f.token(),ref=modelCallReference((await core.reserve({...request(1),deadlineAt:7300000})).record);f.afterNextSync(()=>f.advance(101000));const result=await core.dispatch(ref);assert.equal(result.authorized,false);assert.equal(result.controlledWindowDeadlineAt,7201000);assert.equal(core.g4.snapshot().calls[0].state,'unknown');});
+
+test('removed G4 config still consults persisted private budget actor rather than bypassing guard',async()=>{
+ const {admitG4Task}=await import('../../services/model-budget/g4-admission.ts');let calls=0;
+ await assert.rejects(admitG4Task({getByName:()=>({g4AdmitTask:async()=>{calls++;throw Error('g4-window-config-removed');}})},undefined,'tenant-a','user-a','turn',{key:'old'},{message:'new'}),/config-removed/);assert.equal(calls,1);
+});
