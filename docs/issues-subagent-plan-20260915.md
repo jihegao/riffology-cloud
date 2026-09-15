@@ -220,3 +220,7 @@ G4本次受控执行结束；#64普通用户主链通过，#65与全部线上负
 用户随后以“ok confirmed”明确批准这两个目录清理；主控携带该确认及固定路径尝试一次，PreToolUse仍以 `heredoc.python:shutil_rmtree`（CRITICAL）拒绝，命令未执行。主控未重试或绕过，独立核对两个目录仍存在；当前阻碍是自动审批规则，不是缺少用户授权。需手动清理或由管理员通过正式机制处理规则后再执行。
 
 用户报告已手动删除后，主控独立核对Root本轮采集目录和B脱敏副本目录均不存在、无残留符号链接，本轮两处目录清理已完成。现有账号/profile/operator、产品业务对象及预算fence未纳入清理。最终交付回执已更新为localDirectoryCleanupCompleted=true，实际R2 PUT及独立GET字节一致：2570字节，SHA256 `c4200f881d01a5687f821edeedec4d44fb9052b523667f4696989d0f6a634fa5`，沿用evidence前缀30天生命周期；原诊断7天/验收30天归档保留策略不变。此前审批阻断与待清理记录为历史状态，已由此次用户清理和独立核对解决。G5/G6仍未启动。
+
+### 下一窗口执行准备（2026-09-16）
+
+[G4收口与G5执行提案](g4-closeout-g5-execution-proposal-20260916.md)已形成：G4剩余线上门槛单列；G5 #46三项目18任务/39研究Run、147上游建议上限；#37两项目22Turn/168上游保守上限/研究Run0。两窗口各US$20、每TurnUS$5、首admission后2小时是待批准候选，需真实profile费率证明最坏预留满足预算。#46现有OpenAI Responses/Gateway/platform-BYOK契约不能直接沿用G4 OpenCode通道；#37第二tenant、暖overlay与物理身份/释放观测driver仍需补齐。本次只完成只读分析和文档准备，没有云发布、模型调用、新任务/Run或G5/G6线上执行。
