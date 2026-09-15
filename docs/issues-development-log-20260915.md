@@ -21,7 +21,7 @@
 | --- | --- | --- |
 | G0 | 本地通过 | 线上 #65 签收仍待 G4 |
 | G1 | 实施中 | 确定性包、隔离 runtime、server Mesa |
-| G2 | 未开始 | saved 派生构建、持久 API、Workspace、Agent 约定 |
+| G2 | 部分实施 | Agent 约定已本地验证；saved 派生构建、持久 API、Workspace 待实施 |
 | G3 | 未开始 | 非作者评审、真实本地整链、完整 check |
 | G4 | 未开始 | 冻结发布、普通用户两模型、零执行窗口、资源释放 |
 | G5 | 未开始 | #46/#37 账号/预算、账本、故障/复用验收 |
@@ -60,6 +60,16 @@ G1B主控预审发现host.load迟到写入、Spec参数默认值/范围接线和
 A 完成 G1B 只读预审后，在固定资产身份最终冻结的等待窗口前移 G2C Agent 生成约定（依赖图仅要求 G0，非 G1 server 完成）。触发证据为 G1A基础代码已验收、runtime实际执行/资产收据仍在修复；最小改动仅 Trusted Pi 固定 skill/prompt 与专属生成contract tests，不抢占B runtime、C server adapter或阶段2A central文件。工作树 `codex/issues-g2-generation` 基线 a989599。完成后A返回G1真实registry接线。G2整体不因此提前签收。
 
 线上状态未改变；签收时追加提交、命令、证据与明确缺口。
+
+## G1 Server 基础与 G2C 集成
+
+Server foundation 548da33 集成为 ed85c17，主控独立执行 adapter、server profile、native/export/replay 定向检查32项通过，typecheck通过。Mesa独立CPython3.14.2和八个hash固定wheel保留既有空锁/SimPy路径；执行结果与导出必须匹配可信解释器版本。共享 adapter 原字节摘要为 fa7987095bbc29f2c6d87e9b0f815415f88c9079ad7070fb7fe8b91e7ebf0898。simulation/host.ts 的profile拒绝写入改动由C单独拥有，G2A开始前交还。
+
+G2C 01a8711 集成为2641189，主控实际generation与既有Trusted Pi release tests共9项通过。固定skill保留旧路径，并要求五文件共享模型、明确本地未验证与显式服务器Verify。该步骤没有接入自动build或调用LLM，不代表实际Agent生成验收。
+
+A补丁1f51b4c集成为4c7f563；主控独立19项contract/build/generation测试与typecheck通过。Browser兼容性现在要求run.py与canonical adapter原字节一致，避免浏览器model.py与服务器自写入口产生不同指标。
+
+服务器镜像本地构建成功，作者报告image sha256:1f9b5bbf70f74fde7764d7eb270e7616e9cf79a38c12418ddef8bb8bb1b1851f。512MiB独立导入探测通过；arm64主机翻译amd64执行时seccomp_load=-125，正常模型在preexec被拒绝，不能签收为真实运行。主控正在只读探测原生AMD128环境；生产fence不放宽。B正在最终资产冻结后重新执行真实浏览器验收，旧metadata和旧通过记录不作为最终候选证明。
 
 ## 主控复核与环境记录
 
