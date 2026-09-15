@@ -1,0 +1,19 @@
+# G5全局受控窗口第一切片
+
+状态：本地core/private DO/独立token namespace接口实现；没有生产接线、namespace创建、门禁开启、模型请求或云Run。本实现不构成G5执行授权。
+
+`G5ControlledWindow`只允许固定actor `g5-controlled-global-v1`。当前policy只能取服务端环境，客户RPC不能指定windowId；SQL按windowId保存不可变policy、首个实际平台guard准入的startedAt与单向closed。准入commit时启动最长2小时，实体创建可能稍后完成，不将guard准入冒称UI已建立Project或执行已开始。同window改变policy拒绝；重启/版本变更不清零。
+
+冻结候选policy为显式参数，不提供自动默认授权：A允许OpenAI profile pin、147upstream、39Simulation/0Service、63或66task；B允许2真实tenant/user、168upstream、0Simulation/0Service、24task；均20USD总额/5USD每Turn，明确rate/profile SHA及单价，时长严格1000至7200000ms。价格只是由已批准policy提供的冻结字段，本地测试合成rate不代表实时价格或用户批准。
+
+准入采用全局SQLite事务与durable sync。Project/Turn/Simulation/Service intent分别计数；重放只读回已有身份，不授权新执行。bindTask存真实实体ID且全局唯一，防同一实际Turn拆多个key获得多份Turn金额。Call绑定turnKey及实际turnId、principal、profile/payload/token reservation摘要；实际Turn必须已bound，才能reserve。金额用BigInt计算，并保守占完整冻结上界。
+
+全局所有window的reserved/dispatched/unknown/settling均阻断任何新任务或新call。claimDispatch只有当前active window原reserved行能原子获取一次；ACK丢失以后只observe，不再授权。durable sync跨截止返回authorized=false，已占fence仍保留。模型usage记录只进入settling，不减金额、不放开窗口；tokens/money/tools三个私有权威账本确认必须齐、精确绑定且closed/pending0/unknown0，才按可信usage结算。具体三账本receipt的真实性仍需后续production adapter由真实账本获取并校验，core严格校验规范化绑定与SHA字段，不把fixture当实际生产事实。
+
+终态收尾按全局唯一callKey查已固化历史policy，因此当前env切到下一window后仍能精确完成旧unknown，客户仍不能选择任意window。没有releaseUndispatched、reset或TTL自动退款接口；未dispatch且ACK不确定的hold无法由verifiedusage自解，需要以后单独评审确证未dispatch的三账本释放流程，当前保持阻断。
+
+`G5TenantModelBudget`是新增独立export，必须绑定新的G5_TOKEN_BUDGET namespace，沿用token core但不加载旧G4 singleton。原TenantModelBudget/G4 env/namespace/budget fence未修改。独立token ledger本身不能授权provider请求；后续共享接线必须按token reserve→global reserve→money admission/dispatch→global claim→token dispatch→一次provider请求，任何ACK不确定不重发，未知usage继续保守全局阻断。第一切片尚未实现这个跨actor网络链，不能据此运行execute。
+
+预期additive注册清单：source exports `G5ControlledWindow`与`G5TenantModelBudget`；新G5_WINDOW_GUARD/G5_TOKEN_BUDGET binding及新sqlite migration；保留旧TENANT_MODEL_BUDGET及G4配置用于旧actor收尾。此次未编辑gateway/workspace/model-proxy共享源码或infra overlay，主控独立评审后再批准该切片。
+
+验证：typecheck及8定向用例通过，含2真实本地Workerd/SQLite持久化用例：并发dispatch只有1授权、ACK丢失/重启、跨window unknown及三账本不齐保持阻断、两个tenant竞争最后Run额度、policy不可重置；新增G5 token actor接受冻结OpenAI请求时，旧G4 singleton快照逐项不变并在重启后保持。Node SQLite另外覆盖147dispatch、39Run/63task、全局和Turn金额上界、截止穿过sync、冲突payload。上述全部本地fixture，无生产云事实。
