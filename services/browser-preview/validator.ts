@@ -1,7 +1,7 @@
 import {workspaceArchiveReader} from '../turn-runtime/workspace-file-index.ts';
 import {parseModelSpec,type ModelSpec} from '../simulation/model-spec.ts';
 import {BROWSER_PREVIEW_SCHEMA,BROWSER_PREVIEW_SOURCE_PATHS,previewSha256,type PreviewBuildReason,type PreviewPackageIdentityInput,type PreviewRuntime,type PreviewSourcePath} from './contract.ts';
-import {PREVIEW_LIMITS,type PreviewProfileRegistry,type TrustedPreviewProfile} from './profiles.ts';
+import {PREVIEW_LIMITS,PREVIEW_SERVER_ADAPTER_SHA256,type PreviewProfileRegistry,type TrustedPreviewProfile} from './profiles.ts';
 export type PreviewVisualization={schema:'riffology.visualization/v1';protocol:'riffology.visual/v0.1';renderer:'grid'|'lane';metricKeys:string[]};
 export type SavedPreviewSource={projectId:string;revisionId:string;filesSha256:string};
 export type CompatiblePreview={identity:PreviewPackageIdentityInput;files:Map<PreviewSourcePath,Uint8Array>;spec:ModelSpec;visualization:PreviewVisualization;profile:TrustedPreviewProfile};
@@ -48,6 +48,8 @@ export async function validateSavedPreview(source:SavedPreviewSource,archiveByte
   let lock:unknown;try{lock=json(files.get('app/requirements.lock')!);}catch{reject('dependency-unsupported');}
   const r=lock as {schemaVersion?:number;packages?:unknown};
   if(!r||typeof r!=='object'||Array.isArray(r)||Object.keys(r).sort().join(',')!=='packages,schemaVersion'||r.schemaVersion!==1||!r.packages||typeof r.packages!=='object'||Array.isArray(r.packages)||JSON.stringify(Object.entries(r.packages).sort())!==JSON.stringify(Object.entries(profile.packages).sort()))reject('dependency-unsupported');
+  // Verify must re-run this exact model, not a separate generated server implementation.
+  if(await previewSha256(files.get('model/run.py')!)!==PREVIEW_SERVER_ADAPTER_SHA256)reject('python-unsupported');
   pythonPolicy(files.get('model/model.py')!,profile,true);pythonPolicy(files.get('model/run.py')!,profile,false);
   const sources=await Promise.all(BROWSER_PREVIEW_SOURCE_PATHS.map(async path=>({path,sha256:await previewSha256(files.get(path)!),byteLength:files.get(path)!.length})));
   return {status:'compatible',value:{identity:{schema:BROWSER_PREVIEW_SCHEMA,...source,sources,runtime:profile.runtime},files,spec,visualization,profile}};

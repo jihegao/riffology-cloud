@@ -52,7 +52,7 @@ async function generatedFixture({wrapper=adapter,parameters={steps:{type:'intege
 }
 test('generation check uses saved source/defaults and rejects alternate wrapper or unknown profile',async()=>{
  const f=await generatedFixture(),result=await inspectGeneratedBrowserPreview(f.source,f.archive,'stdlib',{registry:f.registry});assert.equal(result.status,'compatible');assert.equal(result.value.profile.trust,'test-fixture');
- const changed=await generatedFixture({wrapper:adapter+'\n# alternate generated implementation\n'});assert.deepEqual(await inspectGeneratedBrowserPreview(changed.source,changed.archive,'stdlib',{registry:changed.registry}),{status:'invalid-generation',reasonCode:'generation-wrapper-mismatch'});
+ const changed=await generatedFixture({wrapper:adapter+'\n# alternate generated implementation\n'});assert.deepEqual(await inspectGeneratedBrowserPreview(changed.source,changed.archive,'stdlib',{registry:changed.registry}),{status:'unsupported',reasonCode:'python-unsupported'});
  assert.deepEqual(await inspectGeneratedBrowserPreview(f.source,f.archive,'stdlib'),{status:'unsupported',reasonCode:'profile-unavailable'});
  await assert.rejects(inspectGeneratedBrowserPreview(f.source,f.archive,'simpy'),/kind-invalid/);
  const invalid=await generatedFixture({parameters:{steps:{type:'integer',default:501,minimum:1,maximum:501}}});assert.deepEqual(await inspectGeneratedBrowserPreview(invalid.source,invalid.archive,'stdlib',{registry:invalid.registry}),{status:'unsupported',reasonCode:'model-spec-invalid'});

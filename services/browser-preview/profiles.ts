@@ -1,5 +1,7 @@
 import {canonicalPreviewJson,parsePreviewRuntime,previewSha256,type PreviewRuntime} from './contract.ts';
 export const PREVIEW_LIMITS=Object.freeze({inputBytes:8192,resultBytes:8388608,frames:501,agentsPerFrame:10000,gridCells:1000000,deadlineMs:30000,maxSteps:500,cacheBytes:8388608,sourceBytes:1048576,bundleBytes:5242880});
+/** Adapter version riffology.model-run/v1 binds this server-owned standalone wrapper. */
+export const PREVIEW_SERVER_ADAPTER_SHA256='fa7987095bbc29f2c6d87e9b0f815415f88c9079ad7070fb7fe8b91e7ebf0898';
 export const PREVIEW_SOURCE_LOCKS=Object.freeze({'python-stdlib/v1':{},'mesa-3.5.1/v1':{mesa:'3.5.1',networkx:'3.6.1',numpy:'2.4.6',pandas:'3.0.2',scipy:'1.18.0',tqdm:'4.67.3'}});
 export type PreviewAsset={path:string;sha256:string;byteLength:number};
 export type TrustedPreviewProfile={runtime:PreviewRuntime;packages:Record<string,string>;assets:PreviewAsset[];trust:'verified-platform'|'test-fixture'};

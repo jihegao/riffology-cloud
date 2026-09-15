@@ -66,7 +66,7 @@ G0 冻结接口和执行 schema tests。G1A 的校验/打包/storage 单元协�
 
 `validateSavedPreview(source, archiveBytes, profileId, registry)` 校验调用方已授权解析的 `{projectId,revisionId,filesSha256}`，再次验证 canonical 文件 archive 摘要，再逐条从现有 bounded reader 抽取五路径。Spec/visual 各32 KiB、lock64 KiB、两 Python 各1 MiB；读取不包含 Session。摘要不符与错误身份是错误，兼容拒绝是稳定 `{status:'unsupported',reasonCode}`。兼容成功是 `{status:'compatible',value}`，本身不等于 ready。
 
-`model/visualization.json` 严格格式为 `{schema:'riffology.visualization/v1',protocol:'riffology.visual/v0.1',renderer:'grid'|'lane',metricKeys:string[]}`，metrics 必须为保存 Spec 声明键的非空唯一子集，不接受 URL/JS。模型入口必须 `def run(config)`，server wrapper 必须导入 model.run。静态 token 策略拒绝未允许 imports、动态执行/安装/网络桥接、明显顶层执行等早期不兼容；它不是完整 Python AST/语法验证或安全证明。真实编译/执行仍由隔离 runtime 和 server 执行器承担。运行时的恶意 fixture 验收绕开早期拒绝，才能验证 CSP。
+`model/visualization.json` 严格格式为 `{schema:'riffology.visualization/v1',protocol:'riffology.visual/v0.1',renderer:'grid'|'lane',metricKeys:string[]}`，metrics 必须为保存 Spec 声明键的非空唯一子集，不接受 URL/JS。模型入口必须 `def run(config)`；server wrapper 必须与平台 canonical `services/run/model_run_adapter.py` 原字节完全匹配。`riffology.model-run/v1` 在平台注册绑定 SHA256 `fa7987095bbc29f2c6d87e9b0f815415f88c9079ad7070fb7fe8b91e7ebf0898`；不匹配返回 unsupported/python-unsupported，即使它导入了 model.run。自动 build 的 validator 直接执行此检查，不能只靠生成 inspector，避免 browser 跑模型而 Verify 偷换服务器指标。此约束不改变既有 server-only 模型能力。静态 token 策略拒绝未允许 imports、动态执行/安装/网络桥接、明显顶层执行等早期不兼容；它不是完整 Python AST/语法验证或安全证明。真实编译/执行仍由隔离 runtime 和 server 执行器承担。运行时的恶意 fixture 验收绕开早期拒绝，才能验证 CSP。
 
 源 dependency lock 沿用 `{schemaVersion:1,packages:{...}}`。Queue packages 必须为空；Mesa 源锁固定六个根：mesa3.5.1、networkx3.6.1、numpy2.4.6、pandas3.0.2、scipy1.18.0、tqdm4.67.3。`runtime.dependencies` 是包括平台预加载负向测试包在内的完整 browser distribution 闭包，不等于这六个源锁键。CPython 镜像也必须审核/固定其实际完整闭包，不自动追随 transitive latest。
 

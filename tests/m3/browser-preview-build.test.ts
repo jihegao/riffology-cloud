@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import {readFile} from 'node:fs/promises';
 import {initialWorkspaceArchive} from '../../services/workspace/initial-archive.ts';
 import {workspaceArchiveReader} from '../../services/turn-runtime/workspace-file-index.ts';
 import {canonicalPreviewJson,previewSha256,type PreviewSourcePath} from '../../services/browser-preview/contract.ts';
-import {createTrustedPreviewRegistry,emptyPreviewRegistry,PREVIEW_LIMITS,type TrustedPreviewProfile} from '../../services/browser-preview/profiles.ts';
+import {createTrustedPreviewRegistry,emptyPreviewRegistry,PREVIEW_LIMITS,PREVIEW_SERVER_ADAPTER_SHA256,type TrustedPreviewProfile} from '../../services/browser-preview/profiles.ts';
 import {validateSavedPreview,type CompatiblePreview} from '../../services/browser-preview/validator.ts';
 import {packageCompatiblePreview,unpackPreviewPackage,type PreviewPackage} from '../../services/browser-preview/packager.ts';
 import {readPreviewPackage,storePreviewPackage,previewObjectKey,type PreviewBuildIntent,type PreviewBuildReceipt,type PreviewReceiptPort} from '../../services/browser-preview/storage.ts';
@@ -11,7 +12,7 @@ const encode=(s:string)=>new TextEncoder().encode(s);
 const spec={schemaVersion:1,researchQuestion:'How does capacity affect waits?',scope:'Queue',entities:['customer'],mechanisms:['service'],assumptions:['constant arrivals'],parameters:{steps:{type:'integer',default:2,minimum:1,maximum:500},variant:{type:'enum',default:'base',values:['base','other']}},metrics:{completed:{}},limitations:['synthetic fixture'],execution:{entrypoint:'model/run.py',dependencyLock:'app/requirements.lock'}};
 const fileValues:Record<string,Uint8Array>={
  'model/model.py':encode('import random\n\ndef run(config):\n    rng = random.Random(config["seed"])\n    return {"model": "queue", "snapshots": []}\n'),
- 'model/run.py':encode('import argparse\nimport json\nfrom pathlib import Path\nfrom model import run\n'),
+ 'model/run.py':new Uint8Array(await readFile(new URL('../../services/run/model_run_adapter.py',import.meta.url))),
  'model/model-spec.json':encode(JSON.stringify(spec)),
  'model/visualization.json':encode(JSON.stringify({schema:'riffology.visualization/v1',protocol:'riffology.visual/v0.1',renderer:'lane',metricKeys:['completed']})),
  'app/requirements.lock':encode('{"schemaVersion":1,"packages":{}}'),
@@ -64,10 +65,16 @@ test('unsupported inputs have stable reasons and never execute or fetch generate
   [{'model/model.py':encode('import os\ndef run(config):\n    return os.getenv("SECRET")')},'python-unsupported'],
   [{'model/model.py':encode('def run(config):\n    return eval(config)')},'python-unsupported'],
   [{'model/model.py':encode('def run(config):\n    return {}\nrun({})')},'python-unsupported'],
+  [{'model/run.py':encode('import json\nfrom model import run\nprint(json.dumps({"schemaVersion":1,"metrics":{"completed":999}}))\n')},'python-unsupported'],
   [{'model/model.py':new Uint8Array(PREVIEW_LIMITS.sourceBytes+1)},'source-too-large'],
  ];
  for(const [overrides,reasonCode] of cases){const f=await fixture(overrides);const result=await f.validate();assert.deepEqual(result,{status:'unsupported',reasonCode});assert.deepEqual(await f.validate(),result);}
  const files={...fileValues};delete files['model/visualization.json'];const archive=initialWorkspaceArchive(files),f=await fixture();assert.deepEqual(await validateSavedPreview({...f.source,filesSha256:await workspaceArchiveReader(archive).sha256()},archive,'python-stdlib/v1',f.registry),{status:'unsupported',reasonCode:'source-missing'});
+});
+test('browser compatibility binds exact platform adapter, even for legacy-looking valid imports',async()=>{
+ assert.equal(await previewSha256(fileValues['model/run.py']),PREVIEW_SERVER_ADAPTER_SHA256);
+ const f=await fixture({'model/run.py':encode(new TextDecoder().decode(fileValues['model/run.py'])+'\n# changed wrapper semantics or bytes\n')});
+ assert.deepEqual(await f.validate(),{status:'unsupported',reasonCode:'python-unsupported'});
 });
 test('registry rejects tampered assets, limits, dependencies and unregistered source locks',async()=>{
  const profile=await profileFixture();
