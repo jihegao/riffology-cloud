@@ -184,7 +184,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     }
     const browserRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/browser-preview(?:\/(packages|verify|retry)(?:\/([A-Za-z0-9_-]{1,128}))?)?$/.exec(url.pathname);
     if(browserRoute){
-      const [,workspaceId,resource,id]=browserRoute,scope=await new ProjectCatalog(services.database,new Set()).maintenanceWorkspace(principal,workspaceId!);
+      const [,workspaceId,resource,id]=browserRoute,catalog=new ProjectCatalog(services.database,new Set()),scope=resource==='verify'&&!id&&request.method==='POST'?await catalog.workspace(principal,workspaceId!):await catalog.maintenanceWorkspace(principal,workspaceId!);
       if(!services.browserPreviews)throw new HttpError('browser-preview-unavailable',503);
       try{
         if(!resource&&request.method==='GET'){

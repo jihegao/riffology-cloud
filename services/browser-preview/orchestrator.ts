@@ -11,7 +11,7 @@ import type {PreviewSource} from '../preview/source.ts';
 type Saved={identity:TurnRuntimeIdentity;receipt:CheckpointReceipt};
 type Capture={schemaVersion:1;scope:TurnScope;actor:TurnActor;input:PreviewVerifyRequest;request:ExperimentRequest;serverKey:string};
 export interface BrowserPreviewOrchestratorPorts{
- authorize(actor:TurnActor):Promise<void>;checkScope():void;
+ authorize(actor:TurnActor):Promise<void>;authorizeVerify?(actor:TurnActor):Promise<void>;checkScope():void;
  head():Saved|null;saved(revisionId:string):Saved|null;
  registry():Promise<PreviewProfileRegistry>;builds:BrowserPreviewBuildHost;bucket:PreviewObjectBucket;
  files(source:PreviewSource):Promise<Uint8Array>;simulations:SimulationHost;canVerify():boolean;image:string;
@@ -22,11 +22,12 @@ export class BrowserPreviewOrchestrator{
  readonly storage:DurableObjectStorage;readonly scope:TurnScope;readonly ports:BrowserPreviewOrchestratorPorts;
  constructor(storage:DurableObjectStorage,scope:TurnScope,ports:BrowserPreviewOrchestratorPorts){this.storage=storage;this.scope=structuredClone(scope);this.ports=ports;}
  async #authorize(actor:TurnActor){this.ports.checkScope();await this.ports.authorize(actor);this.ports.checkScope();}
+ async #authorizeVerify(actor:TurnActor){this.ports.checkScope();await (this.ports.authorizeVerify??this.ports.authorize)(actor);this.ports.checkScope();}
  #saved(revision:string){turnId(revision);const saved=this.ports.saved(revision);if(!saved)throw Error('browser-preview-not-found');return saved;}
  #stillSaved(saved:Saved){this.ports.checkScope();if(!eq(this.ports.saved(saved.receipt.revisionId),saved))throw Error('browser-preview-source-unavailable');}
  async view(actor:TurnActor,revisionId?:string,profileId?:PreviewRuntime['profileId']){
-  await this.#authorize(actor);const registry=await this.ports.registry();await this.#authorize(actor);
-  if(profileId&&!registry.resolve(profileId))throw Error('browser-preview-input-invalid');
+  await this.#authorize(actor);
+  if(profileId!==undefined&&(typeof profileId!=='string'||!['python-stdlib/v1','mesa-3.5.1/v1'].includes(profileId)))throw Error('browser-preview-input-invalid');
   const head=this.ports.head(),revision=revisionId??head?.receipt.revisionId??null;
   if(!revision)return {currentRevisionId:null,revisionId:null,build:null,stale:false,modelSpec:null,reasonCode:'preview-no-saved-revision',delivery:null};
   const saved=this.#saved(revision),row=this.ports.builds.read(revision,profileId);let delivery=null,reasonCode:string|null=null;
@@ -69,17 +70,17 @@ export class BrowserPreviewOrchestrator{
   return {verificationId:key,status:prior?'accepted':'absent',captured:(({idempotencyKey:_,...captured})=>captured)(capture.input),experiment:prior?publicExperiment(prior,this.ports.head()?.receipt.filesSha256??null):null};
  }
  async verify(actor:TurnActor,raw:unknown){
-  const input=parsePreviewVerifyRequest(raw);await this.#authorize(actor);const key=await this.#key(actor,input.idempotencyKey),prior=this.storage.kv.get<Capture>(key);
+  const input=parsePreviewVerifyRequest(raw);await this.#authorizeVerify(actor);const key=await this.#key(actor,input.idempotencyKey),prior=this.storage.kv.get<Capture>(key);
   if(prior&&(!eq(prior.actor,actor)||!eq(prior.scope,this.scope)||!eq(prior.input,input)))throw Error('browser-preview-idempotency-conflict');
   const saved=this.#saved(input.revisionId),pack=await this.bytes(actor,input.packageIdentity);
   if(pack.manifest.revisionId!==input.revisionId||pack.manifest.filesSha256!==saved.receipt.filesSha256)throw Error('browser-preview-source-unavailable');
-  const source:PreviewSource={kind:'saved-turn',identity:saved.identity,revision:saved.receipt},bytes=await this.ports.files(source);await this.#authorize(actor);this.#stillSaved(saved);
+  const source:PreviewSource={kind:'saved-turn',identity:saved.identity,revision:saved.receipt},bytes=await this.ports.files(source);await this.#authorizeVerify(actor);this.#stillSaved(saved);
   const plan=await simulationPlan(source,bytes),request=experimentRequest({...modelVersion(plan),parameters:input.parameters,seed:input.seed}),capture:Capture={schemaVersion:1,scope:this.scope,actor,input,request,serverKey:'browserverify-'+key.slice(key.lastIndexOf(':')+1)};
   if(!this.ports.canVerify())throw Error('simulation-unavailable');
-  await this.#authorize(actor);this.#stillSaved(saved);
+  await this.#authorizeVerify(actor);this.#stillSaved(saved);
   await this.storage.transaction(async tx=>{const existing=await tx.get<Capture>(key);if(existing&&!eq(existing,capture))throw Error('browser-preview-idempotency-conflict');this.#stillSaved(saved);await tx.put(key,capture);});await this.storage.sync();
-  const replay=await this.ports.simulations.replay(actor,capture.serverKey,request);await this.#authorize(actor);this.#stillSaved(saved);
+  const replay=await this.ports.simulations.replay(actor,capture.serverKey,request);await this.#authorizeVerify(actor);this.#stillSaved(saved);
   const experiment=replay??await this.ports.simulations.submit(actor,capture.serverKey,request,plan,this.ports.image,()=>{this.#stillSaved(saved);return true;});
-  await this.#authorize(actor);return {verificationId:input.idempotencyKey,experiment:publicExperiment(experiment,this.ports.head()?.receipt.filesSha256??null)};
+  await this.#authorizeVerify(actor);return {verificationId:input.idempotencyKey,experiment:publicExperiment(experiment,this.ports.head()?.receipt.filesSha256??null)};
  }
 }

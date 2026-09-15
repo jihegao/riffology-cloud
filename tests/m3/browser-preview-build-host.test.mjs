@@ -8,20 +8,7 @@ import {productionPreviewRegistry} from '../../services/browser-preview/producti
 import {BrowserPreviewBuildHost} from '../../services/browser-preview/build-host.ts';
 import {discoveryKey} from '../../services/browser-preview/discovery.ts';
 import {BROWSER_BUILD_WAKE_KEY} from '../../services/workspace/shared-alarm.ts';
-class Storage{
- values=new Map();alarm=null;failReceipt=false;
- kv={get:key=>structuredClone(this.values.get(key))};
- list=async({prefix})=>new Map([...this.values].filter(([k])=>k.startsWith(prefix)).map(([k,v])=>[k,structuredClone(v)]));
- transaction=async op=>{const before=structuredClone(this.values),alarm=this.alarm;try{return await op({get:async key=>structuredClone(this.values.get(key)),put:async(key,value)=>{if(this.failReceipt&&key.startsWith('browser-preview:receipt:'))throw Error('injected-receipt-failure');this.values.set(key,structuredClone(value));},delete:async key=>this.values.delete(key),list:this.list,setAlarm:async at=>{this.alarm=at;},deleteAlarm:async()=>{this.alarm=null;}});}catch(e){this.values=before;this.alarm=alarm;throw e;}};
- sync=async()=>{};
-}
-async function fixture(index=0){
- const p=profiles[index],f=await makeFixture(p,index?'mesa':'queue'),bytes=initialWorkspaceArchive(Object.fromEntries(f.files.map(f=>[f.path,Buffer.from(f.base64,'base64')]))),storage=new Storage(),objects=new Map();let now=1000,reads=0,puts=0;
- const scope={tenantId:'tenant-a',projectId:f.manifest.projectId,workspaceId:'workspace-a',workspaceGeneration:1},source={schemaVersion:1,identity:{scope,sessionId:'session-a',turnId:'turn-a',dispatchId:'dispatch-a',generation:1},receipt:{revisionId:'revision-a',objectKey:'turns/a.json',filesSha256:await previewSha256(bytes),sessionSha256:'b'.repeat(64),committedAt:900},status:'pending',attempts:0,nextAttemptAt:1000,reasonCode:null};
- storage.values.set(discoveryKey('revision-a'),source);storage.values.set(BROWSER_BUILD_WAKE_KEY,1000);
- const ports={registry:productionPreviewRegistry,files:async()=>{reads++;return bytes;},bucket:{get:async key=>{const b=objects.get(key);return b?{size:b.length,arrayBuffer:async()=>Uint8Array.from(b).buffer}:null;},put:async(key,value,options)=>{assert.equal(options.onlyIf.etagDoesNotMatch,'*');assert.ok([...storage.values.keys()].some(k=>k.startsWith('browser-preview:reference:')));puts++;if(objects.has(key))throw Error('precondition');objects.set(key,Uint8Array.from(value));throw Error('response-lost');}}};
- return {storage,objects,ports,scope,source,bytes,host:()=>new BrowserPreviewBuildHost(storage,scope,ports,()=>now),clock:value=>{now=value;},get reads(){return reads;},get puts(){return puts;}};
-}
+import {fixture} from './browser-preview-test-fixture.mjs';
 for(const index of [0,1])test(`durable profile ${index} packages real saved archive with reference before create-only write`,async()=>{
  const f=await fixture(index);await f.host().alarm();const row=f.host().read('revision-a');assert.equal(row.state.status,'ready');assert.equal(row.profile.trust,'verified-platform');assert.deepEqual(row.profile.runtime,profiles[index].runtime);assert.equal(row.receipt.revisionId,'revision-a');assert.equal(f.puts,1);assert.equal(f.storage.alarm,null);assert.equal(f.storage.values.get(discoveryKey('revision-a')).status,'settled');assert.deepEqual(f.host().receipt(row.receipt.packageIdentity),row.receipt);
 });
@@ -49,4 +36,14 @@ test('Mesa storage failure never overwrites stdlib unsupported and frozen platfo
  const {createTrustedPreviewRegistry}=await import('../../services/browser-preview/profiles.ts');f.ports.registry=()=>createTrustedPreviewRegistry([]);f.storage.failReceipt=false;f.clock(3000);await f.host().alarm();
  assert.equal(f.host().read('revision-a','mesa-3.5.1/v1').state.status,'ready');assert.equal(f.host().read('revision-a','mesa-3.5.1/v1').state.packageIdentity,original.state.buildIdentity);assert.equal(f.puts,1);assert.equal(f.host().read('revision-a','python-stdlib/v1').state.status,'unsupported');
  const failed=await fixture(1);failed.storage.failReceipt=true;await failed.host().alarm();failed.clock(3000);await failed.host().alarm();failed.clock(7000);await failed.host().alarm();assert.equal(failed.host().read('revision-a','mesa-3.5.1/v1').state.status,'failed');assert.equal(failed.host().read('revision-a','python-stdlib/v1').state.status,'unsupported');
+});
+
+test('restart after third durable rearm performs no fourth source or R2 operation',async()=>{
+ const f=await fixture();f.storage.failReceipt=true;await f.host().alarm();const row=f.host().read('revision-a'),reads=f.reads,puts=f.puts;
+ const saved=f.storage.values.get(discoveryKey('revision-a'));f.storage.values.set(discoveryKey('revision-a'),{...saved,attempts:3,nextAttemptAt:7000});f.clock(7000);await f.host().alarm();
+ assert.equal(f.reads,reads);assert.equal(f.puts,puts);assert.equal(f.host().read('revision-a').state.status,'failed');assert.equal(f.host().read('revision-a').state.buildIdentity,row.state.buildIdentity);assert.equal(f.storage.alarm,null);
+});
+test('frozen compatible row becoming unsupported cannot settle with an orphan building status',async()=>{
+ const f=await fixture(1),profile=await f.ports.registry();f.storage.values.set('browser-preview:build:revision-a:python-stdlib/v1',{schemaVersion:1,source:f.source,profile:profile.resolve('python-stdlib/v1'),modelSpec:null,receipt:null,state:{status:'building',revisionId:'revision-a',profileId:'python-stdlib/v1',buildIdentity:'a'.repeat(64),attempt:1}});
+ await f.host().alarm();assert.equal(f.host().read('revision-a','python-stdlib/v1').state.status,'building');assert.equal(f.storage.values.get(discoveryKey('revision-a')).status,'pending');f.clock(3000);await f.host().alarm();f.clock(7000);await f.host().alarm();assert.equal(f.host().read('revision-a','python-stdlib/v1').state.status,'failed');assert.equal(f.host().read('revision-a','python-stdlib/v1').state.buildIdentity,'a'.repeat(64));assert.equal(f.storage.alarm,null);
 });

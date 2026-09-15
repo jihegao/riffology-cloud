@@ -27,7 +27,7 @@ export class BrowserPreviewBuildHost{
  constructor(storage:DurableObjectStorage,scope:TurnScope,ports:BrowserPreviewBuildHost['ports'],now=Date.now){this.storage=storage;this.scope=structuredClone(scope);this.ports=ports;this.now=now;}
  read(revision:string,profile?:PreviewRuntime['profileId']):SavedPreviewBuild|null{
   const rows=(profile?[profile]:ids).map(id=>this.storage.kv.get<SavedPreviewBuild>(rowKey(revision,id))).filter((r):r is SavedPreviewBuild=>!!r);
-  const row=rows.find(r=>r.state.status==='ready')??rows.find(r=>r.state.status==='building')??rows[0]??null;
+  const row=rows.find(r=>r.state.status==='ready')??rows.find(r=>r.state.status==='building')??rows.find(r=>r.state.status==='failed')??rows[0]??null;
   if(row&&!sameScope(row.source.identity.scope,this.scope))throw Error('browser-preview-read-denied');return structuredClone(row);
  }
  receipt(identity:string):PreviewBuildReceipt|null{const r=this.storage.kv.get<PreviewBuildReceipt>(RECEIPT+identity)??null;if(r&&!equal(r.scope,{tenantId:this.scope.tenantId,projectId:this.scope.projectId,workspaceId:this.scope.workspaceId}))throw Error('browser-preview-read-denied');return structuredClone(r);}
@@ -58,10 +58,12 @@ export class BrowserPreviewBuildHost{
   });
  }
  /** One source per alarm, three bounded attempts. Intent is rearmed before I/O. */
+ async #fail(source:PreviewDiscovery,error:unknown){for(const id of ids){const row=this.read(source.receipt.revisionId,id);if(row?.state.status==='ready'||row?.state.status==='unsupported')continue;await this.#write(async tx=>{await tx.put(rowKey(source.receipt.revisionId,id),{schemaVersion:1,source,profile:row?.profile??null,modelSpec:row?.modelSpec??null,receipt:null,state:{status:'failed',revisionId:source.receipt.revisionId,profileId:id,buildIdentity:row&&'buildIdentity' in row.state?row.state.buildIdentity:await previewSha256(canonicalPreviewJson({revision:source.receipt,profileId:id})),reasonCode:error instanceof Error&&error.message==='browser-preview-object-conflict'?'object-conflict':'source-unavailable'}} satisfies SavedPreviewBuild);});}await this.#settle(source,'browser-preview-build-failed');}
  #active:Promise<void>|null=null;
  alarm():Promise<void>{if(this.#active)return this.#active;const work=this.#advance();this.#active=work;void work.finally(()=>{if(this.#active===work)this.#active=null;}).catch(()=>{});return work;}
  async #advance():Promise<void>{
   const due=[...(await this.storage.list<PreviewDiscovery>({prefix:PREVIEW_DISCOVERY_PREFIX})).values()].filter(r=>r.status==='pending'&&r.nextAttemptAt!<=this.now()&&sameScope(r.identity.scope,this.scope)).sort((a,b)=>a.nextAttemptAt!-b.nextAttemptAt!)[0];if(!due)return;
+  if(due.attempts>=3){await this.#fail(due,Error('browser-preview-attempts-exhausted'));return;}
   const source={...due,attempts:due.attempts+1,nextAttemptAt:this.now()+Math.min(60000,2000*2**due.attempts)};
   await this.#write(async tx=>{await tx.put(discoveryKey(source.receipt.revisionId),source);});
   try{
@@ -86,7 +88,7 @@ export class BrowserPreviewBuildHost{
    }
    await this.#settle(source,built?null:'browser-preview-unsupported');
   }catch(error){
-   if(source.attempts>=3){for(const id of ids){const row=this.read(source.receipt.revisionId,id);if(row?.state.status==='ready'||row?.state.status==='unsupported')continue;await this.#write(async tx=>{await tx.put(rowKey(source.receipt.revisionId,id),{schemaVersion:1,source,profile:row?.profile??null,modelSpec:row?.modelSpec??null,receipt:null,state:{status:'failed',revisionId:source.receipt.revisionId,profileId:id,buildIdentity:row&&'buildIdentity' in row.state?row.state.buildIdentity:await previewSha256(canonicalPreviewJson({revision:source.receipt,profileId:id})),reasonCode:error instanceof Error&&error.message==='browser-preview-object-conflict'?'object-conflict':'source-unavailable'}} satisfies SavedPreviewBuild);});}await this.#settle(source,'browser-preview-build-failed');}
+   if(source.attempts>=3)await this.#fail(source,error);
   }
  }
 }
