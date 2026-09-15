@@ -20,7 +20,7 @@
 | 门槛 | 状态 | 剩余条件 |
 | --- | --- | --- |
 | G0 | 本地通过 | 线上 #65 签收仍待 G4 |
-| G1 | 实施中 | 确定性包、隔离 runtime、server Mesa |
+| G1 | 本地通过 | 原生生产隔离/资源继承仍待G4，不能以翻译环境替代 |
 | G2 | 实施中 | Agent 约定已验证；saved 派生构建、持久 API、Workspace 实施中 |
 | G3 | 未开始 | 非作者评审、真实本地整链、完整 check |
 | G4 | 未开始 | 冻结发布、普通用户两模型、零执行窗口、资源释放 |
@@ -84,6 +84,12 @@ B槽位动态前移G2B，工作树codex/issues-g2-preview基线2a6589b。计划�
 C额外实际entrypoint探测发现amd64翻译exec后新解释器RLIMIT_AS为(-1,-1)，此前direct setrlimit→依赖导入探测不能证明child继承512MiB。本地outer结果仅签UID/网络/生命周期/同源计算，不签硬AS内存隔离。生产runner不为翻译环境跳过/放宽限制；默认native资源断言仍保留。可另验Docker cgroup resident cap并标为替代边界，原生生产资源继承须G4实证。失败stderr已由C保存在`.local/g1-server-mesa-isolation-debug.log`。
 
 主控核查当前[SQLite storage事务API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/#transaction)，G2A使用异步storage.transaction覆盖journal/intent/wake/物理alarm，内部journal operation保持同步且无外部I/O；transactionSync不能承载异步setAlarm，sync flush不能替代原子关系。具体rollback/eviction/alarm证据仍待实际Workerd测试。
+
+## G1 本地签收
+
+同输入f14c79f集成为3009c0a；主控独立再运行两模型2/2通过。测试使用B五文件构建真实tar→生产registry validator/packager→实际Docker native→完整同源trace→ZIP真Python replay；seed7及完整参数与真实Browser记录一致，两trace exact deepEqual，无浮点容差。Queue在3.11.14/3.14.2完整trace相同；typecheck通过。原spike protocol/fixture UI另外4/4通过（显式CHROMIUM_PATH使用已安装Chrome；缺Playwright cache的首轮属于环境启动失败）。主控日志与摘要集中于`.local/issues-20260915/g1/`。
+
+G1本地门槛满足：确定性生产包、固定离线runtime、两profile共享renderer、服务端同模型入口及同输入对照。此签收保留前述local outer/资源继承边界；不代表G3实际产品整链或G4普通Agent与原生生产隔离验收。G2A/B继续动态并行，C收尾Mesa实际entrymarker后的deadline/cancel，并转G3整链验收准备。
 
 ## 主控复核与环境记录
 

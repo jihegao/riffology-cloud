@@ -5,7 +5,7 @@
 | Issue | 本地证据 | 本次剩余签收条件 | 关闭状态 |
 | --- | --- | --- | --- |
 | #65 Workspace | G0三视口视觉检查；50项UI回归；2项真实Chrome多项目/跨tenant回归 | G4实际发布三视口、真实preparing→ready、错误保留、导航/保存/Preview/Stop | 未关闭 |
-| #64 Browser Preview | 固定五文件/输入/身份；真实tar→两profile validator/packager；26项真实Pyodide；两模型server+ZIP replay；固定生成约定 | G1同输入完整trace收尾；G2实际saved构建/API/授权/历史Verify；G3本地整链；G4普通Agent两模型、零执行local窗口、Evidence与云产物/资源 | 未关闭 |
+| #64 Browser Preview | G1本地通过：真实tar→validator/packager；26项真实Pyodide；两模型同输入完整trace逐项相同、server+ZIP replay；固定生成约定 | G2实际saved构建/API/授权/历史Verify；G3本地整链；G4普通Agent两模型、原生隔离/资源、零执行local窗口、Evidence与云产物/资源 | 未关闭 |
 | #46 Model supply | 既有Adapter、token/money预算、dispatch-once/unknown保留及定向回归；ADR仍为候选 | 当前provider/价格/隐私；真实账号/模型/预算/日志；18次任务benchmark；普通用户多轮、全链单次上游、两端账本 | 未关闭 |
 | #37 Runtime reuse | 既有默认关闭lazy/reuse代码、身份/隔离协议与历史本地回归 | 本候选同配置冷/热/恢复；纯对话0 Project；10轮新身份/保存；取消/迟到/Session切换/丢失；低容量公平性、释放与回退 | 未关闭 |
 | #35 Publication | 既有readiness/冻结审核/不可变catalog/复制；五文件白名单兼容 | Browser资产/复制关联；普通用户Queue/Inventory/Maintenance依次建模、baseline+comparison+export→提交→非作者管理员审核→发布→新用户复制运行 | 未关闭 |
