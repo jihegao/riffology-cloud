@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {FIXED_PROGRAM,FIXED_COMMAND,MODULES,workerSource,validateContent} from './g4-release-content-probe.mjs';
+import {FIXED_PROGRAM,FIXED_COMMAND,MODULES,frozenProbe,workerSource,validateContent} from './g4-release-content-probe.mjs';
 test('content probe freezes six paths and provider-free policy inspection; HTTP cannot select actor or command',()=>{
  assert.equal(MODULES.length,6);assert.match(FIXED_PROGRAM,/BROWSER_PREVIEW_GENERATION_CONTRACT/);assert.match(FIXED_COMMAND,/^node --input-type=module -e /);
  for(const token of ['resolveOptions(', 'providerFetch(', 'fetch(', 'createProductTrustedPiRelease('])assert.equal(FIXED_PROGRAM.includes(token),false,token);
- const source=workerSource('m2-t-'+ 'a'.repeat(52));assert.match(source,/Object.keys\(input\).length!==1/);assert.equal(source.includes('input.actor'),false);assert.equal(source.includes('input.command'),false);assert.equal(source.includes('startLifecycleProbe'),false);assert.equal(source.includes('/bin/sleep'),false);
+ const source=workerSource(frozenProbe('a'.repeat(24)).actor,frozenProbe('a'.repeat(24)).identity);assert.match(source,/Object.keys\(input\).length!==1/);assert.equal(source.includes('input.actor'),false);assert.equal(source.includes('input.command'),false);assert.equal(source.includes('startLifecycleProbe'),false);assert.equal(source.includes('/bin/sleep'),false);
  assert.throws(()=>workerSource('client-selected'),/actor-invalid/);
 });
 test('signed-off content requires exact modules, root protection, adapter and generation contract',()=>{
@@ -20,8 +20,21 @@ test('health requires continuous success and bounded cleanup retries only fixed 
  await waitHealth(async()=>{n++;if(n===2)throw Error('404');return {ok:true};},{now:()=>now,sleep,stableMs:3000,pollMs:1000,deadlineMs:10000});assert.equal(n,6);
  now=0;await assert.rejects(waitHealth(async()=>{throw Error('404');},{now:()=>now,sleep,deadlineMs:3000,pollMs:1000}),/health-unconfirmed/);
  let proofs=0,destroys=0;
- const ack=await destroyBounded(async()=>{proofs++;},async()=>{destroys++;if(destroys<3)throw Error('transport-unknown');return {ok:true,destroyAcknowledged:true};},{now:()=>now,sleep});
+ const ack=await destroyBounded(async()=>{proofs++;},async()=>{destroys++;if(destroys<3)throw Error('transport-unknown');return {ok:true,destroyAcknowledged:true,running:false,nativeStopImmediatelyObserved:true};},{now:()=>now,sleep});
  assert.equal(ack.destroyAcknowledged,true);assert.equal(proofs,3);assert.equal(destroys,3);
  await assert.rejects(destroyBounded(async()=>{throw Error('version-changed');},async()=>{throw Error('must-not-call');},{now:()=>now,sleep}),/version-changed/);
- const source=workerSource('m2-t-'+ 'a'.repeat(52));assert.match(source,/health.*GET/);assert.equal(source.indexOf("'/health'")<source.indexOf('const stub='),true);
+ const source=workerSource(frozenProbe('a'.repeat(24)).actor,frozenProbe('a'.repeat(24)).identity);assert.match(source,/health.*GET/);assert.equal(source.indexOf("'/health'")<source.indexOf('const stub='),true);
+});
+
+test('destroy uses only compiled token identity and confirms immediate running false',()=>{
+ const probe=frozenProbe('b'.repeat(24)),source=workerSource(probe.actor,probe.identity);
+ assert.equal(probe.identity.sessionId,'session-'+ 'b'.repeat(24));assert.equal(probe.identity.generation,1);
+ assert.match(source,/destroyAndReleaseState/);assert.equal(source.includes('input.identity'),false);assert.equal(source.includes('await stub.destroy()'),false);
+ assert.throws(()=>workerSource(probe.actor,{...probe.identity,sessionId:'other'}),/identity-invalid/);
+ assert.throws(()=>frozenProbe('client-selected'),/token-invalid/);
+});
+
+test('running true never becomes destroy acknowledgement',async()=>{
+ const {destroyBounded}=await import('./g4-release-content-probe.mjs');let now=0,calls=0;
+ await assert.rejects(destroyBounded(async()=>{},async()=>{calls++;return {ok:true,destroyAcknowledged:true,running:true,nativeStopImmediatelyObserved:true};},{now:()=>now,sleep:async ms=>{now+=ms;},maxAttempts:2}),/destroy-shape/);assert.equal(calls,2);
 });
