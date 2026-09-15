@@ -55,6 +55,10 @@ A 提交 16d60bf，主控非作者实际diff复核后集成为 db0fc01；独立1
 
 G1B主控预审发现host.load迟到写入、Spec参数默认值/范围接线和runtime资产身份覆盖transitive执行代码的问题，已由B独占修复；A槽位转为B非作者只读预审并等待最终资产registry接线。
 
+## 动态槽位调整
+
+A 完成 G1B 只读预审后，在固定资产身份最终冻结的等待窗口前移 G2C Agent 生成约定（依赖图仅要求 G0，非 G1 server 完成）。触发证据为 G1A基础代码已验收、runtime实际执行/资产收据仍在修复；最小改动仅 Trusted Pi 固定 skill/prompt 与专属生成contract tests，不抢占B runtime、C server adapter或阶段2A central文件。工作树 `codex/issues-g2-generation` 基线 a989599。完成后A返回G1真实registry接线。G2整体不因此提前签收。
+
 线上状态未改变；签收时追加提交、命令、证据与明确缺口。
 
 ## 主控复核与环境记录
