@@ -1,3 +1,4 @@
+import {createGatewayG4ComputeServices,createGatewayG4WindowServices} from './g4-compute-services.ts';
 import {admitG4Task,type G4TaskBudgetNamespace} from '../model-budget/g4-admission.ts';
 import {createGatewayBrowserPreviewServices} from './browser-preview-services.ts';
 import {serveBrowserPreviewAppAsset} from '../browser-preview/execution/delivery.ts';
@@ -82,7 +83,7 @@ export default {
       }
       return await auth.handler(request);
     }
-    return await gateway(request,{origin:env.APP_ORIGIN,database,modelContent:env.MODEL_CONTENT?new R2ModelContentPort(env.MODEL_CONTENT):undefined,modelUpload:env.MODEL_CONTENT?new R2ModelContentUploadPort(env.MODEL_CONTENT):undefined,
+    return await gateway(request,{g4ComputeCounts:createGatewayG4ComputeServices(env),g4WindowSnapshot:createGatewayG4WindowServices(env as unknown as Parameters<typeof createGatewayG4WindowServices>[0]),origin:env.APP_ORIGIN,database,modelContent:env.MODEL_CONTENT?new R2ModelContentPort(env.MODEL_CONTENT):undefined,modelUpload:env.MODEL_CONTENT?new R2ModelContentUploadPort(env.MODEL_CONTENT):undefined,
       admitProject:(principal,tenantId,key,body)=>admitG4Task(env.TENANT_MODEL_BUDGET,env.G4_CONTROLLED_WINDOW_JSON,tenantId,principal.userId,'project',{key},body),
       provision:async(principal,tenantId,projectId)=>{
         const item=await new ProvisioningCatalog(database).kickProject(principal,tenantId,projectId);

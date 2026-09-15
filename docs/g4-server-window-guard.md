@@ -8,6 +8,8 @@
 
 Go Model Proxy服务端核验输入界限至少为payload UTF-8字节数加4096，并要求既有bound版本。token reserve与美元reserve在同一SQLite事务中；真实provider调用前，token和窗口dispatch围栏原子提交并消费32中的一个槽位。仅一次handler取得dispatch permission。ACK丢失、重启、reserved/dispatched未确认、缺少usage/请求身份、非成功Provider响应及unknown均保留最坏费用并阻断本窗口新任务；不按timeout返还，也不补发同key。只有明确未dispatch proof能释放reserved费用；明确Provider usage+requestId才能按最高费率记保守已知费用。不能将终态unknown记成零。
 
-dispatch回执提供冻结controlledWindowDeadlineAt，Model Proxy将Provider deadline取原期限与该时间的最小值；持久flush跨截止时拒发，后续await跨截止时也拒发。既有Provider/SDK deadline、取消与Stop逻辑保留。维护GET、读取历史Run/Verify、Stop和同identity观察不创造新费用/计数；新窗口snapshot仅查询sqlite_master和既有表，不CREATE、不启动timer。无历史G4 metadata且不配置G4的旧发布继续旧token行为。
+dispatch回执提供冻结controlledWindowDeadlineAt，Model Proxy在最后await后与Go adapter真实fetch前核该新dispatch截止；持久flush跨截止时拒发，后续await跨截止时也拒发。窗口截止不改变已dispatch Provider调用原期限，不强杀已有Run/Task收尾。既有Provider/SDK deadline、取消与Stop逻辑保留。维护GET、读取历史Run/Verify、Stop和同identity观察不创造新费用/计数；新窗口snapshot仅查询sqlite_master和既有表，不CREATE、不启动timer。无历史G4 metadata且不配置G4的旧发布继续旧token行为。
 
-当前证据：专属SQLite测试覆盖上限、幂等、删配置/换window拒绝、lost reserve/dispatch ACK、费用hold与磁盘重开；真实Workerd测试使用同production TenantModelBudget类，dispose/restart后保持startedAt、16Run、唯一dispatch和费用hold。上游出口在测试中关闭。测试里的任务/模型输入为合成数据，不是Provider执行证据。native累计计数及受保护compute-counts读取另由主控安排接口接线，不能用本guard计数冒充成功Python/SDK执行次数。
+当前证据：专属SQLite测试覆盖上限、幂等、删配置/换window拒绝、lost reserve/dispatch ACK、费用hold与磁盘重开；真实Workerd测试使用同production TenantModelBudget类，dispose/restart后保持startedAt、16Run、唯一dispatch和费用hold。上游出口在测试中关闭。测试里的任务/模型输入为合成数据，不是Provider执行证据。受保护GET `/api/workspaces/:ws/g4-compute-counts` 汇合窗口预算、所有Turn/Simulation/Service持久围栏和已登记nativeAttemptSnapshot。该GET维护ACL在各await前后核验，不admit任务、CREATE表或执行native health/observe。缺counter/旧actor为supported:false/null，不能当零；native是attempt-before-call而非成功Python/SDK执行次数。应与真实Agent之后完整ledger、前后稳定计数和Cloudflare库存共同证明本地运行零新增compute。
+
+首次新项目之前，普通已认证 owner 可用 `GET /api/tenants/:tenantId/g4-window` 读取固定 tenant actor 的窗口；前后校验当前 owner/authVersion，拒绝 query 和写请求。未启动窗口返回持久 startedAt/deadlineAt null 与 configured policy，客户端不得伪造截止时钟。该 GET 不创建预算表或任务。

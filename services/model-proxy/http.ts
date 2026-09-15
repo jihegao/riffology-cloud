@@ -40,6 +40,7 @@ export type ProductModelProviderInput = {
   inputTokenUpperBound:number;
   maxOutputTokens: number;
   deadlineAt: number;
+  dispatchAdmissionDeadlineAt?:number;
   signal?: AbortSignal;
 };
 export type ProductModelProviderResult = {
@@ -212,7 +213,7 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
     if(providerDeadlineAt<=now())throw Error('g4-window-deadline');
     result = normalizedProviderResult(await provider.dispatch({
       provider: claims.provider, model: claims.model, providerSessionId, idempotencyKey: parsed.requestId,
-      payload: parsed.payload,inputTokenUpperBound:parsed.inputTokenUpperBound,maxOutputTokens:parsed.maxOutputTokens,deadlineAt:providerDeadlineAt,signal:request.signal,
+      payload: parsed.payload,inputTokenUpperBound:parsed.inputTokenUpperBound,maxOutputTokens:parsed.maxOutputTokens,deadlineAt:parsed.deadlineAt,...(providerDeadlineAt===parsed.deadlineAt?{}:{dispatchAdmissionDeadlineAt:providerDeadlineAt}),signal:request.signal,
     }), claims, parsed);
     emit(telemetry,{event:'provider-dispatch-result',status:result.status,contentType:result.responseContentType,requestIdPresent:result.providerRequestId!==null,usagePresent:result.inputTokens!==null&&result.outputTokens!==null,durationMs:now()-started});
     const usage=result.inputTokens===null||result.outputTokens===null

@@ -17,7 +17,7 @@ import { ModelCatalog, type ModelVersion } from '../catalog/models.ts';
 import { OperatorCatalog } from '../catalog/admin.ts';
 import { statement as sql, type Database } from '../catalog/database.ts';
 import { HttpError, json, readJson, requireOrigin } from './http.ts';
-import type { TurnActor, TurnScope } from '../turn/protocol.ts';
+import {sameScope,type TurnActor,type TurnScope} from '../turn/protocol.ts';
 import { turnEventStream } from './events.ts';
 import { toolArtifactReceipt } from '../artifacts/protocol.ts';
 import type {GatewayServiceRuns,ServiceCursor} from './service-services.ts';
@@ -28,6 +28,8 @@ import {observerArtifactReceipt} from '../preview/observer-artifacts.ts';
 import type {GatewayObservations} from './observer-services.ts';
 
 export interface GatewayServices {
+  g4WindowSnapshot?(tenantId:string,actor:TurnActor):Promise<unknown>;
+  g4ComputeCounts?(scope:TurnScope,actor:TurnActor):Promise<unknown>;
   browserPreviews?:GatewayBrowserPreviews;
   publications?:GatewayPublications;
   publicationArtifacts?:PublicationArtifacts;
@@ -113,6 +115,8 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     const principal=await admission.principal(identity);
     const admin=new OperatorCatalog(services.database);
     const models=new ModelCatalog(services.database,Date.now,services.modelContent,services.modelUpload);
+    const windowRoute=/^\/api\/tenants\/([A-Za-z0-9_-]{1,128})\/g4-window$/.exec(url.pathname);
+    if(windowRoute){if(request.method!=='GET'||url.search)throw new CatalogError('invalid_input');const catalog=new ProjectCatalog(services.database,new Set());await catalog.list(principal,windowRoute[1]!);if(!services.g4WindowSnapshot)throw new HttpError('g4-window-unavailable',503);const result=await services.g4WindowSnapshot(windowRoute[1]!,principal);await catalog.list(principal,windowRoute[1]!);return json(result);}
     const publicationRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/(publication-readiness|model-submissions)$/.exec(url.pathname),reviewRoute=/^\/api\/admin\/model-submissions(?:\/([A-Za-z0-9_-]{1,128})\/(review|export))?$/.exec(url.pathname),ownerExport=/^\/api\/model-submissions\/([A-Za-z0-9_-]{1,128})\/export$/.exec(url.pathname);
     if(publicationRoute||reviewRoute||ownerExport){
       if(!services.publications||!services.publicationArtifacts)throw new HttpError('publication-unavailable',503);
@@ -182,6 +186,13 @@ export async function gateway(request:Request, services:GatewayServices):Promise
         if(request.method==='POST'&&!claimId&&!url.search){const body=await readJson(request);return json(resource==='evidence'?await services.simulations.createEvidence(scope,principal,body):await services.simulations.rejectEvidence(scope,principal,body),201);}
         throw new HttpError('evidence-input-invalid',400);
       }catch(error){if(error instanceof HttpError||error instanceof CatalogError)throw error;const code=error instanceof Error?error.message:'';if(code==='evidence-not-found'||code==='simulation-not-found')throw new HttpError('evidence-not-found',404);if(code==='evidence-capacity')throw new HttpError(code,429);if(code==='evidence-access-denied')throw new HttpError(code,403);if(/^evidence-(?:input-invalid|expectation-mismatch|group-mismatch|metric-missing|no-valid-runs|zero-baseline|number-overflow|source-rejected|run-ineligible)$/.test(code))throw new HttpError(code,400);throw new HttpError('evidence-unavailable',503);}
+    }
+    const g4CountsRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/g4-compute-counts$/.exec(url.pathname);
+    if(g4CountsRoute){
+      if(request.method!=='GET'||url.search)throw new HttpError('g4-compute-counts-input-invalid',400);
+      const catalog=new ProjectCatalog(services.database,new Set()),scope=await catalog.maintenanceWorkspace(principal,g4CountsRoute[1]!);
+      if(!services.g4ComputeCounts)throw new HttpError('g4-compute-counts-unavailable',503);
+      const result=await services.g4ComputeCounts(scope,principal);const after=await catalog.maintenanceWorkspace(principal,scope.workspaceId);if(!sameScope(after,scope))throw new HttpError('g4-compute-counts-scope-denied',403);return json(result);
     }
     const browserRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/browser-preview(?:\/(packages|verify|retry)(?:\/([A-Za-z0-9_-]{1,128}))?)?$/.exec(url.pathname);
     if(browserRoute){

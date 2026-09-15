@@ -1,3 +1,8 @@
+import {sandboxActorIds} from '../sandbox/policy.ts';
+import type {readG4WindowSnapshot} from '../model-budget/g4-window.ts';
+import {g4DurableComputeCounts,readG4NativeSample} from '../model-budget/g4-compute-counts.ts';
+import type {SimulationRecord} from '../simulation/host.ts';
+import type {ServiceIntentRecord} from './service-intents.ts';
 import {admitG4Task} from '../model-budget/g4-admission.ts';
 import { frozenSource,sourceScope,type BrowserBuildSource } from '../browser-preview/source.ts';
 import {BrowserPreviewBuildHost} from '../browser-preview/build-host.ts';
@@ -178,6 +183,34 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       head:()=>this.#turns.workspaceRevisionSnapshot(owned)??this.#browserBuild(owned).initial(),saved:revision=>this.#turns.savedRevisionSnapshot(owned,revision)??this.#browserBuild(owned).source(revision),checkSource:source=>this.#checkBrowserSource(owned,source),
       files:source=>this.env.REVISION_STORE.getByName(revisionStoreActorName(owned)).serviceFiles(source,16*1024*1024),simulations:this.#simulations(owned),canVerify:()=>this.#simulationCanRun(),image:this.env.M4_SIMULATION_IMAGE??'',
       delivery:hash=>platformPreviewDelivery(this.env.APP_ORIGIN,this.env.BROWSER_PREVIEW_EXECUTION_ORIGIN,hash)});
+  }
+  async g4ComputeCounts(input:{scope:TurnScope;actor:TurnActor}){
+    const scope=this.#maintenanceScope(input.scope),catalog=new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set());
+    const authorize=async()=>{this.#maintenanceScope(scope);const actual=await catalog.maintenanceWorkspace(input.actor,scope.workspaceId);if(!sameScope(actual,scope))throw Error('g4-compute-counts-scope-denied');this.#maintenanceScope(scope);};
+    await authorize();
+    const namespace=this.env.TENANT_MODEL_BUDGET as unknown as {getByName(name:string):{g4WindowSnapshot(tenantId:string):Promise<ReturnType<typeof readG4WindowSnapshot>>}}|undefined;
+    if(!namespace)throw Error('g4-compute-counts-unavailable');
+    const raw=await namespace.getByName(modelBudgetTenantName(scope.tenantId)).g4WindowSnapshot(scope.tenantId);
+    let window:ReturnType<typeof readG4WindowSnapshot>;try{window=JSON.parse(JSON.stringify(raw));}finally{const dispose=Object.getOwnPropertyDescriptor(raw,Symbol.dispose)?.value;if(typeof dispose==='function')dispose.call(raw);}
+    await authorize();if(window.policy&&(window.policy.tenantId!==scope.tenantId||window.policy.userId!==input.actor.userId))throw Error('g4-compute-counts-scope-denied');
+    const turns=Object.values(new DurableTurnStore(this.ctx.storage).read()?.turns??{}),state=this.#store.read();
+    const simulations=[...(await this.ctx.storage.list<SimulationRecord>({prefix:'simulation:run:',limit:1001})).values()];await authorize();
+    const hasServices=this.ctx.storage.sql.exec("SELECT 1 FROM sqlite_master WHERE type='table' AND name='service_intents'").toArray().length!==0;
+    const services=hasServices?this.ctx.storage.sql.exec<{record_json:string}>('SELECT record_json FROM service_intents ORDER BY run_id LIMIT 1001').toArray().map(r=>JSON.parse(r.record_json) as ServiceIntentRecord):[];
+    if(turns.length>200||simulations.length>1000||services.length>1000)throw Error('g4-compute-counts-capacity');
+    const durable=g4DurableComputeCounts(scope,window,turns,simulations,services);
+    type CounterPort={nativeAttemptSnapshot(identity:unknown):Promise<unknown>};
+    const project=state?.identity?await readG4NativeSample(this.env.PROJECT_RUNTIME.getByName(runtimeName(state.identity)) as unknown as CounterPort,state.identity):{supported:false,noAddedCalls:true,attempts:null};await authorize();
+    const dispatched=turns.filter(t=>t.dispatchId!==null&&t.runtimeGeneration!==null);
+    const samples=await Promise.all(dispatched.map(async turn=>{
+      const identity=turnRuntimeIdentity({scope,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId!,generation:turn.runtimeGeneration!}),ids=await sandboxActorIds(scope,turn.id,turn.dispatchId!);
+      const [projectTools,trustedPi,toolLedger]=await Promise.all([
+        readG4NativeSample(this.env.PROJECT_SANDBOX?.getByName?.(ids.project) as unknown as CounterPort|undefined,identity),
+        readG4NativeSample(this.env.TRUSTED_PI_SANDBOX?.getByName?.(ids.trustedPi) as unknown as CounterPort|undefined,identity),
+        readG4NativeSample(this.env.TOOL_BRIDGE_AGENT?.getByName(await toolBridgeActorName(scope,turn.id,turn.dispatchId!)) as unknown as CounterPort|undefined,identity,true)]);
+      return {turnId:turn.id,dispatchId:turn.dispatchId,actorSelection:'cold-turn-dispatch',projectTools,trustedPi,toolLedger};
+    }));await authorize();
+    return {schema:'riffology.g4-compute-counts/v1',scope,readOnly:true,noAddedCalls:true,...durable,projectRuntime:{identity:state?.identity??null,readyObserved:state?.runtimeReceipt!=null,counter:project},nativeDispatches:samples,successfulNativeExecutions:null,nativeSemantics:'persisted attempt-before-call counters; unsupported stays null; combine stable before/after with all fences and Cloudflare inventory'};
   }
   browserPreviewView(input:{scope:TurnScope;actor:TurnActor;revisionId?:string;profileId?:PreviewRuntime['profileId']}){return this.#browser(input.scope).view(input.actor,input.revisionId,input.profileId);}
   browserPreviewPackage(input:{scope:TurnScope;actor:TurnActor;packageIdentity:string}){return this.#browser(input.scope).bytes(input.actor,input.packageIdentity);}
