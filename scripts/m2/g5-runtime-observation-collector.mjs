@@ -10,8 +10,10 @@ export async function collectProductRuntimeObservation({workspaceId,cookie,fetch
   const response=await fetchImpl(url,{method:'GET',headers:{cookie,accept:'application/json'},redirect:'error',signal:AbortSignal.timeout(15000)});
   if(response.url&&response.url!==url)throw Error('runtime-observation-response-origin-invalid');
   if(response.status!==200)throw Error('runtime-observation-product-get-failed');
-  const bytes=Buffer.from(await response.arrayBuffer());
-  if(bytes.length>8*1024*1024)throw Error('runtime-observation-snapshot-too-large');
+  if(!response.body)throw Error('runtime-observation-body-missing');
+  const reader=response.body.getReader(),chunks=[];let size=0;
+  try { while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>8*1024*1024){await reader.cancel();throw Error('runtime-observation-snapshot-too-large');}chunks.push(Buffer.from(value));} } finally {reader.releaseLock();}
+  const bytes=Buffer.concat(chunks,size);
   const snapshot=JSON.parse(bytes.toString('utf8'));
   if(snapshot?.schemaVersion!==3||!snapshot.turns||typeof snapshot.turns!=='object'||!snapshot.sessions||typeof snapshot.sessions!=='object')throw Error('runtime-observation-snapshot-invalid');
   // Keep raw session/message content private; public projection contains no Cookie or message.
