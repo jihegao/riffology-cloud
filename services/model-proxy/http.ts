@@ -15,7 +15,7 @@ type Id = { toString(): string };
 type IdentityNamespace = { idFromName(name: string): Id };
 type BudgetStub = {
   reserve(tenantId: string, request: ModelCallRequest): Promise<{ record: ModelCallRecord; replayed: boolean }>;
-  dispatch(tenantId: string, reference: ReturnType<typeof modelCallReference>): Promise<{ authorized: boolean; observeOnly: boolean; record: ModelCallRecord }>;
+  dispatch(tenantId: string, reference: ReturnType<typeof modelCallReference>): Promise<{ authorized: boolean; observeOnly: boolean; record: ModelCallRecord;controlledWindowDeadlineAt?:number }>;
   markUnknown(tenantId: string, reference: ReturnType<typeof modelCallReference>): Promise<ModelCallRecord>;
   releaseUndispatched?(tenantId:string,reference:ReturnType<typeof modelCallReference>,proof:ModelReleaseProof):Promise<ModelCallRecord>;
   finish(tenantId: string, reference: ReturnType<typeof modelCallReference>, terminal: ModelCallTerminal): Promise<ModelCallRecord>;
@@ -23,6 +23,7 @@ type BudgetStub = {
 type BudgetNamespace = { getByName(name: string): BudgetStub };
 
 export interface ModelProxyHttpEnv {
+  G4_CONTROLLED_WINDOW_JSON?:string;
   WORKSPACE_AGENT?:WarmAuthorityNamespace;
   TRUSTED_PI_SANDBOX: IdentityNamespace;
   TENANT_MODEL_BUDGET: BudgetNamespace;
@@ -165,9 +166,10 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
   const production=provider.productionProfile;
   if(claims.provider==='openai'&&!production)return unavailable();
   if(production&&(claims.provider!==production.inferenceProvider||claims.model!==production.model||!env.PRODUCTION_MODEL_BUDGET))return denied();
-  if(production&&(parsed.inputBoundVersion!=='utf8-provider-payload-plus-4096-v1'||parsed.inputTokenUpperBound<new TextEncoder().encode(JSON.stringify(parsed.payload)).byteLength+4096))return denied();
+  if((production||env.G4_CONTROLLED_WINDOW_JSON!==undefined)&&(parsed.inputBoundVersion!=='utf8-provider-payload-plus-4096-v1'||parsed.inputTokenUpperBound<new TextEncoder().encode(JSON.stringify(parsed.payload)).byteLength+4096))return denied();
   const money=production?env.PRODUCTION_MODEL_BUDGET!.getByName(PRODUCTION_MONEY_ACTOR):null;
   let moneyRef:MoneyReference|undefined;
+  let providerDeadlineAt=parsed.deadlineAt;
   let reference: ReturnType<typeof modelCallReference>;
   try {
     const payloadSha256 = await turnDigest({ schemaVersion: 1, purpose: 'product-model-provider-payload', payload: parsed.payload });
@@ -192,6 +194,8 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
       if(!(await money.dispatch(moneyRef)).authorized)return conflict('model_call_observe_only');
     }
     const dispatch = await budget.dispatch(tenantId, reference);
+    if(dispatch.controlledWindowDeadlineAt!==undefined)providerDeadlineAt=Math.min(providerDeadlineAt,dispatch.controlledWindowDeadlineAt);
+    if(env.G4_CONTROLLED_WINDOW_JSON!==undefined&&dispatch.controlledWindowDeadlineAt===undefined)throw Error('g4-window-fence-missing');
     if (!dispatch.authorized) {
       // A previously dispatched token call may have been sent by an older
       // release: only the explicit no-dispatch state proves there is no charge.
@@ -205,9 +209,10 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
   try {
     const providerSessionId=`ses_${(await turnDigest({schemaVersion:1,purpose:'opencode-go-provider-session',scope:claims.identity.scope,sessionId:claims.identity.sessionId})).slice(0,26)}`;
     await checkWarm();
+    if(providerDeadlineAt<=now())throw Error('g4-window-deadline');
     result = normalizedProviderResult(await provider.dispatch({
       provider: claims.provider, model: claims.model, providerSessionId, idempotencyKey: parsed.requestId,
-      payload: parsed.payload,inputTokenUpperBound:parsed.inputTokenUpperBound,maxOutputTokens:parsed.maxOutputTokens,deadlineAt:parsed.deadlineAt,signal:request.signal,
+      payload: parsed.payload,inputTokenUpperBound:parsed.inputTokenUpperBound,maxOutputTokens:parsed.maxOutputTokens,deadlineAt:providerDeadlineAt,signal:request.signal,
     }), claims, parsed);
     emit(telemetry,{event:'provider-dispatch-result',status:result.status,contentType:result.responseContentType,requestIdPresent:result.providerRequestId!==null,usagePresent:result.inputTokens!==null&&result.outputTokens!==null,durationMs:now()-started});
     const usage=result.inputTokens===null||result.outputTokens===null

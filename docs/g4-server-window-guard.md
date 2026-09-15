@@ -1,0 +1,13 @@
+# G4私有持久执行窗口
+
+本实现只限定2026-09-15批准的G4：Go / `gpt-5.6-luna`、同一普通测试tenant/user、总模型US$20、每Turn US$5、32次上游dispatch、16个服务端Run、首次新Project/Turn/Run/provider任务起两小时停止新任务。G5/G6不获得授权。未部署、未调用模型。本文件描述代码，实际scope/账号/发布overlay由主控维护。
+
+主控在既有Gateway配置设置 `G4_CONTROLLED_WINDOW_JSON`，形状由 `G4WindowPolicy` 定义；schemaVersion=1、唯一windowId、已确认tenantId/userId、官方Go费率证据SHA256，以及固定数值：inputNanodollarsPerToken=500，outputNanodollarsPerToken=1800，totalNanodollars=20000000000，turnNanodollars=5000000000，maxUpstreamDispatches=32，maxServerRuns=16，durationMs=7200000。配置不允许客户端选择或修改。采用官方Go两档最高输入/缓存写入US$0.50和输出US$1.80每百万token；整个input按更贵档预留，缓存命中不用于降低预留。费率证据SHA由主控离线核验后冻结，运行时不抓远端价格。Go余额回落设置及账号entitlement仍须主控核验，不能从订阅推断零费用。
+
+窗口复用指定tenant的私有TenantModelBudget SQLite actor，无新DO、D1迁移或公共转发接口。新Project、Turn、实验Run（包括Verify/group child/replay）与Service Run均以平台scope/user/原幂等intent派生key和输入digest。唯一新intent持久登记；跨DO失败可能保守占用Run槽位，绝不自动释放后重做。Service与Simulation共享16。首次intent的startedAt和policy文档共事务写入；相同key不重启计时。metadata存在后，移除配置或修改windowId/policy都拒绝新admission，不能通过重部署重置预算。当前角色/ready校验继续由原Catalog/Workspace执行，窗口不是ACL授权。
+
+Go Model Proxy服务端核验输入界限至少为payload UTF-8字节数加4096，并要求既有bound版本。token reserve与美元reserve在同一SQLite事务中；真实provider调用前，token和窗口dispatch围栏原子提交并消费32中的一个槽位。仅一次handler取得dispatch permission。ACK丢失、重启、reserved/dispatched未确认、缺少usage/请求身份、非成功Provider响应及unknown均保留最坏费用并阻断本窗口新任务；不按timeout返还，也不补发同key。只有明确未dispatch proof能释放reserved费用；明确Provider usage+requestId才能按最高费率记保守已知费用。不能将终态unknown记成零。
+
+dispatch回执提供冻结controlledWindowDeadlineAt，Model Proxy将Provider deadline取原期限与该时间的最小值；持久flush跨截止时拒发，后续await跨截止时也拒发。既有Provider/SDK deadline、取消与Stop逻辑保留。维护GET、读取历史Run/Verify、Stop和同identity观察不创造新费用/计数；新窗口snapshot仅查询sqlite_master和既有表，不CREATE、不启动timer。无历史G4 metadata且不配置G4的旧发布继续旧token行为。
+
+当前证据：专属SQLite测试覆盖上限、幂等、删配置/换window拒绝、lost reserve/dispatch ACK、费用hold与磁盘重开；真实Workerd测试使用同production TenantModelBudget类，dispose/restart后保持startedAt、16Run、唯一dispatch和费用hold。上游出口在测试中关闭。测试里的任务/模型输入为合成数据，不是Provider执行证据。native累计计数及受保护compute-counts读取另由主控安排接口接线，不能用本guard计数冒充成功Python/SDK执行次数。

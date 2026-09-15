@@ -11,7 +11,7 @@ import type {ModelContentUploadPort} from '../runtime/model-upload.ts';
 import {readModelUpload} from './model-upload-body.ts';
 import type {ModelContentPort} from '../runtime/content.ts';
 import { Admission, type VerifiedIdentity } from '../catalog/admission.ts';
-import { CatalogError, type Principal } from '../catalog/contracts.ts';
+import { CatalogError,createProjectInput,opaqueId, type Principal } from '../catalog/contracts.ts';
 import { ProjectCatalog } from '../catalog/projects.ts';
 import { ModelCatalog, type ModelVersion } from '../catalog/models.ts';
 import { OperatorCatalog } from '../catalog/admin.ts';
@@ -38,6 +38,7 @@ export interface GatewayServices {
   modelContent?:ModelContentPort;
   modelUpload?:ModelContentUploadPort;
   identity(request:Request):Promise<VerifiedIdentity|null>;
+  admitProject?(principal:Principal,tenantId:string,key:string,body:unknown):Promise<unknown>;
   provision?(principal:Principal,tenantId:string,projectId:string):Promise<void>;
   serviceRuns?:GatewayServiceRuns;
   previews?:GatewayPreviews;
@@ -353,7 +354,9 @@ export async function gateway(request:Request, services:GatewayServices):Promise
         return json({projects:await catalog.list(principal,match[1])});
       }
       if(request.method==='POST'&&!match[2]){
-        const result=await catalog.create(principal,match[1],request.headers.get('idempotency-key')??'',await readJson(request));
+        const body=await readJson(request),key=request.headers.get('idempotency-key')??'';
+        if(services.admitProject){opaqueId(key);createProjectInput(body,new Set(['blank-v1']));await catalog.list(principal,match[1]);await services.admitProject(principal,match[1],key,body);}
+        const result=await catalog.create(principal,match[1],key,body);
         // The outbox is already committed. Await durable acceptance, never put
         // the only dispatch into waitUntil. A lost response keeps the same key.
         if(services.provision)await services.provision(principal,match[1],result.project.id);

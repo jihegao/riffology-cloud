@@ -10,6 +10,7 @@ export type ExperimentRequest={revisionId:string|null;filesSha256:string;specSha
 type Status='queued'|'waiting_for_capacity'|'preparing'|'running'|'finalizing'|'stopping'|'unknown'|'completed'|'failed'|'cancelled';
 export type SimulationRecord={experimentId:string;groupId?:string;runId:string;scope:TurnScope;actor:TurnActor;key:string;requestJson:string;input:SimulationInput;status:Status;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null;attempt:number;quotaClaimed:boolean;releaseProof:StopConfirmation|null;lease:LeaseReference|null;dispatchClaimed?:boolean;startClaimed:boolean;stop:NativeObservation['stop'];result:null|{metrics:Record<string,number>;artifactSha256:string;outputs?:SimulationOutput[]};releaseBegunAt:number|null;quietSince:number|null;released:boolean};
 export interface SimulationPorts{
+ admitRun?(actor:TurnActor,key:string,request:ExperimentRequest):Promise<unknown>;
  quota:{acquire(request:LeaseRequest):Promise<Acquisition>;lookup(tenantId:string,operationId:string):Promise<Acquisition|null>;dispatch(lease:LeaseReference):Promise<{authorized:boolean;lease:unknown}>;confirmStopped(lease:LeaseReference,proof:StopConfirmation):Promise<unknown>};
  start(input:SimulationInput):Promise<NativeObservation>;
  observe(input:SimulationInput):Promise<NativeObservation>;
@@ -64,6 +65,7 @@ export class SimulationHost{
   const version=modelVersion(plan);if(JSON.stringify(version)!==JSON.stringify({revisionId:request.revisionId,filesSha256:request.filesSha256,specSha256:request.specSha256}))throw Error('simulation-model-stale');
   const parameters=resolveParameters(plan.spec,request.parameters),now=this.clock(),runId=child?turnId(child.runId):crypto.randomUUID();
   const record:SimulationRecord={experimentId:child?.groupId??runId,...(child?{groupId:child.groupId}:{}),runId,scope:this.scope,actor:checkedActor(actor),key,requestJson:JSON.stringify(request),input:{runId,plan,parameters,seed:request.seed,deadlineAt:now+this.policy.durationMs,runtimeImage:image},status:'queued',createdAt:now,updatedAt:now,cancelledAt:null,errorCode:null,attempt:0,quotaClaimed:false,releaseProof:null,lease:null,dispatchClaimed:false,startClaimed:false,stop:null,result:null,releaseBegunAt:null,quietSince:null,released:false};
+  await this.ports.admitRun?.(actor,intent,request);
   const result=await this.storage.transaction(async tx=>{
    const existing=await tx.get<string>(intent);if(existing){const r=(await tx.get<SimulationRecord>(PREFIX+existing))!;if(r.requestJson!==record.requestJson||r.actor.authVersion!==actor.authVersion||(child&&(r.runId!==child.runId||r.groupId!==child.groupId||r.experimentId!==child.groupId)))throw Error('simulation-idempotency-conflict');return r;}
    if(!stillCurrent())throw Error('simulation-model-stale');

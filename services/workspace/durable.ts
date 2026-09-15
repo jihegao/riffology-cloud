@@ -1,3 +1,4 @@
+import {admitG4Task} from '../model-budget/g4-admission.ts';
 import { frozenSource,sourceScope,type BrowserBuildSource } from '../browser-preview/source.ts';
 import {BrowserPreviewBuildHost} from '../browser-preview/build-host.ts';
 import {BrowserPreviewOrchestrator} from '../browser-preview/orchestrator.ts';
@@ -102,6 +103,7 @@ export interface WorkspaceAgentEnv {
   TOOL_BRIDGE_AGENT?:DurableObjectNamespace<ToolBridgeAgent>;
   REVISION_STORE: RevisionStoreNamespace;
   TOOL_ARTIFACT_STORE: ToolArtifactStoreNamespace;
+  G4_CONTROLLED_WINDOW_JSON?:string;
   M2_TURNS_ENABLED: unknown;
   M2_WORKSPACE_RUNTIME_REUSE_ENABLED?:unknown;
   M2_LAZY_PROJECT_ENABLED?:unknown;
@@ -187,6 +189,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   #simulationAlarm=new DurableSimulationAlarmPort(this.ctx.storage);
   #simulations(scope:TurnScope){
     return this.#simulationHost??=new SimulationHost(this.ctx.storage,scope,{
+      admitRun:async(actor,key,body)=>admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,actor.userId,'run',{scope,key},body),
       quota:this.env.TENANT_QUOTA.getByName(tenantQuotaName(scope.tenantId)),
       start:async input=>{
         if(input.runtimeImage!==this.env.M4_SIMULATION_IMAGE)throw Error('simulation-image-changed');
@@ -517,6 +520,9 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   async submitService(input:{scope:TurnScope;actor:TurnActor;key:string;request:ServiceIntentRequest}){
     const scope=this.#ready(input.scope);
     if(this.env.M3_SERVICE_ENABLED!=='true')throw Error('service-run-disabled');
+    await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
+    await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,input.actor.userId,'run',{scope,key:input.key,type:'service'},input.request);
+    this.#ready(scope);
     return this.#services(scope).submit(input.actor,input.key,input.request,()=>{
       if(input.request.runtimeImage!==this.env.M3_SERVICE_IMAGE)throw Error('service-runtime-image-conflict');
       return this.#freezeService(scope);
@@ -529,6 +535,9 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   async submitServiceRequest(input:{scope:TurnScope;actor:TurnActor;key:string;body:{maxDurationMs:number;expectedRevisionId?:string}}){
     const scope=this.#ready(input.scope);
     if(this.env.M3_SERVICE_ENABLED!=='true')throw Error('service-run-disabled');
+    await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
+    await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,input.actor.userId,'run',{scope,key:input.key,type:'service'},input.body);
+    this.#ready(scope);
     return this.#services(scope).submitFromPolicy(input.actor,input.key,input.body,this.env.M3_SERVICE_IMAGE??'',()=>this.#freezeService(scope));
   }
   async listServices(input:{scope:TurnScope;before?:{createdAt:number;runId:string};limit?:number}){
@@ -796,6 +805,9 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     try{if(this.env.M2_TURNS_ENABLED!=='true')throw Error('turn-runtime-not-ready');trace('gate',true);}catch(error){trace('gate',false,error);throw error;}
     let engine:WorkspaceTurnEngine;
     try{engine=this.#engine();trace('engine',true);}catch(error){trace('engine',false,error);throw error;}
+    await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
+    await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,input.actor.userId,'turn',{scope,sessionId:input.sessionId,key:input.key},input.body);
+    this.#ready(scope);
     return engine.submit(scope,input.actor,input.sessionId,input.key,input.body,trace);
   }
   async cancelTurn(input: { scope: TurnScope; actor: TurnActor; turnId: string }) {
