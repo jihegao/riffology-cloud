@@ -5,7 +5,7 @@ import {chromium} from 'playwright';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 const origin='https://workspace.test',previewOrigin='https://p-'+ 'a'.repeat(40)+'.preview.test';
-const names=['index.html','app.js','layout.js','export.js','publication.js','evidence.js','evidence.css','services.js','previews.js','simulation.js','comparison.js','styles.css','workspace.css'];
+const names=['index.html','app.js','browser-preview.js','layout.js','export.js','publication.js','evidence.js','evidence.css','services.js','previews.js','simulation.js','comparison.js','styles.css','workspace.css'];
 const files=Object.fromEntries(await Promise.all(names.map(async name=>[name,await readFile(new URL('../../services/web/'+name,import.meta.url),'utf8')])));
 const screenshotDir=process.env.WORKSPACE_LAYOUT_EVIDENCE_DIR?pathToFileURL(resolve(process.env.WORKSPACE_LAYOUT_EVIDENCE_DIR)+'/'):new URL('../../.local/workspace-layout-screenshots/',import.meta.url);
 async function fixture(t,{mismatched=false,unavailableLayoutStorage=false,activePolling=false,pagedServices=false,projectFlow=false,longTitle=false,legacyLayout=null}={}){
@@ -26,6 +26,7 @@ async function fixture(t,{mismatched=false,unavailableLayoutStorage=false,active
   calls.push({path,method:req.method(),body:req.postData(),key:req.headers()['idempotency-key']});
   if(path==='/api/auth/get-session')return json(route,{user:{id:'u'}});if(path==='/api/me')return json(route,{tenants:[{id:'t'}]});if(path==='/api/models')return json(route,{models:[]});if(path==='/api/tenants/t/projects'){const project={id:'p',title:longTitle?'很长的项目标题'.repeat(17):'排队与服务能力研究',status:projectStatus,workspace_id:'w'};if(req.method()==='POST'){projectStatus='provisioning';return json(route,{project:{...project,status:projectStatus}},202);}if(projectListError)return json(route,{error:'unrelated-list-error'},503);return json(route,{projects:projectStatus==='absent'?[]:[project]});}
   if(path==='/api/workspaces/w')return json(route,{schemaVersion:3,activeTurnId:null,resourceWait:null,releaseHold:null,recoveryHold:null,sessions:{s:{id:'s',title:'排队研究',createdAt:1}},turns:{t:{id:'t',sessionId:'s',message:'建立一个排队模型，比较增加服务台后的等待时间。',status:'completed',saveStatus:'saved',createdAt:1}}});
+  if(path==='/api/workspaces/w/browser-preview'&&req.method()==='GET')return json(route,{currentRevisionId:null,revisionId:null,build:null,stale:false,modelSpec:null,reasonCode:'preview-no-saved-revision',delivery:null});
   if(path==='/api/workspaces/w/events')return json(route,{events:[{sequence:1,turnId:'t',type:'assistant.message',payload:{text:'模型已经保存。可以先查看假设，再修改服务台数量，比较不同种子下的结果。'}}],nextSequence:2,hasMore:false,snapshotRequired:false});
   if(path==='/api/workspaces/w/model')return delayed(route,path,model());if(path==='/api/workspaces/w/files')return delayed(route,path,{revision:{...version(),committedAt:1},files:[{path:'model/run.py',kind:'file',size:1024},{path:'model/model-spec.json',kind:'file',size:512}]});if(path==='/api/workspaces/w/diff')return delayed(route,path,{revision:version(),summary:{added:0,modified:1,deleted:0},changes:[{path:revision+'-changed.py',change:'modified',type:'file',size:1}]});
   if(path==='/api/workspaces/w/evidence')return json(route,{items:[],nextCursor:null});
