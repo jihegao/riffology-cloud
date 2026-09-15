@@ -25,3 +25,9 @@ G5的#46/#37与G6三模型按计划在后续独立窗口进行。执行前必须
 - 生产发布配置、迁移差异、原生产image版本与回退流程：待G3候选冻结后补全。
 
 上述账户读取只确定提案命名和现有资源是否冲突，不证明应用的当前release/gates、配额或付费模型可用。本清单补全前不宣称任何issue已满足线上关闭门槛。
+
+## 发布前只读快照（2026-09-15，非候选验收）
+
+Cloudflare Deployments读取确认当前100%版本为 `f2a8e4e6-570f-4fef-be53-7bfbbf2cf25e`（deployment `3c6e4b73-f830-4c32-bc04-e7209a286f74`，2026-09-14T13:47:53Z）。Settings读取确认现有应用origin为 `https://m1.riff-demo.gaojihe.cn`，Turns/Model provider/Service/Simulation四门禁当前为true，旧Simulation image为 `registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-phase1-simulation@sha256:be02d18823ae778f3eb3d73e87772e90549c4f2a5a2e22777067ea5e6775f888`。
+
+此快照没有修改任何门禁，也没有调用该线上模型。它仅提供发布前比较与回退候选；尚未核验当前Worker源commit、实际Trusted Pi模块、容器清空或新候选兼容性，不能作为本轮G4 sign-off。正式执行前重新读取；回退到旧Worker版本不能假定回退了容器image配置或新增资产，必须按冻结回退清单逐项恢复并核对。
