@@ -198,3 +198,11 @@ G0–G3本地门槛已满足。G4发布清单新增只读生成器/严格校验3
 非作者审查实际生成源码发现其只使用random/字典居民，没有Mesa Model/Agent；依赖锁与Mesa profile不足以证明真Mesa。还发现ID随位置重编号、初始化偏置与number参数整数边界不一致。已通过普通用户新Turn修正真实Mesa机制和上述问题，结果待核对；原Revision保留历史，不把旧stdlib模型签作Mesa。第二个普通用户合成Queue项目与Session已创建，尚未将未核对的新模型或浏览器/服务器链签收。
 
 SDK固定内容探针已停止、完整库存稳定inactive、临时Worker已删除且实际缺失/主应用回退持续30秒确认。已将SDK脱敏准备证据写入本次R2 30天前缀并独立下载对照（2930bytes，SHA495d341834648c638e4e46f08c60bc25467e5ab35b87dccf4a5829dd33d7756a），临时镜像仓库凭据已移除。G5/G6未授权，无issue关闭。
+
+
+### G4 真实运行中的发送前阻断与原键恢复
+
+- 截止固定为2026-09-15T16:57:10.322Z（北京时间次日00:57:10.322）；不会延长窗口。首Turn7次Go调用均有provider usage/requestId，保守费用US$0.0265521，服务端Run0。早期4调用快照不代表最终总数。
+- Mesa修正UI捕获后guard失败，原请求没有dispatch fence/receipt、服务端没有该Turn，独立只读guard重新通过。主控保留捕获键/body，以普通用户认证API同键恢复202；原UI标记发送前阻断，恢复标记API，不宣称其UI成功。
+- 执行器独立审查定位全局proxy环境删除和30秒子进程deadline两项可失败路径；尚未证明本次精确原因，正在补私有stderr/阻断阶段记录。产品预算/时限不放宽。
+- 首模型实际stdlib而非Mesa是明确验收失败；正在通过新Turn生成真正Mesa Model/Agent，原Revision继续保留。首HOLD过期且未故障注入，不算构建失败恢复。Queue初始计划只离线材料化；本地重跑、Verify、比较、ACL、最终释放和G4签收仍待实际证据。
