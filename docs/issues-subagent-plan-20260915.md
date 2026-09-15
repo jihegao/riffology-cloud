@@ -1,6 +1,6 @@
 # Issues 多阶段 subagent 工作计划
 
-日期：2026-09-15。状态：**G0–G3 本地签收；G4 已开窗，普通用户线上验收实施中**。G1保留本地翻译隔离与原生生产资源验收边界。进度见[实施记录](issues-development-log-20260915.md)，逐issue关闭条件见[签收矩阵](issues-acceptance-matrix-20260915.md)。
+日期：2026-09-15。状态：**G0–G3本地签收；G4本次受控执行完成、部分issue门槛仍未关闭**。G1保留本地翻译隔离与原生生产资源验收边界。进度见[实施记录](issues-development-log-20260915.md)，逐issue关闭条件见[签收矩阵](issues-acceptance-matrix-20260915.md)。
 
 主线：**#64 浏览器 Preview 产品化 → #46 / #37 生产验收 → #35 官方模型**。#65 在契约准备阶段并行修复，在 #64 修改工作区入口前完成集成。
 
@@ -207,10 +207,12 @@ flowchart TD
 
 ## 本轮执行进度（2026-09-15）
 
-主控动态并行、独立工作树、非作者审查及串行集成后，G0–G3本地签收。G4冻结源码0748fb975eec6256992a82a1812c93c2d7c77f52，正式check2000项/1989通过/11跳过/0失败；应用、执行站点、amd64镜像和固定SDK内容已独立核验。实际普通用户首项目在2026-09-15T14:57:10.322Z接纳，截止2026-09-15T16:57:10.322Z。两个空白项目与Session已创建，首个Go Turn保存/自动打包；独立审查发现其未真实使用Mesa，已发起同会话修正Turn，尚未签收模型或G4。G5/G6另定范围预算，没有关闭issue。详见[实施记录](issues-development-log-20260915.md)和[签收矩阵](issues-acceptance-matrix-20260915.md)。
+G4本次受控执行结束；#64普通用户主链通过，#65与全部线上负向场景未完整覆盖，issue未关闭。冻结生产source924803b，正式2002/1991通过/11跳过/0失败；三组实际零执行local窗口、七Native Run与严格replay、三个来源verified/scientificunassessed claim、真实source-unavailable恢复和最终quota0/259inactive已核验。30/32上游、7/16Run，保守US$0.1638495，UTC16:39:45提前关闭新任务门禁，原2小时/预算fence不重置。脱敏副本7/30天，实际远端94/94摘要校验。G5/G6未授权。详见[本次G4线上记录](g4-online-acceptance-20260916.md)。
 
 ### G4 本次已授权执行窗口
 
 仅执行 G4。使用既有普通 Google 测试用户、既有 Cloudflare operator、opencode-go/gpt-5.6-luna；模型总额 US$20，每 Turn US$5，上游最多32次，服务端 Run intent 最多16个。首次新项目/Turn/Run实际接纳启动不可重置的2小时时窗；到期停止接纳新任务及新模型请求，既有任务允许收尾和释放。仅合成数据；本次专属诊断7天、验收副本30天。G5/G6未授权。
 
-当前：G4真实运行中。上游已记录7次，保守计费US$0.0265521，无未结算调用；服务端Run尚未启动。Mesa修正UI在POST发送前阻断，确认无dispatch fence与服务端任务后，以原捕获幂等键和原body通过普通认证API接纳202，保留原失败证据，不算原UI成功。Queue首Turn待串行执行。7天诊断/30天验收副本的专属R2生命周期已配置并独立读回，SDK准备证据已上传并字节校验。首Mesa HOLD到期早于保存，未删除任何源码，不作为构建失败恢复证据。
+当前：G4本次受控执行结束；#64普通用户主链通过，#65与全部线上负向场景未完整覆盖，issue未关闭。冻结生产source924803b，正式2002/1991通过/11跳过/0失败；三组实际零执行local窗口、七Native Run与严格replay、三个来源verified/scientificunassessed claim、真实source-unavailable恢复和最终quota0/259inactive已核验。30/32上游、7/16Run，保守US$0.1638495，UTC16:39:45提前关闭新任务门禁，原2小时/预算fence不重置。脱敏副本7/30天，实际远端94/94摘要校验。G5/G6未授权。详见[本次G4线上记录](g4-online-acceptance-20260916.md)。
+
+本地临时集合清理补充：A/C实际副本已删除，Root owned auth已删除、临时控制Worker/cap已失效。B目录递归删除被自动审批拒绝，Root/B剩余目录未删除，需明确许可；不宣称全部本地集合已清除。远端7/30天生命周期与94/94校验完成不受影响。具体两个目录及边界见[G4记录](g4-online-acceptance-20260916.md)。

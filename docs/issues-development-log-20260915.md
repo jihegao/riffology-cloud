@@ -211,3 +211,12 @@ SDK固定内容探针已停止、完整库存稳定inactive、临时Worker已删
 ### G4 正确Mesa修正与配置范围固定
 
 真实新Mesa包通过独立离线源码/执行审查，root R2五文件逐字节核对通过；实际本地Browser/nativeRun仍待执行。Queue首Turn普通UI202接纳。operator修复5737e2f经非作者审查、root轻量失败证据测试1通过与两module语法检查，生产源码0748与固定模块字节不变。应用唯一version3ba32488-1717-49b5-a243-2736f160eb9e允许两个实际workspace私有HOLD，独立源etag与14项预算不变；不滚动容器。临时Mesa控制Worker已释放并删除，API独立确认不存在、route404，未发生源码故障。12次真实模型调用保守US$0.0592862全部recorded，serverRuns0。
+
+
+## G4 最终受控执行收尾（2026-09-16）
+
+G4本次受控执行结束；#64普通用户主链通过，#65与全部线上负向场景未完整覆盖，issue未关闭。冻结生产source924803b，正式2002/1991通过/11跳过/0失败；三组实际零执行local窗口、七Native Run与严格replay、三个来源verified/scientificunassessed claim、真实source-unavailable恢复和最终quota0/259inactive已核验。30/32上游、7/16Run，保守US$0.1638495，UTC16:39:45提前关闭新任务门禁，原2小时/预算fence不重置。脱敏副本7/30天，实际远端94/94摘要校验。G5/G6未授权。详见[本次G4线上记录](g4-online-acceptance-20260916.md)。
+
+此前0748/7或12调用/Run0/尚待验证条目为历史快照，不是最终当前状态。生产source924803b，operator host a4f367c；主应用实际门禁关闭版本fc3c6a9d，执行站点10a5428b，模型/时窗/容量不升级。完整当前证据、费用边界、真实恢复、旧版验证与未覆盖项见链接。
+
+本地临时集合清理补充：A/C实际副本已删除，Root owned auth已删除、临时控制Worker/cap已失效。B目录递归删除被自动审批拒绝，Root/B剩余目录未删除，需明确许可；不宣称全部本地集合已清除。远端7/30天生命周期与94/94校验完成不受影响。具体两个目录及边界见[G4记录](g4-online-acceptance-20260916.md)。

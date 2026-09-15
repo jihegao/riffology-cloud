@@ -4,8 +4,8 @@
 
 | Issue | 本地证据 | 本次剩余签收条件 | 关闭状态 |
 | --- | --- | --- | --- |
-| #65 Workspace | G0三视口视觉检查；50项UI回归；2项真实Chrome多项目/跨tenant回归 | G4实际发布三视口、真实preparing→ready、错误保留、导航/保存/Preview/Stop | 未关闭 |
-| #64 Browser Preview | G1本地通过：真实tar→validator/packager；26项真实Pyodide；两模型同输入完整trace逐项相同、server+ZIP replay；固定生成约定。G2实际Workerd原子发现35项、静态资产4项、面板fixture8项；最终接口17项；G3真实Gateway认证1项及物理HTTP ASSETS控制 | 组合资产物理HTTP/Chrome45项及initial可信来源28项通过；G3作者及主控独立实际整链通过，正式全量检查1971项/1960通过/11条件跳过/0失败；G4普通Agent两模型、原生隔离/资源、零执行local窗口、Evidence与云产物/资源 | 未关闭 |
+| #65 Workspace | G0三视口视觉检查；50项UI回归；2项真实Chrome多项目/跨tenant回归 | G4实际发布三视口与两模型底部/Verify/Evidence只读交互已通过；错误保留、Stop、完整旧导航恢复未全签收 | 未关闭 |
+| #64 Browser Preview | G1本地通过：真实tar→validator/packager；26项真实Pyodide；两模型同输入完整trace逐项相同、server+ZIP replay；固定生成约定。G2实际Workerd原子发现35项、静态资产4项、面板fixture8项；最终接口17项；G3真实Gateway认证1项及物理HTTP ASSETS控制 | 组合资产物理HTTP/Chrome45项及initial可信来源28项通过；G3作者及主控独立实际整链通过，正式全量检查1971项/1960通过/11条件跳过/0失败；G4实际普通Agent两模型、三组零执行窗口、七Native Run/严格replay、Evidence/源恢复/云产物/最终释放通过；另一认证principal、全部线上敌意负向和逐Runkernel实测仍有边界 | 未关闭 |
 | #46 Model supply | 既有Adapter、token/money预算、dispatch-once/unknown保留及定向回归；ADR仍为候选；18项离线任务fixture及2项域检查 | 当前provider/价格/隐私；真实账号/模型/预算/日志；18次任务benchmark；普通用户多轮、全链单次上游、两端账本 | 未关闭 |
 | #37 Runtime reuse | 既有默认关闭lazy/reuse代码、身份/隔离协议与历史本地回归 | 本候选同配置冷/热/恢复；纯对话0 Project；10轮新身份/保存；取消/迟到/Session切换/丢失；低容量公平性、释放与回退 | 未关闭 |
 | #35 Publication | 既有readiness/冻结审核/不可变catalog/复制；五文件白名单兼容 | Browser资产/复制关联；普通用户Queue/Inventory/Maintenance依次建模、baseline+comparison+export→提交→非作者管理员审核→发布→新用户复制运行 | 未关闭 |
@@ -52,3 +52,12 @@ G0–G3本地签收。最终正式check exit0，1971项/1960通过/11 opt-in跳�
 - 配置源字节etag087ec0e4b6068d336af59aaeb76afdc49917148c33d23ec893190884f213eec2保持不变；唯一应用version从f8d464f2-de1e-44df-9edd-935b89619304切至3ba32488-1717-49b5-a243-2736f160eb9e，仅将私有HOLD allowlist加入第二实际workspace，14项预算策略不变/100%发布/无容器rollout。
 - 首HOLD过期、未删除源码，临时控制Worker已release/delete、独立API10007缺失和GET404确认；不算构建失败恢复。Queue首Turn普通UI202已接纳，等待冷容量释放。当前12次upstream全部recorded，保守US$0.0592862，无未知charge，serverRuns0。
 - 待实际签收：两本地窗口完整trace/seed/controls/cancel/三视口、计数与全cloudinventory零增量、Verify/旧包/独立R2结果Evidence、真实unsupported/buildfailed恢复、最终停止与配额释放、脱敏验收与SHA256SUMS读回。
+
+
+## G4 当前最终结论（2026-09-16）
+
+G4本次受控执行结束；#64普通用户主链通过，#65与全部线上负向场景未完整覆盖，issue未关闭。冻结生产source924803b，正式2002/1991通过/11跳过/0失败；三组实际零执行local窗口、七Native Run与严格replay、三个来源verified/scientificunassessed claim、真实source-unavailable恢复和最终quota0/259inactive已核验。30/32上游、7/16Run，保守US$0.1638495，UTC16:39:45提前关闭新任务门禁，原2小时/预算fence不重置。脱敏副本7/30天，实际远端94/94摘要校验。G5/G6未授权。详见[本次G4线上记录](g4-online-acceptance-20260916.md)。
+
+#64签收本次普通用户主链，不将source绑定、fixture或完整轨迹证明扩大为任意Python/全部权限矩阵安全。#65部分交互/三视口通过，不凭截图关闭；#46/#37只接收本次冻结profile/释放前置事实，G5未执行。#35尚无本次官方三模型晋升验收。
+
+本地临时集合清理补充：A/C实际副本已删除，Root owned auth已删除、临时控制Worker/cap已失效。B目录递归删除被自动审批拒绝，Root/B剩余目录未删除，需明确许可；不宣称全部本地集合已清除。远端7/30天生命周期与94/94校验完成不受影响。具体两个目录及边界见[G4记录](g4-online-acceptance-20260916.md)。
