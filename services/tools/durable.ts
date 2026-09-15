@@ -1,3 +1,4 @@
+import {sameScope,scope as validateScope} from '../turn/protocol.ts';
 import {turnRuntimeIdentity} from '../turn-runtime/identity.ts';
 import {workspaceAgentName} from '../workspace/protocol.ts';
 import type {WorkspaceAgent} from '../workspace/durable.ts';
@@ -33,7 +34,7 @@ export class ToolBridgeAgent extends DurableObject<ToolBridgeEnv>{
     const exists=this.ctx.storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='tool_commands'").toArray()[0];
     if(!exists)return {supported:false,noAddedCalls:true,admitted:null,dispatched:null};
     const rows=this.ctx.storage.sql.exec<{scope_json:string;turn_id:string;dispatch_id:string;dispatched_at:number|null}>('SELECT scope_json,turn_id,dispatch_id,dispatched_at FROM tool_commands').toArray();
-    for(const row of rows)if(JSON.stringify(JSON.parse(row.scope_json))!==JSON.stringify(identity.scope)||row.turn_id!==identity.turnId||row.dispatch_id!==identity.dispatchId)throw Error('tool-bridge-ledger-scope-denied');
+    for(const row of rows)if(!sameScope(validateScope(JSON.parse(row.scope_json)),identity.scope)||row.turn_id!==identity.turnId||row.dispatch_id!==identity.dispatchId)throw Error('tool-bridge-ledger-scope-denied');
     return {supported:true,noAddedCalls:true,admitted:rows.length,dispatched:rows.filter(row=>row.dispatched_at!==null).length};
   }
   async closeTurnAdmission(identity:unknown){return this.#ledger.closeTurnAdmission(await this.#settlementIdentity(identity));}
