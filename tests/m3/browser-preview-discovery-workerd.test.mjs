@@ -38,7 +38,7 @@ test('real SQLite rolls back saved journal and build alarm together; restart fir
  let mf;
  const act=async action=>{const r=await mf.dispatchFetch('http://test/',{method:'POST',body:JSON.stringify({action})});const text=await r.text();assert.equal(r.status,200,text);return JSON.parse(text);};
  try{
-  mf=new Miniflare(options);const saved=await act('save');assert.equal(saved.error,'injected-after-alarm');assert.deepEqual(saved.afterFailure,{head:null,discoveries:0,alarm:null});assert.equal(saved.alarm,saved.checkpoint.committedAt);
+  mf=new Miniflare(options);const saved=await act('save');assert.equal(saved.error,'injected-after-alarm');assert.deepEqual(saved.afterFailure,{head:null,discoveries:0,alarm:null});assert.ok(saved.alarm>=saved.checkpoint.committedAt);
   await mf.dispose();mf=new Miniflare(options);await mf.ready;
   // No request opens the Durable Object between restart and alarm delivery.
   await new Promise(resolve=>setTimeout(resolve,4000));

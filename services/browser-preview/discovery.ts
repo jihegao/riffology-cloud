@@ -7,7 +7,7 @@ export interface PreviewDiscovery { schemaVersion:1; identity:TurnRuntimeIdentit
 export function savedPreviewDiscoveries(state:TurnJournalState):PreviewDiscovery[]{
   return Object.values(state.turns).filter(turn=>turn.persistenceOutcome==='saved'&&turn.checkpoint!==null).map(turn=>{
     if(!turn.dispatchId||turn.runtimeGeneration!==state.scope.workspaceGeneration)throw Error('invalid-persisted-turn-journal');
-    return {schemaVersion:1,identity:{scope:structuredClone(state.scope),sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration},receipt:structuredClone(turn.checkpoint!),status:'pending',attempts:0,nextAttemptAt:turn.checkpoint!.committedAt,reasonCode:null};
+    return {schemaVersion:1,identity:{scope:structuredClone(state.scope),sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration},receipt:structuredClone(turn.checkpoint!),status:'pending',attempts:0,nextAttemptAt:turn.finishedAt!,reasonCode:null};
   });
 }
 export function discoveryKey(revisionId:string){return PREVIEW_DISCOVERY_PREFIX+revisionId;}
@@ -25,7 +25,8 @@ export async function projectPreviewDiscoveries(tx:DurableObjectTransaction,stat
   if(!changed)return;
   const pending=await tx.list<PreviewDiscovery>({prefix:PREVIEW_DISCOVERY_PREFIX});
   const times=[...pending.values()].filter(row=>row.status==='pending').map(row=>row.nextAttemptAt!);
-  const wake=times.length?Math.min(...times):null;
+  const existing=await tx.get<number>(BROWSER_BUILD_WAKE_KEY);
+  const wake=times.length?Math.min(...times,...(existing===undefined?[]:[existing])):existing??null;
   if(wake===null)await tx.delete(BROWSER_BUILD_WAKE_KEY);else await tx.put(BROWSER_BUILD_WAKE_KEY,wake);
   const workspace=await tx.get<{wakeAt:number|null}>(WORKSPACE_STATE_KEY);
   await applyWorkspaceAlarm(tx,workspace?.wakeAt??null,await tx.get(TURN_WAKE_KEY),await tx.get(SERVICE_WAKE_KEY),await tx.get(OBSERVER_WAKE_KEY),await tx.get(SIMULATION_WAKE_KEY),wake);
