@@ -1,5 +1,5 @@
 import type { WorkspaceState } from './coordinator.ts';
-import { SIMULATION_WAKE_KEY, applyWorkspaceAlarm, TURN_WAKE_KEY, SERVICE_WAKE_KEY, OBSERVER_WAKE_KEY, WORKSPACE_STATE_KEY } from './shared-alarm.ts';
+import { BROWSER_BUILD_WAKE_KEY, SIMULATION_WAKE_KEY, applyWorkspaceAlarm, TURN_WAKE_KEY, SERVICE_WAKE_KEY, OBSERVER_WAKE_KEY, WORKSPACE_STATE_KEY } from './shared-alarm.ts';
 export interface WorkspaceStore {
   read(): WorkspaceState | null;
   update(operation: (state: WorkspaceState | null) => WorkspaceState): Promise<WorkspaceState>;
@@ -20,7 +20,7 @@ export class DurableWorkspaceStore implements WorkspaceStore {
       if (!next || typeof next !== 'object' || typeof (next as unknown as { then?: unknown }).then === 'function') throw Error('synchronous-workspace-update-required');
       const turnWake=await transaction.get<unknown>(TURN_WAKE_KEY),serviceWake=await transaction.get<unknown>(SERVICE_WAKE_KEY),observerWake=await transaction.get<unknown>(OBSERVER_WAKE_KEY);
       await transaction.put(WORKSPACE_STATE_KEY, next);
-      await applyWorkspaceAlarm(transaction,next.wakeAt,turnWake,serviceWake,observerWake,await transaction.get(SIMULATION_WAKE_KEY));
+      await applyWorkspaceAlarm(transaction,next.wakeAt,turnWake,serviceWake,observerWake,await transaction.get(SIMULATION_WAKE_KEY),await transaction.get(BROWSER_BUILD_WAKE_KEY));
       return next;
     });
     await this.#storage.sync(); return structuredClone(result);

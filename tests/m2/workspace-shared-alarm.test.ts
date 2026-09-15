@@ -97,3 +97,14 @@ test('Observer clear and failed mutation preserve other durable activity wakes',
  storage.failAlarm=true;await assert.rejects(observer.schedule(1500),/alarm-storage-failed/);
  assert.equal(observer.read(),null);assert.equal(storage.alarm,2000);
 });
+
+test('browser build sixth wake survives clearing every other activity',async()=>{
+ const {DurableBrowserBuildAlarmPort,DurableSimulationAlarmPort}=await import('../../services/workspace/turn-alarm.ts');
+ const {BROWSER_BUILD_WAKE_KEY}=await import('../../services/workspace/shared-alarm.ts');
+ const storage=new Storage(),cast=storage as unknown as DurableObjectStorage;
+ const build=new DurableBrowserBuildAlarmPort(cast),turn=new DurableTurnAlarmPort(cast),service=new DurableServiceAlarmPort(cast),observer=new DurableObserverAlarmPort(cast),simulation=new DurableSimulationAlarmPort(cast);
+ await build.schedule(2000);await turn.schedule(1000);await service.schedule(1100);await observer.schedule(1200);await simulation.schedule(1300);
+ await turn.clear();await service.clear();await observer.clear();await simulation.clear();
+ assert.equal(storage.alarm,2000);assert.equal(storage.values.get(BROWSER_BUILD_WAKE_KEY),2000);assert.equal(nextWorkspaceAlarm(null,null,null,null,null,2000),2000);
+ storage.failAlarm=true;await assert.rejects(build.clear());assert.equal(storage.values.get(BROWSER_BUILD_WAKE_KEY),2000);assert.equal(storage.alarm,2000);
+});

@@ -5,7 +5,7 @@ import {leaseReference,type LeaseReference,type LeaseRequest,type Acquisition,ty
 import {modelVersion,digest,type SimulationPlan} from './source.ts';
 import {resolveParameters,validateMetrics,type ParameterValues} from './model-spec.ts';
 import type {SimulationInput,NativeObservation} from './native.ts';
-import {applyWorkspaceAlarm,SIMULATION_WAKE_KEY,WORKSPACE_STATE_KEY,TURN_WAKE_KEY,SERVICE_WAKE_KEY,OBSERVER_WAKE_KEY} from '../workspace/shared-alarm.ts';
+import {BROWSER_BUILD_WAKE_KEY,applyWorkspaceAlarm,SIMULATION_WAKE_KEY,WORKSPACE_STATE_KEY,TURN_WAKE_KEY,SERVICE_WAKE_KEY,OBSERVER_WAKE_KEY} from '../workspace/shared-alarm.ts';
 export type ExperimentRequest={revisionId:string|null;filesSha256:string;specSha256:string;parameters:ParameterValues;seed:number};
 type Status='queued'|'waiting_for_capacity'|'preparing'|'running'|'finalizing'|'stopping'|'unknown'|'completed'|'failed'|'cancelled';
 export type SimulationRecord={experimentId:string;groupId?:string;runId:string;scope:TurnScope;actor:TurnActor;key:string;requestJson:string;input:SimulationInput;status:Status;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null;attempt:number;quotaClaimed:boolean;releaseProof:StopConfirmation|null;lease:LeaseReference|null;dispatchClaimed?:boolean;startClaimed:boolean;stop:NativeObservation['stop'];result:null|{metrics:Record<string,number>;artifactSha256:string;outputs?:SimulationOutput[]};releaseBegunAt:number|null;quietSince:number|null;released:boolean};
@@ -36,7 +36,7 @@ export async function projectSimulationWake(tx:DurableObjectTransaction,now:numb
  const wake=active?Math.min(now+2000,groupWake??Infinity):groupWake??null;
  if(wake===null)await tx.delete(SIMULATION_WAKE_KEY);else await tx.put(SIMULATION_WAKE_KEY,wake);
  const state=await tx.get<{wakeAt:number|null}>(WORKSPACE_STATE_KEY);
- await applyWorkspaceAlarm(tx,state?.wakeAt,await tx.get(TURN_WAKE_KEY),await tx.get(SERVICE_WAKE_KEY),await tx.get(OBSERVER_WAKE_KEY),wake);
+ await applyWorkspaceAlarm(tx,state?.wakeAt,await tx.get(TURN_WAKE_KEY),await tx.get(SERVICE_WAKE_KEY),await tx.get(OBSERVER_WAKE_KEY),wake,await tx.get(BROWSER_BUILD_WAKE_KEY));
 }
 export type GroupChildAdmission={runId:string;groupId:string;permit(tx:DurableObjectTransaction):Promise<boolean>};
 /** Workspace-owned intents, state and wake commit together. External effects

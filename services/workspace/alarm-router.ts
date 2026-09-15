@@ -6,6 +6,7 @@ export type WorkspaceAlarmResult = {
   workspace: 'absent' | 'waiting' | 'advanced';
   turn: 'absent' | 'waiting' | 'deferred' | 'advanced' | 'orphan-cleared';
   service?: 'absent' | 'waiting' | 'deferred' | 'advanced';
+  browserBuild?: 'absent' | 'waiting' | 'deferred' | 'advanced';
   simulation?: 'absent' | 'waiting' | 'deferred' | 'advanced';
   observer?: 'absent' | 'waiting' | 'deferred' | 'advanced';
 };
@@ -16,6 +17,7 @@ export interface WorkspaceAlarmRouterPorts {
     advance(scope: TurnScope): Promise<void>;
     defer(at: number): Promise<void>;
   };
+  browserBuild?: {readWake():number|null;advance(scope:TurnScope):Promise<void>;defer(at:number):Promise<void>};
   simulation?: {readWake():number|null;advance(scope:TurnScope):Promise<void>;defer(at:number):Promise<void>};
   observer?: {
     readWake(): number | null;
@@ -121,7 +123,7 @@ async function routeWorkspaceAndTurnAlarm(
  * fails. Persist a future wake before crossing the external runtime boundary. */
 async function routeMaintenance(
   ports:WorkspaceAlarmRouterPorts,
-  domain:'service'|'observer'|'simulation',
+  domain:'service'|'observer'|'simulation'|'browserBuild',
   observedAt:number,
   retryAt:number,
   result:WorkspaceAlarmResult|undefined,
@@ -152,7 +154,7 @@ export async function routeWorkspaceAlarm(ports:WorkspaceAlarmRouterPorts,now=Da
     try{await routeMaintenance(ports,'service',observedAt,retryAt,result);}
     finally{
       try{await routeMaintenance(ports,'observer',observedAt,retryAt,result);}
-      finally{try{await routeMaintenance(ports,'simulation',observedAt,retryAt,result);}finally{await ports.reconcile();}}
+      finally{try{await routeMaintenance(ports,'simulation',observedAt,retryAt,result);}finally{try{await routeMaintenance(ports,'browserBuild',observedAt,retryAt,result);}finally{await ports.reconcile();}}}
     }
   }
 }
