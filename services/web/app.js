@@ -1,3 +1,4 @@
+import {createBrowserPreviewPanel,browserPreviewRoute} from './browser-preview.js';
 import {createPublicationPanel} from './publication.js';
 import {createExportPanel} from './export.js';
 import {createEvidencePanel} from './evidence.js';
@@ -32,6 +33,7 @@ function renderModelState(){
   }
   status.dataset.state=state;status.textContent=text;
 }
+const browserPreviewPanel=createBrowserPreviewPanel({root:$('#workspace-browser-preview'),api,onVerified:()=>{void simulationPanel.reload();void comparisonPanel.reload();}});
 const previewPanel=createPreviewPanel({root:$('#workspace-preview'),api,autoRestore:true,onState:value=>{const pinned=value.available?.runId||value.current?.runId;if(pinned)servicePanel.selectRun(pinned);}});
 const servicePanel=createServicePanel({root:$('#workspace-services'),inspectRoot:$('#workspace-runtime-details'),api,workspaceMode:true,onPreparingRun:runId=>previewPanel.prepareRun(runId),onPreviewRun:(runId,options)=>options?.automatic?previewPanel.restoreRun(runId):previewPanel.openRun(runId),onState:detail=>{observedService=detail;renderModelState();if(detail.stopRequestedAt||['stopped','failed','cancelled'].includes(detail.runStatus))previewPanel.stoppedRun(detail.runId);}});
 const comparisonPanel=createComparisonPanel({root:$('#workspace-comparison'),api});
@@ -197,8 +199,9 @@ async function loadModels() {
 }
 
 async function api(path, options = {}) {
+  const {responseType,...fetchOptions}=options;
   const response = await fetch(path, {
-    credentials: 'same-origin', ...options,
+    credentials: 'same-origin', ...fetchOptions,
     headers: { 'Content-Type': 'application/json', ...options.headers },
   });
   if (!response.ok) {
@@ -209,6 +212,7 @@ async function api(path, options = {}) {
     if (code === 'turn_runtime_not_ready') messages[503] = '当前环境暂停接收新任务，请稍后查看状态。';
     throw Object.assign(new Error(messages[response.status] || '请求失败，请稍后重试'), { status: response.status, code, retryable: code !== 'turn_runtime_not_ready' });
   }
+  if(responseType==='bytes'){const length=Number(response.headers.get('content-length'));if(length>33554432)throw Error('资源过大');const bytes=new Uint8Array(await response.arrayBuffer());if(bytes.length>33554432)throw Error('资源过大');return bytes;}
   return response.status === 204 ? null : response.json();
 }
 
@@ -225,7 +229,7 @@ function stopEventStream() {
 }
 
 function accountView() {
-  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();}
+  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();}
   $('#login').hidden = authenticated;
   const workspaceRoutePending = Boolean(workspaceProjectIdFromHash()) && !activeProject;
   $('#app').hidden = !tenant || Boolean(activeProject) || workspaceRoutePending;
@@ -422,7 +426,7 @@ async function refreshWorkspaceFiles(generation = viewGeneration) {
   try{const value=await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/files`);if(!valid())return;
     const changed=workspaceFiles?.revision?.filesSha256!==value.revision?.filesSha256||workspaceFiles?.revision?.revisionId!==value.revision?.revisionId;
     workspaceFiles=value;servicePanel.savedRevision(workspaceId,value.revision);
-    if(changed){diffReadEpoch++;workspaceDiff=null;workspaceDiffError='';renderWorkspaceDiff();if(workspaceArtifactPanel==='diff')void refreshWorkspaceDiff(generation);void simulationPanel.reload();void comparisonPanel.reload();}
+    if(changed){browserPreviewPanel.savedRevision();diffReadEpoch++;workspaceDiff=null;workspaceDiffError='';renderWorkspaceDiff();if(workspaceArtifactPanel==='diff')void refreshWorkspaceDiff(generation);void simulationPanel.reload();void comparisonPanel.reload();}
   }catch(error){if(!valid())return;workspaceFilesError=error.message;}
   if(valid())renderWorkspaceFiles();
 }
@@ -554,7 +558,10 @@ function openWorkspace(project) {
   messageIntent = recovery.messageIntent || null;
   $('#message-input').value = messageIntent?.message ?? recovery.draft ?? '';
   $('#new-session').textContent = sessionIntent ? '重试新建对话' : '新建对话';
-  if (location.hash !== `#/workspace/${encodeURIComponent(project.id)}`) history.replaceState(null, '', `#/workspace/${encodeURIComponent(project.id)}`);
+  const browserRoute=browserPreviewRoute(location);
+  const standalone=browserRoute?.projectId===project.id;
+  $('#workspace').classList.toggle('browser-preview-standalone',standalone);
+  if (!standalone&&location.hash !== `#/workspace/${encodeURIComponent(project.id)}`) history.replaceState(null, '', `#/workspace/${encodeURIComponent(project.id)}`);
   $('#workspace-title').textContent = project.title;
   $('#workspace-title').title = project.title;
   const ready=project.status==='ready';
@@ -568,6 +575,9 @@ function openWorkspace(project) {
   renderWorkspaceFiles();
   renderWorkspaceDiff();
   selectArtifactPanel('files');
+  if(standalone)workspaceLayout.select('preview');
+  void browserPreviewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id,canOpen:ready,standalone,...(standalone?browserRoute:{})});
+  if(standalone){servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();return;}
   previewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,canOpen:ready});
   servicePanel.open({workspaceId:project.workspace_id,tenantId:tenant.id,canStart:ready});
   if(ready){void simulationPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});void comparisonPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});}else{simulationPanel.leave();comparisonPanel.leave();}
@@ -663,13 +673,14 @@ async function renderProjects() {
 }
 
 function workspaceProjectIdFromHash() {
+  const browserRoute=browserPreviewRoute(location);if(browserRoute)return browserRoute.projectId;
   const match = location.hash.match(/^#\/workspace\/([^/]+)$/);
   if (!match) return null;
   try { return decodeURIComponent(match[1]); } catch { return null; }
 }
 
 async function load() {
-  servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();
+  servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();
   const generation = ++viewGeneration;
   stopPolling();
   stopEventStream();
@@ -700,14 +711,14 @@ async function load() {
 
 $('#google').onclick = async () => {
   try {
-    const data = await api('/api/auth/sign-in/social', { method: 'POST', body: JSON.stringify({ provider: 'google', callbackURL: location.origin + '/' }) });
+    const data = await api('/api/auth/sign-in/social', { method: 'POST', body: JSON.stringify({ provider: 'google', callbackURL: location.origin + '/' + (browserPreviewRoute(location)?location.hash:'') }) });
     if (data?.url) location.assign(data.url);
   } catch (error) { show(error.message, true); }
 };
 
 $('#sign-out').onclick = async () => {
   viewGeneration++;
-  servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();
+  servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();
   stopEventStream();
   stopPolling();
   const button = $('#sign-out');
