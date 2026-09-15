@@ -3,8 +3,28 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
-import {privateJson} from './g4-ordinary-browser-helpers.mjs';
-const execute=promisify(execFile),mode=process.argv[2];assert(['guard','counts'].includes(mode));
+import {pathToFileURL} from 'node:url';
+const execute=promisify(execFile);
+
+export function readonlyApiPath(p){
+ assert(typeof p==='string'&&(/^\/api\/me$/.test(p)||/^\/api\/tenants\/[A-Za-z0-9_%.-]+\/g4-window$/.test(p)||/^\/api\/workspaces\/[A-Za-z0-9_%.-]+\/g4-compute-counts$/.test(p)),'readonly-api-path-denied');
+ for(const part of p.split('/'))assert(!['.','..'].includes(decodeURIComponent(part))&&!decodeURIComponent(part).includes('/'),'readonly-api-path-denied');return p;
+}
+export async function createReadonlyApi(auth,{cdpUrl,connect,fetchImpl=fetch}={}){
+ const origin=new URL(auth.origin);assert.equal(origin.origin,auth.origin);assert.equal(origin.protocol,'https:');
+ if(!cdpUrl)return {get:async p=>{const r=await fetchImpl(auth.origin+readonlyApiPath(p),{method:'GET',headers:{cookie:auth.cookie},redirect:'error',signal:AbortSignal.timeout(10000)});assert.equal(r.status,200);return r.json();},close:async()=>{}};
+ const endpoint=new URL(cdpUrl);assert(['http:','ws:'].includes(endpoint.protocol)&&['127.0.0.1','localhost','[::1]'].includes(endpoint.hostname)&&!endpoint.username&&!endpoint.password&&!endpoint.search&&!endpoint.hash,'cdp-endpoint-denied');
+ const proxyKeys=['HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','NO_PROXY','http_proxy','https_proxy','all_proxy','no_proxy'],prior=new Map(proxyKeys.map(k=>[k,process.env[k]]));let browser;
+ try{for(const k of proxyKeys)delete process.env[k];if(!connect){const {chromium}=await import('playwright');connect=(url,options)=>chromium.connectOverCDP(url,options);}browser=await connect(cdpUrl,{timeout:10000});}finally{for(const [k,v]of prior)if(v===undefined)delete process.env[k];else process.env[k]=v;}
+ try{
+  const pages=browser.contexts().flatMap(c=>c.pages()).filter(p=>{try{return new URL(p.url()).origin===auth.origin;}catch{return false;}});assert(pages.length>0,'authenticated-origin-page-absent');const page=pages[0];
+  return {get:async p=>{readonlyApiPath(p);let timer;const evaluation=page.evaluate(async({origin,path})=>{if(location.origin!==origin)throw Error('api-origin-changed');const r=await fetch(origin+path,{method:'GET',credentials:'include',redirect:'error',signal:AbortSignal.timeout(10000)});if(r.status!==200)throw Error('readonly-api-unconfirmed');return r.json();},{origin:auth.origin,path:p});try{return await Promise.race([evaluation,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('readonly-cdp-timeout')),12000);})]);}finally{clearTimeout(timer);}},close:async()=>{await browser.close();}};
+ }catch(e){await browser.close();throw e;}
+}
+
+export async function main(){
+const {privateJson}=await import('./g4-ordinary-browser-helpers.mjs');
+const mode=process.argv[2];assert(['guard','counts'].includes(mode));
 let input='';for await(const b of process.stdin){input+=b;assert(input.length<65536);}const intent=JSON.parse(input);
 const auth=privateJson(process.env.G4_AUTH_FILE),policy=privateJson(process.env.G4_WINDOW_POLICY_FILE),release=privateJson(process.env.G4_RELEASE_RECEIPT_FILE);
 for(const k of ['userId','tenantId']){assert.equal(intent[k],auth[k]);assert.equal(auth[k],policy[k]);}assert.equal(intent.origin,auth.origin);assert.equal(release.ready,true);
@@ -14,7 +34,9 @@ const deployment=await cloud(['deployments','status']);assert.equal(deployment.v
 const version=await cloud(['versions','view',release.workerVersionId]);assert.equal(version.annotations['workers/tag'],release.workerTag);
 const vars=Object.fromEntries(version.resources.bindings.filter(b=>b.type==='plain_text').map(b=>[b.name,b.text]));assert.deepEqual(JSON.parse(vars.G4_CONTROLLED_WINDOW_JSON),policy);
 for(const gate of ['M2_TURNS_ENABLED','M4_SIMULATION_ENABLED','M2_MODEL_PROVIDER_ENABLED'])assert.equal(vars[gate],'true');
-async function api(p){const r=await fetch(auth.origin+p,{headers:{cookie:auth.cookie},redirect:'error',signal:AbortSignal.timeout(10000)});assert.equal(r.status,200);return r.json();}
+const transport=await createReadonlyApi(auth,{cdpUrl:process.env.G4_API_CDP_URL});
+try{
+const api=transport.get;
 const me=await api('/api/me');assert.equal(me.userId,auth.userId);assert(me.tenants.some(t=>t.id===auth.tenantId));
 const releaseIdentity=release.workerVersionId+':'+release.workerTag;
 let result;
@@ -35,4 +57,9 @@ if(mode==='guard'){
  for(const n of native){assert.equal(n.toolLedger.supported,true);assert(Number.isSafeInteger(n.toolLedger.dispatched));tools+=n.toolLedger.dispatched+attempt(n.projectTools,'execControl')+attempt(n.projectTools,'execFilework')+attempt(n.projectTools,'startProcess')+attempt(n.projectTools,'init');pi+=attempt(n.trustedPi,'init')+attempt(n.trustedPi,'startProcess')+attempt(n.trustedPi,'execControl')+attempt(n.trustedPi,'execFilework');piTasks+=attempt(n.trustedPi,'taskStart');}
  result={userId:auth.userId,tenantId:auth.tenantId,workspaceId:intent.workspaceId,releaseIdentity,observedAt:Date.now(),counts:{modelUpstreamDispatches:raw.provider.dispatched,simulationStarts:raw.durableFences.simulation.startClaimed,projectRuntimeStarts:['taskStart','init','execControl','execFilework','startProcess'].reduce((n,k)=>n+attempt(raw.projectRuntime.counter,k),0),projectToolDispatches:tools,trustedPiStarts:pi,trustedPiTaskDispatches:piTasks},semantics:'durable admissions and before-call native attempts; successful executions not inferred',externalInventoryRequired:true,raw};
 }
+const after=await api('/api/me');assert.equal(after.userId,auth.userId);assert(after.tenants.some(t=>t.id===auth.tenantId));
 assert(process.env.G4_COLLECTION_DIR);fs.mkdirSync(process.env.G4_COLLECTION_DIR,{recursive:true,mode:0o700});fs.writeFileSync(path.join(process.env.G4_COLLECTION_DIR,mode+'-'+Date.now()+'.json'),JSON.stringify(result,null,2)+'\n',{flag:'wx',mode:0o600});process.stdout.write(JSON.stringify(result));
+
+}finally{await transport.close();}
+}
+if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href)await main();
