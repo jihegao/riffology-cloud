@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Riffology browser simulation spike</title>
+  <style>
+    :root { color-scheme: light dark; font-family: ui-sans-serif, system-ui, sans-serif; }
+    body { margin: 0; background: #111827; color: #e5e7eb; }
+    main { max-width: 1180px; margin: 0 auto; padding: 24px; }
+    .grid { display: grid; grid-template-columns: minmax(250px, 320px) 1fr; gap: 20px; }
+    .panel { background: #1f2937; border: 1px solid #374151; border-radius: 12px; padding: 16px; }
+    label { display: grid; gap: 6px; margin-bottom: 12px; font-size: 14px; }
+    input, select, button { font: inherit; padding: 9px 10px; border-radius: 8px; border: 1px solid #4b5563; background: #111827; color: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: wait; opacity: .6; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    #stage { min-height: 520px; display: grid; place-items: center; overflow: auto; }
+    #metrics { display: grid; grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); gap: 8px; margin-top: 12px; }
+    .metric { padding: 10px; background: #111827; border-radius: 8px; }
+    .metric small { display: block; color: #9ca3af; }
+    .metric strong { font-size: 18px; }
+    .cell { width: 22px; height: 22px; border: 1px solid #374151; box-sizing: border-box; }
+    .agent-a { background: #60a5fa; border-radius: 50%; margin: 2px; width: 16px; height: 16px; }
+    .agent-b { background: #f59e0b; border-radius: 50%; margin: 2px; width: 16px; height: 16px; }
+    .mesa-grid { display: grid; gap: 1px; background: #374151; padding: 1px; }
+    .lane-wrap { width: min(760px, 100%); display: grid; gap: 12px; }
+    .lane { display: grid; grid-template-columns: 110px 1fr; gap: 8px; align-items: center; }
+    .lane-track { min-height: 44px; padding: 6px; display: flex; gap: 6px; align-items: center; background: #111827; border-radius: 8px; flex-wrap: wrap; }
+    .customer { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; background: #60a5fa; color: #0f172a; }
+    .customer.serving { background: #34d399; }
+    .muted { color: #9ca3af; font-size: 13px; }
+    #status { min-height: 20px; }
+    @media (max-width: 780px) { .grid { grid-template-columns: 1fr; } #stage { min-height: 360px; } }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Browser simulation runtime spike</h1>
+  <p class="muted">Mesa or plain Python runs inside a Pyodide Web Worker. Rendering uses the same Riffology visualization protocol; no simulation request is sent to Riffology servers.</p>
+  <div class="grid">
+    <section class="panel">
+      <label>Model
+        <select id="model">
+          <option value="schelling">Mesa Schelling</option>
+          <option value="queue">Python queue trace</option>
+        </select>
+      </label>
+      <div id="parameters"></div>
+      <label>Seed <input id="seed" type="number" value="7" step="1"></label>
+      <div class="actions">
+        <button id="run">Run locally</button>
+        <button id="play" disabled>Play</button>
+        <button id="step" disabled>Step</button>
+        <button id="restart" disabled>Restart</button>
+      </div>
+      <label>Playback speed
+        <select id="speed"><option value="700">1x</option><option value="250">3x</option><option value="80">10x</option></select>
+      </label>
+      <p id="status" class="muted" aria-live="polite">Ready.</p>
+      <p class="muted">Interactive results are local-only and must not be treated as Research Evidence. A production integration would re-run the same revision/parameters/seed in the verified cloud path when the user selects “Save as Experiment”.</p>
+    </section>
+    <section class="panel">
+      <div id="stage" aria-label="Simulation visualization"></div>
+      <div id="metrics"></div>
+    </section>
+  </div>
+</main>
+<script type="module">
+  import { validateTrace, metricEntries } from './protocol.js';
+
+  const modelEl = document.querySelector('#model');
+  const paramsEl = document.querySelector('#parameters');
+  const seedEl = document.querySelector('#seed');
+  const runEl = document.querySelector('#run');
+  const playEl = document.querySelector('#play');
+  const stepEl = document.querySelector('#step');
+  const restartEl = document.querySelector('#restart');
+  const speedEl = document.querySelector('#speed');
+  const stageEl = document.querySelector('#stage');
+  const metricsEl = document.querySelector('#metrics');
+  const statusEl = document.querySelector('#status');
+
+  const definitions = {
+    schelling: {
+      path: './models/schelling.py', needsMesa: true, steps: 40,
+      params: [
+        ['width', 'Width', 20, 4, 60, 1], ['height', 'Height', 14, 4, 60, 1],
+        ['density', 'Density', .82, .05, .98, .01], ['minority_fraction', 'Minority fraction', .35, 0, 1, .01],
+        ['homophily', 'Homophily', .5, 0, 1, .05],
+      ],
+    },
+    queue: {
+      path: './models/queue_trace.py', needsMesa: false, steps: 1,
+      params: [
+        ['servers', 'Servers', 2, 1, 8, 1], ['customers', 'Customers', 30, 1, 200, 1],
+        ['arrival_rate', 'Arrival rate', .8, .01, 10, .01], ['service_rate', 'Service rate', 1, .01, 10, .01],
+      ],
+    },
+  };
+
+  let trace = null;
+  let frameIndex = 0;
+  let timer = null;
+  let playing = false;
+  let activeRequestId = null;
+  let worker = createWorker();
+
+  function createWorker() {
+    const next = new Worker('./worker.js', { type: 'module' });
+    next.addEventListener('message', onWorkerMessage);
+    next.addEventListener('error', onWorkerError);
+    return next;
+  }
+
+  function setRunning(running) {
+    runEl.disabled = running;
+    modelEl.disabled = running;
+    seedEl.disabled = running;
+    for (const input of paramsEl.querySelectorAll('input')) input.disabled = running;
+  }
+
+  function clearTrace() {
+    stopPlayback(); trace = null; frameIndex = 0;
+    stageEl.replaceChildren(); metricsEl.replaceChildren();
+    playEl.disabled = true; stepEl.disabled = true; restartEl.disabled = true;
+  }
+
+  function renderParameterForm() {
+    paramsEl.replaceChildren();
+    for (const [name, label, value, min, max, step] of definitions[modelEl.value].params) {
+      const wrapper = document.createElement('label');
+      wrapper.textContent = label;
+      const input = document.createElement('input');
+      input.type = 'number'; input.name = name; input.value = value; input.min = min; input.max = max; input.step = step;
+      wrapper.append(input); paramsEl.append(wrapper);
+    }
+  }
+
+  function currentConfig(definition) {
+    const parameters = {};
+    for (const input of paramsEl.querySelectorAll('input')) {
+      const value = Number(input.value);
+      if (!Number.isFinite(value)) throw new Error(`${input.name} must be a number`);
+      const min = Number(input.min), max = Number(input.max);
+      parameters[input.name] = Math.max(min, Math.min(max, value));
+    }
+    const seed = Number(seedEl.value);
+    if (!Number.isSafeInteger(seed)) throw new Error('seed must be an integer');
+    return { parameters, seed, steps: definition.steps };
+  }
+
+  function stopPlayback() {
+    playing = false; playEl.textContent = 'Play';
+    if (timer) clearTimeout(timer); timer = null;
+  }
+
+  function renderSnapshot(snapshot) {
+    stageEl.replaceChildren();
+    if (snapshot.space.type === 'grid') renderGrid(snapshot); else renderLanes(snapshot);
+    metricsEl.replaceChildren();
+    for (const [name, value] of metricEntries(snapshot)) {
+      const box = document.createElement('div'); box.className = 'metric';
+      const label = document.createElement('small'); label.textContent = name.replaceAll('_', ' ');
+      const strong = document.createElement('strong'); strong.textContent = Number.isInteger(value) ? String(value) : value.toFixed(4);
+      box.append(label, strong); metricsEl.append(box);
+    }
+    statusEl.textContent = `Frame ${snapshot.frame} / ${trace.snapshots.at(-1).frame} · simulation time ${snapshot.time.toFixed(3)}`;
+  }
+
+  function renderGrid(snapshot) {
+    const grid = document.createElement('div'); grid.className = 'mesa-grid';
+    grid.style.gridTemplateColumns = `repeat(${snapshot.space.width}, 22px)`;
+    const byPosition = new Map(snapshot.agents.map(agent => [`${agent.x},${agent.y}`, agent]));
+    for (let y = 0; y < snapshot.space.height; y += 1) {
+      for (let x = 0; x < snapshot.space.width; x += 1) {
+        const cell = document.createElement('div'); cell.className = 'cell';
+        const agent = byPosition.get(`${x},${y}`);
+        if (agent) {
+          const dot = document.createElement('div'); dot.className = agent.state === 'group-b' ? 'agent-b' : 'agent-a';
+          dot.title = `Resident ${agent.id} · ${agent.state}`; cell.append(dot);
+        }
+        grid.append(cell);
+      }
+    }
+    stageEl.append(grid);
+  }
+
+  function renderLanes(snapshot) {
+    const wrap = document.createElement('div'); wrap.className = 'lane-wrap';
+    for (const laneName of snapshot.space.lanes) {
+      const row = document.createElement('div'); row.className = 'lane';
+      const label = document.createElement('strong'); label.textContent = laneName;
+      const track = document.createElement('div'); track.className = 'lane-track';
+      const agents = snapshot.agents.filter(agent => agent.lane === laneName).sort((a,b) => a.position - b.position);
+      for (const agent of agents) {
+        const node = document.createElement('span'); node.className = `customer ${agent.state}`; node.textContent = agent.id; node.title = agent.state; track.append(node);
+      }
+      row.append(label, track); wrap.append(row);
+    }
+    stageEl.append(wrap);
+  }
+
+  function showFrame(index) {
+    if (!trace) return;
+    frameIndex = Math.max(0, Math.min(index, trace.snapshots.length - 1)); renderSnapshot(trace.snapshots[frameIndex]);
+  }
+
+  function scheduleNext() {
+    if (!playing || !trace) return;
+    if (frameIndex >= trace.snapshots.length - 1) { stopPlayback(); return; }
+    timer = setTimeout(() => { showFrame(frameIndex + 1); scheduleNext(); }, Number(speedEl.value));
+  }
+
+  playEl.addEventListener('click', () => {
+    if (!trace) return;
+    playing = !playing; playEl.textContent = playing ? 'Pause' : 'Play';
+    if (playing) scheduleNext(); else stopPlayback();
+  });
+  stepEl.addEventListener('click', () => { stopPlayback(); showFrame(frameIndex + 1); });
+  restartEl.addEventListener('click', () => { stopPlayback(); showFrame(0); });
+  modelEl.addEventListener('change', () => {
+    clearTrace(); renderParameterForm(); statusEl.textContent = 'Ready.';
+  });
+
+  function onWorkerMessage(event) {
+    if (event.currentTarget !== worker) return;
+    const message = event.data;
+    if (!activeRequestId || message?.requestId !== activeRequestId) return;
+    if (message.type === 'error') {
+      activeRequestId = null; setRunning(false);
+      statusEl.textContent = `Run failed: ${message.error}`; return;
+    }
+    if (message.type !== 'result') return;
+    try {
+      trace = validateTrace(message.trace); frameIndex = 0; showFrame(0);
+      playEl.disabled = false; stepEl.disabled = false; restartEl.disabled = false;
+      statusEl.textContent = `Local run ready in ${message.runtime.elapsedMs.toFixed(0)} ms`;
+    } catch (error) {
+      statusEl.textContent = `Invalid visualization trace: ${error.message}`;
+    } finally { activeRequestId = null; setRunning(false); }
+  }
+
+  function onWorkerError(event) {
+    if (event.currentTarget !== worker) return;
+    worker.terminate(); worker = null;
+    activeRequestId = null; clearTrace(); setRunning(false);
+    statusEl.textContent = `Run failed: ${event.message || 'Worker could not load. Try running again.'}`;
+  }
+
+  runEl.addEventListener('click', async () => {
+    if (activeRequestId) return;
+    clearTrace();
+    let requestId;
+    try {
+      const definition = definitions[modelEl.value];
+      const config = currentConfig(definition);
+      requestId = crypto.randomUUID(); activeRequestId = requestId;
+      worker ??= createWorker();
+      setRunning(true);
+      statusEl.textContent = definition.needsMesa ? 'Loading Pyodide + Mesa and running locally…' : 'Loading Pyodide and running locally…';
+      const source = await fetch(definition.path).then(response => { if (!response.ok) throw new Error(`model source HTTP ${response.status}`); return response.text(); });
+      if (activeRequestId !== requestId) return;
+      worker.postMessage({ type: 'run', requestId, source, needsMesa: definition.needsMesa, config });
+    } catch (error) {
+      if (requestId && activeRequestId !== requestId) return;
+      activeRequestId = null; setRunning(false); statusEl.textContent = `Run failed: ${error.message}`;
+    }
+  });
+
+  renderParameterForm();
+</script>
+</body>
+</html>
