@@ -1,3 +1,4 @@
+import {dockerFenceOptions,DOCKER_FENCE_PROBE} from './simulation-docker-fence.ts';
 import assert from 'node:assert/strict';
 import { mkdtemp, writeFile, readFile, mkdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -20,7 +21,8 @@ for (const scenario of ['success', 'failure', 'cancel', 'isolation', 'outputs'])
   const spec = Buffer.from(JSON.stringify({schemaVersion:1,researchQuestion:'fixture',scope:'test',entities:['item'],mechanisms:['sum'],assumptions:[],parameters:{x:{type:'integer',default:2}},metrics:{value:{}},limitations:[],execution:{entrypoint:'model/run.py',dependencyLock:'app/requirements.lock'}}));
   const lock = Buffer.from(JSON.stringify({schemaVersion:1,packages:{}}));
   await mkdir(join(root, 'model')); await mkdir(join(root, 'app')); await writeFile(join(root, 'model/run.py'), model); await writeFile(join(root, 'model/model-spec.json'), spec); await writeFile(join(root, 'app/requirements.lock'), lock);
-  const container = docker(['run', '-d', '--network', 'none', '--entrypoint', '/bin/sh', image, '-c', 'sleep 60']); t.after(() => { try { docker(['rm', '-f', container]); } catch {} });
+  const container = docker(['run', '-d', '--network', 'none', ...dockerFenceOptions(), '--entrypoint', '/bin/sh', image, '-c', 'sleep 60']); t.after(() => { try { docker(['rm', '-f', container]); } catch {} });
+  if(process.env.G1_DOCKER_OUTER_NETWORK_FENCE==='1')assert.equal(JSON.parse(docker(['exec',container,'python3','-c',DOCKER_FENCE_PROBE])).noNewPrivileges,true);
   docker(['exec', container, 'mkdir', '-p', '/tmp/fixture']); docker(['cp', join(root, 'model'), `${container}:/tmp/fixture/`]); docker(['cp', join(root, 'app'), `${container}:/tmp/fixture/`]);
   docker(['exec', container, 'python3', '-c', "import sys;sys.path.insert(0,'/opt/riffology');from pathlib import Path;import workspace_archive as a;Path('/var/lib/riffology/archives').mkdir(exist_ok=True);a.canonical_tar(Path('/tmp/fixture'),Path('/var/lib/riffology/archives/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.input.tar'))"]);
   const archiveSha = docker(['exec', container, 'sha256sum', `/var/lib/riffology/archives/${token}.input.tar`]).split(' ')[0];

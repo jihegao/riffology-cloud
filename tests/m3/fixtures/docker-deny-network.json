@@ -1,0 +1,8 @@
+{
+  "defaultAction": "SCMP_ACT_ALLOW",
+  "syscalls": [{
+    "names": ["socket", "socketpair", "socketcall", "connect", "bind", "listen", "accept", "accept4", "sendto", "sendmsg", "sendmmsg", "recvfrom", "recvmsg", "recvmmsg", "getpeername", "getsockname", "getsockopt", "setsockopt", "shutdown"],
+    "action": "SCMP_ACT_ERRNO",
+    "errnoRet": 1
+  }]
+}
