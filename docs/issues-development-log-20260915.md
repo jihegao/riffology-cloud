@@ -111,6 +111,12 @@ C 的 64e6572 集成为 a04368f，主控真实 Workerd/Gateway/D1 登录与邀�
 
 A rebased 提交 d650e8b/f628835/d35a139 集成为6c4f3de/3a3e6fa/e4e4b95，生产Workspace/Gateway接口可供C进行真正接线。主控独立8项build-host与Workerd检查通过、typecheck通过：真实tar生成包，先持久reference再条件写R2；丢失receipt可在重启后按原object补回；当前registry变更后使用已冻结平台snapshot；unsupported不被另一profile失败覆盖。host tests 的bucket仍为port，真实Workspace后台ready/R2与Gateway权限整链待实际验收。B非作者评审发现第三次rearm后crash可能造成第四次构建，A正在修复；平台旧host SHA传递与combined ASSETS也在补齐。主控证据归档于`.local/issues-20260915/g2/`，含日志摘要。
 
+## G3 本地替代内核隔离签收
+
+C 的8f786c7集成为d1aad05。主控实际审查freestanding ARM64 ELF构造、BPF syscall限制、UID检查、shell bridge与诊断清理，独立重建并通过真实Sandbox SDK探测。主控派生测试镜像为`sha256:14ad4bb7ac8558c482f1abb21bf8e5183d99e7281ea1df774df0872475c4d574`，其原基镜像身份、helper原字节摘要与编译器版本保存在g3/helper-independent。
+
+真实SDK前后均200；child UID/GID10001、groups空、NoNewPrivs1；ARM64内核原始io_uring三调用先返回EPERM，再执行翻译CPython；loopback/Unix/external TCP/UDP connect与UDP sendto全EPERM1，两rootlistener零arrivals。此为独立测试镜像局部隔离签收，不是生产x86镜像证明。guest AS仍无限；Queue空锁经monitor sys.executable的实际bridge路径和完整SimulationHost结果仍待验证。线上原生隔离/资源继承门槛保持G4。
+
 ## 主控复核与环境记录
 
 Issue逐项关闭条件与本地/线上边界见[签收矩阵](issues-acceptance-matrix-20260915.md)，与本记录同步维护。
