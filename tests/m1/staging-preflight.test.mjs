@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { chmodSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { chmodSync, mkdirSync, mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import {createHash} from 'node:crypto';
+import {validateBrowserPreviewWebAssets} from '../../scripts/m3/materialize-browser-preview-web.mjs';
 import { resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { runPreflight, validateSecretFile, validateStagingConfig } from '../../scripts/m1/staging-preflight.mjs';
@@ -8,7 +10,7 @@ import { runPreflight, validateSecretFile, validateStagingConfig } from '../../s
 const config = {
   name:'riffology-m1-gateway-staging', account_id:'8b0d70250211aa10d89e20605a1c7e5e', workers_dev:false, preview_urls:false,
   routes:[{pattern:'m1.riff-demo.gaojihe.cn',custom_domain:true}],
-  assets:{directory:'../services/web',binding:'ASSETS',run_worker_first:true},
+  assets:{directory:'../.local/browser-preview/gateway-assets',binding:'ASSETS',run_worker_first:true},
   secrets:{required:['BETTER_AUTH_SECRET','GOOGLE_CLIENT_ID','GOOGLE_CLIENT_SECRET']},
   vars:{APP_ORIGIN:'https://m1.riff-demo.gaojihe.cn',TENANT_QUOTA_CAPACITY:'1',TENANT_QUOTA_POLICY_VERSION:'m1-v1',M2_TURNS_ENABLED:'false'},
   d1_databases:[{binding:'CATALOG',database_name:'riffology-catalog-staging',database_id:'993f2fd9-a135-4a93-9caa-10828dec6635',migrations_dir:'../services/catalog/migrations'}],
@@ -28,6 +30,7 @@ test('repository staging files pass every check before deployment credentials',(
   const result=runPreflight();
   assert.equal(result.status,'blocked');
   assert.deepEqual(result.checks.filter(item=>item.status!=='passed'),[
+    ...[validateBrowserPreviewWebAssets()].filter(item=>item.status!=='passed'),
     {name:'deployment-secrets',status:'blocked',detail:'secrets-file-not-supplied'},
   ]);
 });
@@ -47,4 +50,19 @@ test('secret validation checks names and file mode without returning values',()=
   chmodSync(path,0o600);assert.equal(validateSecretFile(path).status,'passed');
   chmodSync(path,0o644);assert.equal(validateSecretFile(path).detail,'secrets-file-permissions');
   assert.equal(JSON.stringify(validateSecretFile(path)).includes('aaaa'),false);
+});
+
+test('asset topology only accepts the reviewed composite directory and required binding/order',()=>{
+ for(const assets of [{...config.assets,directory:'../services/web'},{...config.assets,directory:'../.local/arbitrary-assets'},{...config.assets,binding:'OTHER'},{...config.assets,run_worker_first:false}])assert.equal(validateStagingConfig({...config,assets},dockerfile,migrations).find(item=>item.name==='assets').status,'failed');
+});
+test('execution preflight blocks missing or drifted asset receipt without weakening pure topology',()=>{
+ const root=mkdtempSync(resolve(tmpdir(),'m1-assets-preflight-')),hash=value=>createHash('sha256').update(value).digest('hex');
+ const put=(path,value)=>{const target=resolve(root,path);mkdirSync(resolve(target,'..'),{recursive:true});writeFileSync(target,value);};
+ try{
+  put('infra/wrangler.gateway-staging.jsonc',JSON.stringify(config));put('services/runtime/Dockerfile.cloud',dockerfile);for(const migration of migrations)put('services/catalog/migrations/'+migration,'');put('services/web/app.js','checked web bytes');
+  assert.equal(validateStagingConfig(config,dockerfile,migrations).every(item=>item.status==='passed'),true);assert.equal(runPreflight({root}).checks.find(c=>c.name==='browser-preview-gateway-assets').status,'blocked');
+  const asset={kind:'app',file:'browser-preview-assets/fixed/host.bundle.mjs',sha256:hash('fixed module'),byteLength:12},index={runtimeProfiles:['fixed-profile'],delivery:{hostModule:{url:'/fixed'}},versions:{fixed:{}},assets:[asset]},indexText='export const browserPreviewStaticIndex = '+JSON.stringify(index)+' as const;';
+  put('services/browser-preview/execution/assets/static-index.ts',indexText);put('.local/browser-preview/gateway-assets/app.js','checked web bytes');put('.local/browser-preview/gateway-assets/'+asset.file,'fixed module');put('.local/browser-preview/gateway-assets-receipt.json',JSON.stringify({schema:'riffology.browser-gateway-assets/v1',staticIndexSha256:hash(indexText),runtimeProfiles:index.runtimeProfiles,delivery:index.delivery,versions:index.versions,webFiles:[{path:'app.js',sha256:hash('checked web bytes'),byteLength:17}],appAssets:[asset],assetCount:1}));
+  assert.equal(runPreflight({root}).checks.find(c=>c.name==='browser-preview-gateway-assets').status,'passed');put('.local/browser-preview/gateway-assets/app.js','modified web');assert.equal(runPreflight({root}).checks.find(c=>c.name==='browser-preview-gateway-assets').status,'blocked');
+ }finally{rmSync(root,{recursive:true,force:true});}
 });
