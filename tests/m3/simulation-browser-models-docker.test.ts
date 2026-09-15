@@ -1,3 +1,4 @@
+import type {ParameterValues} from '../../services/simulation/model-spec.ts';
 import {dockerFenceOptions,DOCKER_FENCE_PROBE} from './simulation-docker-fence.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -19,7 +20,7 @@ for(const name of ['mesa','queue'] as const)test(`real frozen ${name} shared sou
  const imageIdentity=JSON.parse(docker(['image','inspect',image]))[0].Id;
  const {mkdir}=await import('node:fs/promises');await mkdir(evidence,{recursive:true});const root=await mkdtemp(join(tmpdir(),'g1-shared-'));t.after(()=>rm(root,{recursive:true,force:true}));
  const model=await readFile(`tests/m3/fixtures/browser-models/${name}.py`),wrapper=await readFile('services/run/model_run_adapter.py');
- const parameters=name==='mesa'?{steps:2,width:4,height:4,density:0.5,minority_fraction:0.35,homophily:0.5}:{servers:2,customers:6,arrival_rate:0.8,service_rate:1};
+ const parameters:ParameterValues=name==='mesa'?{steps:2,width:4,height:4,density:0.5,minority_fraction:0.35,homophily:0.5}:{servers:2,customers:6,arrival_rate:0.8,service_rate:1};
  const metrics=name==='mesa'?{population:{},unhappy:{},happy_fraction:{}}:{queue_length:{},completed:{},mean_wait:{},throughput:{}};
  const spec={schemaVersion:1,researchQuestion:'Same source?',scope:'finite fixture',entities:[],mechanisms:[],assumptions:[],parameters:Object.fromEntries(Object.entries(parameters).map(([key,value])=>[key,{type:Number.isInteger(value)?'integer':'number',default:value}])),metrics,limitations:[],execution:{entrypoint:'model/run.py',dependencyLock:'app/requirements.lock'}};
  const lock={schemaVersion:1,packages:name==='mesa'?MESA_SOURCE_PACKAGES:{}},specBytes=encode(JSON.stringify(spec)),lockBytes=encode(JSON.stringify(lock));
