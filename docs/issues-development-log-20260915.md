@@ -47,6 +47,14 @@
 
 G1C 已派发 `codex/issues-g1-server`（基线 af776ae），独占source/native执行、Python执行器/image、export/replay及通用server adapter与定向回归。A/B继续在G1 package/runtime树实施。三线开发不改变线上门禁与部署。
 
+## G1A 基础能力集成
+
+A 提交 16d60bf，主控非作者实际diff复核后集成为 db0fc01；独立13项contract/build测试与typecheck/diff-check通过。validator核对保存archive摘要、固定五文件、Spec/visual与依赖；packager保留原hash/source path且字节规范化；storage通过create-only写入与同identity GET补持久收据。receipt/reference目前为明确port，G2实际Durable接线仍未交付。empty registry默认拒绝profile，synthetic fixture不能生产ready。
+
+主控冻结Queue server继续空锁3.11.14，Mesa独立3.14.2；Browser Queue在Pyodide3.14.2执行，两版本共享模型逻辑必须实际对照，不能静默升级历史空lock。Mesa源lock六包：mesa3.5.1、networkx3.6.1、numpy2.4.6、pandas3.0.2、scipy1.18.0、tqdm4.67.3；浏览器完整wheel闭包与CPython环境闭包分别冻结，源lock不引入micropip。
+
+G1B主控预审发现host.load迟到写入、Spec参数默认值/范围接线和runtime资产身份覆盖transitive执行代码的问题，已由B独占修复；A槽位转为B非作者只读预审并等待最终资产registry接线。
+
 线上状态未改变；签收时追加提交、命令、证据与明确缺口。
 
 ## 主控复核与环境记录
