@@ -1,6 +1,6 @@
 # Browser Preview 包与保存状态契约
 
-日期：2026-09-15。阶段 0A；状态：纯 schema 已实现，构建、授权读取与编排待阶段 1/2 实现。关联 #64。执行/隔离协议由阶段 0B 独占；此文档定义内容身份与平台交接，不声称任意 Python 可以安全执行。
+日期：2026-09-15。阶段 0A / 1A；状态：schema、确定性校验/打包和条件对象存储协议本地通过；真实平台资产待 runtime 提供，授权/持久编排待阶段 2 实现。关联 #64。执行/隔离协议由阶段 0B 独占；此文档定义内容身份与平台交接，不声称任意 Python 可以安全执行。
 
 ## 1. 保存源码与包身份
 
@@ -60,4 +60,22 @@ receipt 是平台记录，不进包字节，至少含授权 scope、revisionId�
 
 0A / 1A 拥有 `services/browser-preview/contract.ts`、fixtures、validator/package/storage 与本文件。0B / 1B 独占 runtime 独立目录、执行/隔离文档和浏览器测试。阶段 2A 拥有 central actor 与全部持久接线；0A 不修改其文件。此 schema 测试进入现有 `tests/m3/*.test.ts` 正式匹配范围。
 
-G0 仅冻结接口和执行 schema tests。待实现：真正 compatibility validator、deterministic archive、可信 runtime 资产闭包、create-only R2、收据恢复、引用 GC、授权 route、saved 自动派生/重启/alarm 合并、历史 resolver、服务端 Verify 和真实浏览器隔离。任何 fixture 通过均不作为 G1/G2/G4 签收。
+G0 冻结接口和执行 schema tests。G1A 的校验/打包/storage 单元协议已实现，尚未证明完整 G1：可信 runtime 资产闭包与真实两端执行由 B/C 交付。待 G2：收据/引用实际持久实现、GC、授权 route、saved 自动派生/重启/alarm 合并、历史 resolver、服务端 Verify。任何 fixture 通过均不作为 G1/G2/G4 完整签收。
+
+## 6. G1A 实现接口与验证边界
+
+`validateSavedPreview(source, archiveBytes, profileId, registry)` 校验调用方已授权解析的 `{projectId,revisionId,filesSha256}`，再次验证 canonical 文件 archive 摘要，再逐条从现有 bounded reader 抽取五路径。Spec/visual 各32 KiB、lock64 KiB、两 Python 各1 MiB；读取不包含 Session。摘要不符与错误身份是错误，兼容拒绝是稳定 `{status:'unsupported',reasonCode}`。兼容成功是 `{status:'compatible',value}`，本身不等于 ready。
+
+`model/visualization.json` 严格格式为 `{schema:'riffology.visualization/v1',protocol:'riffology.visual/v0.1',renderer:'grid'|'lane',metricKeys:string[]}`，metrics 必须为保存 Spec 声明键的非空唯一子集，不接受 URL/JS。模型入口必须 `def run(config)`，server wrapper 必须导入 model.run。静态 token 策略拒绝未允许 imports、动态执行/安装/网络桥接、明显顶层执行等早期不兼容；它不是完整 Python AST/语法验证或安全证明。真实编译/执行仍由隔离 runtime 和 server 执行器承担。运行时的恶意 fixture 验收绕开早期拒绝，才能验证 CSP。
+
+源 dependency lock 沿用 `{schemaVersion:1,packages:{...}}`。Queue packages 必须为空；Mesa 源锁固定六个根：mesa3.5.1、networkx3.6.1、numpy2.4.6、pandas3.0.2、scipy1.18.0、tqdm4.67.3。`runtime.dependencies` 是包括平台预加载负向测试包在内的完整 browser distribution 闭包，不等于这六个源锁键。CPython 镜像也必须审核/固定其实际完整闭包，不自动追随 transitive latest。
+
+`createTrustedPreviewRegistry(entries)` 接受平台 composition root 已审核的 runtime、`packages`、`assets:[{path,sha256,byteLength}]` 与 trust。资产清单按路径 ASCII 排序摘要必须精确等于 assetSha256，完整依赖摘要必须在资产清单中，limits/固定 runtime/Python/adapter 与源锁精确匹配。包 JSON 不能创建/替换 registry。默认 `emptyPreviewRegistry` 拒绝所有 profile；真实 runtime 资产清单接口由 B 提供后接线。trust='test-fixture' 只能明确 fixture 模式，不自动进入生产。
+
+`packageCompatiblePreview(value)` 产出 `{manifest,bytes,sha256,trust}`。字节是 UTF-8 规范 JSON envelope `{manifest,files:[{path,base64}]}`，五文件顺序固定；每条 base64 还原原字节，所有摘要/长度重新核对。无生成日期、压缩元数据或 Session。`unpackPreviewPackage(bytes)` 拒绝非规范 envelope、错身份、错原字节、非规范 base64 及超限包。平台 runtime loader 必须执行等价校验，并按可信 registry 解释 manifest。
+
+`storePreviewPackage(bucket, receipts, scope, packageValue)` 为每次调用先 await `receipts.begin(intent)`（实现者必须 durable 地记录意图并保护 saved-files 引用）；内部 key 从 `{tenantId,projectId,workspaceId}` 与 packageIdentity 派生。先 GET 恢复已有写入，缺失时 `put(...,{onlyIf:{etagDoesNotMatch:'*'}})`，即使应答丢失仍只 GET 同 key；校验摘要/长度后 await `receipts.persist(receipt)`，后者返回实际持久收据。persist 对相同输入忽略候选 verifiedAt 并返回首次持久日期，对其他字段冲突拒绝。对象写后持久失败保留对象，原身份重试补收据且不覆盖对象。此层调用 bounded single-attempt，重试/取消/backoff 由 G2 durable scheduler 管理。
+
+`readPreviewPackage(bucket, authorizedScope, serverResolvedReceipt)` 再核对 scope/key/identity/Revision/profile digest/对象摘要，不直接授权用户；当前权限校验由调用方 G2 API 提供。它不会回退 latest head。默认 store/read 拒绝 test-fixture；tests 显式 allowTestFixture 且收据保留 fixture 标记，不能被生产 ready 消费。`PreviewReceiptPort` 目前是待 G2 实现的持久接口；单元测试假 port 不证明数据库/R2整链。
+
+本地验证：`node --test tests/m3/browser-preview-build.test.ts tests/m3/browser-preview-contract.test.ts`、`npm run typecheck`。测试覆盖两 profile 合成包、确定身份/字节、原文件摘要/路径、unsupported 原因、篡改资产/包、引用建立失败、create-only 写应答丢失、收据失败恢复、跨 scope/旧源读取拒绝与 fixture 不进入生产收据。真实 Pyodide/CPython、真正 R2 与实际 durable receipt/GC/API 尚未由这些测试覆盖。
