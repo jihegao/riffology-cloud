@@ -31,3 +31,11 @@ G5的#46/#37与G6三模型按计划在后续独立窗口进行。执行前必须
 Cloudflare Deployments读取确认当前100%版本为 `f2a8e4e6-570f-4fef-be53-7bfbbf2cf25e`（deployment `3c6e4b73-f830-4c32-bc04-e7209a286f74`，2026-09-14T13:47:53Z）。Settings读取确认现有应用origin为 `https://m1.riff-demo.gaojihe.cn`，Turns/Model provider/Service/Simulation四门禁当前为true，旧Simulation image为 `registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-phase1-simulation@sha256:be02d18823ae778f3eb3d73e87772e90549c4f2a5a2e22777067ea5e6775f888`。
 
 此快照没有修改任何门禁，也没有调用该线上模型。它仅提供发布前比较与回退候选；尚未核验当前Worker源commit、实际Trusted Pi模块、容器清空或新候选兼容性，不能作为本轮G4 sign-off。正式执行前重新读取；回退到旧Worker版本不能假定回退了容器image配置或新增资产，必须按冻结回退清单逐项恢复并核对。
+
+只读Settings进一步确认当前PHASE1_RELEASE_PROFILE为 `user-preview`；Browser执行origin与lazy/reuse/version三项绑定尚不存在，不能声称当前线上启用了新Browser或warm路径。
+
+## 本地生产镜像准备
+
+已按 `Dockerfile.trusted-pi.vertical` 构建linux/amd64生产候选，local image identity为 `sha256:1a1acfa3b308ab6d4d9e3297f19940b63ac242156e55368c6a9b727531054e3d`。在该精确镜像里以无网络Node导入实际 `trusted-pi-release.mjs`，其摘要 `56e13a838baae1a994aff44c8fcb49bda1535332907607e070083239179f942d` 与release-candidate字节相同；六个实际复制模块均对照当前repo原字节。嵌入adapter摘要为 `fa7987095bbc29f2c6d87e9b0f815415f88c9079ad7070fb7fe8b91e7ebf0898`，generation contract包含五文件/两固定profile/500steps/501frames及输出上限。没有调用resolveOptions或provider，没有上传镜像。
+
+生产Simulation候选仍为G1本地image identity `sha256:1f9b5bbf70f74fde7764d7eb270e7616e9cf79a38c12418ddef8bb8bb1b1851f`。这些是本地身份，不是已上传Cloudflare registry digest，不证明线上装载或原生隔离。构建、actual-module probe及独立对照收据保存在ignored `g4/local-image-preparation`，含SHA256SUMS；G4须在上传后重新核对managed image manifest/config和实际SDK装载源码。
