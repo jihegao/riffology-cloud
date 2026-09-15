@@ -1,8 +1,9 @@
+import {nativeAttemptSnapshot,recordNativeAttempt} from '../g4-native-counts.ts';
 import { DurableObject } from 'cloudflare:workers';
 import { catalogDatabase } from '../catalog/database.ts';
 import { ProvisioningCatalog } from '../catalog/provisioning.ts';
 import { TenantQuota, tenantQuotaName } from '../quota/durable.ts';
-import { RuntimeCore, type NativeRuntimePort } from './core.ts';
+import { RuntimeCore, checkpointKey, sameRuntime, type NativeRuntimePort } from './core.ts';
 import { R2ModelContentPort, type VerifiedModelContent } from './content.ts';
 import { INSPECT_INITIAL_FILES, INSTALL_MODEL_CONTENT } from './starter.ts';
 import { canonicalWorkspaceMarker, type RuntimeIdentity, type RuntimeInitialize } from '../workspace/protocol.ts';
@@ -39,13 +40,16 @@ export class ProjectRuntime extends DurableObject<ProjectRuntimeEnv> {
       const container=this.ctx.container;
       if (!container) throw Error('container-not-configured');
       const context=this.ctx;
+      const count=(tag:Parameters<typeof recordNativeAttempt>[1])=>recordNativeAttempt(context.storage,tag);
       const native: NativeRuntimePort={
         get running(){return container.running;},
         start(program){
+          count('taskStart');count('init');
           container.start({entrypoint:['node','-e',program],enableInternet:false});
           context.waitUntil(container.monitor().catch(()=>{}));
         },
         async installContent(content){
+          count('execFilework');await context.storage.sync();
           const process=await container.exec(['node','-e',INSTALL_MODEL_CONTENT],{
             stdin:modelContentInput(content),stdout:'ignore',stderr:'ignore',signal:AbortSignal.timeout(30000),
           });
@@ -57,6 +61,7 @@ export class ProjectRuntime extends DurableObject<ProjectRuntimeEnv> {
           let reader:ReadableStreamDefaultReader<Uint8Array>|null=null;
           const cleanup=()=>{try{process?.kill(9);}catch{/* stop remains unconfirmed */}void reader?.cancel().catch(()=>{});};
           const actual=(async()=>{
+            count('execControl');await context.storage.sync();
             process=await container.exec(['node','-e',INSPECT_INITIAL_FILES],{stdin:manifestInput(content),stdout:'pipe',stderr:'ignore',signal:AbortSignal.timeout(5000)});
             if(expired){cleanup();throw Error('runtime-observation-deadline');}
             reader=process.stdout?.getReader()??null;if(!reader)return null;
@@ -88,6 +93,13 @@ export class ProjectRuntime extends DurableObject<ProjectRuntimeEnv> {
       },()=>Date.now(),new R2ModelContentPort(this.env.MODEL_CONTENT));
     }
     return this.#core;
+  }
+  nativeAttemptSnapshot(identity:RuntimeIdentity){
+    checkpointKey(identity);
+    if(!this.env.PROJECT_RUNTIME.idFromName(identity.runtimeId).equals(this.ctx.id))throw Error('runtime-actor-scope-denied');
+    const table=this.ctx.storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='runtime_state'").toArray()[0];
+    if(table){const row=this.ctx.storage.sql.exec<{value:string}>('SELECT value FROM runtime_state WHERE id=1').toArray()[0];if(row&&!sameRuntime(JSON.parse(row.value).identity,identity))throw Error('runtime-scope-denied');}
+    return nativeAttemptSnapshot(this.ctx.storage,this.ctx.id.toString());
   }
   async initialize(input:RuntimeInitialize){return this.#for(input.identity).initialize(input);}
   async observe(identity:RuntimeIdentity){return this.#for(identity).observe(identity);}
