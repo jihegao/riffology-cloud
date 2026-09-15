@@ -2,7 +2,7 @@ import type { ModelSpec } from '../simulation/model-spec.ts';
 import type { TurnScope } from '../turn/protocol.ts';
 import {sameScope} from '../turn/protocol.ts';
 import {canonicalPreviewJson,previewSha256,type PreviewBuildState,type PreviewRuntime} from './contract.ts';
-import type {PreviewProfileRegistry,TrustedPreviewProfile} from './profiles.ts';
+import {createTrustedPreviewRegistry,type PreviewProfileRegistry,type TrustedPreviewProfile} from './profiles.ts';
 import {validateSavedPreview} from './validator.ts';
 import {packageCompatiblePreview} from './packager.ts';
 import {storePreviewPackage,type PreviewObjectBucket,type PreviewBuildIntent,type PreviewBuildReceipt,type PreviewReceiptPort} from './storage.ts';
@@ -55,7 +55,9 @@ export class BrowserPreviewBuildHost{
    const registry=await this.ports.registry(),bytes=await this.ports.files(source);
    let built=false;
    for(const id of ids){
-    const checked=await validateSavedPreview({projectId:this.scope.projectId,revisionId:source.receipt.revisionId,filesSha256:source.receipt.filesSha256},bytes,id,registry);
+    const frozen=this.read(source.receipt.revisionId,id)?.profile;
+    const selected=frozen?.trust==='verified-platform'?await createTrustedPreviewRegistry([frozen]):registry;
+    const checked=await validateSavedPreview({projectId:this.scope.projectId,revisionId:source.receipt.revisionId,filesSha256:source.receipt.filesSha256},bytes,id,selected);
     if(checked.status==='unsupported'){
      if(!this.read(source.receipt.revisionId,id))await this.#write(async tx=>{await tx.put(rowKey(source.receipt.revisionId,id),{schemaVersion:1,source,profile:registry.resolve(id),modelSpec:null,receipt:null,state:{status:'unsupported',revisionId:source.receipt.revisionId,profileId:id,buildIdentity:await previewSha256(canonicalPreviewJson({revision:source.receipt,profileId:id})),reasonCode:checked.reasonCode}} satisfies SavedPreviewBuild);});continue;
     }
@@ -67,7 +69,7 @@ export class BrowserPreviewBuildHost{
    }
    await this.#settle(source,built?null:'browser-preview-unsupported');
   }catch(error){
-   if(source.attempts>=3){for(const id of ids){const row=this.read(source.receipt.revisionId,id);if(row?.state.status==='ready')continue;await this.#write(async tx=>{await tx.put(rowKey(source.receipt.revisionId,id),{schemaVersion:1,source,profile:row?.profile??null,modelSpec:row?.modelSpec??null,receipt:null,state:{status:'failed',revisionId:source.receipt.revisionId,profileId:id,buildIdentity:await previewSha256(canonicalPreviewJson({revision:source.receipt,profileId:id})),reasonCode:error instanceof Error&&error.message==='browser-preview-object-conflict'?'object-conflict':'source-unavailable'}} satisfies SavedPreviewBuild);});}await this.#settle(source,'browser-preview-build-failed');}
+   if(source.attempts>=3){for(const id of ids){const row=this.read(source.receipt.revisionId,id);if(row?.state.status==='ready'||row?.state.status==='unsupported')continue;await this.#write(async tx=>{await tx.put(rowKey(source.receipt.revisionId,id),{schemaVersion:1,source,profile:row?.profile??null,modelSpec:row?.modelSpec??null,receipt:null,state:{status:'failed',revisionId:source.receipt.revisionId,profileId:id,buildIdentity:await previewSha256(canonicalPreviewJson({revision:source.receipt,profileId:id})),reasonCode:error instanceof Error&&error.message==='browser-preview-object-conflict'?'object-conflict':'source-unavailable'}} satisfies SavedPreviewBuild);});}await this.#settle(source,'browser-preview-build-failed');}
   }
  }
 }

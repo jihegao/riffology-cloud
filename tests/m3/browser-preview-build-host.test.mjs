@@ -43,3 +43,10 @@ test('new saved discovery preserves earlier build retry and uses local journal t
  await storage.transaction(tx=>projectPreviewDiscoveries(tx,state,null));
  assert.equal(storage.values.get(discoveryKey('revision-b')).nextAttemptAt,2000);assert.equal(storage.alarm,500);assert.equal(storage.values.get(BROWSER_BUILD_WAKE_KEY),500);
 });
+
+test('Mesa storage failure never overwrites stdlib unsupported and frozen platform profile reconciles after registry update',async()=>{
+ const f=await fixture(1);f.storage.failReceipt=true;await f.host().alarm();const original=f.host().read('revision-a','mesa-3.5.1/v1');assert.equal(original.state.status,'building');
+ const {createTrustedPreviewRegistry}=await import('../../services/browser-preview/profiles.ts');f.ports.registry=()=>createTrustedPreviewRegistry([]);f.storage.failReceipt=false;f.clock(3000);await f.host().alarm();
+ assert.equal(f.host().read('revision-a','mesa-3.5.1/v1').state.status,'ready');assert.equal(f.host().read('revision-a','mesa-3.5.1/v1').state.packageIdentity,original.state.buildIdentity);assert.equal(f.puts,1);assert.equal(f.host().read('revision-a','python-stdlib/v1').state.status,'unsupported');
+ const failed=await fixture(1);failed.storage.failReceipt=true;await failed.host().alarm();failed.clock(3000);await failed.host().alarm();failed.clock(7000);await failed.host().alarm();assert.equal(failed.host().read('revision-a','mesa-3.5.1/v1').state.status,'failed');assert.equal(failed.host().read('revision-a','python-stdlib/v1').state.status,'unsupported');
+});
