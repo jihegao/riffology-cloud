@@ -1,7 +1,7 @@
 // Browser output is untrusted visualization data, never a Research Run receipt.
 export const MESSAGE_SCHEMA = 'riffology.browser-runtime/v1';
 export const VISUAL_SCHEMA = 'riffology.visual/v0.1';
-export const LIMITS = Object.freeze({inputBytes: 8192, resultBytes: 8388608, frames: 501, agentsPerFrame: 10000, gridCells: 1000000, deadlineMs: 30000});
+export const LIMITS = Object.freeze({inputBytes: 8192, resultBytes: 8388608, frames: 501, agentsPerFrame: 10000, gridCells: 1000000, deadlineMs: 30000, maxSteps: 500, cacheBytes: 8388608, sourceBytes: 1048576, bundleBytes: 5242880});
 const object = v => v !== null && typeof v === 'object' && !Array.isArray(v) && Object.getPrototypeOf(v) === Object.prototype;
 const fail = reason => { throw new Error(reason); };
 const exact = (v, fields) => object(v) && Object.keys(v).sort().join(',') === [...fields].sort().join(',');
@@ -18,6 +18,7 @@ export function validateInput(input) {
   for (const [name, value] of Object.entries(input.parameters)) {
     if (!/^[A-Za-z][A-Za-z0-9_-]{0,63}$/.test(name) || !(finite(value) && Math.abs(value) <= Number.MAX_SAFE_INTEGER || typeof value === 'boolean' || typeof value === 'string' && value.length <= 1024)) fail('runtime-parameter-invalid');
   }
+  if (Object.hasOwn(input.parameters, "steps") && (!Number.isInteger(input.parameters.steps) || input.parameters.steps < 1 || input.parameters.steps > LIMITS.maxSteps)) fail("runtime-steps-invalid");
   size(input, LIMITS.inputBytes);
   return input;
 }

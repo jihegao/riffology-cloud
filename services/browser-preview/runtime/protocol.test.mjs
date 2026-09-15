@@ -7,6 +7,8 @@ const lane = {model: 'queue', snapshots: [{schemaVersion: VISUAL_SCHEMA, frame: 
 assert.equal(validateRunRequest(request), request);
 for (const seed of [-1, 4294967296, 1.5, '7', true]) assert.throws(() => validateInput({parameters: {}, seed}), /seed-invalid/);
 assert.throws(() => validateInput({...request.input, steps: 40}), /input-invalid/);
+assert.throws(() => validateInput({parameters: {steps: 501}, seed: 1}), /steps-invalid/);
+assert.equal(validateInput({parameters: {enabled: true, variant: 'enum-value'}, seed: 0}).seed, 0);
 assert.throws(() => validateInput({parameters: {steps: Infinity}, seed: 1}), /parameter-invalid/);
 for (const trace of [grid, lane]) assert.equal(validateTrace(trace), trace);
 const result = {schema: MESSAGE_SCHEMA, type: 'result', requestId: request.requestId, packageIdentity: identity, trace: grid};

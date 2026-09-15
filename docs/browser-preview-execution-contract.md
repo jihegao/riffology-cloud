@@ -22,7 +22,7 @@ G1 资产供应：在构建时获取并校验 Pyodide JS/WASM/stdlib zip、distr
 
 可信 UI 验证 manifest 与所有 source bytes，按 packageIdentity 装载。run 消息：`{schema:'riffology.browser-runtime/v1', type:'run', requestId, packageIdentity, input:{parameters,seed}}`。包 bytes 单独装载一次，不允许每次 run 消息任意替换 source。result 消息：`{schema, type:'result', requestId, packageIdentity, trace}`。error 消息仅带同 schema/type/requestId/packageIdentity 和有界 code/text。requestId 与 packageIdentity 均匹配当前 pending 才可显示。新包/取消/超时清 pending 并终止 Worker；每次 run 新 Worker，防止 Python 全局状态和迟到 postMessage 复用。
 
-固定上限对象为 `{inputBytes:8192,resultBytes:8388608,frames:501,agentsPerFrame:10000,gridCells:1000000,deadlineMs:30000}`，canonical SHA256 对应 limitsSha256 并由 profile 精确匹配。G0 的 `runtime/protocol.mjs` 只验证数据形状及显示限制：输入 8 KiB，trace 8 MiB，501 frames，每 frame 10000 agents，grid 1000000 cells；G1 在 worker JSON 序列化前、host 接收后均检查，并对 stdout/stderr 与播放缓存设限。deadline 30 秒由可信 host 定时器强制 terminate，不能等待 Python 响应 cancel。JS 接收校验不能防止 structured-clone 前内存耗尽，不能宣称硬内存隔离；超限或不可终止执行拒绝继续。
+固定上限对象为 `{inputBytes:8192,resultBytes:8388608,frames:501,agentsPerFrame:10000,gridCells:1000000,deadlineMs:30000,maxSteps:500,cacheBytes:8388608,sourceBytes:1048576,bundleBytes:5242880}`，steps 普通参数最多500（horizon时间范围依Spec，不能等同步数），单 source最多1 MiB、bundle最多5 MiB、播放缓存最多8 MiB；canonical SHA256 对应 limitsSha256 并由 profile 精确匹配。G0 的 `runtime/protocol.mjs` 只验证数据形状及显示限制：输入 8 KiB，trace 8 MiB，501 frames，每 frame 10000 agents，grid 1000000 cells；G1 在 worker JSON 序列化前、host 接收后均检查，并对 stdout/stderr 与播放缓存设限。deadline 30 秒由可信 host 定时器强制 terminate，不能等待 Python 响应 cancel。JS 接收校验不能防止 structured-clone 前内存耗尽，不能宣称硬内存隔离；超限或不可终止执行拒绝继续。
 
 ## 无凭据来源和网络边界
 
