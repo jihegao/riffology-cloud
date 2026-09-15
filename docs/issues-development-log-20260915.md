@@ -6,8 +6,8 @@
 
 | 槽位 | 分支 | 文件归属 | 状态 |
 | --- | --- | --- | --- |
-| A | codex/issues-g2-orchestration | build/discovery/orchestrator、journal/shared alarm、Workspace/Gateway、combined资产接线与定向测试 | G2 持久/权限验收及补丁 |
-| B | codex/issues-g2-preview | web Browser面板与execution-static已集成；只读审查A/发布兼容；新增G5离线任务fixture | G3非作者评审结束项交A修复，空闲槽位准备G5 |
+| A | codex/issues-g2-orchestration | 中央实现已交B；只读审查C真实链路与证据 | G3非作者评审 |
+| B | 从a12b31e新建initial兼容分支 | A交接的中央Browser/Workspace保存发现、源/构建/Verify与相关测试 | 初始复制可信来源兼容实施；G5离线样本已签 |
 | C | codex/issues-g3-acceptance | 新本地整链driver/diagnostics、测试专用native bridge；server实现文件已交回 | G3实际SDK两profile与保存→构建→Verify整链 |
 
 ## 冻结决定
@@ -138,6 +138,12 @@ C两模型真实部分链已增加重启后直接R2后台轮询，先于任何Ga
 B c243014集成为29d8857，主控独立两项离线fixture检查通过：三个项目各六项依赖顺序任务、九组配对seed，固定故意失败与修复字节，有限队列守恒/容量/确定性检查。账号/模型/预算/隐私/授权仍为null；provider调用和新增持久项目均为零。正式test:m3纳入该测试。B转初始复制兼容的只读实施设计，central文件继续由A独占。
 
 已形成G4候选发布范围文档；只读Cloudflare元数据确认账号workers.dev子域为jihe-gao、候选独立执行Worker名称未占用。没有启用站点、改DNS、部署、读取后宣称当前门禁通过或发起模型调用。候选源码/生产镜像/预算与回退须在G3完成后冻结。
+
+## G3 资产签入与独占交接
+
+A 367301e/a8d0d9b集成为9e331fb/a12b31e：五配置ASSETS指向verified combined目录，Gateway允许面板module，预检绑定当前web所有字节及平台静态清单原摘要、profiles/versions/delivery/count。作者40资产实际HTTP与真实Chrome模块import、44项preflight及typecheck通过；主控最终组合检查进行中。
+
+中央文件独占A→B交接，B从a12b31e隔离新分支实施可信initial-copy source union，保留legacy saved identity与runtime；不得伪造checkpoint或在GET新建discovery。A停止中央写入，转C完整driver/tail只读审查；C只拥有新增整链driver/testhelper。触发为G2A收尾已提交且复制来源缺口仍阻断G6。G3完整check须在该兼容补丁集成后最终执行，当前真实saved产品链仍单独验收，不等待扩大测试范围。
 
 ## 主控复核与环境记录
 
