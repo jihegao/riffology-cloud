@@ -69,3 +69,7 @@ G4本次受控执行结束；#64普通用户主链通过，#65与全部线上负
 ### 下一窗口执行准备（2026-09-16）
 
 [G4收口与G5执行提案](g4-closeout-g5-execution-proposal-20260916.md)已形成：G4剩余线上门槛单列；G5 #46三项目18任务/39研究Run、147上游建议上限；#37两项目22Turn/168上游保守上限/研究Run0。两窗口各US$20、每TurnUS$5、首admission后2小时是待批准候选，需真实profile费率证明最坏预留满足预算。#46现有OpenAI Responses/Gateway/platform-BYOK契约不能直接沿用G4 OpenCode通道；#37第二tenant、暖overlay与物理身份/释放观测driver仍需补齐。本次只完成只读分析和文档准备，没有云发布、模型调用、新任务/Run或G5/G6线上执行。
+
+### G4/G5执行准备实现进展（2026-09-16）
+
+三独立subagent实现已集成：#46离线调度compiler、#37只读collector（缺可信暖租约/物理事实，验收保持blocked）、G4原生Run可信preexec观测。主控typecheck与54项定向测试通过；未部署/付费/新Run，线上缺#46生产配置与第二授权测试账号。详情见[G4/G5提案最新进展](g4-closeout-g5-execution-proposal-20260916.md)。这些部分准备不代表完整live driver或issue关闭，原线上门禁和预算fence未重置。

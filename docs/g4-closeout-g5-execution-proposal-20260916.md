@@ -73,3 +73,15 @@ G6仍另行确定三模型审核发布范围和预算；本次无提交官方cat
 ## 本次准备验收
 
 主控逐项核对固定任务/现有profile/复用readiness后，两名非作者subagent交叉审查通过；修正Service Stop计数、Browser协议字段、NPP事实要求及probe排程/task最低值边界。文档链接与diff检查通过；无产品代码修改，未运行容器或全套runtime测试。
+
+## 本轮实施进展（2026-09-16）
+
+用户再次要求执行后，主控派发三个独立工作树并串行集成，生产门禁仍关闭。现有线上GET settings/deployments实测：版本`fc3c6a9d-2d9f-42b9-a94d-51e33a652235`占100%；Turn/provider false、OpenCode/Luna；没有#46 OpenAI/Gateway Secrets、ProductionModelBudget绑定、production profile或暖租约vars。本轮没有云写、模型dispatch或新Run intent。
+
+- #46离线调度及预算准入：[实现](g5-benchmark-driver-implementation.md)，集成`7ef9358`/`6597a7d`。固定18任务、39Run、147dispatch，完整最低task63或66；依赖失败/取消阻断后继及probe，unknown停新准入。它是离线compiler，不是可以执行真实18任务的live runner，execute明确拒绝。
+- #37真实只读GET collector/资格校验：[实现](g5-runtime-observation-implementation.md)，集成`44299c4`/`918862b`/`f6b1f03`。scope/UTF8/响应大小/中断校验；公共API拿不到pair/epoch/PID/三账本/FIFO/双域guard，始终cloudAcceptance=false。这是部分观测准备，不是完整暖复用driver；下一实施切片需要可信持久观测与受控读取设计。
+- G4逐Run可信preexec观测：[实现](g4-native-observation-implementation.md)，集成`429aeaa`。Run/source/token/stop绑定、实际uid/gid/NPP/rlimit、PID/startTicks和pidfd探针；报告FD不交给模型，旧结果兼容。未部署新镜像、未取得Linux生产事实，网络specificFilterObserved=false；新metadata占用最终65536字节artifact预算，极限大结果可能明确失败。
+
+非作者交叉评审已通过；主控实际typecheck通过、54项定向测试54通过/0失败/0跳过，含现有Evidence/ZIP真实本地重放回归；diff检查通过。未跑全套check或真实Docker/云Native验收，不复用历史2002项结果冒称新候选全套通过。复用collector提交冲突先审查diff后只编辑冲突块解决；整文件restore被自动审批阻止且未执行，没有覆盖其他工作树或main原有脏文档。
+
+已请求用户指定#46实际生产账号/模型/Gateway引用及第二个已授权普通测试用户/tenant；不在聊天收密钥。此信息缺失时不能完成真实价格/token上限预算证明或跨tenant验收。准备实现已交付，线上G4补测/G5尚未执行，#64/#65/#46/#37未新增关闭；G6、推送、合并和官方发布未开展。
