@@ -21,7 +21,7 @@
 | --- | --- | --- |
 | G0 | 本地通过 | 线上 #65 签收仍待 G4 |
 | G1 | 实施中 | 确定性包、隔离 runtime、server Mesa |
-| G2 | 部分实施 | Agent 约定已本地验证；saved 派生构建、持久 API、Workspace 待实施 |
+| G2 | 实施中 | Agent 约定已验证；saved 派生构建、持久 API、Workspace 实施中 |
 | G3 | 未开始 | 非作者评审、真实本地整链、完整 check |
 | G4 | 未开始 | 冻结发布、普通用户两模型、零执行窗口、资源释放 |
 | G5 | 未开始 | #46/#37 账号/预算、账本、故障/复用验收 |
@@ -76,6 +76,10 @@ A补丁1f51b4c集成为4c7f563；主控独立19项contract/build/generation测�
 AMD128原生x86但无Docker/替代container工具/免密sudo，无法无系统修改复现root与固定UID执行器。C测试专用outer fence f401db4集成为ce75b34，默认测试仍使用生产内层fence；显式本地翻译模式以Docker deny-network syscall规则和no-new-privileges证明真实socket/syscall EPERM，才使用既有translated marker。此证据是本地替代隔离，不证明生产内层seccomp。C作者两模型source重算/导出ZIP/Python replay已通过，主控独立两模型加旧五场景运行中；初次ZIP内存R2 shim漏arrayBuffer失败已修复并保留失败边界。
 
 B槽位动态前移G2B，工作树codex/issues-g2-preview基线2a6589b。计划明确允许面板先基于G0契约fixture开发，G1仍等待主控真实验收与registry签收。B独占web面板、相关UI和新增execution-static Worker/config/materializer；A拥有app/Gateway授权资产路由与central build/Verify。G2最终不能以fixture面板签收，仍须实际API和持久恢复证据。生产独立执行站点/部署均未进行。
+
+主控最终独立验收：26/26真实Chrome/Pyodide、5/5 runtime fixture/schema、7/7真实Docker（两模型与既有五场景）、22/22 contract/build/generation/production-registry，typecheck通过。实际检查image identity、两server receipt的版本/exit/摘要和研究ZIP真Python replay均matches=true；实际查看Queue/Mesa截图。证据集中于`.local/issues-20260915/g1/`（ignored），主控日志有SHA256SUMS，浏览器实证另含请求/CSP/截图摘要。此处真实执行仍使用明确的本地Docker outer替代fence；内存R2 port导出不是Gateway/R2云端整链。C继续补Browser/server同配置seed7完整trace对照后再退出G1。
+
+可信生产registry 70c7d00集成为b9f81cc，仅静态平台清单可注册verified-platform；正式两模型测试使用真实tar archive摘要→validator→确定性packager，不能把runtime自建fixture的拼接摘要冒充保存archive。A进入G2A，工作树codex/issues-g2-orchestration基线b9f81cc，拥有central journal/store/build/Verify/Gateway/alarm所有调用点。API冻结为只读build view/package/Verify状态与显式Verify提交，GET不写discovery、不启动计算。saved journal+discovery intent+build逻辑wake+物理alarm要求同事务，实际重启且无页面后台恢复仍待实施验收。复制模型initial reference尚无savedTurn，Browser派生支持缺口单独保留，不伪造checkpoint或继承源项目权限。
 
 ## 主控复核与环境记录
 
