@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,mkdir,writeFile,readFile,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {spawnSync} from 'node:child_process';
+const adapter=await readFile('services/run/model_run_adapter.py');
+async function run(t,code){const root=await mkdtemp(join(tmpdir(),'model-adapter-'));t.after(()=>rm(root,{recursive:true,force:true}));await mkdir(join(root,'model'));await mkdir(join(root,'output'));await writeFile(join(root,'model/run.py'),adapter);await writeFile(join(root,'model/model.py'),code);await writeFile(join(root,'model/model-spec.json'),JSON.stringify({metrics:{count:{}}}));await writeFile(join(root,'input.json'),JSON.stringify({schemaVersion:1,runId:'frozen-run',parameters:{steps:2},seed:4294967295}));const reply=spawnSync('python3',[join(root,'model/run.py'),'--input',join(root,'input.json'),'--output',join(root,'output/result.json')],{encoding:'utf8'});return {reply,root};}
+const model="def run(config):\n assert set(config)=={'parameters','seed'}\n return {'model':'shared','snapshots':[{'frame':0,'time':0,'metrics':{'count':config['seed'],'extra':2}}]}\n";
+test('self-contained saved adapter recomputes shared model with exact config and Spec-declared metrics',async t=>{const f=await run(t,model);assert.equal(f.reply.status,0,f.reply.stderr);const result=JSON.parse(await readFile(join(f.root,'output/result.json'),'utf8'));assert.deepEqual(result,{schemaVersion:1,metrics:{count:4294967295},outputs:['summary.json','trace.json']});assert.equal(JSON.parse(await readFile(join(f.root,'output/summary.json'),'utf8')).seed,4294967295);});
+test('large trace retains complete computation summary without ever persisting a truncated trace',async t=>{const f=await run(t,model.replace("'extra':2","'extra':2,'diagnostics':'x'*20000"));assert.equal(f.reply.status,0,f.reply.stderr);const result=JSON.parse(await readFile(join(f.root,'output/result.json'),'utf8'));assert.deepEqual(result.outputs,['summary.json']);assert.equal(result.metrics.count,4294967295);await assert.rejects(readFile(join(f.root,'output/trace.json')),/ENOENT/);});
+test('nonfinite or missing metrics fail rather than manufacturing a server finding',async t=>{for(const code of [model.replace("config['seed']","float('nan')"),model.replace("'count':config['seed'],",'')]){const f=await run(t,code);assert.notEqual(f.reply.status,0);await assert.rejects(readFile(join(f.root,'output/result.json')),/ENOENT/);}});

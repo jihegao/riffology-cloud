@@ -5,6 +5,16 @@ RUN useradd --create-home --uid 10001 --shell /usr/sbin/nologin project \
     && chown root:root /workspace /opt/riffology /var/lib/riffology /var/lib/riffology/archives /var/lib/riffology/services /var/lib/riffology/effects \
     && chown project:project /run-output && chmod 0700 /run-output /var/lib/riffology/archives /var/lib/riffology/services
 RUN python3 -m pip install --no-cache-dir --no-deps simpy==4.1.1
+# Independent relocatable CPython: do not replace the historical system Python.
+# Official standalone release asset bytes are verified by BuildKit before extraction.
+ADD --checksum=sha256:4eb8731e2dbc9644dca24e71a9e7615f7fb04720342ea65f3c30ea3a6a00b792 https://github.com/astral-sh/python-build-standalone/releases/download/20251217/cpython-3.14.2%2B20251217-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz /tmp/python-mesa.tar.gz
+RUN test "$(uname -m)" = x86_64 && mkdir -p /opt/riffology/python-mesa \
+    && tar -xzf /tmp/python-mesa.tar.gz --strip-components=1 -C /opt/riffology/python-mesa && rm /tmp/python-mesa.tar.gz
+COPY --chown=root:root --chmod=0444 services/run/mesa-cpython-profile.json /opt/riffology/mesa-cpython-profile.json
+COPY --chown=root:root --chmod=0444 services/run/mesa-cpython-requirements.txt /opt/riffology/mesa-cpython-requirements.txt
+RUN /opt/riffology/python-mesa/bin/python3 -m pip install --no-cache-dir --no-deps --only-binary=:all: --require-hashes -r /opt/riffology/mesa-cpython-requirements.txt \
+    && /opt/riffology/python-mesa/bin/python3 -m pip check \
+    && /opt/riffology/python-mesa/bin/python3 -c "import sys; assert sys.version.split()[0] == '3.14.2'"
 COPY --chown=root:root --chmod=0555 services/project-tools/process_quiescence.py /opt/riffology/process_quiescence.py
 COPY --chown=root:root --chmod=0555 services/project-tools/workspace_archive.py /opt/riffology/workspace_archive.py
 COPY --chown=root:root --chmod=0555 services/project-tools/project_network_fence.py /opt/riffology/project_network_fence.py

@@ -168,6 +168,7 @@ export class SimulationHost{
  * exit and process-domain stop proof. Project success strings are ignored. */
 export async function publishSimulationResult(bucket:R2Bucket,record:SimulationRecord,raw:unknown){
  const value=raw as {exitCode?:unknown;result?:unknown;pythonVersion?:unknown};
+ if(record.input.plan.executionProfile&&value?.pythonVersion!==record.input.plan.executionProfile.pythonVersion)throw Error('simulation-environment-mismatch');
  if(!value||typeof value!=='object'||Object.keys(value).sort().join(',')!=='exitCode,pythonVersion,result'||value.exitCode!==0||typeof value.pythonVersion!=='string'||!/^3\.[0-9]+\.[0-9]+$/.test(value.pythonVersion))throw Error('simulation-result-invalid');
  const result=value.result as {schemaVersion?:unknown;metrics?:unknown;outputs?:unknown};
  if(!result||typeof result!=='object'||!['metrics,schemaVersion','metrics,outputs,schemaVersion'].includes(Object.keys(result).sort().join(','))||result.schemaVersion!==1)throw Error('simulation-result-invalid');

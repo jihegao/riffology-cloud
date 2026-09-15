@@ -43,7 +43,13 @@ def main():
     if python_version != expected['pythonVersion'] and not args.allow_python_mismatch:
         raise ValueError('python-version-mismatch: expected ' + expected['pythonVersion'])
     lock = json.loads(safe(root, source['lockPath']).read_text())
-    for package, version in lock['packages'].items():
+    profile = source.get('executionProfile')
+    packages = {item['name']:item['version'] for item in profile['dependencies']} if profile else lock['packages']
+    if profile and lock['packages'] != profile['sourcePackages']:
+        raise ValueError('dependency-profile-mismatch')
+    if profile and python_version != profile['pythonVersion'] and not args.allow_python_mismatch:
+        raise ValueError('execution-profile-python-mismatch')
+    for package, version in packages.items():
         if importlib.metadata.version(package) != version:
             raise ValueError('dependency-version-mismatch: ' + package)
     with tempfile.TemporaryDirectory(prefix='riffology-replay-') as directory:
@@ -87,7 +93,7 @@ This ZIP is a snapshot of the saved project and all selected persisted research 
 
 1. Unpack the ZIP into a new directory.
 2. Read manifest.json and the selected source's Model Spec and dependency lock under sources/.
-3. Use the recorded Python version, preferably in a new virtual environment. Install the exact packages from environment/<source-key>/requirements.txt if the lock is nonempty.
+3. Use the recorded Python version, preferably in a new virtual environment. For a source with execution-profile.json, use its recorded linux/amd64 CPython and install the complete eight-package native closure with pip install --no-deps --only-binary=:all: --require-hashes -r environment/<source-key>/requirements.txt. The six-package project lock remains unchanged. For historical empty/SimPy sources, install their exact requirements.txt normally if nonempty.
 4. Run python replay.py --verify-only to check every packaged file digest.
 5. Run python replay.py --run RUN_ID (or omit --run for the first completed result).
 

@@ -45,8 +45,9 @@ export async function buildResearchExport(snapshot:ResearchSnapshot,ports:Export
   const spec=paths.get('model/model-spec.json')!,lock=paths.get(inspection.spec.execution.dependencyLock)!;let lockData:{packages:Record<string,string>};try{lockData=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(lock));}catch{fail('export-dependencies-invalid');}
   if(!lockData.packages||typeof lockData.packages!=='object'||Array.isArray(lockData.packages))fail('export-dependencies-invalid');
   const archivePath=`sources/${key}/source.tar`,specPath=`sources/${key}/model-spec.json`,lockPath=`environment/${key}/requirements.lock`;
-  files.add(archivePath,bytes);files.add(specPath,spec);files.add(lockPath,lock);files.add(`environment/${key}/requirements.txt`,encode(Object.entries(lockData.packages).map(([name,version])=>`${name}==${version}`).join('\n')+'\n'));
-  sources.push({key,filesSha256:key,specSha256:inspection.version.specSha256,revisionIds:[...entry.revisions],archivePath,specPath,lockPath,dependencyLockSha256:await digest(lock),execution:inspection.spec.execution,reasonCode:inspection.reasonCode});
+  files.add(archivePath,bytes);files.add(specPath,spec);files.add(lockPath,lock);files.add(`environment/${key}/requirements.txt`,encode((checked.executionProfile?checked.executionProfile.dependencies.map(item=>`${item.name}==${item.version} --hash=sha256:${item.sha256}`):Object.entries(lockData.packages).map(([name,version])=>`${name}==${version}`)).join('\n')+'\n'));
+  if(checked.executionProfile)files.add(`environment/${key}/execution-profile.json`,json(checked.executionProfile));
+  sources.push({key,filesSha256:key,specSha256:inspection.version.specSha256,revisionIds:[...entry.revisions],archivePath,specPath,lockPath,dependencyLockSha256:await digest(lock),execution:inspection.spec.execution,...(checked.executionProfile?{executionProfile:checked.executionProfile}:{}),reasonCode:inspection.reasonCode});
  }
  const runs=[];
  for(const run of snapshot.runs){
@@ -56,6 +57,7 @@ export async function buildResearchExport(snapshot:ResearchSnapshot,ports:Export
    const prefix=`simulation-results-v1/${scope.tenantId}/${scope.projectId}/${scope.workspaceId}/${run.runId}`,bytes=await ports.artifact(`${prefix}/${run.result.artifactSha256}.json`,65536);if(!bytes)fail('export-result-missing');if(bytes.byteLength>65536||await digest(bytes)!==run.result.artifactSha256)fail();
    let raw:Record<string,unknown>;try{raw=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{fail();}
    const allowed=['schemaVersion','runId','experimentId','version','parameters','seed','runtimeImage','pythonVersion','metrics','outputs'];if(!raw||Object.keys(raw).some(k=>!allowed.includes(k))||raw.schemaVersion!==1||raw.runId!==run.runId||raw.experimentId!==run.experimentId||!same(raw.version,modelVersion(run.input.plan))||!same(raw.parameters,run.input.parameters)||raw.seed!==run.input.seed||raw.runtimeImage!==run.input.runtimeImage||typeof raw.pythonVersion!=='string'||!/^3\.[0-9]+\.[0-9]+$/.test(raw.pythonVersion)||!same(raw.metrics,run.result.metrics)||!same(raw.outputs||[],run.result.outputs||[]))fail();
+   if(run.input.plan.executionProfile&&raw.pythonVersion!==run.input.plan.executionProfile.pythonVersion)fail('export-environment-mismatch');
    validateMetrics(run.input.plan.spec,raw.metrics);resultPath=`results/${run.runId}/result.json`;files.add(resultPath,bytes);
    for(const output of run.result.outputs||[]){const value=await ports.artifact(`${prefix}/outputs/${output.sha256}`,16384);if(!value||value.byteLength!==output.size||await digest(value)!==output.sha256)fail();files.add(`results/${run.runId}/outputs/${output.path}`,value);}
   }

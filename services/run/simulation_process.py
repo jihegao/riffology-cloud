@@ -39,8 +39,27 @@ def validate(control, token):
     project_path(control['dependencyLock'], {'app'}, '.lock')
     if control['entrypoint'] == control['dependencyLock'] or type(control['parameters']) is not dict: raise ValueError('invalid-simulation-input')
     return control
-def envelope(exit_code, result):
-    return {'exitCode': int(exit_code), 'result': result, 'pythonVersion': sys.version.split()[0]}
+def envelope(exit_code, result, python_version=None):
+    return {'exitCode': int(exit_code), 'result': result, 'pythonVersion': python_version or sys.version.split()[0]}
+
+def execution_runtime(control):
+    lock = read_json(WORKSPACE / control['dependencyLock']); exact(lock, {'schemaVersion','packages'})
+    if type(lock['schemaVersion']) is not int or lock['schemaVersion'] != 1 or type(lock['packages']) is not dict:
+        raise ValueError('unsupported-simulation-dependencies')
+    packages = lock['packages']
+    if packages in ({}, {'simpy':'4.1.1'}):
+        if packages and importlib.metadata.version('simpy') != '4.1.1': raise ValueError('simulation-dependencies-mismatch')
+        return sys.executable, sys.version.split()[0]
+    profile = read_json(Path('/opt/riffology/mesa-cpython-profile.json'))
+    if packages != profile['sourcePackages']: raise ValueError('unsupported-simulation-dependencies')
+    executable = '/opt/riffology/python-mesa/bin/python3'
+    # Only fixed root-owned interpreter/metadata are evaluated; generated code
+    # cannot choose its interpreter or claim a Python version in the receipt.
+    probe = subprocess.run([executable, '-I', '-c', 'import sys,json,importlib.metadata as m;print(json.dumps({"pythonVersion":sys.version.split()[0],"packages":{p:m.version(p) for p in sys.argv[1:]}}))', *[item['name'] for item in profile['dependencies']]], stdin=subprocess.DEVNULL, capture_output=True, text=True, check=True, timeout=10, env={'PATH':'/usr/bin:/bin','LANG':'C.UTF-8'})
+    observed = json.loads(probe.stdout)
+    expected = {item['name']:item['version'] for item in profile['dependencies']}
+    if observed != {'pythonVersion':profile['pythonVersion'],'packages':expected}: raise ValueError('simulation-dependencies-mismatch')
+    return executable, observed['pythonVersion']
 @contextmanager
 def operation_lock():
     fd = os.open(CONTROL / '.simulation.lock', os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
@@ -60,8 +79,9 @@ def stopped(token):
     return {'schemaVersion': 1, 'token': token, 'status': 'stopped', 'result': None, 'stop': read_json(path)}
 
 def monitor(token, control):
-    code, child = 4, None
+    code, child, python_version = 4, None, None
     try:
+        executable, python_version = execution_runtime(control)
         INPUT_ROOT.mkdir(mode=0o755, exist_ok=True)
         input_path = INPUT_ROOT / 'input.json'
         write(input_path, {'schemaVersion': 1, 'runId': control['runId'], 'parameters': control['parameters'], 'seed': control['seed']})
@@ -75,7 +95,7 @@ def monitor(token, control):
                 return  # a duplicate monitor must not stop the original execution
             write(attempt, {'token': token, 'startedAt': now()})
             with open(CONTROL / (token + '.stdout.log'), 'ab', buffering=0) as stdout, open(CONTROL / (token + '.stderr.log'), 'ab', buffering=0) as stderr:
-                child = subprocess.Popen([sys.executable, '-B', control['entrypoint'], '--input', str(input_path), '--output', str(OUTPUT_ROOT / 'result.json')], cwd=WORKSPACE, env={'PATH':'/usr/local/bin:/usr/bin:/bin','HOME':'/tmp','LANG':'C.UTF-8','PYTHONUNBUFFERED':'1'}, stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr, close_fds=True, start_new_session=True, preexec_fn=child_setup)
+                child = subprocess.Popen([executable, '-B', control['entrypoint'], '--input', str(input_path), '--output', str(OUTPUT_ROOT / 'result.json')], cwd=WORKSPACE, env={'PATH':'/usr/local/bin:/usr/bin:/bin','HOME':'/tmp','LANG':'C.UTF-8','PYTHONUNBUFFERED':'1','OPENBLAS_NUM_THREADS':'1','OMP_NUM_THREADS':'1','MKL_NUM_THREADS':'1'}, stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr, close_fds=True, start_new_session=True, preexec_fn=child_setup)
         while child.poll() is None:
             if now() >= control['deadlineAt'] or (CONTROL / (token + '.stop.json')).exists():
                 fence.seal()
@@ -100,7 +120,7 @@ def monitor(token, control):
                 code, result = 4, None
         elif code == 0:
             code = 4
-        write(CONTROL / (token + '.result.json'), envelope(code, result))
+        write(CONTROL / (token + '.result.json'), envelope(code, result, python_version))
 
 def protect_tree():
     for current, directories, files in os.walk(WORKSPACE, topdown=False, followlinks=False):
@@ -122,9 +142,7 @@ def start(token):
     restored = archive.restore(WORKSPACE, ARCHIVES, token)
     if restored['sha256'] != control['filesSha256']: raise ValueError('simulation-archive-mismatch')
     if digest(WORKSPACE / 'model/model-spec.json') != control['specSha256'] or digest(WORKSPACE / control['entrypoint']) != control['entrypointSha256'] or digest(WORKSPACE / control['dependencyLock']) != control['dependencyLockSha256']: raise ValueError('simulation-source-mismatch')
-    lock = read_json(WORKSPACE / control['dependencyLock']); exact(lock, {'schemaVersion','packages'})
-    if lock['schemaVersion'] != 1 or lock['packages'] not in ({}, {'simpy':'4.1.1'}): raise ValueError('unsupported-simulation-dependencies')
-    if lock['packages'] and importlib.metadata.version('simpy') != '4.1.1': raise ValueError('simulation-dependencies-mismatch')
+    execution_runtime(control)
     protect_tree()
     with fence.spawn_lock() as directory:
         fence.require_unsealed(directory); write(CONTROL / (token + '.started.json'), {'token':token,'startedAt':now()})
