@@ -1,3 +1,10 @@
+import {BrowserPreviewBuildHost} from '../browser-preview/build-host.ts';
+import {BrowserPreviewOrchestrator} from '../browser-preview/orchestrator.ts';
+import {productionPreviewRegistry} from '../browser-preview/production-registry.ts';
+import {platformPreviewDelivery} from '../browser-preview/platform-delivery.ts';
+import {DurableBrowserBuildAlarmPort} from './turn-alarm.ts';
+import {canonicalPreviewJson} from '../browser-preview/contract.ts';
+import type {PreviewRuntime} from '../browser-preview/contract.ts';
 import {preparePublication,type PublicationVersion} from '../publication/readiness.ts';
 import {R2PublicationArtifacts} from '../publication/artifacts.ts';
 import {normalizeToolCommand,type ToolCommand} from '../tools/protocol.ts';
@@ -113,6 +120,7 @@ export interface WorkspaceAgentEnv {
   OBSERVER_EXECUTOR?:ObserverExecutorNamespace;
   M3_PREVIEW_ORIGIN?:string;
   APP_ORIGIN?:string;
+  BROWSER_PREVIEW_EXECUTION_ORIGIN?:string;
   M3_SERVICE_IMAGE?:string;
   SERVICE_RUNTIME?:{getByName(name:string):{forwardHttp(input:ServiceRuntimeInput,request:Request):Promise<Response>;forwardObserverHttp?(input:ObserverRuntimeRequest,request:Request,cancellation:ObserverCancellationPort):Promise<Response>;fetch?(request:Request):Promise<Response>}};
   SERVICE_RUN?:{getByName(name:string):{
@@ -126,6 +134,35 @@ export interface WorkspaceAgentEnv {
 /** Private platform RPC and a single internal WebSocket fetch endpoint. The
  * fetch transport still verifies the access session and authoritative target. */
 export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
+  constructor(ctx:DurableObjectState,env:WorkspaceAgentEnv){
+    super(ctx,env);
+    ctx.blockConcurrencyWhile(async()=>{const store=new DurableTurnStore(ctx.storage);if(store.read())await store.transact(current=>{if(!current)throw Error('invalid-persisted-turn-journal');return {state:current,value:null};});});
+  }
+  #browserBuildAlarm=new DurableBrowserBuildAlarmPort(this.ctx.storage);
+  #browserBuildHost:BrowserPreviewBuildHost|null=null;
+  #browserBuild(scope:TurnScope){
+    if(!this.env.WORKSPACE_CHECKPOINTS)throw Error('browser-preview-unavailable');
+    return this.#browserBuildHost??=new BrowserPreviewBuildHost(this.ctx.storage,scope,{registry:productionPreviewRegistry,bucket:this.env.WORKSPACE_CHECKPOINTS,files:async discovery=>{
+      this.#maintenanceScope(scope);const saved=this.#turns.savedRevisionSnapshot(scope,discovery.receipt.revisionId);
+      if(!saved||canonicalPreviewJson(saved.identity)!==canonicalPreviewJson(discovery.identity)||canonicalPreviewJson(saved.receipt)!==canonicalPreviewJson(discovery.receipt))throw Error('browser-preview-source-unavailable');
+      const bytes=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles({kind:'saved-turn',identity:saved.identity,revision:saved.receipt},16*1024*1024);
+      this.#maintenanceScope(scope);const after=this.#turns.savedRevisionSnapshot(scope,discovery.receipt.revisionId);if(canonicalPreviewJson(after)!==canonicalPreviewJson(saved))throw Error('browser-preview-source-unavailable');return bytes;
+    }});
+  }
+  #browser(scope:TurnScope){
+    const owned=this.#maintenanceScope(scope);
+    return new BrowserPreviewOrchestrator(this.ctx.storage,owned,{builds:this.#browserBuild(owned),bucket:this.env.WORKSPACE_CHECKPOINTS!,registry:productionPreviewRegistry,
+      checkScope:()=>{this.#maintenanceScope(owned);},authorize:async actor=>{const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(actor,owned.workspaceId);if(!sameScope(actual,owned))throw Error('browser-preview-access-denied');},
+      head:()=>this.#turns.workspaceRevisionSnapshot(owned),saved:revision=>this.#turns.savedRevisionSnapshot(owned,revision),
+      files:source=>this.env.REVISION_STORE.getByName(revisionStoreActorName(owned)).serviceFiles(source,16*1024*1024),simulations:this.#simulations(owned),canVerify:()=>this.#simulationCanRun(),image:this.env.M4_SIMULATION_IMAGE??'',
+      delivery:hash=>platformPreviewDelivery(this.env.APP_ORIGIN,this.env.BROWSER_PREVIEW_EXECUTION_ORIGIN,hash)});
+  }
+  browserPreviewView(input:{scope:TurnScope;actor:TurnActor;revisionId?:string;profileId?:PreviewRuntime['profileId']}){return this.#browser(input.scope).view(input.actor,input.revisionId,input.profileId);}
+  browserPreviewPackage(input:{scope:TurnScope;actor:TurnActor;packageIdentity:string}){return this.#browser(input.scope).bytes(input.actor,input.packageIdentity);}
+  verifyBrowserPreview(input:{scope:TurnScope;actor:TurnActor;body:unknown}){return this.#browser(input.scope).verify(input.actor,input.body);}
+  browserPreviewVerification(input:{scope:TurnScope;actor:TurnActor;key:string}){return this.#browser(input.scope).verification(input.actor,input.key);}
+  browserPreviewRetry(input:{scope:TurnScope;actor:TurnActor;key:string}){return this.#browser(input.scope).retryVerification(input.actor,input.key);}
+  retryBrowserPreview(input:{scope:TurnScope;actor:TurnActor;body:unknown}){return this.#browser(input.scope).retry(input.actor,input.body);}
   #simulationHost:SimulationHost|null=null;
   #simulationAlarm=new DurableSimulationAlarmPort(this.ctx.storage);
   #simulations(scope:TurnScope){
@@ -808,6 +845,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   }
   async alarm() {
     await routeWorkspaceAlarm({
+      browserBuild:{readWake:()=>this.#browserBuildAlarm.read(),defer:at=>this.#browserBuildAlarm.schedule(at),advance:async scope=>{await this.#browserBuild(this.#maintenanceScope(scope)).alarm();}},
       simulation:{readWake:()=>this.#simulationAlarm.read(),defer:at=>this.#simulationAlarm.schedule(at),advance:async scope=>{const owned=this.#maintenanceScope(scope);await this.#simulations(owned).alarm();await this.#experimentGroups(owned).alarm();}},
       observer:{
         readWake:()=>this.#observerAlarm.read(),

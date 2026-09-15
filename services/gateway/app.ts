@@ -1,3 +1,5 @@
+import type {GatewayBrowserPreviews} from './browser-preview-services.ts';
+import {parsePreviewVerifyRequest,type PreviewRuntime} from '../browser-preview/contract.ts';
 import {SubmissionCatalog} from '../catalog/submissions.ts';
 import type {GatewayPublications} from './publication-services.ts';
 import type {PublicationArtifacts} from '../publication/artifacts.ts';
@@ -26,6 +28,7 @@ import {observerArtifactReceipt} from '../preview/observer-artifacts.ts';
 import type {GatewayObservations} from './observer-services.ts';
 
 export interface GatewayServices {
+  browserPreviews?:GatewayBrowserPreviews;
   publications?:GatewayPublications;
   publicationArtifacts?:PublicationArtifacts;
   researchExports?:GatewayResearchExports;
@@ -178,6 +181,32 @@ export async function gateway(request:Request, services:GatewayServices):Promise
         if(request.method==='POST'&&!claimId&&!url.search){const body=await readJson(request);return json(resource==='evidence'?await services.simulations.createEvidence(scope,principal,body):await services.simulations.rejectEvidence(scope,principal,body),201);}
         throw new HttpError('evidence-input-invalid',400);
       }catch(error){if(error instanceof HttpError||error instanceof CatalogError)throw error;const code=error instanceof Error?error.message:'';if(code==='evidence-not-found'||code==='simulation-not-found')throw new HttpError('evidence-not-found',404);if(code==='evidence-capacity')throw new HttpError(code,429);if(code==='evidence-access-denied')throw new HttpError(code,403);if(/^evidence-(?:input-invalid|expectation-mismatch|group-mismatch|metric-missing|no-valid-runs|zero-baseline|number-overflow|source-rejected|run-ineligible)$/.test(code))throw new HttpError(code,400);throw new HttpError('evidence-unavailable',503);}
+    }
+    const browserRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/browser-preview(?:\/(packages|verify|retry)(?:\/([A-Za-z0-9_-]{1,128}))?)?$/.exec(url.pathname);
+    if(browserRoute){
+      const [,workspaceId,resource,id]=browserRoute,scope=await new ProjectCatalog(services.database,new Set()).maintenanceWorkspace(principal,workspaceId!);
+      if(!services.browserPreviews)throw new HttpError('browser-preview-unavailable',503);
+      try{
+        if(!resource&&request.method==='GET'){
+          if([...url.searchParams.keys()].some(k=>!['revisionId','profileId'].includes(k))||['revisionId','profileId'].some(k=>url.searchParams.getAll(k).length>1))throw new HttpError('browser-preview-input-invalid',400);
+          const revision=url.searchParams.get('revisionId')??undefined,profile=url.searchParams.get('profileId')??undefined;
+          if(revision!==undefined&&!/^[A-Za-z0-9_-]{1,128}$/.test(revision)||profile!==undefined&&!['python-stdlib/v1','mesa-3.5.1/v1'].includes(profile))throw new HttpError('browser-preview-input-invalid',400);
+          return json(await services.browserPreviews.view(scope,principal,revision,profile as PreviewRuntime['profileId']|undefined));
+        }
+        if(resource==='packages'&&id&&request.method==='GET'&&!url.search){const bytes=await services.browserPreviews.bytes(scope,principal,id);return new Response(bytes,{headers:{'Content-Type':'application/json; charset=utf-8','Content-Length':String(bytes.length),'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});}
+        if(resource==='verify'&&!id&&request.method==='POST'&&!url.search)return json(await services.browserPreviews.verify(scope,principal,parsePreviewVerifyRequest(await readJson(request,12288))),202);
+        if(resource==='verify'&&id&&request.method==='GET'&&!url.search)return json(await services.browserPreviews.verification(scope,principal,id));
+        if(resource==='retry'&&id&&request.method==='GET'&&!url.search)return json(await services.browserPreviews.retryVerification(scope,principal,id));
+        if(resource==='retry'&&!id&&request.method==='POST'&&!url.search)return json(await services.browserPreviews.retry(scope,principal,await readJson(request,4096)),202);
+        throw new CatalogError('not_found');
+      }catch(error){if(error instanceof HttpError||error instanceof CatalogError)throw error;const code=error instanceof Error?error.message:'';
+        if(code==='browser-preview-not-found')throw new HttpError(code,404);
+        if(code==='browser-preview-access-denied')throw new HttpError(code,403);
+        if(/conflict|stale/.test(code))throw new HttpError(code,409);
+        if(/input-invalid|contract-invalid|invalid-browser-preview|invalid-turn-id/.test(code))throw new HttpError('browser-preview-input-invalid',400);
+        if(code==='simulation-capacity')throw new HttpError(code,429);
+        throw new HttpError('browser-preview-unavailable',503);
+      }
     }
     const simulationRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/(model|experiments|experiment-groups|simulation-runs)(?:\/([A-Za-z0-9_-]{1,128})(?:\/(cancel))?)?$/.exec(url.pathname);
     if(simulationRoute){

@@ -15,7 +15,7 @@ export interface BrowserPreviewOrchestratorPorts{
  head():Saved|null;saved(revisionId:string):Saved|null;
  registry():Promise<PreviewProfileRegistry>;builds:BrowserPreviewBuildHost;bucket:PreviewObjectBucket;
  files(source:PreviewSource):Promise<Uint8Array>;simulations:SimulationHost;canVerify():boolean;image:string;
- delivery():unknown;
+ delivery(assetSha256:string):unknown;
 }
 function eq(a:unknown,b:unknown){return canonicalPreviewJson(a)===canonicalPreviewJson(b);}
 export class BrowserPreviewOrchestrator{
@@ -31,8 +31,8 @@ export class BrowserPreviewOrchestrator{
   if(!revision)return {currentRevisionId:null,revisionId:null,build:null,stale:false,modelSpec:null,reasonCode:'preview-no-saved-revision',delivery:null};
   const saved=this.#saved(revision),row=this.ports.builds.read(revision,profileId);let delivery=null,reasonCode:string|null=null;
   if(row?.state.status==='ready'){
-   if(!row.profile||row.profile.trust!=='verified-platform'||!eq(registry.resolve(row.profile.runtime.profileId)?.runtime,row.profile.runtime))reasonCode='preview-runtime-unavailable';
-   else {const config=this.ports.delivery();if(!config||typeof config!=='object')reasonCode='preview-runtime-unavailable';else delivery={...config,profile:{runtime:row.profile.runtime,packages:row.profile.packages,assetManifest:row.profile.assets,verified:true}};}
+   if(!row.profile||row.profile.trust!=='verified-platform')reasonCode='preview-runtime-unavailable';
+   else {let config:unknown=null;try{config=this.ports.delivery(row.profile.runtime.assetSha256);}catch{/* Historical immutable delivery may be unavailable. */}if(!config||typeof config!=='object')reasonCode='preview-runtime-unavailable';else delivery={...config,profile:{runtime:row.profile.runtime,packages:row.profile.packages,assetManifest:row.profile.assets,verified:true}};}
   }
   this.#stillSaved(saved);const current=this.ports.head()?.receipt.revisionId??null;
   return {currentRevisionId:current,revisionId:revision,build:reasonCode?null:row?.state??null,stale:current!==null&&revision!==current,modelSpec:row?.modelSpec??null,reasonCode:reasonCode??(!row?'preview-discovery-pending':null),delivery};
@@ -41,9 +41,24 @@ export class BrowserPreviewOrchestrator{
   if(!/^[a-f0-9]{64}$/.test(identity))throw Error('browser-preview-input-invalid');await this.#authorize(actor);
   const receipt=this.ports.builds.receipt(identity);if(!receipt)throw Error('browser-preview-not-found');const saved=this.#saved(receipt.revisionId);
   const result=await readPreviewPackage(this.ports.bucket,{tenantId:this.scope.tenantId,projectId:this.scope.projectId,workspaceId:this.scope.workspaceId},receipt);
-  const row=this.ports.builds.read(receipt.revisionId,result.manifest.runtime.profileId),registry=await this.ports.registry();
-  if(!row?.profile||!eq(row.profile.runtime,result.manifest.runtime)||!eq(registry.resolve(result.manifest.runtime.profileId)?.runtime,result.manifest.runtime))throw Error('browser-preview-source-unavailable');
+  const row=this.ports.builds.read(receipt.revisionId,result.manifest.runtime.profileId);
+  try{this.ports.delivery(result.manifest.runtime.assetSha256);}catch{throw Error('browser-preview-source-unavailable');}
+  if(!row?.profile||!eq(row.profile.runtime,result.manifest.runtime))throw Error('browser-preview-source-unavailable');
   await this.#authorize(actor);this.#stillSaved(saved);return result;
+ }
+ async retry(actor:TurnActor,raw:unknown){
+  if(!raw||typeof raw!=='object'||Array.isArray(raw)||Object.keys(raw).sort().join(',')!=='buildIdentity,idempotencyKey,profileId,revisionId')throw Error('browser-preview-input-invalid');
+  const r=raw as Record<string,unknown>;for(const key of ['revisionId','idempotencyKey'])turnId(r[key]);
+  if(typeof r.buildIdentity!=='string'||!/^[a-f0-9]{64}$/.test(r.buildIdentity)||!['python-stdlib/v1','mesa-3.5.1/v1'].includes(r.profileId as string))throw Error('browser-preview-input-invalid');
+  await this.#authorize(actor);const saved=this.#saved(r.revisionId as string),row=this.ports.builds.read(r.revisionId as string,r.profileId as PreviewRuntime['profileId']);
+  if(row?.profile&&row.profile.trust!=='verified-platform')throw Error('browser-preview-source-unavailable');
+  const key=await this.#key(actor,r.idempotencyKey as string);await this.#authorize(actor);this.#stillSaved(saved);
+  await this.ports.builds.retry(r.revisionId as string,r.profileId as PreviewRuntime['profileId'],r.buildIdentity,key);
+  await this.#authorize(actor);return {...await this.view(actor,r.revisionId as string,r.profileId as PreviewRuntime['profileId']),retryId:r.idempotencyKey,status:'accepted',revisionId:r.revisionId,profileId:r.profileId,buildIdentity:r.buildIdentity};
+ }
+ async retryVerification(actor:TurnActor,key:string){
+  await this.#authorize(actor);const receipt=this.ports.builds.retryReceipt(await this.#key(actor,key));await this.#authorize(actor);
+  if(receipt)this.#saved(receipt.revisionId);return {retryId:key,status:receipt?'accepted':'absent',captured:receipt};
  }
  async #key(actor:TurnActor,key:string){turnId(key);return 'browser-preview:verify:'+await previewSha256(canonicalPreviewJson([actor.userId,key]));}
  async verification(actor:TurnActor,key:string){
@@ -51,7 +66,7 @@ export class BrowserPreviewOrchestrator{
   if(!capture)return {verificationId:key,status:'absent',captured:null,experiment:null};
   if(!eq(capture.scope,this.scope)||!eq(capture.actor,actor))throw Error('browser-preview-access-denied');this.#saved(capture.input.revisionId);
   const prior=await this.ports.simulations.replay(actor,capture.serverKey,capture.request);await this.#authorize(actor);
-  return {verificationId:key,status:prior?'accepted':'absent',captured:capture.input,experiment:prior?publicExperiment(prior,this.ports.head()?.receipt.filesSha256??null):null};
+  return {verificationId:key,status:prior?'accepted':'absent',captured:(({idempotencyKey:_,...captured})=>captured)(capture.input),experiment:prior?publicExperiment(prior,this.ports.head()?.receipt.filesSha256??null):null};
  }
  async verify(actor:TurnActor,raw:unknown){
   const input=parsePreviewVerifyRequest(raw);await this.#authorize(actor);const key=await this.#key(actor,input.idempotencyKey),prior=this.storage.kv.get<Capture>(key);

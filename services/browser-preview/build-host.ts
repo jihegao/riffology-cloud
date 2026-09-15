@@ -44,6 +44,19 @@ export class BrowserPreviewBuildHost{
    });return structuredClone(result);
   }};
  }
+ retryReceipt(serverKey:string):{revisionId:string;profileId:PreviewRuntime['profileId'];buildIdentity:string}|null{return structuredClone(this.storage.kv.get<{revisionId:string;profileId:PreviewRuntime['profileId'];buildIdentity:string}>('browser-preview:retry:'+serverKey)??null);}
+ /** Explicit recovery only; the same key never resets an accepted retry. */
+ async retry(revisionId:string,profileId:PreviewRuntime['profileId'],buildIdentity:string,serverKey:string):Promise<void>{
+  const intent={revisionId,profileId,buildIdentity};
+  await this.#write(async tx=>{
+   const prior=await tx.get('browser-preview:retry:'+serverKey);if(prior){if(!equal(prior,intent))throw Error('browser-preview-idempotency-conflict');return;}
+   const row=await tx.get<SavedPreviewBuild>(rowKey(revisionId,profileId));
+   if(!row||!sameScope(row.source.identity.scope,this.scope)||row.state.status!=='failed'||row.state.buildIdentity!==buildIdentity)throw Error('browser-preview-retry-conflict');
+   const discovery=await tx.get<PreviewDiscovery>(discoveryKey(revisionId));if(!discovery||!equal(discovery.identity,row.source.identity)||!equal(discovery.receipt,row.source.receipt))throw Error('browser-preview-source-unavailable');
+   await tx.put('browser-preview:retry:'+serverKey,intent);await tx.put(discoveryKey(revisionId),{...discovery,status:'pending',attempts:0,nextAttemptAt:this.now(),reasonCode:null});
+   await tx.put(rowKey(revisionId,profileId),{...row,state:{status:'building',revisionId,profileId,buildIdentity,attempt:0}});
+  });
+ }
  /** One source per alarm, three bounded attempts. Intent is rearmed before I/O. */
  #active:Promise<void>|null=null;
  alarm():Promise<void>{if(this.#active)return this.#active;const work=this.#advance();this.#active=work;void work.finally(()=>{if(this.#active===work)this.#active=null;}).catch(()=>{});return work;}
@@ -55,10 +68,14 @@ export class BrowserPreviewBuildHost{
    const registry=await this.ports.registry(),bytes=await this.ports.files(source);
    let built=false;
    for(const id of ids){
+    const priorState=this.read(source.receipt.revisionId,id)?.state;
+    if(priorState?.status==='ready'){built=true;continue;}
+    if(priorState?.status==='unsupported')continue;
     const frozen=this.read(source.receipt.revisionId,id)?.profile;
     const selected=frozen?.trust==='verified-platform'?await createTrustedPreviewRegistry([frozen]):registry;
     const checked=await validateSavedPreview({projectId:this.scope.projectId,revisionId:source.receipt.revisionId,filesSha256:source.receipt.filesSha256},bytes,id,selected);
     if(checked.status==='unsupported'){
+     if(this.read(source.receipt.revisionId,id))throw Error('browser-preview-source-unavailable');
      if(!this.read(source.receipt.revisionId,id))await this.#write(async tx=>{await tx.put(rowKey(source.receipt.revisionId,id),{schemaVersion:1,source,profile:registry.resolve(id),modelSpec:null,receipt:null,state:{status:'unsupported',revisionId:source.receipt.revisionId,profileId:id,buildIdentity:await previewSha256(canonicalPreviewJson({revision:source.receipt,profileId:id})),reasonCode:checked.reasonCode}} satisfies SavedPreviewBuild);});continue;
     }
     const value=checked.value,prior=this.read(source.receipt.revisionId,id);
@@ -69,7 +86,7 @@ export class BrowserPreviewBuildHost{
    }
    await this.#settle(source,built?null:'browser-preview-unsupported');
   }catch(error){
-   if(source.attempts>=3){for(const id of ids){const row=this.read(source.receipt.revisionId,id);if(row?.state.status==='ready'||row?.state.status==='unsupported')continue;await this.#write(async tx=>{await tx.put(rowKey(source.receipt.revisionId,id),{schemaVersion:1,source,profile:row?.profile??null,modelSpec:row?.modelSpec??null,receipt:null,state:{status:'failed',revisionId:source.receipt.revisionId,profileId:id,buildIdentity:await previewSha256(canonicalPreviewJson({revision:source.receipt,profileId:id})),reasonCode:error instanceof Error&&error.message==='browser-preview-object-conflict'?'object-conflict':'source-unavailable'}} satisfies SavedPreviewBuild);});}await this.#settle(source,'browser-preview-build-failed');}
+   if(source.attempts>=3){for(const id of ids){const row=this.read(source.receipt.revisionId,id);if(row?.state.status==='ready'||row?.state.status==='unsupported')continue;await this.#write(async tx=>{await tx.put(rowKey(source.receipt.revisionId,id),{schemaVersion:1,source,profile:row?.profile??null,modelSpec:row?.modelSpec??null,receipt:null,state:{status:'failed',revisionId:source.receipt.revisionId,profileId:id,buildIdentity:row&&'buildIdentity' in row.state?row.state.buildIdentity:await previewSha256(canonicalPreviewJson({revision:source.receipt,profileId:id})),reasonCode:error instanceof Error&&error.message==='browser-preview-object-conflict'?'object-conflict':'source-unavailable'}} satisfies SavedPreviewBuild);});}await this.#settle(source,'browser-preview-build-failed');}
   }
  }
 }

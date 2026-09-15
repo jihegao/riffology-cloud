@@ -1,10 +1,12 @@
+import {createGatewayBrowserPreviewServices} from './browser-preview-services.ts';
+import {serveBrowserPreviewAppAsset} from '../browser-preview/execution/delivery.ts';
 import {createGatewayPublications} from './publication-services.ts';
 import {R2PublicationArtifacts} from '../publication/artifacts.ts';
 import {createGatewayResearchExports} from './research-export-services.ts';
 import {createGatewaySimulationServices} from './simulation-services.ts';
 import {R2ModelContentUploadPort} from '../runtime/model-upload.ts';
 // Optional until the model-content binding is configured for an environment.
-type GatewayRuntimeEnv=GatewayEnv & {MODEL_CONTENT?:R2Bucket;TOOL_ARTIFACT_STORE?:DurableObjectNamespace<import('../artifacts/durable.ts').ToolArtifactStore>;M3_SERVICE_ENABLED?:unknown;M3_PREVIEW_ENABLED?:unknown;M3_PREVIEW_WS_ENABLED?:unknown;M3_PREVIEW_ORIGIN?:string;M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?:string};
+type GatewayRuntimeEnv=GatewayEnv & {MODEL_CONTENT?:R2Bucket;TOOL_ARTIFACT_STORE?:DurableObjectNamespace<import('../artifacts/durable.ts').ToolArtifactStore>;M3_SERVICE_ENABLED?:unknown;M3_PREVIEW_ENABLED?:unknown;M3_PREVIEW_WS_ENABLED?:unknown;M3_PREVIEW_ORIGIN?:string;BROWSER_PREVIEW_EXECUTION_ORIGIN?:string;M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?:string};
 import {R2ModelContentPort} from '../runtime/content.ts';
 import { createAuth } from './auth.ts';
 import { catalogDatabase } from '../catalog/database.ts';
@@ -49,6 +51,7 @@ export default {
     try {
     const url=new URL(request.url);
     if(url.origin!==env.APP_ORIGIN)return previewHost(request,env,catalogDatabase(env.CATALOG));
+    if(url.pathname.startsWith('/browser-preview-assets/')){if(!env.ASSETS)return json({error:'assets_not_configured'},503);const asset=await serveBrowserPreviewAppAsset(request,env.ASSETS);return asset??json({error:'not_found'},404);}
     if(!url.pathname.startsWith('/api/')){
       if(request.method!=='GET'&&request.method!=='HEAD')return json({error:'not_found'},404);
       if(!['/','/index.html','/app.js','/layout.js','/services.js','/previews.js','/simulation.js','/comparison.js','/export.js','/publication.js','/evidence.js','/evidence.css','/styles.css','/workspace.css','/admin','/admin.html','/admin.js','/admin.css'].includes(url.pathname))return json({error:'not_found'},404);
@@ -57,7 +60,7 @@ export default {
         ? new Request(new URL('/admin.html',url),{method:request.method,headers:request.headers})
         : request;
       const asset=await env.ASSETS.fetch(assetRequest),headers=new Headers(asset.headers);
-      headers.set('Content-Security-Policy',`default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; frame-src ${previewFrameSource(env)}; frame-ancestors 'none'; base-uri 'none'; form-action 'self'`);
+      headers.set('Content-Security-Policy',`default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; frame-src ${previewFrameSource(env)} ${env.BROWSER_PREVIEW_EXECUTION_ORIGIN?new URL(env.BROWSER_PREVIEW_EXECUTION_ORIGIN).origin:""}; frame-ancestors 'none'; base-uri 'none'; form-action 'self'`);
       headers.set('X-Content-Type-Options','nosniff');headers.set('Referrer-Policy','same-origin');
       headers.set('Cache-Control','no-store');return new Response(asset.body,{status:asset.status,headers});
     }
@@ -82,7 +85,7 @@ export default {
       provision:async(principal,tenantId,projectId)=>{
         const item=await new ProvisioningCatalog(database).kickProject(principal,tenantId,projectId);
         if(item)await dispatch(env,item);
-      },publications:createGatewayPublications(env),publicationArtifacts:new R2PublicationArtifacts(env.WORKSPACE_CHECKPOINTS),researchExports:createGatewayResearchExports(env),simulations:createGatewaySimulationServices(env),turns:createGatewayTurnServices({...env,M2_TURN_RUNTIME_CONFIGURED:Boolean(typeof env.PRODUCT_TURN_RUNTIME?.getByName==='function'&&typeof env.TRUSTED_PI_CAPACITY?.getByName==='function'&&typeof env.TOOL_ARTIFACT_STORE?.getByName==='function')}),serviceRuns:createGatewayServiceServices(env),previews:createGatewayPreviewServices(env,database),observations:createGatewayObserverServices(env),identity:async req=>{
+      },publications:createGatewayPublications(env),publicationArtifacts:new R2PublicationArtifacts(env.WORKSPACE_CHECKPOINTS),researchExports:createGatewayResearchExports(env),simulations:createGatewaySimulationServices(env),browserPreviews:createGatewayBrowserPreviewServices(env),turns:createGatewayTurnServices({...env,M2_TURN_RUNTIME_CONFIGURED:Boolean(typeof env.PRODUCT_TURN_RUNTIME?.getByName==='function'&&typeof env.TRUSTED_PI_CAPACITY?.getByName==='function'&&typeof env.TOOL_ARTIFACT_STORE?.getByName==='function')}),serviceRuns:createGatewayServiceServices(env),previews:createGatewayPreviewServices(env,database),observations:createGatewayObserverServices(env),identity:async req=>{
       const value=await auth.api.getSession({headers:req.headers,query:{disableCookieCache:true}});
       return sessionIdentity(value);
     }});
