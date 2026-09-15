@@ -2,12 +2,19 @@
 // checkpoint, build, authorization, simulation and artifact code stays real.
 export const g3WorkerEntry=`
 import gateway from './services/gateway/index.ts';
-export {TenantQuota,ProjectRuntime,RevisionStore,ContainerProxy} from './services/gateway/index.ts';
+export {TenantQuota,RevisionStore,ContainerProxy} from './services/gateway/index.ts';
+import {ProjectRuntime as ProductionProjectRuntime} from './services/runtime/durable.ts';
 import {WorkspaceAgent as ProductionWorkspace} from './services/workspace/durable.ts';
 import {SimulationSandbox as ProductionSandbox} from './services/simulation/sandbox.ts';
 import {TurnJournal} from './services/turn/journal.ts';import {DurableTurnStore} from './services/turn/store.ts';
 import {initialWorkspaceReferenceFromReady} from './services/turn-runtime/initial-workspace.ts';
 import {revisionStoreActorName} from './services/turn-runtime/revision-store-client.ts';import {workspaceAgentName} from './services/workspace/protocol.ts';import {simulationToken} from './services/simulation/native.ts';
+export class ProjectRuntime extends ProductionProjectRuntime{
+ async g3Count(name){const counts=await this.ctx.storage.get('g3:runtime-mutations')??{};counts[name]=(counts[name]??0)+1;await this.ctx.storage.put('g3:runtime-mutations',counts);}
+ async initialize(input){await this.g3Count('initialize');return super.initialize(input);}
+ async stop(input){await this.g3Count('stop');return super.stop(input);}
+ async g3Counts(){return await this.ctx.storage.get('g3:runtime-mutations')??{};}
+}
 export class SimulationSandbox extends ProductionSandbox{
  constructor(ctx,env){super(ctx,env);this.testStorage=ctx.storage;}
  async count(name){const value=await this.testStorage.get('g3:sdk-counts')??{};value[name]=(value[name]??0)+1;await this.testStorage.put('g3:sdk-counts',value);await this.testStorage.sync();}
@@ -34,9 +41,9 @@ export class WorkspaceAgent extends ProductionWorkspace{
  });}
  async g3Diagnostics(scope){
   const stored=await this.ctx.storage.list({prefix:'simulation:run:'});const native=[];
-  for(const record of stored.values()){const token=await simulationToken(record.input);native.push({runId:record.runId,status:record.status,released:record.released,counts:await this.env.SIMULATION_SANDBOX.getByName('simulation-'+token).g3Counts()});}
-  const state=new DurableTurnStore(this.ctx.storage).read();
-  return {turnCount:Object.keys(state?.turns??{}).length,savedTurns:Object.values(state?.turns??{}).filter(t=>t.persistenceOutcome==='saved').map(t=>({id:t.id,receipt:t.checkpoint})),runCount:stored.size,native,buildDiscoveries:[...(await this.ctx.storage.list({prefix:'browser-preview:discovery:'})).values()],buildRows:[...(await this.ctx.storage.list({prefix:'browser-preview:build:'})).values()],physicalAlarm:await this.ctx.storage.getAlarm()};
+  for(const record of stored.values()){const token=await simulationToken(record.input);native.push({runId:record.runId,status:record.status,released:record.released,releaseProof:record.releaseProof,quotaClaimed:record.quotaClaimed,lease:record.lease,counts:await this.env.SIMULATION_SANDBOX.getByName('simulation-'+token).g3Counts()});}
+  const state=new DurableTurnStore(this.ctx.storage).read();const m1=await this.ctx.storage.get('m1:workspace:initialization');const runtimeId=m1?.identity?.runtimeId;
+  return {providerEnabled:this.env.M2_MODEL_PROVIDER_ENABLED==='true',projectRuntimeMutationCalls:runtimeId?await this.env.PROJECT_RUNTIME.getByName(runtimeId).g3Counts():null,turnCount:Object.keys(state?.turns??{}).length,savedTurns:Object.values(state?.turns??{}).filter(t=>t.persistenceOutcome==='saved').map(t=>({id:t.id,receipt:t.checkpoint})),runCount:stored.size,native,buildDiscoveries:[...(await this.ctx.storage.list({prefix:'browser-preview:discovery:'})).values()],buildRows:[...(await this.ctx.storage.list({prefix:'browser-preview:build:'})).values()],physicalAlarm:await this.ctx.storage.getAlarm()};
  }
 }
 export default {async fetch(request,env,ctx){const url=new URL(request.url);
