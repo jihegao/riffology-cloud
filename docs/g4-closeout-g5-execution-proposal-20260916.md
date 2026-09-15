@@ -62,7 +62,7 @@
 
 建议分别提议G5-A总额US$20、每Turn US$5、147上游/39Run；G5-B总额US$20、每Turn US$5、168上游/0研究Run，每个窗口实际首admission后2小时停止新任务。合计US$40仅为候选硬上限，未授权、不是费用预测。若两小时不能覆盖真实释放/恢复，记录partial并收尾，下一窗口另定；不缩短guard来赶进度。
 
-实际价格尚未查询/选择，没有填假rate card。以每token向上取整nanodollars价r_in/r_out和冻结输入/输出上限I/O，C=(I*r_in+O*r_out)/1e9美元。G5-A要求147C≤20且8C≤5；G5-B要求168C≤20且8C≤5。若不满足，停止准入并提出降低token上限的评审或预算修订，不依赖G4实际US$0.1638495外推。现有validator还要求profile/privacy/runtime/无重试证据真实SHA和目标值；清单未填齐不运行execute。
+初始提案未查询价格；随后已读取官方Luna价格并完成保守候选计算，详见[G5账号/Gateway核验](g5-account-gateway-readiness-20260916.md)，实际profile仍未冻结。以每token向上取整nanodollars价r_in/r_out和冻结输入/输出上限I/O，C=(I*r_in+O*r_out)/1e9美元。G5-A要求147C≤20且8C≤5；G5-B要求168C≤20且8C≤5。若不满足，停止准入并提出降低token上限的评审或预算修订，不依赖G4实际US$0.1638495外推。现有validator还要求profile/privacy/runtime/无重试证据真实SHA和目标值；清单未填齐不运行execute。
 
 待明确字段：#46实际生产账号/provider/model/gateway、rate card日期和原始官方来源、I/O上限、授权reference；#37第二tenant与两账号、复用overlay/实际镜像/runtimeVersion；窗口范围/金额/Turn/上游/Run/task限制、p95与合格任务费用目标；仅合成数据、脱敏诊断7天/验收30天建议单独确认。原始session/凭据/cap留本地最小权限，远端只白名单证据；本地副本不由R2生命周期自动清除，验收后按本轮明确归属清理。
 
@@ -76,7 +76,7 @@ G6仍另行确定三模型审核发布范围和预算；本次无提交官方cat
 
 ## 本轮实施进展（2026-09-16）
 
-用户再次要求执行后，主控派发三个独立工作树并串行集成，生产门禁仍关闭。现有线上GET settings/deployments实测：版本`fc3c6a9d-2d9f-42b9-a94d-51e33a652235`占100%；Turn/provider false、OpenCode/Luna；没有#46 OpenAI/Gateway Secrets、ProductionModelBudget绑定、production profile或暖租约vars。本轮没有云写、模型dispatch或新Run intent。
+用户再次要求执行后，主控派发三个独立工作树并串行集成，生产门禁仍关闭。现有线上GET settings/deployments实测：版本`fc3c6a9d-2d9f-42b9-a94d-51e33a652235`占100%；Turn/provider false、OpenCode/Luna；没有#46 OpenAI/Gateway Secrets、ProductionModelBudget绑定、production profile或暖租约vars。初始本地准备阶段没有云写；随后实际创建一个专属Gateway。当前没有Worker部署、模型dispatch或新Run intent。
 
 - #46离线调度及预算准入：[实现](g5-benchmark-driver-implementation.md)，集成`7ef9358`/`6597a7d`。固定18任务、39Run、147dispatch，完整最低task63或66；依赖失败/取消阻断后继及probe，unknown停新准入。它是离线compiler，不是可以执行真实18任务的live runner，execute明确拒绝。
 - #37真实只读GET collector/资格校验：[实现](g5-runtime-observation-implementation.md)，集成`44299c4`/`918862b`/`f6b1f03`。scope/UTF8/响应大小/中断校验；公共API拿不到pair/epoch/PID/三账本/FIFO/双域guard，始终cloudAcceptance=false。这是部分观测准备，不是完整暖复用driver；下一实施切片需要可信持久观测与受控读取设计。
@@ -91,3 +91,5 @@ G6仍另行确定三模型审核发布范围和预算；本次无提交官方cat
 用户提供的OpenAI密钥只读鉴权HTTP200、Luna可用；专属Gateway已创建并独立GET核对，未有推理调用。保守147/168调用预算分别US$10.3563264/11.8358016，满足各US$20候选。Gateway token现已保存，主控只读verify为HTTP200/active；尚不证明Run权限范围或代理调用。第二用户`jihe.gao@theidsa.org`已明确授权，实际userId/tenantId仍待普通登录核对。参见[G5账号/Gateway核验](g5-account-gateway-readiness-20260916.md)。旧G4fence和门禁未重置。
 
 新增[G5服务端窗口守卫](g5-window-guard-implementation.md)已集成本地core/private DO/独立token namespace接口；未绑定任务及未知模型费用跨所有window阻断，policy不可重置，准入跨截止不给创建权，B强制两个不同tenant及user。#37文件journal补入三账本关联及可信校验adapter缺省拒绝，产品终态不能单独解锁。主控在当前集成候选独立typecheck及32项相关测试通过（含2真实本地Workerd、0跳过/失败）；这些是局部本地证据，尚未完成共享接线、部署或真实ledger/native authority。两小时窗口仍未开始。下一步继续审查共享准入与预算dispatch/finish接线，不因密钥可见即开跑。
+
+最新修订：journal白名单不可变snapshot集成2729b4b，Call/Turn结算分层集成194a06e；同Turn合法下一Call不提前关闭整个Turn，新task/window仍待Turn三闭账，未知费用全局阻断。[共享接线与排队设计](g5-shared-wiring-and-queued-design.md)明确真实来源和待穿透入口，排队/Create/start尚未接线。主控独立typecheck、guard13项及runtime23项通过（合计36相关用例，0失败/跳过），非作者复审通过。未完成全套check/真实生产authority/付费benchmark，不关闭issues。

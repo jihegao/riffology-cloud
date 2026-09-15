@@ -32,3 +32,7 @@
 ## 服务端窗口仍需实现
 
 原G4 guard把OpenCode/32调用/16Run及已开始singleton政策固定在旧TenantModelBudget；不能换windowId、清零或删配置绕过旧fence。G5需要独立token budget namespace及全局不可重置window guard，按新政策对跨tenant总额、Turn金额、task/各类Run/upstream、首准入后2小时、unknown及三账本结算实施权威门禁。该最小切片已本地实现并集成，见[G5窗口守卫](g5-window-guard-implementation.md)；共享生产接线及部署尚未完成，没有新model dispatch或Run。
+
+共享接线审查发现必须区分单次模型Call和整个Turn的结算：现有三账本closeTurnAdmission会不可逆关闭Turn，不能在工具循环每次Call后调用。单Call的token/money实际record和tools静止观测只能放行同一已准入Turn的后续Call；跨任务/窗口释放必须等待Turn真实终态与三账本关闭且无未决。核心分层修订已集成194a06e并通过独立本地验证，真实私有来源adapter及queued/Create/start穿透仍需随后完成。邮箱、token或本地receipt均不能取代这些门禁。详见[共享接线与排队设计](g5-shared-wiring-and-queued-design.md)。
+
+本地准备最新验证：typecheck通过；窗口guard13项（含2真实本地Workerd）及journal/collector/runner23项通过，合计36项相关用例，0失败/跳过；非作者交叉审查通过。没有复用历史完整check作为本候选结果，也没有Worker部署/模型推理/新Run；G5两小时窗口未启动。G5-A/B范围与新窗口预算仍是具体待冻结候选，沿用用户原先“G5/G6另行确定范围和预算”的边界。
