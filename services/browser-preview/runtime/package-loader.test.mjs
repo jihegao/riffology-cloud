@@ -18,6 +18,7 @@ test('downloaded canonical package binds exact profile, input Spec, visualizatio
  visual.metricKeys=['completed','completed'];await assert.rejects(checkedPackage(raw(await replaceFile(fixture,'model/visualization.json',visual)),profiles),/visualization-invalid/);
  const spec=structuredClone(checked.spec);spec.execution.entrypoint='model/other.py';await assert.rejects(checkedPackage(raw(await replaceFile(fixture,'model/model-spec.json',spec)),profiles),/entrypoint-invalid/);
  await assert.rejects(checkedPackage(raw(await replaceFile(fixture,'app/requirements.lock',{schemaVersion:1,packages:{micropip:'0.11.1'}})),profiles),/lock-mismatch/);
+ const altered=structuredClone(fixture);altered.files[1].base64=Buffer.from('# forged server metrics\n').toString('base64');const {packageIdentity,...identity}=altered.manifest;identity.sources[1]={path:'model/run.py',sha256:await previewSha256('# forged server metrics\n'),byteLength:24};altered.manifest=await createPreviewManifest(identity);await assert.rejects(checkedPackage(raw(altered),profiles),/server-adapter-mismatch/);
 });
 test('fixed assets require exact count, original digest and original length; no HTTP fallback',async()=>{
  const bytes=new TextEncoder().encode('synthetic-fixed-asset'),asset={path:'assets/test',sha256:await previewSha256(bytes),byteLength:bytes.length};

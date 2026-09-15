@@ -5,7 +5,7 @@
       "runtimeVersion": "pyodide-314.0.6/v1",
       "adapterVersion": "riffology.model-run/v1",
       "pythonVersion": "3.14.2",
-      "assetSha256": "2bf717f23bc755b72eaf7e8881f69157464a723e93e6009e7143c06d2671bf14",
+      "assetSha256": "2a1fb75e77e1e004fa473deddd2ad98eb8f7bf2d22d697e5e280bd8d288fac28",
       "visualProtocol": "riffology.visual/v0.1",
       "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
       "dependencies": []
@@ -44,8 +44,8 @@
       },
       {
         "path": "delivery/worker.bundle.mjs",
-        "sha256": "cca742b84c4bf25f5c1b584bb670839895e2251b40597de5fc0b85585aed8030",
-        "byteLength": 1579991
+        "sha256": "d5eae6b5f48eb4176492b967da218747f64d284f60b570edff69b2ccb9ff3db4",
+        "byteLength": 1580270
       },
       {
         "path": "runtime/frame.html",
@@ -59,13 +59,13 @@
       },
       {
         "path": "runtime/host.mjs",
-        "sha256": "ddeb126a036f0fe13ee7d0e5eede7445e82c64657860ea7e205bd59fce3d5568",
-        "byteLength": 4514
+        "sha256": "051f468d7f70388a528dfe9e05b77faaa4efd9728dd5b78a22b3f58653c70f45",
+        "byteLength": 5099
       },
       {
         "path": "runtime/package-loader.mjs",
-        "sha256": "ee2755fdda4b3c3bce92df4b7f98eb39dd2f390f9f0fa00fcba2298f4a0f779e",
-        "byteLength": 4542
+        "sha256": "768c1e87f91e01e073917b9100468d186b302bf7bf512dfa0cb838411609e1c1",
+        "byteLength": 4813
       },
       {
         "path": "runtime/protocol.mjs",
@@ -99,8 +99,8 @@
       },
       {
         "path": "source/prepare-assets.mjs",
-        "sha256": "5b29cbb936cf97ee71f9114c7fc4063be52805b6c5501ccdc19b06b47a8a0b10",
-        "byteLength": 5319
+        "sha256": "d1955a87587f3a5b3aacefeb9673cc01935373ed2c522500cfb814af7415ec63",
+        "byteLength": 5520
       }
     ],
     "verified": true
@@ -111,7 +111,7 @@
       "runtimeVersion": "pyodide-314.0.6/v1",
       "adapterVersion": "riffology.model-run/v1",
       "pythonVersion": "3.14.2",
-      "assetSha256": "df0308f520ab7122d997c86616e10fb5698797043035bd96a0baf21381f4eccf",
+      "assetSha256": "7d9463f7d7fcc383ed2a04731704e20098bad2438c2aedfbf6ff413a88440ce3",
       "visualProtocol": "riffology.visual/v0.1",
       "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
       "dependencies": [
@@ -358,8 +358,8 @@
       },
       {
         "path": "delivery/worker.bundle.mjs",
-        "sha256": "cca742b84c4bf25f5c1b584bb670839895e2251b40597de5fc0b85585aed8030",
-        "byteLength": 1579991
+        "sha256": "d5eae6b5f48eb4176492b967da218747f64d284f60b570edff69b2ccb9ff3db4",
+        "byteLength": 1580270
       },
       {
         "path": "runtime/frame.html",
@@ -373,13 +373,13 @@
       },
       {
         "path": "runtime/host.mjs",
-        "sha256": "ddeb126a036f0fe13ee7d0e5eede7445e82c64657860ea7e205bd59fce3d5568",
-        "byteLength": 4514
+        "sha256": "051f468d7f70388a528dfe9e05b77faaa4efd9728dd5b78a22b3f58653c70f45",
+        "byteLength": 5099
       },
       {
         "path": "runtime/package-loader.mjs",
-        "sha256": "ee2755fdda4b3c3bce92df4b7f98eb39dd2f390f9f0fa00fcba2298f4a0f779e",
-        "byteLength": 4542
+        "sha256": "768c1e87f91e01e073917b9100468d186b302bf7bf512dfa0cb838411609e1c1",
+        "byteLength": 4813
       },
       {
         "path": "runtime/protocol.mjs",
@@ -413,8 +413,8 @@
       },
       {
         "path": "source/prepare-assets.mjs",
-        "sha256": "5b29cbb936cf97ee71f9114c7fc4063be52805b6c5501ccdc19b06b47a8a0b10",
-        "byteLength": 5319
+        "sha256": "d1955a87587f3a5b3aacefeb9673cc01935373ed2c522500cfb814af7415ec63",
+        "byteLength": 5520
       }
     ],
     "verified": true

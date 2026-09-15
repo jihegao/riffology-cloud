@@ -21,6 +21,7 @@ export async function checkedPackage(envelope, profiles) {
   const visualization = JSON.parse(new TextDecoder('utf-8', {fatal:true}).decode(files.get('model/visualization.json')));
   if (!visualization || Object.keys(visualization).sort().join(',') !== 'metricKeys,protocol,renderer,schema' || visualization.schema !== 'riffology.visualization/v1' || visualization.protocol !== 'riffology.visual/v0.1' || !['grid','lane'].includes(visualization.renderer) || !Array.isArray(visualization.metricKeys) || !visualization.metricKeys.length || visualization.metricKeys.length > 64 || visualization.metricKeys.some(k => typeof k !== 'string' || k.length > 128)) throw Error('runtime-visualization-invalid');
   const spec = parseModelSpec(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(files.get('model/model-spec.json'))));
+  if (manifest.sources.find(s=>s.path==='model/run.py').sha256 !== 'fa7987095bbc29f2c6d87e9b0f815415f88c9079ad7070fb7fe8b91e7ebf0898') throw Error('runtime-server-adapter-mismatch');
   if (spec.execution.entrypoint !== 'model/run.py' || spec.execution.dependencyLock !== 'app/requirements.lock') throw Error('runtime-model-entrypoint-invalid');
   if (visualization.metricKeys.some(k => !Object.hasOwn(spec.metrics,k)) || new Set(visualization.metricKeys).size !== visualization.metricKeys.length) throw Error('runtime-visualization-invalid');
   const lock = JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(files.get('app/requirements.lock')));

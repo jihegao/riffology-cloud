@@ -46,6 +46,8 @@ else if (canonicalPreviewJson(JSON.parse(await readFile(profilePath))) !== canon
 await build({entryPoints:[resolve(root,'services/browser-preview/runtime/host.mjs')],bundle:true,format:'esm',platform:'browser',target:'es2022',outfile:resolve(output,'host.bundle.mjs'),external:['node:*','ws'],logLevel:'warning'});
 const hostBytes = await readFile(resolve(output,'host.bundle.mjs'));
 const delivery={schema:'riffology.browser-runtime-delivery/v1',profiles:profiles.map(p => p.runtime.assetSha256),host:{sha256:await previewSha256(hostBytes),byteLength:hostBytes.length},esbuildVersion:(await import('esbuild')).version,buildOptions:{bundle:true,format:'esm',platform:'browser',target:'es2022',external:['node:*','ws']}};
+const deliveryPath=new URL('./assets/delivery.json',import.meta.url);
+if(process.argv.includes('--update-manifest'))await writeFile(deliveryPath,JSON.stringify(delivery,null,2)+'\n');
+else if(canonicalPreviewJson(JSON.parse(await readFile(deliveryPath)))!==canonicalPreviewJson(delivery))throw Error('runtime-delivery-mismatch: host receipt changed');
 await writeFile(resolve(output,'delivery.json'),JSON.stringify(delivery,null,2)+'\n');
-if(process.argv.includes('--update-manifest'))await writeFile(new URL('./assets/delivery.json',import.meta.url),JSON.stringify(delivery,null,2)+'\n');
 console.log(JSON.stringify({profiles:profiles.map(p => ({profileId:p.runtime.profileId,assetSha256:p.runtime.assetSha256,dependencyCount:p.runtime.dependencies.length,assetBytes:p.assetManifest.reduce((n,a) => n+a.byteLength,0)})),bundles:output},null,2));
