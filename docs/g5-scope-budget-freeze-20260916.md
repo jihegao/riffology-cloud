@@ -1,5 +1,7 @@
 # G5 新窗口范围与预算冻结（2026-09-16）
 
+最新 staging 出口只读诊断与恢复版本见[Worker 诊断记录](g5-worker-origin-probe-20260916.md)：未取得上游 HTTP 状态，地区可用性仍未验证；恢复冻结代码、全部关闭门禁及原预算后，G5 付费验收继续暂停。
+
 授权依据：用户要求“完成生产接线及新窗口范围、预算冻结”。冻结既有 G5-A/B 具体提案，生产接线以关闭门禁发布；本轮不接纳付费模型任务、Project 或 Simulation/Service Run。G6、G4 剩余补测、推送/合并和 issue 关闭不在此范围。
 
 | 窗口 | 固定范围 | 总额 / 每 Turn | 上游 dispatch | Simulation / Service Run | task 硬限 |

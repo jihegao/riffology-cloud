@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "diagnostic": {
+    "observedAt": "2026-09-16T01:26:44.979Z",
+    "worker": "riffology-m1-gateway-staging",
+    "status": null,
+    "errorCode": "transport-unknown",
+    "modelAvailable": null,
+    "inferenceCalls": 0,
+    "readOnly": true,
+    "state": "read-only-failed",
+    "workerVersion": "9cd4fc3d-5350-49d4-9b65-be91d1235932"
+  },
+  "paidInference": false,
+  "newTasksStarted": 0,
+  "readonlyControllerAttempts": 2,
+  "firstControllerAttempt": "transport-failed-delivery-unknown-readonly",
+  "restored": {
+    "versionId": "6ad4aed7-5e29-4d50-8e35-df97ec0201d0",
+    "scriptEtag": "5b52761213c519d9c6a83cb1d601b793b1fecad5d4df7aaee48bb3ac076884ef",
+    "originalScriptEtagMatches": true,
+    "frozenVarsMatch": true,
+    "gates": {
+      "G5_ADMISSION_ENABLED": "false",
+      "M2_MODEL_PROVIDER_ENABLED": "false",
+      "PRODUCTION_MODEL_ENABLED": "false",
+      "M2_TURNS_ENABLED": "false",
+      "M4_SIMULATION_ENABLED": "false",
+      "M3_SERVICE_ENABLED": "false"
+    },
+    "publicRootStatus": 200
+  },
+  "interpretation": "Actual staging RPC completed, but upstream HTTP status was not obtained. Regional availability and paid inference remain unverified.",
+  "cleanup": {
+    "temporaryControllerDeleted": true,
+    "independentAbsenceCode": 10007,
+    "localControllerCapabilityRemoved": true
+  }
+}
