@@ -36,3 +36,9 @@ B另有闭门cold variant `wrangler-B-cold.json`：只将lazy/reuse两个runtime
 冻结private bundle位于隔离工作树`.local/issues-20260915/g5/frozen-v1/`，directory0700、policies/overlay0600，wx+fsync、不同字节不覆盖；临时上传用secret JSON已精确删除，原项目`.dev.vars`保留。后续改变源/通道/profile须生成新的具体评审版本；已有server window/deadline/money unknown不可清零或创建新ID绕过。
 
 公共摘要：[窗口manifest](g5-frozen-window-manifest-20260916.json)、[实际源/镜像pin](g5-production-source-proof-20260916.json)、[生产readback](g5-closed-production-readback-20260916.json)、[发布前独立检查](g5-production-wiring-verification-20260916.md)。脱敏白名单冻结证据已PUT至MODEL_CONTENT `g5-acceptance/g5-20260916-wiring-v1/evidence/closed-wiring-evidence.zip`，8541字节，SHA256 `74683f9244cba8b16c1560b3050f3edeef10e3bc3ab9b50f33f794deba612137`；独立GET字节一致，6/6内部SHA256SUMS通过。30天规则已独立核对；不上传scope中的真实邮箱、principal UUID、账户ID、privatepolicy、凭据或原始session。
+
+## B2实际启动后的冻结状态
+
+用户批准B2并完成第一主体切换后，G5-A只接纳了1个Project和1个建模Turn。产品事件记录`provider.status:error:503`，随后以`pi-turn-failed`结束；该事件不能证明上游HTTP响应码。0个Simulation Run、0个Service Run、0个工具调用。三账本把该调用保留为unknown/pending并占用9,910,450 nanodollars；缺少provider usage终态，不能把这笔预留当成实际invoice，也不能宣称费用为零。
+
+主控立即停止新admission且未重放原intent。生产当前为关闭态诊断版本，六个任务/模型/Run门禁均为false；临时operator在签名脱敏回读后已删除。历史具体错误分类已被旧结算路径覆盖为`outcome-unknown`，后续代码已修复为保留第一个具体分类，但不能反推本次历史根因。当前G5-A未通过，G5-B/G6保持未启动。新尝试需要另行批准新window和新实体ID；若总额仍为US$20，按本次保守占用扣除后的可用上限为US$19.990089550。完整记录见[G5-A B2生产尝试](g5-a-b2-production-attempt-20260916.md)。
