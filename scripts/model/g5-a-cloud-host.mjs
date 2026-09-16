@@ -67,10 +67,16 @@ function candidateMatches(candidate,version){
 }
 
 export function workerMainModuleSha256(contentType,bytes){
- const body=Buffer.from(bytes),match=/^multipart\/form-data;\s*boundary=(?:"([^"]+)"|([^;\s]+))/i.exec(contentType??'');if(!match)return hash(body);
+ const body=Buffer.from(bytes),match=/^multipart\/form-data;\s*boundary=(?:"([^"]+)"|([^;\s]+))/i.exec(contentType??'');if(!match)fail('g5-cloud-source-content-type-invalid');
  const boundary=Buffer.from(`--${match[1]??match[2]}`),parts=new Map();let cursor=0;
  while((cursor=body.indexOf(boundary,cursor))!==-1){cursor+=boundary.length;if(body.subarray(cursor,cursor+2).equals(Buffer.from('--')))break;if(body.subarray(cursor,cursor+2).equals(Buffer.from('\r\n')))cursor+=2;const split=body.indexOf(Buffer.from('\r\n\r\n'),cursor);if(split<0)fail('g5-cloud-source-multipart-invalid');const headers=body.subarray(cursor,split).toString('utf8'),name=/content-disposition:[^\r\n]*\bname="([^"]+)"/i.exec(headers)?.[1];let end=body.indexOf(boundary,split+4);if(end<0||!name)fail('g5-cloud-source-multipart-invalid');end-=2;parts.set(name,body.subarray(split+4,end));cursor=end+2;}
  let metadata;try{metadata=JSON.parse(parts.get('metadata')?.toString('utf8')??'');}catch{fail('g5-cloud-source-metadata-invalid');}const main=metadata?.main_module??metadata?.body_part;if(typeof main!=='string'||!parts.has(main))fail('g5-cloud-source-main-module-missing');return hash(parts.get(main));
+}
+
+export async function workerScriptContentV2Sha256({accountId,workerName,apiToken,fetcher=fetch}){
+ const response=await fetcher(`https://api.cloudflare.com/client/v4/accounts/${accountId}/workers/scripts/${encodeURIComponent(workerName)}/content/v2`,{headers:{authorization:`Bearer ${apiToken}`}});
+ if(!response.ok)fail(`g5-cloud-source-${response.status}`);
+ return workerMainModuleSha256(response.headers.get('content-type'),Buffer.from(await response.arrayBuffer()));
 }
 
 function commandCloud(manifest,{runner=(bin,args,options)=>spawnSync(bin,args,options),fetcher=fetch,root=resolve(fileURLToPath(new URL('../..',import.meta.url)))}={}){
@@ -80,7 +86,7 @@ function commandCloud(manifest,{runner=(bin,args,options)=>spawnSync(bin,args,op
  const version=id=>json(run(['versions','view',id,'--json',...configArgs(manifest.closed.configPath)]));
  return {
   deployments,version,
-  async sourceSha256(id){const response=await fetcher(`https://api.cloudflare.com/client/v4/accounts/${manifest.accountId}/workers/scripts/${manifest.workerName}/versions/${id}/content`,{headers:{authorization:`Bearer ${credentials.CLOUDFLARE_API_TOKEN}`}});if(!response.ok)fail(`g5-cloud-source-${response.status}`);return workerMainModuleSha256(response.headers.get('content-type'),Buffer.from(await response.arrayBuffer()));},
+  async sourceSha256(id){if(!UUID.test(id??''))fail('g5-cloud-source-version-invalid');return workerScriptContentV2Sha256({accountId:manifest.accountId,workerName:manifest.workerName,apiToken:credentials.CLOUDFLARE_API_TOKEN,fetcher});},
   async gateway(){return api(`/ai-gateway/gateways/${encodeURIComponent(manifest.gatewayId)}`);},
   async containerApps(){return json(run(['containers','list','--json',...configArgs(manifest.closed.configPath)]));},
   async instancePages(appId){const first=json(run(['containers','instances',appId,'--json','--per-page','100',...configArgs(manifest.closed.configPath)]));return [first];},
@@ -91,7 +97,7 @@ function commandCloud(manifest,{runner=(bin,args,options)=>spawnSync(bin,args,op
 
 export function createG5CloudOperatorAuthority(manifest,{fetcher=fetch}={}){if(manifest?.[PRIVATE]!==true)fail('g5-cloud-private-manifest-required');const remote=createG5OperatorHttpAuthority({operatorOrigin:manifest.operatorOrigin,capability:manifest[CREDENTIALS].G5_OPERATOR_CAPABILITY,windowId:manifest.windowId,fetcher});return {...remote,inspectAdmissionContract:async input=>{if(input?.windowId!==manifest.windowId)fail('g5-cloud-admission-window-conflict');const actual=await remote.inspectAdmissionContract(),expected=manifest.admissionContract;if(!object(actual)||Object.keys(actual).sort().join()!==Object.keys(expected).sort().join()||Object.keys(expected).some(key=>JSON.stringify(actual[key])!==JSON.stringify(expected[key])))fail('g5-cloud-admission-authority-conflict');return clone(actual);}};}
 
-async function inspectCloud(manifest,cloud){const deployment=activeDeployment(await cloud.deployments()),version=await cloud.version(deployment.versionId),sourceSha256=await cloud.sourceSha256(deployment.versionId);return {...deployment,version,sourceSha256};}
+async function inspectCloud(manifest,cloud){const deployment=activeDeployment(await cloud.deployments()),version=await cloud.version(deployment.versionId),sourceSha256=await cloud.sourceSha256(deployment.versionId),confirmed=activeDeployment(await cloud.deployments());if(confirmed.deploymentId!==deployment.deploymentId||confirmed.versionId!==deployment.versionId)fail('g5-cloud-deployment-changed-during-source-read');return {...deployment,version,sourceSha256};}
 function selectConfig(manifest,version){const candidates=[manifest.closed,manifest.open].filter(candidate=>candidateMatches(candidate,version));if(candidates.length!==1)fail('g5-cloud-active-config-ambiguous');return candidates[0];}
 
 /** Cloudflare control ports for runG5ASerialHost. The default mode is observational. */
