@@ -14,6 +14,8 @@ Deadline, budget or identity failures surfaced by authority, failed/cancelled Tu
 
 Task accounting is authority-backed. Initialization requires a private receipt proving that each of the three Experiment Group intents is itself admitted as a guard task. Final reconciliation requires the guard to report `tasks = 63 + executed probes`, including three Project tasks, 18 Turn tasks, 39 child Run tasks and three Group-intent tasks. Local schedule arithmetic cannot satisfy this check. Until production authority can issue that receipt and final count, live execution fails closed.
 
+The authorized B2 slice adds the explicit `g5-a-b2-controlled` scope. That scope requires the [B2 read-only evidence driver](g5-a-b2-readonly-driver-implementation.md): a same-origin, authority-fenced read sequence before every reopen Turn and a fully verified research export after its Runs and claims. Both intervals require zero change in task, dispatch, money, model-usage, Run and Group counters. These GETs do not increase the frozen 63 normal admissions.
+
 ## Required execution inputs and remaining product/API gaps
 
 A real host still needs these private, reviewed inputs; tests use synthetic adapters only:

@@ -1,6 +1,6 @@
 # G5-A B2 measurable authority proposal
 
-Date: 2026-09-16. Status: explicitly authorized at 19:38 +0800; implementation in progress, not deployed or executed. The same-Turn repair fixture and fail-closed two-stage authority infrastructure are integrated locally; B2's scenario, output, verification, and release changes must still pass integration, independent review, closed-gate deployment, and exact readback.
+Date: 2026-09-16. Status: explicitly authorized at 19:38 +0800; implementation in progress, not deployed or executed. The same-Turn repair fixture and fail-closed two-stage authority infrastructure are integrated locally. The read-only reopen/export driver slice is implemented and documented in [G5-A B2 read-only evidence driver](g5-a-b2-readonly-driver-implementation.md); scenario inputs, trace output, full authority acceptance joins, integration review, closed-gate deployment, and exact readback remain before execution.
 
 The original frozen repair path cannot be executed honestly. The product has no ordinary-user endpoint that can seed a failed file before a Turn, and a failed `project_bash` result is a completed Tool effect with a nonzero child exit rather than a failed artifact or failed Revision. Proposal B moved the failure and repair into the same ordinary-user Turn. Its final prompt/fixture candidate is independently reviewed, omits the repair payload and private receipts, and has SHA-256 `c31c76ec54074f59d9aacc834b2641ce8e130637834dd8cf8e6e8927c9961bad`.
 
