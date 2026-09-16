@@ -2,6 +2,13 @@ import { statement as sql, type Database } from './database.ts';
 import { CatalogError, createProjectInput, digest, opaqueId, type Principal, type Project } from './contracts.ts';
 import type { TurnScope } from '../turn/protocol.ts';
 import type { ModelCatalog } from './models.ts';
+export type ProjectBudgetRoute={kind:'g5';taskKey:string;windowId:string;profileSha256:string};
+export function projectBudgetRoute(raw:unknown):ProjectBudgetRoute {
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new CatalogError('invalid_input');
+  const r=raw as ProjectBudgetRoute;
+  if(Object.keys(r).sort().join(',')!=='kind,profileSha256,taskKey,windowId'||r.kind!=='g5'||!/^[a-f0-9]{64}$/.test(r.taskKey)||!/^[a-f0-9]{64}$/.test(r.profileSha256)||typeof r.windowId!=='string'||!/^[A-Za-z0-9][A-Za-z0-9._:-]{0,149}$/.test(r.windowId))throw new CatalogError('invalid_input');
+  return {kind:'g5',taskKey:r.taskKey,windowId:r.windowId,profileSha256:r.profileSha256};
+}
 
 // Every operation rechecks current membership and revocation inside its SQL statement.
 const ownership = `SELECT 1 FROM catalog_memberships m JOIN catalog_users u ON u.id=m.user_id
@@ -55,13 +62,15 @@ export class ProjectCatalog {
     return this.resolveWorkspace(principal,workspaceId,false);
   }
 
-  async create(principal: Principal, tenantId: string, key: string, body: unknown): Promise<{ project: Project; replayed: boolean }> {
+  async create(principal: Principal, tenantId: string, key: string, body: unknown, budgetRoute?:ProjectBudgetRoute): Promise<{ project: Project; replayed: boolean }> {
     opaqueId(tenantId); opaqueId(key);
     const input = createProjectInput(body, this.starters);
+    const route=budgetRoute===undefined?undefined:projectBudgetRoute(budgetRoute);
     // Replay the original intent before resolving the current model status. A
     // withdrawn model must not make an already committed copy unreplayable.
     const prior = await this.db.query<{project_id:string;payload_hash:string;title:string;source_model_id:string|null;source_model_version:string|null}>(sql(`SELECT i.project_id,i.payload_hash,p.title,p.source_model_id,p.source_model_version FROM catalog_creation_intents i JOIN catalog_projects p ON p.id=i.project_id AND p.tenant_id=i.tenant_id WHERE i.actor_user_id=? AND i.tenant_id=? AND i.operation='project.create' AND i.idempotency_key=? AND EXISTS (${ownership})`,principal.userId,tenantId,key,tenantId,principal.userId,principal.authVersion));
     if (prior[0]) {
+      if(route){const saved=await this.db.query<{route_json:string}>(sql('SELECT route_json FROM catalog_project_budget_routes WHERE project_id=? AND tenant_id=?',prior[0].project_id,tenantId));if(!saved[0]||saved[0].route_json!==JSON.stringify(route))throw new CatalogError('idempotency_conflict');}
       const replayInput = input.modelId ? {title:input.title,modelId:prior[0].source_model_id,modelVersion:prior[0].source_model_version} : {title:input.title,starterVersion:input.starterVersion};
       if ((await digest(JSON.stringify(replayInput))) !== prior[0].payload_hash) throw new CatalogError('idempotency_conflict');
       return {project:await this.get(principal,tenantId,prior[0].project_id),replayed:true};
@@ -83,6 +92,7 @@ export class ProjectCatalog {
         tenantId, principal.userId, principal.authVersion, principal.userId, tenantId, key, source===null?1:0, source?.id??null, source?.modelId??null, source?.version??null, input.starterVersion??null, source?.digest??null),
       sql(`INSERT INTO catalog_workspaces(id,project_id,tenant_id,owner_user_id,generation,status,created_at,updated_at)
         SELECT workspace_id,id,tenant_id,owner_user_id,generation,'provisioning',?,? FROM catalog_projects WHERE id=?`, now, now, projectId),
+      sql(`INSERT INTO catalog_project_budget_routes(project_id,tenant_id,route_json) SELECT id,tenant_id,? FROM catalog_projects WHERE id=? AND ? IS NOT NULL`,route?JSON.stringify(route):null,projectId,route?JSON.stringify(route):null),
       sql(`INSERT INTO catalog_creation_intents(id,actor_user_id,tenant_id,operation,idempotency_key,payload_hash,project_id,state,created_at,updated_at)
         SELECT ?,owner_user_id,tenant_id,'project.create',?,?,id,'pending',?,? FROM catalog_projects WHERE id=?`, intentId,key,payloadHash,now,now,projectId),
       sql(`INSERT INTO catalog_outbox(id,project_id,workspace_id,tenant_id,generation,kind,state,attempts,available_at,created_at,updated_at,actor_auth_version,source_model_version_id,source_model_id,source_model_version,source_content_ref,source_content_sha256)

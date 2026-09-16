@@ -12,7 +12,7 @@ import {readModelUpload} from './model-upload-body.ts';
 import type {ModelContentPort} from '../runtime/content.ts';
 import { Admission, type VerifiedIdentity } from '../catalog/admission.ts';
 import { CatalogError,createProjectInput,opaqueId, type Principal } from '../catalog/contracts.ts';
-import { ProjectCatalog } from '../catalog/projects.ts';
+import { ProjectCatalog,projectBudgetRoute,type ProjectBudgetRoute } from '../catalog/projects.ts';
 import { ModelCatalog, type ModelVersion } from '../catalog/models.ts';
 import { OperatorCatalog } from '../catalog/admin.ts';
 import { statement as sql, type Database } from '../catalog/database.ts';
@@ -41,6 +41,7 @@ export interface GatewayServices {
   modelUpload?:ModelContentUploadPort;
   identity(request:Request):Promise<VerifiedIdentity|null>;
   admitProject?(principal:Principal,tenantId:string,key:string,body:unknown):Promise<unknown>;
+  createdProject?(principal:Principal,tenantId:string,projectId:string,budgetRoute:ProjectBudgetRoute):Promise<void>;
   provision?(principal:Principal,tenantId:string,projectId:string):Promise<void>;
   serviceRuns?:GatewayServiceRuns;
   previews?:GatewayPreviews;
@@ -366,8 +367,14 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       }
       if(request.method==='POST'&&!match[2]){
         const body=await readJson(request),key=request.headers.get('idempotency-key')??'';
-        if(services.admitProject){opaqueId(key);createProjectInput(body,new Set(['blank-v1']));await catalog.list(principal,match[1]);await services.admitProject(principal,match[1],key,body);}
-        const result=await catalog.create(principal,match[1],key,body);
+        let budgetRoute:ProjectBudgetRoute|undefined;
+        if(services.admitProject){opaqueId(key);createProjectInput(body,new Set(['blank-v1']));await catalog.list(principal,match[1]);const permit=await services.admitProject(principal,match[1],key,body);
+          if(permit&&typeof permit==='object'&&Object.hasOwn(permit,'budgetRoute')){const p=permit as {budgetRoute:unknown;authorized:unknown;boundProjectId:unknown};budgetRoute=projectBudgetRoute(p.budgetRoute);
+            if(p.authorized!==true){if(typeof p.boundProjectId==='string')return json({project:await catalog.get(principal,match[1],p.boundProjectId),replayed:true});throw new HttpError('project_admission_observe_only',409);}
+          }
+        }
+        const result=await catalog.create(principal,match[1],key,body,budgetRoute);
+        if(budgetRoute){if(!services.createdProject)throw new HttpError('project_budget_binding_unavailable',503);await services.createdProject(principal,match[1],result.project.id,budgetRoute);}
         // The outbox is already committed. Await durable acceptance, never put
         // the only dispatch into waitUntil. A lost response keeps the same key.
         if(services.provision)await services.provision(principal,match[1],result.project.id);

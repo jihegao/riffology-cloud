@@ -1,5 +1,8 @@
 import {createGatewayG4ComputeServices,createGatewayG4WindowServices} from './g4-compute-services.ts';
 import {admitG4Task,type G4TaskBudgetNamespace} from '../model-budget/g4-admission.ts';
+import {g5TaskKey} from '../model-budget/g5-admission.ts';
+import {G5_GLOBAL_ACTOR} from '../model-budget/g5-window.ts';
+import type {G5ControlledWindow} from '../model-budget/g5-window-durable.ts';
 import {createGatewayBrowserPreviewServices} from './browser-preview-services.ts';
 import {serveBrowserPreviewAppAsset} from '../browser-preview/execution/delivery.ts';
 import {createGatewayPublications} from './publication-services.ts';
@@ -8,7 +11,7 @@ import {createGatewayResearchExports} from './research-export-services.ts';
 import {createGatewaySimulationServices} from './simulation-services.ts';
 import {R2ModelContentUploadPort} from '../runtime/model-upload.ts';
 // Optional until the model-content binding is configured for an environment.
-type GatewayRuntimeEnv=GatewayEnv & {G4_CONTROLLED_WINDOW_JSON?:string;TENANT_MODEL_BUDGET?:G4TaskBudgetNamespace;TRUSTED_PI_CAPACITY?:DurableObjectNamespace<import('../capacity/durable.ts').TrustedPiCapacity>;MODEL_CONTENT?:R2Bucket;TOOL_ARTIFACT_STORE?:DurableObjectNamespace<import('../artifacts/durable.ts').ToolArtifactStore>;M3_SERVICE_ENABLED?:unknown;M3_PREVIEW_ENABLED?:unknown;M3_PREVIEW_WS_ENABLED?:unknown;M3_PREVIEW_ORIGIN?:string;BROWSER_PREVIEW_EXECUTION_ORIGIN?:string;M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?:string};
+type GatewayRuntimeEnv=GatewayEnv & {G5_WINDOW_GUARD?:DurableObjectNamespace<G5ControlledWindow>;G5_CONTROLLED_WINDOW_JSON?:string;G5_ADMISSION_ENABLED?:string;G4_CONTROLLED_WINDOW_JSON?:string;TENANT_MODEL_BUDGET?:G4TaskBudgetNamespace;TRUSTED_PI_CAPACITY?:DurableObjectNamespace<import('../capacity/durable.ts').TrustedPiCapacity>;MODEL_CONTENT?:R2Bucket;TOOL_ARTIFACT_STORE?:DurableObjectNamespace<import('../artifacts/durable.ts').ToolArtifactStore>;M3_SERVICE_ENABLED?:unknown;M3_PREVIEW_ENABLED?:unknown;M3_PREVIEW_WS_ENABLED?:unknown;M3_PREVIEW_ORIGIN?:string;BROWSER_PREVIEW_EXECUTION_ORIGIN?:string;M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?:string};
 import {R2ModelContentPort} from '../runtime/content.ts';
 import { createAuth } from './auth.ts';
 import { catalogDatabase } from '../catalog/database.ts';
@@ -27,6 +30,8 @@ import {runRevisionGcMaintenance} from './revision-gc-maintenance.ts';
 import {runGatewayScheduledDomains} from './scheduled.ts';
 export { TenantQuota } from '../quota/durable.ts';
 export { TenantModelBudget } from '../model-budget/durable.ts';
+export { G5ControlledWindow } from '../model-budget/g5-window-durable.ts';
+export { G5TenantModelBudget } from '../model-budget/g5-token-durable.ts';
 export { TrustedPiCapacity } from '../capacity/durable.ts';
 export { ProjectRuntime } from '../runtime/durable.ts';
 export { WorkspaceAgent } from '../workspace/durable.ts';
@@ -84,7 +89,21 @@ export default {
       return await auth.handler(request);
     }
     return await gateway(request,{g4ComputeCounts:createGatewayG4ComputeServices(env),g4WindowSnapshot:createGatewayG4WindowServices(env as unknown as Parameters<typeof createGatewayG4WindowServices>[0]),origin:env.APP_ORIGIN,database,modelContent:env.MODEL_CONTENT?new R2ModelContentPort(env.MODEL_CONTENT):undefined,modelUpload:env.MODEL_CONTENT?new R2ModelContentUploadPort(env.MODEL_CONTENT):undefined,
-      admitProject:(principal,tenantId,key,body)=>admitG4Task(env.TENANT_MODEL_BUDGET,env.G4_CONTROLLED_WINDOW_JSON,tenantId,principal.userId,'project',{key},body),
+      admitProject:async(principal,tenantId,key,body)=>{
+        if(env.G5_CONTROLLED_WINDOW_JSON!==undefined){
+          if(env.G5_ADMISSION_ENABLED!=='true'||!env.G5_WINDOW_GUARD)throw new HttpError('g5_admission_disabled',409);
+          const registration=await g5TaskKey(env.G5_CONTROLLED_WINDOW_JSON,'project',tenantId,principal.userId,{key},body);
+          const guard=env.G5_WINDOW_GUARD.getByName(G5_GLOBAL_ACTOR);
+          await guard.registerTask(registration);
+          const claim=await guard.claimTaskCreate(registration.key),policy=JSON.parse(env.G5_CONTROLLED_WINDOW_JSON);
+          return {authorized:claim.authorized,boundProjectId:claim.boundId,budgetRoute:{kind:'g5',taskKey:registration.key,windowId:policy.windowId,profileSha256:policy.profilePin.profileSha256}};
+        }
+        return admitG4Task(env.TENANT_MODEL_BUDGET,env.G4_CONTROLLED_WINDOW_JSON,tenantId,principal.userId,'project',{key},body);
+      },
+      createdProject:async(_principal,_tenantId,projectId,route)=>{
+        if(!env.G5_WINDOW_GUARD)throw new HttpError('g5_budget_binding_unavailable',503);
+        await env.G5_WINDOW_GUARD.getByName(G5_GLOBAL_ACTOR).bindTask(route.taskKey,projectId);
+      },
       provision:async(principal,tenantId,projectId)=>{
         const item=await new ProvisioningCatalog(database).kickProject(principal,tenantId,projectId);
         if(item)await dispatch(env,item);

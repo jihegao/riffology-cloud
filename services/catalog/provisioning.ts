@@ -1,5 +1,6 @@
 import { statement as sql, type Database } from './database.ts';
 import { CatalogError, digest, opaqueId, type Principal } from './contracts.ts';
+import {projectBudgetRoute} from './projects.ts';
 
 import { validateWorkspaceTask, type WorkspaceTask, type WorkspaceProjection, type ModelContentRef } from '../workspace/protocol.ts';
 export type { WorkspaceProjection } from '../workspace/protocol.ts';
@@ -42,10 +43,11 @@ const joined=`FROM catalog_outbox o JOIN catalog_projects p ON p.id=o.project_id
 const current=`o.kind='workspace.provision' AND o.generation=p.generation AND o.generation=w.generation
  AND p.status<>'deleting' AND w.status<>'deleting'`;
 const taskColumns=`o.id,o.tenant_id AS tenantId,o.project_id AS projectId,o.workspace_id AS workspaceId,
- o.generation,o.actor_auth_version AS authVersion,p.starter_version AS starterVersion,o.source_model_version_id AS sourceModelVersionId,o.source_model_id AS sourceModelId,o.source_model_version AS sourceModelVersion,o.source_content_ref AS sourceContentRef,o.source_content_sha256 AS sourceContentSha256,o.created_at AS createdAt,o.deadline_at AS deadlineAt`;
+ o.generation,o.actor_auth_version AS authVersion,p.starter_version AS starterVersion,o.source_model_version_id AS sourceModelVersionId,o.source_model_id AS sourceModelId,o.source_model_version AS sourceModelVersion,o.source_content_ref AS sourceContentRef,o.source_content_sha256 AS sourceContentSha256,o.created_at AS createdAt,o.deadline_at AS deadlineAt,(SELECT route_json FROM catalog_project_budget_routes br WHERE br.project_id=p.id AND br.tenant_id=p.tenant_id) AS budgetRouteJson`;
 type DispatchRow=ProvisioningTask & {state:string};
 function taskWithContent(raw:Record<string,unknown>):ProvisioningTask {
-  const {sourceModelVersionId,sourceModelId,sourceModelVersion,sourceContentRef,sourceContentSha256,...base}=raw;
+  const {sourceModelVersionId,sourceModelId,sourceModelVersion,sourceContentRef,sourceContentSha256,budgetRouteJson,...base}=raw;
+  if(budgetRouteJson!==null&&budgetRouteJson!==undefined)Object.assign(base,{budgetRoute:projectBudgetRoute(JSON.parse(String(budgetRouteJson)))});
   if ([sourceModelVersionId,sourceModelId,sourceModelVersion,sourceContentRef,sourceContentSha256].every(v=>v===null||v===undefined)) return validateWorkspaceTask(base as WorkspaceTask);
   if ([sourceModelVersionId,sourceModelId,sourceModelVersion,sourceContentRef,sourceContentSha256].some(v=>typeof v!=='string')) throw Error('invalid-model-content-freeze');
   return validateWorkspaceTask({...base,modelContent:{modelVersionId:sourceModelVersionId as string,modelId:sourceModelId as string,version:sourceModelVersion as string,contentRef:sourceContentRef as string,contentSha256:sourceContentSha256 as string} satisfies ModelContentRef} as WorkspaceTask);
