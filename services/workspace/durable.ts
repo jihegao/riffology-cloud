@@ -798,7 +798,13 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const checked=await guard.checkTaskContinue(taskKey,grant);if(!checked.authorized)throw Error('g5-task-continuation-denied');
   }
   async #g5TurnStart(turn:import('../turn/protocol.ts').TurnRecord,phase:'capacity'|'runtime'){
-    const route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);if(!route)return;
+    const route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);
+    if(!route){
+      // Journal commit can survive a lost sync ACK before the route callback runs.
+      // Missing provenance in a configured G5 Workspace never authorizes a legacy start.
+      if(this.env.G5_CONTROLLED_WINDOW_JSON)throw Error('g5-turn-route-unavailable');
+      return;
+    }
     if(phase==='capacity'){const result=await this.#g5Guard().checkTaskStart(route.taskKey);if(!result.authorized)throw Error('g5-workspace-start-denied');return;}
     await this.#g5StartTask(route.taskKey,{scope:turn.scope,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId!,generation:turn.runtimeGeneration!});
     const usedKey='g5-native-accept:'+route.taskKey;if(this.ctx.storage.kv.get(usedKey))throw Error('g5-native-accept-reconcile-only');this.ctx.storage.kv.put(usedKey,true);await this.ctx.storage.sync();
