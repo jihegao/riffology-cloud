@@ -229,7 +229,7 @@ G4本次受控执行结束；#64普通用户主链通过，#65与全部线上负
 
 用户明确要求完成生产接线及新窗口范围/预算冻结后，主控动态派发provider/overlay、Workspace、私有预算authority三个subagent，串行集成并非作者复核。生产已发布闭门Worker `1afa24e5-f327-412a-b22b-1a921130a7ae`/100%，真实下载代码与本地bundleSHA逐项一致；新增3预算DO/2secret引用，旧15namespace ID、G4policy、旧MODEL_BUDGET字段和5个实际image/app ID不变。新增0010原子Project route migration与7/30天R2规则实际写入并独立核对。全套check2053/2042pass/11skip/0fail，额外23驱动通过；真实本地Workerd三账本及Cold/Warm提交ACKloss缺route零执行经过独立3/3复核。线上原生VM/付费模型验收未以fixture替代。
 
-G5-A冻结US$20/Turn5/147dispatch/39Simulation/0Service/task66；B US$20/Turn5/168dispatch/Run0/task24，两独立user/tenant、A再B、各首实际admission后2小时，共享US$40 money period。生产全门禁及money保持关闭、3新namespace对象0、发布后259实例全部inactive，模型/新Project/Run0、2小时未开始。Gateway只读models实际返回OpenAI403 `unsupported_country_region_territory`，通道可用性阻断未解决；不标记G5付费验收完成。此前“未冻结/无生产接线”记录是历史状态，以[本轮冻结与交付](g5-scope-budget-freeze-20260916.md)和[生产回读证据](g5-closed-production-readback-20260916.json)为当前事实。G4剩余补测、G6、推送/合并及issue关闭仍另行安排。
+G5-A冻结US$20/Turn5/147dispatch/39Simulation/0Service/task66；B US$20/Turn5/168dispatch/Run0/task24，两独立user/tenant、A再B、各首实际admission后2小时，共享US$40 money period。生产全门禁及money保持关闭、3新namespace对象0、发布后259实例全部inactive，模型推理/新Project/Run0、2小时未开始。Gateway只读models在本机曾返回OpenAI403 `unsupported_country_region_territory`；随后从 `riffology-m1-gateway-staging` 实际返回200并确认 `gpt-5.6-luna` 可见、推理调用0。临时诊断版本已恢复为原冻结代码和配置；models200不是Responses或付费验收，正式从Worker运行前须冻结出口兼容配置的新release proof。以[Worker出口诊断](g5-worker-origin-probe-20260916.md)、[本轮冻结与交付](g5-scope-budget-freeze-20260916.md)和[生产回读证据](g5-closed-production-readback-20260916.json)为当前事实。G4剩余补测、G6、推送/合并及issue关闭仍另行安排。
 
 ### G4/G5执行准备实现进展（2026-09-16）
 
