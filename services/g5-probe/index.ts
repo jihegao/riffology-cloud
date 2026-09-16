@@ -44,6 +44,7 @@ type ProbeResult = {
   gateway: typeof GATEWAY_ID;
   model: typeof MODEL_ID;
   colo: string | null;
+  executionPlacement?: string | null;
   status: number | null;
   state: ProbeState;
   errorCode: ProbeErrorCode;
@@ -175,6 +176,11 @@ function requestColo(request: Request): string | null {
   return typeof colo === 'string' && /^[A-Z0-9]{3,8}$/.test(colo) ? colo : null;
 }
 
+function requestPlacement(request: Request): string | null {
+  const placement = request.headers.get('cf-placement');
+  return placement && /^(?:remote|local)-[A-Z0-9]{3,8}$/.test(placement) ? placement : null;
+}
+
 async function runProbe(request: Request, env: G5ProbeEnv, fetchImpl: typeof fetch): Promise<ProbeResult> {
   const colo = requestColo(request);
   if (!validSecret(env.PRODUCTION_OPENAI_API_KEY) || !validSecret(env.PRODUCTION_AI_GATEWAY_TOKEN)) {
@@ -260,7 +266,7 @@ export function createG5ProbeHandler(dependencies: ProbeDependencies = {}) {
   const fetchImpl = dependencies.fetchImpl ?? fetch;
   return async (request: Request, env: G5ProbeEnv): Promise<Response> => {
     if (!await authorized(request, env)) return notFound();
-    return json(await runProbe(request, env, fetchImpl));
+    return json({...await runProbe(request, env, fetchImpl),executionPlacement:requestPlacement(request)});
   };
 }
 

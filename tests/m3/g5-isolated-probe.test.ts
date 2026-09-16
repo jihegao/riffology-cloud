@@ -70,7 +70,7 @@ test('model success uses the fixed Gateway GET contract and returns only whiteli
     'cf-aig-skip-cache': 'true',
   });
   assert.deepEqual(result, {
-    version: 'g5-region-probe-us-east-v1', gateway: 'riffology-g5-region-probe-20260916', model: 'gpt-5.6-luna', colo: 'SJC',
+    version: 'g5-region-probe-us-east-v1', gateway: 'riffology-g5-region-probe-20260916', model: 'gpt-5.6-luna', colo: 'SJC', executionPlacement:null,
     status: 200, state: 'model-available', errorCode: null, modelAvailable: true, inferenceCalls: 0,
   });
   const serialized = JSON.stringify(result);
@@ -86,7 +86,7 @@ test('region rejection is classified without returning raw provider details', as
   }, { status: 403, headers: { 'x-sensitive': 'do-not-copy' } }) });
   const result = await output(await handler(request(), env));
   assert.deepEqual(result, {
-    version: 'g5-region-probe-us-east-v1', gateway: 'riffology-g5-region-probe-20260916', model: 'gpt-5.6-luna', colo: 'SJC',
+    version: 'g5-region-probe-us-east-v1', gateway: 'riffology-g5-region-probe-20260916', model: 'gpt-5.6-luna', colo: 'SJC', executionPlacement:null,
     status: 403, state: 'region-blocked', errorCode: 'unsupported-country-region-territory', modelAvailable: false, inferenceCalls: 0,
   });
   const serialized = JSON.stringify(result);
