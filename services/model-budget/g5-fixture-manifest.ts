@@ -4,26 +4,28 @@ export const G5_FIXTURE_RUNS=[1,2,1,1,6,2] as const;
 export const G5_FIXTURE_CATEGORIES=['create-model','parameter-change','mechanism-change','repair-validation','measured-evidence','reopen-continue'] as const;
 export type G5FixtureCategory=typeof G5_FIXTURE_CATEGORIES[number];
 const seeds=[[104729,104759,104761],[130363,130367,130369],[155921,155927,155929]] as const;
-const base={arrival_rate:0.8,customers:40,servers:1,service_rate:1},overloaded={arrival_rate:1.5,customers:40,max_wait:2,servers:1,service_rate:1};
+const base={arrival_rate:0.8,customers:40,servers:1,service_rate:1},overloaded={arrival_rate:1.5,customers:40,max_wait:2,servers:1,service_rate:1},zeroWait={arrival_rate:1.5,customers:40,max_wait:0,servers:1,service_rate:1};
 const inputs={
  'create-model':[base],'parameter-change':[base,{arrival_rate:1.2,customers:40,servers:1,service_rate:1}],
- 'mechanism-change':[{...overloaded,max_wait:0}],'repair-validation':[overloaded],
+ 'mechanism-change':[zeroWait],'repair-validation':[overloaded],
  'measured-evidence':[overloaded,{arrival_rate:1.5,customers:40,max_wait:2,servers:2,service_rate:1}],
  'reopen-continue':[{arrival_rate:1.5,customers:40,max_wait:2,queue_capacity:120,servers:1,service_rate:1},{arrival_rate:1.5,customers:40,max_wait:2,queue_capacity:0,servers:1,service_rate:1}]
 } as const;
 const relations={
  'create-model':'created','parameter-change':'unchanged','mechanism-change':'changed','repair-validation':'restored-after-same-turn-failure','measured-evidence':'unchanged','reopen-continue':'changed'
 } as const;
-const unsupported:Record<G5FixtureCategory,readonly string[]>={
- 'create-model':['final completed equals customers; final active agents zero','queue_length equals waiting agents at every frame','paired higher-arrival-rate waiting no smaller than baseline reference'],
- 'parameter-change':['final completed equals customers; final active agents zero','queue_length equals waiting agents at every frame'],
- 'mechanism-change':['validation artifact and finite conservation checks','do not claim universal monotonic served-only mean_wait'],
- 'repair-validation':['do not claim universal monotonic served-only mean_wait'],
- 'measured-evidence':['explanation reflects measured sign and served-only selection limitation','do not claim universal monotonic served-only mean_wait'],
- 'reopen-continue':['refresh/reopen reads create no Run or provider call','same project and prior revision/result IDs recovered','queue_length never exceeds queue_capacity','zero-capacity queues reject waiting arrivals']
+const unsupported:Record<G5FixtureCategory,readonly string[]>={'create-model':[],'parameter-change':[],'mechanism-change':[],'repair-validation':[],'measured-evidence':[],'reopen-continue':[]};
+const machineChecks:Record<G5FixtureCategory,readonly string[]>={
+ 'create-model':['finite nonnegative trace audit','final completed equals customers and final active equals zero','queue_length equals waiting in every audit row'],
+ 'parameter-change':['both trace audits are finite and nonnegative','both final completed values equal customers and final active values equal zero','queue_length equals waiting in every audit row','paired higher-arrival-rate mean_wait is no smaller than baseline'],
+ 'mechanism-change':['finite trace audit and final completed plus abandoned equals customers','abandonment count is nonzero','max_wait equals zero and mean_wait equals zero','queue_length equals waiting in every audit row'],
+ 'repair-validation':['finite trace audit and final completed plus abandoned equals customers','saved repair source excludes the seeded failure bytes','queue_length equals waiting in every audit row'],
+ 'measured-evidence':['six child trace audits are finite and conserve customers','group contains exact two configurations by three seeds','verified throughput delta references all six result artifacts'],
+ 'reopen-continue':['finite trace audits and final completed plus abandoned plus rejected equals customers','queue_length never exceeds queue_capacity','zero-capacity intervention has rejected greater than zero and queue_length zero in every row','prior results remain historical under the new revision']
 };
-export type G5FixtureManifestEntry={fixtureId:string;category:G5FixtureCategory;repeat:number;sequence:number;order:number;dependsOn:string|null;sourceRelation:typeof relations[G5FixtureCategory];runCount:number;mode:'individual'|'group';expectedRuns:readonly {parameters:Record<string,number>;seed:number}[];unsupportedChecks:readonly string[]};
-export const G5_FIXTURE_MANIFEST:readonly G5FixtureManifestEntry[]=Object.freeze([1,2,3].flatMap(repeat=>G5_FIXTURE_CATEGORIES.map((category,index)=>{const paired=seeds[repeat-1]!,parameters=inputs[category],expectedRuns=category==='measured-evidence'?parameters.flatMap(value=>paired.map(seed=>({parameters:{...value},seed}))):parameters.map(value=>({parameters:{...value},seed:paired[0]}));return Object.freeze({fixtureId:`queue-r${repeat}-${index+1}-${category}`,category,repeat,sequence:index+1,order:(repeat-1)*6+index+1,dependsOn:index===0?null:`queue-r${repeat}-${index}-${G5_FIXTURE_CATEGORIES[index-1]}`,sourceRelation:relations[category],runCount:G5_FIXTURE_RUNS[index],mode:category==='measured-evidence'?'group':'individual',expectedRuns,unsupportedChecks:unsupported[category]});})));
+const unassessedChecks:Record<G5FixtureCategory,readonly string[]>={'create-model':[],'parameter-change':[],'mechanism-change':[],'repair-validation':[],'measured-evidence':['natural-language interpretation is unassessed'],'reopen-continue':['natural-language interpretation is unassessed']};
+export type G5FixtureManifestEntry={fixtureId:string;category:G5FixtureCategory;repeat:number;sequence:number;order:number;dependsOn:string|null;sourceRelation:typeof relations[G5FixtureCategory];runCount:number;mode:'individual'|'group';expectedRuns:readonly {parameters:Record<string,number>;seed:number}[];machineChecks:readonly string[];unassessedChecks:readonly string[];unsupportedChecks:readonly string[]};
+export const G5_FIXTURE_MANIFEST:readonly G5FixtureManifestEntry[]=Object.freeze([1,2,3].flatMap(repeat=>G5_FIXTURE_CATEGORIES.map((category,index)=>{const paired=seeds[repeat-1]!,parameters=inputs[category],expectedRuns=category==='measured-evidence'?parameters.flatMap(value=>paired.map(seed=>({parameters:{...value},seed}))):parameters.map(value=>({parameters:{...value},seed:paired[0]}));return Object.freeze({fixtureId:`queue-r${repeat}-${index+1}-${category}`,category,repeat,sequence:index+1,order:(repeat-1)*6+index+1,dependsOn:index===0?null:`queue-r${repeat}-${index}-${G5_FIXTURE_CATEGORIES[index-1]}`,sourceRelation:relations[category],runCount:G5_FIXTURE_RUNS[index],mode:category==='measured-evidence'?'group':'individual',expectedRuns,machineChecks:machineChecks[category],unassessedChecks:unassessedChecks[category],unsupportedChecks:unsupported[category]});})));
 export function g5FixtureManifestEntry(fixtureId:string){const entry=G5_FIXTURE_MANIFEST.find(value=>value.fixtureId===fixtureId);if(!entry)throw Error('g5-authority-fixture-invalid');return entry;}
 type FixtureClaim={createdBy:unknown;kind:string;metric:string;experimentId:string;armId:string|null;count:number;baselineCount:number;plannedCount:number;references:{runId:string;armId:string|null}[]};
 export function g5FixtureClaimContract(claims:FixtureClaim[],runIds:string[],groupId:string|null,actor:unknown){
