@@ -3,8 +3,10 @@ import {readFile,stat} from 'node:fs/promises';
 import {spawnSync} from 'node:child_process';
 import {dirname,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {runG5ASerialHost} from './g5-a-live-driver.mjs';
+import {G5ACdpDurableRunner,G5ASequentialLiveDriver,createG5ACdpTransport,g5ASerialSchedule,runG5ASerialHost} from './g5-a-live-driver.mjs';
 import {createG5OperatorHttpAuthority} from './g5-a-operator-control.mjs';
+import {G5B2ReadonlyProof} from './g5-b2-readonly-proof.mjs';
+import {APP_ORIGIN,configSha256} from './g5-benchmark-live-runner.mjs';
 
 const SHA=/^[a-f0-9]{64}$/;
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
@@ -116,10 +118,34 @@ export async function assembleG5ACloudAdapters({manifestPath,execute=false,cloud
  return Object.freeze({manifest,authority:authorityAdapter,controlPorts,releasePreflight});
 }
 
-/** Final assembly seam: the CDP identity receipt is consumed without exposing its browser cookies. */
-export async function runG5ACloudSerialHost({plan,driver,cdp,manifestPath,adapters=null,execute=false,runProbes=false,cloud,authority,runner,fetcher,root,...hostOptions}={}){
- if(execute!==true)return runG5ASerialHost({plan,driver,execute:false,identityPreflight:cdp?.identityProof});
- const wired=adapters??await assembleG5ACloudAdapters({manifestPath,execute:true,cloud,authority,runner,fetcher,root});
- if(driver?.authority!==wired.authority||driver?.runner?.cdp!==cdp)fail('g5-cloud-driver-adapter-conflict');driver.runner.releasePreflight=wired.releasePreflight;
- if(!driver.schedule)await driver.init();return runG5ASerialHost({plan,driver,controlPorts:wired.controlPorts,identityPreflight:cdp.identityProof,execute:true,runProbes,...hostOptions});
+function requireB2Assembly(manifest,plan,config,approvedSha256,directory){
+ const handoff=plan?.driverHandoff;
+ if(!object(plan)||!object(handoff)||!object(config)||typeof directory!=='string'||directory.length===0)fail('g5-cloud-b2-input-invalid');
+ if(config.authorization?.scope!=='g5-a-b2-controlled'||config.authorization.syntheticOnly!==true)fail('g5-cloud-b2-scope-required');
+ if(approvedSha256!==configSha256(config))fail('g5-cloud-b2-approved-config-conflict');
+ if(plan.windowId!==manifest.windowId||plan.sourceSha256!==manifest.sourceSha256||plan.profileSha256!==manifest.profileSha256||plan.openSha256!==manifest.open.configSha256||plan.closedSha256!==manifest.closed.configSha256)fail('g5-cloud-b2-plan-manifest-conflict');
+ if(config.windowId!==manifest.windowId||config.sourceSha256!==manifest.sourceSha256||config.origin!==APP_ORIGIN||config.tenantId!==handoff.allowedTenantId||handoff.windowId!==manifest.windowId||handoff.profileSha256!==manifest.profileSha256||handoff.sourceSha256!==manifest.sourceSha256||handoff.openConfigSha256!==manifest.open.configSha256||handoff.ordinaryOrigin!==APP_ORIGIN)fail('g5-cloud-b2-config-binding-conflict');
+ return handoff;
+}
+
+/** Production B2 assembly. One manifest creates the authority, controls, preflight, CDP transport, proof and driver. */
+export async function assembleG5ACloudB2Host({plan,manifestPath,config,approvedSha256,directory,cdpUrl,connect,clock=Date.now,wait,projectPoll,cloud,runner,fetcher,root}={}){
+ const manifest=await loadG5ACloudPrivateManifest(manifestPath),handoff=requireB2Assembly(manifest,plan,config,approvedSha256,directory);
+ const authority=createG5CloudOperatorAuthority(manifest,{fetcher}),controlPorts=createG5ACloudControlPorts(manifest,{execute:true,cloud,authority,runner,fetcher,root}),releasePreflight=createG5AReleasePreflight(manifest,{cloud,controlPorts,runner,fetcher,root});
+ const cdp=await createG5ACdpTransport({cdpUrl,expectedUserId:handoff.allowedUserId,allowedTenantId:handoff.allowedTenantId,deniedUserId:handoff.deniedUserId,deniedTenantId:handoff.deniedTenantId,windowId:manifest.windowId,openConfigSha256:manifest.open.configSha256,origin:handoff.ordinaryOrigin,connect,clock});
+ try{
+  const durableRunner=new G5ACdpDurableRunner({directory,config,approvedSha256,cdp,releasePreflight,operatorHandoff:handoff,clock}),b2Readonly=new G5B2ReadonlyProof({reader:cdp.readonlyReader,authority}),driver=new G5ASequentialLiveDriver({runner:durableRunner,authority,b2Readonly,clock,...(wait?{wait}:{}),...(projectPoll?{projectPoll}:{})});
+  if(driver.authority!==authority||driver.b2Readonly.authority!==authority||driver.b2Readonly.reader!==cdp.readonlyReader||driver.runner.cdp!==cdp||driver.runner.releasePreflight!==releasePreflight)fail('g5-cloud-b2-wiring-conflict');
+  return Object.freeze({manifest,authority,controlPorts,releasePreflight,cdp,b2Readonly,runner:durableRunner,driver});
+ }catch(error){await cdp.close();throw error;}
+}
+
+/** Final production entrypoint. Execute mode refuses caller-supplied driver, CDP, authority or adapters. */
+export async function runG5ACloudSerialHost(options={}){
+ const {plan,manifestPath,config,approvedSha256,directory,cdpUrl,connect,execute=false,runProbes=false,cloud,runner,fetcher,root,clock,wait,projectPoll,...hostOptions}=options;
+ if(execute!==true)return {status:'planned-not-executed',schedule:await g5ASerialSchedule()};
+ if(['driver','cdp','authority','adapters','b2Readonly','controlPorts','releasePreflight','identityPreflight'].some(key=>Object.hasOwn(options,key)))fail('g5-cloud-b2-injection-denied');
+ const wired=await assembleG5ACloudB2Host({plan,manifestPath,config,approvedSha256,directory,cdpUrl,connect,clock,wait,projectPoll,cloud,runner,fetcher,root});
+ try{await wired.driver.init();return await runG5ASerialHost({plan,driver:wired.driver,controlPorts:wired.controlPorts,identityPreflight:wired.cdp.identityProof,execute:true,runProbes,...hostOptions});}
+ finally{await wired.cdp.close();}
 }
