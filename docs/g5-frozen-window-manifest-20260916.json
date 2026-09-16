@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "kind": "closed-frozen-window-not-admission",
+  "sourceSha256": "680259b32bef0f6680266ebc562a01556f850e76da1ddd773b30f7e636d6ffc8",
+  "profileSha256": "7291181d366d597b4c5ebcf365d43dd455904bfdcc4825ba7bf020aac9903341",
+  "rateCardSha256": "8105427142f58810906b1124ffcc653c44d5a95b0502b32c4534c20aa9da88cc",
+  "policyBundleSha256": "b96eb34484c1ea86abf79f9e1c27558c68d2a05c650f5e5efcce6029bce91768",
+  "durationMs": 7200000,
+  "phaseOrder": [
+    "A",
+    "B"
+  ],
+  "limits": {
+    "A": {
+      "upstream": 147,
+      "simulationRuns": 39,
+      "serviceRuns": 0,
+      "tasks": 66,
+      "totalUSD": 20
+    },
+    "B": {
+      "upstream": 168,
+      "simulationRuns": 0,
+      "serviceRuns": 0,
+      "tasks": 24,
+      "totalUSD": 20
+    },
+    "turnUSD": 5,
+    "sharedMoneyUSD": 40
+  },
+  "maximumNanodollars": {
+    "perCall": 70451200,
+    "A": 10356326400,
+    "B": 11835801600
+  },
+  "targets": {
+    "p95TurnMs": 120000,
+    "maxCostPerAcceptedTaskNanodollars": 1000000000
+  },
+  "gatesClosed": true,
+  "firstAdmissionStarted": false
+}

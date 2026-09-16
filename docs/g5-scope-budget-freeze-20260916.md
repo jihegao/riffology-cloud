@@ -13,6 +13,8 @@ A 再 B，线上执行严格串行；各自从服务端首次真实 admission �
 
 两窗口均使用 OpenAI API `gpt-5.6-luna`、Cloudflare Gateway、原生 Responses、platform BYOK；不将 G4 的 OpenCode Go 推理计入此验收。token 固定8 reserve/8 dispatch、输入262144、输出4096、Turn reservedTokens2129920。独立 `G5_TOKEN_BUDGET_POLICY_JSON` 不改写旧 `MODEL_BUDGET_*`、G4 policy、namespace 或不可重置 fence。Money 每窗口20、每Turn5，shared global/user/tenant40，按向上取整 nanodollars 保守预留。
 
+B另有闭门cold variant `wrangler-B-cold.json`：只将lazy/reuse两个runtime gate设false，window/profile/token/money/source完全相同，无新增预算或window ID。用于已冻结的冷对照及冷回退，暖pair实际退休/双域释放后才切阶段；不能靠切variant重新执行未知任务。[Cold variant摘要](g5-b-cold-variant-proof-20260916.json)绑定原B overlay及source proof字节；本轮不发布或执行该variant。
+
 固定任务 fixture SHA256 为 `3e410718f9143da69f3bc63407f4452ae7802afb299f250657be51a40a756fb4`。A 目标沿用16/18、每类别至少2、安全/伪造0；主控冻结筛查目标 p95 Turn≤120秒、模型费用/合格任务≤US$1。它们是小样本验收筛查值，不是长期 SLO、实际性能或额外准入授权。任务细节见[具体提案](g4-closeout-g5-execution-proposal-20260916.md)。B 暖配置保持闲置60秒、最大30分钟、16 binding、guard360秒、quiet30秒、容量2及共享 FIFO；版本摘要绑定当前实际镜像和本次代码，不能冒称原生物理身份已验收。
 
 仅合成数据，平台脱敏诊断7天、验收证据30天，已实际写入并独立读取专属 R2 生命周期；上游默认保留与本地副本清理另有边界，见[数据评审](g5-privacy-freeze-20260916.md)。[费率冻结](g5-ratecard-freeze-20260916.md)的模型最坏预留分别US$10.3563264/11.8358016，不是invoice结果。
@@ -21,4 +23,12 @@ A 再 B，线上执行严格串行；各自从服务端首次真实 admission �
 
 当前真实通道阻断：Gateway 原生 `/models` 返回 OpenAI HTTP403 `unsupported_country_region_territory`，0推理。生产配置接线与预算冻结可交付，但通道尚不可标记可用。提供符合上游支持地区要求的通道并重新核验后，才可另行安排首次付费准入；不得单凭密钥/token存在或本地fixture解锁。五个模型/Turn/Simulation/G5 gate 与 money.enabled 保持关闭。
 
-生产版本、源码/镜像/overlay 摘要与最终验证回执将在本轮收口追加；冻结 private bundle 使用 wx+fsync，不同字节不覆盖。
+生产接线已关闭门禁发布：Worker version `1afa24e5-f327-412a-b22b-1a921130a7ae`，deployment `579ac95f-a403-4d91-b003-cc659ff723d1`，100%，2026-09-16 UTC00:46:16。源码提交 `5d468296da3b68c20362fe5a6a7b4e5e0f1d9a9b`；源码清单 SHA256 `680259b32bef0f6680266ebc562a01556f850e76da1ddd773b30f7e636d6ffc8`，线上下载的 `index.js` 与本地两phase dry-run逐字节摘要一致：`ba7f989e7cf0de7ae16e67314e0875c79650b7235ebbc9887d4d617b190a1b03`，4120280字节。实际发布A闭门overlay；B暖/冷配置范围已冻结为后续阶段，不在本轮开启。
+
+所有冻结vars独立GET逐项一致，五个新任务/模型/Simulation gate与Service=false，money.enabled=false；3新DO与2生产secret名字已读回，旧15 namespace ID、G4 policy、MODEL_BUDGET政策、5 container app ID及实际image均保持。发布后UTC00:49:25分页完备读取259实例，nonInactive=0；3新预算namespace对象均0，因此本窗口未接纳任何任务/推理/新Run、两小时未启动。公共root HTTP200，未认证providers HTTP401，仅为健康/认证边界检查，不是普通用户建模验收。
+
+完整check2053项：2042通过、11环境/opt-in跳过、0失败；额外G5驱动23/23，非作者实际Workerd复核3/3。SDK两phase dry-run完成，CLI在部分命令输出完成后未退出，主控以构建字节/独立云readback确认完成后仅终止对应CLI进程，没有重复部署或推理重试。上游403地区阻断仍保留；未进行G5付费benchmark、实际暖复用物理身份验收或关闭#46/#37。
+
+冻结private bundle位于隔离工作树`.local/issues-20260915/g5/frozen-v1/`，directory0700、policies/overlay0600，wx+fsync、不同字节不覆盖；临时上传用secret JSON已精确删除，原项目`.dev.vars`保留。后续改变源/通道/profile须生成新的具体评审版本；已有server window/deadline/money unknown不可清零或创建新ID绕过。
+
+公共摘要：[窗口manifest](g5-frozen-window-manifest-20260916.json)、[实际源/镜像pin](g5-production-source-proof-20260916.json)、[生产readback](g5-closed-production-readback-20260916.json)、[发布前独立检查](g5-production-wiring-verification-20260916.md)。脱敏白名单冻结证据已PUT至MODEL_CONTENT `g5-acceptance/g5-20260916-wiring-v1/evidence/closed-wiring-evidence.zip`，8541字节，SHA256 `74683f9244cba8b16c1560b3050f3edeef10e3bc3ab9b50f33f794deba612137`；独立GET字节一致，6/6内部SHA256SUMS通过。30天规则已独立核对；不上传scope中的真实邮箱、principal UUID、账户ID、privatepolicy、凭据或原始session。

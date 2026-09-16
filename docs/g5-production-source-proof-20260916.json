@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "5d468296da3b68c20362fe5a6a7b4e5e0f1d9a9b",
+  "sourceSha256": "680259b32bef0f6680266ebc562a01556f850e76da1ddd773b30f7e636d6ffc8",
+  "runtimeSha256": "72692119f2f20eb72968f8d6e7c122adb312774379a0795dd5e027dabf57d9be",
+  "sourceInventorySha256": "680259b32bef0f6680266ebc562a01556f850e76da1ddd773b30f7e636d6ffc8",
+  "profileSha256": "7291181d366d597b4c5ebcf365d43dd455904bfdcc4825ba7bf020aac9903341",
+  "evidenceSha256": "6b7f29c3cdec869cfd616e58d79fb942588e49f225e48103b8afd4b0b6c29099",
+  "privacyReviewSha256": "dafb3bfc1aa9885b3823c0f11e55b4fc32b1e1a1abb8ed3734ebccf8af720a0e",
+  "rateCardSha256": "8105427142f58810906b1124ffcc653c44d5a95b0502b32c4534c20aa9da88cc",
+  "policyBundleSha256": "b96eb34484c1ea86abf79f9e1c27558c68d2a05c650f5e5efcce6029bce91768",
+  "images": [
+    {
+      "className": "ProjectRuntime",
+      "sha256": "bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00"
+    },
+    {
+      "className": "ProjectToolSandbox",
+      "sha256": "b21324f5d19ab76c6924192d572d087e599d5243bb99ab9cd4e23180793e616a"
+    },
+    {
+      "className": "TrustedPiSandbox",
+      "sha256": "025a80a809ab2fcf7bfac1dbd2a1ab2c225753fa4881514949cecfd408b7426e"
+    },
+    {
+      "className": "ServiceSandbox",
+      "sha256": "b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8"
+    },
+    {
+      "className": "SimulationSandbox",
+      "sha256": "bdceaa26a9dd4ecf82182327ea6ca07f3e968c4b132d79adf3c0cfac6a58fcf2"
+    }
+  ],
+  "gatesClosed": true,
+  "firstAdmissionStarted": false,
+  "upstreamReady": false,
+  "upstreamReason": "unsupported_country_region_territory",
+  "retention": {
+    "diagnosticsDays": 7,
+    "evidenceDays": 30
+  },
+  "overlaySha256": {
+    "A": "d87ebe837c5fa85e72df3749cda573cbade0e4eabb993838a036bdf127e50c6a",
+    "B": "baec1642ab504d758460f5bd06ad252a1bf0f01bded146dd64f7b757010cd108"
+  }
+}

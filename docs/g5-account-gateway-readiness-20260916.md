@@ -1,5 +1,7 @@
 # G5账号与Gateway核验（2026-09-16）
 
+最新状态：生产接线已闭门发布，两个production secret引用已上传并独立读回名字；两个真实user/tenant/owner membership已目录只读核对，不代替普通登录。A/B范围及20+20USD预算已冻结，原生Gateway models实测403 `unsupported_country_region_territory`，0推理、未开跑。下文“待接线/未上传/未冻结”为先前准备状态，当前以[冻结回执](g5-scope-budget-freeze-20260916.md)和[生产readback](g5-closed-production-readback-20260916.json)为准。
+
 用户已创建OpenAI密钥Codex并保存到原项目`.dev.vars`的`OPENAI_API_KEY`。主控核对文件权限0600；从该引用只读调用`GET /v1/models`，HTTP200且账号返回`gpt-5.6-luna`。没有打印、上传或写入文档密钥值，也没有修改原变量。此结果证明只读鉴权和模型可见性，不证明推理余额、账单或完整Responses工具循环。
 
 沿用Luna模型身份准备OpenAI Responses/platform-BYOK配置；它是不同于G4 OpenCode的生产通道，不能据G4结果提前签收#46。部署时固定secret引用`PRODUCTION_OPENAI_API_KEY`应从用户已有`OPENAI_API_KEY`安全映射，当前尚未上传Worker。Provider真实请求与工具循环仍需新窗口验收。

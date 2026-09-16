@@ -1,5 +1,7 @@
 # G4收口与G5执行提案（2026-09-16）
 
+本轮最新状态：用户已要求并完成 G5 关闭门禁生产接线及 A/B 范围/预算冻结；各US$20、共享US$40、Turn5、A147/39Run/task66、B168/0Run/task24，首真实admission后各2小时。本提案以下未授权/未接线文字为历史准备状态。生产模块字节、门禁、旧fence/namespace保持及30天归档均已独立核验；上游Gateway `/models` 地区403仍阻断可用性，付费任务/新Run0，G6及issue关闭未开展。以[本轮冻结回执](g5-scope-budget-freeze-20260916.md)为准。
+
 状态：本次授权仅完成可审阅准备清单。没有部署、开启门禁、调用上游模型或接纳新Run；G5/G6线上执行尚未授权。G4窗口已关闭，剩余额度不可作为新窗口授权。主控管理流程和独立验收，三个只读subagent分别审阅#46、#37与G4缺口；文档在集成分支编辑并同步新增文档，不覆盖main原有五份脏文档。
 
 依据：[阶段计划](issues-subagent-plan-20260915.md)、[G4实际记录](g4-online-acceptance-20260916.md)、[#37准备](runtime-reuse-g5-readiness-20260915.md)、[#46固定任务](production-model-benchmark-task-fixtures.md)。本次集成基线`b9695b5`，生产历史冻结source`924803b36d587b95f92d6b252d87a8a0aa567a7d`；实际开跑必须重新核对当前release、源、镜像、gate与库存，不能把历史版本当当前证明。
