@@ -123,3 +123,17 @@ export function createG5GuardOperatorAdapter(stub,windowId){
  if(typeof stub?.snapshot!=='function'||typeof stub?.closeAdmission!=='function')fail('operator-guard-stub-required');
  return {snapshot:async()=>summarizeG5GuardSnapshot(await stub.snapshot(),windowId),closeAdmission:async()=>{const before=summarizeG5GuardSnapshot(await stub.snapshot(),windowId);if(before.windowId!==windowId)fail('operator-guard-window-conflict');const ack=await stub.closeAdmission();const after=summarizeG5GuardSnapshot(await stub.snapshot(),windowId);return {closed:ack?.closed===true&&after.closed,windowId};}};
 }
+
+/** Complete private authority adapter. It accepts no caller-supplied ledger
+ * receipts; every inspector executes inside the fixed global Guard actor. */
+export function createG5AuthorityAdapter(stub,windowId){
+ if(!stub||['operatorSnapshot','inspectTask','inspectRun','inspectFinal','closeAdmission'].some(name=>typeof stub[name]!=='function'))fail('operator-authority-stub-required');
+ const checked=async()=>{const value=await stub.operatorSnapshot();if(value?.schemaVersion!==1||value.windowId!==windowId)fail('operator-authority-snapshot-invalid');hash(value.receiptSha256,'authority-receipt');return value;};
+ return {
+  readState:checked,
+  inspectTask:input=>stub.inspectTask(input),
+  inspectRun:input=>stub.inspectRun(input),
+  inspectFinal:input=>stub.inspectFinal(input),
+  closeAdmission:async input=>{if(input?.windowId!==windowId)fail('operator-guard-window-conflict');await checked();const ack=await stub.closeAdmission(),after=await checked();if(ack?.closed!==true||after.closed!==true)fail('operator-close-admission-readback-conflict');return {schemaVersion:1,windowId,closed:true,receiptSha256:after.receiptSha256};},
+ };
+}

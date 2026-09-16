@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {compileG5AControl,runG5AControl,assessG5AState,createG5GuardOperatorAdapter} from './g5-a-operator-control.mjs';
+import {compileG5AControl,runG5AControl,assessG5AState,createG5GuardOperatorAdapter,createG5AuthorityAdapter} from './g5-a-operator-control.mjs';
 import {compileG5Freeze} from './g5-window-freeze.mjs';
 
 const h=c=>createHash('sha256').update(c).digest('hex');
@@ -26,3 +26,5 @@ test('guard-only summary cannot masquerade as complete three-ledger state',async
 test('private guard adapter summarizes and verifies close readback',async()=>{const {bundle}=await fixture();const id=bundle.privatePolicies.windows.A.windowId;let closed=0;const raw=()=>({schemaVersion:1,activePolicy:{windowId:id},windows:[{window_id:id,started_at:5,closed}],tasks:[],turns:[],calls:[]});const adapter=createG5GuardOperatorAdapter({snapshot:async()=>raw(),closeAdmission:async()=>{closed=1;return {closed:true};}},id);assert.equal((await adapter.snapshot()).closed,false);assert.deepEqual(await adapter.closeAdmission(),{closed:true,windowId:id});});
 
 test('gate opening rejects absent, stale, cross-origin, or cookie-bearing identity evidence',async()=>{const {bundle,closed}=await fixture();const plan=makePlan(closed,bundle);const ports={readState:async()=>state(plan.windowId),readConfig:async()=>closed,deployExact:async()=>assert.fail()};for(const proof of [undefined,identity(plan,1),{...identity(plan,700001),origin:'https://other.example.test'},{...identity(plan,700001),cookie:'forbidden'}])await assert.rejects(runG5AControl(plan,{action:'open',execute:true,ports,identityPreflight:proof,now:700001}),/identity-preflight/);});
+
+test('complete authority adapter delegates fixed inspectors and hashes close readback',async()=>{let closed=false;const snapshot=()=>({...state('g5-window-a'),schemaVersion:1,closed,receiptSha256:h(closed?'closed':'open')});const calls=[];const stub={operatorSnapshot:async()=>snapshot(),inspectTask:async value=>(calls.push('task'),value),inspectRun:async value=>(calls.push('run'),value),inspectFinal:async value=>(calls.push('final'),value),closeAdmission:async()=>{closed=true;return {closed:true};}};const adapter=createG5AuthorityAdapter(stub,'g5-window-a');assert.equal((await adapter.readState()).closed,false);await adapter.inspectTask({id:1});await adapter.inspectRun({id:2});await adapter.inspectFinal({id:3});const receipt=await adapter.closeAdmission({windowId:'g5-window-a',reason:'done'});assert.deepEqual(calls,['task','run','final']);assert.deepEqual(receipt,{schemaVersion:1,windowId:'g5-window-a',closed:true,receiptSha256:h('closed')});});

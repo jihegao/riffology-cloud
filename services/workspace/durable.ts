@@ -24,6 +24,8 @@ import {EvidenceLedger,evidenceGroup,assessmentForRun,evidenceAssessments} from 
 import {evidenceRequest,type EvidenceHead} from '../simulation/evidence.ts';
 import {boundedResearchContext} from '../simulation/research-context.ts';
 import {ExperimentGroupHost,experimentGroupRequest,type ExperimentGroupRequest} from '../simulation/groups.ts';
+import type {ExperimentGroupRecord} from '../simulation/groups.ts';
+import {GROUP_PREFIX} from '../simulation/group-state.ts';
 import {turnRuntimeIdentity,type TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
 import {SimulationHost,experimentRequest,publicExperiment,publishSimulationResult,type ExperimentRequest} from '../simulation/host.ts';
 import {SimulationNative,simulationToken,type SimulationSandboxApi,type SimulationInput} from '../simulation/native.ts';
@@ -115,7 +117,7 @@ export interface WorkspaceAgentEnv {
   G4_CONTROLLED_WINDOW_JSON?:string;
   G5_CONTROLLED_WINDOW_JSON?:string;
   G5_TOKEN_BUDGET?:DurableObjectNamespace<G5TenantModelBudget>;
-  G5_WINDOW_GUARD?:{getByName(name:string):{registerTask(task:unknown):Promise<unknown>;claimTaskCreate(key:string):Promise<{authorized:boolean}>;bindTask(key:string,id:string):Promise<unknown>;checkTaskStart(key:string):Promise<{authorized:boolean}>;claimTaskStart(key:string,identity?:TurnRuntimeIdentity):Promise<{authorized:boolean;grantId:string|null}>;confirmTaskStartGrant(key:string,grantId:string):Promise<{confirmed:boolean}>;checkTaskContinue(key:string,grantId:string):Promise<{authorized:boolean}>;cancelUnstartedTask(key:string):Promise<unknown>;closeTrustedTurn(key:string,identity:TurnRuntimeIdentity):Promise<unknown>}};
+  G5_WINDOW_GUARD?:{getByName(name:string):{registerTask(task:unknown):Promise<unknown>;claimTaskCreate(key:string):Promise<{authorized:boolean}>;bindTask(key:string,id:string):Promise<unknown>;checkTaskStart(key:string):Promise<{authorized:boolean}>;claimTaskStart(key:string,identity?:TurnRuntimeIdentity):Promise<{authorized:boolean;alreadyStarted:boolean;grantId:string|null}>;confirmTaskStartGrant(key:string,grantId:string):Promise<{confirmed:boolean}>;checkTaskContinue(key:string,grantId:string):Promise<{authorized:boolean}>;cancelUnstartedTask(key:string):Promise<unknown>;closeTrustedTurn(key:string,identity:TurnRuntimeIdentity):Promise<unknown>}};
   G4_BROWSER_BUILD_HOLD_SCOPES_JSON?:string;
   M2_TURNS_ENABLED: unknown;
   M2_WORKSPACE_RUNTIME_REUSE_ENABLED?:unknown;
@@ -264,9 +266,13 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   #experimentGroupHost:ExperimentGroupHost|null=null;
   #experimentGroups(scope:TurnScope){return this.#experimentGroupHost??=new ExperimentGroupHost(this.ctx.storage,scope,this.#simulations(scope),()=>this.#simulationCanRun());}
   async submitExperimentGroup(input:{scope:TurnScope;actor:TurnActor;key:string;body:ExperimentGroupRequest}){
-    const scope=this.#ready(input.scope),host=this.#experimentGroups(scope),request=experimentGroupRequest(input.body);
+    const scope=this.#ready(input.scope),host=this.#experimentGroups(scope),request=experimentGroupRequest(input.body),head=this.#turns.workspaceRevisionSnapshot(scope);
+    let g5Task:Awaited<ReturnType<typeof g5TaskKey>>|null=null;
+    if(this.env.G5_CONTROLLED_WINDOW_JSON!==undefined){if(!head)throw Error('g5-group-parent-turn-absent');const parent=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+head.identity.turnId);if(!parent||parent.kind!=='g5')throw Error('g5-group-parent-turn-unbound');g5Task=await g5TaskKey(this.env.G5_CONTROLLED_WINDOW_JSON,'group',scope.tenantId,input.actor.userId,{scope,key:input.key},request,parent.taskKey);await this.#g5Guard().registerTask(g5Task);}
+    const finalize=async(group:ExperimentGroupRecord)=>{if(!g5Task)return;const guard=this.#g5Guard();await guard.bindTask(g5Task.key,group.groupId);const started=await guard.claimTaskStart(g5Task.key);if(started.authorized){if(!started.grantId)throw Error('g5-group-start-grant-absent');const confirmed=await guard.confirmTaskStartGrant(g5Task.key,started.grantId);if(!confirmed.confirmed)throw Error('g5-group-start-unconfirmed');}else if(!started.alreadyStarted)throw Error('g5-group-start-denied');this.ctx.storage.kv.put('g5-group-route:'+group.groupId,{kind:'g5',taskKey:g5Task.key,windowId:g5WindowPolicy(JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON!))!.windowId,profileSha256:g5WindowPolicy(JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON!))!.profilePin.profileSha256} satisfies WorkspaceBudgetRoute);await this.ctx.storage.sync();};
     const prior=await host.replay(input.actor,input.key,request);
-    if(prior)return host.view(prior,this.#turns.workspaceRevisionSnapshot(scope)?.receipt.filesSha256??null);
+    if(prior){await finalize(prior);return host.view(prior,head?.receipt.filesSha256??null);}
+    if(g5Task){const claimed=await this.#g5Guard().claimTaskCreate(g5Task.key);if(!claimed.authorized)throw Error('g5-group-create-denied');}
     if(!this.#simulationCanRun())throw Error('simulation-unavailable');
     const source=await this.#simulationSource(scope),store=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope));
     const plan=await simulationPlan(source,await store.serviceFiles(source));
@@ -274,7 +280,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       this.#ready(scope);const latest=this.#turns.workspaceRevisionSnapshot(scope);
       return source.kind==='saved-turn'?latest?.receipt.revisionId===source.revision.revisionId:latest===null;
     });
-    return host.view(group,modelVersion(plan).filesSha256);
+    await finalize(group);return host.view(group,modelVersion(plan).filesSha256);
   }
   async experimentGroup(input:{scope:TurnScope;groupId:string}){
     const scope=this.#maintenanceScope(input.scope),host=this.#experimentGroups(scope);
@@ -909,6 +915,25 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   }
   async turnSnapshot(input: { scope: TurnScope }) {
     return this.#turns.view(this.#ready(input.scope));
+  }
+  async g5TurnAuthority(input:{identity:TurnRuntimeIdentity;userId:string}){
+    const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
+    if(!turn||turn.actor.userId!==input.userId||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation||turn.status!=='completed'||turn.executionOutcome!=='completed'||turn.persistenceOutcome!=='saved'||!turn.checkpoint||state.activeTurnId!==null||state.releaseHold!==null||state.recoveryHold!==null)throw Error('g5-turn-authority-unsettled');
+    const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-turn-authority-denied');
+    const head=this.#turns.workspaceRevisionSnapshot(scope);if(!head||head.identity.turnId!==identity.turnId||JSON.stringify(head.receipt)!==JSON.stringify(turn.checkpoint))throw Error('g5-turn-authority-head-mismatch');
+    const model=await this.modelSpec({scope});if(!model.version)throw Error('g5-turn-authority-model-absent');const toolEventIds=state.events.filter(event=>event.turnId===identity.turnId&&event.type==='tool.completed').map(event=>event.eventId);if(!toolEventIds.length||model.version.revisionId!==turn.checkpoint.revisionId||model.version.filesSha256!==turn.checkpoint.filesSha256)throw Error('g5-turn-authority-evidence-absent');
+    return {schemaVersion:1 as const,identity,version:model.version,toolEventIds};
+  }
+  async g5SimulationRunAuthority(input:{identity:TurnRuntimeIdentity;userId:string;taskKey:string;runId:string;artifactSha256:string}){
+    const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),record=await this.#simulations(scope).get(input.runId);if(record.actor.userId!==input.userId||!sameScope(record.scope,scope)||record.budgetRoute?.kind!=='g5'||record.budgetRoute.taskKey!==input.taskKey||record.runId!==input.runId||record.status!=='completed'||record.result?.artifactSha256!==input.artifactSha256||record.released!==true||record.releaseProof===null)throw Error('g5-run-authority-unsettled');
+    const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(record.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-run-authority-denied');
+    return {schemaVersion:1 as const,runId:record.runId,taskKey:record.budgetRoute.taskKey,artifactSha256:record.result.artifactSha256,released:true,active:0,unknown:0,releaseProof:record.releaseProof};
+  }
+  async g5SimulationWindowAuthority(input:{identity:TurnRuntimeIdentity;userId:string;windowId:string}){
+    const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),turn=(await this.#turns.snapshot(scope)).turns[identity.turnId];if(!turn||turn.actor.userId!==input.userId)throw Error('g5-window-simulation-authority-denied');const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-window-simulation-authority-denied');
+    const runs=[...(await this.ctx.storage.list<SimulationRecord>({prefix:'simulation:run:'})).values()].filter(record=>record.budgetRoute?.kind==='g5'&&record.budgetRoute.windowId===input.windowId);for(const record of runs)if(!sameScope(record.scope,scope)||record.actor.userId!==input.userId)throw Error('g5-window-simulation-authority-conflict');
+    const groups=[...(await this.ctx.storage.list<ExperimentGroupRecord>({prefix:GROUP_PREFIX})).values()].filter(group=>group.actor.userId===input.userId&&sameScope(group.scope,scope)&&group.children.some(child=>runs.some(run=>run.runId===child.runId)));for(const group of groups)if(group.children.some(child=>!runs.some(run=>run.runId===child.runId)))throw Error('g5-window-group-authority-incomplete');
+    return {schemaVersion:1 as const,runIds:runs.map(record=>record.runId).sort(),groupIds:groups.map(group=>group.groupId).sort()};
   }
   /** Private plan selection. A future submit intent must freeze this source
    * durably with its idempotency key; this read does not create or start a Run. */

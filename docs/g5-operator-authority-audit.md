@@ -1,3 +1,7 @@
+# Implementation update (2026-09-16)
+
+The missing private authority path described below is now implemented locally in `G5ControlledWindow.operatorSnapshot()`, `inspectTask()`, `inspectRun()`, and `inspectFinal()`, with the capability Worker exposing only those fixed actions. Group intents are first-class Guard tasks. See [G5-A private authority RPC](g5-authority-rpc-implementation.md). No cloud deployment or production verification is claimed. The text below is retained as the pre-implementation audit that motivated the change.
+
 # G5 operator authority audit
 
 The tracked temporary Worker in `services/g5-operator/index.ts` is the smallest current path to the production G5 Window Guard. Its Wrangler binding names the existing `G5ControlledWindow` class in `riffology-m1-gateway-staging`; `getByName("g5-controlled-global-v1")` therefore invokes the existing Durable Object through private RPC. The Worker exposes one capability-protected temporary endpoint because an external CLI cannot invoke a Durable Object RPC directly. It returns a sanitized Guard summary. Closing requires the exact preceding raw-snapshot digest, the existing window ID, an explicit confirmation value, and `x-g5-mutation: close-admission`; it then verifies a second snapshot. The Worker must be deleted after evidence collection. This commit does not deploy it.
