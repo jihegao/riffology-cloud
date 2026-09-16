@@ -12,6 +12,7 @@ import { ProjectSandboxFileEffects } from './project-sandbox.ts';
 import { normalizeToolCommandIntent, type ToolCommandIntent } from './protocol.ts';
 import { ToolArtifactMaterializer } from '../artifacts/materializer.ts';
 import { TOOL_ARTIFACT_STORE_ACTOR, type ToolArtifactStoreNamespace } from '../artifacts/protocol.ts';
+import {g5RepairFixtureProof} from './g5-fixture-authority.ts';
 
 export interface ToolBridgeEnv{
   WORKSPACE_AGENT?:DurableObjectNamespace<WorkspaceAgent>;
@@ -20,6 +21,7 @@ export interface ToolBridgeEnv{
   TOOL_ARTIFACT_STORE:ToolArtifactStoreNamespace;
   M2_PROJECT_EFFECT_CAPABILITY_KEY:string;
 }
+type G5FixtureWorkspaceAuthority={identity:ReturnType<typeof turnRuntimeIdentity>;requestKey:string;source:{revisionId:string|null;filesSha256:string;specSha256:string};checkpointFilesSha256:string;events:Array<{eventId:string;type:string;payload:Record<string,unknown>}>};
 
 /** One internal actor owns the durable Tool Ledger for one immutable Turn
  * dispatch. Public HTTP and project code receive neither this namespace nor
@@ -39,6 +41,7 @@ export class ToolBridgeAgent extends DurableObject<ToolBridgeEnv>{
   }
   async closeTurnAdmission(identity:unknown){return this.#ledger.closeTurnAdmission(await this.#settlementIdentity(identity));}
   async turnSettlement(identity:unknown){return this.#ledger.turnSettlement(await this.#settlementIdentity(identity));}
+  async g5RepairFixtureAuthority(rawIdentity:unknown){const identity=await this.#settlementIdentity(rawIdentity);if(!this.env.WORKSPACE_AGENT)throw Error('g5-fixture-workspace-binding-unavailable');const recordsPromise=this.#ledger.g5FixtureRecords(identity),workspacePromise:Promise<G5FixtureWorkspaceAuthority>=this.env.WORKSPACE_AGENT.getByName(workspaceAgentName(identity.scope.tenantId,identity.scope.workspaceId)).g5FixtureTurnAuthority(identity),[records,workspace]=await Promise.all([recordsPromise,workspacePromise]);if(JSON.stringify(workspace.identity)!==JSON.stringify(identity))throw Error('g5-fixture-workspace-identity-mismatch');return {schemaVersion:1 as const,source:workspace.source,requestKey:workspace.requestKey,repairProof:await g5RepairFixtureProof({identity,records,events:workspace.events,source:workspace.source,checkpointFilesSha256:workspace.checkpointFilesSha256,requestKey:workspace.requestKey})};}
   async run(input:ToolCommandIntent){
     const command=normalizeToolCommandIntent(input),name=await toolBridgeActorName(command.scope,command.turnId,command.dispatchId);
     if(!this.env.TOOL_BRIDGE_AGENT.idFromName(name).equals(this.ctx.id))throw Error('tool-bridge-actor-scope-denied');
