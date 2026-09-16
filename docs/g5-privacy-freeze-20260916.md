@@ -2,7 +2,7 @@
 
 仅使用合成建模数据及专属测试项目。两个已授权测试主体从现有目录只读核对：user、tenant、owner membership 均 active，且不同 user/tenant；这是目录映射，不代替两个普通用户的实际登录与权限验收。真实 UUID、账号配置及授权引用保存在本地 0700 目录/0600 文件，不进入公共 manifest。
 
-平台白名单脱敏诊断保留 7 天，验收证据保留 30 天。凭据、Cookie、capability、原始 session 与非白名单响应不上传；本地副本需要明确归属及清理回执，R2 生命周期不自动清理本地。沿用已有诊断/验收前缀与生命周期前须再次核对实际规则。
+平台白名单脱敏诊断保留 7 天，验收证据保留 30 天。凭据、Cookie、capability、原始 session 与非白名单响应不上传；本地副本需要明确归属及清理回执，R2 生命周期不自动清理本地。主控已实际 PUT 并独立 GET 核对 MODEL_CONTENT 中 `g5-acceptance/g5-20260916-wiring-v1/diagnostics/` 的 604800 秒和 `evidence/` 的 2592000 秒删除规则；原有 multipart/G4 规则逐项保留。两个窗口各自产物位于相应前缀的 A/B 子目录。
 
 Cloudflare Gateway 已实际创建并 GET 核对 authentication=true、byok_only=true、collect_logs=false、cache_ttl=0、retry_max_attempts=1、retry_delay=0、logpush=false。这些是 Gateway 设置，不是上游零保留证明。
 
