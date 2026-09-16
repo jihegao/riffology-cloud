@@ -41,4 +41,4 @@ B另有闭门cold variant `wrangler-B-cold.json`：只将lazy/reuse两个runtime
 
 用户批准B2并完成第一主体切换后，G5-A只接纳了1个Project和1个建模Turn。产品事件记录`provider.status:error:503`，随后以`pi-turn-failed`结束；该事件不能证明上游HTTP响应码。0个Simulation Run、0个Service Run、0个工具调用。三账本把该调用保留为unknown/pending并占用9,910,450 nanodollars；缺少provider usage终态，不能把这笔预留当成实际invoice，也不能宣称费用为零。
 
-主控立即停止新admission且未重放原intent。生产当前为关闭态诊断版本，六个任务/模型/Run门禁均为false；临时operator在签名脱敏回读后已删除。历史具体错误分类已被旧结算路径覆盖为`outcome-unknown`，后续代码已修复为保留第一个具体分类，但不能反推本次历史根因。当前G5-A未通过，G5-B/G6保持未启动。新尝试需要另行批准新window和新实体ID；若总额仍为US$20，按本次保守占用扣除后的可用上限为US$19.990089550。完整记录见[G5-A B2生产尝试](g5-a-b2-production-attempt-20260916.md)。
+主控立即停止新admission且未重放原intent。生产当前为关闭态诊断版本，六个任务/模型/Run门禁均为false；临时operator在签名脱敏回读后已删除。历史具体错误分类已被旧结算路径覆盖为`outcome-unknown`，后续代码已修复为保留第一个具体分类，但不能反推本次历史根因。当前G5-A未通过，G5-B/G6保持未启动。残余算术为64 tasks、146 dispatch、39/0 Run、US$19.990089550及每Turn US$5，但全局Guard会让旧unknown/open Turn阻断任何新window，当前compiler/driver也拒绝该残余policy；仅批准新window和新实体ID不能开跑。继续须先取得权威provider终态完成原结算，或明确批准并实现改变全局unknown阻断语义的一次性rollover。完整记录见[G5-A B2生产尝试](g5-a-b2-production-attempt-20260916.md)和[后续窗口阻断审计](g5-a-rollover-blocker-20260916.md)。
