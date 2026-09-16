@@ -1,7 +1,7 @@
-const PROBE_ORIGIN = 'https://riffology-g5-isolated-probe-20260916.jihe-gao.workers.dev';
-const GATEWAY_ID = 'riffology-g5-probe-20260916';
+const PROBE_ORIGIN = 'https://riffology-g5-region-probe-us-east-20260916.jihe-gao.workers.dev';
+const GATEWAY_ID = 'riffology-g5-region-probe-20260916';
 const MODEL_ID = 'gpt-5.6-luna';
-const PROBE_VERSION = 'g5-isolated-probe-v1';
+const PROBE_VERSION = 'g5-region-probe-us-east-v1';
 const ACCOUNT_ID = '8b0d70250211aa10d89e20605a1c7e5e';
 const MODELS_URL = `https://gateway.ai.cloudflare.com/v1/${ACCOUNT_ID}/${GATEWAY_ID}/openai/models`;
 const MAX_RESPONSE_BYTES = 64 * 1024;

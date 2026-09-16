@@ -53,7 +53,7 @@ test('model success uses the fixed Gateway GET contract and returns only whiteli
     return Response.json({ object: 'list', data: [{ id: 'gpt-5.6-luna' }, { id: 'other' }], secret: 'raw-upstream-secret' });
   } });
   const result = await output(await handler(request(), env));
-  assert.equal(sentUrl, 'https://gateway.ai.cloudflare.com/v1/8b0d70250211aa10d89e20605a1c7e5e/riffology-g5-probe-20260916/openai/models');
+  assert.equal(sentUrl, 'https://gateway.ai.cloudflare.com/v1/8b0d70250211aa10d89e20605a1c7e5e/riffology-g5-region-probe-20260916/openai/models');
   assert.equal(sentInit?.method, 'GET');
   assert.equal(sentInit?.redirect, 'manual');
   assert.equal(sentInit?.body, undefined);
@@ -70,7 +70,7 @@ test('model success uses the fixed Gateway GET contract and returns only whiteli
     'cf-aig-skip-cache': 'true',
   });
   assert.deepEqual(result, {
-    version: 'g5-isolated-probe-v1', gateway: 'riffology-g5-probe-20260916', model: 'gpt-5.6-luna', colo: 'SJC',
+    version: 'g5-region-probe-us-east-v1', gateway: 'riffology-g5-region-probe-20260916', model: 'gpt-5.6-luna', colo: 'SJC',
     status: 200, state: 'model-available', errorCode: null, modelAvailable: true, inferenceCalls: 0,
   });
   const serialized = JSON.stringify(result);
@@ -86,7 +86,7 @@ test('region rejection is classified without returning raw provider details', as
   }, { status: 403, headers: { 'x-sensitive': 'do-not-copy' } }) });
   const result = await output(await handler(request(), env));
   assert.deepEqual(result, {
-    version: 'g5-isolated-probe-v1', gateway: 'riffology-g5-probe-20260916', model: 'gpt-5.6-luna', colo: 'SJC',
+    version: 'g5-region-probe-us-east-v1', gateway: 'riffology-g5-region-probe-20260916', model: 'gpt-5.6-luna', colo: 'SJC',
     status: 403, state: 'region-blocked', errorCode: 'unsupported-country-region-territory', modelAvailable: false, inferenceCalls: 0,
   });
   const serialized = JSON.stringify(result);
@@ -124,10 +124,11 @@ test('responses above 64 KiB are cancelled and reduced to a safe result', async 
 
 test('Wrangler package declares only three secret names and no resource bindings', async () => {
   const config = JSON.parse(await readFile(new URL('../../infra/wrangler.g5-probe.jsonc', import.meta.url), 'utf8')) as Record<string, unknown>;
-  assert.equal(config.name, 'riffology-g5-isolated-probe-20260916');
+  assert.equal(config.name, 'riffology-g5-region-probe-us-east-20260916');
+  assert.deepEqual(config.placement, {region:'aws:us-east-1'});
   assert.equal(config.workers_dev, true);
   assert.deepEqual(config.compatibility_flags, ['global_fetch_strictly_public']);
   assert.deepEqual(config.secrets, { required: ['PRODUCTION_OPENAI_API_KEY', 'PRODUCTION_AI_GATEWAY_TOKEN', 'G5_PROBE_OPERATOR_CAPABILITY'] });
-  assert.deepEqual(Object.keys(config).sort(), ['$schema', 'account_id', 'compatibility_date', 'compatibility_flags', 'main', 'name', 'preview_urls', 'secrets', 'workers_dev']);
+  assert.deepEqual(Object.keys(config).sort(), ['$schema', 'account_id', 'compatibility_date', 'compatibility_flags', 'main', 'name', 'placement', 'preview_urls', 'secrets', 'workers_dev']);
   assert.equal(G5_PROBE_CONTRACT.timeoutMs, 10_000);
 });
