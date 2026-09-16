@@ -1,6 +1,6 @@
 # G5双窗口离线冻结compiler
 
-本地准备，不创建window、首准入、云资源或模型请求。`compileG5Freeze(input)`只处理显式profile/principals/windowIds/authorizationReference/rateCardSha256/sourceSha256/targets；未知输入字段（含任何openflag/key值）拒绝。ProductionProfile必须完整契约且实际模型Luna、input250/output1200 nanodollars、I262144/O4096；placeholder重复hash及缺字段拒绝。SHA形状只能排除明显占位符，不能证明证据真实性，账号/价格/授权原证据由主控独立核对。
+用户已授权本地冻结；manifest为closed-frozen-window-not-admission，不创建window、首准入、云资源或模型请求。`compileG5Freeze(input)`只处理显式profile/principals/windowIds/authorizationReference/rateCardSha256/sourceSha256/targets；未知输入字段（含任何openflag/key值）拒绝。ProductionProfile必须完整契约且实际模型Luna、input250/output1200 nanodollars、I262144/O4096；placeholder重复hash及缺字段拒绝。SHA形状只能排除明显占位符，不能证明证据真实性，账号/价格/授权原证据由主控独立核对。
 
 两不同tenant和user的真实UUID必须显式提供，不能由邮箱推算。A第一主体：20USD/5Turn/147upstream/39Simulation/0Service/66task；B双主体：20/5/168/0/0/24；各7200000ms，串行A/B。shared money全局固定actor原契约，一个共同period/version覆盖两phase，global/user/tenant40USD、Turn5；输出money.enabled=false。Token固定version g5-openai-luna-20260916-v1、8reservation/8dispatch/262144in/4096out/2129920 reserved tokens，独立G5token JSON，不覆盖旧MODEL_BUDGET字段。
 
