@@ -67,7 +67,8 @@ export function summarizeG5GuardSnapshot(raw,windowId){
 export function assessG5AState(plan,state,now=Date.now()){
  if(state?.windowId!==plan.windowId)fail('operator-state-window-conflict');
  const names=['tasks','dispatches','simulationRuns','serviceRuns','guardUnknown','guardPending','tokenUnknown','tokenPending','moneyUnknown','moneyPending','toolUnknown','toolPending','totalNanodollars','maxTurnNanodollars'];
- for(const name of names)integer(state[name]??0,name);
+ if(typeof state.closed!=='boolean'||!Object.hasOwn(state,'startedAt'))fail('operator-state-incomplete');
+ for(const name of names){if(!Object.hasOwn(state,name))fail(`operator-${name}-missing`);integer(state[name],name);}
  for(const name of ['tasks','dispatches','simulationRuns','serviceRuns','totalNanodollars','maxTurnNanodollars'])if(state[name]>plan.caps[name])fail(`operator-${name}-cap-exceeded`);
  const unknown=state.guardUnknown+state.tokenUnknown+state.moneyUnknown+state.toolUnknown;
  const pending=state.guardPending+state.tokenPending+state.moneyPending+state.toolPending;

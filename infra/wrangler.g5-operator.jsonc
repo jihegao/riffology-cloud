@@ -1,0 +1,16 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "riffology-g5-operator-20260916",
+  "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+  "main": "../services/g5-operator/index.ts",
+  "compatibility_date": "2026-09-16",
+  "workers_dev": true,
+  "preview_urls": false,
+  "observability": {"enabled": true, "head_sampling_rate": 1},
+  "secrets": {"required": ["G5_OPERATOR_CAPABILITY"]},
+  "durable_objects": {"bindings": [{
+    "name": "G5_WINDOW_GUARD",
+    "class_name": "G5ControlledWindow",
+    "script_name": "riffology-m1-gateway-staging"
+  }]}
+}
