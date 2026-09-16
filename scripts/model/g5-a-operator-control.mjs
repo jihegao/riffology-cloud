@@ -137,3 +137,15 @@ export function createG5AuthorityAdapter(stub,windowId){
   closeAdmission:async input=>{if(input?.windowId!==windowId)fail('operator-guard-window-conflict');await checked();const ack=await stub.closeAdmission(),after=await checked();if(ack?.closed!==true||after.closed!==true)fail('operator-close-admission-readback-conflict');return {schemaVersion:1,windowId,closed:true,receiptSha256:after.receiptSha256};},
  };
 }
+
+/** Node-side client for the temporary capability Worker. The capability is
+ * request-only and is never included in returned evidence or thrown errors. */
+export function createG5OperatorHttpAuthority({operatorOrigin,capability,windowId,fetcher=fetch,timeoutMs=15000}={}){
+ let endpoint;try{endpoint=new URL('/operate',operatorOrigin);}catch{fail('operator-http-origin-invalid');}
+ if(endpoint.protocol!=='https:'||endpoint.username||endpoint.password||endpoint.search||endpoint.hash||typeof capability!=='string'||capability.length<32||/[\r\n]/.test(capability)||!namedWindow(windowId)||typeof fetcher!=='function'||!Number.isSafeInteger(timeoutMs)||timeoutMs<1000||timeoutMs>30000)fail('operator-http-config-invalid');
+ const call=async(action,payload,mutation=false)=>{let response;try{response=await fetcher(endpoint,{method:'POST',redirect:'error',signal:AbortSignal.timeout(timeoutMs),headers:{authorization:`Bearer ${capability}`,'content-type':'application/json',...(mutation?{'x-g5-mutation':'close-admission'}:{})},body:JSON.stringify({action,windowId,...payload})});}catch{fail('operator-http-unavailable');}const bytes=new Uint8Array(await response.arrayBuffer());if(bytes.byteLength>65536)fail('operator-http-response-too-large');let value;try{value=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{fail('operator-http-response-invalid');}if(!response.ok||value?.ok!==true)fail('operator-http-rejected');return value;};
+ const snapshot=async()=>{const value=await call('snapshot',{});if(value.summary?.windowId!==windowId||typeof value.snapshotSha256!=='string')fail('operator-http-snapshot-invalid');hash(value.snapshotSha256,'snapshot-sha256');return value;};
+ const inspect=action=>async payload=>(await call(action,{payload})).value;
+ return {readState:async()=>(await snapshot()).summary,inspectTask:inspect('inspectTask'),inspectRun:inspect('inspectRun'),inspectFinal:inspect('inspectFinal'),closeAdmission:async input=>{if(input?.windowId!==windowId)fail('operator-guard-window-conflict');const before=await snapshot(),closed=await call('close',{expectedSnapshotSha256:before.snapshotSha256,confirmation:'close-existing-window'},true);if(closed.closed!==true||closed.windowId!==windowId)fail('operator-close-admission-readback-conflict');hash(closed.afterSnapshotSha256,'close-receipt-sha256');return {schemaVersion:1,windowId,closed:true,receiptSha256:closed.afterSnapshotSha256};}};
+}
+function namedWindow(value){return typeof value==='string'&&/^[A-Za-z0-9][A-Za-z0-9._:-]{0,149}$/.test(value);}
