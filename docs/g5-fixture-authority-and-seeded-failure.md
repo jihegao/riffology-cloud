@@ -1,0 +1,26 @@
+# G5-A fixture authority and seeded-failure boundary
+
+The frozen benchmark descriptions are instructions and offline reference assets. They are not evidence that a live Turn changed a model, ran Python, or produced a saved Revision. `scripts/model/g5-fixture-authority.mjs` adds a fail-closed adapter contract for the missing live authority.
+
+For every fixture the adapter requires the exact `dependsOn` receipt, actual Workspace/Session/Turn identity, the server-read current Revision and source digests, every named `requiredEvidence` item, and every named `domainChecks` item. Each assertion must be satisfied by at least one typed authoritative reference. It also enforces source relationships: parameter and measured steps keep the exact source version; mechanism and capacity steps create a different saved Revision; repair must move away from the injected failed Revision. The adapter never derives acceptance from prompts, fixture files, browser output, or the model's prose.
+
+The existing production architecture has no safe seeded-failure write path. Ordinary HTTP exposes Workspace reads and Turn submission but no project-file mutation endpoint. Project writes require an active Turn-bound Tool command and Sandbox capability. RevisionStore can persist a frozen snapshot, but Workspace current head advances only when TurnJournal commits a checkpoint for the same live Turn identity. Tool artifacts cover large successful `read`, `list`, and `search` results; they cannot represent a failed `bash` validation. Simulation artifacts are published only from a completed Simulation result. No service currently runs Python compile validation and persists the failed diagnostic as an authoritative artifact.
+
+Adding only a RevisionStore RPC would bypass the current-head, task-count, ledger-close, and runtime-release invariants. The module therefore defines and validates the smallest intended private operator request and receipt, but reports `g5-seeded-failure-authority-not-implemented` instead of claiming the RPC exists. That contract binds the active A window, exact scope/workspace/session, expected current Revision, predecessor authority receipt, exact frozen failure bytes and SHA-256, a newly saved injected head, and a failed `SyntaxError` diagnostic artifact tied to that injected Revision and source digest.
+
+Before G5-A can execute the repair fixture, a separately reviewed implementation must add an operator-owned, counted mutation lifecycle that atomically reaches these postconditions:
+
+1. Register one explicitly budgeted operator task in the active G5-A window and refuse admission after close/deadline.
+2. Create an authoritative non-provider operator Turn or an equivalent first-class journal record; do not attach a Revision to an invented identity.
+3. Apply the exact frozen `model/model.py` bytes to the current saved archive only when the supplied current-head receipt still matches.
+4. Commit RevisionStore and TurnJournal current head together through the existing acknowledgement-loss reconciliation rules, with a runtime-free terminal resource disposition.
+5. Run a bounded Python compile validator and persist its failed diagnostic in a new artifact domain that supports failures and source/revision binding.
+6. Close the operator task and all applicable ledgers, then return the contract receipt. The repair Turn may be admitted only after independent readback validates that receipt.
+
+Two scope choices are available for review. Neither is authorized for execution by the current frozen G5-A scope.
+
+**A — first-class operator task.** Implement the six postconditions above. The operator mutation is a real admitted task, so normal tasks increase from 63 to 64 and at most two of the 66 total task slots remain for terminal probes. The current final-count assertion must change. This choice preserves a distinct failed Revision and failed diagnostic artifact.
+
+**B — same ordinary repair Turn.** Re-freeze the repair prompt so that the authenticated ordinary-user Turn uses the existing project Tool Sandbox to write the exact failure bytes, verifies their frozen SHA-256, runs bounded Python compile validation, retains the authoritative Tool Ledger result/event and its source digest, restores the repaired bytes, validates them, and finally saves the repaired Revision. Current `project_bash` treats the shell effect as completed while its result carries the child compiler's nonzero exit and stderr; it does not materialize a failed Tool Artifact, and the public Turn event does not carry that result. Acceptance must therefore read the private Tool Ledger and bind its receipt digest, command identity, nonzero compiler exit, `SyntaxError`, and source SHA-256 to the repair Turn. The final checkpoint proves only the repaired source. This choice remains at 63 normal tasks and allows up to three probes, but it changes the frozen fixture semantics and digest, so the schedule, manifest and every digest-pinned overlay must be reviewed and re-frozen before any gate opens.
+
+Until one choice is explicitly authorized and implemented, the repair fixture is a hard admission blocker. The validator intentionally cannot convert a prompt, an offline fixture, or an unbound stderr string into acceptance evidence.
