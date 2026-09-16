@@ -66,17 +66,23 @@ function candidateMatches(candidate,version){
  return true;
 }
 
-export function workerMainModuleSha256(contentType,bytes){
+function workerMultipartParts(contentType,bytes){
  const body=Buffer.from(bytes),match=/^multipart\/form-data;\s*boundary=(?:"([^"]+)"|([^;\s]+))/i.exec(contentType??'');if(!match)fail('g5-cloud-source-content-type-invalid');
  const boundary=Buffer.from(`--${match[1]??match[2]}`),parts=new Map();let cursor=0;
- while((cursor=body.indexOf(boundary,cursor))!==-1){cursor+=boundary.length;if(body.subarray(cursor,cursor+2).equals(Buffer.from('--')))break;if(body.subarray(cursor,cursor+2).equals(Buffer.from('\r\n')))cursor+=2;const split=body.indexOf(Buffer.from('\r\n\r\n'),cursor);if(split<0)fail('g5-cloud-source-multipart-invalid');const headers=body.subarray(cursor,split).toString('utf8'),name=/content-disposition:[^\r\n]*\bname="([^"]+)"/i.exec(headers)?.[1];let end=body.indexOf(boundary,split+4);if(end<0||!name)fail('g5-cloud-source-multipart-invalid');end-=2;parts.set(name,body.subarray(split+4,end));cursor=end+2;}
- let metadata;try{metadata=JSON.parse(parts.get('metadata')?.toString('utf8')??'');}catch{fail('g5-cloud-source-metadata-invalid');}const main=metadata?.main_module??metadata?.body_part;if(typeof main!=='string'||!parts.has(main))fail('g5-cloud-source-main-module-missing');return hash(parts.get(main));
+ while((cursor=body.indexOf(boundary,cursor))!==-1){cursor+=boundary.length;if(body.subarray(cursor,cursor+2).equals(Buffer.from('--')))break;if(body.subarray(cursor,cursor+2).equals(Buffer.from('\r\n')))cursor+=2;const split=body.indexOf(Buffer.from('\r\n\r\n'),cursor);if(split<0)fail('g5-cloud-source-multipart-invalid');const headers=body.subarray(cursor,split).toString('utf8'),name=/content-disposition:[^\r\n]*\bname="([^"]+)"/i.exec(headers)?.[1],partContentType=/^content-type:\s*([^\r\n]+)/im.exec(headers)?.[1]?.trim().toLowerCase()??null;let end=body.indexOf(boundary,split+4);if(end<0||!name||parts.has(name))fail('g5-cloud-source-multipart-invalid');end-=2;parts.set(name,{bytes:body.subarray(split+4,end),contentType:partContentType});cursor=end+2;}
+ if(parts.size===0)fail('g5-cloud-source-multipart-invalid');return parts;
+}
+function metadataMainModuleSha256(parts){let metadata;try{metadata=JSON.parse(parts.get('metadata')?.bytes.toString('utf8')??'');}catch{fail('g5-cloud-source-metadata-invalid');}const main=metadata?.main_module??metadata?.body_part;if(typeof main!=='string'||!parts.has(main))fail('g5-cloud-source-main-module-missing');return hash(parts.get(main).bytes);}
+export function workerMainModuleSha256(contentType,bytes){return metadataMainModuleSha256(workerMultipartParts(contentType,bytes));}
+function workerContentV2MainModuleSha256(contentType,bytes){
+ const parts=workerMultipartParts(contentType,bytes);if(parts.has('metadata'))return metadataMainModuleSha256(parts);
+ const eligible=[...parts.values()].filter(part=>part.contentType?.split(';',1)[0].trim()==='application/javascript+module');if(eligible.length!==1)fail('g5-cloud-source-main-module-ambiguous');return hash(eligible[0].bytes);
 }
 
 export async function workerScriptContentV2Sha256({accountId,workerName,apiToken,fetcher=fetch}){
  const response=await fetcher(`https://api.cloudflare.com/client/v4/accounts/${accountId}/workers/scripts/${encodeURIComponent(workerName)}/content/v2`,{headers:{authorization:`Bearer ${apiToken}`}});
  if(!response.ok)fail(`g5-cloud-source-${response.status}`);
- return workerMainModuleSha256(response.headers.get('content-type'),Buffer.from(await response.arrayBuffer()));
+ return workerContentV2MainModuleSha256(response.headers.get('content-type'),Buffer.from(await response.arrayBuffer()));
 }
 
 function commandCloud(manifest,{runner=(bin,args,options)=>spawnSync(bin,args,options),fetcher=fetch,root=resolve(fileURLToPath(new URL('../..',import.meta.url)))}={}){
