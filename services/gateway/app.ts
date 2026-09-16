@@ -26,6 +26,7 @@ import {browserPrincipal} from '../preview/session.ts';
 import {observerRpcData} from '../preview/observer-rpc-data.ts';
 import {observerArtifactReceipt} from '../preview/observer-artifacts.ts';
 import type {GatewayObservations} from './observer-services.ts';
+import type {GatewayG5ReadonlyReads} from './g5-read-services.ts';
 
 export interface GatewayServices {
   g4WindowSnapshot?(tenantId:string,actor:TurnActor):Promise<unknown>;
@@ -46,6 +47,7 @@ export interface GatewayServices {
   serviceRuns?:GatewayServiceRuns;
   previews?:GatewayPreviews;
   observations?:GatewayObservations;
+  g5ReadonlyReads?:GatewayG5ReadonlyReads;
   turns?:{
     createSession(scope:TurnScope,actor:TurnActor,key:string,body:{title:unknown}):Promise<unknown>;
     submit(scope:TurnScope,actor:TurnActor,sessionId:string,key:string,body:{message:unknown}):Promise<unknown>;
@@ -81,6 +83,7 @@ function idempotencyKey(request:Request):string{const values=request.headers.get
 function replayed(value:unknown):boolean{return !!value&&typeof value==='object'&&!Array.isArray(value)&&(value as {replayed?:unknown}).replayed===true;}
 function publicSession(value:unknown):unknown{if(!value||typeof value!=='object'||Array.isArray(value))return value;const {actorUserId:_,actorAuthVersion:__,...safe}=value as Record<string,unknown>;return safe;}
 function publicTurn(value:unknown):unknown{if(!value||typeof value!=='object'||Array.isArray(value))return value;const {actor:privateActor,requestKey:_,payloadSha256:__,dispatchId:___,base:____,resourceLease:_____,startedSequence:______,terminalSequence:_______,...safe}=value as Record<string,unknown>,actor=privateActor&&typeof privateActor==='object'&&!Array.isArray(privateActor)?{userId:(privateActor as Record<string,unknown>).userId}:privateActor;return {...safe,actor};}
+async function g5Read(request:Request,services:GatewayServices,scope:TurnScope,actor:TurnActor,response:Response){return services.g5ReadonlyReads?services.g5ReadonlyReads.record(request,scope,actor,response):response;}
 function publicResult(value:unknown,field:'session'|'turn'):unknown{if(!value||typeof value!=='object'||Array.isArray(value)||!Object.hasOwn(value,field))return field==='turn'?publicTurn(value):publicSession(value);const result=value as Record<string,unknown>;return {...result,[field]:field==='turn'?publicTurn(result[field]):publicSession(result[field])};}
 function publicModel(model:ModelVersion){return {model_id:model.model_id,version:model.version,status:model.status,title:model.title,description:model.description,content_sha256:model.content_sha256,published_at:model.published_at};}
 async function artifactContent(value:unknown):Promise<Response>{
@@ -166,7 +169,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       if(request.method!=='GET'||url.search)throw new HttpError('export-input-invalid',400);
       const scope=await new ProjectCatalog(services.database,new Set(['blank-v1']),models).maintenanceWorkspace(principal,exportRoute[1]!);
       if(!services.researchExports)throw new HttpError('export-unavailable',503);
-      try{return await services.researchExports.download(scope,principal);}catch(error){const code=error instanceof Error?error.message:'';
+      try{return await g5Read(request,services,scope,principal,await services.researchExports.download(scope,principal));}catch(error){const code=error instanceof Error?error.message:'';
         if(code==='export-access-denied')throw new HttpError(code,403);
         if(code==='export-busy')throw new HttpError(code,429);
         if(code==='export-too-large'||code==='turn-revision-object-too-large')throw new HttpError('export-too-large',413);
@@ -181,7 +184,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       if(!services.simulations)throw new HttpError('evidence-unavailable',503);
       try{
         if(resource==='evidence'&&request.method==='GET'){
-          if(claimId&&!url.search)return json(await services.simulations.viewEvidence(scope,principal,claimId));
+          if(claimId&&!url.search)return g5Read(request,services,scope,principal,json(await services.simulations.viewEvidence(scope,principal,claimId)));
           if(!claimId){if([...url.searchParams.keys()].some(k=>k!=='before')||url.searchParams.getAll('before').length>1)throw new HttpError('evidence-input-invalid',400);return json(await services.simulations.listEvidence(scope,principal,url.searchParams.get('before')??undefined));}
         }
         if(request.method==='POST'&&!claimId&&!url.search){const body=await readJson(request);return json(resource==='evidence'?await services.simulations.createEvidence(scope,principal,body):await services.simulations.rejectEvidence(scope,principal,body),201);}
@@ -229,16 +232,16 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       const scope=creating?await catalog.workspace(principal,workspaceId!):await catalog.maintenanceWorkspace(principal,workspaceId!);
       if(!services.simulations)throw new HttpError('simulation-unavailable',503);
       try{
-        if(resource==='model'&&!id&&request.method==='GET'&&!url.search)return json(await services.simulations.model(scope));
+        if(resource==='model'&&!id&&request.method==='GET'&&!url.search)return g5Read(request,services,scope,principal,json(await services.simulations.model(scope)));
         if(creating&&resource==='experiment-groups'&&!url.search)return json(await services.simulations.submitGroup(scope,principal,idempotencyKey(request),experimentGroupRequest(await readJson(request,32768))),202);
         if(creating&&!url.search)return json(await services.simulations.submit(scope,principal,idempotencyKey(request),experimentRequest(await readJson(request))),202);
         if(resource==='experiment-groups'&&request.method==='GET'&&!action){
-          if(id&&!url.search)return json(await services.simulations.viewGroup(scope,id));
+          if(id&&!url.search)return g5Read(request,services,scope,principal,json(await services.simulations.viewGroup(scope,id)));
           if(!id){if([...url.searchParams.keys()].some(k=>k!=='before')||url.searchParams.getAll('before').length>1)throw new HttpError('simulation-input-invalid',400);return json(await services.simulations.listGroups(scope,url.searchParams.get('before')??undefined));}
         }
         if(resource==='experiment-groups'&&id&&action==='cancel'&&request.method==='POST'&&!url.search){const body=await readJson(request);if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).length)throw new HttpError('simulation-input-invalid',400);return json(await services.simulations.cancelGroup(scope,id),202);}
         if(resource==='experiments'&&request.method==='GET'&&!action){
-          if(id&&!url.search)return json(await services.simulations.view(scope,id));
+          if(id&&!url.search)return g5Read(request,services,scope,principal,json(await services.simulations.view(scope,id)));
           if(!id){if([...url.searchParams.keys()].some(k=>k!=='before')||url.searchParams.getAll('before').length>1)throw new HttpError('simulation-input-invalid',400);return json(await services.simulations.list(scope,url.searchParams.get('before')??undefined));}
         }
         if(resource==='simulation-runs'&&id&&action==='cancel'&&request.method==='POST'&&!url.search){const body=await readJson(request);if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).length)throw new HttpError('simulation-input-invalid',400);return json(await services.simulations.cancel(scope,id),202);}
@@ -330,8 +333,8 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       if(!services.turns)throw Error('turn-service-not-configured');
       const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),turnScope=await catalog.workspace(principal,turnMatch[1]);
       const turnActor={userId:principal.userId,authVersion:principal.authVersion};
-      if(workspace&&request.method==='GET'&&url.search==='')return json(await turnCall(()=>services.turns!.snapshot(turnScope)));
-      if(files&&request.method==='GET'&&url.search==='')return json(await turnCall(()=>services.turns!.files(turnScope)));
+      if(workspace&&request.method==='GET'&&url.search==='')return g5Read(request,services,turnScope,turnActor,json(await turnCall(()=>services.turns!.snapshot(turnScope))));
+      if(files&&request.method==='GET'&&url.search==='')return g5Read(request,services,turnScope,turnActor,json(await turnCall(()=>services.turns!.files(turnScope))));
       if(diff&&request.method==='GET'&&url.search==='')return json(await turnCall(()=>services.turns!.diff(turnScope)));
       if(artifact&&request.method==='GET'&&url.search==='')return await artifactContent(await turnCall(()=>services.turns!.artifact(turnScope,artifact[2])));
       if(sessions&&request.method==='POST'){
