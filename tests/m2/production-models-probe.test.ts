@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {probeProductionModels} from '../../services/model-proxy/production-models-probe.ts';
 import {profile} from './production-profile-fixture.ts';
 const env={PRODUCTION_MODEL_PROFILE_JSON:JSON.stringify(profile),PRODUCTION_OPENAI_API_KEY:'local-only-provider-secret',PRODUCTION_AI_GATEWAY_TOKEN:'local-only-gateway-secret'};
-test('fixed native GET models only, no body, redirect forbidden and no inference',async()=>{
- let count=0;const result=await probeProductionModels(env,async(url,options)=>{count++;assert.equal(url,`https://gateway.ai.cloudflare.com/v1/${profile.gateway.accountId}/${profile.gateway.gatewayId}/openai/models`);assert.equal(options?.method,'GET');assert.equal(options?.redirect,'error');assert.equal(options?.body,undefined);assert.ok(options?.signal);return Response.json({data:[{id:profile.model}]});});
+test('fixed native GET models only, no body, redirects observed but never followed and no inference',async()=>{
+ let count=0;const result=await probeProductionModels(env,async(url,options)=>{count++;assert.equal(url,`https://gateway.ai.cloudflare.com/v1/${profile.gateway.accountId}/${profile.gateway.gatewayId}/openai/models`);assert.equal(options?.method,'GET');assert.equal(options?.redirect,'manual');assert.equal(options?.body,undefined);assert.ok(options?.signal);return Response.json({data:[{id:profile.model}]});});
  assert.equal(count,1);assert.equal(result.modelAvailable,true);assert.equal(result.inferenceCalls,0);assert.equal(result.readOnly,true);assert.doesNotMatch(JSON.stringify(result),/local-only/);
 });
 test('country403 white-listed diagnosis excludes raw message and headers; redirects never followed',async()=>{

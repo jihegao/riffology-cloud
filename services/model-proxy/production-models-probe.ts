@@ -15,7 +15,7 @@ export async function probeProductionModels(env:ProbeEnv,fetchImpl:typeof fetch=
  const url=`https://gateway.ai.cloudflare.com/v1/${profile.gateway.accountId}/${profile.gateway.gatewayId}/openai/models`;
  const signal=AbortSignal.timeout(10000);let status:number|null=null;
  try{
-  const response=await fetchImpl(url,{method:'GET',redirect:'error',signal,headers:{accept:'application/json',authorization:`Bearer ${providerKey}`,'cf-aig-authorization':`Bearer ${gatewayKey}`,'cf-aig-skip-cache':'true','cf-aig-collect-log-payload':'false','cf-aig-max-attempts':'1'}});
+  const response=await fetchImpl(url,{method:'GET',redirect:'manual',signal,headers:{accept:'application/json',authorization:`Bearer ${providerKey}`,'cf-aig-authorization':`Bearer ${gatewayKey}`,'cf-aig-skip-cache':'true','cf-aig-collect-log-payload':'false','cf-aig-max-attempts':'1'}});
   status=response.status;
   if(response.url&&response.url!==url||status>=300&&status<400){await response.body?.cancel();return failed('redirect-rejected',status);}
   if(!response.body)return failed('malformed-response',status);
