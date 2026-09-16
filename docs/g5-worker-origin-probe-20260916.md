@@ -10,4 +10,4 @@
 
 临时调用器的首次 DELETE 超时；只读查询确认仍存在后完成第二次删除，并独立查询得到 Worker 不存在 `10007`。本地临时 operator capability 文件已精确删除，原项目 `.dev.vars` 保持不变。部署首次失败停在服务 GET、没有上传；确认日志阶段后才重试。无推理重试。
 
-[脱敏结果及恢复证明](g5-worker-origin-probe-20260916.json)记录实际返回与复原核对。诊断 R2 对象使用原已核对的专属7天前缀，验收证据30天规则与原冻结证据不变；平台保留边界见[隐私冻结](g5-privacy-freeze-20260916.md)。原[范围预算冻结](g5-scope-budget-freeze-20260916.md)、[首次生产 readback](g5-closed-production-readback-20260916.json)保留为历史证据，当前 Worker 版本以本记录为准。
+[脱敏结果及恢复证明](g5-worker-origin-probe-20260916.json)记录实际返回与复原核对。该JSON已实际PUT至 MODEL_CONTENT `g5-acceptance/g5-20260916-wiring-v1/diagnostics/worker-origin-probe-20260916.json`，独立GET与仓库字节一致；使用原已核对的专属7天前缀，验收证据30天规则与原冻结证据不变。首次上传在API请求前连接失败，随后固定对象PUT完成，无模型请求。平台保留边界见[隐私冻结](g5-privacy-freeze-20260916.md)。原[范围预算冻结](g5-scope-budget-freeze-20260916.md)、[首次生产 readback](g5-closed-production-readback-20260916.json)保留为历史证据，当前 Worker 版本以本记录为准。
