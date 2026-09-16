@@ -1,10 +1,10 @@
 # G5-A B2 measurable authority proposal
 
-Date: 2026-09-16. Status: concrete review proposal; not authorized, integrated, deployed, or executed.
+Date: 2026-09-16. Status: concrete scope proposal; not authorized, implemented, deployed, or executed. The same-Turn repair fixture and fail-closed two-stage authority infrastructure are integrated locally, but B2's scenario, output, verification, and release changes are not.
 
 The original frozen repair path cannot be executed honestly. The product has no ordinary-user endpoint that can seed a failed file before a Turn, and a failed `project_bash` result is a completed Tool effect with a nonzero child exit rather than a failed artifact or failed Revision. Proposal B moved the failure and repair into the same ordinary-user Turn. Its final prompt/fixture candidate is independently reviewed, omits the repair payload and private receipts, and has SHA-256 `c31c76ec54074f59d9aacc834b2641ce8e130637834dd8cf8e6e8927c9961bad`.
 
-A two-stage production authority draft now proves the post-Turn source/tool facts, persists a predecessor chain, then checks post-Run/Group/Claim state. It correctly fails closed because seven original assertions are not represented by current durable evidence: optional full traces, a comparison assigned to the wrong fixture, unexecuted `max_wait=0` and `queue_capacity=0` scenarios, generic validation/export identities, natural-language meaning, and an unfenced reopen/read interval. It returns the unsupported checks, writes no terminal receipt, and admits no successor.
+A two-stage production authority now proves the post-Turn source/tool facts, persists a predecessor chain, then checks post-Run/Group/Claim state. It correctly fails closed because seven original assertions are not represented by current durable evidence: optional full traces, a comparison assigned to the wrong fixture, unexecuted `max_wait=0` and `queue_capacity=0` scenarios, generic validation/export identities, natural-language meaning, and an unfenced reopen/read interval. It returns the unsupported checks, writes no terminal receipt, and admits no successor. Before B2 can be executable, a Workerd integration test must also exercise the real Guard and Workspace durable join for Run ordinals, Group parent binding, stage-1 SQL continuity, and unsupported no-write.
 
 B2 replaces those unobservable assertions with evidence that the existing product can produce under the same budget and research intent:
 
