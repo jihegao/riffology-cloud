@@ -802,7 +802,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     if(!route){
       // Journal commit can survive a lost sync ACK before the route callback runs.
       // Missing provenance in a configured G5 Workspace never authorizes a legacy start.
-      if(this.env.G5_CONTROLLED_WINDOW_JSON)throw Error('g5-turn-route-unavailable');
+      if(this.env.G5_CONTROLLED_WINDOW_JSON!==undefined)throw Error('g5-turn-route-unavailable');
       return;
     }
     if(phase==='capacity'){const result=await this.#g5Guard().checkTaskStart(route.taskKey);if(!result.authorized)throw Error('g5-workspace-start-denied');return;}
