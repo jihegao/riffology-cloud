@@ -1,0 +1,26 @@
+export const G5_FIXTURE_MANIFEST_SHA256='c31c76ec54074f59d9aacc834b2641ce8e130637834dd8cf8e6e8927c9961bad';
+export const G5_FIXTURE_RUNS=[1,2,1,1,6,2] as const;
+export const G5_FIXTURE_CATEGORIES=['create-model','parameter-change','mechanism-change','repair-validation','measured-evidence','reopen-continue'] as const;
+export type G5FixtureCategory=typeof G5_FIXTURE_CATEGORIES[number];
+const seeds=[[104729,104759,104761],[130363,130367,130369],[155921,155927,155929]] as const;
+const base={arrival_rate:0.8,customers:40,servers:1,service_rate:1},overloaded={arrival_rate:1.5,customers:40,max_wait:2,servers:1,service_rate:1};
+const inputs={
+ 'create-model':[base],'parameter-change':[base,{arrival_rate:1.2,customers:40,servers:1,service_rate:1}],
+ 'mechanism-change':[overloaded],'repair-validation':[overloaded],
+ 'measured-evidence':[overloaded,{arrival_rate:1.5,customers:40,max_wait:2,servers:2,service_rate:1}],
+ 'reopen-continue':[{arrival_rate:1.5,customers:40,max_wait:2,queue_capacity:120,servers:1,service_rate:1},{arrival_rate:1.5,customers:40,max_wait:2,queue_capacity:2,servers:1,service_rate:1}]
+} as const;
+const relations={
+ 'create-model':'created','parameter-change':'unchanged','mechanism-change':'changed','repair-validation':'restored-after-same-turn-failure','measured-evidence':'unchanged','reopen-continue':'changed'
+} as const;
+const unsupported:Record<G5FixtureCategory,readonly string[]>={
+ 'create-model':['final completed equals customers; final active agents zero','queue_length equals waiting agents at every frame','paired higher-arrival-rate waiting no smaller than baseline reference'],
+ 'parameter-change':['final completed equals customers; final active agents zero','queue_length equals waiting agents at every frame'],
+ 'mechanism-change':['validation artifact and finite conservation checks','do not claim universal monotonic served-only mean_wait'],
+ 'repair-validation':['do not claim universal monotonic served-only mean_wait'],
+ 'measured-evidence':['explanation reflects measured sign and served-only selection limitation','do not claim universal monotonic served-only mean_wait'],
+ 'reopen-continue':['refresh/reopen reads create no Run or provider call','same project and prior revision/result IDs recovered','queue_length never exceeds queue_capacity','zero-capacity queues reject waiting arrivals']
+};
+export type G5FixtureManifestEntry={fixtureId:string;category:G5FixtureCategory;repeat:number;sequence:number;order:number;dependsOn:string|null;sourceRelation:typeof relations[G5FixtureCategory];runCount:number;mode:'individual'|'group';expectedRuns:readonly {parameters:Record<string,number>;seed:number}[];unsupportedChecks:readonly string[]};
+export const G5_FIXTURE_MANIFEST:readonly G5FixtureManifestEntry[]=Object.freeze([1,2,3].flatMap(repeat=>G5_FIXTURE_CATEGORIES.map((category,index)=>{const paired=seeds[repeat-1]!,parameters=inputs[category],expectedRuns=category==='measured-evidence'?parameters.flatMap(value=>paired.map(seed=>({parameters:{...value},seed}))):parameters.map(value=>({parameters:{...value},seed:paired[0]}));return Object.freeze({fixtureId:`queue-r${repeat}-${index+1}-${category}`,category,repeat,sequence:index+1,order:(repeat-1)*6+index+1,dependsOn:index===0?null:`queue-r${repeat}-${index}-${G5_FIXTURE_CATEGORIES[index-1]}`,sourceRelation:relations[category],runCount:G5_FIXTURE_RUNS[index],mode:category==='measured-evidence'?'group':'individual',expectedRuns,unsupportedChecks:unsupported[category]});})));
+export function g5FixtureManifestEntry(fixtureId:string){const entry=G5_FIXTURE_MANIFEST.find(value=>value.fixtureId===fixtureId);if(!entry)throw Error('g5-authority-fixture-invalid');return entry;}

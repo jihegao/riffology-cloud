@@ -18,6 +18,25 @@ The temporary operator Worker exposes only capability-protected POST actions `sn
 
 Proposal B has an isolated `inspectFixtureTask` path. The per-dispatch Tool Bridge reads its closed, quiescent SQLite ledger and asks the exact Workspace actor for retained `tool.completed` events and the current saved Turn head. It accepts exactly six event-derived command IDs in bash/read/bash/bash/read/bash order, six unique effect and event IDs, the frozen failed and repaired `model/model.py` digests, a nonzero compile result containing `SyntaxError`, a final zero compile result, and a new saved Revision whose archive digest matches the Turn checkpoint. The returned proof contains only identities, exit classification and SHA-256 receipts; source content, stdout, stderr, command payloads and capabilities never cross the operator response.
 
-This path deliberately returns `contractAccepted: false`. Commit `d470480` also asks `inspectFixtureTask` to certify predecessor fixture receipts and four simulation domain assertions before the repair Run is created. The current durable schema has no fixture-receipt index, and Tool/Turn/Revision state cannot prove those later Run properties. The response names both blockers so the proposal-B driver rejects it instead of treating a Revision reference as domain evidence. A future integrated design must persist the accepted fixture chain and inspect released Run/evidence state at the correct lifecycle point before changing this flag.
 
 Validation: TypeScript typecheck, 64 focused G5 tests, and eight Workspace authority/model-proxy integration tests pass. The Workerd test proves a closed parent Turn can authorize exactly one persisted group task, that the group consumes task capacity, and that it does not consume Simulation Run capacity. All proofs in these tests are local fixtures; production authority remains unverified until the exact release is deployed and read back.
+
+## Two-stage fixture authority
+
+The server owns the 18-entry Proposal B order in `services/model-budget/g5-fixture-manifest.ts`, pinned to final fixture bytes `c31c76ec54074f59d9aacc834b2641ce8e130637834dd8cf8e6e8927c9961bad`. It derives the six category relations, run cardinalities `[1,2,1,1,6,2]`, three group intents and 39 Runs. The caller supplies only fixture, Workspace, Turn, Run, Group and Claim identities plus the observed saved version.
+
+`inspectFixtureTask` is the post-Turn phase. It reuses the Guard task, saved Workspace head, provider receipt and closed model/money/tool ledgers. Repair fixtures additionally read the private six-command Tool Ledger proof. The Guard writes a `turn-verified` row with the server manifest digest and the preceding terminal receipt hash in one SQLite transaction. The next fixture cannot enter this phase until every preceding row is terminal.
+
+`inspectFixtureTerminal` is the post-Run/Group/Claim phase. Workspace durable state must show the exact run count, completed and released Runs with release proof, finite nonnegative metrics, the saved version, a completed exact-child Group when required, and verified current evidence claims whose references point only at those Runs. The Guard independently binds every Run to its simulation task and fixture request key. Only a fully accepted result is persisted as the terminal chain receipt.
+
+The final fixture schedule still cannot pass production acceptance with the current product evidence. The authority returns `accepted: false`, lists the exact unsupported checks, persists no terminal receipt, and therefore admits no successor. The unavailable facts are: required frame-level trace invariants when `trace.json` is optional; the create fixture's later paired arrival comparison; `max_wait=0` and `queue_capacity=0` counterfactuals that the frozen Runs do not execute; general Python-validation/export identities not emitted by the workflow; semantic natural-language claims about served-only selection; and a separately bounded reopen/read interval proving that reads created no Run or provider call. These are evidence gaps, not assertions inferred from browser output or caller receipts.
+
+The seven fail-closed requirement classes are:
+
+1. Frame/trace completeness and per-frame invariants, because `trace.json` is optional under the current output size limits.
+2. The create-model higher-arrival paired comparison, because that fixture creates only its baseline Run.
+3. The `max_wait=0` counterfactual, because the frozen mechanism Runs use `max_wait=2`.
+4. The `queue_capacity=0` counterfactual, because the frozen reopen Runs use capacities 120 and 2.
+5. General Python-validation and export identities, because only the repair fixture has a fixed private compile proof and the driver creates no export.
+6. Natural-language meaning for the served-only selection limitation and measured sign, because no stable structured semantic proof is persisted.
+7. Reopen/read causality, including no Run/provider call during reads and proof that prior IDs were actually recovered, because the driver has no separately fenced read interval.

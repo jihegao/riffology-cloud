@@ -4,7 +4,7 @@
 
 `scripts/model/g5-benchmark-schedule.mjs`调用既有`benchmarkPlan`及ProductionProfile校验，不修改profile契约、不填真实账号/隐私/费率证明。运行方式：`node scripts/model/g5-benchmark-schedule.mjs proposal.json`。输入为productionManifest（沿用既有模板全部字段），另加groupIntentTasks、extraTurns、taskCap、dispatchCap、runCap。当前冻结方案要求maxCallsPerTask=8、concurrency=1、fixture hash精确匹配、extraTurns=0、dispatchCap=147、runCap=39。
 
-输出三项目各六依赖任务的repetition-major顺序，固定三组seed；18任务、39显式Run、144正常上游加最多3终端probe。最小task完整计数为3project+18Turn+39Run+3probeTurn=63。若三个group intent也独立计入准入task，groupIntentTasks=3，则66；若不计入，显式填写0。分类必须按实际服务端契约核对，不能用未填值默认为零。额外多Turn拒绝当前方案，须先修订冻结manifest/计数。
+输出三项目各六依赖任务的repetition-major顺序，固定三组seed；18任务、39显式Run、144正常上游加最多3终端probe。冻结计数明确为`normalAdmissionTasks=3 Project+18 Turn+39 child Run+3 group intent=63`、`probeTasks=3`、`maximumAdmissionTasks=63+3=66`。`groupIntentTasks`必须显式为3，零值会被拒绝。额外多Turn拒绝当前方案，须先修订冻结manifest/计数。
 
 预算重新用冻结profile的token ceiling和向上取整nanodollar费率计算147*C；既有validator检查8*C的Turn上限，新增检查probe-inclusive全局上限与整数安全。没有真实费率不生成美元预测。测试profile仅为本地合成值，不能复制成执行配置。参考hash与authorizationReference字符串仅验证形状，绝不证明账号授权或证据真实性。
 

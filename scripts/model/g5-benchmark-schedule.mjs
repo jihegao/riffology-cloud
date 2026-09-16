@@ -3,7 +3,7 @@ import { pathToFileURL } from 'node:url';
 import { benchmarkPlan, tasks } from './benchmark-plan.mjs';
 import { conservativeCost, productionProfile } from '../../services/model-proxy/production-profile.ts';
 
-export const fixtureSha256 = '3e410718f9143da69f3bc63407f4452ae7802afb299f250657be51a40a756fb4';
+export const fixtureSha256 = 'c31c76ec54074f59d9aacc834b2641ce8e130637834dd8cf8e6e8927c9961bad';
 const runs = [1, 2, 1, 1, 6, 2];
 const seeds = [[104729,104759,104761],[130363,130367,130369],[155921,155927,155929]];
 export function frozenSchedule() {
@@ -24,13 +24,17 @@ export async function compileSchedule(input) {
   const plan = await benchmarkPlan(manifest);
   if (manifest.maxCallsPerTask !== 8 || manifest.concurrency !== 1) throw Error('frozen-call-or-concurrency-bound');
   if (manifest.taskFixturesSha256 !== fixtureSha256) throw Error('frozen-fixture-mismatch');
-  // A group intent may itself be an admission task. Classification must be explicit.
+  // Each of the three group intents is an admission task in the frozen scope.
   const groupIntentTasks = integer(input.groupIntentTasks, 'group-intent-tasks');
-  if (![0,3].includes(groupIntentTasks)) throw Error('group-intent-classification-required');
+  if (groupIntentTasks !== 3) throw Error('group-intent-classification-required');
   const extraTurns = integer(input.extraTurns, 'extra-turns');
   if (extraTurns !== 0) throw Error('extra-turns-require-revised-frozen-plan');
-  const requiredTasks = 3 + 18 + 39 + 3 + groupIntentTasks;
-  if (integer(input.taskCap, 'task-cap') < requiredTasks) throw Error('task-cap-too-small');
+  // 3 Projects + 18 Turns + 39 child Runs + 3 group intents = 63 normal admissions.
+  const normalAdmissionTasks = 3 + 18 + 39 + groupIntentTasks;
+  const probeTasks = 3;
+  // The frozen maximum is every normal admission plus exactly three terminal probes.
+  const maximumAdmissionTasks = normalAdmissionTasks + probeTasks;
+  if (integer(input.taskCap, 'task-cap') < maximumAdmissionTasks) throw Error('task-cap-too-small');
   if (input.dispatchCap !== 147 || input.runCap !== 39) throw Error('frozen-dispatch-or-run-cap');
   const profile = productionProfile(manifest.profile);
   const perCall = BigInt(conservativeCost(profile, profile.limits.maxInputTokens, profile.limits.maxOutputTokens));
@@ -41,8 +45,8 @@ export async function compileSchedule(input) {
     profileSha256: plan.profileSha256, schedule: frozenSchedule(), probes: [
       'missing-usage', 'transport-uncertain', 'single-upstream-attempt',
     ].map((id,index) => ({ id, order: 19+index, maxDispatches: 1, requiresNormalSuiteTerminal: true })),
-    limits: { normalTasks:18, projects:3, turns:18, explicitRuns:39, probeTurns:3,
-      groupIntentTasks, extraTurns, requiredAdmissionTasks:requiredTasks, taskCap:input.taskCap,
+    limits: { projects:3, turns:18, explicitRuns:39, groupIntentTasks, extraTurns,
+      normalAdmissionTasks, probeTasks, maximumAdmissionTasks, taskCap:input.taskCap,
       normalDispatches:144, totalDispatches:147, maximumNanodollars:Number(total),
       maxTurnNanodollars:Number(perCall*8n) },
     stopOn: plan.stopOn, probePolicy: 'after-normal-suite; first-unknown-stops-all-new-admission',

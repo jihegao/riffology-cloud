@@ -13,7 +13,9 @@ test('repetition dependency schedule, complete admission counts and probe-inclus
  assert.equal(s.schedule.length,18);assert.equal(s.schedule.reduce((n,t)=>n+t.explicitRuns,0),39);
  assert.deepEqual(s.schedule.map(t=>t.repeat),[...Array(6).fill(1),...Array(6).fill(2),...Array(6).fill(3)]);
  assert.equal(s.schedule[6].dependsOn,null);assert.equal(s.schedule[5].dependsOn,'repeat-1/measured-evidence');
- assert.equal(s.limits.requiredAdmissionTasks,66);assert.equal(s.limits.maximumNanodollars,147*9216);
+ assert.deepEqual([s.limits.normalAdmissionTasks,s.limits.probeTasks,s.limits.maximumAdmissionTasks],[63,3,66]);assert.equal(s.limits.maximumNanodollars,147*9216);
+ p.groupIntentTasks=0;await assert.rejects(compileSchedule(p),/group-intent-classification-required/);
+ p.groupIntentTasks=3;
  p.taskCap=63;await assert.rejects(compileSchedule(p),/task-cap-too-small/);
  p.taskCap=66;p.productionManifest.globalCapNanodollars=144*9216;
  await assert.rejects(compileSchedule(p),/probe-inclusive-budget-too-small/);
