@@ -30,7 +30,7 @@ function changed(a,b,path='',out=[]){
 
 /** Compile a reviewable gate-only transition for the already-frozen A window. */
 export function compileG5AControl(closedConfig,bundle,{ordinaryOrigin}={}){
- const {m,w,patch}=validateBundle(bundle);
+ const {m,p,w,patch}=validateBundle(bundle);
  if(!closedConfig?.vars)fail('operator-closed-config-required');
  for(const [key,value] of Object.entries(patch))if(closedConfig.vars[key]!==value)fail(`operator-live-pin-conflict:${key}`);
  if(closedConfig.vars.M3_SERVICE_ENABLED!=='false')fail('operator-service-must-remain-closed');
@@ -41,15 +41,20 @@ export function compileG5AControl(closedConfig,bundle,{ordinaryOrigin}={}){
  if(!equal([...paths].sort(),expected))fail('operator-non-gate-diff');
  const appOrigin=origin(ordinaryOrigin);
  const openSha256=sha(openConfig);
- return {schemaVersion:1,kind:'g5-a-existing-window-control',windowId:w.windowId,sourceSha256:m.sourceSha256,profileSha256:m.profileSha256,policyBundleSha256:m.policyBundleSha256,caps,changedPaths:expected,closedConfig:structuredClone(closedConfig),openConfig,closedSha256:sha(closedConfig),openSha256,driverHandoff:{schemaVersion:1,kind:'g5-a-cdp-same-origin-handoff',ordinaryOrigin:appOrigin,windowId:w.windowId,profileSha256:m.profileSha256,sourceSha256:m.sourceSha256,openConfigSha256:openSha256,requiresIdentityPreflight:true}};
+ const principal=w.principals?.[0],denied=p.windows?.B?.principals?.find(value=>value.userId!==principal?.userId&&value.tenantId!==principal?.tenantId);
+ if(!principal||!denied)fail('operator-principal-boundary-required');
+ return {schemaVersion:1,kind:'g5-a-existing-window-control',windowId:w.windowId,sourceSha256:m.sourceSha256,profileSha256:m.profileSha256,policyBundleSha256:m.policyBundleSha256,caps,changedPaths:expected,closedConfig:structuredClone(closedConfig),openConfig,closedSha256:sha(closedConfig),openSha256,driverHandoff:{schemaVersion:1,kind:'g5-a-cdp-same-origin-handoff',ordinaryOrigin:appOrigin,windowId:w.windowId,profileSha256:m.profileSha256,sourceSha256:m.sourceSha256,openConfigSha256:openSha256,allowedUserId:principal.userId,allowedTenantId:principal.tenantId,deniedUserId:denied.userId,deniedTenantId:denied.tenantId,requiresIdentityPreflight:true}};
 }
 
 function identityChecked(plan,value,now){
- const keys=['schemaVersion','completed','origin','checkedAt','principalSha256','evidenceSha256'];
- if(!value||Object.keys(value).sort().join()!==keys.sort().join()||value.schemaVersion!==1||value.completed!==true||origin(value.origin)!==plan.driverHandoff.ordinaryOrigin)fail('operator-identity-preflight-required');
+ const keys=['schemaVersion','completed','origin','windowId','openConfigSha256','checkedAt','principalSha256','deniedPrincipalSha256','boundarySha256','evidenceSha256'];
+ const handoff=plan.driverHandoff;
+ if(!value||Object.keys(value).sort().join()!==keys.sort().join()||value.schemaVersion!==1||value.completed!==true||origin(value.origin)!==handoff.ordinaryOrigin||value.windowId!==plan.windowId||value.openConfigSha256!==plan.openSha256)fail('operator-identity-preflight-required');
  const checkedAt=integer(value.checkedAt,'identity-checkedAt');
  if(checkedAt>now||now-checkedAt>600_000)fail('operator-identity-preflight-stale');
- hash(value.principalSha256,'identity-principal-sha256');hash(value.evidenceSha256,'identity-evidence-sha256');
+ const expectedPrincipal=sha({userId:handoff.allowedUserId,tenantId:handoff.allowedTenantId}),expectedDenied=sha({userId:handoff.deniedUserId,tenantId:handoff.deniedTenantId});
+ if(value.principalSha256!==expectedPrincipal||value.deniedPrincipalSha256!==expectedDenied||value.boundarySha256!==sha({origin:handoff.ordinaryOrigin,windowId:plan.windowId,openConfigSha256:plan.openSha256,principalSha256:expectedPrincipal,deniedPrincipalSha256:expectedDenied,allowedTenantStatus:200,deniedTenantStatus:404}))fail('operator-identity-preflight-binding-conflict');
+ hash(value.evidenceSha256,'identity-evidence-sha256');
 }
 
 /** Normalizes only the existing G5 guard window. No schema creation or mutation. */
