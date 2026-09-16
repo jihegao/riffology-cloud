@@ -73,7 +73,21 @@
     "syntheticDataOnly": true
   },
   "mainWorker": {
-    "versionId": "75d4b354-0943-4278-961f-b07738752106",
+    "versionId": "d72c0145-5124-415d-87bd-6aa82d82d4f8",
+    "deploymentPercent": 100,
+    "module": {
+      "name": "index.js",
+      "bytes": 4120280,
+      "sha256": "ba7f989e7cf0de7ae16e67314e0875c79650b7235ebbc9887d4d617b190a1b03"
+    },
+    "scriptEtag": "97cdfea5b3e5ea57d18bdac6677ab7dd325dee5a7d4236767eeb0d0ac35d896f",
+    "compatibilityDate": "2026-09-09",
+    "compatibilityFlags": [
+      "nodejs_compat",
+      "nodejs_compat_do_not_populate_process_env",
+      "global_fetch_strictly_public"
+    ],
+    "varsMatchFrozenA": true,
     "gates": {
       "G5_ADMISSION_ENABLED": false,
       "M2_MODEL_PROVIDER_ENABLED": false,
@@ -82,12 +96,17 @@
       "M4_SIMULATION_ENABLED": false,
       "PRODUCTION_MODEL_ENABLED": false
     },
+    "providerSecretsPreserved": [
+      "PRODUCTION_AI_GATEWAY_TOKEN",
+      "PRODUCTION_OPENAI_API_KEY"
+    ],
     "newBudgetNamespaceObjectCounts": {
       "G5_WINDOW_GUARD": 0,
       "G5_TOKEN_BUDGET": 0,
       "PRODUCTION_MODEL_BUDGET": 0
     },
     "catalogProjectBudgetRouteCount": 0,
+    "publicRootStatus": 200,
     "windowClockStarted": false
   },
   "preparedEgressOverlays": {
@@ -105,7 +124,13 @@
     "BCold": {
       "sha256": "cd3c88e2ca250eaed60f813e73ec5f921491f9d780f8526fd62f7757b9ab0ee0"
     },
-    "deployed": false
+    "deployed": false,
+    "deployment": {
+      "A": "deployed-closed-gate",
+      "B": "not-deployed",
+      "BCold": "not-deployed"
+    },
+    "deployedClosedGateVersion": "d72c0145-5124-415d-87bd-6aa82d82d4f8"
   },
   "cleanup": {
     "workerDeleted": true,
@@ -116,5 +141,5 @@
     "localUploadSecretFilesRemoved": 2,
     "existingRunTokenUnchanged": true
   },
-  "conclusion": "Isolated Worker origin and independent authenticated Gateway listed gpt-5.6-luna with zero inference. This is G5 channel readiness evidence, not Responses or paid acceptance."
+  "conclusion": "Isolated Worker origin and independent authenticated Gateway listed gpt-5.6-luna with zero inference. The main Worker now has the frozen bundle plus the outbound compatibility flag under closed gates. Responses and paid acceptance remain unverified."
 }

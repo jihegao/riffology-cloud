@@ -14,7 +14,7 @@
 
 ## 主 Worker 与 G5 准备
 
-主 Worker 保持版本 `75d4b354-0943-4278-961f-b07738752106`，六项门禁均为false。`G5_WINDOW_GUARD`、`G5_TOKEN_BUDGET`、`PRODUCTION_MODEL_BUDGET`仍各0对象，`catalog_project_budget_routes`仍0行；没有Project/Turn/Run admission、付费模型调用或两小时时钟启动。
+隔离探针成功后，A出口候选已按授权以closed-gate方式发布到主 Worker，当前版本为 `d72c0145-5124-415d-87bd-6aa82d82d4f8`、100%。活跃 `index.js` 4120280字节，SHA256 `ba7f989e7cf0de7ae16e67314e0875c79650b7235ebbc9887d4d617b190a1b03`，与原冻结bundle逐字节摘要一致；新的script etag为 `97cdfea5b3e5ea57d18bdac6677ab7dd325dee5a7d4236767eeb0d0ac35d896f`。45个vars逐项等于冻结A，两个production secret binding保留，新增flag已实际回读。六项门禁均为false，`G5_WINDOW_GUARD`、`G5_TOKEN_BUDGET`、`PRODUCTION_MODEL_BUDGET`仍各0对象，`catalog_project_budget_routes`仍0行，首页200；没有Project/Turn/Run admission、付费模型调用或两小时时钟启动。
 
 已生成三个新的私有、不可覆盖候选overlay：A、B和B-cold均固定使用原冻结bundle SHA256 `ba7f989e7cf0de7ae16e67314e0875c79650b7235ebbc9887d4d617b190a1b03`，只增加 `global_fetch_strictly_public`、`no_bundle`和绝对固定bundle入口。逐字段核对确认其余45个vars、预算、window/profile/source、bindings、routes与各自原overlay一致。候选SHA256分别为：
 
@@ -22,12 +22,12 @@
 - B `80e8914adb76c9af059e27a79832d62a7a20485756d57b247196a1b604b1bdbe`
 - B-cold `cd3c88e2ca250eaed60f813e73ec5f921491f9d780f8526fd62f7757b9ab0ee0`
 
-这些overlay尚未部署。正式推进G5前，应在门禁关闭状态发布对应新overlay，重新读取active source etag、vars、bindings、namespace对象数和容器库存，并生成新的release proof；随后才能按A→B及原预算/2小时规则决定是否开启门禁。隔离探针成功不能替代这一步。
+A已在门禁关闭状态部署并完成active module、etag、vars、bindings和namespace对象数回读；B与B-cold尚未部署。正式开始G5-A前仍须完成容器库存、生产Gateway配置和A release proof的最终汇总，然后才能按原预算/2小时规则决定是否开启门禁。进入B前须同样发布并回读B；B-cold只在冻结对照步骤使用。隔离探针和models 200均不能替代Responses及普通用户验收。
 
 ## 清理与证据
 
 实际测试后已删除隔离 Worker及其公开路由，API独立回读为Worker不存在`10007`，hostname返回404；专用 Gateway已删除，独立回读为`7002 Not Found`。两份本地上传secret JSON已精确删除；原项目 `.dev.vars` 和现有Run token未修改。仓库源码保留，后续可以按同一契约重建探针。
 
-[脱敏机器证据](g5-isolated-probe-readiness-20260916.json) SHA256为 `024f3db518dcd0a5540908d3bedfe231ffe0788c4d814189b05d28f7af24ded4`。同一字节已分别PUT至7天diagnostics前缀和30天evidence前缀，并独立GET逐字节一致。该新增证明不改写原冻结/readback证据。
+[脱敏机器证据](g5-isolated-probe-readiness-20260916.json) SHA256为 `e01595f9a2ab44673fbb11faab9b8e5309be859669c09ac6e243d8a86a0e2f73`。同一字节已分别PUT至7天diagnostics前缀和30天evidence前缀，并独立GET逐字节一致。该新增证明不改写原冻结/readback证据。
 
 Cloudflare官方依据：[Workers compatibility flags](https://developers.cloudflare.com/workers/configuration/compatibility-flags/)、[Workers.dev路由](https://developers.cloudflare.com/workers/configuration/routing/workers-dev/)、[AI Gateway鉴权](https://developers.cloudflare.com/ai-gateway/configuration/authentication/)、[AI Gateway日志控制](https://developers.cloudflare.com/ai-gateway/observability/logging/)。

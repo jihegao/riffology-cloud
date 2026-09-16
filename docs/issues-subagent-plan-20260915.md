@@ -227,7 +227,7 @@ G4本次受控执行结束；#64普通用户主链通过，#65与全部线上负
 
 ### G5生产接线与新窗口冻结（2026-09-16，本轮最新状态）
 
-隔离Worker/独立Gateway复核已完成：精确仓库探针从SJC经专用Gateway返回models 200并识别Luna、推理0；随后删除Worker、route和Gateway并独立核对不存在。主Worker六门禁false、三个新namespace对象0、项目预算路由0。A/B/B-cold新增只包含固定原bundle与`global_fetch_strictly_public`的候选overlay，尚未部署；下一阶段是closed-gate发布及新release proof，不是直接开跑。见[隔离出口准备证明](g5-isolated-probe-readiness-20260916.md)。
+隔离Worker/独立Gateway复核已完成：精确仓库探针从SJC经专用Gateway返回models 200并识别Luna、推理0；随后删除Worker、route和Gateway并独立核对不存在。A出口overlay已发布到主Worker版本 `d72c0145-5124-415d-87bd-6aa82d82d4f8`，精确原bundle hash及45个vars匹配；六门禁false、三个新namespace对象0、项目预算路由0。B/B-cold候选未部署；下一阶段是完成A closed-gate release proof后再决定是否按冻结预算开跑。见[隔离出口准备证明](g5-isolated-probe-readiness-20260916.md)。
 
 用户明确要求完成生产接线及新窗口范围/预算冻结后，主控动态派发provider/overlay、Workspace、私有预算authority三个subagent，串行集成并非作者复核。生产已发布闭门Worker `1afa24e5-f327-412a-b22b-1a921130a7ae`/100%，真实下载代码与本地bundleSHA逐项一致；新增3预算DO/2secret引用，旧15namespace ID、G4policy、旧MODEL_BUDGET字段和5个实际image/app ID不变。新增0010原子Project route migration与7/30天R2规则实际写入并独立核对。全套check2053/2042pass/11skip/0fail，额外23驱动通过；真实本地Workerd三账本及Cold/Warm提交ACKloss缺route零执行经过独立3/3复核。线上原生VM/付费模型验收未以fixture替代。
 
