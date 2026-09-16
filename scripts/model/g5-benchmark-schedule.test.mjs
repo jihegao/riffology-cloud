@@ -6,18 +6,18 @@ import { profileDigest } from '../../services/model-proxy/production-profile.ts'
 async function proposal() {
   const hash='a'.repeat(64);
   const profile={schemaVersion:1,profileVersion:'test-v1',inferenceProvider:'openai',model:'test-model',protocol:'openai-responses',billing:'platform-byok',gateway:{kind:'cloudflare',accountId:'a'.repeat(32),gatewayId:'test'},secrets:{provider:'PRODUCTION_OPENAI_API_KEY',gateway:'PRODUCTION_AI_GATEWAY_TOKEN'},acceptance:{evidenceSha256:hash,privacyReviewSha256:hash},rates:{version:'test-rate',currency:'USD',inputNanodollarsPerToken:1,outputNanodollarsPerToken:1},limits:{maxInputTokens:8192,maxOutputTokens:1024}};
-  return {groupIntentTasks:3,extraTurns:0,taskCap:66,dispatchCap:147,runCap:39,productionManifest:{profile,profileSha256:await profileDigest(profile),runtimeSha256:hash,taskFixturesSha256:fixtureSha256,privacyEvidenceSha256:hash,gatewayNoRetryEvidenceSha256:hash,operator:'synthetic-test',accountReference:'synthetic-test',authorizationReference:'NOT-LIVE-AUTHORIZATION',rateCardSource:'https://example.invalid/test',rateCardCheckedAt:'2026-09-16T00:00:00Z',deadline:'2026-09-17T00:00:00Z',maxCallsPerTask:8,concurrency:1,globalCapNanodollars:20000000000,turnCapNanodollars:5000000000,targets:{p95TurnMs:1,maxCostPerAcceptedTaskNanodollars:1}}};
+  return {groupIntentTasks:3,extraTurns:0,taskCap:64,dispatchCap:146,runCap:39,productionManifest:{profile,profileSha256:await profileDigest(profile),runtimeSha256:hash,taskFixturesSha256:fixtureSha256,privacyEvidenceSha256:hash,gatewayNoRetryEvidenceSha256:hash,operator:'synthetic-test',accountReference:'synthetic-test',authorizationReference:'NOT-LIVE-AUTHORIZATION',rateCardSource:'https://example.invalid/test',rateCardCheckedAt:'2026-09-16T00:00:00Z',deadline:'2026-09-17T00:00:00Z',maxCallsPerTask:8,concurrency:1,globalCapNanodollars:19990089550,turnCapNanodollars:5000000000,targets:{p95TurnMs:1,maxCostPerAcceptedTaskNanodollars:1}}};
 }
 test('repetition dependency schedule, complete admission counts and probe-inclusive arithmetic',async()=>{
  const p=await proposal(), s=await compileSchedule(p);
  assert.equal(s.schedule.length,18);assert.equal(s.schedule.reduce((n,t)=>n+t.explicitRuns,0),39);
  assert.deepEqual(s.schedule.map(t=>t.repeat),[...Array(6).fill(1),...Array(6).fill(2),...Array(6).fill(3)]);
  assert.equal(s.schedule[6].dependsOn,null);assert.equal(s.schedule[5].dependsOn,'repeat-1/measured-evidence');
- assert.deepEqual([s.limits.normalAdmissionTasks,s.limits.probeTasks,s.limits.maximumAdmissionTasks],[63,3,66]);assert.equal(s.limits.maximumNanodollars,147*9216);
+ assert.deepEqual([s.limits.normalAdmissionTasks,s.limits.probeTasks,s.limits.maximumAdmissionTasks],[63,1,64]);assert.equal(s.limits.maximumNanodollars,146*9216);assert.equal(s.limits.dispatchCap,146);
  p.groupIntentTasks=0;await assert.rejects(compileSchedule(p),/group-intent-classification-required/);
  p.groupIntentTasks=3;
- p.taskCap=63;await assert.rejects(compileSchedule(p),/task-cap-too-small/);
- p.taskCap=66;p.productionManifest.globalCapNanodollars=144*9216;
+ p.taskCap=63;await assert.rejects(compileSchedule(p),/task-cap-conflict/);
+ p.taskCap=64;p.productionManifest.globalCapNanodollars=144*9216;
  await assert.rejects(compileSchedule(p),/probe-inclusive-budget-too-small/);
 });
 test('unknown final probe stops; no post-stop admission, no replay, unqualified predecessor blocks dependencies',async()=>{
@@ -32,7 +32,7 @@ test('unknown final probe stops; no post-stop admission, no replay, unqualified 
  assert.equal(nextAdmission(s,[...normal.slice(0,17),{...normal[17],status:'failed'}]).state,'blocked');
  const unknown=[...normal,{id:'missing-usage',status:'unknown',dispatches:1}];
  assert.deepEqual(nextAdmission(s,unknown),{state:'stopped',reason:'unknown-charge',preserveReservation:true});
- assert.throws(()=>nextAdmission(s,[...unknown,{id:'transport-uncertain',status:'failed',dispatches:1}]),/admission-after-stop/);
+ assert.throws(()=>nextAdmission(s,[...unknown,{id:'transport-uncertain',status:'failed',dispatches:1}]),/too-many-terminal-records|admission-after-stop/);
  assert.throws(()=>nextAdmission(s,[{id:s.schedule[0].fixtureId,status:'accepted',dispatches:9}]),/dispatch-bound/);
 });
 test('unresolved manifest and execute refuse before any external side effect',async()=>{

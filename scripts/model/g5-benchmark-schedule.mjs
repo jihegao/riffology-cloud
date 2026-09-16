@@ -31,23 +31,23 @@ export async function compileSchedule(input) {
   if (extraTurns !== 0) throw Error('extra-turns-require-revised-frozen-plan');
   // 3 Projects + 18 Turns + 39 child Runs + 3 group intents = 63 normal admissions.
   const normalAdmissionTasks = 3 + 18 + 39 + groupIntentTasks;
-  const probeTasks = 3;
-  // The frozen maximum is every normal admission plus exactly three terminal probes.
+  const probeTasks = 1;
+  // Rollover leaves one task slot after the 63-task normal suite.
   const maximumAdmissionTasks = normalAdmissionTasks + probeTasks;
-  if (integer(input.taskCap, 'task-cap') < maximumAdmissionTasks) throw Error('task-cap-too-small');
-  if (input.dispatchCap !== 147 || input.runCap !== 39) throw Error('frozen-dispatch-or-run-cap');
+  if (integer(input.taskCap, 'task-cap') !== maximumAdmissionTasks) throw Error('task-cap-conflict');
+  if (input.dispatchCap !== 146 || input.runCap !== 39) throw Error('frozen-dispatch-or-run-cap');
   const profile = productionProfile(manifest.profile);
   const perCall = BigInt(conservativeCost(profile, profile.limits.maxInputTokens, profile.limits.maxOutputTokens));
-  const total = perCall * 147n;
+  const total = perCall * 146n;
   if (total > BigInt(manifest.globalCapNanodollars)) throw Error('probe-inclusive-budget-too-small');
   if (total > BigInt(Number.MAX_SAFE_INTEGER)) throw Error('unsafe-budget-total');
   return { schemaVersion: 1, kind: 'offline-schedule-not-authorization', fixtureSha256,
     profileSha256: plan.profileSha256, schedule: frozenSchedule(), probes: [
       'missing-usage', 'transport-uncertain', 'single-upstream-attempt',
-    ].map((id,index) => ({ id, order: 19+index, maxDispatches: 1, requiresNormalSuiteTerminal: true })),
+    ].slice(0,probeTasks).map((id,index) => ({ id, order: 19+index, maxDispatches: 1, requiresNormalSuiteTerminal: true })),
     limits: { projects:3, turns:18, explicitRuns:39, groupIntentTasks, extraTurns,
       normalAdmissionTasks, probeTasks, maximumAdmissionTasks, taskCap:input.taskCap,
-      normalDispatches:144, totalDispatches:147, maximumNanodollars:Number(total),
+      normalDispatches:144, totalDispatches:145, dispatchCap:146, maximumNanodollars:Number(total),
       maxTurnNanodollars:Number(perCall*8n) },
     stopOn: plan.stopOn, probePolicy: 'after-normal-suite; first-unknown-stops-all-new-admission',
   };

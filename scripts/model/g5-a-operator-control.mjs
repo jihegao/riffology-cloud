@@ -3,7 +3,7 @@ import {turnDigest} from '../../services/turn/protocol.ts';
 
 const sha=v=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const gates=['G5_ADMISSION_ENABLED','M2_TURNS_ENABLED','M2_MODEL_PROVIDER_ENABLED','PRODUCTION_MODEL_ENABLED','M4_SIMULATION_ENABLED'];
-const caps={tasks:66,dispatches:147,simulationRuns:39,serviceRuns:0,totalNanodollars:20_000_000_000,maxTurnNanodollars:5_000_000_000};
+const caps={tasks:64,dispatches:146,simulationRuns:39,serviceRuns:0,totalNanodollars:19_990_089_550,maxTurnNanodollars:5_000_000_000};
 const fail=m=>{throw Error(m);};
 const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const integer=(v,name)=>{if(!Number.isSafeInteger(v)||v<0)fail(`operator-${name}-invalid`);return v;};
@@ -25,8 +25,10 @@ function validateBundle(bundle){
  if(!w||w.phase!=='A'||!patch)fail('operator-a-window-required');
  if(w.durationMs!==7_200_000||w.maxTasks!==caps.tasks||w.maxUpstreamDispatches!==caps.dispatches||w.maxSimulationRuns!==caps.simulationRuns||w.maxServiceRuns!==0||w.totalNanodollars!==caps.totalNanodollars||w.turnNanodollars!==caps.maxTurnNanodollars)fail('operator-a-caps-conflict');
  if(JSON.parse(patch.G5_CONTROLLED_WINDOW_JSON).windowId!==w.windowId||JSON.parse(patch.PRODUCTION_MONEY_POLICY_JSON).enabled!==false)fail('operator-frozen-policy-conflict');
+ const rollover=w.rollover;if(!rollover||rollover.targetWindowId!==w.windowId||rollover.newIntentNamespace!==`${w.windowId}-`||rollover.sourceTasks!==2||rollover.sourceDispatches!==1||rollover.sourceSimulationRuns!==0||rollover.sourceServiceRuns!==0||rollover.sourceReservedNanodollars!==9_910_450||p.money?.period!==rollover.sourceMoneyPeriod)fail('operator-rollover-binding-conflict');
+ const {receiptSha256,...rolloverBinding}=rollover;if(receiptSha256!==sha({purpose:'g5-a-one-time-rollover-v1',...rolloverBinding}))fail('operator-rollover-receipt-conflict');
  for(const gate of gates)if(patch[gate]!=='false')fail('operator-closed-gates-required');
- return {m,p,w,patch};
+ return {m,p,w,patch,rollover,rolloverBinding};
 }
 
 function changed(a,b,path='',out=[]){
@@ -39,7 +41,7 @@ function changed(a,b,path='',out=[]){
 
 /** Compile a reviewable gate-only transition for the already-frozen A window. */
 export function compileG5AControl(closedConfig,bundle,{ordinaryOrigin}={}){
- const {m,p,w,patch}=validateBundle(bundle);
+ const {m,p,w,patch,rollover,rolloverBinding}=validateBundle(bundle);
  if(!closedConfig?.vars)fail('operator-closed-config-required');
  for(const [key,value] of Object.entries(patch))if(closedConfig.vars[key]!==value)fail(`operator-live-pin-conflict:${key}`);
  if(closedConfig.vars.M3_SERVICE_ENABLED!=='false')fail('operator-service-must-remain-closed');
@@ -52,7 +54,7 @@ export function compileG5AControl(closedConfig,bundle,{ordinaryOrigin}={}){
  const openSha256=sha(openConfig);
  const principal=w.principals?.[0],denied=p.windows?.B?.principals?.find(value=>value.userId!==principal?.userId&&value.tenantId!==principal?.tenantId);
  if(!principal||!denied)fail('operator-principal-boundary-required');
- return {schemaVersion:1,kind:'g5-a-existing-window-control',windowId:w.windowId,sourceSha256:m.sourceSha256,profileSha256:m.profileSha256,policyBundleSha256:m.policyBundleSha256,caps,changedPaths:expected,closedConfig:structuredClone(closedConfig),openConfig,closedSha256:sha(closedConfig),openSha256,driverHandoff:{schemaVersion:1,kind:'g5-a-cdp-same-origin-handoff',ordinaryOrigin:appOrigin,windowId:w.windowId,profileSha256:m.profileSha256,sourceSha256:m.sourceSha256,openConfigSha256:openSha256,allowedUserId:principal.userId,allowedTenantId:principal.tenantId,deniedUserId:denied.userId,deniedTenantId:denied.tenantId,requiresIdentityPreflight:true}};
+ return {schemaVersion:1,kind:'g5-a-one-time-rollover-control',windowId:w.windowId,sourceSha256:m.sourceSha256,profileSha256:m.profileSha256,policyBundleSha256:m.policyBundleSha256,caps,rollover:structuredClone(rollover),rolloverBinding:structuredClone(rolloverBinding),changedPaths:expected,closedConfig:structuredClone(closedConfig),openConfig,closedSha256:sha(closedConfig),openSha256,driverHandoff:{schemaVersion:1,kind:'g5-a-cdp-same-origin-handoff',ordinaryOrigin:appOrigin,windowId:w.windowId,profileSha256:m.profileSha256,sourceSha256:m.sourceSha256,openConfigSha256:openSha256,rolloverReceiptSha256:rollover.receiptSha256,allowedUserId:principal.userId,allowedTenantId:principal.tenantId,deniedUserId:denied.userId,deniedTenantId:denied.tenantId,requiresIdentityPreflight:true,newIntentNamespace:rollover.newIntentNamespace,forbiddenIntentNamespace:`${rollover.sourceWindowId}-`,sourceIntentKeySha256:rollover.sourceIntentKeySha256,sourceProjectId:rollover.sourceProjectId,sourceSessionId:rollover.sourceSessionId,sourceTurnId:rollover.sourceTurnId}};
 }
 
 function identityChecked(plan,value,now){
@@ -75,7 +77,8 @@ export function summarizeG5GuardSnapshot(raw,windowId){
  const calls=(raw.calls??[]).filter(x=>x.window_id===windowId);
  const turns=(raw.turns??[]).filter(x=>x.window_id===windowId);
  const tasks=(raw.tasks??[]).filter(x=>x.window_id===windowId);
- return {windowId,startedAt:window?.started_at??null,closed:window?.closed===1,tasks:tasks.length,dispatches:calls.filter(x=>x.dispatch_at!==null).length,simulationRuns:tasks.filter(x=>{try{return JSON.parse(x.document).kind==='simulation';}catch{return false;}}).length,serviceRuns:tasks.filter(x=>{try{return JSON.parse(x.document).kind==='service';}catch{return false;}}).length,guardUnknown:calls.filter(x=>x.state==='unknown').length,guardPending:calls.filter(x=>['reserved','dispatched','settling'].includes(x.state)).length+turns.filter(x=>x.state==='open').length};
+ const rollovers=(raw.rollovers??[]).filter(x=>x.target_window_id===windowId),rolloverReceiptSha256=rollovers.length===1?rollovers[0].receipt_sha256:null;if(rollovers.length>1)fail('operator-rollover-duplicate');
+ return {windowId,startedAt:window?.started_at??null,closed:window?.closed===1,tasks:tasks.length,dispatches:calls.filter(x=>x.dispatch_at!==null).length,simulationRuns:tasks.filter(x=>{try{return JSON.parse(x.document).kind==='simulation';}catch{return false;}}).length,serviceRuns:tasks.filter(x=>{try{return JSON.parse(x.document).kind==='service';}catch{return false;}}).length,guardUnknown:calls.filter(x=>x.state==='unknown').length,guardPending:calls.filter(x=>['reserved','dispatched','settling'].includes(x.state)).length+turns.filter(x=>x.state==='open').length,rolloverReceiptSha256};
 }
 
 export function assessG5AState(plan,state,now=Date.now()){
@@ -99,38 +102,43 @@ async function exactDeploy(config,expectedSha,ports){
 
 /** Default is plan-only. Mutation requires execute:true and explicit trusted ports. */
 export async function runG5AControl(plan,{action='preflight',execute=false,ports,identityPreflight,now=Date.now()}={}){
- if(!['preflight','open','stop'].includes(action))fail('operator-action-invalid');
+ if(!['preflight','rollover','open','stop'].includes(action))fail('operator-action-invalid');
  if(!execute)return {status:'planned-not-executed',action,windowId:plan.windowId,changedPaths:plan.changedPaths};
- for(const name of action==='preflight'?['readState','readConfig']:action==='open'?['readState','readConfig','deployExact']:['readState','readConfig','deployExact','closeAdmission'])if(typeof ports?.[name]!=='function')fail(`operator-port-required:${name}`);
+ for(const name of action==='preflight'?['readState','readConfig']:action==='rollover'?['readState','readConfig','registerRollover']:action==='open'?['readState','readConfig','deployExact']:['readState','readConfig','deployExact','closeAdmission'])if(typeof ports?.[name]!=='function')fail(`operator-port-required:${name}`);
+ if(action==='stop'){
+  let deployError=null;try{await exactDeploy(plan.closedConfig,plan.closedSha256,ports);}catch(error){deployError=error;}
+  let closedConfig=false;try{closedConfig=sha(await ports.readConfig())===plan.closedSha256;}catch{}if(!closedConfig)throw deployError??Error('operator-stop-closed-config-unconfirmed');
+  const before=assessG5AState(plan,await ports.readState(),now);if(before.startedAt===null)return {status:'new-admission-stopped-before-window-start',state:before,settlementRequired:false};
+  const ack=await ports.closeAdmission(plan.windowId);if(ack?.closed!==true||ack.windowId!==plan.windowId)fail('operator-close-admission-ack-unknown');const after=assessG5AState(plan,await ports.readState(),now);if(!after.closed)fail('operator-close-admission-readback-conflict');return {status:'new-admission-stopped',state:after,settlementRequired:after.unknown>0||after.pending>0};
+ }
  const before=assessG5AState(plan,await ports.readState(),now);
  const configSha=sha(await ports.readConfig());
  if(action==='preflight'){
   if(configSha!==plan.closedSha256)fail('operator-closed-preflight-config-conflict');
   return {status:'verified-read-only',state:before};
  }
+ if(action==='rollover'){
+  if(configSha!==plan.closedSha256||before.startedAt!==null||before.closed||before.tasks!==0||before.dispatches!==0||before.rolloverReceiptSha256!==null&&before.rolloverReceiptSha256!==plan.rollover.receiptSha256)fail('operator-rollover-precondition-failed');
+  const ack=await ports.registerRollover(plan.rolloverBinding);if(ack?.targetWindowId!==plan.windowId||ack?.sourceWindowId!==plan.rollover.sourceWindowId||ack?.receiptSha256!==plan.rollover.receiptSha256)fail('operator-rollover-ack-conflict');
+  const after=assessG5AState(plan,await ports.readState(),now);if(after.rolloverReceiptSha256!==plan.rollover.receiptSha256||after.startedAt!==null||after.tasks!==0||after.dispatches!==0)fail('operator-rollover-readback-conflict');
+  return {status:'rollover-registered-gates-closed',windowId:plan.windowId,receiptSha256:plan.rollover.receiptSha256,state:after};
+ }
  if(action==='open'){
   identityChecked(plan,identityPreflight,now);
   if(configSha!==plan.closedSha256)fail('operator-open-source-config-conflict');
-  if(before.startedAt!==null||before.closed||before.tasks!==0||before.dispatches!==0||before.unknown||before.pending)fail('operator-a-first-admission-precondition-failed');
+  if(before.rolloverReceiptSha256!==plan.rollover.receiptSha256||before.startedAt!==null||before.closed||before.tasks!==0||before.dispatches!==0||before.unknown||before.pending)fail('operator-a-first-admission-precondition-failed');
   await exactDeploy(plan.openConfig,plan.openSha256,ports);
   const after=assessG5AState(plan,await ports.readState(),now);
   if(after.startedAt!==null||after.tasks!==0||after.dispatches!==0)fail('operator-open-started-window-unexpectedly');
   return {status:'opened-existing-window-gates',state:after};
  }
- if(configSha!==plan.openSha256&&configSha!==plan.closedSha256)fail('operator-stop-source-config-conflict');
- if(configSha!==plan.closedSha256)await exactDeploy(plan.closedConfig,plan.closedSha256,ports);
- if(before.startedAt===null)return {status:'new-admission-stopped-before-window-start',state:before,settlementRequired:false};
- const ack=await ports.closeAdmission(plan.windowId);
- if(ack?.closed!==true||ack.windowId!==plan.windowId)fail('operator-close-admission-ack-unknown');
- const after=assessG5AState(plan,await ports.readState(),now);
- if(!after.closed)fail('operator-close-admission-readback-conflict');
- return {status:'new-admission-stopped',state:after,settlementRequired:after.unknown>0||after.pending>0};
+ fail('operator-action-invalid');
 }
 
 /** Wraps the private DO RPC without exposing it as HTTP. */
 export function createG5GuardOperatorAdapter(stub,windowId){
- if(typeof stub?.snapshot!=='function'||typeof stub?.closeAdmission!=='function')fail('operator-guard-stub-required');
- return {snapshot:async()=>summarizeG5GuardSnapshot(await stub.snapshot(),windowId),closeAdmission:async()=>{const before=summarizeG5GuardSnapshot(await stub.snapshot(),windowId);if(before.windowId!==windowId)fail('operator-guard-window-conflict');const ack=await stub.closeAdmission();const after=summarizeG5GuardSnapshot(await stub.snapshot(),windowId);return {closed:ack?.closed===true&&after.closed,windowId};}};
+ if(typeof stub?.snapshot!=='function'||typeof stub?.registerRollover!=='function'||typeof stub?.closeAdmission!=='function')fail('operator-guard-stub-required');
+ return {snapshot:async()=>summarizeG5GuardSnapshot(await stub.snapshot(),windowId),registerRollover:input=>stub.registerRollover(input),closeAdmission:async()=>{const before=summarizeG5GuardSnapshot(await stub.snapshot(),windowId);if(before.windowId!==windowId)fail('operator-guard-window-conflict');const ack=await stub.closeAdmission();const after=summarizeG5GuardSnapshot(await stub.snapshot(),windowId);return {closed:ack?.closed===true&&after.closed,windowId};}};
 }
 
 /** Complete private authority adapter. It accepts no caller-supplied ledger
@@ -146,6 +154,7 @@ export function createG5AuthorityAdapter(stub,windowId){
   beginReadonlyReadSession:input=>typeof stub.beginReadonlyReadSession==='function'?stub.beginReadonlyReadSession(input):fail('operator-b2-authority-unavailable'),
   attestReadonlyInterval:input=>typeof stub.attestReadonlyInterval==='function'?stub.attestReadonlyInterval(input):fail('operator-b2-authority-unavailable'),
   consumeReadonlyReopenGrant:input=>typeof stub.consumeReadonlyReopenGrant==='function'?stub.consumeReadonlyReopenGrant(input):fail('operator-b2-authority-unavailable'),
+  registerRollover:input=>typeof stub.registerRollover==='function'?stub.registerRollover(input):fail('operator-rollover-authority-unavailable'),
   inspectRun:input=>stub.inspectRun(input),
   inspectFinal:input=>stub.inspectFinal(input),
   closeAdmission:async input=>{if(input?.windowId!==windowId)fail('operator-guard-window-conflict');await checked();const ack=await stub.closeAdmission(),after=await checked();if(ack?.closed!==true||after.closed!==true)fail('operator-close-admission-readback-conflict');return {schemaVersion:1,windowId,closed:true,receiptSha256:after.receiptSha256};},
@@ -157,9 +166,9 @@ export function createG5AuthorityAdapter(stub,windowId){
 export function createG5OperatorHttpAuthority({operatorOrigin,capability,windowId,fetcher=fetch,timeoutMs=15000}={}){
  let endpoint;try{endpoint=new URL('/operate',operatorOrigin);}catch{fail('operator-http-origin-invalid');}
  if(endpoint.protocol!=='https:'||endpoint.username||endpoint.password||endpoint.search||endpoint.hash||typeof capability!=='string'||capability.length<32||/[\r\n]/.test(capability)||!namedWindow(windowId)||typeof fetcher!=='function'||!Number.isSafeInteger(timeoutMs)||timeoutMs<1000||timeoutMs>30000)fail('operator-http-config-invalid');
- const call=async(action,payload,mutation=false)=>{let response;try{response=await fetcher(endpoint,{method:'POST',redirect:'error',signal:AbortSignal.timeout(timeoutMs),headers:{authorization:`Bearer ${capability}`,'content-type':'application/json',...(mutation?{'x-g5-mutation':'close-admission'}:{})},body:JSON.stringify({action,windowId,...payload})});}catch{fail('operator-http-unavailable');}const bytes=new Uint8Array(await response.arrayBuffer());if(bytes.byteLength>65536)fail('operator-http-response-too-large');let value;try{value=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{fail('operator-http-response-invalid');}if(!response.ok||value?.ok!==true)fail('operator-http-rejected');return value;};
+ const call=async(action,payload,mutation=null)=>{let response;try{response=await fetcher(endpoint,{method:'POST',redirect:'error',signal:AbortSignal.timeout(timeoutMs),headers:{authorization:`Bearer ${capability}`,'content-type':'application/json',...(mutation?{'x-g5-mutation':mutation}:{})},body:JSON.stringify({action,windowId,...payload})});}catch{fail('operator-http-unavailable');}const bytes=new Uint8Array(await response.arrayBuffer());if(bytes.byteLength>65536)fail('operator-http-response-too-large');let value;try{value=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{fail('operator-http-response-invalid');}if(!response.ok||value?.ok!==true)fail('operator-http-rejected');return value;};
  const snapshot=async()=>{const value=await call('snapshot',{});if(value.summary?.windowId!==windowId||typeof value.snapshotSha256!=='string')fail('operator-http-snapshot-invalid');hash(value.snapshotSha256,'snapshot-sha256');return value;};
  const inspect=action=>async payload=>(await call(action,{payload})).value;
- return {readState:async()=>(await snapshot()).summary,inspectAdmissionContract:inspect('inspectAdmissionContract'),inspectProviderFailure:async input=>{if(!exactObject(input,['windowId','turnId'])||input.windowId!==windowId||!namedWindow(input.turnId))fail('operator-provider-failure-input-invalid');return checkedProviderFailure(await inspect('inspectProviderFailure')(input),input);},inspectTask:inspect('inspectTask'),inspectFixtureTask:inspect('inspectFixtureTask'),inspectFixtureTerminal:inspect('inspectFixtureTerminal'),snapshotReadonlyCounters:inspect('snapshotReadonlyCounters'),beginReadonlyReadSession:inspect('beginReadonlyReadSession'),attestReadonlyInterval:inspect('attestReadonlyInterval'),consumeReadonlyReopenGrant:inspect('consumeReadonlyReopenGrant'),inspectRun:inspect('inspectRun'),inspectFinal:inspect('inspectFinal'),closeAdmission:async input=>{if(input?.windowId!==windowId)fail('operator-guard-window-conflict');const before=await snapshot(),closed=await call('close',{expectedSnapshotSha256:before.snapshotSha256,confirmation:'close-existing-window'},true);if(closed.closed!==true||closed.windowId!==windowId)fail('operator-close-admission-readback-conflict');hash(closed.afterSnapshotSha256,'close-receipt-sha256');return {schemaVersion:1,windowId,closed:true,receiptSha256:closed.afterSnapshotSha256};}};
+ return {readState:async()=>(await snapshot()).summary,inspectAdmissionContract:inspect('inspectAdmissionContract'),inspectProviderFailure:async input=>{if(!exactObject(input,['windowId','turnId'])||input.windowId!==windowId||!namedWindow(input.turnId))fail('operator-provider-failure-input-invalid');return checkedProviderFailure(await inspect('inspectProviderFailure')(input),input);},inspectTask:inspect('inspectTask'),inspectFixtureTask:inspect('inspectFixtureTask'),inspectFixtureTerminal:inspect('inspectFixtureTerminal'),snapshotReadonlyCounters:inspect('snapshotReadonlyCounters'),beginReadonlyReadSession:inspect('beginReadonlyReadSession'),attestReadonlyInterval:inspect('attestReadonlyInterval'),consumeReadonlyReopenGrant:inspect('consumeReadonlyReopenGrant'),inspectRun:inspect('inspectRun'),inspectFinal:inspect('inspectFinal'),registerRollover:async binding=>{const before=await snapshot(),value=await call('rollover',{binding,expectedSnapshotSha256:before.snapshotSha256,confirmation:'register-one-time-rollover'},'register-rollover');if(value?.targetWindowId!==windowId||value?.sourceWindowId!==binding?.sourceWindowId)fail('operator-rollover-ack-conflict');hash(value.receiptSha256,'rollover-receipt-sha256');hash(value.afterSnapshotSha256,'rollover-after-snapshot-sha256');const after=await snapshot();if(after.snapshotSha256!==value.afterSnapshotSha256||after.summary?.rolloverReceiptSha256!==value.receiptSha256)fail('operator-rollover-readback-conflict');return value;},closeAdmission:async input=>{if(input?.windowId!==windowId)fail('operator-guard-window-conflict');const before=await snapshot(),closed=await call('close',{expectedSnapshotSha256:before.snapshotSha256,confirmation:'close-existing-window'},'close-admission');if(closed.closed!==true||closed.windowId!==windowId)fail('operator-close-admission-readback-conflict');hash(closed.afterSnapshotSha256,'close-receipt-sha256');return {schemaVersion:1,windowId,closed:true,receiptSha256:closed.afterSnapshotSha256};}};
 }
 function namedWindow(value){return typeof value==='string'&&/^[A-Za-z0-9][A-Za-z0-9._:-]{0,149}$/.test(value);}
