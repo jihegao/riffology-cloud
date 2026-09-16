@@ -13,6 +13,7 @@ type Status='queued'|'waiting_for_capacity'|'preparing'|'running'|'finalizing'|'
 export type SimulationRecord={budgetRoute?:WorkspaceBudgetRoute;experimentId:string;groupId?:string;runId:string;scope:TurnScope;actor:TurnActor;key:string;requestJson:string;input:SimulationInput;status:Status;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null;attempt:number;quotaClaimed:boolean;releaseProof:StopConfirmation|null;lease:LeaseReference|null;dispatchClaimed?:boolean;startClaimed:boolean;stop:NativeObservation['stop'];result:null|{metrics:Record<string,number>;artifactSha256:string;outputs?:SimulationOutput[]};releaseBegunAt:number|null;quietSince:number|null;released:boolean};
 export interface SimulationPorts{
  admitRun?(actor:TurnActor,key:string,request:ExperimentRequest,runId:string):Promise<WorkspaceBudgetRoute|void>;
+ createdRun?(record:SimulationRecord):Promise<void>;
  beforeStart?(record:SimulationRecord,stage:'capacity'|'native'):Promise<void>;
  quota:{acquire(request:LeaseRequest):Promise<Acquisition>;lookup(tenantId:string,operationId:string):Promise<Acquisition|null>;dispatch(lease:LeaseReference):Promise<{authorized:boolean;lease:unknown}>;confirmStopped(lease:LeaseReference,proof:StopConfirmation):Promise<unknown>};
  start(input:SimulationInput):Promise<NativeObservation>;
@@ -79,8 +80,9 @@ export class SimulationHost{
    if(rows.length+reserved+(child?0:1)>1000||rows.filter(r=>!r.released).length>=8)throw Error('simulation-capacity');
    if(child)await tx.put(GROUP_RESERVATION+child.groupId,reservations.get(GROUP_RESERVATION+child.groupId)!.filter(id=>id!==runId));
    await tx.put(PREFIX+runId,record);await tx.put(intent,runId);await this.#project(tx);return record;
-  });await this.storage.sync();return result;
+  });await this.storage.sync();await this.ports.createdRun?.(result);return result;
  }
+ async reconcileCreatedRun(id:string){const record=await this.get(id);await this.ports.createdRun?.(record);return record;}
  async cancel(id:string){return this.#change(id,r=>{if(!TERMINAL.has(r.status)){r.cancelledAt??=this.clock();r.status='stopping';}});}
  async #bounded<T>(operation:()=>Promise<T>):Promise<T>{let timer:ReturnType<typeof setTimeout>|undefined;const pending=Promise.resolve().then(operation);this.ports.hold(pending.catch(()=>{}));try{return await Promise.race([pending,new Promise<never>((_,reject)=>{timer=setTimeout(()=>reject(Error('simulation-operation-unconfirmed')),15000);})]);}finally{clearTimeout(timer);}}
  async authorizeActor(actor:TurnActor){return this.#bounded(()=>this.ports.authorize(checkedActor(actor)));}

@@ -242,7 +242,8 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   #simulationAlarm=new DurableSimulationAlarmPort(this.ctx.storage);
   #simulations(scope:TurnScope){
     return this.#simulationHost??=new SimulationHost(this.ctx.storage,scope,{
-      admitRun:async(actor,key,body,runId)=>{if(this.env.G5_CONTROLLED_WINDOW_JSON===undefined){await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,actor.userId,'run',{scope,key},body);return;}const task=await g5TaskKey(this.env.G5_CONTROLLED_WINDOW_JSON,'simulation',scope.tenantId,actor.userId,{scope,key},body);const policy=g5WindowPolicy(JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON))!;const guard=this.#g5Guard();await guard.registerTask(task);const created=await guard.claimTaskCreate(task.key);if(!created.authorized)throw Error('g5-simulation-create-denied');await guard.bindTask(task.key,runId);return {kind:'g5' as const,taskKey:task.key,windowId:policy.windowId,profileSha256:policy.profilePin.profileSha256};},
+      admitRun:async(actor,key,body,runId)=>{if(this.env.G5_CONTROLLED_WINDOW_JSON===undefined){await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,actor.userId,'run',{scope,key},body);return;}const task=await g5TaskKey(this.env.G5_CONTROLLED_WINDOW_JSON,'simulation',scope.tenantId,actor.userId,{scope,key},body);const policy=g5WindowPolicy(JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON))!;const guard=this.#g5Guard();await guard.registerTask(task);const created=await guard.claimTaskCreate(task.key);if(!created.authorized)throw Error('g5-simulation-create-denied');return {kind:'g5' as const,taskKey:task.key,windowId:policy.windowId,profileSha256:policy.profilePin.profileSha256};},
+      createdRun:async record=>{if(record.budgetRoute)await this.#g5Guard().bindTask(record.budgetRoute.taskKey,record.runId);},
       beforeStart:async(record,stage)=>{if(!record.budgetRoute)return;await this.#g5StartTask(record.budgetRoute.taskKey);},
       quota:this.env.TENANT_QUOTA.getByName(tenantQuotaName(scope.tenantId)),
       start:async input=>{
@@ -915,6 +916,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const reference=await initialWorkspaceReferenceFromReady({scope,task:state.task,runtime:state.identity,markerNonce:state.markerNonce,ready:state.runtimeReceipt});
     const plan=await store.initialPreviewPlan(reference,scope);this.#ready(scope);return plan;
   }
+  async reconcileSimulationCreation(input:{scope:TurnScope;actor:TurnActor;runId:string}){const scope=this.#maintenanceScope(input.scope);const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(input.actor,scope.workspaceId);if(!sameScope(scope,actual))throw Error('g5-simulation-reconcile-scope-denied');return publicExperiment(await this.#simulations(scope).reconcileCreatedRun(input.runId),this.#turns.workspaceRevisionSnapshot(scope)?.receipt.filesSha256??null);}
   async listFiles(input:{scope:TurnScope}){
     const scope=this.#ready(input.scope),revision=await this.#turns.workspaceRevision(scope);
     if(!revision){const initial=await this.#initialWorkspace(scope);return {schemaVersion:1,revision:null,files:workspaceFileIndex(initial.filesArchive).files};}
