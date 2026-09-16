@@ -28,7 +28,7 @@ const hash=b=>createHash('sha256').update(b).digest('hex');
 export function validateContent(value,expected){
  if(value?.schemaVersion!==1||!Array.isArray(value.modules)||value.modules.length!==6)throw Error('content-shape-invalid');
  for(let i=0;i<6;i++){const row=value.modules[i],want=expected.modules[i];if(row.name!==MODULES[i]||want?.name!==MODULES[i]||row.sha256!==want.sha256||row.byteLength!==want.byteLength||row.uid!==0||row.gid!==0||(row.mode&0o022)!==0)throw Error('module-content-mismatch');}
- if(value.modules[0].sha256!==value.modules[1].sha256||value.adapterSha256!=='fa7987095bbc29f2c6d87e9b0f815415f88c9079ad7070fb7fe8b91e7ebf0898'||value.adapterActualSha256!==value.adapterSha256||JSON.stringify(value.generationContract)!==JSON.stringify(expected.generationContract))throw Error('generation-policy-mismatch');return value;
+ if(value.modules[0].sha256!==value.modules[1].sha256||value.adapterSha256!=='b0c785d8c08838d9e416eb87aba1c6b5ce9d8b1d6d233cf2fec32de99a0ec7f5'||value.adapterActualSha256!==value.adapterSha256||JSON.stringify(value.generationContract)!==JSON.stringify(expected.generationContract))throw Error('generation-policy-mismatch');return value;
 }
 export function validateMainApp(apps,detail,version,expected){
  const name='riffology-m3-trusted-pi-staging',id=expected.appId??'a03628c4-f032-461f-a65b-612ccac11a06',namespace=expected.namespaceId??'ac0e9a31323e463b9a05696dad1b30d5';

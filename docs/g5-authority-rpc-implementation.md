@@ -23,7 +23,7 @@ Validation: TypeScript typecheck, 64 focused G5 tests, and eight Workspace autho
 
 ## Two-stage fixture authority
 
-The server owns the 18-entry Proposal B order in `services/model-budget/g5-fixture-manifest.ts`, pinned to final fixture bytes `c31c76ec54074f59d9aacc834b2641ce8e130637834dd8cf8e6e8927c9961bad`. It derives the six category relations, run cardinalities `[1,2,1,1,6,2]`, three group intents and 39 Runs. The caller supplies only fixture, Workspace, Turn, Run, Group and Claim identities plus the observed saved version.
+The server owns the 18-entry Proposal B order in `services/model-budget/g5-fixture-manifest.ts`, pinned to final fixture bytes `673d0cbe930990602649aaa9d746e16ad29280981f5f7be336b368388ceee753`. It derives the six category relations, run cardinalities `[1,2,1,1,6,2]`, three group intents and 39 Runs. The caller supplies only fixture, Workspace, Turn, Run, Group and Claim identities plus the observed saved version.
 
 `inspectFixtureTask` is the post-Turn phase. It reuses the Guard task, saved Workspace head, provider receipt and closed model/money/tool ledgers. Repair fixtures additionally read the private six-command Tool Ledger proof. The Guard writes a `turn-verified` row with the server manifest digest and the preceding terminal receipt hash in one SQLite transaction. The next fixture cannot enter this phase until every preceding row is terminal.
 

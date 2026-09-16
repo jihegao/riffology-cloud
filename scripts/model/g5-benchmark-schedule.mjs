@@ -3,7 +3,7 @@ import { pathToFileURL } from 'node:url';
 import { benchmarkPlan, tasks } from './benchmark-plan.mjs';
 import { conservativeCost, productionProfile } from '../../services/model-proxy/production-profile.ts';
 
-export const fixtureSha256 = 'c31c76ec54074f59d9aacc834b2641ce8e130637834dd8cf8e6e8927c9961bad';
+export const fixtureSha256 = '673d0cbe930990602649aaa9d746e16ad29280981f5f7be336b368388ceee753';
 const runs = [1, 2, 1, 1, 6, 2];
 const seeds = [[104729,104759,104761],[130363,130367,130369],[155921,155927,155929]];
 export function frozenSchedule() {

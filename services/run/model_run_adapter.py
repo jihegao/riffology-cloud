@@ -10,6 +10,37 @@ from pathlib import Path
 from model import run
 
 
+TRACE_AUDIT_COLUMNS = [
+    'frame', 'time', 'queue_length', 'completed',
+    'abandoned', 'rejected', 'active', 'waiting',
+]
+
+
+def trace_audit(trace):
+    rows = []
+    for snapshot in trace['snapshots']:
+        if type(snapshot) is not dict or type(snapshot.get('metrics')) is not dict:
+            raise ValueError('invalid-model-trace')
+        agents = snapshot.get('agents', [])
+        if type(agents) is not list:
+            raise ValueError('invalid-model-trace')
+        metrics = snapshot['metrics']
+        row = [
+            snapshot.get('frame'),
+            snapshot.get('time'),
+            metrics.get('queue_length', 0),
+            metrics.get('completed', 0),
+            metrics.get('abandoned', 0),
+            metrics.get('rejected', 0),
+            len(agents),
+            sum(type(agent) is dict and agent.get('state') == 'waiting' for agent in agents),
+        ]
+        if any(type(value) not in (int, float) for value in row):
+            raise ValueError('invalid-model-trace-audit')
+        rows.append(row)
+    return {'schemaVersion': 1, 'columns': TRACE_AUDIT_COLUMNS, 'rows': rows}
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input', required=True)
@@ -38,10 +69,14 @@ def main():
     summary_bytes = json.dumps(summary, sort_keys=True, separators=(',', ':'), allow_nan=False).encode('utf-8')
     if len(summary_bytes) > 16384:
         raise ValueError('model-summary-too-large')
+    audit_bytes = json.dumps(trace_audit(trace), sort_keys=True, separators=(',', ':'), allow_nan=False).encode('utf-8')
+    if len(audit_bytes) > 16384:
+        raise ValueError('model-trace-audit-too-large')
     output.with_name('summary.json').write_bytes(summary_bytes)
-    outputs = ['summary.json']
+    output.with_name('trace-audit.json').write_bytes(audit_bytes)
+    outputs = ['summary.json', 'trace-audit.json']
     # A full trace is optional; no partial/truncated trace is ever persisted.
-    if len(trace_bytes) <= 16384 and len(trace_bytes) + len(summary_bytes) <= 32768:
+    if len(trace_bytes) <= 16384 and len(trace_bytes) + len(summary_bytes) + len(audit_bytes) <= 32768:
         output.with_name('trace.json').write_bytes(trace_bytes)
         outputs.append('trace.json')
     output.write_text(json.dumps({'schemaVersion': 1, 'metrics': metrics, 'outputs': outputs}, allow_nan=False, separators=(',', ':')))

@@ -1,6 +1,6 @@
 # G5-A proposal B: same-Turn seeded failure
 
-This branch is a review draft. It is not authorized for live execution and has not been integrated or deployed. The currently authorized G5-A scope still pins fixture SHA-256 `3e410718f9143da69f3bc63407f4452ae7802afb299f250657be51a40a756fb4`. Proposal B changes the frozen fixture bytes to SHA-256 `c31c76ec54074f59d9aacc834b2641ce8e130637834dd8cf8e6e8927c9961bad`; every manifest and overlay that still pins the old digest must reject this draft.
+The same-Turn repair contract is retained by the authorized B2 fixture. The prior reviewed Proposal-B bytes had SHA-256 `c31c76ec54074f59d9aacc834b2641ce8e130637834dd8cf8e6e8927c9961bad`; B2 adds measurable boundary inputs and the bounded trace-audit output, producing fixture SHA-256 `673d0cbe930990602649aaa9d746e16ad29280981f5f7be336b368388ceee753`. This document does not grant live execution authority, and no cloud service was changed by the local fixture update.
 
 Proposal B keeps three Projects, 18 ordinary-user Turns, 39 Runs, three group intents and `normalAdmissionTasks=63`. Exactly `probeTasks=3` are reserved, so `maximumAdmissionTasks=63+3=66`. It does not change the 147-dispatch cap, US$20 window cap, US$5 Turn cap, concurrency one or two-hour admission deadline.
 

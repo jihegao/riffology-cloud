@@ -22,9 +22,9 @@ Mesa 源锁固定 mesa3.5.1、networkx3.6.1、numpy2.4.6、pandas3.0.2、scipy1.
 
 ## Canonical server adapter 与发布材料
 
-唯一实现负责人是 server 任务的 `services/run/model_run_adapter.py`；Trusted Pi release 内嵌其原字节静态快照和 SHA256 `fa7987095bbc29f2c6d87e9b0f815415f88c9079ad7070fb7fe8b91e7ebf0898`。这是固定 prompt 数据快照，不是第二套 adapter 语义实现。Agent 使用 project_write 保存同字节 model/run.py；无需项目可写模板或 Trusted Pi 新文件系统权限，也不增加 Docker COPY 依赖。canonical adapter 更新时必须同步固定快照与摘要，并通过集成对照测试；不允许仅更新一个文件导致生成结果漂移。
+唯一实现负责人是 server 任务的 `services/run/model_run_adapter.py`；Trusted Pi release 内嵌其原字节静态快照和 SHA256 `b0c785d8c08838d9e416eb87aba1c6b5ce9d8b1d6d233cf2fec32de99a0ec7f5`。这是固定 prompt 数据快照，不是第二套 adapter 语义实现。Agent 使用 project_write 保存同字节 model/run.py；无需项目可写模板或 Trusted Pi 新文件系统权限，也不增加 Docker COPY 依赖。canonical adapter 更新时必须同步固定快照与摘要，并通过集成对照测试；不允许仅更新一个文件导致生成结果漂移。
 
-adapter 接受服务器既有 --input/--output，独立从末 frame 取 Spec.metrics，NaN/Infinity 序列化拒绝。完整 summary.json≤16 KiB；完整 trace.json 仅在单文件≤16 KiB、所有输出≤32 KiB时附带，超限不写部分 trace、也不截断模型计算。平台既有结果/输出限额仍生效，完整 summary 或 result 超限明确失败。浏览器 trace/metrics 不能作为服务器输入结果。重复 Verify 对 frozen Revision/参数/seed 使用原幂等身份，由用户显式可信按钮提交。
+adapter 接受服务器既有 --input/--output，独立从末 frame 取 Spec.metrics，NaN/Infinity 序列化拒绝。完整 summary.json 与闭 schema 的 trace-audit.json 均为必需输出且各自≤16 KiB；audit 固定记录 frame、time、queue_length、completed、abandoned、rejected、active、waiting。完整 trace.json 仅在单文件≤16 KiB、所有输出≤32 KiB时附带，超限不写部分 trace、也不截断模型计算；audit 超限则明确失败。平台既有结果/输出限额仍生效，完整 summary、audit 或 result 超限明确失败。浏览器 trace/metrics 不能作为服务器输入结果。重复 Verify 对 frozen Revision/参数/seed 使用原幂等身份，由用户显式可信按钮提交。
 
 本地生成检查通过 `inspectGeneratedBrowserPreview(source, archiveBytes, kind, {registry})` 复用已保存 archive 的 compatibility validator，再检查 model/run.py 原字节摘要与保存 defaults。kind 仅 mesa/stdlib；默认 empty registry 明确 profile-unavailable，不借合成资产伪造 ready。该检查是调用方已授权、已保存文件的检查器，不自动发 LLM、执行 Python、保存 Revision 或触发构建。现阶段尚未接 central actor；实际保存/派生/read/Verify 由阶段2A完成。
 

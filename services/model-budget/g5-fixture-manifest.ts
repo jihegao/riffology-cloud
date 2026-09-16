@@ -1,4 +1,5 @@
-export const G5_FIXTURE_MANIFEST_SHA256='c31c76ec54074f59d9aacc834b2641ce8e130637834dd8cf8e6e8927c9961bad';
+export const G5_FIXTURE_MANIFEST_SHA256='673d0cbe930990602649aaa9d746e16ad29280981f5f7be336b368388ceee753';
+export const G5_TRACE_AUDIT_CONTRACT=Object.freeze({schemaVersion:1 as const,path:'trace-audit.json' as const,maxBytes:16384 as const,columns:Object.freeze(['frame','time','queue_length','completed','abandoned','rejected','active','waiting'] as const)});
 export const G5_FIXTURE_RUNS=[1,2,1,1,6,2] as const;
 export const G5_FIXTURE_CATEGORIES=['create-model','parameter-change','mechanism-change','repair-validation','measured-evidence','reopen-continue'] as const;
 export type G5FixtureCategory=typeof G5_FIXTURE_CATEGORIES[number];
@@ -6,9 +7,9 @@ const seeds=[[104729,104759,104761],[130363,130367,130369],[155921,155927,155929
 const base={arrival_rate:0.8,customers:40,servers:1,service_rate:1},overloaded={arrival_rate:1.5,customers:40,max_wait:2,servers:1,service_rate:1};
 const inputs={
  'create-model':[base],'parameter-change':[base,{arrival_rate:1.2,customers:40,servers:1,service_rate:1}],
- 'mechanism-change':[overloaded],'repair-validation':[overloaded],
+ 'mechanism-change':[{...overloaded,max_wait:0}],'repair-validation':[overloaded],
  'measured-evidence':[overloaded,{arrival_rate:1.5,customers:40,max_wait:2,servers:2,service_rate:1}],
- 'reopen-continue':[{arrival_rate:1.5,customers:40,max_wait:2,queue_capacity:120,servers:1,service_rate:1},{arrival_rate:1.5,customers:40,max_wait:2,queue_capacity:2,servers:1,service_rate:1}]
+ 'reopen-continue':[{arrival_rate:1.5,customers:40,max_wait:2,queue_capacity:120,servers:1,service_rate:1},{arrival_rate:1.5,customers:40,max_wait:2,queue_capacity:0,servers:1,service_rate:1}]
 } as const;
 const relations={
  'create-model':'created','parameter-change':'unchanged','mechanism-change':'changed','repair-validation':'restored-after-same-turn-failure','measured-evidence':'unchanged','reopen-continue':'changed'

@@ -8,7 +8,7 @@ test('content probe freezes six paths and provider-free policy inspection; HTTP 
  assert.throws(()=>workerSource('client-selected'),/actor-invalid/);
 });
 test('signed-off content requires exact modules, root protection, adapter and generation contract',()=>{
- const adapter='fa7987095bbc29f2c6d87e9b0f815415f88c9079ad7070fb7fe8b91e7ebf0898';
+ const adapter='b0c785d8c08838d9e416eb87aba1c6b5ce9d8b1d6d233cf2fec32de99a0ec7f5';
  const modules=MODULES.map(name=>({name,sha256:'a'.repeat(64),byteLength:20,uid:0,gid:0,mode:0o444})),generationContract={schema:'frozen'},value={schemaVersion:1,modules,generationContract,adapterSha256:adapter,adapterActualSha256:adapter},expected={modules,generationContract};
  assert.equal(validateContent(value,expected),value);
  for(const change of [{...value,adapterActualSha256:'b'.repeat(64)},{...value,generationContract:{schema:'other'}},{...value,modules:modules.map((x,i)=>i===1?{...x,sha256:'b'.repeat(64)}:x)},{...value,modules:modules.map((x,i)=>i===4?{...x,mode:0o666}:x)}])assert.throws(()=>validateContent(change,expected));

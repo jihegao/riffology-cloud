@@ -1,5 +1,5 @@
 const SHA=/^[a-f0-9]{64}$/;
-const MANIFEST_SHA256='c31c76ec54074f59d9aacc834b2641ce8e130637834dd8cf8e6e8927c9961bad';
+const MANIFEST_SHA256='673d0cbe930990602649aaa9d746e16ad29280981f5f7be336b368388ceee753';
 const ID=/^[A-Za-z0-9_-]{1,128}$/;
 const exact=(value,keys)=>!!value&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)===Object.prototype&&Object.keys(value).sort().join(',')===[...keys].sort().join(',');
 const id=(value,code)=>{if(typeof value!=='string'||!ID.test(value))throw Error(code);return value;};

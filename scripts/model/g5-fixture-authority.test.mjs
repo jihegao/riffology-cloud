@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {G5FixtureAuthorityAdapter} from './g5-fixture-authority.mjs';
-const H='a'.repeat(64),M='c31c76ec54074f59d9aacc834b2641ce8e130637834dd8cf8e6e8927c9961bad';
+const H='a'.repeat(64),M='673d0cbe930990602649aaa9d746e16ad29280981f5f7be336b368388ceee753';
 const fixtures=JSON.parse(await readFile(new URL('./benchmark-task-fixtures/fixtures.json',import.meta.url)));
 const version={revisionId:'revision-a',filesSha256:H,specSha256:H};
 const port=()=>({async inspectFixtureTask(i){return {schemaVersion:2,stage:'turn',manifestSha256:M,fixtureId:i.fixtureId,category:'create-model',order:1,workspaceId:i.workspaceId,sessionId:i.sessionId,turnId:i.turnId,source:i.version,sourceRelation:'created',predecessorReceiptSha256:null,repairProof:null,accepted:true,receiptSha256:H};},async inspectFixtureTerminal(i){return {schemaVersion:2,stage:'terminal',manifestSha256:M,fixtureId:i.fixtureId,category:'create-model',workspaceId:i.workspaceId,turnId:i.turnId,stage1ReceiptSha256:H,source:version,runIds:i.runIds,groupId:i.groupId,claimIds:i.claimIds,predecessorReceiptSha256:null,accepted:true,receiptSha256:H};}});
