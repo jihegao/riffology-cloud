@@ -1,3 +1,5 @@
+import {G5_GLOBAL_ACTOR} from '../model-budget/g5-window.ts';
+import {profileDigest} from './production-profile.ts';
 import {authorizeWarmOutbound,type WarmAuthorityNamespace} from '../sandbox/warm-authority.ts';
 import { PRODUCTION_MONEY_ACTOR, moneyReference, type ProductionMoneyLedger, type MoneyReference } from '../model-budget/production-money.ts';
 import type { ProductionProfile } from './production-profile.ts';
@@ -22,7 +24,18 @@ type BudgetStub = {
 };
 type BudgetNamespace = { getByName(name: string): BudgetStub };
 
+export type G5ProxyGuard={
+ lookupTrustedTurnRoute(identity:ModelCallRequest['identity']):Promise<{kind:'g5';taskKey:string;windowId:string;profileSha256:string}|null>;
+ reserveTrustedCall(input:{request:ModelCallRequest;tokenReference:ReturnType<typeof modelCallReference>;profile:ProductionProfile}):Promise<{callKey:string;windowId:string;deadlineAt:number;replayed:boolean;mayDispatch:false}>;
+ bindTrustedMoney(callKey:string,reference:MoneyReference):Promise<unknown>;
+ claimTrustedDispatch(callKey:string):Promise<{authorized:boolean;deadlineAt:number}>;
+ settleTrustedCall(callKey:string):Promise<unknown>;
+ markUnknown(callKey:string):Promise<unknown>;
+};
 export interface ModelProxyHttpEnv {
+ G5_CONTROLLED_WINDOW_JSON?:string;
+ G5_TOKEN_BUDGET?:BudgetNamespace;
+ G5_WINDOW_GUARD?:{getByName(name:string):G5ProxyGuard};
   G4_CONTROLLED_WINDOW_JSON?:string;
   WORKSPACE_AGENT?:WarmAuthorityNamespace;
   TRUSTED_PI_SANDBOX: IdentityNamespace;
@@ -163,13 +176,23 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
   if (!provider) return unavailable();
 
   const tenantId = claims.identity.scope.tenantId;
-  const budget = env.TENANT_MODEL_BUDGET.getByName(modelBudgetTenantName(tenantId));
+  let guard:G5ProxyGuard|null=null,route:Awaited<ReturnType<G5ProxyGuard['lookupTrustedTurnRoute']>>=null;
+  if(env.G5_CONTROLLED_WINDOW_JSON!==undefined){
+    if(!env.G5_WINDOW_GUARD)return denied();
+    try{guard=env.G5_WINDOW_GUARD.getByName(G5_GLOBAL_ACTOR);route=await guard.lookupTrustedTurnRoute(claims.identity);}catch{return denied();}
+  }
+  const isG5=route!==null;
+  if(isG5&&!env.G5_TOKEN_BUDGET)return denied();
+  const budget = (isG5?env.G5_TOKEN_BUDGET!:env.TENANT_MODEL_BUDGET).getByName(modelBudgetTenantName(tenantId));
   const production=provider.productionProfile;
+  if(isG5){try{if(!production||claims.provider!=='openai'||route!.profileSha256!==await profileDigest(production))return denied();}catch{return denied();}}
+  if(env.G5_CONTROLLED_WINDOW_JSON!==undefined&&!isG5&&claims.provider==='openai')return denied();
   if(claims.provider==='openai'&&!production)return unavailable();
   if(production&&(claims.provider!==production.inferenceProvider||claims.model!==production.model||!env.PRODUCTION_MODEL_BUDGET))return denied();
   if((production||env.G4_CONTROLLED_WINDOW_JSON!==undefined)&&(parsed.inputBoundVersion!=='utf8-provider-payload-plus-4096-v1'||parsed.inputTokenUpperBound<new TextEncoder().encode(JSON.stringify(parsed.payload)).byteLength+4096))return denied();
   const money=production?env.PRODUCTION_MODEL_BUDGET!.getByName(PRODUCTION_MONEY_ACTOR):null;
   let moneyRef:MoneyReference|undefined;
+  let g5CallKey:string|undefined;
   let providerDeadlineAt=parsed.deadlineAt;
   let controlledWindowDeadlineAt:number|undefined;
   let reference: ReturnType<typeof modelCallReference>;
@@ -186,6 +209,14 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
     // Its durable dispatch fence remains untouched until money is authorized.
     const reservation=await budget.reserve(tenantId,reservationRequest);
     reference = modelCallReference(reservation.record);
+    if(isG5){
+      const global=await guard!.reserveTrustedCall({request:reservationRequest,tokenReference:reference,profile:production!});
+      g5CallKey=global.callKey;
+      if(global.windowId!==route!.windowId)throw Error('g5-route-window-conflict');
+      controlledWindowDeadlineAt=positive(global.deadlineAt);
+      providerDeadlineAt=Math.min(providerDeadlineAt,controlledWindowDeadlineAt);
+      if(global.replayed)return conflict('model_call_observe_only');
+    }
     if(money&&production){
       const admission=await money.admit({request:reservationRequest,profile:production});
       if(!admission.accepted){
@@ -193,19 +224,21 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
         return conflict('model_money_admission_denied');
       }
       moneyRef=moneyReference(admission.record);
-      if(!(await money.dispatch(moneyRef)).authorized)return conflict('model_call_observe_only');
+      if(!(await money.dispatch(moneyRef)).authorized){if(isG5)throw Error('g5-money-observe-only');return conflict('model_call_observe_only');}
+      if(isG5){await guard!.bindTrustedMoney(g5CallKey!,moneyRef);const globalDispatch=await guard!.claimTrustedDispatch(g5CallKey!);if(!globalDispatch.authorized)throw Error('g5-global-dispatch-denied');providerDeadlineAt=Math.min(providerDeadlineAt,positive(globalDispatch.deadlineAt));}
     }
     const dispatch = await budget.dispatch(tenantId, reference);
-    controlledWindowDeadlineAt=dispatch.controlledWindowDeadlineAt;
+    if(!isG5)controlledWindowDeadlineAt=dispatch.controlledWindowDeadlineAt;
     if(controlledWindowDeadlineAt!==undefined)providerDeadlineAt=Math.min(providerDeadlineAt,controlledWindowDeadlineAt);
-    if(env.G4_CONTROLLED_WINDOW_JSON!==undefined&&dispatch.controlledWindowDeadlineAt===undefined)throw Error('g4-window-fence-missing');
+    if(!isG5&&env.G4_CONTROLLED_WINDOW_JSON!==undefined&&dispatch.controlledWindowDeadlineAt===undefined)throw Error('g4-window-fence-missing');
     if (!dispatch.authorized) {
+      if(isG5)throw Error('g5-token-dispatch-denied');
       // A previously dispatched token call may have been sent by an older
       // release: only the explicit no-dispatch state proves there is no charge.
       if(money&&moneyRef&&!dispatch.observeOnly&&dispatch.record.dispatchedAt===null)await money.releaseUndispatched(moneyRef,{kind:'token-fence-denied-before-provider',confirmationId:parsed.requestId,tokenReservationId:reference.reservationId,observedAt:positive(now())});
       return conflict(dispatch.observeOnly ? 'model_call_observe_only' : 'model_call_not_dispatched', dispatch.record.status);
     }
-  } catch { if(money&&moneyRef)await money.markUnknown(moneyRef,'outcome-unknown').catch(()=>{});return conflict('model_call_rejected'); }
+  } catch { if(isG5){if(g5CallKey)await guard!.markUnknown(g5CallKey).catch(()=>{});if(reference!)await budget.markUnknown(tenantId,reference).catch(()=>{});}if(money&&moneyRef)await money.markUnknown(moneyRef,'outcome-unknown').catch(()=>{});return conflict('model_call_rejected'); }
 
   let result: ProductModelProviderResult;
   let stage='provider-dispatch',started=now();
@@ -233,9 +266,11 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
       else await money.markUnknown(moneyRef,productionHttpFailure(result.status));
     }
     await budget.finish(tenantId, reference, terminal);
+    if(isG5)await guard!.settleTrustedCall(g5CallKey!);
     emit(telemetry,{event:'budget-finish-result',outcome:'committed',durationMs:now()-started});
   } catch(error) {
     emit(telemetry,{event:'model-call-failure',stage,errorCode:failureCode(error),durationMs:now()-started});
+    if(isG5&&g5CallKey)await guard!.markUnknown(g5CallKey).catch(()=>{});
     if(money&&moneyRef)await money.markUnknown(moneyRef,productionFailure(error)).catch(()=>{});
     await budget.markUnknown(tenantId, reference).catch(() => {});
     return unavailable();

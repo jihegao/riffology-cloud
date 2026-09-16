@@ -25,6 +25,7 @@ export function productModelProvider(env:ModelProxyReleaseEnv,dependencies:{fetc
   if(env.M2_MODEL_PROVIDER==='openai'){
     try{
       if(env.PRODUCTION_MODEL_ENABLED!=='true'||!env.PRODUCTION_MODEL_BUDGET)return null;
+      if(env.G5_CONTROLLED_WINDOW_JSON!==undefined&&(!env.G5_WINDOW_GUARD||!env.G5_TOKEN_BUDGET))return null;
       const profile=productionProfile(JSON.parse(env.PRODUCTION_MODEL_PROFILE_JSON??'null'));
       if(profile.model!==env.M2_MODEL_ID||profile.acceptance.evidenceSha256!==env.PRODUCTION_ACCEPTED_EVIDENCE_SHA256)return null;
       return new OpenAIGatewayResponsesProvider({profile,providerKey:env.PRODUCTION_OPENAI_API_KEY??'',gatewayKey:env.PRODUCTION_AI_GATEWAY_TOKEN??'',...dependencies});
