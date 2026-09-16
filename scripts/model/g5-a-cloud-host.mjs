@@ -44,7 +44,8 @@ export async function loadG5ACloudPrivateManifest(path){
  const binding={windowId,profileSha256,sourceSha256,closedConfigSha256:closed.configSha256,openConfigSha256:open.configSha256},manifest={schemaVersion:1,accountId:text(raw.accountId,'account'),workerName:text(raw.workerName,'worker'),gatewayId:text(raw.gatewayId,'gateway'),windowId,profileSha256,sourceSha256,operatorOrigin,credentialsFile:absolute(base,raw.credentialsFile,'credentials'),closed,open,admissionContract:admissionContract(raw.admissionContract,binding),containerNames:Array.isArray(raw.containerNames)&&raw.containerNames.length>0?[...raw.containerNames]:fail('g5-cloud-container-names-invalid')};
  if(new Set(manifest.containerNames).size!==manifest.containerNames.length||manifest.containerNames.some(value=>typeof value!=='string'||value.length===0))fail('g5-cloud-container-names-invalid');
  const credentials=Object.fromEntries((await privateFile(manifest.credentialsFile,'credentials')).split(/\r?\n/).filter(Boolean).map(line=>{const at=line.indexOf('=');if(at<1)fail('g5-cloud-credentials-invalid');return [line.slice(0,at),line.slice(at+1)];}));
- for(const key of ['CLOUDFLARE_API_TOKEN','G5_OPERATOR_CAPABILITY'])if(typeof credentials[key]!=='string'||credentials[key].length<32)fail(`g5-cloud-${key.toLowerCase()}-missing`);
+ for(const key of ['CLOUDFLARE_API_TOKEN','CLOUDFLARE_AI_GATEWAY_READ_TOKEN','G5_OPERATOR_CAPABILITY'])if(typeof credentials[key]!=='string'||credentials[key].length<32)fail(`g5-cloud-${key.toLowerCase()}-missing`);
+ if(credentials.CLOUDFLARE_AI_GATEWAY_READ_TOKEN===credentials.CLOUDFLARE_API_TOKEN)fail('g5-cloud-ai-gateway-read-token-not-distinct');
  Object.defineProperties(manifest,{[PRIVATE]:{value:true},[CREDENTIALS]:{value:Object.freeze(credentials)}});return Object.freeze(manifest);
 }
 
@@ -87,13 +88,13 @@ export async function workerScriptContentV2Sha256({accountId,workerName,apiToken
 
 function commandCloud(manifest,{runner=(bin,args,options)=>spawnSync(bin,args,options),fetcher=fetch,root=resolve(fileURLToPath(new URL('../..',import.meta.url)))}={}){
  const credentials=manifest[CREDENTIALS],wrangler=resolve(root,'node_modules/.bin/wrangler'),env={...process.env,CLOUDFLARE_API_TOKEN:credentials.CLOUDFLARE_API_TOKEN},run=args=>runner(wrangler,args,{cwd:root,env,encoding:'utf8',timeout:300000,maxBuffer:8*1024*1024}),configArgs=path=>['--config',path,'--name',manifest.workerName];
- const api=async path=>{const response=await fetcher(`https://api.cloudflare.com/client/v4/accounts/${manifest.accountId}${path}`,{headers:{authorization:`Bearer ${credentials.CLOUDFLARE_API_TOKEN}`}});if(!response.ok)fail(`g5-cloud-api-${response.status}`);const body=await response.json();if(body?.success!==true)fail('g5-cloud-api-failed');return body.result;};
+ const gatewayApi=async path=>{const response=await fetcher(`https://api.cloudflare.com/client/v4/accounts/${manifest.accountId}${path}`,{headers:{authorization:`Bearer ${credentials.CLOUDFLARE_AI_GATEWAY_READ_TOKEN}`}});if(!response.ok)fail(`g5-cloud-api-${response.status}`);const body=await response.json();if(body?.success!==true)fail('g5-cloud-api-failed');return body.result;};
  const deployments=()=>json(run(['deployments','status','--json',...configArgs(manifest.closed.configPath)]));
  const version=id=>json(run(['versions','view',id,'--json',...configArgs(manifest.closed.configPath)]));
  return {
   deployments,version,
   async sourceSha256(id){if(!UUID.test(id??''))fail('g5-cloud-source-version-invalid');return workerScriptContentV2Sha256({accountId:manifest.accountId,workerName:manifest.workerName,apiToken:credentials.CLOUDFLARE_API_TOKEN,fetcher});},
-  async gateway(){return api(`/ai-gateway/gateways/${encodeURIComponent(manifest.gatewayId)}`);},
+  async gateway(){return gatewayApi(`/ai-gateway/gateways/${encodeURIComponent(manifest.gatewayId)}`);},
   async containerApps(){return json(run(['containers','list','--json',...configArgs(manifest.closed.configPath)]));},
   async instancePages(appId){const first=json(run(['containers','instances',appId,'--json','--per-page','100',...configArgs(manifest.closed.configPath)]));return [first];},
   async upload(configPath,tag){const before=json(run(['versions','list','--json',...configArgs(configPath)])),prior=new Set((Array.isArray(before)?before:[]).map(row=>row?.id));const uploaded=run(['versions','upload','--tag',tag,...configArgs(configPath)]);if(uploaded?.status!==0)fail('g5-cloud-upload-failed');const after=json(run(['versions','list','--json',...configArgs(configPath)])),matches=(Array.isArray(after)?after:[]).filter(row=>!prior.has(row?.id)&&(row?.annotations?.['workers/tag']===tag||row?.tag===tag));if(matches.length!==1||!UUID.test(matches[0]?.id??''))fail('g5-cloud-upload-version-invalid');return {versionId:matches[0].id};},
