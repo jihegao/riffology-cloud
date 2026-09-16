@@ -79,7 +79,9 @@ export class ProductionMoneyLedger {
     const result=this.#storage.transactionSync(()=>{const record=this.#reference(reference);if(record.state!=='reserved')return {authorized:false,record};if(this.#storage.sql.exec('SELECT 1 FROM production_money_turn_closures WHERE turn_key=?',record.turnKey).toArray().length)return {authorized:false,record};this.#admit();if(record.profileSha256!==this.#policy.profileSha256)throw Error('production-money-route-changed');if(record.request.deadlineAt<=this.#now())throw Error('production-money-deadline');record.state='dispatched';record.updatedAt=this.#now();this.#save(record);return {authorized:true,record};});await this.#storage.sync();return result;
   }
   async markUnknown(reference:MoneyReference,category:string):Promise<MoneyRecord>{
-    const record=this.#storage.transactionSync(()=>{const r=this.#reference(reference);if(r.state==='dispatched'||r.state==='unknown'){r.state='unknown';r.errorCategory=id(category);r.updatedAt=this.#now();this.#save(r);}return r;});await this.#storage.sync();return record;
+    // A later settlement/transport catch may only know `outcome-unknown`; keep
+    // the first parser or provider classification that was already observed.
+    const record=this.#storage.transactionSync(()=>{const r=this.#reference(reference);if(r.state==='dispatched'||r.state==='unknown'){const normalized=id(category);r.state='unknown';if(r.errorCategory===null||r.errorCategory==='outcome-unknown'&&normalized!=='outcome-unknown')r.errorCategory=normalized;r.updatedAt=this.#now();this.#save(r);}return r;});await this.#storage.sync();return record;
   }
   async finish(reference:MoneyReference,terminal:NonNullable<MoneyRecord['terminal']>):Promise<MoneyRecord>{
     if(terminal.evidence!=='provider-usage-conservative-price'||typeof terminal.providerRequestId!=='string'||!/^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(terminal.providerRequestId))throw Error('invalid-production-money-evidence');
