@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-16T08:55:01.886Z",
+  "probe": {
+    "worker": "riffology-g5-isolated-probe-20260916",
+    "route": "dedicated-workers-dev-route",
+    "versionId": "e32f8d7e-1f1c-46d6-9cf5-92062f41c68a",
+    "gitCommit": "7810a2f",
+    "module": {
+      "name": "index.js",
+      "bytes": 8696,
+      "sha256": "e4b09c57d7b110ae886b1c11a4bdf819122dd8db3d46e1edecdc85d85a4eb0a1"
+    },
+    "compatibilityDate": "2026-09-16",
+    "compatibilityFlags": [
+      "global_fetch_strictly_public"
+    ],
+    "bindings": [
+      {
+        "name": "G5_PROBE_OPERATOR_CAPABILITY",
+        "type": "secret_text"
+      },
+      {
+        "name": "PRODUCTION_AI_GATEWAY_TOKEN",
+        "type": "secret_text"
+      },
+      {
+        "name": "PRODUCTION_OPENAI_API_KEY",
+        "type": "secret_text"
+      }
+    ],
+    "unauthorizedChecks": {
+      "wrongMethodStatus": 404,
+      "queryStatus": 404
+    },
+    "result": {
+      "observedAt": "2026-09-16T08:55:01.886Z",
+      "worker": "riffology-g5-isolated-probe-20260916",
+      "version": "g5-isolated-probe-v1",
+      "gateway": "riffology-g5-probe-20260916",
+      "model": "gpt-5.6-luna",
+      "colo": "SJC",
+      "status": 200,
+      "state": "model-available",
+      "errorCode": null,
+      "modelAvailable": true,
+      "inferenceCalls": 0
+    }
+  },
+  "gateway": {
+    "id": "riffology-g5-probe-20260916",
+    "authentication": true,
+    "byokOnly": true,
+    "zdr": true,
+    "collectLogs": false,
+    "logpush": false,
+    "cacheTtl": 0,
+    "retryMaxAttempts": 1,
+    "retryDelay": 0,
+    "retryBackoff": "constant",
+    "rateLimit": {
+      "limit": 32,
+      "intervalSeconds": 60,
+      "technique": "fixed"
+    },
+    "runToken": "existing-authorized-token-reused-not-gateway-scoped"
+  },
+  "scope": {
+    "paidInference": false,
+    "inferenceCalls": 0,
+    "newTasksStarted": 0,
+    "projectTurnRunAdmissions": 0,
+    "syntheticDataOnly": true
+  },
+  "mainWorker": {
+    "versionId": "75d4b354-0943-4278-961f-b07738752106",
+    "gates": {
+      "G5_ADMISSION_ENABLED": false,
+      "M2_MODEL_PROVIDER_ENABLED": false,
+      "M2_TURNS_ENABLED": false,
+      "M3_SERVICE_ENABLED": false,
+      "M4_SIMULATION_ENABLED": false,
+      "PRODUCTION_MODEL_ENABLED": false
+    },
+    "newBudgetNamespaceObjectCounts": {
+      "G5_WINDOW_GUARD": 0,
+      "G5_TOKEN_BUDGET": 0,
+      "PRODUCTION_MODEL_BUDGET": 0
+    },
+    "catalogProjectBudgetRouteCount": 0,
+    "windowClockStarted": false
+  },
+  "preparedEgressOverlays": {
+    "bundleSha256": "ba7f989e7cf0de7ae16e67314e0875c79650b7235ebbc9887d4d617b190a1b03",
+    "changes": [
+      "pin prebuilt frozen bundle with no_bundle",
+      "add global_fetch_strictly_public"
+    ],
+    "A": {
+      "sha256": "fe8f099913bc0ffc1100398223fa8c72318e61b583213e148277802ed6ea4f86"
+    },
+    "B": {
+      "sha256": "80e8914adb76c9af059e27a79832d62a7a20485756d57b247196a1b604b1bdbe"
+    },
+    "BCold": {
+      "sha256": "cd3c88e2ca250eaed60f813e73ec5f921491f9d780f8526fd62f7757b9ab0ee0"
+    },
+    "deployed": false
+  },
+  "cleanup": {
+    "workerDeleted": true,
+    "workerAbsenceCode": 10007,
+    "gatewayDeleted": true,
+    "gatewayAbsenceCode": 7002,
+    "routeAfterDeleteStatus": 404,
+    "localUploadSecretFilesRemoved": 2,
+    "existingRunTokenUnchanged": true
+  },
+  "conclusion": "Isolated Worker origin and independent authenticated Gateway listed gpt-5.6-luna with zero inference. This is G5 channel readiness evidence, not Responses or paid acceptance."
+}

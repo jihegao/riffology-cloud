@@ -1,5 +1,7 @@
 # G5 新窗口范围与预算冻结（2026-09-16）
 
+独立 Worker / Gateway 探针已返回models 200并识别Luna，随后完成云端清理；三个只增加Worker公网出口flag且固定原bundle的A/B/B-cold候选overlay已生成但未部署。详情见[隔离出口准备证明](g5-isolated-probe-readiness-20260916.md)。主Worker门禁、预算和首次admission时钟未变，正式运行仍需新的closed-gate release proof。
+
 最新 staging 出口只读诊断与恢复版本见[Worker 诊断记录](g5-worker-origin-probe-20260916.md)：Gateway models 返回200且包含 `gpt-5.6-luna`，地区403未在 Worker 出口复现；这不是 Responses 推理验收。恢复冻结代码、全部关闭门禁及原预算后，G5 付费验收继续暂停，正式运行前须冻结 Worker 出口兼容配置的新 release proof。
 
 授权依据：用户要求“完成生产接线及新窗口范围、预算冻结”。冻结既有 G5-A/B 具体提案，生产接线以关闭门禁发布；本轮不接纳付费模型任务、Project 或 Simulation/Service Run。G6、G4 剩余补测、推送/合并和 issue 关闭不在此范围。
