@@ -107,7 +107,18 @@
     },
     "catalogProjectBudgetRouteCount": 0,
     "publicRootStatus": 200,
-    "windowClockStarted": false
+    "windowClockStarted": false,
+    "deployment": {
+      "id": "4d5d6d09-7d2c-42f5-aca8-bd62a12f8c60",
+      "createdOn": "2026-09-16T08:58:55.328828Z",
+      "percentage": 100
+    },
+    "containerInventory": {
+      "observedAt": "2026-09-16T09:01:30.104Z",
+      "total": 259,
+      "nonInactive": 0,
+      "paginationComplete": true
+    }
   },
   "preparedEgressOverlays": {
     "bundleSha256": "ba7f989e7cf0de7ae16e67314e0875c79650b7235ebbc9887d4d617b190a1b03",
@@ -130,7 +141,8 @@
       "B": "not-deployed",
       "BCold": "not-deployed"
     },
-    "deployedClosedGateVersion": "d72c0145-5124-415d-87bd-6aa82d82d4f8"
+    "deployedClosedGateVersion": "d72c0145-5124-415d-87bd-6aa82d82d4f8",
+    "closedGateAReleaseProofComplete": true
   },
   "cleanup": {
     "workerDeleted": true,
@@ -141,5 +153,22 @@
     "localUploadSecretFilesRemoved": 2,
     "existingRunTokenUnchanged": true
   },
-  "conclusion": "Isolated Worker origin and independent authenticated Gateway listed gpt-5.6-luna with zero inference. The main Worker now has the frozen bundle plus the outbound compatibility flag under closed gates. Responses and paid acceptance remain unverified."
+  "conclusion": "Isolated Worker origin and independent authenticated Gateway listed gpt-5.6-luna with zero inference. The main Worker now has the frozen bundle plus the outbound compatibility flag under closed gates. Responses and paid acceptance remain unverified.",
+  "productionGateway": {
+    "id": "riffology-g5-20260916",
+    "authentication": true,
+    "byokOnly": true,
+    "zdr": false,
+    "collectLogs": false,
+    "cacheTtl": 0,
+    "logpush": false,
+    "retryMaxAttempts": 1,
+    "retryDelay": 0,
+    "retryBackoff": "constant",
+    "rateLimit": {
+      "limit": 32,
+      "intervalSeconds": 60,
+      "technique": "fixed"
+    }
+  }
 }
