@@ -15,7 +15,7 @@ export function createG5OperatorHandler(){return {async fetch(request:Request,en
   const url=new URL(request.url);if(request.method!=='POST'||url.pathname!=='/operate'||url.search||url.hash)return fail(404,'not-found');
   if(!validSecret(env.G5_OPERATOR_CAPABILITY))return fail(503,'operator-unconfigured');
   const auth=request.headers.get('authorization');if(!auth?.startsWith('Bearer ')||!await sameSecret(auth.slice(7),env.G5_OPERATOR_CAPABILITY))return fail(404,'not-found');
-  const input=await body(request) as Record<string,unknown>;const action=input?.action;if(!['snapshot','inspectAdmissionContract','inspectTask','inspectFixtureTask','inspectFixtureTerminal','snapshotReadonlyCounters','beginReadonlyReadSession','attestReadonlyInterval','inspectRun','inspectFinal','close'].includes(String(action)))return fail(400,'input-invalid');const keys=['action','windowId',...(action==='close'?['expectedSnapshotSha256','confirmation']:['snapshot','inspectAdmissionContract'].includes(String(action))?[]:['payload'])];if(!exact(input,keys))return fail(400,'input-invalid');
+  const input=await body(request) as Record<string,unknown>;const action=input?.action;if(!['snapshot','inspectAdmissionContract','inspectTask','inspectFixtureTask','inspectFixtureTerminal','snapshotReadonlyCounters','beginReadonlyReadSession','attestReadonlyInterval','consumeReadonlyReopenGrant','inspectRun','inspectFinal','close'].includes(String(action)))return fail(400,'input-invalid');const keys=['action','windowId',...(action==='close'?['expectedSnapshotSha256','confirmation']:['snapshot','inspectAdmissionContract'].includes(String(action))?[]:['payload'])];if(!exact(input,keys))return fail(400,'input-invalid');
   if(typeof input.windowId!=='string'||!/^[A-Za-z0-9][A-Za-z0-9._:-]{0,149}$/.test(input.windowId))return fail(400,'window-invalid');
   const guard=env.G5_WINDOW_GUARD.getByName(G5_GLOBAL_ACTOR),summary=await guard.operatorSnapshot(),snapshotSha256=await digest(summary);
   if(summary.windowId!==input.windowId)return fail(409,'window-conflict');
@@ -27,6 +27,7 @@ export function createG5OperatorHandler(){return {async fetch(request:Request,en
   if(input.action==='snapshotReadonlyCounters')return json({ok:true,value:await (guard as any).snapshotReadonlyCounters(input.payload)});
   if(input.action==='beginReadonlyReadSession')return json({ok:true,value:await (guard as any).beginReadonlyReadSession(input.payload)});
   if(input.action==='attestReadonlyInterval')return json({ok:true,value:await (guard as any).attestReadonlyInterval(input.payload)});
+  if(input.action==='consumeReadonlyReopenGrant')return json({ok:true,value:await (guard as any).consumeReadonlyReopenGrant(input.payload)});
   if(input.action==='inspectRun')return json({ok:true,value:await guard.inspectRun(input.payload as Parameters<G5ControlledWindow['inspectRun']>[0])});
   if(input.action==='inspectFinal')return json({ok:true,value:await guard.inspectFinal(input.payload as Parameters<G5ControlledWindow['inspectFinal']>[0])});
   if(input.action!=='close'||request.headers.get('x-g5-mutation')!=='close-admission'||input.confirmation!=='close-existing-window'||typeof input.expectedSnapshotSha256!=='string'||input.expectedSnapshotSha256!==snapshotSha256)return fail(409,'close-precondition-failed');
