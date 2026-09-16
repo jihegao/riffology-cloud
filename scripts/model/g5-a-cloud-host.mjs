@@ -4,6 +4,7 @@ import {spawnSync} from 'node:child_process';
 import {dirname,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {runG5ASerialHost} from './g5-a-live-driver.mjs';
+import {createG5OperatorHttpAuthority} from './g5-a-operator-control.mjs';
 
 const SHA=/^[a-f0-9]{64}$/;
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
@@ -27,12 +28,18 @@ async function validateCandidate(value,name,base){
  const artifactSha256=hash(await privateFile(configPath,`${name}-config`));if(value.artifactSha256!==artifactSha256)fail(`g5-cloud-${name}-artifact-sha-conflict`);
  return {configPath,normalized,configSha256,artifactSha256};
 }
+function admissionContract(raw,binding){
+ const keys=['schemaVersion','windowId','normalTasks','maximumTasks','groupIntentTasks','groupIntentAdmission','receiptSha256'];
+ if(!object(raw)||Object.keys(raw).sort().join()!==keys.sort().join()||raw.schemaVersion!==1||raw.windowId!==binding.windowId||raw.normalTasks!==63||raw.maximumTasks!==66||raw.groupIntentTasks!==3||raw.groupIntentAdmission!=='guard-task')fail('g5-cloud-admission-contract-invalid');
+ const receiptSha256=hash({...raw,receiptSha256:undefined,...binding});if(raw.receiptSha256!==receiptSha256)fail('g5-cloud-admission-contract-sha-conflict');return Object.freeze(clone(raw));
+}
 
 /** Loads the only mutation authority. The manifest and referenced credentials/configs must be private files. */
 export async function loadG5ACloudPrivateManifest(path){
  const manifestPath=resolve(path),raw=JSON.parse(await privateFile(manifestPath,'manifest')),base=dirname(manifestPath);
  if(raw?.schemaVersion!==1)fail('g5-cloud-manifest-schema-invalid');
- const manifest={schemaVersion:1,accountId:text(raw.accountId,'account'),workerName:text(raw.workerName,'worker'),gatewayId:text(raw.gatewayId,'gateway'),windowId:text(raw.windowId,'window'),profileSha256:sha(raw.profileSha256,'profile-sha256'),sourceSha256:sha(raw.sourceSha256,'source-sha256'),operatorUrl:new URL(text(raw.operatorUrl,'operator-url')).href,authorityUrl:new URL(text(raw.authorityUrl,'authority-url')).href,credentialsFile:absolute(base,raw.credentialsFile,'credentials'),closed:await validateCandidate(raw.closed,'closed',base),open:await validateCandidate(raw.open,'open',base),containerNames:Array.isArray(raw.containerNames)&&raw.containerNames.length>0?[...raw.containerNames]:fail('g5-cloud-container-names-invalid')};
+ const closed=await validateCandidate(raw.closed,'closed',base),open=await validateCandidate(raw.open,'open',base),windowId=text(raw.windowId,'window'),profileSha256=sha(raw.profileSha256,'profile-sha256'),sourceSha256=sha(raw.sourceSha256,'source-sha256'),operatorOrigin=new URL(text(raw.operatorOrigin,'operator-origin')).origin;
+ const binding={windowId,profileSha256,sourceSha256,closedConfigSha256:closed.configSha256,openConfigSha256:open.configSha256},manifest={schemaVersion:1,accountId:text(raw.accountId,'account'),workerName:text(raw.workerName,'worker'),gatewayId:text(raw.gatewayId,'gateway'),windowId,profileSha256,sourceSha256,operatorOrigin,credentialsFile:absolute(base,raw.credentialsFile,'credentials'),closed,open,admissionContract:admissionContract(raw.admissionContract,binding),containerNames:Array.isArray(raw.containerNames)&&raw.containerNames.length>0?[...raw.containerNames]:fail('g5-cloud-container-names-invalid')};
  if(new Set(manifest.containerNames).size!==manifest.containerNames.length||manifest.containerNames.some(value=>typeof value!=='string'||value.length===0))fail('g5-cloud-container-names-invalid');
  const credentials=Object.fromEntries((await privateFile(manifest.credentialsFile,'credentials')).split(/\r?\n/).filter(Boolean).map(line=>{const at=line.indexOf('=');if(at<1)fail('g5-cloud-credentials-invalid');return [line.slice(0,at),line.slice(at+1)];}));
  for(const key of ['CLOUDFLARE_API_TOKEN','G5_OPERATOR_CAPABILITY'])if(typeof credentials[key]!=='string'||credentials[key].length<32)fail(`g5-cloud-${key.toLowerCase()}-missing`);
@@ -57,6 +64,13 @@ function candidateMatches(candidate,version){
  return true;
 }
 
+export function workerMainModuleSha256(contentType,bytes){
+ const body=Buffer.from(bytes),match=/^multipart\/form-data;\s*boundary=(?:"([^"]+)"|([^;\s]+))/i.exec(contentType??'');if(!match)return hash(body);
+ const boundary=Buffer.from(`--${match[1]??match[2]}`),parts=new Map();let cursor=0;
+ while((cursor=body.indexOf(boundary,cursor))!==-1){cursor+=boundary.length;if(body.subarray(cursor,cursor+2).equals(Buffer.from('--')))break;if(body.subarray(cursor,cursor+2).equals(Buffer.from('\r\n')))cursor+=2;const split=body.indexOf(Buffer.from('\r\n\r\n'),cursor);if(split<0)fail('g5-cloud-source-multipart-invalid');const headers=body.subarray(cursor,split).toString('utf8'),name=/content-disposition:[^\r\n]*\bname="([^"]+)"/i.exec(headers)?.[1];let end=body.indexOf(boundary,split+4);if(end<0||!name)fail('g5-cloud-source-multipart-invalid');end-=2;parts.set(name,body.subarray(split+4,end));cursor=end+2;}
+ let metadata;try{metadata=JSON.parse(parts.get('metadata')?.toString('utf8')??'');}catch{fail('g5-cloud-source-metadata-invalid');}const main=metadata?.main_module??metadata?.body_part;if(typeof main!=='string'||!parts.has(main))fail('g5-cloud-source-main-module-missing');return hash(parts.get(main));
+}
+
 function commandCloud(manifest,{runner=(bin,args,options)=>spawnSync(bin,args,options),fetcher=fetch,root=resolve(fileURLToPath(new URL('../..',import.meta.url)))}={}){
  const credentials=manifest[CREDENTIALS],wrangler=resolve(root,'node_modules/.bin/wrangler'),env={...process.env,CLOUDFLARE_API_TOKEN:credentials.CLOUDFLARE_API_TOKEN},run=args=>runner(wrangler,args,{cwd:root,env,encoding:'utf8',timeout:300000,maxBuffer:8*1024*1024}),configArgs=path=>['--config',path,'--name',manifest.workerName];
  const api=async path=>{const response=await fetcher(`https://api.cloudflare.com/client/v4/accounts/${manifest.accountId}${path}`,{headers:{authorization:`Bearer ${credentials.CLOUDFLARE_API_TOKEN}`}});if(!response.ok)fail(`g5-cloud-api-${response.status}`);const body=await response.json();if(body?.success!==true)fail('g5-cloud-api-failed');return body.result;};
@@ -64,7 +78,7 @@ function commandCloud(manifest,{runner=(bin,args,options)=>spawnSync(bin,args,op
  const version=id=>json(run(['versions','view',id,'--json',...configArgs(manifest.closed.configPath)]));
  return {
   deployments,version,
-  async sourceSha256(id){const response=await fetcher(`https://api.cloudflare.com/client/v4/accounts/${manifest.accountId}/workers/scripts/${manifest.workerName}/versions/${id}/content`,{headers:{authorization:`Bearer ${credentials.CLOUDFLARE_API_TOKEN}`}});if(!response.ok)fail(`g5-cloud-source-${response.status}`);return hash(Buffer.from(await response.arrayBuffer()));},
+  async sourceSha256(id){const response=await fetcher(`https://api.cloudflare.com/client/v4/accounts/${manifest.accountId}/workers/scripts/${manifest.workerName}/versions/${id}/content`,{headers:{authorization:`Bearer ${credentials.CLOUDFLARE_API_TOKEN}`}});if(!response.ok)fail(`g5-cloud-source-${response.status}`);return workerMainModuleSha256(response.headers.get('content-type'),Buffer.from(await response.arrayBuffer()));},
   async gateway(){return api(`/ai-gateway/gateways/${encodeURIComponent(manifest.gatewayId)}`);},
   async containerApps(){return json(run(['containers','list','--json',...configArgs(manifest.closed.configPath)]));},
   async instancePages(appId){const first=json(run(['containers','instances',appId,'--json','--per-page','100',...configArgs(manifest.closed.configPath)]));return [first];},
@@ -73,44 +87,20 @@ function commandCloud(manifest,{runner=(bin,args,options)=>spawnSync(bin,args,op
  };
 }
 
-function bearer(manifest){return `Bearer ${manifest[CREDENTIALS].G5_OPERATOR_CAPABILITY}`;}
-async function postJson(url,token,body,fetcher,extraHeaders={}){const response=await fetcher(url,{method:'POST',redirect:'error',headers:{authorization:token,'content-type':'application/json',accept:'application/json',...extraHeaders},body:JSON.stringify(body)});let value;try{value=await response.json();}catch{fail('g5-cloud-private-response-invalid');}if(!response.ok||value?.ok!==true)fail('g5-cloud-private-request-failed');return value;}
-
-export function createG5OperatorHttpAdapter(manifest,{fetcher=fetch}={}){
- if(manifest?.[PRIVATE]!==true)fail('g5-cloud-private-manifest-required');
- let last=null;return {
-  async snapshot(){last=await postJson(manifest.operatorUrl,bearer(manifest),{action:'snapshot',windowId:manifest.windowId},fetcher);return last;},
-  async closeAdmission(){const before=last??await this.snapshot();const value=await postJson(manifest.operatorUrl,bearer(manifest),{action:'close',windowId:manifest.windowId,expectedSnapshotSha256:before.snapshotSha256,confirmation:'close-existing-window'},fetcher,{'x-g5-mutation':'close-admission'});last=null;return {closed:value.closed===true,windowId:value.windowId};},
- };
-}
-
-/** Adapter for a separately reviewed, capability-protected authority Worker. It never returns the capability. */
-export function createG5AuthorityHttpAdapter(manifest,{fetcher=fetch}={}){
- if(manifest?.[PRIVATE]!==true)fail('g5-cloud-private-manifest-required');
- const invoke=async(action,payload={})=>{const value=await postJson(manifest.authorityUrl,bearer(manifest),{action,windowId:manifest.windowId,payload},fetcher);if(value.windowId!==manifest.windowId||!object(value.result))fail('g5-cloud-authority-binding-conflict');return value.result;};
- return {inspectState:()=>invoke('state'),inspectAdmissionContract:payload=>invoke('admission-contract',payload),inspectTask:payload=>invoke('task',payload),inspectRun:payload=>invoke('run',payload),inspectFinal:payload=>invoke('final',payload),prepareProbe:payload=>invoke('prepare-probe',payload),inspectProbe:payload=>invoke('probe',payload)};
-}
-
-function guardState(value){const s=value?.summary;if(value?.ok!==true||s?.authority!=='g5-window-guard-only'||s.completeLedgers!==false||!object(s.counts)||!object(s.money))fail('g5-cloud-guard-summary-invalid');return {windowId:s.windowId,startedAt:s.startedAt,closed:s.closed,tasks:s.counts.tasks,dispatches:s.counts.dispatches,simulationRuns:s.counts.simulationRuns,serviceRuns:s.counts.serviceRuns,guardUnknown:s.counts.guardUnknown,guardPending:s.counts.guardPending+s.counts.openTurns,totalNanodollars:s.money.guardAccountedNanodollars,maxTurnNanodollars:s.money.guardMaxTurnNanodollars};}
-function completeState(guard,ledger){
- const names=['tokenUnknown','tokenPending','moneyUnknown','moneyPending','toolUnknown','toolPending'];
- if(ledger?.schemaVersion!==1||ledger.windowId!==guard.windowId||ledger.completeLedgers!==true||names.some(name=>!Number.isSafeInteger(ledger[name])||ledger[name]<0))fail('g5-cloud-ledger-state-incomplete');
- for(const key of ['tasks','dispatches','simulationRuns','serviceRuns','startedAt','closed'])if(JSON.stringify(ledger[key])!==JSON.stringify(guard[key]))fail(`g5-cloud-state-${key}-conflict`);
- return {...guard,...Object.fromEntries(names.map(name=>[name,ledger[name]]))};
-}
+export function createG5CloudOperatorAuthority(manifest,{fetcher=fetch}={}){if(manifest?.[PRIVATE]!==true)fail('g5-cloud-private-manifest-required');const remote=createG5OperatorHttpAuthority({operatorOrigin:manifest.operatorOrigin,capability:manifest[CREDENTIALS].G5_OPERATOR_CAPABILITY,windowId:manifest.windowId,fetcher});return {...remote,inspectAdmissionContract:async input=>{if(input?.windowId!==manifest.windowId)fail('g5-cloud-admission-window-conflict');return clone(manifest.admissionContract);}};}
 
 async function inspectCloud(manifest,cloud){const deployment=activeDeployment(await cloud.deployments()),version=await cloud.version(deployment.versionId),sourceSha256=await cloud.sourceSha256(deployment.versionId);return {...deployment,version,sourceSha256};}
 function selectConfig(manifest,version){const candidates=[manifest.closed,manifest.open].filter(candidate=>candidateMatches(candidate,version));if(candidates.length!==1)fail('g5-cloud-active-config-ambiguous');return candidates[0];}
 
 /** Cloudflare control ports for runG5ASerialHost. The default mode is observational. */
-export function createG5ACloudControlPorts(manifest,{execute=false,cloud,operator,authority,runner,fetcher,root}={}){
- if(manifest?.[PRIVATE]!==true)fail('g5-cloud-private-manifest-required');cloud??=commandCloud(manifest,{runner,fetcher,root});operator??=createG5OperatorHttpAdapter(manifest,{fetcher});authority??=createG5AuthorityHttpAdapter(manifest,{fetcher});
+export function createG5ACloudControlPorts(manifest,{execute=false,cloud,authority,runner,fetcher,root}={}){
+ if(manifest?.[PRIVATE]!==true)fail('g5-cloud-private-manifest-required');cloud??=commandCloud(manifest,{runner,fetcher,root});authority??=createG5CloudOperatorAuthority(manifest,{fetcher});
  const readConfig=async()=>{const observed=await inspectCloud(manifest,cloud);if(observed.sourceSha256!==manifest.sourceSha256)fail('g5-cloud-source-conflict');return clone(selectConfig(manifest,observed.version).normalized);};
  return {
   readConfig,
   async deployExact(config){if(execute!==true)fail('g5-cloud-execute-required');const expected=hash(config),candidate=[manifest.closed,manifest.open].find(value=>value.configSha256===expected&&JSON.stringify(value.normalized)===JSON.stringify(config));if(!candidate)fail('g5-cloud-unapproved-config');if(hash(await privateFile(candidate.configPath,'deploy-config'))!==candidate.artifactSha256)fail('g5-cloud-deploy-artifact-drift');const tag=`g5-${expected.slice(0,24)}`,uploaded=await cloud.upload(candidate.configPath,tag);await cloud.deploy(uploaded.versionId);const observed=await inspectCloud(manifest,cloud),active=selectConfig(manifest,observed.version);if(observed.versionId!==uploaded.versionId||active.configSha256!==expected||observed.sourceSha256!==manifest.sourceSha256)fail('g5-cloud-deploy-readback-conflict');return {status:'confirmed',sha256:expected,versionId:observed.versionId,deploymentId:observed.deploymentId,evidenceSha256:hash({expected,artifactSha256:candidate.artifactSha256,tag,versionId:observed.versionId,deploymentId:observed.deploymentId,sourceSha256:observed.sourceSha256})};},
-  async readState(){return completeState(guardState(await operator.snapshot()),await authority.inspectState());},
-  closeAdmission:async windowId=>{if(execute!==true)fail('g5-cloud-execute-required');if(windowId!==manifest.windowId)fail('g5-cloud-close-window-conflict');return operator.closeAdmission();},
+  async readState(){return authority.readState();},
+  closeAdmission:async windowId=>{if(execute!==true)fail('g5-cloud-execute-required');if(windowId!==manifest.windowId)fail('g5-cloud-close-window-conflict');const value=await authority.closeAdmission({windowId,reason:'g5-a-host-stop'});return {closed:value.closed===true,windowId:value.windowId};},
  };
 }
 
@@ -121,15 +111,15 @@ export function createG5AReleasePreflight(manifest,{cloud,controlPorts,runner,fe
  return async()=>{const observed=await inspectCloud(manifest,cloud),candidate=selectConfig(manifest,observed.version),vars=versionVars(observed.version);if(observed.sourceSha256!==manifest.sourceSha256||candidate.configSha256!==manifest.closed.configSha256&&candidate.configSha256!==manifest.open.configSha256)fail('g5-cloud-release-source-config-conflict');if(vars.G5_WINDOW_ID!==undefined&&vars.G5_WINDOW_ID!==manifest.windowId)fail('g5-cloud-release-window-conflict');if(vars.PRODUCTION_MODEL_PROFILE_SHA256!==undefined&&vars.PRODUCTION_MODEL_PROFILE_SHA256!==manifest.profileSha256)fail('g5-cloud-release-profile-conflict');if(GATES.some(name=>!['true','false'].includes(vars[name])))fail('g5-cloud-release-gates-invalid');const gateway=await cloud.gateway();if(gateway?.id!==manifest.gatewayId||gateway?.authentication!==true||gateway?.collect_logs!==false||gateway?.cache_invalidate_on_update!==false&&gateway?.cache_ttl!==0)fail('g5-cloud-gateway-policy-conflict');const apps=await cloud.containerApps();if(!Array.isArray(apps)||apps.length!==manifest.containerNames.length||manifest.containerNames.some(name=>apps.filter(app=>app?.name===name).length!==1))fail('g5-cloud-container-app-conflict');const inventory=await pagesComplete(cloud,apps);if(inventory.nonInactive!==0)fail('g5-cloud-container-not-quiescent');const state=controlPorts?await controlPorts.readState():null;if(state&&(state.windowId!==manifest.windowId||state.closed||state.startedAt!==null||state.tasks!==0||state.dispatches!==0||Object.entries(state).some(([key,value])=>/(Unknown|Pending)$/.test(key)&&value!==0)))fail('g5-cloud-window-not-pristine');return {schemaVersion:1,windowId:manifest.windowId,profileSha256:manifest.profileSha256,sourceSha256:manifest.sourceSha256,versionId:observed.versionId,deploymentId:observed.deploymentId,configSha256:candidate.configSha256,gatewayId:manifest.gatewayId,containerInstances:inventory.total,evidenceSha256:hash({versionId:observed.versionId,deploymentId:observed.deploymentId,configSha256:candidate.configSha256,sourceSha256:observed.sourceSha256,gatewayId:manifest.gatewayId,inventory})};};
 }
 
-export async function assembleG5ACloudAdapters({manifestPath,execute=false,cloud,operator,authority,runner,fetcher,root}={}){
- const manifest=await loadG5ACloudPrivateManifest(manifestPath),authorityAdapter=authority??createG5AuthorityHttpAdapter(manifest,{fetcher}),operatorAdapter=operator??createG5OperatorHttpAdapter(manifest,{fetcher}),controlPorts=createG5ACloudControlPorts(manifest,{execute,cloud,operator:operatorAdapter,authority:authorityAdapter,runner,fetcher,root}),releasePreflight=createG5AReleasePreflight(manifest,{cloud,controlPorts,runner,fetcher,root});
- return Object.freeze({manifest,authority:authorityAdapter,operator:operatorAdapter,controlPorts,releasePreflight});
+export async function assembleG5ACloudAdapters({manifestPath,execute=false,cloud,authority,runner,fetcher,root}={}){
+ const manifest=await loadG5ACloudPrivateManifest(manifestPath),authorityAdapter=authority??createG5CloudOperatorAuthority(manifest,{fetcher}),controlPorts=createG5ACloudControlPorts(manifest,{execute,cloud,authority:authorityAdapter,runner,fetcher,root}),releasePreflight=createG5AReleasePreflight(manifest,{cloud,controlPorts,runner,fetcher,root});
+ return Object.freeze({manifest,authority:authorityAdapter,controlPorts,releasePreflight});
 }
 
 /** Final assembly seam: the CDP identity receipt is consumed without exposing its browser cookies. */
-export async function runG5ACloudSerialHost({plan,driver,cdp,manifestPath,adapters=null,execute=false,runProbes=false,cloud,operator,authority,runner,fetcher,root,...hostOptions}={}){
+export async function runG5ACloudSerialHost({plan,driver,cdp,manifestPath,adapters=null,execute=false,runProbes=false,cloud,authority,runner,fetcher,root,...hostOptions}={}){
  if(execute!==true)return runG5ASerialHost({plan,driver,execute:false,identityPreflight:cdp?.identityProof});
- const wired=adapters??await assembleG5ACloudAdapters({manifestPath,execute:true,cloud,operator,authority,runner,fetcher,root});
+ const wired=adapters??await assembleG5ACloudAdapters({manifestPath,execute:true,cloud,authority,runner,fetcher,root});
  if(driver?.authority!==wired.authority||driver?.runner?.cdp!==cdp)fail('g5-cloud-driver-adapter-conflict');driver.runner.releasePreflight=wired.releasePreflight;
  if(!driver.schedule)await driver.init();return runG5ASerialHost({plan,driver,controlPorts:wired.controlPorts,identityPreflight:cdp.identityProof,execute:true,runProbes,...hostOptions});
 }
