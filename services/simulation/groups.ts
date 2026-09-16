@@ -14,6 +14,11 @@ export type ExperimentGroupRecord={schemaVersion:1;groupId:string;scope:TurnScop
 export type GroupRun={evidenceRejection?:{assessmentId:string;scope:'run'|'model';reason:string};runId:string;configurationId:string;seed:number;status:SimulationRecord['status']|'pending';errorCode:string|null;result:SimulationRecord['result'];released:boolean};
 export type GroupMetric={count:number;missing:number;mean:number|null;baselineMean:number|null;delta:number|null;errorCode:null|'simulation-metric-overflow'};
 export type ExperimentGroupView={groupId:string;version:ReturnType<typeof modelVersion>;hypothesis:string;configurations:GroupConfiguration[];seeds:number[];repetitions:number;metrics:Record<string,MetricDefinition>;status:GroupStatus;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null;stale:boolean;progress:{rejected:number;total:number;pending:number;active:number;completed:number;failed:number;cancelled:number};runs:GroupRun[];summary:Array<{configurationId:string;metrics:Record<string,GroupMetric>}>};
+export function g5TerminalGroupAuthority(runs:Pick<SimulationRecord,'runId'|'status'|'released'|'releaseProof'>[],groups:Pick<ExperimentGroupRecord,'groupId'|'status'|'children'>[]){
+ const runIds=new Set<string>();for(const run of runs){if(runIds.has(run.runId)||run.status!=='completed'||run.released!==true||run.releaseProof===null)throw Error('g5-window-simulation-authority-conflict');runIds.add(run.runId);}
+ const groupIds=new Set<string>();for(const group of groups){if(groupIds.has(group.groupId)||group.status!=='completed'||group.children.length<1||group.children.some(child=>!runIds.has(child.runId)))throw Error('g5-window-group-authority-incomplete');groupIds.add(group.groupId);}
+ return {runIds:[...runIds].sort(),groupIds:[...groupIds].sort()};
+}
 const FINAL=new Set(['completed','failed','cancelled']);
 function invalid():never{throw Error('simulation-input-invalid');}
 function object(raw:unknown,keys:string[]):Record<string,unknown>{

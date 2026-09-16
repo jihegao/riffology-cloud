@@ -23,7 +23,7 @@ import {researchSnapshot,buildResearchExport} from '../research/export.ts';
 import {EvidenceLedger,evidenceGroup,assessmentForRun,evidenceAssessments} from '../simulation/evidence-adapter.ts';
 import {evidenceRequest,type EvidenceHead} from '../simulation/evidence.ts';
 import {boundedResearchContext} from '../simulation/research-context.ts';
-import {ExperimentGroupHost,experimentGroupRequest,type ExperimentGroupRequest} from '../simulation/groups.ts';
+import {ExperimentGroupHost,experimentGroupRequest,g5TerminalGroupAuthority,type ExperimentGroupRequest} from '../simulation/groups.ts';
 import type {ExperimentGroupRecord} from '../simulation/groups.ts';
 import {GROUP_PREFIX} from '../simulation/group-state.ts';
 import {turnRuntimeIdentity,type TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
@@ -922,18 +922,18 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-turn-authority-denied');
     const head=this.#turns.workspaceRevisionSnapshot(scope);if(!head||head.identity.turnId!==identity.turnId||JSON.stringify(head.receipt)!==JSON.stringify(turn.checkpoint))throw Error('g5-turn-authority-head-mismatch');
     const model=await this.modelSpec({scope});if(!model.version)throw Error('g5-turn-authority-model-absent');const toolEventIds=state.events.filter(event=>event.turnId===identity.turnId&&event.type==='tool.completed').map(event=>event.eventId);if(!toolEventIds.length||model.version.revisionId!==turn.checkpoint.revisionId||model.version.filesSha256!==turn.checkpoint.filesSha256)throw Error('g5-turn-authority-evidence-absent');
-    return {schemaVersion:1 as const,identity,version:model.version,toolEventIds};
+    return {schemaVersion:1 as const,identity,requestKey:turn.requestKey,version:model.version,toolEventIds};
   }
   async g5SimulationRunAuthority(input:{identity:TurnRuntimeIdentity;userId:string;taskKey:string;runId:string;artifactSha256:string}){
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),record=await this.#simulations(scope).get(input.runId);if(record.actor.userId!==input.userId||!sameScope(record.scope,scope)||record.budgetRoute?.kind!=='g5'||record.budgetRoute.taskKey!==input.taskKey||record.runId!==input.runId||record.status!=='completed'||record.result?.artifactSha256!==input.artifactSha256||record.released!==true||record.releaseProof===null)throw Error('g5-run-authority-unsettled');
     const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(record.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-run-authority-denied');
-    return {schemaVersion:1 as const,runId:record.runId,taskKey:record.budgetRoute.taskKey,artifactSha256:record.result.artifactSha256,released:true,active:0,unknown:0,releaseProof:record.releaseProof};
+    return {schemaVersion:1 as const,runId:record.runId,taskKey:record.budgetRoute.taskKey,requestKey:record.key,artifactSha256:record.result.artifactSha256,released:true,active:0,unknown:0,releaseProof:record.releaseProof};
   }
   async g5SimulationWindowAuthority(input:{identity:TurnRuntimeIdentity;userId:string;windowId:string}){
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),turn=(await this.#turns.snapshot(scope)).turns[identity.turnId];if(!turn||turn.actor.userId!==input.userId)throw Error('g5-window-simulation-authority-denied');const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-window-simulation-authority-denied');
     const runs=[...(await this.ctx.storage.list<SimulationRecord>({prefix:'simulation:run:'})).values()].filter(record=>record.budgetRoute?.kind==='g5'&&record.budgetRoute.windowId===input.windowId);for(const record of runs)if(!sameScope(record.scope,scope)||record.actor.userId!==input.userId)throw Error('g5-window-simulation-authority-conflict');
-    const groups=[...(await this.ctx.storage.list<ExperimentGroupRecord>({prefix:GROUP_PREFIX})).values()].filter(group=>group.actor.userId===input.userId&&sameScope(group.scope,scope)&&group.children.some(child=>runs.some(run=>run.runId===child.runId)));for(const group of groups)if(group.children.some(child=>!runs.some(run=>run.runId===child.runId)))throw Error('g5-window-group-authority-incomplete');
-    return {schemaVersion:1 as const,runIds:runs.map(record=>record.runId).sort(),groupIds:groups.map(group=>group.groupId).sort()};
+    const groups=[...(await this.ctx.storage.list<ExperimentGroupRecord>({prefix:GROUP_PREFIX})).values()].filter(group=>group.actor.userId===input.userId&&sameScope(group.scope,scope)&&group.children.some(child=>runs.some(run=>run.runId===child.runId)));
+    return {schemaVersion:1 as const,...g5TerminalGroupAuthority(runs,groups)};
   }
   /** Private plan selection. A future submit intent must freeze this source
    * durably with its idempotency key; this read does not create or start a Run. */

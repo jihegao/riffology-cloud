@@ -4,6 +4,22 @@ export const G5_GLOBAL_ACTOR='g5-controlled-global-v1';
 export type G5WindowPolicy={schemaVersion:1;windowId:string;phase:'A'|'B';principals:{tenantId:string;userId:string}[];profilePin:{provider:string;model:string;profileSha256:string;rateCardSha256:string;inputNanodollarsPerToken:number;outputNanodollarsPerToken:number};totalNanodollars:20000000000;turnNanodollars:5000000000;maxUpstreamDispatches:147|168;maxSimulationRuns:39|0;maxServiceRuns:0;maxTasks:63|66|24;durationMs:number};
 export type G5Task={tenantId:string;userId:string;kind:'project'|'turn'|'group'|'simulation'|'service';key:string;digest:string};
 export type G5Call={key:string;turnKey:string;turnId:string;tenantId:string;userId:string;provider:string;model:string;profileSha256:string;payloadSha256:string;reservationId:string;budgetReferenceSha256:string;inputTokenUpperBound:number;maxOutputTokens:number};
+export function g5FixtureRequestKey(requestKey:string,windowId:string,fixtureId:string,kind:'turn'|'run'){
+ const prefix=`${windowId}-${fixtureId}-${kind}`;if(kind==='turn'){if(requestKey!==prefix)throw Error('g5-authority-fixture-request-key-mismatch');return {requestKey};}
+ const ordinal=requestKey.startsWith(prefix+'-')?requestKey.slice(prefix.length+1):'';if(!/^[1-9][0-9]*$/.test(ordinal))throw Error('g5-authority-fixture-request-key-mismatch');return {requestKey,ordinal:Number(ordinal)};
+}
+export function g5FinalTaskCounts(raw:{windows:Array<Record<string,unknown>>;tasks:Array<Record<string,unknown>>},windowId:string){
+ const windows=raw.windows.filter(value=>value.window_id===windowId);if(windows.length!==1)throw Error('g5-authority-final-window-absent');const tasks=raw.tasks.filter(value=>value.window_id===windowId),kinds=tasks.map(value=>{const valueKind=JSON.parse(String(value.document)).kind;if(!['project','turn','group','simulation','service'].includes(valueKind))throw Error('g5-authority-final-task-kind-invalid');return valueKind;});
+ return {tasks:tasks.length,projects:kinds.filter(kind=>kind==='project').length,turns:kinds.filter(kind=>kind==='turn').length,runs:kinds.filter(kind=>kind==='simulation').length,groupIntentTasks:kinds.filter(kind=>kind==='group').length,closed:windows[0]!.closed===1};
+}
+export function g5FinalAuthorityResult(windowId:string,counts:ReturnType<typeof g5FinalTaskCounts>,groupIntents:number,active:number,unknown:number){
+ for(const value of [groupIntents,active,unknown])if(!Number.isSafeInteger(value)||value<0)throw Error('g5-authority-final-count-invalid');if(groupIntents!==counts.groupIntentTasks)throw Error('g5-authority-final-group-mismatch');
+ return {schemaVersion:1 as const,windowId,projects:counts.projects,turns:counts.turns,runs:counts.runs,groupIntents,groupIntentTasks:counts.groupIntentTasks,tasks:counts.tasks,closed:counts.closed,active,unknown};
+}
+export function g5AdmissionContract(policy:G5WindowPolicy){
+ const rules={projects:3,turns:18,groupIntentTasks:3};if(policy.phase!=='A'||policy.maxSimulationRuns!==39||policy.maxServiceRuns!==0||policy.maxTasks!==66)throw Error('g5-authority-admission-contract-mismatch');const normalTasks=rules.projects+rules.turns+rules.groupIntentTasks+policy.maxSimulationRuns;
+ return {schemaVersion:1 as const,windowId:policy.windowId,normalTasks,maximumTasks:policy.maxTasks,groupIntentTasks:rules.groupIntentTasks,groupIntentAdmission:'guard-task' as const};
+}
 const fail=(code:string):never=>{throw Error('g5-window-'+code);};
 const id=(v:unknown)=>typeof v==='string'&&/^[A-Za-z0-9][A-Za-z0-9._:-]{0,149}$/.test(v)?v:fail('identity-invalid');
 const hash=(v:unknown)=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v)?v:fail('digest-invalid');
