@@ -19,6 +19,7 @@ export type WorkspaceState = {
   projection: WorkspaceProjection | null; projectionConfirmed: boolean; projectionAttempts: number; sequence: number;
 };
 export type WorkspacePorts = {
+  beforeStart?(task:WorkspaceTask):Promise<void>;
   catalog: WorkspaceCatalogPort; quota: WorkspaceQuotaPort; runtime(identity: RuntimeIdentity): RuntimePort;
   /** Hold the actual RPC, including after the local wait times out. */
   hold(promise: Promise<unknown>): void;
@@ -236,7 +237,7 @@ export class WorkspaceCoordinator {
           else if (result.known && result.value === null && s.acquireAttempts < 3 && this.#clock() < s.task.deadlineAt) {
             // Quota, unlike Runtime initialization, atomically deduplicates the
             // complete fixed request. A null read is not itself a release proof.
-            const retried = await this.#effect('acquire', () => this.#ports.quota.acquire(request(s!.task)), current => { current.acquireAttempts++; },
+            const retried = await this.#effect('acquire', async() => {await this.#ports.beforeStart?.(s!.task);return this.#ports.quota.acquire(request(s!.task));}, current => { current.acquireAttempts++; },
               current => this.#clock() < current.task.deadlineAt);
             if (retried.known) await this.#acquisition(retried.value);
           }
@@ -245,7 +246,7 @@ export class WorkspaceCoordinator {
         const auth = await this.#effect('authority', () => this.#ports.catalog.verifyTask(s!.task));
         if (!auth.known) return;
         if (!auth.value) { await this.#mutate(current => { current.target = 'failed'; current.reasonCode = 'authority-revoked'; }); return; }
-        const result = await this.#effect('acquire', () => this.#ports.quota.acquire(request(s!.task)), current => { current.intents.acquire = true; current.acquireAttempts++; },
+        const result = await this.#effect('acquire', async() => {await this.#ports.beforeStart?.(s!.task);return this.#ports.quota.acquire(request(s!.task));}, current => { current.intents.acquire = true; current.acquireAttempts++; },
           current => !current.target && this.#clock() < current.task.deadlineAt);
         if (result.known) await this.#acquisition(result.value); return;
       }
@@ -292,7 +293,7 @@ export class WorkspaceCoordinator {
         const auth = await this.#effect('authority', () => this.#ports.catalog.verifyTask(s!.task));
         if (!auth.known) return;
         if (!auth.value) { await this.#mutate(current => { current.target = 'failed'; current.reasonCode = 'authority-revoked'; }); return; }
-        const result = await this.#effect('dispatch', () => this.#ports.quota.dispatch(leaseReference(s!.lease!)), current => { current.intents.dispatch = true; },
+        const result = await this.#effect('dispatch', async() => {await this.#ports.beforeStart?.(s!.task);return this.#ports.quota.dispatch(leaseReference(s!.lease!));}, current => { current.intents.dispatch = true; },
           current => !current.target && this.#clock() < current.task.deadlineAt);
         if (result.known && result.value.authorized === true) {
           const lease = this.#lease(result.value.lease, s);
@@ -309,7 +310,7 @@ export class WorkspaceCoordinator {
         if (!auth.known || auth.value !== true) {
           await this.#mutate(current => { current.target ??= 'failed'; current.reasonCode ??= auth.known ? 'authority-revoked' : 'runtime-unknown'; }); return;
         }
-        const result = await this.#effect('initialize', () => this.#ports.runtime(s!.identity!).initialize({ task: s!.task, identity: s!.identity!, markerNonce: s!.markerNonce }),
+        const result = await this.#effect('initialize', async() => {await this.#ports.beforeStart?.(s!.task);return this.#ports.runtime(s!.identity!).initialize({ task: s!.task, identity: s!.identity!, markerNonce: s!.markerNonce });},
           current => { current.intents.initialize = true; current.phase = 'initializing'; },
           current => !current.target && current.dispatchOwner === this.#owner && this.#clock() < current.task.deadlineAt);
         if (result.known) await this.#observation(result.value); return;

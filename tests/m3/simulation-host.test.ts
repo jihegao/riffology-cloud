@@ -1,3 +1,4 @@
+import {GROUP_RESERVATION} from '../../services/simulation/group-state.ts';
 import {simulationToken} from '../../services/simulation/native.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -109,3 +110,5 @@ test('root native facts persist separately from model outputs and reject absent 
  for(const bad of [{...nativeObservation,child:null},{...nativeObservation,stop:{...nativeObservation.stop,confirmationId:'f'.repeat(64)}}])await assert.rejects(publishSimulationResult(bucket,r,{...raw,nativeObservation:bad}),/invalid/);
  await assert.rejects(publishSimulationResult(bucket,r,{exitCode:0,pythonVersion:'3.11.1',result:{...raw.result,nativeObservation}}),/invalid/);
 });
+
+test('each childRun persists own admission route; expired start guard prevents quota/native dispatch after reopen',async t=>{const f=setup(t);let admissions=0,acquires=0;f.ports.admitRun=async(_actor,_key,_request,runId)=>{admissions++;return {kind:'g5',taskKey:await digest(runId),windowId:'g5',profileSha256:'a'.repeat(64)};};f.ports.beforeStart=async(record)=>{assert.ok(record.budgetRoute);throw Error('g5-window-deadline');};const acquire=f.ports.quota.acquire;f.ports.quota.acquire=async request=>{acquires++;return acquire(request);};await f.storage.put(GROUP_RESERVATION+'group-a',['run-a','run-b']);const first=await f.host().submit(actor,'child-a',f.request,plan,'image',()=>true,{groupId:'group-a',runId:'run-a',permit:async()=>true});const second=await f.host().submit(actor,'child-b',f.request,plan,'image',()=>true,{groupId:'group-a',runId:'run-b',permit:async()=>true});assert.equal(admissions,2);assert.notEqual(first.budgetRoute?.taskKey,second.budgetRoute?.taskKey);f.reopen();await f.host().alarm();assert.equal(acquires,0);assert.equal(f.starts,0);});

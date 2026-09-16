@@ -1,3 +1,6 @@
+import {g5TaskKey} from '../model-budget/g5-admission.ts';
+import {G5_GLOBAL_ACTOR,g5WindowPolicy} from '../model-budget/g5-window.ts';
+import type {G5TenantModelBudget} from '../model-budget/g5-token-durable.ts';
 import {G4BrowserBuildHold,g4BuildHoldUntil} from '../browser-preview/g4-build-hold.ts';
 import {sandboxActorIds} from '../sandbox/policy.ts';
 import type {readG4WindowSnapshot} from '../model-budget/g4-window.ts';
@@ -72,7 +75,7 @@ import {WORKSPACE_LAYOUT} from './protocol.ts';
 import { DurableObserverAlarmPort, DurableServiceAlarmPort, DurableTurnAlarmPort } from './turn-alarm.ts';
 import { routeWorkspaceAlarm } from './alarm-router.ts';
 import { WorkspaceTurnEngine } from './turns.ts';
-import { runtimeName, validateWorkspaceTask, workspaceAgentName, type WorkspaceTask } from './protocol.ts';
+import { runtimeName, validateWorkspaceTask, workspaceAgentName, type WorkspaceTask, type WorkspaceBudgetRoute } from './protocol.ts';
 import { TurnJournal } from '../turn/journal.ts';
 import { DurableTurnStore } from '../turn/store.ts';
 import type { TurnActor, TurnScope } from '../turn/protocol.ts';
@@ -110,6 +113,9 @@ export interface WorkspaceAgentEnv {
   REVISION_STORE: RevisionStoreNamespace;
   TOOL_ARTIFACT_STORE: ToolArtifactStoreNamespace;
   G4_CONTROLLED_WINDOW_JSON?:string;
+  G5_CONTROLLED_WINDOW_JSON?:string;
+  G5_TOKEN_BUDGET?:DurableObjectNamespace<G5TenantModelBudget>;
+  G5_WINDOW_GUARD?:{getByName(name:string):{registerTask(task:unknown):Promise<unknown>;claimTaskCreate(key:string):Promise<{authorized:boolean}>;bindTask(key:string,id:string):Promise<unknown>;checkTaskStart(key:string):Promise<{authorized:boolean}>;claimTaskStart(key:string,identity?:TurnRuntimeIdentity):Promise<{authorized:boolean;grantId:string|null}>;confirmTaskStartGrant(key:string,grantId:string):Promise<{confirmed:boolean}>;checkTaskContinue(key:string,grantId:string):Promise<{authorized:boolean}>;cancelUnstartedTask(key:string):Promise<unknown>;closeTrustedTurn(key:string,identity:TurnRuntimeIdentity):Promise<unknown>}};
   G4_BROWSER_BUILD_HOLD_SCOPES_JSON?:string;
   M2_TURNS_ENABLED: unknown;
   M2_WORKSPACE_RUNTIME_REUSE_ENABLED?:unknown;
@@ -236,7 +242,8 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   #simulationAlarm=new DurableSimulationAlarmPort(this.ctx.storage);
   #simulations(scope:TurnScope){
     return this.#simulationHost??=new SimulationHost(this.ctx.storage,scope,{
-      admitRun:async(actor,key,body)=>admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,actor.userId,'run',{scope,key},body),
+      admitRun:async(actor,key,body,runId)=>{if(this.env.G5_CONTROLLED_WINDOW_JSON===undefined){await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,actor.userId,'run',{scope,key},body);return;}const task=await g5TaskKey(this.env.G5_CONTROLLED_WINDOW_JSON,'simulation',scope.tenantId,actor.userId,{scope,key},body);const policy=g5WindowPolicy(JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON))!;const guard=this.#g5Guard();await guard.registerTask(task);const created=await guard.claimTaskCreate(task.key);if(!created.authorized)throw Error('g5-simulation-create-denied');await guard.bindTask(task.key,runId);return {kind:'g5' as const,taskKey:task.key,windowId:policy.windowId,profileSha256:policy.profilePin.profileSha256};},
+      beforeStart:async(record,stage)=>{if(!record.budgetRoute)return;await this.#g5StartTask(record.budgetRoute.taskKey);},
       quota:this.env.TENANT_QUOTA.getByName(tenantQuotaName(scope.tenantId)),
       start:async input=>{
         if(input.runtimeImage!==this.env.M4_SIMULATION_IMAGE)throw Error('simulation-image-changed');
@@ -415,10 +422,12 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const identity=turnRuntimeIdentity(input.identity);this.#maintenanceScope(identity.scope);
     const {current:binding}=await this.#leases().pairState(identity);
     await this.#leases().close(identity);
-    if(!this.env.TENANT_MODEL_BUDGET||!this.env.PRODUCTION_MODEL_BUDGET||!this.env.TOOL_BRIDGE_AGENT)throw Error('workspace-runtime-settlement-required');
-    const model=this.env.TENANT_MODEL_BUDGET.getByName(modelBudgetTenantName(identity.scope.tenantId)),money=this.env.PRODUCTION_MODEL_BUDGET.getByName(PRODUCTION_MONEY_ACTOR),tool=this.env.TOOL_BRIDGE_AGENT.getByName(await toolBridgeActorName(identity.scope,identity.turnId,identity.dispatchId));
+    const route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+identity.turnId);const tokenNamespace=route?this.env.G5_TOKEN_BUDGET:this.env.TENANT_MODEL_BUDGET;
+    if(!tokenNamespace||!this.env.PRODUCTION_MODEL_BUDGET||!this.env.TOOL_BRIDGE_AGENT)throw Error('workspace-runtime-settlement-required');
+    const model=tokenNamespace.getByName(modelBudgetTenantName(identity.scope.tenantId)),money=this.env.PRODUCTION_MODEL_BUDGET.getByName(PRODUCTION_MONEY_ACTOR),tool=this.env.TOOL_BRIDGE_AGENT.getByName(await toolBridgeActorName(identity.scope,identity.turnId,identity.dispatchId));
     const settled=await Promise.all([model.closeTurnAdmission(identity.scope.tenantId,identity),money.closeTurnAdmission(identity),tool.closeTurnAdmission(identity)]);
     if(settled.some(record=>JSON.stringify(record.identity)!==JSON.stringify(identity)||record.closed!==true))throw Error('workspace-runtime-settlement-denied');
+    if(route)await this.#g5Guard().closeTrustedTurn(route.taskKey,identity);
     return {binding,settled};
   }
   async workspaceRuntimeAuthority(input:WarmOutboundRequest){
@@ -568,6 +577,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const scope=this.#ready(input.scope);
     if(this.env.M3_SERVICE_ENABLED!=='true')throw Error('service-run-disabled');
     if(this.env.G4_CONTROLLED_WINDOW_JSON!==undefined)await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
+    if(this.env.G5_CONTROLLED_WINDOW_JSON!==undefined)throw Error('g5-service-run-disabled');
     await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,input.actor.userId,'run',{scope,key:input.key,type:'service'},input.request);
     this.#ready(scope);
     return this.#services(scope).submit(input.actor,input.key,input.request,()=>{
@@ -583,6 +593,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const scope=this.#ready(input.scope);
     if(this.env.M3_SERVICE_ENABLED!=='true')throw Error('service-run-disabled');
     if(this.env.G4_CONTROLLED_WINDOW_JSON!==undefined)await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
+    if(this.env.G5_CONTROLLED_WINDOW_JSON!==undefined)throw Error('g5-service-run-disabled');
     await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,input.actor.userId,'run',{scope,key:input.key,type:'service'},input.body);
     this.#ready(scope);
     return this.#services(scope).submitFromPolicy(input.actor,input.key,input.body,this.env.M3_SERVICE_IMAGE??'',()=>this.#freezeService(scope));
@@ -778,6 +789,21 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const scope=this.#maintenanceScope(input.scope);
     return this.#services(scope).snapshot(input.runId);
   }
+  #g5Guard(){const guard=this.env.G5_WINDOW_GUARD?.getByName(G5_GLOBAL_ACTOR);if(!guard)throw Error('g5-workspace-guard-required');return guard;}
+  async #g5StartTask(taskKey:string,identity?:TurnRuntimeIdentity){
+    const guard=this.#g5Guard(),grantKey='g5-start-grant:'+taskKey;let grant=this.ctx.storage.kv.get<string>(grantKey);
+    if(!grant){const result=await guard.claimTaskStart(taskKey,identity);if(!result.authorized||!result.grantId)throw Error('g5-workspace-start-denied');grant=result.grantId;this.ctx.storage.kv.put(grantKey,grant);await this.ctx.storage.sync();}
+    const confirmed=await guard.confirmTaskStartGrant(taskKey,grant);if(!confirmed.confirmed)throw Error('g5-start-grant-unconfirmed');
+    const checked=await guard.checkTaskContinue(taskKey,grant);if(!checked.authorized)throw Error('g5-task-continuation-denied');
+  }
+  async #g5TurnStart(turn:import('../turn/protocol.ts').TurnRecord,phase:'capacity'|'runtime'){
+    const route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);if(!route)return;
+    if(phase==='capacity'){const result=await this.#g5Guard().checkTaskStart(route.taskKey);if(!result.authorized)throw Error('g5-workspace-start-denied');return;}
+    await this.#g5StartTask(route.taskKey,{scope:turn.scope,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId!,generation:turn.runtimeGeneration!});
+    const usedKey='g5-native-accept:'+route.taskKey;if(this.ctx.storage.kv.get(usedKey))throw Error('g5-native-accept-reconcile-only');this.ctx.storage.kv.put(usedKey,true);await this.ctx.storage.sync();
+  }
+  async #g5Terminal(turn:import('../turn/protocol.ts').TurnRecord){const route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);if(!route||this.ctx.storage.kv.get('g5-terminal-closed:'+turn.id))return;if(!turn.dispatchId||!turn.runtimeGeneration){if(turn.status==='cancelled'){await this.#g5Guard().cancelUnstartedTask(route.taskKey);this.ctx.storage.kv.put('g5-terminal-closed:'+turn.id,true);await this.ctx.storage.sync();}return;}const identity=turnRuntimeIdentity({scope:turn.scope,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration});if(!this.env.G5_TOKEN_BUDGET||!this.env.PRODUCTION_MODEL_BUDGET||!this.env.TOOL_BRIDGE_AGENT)throw Error('g5-terminal-ledgers-required');await Promise.all([this.env.G5_TOKEN_BUDGET.getByName(modelBudgetTenantName(identity.scope.tenantId)).closeTurnAdmission(identity.scope.tenantId,identity),this.env.PRODUCTION_MODEL_BUDGET.getByName(PRODUCTION_MONEY_ACTOR).closeTurnAdmission(identity),this.env.TOOL_BRIDGE_AGENT.getByName(await toolBridgeActorName(identity.scope,identity.turnId,identity.dispatchId)).closeTurnAdmission(identity)]);await this.#g5Guard().closeTrustedTurn(route.taskKey,identity);this.ctx.storage.kv.put('g5-terminal-closed:'+turn.id,true);await this.ctx.storage.sync();}
+  async #g5ProjectStart(task:WorkspaceTask){if(!task.budgetRoute)return;await this.#g5StartTask(task.budgetRoute.taskKey);}
   #engine(): WorkspaceTurnEngine {
     if (!this.env.PRODUCT_TURN_RUNTIME?.getByName) throw Error('product-turn-runtime-not-configured');
     if (!this.env.TOOL_ARTIFACT_STORE?.getByName) throw Error('tool-artifact-store-not-configured');
@@ -791,6 +817,8 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       this.env.TOOL_ARTIFACT_STORE.getByName(TOOL_ARTIFACT_STORE_ACTOR),
       this.#leases(),
       turnOperationTracer(this.env.M2_TURN_OPERATION_TELEMETRY),
+      (turn,phase)=>this.#g5TurnStart(turn,phase),
+      turn=>this.#g5Terminal(turn),
     );
   }
   #for(input: WorkspaceTask): WorkspaceCoordinator {
@@ -798,6 +826,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     if (!this.env.WORKSPACE_AGENT.idFromName(workspaceAgentName(task.tenantId, task.workspaceId)).equals(this.ctx.id)) throw Error('workspace-actor-scope-denied');
     if (!this.#coordinator) {
       this.#coordinator = new WorkspaceCoordinator(this.#store, {
+        beforeStart:task=>this.#g5ProjectStart(task),
         catalog: new ProvisioningCatalog(catalogDatabase(this.env.CATALOG)),
         quota: this.env.TENANT_QUOTA.getByName(tenantQuotaName(task.tenantId)),
         runtime: identity => this.env.PROJECT_RUNTIME.getByName(runtimeName(identity)),
@@ -853,12 +882,20 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     let engine:WorkspaceTurnEngine;
     try{engine=this.#engine();trace('engine',true);}catch(error){trace('engine',false,error);throw error;}
     if(this.env.G4_CONTROLLED_WINDOW_JSON!==undefined)await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
-    await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,input.actor.userId,'turn',{scope,sessionId:input.sessionId,key:input.key},input.body);
+    let route:WorkspaceBudgetRoute|undefined;
+    if(this.env.G5_CONTROLLED_WINDOW_JSON!==undefined){
+      await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
+      const task=await g5TaskKey(this.env.G5_CONTROLLED_WINDOW_JSON,'turn',scope.tenantId,input.actor.userId,{scope,sessionId:input.sessionId,key:input.key},input.body);
+      const policy=g5WindowPolicy(JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON))!;const guard=this.#g5Guard();await guard.registerTask(task);
+      route={kind:'g5',taskKey:task.key,windowId:policy.windowId,profileSha256:policy.profilePin.profileSha256};
+      const known=this.ctx.storage.kv.get<string>('g5-submission:'+task.key);if(!known){const created=await guard.claimTaskCreate(task.key);if(!created.authorized)throw Error('g5-turn-create-denied');}
+    }else{await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,input.actor.userId,'turn',{scope,sessionId:input.sessionId,key:input.key},input.body);}
+
     this.#ready(scope);
-    return engine.submit(scope,input.actor,input.sessionId,input.key,input.body,trace);
+    return engine.submit(scope,input.actor,input.sessionId,input.key,input.body,trace,route?async turn=>{const prior=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);if(prior&&JSON.stringify(prior)!==JSON.stringify(route))throw Error('g5-turn-route-conflict');this.ctx.storage.kv.put('g5-turn-route:'+turn.id,route!);this.ctx.storage.kv.put('g5-submission:'+route!.taskKey,turn.id);await this.ctx.storage.sync();await this.#g5Guard().bindTask(route!.taskKey,turn.id);}:undefined);
   }
   async cancelTurn(input: { scope: TurnScope; actor: TurnActor; turnId: string }) {
-    return this.#engine().cancel(this.#ready(input.scope), input.actor, input.turnId);
+    const turn=await this.#engine().cancel(this.#ready(input.scope), input.actor, input.turnId);if(['completed','failed','cancelled','interrupted'].includes(turn.status))await this.#g5Terminal(turn);return turn;
   }
   async replayTurnEvents(input: { scope: TurnScope; afterSequence: number; limit: number }) {
     return this.#turns.replay(this.#ready(input.scope), input.afterSequence, input.limit);
@@ -923,6 +960,8 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return releaseRetiredArtifactEvent(this.#turns,this.env.TOOL_ARTIFACT_STORE.getByName(TOOL_ARTIFACT_STORE_ACTOR),input);
   }
   async alarm() {
+    const terminalTurns=Object.values(new DurableTurnStore(this.ctx.storage).read()?.turns??{}).filter(turn=>['completed','failed','cancelled','interrupted'].includes(turn.status));
+    for(const turn of terminalTurns){try{await this.#g5Terminal(turn);}catch(error){await this.#turnAlarm.schedule(Date.now()+5000);throw error;}}
     await routeWorkspaceAlarm({
       browserBuild:{readWake:()=>this.#browserBuildAlarm.read(),defer:at=>this.#browserBuildAlarm.schedule(at),advance:async scope=>{await this.#browserBuild(this.#maintenanceScope(scope)).alarm();}},
       simulation:{readWake:()=>this.#simulationAlarm.read(),defer:at=>this.#simulationAlarm.schedule(at),advance:async scope=>{const owned=this.#maintenanceScope(scope);await this.#simulations(owned).alarm();await this.#experimentGroups(owned).alarm();}},

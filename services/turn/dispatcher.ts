@@ -132,6 +132,7 @@ function validateReceipt(value:unknown,expected:ExpectedReceipt,expectedLease?:{
   return {...(retirement?{retirement:'workspace-native-unresolved' as const}:{}),scope:receiptScope,sessionId:expected.sessionId,turnId:expected.turnId,dispatchId:expected.dispatchId,generation:expected.generation,phase,outcome,executionErrorCode:executionError,events,checkpoint:saved,persistenceErrorCode:saveError,stopped:stop,resourceDisposition:disposition} as TurnRuntimeReceipt;
 }
 
+export type TurnStartGuard=(turn:TurnRecord,phase:'capacity'|'runtime')=>Promise<void>;
 export class TurnDispatcher {
   private readonly journal:TurnDispatcherJournal;
   private readonly runtime:TurnRuntimePort;
@@ -139,7 +140,8 @@ export class TurnDispatcher {
   private readonly capacity:TurnCapacityPort|null;
   private readonly clock:()=>number;
   private readonly trace:TurnOperationTrace|undefined;
-  constructor(journal:TurnDispatcherJournal,runtime:TurnRuntimePort,artifactReferences:TurnArtifactReferencePort|null=null,capacity:TurnCapacityPort|null=null,clock:()=>number=Date.now,trace?:TurnOperationTrace){this.journal=journal;this.runtime=runtime;this.artifactReferences=artifactReferences;this.capacity=capacity;this.clock=clock;this.trace=trace;}
+  readonly startGuard?:TurnStartGuard;
+  constructor(journal:TurnDispatcherJournal,runtime:TurnRuntimePort,artifactReferences:TurnArtifactReferencePort|null=null,capacity:TurnCapacityPort|null=null,clock:()=>number=Date.now,trace?:TurnOperationTrace,startGuard?:TurnStartGuard){this.journal=journal;this.runtime=runtime;this.artifactReferences=artifactReferences;this.capacity=capacity;this.clock=clock;this.trace=trace;this.startGuard=startGuard;}
 
   private emit(event:TurnOperationTelemetryEvent){try{this.trace?.(event);}catch{}}
 
@@ -195,7 +197,7 @@ export class TurnDispatcher {
       const neverStarted=await this.capacity.releaseNeverStarted({scope:turn.scope,sessionId:turn.sessionId,turnId:turn.id,generation:expected.generation,ticketId:null,operationId:turn.resourceLease!.operationId,leaseId:turn.resourceLease!.leaseId,reasonCode:'turn-cancelled-before-runtime-accept',observedAt:turn.cancelRequestedAt!});
       return {receipt:null,neverStarted};
     }
-    const accepted=validateReceipt(await this.runtime.accept(input),expected,turn.resourceLease!);
+    const accepted=validateReceipt(await (async()=>{await this.startGuard?.(turn,'runtime');return this.runtime.accept(input);})(),expected,turn.resourceLease!);
     if(accepted.phase==='absent')throw Error('invalid-turn-runtime-receipt');
     if(accepted.phase==='terminal')return {receipt:accepted,neverStarted:null};
     return {receipt:validateReceipt(await this.runtime.cancel(exact),expected,turn.resourceLease!),neverStarted:null};
@@ -216,6 +218,7 @@ export class TurnDispatcher {
       if(active)claim={turn:active,replayed:true};
       else{
         const candidate=this.journal.admissionCandidate(scope);if(!candidate)return null;
+        await this.startGuard?.(candidate.turn,'capacity');
         const operationId=candidate.wait?.operationId??crypto.randomUUID();if(!candidate.wait)await this.journal.beginResourceWait(scope,{turnId:candidate.turn.id,operationId,ticketId:null});
         const response=capacityReceipt(await this.capacity.acquire({scope,sessionId:candidate.turn.sessionId,turnId:candidate.turn.id,generation:runtimeGeneration,ticketId:candidate.wait?.ticketId??null,operationId}));
         if(response.turnId!==candidate.turn.id||response.generation!==runtimeGeneration)throw Error('turn-capacity-receipt-scope-denied');
@@ -244,9 +247,9 @@ export class TurnDispatcher {
       }else receipt=validateReceipt(await this.runtime.observe({...expected,capacityLease:turn.resourceLease}),expected,turn.resourceLease);
       if(receipt.phase==='unknown')return turn;
       if(receipt.phase==='absent'){
-        receipt=validateReceipt(await this.runtime.accept(input),expected,turn.resourceLease);
+        receipt=validateReceipt(await (async()=>{await this.startGuard?.(turn,'runtime');return this.runtime.accept(input);})(),expected,turn.resourceLease);
       }
-    }else receipt=validateReceipt(await this.runtime.accept(input),expected,turn.resourceLease);
+    }else receipt=validateReceipt(await (async()=>{await this.startGuard?.(turn,'runtime');return this.runtime.accept(input);})(),expected,turn.resourceLease);
     if(receipt.phase==='absent')throw Error('invalid-turn-runtime-receipt');
     return this.apply(turn,receipt);
   }
