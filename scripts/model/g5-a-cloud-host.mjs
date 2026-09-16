@@ -33,7 +33,8 @@ async function validateCandidate(value,name,base){
 function admissionContract(raw,binding){
  const keys=['schemaVersion','windowId','normalTasks','maximumTasks','groupIntentTasks','groupIntentAdmission','receiptSha256'];
  if(!object(raw)||Object.keys(raw).sort().join()!==keys.sort().join()||raw.schemaVersion!==1||raw.windowId!==binding.windowId||raw.normalTasks!==63||raw.maximumTasks!==66||raw.groupIntentTasks!==3||raw.groupIntentAdmission!=='guard-task')fail('g5-cloud-admission-contract-invalid');
- const receiptSha256=hash({...raw,receiptSha256:undefined,...binding});if(raw.receiptSha256!==receiptSha256)fail('g5-cloud-admission-contract-sha-conflict');return Object.freeze(clone(raw));
+ const contract={schemaVersion:raw.schemaVersion,windowId:raw.windowId,normalTasks:raw.normalTasks,maximumTasks:raw.maximumTasks,groupIntentTasks:raw.groupIntentTasks,groupIntentAdmission:raw.groupIntentAdmission};
+ if(raw.receiptSha256!==hash(contract))fail('g5-cloud-admission-contract-sha-conflict');return Object.freeze(clone(raw));
 }
 
 /** Loads the only mutation authority. The manifest and referenced credentials/configs must be private files. */
