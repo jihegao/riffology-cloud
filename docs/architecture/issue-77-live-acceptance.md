@@ -46,6 +46,15 @@ observation/cancellation/cleanup, with no new input. A process lock excludes a
 second operator; a crashed lock is retained for explicit process inspection.
 State cannot be reset by merely changing a window ID or rerunning the command.
 
+A known candidate-contract failure can be repaired within the same approved
+window using `--execute --resume-known-candidate-failure`: only the first failed
+candidate attempt is eligible, and only with a completed provider Turn, observed
+usage below its hold, confirmed deletion/absence and the original unexpired
+clock. The pause report is retained in SQLite; all counts and money reservations
+remain consumed. Unknown execution/usage, excess cost, and unconfirmed cleanup
+can never use this path. It creates the second and final allowed Session with
+new explicit local identities, rather than replaying a prior Turn.
+
 The planned sequence is model creation, same-Session default modification with
 history preservation, then cancellation. Observation reconstructs the adapter
 from durable bindings. Downloaded code is validated and packaged with the

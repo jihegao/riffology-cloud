@@ -51,6 +51,15 @@ export class Issue77Ledger {
   }
   stop(reason) {this.db.prepare('UPDATE trial SET stopped=COALESCE(stopped,?) WHERE id=1').run(reason);}
   async cleaned(binding) {const local=binding.identity.sessionId;this.transaction(()=>{for(const row of this.db.prepare('SELECT key,input FROM inputs').all())if(JSON.parse(row.input).identity.sessionId===local)this.db.prepare('UPDATE inputs SET cleanup=1 WHERE key=?').run(row.key);});}
+  resumeKnownCandidateFailure(report) {
+    this.transaction(()=>{
+      const state=this.db.prepare('SELECT * FROM trial').get(),rows=this.db.prepare('SELECT * FROM inputs').all();
+      if(state.stopped!=='trial-stopped'||report.failure?.code!=='invalid-model-spec'||report.cleanup?.status!=='remote-deleted'||report.cleanup.readbackAbsent!==true||rows.length!==1||rows[0].cleanup!==1||rows[0].model_cost===null||rows[0].model_cost>POLICY.turnHoldUsd||JSON.parse(rows[0].observed??'null')?.phase!=='completed'||JSON.parse(rows[0].observed).usage.status!=='observed'||this.clock()>=state.started_at+POLICY.durationMs)throw Error('issue77-resume-denied');
+      this.db.exec('CREATE TABLE IF NOT EXISTS pauses (id INTEGER PRIMARY KEY, at INTEGER NOT NULL, evidence TEXT NOT NULL)');
+      this.db.prepare('INSERT INTO pauses (at,evidence) VALUES (?,?)').run(this.clock(),JSON.stringify(report));
+      this.db.prepare('UPDATE trial SET stopped=NULL WHERE id=1').run();
+    });
+  }
   summary() {const state=this.db.prepare('SELECT started_at,stopped FROM trial').get(),rows=this.db.prepare('SELECT operation,observed,model_cost FROM inputs').all();return {schemaVersion:1,policy:POLICY,startedAt:state.started_at,deadline:state.started_at===null?null:state.started_at+POLICY.durationMs,stopped:state.stopped,attempts:rows.length,sessions:rows.filter(r=>r.operation==='create').length,unknown:rows.filter(r=>!r.observed||JSON.parse(r.observed).usage.status==='unknown').length,conservativeReservedUsd:rows.reduce((s,r)=>s+Math.max(POLICY.turnHoldUsd,r.model_cost??0)+(r.operation==='create'?POLICY.sessionHoldUsd:0),0),observedModelCostUpperEstimateUsd:rows.reduce((s,r)=>s+(r.model_cost??0),0),billingSettled:false};}
   close(){this.db.close();}
 }

@@ -21,6 +21,9 @@ const prompts=[
 `Continue the same model. Change only the default service_time from 3 to 2 in the model code and model spec. Preserve the earlier model/results.json bytes and include them unchanged. Run the changed default once with seed 1 and truthfully report it. Write the updated complete candidate.json to /workspace/outputs/candidate.json using the identical three-file schema. Do not claim platform evidence.`,
 `Cancellation acceptance probe: in the sandbox run Python time.sleep(45) once, then print 'probe finished'. Do not modify or delete earlier files, make network calls, or spawn agents. The client may cancel this Turn.`,
 ];
+// A literal validated contract removes ambiguity about optional schema fields.
+const requestedSpec={schemaVersion:1,researchQuestion:'How does service time affect FCFS waiting?',scope:'Synthetic deterministic single-server queue',entities:['customers','server'],mechanisms:['FCFS service'],assumptions:['Arrival i is seed % 3 + 2*i','One server'],parameters:{customers:{type:'integer',default:5,minimum:1,maximum:20},service_time:{type:'integer',default:3,minimum:1,maximum:5}},metrics:{completed:{},mean_wait:{}},limitations:['Synthetic deterministic arrivals'],execution:{entrypoint:'model/run.py',dependencyLock:'app/requirements.lock'}};
+prompts[0]+=' Copy this exact spec JSON, with no extra keys or reformatting of its string values: '+JSON.stringify(requestedSpec);
 function save(name,value){writeFileSync(resolve(directory,name),typeof value==='string'||value instanceof Uint8Array?value:JSON.stringify(value,null,2)+'\n',{mode:0o600});}
 
 export async function checkCandidate(bytes,binding,n){
@@ -41,13 +44,14 @@ export async function checkCandidate(bytes,binding,n){
 
 async function main(){
   const recovery=process.argv.includes('--recover');
+  const resume=process.argv.includes('--resume-known-candidate-failure');
   if(!process.argv.includes('--execute')&&!recovery){console.log(JSON.stringify({policy:POLICY,paidRequests:0,mode:'preflight-only'}));return;}
   mkdirSync(directory,{recursive:true,mode:0o700});
   const lockPath=resolve(directory,'operator.lock'),lock=openSync(lockPath,'wx',0o600);
   const ledger=new Issue77Ledger(resolve(directory,'ledger.sqlite'));
-  if(ledger.summary().attempts!==0&&!recovery){ledger.close();closeSync(lock);unlinkSync(lockPath);throw Error('trial-already-started-use-original-recovery');}
+  if(ledger.summary().attempts!==0&&!recovery&&!resume){ledger.close();closeSync(lock);unlinkSync(lockPath);throw Error('trial-already-started-use-original-recovery');}
   let dispatcher,adapter,transport,store,currentIdentity=null;
-  const report=recovery&&existsSync(resolve(directory,'report.json'))?JSON.parse(readFileSync(resolve(directory,'report.json'),'utf8')):{schemaVersion:1,sourceCommit:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),policy:POLICY,credential:'reused-existing-local-configuration',turns:[],cleanup:{status:'not-created'},productionRouting:false,endToEndAcceptance:false};
+  const report=(recovery||resume)&&existsSync(resolve(directory,'report.json'))?JSON.parse(readFileSync(resolve(directory,'report.json'),'utf8')):{schemaVersion:1,sourceCommit:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),policy:POLICY,credential:'reused-existing-local-configuration',turns:[],cleanup:{status:'not-created'},productionRouting:false,endToEndAcceptance:false};
   try{
     if(execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).trim())throw Error('live-source-must-be-committed');
     const apiKey=parseEnv(readFileSync('/Users/gaojihe/apps/riffology-cloud-issue73-luna-agents/.env.local','utf8')).OPENAI_API_KEY;
@@ -64,11 +68,14 @@ async function main(){
       if(['completed','failed','cancelled'].includes(observation.execution)){const receipt=await transport.retrieve(binding);await ledger.record(binding,receipt);save('recovered-original-receipt.json',receipt);}
       return;
     }
-    save('freeze.json',{schemaVersion:1,policy:POLICY,sourceCommit:report.sourceCommit,approved:true,authorization:'User confirmed key reuse, delegated independent limits, and accepted the bounded trial with actual-cost uncertainty.',createdAt:new Date().toISOString(),data:'synthetic FCFS only',retention:'download then delete remote Session; private local evidence retained for review; no credentials in artifacts',stops:['delivery-unknown','usage-unknown','cleanup-unconfirmed','deadline','observed-cost-over-hold'],priceSource:'https://developers.openai.com/api/docs/pricing',tokenUpperEstimateRates:{inputUsdPerMillion:0.5,outputUsdPerMillion:1.8},noProductionGateChange:true});
+    if(resume){save('first-attempt-report.json',report);ledger.resumeKnownCandidateFailure(report);report.priorFailure=report.failure;delete report.failure;report.repairSourceCommit=execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();}
+    else save('freeze.json',{schemaVersion:1,policy:POLICY,sourceCommit:report.sourceCommit,approved:true,authorization:'User confirmed key reuse, delegated independent limits, and accepted the bounded trial with actual-cost uncertainty.',createdAt:new Date().toISOString(),data:'synthetic FCFS only',retention:'download then delete remote Session; private local evidence retained for review; no credentials in artifacts',stops:['delivery-unknown','usage-unknown','cleanup-unconfirmed','deadline','observed-cost-over-hold'],priceSource:'https://developers.openai.com/api/docs/pricing',tokenUpperEstimateRates:{inputUsdPerMillion:0.5,outputUsdPerMillion:1.8},noProductionGateChange:true});
+    const ordinalOffset=ledger.summary().attempts,localSession=`issue77-local-session-${ledger.summary().sessions+1}`;
     let previous=null;
     for(let n=1;n<=prompts.length;n++){
       if(ledger.summary().stopped)break;
-      const identity={scope:{tenantId:'issue77-synthetic',projectId:'fcfs-capability',workspaceId:'internal-only',workspaceGeneration:1},sessionId:'issue77-local-session',turnId:`issue77-turn-${n}`,dispatchId:`issue77-dispatch-${n}`,generation:1};
+      const ordinal=ordinalOffset+n;
+      const identity={scope:{tenantId:'issue77-synthetic',projectId:'fcfs-capability',workspaceId:'internal-only',workspaceGeneration:1},sessionId:localSession,turnId:`issue77-turn-${ordinal}`,dispatchId:`issue77-dispatch-${ordinal}`,generation:1};
       currentIdentity=identity;
       const started=Date.now(),input={identity,actor:{userId:'issue77-operator',authVersion:1},message:prompts[n-1],base:{workspace:null,session:null}};
       let observation=await adapter.accept(input,previous);
@@ -83,25 +90,28 @@ async function main(){
       if(['running','unknown'].includes(observation.execution)){
         ledger.stop('execution-outcome-unresolved');
         await adapter.cancel(identity);
-        report.turns.push({ordinal:n,execution:observation.execution,cancelRequested:true});break;
+        report.turns.push({ordinal,execution:observation.execution,cancelRequested:true});break;
       }
       const binding=await store.read(identity);
       let receipt=await transport.retrieve(binding);
       const usageDeadline=Date.now()+45_000;
       while(receipt.usage===null&&Date.now()<usageDeadline){await pause(3000);receipt=await transport.retrieve(binding);}
       await ledger.record(binding,receipt);
-      const result={ordinal:n,execution:receipt.phase,usage:receipt.usage,sessionHash:hash(binding.remoteSessionId),turnHash:hash(binding.remoteTurnId),cancelRequested};
-      save(`turn-${n}-receipt.json`,receipt);
+      const result={ordinal,execution:receipt.phase,usage:receipt.usage,sessionHash:hash(binding.remoteSessionId),turnHash:hash(binding.remoteTurnId),cancelRequested};
+      save(`turn-${ordinal}-receipt.json`,receipt);
       report.turns.push(result);
       if(n<=2&&receipt.phase==='completed'){
         const artifacts=[];
         for await(const item of transport.client.beta.agents.sessions.artifacts.list(binding.remoteSessionId,{limit:100})){if(artifacts.length>=128)throw Error('artifact-list-limit');artifacts.push(item);}
         const matches=artifacts.filter(a=>a.turn_id===binding.remoteTurnId&&a.path==='/workspace/outputs/candidate.json');
         if(matches.length!==1)throw Error('candidate-artifact-missing-or-ambiguous');
-        const bytes=await transport.download(binding,matches[0].id),candidate=await checkCandidate(bytes,binding,n);
-        save(`turn-${n}-candidate.json`,bytes);save(`turn-${n}-workspace.tar`,candidate.archive);save(`turn-${n}-manifest.json`,candidate.manifest);
+        const bytes=await transport.download(binding,matches[0].id);
+        // Preserve even rejected source before validation and remote deletion.
+        save(`turn-${ordinal}-artifact.json`,matches[0]);save(`turn-${ordinal}-candidate.json`,bytes);
+        const candidate=await checkCandidate(bytes,binding,ordinal);
+        save(`turn-${ordinal}-workspace.tar`,candidate.archive);save(`turn-${ordinal}-manifest.json`,candidate.manifest);
         result.candidate=candidate.report;
-        if(n===2){const before=JSON.parse(readFileSync(resolve(directory,'turn-1-candidate.json'),'utf8'));if(before.files['model/results.json']!==candidate.raw.files['model/results.json']||candidate.raw.spec.parameters.service_time.default!==2)throw Error('continuation-contract-mismatch');result.historyPreserved=true;}
+        if(n===2){const before=JSON.parse(readFileSync(resolve(directory,`turn-${ordinalOffset+1}-candidate.json`),'utf8'));if(before.files['model/results.json']!==candidate.raw.files['model/results.json']||candidate.raw.spec.parameters.service_time.default!==2)throw Error('continuation-contract-mismatch');result.historyPreserved=true;}
       }else if(n<=2){ledger.stop('provider-terminal-failure');break;}
       previous=binding;save('report.json',{...report,budget:ledger.summary()});
     }
