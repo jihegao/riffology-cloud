@@ -29,6 +29,7 @@ import type {GatewayObservations} from './observer-services.ts';
 import type {GatewayG5ReadonlyReads} from './g5-read-services.ts';
 
 export interface GatewayServices {
+  executionAvailability?:{service:boolean;preview:boolean;simulation:boolean};
   g4WindowSnapshot?(tenantId:string,actor:TurnActor):Promise<unknown>;
   g4ComputeCounts?(scope:TurnScope,actor:TurnActor):Promise<unknown>;
   browserPreviews?:GatewayBrowserPreviews;
@@ -162,7 +163,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     if(url.pathname==='/api/me' && request.method==='GET'){
       const tenants=await services.database.query<{id:string}>(sql(`SELECT t.id FROM catalog_tenants t JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=t.owner_user_id
         JOIN catalog_users u ON u.id=t.owner_user_id WHERE t.owner_user_id=? AND t.status='active' AND m.status='active' AND u.status='active' AND u.auth_version=?`,principal.userId,principal.authVersion));
-      return json({userId:principal.userId,tenants});
+      return json({userId:principal.userId,tenants,...(services.executionAvailability?{execution:services.executionAvailability}:{})});
     }
     const exportRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/research-export$/.exec(url.pathname);
     if(exportRoute){

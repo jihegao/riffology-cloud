@@ -1,4 +1,5 @@
 import {createBrowserPreviewPanel,browserPreviewRoute} from './browser-preview.js';
+import {isAcceptanceProject,projectModelSummary} from './project-status.js';
 import {createPublicationPanel} from './publication.js';
 import {createExportPanel} from './export.js';
 import {createEvidencePanel} from './evidence.js';
@@ -8,8 +9,12 @@ import {createPreviewPanel} from './previews.js';
 import {createComparisonPanel} from './comparison.js';
 import {createSimulationPanel} from './simulation.js';
 const $ = selector => document.querySelector(selector);
+function filterProjectCards(){const filter=$('#project-filter')?.value??'all',search=($('#project-search')?.value??'').toLowerCase();for(const card of document.querySelectorAll('#projects .project'))card.hidden=!card.dataset.title.toLowerCase().includes(search)||(filter==='ordinary'&&card.dataset.acceptance==='true')||(filter==='acceptance'&&card.dataset.acceptance!=='true')||(filter==='preview'&&card.dataset.previewReady!=='true');}
+$('#project-filter')?.addEventListener('change',filterProjectCards);$('#project-search')?.addEventListener('input',filterProjectCards);
+async function loadProjectSummaries(jobs,generation,requestNumber){let next=0;async function lane(){while(next<jobs.length&&generation===viewGeneration&&requestNumber===listGeneration){const {project,card,summary}=jobs[next++];if(!project.workspace_id||project.status!=='ready'){summary.textContent='工作区尚未就绪；模型状态暂未读取。';continue;}const base=`/api/workspaces/${encodeURIComponent(project.workspace_id)}`;const [model,preview]=await Promise.all(['/model','/browser-preview'].map(s=>api(base+s,{signal:AbortSignal.timeout(15000)}).catch(()=>null)));if(generation!==viewGeneration||requestNumber!==listGeneration||!card.isConnected)return;const value=projectModelSummary(model,preview);summary.textContent=value.text;card.dataset.previewReady=String(value.previewReady);filterProjectCards();}}await Promise.all([lane(),lane()]);}
 const workspaceLayout=createWorkspaceLayout({root:$('#workspace')});
 let observedModel=null,observedService=null;
+let executionAvailability={service:false,preview:false,simulation:false};
 function renderModelState(){
   const status=$('#workspace-model-status');if(!status)return;
   const active=workspaceSnapshot?.activeTurnId&&workspaceSnapshot.turns?.[workspaceSnapshot.activeTurnId];
@@ -29,7 +34,7 @@ function renderModelState(){
   }else if(observedModel?.reasonCode){
     state='failed';text='模型尚未通过运行检查，请在 Model 查看说明并继续修改。';
   }else if(observedModel?.version){
-    text='模型已保存。可以运行交互模型，或直接进行参数实验。';
+    text='模型已保存。本地预览兼容性见下方；云端运行状态独立显示。';
   }
   status.dataset.state=state;status.textContent=text;
 }
@@ -576,10 +581,10 @@ function openWorkspace(project) {
   renderWorkspaceDiff();
   selectArtifactPanel('files');
   if(standalone)workspaceLayout.select('preview');
-  void browserPreviewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id,canOpen:ready,standalone,...(standalone?browserRoute:{})});
+  void browserPreviewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id,canOpen:ready,canVerify:executionAvailability.simulation,standalone,...(standalone?browserRoute:{})});
   if(standalone){servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();return;}
-  previewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,canOpen:ready});
-  servicePanel.open({workspaceId:project.workspace_id,tenantId:tenant.id,canStart:ready});
+  previewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,canOpen:ready&&executionAvailability.preview,paused:!executionAvailability.preview});
+  servicePanel.open({workspaceId:project.workspace_id,tenantId:tenant.id,canStart:ready&&executionAvailability.service});
   if(ready){void simulationPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});void comparisonPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});}else{simulationPanel.leave();comparisonPanel.leave();}
   exportPanel.enter({workspaceId:project.workspace_id});publicationPanel.enter({workspaceId:project.workspace_id});
   void evidencePanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});
@@ -634,9 +639,11 @@ async function renderProjects() {
       empty.textContent = '还没有项目，创建你的第一个项目。';
       box.append(empty);
     }
+    const summaryJobs=[];
     for (const project of projects) {
       const card = document.createElement('article');
       card.className = 'card project';
+      card.dataset.title=project.title;card.dataset.acceptance=String(isAcceptanceProject(project.title));card.dataset.previewReady='false';
       const open = document.createElement('button');
       open.className = 'project-open';
       open.type = 'button';
@@ -645,18 +652,21 @@ async function renderProjects() {
       const title = document.createElement('h2');
       title.textContent = project.title;
       const status = document.createElement('span');
-      const labels = { provisioning: '准备中', ready: '就绪', failed: '失败', deleting: '删除中' };
+      const labels = { provisioning: '工作区准备中', ready: '工作区已创建', failed: '工作区准备失败', deleting: '删除中' };
       status.className = `status ${Object.hasOwn(labels, project.status) ? project.status : ''}`;
       status.textContent = labels[project.status] || '未知';
       const detail = document.createElement('p');
       detail.className = 'meta';
-      detail.textContent = project.source_model_id && project.source_model_version ? `官方版本 · 独立副本 · ${project.source_model_id}@${project.source_model_version}` : '空白项目';
+      detail.textContent = project.source_model_id && project.source_model_version ? `官方版本 · 独立副本 · ${project.source_model_id}@${project.source_model_version}` : '从空白创建 · 当前模型状态见下方';
       open.append(title, status, detail);
+      const summary=document.createElement('p');summary.className='meta';summary.textContent='正在读取模型与本地预览状态…';open.append(summary);summaryJobs.push({project,card,summary});
+      if(isAcceptanceProject(project.title)){const tag=document.createElement('span');tag.className='meta';tag.textContent='验收／调试（按标题）';open.append(tag);}
       if (!open.disabled) open.onclick = () => openWorkspace(project);
       card.append(open);
       box.append(card);
     }
     scheduleProjectRefresh(projects);
+    filterProjectCards();void loadProjectSummaries(summaryJobs,generation,requestNumber);
   } catch (error) {
     if (generation !== viewGeneration || requestNumber !== listGeneration) return;
     if (error.status === 401) {
@@ -698,6 +708,7 @@ async function load() {
     if (!authenticated) return;
     const user = await api('/api/me');
     if (generation !== viewGeneration) return;
+    executionAvailability={service:user.execution?.service===true,preview:user.execution?.preview===true,simulation:user.execution?.simulation===true};
     tenant = user.tenants[0] || null;
     accountView();
     pollDeadline = Date.now() + POLL_WINDOW_MS;
@@ -743,7 +754,7 @@ $('#sign-out').onclick = async () => {
     $('#projects').replaceChildren();
     accountView();
     show('已退出登录。');
-  } catch (error) { if(authenticated&&tenant&&activeProject){previewPanel.enter({workspaceId:activeProject.workspace_id,tenantId:tenant.id,canOpen:activeProject.status==='ready'});servicePanel.open({workspaceId:activeProject.workspace_id,tenantId:tenant.id,canStart:activeProject.status==='ready'});void refreshWorkspace(viewGeneration);}show(error.message, true); }
+  } catch (error) { if(authenticated&&tenant&&activeProject){previewPanel.enter({workspaceId:activeProject.workspace_id,tenantId:tenant.id,canOpen:activeProject.status==='ready'&&executionAvailability.preview,paused:!executionAvailability.preview});servicePanel.open({workspaceId:activeProject.workspace_id,tenantId:tenant.id,canStart:activeProject.status==='ready'&&executionAvailability.service});void refreshWorkspace(viewGeneration);}show(error.message, true); }
   finally { button.disabled = false; }
 };
 

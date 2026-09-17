@@ -6,3 +6,5 @@
 .publication-panel input,.publication-panel textarea,#model-submissions textarea{width:100%;box-sizing:border-box;min-width:0}
 .publication-panel textarea,#model-submissions textarea{min-height:80px}
 .publication-panel article,#model-submissions article{padding:16px 0;border-top:1px solid var(--line)}
+/* Author card layout must not override the native hidden attribute used by filters. */
+.project[hidden] { display: none; }
