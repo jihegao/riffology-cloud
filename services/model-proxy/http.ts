@@ -3,7 +3,7 @@ import {profileDigest} from './production-profile.ts';
 import {authorizeWarmOutbound,type WarmAuthorityNamespace} from '../sandbox/warm-authority.ts';
 import { PRODUCTION_MONEY_ACTOR, moneyReference, type ProductionMoneyLedger, type MoneyReference } from '../model-budget/production-money.ts';
 import type { ProductionProfile } from './production-profile.ts';
-import { productionFailure, productionHttpFailure } from './openai-gateway-responses.ts';
+import { productionFailure, productionHttpFailure, safeProviderErrorHint } from './openai-gateway-responses.ts';
 import { modelBudgetTenantName, modelCallReference, type ModelCallRecord, type ModelCallRequest, type ModelCallTerminal, type ModelReleaseProof } from '../model-budget/core.ts';
 import { positive, turnDigest, turnId } from '../turn/protocol.ts';
 import { verifyModelTurnCapability, type ModelTurnCapabilityClaims } from './capability.ts';
@@ -58,6 +58,7 @@ export type ProductModelProviderInput = {
   signal?: AbortSignal;
 };
 export type ProductModelProviderResult = {
+  providerErrorHint?: string;
   status: number;
   providerRequestId: string | null;
   inputTokens: number | null;
@@ -132,18 +133,19 @@ function denied(): Response { return Response.json({ error: 'model_request_denie
 function unavailable(): Response { return Response.json({ error: 'model_provider_unavailable' }, { status: 503, headers: { 'cache-control': 'no-store' } }); }
 function emit(telemetry:ProductModelTelemetry|undefined,event:Record<string,unknown>){try{telemetry?.(event);}catch{}}
 function failureCode(error:unknown):string{const message=error instanceof Error?error.message:'';if(/^(?:opencode-go|invalid-opencode-go|model-call|invalid-model|g5-|production-|provider-fetch-)[a-z0-9-]{0,96}$/.test(message)||['rejected-auth','rate-limited','provider-failure','deadline','cancelled','malformed-stream','missing-usage','outcome-unknown'].includes(message))return message;if(error instanceof DOMException&&['AbortError','TimeoutError'].includes(error.name))return `provider-${error.name.toLowerCase()}`;if(error instanceof TypeError)return 'runtime-typeerror';return 'unclassified';}
-function failureEvidence(stage:G5ProviderFailureEvidence['stage'],error:unknown,now:()=>number,upstreamStatus?:number):G5ProviderFailureEvidence{
+function failureEvidence(stage:G5ProviderFailureEvidence['stage'],error:unknown,now:()=>number,upstreamStatus?:number,hint?:string):G5ProviderFailureEvidence{
  const code=failureCode(error);
  // Keep the existing strict receipt schema. Only a validated provider result
  // may supply this prefix; request data and raw upstream bodies never enter it.
- const errorCode=upstreamStatus===undefined?code:`upstream-http-${upstreamStatus}:${code}`;
+ const safeHint=safeProviderErrorHint(hint);
+ const errorCode=upstreamStatus===undefined?code:`upstream-http-${upstreamStatus}:${safeHint?safeHint+':':''}${code}`.slice(0,150);
  return {schemaVersion:1,stage,errorCode,observedAt:positive(now())};
 }
 function conflict(error: string, status?: string): Response {
   return Response.json({ error, ...(status ? { status } : {}) }, { status: 409, headers: { 'cache-control': 'no-store' } });
 }
 function normalizedProviderResult(value: unknown, claims: ModelTurnCapabilityClaims, envelopeValue: Envelope): ProductModelProviderResult {
-  exact(value, ['status', 'providerRequestId', 'inputTokens', 'outputTokens', 'responseContentType', 'responseBody'], 'invalid-model-provider-result');
+  exact(value, ['status', 'providerRequestId', 'inputTokens', 'outputTokens', 'responseContentType', 'responseBody', ...(value&&typeof value==='object'&&Object.hasOwn(value,'providerErrorHint')?['providerErrorHint']:[])], 'invalid-model-provider-result');
   const status = bounded(value.status, 599, 100);
   const providerRequestId = value.providerRequestId === null ? null : typeof value.providerRequestId === 'string' && /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(value.providerRequestId) ? value.providerRequestId : reject('invalid-model-provider-result');
   const inputTokens = value.inputTokens === null ? null : bounded(value.inputTokens, envelopeValue.inputTokenUpperBound);
@@ -152,7 +154,7 @@ function normalizedProviderResult(value: unknown, claims: ModelTurnCapabilityCla
   if (value.responseContentType!=='text/event-stream'&&value.responseContentType!=='application/json') reject('invalid-model-provider-result');
   if (!(value.responseBody instanceof Uint8Array)||value.responseBody.byteLength<1||value.responseBody.byteLength>MAX_BODY) reject('invalid-model-provider-result');
   if(status>=200&&status<300&&(providerRequestId===null||inputTokens===null||outputTokens===null||value.responseContentType!=='text/event-stream'))reject('invalid-model-provider-result');
-  return {status,providerRequestId,inputTokens,outputTokens,responseContentType:value.responseContentType,responseBody:Uint8Array.from(value.responseBody)};
+  return {status,providerRequestId,inputTokens,outputTokens,providerErrorHint:safeProviderErrorHint(value.providerErrorHint),responseContentType:value.responseContentType,responseBody:Uint8Array.from(value.responseBody)};
 }
 
 /** Private service-binding gate. Provider/model authority comes only from the
@@ -250,6 +252,7 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
 
   let result: ProductModelProviderResult;
   let upstreamFailureStatus:number|undefined;
+  let upstreamErrorHint:string|undefined;
   let stage='provider-dispatch',started=now();
   try {
     const providerSessionId=`ses_${(await turnDigest({schemaVersion:1,purpose:'opencode-go-provider-session',scope:claims.identity.scope,sessionId:claims.identity.sessionId})).slice(0,26)}`;
@@ -259,7 +262,7 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
       provider: claims.provider, model: claims.model, providerSessionId, idempotencyKey: parsed.requestId,
       payload: parsed.payload,inputTokenUpperBound:parsed.inputTokenUpperBound,maxOutputTokens:parsed.maxOutputTokens,deadlineAt:parsed.deadlineAt,...(controlledWindowDeadlineAt===undefined?{}:{dispatchAdmissionDeadlineAt:providerDeadlineAt}),signal:request.signal,
     }), claims, parsed);
-    if(production&&(result.status<200||result.status>=300))upstreamFailureStatus=result.status;
+    if(production&&(result.status<200||result.status>=300)){upstreamFailureStatus=result.status;upstreamErrorHint=safeProviderErrorHint(result.providerErrorHint);}
     emit(telemetry,{event:'provider-dispatch-result',status:result.status,contentType:result.responseContentType,requestIdPresent:result.providerRequestId!==null,usagePresent:result.inputTokens!==null&&result.outputTokens!==null,durationMs:now()-started});
     const usage=result.inputTokens===null||result.outputTokens===null
       ? {kind:'unknown' as const,observedAt:positive(now())}
@@ -280,7 +283,7 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
     emit(telemetry,{event:'budget-finish-result',outcome:'committed',durationMs:now()-started});
   } catch(error) {
     emit(telemetry,{event:'model-call-failure',stage,errorCode:failureCode(error),durationMs:now()-started});
-    if(isG5&&g5CallKey)await guard!.markUnknown(g5CallKey,failureEvidence(stage as G5ProviderFailureEvidence['stage'],error,now,upstreamFailureStatus)).catch(()=>{});
+    if(isG5&&g5CallKey)await guard!.markUnknown(g5CallKey,failureEvidence(stage as G5ProviderFailureEvidence['stage'],error,now,upstreamFailureStatus,upstreamErrorHint)).catch(()=>{});
     if(money&&moneyRef)await money.markUnknown(moneyRef,productionFailure(error)).catch(()=>{});
     await budget.markUnknown(tenantId, reference).catch(() => {});
     return unavailable();
