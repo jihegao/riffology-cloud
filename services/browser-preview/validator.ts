@@ -20,7 +20,10 @@ function pythonPolicy(bytes:Uint8Array,profile:TrustedPreviewProfile,model:boole
  // Preserve line structure and identifiers while ignoring Python strings/comments.
  const tokens=source.replace(/'''[\s\S]*?'''|"""[\s\S]*?"""|'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"|#[^\n]*/g,m=>m.replace(/[^\n]/g,' '));
  const allowed=new Set(['math','random','heapq','collections','itertools','statistics','dataclasses','typing','enum','functools','json',...profile.runtime.dependencies.map(d=>d.name.replace(/-/g,'_')),...(!model?['argparse','pathlib','sys','model']:[])]);
- for(const match of tokens.matchAll(/(?:^|[;\n])\s*(from\s+([^\s]+)\s+import|import\s+([^\n;]+))/g)){
+ // An import is also legal in a one-line compound suite (`if ok: import x`).
+ // Match the Python keywords wherever they occur after strings/comments have
+ // been blanked so indentation or a preceding colon cannot bypass the allowlist.
+ for(const match of tokens.matchAll(/\b(from\s+([^\s]+)\s+import|import\s+([^\n;]+))/g)){
   const modules=match[2]?[match[2]]:match[3]!.split(',').map(s=>s.trim().split(/\s+/)[0]!);
   if(modules.some(name=>!allowed.has(name.split('.')[0]!)||name.startsWith('.')))reject('python-unsupported');
  }

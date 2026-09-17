@@ -49,9 +49,18 @@ self.onmessage = async event => {
     pyodide.FS.mkdirTree('/model');
     pyodide.FS.writeFile('/model/model.py', loaded.files.get('model/model.py'));
     pyodide.globals.set('riffology_config_json', JSON.stringify(pending.input));
-    pyodide.globals.set('riffology_max_output_bytes', LIMITS.resultBytes);
-    const json = await pyodide.runPythonAsync(`import json, sys, inspect\nsys.path.insert(0, '/model')\nfrom model import run\n_result = run(json.loads(riffology_config_json))\nif inspect.isawaitable(_result): _result = await _result\n_encoder = json.JSONEncoder(allow_nan=False, separators=(',', ':'))\n_chunks = []\n_total = 0\nfor _chunk in _encoder.iterencode(_result):\n    _total += len(_chunk.encode('utf-8'))\n    if _total > riffology_max_output_bytes: raise ValueError('runtime-output-limit')\n    _chunks.append(_chunk)\n''.join(_chunks)`);
-    const trace = validateTrace(JSON.parse(String(json)));
+    const resultChunks = []; let resultBytes = 0, resultExceeded = false; const encoder = new TextEncoder();
+    pyodide.globals.set('riffology_emit_chunk', value => {
+      if (resultExceeded) return;
+      const chunk = String(value), bytes = encoder.encode(chunk).byteLength;
+      if (bytes > LIMITS.resultBytes - resultBytes) {resultExceeded = true; return;}
+      resultBytes += bytes; resultChunks.push(chunk);
+    });
+    await pyodide.runPythonAsync(`import json, sys, inspect\nasync def _riffology_execute(config_json, emit):\n    _loads = json.loads\n    _isawaitable = inspect.isawaitable\n    _iterencode = json.JSONEncoder(allow_nan=False, separators=(',', ':')).iterencode\n    sys.path.insert(0, '/model')\n    from model import run\n    _result = run(_loads(config_json))\n    if _isawaitable(_result): _result = await _result\n    for _chunk in _iterencode(_result): emit(_chunk)\nawait _riffology_execute(riffology_config_json, riffology_emit_chunk)`);
+    if (resultExceeded) throw Error('runtime-output-limit');
+    const resultText = resultChunks.join('');
+    if (encoder.encode(resultText).byteLength !== resultBytes) throw Error('runtime-output-limit');
+    const trace = validateTrace(JSON.parse(resultText));
     if (trace.snapshots.some(s => s.space.type !== loaded.visualization.renderer)) throw Error('runtime-renderer-mismatch');
     await new Promise(resolve => setTimeout(resolve, 20));
     self.postMessage({schema:MESSAGE_SCHEMA,type:'result',requestId:pending.requestId,packageIdentity:pending.packageIdentity,trace});

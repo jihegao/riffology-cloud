@@ -5,7 +5,7 @@
       "runtimeVersion": "pyodide-314.0.6/v1",
       "adapterVersion": "riffology.model-run/v1",
       "pythonVersion": "3.14.2",
-      "assetSha256": "99c88a6dd3e3a520c907af5dd2e9c6bfdb1754a742a5a816351ea144e18965f6",
+      "assetSha256": "b142b02c7a1edd5eaa72989a8488b58c7309fea578ce8beff5ada642c44be981",
       "visualProtocol": "riffology.visual/v0.1",
       "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
       "dependencies": []
@@ -44,8 +44,8 @@
       },
       {
         "path": "delivery/worker.bundle.mjs",
-        "sha256": "907064f01db56308a5c220547d992918d0bb3d7c1d17bdc98024c77daa356df0",
-        "byteLength": 1645408
+        "sha256": "404b93d84accedd287324f995d03d3d81ffbe4ecce94562a63b1e2f09a603890",
+        "byteLength": 1646032
       },
       {
         "path": "runtime/frame.html",
@@ -84,8 +84,8 @@
       },
       {
         "path": "runtime/worker.mjs",
-        "sha256": "4d0d40fe70093355b27da75e748d9f29506f0bad856bda91b85aa09e49c9ddac",
-        "byteLength": 5444
+        "sha256": "f420e78080ca2310ed591ccc990d67809914e5acfb819ee34559bebde65a61cc",
+        "byteLength": 5994
       },
       {
         "path": "source/contract.ts",
@@ -116,7 +116,7 @@
       "runtimeVersion": "pyodide-314.0.6/v1",
       "adapterVersion": "riffology.model-run/v1",
       "pythonVersion": "3.14.2",
-      "assetSha256": "38918447739ce7090af90cc5dd074b6d706fbdfae2532e99f978cd694ed3b715",
+      "assetSha256": "d8ba03adacbcdf0458dfb23e33f80da52c4c852082158d687fe587676a07b79f",
       "visualProtocol": "riffology.visual/v0.1",
       "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
       "dependencies": [
@@ -363,8 +363,8 @@
       },
       {
         "path": "delivery/worker.bundle.mjs",
-        "sha256": "907064f01db56308a5c220547d992918d0bb3d7c1d17bdc98024c77daa356df0",
-        "byteLength": 1645408
+        "sha256": "404b93d84accedd287324f995d03d3d81ffbe4ecce94562a63b1e2f09a603890",
+        "byteLength": 1646032
       },
       {
         "path": "runtime/frame.html",
@@ -403,8 +403,8 @@
       },
       {
         "path": "runtime/worker.mjs",
-        "sha256": "4d0d40fe70093355b27da75e748d9f29506f0bad856bda91b85aa09e49c9ddac",
-        "byteLength": 5444
+        "sha256": "f420e78080ca2310ed591ccc990d67809914e5acfb819ee34559bebde65a61cc",
+        "byteLength": 5994
       },
       {
         "path": "source/contract.ts",
