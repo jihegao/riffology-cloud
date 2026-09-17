@@ -36,7 +36,7 @@ export class OpenAIGatewayResponsesProvider implements ProductModelProvider {
  constructor(options:{profile:ProductionProfile;providerKey:string;gatewayKey:string;fetch?:typeof fetch;clock?:()=>number}){
   this.productionProfile=productionProfile(options.profile);
   for(const key of [options.providerKey,options.gatewayKey])if(typeof key!=='string'||key.length<16||key.length>4096||/[\r\n]/.test(key))throw Error('invalid-production-secrets');
-  this.#providerKey=options.providerKey;this.#gatewayKey=options.gatewayKey;this.#fetch=options.fetch??fetch;this.#now=options.clock??Date.now;
+  this.#providerKey=options.providerKey;this.#gatewayKey=options.gatewayKey;this.#fetch=options.fetch??globalThis.fetch.bind(globalThis);this.#now=options.clock??Date.now;
  }
  async dispatch(input:ProductModelProviderInput):Promise<ProductModelProviderResult>{
   if(input.provider!=='openai'||input.model!==this.productionProfile.model||!externalId.test(input.idempotencyKey)||input.deadlineAt<=this.#now())throw Error('rejected-auth');
