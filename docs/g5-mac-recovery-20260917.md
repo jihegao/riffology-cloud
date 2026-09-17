@@ -1,8 +1,8 @@
 # G5 Mac recovery: upstream failure evidence
 
-Status: user authorized the exact v4 failed/pending rollover; implementation and
-fresh authority readback complete. Closed deployment and controlled execution
-are pending. Live G5 model/browser acceptance is not yet passed.
+Status: authorized v4 rollover implemented, deployed and registered. One Mac UI
+recovery Turn executed and failed with proven upstream HTTP 400. All active
+gates and Guard admission are closed. G5 browser acceptance remains blocked.
 
 ## Revalidated deployment and historical evidence
 
@@ -39,7 +39,8 @@ Transport errors and successful HTTP responses retain their previous evidence.
 No raw upstream body, request ID, prompt, or credential enters the failure code.
 
 This is an observability repair. It cannot reconstruct historical status or
-guarantee the underlying provider request will succeed. It is not deployed.
+guarantee the underlying provider request will succeed. It is now deployed in
+source commit `e346e6f4a56dfb97b27c4d24b10bb4f2c05f8a09`.
 
 Validation: TypeScript and diff whitespace checks passed; proxy suites 13/13,
 operator inspector suite 14/14, and real Workerd money/token crash, response-loss,
@@ -93,3 +94,80 @@ single model recovery, not the full 63-Task benchmark admission contract.
 Browser acceptance remains pending for actual G5 local Run, trajectory,
 opaque-origin frame, playback and browser-side request counting. Earlier empty
 Worker Tail output is an observation, not complete proof of zero browser POSTs.
+
+## Executed v5 result
+
+- Target window: `g5-20260917-mac-v5-A`.
+- Registered rollover receipt:
+  `dff8846150223b1f4cf59efd2ede13b84b774bb51bfa8b4bffcffd12d9f59e3c`.
+- Main module SHA256:
+  `c14e7bf0dc6f8d95035906ee26deb065876c4c608611df25a3df539171541807`.
+- Closed version: `2ba2ede5-a7f7-4647-af88-373a14bfae00`.
+- One-model open version: `fa800704-88f1-4045-88e2-da348859a804`.
+- Final deployment: `baefea69-cb3d-4cdb-a998-3ec6792ae474`, 100% closed version.
+- Existing app assets were retained. Public root SHA256 remained
+  `d70a95d14dc298babd4eb414a38aff3bbe4e04fd4899cdd56a3ead24b521315b`.
+- All DO namespace IDs were independently preserved; no migrations, container
+  image changes, model/profile changes, retention changes or budget top-up.
+- Gateway remained authenticated, payload logging disabled, cache TTL zero.
+  All five named container apps were enumerated through complete instance pages
+  and every instance was inactive before admission.
+- Safari `/api/me` matched the frozen principal. Project
+  `21a176c7-b244-4e68-a39a-3d8617092a72`, workspace
+  `7865d8fa-0f43-4aec-8f6a-13b9e94046ef`, Turn
+  `4a2590c3-6961-484a-90a5-bb3681fca792`.
+- Browser submitted one inspected synthetic FCFS prompt. Native paste inserted
+  unrelated clipboard content and native typing dropped some punctuation during
+  drafting; neither draft was submitted. Both were replaced, and the final
+  plain-English model request was inspected before the sole Send action.
+- Final counts: 2 Tasks, 1 Project, 1 Turn, 1 upstream dispatch, 0 Simulation,
+  0 Service, 0 active/pending/unknown tools.
+- Browser terminal event sequence 7: `turn.failed`, saved=true, revision
+  `a36e7ea2d1dca4206ddae08dab55bb1c4284c55a956caa20e22d8126d1160896`.
+  This saved failure revision is not a valid Model Spec or ready Browser Preview.
+- New failure code:
+  `upstream-http-400:g5-authority-settlement-unconfirmed`.
+  Failure authority receipt:
+  `11e08f9549533395e10015b397aafa4100342aac1eb502220dd52687cdb6386a`.
+- Token failed/pending, usage unknown, provider request ID present; Guard and
+  Money unknown. New conservative hold: 9,978,200 nanodollars ($0.0099782), not
+  verified billing. It was not refunded, settled, replayed or quarantined again.
+- All five prior authority receipts and each 9,910,450-nanodollar hold were
+  re-read after v5 and remained unchanged.
+- Final Guard closed=true. Final Guard summary receipt:
+  `8d82dbdb3097e9432c318d6ae2c18161d5897372364bea08bc3ab8be5b2b181b`.
+- Temporary v5 operator deleted; API absence verified. Credentials and raw
+  operational evidence remain private on AMD128 under
+  `/home/g/.private/riffology-cloud/g5-a/mac-v5-recovery-20260917-frozen`.
+
+The watch restored the closed version on detecting the new unknown, but its
+initial confirmation incorrectly queried `/settings`, which reflected the
+latest uploaded open configuration rather than the selected traffic version.
+Three bounded close-to-the-same-version submissions occurred; no model request
+was repeated. Independent deployment plus exact version-resource readback
+confirmed all six gates false and money.enabled=false. Guard was then explicitly
+closed and read back. The operational helper now verifies active deployment plus
+version resources, not `/settings`, for rollback confirmation.
+
+Final checks: TypeScript and diff whitespace checks passed; 35 focused tests and
+the separate real Workerd production-path regression passed. No push or merge
+was performed in either user's main worktree.
+
+## Read-only HTTP 400 follow-up and boundary
+
+`openai-gateway-responses.ts` pins `prompt_cache_retention: in_memory` for the
+frozen `gpt-5.6-luna` profile. Current
+[OpenAI prompt caching documentation](https://developers.openai.com/api/docs/guides/prompt-caching)
+describes GPT-5.6-and-later controls through `prompt_cache_options.ttl` with `30m`,
+and a 1.25x input-rate cache-write charge. This exposes a concrete compatibility,
+retention and conservative-pricing review item in the older frozen profile.
+It is a suspected contributor to HTTP 400, not a proved error-field diagnosis:
+the adapter cancels non-2xx bodies and retained no structured provider error
+`code` or `param`. Do not claim invalid credentials, quota exhaustion or a
+specific bad field solely from HTTP 400.
+
+No parameter, model, retention period or price card was changed to make the
+request succeed. Next work requires a reviewed provider contract and sanitized
+error-code/parameter capture; any new paid attempt also needs a separate decision
+for v5's now-unknown outcome. This v4-only authorization is exhausted. The Mac
+browser transfer worked, but cannot repair a server-side provider rejection.
