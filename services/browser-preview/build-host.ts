@@ -29,6 +29,28 @@ export class BrowserPreviewBuildHost{
  receipt(identity:string):PreviewBuildReceipt|null{const r=this.storage.kv.get<PreviewBuildReceipt>(RECEIPT+identity)??null;if(r&&!equal(r.scope,{tenantId:this.scope.tenantId,projectId:this.scope.projectId,workspaceId:this.scope.workspaceId}))throw Error('browser-preview-read-denied');return structuredClone(r);}
  source(revision:string):PreviewDiscovery|null{const source=this.storage.kv.get<PreviewDiscovery>(discoveryKey(revision))??null;if(source&&!sameScope(sourceScope(source),this.scope))throw Error('browser-preview-read-denied');return structuredClone(source);}
  initial():PreviewDiscovery|null{const revision=this.storage.kv.get<string>('browser-preview:initial-source');return revision?this.source(revision):null;}
+ /** A ready package is bound to the exact trusted runtime profile that built it. */
+ async rearmStaleReady(revision:string):Promise<boolean>{
+  const source=this.source(revision);if(!source)return false;
+  let registry:PreviewProfileRegistry;try{registry=await this.ports.registry();}catch{return false;}
+  try{
+   await this.#guard(source);
+   const stale=ids.some(id=>{const row=this.read(revision,id),current=registry.resolve(id);return row?.state.status==='ready'&&current!==null&&!equal(row.profile,current);});if(!stale)return false;
+   let changed=false;
+   await this.#write(async tx=>{
+    const reset:PreviewDiscovery={...source,status:'pending',attempts:0,nextAttemptAt:this.now(),reasonCode:null};
+    for(const id of ids){
+     const row=await tx.get<SavedPreviewBuild>(rowKey(revision,id)),current=registry.resolve(id);
+     if(row?.state.status!=='ready'||current===null||equal(row.profile,current))continue;
+     if(!sameScope(sourceScope(row.source),this.scope)||!equal(frozenSource(row.source),frozenSource(source)))throw Error('browser-preview-source-unavailable');
+     const buildIdentity=await previewSha256(canonicalPreviewJson({revision:frozenSource(source),profileId:id}));
+     await this.#put(tx,rowKey(revision,id),{schemaVersion:1,source:reset,profile:null,modelSpec:null,receipt:null,state:{status:'building',revisionId:revision,profileId:id,buildIdentity,attempt:0}} satisfies SavedPreviewBuild,source);changed=true;
+    }
+    if(changed)await this.#put(tx,discoveryKey(revision),reset,source);
+   },source);
+   return changed;
+  }catch(error){const current=this.source(revision),stillStale=ids.some(id=>{const row=this.read(revision,id),profile=registry.resolve(id);return row?.state.status==='ready'&&profile!==null&&!equal(row.profile,profile);});if(error instanceof Error&&error.message==='preview-discovery-conflict'&&current?.status==='pending'&&equal(frozenSource(current),frozenSource(source))&&!stillStale)return false;throw error;}
+ }
  async #guard(source:PreviewDiscovery){this.ports.checkSource?.(source);const current=await this.storage.get<PreviewDiscovery>(discoveryKey(sourceRevision(source)));if(!current||!equal(current,source))throw Error('preview-discovery-conflict');this.ports.checkSource?.(source);}
  async #checkTransactionSource(tx:DurableObjectTransaction,source:PreviewDiscovery){const current=await tx.get<PreviewDiscovery>(discoveryKey(sourceRevision(source)));this.ports.checkSource?.(source);if(!current||!equal(current,source))throw Error('preview-discovery-conflict');}
  async #put(tx:DurableObjectTransaction,key:string,value:unknown,source:PreviewDiscovery){await this.#checkTransactionSource(tx,source);await tx.put(key,value);}

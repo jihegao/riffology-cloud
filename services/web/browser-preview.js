@@ -13,7 +13,7 @@ export async function loadBrowserPreviewAssets(profile,request){if(!profile||!Ar
 export async function createBrowserPreviewRuntime({delivery,request,win,visualRoot,metricRoot}){
  if(!delivery||delivery.assetBaseUrl!=='/browser-preview-assets')throw Error('本地执行环境尚未配置。');
  const [{BrowserPreviewRuntime},{PreviewPlayer}]=await Promise.all([verifiedModule(delivery.hostModule,request,win),verifiedModule(delivery.rendererModule,request,win)]);
- const runtime=new BrowserPreviewRuntime({executionOrigin:delivery.executionOrigin,assetLoader:profile=>loadBrowserPreviewAssets(profile,request)});
+ const runtime=new BrowserPreviewRuntime({executionOrigin:delivery.executionOrigin,frameUrl:delivery.frameDocument?.url,assetLoader:profile=>loadBrowserPreviewAssets(profile,request)});
  return {runtime,player:new PreviewPlayer(visualRoot,metricRoot)};
 }
 // Fixed immutable byte assets may have large bodies; metadata retains its shorter budget.

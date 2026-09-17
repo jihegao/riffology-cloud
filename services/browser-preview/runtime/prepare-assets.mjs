@@ -18,15 +18,17 @@ for (const expected of metadata.assets) {
     await writeFile(path,bytes);
   }
 }
-const sources = ['worker.mjs','host.mjs','frame.mjs','renderer.mjs','package-loader.mjs','protocol.mjs','frame.html'];
+const sources = ['worker.mjs','host.mjs','frame.mjs','renderer.mjs','package-loader.mjs','protocol.mjs','sha256.mjs','frame.html'];
 const runtimeAssets = await Promise.all(sources.map(async file => {const bytes = await readFile(new URL(file,import.meta.url)); return {path:'runtime/'+file,sha256:await previewSha256(bytes),byteLength:bytes.length};}));
 for (const [path,file] of [['source/contract.ts','services/browser-preview/contract.ts'],['source/model-spec.ts','services/simulation/model-spec.ts'],['source/package-lock.json','package-lock.json'],['source/prepare-assets.mjs','services/browser-preview/runtime/prepare-assets.mjs']]) {
   const bytes = await readFile(resolve(root,file));runtimeAssets.push({path,sha256:await previewSha256(bytes),byteLength:bytes.length});
 }
 // Execution bundles do not import the registry: hash actual bytes before producing it.
+const executionBuildOptions={bundle:true,format:'iife',platform:'browser',target:'es2022',external:['node:*','ws'],workerDefine:{'import.meta.url':'self.location.href'}};
 for (const entry of ['worker','frame']) {
   const path = resolve(output,`${entry}.bundle.mjs`);
-  await build({entryPoints:[resolve(root,`services/browser-preview/runtime/${entry}.mjs`)],bundle:true,format:'esm',platform:'browser',target:'es2022',outfile:path,external:['node:*','ws'],logLevel:'warning'});
+  const {workerDefine,...sharedExecutionBuildOptions}=executionBuildOptions;
+  await build({entryPoints:[resolve(root,`services/browser-preview/runtime/${entry}.mjs`)],...sharedExecutionBuildOptions,...(entry==='worker'?{define:workerDefine}:{}),outfile:path,logLevel:'warning'});
   const bytes = await readFile(path);runtimeAssets.push({path:`delivery/${entry}.bundle.mjs`,sha256:await previewSha256(bytes),byteLength:bytes.length});
   const immutable = resolve(output,'delivery',await previewSha256(bytes),`${entry}.bundle.mjs`);
   await mkdir(dirname(immutable),{recursive:true});
@@ -45,7 +47,7 @@ if (process.argv.includes('--update-manifest')) await writeFile(profilePath, JSO
 else if (canonicalPreviewJson(JSON.parse(await readFile(profilePath))) !== canonicalPreviewJson(profiles)) throw Error('runtime-profile-source-changed: review and run --update-manifest');
 await build({entryPoints:[resolve(root,'services/browser-preview/runtime/host.mjs')],bundle:true,format:'esm',platform:'browser',target:'es2022',outfile:resolve(output,'host.bundle.mjs'),external:['node:*','ws'],logLevel:'warning'});
 const hostBytes = await readFile(resolve(output,'host.bundle.mjs'));
-const delivery={schema:'riffology.browser-runtime-delivery/v1',profiles:profiles.map(p => p.runtime.assetSha256),host:{sha256:await previewSha256(hostBytes),byteLength:hostBytes.length},esbuildVersion:(await import('esbuild')).version,buildOptions:{bundle:true,format:'esm',platform:'browser',target:'es2022',external:['node:*','ws']}};
+const delivery={schema:'riffology.browser-runtime-delivery/v1',profiles:profiles.map(p => p.runtime.assetSha256),host:{sha256:await previewSha256(hostBytes),byteLength:hostBytes.length},esbuildVersion:(await import('esbuild')).version,buildOptions:{bundle:true,format:'esm',platform:'browser',target:'es2022',external:['node:*','ws']},executionBuildOptions};
 const deliveryPath=new URL('./assets/delivery.json',import.meta.url);
 if(process.argv.includes('--update-manifest'))await writeFile(deliveryPath,JSON.stringify(delivery,null,2)+'\n');
 else if(canonicalPreviewJson(JSON.parse(await readFile(deliveryPath)))!==canonicalPreviewJson(delivery))throw Error('runtime-delivery-mismatch: host receipt changed');

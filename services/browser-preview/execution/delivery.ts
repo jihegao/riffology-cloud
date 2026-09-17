@@ -1,6 +1,6 @@
 import {browserPreviewStaticIndex} from './assets/static-index.ts';
 export type StaticAssetPort={fetch(request:Request):Promise<Response>};
-type StaticAsset={url:string;file:string;sha256:string;byteLength:number;contentType:string;kind:'frame'|'worker'|'app'};
+type StaticAsset={url:string;file:string;sha256:string;byteLength:number;contentType:string;kind:'frame'|'app';scriptSha256?:string};
 function deny(status:number){return new Response('unavailable',{status,headers:{'Cache-Control':'no-store','Content-Type':'text/plain','X-Content-Type-Options':'nosniff'}});}
 export async function checkedStaticAsset(request:Request,port:StaticAssetPort,asset:StaticAsset,headers:Headers):Promise<Response>{
  const source=await port.fetch(new Request(new URL('/'+asset.file,request.url),{method:'GET'}));
@@ -22,7 +22,7 @@ export async function serveBrowserPreviewAppAsset(request:Request,port:StaticAss
  if(!asset)return deny(404);
  return checkedStaticAsset(request,port,asset,new Headers({'Cross-Origin-Resource-Policy':'same-origin'}));
 }
-type DeliveryDescriptor={hostModule:{url:string;sha256:string;byteLength:number};rendererModule:{url:string;sha256:string;byteLength:number};assetBaseUrl:string};
+type DeliveryDescriptor={hostModule:{url:string;sha256:string;byteLength:number};rendererModule:{url:string;sha256:string;byteLength:number};frameDocument:{url:string;sha256:string;byteLength:number;scriptSha256:string};assetBaseUrl:string};
 export function selectBrowserPreviewDelivery(index:{delivery:DeliveryDescriptor;versions:Record<string,DeliveryDescriptor>},executionOrigin:string,assetSha256?:string){const delivery=assetSha256===undefined?index.delivery:index.versions[assetSha256];if(!delivery)throw Error('browser-preview-delivery-version-unavailable');return {...delivery,executionOrigin};}
 export function browserPreviewDelivery(executionOrigin:string,assetSha256?:string){return selectBrowserPreviewDelivery(browserPreviewStaticIndex,executionOrigin,assetSha256);}
 export function findExecutionAsset(path:string){return browserPreviewStaticIndex.assets.find(a=>a.kind!=='app'&&a.url===path)??null;}
