@@ -30,6 +30,13 @@ test('chained rollover runs the complete normal suite with zero probe Tasks',asy
  assert.deepEqual(nextAdmission(s,normal),{state:'complete'});
  p.dispatchCap=146;await assert.rejects(compileSchedule(p),/frozen-dispatch-or-run-cap/);
 });
+test('v3 residual 144 dispatches covers only the normal suite without relaxing budget',async()=>{
+ const p=await proposal();p.taskCap=63;p.dispatchCap=144;p.productionManifest.globalCapNanodollars=144*9216;
+ const s=await compileSchedule(p);assert.equal(s.limits.totalDispatches,144);assert.equal(s.limits.maximumNanodollars,144*9216);assert.deepEqual(s.probes,[]);
+ p.productionManifest.globalCapNanodollars--;await assert.rejects(compileSchedule(p),/budget-too-small/);
+ p.productionManifest.globalCapNanodollars++;p.dispatchCap=143;await assert.rejects(compileSchedule(p),/frozen-dispatch-or-run-cap/);
+ p.dispatchCap=144;p.taskCap=64;await assert.rejects(compileSchedule(p),/frozen-dispatch-or-run-cap/);
+});
 test('unknown final probe stops; no post-stop admission, no replay, unqualified predecessor blocks dependencies',async()=>{
  const s=await compileSchedule(await proposal());
  const normal=s.schedule.map(t=>({id:t.fixtureId,status:'accepted',dispatches:2}));

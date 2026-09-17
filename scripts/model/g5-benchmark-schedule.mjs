@@ -37,8 +37,8 @@ export async function compileSchedule(input) {
   const probeTasks = taskCap === normalAdmissionTasks + 1 ? 1 : taskCap === normalAdmissionTasks ? 0 : -1;
   if (probeTasks < 0) throw Error('task-cap-conflict');
   const maximumAdmissionTasks = normalAdmissionTasks + probeTasks;
-  const expectedDispatchCap = probeTasks === 1 ? 146 : 145;
-  if (input.dispatchCap !== expectedDispatchCap || input.runCap !== 39) throw Error('frozen-dispatch-or-run-cap');
+  const allowedDispatchCaps = probeTasks === 1 ? [146] : [144, 145];
+  if (!allowedDispatchCaps.includes(input.dispatchCap) || input.runCap !== 39) throw Error('frozen-dispatch-or-run-cap');
   const profile = productionProfile(manifest.profile);
   const perCall = BigInt(conservativeCost(profile, profile.limits.maxInputTokens, profile.limits.maxOutputTokens));
   const total = perCall * BigInt(input.dispatchCap);
