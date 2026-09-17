@@ -136,7 +136,9 @@ Worker Tail output is an observation, not complete proof of zero browser POSTs.
   re-read after v5 and remained unchanged.
 - Final Guard closed=true. Final Guard summary receipt:
   `8d82dbdb3097e9432c318d6ae2c18161d5897372364bea08bc3ab8be5b2b181b`.
-- Temporary v5 operator deleted; API absence verified. Credentials and raw
+- Temporary v5 operator deleted; API absence verified. The loopback-only SSH
+  proxy forward was terminated and port 17889 verified no longer listening.
+  Credentials and raw
   operational evidence remain private on AMD128 under
   `/home/g/.private/riffology-cloud/g5-a/mac-v5-recovery-20260917-frozen`.
 
