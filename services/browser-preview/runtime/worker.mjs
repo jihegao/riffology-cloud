@@ -4,7 +4,11 @@ import {checkedPackage, checkedAssets} from './package-loader.mjs';
 import {validateRunRequest, validateTrace, MESSAGE_SCHEMA, LIMITS} from './protocol.mjs';
 import {resolveParameters} from '../../simulation/model-spec.ts';
 import {canonicalPreviewJson} from '../contract.ts';
+import {sha256Hex} from './sha256.mjs';
 const nativeFetch = globalThis.fetch.bind(globalThis);
+function DeniedNestedWorker() { throw Error('runtime-subworker-denied'); }
+Object.defineProperty(globalThis, 'Worker', {value:DeniedNestedWorker,writable:false,configurable:false,enumerable:false});
+const digest=value=>sha256Hex(typeof value==='string'?new TextEncoder().encode(value):value);
 let pending = null;
 let stdoutBytes = 0;
 const print = text => {stdoutBytes += new TextEncoder().encode(String(text)).length; if (stdoutBytes > 65536) throw Error('runtime-stdout-limit');};
@@ -15,13 +19,15 @@ self.onmessage = async event => {
   try {
     if (!message || Object.keys(message).sort().join(',') !== 'assets,envelope,profile,request') throw Error('runtime-load-invalid');
     validateRunRequest(message.request); pending = message.request;
-    const loaded = await checkedPackage(message.envelope, [message.profile]);
+    const loaded = await checkedPackage(message.envelope, [message.profile],digest);
     if (pending.packageIdentity !== loaded.manifest.packageIdentity) throw Error('runtime-package-mismatch');
     const workerAsset = loaded.profile.assetManifest.find(a => a.path === 'delivery/worker.bundle.mjs');
-    if (!workerAsset || new URL(self.location.href).pathname !== `/runtime/${workerAsset.sha256}/worker.bundle.mjs`) throw Error('runtime-worker-delivery-mismatch');
+    if (!workerAsset) throw Error('runtime-worker-delivery-mismatch');
     if (canonicalPreviewJson(resolveParameters(loaded.spec,pending.input.parameters)) !== canonicalPreviewJson(pending.input.parameters)) throw Error('runtime-parameters-unresolved');
-    const assets = await checkedAssets(message.assets, loaded.profile);
-    const indexURL = new URL('/fixed-pyodide/', self.location.href).href;
+    const assets = await checkedAssets(message.assets, loaded.profile,digest);
+    // An opaque-origin blob URL cannot resolve relative paths. This synthetic
+    // absolute base is only a lookup key for the verified in-memory fetch map.
+    const indexURL = 'https://browser-preview.invalid/fixed-pyodide/';
     // Only fixed verified in-memory assets. This function has no HTTP fallback.
     globalThis.fetch = async value => {
       const url = new URL(typeof value === 'string' ? value : value.url ?? value.href, indexURL);
@@ -43,9 +49,18 @@ self.onmessage = async event => {
     pyodide.FS.mkdirTree('/model');
     pyodide.FS.writeFile('/model/model.py', loaded.files.get('model/model.py'));
     pyodide.globals.set('riffology_config_json', JSON.stringify(pending.input));
-    pyodide.globals.set('riffology_max_output_bytes', LIMITS.resultBytes);
-    const json = await pyodide.runPythonAsync(`import json, sys, inspect\nsys.path.insert(0, '/model')\nfrom model import run\n_result = run(json.loads(riffology_config_json))\nif inspect.isawaitable(_result): _result = await _result\n_encoder = json.JSONEncoder(allow_nan=False, separators=(',', ':'))\n_chunks = []\n_total = 0\nfor _chunk in _encoder.iterencode(_result):\n    _total += len(_chunk.encode('utf-8'))\n    if _total > riffology_max_output_bytes: raise ValueError('runtime-output-limit')\n    _chunks.append(_chunk)\n''.join(_chunks)`);
-    const trace = validateTrace(JSON.parse(String(json)));
+    const resultChunks = []; let resultBytes = 0, resultExceeded = false; const encoder = new TextEncoder();
+    pyodide.globals.set('riffology_emit_chunk', value => {
+      if (resultExceeded) return;
+      const chunk = String(value), bytes = encoder.encode(chunk).byteLength;
+      if (bytes > LIMITS.resultBytes - resultBytes) {resultExceeded = true; return;}
+      resultBytes += bytes; resultChunks.push(chunk);
+    });
+    await pyodide.runPythonAsync(`import json, sys, inspect\nasync def _riffology_execute(config_json, emit):\n    _loads = json.loads\n    _isawaitable = inspect.isawaitable\n    _iterencode = json.JSONEncoder(allow_nan=False, separators=(',', ':')).iterencode\n    sys.path.insert(0, '/model')\n    from model import run\n    _result = run(_loads(config_json))\n    if _isawaitable(_result): _result = await _result\n    for _chunk in _iterencode(_result): emit(_chunk)\nawait _riffology_execute(riffology_config_json, riffology_emit_chunk)`);
+    if (resultExceeded) throw Error('runtime-output-limit');
+    const resultText = resultChunks.join('');
+    if (encoder.encode(resultText).byteLength !== resultBytes) throw Error('runtime-output-limit');
+    const trace = validateTrace(JSON.parse(resultText));
     if (trace.snapshots.some(s => s.space.type !== loaded.visualization.renderer)) throw Error('runtime-renderer-mismatch');
     await new Promise(resolve => setTimeout(resolve, 20));
     self.postMessage({schema:MESSAGE_SCHEMA,type:'result',requestId:pending.requestId,packageIdentity:pending.packageIdentity,trace});

@@ -56,9 +56,10 @@ export function canonicalPreviewJson(raw:unknown):string{
  return fail();
 }
 export async function previewSha256(bytes:Uint8Array|string):Promise<string>{const b=typeof bytes==='string'?new TextEncoder().encode(bytes):Uint8Array.from(bytes);return [...new Uint8Array(await crypto.subtle.digest('SHA-256',b))].map(v=>v.toString(16).padStart(2,'0')).join('');}
-export async function previewPackageIdentity(raw:unknown):Promise<string>{return previewSha256(canonicalPreviewJson(parsePreviewIdentityInput(raw)));}
-export async function createPreviewManifest(raw:unknown):Promise<BrowserPreviewManifest>{const input=parsePreviewIdentityInput(raw);return {...input,packageIdentity:await previewPackageIdentity(input)};}
-export async function parsePreviewManifest(raw:unknown):Promise<BrowserPreviewManifest>{const r=object(raw,['schema','projectId','revisionId','filesSha256','sources','runtime','packageIdentity']);const {packageIdentity,...input}=r;const manifest=await createPreviewManifest(input);if(text(packageIdentity,hashPattern)!==manifest.packageIdentity)fail();return manifest;}
+type PreviewDigest=(bytes:Uint8Array|string)=>string|Promise<string>;
+export async function previewPackageIdentity(raw:unknown,digest:PreviewDigest=previewSha256):Promise<string>{return digest(canonicalPreviewJson(parsePreviewIdentityInput(raw)));}
+export async function createPreviewManifest(raw:unknown,digest:PreviewDigest=previewSha256):Promise<BrowserPreviewManifest>{const input=parsePreviewIdentityInput(raw);return {...input,packageIdentity:await previewPackageIdentity(input,digest)};}
+export async function parsePreviewManifest(raw:unknown,digest:PreviewDigest=previewSha256):Promise<BrowserPreviewManifest>{const r=object(raw,['schema','projectId','revisionId','filesSha256','sources','runtime','packageIdentity']);const {packageIdentity,...input}=r;const manifest=await createPreviewManifest(input,digest);if(text(packageIdentity,hashPattern)!==manifest.packageIdentity)fail();return manifest;}
 export function parsePreviewRunInput(raw:unknown):PreviewRunInput{
  const r=object(raw,['parameters','seed']);const p=r.parameters;if(!p||typeof p!=='object'||Array.isArray(p)||Object.keys(p).length>64)fail();
  const parameters=object(p,Object.keys(p));
