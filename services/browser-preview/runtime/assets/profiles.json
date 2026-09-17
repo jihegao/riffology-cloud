@@ -5,7 +5,7 @@
       "runtimeVersion": "pyodide-314.0.6/v1",
       "adapterVersion": "riffology.model-run/v1",
       "pythonVersion": "3.14.2",
-      "assetSha256": "43d29ab27496ef50e57751df1fde12eefe20fc350a7d534fe8cfbb739476b9c0",
+      "assetSha256": "b5355cc5925224d224540792525cdefa0ae00deacc3d330608065f90c740eed2",
       "visualProtocol": "riffology.visual/v0.1",
       "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
       "dependencies": []
@@ -99,8 +99,8 @@
       },
       {
         "path": "source/package-lock.json",
-        "sha256": "f2148feb0fe4ea3aad8524fa2cae71e83aa811ca318c45af78863c88ab2c6d08",
-        "byteLength": 213104
+        "sha256": "2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8",
+        "byteLength": 214212
       },
       {
         "path": "source/prepare-assets.mjs",
@@ -116,7 +116,7 @@
       "runtimeVersion": "pyodide-314.0.6/v1",
       "adapterVersion": "riffology.model-run/v1",
       "pythonVersion": "3.14.2",
-      "assetSha256": "08460495d986e2b21de713e14d23afb58b9253ac69b692a61bcfe1bd939c9b76",
+      "assetSha256": "28cd56fae7755f8b100e00d96aed82dc11757e38733fd3f0a3d1efe28c7fbd4c",
       "visualProtocol": "riffology.visual/v0.1",
       "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
       "dependencies": [
@@ -418,8 +418,8 @@
       },
       {
         "path": "source/package-lock.json",
-        "sha256": "f2148feb0fe4ea3aad8524fa2cae71e83aa811ca318c45af78863c88ab2c6d08",
-        "byteLength": 213104
+        "sha256": "2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8",
+        "byteLength": 214212
       },
       {
         "path": "source/prepare-assets.mjs",

@@ -4,9 +4,8 @@ import type { TurnRuntimeEvent } from '../turn/dispatcher.ts';
 import { sameTurnRuntimeIdentity, turnRuntimeIdentity, type TurnRuntimeIdentity } from './identity.ts';
 import { usageObservation, type ExecutionBindingStore, type ExecutionBinding, type UsageObservation } from './backend-contract.ts';
 
-/** Normalized provider boundary. Phase 3 injects synthetic transports only.
- * A future SDK transport must prove correlation; listing the newest Turn is
- * not an implementation of lookupOriginal. There is no network client here. */
+/** Normalized provider boundary. The SDK transport proves original-input
+ * correlation; listing the newest Turn is never lookupOriginal. */
 export interface ManagedTransport {
  create(input:ManagedInput):Promise<ManagedReceipt>;
  continue(input:ManagedInput,sessionId:string):Promise<ManagedReceipt>;
@@ -27,10 +26,10 @@ const EVENT_MAP:Record<string,TurnRuntimeEvent['type']>={
 /** A managed terminal event deliberately cannot satisfy TurnStopReceipt.
  * Until remote termination is represented end-to-end, routing stays closed. */
 export function selectProductBackend(value:unknown='pi'):'pi'{if(value!=='pi')throw Error('managed-product-route-disabled');return 'pi';}
-export class OfflineManagedAdapter {
+export class ManagedExecutionAdapter {
  readonly store:ExecutionBindingStore;readonly transport:ManagedTransport;readonly clock:()=>number;
- constructor(input:{mode:'offline';store:ExecutionBindingStore;transport:ManagedTransport;clock?:()=>number}){
-  if(input.mode!=='offline')throw Error('managed-product-route-disabled');this.store=input.store;this.transport=input.transport;this.clock=input.clock??Date.now;
+ constructor(input:{store:ExecutionBindingStore;transport:ManagedTransport;clock?:()=>number}){
+  this.store=input.store;this.transport=input.transport;this.clock=input.clock??Date.now;
  }
  private unknown(identity:TurnRuntimeIdentity):ManagedObservation{return {schemaVersion:1,identity,backend:'managed-agents',execution:'unknown',usage:{status:'unknown',reason:'missing'},events:[],nativeFence:null,acceptance:'pending',checkpoint:'pending',resources:'unknown'};}
  private async binding(identity:TurnRuntimeIdentity){const saved=await this.store.read(turnRuntimeIdentity(identity));if(!saved||saved.backend!=='managed-agents')throw Error('managed-binding-missing');return saved;}
@@ -92,4 +91,10 @@ export class OfflineManagedAdapter {
  }
  async candidateSnapshot(identity:TurnRuntimeIdentity,artifactId:string,manifest:unknown){const binding=await this.binding(identity);return managedCandidateSnapshot(binding,manifest,await this.download(identity,artifactId));}
  async download(identity:TurnRuntimeIdentity,artifactId:string){const binding=await this.binding(identity);if(!binding.remoteTurnId)throw Error('managed-artifact-reference-unknown');return this.transport.download(binding,turnId(artifactId));}
+}
+/** Compatibility entrypoint for the frozen Phase 3 fixture suite. */
+export class OfflineManagedAdapter extends ManagedExecutionAdapter {
+ constructor(input:{mode:'offline';store:ExecutionBindingStore;transport:ManagedTransport;clock?:()=>number}){
+  if(input.mode!=='offline')throw Error('managed-product-route-disabled');super(input);
+ }
 }
