@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "baselineCommit": "40aee17ed810430ee71fa4afb02af6fecf59b26a",
+  "kind": "synthetic-local-regression-not-production-incident",
+  "defects": [
+    {
+      "fixture": "tests/m2/product-turn-runtime.test.ts: issue 77: reordered JSON keys are the same replay after runtime reopen",
+      "before": "product-turn-runtime-event-conflict",
+      "expected": "one durable event, one native start, reject changed values",
+      "reproducedBeforeEdit": true
+    },
+    {
+      "fixture": "tests/m2/turn-journal.test.ts: issue 77: journal replays reordered nested payloads without weakening event identity",
+      "before": "turn-event-conflict",
+      "expected": "same sequence on replay, reject changed timestamps and values",
+      "reproducedBeforeEdit": true
+    }
+  ],
+  "existingRegressionCoverageNotNewIncidents": [
+    "lost start acknowledgement and original-identity observation",
+    "native stop and natural terminal race",
+    "checkpoint ACK loss and bounded reconciliation",
+    "resource release failure and quiet-period confirmation",
+    "old dispatch and generation receipt rejection"
+  ],
+  "limits": [
+    "The failure baseline is not the later integration baseline 08f7b72.",
+    "No live provider, production fault injection, throughput or long-duration reliability claim.",
+    "#73 source remains uncommitted local context, identified by hashes in a separate file."
+  ]
+}

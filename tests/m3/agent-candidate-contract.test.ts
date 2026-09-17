@@ -1,3 +1,4 @@
+import {MESA_SOURCE_PACKAGES,MESA_SERVER_PROFILE} from '../../services/simulation/server-profile.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {validateResultEnvelope,verifyDefaultChange,type ResultEnvelope,type ExperimentProvenance} from '../../services/simulation/result-oracle.ts';
@@ -45,4 +46,6 @@ test('candidate packaging verifies files and model contract without changing sup
  const snapshot=await managedCandidateSnapshot({schemaVersion:1,identity,backend:'managed-agents',inputSha256:'f'.repeat(64),reservedAt:1,remoteSessionId:'remote-session',remoteTurnId:'remote-turn'},manifest,bytes);assert.equal(snapshot.piSession,undefined);assert.equal(snapshot.backendState?.backend,'managed-agents');
  const source={kind:'saved-turn' as const,identity,revision:{revisionId:'revision',objectKey:'turns/revision',filesSha256:manifest.sha256,sessionSha256:'b'.repeat(64),committedAt:1}};
  await assert.rejects(simulationPlan(source,bytes),/model-dependencies-unsupported/);
+ const supported=packageCandidateModel({...files,'app/requirements.lock':new TextEncoder().encode(JSON.stringify({schemaVersion:1,packages:MESA_SOURCE_PACKAGES}))},spec);
+ const plan=await simulationPlan({...source,revision:{...source.revision,filesSha256:await digest(supported)}},supported);assert.deepEqual(plan.executionProfile,MESA_SERVER_PROFILE);
 });

@@ -1,7 +1,9 @@
 # ADR: execution bindings, recovery, and candidate evidence (#77)
 
 Status: local implementation, offline verification; production routing remains Pi.
-Baseline: `40aee17` (the exact full SHA is recorded in the evidence manifest).
+Original fault baseline: `40aee17`. Implementation rebased onto main
+`08f7b727070a58484732fa56bdf7d7a448727db1` after safety checkpoint
+`3f4bee9b3b8dd5211af669066dce8afd27a85b91`; cherry-pick `e7736aa`.
 This ADR does not authorize a provider request, deployment, runtime switch,
 settlement, or reopening an unknown/budget window.
 
@@ -121,9 +123,13 @@ control flow/expansion is `harness:unverifiable`; mismatched commands are
 `harness:not-observed`, never a numerical fabrication finding. Actual default
 changes compare parsed model specs, not source-text substrings.
 
-The formal `simulationPlan` dependency profile still accepts only its existing
-stdlib/SimPy contract. Mesa remains rejected. A Mesa profile requires separate
-isolation, dependency, resource, timeout, execution and result-protocol acceptance.
+Latest main already supplies the independent
+`mesa-3.5.1-cpython-3.14.2/v1` server profile, with a pinned interpreter and wheel
+hashes, six-package source lock, native isolation/resource/timeout checks and
+Docker boundary tests. #77 reuses it unchanged. Tests accept that exact profile
+and reject a partial/arbitrary Mesa lock; this is not a widened SimPy whitelist.
+The native Docker acceptance is distinct from offline schema/oracle tests and
+must be reported separately when the required local image is unavailable.
 
 ## Baseline and verification
 
