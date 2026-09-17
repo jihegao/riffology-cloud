@@ -1,15 +1,25 @@
+import {backendState as validateBackendState,type BackendState} from './backend-contract.ts';
 import type { CheckpointReceipt, TurnBaseCheckpoints } from '../turn/protocol.ts';
 import { checkpointObjectKey, checkpointReceipt, positive, sameScope, scope as turnScope, sha, turnBaseCheckpoints, turnDigest, turnId } from '../turn/protocol.ts';
 import { InitialWorkspaceResolver } from './initial-workspace.ts';
 import { sameTurnRuntimeIdentity, turnRuntimeIdentity, type TurnRuntimeIdentity } from './identity.ts';
 
-export type FrozenTurnSnapshot={identity:TurnRuntimeIdentity;filesArchive:Uint8Array;piSession:Uint8Array};
-export type FrozenTurnSnapshotDescriptor={filesSha256:string;filesBytes:number;sessionSha256:string;sessionBytes:number};
+export type PiRevisionState={schemaVersion:1;backend:'pi';recovery:'full-session';capabilities:['files','pi-session']};
+export const piRevisionState=():PiRevisionState=>({schemaVersion:1,backend:'pi',recovery:'full-session',capabilities:['files','pi-session']});
+export function validatePiRevisionState(value:unknown):PiRevisionState{
+ if(!value||typeof value!=='object'||Array.isArray(value))throw Error('invalid-revision-backend-state');
+ const v=value as Record<string,unknown>;
+ if(Object.keys(v).length!==4||v.schemaVersion!==1||v.backend!=='pi'||v.recovery!=='full-session'||!Array.isArray(v.capabilities)||v.capabilities.length!==2||v.capabilities[0]!=='files'||v.capabilities[1]!=='pi-session')throw Error('invalid-revision-backend-state');
+ return piRevisionState();
+}
+export type FrozenTurnSnapshot={identity:TurnRuntimeIdentity;filesArchive:Uint8Array}&({piSession:Uint8Array;backendState?:never}|{piSession?:never;backendState:BackendState});
+export function snapshotSessionBytes(snapshot:FrozenTurnSnapshot):Uint8Array{return snapshot.piSession??new TextEncoder().encode(JSON.stringify(snapshot.backendState));}
+export type FrozenTurnSnapshotDescriptor={filesSha256:string;filesBytes:number;sessionSha256:string;sessionBytes:number;backendState?:BackendState};
 export interface FrozenTurnSnapshotPort{freeze(identity:TurnRuntimeIdentity,base:TurnBaseCheckpoints):Promise<FrozenTurnSnapshot>}
 export type TurnRevisionBucket=Pick<R2Bucket,'get'|'put'>;
-type Manifest={schemaVersion:3;identity:TurnRuntimeIdentity;base:TurnBaseCheckpoints;outcome:'completed'|'failed'|'cancelled'|'interrupted';executionErrorCode:string|null;files:{objectKey:string;sha256:string;size:number};piSession:{objectKey:string;sha256:string;size:number};committedAt:number};
-export type RestoredTurnRevision={identity:TurnRuntimeIdentity;receipt:CheckpointReceipt;filesArchive:Uint8Array;piSession:Uint8Array};
-export type TurnRevisionObservation={identity:TurnRuntimeIdentity;receipt:CheckpointReceipt;outcome:Manifest['outcome'];executionErrorCode:string|null;base:TurnBaseCheckpoints;files:{sha256:string;size:number};piSession:{sha256:string;size:number}};
+type Manifest={schemaVersion:3|4;backendState?:PiRevisionState|BackendState;identity:TurnRuntimeIdentity;base:TurnBaseCheckpoints;outcome:'completed'|'failed'|'cancelled'|'interrupted';executionErrorCode:string|null;files:{objectKey:string;sha256:string;size:number};piSession:{objectKey:string;sha256:string;size:number};committedAt:number};
+export type RestoredTurnRevision={identity:TurnRuntimeIdentity;receipt:CheckpointReceipt;filesArchive:Uint8Array;piSession:Uint8Array|null;backendState?:BackendState};
+export type TurnRevisionObservation={identity:TurnRuntimeIdentity;receipt:CheckpointReceipt;outcome:Manifest['outcome'];executionErrorCode:string|null;base:TurnBaseCheckpoints;files:{sha256:string;size:number};piSession:{sha256:string;size:number};backendState?:BackendState};
 export type TurnRevisionWorkspaceFiles={filesArchive:Uint8Array;base:CheckpointReceipt|null;initial?:TurnBaseCheckpoints['initial']};
 const encoder=new TextEncoder(),decoder=new TextDecoder('utf-8',{fatal:true}),MAX_BLOB_BYTES=64*1024*1024,MAX_MANIFEST_BYTES=64*1024;
 function reject(code:string):never{throw Error(code);}
@@ -23,20 +33,28 @@ export function turnRevisionManifestPrefix(raw:TurnRuntimeIdentity['scope']):str
 export function turnRevisionBlobPrefix(raw:TurnRuntimeIdentity['scope']):string{const scope=turnScope(raw);return `turn-blobs-v3/${scope.tenantId}/${scope.projectId}/${scope.workspaceId}/`;}
 export function turnRevisionBlobKey(scope:TurnRuntimeIdentity['scope'],kind:'files'|'sessions',value:string):string{return checkpointObjectKey(`${turnRevisionBlobPrefix(scope)}${kind}/${sha(value)}`);}
 export function frozenTurnSnapshot(value:unknown,expected:TurnRuntimeIdentity):FrozenTurnSnapshot{
-  exact(value,['identity','filesArchive','piSession'],'invalid-frozen-turn-snapshot');const identity=turnRuntimeIdentity(value.identity);if(!sameTurnRuntimeIdentity(identity,expected))reject('turn-revision-scope-denied');
-  if(!(value.filesArchive instanceof Uint8Array)||!(value.piSession instanceof Uint8Array)||value.filesArchive.byteLength<1||value.piSession.byteLength<1||value.filesArchive.byteLength>MAX_BLOB_BYTES||value.piSession.byteLength>MAX_BLOB_BYTES||value.filesArchive.byteLength+value.piSession.byteLength>MAX_BLOB_BYTES)reject('invalid-frozen-turn-snapshot');
-  return {identity,filesArchive:Uint8Array.from(value.filesArchive),piSession:Uint8Array.from(value.piSession)};
+  const typed=!!value&&typeof value==='object'&&Object.hasOwn(value,'backendState');
+  exact(value,['identity','filesArchive',typed?'backendState':'piSession'],'invalid-frozen-turn-snapshot');const identity=turnRuntimeIdentity(value.identity);if(!sameTurnRuntimeIdentity(identity,expected))reject('turn-revision-scope-denied');
+  if(!(value.filesArchive instanceof Uint8Array)||value.filesArchive.byteLength<1||value.filesArchive.byteLength>MAX_BLOB_BYTES)reject('invalid-frozen-turn-snapshot');
+  let snapshot:FrozenTurnSnapshot;
+  if(typed){const state=validateBackendState(value.backendState);if(state.backend!=='managed-agents'||state.recovery!=='remote-reference'||!sameTurnRuntimeIdentity(state.identity,identity))reject('turn-revision-backend-mismatch');snapshot={identity,filesArchive:Uint8Array.from(value.filesArchive),backendState:state};}
+  else {if(!(value.piSession instanceof Uint8Array)||value.piSession.byteLength<1||value.filesArchive.byteLength+value.piSession.byteLength>MAX_BLOB_BYTES)reject('invalid-frozen-turn-snapshot');snapshot={identity,filesArchive:Uint8Array.from(value.filesArchive),piSession:Uint8Array.from(value.piSession)};}
+  if(snapshot.filesArchive.byteLength+snapshotSessionBytes(snapshot).byteLength>MAX_BLOB_BYTES)reject('invalid-frozen-turn-snapshot');return snapshot;
 }
 function part(value:unknown,scope:TurnRuntimeIdentity['scope'],kind:'files'|'sessions'):Manifest['files']{exact(value,['objectKey','sha256','size'],'invalid-turn-revision-manifest');const digest=sha(value.sha256),objectKey=checkpointObjectKey(value.objectKey);if(objectKey!==turnRevisionBlobKey(scope,kind,digest))reject('invalid-turn-revision-manifest');return {objectKey,sha256:digest,size:size(value.size)};}
 function manifest(value:unknown,expected:TurnRuntimeIdentity):Manifest{
-  exact(value,['schemaVersion','identity','base','outcome','executionErrorCode','files','piSession','committedAt'],'invalid-turn-revision-manifest');if(value.schemaVersion!==3||!['completed','failed','cancelled','interrupted'].includes(value.outcome as string))reject('invalid-turn-revision-manifest');
-  const identity=turnRuntimeIdentity(value.identity);if(!sameTurnRuntimeIdentity(identity,expected))reject('turn-revision-scope-denied');const base=turnBaseCheckpoints(value.base);if(base.initial&&!sameScope(base.initial.reference.scope,identity.scope))reject('turn-revision-base-scope-denied');const outcome=value.outcome as Manifest['outcome'],executionErrorCode=value.executionErrorCode===null?null:turnId(value.executionErrorCode);if(outcome==='completed'&&executionErrorCode!==null)reject('invalid-turn-revision-manifest');
-  return {schemaVersion:3,identity,base,outcome,executionErrorCode,files:part(value.files,identity.scope,'files'),piSession:part(value.piSession,identity.scope,'sessions'),committedAt:positive(value.committedAt)};
+  const version=(value as {schemaVersion?:unknown})?.schemaVersion;
+  const managed=version===4&&(value as {backendState?:{backend?:unknown}}).backendState?.backend==='managed-agents';
+  exact(value,['schemaVersion',...(version===4?['backendState']:[]),'identity','base','outcome','executionErrorCode','files',managed?'sessionState':'piSession','committedAt'],'invalid-turn-revision-manifest');if(version!==3&&version!==4||!['completed','failed','cancelled','interrupted'].includes(value.outcome as string))reject('invalid-turn-revision-manifest');
+  const identity=turnRuntimeIdentity(value.identity);if(!sameTurnRuntimeIdentity(identity,expected))reject('turn-revision-scope-denied');if(managed){const state=validateBackendState(value.backendState);if(state.recovery!=='remote-reference'||!sameTurnRuntimeIdentity(state.identity,identity))reject('turn-revision-scope-denied');}
+  const base=turnBaseCheckpoints(value.base);if(base.initial&&!sameScope(base.initial.reference.scope,identity.scope))reject('turn-revision-base-scope-denied');const outcome=value.outcome as Manifest['outcome'],executionErrorCode=value.executionErrorCode===null?null:turnId(value.executionErrorCode);if(outcome==='completed'&&executionErrorCode!==null)reject('invalid-turn-revision-manifest');
+  return {schemaVersion:version as 3|4,...(version===4?{backendState:managed?validateBackendState(value.backendState):validatePiRevisionState(value.backendState)}:{}),identity,base,outcome,executionErrorCode,files:part(value.files,identity.scope,'files'),piSession:part(managed?value.sessionState:value.piSession,identity.scope,'sessions'),committedAt:positive(value.committedAt)};
 }
 async function readObject(bucket:TurnRevisionBucket,key:string,max:number):Promise<Uint8Array|null>{const object=await bucket.get(key);if(!object)return null;if(object.size>max){void object.body.cancel().catch(()=>{});reject('turn-revision-object-too-large');}const bytes=new Uint8Array(await object.arrayBuffer());if(bytes.byteLength>max)reject('turn-revision-object-too-large');return bytes;}
 async function readParts(bucket:TurnRevisionBucket,saved:Manifest):Promise<{filesArchive:Uint8Array;piSession:Uint8Array}>{
   if(saved.files.size+saved.piSession.size>MAX_BLOB_BYTES)reject('turn-revision-object-too-large');
   const values=[] as Uint8Array[];for(const item of [saved.files,saved.piSession]){const blob=await readObject(bucket,item.objectKey,MAX_BLOB_BYTES);if(!blob||blob.byteLength!==item.size||await digest(blob)!==item.sha256)reject('turn-revision-object-conflict');values.push(blob);}
+  if(saved.backendState?.backend==='managed-agents'&&await digest(encoder.encode(JSON.stringify(saved.backendState)))!==saved.piSession.sha256)reject('turn-revision-object-conflict');
   return {filesArchive:values[0]!,piSession:values[1]!};
 }
 async function readIdentityManifest(bucket:TurnRevisionBucket,identity:TurnRuntimeIdentity):Promise<{manifest:Manifest;receipt:CheckpointReceipt;filesArchive:Uint8Array;piSession:Uint8Array}|null>{
@@ -51,7 +69,7 @@ async function readReceiptManifest(bucket:TurnRevisionBucket,receipt:CheckpointR
 }
 async function readReceipt(bucket:TurnRevisionBucket,receipt:CheckpointReceipt,identity:TurnRuntimeIdentity,sessionBound:boolean):Promise<RestoredTurnRevision>{
   const {expected,parentIdentity,saved}=await readReceiptManifest(bucket,receipt,identity,sessionBound),parts=await readParts(bucket,saved);
-  return {identity:parentIdentity,receipt:expected,...parts};
+  return {identity:parentIdentity,receipt:expected,...parts,...(saved.backendState?.backend==='managed-agents'?{piSession:null,backendState:validateBackendState(saved.backendState)}:{})};
 }
 async function readFilesPart(bucket:TurnRevisionBucket,saved:Manifest,maxBytes=MAX_BLOB_BYTES):Promise<Uint8Array>{if(saved.files.size>maxBytes)reject('turn-revision-object-too-large');const bytes=await readObject(bucket,saved.files.objectKey,maxBytes);if(!bytes||bytes.byteLength!==saved.files.size||await digest(bytes)!==saved.files.sha256)reject('turn-revision-object-conflict');return bytes;}
 async function readFilesReceipt(bucket:TurnRevisionBucket,receipt:CheckpointReceipt,identity:TurnRuntimeIdentity,maxBytes=MAX_BLOB_BYTES):Promise<Uint8Array>{if(!Number.isSafeInteger(maxBytes)||maxBytes<1||maxBytes>MAX_BLOB_BYTES)reject('turn-revision-object-too-large');const {saved}=await readReceiptManifest(bucket,receipt,identity,false);return readFilesPart(bucket,saved,maxBytes);}
@@ -65,28 +83,29 @@ export class R2TurnRevisionReader{
   async restore(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt,sessionBound=false):Promise<RestoredTurnRevision>{return readReceipt(this.#bucket,receipt,turnRuntimeIdentity(raw),sessionBound);}
   async files(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt,maxBytes=MAX_BLOB_BYTES):Promise<Uint8Array>{return readFilesReceipt(this.#bucket,receipt,turnRuntimeIdentity(raw),maxBytes);}
   async workspaceFiles(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt):Promise<TurnRevisionWorkspaceFiles>{const identity=turnRuntimeIdentity(raw),{saved}=await readReceiptManifest(this.#bucket,receipt,identity,false),filesArchive=await readFilesPart(this.#bucket,saved);return {filesArchive,base:saved.base.workspace,...(saved.base.initial?{initial:saved.base.initial}:{})};}
-  async load(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt|null):Promise<Uint8Array|null>{if(receipt===null)return null;return (await this.restore(raw,receipt,true)).piSession;}
-  async inspect(raw:TurnRuntimeIdentity):Promise<TurnRevisionObservation|null>{const identity=turnRuntimeIdentity(raw),saved=await readIdentityManifest(this.#bucket,identity);return saved&&{identity,receipt:saved.receipt,outcome:saved.manifest.outcome,executionErrorCode:saved.manifest.executionErrorCode,base:saved.manifest.base,files:{sha256:saved.manifest.files.sha256,size:saved.manifest.files.size},piSession:{sha256:saved.manifest.piSession.sha256,size:saved.manifest.piSession.size}};}
+  async backendState(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt):Promise<PiRevisionState|BackendState>{const {saved}=await readReceiptManifest(this.#bucket,receipt,turnRuntimeIdentity(raw),true);return saved.backendState??piRevisionState();}
+  async load(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt|null):Promise<Uint8Array|null>{if(receipt===null)return null;const restored=await this.restore(raw,receipt,true);if(restored.piSession===null)reject('turn-revision-backend-mismatch');return restored.piSession;}
+  async inspect(raw:TurnRuntimeIdentity):Promise<TurnRevisionObservation|null>{const identity=turnRuntimeIdentity(raw),saved=await readIdentityManifest(this.#bucket,identity);return saved&&{identity,receipt:saved.receipt,outcome:saved.manifest.outcome,executionErrorCode:saved.manifest.executionErrorCode,base:saved.manifest.base,files:{sha256:saved.manifest.files.sha256,size:saved.manifest.files.size},piSession:{sha256:saved.manifest.piSession.sha256,size:saved.manifest.piSession.size},...(saved.manifest.backendState?.backend==='managed-agents'?{backendState:validateBackendState(saved.manifest.backendState)}:{})};}
 }
 
 /** Restores the exact frozen snapshot staged by RevisionStore before a commit.
  * Content-addressed keys are re-derived instead of trusted from persisted JSON. */
-export async function readFrozenTurnSnapshot(bucket:TurnRevisionBucket,rawIdentity:TurnRuntimeIdentity,raw:{filesSha256:string;filesBytes:number;sessionSha256:string;sessionBytes:number}):Promise<FrozenTurnSnapshot>{
+export async function readFrozenTurnSnapshot(bucket:TurnRevisionBucket,rawIdentity:TurnRuntimeIdentity,raw:FrozenTurnSnapshotDescriptor):Promise<FrozenTurnSnapshot>{
   const identity=turnRuntimeIdentity(rawIdentity),filesSha256=sha(raw.filesSha256),sessionSha256=sha(raw.sessionSha256),filesBytes=size(raw.filesBytes),sessionBytes=size(raw.sessionBytes);
   if(filesBytes+sessionBytes>MAX_BLOB_BYTES)reject('turn-revision-object-too-large');
   const filesArchive=await readObject(bucket,turnRevisionBlobKey(identity.scope,'files',filesSha256),filesBytes),piSession=await readObject(bucket,turnRevisionBlobKey(identity.scope,'sessions',sessionSha256),sessionBytes);
   if(!filesArchive||!piSession)reject('turn-revision-staging-unavailable');if(filesArchive.byteLength!==filesBytes||await digest(filesArchive)!==filesSha256||piSession.byteLength!==sessionBytes||await digest(piSession)!==sessionSha256)reject('turn-revision-object-conflict');
-  return {identity,filesArchive,piSession};
+  if(raw.backendState){const state=validateBackendState(raw.backendState);if(await digest(new TextEncoder().encode(JSON.stringify(state)))!==sessionSha256)reject('turn-revision-object-conflict');return frozenTurnSnapshot({identity,filesArchive,backendState:state},identity);}return {identity,filesArchive,piSession};
 }
-export async function stageFrozenTurnSnapshot(bucket:TurnRevisionBucket,raw:FrozenTurnSnapshot):Promise<FrozenTurnSnapshotDescriptor>{const snapshot=frozenTurnSnapshot(raw,raw.identity),filesSha256=await digest(snapshot.filesArchive),sessionSha256=await digest(snapshot.piSession);await putVerifiedObject(bucket,turnRevisionBlobKey(snapshot.identity.scope,'files',filesSha256),snapshot.filesArchive,filesSha256);await putVerifiedObject(bucket,turnRevisionBlobKey(snapshot.identity.scope,'sessions',sessionSha256),snapshot.piSession,sessionSha256);return {filesSha256,filesBytes:snapshot.filesArchive.byteLength,sessionSha256,sessionBytes:snapshot.piSession.byteLength};}
+export async function stageFrozenTurnSnapshot(bucket:TurnRevisionBucket,raw:FrozenTurnSnapshot):Promise<FrozenTurnSnapshotDescriptor>{const snapshot=frozenTurnSnapshot(raw,raw.identity),filesSha256=await digest(snapshot.filesArchive),sessionSha256=await digest(snapshotSessionBytes(snapshot));await putVerifiedObject(bucket,turnRevisionBlobKey(snapshot.identity.scope,'files',filesSha256),snapshot.filesArchive,filesSha256);await putVerifiedObject(bucket,turnRevisionBlobKey(snapshot.identity.scope,'sessions',sessionSha256),snapshotSessionBytes(snapshot),sessionSha256);return {filesSha256,filesBytes:snapshot.filesArchive.byteLength,sessionSha256,sessionBytes:snapshotSessionBytes(snapshot).byteLength,...(snapshot.backendState?{backendState:snapshot.backendState}:{})};}
 
 /** R2 materialization adapter for a frozen project archive plus trusted Pi
  * Session. Blobs and the identity-specific manifest are immutable and always
  * read back by hash. The returned receipt is evidence for the Workspace
  * TurnJournal to commit; R2 presence alone is not the authoritative Turn. */
 export class R2TurnRevisionPort{
-  readonly #bucket:TurnRevisionBucket;readonly #snapshots:FrozenTurnSnapshotPort;readonly #clock:()=>number;readonly #modelBucket?:R2Bucket;
-  constructor(bucket:TurnRevisionBucket,snapshots:FrozenTurnSnapshotPort,clock:()=>number=Date.now,modelBucket?:R2Bucket){if(!bucket?.get||!bucket?.put)reject('r2-turn-revision-required');this.#bucket=bucket;this.#snapshots=snapshots;this.#clock=clock;this.#modelBucket=modelBucket;}
+  readonly #bucket:TurnRevisionBucket;readonly #snapshots:FrozenTurnSnapshotPort;readonly #clock:()=>number;readonly #modelBucket?:R2Bucket;readonly #writeSchema:3|4;
+  constructor(bucket:TurnRevisionBucket,snapshots:FrozenTurnSnapshotPort,clock:()=>number=Date.now,modelBucket?:R2Bucket,writeSchema:3|4=4){if(writeSchema!==3&&writeSchema!==4)reject('invalid-revision-write-schema');this.#writeSchema=writeSchema;if(!bucket?.get||!bucket?.put)reject('r2-turn-revision-required');this.#bucket=bucket;this.#snapshots=snapshots;this.#clock=clock;this.#modelBucket=modelBucket;}
   async #putVerified(key:string,bytes:Uint8Array,expectedSha:string):Promise<void>{return putVerifiedObject(this.#bucket,key,bytes,expectedSha);}
   async #readManifest(identity:TurnRuntimeIdentity):Promise<{manifest:Manifest;receipt:CheckpointReceipt}|null>{
     const saved=await readIdentityManifest(this.#bucket,identity);return saved&&{manifest:saved.manifest,receipt:saved.receipt};
@@ -100,10 +119,12 @@ export class R2TurnRevisionPort{
     const prior=await this.#readManifest(identity);if(prior){if(prior.manifest.outcome!==input.outcome||prior.manifest.executionErrorCode!==executionErrorCode||!same(prior.manifest.base,base))reject('turn-revision-conflict');return prior.receipt;}
     if(base.workspace)await this.#verifyBase(base.workspace,identity,false);if(base.session)await this.#verifyBase(base.session,identity,true);
     if(base.initial){const initial=await new InitialWorkspaceResolver(this.#bucket as R2Bucket,this.#modelBucket).resolve(base.initial.reference,identity.scope);if(initial.filesSha256!==base.initial.filesSha256)reject('initial-workspace-files-mismatch');}
-    const snapshot=frozenTurnSnapshot(await this.#snapshots.freeze(identity,base),identity),filesSha256=await digest(snapshot.filesArchive),sessionSha256=await digest(snapshot.piSession),filesKey=turnRevisionBlobKey(identity.scope,'files',filesSha256),sessionKey=turnRevisionBlobKey(identity.scope,'sessions',sessionSha256);
-    await this.#putVerified(filesKey,snapshot.filesArchive,filesSha256);await this.#putVerified(sessionKey,snapshot.piSession,sessionSha256);
-    const value:Manifest={schemaVersion:3,identity,base,outcome:input.outcome,executionErrorCode,files:{objectKey:filesKey,sha256:filesSha256,size:snapshot.filesArchive.byteLength},piSession:{objectKey:sessionKey,sha256:sessionSha256,size:snapshot.piSession.byteLength},committedAt:positive(this.#clock())};
-    const bytes=encoder.encode(JSON.stringify(value)),revisionId=await digest(bytes),objectKey=turnRevisionObjectKey(identity);await this.#putVerified(objectKey,bytes,revisionId);
+    const snapshot=frozenTurnSnapshot(await this.#snapshots.freeze(identity,base),identity),filesSha256=await digest(snapshot.filesArchive),sessionSha256=await digest(snapshotSessionBytes(snapshot)),filesKey=turnRevisionBlobKey(identity.scope,'files',filesSha256),sessionKey=turnRevisionBlobKey(identity.scope,'sessions',sessionSha256);
+    if(this.#writeSchema===3&&snapshot.backendState)reject('turn-revision-backend-mismatch');
+    await this.#putVerified(filesKey,snapshot.filesArchive,filesSha256);await this.#putVerified(sessionKey,snapshotSessionBytes(snapshot),sessionSha256);
+    const value:Manifest={schemaVersion:this.#writeSchema,...(this.#writeSchema===4?{backendState:snapshot.backendState??piRevisionState()}:{}),identity,base,outcome:input.outcome,executionErrorCode,files:{objectKey:filesKey,sha256:filesSha256,size:snapshot.filesArchive.byteLength},piSession:{objectKey:sessionKey,sha256:sessionSha256,size:snapshotSessionBytes(snapshot).byteLength},committedAt:positive(this.#clock())};
+    const {piSession,...rest}=value,serialized=value.backendState?.backend==='managed-agents'?{...rest,sessionState:piSession}:value;
+    const bytes=encoder.encode(JSON.stringify(serialized)),revisionId=await digest(bytes),objectKey=turnRevisionObjectKey(identity);await this.#putVerified(objectKey,bytes,revisionId);
     const confirmed=await this.#readManifest(identity);if(!confirmed||!same(confirmed.manifest,value)||confirmed.receipt.revisionId!==revisionId)reject('turn-revision-conflict');return confirmed.receipt;
   }
 }

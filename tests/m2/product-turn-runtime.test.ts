@@ -334,3 +334,12 @@ test('cold execution and forged warm retirement combinations remain rejected',as
  const f=fixture(t);await f.host().accept(request());f.cancel(retiring);await assert.rejects(f.host().cancel(identity),/invalid-product-turn-execution-receipt/);
  for(const override of [{outcome:'completed'},{stopped:stop},{events:[event]},{executionErrorCode:'anything'}]){f.cancel({...retiring,...override});await assert.rejects(f.host({settle(){throw Error('must-not-settle');}}).cancel(identity),/invalid-product-turn-execution-receipt/);}
 });
+
+test('issue 77: reordered JSON keys are the same replay after runtime reopen',async t=>{
+ const f=fixture(t),first={...event,payload:{text:'hello',metadata:{a:1,b:2}}};
+ f.start({identity,phase:'running',outcome:null,events:[first]});await f.host().accept(request());f.reopen();
+ f.observe({identity,phase:'running',outcome:null,events:[{...first,payload:{metadata:{b:2,a:1},text:'hello'}}]});
+ const replay=await f.host().observe(identity);assert.equal(replay.events.length,1);assert.equal(f.starts,1);
+ f.observe({identity,phase:'running',outcome:null,events:[{...first,payload:{metadata:{b:3,a:1},text:'hello'}}]});
+ await assert.rejects(f.host().observe(identity),/event-conflict/);
+});

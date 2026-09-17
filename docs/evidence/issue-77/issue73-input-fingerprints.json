@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "sourceIssue": 73,
+  "gitBase": "40aee17ed810430ee71fa4afb02af6fecf59b26a",
+  "publicationStatus": "uncommitted-local-inputs-not-main-delivery",
+  "use": "context-only; not acceptance or spend authorization",
+  "files": [
+    {
+      "path": "docs/issue-73-luna-agents-adr.md",
+      "sha256": "d79c43543dd6c53a4711f6a8b1bd0b8546925811148c7c1bf99a1b2632baa2d6"
+    },
+    {
+      "path": "docs/evidence/issue-73-luna-agents/limited-20260917/report.md",
+      "sha256": "9f24cd601f305e560e34e8ac49fa53094d4c3c39e0f80cca0b7dca3cc7741cf4"
+    },
+    {
+      "path": "experiments/issue-73-luna-agents/lib/evidence.mjs",
+      "sha256": "53f8f5a47b87129c68e2c77a5cbd25e065097333b638fe0381a9f0a45185f49e"
+    }
+  ]
+}

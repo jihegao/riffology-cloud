@@ -16,6 +16,8 @@ export type TurnStopReceipt = {
   fenced:true;
 };
 type RuntimeReceiptBase = {
+  schemaVersion?:1;
+  backend?:'pi';
   retirement?:never;
   scope:TurnScope;
   sessionId:string;
@@ -107,7 +109,9 @@ function capacityReceipt(value:unknown):TurnCapacityReceipt{
 function validateReceipt(value:unknown,expected:ExpectedReceipt,expectedLease?:{operationId:string;leaseId:string}):TurnRuntimeReceipt{
   if(!value||typeof value!=='object'||Array.isArray(value))throw Error('invalid-turn-runtime-receipt');
   const receipt=value as Record<string,unknown>,receiptScope=validateScope(receipt.scope);
-  const keys=[...(Object.hasOwn(receipt,'retirement')?['retirement']:[]),'scope','sessionId','turnId','dispatchId','generation','phase','outcome','executionErrorCode','events','checkpoint','persistenceErrorCode','stopped','resourceDisposition'];
+  const versioned=Object.hasOwn(receipt,'schemaVersion')||Object.hasOwn(receipt,'backend');
+  if(versioned&&(receipt.schemaVersion!==1||receipt.backend!=='pi'))throw Error('invalid-turn-runtime-receipt');
+  const keys=[...(versioned?['schemaVersion','backend']:[]),...(Object.hasOwn(receipt,'retirement')?['retirement']:[]),'scope','sessionId','turnId','dispatchId','generation','phase','outcome','executionErrorCode','events','checkpoint','persistenceErrorCode','stopped','resourceDisposition'];
   if(Object.keys(receipt).length!==keys.length||keys.some(key=>!Object.hasOwn(receipt,key)))throw Error('invalid-turn-runtime-receipt');
   if(!sameScope(receiptScope,expected.scope)||turnId(receipt.sessionId)!==expected.sessionId||turnId(receipt.turnId)!==expected.turnId||turnId(receipt.dispatchId)!==expected.dispatchId||positive(receipt.generation)!==expected.generation)throw Error('turn-runtime-receipt-scope-denied');
   if(typeof receipt.phase!=='string'||!PHASES.has(receipt.phase as TurnRuntimeReceipt['phase']))throw Error('invalid-turn-runtime-receipt');

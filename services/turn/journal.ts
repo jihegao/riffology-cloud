@@ -1,4 +1,5 @@
 import {deriveTurnTiming} from './timing.ts';
+import {jsonEquivalent} from './json-equivalent.ts';
 import { TURN_EVENT_BYTES_LIMIT, TURN_EVENT_LIMIT, TURN_EVENT_RECEIPT_LIMIT, actor, checkpointReceipt, initialWorkspaceBase, jsonPayload, message, positive, resourceDisposition, verifyHandoffProof, sameScope, scope, title, turnDigest, turnId,
   type CheckpointReceipt, type InitialWorkspaceBase, type RuntimeEventType, type SessionRecord, type TurnActor, type TurnEvent,
   type TurnEventType, type TurnJournalState, type TurnJournalView, type TurnRecord, type TurnResourceDisposition, type TurnScope } from './protocol.ts';
@@ -142,7 +143,7 @@ export class TurnJournal{
         const {tid,dispatchId,generation,eid,at,payload,type,payloadSha256}=input,turn=state.turns[tid];
         if(!turn||turn.dispatchId!==dispatchId||turn.runtimeGeneration!==generation)throw Error('turn-runtime-scope-denied');
         const prior=state.eventReceipts[eid];
-        if(prior){if(prior.payloadSha256!==payloadSha256)throw Error('turn-event-conflict');value.push({event:structuredClone(prior.event),replayed:true});continue;}
+        if(prior){if(prior.payloadSha256!==payloadSha256&&(prior.event.turnId!==tid||prior.event.type!==type||prior.event.at!==at||!jsonEquivalent(prior.event.payload,payload)))throw Error('turn-event-conflict');value.push({event:structuredClone(prior.event),replayed:true});continue;}
         if(!['running','cancelling'].includes(turn.status))throw Error('turn-runtime-scope-denied');
         if(!turn.startedAt||at<turn.startedAt||at>observedAt)throw Error('invalid-runtime-event-time');
         if(receiptCount>=TURN_EVENT_RECEIPT_LIMIT)throw Error('turn-event-receipt-archive-required');
@@ -190,6 +191,7 @@ export class TurnJournal{
         throw Error('turn-checkpoint-conflict');
       }
       if(turn.status!=='checkpointing')throw Error('turn-runtime-scope-denied');
+      if(!turn.base||!equal(turn.base.workspace,state.workspaceHead)||!equal(turn.base.session,state.sessions[turn.sessionId]!.head))throw Error('turn-checkpoint-base-conflict');
       const lastExecutionAt=state.events.filter(row=>row.turnId===turn.id&&!row.type.startsWith('turn.')).reduce((latest,row)=>Math.max(latest,row.at),turn.startedAt!);
       // ProductTurnRuntime materializes R2 before WorkspaceAgent records its
       // checkpointing intent, so its committedAt can legitimately precede the

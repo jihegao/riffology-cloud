@@ -169,3 +169,32 @@ test('synchronous saved-head snapshot excludes active work and is detached for i
  assert.equal(f.journal.workspaceRevisionSnapshot(scope)!.identity.scope.projectId,scope.projectId);
  assert.throws(()=>f.journal.workspaceRevisionSnapshot({...scope,workspaceId:'other-workspace'}),/scope/);
 });
+
+test('issue 77: journal replays reordered nested payloads without weakening event identity',async()=>{
+ const f=fixture(),turn=await queued(f.journal),claim=(await f.journal.claim(scope,1))!.turn;
+ const input={turnId:turn.id,dispatchId:claim.dispatchId!,runtimeGeneration:1,eventId:'reordered-event',type:'provider.status' as const,at:claim.startedAt!,payload:{status:'running',usage:{input:1,output:2}}};
+ const first=await f.journal.appendRuntime(scope,input);
+ const again=await f.journal.appendRuntime(scope,{...input,payload:{usage:{output:2,input:1},status:'running'}});
+ assert.equal(again.replayed,true);assert.equal(again.event.sequence,first.event.sequence);
+ await assert.rejects(f.journal.appendRuntime(scope,{...input,at:input.at+1}),/event-conflict/);
+ await assert.rejects(f.journal.appendRuntime(scope,{...input,payload:{status:'running',usage:{input:1,output:3}}}),/event-conflict/);
+});
+
+test('issue 77: checkpoint compare-and-swap rejects a stale base and retains the newer head',async()=>{
+ const f=fixture(),s=await session(f.journal);
+ const finish=async(key:string)=>{
+  await f.journal.submit(scope,actor,s.id,key,{message:key});const turn=(await f.journal.claim(scope,1))!.turn;
+  const input={turnId:turn.id,dispatchId:turn.dispatchId!,runtimeGeneration:1};
+  await f.journal.beginCheckpoint(scope,{...input,outcome:'completed'});
+  const checkpoint={revisionId:key,objectKey:`turns/${key}`,filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:turn.startedAt!};
+  await f.journal.commitCheckpoint(scope,{...input,checkpoint});return checkpoint;
+ };
+ const older=await finish('older'),newer=await finish('newer');
+ await f.journal.submit(scope,actor,s.id,'stale',{message:'stale'});const turn=(await f.journal.claim(scope,1))!.turn;
+ const input={turnId:turn.id,dispatchId:turn.dispatchId!,runtimeGeneration:1};await f.journal.beginCheckpoint(scope,{...input,outcome:'completed'});
+ // A valid persisted older parent can arise in a migrated/externally prepared
+ // candidate. The product commit must check the current authority as well.
+ await f.store.transact(state=>{state!.turns[turn.id]!.base={workspace:older,session:older};return {state:state!,value:null};});
+ await assert.rejects(f.journal.commitCheckpoint(scope,{...input,checkpoint:{...newer,revisionId:'candidate',committedAt:turn.startedAt!}}),/turn-checkpoint-base-conflict/);
+ assert.deepEqual(f.store.snapshot()!.workspaceHead,newer);assert.equal(f.store.snapshot()!.turns[turn.id]!.persistenceOutcome,null);
+});

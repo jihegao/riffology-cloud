@@ -67,7 +67,7 @@ test('RevisionStore is the sole workerd RPC authority for immutable R2 revisions
         }
         if(body.action==='observe')return Response.json({ok:true,value:await stub.observe(body.identity)});
         if(body.action==='prepare'){
-          const snapshot={identity:body.identity,filesArchive:new TextEncoder().encode(body.files),piSession:new TextEncoder().encode(body.session)};
+          const snapshot={identity:body.identity,filesArchive:new TextEncoder().encode(body.files),...(body.backendState?{backendState:body.backendState}:{piSession:new TextEncoder().encode(body.session)})};
           return Response.json({ok:true,value:await stub.prepareCommit({identity:body.identity,outcome:body.outcome,executionErrorCode:body.error,base:{workspace:null,session:null},snapshot})});
         }
         if(body.action==='commitPrepared')return Response.json({ok:true,value:await stub.commitPrepared({identity:body.identity,outcome:body.outcome,executionErrorCode:body.error,base:{workspace:null,session:null},operationId:body.operationId,inputSha256:body.inputSha256})});
@@ -85,7 +85,7 @@ test('RevisionStore is the sole workerd RPC authority for immutable R2 revisions
         }
         if(body.action==='gc')return Response.json({ok:true,value:await stub.gc({scope:body.identity.scope,operationId:body.operationId,now:body.now,minAgeMs:body.minAgeMs,pageSize:body.pageSize,maxObjects:body.maxObjects})});
         if(body.action==='reconcileGc')return Response.json({ok:true,value:await stub.reconcileGc({scope:body.identity.scope,operationId:body.operationId,inputSha256:body.inputSha256})});
-        const snapshot={identity:body.identity,filesArchive:new TextEncoder().encode(body.files),piSession:new TextEncoder().encode(body.session)};
+        const snapshot={identity:body.identity,filesArchive:new TextEncoder().encode(body.files),...(body.backendState?{backendState:body.backendState}:{piSession:new TextEncoder().encode(body.session)})};
         return Response.json({ok:true,value:await stub.commit({identity:body.identity,outcome:body.outcome,executionErrorCode:body.error,base:{workspace:null,session:null},snapshot})});
       }catch(error){return Response.json({ok:false,error:error.message});}
     }};`;
@@ -182,6 +182,11 @@ test('RevisionStore is the sole workerd RPC authority for immutable R2 revisions
     const crossService=await call({action:'serviceFiles',identity:{...previewIdentity,scope:{...identity.scope,tenantId:'tenant-b'}},receipt:previewReceipt});assert.equal(crossService.ok,false);assert.match(crossService.error,/scope-denied/);
     await bucket.put('turn-blobs-v3/tenant-a/project-a/workspace-a/files/'+previewReceipt.filesSha256,encoder.encode('corrupt archive'));
     const corruptService=await call({action:'serviceFiles',identity:previewIdentity,receipt:previewReceipt});assert.equal(corruptService.ok,false);
+    const managedIdentity={...identity,scope:{...identity.scope,workspaceId:'managed-workspace'},turnId:'managed-turn',dispatchId:'managed-dispatch'};
+    const backendState={schemaVersion:1,backend:'managed-agents',recovery:'remote-reference',identity:managedIdentity,sessionId:'remote-session',turnId:'remote-turn'};
+    const managed=await call({action:'commit',identity:managedIdentity,outcome:'completed',error:null,files:'managed-files',backendState});assert.equal(managed.ok,true,JSON.stringify(managed));assert.equal(managed.value.status,'committed');
+    assert.deepEqual(await call({action:'observe',identity:managedIdentity}),{ok:true,value:managed.value.receipt});
+    const managedManifest=await (await bucket.get(managed.value.receipt.objectKey)).json();assert.equal(managedManifest.backendState.backend,'managed-agents');assert.equal(Object.hasOwn(managedManifest,'piSession'),false);assert.ok(managedManifest.sessionState);
     assert.equal((await mf.dispatchFetch('http://revision.test/')).status,404);
   }finally{await mf.dispose();}
 });
