@@ -1,4 +1,4 @@
-import {canonicalPreviewJson, parsePreviewManifest, previewSha256, BROWSER_PREVIEW_SOURCE_PATHS} from '../contract.ts';
+import {canonicalPreviewJson, parsePreviewManifest, previewSha256, BROWSER_PREVIEW_SOURCE_PATHS, PREVIEW_COMPATIBLE_ADAPTER_SHA256} from '../contract.ts';
 import {LIMITS} from './protocol.mjs';
 import {parseModelSpec} from '../../simulation/model-spec.ts';
 const decode = text => {if (!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(text)) throw Error('runtime-base64-invalid'); const bytes = Uint8Array.from(atob(text), c => c.charCodeAt(0));let encoded='';for(const byte of bytes) encoded+=String.fromCharCode(byte);if(btoa(encoded)!==text)throw Error('runtime-base64-invalid');return bytes;};
@@ -21,7 +21,7 @@ export async function checkedPackage(envelope, profiles, digest=previewSha256) {
   const visualization = JSON.parse(new TextDecoder('utf-8', {fatal:true}).decode(files.get('model/visualization.json')));
   if (!visualization || Object.keys(visualization).sort().join(',') !== 'metricKeys,protocol,renderer,schema' || visualization.schema !== 'riffology.visualization/v1' || visualization.protocol !== 'riffology.visual/v0.1' || !['grid','lane'].includes(visualization.renderer) || !Array.isArray(visualization.metricKeys) || !visualization.metricKeys.length || visualization.metricKeys.length > 64 || visualization.metricKeys.some(k => typeof k !== 'string' || k.length > 128)) throw Error('runtime-visualization-invalid');
   const spec = parseModelSpec(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(files.get('model/model-spec.json'))));
-  if (manifest.sources.find(s=>s.path==='model/run.py').sha256 !== 'b0c785d8c08838d9e416eb87aba1c6b5ce9d8b1d6d233cf2fec32de99a0ec7f5') throw Error('runtime-server-adapter-mismatch');
+  if (!PREVIEW_COMPATIBLE_ADAPTER_SHA256.includes(manifest.sources.find(s=>s.path==='model/run.py').sha256)) throw Error('runtime-server-adapter-mismatch');
   if (spec.execution.entrypoint !== 'model/run.py' || spec.execution.dependencyLock !== 'app/requirements.lock') throw Error('runtime-model-entrypoint-invalid');
   if (visualization.metricKeys.some(k => !Object.hasOwn(spec.metrics,k)) || new Set(visualization.metricKeys).size !== visualization.metricKeys.length) throw Error('runtime-visualization-invalid');
   const lock = JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(files.get('app/requirements.lock')));

@@ -21,14 +21,14 @@ test('simulation panel renders typed parameters, retries one pending request and
   t.after(() => browser.close());
   const context = await browser.newContext(); t.after(() => context.close());
   const page = await context.newPage(); const files = {};
-  for (const name of ['index.html', 'app.js', 'browser-preview.js', 'layout.js', 'export.js', 'publication.js', 'evidence.js', 'evidence.css', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'styles.css', 'workspace.css']) files[name] = await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8');
+  for (const name of ['index.html', 'app.js','project-status.js', 'browser-preview.js', 'layout.js', 'export.js', 'publication.js', 'evidence.js', 'evidence.css', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'styles.css', 'workspace.css']) files[name] = await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8');
   let experiments = [], posts = 0, failOnce = true, changedSpec = false;const attempts=[];
   const json = (route, body, status = 200) => route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
   await page.route('**/*', async route => {
     const url = new URL(route.request().url()), path = url.pathname;
     if (path.startsWith('/api/')) {
       if (path === '/api/auth/get-session') return json(route, { user: { id: 'u' } });
-      if (path === '/api/me') return json(route, { tenants: [{ id: 't' }] });
+if (path === '/api/me') return json(route, { execution:{service:true,preview:true,simulation:true},tenants: [{ id: 't' }] });
       if (path === '/api/models') return json(route, { models: [] });
       if (path === '/api/tenants/t/projects') return json(route, { projects: [{ id: 'p', title: 'P', status: 'ready', workspace_id: 'w' }] });
       if (path === '/api/workspaces/w/browser-preview' && route.request().method()==='GET') return json(route,{currentRevisionId:null,revisionId:null,build:null,stale:false,modelSpec:null,reasonCode:'preview-no-saved-revision',delivery:null});

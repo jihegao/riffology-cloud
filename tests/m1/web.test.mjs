@@ -5,7 +5,7 @@ import { chromium } from 'playwright';
 import { JSON_REQUEST_MAX_BYTES } from '../../services/gateway/http.ts';
 import { renderWorkspace } from '../../ui/workspace.js';
 
-const files = Object.fromEntries(await Promise.all(['index.html', 'app.js', 'browser-preview.js', 'layout.js', 'export.js', 'publication.js', 'evidence.js', 'evidence.css', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'styles.css', 'workspace.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
+const files = Object.fromEntries(await Promise.all(['index.html', 'app.js','project-status.js', 'browser-preview.js', 'layout.js', 'export.js', 'publication.js', 'evidence.js', 'evidence.css', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'styles.css', 'workspace.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
 const workspaceUiSource = await readFile(new URL('../../ui/workspace.js', import.meta.url), 'utf8');
 let browser;
 before(async () => { browser = await chromium.launch({ headless: true, channel: process.env.M1_BROWSER_CHANNEL || 'chrome' }); });
@@ -24,7 +24,7 @@ async function pageFixture(t, handle, options = {}) {
     if (url.pathname.startsWith('/api/')) {
       if (await handle(route, url.pathname)) return;
       if (url.pathname === '/api/auth/get-session') return json(route, { user: { id: 'fixture-user' } });
-      if (url.pathname === '/api/me') return json(route, { tenants: [{ id: 'tenant-a' }] });
+if (url.pathname === '/api/me') return json(route, { execution:{service:true,preview:true,simulation:true},tenants: [{ id: 'tenant-a' }] });
       if (url.pathname === '/api/models') return json(route, { models: [] });
       if (url.pathname === '/api/tenants/tenant-a/projects') return json(route, { projects: [] });
       if (/^\/api\/workspaces\/[^/]+\/browser-preview$/.test(url.pathname) && route.request().method()==='GET') return json(route,{currentRevisionId:null,revisionId:null,build:null,stale:false,modelSpec:null,reasonCode:'preview-no-saved-revision',delivery:null});
@@ -44,6 +44,21 @@ async function pageFixture(t, handle, options = {}) {
   return page;
 }
 async function waitFor(check) { for (let i = 0; i < 100; i++) { if (check()) return; await new Promise(resolve => setTimeout(resolve, 20)); } assert.ok(check(), 'condition timed out'); }
+
+test('project filters use saved-model and preview metadata without executing or deleting projects',async t=>{
+ const calls=[];const page=await pageFixture(t,async(route,path)=>{
+  calls.push({path,method:route.request().method()});
+  if(path==='/api/tenants/tenant-a/projects'){await json(route,{projects:[{id:'queue',workspace_id:'wq',title:'G4 synthetic Queue',status:'ready'},{id:'normal',workspace_id:'wn',title:'我的研究',status:'ready'}]});return true;}
+  if(path==='/api/workspaces/wq/model'){await json(route,{version:{revisionId:'rev-q'}});return true;}
+  if(path==='/api/workspaces/wq/browser-preview'){await json(route,{build:{status:'ready'},currentRevisionId:'rev-q'});return true;}
+ });
+ await page.goto('https://ui.test/');await page.waitForFunction(()=>document.querySelector('[data-preview-ready="true"]'));
+ await page.locator('#project-filter').selectOption('preview');assert.equal(await page.locator('.project:visible').count(),1);assert.match(await page.locator('.project:visible').innerText(),/本地预览可用/);
+ await page.locator('#project-filter').selectOption('ordinary');assert.equal(await page.locator('.project:visible h2').innerText(),'我的研究');
+ await page.locator('#project-filter').selectOption('all');assert.equal(await page.locator('.project:visible').count(),2);
+ await page.locator('#project-search').fill('Queue');assert.equal(await page.locator('.project:visible').count(),1);
+ assert.ok(calls.every(c=>c.method==='GET'));assert.equal(calls.some(c=>/packages|services|turns|simulations/.test(c.path)),false);
+});
 
 test('workspace UI keeps ordinary and airport projects in the real unconnected empty state', () => {
   assert.match(workspaceUiSource, /runtimeConnected=false/);
@@ -210,9 +225,9 @@ test('successful mutation responses remain visible while the first list read is 
   await page.locator('#project-submit').click();
   await page.locator('#project-dialog').waitFor({ state: 'hidden' });
   assert.equal(await page.locator('.project h2').innerText(), 'Immediately visible');
-  assert.equal(await page.locator('.project .status').innerText(), '准备中');
+  assert.equal(await page.locator('.project .status').innerText(), '工作区准备中');
   await page.clock.fastForward(3000);
-  await page.locator('.project .status').filter({ hasText: '就绪' }).waitFor();
+  await page.locator('.project .status').filter({ hasText: '工作区已创建' }).waitFor();
   assert.ok(projectReads >= 3);
 });
 
@@ -281,6 +296,7 @@ test('invalid or foreign project hash never opens a workspace', async t => {
   let workspaceReads = 0;
   const page = await pageFixture(t, async (route, path) => {
     if (path === '/api/tenants/tenant-a/projects') { await json(route, { projects: [{ id: 'other-project', workspace_id: 'other-workspace', title: '其他租户项目', status: 'ready' }] }); return true; }
+    if(['/api/workspaces/other-workspace/model','/api/workspaces/other-workspace/browser-preview'].includes(path)){assert.equal(route.request().method(),'GET');await json(route,{});return true;}
     if (path.startsWith('/api/workspaces/')) { workspaceReads++; await json(route, { schemaVersion: 1, sessions: {}, turns: {} }); return true; }
   });
   await page.goto('https://ui.test/#/workspace/foreign-project');

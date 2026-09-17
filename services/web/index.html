@@ -16,6 +16,8 @@
     <section id="app" hidden>
       <div class="heading"><div><p class="eyebrow">PROJECTS</p><h1>你的项目</h1><p>个人空间</p></div><button id="new-project" class="button primary">新建项目</button></div>
       <section class="model-library card" aria-labelledby="models-heading"><div class="section-heading"><div><p class="eyebrow">MODEL LIBRARY</p><h2 id="models-heading">官方模型</h2><p id="models-status" class="meta">正在加载官方模型…</p></div><button id="models-refresh" class="button compact" type="button">刷新目录</button></div><div id="models" class="model-grid" aria-live="polite"></div></section>
+      <div class="heading"><label>项目筛选 <select id="project-filter"><option value="all">全部项目</option><option value="ordinary">隐藏验收／调试项目</option><option value="acceptance">仅验收／调试项目</option><option value="preview">本地预览可用</option></select></label><label>搜索项目 <input id="project-search" type="search" placeholder="项目名称"></label></div>
+      <p class="meta">验收／调试分类按项目标题识别；筛选不会删除或归档项目。工作区已创建不代表已有模型或可运行。</p>
       <div id="projects" class="project-grid" aria-live="polite"></div>
     </section>
     <section id="workspace" hidden>
