@@ -3,7 +3,6 @@ import {turnDigest} from '../../services/turn/protocol.ts';
 
 const sha=v=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const gates=['G5_ADMISSION_ENABLED','M2_TURNS_ENABLED','M2_MODEL_PROVIDER_ENABLED','PRODUCTION_MODEL_ENABLED','M4_SIMULATION_ENABLED'];
-const caps={tasks:64,dispatches:146,simulationRuns:39,serviceRuns:0,totalNanodollars:19_990_089_550,maxTurnNanodollars:5_000_000_000};
 const fail=m=>{throw Error(m);};
 const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const integer=(v,name)=>{if(!Number.isSafeInteger(v)||v<0)fail(`operator-${name}-invalid`);return v;};
@@ -23,12 +22,12 @@ function validateBundle(bundle){
  if(!m||!p||m.kind!=='closed-frozen-window-not-admission'||m.phaseOrder?.[0]!=='A'||m.firstAdmissionStarted!==false||m.gatesClosed!==true)fail('operator-closed-freeze-required');
  const w=p.windows?.A,patch=p.patches?.A;
  if(!w||w.phase!=='A'||!patch)fail('operator-a-window-required');
- if(w.durationMs!==7_200_000||w.maxTasks!==caps.tasks||w.maxUpstreamDispatches!==caps.dispatches||w.maxSimulationRuns!==caps.simulationRuns||w.maxServiceRuns!==0||w.totalNanodollars!==caps.totalNanodollars||w.turnNanodollars!==caps.maxTurnNanodollars)fail('operator-a-caps-conflict');
+ const caps={tasks:w.maxTasks,dispatches:w.maxUpstreamDispatches,simulationRuns:w.maxSimulationRuns,serviceRuns:w.maxServiceRuns,totalNanodollars:w.totalNanodollars,maxTurnNanodollars:w.turnNanodollars};if(w.durationMs!==7_200_000||!equal(m.limits?.A,{upstream:caps.dispatches,simulationRuns:caps.simulationRuns,serviceRuns:caps.serviceRuns,tasks:caps.tasks,totalNanodollars:caps.totalNanodollars})||caps.maxTurnNanodollars!==5_000_000_000)fail('operator-a-caps-conflict');
  if(JSON.parse(patch.G5_CONTROLLED_WINDOW_JSON).windowId!==w.windowId||JSON.parse(patch.PRODUCTION_MONEY_POLICY_JSON).enabled!==false)fail('operator-frozen-policy-conflict');
- const rollover=w.rollover;if(!rollover||rollover.targetWindowId!==w.windowId||rollover.newIntentNamespace!==`${w.windowId}-`||rollover.sourceTasks!==2||rollover.sourceDispatches!==1||rollover.sourceSimulationRuns!==0||rollover.sourceServiceRuns!==0||rollover.sourceReservedNanodollars!==9_910_450||p.money?.period!==rollover.sourceMoneyPeriod)fail('operator-rollover-binding-conflict');
- const {receiptSha256,...rolloverBinding}=rollover;if(receiptSha256!==sha({purpose:'g5-a-one-time-rollover-v1',...rolloverBinding}))fail('operator-rollover-receipt-conflict');
+ const rollover=w.rollover,quarantines=rollover?.schemaVersion===1?[rollover]:rollover?.quarantines,immediate=quarantines?.at(-1);if(!rollover||![1,2].includes(rollover.schemaVersion)||!Array.isArray(quarantines)||quarantines.length<1||rollover.targetWindowId!==w.windowId||rollover.sourceWindowId!==immediate?.sourceWindowId||rollover.newIntentNamespace!==`${w.windowId}-`||p.money?.period!==immediate?.sourceMoneyPeriod)fail('operator-rollover-binding-conflict');
+ const {receiptSha256,...rolloverBinding}=rollover;if(receiptSha256!==sha({purpose:rollover.schemaVersion===1?'g5-a-one-time-rollover-v1':'g5-a-chained-rollover-v2',...rolloverBinding}))fail('operator-rollover-receipt-conflict');
  for(const gate of gates)if(patch[gate]!=='false')fail('operator-closed-gates-required');
- return {m,p,w,patch,rollover,rolloverBinding};
+ return {m,p,w,patch,caps,rollover,rolloverBinding,quarantines,immediate};
 }
 
 function changed(a,b,path='',out=[]){
@@ -41,7 +40,7 @@ function changed(a,b,path='',out=[]){
 
 /** Compile a reviewable gate-only transition for the already-frozen A window. */
 export function compileG5AControl(closedConfig,bundle,{ordinaryOrigin}={}){
- const {m,p,w,patch,rollover,rolloverBinding}=validateBundle(bundle);
+ const {m,p,w,patch,caps,rollover,rolloverBinding,quarantines,immediate}=validateBundle(bundle);
  if(!closedConfig?.vars)fail('operator-closed-config-required');
  for(const [key,value] of Object.entries(patch))if(closedConfig.vars[key]!==value)fail(`operator-live-pin-conflict:${key}`);
  if(closedConfig.vars.M3_SERVICE_ENABLED!=='false')fail('operator-service-must-remain-closed');
@@ -54,7 +53,7 @@ export function compileG5AControl(closedConfig,bundle,{ordinaryOrigin}={}){
  const openSha256=sha(openConfig);
  const principal=w.principals?.[0],denied=p.windows?.B?.principals?.find(value=>value.userId!==principal?.userId&&value.tenantId!==principal?.tenantId);
  if(!principal||!denied)fail('operator-principal-boundary-required');
- return {schemaVersion:1,kind:'g5-a-one-time-rollover-control',windowId:w.windowId,sourceSha256:m.sourceSha256,profileSha256:m.profileSha256,policyBundleSha256:m.policyBundleSha256,caps,rollover:structuredClone(rollover),rolloverBinding:structuredClone(rolloverBinding),changedPaths:expected,closedConfig:structuredClone(closedConfig),openConfig,closedSha256:sha(closedConfig),openSha256,driverHandoff:{schemaVersion:1,kind:'g5-a-cdp-same-origin-handoff',ordinaryOrigin:appOrigin,windowId:w.windowId,profileSha256:m.profileSha256,sourceSha256:m.sourceSha256,openConfigSha256:openSha256,rolloverReceiptSha256:rollover.receiptSha256,allowedUserId:principal.userId,allowedTenantId:principal.tenantId,deniedUserId:denied.userId,deniedTenantId:denied.tenantId,requiresIdentityPreflight:true,newIntentNamespace:rollover.newIntentNamespace,forbiddenIntentNamespace:`${rollover.sourceWindowId}-`,sourceIntentKeySha256:rollover.sourceIntentKeySha256,sourceProjectId:rollover.sourceProjectId,sourceSessionId:rollover.sourceSessionId,sourceTurnId:rollover.sourceTurnId}};
+ return {schemaVersion:1,kind:rollover.schemaVersion===1?'g5-a-one-time-rollover-control':'g5-a-chained-rollover-control',windowId:w.windowId,sourceSha256:m.sourceSha256,profileSha256:m.profileSha256,policyBundleSha256:m.policyBundleSha256,caps,rollover:structuredClone(rollover),rolloverBinding:structuredClone(rolloverBinding),changedPaths:expected,closedConfig:structuredClone(closedConfig),openConfig,closedSha256:sha(closedConfig),openSha256,driverHandoff:{schemaVersion:1,kind:'g5-a-cdp-same-origin-handoff',ordinaryOrigin:appOrigin,windowId:w.windowId,profileSha256:m.profileSha256,sourceSha256:m.sourceSha256,openConfigSha256:openSha256,rolloverReceiptSha256:rollover.receiptSha256,maximumTasks:caps.tasks,allowedUserId:principal.userId,allowedTenantId:principal.tenantId,deniedUserId:denied.userId,deniedTenantId:denied.tenantId,requiresIdentityPreflight:true,newIntentNamespace:rollover.newIntentNamespace,forbiddenIntentNamespace:`${immediate.sourceWindowId}-`,sourceIntentKeySha256:immediate.sourceIntentKeySha256,sourceProjectId:immediate.sourceProjectId,sourceSessionId:immediate.sourceSessionId,sourceTurnId:immediate.sourceTurnId,forbiddenIntentNamespaces:quarantines.map(value=>`${value.sourceWindowId}-`),sourceIntentKeySha256s:quarantines.map(value=>value.sourceIntentKeySha256),sourceProjectIds:quarantines.map(value=>value.sourceProjectId),sourceSessionIds:quarantines.map(value=>value.sourceSessionId),sourceTurnIds:quarantines.map(value=>value.sourceTurnId)}};
 }
 
 function identityChecked(plan,value,now){
