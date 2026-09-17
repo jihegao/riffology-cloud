@@ -55,10 +55,68 @@ verify exact profile selection and arbitrary-lock rejection; native Docker
 acceptance requires its explicit opt-in and image. Skipped Docker/live suites
 must not be described as passing live execution.
 
-Phase 5 and production deployment were not authorized or run. This work makes
-no paid call, settles no unknown usage, switches no production route, and does
-not close the issue on the strength of offline evidence.
+At the original offline checkpoint, Phase 5 and production deployment had not
+been authorized or run. The following live record supersedes only the internal
+paid execution status; it does not establish production routing or close #77.
 
 ## 2026-09-18 live preflight
 
 The original offline report is preserved as `offline-20260917.json`; verify its committed historical source with `node scripts/evidence/verify-issue77.mjs --historical`. Current `validation.json` binds the latest main integration, SDK client, bounded operator and ledger to a committed source. Full check: 2,205 passed, 11 skipped. The subsequent focused 21-test run includes six new operator/ledger cases. Authorization is distinct from execution: these are offline preflight results, not paid or production acceptance.
+
+## 2026-09-18 authorized internal run and actual artifact acceptance
+
+`live-acceptance.json` is separate from the offline preflight. The accepted
+policy allowed at most two Sessions and six Turns in the original two-hour
+window, with US$5 as an observation threshold rather than an enforceable cap.
+Four paid Turns used both Sessions. All four have observed usage; the upper
+model token cost estimate is US$0.1169232, conservative reservations US$3.50.
+Billing remains unsettled. Both Sessions were deleted and absence read back.
+
+The first candidate failed contract validation. A harness preservation defect
+lost the rejected artifact before deletion, so that failure cannot reliably be
+attributed to model output. The fixed harness retained artifacts before
+validation, supplied the exact schema, and resumed under the unchanged budget
+clock, counts and reservations. Two valid model versions then passed; the
+same-Session modification preserved earlier result bytes. A separate fourth
+Turn confirmed cancellation. No unknown was refunded, replayed or cleared.
+
+After cleanup, actual candidate bytes exposed a files-only Revision defect;
+publication/read/GC validation now accepts the documented recovery type while
+retaining strict identity checks for live remote references. Final M2 regression:
+729 passed, zero failures; typecheck passed. This follow-up is recorded separately
+from the earlier complete check.
+
+Local Workerd/R2 committed and restored both actual versions, retained history,
+and proved replay idempotence. Twelve independent network-denied native Docker
+runs matched a closed-form FCFS oracle. Twelve real Chrome/Pyodide Preview runs
+matched those native traces exactly; playback and refresh passed. Every native
+container was removed. An initial verifier attempt incorrectly reused one
+container for two tokens and was rejected by its single-operation guard; the
+verifier was corrected to use a fresh container per run without weakening the
+guard. Raw private diagnostic reports remain local.
+
+The committed `live-artifacts/` contains synthetic candidate JSON, converted
+archives, Preview packages and actual native receipts. Source receipts refer to
+the explicit converted-archive hash after adding platform presentation metadata;
+they never claim that edited bytes are the original provider artifact. Provider
+identifiers, credentials and account data are omitted.
+
+```sh
+node scripts/evidence/verify-issue77.mjs
+node scripts/evidence/verify-issue77-live.mjs
+shasum -a 256 -c docs/evidence/issue-77/SHA256SUMS
+```
+
+The live verifier only checks recorded bytes, hashes and numeric receipts; it
+makes no model calls and does not re-execute the browser. Re-execution scripts
+are `scripts/issue77/verify-downloaded.mjs` and
+`scripts/issue77/verify-downloaded-browser.mjs`; they require the preserved private
+operator evidence, pinned native Docker image and materialized Preview assets.
+
+**Production remains incomplete.** The product dispatcher, native capacity
+release and Workspace routing still require a Pi-specific proof. Managed
+backend-specific termination/resource receipts, project opt-in, durable product
+admission and the authenticated formal Experiment/Evidence path have not been
+assembled. No production deployment or authenticated production E2E is claimed.
+The two authorized Sessions are consumed; another paid production Session would
+require a separately authorized policy amendment, retaining this ledger intact.

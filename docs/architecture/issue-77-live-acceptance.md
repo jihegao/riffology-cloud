@@ -70,3 +70,25 @@ dispatcher still requires Pi-native termination and capacity receipts. A separat
 reviewed backend-specific termination/resource contract and project-scoped
 admission assembly must precede enabling Managed product routing. The SDK client
 and this bounded operator do not bypass those contracts.
+
+## Recorded outcome
+
+The authorized internal run consumed four Turns and both Sessions. All usage
+was observed, both Sessions were deleted with absence readback, and the model
+token cost upper estimate was US$0.1169232 (not settled billing). The first
+candidate failure had incomplete artifact preservation, documented without
+assuming a model fault. Two later valid candidates, same-Session history
+preservation and cancellation passed.
+
+Actual downloaded bytes subsequently passed local RevisionStore/R2 publication
+and restore, twelve native Docker oracle runs, and twelve matching real browser
+Preview runs. These are component results, not authenticated production E2E.
+See `docs/evidence/issue-77/live-acceptance.json` and its adjacent README.
+
+Product integration remains unassembled: backend-specific terminal/resource
+contracts must replace Pi-only assumptions in the existing dispatcher and
+Workspace assembly; project opt-in and durable admission must bind the backend
+before input; remote controls must never synthesize a native fence. Only after
+those contracts and existing Pi regression checks pass can a closed deployment
+be read back, a single project be enabled, and authenticated formal
+Experiment/Evidence acceptance run. This trial cannot admit a third Session.

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "recordedAt": "2026-09-17T23:34:41.601107+00:00",
-  "sourceCommit": "f19888be824fdc5a0ae524a5a531a87fdfc55ece",
+  "recordedAt": "2026-09-17T23:49:30.285794+00:00",
+  "sourceCommit": "e10e8b8a2031541544d8426ecc3a0fae37f8472d",
   "integrationBase": "eb73155ed72be278300f9e57704dc3c1d5c4ed5b",
   "safetyCheckpoint": "3f4bee9b3b8dd5211af669066dce8afd27a85b91",
   "sourceFiles": [
@@ -167,7 +167,7 @@
     },
     {
       "path": "services/turn-runtime/revision-gc.ts",
-      "sha256": "9f80603c65b5cfc02f081a8e0239e17411398220a1e339d8e8029216d90988f6"
+      "sha256": "c78cbafd48f1313a403b2907a76efe72396e64b16472c0d79148c0cb0a188448"
     },
     {
       "path": "services/turn-runtime/revision-store-client.ts",
@@ -179,7 +179,7 @@
     },
     {
       "path": "services/turn-runtime/revision.ts",
-      "sha256": "3668c4b96b18db25e980c78227c04c54c1f21a5bf0668b8e7149cda571ae9e36"
+      "sha256": "d026dd72aca59c04e91bc08d3731a328da26b14c0592b68e04a92a2d9adeef02"
     },
     {
       "path": "services/turn/dispatcher.ts",
@@ -267,7 +267,7 @@
     },
     {
       "path": "tests/m2/turn-revision.test.ts",
-      "sha256": "6220cdd7acc4eedd61819057dd8cab17ed607f06b40de661981ed8b0a645ece6"
+      "sha256": "736ab61a1ec3248e09533bb3acaf97a05138d2da453eaefaee3e1a4934a143a8"
     },
     {
       "path": "tests/m3/agent-candidate-contract.test.ts",
@@ -300,6 +300,14 @@
     {
       "path": "tests/m3/workspace-layout.test.mjs",
       "sha256": "62bb2bdbf331e59aee22a4b90841ee4fc6641d7cdf12279159f9872b8af08b0c"
+    },
+    {
+      "path": "scripts/issue77/verify-downloaded.mjs",
+      "sha256": "3ae56c618d391de035141e5218ba8fa0f123499f0a0347eb0d9990ec418dc8e7"
+    },
+    {
+      "path": "scripts/issue77/verify-downloaded-browser.mjs",
+      "sha256": "992be08e3ddeacb8c32dd22e8b74cfdf38435209b3c0d14f80fb936c26129d22"
     }
   ],
   "validation": {
@@ -406,7 +414,8 @@
     "fullCheck": {
       "command": "npm run check",
       "exitCode": 0,
-      "logSha256": "599ad0c256e941b348214be818f5da25c43b8cdfa0a859eef953fa328a6650f8"
+      "logSha256": "599ad0c256e941b348214be818f5da25c43b8cdfa0a859eef953fa328a6650f8",
+      "sourceCommit": "f19888be824fdc5a0ae524a5a531a87fdfc55ece"
     },
     "focusedFollowup": {
       "command": "node --test scripts/issue77/*.test.mjs tests/m2/managed-sdk-transport.test.ts tests/m2/backend-contract.test.ts tests/m2/backend-shared-contract.test.ts",
@@ -423,6 +432,21 @@
       "exitCode": 0,
       "logSha256": "35ea97dc2bb8b8586dd3dee6435a51977f96b9e7733a6591422d0d30d546f2a9",
       "scope": "Operator-only repair after first live attempt; full npm check source unchanged except previously focused-verified adapter wrapper. No claim that this offline record covers live execution."
+    },
+    "revisionFollowup": {
+      "sourceCommit": "e10e8b8a2031541544d8426ecc3a0fae37f8472d",
+      "commands": [
+        "npm run typecheck",
+        "npm run test:m2"
+      ],
+      "exitCodes": [
+        0,
+        0
+      ],
+      "passed": 729,
+      "failed": 0,
+      "logSha256": "e0d0b860374b9fb37c65975f72a8d879ad99cefae4f499ac71fa676ac9b52129",
+      "scope": "Final Revision restore/GC changes, including two new cases; preceding full-check totals above are retained as historical preflight totals, not recomputed current totals."
     }
   },
   "delivery": {
