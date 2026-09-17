@@ -19,6 +19,7 @@ test('incomplete execution still carries verified billing usage',async()=>{asser
 test('cancel before dispatch makes no call; stalled body deadline cancels reader',async()=>{
  let calls=0,cancelled=false;const p=provider(async()=>{calls++;return new Response(new ReadableStream({cancel(){cancelled=true;}}),{headers:{'content-type':'text/event-stream'}});});const c=new AbortController();c.abort();await assert.rejects(p.dispatch({...input(),signal:c.signal}),/abort/i);assert.equal(calls,0);await assert.rejects(p.dispatch({...input(),deadlineAt:Date.now()+20}),/deadline/);assert.equal(calls,1);assert.equal(cancelled,true);
 });
+test('Gateway fetch TypeError becomes a stable redacted failure code',async()=>{await assert.rejects(provider(async()=>{throw new TypeError('sensitive network detail');}).dispatch(input()),/^Error: provider-fetch-typeerror$/);});
 test('hosted tools, media, paid tier and extended retention denied before fetch',async()=>{
  let calls=0;const p=provider(async()=>{calls++;throw Error('unexpected');});for(const patch of [{tools:[{type:'web_search'}]},{input:[{type:'input_image',image_url:'x'}]},{service_tier:'priority'},{prompt_cache_retention:'24h'},{previous_response_id:'resp-1'}])await assert.rejects(p.dispatch({...input(),payload:{...input().payload,...patch}}),/rejected-auth/);assert.equal(calls,0);
 });

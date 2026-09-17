@@ -15,7 +15,7 @@ const identity = { scope: { tenantId: 'tenant-a', projectId: 'project-a', worksp
 const actor = { userId: 'user-a', authVersion: 3 };
 const idFor = (name: string) => `id-${name}`;
 
-type Log = { reserves: ModelCallRequest[]; dispatches: number; unknown: number; terminals: ModelCallTerminal[] };
+type Log = { reserves: ModelCallRequest[]; dispatches: number; unknown: number; terminals: ModelCallTerminal[]; failures: unknown[] };
 function record(request: ModelCallRequest): ModelCallRecord {
   return {
     identity: request.identity, callId: request.callId, requestId: request.requestId,
@@ -41,7 +41,7 @@ function environment(log: Log): ModelProxyHttpEnv {
     }) },
   };
 }
-function log(): Log { return { reserves: [], dispatches: 0, unknown: 0, terminals: [] }; }
+function log(): Log { return { reserves: [], dispatches: 0, unknown: 0, terminals: [], failures: [] }; }
 async function signedRequest(overrides: { body?: Record<string, unknown>; at?: number; containerId?: string; mac?: string; capability?: string; path?: string } = {}): Promise<Request> {
   const trustedPiActorId = (await sandboxActorIds(identity.scope, identity.turnId, identity.dispatchId)).trustedPi;
   const capability = overrides.capability ?? await issueModelTurnCapability(capabilityKey, {
@@ -78,7 +78,7 @@ async function g5Environment(ledger:Log,order:string[],failAt=''){
  async lookupTrustedTurnRoute(){step('route');return {kind:'g5',taskKey:'a'.repeat(64),windowId:'window-a',profileSha256:await profileDigest(profile)};},
  async reserveTrustedCall(){step('global-reserve');return {callKey:'c'.repeat(64),windowId:'window-a',deadlineAt:now+20000,replayed:false,mayDispatch:false};},
  async bindTrustedMoney(){step('money-bind');},async claimTrustedDispatch(){step('global-claim');return {authorized:true,deadlineAt:now+20000};},
- async settleTrustedCall(){step('global-settle');},async markUnknown(){order.push('global-unknown');},
+ async settleTrustedCall(){step('global-settle');},async markUnknown(_key,failure){order.push('global-unknown');ledger.failures.push(failure);},
  };}};
  env.PRODUCTION_MODEL_BUDGET={getByName(){return {
  async admit(){step('money-admit');return {accepted:true,record:{key:'m'.repeat(64),digest:'d'.repeat(64)}};},
@@ -101,7 +101,7 @@ test('private ACK loss before provider fences globally; lost settlement after pr
   const ledger=log(),order:string[]=[],env=await g5Environment(ledger,order,stage),calls:unknown[]=[];
   const response=await handleModelProxyRequest(await signedRequest(),env,{...provider(calls),productionProfile:profile},()=>now);
   assert.ok([409,503].includes(response.status));assert.equal(calls.length,stage==='global-settle'?1:0);assert.equal(ledger.unknown,1);
-  if(stage!=='global-reserve')assert.ok(order.includes('global-unknown'));
+  if(stage!=='global-reserve'){assert.ok(order.includes('global-unknown'));assert.deepEqual(ledger.failures,[{schemaVersion:1,stage:stage==='global-settle'?'budget-finish':'admission',errorCode:'unclassified',observedAt:now}]);}
  }
 });
 test('route lookup loss refuses before reservation and legacy path remains untouched with no G5 config',async()=>{
@@ -113,7 +113,7 @@ test('provider loss marks all existing fences unknown and same signed replay can
  const ledger=log(),order:string[]=[],env=await g5Environment(ledger,order),calls:unknown[]=[];
  const model={...provider(calls,true),productionProfile:profile};
  assert.equal((await handleModelProxyRequest(await signedRequest(),env,model,()=>now)).status,503);
- assert.ok(order.includes('global-unknown'));assert.ok(order.includes('money-unknown'));assert.equal(ledger.unknown,1);
+ assert.ok(order.includes('global-unknown'));assert.ok(order.includes('money-unknown'));assert.equal(ledger.unknown,1);assert.deepEqual(ledger.failures,[{schemaVersion:1,stage:'provider-dispatch',errorCode:'unclassified',observedAt:now}]);
  assert.equal((await handleModelProxyRequest(await signedRequest(),env,model,()=>now)).status,409);assert.equal(calls.length,1);
 });
 test('trusted registered route cannot select another profile or silently use legacy token authority',async()=>{

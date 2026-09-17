@@ -30,8 +30,9 @@ export type G5ProxyGuard={
  bindTrustedMoney(callKey:string,reference:MoneyReference):Promise<unknown>;
  claimTrustedDispatch(callKey:string):Promise<{authorized:boolean;deadlineAt:number}>;
  settleTrustedCall(callKey:string):Promise<unknown>;
- markUnknown(callKey:string):Promise<unknown>;
+ markUnknown(callKey:string,failure?:G5ProviderFailureEvidence):Promise<unknown>;
 };
+export type G5ProviderFailureEvidence={schemaVersion:1;stage:'admission'|'provider-dispatch'|'budget-finish';errorCode:string;observedAt:number};
 export interface ModelProxyHttpEnv {
  G5_CONTROLLED_WINDOW_JSON?:string;
  G5_TOKEN_BUDGET?:BudgetNamespace;
@@ -130,7 +131,8 @@ async function readBody(request: Request): Promise<ArrayBuffer> {
 function denied(): Response { return Response.json({ error: 'model_request_denied' }, { status: 403, headers: { 'cache-control': 'no-store' } }); }
 function unavailable(): Response { return Response.json({ error: 'model_provider_unavailable' }, { status: 503, headers: { 'cache-control': 'no-store' } }); }
 function emit(telemetry:ProductModelTelemetry|undefined,event:Record<string,unknown>){try{telemetry?.(event);}catch{}}
-function failureCode(error:unknown):string{const message=error instanceof Error?error.message:'';if(/^(?:opencode-go|invalid-opencode-go|model-call|invalid-model)[a-z0-9-]{0,96}$/.test(message))return message;if(error instanceof DOMException&&['AbortError','TimeoutError'].includes(error.name))return `provider-${error.name.toLowerCase()}`;return 'unclassified';}
+function failureCode(error:unknown):string{const message=error instanceof Error?error.message:'';if(/^(?:opencode-go|invalid-opencode-go|model-call|invalid-model|g5-|production-|provider-fetch-)[a-z0-9-]{0,96}$/.test(message)||['rejected-auth','rate-limited','provider-failure','deadline','cancelled','malformed-stream','missing-usage','outcome-unknown'].includes(message))return message;if(error instanceof DOMException&&['AbortError','TimeoutError'].includes(error.name))return `provider-${error.name.toLowerCase()}`;if(error instanceof TypeError)return 'runtime-typeerror';return 'unclassified';}
+function failureEvidence(stage:G5ProviderFailureEvidence['stage'],error:unknown,now:()=>number):G5ProviderFailureEvidence{return {schemaVersion:1,stage,errorCode:failureCode(error),observedAt:positive(now())};}
 function conflict(error: string, status?: string): Response {
   return Response.json({ error, ...(status ? { status } : {}) }, { status: 409, headers: { 'cache-control': 'no-store' } });
 }
@@ -238,7 +240,7 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
       if(money&&moneyRef&&!dispatch.observeOnly&&dispatch.record.dispatchedAt===null)await money.releaseUndispatched(moneyRef,{kind:'token-fence-denied-before-provider',confirmationId:parsed.requestId,tokenReservationId:reference.reservationId,observedAt:positive(now())});
       return conflict(dispatch.observeOnly ? 'model_call_observe_only' : 'model_call_not_dispatched', dispatch.record.status);
     }
-  } catch { if(isG5){if(g5CallKey)await guard!.markUnknown(g5CallKey).catch(()=>{});if(reference!)await budget.markUnknown(tenantId,reference).catch(()=>{});}if(money&&moneyRef)await money.markUnknown(moneyRef,'outcome-unknown').catch(()=>{});return conflict('model_call_rejected'); }
+  } catch(error) { if(isG5){if(g5CallKey)await guard!.markUnknown(g5CallKey,failureEvidence('admission',error,now)).catch(()=>{});if(reference!)await budget.markUnknown(tenantId,reference).catch(()=>{});}if(money&&moneyRef)await money.markUnknown(moneyRef,productionFailure(error)).catch(()=>{});return conflict('model_call_rejected'); }
 
   let result: ProductModelProviderResult;
   let stage='provider-dispatch',started=now();
@@ -270,7 +272,7 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
     emit(telemetry,{event:'budget-finish-result',outcome:'committed',durationMs:now()-started});
   } catch(error) {
     emit(telemetry,{event:'model-call-failure',stage,errorCode:failureCode(error),durationMs:now()-started});
-    if(isG5&&g5CallKey)await guard!.markUnknown(g5CallKey).catch(()=>{});
+    if(isG5&&g5CallKey)await guard!.markUnknown(g5CallKey,failureEvidence(stage as G5ProviderFailureEvidence['stage'],error,now)).catch(()=>{});
     if(money&&moneyRef)await money.markUnknown(moneyRef,productionFailure(error)).catch(()=>{});
     await budget.markUnknown(tenantId, reference).catch(() => {});
     return unavailable();
