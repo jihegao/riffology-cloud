@@ -91,4 +91,3 @@ def run(config):
         if snapshots[-1]["metrics"]["unhappy"] == 0:
             break
     return {"model": "mesa-schelling", "snapshots": snapshots}
-

@@ -4,6 +4,8 @@ Riffology Cloud 是一个多租户、持久化的 AI 仿真建模工作台。
 用户围绕 Project 和 Pi Agent Session 工作，Workspace 提供文件、运行与插件能力，
 Browser 作为可选内置插件提供交互预览和 Agent 观察。
 
+截至 2026-09-18，正式 Browser Preview、Workspace UI 和 G4/G5 控制逻辑已在集成分支实现；PR #76 的发布记录见[线上验收说明](docs/browser-preview-online-acceptance-20260917.md)。登录用户的最新线上预览仍有兼容故障，由 [Issue #78](https://github.com/jihegao/riffology-cloud/issues/78) 跟踪。合入主分支不表示该故障已修复、完整线上验收通过或付费执行已开放。下方早期里程碑保留历史状态，当前整合与检查结果见[主分支整合记录](docs/integration-main-review-20260918.md)。
+
 MVP 采用极简 Session 界面，以 Cloudflare Workers、Agents SDK / Durable Objects、
 Sandbox、D1 和 R2 构成云端服务；本地候选支持 Python 标准库 Queue 与固定 Mesa profile，保留历史 SimPy 路径。
 
@@ -61,4 +63,4 @@ npm run dev
 用户登录、生产多租户链路、持久 Turn、项目应用、真实 Run 和计费尚未交付。当前源码未整体部署，候选清单仍禁止推广。详见[开发执行状态](docs/development-status.md)。
 
 
-Browser Preview 本地候选按[多阶段计划](docs/issues-subagent-plan-20260915.md)实施；实际验收与上线边界见[实施记录](docs/issues-development-log-20260915.md)。干净工作树执行 `npm ci` 后创建 `.local`，依次运行 `node services/browser-preview/runtime/prepare-assets.mjs`、`node services/browser-preview/execution/materialize.mjs`、`node scripts/m3/materialize-browser-preview-web.mjs`，再运行 `npm run check`。固定资产必须通过收据核验，当前候选尚未发布。
+Browser Preview 按[多阶段计划](docs/issues-subagent-plan-20260915.md)实施；历史验收见[实施记录](docs/issues-development-log-20260915.md)，最近发布边界见[线上验收说明](docs/browser-preview-online-acceptance-20260917.md)。干净工作树执行 `npm ci` 后创建 `.local`，依次运行 `node services/browser-preview/runtime/prepare-assets.mjs`、`node services/browser-preview/execution/materialize.mjs`、`node scripts/m3/materialize-browser-preview-web.mjs`，再运行 `npm run check`。固定资产必须通过收据核验；这些本地检查不能替代登录用户的线上验收。

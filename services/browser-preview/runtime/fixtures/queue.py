@@ -80,4 +80,3 @@ def run(config):
         })
 
     return {"model": "python-queue-trace", "snapshots": snapshots}
-
