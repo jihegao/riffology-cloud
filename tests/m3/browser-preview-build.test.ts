@@ -63,6 +63,8 @@ test('unsupported inputs have stable reasons and never execute or fetch generate
   [{'app/requirements.lock':encode('{"schemaVersion":1,"packages":{"requests":"1"}}')},'dependency-unsupported'],
   [{'model/model.py':encode('import js\ndef run(config):\n    return js.fetch("https://trap/")')},'python-unsupported'],
   [{'model/model.py':encode('import os\ndef run(config):\n    return os.getenv("SECRET")')},'python-unsupported'],
+  [{'model/model.py':encode('def run(config):\n    if config["seed"] >= 0: import os\n    return {"model": "queue", "snapshots": []}')},'python-unsupported'],
+  [{'model/model.py':encode('def run(config):\n    while False: from os import environ\n    return {"model": "queue", "snapshots": []}')},'python-unsupported'],
   [{'model/model.py':encode('def run(config):\n    return eval(config)')},'python-unsupported'],
   [{'model/model.py':encode('def run(config):\n    return {}\nrun({})')},'python-unsupported'],
   [{'model/run.py':encode('import json\nfrom model import run\nprint(json.dumps({"schemaVersion":1,"metrics":{"completed":999}}))\n')},'python-unsupported'],
