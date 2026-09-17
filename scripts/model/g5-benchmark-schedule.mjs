@@ -31,14 +31,17 @@ export async function compileSchedule(input) {
   if (extraTurns !== 0) throw Error('extra-turns-require-revised-frozen-plan');
   // 3 Projects + 18 Turns + 39 child Runs + 3 group intents = 63 normal admissions.
   const normalAdmissionTasks = 3 + 18 + 39 + groupIntentTasks;
-  const probeTasks = 1;
-  // Rollover leaves one task slot after the 63-task normal suite.
+  const taskCap = integer(input.taskCap, 'task-cap');
+  // The first rollover retained one optional probe Task. A chained rollover
+  // with exactly 63 Tasks runs only the frozen normal suite.
+  const probeTasks = taskCap === normalAdmissionTasks + 1 ? 1 : taskCap === normalAdmissionTasks ? 0 : -1;
+  if (probeTasks < 0) throw Error('task-cap-conflict');
   const maximumAdmissionTasks = normalAdmissionTasks + probeTasks;
-  if (integer(input.taskCap, 'task-cap') !== maximumAdmissionTasks) throw Error('task-cap-conflict');
-  if (input.dispatchCap !== 146 || input.runCap !== 39) throw Error('frozen-dispatch-or-run-cap');
+  const expectedDispatchCap = probeTasks === 1 ? 146 : 145;
+  if (input.dispatchCap !== expectedDispatchCap || input.runCap !== 39) throw Error('frozen-dispatch-or-run-cap');
   const profile = productionProfile(manifest.profile);
   const perCall = BigInt(conservativeCost(profile, profile.limits.maxInputTokens, profile.limits.maxOutputTokens));
-  const total = perCall * 146n;
+  const total = perCall * BigInt(input.dispatchCap);
   if (total > BigInt(manifest.globalCapNanodollars)) throw Error('probe-inclusive-budget-too-small');
   if (total > BigInt(Number.MAX_SAFE_INTEGER)) throw Error('unsafe-budget-total');
   return { schemaVersion: 1, kind: 'offline-schedule-not-authorization', fixtureSha256,
@@ -46,8 +49,8 @@ export async function compileSchedule(input) {
       'missing-usage', 'transport-uncertain', 'single-upstream-attempt',
     ].slice(0,probeTasks).map((id,index) => ({ id, order: 19+index, maxDispatches: 1, requiresNormalSuiteTerminal: true })),
     limits: { projects:3, turns:18, explicitRuns:39, groupIntentTasks, extraTurns,
-      normalAdmissionTasks, probeTasks, maximumAdmissionTasks, taskCap:input.taskCap,
-      normalDispatches:144, totalDispatches:145, dispatchCap:146, maximumNanodollars:Number(total),
+      normalAdmissionTasks, probeTasks, maximumAdmissionTasks, taskCap,
+      normalDispatches:144, totalDispatches:144+probeTasks, dispatchCap:input.dispatchCap, maximumNanodollars:Number(total),
       maxTurnNanodollars:Number(perCall*8n) },
     stopOn: plan.stopOn, probePolicy: 'after-normal-suite; first-unknown-stops-all-new-admission',
   };

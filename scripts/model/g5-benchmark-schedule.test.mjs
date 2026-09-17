@@ -16,9 +16,19 @@ test('repetition dependency schedule, complete admission counts and probe-inclus
  assert.deepEqual([s.limits.normalAdmissionTasks,s.limits.probeTasks,s.limits.maximumAdmissionTasks],[63,1,64]);assert.equal(s.limits.maximumNanodollars,146*9216);assert.equal(s.limits.dispatchCap,146);
  p.groupIntentTasks=0;await assert.rejects(compileSchedule(p),/group-intent-classification-required/);
  p.groupIntentTasks=3;
- p.taskCap=63;await assert.rejects(compileSchedule(p),/task-cap-conflict/);
+ p.taskCap=62;await assert.rejects(compileSchedule(p),/task-cap-conflict/);
  p.taskCap=64;p.productionManifest.globalCapNanodollars=144*9216;
  await assert.rejects(compileSchedule(p),/probe-inclusive-budget-too-small/);
+});
+test('chained rollover runs the complete normal suite with zero probe Tasks',async()=>{
+ const p=await proposal();p.taskCap=63;p.dispatchCap=145;p.productionManifest.globalCapNanodollars=145*9216;
+ const s=await compileSchedule(p);
+ assert.deepEqual([s.limits.normalAdmissionTasks,s.limits.probeTasks,s.limits.maximumAdmissionTasks],[63,0,63]);
+ assert.deepEqual([s.limits.normalDispatches,s.limits.totalDispatches,s.limits.dispatchCap],[144,144,145]);
+ assert.equal(s.limits.maximumNanodollars,145*9216);assert.deepEqual(s.probes,[]);
+ const normal=s.schedule.map(t=>({id:t.fixtureId,status:'accepted',dispatches:2}));
+ assert.deepEqual(nextAdmission(s,normal),{state:'complete'});
+ p.dispatchCap=146;await assert.rejects(compileSchedule(p),/frozen-dispatch-or-run-cap/);
 });
 test('unknown final probe stops; no post-stop admission, no replay, unqualified predecessor blocks dependencies',async()=>{
  const s=await compileSchedule(await proposal());
