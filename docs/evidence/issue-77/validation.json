@@ -1,17 +1,133 @@
 {
-  "schemaVersion": 1,
-  "recordedAt": "2026-09-17T16:47:47.072508+00:00",
-  "sourceCommit": "8d5e6ec2f9e5f2b62d1af002cdddde030491998d",
-  "integrationBase": "08f7b727070a58484732fa56bdf7d7a448727db1",
+  "schemaVersion": 2,
+  "recordedAt": "2026-09-17T23:29:02.328127+00:00",
+  "sourceCommit": "52a494b27e9bc9e05b83aa9c6879d420b8faf72f",
+  "integrationBase": "eb73155ed72be278300f9e57704dc3c1d5c4ed5b",
   "safetyCheckpoint": "3f4bee9b3b8dd5211af669066dce8afd27a85b91",
   "sourceFiles": [
     {
       "path": "package-lock.json",
-      "sha256": "f2148feb0fe4ea3aad8524fa2cae71e83aa811ca318c45af78863c88ab2c6d08"
+      "sha256": "2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8"
+    },
+    {
+      "path": "package.json",
+      "sha256": "5c49d126b6e53360bb9ef27c814322b89a91fc15545d7a31ac6b0e3ba4fb925f"
     },
     {
       "path": "scripts/evidence/verify-issue77.mjs",
-      "sha256": "b0254a795334703df2d91ed6ac3283cf4e79631a83c1057ecc37edfe92d9f88b"
+      "sha256": "a5adc3dd2647b757757d2c30cb7195283dded0877c0d1967591ca9607088ab67"
+    },
+    {
+      "path": "scripts/issue77/ledger.mjs",
+      "sha256": "24064f68e95e5d5e0e1ee63dec772c5313323e619511fdc89b201583d8ab2e6e"
+    },
+    {
+      "path": "scripts/issue77/ledger.test.mjs",
+      "sha256": "84919f5cfd3383bc520c2015472abe6eeac260363bd2c08ffc17375f3dcb519a"
+    },
+    {
+      "path": "scripts/issue77/live.mjs",
+      "sha256": "d82e1dc6e28d0b05536dfe709b339d441538d31e370905dda2969ef7ea960612"
+    },
+    {
+      "path": "scripts/issue77/live.test.mjs",
+      "sha256": "7426b6da10f642a8f8d99bb2350e5cf6f5c5a70749f162df82a452b76dd8db20"
+    },
+    {
+      "path": "scripts/model/g5-v4-recovery-control.mjs",
+      "sha256": "0ab8e64d3523d46c6263bad3ecadeea79878121bafbf2a74c54b14259059f275"
+    },
+    {
+      "path": "scripts/model/g5-v4-recovery-deploy.mjs",
+      "sha256": "d604c94e78360fa91f06c5dba656831da8a016068f5916556459ee0c0f06b79f"
+    },
+    {
+      "path": "scripts/model/g5-v4-recovery-prepare.mjs",
+      "sha256": "be231618903e5b0530251086eb4ad5c550069871d69cfc61dbcd6fbc24919425"
+    },
+    {
+      "path": "scripts/model/g5-v4-recovery-read.mjs",
+      "sha256": "b03a0cdcecc5e31e52111642a3dd4b4f775e2c2360056b68676a6e0a3fe24923"
+    },
+    {
+      "path": "scripts/model/g5-v4-recovery-watch.mjs",
+      "sha256": "4725abc57dc858c5b5066aea096b472835b17b38c4bc6222750e107b9e2bf021"
+    },
+    {
+      "path": "scripts/model/g5-window-freeze.mjs",
+      "sha256": "5ce8a3103fccf022df70e48ea608ef4c2af1f45838a58153b9cac133b43c7f58"
+    },
+    {
+      "path": "scripts/model/g5-window-freeze.test.mjs",
+      "sha256": "0a435665ad4e3741a8b02aae3836cb377dec40fbd94fa471fff713b0579d5d9d"
+    },
+    {
+      "path": "services/browser-preview/build-host.ts",
+      "sha256": "dd9628e005c9f1962fdb3a63b6b343b6fd157652c1de9502c2a3ad31ee16eb15"
+    },
+    {
+      "path": "services/browser-preview/contract.ts",
+      "sha256": "2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f"
+    },
+    {
+      "path": "services/browser-preview/execution/assets/static-index.ts",
+      "sha256": "9f1a56ddcd5576b78fcda80be0b04fc34381847c17cd2fbd5ed619dc11c599ad"
+    },
+    {
+      "path": "services/browser-preview/orchestrator.ts",
+      "sha256": "65f30d652ee103d4a3022e52bb9fa6bf4f24c6f0030065ac9c01720f3a17e20e"
+    },
+    {
+      "path": "services/browser-preview/runtime/assets/delivery.json",
+      "sha256": "ff120ec3ae24df6ed2c2a6b4d41775766f5314102067dd135064a1ddcff07b94"
+    },
+    {
+      "path": "services/browser-preview/runtime/assets/profiles.json",
+      "sha256": "5c9754897bc765ac976218f80e532e3727f62c759b460f65d45d6a81f2e98a1e"
+    },
+    {
+      "path": "services/browser-preview/runtime/browser-acceptance.mjs",
+      "sha256": "e40669f8e44611aaa207768a7e0598e911351c4d18d9738e6bbccc96a9eaf39a"
+    },
+    {
+      "path": "services/browser-preview/runtime/fixtures.mjs",
+      "sha256": "566a81aac420e569543c9119618b7d648530d5942ca447b1bc41af5754f3e68d"
+    },
+    {
+      "path": "services/browser-preview/runtime/package-loader.mjs",
+      "sha256": "fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396"
+    },
+    {
+      "path": "services/browser-preview/validator.ts",
+      "sha256": "d5f8c41a55e02a84572eb3e1619ace21ebf4d0f06943d93cec830d0f2a9493cf"
+    },
+    {
+      "path": "services/gateway/app.ts",
+      "sha256": "684c616857ae7702ce98d6e0f86e8c66e33d2fcb405f7bd5a0dba36c3bbca5ec"
+    },
+    {
+      "path": "services/gateway/index.ts",
+      "sha256": "b2f7f2222c479a143660c8b0bbac7c6c0c3bc281e3337e4e866b3cba41d3f02e"
+    },
+    {
+      "path": "services/model-budget/g5-rollover-token.ts",
+      "sha256": "9b2000064f9994ee5b9275444a564b66f5a5871da1b2d287cdc677e43bbd8f2d"
+    },
+    {
+      "path": "services/model-budget/g5-window-durable.ts",
+      "sha256": "2c217a1f1720dbcea7ace18af22452633e64a8619cee33456956bf471cf95cc8"
+    },
+    {
+      "path": "services/model-budget/g5-window.ts",
+      "sha256": "141d14cda45adf869b9fa963a2021f1330b022decc1f5645e19ae16047674d00"
+    },
+    {
+      "path": "services/model-proxy/http.ts",
+      "sha256": "e4b4cb84ee357cf2de900fb27ccfaa9ea049db0666b6b42938ea18f63c54e9b9"
+    },
+    {
+      "path": "services/model-proxy/openai-gateway-responses.ts",
+      "sha256": "400722f8fc9e9199f254ffffbab78d595e0ad6fe297deaa362b60ba3f49936fe"
     },
     {
       "path": "services/simulation/command-evidence.ts",
@@ -43,7 +159,11 @@
     },
     {
       "path": "services/turn-runtime/managed-adapter.ts",
-      "sha256": "3bcb95e46cf01d55a508c2a92e184264f0018900210b5649176cc8ce7b8ace3e"
+      "sha256": "db2caf16b1db90b79ce08faa2097d7c1dfb38ec9036689b5c9dafbd3e77683de"
+    },
+    {
+      "path": "services/turn-runtime/managed-sdk-transport.ts",
+      "sha256": "287005fc056681b8aa15bc6cc66c4707e15526bfa290aa13cae19bb296d397cf"
     },
     {
       "path": "services/turn-runtime/revision-gc.ts",
@@ -78,12 +198,60 @@
       "sha256": "95f2531dfd7d47f7464cf8d69deb3141ce66f6a202f6770ade9694ec757691e4"
     },
     {
+      "path": "services/web/app.js",
+      "sha256": "afa0a3754bacaedc7cf660e2759bb36125bfdeddf70b28629e09c9db07b07597"
+    },
+    {
+      "path": "services/web/browser-preview.js",
+      "sha256": "041034d2976baa38164423fe7c4ca85e8835162671d02ba111ec6464d1d9872e"
+    },
+    {
+      "path": "services/web/index.html",
+      "sha256": "c0ad8b8c76a685191f9e728923922efe14a7ec50a2525311e3fb059d4bf5e5c2"
+    },
+    {
+      "path": "services/web/previews.js",
+      "sha256": "c0309eaebfd65e27b35245a63ccb2d7b571d797e0509f0dbaa06dae377f38411"
+    },
+    {
+      "path": "services/web/project-status.js",
+      "sha256": "691e0cab145cf1e1cff3a7d21a85f9e8d87f3e19003d28d97215647df1f8a960"
+    },
+    {
+      "path": "services/web/services.js",
+      "sha256": "5af88da91e1a48923e4aaf54b74c909d904a39fcef62a016ad38d5f07c6b3fae"
+    },
+    {
+      "path": "services/web/styles.css",
+      "sha256": "7ce2bb388f7aa1fd18d59165b88ae9df02999d51974c07c91c450d86577b4b39"
+    },
+    {
+      "path": "tests/fixtures/preview-legacy-run.py",
+      "sha256": "fa7987095bbc29f2c6d87e9b0f815415f88c9079ad7070fb7fe8b91e7ebf0898"
+    },
+    {
+      "path": "tests/m1/web.test.mjs",
+      "sha256": "897f64855d3fcc340ad6022f4e4e975e9e89a61283e99c2f6521598235bd1b48"
+    },
+    {
       "path": "tests/m2/backend-contract.test.ts",
       "sha256": "9ef19fbcdda4dfaec417eb6114160b7ef1821a3fe1bd2dc4545f1eb39720c116"
     },
     {
       "path": "tests/m2/backend-shared-contract.test.ts",
       "sha256": "4e2a1e67dc84fc7de18ec558b67b2bae57369ce6758b747f1cdffef433ce52eb"
+    },
+    {
+      "path": "tests/m2/managed-sdk-transport.test.ts",
+      "sha256": "1b47a0caf90c8c785253a5d02df895e31058225ba247c583897eb16d635934fd"
+    },
+    {
+      "path": "tests/m2/model-proxy-g5-http.test.ts",
+      "sha256": "3eeadc6a8049b46df66f4543a488cf46b1c1cb975d82c342fb3ecea90731247d"
+    },
+    {
+      "path": "tests/m2/openai-gateway-responses.test.ts",
+      "sha256": "675e52da7d8be0735e096cc60bc021e97ca590e5e55c51e3e500d3b84862efbd"
     },
     {
       "path": "tests/m2/product-turn-runtime.test.ts",
@@ -104,10 +272,37 @@
     {
       "path": "tests/m3/agent-candidate-contract.test.ts",
       "sha256": "1ff7ac18b4eed9ce02a7473a1c8bb27f5c5ed5bc521ba9f126b9505cfe4d119a"
+    },
+    {
+      "path": "tests/m3/browser-preview-legacy.test.mjs",
+      "sha256": "43401b7930c5e61d1c6185f974eb193fcd77621043f1c52892461b29baa605c3"
+    },
+    {
+      "path": "tests/m3/browser-preview-panel.test.mjs",
+      "sha256": "be86169077f399306af828ed6aa140055a72975230c03dfc770de0ab6efd1791"
+    },
+    {
+      "path": "tests/m3/g5-authority-workerd.test.mjs",
+      "sha256": "a70855d28922e00c09b223284f4d89e9e52b5fe504b53bd611f97a50c9a57a42"
+    },
+    {
+      "path": "tests/m3/g5-rollover-token.test.ts",
+      "sha256": "975db9c25aa29ee77c69a8faf4d133f2adfc469cc54796d9d4718392c0e928f2"
+    },
+    {
+      "path": "tests/m3/project-status.test.mjs",
+      "sha256": "270803e14175fbb41875efb96f072f6816d1c0353334ea7d89d4c6c2e2ef877e"
+    },
+    {
+      "path": "tests/m3/simulation-ui.test.mjs",
+      "sha256": "696418304474673e1adeab1fd53a811ee8ceedb77d0f2cf73e688a1d2ead6d0a"
+    },
+    {
+      "path": "tests/m3/workspace-layout.test.mjs",
+      "sha256": "62bb2bdbf331e59aee22a4b90841ee4fc6641d7cdf12279159f9872b8af08b0c"
     }
   ],
   "validation": {
-    "mode": "all-required-check-stages-with-M3-remediation",
     "requiredStages": [
       {
         "name": "static",
@@ -136,8 +331,8 @@
         "exitCode": 0,
         "suites": [
           {
-            "tests": 213,
-            "passed": 213,
+            "tests": 214,
+            "passed": 214,
             "failed": 0,
             "cancelled": 0,
             "skipped": 0,
@@ -151,8 +346,8 @@
         "exitCode": 0,
         "suites": [
           {
-            "tests": 715,
-            "passed": 715,
+            "tests": 727,
+            "passed": 727,
             "failed": 0,
             "cancelled": 0,
             "skipped": 0,
@@ -166,8 +361,8 @@
         "exitCode": 0,
         "suites": [
           {
-            "tests": 805,
-            "passed": 795,
+            "tests": 813,
+            "passed": 803,
             "failed": 0,
             "cancelled": 0,
             "skipped": 10,
@@ -201,35 +396,45 @@
       }
     ],
     "total": {
-      "tests": 2195,
-      "passed": 2184,
+      "tests": 2216,
+      "passed": 2205,
       "failed": 0,
       "cancelled": 0,
       "skipped": 11,
       "todo": 0
     },
-    "initialFullCheck": {
+    "fullCheck": {
       "command": "npm run check",
-      "exitCode": 1,
-      "failedStage": "m3",
-      "reason": "missing ignored Browser Preview host bundle in new worktree",
-      "resolution": "verified 25 public assets against committed hashes; ran prepare-assets and materialize without manifest updates; reran complete test:m3"
+      "exitCode": 0,
+      "logSha256": "599ad0c256e941b348214be818f5da25c43b8cdfa0a859eef953fa328a6650f8"
     },
-    "priorSetupFailure": "missing .local temporary directory; created before stage checks",
+    "focusedFollowup": {
+      "command": "node --test scripts/issue77/*.test.mjs tests/m2/managed-sdk-transport.test.ts tests/m2/backend-contract.test.ts tests/m2/backend-shared-contract.test.ts",
+      "passed": 21,
+      "failed": 0,
+      "exitCode": 0,
+      "logSha256": "c472682a4f906fbf38e6e18620e32d27ef9a2018b27bcd5805300f1d9098c31e"
+    },
     "diffCheck": "passed"
-  },
-  "authorizations": {
-    "paidRequests": false,
-    "productionDeployment": false,
-    "phase5": false
   },
   "delivery": {
     "offlineImplementation": "implemented and locally verified",
     "piFaultImprovement": "two specific JSON replay-order regressions corrected",
-    "managedTransport": "synthetic injected transport only; no live SDK/HTTP client acceptance",
+    "managedTransport": "Public SDK transport implemented; mocked HTTP and durable local ledger validated, no live request in this preflight record",
     "nativeMesaDocker": "not run; existing opt-in tests skipped",
-    "liveEndToEnd": "not run",
+    "liveEndToEnd": "not run in this preflight",
     "production": "not deployed",
     "githubIssue": "not closed"
+  },
+  "execution": {
+    "paidRequests": false,
+    "productionDeployment": false,
+    "phase5": false
+  },
+  "authorization": {
+    "keyReuse": true,
+    "boundedInternalTrial": true,
+    "acknowledgeUnknownActualSpend": true,
+    "policyDocument": "docs/architecture/issue-77-live-acceptance.md"
   }
 }

@@ -58,3 +58,7 @@ must not be described as passing live execution.
 Phase 5 and production deployment were not authorized or run. This work makes
 no paid call, settles no unknown usage, switches no production route, and does
 not close the issue on the strength of offline evidence.
+
+## 2026-09-18 live preflight
+
+The original offline report is preserved as `offline-20260917.json`; verify its committed historical source with `node scripts/evidence/verify-issue77.mjs --historical`. Current `validation.json` binds the latest main integration, SDK client, bounded operator and ledger to a committed source. Full check: 2,205 passed, 11 skipped. The subsequent focused 21-test run includes six new operator/ledger cases. Authorization is distinct from execution: these are offline preflight results, not paid or production acceptance.
