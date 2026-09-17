@@ -123,3 +123,32 @@ test('trusted registered route cannot select another profile or silently use leg
  assert.equal((await handleModelProxyRequest(await signedRequest(),env,{...provider(calls),productionProfile:profile},()=>now)).status,403);
  assert.equal(ledger.reserves.length,0);assert.equal(calls.length,0);
 });
+
+test('upstream status survives settlement refusal without leaking bodies or replaying dispatch',async()=>{
+ for(const status of [400,401,403,429,500,502,503]){
+  const ledger=log(),order:string[]=[],env=await g5Environment(ledger,order,'global-settle');
+  let dispatches=0;
+  const model:ProductModelProvider={productionProfile:profile,async dispatch(){
+   dispatches++;
+   return {status,providerRequestId:'private-provider-request',inputTokens:null,outputTokens:null,responseContentType:'application/json',responseBody:new TextEncoder().encode('{"error":"private-upstream-body"}')};
+  }};
+  assert.equal((await handleModelProxyRequest(await signedRequest(),env,model,()=>now)).status,503);
+  assert.deepEqual(ledger.failures,[{schemaVersion:1,stage:'budget-finish',errorCode:`upstream-http-${status}:unclassified`,observedAt:now}]);
+  assert.equal(ledger.terminals[0]!.usage.kind,'unknown');
+  assert.ok(order.includes('money-unknown'));assert.equal(ledger.unknown,1);
+  assert.doesNotMatch(JSON.stringify(ledger.failures),/private-provider-request|private-upstream-body/);
+  assert.equal((await handleModelProxyRequest(await signedRequest(),env,model,()=>now)).status,409);
+  assert.equal(dispatches,1);
+ }
+});
+test('only allowlisted provider hints reach the private failure receipt',async()=>{
+ for(const hint of ['unsupported_value:prompt_cache_retention','invalid_value:prompt_cache_options','private-secret',undefined]){
+  const ledger=log(),order:string[]=[],env=await g5Environment(ledger,order,'global-settle');
+  const model:ProductModelProvider={productionProfile:profile,async dispatch(){return {status:400,providerErrorHint:hint,providerRequestId:'private-request',inputTokens:null,outputTokens:null,responseContentType:'application/json',responseBody:new TextEncoder().encode('private-body')};}};
+  assert.equal((await handleModelProxyRequest(await signedRequest(),env,model,()=>now)).status,503);
+  const kept=hint?.includes(':prompt_cache_')?hint+':':'';
+  assert.deepEqual(ledger.failures,[{schemaVersion:1,stage:'budget-finish',errorCode:`upstream-http-400:${kept}unclassified`,observedAt:now}]);
+  assert.equal(ledger.terminals[0]!.usage.kind,'unknown');assert.ok(order.includes('money-unknown'));
+  assert.doesNotMatch(JSON.stringify(ledger.failures),/private/);
+ }
+});
