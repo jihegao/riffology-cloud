@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "recordedAt": "2026-09-17T23:29:02.328127+00:00",
-  "sourceCommit": "52a494b27e9bc9e05b83aa9c6879d420b8faf72f",
+  "recordedAt": "2026-09-17T23:34:41.601107+00:00",
+  "sourceCommit": "f19888be824fdc5a0ae524a5a531a87fdfc55ece",
   "integrationBase": "eb73155ed72be278300f9e57704dc3c1d5c4ed5b",
   "safetyCheckpoint": "3f4bee9b3b8dd5211af669066dce8afd27a85b91",
   "sourceFiles": [
@@ -19,15 +19,15 @@
     },
     {
       "path": "scripts/issue77/ledger.mjs",
-      "sha256": "24064f68e95e5d5e0e1ee63dec772c5313323e619511fdc89b201583d8ab2e6e"
+      "sha256": "a28ca3bed4ec962aabb8db116d61d7b7fcb52d09f00d3bd73a45676cc4d554b6"
     },
     {
       "path": "scripts/issue77/ledger.test.mjs",
-      "sha256": "84919f5cfd3383bc520c2015472abe6eeac260363bd2c08ffc17375f3dcb519a"
+      "sha256": "0f2b33e89d39e71fa6ef85beadb2693e9368c30bd0e6446594f0025661c8354d"
     },
     {
       "path": "scripts/issue77/live.mjs",
-      "sha256": "d82e1dc6e28d0b05536dfe709b339d441538d31e370905dda2969ef7ea960612"
+      "sha256": "114e59d67397714023e8d8078542e40d6a522f16297d79bf64677e3edcfdfb00"
     },
     {
       "path": "scripts/issue77/live.test.mjs",
@@ -415,7 +415,15 @@
       "exitCode": 0,
       "logSha256": "c472682a4f906fbf38e6e18620e32d27ef9a2018b27bcd5805300f1d9098c31e"
     },
-    "diffCheck": "passed"
+    "diffCheck": "passed",
+    "operatorRepair": {
+      "command": "node --test scripts/issue77/*.test.mjs",
+      "passed": 8,
+      "failed": 0,
+      "exitCode": 0,
+      "logSha256": "35ea97dc2bb8b8586dd3dee6435a51977f96b9e7733a6591422d0d30d546f2a9",
+      "scope": "Operator-only repair after first live attempt; full npm check source unchanged except previously focused-verified adapter wrapper. No claim that this offline record covers live execution."
+    }
   },
   "delivery": {
     "offlineImplementation": "implemented and locally verified",
