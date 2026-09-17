@@ -2,14 +2,14 @@
 export const browserPreviewStaticIndex = {
   "schema": "riffology.browser-static-delivery/v3",
   "runtimeProfiles": [
-    "b142b02c7a1edd5eaa72989a8488b58c7309fea578ce8beff5ada642c44be981",
-    "d8ba03adacbcdf0458dfb23e33f80da52c4c852082158d687fe587676a07b79f"
+    "08460495d986e2b21de713e14d23afb58b9253ac69b692a61bcfe1bd939c9b76",
+    "43d29ab27496ef50e57751df1fde12eefe20fc350a7d534fe8cfbb739476b9c0"
   ],
   "delivery": {
     "hostModule": {
-      "url": "/browser-preview-assets/fb0a20bbae6337b3f4f3133b473725b4345b22d4c44772af76055ee981da85ac/host.bundle.mjs",
-      "sha256": "fb0a20bbae6337b3f4f3133b473725b4345b22d4c44772af76055ee981da85ac",
-      "byteLength": 41030
+      "url": "/browser-preview-assets/de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1/host.bundle.mjs",
+      "sha256": "de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1",
+      "byteLength": 41203
     },
     "rendererModule": {
       "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
@@ -25,11 +25,11 @@ export const browserPreviewStaticIndex = {
     }
   },
   "versions": {
-    "b142b02c7a1edd5eaa72989a8488b58c7309fea578ce8beff5ada642c44be981": {
+    "43d29ab27496ef50e57751df1fde12eefe20fc350a7d534fe8cfbb739476b9c0": {
       "hostModule": {
-        "url": "/browser-preview-assets/fb0a20bbae6337b3f4f3133b473725b4345b22d4c44772af76055ee981da85ac/host.bundle.mjs",
-        "sha256": "fb0a20bbae6337b3f4f3133b473725b4345b22d4c44772af76055ee981da85ac",
-        "byteLength": 41030
+        "url": "/browser-preview-assets/de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1/host.bundle.mjs",
+        "sha256": "de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1",
+        "byteLength": 41203
       },
       "rendererModule": {
         "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
@@ -44,11 +44,11 @@ export const browserPreviewStaticIndex = {
         "scriptSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf"
       }
     },
-    "d8ba03adacbcdf0458dfb23e33f80da52c4c852082158d687fe587676a07b79f": {
+    "08460495d986e2b21de713e14d23afb58b9253ac69b692a61bcfe1bd939c9b76": {
       "hostModule": {
-        "url": "/browser-preview-assets/fb0a20bbae6337b3f4f3133b473725b4345b22d4c44772af76055ee981da85ac/host.bundle.mjs",
-        "sha256": "fb0a20bbae6337b3f4f3133b473725b4345b22d4c44772af76055ee981da85ac",
-        "byteLength": 41030
+        "url": "/browser-preview-assets/de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1/host.bundle.mjs",
+        "sha256": "de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1",
+        "byteLength": 41203
       },
       "rendererModule": {
         "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
@@ -114,6 +114,14 @@ export const browserPreviewStaticIndex = {
       "kind": "app"
     },
     {
+      "url": "/browser-preview-assets/2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f/source/contract.ts",
+      "file": "browser-preview-assets/2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f/source/contract.ts",
+      "sha256": "2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f",
+      "byteLength": 8961,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
       "url": "/browser-preview-assets/32959d4137cec8143d75016d029281df3d2e80a232896ed903c2b59e1c44ee9f/assets/numpy-2.4.6-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
       "file": "browser-preview-assets/32959d4137cec8143d75016d029281df3d2e80a232896ed903c2b59e1c44ee9f/assets/numpy-2.4.6-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
       "sha256": "32959d4137cec8143d75016d029281df3d2e80a232896ed903c2b59e1c44ee9f",
@@ -134,14 +142,6 @@ export const browserPreviewStaticIndex = {
       "file": "browser-preview-assets/3fdaef09e9e365c85e002737720f8d0ab8f278c1c244a2dde6a37663cf488ad4/assets/pyodide-lock.json",
       "sha256": "3fdaef09e9e365c85e002737720f8d0ab8f278c1c244a2dde6a37663cf488ad4",
       "byteLength": 114440,
-      "contentType": "application/octet-stream",
-      "kind": "app"
-    },
-    {
-      "url": "/browser-preview-assets/404b93d84accedd287324f995d03d3d81ffbe4ecce94562a63b1e2f09a603890/delivery/worker.bundle.mjs",
-      "file": "browser-preview-assets/404b93d84accedd287324f995d03d3d81ffbe4ecce94562a63b1e2f09a603890/delivery/worker.bundle.mjs",
-      "sha256": "404b93d84accedd287324f995d03d3d81ffbe4ecce94562a63b1e2f09a603890",
-      "byteLength": 1646032,
       "contentType": "application/octet-stream",
       "kind": "app"
     },
@@ -182,14 +182,6 @@ export const browserPreviewStaticIndex = {
       "file": "browser-preview-assets/5dc47f9c9e9da126476870464a9608a63134ed23a2fa587966e5091b736a338f/assets/setuptools-82.0.1-py3-none-any.whl",
       "sha256": "5dc47f9c9e9da126476870464a9608a63134ed23a2fa587966e5091b736a338f",
       "byteLength": 756856,
-      "contentType": "application/octet-stream",
-      "kind": "app"
-    },
-    {
-      "url": "/browser-preview-assets/6327de42b6989bea60816e25e019540c78282e36844dfebea9927344320c110a/source/contract.ts",
-      "file": "browser-preview-assets/6327de42b6989bea60816e25e019540c78282e36844dfebea9927344320c110a/source/contract.ts",
-      "sha256": "6327de42b6989bea60816e25e019540c78282e36844dfebea9927344320c110a",
-      "byteLength": 8512,
       "contentType": "application/octet-stream",
       "kind": "app"
     },
@@ -274,14 +266,6 @@ export const browserPreviewStaticIndex = {
       "kind": "app"
     },
     {
-      "url": "/browser-preview-assets/99856652b1813709f03adbe52519af12e1b610cd1f178c5bd9ec344887396ad7/runtime/package-loader.mjs",
-      "file": "browser-preview-assets/99856652b1813709f03adbe52519af12e1b610cd1f178c5bd9ec344887396ad7/runtime/package-loader.mjs",
-      "sha256": "99856652b1813709f03adbe52519af12e1b610cd1f178c5bd9ec344887396ad7",
-      "byteLength": 4836,
-      "contentType": "application/octet-stream",
-      "kind": "app"
-    },
-    {
       "url": "/browser-preview-assets/99cef063109bb03956af3987b2351c4d6615060732597e224e9fc49ecd345392/assets/pandas-3.0.2-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
       "file": "browser-preview-assets/99cef063109bb03956af3987b2351c4d6615060732597e224e9fc49ecd345392/assets/pandas-3.0.2-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
       "sha256": "99cef063109bb03956af3987b2351c4d6615060732597e224e9fc49ecd345392",
@@ -294,6 +278,14 @@ export const browserPreviewStaticIndex = {
       "file": "browser-preview-assets/9c1d350424840e15c16450ac0b0d6007e908d266746b61d64760dd77263085af/assets/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
       "sha256": "9c1d350424840e15c16450ac0b0d6007e908d266746b61d64760dd77263085af",
       "byteLength": 229892,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717/delivery/worker.bundle.mjs",
+      "file": "browser-preview-assets/a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717/delivery/worker.bundle.mjs",
+      "sha256": "a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717",
+      "byteLength": 1646213,
       "contentType": "application/octet-stream",
       "kind": "app"
     },
@@ -335,6 +327,14 @@ export const browserPreviewStaticIndex = {
       "sha256": "ddc80a8321dec64e3373312dc4cbc709eec9d0d34477d7fe61e4b09378c7a197",
       "byteLength": 5356,
       "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1/host.bundle.mjs",
+      "file": "browser-preview-assets/de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1/host.bundle.mjs",
+      "sha256": "de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1",
+      "byteLength": 41203,
+      "contentType": "text/javascript",
       "kind": "app"
     },
     {
@@ -386,11 +386,11 @@ export const browserPreviewStaticIndex = {
       "kind": "app"
     },
     {
-      "url": "/browser-preview-assets/fb0a20bbae6337b3f4f3133b473725b4345b22d4c44772af76055ee981da85ac/host.bundle.mjs",
-      "file": "browser-preview-assets/fb0a20bbae6337b3f4f3133b473725b4345b22d4c44772af76055ee981da85ac/host.bundle.mjs",
-      "sha256": "fb0a20bbae6337b3f4f3133b473725b4345b22d4c44772af76055ee981da85ac",
-      "byteLength": 41030,
-      "contentType": "text/javascript",
+      "url": "/browser-preview-assets/fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396/runtime/package-loader.mjs",
+      "file": "browser-preview-assets/fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396/runtime/package-loader.mjs",
+      "sha256": "fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396",
+      "byteLength": 4845,
+      "contentType": "application/octet-stream",
       "kind": "app"
     },
     {

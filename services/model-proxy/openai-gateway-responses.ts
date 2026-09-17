@@ -7,6 +7,23 @@ export function productionFailure(error:unknown):ProductionFailure {
   const value=error instanceof Error?error.message:'';return ['rejected-auth','rate-limited','provider-failure','deadline','cancelled','malformed-stream','missing-usage'].includes(value)?value as ProductionFailure:'outcome-unknown';
 }
 export const productionHttpFailure=(status:number):ProductionFailure=>status===401||status===403?'rejected-auth':status===429?'rate-limited':'provider-failure';
+// Finite labels only: never persist the provider's message or arbitrary strings.
+export function safeProviderErrorHint(value:unknown):string|undefined {
+ if(typeof value!=='string')return undefined;
+ return /^(?:unsupported_value|invalid_value|unsupported_parameter|unknown_parameter|invalid_request_error):(?:prompt_cache_retention|prompt_cache_options)$/.test(value)?value:undefined;
+}
+async function providerErrorHint(response:Response,signal:AbortSignal):Promise<string|undefined>{
+ if(!response.body)return undefined;
+ const reader=response.body.getReader(),chunks:Uint8Array[]=[];let size=0;
+ const abort=()=>{void reader.cancel().catch(()=>{});};signal.addEventListener('abort',abort,{once:true});
+ try{
+  for(;;){signal.throwIfAborted();const next=await reader.read();signal.throwIfAborted();if(next.done)break;size+=next.value.byteLength;if(size>16_384)return undefined;chunks.push(next.value);}
+  const bytes=new Uint8Array(size);let at=0;for(const chunk of chunks){bytes.set(chunk,at);at+=chunk.length;}
+  const error=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes))?.error;
+  if(!error||typeof error.code!=='string'||typeof error.param!=='string')return undefined;
+  return safeProviderErrorHint(`${error.code}:${error.param}`);
+ }catch{return undefined;}finally{signal.removeEventListener('abort',abort);void reader.cancel().catch(()=>{});}
+}
 function object(v:unknown):Record<string,unknown>{if(!v||typeof v!=='object'||Array.isArray(v))throw Error('malformed-stream');return v as Record<string,unknown>;}
 function usage(bytes:Uint8Array,input:ProductModelProviderInput){
  let text:string;try{text=new TextDecoder('utf-8',{fatal:true}).decode(bytes);}catch{throw Error('malformed-stream');}
@@ -47,14 +64,20 @@ export class OpenAIGatewayResponsesProvider implements ProductModelProvider {
   const allowed=new Set(['input','instructions','tools','tool_choice','parallel_tool_calls','reasoning','text','temperature','top_p','stream','store','include','prompt_cache_key','prompt_cache_retention','service_tier']);
   if(Object.keys(payload).some(k=>!allowed.has(k)))throw Error('rejected-auth');
   if(payload.service_tier!==undefined&&payload.service_tier!=='default'||payload.prompt_cache_retention!==undefined&&payload.prompt_cache_retention!=='in_memory')throw Error('rejected-auth');
+  const noCacheLuna=/^gpt-5\.6-luna(?:-\d{4}-\d{2}-\d{2})?$/.test(this.productionProfile.model);
+  // Do not silently translate an explicit in-memory retention requirement.
+  if(noCacheLuna&&payload.prompt_cache_retention!==undefined)throw Error('rejected-auth');
+  const noBreakpoints=(v:unknown):void=>{if(Array.isArray(v)){for(const item of v)noBreakpoints(item);}else if(v&&typeof v==='object'){for(const [key,item] of Object.entries(v)){if(key==='prompt_cache_breakpoint')throw Error('rejected-auth');noBreakpoints(item);}}};
+  if(noCacheLuna)noBreakpoints(payload);
+  const cachePolicy=noCacheLuna?{prompt_cache_options:{mode:'explicit'}}:{prompt_cache_retention:'in_memory'};
   const visit=(v:unknown):void=>{if(Array.isArray(v)){for(const item of v)visit(item);}else if(v&&typeof v==='object'){for(const [k,item] of Object.entries(v)){if(['image_url','file_id','input_audio','input_image','input_file'].includes(k)||k==='type'&&['input_image','input_audio','input_file','image','audio','file'].includes(String(item)))throw Error('rejected-auth');visit(item);}}};visit(payload.input);
   if(payload.tools!==undefined&&(!Array.isArray(payload.tools)||payload.tools.some(t=>object(t).type!=='function')))throw Error('rejected-auth');
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(new DOMException('deadline','TimeoutError')),input.deadlineAt-this.#now()),signal=input.signal?AbortSignal.any([input.signal,controller.signal]):controller.signal;
   try{
    signal.throwIfAborted();
-   let response:Response;try{response=await this.#fetch(productionEndpoint(this.productionProfile),{method:'POST',redirect:'manual',signal,headers:{'content-type':'application/json',accept:'text/event-stream',authorization:`Bearer ${this.#providerKey}`,'cf-aig-authorization':`Bearer ${this.#gatewayKey}`,'cf-aig-skip-cache':'true','cf-aig-collect-log-payload':'false','cf-aig-max-attempts':'1','x-client-request-id':input.idempotencyKey},body:JSON.stringify({...payload,prompt_cache_key:undefined,prompt_cache_retention:'in_memory',service_tier:'default',model:this.productionProfile.model,max_output_tokens:input.maxOutputTokens})});}catch(error){if(error instanceof TypeError)throw Error('provider-fetch-typeerror');throw error;}
+   let response:Response;try{response=await this.#fetch(productionEndpoint(this.productionProfile),{method:'POST',redirect:'manual',signal,headers:{'content-type':'application/json',accept:'text/event-stream',authorization:`Bearer ${this.#providerKey}`,'cf-aig-authorization':`Bearer ${this.#gatewayKey}`,'cf-aig-skip-cache':'true','cf-aig-collect-log-payload':'false','cf-aig-max-attempts':'1','x-client-request-id':input.idempotencyKey},body:JSON.stringify({...payload,prompt_cache_key:undefined,...cachePolicy,service_tier:'default',model:this.productionProfile.model,max_output_tokens:input.maxOutputTokens})});}catch(error){if(error instanceof TypeError)throw Error('provider-fetch-typeerror');throw error;}
    const headerId=response.headers.get('x-request-id');
-   if(response.status<200||response.status>=300){await response.body?.cancel();return {status:response.status,providerRequestId:headerId&&externalId.test(headerId)?headerId:null,inputTokens:null,outputTokens:null,responseContentType:'application/json',responseBody:encoder.encode(JSON.stringify({error:productionHttpFailure(response.status)}))};}
+   if(response.status<200||response.status>=300){const hint=await providerErrorHint(response,signal);return {status:response.status,providerErrorHint:hint,providerRequestId:headerId&&externalId.test(headerId)?headerId:null,inputTokens:null,outputTokens:null,responseContentType:'application/json',responseBody:encoder.encode(JSON.stringify({error:productionHttpFailure(response.status)}))};}
    if(response.headers.get('content-type')?.split(';')[0].trim()!=='text/event-stream'||!response.body)throw Error('malformed-stream');
    const reader=response.body.getReader(),chunks:Uint8Array[]=[];let size=0;
    const abort=()=>{void reader.cancel(signal.reason).catch(()=>{});};signal.addEventListener('abort',abort,{once:true});

@@ -4,7 +4,7 @@ import type { TurnScope } from '../turn/protocol.ts';
 import {sameScope} from '../turn/protocol.ts';
 import {canonicalPreviewJson,previewSha256,type PreviewBuildState,type PreviewRuntime} from './contract.ts';
 import {createTrustedPreviewRegistry,type PreviewProfileRegistry,type TrustedPreviewProfile} from './profiles.ts';
-import {validateSavedPreview} from './validator.ts';
+import {validateSavedPreview,PREVIEW_VALIDATION_VERSION} from './validator.ts';
 import {packageCompatiblePreview} from './packager.ts';
 import {storePreviewPackage,type PreviewObjectBucket,type PreviewBuildIntent,type PreviewBuildReceipt,type PreviewReceiptPort} from './storage.ts';
 import {discoveryKey,PREVIEW_DISCOVERY_PREFIX,type PreviewDiscovery} from './discovery.ts';
@@ -12,7 +12,7 @@ import {sourceScope,sourceRevision,sourceFilesSha,frozenSource,type BrowserBuild
 import type { ResolvedInitialWorkspace } from '../turn-runtime/initial-workspace.ts';
 type FrozenSource=BrowserBuildSource;
 const ROW='browser-preview:build:',REFERENCE='browser-preview:reference:',RECEIPT='browser-preview:receipt:';
-export interface SavedPreviewBuild {schemaVersion:1;state:PreviewBuildState;source:PreviewDiscovery;profile:TrustedPreviewProfile|null;modelSpec:ModelSpec|null;receipt:PreviewBuildReceipt|null}
+export interface SavedPreviewBuild {schemaVersion:1;validationVersion?:string;state:PreviewBuildState;source:PreviewDiscovery;profile:TrustedPreviewProfile|null;modelSpec:ModelSpec|null;receipt:PreviewBuildReceipt|null}
 const ids:PreviewRuntime['profileId'][]=['python-stdlib/v1','mesa-3.5.1/v1'];
 function rowKey(revision:string,profile:string){return ROW+revision+':'+profile;}
 function equal(a:unknown,b:unknown){return canonicalPreviewJson(a)===canonicalPreviewJson(b);}
@@ -23,7 +23,7 @@ export class BrowserPreviewBuildHost{
  constructor(storage:DurableObjectStorage,scope:TurnScope,ports:BrowserPreviewBuildHost['ports'],now=Date.now){this.storage=storage;this.scope=structuredClone(scope);this.ports=ports;this.now=now;}
  read(revision:string,profile?:PreviewRuntime['profileId']):SavedPreviewBuild|null{
   const rows=(profile?[profile]:ids).map(id=>this.storage.kv.get<SavedPreviewBuild>(rowKey(revision,id))).filter((r):r is SavedPreviewBuild=>!!r);
-  const row=rows.find(r=>r.state.status==='ready')??rows.find(r=>r.state.status==='building')??rows.find(r=>r.state.status==='failed')??rows[0]??null;
+  const row=rows.find(r=>r.state.status==='ready')??rows.find(r=>r.state.status==='building')??rows.find(r=>r.state.status==='failed')??rows.find(r=>r.state.status==='unsupported'&&r.state.reasonCode!=='dependency-unsupported')??rows[0]??null;
   if(row&&!sameScope(sourceScope(row.source),this.scope))throw Error('browser-preview-read-denied');return structuredClone(row);
  }
  receipt(identity:string):PreviewBuildReceipt|null{const r=this.storage.kv.get<PreviewBuildReceipt>(RECEIPT+identity)??null;if(r&&!equal(r.scope,{tenantId:this.scope.tenantId,projectId:this.scope.projectId,workspaceId:this.scope.workspaceId}))throw Error('browser-preview-read-denied');return structuredClone(r);}
@@ -33,15 +33,16 @@ export class BrowserPreviewBuildHost{
  async rearmStaleReady(revision:string):Promise<boolean>{
   const source=this.source(revision);if(!source)return false;
   let registry:PreviewProfileRegistry;try{registry=await this.ports.registry();}catch{return false;}
+  const needsRefresh=(row:SavedPreviewBuild|null,current:TrustedPreviewProfile|null)=>current!==null&&!!row&&(row.state.status==='ready'&&!equal(row.profile,current)||row.state.status==='unsupported'&&row.validationVersion!==PREVIEW_VALIDATION_VERSION);
   try{
    await this.#guard(source);
-   const stale=ids.some(id=>{const row=this.read(revision,id),current=registry.resolve(id);return row?.state.status==='ready'&&current!==null&&!equal(row.profile,current);});if(!stale)return false;
+   const stale=ids.some(id=>needsRefresh(this.read(revision,id),registry.resolve(id)));if(!stale)return false;
    let changed=false;
    await this.#write(async tx=>{
     const reset:PreviewDiscovery={...source,status:'pending',attempts:0,nextAttemptAt:this.now(),reasonCode:null};
     for(const id of ids){
      const row=await tx.get<SavedPreviewBuild>(rowKey(revision,id)),current=registry.resolve(id);
-     if(row?.state.status!=='ready'||current===null||equal(row.profile,current))continue;
+     if(!row||!needsRefresh(row,current))continue;
      if(!sameScope(sourceScope(row.source),this.scope)||!equal(frozenSource(row.source),frozenSource(source)))throw Error('browser-preview-source-unavailable');
      const buildIdentity=await previewSha256(canonicalPreviewJson({revision:frozenSource(source),profileId:id}));
      await this.#put(tx,rowKey(revision,id),{schemaVersion:1,source:reset,profile:null,modelSpec:null,receipt:null,state:{status:'building',revisionId:revision,profileId:id,buildIdentity,attempt:0}} satisfies SavedPreviewBuild,source);changed=true;
@@ -49,7 +50,7 @@ export class BrowserPreviewBuildHost{
     if(changed)await this.#put(tx,discoveryKey(revision),reset,source);
    },source);
    return changed;
-  }catch(error){const current=this.source(revision),stillStale=ids.some(id=>{const row=this.read(revision,id),profile=registry.resolve(id);return row?.state.status==='ready'&&profile!==null&&!equal(row.profile,profile);});if(error instanceof Error&&error.message==='preview-discovery-conflict'&&current?.status==='pending'&&equal(frozenSource(current),frozenSource(source))&&!stillStale)return false;throw error;}
+  }catch(error){const current=this.source(revision),stillStale=ids.some(id=>needsRefresh(this.read(revision,id),registry.resolve(id)));if(error instanceof Error&&error.message==='preview-discovery-conflict'&&current?.status==='pending'&&equal(frozenSource(current),frozenSource(source))&&!stillStale)return false;throw error;}
  }
  async #guard(source:PreviewDiscovery){this.ports.checkSource?.(source);const current=await this.storage.get<PreviewDiscovery>(discoveryKey(sourceRevision(source)));if(!current||!equal(current,source))throw Error('preview-discovery-conflict');this.ports.checkSource?.(source);}
  async #checkTransactionSource(tx:DurableObjectTransaction,source:PreviewDiscovery){const current=await tx.get<PreviewDiscovery>(discoveryKey(sourceRevision(source)));this.ports.checkSource?.(source);if(!current||!equal(current,source))throw Error('preview-discovery-conflict');}
@@ -116,7 +117,7 @@ export class BrowserPreviewBuildHost{
      const prior=this.read(sourceRevision(source),id),discoveryIdentity=await previewSha256(canonicalPreviewJson({revision:frozenSource(source),profileId:id}));
      const placeholder=prior!==null&&prior.profile===null&&prior.modelSpec===null&&prior.receipt===null&&(prior.state.status==='failed'||prior.state.status==='building')&&prior.state.buildIdentity===discoveryIdentity;
      if(prior&&!placeholder)throw Error('browser-preview-source-unavailable');
-     await this.#write(async tx=>{await this.#put(tx,rowKey(sourceRevision(source),id),{schemaVersion:1,source,profile:registry.resolve(id),modelSpec:null,receipt:null,state:{status:'unsupported',revisionId:sourceRevision(source),profileId:id,buildIdentity:await previewSha256(canonicalPreviewJson({revision:frozenSource(source),profileId:id})),reasonCode:checked.reasonCode}} satisfies SavedPreviewBuild,source);},source);continue;
+     await this.#write(async tx=>{await this.#put(tx,rowKey(sourceRevision(source),id),{schemaVersion:1,validationVersion:PREVIEW_VALIDATION_VERSION,source,profile:registry.resolve(id),modelSpec:null,receipt:null,state:{status:'unsupported',revisionId:sourceRevision(source),profileId:id,buildIdentity:await previewSha256(canonicalPreviewJson({revision:frozenSource(source),profileId:id})),reasonCode:checked.reasonCode}} satisfies SavedPreviewBuild,source);},source);continue;
     }
     await this.#guard(source);
     const value=checked.value,prior=this.read(sourceRevision(source),id);

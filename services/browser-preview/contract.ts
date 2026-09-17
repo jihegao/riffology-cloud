@@ -1,5 +1,12 @@
 /** Immutable package metadata. This schema is not a Python security validator. */
 export const BROWSER_PREVIEW_SCHEMA = 'riffology.browser-preview/v1' as const;
+/** Reviewed platform wrappers only. Both invoke the same saved model.run(config).
+ * The newer wrapper additionally emits server trace-audit evidence; accepting
+ * the legacy wrapper for local playback does not manufacture that evidence. */
+export const PREVIEW_COMPATIBLE_ADAPTER_SHA256 = Object.freeze([
+ 'b0c785d8c08838d9e416eb87aba1c6b5ce9d8b1d6d233cf2fec32de99a0ec7f5',
+ 'fa7987095bbc29f2c6d87e9b0f815415f88c9079ad7070fb7fe8b91e7ebf0898',
+]);
 export const BROWSER_PREVIEW_SOURCE_PATHS = ['model/model.py','model/run.py','model/model-spec.json','model/visualization.json','app/requirements.lock'] as const;
 export const BROWSER_PREVIEW_SEED_MAX = 4294967295;
 export type PreviewSourcePath = typeof BROWSER_PREVIEW_SOURCE_PATHS[number];
