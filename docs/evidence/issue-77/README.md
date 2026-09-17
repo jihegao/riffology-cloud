@@ -17,13 +17,19 @@ Reproduce current checks from the implementation worktree:
 ```sh
 npm ci --ignore-scripts
 mkdir -p .local
+node services/browser-preview/runtime/prepare-assets.mjs
+node scripts/m3/materialize-browser-preview-web.mjs
 npm run check
 node --test tests/m2/backend-shared-contract.test.ts
 ```
 
 The `.local` directory is required by existing temporary-directory tests in
 main. The first clean-worktree attempt failed with ENOENT before it was created;
-this was an environment setup failure, not a waived assertion.
+this was an environment setup failure, not a waived assertion. The clean
+worktree also needed the ignored Browser Preview bundles. Public upstream
+assets were copied only after matching the committed inventory hashes; the
+normal preparation/materialization scripts then verified the generated bundles
+without changing the tracked manifests. M3 was rerun after this preparation.
 
 For the specific before/after failure, create a disposable worktree at
 `40aee17ed810430ee71fa4afb02af6fecf59b26a`, copy **only** the two test files from
