@@ -4,7 +4,9 @@ import {checkedPackage, checkedAssets} from './package-loader.mjs';
 import {validateRunRequest, validateTrace, MESSAGE_SCHEMA, LIMITS} from './protocol.mjs';
 import {resolveParameters} from '../../simulation/model-spec.ts';
 import {canonicalPreviewJson} from '../contract.ts';
+import {sha256Hex} from './sha256.mjs';
 const nativeFetch = globalThis.fetch.bind(globalThis);
+const digest=value=>sha256Hex(typeof value==='string'?new TextEncoder().encode(value):value);
 let pending = null;
 let stdoutBytes = 0;
 const print = text => {stdoutBytes += new TextEncoder().encode(String(text)).length; if (stdoutBytes > 65536) throw Error('runtime-stdout-limit');};
@@ -15,13 +17,15 @@ self.onmessage = async event => {
   try {
     if (!message || Object.keys(message).sort().join(',') !== 'assets,envelope,profile,request') throw Error('runtime-load-invalid');
     validateRunRequest(message.request); pending = message.request;
-    const loaded = await checkedPackage(message.envelope, [message.profile]);
+    const loaded = await checkedPackage(message.envelope, [message.profile],digest);
     if (pending.packageIdentity !== loaded.manifest.packageIdentity) throw Error('runtime-package-mismatch');
     const workerAsset = loaded.profile.assetManifest.find(a => a.path === 'delivery/worker.bundle.mjs');
-    if (!workerAsset || new URL(self.location.href).pathname !== `/runtime/${workerAsset.sha256}/worker.bundle.mjs`) throw Error('runtime-worker-delivery-mismatch');
+    if (!workerAsset) throw Error('runtime-worker-delivery-mismatch');
     if (canonicalPreviewJson(resolveParameters(loaded.spec,pending.input.parameters)) !== canonicalPreviewJson(pending.input.parameters)) throw Error('runtime-parameters-unresolved');
-    const assets = await checkedAssets(message.assets, loaded.profile);
-    const indexURL = new URL('/fixed-pyodide/', self.location.href).href;
+    const assets = await checkedAssets(message.assets, loaded.profile,digest);
+    // An opaque-origin blob URL cannot resolve relative paths. This synthetic
+    // absolute base is only a lookup key for the verified in-memory fetch map.
+    const indexURL = 'https://browser-preview.invalid/fixed-pyodide/';
     // Only fixed verified in-memory assets. This function has no HTTP fallback.
     globalThis.fetch = async value => {
       const url = new URL(typeof value === 'string' ? value : value.url ?? value.href, indexURL);

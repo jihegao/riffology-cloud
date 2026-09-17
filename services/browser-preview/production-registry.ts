@@ -20,14 +20,15 @@ export async function reviewedPreviewInventory(rawProfiles:unknown,rawDelivery:u
   const packages=record(p.packages,Object.keys((p.packages??{}) as object));
   if(Object.values(packages).some(v=>typeof v!=='string'))fail();
   const assets:PreviewAsset[]=p.assetManifest.map(raw=>{const a=record(raw,['path','sha256','byteLength']);if(typeof a.path!=='string')fail();return {path:a.path,sha256:hash(a.sha256),byteLength:length(a.byteLength)};});
-  for(const path of ['assets/pyodide.mjs','assets/pyodide.asm.mjs','assets/pyodide.asm.wasm','assets/python_stdlib.zip','assets/pyodide-lock.json','delivery/worker.bundle.mjs','delivery/frame.bundle.mjs','source/contract.ts','source/model-spec.ts','source/package-lock.json','source/prepare-assets.mjs'])if(!assets.some(a=>a.path===path))fail();
+  for(const path of ['assets/pyodide.mjs','assets/pyodide.asm.mjs','assets/pyodide.asm.wasm','assets/python_stdlib.zip','assets/pyodide-lock.json','delivery/worker.bundle.mjs','delivery/frame.bundle.mjs','runtime/sha256.mjs','source/contract.ts','source/model-spec.ts','source/package-lock.json','source/prepare-assets.mjs'])if(!assets.some(a=>a.path===path))fail();
   return {runtime,packages:packages as Record<string,string>,assets,trust:'verified-platform'};
  });
  if(new Set(entries.map(p=>p.runtime.profileId)).size!==2)fail();
- const delivery=record(rawDelivery,['schema','profiles','host','esbuildVersion','buildOptions']);
+ const delivery=record(rawDelivery,['schema','profiles','host','esbuildVersion','buildOptions','executionBuildOptions']);
  const host=record(delivery.host,['sha256','byteLength']);hash(host.sha256);length(host.byteLength);
  const options=record(delivery.buildOptions,['bundle','format','platform','target','external']);
- if(delivery.schema!=='riffology.browser-runtime-delivery/v1'||canonicalPreviewJson(delivery.profiles)!==canonicalPreviewJson(entries.map(p=>p.runtime.assetSha256))||typeof delivery.esbuildVersion!=='string'||!/^[0-9]+\.[0-9]+\.[0-9]+$/.test(delivery.esbuildVersion)||canonicalPreviewJson(options)!==canonicalPreviewJson({bundle:true,format:'esm',platform:'browser',target:'es2022',external:['node:*','ws']}))fail();
+ const executionOptions=record(delivery.executionBuildOptions,['bundle','format','platform','target','external','workerDefine']),workerDefine=record(executionOptions.workerDefine,['import.meta.url']);
+ if(delivery.schema!=='riffology.browser-runtime-delivery/v1'||canonicalPreviewJson(delivery.profiles)!==canonicalPreviewJson(entries.map(p=>p.runtime.assetSha256))||typeof delivery.esbuildVersion!=='string'||!/^[0-9]+\.[0-9]+\.[0-9]+$/.test(delivery.esbuildVersion)||canonicalPreviewJson(options)!==canonicalPreviewJson({bundle:true,format:'esm',platform:'browser',target:'es2022',external:['node:*','ws']})||canonicalPreviewJson({...executionOptions,workerDefine})!==canonicalPreviewJson({bundle:true,format:'iife',platform:'browser',target:'es2022',external:['node:*','ws'],workerDefine:{'import.meta.url':'self.location.href'}}))fail();
  return createTrustedPreviewRegistry(entries);
 }
 let production:Promise<PreviewProfileRegistry>|undefined;

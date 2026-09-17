@@ -1,6 +1,6 @@
 import {browserPreviewStaticIndex} from './assets/static-index.ts';
 export type StaticAssetPort={fetch(request:Request):Promise<Response>};
-type StaticAsset={url:string;file:string;sha256:string;byteLength:number;contentType:string;kind:'frame'|'worker'|'app'};
+type StaticAsset={url:string;file:string;sha256:string;byteLength:number;contentType:string;kind:'frame'|'app'};
 function deny(status:number){return new Response('unavailable',{status,headers:{'Cache-Control':'no-store','Content-Type':'text/plain','X-Content-Type-Options':'nosniff'}});}
 export async function checkedStaticAsset(request:Request,port:StaticAssetPort,asset:StaticAsset,headers:Headers):Promise<Response>{
  const source=await port.fetch(new Request(new URL('/'+asset.file,request.url),{method:'GET'}));

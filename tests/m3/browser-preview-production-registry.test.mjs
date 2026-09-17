@@ -15,6 +15,7 @@ test('committed reviewed production inventory resolves fixed profiles with immut
  for(const p of profiles){const resolved=registry.resolve(p.runtime.profileId);assert.equal(resolved.trust,'verified-platform');assert.deepEqual(resolved.runtime,p.runtime);assert.deepEqual(resolved.assets,p.assetManifest);assert.deepEqual(resolved.packages,p.packages);}
  const unreviewed=structuredClone(profiles);unreviewed[0].verified=false;await assert.rejects(reviewedPreviewInventory(unreviewed,delivery),/production-inventory-invalid/);
  const poisoned=structuredClone(delivery);poisoned.profiles[0]='a'.repeat(64);await assert.rejects(reviewedPreviewInventory(profiles,poisoned),/production-inventory-invalid/);
+ const moduleWorker=structuredClone(delivery);moduleWorker.executionBuildOptions.format='esm';await assert.rejects(reviewedPreviewInventory(profiles,moduleWorker),/production-inventory-invalid/);
  const absent=structuredClone(profiles);absent[0].assetManifest=absent[0].assetManifest.filter(a=>a.path!=='delivery/worker.bundle.mjs');await assert.rejects(reviewedPreviewInventory(absent,delivery),/production-inventory-invalid/);
 });
 for(const [kind,profileId] of [['queue','python-stdlib/v1'],['mesa','mesa-3.5.1/v1']])test(`real saved ${kind} archive validates and packages against verified platform profile with stable bytes`,async()=>{
