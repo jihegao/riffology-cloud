@@ -159,3 +159,9 @@ test('future and absent Observer wakes do not run external work',async()=>{
   assert.equal(result.observer,wake===null?'absent':'waiting');assert.deepEqual(f.calls,['reconcile']);
  }
 });
+
+test('browser build gets persisted retry and delivery after simulation failure',async()=>{
+ const f=fixture(state(null,true),null);let wake=900;
+ await assert.rejects(routeWorkspaceAlarm({...f.ports,simulation:{readWake:()=>900,defer:async()=>{},advance:async()=>{throw Error('simulation-failed');}},browserBuild:{readWake:()=>wake,defer:async at=>{wake=at;f.calls.push('build-defer');},advance:async scope=>{assert.equal(scope.workspaceId,'workspace-a');assert.equal(wake,1050);f.calls.push('build');}}},1000,50),/simulation-failed/);
+ assert.deepEqual(f.calls,['build-defer','build','reconcile']);
+});

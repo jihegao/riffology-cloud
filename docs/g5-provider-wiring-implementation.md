@@ -1,0 +1,13 @@
+# G5私有Model Proxy接线
+
+基线e746cf7，独立codex/g5-provider-wiring；实现仅本地，未模型/云调用、部署或改旧G4配置。实际线上配置/首准入窗口由主控冻结，本模块不自行批准。
+
+MAC/capability/容器校验后，从固定G5_GLOBAL_ACTOR调用lookupTrustedTurnRoute(full runtimeIdentity)。只有已登记真实G5 Turn路由才选G5_TOKEN_BUDGET，profile SHA必须等于实际provider.productionProfile完整digest。没有G5环境仍走原TENANT_MODEL_BUDGET；开启G5但private route lookup失败直接拒绝，不回退。未登记历史Go身份仍原namespace，不能自动使用新OpenAI profile；新release若只提供OpenAI，则原Go请求拒绝，绝不解释为同模型重路由。生产路由来自server guard登记，不是请求body或客户端参数。
+
+顺序：token reserve→reserveTrustedCall→money admit/dispatch→bindTrustedMoney→claimTrustedDispatch→token dispatch→一次provider。窗口deadline在实际provider前再次核对并送dispatchAdmissionDeadlineAt；任何ACK丢失已持久fence保持占用，不重试网络请求。global reserve ACK丢失即使拿不到callKey也保留guard reserved、token unknown；已知callKey则主动markUnknown。金额/全局/Token派发拒绝后保守hold，不提供免费释放global未知接口。
+
+provider terminal收到后先money finish/unknown、token finish，再settleTrustedCall(callKey)。caller不提供normalized三账本receipt或usage fixture；G5 DO须内部实际读取token/money/tool authority验证call级收尾，Turn级close由workspace负责。finish/settle ACK丢失即global+token+money unknown，响应不冒成功，也不重复provider。合法同Turn多个call通过独立callId/ref结清，预算仍按Turn累计。
+
+release factory在G5配置存在且独立token/global binding缺失时返回null，普通MAC门禁也拒绝缺少绑定/不符profile。G5Token DO政策必须使用独立冻结字段或保留旧MODEL_BUDGET字段，不能为新OpenAI预算改写旧G4 singleton政策；该部分由主控/C的token/infra实现负责。
+
+验证：typecheck与12实际handleModelProxyRequest定向tests通过，覆盖ordered chain、profile authority route、两个合法同Turn call、private ACK loss各阶段、settlement loss、provider断线及同签名replay不再provider、旧无G5路径、route lookup失败前零reserve。测试使用合成private port，不是生产账本读回/供应商invoice；C真实DO adapter与Workspace/Gateway接线仍须主控集成后独立验证。没有修改gateway/workspace/infra或G5 core。

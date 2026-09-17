@@ -1,0 +1,11 @@
+# G5-A operator control slice
+
+`scripts/model/g5-a-operator-control.mjs` prepares and checks the transition for the already frozen A window. It cannot create a window, change a budget, submit a task, or call a model.
+
+The compiler accepts the private freeze bundle, the deployed closed configuration, and the ordinary application origin. It requires the A limits (US$20 total, US$5 per Turn, 147 upstream dispatches, 39 simulation Runs, zero service Runs, 66 tasks, two hours) and produces a diff containing exactly the five admission/provider gates. The service gate stays closed and all profile, money, token, legacy G4, source, and window identifiers remain byte-for-byte unchanged. Its private `driverHandoff` binds the A user and tenant, denied B user and tenant, existing window, source, profile, exact open-configuration hash, and HTTPS origin so the CDP ordinary-user driver and operator validate one identity boundary without copying authentication material.
+
+`runG5AControl` is plan-only unless the caller supplies `execute: true` and the required private operator ports. Before `open`, it also requires a fresh same-origin CDP identity-preflight receipt containing only timestamps and SHA-256 evidence; exact shape validation rejects cookies, authorization headers, and other added fields. It then requires an unstarted, unused, settled A window, deploys the exact compiled configuration, verifies the deployment acknowledgement and independent readback hash, and proves that opening gates did not start the window clock. `stop` deploys and verifies the closed configuration first, then invokes the private Window Guard `closeAdmission` RPC for the same window and verifies its snapshot. Pending or unknown entries remain visible as `settlementRequired`; they are never cleared or retried by this tool.
+
+`createG5GuardOperatorAdapter` wraps only the private Durable Object `snapshot` and `closeAdmission` RPCs. It exposes no HTTP route. The surrounding operator adapter must supply independent token, money, and tool ledger counts to `readState`; any unknown, pending entry, deadline, or cap failure blocks new admission.
+
+This slice performs no Cloudflare operation and reads no secret. A live operator must connect authenticated deployment and private RPC implementations and retain the returned acknowledgements as acceptance evidence.

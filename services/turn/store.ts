@@ -1,3 +1,4 @@
+import { projectPreviewDiscoveries } from '../browser-preview/discovery.ts';
 import { TURN_EVENT_BYTES_LIMIT, TURN_EVENT_LIMIT, TURN_EVENT_RECEIPT_LIMIT, actor, checkpointReceipt, jsonPayload, message, positive, sameScope, scope, sha, title, turnBaseCheckpoints, turnId, type CheckpointReceipt, type TurnEvent, type TurnJournalState } from './protocol.ts';
 
 export interface AtomicTurnStore { read():TurnJournalState|null; transact<T>(operation:(current:TurnJournalState|null)=>{state:TurnJournalState;value:T}):Promise<T> }
@@ -151,6 +152,7 @@ function preserveInitialBases(previous:TurnJournalState|null,next:TurnJournalSta
   if(!previous)return;
   for(const row of Object.values(previous.turns))if(row.dispatchId!==null){
     const after=next.turns[row.id];
+    if(row.persistenceOutcome==='saved'&&(!after||after.persistenceOutcome!=='saved'||!same(row.checkpoint,after.checkpoint)||row.sessionId!==after.sessionId||row.dispatchId!==after.dispatchId||row.runtimeGeneration!==after.runtimeGeneration))throw Error('invalid-persisted-turn-journal');
     if(!after||!same(row.base?.initial,after.base?.initial)||!same(row.resourceLease,after.resourceLease))throw Error('invalid-persisted-turn-journal');
   }
 }
@@ -159,17 +161,17 @@ function preserveInitialBases(previous:TurnJournalState|null,next:TurnJournalSta
 export class DurableTurnStore implements AtomicTurnStore{
   #storage:DurableObjectStorage;
   constructor(storage:DurableObjectStorage){
-    if(!storage||typeof storage.transactionSync!=='function'||typeof storage.sync!=='function'||!storage.kv)throw Error('sqlite-turn-storage-required');
+    if(!storage||typeof storage.transaction!=='function'||typeof storage.sync!=='function'||!storage.kv)throw Error('sqlite-turn-storage-required');
     this.#storage=storage;
   }
   read():TurnJournalState|null{const saved=this.#storage.kv.get<unknown>(KEY);if(saved===undefined)return null;const current=migrateV6(migrateV5(migrateV4(migrateV3(migrateV2(migrate(saved))))));valid(current);return structuredClone(current);}
   async transact<T>(operation:(current:TurnJournalState|null)=>{state:TurnJournalState;value:T}):Promise<T>{
-    const result=this.#storage.transactionSync(()=>{
-      const saved=this.#storage.kv.get<unknown>(KEY),current=saved===undefined?null:migrateV6(migrateV5(migrateV4(migrateV3(migrateV2(migrate(saved))))));if(current!==null)valid(current);
+    const result=await this.#storage.transaction(async transaction=>{
+      const saved=await transaction.get<unknown>(KEY),current=saved===undefined?null:migrateV6(migrateV5(migrateV4(migrateV3(migrateV2(migrate(saved))))));if(current!==null)valid(current);
       const output=operation(current===null?null:structuredClone(current));
       if(!output||typeof output!=='object'||output instanceof Promise)throw Error('turn-journal-operation-must-be-synchronous');
       valid(output.state);preserveInitialBases(current,output.state);const state=structuredClone(output.state),value=structuredClone(output.value);
-      this.#storage.kv.put(KEY,state);return value;
+      await transaction.put(KEY,state);await projectPreviewDiscoveries(transaction,state,current);return value;
     });
     await this.#storage.sync();return structuredClone(result);
   }

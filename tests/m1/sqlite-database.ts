@@ -16,6 +16,7 @@ export class SqliteCatalog implements Database {
       this.sqlite.exec(readFileSync(new URL('../../services/catalog/migrations/0005_initial_operator.sql', import.meta.url), 'utf8'));
       this.sqlite.exec(readFileSync(new URL('../../services/catalog/migrations/0006_model_catalog.sql', import.meta.url), 'utf8'));
       this.sqlite.exec(readFileSync(new URL('../../services/catalog/migrations/0007_model_content_checks.sql', import.meta.url), 'utf8'));
+      this.sqlite.exec(readFileSync(new URL('../../services/catalog/migrations/0010_project_budget_routes.sql', import.meta.url), 'utf8'));
     }
   }
   async query<T>(s: Statement): Promise<T[]> { return this.sqlite.prepare(s.sql).all(...s.values) as T[]; }

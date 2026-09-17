@@ -1,5 +1,9 @@
 # 开发执行状态
 
+## 2026-09-15 Browser Preview 多阶段开发（实施中）
+
+当前以[多阶段计划](issues-subagent-plan-20260915.md)为准。G0/G1本地签收；G2中央接口、组合资产、持久构建与initial复制来源兼容已集成并经非作者审查。主控28项来源/历史/真实Workerd与8项Chrome面板通过。G3作者两模型真实Gateway→Browser→历史Verify→native→R2→导出重放整链通过；主控独立整链已通过；最终npm run check exit0，1971项、1960通过、11 opt-in跳过、0失败。G0–G3本地签收。ARM64测试bridge不能证明生产x86资源继承，G4仍须原生验收。18项benchmark仅离线准备，账号预算/隐私与发布范围待明确。详见[实施记录](issues-development-log-20260915.md)和[签收矩阵](issues-acceptance-matrix-20260915.md)。未部署、无新增收费调用、未关闭issue；下方记录保留为历史。
+
 ## 2026-09-14 研究闭环后续执行计划（规划落盘）
 
 第一阶段实际交付与限制见[普通用户发布验收](phase1-user-preview-acceptance.md)。后续按[研究闭环 Issues 执行顺序](research-loop-execution-plan.md)推进：#29 → #30/#33 → #31 → #32 → #45/#34 → #46 → #37 → #35；#28 跟踪全程。#46 的 ADR 和 #37 的度量可提前，完整实现默认不阻塞研究主线。

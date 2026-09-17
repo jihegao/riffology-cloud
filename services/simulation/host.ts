@@ -1,15 +1,20 @@
+import type {WorkspaceBudgetRoute} from '../workspace/protocol.ts';
+import {checkedNativeObservation} from './native-observation.ts';
 import {GROUP_RESERVATION,GROUP_WAKE_KEY} from './group-state.ts';
 import {publishOutputs,type SimulationOutput} from './outputs.ts';
 import {actor as checkedActor,scope as checkedScope,turnId,type TurnActor,type TurnScope} from '../turn/protocol.ts';
 import {leaseReference,type LeaseReference,type LeaseRequest,type Acquisition,type StopConfirmation} from '../quota/core.ts';
 import {modelVersion,digest,type SimulationPlan} from './source.ts';
 import {resolveParameters,validateMetrics,type ParameterValues} from './model-spec.ts';
-import type {SimulationInput,NativeObservation} from './native.ts';
-import {applyWorkspaceAlarm,SIMULATION_WAKE_KEY,WORKSPACE_STATE_KEY,TURN_WAKE_KEY,SERVICE_WAKE_KEY,OBSERVER_WAKE_KEY} from '../workspace/shared-alarm.ts';
+import {simulationToken,type SimulationInput,type NativeObservation} from './native.ts';
+import {BROWSER_BUILD_WAKE_KEY,applyWorkspaceAlarm,SIMULATION_WAKE_KEY,WORKSPACE_STATE_KEY,TURN_WAKE_KEY,SERVICE_WAKE_KEY,OBSERVER_WAKE_KEY} from '../workspace/shared-alarm.ts';
 export type ExperimentRequest={revisionId:string|null;filesSha256:string;specSha256:string;parameters:ParameterValues;seed:number};
 type Status='queued'|'waiting_for_capacity'|'preparing'|'running'|'finalizing'|'stopping'|'unknown'|'completed'|'failed'|'cancelled';
-export type SimulationRecord={experimentId:string;groupId?:string;runId:string;scope:TurnScope;actor:TurnActor;key:string;requestJson:string;input:SimulationInput;status:Status;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null;attempt:number;quotaClaimed:boolean;releaseProof:StopConfirmation|null;lease:LeaseReference|null;dispatchClaimed?:boolean;startClaimed:boolean;stop:NativeObservation['stop'];result:null|{metrics:Record<string,number>;artifactSha256:string;outputs?:SimulationOutput[]};releaseBegunAt:number|null;quietSince:number|null;released:boolean};
+export type SimulationRecord={budgetRoute?:WorkspaceBudgetRoute;experimentId:string;groupId?:string;runId:string;scope:TurnScope;actor:TurnActor;key:string;requestJson:string;input:SimulationInput;status:Status;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null;attempt:number;quotaClaimed:boolean;releaseProof:StopConfirmation|null;lease:LeaseReference|null;dispatchClaimed?:boolean;startClaimed:boolean;stop:NativeObservation['stop'];result:null|{metrics:Record<string,number>;artifactSha256:string;outputs?:SimulationOutput[]};releaseBegunAt:number|null;quietSince:number|null;released:boolean};
 export interface SimulationPorts{
+ admitRun?(actor:TurnActor,key:string,request:ExperimentRequest,runId:string):Promise<WorkspaceBudgetRoute|void>;
+ createdRun?(record:SimulationRecord):Promise<void>;
+ beforeStart?(record:SimulationRecord,stage:'capacity'|'native'):Promise<void>;
  quota:{acquire(request:LeaseRequest):Promise<Acquisition>;lookup(tenantId:string,operationId:string):Promise<Acquisition|null>;dispatch(lease:LeaseReference):Promise<{authorized:boolean;lease:unknown}>;confirmStopped(lease:LeaseReference,proof:StopConfirmation):Promise<unknown>};
  start(input:SimulationInput):Promise<NativeObservation>;
  observe(input:SimulationInput):Promise<NativeObservation>;
@@ -36,7 +41,7 @@ export async function projectSimulationWake(tx:DurableObjectTransaction,now:numb
  const wake=active?Math.min(now+2000,groupWake??Infinity):groupWake??null;
  if(wake===null)await tx.delete(SIMULATION_WAKE_KEY);else await tx.put(SIMULATION_WAKE_KEY,wake);
  const state=await tx.get<{wakeAt:number|null}>(WORKSPACE_STATE_KEY);
- await applyWorkspaceAlarm(tx,state?.wakeAt,await tx.get(TURN_WAKE_KEY),await tx.get(SERVICE_WAKE_KEY),await tx.get(OBSERVER_WAKE_KEY),wake);
+ await applyWorkspaceAlarm(tx,state?.wakeAt,await tx.get(TURN_WAKE_KEY),await tx.get(SERVICE_WAKE_KEY),await tx.get(OBSERVER_WAKE_KEY),wake,await tx.get(BROWSER_BUILD_WAKE_KEY));
 }
 export type GroupChildAdmission={runId:string;groupId:string;permit(tx:DurableObjectTransaction):Promise<boolean>};
 /** Workspace-owned intents, state and wake commit together. External effects
@@ -64,6 +69,7 @@ export class SimulationHost{
   const version=modelVersion(plan);if(JSON.stringify(version)!==JSON.stringify({revisionId:request.revisionId,filesSha256:request.filesSha256,specSha256:request.specSha256}))throw Error('simulation-model-stale');
   const parameters=resolveParameters(plan.spec,request.parameters),now=this.clock(),runId=child?turnId(child.runId):crypto.randomUUID();
   const record:SimulationRecord={experimentId:child?.groupId??runId,...(child?{groupId:child.groupId}:{}),runId,scope:this.scope,actor:checkedActor(actor),key,requestJson:JSON.stringify(request),input:{runId,plan,parameters,seed:request.seed,deadlineAt:now+this.policy.durationMs,runtimeImage:image},status:'queued',createdAt:now,updatedAt:now,cancelledAt:null,errorCode:null,attempt:0,quotaClaimed:false,releaseProof:null,lease:null,dispatchClaimed:false,startClaimed:false,stop:null,result:null,releaseBegunAt:null,quietSince:null,released:false};
+  const budgetRoute=await this.ports.admitRun?.(actor,intent,request,runId);if(budgetRoute)record.budgetRoute=budgetRoute;
   const result=await this.storage.transaction(async tx=>{
    const existing=await tx.get<string>(intent);if(existing){const r=(await tx.get<SimulationRecord>(PREFIX+existing))!;if(r.requestJson!==record.requestJson||r.actor.authVersion!==actor.authVersion||(child&&(r.runId!==child.runId||r.groupId!==child.groupId||r.experimentId!==child.groupId)))throw Error('simulation-idempotency-conflict');return r;}
    if(!stillCurrent())throw Error('simulation-model-stale');
@@ -74,8 +80,9 @@ export class SimulationHost{
    if(rows.length+reserved+(child?0:1)>1000||rows.filter(r=>!r.released).length>=8)throw Error('simulation-capacity');
    if(child)await tx.put(GROUP_RESERVATION+child.groupId,reservations.get(GROUP_RESERVATION+child.groupId)!.filter(id=>id!==runId));
    await tx.put(PREFIX+runId,record);await tx.put(intent,runId);await this.#project(tx);return record;
-  });await this.storage.sync();return result;
+  });await this.storage.sync();await this.ports.createdRun?.(result);return result;
  }
+ async reconcileCreatedRun(id:string){const record=await this.get(id);await this.ports.createdRun?.(record);return record;}
  async cancel(id:string){return this.#change(id,r=>{if(!TERMINAL.has(r.status)){r.cancelledAt??=this.clock();r.status='stopping';}});}
  async #bounded<T>(operation:()=>Promise<T>):Promise<T>{let timer:ReturnType<typeof setTimeout>|undefined;const pending=Promise.resolve().then(operation);this.ports.hold(pending.catch(()=>{}));try{return await Promise.race([pending,new Promise<never>((_,reject)=>{timer=setTimeout(()=>reject(Error('simulation-operation-unconfirmed')),15000);})]);}finally{clearTimeout(timer);}}
  async authorizeActor(actor:TurnActor){return this.#bounded(()=>this.ports.authorize(checkedActor(actor)));}
@@ -101,6 +108,7 @@ export class SimulationHost{
    const operationId=`sim-${r.runId}-${r.attempt}`;
    let acquisition=await this.#bounded(()=>this.ports.quota.lookup(r.scope.tenantId,operationId));
    if(!acquisition&&(r.quotaClaimed||!r.cancelledAt&&!expired)){
+    await this.ports.beforeStart?.(r,'capacity');
     if(!r.quotaClaimed)r=await this.#change(id,v=>{v.quotaClaimed=true;});
     const request:LeaseRequest={tenantId:r.scope.tenantId,projectId:r.scope.projectId,workspaceId:r.scope.workspaceId,generation:r.scope.workspaceGeneration,operation:'simulation-run',operationId,runId:r.runId,deadlineAt:r.input.deadlineAt};
     acquisition=await this.#bounded(()=>this.ports.quota.acquire(request));
@@ -115,6 +123,7 @@ export class SimulationHost{
   }
   let observation:NativeObservation;
   if(!r.startClaimed){
+   await this.ports.beforeStart?.(r,'native');
    r=await this.#change(id,v=>{if(!v.cancelledAt){v.dispatchClaimed=true;v.status='preparing';}});
    if(!r.dispatchClaimed)return;
    const dispatched=await this.#bounded(()=>this.ports.quota.dispatch(r.lease!));
@@ -167,14 +176,16 @@ export class SimulationHost{
 /** Only the platform publishes the immutable result envelope, after native
  * exit and process-domain stop proof. Project success strings are ignored. */
 export async function publishSimulationResult(bucket:R2Bucket,record:SimulationRecord,raw:unknown){
- const value=raw as {exitCode?:unknown;result?:unknown;pythonVersion?:unknown};
- if(!value||typeof value!=='object'||Object.keys(value).sort().join(',')!=='exitCode,pythonVersion,result'||value.exitCode!==0||typeof value.pythonVersion!=='string'||!/^3\.[0-9]+\.[0-9]+$/.test(value.pythonVersion))throw Error('simulation-result-invalid');
+ const value=raw as {exitCode?:unknown;result?:unknown;pythonVersion?:unknown;nativeObservation?:unknown};
+ if(record.input.plan.executionProfile&&value?.pythonVersion!==record.input.plan.executionProfile.pythonVersion)throw Error('simulation-environment-mismatch');
+ if(!value||typeof value!=='object'||!['exitCode,pythonVersion,result','exitCode,nativeObservation,pythonVersion,result'].includes(Object.keys(value).sort().join(','))||value.exitCode!==0||typeof value.pythonVersion!=='string'||!/^3\.[0-9]+\.[0-9]+$/.test(value.pythonVersion))throw Error('simulation-result-invalid');
+ const nativeObservation=value.nativeObservation===undefined?undefined:checkedNativeObservation(value.nativeObservation,record.runId,modelVersion(record.input.plan).filesSha256,await simulationToken(record.input),await digest('simulation-stop:'+await simulationToken(record.input)));
  const result=value.result as {schemaVersion?:unknown;metrics?:unknown;outputs?:unknown};
  if(!result||typeof result!=='object'||!['metrics,schemaVersion','metrics,outputs,schemaVersion'].includes(Object.keys(result).sort().join(','))||result.schemaVersion!==1)throw Error('simulation-result-invalid');
  let metrics:Record<string,number>;try{metrics=validateMetrics(record.input.plan.spec,result.metrics);}catch{throw Error('simulation-result-invalid');}
  const prefix=`simulation-results-v1/${record.scope.tenantId}/${record.scope.projectId}/${record.scope.workspaceId}/${record.runId}`;
  const outputs=await publishOutputs(bucket,prefix,result.outputs);
- const envelope={...(outputs.length?{outputs}:{}),schemaVersion:1,runId:record.runId,experimentId:record.experimentId,version:modelVersion(record.input.plan),parameters:record.input.parameters,seed:record.input.seed,runtimeImage:record.input.runtimeImage,pythonVersion:value.pythonVersion,metrics};
+ const envelope={...(nativeObservation?{nativeObservation}:{}),...(outputs.length?{outputs}:{}),schemaVersion:1,runId:record.runId,experimentId:record.experimentId,version:modelVersion(record.input.plan),parameters:record.input.parameters,seed:record.input.seed,runtimeImage:record.input.runtimeImage,pythonVersion:value.pythonVersion,metrics};
  const content=JSON.stringify(envelope),artifactSha256=await digest(content),key=`simulation-results-v1/${record.scope.tenantId}/${record.scope.projectId}/${record.scope.workspaceId}/${record.runId}/${artifactSha256}.json`;
  await bucket.put(key,content,{onlyIf:{etagDoesNotMatch:'*'},httpMetadata:{contentType:'application/json'}});
  const stored=await bucket.get(key);if(!stored||stored.size>65536||await digest(await stored.text())!==artifactSha256)throw Error('simulation-result-unconfirmed');

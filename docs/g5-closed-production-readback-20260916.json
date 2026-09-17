@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "kind": "closed-production-wiring-readback-not-paid-acceptance",
+  "workerVersionId": "1afa24e5-f327-412a-b22b-1a921130a7ae",
+  "deploymentId": "579ac95f-a403-4d91-b003-cc659ff723d1",
+  "deployedAt": "2026-09-16T00:46:16.488676Z",
+  "percentage": 100,
+  "sourceCommit": "5d468296da3b68c20362fe5a6a7b4e5e0f1d9a9b",
+  "remoteModuleSha256": "ba7f989e7cf0de7ae16e67314e0875c79650b7235ebbc9887d4d617b190a1b03",
+  "remoteModuleBytes": 4120280,
+  "localDryRunModuleMatches": true,
+  "frozenVarsExact": true,
+  "gates": {
+    "G5_ADMISSION_ENABLED": "false",
+    "M2_TURNS_ENABLED": "false",
+    "M2_MODEL_PROVIDER_ENABLED": "false",
+    "PRODUCTION_MODEL_ENABLED": "false",
+    "M4_SIMULATION_ENABLED": "false",
+    "M3_SERVICE_ENABLED": "false"
+  },
+  "moneyEnabled": false,
+  "newBudgetNamespaces": [
+    {
+      "name": "G5_TOKEN_BUDGET",
+      "httpStatus": 200,
+      "objectCount": 0,
+      "cursorEmpty": true
+    },
+    {
+      "name": "G5_WINDOW_GUARD",
+      "httpStatus": 200,
+      "objectCount": 0,
+      "cursorEmpty": true
+    },
+    {
+      "name": "PRODUCTION_MODEL_BUDGET",
+      "httpStatus": 200,
+      "objectCount": 0,
+      "cursorEmpty": true
+    }
+  ],
+  "legacyNamespaceCount": 15,
+  "legacyNamespaceIdsPreserved": true,
+  "legacyG4PolicyPreserved": true,
+  "legacyModelPolicyPreserved": true,
+  "productionSecretNames": [
+    "PRODUCTION_AI_GATEWAY_TOKEN",
+    "PRODUCTION_OPENAI_API_KEY"
+  ],
+  "fiveContainerIdsAndImagesPreserved": true,
+  "remoteCatalogMigration": {
+    "name": "0010_project_budget_routes.sql",
+    "migrationApplied": 1,
+    "tablePresent": 1,
+    "immutableTriggerPresent": 1,
+    "newProjectRoutes": 0
+  },
+  "retention": {
+    "diagnosticsDays": 7,
+    "evidenceDays": 30,
+    "cloudRulesPutAndIndependentGetVerified": true,
+    "legacyRulesPreserved": true
+  },
+  "publicChecks": {
+    "rootHttpStatus": 200,
+    "unauthenticatedProvidersHttpStatus": 401
+  },
+  "gatewayModelList": {
+    "httpStatus": 403,
+    "errorCode": "unsupported_country_region_territory",
+    "inferenceCalls": 0
+  },
+  "newModelDispatches": 0,
+  "newProjectAdmissions": 0,
+  "newSimulationRuns": 0,
+  "newServiceRuns": 0,
+  "firstAdmissionStarted": false,
+  "upstreamReady": false,
+  "g5PaidAcceptance": false,
+  "postDeploymentInventory": {
+    "observedAt": "2026-09-16T00:49:25.568Z",
+    "total": 259,
+    "nonInactive": 0,
+    "paginationComplete": true
+  }
+}

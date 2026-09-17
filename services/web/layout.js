@@ -8,7 +8,7 @@ export function createWorkspaceLayout({root,storage}){
  function limits(){const width=grid.getBoundingClientRect().width;return {min:Math.max(25,Math.min(45,240/Math.max(1,width)*100)),max:Math.min(60,Math.max(45,(width-340)/Math.max(1,width)*100))};}
  function render(){
   const {min,max}=limits(),shown=Math.min(max,Math.max(min,ratio));grid.style.setProperty('--agent-width',`${shown}%`);separator.setAttribute('aria-valuenow',String(Math.round(shown)));separator.setAttribute('aria-valuemin',String(Math.ceil(min)));separator.setAttribute('aria-valuemax',String(Math.floor(max)));separator.setAttribute('aria-valuetext',`对话 ${Math.round(shown)}%，模型 ${100-Math.round(shown)}%`);
-  root.dataset.depth=depth;root.dataset.mobilePane=mobile;
+  root.dataset.depth=view==='inspect'?'inspect':view==='runs'?'experiment':'explore';root.dataset.mobilePane=mobile;
   for(const node of root.querySelectorAll('[data-workspace-view]'))node.hidden=node.dataset.workspaceView!==view;
   for(const tab of root.querySelectorAll('[data-workspace-tab]')){const selected=tab.dataset.workspaceTab===view;tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;}
   for(const node of root.querySelectorAll('[data-workspace-depth]'))node.setAttribute('aria-pressed',String(node.dataset.workspaceDepth===depth));
@@ -23,6 +23,6 @@ export function createWorkspaceLayout({root,storage}){
  separator.addEventListener('pointermove',event=>{if(!dragging)return;const rect=grid.getBoundingClientRect(),{min,max}=limits();ratio=Math.max(min,Math.min(max,(event.clientX-rect.left)/rect.width*100));render();});
  const finish=()=>{if(!dragging)return;dragging=false;root.classList.remove('workspace-resizing');save();};separator.addEventListener('pointerup',finish);separator.addEventListener('pointercancel',finish);separator.addEventListener('lostpointercapture',finish);
  window.addEventListener('resize',render);
- function enter(value){context=value;ratio=window.innerWidth>=1200?35:32;depth='explore';view='preview';mobile='chat';try{const saved=JSON.parse(storage?.getItem(key())||'null');if(saved){if(Number.isFinite(saved.ratio))ratio=Math.max(25,Math.min(60,saved.ratio));if(['explore','experiment','inspect'].includes(saved.depth))depth=saved.depth;if(['preview','model','runs','inspect'].includes(saved.view))view=saved.view;if(['chat','preview'].includes(saved.mobile))mobile=saved.mobile;}}catch{}render();}
+ function enter(value){context=value;ratio=window.innerWidth>=1200?35:32;depth='explore';view='preview';mobile='chat';try{const saved=JSON.parse(storage?.getItem(key())||'null');if(saved){if(Number.isFinite(saved.ratio))ratio=Math.max(25,Math.min(60,saved.ratio));if(['explore','experiment','inspect'].includes(saved.depth))depth=saved.depth;if(['preview','model','runs','inspect'].includes(saved.view))view=saved.view;else view=depth==='inspect'?'inspect':depth==='experiment'?'runs':'preview';if(['chat','preview'].includes(saved.mobile))mobile=saved.mobile;}}catch{}render();}
  return {enter,select,refresh:render};
 }

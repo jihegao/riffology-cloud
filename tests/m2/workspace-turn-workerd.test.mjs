@@ -179,7 +179,7 @@ test('Workerd drives one durable Turn through the independent runtime actor', { 
 
   try {
     mf = new Miniflare(options); await mf.ready; const db = await mf.getD1Database('CATALOG', workerName);
-    for (const path of ['0001_catalog.sql', '0003_provisioning.sql', '0004_operator_invitations.sql', '0005_initial_operator.sql', '0006_model_catalog.sql','0007_model_content_checks.sql']) {
+    for (const path of ['0001_catalog.sql', '0003_provisioning.sql', '0004_operator_invitations.sql', '0005_initial_operator.sql', '0006_model_catalog.sql','0007_model_content_checks.sql','0010_project_budget_routes.sql']) {
       const sql = (await readFile(`services/catalog/migrations/${path}`, 'utf8')).replace(/--[^\n]*/g, '');
       const statements = sql.match(/\s*CREATE TRIGGER[\s\S]*?END;|[^;]+;/g) ?? [];
       for (const statement of statements) if (statement.trim()) await db.prepare(statement).run();

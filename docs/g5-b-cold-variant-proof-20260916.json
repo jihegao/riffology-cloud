@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "kind": "closed-B-cold-variant-not-admission",
+  "sourceCommit": "5d468296da3b68c20362fe5a6a7b4e5e0f1d9a9b",
+  "parentSourceProofSha256": "908435341e6d02ec8db275c95fb33b322aae38a042d1167b9f74044b480f7c56",
+  "parentBOverlaySha256": "baec1642ab504d758460f5bd06ad252a1bf0f01bded146dd64f7b757010cd108",
+  "coldOverlaySha256": "510abdffd6f0c556d12064cd05cb46c2ee353fd801473ef29d92b782d3afed0c",
+  "onlyChangedVars": {
+    "M2_LAZY_PROJECT_ENABLED": "false",
+    "M2_WORKSPACE_RUNTIME_REUSE_ENABLED": "false"
+  },
+  "sameWindowPolicy": true,
+  "sameMoneyPolicy": true,
+  "sameTokenPolicy": true,
+  "sameProfile": true,
+  "gatesClosed": true,
+  "extraBudgetUSD": 0,
+  "extraWindowIds": 0,
+  "firstAdmissionStarted": false
+}

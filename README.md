@@ -4,11 +4,14 @@ Riffology Cloud 是一个多租户、持久化的 AI 仿真建模工作台。
 用户围绕 Project 和 Pi Agent Session 工作，Workspace 提供文件、运行与插件能力，
 Browser 作为可选内置插件提供交互预览和 Agent 观察。
 
+截至 2026-09-18，正式 Browser Preview、Workspace UI 和 G4/G5 控制逻辑已在集成分支实现；PR #76 的发布记录见[线上验收说明](docs/browser-preview-online-acceptance-20260917.md)。登录用户的最新线上预览仍有兼容故障，由 [Issue #78](https://github.com/jihegao/riffology-cloud/issues/78) 跟踪。合入主分支不表示该故障已修复、完整线上验收通过或付费执行已开放。下方早期里程碑保留历史状态，当前整合与检查结果见[主分支整合记录](docs/integration-main-review-20260918.md)。
+
 MVP 采用极简 Session 界面，以 Cloudflare Workers、Agents SDK / Durable Objects、
-Sandbox、D1 和 R2 构成云端服务；仿真主路径固定为 Python + SimPy。
+Sandbox、D1 和 R2 构成云端服务；本地候选支持 Python 标准库 Queue 与固定 Mesa profile，保留历史 SimPy 路径。
 
 ## 文档
 
+- [当前多阶段开发计划](docs/issues-subagent-plan-20260915.md)与[实施验收记录](docs/issues-development-log-20260915.md)：#64 浏览器 Preview、#65 UI、#46/#37 生产验收及 #35 官方模型。
 - [研究闭环 Issues 执行顺序](docs/research-loop-execution-plan.md)：第一阶段签收后的 8 个交付批次、依赖、接口兼容和验收门槛。
 - [MVP 系统概要设计](docs/mvp-system-design.md)：产品范围、功能模块、架构、核心流程、持久化与验收标准。
 - [官方模型库、多租户与 Token 付费设计](docs/model-library-tenancy-billing-design.md)：官方模型版本、项目与账单归属、充值余额、Token 结算和运行额度。
@@ -58,3 +61,6 @@ npm run dev
 [受控 Pi 代理客户端](docs/m0-proxy-pi-bridge.md)已通过 13 项本地集成检查，覆盖完整 Session 历史、每调用独立 capability、显式取消、超时和凭据脱敏；另完成真实 Pi 子进程到 Workerd/SQLite DO 的 [10 项本地联调](docs/evidence/runs/m0-proxy-pi-local-1788622591199-4e3a43ff/proxy-pi-local.json)，包括落盘恢复、DO 重启与取消收据；该客户端已进入[新本地镜像](docs/m0-pi-proxy-image.md)，尚未上传或部署；此前冻结镜像保留为历史。
 
 用户登录、生产多租户链路、持久 Turn、项目应用、真实 Run 和计费尚未交付。当前源码未整体部署，候选清单仍禁止推广。详见[开发执行状态](docs/development-status.md)。
+
+
+Browser Preview 按[多阶段计划](docs/issues-subagent-plan-20260915.md)实施；历史验收见[实施记录](docs/issues-development-log-20260915.md)，最近发布边界见[线上验收说明](docs/browser-preview-online-acceptance-20260917.md)。干净工作树执行 `npm ci` 后创建 `.local`，依次运行 `node services/browser-preview/runtime/prepare-assets.mjs`、`node services/browser-preview/execution/materialize.mjs`、`node scripts/m3/materialize-browser-preview-web.mjs`，再运行 `npm run check`。固定资产必须通过收据核验；这些本地检查不能替代登录用户的线上验收。

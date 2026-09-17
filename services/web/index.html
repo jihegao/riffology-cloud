@@ -19,8 +19,7 @@
       <div id="projects" class="project-grid" aria-live="polite"></div>
     </section>
     <section id="workspace" hidden>
-      <div class="workspace-head"><button id="workspace-back" class="button" type="button">← 返回项目</button><div><p class="eyebrow">PROJECT WORKSPACE</p><h1 id="workspace-title"></h1><p id="workspace-meta" class="meta"></p></div></div>
-      <div class="workspace-depths" aria-label="展示深度"><button type="button" data-workspace-depth="explore" aria-pressed="true">Explore · 探索</button><button type="button" data-workspace-depth="experiment" aria-pressed="false">Experiment · 实验</button><button type="button" data-workspace-depth="inspect" aria-pressed="false">Inspect · 检查</button><span>同一个模型，从问题到证据</span></div>
+      <div class="workspace-head"><button id="workspace-back" class="button" type="button">← 返回项目</button><div class="workspace-heading"><h1 id="workspace-title"></h1><p id="workspace-meta" class="meta"></p></div></div>
       <div class="mobile-panes" aria-label="工作区面板"><button type="button" data-mobile-pane="chat" aria-pressed="true">Chat · 对话</button><button type="button" data-mobile-pane="preview" aria-pressed="false">Preview · 模型</button></div>
       <div class="workspace-grid">
         <section class="workspace-main" id="workspace-agent" aria-label="建模助手">
@@ -37,6 +36,7 @@
           <nav class="workspace-tabs" role="tablist" aria-label="模型视图"><button id="canvas-preview-tab" type="button" role="tab" data-workspace-tab="preview" aria-selected="true" aria-controls="canvas-preview">Preview</button><button id="canvas-model-tab" type="button" role="tab" data-workspace-tab="model" aria-selected="false" aria-controls="canvas-model" tabindex="-1">Model</button><button id="canvas-runs-tab" type="button" role="tab" data-workspace-tab="runs" aria-selected="false" aria-controls="canvas-runs" tabindex="-1">Runs</button><button id="canvas-inspect-tab" type="button" role="tab" data-workspace-tab="inspect" aria-selected="false" aria-controls="canvas-inspect" tabindex="-1">Inspect</button></nav>
           <section id="canvas-preview" class="workspace-view" data-workspace-view="preview" role="tabpanel" aria-labelledby="canvas-preview-tab">
             <p id="workspace-model-status" class="model-state" role="status">还没有模型预览。请在左侧描述研究问题。</p>
+            <section id="workspace-browser-preview" class="service-panel browser-preview-panel" aria-label="本地模型预览"></section>
             <section id="workspace-services" class="service-panel" aria-label="运行已保存模型"></section>
             <section id="workspace-preview" class="service-panel preview-panel" aria-label="项目预览"></section>
             <section id="workspace-simulation" class="service-panel simulation-panel" aria-label="Simulation 参数实验"></section>

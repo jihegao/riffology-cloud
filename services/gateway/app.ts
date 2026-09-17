@@ -1,3 +1,5 @@
+import type {GatewayBrowserPreviews} from './browser-preview-services.ts';
+import {parsePreviewVerifyRequest,type PreviewRuntime} from '../browser-preview/contract.ts';
 import {SubmissionCatalog} from '../catalog/submissions.ts';
 import type {GatewayPublications} from './publication-services.ts';
 import type {PublicationArtifacts} from '../publication/artifacts.ts';
@@ -9,13 +11,13 @@ import type {ModelContentUploadPort} from '../runtime/model-upload.ts';
 import {readModelUpload} from './model-upload-body.ts';
 import type {ModelContentPort} from '../runtime/content.ts';
 import { Admission, type VerifiedIdentity } from '../catalog/admission.ts';
-import { CatalogError, type Principal } from '../catalog/contracts.ts';
-import { ProjectCatalog } from '../catalog/projects.ts';
+import { CatalogError,createProjectInput,opaqueId, type Principal } from '../catalog/contracts.ts';
+import { ProjectCatalog,projectBudgetRoute,type ProjectBudgetRoute } from '../catalog/projects.ts';
 import { ModelCatalog, type ModelVersion } from '../catalog/models.ts';
 import { OperatorCatalog } from '../catalog/admin.ts';
 import { statement as sql, type Database } from '../catalog/database.ts';
 import { HttpError, json, readJson, requireOrigin } from './http.ts';
-import type { TurnActor, TurnScope } from '../turn/protocol.ts';
+import {sameScope,type TurnActor,type TurnScope} from '../turn/protocol.ts';
 import { turnEventStream } from './events.ts';
 import { toolArtifactReceipt } from '../artifacts/protocol.ts';
 import type {GatewayServiceRuns,ServiceCursor} from './service-services.ts';
@@ -24,8 +26,12 @@ import {browserPrincipal} from '../preview/session.ts';
 import {observerRpcData} from '../preview/observer-rpc-data.ts';
 import {observerArtifactReceipt} from '../preview/observer-artifacts.ts';
 import type {GatewayObservations} from './observer-services.ts';
+import type {GatewayG5ReadonlyReads} from './g5-read-services.ts';
 
 export interface GatewayServices {
+  g4WindowSnapshot?(tenantId:string,actor:TurnActor):Promise<unknown>;
+  g4ComputeCounts?(scope:TurnScope,actor:TurnActor):Promise<unknown>;
+  browserPreviews?:GatewayBrowserPreviews;
   publications?:GatewayPublications;
   publicationArtifacts?:PublicationArtifacts;
   researchExports?:GatewayResearchExports;
@@ -35,10 +41,13 @@ export interface GatewayServices {
   modelContent?:ModelContentPort;
   modelUpload?:ModelContentUploadPort;
   identity(request:Request):Promise<VerifiedIdentity|null>;
+  admitProject?(principal:Principal,tenantId:string,key:string,body:unknown):Promise<unknown>;
+  createdProject?(principal:Principal,tenantId:string,projectId:string,budgetRoute:ProjectBudgetRoute):Promise<void>;
   provision?(principal:Principal,tenantId:string,projectId:string):Promise<void>;
   serviceRuns?:GatewayServiceRuns;
   previews?:GatewayPreviews;
   observations?:GatewayObservations;
+  g5ReadonlyReads?:GatewayG5ReadonlyReads;
   turns?:{
     createSession(scope:TurnScope,actor:TurnActor,key:string,body:{title:unknown}):Promise<unknown>;
     submit(scope:TurnScope,actor:TurnActor,sessionId:string,key:string,body:{message:unknown}):Promise<unknown>;
@@ -74,6 +83,7 @@ function idempotencyKey(request:Request):string{const values=request.headers.get
 function replayed(value:unknown):boolean{return !!value&&typeof value==='object'&&!Array.isArray(value)&&(value as {replayed?:unknown}).replayed===true;}
 function publicSession(value:unknown):unknown{if(!value||typeof value!=='object'||Array.isArray(value))return value;const {actorUserId:_,actorAuthVersion:__,...safe}=value as Record<string,unknown>;return safe;}
 function publicTurn(value:unknown):unknown{if(!value||typeof value!=='object'||Array.isArray(value))return value;const {actor:privateActor,requestKey:_,payloadSha256:__,dispatchId:___,base:____,resourceLease:_____,startedSequence:______,terminalSequence:_______,...safe}=value as Record<string,unknown>,actor=privateActor&&typeof privateActor==='object'&&!Array.isArray(privateActor)?{userId:(privateActor as Record<string,unknown>).userId}:privateActor;return {...safe,actor};}
+async function g5Read(request:Request,services:GatewayServices,scope:TurnScope,actor:TurnActor,response:Response){return services.g5ReadonlyReads?services.g5ReadonlyReads.record(request,scope,actor,response):response;}
 function publicResult(value:unknown,field:'session'|'turn'):unknown{if(!value||typeof value!=='object'||Array.isArray(value)||!Object.hasOwn(value,field))return field==='turn'?publicTurn(value):publicSession(value);const result=value as Record<string,unknown>;return {...result,[field]:field==='turn'?publicTurn(result[field]):publicSession(result[field])};}
 function publicModel(model:ModelVersion){return {model_id:model.model_id,version:model.version,status:model.status,title:model.title,description:model.description,content_sha256:model.content_sha256,published_at:model.published_at};}
 async function artifactContent(value:unknown):Promise<Response>{
@@ -109,6 +119,8 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     const principal=await admission.principal(identity);
     const admin=new OperatorCatalog(services.database);
     const models=new ModelCatalog(services.database,Date.now,services.modelContent,services.modelUpload);
+    const windowRoute=/^\/api\/tenants\/([A-Za-z0-9_-]{1,128})\/g4-window$/.exec(url.pathname);
+    if(windowRoute){if(request.method!=='GET'||url.search)throw new CatalogError('invalid_input');const catalog=new ProjectCatalog(services.database,new Set());await catalog.list(principal,windowRoute[1]!);if(!services.g4WindowSnapshot)throw new HttpError('g4-window-unavailable',503);const result=await services.g4WindowSnapshot(windowRoute[1]!,principal);await catalog.list(principal,windowRoute[1]!);return json(result);}
     const publicationRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/(publication-readiness|model-submissions)$/.exec(url.pathname),reviewRoute=/^\/api\/admin\/model-submissions(?:\/([A-Za-z0-9_-]{1,128})\/(review|export))?$/.exec(url.pathname),ownerExport=/^\/api\/model-submissions\/([A-Za-z0-9_-]{1,128})\/export$/.exec(url.pathname);
     if(publicationRoute||reviewRoute||ownerExport){
       if(!services.publications||!services.publicationArtifacts)throw new HttpError('publication-unavailable',503);
@@ -157,7 +169,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       if(request.method!=='GET'||url.search)throw new HttpError('export-input-invalid',400);
       const scope=await new ProjectCatalog(services.database,new Set(['blank-v1']),models).maintenanceWorkspace(principal,exportRoute[1]!);
       if(!services.researchExports)throw new HttpError('export-unavailable',503);
-      try{return await services.researchExports.download(scope,principal);}catch(error){const code=error instanceof Error?error.message:'';
+      try{return await g5Read(request,services,scope,principal,await services.researchExports.download(scope,principal));}catch(error){const code=error instanceof Error?error.message:'';
         if(code==='export-access-denied')throw new HttpError(code,403);
         if(code==='export-busy')throw new HttpError(code,429);
         if(code==='export-too-large'||code==='turn-revision-object-too-large')throw new HttpError('export-too-large',413);
@@ -172,12 +184,45 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       if(!services.simulations)throw new HttpError('evidence-unavailable',503);
       try{
         if(resource==='evidence'&&request.method==='GET'){
-          if(claimId&&!url.search)return json(await services.simulations.viewEvidence(scope,principal,claimId));
+          if(claimId&&!url.search)return g5Read(request,services,scope,principal,json(await services.simulations.viewEvidence(scope,principal,claimId)));
           if(!claimId){if([...url.searchParams.keys()].some(k=>k!=='before')||url.searchParams.getAll('before').length>1)throw new HttpError('evidence-input-invalid',400);return json(await services.simulations.listEvidence(scope,principal,url.searchParams.get('before')??undefined));}
         }
         if(request.method==='POST'&&!claimId&&!url.search){const body=await readJson(request);return json(resource==='evidence'?await services.simulations.createEvidence(scope,principal,body):await services.simulations.rejectEvidence(scope,principal,body),201);}
         throw new HttpError('evidence-input-invalid',400);
       }catch(error){if(error instanceof HttpError||error instanceof CatalogError)throw error;const code=error instanceof Error?error.message:'';if(code==='evidence-not-found'||code==='simulation-not-found')throw new HttpError('evidence-not-found',404);if(code==='evidence-capacity')throw new HttpError(code,429);if(code==='evidence-access-denied')throw new HttpError(code,403);if(/^evidence-(?:input-invalid|expectation-mismatch|group-mismatch|metric-missing|no-valid-runs|zero-baseline|number-overflow|source-rejected|run-ineligible)$/.test(code))throw new HttpError(code,400);throw new HttpError('evidence-unavailable',503);}
+    }
+    const g4CountsRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/g4-compute-counts$/.exec(url.pathname);
+    if(g4CountsRoute){
+      if(request.method!=='GET'||url.search)throw new HttpError('g4-compute-counts-input-invalid',400);
+      const catalog=new ProjectCatalog(services.database,new Set()),scope=await catalog.maintenanceWorkspace(principal,g4CountsRoute[1]!);
+      if(!services.g4ComputeCounts)throw new HttpError('g4-compute-counts-unavailable',503);
+      const result=await services.g4ComputeCounts(scope,principal);const after=await catalog.maintenanceWorkspace(principal,scope.workspaceId);if(!sameScope(after,scope))throw new HttpError('g4-compute-counts-scope-denied',403);return json(result);
+    }
+    const browserRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/browser-preview(?:\/(packages|verify|retry)(?:\/([A-Za-z0-9_-]{1,128}))?)?$/.exec(url.pathname);
+    if(browserRoute){
+      const [,workspaceId,resource,id]=browserRoute,catalog=new ProjectCatalog(services.database,new Set()),scope=resource==='verify'&&!id&&request.method==='POST'?await catalog.workspace(principal,workspaceId!):await catalog.maintenanceWorkspace(principal,workspaceId!);
+      if(!services.browserPreviews)throw new HttpError('browser-preview-unavailable',503);
+      try{
+        if(!resource&&request.method==='GET'){
+          if([...url.searchParams.keys()].some(k=>!['revisionId','profileId'].includes(k))||['revisionId','profileId'].some(k=>url.searchParams.getAll(k).length>1))throw new HttpError('browser-preview-input-invalid',400);
+          const revision=url.searchParams.get('revisionId')??undefined,profile=url.searchParams.get('profileId')??undefined;
+          if(revision!==undefined&&!/^[A-Za-z0-9_-]{1,128}$/.test(revision)||profile!==undefined&&!['python-stdlib/v1','mesa-3.5.1/v1'].includes(profile))throw new HttpError('browser-preview-input-invalid',400);
+          return json(await services.browserPreviews.view(scope,principal,revision,profile as PreviewRuntime['profileId']|undefined));
+        }
+        if(resource==='packages'&&id&&request.method==='GET'&&!url.search){const bytes=await services.browserPreviews.bytes(scope,principal,id);return new Response(bytes,{headers:{'Content-Type':'application/json; charset=utf-8','Content-Length':String(bytes.length),'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});}
+        if(resource==='verify'&&!id&&request.method==='POST'&&!url.search)return json(await services.browserPreviews.verify(scope,principal,parsePreviewVerifyRequest(await readJson(request,12288))),202);
+        if(resource==='verify'&&id&&request.method==='GET'&&!url.search)return json(await services.browserPreviews.verification(scope,principal,id));
+        if(resource==='retry'&&id&&request.method==='GET'&&!url.search)return json(await services.browserPreviews.retryVerification(scope,principal,id));
+        if(resource==='retry'&&!id&&request.method==='POST'&&!url.search)return json(await services.browserPreviews.retry(scope,principal,await readJson(request,4096)),202);
+        throw new CatalogError('not_found');
+      }catch(error){if(error instanceof HttpError||error instanceof CatalogError)throw error;const code=error instanceof Error?error.message:'';
+        if(code==='browser-preview-not-found')throw new HttpError(code,404);
+        if(code==='browser-preview-access-denied')throw new HttpError(code,403);
+        if(/conflict|stale/.test(code))throw new HttpError(code,409);
+        if(/input-invalid|contract-invalid|invalid-browser-preview|invalid-turn-id/.test(code))throw new HttpError('browser-preview-input-invalid',400);
+        if(code==='simulation-capacity')throw new HttpError(code,429);
+        throw new HttpError('browser-preview-unavailable',503);
+      }
     }
     const simulationRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/(model|experiments|experiment-groups|simulation-runs)(?:\/([A-Za-z0-9_-]{1,128})(?:\/(cancel))?)?$/.exec(url.pathname);
     if(simulationRoute){
@@ -187,16 +232,16 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       const scope=creating?await catalog.workspace(principal,workspaceId!):await catalog.maintenanceWorkspace(principal,workspaceId!);
       if(!services.simulations)throw new HttpError('simulation-unavailable',503);
       try{
-        if(resource==='model'&&!id&&request.method==='GET'&&!url.search)return json(await services.simulations.model(scope));
+        if(resource==='model'&&!id&&request.method==='GET'&&!url.search)return g5Read(request,services,scope,principal,json(await services.simulations.model(scope)));
         if(creating&&resource==='experiment-groups'&&!url.search)return json(await services.simulations.submitGroup(scope,principal,idempotencyKey(request),experimentGroupRequest(await readJson(request,32768))),202);
         if(creating&&!url.search)return json(await services.simulations.submit(scope,principal,idempotencyKey(request),experimentRequest(await readJson(request))),202);
         if(resource==='experiment-groups'&&request.method==='GET'&&!action){
-          if(id&&!url.search)return json(await services.simulations.viewGroup(scope,id));
+          if(id&&!url.search)return g5Read(request,services,scope,principal,json(await services.simulations.viewGroup(scope,id)));
           if(!id){if([...url.searchParams.keys()].some(k=>k!=='before')||url.searchParams.getAll('before').length>1)throw new HttpError('simulation-input-invalid',400);return json(await services.simulations.listGroups(scope,url.searchParams.get('before')??undefined));}
         }
         if(resource==='experiment-groups'&&id&&action==='cancel'&&request.method==='POST'&&!url.search){const body=await readJson(request);if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).length)throw new HttpError('simulation-input-invalid',400);return json(await services.simulations.cancelGroup(scope,id),202);}
         if(resource==='experiments'&&request.method==='GET'&&!action){
-          if(id&&!url.search)return json(await services.simulations.view(scope,id));
+          if(id&&!url.search)return g5Read(request,services,scope,principal,json(await services.simulations.view(scope,id)));
           if(!id){if([...url.searchParams.keys()].some(k=>k!=='before')||url.searchParams.getAll('before').length>1)throw new HttpError('simulation-input-invalid',400);return json(await services.simulations.list(scope,url.searchParams.get('before')??undefined));}
         }
         if(resource==='simulation-runs'&&id&&action==='cancel'&&request.method==='POST'&&!url.search){const body=await readJson(request);if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).length)throw new HttpError('simulation-input-invalid',400);return json(await services.simulations.cancel(scope,id),202);}
@@ -288,8 +333,8 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       if(!services.turns)throw Error('turn-service-not-configured');
       const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),turnScope=await catalog.workspace(principal,turnMatch[1]);
       const turnActor={userId:principal.userId,authVersion:principal.authVersion};
-      if(workspace&&request.method==='GET'&&url.search==='')return json(await turnCall(()=>services.turns!.snapshot(turnScope)));
-      if(files&&request.method==='GET'&&url.search==='')return json(await turnCall(()=>services.turns!.files(turnScope)));
+      if(workspace&&request.method==='GET'&&url.search==='')return g5Read(request,services,turnScope,turnActor,json(await turnCall(()=>services.turns!.snapshot(turnScope))));
+      if(files&&request.method==='GET'&&url.search==='')return g5Read(request,services,turnScope,turnActor,json(await turnCall(()=>services.turns!.files(turnScope))));
       if(diff&&request.method==='GET'&&url.search==='')return json(await turnCall(()=>services.turns!.diff(turnScope)));
       if(artifact&&request.method==='GET'&&url.search==='')return await artifactContent(await turnCall(()=>services.turns!.artifact(turnScope,artifact[2])));
       if(sessions&&request.method==='POST'){
@@ -324,7 +369,15 @@ export async function gateway(request:Request, services:GatewayServices):Promise
         return json({projects:await catalog.list(principal,match[1])});
       }
       if(request.method==='POST'&&!match[2]){
-        const result=await catalog.create(principal,match[1],request.headers.get('idempotency-key')??'',await readJson(request));
+        const body=await readJson(request),key=request.headers.get('idempotency-key')??'';
+        let budgetRoute:ProjectBudgetRoute|undefined;
+        if(services.admitProject){opaqueId(key);createProjectInput(body,new Set(['blank-v1']));await catalog.list(principal,match[1]);const permit=await services.admitProject(principal,match[1],key,body);
+          if(permit&&typeof permit==='object'&&Object.hasOwn(permit,'budgetRoute')){const p=permit as {budgetRoute:unknown;authorized:unknown;boundProjectId:unknown};budgetRoute=projectBudgetRoute(p.budgetRoute);
+            if(p.authorized!==true){if(typeof p.boundProjectId==='string')return json({project:await catalog.get(principal,match[1],p.boundProjectId),replayed:true});throw new HttpError('project_admission_observe_only',409);}
+          }
+        }
+        const result=await catalog.create(principal,match[1],key,body,budgetRoute);
+        if(budgetRoute){if(!services.createdProject)throw new HttpError('project_budget_binding_unavailable',503);await services.createdProject(principal,match[1],result.project.id,budgetRoute);}
         // The outbox is already committed. Await durable acceptance, never put
         // the only dispatch into waitUntil. A lost response keeps the same key.
         if(services.provision)await services.provision(principal,match[1],result.project.id);

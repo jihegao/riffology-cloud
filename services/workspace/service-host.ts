@@ -1,7 +1,7 @@
 import type {TurnActor,TurnScope} from '../turn/protocol.ts';
 import {SqlServiceIntentJournal,type ServiceIntentRequest,type ServiceSourceCandidate} from './service-intents.ts';
 import {ServiceIntentDelivery,type ServiceDeliveryPorts} from './service-delivery.ts';
-import {SIMULATION_WAKE_KEY,applyWorkspaceAlarm,OBSERVER_WAKE_KEY,SERVICE_WAKE_KEY,TURN_WAKE_KEY,WORKSPACE_STATE_KEY} from './shared-alarm.ts';
+import {BROWSER_BUILD_WAKE_KEY,SIMULATION_WAKE_KEY,applyWorkspaceAlarm,OBSERVER_WAKE_KEY,SERVICE_WAKE_KEY,TURN_WAKE_KEY,WORKSPACE_STATE_KEY} from './shared-alarm.ts';
 import type {WorkspaceState} from './coordinator.ts';
 
 /** Workspace-local SQL outbox and its wake projection commit together. No
@@ -21,7 +21,7 @@ export class WorkspaceServiceHost{
   const wake=this.#journal.nextWakeSync();
   if(wake===null)await tx.delete(SERVICE_WAKE_KEY);else await tx.put(SERVICE_WAKE_KEY,wake);
   const state=await tx.get<WorkspaceState>(WORKSPACE_STATE_KEY),turn=await tx.get<unknown>(TURN_WAKE_KEY),observer=await tx.get<unknown>(OBSERVER_WAKE_KEY);
-  return applyWorkspaceAlarm(tx,state?.wakeAt,turn,wake,observer,await tx.get(SIMULATION_WAKE_KEY));
+  return applyWorkspaceAlarm(tx,state?.wakeAt,turn,wake,observer,await tx.get(SIMULATION_WAKE_KEY),await tx.get(BROWSER_BUILD_WAKE_KEY));
  }
  submit(actor:TurnActor,key:string,request:ServiceIntentRequest,freeze:()=>ServiceSourceCandidate){return this.#journal.create(actor,key,request,freeze);}
  submitFromPolicy(actor:TurnActor,key:string,body:{maxDurationMs:number;expectedRevisionId?:string},image:string,freeze:()=>ServiceSourceCandidate){return this.#journal.createFromPolicy(actor,key,body,image,freeze);}

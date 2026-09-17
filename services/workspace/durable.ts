@@ -1,3 +1,23 @@
+import {g5TaskKey} from '../model-budget/g5-admission.ts';
+import {g5FixtureClaimContract} from '../model-budget/g5-fixture-manifest.ts';
+import {g5B2RunEvidence} from '../model-budget/g5-b2-evidence.ts';
+import {G5_GLOBAL_ACTOR,g5WindowPolicy} from '../model-budget/g5-window.ts';
+import type {G5TenantModelBudget} from '../model-budget/g5-token-durable.ts';
+import {G4BrowserBuildHold,g4BuildHoldUntil} from '../browser-preview/g4-build-hold.ts';
+import {sandboxActorIds} from '../sandbox/policy.ts';
+import type {readG4WindowSnapshot} from '../model-budget/g4-window.ts';
+import {g4DurableComputeCounts,readG4NativeSample} from '../model-budget/g4-compute-counts.ts';
+import type {SimulationRecord} from '../simulation/host.ts';
+import type {ServiceIntentRecord} from './service-intents.ts';
+import {admitG4Task} from '../model-budget/g4-admission.ts';
+import { frozenSource,sourceScope,type BrowserBuildSource } from '../browser-preview/source.ts';
+import {BrowserPreviewBuildHost} from '../browser-preview/build-host.ts';
+import {BrowserPreviewOrchestrator} from '../browser-preview/orchestrator.ts';
+import {productionPreviewRegistry} from '../browser-preview/production-registry.ts';
+import {platformPreviewDelivery} from '../browser-preview/platform-delivery.ts';
+import {DurableBrowserBuildAlarmPort} from './turn-alarm.ts';
+import {canonicalPreviewJson} from '../browser-preview/contract.ts';
+import type {PreviewRuntime} from '../browser-preview/contract.ts';
 import {preparePublication,type PublicationVersion} from '../publication/readiness.ts';
 import {R2PublicationArtifacts} from '../publication/artifacts.ts';
 import {normalizeToolCommand,type ToolCommand} from '../tools/protocol.ts';
@@ -5,11 +25,13 @@ import {researchSnapshot,buildResearchExport} from '../research/export.ts';
 import {EvidenceLedger,evidenceGroup,assessmentForRun,evidenceAssessments} from '../simulation/evidence-adapter.ts';
 import {evidenceRequest,type EvidenceHead} from '../simulation/evidence.ts';
 import {boundedResearchContext} from '../simulation/research-context.ts';
-import {ExperimentGroupHost,experimentGroupRequest,type ExperimentGroupRequest} from '../simulation/groups.ts';
+import {ExperimentGroupHost,experimentGroupRequest,g5TerminalGroupAuthority,type ExperimentGroupRequest} from '../simulation/groups.ts';
+import type {ExperimentGroupRecord} from '../simulation/groups.ts';
+import {GROUP_PREFIX} from '../simulation/group-state.ts';
 import {turnRuntimeIdentity,type TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
 import {SimulationHost,experimentRequest,publicExperiment,publishSimulationResult,type ExperimentRequest} from '../simulation/host.ts';
 import {SimulationNative,simulationToken,type SimulationSandboxApi,type SimulationInput} from '../simulation/native.ts';
-import {simulationPlan,modelVersion,inspectModel} from '../simulation/source.ts';
+import {simulationPlan,modelVersion,inspectModel,digest} from '../simulation/source.ts';
 import type {PreviewSource} from '../preview/source.ts';
 import {DurableSimulationAlarmPort} from './turn-alarm.ts';
 import {ObserverCancellation,type ObserverCancellationPort} from '../preview/observer-cancellation.ts';
@@ -23,7 +45,7 @@ import {readObserverArtifact,observerArtifactReadInput,type ObserverArtifactRead
 import {WorkspaceObserverHost} from './observer-host.ts';
 import {PreviewRoutes} from '../preview/routes.ts';
 import {previewHostOrigin} from '../preview/origin.ts';
-import {sha} from '../turn/protocol.ts';
+import {sha,turnDigest} from '../turn/protocol.ts';
 import {initialWorkspaceReference,initialWorkspaceReferenceFromReady,isInitialWorkspaceSourceFailure} from '../turn-runtime/initial-workspace.ts';
 import {workspaceFileIndex} from '../turn-runtime/workspace-file-index.ts';
 import { DurableObject } from 'cloudflare:workers';
@@ -57,7 +79,7 @@ import {WORKSPACE_LAYOUT} from './protocol.ts';
 import { DurableObserverAlarmPort, DurableServiceAlarmPort, DurableTurnAlarmPort } from './turn-alarm.ts';
 import { routeWorkspaceAlarm } from './alarm-router.ts';
 import { WorkspaceTurnEngine } from './turns.ts';
-import { runtimeName, validateWorkspaceTask, workspaceAgentName, type WorkspaceTask } from './protocol.ts';
+import { runtimeName, validateWorkspaceTask, workspaceAgentName, type WorkspaceTask, type WorkspaceBudgetRoute } from './protocol.ts';
 import { TurnJournal } from '../turn/journal.ts';
 import { DurableTurnStore } from '../turn/store.ts';
 import type { TurnActor, TurnScope } from '../turn/protocol.ts';
@@ -94,6 +116,11 @@ export interface WorkspaceAgentEnv {
   TOOL_BRIDGE_AGENT?:DurableObjectNamespace<ToolBridgeAgent>;
   REVISION_STORE: RevisionStoreNamespace;
   TOOL_ARTIFACT_STORE: ToolArtifactStoreNamespace;
+  G4_CONTROLLED_WINDOW_JSON?:string;
+  G5_CONTROLLED_WINDOW_JSON?:string;
+  G5_TOKEN_BUDGET?:DurableObjectNamespace<G5TenantModelBudget>;
+  G5_WINDOW_GUARD?:{getByName(name:string):{registerTask(task:unknown):Promise<unknown>;claimTaskCreate(key:string):Promise<{authorized:boolean}>;bindTask(key:string,id:string):Promise<unknown>;checkTaskStart(key:string):Promise<{authorized:boolean}>;claimTaskStart(key:string,identity?:TurnRuntimeIdentity):Promise<{authorized:boolean;alreadyStarted:boolean;grantId:string|null}>;confirmTaskStartGrant(key:string,grantId:string):Promise<{confirmed:boolean}>;checkTaskContinue(key:string,grantId:string):Promise<{authorized:boolean}>;cancelUnstartedTask(key:string):Promise<unknown>;closeTrustedTurn(key:string,identity:TurnRuntimeIdentity):Promise<unknown>}};
+  G4_BROWSER_BUILD_HOLD_SCOPES_JSON?:string;
   M2_TURNS_ENABLED: unknown;
   M2_WORKSPACE_RUNTIME_REUSE_ENABLED?:unknown;
   M2_LAZY_PROJECT_ENABLED?:unknown;
@@ -113,6 +140,7 @@ export interface WorkspaceAgentEnv {
   OBSERVER_EXECUTOR?:ObserverExecutorNamespace;
   M3_PREVIEW_ORIGIN?:string;
   APP_ORIGIN?:string;
+  BROWSER_PREVIEW_EXECUTION_ORIGIN?:string;
   M3_SERVICE_IMAGE?:string;
   SERVICE_RUNTIME?:{getByName(name:string):{forwardHttp(input:ServiceRuntimeInput,request:Request):Promise<Response>;forwardObserverHttp?(input:ObserverRuntimeRequest,request:Request,cancellation:ObserverCancellationPort):Promise<Response>;fetch?(request:Request):Promise<Response>}};
   SERVICE_RUN?:{getByName(name:string):{
@@ -126,10 +154,101 @@ export interface WorkspaceAgentEnv {
 /** Private platform RPC and a single internal WebSocket fetch endpoint. The
  * fetch transport still verifies the access session and authoritative target. */
 export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
+  constructor(ctx:DurableObjectState,env:WorkspaceAgentEnv){
+    super(ctx,env);
+    ctx.blockConcurrencyWhile(async()=>{const store=new DurableTurnStore(ctx.storage);if(store.read())await store.transact(current=>{if(!current)throw Error('invalid-persisted-turn-journal');return {state:current,value:null};});});
+  }
+  #browserBuildAlarm=new DurableBrowserBuildAlarmPort(this.ctx.storage);
+  #browserBuildHost:BrowserPreviewBuildHost|null=null;
+  #browserBuild(scope:TurnScope){
+    if(!this.env.WORKSPACE_CHECKPOINTS)throw Error('browser-preview-unavailable');
+    return this.#browserBuildHost??=new BrowserPreviewBuildHost(this.ctx.storage,scope,{registry:productionPreviewRegistry,bucket:this.env.WORKSPACE_CHECKPOINTS,holdUntil:source=>g4BuildHoldUntil(this.ctx.storage,source,s=>s.kind==='initial-workspace'?null:new DurableTurnStore(this.ctx.storage).read()?.turns[s.identity.turnId]?.finishedAt??null),checkSource:source=>this.#checkBrowserSource(scope,source),resolveInitial:async source=>{
+      this.#checkBrowserSource(scope,source);
+      const resolved=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).resolveInitial(source.reference,scope);
+      this.#checkBrowserSource(scope,source);return resolved;
+    },files:async discovery=>{
+      if(discovery.kind==='initial-workspace')throw Error('browser-preview-source-unavailable');
+      this.#maintenanceScope(scope);const saved=this.#turns.savedRevisionSnapshot(scope,discovery.receipt.revisionId);
+      if(!saved||canonicalPreviewJson(saved.identity)!==canonicalPreviewJson(discovery.identity)||canonicalPreviewJson(saved.receipt)!==canonicalPreviewJson(discovery.receipt))throw Error('browser-preview-source-unavailable');
+      const bytes=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles({kind:'saved-turn',identity:saved.identity,revision:saved.receipt},16*1024*1024);
+      this.#maintenanceScope(scope);const after=this.#turns.savedRevisionSnapshot(scope,discovery.receipt.revisionId);if(canonicalPreviewJson(after)!==canonicalPreviewJson(saved))throw Error('browser-preview-source-unavailable');return bytes;
+    }});
+  }
+  #checkBrowserSource(scope:TurnScope,source:BrowserBuildSource){
+    this.#maintenanceScope(scope);if(!sameScope(sourceScope(source),scope))throw Error('browser-preview-source-unavailable');
+    if(source.kind!=='initial-workspace'){
+      const saved=this.#turns.savedRevisionSnapshot(scope,source.receipt.revisionId);
+      if(canonicalPreviewJson(saved)!==canonicalPreviewJson(frozenSource(source)))throw Error('browser-preview-source-unavailable');return;
+    }
+    const state=this.#store.read();
+    if(!state?.task.modelContent||!state.identity||!state.runtimeReceipt)throw Error('browser-preview-source-unavailable');
+    const admitted=this.ctx.storage.kv.get<BrowserBuildSource>('browser-preview:discovery:'+source.revisionId);
+    if(admitted?.kind!=='initial-workspace'||admitted.referenceSha256!==source.referenceSha256||canonicalPreviewJson(admitted.reference)!==canonicalPreviewJson(source.reference)||this.ctx.storage.kv.get<string>('browser-preview:initial-source')!==source.revisionId)throw Error('browser-preview-source-unavailable');
+    const actual=initialWorkspaceReference({schemaVersion:1,scope,task:state.task,runtime:state.identity,markerNonce:state.markerNonce,markerSha256:state.runtimeReceipt.markerSha256,checkpointRevision:state.runtimeReceipt.checkpointRevision});
+    if(canonicalPreviewJson(actual)!==canonicalPreviewJson(source.reference))throw Error('browser-preview-source-unavailable');
+  }
+  #browser(scope:TurnScope){
+    const owned=this.#maintenanceScope(scope);
+    return new BrowserPreviewOrchestrator(this.ctx.storage,owned,{builds:this.#browserBuild(owned),bucket:this.env.WORKSPACE_CHECKPOINTS!,registry:productionPreviewRegistry,
+      checkScope:()=>{this.#maintenanceScope(owned);},authorize:async actor=>{const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(actor,owned.workspaceId);if(!sameScope(actual,owned))throw Error('browser-preview-access-denied');},
+      authorizeVerify:async actor=>{this.#ready(owned);const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(actor,owned.workspaceId);if(!sameScope(actual,owned))throw Error('browser-preview-access-denied');this.#ready(owned);},
+      head:()=>this.#turns.workspaceRevisionSnapshot(owned)??this.#browserBuild(owned).initial(),saved:revision=>this.#turns.savedRevisionSnapshot(owned,revision)??this.#browserBuild(owned).source(revision),checkSource:source=>this.#checkBrowserSource(owned,source),
+      files:source=>this.env.REVISION_STORE.getByName(revisionStoreActorName(owned)).serviceFiles(source,16*1024*1024),simulations:this.#simulations(owned),canVerify:()=>this.#simulationCanRun(),image:this.env.M4_SIMULATION_IMAGE??'',
+      delivery:hash=>platformPreviewDelivery(this.env.APP_ORIGIN,this.env.BROWSER_PREVIEW_EXECUTION_ORIGIN,hash)});
+  }
+  #g4BuildHoldControl(){
+    return new G4BrowserBuildHold(this.ctx.storage,this.env.G4_CONTROLLED_WINDOW_JSON,this.env.G4_BROWSER_BUILD_HOLD_SCOPES_JSON,{
+      checkScope:scope=>{this.#maintenanceScope(scope);},
+      authorize:async(scope,actor,creating)=>{const catalog=new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()),actual=creating?await catalog.workspace(actor,scope.workspaceId):await catalog.maintenanceWorkspace(actor,scope.workspaceId);if(!sameScope(actual,scope))throw Error('g4-build-hold-scope-denied');},
+      window:async()=>{const task=this.#store.read()?.task;if(!task||!this.env.TENANT_MODEL_BUDGET)throw Error('g4-build-hold-window-unavailable');const namespace=this.env.TENANT_MODEL_BUDGET as unknown as {getByName(name:string):{g4WindowSnapshot(tenantId:string):Promise<ReturnType<typeof readG4WindowSnapshot>>}};return namespace.getByName(modelBudgetTenantName(task.tenantId)).g4WindowSnapshot(task.tenantId);},
+      finishedAt:source=>source.kind==='initial-workspace'?null:new DurableTurnStore(this.ctx.storage).read()?.turns[source.identity.turnId]?.finishedAt??null,
+      baseline:()=>{const task=this.#store.read()!.task;return this.#turns.workspaceRevisionSnapshot(this.#maintenanceScope({tenantId:task.tenantId,projectId:task.projectId,workspaceId:task.workspaceId,workspaceGeneration:task.generation}))?.receipt.revisionId??null;},
+      checkSource:source=>this.#checkBrowserSource(sourceScope(source),source),
+    });
+  }
+  g4BrowserBuildHold(input:{scope:TurnScope;actor:TurnActor;durationMs:number}){return this.#g4BuildHoldControl().hold(input);}
+  g4BrowserBuildRelease(input:{scope:TurnScope;actor:TurnActor}){return this.#g4BuildHoldControl().release(input);}
+  async g4ComputeCounts(input:{scope:TurnScope;actor:TurnActor}){
+    const scope=this.#maintenanceScope(input.scope),catalog=new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set());
+    const authorize=async()=>{this.#maintenanceScope(scope);const actual=await catalog.maintenanceWorkspace(input.actor,scope.workspaceId);if(!sameScope(actual,scope))throw Error('g4-compute-counts-scope-denied');this.#maintenanceScope(scope);};
+    await authorize();
+    const namespace=this.env.TENANT_MODEL_BUDGET as unknown as {getByName(name:string):{g4WindowSnapshot(tenantId:string):Promise<ReturnType<typeof readG4WindowSnapshot>>}}|undefined;
+    if(!namespace)throw Error('g4-compute-counts-unavailable');
+    const raw=await namespace.getByName(modelBudgetTenantName(scope.tenantId)).g4WindowSnapshot(scope.tenantId);
+    let window:ReturnType<typeof readG4WindowSnapshot>;try{window=JSON.parse(JSON.stringify(raw));}finally{const dispose=Object.getOwnPropertyDescriptor(raw,Symbol.dispose)?.value;if(typeof dispose==='function')dispose.call(raw);}
+    await authorize();if(window.policy&&(window.policy.tenantId!==scope.tenantId||window.policy.userId!==input.actor.userId))throw Error('g4-compute-counts-scope-denied');
+    const turns=Object.values(new DurableTurnStore(this.ctx.storage).read()?.turns??{}),state=this.#store.read();
+    const simulations=[...(await this.ctx.storage.list<SimulationRecord>({prefix:'simulation:run:',limit:1001})).values()];await authorize();
+    const hasServices=this.ctx.storage.sql.exec("SELECT 1 FROM sqlite_master WHERE type='table' AND name='service_intents'").toArray().length!==0;
+    const services=hasServices?this.ctx.storage.sql.exec<{record_json:string}>('SELECT record_json FROM service_intents ORDER BY run_id LIMIT 1001').toArray().map(r=>JSON.parse(r.record_json) as ServiceIntentRecord):[];
+    if(turns.length>200||simulations.length>1000||services.length>1000)throw Error('g4-compute-counts-capacity');
+    const durable=g4DurableComputeCounts(scope,window,turns,simulations,services);
+    type CounterPort={nativeAttemptSnapshot(identity:unknown):Promise<unknown>};
+    const project=state?.identity?await readG4NativeSample(this.env.PROJECT_RUNTIME.getByName(runtimeName(state.identity)) as unknown as CounterPort,state.identity):{supported:false,noAddedCalls:true,attempts:null};await authorize();
+    const dispatched=turns.filter(t=>t.dispatchId!==null&&t.runtimeGeneration!==null);
+    const samples=await Promise.all(dispatched.map(async turn=>{
+      const identity=turnRuntimeIdentity({scope,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId!,generation:turn.runtimeGeneration!}),ids=await sandboxActorIds(scope,turn.id,turn.dispatchId!);
+      const [projectTools,trustedPi,toolLedger]=await Promise.all([
+        readG4NativeSample(this.env.PROJECT_SANDBOX?.getByName?.(ids.project) as unknown as CounterPort|undefined,identity),
+        readG4NativeSample(this.env.TRUSTED_PI_SANDBOX?.getByName?.(ids.trustedPi) as unknown as CounterPort|undefined,identity),
+        readG4NativeSample(this.env.TOOL_BRIDGE_AGENT?.getByName(await toolBridgeActorName(scope,turn.id,turn.dispatchId!)) as unknown as CounterPort|undefined,identity,true)]);
+      return {turnId:turn.id,dispatchId:turn.dispatchId,actorSelection:'cold-turn-dispatch',projectTools,trustedPi,toolLedger};
+    }));await authorize();
+    return {schema:'riffology.g4-compute-counts/v1',scope,readOnly:true,noAddedCalls:true,...durable,projectRuntime:{identity:state?.identity??null,readyObserved:state?.runtimeReceipt!=null,counter:project},nativeDispatches:samples,successfulNativeExecutions:null,nativeSemantics:'persisted attempt-before-call counters; unsupported stays null; combine stable before/after with all fences and Cloudflare inventory'};
+  }
+  browserPreviewView(input:{scope:TurnScope;actor:TurnActor;revisionId?:string;profileId?:PreviewRuntime['profileId']}){return this.#browser(input.scope).view(input.actor,input.revisionId,input.profileId);}
+  browserPreviewPackage(input:{scope:TurnScope;actor:TurnActor;packageIdentity:string}){return this.#browser(input.scope).bytes(input.actor,input.packageIdentity);}
+  verifyBrowserPreview(input:{scope:TurnScope;actor:TurnActor;body:unknown}){return this.#browser(input.scope).verify(input.actor,input.body);}
+  browserPreviewVerification(input:{scope:TurnScope;actor:TurnActor;key:string}){return this.#browser(input.scope).verification(input.actor,input.key);}
+  browserPreviewRetry(input:{scope:TurnScope;actor:TurnActor;key:string}){return this.#browser(input.scope).retryVerification(input.actor,input.key);}
+  retryBrowserPreview(input:{scope:TurnScope;actor:TurnActor;body:unknown}){return this.#browser(input.scope).retry(input.actor,input.body);}
   #simulationHost:SimulationHost|null=null;
   #simulationAlarm=new DurableSimulationAlarmPort(this.ctx.storage);
   #simulations(scope:TurnScope){
     return this.#simulationHost??=new SimulationHost(this.ctx.storage,scope,{
+      admitRun:async(actor,key,body,runId)=>{if(this.env.G5_CONTROLLED_WINDOW_JSON===undefined){await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,actor.userId,'run',{scope,key},body);return;}const task=await g5TaskKey(this.env.G5_CONTROLLED_WINDOW_JSON,'simulation',scope.tenantId,actor.userId,{scope,key},body);const policy=g5WindowPolicy(JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON))!;const guard=this.#g5Guard();await guard.registerTask(task);const created=await guard.claimTaskCreate(task.key);if(!created.authorized)throw Error('g5-simulation-create-denied');return {kind:'g5' as const,taskKey:task.key,windowId:policy.windowId,profileSha256:policy.profilePin.profileSha256};},
+      createdRun:async record=>{if(record.budgetRoute)await this.#g5Guard().bindTask(record.budgetRoute.taskKey,record.runId);},
+      beforeStart:async(record,stage)=>{if(!record.budgetRoute)return;await this.#g5StartTask(record.budgetRoute.taskKey);},
       quota:this.env.TENANT_QUOTA.getByName(tenantQuotaName(scope.tenantId)),
       start:async input=>{
         if(input.runtimeImage!==this.env.M4_SIMULATION_IMAGE)throw Error('simulation-image-changed');
@@ -149,9 +268,13 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   #experimentGroupHost:ExperimentGroupHost|null=null;
   #experimentGroups(scope:TurnScope){return this.#experimentGroupHost??=new ExperimentGroupHost(this.ctx.storage,scope,this.#simulations(scope),()=>this.#simulationCanRun());}
   async submitExperimentGroup(input:{scope:TurnScope;actor:TurnActor;key:string;body:ExperimentGroupRequest}){
-    const scope=this.#ready(input.scope),host=this.#experimentGroups(scope),request=experimentGroupRequest(input.body);
+    const scope=this.#ready(input.scope),host=this.#experimentGroups(scope),request=experimentGroupRequest(input.body),head=this.#turns.workspaceRevisionSnapshot(scope);
+    let g5Task:Awaited<ReturnType<typeof g5TaskKey>>|null=null;
+    if(this.env.G5_CONTROLLED_WINDOW_JSON!==undefined){if(!head)throw Error('g5-group-parent-turn-absent');const parent=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+head.identity.turnId);if(!parent||parent.kind!=='g5')throw Error('g5-group-parent-turn-unbound');g5Task=await g5TaskKey(this.env.G5_CONTROLLED_WINDOW_JSON,'group',scope.tenantId,input.actor.userId,{scope,key:input.key},request,parent.taskKey);await this.#g5Guard().registerTask(g5Task);}
+    const finalize=async(group:ExperimentGroupRecord)=>{if(!g5Task)return;const guard=this.#g5Guard();await guard.bindTask(g5Task.key,group.groupId);const started=await guard.claimTaskStart(g5Task.key);if(started.authorized){if(!started.grantId)throw Error('g5-group-start-grant-absent');const confirmed=await guard.confirmTaskStartGrant(g5Task.key,started.grantId);if(!confirmed.confirmed)throw Error('g5-group-start-unconfirmed');}else if(!started.alreadyStarted)throw Error('g5-group-start-denied');this.ctx.storage.kv.put('g5-group-route:'+group.groupId,{kind:'g5',taskKey:g5Task.key,windowId:g5WindowPolicy(JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON!))!.windowId,profileSha256:g5WindowPolicy(JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON!))!.profilePin.profileSha256} satisfies WorkspaceBudgetRoute);await this.ctx.storage.sync();};
     const prior=await host.replay(input.actor,input.key,request);
-    if(prior)return host.view(prior,this.#turns.workspaceRevisionSnapshot(scope)?.receipt.filesSha256??null);
+    if(prior){await finalize(prior);return host.view(prior,head?.receipt.filesSha256??null);}
+    if(g5Task){const claimed=await this.#g5Guard().claimTaskCreate(g5Task.key);if(!claimed.authorized)throw Error('g5-group-create-denied');}
     if(!this.#simulationCanRun())throw Error('simulation-unavailable');
     const source=await this.#simulationSource(scope),store=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope));
     const plan=await simulationPlan(source,await store.serviceFiles(source));
@@ -159,7 +282,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       this.#ready(scope);const latest=this.#turns.workspaceRevisionSnapshot(scope);
       return source.kind==='saved-turn'?latest?.receipt.revisionId===source.revision.revisionId:latest===null;
     });
-    return host.view(group,modelVersion(plan).filesSha256);
+    await finalize(group);return host.view(group,modelVersion(plan).filesSha256);
   }
   async experimentGroup(input:{scope:TurnScope;groupId:string}){
     const scope=this.#maintenanceScope(input.scope),host=this.#experimentGroups(scope);
@@ -200,6 +323,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
         const object=await bucket.get(key);if(!object)return null;
         try{if(object.size>maxBytes)throw Error('export-too-large');const bytes=new Uint8Array(await object.arrayBuffer());if(bytes.byteLength!==object.size||bytes.byteLength>maxBytes)throw Error('export-source-mismatch');return bytes;}finally{await object.body?.cancel().catch(()=>{});}
       }});
+      const revision=(await this.modelSpec({scope})).version;if(!revision)throw Error('export-model-changed');const exportReceipt={schemaVersion:1 as const,sha256:result.sha256,projectId:scope.projectId,workspaceId:scope.workspaceId,revision,runIds:snapshot.runs.map(run=>run.runId).sort(),groupIds:snapshot.groups.map(group=>group.groupId).sort(),claimIds:snapshot.claims.map((claim:any)=>String(claim.claimId)).sort(),sourceVersions:result.manifest.sources.flatMap(source=>source.revisionIds.map(revisionId=>({revisionId,filesSha256:source.filesSha256,specSha256:source.specSha256}))).filter((value,index,all)=>all.findIndex(other=>JSON.stringify(other)===JSON.stringify(value))===index).sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b))),manifestSha256:await digest(new TextEncoder().encode(JSON.stringify(result.manifest,null,2))),entryCount:result.manifest.files.length+1,bytes:result.bytes.byteLength,contentType:'application/zip',cacheControl:'no-store'};await this.ctx.storage.put('g5-readonly-export:'+result.sha256,exportReceipt);await this.ctx.storage.sync();
       return new Response(result.bytes,{headers:{'content-type':'application/zip','content-disposition':`attachment; filename="${result.filename}"`,'cache-control':'no-store','x-content-type-options':'nosniff','x-riffology-export-sha256':result.sha256}});
     }finally{this.#exporting=false;}
   }
@@ -308,10 +432,12 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const identity=turnRuntimeIdentity(input.identity);this.#maintenanceScope(identity.scope);
     const {current:binding}=await this.#leases().pairState(identity);
     await this.#leases().close(identity);
-    if(!this.env.TENANT_MODEL_BUDGET||!this.env.PRODUCTION_MODEL_BUDGET||!this.env.TOOL_BRIDGE_AGENT)throw Error('workspace-runtime-settlement-required');
-    const model=this.env.TENANT_MODEL_BUDGET.getByName(modelBudgetTenantName(identity.scope.tenantId)),money=this.env.PRODUCTION_MODEL_BUDGET.getByName(PRODUCTION_MONEY_ACTOR),tool=this.env.TOOL_BRIDGE_AGENT.getByName(await toolBridgeActorName(identity.scope,identity.turnId,identity.dispatchId));
+    const route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+identity.turnId);const tokenNamespace=route?this.env.G5_TOKEN_BUDGET:this.env.TENANT_MODEL_BUDGET;
+    if(!tokenNamespace||!this.env.PRODUCTION_MODEL_BUDGET||!this.env.TOOL_BRIDGE_AGENT)throw Error('workspace-runtime-settlement-required');
+    const model=tokenNamespace.getByName(modelBudgetTenantName(identity.scope.tenantId)),money=this.env.PRODUCTION_MODEL_BUDGET.getByName(PRODUCTION_MONEY_ACTOR),tool=this.env.TOOL_BRIDGE_AGENT.getByName(await toolBridgeActorName(identity.scope,identity.turnId,identity.dispatchId));
     const settled=await Promise.all([model.closeTurnAdmission(identity.scope.tenantId,identity),money.closeTurnAdmission(identity),tool.closeTurnAdmission(identity)]);
     if(settled.some(record=>JSON.stringify(record.identity)!==JSON.stringify(identity)||record.closed!==true))throw Error('workspace-runtime-settlement-denied');
+    if(route)await this.#g5Guard().closeTrustedTurn(route.taskKey,identity);
     return {binding,settled};
   }
   async workspaceRuntimeAuthority(input:WarmOutboundRequest){
@@ -460,6 +586,10 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   async submitService(input:{scope:TurnScope;actor:TurnActor;key:string;request:ServiceIntentRequest}){
     const scope=this.#ready(input.scope);
     if(this.env.M3_SERVICE_ENABLED!=='true')throw Error('service-run-disabled');
+    if(this.env.G4_CONTROLLED_WINDOW_JSON!==undefined)await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
+    if(this.env.G5_CONTROLLED_WINDOW_JSON!==undefined)throw Error('g5-service-run-disabled');
+    await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,input.actor.userId,'run',{scope,key:input.key,type:'service'},input.request);
+    this.#ready(scope);
     return this.#services(scope).submit(input.actor,input.key,input.request,()=>{
       if(input.request.runtimeImage!==this.env.M3_SERVICE_IMAGE)throw Error('service-runtime-image-conflict');
       return this.#freezeService(scope);
@@ -472,6 +602,10 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   async submitServiceRequest(input:{scope:TurnScope;actor:TurnActor;key:string;body:{maxDurationMs:number;expectedRevisionId?:string}}){
     const scope=this.#ready(input.scope);
     if(this.env.M3_SERVICE_ENABLED!=='true')throw Error('service-run-disabled');
+    if(this.env.G4_CONTROLLED_WINDOW_JSON!==undefined)await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
+    if(this.env.G5_CONTROLLED_WINDOW_JSON!==undefined)throw Error('g5-service-run-disabled');
+    await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,input.actor.userId,'run',{scope,key:input.key,type:'service'},input.body);
+    this.#ready(scope);
     return this.#services(scope).submitFromPolicy(input.actor,input.key,input.body,this.env.M3_SERVICE_IMAGE??'',()=>this.#freezeService(scope));
   }
   async listServices(input:{scope:TurnScope;before?:{createdAt:number;runId:string};limit?:number}){
@@ -665,6 +799,27 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const scope=this.#maintenanceScope(input.scope);
     return this.#services(scope).snapshot(input.runId);
   }
+  #g5Guard(){const guard=this.env.G5_WINDOW_GUARD?.getByName(G5_GLOBAL_ACTOR);if(!guard)throw Error('g5-workspace-guard-required');return guard;}
+  async #g5StartTask(taskKey:string,identity?:TurnRuntimeIdentity){
+    const guard=this.#g5Guard(),grantKey='g5-start-grant:'+taskKey;let grant=this.ctx.storage.kv.get<string>(grantKey);
+    if(!grant){const result=await guard.claimTaskStart(taskKey,identity);if(!result.authorized||!result.grantId)throw Error('g5-workspace-start-denied');grant=result.grantId;this.ctx.storage.kv.put(grantKey,grant);await this.ctx.storage.sync();}
+    const confirmed=await guard.confirmTaskStartGrant(taskKey,grant);if(!confirmed.confirmed)throw Error('g5-start-grant-unconfirmed');
+    const checked=await guard.checkTaskContinue(taskKey,grant);if(!checked.authorized)throw Error('g5-task-continuation-denied');
+  }
+  async #g5TurnStart(turn:import('../turn/protocol.ts').TurnRecord,phase:'capacity'|'runtime'){
+    const route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);
+    if(!route){
+      // Journal commit can survive a lost sync ACK before the route callback runs.
+      // Missing provenance in a configured G5 Workspace never authorizes a legacy start.
+      if(this.env.G5_CONTROLLED_WINDOW_JSON!==undefined)throw Error('g5-turn-route-unavailable');
+      return;
+    }
+    if(phase==='capacity'){const result=await this.#g5Guard().checkTaskStart(route.taskKey);if(!result.authorized)throw Error('g5-workspace-start-denied');return;}
+    await this.#g5StartTask(route.taskKey,{scope:turn.scope,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId!,generation:turn.runtimeGeneration!});
+    const usedKey='g5-native-accept:'+route.taskKey;if(this.ctx.storage.kv.get(usedKey))throw Error('g5-native-accept-reconcile-only');this.ctx.storage.kv.put(usedKey,true);await this.ctx.storage.sync();
+  }
+  async #g5Terminal(turn:import('../turn/protocol.ts').TurnRecord){const route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);if(!route||this.ctx.storage.kv.get('g5-terminal-closed:'+turn.id))return;if(!turn.dispatchId||!turn.runtimeGeneration){if(turn.status==='cancelled'){await this.#g5Guard().cancelUnstartedTask(route.taskKey);this.ctx.storage.kv.put('g5-terminal-closed:'+turn.id,true);await this.ctx.storage.sync();}return;}const identity=turnRuntimeIdentity({scope:turn.scope,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration});if(!this.env.G5_TOKEN_BUDGET||!this.env.PRODUCTION_MODEL_BUDGET||!this.env.TOOL_BRIDGE_AGENT)throw Error('g5-terminal-ledgers-required');await Promise.all([this.env.G5_TOKEN_BUDGET.getByName(modelBudgetTenantName(identity.scope.tenantId)).closeTurnAdmission(identity.scope.tenantId,identity),this.env.PRODUCTION_MODEL_BUDGET.getByName(PRODUCTION_MONEY_ACTOR).closeTurnAdmission(identity),this.env.TOOL_BRIDGE_AGENT.getByName(await toolBridgeActorName(identity.scope,identity.turnId,identity.dispatchId)).closeTurnAdmission(identity)]);await this.#g5Guard().closeTrustedTurn(route.taskKey,identity);this.ctx.storage.kv.put('g5-terminal-closed:'+turn.id,true);await this.ctx.storage.sync();}
+  async #g5ProjectStart(task:WorkspaceTask){if(!task.budgetRoute)return;await this.#g5StartTask(task.budgetRoute.taskKey);}
   #engine(): WorkspaceTurnEngine {
     if (!this.env.PRODUCT_TURN_RUNTIME?.getByName) throw Error('product-turn-runtime-not-configured');
     if (!this.env.TOOL_ARTIFACT_STORE?.getByName) throw Error('tool-artifact-store-not-configured');
@@ -678,6 +833,8 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       this.env.TOOL_ARTIFACT_STORE.getByName(TOOL_ARTIFACT_STORE_ACTOR),
       this.#leases(),
       turnOperationTracer(this.env.M2_TURN_OPERATION_TELEMETRY),
+      (turn,phase)=>this.#g5TurnStart(turn,phase),
+      turn=>this.#g5Terminal(turn),
     );
   }
   #for(input: WorkspaceTask): WorkspaceCoordinator {
@@ -685,6 +842,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     if (!this.env.WORKSPACE_AGENT.idFromName(workspaceAgentName(task.tenantId, task.workspaceId)).equals(this.ctx.id)) throw Error('workspace-actor-scope-denied');
     if (!this.#coordinator) {
       this.#coordinator = new WorkspaceCoordinator(this.#store, {
+        beforeStart:task=>this.#g5ProjectStart(task),
         catalog: new ProvisioningCatalog(catalogDatabase(this.env.CATALOG)),
         quota: this.env.TENANT_QUOTA.getByName(tenantQuotaName(task.tenantId)),
         runtime: identity => this.env.PROJECT_RUNTIME.getByName(runtimeName(identity)),
@@ -739,16 +897,97 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     try{if(this.env.M2_TURNS_ENABLED!=='true')throw Error('turn-runtime-not-ready');trace('gate',true);}catch(error){trace('gate',false,error);throw error;}
     let engine:WorkspaceTurnEngine;
     try{engine=this.#engine();trace('engine',true);}catch(error){trace('engine',false,error);throw error;}
-    return engine.submit(scope,input.actor,input.sessionId,input.key,input.body,trace);
+    if(this.env.G4_CONTROLLED_WINDOW_JSON!==undefined)await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
+    let route:WorkspaceBudgetRoute|undefined;
+    if(this.env.G5_CONTROLLED_WINDOW_JSON!==undefined){
+      await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
+      const task=await g5TaskKey(this.env.G5_CONTROLLED_WINDOW_JSON,'turn',scope.tenantId,input.actor.userId,{scope,sessionId:input.sessionId,key:input.key},input.body);
+      const policy=g5WindowPolicy(JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON))!;const guard=this.#g5Guard();await guard.registerTask(task);
+      route={kind:'g5',taskKey:task.key,windowId:policy.windowId,profileSha256:policy.profilePin.profileSha256};
+      const known=this.ctx.storage.kv.get<string>('g5-submission:'+task.key);if(!known){const created=await guard.claimTaskCreate(task.key);if(!created.authorized)throw Error('g5-turn-create-denied');}
+    }else{await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,input.actor.userId,'turn',{scope,sessionId:input.sessionId,key:input.key},input.body);}
+
+    this.#ready(scope);
+    return engine.submit(scope,input.actor,input.sessionId,input.key,input.body,trace,route?async turn=>{const prior=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);if(prior&&JSON.stringify(prior)!==JSON.stringify(route))throw Error('g5-turn-route-conflict');this.ctx.storage.kv.put('g5-turn-route:'+turn.id,route!);this.ctx.storage.kv.put('g5-submission:'+route!.taskKey,turn.id);await this.ctx.storage.sync();await this.#g5Guard().bindTask(route!.taskKey,turn.id);}:undefined);
   }
   async cancelTurn(input: { scope: TurnScope; actor: TurnActor; turnId: string }) {
-    return this.#engine().cancel(this.#ready(input.scope), input.actor, input.turnId);
+    const turn=await this.#engine().cancel(this.#ready(input.scope), input.actor, input.turnId);if(['completed','failed','cancelled','interrupted'].includes(turn.status))await this.#g5Terminal(turn);return turn;
   }
   async replayTurnEvents(input: { scope: TurnScope; afterSequence: number; limit: number }) {
     return this.#turns.replay(this.#ready(input.scope), input.afterSequence, input.limit);
   }
   async turnSnapshot(input: { scope: TurnScope }) {
     return this.#turns.view(this.#ready(input.scope));
+  }
+  async g5TurnAuthority(input:{identity:TurnRuntimeIdentity;userId:string}){
+    const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
+    if(!turn||turn.actor.userId!==input.userId||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation||turn.status!=='completed'||turn.executionOutcome!=='completed'||turn.persistenceOutcome!=='saved'||!turn.checkpoint||state.activeTurnId!==null||state.releaseHold!==null||state.recoveryHold!==null)throw Error('g5-turn-authority-unsettled');
+    const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-turn-authority-denied');
+    const head=this.#turns.workspaceRevisionSnapshot(scope);if(!head||head.identity.turnId!==identity.turnId||JSON.stringify(head.receipt)!==JSON.stringify(turn.checkpoint))throw Error('g5-turn-authority-head-mismatch');
+    const model=await this.modelSpec({scope});if(!model.version)throw Error('g5-turn-authority-model-absent');const toolEventIds=state.events.filter(event=>event.turnId===identity.turnId&&event.type==='tool.completed').map(event=>event.eventId);if(!toolEventIds.length||model.version.revisionId!==turn.checkpoint.revisionId||model.version.filesSha256!==turn.checkpoint.filesSha256)throw Error('g5-turn-authority-evidence-absent');
+    return {schemaVersion:1 as const,identity,requestKey:turn.requestKey,version:model.version,toolEventIds};
+  }
+  async g5FixtureTurnAuthority(rawIdentity:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(rawIdentity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId],route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+identity.turnId);if(!turn||route?.kind!=='g5'||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation||turn.status!=='completed'||turn.executionOutcome!=='completed'||turn.persistenceOutcome!=='saved'||!turn.checkpoint||state.activeTurnId!==null||state.releaseHold!==null||state.recoveryHold!==null)throw Error('g5-fixture-turn-authority-unsettled');const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-fixture-turn-authority-denied');const head=this.#turns.workspaceRevisionSnapshot(scope);if(!head||JSON.stringify(head.identity)!==JSON.stringify(identity)||JSON.stringify(head.receipt)!==JSON.stringify(turn.checkpoint))throw Error('g5-fixture-turn-authority-head-mismatch');const model=await this.modelSpec({scope});if(!model.version||model.version.revisionId!==turn.checkpoint.revisionId||model.version.filesSha256!==turn.checkpoint.filesSha256)throw Error('g5-fixture-turn-authority-revision-mismatch');const events=state.events.filter(event=>event.turnId===identity.turnId&&event.type==='tool.completed').map(event=>({eventId:event.eventId,type:event.type,payload:structuredClone(event.payload)}));return {schemaVersion:1 as const,identity,requestKey:turn.requestKey,source:model.version,checkpointFilesSha256:turn.checkpoint.filesSha256,events};}
+  async g5SimulationRunAuthority(input:{identity:TurnRuntimeIdentity;userId:string;taskKey:string;runId:string;artifactSha256:string}){
+    const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),record=await this.#simulations(scope).get(input.runId);if(record.actor.userId!==input.userId||!sameScope(record.scope,scope)||record.budgetRoute?.kind!=='g5'||record.budgetRoute.taskKey!==input.taskKey||record.runId!==input.runId||record.status!=='completed'||record.result?.artifactSha256!==input.artifactSha256||record.released!==true||record.releaseProof===null)throw Error('g5-run-authority-unsettled');
+    const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(record.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-run-authority-denied');
+    return {schemaVersion:1 as const,runId:record.runId,taskKey:record.budgetRoute.taskKey,requestKey:record.key,artifactSha256:record.result.artifactSha256,released:true,active:0,unknown:0,releaseProof:record.releaseProof};
+  }
+  async g5FixtureTerminalAuthority(input:{identity:TurnRuntimeIdentity;userId:string;runIds:string[];groupId:string|null;claimIds:string[];version:{revisionId:string|null;filesSha256:string;specSha256:string}}){
+    const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),turn=(await this.#turns.snapshot(scope)).turns[identity.turnId];if(!turn||turn.actor.userId!==input.userId||turn.status!=='completed'||turn.persistenceOutcome!=='saved'||new Set(input.runIds).size!==input.runIds.length||new Set(input.claimIds).size!==input.claimIds.length||!this.env.WORKSPACE_CHECKPOINTS)throw Error('g5-fixture-terminal-authority-denied');const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-fixture-terminal-authority-denied');
+    const runs=[];for(const runId of input.runIds){const record=await this.#simulations(scope).get(runId);if(record.actor.userId!==input.userId||!sameScope(record.scope,scope)||record.status!=='completed'||record.errorCode!==null||!record.result||record.released!==true||record.releaseProof===null||JSON.stringify(modelVersion(record.input.plan))!==JSON.stringify(input.version)||Object.values(record.result.metrics).some(value=>!Number.isFinite(value)||value<0))throw Error('g5-fixture-run-authority-unsettled');const evidence=await g5B2RunEvidence(this.env.WORKSPACE_CHECKPOINTS,scope,record,identity.turnId);runs.push({runId:record.runId,requestKey:record.key,artifactSha256:record.result.artifactSha256,parameters:record.input.parameters,seed:record.input.seed,metrics:record.result.metrics,released:true,releaseProof:record.releaseProof,evidence});}
+    let group:null|{groupId:string;runIds:string[];taskKey:string}=null;if(input.groupId!==null){const record=await this.#experimentGroups(scope).get(input.groupId),route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-group-route:'+input.groupId);const ids=record.children.map(child=>child.runId).sort();if(record.status!=='completed'||record.actor.userId!==input.userId||!sameScope(record.scope,scope)||JSON.stringify(ids)!==JSON.stringify([...input.runIds].sort())||JSON.stringify(modelVersion(record.plan))!==JSON.stringify(input.version)||route?.kind!=='g5')throw Error('g5-fixture-group-authority-unsettled');group={groupId:record.groupId,runIds:ids,taskKey:route.taskKey};}
+    const head=await this.#evidenceHead(scope),claims=[];for(const claimId of input.claimIds){const claim=await this.#evidence(scope).get(claimId,head);if(claim.evidenceValidity!=='verified'||claim.stale||claim.olderRevision)throw Error('g5-fixture-claim-authority-unsettled');claims.push(claim);}g5FixtureClaimContract(claims,input.runIds,group?.groupId??null,turn.actor);
+    const historical=[...(await this.ctx.storage.list<SimulationRecord>({prefix:'simulation:run:'})).values()].filter(record=>!input.runIds.includes(record.runId)&&record.actor.userId===input.userId&&sameScope(record.scope,scope)&&record.status==='completed'&&record.result&&record.released&&record.releaseProof&&JSON.stringify(modelVersion(record.input.plan))!==JSON.stringify(input.version)).map(record=>({runId:record.runId,artifactSha256:record.result!.artifactSha256,version:modelVersion(record.input.plan)}));
+    return {schemaVersion:1 as const,runs,group,claims,historical};
+  }
+  async g5SimulationWindowAuthority(input:{identity:TurnRuntimeIdentity;userId:string;windowId:string}){
+    const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),turn=(await this.#turns.snapshot(scope)).turns[identity.turnId];if(!turn||turn.actor.userId!==input.userId)throw Error('g5-window-simulation-authority-denied');const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-window-simulation-authority-denied');
+    const runs=[...(await this.ctx.storage.list<SimulationRecord>({prefix:'simulation:run:'})).values()].filter(record=>record.budgetRoute?.kind==='g5'&&record.budgetRoute.windowId===input.windowId);for(const record of runs)if(!sameScope(record.scope,scope)||record.actor.userId!==input.userId)throw Error('g5-window-simulation-authority-conflict');
+    const groups=[...(await this.ctx.storage.list<ExperimentGroupRecord>({prefix:GROUP_PREFIX})).values()].filter(group=>group.actor.userId===input.userId&&sameScope(group.scope,scope)&&group.children.some(child=>runs.some(run=>run.runId===child.runId)));
+    return {schemaVersion:1 as const,...g5TerminalGroupAuthority(runs,groups)};
+  }
+  async g5ReadonlyCounters(input:{identity:TurnRuntimeIdentity;userId:string;windowId:string}){
+    const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),turn=(await this.#turns.snapshot(scope)).turns[identity.turnId];
+    if(!turn||turn.actor.userId!==input.userId)throw Error('g5-readonly-counters-authority-denied');
+    const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-readonly-counters-authority-denied');
+    const runs=[...(await this.ctx.storage.list<SimulationRecord>({prefix:'simulation:run:'})).values()].filter(record=>record.budgetRoute?.kind==='g5'&&record.budgetRoute.windowId===input.windowId);
+    for(const record of runs)if(!sameScope(record.scope,scope)||record.actor.userId!==input.userId)throw Error('g5-readonly-counters-authority-conflict');
+    const runIds=new Set(runs.map(record=>record.runId)),groups=[...(await this.ctx.storage.list<ExperimentGroupRecord>({prefix:GROUP_PREFIX})).values()].filter(group=>group.actor.userId===input.userId&&sameScope(group.scope,scope)&&group.children.some(child=>runIds.has(child.runId)));
+    const activeRuns=runs.filter(record=>['waiting_for_capacity','preparing','running','finalizing','stopping'].includes(record.status)).length,pendingRuns=runs.filter(record=>record.status==='queued'||record.status==='completed'&&(!record.released||record.releaseProof===null)).length,unknownRuns=runs.filter(record=>record.status==='unknown'||['failed','cancelled'].includes(record.status)).length;
+    const activeGroups=groups.filter(group=>group.status==='running').length,pendingGroups=groups.filter(group=>group.status==='queued'||group.status==='completed'&&group.children.some(child=>!runIds.has(child.runId))).length,unknownGroups=groups.filter(group=>['partial','failed','cancelled'].includes(group.status)).length;
+    const head=this.#turns.workspaceRevisionSnapshot(scope),version=(await this.modelSpec({scope})).version;if(!head||!version||version.revisionId!==head.receipt.revisionId||version.filesSha256!==head.receipt.filesSha256)throw Error('g5-readonly-counters-revision-absent');
+    return {schemaVersion:1 as const,projectId:scope.projectId,revision:version,simulationRuns:runs.length,groups:groups.length,active:activeRuns+activeGroups,pending:pendingRuns+pendingGroups,unknown:unknownRuns+unknownGroups,runIds:[...runIds].sort(),groupIds:groups.map(group=>group.groupId).sort()};
+  }
+  async beginG5ReadonlyReadSession(input:{identity:TurnRuntimeIdentity;userId:string;windowId:string;bindingSha256:string;binding:{schemaVersion:1;kind:'before-reopen-readonly';projectId:string;workspaceId:string;revision:{revisionId:string;filesSha256:string;specSha256:string};runIds:string[];groupIds:string[];claimIds:string[]}}){
+    const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),binding=input.binding;
+    if(!/^[a-f0-9]{64}$/.test(input.bindingSha256)||await turnDigest(binding)!==input.bindingSha256||binding?.schemaVersion!==1||binding.kind!=='before-reopen-readonly'||binding.projectId!==scope.projectId||binding.workspaceId!==scope.workspaceId)throw Error('g5-read-session-binding-invalid');
+    const authority=await this.g5ReadonlyAttestationAuthority({identity,userId:input.userId,windowId:input.windowId,kind:'before-reopen-readonly'}),expected={schemaVersion:1,kind:authority.kind,projectId:authority.projectId,workspaceId:authority.workspaceId,revision:authority.revision,runIds:authority.runIds,groupIds:authority.groupIds,claimIds:authority.claimIds};
+    if(JSON.stringify(binding)!==JSON.stringify(expected))throw Error('g5-read-session-authority-mismatch');
+    const key='g5-read-session-binding:'+input.windowId+':'+input.bindingSha256,priorId=await this.ctx.storage.get<string>(key);
+    const now=Date.now();if(priorId){const prior=await this.ctx.storage.get<any>('g5-read-session:'+priorId);if(!prior||prior.bindingSha256!==input.bindingSha256)throw Error('g5-read-session-state-conflict');if(!Number.isSafeInteger(prior.expiresAt)||now>=prior.expiresAt)throw Error('g5-read-session-expired');return {schemaVersion:1 as const,sessionId:prior.sessionId,capability:prior.capability,createdAt:prior.createdAt,expiresAt:prior.expiresAt};}
+    const sessionId='g5-read-'+crypto.randomUUID(),random=new Uint8Array(32);crypto.getRandomValues(random);const capability=[...random].map(value=>value.toString(16).padStart(2,'0')).join(''),createdAt=now,expiresAt=createdAt+30*60*1000,base=`/api/workspaces/${scope.workspaceId}`,paths=[base,base+'/files',base+'/model',...binding.runIds.map(id=>`${base}/experiments/${id}`),...binding.groupIds.map(id=>`${base}/experiment-groups/${id}`),...binding.claimIds.map(id=>`${base}/evidence/${id}`)],state={schemaVersion:1,sessionId,capability,createdAt,expiresAt,consumedAt:null,windowId:input.windowId,scope,userId:input.userId,authVersion:(await this.#turns.snapshot(scope)).turns[identity.turnId]!.actor.authVersion,binding,bindingSha256:input.bindingSha256,paths,reads:[],status:'open',receipt:null};
+    await this.ctx.storage.put('g5-read-session:'+sessionId,state);await this.ctx.storage.put(key,sessionId);await this.ctx.storage.sync();return {schemaVersion:1 as const,sessionId,capability,createdAt,expiresAt};
+  }
+  async recordG5ReadonlyRead(input:{scope:TurnScope;actor:TurnActor;sessionId:string;capability:string;path:string;status:number;bodySha256:string}){
+    const scope=this.#maintenanceScope(input.scope),key='g5-read-session:'+input.sessionId,state=await this.ctx.storage.get<any>(key);
+    const now=Date.now();if(!state||state.status!=='open'||!Number.isSafeInteger(state.createdAt)||!Number.isSafeInteger(state.expiresAt)||now<state.createdAt||now>=state.expiresAt||state.capability!==input.capability||!sameScope(scope,state.scope)||state.userId!==input.actor.userId||state.authVersion!==input.actor.authVersion||!Number.isSafeInteger(input.status)||input.status!==200||!/^[a-f0-9]{64}$/.test(input.bodySha256))throw Error(now>=Number(state?.expiresAt)?'g5-read-session-expired':'g5-read-session-record-denied');
+    const prior=state.reads.at(-1);if(prior?.path===input.path&&prior.status===input.status&&prior.bodySha256===input.bodySha256)return;
+    const expected=state.paths[state.reads.length];if(input.path!==expected)throw Error('g5-read-session-order-mismatch');state.reads.push({path:input.path,status:input.status,bodySha256:input.bodySha256});await this.ctx.storage.put(key,state);await this.ctx.storage.sync();
+  }
+  async consumeG5ReadonlyReadSession(input:{identity:TurnRuntimeIdentity;userId:string;windowId:string;bindingSha256:string;sessionId:string;capability:string}){
+    const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),key='g5-read-session:'+input.sessionId,state=await this.ctx.storage.get<any>(key);
+    const now=Date.now();if(!state||state.capability!==input.capability||state.windowId!==input.windowId||state.userId!==input.userId||state.bindingSha256!==input.bindingSha256||!sameScope(scope,state.scope))throw Error('g5-read-session-consume-denied');if(!Number.isSafeInteger(state.createdAt)||!Number.isSafeInteger(state.expiresAt)||now<state.createdAt||now>=state.expiresAt)throw Error('g5-read-session-expired');
+    if(state.status==='sealed'){if(!Number.isSafeInteger(state.consumedAt)||state.consumedAt<state.createdAt||state.consumedAt>=state.expiresAt)return Promise.reject(Error('g5-read-session-timing-invalid'));return state.receipt;}
+    if(state.status!=='open'||state.reads.length!==state.paths.length||state.reads.some((read:any,index:number)=>read.path!==state.paths[index]||read.status!==200||!/^[a-f0-9]{64}$/.test(read.bodySha256)))throw Error('g5-read-session-incomplete');
+    const consumedAt=now,result={schemaVersion:1 as const,kind:'before-reopen-read-session' as const,windowId:state.windowId,userId:state.userId,tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,workspaceGeneration:scope.workspaceGeneration,revision:state.binding.revision,bindingSha256:state.bindingSha256,runIds:state.binding.runIds,groupIds:state.binding.groupIds,claimIds:state.binding.claimIds,createdAt:state.createdAt,expiresAt:state.expiresAt,consumedAt,reads:state.reads},receipt={...result,receiptSha256:await turnDigest(result)};state.status='sealed';state.consumedAt=consumedAt;state.receipt=receipt;await this.ctx.storage.put(key,state);await this.ctx.storage.sync();return receipt;
+  }
+  async g5ReadonlyAttestationAuthority(input:{identity:TurnRuntimeIdentity;userId:string;windowId:string;kind:'before-reopen-readonly'|'research-export-readonly';exportSha256?:string}){
+    const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];if(!turn||turn.actor.userId!==input.userId||state.activeTurnId!==null||state.releaseHold!==null||state.recoveryHold!==null||!this.env.WORKSPACE_CHECKPOINTS)throw Error('g5-readonly-authority-unsettled');const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-readonly-authority-denied');
+    const current=await this.#simulationSource(scope),version=(await this.modelSpec({scope})).version;if(!version)throw Error('g5-readonly-authority-revision-absent');const runs=[...(await this.ctx.storage.list<SimulationRecord>({prefix:'simulation:run:'})).values()].filter(record=>record.budgetRoute?.kind==='g5'&&record.budgetRoute.windowId===input.windowId);if(runs.some(record=>!sameScope(record.scope,scope)||record.actor.userId!==input.userId||record.status!=='completed'||record.errorCode!==null||!record.result||record.released!==true||record.releaseProof===null))throw Error('g5-readonly-authority-run-unsettled');for(const record of runs)await g5B2RunEvidence(this.env.WORKSPACE_CHECKPOINTS,scope,record,identity.turnId);
+    const runIds=new Set(runs.map(record=>record.runId)),groups=[...(await this.ctx.storage.list<ExperimentGroupRecord>({prefix:GROUP_PREFIX})).values()].filter(group=>group.actor.userId===input.userId&&sameScope(group.scope,scope)&&group.children.some(child=>runIds.has(child.runId)));g5TerminalGroupAuthority(runs,groups);const evidence=await this.#evidence(scope).exportRecords(),claimIds=evidence.claims.map((claim:any)=>String(claim.claimId)).sort();if(new Set(claimIds).size!==claimIds.length)throw Error('g5-readonly-authority-claim-conflict');const sourceVersions=[version,...runs.map(record=>modelVersion(record.input.plan))].filter((value,index,all)=>all.findIndex(other=>JSON.stringify(other)===JSON.stringify(value))===index).sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b))),facts={schemaVersion:1 as const,kind:input.kind,projectId:scope.projectId,workspaceId:scope.workspaceId,revision:version,runIds:[...runIds].sort(),groupIds:groups.map(group=>group.groupId).sort(),claimIds,sourceVersions};
+    let exportReceipt:null|Record<string,unknown>=null;if(input.kind==='research-export-readonly'){if(typeof input.exportSha256!=='string'||!/^[a-f0-9]{64}$/.test(input.exportSha256))throw Error('g5-readonly-authority-export-absent');exportReceipt=await this.ctx.storage.get<Record<string,unknown>>('g5-readonly-export:'+input.exportSha256)??null;if(!exportReceipt||exportReceipt.projectId!==scope.projectId||exportReceipt.workspaceId!==scope.workspaceId||!sameScope(scope,identity.scope)||JSON.stringify(exportReceipt.revision)!==JSON.stringify(version)||JSON.stringify(exportReceipt.runIds)!==JSON.stringify(facts.runIds)||JSON.stringify(exportReceipt.groupIds)!==JSON.stringify(facts.groupIds)||JSON.stringify(exportReceipt.claimIds)!==JSON.stringify(facts.claimIds)||JSON.stringify(exportReceipt.sourceVersions)!==JSON.stringify(facts.sourceVersions))throw Error('g5-readonly-authority-export-mismatch');}
+    const result={...facts,...(exportReceipt?{export:{sha256:exportReceipt.sha256,manifestSha256:exportReceipt.manifestSha256,entryCount:exportReceipt.entryCount,bytes:exportReceipt.bytes,contentType:exportReceipt.contentType,cacheControl:exportReceipt.cacheControl}}:{})};return {...result,receiptSha256:await turnDigest(result)};
   }
   /** Private plan selection. A future submit intent must freeze this source
    * durably with its idempotency key; this read does not create or start a Run. */
@@ -762,6 +1001,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const reference=await initialWorkspaceReferenceFromReady({scope,task:state.task,runtime:state.identity,markerNonce:state.markerNonce,ready:state.runtimeReceipt});
     const plan=await store.initialPreviewPlan(reference,scope);this.#ready(scope);return plan;
   }
+  async reconcileSimulationCreation(input:{scope:TurnScope;actor:TurnActor;runId:string}){const scope=this.#maintenanceScope(input.scope);const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(input.actor,scope.workspaceId);if(!sameScope(scope,actual))throw Error('g5-simulation-reconcile-scope-denied');return publicExperiment(await this.#simulations(scope).reconcileCreatedRun(input.runId),this.#turns.workspaceRevisionSnapshot(scope)?.receipt.filesSha256??null);}
   async listFiles(input:{scope:TurnScope}){
     const scope=this.#ready(input.scope),revision=await this.#turns.workspaceRevision(scope);
     if(!revision){const initial=await this.#initialWorkspace(scope);return {schemaVersion:1,revision:null,files:workspaceFileIndex(initial.filesArchive).files};}
@@ -807,7 +1047,10 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return releaseRetiredArtifactEvent(this.#turns,this.env.TOOL_ARTIFACT_STORE.getByName(TOOL_ARTIFACT_STORE_ACTOR),input);
   }
   async alarm() {
+    const terminalTurns=Object.values(new DurableTurnStore(this.ctx.storage).read()?.turns??{}).filter(turn=>['completed','failed','cancelled','interrupted'].includes(turn.status));
+    for(const turn of terminalTurns){try{await this.#g5Terminal(turn);}catch(error){await this.#turnAlarm.schedule(Date.now()+5000);throw error;}}
     await routeWorkspaceAlarm({
+      browserBuild:{readWake:()=>this.#browserBuildAlarm.read(),defer:at=>this.#browserBuildAlarm.schedule(at),advance:async scope=>{await this.#browserBuild(this.#maintenanceScope(scope)).alarm();}},
       simulation:{readWake:()=>this.#simulationAlarm.read(),defer:at=>this.#simulationAlarm.schedule(at),advance:async scope=>{const owned=this.#maintenanceScope(scope);await this.#simulations(owned).alarm();await this.#experimentGroups(owned).alarm();}},
       observer:{
         readWake:()=>this.#observerAlarm.read(),

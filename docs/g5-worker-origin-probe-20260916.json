@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 2,
+  "diagnostic": {
+    "observedAt": "2026-09-16T05:18:06.256Z",
+    "worker": "riffology-m1-gateway-staging",
+    "status": 200,
+    "errorCode": null,
+    "modelAvailable": true,
+    "inferenceCalls": 0,
+    "readOnly": true,
+    "state": "read-only-complete",
+    "workerVersion": "6f0472b6-0303-4f08-96e2-94a878630447"
+  },
+  "paidInference": false,
+  "newTasksStarted": 0,
+  "readonlyControllerAttempts": 4,
+  "observedSequence": [
+    "delivery-unknown",
+    "transport-unknown",
+    "transport-unknown",
+    "http-200-model-available"
+  ],
+  "diagnosticConfiguration": {
+    "globalFetchStrictlyPublic": true,
+    "redirectMode": "manual",
+    "redirectsFollowed": false
+  },
+  "interpretation": "The staging Worker origin reached the authenticated native Gateway models endpoint and gpt-5.6-luna was listed. This proves read-only channel access only; Responses inference remains unverified.",
+  "restored": {
+    "versionId": "75d4b354-0943-4278-961f-b07738752106",
+    "scriptEtag": "5b52761213c519d9c6a83cb1d601b793b1fecad5d4df7aaee48bb3ac076884ef",
+    "originalScriptEtagMatches": true,
+    "frozenVarsMatch": true,
+    "globalFetchStrictlyPublic": false,
+    "gates": {
+      "G5_ADMISSION_ENABLED": "false",
+      "M2_MODEL_PROVIDER_ENABLED": "false",
+      "PRODUCTION_MODEL_ENABLED": "false",
+      "M2_TURNS_ENABLED": "false",
+      "M4_SIMULATION_ENABLED": "false",
+      "M3_SERVICE_ENABLED": "false"
+    },
+    "publicRootStatus": 200
+  },
+  "cleanup": {
+    "temporaryControllerDeleted": true,
+    "independentAbsenceCode": 10007,
+    "localControllerCapabilityRemoved": true
+  }
+}

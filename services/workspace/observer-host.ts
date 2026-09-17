@@ -2,7 +2,7 @@ import {SqlObserverCalls} from '../preview/observer-calls.ts';
 import {ObserverCallHost} from '../preview/observer-host.ts';
 import type {ObserverCommand} from '../preview/observer-protocol.ts';
 import type {TurnScope} from '../turn/protocol.ts';
-import {SIMULATION_WAKE_KEY,applyWorkspaceAlarm,OBSERVER_WAKE_KEY,SERVICE_WAKE_KEY,TURN_WAKE_KEY,WORKSPACE_STATE_KEY} from './shared-alarm.ts';
+import {BROWSER_BUILD_WAKE_KEY,SIMULATION_WAKE_KEY,applyWorkspaceAlarm,OBSERVER_WAKE_KEY,SERVICE_WAKE_KEY,TURN_WAKE_KEY,WORKSPACE_STATE_KEY} from './shared-alarm.ts';
 import type {WorkspaceState} from './coordinator.ts';
 export interface ObserverMaintenancePorts{
  shouldStop(command:ObserverCommand):Promise<boolean>;
@@ -24,7 +24,7 @@ export class WorkspaceObserverHost{
   const wake=call?Math.min(call.command.deadlineAt>now?call.command.deadlineAt:now+5000,now+5000):null;
   if(wake===null)await tx.delete(OBSERVER_WAKE_KEY);else await tx.put(OBSERVER_WAKE_KEY,wake);
   const state=await tx.get<WorkspaceState>(WORKSPACE_STATE_KEY),turn=await tx.get<unknown>(TURN_WAKE_KEY),service=await tx.get<unknown>(SERVICE_WAKE_KEY);
-  return applyWorkspaceAlarm(tx,state?.wakeAt,turn,service,wake,await tx.get(SIMULATION_WAKE_KEY));
+  return applyWorkspaceAlarm(tx,state?.wakeAt,turn,service,wake,await tx.get(SIMULATION_WAKE_KEY),await tx.get(BROWSER_BUILD_WAKE_KEY));
  }
  async #shouldStop(command:ObserverCommand):Promise<boolean>{
   if(command.deadlineAt<=this.#clock())return true;

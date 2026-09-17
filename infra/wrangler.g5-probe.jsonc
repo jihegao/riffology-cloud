@@ -1,0 +1,18 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "riffology-g5-region-probe-us-east-20260916",
+  "account_id": "8b0d70250211aa10d89e20605a1c7e5e",
+  "main": "../services/g5-probe/index.ts",
+  "compatibility_date": "2026-09-16",
+  "compatibility_flags": ["global_fetch_strictly_public"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "placement": {"region": "aws:us-east-1"},
+  "secrets": {
+    "required": [
+      "PRODUCTION_OPENAI_API_KEY",
+      "PRODUCTION_AI_GATEWAY_TOKEN",
+      "G5_PROBE_OPERATOR_CAPABILITY"
+    ]
+  }
+}

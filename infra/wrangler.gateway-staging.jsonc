@@ -11,7 +11,7 @@
     { "pattern": "m1.riff-demo.gaojihe.cn", "custom_domain": true }
   ],
   "assets": {
-    "directory": "../services/web",
+    "directory": "../.local/browser-preview/gateway-assets",
     "binding": "ASSETS",
     "run_worker_first": true
   },
@@ -19,6 +19,7 @@
     "required": ["BETTER_AUTH_SECRET", "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET"]
   },
   "vars": {
+    "BROWSER_PREVIEW_EXECUTION_ORIGIN": "",
     "APP_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
     "TENANT_QUOTA_CAPACITY": "1",
     "TENANT_QUOTA_POLICY_VERSION": "m1-v1",

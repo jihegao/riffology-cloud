@@ -1,0 +1,4 @@
+import {BROWSER_PREVIEW_SCHEMA,BROWSER_PREVIEW_SOURCE_PATHS,type PreviewPackageIdentityInput} from '../contract.ts';
+/** Synthetic hashes test schema and identity only, never an executable release. */
+export const previewIdentityFixture:PreviewPackageIdentityInput={schema:BROWSER_PREVIEW_SCHEMA,projectId:'project-fixture',revisionId:'revision-fixture',filesSha256:'a'.repeat(64),sources:BROWSER_PREVIEW_SOURCE_PATHS.map((path,i)=>({path,sha256:String(i+1).repeat(64),byteLength:10+i})),runtime:{profileId:'python-stdlib/v1',runtimeVersion:'pyodide-314.0.6/v1',adapterVersion:'riffology.model-run/v1',pythonVersion:'3.14.2',assetSha256:'b'.repeat(64),visualProtocol:'riffology.visual/v0.1',limitsSha256:'c'.repeat(64),dependencies:[]}};
+export const previewRunFixture={parameters:{steps:20,horizon:100,arrival_rate:0.5},seed:4294967295};

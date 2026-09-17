@@ -262,6 +262,15 @@ export class TurnJournal{
     if(!turn||!turn.dispatchId||turn.runtimeGeneration!==s.workspaceGeneration)throw Error('invalid-persisted-turn-journal');
     return {identity:{scope:s,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration},receipt:structuredClone(receipt)};
   }
+  /** Resolve only a committed saved row, including failed/cancelled saves. */
+  savedRevisionSnapshot(rawScope:TurnScope,revisionId:string):{identity:TurnRuntimeIdentity;receipt:CheckpointReceipt}|null{
+    const s=scope(rawScope),state=requireState(this.#store.read(),s);turnId(revisionId);
+    const matches=Object.values(state.turns).filter(row=>row.persistenceOutcome==='saved'&&row.checkpoint?.revisionId===revisionId);
+    if(!matches.length)return null;
+    const row=matches[0]!;
+    if(matches.length!==1||!row.dispatchId||row.runtimeGeneration!==s.workspaceGeneration)throw Error('invalid-persisted-turn-journal');
+    return {identity:{scope:s,sessionId:row.sessionId,turnId:row.id,dispatchId:row.dispatchId,generation:row.runtimeGeneration},receipt:structuredClone(row.checkpoint!)};
+  }
   publicationHasActiveTurn(rawScope:TurnScope):boolean{return requireState(this.#store.read(),scope(rawScope)).activeTurnId!==null;}
   async workspaceRevision(rawScope:TurnScope){return this.workspaceRevisionSnapshot(rawScope);}
   async view(rawScope:TurnScope):Promise<TurnJournalView>{const state=await this.snapshot(rawScope),turns:TurnJournalView['turns']={};

@@ -1,0 +1,30 @@
+import assert from 'node:assert/strict';
+import {fixture} from './browser-preview-test-fixture.mjs';
+import {InitialWorkspaceResolver} from '../../services/turn-runtime/initial-workspace.ts';
+import {verifyModelContent,modelContentKey} from '../../services/runtime/content.ts';
+import {initialCheckpoint} from '../../services/runtime/starter.ts';
+import {checkpointKey} from '../../services/runtime/core.ts';
+import {canonicalWorkspaceMarker,workspaceDigest} from '../../services/workspace/protocol.ts';
+import {previewSha256} from '../../services/browser-preview/contract.ts';
+import {projectInitialPreviewDiscovery,discoveryKey} from '../../services/browser-preview/discovery.ts';
+import {BrowserPreviewBuildHost} from '../../services/browser-preview/build-host.ts';
+import {makeFixture} from '../../services/browser-preview/runtime/fixtures.mjs';
+import profiles from '../../services/browser-preview/runtime/assets/profiles.json' with {type:'json'};
+const encoder=new TextEncoder();
+const object=bytes=>({size:bytes.length,arrayBuffer:async()=>Uint8Array.from(bytes).buffer});
+export async function initial(index=0){
+ const f=await fixture(index),model=await makeFixture(profiles[index],index?'mesa':'queue');
+ const files=await Promise.all(model.files.map(async row=>{const bytes=Buffer.from(row.base64,'base64');return {path:row.path,bytes:bytes.length,sha256:await previewSha256(bytes),contentBase64:row.base64};}));files.sort((a,b)=>a.path.localeCompare(b.path));
+ const content=encoder.encode(JSON.stringify({schemaVersion:1,files})),modelContent={modelVersionId:'version-a',modelId:'model-a',version:1,contentRef:'copy/source.json',contentSha256:await previewSha256(content)};
+ const task={id:'task-a',tenantId:f.scope.tenantId,projectId:f.scope.projectId,workspaceId:f.scope.workspaceId,generation:1,starterVersion:'blank-v1',authVersion:1,createdAt:1000,deadlineAt:2000,modelContent};
+ const runtime={taskId:task.id,tenantId:task.tenantId,projectId:task.projectId,workspaceId:task.workspaceId,generation:1,runtimeId:'runtime-a',leaseId:'lease-a'},markerNonce='nonce-a';
+ const verified=await verifyModelContent(modelContent,object(content)),checkpoint=await initialCheckpoint({task,identity:runtime,markerNonce},verified.receipt);
+ const state={schemaVersion:1,task,identity:runtime,markerNonce,runtimeReceipt:{receiptId:'receipt-a',initializedAt:1500,layoutVersion:'m1-empty-v1',markerSha256:await workspaceDigest(canonicalWorkspaceMarker(runtime,markerNonce)),checkpointRevision:checkpoint.revision},projection:{outcome:'ready'},projectionConfirmed:true,wakeAt:null};
+ f.storage.values.clear();let resolves=0,scopeValid=true;
+ const resolver=new InitialWorkspaceResolver({get:async key=>key===checkpointKey(runtime)?object(encoder.encode(checkpoint.text)):null},{get:async key=>key===modelContentKey(modelContent)?object(content):null});
+ await f.storage.transaction(tx=>projectInitialPreviewDiscovery(tx,state,{...state,projectionConfirmed:false}));
+ const revision=f.storage.values.get('browser-preview:initial-source'),source=f.storage.values.get(discoveryKey(revision));
+ const ports={...f.ports,checkSource:source=>{if(!scopeValid||source.reference?.task.generation!==1)throw Error('browser-preview-source-unavailable');},files:async()=>{throw Error('saved must not resolve');},resolveInitial:async source=>{resolves++;assert.ok(f.storage.alarm!==null,'physical wake rearmed before private source I/O');return resolver.resolve(source.reference,f.scope);}};
+ const host=()=>new BrowserPreviewBuildHost(f.storage,f.scope,ports,()=>1000);
+ return {f,state,content,checkpoint,resolver,source,revision,ports,host,get resolves(){return resolves;},revoke:()=>{scopeValid=false;}};
+}

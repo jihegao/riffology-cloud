@@ -1,3 +1,4 @@
+import {nativeAttemptSnapshot,recordNativeAttempt,execAttemptTag,bindNativeOwner,NATIVE_OWNER_KEY} from '../g4-native-counts.ts';
 import {WorkspaceNativeHost} from './workspace-native-host.ts';
 import type {WorkspaceSandboxBinding} from './workspace-binding.ts';
 import type {WorkspaceNativeOptions} from './workspace-native.ts';
@@ -31,6 +32,15 @@ export class TrustedPiSandbox extends Sandbox<M2SandboxEnv>{
   #turnFence:TurnSandboxFence;
   #warm:WorkspaceNativeHost<'trustedPi'>;
   constructor(ctx:DurableObjectState<{}>,env:M2SandboxEnv){super(ctx,env);this.#turnFence=new TurnSandboxFence(ctx.storage);this.#warm=new WorkspaceNativeHost('trustedPi',{sandbox:this as unknown as WorkspaceNativeOptions['sandbox'],storage:ctx.storage,actorId:ctx.id.name??'',running:()=>ctx.container?.running===true,queryObserverExecution:identity=>readCurrentObserverExecution(createObserverNativeReader(ctx.container,Date.now()+5000),identity)},name=>{const owner=env.WORKSPACE_AGENT?.getByName(name);if(!owner)throw Error('workspace-native-owner-required');return owner as unknown as WorkspaceAgent;});}
+  override async startAndWaitForPorts(...input:Parameters<Sandbox<M2SandboxEnv>['startAndWaitForPorts']>){recordNativeAttempt(this.ctx.storage,'init');await this.ctx.storage.sync();return super.startAndWaitForPorts(...input);}
+  override async exec(...input:Parameters<Sandbox<M2SandboxEnv>['exec']>){recordNativeAttempt(this.ctx.storage,execAttemptTag(input[0]));await this.ctx.storage.sync();return super.exec(...input);}
+  override async startProcess(...input:Parameters<Sandbox<M2SandboxEnv>['startProcess']>){if(input[0].includes('/trusted-pi-turn-host.mjs'))recordNativeAttempt(this.ctx.storage,'taskStart');recordNativeAttempt(this.ctx.storage,'startProcess');await this.ctx.storage.sync();return super.startProcess(...input);}
+  async nativeAttemptSnapshot(raw:unknown){
+    const identity=turnRuntimeIdentity(raw),owner=this.ctx.storage.kv.get(NATIVE_OWNER_KEY),config=this.ctx.storage.kv.get<{context:{identity:unknown}}>('workspace-native-configuration'),fence=this.ctx.storage.kv.get<{identity?:unknown;dispatch?:unknown;sessionId?:string}>('turn-sandbox-fence-v1');
+    const bound=config?.context.identity??owner??fence?.identity??(fence?.dispatch&&fence.sessionId?{...(fence.dispatch as object),sessionId:fence.sessionId}:null);
+    if(!bound||JSON.stringify(turnRuntimeIdentity(bound))!==JSON.stringify(identity))throw Error('sandbox-counter-owner-denied');
+    return nativeAttemptSnapshot(this.ctx.storage,this.ctx.id.toString());
+  }
   async configureWorkspaceBinding(input:{context:WorkspaceSandboxBinding;deadlineAt:number}){return this.#warm.configure(input);}
   async sealWorkspaceBinding(context:WorkspaceSandboxBinding){return this.#warm.seal(context);}
   async pruneWorkspaceBinding(context:WorkspaceSandboxBinding,value:string){return this.#warm.prune(context,value);}
@@ -38,12 +48,13 @@ export class TrustedPiSandbox extends Sandbox<M2SandboxEnv>{
   async destroyWorkspaceLease(lease:WorkspaceSandboxBinding['lease']){return this.#warm.destroyLease(lease);}
   async #assertActor(identity:ReturnType<typeof turnRuntimeIdentity>){
     if(!this.ctx.id.name||(await sandboxActorIds(identity.scope,identity.turnId,identity.dispatchId)).trustedPi!==this.ctx.id.name)throw Error('trusted-pi-native-scope-denied');
+    bindNativeOwner(this.ctx.storage,identity);await this.ctx.storage.sync();
   }
   async #destroyForFence(){await this.destroy();return {running:this.ctx.container?.running===true};}
   async writeTurnFile(raw:Parameters<typeof turnRuntimeIdentity>[0],...input:Parameters<Sandbox<M2SandboxEnv>['writeFile']>){const identity=turnRuntimeIdentity(raw);if(this.#warm.warm)return (await this.#warm.forIdentity(identity)).writeTurnFile(identity,...input as Parameters<import('./workspace-native.ts').WorkspaceTrustedPiNativeController['writeTurnFile']> extends [unknown,...infer R]?R:never);await this.#assertActor(identity);return this.#turnFence.run(identity,()=>super.writeFile(...input),()=>this.#destroyForFence());}
   async readTurnFile(raw:Parameters<typeof turnRuntimeIdentity>[0],...input:Parameters<Sandbox<M2SandboxEnv>['readFile']>){const identity=turnRuntimeIdentity(raw);if(this.#warm.warm)return (await this.#warm.forIdentity(identity,true)).readTurnFile(identity,...input as Parameters<import('./workspace-native.ts').WorkspaceTrustedPiNativeController['readTurnFile']> extends [unknown,...infer R]?R:never);await this.#assertActor(identity);return this.#turnFence.run(identity,()=>super.readFile(...input),()=>this.#destroyForFence());}
-  async startTurnProcess(raw:Parameters<typeof turnRuntimeIdentity>[0],...input:Parameters<Sandbox<M2SandboxEnv>['startProcess']>){const identity=turnRuntimeIdentity(raw);if(this.#warm.warm)return (await this.#warm.forIdentity(identity)).startTurnProcess(identity,...input as Parameters<import('./workspace-native.ts').WorkspaceTrustedPiNativeController['startTurnProcess']> extends [unknown,...infer R]?R:never);await this.#assertActor(identity);return this.#turnFence.runStart(identity,()=>super.startProcess(...input),()=>this.#destroyForFence());}
-  async startTurnProcessSnapshot(raw:Parameters<typeof turnRuntimeIdentity>[0],...input:Parameters<Sandbox<M2SandboxEnv>['startProcess']>){const identity=turnRuntimeIdentity(raw);if(this.#warm.warm)return (await this.#warm.forIdentity(identity)).startTurnProcessSnapshot(identity,...input as Parameters<import('./workspace-native.ts').WorkspaceTrustedPiNativeController['startTurnProcessSnapshot']> extends [unknown,...infer R]?R:never);await this.#assertActor(identity);return this.#turnFence.runStart(identity,async()=>{const process=await super.startProcess(...input),status=await process.getStatus(),exitCode=process.exitCode;return {id:process.id,status,...(Number.isSafeInteger(exitCode)?{exitCode}: {})};},()=>this.#destroyForFence());}
+  async startTurnProcess(raw:Parameters<typeof turnRuntimeIdentity>[0],...input:Parameters<Sandbox<M2SandboxEnv>['startProcess']>){const identity=turnRuntimeIdentity(raw);if(this.#warm.warm)return (await this.#warm.forIdentity(identity)).startTurnProcess(identity,...input as Parameters<import('./workspace-native.ts').WorkspaceTrustedPiNativeController['startTurnProcess']> extends [unknown,...infer R]?R:never);await this.#assertActor(identity);return this.#turnFence.runStart(identity,()=>this.startProcess(...input),()=>this.#destroyForFence());}
+  async startTurnProcessSnapshot(raw:Parameters<typeof turnRuntimeIdentity>[0],...input:Parameters<Sandbox<M2SandboxEnv>['startProcess']>){const identity=turnRuntimeIdentity(raw);if(this.#warm.warm)return (await this.#warm.forIdentity(identity)).startTurnProcessSnapshot(identity,...input as Parameters<import('./workspace-native.ts').WorkspaceTrustedPiNativeController['startTurnProcessSnapshot']> extends [unknown,...infer R]?R:never);await this.#assertActor(identity);return this.#turnFence.runStart(identity,async()=>{const process=await this.startProcess(...input),status=await process.getStatus(),exitCode=process.exitCode;return {id:process.id,status,...(Number.isSafeInteger(exitCode)?{exitCode}: {})};},()=>this.#destroyForFence());}
   /** Provider-free release probe. Keep the SDK Process handle inside this DO
    * and return only plain data so the caller is not coupled to an RPC target's
    * lifetime. The command and all execution options are fixed here. */
@@ -53,7 +64,7 @@ export class TrustedPiSandbox extends Sandbox<M2SandboxEnv>{
     if(!token||!suffix||identity.scope.projectId!==`probe-${token}`||identity.scope.workspaceId!==`probe-${token}`||identity.scope.workspaceGeneration!==1||identity.sessionId!==`session-${token}`||identity.turnId!==`turn-${token}-${suffix}`||identity.dispatchId!==`dispatch-${token}-${suffix}`||identity.generation!==1)throw Error('trusted-pi-lifecycle-probe-identity-invalid');
     const processId=`probe-${token}`;
     return this.#turnFence.runStart(identity,async()=>{
-      const process=await super.startProcess('/bin/sleep 300',{processId,autoCleanup:false,timeout:300000,cwd:'/tmp',encoding:'utf8',env:{LANG:'C.UTF-8',PATH:'/usr/local/bin:/usr/bin:/bin'}});
+      recordNativeAttempt(this.ctx.storage,'taskStart');await this.ctx.storage.sync();const process=await this.startProcess('/bin/sleep 300',{processId,autoCleanup:false,timeout:300000,cwd:'/tmp',encoding:'utf8',env:{LANG:'C.UTF-8',PATH:'/usr/local/bin:/usr/bin:/bin'}});
       if(!process||process.id!==processId)throw Error('trusted-pi-lifecycle-probe-start-invalid');
       const status=await process.getStatus(),containerRunning=this.ctx.container?.running===true;
       if(status!=='running'||!containerRunning)throw Error('trusted-pi-lifecycle-probe-start-unconfirmed');
@@ -87,8 +98,10 @@ export class ProjectToolSandbox extends Sandbox<M2SandboxEnv>{
   override sleepAfter='5m';
   override envVars={};
   #preparation:ProjectPreparationLedger;
-  #effects:ProjectFileEffectPort;
-  #supervisor:SqlProjectEffectSupervisor;
+  #ownedEffects:ProjectFileEffectPort|null=null;
+  #ownedSupervisor:SqlProjectEffectSupervisor|null=null;
+  get #supervisor(){return this.#ownedSupervisor??=new SqlProjectEffectSupervisor(this.ctx.storage,new SandboxNativeProjectEffectPort(this));}
+  get #effects(){return this.#ownedEffects??=new ProjectFileEffectPort(this.#supervisor);}
   #workspace:SandboxProjectWorkspacePort;
   #turnFence:TurnSandboxFence;
   #warm:WorkspaceNativeHost<'project'>;
@@ -100,11 +113,17 @@ export class ProjectToolSandbox extends Sandbox<M2SandboxEnv>{
     this.#preparation=new ProjectPreparationLedger(ctx.storage,()=>ctx.container?.running===true);
     this.#actorId=ctx.id.name;this.#capabilityKey=env.M2_PROJECT_EFFECT_CAPABILITY_KEY;
     this.#warm=new WorkspaceNativeHost('project',{sandbox:this as unknown as WorkspaceNativeOptions['sandbox'],storage:ctx.storage,actorId:this.#actorId,running:()=>ctx.container?.running===true,capabilityKey:this.#capabilityKey},name=>{const owner=env.WORKSPACE_AGENT?.getByName(name);if(!owner)throw Error('workspace-native-owner-required');return owner as unknown as WorkspaceAgent;});
-    const native=new SandboxNativeProjectEffectPort(this);
-    this.#supervisor=new SqlProjectEffectSupervisor(ctx.storage,native);
-    this.#effects=new ProjectFileEffectPort(this.#supervisor);
     this.#workspace=new SandboxProjectWorkspacePort(this,this.#actorId);
     this.#turnFence=new TurnSandboxFence(ctx.storage);
+  }
+  override async startAndWaitForPorts(...input:Parameters<Sandbox<M2SandboxEnv>['startAndWaitForPorts']>){recordNativeAttempt(this.ctx.storage,'init');await this.ctx.storage.sync();return super.startAndWaitForPorts(...input);}
+  override async exec(...input:Parameters<Sandbox<M2SandboxEnv>['exec']>){recordNativeAttempt(this.ctx.storage,execAttemptTag(input[0]));await this.ctx.storage.sync();return super.exec(...input);}
+  override async startProcess(...input:Parameters<Sandbox<M2SandboxEnv>['startProcess']>){if(input[0].includes('/trusted-pi-turn-host.mjs'))recordNativeAttempt(this.ctx.storage,'taskStart');recordNativeAttempt(this.ctx.storage,'startProcess');await this.ctx.storage.sync();return super.startProcess(...input);}
+  async nativeAttemptSnapshot(raw:unknown){
+    const identity=turnRuntimeIdentity(raw),owner=this.ctx.storage.kv.get(NATIVE_OWNER_KEY),config=this.ctx.storage.kv.get<{context:{identity:unknown}}>('workspace-native-configuration'),fence=this.ctx.storage.kv.get<{identity?:unknown;dispatch?:unknown;sessionId?:string}>('turn-sandbox-fence-v1');
+    const bound=config?.context.identity??owner??fence?.identity??(fence?.dispatch&&fence.sessionId?{...(fence.dispatch as object),sessionId:fence.sessionId}:null);
+    if(!bound||JSON.stringify(turnRuntimeIdentity(bound))!==JSON.stringify(identity))throw Error('sandbox-counter-owner-denied');
+    return nativeAttemptSnapshot(this.ctx.storage,this.ctx.id.toString());
   }
   async configureWorkspaceBinding(input:{context:WorkspaceSandboxBinding;deadlineAt:number}){return this.#warm.configure(input);}
   async sealWorkspaceBinding(context:WorkspaceSandboxBinding){return this.#warm.seal(context);}
@@ -113,6 +132,7 @@ export class ProjectToolSandbox extends Sandbox<M2SandboxEnv>{
   async destroyWorkspaceLease(lease:WorkspaceSandboxBinding['lease']){return this.#warm.destroyLease(lease);}
   async #assertActor(identity:ReturnType<typeof turnRuntimeIdentity>){
     if((await sandboxActorIds(identity.scope,identity.turnId,identity.dispatchId)).project!==this.#actorId)throw Error('project-workspace-actor-scope-denied');
+    bindNativeOwner(this.ctx.storage,identity);await this.ctx.storage.sync();
   }
   async #assertDispatch(identity:Pick<ReturnType<typeof turnRuntimeIdentity>,'scope'|'turnId'|'dispatchId'>){
     if((await sandboxActorIds(identity.scope,identity.turnId,identity.dispatchId)).project!==this.#actorId)throw Error('project-workspace-actor-scope-denied');

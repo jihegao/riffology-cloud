@@ -1,0 +1,35 @@
+{
+  "schema": "riffology.browser-runtime-delivery/v1",
+  "profiles": [
+    "b142b02c7a1edd5eaa72989a8488b58c7309fea578ce8beff5ada642c44be981",
+    "d8ba03adacbcdf0458dfb23e33f80da52c4c852082158d687fe587676a07b79f"
+  ],
+  "host": {
+    "sha256": "fb0a20bbae6337b3f4f3133b473725b4345b22d4c44772af76055ee981da85ac",
+    "byteLength": 41030
+  },
+  "esbuildVersion": "0.28.1",
+  "buildOptions": {
+    "bundle": true,
+    "format": "esm",
+    "platform": "browser",
+    "target": "es2022",
+    "external": [
+      "node:*",
+      "ws"
+    ]
+  },
+  "executionBuildOptions": {
+    "bundle": true,
+    "format": "iife",
+    "platform": "browser",
+    "target": "es2022",
+    "external": [
+      "node:*",
+      "ws"
+    ],
+    "workerDefine": {
+      "import.meta.url": "self.location.href"
+    }
+  }
+}

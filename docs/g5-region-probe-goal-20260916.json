@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-16T09:20:33.342Z",
+  "worker": {
+    "name": "riffology-g5-region-probe-us-east-20260916",
+    "versionId": "67634122-64cd-4468-9a42-a61349c8f94c",
+    "module": {
+      "name": "index.js",
+      "bytes": 9004,
+      "sha256": "a9d0880fcd3b5e963681bf68aacc2021d0bb90226de7243dd29b19ca90f01579"
+    },
+    "placement": {
+      "mode": "targeted",
+      "region": "aws:us-east-1",
+      "serviceApiConfirmed": true,
+      "responseHeader": "remote-"
+    },
+    "ingressColo": "SJC",
+    "compatibilityFlags": [
+      "global_fetch_strictly_public"
+    ],
+    "bindings": [
+      "G5_PROBE_OPERATOR_CAPABILITY:secret_text",
+      "PRODUCTION_AI_GATEWAY_TOKEN:secret_text",
+      "PRODUCTION_OPENAI_API_KEY:secret_text"
+    ]
+  },
+  "gateway": {
+    "id": "riffology-g5-region-probe-20260916",
+    "authentication": true,
+    "byokOnly": true,
+    "zdr": true,
+    "collectLogs": false,
+    "cacheTtl": 0,
+    "retryMaxAttempts": 1
+  },
+  "result": {
+    "status": 200,
+    "state": "model-available",
+    "model": "gpt-5.6-luna",
+    "modelAvailable": true,
+    "inferenceCalls": 0
+  },
+  "mainAtValidation": {
+    "gates": {
+      "G5_ADMISSION_ENABLED": false,
+      "M2_MODEL_PROVIDER_ENABLED": false,
+      "M2_TURNS_ENABLED": false,
+      "M3_SERVICE_ENABLED": false,
+      "M4_SIMULATION_ENABLED": false,
+      "PRODUCTION_MODEL_ENABLED": false
+    }
+  },
+  "cleanup": {
+    "workerDeleted": true,
+    "gatewayDeleted": true,
+    "localUploadSecretRemoved": true,
+    "workerAbsenceCode": 10090,
+    "gatewayAbsenceCode": 7002
+  },
+  "conclusion": "Targeted us-east-1 placement probe reached the independent authenticated Gateway and listed gpt-5.6-luna with zero inference. Ingress cf.colo remained SJC; cf-placement indicated remote placement without an airport suffix."
+}

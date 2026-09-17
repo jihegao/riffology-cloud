@@ -1,3 +1,4 @@
+import {createBrowserPreviewPanel,browserPreviewRoute} from './browser-preview.js';
 import {createPublicationPanel} from './publication.js';
 import {createExportPanel} from './export.js';
 import {createEvidencePanel} from './evidence.js';
@@ -32,6 +33,7 @@ function renderModelState(){
   }
   status.dataset.state=state;status.textContent=text;
 }
+const browserPreviewPanel=createBrowserPreviewPanel({root:$('#workspace-browser-preview'),api,onVerified:()=>{void simulationPanel.reload();void comparisonPanel.reload();}});
 const previewPanel=createPreviewPanel({root:$('#workspace-preview'),api,autoRestore:true,onState:value=>{const pinned=value.available?.runId||value.current?.runId;if(pinned)servicePanel.selectRun(pinned);}});
 const servicePanel=createServicePanel({root:$('#workspace-services'),inspectRoot:$('#workspace-runtime-details'),api,workspaceMode:true,onPreparingRun:runId=>previewPanel.prepareRun(runId),onPreviewRun:(runId,options)=>options?.automatic?previewPanel.restoreRun(runId):previewPanel.openRun(runId),onState:detail=>{observedService=detail;renderModelState();if(detail.stopRequestedAt||['stopped','failed','cancelled'].includes(detail.runStatus))previewPanel.stoppedRun(detail.runId);}});
 const comparisonPanel=createComparisonPanel({root:$('#workspace-comparison'),api});
@@ -50,6 +52,7 @@ let pollDeadline = 0;
 let intent = null;
 let creating = false;
 let pendingProject = null;
+let pendingProjectTenantId = null;
 let models = [];
 let modelsStatus = 'loading';
 let modelsGeneration = 0;
@@ -103,7 +106,9 @@ function workspaceNeedsTurnUpdates(snapshot = workspaceSnapshot) {
   return Object.values(snapshot.turns || {}).some(turn => turn?.status === 'queued');
 }
 
-function show(message, error = false, action = null) {
+let projectNotice = null;
+function show(message, error = false, action = null, project = null) {
+  projectNotice = project ? {...project,tenantId:tenant?.id,kind:project.kind||'preparing'} : null;
   notice.replaceChildren();
   const text = document.createElement('span');
   text.textContent = message;
@@ -117,6 +122,28 @@ function show(message, error = false, action = null) {
   }
   notice.className = `notice${error ? ' error' : ''}`;
   notice.hidden = !message;
+}
+
+function syncProjectNotice(projects) {
+  if (!projectNotice || projectNotice.tenantId !== tenant?.id || projectNotice.kind !== 'preparing') return;
+  const project = projects.find(item => item.id === projectNotice.id);
+  if (!project) return;
+  if (project.status === 'ready') show('');
+  else if (project.status === 'failed') show('项目准备失败。请刷新项目状态后重试。', true, {label:'刷新',run:()=>void renderProjects()});
+}
+function scheduleProjectRefresh(projects) {
+  const preparing = projects.find(project => project.status === 'provisioning');
+  if (!preparing) return;
+  if (notice.hidden) show('项目正在准备中。',false,null,{id:preparing.id});
+  if (Date.now() >= pollDeadline) {
+    // A project timeout must not overwrite an unrelated error or notice.
+    if (!projectNotice || projectNotice.tenantId !== tenant?.id || projectNotice.id !== preparing.id) return;
+    show('项目准备状态确认超时，已停止自动刷新。', false, {label:'刷新',run:()=>{
+      pollDeadline=Date.now()+POLL_WINDOW_MS;
+      show('项目正在准备中。',false,null,{id:preparing.id});
+      void renderProjects();
+    }}, {id:preparing.id,kind:'timeout'});
+  } else if (!document.hidden) pollTimer=setTimeout(renderProjects,3000);
 }
 
 function renderModels() {
@@ -172,8 +199,9 @@ async function loadModels() {
 }
 
 async function api(path, options = {}) {
+  const {responseType,...fetchOptions}=options;
   const response = await fetch(path, {
-    credentials: 'same-origin', ...options,
+    credentials: 'same-origin', ...fetchOptions,
     headers: { 'Content-Type': 'application/json', ...options.headers },
   });
   if (!response.ok) {
@@ -184,6 +212,7 @@ async function api(path, options = {}) {
     if (code === 'turn_runtime_not_ready') messages[503] = '当前环境暂停接收新任务，请稍后查看状态。';
     throw Object.assign(new Error(messages[response.status] || '请求失败，请稍后重试'), { status: response.status, code, retryable: code !== 'turn_runtime_not_ready' });
   }
+  if(responseType==='bytes'){const length=Number(response.headers.get('content-length'));if(length>33554432)throw Error('资源过大');const bytes=new Uint8Array(await response.arrayBuffer());if(bytes.length>33554432)throw Error('资源过大');return bytes;}
   return response.status === 204 ? null : response.json();
 }
 
@@ -200,7 +229,7 @@ function stopEventStream() {
 }
 
 function accountView() {
-  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();}
+  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();}
   $('#login').hidden = authenticated;
   const workspaceRoutePending = Boolean(workspaceProjectIdFromHash()) && !activeProject;
   $('#app').hidden = !tenant || Boolean(activeProject) || workspaceRoutePending;
@@ -397,7 +426,7 @@ async function refreshWorkspaceFiles(generation = viewGeneration) {
   try{const value=await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/files`);if(!valid())return;
     const changed=workspaceFiles?.revision?.filesSha256!==value.revision?.filesSha256||workspaceFiles?.revision?.revisionId!==value.revision?.revisionId;
     workspaceFiles=value;servicePanel.savedRevision(workspaceId,value.revision);
-    if(changed){diffReadEpoch++;workspaceDiff=null;workspaceDiffError='';renderWorkspaceDiff();if(workspaceArtifactPanel==='diff')void refreshWorkspaceDiff(generation);void simulationPanel.reload();void comparisonPanel.reload();}
+    if(changed){browserPreviewPanel.savedRevision();diffReadEpoch++;workspaceDiff=null;workspaceDiffError='';renderWorkspaceDiff();if(workspaceArtifactPanel==='diff')void refreshWorkspaceDiff(generation);void simulationPanel.reload();void comparisonPanel.reload();}
   }catch(error){if(!valid())return;workspaceFilesError=error.message;}
   if(valid())renderWorkspaceFiles();
 }
@@ -510,6 +539,9 @@ function openWorkspace(project) {
   stopPolling();
   stopEventStream();
   viewGeneration++;
+  if (project.status === 'provisioning' && notice.hidden) show('项目正在准备中。',false,null,{id:project.id});
+  syncProjectNotice([project]);
+  scheduleProjectRefresh([project]);
   activeProject = project;observedModel=null;observedService=null;workspaceLayout.enter({tenantId:tenant.id,workspaceId:project.workspace_id});
   workspaceSnapshot = null;
   workspaceEvents = [];
@@ -526,10 +558,14 @@ function openWorkspace(project) {
   messageIntent = recovery.messageIntent || null;
   $('#message-input').value = messageIntent?.message ?? recovery.draft ?? '';
   $('#new-session').textContent = sessionIntent ? '重试新建对话' : '新建对话';
-  if (location.hash !== `#/workspace/${encodeURIComponent(project.id)}`) history.replaceState(null, '', `#/workspace/${encodeURIComponent(project.id)}`);
+  const browserRoute=browserPreviewRoute(location);
+  const standalone=browserRoute?.projectId===project.id;
+  $('#workspace').classList.toggle('browser-preview-standalone',standalone);
+  if (!standalone&&location.hash !== `#/workspace/${encodeURIComponent(project.id)}`) history.replaceState(null, '', `#/workspace/${encodeURIComponent(project.id)}`);
   $('#workspace-title').textContent = project.title;
+  $('#workspace-title').title = project.title;
   const ready=project.status==='ready';
-  $('#workspace-meta').textContent = ready?'研究工作区 · 模型与结果自动保存':'项目恢复中 · 已保存结果仍可查看';
+  $('#workspace-meta').textContent = ready?'研究工作区 · 模型与结果自动保存':project.status==='provisioning'?'项目准备中 · 自动刷新状态':'项目恢复中 · 已保存结果仍可查看';
   $('#message-input').disabled=!ready;$('#message-submit').disabled=true;$('#new-session').disabled=true;
   $('#session-select').disabled=!ready;$('#cancel-turn').hidden=true;
   $('#files-refresh').disabled=!ready;$('#files-tab').disabled=!ready;$('#diff-tab').disabled=!ready;
@@ -539,6 +575,9 @@ function openWorkspace(project) {
   renderWorkspaceFiles();
   renderWorkspaceDiff();
   selectArtifactPanel('files');
+  if(standalone)workspaceLayout.select('preview');
+  void browserPreviewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id,canOpen:ready,standalone,...(standalone?browserRoute:{})});
+  if(standalone){servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();return;}
   previewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,canOpen:ready});
   servicePanel.open({workspaceId:project.workspace_id,tenantId:tenant.id,canStart:ready});
   if(ready){void simulationPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});void comparisonPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});}else{simulationPanel.leave();comparisonPanel.leave();}
@@ -559,6 +598,9 @@ async function renderProjects() {
     const data = await api(`/api/tenants/${encodeURIComponent(tenant.id)}/projects`);
     if (generation !== viewGeneration || requestNumber !== listGeneration) return;
     const projects = [...data.projects];
+    if (pendingProject && pendingProjectTenantId !== tenant.id) pendingProject = null;
+    syncProjectNotice(projects);
+    if (pendingProject && projects.some(project => project.id === pendingProject.id)) pendingProject = null;
     const requestedProjectId = workspaceProjectIdFromHash();
     if (requestedProjectId) {
       const requested = projects.find(project => project.id === requestedProjectId && project.workspace_id);
@@ -614,17 +656,7 @@ async function renderProjects() {
       card.append(open);
       box.append(card);
     }
-    if (projects.some(project => project.status === 'provisioning')) {
-      if (Date.now() >= pollDeadline) {
-        show('项目仍在准备中，已停止自动刷新。', false, { label: '刷新', run: () => {
-          pollDeadline = Date.now() + POLL_WINDOW_MS;
-          show('');
-          void renderProjects();
-        } });
-      } else if (!document.hidden) {
-        pollTimer = setTimeout(renderProjects, 3000);
-      }
-    }
+    scheduleProjectRefresh(projects);
   } catch (error) {
     if (generation !== viewGeneration || requestNumber !== listGeneration) return;
     if (error.status === 401) {
@@ -641,13 +673,14 @@ async function renderProjects() {
 }
 
 function workspaceProjectIdFromHash() {
+  const browserRoute=browserPreviewRoute(location);if(browserRoute)return browserRoute.projectId;
   const match = location.hash.match(/^#\/workspace\/([^/]+)$/);
   if (!match) return null;
   try { return decodeURIComponent(match[1]); } catch { return null; }
 }
 
 async function load() {
-  servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();
+  servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();
   const generation = ++viewGeneration;
   stopPolling();
   stopEventStream();
@@ -678,14 +711,14 @@ async function load() {
 
 $('#google').onclick = async () => {
   try {
-    const data = await api('/api/auth/sign-in/social', { method: 'POST', body: JSON.stringify({ provider: 'google', callbackURL: location.origin + '/' }) });
+    const data = await api('/api/auth/sign-in/social', { method: 'POST', body: JSON.stringify({ provider: 'google', callbackURL: location.origin + '/' + (browserPreviewRoute(location)?location.hash:'') }) });
     if (data?.url) location.assign(data.url);
   } catch (error) { show(error.message, true); }
 };
 
 $('#sign-out').onclick = async () => {
   viewGeneration++;
-  servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();
+  servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();
   stopEventStream();
   stopPolling();
   const button = $('#sign-out');
@@ -718,7 +751,8 @@ document.addEventListener('visibilitychange', () => {
   stopPolling();
   stopEventStream();
   listGeneration++;
-  if (!document.hidden && activeProject) void refreshWorkspace(viewGeneration);
+  if (!document.hidden && activeProject?.status === 'provisioning') void renderProjects();
+  else if (!document.hidden && activeProject) void refreshWorkspace(viewGeneration);
   else if (!document.hidden && tenant) void renderProjects();
 });
 
@@ -913,7 +947,8 @@ $('#project-form').onsubmit = async event => {
     dialog.close();
     intent = null;
     pendingProject = result.project;
-    show(result.project.status === 'provisioning' ? '项目正在准备中。' : '项目已创建。');
+    pendingProjectTenantId = current.tenantId;
+    show(result.project.status === 'provisioning' ? '项目正在准备中。' : '项目已创建。',false,null,result.project.status==='provisioning'?{id:result.project.id}:null);
     pollDeadline = Date.now() + POLL_WINDOW_MS;
     await renderProjects();
   } catch (error) {

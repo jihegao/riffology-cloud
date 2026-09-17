@@ -5,7 +5,7 @@ export const tasks=[
  {id:'create-model',prompt:'Create a queue model with explicit arrivals, service process, assumptions, parameters, metrics and limitations. Save a valid Model Spec and run the Python validation.'},
  {id:'parameter-change',prompt:'Change the arrival-rate parameter using the experiment controls. Run a baseline and an intervention without editing model source. Explain the exact saved result IDs.'},
  {id:'mechanism-change',prompt:'Add abandonment after a waiting threshold. Update the mechanism, assumptions and Model Spec together; validate Python and save the new model revision.'},
- {id:'repair-validation',prompt:'Inspect the seeded Python validation failure. Fix its cause, run validation again, and cite the failed and repaired artifacts separately.'},
+ {id:'repair-validation',prompt:'Inspect the seeded Python validation failure. Fix its cause, run validation again, and cite the failed validation Tool Ledger evidence and repaired saved Revision separately.'},
  {id:'measured-evidence',prompt:'Compare baseline and intervention across the fixed seeds. Explain the measured difference using persisted evidence cards and exact Experiment, Run, metric and artifact references.'},
  {id:'reopen-continue',prompt:'Reopen the saved project, inspect its actual files and prior results, then extend the model and validate the saved revision. Keep old-version results marked as historical.'},
 ];

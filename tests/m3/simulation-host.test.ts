@@ -1,3 +1,5 @@
+import {GROUP_RESERVATION} from '../../services/simulation/group-state.ts';
+import {simulationToken} from '../../services/simulation/native.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
@@ -5,7 +7,7 @@ import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {SimulationHost,publicExperiment,publishSimulationResult,type SimulationPorts} from '../../services/simulation/host.ts';
-import {modelVersion,type SimulationPlan} from '../../services/simulation/source.ts';
+import {modelVersion,digest,type SimulationPlan} from '../../services/simulation/source.ts';
 import {SqlTenantQuota} from '../../services/quota/core.ts';
 import {fixture,scope,actor,spec as serviceSpec} from './run-fixture.ts';
 import {SIMULATION_WAKE_KEY,TURN_WAKE_KEY} from '../../services/workspace/shared-alarm.ts';
@@ -100,3 +102,16 @@ test('overlapping alarms on the Workspace-owned host cannot dispatch twice',asyn
  f.ports.quota.dispatch=async lease=>{dispatches++;grant=await dispatch(lease);entered();return new Promise(r=>{resolve=r;});};
  const r=await h.submit(actor,'overlapping-alarm',f.request,plan,'image',()=>true),first=h.alarm();await reached;await h.alarm();assert.equal(dispatches,1);assert.equal(f.starts,0);assert.equal(f.observes,0);resolve(grant!);await first;assert.equal(f.starts,1);assert.equal((await h.get(r.runId)).startClaimed,true);
 });
+
+test('root native facts persist separately from model outputs and reject absent child or mismatched stop',async t=>{
+ const f=setup(t),r=await f.host().submit(actor,'observed',f.request,plan,'image',()=>true);let body='';const bucket={put:async(_k:string,b:string)=>{body=b;},get:async()=>({size:body.length,text:async()=>body})} as unknown as R2Bucket;
+ const token=await simulationToken(r.input),nativeObservation={schemaVersion:1,runId:r.runId,token,filesSha256:modelVersion(plan).filesSha256,child:{pid:12,startTicks:40,uid:[10001,10001,10001,10001],gid:[10001,10001,10001,10001],noNewPrivileges:1,rlimitAS:[536870912,536870912],rlimitNPROC:[64,64],pidfd:'unobserved',network:{seccompMode:2,childSetupAcknowledged:true,specificFilterObserved:false,platformFallbackConfigured:false}},stop:{confirmationId:await digest('simulation-stop:'+token),observedAt:10,fenced:true},sealed:true,quiescent:true};
+ const raw={exitCode:0,result:{schemaVersion:1,metrics:{wait:2}},pythonVersion:'3.11.1',nativeObservation};await publishSimulationResult(bucket,r,raw);assert.deepEqual(JSON.parse(body).nativeObservation,nativeObservation);
+ for(const bad of [{...nativeObservation,child:null},{...nativeObservation,stop:{...nativeObservation.stop,confirmationId:'f'.repeat(64)}}])await assert.rejects(publishSimulationResult(bucket,r,{...raw,nativeObservation:bad}),/invalid/);
+ await assert.rejects(publishSimulationResult(bucket,r,{exitCode:0,pythonVersion:'3.11.1',result:{...raw.result,nativeObservation}}),/invalid/);
+});
+
+test('each childRun persists own admission route; expired start guard prevents quota/native dispatch after reopen',async t=>{const f=setup(t);let admissions=0,acquires=0;f.ports.admitRun=async(_actor,_key,_request,runId)=>{admissions++;return {kind:'g5',taskKey:await digest(runId),windowId:'g5',profileSha256:'a'.repeat(64)};};f.ports.beforeStart=async(record)=>{assert.ok(record.budgetRoute);throw Error('g5-window-deadline');};const acquire=f.ports.quota.acquire;f.ports.quota.acquire=async request=>{acquires++;return acquire(request);};await f.storage.put(GROUP_RESERVATION+'group-a',['run-a','run-b']);const first=await f.host().submit(actor,'child-a',f.request,plan,'image',()=>true,{groupId:'group-a',runId:'run-a',permit:async()=>true});const second=await f.host().submit(actor,'child-b',f.request,plan,'image',()=>true,{groupId:'group-a',runId:'run-b',permit:async()=>true});assert.equal(admissions,2);assert.notEqual(first.budgetRoute?.taskKey,second.budgetRoute?.taskKey);f.reopen();await f.host().alarm();assert.equal(acquires,0);assert.equal(f.starts,0);});
+
+test('actual Run commit ACK loss leaves guard unbound; independent stored-read reconciliation binds without new intent',async t=>{const f=setup(t);let registrations=0,bindings=0;f.ports.admitRun=async()=>{registrations++;return {kind:'g5',taskKey:'a'.repeat(64),windowId:'g5',profileSha256:'b'.repeat(64)};};f.ports.createdRun=async record=>{assert.ok(await f.storage.get('simulation:run:'+record.runId));bindings++;};f.ports.beforeStart=async()=>{if(!bindings)throw Error('guard-task-unbound');};f.loseSync();await assert.rejects(f.host().submit(actor,'g5-unknown',f.request,plan,'image',()=>true),/lost-ack/);assert.equal(bindings,0);f.reopen();await f.host().alarm();assert.equal(f.starts,0);const records=await f.host().list();assert.equal(records.items.length,1);await f.host().reconcileCreatedRun(records.items[0].runId);assert.equal(bindings,1);assert.equal(registrations,1);});
+test('failed childRun transaction does not bind the registered creation',async t=>{const f=setup(t);let bindings=0;f.ports.admitRun=async()=>({kind:'g5',taskKey:'a'.repeat(64),windowId:'g5',profileSha256:'b'.repeat(64)});f.ports.createdRun=async()=>{bindings++;};await f.storage.put(GROUP_RESERVATION+'group-b',['run-c']);await assert.rejects(f.host().submit(actor,'child-fail',f.request,plan,'image',()=>true,{groupId:'group-b',runId:'run-c',permit:async()=>false}),/group-admission-closed/);assert.equal(bindings,0);assert.equal((await f.host().list()).items.length,0);assert.equal(f.starts,0);});

@@ -1,0 +1,13 @@
+# G5 closed-first production overlay compiler
+
+`compileG5ProductionOverlay(baseWranglerObject, freezeBundle, phase, {sourceSha256})`生成私有配置，不打印、不部署、不新建namespace或接纳任务。本模块仅新增scripts/test/doc，不改infra/gateway现有源码。冻结manifest kind为closed-frozen-window-not-admission：用户已授权冻结，但不等于首准入已经发生。
+
+compiler用compileG5Freeze重新生成canonical私有policy与脱敏manifest，逐字比较bundle和profile/pin/source，拒绝重写hash后伪造policy的输入。A/B必须同profile/token/moneyperiod，五门禁false、钱enabled=false；Service/Preview/WS亦false。Source digest必须由主控实际源码核对后显式传入，不将字符串参数当active release证据。
+
+保持base的全部旧bindings及namespace IDs、class exports、containers/images、routes、services、已有migrations/D1/R2及vars；旧MODEL_BUDGET_*和G4_*字段严格不变。仅添加G5_WINDOW_GUARD→G5ControlledWindow、G5_TOKEN_BUDGET→G5TenantModelBudget、PRODUCTION_MODEL_BUDGET→ProductionModelBudget三个同workerbinding及sqlite exports，不设置旧namespace的新ID。已有相同binding/export可复用，冲突拒绝。required secrets追加两固定生产secret引用，无密钥值。
+
+新运行provider变量OpenAI/Luna，M2_MODEL_BUDGET_POLICY_VERSION为G5token固定version；保留原MODEL_BUDGET_POLICY_VERSION等旧token配置，新增独立G5_TOKEN_BUDGET_POLICY_JSON。此区别防新Turn与旧G4 singleton互换预算政策。主控负责实际source exports、新sqlite namespace与Cloud部署迁移核验；compiler的sqlite exports配置不冒称实际Cloud迁移完成。
+
+输入base必须是主控已合并实际线上设置的Wrangler JSON对象；只依赖历史仓库配置不提供release parity。返回包含私有principal/window/policy JSON，必须mode0600本地持久，不加入公共repo或stdout。无CLI自动输出路径，主控按已批准本轮私有配置流程存放。
+
+2针对性tests通过，加freeze3测试共5：身份/旧runtime及ids不变、phase共用moneyepoch、closed-first、source/伪造policy/openflag/binding冲突拒绝。未执行Cloud/模型或读取密钥。

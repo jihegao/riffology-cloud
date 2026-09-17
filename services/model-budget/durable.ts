@@ -1,7 +1,9 @@
+import {G4WindowGuard,readG4WindowSnapshot,g4WindowPolicy,type G4Task} from './g4-window.ts';
 import { DurableObject } from 'cloudflare:workers';
 import { SqlTenantModelBudget, modelBudgetTenantName, type ModelBudgetPolicy, type ModelCallReference } from './core.ts';
 
 export interface TenantModelBudgetEnv{
+  G4_CONTROLLED_WINDOW_JSON?:string;
   TENANT_MODEL_BUDGET:DurableObjectNamespace<TenantModelBudget>;
   MODEL_BUDGET_POLICY_VERSION:string;
   MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN:string;
@@ -21,9 +23,15 @@ export class TenantModelBudget extends DurableObject<TenantModelBudgetEnv>{
     const expected=this.env.TENANT_MODEL_BUDGET.idFromName(modelBudgetTenantName(tenantId));
     if(!expected.equals(this.ctx.id))throw Error('model-budget-actor-scope-denied');
     if(this.#tenantId!==null&&this.#tenantId!==tenantId)throw Error('model-budget-tenant-conflict');
-    if(!this.#core){const policy:ModelBudgetPolicy={tenantId,version:this.env.MODEL_BUDGET_POLICY_VERSION,maxReservationAttemptsPerTurn:decimal(this.env.MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN),maxDispatchedCallsPerTurn:decimal(this.env.MODEL_BUDGET_MAX_DISPATCHED_CALLS_PER_TURN),maxInputTokensPerCall:decimal(this.env.MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL),maxOutputTokensPerCall:decimal(this.env.MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL),maxReservedTokensPerTurn:decimal(this.env.MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN)};this.#core=new SqlTenantModelBudget(this.ctx.storage,policy);this.#tenantId=tenantId;}
+    if(!this.#core){const policy:ModelBudgetPolicy={tenantId,version:this.env.MODEL_BUDGET_POLICY_VERSION,maxReservationAttemptsPerTurn:decimal(this.env.MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN),maxDispatchedCallsPerTurn:decimal(this.env.MODEL_BUDGET_MAX_DISPATCHED_CALLS_PER_TURN),maxInputTokensPerCall:decimal(this.env.MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL),maxOutputTokensPerCall:decimal(this.env.MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL),maxReservedTokensPerTurn:decimal(this.env.MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN)};this.#core=new SqlTenantModelBudget(this.ctx.storage,policy,Date.now,()=>crypto.randomUUID(),g4WindowPolicy(this.env.G4_CONTROLLED_WINDOW_JSON===undefined?undefined:JSON.parse(this.env.G4_CONTROLLED_WINDOW_JSON)));this.#tenantId=tenantId;}
     return this.#core;
   }
+  #g4(tenantId:string){
+    if(!this.env.TENANT_MODEL_BUDGET.idFromName(modelBudgetTenantName(tenantId)).equals(this.ctx.id))throw Error('g4-window-actor-scope-denied');
+    return new G4WindowGuard(this.ctx.storage,g4WindowPolicy(this.env.G4_CONTROLLED_WINDOW_JSON===undefined?undefined:JSON.parse(this.env.G4_CONTROLLED_WINDOW_JSON)));
+  }
+  async g4AdmitTask(tenantId:string,task:G4Task){if(task.tenantId!==tenantId)throw Error('g4-window-actor-scope-denied');const guard=this.#g4(tenantId);const result=this.ctx.storage.transactionSync(()=>guard.taskSync(task));await this.ctx.storage.sync();return result;}
+  async g4WindowSnapshot(tenantId:string){if(!this.env.TENANT_MODEL_BUDGET.idFromName(modelBudgetTenantName(tenantId)).equals(this.ctx.id))throw Error('g4-window-actor-scope-denied');return readG4WindowSnapshot(this.ctx.storage,g4WindowPolicy(this.env.G4_CONTROLLED_WINDOW_JSON===undefined?undefined:JSON.parse(this.env.G4_CONTROLLED_WINDOW_JSON)));}
   async closeTurnAdmission(tenantId:string,identity:unknown){return this.#forTenant(tenantId).closeTurnAdmission(identity);}
   async turnSettlement(tenantId:string,identity:unknown){return this.#forTenant(tenantId).turnSettlement(identity);}
   async reserve(tenantId:string,request:unknown){return this.#forTenant(tenantId).reserve(request);}

@@ -7,7 +7,7 @@ function fixture(){
  let values=new Map<string,unknown>(),durable=new Map<string,unknown>(),failSync=false,hold=false;const pending:Array<{commit():void;fail():void}>=[],events:string[]=[];
  const storage={
   kv:{get:(key:string)=>{events.push('get');return values.get(key);},put:(key:string,value:unknown)=>{events.push('put');values.set(key,value);}},
-  transactionSync:<T>(operation:()=>T)=>{events.push('transaction-start');const before=structuredClone(values);try{return operation();}catch(error){values=before;events.push('rollback');throw error;}},
+  transaction:async<T>(operation:(tx:DurableObjectTransaction)=>Promise<T>)=>{events.push('transaction-start');const before=structuredClone(values);try{return await operation({get:async(key:string)=>{events.push('get');return values.get(key);},put:async(key:string,value:unknown)=>{events.push('put');values.set(key,value);},list:async({prefix}:{prefix:string})=>new Map([...values].filter(([key])=>key.startsWith(prefix))),delete:async(key:string)=>values.delete(key),setAlarm:async(at:number)=>values.set('test:alarm',at),deleteAlarm:async()=>values.delete('test:alarm')} as unknown as DurableObjectTransaction);}catch(error){values=before;events.push('rollback');throw error;}},
   sync:()=>{
    events.push('sync');const snapshot=structuredClone(values);
    if(failSync)return Promise.reject(Error('injected-sync-failure'));
@@ -20,7 +20,7 @@ function fixture(){
 test('durable turn store acknowledges only after SQLite sync and detaches aliases',async()=>{
  const f=fixture();f.hold(true);const journal=new TurnJournal(f.store(),()=>1000);let resolved=false;
  const result=journal.createSession(scope,actor,'session-key',{title:'Session'}).then(value=>{resolved=true;return value;});
- for(let i=0;i<20&&f.pending.length===0;i++)await new Promise<void>(resolve=>setImmediate(resolve));assert.equal(resolved,false);assert.ok(f.peek());assert.equal(f.persisted(),undefined);assert.deepEqual(f.events.slice(-4),['transaction-start','get','put','sync']);
+ for(let i=0;i<20&&f.pending.length===0;i++)await new Promise<void>(resolve=>setImmediate(resolve));assert.equal(resolved,false);assert.ok(f.peek());assert.equal(f.persisted(),undefined);assert.equal(f.events.at(-1),'sync');assert.ok(f.events.indexOf('transaction-start')<f.events.indexOf('put'));
  f.pending[0]!.commit();const created=await result;assert.equal(created.replayed,false);created.session.title='mutated';assert.equal((f.persisted() as any).sessions[created.session.id].title,'Session');
 });
 test('sync uncertainty preserves an idempotent accepted session for readback',async()=>{

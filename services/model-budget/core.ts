@@ -1,3 +1,4 @@
+import {G4WindowGuard,type G4WindowPolicy} from './g4-window.ts';
 import { actor as validateActor, positive, sha, turnDigest, type TurnActor } from '../turn/protocol.ts';
 import { turnRuntimeIdentity, type TurnRuntimeIdentity } from '../turn-runtime/identity.ts';
 
@@ -223,10 +224,12 @@ export class SqlTenantModelBudget {
   #clock: () => number;
   #id: () => string;
   #ready: Promise<void>;
+  readonly g4:G4WindowGuard;
 
-  constructor(storage: ModelBudgetStorage, policy: ModelBudgetPolicy, clock: () => number = Date.now, id: () => string = () => crypto.randomUUID()) {
+  constructor(storage: ModelBudgetStorage, policy: ModelBudgetPolicy, clock: () => number = Date.now, id: () => string = () => crypto.randomUUID(),g4Policy:G4WindowPolicy|null=null) {
     if (!storage?.sql?.exec || !storage.transactionSync || !storage.sync) reject('sqlite-model-budget-storage-required');
     this.#storage = storage;
+    this.g4=new G4WindowGuard(storage,g4Policy,clock);
     this.#policy = configuredPolicy(structuredClone(policy));
     this.#clock = clock;
     this.#id = id;
@@ -383,6 +386,7 @@ export class SqlTenantModelBudget {
       const accounted = Number(this.#rows('SELECT coalesce(sum(accounted_tokens),0) AS n FROM model_calls WHERE turn_key=?', keys.turn)[0]?.n ?? 0);
       if (!Number.isSafeInteger(reservationTokens) || !Number.isSafeInteger(accounted)
         || reservationTokens > this.#policy.maxReservedTokensPerTurn - accounted) reject('model-turn-token-budget-exhausted');
+      this.g4.reserveSync(request,keys.call,keys.turn);
       const reservationId = identifier(this.#id());
       this.#storage.sql.exec(
         "INSERT INTO model_calls(call_key,turn_key,call_id,request_id,identity_json,request_json,request_digest,reservation_id,reservation_tokens,accounted_tokens,status,reconciliation,accepted_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,'reserved','held',?,?)",
@@ -405,7 +409,7 @@ export class SqlTenantModelBudget {
     return row ? structuredClone(await this.#verified(row)) : null;
   }
 
-  async dispatch(value: unknown): Promise<{ authorized: boolean; observeOnly: boolean; record: ModelCallRecord }> {
+  async dispatch(value: unknown): Promise<{ authorized: boolean; observeOnly: boolean; record: ModelCallRecord;controlledWindowDeadlineAt?:number }> {
     const reference = normalizedReference(value);
     this.#scope(reference.identity);
     const key = await callKey(reference.identity, reference.callId);
@@ -425,9 +429,11 @@ export class SqlTenantModelBudget {
       if(this.#rows('SELECT 1 FROM model_turn_admission_closures WHERE turn_key=?',current.turnKey).length)return;
       const now = this.#now();
       if (current.deadlineAt <= now) {
+        this.g4.releaseSync(key);
         this.#storage.sql.exec("UPDATE model_calls SET status='not-dispatched',reconciliation='released',accounted_tokens=0,updated_at=?,finished_at=?,release_id=?,release_json=?,release_digest=? WHERE call_key=?", now, now, expiryProof.confirmationId, canonical(expiryProof), expiryDigest, key);
         return;
       }
+      this.g4.dispatchSync(key);
       const ordinal = Number(this.#rows('SELECT count(*) AS n FROM model_calls WHERE turn_key=? AND dispatched_at IS NOT NULL', current.turnKey)[0]?.n ?? 0) + 1;
       this.#storage.sql.exec("UPDATE model_calls SET status='dispatched',updated_at=?,dispatched_at=?,dispatch_ordinal=? WHERE call_key=?", now, now, ordinal, key);
       granted = true;
@@ -437,7 +443,8 @@ export class SqlTenantModelBudget {
       const row = this.#get(key);
       if (!row) reject('model-call-not-found');
       const current = this.#record(row), now = this.#now();
-      if (granted && current.status === 'dispatched' && current.deadlineAt <= now) {
+      if (granted && current.status === 'dispatched' && (current.deadlineAt <= now || (this.g4.deadlineAt()!==null&&this.g4.deadlineAt()!<=now))) {
+        this.g4.unknownSync(key);
         this.#storage.sql.exec("UPDATE model_calls SET status='unknown',reconciliation='pending',updated_at=?,unknown_at=? WHERE call_key=?", now, now, key);
         granted = false;
         return this.#record(this.#get(key)!);
@@ -445,7 +452,7 @@ export class SqlTenantModelBudget {
       return current;
     });
     await this.#storage.sync();
-    return { authorized: granted && final.status === 'dispatched', observeOnly: !granted && (final.status === 'dispatched' || final.status === 'unknown'), record: structuredClone(final) };
+    return { authorized: granted && final.status === 'dispatched', observeOnly: !granted && (final.status === 'dispatched' || final.status === 'unknown'), record: structuredClone(final),...(this.g4.deadlineAt()===null?{}:{controlledWindowDeadlineAt:this.g4.deadlineAt()!}) };
   }
 
   async markUnknown(value: unknown): Promise<ModelCallRecord> {
@@ -456,6 +463,7 @@ export class SqlTenantModelBudget {
       if (current.status === 'reserved') reject('model-call-not-dispatched');
       if (current.status === 'dispatched') {
         const now = this.#now();
+        this.g4.unknownSync(key);
         this.#storage.sql.exec("UPDATE model_calls SET status='unknown',reconciliation='pending',updated_at=?,unknown_at=? WHERE call_key=?", now, now, key);
       }
       return this.#record(this.#get(key)!);
@@ -482,6 +490,7 @@ export class SqlTenantModelBudget {
       const accountedTokens = terminal.usage.kind === 'verified' ? terminal.usage.inputTokens + terminal.usage.outputTokens : latest.reservationTokens;
       const reconciliation = terminal.usage.kind === 'verified' ? 'recorded' : 'pending';
       const now = this.#now();
+      this.g4.finishSync(key,terminal);
       this.#storage.sql.exec('UPDATE model_calls SET status=?,reconciliation=?,accounted_tokens=?,updated_at=?,finished_at=?,terminal_json=?,terminal_digest=? WHERE call_key=?', terminal.outcome, reconciliation, accountedTokens, now, now, canonical(terminal), terminalDigest, key);
       return this.#record(this.#get(key)!);
     });
@@ -502,6 +511,7 @@ export class SqlTenantModelBudget {
         return current;
       }
       if (current.status !== 'reserved') reject('model-call-may-have-dispatched');
+      this.g4.releaseSync(key);
       if (this.#rows('SELECT call_key FROM model_calls WHERE release_id=?', proof.confirmationId).length) reject('model-release-proof-reused');
       this.#storage.sql.exec("UPDATE model_calls SET status='not-dispatched',reconciliation='released',accounted_tokens=0,updated_at=?,finished_at=?,release_id=?,release_json=?,release_digest=? WHERE call_key=?", now, now, proof.confirmationId, canonical(proof), proofDigest, key);
       return this.#record(this.#get(key)!);

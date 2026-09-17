@@ -36,7 +36,7 @@ export class OpenAIGatewayResponsesProvider implements ProductModelProvider {
  constructor(options:{profile:ProductionProfile;providerKey:string;gatewayKey:string;fetch?:typeof fetch;clock?:()=>number}){
   this.productionProfile=productionProfile(options.profile);
   for(const key of [options.providerKey,options.gatewayKey])if(typeof key!=='string'||key.length<16||key.length>4096||/[\r\n]/.test(key))throw Error('invalid-production-secrets');
-  this.#providerKey=options.providerKey;this.#gatewayKey=options.gatewayKey;this.#fetch=options.fetch??fetch;this.#now=options.clock??Date.now;
+  this.#providerKey=options.providerKey;this.#gatewayKey=options.gatewayKey;this.#fetch=options.fetch??globalThis.fetch.bind(globalThis);this.#now=options.clock??Date.now;
  }
  async dispatch(input:ProductModelProviderInput):Promise<ProductModelProviderResult>{
   if(input.provider!=='openai'||input.model!==this.productionProfile.model||!externalId.test(input.idempotencyKey)||input.deadlineAt<=this.#now())throw Error('rejected-auth');
@@ -52,7 +52,7 @@ export class OpenAIGatewayResponsesProvider implements ProductModelProvider {
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(new DOMException('deadline','TimeoutError')),input.deadlineAt-this.#now()),signal=input.signal?AbortSignal.any([input.signal,controller.signal]):controller.signal;
   try{
    signal.throwIfAborted();
-   const response=await this.#fetch(productionEndpoint(this.productionProfile),{method:'POST',redirect:'manual',signal,headers:{'content-type':'application/json',accept:'text/event-stream',authorization:`Bearer ${this.#providerKey}`,'cf-aig-authorization':`Bearer ${this.#gatewayKey}`,'cf-aig-skip-cache':'true','cf-aig-collect-log-payload':'false','cf-aig-max-attempts':'1','x-client-request-id':input.idempotencyKey},body:JSON.stringify({...payload,prompt_cache_key:undefined,prompt_cache_retention:'in_memory',service_tier:'default',model:this.productionProfile.model,max_output_tokens:input.maxOutputTokens})});
+   let response:Response;try{response=await this.#fetch(productionEndpoint(this.productionProfile),{method:'POST',redirect:'manual',signal,headers:{'content-type':'application/json',accept:'text/event-stream',authorization:`Bearer ${this.#providerKey}`,'cf-aig-authorization':`Bearer ${this.#gatewayKey}`,'cf-aig-skip-cache':'true','cf-aig-collect-log-payload':'false','cf-aig-max-attempts':'1','x-client-request-id':input.idempotencyKey},body:JSON.stringify({...payload,prompt_cache_key:undefined,prompt_cache_retention:'in_memory',service_tier:'default',model:this.productionProfile.model,max_output_tokens:input.maxOutputTokens})});}catch(error){if(error instanceof TypeError)throw Error('provider-fetch-typeerror');throw error;}
    const headerId=response.headers.get('x-request-id');
    if(response.status<200||response.status>=300){await response.body?.cancel();return {status:response.status,providerRequestId:headerId&&externalId.test(headerId)?headerId:null,inputTokens:null,outputTokens:null,responseContentType:'application/json',responseBody:encoder.encode(JSON.stringify({error:productionHttpFailure(response.status)}))};}
    if(response.headers.get('content-type')?.split(';')[0].trim()!=='text/event-stream'||!response.body)throw Error('malformed-stream');

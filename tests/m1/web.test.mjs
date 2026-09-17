@@ -5,7 +5,7 @@ import { chromium } from 'playwright';
 import { JSON_REQUEST_MAX_BYTES } from '../../services/gateway/http.ts';
 import { renderWorkspace } from '../../ui/workspace.js';
 
-const files = Object.fromEntries(await Promise.all(['index.html', 'app.js', 'layout.js', 'export.js', 'publication.js', 'evidence.js', 'evidence.css', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'styles.css', 'workspace.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
+const files = Object.fromEntries(await Promise.all(['index.html', 'app.js', 'browser-preview.js', 'layout.js', 'export.js', 'publication.js', 'evidence.js', 'evidence.css', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'styles.css', 'workspace.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
 const workspaceUiSource = await readFile(new URL('../../ui/workspace.js', import.meta.url), 'utf8');
 let browser;
 before(async () => { browser = await chromium.launch({ headless: true, channel: process.env.M1_BROWSER_CHANNEL || 'chrome' }); });
@@ -27,6 +27,7 @@ async function pageFixture(t, handle, options = {}) {
       if (url.pathname === '/api/me') return json(route, { tenants: [{ id: 'tenant-a' }] });
       if (url.pathname === '/api/models') return json(route, { models: [] });
       if (url.pathname === '/api/tenants/tenant-a/projects') return json(route, { projects: [] });
+      if (/^\/api\/workspaces\/[^/]+\/browser-preview$/.test(url.pathname) && route.request().method()==='GET') return json(route,{currentRevisionId:null,revisionId:null,build:null,stale:false,modelSpec:null,reasonCode:'preview-no-saved-revision',delivery:null});
       if (/^\/api\/workspaces\/[^/]+\/model$/.test(url.pathname)) return json(route, { version: null, spec: null, reasonCode: 'model_not_saved', canRun: false });
       if (/^\/api\/workspaces\/[^/]+\/evidence$/.test(url.pathname)) return json(route,{items:[],nextCursor:null});
       if (/^\/api\/workspaces\/[^/]+\/experiment-groups$/.test(url.pathname) && route.request().method() === 'GET') return json(route, { items: [], nextCursor: null });
@@ -232,7 +233,7 @@ test('ready project opens the real workspace APIs and keeps platform and Pi resp
   await page.locator('.project .meta').filter({ hasText: '官方版本 · 独立副本' }).waitFor();
   await page.locator('.project-open').click();
   await page.locator('#workspace:not([hidden])').waitFor();
-  await page.locator('[data-workspace-depth=inspect]').click();await page.locator('.boundary-note summary').click();
+  await page.getByRole('tab',{name:'Inspect',exact:true}).click();await page.locator('.boundary-note summary').click();
   assert.match(await page.locator('.boundary-note').innerText(), /平台负责身份、预算、保存和恢复/);
   assert.match(await page.locator('.boundary-note').innerText(), /模型代码在隔离环境运行/);
   assert.equal(await page.locator('.turn-card.user p').innerText(), '<img src=x onerror=alert(1)>');
@@ -332,7 +333,7 @@ test('authenticated workspace renders Files and lazily reads parent Revision Dif
     if (path === `/api/workspaces/${workspaceId}/events`) { await json(route, { events: [], nextSequence: 0, hasMore: false, oldestSequence: 1, snapshotRequired: false }); return true; }
   });
   await page.goto('https://ui.test/#/workspace/project-files');
-  await page.locator('[data-workspace-depth=inspect]').click();
+  await page.getByRole('tab',{name:'Inspect',exact:true}).click();
   await page.locator('.file-entry').nth(1).waitFor();
   assert.equal(fileReads, 1);assert.equal(await page.locator('.file-entry').count(), 2);assert.equal(await page.locator('.file-entry img').count(), 0);
   assert.match(await page.locator('.file-entry').nth(1).innerText(), /<img src=x onerror=alert\(1\)>\.py.*1\.5 KB/s);
@@ -580,7 +581,7 @@ test('delta-only output is deterministic and malformed-only output stays empty',
 test('real browser pauses polling when hidden, resumes one chain and stops after five elapsed minutes', async t => {
   let requests = 0;
   const page = await pageFixture(t, async (route, path) => {
-    if (path.endsWith('/projects')) { requests++; await json(route, { projects: [{ title: 'Initializing', status: 'provisioning' }] }); return true; }
+    if (path.endsWith('/projects')) { requests++; await json(route, { projects: [{ id: 'initializing', title: 'Initializing', status: 'provisioning' }] }); return true; }
   });
   await page.clock.install({ time: new Date('2026-09-06T00:00:00Z') });
   await page.goto('https://ui.test/');
@@ -857,4 +858,48 @@ test('a persisted oversized message intent is released before retry preflight', 
   assert.equal(posts, 0); assert.equal(await page.locator('#message-input').isEditable(), true);
   await page.locator('#message-input').fill('缩短后的请求'); await page.locator('#message-submit').click();
   await waitFor(() => posts === 1);
+});
+
+test('another preparing project keeps polling to ready while the first project owns the notice', {timeout:15000}, async t => {
+  const a={id:'prepare-a',title:'准备项目 A',status:'provisioning',workspace_id:'workspace-a'};
+  let b={id:'prepare-b',title:'准备项目 B',status:'provisioning',workspace_id:'workspace-b'},created=false,listReads=0;
+  const posts=[];
+  const page=await pageFixture(t,async(route,path)=>{
+    if(route.request().method()==='POST')posts.push(path);
+    if(path==='/api/tenants/tenant-a/projects'){
+      if(route.request().method()==='POST'){created=true;await json(route,{project:a},202);}
+      else{listReads++;await json(route,{projects:created?[a,b]:[b]});}return true;
+    }
+    if(path==='/api/workspaces/workspace-b'){await json(route,{schemaVersion:3,activeTurnId:null,sessions:{s:{id:'s',title:'B 对话',createdAt:1}},turns:{}});return true;}
+    if(path==='/api/workspaces/workspace-b/events'){await json(route,{events:[],nextSequence:0,hasMore:false});return true;}
+  });
+  page.setDefaultTimeout(8000);await page.goto('https://ui.test/');await page.locator('#new-project').click();await page.locator('#project-title').fill(a.title);await page.locator('#project-submit').click();await page.locator('#notice').filter({hasText:'项目正在准备中'}).waitFor();
+  await page.getByRole('button',{name:'管理项目 '+b.title,exact:true}).click();await page.locator('#workspace-title').filter({hasText:b.title}).waitFor();assert.equal(await page.locator('#message-input').isDisabled(),true);const before=listReads;b={...b,status:'ready'};
+  // No visibility event or manual refresh: the actual scheduled project poll must recover B.
+  await page.locator('#message-input:not([disabled])').waitFor();assert.ok(listReads>before);assert.equal(await page.locator('#workspace-title').innerText(),b.title);assert.match(await page.locator('#notice').innerText(),/项目正在准备中/);assert.deepEqual(posts,['/api/tenants/tenant-a/projects']);
+});
+
+test('authorization reload into another tenant drops the old tenant pending project fallback', {timeout:15000}, async t => {
+  const pending={id:'private-pending-a',title:'旧租户未同步的私有项目',status:'provisioning',workspace_id:'private-workspace-a'};
+  const ready={id:'ready-a',title:'旧租户活动项目',status:'ready',workspace_id:'active-workspace-a'};
+  let tenantId='tenant-a',created=false,streamConnected=false,newTenantReads=0,releaseStream;
+  const streamGate=new Promise(resolve=>releaseStream=resolve);
+  t.after(()=>releaseStream());
+  const page=await pageFixture(t,async(route,path)=>{
+    if(path==='/api/me'){await json(route,{tenants:[{id:tenantId}]});return true;}
+    if(path==='/api/tenants/tenant-a/projects'){
+      if(route.request().method()==='POST'){created=true;await json(route,{project:pending},202);}
+      else await json(route,{projects:[ready]});return true;
+    }
+    if(path==='/api/tenants/tenant-b/projects'){newTenantReads++;await json(route,{projects:[]});return true;}
+    if(path==='/api/workspaces/active-workspace-a'){await json(route,{schemaVersion:3,activeTurnId:'active',sessions:{s:{id:'s',title:'旧会话',createdAt:1}},turns:{active:{id:'active',sessionId:'s',message:'已有任务',status:'running',createdAt:1}}});return true;}
+    if(path==='/api/workspaces/active-workspace-a/events'){
+      if(route.request().headers().accept?.includes('text/event-stream')){streamConnected=true;await streamGate;await route.fulfill({contentType:'text/event-stream',body:'event: stream.closed\ndata: {"reason":"authorization_changed"}\n\n'});}
+      else await json(route,{events:[],nextSequence:0,hasMore:false});return true;
+    }
+  });
+  page.setDefaultTimeout(8000);await page.goto('https://ui.test/');await page.locator('#new-project').click();await page.locator('#project-title').fill(pending.title);await page.locator('#project-submit').click();await page.getByRole('button',{name:'管理项目 '+pending.title,exact:true}).waitFor();assert.equal(created,true);
+  // Old list still omits the newly created project, so its fallback remains pending when opening another Workspace.
+  await page.getByRole('button',{name:'打开项目 '+ready.title,exact:true}).click();await waitFor(()=>streamConnected);tenantId='tenant-b';releaseStream();
+  await waitFor(()=>newTenantReads>0);await page.locator('#app:not([hidden])').waitFor();await page.locator('#projects[aria-busy=false]').waitFor();assert.equal(await page.locator('#projects .project').count(),0);assert.doesNotMatch(await page.locator('#projects').innerText(),/旧租户|private-pending-a/);assert.equal(await page.locator('#workspace').isVisible(),false);
 });

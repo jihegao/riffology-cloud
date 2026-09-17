@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import {validateBrowserPreviewWebAssets} from '../m3/materialize-browser-preview-web.mjs';
 import { lstatSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { isAbsolute, resolve } from 'node:path';
@@ -40,7 +41,7 @@ export function validateStagingConfig(config, dockerfile, migrationNames = []) {
     check('origin', config.vars?.APP_ORIGIN === STAGING_ORIGIN),
     check('quota', config.vars?.TENANT_QUOTA_CAPACITY === '1' && config.vars?.TENANT_QUOTA_POLICY_VERSION === 'm1-v1'),
     check('turn-runtime-gate', config.vars?.M2_TURNS_ENABLED === 'false'),
-    check('assets', config.assets?.binding === 'ASSETS' && config.assets?.directory === '../services/web'
+    check('assets', config.assets?.binding === 'ASSETS' && config.assets?.directory === '../.local/browser-preview/gateway-assets'
       && config.assets?.run_worker_first === true),
     check('required-secrets', same(sorted(config.secrets?.required ?? []), sorted(REQUIRED_SECRETS))),
     check('dedicated-d1', config.d1_databases?.length === 1 && database?.binding === 'CATALOG'
@@ -64,7 +65,7 @@ export function validateStagingConfig(config, dockerfile, migrationNames = []) {
       && /\nUSER node\n/.test(dockerfile) && /\nWORKDIR \/workspace\n/.test(dockerfile)),
     check('catalog-migrations', same(migrationNames, [
       '0001_catalog.sql', '0002_auth.sql', '0003_provisioning.sql',
-      '0004_operator_invitations.sql', '0005_initial_operator.sql', '0006_model_catalog.sql','0007_model_content_checks.sql','0008_preview_routes.sql','0009_model_submissions.sql',
+      '0004_operator_invitations.sql', '0005_initial_operator.sql', '0006_model_catalog.sql','0007_model_content_checks.sql','0008_preview_routes.sql','0009_model_submissions.sql','0010_project_budget_routes.sql',
     ])),
   ];
 }
@@ -115,7 +116,7 @@ export function runPreflight({ root = resolve(fileURLToPath(new URL('../..', imp
   const config = JSON.parse(readFileSync(resolve(root, STAGING_CONFIG), 'utf8'));
   const dockerfile = readFileSync(resolve(root, 'services/runtime/Dockerfile.cloud'), 'utf8');
   const migrationNames = readdirSync(resolve(root, 'services/catalog/migrations')).filter(name => /^\d{4}_.+\.sql$/.test(name)).sort();
-  const checks = validateStagingConfig(config, dockerfile, migrationNames);
+  const checks = [...validateStagingConfig(config, dockerfile, migrationNames),validateBrowserPreviewWebAssets(root)];
   if (cloud) checks.push(...cloudInventory());
   if (dryRunEnabled) checks.push(dryRun());
   checks.push(validateSecretFile(secretsFile ? resolve(root, secretsFile) : null));

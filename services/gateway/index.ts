@@ -1,10 +1,18 @@
+import {createGatewayG4ComputeServices,createGatewayG4WindowServices} from './g4-compute-services.ts';
+import {admitG4Task,type G4TaskBudgetNamespace} from '../model-budget/g4-admission.ts';
+import {g5TaskKey} from '../model-budget/g5-admission.ts';
+import {G5_GLOBAL_ACTOR} from '../model-budget/g5-window.ts';
+import type {G5ControlledWindow} from '../model-budget/g5-window-durable.ts';
+import {createGatewayBrowserPreviewServices} from './browser-preview-services.ts';
+import {serveBrowserPreviewAppAsset} from '../browser-preview/execution/delivery.ts';
 import {createGatewayPublications} from './publication-services.ts';
 import {R2PublicationArtifacts} from '../publication/artifacts.ts';
 import {createGatewayResearchExports} from './research-export-services.ts';
+import {createGatewayG5ReadonlyReads} from './g5-read-services.ts';
 import {createGatewaySimulationServices} from './simulation-services.ts';
 import {R2ModelContentUploadPort} from '../runtime/model-upload.ts';
 // Optional until the model-content binding is configured for an environment.
-type GatewayRuntimeEnv=GatewayEnv & {MODEL_CONTENT?:R2Bucket;TOOL_ARTIFACT_STORE?:DurableObjectNamespace<import('../artifacts/durable.ts').ToolArtifactStore>;M3_SERVICE_ENABLED?:unknown;M3_PREVIEW_ENABLED?:unknown;M3_PREVIEW_WS_ENABLED?:unknown;M3_PREVIEW_ORIGIN?:string;M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?:string};
+type GatewayRuntimeEnv=GatewayEnv & {G5_WINDOW_GUARD?:DurableObjectNamespace<G5ControlledWindow>;G5_CONTROLLED_WINDOW_JSON?:string;G5_ADMISSION_ENABLED?:string;G4_CONTROLLED_WINDOW_JSON?:string;TENANT_MODEL_BUDGET?:G4TaskBudgetNamespace;TRUSTED_PI_CAPACITY?:DurableObjectNamespace<import('../capacity/durable.ts').TrustedPiCapacity>;MODEL_CONTENT?:R2Bucket;TOOL_ARTIFACT_STORE?:DurableObjectNamespace<import('../artifacts/durable.ts').ToolArtifactStore>;M3_SERVICE_ENABLED?:unknown;M3_PREVIEW_ENABLED?:unknown;M3_PREVIEW_WS_ENABLED?:unknown;M3_PREVIEW_ORIGIN?:string;BROWSER_PREVIEW_EXECUTION_ORIGIN?:string;M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?:string};
 import {R2ModelContentPort} from '../runtime/content.ts';
 import { createAuth } from './auth.ts';
 import { catalogDatabase } from '../catalog/database.ts';
@@ -23,6 +31,8 @@ import {runRevisionGcMaintenance} from './revision-gc-maintenance.ts';
 import {runGatewayScheduledDomains} from './scheduled.ts';
 export { TenantQuota } from '../quota/durable.ts';
 export { TenantModelBudget } from '../model-budget/durable.ts';
+export { G5ControlledWindow } from '../model-budget/g5-window-durable.ts';
+export { G5TenantModelBudget } from '../model-budget/g5-token-durable.ts';
 export { TrustedPiCapacity } from '../capacity/durable.ts';
 export { ProjectRuntime } from '../runtime/durable.ts';
 export { WorkspaceAgent } from '../workspace/durable.ts';
@@ -49,15 +59,16 @@ export default {
     try {
     const url=new URL(request.url);
     if(url.origin!==env.APP_ORIGIN)return previewHost(request,env,catalogDatabase(env.CATALOG));
+    if(url.pathname.startsWith('/browser-preview-assets/')){if(!env.ASSETS)return json({error:'assets_not_configured'},503);const asset=await serveBrowserPreviewAppAsset(request,env.ASSETS);return asset??json({error:'not_found'},404);}
     if(!url.pathname.startsWith('/api/')){
       if(request.method!=='GET'&&request.method!=='HEAD')return json({error:'not_found'},404);
-      if(!['/','/index.html','/app.js','/layout.js','/services.js','/previews.js','/simulation.js','/comparison.js','/export.js','/publication.js','/evidence.js','/evidence.css','/styles.css','/workspace.css','/admin','/admin.html','/admin.js','/admin.css'].includes(url.pathname))return json({error:'not_found'},404);
+      if(!['/','/index.html','/app.js','/layout.js','/services.js','/previews.js','/browser-preview.js','/simulation.js','/comparison.js','/export.js','/publication.js','/evidence.js','/evidence.css','/styles.css','/workspace.css','/admin','/admin.html','/admin.js','/admin.css'].includes(url.pathname))return json({error:'not_found'},404);
       if(!env.ASSETS)return json({error:'assets_not_configured'},503);
       const assetRequest=url.pathname==='/admin'
         ? new Request(new URL('/admin.html',url),{method:request.method,headers:request.headers})
         : request;
       const asset=await env.ASSETS.fetch(assetRequest),headers=new Headers(asset.headers);
-      headers.set('Content-Security-Policy',`default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; frame-src ${previewFrameSource(env)}; frame-ancestors 'none'; base-uri 'none'; form-action 'self'`);
+      headers.set('Content-Security-Policy',`default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; frame-src ${previewFrameSource(env)} ${env.BROWSER_PREVIEW_EXECUTION_ORIGIN?new URL(env.BROWSER_PREVIEW_EXECUTION_ORIGIN).origin:""}; frame-ancestors 'none'; base-uri 'none'; form-action 'self'`);
       headers.set('X-Content-Type-Options','nosniff');headers.set('Referrer-Policy','same-origin');
       headers.set('Cache-Control','no-store');return new Response(asset.body,{status:asset.status,headers});
     }
@@ -78,11 +89,26 @@ export default {
       }
       return await auth.handler(request);
     }
-    return await gateway(request,{origin:env.APP_ORIGIN,database,modelContent:env.MODEL_CONTENT?new R2ModelContentPort(env.MODEL_CONTENT):undefined,modelUpload:env.MODEL_CONTENT?new R2ModelContentUploadPort(env.MODEL_CONTENT):undefined,
+    return await gateway(request,{g4ComputeCounts:createGatewayG4ComputeServices(env),g4WindowSnapshot:createGatewayG4WindowServices(env as unknown as Parameters<typeof createGatewayG4WindowServices>[0]),origin:env.APP_ORIGIN,database,modelContent:env.MODEL_CONTENT?new R2ModelContentPort(env.MODEL_CONTENT):undefined,modelUpload:env.MODEL_CONTENT?new R2ModelContentUploadPort(env.MODEL_CONTENT):undefined,
+      admitProject:async(principal,tenantId,key,body)=>{
+        if(env.G5_CONTROLLED_WINDOW_JSON!==undefined){
+          if(env.G5_ADMISSION_ENABLED!=='true'||!env.G5_WINDOW_GUARD)throw new HttpError('g5_admission_disabled',409);
+          const registration=await g5TaskKey(env.G5_CONTROLLED_WINDOW_JSON,'project',tenantId,principal.userId,{key},body);
+          const guard=env.G5_WINDOW_GUARD.getByName(G5_GLOBAL_ACTOR);
+          await guard.registerTask(registration);
+          const claim=await guard.claimTaskCreate(registration.key),policy=JSON.parse(env.G5_CONTROLLED_WINDOW_JSON);
+          return {authorized:claim.authorized,boundProjectId:claim.boundId,budgetRoute:{kind:'g5',taskKey:registration.key,windowId:policy.windowId,profileSha256:policy.profilePin.profileSha256}};
+        }
+        return admitG4Task(env.TENANT_MODEL_BUDGET,env.G4_CONTROLLED_WINDOW_JSON,tenantId,principal.userId,'project',{key},body);
+      },
+      createdProject:async(_principal,_tenantId,projectId,route)=>{
+        if(!env.G5_WINDOW_GUARD)throw new HttpError('g5_budget_binding_unavailable',503);
+        await env.G5_WINDOW_GUARD.getByName(G5_GLOBAL_ACTOR).bindTask(route.taskKey,projectId);
+      },
       provision:async(principal,tenantId,projectId)=>{
         const item=await new ProvisioningCatalog(database).kickProject(principal,tenantId,projectId);
         if(item)await dispatch(env,item);
-      },publications:createGatewayPublications(env),publicationArtifacts:new R2PublicationArtifacts(env.WORKSPACE_CHECKPOINTS),researchExports:createGatewayResearchExports(env),simulations:createGatewaySimulationServices(env),turns:createGatewayTurnServices({...env,M2_TURN_RUNTIME_CONFIGURED:Boolean(typeof env.PRODUCT_TURN_RUNTIME?.getByName==='function'&&typeof env.TRUSTED_PI_CAPACITY?.getByName==='function'&&typeof env.TOOL_ARTIFACT_STORE?.getByName==='function')}),serviceRuns:createGatewayServiceServices(env),previews:createGatewayPreviewServices(env,database),observations:createGatewayObserverServices(env),identity:async req=>{
+      },publications:createGatewayPublications(env),publicationArtifacts:new R2PublicationArtifacts(env.WORKSPACE_CHECKPOINTS),researchExports:createGatewayResearchExports(env),g5ReadonlyReads:createGatewayG5ReadonlyReads(env),simulations:createGatewaySimulationServices(env),browserPreviews:createGatewayBrowserPreviewServices(env),turns:createGatewayTurnServices({...env,M2_TURN_RUNTIME_CONFIGURED:Boolean(typeof env.PRODUCT_TURN_RUNTIME?.getByName==='function'&&typeof env.TRUSTED_PI_CAPACITY?.getByName==='function'&&typeof env.TOOL_ARTIFACT_STORE?.getByName==='function')}),serviceRuns:createGatewayServiceServices(env),previews:createGatewayPreviewServices(env,database),observations:createGatewayObserverServices(env),identity:async req=>{
       const value=await auth.api.getSession({headers:req.headers,query:{disableCookieCache:true}});
       return sessionIdentity(value);
     }});

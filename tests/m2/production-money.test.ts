@@ -37,6 +37,10 @@ test('unknown reservations survive period changes; stop allows history but never
  const next=f.host({...f.policy,version:'policy-v2',period:'2026-10'});await assert.rejects(next.reserve({request:request('call-b'),profile}),/cap/);
  const stopped=f.host({...f.policy,enabled:false});assert.equal((await stopped.lookup(ref)).state,'unknown');await assert.rejects(stopped.reserve({request:request('call-c'),profile}),/stopped/);
 });
+test('first concrete unknown category survives later generic settlement uncertainty',async t=>{
+ const f=await fixture(t),a=f.host(),first=moneyReference((await a.reserve({request:request(),profile})).record);await a.dispatch(first);await a.markUnknown(first,'rate-limited');await a.markUnknown(first,'outcome-unknown');await a.markUnknown(first,'provider-failure');assert.equal((await a.lookup(first)).errorCategory,'rate-limited');
+ const second=moneyReference((await a.reserve({request:request('call-b'),profile})).record);await a.dispatch(second);await a.markUnknown(second,'outcome-unknown');await a.markUnknown(second,'missing-usage');await a.markUnknown(second,'malformed-stream');assert.equal((await a.lookup(second)).errorCategory,'missing-usage');
+});
 test('configured route or cap changes cannot redirect admitted calls; recorded turn usage spans periods',async t=>{
  const f=await fixture(t,{turn:250,user:2000,tenant:2000,global:2000}),a=f.host(),ref=moneyReference((await a.reserve({request:request(),profile})).record);
  await assert.rejects(f.host({...f.policy,version:'policy-v2',profileSha256:'f'.repeat(64)}).dispatch(ref),/route-changed/);

@@ -5,8 +5,8 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { SqlTenantQuota, type QuotaStorage } from '../../services/quota/core.ts';
-import { WorkspaceCoordinator, type WorkspaceState } from '../../services/workspace/coordinator.ts';
-import { canonicalWorkspaceMarker, workspaceDigest, type RuntimeIdentity, type RuntimeInitialize, type RuntimeObservation, type WorkspaceProjection, type WorkspaceTask } from '../../services/workspace/protocol.ts';
+import { WorkspaceCoordinator, type WorkspaceState, type WorkspacePorts } from '../../services/workspace/coordinator.ts';
+import { canonicalWorkspaceMarker, workspaceDigest, validateWorkspaceTask, type RuntimeIdentity, type RuntimeInitialize, type RuntimeObservation, type WorkspaceProjection, type WorkspaceTask } from '../../services/workspace/protocol.ts';
 import type { WorkspaceStore } from '../../services/workspace/store.ts';
 
 // Actual file-backed SQLite and transactions exercise persistence; native
@@ -204,3 +204,5 @@ test('quota retry reservations are capped at three durably, including after expl
     f.reopen(); await f.host.reconcile(f.task); await f.drain(); assert.equal(count, 3); assert.equal(f.host.report()?.quotaReleased, false);
   }
 });
+
+test('G5 Project route survives freeze/reopen and current start denial prevents quota/native preparation',async t=>{const f=fixture(t);f.task.budgetRoute={kind:'g5',taskKey:'a'.repeat(64),windowId:'g5-window',profileSha256:'b'.repeat(64)};let checks=0;(f.ports as WorkspacePorts).beforeStart=async task=>{checks++;assert.deepEqual(task.budgetRoute,f.task.budgetRoute);throw Error('g5-window-closed');};await f.host.accept(f.task);await f.drain(3);assert.ok(checks>0);assert.equal(f.calls.filter(value=>value==='acquire'||value==='dispatch'||value==='initialize').length,0);assert.deepEqual(f.host.report()?.task.budgetRoute,f.task.budgetRoute);const copied=validateWorkspaceTask(f.task);assert.deepEqual(copied.budgetRoute,f.task.budgetRoute);assert.throws(()=>validateWorkspaceTask({...f.task,budgetRoute:{...f.task.budgetRoute!,unexpected:'secret'} as never}),/budget-route/);assert.equal(validateWorkspaceTask({...f.task,budgetRoute:undefined}).budgetRoute,undefined);});

@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-17T09:28:32Z",
+  "release": {
+    "pullRequest": "https://github.com/jihegao/riffology-cloud/pull/76",
+    "sourceCommit": "305c38cb88b09aa8586dbf64cf638db7a6eb0426",
+    "sourceTree": "be8b9a6749c6501f6e23d46912454da99fbc4bf3",
+    "app": {
+      "name": "riffology-m1-gateway-staging",
+      "origin": "https://m1.riff-demo.gaojihe.cn",
+      "version": "9a113e37-e3e1-439a-918c-b50b8a7969de",
+      "trafficPercent": 100,
+      "tag": "source-305c38cb88b09aa8586dbf64cf638db7a6eb0426"
+    },
+    "execution": {
+      "name": "riffology-browser-execution",
+      "origin": "https://riffology-browser-execution.jihe-gao.workers.dev",
+      "version": "2b9bfc38-4994-495c-ba36-df51b6265ca4",
+      "trafficPercent": 100,
+      "tag": "source-305c38cb88b09aa8586dbf64cf638db7a6eb0426"
+    }
+  },
+  "validation": {
+    "local": {
+      "npmRunCheck": "passed",
+      "realChromePyodideAcceptance": "passed",
+      "maliciousBlobSubworkerCase": "passed-fail-closed",
+      "v1ReadyToV2RebuildRegression": "passed"
+    },
+    "publicOnline": {
+      "status": "passed",
+      "appRoot": {
+        "httpStatus": 200,
+        "bodySha256": "d70a95d14dc298babd4eb414a38aff3bbe4e04fd4899cdd56a3ead24b521315b"
+      },
+      "unauthenticatedApiMe": {
+        "httpStatus": 401,
+        "body": {
+          "error": "authentication_required"
+        }
+      },
+      "executionFrame": {
+        "path": "/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
+        "httpStatus": 200,
+        "bodySha256": "53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5",
+        "cacheControl": "public, max-age=31536000, immutable",
+        "frameAncestor": "https://m1.riff-demo.gaojihe.cn",
+        "connectSrc": "none"
+      },
+      "negativePaths": {
+        "executionRootStatus": 404,
+        "legacyFrameStatus": 404,
+        "postFrameStatus": 404
+      }
+    },
+    "authenticatedOrdinaryUser": {
+      "status": "blocked",
+      "reason": "No reusable authenticated browser session was available on either acceptance host. The saved local sessions returned 401 and the remote host had no discoverable authenticated CDP session.",
+      "notClaimed": [
+        "signed-in Preview panel load against the deployed release",
+        "deployed Queue and Mesa execution from an ordinary-user session",
+        "refresh and persistence behavior in the deployed authenticated UI",
+        "browser-observed zero server-side Run creation"
+      ],
+      "requiredNextAction": "Sign in once with an invited Google test account, then rerun the authenticated browser matrix without redeploying or opening paid execution gates."
+    }
+  },
+  "productionSafety": {
+    "paidOrServerRunInvoked": false,
+    "gates": {
+      "G5_ADMISSION_ENABLED": false,
+      "M2_TURNS_ENABLED": false,
+      "M2_MODEL_PROVIDER_ENABLED": false,
+      "PRODUCTION_MODEL_ENABLED": false,
+      "M4_SIMULATION_ENABLED": false,
+      "M3_SERVICE_ENABLED": false,
+      "M3_PREVIEW_ENABLED": false,
+      "M3_PREVIEW_WS_ENABLED": false
+    }
+  },
+  "overallStatus": "deployment-passed-public-online-passed-authenticated-ordinary-user-blocked"
+}

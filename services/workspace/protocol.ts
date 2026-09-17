@@ -3,9 +3,10 @@ import type { ModelContentReceipt } from '../runtime/content.ts';
 
 export const WORKSPACE_LAYOUT = 'm1-empty-v1' as const;
 export type ModelContentRef = { modelVersionId:string; modelId:string; version:string; contentRef:string; contentSha256:string };
+export type WorkspaceBudgetRoute={kind:'g5';taskKey:string;windowId:string;profileSha256:string};
 export type WorkspaceTask = {
   id: string; tenantId: string; projectId: string; workspaceId: string; generation: number;
-  starterVersion: string; authVersion: number; createdAt: number; deadlineAt: number; modelContent?: ModelContentRef;
+  starterVersion: string; authVersion: number; createdAt: number; deadlineAt: number; modelContent?: ModelContentRef; budgetRoute?:WorkspaceBudgetRoute;
 };
 export type RuntimeIdentity = {
   taskId: string; tenantId: string; projectId: string; workspaceId: string; generation: number;
@@ -54,15 +55,17 @@ export function workspaceAgentName(tenantId: string, workspaceId: string): strin
 export function runtimeName(identity: RuntimeIdentity): string { quotaIdentifier(identity.runtimeId); return identity.runtimeId; }
 export function validateWorkspaceTask(value: WorkspaceTask): WorkspaceTask {
   const keys = ['id', 'tenantId', 'projectId', 'workspaceId', 'generation', 'starterVersion', 'authVersion', 'createdAt', 'deadlineAt'];
-  if (!value || typeof value !== 'object' || Array.isArray(value) || (Object.keys(value).length !== keys.length && Object.keys(value).length !== keys.length+1) || !keys.every(key => Object.hasOwn(value, key))) throw Error('invalid-workspace-task');
+  if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).some(key=>![...keys,'modelContent','budgetRoute'].includes(key)) || !keys.every(key => Object.hasOwn(value, key))) throw Error('invalid-workspace-task');
   for (const key of ['id', 'tenantId', 'projectId', 'workspaceId', 'starterVersion'] as const) quotaIdentifier(value[key]);
   for (const key of ['generation', 'authVersion', 'createdAt', 'deadlineAt'] as const) if (!Number.isSafeInteger(value[key]) || value[key] < 1) throw Error('invalid-workspace-task');
   if (value.deadlineAt <= value.createdAt) throw Error('invalid-workspace-task');
+  const route=value.budgetRoute;if(route!==undefined&&(!route||Object.keys(route).sort().join(',')!=='kind,profileSha256,taskKey,windowId'||route.kind!=='g5'||! /^[a-f0-9]{64}$/.test(route.taskKey)||! /^[a-f0-9]{64}$/.test(route.profileSha256)||! /^[A-Za-z0-9._:-]{1,128}$/.test(route.windowId)))throw Error('invalid-workspace-budget-route');
   const content=value.modelContent;
   if (content!==undefined) { if (!content || typeof content!=='object' || Object.keys(content).length!==5 || !/^[A-Za-z0-9._:-]{1,128}$/.test(content.modelVersionId) || !/^[A-Za-z0-9._-]{1,128}$/.test(content.modelId) || !/^[A-Za-z0-9._-]{1,64}$/.test(content.version) || typeof content.contentRef!=='string' || content.contentRef.length<1 || content.contentRef.length>512 || !/^[a-f0-9]{64}$/.test(content.contentSha256)) throw Error('invalid-workspace-task'); }
   const result={ id: value.id, tenantId: value.tenantId, projectId: value.projectId, workspaceId: value.workspaceId,
     generation: value.generation, starterVersion: value.starterVersion, authVersion: value.authVersion, createdAt: value.createdAt, deadlineAt: value.deadlineAt } as WorkspaceTask;
   if (content!==undefined) result.modelContent=structuredClone(content);
+  if(route!==undefined)result.budgetRoute=structuredClone(route);
   return result;
 }
 /** Stable marker bytes shared by trusted coordinator and native runtime. No
