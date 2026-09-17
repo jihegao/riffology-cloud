@@ -157,3 +157,12 @@ test('issue 77: writer rollback preserves v4 readers and emits legacy Pi format 
  assert.equal(JSON.parse(new TextDecoder().decode(f.bucket.objects.get(first.objectKey)!)).schemaVersion,4);
  const reader=new R2TurnRevisionReader(f.bucket as unknown as TurnRevisionBucket);assert.deepEqual(await reader.load(next,saved),f.session);assert.deepEqual(await reader.load(identity,first),f.session);
 });
+for(const recovery of ['files-only','unrecoverable'] as const)test(`issue 77: ${recovery} Managed recovery survives publication, restore and GC without a false live Session reference`,async()=>{
+ const {readManifest}=await import('../../services/turn-runtime/revision-gc.ts');
+ const f=fixture(),backendState={schemaVersion:1 as const,backend:'managed-agents' as const,recovery};
+ const port=new R2TurnRevisionPort(f.bucket as unknown as TurnRevisionBucket,{async freeze(){return {identity,filesArchive:f.files,backendState};}},()=>1000);
+ const receipt=await port.commit(commitInput());assert.deepEqual(await port.commit(commitInput()),receipt);
+ const reader=new R2TurnRevisionReader(f.bucket as unknown as TurnRevisionBucket),restored=await reader.restore(identity,receipt,true);
+ assert.equal(restored.piSession,null);assert.deepEqual(restored.backendState,backendState);assert.deepEqual(restored.filesArchive,f.files);
+ assert.equal((await readManifest(f.bucket as any,receipt.objectKey,identity.scope)).size,2);await assert.rejects(reader.load(identity,receipt),/backend-mismatch/);
+});

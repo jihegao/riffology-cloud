@@ -79,7 +79,7 @@ export async function readManifest(bucket: TurnRevisionGcBucket, objectKey: stri
   if(value.schemaVersion===4){if(managed)validateBackendState(value.backendState);else validatePiRevisionState(value.backendState);}
   const session=managed?value.sessionState:value.piSession;
   const identity = turnRuntimeIdentity(value.identity);
-  if(managed){const state=validateBackendState(value.backendState);if(state.recovery!=='remote-reference'||!sameTurnRuntimeIdentity(state.identity,identity))fail('invalid-turn-revision-gc-manifest');}
+  if(managed){const state=validateBackendState(value.backendState);if(state.recovery==='remote-reference'&&!sameTurnRuntimeIdentity(state.identity,identity))fail('invalid-turn-revision-gc-manifest');}
   const scope=turnScope(rawScope??identity.scope),blobPrefix=turnRevisionBlobPrefix(scope);
   if (turnRevisionObjectKey(identity) !== objectKey || turnRevisionManifestPrefix(identity.scope)!==turnRevisionManifestPrefix(scope)) fail('invalid-turn-revision-gc-manifest');
   turnBaseCheckpoints(value.base); gcPositive(value.committedAt, 'invalid-turn-revision-gc-manifest');
