@@ -5,8 +5,10 @@ import {BrowserPreviewOrchestrator} from '../../services/browser-preview/orchest
 import {SimulationHost} from '../../services/simulation/host.ts';
 import {platformPreviewDelivery} from '../../services/browser-preview/platform-delivery.ts';
 import {createTrustedPreviewRegistry} from '../../services/browser-preview/profiles.ts';
+import {canonicalPreviewJson,previewSha256} from '../../services/browser-preview/contract.ts';
+import {productionPreviewRegistry} from '../../services/browser-preview/production-registry.ts';
 const actor={userId:'user-a',authVersion:1};
-async function setup(){const f=await fixture();await f.host().alarm();let allowed=true,head={identity:f.source.identity,receipt:f.source.receipt},starts=0;
+async function setup(configure=async()=>{}){const f=await fixture();await configure(f);await f.host().alarm();let allowed=true,head={identity:f.source.identity,receipt:f.source.receipt},starts=0;
  const simulations=()=>new SimulationHost(f.storage,f.scope,{authorize:async()=>allowed,hold:()=>{},quota:{},start:async()=>{starts++;throw Error('no-native-execution-on-submit');},observe:async()=>{},stop:async()=>{},destroy:async()=>{},running:async()=>false,publish:async()=>{}},()=>1000);
  const ports={authorize:async()=>{if(!allowed)throw Error('browser-preview-access-denied');},checkScope:()=>{},head:()=>head,saved:id=>id==='revision-a'?{identity:f.source.identity,receipt:f.source.receipt}:null,registry:f.ports.registry,builds:f.host(),bucket:f.ports.bucket,files:async()=>f.bytes,simulations:simulations(),canVerify:()=>true,image:'fixture-image',delivery:hash=>platformPreviewDelivery('http://127.0.0.1:8795','http://localhost:8821',hash)};
  const body={revisionId:'revision-a',packageIdentity:f.host().read('revision-a').state.packageIdentity,parameters:{},seed:42,intent:'experiment',idempotencyKey:'verify-a'};
@@ -25,6 +27,12 @@ test('ACL revocation during source or R2 await refuses private read and creates 
 test('explicit historical profile survives removed current registry only with frozen delivery',async()=>{
  const s=await setup();s.ports.registry=async()=>{throw Error('current-registry-unavailable');};const view=await s.service().view(actor,'revision-a','python-stdlib/v1');assert.equal(view.build.status,'ready');assert.equal(view.delivery.profile.verified,true);const bytes=await s.service().bytes(actor,s.body.packageIdentity);assert.ok(bytes.bytes.length>0);
  s.ports.delivery=()=>{throw Error('missing-retained-version');};const absent=await s.service().view(actor,'revision-a','python-stdlib/v1');assert.equal(absent.build,null);assert.equal(absent.reasonCode,'preview-runtime-unavailable');await assert.rejects(s.service().bytes(actor,s.body.packageIdentity),/source-unavailable/);
+});
+test('view of a retained v1 ready row rearms migration before exposing an unavailable package',async()=>{
+ const currentRegistry=await productionPreviewRegistry(),current=currentRegistry.resolve('python-stdlib/v1'),oldAssets=[...current.assets,{path:'runtime/retired-v1-marker.bin',sha256:'e'.repeat(64),byteLength:1}].sort((a,b)=>a.path<b.path?-1:1),old={...current,runtime:{...current.runtime,assetSha256:await previewSha256(canonicalPreviewJson(oldAssets))},assets:oldAssets},oldRegistry=await createTrustedPreviewRegistry([old]);
+ const s=await setup(async f=>{f.ports.registry=async()=>oldRegistry;});const oldIdentity=s.f.host().read('revision-a','python-stdlib/v1').state.packageIdentity;s.f.ports.registry=async()=>currentRegistry;s.ports.registry=s.f.ports.registry;
+ const migrating=await s.service().view(actor,'revision-a','python-stdlib/v1');assert.equal(migrating.build.status,'building');assert.equal(migrating.delivery,null);assert.equal(s.f.storage.values.get('browser-preview:discovery:revision-a').status,'pending');
+ await s.f.host().alarm();const ready=await s.service().view(actor,'revision-a','python-stdlib/v1');assert.equal(ready.build.status,'ready');assert.notEqual(ready.build.packageIdentity,oldIdentity);assert.equal(ready.delivery.profile.runtime.assetSha256,current.runtime.assetSha256);
 });
 test('Verify rejects browser metrics, wrong package/revision and actor scope',async()=>{
  const s=await setup();await assert.rejects(s.service().verify(actor,{...s.body,metrics:{completed:999}}));await assert.rejects(s.service().verify(actor,{...s.body,revisionId:'missing'}),/not-found/);await assert.rejects(s.service().bytes(actor,'a'.repeat(64)),/not-found/);assert.equal(s.starts,0);

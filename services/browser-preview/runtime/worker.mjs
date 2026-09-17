@@ -6,6 +6,8 @@ import {resolveParameters} from '../../simulation/model-spec.ts';
 import {canonicalPreviewJson} from '../contract.ts';
 import {sha256Hex} from './sha256.mjs';
 const nativeFetch = globalThis.fetch.bind(globalThis);
+function DeniedNestedWorker() { throw Error('runtime-subworker-denied'); }
+Object.defineProperty(globalThis, 'Worker', {value:DeniedNestedWorker,writable:false,configurable:false,enumerable:false});
 const digest=value=>sha256Hex(typeof value==='string'?new TextEncoder().encode(value):value);
 let pending = null;
 let stdoutBytes = 0;

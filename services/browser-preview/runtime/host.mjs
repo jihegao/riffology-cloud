@@ -4,12 +4,13 @@ import {validateInput, validateRunRequest, validateResult, MESSAGE_SCHEMA, LIMIT
 import {resolveParameters} from '../../simulation/model-spec.ts';
 export {profiles};
 export class BrowserPreviewRuntime {
-  constructor({executionOrigin, assetLoader, timeoutMs = LIMITS.deadlineMs, onStarted = () => {}, onDiagnostic = () => {}}) {
+  constructor({executionOrigin, frameUrl, assetLoader, timeoutMs = LIMITS.deadlineMs, onStarted = () => {}, onDiagnostic = () => {}}) {
     const url = new URL(executionOrigin); if (url.origin === location.origin || !['http:','https:'].includes(url.protocol)) throw Error('runtime-execution-origin-invalid');
     const local = host => ['localhost','127.0.0.1','[::1]'].includes(host);
     if (!(local(url.hostname) && local(location.hostname)) && (url.protocol !== 'https:' || url.hostname.split('.').slice(-2).join('.') === location.hostname.split('.').slice(-2).join('.'))) throw Error('runtime-dedicated-site-required');
+    const frame = new URL(frameUrl,url.origin); if (frame.origin !== url.origin || frame.search || frame.hash || !/^\/runtime\/[a-f0-9]{64}\/frame\.html$/.test(frame.pathname)) throw Error('runtime-frame-url-invalid');
     if (!Number.isInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > LIMITS.deadlineMs) throw Error('runtime-timeout-invalid');
-    this.executionOrigin = url.origin; this.assetLoader = assetLoader; this.timeoutMs = Math.min(timeoutMs, LIMITS.deadlineMs); this.onStarted = onStarted; this.onDiagnostic = onDiagnostic; this.sequence = 0; this.loadGeneration = 0;
+    this.executionOrigin = url.origin; this.frameUrl = frame.href; this.assetLoader = assetLoader; this.timeoutMs = Math.min(timeoutMs, LIMITS.deadlineMs); this.onStarted = onStarted; this.onDiagnostic = onDiagnostic; this.sequence = 0; this.loadGeneration = 0;
   }
   async load(envelope) {
     const generation = ++this.loadGeneration, captured = structuredClone(envelope); this.cancel();
@@ -26,8 +27,7 @@ export class BrowserPreviewRuntime {
     validateInput(input);
     const request = validateRunRequest({schema:MESSAGE_SCHEMA,type:'run',requestId:`local-${++this.sequence}`,packageIdentity:this.loaded.manifest.packageIdentity,input:{parameters:resolveParameters(this.loaded.spec,input.parameters),seed:input.seed}});
     return new Promise((resolve, reject) => {
-      const frameAsset = this.loaded.profile.assetManifest.find(a => a.path === 'delivery/frame.bundle.mjs');
-      const frame = document.createElement('iframe'); frame.hidden = true; frame.sandbox = 'allow-scripts'; frame.src = this.executionOrigin + `/runtime/${frameAsset.sha256}/frame.html`;
+      const frame = document.createElement('iframe'); frame.hidden = true; frame.sandbox = 'allow-scripts'; frame.src = this.frameUrl;
       const channel = new MessageChannel();
       this.pending = {request, resolve, reject, frame, channel, phase:'connecting', diagnostics:0};
       const finish = (error, trace) => {if (this.pending?.request !== request) return; this.destroy(); error ? reject(error) : resolve(trace);};

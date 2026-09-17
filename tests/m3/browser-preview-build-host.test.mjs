@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import profiles from '../../services/browser-preview/runtime/assets/profiles.json' with {type:'json'};
 import {makeFixture} from '../../services/browser-preview/runtime/fixtures.mjs';
 import {initialWorkspaceArchive} from '../../services/workspace/initial-archive.ts';
-import {previewSha256} from '../../services/browser-preview/contract.ts';
+import {canonicalPreviewJson,previewSha256} from '../../services/browser-preview/contract.ts';
 import {productionPreviewRegistry} from '../../services/browser-preview/production-registry.ts';
+import {createTrustedPreviewRegistry} from '../../services/browser-preview/profiles.ts';
 import {BrowserPreviewBuildHost} from '../../services/browser-preview/build-host.ts';
 import {discoveryKey} from '../../services/browser-preview/discovery.ts';
 import {BROWSER_BUILD_WAKE_KEY} from '../../services/workspace/shared-alarm.ts';
@@ -21,6 +22,16 @@ test('three transport attempts terminate durably and concurrent alarm shares one
 });
 test('unknown source dependencies settle unsupported without R2 ready',async()=>{
  const f=await fixture(),p=profiles[0],raw=await makeFixture(p,'queue');const files=Object.fromEntries(raw.files.map(f=>[f.path,Buffer.from(f.base64,'base64')]));files['app/requirements.lock']=Buffer.from(JSON.stringify({schemaVersion:1,packages:{evil:'1'}}));const bytes=initialWorkspaceArchive(files);f.source.receipt.filesSha256=await previewSha256(bytes);f.storage.values.set(discoveryKey('revision-a'),f.source);f.ports.files=async()=>bytes;await f.host().alarm();assert.equal(f.host().read('revision-a').state.status,'unsupported');assert.equal(f.objects.size,0);assert.equal(f.storage.alarm,null);
+});
+
+test('settled v1 ready row automatically rearms and rebuilds against the current trusted runtime profile',async()=>{
+ const f=await fixture(),currentRegistry=await productionPreviewRegistry(),current=currentRegistry.resolve('python-stdlib/v1');
+ const oldAssets=[...current.assets,{path:'runtime/retired-v1-marker.bin',sha256:'e'.repeat(64),byteLength:1}].sort((a,b)=>a.path<b.path?-1:1),old={...current,runtime:{...current.runtime,assetSha256:await previewSha256(canonicalPreviewJson(oldAssets))},assets:oldAssets};
+ const oldRegistry=await createTrustedPreviewRegistry([old]);f.ports.registry=async()=>oldRegistry;await f.host().alarm();
+ const v1=f.host().read('revision-a','python-stdlib/v1');assert.equal(v1.state.status,'ready');assert.equal(v1.profile.runtime.assetSha256,old.runtime.assetSha256);assert.equal(f.storage.values.get(discoveryKey('revision-a')).status,'settled');
+ f.ports.registry=async()=>currentRegistry;assert.deepEqual((await Promise.all([f.host().rearmStaleReady('revision-a'),f.host().rearmStaleReady('revision-a')])).sort(),[false,true]);
+ const rearmed=f.host().read('revision-a','python-stdlib/v1');assert.equal(rearmed.state.status,'building');assert.equal(rearmed.profile,null);assert.equal(rearmed.receipt,null);assert.equal(f.storage.values.get(discoveryKey('revision-a')).status,'pending');assert.equal(f.storage.alarm,1000);
+ await f.host().alarm();const v2=f.host().read('revision-a','python-stdlib/v1');assert.equal(v2.state.status,'ready');assert.equal(v2.profile.runtime.assetSha256,current.runtime.assetSha256);assert.notEqual(v2.state.packageIdentity,v1.state.packageIdentity);assert.equal(f.objects.size,2);assert.equal(f.storage.values.get(discoveryKey('revision-a')).status,'settled');
 });
 
 test('new saved discovery preserves earlier build retry and uses local journal time',async()=>{

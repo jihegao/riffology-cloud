@@ -32,7 +32,7 @@ export class BrowserPreviewOrchestrator{
   if(profileId!==undefined&&(typeof profileId!=='string'||!['python-stdlib/v1','mesa-3.5.1/v1'].includes(profileId)))throw Error('browser-preview-input-invalid');
   const head=this.ports.head(),revision=revisionId??(head?sourceRevision(head):null)??null;
   if(!revision)return {currentRevisionId:null,revisionId:null,build:null,stale:false,modelSpec:null,reasonCode:'preview-no-saved-revision',delivery:null};
-  const saved=this.#saved(revision),row=this.ports.builds.read(revision,profileId);let delivery=null,reasonCode:string|null=null;
+  const saved=this.#saved(revision);if(this.ports.builds.read(revision,profileId)?.state.status==='ready'){await this.ports.builds.rearmStaleReady(revision);await this.#authorize(actor);}const row=this.ports.builds.read(revision,profileId);let delivery=null,reasonCode:string|null=null;
   if(row?.state.status==='ready'){
    if(!row.profile||row.profile.trust!=='verified-platform')reasonCode='preview-runtime-unavailable';
    else {let config:unknown=null;try{config=this.ports.delivery(row.profile.runtime.assetSha256);}catch{/* Historical immutable delivery may be unavailable. */}if(!config||typeof config!=='object')reasonCode='preview-runtime-unavailable';else delivery={...config,profile:{runtime:row.profile.runtime,packages:row.profile.packages,assetManifest:row.profile.assets,verified:true}};}
@@ -43,6 +43,7 @@ export class BrowserPreviewOrchestrator{
  async bytes(actor:TurnActor,identity:string){
   if(!/^[a-f0-9]{64}$/.test(identity))throw Error('browser-preview-input-invalid');await this.#authorize(actor);
   const receipt=this.ports.builds.receipt(identity);if(!receipt)throw Error('browser-preview-not-found');const saved=this.#saved(receipt.revisionId);
+  if(this.ports.builds.read(receipt.revisionId)?.state.status==='ready'){await this.ports.builds.rearmStaleReady(receipt.revisionId);await this.#authorize(actor);}
   const result=await readPreviewPackage(this.ports.bucket,{tenantId:this.scope.tenantId,projectId:this.scope.projectId,workspaceId:this.scope.workspaceId},receipt);
   const row=this.ports.builds.read(receipt.revisionId,result.manifest.runtime.profileId);
   try{this.ports.delivery(result.manifest.runtime.assetSha256);}catch{throw Error('browser-preview-source-unavailable');}

@@ -14,8 +14,8 @@ export default {
    const appOrigin=approved(env,request),url=new URL(request.url);
    if(!['GET','HEAD'].includes(request.method)||url.search||url.hash||request.headers.has('Authorization')||request.headers.has('Cookie'))return new Response('not found',{status:404});
    const asset=findExecutionAsset(url.pathname);if(!asset)return new Response('not found',{status:404});
-   const frameScript=/^\/runtime\/([a-f0-9]{64})\/frame\.html$/.exec(asset.url)?.[1];if(asset.kind!=='frame'||!frameScript)throw Error('execution-asset-invalid');
-   const frame=`default-src 'none'; script-src 'sha256-${cspHash(frameScript)}' 'unsafe-eval' 'wasm-unsafe-eval'; connect-src 'none'; worker-src blob:; frame-ancestors ${appOrigin}; base-uri 'none'; form-action 'none'`;
+   const frameDocument=/^\/runtime\/([a-f0-9]{64})\/frame\.html$/.exec(asset.url)?.[1];if(asset.kind!=='frame'||frameDocument!==asset.sha256||!('scriptSha256' in asset)||!/^[a-f0-9]{64}$/.test(asset.scriptSha256))throw Error('execution-asset-invalid');
+   const frame=`default-src 'none'; script-src 'sha256-${cspHash(asset.scriptSha256)}' 'unsafe-eval' 'wasm-unsafe-eval'; connect-src 'none'; worker-src blob:; frame-ancestors ${appOrigin}; base-uri 'none'; form-action 'none'`;
    return checkedStaticAsset(request,env.RUNTIME_ASSETS,asset,new Headers({'Content-Security-Policy':frame,'Permissions-Policy':'camera=(), microphone=(), geolocation=(), usb=(), storage-access=()','Cross-Origin-Resource-Policy':'cross-origin'}));
   }catch{return new Response('execution delivery unavailable',{status:503,headers:{'Cache-Control':'no-store'}});}
  }
