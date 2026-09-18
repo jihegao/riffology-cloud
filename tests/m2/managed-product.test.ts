@@ -19,12 +19,13 @@ const workerSource=`
  import {RevisionStore as BaseRevisionStore} from './services/turn-runtime/revision-store.ts';
  import {revisionStoreActorName} from './services/turn-runtime/revision-store-client.ts';
  export class RevisionStore extends BaseRevisionStore {async faultObserveForTest(enabled){this.ctx.storage.kv.put("test:observe-fault",enabled);await this.ctx.storage.sync();}async observe(input){if(this.ctx.storage.kv.get("test:observe-fault"))throw Error("synthetic-observe-unavailable");return super.observe(input);}async faultCommitForTest(mode){this.ctx.storage.kv.put('test:commit-fault',mode);await this.ctx.storage.sync();}async commitsForTest(){return this.ctx.storage.kv.get('test:commit-count')??0;}async commit(input){const mode=this.ctx.storage.kv.get('test:commit-fault');this.ctx.storage.kv.delete('test:commit-fault');this.ctx.storage.kv.put('test:commit-count',(this.ctx.storage.kv.get('test:commit-count')??0)+1);await this.ctx.storage.sync();if(mode==='before')throw Error('synthetic-commit-before-write');const result=await super.commit(input);if(mode==='after')throw Error('synthetic-commit-lost-ack');return result;}}
- export class ManagedProductRuntime extends BaseManagedProductRuntime {async partialClosureForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:"turn:"})){if(!row.deletion){row.closed=false;this.ctx.storage.kv.put(key,row);}}await this.ctx.storage.sync();}async tickForTest(){await super.alarm();}async pendingClosedForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:"turn:"})){row.receipt=null;row.checkpoint=null;row.closed=true;this.ctx.storage.kv.put(key,row);}await this.ctx.storage.sync();}async seedUnreservedForTest(input,withBinding){const identity={scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation},managedInput={identity,actor:input.actor,message:input.message,base:input.base};this.ctx.storage.kv.put('turn:'+identity.turnId,{input,managedInput,reserved:false,operation:null,observation:null,checkpoint:null,persistenceError:null,closed:false,cleanupRequested:false,cost:null,cancelRequested:false,receipt:null});await this.ctx.storage.sync();if(withBinding)await new SqlExecutionBindingStore(this.ctx.storage).reserve({schemaVersion:1,identity,backend:'managed-agents',inputSha256:await turnDigest(managedInput),reservedAt:Date.now(),remoteSessionId:null,remoteTurnId:null});}async interruptedCleanupForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:'turn:'})){row.cleanupRequested=true;this.ctx.storage.kv.put(key,row);}await this.ctx.storage.sync();throw Error('synthetic-cleanup-interrupted');}async expireForTest(){const budget=this.ctx.storage.kv.get('budget');budget.startedAt=Date.now()-budget.policy.maxDurationMs-1;this.ctx.storage.kv.put('budget',budget);await this.ctx.storage.sync();}}
+ export class ManagedProductRuntime extends BaseManagedProductRuntime {async legacyStopForTest(){const b=this.ctx.storage.kv.get('budget');b.stopped='managed-execution-unknown';this.ctx.storage.kv.put('budget',b);await this.ctx.storage.sync();}async partialClosureForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:"turn:"})){if(!row.deletion){row.closed=false;this.ctx.storage.kv.put(key,row);}}await this.ctx.storage.sync();}async tickForTest(){await super.alarm();}async pendingClosedForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:"turn:"})){row.receipt=null;row.checkpoint=null;row.closed=true;this.ctx.storage.kv.put(key,row);}await this.ctx.storage.sync();}async seedUnreservedForTest(input,withBinding){const identity={scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation},managedInput={identity,actor:input.actor,message:input.message,base:input.base};this.ctx.storage.kv.put('turn:'+identity.turnId,{input,managedInput,reserved:false,operation:null,observation:null,checkpoint:null,persistenceError:null,closed:false,cleanupRequested:false,cost:null,cancelRequested:false,receipt:null});await this.ctx.storage.sync();if(withBinding)await new SqlExecutionBindingStore(this.ctx.storage).reserve({schemaVersion:1,identity,backend:'managed-agents',inputSha256:await turnDigest(managedInput),reservedAt:Date.now(),remoteSessionId:null,remoteTurnId:null});}async interruptedCleanupForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:'turn:'})){row.cleanupRequested=true;this.ctx.storage.kv.put(key,row);}await this.ctx.storage.sync();throw Error('synthetic-cleanup-interrupted');}async expireForTest(){const budget=this.ctx.storage.kv.get('budget');budget.startedAt=Date.now()-7200001;this.ctx.storage.kv.put('budget',budget);await this.ctx.storage.sync();}}
  export default {async fetch(request,env){
   const b=await request.json(),s=b.input?.scope??b.scope,stub=env.MANAGED.getByName(b.wrong?'wrong-actor':managedProductActorName(s));
   try{
    let value;
-   if(b.action==='partial-closure')value=await stub.partialClosureForTest();
+   if(b.action==='legacy-stop')value=await stub.legacyStopForTest();
+   else if(b.action==='partial-closure')value=await stub.partialClosureForTest();
    else if(b.action==='alarm')value=await stub.tickForTest();
    else if(b.action==='pending-closed')value=await stub.pendingClosedForTest();
    else if(b.action==='fault-observe')value=await env.REVISION_STORE.getByName(revisionStoreActorName(s)).faultObserveForTest(b.enabled);
@@ -32,6 +33,7 @@ const workerSource=`
    else if(b.action==='seed-unreserved')value=await stub.seedUnreservedForTest(b.input,b.withBinding);
    else if(b.action==='observe')value=await stub.observe(b.input);
    else if(b.action==='cancel')value=await stub.cancel(b.input);
+   else if(b.action==='recover-delivery')value=await stub.recoverInputDelivery(s,b.actor,b.turnId);
    else if(b.action==='preflight')value=await stub.preflight(s,b.actor);
    else if(b.action==='expire')value=await stub.expireForTest();
    else if(b.action==='interrupt-cleanup')value=await stub.interruptedCleanupForTest();
@@ -46,21 +48,23 @@ const workerSource=`
   }catch(error){return Response.json({ok:false,error:error.message});}
  }};`;
 let bundlePromise:ReturnType<typeof build>|undefined;
-async function fixture(){
+async function fixture(testing=false){
  bundlePromise??=build({stdin:{contents:workerSource,sourcefile:'managed-product-test.ts',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'neutral',target:'es2024',external:['cloudflare:workers','node:*'],logLevel:'silent'});
  const bundle=await bundlePromise,directory=await mkdtemp(join(tmpdir(),'managed-product-'));
- const calls:Array<{method:string;path:string}>=[];const sessions=new Map<string,any>();let unknownUsage=false,lostInput=false,lostCreate=false,hideOriginal=false,deleteUnconfirmed=false,deleteFails=false,artifactFails=false,running=false,lostDeleteAck=false,failAbsentReads=false;
+ const calls:Array<{method:string;path:string;idempotencyKey:string|null}>=[];const sessions=new Map<string,any>();let inputTokens=100,unknownUsage=false,lostInput=false,lostCreate=false,hideOriginal=false,deleteUnconfirmed=false,deleteFails=false,artifactFails=false,running=false,lostDeleteAck=false,failAbsentReads=false,failReads=false,candidateOutput=candidate,dropInputs=0;
  const handler=async(request:Request)=>{
-  assert.equal(new URL(request.url).hostname,'api.openai.com');const path=new URL(request.url).pathname,method=request.method;calls.push({method,path});
+  assert.equal(new URL(request.url).hostname,'api.openai.com');const path=new URL(request.url).pathname,method=request.method;calls.push({method,path,idempotencyKey:request.headers.get('idempotency-key')});
   const json=(v:unknown,status=200)=>new Response(JSON.stringify(v),{status,headers:{'content-type':'application/json'}});
   const page=(data:unknown[])=>json({object:'list',data,has_more:false,first_id:null,last_id:null});
+  if(failReads&&method==='GET')return json({error:{message:'temporary read outage'}},503);
   const body=method==='POST'?await request.json() as any:null;
-  if(path==='/v1/agents/sessions'&&method==='POST'){const session={id:`remote-session-${sessions.size+1}`,metadata:body.metadata,status:'idle',items:[],turns:[],deleted:false};sessions.set(session.id,session);if(lostCreate)return json({error:{message:'synthetic create reply loss'}},500);return json(session);}
+  if(path==='/v1/agents/sessions'&&method==='POST'){const session={id:`remote-session-${sessions.size+1}`,metadata:body.metadata,instructions:body.agent.instructions,status:'idle',items:[],turns:[],deleted:false};sessions.set(session.id,session);if(lostCreate)return json({error:{message:'synthetic create reply loss'}},500);return json(session);}
   if(path==='/v1/agents/sessions')return page([...sessions.values()].filter(s=>!s.deleted));
   const id=path.split('/')[4],s=sessions.get(id);if(s?.deleted&&failAbsentReads)return json({error:{message:'synthetic absence probe unavailable'}},500);if(!s||s.deleted)return json({error:{message:'missing'}},404);
   if(path.endsWith('/events')){
    if(body.events[0].type==='agent.session.input.cancel'){for(const turn of s.turns)if(turn.status==='in_progress'){turn.status='cancelled';turn.completed_at=Math.floor(Date.now()/1000);}s.status='idle';return new Response(null,{status:204});}
-   const turn={id:`remote-turn-${s.turns.length+1}`,session_id:id,subagent_id:null,status:running?'in_progress':'completed',completed_at:running?null:Math.floor(Date.now()/1000),usage:unknownUsage?null:{input_tokens:100,output_tokens:20,total_tokens:120}};
+   if(dropInputs>0){dropInputs--;return json({error:{message:'input delivery unavailable before acceptance'}},503);}
+   const turn={id:`remote-turn-${s.turns.length+1}`,session_id:id,subagent_id:null,status:running?'in_progress':'completed',completed_at:running?null:Math.floor(Date.now()/1000),usage:unknownUsage?null:{input_tokens:inputTokens,output_tokens:20,total_tokens:inputTokens+20}};
    s.turns.push(turn);s.status=running?'running':'idle';s.items.push({type:'message',role:'user',turn_id:turn.id,content:body.events[0].input[0].content});
    if(lostInput)return json({error:{message:'synthetic lost reply'}},500);return new Response(null,{status:204});
   }
@@ -68,15 +72,15 @@ async function fixture(){
   if(path.endsWith('/turns'))return page(s.turns);
   if(path.includes('/turns/'))return json(s.turns.find((t:any)=>t.id===path.split('/').at(-1)));
   if(artifactFails&&path.includes('/artifacts'))return json({error:{message:'synthetic artifact read failure'}},500);
-  if(path.endsWith('/artifacts'))return page(s.turns.map((t:any)=>({id:`artifact-${t.id}`,session_id:id,turn_id:t.id,path:'/workspace/outputs/candidate.json',size_bytes:new TextEncoder().encode(candidate).length})));
-  if(path.endsWith('/content'))return new Response(candidate);
-  if(path.includes('/artifacts/')){const artifactId=path.split('/').at(-1)!;return json({id:artifactId,session_id:id,turn_id:artifactId.slice('artifact-'.length),path:'/workspace/outputs/candidate.json',size_bytes:new TextEncoder().encode(candidate).length});}
+  if(path.endsWith('/artifacts'))return page(s.turns.map((t:any)=>({id:`artifact-${t.id}`,session_id:id,turn_id:t.id,path:'/workspace/outputs/candidate.json',size_bytes:new TextEncoder().encode(candidateOutput).length})));
+  if(path.endsWith('/content'))return new Response(candidateOutput);
+  if(path.includes('/artifacts/')){const artifactId=path.split('/').at(-1)!;return json({id:artifactId,session_id:id,turn_id:artifactId.slice('artifact-'.length),path:'/workspace/outputs/candidate.json',size_bytes:new TextEncoder().encode(candidateOutput).length});}
   if(method==='DELETE'){if(deleteFails)return json({error:{message:'synthetic delete transport error'}},500);if(!deleteUnconfirmed)s.deleted=true;if(lostDeleteAck)return json({error:{message:'synthetic delete effect then lost ACK'}},500);return json({id,deleted:true});}
   return json(s);
  };
- const worker='managed-product-test';const options:any={host:'127.0.0.1',port:0,inspectorPort:0,cf:{},resourcePersistencePath:directory,telemetry:{enabled:false},logRequests:false,workers:[{config:{type:'worker',name:worker,compatibilityDate:'2026-09-09',compatibilityFlags:['nodejs_compat'],manifest:{mainModule:'worker.mjs',modules:{'worker.mjs':{type:'esm',contents:bundle.outputFiles![0].text}}},env:{MANAGED:{type:'durable-object',worker,exportName:'ManagedProductRuntime'},MANAGED_TURN_RUNTIME:{type:'durable-object',worker,exportName:'ManagedProductRuntime'},REVISION_STORE:{type:'durable-object',worker,exportName:'RevisionStore'},WORKSPACE_CHECKPOINTS:{type:'r2',name:'managed-checkpoints'},MODEL_CONTENT:{type:'r2',name:'managed-content'},MANAGED_ACCEPTANCE_JSON:{type:'text',value:JSON.stringify(policy)},MANAGED_OPENAI_API_KEY:{type:'text',value:'synthetic-key-no-network'}},exports:{ManagedProductRuntime:{type:'durable-object',storage:'sqlite'},RevisionStore:{type:'durable-object',storage:'sqlite'}}},dev:{unsafeRegisterWorker:false,outboundService:{type:'fetcher',handler}}}]};
+ const worker='managed-product-test';const options:any={host:'127.0.0.1',port:0,inspectorPort:0,cf:{},resourcePersistencePath:directory,telemetry:{enabled:false},logRequests:false,workers:[{config:{type:'worker',name:worker,compatibilityDate:'2026-09-09',compatibilityFlags:['nodejs_compat'],manifest:{mainModule:'worker.mjs',modules:{'worker.mjs':{type:'esm',contents:bundle.outputFiles![0].text}}},env:{MANAGED:{type:'durable-object',worker,exportName:'ManagedProductRuntime'},MANAGED_TURN_RUNTIME:{type:'durable-object',worker,exportName:'ManagedProductRuntime'},REVISION_STORE:{type:'durable-object',worker,exportName:'RevisionStore'},WORKSPACE_CHECKPOINTS:{type:'r2',name:'managed-checkpoints'},MODEL_CONTENT:{type:'r2',name:'managed-content'},...(testing?{MANAGED_TESTING_JSON:{type:'text',value:JSON.stringify({schemaVersion:2,policyId:'owner-online-test',tenantId:scope.tenantId,userId:actor.userId,enabled:true})}}:{MANAGED_ACCEPTANCE_JSON:{type:'text',value:JSON.stringify(policy)}}),MANAGED_OPENAI_API_KEY:{type:'text',value:'synthetic-key-no-network'}},exports:{ManagedProductRuntime:{type:'durable-object',storage:'sqlite'},RevisionStore:{type:'durable-object',storage:'sqlite'}}},dev:{unsafeRegisterWorker:false,outboundService:{type:'fetcher',handler}}}]};
  let mf=new Miniflare(options);
- return {calls,sessions,async call(body:unknown):Promise<any>{const response=await mf.dispatchFetch('http://test/',{method:'POST',body:JSON.stringify(body)});assert.equal(response.status,200);return response.json();},async restart(){await mf.dispose();mf=new Miniflare(options);},async close(){await mf.dispose();await rm(directory,{recursive:true,force:true});},loseDeleteAck(){lostDeleteAck=true;},failAbsence(value=true){failAbsentReads=value;},unknownUsage(){unknownUsage=true;},loseInput(){lostInput=true;},loseCreate(){lostCreate=true;},hideOriginal(){hideOriginal=true;},deleteUnconfirmed(){deleteUnconfirmed=true;},failDelete(){deleteFails=true;},failArtifacts(value=true){artifactFails=value;},run(){running=true;}};
+ return {calls,sessions,highCost(){inputTokens=2000000;},async call(body:unknown):Promise<any>{const response=await mf.dispatchFetch('http://test/',{method:'POST',body:JSON.stringify(body)});assert.equal(response.status,200);return response.json();},async restart(){await mf.dispose();mf=new Miniflare(options);},async close(){await mf.dispose();await rm(directory,{recursive:true,force:true});},loseDeleteAck(){lostDeleteAck=true;},failAbsence(value=true){failAbsentReads=value;},unknownUsage(){unknownUsage=true;},loseInput(){lostInput=true;},loseCreate(){lostCreate=true;},hideOriginal(){hideOriginal=true;},failReads(value=true){failReads=value;},dropInputs(count=1){dropInputs=count;},invalidCandidate(value=true){candidateOutput=value?JSON.stringify({schemaVersion:1,spec,files:{'model/model.py':'invalid'}}):candidate;},deleteUnconfirmed(){deleteUnconfirmed=true;},failDelete(){deleteFails=true;},failArtifacts(value=true){artifactFails=value;},run(){running=true;}};
 }
 const posts=(f:Awaited<ReturnType<typeof fixture>>)=>f.calls.filter(c=>c.method==='POST');
 test('Managed Workerd creates one real SDK input, saves R2 files-only Revision, restores and replays after actor restart',{timeout:60000},async()=>{
@@ -232,5 +236,71 @@ test('Managed cleanup waits for every Turn sharing the Session and recovers a pa
   // intent owner is closed, another reference to the same Session is not.
   await f.call({action:'partial-closure',scope});await f.restart();await f.call({action:'alarm',scope});status=(await f.call({action:'status',scope})).value;
   assert.equal(status.records.every((r:any)=>r.closed),true);assert.equal(status.cleanupPending,false);assert.equal(status.liveSessions,0);assert.equal(status.unresolved,1);assert.equal(status.reservedUsd,1.75);assert.equal(posts(f).length,count);assert.equal(f.calls.filter(c=>c.method==='DELETE').length,1);
+ }finally{await f.close();}
+});
+
+test('Account testing removes money, turn, session, simulation and total-duration quotas while preserving accounting',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  f.highCost();let checkpoint=null;
+  for(let i=1;i<=8;i++){
+   const result=await f.call({action:'accept',input:input(i,'local-session',{workspace:checkpoint,session:checkpoint})});
+   assert.equal(result.ok,true,JSON.stringify(result));assert.ok(result.value.checkpoint,JSON.stringify(result));checkpoint=result.value.checkpoint;
+   if(i===1)assert.equal((await f.call({action:'expire',scope})).ok,true);
+  }
+  for(let i=0;i<14;i++)assert.equal((await f.call({action:'simulation',scope,runId:'simulation-'+i})).ok,true);
+  assert.equal((await f.call({action:'cleanup',scope})).ok,true);
+  for(let i=9;i<=10;i++){
+   const result=await f.call({action:'accept',input:input(i,'session-'+i,{workspace:checkpoint,session:null})});assert.equal(result.ok,true,JSON.stringify(result));checkpoint=result.value.checkpoint;
+   assert.equal((await f.call({action:'cleanup',scope})).ok,true);
+  }
+  const status=(await f.call({action:'status',scope})).value;
+  assert.equal(status.turnCount,10);assert.equal(status.sessionCount,3);assert.equal(status.simulationCount,14);assert.equal(status.deadline,null);assert.equal(status.stopped,null);assert.ok(status.observedUsd>5);assert.equal(status.policy.observedStopUsd,null);
+ }finally{await f.close();}
+});
+test('Account testing retains unknown usage and recreates a cleaned Session from verified saved files',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  f.unknownUsage();const request=input(),first=await f.call({action:'accept',input:request});assert.equal(first.ok,true);const count=posts(f).length;
+  assert.deepEqual(await f.call({action:'accept',input:request}),first);assert.equal(posts(f).length,count);
+  await f.call({action:'cleanup',scope});await f.call({action:'legacy-stop',scope});await f.restart();
+  const preflight=await f.call({action:'preflight',scope,actor});assert.equal(preflight.ok,true,JSON.stringify(preflight));assert.equal(posts(f).length,count);
+  const state=(await f.call({action:'status',scope})).value;assert.equal(state.stopped,null);assert.equal(state.unresolved,1);assert.equal(state.records[0].cost,null);assert.equal(state.records[0].usage.status,'unknown');assert.equal(state.reservedUsd,1);
+  const next=await f.call({action:'accept',input:input(2,request.sessionId,{workspace:first.value.checkpoint,session:first.value.checkpoint})});assert.equal(next.ok,true,JSON.stringify(next));assert.equal(next.value.outcome,'completed');assert.equal(f.sessions.size,2);
+  const hosted=[...f.sessions.values()][1];assert.match(hosted.instructions,/def run/);assert.match(hosted.instructions,/Synthetic FCFS only/);assert.match(hosted.instructions,/saved project files/);
+  assert.equal((await f.call({action:'status',scope})).value.records[0].cost,null);
+  const third=await f.call({action:'accept',input:input(3,request.sessionId,{workspace:next.value.checkpoint,session:next.value.checkpoint})});assert.equal(third.ok,true,JSON.stringify(third));assert.equal(third.value.outcome,'completed');assert.equal(f.sessions.size,2);
+ }finally{await f.close();}
+});
+test('Account testing observes transient read failures without cancelling or replaying original',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  f.run();f.failReads();const request=input(),first=await f.call({action:'accept',input:request});assert.equal(first.value.phase,'unknown');const count=posts(f).length;
+  await f.call({action:'alarm',scope});assert.equal(posts(f).length,count);assert.equal(f.calls.filter(c=>c.method==='DELETE').length,0);
+  assert.equal((await f.call({action:'preflight',scope,actor})).ok,false);
+  await f.call({action:'legacy-stop',scope});assert.equal((await f.call({action:'preflight',scope,actor})).ok,false);
+  f.failReads(false);const observed=await f.call({action:'observe',input:request});assert.equal(observed.value.phase,'running');assert.equal(posts(f).length,count);
+ }finally{await f.close();}
+});
+
+test('Account testing build format failure retains last good revision and allows a corrected new request',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  const first=await f.call({action:'accept',input:input()});assert.ok(first.value.checkpoint);const base={workspace:first.value.checkpoint,session:first.value.checkpoint};
+  f.invalidCandidate();const failed=await f.call({action:'accept',input:input(2,'local-session',base)});assert.equal(failed.value.persistenceErrorCode,'managed-candidate-schema');assert.equal(failed.value.checkpoint,null);assert.equal((await f.call({action:'status',scope})).value.stopped,null);
+  await f.call({action:'cleanup',scope});await f.call({action:'legacy-stop',scope});
+  assert.equal((await f.call({action:'preflight',scope,actor})).ok,true);
+  f.invalidCandidate(false);const fixed=await f.call({action:'accept',input:input(3,'local-session',base)});assert.equal(fixed.ok,true,JSON.stringify(fixed));assert.ok(fixed.value.checkpoint);assert.equal(fixed.value.outcome,'completed');assert.equal(f.sessions.size,2);
+ }finally{await f.close();}
+});
+
+test('Account testing retries lost delivery with the exact same idempotency key, one reservation and one execution',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  f.dropInputs();const request=input(),result=await f.call({action:'accept',input:request});assert.equal(result.ok,true,JSON.stringify(result));assert.equal(result.value.outcome,'completed');assert.ok(result.value.checkpoint);
+  const delivery=f.calls.filter(c=>c.method==='POST'&&c.path.endsWith('/events'));assert.equal(delivery.length,2);assert.ok(delivery[0].idempotencyKey);assert.equal(delivery[0].idempotencyKey,delivery[1].idempotencyKey);assert.equal([...f.sessions.values()][0].turns.length,1);assert.equal((await f.call({action:'status',scope})).value.turnCount,1);
+  const count=posts(f).length;await f.restart();assert.deepEqual(await f.call({action:'accept',input:request}),result);assert.equal(posts(f).length,count);
+ }finally{await f.close();}
+});
+test('Account testing explicit original-delivery recovery is owner scoped and keeps the original identity',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  f.dropInputs(8);const request=input(),initial=await f.call({action:'accept',input:request});assert.equal(initial.value.phase,'unknown');await f.call({action:'legacy-stop',scope});const count=posts(f).length;
+  assert.equal((await f.call({action:'recover-delivery',scope,actor:{...actor,userId:'wrong'},turnId:request.turnId})).ok,false);assert.equal(posts(f).length,count);
+  f.dropInputs(0);const recovered=await f.call({action:'recover-delivery',scope,actor,turnId:request.turnId});assert.equal(recovered.ok,true,JSON.stringify(recovered));assert.equal(recovered.value.outcome,'completed');assert.equal(recovered.value.turnId,request.turnId);assert.equal(f.sessions.size,1);assert.equal([...f.sessions.values()][0].turns.length,1);assert.equal((await f.call({action:'status',scope})).value.turnCount,1);
  }finally{await f.close();}
 });

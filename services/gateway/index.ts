@@ -1,3 +1,4 @@
+import {managedTestingOwner} from '../workspace/managed-route.ts';
 import {matchesManagedProjectBootstrap} from '../workspace/managed-bootstrap.ts';
 import {createGatewayG4ComputeServices,createGatewayG4WindowServices} from './g4-compute-services.ts';
 import {admitG4Task,type G4TaskBudgetNamespace} from '../model-budget/g4-admission.ts';
@@ -13,7 +14,7 @@ import {createGatewayG5ReadonlyReads} from './g5-read-services.ts';
 import {createGatewaySimulationServices} from './simulation-services.ts';
 import {R2ModelContentUploadPort} from '../runtime/model-upload.ts';
 // Optional until the model-content binding is configured for an environment.
-type GatewayRuntimeEnv=GatewayEnv & {MANAGED_PROJECT_BOOTSTRAP_JSON?:string;M4_SIMULATION_ENABLED?:unknown;G5_WINDOW_GUARD?:DurableObjectNamespace<G5ControlledWindow>;G5_CONTROLLED_WINDOW_JSON?:string;G5_ADMISSION_ENABLED?:string;G4_CONTROLLED_WINDOW_JSON?:string;TENANT_MODEL_BUDGET?:G4TaskBudgetNamespace;TRUSTED_PI_CAPACITY?:DurableObjectNamespace<import('../capacity/durable.ts').TrustedPiCapacity>;MODEL_CONTENT?:R2Bucket;TOOL_ARTIFACT_STORE?:DurableObjectNamespace<import('../artifacts/durable.ts').ToolArtifactStore>;M3_SERVICE_ENABLED?:unknown;M3_PREVIEW_ENABLED?:unknown;M3_PREVIEW_WS_ENABLED?:unknown;M3_PREVIEW_ORIGIN?:string;BROWSER_PREVIEW_EXECUTION_ORIGIN?:string;M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?:string};
+type GatewayRuntimeEnv=GatewayEnv & {MANAGED_TESTING_JSON?:string;MANAGED_PROJECT_BOOTSTRAP_JSON?:string;M4_SIMULATION_ENABLED?:unknown;G5_WINDOW_GUARD?:DurableObjectNamespace<G5ControlledWindow>;G5_CONTROLLED_WINDOW_JSON?:string;G5_ADMISSION_ENABLED?:string;G4_CONTROLLED_WINDOW_JSON?:string;TENANT_MODEL_BUDGET?:G4TaskBudgetNamespace;TRUSTED_PI_CAPACITY?:DurableObjectNamespace<import('../capacity/durable.ts').TrustedPiCapacity>;MODEL_CONTENT?:R2Bucket;TOOL_ARTIFACT_STORE?:DurableObjectNamespace<import('../artifacts/durable.ts').ToolArtifactStore>;M3_SERVICE_ENABLED?:unknown;M3_PREVIEW_ENABLED?:unknown;M3_PREVIEW_WS_ENABLED?:unknown;M3_PREVIEW_ORIGIN?:string;BROWSER_PREVIEW_EXECUTION_ORIGIN?:string;M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?:string};
 import {R2ModelContentPort} from '../runtime/content.ts';
 import { createAuth } from './auth.ts';
 import { catalogDatabase } from '../catalog/database.ts';
@@ -91,8 +92,9 @@ export default {
       }
       return await auth.handler(request);
     }
-    return await gateway(request,{executionAvailability:{service:env.M3_SERVICE_ENABLED==='true',preview:env.M3_PREVIEW_ENABLED==='true',simulation:env.M4_SIMULATION_ENABLED==='true'},g4ComputeCounts:createGatewayG4ComputeServices(env),g4WindowSnapshot:createGatewayG4WindowServices(env as unknown as Parameters<typeof createGatewayG4WindowServices>[0]),origin:env.APP_ORIGIN,database,modelContent:env.MODEL_CONTENT?new R2ModelContentPort(env.MODEL_CONTENT):undefined,modelUpload:env.MODEL_CONTENT?new R2ModelContentUploadPort(env.MODEL_CONTENT):undefined,
+    return await gateway(request,{testingSimulationAvailable:(principal,tenantId)=>managedTestingOwner(env.MANAGED_TESTING_JSON,tenantId,principal.userId),executionAvailability:{service:env.M3_SERVICE_ENABLED==='true',preview:env.M3_PREVIEW_ENABLED==='true',simulation:env.M4_SIMULATION_ENABLED==='true'},g4ComputeCounts:createGatewayG4ComputeServices(env),g4WindowSnapshot:createGatewayG4WindowServices(env as unknown as Parameters<typeof createGatewayG4WindowServices>[0]),origin:env.APP_ORIGIN,database,modelContent:env.MODEL_CONTENT?new R2ModelContentPort(env.MODEL_CONTENT):undefined,modelUpload:env.MODEL_CONTENT?new R2ModelContentUploadPort(env.MODEL_CONTENT):undefined,
       admitProject:async(principal,tenantId,key,body)=>{
+        if(managedTestingOwner(env.MANAGED_TESTING_JSON,tenantId,principal.userId))return null;
         if(await matchesManagedProjectBootstrap(env.MANAGED_PROJECT_BOOTSTRAP_JSON,principal,tenantId,key,body))return null;
         if(env.G5_CONTROLLED_WINDOW_JSON!==undefined){
           if(env.G5_ADMISSION_ENABLED!=='true'||!env.G5_WINDOW_GUARD)throw new HttpError('g5_admission_disabled',409);

@@ -7,6 +7,16 @@ import {pathToFileURL} from 'node:url';
 const origin='https://workspace.test',previewOrigin='https://p-'+ 'a'.repeat(40)+'.preview.test';
 const names=['index.html','app.js','project-status.js','browser-preview.js','layout.js','export.js','publication.js','evidence.js','evidence.css','services.js','previews.js','simulation.js','comparison.js','styles.css','workspace.css'];
 const files=Object.fromEntries(await Promise.all(names.map(async name=>[name,await readFile(new URL('../../services/web/'+name,import.meta.url),'utf8')])));
+test('closed project admission explains the restriction instead of asking for a refresh',async t=>{
+ const f=await fixture(t,{projectFlow:true}),p=f.page;
+ await p.route('**/api/tenants/t/projects',route=>route.request().method()==='POST'
+  ?route.fulfill({status:409,contentType:'application/json',body:JSON.stringify({error:'g5_admission_disabled'})})
+  :route.fallback());
+ await p.locator('#new-project').click();await p.locator('#project-title').fill('Admission diagnostic');await p.locator('#project-submit').click();
+ await p.waitForFunction(()=>document.querySelector('#project-error').textContent.includes('当前环境已暂停创建项目'));
+ assert.doesNotMatch(await p.locator('#project-error').innerText(),/状态已变化|刷新后重试/);
+ assert.equal(f.calls.filter(c=>c.method==='POST').length,0);
+});
 const screenshotDir=process.env.WORKSPACE_LAYOUT_EVIDENCE_DIR?pathToFileURL(resolve(process.env.WORKSPACE_LAYOUT_EVIDENCE_DIR)+'/'):new URL('../../.local/workspace-layout-screenshots/',import.meta.url);
 async function fixture(t,{mismatched=false,unavailableLayoutStorage=false,activePolling=false,pagedServices=false,projectFlow=false,longTitle=false,legacyLayout=null}={}){
  const browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||'chrome'});t.after(()=>browser.close());const context=await browser.newContext({viewport:{width:1600,height:900}});t.after(()=>context.close());if(unavailableLayoutStorage)await context.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw new DOMException('Storage disabled','SecurityError');}}));if(legacyLayout)await context.addInitScript(value=>localStorage.setItem('riffology:workspace-layout:t:w',JSON.stringify(value)),legacyLayout);const page=await context.newPage(),errors=[],calls=[];page.setDefaultTimeout(8000);page.on('pageerror',e=>errors.push(e.message));t.after(()=>assert.deepEqual(errors,[]));
@@ -124,4 +134,15 @@ test('project failures and timeouts stay actionable, unrelated list errors are n
 });
 test('legacy depth restores a view and four tabs support keyboard navigation without execution',async t=>{
  const f=await fixture(t,{legacyLayout:{depth:'inspect',mobile:'preview'}}),p=f.page;assert.equal(await p.locator('#canvas-inspect').isVisible(),true);await p.getByRole('tab',{name:'Inspect',exact:true}).focus();await p.keyboard.press('Home');assert.equal(await p.locator('#canvas-preview').isVisible(),true);await p.keyboard.press('ArrowRight');assert.equal(await p.locator('#canvas-model').isVisible(),true);await p.keyboard.press('ArrowRight');assert.equal(await p.locator('#canvas-runs').isVisible(),true);await p.keyboard.press('End');assert.equal(await p.locator('#canvas-inspect').isVisible(),true);assert.equal(await p.locator('#workspace-runtime-details').isVisible(),true);assert.equal(f.calls.filter(c=>c.method==='POST'&&!c.path.endsWith('/tickets')).length,0);
+});
+
+test('Managed retry explains the durable block and cancelled saves do not claim model completion',async t=>{
+ const f=await fixture(t),p=f.page;
+ await p.route('**/api/workspaces/w',route=>route.fulfill({contentType:'application/json',body:JSON.stringify({schemaVersion:3,activeTurnId:null,releaseHold:null,managedState:{stopped:'managed-execution-unknown',unresolved:1,cleanupPending:false},sessions:{s:{id:'s',title:'Main',createdAt:1}},turns:{t:{id:'t',sessionId:'s',message:'Build traffic model',status:'cancelled',persistenceOutcome:'saved',createdAt:1}}})}));
+ await p.route('**/api/workspaces/w/sessions/s/turns',route=>route.fulfill({status:409,contentType:'application/json',body:JSON.stringify({error:'managed-execution-unknown'})}));
+ await p.reload();await p.getByText('已停止 · 恢复状态已保存（不代表建模完成）',{exact:true}).waitFor();
+ await p.getByText('上一轮曾出现执行状态未确认，项目已暂停接收新请求；需要核对原任务后恢复，重复发送不会解除暂停。',{exact:true}).waitFor();
+ await p.locator('#message-input').fill('Retry');await p.locator('#message-submit').click();
+ await p.waitForFunction(()=>document.querySelector('#message-error').textContent.includes('执行状态未确认'));
+ assert.doesNotMatch(await p.locator('#message-error').innerText(),/服务暂不可用/);
 });

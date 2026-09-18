@@ -19,6 +19,7 @@ interface WorkspaceTurnActor {
 
 interface TurnServicesEnv {
   MANAGED_ACCEPTANCE_JSON?:string;
+  MANAGED_TESTING_JSON?:string;
   MANAGED_TURN_RUNTIME?:{getByName:unknown};
   M2_TURNS_ENABLED: unknown;
   M2_TURN_RUNTIME_CONFIGURED?: unknown;
@@ -36,7 +37,7 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
     },
     async submit(scope: TurnScope, caller: TurnActor, sessionId: string, key: string, body: { message: unknown }) {
       try{
-        const managed=managedProjectPolicy(env.MANAGED_ACCEPTANCE_JSON,scope);
+        const managed=managedProjectPolicy(env.MANAGED_ACCEPTANCE_JSON,scope,env.MANAGED_TESTING_JSON);
         if(managed){if(!managed.enabled||managed.userId!==caller.userId)throw Error('managed-admission-denied');requireTurnRuntime('true',typeof env.MANAGED_TURN_RUNTIME?.getByName==='function');}
         else requireTurnRuntime(env.M2_TURNS_ENABLED,env.M2_TURN_RUNTIME_CONFIGURED!==false);
         const result=await actor(scope).submitTurn({scope,actor:caller,sessionId,key,body});
@@ -52,7 +53,7 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
     async snapshot(scope: TurnScope) {
       const value = await actor(scope).turnSnapshot({ scope });
       if (!value || typeof value !== 'object' || Array.isArray(value)) return value;
-      return { ...(value as Record<string, unknown>), admission: managedProjectPolicy(env.MANAGED_ACCEPTANCE_JSON,scope)?turnAdmissionStatus(managedProjectPolicy(env.MANAGED_ACCEPTANCE_JSON,scope)?.enabled?'true':'false',typeof env.MANAGED_TURN_RUNTIME?.getByName==='function'):turnAdmissionStatus(env.M2_TURNS_ENABLED, env.M2_TURN_RUNTIME_CONFIGURED !== false) };
+      return { ...(value as Record<string, unknown>), admission: managedProjectPolicy(env.MANAGED_ACCEPTANCE_JSON,scope,env.MANAGED_TESTING_JSON)?turnAdmissionStatus(managedProjectPolicy(env.MANAGED_ACCEPTANCE_JSON,scope,env.MANAGED_TESTING_JSON)?.enabled?'true':'false',typeof env.MANAGED_TURN_RUNTIME?.getByName==='function'):turnAdmissionStatus(env.M2_TURNS_ENABLED, env.M2_TURN_RUNTIME_CONFIGURED !== false) };
     },
     async files(scope:TurnScope){return actor(scope).listFiles({scope});},
     async diff(scope:TurnScope){return actor(scope).diffFiles({scope});},

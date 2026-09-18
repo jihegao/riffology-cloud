@@ -30,6 +30,7 @@ import type {GatewayG5ReadonlyReads} from './g5-read-services.ts';
 
 export interface GatewayServices {
   executionAvailability?:{service:boolean;preview:boolean;simulation:boolean};
+  testingSimulationAvailable?:(principal:Principal,tenantId:string)=>boolean;
   g4WindowSnapshot?(tenantId:string,actor:TurnActor):Promise<unknown>;
   g4ComputeCounts?(scope:TurnScope,actor:TurnActor):Promise<unknown>;
   browserPreviews?:GatewayBrowserPreviews;
@@ -74,6 +75,7 @@ async function turnCall<T>(operation:()=>Promise<T>):Promise<T>{
   try{return await operation();}catch(error){const code=error instanceof Error?error.message:'';
     if(code.includes('idempotency-conflict'))throw new CatalogError('idempotency_conflict');
     if(code==='workspace-recovery-hold')throw new HttpError(code,409);
+    if(new Set(['managed-execution-unknown','managed-usage-unknown','managed-original-unresolved','managed-cleanup-unconfirmed','managed-input-in-flight','managed-session-base-unavailable','managed-session-limit-or-cleanup-pending','managed-admission-denied','managed-policy-immutable','managed-route-existing-turn-history','managed-window-expired','managed-turn-limit','managed-observed-cost-limit','managed-reservation-limit','managed-observed-cost-exceeds-hold','managed-observation-failed']).has(code))throw new HttpError(code,409);
     if(code.includes('not-found'))throw new CatalogError('not_found');
     if(code.startsWith('invalid-'))throw new CatalogError('invalid_input');throw error;}
 }
@@ -165,7 +167,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     if(url.pathname==='/api/me' && request.method==='GET'){
       const tenants=await services.database.query<{id:string}>(sql(`SELECT t.id FROM catalog_tenants t JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=t.owner_user_id
         JOIN catalog_users u ON u.id=t.owner_user_id WHERE t.owner_user_id=? AND t.status='active' AND m.status='active' AND u.status='active' AND u.auth_version=?`,principal.userId,principal.authVersion));
-      return json({userId:principal.userId,tenants,...(services.executionAvailability?{execution:services.executionAvailability}:{})});
+      return json({userId:principal.userId,tenants,...(services.executionAvailability?{execution:{...services.executionAvailability,simulation:services.executionAvailability.simulation||tenants.some(t=>services.testingSimulationAvailable?.(principal,t.id))}}:{})});
     }
     const exportRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/research-export$/.exec(url.pathname);
     if(exportRoute){

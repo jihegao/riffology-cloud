@@ -25,7 +25,7 @@ async function fixture(){
   artifact:async(_scope:any,id:string)=>{if(id!==artifactId)throw Error('tool-artifact-not-found');return {receipt:{schemaVersion:1,artifactId,operation:'read',mediaType:'application/json',bytes:artifactContent.byteLength,sha256:artifactSha,createdAt:1500},content:artifactContent};},
  }};
  const get=(path:string,headers?:HeadersInit)=>gateway(new Request(origin+path,{headers}),services),post=(path:string,key:string,body:unknown,requestOrigin=origin)=>gateway(new Request(origin+path,{method:'POST',headers:{origin:requestOrigin,'content-type':'application/json','idempotency-key':key},body:JSON.stringify(body)}),services);
- return {db,journal,workspaceId,artifactId,artifactContent,artifactSha,get,post,ready(){db.sqlite.prepare("UPDATE catalog_projects SET status='ready' WHERE workspace_id=?").run(workspaceId);db.sqlite.prepare("UPDATE catalog_workspaces SET status='ready' WHERE id=?").run(workspaceId);}};
+ return {db,journal,services,workspaceId,artifactId,artifactContent,artifactSha,get,post,ready(){db.sqlite.prepare("UPDATE catalog_projects SET status='ready' WHERE workspace_id=?").run(workspaceId);db.sqlite.prepare("UPDATE catalog_workspaces SET status='ready' WHERE id=?").run(workspaceId);}};
 }
 test('authenticated ready workspace exposes durable session, turn, cancel, snapshot and event cursor APIs',async()=>{
  const f=await fixture();try{
@@ -97,5 +97,13 @@ test('turn mutation replay and cancel never publish private base or journal sequ
   const cancelled=await (await f.post(`/api/workspaces/${f.workspaceId}/turns/${claimed!.turn.id}/cancel`,'unused',{})).json() as any;
   await f.journal.beginCheckpoint(session.session.scope,{turnId:claimed!.turn.id,dispatchId:claimed!.turn.dispatchId!,runtimeGeneration:1,outcome:'completed'});await f.journal.commitCheckpoint(session.session.scope,{turnId:claimed!.turn.id,dispatchId:claimed!.turn.dispatchId!,runtimeGeneration:1,checkpoint:{revisionId:'revision-private',objectKey:'turns/private.json',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:claimed!.turn.startedAt!}});const terminal=await (await f.post(`/api/workspaces/${f.workspaceId}/turns/${claimed!.turn.id}/cancel`,'unused',{})).json() as any;
   for(const turn of [replay.turn,cancelled,terminal]){for(const key of ['requestKey','payloadSha256','dispatchId','base','resourceLease','startedSequence','terminalSequence'])assert.equal(Object.hasOwn(turn,key),false,key);assert.deepEqual(turn.actor,{userId:'user-a'});}
+ }finally{f.db.sqlite.close();}
+});
+
+test('Managed admission blocks retain safe reason codes instead of becoming generic 503s',async()=>{
+ const f=await fixture();try{f.ready();
+  const codes=['managed-execution-unknown','managed-usage-unknown','managed-original-unresolved','managed-input-in-flight','managed-session-base-unavailable','managed-admission-denied'];
+  for(const code of codes){f.services.turns.submit=async()=>{throw Error(code);};const response=await f.post(`/api/workspaces/${f.workspaceId}/sessions/session-a/turns`,'retry',{message:'Retry'});assert.equal(response.status,409);assert.deepEqual(await response.json(),{error:code});}
+  f.services.turns.submit=async()=>{throw Error('opaque private provider detail');};const response=await f.post(`/api/workspaces/${f.workspaceId}/sessions/session-a/turns`,'retry',{message:'Retry'});assert.equal(response.status,503);assert.deepEqual(await response.json(),{error:'temporarily_unavailable'});
  }finally{f.db.sqlite.close();}
 });

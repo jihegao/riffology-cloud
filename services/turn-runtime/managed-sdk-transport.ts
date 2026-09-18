@@ -38,9 +38,11 @@ export class ManagedSdkTransport implements ManagedTransport {
   readonly store: ExecutionBindingStore;
   readonly admission: ManagedPaidAdmission;
   readonly clock: () => number;
-  constructor(input: {apiKey: string; store: ExecutionBindingStore; admission: ManagedPaidAdmission; fetch?: typeof fetch; clock?: () => number}) {
+  readonly instructionsForInput?: (input: ManagedInput) => string;
+  constructor(input: {apiKey: string; store: ExecutionBindingStore; admission: ManagedPaidAdmission; fetch?: typeof fetch; clock?: () => number; instructionsForInput?: (input: ManagedInput) => string}) {
     if (!input.apiKey || !input.admission?.reserve || !input.admission.readInput) throw Error('managed-credentials-and-admission-required');
     this.client = new OpenAI({apiKey: input.apiKey, baseURL: 'https://api.openai.com/v1', maxRetries: 0, timeout: 30_000, fetch: input.fetch});
+    this.instructionsForInput = input.instructionsForInput;
     this.store = input.store; this.admission = input.admission; this.clock = input.clock ?? Date.now;
   }
   private async inputBinding(input: ManagedInput) {
@@ -79,7 +81,7 @@ export class ManagedSdkTransport implements ManagedTransport {
     // lost, scope+creation metadata can recover the idle Session, but never send
     // the missing input automatically.
     const session = await this.client.beta.agents.sessions.create({
-      agent: {model: 'gpt-5.6-luna', instructions, multi_agent: {enabled: false}, reasoning: {effort: 'low'}, text: {verbosity: 'low'}, service_tier: 'default'},
+      agent: {model: 'gpt-5.6-luna', instructions: this.instructionsForInput?.(input) ?? instructions, multi_agent: {enabled: false}, reasoning: {effort: 'low'}, text: {verbosity: 'low'}, service_tier: 'default'},
       environment: {type: 'openai_hosted', network: {access: 'disabled'}},
       metadata: {riffology_scope: await sessionScope(binding), riffology_creation: await managedCorrelation(binding)},
       stream: false,
@@ -125,6 +127,20 @@ export class ManagedSdkTransport implements ManagedTransport {
     if (binding.remoteTurnId !== null && binding.remoteTurnId !== turnId) throw Error('managed-original-turn-conflict');
     const attached = await this.store.attach(binding.identity, {sessionId, turnId});
     return this.retrieve(attached);
+  }
+  /** Retransmit the exact original event using the provider's idempotency key.
+   * No new Session, identity, reservation or input is created. Account testing
+   * opts in at its durable authority; bounded trials never call this method. */
+  async recoverInputDelivery(binding: ExecutionBinding): Promise<ManagedReceipt | null> {
+    const original=await this.lookupOriginal(binding);
+    if(original)return original;
+    const current=await this.store.read(binding.identity);
+    if(!current?.remoteSessionId||current.remoteTurnId)throw Error('managed-original-unresolved');
+    const session=await this.verifySession(current,current.remoteSessionId);
+    if(session.status!=='idle')return null;
+    const input=await this.admission.readInput(current);
+    if(!input||await turnDigest(input)!==current.inputSha256)throw Error('managed-original-input-unavailable');
+    return this.submit(input,current,current.remoteSessionId);
   }
   async retrieve(binding: ExecutionBinding): Promise<ManagedReceipt> {
     if (!binding.remoteSessionId || !binding.remoteTurnId) throw Error('managed-original-reference-required');

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {managedAcceptancePolicy,managedProjectPolicy,requireManagedAdmission,managedProductActorName,resolveManagedRoute} from '../../services/workspace/managed-route.ts';
+import {managedTestingOwner,managedTestingConfig,managedAcceptancePolicy,managedProjectPolicy,requireManagedAdmission,managedProductActorName,resolveManagedRoute} from '../../services/workspace/managed-route.ts';
 import {createGatewayTurnServices} from '../../services/gateway/turn-services.ts';
 const scope={tenantId:'tenant',projectId:'synthetic',workspaceId:'workspace',workspaceGeneration:1};
 const policy={schemaVersion:1 as const,policyId:'issue77-production-v1',scope,userId:'owner',enabled:true,syntheticOnly:true as const,maxTurns:6 as const,maxSessions:2 as const,observedStopUsd:5 as const,maxDurationMs:7200000 as const,maxTurnObservationMs:300000 as const,maxSimulationRuns:12 as const};
@@ -38,4 +38,24 @@ test('Persistent backend selection survives closed/removed config and rejects Pi
  assert.throws(()=>resolveManagedRoute(policy,scope,null,true),/existing-turn-history/);
  assert.equal(resolveManagedRoute(undefined,scope,null,true),null);
  assert.throws(()=>resolveManagedRoute(policy,{...scope,workspaceGeneration:2},policy,true),/scope-conflict/);
+});
+
+const testing={schemaVersion:2,policyId:'owner-online-testing',tenantId:scope.tenantId,userId:'owner',enabled:true};
+test('Account testing admits only its exact owner and tenant; old acceptance and pinned history are preserved',()=>{
+ assert.equal(managedTestingOwner(testing,scope.tenantId,'owner'),true);
+ assert.equal(managedTestingOwner(testing,'other','owner'),false);
+ assert.equal(managedTestingOwner(testing,scope.tenantId,'other'),false);
+ assert.equal(managedTestingOwner({...testing,enabled:false},scope.tenantId,'owner'),false);
+ assert.throws(()=>managedTestingConfig({...testing,extra:true}));
+ const selected=managedProjectPolicy(undefined,scope,testing)!;
+ assert.equal(selected.schemaVersion,2);assert.equal(selected.maxTurns,null);assert.equal(selected.maxDurationMs,null);
+ assert.deepEqual(managedAcceptancePolicy(selected),selected);
+ assert.deepEqual(requireManagedAdmission(undefined,selected,scope,'owner',testing),selected);
+ assert.throws(()=>requireManagedAdmission(undefined,selected,scope,'other',testing));
+ assert.throws(()=>requireManagedAdmission(undefined,selected,scope,'owner',{...testing,enabled:false}));
+ assert.throws(()=>requireManagedAdmission(undefined,selected,scope,'owner',{...testing,policyId:'changed'}));
+ assert.deepEqual(managedProjectPolicy({...policy,enabled:false},scope,testing),{...policy,enabled:false});
+ assert.deepEqual(resolveManagedRoute(undefined,scope,policy,true,testing),policy);
+ assert.throws(()=>requireManagedAdmission(undefined,policy,scope,'owner',testing));
+ assert.throws(()=>resolveManagedRoute(undefined,scope,null,true,testing),/existing-turn-history/);
 });

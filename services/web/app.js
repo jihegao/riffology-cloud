@@ -203,8 +203,27 @@ async function loadModels() {
   }
 }
 
+function managedBlockMessage(code) {
+  const messages = {
+    'managed-execution-unknown': '上一轮曾出现执行状态未确认，项目已暂停接收新请求；需要核对原任务后恢复，重复发送不会解除暂停。',
+    'managed-usage-unknown': '上一轮用量尚未确认，项目已暂停接收新请求；需要核对原任务后恢复，稍后重试不会自动解除暂停。',
+    'managed-original-unresolved': '上一轮执行或用量尚未确认，当前不能开始新任务。',
+    'managed-cleanup-unconfirmed': '上一轮远端会话清理尚未确认，当前不能开始新任务。',
+    'managed-input-in-flight': '上一轮仍在执行或确认资源释放，请等它结束后再发送。',
+    'managed-session-base-unavailable': '当前对话的远端会话已不可继续，需要恢复会话后才能发送。',
+    'managed-session-limit-or-cleanup-pending': '当前还有需要清理的远端会话，或已达到此项目的会话上限。',
+    'managed-admission-denied': '当前项目的执行策略尚未开放。账号测试模式不会自动重开历史受控项目。',
+    'managed-policy-immutable': '当前项目绑定的执行策略与环境配置不一致，需要管理员处理。',
+    'managed-route-existing-turn-history': '这个历史项目使用原执行路径，不能直接切换到当前测试模式。',
+    'managed-observation-failed': '上一轮运行状态读取失败，项目已暂停，需要核对原任务后恢复。',
+  };
+  if (messages[code]) return messages[code];
+  if (['managed-window-expired','managed-turn-limit','managed-observed-cost-limit','managed-reservation-limit','managed-observed-cost-exceeds-hold'].includes(code)) return '此历史项目的受控运行额度或期限已触发停止；账号测试模式不会重置原策略。';
+  return null;
+}
+
 async function api(path, options = {}) {
-  const {responseType,...fetchOptions}=options;
+  const {responseType,onProgress,...fetchOptions}=options;
   const response = await fetch(path, {
     credentials: 'same-origin', ...fetchOptions,
     headers: { 'Content-Type': 'application/json', ...options.headers },
@@ -214,10 +233,12 @@ async function api(path, options = {}) {
     let code = null;
     try { const body = await response.clone().json(); if (typeof body?.error === 'string') code = body.error; } catch {}
     const messages = { 400: '请求内容无效', 401: '请先登录', 403: '登录或项目权限已变化，请刷新后重试', 404: '当前账号尚未获得访问权限', 409: '状态已变化，请刷新后重试', 413: '请求内容过大，请缩短后重试', 429: projectLimit ? '本项目已达到当前费用或运行上限' : '请求过于频繁，请稍后重试', 503: '服务暂不可用，请稍后再试' };
+    if (code === 'g5_admission_disabled') messages[409] = '当前环境已暂停创建项目，请联系管理员恢复开放。刷新页面无法解除此限制。';
     if (code === 'turn_runtime_not_ready') messages[503] = '当前环境暂停接收新任务，请稍后查看状态。';
-    throw Object.assign(new Error(messages[response.status] || '请求失败，请稍后重试'), { status: response.status, code, retryable: code !== 'turn_runtime_not_ready' });
+    const blocked = managedBlockMessage(code);
+    throw Object.assign(new Error(blocked || messages[response.status] || '请求失败，请稍后重试'), { status: response.status, code, retryable: !blocked && code !== 'turn_runtime_not_ready' });
   }
-  if(responseType==='bytes'){const length=Number(response.headers.get('content-length'));if(length>33554432)throw Error('资源过大');const bytes=new Uint8Array(await response.arrayBuffer());if(bytes.length>33554432)throw Error('资源过大');return bytes;}
+  if(responseType==='bytes'){const length=Number(response.headers.get('content-length'));if(length>33554432)throw Error('资源过大');if(typeof onProgress==='function'&&response.body){const reader=response.body.getReader(),chunks=[];let size=0;try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>33554432)throw Error('资源过大');chunks.push(value);onProgress(size,length);}}catch(error){await reader.cancel().catch(()=>{});throw error;}const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}return bytes;}const bytes=new Uint8Array(await response.arrayBuffer());if(bytes.length>33554432)throw Error('资源过大');return bytes;}
   return response.status === 204 ? null : response.json();
 }
 
@@ -246,7 +267,7 @@ function accountView() {
 function turnStatus(turn) {
   const labels = { queued: '排队中', running: '正在执行', cancelling: '正在停止', checkpointing: '正在保存', completed: '已完成', failed: '失败', cancelled: '已停止', interrupted: '已中断' };
   if (turn.persistenceOutcome === 'failed') return `${labels[turn.status] || turn.status} · 保存失败`;
-  if (turn.persistenceOutcome === 'saved') return `${labels[turn.status] || turn.status} · 已保存`;
+  if (turn.persistenceOutcome === 'saved') return `${labels[turn.status] || turn.status} · ${turn.status === 'completed' ? '已保存' : '恢复状态已保存（不代表建模完成）'}`;
   return labels[turn.status] || turn.status;
 }
 
@@ -377,6 +398,9 @@ function renderWorkspace() {
     }));
     sessionSelect.value = selectedSessionId || '';
     sessionSelect.disabled = !sessions.length;
+  }
+  if (workspaceSnapshot.managedState?.stopped) {
+    appendTurnCard('system', managedBlockMessage(workspaceSnapshot.managedState.stopped) || '项目因上一轮异常暂停接收新请求，需要核对后恢复。');
   }
   if (workspaceSnapshot.releaseHold) {
     const detail = workspaceSnapshot.releaseHold.status === 'recovery-hold'

@@ -12,6 +12,13 @@ export async function checkedStaticAsset(request:Request,port:StaticAssetPort,as
  const hash=[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(n=>n.toString(16).padStart(2,'0')).join('');
  if(hash!==asset.sha256)return deny(503);
  headers.set('Content-Type',asset.contentType);headers.set('Content-Length',String(size));headers.set('Cache-Control','public, max-age=31536000, immutable');headers.set('ETag','"'+hash+'"');headers.set('X-Content-Type-Options','nosniff');headers.set('Referrer-Policy','no-referrer');headers.delete('Set-Cookie');
+ // Let the Workers runtime encode verified bytes for delivery. The browser still
+ // validates the original decoded bytes against the frozen asset identity.
+ if(asset.kind==='app'&&size>=65536){
+  headers.set('Vary','Accept-Encoding');
+  const gzip=request.headers.get('accept-encoding')?.split(',').some(value=>/^gzip(?:\s*;\s*q=(?:1(?:\.0+)?|0\.[0-9]*[1-9][0-9]*))?$/i.test(value.trim()));
+  if(gzip){headers.set('Content-Encoding','gzip');headers.delete('Content-Length');}
+ }
  return new Response(request.method==='HEAD'?null:bytes,{status:200,headers});
 }
 /** Only platform fixed bytes: no project/package endpoint and no request-header broker. */

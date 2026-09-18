@@ -8,7 +8,7 @@ import {Miniflare} from 'miniflare';
 
 // Actual WorkspaceAgent, durable journal and D1 authorization. Readiness and
 // provider/quota responses are explicit fixtures; this test sends no model input.
-test('Managed Workspace serializes concurrent submissions and exposes only authorized scoped resource evidence',{timeout:45000},async()=>{
+for(const testing of [false,true])test(`Managed ${testing?'account testing':'acceptance'} Workspace serializes concurrent submissions and exposes only authorized scoped resource evidence`,{timeout:45000},async()=>{
  const scope={tenantId:'tenant',projectId:'project',workspaceId:'workspace',workspaceGeneration:1},actor={userId:'owner',authVersion:1};
  const policy={schemaVersion:1,policyId:'issue77-production-v1',scope,userId:'owner',enabled:true,syntheticOnly:true,maxTurns:6,maxSessions:2,observedStopUsd:5,maxDurationMs:7200000,maxTurnObservationMs:300000,maxSimulationRuns:12};
  const entry=`
@@ -24,7 +24,7 @@ test('Managed Workspace serializes concurrent submissions and exposes only autho
  export class Managed extends DurableObject{
   async preflight(){if(await this.ctx.storage.get('stopped'))throw Error('fixture-budget-stopped');await new Promise(r=>setTimeout(r,30));await this.ctx.storage.put('preflights',(await this.ctx.storage.get('preflights')??0)+1);return {allowed:true};}
   async stop(){await this.ctx.storage.put('stopped',true);}
-  async budgetStatus(){return {turnCount:0,preflights:await this.ctx.storage.get('preflights')??0};}
+  async budgetStatus(){return {stopped:await this.ctx.storage.get('stopped')?'managed-usage-unknown':null,unresolved:1,cleanupPending:false,turnCount:0,preflights:await this.ctx.storage.get('preflights')??0};}
  }
  export class Quota extends DurableObject{async snapshot(){return {capacity:2,occupied:1,available:1,unknown:1,configuredPolicyMatches:true,leases:[{status:'unknown',projectId:'private-other-project',operationId:'private-operation'}]};}}
  export class Artifacts extends DurableObject{}
@@ -33,7 +33,7 @@ test('Managed Workspace serializes concurrent submissions and exposes only autho
  try{
  const bundled=await build({stdin:{contents:entry,sourcefile:'managed-workspace.ts',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'neutral',target:'es2024',external:['cloudflare:workers'],logLevel:'silent'});
  const classes={WORKSPACE_AGENT:'Workspace',MANAGED_TURN_RUNTIME:'Managed',TENANT_QUOTA:'Quota',TOOL_ARTIFACT_STORE:'Artifacts'};
- const options={host:'127.0.0.1',port:0,inspectorPort:0,cf:{},resourcePersistencePath:directory,telemetry:{enabled:false},logRequests:false,workers:[{config:{type:'worker',name:workerName,compatibilityDate:'2026-09-06',manifest:{mainModule:'worker.mjs',modules:{'worker.mjs':{type:'esm',contents:bundled.outputFiles[0].text}}},env:{CATALOG:{type:'d1',id:'catalog',name:'catalog'},M2_TURNS_ENABLED:{type:'text',value:'false'},MANAGED_ACCEPTANCE_JSON:{type:'text',value:JSON.stringify(policy)},...Object.fromEntries(Object.entries(classes).map(([key,exportName])=>[key,{type:'durable-object',worker:workerName,exportName}]))},exports:Object.fromEntries(Object.values(classes).map(name=>[name,{type:'durable-object',storage:'sqlite'}]))},dev:{unsafeRegisterWorker:false,outboundService:{type:'fetcher',handler:()=>new Response('disabled',{status:403})}}}]};mf=new Miniflare(options);await mf.ready;
+ const options={host:'127.0.0.1',port:0,inspectorPort:0,cf:{},resourcePersistencePath:directory,telemetry:{enabled:false},logRequests:false,workers:[{config:{type:'worker',name:workerName,compatibilityDate:'2026-09-06',manifest:{mainModule:'worker.mjs',modules:{'worker.mjs':{type:'esm',contents:bundled.outputFiles[0].text}}},env:{CATALOG:{type:'d1',id:'catalog',name:'catalog'},M2_TURNS_ENABLED:{type:'text',value:'false'},...(testing?{MANAGED_TESTING_JSON:{type:'text',value:JSON.stringify({schemaVersion:2,policyId:'owner-online-testing',tenantId:scope.tenantId,userId:actor.userId,enabled:true})}}:{MANAGED_ACCEPTANCE_JSON:{type:'text',value:JSON.stringify(policy)}}),...Object.fromEntries(Object.entries(classes).map(([key,exportName])=>[key,{type:'durable-object',worker:workerName,exportName}]))},exports:Object.fromEntries(Object.values(classes).map(name=>[name,{type:'durable-object',storage:'sqlite'}]))},dev:{unsafeRegisterWorker:false,outboundService:{type:'fetcher',handler:()=>new Response('disabled',{status:403})}}}]};mf=new Miniflare(options);await mf.ready;
  const db=await mf.getD1Database('CATALOG',workerName),sql=(await readFile('services/catalog/migrations/0001_catalog.sql','utf8')).replace(/--[^\n]*/g,'');for(const statement of sql.match(/\s*CREATE TRIGGER[\s\S]*?END;|[^;]+;/g)??[])if(statement.trim())await db.prepare(statement).run();
  await db.batch([
  db.prepare("INSERT INTO catalog_users(id,identity_issuer,identity_subject,normalized_email,created_at,updated_at) VALUES('owner','test','owner','owner@example.test',1,1)"),
@@ -51,7 +51,7 @@ test('Managed Workspace serializes concurrent submissions and exposes only autho
  assert.equal((await rpc('submitTurn',{...input,key:'after-restart'})).error,'managed-input-in-flight');
  const replays=await Promise.all([rpc('submitTurn',input),rpc('submitTurn',input)]);for(const replay of replays){assert.equal(replay.ok,true,JSON.stringify(replay));assert.equal(replay.value.replayed,true);assert.equal(replay.value.turn.id,winner.id);}
  assert.equal((await rpc('submitTurn',{...input,body:{message:'different'}})).error,'turn-idempotency-conflict');
- const view=await rpc('turnSnapshot');assert.equal(Object.keys(view.value.turns).length,1);
+ const view=await rpc('turnSnapshot');assert.equal(Object.keys(view.value.turns).length,1);assert.deepEqual(view.value.managedState,{stopped:'managed-usage-unknown',unresolved:1,cleanupPending:false});
  await rpc('seedRuns');const status=await rpc('managedAcceptanceStatus');assert.equal(status.ok,true,JSON.stringify(status));assert.equal(status.value.preflights,1);assert.equal(status.value.resources.simulations.length,1);assert.equal(status.value.resources.simulations[0].releaseProof.confirmationId,'actual-stored-release');assert.equal(status.value.resources.simulations[0].stop.confirmationId,'actual-stored-stop');assert.deepEqual(status.value.resources.tenantQuota,{capacity:2,occupied:1,available:1,unknown:1,configuredPolicyMatches:true,leaseStatusCounts:{unknown:1}});assert.equal(JSON.stringify(status).includes('private-other'),false);assert.equal(JSON.stringify(status).includes('private-operation'),false);
  assert.equal((await rpc('managedAcceptanceStatus',{actor:{...actor,userId:'other'}})).ok,false);assert.equal((await rpc('managedAcceptanceStatus',{scope:{...scope,projectId:'other'}})).ok,false);assert.equal((await rpc('managedAcceptanceStatus',{actor:{...actor,authVersion:2}})).ok,false);
  }finally{await mf?.dispose();await rm(directory,{recursive:true,force:true});}

@@ -124,6 +124,7 @@ export interface WorkspaceAgentEnv {
   G5_WINDOW_GUARD?:{getByName(name:string):{registerTask(task:unknown):Promise<unknown>;claimTaskCreate(key:string):Promise<{authorized:boolean}>;bindTask(key:string,id:string):Promise<unknown>;checkTaskStart(key:string):Promise<{authorized:boolean}>;claimTaskStart(key:string,identity?:TurnRuntimeIdentity):Promise<{authorized:boolean;alreadyStarted:boolean;grantId:string|null}>;confirmTaskStartGrant(key:string,grantId:string):Promise<{confirmed:boolean}>;checkTaskContinue(key:string,grantId:string):Promise<{authorized:boolean}>;cancelUnstartedTask(key:string):Promise<unknown>;closeTrustedTurn(key:string,identity:TurnRuntimeIdentity):Promise<unknown>}};
   G4_BROWSER_BUILD_HOLD_SCOPES_JSON?:string;
   MANAGED_ACCEPTANCE_JSON?:string;
+  MANAGED_TESTING_JSON?:string;
   MANAGED_TURN_RUNTIME?:{getByName(name:string):TurnRuntimePort & {preflight(scope:TurnScope,actor:TurnActor):Promise<unknown>;reserveSimulation(scope:TurnScope,runId:string):Promise<unknown>;budgetStatus(scope:TurnScope):Promise<unknown>;cleanup(scope:TurnScope):Promise<unknown>}};
   M2_TURNS_ENABLED: unknown;
   M2_WORKSPACE_RUNTIME_REUSE_ENABLED?:unknown;
@@ -252,7 +253,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return this.#simulationHost??=new SimulationHost(this.ctx.storage,scope,{
       admitRun:async(actor,key,body,runId)=>{const managed=await this.#managedAdmit(scope,actor,false);if(managed){await this.#managedRuntime(managed).reserveSimulation(scope,runId);return;}if(this.env.G5_CONTROLLED_WINDOW_JSON===undefined){await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,actor.userId,'run',{scope,key},body);return;}const task=await g5TaskKey(this.env.G5_CONTROLLED_WINDOW_JSON,'simulation',scope.tenantId,actor.userId,{scope,key},body);const policy=g5WindowPolicy(JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON))!;const guard=this.#g5Guard();await guard.registerTask(task);const created=await guard.claimTaskCreate(task.key);if(!created.authorized)throw Error('g5-simulation-create-denied');return {kind:'g5' as const,taskKey:task.key,windowId:policy.windowId,profileSha256:policy.profilePin.profileSha256};},
       createdRun:async record=>{if(record.budgetRoute)await this.#g5Guard().bindTask(record.budgetRoute.taskKey,record.runId);},
-      beforeStart:async(record,stage)=>{const managed=this.#managedRoute();if(managed){requireManagedAdmission(this.env.MANAGED_ACCEPTANCE_JSON,managed,record.scope,record.actor.userId);await this.#managedRuntime(managed).reserveSimulation(record.scope,record.runId);return;}if(!record.budgetRoute)return;await this.#g5StartTask(record.budgetRoute.taskKey);},
+      beforeStart:async(record,stage)=>{const managed=this.#managedRoute();if(managed){requireManagedAdmission(this.env.MANAGED_ACCEPTANCE_JSON,managed,record.scope,record.actor.userId,this.env.MANAGED_TESTING_JSON);await this.#managedRuntime(managed).reserveSimulation(record.scope,record.runId);return;}if(!record.budgetRoute)return;await this.#g5StartTask(record.budgetRoute.taskKey);},
       quota:this.env.TENANT_QUOTA.getByName(tenantQuotaName(scope.tenantId)),
       start:async input=>{
         if(input.runtimeImage!==this.env.M4_SIMULATION_IMAGE)throw Error('simulation-image-changed');
@@ -310,7 +311,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const initial=await this.#initialWorkspace(scope);
     return {kind:'initial-workspace',reference:initial.reference,filesSha256:initial.filesSha256};
   }
-  #simulationCanRun(){const managed=this.#managedRoute();return (managed?managedProjectPolicy(this.env.MANAGED_ACCEPTANCE_JSON,managed.scope)?.enabled===true:this.env.M4_SIMULATION_ENABLED==='true')&&!!this.env.SIMULATION_SANDBOX?.getByName&&!!this.env.M4_SIMULATION_IMAGE&&!!this.env.WORKSPACE_CHECKPOINTS;}
+  #simulationCanRun(){const managed=this.#managedRoute();return (managed?managedProjectPolicy(this.env.MANAGED_ACCEPTANCE_JSON,managed.scope,this.env.MANAGED_TESTING_JSON)?.enabled===true:this.env.M4_SIMULATION_ENABLED==='true')&&!!this.env.SIMULATION_SANDBOX?.getByName&&!!this.env.M4_SIMULATION_IMAGE&&!!this.env.WORKSPACE_CHECKPOINTS;}
   #exporting=false;
   async researchExport(input:{scope:TurnScope;actor:TurnActor}):Promise<Response>{
     const scope=this.#maintenanceScope(input.scope);
@@ -808,12 +809,12 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const scope={tenantId:task.tenantId,projectId:task.projectId,workspaceId:task.workspaceId,workspaceGeneration:task.generation};
     const stored=this.ctx.storage.kv.get<ManagedAcceptancePolicy>('managed-product-route-v1')??null;
     const journal=new DurableTurnStore(this.ctx.storage).read();
-    return resolveManagedRoute(this.env.MANAGED_ACCEPTANCE_JSON,scope,stored,!!journal&&Object.keys(journal.turns).length>0);
+    return resolveManagedRoute(this.env.MANAGED_ACCEPTANCE_JSON,scope,stored,!!journal&&Object.keys(journal.turns).length>0,this.env.MANAGED_TESTING_JSON);
   }
   #managedRuntime(policy:ManagedAcceptancePolicy){const namespace=this.env.MANAGED_TURN_RUNTIME;if(!namespace?.getByName)throw Error('managed-product-runtime-not-configured');return namespace.getByName(managedProductActorName(policy.scope));}
   async #managedAdmit(scope:TurnScope,actor:TurnActor,turnPreflight=true){
     const policy=this.#managedRoute();if(!policy)return null;
-    requireManagedAdmission(this.env.MANAGED_ACCEPTANCE_JSON,policy,scope,actor.userId);
+    requireManagedAdmission(this.env.MANAGED_ACCEPTANCE_JSON,policy,scope,actor.userId,this.env.MANAGED_TESTING_JSON);
     const authorized=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(actor,scope.workspaceId);if(!sameScope(authorized,scope))throw Error('managed-admission-denied');
     if(turnPreflight)await this.#managedRuntime(policy).preflight(scope,actor);
     const before=this.#managedRoute();if(!before||JSON.stringify(before)!==JSON.stringify(policy))throw Error('managed-route-conflict');
@@ -985,7 +986,14 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return this.#turns.replay(this.#ready(input.scope), input.afterSequence, input.limit);
   }
   async turnSnapshot(input: { scope: TurnScope }) {
-    return this.#turns.view(this.#ready(input.scope));
+    const scope=this.#ready(input.scope),snapshot=await this.#turns.view(scope),managed=this.#managedRoute();
+    if(!managed)return snapshot;
+    try{
+      const status=await this.#managedRuntime(managed).budgetStatus(scope);
+      if(!status||typeof status!=='object'||Array.isArray(status))throw Error('managed-budget-status-invalid');
+      const value=status as Record<string,unknown>;
+      return {...snapshot,managedState:{stopped:typeof value.stopped==='string'?value.stopped:null,unresolved:Number.isSafeInteger(value.unresolved)?value.unresolved:null,cleanupPending:value.cleanupPending===true}};
+    }catch{return {...snapshot,managedState:{unavailable:true}};}
   }
   async g5TurnAuthority(input:{identity:TurnRuntimeIdentity;userId:string}){
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
