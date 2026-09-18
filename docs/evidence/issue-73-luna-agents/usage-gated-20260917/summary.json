@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "issue-73-luna-agents",
+  "definitionSha256": "4ba4b2ea50b1f8ba5967cf8001701504751a5015985da8e59aee8a9e600defc7",
+  "provider": "openai",
+  "api": "agents-v1",
+  "model": "gpt-5.6-luna",
+  "sdkVersion": "7.17.0",
+  "fixtureVersion": "schelling-v1",
+  "conditions": {
+    "baseline": {
+      "runs": 1,
+      "acceptedTasks": 0,
+      "acceptedTaskRate": 0,
+      "firstRunSuccessRate": 1,
+      "autonomousDebugSuccessRate": 0,
+      "modelExecutionVerifiedRate": 0.5,
+      "parameterExperimentRate": 1,
+      "skillReadRate": 0,
+      "fabricatedResultIncidents": 0,
+      "meanToolCalls": 4.5,
+      "meanRepairIterations": 0,
+      "totalTokens": 97179,
+      "unknownUsageTurns": 1,
+      "totalWallTimeMs": 178226,
+      "modelCostUsd": 0.011223619999999998,
+      "estimatedSandboxCostUsd": 0.0075,
+      "estimatedTotalCostUsd": 0.018723619999999996,
+      "costPerAcceptedTaskUsd": null,
+      "artifactCount": 4,
+      "dimensionRates": {
+        "assumptionsExplicit": 0.5,
+        "entitiesStateInteractionsExplicit": 0,
+        "feedbackExplicit": 0.5,
+        "emergentQuantityDefined": 0.5,
+        "implementationVerifiedBeforeInterpretation": 0.5,
+        "sensitivityAnalysis": 0.5,
+        "machineReadableArtifacts": 0.5
+      }
+    },
+    "simulation-skill": {
+      "runs": 0,
+      "acceptedTasks": 0,
+      "acceptedTaskRate": 0,
+      "firstRunSuccessRate": 0,
+      "autonomousDebugSuccessRate": 0,
+      "modelExecutionVerifiedRate": 0,
+      "parameterExperimentRate": 0,
+      "skillReadRate": 0,
+      "fabricatedResultIncidents": 0,
+      "meanToolCalls": 0,
+      "meanRepairIterations": 0,
+      "totalTokens": 0,
+      "unknownUsageTurns": 0,
+      "totalWallTimeMs": 0,
+      "modelCostUsd": 0,
+      "estimatedSandboxCostUsd": 0,
+      "estimatedTotalCostUsd": 0,
+      "costPerAcceptedTaskUsd": null,
+      "artifactCount": 0,
+      "dimensionRates": {
+        "assumptionsExplicit": 0,
+        "entitiesStateInteractionsExplicit": 0,
+        "feedbackExplicit": 0,
+        "emergentQuantityDefined": 0,
+        "implementationVerifiedBeforeInterpretation": 0,
+        "sensitivityAnalysis": 0,
+        "machineReadableArtifacts": 0
+      }
+    }
+  },
+  "decision": "blocked"
+}

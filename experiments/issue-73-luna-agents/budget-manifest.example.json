@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "issue-73-luna-agents",
+  "model": "gpt-5.6-luna",
+  "repetitionsPerCondition": 3,
+  "maxSessions": 6,
+  "maxTurns": 18,
+  "maxWallTimeSecondsPerTurn": 900,
+  "maxTokensPerTurn": 400000,
+  "maxTotalTokens": 7200000,
+  "maxModelCostUsd": 1.0,
+  "maxSandboxCostUsd": 1.0,
+  "authorizationReference": "REPLACE_WITH_EXPLICIT_USER_APPROVAL_REFERENCE",
+  "approvedAt": "REPLACE_WITH_ISO_8601_TIMESTAMP",
+  "deadline": "REPLACE_WITH_ISO_8601_TIMESTAMP",
+  "privacyScope": "synthetic-schelling-fixture-only",
+  "rateCard": {
+    "source": "https://developers.openai.com/api/docs/pricing",
+    "checkedAt": "2026-09-17T00:00:00Z",
+    "inputUsdPerMillion": 0.2,
+    "cachedInputUsdPerMillion": 0.02,
+    "outputUsdPerMillion": 1.2,
+    "sandbox1GbUsdPer20Minutes": 0.03,
+    "minimumSandboxMinutes": 5
+  },
+  "cleanup": "delete-after-download"
+}

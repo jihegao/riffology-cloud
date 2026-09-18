@@ -1,0 +1,90 @@
+[
+  {
+    "runId": "r01-baseline",
+    "repetition": 1,
+    "condition": "baseline",
+    "sessionRef": "sha256:da183ddf86b1887d240cb2de69c5749282a2b86b731bc83f9609bfb4ad997781",
+    "expectedModel": "gpt-5.6-luna",
+    "providerModel": "gpt-5.6-luna",
+    "environmentType": "openai_hosted",
+    "installedSkillNames": [],
+    "simulationSkillRead": false,
+    "accepted": false,
+    "rejectionReasons": [
+      "usage-unavailable:turn-2"
+    ],
+    "failureCategories": [
+      "provider-outcome-unknown"
+    ],
+    "costState": "partial-observed",
+    "modelCostUsd": 0.011223619999999998,
+    "estimatedSandboxCostUsd": 0.0075,
+    "totalSessionWallTimeMs": 191727,
+    "sessionDeleted": true,
+    "turns": [
+      {
+        "turn": 1,
+        "turnRef": "sha256:afd465b76a0fdf57673418b3504177118bd37bcfda891842f7f19a1ad23fdfd6",
+        "status": "completed",
+        "accepted": true,
+        "rejectionReasons": [],
+        "usage": {
+          "input_tokens": 92530,
+          "input_tokens_details": {
+            "cached_tokens": 71451
+          },
+          "output_tokens": 4649,
+          "output_tokens_details": {
+            "reasoning_tokens": 581
+          },
+          "total_tokens": 97179
+        },
+        "usageKnown": true,
+        "wallTimeMs": 120278,
+        "toolCalls": 4,
+        "repairIterations": 0,
+        "simulationSkillRead": false,
+        "artifactCount": 2,
+        "artifactSha256": {
+          "manifest": "6bb130b105ee0f2ac486f5046c7af8d91d5f4e1c2bf224abd6d1346b39be358c",
+          "projectZip": "666fc32f2f925c4b9a2b7ede230420d4f5371f5356612df88460458be6e0634e"
+        },
+        "modelExecutionVerified": true,
+        "parameterExperimentCompleted": true,
+        "dimensions": {
+          "assumptionsExplicit": true,
+          "entitiesStateInteractionsExplicit": false,
+          "feedbackExplicit": true,
+          "emergentQuantityDefined": true,
+          "implementationVerifiedBeforeInterpretation": true,
+          "sensitivityAnalysis": true,
+          "machineReadableArtifacts": true
+        },
+        "fabricatedResultIncidents": 0,
+        "reconciledAfterObserverFailure": false
+      },
+      {
+        "turn": 2,
+        "turnRef": "sha256:b3c6a938377b1d372e3a4661c04589a365f7b419e4a5633b78f38a9f45c26dd4",
+        "status": "completed",
+        "accepted": false,
+        "rejectionReasons": [
+          "python-model-source-missing"
+        ],
+        "usage": null,
+        "usageKnown": false,
+        "wallTimeMs": 57948,
+        "toolCalls": 5,
+        "repairIterations": 0,
+        "simulationSkillRead": false,
+        "artifactCount": 2,
+        "artifactSha256": {},
+        "modelExecutionVerified": false,
+        "parameterExperimentCompleted": false,
+        "dimensions": {},
+        "fabricatedResultIncidents": 0,
+        "reconciledAfterObserverFailure": false
+      }
+    ]
+  }
+]

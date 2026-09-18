@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "scope": "artifact-and-continuity-only",
+  "reason": "Turn 3 was reverified after correcting an over-strict rule that incorrectly required a multi-seed sweep for a default-value verification Turn.",
+  "providerOutcomeStillUnknown": true,
+  "unknownUsageTurn": 3,
+  "usageObservationAttempts": 22,
+  "turns": [
+    {
+      "turn": 1,
+      "accepted": true,
+      "artifactSha256": {
+        "manifest": "feb0682b0740a4527e944e4dd5f752b51180d5637aa2d08d3abe8ba91adb4c5e",
+        "projectZip": "8872e29ed668d3ee9d543dd01b4f4089eea3a157be1a0a3f435e6684d6bbf82a"
+      },
+      "runCount": 12,
+      "seeds": [101, 202, 303]
+    },
+    {
+      "turn": 2,
+      "accepted": true,
+      "artifactSha256": {
+        "manifest": "f60d55b81049ce21cc978552c0fac0547fd0689478db48b0e2a2e66c4806ff4b",
+        "projectZip": "07e18c6329f2f6724c4bc615dd96c30ab8784e9c890cfdc6506f61efa7f92d3b"
+      },
+      "runCount": 36,
+      "seeds": [101, 202, 303],
+      "mobilityNoise": [0, 0.1, 0.3]
+    },
+    {
+      "turn": 3,
+      "accepted": true,
+      "artifactSha256": {
+        "manifest": "806dc7ea3e8e92b4000ac9be1819d3cf82ede3c77a09142b232f5b97eccbb38b",
+        "projectZip": "0034a521cb17464a9948f59251b6e16dc44cb84587d2e351cfe1b67f14026892"
+      },
+      "runCount": 1,
+      "seeds": [],
+      "verifiedDefaultSimilarityThreshold": 0.45,
+      "changedCodeFiles": 2
+    }
+  ],
+  "continuity": {
+    "turn1ToTurn2": {
+      "retainedCodeFiles": 3,
+      "changedCodeFiles": 3
+    },
+    "turn2ToTurn3": {
+      "retainedCodeFiles": 3,
+      "changedCodeFiles": 2
+    }
+  },
+  "conclusion": "The three-Turn baseline artifact and continuity loop is verified, but the run is not an accepted A/B repetition because Turn 3 usage remains unavailable."
+}

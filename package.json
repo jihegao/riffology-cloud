@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "node ui/serve.mjs",
-    "check": "npm run check:ui && npm run typecheck && npm run test:m0 && npm run test:m1 && npm run test:m2 && npm run test:m3",
+    "check": "npm run check:ui && npm run typecheck && npm run test:m0 && npm run test:m1 && npm run test:m2 && npm run test:m3 && npm run issue73:validate && npm run test:research-quality",
     "check:ui": "node --check ui/app.js && node --check ui/workspace.js && node --check ui/user-pages.js && node --check ui/admin.js && node --check ui/shared.js && node --check services/web/app.js && node --check services/web/layout.js && node --check services/web/services.js && node --check services/web/previews.js && node --check services/web/admin.js && node --check services/web/simulation.js && node --check services/web/comparison.js && node --check services/web/export.js && node --check services/web/publication.js && node --check services/web/evidence.js && node --check services/web/browser-preview.js",
     "typecheck": "tsc --noEmit",
     "test:m0": "node --test tests/m0/*.test.ts tests/m0/*.test.mjs tests/m0/pi/*.test.mjs spikes/m0-cloud/*.test.ts spikes/m0-files/*.test.ts spikes/m0-preview/*.test.ts spikes/m0-recovery/*.test.ts spikes/m0-release/*.test.ts scripts/m0/release-manifest.test.mjs && node scripts/evidence/self-test.mjs && node scripts/m0/preflight-self-test.mjs",
@@ -33,7 +33,11 @@
     "m3:vertical:preflight:staging": "node scripts/m3/vertical-staging-preflight.mjs",
     "m3:vertical:release:staging": "node scripts/m3/vertical-staging-release.mjs",
     "m3:issues:acceptance:staging": "node scripts/m3/issues-controlled-release-acceptance.mjs",
-    "m3:issues:reconcile:staging": "node scripts/m3/issues-acceptance-reconcile.mjs"
+    "m3:issues:reconcile:staging": "node scripts/m3/issues-acceptance-reconcile.mjs",
+    "issue73:validate": "node --test tests/issue73/*.test.mjs",
+    "issue73:plan": "node experiments/issue-73-luna-agents/cli.mjs plan",
+    "test:research-quality": "python3 -m unittest discover -s tests/research-quality -p \"test_*.py\"",
+    "issue73:run": "node experiments/issue-73-luna-agents/cli.mjs run"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "5.20260905.1",
@@ -48,6 +52,7 @@
     "@earendil-works/pi-coding-agent": "0.85.0",
     "@earendil-works/pi-server": "0.85.0",
     "better-auth": "1.7.3",
+    "fflate": "0.8.3",
     "openai": "7.17.0",
     "undici": "7.29.0"
   },

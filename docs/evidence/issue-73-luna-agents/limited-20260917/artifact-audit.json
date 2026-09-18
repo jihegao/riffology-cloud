@@ -1,0 +1,1982 @@
+{
+  "schemaVersion": 1,
+  "scope": "Offline archive hashes, CSV physical line counts, result retention and default-check artifacts. No generated-code replay; no rescoring of frozen acceptance; CSV line counts are not a general CSV parser.",
+  "runs": [
+    {
+      "runId": "r01-baseline",
+      "condition": "baseline",
+      "turns": [
+        {
+          "turn": 1,
+          "frozenAccepted": true,
+          "frozenRejectionReasons": [],
+          "manifestSha256": "ea65b5ceba2147bf34cedc266dbefd714ec530fa53f70ae980cd7c653e600bc2",
+          "projectZipSha256": "d3868f5d06e9e656e5047125698ba444ae75afcb6d29d197de2f0a6e6943b0b7",
+          "allHashesMatch": true,
+          "archivedFiles": [
+            {
+              "path": "README.md",
+              "kind": "report",
+              "sha256": "18d99740f2b7d2c1fb041bbcf6610c67088557bbc3ee28f493f33ec362ee9918"
+            },
+            {
+              "path": "__pycache__/schelling_model.cpython-312.pyc",
+              "kind": "other",
+              "sha256": "b1edc8d3002fd554d28d84254f222b383d03f17590a23049b2c7bfbee3b301ff"
+            },
+            {
+              "path": "__pycache__/test_schelling.cpython-312.pyc",
+              "kind": "other",
+              "sha256": "a18d2628d1970a7a4b72c80ca58328d14b094108b42157eeb0bbd417d6c83b86"
+            },
+            {
+              "path": "results/happy_fraction_by_threshold.png",
+              "kind": "plot",
+              "sha256": "a3479e27924cf5163a3c64880f64a4c3671badc4c6c1a9039e252269bdd02199"
+            },
+            {
+              "path": "results/run_results.csv",
+              "kind": "result",
+              "sha256": "a74d2b579f8819b7da85c1c9fb15d2f85756f89f65eaad1592add0461089eca4"
+            },
+            {
+              "path": "results/threshold_summary.json",
+              "kind": "result",
+              "sha256": "3e67407d2d562d64bed1f78ca0d0de067b7c334382171f68591aeea9ef175e68"
+            },
+            {
+              "path": "run_experiment.py",
+              "kind": "source",
+              "sha256": "735df6ac19a415491cf3b60b222427c19d90b8708e212bd9c5a63a7ee775fc3f"
+            },
+            {
+              "path": "schelling_model.py",
+              "kind": "source",
+              "sha256": "173178194a9a7d13d95f964720de8f92c6399d98ff635a822c5a7e0ece627185"
+            },
+            {
+              "path": "test_schelling.py",
+              "kind": "test",
+              "sha256": "f5cbfddbaa15a6beb3b93da5afd51094be241dd4625730f83fb2216e3440b115"
+            }
+          ],
+          "experiment": {
+            "parametersVaried": [
+              "similarity_threshold"
+            ],
+            "parameterValues": {
+              "similarity_threshold": [
+                0.3,
+                0.5,
+                0.7,
+                0.9
+              ]
+            },
+            "seeds": [
+              101,
+              202,
+              303
+            ],
+            "steps": 50,
+            "primaryMetrics": [
+              "final_happy_fraction",
+              "final_mean_similarity",
+              "final_unhappy",
+              "steps_run"
+            ],
+            "runCount": 12
+          },
+          "runtime": {
+            "python": "3.12.12",
+            "mesa": "3.5.1"
+          },
+          "changedCodeFiles": null,
+          "previousResultFiles": 0,
+          "unchangedPreviousResultFiles": 0,
+          "previousResultsPreservedByHash": [],
+          "observedPassingTestCommands": [
+            {
+              "commandSha256": "764f91d538d256599ec711027020182c9d12adbe25ed654138a1cb209b41c6d6",
+              "outputSha256": "a357f55a0b916c7cd8b2eb55c56b296e3f41c200a3204ed4f67c5a203ad2af89",
+              "summary": "Ran 2 tests in 0.009s\n\nOK"
+            }
+          ],
+          "csvTables": [
+            {
+              "path": "results/run_results.csv",
+              "header": "threshold,seed,steps_requested,steps_run,final_moved,final_unhappy,final_mean_similarity,final_happy_fraction,converged",
+              "nonemptyDataLines": 12,
+              "containsSeedMethodInsteadOfValue": false
+            }
+          ],
+          "defaultThresholdEvidence": [],
+          "usageKnown": true,
+          "usageReadCount": 2,
+          "usageObservationSpanMs": 2505
+        },
+        {
+          "turn": 2,
+          "frozenAccepted": true,
+          "frozenRejectionReasons": [],
+          "manifestSha256": "35fe3312e0929686e557813109b63f5be7775966d926df29851c94cdb6d487f4",
+          "projectZipSha256": "3027cbda6f8b75a7b5f6dc8861b05d3683bf2c4a9d004e679887ff1805d37480",
+          "allHashesMatch": true,
+          "archivedFiles": [
+            {
+              "path": "README.md",
+              "kind": "report",
+              "sha256": "90696aec26265cbba353d025da8f418d457b80b999583b64c5dab78bf862a960"
+            },
+            {
+              "path": "__pycache__/schelling_model.cpython-312.pyc",
+              "kind": "other",
+              "sha256": "f49daca3a268c1f7f56f2d63e4b882c95d0d608081218e9cbfd11e66bfeb6070"
+            },
+            {
+              "path": "__pycache__/test_schelling.cpython-312.pyc",
+              "kind": "other",
+              "sha256": "0dc02a8373b8715278560e9efbd368bc2d12d27de14d8894a620678955043b13"
+            },
+            {
+              "path": "results/happy_fraction_by_mobility_noise.png",
+              "kind": "plot",
+              "sha256": "9da9666ab06cd4f773465131cd070ad275b1704b2ee52ba844f154a363539f68"
+            },
+            {
+              "path": "results/happy_fraction_by_threshold.png",
+              "kind": "plot",
+              "sha256": "d3241dd6a03250ae9d9e8856bdec110633cbf3379f91edb4f30229d0236f880f"
+            },
+            {
+              "path": "results/mobility_noise_run_results.csv",
+              "kind": "result",
+              "sha256": "d91cbdf1d08babe55adc65502aa2f16ce948f0e6565fa60ff2da90204bb4983b"
+            },
+            {
+              "path": "results/mobility_noise_summary.json",
+              "kind": "result",
+              "sha256": "b4958df955288d7a21b6a934a6dc9fae19abb00e52d6de3215822ead0fcaa135"
+            },
+            {
+              "path": "results/run_results.csv",
+              "kind": "result",
+              "sha256": "a74d2b579f8819b7da85c1c9fb15d2f85756f89f65eaad1592add0461089eca4"
+            },
+            {
+              "path": "results/threshold_run_results.csv",
+              "kind": "result",
+              "sha256": "c73785a25f2bac4700036eaf1271fe0885c6ac319897eb87812b998281da91df"
+            },
+            {
+              "path": "results/threshold_summary.json",
+              "kind": "result",
+              "sha256": "cd321f3f47c088536697e12e7a99243dafd3dc2a37695bde7e75852379d80fd9"
+            },
+            {
+              "path": "run_experiment.py",
+              "kind": "source",
+              "sha256": "19e401c924ef51941185639268b4815713c0a53af7fc5f66de12deebc3c070dc"
+            },
+            {
+              "path": "schelling_model.py",
+              "kind": "source",
+              "sha256": "a68d6768aeaf55b6348f51ba26b4931d68692afd2932e8dde04ebca5b735af6c"
+            },
+            {
+              "path": "test_schelling.py",
+              "kind": "test",
+              "sha256": "b292d7a1e5ae4b444176c88198c69c809c40cd392ee9413013fcb5af929845a2"
+            }
+          ],
+          "experiment": {
+            "parametersVaried": [
+              "similarity_threshold",
+              "mobility_noise"
+            ],
+            "parameterValues": {
+              "similarity_threshold": [
+                0.3,
+                0.5,
+                0.7,
+                0.9
+              ],
+              "mobility_noise": [
+                0,
+                0.1,
+                0.3
+              ]
+            },
+            "seeds": [
+              101,
+              202,
+              303
+            ],
+            "steps": 50,
+            "primaryMetrics": [
+              "final_happy_fraction",
+              "final_mean_similarity",
+              "final_unhappy",
+              "steps_run"
+            ],
+            "runCount": 21
+          },
+          "runtime": {
+            "python": "3.12.12",
+            "mesa": "3.5.1"
+          },
+          "changedCodeFiles": [
+            "run_experiment.py",
+            "schelling_model.py",
+            "test_schelling.py"
+          ],
+          "previousResultFiles": 2,
+          "unchangedPreviousResultFiles": 1,
+          "previousResultsPreservedByHash": [
+            {
+              "previousPath": "results/run_results.csv",
+              "currentPaths": [
+                "results/run_results.csv"
+              ]
+            },
+            {
+              "previousPath": "results/threshold_summary.json",
+              "currentPaths": []
+            }
+          ],
+          "observedPassingTestCommands": [
+            {
+              "commandSha256": "764f91d538d256599ec711027020182c9d12adbe25ed654138a1cb209b41c6d6",
+              "outputSha256": "d68c1b8d0731f573c23cbfb6eff528467ace7f8847fcf17414ace1a4e150d6d6",
+              "summary": "Ran 3 tests in 0.008s\n\nOK"
+            }
+          ],
+          "csvTables": [
+            {
+              "path": "results/mobility_noise_run_results.csv",
+              "header": "threshold,mobility_noise,seed,steps_requested,steps_run,final_moved,final_unhappy,final_mean_similarity,final_happy_fraction,converged",
+              "nonemptyDataLines": 9,
+              "containsSeedMethodInsteadOfValue": false
+            },
+            {
+              "path": "results/run_results.csv",
+              "header": "threshold,seed,steps_requested,steps_run,final_moved,final_unhappy,final_mean_similarity,final_happy_fraction,converged",
+              "nonemptyDataLines": 12,
+              "containsSeedMethodInsteadOfValue": false
+            },
+            {
+              "path": "results/threshold_run_results.csv",
+              "header": "threshold,mobility_noise,seed,steps_requested,steps_run,final_moved,final_unhappy,final_mean_similarity,final_happy_fraction,converged",
+              "nonemptyDataLines": 12,
+              "containsSeedMethodInsteadOfValue": false
+            }
+          ],
+          "defaultThresholdEvidence": [],
+          "usageKnown": true,
+          "usageReadCount": 2,
+          "usageObservationSpanMs": 4439
+        },
+        {
+          "turn": 3,
+          "frozenAccepted": false,
+          "frozenRejectionReasons": [
+            "turn-3-default-threshold-verification-missing"
+          ],
+          "manifestSha256": "7d01f6826b7a7189eb32f1507d0fab73a6c06abcdb76688e38f9a4a0ba679522",
+          "projectZipSha256": "18b01ae3d748f191166b01d276b077353ff9d13bd471ec378f74d7e54c9e1b1e",
+          "allHashesMatch": true,
+          "archivedFiles": [
+            {
+              "path": "README.md",
+              "kind": "report",
+              "sha256": "62d4961d8b02ff2acc30209e32cce0872a475f0f9f0830a1dba722c91a3a5f77"
+            },
+            {
+              "path": "__pycache__/schelling_model.cpython-312.pyc",
+              "kind": "other",
+              "sha256": "d2973a388f07e958fa12ebf464fa69d09695a21b7b527a887135defdb2b2ebf6"
+            },
+            {
+              "path": "__pycache__/test_schelling.cpython-312.pyc",
+              "kind": "other",
+              "sha256": "0dc02a8373b8715278560e9efbd368bc2d12d27de14d8894a620678955043b13"
+            },
+            {
+              "path": "results/happy_fraction_by_mobility_noise.png",
+              "kind": "plot",
+              "sha256": "9da9666ab06cd4f773465131cd070ad275b1704b2ee52ba844f154a363539f68"
+            },
+            {
+              "path": "results/happy_fraction_by_threshold.png",
+              "kind": "plot",
+              "sha256": "d3241dd6a03250ae9d9e8856bdec110633cbf3379f91edb4f30229d0236f880f"
+            },
+            {
+              "path": "results/mobility_noise_run_results.csv",
+              "kind": "result",
+              "sha256": "d91cbdf1d08babe55adc65502aa2f16ce948f0e6565fa60ff2da90204bb4983b"
+            },
+            {
+              "path": "results/mobility_noise_summary.json",
+              "kind": "result",
+              "sha256": "b4958df955288d7a21b6a934a6dc9fae19abb00e52d6de3215822ead0fcaa135"
+            },
+            {
+              "path": "results/run_results.csv",
+              "kind": "result",
+              "sha256": "a74d2b579f8819b7da85c1c9fb15d2f85756f89f65eaad1592add0461089eca4"
+            },
+            {
+              "path": "results/threshold_run_results.csv",
+              "kind": "result",
+              "sha256": "c73785a25f2bac4700036eaf1271fe0885c6ac319897eb87812b998281da91df"
+            },
+            {
+              "path": "results/threshold_summary.json",
+              "kind": "result",
+              "sha256": "cd321f3f47c088536697e12e7a99243dafd3dc2a37695bde7e75852379d80fd9"
+            },
+            {
+              "path": "results/turn3_default_threshold_verification.json",
+              "kind": "result",
+              "sha256": "98d323b6d69d0d9ff9cba63529ded6a43e734d76b57361b4da55a0574815294f"
+            },
+            {
+              "path": "run_experiment.py",
+              "kind": "source",
+              "sha256": "19e401c924ef51941185639268b4815713c0a53af7fc5f66de12deebc3c070dc"
+            },
+            {
+              "path": "schelling_model.py",
+              "kind": "source",
+              "sha256": "7a24a4cf54abab0ebb93a3e2856e04bc8bcac9ae154adcc7445e6a5cad01d62b"
+            },
+            {
+              "path": "test_schelling.py",
+              "kind": "test",
+              "sha256": "b292d7a1e5ae4b444176c88198c69c809c40cd392ee9413013fcb5af929845a2"
+            }
+          ],
+          "experiment": {
+            "parametersVaried": [
+              "similarity_threshold",
+              "mobility_noise"
+            ],
+            "parameterValues": {
+              "similarity_threshold": [
+                0.3,
+                0.5,
+                0.7,
+                0.9
+              ],
+              "mobility_noise": [
+                0,
+                0.1,
+                0.3
+              ]
+            },
+            "seeds": [
+              101,
+              202,
+              303
+            ],
+            "steps": 50,
+            "primaryMetrics": [
+              "final_happy_fraction",
+              "final_mean_similarity",
+              "final_unhappy",
+              "steps_run"
+            ],
+            "runCount": 21
+          },
+          "runtime": {
+            "python": "3.12.12",
+            "mesa": "3.5.1"
+          },
+          "changedCodeFiles": [
+            "schelling_model.py"
+          ],
+          "previousResultFiles": 5,
+          "unchangedPreviousResultFiles": 5,
+          "previousResultsPreservedByHash": [
+            {
+              "previousPath": "results/mobility_noise_run_results.csv",
+              "currentPaths": [
+                "results/mobility_noise_run_results.csv"
+              ]
+            },
+            {
+              "previousPath": "results/mobility_noise_summary.json",
+              "currentPaths": [
+                "results/mobility_noise_summary.json"
+              ]
+            },
+            {
+              "previousPath": "results/run_results.csv",
+              "currentPaths": [
+                "results/run_results.csv"
+              ]
+            },
+            {
+              "previousPath": "results/threshold_run_results.csv",
+              "currentPaths": [
+                "results/threshold_run_results.csv"
+              ]
+            },
+            {
+              "previousPath": "results/threshold_summary.json",
+              "currentPaths": [
+                "results/threshold_summary.json"
+              ]
+            }
+          ],
+          "observedPassingTestCommands": [
+            {
+              "commandSha256": "d858c7e076b414402a0e09d6c595475bf90f406cbd8816d9ce8dcbf7fe20e849",
+              "outputSha256": "590aa271563a6c0b89f0d956895a0ee0e5537cef9f17fb2b675d54b14bff52d6",
+              "summary": "Ran 3 tests in 0.009s\n\nOK"
+            }
+          ],
+          "csvTables": [
+            {
+              "path": "results/mobility_noise_run_results.csv",
+              "header": "threshold,mobility_noise,seed,steps_requested,steps_run,final_moved,final_unhappy,final_mean_similarity,final_happy_fraction,converged",
+              "nonemptyDataLines": 9,
+              "containsSeedMethodInsteadOfValue": false
+            },
+            {
+              "path": "results/run_results.csv",
+              "header": "threshold,seed,steps_requested,steps_run,final_moved,final_unhappy,final_mean_similarity,final_happy_fraction,converged",
+              "nonemptyDataLines": 12,
+              "containsSeedMethodInsteadOfValue": false
+            },
+            {
+              "path": "results/threshold_run_results.csv",
+              "header": "threshold,mobility_noise,seed,steps_requested,steps_run,final_moved,final_unhappy,final_mean_similarity,final_happy_fraction,converged",
+              "nonemptyDataLines": 12,
+              "containsSeedMethodInsteadOfValue": false
+            }
+          ],
+          "defaultThresholdEvidence": [
+            {
+              "path": "results/turn3_default_threshold_verification.json",
+              "data": {
+                "verification": "Turn 3 default threshold check",
+                "seed": 404,
+                "default_similarity_threshold": 0.45,
+                "expected": 0.45,
+                "matches": true
+              }
+            }
+          ],
+          "usageKnown": true,
+          "usageReadCount": 2,
+          "usageObservationSpanMs": 3249
+        }
+      ]
+    },
+    {
+      "runId": "r01-simulation-skill",
+      "condition": "simulation-skill",
+      "turns": [
+        {
+          "turn": 1,
+          "frozenAccepted": true,
+          "frozenRejectionReasons": [],
+          "manifestSha256": "ccc2b9d370d60009ba8b32f812e9c8a741f60f7070ce6d28e693eb78c2a9c094",
+          "projectZipSha256": "1918f1cad82e3968e8dec227ecf52b5af2570df3e63890539a5c6a207e76b54f",
+          "allHashesMatch": true,
+          "archivedFiles": [
+            {
+              "path": "README.md",
+              "kind": "report",
+              "sha256": "c7eb7b66f267328aca7da152e78659ac5314aa7482b80419575f32a25dc79502"
+            },
+            {
+              "path": "__pycache__/schelling_model.cpython-312.pyc",
+              "kind": "other",
+              "sha256": "d0a619b6cec88ff0938d0d1cc14295e8190c9865b3361397acbfff7f7deaab26"
+            },
+            {
+              "path": "__pycache__/test_schelling.cpython-312.pyc",
+              "kind": "other",
+              "sha256": "f00df223c042b7436fccb1e007ba44981a08c193d1041c2c9bc277b31b143c98"
+            },
+            {
+              "path": "results/experiment_metadata.json",
+              "kind": "result",
+              "sha256": "00ea7f9f0ba805ab7d4b97e590bb2c50c1c8dedaab1a004e21fb1d3c1f995f4c"
+            },
+            {
+              "path": "results/runs.csv",
+              "kind": "result",
+              "sha256": "c96069b169243c1d698544a373e621e5ef2b2f62f204e7a5af5f8fe2b57f707f"
+            },
+            {
+              "path": "results/summary.json",
+              "kind": "result",
+              "sha256": "a156bf2c86f3252245ee0266a4d8292cb7cb7c8377dee8c8d6b9630086b86672"
+            },
+            {
+              "path": "results/threshold_sensitivity.png",
+              "kind": "plot",
+              "sha256": "5e9b71267f98273235945242e701d051fc15daaf060c0cd074460e27a6904880"
+            },
+            {
+              "path": "run_experiment.py",
+              "kind": "source",
+              "sha256": "784eadee611b536805f4b1d6a5ec80a0e917f394d55a6224bb800b8091fa853c"
+            },
+            {
+              "path": "schelling_model.py",
+              "kind": "source",
+              "sha256": "bd5132fc817eea7e64f839ab5417e6c53e65c0698db7e1b4fb100c839cd2377f"
+            },
+            {
+              "path": "test_schelling.py",
+              "kind": "test",
+              "sha256": "df466f6b3968c2da76f4ad1218d8c83902f45746eb76a13737392bf86482c5c3"
+            }
+          ],
+          "experiment": {
+            "parametersVaried": [
+              "similarity_threshold"
+            ],
+            "parameterValues": {
+              "similarity_threshold": [
+                0.2,
+                0.4,
+                0.6,
+                0.8
+              ]
+            },
+            "seeds": [
+              101,
+              202,
+              303
+            ],
+            "steps": 50,
+            "primaryMetrics": [
+              "mean_similarity",
+              "unhappy_fraction",
+              "converged"
+            ],
+            "runCount": 12
+          },
+          "runtime": {
+            "python": "3.12.12",
+            "mesa": "3.5.1"
+          },
+          "changedCodeFiles": null,
+          "previousResultFiles": 0,
+          "unchangedPreviousResultFiles": 0,
+          "previousResultsPreservedByHash": [],
+          "observedPassingTestCommands": [
+            {
+              "commandSha256": "f836a48db9f2013b9b22c1208146079995765f6b4b892890d280b4ca23ff85b7",
+              "outputSha256": "db37e2f91f250929dff2698098b1ad11de4b9dfc57ecf2d8ea893ee1145f8e16",
+              "summary": "Ran 2 tests in 0.006s\n\nOK"
+            }
+          ],
+          "csvTables": [
+            {
+              "path": "results/runs.csv",
+              "header": "seed,width,density,similarity_threshold,steps,mean_similarity,unhappy_fraction,converged",
+              "nonemptyDataLines": 12,
+              "containsSeedMethodInsteadOfValue": false
+            }
+          ],
+          "defaultThresholdEvidence": [],
+          "usageKnown": true,
+          "usageReadCount": 1,
+          "usageObservationSpanMs": 0
+        },
+        {
+          "turn": 2,
+          "frozenAccepted": true,
+          "frozenRejectionReasons": [],
+          "manifestSha256": "01ba93aac57b85e4b93e649cbbca8f5d2100199cb7608c39b2dcda734aa357c2",
+          "projectZipSha256": "83ef30b1b45d5c351b80e0914d774a0d9f0b5aa382c945b90c9c2ae7b080381a",
+          "allHashesMatch": true,
+          "archivedFiles": [
+            {
+              "path": "README.md",
+              "kind": "report",
+              "sha256": "d810a3f028bed6ecd5cd1937b8ce3c012221f8efb7f80d6eed0055a86ed9857a"
+            },
+            {
+              "path": "__pycache__/schelling_model.cpython-312.pyc",
+              "kind": "other",
+              "sha256": "2e584dbda1caa18cbb403b53e4905076208205c9d6e265bcaf68aa1115f7f7fb"
+            },
+            {
+              "path": "__pycache__/test_schelling.cpython-312.pyc",
+              "kind": "other",
+              "sha256": "6b8bdd346bea318a8e5aa06a5fce127bc2b742d85f06d93fefb507ee6dc0bac1"
+            },
+            {
+              "path": "results/experiment_metadata.json",
+              "kind": "result",
+              "sha256": "00ea7f9f0ba805ab7d4b97e590bb2c50c1c8dedaab1a004e21fb1d3c1f995f4c"
+            },
+            {
+              "path": "results/experiment_metadata_mobility_noise.json",
+              "kind": "result",
+              "sha256": "aeda02293d13307622a100945a2af3d5ec7bbb4b3646e9f335eb1e22e053fe83"
+            },
+            {
+              "path": "results/mobility_noise_comparison.png",
+              "kind": "plot",
+              "sha256": "2ac517fd80873a38ed4484daf4af3551e728eeadfc7a8e8bdac2a3ca4bbd5ed6"
+            },
+            {
+              "path": "results/runs.csv",
+              "kind": "result",
+              "sha256": "c96069b169243c1d698544a373e621e5ef2b2f62f204e7a5af5f8fe2b57f707f"
+            },
+            {
+              "path": "results/runs_mobility_noise.csv",
+              "kind": "result",
+              "sha256": "720060c3fb7655d25a7deedf45c24c3f95737e03351bfa3e815b0666ab64e103"
+            },
+            {
+              "path": "results/summary.json",
+              "kind": "result",
+              "sha256": "a156bf2c86f3252245ee0266a4d8292cb7cb7c8377dee8c8d6b9630086b86672"
+            },
+            {
+              "path": "results/summary_mobility_noise.json",
+              "kind": "result",
+              "sha256": "0005e6cf86cf4f39795a1948e08c5860bbabd1828ed461d6a291e08d68f51e44"
+            },
+            {
+              "path": "results/threshold_sensitivity.png",
+              "kind": "plot",
+              "sha256": "5e9b71267f98273235945242e701d051fc15daaf060c0cd074460e27a6904880"
+            },
+            {
+              "path": "run_experiment.py",
+              "kind": "source",
+              "sha256": "d9e6368ad4e8631b0106a0fea2a17e0326195aedeaa4215071407c2afad962f8"
+            },
+            {
+              "path": "schelling_model.py",
+              "kind": "source",
+              "sha256": "d2a8e82787277dc6883b8c0bbc01ad0544a333bc2811ae001f6bea9da18fed7a"
+            },
+            {
+              "path": "test_schelling.py",
+              "kind": "test",
+              "sha256": "dd0871ce2480f82131bd87c64bf51239061f7342f0204ce97ad3f6362e059944"
+            }
+          ],
+          "experiment": {
+            "parametersVaried": [
+              "similarity_threshold",
+              "mobility_noise"
+            ],
+            "parameterValues": {
+              "similarity_threshold": [
+                0.2,
+                0.4,
+                0.6,
+                0.8
+              ],
+              "mobility_noise": [
+                0,
+                0.1,
+                0.3
+              ]
+            },
+            "seeds": [
+              101,
+              202,
+              303
+            ],
+            "steps": 50,
+            "primaryMetrics": [
+              "mean_similarity",
+              "unhappy_fraction",
+              "converged"
+            ],
+            "runCount": 36
+          },
+          "runtime": {
+            "python": "3.12.12",
+            "mesa": "3.5.1"
+          },
+          "changedCodeFiles": [
+            "run_experiment.py",
+            "schelling_model.py",
+            "test_schelling.py"
+          ],
+          "previousResultFiles": 3,
+          "unchangedPreviousResultFiles": 3,
+          "previousResultsPreservedByHash": [
+            {
+              "previousPath": "results/experiment_metadata.json",
+              "currentPaths": [
+                "results/experiment_metadata.json"
+              ]
+            },
+            {
+              "previousPath": "results/runs.csv",
+              "currentPaths": [
+                "results/runs.csv"
+              ]
+            },
+            {
+              "previousPath": "results/summary.json",
+              "currentPaths": [
+                "results/summary.json"
+              ]
+            }
+          ],
+          "observedPassingTestCommands": [
+            {
+              "commandSha256": "f836a48db9f2013b9b22c1208146079995765f6b4b892890d280b4ca23ff85b7",
+              "outputSha256": "8744e4c01fb7123cae45c582733dfca66f58e34c64abb5b794f0e873af1d4f1a",
+              "summary": "Ran 3 tests in 0.014s\n\nOK"
+            }
+          ],
+          "csvTables": [
+            {
+              "path": "results/runs.csv",
+              "header": "seed,width,density,similarity_threshold,steps,mean_similarity,unhappy_fraction,converged",
+              "nonemptyDataLines": 12,
+              "containsSeedMethodInsteadOfValue": false
+            },
+            {
+              "path": "results/runs_mobility_noise.csv",
+              "header": "seed,width,density,similarity_threshold,mobility_noise,steps,mean_similarity,unhappy_fraction,converged",
+              "nonemptyDataLines": 36,
+              "containsSeedMethodInsteadOfValue": false
+            }
+          ],
+          "defaultThresholdEvidence": [],
+          "usageKnown": true,
+          "usageReadCount": 2,
+          "usageObservationSpanMs": 3392
+        },
+        {
+          "turn": 3,
+          "frozenAccepted": false,
+          "frozenRejectionReasons": [
+            "turn-3-default-threshold-verification-missing"
+          ],
+          "manifestSha256": "49beaa51f6cd9a1c8df00eecb236b6f80395bc3925a97c0f9e76993cd07542a3",
+          "projectZipSha256": "ea6dc21457a73896c74e27f6307659ace02567e874f75edabf9239031f05bb19",
+          "allHashesMatch": true,
+          "archivedFiles": [
+            {
+              "path": "README.md",
+              "kind": "report",
+              "sha256": "146c9488144a2ff2846e0c8ed8a6875464e98cab4612993019fb3e488ee89aba"
+            },
+            {
+              "path": "__pycache__/schelling_model.cpython-312.pyc",
+              "kind": "other",
+              "sha256": "6c06cfe564fe6891da17fbeec09ca48879cff553a1246f96589a582f75b0b414"
+            },
+            {
+              "path": "__pycache__/test_schelling.cpython-312.pyc",
+              "kind": "other",
+              "sha256": "fbc12350be06eac3360a213e0e8f8d963be7a9ac2dcc5cf4363a89454dae7f4c"
+            },
+            {
+              "path": "results/default_threshold_verification.json",
+              "kind": "result",
+              "sha256": "13c85d294cf2dcf3f6cfa3eca1cba5ed22617a74ba6a307a00bad7a8a246e7f1"
+            },
+            {
+              "path": "results/experiment_metadata.json",
+              "kind": "result",
+              "sha256": "00ea7f9f0ba805ab7d4b97e590bb2c50c1c8dedaab1a004e21fb1d3c1f995f4c"
+            },
+            {
+              "path": "results/experiment_metadata_mobility_noise.json",
+              "kind": "result",
+              "sha256": "aeda02293d13307622a100945a2af3d5ec7bbb4b3646e9f335eb1e22e053fe83"
+            },
+            {
+              "path": "results/mobility_noise_comparison.png",
+              "kind": "plot",
+              "sha256": "2ac517fd80873a38ed4484daf4af3551e728eeadfc7a8e8bdac2a3ca4bbd5ed6"
+            },
+            {
+              "path": "results/runs.csv",
+              "kind": "result",
+              "sha256": "c96069b169243c1d698544a373e621e5ef2b2f62f204e7a5af5f8fe2b57f707f"
+            },
+            {
+              "path": "results/runs_mobility_noise.csv",
+              "kind": "result",
+              "sha256": "720060c3fb7655d25a7deedf45c24c3f95737e03351bfa3e815b0666ab64e103"
+            },
+            {
+              "path": "results/summary.json",
+              "kind": "result",
+              "sha256": "a156bf2c86f3252245ee0266a4d8292cb7cb7c8377dee8c8d6b9630086b86672"
+            },
+            {
+              "path": "results/summary_mobility_noise.json",
+              "kind": "result",
+              "sha256": "0005e6cf86cf4f39795a1948e08c5860bbabd1828ed461d6a291e08d68f51e44"
+            },
+            {
+              "path": "results/threshold_sensitivity.png",
+              "kind": "plot",
+              "sha256": "5e9b71267f98273235945242e701d051fc15daaf060c0cd074460e27a6904880"
+            },
+            {
+              "path": "run_experiment.py",
+              "kind": "source",
+              "sha256": "d9e6368ad4e8631b0106a0fea2a17e0326195aedeaa4215071407c2afad962f8"
+            },
+            {
+              "path": "schelling_model.py",
+              "kind": "source",
+              "sha256": "b827c24d648c49dd5103faa2eafe297c11a2c9c575778ae98dc5bd5b2072d1f2"
+            },
+            {
+              "path": "test_schelling.py",
+              "kind": "test",
+              "sha256": "c8e9ed09f7ee23653d2349eca022f9459f7b916bc9a212a0ffbafcedf3625ae3"
+            }
+          ],
+          "experiment": {
+            "parametersVaried": [
+              "similarity_threshold",
+              "mobility_noise"
+            ],
+            "parameterValues": {
+              "similarity_threshold": [
+                0.2,
+                0.4,
+                0.6,
+                0.8
+              ],
+              "mobility_noise": [
+                0,
+                0.1,
+                0.3
+              ]
+            },
+            "seeds": [
+              101,
+              202,
+              303
+            ],
+            "steps": 50,
+            "primaryMetrics": [
+              "mean_similarity",
+              "unhappy_fraction",
+              "converged"
+            ],
+            "runCount": 36
+          },
+          "runtime": {
+            "python": "3.12.12",
+            "mesa": "3.5.1"
+          },
+          "changedCodeFiles": [
+            "schelling_model.py",
+            "test_schelling.py"
+          ],
+          "previousResultFiles": 6,
+          "unchangedPreviousResultFiles": 6,
+          "previousResultsPreservedByHash": [
+            {
+              "previousPath": "results/experiment_metadata.json",
+              "currentPaths": [
+                "results/experiment_metadata.json"
+              ]
+            },
+            {
+              "previousPath": "results/experiment_metadata_mobility_noise.json",
+              "currentPaths": [
+                "results/experiment_metadata_mobility_noise.json"
+              ]
+            },
+            {
+              "previousPath": "results/runs.csv",
+              "currentPaths": [
+                "results/runs.csv"
+              ]
+            },
+            {
+              "previousPath": "results/runs_mobility_noise.csv",
+              "currentPaths": [
+                "results/runs_mobility_noise.csv"
+              ]
+            },
+            {
+              "previousPath": "results/summary.json",
+              "currentPaths": [
+                "results/summary.json"
+              ]
+            },
+            {
+              "previousPath": "results/summary_mobility_noise.json",
+              "currentPaths": [
+                "results/summary_mobility_noise.json"
+              ]
+            }
+          ],
+          "observedPassingTestCommands": [
+            {
+              "commandSha256": "f836a48db9f2013b9b22c1208146079995765f6b4b892890d280b4ca23ff85b7",
+              "outputSha256": "0b0ad9fbbd330557c9d95eb8d57210711aca8949e6e43435154e1c9b3d224cb5",
+              "summary": "Ran 4 tests in 0.014s\n\nOK"
+            }
+          ],
+          "csvTables": [
+            {
+              "path": "results/runs.csv",
+              "header": "seed,width,density,similarity_threshold,steps,mean_similarity,unhappy_fraction,converged",
+              "nonemptyDataLines": 12,
+              "containsSeedMethodInsteadOfValue": false
+            },
+            {
+              "path": "results/runs_mobility_noise.csv",
+              "header": "seed,width,density,similarity_threshold,mobility_noise,steps,mean_similarity,unhappy_fraction,converged",
+              "nonemptyDataLines": 36,
+              "containsSeedMethodInsteadOfValue": false
+            }
+          ],
+          "defaultThresholdEvidence": [
+            {
+              "path": "results/default_threshold_verification.json",
+              "data": {
+                "verification": "Turn 3 default threshold",
+                "similarity_threshold": 0.45,
+                "seed": 1
+              }
+            }
+          ],
+          "usageKnown": true,
+          "usageReadCount": 3,
+          "usageObservationSpanMs": 6917
+        }
+      ]
+    },
+    {
+      "runId": "r02-simulation-skill",
+      "condition": "simulation-skill",
+      "turns": [
+        {
+          "turn": 1,
+          "frozenAccepted": true,
+          "frozenRejectionReasons": [],
+          "manifestSha256": "4a1457da40fd2545472eb50646ae7809682cb465469b18bc341140bb76f4fa3a",
+          "projectZipSha256": "801bf7ae5333dd8f0b0e91027ed8da2a69a8dbc88c011e3841f41abdccdcecb7",
+          "allHashesMatch": true,
+          "archivedFiles": [
+            {
+              "path": "analyze_results.py",
+              "kind": "source",
+              "sha256": "82b29a7ce78dd261f646411b8c08edf4b2740caf31aa8226759201312a4348dd"
+            },
+            {
+              "path": "plots/threshold_vs_similarity.png",
+              "kind": "plot",
+              "sha256": "8591610aa179f1e6a17934d4f9baff6661b59cfe6794cc375d3444a14a485a47"
+            },
+            {
+              "path": "reports/analysis.md",
+              "kind": "report",
+              "sha256": "814108facb74bfb4510014185cb77234a2544c8a113b20ddc4f04a68b507247b"
+            },
+            {
+              "path": "results/metadata.json",
+              "kind": "result",
+              "sha256": "5c3f636e48d04e969916ee4506e67132669dc450a5e5cde5f6e3f1c482c5479d"
+            },
+            {
+              "path": "results/runs.csv",
+              "kind": "result",
+              "sha256": "054eab35ee69a43479d095980c8ac413f9f55c178c18f17b3bb0ad3bc1659e5b"
+            },
+            {
+              "path": "results/summary.json",
+              "kind": "result",
+              "sha256": "992bbdded33c5efbff7afc99d68cce8ded37cb825881a4259c6f840cbdf9d990"
+            },
+            {
+              "path": "run_experiment.py",
+              "kind": "source",
+              "sha256": "610677f966f3e4de20740e7355fc46ea6629a1b278cc9c913d08466e5db66f73"
+            },
+            {
+              "path": "schelling_model.py",
+              "kind": "source",
+              "sha256": "2ff1b3e971d85ba694f1edcb2037ef5d2acdf734b7d66145caa1b60b9431bf11"
+            },
+            {
+              "path": "tests/test_model.py",
+              "kind": "source",
+              "sha256": "eba6a6f21fd6568d4721beaa2bf599bcbac167fdf0a0a0d7a015099401856480"
+            }
+          ],
+          "experiment": {
+            "parametersVaried": [
+              "similarity_threshold"
+            ],
+            "parameterValues": {
+              "similarity_threshold": [
+                0.2,
+                0.4,
+                0.6,
+                0.8
+              ]
+            },
+            "seeds": [
+              101,
+              202,
+              303
+            ],
+            "steps": 50,
+            "primaryMetrics": [
+              "mean_similarity",
+              "satisfied_fraction",
+              "unhappy_count"
+            ],
+            "runCount": 12
+          },
+          "runtime": {
+            "python": "3.12.12",
+            "mesa": "3.5.1"
+          },
+          "changedCodeFiles": null,
+          "previousResultFiles": 0,
+          "unchangedPreviousResultFiles": 0,
+          "previousResultsPreservedByHash": [],
+          "observedPassingTestCommands": [
+            {
+              "commandSha256": "56984e518967b3b39a9624984df07eaea6c54f23cd180135f8632419f392dded",
+              "outputSha256": "54f8ce11aff20c39edef69b609eb8e680e47224f96314a129b7c60b4f5fc4dcb",
+              "summary": "Ran 2 tests in 0.006s\n\nOK"
+            }
+          ],
+          "csvTables": [
+            {
+              "path": "results/runs.csv",
+              "header": "threshold,seed,width,density,steps_requested,steps_run,occupied,mean_similarity,satisfied_fraction,unhappy_count",
+              "nonemptyDataLines": 12,
+              "containsSeedMethodInsteadOfValue": false
+            }
+          ],
+          "defaultThresholdEvidence": [],
+          "usageKnown": false,
+          "usageReadCount": 20,
+          "usageObservationSpanMs": 58001
+        },
+        {
+          "turn": 2,
+          "frozenAccepted": false,
+          "frozenRejectionReasons": [
+            "manifest-command-not-observed:python - <<'PY' ... read mobility_summary.json ... PY"
+          ],
+          "manifestSha256": "1c9cfc011174aa3b5001f91b5d2eb9112719c7de1becafa3409a6fee860a7e05",
+          "projectZipSha256": "d6116e6d4b9a8996b581e22ba17c5f3d143886c57c01b62ebba2e6cd6b1fb42f",
+          "allHashesMatch": true,
+          "archivedFiles": [
+            {
+              "path": "analyze_mobility.py",
+              "kind": "source",
+              "sha256": "4bfc06fe7d4ec9360905e8033a7999dc13df58e358d45f920d4d14747198f891"
+            },
+            {
+              "path": "analyze_results.py",
+              "kind": "source",
+              "sha256": "82b29a7ce78dd261f646411b8c08edf4b2740caf31aa8226759201312a4348dd"
+            },
+            {
+              "path": "plots/mobility_noise_similarity.png",
+              "kind": "plot",
+              "sha256": "09268a68caf9b8bd0fe8687636615f0e6d7ef9237a2fd9efca24c739a1e1f4cf"
+            },
+            {
+              "path": "plots/threshold_vs_similarity.png",
+              "kind": "plot",
+              "sha256": "8591610aa179f1e6a17934d4f9baff6661b59cfe6794cc375d3444a14a485a47"
+            },
+            {
+              "path": "reports/analysis.md",
+              "kind": "report",
+              "sha256": "29da4df6b415f7f871667afd5690bee3952cf0935e4df1eabb4992dc57fc931c"
+            },
+            {
+              "path": "results/metadata.json",
+              "kind": "result",
+              "sha256": "5c3f636e48d04e969916ee4506e67132669dc450a5e5cde5f6e3f1c482c5479d"
+            },
+            {
+              "path": "results/mobility_metadata.json",
+              "kind": "result",
+              "sha256": "e150cd95be650d5e6759a6e82e871b9d8470b87df79f723e69789848b78a9a39"
+            },
+            {
+              "path": "results/mobility_runs.csv",
+              "kind": "result",
+              "sha256": "66887b27fee913c401ebfe2aa835100c2d8a32f14f67fd163e6768a351bf4538"
+            },
+            {
+              "path": "results/mobility_summary.json",
+              "kind": "result",
+              "sha256": "ec891f03fef7da42502cb1f1f1de2ec78bab0a2369b5cae4c64a9ec5eb5120e7"
+            },
+            {
+              "path": "results/runs.csv",
+              "kind": "result",
+              "sha256": "054eab35ee69a43479d095980c8ac413f9f55c178c18f17b3bb0ad3bc1659e5b"
+            },
+            {
+              "path": "results/summary.json",
+              "kind": "result",
+              "sha256": "992bbdded33c5efbff7afc99d68cce8ded37cb825881a4259c6f840cbdf9d990"
+            },
+            {
+              "path": "run_experiment.py",
+              "kind": "source",
+              "sha256": "610677f966f3e4de20740e7355fc46ea6629a1b278cc9c913d08466e5db66f73"
+            },
+            {
+              "path": "run_mobility_experiment.py",
+              "kind": "source",
+              "sha256": "1c3ba3824025497854c9438af00809914e0ce5ca43fe20648aee6215c192373d"
+            },
+            {
+              "path": "schelling_model.py",
+              "kind": "source",
+              "sha256": "43134003b37add84d609eed3001c6c4017af7064da84feb044da4d1cbd950eab"
+            },
+            {
+              "path": "tests/test_model.py",
+              "kind": "source",
+              "sha256": "1cad4e178e86a98f4a8922df97137b1b44dcb13bb398c953182c7d8647c57c56"
+            }
+          ],
+          "experiment": {
+            "parametersVaried": [
+              "mobility_noise",
+              "similarity_threshold"
+            ],
+            "parameterValues": {
+              "mobility_noise": [
+                0,
+                0.1,
+                0.3
+              ],
+              "similarity_threshold": [
+                0.2,
+                0.4,
+                0.6,
+                0.8
+              ]
+            },
+            "seeds": [
+              101,
+              202,
+              303
+            ],
+            "steps": 50,
+            "primaryMetrics": [
+              "mean_similarity",
+              "satisfied_fraction",
+              "unhappy_count"
+            ],
+            "runCount": 36
+          },
+          "runtime": {
+            "python": "3.12.12",
+            "mesa": "3.5.1"
+          },
+          "changedCodeFiles": [
+            "analyze_mobility.py",
+            "run_mobility_experiment.py",
+            "schelling_model.py",
+            "tests/test_model.py"
+          ],
+          "previousResultFiles": 3,
+          "unchangedPreviousResultFiles": 3,
+          "previousResultsPreservedByHash": [
+            {
+              "previousPath": "results/metadata.json",
+              "currentPaths": [
+                "results/metadata.json"
+              ]
+            },
+            {
+              "previousPath": "results/runs.csv",
+              "currentPaths": [
+                "results/runs.csv"
+              ]
+            },
+            {
+              "previousPath": "results/summary.json",
+              "currentPaths": [
+                "results/summary.json"
+              ]
+            }
+          ],
+          "observedPassingTestCommands": [
+            {
+              "commandSha256": "dc4bd314d4d2d06d8fc82604e6e7c1fa68263bcd8115a1115294e668004c9920",
+              "outputSha256": "e44b6409656f191f723898d98f9487bef2a5b489bcef4d8e43a513e645afe057",
+              "summary": "Ran 3 tests in 0.008s\n\nOK"
+            }
+          ],
+          "csvTables": [
+            {
+              "path": "results/mobility_runs.csv",
+              "header": "experiment,mobility_noise,threshold,seed,width,density,steps_requested,steps_run,occupied,mean_similarity,satisfied_fraction,unhappy_count",
+              "nonemptyDataLines": 36,
+              "containsSeedMethodInsteadOfValue": false
+            },
+            {
+              "path": "results/runs.csv",
+              "header": "threshold,seed,width,density,steps_requested,steps_run,occupied,mean_similarity,satisfied_fraction,unhappy_count",
+              "nonemptyDataLines": 12,
+              "containsSeedMethodInsteadOfValue": false
+            }
+          ],
+          "defaultThresholdEvidence": [],
+          "usageKnown": true,
+          "usageReadCount": 2,
+          "usageObservationSpanMs": 4314
+        },
+        {
+          "turn": 3,
+          "frozenAccepted": false,
+          "frozenRejectionReasons": [
+            "manifest-command-not-observed:python -m json.tool /workspace/outputs/turn-3-manifest.json >/dev/null && unzip -l /workspace/outputs/turn-3-project.zip"
+          ],
+          "manifestSha256": "8c7097755c71a5aea388a690c0c9fcc446556268e9cd67dbde4971734085d855",
+          "projectZipSha256": "ad6115867fc408adab3f57fb5136ceec1c0a60051560cd837def5a58d2e477f1",
+          "allHashesMatch": true,
+          "archivedFiles": [
+            {
+              "path": "analyze_mobility.py",
+              "kind": "source",
+              "sha256": "4bfc06fe7d4ec9360905e8033a7999dc13df58e358d45f920d4d14747198f891"
+            },
+            {
+              "path": "analyze_results.py",
+              "kind": "source",
+              "sha256": "82b29a7ce78dd261f646411b8c08edf4b2740caf31aa8226759201312a4348dd"
+            },
+            {
+              "path": "plots/mobility_noise_similarity.png",
+              "kind": "plot",
+              "sha256": "09268a68caf9b8bd0fe8687636615f0e6d7ef9237a2fd9efca24c739a1e1f4cf"
+            },
+            {
+              "path": "plots/threshold_vs_similarity.png",
+              "kind": "plot",
+              "sha256": "8591610aa179f1e6a17934d4f9baff6661b59cfe6794cc375d3444a14a485a47"
+            },
+            {
+              "path": "reports/analysis.md",
+              "kind": "report",
+              "sha256": "29da4df6b415f7f871667afd5690bee3952cf0935e4df1eabb4992dc57fc931c"
+            },
+            {
+              "path": "results/metadata.json",
+              "kind": "result",
+              "sha256": "5c3f636e48d04e969916ee4506e67132669dc450a5e5cde5f6e3f1c482c5479d"
+            },
+            {
+              "path": "results/mobility_metadata.json",
+              "kind": "result",
+              "sha256": "e150cd95be650d5e6759a6e82e871b9d8470b87df79f723e69789848b78a9a39"
+            },
+            {
+              "path": "results/mobility_runs.csv",
+              "kind": "result",
+              "sha256": "66887b27fee913c401ebfe2aa835100c2d8a32f14f67fd163e6768a351bf4538"
+            },
+            {
+              "path": "results/mobility_summary.json",
+              "kind": "result",
+              "sha256": "ec891f03fef7da42502cb1f1f1de2ec78bab0a2369b5cae4c64a9ec5eb5120e7"
+            },
+            {
+              "path": "results/runs.csv",
+              "kind": "result",
+              "sha256": "054eab35ee69a43479d095980c8ac413f9f55c178c18f17b3bb0ad3bc1659e5b"
+            },
+            {
+              "path": "results/summary.json",
+              "kind": "result",
+              "sha256": "992bbdded33c5efbff7afc99d68cce8ded37cb825881a4259c6f840cbdf9d990"
+            },
+            {
+              "path": "results/turn3_default_verification.json",
+              "kind": "result",
+              "sha256": "17b7f584c7e6c3bcc8f488cf1f433cc85cf4dff4ea1c35ccb9939aeda955c9d5"
+            },
+            {
+              "path": "run_experiment.py",
+              "kind": "source",
+              "sha256": "610677f966f3e4de20740e7355fc46ea6629a1b278cc9c913d08466e5db66f73"
+            },
+            {
+              "path": "run_mobility_experiment.py",
+              "kind": "source",
+              "sha256": "1c3ba3824025497854c9438af00809914e0ce5ca43fe20648aee6215c192373d"
+            },
+            {
+              "path": "schelling_model.py",
+              "kind": "source",
+              "sha256": "4a911c7518a70db0dbffa59a3f0de9d86919465ef89c2eab667437d32267fd02"
+            },
+            {
+              "path": "tests/test_model.py",
+              "kind": "source",
+              "sha256": "e21b84a540bd33961f36499680c5c465e65e1b1b583c0eb5f83375ac30386354"
+            }
+          ],
+          "experiment": {
+            "parametersVaried": [
+              "similarity_threshold",
+              "mobility_noise"
+            ],
+            "parameterValues": {
+              "similarity_threshold": [
+                0.45
+              ],
+              "mobility_noise": [
+                0,
+                0.1,
+                0.3
+              ]
+            },
+            "seeds": [
+              707
+            ],
+            "steps": 0,
+            "primaryMetrics": [
+              "default_similarity_threshold",
+              "occupied"
+            ],
+            "runCount": 1
+          },
+          "runtime": {
+            "python": "3.12.12",
+            "mesa": "3.5.1"
+          },
+          "changedCodeFiles": [
+            "schelling_model.py",
+            "tests/test_model.py"
+          ],
+          "previousResultFiles": 6,
+          "unchangedPreviousResultFiles": 6,
+          "previousResultsPreservedByHash": [
+            {
+              "previousPath": "results/metadata.json",
+              "currentPaths": [
+                "results/metadata.json"
+              ]
+            },
+            {
+              "previousPath": "results/mobility_metadata.json",
+              "currentPaths": [
+                "results/mobility_metadata.json"
+              ]
+            },
+            {
+              "previousPath": "results/mobility_runs.csv",
+              "currentPaths": [
+                "results/mobility_runs.csv"
+              ]
+            },
+            {
+              "previousPath": "results/mobility_summary.json",
+              "currentPaths": [
+                "results/mobility_summary.json"
+              ]
+            },
+            {
+              "previousPath": "results/runs.csv",
+              "currentPaths": [
+                "results/runs.csv"
+              ]
+            },
+            {
+              "previousPath": "results/summary.json",
+              "currentPaths": [
+                "results/summary.json"
+              ]
+            }
+          ],
+          "observedPassingTestCommands": [
+            {
+              "commandSha256": "b3dc21a10bb13675df5e6a18a0f5722feda7c2b31b7e8c5935d4985837291a35",
+              "outputSha256": "8b6927ea20e7ff26c4ed91ca38b8f0746b08f5fd81a136e9565578797c8cb4d4",
+              "summary": "Ran 4 tests in 0.010s\n\nOK"
+            }
+          ],
+          "csvTables": [
+            {
+              "path": "results/mobility_runs.csv",
+              "header": "experiment,mobility_noise,threshold,seed,width,density,steps_requested,steps_run,occupied,mean_similarity,satisfied_fraction,unhappy_count",
+              "nonemptyDataLines": 36,
+              "containsSeedMethodInsteadOfValue": false
+            },
+            {
+              "path": "results/runs.csv",
+              "header": "threshold,seed,width,density,steps_requested,steps_run,occupied,mean_similarity,satisfied_fraction,unhappy_count",
+              "nonemptyDataLines": 12,
+              "containsSeedMethodInsteadOfValue": false
+            }
+          ],
+          "defaultThresholdEvidence": [
+            {
+              "path": "results/turn3_default_verification.json",
+              "data": {
+                "verification": "turn-3-default",
+                "seed": 707,
+                "default_similarity_threshold": 0.45,
+                "mobility_noise": 0,
+                "occupied": 320
+              }
+            }
+          ],
+          "usageKnown": true,
+          "usageReadCount": 2,
+          "usageObservationSpanMs": 3413
+        }
+      ]
+    },
+    {
+      "runId": "r02-baseline",
+      "condition": "baseline",
+      "turns": [
+        {
+          "turn": 1,
+          "frozenAccepted": false,
+          "frozenRejectionReasons": [
+            "manifest-command-not-observed:python -m unittest -v"
+          ],
+          "manifestSha256": "4061c2d707ac5d2ac6086c669a61b498515e519e737b664404b1e732966bfbc4",
+          "projectZipSha256": "3b65e532c7fb7d2178c0b1bc84979ea91760ecb835015f118f4e7cd76c3503c2",
+          "allHashesMatch": true,
+          "archivedFiles": [
+            {
+              "path": "README.md",
+              "kind": "report",
+              "sha256": "4ac9cba790a6598aaba50abd24dc3b82a32b5552cfb6caefb7bd5882255d0024"
+            },
+            {
+              "path": "make_plot.py",
+              "kind": "source",
+              "sha256": "e347b6535904011b21b242a0c5f5954db0921dbed7180e3c33771e117b886234"
+            },
+            {
+              "path": "requirements.txt",
+              "kind": "config",
+              "sha256": "9494c8bf07ab5e2c8a23d3976eaf63c37cccfeb5485421a73a43baac3e68cb3a"
+            },
+            {
+              "path": "results/run_results.csv",
+              "kind": "result",
+              "sha256": "6ba31edbdedd41e41cc3c62261f4e2c2a4ebba95333e7ca197bc4a976752d0a0"
+            },
+            {
+              "path": "results/summary.json",
+              "kind": "result",
+              "sha256": "69bd112a1f5ecb3f43b5b19e51c96356e79e2af0089defba79b8ac5795138513"
+            },
+            {
+              "path": "results/unhappy_fraction_by_threshold.png",
+              "kind": "plot",
+              "sha256": "82a598d1c3d37b5d48421bbb622ecc2db6cb9a243ee51504c5ae6c46798d40e5"
+            },
+            {
+              "path": "run_experiment.py",
+              "kind": "source",
+              "sha256": "4914464255d4780d0a9001346d4c0cdaedc20b44d0772d919777376394ab9cc8"
+            },
+            {
+              "path": "schelling_model.py",
+              "kind": "source",
+              "sha256": "54e4a9f0fc12015f3db4b5fbb8d56b67e47e91d824954d3af7194c080e7e2ba8"
+            },
+            {
+              "path": "test_schelling.py",
+              "kind": "source",
+              "sha256": "03d2b5c7b593ff6e9101f6ec499b52ae42c24c779472e49ce909c338f881d0f0"
+            }
+          ],
+          "experiment": {
+            "parametersVaried": [
+              "similarity_threshold"
+            ],
+            "parameterValues": {
+              "similarity_threshold": [
+                0.2,
+                0.4,
+                0.6,
+                0.8
+              ]
+            },
+            "seeds": [
+              101,
+              202,
+              303
+            ],
+            "steps": 50,
+            "primaryMetrics": [
+              "unhappy_fraction",
+              "mean_similarity",
+              "steps",
+              "converged"
+            ],
+            "runCount": 12
+          },
+          "runtime": {
+            "python": "3.12.12",
+            "mesa": "3.5.1"
+          },
+          "changedCodeFiles": null,
+          "previousResultFiles": 0,
+          "unchangedPreviousResultFiles": 0,
+          "previousResultsPreservedByHash": [],
+          "observedPassingTestCommands": [
+            {
+              "commandSha256": "8d97fc31d63cecd6a7218405ef8fbacc13d07659f3816aaf05d335248e5a92e8",
+              "outputSha256": "21db1bb8a819751f7349c68efeb8cd78d3279e835803d28a1b0364fc27be3c9b",
+              "summary": "Ran 1 test in 0.004s\n\nOK"
+            }
+          ],
+          "csvTables": [
+            {
+              "path": "results/run_results.csv",
+              "header": "width,height,density,similarity_threshold,seed,steps,mean_similarity,unhappy_count,unhappy_fraction,converged",
+              "nonemptyDataLines": 12,
+              "containsSeedMethodInsteadOfValue": true
+            }
+          ],
+          "defaultThresholdEvidence": [],
+          "usageKnown": true,
+          "usageReadCount": 2,
+          "usageObservationSpanMs": 3063
+        },
+        {
+          "turn": 2,
+          "frozenAccepted": false,
+          "frozenRejectionReasons": [
+            "manifest-command-not-observed:python -m unittest -v"
+          ],
+          "manifestSha256": "049c17dd4f2abf50fc2d2e8b1629b09de6aeb3b12b08b4638370e42b7fb33d49",
+          "projectZipSha256": "c4d51002cc9f33e42c018cbe7a123512e6eaf75d941d22fdb711df7216e48a87",
+          "allHashesMatch": true,
+          "archivedFiles": [
+            {
+              "path": "README.md",
+              "kind": "report",
+              "sha256": "f7a39ccfc0c29986ce21a046b7387a90f6ab8f66ce35d5ce1e01cf974e840b65"
+            },
+            {
+              "path": "make_plot.py",
+              "kind": "source",
+              "sha256": "8345ebc691c3a7ee72418de8f8ff833a1f5e6ed1e7d459374de79f0c7a62eeff"
+            },
+            {
+              "path": "requirements.txt",
+              "kind": "config",
+              "sha256": "9494c8bf07ab5e2c8a23d3976eaf63c37cccfeb5485421a73a43baac3e68cb3a"
+            },
+            {
+              "path": "results/mobility_noise_comparison.png",
+              "kind": "plot",
+              "sha256": "2c1a0c86b7dcad47d81f8fe81ecece6dae1b8882187fe933e8c310373fa3365e"
+            },
+            {
+              "path": "results/mobility_noise_results.csv",
+              "kind": "result",
+              "sha256": "4dc3cff3a3e46e2bf9a1c9bc884fe26fbdccdf028f46ed7280d2bd1a27bcb2e1"
+            },
+            {
+              "path": "results/mobility_noise_summary.json",
+              "kind": "result",
+              "sha256": "c501c865d34e387fdfcc7a77f0faa017db08c29908f4a8389507e779ec56d7cd"
+            },
+            {
+              "path": "results/previous_turn1_run_results.csv",
+              "kind": "result",
+              "sha256": "6ba31edbdedd41e41cc3c62261f4e2c2a4ebba95333e7ca197bc4a976752d0a0"
+            },
+            {
+              "path": "results/previous_turn1_summary.json",
+              "kind": "result",
+              "sha256": "69bd112a1f5ecb3f43b5b19e51c96356e79e2af0089defba79b8ac5795138513"
+            },
+            {
+              "path": "results/previous_turn1_unhappy_fraction_by_threshold.png",
+              "kind": "plot",
+              "sha256": "82a598d1c3d37b5d48421bbb622ecc2db6cb9a243ee51504c5ae6c46798d40e5"
+            },
+            {
+              "path": "results/run_results.csv",
+              "kind": "result",
+              "sha256": "10ba36f212b37ee4c23f27aeaf3675dc471a18c79e235f62e38ccc0132d45091"
+            },
+            {
+              "path": "results/summary.json",
+              "kind": "result",
+              "sha256": "7d9acf552063a8a0e61b570ff9d619c65d51240358e0b1502523db24d6ae3429"
+            },
+            {
+              "path": "results/turn2_comparison.json",
+              "kind": "result",
+              "sha256": "a1c9cc3533a39f173bc9c57a597fd5578f08b34d0b581ff9076d191485f26da3"
+            },
+            {
+              "path": "results/unhappy_fraction_by_threshold.png",
+              "kind": "plot",
+              "sha256": "892af6059cc42b522d15a57aee317d559593280b680fd5ed7d252eba1b50326a"
+            },
+            {
+              "path": "run_experiment.py",
+              "kind": "source",
+              "sha256": "48b26ef6c214b1aab6296ba7e1cdecdd2a6a71cb7f4c27e54c28e959a66e6f94"
+            },
+            {
+              "path": "schelling_model.py",
+              "kind": "source",
+              "sha256": "852d913ebeeb87610d05197bd65c85d830df239817753bc3096ee986e36957ea"
+            },
+            {
+              "path": "test_schelling.py",
+              "kind": "source",
+              "sha256": "c4b438d864aa427310c5e6b3153407132ae78d7513cdbde1ce2205767b412fce"
+            }
+          ],
+          "experiment": {
+            "parametersVaried": [
+              "similarity_threshold",
+              "mobility_noise"
+            ],
+            "parameterValues": {
+              "similarity_threshold": [
+                0.2,
+                0.4,
+                0.6,
+                0.8
+              ],
+              "mobility_noise": [
+                0,
+                0.1,
+                0.3
+              ]
+            },
+            "seeds": [
+              101,
+              202,
+              303
+            ],
+            "steps": 50,
+            "primaryMetrics": [
+              "unhappy_fraction",
+              "mean_similarity",
+              "steps",
+              "converged"
+            ],
+            "runCount": 21
+          },
+          "runtime": {
+            "python": "3.12.12",
+            "mesa": "3.5.1"
+          },
+          "changedCodeFiles": [
+            "make_plot.py",
+            "run_experiment.py",
+            "schelling_model.py",
+            "test_schelling.py"
+          ],
+          "previousResultFiles": 2,
+          "unchangedPreviousResultFiles": 0,
+          "previousResultsPreservedByHash": [
+            {
+              "previousPath": "results/run_results.csv",
+              "currentPaths": [
+                "results/previous_turn1_run_results.csv"
+              ]
+            },
+            {
+              "previousPath": "results/summary.json",
+              "currentPaths": [
+                "results/previous_turn1_summary.json"
+              ]
+            }
+          ],
+          "observedPassingTestCommands": [
+            {
+              "commandSha256": "d90e72a702eee5f68341b3ec752c0c5c9741809e6dd50c0eed249cd7a9593cd2",
+              "outputSha256": "9b229c13489e2568a0db2df8f71fb37fb4a29e300f5ca62aea916591682a1f59",
+              "summary": "Ran 2 tests in 0.025s\n\nOK"
+            },
+            {
+              "commandSha256": "af106c6b56c874fff1e615014e7a95a879fcf6424fbcec589c84d6d50e3028af",
+              "outputSha256": "78ba682fe899f48b6b396187c5b9f55bbaa71380ef0b418749891fc02b76defe",
+              "summary": "Ran 2 tests in 0.026s\n\nOK"
+            }
+          ],
+          "csvTables": [
+            {
+              "path": "results/mobility_noise_results.csv",
+              "header": "width,height,density,similarity_threshold,mobility_noise,seed,steps,mean_similarity,unhappy_count,unhappy_fraction,converged",
+              "nonemptyDataLines": 9,
+              "containsSeedMethodInsteadOfValue": true
+            },
+            {
+              "path": "results/previous_turn1_run_results.csv",
+              "header": "width,height,density,similarity_threshold,seed,steps,mean_similarity,unhappy_count,unhappy_fraction,converged",
+              "nonemptyDataLines": 12,
+              "containsSeedMethodInsteadOfValue": true
+            },
+            {
+              "path": "results/run_results.csv",
+              "header": "width,height,density,similarity_threshold,mobility_noise,seed,steps,mean_similarity,unhappy_count,unhappy_fraction,converged",
+              "nonemptyDataLines": 12,
+              "containsSeedMethodInsteadOfValue": true
+            }
+          ],
+          "defaultThresholdEvidence": [],
+          "usageKnown": true,
+          "usageReadCount": 2,
+          "usageObservationSpanMs": 3382
+        },
+        {
+          "turn": 3,
+          "frozenAccepted": false,
+          "frozenRejectionReasons": [
+            "manifest-command-not-observed:python -m unittest -v"
+          ],
+          "manifestSha256": "ea39136520dcc1190bceee21a6d8e9043af152bff5302755889f76b0b2bbba75",
+          "projectZipSha256": "ffe68c2f6dd84d2611247f2787a8240be6b0105e2feb37a5ca41ba282bdb8505",
+          "allHashesMatch": true,
+          "archivedFiles": [
+            {
+              "path": "README.md",
+              "kind": "report",
+              "sha256": "f7a39ccfc0c29986ce21a046b7387a90f6ab8f66ce35d5ce1e01cf974e840b65"
+            },
+            {
+              "path": "make_plot.py",
+              "kind": "source",
+              "sha256": "8345ebc691c3a7ee72418de8f8ff833a1f5e6ed1e7d459374de79f0c7a62eeff"
+            },
+            {
+              "path": "requirements.txt",
+              "kind": "config",
+              "sha256": "9494c8bf07ab5e2c8a23d3976eaf63c37cccfeb5485421a73a43baac3e68cb3a"
+            },
+            {
+              "path": "results/mobility_noise_comparison.png",
+              "kind": "plot",
+              "sha256": "2c1a0c86b7dcad47d81f8fe81ecece6dae1b8882187fe933e8c310373fa3365e"
+            },
+            {
+              "path": "results/mobility_noise_results.csv",
+              "kind": "result",
+              "sha256": "4dc3cff3a3e46e2bf9a1c9bc884fe26fbdccdf028f46ed7280d2bd1a27bcb2e1"
+            },
+            {
+              "path": "results/mobility_noise_summary.json",
+              "kind": "result",
+              "sha256": "c501c865d34e387fdfcc7a77f0faa017db08c29908f4a8389507e779ec56d7cd"
+            },
+            {
+              "path": "results/previous_turn1_run_results.csv",
+              "kind": "result",
+              "sha256": "6ba31edbdedd41e41cc3c62261f4e2c2a4ebba95333e7ca197bc4a976752d0a0"
+            },
+            {
+              "path": "results/previous_turn1_summary.json",
+              "kind": "result",
+              "sha256": "69bd112a1f5ecb3f43b5b19e51c96356e79e2af0089defba79b8ac5795138513"
+            },
+            {
+              "path": "results/previous_turn1_unhappy_fraction_by_threshold.png",
+              "kind": "plot",
+              "sha256": "82a598d1c3d37b5d48421bbb622ecc2db6cb9a243ee51504c5ae6c46798d40e5"
+            },
+            {
+              "path": "results/run_results.csv",
+              "kind": "result",
+              "sha256": "10ba36f212b37ee4c23f27aeaf3675dc471a18c79e235f62e38ccc0132d45091"
+            },
+            {
+              "path": "results/summary.json",
+              "kind": "result",
+              "sha256": "7d9acf552063a8a0e61b570ff9d619c65d51240358e0b1502523db24d6ae3429"
+            },
+            {
+              "path": "results/turn2_comparison.json",
+              "kind": "result",
+              "sha256": "a1c9cc3533a39f173bc9c57a597fd5578f08b34d0b581ff9076d191485f26da3"
+            },
+            {
+              "path": "results/turn3_default_threshold_verification.json",
+              "kind": "result",
+              "sha256": "6763dc84caa88b15f3b0c2af89773228f5b2fa52fa0c604d6535c04c23d7e1c4"
+            },
+            {
+              "path": "results/unhappy_fraction_by_threshold.png",
+              "kind": "plot",
+              "sha256": "892af6059cc42b522d15a57aee317d559593280b680fd5ed7d252eba1b50326a"
+            },
+            {
+              "path": "run_experiment.py",
+              "kind": "source",
+              "sha256": "48b26ef6c214b1aab6296ba7e1cdecdd2a6a71cb7f4c27e54c28e959a66e6f94"
+            },
+            {
+              "path": "schelling_model.py",
+              "kind": "source",
+              "sha256": "0a3fca6b20d32cbd166302f83a670a9d5f24568e6f33b1456ce9863ae15a0584"
+            },
+            {
+              "path": "test_schelling.py",
+              "kind": "source",
+              "sha256": "aba1cc132b9c5966e753cda0b485eb90fc7e6e59abb72c9909461e3bd5662c5e"
+            }
+          ],
+          "experiment": {
+            "parametersVaried": [
+              "similarity_threshold",
+              "mobility_noise"
+            ],
+            "parameterValues": {
+              "similarity_threshold": [
+                0.2,
+                0.4,
+                0.6,
+                0.8,
+                0.45
+              ],
+              "mobility_noise": [
+                0,
+                0.1,
+                0.3
+              ]
+            },
+            "seeds": [
+              101,
+              202,
+              303,
+              404
+            ],
+            "steps": 50,
+            "primaryMetrics": [
+              "unhappy_fraction",
+              "mean_similarity",
+              "steps",
+              "converged",
+              "default_similarity_threshold"
+            ],
+            "runCount": 22
+          },
+          "runtime": {
+            "python": "3.12.12",
+            "mesa": "3.5.1"
+          },
+          "changedCodeFiles": [
+            "schelling_model.py",
+            "test_schelling.py"
+          ],
+          "previousResultFiles": 7,
+          "unchangedPreviousResultFiles": 7,
+          "previousResultsPreservedByHash": [
+            {
+              "previousPath": "results/mobility_noise_results.csv",
+              "currentPaths": [
+                "results/mobility_noise_results.csv"
+              ]
+            },
+            {
+              "previousPath": "results/mobility_noise_summary.json",
+              "currentPaths": [
+                "results/mobility_noise_summary.json"
+              ]
+            },
+            {
+              "previousPath": "results/previous_turn1_run_results.csv",
+              "currentPaths": [
+                "results/previous_turn1_run_results.csv"
+              ]
+            },
+            {
+              "previousPath": "results/previous_turn1_summary.json",
+              "currentPaths": [
+                "results/previous_turn1_summary.json"
+              ]
+            },
+            {
+              "previousPath": "results/run_results.csv",
+              "currentPaths": [
+                "results/run_results.csv"
+              ]
+            },
+            {
+              "previousPath": "results/summary.json",
+              "currentPaths": [
+                "results/summary.json"
+              ]
+            },
+            {
+              "previousPath": "results/turn2_comparison.json",
+              "currentPaths": [
+                "results/turn2_comparison.json"
+              ]
+            }
+          ],
+          "observedPassingTestCommands": [
+            {
+              "commandSha256": "cdc6a194668cca58a6c475535b8730f92a4479566608c91144bc5ede904070a6",
+              "outputSha256": "aba817a11cbb4396c9fbb2ed55746af0fb8eb7840280e8e77d3894cc387f1baa",
+              "summary": "Ran 3 tests in 0.034s\n\nOK"
+            }
+          ],
+          "csvTables": [
+            {
+              "path": "results/mobility_noise_results.csv",
+              "header": "width,height,density,similarity_threshold,mobility_noise,seed,steps,mean_similarity,unhappy_count,unhappy_fraction,converged",
+              "nonemptyDataLines": 9,
+              "containsSeedMethodInsteadOfValue": true
+            },
+            {
+              "path": "results/previous_turn1_run_results.csv",
+              "header": "width,height,density,similarity_threshold,seed,steps,mean_similarity,unhappy_count,unhappy_fraction,converged",
+              "nonemptyDataLines": 12,
+              "containsSeedMethodInsteadOfValue": true
+            },
+            {
+              "path": "results/run_results.csv",
+              "header": "width,height,density,similarity_threshold,mobility_noise,seed,steps,mean_similarity,unhappy_count,unhappy_fraction,converged",
+              "nonemptyDataLines": 12,
+              "containsSeedMethodInsteadOfValue": true
+            }
+          ],
+          "defaultThresholdEvidence": [
+            {
+              "path": "results/turn3_default_threshold_verification.json",
+              "data": {
+                "verification": "Turn 3 default threshold check",
+                "seed": 404,
+                "default_similarity_threshold": 0.45,
+                "steps": 10,
+                "final_unhappy_fraction": 0
+              }
+            }
+          ],
+          "usageKnown": false,
+          "usageReadCount": 20,
+          "usageObservationSpanMs": 57057
+        }
+      ]
+    }
+  ]
+}
