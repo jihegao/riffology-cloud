@@ -15,7 +15,15 @@
     <section id="login" class="card login"><p class="eyebrow">PRIVATE WORKSPACE</p><h1>进入你的创作空间</h1><p>使用受邀请的 Google 账号登录，开始一个新的项目。</p><button id="google" class="button primary">使用 Google 登录</button></section>
     <section id="app" hidden>
       <div class="heading"><div><p class="eyebrow">PROJECTS</p><h1>你的项目</h1><p>个人空间</p></div><button id="new-project" class="button primary">新建项目</button></div>
-      <section class="model-library card" aria-labelledby="models-heading"><div class="section-heading"><div><p class="eyebrow">MODEL LIBRARY</p><h2 id="models-heading">官方模型</h2><p id="models-status" class="meta">正在加载官方模型…</p></div><button id="models-refresh" class="button compact" type="button">刷新目录</button></div><div id="models" class="model-grid" aria-live="polite"></div></section>
+      <section class="card research-start" aria-labelledby="research-heading">
+        <h2 id="research-heading">开始一次研究</h2>
+        <div class="model-grid">
+          <article class="research-choice"><h3>从 Queue 案例开始</h3><p>增加服务台，在不同到达率下会怎样改变等待时间？从一个经过审核的版本创建自己的副本。</p><button id="start-queue" class="button" type="button" disabled aria-describedby="queue-start-status">选择 Queue 案例</button><p id="queue-start-status" class="meta" role="status">正在检查官方案例…</p></article>
+          <article class="research-choice"><h3>描述自己的问题</h3><p>写下你想比较的方案、关注的指标和已有假设。先创建项目，再和建模助手一起明确问题。</p><button id="start-question" class="button" type="button">描述自己的研究问题</button></article>
+        </div>
+        <p class="meta">先观察模型，再改一个参数，最后用多个随机种子的实验比较结果。保存或导出后，可以回来继续研究。</p>
+      </section>
+      <section class="model-library card" aria-labelledby="models-heading"><div class="section-heading"><div><p class="eyebrow">MODEL LIBRARY</p><h2 id="models-heading" tabindex="-1">官方模型</h2><p id="models-status" class="meta">正在加载官方模型…</p></div><button id="models-refresh" class="button compact" type="button">刷新目录</button></div><div id="models" class="model-grid" aria-live="polite"></div></section>
       <div class="heading"><label>项目筛选 <select id="project-filter"><option value="all">全部项目</option><option value="ordinary">隐藏验收／调试项目</option><option value="acceptance">仅验收／调试项目</option><option value="preview">本地预览可用</option></select></label><label>搜索项目 <input id="project-search" type="search" placeholder="项目名称"></label></div>
       <p class="meta">验收／调试分类按项目标题识别；筛选不会删除或归档项目。工作区已创建不代表已有模型或可运行。</p>
       <div id="projects" class="project-grid" aria-live="polite"></div>

@@ -43,6 +43,43 @@ if (url.pathname === '/api/me') return json(route, { execution:{service:true,pre
   });
   return page;
 }
+
+test('research entry points do not fabricate an unpublished Queue case or start computation', async t => {
+  const calls = [];
+  const page = await pageFixture(t, async route => { calls.push(route.request().method()); });
+  await page.goto('https://ui.test/');
+  await page.getByText('Queue 官方案例尚未发布。你可以先描述自己的研究问题。').waitFor();
+  assert.equal(await page.locator('#start-queue').isDisabled(), true);
+  await page.locator('#start-question').click();
+  await page.locator('#project-dialog[open]').waitFor();
+  assert.equal(await page.locator('#project-model').inputValue(), '');
+  assert.ok(calls.every(method => method === 'GET'));
+});
+
+test('Queue entry uses only published catalog versions and normal independent-copy creation', async t => {
+  const calls = [], versions = [
+    {model_id:'queue-research',version:'v1',title:'Queue',status:'published'},
+    {model_id:'queue-research',version:'draft',title:'Draft Queue',status:'draft'},
+  ];
+  const page = await pageFixture(t, async (route, path) => {
+    calls.push({method:route.request().method(),path});
+    if (path === '/api/models') { await json(route, {models:versions}); return true; }
+  }, {mobile:true});
+  await page.goto('https://ui.test/');
+  await page.waitForFunction(() => !document.querySelector('#start-queue').disabled);
+  await page.locator('#start-queue').click();
+  assert.equal(await page.locator('#models .model-card').count(), 1);
+  assert.equal(await page.locator('#models .model-card').evaluate(node => node === document.activeElement), true);
+  await page.getByRole('button', {name:'使用此版本',exact:true}).click();
+  assert.equal(await page.locator('#project-model').inputValue(), 'queue-research@v1');
+  assert.ok(calls.every(call => call.method === 'GET'));
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  await page.locator('#project-cancel').click();
+  versions.splice(0);
+  await page.locator('#models-refresh').click();
+  await page.getByText('Queue 官方案例尚未发布。你可以先描述自己的研究问题。').waitFor();
+  assert.equal(await page.locator('#start-queue').isDisabled(), true);
+});
 async function waitFor(check) { for (let i = 0; i < 100; i++) { if (check()) return; await new Promise(resolve => setTimeout(resolve, 20)); } assert.ok(check(), 'condition timed out'); }
 
 test('project filters use saved-model and preview metadata without executing or deleting projects',async t=>{

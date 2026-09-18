@@ -1,0 +1,53 @@
+name: Local validation
+
+on:
+  pull_request:
+  push:
+    branches: [main, 'codex/invited-queue-delivery']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: local-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      CI: 'true'
+      WRANGLER_SEND_METRICS: 'false'
+      M1_BROWSER_CHANNEL: chrome
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '25.3.0'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chrome
+      - name: Prepare and verify pinned public browser assets
+        run: |
+          node services/browser-preview/runtime/prepare-assets.mjs
+          node services/browser-preview/execution/materialize.mjs
+      # No credentials or production configuration are supplied. Opt-in cloud
+      # and paid suites remain separate; their skips are visible in the log.
+      - name: Existing local checks, archived experiment and quality regression
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run check 2>&1 | tee local-check.log
+      - name: Preserve validation output, including conditional skips
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: local-check-${{ github.sha }}
+          path: local-check.log
+          if-no-files-found: ignore
+          retention-days: 7

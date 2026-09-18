@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "observedAt": null,
+  "status": "not-started",
+  "syntheticOrPublicDataOnly": true,
+  "participants": [
+    {
+      "participant": "U1",
+      "sourceCommit": null,
+      "releaseVersion": null,
+      "firstPreviewSucceeded": null,
+      "comparisonCompleted": null,
+      "evidenceInterpreted": null,
+      "developerIntervention": null,
+      "secondVisitContinued": null,
+      "usageEstimatedNanodollars": null,
+      "unknownReservedNanodollars": null,
+      "failureCategory": null,
+      "evidence": []
+    },
+    {
+      "participant": "U2",
+      "sourceCommit": null,
+      "releaseVersion": null,
+      "firstPreviewSucceeded": null,
+      "comparisonCompleted": null,
+      "evidenceInterpreted": null,
+      "developerIntervention": null,
+      "secondVisitContinued": null,
+      "usageEstimatedNanodollars": null,
+      "unknownReservedNanodollars": null,
+      "failureCategory": null,
+      "evidence": []
+    },
+    {
+      "participant": "U3",
+      "sourceCommit": null,
+      "releaseVersion": null,
+      "firstPreviewSucceeded": null,
+      "comparisonCompleted": null,
+      "evidenceInterpreted": null,
+      "developerIntervention": null,
+      "secondVisitContinued": null,
+      "usageEstimatedNanodollars": null,
+      "unknownReservedNanodollars": null,
+      "failureCategory": null,
+      "evidence": []
+    }
+  ]
+}
