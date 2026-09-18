@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "kind": "recorded-internal-component-revalidation",
+  "networkUsed": false,
+  "codeExecuted": false,
+  "productionE2E": false,
+  "formalEvidencePublished": false,
+  "status": "validated-candidate",
+  "inputs": [
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/issue77-native-2-1-2.json",
+      "sha256": "042ca5ca1f8619fce964807b8fe6db703ba353800a16bb8550423fd3e7298c64"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/issue77-native-2-1-3.json",
+      "sha256": "24e5f39e076bfd4282bcd48b1d185eff174417c033dcc37f3df68ee72e70c635"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/issue77-native-2-2-2.json",
+      "sha256": "812940c0d436e0d2496acb65e66f1026161e98c2ba5269960de6beccf3687412"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/issue77-native-2-2-3.json",
+      "sha256": "009a5377e97d85e761a2cb3958d7f1da2d524ff177554b51cdca2dd3a89eee3b"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/issue77-native-2-3-2.json",
+      "sha256": "29a7cdec3dfce71f1c5928a4d3eed0746d509dcadad25232b7c48792410db770"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/issue77-native-2-3-3.json",
+      "sha256": "975a47a54278342b82be50ca8989d40a905392fb9abf5fa6b0e1de7504c51885"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/issue77-native-3-1-2.json",
+      "sha256": "c987c6ffb8d2fedada9915d3308b3f10d1c0af5a2296f41276b0d45a994b850e"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/issue77-native-3-1-3.json",
+      "sha256": "2a966cf6fed4d9fb9cadc7c67c0f882fd14ad4966363a34a105150c81c4183fe"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/issue77-native-3-2-2.json",
+      "sha256": "775d1bf3f9c73fd03dc6ba3f5aa88706277126fe690c82162a05a3443652a2bb"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/issue77-native-3-2-3.json",
+      "sha256": "1413fe8cac6be34286cc01f763176fb458d682c342a007fe2e9f3040e440eec6"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/issue77-native-3-3-2.json",
+      "sha256": "0356e3c4ee0f8441bf0e10189ee7f8d197815348f5cd67a277cdef53d219c8d1"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/issue77-native-3-3-3.json",
+      "sha256": "6178af4290165d0c557ae30da780215410ca27ddf127ca690dc2235b138203f9"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/turn-2-candidate.json",
+      "sha256": "308e2da774f90c517c444fc4f7828af8e4ff48d475e7c5788ef6dea22684f892"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/turn-2-converted-workspace.tar",
+      "sha256": "2f0da11ba2fe782da7e7ff658faf3581cd11e8e47b8225ac7308cf633abc0a87"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/turn-2-preview-package.json",
+      "sha256": "380529c8f899d5ffd847932f897da0735053651f9894c0f5b1aa9518c314028f"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/turn-3-candidate.json",
+      "sha256": "4937b1837e4af73409a5f398f222c53c8d1397c25d7e408704ed2b65c01ccea5"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/turn-3-converted-workspace.tar",
+      "sha256": "6374eed3b1a8402c49da5461048d49703ee27af68492275ca5327fd81421a92a"
+    },
+    {
+      "path": "docs/evidence/issue-77/live-artifacts/turn-3-preview-package.json",
+      "sha256": "df63a2b2bd03811d229419d5a19724676fa3271ef44590aeb2c79637e93aa7f9"
+    }
+  ],
+  "defaultChange": {
+    "status": "verified",
+    "parameter": "service_time",
+    "before": 3,
+    "after": 2,
+    "scope": "parsed-model-spec-only"
+  },
+  "history": {
+    "status": "verified",
+    "path": "model/results.json",
+    "sha256": "876e9a784d5b4de3e0a64730604dd73dbfa1e599e94465f3bf94ebf1f1e133fe"
+  },
+  "versions": [
+    {
+      "ordinal": 2,
+      "revisionId": "f40ba69bab6e93f729cb239418227c8506a85a7a5c540b61c896c3e0ed8e8dc7",
+      "filesSha256": "2f0da11ba2fe782da7e7ff658faf3581cd11e8e47b8225ac7308cf633abc0a87",
+      "rows": 6,
+      "nativeReceipts": 6,
+      "status": "validated-candidate"
+    },
+    {
+      "ordinal": 3,
+      "revisionId": "680d2aca3ca6fbfef0c4b867db9a7eb4d3a59fca530f7adec28f6f8df0155082",
+      "filesSha256": "6374eed3b1a8402c49da5461048d49703ee27af68492275ca5327fd81421a92a",
+      "rows": 6,
+      "nativeReceipts": 6,
+      "status": "validated-candidate"
+    }
+  ],
+  "commands": {
+    "status": "unknown",
+    "category": "harness",
+    "reason": "command-trace-unavailable",
+    "providerCommandExecutionProven": false
+  },
+  "usage": {
+    "status": "observed",
+    "settlement": "pending"
+  },
+  "billing": {
+    "status": "unsettled"
+  },
+  "resources": {
+    "status": "recorded-deleted",
+    "liveReadbackPerformed": false
+  },
+  "sourceManifest": {
+    "path": "docs/evidence/issue-77/live-acceptance.json",
+    "sha256": "69a43940f2c9360166fd0825219e9367b0eaa63f10b9f34e8cd4f1dea4aa0f69"
+  },
+  "verificationCommand": "node scripts/issue77/verify-recorded-acceptance.mjs",
+  "testCommand": "node --test scripts/issue77/verify-recorded-acceptance.test.mjs",
+  "sourceFiles": [
+    {
+      "path": "scripts/issue77/verify-recorded-acceptance.mjs",
+      "sha256": "a2efe27681bbca1ec83220da9b9b05055b2d292897b7837b0628f9bee6a4f1e7"
+    },
+    {
+      "path": "scripts/issue77/verify-recorded-acceptance.test.mjs",
+      "sha256": "56c7648eb15facaba4b8762f703603111be83301321c0d780b0f84cccd576275"
+    },
+    {
+      "path": "services/simulation/result-oracle.ts",
+      "sha256": "3ff77c7e5e4a826f8b2486b8bd44c776a3f3a8432e37e56b50b87278da96ca43"
+    },
+    {
+      "path": "services/simulation/command-evidence.ts",
+      "sha256": "dc7ef4c9d45a5a5452b59907baacf3a714f1f2c688b89732672d1414919267ac"
+    }
+  ],
+  "sourceBinding": "content hashes; not a claim these additions existed in the production Worker source",
+  "sourceCommit": "badbfe1eccecd06bc0415a514470f3cef1c2f6fd"
+}

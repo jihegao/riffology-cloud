@@ -1,4 +1,7 @@
-# Issue 77 bounded internal acceptance
+# Issue 77 bounded internal and production acceptance
+
+The first sections preserve the original internal trial policy and outcome. The
+additional production window and its stopped outcome are separate records below.
 
 The user authorized reuse of the existing locally configured API key and accepted
 the proposed bounded trial, including unknown actual charges. The policy is
@@ -65,11 +68,10 @@ local evidence is retained for review; provider cleanup does not erase unknown
 billing records.
 
 Candidate packaging and `simulationPlan` resolution are not persisted Revisions,
-formal Experiments, evidence acceptance, or production browser E2E. The product
-dispatcher still requires Pi-native termination and capacity receipts. A separate
-reviewed backend-specific termination/resource contract and project-scoped
-admission assembly must precede enabling Managed product routing. The SDK client
-and this bounded operator do not bypass those contracts.
+formal Experiments, evidence acceptance, or production browser E2E. At the original internal
+checkpoint the dispatcher still required Pi-native termination/capacity receipts.
+The subsequent product integration added reviewed backend-specific proofs and
+project-scoped admission; the internal operator itself does not bypass them.
 
 ## Recorded outcome
 
@@ -85,13 +87,11 @@ and restore, twelve native Docker oracle runs, and twelve matching real browser
 Preview runs. These are component results, not authenticated production E2E.
 See `docs/evidence/issue-77/live-acceptance.json` and its adjacent README.
 
-Product integration remains unassembled: backend-specific terminal/resource
-contracts must replace Pi-only assumptions in the existing dispatcher and
-Workspace assembly; project opt-in and durable admission must bind the backend
-before input; remote controls must never synthesize a native fence. Only after
-those contracts and existing Pi regression checks pass can a closed deployment
-be read back, a single project be enabled, and authenticated formal
-Experiment/Evidence acceptance run. This trial cannot admit a third Session.
+At the original internal checkpoint, product integration was still unassembled.
+The later product route now has backend-specific terminal/resource contracts,
+immutable project opt-in and durable admission without synthesizing a native
+fence. That implementation does not expand the original internal allowance: this
+trial cannot admit a third Session.
 
 ## Additional production acceptance authorization (2026-09-18)
 
@@ -123,3 +123,33 @@ UI for model -> Revision -> native Experiment -> Evidence/Preview -> continuatio
 -> cancellation/cleanup. Close the policy after acceptance and read back both
 remote cleanup and native resource inventory. This section freezes authorization
 and implementation intent; it is not evidence that production acceptance passed.
+
+## Production trial outcome: stopped, incomplete
+
+The separately authorized production window submitted its first paid Turn on
+source `7b12505`. The runtime stopped admission with
+`managed-execution-unknown`; no subsequent model input was submitted. Read-only
+original-identity reconciliation eventually observed execution completed, saved
+the candidate checkpoint and confirmed hosted Session deletion. Usage remains
+unknown/missing and billing remains unsettled. These later observations neither
+clear the stopped policy nor create a new paid allowance.
+
+A late-accounting event timestamp conflict left Workspace checkpointing despite
+the saved runtime checkpoint. The focused repair was verified and deployed with
+admission closed; authenticated readback now shows completed/saved and readable
+model/files. The initial policy closure used Worker version prefix `d3f40847` from
+source `7b12505`; record the final closed repair source/version and reconciled
+Workspace/resource readback in
+[`production-acceptance.json`](../evidence/issue-77/production-acceptance.json).
+The complete model → native Experiment/Evidence → Preview/Verify → continuation
+path did not pass, and no production E2E or issue completion is claimed.
+
+Separate offline revalidation added in `badbfe1` runs the candidate validators
+against the preserved internal candidates and native receipts through
+`scripts/issue77/verify-recorded-acceptance.mjs`. It checks default-only parsed
+spec edits, byte-preserved history and numerical coverage with immutable source
+bindings. Hosted command visibility remains unknown; shell recognition has
+fixture evidence only. This does not modify #73's evaluator or change either
+trial ledger.
+
+Final original-identity recovery (2026-09-18): closed-policy Worker `ac0dd1f2-bce1-4b41-a25a-d7e811b9d0da`, source `9641f6546b099ad080ec00c2f7ba9e6b996a2fa7`, is independently confirmed at 100% traffic. Authenticated Workspace is completed/saved with no active Turn, release hold or recovery hold; model/files are readable. One unknown usage record and US$1 reservation remain, with zero live Sessions and no pending cleanup. No native Experiment, formal Evidence, Preview Verify or same-Session continuation was executed after the stop. See `docs/evidence/issue-77/production-acceptance.json` and `repair-validation.json`; issue #77 remains incomplete.

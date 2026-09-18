@@ -1,4 +1,4 @@
-# Issue 77 offline evidence
+# Issue 77 evidence: offline, internal paid and production acceptance
 
 The safety checkpoint is `3f4bee9b3b8dd5211af669066dce8afd27a85b91` on
 `codex/issue-77-safety-checkpoint`. It preserves the work made against `40aee17`.
@@ -61,7 +61,7 @@ paid execution status; it does not establish production routing or close #77.
 
 ## 2026-09-18 live preflight
 
-The original offline report is preserved as `offline-20260917.json`; verify its committed historical source with `node scripts/evidence/verify-issue77.mjs --historical`. Current `validation.json` binds the latest main integration, SDK client, bounded operator and ledger to a committed source. Full check: 2,205 passed, 11 skipped. The subsequent focused 21-test run includes six new operator/ledger cases. Authorization is distinct from execution: these are offline preflight results, not paid or production acceptance.
+The original offline report is preserved as `offline-20260917.json`; verify its committed historical source with `node scripts/evidence/verify-issue77.mjs --historical`. `validation.json` binds integrated production source `7b12505` to 2,263 passed and 11 skipped tests. `repair-validation.json` separately binds the later `9641f65` recovery fix to 783 M2 tests, 107 focused tests and typecheck. Use `--committed` to verify the recorded source; this does not assert that the current worktree is identical to that historical full-check source. Authorization is distinct from execution: these are offline preflight results, not paid or production acceptance.
 
 ## 2026-09-18 authorized internal run and actual artifact acceptance
 
@@ -102,7 +102,7 @@ they never claim that edited bytes are the original provider artifact. Provider
 identifiers, credentials and account data are omitted.
 
 ```sh
-node scripts/evidence/verify-issue77.mjs
+node scripts/evidence/verify-issue77.mjs --committed
 node scripts/evidence/verify-issue77-live.mjs
 shasum -a 256 -c docs/evidence/issue-77/SHA256SUMS
 ```
@@ -113,10 +113,84 @@ are `scripts/issue77/verify-downloaded.mjs` and
 `scripts/issue77/verify-downloaded-browser.mjs`; they require the preserved private
 operator evidence, pinned native Docker image and materialized Preview assets.
 
-**Production remains incomplete.** The product dispatcher, native capacity
-release and Workspace routing still require a Pi-specific proof. Managed
-backend-specific termination/resource receipts, project opt-in, durable product
-admission and the authenticated formal Experiment/Evidence path have not been
-assembled. No production deployment or authenticated production E2E is claimed.
-The two authorized Sessions are consumed; another paid production Session would
-require a separately authorized policy amendment, retaining this ledger intact.
+## Product integration and stopped production acceptance
+
+The earlier Pi-only integration boundary has been resolved in code. The product
+assembly now includes `ManagedProductRuntime`, typed remote terminal/resource
+receipts, immutable project/user opt-in, durable paid admission, the normal
+RevisionStore/CAS path, and authenticated formal Experiment/Evidence routes.
+The `7b12505` UI checkpoint exposes observed versus unknown token usage,
+unsettled billing, saving failures and the separate Session cleanup boundary.
+These implementation results are not a passing production execution record.
+
+The original internal ledger above remains intact. The user separately authorized
+one additional bounded production policy, `issue77-production-v1`, under the
+limits in `docs/architecture/issue-77-live-acceptance.md`. This authorization does
+not reopen historical G5 or internal-trial funds and is not a hard billing cap.
+
+The recorded acceptance entrypoint added in `badbfe1`,
+`scripts/issue77/verify-recorded-acceptance.mjs`, actually calls
+`result-oracle.ts`, `verifyDefaultChange` and the optional command-evidence path.
+It revalidates both preserved internal candidates and twelve native receipts,
+including parsed-spec default-only changes, original history bytes, exact six-row
+coverage per version, seed/parameters, actual trace step counts, before/after
+metrics and source/receipt hashes. Nine focused tests passed. This is a later
+offline revalidation; it makes no paid request and does not change the source
+that ran in production. Its report binds the input and verifier bytes separately
+in [`recorded-acceptance.json`](recorded-acceptance.json).
+
+The hosted command trace is unavailable, so the actual command result is unknown.
+Combined-shell handling is tested through the same entrypoint using fixtures;
+it is not a claim that a hosted command was observed. These helpers do not patch
+#73's neighboring evaluator or replace production native Simulation Run and
+Experiment/Evidence authority. The retained Mesa profile is optional for this
+stdlib FCFS trial; no new live Mesa result is claimed. Browser Preview and
+Agent-reported results alone never establish formal Evidence.
+
+The driver `scripts/issue77/production-acceptance.mjs` defaults to no-network
+preflight. Paid actions require `--execute`, an authenticated existing user
+session and frozen scope/source/release/policy checks. Local Workerd tests cover
+ACK loss, stale checkpoint bases, unknowns, cancellation and cleanup failures.
+The live driver includes refresh/recovery but does not inject production
+checkpoint conflicts or dropped ACKs; those proof categories stay separate.
+
+**Production result: stopped; E2E incomplete.** The first production Turn was
+paid under the separate bounded policy. `managed-execution-unknown` stopped new
+input; original-identity reconciliation later observed execution completed,
+saved its candidate checkpoint and confirmed Session deletion. Usage remains
+unknown/missing, billing unsettled. No further input is authorized by that
+recovery, cleanup or deployment repair.
+
+A late-accounting event timestamp conflict left Workspace in checkpointing while
+the runtime checkpoint was already saved. The targeted repair was deployed
+with the policy closed. The final authenticated readback confirms completed and
+saved, the original Revision retained, no active Turn or release/recovery hold,
+and readable model/files. Unknown usage and its reservation remain unchanged. The initial closure was Worker version
+prefix `d3f40847` from source `7b12505`. Exact enabled, closure and final repair
+versions belong in [`production-acceptance.json`](production-acceptance.json).
+
+| Required record | Current evidence status |
+| --- | --- |
+| Integrated offline source and checks | `validation.json`: source `7b12505`, 2,263 passed and 11 skipped; later verifier/repair sources remain separately identified |
+| Active enabled Worker and scoped policy | Actual paid trial occurred; exact release proof is recorded in `production-acceptance.json` |
+| Ordinary-user model → saved Revision → native Experiment → accepted Evidence | Original business Turn completed/saved after closed-policy repair; model/files readable; full path did not pass |
+| Actual browser Preview and Verify | Not completed in this production window |
+| Same-Session continuation and preserved history | Not executed after the unknown stop; internal recorded evidence remains separate |
+| Cancellation, refresh and durable final business Turn | Original-identity recovery confirmed; deadline cancel returned already-terminal; no production cancellation acceptance claimed |
+| Usage, reservations and billing | Usage unknown/missing; reservation retained, billing unsettled |
+| Remote Session cleanup | Deletion confirmed; does not remove the unknown usage record |
+| Native Run release and tenant quota | No native Run dispatched; quota occupied=0 and unknown=0; no native cleanup claimed |
+| Final closed-policy repair Worker | Active `ac0dd1f2` / source `9641f65`, 100% traffic; Managed/bootstrap and all legacy money gates closed |
+
+Revalidate the preserved internal record without new execution:
+
+```sh
+node scripts/issue77/verify-recorded-acceptance.mjs
+node --test scripts/issue77/verify-recorded-acceptance.test.mjs
+```
+
+#77 completion is not claimed. The production report must retain each failed,
+unknown or unexecuted step and distinguish saved runtime artifacts from formal
+acceptance. Captured evidence omits credentials, raw provider IDs and account
+identifiers; private originals remain separate. Final fingerprints bind actual
+bytes and source without rewriting historical baseline or internal-trial records.

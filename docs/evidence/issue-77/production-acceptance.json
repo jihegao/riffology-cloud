@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "kind": "bounded-production-acceptance",
+  "status": "stopped-incomplete",
+  "productionE2E": false,
+  "issue77Complete": false,
+  "ordinaryUser": {
+    "authenticated": true,
+    "userIdPublished": false,
+    "googleLoginPerformedByUser": true,
+    "uiInputSubmitted": true,
+    "refreshDuringOriginalTurn": true,
+    "finalUiCompletedAndSaved": true,
+    "unknownUsageAndUnsettledBillingVisible": true
+  },
+  "policy": {
+    "policyId": "issue77-production-v1",
+    "scopeSha256": "7080e355ca3eddb153c6db7d74588b75a68034c0f876b2533401a38978471a1c",
+    "singleExactUser": true,
+    "syntheticOnly": true,
+    "additionalWindowAuthorized": true,
+    "actualCostUncertaintyAccepted": true,
+    "limits": {
+      "maxTurns": 6,
+      "maxSessions": 2,
+      "durationMs": 7200000,
+      "perTurnMs": 300000,
+      "stopThresholdUsd": 5,
+      "maxSimulationRuns": 12
+    },
+    "startedAt": 1789692077916,
+    "deadline": 1789699277916,
+    "noResetOrRollover": true
+  },
+  "releases": {
+    "enabled": {
+      "sourceCommit": "7b1250549da146b236962196cad7046b463061ee",
+      "versionId": "a0f4ba3b-3c7c-4308-81a2-eb8523903cb8",
+      "deploymentId": "53dfa7de-3d91-41b1-9322-840e40136cbb",
+      "percentage": 100,
+      "managedEnabled": true,
+      "bootstrapEnabled": false,
+      "oldGatesClosed": true,
+      "priorBindingsPreserved": true,
+      "independentReadbackVerified": true
+    },
+    "initialClosure": {
+      "sourceCommit": "7b1250549da146b236962196cad7046b463061ee",
+      "versionId": "d3f40847-ca78-4951-bd12-a243ff77bd85",
+      "deploymentId": "6f1526c6-028a-459b-9851-e878fbece7bd",
+      "managedEnabled": false
+    },
+    "recovery": {
+      "observedAt": "2026-09-18T00:51:55.131Z",
+      "versionId": "ac0dd1f2-bce1-4b41-a25a-d7e811b9d0da",
+      "deploymentId": "71932a99-fb27-4ad4-917f-f2a10581d6ac",
+      "traffic": [
+        {
+          "version_id": "ac0dd1f2-bce1-4b41-a25a-d7e811b9d0da",
+          "percentage": 100
+        }
+      ],
+      "sourceCommit": "9641f6546b099ad080ec00c2f7ba9e6b996a2fa7",
+      "managedEnabled": false,
+      "bootstrapEnabled": false,
+      "gates": [
+        {
+          "name": "G5_ADMISSION_ENABLED",
+          "value": "false"
+        },
+        {
+          "name": "M2_LAZY_PROJECT_ENABLED",
+          "value": "false"
+        },
+        {
+          "name": "M2_MODEL_PROVIDER_ENABLED",
+          "value": "false"
+        },
+        {
+          "name": "M2_TURNS_ENABLED",
+          "value": "false"
+        },
+        {
+          "name": "M2_WORKSPACE_RUNTIME_REUSE_ENABLED",
+          "value": "false"
+        },
+        {
+          "name": "M3_OBSERVER_ENABLED",
+          "value": "false"
+        },
+        {
+          "name": "M3_PREVIEW_ENABLED",
+          "value": "false"
+        },
+        {
+          "name": "M3_PREVIEW_WS_ENABLED",
+          "value": "false"
+        },
+        {
+          "name": "M3_SERVICE_ENABLED",
+          "value": "false"
+        },
+        {
+          "name": "M4_SIMULATION_ENABLED",
+          "value": "false"
+        },
+        {
+          "name": "PRODUCTION_MODEL_ENABLED",
+          "value": "false"
+        }
+      ],
+      "moneyEnabled": false,
+      "managedSecretPresent": true,
+      "allOriginalBindingsPreserved": true
+    }
+  },
+  "paidAttempt": {
+    "turnCount": 1,
+    "sessionCount": 1,
+    "inputReplayed": false,
+    "stopped": "managed-execution-unknown",
+    "initialUnknownCause": "unresolved: adapter did not retain original transport/lookup error",
+    "execution": "completed",
+    "persistence": "saved",
+    "turnStatus": "completed",
+    "revisionId": "fadb8850ba35f680bedbdff3ef723b0826b06e309526d14bf5d6eb8a3a56efa3",
+    "filesSha256": "51610cc280d8b352bf9c07e3adbf5640daaaa0dfee4111553d10b04534d74b30",
+    "checkpointCommittedAt": 1789692157294,
+    "activeTurn": false,
+    "releaseHold": null,
+    "recoveryHold": null,
+    "usage": {
+      "status": "unknown",
+      "reason": "missing"
+    },
+    "modelCostUsd": null,
+    "observedKnownCostSubtotalUsd": 0,
+    "observedKnownCostSubtotalIsTotal": false,
+    "reservedUsd": 1,
+    "unresolved": 1,
+    "billingSettled": false
+  },
+  "cancellation": {
+    "requestedAfterObservationDeadline": true,
+    "responseStatus": 200,
+    "disposition": "already-terminal",
+    "finalExecutionOutcome": "completed",
+    "cancellationAcceptancePassed": false
+  },
+  "recovery": {
+    "defect": "A late accounting-only provider.status event was incorrectly treated as post-checkpoint execution evidence.",
+    "fix": "Recognize only the exact Managed accounting envelope as non-execution evidence; keep tool, assistant and all other provider events constrained.",
+    "originalIdentityOnly": true,
+    "newPaidInputs": 0,
+    "originalImmutableEventsPreserved": true,
+    "originalCheckpointRetained": true,
+    "finalWorkspaceReadbackAt": "2026-09-18T00:51:19.739Z",
+    "modelAndFilesReadable": true
+  },
+  "cleanup": {
+    "liveSessions": 0,
+    "cleanupPending": false,
+    "allRecordedSessionsClosed": true,
+    "proof": "Durable runtime closed flag is written only after scoped Session delete confirmation and subsequent retrieve 404; independent provider list returned empty but is not used as deletion proof.",
+    "usageUnknownPreserved": true
+  },
+  "native": {
+    "simulationCount": 0,
+    "ownRecords": [],
+    "tenantQuota": {
+      "capacity": 2,
+      "occupied": 0,
+      "available": 2,
+      "unknown": 0,
+      "configuredPolicyMatches": true,
+      "leaseStatusCounts": {}
+    },
+    "containerRunCleanup": "not-applicable: no native Simulation Run dispatched"
+  },
+  "acceptance": {
+    "modelToRevision": "passed after closed-policy original-identity repair",
+    "nativeExperiment": "not-executed-after-unknown-stop",
+    "formalEvidence": "not-executed-after-unknown-stop",
+    "browserPreview": "not-accepted-in-this-production-window",
+    "previewVerify": "not-executed-after-unknown-stop",
+    "sameHostedSessionContinuation": "not-executed-after-unknown-stop",
+    "cancelProbe": "not-executed-after-unknown-stop",
+    "fullChain": "incomplete"
+  },
+  "driver": {
+    "failureReason": "turn deadline: cancel requested; inspect original until cleanup confirmed",
+    "noAutomaticReplay": true
+  },
+  "privateEvidenceFingerprints": [
+    {
+      "label": "freeze.json",
+      "sha256": "257ac2d40700d5b35729c56aefe75b57084d6f75ad3c2786dec3055afb524b7e"
+    },
+    {
+      "label": "evidence/model-turn-dispatch.json",
+      "sha256": "4415aea0749bab5d538457b3ab2da6ad5fedf9e8871f5fbf7df58f2252d93eef"
+    },
+    {
+      "label": "evidence/model-turn-receipt.json",
+      "sha256": "9acedf2181297a575d0c35917d9fdc0b8003372830edd31c71fd7d239bcaa586"
+    },
+    {
+      "label": "evidence/model-failure.json",
+      "sha256": "f651f87e84a9d32f51b9d60b20fe971c1ddb6bc021fe5e0c83d9cb868d55b605"
+    },
+    {
+      "label": "evidence/model-deadline-cancel-receipt.json",
+      "sha256": "7ab9013ba29c7d777ad59f2232ecfb3fcc150a66927136735b660688833e971a"
+    },
+    {
+      "label": "current-readback.json",
+      "sha256": "77331a533d6a3a6c146f796ea70354a0bc8f80a92bb2125fee22024ecc568d0f"
+    },
+    {
+      "label": "final-release-readback.json",
+      "sha256": "080bc352a2442b7dd98a312c6f25a73a76e5a8d6b394c8e0da5e6f05d7a4f804"
+    },
+    {
+      "label": "original-provider-readonly.json",
+      "sha256": "33eb9b47f6d0f8505016a60da26d5a34953bbd2a905de56161c3ccb7d225dd67"
+    },
+    {
+      "label": "recovered-ui.txt",
+      "sha256": "814d7a0331e9e6252ef8189d86c3931aa3a1f1b7d7c6a734f86f3c5a92d8e1b7"
+    },
+    {
+      "label": "recovered-model.json",
+      "sha256": "6aa081592b85733ba1d101782f2f2ede1f7019e00174b2030f8a5409dd3cfedb"
+    },
+    {
+      "label": "recovered-files.json",
+      "sha256": "f19e5d71468978b70e52c45b7ae87073d80a247e90bb2d3599579e26c33afca2"
+    }
+  ],
+  "privacy": {
+    "rawAccountUserProjectSessionProviderIdsPublished": false,
+    "credentialsPublished": false
+  },
+  "nextBoundary": "Keep policy closed and preserve the unknown record. Do not retry this input, clear reservations, or create a replacement budget window to bypass it."
+}

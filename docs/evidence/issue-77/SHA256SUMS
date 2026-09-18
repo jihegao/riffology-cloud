@@ -1,4 +1,4 @@
-d4f71a092b3eb2825c515a40594fc6d204701114f1cd3d87e48555264489d0f5  docs/evidence/issue-77/README.md
+f62fbb5ec054772a81902eaee611d58209c7ba2c0c04f5257ef97c3e3fb55c11  docs/evidence/issue-77/README.md
 bd130f28075a0e58002784e3428df8253089c76821a8aa0619cd1447b69121cc  docs/evidence/issue-77/baseline.json
 c3376ab843c7872390417d1156da86f31299d6abe5cb776aed7b5cad24a185f0  docs/evidence/issue-77/checkpoint.json
 95a0494594077ec34bfc8de4bae7a84f7ade295bf379d13ef447b4058d3ce28a  docs/evidence/issue-77/issue73-input-fingerprints.json
@@ -22,4 +22,7 @@ c987c6ffb8d2fedada9915d3308b3f10d1c0af5a2296f41276b0d45a994b850e  docs/evidence/
 6374eed3b1a8402c49da5461048d49703ee27af68492275ca5327fd81421a92a  docs/evidence/issue-77/live-artifacts/turn-3-converted-workspace.tar
 df63a2b2bd03811d229419d5a19724676fa3271ef44590aeb2c79637e93aa7f9  docs/evidence/issue-77/live-artifacts/turn-3-preview-package.json
 7cf616ab794980a2121e19ce5fecd6eb3eab8a3220a542124082ef408aa91ca5  docs/evidence/issue-77/offline-20260917.json
-e33da1f6071d670e9e906edc34c8508f592696d8798a8f8ac30c818c12516cd8  docs/evidence/issue-77/validation.json
+2d8682350bde70fe7058a01b7b20efde7ea0769eab7456d3133666e10030d339  docs/evidence/issue-77/production-acceptance.json
+8f4e06d7c7ef0b530fc4778722dccec3e1a089727681203b9e7f8b904796bb21  docs/evidence/issue-77/recorded-acceptance.json
+0fc5f1183f73a712b2e16f0b026bb49765a42be712c7e062e62c303ffcdb4bf0  docs/evidence/issue-77/repair-validation.json
+ec9093229372bc1cda7e7c45951e3bdb11f819035a3a2aee2e8f748cb68184b5  docs/evidence/issue-77/validation.json
