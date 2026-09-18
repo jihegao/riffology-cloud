@@ -23,9 +23,14 @@ Baseline: `727c40f11a5b5e2fd2eebace05e4bd3971955432`.
 | Imported experiment local tests | 29 passed; separate archive-integrity check also passed |
 | Offline quality regression | 8 passed |
 | Archived evidence checksums | 17/17 verified across 4 bundles |
-| Full repository check | Running; final result appended below |
+| Full repository check | M0 350 passed / 1 pre-existing skip; M1 223 passed; M2 800 passed. Final M3 and aggregate result recorded in [PR #84](https://github.com/jihegao/riffology-cloud/pull/84) |
 | Real Chrome / Pyodide acceptance | 33/33 passed after asset preparation; local runtime only |
-| GitHub-hosted CI | Workflow added; no hosted result claimed until the actual run completes |
+| GitHub-hosted CI | Ubuntu workflow added; the latest [PR #84 checks](https://github.com/jihegao/riffology-cloud/pull/84/checks) are authoritative. Failed attempts remain visible; local results do not substitute for hosted success |
+
+Code is submitted as [draft PR #84](https://github.com/jihegao/riffology-cloud/pull/84).
+The PR validation paragraph records the latest completed aggregate and hosted
+run, so changing operational status does not require changing tested code.
+The test-only Linux stdin correction passed all 12 process-probe tests locally.
 
 Logs are under ignored `.local/` in this isolated worktree. The initial new-entry UI
 test exposed an existing `.model-card` selector collision; research cards now have
