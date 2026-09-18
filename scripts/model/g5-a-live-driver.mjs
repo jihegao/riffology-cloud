@@ -97,7 +97,7 @@ export async function runG5ASerialHost({plan,driver,controlPorts,identityPreflig
    workload=await driver.executeFromSerialHost(HOST_EXECUTION,{runProbes});
    if(workload?.status!=='pending')break;
    const observedAt=Date.now(),state=assessG5AState(plan,await controlPorts.readState(),observedAt);
-   if(state.closed||state.unknown>0||state.expired){workload=await driver.stop(state.expired?'deadline':'authority-became-unsafe',{pending:workload,state});break;}
+   if(state.closed||state.executionUnknown>0||state.billingLimitReached||state.expired){workload=await driver.stop(state.expired?'deadline':'authority-became-unsafe',{pending:workload,state});break;}
    if(poll===maxSupervisionPolls){workload=await driver.stop('g5-a-host-supervision-exhausted',{pending:workload,polls:poll});break;}
    const remaining=state.deadlineAt===null?supervisionIntervalMs:Math.max(0,state.deadlineAt-observedAt);
    if(remaining===0){workload=await driver.stop('deadline',{pending:workload});break;}

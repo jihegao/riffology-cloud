@@ -1,3 +1,4 @@
+import {g5BillingPolicy} from '../../services/model-budget/g5-window.ts';
 import {mkdir,open,readFile,lstat} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
@@ -12,7 +13,7 @@ const integer=(v,max=Number.MAX_SAFE_INTEGER)=>{if(!Number.isSafeInteger(v)||v<0
 const quarantineKeys=['sourceWindowId','sourceCallKey','sourceTurnKey','sourceProjectId','sourceSessionId','sourceTurnId','sourceIntentKeySha256','sourceTasks','sourceDispatches','sourceSimulationRuns','sourceServiceRuns','sourceReservedNanodollars','sourceMoneyPeriod','sourceAuthorityReceiptSha256'];
 const quarantine=raw=>{exact(raw,[...quarantineKeys,...(Object.hasOwn(raw,'sourceTokenState')?['sourceTokenState']:[])]);if(raw.sourceTokenState!==undefined&&raw.sourceTokenState!=='failed-pending')throw Error('freeze-rollover-token-state-invalid');id(raw.sourceWindowId);for(const key of ['sourceCallKey','sourceTurnKey','sourceIntentKeySha256','sourceAuthorityReceiptSha256'])hash(raw[key]);for(const key of ['sourceProjectId','sourceSessionId','sourceTurnId'])entityId(raw[key]);if(typeof raw.sourceMoneyPeriod!=='string'||!/^g5-[A-Za-z0-9-]{8,80}$/.test(raw.sourceMoneyPeriod)||/placeholder|example|pending|todo/i.test(raw.sourceMoneyPeriod))throw Error('freeze-rollover-money-period-invalid');for(const key of ['sourceTasks','sourceDispatches','sourceSimulationRuns','sourceServiceRuns','sourceReservedNanodollars'])integer(raw[key]);if(raw.sourceTasks<1||raw.sourceDispatches<1||raw.sourceReservedNanodollars<1)throw Error('freeze-rollover-residual-invalid');return structuredClone(raw);};
 export async function compileG5Freeze(input){
- exact(input,['profile','principals','windowIds','authorizationReference','rateCardSha256','sourceSha256','targets','rollover']);
+ exact(input,['profile','principals','windowIds','authorizationReference','rateCardSha256','sourceSha256','targets','rollover',...(Object.hasOwn(input,'billingPolicy')?['billingPolicy']:[])]);
  const profile=productionProfile(input.profile),profileSha256=await profileDigest(profile);
  hash(profile.acceptance.evidenceSha256);hash(profile.acceptance.privacyReviewSha256);
  const sourceSha256=hash(input.sourceSha256),rateCardSha256=hash(input.rateCardSha256);
@@ -35,6 +36,7 @@ export async function compileG5Freeze(input){
  const policyPin={provider:'openai',model:profile.model,profileSha256,rateCardSha256,inputNanodollarsPerToken:250,outputNanodollarsPerToken:1200};
  const base={schemaVersion:1,profilePin:policyPin,totalNanodollars:20000000000,turnNanodollars:5000000000,maxServiceRuns:0,durationMs:7200000};
  const windows={A:{...base,totalNanodollars:targetCaps.totalNanodollars,windowId:windowIds.A,phase:'A',principals:[principals[0]],maxUpstreamDispatches:targetCaps.dispatches,maxSimulationRuns:targetCaps.simulationRuns,maxTasks:targetCaps.tasks,rollover},B:{...base,windowId:windowIds.B,phase:'B',principals,maxUpstreamDispatches:168,maxSimulationRuns:0,maxTasks:24}};
+ if(input.billingPolicy!==undefined)for(const window of Object.values(windows))window.billingPolicy=g5BillingPolicy(input.billingPolicy,window.totalNanodollars);
  const period=immediate.sourceMoneyPeriod;
  const money={version:period+'-rollover-v1',period,enabled:false,profileSha256,caps:{turn:5000000000,user:40000000000,tenant:40000000000,global:40000000000}};
  const token={version:'g5-openai-luna-20260916-v1',maxReservationAttemptsPerTurn:8,maxDispatchedCallsPerTurn:8,maxInputTokensPerCall:262144,maxOutputTokensPerCall:4096,maxReservedTokensPerTurn:2129920};
@@ -43,6 +45,7 @@ export async function compileG5Freeze(input){
  const privatePolicies={schemaVersion:1,authorizationReference:input.authorizationReference,windows,money,token,patches};
  // No principals, auth references, provider-account IDs or private config in public projection.
  const cumulative=quarantines.reduce((sum,value)=>({tasks:sum.tasks+value.sourceTasks,dispatches:sum.dispatches+value.sourceDispatches,simulationRuns:sum.simulationRuns+value.sourceSimulationRuns,serviceRuns:sum.serviceRuns+value.sourceServiceRuns,reservedNanodollars:sum.reservedNanodollars+value.sourceReservedNanodollars}),{tasks:0,dispatches:0,simulationRuns:0,serviceRuns:0,reservedNanodollars:0}),sanitizedManifest={schemaVersion:1,kind:'closed-frozen-window-not-admission',sourceSha256,profileSha256,rateCardSha256,policyBundleSha256:digest(privatePolicies),durationMs:7200000,phaseOrder:['A','B'],oneTimeRollover:rollover.schemaVersion===1,chainedRollover:rollover.schemaVersion===2,quarantineDepth:quarantines.length,sourceOccupancy:cumulative,limits:{A:{upstream:targetCaps.dispatches,simulationRuns:targetCaps.simulationRuns,serviceRuns:targetCaps.serviceRuns,tasks:targetCaps.tasks,totalNanodollars:targetCaps.totalNanodollars},B:{upstream:168,simulationRuns:0,serviceRuns:0,tasks:24,totalNanodollars:20_000_000_000},turnNanodollars:5_000_000_000,sharedMoneyNanodollars:40_000_000_000},maximumNanodollars:{perCall:Number(perCall),A:Number(perCall*BigInt(targetCaps.dispatches)),B:Number(perCall*168n)},targets:{...input.targets},gatesClosed:true,firstAdmissionStarted:false};
+ if(input.billingPolicy!==undefined)sanitizedManifest.billingPolicy=structuredClone(windows.A.billingPolicy);
  return {sanitizedManifest,privatePolicies,closedFirstPatch:patches};
 }
 export async function persistG5Freeze(directory,bundle){

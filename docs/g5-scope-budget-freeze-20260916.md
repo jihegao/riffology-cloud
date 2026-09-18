@@ -1,5 +1,7 @@
 # G5 新窗口范围与预算冻结（2026-09-16）
 
+2026-09-19 更新：已实现可显式冻结的[有界待核对费用规则](g5-bounded-billing-20260919.md)。下文为原窗口历史冻结，仍按原规则解释，不代表新模式已在生产启用。
+
 独立 Worker / Gateway 探针已返回models 200并识别Luna，随后完成云端清理；三个只增加Worker公网出口flag且固定原bundle的A/B/B-cold候选overlay已生成。A已以关闭门禁方式发布，精确bundle、deployment、vars、bindings、生产Gateway、零对象状态及259个inactive容器均已回读，closed-gate release proof齐备；B/B-cold未发布。详情见[隔离出口准备证明](g5-isolated-probe-readiness-20260916.md)。主Worker门禁、预算和首次admission时钟未变。
 
 最新 staging 出口只读诊断与恢复版本见[Worker 诊断记录](g5-worker-origin-probe-20260916.md)：Gateway models 返回200且包含 `gpt-5.6-luna`，地区403未在 Worker 出口复现；这不是 Responses 推理验收。恢复冻结代码、全部关闭门禁及原预算后，G5 付费验收继续暂停，正式运行前须冻结 Worker 出口兼容配置的新 release proof。

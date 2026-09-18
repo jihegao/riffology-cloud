@@ -37,3 +37,12 @@ test('private wx writes recover identical partial output and never overwrite cha
  const modified=structuredClone(out);modified.privatePolicies.money.period='other-period';
  await assert.rejects(persistG5Freeze(directory,modified),/output-conflict/);assert.equal(await readFile(directory+'/private-policies.json','utf8'),before);
 });
+
+test('optional bounded billing is frozen and disclosed without changing money caps or opening gates',async()=>{
+ const original=await compileG5Freeze(input()),value={...input(),billingPolicy:{mode:'bounded-pending',maxUnknownCalls:3,maxUnknownNanodollars:1_000_000_000}},out=await compileG5Freeze(value);
+ assert.deepEqual(out.privatePolicies.money,original.privatePolicies.money);
+ assert.deepEqual(out.sanitizedManifest.billingPolicy,value.billingPolicy);
+ assert.notEqual(out.sanitizedManifest.policyBundleSha256,original.sanitizedManifest.policyBundleSha256);
+ for(const phase of ['A','B']){assert.deepEqual(out.privatePolicies.windows[phase].billingPolicy,value.billingPolicy);assert.deepEqual(JSON.parse(out.closedFirstPatch[phase].G5_CONTROLLED_WINDOW_JSON).billingPolicy,value.billingPolicy);assert.equal(out.closedFirstPatch[phase].G5_ADMISSION_ENABLED,'false');}
+ for(const policy of [{...value.billingPolicy,maxUnknownCalls:0},{...value.billingPolicy,maxUnknownNanodollars:40_000_000_000},{...value.billingPolicy,refund:true}])await assert.rejects(compileG5Freeze({...input(),billingPolicy:policy}));
+});
