@@ -250,6 +250,16 @@ function turnStatus(turn) {
   return labels[turn.status] || turn.status;
 }
 
+function managedAccountingSummary(payload) {
+  if (payload?.backend !== 'managed-agents') return null;
+  const usage = payload.usage;
+  const observed = usage?.status === 'observed' && ['inputTokens','outputTokens','totalTokens'].every(key => Number.isSafeInteger(usage[key]) && usage[key] >= 0) && usage.inputTokens + usage.outputTokens === usage.totalTokens;
+  return {
+    usage: observed ? `Managed 用量已观测：输入 ${usage.inputTokens} Token，输出 ${usage.outputTokens} Token。` : 'Managed 用量尚未确认。',
+    detail: '费用尚未结算；执行完成或已保存不代表正式实验通过。' + (payload.resources === 'session-retained' ? ' 回合结束时远端会话仍保留，删除状态需单独确认。' : ' 远端资源状态需单独确认。'),
+  };
+}
+
 function appendTurnCard(kind, text, detail = '') {
   const card = document.createElement('article');
   card.className = `turn-card ${kind}`;
@@ -392,6 +402,9 @@ function renderWorkspace() {
     appendToolCards(events, turn.id);
     const providerError = events.findLast?.(event => event.type === 'provider.status' && event.payload?.state === 'error');
     if (providerError) appendTurnCard('system', `模型服务返回错误${providerError.payload?.status ? `（${providerError.payload.status}）` : ''}，平台仍会保存可恢复状态。`);
+    const managedStatus = events.findLast?.(event => event.type === 'provider.status' && event.payload?.backend === 'managed-agents');
+    const accounting = managedAccountingSummary(managedStatus?.payload);
+    if (accounting) appendTurnCard('system', accounting.usage, accounting.detail);
     if (turn.errorCode && !events.some(event => event.type === 'assistant.message')) appendTurnCard('system', `回合未完成：${turn.errorCode}`, turnStatus(turn));
   }
   const active = workspaceSnapshot.activeTurnId && workspaceSnapshot.turns?.[workspaceSnapshot.activeTurnId];
