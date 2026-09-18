@@ -53,7 +53,12 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
     async snapshot(scope: TurnScope) {
       const value = await actor(scope).turnSnapshot({ scope });
       if (!value || typeof value !== 'object' || Array.isArray(value)) return value;
-      return { ...(value as Record<string, unknown>), admission: managedProjectPolicy(env.MANAGED_ACCEPTANCE_JSON,scope,env.MANAGED_TESTING_JSON)?turnAdmissionStatus(managedProjectPolicy(env.MANAGED_ACCEPTANCE_JSON,scope,env.MANAGED_TESTING_JSON)?.enabled?'true':'false',typeof env.MANAGED_TURN_RUNTIME?.getByName==='function'):turnAdmissionStatus(env.M2_TURNS_ENABLED, env.M2_TURN_RUNTIME_CONFIGURED !== false) };
+      const {runtimeBackend,...snapshot}=value as Record<string,unknown>;
+      const configured=managedProjectPolicy(env.MANAGED_ACCEPTANCE_JSON,scope,env.MANAGED_TESTING_JSON);
+      // Workspace owns persisted backend selection; account-level testing must
+      // not advertise Managed admission for a historical Pi project.
+      const managed=runtimeBackend==='pi'?false:runtimeBackend==='managed'||!!configured;
+      return { ...snapshot, admission: managed?turnAdmissionStatus(configured?.enabled?'true':'false',typeof env.MANAGED_TURN_RUNTIME?.getByName==='function'):turnAdmissionStatus(env.M2_TURNS_ENABLED, env.M2_TURN_RUNTIME_CONFIGURED !== false) };
     },
     async files(scope:TurnScope){return actor(scope).listFiles({scope});},
     async diff(scope:TurnScope){return actor(scope).diffFiles({scope});},

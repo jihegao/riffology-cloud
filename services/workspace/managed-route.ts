@@ -44,6 +44,13 @@ export function managedProductActorName(target:TurnScope):string{const s=scope(t
 export function resolveManagedRoute(raw:unknown,target:TurnScope,pinned:ManagedAcceptancePolicy|null,hasTurnHistory:boolean,testing?:unknown):ManagedAcceptancePolicy|null{
   if(pinned){const saved=managedAcceptancePolicy(pinned)!;if(!sameScope(saved.scope,target))throw Error('managed-route-scope-conflict');return saved;}
   const configured=managedProjectPolicy(raw,target,testing);
-  if(configured&&hasTurnHistory)throw Error('managed-route-existing-turn-history');
+  if(configured&&hasTurnHistory){
+    // Account-wide testing applies to fresh projects only. A legacy Pi journal
+    // remains readable and keeps its original execution gates. An explicit
+    // project-scoped migration attempt still fails rather than changing route.
+    const explicit=managedAcceptancePolicy(raw);
+    if(explicit&&sameScope(explicit.scope,target))throw Error('managed-route-existing-turn-history');
+    return null;
+  }
   return configured;
 }

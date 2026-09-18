@@ -987,13 +987,13 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   }
   async turnSnapshot(input: { scope: TurnScope }) {
     const scope=this.#ready(input.scope),snapshot=await this.#turns.view(scope),managed=this.#managedRoute();
-    if(!managed)return snapshot;
+    if(!managed)return {...snapshot,runtimeBackend:'pi' as const};
     try{
       const status=await this.#managedRuntime(managed).budgetStatus(scope);
       if(!status||typeof status!=='object'||Array.isArray(status))throw Error('managed-budget-status-invalid');
       const value=status as Record<string,unknown>;
-      return {...snapshot,managedState:{stopped:typeof value.stopped==='string'?value.stopped:null,unresolved:Number.isSafeInteger(value.unresolved)?value.unresolved:null,cleanupPending:value.cleanupPending===true}};
-    }catch{return {...snapshot,managedState:{unavailable:true}};}
+      return {...snapshot,runtimeBackend:'managed' as const,managedState:{stopped:typeof value.stopped==='string'?value.stopped:null,unresolved:Number.isSafeInteger(value.unresolved)?value.unresolved:null,cleanupPending:value.cleanupPending===true}};
+    }catch{return {...snapshot,runtimeBackend:'managed' as const,managedState:{unavailable:true}};}
   }
   async g5TurnAuthority(input:{identity:TurnRuntimeIdentity;userId:string}){
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];

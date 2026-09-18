@@ -17,6 +17,7 @@ for(const testing of [false,true])test(`Managed ${testing?'account testing':'acc
  import {WORKSPACE_STATE_KEY} from './services/workspace/shared-alarm.ts';
  import {workspaceAgentName} from './services/workspace/protocol.ts';
  export class Workspace extends ProductionWorkspace {
+  async legacyPiRouteForTest(){await this.ctx.storage.delete('managed-product-route-v1');}
   async seed(scope){const now=Date.now();await this.ctx.storage.put(WORKSPACE_STATE_KEY,{task:{id:'task',tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,generation:1,starterVersion:'empty-v1',authVersion:1,createdAt:now,deadlineAt:now+3600000},projection:{outcome:'ready'},projectionConfirmed:true,wakeAt:null});}
   async seedRuns(scope,actor){const common={actor,status:'completed',released:true,releaseProof:{kind:'runtime-stopped',confirmationId:'actual-stored-release',observedAt:123},stop:{confirmationId:'actual-stored-stop',observedAt:122,nativeRunning:false,fenced:true},result:{artifactSha256:'a'.repeat(64)}};await this.ctx.storage.put('simulation:run:own',{...common,scope,runId:'own'});await this.ctx.storage.put('simulation:run:other',{...common,scope:{...scope,projectId:'private-other-project'},runId:'private-other-run'});}
   async alarm(){} // Keep this admission-only test from starting a runtime.
@@ -54,5 +55,16 @@ for(const testing of [false,true])test(`Managed ${testing?'account testing':'acc
  const view=await rpc('turnSnapshot');assert.equal(Object.keys(view.value.turns).length,1);assert.deepEqual(view.value.managedState,{stopped:'managed-usage-unknown',unresolved:1,cleanupPending:false});
  await rpc('seedRuns');const status=await rpc('managedAcceptanceStatus');assert.equal(status.ok,true,JSON.stringify(status));assert.equal(status.value.preflights,1);assert.equal(status.value.resources.simulations.length,1);assert.equal(status.value.resources.simulations[0].releaseProof.confirmationId,'actual-stored-release');assert.equal(status.value.resources.simulations[0].stop.confirmationId,'actual-stored-stop');assert.deepEqual(status.value.resources.tenantQuota,{capacity:2,occupied:1,available:1,unknown:1,configuredPolicyMatches:true,leaseStatusCounts:{unknown:1}});assert.equal(JSON.stringify(status).includes('private-other'),false);assert.equal(JSON.stringify(status).includes('private-operation'),false);
  assert.equal((await rpc('managedAcceptanceStatus',{actor:{...actor,userId:'other'}})).ok,false);assert.equal((await rpc('managedAcceptanceStatus',{scope:{...scope,projectId:'other'}})).ok,false);assert.equal((await rpc('managedAcceptanceStatus',{actor:{...actor,authVersion:2}})).ok,false);
+ if(testing){
+  // A pre-testing Pi journal has no pinned Managed route. The stored journal
+  // is real here; this fixture does not claim an actual provider run.
+  assert.equal((await rpc('legacyPiRouteForTest')).ok,true);
+  const legacy=await rpc('turnSnapshot');assert.equal(legacy.ok,true,JSON.stringify(legacy));
+  assert.equal(legacy.value.runtimeBackend,'pi');assert.equal(legacy.value.managedState,undefined);
+  assert.equal(legacy.value.turns[winner.id].status,winner.status);
+  const denied=await rpc('submitTurn',{...input,key:'pi-must-stay-closed'});
+  assert.equal(denied.ok,false);assert.equal(denied.error,'turn-runtime-not-ready');
+  assert.equal(Object.keys((await rpc('turnSnapshot')).value.turns).length,1);
+ }
  }finally{await mf?.dispose();await rm(directory,{recursive:true,force:true});}
 });

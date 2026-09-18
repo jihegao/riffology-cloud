@@ -57,5 +57,16 @@ test('Account testing admits only its exact owner and tenant; old acceptance and
  assert.deepEqual(managedProjectPolicy({...policy,enabled:false},scope,testing),{...policy,enabled:false});
  assert.deepEqual(resolveManagedRoute(undefined,scope,policy,true,testing),policy);
  assert.throws(()=>requireManagedAdmission(undefined,policy,scope,'owner',testing));
- assert.throws(()=>resolveManagedRoute(undefined,scope,null,true,testing),/existing-turn-history/);
+ assert.equal(resolveManagedRoute(undefined,scope,null,true,testing),null);
+ assert.equal(resolveManagedRoute(undefined,scope,null,true,{...testing,enabled:false}),null);
+ assert.equal(resolveManagedRoute(undefined,scope,null,false,testing)?.schemaVersion,2);
+});
+
+test('Gateway reports the authoritative legacy Pi gate under account-wide Managed testing',async()=>{
+ const services=createGatewayTurnServices({M2_TURNS_ENABLED:'false',MANAGED_TESTING_JSON:JSON.stringify(testing),MANAGED_TURN_RUNTIME:{getByName(){}},WORKSPACE_AGENT:{getByName(){return {async turnSnapshot(){return {runtimeBackend:'pi',turns:{old:{status:'completed'}}};}} as any;}}});
+ const snapshot=await services.snapshot(scope) as any;
+ assert.equal(snapshot.admission.state,'maintenance');
+ assert.equal(snapshot.admission.reasonCode,'turn_runtime_not_ready');
+ assert.equal(snapshot.turns.old.status,'completed');
+ assert.equal(Object.hasOwn(snapshot,'runtimeBackend'),false);
 });
