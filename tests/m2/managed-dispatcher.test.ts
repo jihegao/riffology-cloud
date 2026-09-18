@@ -19,7 +19,7 @@ async function fixture(transform:(value:TurnRuntimeReceipt)=>unknown=value=>valu
  const turn=(await journal.submit(scope,actor,session.id,'turn-request',{message:'Build synthetic model'})).turn;
  const emit=(input:Parameters<TurnRuntimePort['observe']>[0])=>transform(receipt({...input,capacityLease:input.capacityLease!})) as TurnRuntimeReceipt;
  const runtime:TurnRuntimePort={accept:async input=>{calls.push('accept');return emit(input);},observe:async input=>{calls.push('observe');return emit(input);},cancel:async input=>{calls.push('cancel');return emit(input);}};
- return {store,journal,turn,calls,runtime,dispatcher:new TurnDispatcher(journal,runtime)};
+ return {store,journal,turn,calls,runtime,setClock(value:number){now=value;},dispatcher:new TurnDispatcher(journal,runtime)};
 }
 test('Managed remote terminal proof publishes checkpoint through the real Journal without native fence',async()=>{
  const f=await fixture();const saved=await f.dispatcher.tick(scope,1);
@@ -65,4 +65,31 @@ test('Managed journal claim before runtime accept recovers exact original only a
 test('Managed Stop after journal claim before accept completes never-started without paid accept or native fence',async()=>{
  const f=await fixture();await f.journal.claim(scope,1);f.runtime.cancel=async i=>{f.calls.push('cancel');return {...receipt({...i,capacityLease:i.capacityLease!}),phase:'absent',outcome:null,checkpoint:null,stopped:null};};
  const cancelled=await f.dispatcher.cancel(scope,actor,f.turn);assert.equal(cancelled.status,'cancelled');assert.equal(cancelled.checkpoint,null);assert.equal(cancelled.persistenceOutcome,null);assert.equal(f.store.snapshot()!.activeTurnId,null);assert.deepEqual(f.calls,['cancel']);
+});
+
+for(const usage of [{status:'unknown',reason:'missing'},{status:'observed',inputTokens:10,outputTokens:2,totalTokens:12,settlement:'pending'}])test(`Managed late ${usage.status} accounting restores an already-checkpointing Turn without changing immutable events`,async()=>{
+ const f=await fixture();const claimed=(await f.journal.claim(scope,1))!.turn;
+ f.setClock(1100);
+ const event={eventId:'persisted-usage',type:'provider.status' as const,at:1006,payload:{backend:'managed-agents',usage,billing:'pending',resources:'session-retained'}};
+ await f.journal.appendRuntime(scope,{turnId:claimed.id,dispatchId:claimed.dispatchId!,runtimeGeneration:1,...event});
+ await f.journal.beginCheckpoint(scope,{turnId:claimed.id,dispatchId:claimed.dispatchId!,runtimeGeneration:1,outcome:'completed'});
+ // Simulate a process restart after append + beginCheckpoint committed, with
+ // admission closed and the hosted Session already deleted. Only observe is used.
+ const before=f.store.snapshot()!.events.find(e=>e.eventId===event.eventId)!;
+ f.runtime.accept=async()=>{throw Error('new-input-forbidden');};
+ f.runtime.observe=async i=>{f.calls.push('observe');return {...receipt({...i,capacityLease:i.capacityLease!}),events:[event]};};
+ const saved=await new TurnDispatcher(f.journal,f.runtime,null,null,()=>2000,undefined,async()=>{throw Error('admission-closed');}).tick(scope,1);
+ assert.equal(saved?.status,'completed');assert.deepEqual(saved?.checkpoint,checkpoint);assert.deepEqual(f.store.snapshot()!.sessions[claimed.sessionId]!.head,checkpoint);assert.equal(f.store.snapshot()!.activeTurnId,null);assert.deepEqual(f.calls,['observe']);
+ assert.deepEqual(f.store.snapshot()!.events.find(e=>e.eventId===event.eventId),before);assert.equal(f.store.snapshot()!.events.filter(e=>e.eventId===event.eventId).length,1);assert.deepEqual(before.payload.usage,usage);
+});
+for(const [name,type,payload] of [
+ ['unrelated provider status','provider.status',{state:'running'}],
+ ['additional execution field','provider.status',{backend:'managed-agents',usage:{status:'unknown',reason:'missing'},billing:'pending',resources:'session-retained',execution:'completed'}],
+ ['wrong backend','provider.status',{backend:'pi',usage:{status:'unknown',reason:'missing'},billing:'pending',resources:'session-retained'}],
+ ['invalid usage totals','provider.status',{backend:'managed-agents',usage:{status:'observed',inputTokens:10,outputTokens:2,totalTokens:99,settlement:'pending'},billing:'pending',resources:'session-retained'}],
+ ['late tool event','tool.completed',{backend:'managed-agents',usage:{status:'unknown',reason:'missing'},billing:'pending',resources:'session-retained'}],
+ ['late assistant output','assistant.message',{text:'later execution'}],
+] as const)test(`Managed checkpoint still rejects ${name} occurring after file commit`,async()=>{
+ const f=await fixture();const claimed=(await f.journal.claim(scope,1))!.turn;f.setClock(1100);const event={eventId:'late-execution',type,at:1006,payload};await f.journal.appendRuntime(scope,{turnId:claimed.id,dispatchId:claimed.dispatchId!,runtimeGeneration:1,...event});await f.journal.beginCheckpoint(scope,{turnId:claimed.id,dispatchId:claimed.dispatchId!,runtimeGeneration:1,outcome:'completed'});
+ f.runtime.observe=async i=>({...receipt({...i,capacityLease:i.capacityLease!}),events:[event]});await assert.rejects(f.dispatcher.tick(scope,1),/invalid-checkpoint-receipt/);assert.equal(f.store.snapshot()!.turns[claimed.id]!.checkpoint,null);assert.equal(f.store.snapshot()!.turns[claimed.id]!.status,'checkpointing');
 });
