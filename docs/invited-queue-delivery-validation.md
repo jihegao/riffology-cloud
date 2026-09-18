@@ -67,14 +67,18 @@ reply before asserting all 2048 events, exactly 12 reads per visit and zero
 mutations. It passed in isolation; the final full run includes this correction. A later M0 run also hit a 25ms
 fixture deadline while checking replay rejection under the default concurrency;
 all 21 proxy tests passed in isolation. The two-file concurrency limit is applied
-consistently to M0–M3, keeping every timeout and assertion unchanged.
+consistently to M0–M3, without relaxing existing finite deadlines or assertions.
 
 The first Ubuntu CI reached the actual checks and exposed two portable-setup
 issues: ripgrep was absent (source-inventory dependency), and a test-only child
 wrapper reopened `/dev/stdin`, which fails for Linux socket-backed child stdin.
 CI now installs ripgrep; the wrapper consumes `process.stdin` directly. Production
-probe logic and its persistence/replay assertions are unchanged. The failed CI
-run remains available as evidence; its result is not counted as a pass.
+probe logic and its persistence/replay assertions are unchanged. A later Ubuntu run exposed a durability-test fixture that assumed 20 event-loop
+turns were sufficient for an asynchronous hash and SQLite sync to start. It now
+awaits the fixture's explicit held-sync signal, still asserting no acknowledgement
+before commit and correct replay after a lost acknowledgement. CI runs every
+existing local suite and aggregates failures, so one failure cannot hide later
+platform diagnostics. Failed CI runs remain available as evidence; its result is not counted as a pass.
 
 ## Fresh online observation and remaining work
 

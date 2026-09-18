@@ -44,7 +44,15 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          npm run check 2>&1 | tee local-check.log
+          {
+            status=0
+            # Run all existing local suites even if one fails, preserving a
+            # failing exit code and all platform diagnostics in one run.
+            for check in check:ui typecheck test:m0 test:m1 test:m2 test:m3 issue73:validate test:research-quality; do
+              npm run "$check" || status=1
+            done
+            exit "$status"
+          } 2>&1 | tee local-check.log
       - name: Preserve validation output, including conditional skips
         if: always()
         uses: actions/upload-artifact@v4
