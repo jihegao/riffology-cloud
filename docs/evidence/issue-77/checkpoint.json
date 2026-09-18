@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "status": "safety-checkpoint-before-latest-main-integration",
+  "baseCommit": "40aee17ed810430ee71fa4afb02af6fecf59b26a",
+  "verification": {
+    "typecheck": "passed",
+    "focusedFinal": {
+      "tests": 32,
+      "passed": 32,
+      "failed": 0
+    },
+    "fullCheck": "passed on earlier in-turn snapshot; not final checkpoint claim",
+    "finalM2": "still running when checkpoint recorded"
+  },
+  "reproducedBaselineFailures": [
+    "product-turn-runtime-event-conflict on JSON key order replay",
+    "turn-event-conflict on JSON key order replay"
+  ],
+  "remaining": [
+    "Integrate against latest origin/main and inspect AGENTS.md and changed contracts",
+    "Reassess #73 input status after main update; current local-input statement may be superseded",
+    "Review Managed offline adapter transport and same-contract test coverage",
+    "Integrate/reconcile candidate validators with current main evaluator, rather than duplicating it",
+    "Review format rollout, native vs remote termination boundary and run final full checks",
+    "Record final source-bound machine evidence; Phase 5 and production remain unauthorized"
+  ],
+  "files": [
+    {
+      "path": "services/turn-runtime/core.ts",
+      "sha256": "a55015ee312f65437128bff8d8187276beac7b7be3b69e476ad6df534f6cfb19"
+    },
+    {
+      "path": "services/turn-runtime/revision-gc.ts",
+      "sha256": "9f80603c65b5cfc02f081a8e0239e17411398220a1e339d8e8029216d90988f6"
+    },
+    {
+      "path": "services/turn-runtime/revision-store-client.ts",
+      "sha256": "8f334f5c21e759dfe9183a41e0aaca4c2e93f7dd49f65a18bbef046b49a33d9d"
+    },
+    {
+      "path": "services/turn-runtime/revision-store.ts",
+      "sha256": "14927ea7cf9284919c38fc2387b4e38e1e4b890eea70f2a561a2d803664eecad"
+    },
+    {
+      "path": "services/turn-runtime/revision.ts",
+      "sha256": "3668c4b96b18db25e980c78227c04c54c1f21a5bf0668b8e7149cda571ae9e36"
+    },
+    {
+      "path": "services/turn/dispatcher.ts",
+      "sha256": "24e98da37dbfc0ef2c5fcd8c7449a0616d3e2a2b41efe0a2df317cfa99e8b02c"
+    },
+    {
+      "path": "services/turn/journal.ts",
+      "sha256": "393e308eddd4095f9f971d1bf31fab96eaa72063dd9b23f345abe7b3c91f0d46"
+    },
+    {
+      "path": "tests/m2/product-turn-runtime.test.ts",
+      "sha256": "9634342a5d7cfbb05be5bb6b694d827946f317691940b48bdb8f57eb01ad6682"
+    },
+    {
+      "path": "tests/m2/revision-store-workerd.test.mjs",
+      "sha256": "ba2fb21526e3d177b9aa40d9cb1e5f47fa8af6b74290d3efd5db7005558fd75f"
+    },
+    {
+      "path": "tests/m2/turn-journal.test.ts",
+      "sha256": "841663bc537e814012513ba4de0971668dd6ed156bdd51df7b8ee80679c23264"
+    },
+    {
+      "path": "tests/m2/turn-revision.test.ts",
+      "sha256": "6220cdd7acc4eedd61819057dd8cab17ed607f06b40de661981ed8b0a645ece6"
+    },
+    {
+      "path": "services/simulation/command-evidence.ts",
+      "sha256": "dc7ef4c9d45a5a5452b59907baacf3a714f1f2c688b89732672d1414919267ac"
+    },
+    {
+      "path": "services/simulation/result-oracle.ts",
+      "sha256": "3ff77c7e5e4a826f8b2486b8bd44c776a3f3a8432e37e56b50b87278da96ca43"
+    },
+    {
+      "path": "services/turn-runtime/backend-contract.ts",
+      "sha256": "c213ff96484684128d9a2c11f86c751066274aac148e111addd961f75ace63cc"
+    },
+    {
+      "path": "services/turn-runtime/candidate-artifact.ts",
+      "sha256": "4b0a717330a8e69f29f8c3d944b21530e0342c7b6d332353e181564efc69563a"
+    },
+    {
+      "path": "services/turn-runtime/managed-adapter.ts",
+      "sha256": "3bcb95e46cf01d55a508c2a92e184264f0018900210b5649176cc8ce7b8ace3e"
+    },
+    {
+      "path": "services/turn/json-equivalent.ts",
+      "sha256": "254cf43b4c57694db810024e8d7d75660ab4e5411c37e545a47dceecd972253f"
+    },
+    {
+      "path": "tests/m2/backend-contract.test.ts",
+      "sha256": "9ef19fbcdda4dfaec417eb6114160b7ef1821a3fe1bd2dc4545f1eb39720c116"
+    },
+    {
+      "path": "tests/m3/agent-candidate-contract.test.ts",
+      "sha256": "5767ff844a7e6e942da1d52b28f355479cdf7b4b013238fcbea902a46a1a6758"
+    },
+    {
+      "path": "docs/architecture/issue-77-execution-protocol.md",
+      "sha256": "01ae9145394111e2d7f674502a89ac00dd32414a377dadf75283d37fdbca959c"
+    },
+    {
+      "path": "docs/evidence/issue-77/issue73-input-fingerprints.json",
+      "sha256": "95a0494594077ec34bfc8de4bae7a84f7ade295bf379d13ef447b4058d3ce28a"
+    }
+  ]
+}

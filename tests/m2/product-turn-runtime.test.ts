@@ -86,7 +86,7 @@ test('schema 4 runtime migrates conservatively and preserves exact identity with
 test('unobservable native start stays fail closed until its fixed deadline then fences without checkpoint allocation',async t=>{
  const f=fixture(t),host=f.host();f.startError(true);await assert.rejects(host.accept(request()),/lost-start-response/);const deadline=f.row().executionDeadlineAt;assert.equal(f.row().nativeStartReserved,true);assert.equal(f.row().nativeProcessObservedAt,null);assert.equal(f.fences,0);
  f.observe({identity,phase:'unknown',outcome:null});f.clock(deadline-2);const waiting=await host.observe(identity);assert.equal(waiting.phase,'unknown');assert.equal(f.observes,1);assert.equal(f.fences,0);assert.equal(f.starts,1);
- f.reopen();f.clock(deadline-1);const ended=await f.host().observe(identity);assert.equal(ended.phase,'terminal');assert.equal(ended.outcome,'failed');assert.equal(ended.executionErrorCode,'turn-native-start-unresolved');assert.equal(ended.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(ended.stopped?.fenced,true);assert.equal(f.fences,1);assert.equal(f.starts,1);assert.equal(f.prepares,0);assert.equal(f.commits,0);assert.equal(f.row().nativeStartFenceReserved,true);
+ f.reopen();f.clock(deadline-1);const ended=await f.host().observe(identity);assert.equal(ended.phase,'terminal');assert.equal(ended.outcome,'failed');assert.equal(ended.executionErrorCode,'turn-native-start-unresolved');assert.equal(ended.persistenceErrorCode,'turn-checkpoint-unknown');assert.ok(ended.backend!=='managed-agents');assert.equal(ended.stopped?.fenced,true);assert.equal(f.fences,1);assert.equal(f.starts,1);assert.equal(f.prepares,0);assert.equal(f.commits,0);assert.equal(f.row().nativeStartFenceReserved,true);
  assert.deepEqual(f.telemetry.map(({metric,stage,reasonCategory,value,correlationId})=>({metric,stage,reasonCategory,value,correlationId})),[{metric:'native_start_fence',stage:'native-start',reasonCategory:'native_start_unresolved',value:1,correlationId:'legacy'}]);
  assert.deepEqual(await f.host().observe(identity),ended);assert.equal(f.fences,1);
 });
@@ -94,7 +94,7 @@ test('unobservable native start stays fail closed until its fixed deadline then 
 test('a previously observed execution becomes execution-unresolved at its fixed deadline without checkpoint allocation',async t=>{
  const f=fixture(t),host=f.host();await host.accept(request());const deadline=f.row().executionDeadlineAt;assert.ok(f.row().nativeProcessObservedAt);f.observe({identity,phase:'unknown',outcome:null});
  f.clock(deadline-2);const waiting=await host.observe(identity);assert.equal(waiting.phase,'unknown');assert.equal(f.observes,1);assert.equal(f.fences,0);
- f.reopen();f.clock(deadline-1);const ended=await f.host().observe(identity);assert.equal(ended.phase,'terminal');assert.equal(ended.outcome,'failed');assert.equal(ended.executionErrorCode,'turn-native-execution-unresolved');assert.equal(ended.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(ended.checkpoint,null);assert.equal(ended.stopped?.fenced,true);assert.equal(f.fences,1);assert.equal(f.starts,1);assert.equal(f.prepares,0);assert.equal(f.commits,0);assert.equal(f.row().nativeStartFenceReserved,true);assert.ok(f.row().nativeProcessObservedAt);
+ f.reopen();f.clock(deadline-1);const ended=await f.host().observe(identity);assert.equal(ended.phase,'terminal');assert.equal(ended.outcome,'failed');assert.equal(ended.executionErrorCode,'turn-native-execution-unresolved');assert.equal(ended.persistenceErrorCode,'turn-checkpoint-unknown');assert.equal(ended.checkpoint,null);assert.ok(ended.backend!=='managed-agents');assert.equal(ended.stopped?.fenced,true);assert.equal(f.fences,1);assert.equal(f.starts,1);assert.equal(f.prepares,0);assert.equal(f.commits,0);assert.equal(f.row().nativeStartFenceReserved,true);assert.ok(f.row().nativeProcessObservedAt);
  assert.deepEqual(f.telemetry.map(({metric,stage,reasonCategory,value})=>({metric,stage,reasonCategory,value})),[{metric:'native_execution_fence',stage:'native-execution',reasonCategory:'native_execution_unresolved',value:1}]);
  assert.deepEqual(await f.host().observe(identity),ended);assert.equal(f.fences,1);
 });
@@ -333,4 +333,13 @@ test('warm unresolved retirement survives pre-finish restart without checkpoint 
 test('cold execution and forged warm retirement combinations remain rejected',async t=>{
  const f=fixture(t);await f.host().accept(request());f.cancel(retiring);await assert.rejects(f.host().cancel(identity),/invalid-product-turn-execution-receipt/);
  for(const override of [{outcome:'completed'},{stopped:stop},{events:[event]},{executionErrorCode:'anything'}]){f.cancel({...retiring,...override});await assert.rejects(f.host({settle(){throw Error('must-not-settle');}}).cancel(identity),/invalid-product-turn-execution-receipt/);}
+});
+
+test('issue 77: reordered JSON keys are the same replay after runtime reopen',async t=>{
+ const f=fixture(t),first={...event,payload:{text:'hello',metadata:{a:1,b:2}}};
+ f.start({identity,phase:'running',outcome:null,events:[first]});await f.host().accept(request());f.reopen();
+ f.observe({identity,phase:'running',outcome:null,events:[{...first,payload:{metadata:{b:2,a:1},text:'hello'}}]});
+ const replay=await f.host().observe(identity);assert.equal(replay.events.length,1);assert.equal(f.starts,1);
+ f.observe({identity,phase:'running',outcome:null,events:[{...first,payload:{metadata:{b:3,a:1},text:'hello'}}]});
+ await assert.rejects(f.host().observe(identity),/event-conflict/);
 });

@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "recordType": "offline-repair-validation",
+  "recordedAt": "2026-09-18T00:53:04.132321+00:00",
+  "sourceCommit": "9641f6546b099ad080ec00c2f7ba9e6b996a2fa7",
+  "baselineValidation": {
+    "path": "docs/evidence/issue-77/validation.json",
+    "sourceCommit": "7b1250549da146b236962196cad7046b463061ee",
+    "verificationCommand": "node scripts/evidence/verify-issue77.mjs --committed",
+    "scope": "The baseline describes its recorded Git tree, not the current repaired working tree."
+  },
+  "sourceFiles": [
+    {
+      "path": "services/turn/journal.ts",
+      "sha256": "b6d6c6bea802652ed82c241830f9e41d8f1a33aa86d2afd1ce2aa513d21a7893"
+    },
+    {
+      "path": "tests/m2/managed-dispatcher.test.ts",
+      "sha256": "1f09ebde0f5b0f02766e2db3b0ad5c710bade86c73b64f17dc79fdba591c7b37"
+    },
+    {
+      "path": "services/turn/dispatcher.ts",
+      "sha256": "9793a6418ed7f1ec61298c2425f6b92121731894de78d607ec2bc2e46c4bff27"
+    },
+    {
+      "path": "services/turn/protocol.ts",
+      "sha256": "1eb62d9e57171e157338c7a3a909713bd660b551c6e353bc0637d074b2b5772d"
+    },
+    {
+      "path": "services/turn/store.ts",
+      "sha256": "95f2531dfd7d47f7464cf8d69deb3141ce66f6a202f6770ade9694ec757691e4"
+    },
+    {
+      "path": "services/turn-runtime/managed-product.ts",
+      "sha256": "e8b905c4ef3b333f5774ea981d44df9753e0375c074193053e05b4f02e976792"
+    },
+    {
+      "path": "services/workspace/durable.ts",
+      "sha256": "4308b43463bdf3c118c8de250a0a7f0491e60de1ee87667dfb951137f1ef0b1e"
+    },
+    {
+      "path": "services/workspace/turns.ts",
+      "sha256": "e7faf63d3b2f97f319d58ca6af06e904c3be794b69c820a60fc44d98e90c8837"
+    },
+    {
+      "path": "services/workspace/managed-route.ts",
+      "sha256": "2827bff12be6164aa17b55385432f01f35a338dbeefcdfd269859dc31a9aea2a"
+    },
+    {
+      "path": "tests/m2/managed-product.test.ts",
+      "sha256": "35440a08fc40fe7e55a54cad3990bfac827f651047afd0f6c081b140aae84901"
+    },
+    {
+      "path": "tests/m2/turn-journal.test.ts",
+      "sha256": "841663bc537e814012513ba4de0971668dd6ed156bdd51df7b8ee80679c23264"
+    },
+    {
+      "path": "tests/m2/turn-dispatcher.test.ts",
+      "sha256": "97dccc6c87ae6a932fa547369b42ccbc0e257f4cbd080cac1f97b8082df25746"
+    }
+  ],
+  "problem": "Managed accounting observations can be timestamped after immutable Revision publication. Treating that metadata as later model execution rejected a valid checkpoint and left TurnJournal checkpointing.",
+  "repair": "Exclude only the exact deployed Managed accounting-only provider.status envelope from the execution-evidence timestamp lower bound; preserve all existing immutable events and receipts. Other provider, assistant and tool evidence remains subject to the timestamp check.",
+  "regressions": [
+    "Already-checkpointing Turn recovers from the original immutable receipt while admission is closed.",
+    "Saved Session/workspace head advances without modifying or duplicating the existing accounting event.",
+    "Both unknown and observed usage observations remain unchanged.",
+    "Additional provider fields, wrong backend, malformed usage totals, late tool events and late assistant output still reject a checkpoint older than execution evidence."
+  ],
+  "validation": [
+    {
+      "name": "focused",
+      "command": "node --test tests/m2/managed-dispatcher.test.ts tests/m2/turn-journal.test.ts tests/m2/turn-dispatcher.test.ts tests/m2/managed-product.test.ts",
+      "sourceCommit": "9641f6546b099ad080ec00c2f7ba9e6b996a2fa7",
+      "exitCode": 0,
+      "summary": {
+        "tests": 107,
+        "passed": 107,
+        "failed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "192ea347d998b45b47c6140f4b211a8ebc3e4b78db1f2a2d71359c1119797d08"
+    },
+    {
+      "name": "m2",
+      "command": "npm run test:m2",
+      "sourceCommit": "9641f6546b099ad080ec00c2f7ba9e6b996a2fa7",
+      "exitCode": 0,
+      "summary": {
+        "tests": 783,
+        "passed": 783,
+        "failed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "f7fa91e06bb9e5e1efc0834c1428682695ccae464f199ba34e14befaef32a377"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "sourceCommit": "9641f6546b099ad080ec00c2f7ba9e6b996a2fa7",
+      "exitCode": 0,
+      "logSha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f"
+    }
+  ],
+  "diffCheck": "passed",
+  "execution": {
+    "paidRequests": false,
+    "productionDeployment": false,
+    "productionRecoveryVerified": false,
+    "newInputsAuthorizedByRepair": false
+  },
+  "scope": "Local verification only. This record does not settle usage, reopen admission, alter budget holds, or assert production recovery; production readback is separate evidence."
+}

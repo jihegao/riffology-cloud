@@ -1,10 +1,12 @@
+import {backendState as validateBackendState} from './backend-contract.ts';
+import {validatePiRevisionState} from './revision.ts';
 /** Conservative garbage collection for content addressed Turn Revision blobs.
  * This is deliberately separate from commit/restore: a failed or partial
  * sweep must never be able to affect manifests or objects outside the two
  * blob prefixes. */
 
 import { positive, scope as turnScope, turnBaseCheckpoints, type TurnScope } from '../turn/protocol.ts';
-import { turnRuntimeIdentity } from './identity.ts';
+import { sameTurnRuntimeIdentity, turnRuntimeIdentity } from './identity.ts';
 import { turnRevisionBlobPrefix, turnRevisionManifestPrefix, turnRevisionObjectKey } from './revision.ts';
 
 export type TurnRevisionGcBucket = Pick<R2Bucket, 'list' | 'get' | 'delete'>;
@@ -69,19 +71,23 @@ export async function readManifest(bucket: TurnRevisionGcBucket, objectKey: stri
   let value: any;
   try { value = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(new Uint8Array(await object.arrayBuffer()))); }
   catch { fail('invalid-turn-revision-gc-manifest'); }
-  exact(value, ['schemaVersion', 'identity', 'base', 'outcome', 'executionErrorCode', 'files', 'piSession', 'committedAt']);
-  if (value.schemaVersion !== 3 || !['completed', 'failed', 'cancelled', 'interrupted'].includes(value.outcome as string)
+  const managed=value?.schemaVersion===4&&value?.backendState?.backend==='managed-agents';
+  exact(value, ['schemaVersion', ...(value.schemaVersion===4?['backendState']:[]), 'identity', 'base', 'outcome', 'executionErrorCode', 'files', managed?'sessionState':'piSession', 'committedAt']);
+  if (value.schemaVersion !== 3 && value.schemaVersion !== 4 || !['completed', 'failed', 'cancelled', 'interrupted'].includes(value.outcome as string)
     || (value.outcome === 'completed' ? value.executionErrorCode !== null : (value.executionErrorCode !== null && typeof value.executionErrorCode !== 'string')))
     fail('invalid-turn-revision-gc-manifest');
+  if(value.schemaVersion===4){if(managed)validateBackendState(value.backendState);else validatePiRevisionState(value.backendState);}
+  const session=managed?value.sessionState:value.piSession;
   const identity = turnRuntimeIdentity(value.identity);
+  if(managed){const state=validateBackendState(value.backendState);if(state.recovery==='remote-reference'&&!sameTurnRuntimeIdentity(state.identity,identity))fail('invalid-turn-revision-gc-manifest');}
   const scope=turnScope(rawScope??identity.scope),blobPrefix=turnRevisionBlobPrefix(scope);
   if (turnRevisionObjectKey(identity) !== objectKey || turnRevisionManifestPrefix(identity.scope)!==turnRevisionManifestPrefix(scope)) fail('invalid-turn-revision-gc-manifest');
   turnBaseCheckpoints(value.base); gcPositive(value.committedAt, 'invalid-turn-revision-gc-manifest');
-  exact(value.files, ['objectKey', 'sha256', 'size']); exact(value.piSession, ['objectKey', 'sha256', 'size']);
-  const filesKey = key(value.files.objectKey,blobPrefix), sessionsKey = key(value.piSession.objectKey,blobPrefix);
+  exact(value.files, ['objectKey', 'sha256', 'size']); exact(session, ['objectKey', 'sha256', 'size']);
+  const filesKey = key(value.files.objectKey,blobPrefix), sessionsKey = key(session.objectKey,blobPrefix);
   if (filesKey !== `${blobPrefix}files/${hash(value.files.sha256)}`
-    || sessionsKey !== `${blobPrefix}sessions/${hash(value.piSession.sha256)}`) fail('invalid-turn-revision-gc-manifest');
-  const fileSize = gcPositive(value.files.size, 'invalid-turn-revision-gc-manifest'), sessionSize = gcPositive(value.piSession.size, 'invalid-turn-revision-gc-manifest');
+    || sessionsKey !== `${blobPrefix}sessions/${hash(session.sha256)}`) fail('invalid-turn-revision-gc-manifest');
+  const fileSize = gcPositive(value.files.size, 'invalid-turn-revision-gc-manifest'), sessionSize = gcPositive(session.size, 'invalid-turn-revision-gc-manifest');
   if (fileSize > 64 * 1024 * 1024 || sessionSize > 64 * 1024 * 1024 || fileSize + sessionSize > 64 * 1024 * 1024) fail('invalid-turn-revision-gc-manifest');
   return new Set([filesKey, sessionsKey]);
 }

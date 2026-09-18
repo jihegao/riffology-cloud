@@ -2,13 +2,13 @@
 export const browserPreviewStaticIndex = {
   "schema": "riffology.browser-static-delivery/v3",
   "runtimeProfiles": [
-    "08460495d986e2b21de713e14d23afb58b9253ac69b692a61bcfe1bd939c9b76",
-    "43d29ab27496ef50e57751df1fde12eefe20fc350a7d534fe8cfbb739476b9c0"
+    "28cd56fae7755f8b100e00d96aed82dc11757e38733fd3f0a3d1efe28c7fbd4c",
+    "b5355cc5925224d224540792525cdefa0ae00deacc3d330608065f90c740eed2"
   ],
   "delivery": {
     "hostModule": {
-      "url": "/browser-preview-assets/de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1/host.bundle.mjs",
-      "sha256": "de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1",
+      "url": "/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+      "sha256": "38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1",
       "byteLength": 41203
     },
     "rendererModule": {
@@ -25,10 +25,10 @@ export const browserPreviewStaticIndex = {
     }
   },
   "versions": {
-    "43d29ab27496ef50e57751df1fde12eefe20fc350a7d534fe8cfbb739476b9c0": {
+    "b5355cc5925224d224540792525cdefa0ae00deacc3d330608065f90c740eed2": {
       "hostModule": {
-        "url": "/browser-preview-assets/de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1/host.bundle.mjs",
-        "sha256": "de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1",
+        "url": "/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+        "sha256": "38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1",
         "byteLength": 41203
       },
       "rendererModule": {
@@ -44,10 +44,10 @@ export const browserPreviewStaticIndex = {
         "scriptSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf"
       }
     },
-    "08460495d986e2b21de713e14d23afb58b9253ac69b692a61bcfe1bd939c9b76": {
+    "28cd56fae7755f8b100e00d96aed82dc11757e38733fd3f0a3d1efe28c7fbd4c": {
       "hostModule": {
-        "url": "/browser-preview-assets/de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1/host.bundle.mjs",
-        "sha256": "de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1",
+        "url": "/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+        "sha256": "38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1",
         "byteLength": 41203
       },
       "rendererModule": {
@@ -106,6 +106,14 @@ export const browserPreviewStaticIndex = {
       "kind": "app"
     },
     {
+      "url": "/browser-preview-assets/2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8/source/package-lock.json",
+      "file": "browser-preview-assets/2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8/source/package-lock.json",
+      "sha256": "2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8",
+      "byteLength": 214212,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
       "url": "/browser-preview-assets/2d127e0fbdfdd139b90c2eb487950913771846991330460fce3b183ba79d8ddb/assets/matplotlib-3.10.8-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
       "file": "browser-preview-assets/2d127e0fbdfdd139b90c2eb487950913771846991330460fce3b183ba79d8ddb/assets/matplotlib-3.10.8-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
       "sha256": "2d127e0fbdfdd139b90c2eb487950913771846991330460fce3b183ba79d8ddb",
@@ -127,6 +135,14 @@ export const browserPreviewStaticIndex = {
       "sha256": "32959d4137cec8143d75016d029281df3d2e80a232896ed903c2b59e1c44ee9f",
       "byteLength": 2918760,
       "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+      "file": "browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+      "sha256": "38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1",
+      "byteLength": 41203,
+      "contentType": "text/javascript",
       "kind": "app"
     },
     {
@@ -330,14 +346,6 @@ export const browserPreviewStaticIndex = {
       "kind": "app"
     },
     {
-      "url": "/browser-preview-assets/de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1/host.bundle.mjs",
-      "file": "browser-preview-assets/de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1/host.bundle.mjs",
-      "sha256": "de42f9c9027a035cb27ff050089b070a223d9bc27119bbfc0e8f7deb98332da1",
-      "byteLength": 41203,
-      "contentType": "text/javascript",
-      "kind": "app"
-    },
-    {
       "url": "/browser-preview-assets/df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8/source/model-spec.ts",
       "file": "browser-preview-assets/df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8/source/model-spec.ts",
       "sha256": "df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8",
@@ -350,14 +358,6 @@ export const browserPreviewStaticIndex = {
       "file": "browser-preview-assets/f08716f1e1307718c01c03748408ffed22cbbe3c2a098a0d0cb8f616e0642a63/assets/tqdm-4.67.3-py3-none-any.whl",
       "sha256": "f08716f1e1307718c01c03748408ffed22cbbe3c2a098a0d0cb8f616e0642a63",
       "byteLength": 78374,
-      "contentType": "application/octet-stream",
-      "kind": "app"
-    },
-    {
-      "url": "/browser-preview-assets/f2148feb0fe4ea3aad8524fa2cae71e83aa811ca318c45af78863c88ab2c6d08/source/package-lock.json",
-      "file": "browser-preview-assets/f2148feb0fe4ea3aad8524fa2cae71e83aa811ca318c45af78863c88ab2c6d08/source/package-lock.json",
-      "sha256": "f2148feb0fe4ea3aad8524fa2cae71e83aa811ca318c45af78863c88ab2c6d08",
-      "byteLength": 213104,
       "contentType": "application/octet-stream",
       "kind": "app"
     },

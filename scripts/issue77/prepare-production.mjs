@@ -1,0 +1,33 @@
+import {readFileSync,writeFileSync,mkdirSync,readdirSync,cpSync,mkdtempSync} from 'node:fs';
+import {resolve,relative} from 'node:path';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {validateBrowserPreviewWebAssets} from '../m3/materialize-browser-preview-web.mjs';
+const args=process.argv.slice(2),option=name=>{const i=args.indexOf(name);return i<0?null:args[i+1];};
+const root=resolve(import.meta.dirname,'../..'),dir=resolve(option('--directory')??resolve(root,'.local/issue77-production-prep'));
+const assets=option('--assets');if(!assets)throw Error('explicit-verified-active-assets-directory-required');
+const raw=JSON.parse(readFileSync(resolve(dir,'active-settings.json'),'utf8')),inventory=JSON.parse(readFileSync(resolve(dir,'runtime-inventory.json'),'utf8'));
+const verified=validateBrowserPreviewWebAssets(root);if(verified.status!=='passed')throw Error('current-web-assets-not-materialized');
+mkdirSync(dir,{recursive:true,mode:0o700});const candidateAssets=mkdtempSync(resolve(dir,'gateway-assets-candidate-'));
+cpSync(resolve(assets),candidateAssets,{recursive:true});cpSync(resolve(root,'.local/browser-preview/gateway-assets'),candidateAssets,{recursive:true});
+const {settings,active}=raw;if(active.versions.length!==1||active.versions[0].percentage!==100)throw Error('single-active-version-required');
+const bindings=structuredClone(settings.bindings),names=new Set(bindings.map(b=>b.name));if(names.size!==bindings.length)throw Error('duplicate-binding');
+for(const binding of bindings.filter(b=>/ENABLED$/.test(b.name)))if(binding.text!=='false')throw Error('existing-gate-not-closed:'+binding.name);
+const money=JSON.parse(bindings.find(b=>b.name==='PRODUCTION_MONEY_POLICY_JSON').text);if(money.enabled!==false)throw Error('historical-money-policy-not-closed');
+if(names.has('MANAGED_ACCEPTANCE_JSON')||names.has('MANAGED_TURN_RUNTIME'))throw Error('managed-already-configured-reconcile-required');
+const simulation=inventory.containers.find(c=>c.name==='riffology-phase1-simulation');if(!simulation||simulation.namespaceId!==bindings.find(b=>b.name==='SIMULATION_SANDBOX').namespace_id||simulation.image!==bindings.find(b=>b.name==='M4_SIMULATION_IMAGE').text)throw Error('simulation-topology-mismatch');
+const sourceCommit=execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();
+const sourceWorktreeClean=execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).trim()==='';
+if(!sourceWorktreeClean&&!args.includes('--allow-dirty-preparation'))throw Error('committed-source-required');
+const vars=Object.fromEntries(bindings.filter(b=>b.type==='plain_text').map(b=>[b.name,b.text]));vars.M2_WORKER_SOURCE_SHA=sourceCommit;
+const secrets=bindings.filter(b=>b.type==='secret_text'||b.type==='secret_key').map(b=>b.name);
+const unsafe=bindings.filter(b=>!['plain_text','secret_text','secret_key','assets'].includes(b.type));
+unsafe.push({name:'MANAGED_TURN_RUNTIME',type:'durable_object_namespace',class_name:'ManagedProductRuntime'});
+const config={name:'riffology-m1-gateway-staging',main:resolve(root,'services/gateway/index.ts'),compatibility_date:settings.compatibility_date,compatibility_flags:settings.compatibility_flags,preview_urls:false,keep_vars:false,assets:{directory:candidateAssets,binding:'ASSETS',run_worker_first:true,html_handling:'none',not_found_handling:'none'},vars,secrets:{required:[...secrets,'MANAGED_OPENAI_API_KEY']},unsafe:{bindings:unsafe,metadata:{exports:{...inventory.scriptRuntime.exports,ManagedProductRuntime:{type:'durable-object',storage:'sqlite'}},containers:inventory.scriptRuntime.containers,keep_bindings:['secret_text','secret_key'],observability:settings.observability,placement:settings.placement,logpush:settings.logpush,tail_consumers:settings.tail_consumers}}};
+const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
+function fileManifest(path,base=path){return readdirSync(path,{withFileTypes:true}).flatMap(e=>e.isDirectory()?fileManifest(resolve(path,e.name),base):[{path:relative(base,resolve(path,e.name)),sha256:sha(readFileSync(resolve(path,e.name)))}]).sort((a,b)=>a.path.localeCompare(b.path));}
+const priorAssets=fileManifest(resolve(assets)),nextAssets=fileManifest(candidateAssets);for(const old of priorAssets.filter(a=>a.path.startsWith('browser-preview-assets/'))){if(nextAssets.find(a=>a.path===old.path)?.sha256!==old.sha256)throw Error('immutable-prior-asset-not-retained');}
+const assetChanges=nextAssets.filter(a=>priorAssets.find(b=>b.path===a.path)?.sha256!==a.sha256);
+const plan={schemaVersion:1,preparedAt:new Date().toISOString(),sourceCommit,sourceWorktreeClean,uploadReady:sourceWorktreeClean,baseDeploymentId:active.id,baseVersionId:active.versions[0].version_id,closed:true,managedPolicy:'absent',newSecretName:'MANAGED_OPENAI_API_KEY',newDurableClass:'ManagedProductRuntime',preservedNamespaceIds:Object.fromEntries(bindings.filter(b=>b.type==='durable_object_namespace').map(b=>[b.name,b.namespace_id])),preservedBindingSha256:sha(JSON.stringify(bindings)),priorAssets,nextAssets,assetChanges,retainedImmutableAssets:priorAssets.filter(a=>a.path.startsWith('browser-preview-assets/')).length,currentWebReceiptSha256:sha(readFileSync(resolve(root,'.local/browser-preview/gateway-assets-receipt.json'))),simulation,allowedChanges:['source bundle','current web and runtime assets with prior immutable assets retained','M2_WORKER_SOURCE_SHA','ManagedProductRuntime SQLite export','MANAGED_TURN_RUNTIME binding','MANAGED_OPENAI_API_KEY secret name'],requiresFreshReadbackBeforeUpload:true,cloudWritesPerformed:false};
+mkdirSync(dir,{recursive:true,mode:0o700});for(const [name,value] of [['closed-candidate.json',config],['preparation-plan.json',plan]])writeFileSync(resolve(dir,name),JSON.stringify(value,null,2)+'\n',{mode:0o600});
+console.log(JSON.stringify({prepared:true,config:resolve(dir,'closed-candidate.json'),plan:resolve(dir,'preparation-plan.json'),baseVersionId:plan.baseVersionId,policy:'absent',cloudWritesPerformed:false}));

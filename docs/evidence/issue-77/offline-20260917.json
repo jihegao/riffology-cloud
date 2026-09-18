@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-17T16:47:47.072508+00:00",
+  "sourceCommit": "8d5e6ec2f9e5f2b62d1af002cdddde030491998d",
+  "integrationBase": "08f7b727070a58484732fa56bdf7d7a448727db1",
+  "safetyCheckpoint": "3f4bee9b3b8dd5211af669066dce8afd27a85b91",
+  "sourceFiles": [
+    {
+      "path": "package-lock.json",
+      "sha256": "f2148feb0fe4ea3aad8524fa2cae71e83aa811ca318c45af78863c88ab2c6d08"
+    },
+    {
+      "path": "scripts/evidence/verify-issue77.mjs",
+      "sha256": "b0254a795334703df2d91ed6ac3283cf4e79631a83c1057ecc37edfe92d9f88b"
+    },
+    {
+      "path": "services/simulation/command-evidence.ts",
+      "sha256": "dc7ef4c9d45a5a5452b59907baacf3a714f1f2c688b89732672d1414919267ac"
+    },
+    {
+      "path": "services/simulation/result-oracle.ts",
+      "sha256": "3ff77c7e5e4a826f8b2486b8bd44c776a3f3a8432e37e56b50b87278da96ca43"
+    },
+    {
+      "path": "services/simulation/server-profile.ts",
+      "sha256": "b4d54cdc75cca3d2cd2a754d7341dff51d55962715e6e5d28ea7a2f57eede04e"
+    },
+    {
+      "path": "services/simulation/source.ts",
+      "sha256": "819e43f9495fc2831efc4361957d0a7dfc1820e7c6d73c3fe427b2055956ea26"
+    },
+    {
+      "path": "services/turn-runtime/backend-contract.ts",
+      "sha256": "c213ff96484684128d9a2c11f86c751066274aac148e111addd961f75ace63cc"
+    },
+    {
+      "path": "services/turn-runtime/candidate-artifact.ts",
+      "sha256": "4b0a717330a8e69f29f8c3d944b21530e0342c7b6d332353e181564efc69563a"
+    },
+    {
+      "path": "services/turn-runtime/core.ts",
+      "sha256": "a55015ee312f65437128bff8d8187276beac7b7be3b69e476ad6df534f6cfb19"
+    },
+    {
+      "path": "services/turn-runtime/managed-adapter.ts",
+      "sha256": "3bcb95e46cf01d55a508c2a92e184264f0018900210b5649176cc8ce7b8ace3e"
+    },
+    {
+      "path": "services/turn-runtime/revision-gc.ts",
+      "sha256": "9f80603c65b5cfc02f081a8e0239e17411398220a1e339d8e8029216d90988f6"
+    },
+    {
+      "path": "services/turn-runtime/revision-store-client.ts",
+      "sha256": "8f334f5c21e759dfe9183a41e0aaca4c2e93f7dd49f65a18bbef046b49a33d9d"
+    },
+    {
+      "path": "services/turn-runtime/revision-store.ts",
+      "sha256": "14927ea7cf9284919c38fc2387b4e38e1e4b890eea70f2a561a2d803664eecad"
+    },
+    {
+      "path": "services/turn-runtime/revision.ts",
+      "sha256": "3668c4b96b18db25e980c78227c04c54c1f21a5bf0668b8e7149cda571ae9e36"
+    },
+    {
+      "path": "services/turn/dispatcher.ts",
+      "sha256": "eba7020cca4b8be4d0739e82b785bd72e143945f54b4167eb75e87f49288cf1f"
+    },
+    {
+      "path": "services/turn/journal.ts",
+      "sha256": "7c99c54b62c8dfa00c15456ec4f35727c0ebc9149792afd329f59d59d61797ba"
+    },
+    {
+      "path": "services/turn/json-equivalent.ts",
+      "sha256": "254cf43b4c57694db810024e8d7d75660ab4e5411c37e545a47dceecd972253f"
+    },
+    {
+      "path": "services/turn/store.ts",
+      "sha256": "95f2531dfd7d47f7464cf8d69deb3141ce66f6a202f6770ade9694ec757691e4"
+    },
+    {
+      "path": "tests/m2/backend-contract.test.ts",
+      "sha256": "9ef19fbcdda4dfaec417eb6114160b7ef1821a3fe1bd2dc4545f1eb39720c116"
+    },
+    {
+      "path": "tests/m2/backend-shared-contract.test.ts",
+      "sha256": "4e2a1e67dc84fc7de18ec558b67b2bae57369ce6758b747f1cdffef433ce52eb"
+    },
+    {
+      "path": "tests/m2/product-turn-runtime.test.ts",
+      "sha256": "9634342a5d7cfbb05be5bb6b694d827946f317691940b48bdb8f57eb01ad6682"
+    },
+    {
+      "path": "tests/m2/revision-store-workerd.test.mjs",
+      "sha256": "ba2fb21526e3d177b9aa40d9cb1e5f47fa8af6b74290d3efd5db7005558fd75f"
+    },
+    {
+      "path": "tests/m2/turn-journal.test.ts",
+      "sha256": "841663bc537e814012513ba4de0971668dd6ed156bdd51df7b8ee80679c23264"
+    },
+    {
+      "path": "tests/m2/turn-revision.test.ts",
+      "sha256": "6220cdd7acc4eedd61819057dd8cab17ed607f06b40de661981ed8b0a645ece6"
+    },
+    {
+      "path": "tests/m3/agent-candidate-contract.test.ts",
+      "sha256": "1ff7ac18b4eed9ce02a7473a1c8bb27f5c5ed5bc521ba9f126b9505cfe4d119a"
+    }
+  ],
+  "validation": {
+    "mode": "all-required-check-stages-with-M3-remediation",
+    "requiredStages": [
+      {
+        "name": "static",
+        "command": "npm run check:ui && npm run typecheck",
+        "exitCode": 0,
+        "suites": []
+      },
+      {
+        "name": "m0",
+        "command": "npm run test:m0",
+        "exitCode": 0,
+        "suites": [
+          {
+            "tests": 351,
+            "passed": 350,
+            "failed": 0,
+            "cancelled": 0,
+            "skipped": 1,
+            "todo": 0
+          }
+        ]
+      },
+      {
+        "name": "m1",
+        "command": "npm run test:m1",
+        "exitCode": 0,
+        "suites": [
+          {
+            "tests": 213,
+            "passed": 213,
+            "failed": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          }
+        ]
+      },
+      {
+        "name": "m2",
+        "command": "npm run test:m2",
+        "exitCode": 0,
+        "suites": [
+          {
+            "tests": 715,
+            "passed": 715,
+            "failed": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          }
+        ]
+      },
+      {
+        "name": "m3",
+        "command": "npm run test:m3",
+        "exitCode": 0,
+        "suites": [
+          {
+            "tests": 805,
+            "passed": 795,
+            "failed": 0,
+            "cancelled": 0,
+            "skipped": 10,
+            "todo": 0
+          },
+          {
+            "tests": 15,
+            "passed": 15,
+            "failed": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          {
+            "tests": 9,
+            "passed": 9,
+            "failed": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          {
+            "tests": 87,
+            "passed": 87,
+            "failed": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          }
+        ]
+      }
+    ],
+    "total": {
+      "tests": 2195,
+      "passed": 2184,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 11,
+      "todo": 0
+    },
+    "initialFullCheck": {
+      "command": "npm run check",
+      "exitCode": 1,
+      "failedStage": "m3",
+      "reason": "missing ignored Browser Preview host bundle in new worktree",
+      "resolution": "verified 25 public assets against committed hashes; ran prepare-assets and materialize without manifest updates; reran complete test:m3"
+    },
+    "priorSetupFailure": "missing .local temporary directory; created before stage checks",
+    "diffCheck": "passed"
+  },
+  "authorizations": {
+    "paidRequests": false,
+    "productionDeployment": false,
+    "phase5": false
+  },
+  "delivery": {
+    "offlineImplementation": "implemented and locally verified",
+    "piFaultImprovement": "two specific JSON replay-order regressions corrected",
+    "managedTransport": "synthetic injected transport only; no live SDK/HTTP client acceptance",
+    "nativeMesaDocker": "not run; existing opt-in tests skipped",
+    "liveEndToEnd": "not run",
+    "production": "not deployed",
+    "githubIssue": "not closed"
+  }
+}

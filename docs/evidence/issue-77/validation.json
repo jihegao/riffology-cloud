@@ -1,0 +1,552 @@
+{
+  "schemaVersion": 2,
+  "recordType": "offline-validation",
+  "recordedAt": "2026-09-18T00:44:46.285977+00:00",
+  "sourceCommit": "7b1250549da146b236962196cad7046b463061ee",
+  "integrationBase": "eb73155ed72be278300f9e57704dc3c1d5c4ed5b",
+  "safetyCheckpoint": "3f4bee9b3b8dd5211af669066dce8afd27a85b91",
+  "sourceFiles": [
+    {
+      "path": "package-lock.json",
+      "sha256": "2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8"
+    },
+    {
+      "path": "package.json",
+      "sha256": "5c49d126b6e53360bb9ef27c814322b89a91fc15545d7a31ac6b0e3ba4fb925f"
+    },
+    {
+      "path": "scripts/evidence/verify-issue77-live.mjs",
+      "sha256": "d0fb897786271d3f2010b5d5f63e700d1cb23bef002d92be7e422e10daa3689b"
+    },
+    {
+      "path": "scripts/evidence/verify-issue77.mjs",
+      "sha256": "a5adc3dd2647b757757d2c30cb7195283dded0877c0d1967591ca9607088ab67"
+    },
+    {
+      "path": "scripts/issue77/ledger.mjs",
+      "sha256": "a28ca3bed4ec962aabb8db116d61d7b7fcb52d09f00d3bd73a45676cc4d554b6"
+    },
+    {
+      "path": "scripts/issue77/ledger.test.mjs",
+      "sha256": "0f2b33e89d39e71fa6ef85beadb2693e9368c30bd0e6446594f0025661c8354d"
+    },
+    {
+      "path": "scripts/issue77/live.mjs",
+      "sha256": "114e59d67397714023e8d8078542e40d6a522f16297d79bf64677e3edcfdfb00"
+    },
+    {
+      "path": "scripts/issue77/live.test.mjs",
+      "sha256": "7426b6da10f642a8f8d99bb2350e5cf6f5c5a70749f162df82a452b76dd8db20"
+    },
+    {
+      "path": "scripts/issue77/prepare-production.mjs",
+      "sha256": "3f9fd190d6af98f68acfc0ff776d707b812f68d13ed64ed80cac3d87bf29488e"
+    },
+    {
+      "path": "scripts/issue77/production-acceptance.mjs",
+      "sha256": "30e58d71ba509e1f3a993d37f39089d4f642f4604da02943b3c862dd1196b1cc"
+    },
+    {
+      "path": "scripts/issue77/production-acceptance.test.mjs",
+      "sha256": "22321dde40603c356cbe6d6a81f3c6f741b665dcc5146b776c82a1e00116e275"
+    },
+    {
+      "path": "scripts/issue77/verify-downloaded-browser.mjs",
+      "sha256": "992be08e3ddeacb8c32dd22e8b74cfdf38435209b3c0d14f80fb936c26129d22"
+    },
+    {
+      "path": "scripts/issue77/verify-downloaded.mjs",
+      "sha256": "3ae56c618d391de035141e5218ba8fa0f123499f0a0347eb0d9990ec418dc8e7"
+    },
+    {
+      "path": "scripts/model/g5-v4-recovery-control.mjs",
+      "sha256": "0ab8e64d3523d46c6263bad3ecadeea79878121bafbf2a74c54b14259059f275"
+    },
+    {
+      "path": "scripts/model/g5-v4-recovery-deploy.mjs",
+      "sha256": "d604c94e78360fa91f06c5dba656831da8a016068f5916556459ee0c0f06b79f"
+    },
+    {
+      "path": "scripts/model/g5-v4-recovery-prepare.mjs",
+      "sha256": "be231618903e5b0530251086eb4ad5c550069871d69cfc61dbcd6fbc24919425"
+    },
+    {
+      "path": "scripts/model/g5-v4-recovery-read.mjs",
+      "sha256": "b03a0cdcecc5e31e52111642a3dd4b4f775e2c2360056b68676a6e0a3fe24923"
+    },
+    {
+      "path": "scripts/model/g5-v4-recovery-watch.mjs",
+      "sha256": "4725abc57dc858c5b5066aea096b472835b17b38c4bc6222750e107b9e2bf021"
+    },
+    {
+      "path": "scripts/model/g5-window-freeze.mjs",
+      "sha256": "5ce8a3103fccf022df70e48ea608ef4c2af1f45838a58153b9cac133b43c7f58"
+    },
+    {
+      "path": "scripts/model/g5-window-freeze.test.mjs",
+      "sha256": "0a435665ad4e3741a8b02aae3836cb377dec40fbd94fa471fff713b0579d5d9d"
+    },
+    {
+      "path": "services/browser-preview/build-host.ts",
+      "sha256": "dd9628e005c9f1962fdb3a63b6b343b6fd157652c1de9502c2a3ad31ee16eb15"
+    },
+    {
+      "path": "services/browser-preview/contract.ts",
+      "sha256": "2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f"
+    },
+    {
+      "path": "services/browser-preview/execution/assets/static-index.ts",
+      "sha256": "9f1a56ddcd5576b78fcda80be0b04fc34381847c17cd2fbd5ed619dc11c599ad"
+    },
+    {
+      "path": "services/browser-preview/orchestrator.ts",
+      "sha256": "fab4cce03850bfefaf5746cc093282c414fdb6eb42b7664a1db7fdc884a2e764"
+    },
+    {
+      "path": "services/browser-preview/runtime/assets/delivery.json",
+      "sha256": "ff120ec3ae24df6ed2c2a6b4d41775766f5314102067dd135064a1ddcff07b94"
+    },
+    {
+      "path": "services/browser-preview/runtime/assets/profiles.json",
+      "sha256": "5c9754897bc765ac976218f80e532e3727f62c759b460f65d45d6a81f2e98a1e"
+    },
+    {
+      "path": "services/browser-preview/runtime/browser-acceptance.mjs",
+      "sha256": "e40669f8e44611aaa207768a7e0598e911351c4d18d9738e6bbccc96a9eaf39a"
+    },
+    {
+      "path": "services/browser-preview/runtime/fixtures.mjs",
+      "sha256": "566a81aac420e569543c9119618b7d648530d5942ca447b1bc41af5754f3e68d"
+    },
+    {
+      "path": "services/browser-preview/runtime/fixtures/run.py",
+      "sha256": "b0c785d8c08838d9e416eb87aba1c6b5ce9d8b1d6d233cf2fec32de99a0ec7f5"
+    },
+    {
+      "path": "services/browser-preview/runtime/package-loader.mjs",
+      "sha256": "fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396"
+    },
+    {
+      "path": "services/browser-preview/validator.ts",
+      "sha256": "d5f8c41a55e02a84572eb3e1619ace21ebf4d0f06943d93cec830d0f2a9493cf"
+    },
+    {
+      "path": "services/gateway/app.ts",
+      "sha256": "891c77d4a67f79d14ed927787fa8282d39af2fafd2679a2faa80d2b1017176fd"
+    },
+    {
+      "path": "services/gateway/index.ts",
+      "sha256": "3a1f93f581c883140d2a32d39d3a5d3d7a5831e3050b5d63e8fc53de6f330892"
+    },
+    {
+      "path": "services/gateway/turn-services.ts",
+      "sha256": "6d5fef4d5edc6b3619b96499ed8d0a6871da024ed1d48c05d77cd6cab9f25309"
+    },
+    {
+      "path": "services/model-budget/g5-rollover-token.ts",
+      "sha256": "9b2000064f9994ee5b9275444a564b66f5a5871da1b2d287cdc677e43bbd8f2d"
+    },
+    {
+      "path": "services/model-budget/g5-window-durable.ts",
+      "sha256": "2c217a1f1720dbcea7ace18af22452633e64a8619cee33456956bf471cf95cc8"
+    },
+    {
+      "path": "services/model-budget/g5-window.ts",
+      "sha256": "141d14cda45adf869b9fa963a2021f1330b022decc1f5645e19ae16047674d00"
+    },
+    {
+      "path": "services/model-proxy/http.ts",
+      "sha256": "e4b4cb84ee357cf2de900fb27ccfaa9ea049db0666b6b42938ea18f63c54e9b9"
+    },
+    {
+      "path": "services/model-proxy/openai-gateway-responses.ts",
+      "sha256": "400722f8fc9e9199f254ffffbab78d595e0ad6fe297deaa362b60ba3f49936fe"
+    },
+    {
+      "path": "services/simulation/command-evidence.ts",
+      "sha256": "dc7ef4c9d45a5a5452b59907baacf3a714f1f2c688b89732672d1414919267ac"
+    },
+    {
+      "path": "services/simulation/result-oracle.ts",
+      "sha256": "3ff77c7e5e4a826f8b2486b8bd44c776a3f3a8432e37e56b50b87278da96ca43"
+    },
+    {
+      "path": "services/simulation/server-profile.ts",
+      "sha256": "b4d54cdc75cca3d2cd2a754d7341dff51d55962715e6e5d28ea7a2f57eede04e"
+    },
+    {
+      "path": "services/simulation/source.ts",
+      "sha256": "819e43f9495fc2831efc4361957d0a7dfc1820e7c6d73c3fe427b2055956ea26"
+    },
+    {
+      "path": "services/turn-runtime/backend-contract.ts",
+      "sha256": "c213ff96484684128d9a2c11f86c751066274aac148e111addd961f75ace63cc"
+    },
+    {
+      "path": "services/turn-runtime/candidate-artifact.ts",
+      "sha256": "4b0a717330a8e69f29f8c3d944b21530e0342c7b6d332353e181564efc69563a"
+    },
+    {
+      "path": "services/turn-runtime/core.ts",
+      "sha256": "a55015ee312f65437128bff8d8187276beac7b7be3b69e476ad6df534f6cfb19"
+    },
+    {
+      "path": "services/turn-runtime/managed-adapter.ts",
+      "sha256": "e58e1be12d4b97b775572f0eb2b04d6584db461dfe42517a2d9ae8fe63a84712"
+    },
+    {
+      "path": "services/turn-runtime/managed-product.ts",
+      "sha256": "e8b905c4ef3b333f5774ea981d44df9753e0375c074193053e05b4f02e976792"
+    },
+    {
+      "path": "services/turn-runtime/managed-runner.ts",
+      "sha256": "e1c0585c59266220ea3c97d61cdab5f1d305a7a9f17f9ecc97f9093e02ddeb69"
+    },
+    {
+      "path": "services/turn-runtime/managed-sdk-transport.ts",
+      "sha256": "b0c257dc78ad5afe54be9a0cb5a31626a4d1def0cdaedb1132fdc2cb109e53d7"
+    },
+    {
+      "path": "services/turn-runtime/revision-gc.ts",
+      "sha256": "c78cbafd48f1313a403b2907a76efe72396e64b16472c0d79148c0cb0a188448"
+    },
+    {
+      "path": "services/turn-runtime/revision-store-client.ts",
+      "sha256": "8f334f5c21e759dfe9183a41e0aaca4c2e93f7dd49f65a18bbef046b49a33d9d"
+    },
+    {
+      "path": "services/turn-runtime/revision-store.ts",
+      "sha256": "14927ea7cf9284919c38fc2387b4e38e1e4b890eea70f2a561a2d803664eecad"
+    },
+    {
+      "path": "services/turn-runtime/revision.ts",
+      "sha256": "d026dd72aca59c04e91bc08d3731a328da26b14c0592b68e04a92a2d9adeef02"
+    },
+    {
+      "path": "services/turn/dispatcher.ts",
+      "sha256": "9793a6418ed7f1ec61298c2425f6b92121731894de78d607ec2bc2e46c4bff27"
+    },
+    {
+      "path": "services/turn/journal.ts",
+      "sha256": "7c99c54b62c8dfa00c15456ec4f35727c0ebc9149792afd329f59d59d61797ba"
+    },
+    {
+      "path": "services/turn/json-equivalent.ts",
+      "sha256": "254cf43b4c57694db810024e8d7d75660ab4e5411c37e545a47dceecd972253f"
+    },
+    {
+      "path": "services/turn/store.ts",
+      "sha256": "95f2531dfd7d47f7464cf8d69deb3141ce66f6a202f6770ade9694ec757691e4"
+    },
+    {
+      "path": "services/web/app.js",
+      "sha256": "8ed1bb87a039ee8c666764c0084692cc21b8af3814bbe3fafdb6490e99612d76"
+    },
+    {
+      "path": "services/web/browser-preview.js",
+      "sha256": "a5388257b5972daa128a8ab51f72d124bf6c82b34ce7cf5b426540e3eb2834bf"
+    },
+    {
+      "path": "services/web/index.html",
+      "sha256": "c0ad8b8c76a685191f9e728923922efe14a7ec50a2525311e3fb059d4bf5e5c2"
+    },
+    {
+      "path": "services/web/previews.js",
+      "sha256": "c0309eaebfd65e27b35245a63ccb2d7b571d797e0509f0dbaa06dae377f38411"
+    },
+    {
+      "path": "services/web/project-status.js",
+      "sha256": "691e0cab145cf1e1cff3a7d21a85f9e8d87f3e19003d28d97215647df1f8a960"
+    },
+    {
+      "path": "services/web/services.js",
+      "sha256": "5af88da91e1a48923e4aaf54b74c909d904a39fcef62a016ad38d5f07c6b3fae"
+    },
+    {
+      "path": "services/web/styles.css",
+      "sha256": "7ce2bb388f7aa1fd18d59165b88ae9df02999d51974c07c91c450d86577b4b39"
+    },
+    {
+      "path": "services/workspace/durable.ts",
+      "sha256": "4308b43463bdf3c118c8de250a0a7f0491e60de1ee87667dfb951137f1ef0b1e"
+    },
+    {
+      "path": "services/workspace/managed-bootstrap.ts",
+      "sha256": "ad24139150b423fab808c748a41997059ece086bfe48d57a45abf7b580fdb841"
+    },
+    {
+      "path": "services/workspace/managed-route.ts",
+      "sha256": "2827bff12be6164aa17b55385432f01f35a338dbeefcdfd269859dc31a9aea2a"
+    },
+    {
+      "path": "tests/fixtures/preview-legacy-run.py",
+      "sha256": "fa7987095bbc29f2c6d87e9b0f815415f88c9079ad7070fb7fe8b91e7ebf0898"
+    },
+    {
+      "path": "tests/m1/managed-project-bootstrap.test.ts",
+      "sha256": "6c8ad9f9abeaac611881040183d9561db1321807169c5bf21afad5a877ad9312"
+    },
+    {
+      "path": "tests/m1/web.test.mjs",
+      "sha256": "89d4d1391a7bcb9c3ac5dc96a992c7b69c23cc0c5f364cab9e4b5912b31f0074"
+    },
+    {
+      "path": "tests/m2/backend-contract.test.ts",
+      "sha256": "9ef19fbcdda4dfaec417eb6114160b7ef1821a3fe1bd2dc4545f1eb39720c116"
+    },
+    {
+      "path": "tests/m2/backend-shared-contract.test.ts",
+      "sha256": "4e2a1e67dc84fc7de18ec558b67b2bae57369ce6758b747f1cdffef433ce52eb"
+    },
+    {
+      "path": "tests/m2/gateway-managed-acceptance.test.ts",
+      "sha256": "200cf02d04db52df723b9a34eabd116df5acf4e4c9079d9d531ffd5414f6dcd9"
+    },
+    {
+      "path": "tests/m2/managed-dispatcher.test.ts",
+      "sha256": "e8b88a2abe6fa63aa7e4eb872e7ee0cd9f456247b5ee7bda7fc2a2684e270b21"
+    },
+    {
+      "path": "tests/m2/managed-product.test.ts",
+      "sha256": "35440a08fc40fe7e55a54cad3990bfac827f651047afd0f6c081b140aae84901"
+    },
+    {
+      "path": "tests/m2/managed-route-workerd.test.mjs",
+      "sha256": "4f5401ee7de6bed60a6534baccb29393430bbee21803ed9f94a6632691895658"
+    },
+    {
+      "path": "tests/m2/managed-route.test.ts",
+      "sha256": "899020743f6730f41f83efc351a0f07d9cb848d232f9c4c35467f1045052f239"
+    },
+    {
+      "path": "tests/m2/managed-runner.test.ts",
+      "sha256": "d506d0516f29905b706591700cfa9cd1da2a9e2a70689d7f7f14b0357fb56ea6"
+    },
+    {
+      "path": "tests/m2/managed-sdk-transport.test.ts",
+      "sha256": "1b47a0caf90c8c785253a5d02df895e31058225ba247c583897eb16d635934fd"
+    },
+    {
+      "path": "tests/m2/model-proxy-g5-http.test.ts",
+      "sha256": "3eeadc6a8049b46df66f4543a488cf46b1c1cb975d82c342fb3ecea90731247d"
+    },
+    {
+      "path": "tests/m2/openai-gateway-responses.test.ts",
+      "sha256": "675e52da7d8be0735e096cc60bc021e97ca590e5e55c51e3e500d3b84862efbd"
+    },
+    {
+      "path": "tests/m2/product-turn-runtime.test.ts",
+      "sha256": "49938cc937a2f221f0454e4cf6091c052fa92f45d8c6956882d2efcc6315749f"
+    },
+    {
+      "path": "tests/m2/revision-store-workerd.test.mjs",
+      "sha256": "ba2fb21526e3d177b9aa40d9cb1e5f47fa8af6b74290d3efd5db7005558fd75f"
+    },
+    {
+      "path": "tests/m2/turn-journal.test.ts",
+      "sha256": "841663bc537e814012513ba4de0971668dd6ed156bdd51df7b8ee80679c23264"
+    },
+    {
+      "path": "tests/m2/turn-revision.test.ts",
+      "sha256": "736ab61a1ec3248e09533bb3acaf97a05138d2da453eaefaee3e1a4934a143a8"
+    },
+    {
+      "path": "tests/m3/agent-candidate-contract.test.ts",
+      "sha256": "1ff7ac18b4eed9ce02a7473a1c8bb27f5c5ed5bc521ba9f126b9505cfe4d119a"
+    },
+    {
+      "path": "tests/m3/browser-preview-legacy.test.mjs",
+      "sha256": "43401b7930c5e61d1c6185f974eb193fcd77621043f1c52892461b29baa605c3"
+    },
+    {
+      "path": "tests/m3/browser-preview-orchestrator.test.mjs",
+      "sha256": "fa68d3dd32e5d1686ab5b7df44d9f9565b3d204931248ed26bc1fb3a4d9f00d4"
+    },
+    {
+      "path": "tests/m3/browser-preview-panel.test.mjs",
+      "sha256": "1610e9e25dd1e340a287ca49d3731c2cdbc9d21241e6f2c5052211ece34250e8"
+    },
+    {
+      "path": "tests/m3/g5-authority-workerd.test.mjs",
+      "sha256": "a70855d28922e00c09b223284f4d89e9e52b5fe504b53bd611f97a50c9a57a42"
+    },
+    {
+      "path": "tests/m3/g5-rollover-token.test.ts",
+      "sha256": "975db9c25aa29ee77c69a8faf4d133f2adfc469cc54796d9d4718392c0e928f2"
+    },
+    {
+      "path": "tests/m3/gateway-root-assets-workerd.test.mjs",
+      "sha256": "6bbc173a7800c03ff66d1d2ded4de92182c3ae6cdd3b19a48a96050a7e7e36bc"
+    },
+    {
+      "path": "tests/m3/project-status.test.mjs",
+      "sha256": "270803e14175fbb41875efb96f072f6816d1c0353334ea7d89d4c6c2e2ef877e"
+    },
+    {
+      "path": "tests/m3/simulation-ui.test.mjs",
+      "sha256": "696418304474673e1adeab1fd53a811ee8ceedb77d0f2cf73e688a1d2ead6d0a"
+    },
+    {
+      "path": "tests/m3/workspace-layout.test.mjs",
+      "sha256": "62bb2bdbf331e59aee22a4b90841ee4fc6641d7cdf12279159f9872b8af08b0c"
+    }
+  ],
+  "validation": {
+    "requiredStages": [
+      {
+        "name": "static",
+        "command": "npm run check:ui && npm run typecheck",
+        "exitCode": 0,
+        "suites": []
+      },
+      {
+        "name": "m0",
+        "command": "npm run test:m0",
+        "exitCode": 0,
+        "suites": [
+          {
+            "tests": 351,
+            "passed": 350,
+            "failed": 0,
+            "cancelled": 0,
+            "skipped": 1,
+            "todo": 0
+          }
+        ]
+      },
+      {
+        "name": "m1",
+        "command": "npm run test:m1",
+        "exitCode": 0,
+        "suites": [
+          {
+            "tests": 221,
+            "passed": 221,
+            "failed": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          }
+        ]
+      },
+      {
+        "name": "m2",
+        "command": "npm run test:m2",
+        "exitCode": 0,
+        "suites": [
+          {
+            "tests": 775,
+            "passed": 775,
+            "failed": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          }
+        ]
+      },
+      {
+        "name": "m3",
+        "command": "npm run test:m3",
+        "exitCode": 0,
+        "suites": [
+          {
+            "tests": 816,
+            "passed": 806,
+            "failed": 0,
+            "cancelled": 0,
+            "skipped": 10,
+            "todo": 0
+          },
+          {
+            "tests": 15,
+            "passed": 15,
+            "failed": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          {
+            "tests": 9,
+            "passed": 9,
+            "failed": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          {
+            "tests": 87,
+            "passed": 87,
+            "failed": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          }
+        ]
+      }
+    ],
+    "total": {
+      "tests": 2274,
+      "passed": 2263,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 11,
+      "todo": 0
+    },
+    "fullCheck": {
+      "command": "npm run check",
+      "exitCode": 0,
+      "logSha256": "77ab5da299874430991c3567fc3eb6534be5baba14ede0280b809674139cfea6",
+      "sourceCommit": "7b1250549da146b236962196cad7046b463061ee"
+    },
+    "operatorTests": {
+      "command": "node --test scripts/issue77/*.test.mjs",
+      "exitCode": 0,
+      "suites": [
+        {
+          "tests": 12,
+          "passed": 12,
+          "failed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      ],
+      "logSha256": "500904fc97a6998c457b13def5ec87e93e787db3d0752bcd6aad12f35ad0efc9",
+      "sourceCommit": "7b1250549da146b236962196cad7046b463061ee",
+      "scope": "The script glob at this commit includes ledger, live operator, and production-acceptance tests. No model requests were made."
+    },
+    "historicalEvidenceVerification": {
+      "commands": [
+        "node scripts/evidence/verify-issue77.mjs --historical",
+        "node scripts/evidence/verify-issue77-live.mjs"
+      ],
+      "exitCodes": [
+        0,
+        0
+      ],
+      "scope": "Read-only verification of previously committed evidence; no new live execution or production acceptance claim."
+    },
+    "diffCheck": "passed"
+  },
+  "delivery": {
+    "offlineImplementation": "Managed project routing, admission, SDK adapter, checkpoint recovery, cancellation and UI usage implemented and locally verified",
+    "piFaultImprovement": "Existing Pi and shared Journal tests pass alongside backend-specific Managed receipts",
+    "managedTransport": "Public SDK exercised through intercepted synthetic HTTP in local Workerd; durable admission and RevisionStore/R2 integration validated",
+    "nativeMesaDocker": "This full check retains existing opt-in skips; it does not claim new native Docker acceptance",
+    "liveEndToEnd": "Outside this offline record; no new live end-to-end acceptance asserted",
+    "production": "Outside this offline record; deployment and live results require separate release evidence",
+    "githubIssue": "No issue-completion claim in this offline record"
+  },
+  "execution": {
+    "paidRequests": false,
+    "productionDeployment": false,
+    "phase5": false
+  },
+  "executionScope": "The booleans describe only the commands executed for this offline validation record, not cumulative task activity.",
+  "authorization": {
+    "keyReuse": true,
+    "boundedInternalTrial": true,
+    "acknowledgeUnknownActualSpend": true,
+    "policyDocument": "docs/architecture/issue-77-live-acceptance.md"
+  }
+}

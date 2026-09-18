@@ -919,3 +919,16 @@ test('authorization reload into another tenant drops the old tenant pending proj
   await page.getByRole('button',{name:'打开项目 '+ready.title,exact:true}).click();await waitFor(()=>streamConnected);tenantId='tenant-b';releaseStream();
   await waitFor(()=>newTenantReads>0);await page.locator('#app:not([hidden])').waitFor();await page.locator('#projects[aria-busy=false]').waitFor();assert.equal(await page.locator('#projects .project').count(),0);assert.doesNotMatch(await page.locator('#projects').innerText(),/旧租户|private-pending-a/);assert.equal(await page.locator('#workspace').isVisible(),false);
 });
+
+for(const usage of [{status:'observed',inputTokens:100,outputTokens:20,totalTokens:120,settlement:'pending'},{status:'unknown',reason:'missing'},{status:'observed',inputTokens:100,outputTokens:-1,totalTokens:99}])test(`Managed UI distinguishes ${usage.status} usage from settlement and resource cleanup (${usage.outputTokens??'missing'})`,async t=>{
+ const workspaceId='managed-workspace',sessionId='managed-session',turnId='managed-turn';
+ const page=await pageFixture(t,async(route,path)=>{
+  if(path==='/api/tenants/tenant-a/projects'){await json(route,{projects:[{id:'managed-project',workspace_id:workspaceId,title:'Managed synthetic',status:'ready'}]});return true;}
+  if(path===`/api/workspaces/${workspaceId}`){await json(route,{schemaVersion:3,nextSequence:2,activeTurnId:null,sessions:{[sessionId]:{id:sessionId,title:'Managed',createdAt:1}},turns:{[turnId]:{id:turnId,sessionId,message:'Synthetic model',status:'completed',executionOutcome:'completed',persistenceOutcome:'failed',persistenceErrorCode:'managed-candidate-schema',createdAt:2}}});return true;}
+  if(path===`/api/workspaces/${workspaceId}/events`){await json(route,{events:[{sequence:1,eventId:'managed-usage',turnId,workspaceId,runtimeGeneration:1,type:'provider.status',at:3,payload:{backend:'managed-agents',usage,billing:'pending',resources:'session-retained',remoteSessionId:'PRIVATE_PROVIDER_SESSION',apiKey:'SECRET_PROVIDER_KEY'}}],nextSequence:1,hasMore:false,oldestSequence:1,snapshotRequired:false});return true;}
+ });
+ await page.goto('https://ui.test/#/workspace/managed-project');await page.locator('#turns').getByText(/Managed 用量/).waitFor();const text=await page.locator('#turns').innerText();
+ assert.match(text,/已完成 · 保存失败/);assert.match(text,/费用尚未结算/);assert.match(text,/不代表正式实验通过/);assert.match(text,/回合结束时远端会话仍保留/);
+ if(usage.status==='observed'&&usage.outputTokens>=0)assert.match(text,/输入 100 Token，输出 20 Token/);else assert.match(text,/用量尚未确认/);
+ assert.doesNotMatch(text,/PRIVATE_PROVIDER_SESSION|SECRET_PROVIDER_KEY|费用已结算/);
+});

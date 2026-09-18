@@ -1,4 +1,5 @@
 import {deriveTurnTiming} from './timing.ts';
+import {jsonEquivalent} from './json-equivalent.ts';
 import { TURN_EVENT_BYTES_LIMIT, TURN_EVENT_LIMIT, TURN_EVENT_RECEIPT_LIMIT, actor, checkpointReceipt, initialWorkspaceBase, jsonPayload, message, positive, resourceDisposition, verifyHandoffProof, sameScope, scope, title, turnDigest, turnId,
   type CheckpointReceipt, type InitialWorkspaceBase, type RuntimeEventType, type SessionRecord, type TurnActor, type TurnEvent,
   type TurnEventType, type TurnJournalState, type TurnJournalView, type TurnRecord, type TurnResourceDisposition, type TurnScope } from './protocol.ts';
@@ -11,6 +12,21 @@ const terminal=(status:TurnRecord['status'])=>['completed','failed','cancelled',
 const intent=(userId:string,key:string)=>`${userId}|${turnId(key)}`;
 const nowValid=(value:number)=>positive(value);
 const equal=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
+/** Managed accounting is observed after immutable file publication. It does
+ * not prove later model/tool execution and cannot move the execution clock.
+ * Recognize the deployed exact envelope so existing immutable events recover;
+ * arbitrary provider status payloads retain the normal timestamp constraint. */
+function postExecutionAccounting(row:TurnEvent):boolean{
+  if(row.type!=='provider.status')return false;
+  const p=row.payload;
+  if(Object.keys(p).sort().join(',')!=='backend,billing,resources,usage'||p.backend!=='managed-agents'||p.billing!=='pending'||p.resources!=='session-retained')return false;
+  if(!p.usage||typeof p.usage!=='object'||Array.isArray(p.usage))return false;
+  const usage=p.usage as Record<string,unknown>,keys=Object.keys(usage).sort().join(',');
+  if(usage.status==='unknown')return keys==='reason,status'&&['missing','invalid'].includes(usage.reason as string);
+  if(usage.status!=='observed'||keys!=='inputTokens,outputTokens,settlement,status,totalTokens'||usage.settlement!=='pending')return false;
+  const values=[usage.inputTokens,usage.outputTokens,usage.totalTokens];
+  return values.every(v=>Number.isSafeInteger(v)&&(v as number)>=0)&&(usage.inputTokens as number)+(usage.outputTokens as number)===usage.totalTokens;
+}
 /** Runtime receipts only prevent a still-active Runtime from appending the
  * same event twice. Once a Turn is terminal, appendRuntime rejects every new
  * event by status, so retaining that Turn's receipts cannot add safety and
@@ -142,7 +158,7 @@ export class TurnJournal{
         const {tid,dispatchId,generation,eid,at,payload,type,payloadSha256}=input,turn=state.turns[tid];
         if(!turn||turn.dispatchId!==dispatchId||turn.runtimeGeneration!==generation)throw Error('turn-runtime-scope-denied');
         const prior=state.eventReceipts[eid];
-        if(prior){if(prior.payloadSha256!==payloadSha256)throw Error('turn-event-conflict');value.push({event:structuredClone(prior.event),replayed:true});continue;}
+        if(prior){if(prior.payloadSha256!==payloadSha256&&(prior.event.turnId!==tid||prior.event.type!==type||prior.event.at!==at||!jsonEquivalent(prior.event.payload,payload)))throw Error('turn-event-conflict');value.push({event:structuredClone(prior.event),replayed:true});continue;}
         if(!['running','cancelling'].includes(turn.status))throw Error('turn-runtime-scope-denied');
         if(!turn.startedAt||at<turn.startedAt||at>observedAt)throw Error('invalid-runtime-event-time');
         if(receiptCount>=TURN_EVENT_RECEIPT_LIMIT)throw Error('turn-event-receipt-archive-required');
@@ -190,10 +206,12 @@ export class TurnJournal{
         throw Error('turn-checkpoint-conflict');
       }
       if(turn.status!=='checkpointing')throw Error('turn-runtime-scope-denied');
-      const lastExecutionAt=state.events.filter(row=>row.turnId===turn.id&&!row.type.startsWith('turn.')).reduce((latest,row)=>Math.max(latest,row.at),turn.startedAt!);
+      if(!turn.base||!equal(turn.base.workspace,state.workspaceHead)||!equal(turn.base.session,state.sessions[turn.sessionId]!.head))throw Error('turn-checkpoint-base-conflict');
+      const lastExecutionAt=state.events.filter(row=>row.turnId===turn.id&&!row.type.startsWith('turn.')&&!postExecutionAccounting(row)).reduce((latest,row)=>Math.max(latest,row.at),turn.startedAt!);
       // ProductTurnRuntime materializes R2 before WorkspaceAgent records its
       // checkpointing intent, so its committedAt can legitimately precede the
-      // local checkpointing event. It may not precede execution evidence.
+      // local checkpointing event or a later accounting-only observation. It may
+      // not precede actual execution evidence.
       if(checkpoint.committedAt<lastExecutionAt)throw Error('invalid-checkpoint-receipt');if(turn.checkpoint&&!equal(turn.checkpoint,checkpoint))throw Error('turn-checkpoint-conflict');turn.checkpoint=checkpoint;turn.persistenceOutcome='saved';turn.persistenceErrorCode=null;turn.status=turn.executionOutcome;turn.finishedAt=at;turn.updatedAt=at;state.workspaceHead=structuredClone(checkpoint);const session=state.sessions[turn.sessionId]!;session.head=structuredClone(checkpoint);session.updatedAt=at;state.activeTurnId=null;applyReleaseDisposition(state,turn,disposition);
       const type=`turn.${turn.status}` as TurnEventType;turn.terminalSequence=event(state,turn,type,at,{revisionId:checkpoint.revisionId,saved:true,errorCode:turn.errorCode}).sequence;pruneTerminalEventReceipts(state);return {state,value:turn};});
   }
