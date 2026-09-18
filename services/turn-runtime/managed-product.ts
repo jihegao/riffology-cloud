@@ -4,7 +4,7 @@ import {sameScope,turnDigest,turnId,turnBaseCheckpoints,actor as validateActor,m
 import {turnRuntimeIdentity,type TurnRuntimeIdentity} from './identity.ts';
 import {SqlExecutionBindingStore,type ExecutionBinding} from './backend-contract.ts';
 import {ManagedExecutionAdapter,type ManagedInput,type ManagedObservation} from './managed-adapter.ts';
-import {ManagedSdkTransport,type ManagedPaidAdmission} from './managed-sdk-transport.ts';
+import {ManagedSdkTransport,type ManagedPaidAdmission,type ManagedDeletionIntent} from './managed-sdk-transport.ts';
 import {revisionStoreActorName,type RevisionStoreNamespace} from './revision-store-client.ts';
 import {packageCandidateModel} from './candidate-artifact.ts';
 import {managedRunner} from './managed-runner.ts';
@@ -12,7 +12,7 @@ import {managedAcceptancePolicy,type ManagedAcceptancePolicy} from '../workspace
 
 type AbsentReceipt=Extract<TurnRuntimeReceipt,{phase:'absent'}>;
 type Accepted=Parameters<TurnRuntimePort['accept']>[0];
-type RecordState={input:Accepted;managedInput:ManagedInput;reserved:boolean;operation:'create'|'continue'|null;observation:ManagedObservation|null;checkpoint:CheckpointReceipt|null;persistenceError:string|null;closed:boolean;cleanupRequested:boolean;cost:number|null;cancelRequested:boolean;receipt:TurnRuntimeReceipt|null};
+type RecordState={inputAttempted?:boolean;deletion?:{intent:ManagedDeletionIntent;acknowledgedAt:number|null;absentAt:number|null};input:Accepted;managedInput:ManagedInput;reserved:boolean;operation:'create'|'continue'|null;observation:ManagedObservation|null;checkpoint:CheckpointReceipt|null;persistenceError:string|null;closed:boolean;cleanupRequested:boolean;cost:number|null;cancelRequested:boolean;receipt:TurnRuntimeReceipt|null};
 type Budget={policy:ManagedAcceptancePolicy;startedAt:number|null;stopped:string|null;simulations:string[]};
 export interface ManagedProductEnv {MANAGED_TURN_RUNTIME:DurableObjectNamespace<ManagedProductRuntime>;MANAGED_ACCEPTANCE_JSON?:string;MANAGED_OPENAI_API_KEY?:string;REVISION_STORE:RevisionStoreNamespace;}
 export const managedProductActorName=(scope:TurnScope)=>`managed-product-v1:${scope.tenantId}:${scope.projectId}`;
@@ -70,6 +70,11 @@ export class ManagedProductRuntime extends DurableObject<ManagedProductEnv> impl
   this.ctx.storage.transactionSync(()=>{this.ctx.storage.kv.put('budget',budget);this.ctx.storage.kv.put(rowKey(input.identity),row);});
   await this.ctx.storage.sync();await this.ctx.storage.setAlarm(Math.min(Date.now()+5000,budget.startedAt+budget.policy.maxDurationMs));
  }
+ async markInputAttempt(binding:ExecutionBinding){
+  const row=this.ctx.storage.kv.get<RecordState>(rowKey(binding.identity));
+  if(!row?.reserved||await turnDigest(row.managedInput)!==binding.inputSha256)throw Error('managed-input-attempt-scope-denied');
+  row.inputAttempted=true;await this.#put(row);
+ }
  async readInput(binding:ExecutionBinding){const row=this.ctx.storage.kv.get<RecordState>(rowKey(binding.identity));return row?.managedInput??null;}
  async #absent(raw:Parameters<TurnRuntimePort['observe']>[0],cancelIntent:boolean):Promise<AbsentReceipt>{
   const identity=identityOf(raw);this.#owned(identity.scope);
@@ -119,7 +124,7 @@ export class ManagedProductRuntime extends DurableObject<ManagedProductEnv> impl
   }else if(input.base.session)throw Error('managed-session-base-unavailable');
   if(!previous){const paid=this.#rows().filter(r=>r.reserved),policy=this.#currentBudget(identity.scope,input.actor).policy;if(paid.filter(r=>r.operation==='create').length>=policy.maxSessions||paid.some(r=>!r.closed))throw Error('managed-session-limit-or-cleanup-pending');}
   const managedInput:ManagedInput={identity,actor:input.actor,message:input.message,base:input.base};
-  const row:RecordState={input,managedInput,reserved:false,operation:null,observation:null,checkpoint:null,persistenceError:null,closed:false,cleanupRequested:false,cost:null,cancelRequested:false,receipt:null};
+  const row:RecordState={input,managedInput,inputAttempted:false,reserved:false,operation:null,observation:null,checkpoint:null,persistenceError:null,closed:false,cleanupRequested:false,cost:null,cancelRequested:false,receipt:null};
   await this.#put(row);const prior=previous?await this.#store().read(identityOf(previous.input)):null;
   await this.#adapter().accept(managedInput,prior??undefined);
   return this.#observe(this.ctx.storage.kv.get<RecordState>(rowKey(identity))!);
@@ -208,7 +213,7 @@ export class ManagedProductRuntime extends DurableObject<ManagedProductEnv> impl
  }
  async #stop(reason:string){const budget=this.#budget();if(budget&&!budget.stopped){budget.stopped=reason;this.ctx.storage.kv.put('budget',budget);await this.ctx.storage.sync();}}
  async budgetStatus(scope:TurnScope){return this.#run(async()=>this.#status(scope));}
- async #status(scope:TurnScope){const budget=this.#owned(scope),rows=this.#rows(),paid=rows.filter(r=>r.reserved);return {policy:budget?.policy??this.#policy(scope),startedAt:budget?.startedAt??null,deadline:budget?.startedAt?budget.startedAt+budget.policy.maxDurationMs:null,turnCount:paid.length,sessionCount:paid.filter(r=>r.operation==='create').length,liveSessions:new Set(paid.filter(r=>!r.closed).map(r=>r.input.sessionId)).size,unresolved:paid.filter(r=>!r.observation||['running','unknown'].includes(r.observation.execution)||r.cost===null).length,cleanupPending:paid.some(r=>r.cleanupRequested&&!r.closed),observedUsd:paid.reduce((s,r)=>s+(r.cost??0),0),reservedUsd:paid.length*.75+paid.filter(r=>r.operation==='create').length*.25,stopped:budget?.stopped??null,billingSettled:false,simulationCount:budget?.simulations.length??0,records:await Promise.all(rows.map(async r=>({remoteSessionHash:await this.#store().read(identityOf(r.input)).then(b=>b?.remoteSessionId?turnDigest(b.remoteSessionId):null),identity:identityOf(r.input),execution:r.observation?.execution??'unknown',checkpoint:r.checkpoint,closed:r.closed,usage:r.observation?.usage??{status:'unknown'},cost:r.cost}))) };}
+ async #status(scope:TurnScope){const budget=this.#owned(scope),rows=this.#rows(),paid=rows.filter(r=>r.reserved);return {policy:budget?.policy??this.#policy(scope),startedAt:budget?.startedAt??null,deadline:budget?.startedAt?budget.startedAt+budget.policy.maxDurationMs:null,turnCount:paid.length,sessionCount:paid.filter(r=>r.operation==='create').length,liveSessions:new Set(paid.filter(r=>!r.closed).map(r=>r.input.sessionId)).size,unresolved:paid.filter(r=>!r.observation||['running','unknown'].includes(r.observation.execution)||r.cost===null).length,cleanupPending:paid.some(r=>r.cleanupRequested&&!r.closed),checkpointRecoveryPending:paid.some(r=>this.#needsRecovery(r)),observedUsd:paid.reduce((s,r)=>s+(r.cost??0),0),reservedUsd:paid.length*.75+paid.filter(r=>r.operation==='create').length*.25,stopped:budget?.stopped??null,billingSettled:false,simulationCount:budget?.simulations.length??0,records:await Promise.all(rows.map(async r=>({remoteSessionHash:await this.#store().read(identityOf(r.input)).then(b=>b?.remoteSessionId?turnDigest(b.remoteSessionId):null),identity:identityOf(r.input),execution:r.observation?.execution??'unknown',checkpoint:r.checkpoint,closed:r.closed,usage:r.observation?.usage??{status:'unknown'},cost:r.cost}))) };}
  async reserveSimulation(scope:TurnScope,runId:string){return this.#run(async()=>{
   const budget=this.#owned(scope);if(!budget)throw Error('managed-budget-not-started');this.#policy(scope);
   if(budget.stopped||!budget.startedAt||Date.now()>=budget.startedAt+budget.policy.maxDurationMs)throw Error('managed-window-closed');
@@ -217,31 +222,73 @@ export class ManagedProductRuntime extends DurableObject<ManagedProductEnv> impl
   budget.simulations.push(runId);this.ctx.storage.kv.put('budget',budget);await this.ctx.storage.sync();return {reserved:true};
  });}
  async cleanup(scope:TurnScope){return this.#run(async()=>{this.#owned(scope);await this.#cleanup();return this.#status(scope);});}
+ // Resource closure does not imply that immutable publication has finished.
+ #needsRecovery(row:RecordState){return row.reserved&&!row.receipt&&!(row.closed&&row.inputAttempted===false);}
  async #cleanup(){
   try {
-  const rows=this.#rows();for(const row of rows.filter(r=>r.reserved&&!r.closed)){
-   row.cleanupRequested=true;await this.#put(row);const identity=identityOf(row.input),transport=this.#transport(),adapter=this.#adapter(transport);
-   if(rows.some(r=>r.closed&&r.input.sessionId===row.input.sessionId)){row.closed=true;await this.#put(row);continue;}
-   let observed=await adapter.observe(identity);
-   if(observed.execution==='running'||observed.execution==='unknown')observed=await adapter.cancel(identity);
-   if(observed.execution==='unknown')await this.#stop('managed-execution-unknown');
-   // Preserve authoritative outcome/usage before deleting evidence. An idle
-   // Session with no correlated Turn can still be cleaned up, but this never
-   // resolves its unknown input accounting or permits another model input.
-   if(observed.execution!=='running'&&observed.execution!=='unknown'&&!row.receipt)await this.#observe(row);
-   const binding=await this.#store().read(identity);
-   if(!binding?.remoteSessionId){await this.#stop('managed-cleanup-unconfirmed');continue;}
-   const deleted=await adapter.deleteSession(identity);if(deleted.status!=='remote-deleted'){await this.#stop('managed-cleanup-unconfirmed');continue;}
-   let absent=false;try{await transport.client.beta.agents.sessions.retrieve(binding.remoteSessionId);}catch(error){absent=(error as {status?:number}).status===404;}
-   if(!absent){await this.#stop('managed-cleanup-unconfirmed');continue;}
-   for(const sibling of rows.filter(r=>r.input.sessionId===row.input.sessionId)){sibling.closed=true;await this.#put(sibling);}
-  }
+   for(const original of this.#rows().filter(r=>r.reserved&&!r.closed)){
+    // Reload after earlier Session siblings were reconciled in this same pass.
+    let row=this.ctx.storage.kv.get<RecordState>(rowKey(identityOf(original.input)))!;
+    if(row.closed)continue;
+    row.cleanupRequested=true;await this.#put(row);
+    const identity=identityOf(row.input),transport=this.#transport(),adapter=this.#adapter(transport);
+    if(!row.deletion){
+     if(!row.receipt){
+      let observed=await adapter.observe(identity);
+      if(observed.execution==='running'||observed.execution==='unknown')observed=await adapter.cancel(identity);
+      if(observed.execution==='unknown')await this.#stop('managed-execution-unknown');
+      if(observed.execution!=='running'&&observed.execution!=='unknown')await this.#observe(row);
+     }
+     row=this.ctx.storage.kv.get<RecordState>(rowKey(identity))!;
+    }
+    let binding=await this.#store().read(identity);
+    if(!binding?.remoteSessionId){await this.#stop('managed-cleanup-unconfirmed');continue;}
+    const siblings:RecordState[]=[];
+    for(const sibling of this.#rows().filter(r=>r.reserved)){
+     const other=await this.#store().read(identityOf(sibling.input));
+     if(other?.remoteSessionId===binding.remoteSessionId)siblings.push(sibling);
+    }
+    // Require every associated Turn to have completed publication (or recorded
+    // an explicit terminal persistence failure). The only no-receipt exception
+    // is durable proof that model input was never attempted. Legacy rows lack
+    // that proof and remain conservative. Never delete on pending artifact/R2.
+    if(siblings.some(r=>!r.receipt&&r.inputAttempted!==false))continue;
+    const intentOwner=siblings.find(r=>r.deletion);
+    if(intentOwner){
+     const ownerBinding=await this.#store().read(identityOf(intentOwner.input));
+     if(!ownerBinding||ownerBinding.remoteSessionId!==binding.remoteSessionId)throw Error('managed-delete-intent-scope-denied');
+     row=intentOwner;binding=ownerBinding;
+    }
+    if(!row.deletion){
+     row.deletion={intent:await transport.prepareSessionDeletion(binding),acknowledgedAt:null,absentAt:null};
+     await this.#put(row); // before the first DELETE, including ACK-loss crashes
+    }
+    let absence=await transport.observeSessionDeletion(binding,row.deletion.intent);
+    if(!absence.absent){
+     const deleted=await adapter.deleteSession(identityOf(row.input));
+     if(deleted.status==='remote-deleted'){row.deletion.acknowledgedAt=deleted.observedAt;await this.#put(row);}
+     // Probe even when DELETE response was lost. A retry starts here using the
+     // original durable intent, independently of verify-before-DELETE.
+     absence=await transport.observeSessionDeletion(binding,row.deletion.intent);
+    }
+    if(!absence.absent){await this.#stop('managed-cleanup-unconfirmed');continue;}
+    row.deletion.absentAt=absence.observedAt;await this.#put(row);
+    // All Turn references to this Session close atomically. A crash cannot
+    // strand a sibling after the intent owner has already been marked closed.
+    this.ctx.storage.transactionSync(()=>{
+     for(const sibling of siblings){
+      const key=rowKey(identityOf(sibling.input)),fresh=this.ctx.storage.kv.get<RecordState>(key)!;
+      fresh.closed=true;this.ctx.storage.kv.put(key,fresh);
+     }
+    });await this.ctx.storage.sync();
+   }
   }catch{await this.#stop('managed-cleanup-unconfirmed');}
+  finally{if(this.#rows().some(r=>r.reserved&&(!r.closed||this.#needsRecovery(r))))await this.ctx.storage.setAlarm(Date.now()+10000);}
  }
  async alarm(){return this.#run(async()=>{
   const budget=this.#budget();if(!budget?.startedAt)return;
-  for(const row of this.#rows().filter(r=>r.reserved&&!r.receipt&&!r.closed)){try{await this.#observe(row);}catch{await this.#stop('managed-observation-failed');}}
+  for(const row of this.#rows().filter(r=>this.#needsRecovery(r))){try{await this.#observe(row);}catch{await this.#stop('managed-observation-failed');}}
   if(budget.stopped||Date.now()>=budget.startedAt+budget.policy.maxDurationMs)await this.#cleanup();
-  if(this.#rows().some(r=>r.reserved&&!r.closed))await this.ctx.storage.setAlarm(Date.now()+10000);
+  if(this.#rows().some(r=>r.reserved&&(!r.closed||this.#needsRecovery(r))))await this.ctx.storage.setAlarm(Date.now()+10000);
  });}
 }

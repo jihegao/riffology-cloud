@@ -95,3 +95,11 @@ test('cancel after canonical completion sends no Session-wide cancellation', asy
   const f = await fixture(); await f.adapter().accept(f.input); await f.transport.cancel(f.binding);
   assert.equal(f.calls.filter(c => c.path.endsWith('/events')).length, 1);
 });
+
+test('delete absence probe requires the exact previously verified binding and rejects changed ownership',async()=>{
+ const f=await fixture();await f.adapter().accept(f.input);const intent=await f.transport.prepareSessionDeletion(f.binding),count=f.calls.length;
+ await assert.rejects(f.transport.observeSessionDeletion({...f.binding,remoteSessionId:'foreign'},intent),/intent-scope-denied/);assert.equal(f.calls.length,count);
+ await assert.rejects(f.transport.observeSessionDeletion(f.binding,{...intent,verifiedAt:0}),/intent-scope-denied/);
+ assert.equal((await f.transport.observeSessionDeletion(f.binding,intent)).absent,false);
+ f.foreignScope();await assert.rejects(f.transport.prepareSessionDeletion(f.binding),/session-scope-denied/);await assert.rejects(f.transport.observeSessionDeletion(f.binding,intent),/session-scope-denied/);
+});

@@ -10,7 +10,10 @@ import { turnDigest } from '../turn/protocol.ts';
 export interface ManagedPaidAdmission {
   reserve(binding: ExecutionBinding, operation: 'create' | 'continue', input: ManagedInput): Promise<void>;
   readInput(binding: ExecutionBinding): Promise<ManagedInput | null>;
+  markInputAttempt?(binding: ExecutionBinding): Promise<void>;
 }
+
+export type ManagedDeletionIntent={sessionId:string;bindingSha256:string;verifiedAt:number};
 
 const TERMINAL = new Set(['completed', 'failed', 'cancelled']);
 const MAX_ITEMS = 1024, MAX_SESSIONS = 256, MAX_ARTIFACT_BYTES = 8 * 1024 * 1024;
@@ -59,6 +62,7 @@ export class ManagedSdkTransport implements ManagedTransport {
     return items;
   }
   private async submit(input: ManagedInput, binding: ExecutionBinding, sessionId: string) {
+    await this.admission.markInputAttempt?.(binding);
     await this.client.beta.agents.sessions.events.create(sessionId, {
       'Idempotency-Key': await managedCorrelation(binding),
       events: [{type: 'agent.session.input.message', input: [{role: 'user', content: [{type: 'input_text', text: await managedInputEnvelope(binding, input.message)}]}]}],
@@ -152,6 +156,19 @@ export class ManagedSdkTransport implements ManagedTransport {
       if (!TERMINAL.has(turn.status) && turn.id !== current.turnId) throw Error('managed-cancel-scope-denied');
     }
     await this.client.beta.agents.sessions.events.create(current.sessionId, {events: [{type: 'agent.session.input.cancel'}]});
+  }
+  async prepareSessionDeletion(binding:ExecutionBinding):Promise<ManagedDeletionIntent>{
+    if(!binding.remoteSessionId)throw Error('managed-original-reference-required');
+    const session=await this.verifySession(binding,binding.remoteSessionId);
+    if(session.status!=='idle'&&session.status!=='failed')throw Error('managed-delete-not-terminal');
+    return {sessionId:binding.remoteSessionId,bindingSha256:await turnDigest(binding),verifiedAt:this.clock()};
+  }
+  async observeSessionDeletion(binding:ExecutionBinding,intent:ManagedDeletionIntent){
+    // A 404 is resource evidence only after a durable, scope-verified delete
+    // intent. Never derive ownership from absence or from a caller-supplied ID.
+    if(!binding.remoteSessionId||intent.sessionId!==binding.remoteSessionId||intent.bindingSha256!==await turnDigest(binding)||!Number.isSafeInteger(intent.verifiedAt)||intent.verifiedAt<binding.reservedAt||intent.verifiedAt>this.clock())throw Error('managed-delete-intent-scope-denied');
+    try{await this.verifySession(binding,intent.sessionId);return {sessionId:intent.sessionId,absent:false,observedAt:this.clock()};}
+    catch(error){if((error as {status?:number}).status!==404)throw error;return {sessionId:intent.sessionId,absent:true,observedAt:this.clock()};}
   }
   async deleteSession(binding: ExecutionBinding) {
     if (!binding.remoteSessionId) throw Error('managed-original-reference-required');
