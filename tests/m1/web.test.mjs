@@ -583,10 +583,10 @@ test('history window advances by rereading a retained suffix and rejects no prog
       return true;
     }
   });
-  await page.goto('https://ui.test/#/workspace/project-retained-progress'); await page.locator('#workspace:not([hidden])').waitFor(); await waitFor(() => reads >= 4); assert.match(await page.locator('#turns').innerText(), /新片段/); assert.equal(await page.locator('#message-error').innerText(), '');
+  await page.goto('https://ui.test/#/workspace/project-retained-progress'); await page.locator('#workspace:not([hidden])').waitFor(); await waitFor(() => reads >= 4); await page.waitForFunction(() => document.querySelector('#turns').textContent.includes('新片段')); assert.match(await page.locator('#turns').innerText(), /新片段/); assert.equal(await page.locator('#message-error').innerText(), '');
   noProgressReads = 0;
   const stalled = await pageFixture(t, async (route, path) => { if (path === '/api/tenants/tenant-a/projects') { await json(route, { projects: [{ id: 'project-stalled', workspace_id: 'workspace-stalled', title: '无进展', status: 'ready' }] }); return true; } if (path === '/api/workspaces/workspace-stalled') { await json(route, { schemaVersion: 1, nextSequence: 3, activeTurnId: null, sessions: {}, turns: {} }); return true; } if (path === '/api/workspaces/workspace-stalled/events') { noProgressReads++; await json(route, { events: [], nextSequence: 3, hasMore: false, oldestSequence: 2, snapshotRequired: true }); return true; } });
-  await stalled.goto('https://ui.test/#/workspace/project-stalled'); await stalled.locator('#workspace:not([hidden])').waitFor(); await waitFor(() => noProgressReads === 2); assert.equal(noProgressReads, 2); assert.match(await stalled.locator('#message-error').innerText(), /无法推进/);
+  await stalled.goto('https://ui.test/#/workspace/project-stalled'); await stalled.locator('#workspace:not([hidden])').waitFor(); await waitFor(() => noProgressReads === 2); await stalled.waitForFunction(() => document.querySelector('#message-error').textContent.includes('无法推进')); assert.equal(noProgressReads, 2); assert.match(await stalled.locator('#message-error').innerText(), /无法推进/);
 });
 
 test('assistant deltas merge once per Turn and prefer the final message safely', async t => {
