@@ -53,7 +53,12 @@ in 5.3 seconds with stage diagnostics; its 30-second deadline was retained. M3
 now runs at two concurrent files, and the Gateway test uses the portable Chrome
 channel (or an explicit CHROMIUM_PATH). CI prepares and validates pinned public
 assets before running the unchanged assertions. The interrupted first-run log is
-retained separately; it is not reported as a pass.
+retained separately; it is not reported as a pass. Both affected suites passed
+in isolation (Gateway assets 1/1; historical Workspace reads 7/7). The next full
+run exposed an existing UI test race: receiving the last history request does
+not mean its response has rendered. That test now waits for the actual retained
+reply before asserting all 2048 events, exactly 12 reads per visit and zero
+mutations. It passed in isolation; the final full run includes this correction.
 
 ## Fresh online observation and remaining work
 

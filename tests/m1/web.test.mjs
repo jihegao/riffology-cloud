@@ -562,8 +562,11 @@ test('history truncation reads the full 2048-event retained window within the pa
     }
   });
   await page.goto('https://ui.test/#/workspace/project-retained-boundary'); await page.locator('#workspace:not([hidden])').waitFor();
-  await waitFor(() => reads === 12); assert.equal(reads, 12); assert.equal(mutations, 0); assert.match(await page.locator('#turns').innerText(), /边界回复/); assert.match(await page.locator('#turns').innerText(), /这里只显示近期对话回复/);
-  await page.reload(); await page.locator('#workspace:not([hidden])').waitFor(); await waitFor(() => reads === 24); assert.equal(mutations, 0);
+  await waitFor(() => reads === 12);
+  // Receiving the last request precedes applying its response to the DOM.
+  await page.waitForFunction(() => document.querySelector('#turns').textContent.includes('边界回复'));
+  assert.equal(reads, 12); assert.equal(mutations, 0); assert.match(await page.locator('#turns').innerText(), /边界回复/); assert.match(await page.locator('#turns').innerText(), /这里只显示近期对话回复/);
+  await page.reload(); await page.locator('#workspace:not([hidden])').waitFor(); await waitFor(() => reads === 24); await page.waitForFunction(() => document.querySelector('#turns').textContent.includes('边界回复')); assert.equal(mutations, 0);
 });
 
 test('history window advances by rereading a retained suffix and rejects no progress', async t => {
