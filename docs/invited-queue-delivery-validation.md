@@ -49,8 +49,8 @@ No production bindings, secrets, namespaces, ledger migrations or prices changed
 
 The first full check passed M0/M1/M2, then timed out in two real-Workerd M3
 suites under CPU-count-based file concurrency. Gateway assets subsequently passed
-in 5.3 seconds with stage diagnostics; its 30-second deadline was retained. M3
-now runs at two concurrent files, and the Gateway test uses the portable Chrome
+in 5.3 seconds with stage diagnostics; its 30-second deadline was retained. M0–M3
+now run at two concurrent files, and the Gateway test uses the portable Chrome
 channel (or an explicit CHROMIUM_PATH). CI prepares and validates pinned public
 assets before running the unchanged assertions. The interrupted first-run log is
 retained separately; it is not reported as a pass. Both affected suites passed
@@ -58,7 +58,10 @@ in isolation (Gateway assets 1/1; historical Workspace reads 7/7). The next full
 run exposed an existing UI test race: receiving the last history request does
 not mean its response has rendered. That test now waits for the actual retained
 reply before asserting all 2048 events, exactly 12 reads per visit and zero
-mutations. It passed in isolation; the final full run includes this correction.
+mutations. It passed in isolation; the final full run includes this correction. A later M0 run also hit a 25ms
+fixture deadline while checking replay rejection under the default concurrency;
+all 21 proxy tests passed in isolation. The two-file concurrency limit is applied
+consistently to M0–M3, keeping every timeout and assertion unchanged.
 
 ## Fresh online observation and remaining work
 
