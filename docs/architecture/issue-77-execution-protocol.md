@@ -239,3 +239,32 @@ Session deletion. Unknown usage and unsettled billing remain visible after the
 policy is closed.
 
 Final original-identity recovery (2026-09-18): closed-policy Worker `ac0dd1f2-bce1-4b41-a25a-d7e811b9d0da`, source `9641f6546b099ad080ec00c2f7ba9e6b996a2fa7`, is independently confirmed at 100% traffic. Authenticated Workspace is completed/saved with no active Turn, release hold or recovery hold; model/files are readable. One unknown usage record and US$1 reservation remain, with zero live Sessions and no pending cleanup. No native Experiment, formal Evidence, Preview Verify or same-Session continuation was executed after the stop. See `docs/evidence/issue-77/production-acceptance.json` and `repair-validation.json`; issue #77 remains incomplete.
+
+
+## PR #80 cleanup review corrections
+
+Source `a0b6451` addresses the two cleanup/recovery review findings. Cleanup groups
+Turns by the actual bound remote Session and requires every associated Turn to
+have a terminal persistence receipt before deletion. The narrow exception is a
+new durable `inputAttempted:false` record proving that model input was never
+attempted; the flag is synced before an input POST and missing legacy fields do
+not grant this exception. An artifact or RevisionStore outage therefore leaves
+the remote source and cleanup pending, with new input still blocked. A permanent
+storage outage may retain the Session until publication can recover; it is not
+reported as successful cleanup.
+
+Resource `closed` and `checkpointRecoveryPending` are independent. Alarms keep
+recovering incomplete saved-state receipts even for legacy resource-closed rows.
+A scope-verified, idle/failed Session deletion intent is persisted before DELETE,
+including its original binding digest and verification time. DELETE ACK and
+confirmed absence are recorded separately. Restart may GET the original bound
+Session to establish 404 without first requiring another successful DELETE.
+Other HTTP errors, changed scope or mismatched intent cannot establish absence.
+
+Every Turn sharing a Session reuses its intent owner's original binding, even
+if that owner was already closed by an older partial write. Final sibling closure
+is one SQLite transaction. None of these resource proofs is a native fence,
+usage settlement, refund, reservation reset or authorization for another input.
+See `docs/evidence/issue-77/review-validation.json` for the source-bound offline
+regression record. This code review revision does not update the previously
+recorded production Worker or claim that the production E2E chain has passed.

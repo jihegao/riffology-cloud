@@ -1,4 +1,4 @@
-f62fbb5ec054772a81902eaee611d58209c7ba2c0c04f5257ef97c3e3fb55c11  docs/evidence/issue-77/README.md
+96a4ddfa3cd7a185cdf3c36d24e4cb41eec2cfac5fae504c9fbe6ae632ab6246  docs/evidence/issue-77/README.md
 bd130f28075a0e58002784e3428df8253089c76821a8aa0619cd1447b69121cc  docs/evidence/issue-77/baseline.json
 c3376ab843c7872390417d1156da86f31299d6abe5cb776aed7b5cad24a185f0  docs/evidence/issue-77/checkpoint.json
 95a0494594077ec34bfc8de4bae7a84f7ade295bf379d13ef447b4058d3ce28a  docs/evidence/issue-77/issue73-input-fingerprints.json
@@ -25,4 +25,5 @@ df63a2b2bd03811d229419d5a19724676fa3271ef44590aeb2c79637e93aa7f9  docs/evidence/
 2d8682350bde70fe7058a01b7b20efde7ea0769eab7456d3133666e10030d339  docs/evidence/issue-77/production-acceptance.json
 8f4e06d7c7ef0b530fc4778722dccec3e1a089727681203b9e7f8b904796bb21  docs/evidence/issue-77/recorded-acceptance.json
 0fc5f1183f73a712b2e16f0b026bb49765a42be712c7e062e62c303ffcdb4bf0  docs/evidence/issue-77/repair-validation.json
+98c7d4889ee2e395a79c6209583c91990fd58191611626c6a9193b12b73ea54c  docs/evidence/issue-77/review-validation.json
 ec9093229372bc1cda7e7c45951e3bdb11f819035a3a2aee2e8f748cb68184b5  docs/evidence/issue-77/validation.json

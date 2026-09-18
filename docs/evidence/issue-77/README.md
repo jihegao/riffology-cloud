@@ -194,3 +194,25 @@ unknown or unexecuted step and distinguish saved runtime artifacts from formal
 acceptance. Captured evidence omits credentials, raw provider IDs and account
 identifiers; private originals remain separate. Final fingerprints bind actual
 bytes and source without rewriting historical baseline or internal-trial records.
+
+
+## PR #80 review corrections
+
+Both cleanup findings are addressed in source `a0b6451`: pending artifact/R2
+recovery retains the remote source, and a persisted scope-bound deletion intent
+allows original-reference absence checks after lost DELETE ACKs or confirmation
+reads. Same-Session references close atomically; legacy partially closed
+references can reuse the existing intent. Resource closure no longer removes
+incomplete checkpoint recovery from alarms. Missing legacy input-attempt fields
+remain conservative; unknown usage and reservations remain unchanged.
+
+[`review-validation.json`](review-validation.json) binds this revision's full
+check and targeted combination tests to its exact source, independently of
+`validation.json` (`7b12505`) and `repair-validation.json` (`9641f65`). The older
+production record is historical and is not rewritten by this offline review
+fix. Production E2E and issue closure remain separate outstanding work.
+
+Full check at `a0b6451`: **2,278 passed, 11 skipped, 0 failed** (M2: 790/790).
+The 36 targeted SDK/Workerd tests are included in that total. The separate
+operator/evidence suite passed 23/23. No paid input or production deployment was
+performed for this review fix.
