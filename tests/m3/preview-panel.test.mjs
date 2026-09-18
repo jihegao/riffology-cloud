@@ -117,3 +117,16 @@ test('a late ticket response from an old iframe cannot be posted to a replacemen
   await f.page.getByRole('button', { name: '关闭预览' }).click(); assert.equal(await f.page.locator('iframe').count(), 0); await f.page.getByRole('button', { name: '恢复预览' }).click(); await f.page.getByTitle('项目预览').waitFor(); const newFrame = await readyPreviewFrame(f.page); assert.ok(newFrame); assert.notEqual(newFrame, oldFrame);
   await f.page.evaluate(() => window.releaseTicket()); await f.page.waitForTimeout(30); assert.equal(await newFrame.evaluate(() => window.received), null); assert.equal(await f.page.locator('iframe').count(), 1);
 });
+
+
+test('paused cloud preview hides its region without requests and can reopen when enabled', async t => {
+ const {page}=await fixture(t);
+ await page.evaluate(async()=>{await panel.enter({tenantId:'tenant-a',workspaceId:'work-a',canOpen:true,paused:true});await panel.openRun('run-a');});
+ assert.equal(await page.locator('#root').isVisible(),false);
+ assert.deepEqual(await page.evaluate(()=>calls),[]);
+ await page.evaluate(async()=>panel.enter({tenantId:'tenant-a',workspaceId:'work-a',canOpen:true,paused:false}));
+ assert.equal(await page.getByRole('heading',{name:'云端交互预览',exact:true}).isVisible(),true);
+ assert.doesNotMatch(await page.locator('#root').innerText(),/预览与已保存结果属于各自的模型版本/);
+ assert.ok((await page.evaluate(()=>calls)).every(c=>c.method==='GET'));
+ await page.evaluate(()=>panel.leave());assert.equal(await page.locator('#root').isVisible(),false);
+});

@@ -32,14 +32,14 @@ export function createPreviewPanel({ root, api, requestTimeoutMs = 15000, autoRe
   function button(text, action, disabled = false) { const b = doc.createElement('button'); b.type = 'button'; b.textContent = text; b.dataset.previewAction = action; b.disabled = disabled; return b; }
   function render() {
     if (!context) return;
-    const title = doc.createElement('h3'); title.textContent = '项目预览';
+    root.hidden=context.paused;if(context.paused){controls.replaceChildren();return;}
+    const title = doc.createElement('h3'); title.textContent = '云端交互预览';
     const status = doc.createElement('p'); status.setAttribute('role', 'status');
     status.textContent = message || (loading ? '正在读取预览状态…' : !context.canOpen ? '项目尚未就绪，暂不可打开预览。' : selected ? `已选择服务：${selected}` : '请从上方选择一个运行中的服务。');
     const note = doc.createElement('p'); note.textContent = '关闭预览只关闭当前视图，服务会继续运行。';
     const pending = intent(),healthy=autoRestore&&frame&&!loading&&(!message||message==='模型预览已连接。');
     controls.classList.toggle('preview-connected-controls',Boolean(healthy));status.hidden=Boolean(healthy);
-    controls.replaceChildren(title, status, note);if(autoRestore){status.textContent=message||(loading?'正在恢复模型预览…':state?.available?'已有交互模型，可在此继续观察。':state?.current?'交互模型已停止或不可访问；已保存结果仍可查看，重新运行需明确操作。':'还没有交互预览。运行已保存模型后会显示在这里。');note.textContent='预览与已保存结果属于各自的模型版本。';if(frame)note.hidden=true;else note.hidden=false;}
-    if(context.paused)status.textContent='云端交互预览已暂停；这不影响上方 Browser Preview 本地运行。';
+    controls.replaceChildren(title, status, note);if(autoRestore){status.textContent=message||(loading?'正在恢复模型预览…':state?.available?'已有交互模型，可在此继续观察。':state?.current?'交互模型已停止或不可访问；已保存结果仍可查看，重新运行需明确操作。':'还没有交互预览。运行已保存模型后会显示在这里。');note.textContent='关闭预览只关闭当前视图，服务会继续运行。';if(frame)note.hidden=true;else note.hidden=false;}
     if (pending) { const p = doc.createElement('p'); p.textContent = `待确认的打开请求：${pending.body.runId}；重试会使用原请求。`; controls.append(p); }
     if (state?.current && !autoRestore) { const p = doc.createElement('p'); p.textContent = `当前预览：${state.current.previewId}`; controls.append(p); }
     if(!autoRestore||pending||(selected&&!frame&&!state?.available))controls.append(button(pending&&autoRestore?'重试原预览请求':autoRestore?'连接运行中的模型':'打开预览','open',busy||loading||!context.canOpen||(!selected&&!pending)));const refresh=button('刷新预览状态','refresh',busy||loading||!context.canOpen);if(autoRestore&&frame&&!message.includes('失败')){const details=doc.createElement('details'),summary=doc.createElement('summary');summary.textContent='预览选项';details.append(summary,refresh);controls.append(details);}else controls.append(refresh);
@@ -126,8 +126,8 @@ export function createPreviewPanel({ root, api, requestTimeoutMs = 15000, autoRe
     const action = b.dataset.previewAction;
     if (action === 'open') void open(); else if (action === 'refresh') void load(); else if (action === 'recover') showTarget(state?.available); else if (action === 'close') { if(autoRestore)rememberClosed(shownPreviewId);removeFrame(); message = '已关闭预览视图，服务未停止。'; render(); }
   }
-  function leave() { generation++; version++; removeFrame(); for (const c of requests) c.abort(); requests.clear(); context = null; selected = null;awaitingRunId=null;stoppedRuns=new Set();queuedOpenRun=null; state = null; message = ''; busy = false; loading = false; loadingPromise = null; root.removeEventListener('click', click); root.replaceChildren(); }
-  async function enter(value) { leave(); if (!value || !id(value.tenantId) || !id(value.workspaceId)) throw Error('invalid-preview-context'); context = { tenantId: value.tenantId, workspaceId: value.workspaceId, canOpen: value.canOpen === true, paused:value.paused===true }; selected = intent()?.body.runId || null; root.append(controls, frames); root.addEventListener('click', click); render(); await load(); }
+  function leave() { root.hidden=true;generation++; version++; removeFrame(); for (const c of requests) c.abort(); requests.clear(); context = null; selected = null;awaitingRunId=null;stoppedRuns=new Set();queuedOpenRun=null; state = null; message = ''; busy = false; loading = false; loadingPromise = null; root.removeEventListener('click', click); root.replaceChildren(); }
+  async function enter(value) { leave(); if (!value || !id(value.tenantId) || !id(value.workspaceId)) throw Error('invalid-preview-context'); context = { tenantId: value.tenantId, workspaceId: value.workspaceId, canOpen: value.canOpen === true&&value.paused!==true, paused:value.paused===true }; selected = intent()?.body.runId || null; root.append(controls, frames); root.addEventListener('click', click); render(); await load(); }
   function selectRun(runId) { selected = id(runId) ? runId : null; render(); }
   async function openRun(runId) { if(busy||intent()&&intent().body.runId!==runId){queuedOpenRun=runId;return;}selectRun(runId); if (!selected) return; const token = generation; if (loadingPromise) await loadingPromise; if (token !== generation || selected !== runId) return; await open(); }
   async function restoreRun(runId){if(!context||!id(runId))return;const token=generation;if(loadingPromise)await loadingPromise;if(token!==generation||stoppedRuns.has(runId)||intent()||closed()&&closed()===state?.current?.previewId)return;if(state?.available){if(state.available.runId===runId&&!frame)showTarget(state.available,true);return;}if(state?.current&&state.current.runId!==runId)return;selectRun(runId);await open();}
