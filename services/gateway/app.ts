@@ -58,6 +58,8 @@ export interface GatewayServices {
     files(scope:TurnScope):Promise<unknown>;
     diff(scope:TurnScope):Promise<unknown>;
     artifact(scope:TurnScope,artifactId:string):Promise<unknown>;
+    managedAcceptanceStatus?(scope:TurnScope,actor:TurnActor):Promise<unknown>;
+    cleanupManagedAcceptance?(scope:TurnScope,actor:TurnActor):Promise<unknown>;
   };
 }
 async function serviceCall<T>(operation:()=>Promise<T>):Promise<T>{
@@ -317,6 +319,16 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     const diff=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/diff$/.exec(url.pathname);
     const artifact=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/artifacts\/([A-Za-z0-9_-]{1,128})$/.exec(url.pathname);
     const sessions=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/sessions$/.exec(url.pathname);
+    const managedAcceptance=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/managed-acceptance(?:\/(cleanup))?$/.exec(url.pathname);
+    if(managedAcceptance){
+      if(url.search)throw new CatalogError('invalid_input');
+      const owned=await new ProjectCatalog(services.database,new Set()).maintenanceWorkspace(principal,managedAcceptance[1]!);
+      try{
+        if(request.method==='GET'&&!managedAcceptance[2]&&services.turns?.managedAcceptanceStatus)return json(await services.turns.managedAcceptanceStatus(owned,principal));
+        if(request.method==='POST'&&managedAcceptance[2]==='cleanup'&&services.turns?.cleanupManagedAcceptance){const body=await readJson(request);if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).length)throw new CatalogError('invalid_input');return json(await services.turns.cleanupManagedAcceptance(owned,principal));}
+        throw new HttpError('method_not_allowed',405);
+      }catch(error){if(error instanceof CatalogError||error instanceof HttpError)throw error;const code=error instanceof Error?error.message:'';if(/scope|owner|access|policy.*denied/.test(code))throw new HttpError('managed_acceptance_denied',403);throw new HttpError('managed_acceptance_unavailable',503);}
+    }
     const turns=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/sessions\/([A-Za-z0-9_-]{1,128})\/turns$/.exec(url.pathname);
     const cancel=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/turns\/([A-Za-z0-9_-]{1,128})\/cancel$/.exec(url.pathname);
     const events=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/events$/.exec(url.pathname);

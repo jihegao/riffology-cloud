@@ -23,8 +23,8 @@ const EVENT_MAP:Record<string,TurnRuntimeEvent['type']>={
  'agent.session.turn.output_text.delta':'assistant.delta',
  'agent.session.turn.output_text.done':'assistant.message',
 };
-/** A managed terminal event deliberately cannot satisfy TurnStopReceipt.
- * Until remote termination is represented end-to-end, routing stays closed. */
+/** Unscoped backend selection remains Pi-only. Managed product routing requires
+ * the separate immutable project policy and remote-terminal receipt contract. */
 export function selectProductBackend(value:unknown='pi'):'pi'{if(value!=='pi')throw Error('managed-product-route-disabled');return 'pi';}
 export class ManagedExecutionAdapter {
  readonly store:ExecutionBindingStore;readonly transport:ManagedTransport;readonly clock:()=>number;

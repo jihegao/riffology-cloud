@@ -55,3 +55,8 @@ test('Verify ready admission rechecks after awaited source and rejects wrong Wor
  const other=new BrowserPreviewOrchestrator(s.f.storage,{...s.f.scope,workspaceId:'other-workspace'},s.ports);await assert.rejects(other.bytes(actor,s.body.packageIdentity),/read-denied/);
  s.ports.checkScope=()=>{throw Error('workspace-actor-scope-denied');};await assert.rejects(s.service().view(actor),/scope-denied/);
 });
+
+
+test('authenticated preview reads expose only the workspace scoped Verify availability',async()=>{
+ const s=await setup();assert.equal((await s.service().view(actor,'revision-a')).canVerify,true);s.ports.canVerify=()=>false;assert.equal((await s.service().view(actor,'revision-a')).canVerify,false);await assert.rejects(s.service().verify(actor,s.body),/simulation-unavailable/);assert.equal(s.starts,0);
+});

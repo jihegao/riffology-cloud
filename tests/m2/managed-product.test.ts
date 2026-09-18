@@ -1,0 +1,190 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import {build} from 'esbuild';
+import {Miniflare} from 'miniflare';
+import {mkdtemp,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+const scope={tenantId:'tenant-managed',projectId:'project-managed',workspaceId:'workspace-managed',workspaceGeneration:1};
+const actor={userId:'test-user',authVersion:1};
+const policy={schemaVersion:1,policyId:'additional-production-v1',scope,userId:actor.userId,enabled:true,syntheticOnly:true,maxTurns:6,maxSessions:2,observedStopUsd:5,maxDurationMs:7200000,maxTurnObservationMs:300000,maxSimulationRuns:12};
+const input=(number=1,session='local-session',base:unknown={workspace:null,session:null})=>({scope,sessionId:session,turnId:`local-turn-${number}`,dispatchId:`local-dispatch-${number}`,generation:1,actor,message:'Synthetic FCFS only',base,capacityLease:{operationId:`operation-${number}`,leaseId:`lease-${number}`}});
+const spec={schemaVersion:1,researchQuestion:'How does service time affect FCFS waiting?',scope:'Synthetic deterministic single-server queue',entities:['customers','server'],mechanisms:['FCFS service'],assumptions:['One server'],parameters:{customers:{type:'integer',default:5,minimum:1,maximum:20},service_time:{type:'integer',default:3,minimum:1,maximum:5}},metrics:{completed:{},mean_wait:{}},limitations:['Synthetic deterministic arrivals'],execution:{entrypoint:'model/run.py',dependencyLock:'app/requirements.lock'}};
+const candidate=JSON.stringify({schemaVersion:1,spec,files:{'model/model.py':'def run(config):\n return {"snapshots": []}\n','model/results.json':'[]','app/requirements.lock':'{"schemaVersion":1,"packages":{}}'}});
+const workerSource=`
+ import {ManagedProductRuntime as BaseManagedProductRuntime} from './services/turn-runtime/managed-product.ts';
+ import {managedProductActorName} from './services/workspace/managed-route.ts';
+ import {SqlExecutionBindingStore} from './services/turn-runtime/backend-contract.ts';
+ import {turnDigest} from './services/turn/protocol.ts';
+ import {RevisionStore as BaseRevisionStore} from './services/turn-runtime/revision-store.ts';
+ import {revisionStoreActorName} from './services/turn-runtime/revision-store-client.ts';
+ export class RevisionStore extends BaseRevisionStore {async faultCommitForTest(mode){this.ctx.storage.kv.put('test:commit-fault',mode);await this.ctx.storage.sync();}async commitsForTest(){return this.ctx.storage.kv.get('test:commit-count')??0;}async commit(input){const mode=this.ctx.storage.kv.get('test:commit-fault');this.ctx.storage.kv.delete('test:commit-fault');this.ctx.storage.kv.put('test:commit-count',(this.ctx.storage.kv.get('test:commit-count')??0)+1);await this.ctx.storage.sync();if(mode==='before')throw Error('synthetic-commit-before-write');const result=await super.commit(input);if(mode==='after')throw Error('synthetic-commit-lost-ack');return result;}}
+ export class ManagedProductRuntime extends BaseManagedProductRuntime {async seedUnreservedForTest(input,withBinding){const identity={scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation},managedInput={identity,actor:input.actor,message:input.message,base:input.base};this.ctx.storage.kv.put('turn:'+identity.turnId,{input,managedInput,reserved:false,operation:null,observation:null,checkpoint:null,persistenceError:null,closed:false,cleanupRequested:false,cost:null,cancelRequested:false,receipt:null});await this.ctx.storage.sync();if(withBinding)await new SqlExecutionBindingStore(this.ctx.storage).reserve({schemaVersion:1,identity,backend:'managed-agents',inputSha256:await turnDigest(managedInput),reservedAt:Date.now(),remoteSessionId:null,remoteTurnId:null});}async interruptedCleanupForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:'turn:'})){row.cleanupRequested=true;this.ctx.storage.kv.put(key,row);}await this.ctx.storage.sync();throw Error('synthetic-cleanup-interrupted');}async expireForTest(){const budget=this.ctx.storage.kv.get('budget');budget.startedAt=Date.now()-budget.policy.maxDurationMs-1;this.ctx.storage.kv.put('budget',budget);await this.ctx.storage.sync();}}
+ export default {async fetch(request,env){
+  const b=await request.json(),s=b.input?.scope??b.scope,stub=env.MANAGED.getByName(b.wrong?'wrong-actor':managedProductActorName(s));
+  try{
+   let value;
+   if(b.action==='accept')value=await stub.accept(b.input);
+   else if(b.action==='seed-unreserved')value=await stub.seedUnreservedForTest(b.input,b.withBinding);
+   else if(b.action==='observe')value=await stub.observe(b.input);
+   else if(b.action==='cancel')value=await stub.cancel(b.input);
+   else if(b.action==='preflight')value=await stub.preflight(s,b.actor);
+   else if(b.action==='expire')value=await stub.expireForTest();
+   else if(b.action==='interrupt-cleanup')value=await stub.interruptedCleanupForTest();
+   else if(b.action==='status')value=await stub.budgetStatus(s);
+   else if(b.action==='cleanup')value=await stub.cleanup(s);
+   else if(b.action==='simulation')value=await stub.reserveSimulation(s,b.runId);
+   else if(b.action==='fault-commit')value=await env.REVISION_STORE.getByName(revisionStoreActorName(s)).faultCommitForTest(b.mode);
+   else if(b.action==='commit-count')value=await env.REVISION_STORE.getByName(revisionStoreActorName(s)).commitsForTest();
+   else if(b.action==='restore'){const restored=await env.REVISION_STORE.getByName(revisionStoreActorName(s)).restore(b.input,b.receipt);value={backendState:restored.backendState,piSession:restored.piSession,bytes:restored.filesArchive.length,receipt:restored.receipt};}
+   else throw Error('unknown-test-action');
+   return Response.json({ok:true,value});
+  }catch(error){return Response.json({ok:false,error:error.message});}
+ }};`;
+let bundlePromise:ReturnType<typeof build>|undefined;
+async function fixture(){
+ bundlePromise??=build({stdin:{contents:workerSource,sourcefile:'managed-product-test.ts',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'neutral',target:'es2024',external:['cloudflare:workers','node:*'],logLevel:'silent'});
+ const bundle=await bundlePromise,directory=await mkdtemp(join(tmpdir(),'managed-product-'));
+ const calls:Array<{method:string;path:string}>=[];const sessions=new Map<string,any>();let unknownUsage=false,lostInput=false,lostCreate=false,hideOriginal=false,deleteUnconfirmed=false,deleteFails=false,artifactFails=false,running=false;
+ const handler=async(request:Request)=>{
+  assert.equal(new URL(request.url).hostname,'api.openai.com');const path=new URL(request.url).pathname,method=request.method;calls.push({method,path});
+  const json=(v:unknown,status=200)=>new Response(JSON.stringify(v),{status,headers:{'content-type':'application/json'}});
+  const page=(data:unknown[])=>json({object:'list',data,has_more:false,first_id:null,last_id:null});
+  const body=method==='POST'?await request.json() as any:null;
+  if(path==='/v1/agents/sessions'&&method==='POST'){const session={id:`remote-session-${sessions.size+1}`,metadata:body.metadata,status:'idle',items:[],turns:[],deleted:false};sessions.set(session.id,session);if(lostCreate)return json({error:{message:'synthetic create reply loss'}},500);return json(session);}
+  if(path==='/v1/agents/sessions')return page([...sessions.values()].filter(s=>!s.deleted));
+  const id=path.split('/')[4],s=sessions.get(id);if(!s||s.deleted)return json({error:{message:'missing'}},404);
+  if(path.endsWith('/events')){
+   if(body.events[0].type==='agent.session.input.cancel'){for(const turn of s.turns)if(turn.status==='in_progress'){turn.status='cancelled';turn.completed_at=Math.floor(Date.now()/1000);}s.status='idle';return new Response(null,{status:204});}
+   const turn={id:`remote-turn-${s.turns.length+1}`,session_id:id,subagent_id:null,status:running?'in_progress':'completed',completed_at:running?null:Math.floor(Date.now()/1000),usage:unknownUsage?null:{input_tokens:100,output_tokens:20,total_tokens:120}};
+   s.turns.push(turn);s.status=running?'running':'idle';s.items.push({type:'message',role:'user',turn_id:turn.id,content:body.events[0].input[0].content});
+   if(lostInput)return json({error:{message:'synthetic lost reply'}},500);return new Response(null,{status:204});
+  }
+  if(path.endsWith('/items'))return page(hideOriginal?[]:s.items);
+  if(path.endsWith('/turns'))return page(s.turns);
+  if(path.includes('/turns/'))return json(s.turns.find((t:any)=>t.id===path.split('/').at(-1)));
+  if(artifactFails&&path.includes('/artifacts'))return json({error:{message:'synthetic artifact read failure'}},500);
+  if(path.endsWith('/artifacts'))return page(s.turns.map((t:any)=>({id:`artifact-${t.id}`,session_id:id,turn_id:t.id,path:'/workspace/outputs/candidate.json',size_bytes:new TextEncoder().encode(candidate).length})));
+  if(path.endsWith('/content'))return new Response(candidate);
+  if(path.includes('/artifacts/')){const artifactId=path.split('/').at(-1)!;return json({id:artifactId,session_id:id,turn_id:artifactId.slice('artifact-'.length),path:'/workspace/outputs/candidate.json',size_bytes:new TextEncoder().encode(candidate).length});}
+  if(method==='DELETE'){if(deleteFails)return json({error:{message:'synthetic delete transport error'}},500);if(!deleteUnconfirmed)s.deleted=true;return json({id,deleted:true});}
+  return json(s);
+ };
+ const worker='managed-product-test';const options:any={host:'127.0.0.1',port:0,inspectorPort:0,cf:{},resourcePersistencePath:directory,telemetry:{enabled:false},logRequests:false,workers:[{config:{type:'worker',name:worker,compatibilityDate:'2026-09-09',compatibilityFlags:['nodejs_compat'],manifest:{mainModule:'worker.mjs',modules:{'worker.mjs':{type:'esm',contents:bundle.outputFiles![0].text}}},env:{MANAGED:{type:'durable-object',worker,exportName:'ManagedProductRuntime'},MANAGED_TURN_RUNTIME:{type:'durable-object',worker,exportName:'ManagedProductRuntime'},REVISION_STORE:{type:'durable-object',worker,exportName:'RevisionStore'},WORKSPACE_CHECKPOINTS:{type:'r2',name:'managed-checkpoints'},MODEL_CONTENT:{type:'r2',name:'managed-content'},MANAGED_ACCEPTANCE_JSON:{type:'text',value:JSON.stringify(policy)},MANAGED_OPENAI_API_KEY:{type:'text',value:'synthetic-key-no-network'}},exports:{ManagedProductRuntime:{type:'durable-object',storage:'sqlite'},RevisionStore:{type:'durable-object',storage:'sqlite'}}},dev:{unsafeRegisterWorker:false,outboundService:{type:'fetcher',handler}}}]};
+ let mf=new Miniflare(options);
+ return {calls,sessions,async call(body:unknown):Promise<any>{const response=await mf.dispatchFetch('http://test/',{method:'POST',body:JSON.stringify(body)});assert.equal(response.status,200);return response.json();},async restart(){await mf.dispose();mf=new Miniflare(options);},async close(){await mf.dispose();await rm(directory,{recursive:true,force:true});},unknownUsage(){unknownUsage=true;},loseInput(){lostInput=true;},loseCreate(){lostCreate=true;},hideOriginal(){hideOriginal=true;},deleteUnconfirmed(){deleteUnconfirmed=true;},failDelete(){deleteFails=true;},failArtifacts(value=true){artifactFails=value;},run(){running=true;}};
+}
+const posts=(f:Awaited<ReturnType<typeof fixture>>)=>f.calls.filter(c=>c.method==='POST');
+test('Managed Workerd creates one real SDK input, saves R2 files-only Revision, restores and replays after actor restart',{timeout:60000},async()=>{
+ const f=await fixture();try{
+  const request=input(),result=await f.call({action:'accept',input:request});assert.equal(result.ok,true,JSON.stringify(result));assert.equal(result.value.phase,'terminal');assert.ok(result.value.checkpoint,JSON.stringify(result));assert.equal(result.value.stopped.kind,'remote-terminal');assert.equal(result.value.resourceDisposition.status,'released');
+  const saved=result.value.checkpoint,identity={scope,sessionId:request.sessionId,turnId:request.turnId,dispatchId:request.dispatchId,generation:1};
+  const restored=await f.call({action:'restore',input:identity,receipt:saved});assert.equal(restored.ok,true,JSON.stringify(restored));assert.equal(restored.value.backendState.recovery,'files-only');assert.equal(restored.value.piSession,null);assert.ok(restored.value.bytes>0);
+  const count=posts(f).length;assert.equal(count,2);await f.restart();assert.deepEqual(await f.call({action:'accept',input:request}),result);assert.equal(posts(f).length,count);
+  const next=await f.call({action:'accept',input:input(2,request.sessionId,{workspace:saved,session:saved})});assert.equal(next.ok,true,JSON.stringify(next));assert.ok(next.value.checkpoint);assert.equal(posts(f).length,3);assert.equal(f.sessions.size,1);
+  const status=await f.call({action:'status',scope});assert.equal(status.value.turnCount,2);assert.equal(status.value.sessionCount,1);assert.equal(status.value.liveSessions,1);assert.equal(status.value.cleanupPending,false);
+  const cleanup=await f.call({action:'cleanup',scope});assert.equal(cleanup.ok,true,JSON.stringify(cleanup));assert.equal(cleanup.value.cleanupPending,false);assert.equal(f.calls.filter(c=>c.method==='DELETE').length,1);
+ }finally{await f.close();}
+});
+test('Managed policy rejects wrong user and scope before provider effects',{timeout:60000},async()=>{const f=await fixture();try{
+ for(const request of [{...input(),actor:{...actor,userId:'other-user'}},{...input(),scope:{...scope,projectId:'other-project'}}]){const result=await f.call({action:'accept',input:request});assert.equal(result.ok,false);assert.match(result.error,/scope-denied|route-denied/);}
+ assert.equal(posts(f).length,0);
+}finally{await f.close();}});
+test('Managed unknown usage permanently blocks new inputs while allowing verified Session cleanup',{timeout:60000},async()=>{const f=await fixture();try{
+ f.unknownUsage();const first=await f.call({action:'accept',input:input()});assert.equal(first.ok,true,JSON.stringify(first));assert.equal(first.value.phase,'terminal');const count=posts(f).length;
+ const next=await f.call({action:'accept',input:input(2)});assert.equal(next.ok,false,JSON.stringify(next));assert.equal(posts(f).length,count);
+ const status=await f.call({action:'status',scope});assert.equal(status.value.stopped,'managed-usage-unknown');assert.equal(status.value.unresolved,1);
+ const cleanup=await f.call({action:'cleanup',scope});assert.equal(cleanup.value.cleanupPending,false);assert.equal(cleanup.value.stopped,'managed-usage-unknown');
+}finally{await f.close();}});
+test('Managed input response loss reconciles exact original without another POST across restart',{timeout:60000},async()=>{const f=await fixture();try{
+ f.loseInput();const first=await f.call({action:'accept',input:input()});assert.equal(first.ok,true,JSON.stringify(first));assert.equal(first.value.phase,'terminal');assert.equal(posts(f).length,2);await f.restart();assert.deepEqual(await f.call({action:'accept',input:input()}),first);assert.equal(posts(f).length,2);
+ await f.call({action:'cleanup',scope});
+}finally{await f.close();}});
+test('Managed unconfirmed deletion retains cleanup liability and stops new inputs',{timeout:60000},async()=>{const f=await fixture();try{
+ await f.call({action:'accept',input:input()});f.deleteUnconfirmed();const cleanup=await f.call({action:'cleanup',scope});assert.equal(cleanup.value.cleanupPending,true);assert.equal(cleanup.value.stopped,'managed-cleanup-unconfirmed');const count=posts(f).length;
+ await f.call({action:'accept',input:input(2,'another-session')});assert.equal(posts(f).length,count);
+}finally{await f.close();}});
+
+test('Managed project budget cannot be reset by addressing a different actor name',{timeout:60000},async()=>{const f=await fixture();try{
+ const result=await f.call({action:'accept',wrong:true,input:input()});assert.equal(result.ok,false);assert.match(result.error,/actor-scope-denied/);assert.equal(posts(f).length,0);
+}finally{await f.close();}});
+test('Managed continuation binds full latest checkpoint independently of lexical Turn identifiers',{timeout:60000},async()=>{const f=await fixture();try{
+ const first=await f.call({action:'accept',input:input(9)});assert.ok(first.value.checkpoint);
+ const second=await f.call({action:'accept',input:input(1,'local-session',{workspace:first.value.checkpoint,session:first.value.checkpoint})});assert.ok(second.value.checkpoint,JSON.stringify(second));
+ const count=posts(f).length;
+ const stale=await f.call({action:'accept',input:input(2,'local-session',{workspace:second.value.checkpoint,session:first.value.checkpoint})});assert.equal(stale.ok,false);assert.equal(posts(f).length,count);
+ const third=await f.call({action:'accept',input:input(3,'local-session',{workspace:second.value.checkpoint,session:second.value.checkpoint})});assert.ok(third.value.checkpoint,JSON.stringify(third));assert.equal(posts(f).length,count+1);await f.call({action:'cleanup',scope});
+}finally{await f.close();}});
+
+test('Managed lost provisioning ACK cleans exact idle Session without inventing usage or refunding its reservation',{timeout:60000},async()=>{const f=await fixture();try{
+ f.loseCreate();const first=await f.call({action:'accept',input:input()});assert.equal(first.ok,true,JSON.stringify(first));assert.equal(first.value.phase,'unknown');assert.equal(posts(f).length,1);
+ const cleanup=await f.call({action:'cleanup',scope});assert.equal(cleanup.ok,true,JSON.stringify(cleanup));assert.equal(cleanup.value.cleanupPending,false);assert.equal(cleanup.value.liveSessions,0);assert.equal(cleanup.value.unresolved,1);assert.equal(cleanup.value.reservedUsd,1);assert.equal(cleanup.value.stopped,'managed-execution-unknown');assert.equal(f.calls.filter(c=>c.method==='DELETE').length,1);
+ const next=await f.call({action:'accept',input:input(2,'another-session')});assert.equal(next.ok,false);assert.equal(posts(f).length,1);
+}finally{await f.close();}});
+test('Managed active cancellation reconciles remote outcome and usage before Session deletion',{timeout:60000},async()=>{const f=await fixture();try{
+ const first=await f.call({action:'accept',input:input()});assert.ok(first.value.checkpoint);f.run();const second=await f.call({action:'accept',input:input(2,'local-session',{workspace:first.value.checkpoint,session:first.value.checkpoint})});assert.equal(second.value.phase,'running');
+ const cleanup=await f.call({action:'cleanup',scope});assert.equal(cleanup.ok,true,JSON.stringify(cleanup));assert.equal(cleanup.value.liveSessions,0);assert.equal(cleanup.value.unresolved,0);const cancelled=cleanup.value.records.find((r:any)=>r.identity.turnId==='local-turn-2');assert.equal(cancelled.execution,'cancelled');assert.equal(cancelled.usage.status,'observed');assert.equal(cancelled.closed,true);assert.equal(f.calls.filter(c=>c.method==='DELETE').length,1);
+}finally{await f.close();}});
+test('Managed fixed Turn reservations and formal simulation slots survive actor restart without rollover',{timeout:60000},async()=>{const f=await fixture();try{
+ let checkpoint:any=null;
+ for(let n=1;n<=6;n++){const r=await f.call({action:'accept',input:input(n,'local-session',{workspace:checkpoint,session:checkpoint})});assert.ok(r.value?.checkpoint,JSON.stringify(r));checkpoint=r.value.checkpoint;}
+ const status=await f.call({action:'status',scope});assert.equal(status.value.turnCount,6);assert.equal(status.value.reservedUsd,4.75);const count=posts(f).length;await f.restart();
+ const denied=await f.call({action:'accept',input:input(7,'local-session',{workspace:checkpoint,session:checkpoint})});assert.equal(denied.ok,false);assert.equal(denied.error,'managed-turn-limit');assert.equal(posts(f).length,count);
+ for(let n=1;n<=12;n++)assert.equal((await f.call({action:'simulation',scope,runId:`run-${n}`})).ok,true);
+ assert.equal((await f.call({action:'simulation',scope,runId:'run-1'})).ok,true);assert.equal((await f.call({action:'simulation',scope,runId:'run-13'})).error,'managed-simulation-limit');
+ await f.call({action:'cleanup',scope});assert.equal((await f.call({action:'status',scope})).value.reservedUsd,4.75);
+}finally{await f.close();}});
+test('Managed two Session ceiling counts deleted Sessions and cannot be replenished by cleanup',{timeout:60000},async()=>{const f=await fixture();try{
+ let saved:any=null;
+ for(let n=1;n<=2;n++){const r=await f.call({action:'accept',input:input(n,`session-${n}`,{workspace:saved,session:null})});assert.ok(r.value?.checkpoint,JSON.stringify(r));saved=r.value.checkpoint;assert.equal((await f.call({action:'cleanup',scope})).value.liveSessions,0);}
+ const count=posts(f).length;const denied=await f.call({action:'accept',input:input(3,'session-3',{workspace:saved,session:null})});assert.equal(denied.ok,false);assert.equal(denied.error,'managed-session-limit-or-cleanup-pending');assert.equal(posts(f).length,count);assert.equal(f.sessions.size,2);
+ const status=await f.call({action:'status',scope});assert.equal(status.value.sessionCount,2);assert.equal(status.value.turnCount,2);assert.equal(status.value.reservedUsd,2);
+}finally{await f.close();}});
+
+test('Managed expired acceptance window permits original observation and cleanup but no fresh model or simulation input',{timeout:60000},async()=>{const f=await fixture();try{
+ const first=await f.call({action:'accept',input:input()});assert.ok(first.value.checkpoint);const count=posts(f).length;await f.call({action:'expire',scope});
+ assert.equal((await f.call({action:'accept',input:input(2,'local-session',{workspace:first.value.checkpoint,session:first.value.checkpoint})})).error,'managed-window-expired');
+ assert.deepEqual(await f.call({action:'observe',input:input()}),first);assert.equal((await f.call({action:'simulation',scope,runId:'run-expired'})).error,'managed-window-closed');assert.equal(posts(f).length,count);
+ const cleanup=await f.call({action:'cleanup',scope});assert.equal(cleanup.value.liveSessions,0);assert.equal(cleanup.value.reservedUsd,1);
+}finally{await f.close();}});
+
+
+test('Managed cleanup transport failure blocks same-session continuation without another provider input',{timeout:60000},async()=>{const f=await fixture();try{
+ const first=await f.call({action:'accept',input:input()});assert.ok(first.value.checkpoint);f.failDelete();const cleanup=await f.call({action:'cleanup',scope});assert.equal(cleanup.ok,true);assert.equal(cleanup.value.cleanupPending,true);assert.equal(cleanup.value.stopped,'managed-cleanup-unconfirmed');const count=posts(f).length;
+ assert.equal((await f.call({action:'preflight',scope,actor})).ok,false);assert.equal((await f.call({action:'accept',input:input(2,'local-session',{workspace:first.value.checkpoint,session:first.value.checkpoint})})).ok,false);assert.equal(posts(f).length,count);
+}finally{await f.close();}});
+test('Managed durable cleanup request blocks continuation after crash even before stopped reason was saved',{timeout:60000},async()=>{const f=await fixture();try{
+ const first=await f.call({action:'accept',input:input()});assert.ok(first.value.checkpoint);const interrupted=await f.call({action:'interrupt-cleanup',scope});assert.equal(interrupted.ok,false);await f.restart();const status=await f.call({action:'status',scope});assert.equal(status.value.cleanupPending,true);assert.equal(status.value.stopped,null);const count=posts(f).length;
+ const preflight=await f.call({action:'preflight',scope,actor});assert.equal(preflight.ok,false);assert.match(preflight.error,/cleanup/);const next=await f.call({action:'accept',input:input(2,'local-session',{workspace:first.value.checkpoint,session:first.value.checkpoint})});assert.equal(next.ok,false);assert.equal(posts(f).length,count);
+}finally{await f.close();}});
+
+
+test('Managed lost checkpoint ACK recovers original immutable manifest after restart without provider input or artifact reread',{timeout:60000},async()=>{const f=await fixture();try{
+ await f.call({action:'fault-commit',scope,mode:'after'});const first=await f.call({action:'accept',input:input()});assert.equal(first.ok,true,JSON.stringify(first));assert.equal(first.value.phase,'running');assert.equal(first.value.checkpoint,null);assert.equal((await f.call({action:'status',scope})).value.stopped,null);const postCount=posts(f).length,artifactReads=f.calls.filter(c=>c.path.includes('/artifacts')).length;assert.equal((await f.call({action:'commit-count',scope})).value,1);
+ await f.restart();f.failArtifacts();const recovered=await f.call({action:'observe',input:input()});assert.equal(recovered.ok,true,JSON.stringify(recovered));assert.equal(recovered.value.phase,'terminal');assert.ok(recovered.value.checkpoint);assert.equal(posts(f).length,postCount);assert.equal(f.calls.filter(c=>c.path.includes('/artifacts')).length,artifactReads);assert.equal((await f.call({action:'commit-count',scope})).value,1);const replay=await f.call({action:'observe',input:input()});assert.deepEqual(replay,recovered);
+}finally{await f.close();}});
+test('Managed checkpoint retry reuses frozen first candidate bytes rather than re-downloading mutable provider artifacts',{timeout:60000},async()=>{const f=await fixture();try{
+ await f.call({action:'fault-commit',scope,mode:'before'});const first=await f.call({action:'accept',input:input()});assert.equal(first.value.phase,'running');const artifactReads=f.calls.filter(c=>c.path.includes('/artifacts')).length,postCount=posts(f).length;f.failArtifacts();await f.restart();const recovered=await f.call({action:'observe',input:input()});assert.equal(recovered.ok,true,JSON.stringify(recovered));assert.equal(recovered.value.phase,'terminal');assert.ok(recovered.value.checkpoint);assert.equal((await f.call({action:'commit-count',scope})).value,2);assert.equal(f.calls.filter(c=>c.path.includes('/artifacts')).length,artifactReads);assert.equal(posts(f).length,postCount);assert.equal((await f.call({action:'status',scope})).value.stopped,null);
+}finally{await f.close();}});
+test('Managed transient artifact GET failure stays pending and recovers without another paid input',{timeout:60000},async()=>{const f=await fixture();try{
+ f.failArtifacts();const first=await f.call({action:'accept',input:input()});assert.equal(first.ok,true,JSON.stringify(first));assert.equal(first.value.phase,'running');assert.equal((await f.call({action:'status',scope})).value.stopped,null);const count=posts(f).length;f.failArtifacts(false);await f.restart();const recovered=await f.call({action:'observe',input:input()});assert.equal(recovered.value.phase,'terminal');assert.ok(recovered.value.checkpoint);assert.equal(posts(f).length,count);
+}finally{await f.close();}});
+
+test('Managed runtime absence before accept is an effect-free lease proof and exact original accept remains possible',{timeout:60000},async()=>{const f=await fixture();try{
+ const absent=await f.call({action:'observe',input:input()});assert.equal(absent.ok,true,JSON.stringify(absent));assert.equal(absent.value.phase,'absent');assert.equal(absent.value.stopped,null);assert.equal(absent.value.resourceDisposition.status,'released');assert.equal(absent.value.resourceDisposition.operationId,input().capacityLease.operationId);assert.equal(posts(f).length,0);
+ const saved=await f.call({action:'accept',input:input()});assert.ok(saved.value.checkpoint,JSON.stringify(saved));assert.equal(posts(f).length,2);await f.call({action:'cleanup',scope});
+}finally{await f.close();}});
+test('Managed cancel before runtime accept durably tombstones original identity without provisioning or input',{timeout:60000},async()=>{const f=await fixture();try{
+ const cancelled=await f.call({action:'cancel',input:input()});assert.equal(cancelled.ok,true);assert.equal(cancelled.value.phase,'absent');assert.equal(cancelled.value.stopped,null);assert.equal(posts(f).length,0);await f.restart();
+ assert.deepEqual(await f.call({action:'cancel',input:input()}),cancelled);assert.deepEqual(await f.call({action:'observe',input:input()}),cancelled);
+ assert.equal((await f.call({action:'cancel',input:{...input(),dispatchId:'wrong-dispatch'}})).ok,false);assert.equal((await f.call({action:'cancel',input:{...input(),capacityLease:{...input().capacityLease,leaseId:'wrong-lease'}}})).ok,false);
+ assert.equal((await f.call({action:'accept',input:input()})).error,'managed-cancelled-before-accept');assert.equal(posts(f).length,0);assert.equal((await f.call({action:'status',scope})).value.turnCount,0);
+}finally{await f.close();}});
+for(const withBinding of [false,true])test('Managed crash after unreserved '+(withBinding?'binding':'input')+' persistence resumes one exact original only',{timeout:60000},async()=>{const f=await fixture();try{
+ await f.call({action:'seed-unreserved',input:input(),withBinding});await f.restart();assert.equal((await f.call({action:'observe',input:input()})).value.phase,'absent');assert.equal(posts(f).length,0);
+ assert.equal((await f.call({action:'accept',input:{...input(),message:'changed original'}})).error,'managed-accept-conflict');assert.equal(posts(f).length,0);
+ const saved=await f.call({action:'accept',input:input()});assert.ok(saved.value?.checkpoint,JSON.stringify(saved));assert.equal(posts(f).length,2);assert.deepEqual(await f.call({action:'accept',input:input()}),saved);assert.equal(posts(f).length,2);await f.call({action:'cleanup',scope});
+}finally{await f.close();}});
+for(const withBinding of [false,true])test('Managed Stop fences unreserved '+(withBinding?'binding':'input')+' persistence without starting it',{timeout:60000},async()=>{const f=await fixture();try{
+ await f.call({action:'seed-unreserved',input:input(),withBinding});const cancelled=await f.call({action:'cancel',input:input()});assert.equal(cancelled.value.phase,'absent');await f.restart();assert.equal((await f.call({action:'accept',input:input()})).error,'managed-cancelled-before-accept');assert.deepEqual(await f.call({action:'observe',input:input()}),cancelled);assert.equal(posts(f).length,0);
+}finally{await f.close();}});

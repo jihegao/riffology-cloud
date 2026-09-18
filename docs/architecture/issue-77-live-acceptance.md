@@ -92,3 +92,34 @@ before input; remote controls must never synthesize a native fence. Only after
 those contracts and existing Pi regression checks pass can a closed deployment
 be read back, a single project be enabled, and authenticated formal
 Experiment/Evidence acceptance run. This trial cannot admit a third Session.
+
+## Additional production acceptance authorization (2026-09-18)
+
+The user explicitly requested completion with subagents and authorized one
+additional bounded plan. This is a new, separately auditable production trial,
+not a reset/refund/reuse of the completed internal trial or historical G5 funds.
+Policy `issue77-production-v1`: one exact synthetic Project/Workspace and user,
+serial input; at most two new hosted Sessions, six Turn attempts, twelve native
+Simulation Runs, and two hours from the first paid reservation. US$5 is the
+observed model-cost stopping threshold, not a provider-enforced cap; the earlier
+accepted actual-cost uncertainty remains applicable. Each Turn is observed for
+at most five minutes before cancellation. Unknown execution/usage or unconfirmed
+cleanup blocks new input. Reservations remain US$0.75/Turn + US$0.25/Session,
+nonrefundable. No further automatic window or attempt renewal is allowed.
+
+The ManagedProductRuntime uses a fixed project actor name, verifies the actor
+identity, pins the policy immutably and reserves before provider side effects.
+TurnJournal remains the business/head authority. Remote terminal receipts release
+only the adapter input slot, while separately recorded hosted Sessions remain
+retained for explicit same-Session continuation and later verified deletion.
+No native process fence is inferred. Files-only Revisions use the normal
+RevisionStore/CAS path. Existing Pi/G5 projects and global gates remain unchanged.
+
+Release sequence: compile and test; upload a closed candidate preserving actual
+resource IDs/assets/secrets; read back the candidate before activation; create
+one idempotent blank synthetic project under an exact bootstrap request; disable
+bootstrap and enable only its frozen Managed policy; use the authenticated user
+UI for model -> Revision -> native Experiment -> Evidence/Preview -> continuation
+-> cancellation/cleanup. Close the policy after acceptance and read back both
+remote cleanup and native resource inventory. This section freezes authorization
+and implementation intent; it is not evidence that production acceptance passed.

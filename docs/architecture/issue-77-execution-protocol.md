@@ -157,3 +157,20 @@ See `docs/evidence/issue-77/` for source fingerprints, baseline results and
 verification commands. Phase 5 has not been authorized or run. No paid-model
 request, deployment, production cutover, live E2E acceptance or issue closure is
 part of the offline evidence.
+
+## Production integration follow-up (2026-09-18)
+
+The preceding offline-only status is historical. The production candidate now
+assembles ManagedProductRuntime behind an immutable project/user policy while
+retaining TurnJournal as the sole business Turn/head authority. Dispatcher
+accepts explicitly typed remote terminal proofs and never treats remote deletion
+as a Pi native fence. A cancelled, provably unsubmitted input has a durable
+no-input tombstone; prepared-but-unreserved original inputs can resume, while
+reserved inputs reconcile only. Checkpoint ACK loss recovers the original
+Revision and retained artifact bytes; concurrent fresh inputs cannot queue.
+
+The additional trial limits, bootstrap scope and rollout/cleanup sequence are
+frozen in `issue-77-live-acceptance.md`. Runtime restart, cancellation, unknown
+usage, counter exhaustion, actor/policy substitution, cleanup response loss and
+checkpoint response loss are covered by actual local Workerd tests. This
+implementation status does not by itself assert deployment or live acceptance.

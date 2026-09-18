@@ -27,7 +27,7 @@ export async function managedInputEnvelope(binding: ExecutionBinding, message: s
   return `[riffology-input-v1:${await managedCorrelation(binding)}]\n${message}`;
 }
 
-/** Real public SDK transport, deliberately not assembled into product routing.
+/** Real public SDK transport, admitted by a durable bounded authority.
  * Reconciliation matches the exact persisted user input marker, never the
  * newest Turn or the first Turn absent from a prior listing. */
 export class ManagedSdkTransport implements ManagedTransport {
