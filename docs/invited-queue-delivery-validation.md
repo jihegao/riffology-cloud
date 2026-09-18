@@ -63,6 +63,13 @@ fixture deadline while checking replay rejection under the default concurrency;
 all 21 proxy tests passed in isolation. The two-file concurrency limit is applied
 consistently to M0–M3, keeping every timeout and assertion unchanged.
 
+The first Ubuntu CI reached the actual checks and exposed two portable-setup
+issues: ripgrep was absent (source-inventory dependency), and a test-only child
+wrapper reopened `/dev/stdin`, which fails for Linux socket-backed child stdin.
+CI now installs ripgrep; the wrapper consumes `process.stdin` directly. Production
+probe logic and its persistence/replay assertions are unchanged. The failed CI
+run remains available as evidence; its result is not counted as a pass.
+
 ## Fresh online observation and remaining work
 
 Safari signed in through an existing Google account. The current official model
