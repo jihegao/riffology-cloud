@@ -974,17 +974,16 @@ for(const usage of [{status:'observed',inputTokens:100,outputTokens:20,totalToke
 });
 
 test('Pi historical execution block disables sends after reload while retaining local draft and readable workspace',async t=>{
- let posts=0;
+ let posts=0,blocked=false;
  const page=await pageFixture(t,async(route,path)=>{
   if(path==='/api/tenants/tenant-a/projects'){await json(route,{projects:[{id:'pi-project',workspace_id:'pi-workspace',title:'Pi 开发者测试',status:'ready'}]});return true;}
-  if(path==='/api/workspaces/pi-workspace'){await json(route,{schemaVersion:1,sessions:{session:{id:'session',title:'主对话',createdAt:1}},turns:{},activeTurnId:null,admission:{state:'enabled'},piDeveloperState:{billingMode:'observe',blocked:'pi-developer-execution-unconfirmed'}});return true;}
+  if(path==='/api/workspaces/pi-workspace'){await json(route,{schemaVersion:1,sessions:{session:{id:'session',title:'主对话',createdAt:1}},turns:{},activeTurnId:null,admission:{state:'enabled'},piDeveloperState:{billingMode:'observe',blocked:blocked?'pi-developer-execution-unconfirmed':null}});return true;}
   if(path.endsWith('/events')){await json(route,{events:[],nextSequence:0,hasMore:false,snapshotRequired:false});return true;}
   if(route.request().method()==='POST'){posts++;await json(route,{error:'unexpected'},500);return true;}
  });
  await page.goto('https://ui.test/#/workspace/pi-project');
- await page.getByText('账号存在执行结果尚未确认的模型调用。请停止重试并核对原任务；新建项目不能绕过此状态。').waitFor();
- assert.equal(await page.locator('#message-submit').isDisabled(),true);
- await page.locator('#message-input').fill('保留的草稿');await page.reload();
+ await page.locator('#message-input:enabled').waitFor();
+ await page.locator('#message-input').fill('保留的草稿');blocked=true;await page.reload();
  await page.getByText('账号存在执行结果尚未确认的模型调用。请停止重试并核对原任务；新建项目不能绕过此状态。').waitFor();
  assert.equal(await page.locator('#message-submit').isDisabled(),true);assert.equal(await page.locator('#message-input').inputValue(),'保留的草稿');assert.equal(posts,0);
 });
