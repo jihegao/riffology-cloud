@@ -46,7 +46,7 @@ test('rejects client ownership, arbitrary starters and malformed values without 
   } finally { db.sqlite.close(); }
 });
 
-for(let failure=0;failure<5;failure++)test(`create SQL failure at statement ${failure} leaves no partial project`,async()=>{
+for(let failure=0;failure<6;failure++)test(`create SQL failure at statement ${failure} leaves no partial project`,async()=>{
   const {db,catalog}=fixture();
   try {
     db.failAt=failure; await assert.rejects(catalog.create(alpha,'tenant-alpha','key',body),/injected SQL failure/);

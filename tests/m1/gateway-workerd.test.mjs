@@ -11,7 +11,7 @@ import {workspaceAgentName} from '../../services/workspace/protocol.ts';
 
 test('actual gateway starts in Workerd with D1 and rejects unauthenticated callers', {timeout:45000}, async()=>{
   const bundle=await build({entryPoints:['services/gateway/index.ts'],bundle:true,write:false,format:'esm',platform:'neutral',target:'es2024',mainFields:['module','main'],conditions:['workerd','worker','browser'],external:['cloudflare:workers','node:*'],logLevel:'silent'});
-  const env={CATALOG:{type:'d1',id:'gateway-test',name:'gateway-test'},APP_ORIGIN:{type:'text',value:'https://gateway-local.test'},BETTER_AUTH_SECRET:{type:'text',value:'local-workerd-fixture-secret-00000000000000000'},GOOGLE_CLIENT_ID:{type:'text',value:'local-fixture'},GOOGLE_CLIENT_SECRET:{type:'text',value:'local-fixture'},TENANT_QUOTA_CAPACITY:{type:'text',value:'1'},TENANT_QUOTA_POLICY_VERSION:{type:'text',value:'m1-v1'},TENANT_QUOTA:{type:'durable-object',worker:'gateway-test',exportName:'TenantQuota'}};
+  const env={CATALOG:{type:'d1',id:'gateway-test',name:'gateway-test'},APP_ORIGIN:{type:'text',value:'https://gateway-local.test'},BETTER_AUTH_SECRET:{type:'text',value:'local-workerd-fixture-secret-00000000000000000'},GOOGLE_CLIENT_ID:{type:'text',value:'local-fixture'},GOOGLE_CLIENT_SECRET:{type:'text',value:'local-fixture'},TENANT_QUOTA_CAPACITY:{type:'text',value:'1'},TENANT_QUOTA_POLICY_VERSION:{type:'text',value:'m1-v1'},INVITED_PROJECT_ADMISSION_ENABLED:{type:'text',value:'true'},G5_CONTROLLED_WINDOW_JSON:{type:'text',value:'{}'},G5_ADMISSION_ENABLED:{type:'text',value:'false'},TENANT_QUOTA:{type:'durable-object',worker:'gateway-test',exportName:'TenantQuota'}};
   env.WORKSPACE_AGENT={type:'durable-object',worker:'gateway-test',exportName:'WorkspaceAgent'};
   env.MODEL_CONTENT={type:'r2',name:'gateway-test-models'};
   env.PROJECT_RUNTIME={type:'durable-object',worker:'gateway-test',exportName:'ProjectRuntime'};
@@ -34,12 +34,13 @@ test('actual gateway starts in Workerd with D1 and rejects unauthenticated calle
     const fixture=new SqliteCatalog();
     try{
       fixture.sqlite.exec(authSchema);const now=Date.now(),token='e'.repeat(64);
-      fixture.sqlite.prepare(`INSERT INTO catalog_invitations(id,token_hash,normalized_email,created_at,expires_at) VALUES ('workerd-invite',?,'workerd@example.test',?,?)`).run(await digest(token),now,now+60000);
+      fixture.sqlite.prepare(`INSERT INTO catalog_users(id,identity_issuer,identity_subject,normalized_email,created_at,updated_at) VALUES ('issuer','test-only','issuer','issuer@example.test',?,?)`).run(now,now);
+      fixture.sqlite.prepare(`INSERT INTO catalog_invitations(id,token_hash,normalized_email,issued_by,created_at,expires_at) VALUES ('workerd-invite',?,'workerd@example.test','issuer',?,?)`).run(await digest(token),now,now+60000);
       const auth=createAuth({database:fixture.sqlite,catalog:fixture,origin:'https://gateway-local.test',secret:env.BETTER_AUTH_SECRET.value,googleClientId:'local-fixture',googleClientSecret:'local-fixture'});
       const context=await auth.$context;
       const user=await context.internalAdapter.createUser({name:'Fixture',email:'workerd@example.test',emailVerified:true},{method:'oauth',oauth:{providerId:'google'}});
       const session=await context.internalAdapter.createSession(user.id);
-      for(const table of ['auth_user','auth_session','catalog_invitations'])for(const row of fixture.sqlite.prepare(`SELECT * FROM ${table}`).all()){
+      for(const table of ['catalog_users','auth_user','auth_session','catalog_invitations'])for(const row of fixture.sqlite.prepare(`SELECT * FROM ${table}`).all()){
         const keys=Object.keys(row);await db.prepare(`INSERT INTO ${table} (${keys.map(key=>`"${key}"`).join(',')}) VALUES (${keys.map(()=>'?').join(',')})`).bind(...keys.map(key=>row[key])).run();
       }
       const cookie=(await serializeSignedCookie(context.authCookies.sessionToken.name,session.token,env.BETTER_AUTH_SECRET.value)).split(';')[0];
@@ -73,6 +74,10 @@ test('actual gateway starts in Workerd with D1 and rejects unauthenticated calle
       assert.equal((await db.prepare('SELECT count(*) AS n FROM catalog_model_content_checks').first()).n,1);
       const create=await mf.dispatchFetch(`https://gateway-local.test/api/tenants/${tenantId}/projects`,{method:'POST',headers:{...headers,'idempotency-key':'workerd-create'},body:JSON.stringify({title:'Real durable acceptance',starterVersion:'blank-v1'})});
       const createBody=await create.text();assert.equal(create.status,202,createBody);const {project}=JSON.parse(createBody);assert.equal(project.status,'provisioning');
+      assert.equal((await db.prepare('SELECT count(*) AS n FROM catalog_project_budget_routes').first()).n,0);
+      const admissionAudit=await db.prepare("SELECT actor_user_id,tenant_id,target_id,reason_code,request_id,outcome FROM catalog_audit_log WHERE action='project.admission'").first();
+      assert.equal(admissionAudit.actor_user_id,owner.owner_user_id);assert.equal(admissionAudit.tenant_id,tenantId);assert.equal(admissionAudit.target_id,project.id);
+      assert.equal(admissionAudit.reason_code,'accepted-invitation-project-v1');assert.equal(admissionAudit.request_id,'workerd-invite');assert.equal(admissionAudit.outcome,'completed');
       const outbox=await db.prepare('SELECT * FROM catalog_outbox WHERE project_id=?').bind(project.id).first();assert.equal(outbox.state,'processing');assert.equal(outbox.actor_auth_version,1);
       const namespace=await mf.getDurableObjectNamespace('WORKSPACE_AGENT','gateway-test');
       const task={id:outbox.id,tenantId,projectId:project.id,workspaceId:project.workspace_id,generation:1,starterVersion:'blank-v1',authVersion:1,createdAt:outbox.created_at,deadlineAt:outbox.deadline_at};

@@ -23,7 +23,8 @@
     "APP_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
     "TENANT_QUOTA_CAPACITY": "1",
     "TENANT_QUOTA_POLICY_VERSION": "m1-v1",
-    "M2_TURNS_ENABLED": "false"
+    "M2_TURNS_ENABLED": "false",
+    "INVITED_PROJECT_ADMISSION_ENABLED": "false"
   },
   "d1_databases": [
     {
