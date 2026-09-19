@@ -1,6 +1,7 @@
 import {G4WindowGuard,readG4WindowSnapshot,g4WindowPolicy,type G4Task} from './g4-window.ts';
 import { DurableObject } from 'cloudflare:workers';
 import { SqlTenantModelBudget, modelBudgetTenantName, type ModelBudgetPolicy, type ModelCallReference } from './core.ts';
+import {verifyExecutionIsolationAuthority} from './execution-isolation-capability.ts';
 
 export interface TenantModelBudgetEnv{
   G4_CONTROLLED_WINDOW_JSON?:string;
@@ -11,6 +12,7 @@ export interface TenantModelBudgetEnv{
   MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL:string;
   MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL:string;
   MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN:string;
+  M2_MODEL_TURN_CAPABILITY_KEY:string;
 }
 function decimal(value:string):number{if(typeof value!=='string'||!/^[1-9][0-9]{0,8}$/.test(value))throw Error('invalid-model-budget-configuration');return Number(value);}
 
@@ -41,6 +43,10 @@ export class TenantModelBudget extends DurableObject<TenantModelBudgetEnv>{
   async finish(tenantId:string,reference:ModelCallReference,terminal:unknown){return this.#forTenant(tenantId).finish(reference,terminal);}
   async releaseUndispatched(tenantId:string,reference:ModelCallReference,proof:unknown){return this.#forTenant(tenantId).releaseUndispatched(reference,proof);}
  async assertExecutionQuiet(tenantId:string){return this.#forTenant(tenantId).assertExecutionQuiet();}
+  async executionIsolationCandidate(tenantId:string,callKey:unknown){return this.#forTenant(tenantId).executionIsolationCandidate(callKey);}
+  async recordExecutionIsolation(tenantId:string,proof:unknown,authority:unknown){await verifyExecutionIsolationAuthority(this.env.M2_MODEL_TURN_CAPABILITY_KEY,'legacy',tenantId,proof,authority);return this.#forTenant(tenantId).recordExecutionIsolation(proof);}
+  async assertExecutionIsolated(tenantId:string,manifest:unknown){return this.#forTenant(tenantId).assertExecutionIsolated(manifest);}
+  async assertTurnExecutionIsolated(tenantId:string,identity:unknown){return this.#forTenant(tenantId).assertTurnExecutionIsolated(identity);}
   async executionBlockers(tenantId:string){return this.#forTenant(tenantId).executionBlockers();}
   async executionBlockerCorrelation(tenantId:string,callKey:unknown){return this.#forTenant(tenantId).executionBlockerCorrelation(callKey);}
   async snapshot(tenantId:string,identity:unknown){return this.#forTenant(tenantId).snapshot(identity);}

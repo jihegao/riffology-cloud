@@ -97,6 +97,7 @@ import type {WorkspaceBindingLease} from '../turn/protocol.ts';
 import {workspaceSandboxActor,type WorkspaceSandboxBinding} from '../sandbox/workspace-binding.ts';
 import type {PairDomain} from '../capacity/paired.ts';
 import {modelBudgetTenantName} from '../model-budget/core.ts';
+import {issueExecutionIsolationAuthority} from '../model-budget/execution-isolation-capability.ts';
 import {PRODUCTION_MONEY_ACTOR} from '../model-budget/production-money.ts';
 import type {TenantModelBudget} from '../model-budget/durable.ts';
 import type {ProductionModelBudget} from '../model-budget/production-durable.ts';
@@ -131,6 +132,7 @@ export interface WorkspaceAgentEnv {
   MANAGED_TESTING_JSON?:string;
   MANAGED_TURN_RUNTIME?:{getByName(name:string):TurnRuntimePort & {preflight(scope:TurnScope,actor:TurnActor):Promise<unknown>;reserveSimulation(scope:TurnScope,runId:string):Promise<unknown>;budgetStatus(scope:TurnScope):Promise<unknown>;cleanup(scope:TurnScope):Promise<unknown>}};
   M2_TURNS_ENABLED: unknown;
+  M2_MODEL_TURN_CAPABILITY_KEY:string;
   M2_WORKSPACE_RUNTIME_REUSE_ENABLED?:unknown;
   M2_LAZY_PROJECT_ENABLED?:unknown;
   M2_WORKSPACE_RUNTIME_VERSION?:unknown;
@@ -813,7 +815,8 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const scope={tenantId:task.tenantId,projectId:task.projectId,workspaceId:task.workspaceId,workspaceGeneration:task.generation};
     const stored=this.ctx.storage.kv.get<ManagedAcceptancePolicy>('managed-product-route-v1')??null;
     const journal=new DurableTurnStore(this.ctx.storage).read();
-    return resolveManagedRoute(this.env.MANAGED_ACCEPTANCE_JSON,scope,stored,!!journal&&Object.keys(journal.turns).length>0,(piDeveloperPolicy(this.env.PI_DEVELOPER_POLICY_JSON)?.enabled&&piDeveloperPolicy(this.env.PI_DEVELOPER_POLICY_JSON)?.tenantId===scope.tenantId&&!stored)?undefined:this.env.MANAGED_TESTING_JSON);
+    const developer=piDeveloperPolicy(this.env.PI_DEVELOPER_POLICY_JSON);
+    return resolveManagedRoute(this.env.MANAGED_ACCEPTANCE_JSON,scope,stored,!!journal&&Object.keys(journal.turns).length>0,(developer&&piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,scope.tenantId,developer.userId,scope.projectId)&&!stored)?undefined:this.env.MANAGED_TESTING_JSON);
   }
   #managedRuntime(policy:ManagedAcceptancePolicy){const namespace=this.env.MANAGED_TURN_RUNTIME;if(!namespace?.getByName)throw Error('managed-product-runtime-not-configured');return namespace.getByName(managedProductActorName(policy.scope));}
   async #managedAdmit(scope:TurnScope,actor:TurnActor,turnPreflight=true){
@@ -851,7 +854,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   async piDeveloperTurnAuthorization(input:{identity:TurnRuntimeIdentity;actor:TurnActor}){
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope);
     if(!this.ctx.storage.kv.get('pi-developer-turn:'+identity.turnId))return false;
-    if(!piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,scope.tenantId,input.actor.userId)||this.#store.read()?.task.budgetRoute||this.#managedRoute())throw Error('pi-developer-admission-denied');
+    if(!piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,scope.tenantId,input.actor.userId,scope.projectId)||this.#store.read()?.task.budgetRoute||this.#managedRoute())throw Error('pi-developer-admission-denied');
     const state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
     if(!turn||turn.status!=='running'||state.activeTurnId!==turn.id||turn.actor.userId!==input.actor.userId||turn.actor.authVersion!==input.actor.authVersion||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation||turn.cancelRequestedAt!==null)throw Error('pi-developer-turn-denied');
     const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('pi-developer-admission-denied');return true;
@@ -866,7 +869,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   async #g5TurnStart(turn:import('../turn/protocol.ts').TurnRecord,phase:'capacity'|'runtime'){
     const route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);
     if(!route){
-      if(this.ctx.storage.kv.get('pi-developer-turn:'+turn.id)){if(!piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,turn.scope.tenantId,turn.actor.userId))throw Error('pi-developer-admission-denied');return;}
+      if(this.ctx.storage.kv.get('pi-developer-turn:'+turn.id)){if(!piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,turn.scope.tenantId,turn.actor.userId,turn.scope.projectId))throw Error('pi-developer-admission-denied');return;}
       // Journal commit can survive a lost sync ACK before the route callback runs.
       // Missing provenance in a configured G5 Workspace never authorizes a legacy start.
       if(this.env.G5_CONTROLLED_WINDOW_JSON!==undefined)throw Error('g5-turn-route-unavailable');
@@ -954,7 +957,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   submitTurn(input: { scope: TurnScope; actor: TurnActor; sessionId: string; key: string; body: { message: unknown } }) {
     // Serialize admission through the durable journal commit. DO input gates
     // alone do not cover the external preflight/catalog awaits in this method.
-    if(!this.#managedRoute()&&!piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,input.scope.tenantId,input.actor.userId))return this.#submitTurn(input);
+    if(!this.#managedRoute()&&!piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,input.scope.tenantId,input.actor.userId,input.scope.projectId))return this.#submitTurn(input);
     const next=this.#managedSubmitTail.then(()=>this.#submitTurn(input));
     this.#managedSubmitTail=next.catch(()=>{});return next;
   }
@@ -963,7 +966,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     let scope:TurnScope;
     try{scope=this.#ready(input.scope);trace('ready',true);}catch(error){trace('ready',false,error);throw error;}
     const selected=this.#managedRoute();
-    const developer=!selected&&!this.#store.read()?.task.budgetRoute&&piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,scope.tenantId,input.actor.userId);
+    const developer=!selected&&!this.#store.read()?.task.budgetRoute&&piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,scope.tenantId,input.actor.userId,scope.projectId);
     if(selected||developer){
       const state=await this.#turns.snapshot(scope);
       const prior=Object.values(state.turns).find(turn=>turn.sessionId===input.sessionId&&turn.requestKey===input.key&&turn.actor.userId===input.actor.userId);
@@ -990,10 +993,11 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       for(const old of Object.values(state.turns)){
         if(this.ctx.storage.kv.get('pi-developer-turn:'+old.id)||!old.dispatchId||!old.runtimeGeneration)continue;
         const identity=turnRuntimeIdentity({scope,sessionId:old.sessionId,turnId:old.id,dispatchId:old.dispatchId,generation:old.runtimeGeneration});
-        const status=await this.env.TENANT_MODEL_BUDGET?.getByName(modelBudgetTenantName(scope.tenantId)).turnSettlement(scope.tenantId,identity);
-        if(!status||status.active||status.pending||status.unknown)throw Error('pi-developer-historical-execution-unconfirmed');
+        const ledger=this.env.TENANT_MODEL_BUDGET?.getByName(modelBudgetTenantName(scope.tenantId));
+        if(!ledger)throw Error('pi-developer-historical-ledger-unavailable');
+        await ledger.assertTurnExecutionIsolated(scope.tenantId,identity);
       }
-      await this.#developerBudget(scope.tenantId).assertQuiet(scope,input.actor.userId);
+      await this.#developerBudget(scope.tenantId).admitTurn(scope,input.actor.userId,input.sessionId,input.key);
     }else if(!managed&&this.env.G5_CONTROLLED_WINDOW_JSON!==undefined){
       await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
       const task=await g5TaskKey(this.env.G5_CONTROLLED_WINDOW_JSON,'turn',scope.tenantId,input.actor.userId,{scope,sessionId:input.sessionId,key:input.key},input.body);
@@ -1015,9 +1019,9 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const scope=this.#ready(input.scope),snapshot=await this.#turns.view(scope),managed=this.#managedRoute();
     if(!managed){
       const policy=piDeveloperPolicy(this.env.PI_DEVELOPER_POLICY_JSON);
-      const developer=!!policy?.enabled&&policy.tenantId===scope.tenantId&&!this.#store.read()?.task.budgetRoute&&!Object.keys(snapshot.turns).some(id=>this.ctx.storage.kv.get('g5-turn-route:'+id));
+      const developer=!!policy&&piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,scope.tenantId,policy.userId,scope.projectId)&&!this.#store.read()?.task.budgetRoute&&!Object.keys(snapshot.turns).some(id=>this.ctx.storage.kv.get('g5-turn-route:'+id));
       let blocked:string|null=null;
-      if(developer&&!snapshot.activeTurnId)try{await this.#developerBudget(scope.tenantId).assertQuiet(scope,policy!.userId);}catch(error){blocked=error instanceof Error&&error.message==='pi-developer-execution-unconfirmed'?error.message:'pi-developer-historical-ledger-unavailable';}
+      if(developer&&!snapshot.activeTurnId)try{await this.#developerBudget(scope.tenantId).assertQuiet(scope,policy!.userId);}catch(error){blocked=error instanceof Error&&['pi-developer-execution-unconfirmed','pi-developer-execution-isolation-unconfirmed'].includes(error.message)?error.message:'pi-developer-historical-ledger-unavailable';}
       return {...snapshot,runtimeBackend:'pi' as const,...(developer?{piDeveloperState:{billingMode:'observe',blocked}}:{})};
     }
     try{
@@ -1041,7 +1045,31 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   async runtimeReleaseSnapshot(input:{identity:TurnRuntimeIdentity}){
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
     if(!turn||!['completed','failed','cancelled','interrupted'].includes(turn.status)||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation)throw Error('turn-release-scope-denied');
-    return {schemaVersion:1 as const,status:turn.status,persistenceOutcome:turn.persistenceOutcome,active:state.activeTurnId!==null,releaseHold:state.releaseHold?{status:state.releaseHold.status,matches:state.releaseHold.turnId===identity.turnId}:null};
+    return {schemaVersion:1 as const,status:turn.status,persistenceOutcome:turn.persistenceOutcome,active:state.activeTurnId!==null,releaseHold:state.releaseHold?{status:state.releaseHold.status,matches:state.releaseHold.turnId===identity.turnId}:null,recoveryHold:state.recoveryHold?{matches:state.recoveryHold.turnId===identity.turnId}:null};
+  }
+  /** Private platform attestation for one exact historical model blocker. The
+   * Workspace reads the ledger-owned identity, proves all execution consumers
+   * quiescent, and only then appends a proof back to that source ledger. */
+  async attestExecutionIsolation(input:{tenantId:string;ledger:'legacy'|'g5';callKey:string}){
+    if(!input||Object.keys(input).sort().join(',')!=='callKey,ledger,tenantId'||!['legacy','g5'].includes(input.ledger)||!/^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(input.tenantId)||!/^[a-f0-9]{64}$/.test(input.callKey))throw Error('model-execution-isolation-input-invalid');
+    const namespace=input.ledger==='legacy'?this.env.TENANT_MODEL_BUDGET:this.env.G5_TOKEN_BUDGET;
+    if(!namespace||!this.env.TOOL_BRIDGE_AGENT)throw Error('model-execution-isolation-authority-unavailable');
+    const tenantId=input.tenantId;
+    const ledger=namespace.getByName(modelBudgetTenantName(tenantId)),candidate=await ledger.executionIsolationCandidate(tenantId,input.callKey),identity=turnRuntimeIdentity(candidate.identity),scope=this.#maintenanceScope(identity.scope);
+    if(scope.tenantId!==tenantId)throw Error('model-execution-isolation-scope-denied');
+    const state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
+    if(!turn||!['completed','failed','cancelled','interrupted'].includes(turn.status)||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation||state.activeTurnId!==null||state.releaseHold!==null||state.recoveryHold!==null)throw Error('model-execution-isolation-workspace-active');
+    const model=await ledger.closeTurnAdmission(tenantId,identity);
+    if(!model.closed)throw Error('model-execution-isolation-model-open');
+    const runtime=await this.env.PRODUCT_TURN_RUNTIME.getByName(await turnRuntimeActorName(identity)).fenceExecution(identity);
+    const toolActor=this.env.TOOL_BRIDGE_AGENT.getByName(await toolBridgeActorName(identity.scope,identity.turnId,identity.dispatchId)),tools=await toolActor.closeTurnAdmission(identity);
+    const isolatedAt=Date.now();
+    if(candidate.blocker.deadlineAt>isolatedAt||!tools.closed||tools.active!==0||tools.pending!==0||tools.unknown!==0)throw Error('model-execution-isolation-tools-active');
+    const authority={schemaVersion:1 as const,identity,ledger:input.ledger,callKey:input.callKey,recordDigest:candidate.recordDigest,modelDeadlineAt:candidate.blocker.deadlineAt,workspace:{status:turn.status,persistenceOutcome:turn.persistenceOutcome,active:false,releaseHold:null,recoveryHold:null},model:{closed:model.closed,closedAt:model.closedAt,total:model.total,active:model.active,pending:model.pending,unknown:model.unknown},runtime:{identityDigest:runtime.identityDigest,fencedAt:runtime.fencedAt,classification:runtime.classification},tools:{closed:tools.closed,closedAt:tools.closedAt,total:tools.total,active:tools.active,pending:tools.pending,unknown:tools.unknown},isolatedAt};
+    const proof={schemaVersion:1 as const,callKey:candidate.blocker.callKey,turnKey:candidate.blocker.turnKey,recordDigest:candidate.recordDigest,evidenceSha256:await turnDigest(authority),isolatedAt,classification:runtime.classification};
+    const authorityMac=await issueExecutionIsolationAuthority(this.env.M2_MODEL_TURN_CAPABILITY_KEY,input.ledger,tenantId,proof);
+    const stored=await ledger.recordExecutionIsolation(tenantId,proof,authorityMac);
+    return {schemaVersion:1 as const,ledger:input.ledger,proof:stored.proof,proofDigest:stored.proofDigest,evidenceSha256:proof.evidenceSha256,authorityReceiptSha256:await turnDigest({authority,proofDigest:stored.proofDigest})};
   }
   async g5TurnAuthority(input:{identity:TurnRuntimeIdentity;userId:string}){
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];

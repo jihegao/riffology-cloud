@@ -75,7 +75,7 @@ async function serviceCall<T>(operation:()=>Promise<T>):Promise<T>{
 async function turnCall<T>(operation:()=>Promise<T>):Promise<T>{
   try{return await operation();}catch(error){const code=error instanceof Error?error.message:'';
     if(code.includes('idempotency-conflict'))throw new CatalogError('idempotency_conflict');
-    if(['pi-developer-execution-unconfirmed','pi-developer-historical-execution-unconfirmed','pi-developer-historical-g5-denied','pi-developer-admission-denied','pi-developer-budget-unavailable','pi-developer-historical-ledger-unavailable'].includes(code))throw new HttpError(code,409);
+    if(['pi-developer-execution-unconfirmed','pi-developer-execution-isolation-unconfirmed','pi-developer-historical-execution-unconfirmed','pi-developer-historical-g5-denied','pi-developer-admission-denied','pi-developer-budget-unavailable','pi-developer-historical-ledger-unavailable','pi-developer-packet-limit','pi-developer-policy-conflict','pi-developer-usage-missing','pi-developer-usage-invalid'].includes(code))throw new HttpError(code,409);
     if(code==='workspace-recovery-hold')throw new HttpError(code,409);
     if(new Set(['managed-execution-unknown','managed-usage-unknown','managed-original-unresolved','managed-cleanup-unconfirmed','managed-input-in-flight','managed-session-base-unavailable','managed-session-limit-or-cleanup-pending','managed-admission-denied','managed-policy-immutable','managed-route-existing-turn-history','managed-window-expired','managed-turn-limit','managed-observed-cost-limit','managed-reservation-limit','managed-observed-cost-exceeds-hold','managed-observation-failed']).has(code))throw new HttpError(code,409);
     if(code.includes('not-found'))throw new CatalogError('not_found');

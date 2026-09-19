@@ -73,3 +73,43 @@ test('cold observer on absent actor reads schema only and never initializes stor
  const host=new ProductTurnRuntimeHost(ctx,{PRODUCT_TURN_RUNTIME:right as never},()=>{releases++;throw Error('unexpected release');});
  await assert.rejects(host.currentObserverExecution(identity),/observer-denied/);assert.equal(releases,0);assert.equal(queries.length,1);assert.match(queries[0]!,/^SELECT name FROM sqlite_master/);
 });
+
+test('an absent exact runtime gains a durable tombstone that fences accept, observe, cancel and alarm',async()=>{
+ const expected=await turnRuntimeActorName(identity),fresh=sqliteState(expected);let factories=0;
+ const env={PRODUCT_TURN_RUNTIME:{idFromName(){return {equals(){return true;}};}},M2_TURNS_ENABLED:'true'};
+ let host=new ProductTurnRuntimeHost(fresh.ctx,env,()=>{factories++;throw Error('release-must-not-run');});
+ const fenced=await host.fenceExecution(identity);assert.equal(fenced.classification,'runtime-absent-and-fenced');assert.equal(factories,0);
+ for(const operation of [()=>host.accept(request),()=>host.observe(identity),()=>host.cancel(identity)])await assert.rejects(operation(),/runtime-isolated/);
+ await host.alarm();assert.equal(factories,0);
+ host=new ProductTurnRuntimeHost(fresh.ctx,env,()=>{factories++;throw Error('release-must-not-run');});
+ assert.deepEqual(await host.fenceExecution(identity),{...fenced,runtime:null});
+ await assert.rejects(host.accept(request),/runtime-isolated/);assert.equal(factories,0);
+});
+
+test('a schema-only runtime actor is fenced as absent without constructing release ports',async()=>{
+ const expected=await turnRuntimeActorName(identity),fresh=sqliteState(expected);let factories=0;
+ fresh.db.exec('CREATE TABLE product_turn_runtime(singleton INTEGER PRIMARY KEY,value TEXT NOT NULL) STRICT');
+ const env={PRODUCT_TURN_RUNTIME:{idFromName(){return {equals(){return true;}};}},M2_TURNS_ENABLED:'true'};
+ const host=new ProductTurnRuntimeHost(fresh.ctx,env,()=>{factories++;throw Error('release-must-not-run');});
+ const fenced=await host.fenceExecution(identity);
+ assert.equal(fenced.classification,'runtime-absent-and-fenced');assert.equal(fenced.runtime,null);assert.equal(factories,0);
+ await assert.rejects(host.observe(identity),/runtime-isolated/);
+});
+
+test('runtime accept and absent-runtime fencing are serialized across release-factory awaits',async()=>{
+ const expected=await turnRuntimeActorName(identity),fresh=sqliteState(expected),env={PRODUCT_TURN_RUNTIME:{idFromName(){return {equals(){return true;}};}},M2_TURNS_ENABLED:'true'};
+ let entered!:()=>void,release!:()=>void;const factoryEntered=new Promise<void>(resolve=>{entered=resolve;}),allowFactory=new Promise<void>(resolve=>{release=resolve;});
+ const ports=()=>({execution:{async start(){return {identity,phase:'terminal' as const,outcome:'completed' as const,events:[],stopped:{confirmationId:'stop-race',observedAt:Date.now(),nativeRunning:false as const,fenced:true as const}};},async observe(){throw Error('native-observe-must-not-run');},async cancel(){throw Error('native-cancel-must-not-run');},async fenceUnresolvedStart(){throw Error('native-fence-must-not-run');},async release(){return {running:false};}},checkpoints:{async prepare(){return {operationId:`commit:${identity.scope.tenantId}:${identity.scope.projectId}:${identity.scope.workspaceId}:${identity.generation}:${identity.sessionId}:${identity.turnId}:${identity.dispatchId}`,inputSha256:'a'.repeat(64)};},async commit(){return {status:'committed' as const,receipt:{revisionId:'revision-race',objectKey:'turns/revision-race.json',filesSha256:'b'.repeat(64),sessionSha256:'c'.repeat(64),committedAt:Date.now()}};},async reconcile(){return {status:'absent' as const};}}});
+ const host=new ProductTurnRuntimeHost(fresh.ctx,env,async()=>{entered();await allowFactory;return ports();});
+ const accepting=host.accept(request);await factoryEntered;const fencing=host.fenceExecution(identity);release();
+ assert.equal((await accepting).phase,'terminal');await assert.rejects(fencing,/isolation-denied/);
+ assert.equal(fresh.db.prepare("SELECT count(*) count FROM sqlite_master WHERE name='product_turn_execution_isolations'").get()!.count,0);
+});
+
+test('fence wins a same-tick race before accept and permanently prevents runtime creation',async()=>{
+ const expected=await turnRuntimeActorName(identity),fresh=sqliteState(expected),env={PRODUCT_TURN_RUNTIME:{idFromName(){return {equals(){return true;}};}},M2_TURNS_ENABLED:'true'};let factories=0;
+ const host=new ProductTurnRuntimeHost(fresh.ctx,env,()=>{factories++;throw Error('release-must-not-run');});
+ const fencing=host.fenceExecution(identity),accepting=host.accept(request);assert.equal((await fencing).classification,'runtime-absent-and-fenced');
+ await assert.rejects(accepting,/runtime-isolated/);assert.equal(factories,0);
+ assert.equal(fresh.db.prepare("SELECT count(*) count FROM sqlite_master WHERE name='product_turn_runtime'").get()!.count,0);
+});

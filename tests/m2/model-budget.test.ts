@@ -12,6 +12,7 @@ import {
   type ModelCallRequest,
 } from '../../services/model-budget/core.ts';
 import type { TurnRuntimeIdentity } from '../../services/turn-runtime/identity.ts';
+import {turnDigest} from '../../services/turn/protocol.ts';
 
 const identity = (overrides: Partial<TurnRuntimeIdentity> = {}): TurnRuntimeIdentity => ({
   scope: { tenantId: 'tenant-a', projectId: 'project-a', workspaceId: 'workspace-a', workspaceGeneration: 1 },
@@ -330,4 +331,51 @@ test('private operator correlation rejects calls whose execution is confirmed en
  await host.finish(call.reference,{outcome:'failed',errorCode:'rejected-auth',providerRequestId:'provider-secret',usage:{kind:'unknown',observedAt:1000}});
  const key=(await host.snapshot(identity())).records[0]!.callKey;
  await assert.rejects(host.executionBlockerCorrelation(key),/model-execution-blocker-ended/);
+});
+
+test('append-only execution isolation proves an exact blocker without changing its billing record',async t=>{
+ const f=fixture(t),host=f.host(),call=await dispatch(host);
+ await host.finish(call.reference,{outcome:'failed',errorCode:'provider-failure',providerRequestId:'provider-secret',usage:{kind:'unknown',observedAt:1000}});
+ await host.closeTurnAdmission(identity());
+ const before=await host.snapshot(identity()),candidate=await host.executionIsolationCandidate(before.records[0]!.callKey);
+ assert.deepEqual(candidate.identity,identity());
+ assert.equal(JSON.stringify(candidate).includes('provider-secret'),false);
+ await assert.rejects(host.recordExecutionIsolation({schemaVersion:1,callKey:candidate.blocker.callKey,turnKey:candidate.blocker.turnKey,recordDigest:candidate.recordDigest,evidenceSha256:'e'.repeat(64),isolatedAt:1000,classification:'runtime-released'}),/isolation-denied/);
+ f.advance(2_100);
+ const proof={schemaVersion:1 as const,callKey:candidate.blocker.callKey,turnKey:candidate.blocker.turnKey,recordDigest:candidate.recordDigest,evidenceSha256:'e'.repeat(64),isolatedAt:2_100,classification:'runtime-released' as const};
+ const stored=await host.recordExecutionIsolation(proof);
+ assert.deepEqual(await host.recordExecutionIsolation(proof),stored);
+ await assert.rejects(host.recordExecutionIsolation({...proof,evidenceSha256:'f'.repeat(64)}),/isolation-conflict/);
+ assert.deepEqual(await host.snapshot(identity()),before);
+ await assert.rejects(host.assertExecutionQuiet(),/execution-unconfirmed/);
+ await host.assertTurnExecutionIsolated(identity());
+ const manifest={schemaVersion:1 as const,ledger:'legacy' as const,proofs:[{callKey:proof.callKey,proofDigest:stored.proofDigest}]};
+ assert.equal((await host.assertExecutionIsolated(manifest)).isolated,1);
+ await assert.rejects(host.assertExecutionIsolated({...manifest,proofs:[]}),/invalid-model-execution-isolation-manifest/);
+ await assert.rejects(host.assertExecutionIsolated({...manifest,proofs:[{...manifest.proofs[0]!,proofDigest:'f'.repeat(64)}]}),/execution-isolation-unconfirmed/);
+ f.reopen();
+ assert.equal((await f.host().assertExecutionIsolated(manifest)).isolated,1);
+ assert.deepEqual(await f.host().snapshot(identity()),before);
+});
+
+test('execution isolation rejects a proof whose record digest or exact Turn was substituted',async t=>{
+ const f=fixture(t),host=f.host(),call=await dispatch(host);
+ await host.finish(call.reference,{outcome:'failed',errorCode:'provider-failure',providerRequestId:null,usage:{kind:'unknown',observedAt:1000}});
+ await host.closeTurnAdmission(identity());
+ f.advance(2_100);
+ const candidate=await host.executionIsolationCandidate((await host.snapshot(identity())).records[0]!.callKey);
+ const base={schemaVersion:1 as const,callKey:candidate.blocker.callKey,turnKey:candidate.blocker.turnKey,recordDigest:candidate.recordDigest,evidenceSha256:await turnDigest({authority:'workspace-runtime-tool'}),isolatedAt:2_100,classification:'runtime-absent-and-fenced' as const};
+ await assert.rejects(host.recordExecutionIsolation({...base,recordDigest:'f'.repeat(64)}),/isolation-denied/);
+ await assert.rejects(host.recordExecutionIsolation({...base,turnKey:'f'.repeat(64)}),/isolation-denied/);
+});
+
+test('later provider reconciliation cannot invalidate an immutable execution fence or hide a new blocker',async t=>{
+ const f=fixture(t),host=f.host(),call=await dispatch(host);await host.markUnknown(call.reference);await host.closeTurnAdmission(identity());f.advance(2_100);
+ const candidate=await host.executionIsolationCandidate((await host.snapshot(identity())).records[0]!.callKey),proof={schemaVersion:1 as const,callKey:candidate.blocker.callKey,turnKey:candidate.blocker.turnKey,recordDigest:candidate.recordDigest,evidenceSha256:'e'.repeat(64),isolatedAt:2_100,classification:'runtime-released' as const},stored=await host.recordExecutionIsolation(proof),manifest={schemaVersion:1 as const,ledger:'legacy' as const,proofs:[{callKey:proof.callKey,proofDigest:stored.proofDigest}]};
+ assert.equal((await host.assertExecutionIsolated(manifest)).blocked,1);
+ await host.finish(call.reference,{outcome:'completed',errorCode:null,providerRequestId:'provider-later',usage:{kind:'verified',inputTokens:1,outputTokens:1,source:'provider-usage',observedAt:2_100}});
+ const after=await host.assertExecutionIsolated(manifest);assert.equal(after.blocked,0);assert.equal(after.isolated,1);
+ const other=identity({sessionId:'session-b',turnId:'turn-b',dispatchId:'dispatch-b'}),extra=await dispatch(host,request({identity:other,callId:'call-b',requestId:'request-b',deadlineAt:3_000,payloadSha256:'b'.repeat(64)}));
+ await host.markUnknown(extra.reference);
+ await assert.rejects(host.assertExecutionIsolated(manifest),/execution-isolation-unconfirmed/);
 });

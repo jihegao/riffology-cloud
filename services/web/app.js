@@ -219,11 +219,16 @@ async function loadModels() {
 function managedBlockMessage(code) {
   const messages = {
     'pi-developer-execution-unconfirmed': '账号存在执行结果尚未确认的模型调用。请停止重试并核对原任务；新建项目不能绕过此状态。',
+    'pi-developer-execution-isolation-unconfirmed': '历史任务尚未完成可靠隔离。请停止重试并核对原任务；费用待核对本身不会解除或制造隔离证明。',
     'pi-developer-historical-execution-unconfirmed': '历史任务的执行结果尚未确认，请先核对原任务。',
     'pi-developer-historical-g5-denied': '此项目保留原受控测试策略，不能切换为开发者模式。',
     'pi-developer-admission-denied': '当前账号的 Pi 开发者模式未开放。',
     'pi-developer-budget-unavailable': '开发者用量记录服务暂不可用，请联系管理员。',
     'pi-developer-historical-ledger-unavailable': '历史执行状态暂时无法核对，当前不能开始新任务。',
+    'pi-developer-packet-limit': '本次 Pi 验收包已达到次数、费用或时间上限。',
+    'pi-developer-policy-conflict': '本次 Pi 验收策略与已有请求不一致，已停止继续执行。',
+    'pi-developer-usage-missing': 'Pi 验收费用记录不完整，已停止继续执行。',
+    'pi-developer-usage-invalid': 'Pi 验收费用记录无效，已停止继续执行。',
     'managed-execution-unknown': '上一轮曾出现执行状态未确认，项目已暂停接收新请求；需要核对原任务后恢复，重复发送不会解除暂停。',
     'managed-usage-unknown': '上一轮用量尚未确认，项目已暂停接收新请求；需要核对原任务后恢复，稍后重试不会自动解除暂停。',
     'managed-original-unresolved': '上一轮执行或用量尚未确认，当前不能开始新任务。',

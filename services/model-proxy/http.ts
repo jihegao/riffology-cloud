@@ -196,7 +196,7 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
   const tenantId = claims.identity.scope.tenantId;
   let guard:G5ProxyGuard|null=null,route:Awaited<ReturnType<G5ProxyGuard['lookupTrustedTurnRoute']>>=null;
   let developer=false;
-  if(piDeveloperOwner(env.PI_DEVELOPER_POLICY_JSON,tenantId,claims.actor.userId)){
+  if(piDeveloperOwner(env.PI_DEVELOPER_POLICY_JSON,tenantId,claims.actor.userId,claims.identity.scope.projectId)){
     try{developer=await env.WORKSPACE_AGENT?.getByName(workspaceAgentName(tenantId,claims.identity.scope.workspaceId)).piDeveloperTurnAuthorization?.({identity:claims.identity,actor:claims.actor})===true;}catch{return denied();}
   }
   if(developer&&!env.PI_DEVELOPER_BUDGET)return denied();
