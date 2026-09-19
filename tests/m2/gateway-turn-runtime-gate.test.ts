@@ -103,3 +103,16 @@ test('staging turn admission telemetry emits only its fixed schema and redacts u
   const identifier=['a1234567','89ab','4cde','8fab',['012345','6789ab'].join('')].join('-');
   for(const value of ['session-sensitive','private-secret','tenant-a',identifier,'arbitrary-short-slug'])assert.equal(turnAdmissionErrorCode(Error(value)),'unclassified');
 });
+
+test('opening the Pi runtime for developer mode does not reopen a historical G5 route',async()=>{
+ for(const developer of [false,true]){
+  let submitted=0;
+  const services=createGatewayTurnServices({M2_TURNS_ENABLED:'true',G5_CONTROLLED_WINDOW_JSON:'{}',G5_ADMISSION_ENABLED:'false',WORKSPACE_AGENT:{getByName:()=>({
+   async turnSnapshot(){return {runtimeBackend:'pi',...(developer?{piDeveloperState:{billingMode:'observe',blocked:null}}:{})};},async submitTurn(){submitted++;return {accepted:true};}
+  } as any)}});
+  assert.equal((await services.snapshot(scope) as any).admission.state,developer?'enabled':'maintenance');
+  if(developer)await services.submit(scope,actor,'session','key',{message:'synthetic'});
+  else await assert.rejects(services.submit(scope,actor,'session','key',{message:'synthetic'}),/turn_runtime_not_ready/);
+  assert.equal(submitted,developer?1:0);
+ }
+});

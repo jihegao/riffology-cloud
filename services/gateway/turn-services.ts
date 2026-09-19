@@ -21,6 +21,8 @@ interface TurnServicesEnv {
   MANAGED_ACCEPTANCE_JSON?:string;
   MANAGED_TESTING_JSON?:string;
   MANAGED_TURN_RUNTIME?:{getByName:unknown};
+  G5_CONTROLLED_WINDOW_JSON?:string;
+  G5_ADMISSION_ENABLED?:string;
   M2_TURNS_ENABLED: unknown;
   M2_TURN_RUNTIME_CONFIGURED?: unknown;
   M2_TURN_ADMISSION_TELEMETRY?:unknown;
@@ -32,7 +34,9 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
   const selection = (scope:TurnScope,value:unknown) => {
     const backend=value && typeof value==='object' && !Array.isArray(value)?(value as Record<string,unknown>).runtimeBackend:undefined;
     const configured=managedProjectPolicy(env.MANAGED_ACCEPTANCE_JSON,scope,env.MANAGED_TESTING_JSON);
-    return {configured,managed:backend==='pi'?false:backend==='managed'||!!configured};
+    const developer=!!(value&&typeof value==='object'&&(value as Record<string,unknown>).piDeveloperState);
+    const piEnabled=env.G5_CONTROLLED_WINDOW_JSON!==undefined&&!developer&&env.G5_ADMISSION_ENABLED!=='true'?'false':env.M2_TURNS_ENABLED;
+    return {piEnabled,configured,managed:backend==='pi'?false:backend==='managed'||!!configured};
   };
   return {
     async managedAcceptanceStatus(scope:TurnScope,caller:TurnActor){const stub=actor(scope);if(!stub.managedAcceptanceStatus)throw Error('managed-product-runtime-not-configured');return stub.managedAcceptanceStatus({scope,actor:caller});},
@@ -42,9 +46,9 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
     },
     async submit(scope: TurnScope, caller: TurnActor, sessionId: string, key: string, body: { message: unknown }) {
       try{
-        const {managed,configured}=selection(scope,await actor(scope).turnSnapshot({scope}));
+        const {managed,configured,piEnabled}=selection(scope,await actor(scope).turnSnapshot({scope}));
         if(managed){if(!configured?.enabled||configured.userId!==caller.userId)throw Error('managed-admission-denied');requireTurnRuntime('true',typeof env.MANAGED_TURN_RUNTIME?.getByName==='function');}
-        else requireTurnRuntime(env.M2_TURNS_ENABLED,env.M2_TURN_RUNTIME_CONFIGURED!==false);
+        else requireTurnRuntime(piEnabled,env.M2_TURN_RUNTIME_CONFIGURED!==false);
         const result=await actor(scope).submitTurn({scope,actor:caller,sessionId,key,body});
         traceTurnAdmission(env.M2_TURN_ADMISSION_TELEMETRY,'gateway',true);return result;
       }catch(error){traceTurnAdmission(env.M2_TURN_ADMISSION_TELEMETRY,'gateway',false,error);throw error;}
@@ -59,8 +63,8 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
       const value = await actor(scope).turnSnapshot({ scope });
       if (!value || typeof value !== 'object' || Array.isArray(value)) return value;
       const {runtimeBackend,...snapshot}=value as Record<string,unknown>;
-      const {managed,configured}=selection(scope,value);
-      return { ...snapshot, admission: managed?turnAdmissionStatus(configured?.enabled?'true':'false',typeof env.MANAGED_TURN_RUNTIME?.getByName==='function'):turnAdmissionStatus(env.M2_TURNS_ENABLED, env.M2_TURN_RUNTIME_CONFIGURED !== false) };
+      const {managed,configured,piEnabled}=selection(scope,value);
+      return { ...snapshot, admission: managed?turnAdmissionStatus(configured?.enabled?'true':'false',typeof env.MANAGED_TURN_RUNTIME?.getByName==='function'):turnAdmissionStatus(piEnabled, env.M2_TURN_RUNTIME_CONFIGURED !== false) };
     },
     async files(scope:TurnScope){return actor(scope).listFiles({scope});},
     async diff(scope:TurnScope){return actor(scope).diffFiles({scope});},

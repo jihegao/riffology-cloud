@@ -289,3 +289,13 @@ test('product budget implementation imports no M0 price or billing authority', (
   assert.doesNotMatch(imports, /spikes|m0-|billing|quota\/core/);
   assert.doesNotMatch(core, /microusd|priceBook|currency/i);
 });
+
+for(const errorCode of ['rejected-auth','rate-limited','provider-failure','deadline'])test(`developer historical execution fence: ${errorCode} survives restart without ledger changes`,async t=>{
+ const f=fixture(t),host=f.host(),call=await dispatch(host);
+ await assert.rejects(host.assertExecutionQuiet(),/execution-unconfirmed/);
+ await host.finish(call.reference,{outcome:'failed',errorCode,providerRequestId:'req-result',usage:{kind:'unknown',observedAt:1000}});
+ const before=await host.snapshot(identity());f.reopen();const next=f.host();
+ if(['rejected-auth','rate-limited'].includes(errorCode))await next.assertExecutionQuiet();
+ else await assert.rejects(next.assertExecutionQuiet(),/execution-unconfirmed/);
+ assert.deepEqual(await next.snapshot(identity()),before);
+});

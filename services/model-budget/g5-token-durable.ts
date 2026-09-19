@@ -14,6 +14,7 @@ export class G5TenantModelBudget extends DurableObject<G5TokenEnv>{
  async markUnknown(tenantId:string,reference:unknown){return this.#forTenant(tenantId).markUnknown(reference);}
  async finish(tenantId:string,reference:ModelCallReference,terminal:unknown){return this.#forTenant(tenantId).finish(reference,terminal);}
  async releaseUndispatched(tenantId:string,reference:ModelCallReference,proof:unknown){return this.#forTenant(tenantId).releaseUndispatched(reference,proof);}
+ async assertExecutionQuiet(tenantId:string){return this.#forTenant(tenantId).assertExecutionQuiet();}
  async snapshot(tenantId:string,identity:unknown){return this.#forTenant(tenantId).snapshot(identity);}
  async closeTurnAdmission(tenantId:string,identity:unknown){return this.#forTenant(tenantId).closeTurnAdmission(identity);}
  async turnSettlement(tenantId:string,identity:unknown){return this.#forTenant(tenantId).turnSettlement(identity);}

@@ -1,3 +1,5 @@
+import {piDeveloperOwner,piDeveloperPolicy} from '../model-budget/pi-developer-policy.ts';
+import type {PiDeveloperBudget} from '../model-budget/pi-developer-durable.ts';
 import {managedProjectPolicy,requireManagedAdmission,managedProductActorName,resolveManagedRoute,type ManagedAcceptancePolicy} from './managed-route.ts';
 import type {TurnRuntimePort} from '../turn/dispatcher.ts';
 import {g5TaskKey} from '../model-budget/g5-admission.ts';
@@ -119,6 +121,8 @@ export interface WorkspaceAgentEnv {
   REVISION_STORE: RevisionStoreNamespace;
   TOOL_ARTIFACT_STORE: ToolArtifactStoreNamespace;
   G4_CONTROLLED_WINDOW_JSON?:string;
+  PI_DEVELOPER_POLICY_JSON?:string;
+  PI_DEVELOPER_BUDGET?:{getByName(name:string):PiDeveloperBudget};
   G5_CONTROLLED_WINDOW_JSON?:string;
   G5_TOKEN_BUDGET?:DurableObjectNamespace<G5TenantModelBudget>;
   G5_WINDOW_GUARD?:{getByName(name:string):{registerTask(task:unknown):Promise<unknown>;claimTaskCreate(key:string):Promise<{authorized:boolean}>;bindTask(key:string,id:string):Promise<unknown>;checkTaskStart(key:string):Promise<{authorized:boolean}>;claimTaskStart(key:string,identity?:TurnRuntimeIdentity):Promise<{authorized:boolean;alreadyStarted:boolean;grantId:string|null}>;confirmTaskStartGrant(key:string,grantId:string):Promise<{confirmed:boolean}>;checkTaskContinue(key:string,grantId:string):Promise<{authorized:boolean}>;cancelUnstartedTask(key:string):Promise<unknown>;closeTrustedTurn(key:string,identity:TurnRuntimeIdentity):Promise<unknown>}};
@@ -437,7 +441,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const identity=turnRuntimeIdentity(input.identity);this.#maintenanceScope(identity.scope);
     const {current:binding}=await this.#leases().pairState(identity);
     await this.#leases().close(identity);
-    const route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+identity.turnId);const tokenNamespace=route?this.env.G5_TOKEN_BUDGET:this.env.TENANT_MODEL_BUDGET;
+    const route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+identity.turnId);const tokenNamespace=this.ctx.storage.kv.get('pi-developer-turn:'+identity.turnId)?this.env.PI_DEVELOPER_BUDGET:route?this.env.G5_TOKEN_BUDGET:this.env.TENANT_MODEL_BUDGET;
     if(!tokenNamespace||!this.env.PRODUCTION_MODEL_BUDGET||!this.env.TOOL_BRIDGE_AGENT)throw Error('workspace-runtime-settlement-required');
     const model=tokenNamespace.getByName(modelBudgetTenantName(identity.scope.tenantId)),money=this.env.PRODUCTION_MODEL_BUDGET.getByName(PRODUCTION_MONEY_ACTOR),tool=this.env.TOOL_BRIDGE_AGENT.getByName(await toolBridgeActorName(identity.scope,identity.turnId,identity.dispatchId));
     const settled=await Promise.all([model.closeTurnAdmission(identity.scope.tenantId,identity),money.closeTurnAdmission(identity),tool.closeTurnAdmission(identity)]);
@@ -809,7 +813,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const scope={tenantId:task.tenantId,projectId:task.projectId,workspaceId:task.workspaceId,workspaceGeneration:task.generation};
     const stored=this.ctx.storage.kv.get<ManagedAcceptancePolicy>('managed-product-route-v1')??null;
     const journal=new DurableTurnStore(this.ctx.storage).read();
-    return resolveManagedRoute(this.env.MANAGED_ACCEPTANCE_JSON,scope,stored,!!journal&&Object.keys(journal.turns).length>0,this.env.MANAGED_TESTING_JSON);
+    return resolveManagedRoute(this.env.MANAGED_ACCEPTANCE_JSON,scope,stored,!!journal&&Object.keys(journal.turns).length>0,(piDeveloperPolicy(this.env.PI_DEVELOPER_POLICY_JSON)?.enabled&&piDeveloperPolicy(this.env.PI_DEVELOPER_POLICY_JSON)?.tenantId===scope.tenantId&&!stored)?undefined:this.env.MANAGED_TESTING_JSON);
   }
   #managedRuntime(policy:ManagedAcceptancePolicy){const namespace=this.env.MANAGED_TURN_RUNTIME;if(!namespace?.getByName)throw Error('managed-product-runtime-not-configured');return namespace.getByName(managedProductActorName(policy.scope));}
   async #managedAdmit(scope:TurnScope,actor:TurnActor,turnPreflight=true){
@@ -843,6 +847,15 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return this.#managedRuntime(policy).cleanup(scope);
   }
 
+  #developerBudget(tenantId:string){const stub=this.env.PI_DEVELOPER_BUDGET?.getByName(modelBudgetTenantName(tenantId));if(!stub)throw Error('pi-developer-budget-unavailable');return stub;}
+  async piDeveloperTurnAuthorization(input:{identity:TurnRuntimeIdentity;actor:TurnActor}){
+    const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope);
+    if(!this.ctx.storage.kv.get('pi-developer-turn:'+identity.turnId))return false;
+    if(!piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,scope.tenantId,input.actor.userId)||this.#store.read()?.task.budgetRoute||this.#managedRoute())throw Error('pi-developer-admission-denied');
+    const state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
+    if(!turn||turn.status!=='running'||state.activeTurnId!==turn.id||turn.actor.userId!==input.actor.userId||turn.actor.authVersion!==input.actor.authVersion||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation||turn.cancelRequestedAt!==null)throw Error('pi-developer-turn-denied');
+    const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('pi-developer-admission-denied');return true;
+  }
   #g5Guard(){const guard=this.env.G5_WINDOW_GUARD?.getByName(G5_GLOBAL_ACTOR);if(!guard)throw Error('g5-workspace-guard-required');return guard;}
   async #g5StartTask(taskKey:string,identity?:TurnRuntimeIdentity){
     const guard=this.#g5Guard(),grantKey='g5-start-grant:'+taskKey;let grant=this.ctx.storage.kv.get<string>(grantKey);
@@ -853,6 +866,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   async #g5TurnStart(turn:import('../turn/protocol.ts').TurnRecord,phase:'capacity'|'runtime'){
     const route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);
     if(!route){
+      if(this.ctx.storage.kv.get('pi-developer-turn:'+turn.id)){if(!piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,turn.scope.tenantId,turn.actor.userId))throw Error('pi-developer-admission-denied');return;}
       // Journal commit can survive a lost sync ACK before the route callback runs.
       // Missing provenance in a configured G5 Workspace never authorizes a legacy start.
       if(this.env.G5_CONTROLLED_WINDOW_JSON!==undefined)throw Error('g5-turn-route-unavailable');
@@ -862,7 +876,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     await this.#g5StartTask(route.taskKey,{scope:turn.scope,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId!,generation:turn.runtimeGeneration!});
     const usedKey='g5-native-accept:'+route.taskKey;if(this.ctx.storage.kv.get(usedKey))throw Error('g5-native-accept-reconcile-only');this.ctx.storage.kv.put(usedKey,true);await this.ctx.storage.sync();
   }
-  async #g5Terminal(turn:import('../turn/protocol.ts').TurnRecord){const route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);if(!route||this.ctx.storage.kv.get('g5-terminal-closed:'+turn.id))return;if(!turn.dispatchId||!turn.runtimeGeneration){if(turn.status==='cancelled'){await this.#g5Guard().cancelUnstartedTask(route.taskKey);this.ctx.storage.kv.put('g5-terminal-closed:'+turn.id,true);await this.ctx.storage.sync();}return;}const identity=turnRuntimeIdentity({scope:turn.scope,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration});if(!this.env.G5_TOKEN_BUDGET||!this.env.PRODUCTION_MODEL_BUDGET||!this.env.TOOL_BRIDGE_AGENT)throw Error('g5-terminal-ledgers-required');await Promise.all([this.env.G5_TOKEN_BUDGET.getByName(modelBudgetTenantName(identity.scope.tenantId)).closeTurnAdmission(identity.scope.tenantId,identity),this.env.PRODUCTION_MODEL_BUDGET.getByName(PRODUCTION_MONEY_ACTOR).closeTurnAdmission(identity),this.env.TOOL_BRIDGE_AGENT.getByName(await toolBridgeActorName(identity.scope,identity.turnId,identity.dispatchId)).closeTurnAdmission(identity)]);await this.#g5Guard().closeTrustedTurn(route.taskKey,identity);this.ctx.storage.kv.put('g5-terminal-closed:'+turn.id,true);await this.ctx.storage.sync();}
+  async #g5Terminal(turn:import('../turn/protocol.ts').TurnRecord){if(this.ctx.storage.kv.get('pi-developer-turn:'+turn.id)&&turn.dispatchId&&turn.runtimeGeneration){const identity=turnRuntimeIdentity({scope:turn.scope,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration});await this.#developerBudget(turn.scope.tenantId).closeTurnAdmission(turn.scope.tenantId,identity);}const route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);if(!route||this.ctx.storage.kv.get('g5-terminal-closed:'+turn.id))return;if(!turn.dispatchId||!turn.runtimeGeneration){if(turn.status==='cancelled'){await this.#g5Guard().cancelUnstartedTask(route.taskKey);this.ctx.storage.kv.put('g5-terminal-closed:'+turn.id,true);await this.ctx.storage.sync();}return;}const identity=turnRuntimeIdentity({scope:turn.scope,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration});if(!this.env.G5_TOKEN_BUDGET||!this.env.PRODUCTION_MODEL_BUDGET||!this.env.TOOL_BRIDGE_AGENT)throw Error('g5-terminal-ledgers-required');await Promise.all([this.env.G5_TOKEN_BUDGET.getByName(modelBudgetTenantName(identity.scope.tenantId)).closeTurnAdmission(identity.scope.tenantId,identity),this.env.PRODUCTION_MODEL_BUDGET.getByName(PRODUCTION_MONEY_ACTOR).closeTurnAdmission(identity),this.env.TOOL_BRIDGE_AGENT.getByName(await toolBridgeActorName(identity.scope,identity.turnId,identity.dispatchId)).closeTurnAdmission(identity)]);await this.#g5Guard().closeTrustedTurn(route.taskKey,identity);this.ctx.storage.kv.put('g5-terminal-closed:'+turn.id,true);await this.ctx.storage.sync();}
   async #g5ProjectStart(task:WorkspaceTask){if(!task.budgetRoute)return;await this.#g5StartTask(task.budgetRoute.taskKey);}
   #engine(): WorkspaceTurnEngine {
     const managed=this.#managedRoute();
@@ -940,7 +954,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   submitTurn(input: { scope: TurnScope; actor: TurnActor; sessionId: string; key: string; body: { message: unknown } }) {
     // Serialize admission through the durable journal commit. DO input gates
     // alone do not cover the external preflight/catalog awaits in this method.
-    if(!this.#managedRoute())return this.#submitTurn(input);
+    if(!this.#managedRoute()&&!piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,input.scope.tenantId,input.actor.userId))return this.#submitTurn(input);
     const next=this.#managedSubmitTail.then(()=>this.#submitTurn(input));
     this.#managedSubmitTail=next.catch(()=>{});return next;
   }
@@ -949,11 +963,12 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     let scope:TurnScope;
     try{scope=this.#ready(input.scope);trace('ready',true);}catch(error){trace('ready',false,error);throw error;}
     const selected=this.#managedRoute();
-    if(selected){
+    const developer=!selected&&!this.#store.read()?.task.budgetRoute&&piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,scope.tenantId,input.actor.userId);
+    if(selected||developer){
       const state=await this.#turns.snapshot(scope);
       const prior=Object.values(state.turns).find(turn=>turn.sessionId===input.sessionId&&turn.requestKey===input.key&&turn.actor.userId===input.actor.userId);
       if(prior){
-        if(selected.userId!==input.actor.userId)throw Error('managed-admission-denied');
+        if(selected&&selected.userId!==input.actor.userId)throw Error('managed-admission-denied');
         const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(input.actor,scope.workspaceId);
         if(!sameScope(allowed,scope))throw Error('managed-admission-denied');
         // Original idempotency validation remains the journal's authority;
@@ -968,7 +983,18 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     try{engine=this.#engine();trace('engine',true);}catch(error){trace('engine',false,error);throw error;}
     if(!managed&&this.env.G4_CONTROLLED_WINDOW_JSON!==undefined)await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
     let route:WorkspaceBudgetRoute|undefined;
-    if(!managed&&this.env.G5_CONTROLLED_WINDOW_JSON!==undefined){
+    if(developer){
+      await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
+      const state=await this.#turns.snapshot(scope);
+      if(Object.values(state.turns).some(t=>this.ctx.storage.kv.get('g5-turn-route:'+t.id)))throw Error('pi-developer-historical-g5-denied');
+      for(const old of Object.values(state.turns)){
+        if(this.ctx.storage.kv.get('pi-developer-turn:'+old.id)||!old.dispatchId||!old.runtimeGeneration)continue;
+        const identity=turnRuntimeIdentity({scope,sessionId:old.sessionId,turnId:old.id,dispatchId:old.dispatchId,generation:old.runtimeGeneration});
+        const status=await this.env.TENANT_MODEL_BUDGET?.getByName(modelBudgetTenantName(scope.tenantId)).turnSettlement(scope.tenantId,identity);
+        if(!status||status.active||status.pending||status.unknown)throw Error('pi-developer-historical-execution-unconfirmed');
+      }
+      await this.#developerBudget(scope.tenantId).assertQuiet(scope,input.actor.userId);
+    }else if(!managed&&this.env.G5_CONTROLLED_WINDOW_JSON!==undefined){
       await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
       const task=await g5TaskKey(this.env.G5_CONTROLLED_WINDOW_JSON,'turn',scope.tenantId,input.actor.userId,{scope,sessionId:input.sessionId,key:input.key},input.body);
       const policy=g5WindowPolicy(JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON))!;const guard=this.#g5Guard();await guard.registerTask(task);
@@ -977,7 +1003,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     }else if(!managed){await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,input.actor.userId,'turn',{scope,sessionId:input.sessionId,key:input.key},input.body);}
 
     this.#ready(scope);
-    return engine.submit(scope,input.actor,input.sessionId,input.key,input.body,trace,route?async turn=>{const prior=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);if(prior&&JSON.stringify(prior)!==JSON.stringify(route))throw Error('g5-turn-route-conflict');this.ctx.storage.kv.put('g5-turn-route:'+turn.id,route!);this.ctx.storage.kv.put('g5-submission:'+route!.taskKey,turn.id);await this.ctx.storage.sync();await this.#g5Guard().bindTask(route!.taskKey,turn.id);}:undefined);
+    return engine.submit(scope,input.actor,input.sessionId,input.key,input.body,trace,developer?async turn=>{this.ctx.storage.kv.put('pi-developer-turn:'+turn.id,{policyId:piDeveloperPolicy(this.env.PI_DEVELOPER_POLICY_JSON)!.policyId});await this.ctx.storage.sync();}:route?async turn=>{const prior=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);if(prior&&JSON.stringify(prior)!==JSON.stringify(route))throw Error('g5-turn-route-conflict');this.ctx.storage.kv.put('g5-turn-route:'+turn.id,route!);this.ctx.storage.kv.put('g5-submission:'+route!.taskKey,turn.id);await this.ctx.storage.sync();await this.#g5Guard().bindTask(route!.taskKey,turn.id);}:undefined);
   }
   async cancelTurn(input: { scope: TurnScope; actor: TurnActor; turnId: string }) {
     const turn=await this.#engine().cancel(this.#ready(input.scope), input.actor, input.turnId);if(!this.#managedRoute()&&['completed','failed','cancelled','interrupted'].includes(turn.status))await this.#g5Terminal(turn);return turn;
@@ -987,7 +1013,13 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   }
   async turnSnapshot(input: { scope: TurnScope }) {
     const scope=this.#ready(input.scope),snapshot=await this.#turns.view(scope),managed=this.#managedRoute();
-    if(!managed)return {...snapshot,runtimeBackend:'pi' as const};
+    if(!managed){
+      const policy=piDeveloperPolicy(this.env.PI_DEVELOPER_POLICY_JSON);
+      const developer=!!policy?.enabled&&policy.tenantId===scope.tenantId&&!this.#store.read()?.task.budgetRoute&&!Object.keys(snapshot.turns).some(id=>this.ctx.storage.kv.get('g5-turn-route:'+id));
+      let blocked:string|null=null;
+      if(developer&&!snapshot.activeTurnId)try{await this.#developerBudget(scope.tenantId).assertQuiet(scope,policy!.userId);}catch(error){blocked=error instanceof Error&&error.message==='pi-developer-execution-unconfirmed'?error.message:'pi-developer-historical-ledger-unavailable';}
+      return {...snapshot,runtimeBackend:'pi' as const,...(developer?{piDeveloperState:{billingMode:'observe',blocked}}:{})};
+    }
     try{
       const status=await this.#managedRuntime(managed).budgetStatus(scope);
       if(!status||typeof status!=='object'||Array.isArray(status))throw Error('managed-budget-status-invalid');

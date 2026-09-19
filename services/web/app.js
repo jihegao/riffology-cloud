@@ -89,7 +89,7 @@ function saveConversation(key, patch) {
   catch { throw Error('无法保存待确认请求，请检查浏览器存储后重试。'); }
 }
 function canSubmitConversation() {
-  return Boolean(activeProject?.status === 'ready' && workspaceSnapshot && !['maintenance','unavailable'].includes(workspaceSnapshot.admission?.state));
+  return Boolean(activeProject?.status === 'ready' && workspaceSnapshot && !workspaceSnapshot.piDeveloperState?.blocked && !['maintenance','unavailable'].includes(workspaceSnapshot.admission?.state));
 }
 
 let eventSource = null;
@@ -217,6 +217,12 @@ async function loadModels() {
 
 function managedBlockMessage(code) {
   const messages = {
+    'pi-developer-execution-unconfirmed': '账号存在执行结果尚未确认的模型调用。请停止重试并核对原任务；新建项目不能绕过此状态。',
+    'pi-developer-historical-execution-unconfirmed': '历史任务的执行结果尚未确认，请先核对原任务。',
+    'pi-developer-historical-g5-denied': '此项目保留原受控测试策略，不能切换为开发者模式。',
+    'pi-developer-admission-denied': '当前账号的 Pi 开发者模式未开放。',
+    'pi-developer-budget-unavailable': '开发者用量记录服务暂不可用，请联系管理员。',
+    'pi-developer-historical-ledger-unavailable': '历史执行状态暂时无法核对，当前不能开始新任务。',
     'managed-execution-unknown': '上一轮曾出现执行状态未确认，项目已暂停接收新请求；需要核对原任务后恢复，重复发送不会解除暂停。',
     'managed-usage-unknown': '上一轮用量尚未确认，项目已暂停接收新请求；需要核对原任务后恢复，稍后重试不会自动解除暂停。',
     'managed-original-unresolved': '上一轮执行或用量尚未确认，当前不能开始新任务。',
@@ -389,7 +395,7 @@ function renderWorkspace() {
   }
   const admission = workspaceSnapshot.admission;
   const unavailable = admission?.state === 'unavailable';
-  const maintenance = admission?.state === 'maintenance';
+  const maintenance = admission?.state === 'maintenance' || Boolean(workspaceSnapshot.piDeveloperState?.blocked);
   if (maintenance) appendTurnCard('system', '当前环境暂停接收新任务。', '草稿会保留；已接收回合仍可继续观察、取消和读取保存结果。');
   if (unavailable) appendTurnCard('system', '当前执行环境暂不可用。', '平台正在恢复运行资源，请稍后重试；草稿会保留。');
   if (workspaceHistoryTruncated) appendTurnCard('system', '这里只显示近期对话回复。', '较早回复已超出显示保留范围；项目文件和实验结果仍可查看。');
@@ -411,6 +417,7 @@ function renderWorkspace() {
     sessionSelect.value = selectedSessionId || '';
     sessionSelect.disabled = !sessions.length;
   }
+  if (workspaceSnapshot.piDeveloperState?.blocked) appendTurnCard('system', managedBlockMessage(workspaceSnapshot.piDeveloperState.blocked) || '执行状态暂时无法核对，请联系管理员。');
   if (workspaceSnapshot.managedState?.stopped) {
     appendTurnCard('system', managedBlockMessage(workspaceSnapshot.managedState.stopped) || '项目因上一轮异常暂停接收新请求，需要核对后恢复。');
   }

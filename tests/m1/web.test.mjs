@@ -322,7 +322,7 @@ test('direct workspace hash does not flash the project list while ownership is b
     if (path === '/api/workspaces/workspace-direct/events') { await json(route, { events: [], nextSequence: 0, hasMore: false, oldestSequence: 1, snapshotRequired: false }); return true; }
   });
   await page.goto('https://ui.test/#/workspace/project-direct');
-  await waitFor(() => page.locator('#login').evaluate(element => element.hidden));
+  await page.locator('#login[hidden]').waitFor({state:'attached'});
   assert.equal(await page.locator('#app').isVisible(), false);
   release();
   await page.locator('#workspace:not([hidden])').waitFor();
@@ -971,4 +971,19 @@ for(const usage of [{status:'observed',inputTokens:100,outputTokens:20,totalToke
  assert.match(text,/已完成 · 保存失败/);assert.match(text,/费用尚未结算/);assert.match(text,/不代表正式实验通过/);assert.match(text,/回合结束时远端会话仍保留/);
  if(usage.status==='observed'&&usage.outputTokens>=0)assert.match(text,/输入 100 Token，输出 20 Token/);else assert.match(text,/用量尚未确认/);
  assert.doesNotMatch(text,/PRIVATE_PROVIDER_SESSION|SECRET_PROVIDER_KEY|费用已结算/);
+});
+
+test('Pi historical execution block disables sends after reload while retaining local draft and readable workspace',async t=>{
+ let posts=0,blocked=false;
+ const page=await pageFixture(t,async(route,path)=>{
+  if(path==='/api/tenants/tenant-a/projects'){await json(route,{projects:[{id:'pi-project',workspace_id:'pi-workspace',title:'Pi 开发者测试',status:'ready'}]});return true;}
+  if(path==='/api/workspaces/pi-workspace'){await json(route,{schemaVersion:1,sessions:{session:{id:'session',title:'主对话',createdAt:1}},turns:{},activeTurnId:null,admission:{state:'enabled'},piDeveloperState:{billingMode:'observe',blocked:blocked?'pi-developer-execution-unconfirmed':null}});return true;}
+  if(path.endsWith('/events')){await json(route,{events:[],nextSequence:0,hasMore:false,snapshotRequired:false});return true;}
+  if(route.request().method()==='POST'){posts++;await json(route,{error:'unexpected'},500);return true;}
+ });
+ await page.goto('https://ui.test/#/workspace/pi-project');
+ await page.locator('#message-input:enabled').waitFor();
+ await page.locator('#message-input').fill('保留的草稿');blocked=true;await page.reload();
+ await page.getByText('账号存在执行结果尚未确认的模型调用。请停止重试并核对原任务；新建项目不能绕过此状态。').waitFor();
+ assert.equal(await page.locator('#message-submit').isDisabled(),true);assert.equal(await page.locator('#message-input').inputValue(),'保留的草稿');assert.equal(posts,0);
 });
