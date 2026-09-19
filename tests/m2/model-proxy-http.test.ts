@@ -129,3 +129,26 @@ test('route variants are absent and capability bounds reject before the budget',
   assert.equal((await handleModelProxyRequest(oversized, environment(ledger), provider(calls), () => now)).status, 403);
   assert.equal(ledger.reserves.length, 0); assert.equal(calls.length, 0);
 });
+
+test('developer billing exception requires Workspace authority and cannot be selected by a capability alone',async()=>{
+ for(const authorized of [true,false]){
+  const ledger=log(),env=environment(ledger),calls:unknown[]=[];
+  env.PI_DEVELOPER_POLICY_JSON=JSON.stringify({schemaVersion:1,policyId:'developer',tenantId:'tenant-a',userId:'user-a',enabled:true,billingMode:'observe'});
+  env.PI_DEVELOPER_BUDGET=env.TENANT_MODEL_BUDGET as unknown as NonNullable<ModelProxyHttpEnv['PI_DEVELOPER_BUDGET']>;
+  env.WORKSPACE_AGENT={getByName:()=>({piDeveloperTurnAuthorization:async()=>authorized})} as ModelProxyHttpEnv['WORKSPACE_AGENT'];
+  const model:ProductModelProvider={async dispatch(input){calls.push(input);return {status:200,providerRequestId:'req-ended',inputTokens:null,outputTokens:null,executionTerminal:true,responseContentType:'text/event-stream',responseBody:new TextEncoder().encode('data: {}\n\n')};}};
+  const response=await handleModelProxyRequest(await signedRequest(),env,model,()=>now);
+  assert.equal(response.status,authorized?200:503);
+  assert.equal((calls[0] as {billingMode?:string}).billingMode,authorized?'observe':undefined);
+  if(authorized)assert.equal(ledger.terminals[0]?.usage.kind,'unknown');else assert.equal(ledger.unknown,1);
+ }
+});
+
+test('developer actor revocation during reservation prevents provider dispatch',async()=>{
+ const ledger=log(),env=environment(ledger),calls:unknown[]=[];let checks=0;
+ env.PI_DEVELOPER_POLICY_JSON=JSON.stringify({schemaVersion:1,policyId:'developer',tenantId:'tenant-a',userId:'user-a',enabled:true,billingMode:'observe'});
+ env.PI_DEVELOPER_BUDGET=env.TENANT_MODEL_BUDGET as unknown as NonNullable<ModelProxyHttpEnv['PI_DEVELOPER_BUDGET']>;
+ env.WORKSPACE_AGENT={getByName:()=>({piDeveloperTurnAuthorization:async()=>++checks===1})} as ModelProxyHttpEnv['WORKSPACE_AGENT'];
+ const response=await handleModelProxyRequest(await signedRequest(),env,provider(calls),()=>now);
+ assert.equal(response.status,503);assert.equal(calls.length,0);assert.equal(ledger.unknown,1);
+});

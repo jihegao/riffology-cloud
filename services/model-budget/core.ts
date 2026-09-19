@@ -529,6 +529,20 @@ export class SqlTenantModelBudget {
   async closeTurnAdmission(value:unknown){const identity=turnRuntimeIdentity(value);this.#scope(identity);const key=await turnKey(identity);await this.#ready;const result=this.#storage.transactionSync(()=>{this.#settlement(identity,key);this.#storage.sql.exec('INSERT OR IGNORE INTO model_turn_admission_closures VALUES(?,?,?)',key,canonical(identity),this.#now());return this.#settlement(identity,key);});await this.#storage.sync();return result;}
   async turnSettlement(value:unknown){const identity=turnRuntimeIdentity(value);this.#scope(identity);const key=await turnKey(identity);await this.#ready;return this.#storage.transactionSync(()=>this.#settlement(identity,key));}
 
+  /** Read-only execution fence, independent of monetary settlement or period IDs. */
+  async assertExecutionQuiet(): Promise<void> {
+    await this.#ready;
+    for (const row of this.#rows('SELECT * FROM model_calls')) {
+      const record = await this.#verified(row);
+      const terminal = record.terminal;
+      const ended = record.status === 'not-dispatched' || !!terminal?.providerRequestId && (
+        record.status === 'completed' && terminal.outcome === 'completed' ||
+        record.status === 'failed' && terminal.outcome === 'failed' && ['rejected-auth', 'rate-limited'].includes(String(terminal.errorCode))
+      );
+      if (!ended) throw Error('pi-developer-execution-unconfirmed');
+    }
+  }
+
   async snapshot(identityValue: unknown): Promise<ModelBudgetSnapshot> {
     const identity = turnRuntimeIdentity(identityValue);
     this.#scope(identity);

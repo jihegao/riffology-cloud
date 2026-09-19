@@ -30,7 +30,7 @@ function usage(bytes:Uint8Array,input:ProductModelProviderInput){
  // Truncated terminal frames must not become authoritative merely because the
  // partial buffer happens to parse as JSON.
  if(!text.endsWith('\n\n')&&!text.endsWith('\r\n\r\n'))throw Error('malformed-stream');
- let terminal:{inputTokens:number;outputTokens:number;id:string}|null=null,done=false;
+ let terminal:{inputTokens:number|null;outputTokens:number|null;id:string}|null=null,done=false;
  for(const frame of text.replaceAll('\r\n','\n').split(/\n\n+/u)){
   if(encoder.encode(frame).byteLength>256*1024)throw Error('malformed-stream');
   const data=frame.split('\n').filter(x=>x.startsWith('data:')).map(x=>x.slice(5).trimStart()).join('\n');if(!data)continue;
@@ -39,8 +39,10 @@ function usage(bytes:Uint8Array,input:ProductModelProviderInput){
   if(typeof row.type!=='string'||!row.type.startsWith('response.'))throw Error('malformed-stream');
   if(row.type==='response.failed')throw Error('provider-failure');
   if(row.type!=='response.completed'&&row.type!=='response.incomplete')continue;
-  const response=object(row.response);if(!response.usage)throw Error('missing-usage');const receipt=object(response.usage);
+  const response=object(row.response);
   if(typeof response.id!=='string'||!externalId.test(response.id)||response.status!==(row.type==='response.completed'?'completed':'incomplete'))throw Error('malformed-stream');
+  if(response.usage==null&&input.billingMode==='observe'){terminal={inputTokens:null,outputTokens:null,id:response.id};continue;}
+  if(!response.usage)throw Error('missing-usage');const receipt=object(response.usage);
   const a=receipt.input_tokens,b=receipt.output_tokens;if(!Number.isSafeInteger(a)||!Number.isSafeInteger(b)||(a as number)<0||(b as number)<0||(a as number)>input.inputTokenUpperBound||(b as number)>input.maxOutputTokens)throw Error('missing-usage');
   terminal={inputTokens:a as number,outputTokens:b as number,id:response.id};
  }
@@ -83,7 +85,7 @@ export class OpenAIGatewayResponsesProvider implements ProductModelProvider {
    const abort=()=>{void reader.cancel(signal.reason).catch(()=>{});};signal.addEventListener('abort',abort,{once:true});
    try{for(;;){signal.throwIfAborted();const next=await reader.read();signal.throwIfAborted();if(next.done)break;size+=next.value.byteLength;if(size>1_000_000)throw Error('malformed-stream');chunks.push(next.value);}}catch(e){await reader.cancel().catch(()=>{});throw e;}finally{signal.removeEventListener('abort',abort);}
    const bytes=new Uint8Array(size);let offset=0;for(const c of chunks){bytes.set(c,offset);offset+=c.byteLength;}const evidence=usage(bytes,input);
-   return {status:response.status,providerRequestId:headerId&&externalId.test(headerId)?headerId:evidence.id,inputTokens:evidence.inputTokens,outputTokens:evidence.outputTokens,responseContentType:'text/event-stream',responseBody:bytes};
+   return {executionTerminal:true,status:response.status,providerRequestId:headerId&&externalId.test(headerId)?headerId:evidence.id,inputTokens:evidence.inputTokens,outputTokens:evidence.outputTokens,responseContentType:'text/event-stream',responseBody:bytes};
   }finally{clearTimeout(timer);}
  }
 }

@@ -44,3 +44,14 @@ test('Gateway fetch TypeError becomes a stable redacted failure code',async()=>{
 test('hosted tools, media, paid tier and extended retention denied before fetch',async()=>{
  let calls=0;const p=provider(async()=>{calls++;throw Error('unexpected');});for(const patch of [{tools:[{type:'web_search'}]},{input:[{type:'input_image',image_url:'x'}]},{service_tier:'priority'},{prompt_cache_retention:'24h'},{previous_response_id:'resp-1'}])await assert.rejects(p.dispatch({...input(),payload:{...input().payload,...patch}}),/rejected-auth/);assert.equal(calls,0);
 });
+
+test('Pi observe billing accepts only a framed terminal with missing usage, strict mode remains closed',async()=>{
+ const body=terminal(null);
+ const p=provider(async()=>new Response(body,{headers:{'content-type':'text/event-stream'}}));
+ await assert.rejects(p.dispatch(input()),/missing-usage/);
+ const result=await p.dispatch({...input(),billingMode:'observe'});
+ assert.equal(result.executionTerminal,true);assert.equal(result.inputTokens,null);assert.equal(result.outputTokens,null);
+ for(const malformed of [body.trim(),body+body,body.replace('"status":"completed"','"status":"in_progress"'),body.replace('"id":"resp-fixture"','"id":null'),'data: {"type":"response.failed"}\n\n']){
+  await assert.rejects(provider(async()=>new Response(malformed,{headers:{'content-type':'text/event-stream'}})).dispatch({...input(),billingMode:'observe'}));
+ }
+});

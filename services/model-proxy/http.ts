@@ -1,3 +1,6 @@
+import {piDeveloperOwner} from '../model-budget/pi-developer-policy.ts';
+import type {PiDeveloperBudget} from '../model-budget/pi-developer-durable.ts';
+import {workspaceAgentName} from '../workspace/protocol.ts';
 import {G5_GLOBAL_ACTOR} from '../model-budget/g5-window.ts';
 import {profileDigest} from './production-profile.ts';
 import {authorizeWarmOutbound,type WarmAuthorityNamespace} from '../sandbox/warm-authority.ts';
@@ -34,11 +37,13 @@ export type G5ProxyGuard={
 };
 export type G5ProviderFailureEvidence={schemaVersion:1;stage:'admission'|'provider-dispatch'|'budget-finish';errorCode:string;observedAt:number};
 export interface ModelProxyHttpEnv {
+ PI_DEVELOPER_POLICY_JSON?:string;
+ PI_DEVELOPER_BUDGET?:{getByName(name:string):PiDeveloperBudget};
  G5_CONTROLLED_WINDOW_JSON?:string;
  G5_TOKEN_BUDGET?:BudgetNamespace;
  G5_WINDOW_GUARD?:{getByName(name:string):G5ProxyGuard};
   G4_CONTROLLED_WINDOW_JSON?:string;
-  WORKSPACE_AGENT?:WarmAuthorityNamespace;
+  WORKSPACE_AGENT?:{getByName(name:string):ReturnType<WarmAuthorityNamespace['getByName']>&{piDeveloperTurnAuthorization?(input:{identity:ModelCallRequest['identity'];actor:ModelCallRequest['actor']}):Promise<boolean>}};
   TRUSTED_PI_SANDBOX: IdentityNamespace;
   TENANT_MODEL_BUDGET: BudgetNamespace;
   PRODUCTION_MODEL_BUDGET?:{getByName(name:string):Pick<ProductionMoneyLedger,'admit'|'reserve'|'dispatch'|'finish'|'markUnknown'|'releaseUndispatched'|'lookup'>};
@@ -55,9 +60,11 @@ export type ProductModelProviderInput = {
   maxOutputTokens: number;
   deadlineAt: number;
   dispatchAdmissionDeadlineAt?:number;
+  billingMode?:'observe';
   signal?: AbortSignal;
 };
 export type ProductModelProviderResult = {
+  executionTerminal?:boolean;
   providerErrorHint?: string;
   status: number;
   providerRequestId: string | null;
@@ -144,8 +151,9 @@ function failureEvidence(stage:G5ProviderFailureEvidence['stage'],error:unknown,
 function conflict(error: string, status?: string): Response {
   return Response.json({ error, ...(status ? { status } : {}) }, { status: 409, headers: { 'cache-control': 'no-store' } });
 }
-function normalizedProviderResult(value: unknown, claims: ModelTurnCapabilityClaims, envelopeValue: Envelope): ProductModelProviderResult {
-  exact(value, ['status', 'providerRequestId', 'inputTokens', 'outputTokens', 'responseContentType', 'responseBody', ...(value&&typeof value==='object'&&Object.hasOwn(value,'providerErrorHint')?['providerErrorHint']:[])], 'invalid-model-provider-result');
+function normalizedProviderResult(value: unknown, claims: ModelTurnCapabilityClaims, envelopeValue: Envelope,developer=false): ProductModelProviderResult {
+  exact(value, ['status', 'providerRequestId', 'inputTokens', 'outputTokens', 'responseContentType', 'responseBody', ...(value&&typeof value==='object'&&Object.hasOwn(value,'providerErrorHint')?['providerErrorHint']:[]), ...(value&&typeof value==='object'&&Object.hasOwn(value,'executionTerminal')?['executionTerminal']:[])], 'invalid-model-provider-result');
+  if(value.executionTerminal!==undefined&&value.executionTerminal!==true)reject('invalid-model-provider-result');
   const status = bounded(value.status, 599, 100);
   const providerRequestId = value.providerRequestId === null ? null : typeof value.providerRequestId === 'string' && /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(value.providerRequestId) ? value.providerRequestId : reject('invalid-model-provider-result');
   const inputTokens = value.inputTokens === null ? null : bounded(value.inputTokens, envelopeValue.inputTokenUpperBound);
@@ -153,7 +161,7 @@ function normalizedProviderResult(value: unknown, claims: ModelTurnCapabilityCla
   if ((inputTokens===null)!==(outputTokens===null)) reject('invalid-model-provider-result');
   if (value.responseContentType!=='text/event-stream'&&value.responseContentType!=='application/json') reject('invalid-model-provider-result');
   if (!(value.responseBody instanceof Uint8Array)||value.responseBody.byteLength<1||value.responseBody.byteLength>MAX_BODY) reject('invalid-model-provider-result');
-  if(status>=200&&status<300&&(providerRequestId===null||inputTokens===null||outputTokens===null||value.responseContentType!=='text/event-stream'))reject('invalid-model-provider-result');
+  if(status>=200&&status<300&&(providerRequestId===null||((inputTokens===null||outputTokens===null)&&!(developer&&value.executionTerminal===true))||value.responseContentType!=='text/event-stream'))reject('invalid-model-provider-result');
   return {status,providerRequestId,inputTokens,outputTokens,providerErrorHint:safeProviderErrorHint(value.providerErrorHint),responseContentType:value.responseContentType,responseBody:Uint8Array.from(value.responseBody)};
 }
 
@@ -187,20 +195,25 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
 
   const tenantId = claims.identity.scope.tenantId;
   let guard:G5ProxyGuard|null=null,route:Awaited<ReturnType<G5ProxyGuard['lookupTrustedTurnRoute']>>=null;
-  if(env.G5_CONTROLLED_WINDOW_JSON!==undefined){
+  let developer=false;
+  if(piDeveloperOwner(env.PI_DEVELOPER_POLICY_JSON,tenantId,claims.actor.userId)){
+    try{developer=await env.WORKSPACE_AGENT?.getByName(workspaceAgentName(tenantId,claims.identity.scope.workspaceId)).piDeveloperTurnAuthorization?.({identity:claims.identity,actor:claims.actor})===true;}catch{return denied();}
+  }
+  if(developer&&!env.PI_DEVELOPER_BUDGET)return denied();
+  if(!developer&&env.G5_CONTROLLED_WINDOW_JSON!==undefined){
     if(!env.G5_WINDOW_GUARD)return denied();
     try{guard=env.G5_WINDOW_GUARD.getByName(G5_GLOBAL_ACTOR);route=await guard.lookupTrustedTurnRoute(claims.identity);}catch{return denied();}
   }
   const isG5=route!==null;
   if(isG5&&!env.G5_TOKEN_BUDGET)return denied();
-  const budget = (isG5?env.G5_TOKEN_BUDGET!:env.TENANT_MODEL_BUDGET).getByName(modelBudgetTenantName(tenantId));
+  const budget = (developer?env.PI_DEVELOPER_BUDGET!:isG5?env.G5_TOKEN_BUDGET!:env.TENANT_MODEL_BUDGET).getByName(modelBudgetTenantName(tenantId));
   const production=provider.productionProfile;
   if(isG5){try{if(!production||claims.provider!=='openai'||route!.profileSha256!==await profileDigest(production))return denied();}catch{return denied();}}
-  if(env.G5_CONTROLLED_WINDOW_JSON!==undefined&&!isG5&&claims.provider==='openai')return denied();
+  if(env.G5_CONTROLLED_WINDOW_JSON!==undefined&&!isG5&&!developer&&claims.provider==='openai')return denied();
   if(claims.provider==='openai'&&!production)return unavailable();
   if(production&&(claims.provider!==production.inferenceProvider||claims.model!==production.model||!env.PRODUCTION_MODEL_BUDGET))return denied();
   if((production||env.G4_CONTROLLED_WINDOW_JSON!==undefined)&&(parsed.inputBoundVersion!=='utf8-provider-payload-plus-4096-v1'||parsed.inputTokenUpperBound<new TextEncoder().encode(JSON.stringify(parsed.payload)).byteLength+4096))return denied();
-  const money=production?env.PRODUCTION_MODEL_BUDGET!.getByName(PRODUCTION_MONEY_ACTOR):null;
+  const money=production&&!developer?env.PRODUCTION_MODEL_BUDGET!.getByName(PRODUCTION_MONEY_ACTOR):null;
   let moneyRef:MoneyReference|undefined;
   let g5CallKey:string|undefined;
   let providerDeadlineAt=parsed.deadlineAt;
@@ -240,7 +253,7 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
     const dispatch = await budget.dispatch(tenantId, reference);
     if(!isG5)controlledWindowDeadlineAt=dispatch.controlledWindowDeadlineAt;
     if(controlledWindowDeadlineAt!==undefined)providerDeadlineAt=Math.min(providerDeadlineAt,controlledWindowDeadlineAt);
-    if(!isG5&&env.G4_CONTROLLED_WINDOW_JSON!==undefined&&dispatch.controlledWindowDeadlineAt===undefined)throw Error('g4-window-fence-missing');
+    if(!isG5&&!developer&&env.G4_CONTROLLED_WINDOW_JSON!==undefined&&dispatch.controlledWindowDeadlineAt===undefined)throw Error('g4-window-fence-missing');
     if (!dispatch.authorized) {
       if(isG5)throw Error('g5-token-dispatch-denied');
       // A previously dispatched token call may have been sent by an older
@@ -257,11 +270,12 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
   try {
     const providerSessionId=`ses_${(await turnDigest({schemaVersion:1,purpose:'opencode-go-provider-session',scope:claims.identity.scope,sessionId:claims.identity.sessionId})).slice(0,26)}`;
     await checkWarm();
+    if(developer&&await env.WORKSPACE_AGENT?.getByName(workspaceAgentName(tenantId,claims.identity.scope.workspaceId)).piDeveloperTurnAuthorization?.({identity:claims.identity,actor:claims.actor})!==true)throw Error('pi-developer-turn-denied');
     if(providerDeadlineAt<=now())throw Error('g4-window-deadline');
     result = normalizedProviderResult(await provider.dispatch({
       provider: claims.provider, model: claims.model, providerSessionId, idempotencyKey: parsed.requestId,
-      payload: parsed.payload,inputTokenUpperBound:parsed.inputTokenUpperBound,maxOutputTokens:parsed.maxOutputTokens,deadlineAt:parsed.deadlineAt,...(controlledWindowDeadlineAt===undefined?{}:{dispatchAdmissionDeadlineAt:providerDeadlineAt}),signal:request.signal,
-    }), claims, parsed);
+      ...(developer?{billingMode:'observe' as const}:{}),payload: parsed.payload,inputTokenUpperBound:parsed.inputTokenUpperBound,maxOutputTokens:parsed.maxOutputTokens,deadlineAt:parsed.deadlineAt,...(controlledWindowDeadlineAt===undefined?{}:{dispatchAdmissionDeadlineAt:providerDeadlineAt}),signal:request.signal,
+    }), claims, parsed,developer);
     if(production&&(result.status<200||result.status>=300)){upstreamFailureStatus=result.status;upstreamErrorHint=safeProviderErrorHint(result.providerErrorHint);}
     emit(telemetry,{event:'provider-dispatch-result',status:result.status,contentType:result.responseContentType,requestIdPresent:result.providerRequestId!==null,usagePresent:result.inputTokens!==null&&result.outputTokens!==null,durationMs:now()-started});
     const usage=result.inputTokens===null||result.outputTokens===null
