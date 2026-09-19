@@ -299,3 +299,18 @@ for(const errorCode of ['rejected-auth','rate-limited','provider-failure','deadl
  else await assert.rejects(next.assertExecutionQuiet(),/execution-unconfirmed/);
  assert.deepEqual(await next.snapshot(identity()),before);
 });
+
+test('developer blocker inventory is read-only and redacts identities and external request ids',async t=>{
+ const f=fixture(t),host=f.host(),call=await dispatch(host);
+ await host.finish(call.reference,{outcome:'failed',errorCode:'provider-failure',providerRequestId:'provider-secret',usage:{kind:'unknown',observedAt:1000}});
+ const before=await host.snapshot(identity()),inventory=await host.executionBlockers(),after=await host.snapshot(identity());
+ assert.deepEqual(after,before);
+ assert.equal(inventory.total,1);assert.equal(inventory.confirmedEnded,0);assert.equal(inventory.blocked,1);
+ assert.deepEqual(inventory.blockers,[{
+  schemaVersion:1,callKey:before.records[0]!.callKey,turnKey:before.records[0]!.turnKey,status:'failed',reconciliation:'pending',
+  acceptedAt:before.records[0]!.acceptedAt,dispatchedAt:before.records[0]!.dispatchedAt,finishedAt:before.records[0]!.finishedAt,
+  terminalOutcome:'failed',terminalErrorCode:'provider-failure',providerRequestIdPresent:true,usageKind:'unknown',
+ }]);
+ const serialized=JSON.stringify(inventory);
+ for(const secret of ['provider-secret','request-a','session-a','dispatch-a','workspace-a'])assert.equal(serialized.includes(secret),false);
+});
