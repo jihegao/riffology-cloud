@@ -1,10 +1,14 @@
-# Riffology Cloud
+# Riffology Cloud Private Beta
+
+面向受邀用户的受控内测版本。支持 Pi 驱动的 Python 建模、保存和本地预览；不包含生产级 SLA、权威云端实验或公开商业服务。容量在预算和安全门限内持续开放。
+
+以上是 Private Beta 的版本定义与运行目标。截至 2026-09-20，#87 核心流程验收已完成并关闭；其临时执行门禁在验收后关闭。常态容量由 [#104：邀请制内测运行与常态容量](https://github.com/jihegao/riffology-cloud/issues/104) 承接，名单、预算、并发和运行验收尚待冻结与交付，尚未宣告常态开通。Browser Preview 结果始终是 local/unverified。
 
 Riffology Cloud 是一个多租户、持久化的 AI 仿真建模工作台。
 用户围绕 Project 和 Pi Agent Session 工作，Workspace 提供文件、运行与插件能力，
 Browser 作为可选内置插件提供交互预览和 Agent 观察。
 
-截至 2026-09-18，正式 Browser Preview、Workspace UI 和 G4/G5 控制逻辑已在集成分支实现；PR #76 的发布记录见[线上验收说明](docs/browser-preview-online-acceptance-20260917.md)。登录用户的最新线上预览仍有兼容故障，由 [Issue #78](https://github.com/jihegao/riffology-cloud/issues/78) 跟踪。合入主分支不表示该故障已修复、完整线上验收通过或付费执行已开放。下方早期里程碑保留历史状态，当前整合与检查结果见[主分支整合记录](docs/integration-main-review-20260918.md)。
+Queue/Mesa 预览的 #78/#90 已完成指定账号验收；#87 已验证一次真实 Pi Turn 的 Python 修改、保存 Revision、Browser Preview、参数修改和刷新继续。第二身份隔离与受邀准入等未覆盖项见[当前发布与验收状态](docs/release-readiness.md)。下方早期里程碑及[主分支整合记录](docs/integration-main-review-20260918.md)保留为历史证据，不代表持续内测容量已验收。
 
 MVP 采用极简 Session 界面，以 Cloudflare Workers、Agents SDK / Durable Objects、
 Sandbox、D1 和 R2 构成云端服务；本地候选支持 Python 标准库 Queue 与固定 Mesa profile，保留历史 SimPy 路径。
@@ -14,7 +18,7 @@ Sandbox、D1 和 R2 构成云端服务；本地候选支持 Python 标准库 Que
 - [当前发布与验收状态](docs/release-readiness.md)：源码、部署记录、真实验收边界及后续负责人。
 - [Queue 受邀用户研究指南](docs/invited-queue-research.md)与[本轮本地验证](docs/invited-queue-delivery-validation.md)：首个官方案例、三人研究验收及未冻结的生产执行条件。
 - [#73 实验结论](docs/issue-73-luna-agents-adr.md)与[质量回归](docs/research-quality-regression.md)：保留当前运行时，复用已有负面实验发现。
-- [当前多阶段开发计划](docs/issues-subagent-plan-20260915.md)与[实施验收记录](docs/issues-development-log-20260915.md)：#64 浏览器 Preview、#65 UI、#46/#37 生产验收及 #35 官方模型。
+- [历史多阶段开发计划](docs/issues-subagent-plan-20260915.md)与[实施验收记录](docs/issues-development-log-20260915.md)：#64 浏览器 Preview、#65 UI、#46/#37 生产验收及 #35 官方模型；当前优先级以 Delivery Project 为准。
 - [研究闭环 Issues 执行顺序](docs/research-loop-execution-plan.md)：第一阶段签收后的 8 个交付批次、依赖、接口兼容和验收门槛。
 - [MVP 系统概要设计](docs/mvp-system-design.md)：产品范围、功能模块、架构、核心流程、持久化与验收标准。
 - [官方模型库、多租户与 Token 付费设计](docs/model-library-tenancy-billing-design.md)：官方模型版本、项目与账单归属、充值余额、Token 结算和运行额度。
