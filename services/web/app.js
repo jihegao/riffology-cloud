@@ -89,7 +89,7 @@ function saveConversation(key, patch) {
   catch { throw Error('无法保存待确认请求，请检查浏览器存储后重试。'); }
 }
 function canSubmitConversation() {
-  return Boolean(activeProject?.status === 'ready' && workspaceSnapshot && !['maintenance','unavailable'].includes(workspaceSnapshot.admission?.state));
+  return Boolean(activeProject?.status === 'ready' && workspaceSnapshot && !workspaceSnapshot.piDeveloperState?.blocked && !['maintenance','unavailable'].includes(workspaceSnapshot.admission?.state));
 }
 
 let eventSource = null;
@@ -395,7 +395,7 @@ function renderWorkspace() {
   }
   const admission = workspaceSnapshot.admission;
   const unavailable = admission?.state === 'unavailable';
-  const maintenance = admission?.state === 'maintenance';
+  const maintenance = admission?.state === 'maintenance' || Boolean(workspaceSnapshot.piDeveloperState?.blocked);
   if (maintenance) appendTurnCard('system', '当前环境暂停接收新任务。', '草稿会保留；已接收回合仍可继续观察、取消和读取保存结果。');
   if (unavailable) appendTurnCard('system', '当前执行环境暂不可用。', '平台正在恢复运行资源，请稍后重试；草稿会保留。');
   if (workspaceHistoryTruncated) appendTurnCard('system', '这里只显示近期对话回复。', '较早回复已超出显示保留范围；项目文件和实验结果仍可查看。');
