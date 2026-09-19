@@ -42,6 +42,17 @@ test('authenticated repeat cancel on a saved terminal turn records already-termi
   await assert.rejects(f.engine.cancel(scope,{userId:'user-b',authVersion:1},submitted.turn.id),/turn-not-found/);assert.equal(f.calls.observeCalls,1);
 });
 
+test('exact maintenance identity clears only an existing terminal release hold',async()=>{
+  const f=fixture(),session=(await f.journal.createSession(scope,actor,'release-session',{title:'Session'})).session,submitted=await f.engine.submit(scope,actor,session.id,'release-turn',{message:'Build model'}),claimed=(await f.journal.claim(scope,1))!.turn;
+  await f.journal.beginCheckpoint(scope,{turnId:claimed.id,dispatchId:claimed.dispatchId!,runtimeGeneration:1,outcome:'completed'});
+  await f.journal.commitCheckpoint(scope,{turnId:claimed.id,dispatchId:claimed.dispatchId!,runtimeGeneration:1,checkpoint:{revisionId:'release-revision',objectKey:'checkpoint-release',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:claimed.startedAt!},resourceDisposition:{status:'release-pending',...claimed.resourceLease!,turnId:claimed.id,dispatchId:claimed.dispatchId!,generation:1,reasonCode:'runtime-release-pending',since:1000,nextAttemptAt:2000}});
+  const queued=(await f.journal.submit(scope,actor,session.id,'queued-behind-release',{message:'Do not claim'})).turn;
+  const identity={scope,sessionId:session.id,turnId:submitted.turn.id,dispatchId:claimed.dispatchId!,generation:1};
+  await assert.rejects(f.engine.reconcileRelease(scope,{...identity,dispatchId:'wrong-dispatch'}),/turn-release-scope-denied/);assert.ok(f.store.snapshot()!.releaseHold);assert.equal(f.calls.observeCalls,0);
+  assert.equal(await f.engine.reconcileRelease(scope,identity),null);assert.equal(f.store.snapshot()!.releaseHold,null);assert.equal(f.store.snapshot()!.turns[submitted.turn.id]!.status,'completed');assert.equal(f.store.snapshot()!.turns[queued.id]!.status,'queued');assert.equal(f.store.snapshot()!.activeTurnId,null);assert.equal(f.calls.observeCalls,1);assert.equal(f.calls.acceptCalls,0);
+  assert.equal(await f.engine.reconcileRelease(scope,identity),null);assert.equal(f.calls.observeCalls,1);
+});
+
 test('repeat cancel never destroys for a terminal turn without a saved checkpoint',async()=>{
   const f=fixture(),session=(await f.journal.createSession(scope,actor,'session-key',{title:'Session'})).session,submitted=await f.engine.submit(scope,actor,session.id,'turn-key',{message:'Build model'}),claimed=(await f.journal.claim(scope,1))!.turn;
   await f.journal.beginCheckpoint(scope,{turnId:claimed.id,dispatchId:claimed.dispatchId!,runtimeGeneration:1,outcome:'failed',errorCode:'fixture-failed'});await f.journal.failCheckpoint(scope,{turnId:claimed.id,dispatchId:claimed.dispatchId!,runtimeGeneration:1,errorCode:'turn-checkpoint-unknown'});
