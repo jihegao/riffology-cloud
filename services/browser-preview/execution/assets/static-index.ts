@@ -2,7 +2,9 @@
 export const browserPreviewStaticIndex = {
   "schema": "riffology.browser-static-delivery/v3",
   "runtimeProfiles": [
+    "28cd56fae7755f8b100e00d96aed82dc11757e38733fd3f0a3d1efe28c7fbd4c",
     "64f7b7606d47dd508ee0046b08ac4720dbd9bff46790de58ad2b7e40a23e6520",
+    "b5355cc5925224d224540792525cdefa0ae00deacc3d330608065f90c740eed2",
     "b6cb6c0e726d007c281f991eaea0d2aae415113328444de47c0681d85b553fd9"
   ],
   "delivery": {
@@ -62,6 +64,44 @@ export const browserPreviewStaticIndex = {
         "byteLength": 5944,
         "scriptSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf"
       }
+    },
+    "b5355cc5925224d224540792525cdefa0ae00deacc3d330608065f90c740eed2": {
+      "hostModule": {
+        "url": "/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+        "sha256": "38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1",
+        "byteLength": 41203
+      },
+      "rendererModule": {
+        "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+        "sha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
+        "byteLength": 6909
+      },
+      "assetBaseUrl": "/browser-preview-assets",
+      "frameDocument": {
+        "url": "/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
+        "sha256": "53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5",
+        "byteLength": 5944,
+        "scriptSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf"
+      }
+    },
+    "28cd56fae7755f8b100e00d96aed82dc11757e38733fd3f0a3d1efe28c7fbd4c": {
+      "hostModule": {
+        "url": "/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+        "sha256": "38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1",
+        "byteLength": 41203
+      },
+      "rendererModule": {
+        "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+        "sha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
+        "byteLength": 6909
+      },
+      "assetBaseUrl": "/browser-preview-assets",
+      "frameDocument": {
+        "url": "/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
+        "sha256": "53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5",
+        "byteLength": 5944,
+        "scriptSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf"
+      }
     }
   },
   "assets": [
@@ -106,6 +146,14 @@ export const browserPreviewStaticIndex = {
       "kind": "app"
     },
     {
+      "url": "/browser-preview-assets/2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8/source/package-lock.json",
+      "file": "browser-preview-assets/2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8/source/package-lock.json",
+      "sha256": "2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8",
+      "byteLength": 214212,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
       "url": "/browser-preview-assets/2d127e0fbdfdd139b90c2eb487950913771846991330460fce3b183ba79d8ddb/assets/matplotlib-3.10.8-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
       "file": "browser-preview-assets/2d127e0fbdfdd139b90c2eb487950913771846991330460fce3b183ba79d8ddb/assets/matplotlib-3.10.8-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
       "sha256": "2d127e0fbdfdd139b90c2eb487950913771846991330460fce3b183ba79d8ddb",
@@ -127,6 +175,14 @@ export const browserPreviewStaticIndex = {
       "sha256": "32959d4137cec8143d75016d029281df3d2e80a232896ed903c2b59e1c44ee9f",
       "byteLength": 2918760,
       "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+      "file": "browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+      "sha256": "38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1",
+      "byteLength": 41203,
+      "contentType": "text/javascript",
       "kind": "app"
     },
     {

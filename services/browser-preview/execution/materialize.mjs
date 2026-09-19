@@ -1,4 +1,4 @@
-import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {readFile,writeFile,mkdir,cp} from 'node:fs/promises';
 import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {build,version as esbuildVersion} from 'esbuild';
@@ -23,6 +23,9 @@ for(const profile of profiles){
  frameByProfile.set(profile.runtime.assetSha256,{url:deliveredFrame.url,sha256:deliveredFrame.sha256,byteLength:deliveredFrame.byteLength,scriptSha256:frame.sha256});
  if(!worker)throw Error('worker-delivery-missing');
 }
+// Reviewed baseline ships with its original unique bytes; shared bytes are rebuilt above.
+await cp(resolve(root,'services/browser-preview/execution/retained/bytes'),directories.app,{recursive:true});
+process.argv.push('--retain',resolve(root,'services/browser-preview/execution/retained/727c40f.json'));
 // Retention must be explicit: a prior reviewed index plus its original materialized files.
 for(let i=2;i<process.argv.length;i++){if(process.argv[i]==='--update-index')continue;if(process.argv[i]!=='--retain')throw Error('unexpected-materializer-option');const retained=JSON.parse(await readFile(resolve(process.argv[++i])));if(retained.schema!=='riffology.browser-static-delivery/v3')throw Error('retained-static-delivery-isolation-incompatible');for(const asset of retained.assets){const frameMatch=asset.kind==='frame'&&/^\/runtime\/([a-f0-9]{64})\/frame.html$/.exec(asset.url);if(!['app','frame'].includes(asset.kind)||!/^[a-f0-9]{64}$/.test(asset.sha256)||!Number.isSafeInteger(asset.byteLength)||asset.byteLength<1||asset.file!==asset.url.slice(1)||asset.file.split('/').some(part=>!part||part==='.'||part==='..')||/[?#\\]/.test(asset.url)||asset.kind==='app'&&(!asset.url.startsWith('/browser-preview-assets/'+asset.sha256+'/')||asset.scriptSha256!==undefined)||asset.kind==='frame'&&(!frameMatch||frameMatch[1]!==asset.sha256||!/^[a-f0-9]{64}$/.test(asset.scriptSha256)))throw Error('retained-static-asset-invalid');if(assets.some(a=>a.url===asset.url))continue;const path=resolve(asset.kind==='app'?directories.app:directories.execution,asset.file),bytes=await readFile(path);if(await previewSha256(bytes)!==asset.sha256||bytes.length!==asset.byteLength)throw Error('retained-static-delivery-unavailable');assets.push(asset);}}
 const sharedDelivery={hostModule:{url:host.url,sha256:host.sha256,byteLength:host.byteLength},rendererModule:{url:renderer.url,sha256:renderer.sha256,byteLength:renderer.byteLength},assetBaseUrl:'/browser-preview-assets'};

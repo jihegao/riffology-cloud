@@ -29,6 +29,11 @@ interface TurnServicesEnv {
 
 export function createGatewayTurnServices(env: TurnServicesEnv) {
   const actor = (scope: TurnScope) => env.WORKSPACE_AGENT.getByName(workspaceAgentName(scope.tenantId, scope.workspaceId));
+  const selection = (scope:TurnScope,value:unknown) => {
+    const backend=value && typeof value==='object' && !Array.isArray(value)?(value as Record<string,unknown>).runtimeBackend:undefined;
+    const configured=managedProjectPolicy(env.MANAGED_ACCEPTANCE_JSON,scope,env.MANAGED_TESTING_JSON);
+    return {configured,managed:backend==='pi'?false:backend==='managed'||!!configured};
+  };
   return {
     async managedAcceptanceStatus(scope:TurnScope,caller:TurnActor){const stub=actor(scope);if(!stub.managedAcceptanceStatus)throw Error('managed-product-runtime-not-configured');return stub.managedAcceptanceStatus({scope,actor:caller});},
     async cleanupManagedAcceptance(scope:TurnScope,caller:TurnActor){const stub=actor(scope);if(!stub.cleanupManagedAcceptance)throw Error('managed-product-runtime-not-configured');return stub.cleanupManagedAcceptance({scope,actor:caller});},
@@ -37,8 +42,8 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
     },
     async submit(scope: TurnScope, caller: TurnActor, sessionId: string, key: string, body: { message: unknown }) {
       try{
-        const managed=managedProjectPolicy(env.MANAGED_ACCEPTANCE_JSON,scope,env.MANAGED_TESTING_JSON);
-        if(managed){if(!managed.enabled||managed.userId!==caller.userId)throw Error('managed-admission-denied');requireTurnRuntime('true',typeof env.MANAGED_TURN_RUNTIME?.getByName==='function');}
+        const {managed,configured}=selection(scope,await actor(scope).turnSnapshot({scope}));
+        if(managed){if(!configured?.enabled||configured.userId!==caller.userId)throw Error('managed-admission-denied');requireTurnRuntime('true',typeof env.MANAGED_TURN_RUNTIME?.getByName==='function');}
         else requireTurnRuntime(env.M2_TURNS_ENABLED,env.M2_TURN_RUNTIME_CONFIGURED!==false);
         const result=await actor(scope).submitTurn({scope,actor:caller,sessionId,key,body});
         traceTurnAdmission(env.M2_TURN_ADMISSION_TELEMETRY,'gateway',true);return result;
@@ -54,10 +59,7 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
       const value = await actor(scope).turnSnapshot({ scope });
       if (!value || typeof value !== 'object' || Array.isArray(value)) return value;
       const {runtimeBackend,...snapshot}=value as Record<string,unknown>;
-      const configured=managedProjectPolicy(env.MANAGED_ACCEPTANCE_JSON,scope,env.MANAGED_TESTING_JSON);
-      // Workspace owns persisted backend selection; account-level testing must
-      // not advertise Managed admission for a historical Pi project.
-      const managed=runtimeBackend==='pi'?false:runtimeBackend==='managed'||!!configured;
+      const {managed,configured}=selection(scope,value);
       return { ...snapshot, admission: managed?turnAdmissionStatus(configured?.enabled?'true':'false',typeof env.MANAGED_TURN_RUNTIME?.getByName==='function'):turnAdmissionStatus(env.M2_TURNS_ENABLED, env.M2_TURN_RUNTIME_CONFIGURED !== false) };
     },
     async files(scope:TurnScope){return actor(scope).listFiles({scope});},

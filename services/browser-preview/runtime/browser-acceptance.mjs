@@ -9,7 +9,7 @@ import {makeFixture,emptyTracePython} from './fixtures.mjs';
 import {canonicalPreviewJson, previewSha256} from '../contract.ts';
 const root = resolve(dirname(fileURLToPath(import.meta.url)),'../../..');
 const out = resolve(process.env.OUTPUT_DIR ?? resolve(root,'.local/browser-preview/acceptance'));
-const profiles = JSON.parse(await readFile(new URL('./assets/profiles.json',import.meta.url)));
+const profiles = JSON.parse(await readFile(process.env.RETAINED_PROFILES ?? new URL('./assets/profiles.json',import.meta.url)));
 const staticIndex = JSON.parse(await readFile(resolve(root,'.local/browser-preview/static-index.json')));
 const delivery = staticIndex.versions[profiles[0].runtime.assetSha256];
 if(!delivery?.frameDocument)throw Error('browser-preview-frame-delivery-missing');
@@ -36,12 +36,12 @@ const app = await listen(async(req,res)=>{
   logs.app.push({url:req.url});
   try {
     if(req.url==='/') return send(res,`<!doctype html><html><head><meta charset="utf-8"><title>Browser runtime acceptance</title><style>#visual{max-width:600px}.preview-cell{height:20px;text-align:center}.preview-lane{padding:10px}button{padding:12px}</style></head><body><h1>Local preview acceptance</h1><div id="visual"></div><div id="metrics"></div><button id="play">Play</button><button id="pause">Pause</button><button id="step">Step</button><button id="restart">Restart</button><script type="module" src="/acceptance-host.mjs"></script></body></html>`,'text/html',{'Set-Cookie':'app_session=sentinel; Path=/; SameSite=Lax'});
-    if(req.url==='/host.bundle.mjs') return send(res,await readFile(resolve(root,'.local/browser-preview/host.bundle.mjs')));
+    if(req.url==='/host.bundle.mjs') return send(res,await readFile(resolve(root,'.local/browser-preview/app-assets',delivery.hostModule.url.slice(1))));
     if(req.url==='/renderer.mjs') return send(res,await readFile(new URL('./renderer.mjs',import.meta.url)));
     if(req.url==='/protocol.mjs') return send(res,await readFile(new URL('./protocol.mjs',import.meta.url)));
     if(req.url==='/acceptance-host.mjs') return send(res,`import {BrowserPreviewRuntime} from '/host.bundle.mjs';import {PreviewPlayer} from '/renderer.mjs';window.diagnostics=[];window.player=new PreviewPlayer(document.querySelector('#visual'),document.querySelector('#metrics'));const runtimeOptions={executionOrigin:${JSON.stringify(executionOrigin)},frameUrl:${JSON.stringify(delivery.frameDocument.url)},assetLoader:async profile=>Promise.all(profile.assetManifest.map(async a=>({path:a.path,bytes:new Uint8Array(await(await fetch('/fixed/'+a.path)).arrayBuffer())}))),onStarted:r=>{window.started=r},onDiagnostic:d=>window.diagnostics.push(d)};window.makeRuntime=()=>new BrowserPreviewRuntime(runtimeOptions);window.runtime=makeRuntime();window.loadFixture=async name=>runtime.load(new Uint8Array(await(await fetch('/package/'+name)).arrayBuffer()));window.runFixture=async input=>{window.started=null;const trace=await runtime.run(input);window.trace=trace;player.load(trace,runtime.loaded.visualization);return trace};for(const action of ['play','pause','step','restart'])document.querySelector('#'+action).onclick=()=>player[action]();window.acceptanceReady=true;`);
     if(req.url.startsWith('/package/')){const value=fixtures.get(req.url.slice(9));if(!value)throw Error('missing fixture');return send(res,canonicalPreviewJson(value),'application/json');}
-    if(req.url.startsWith('/fixed/')){const path=req.url.slice(7);const allowed=profiles.some(p=>p.assetManifest.some(a=>a.path===path));if(!allowed)throw Error('asset denied');const file=path.startsWith('assets/')?resolve(root,'.local/browser-preview',path):path.startsWith('delivery/')?resolve(root,'.local/browser-preview',path.slice(9)):path.startsWith('source/')?resolve(root,({'contract.ts':'services/browser-preview/contract.ts','model-spec.ts':'services/simulation/model-spec.ts','package-lock.json':'package-lock.json','prepare-assets.mjs':'services/browser-preview/runtime/prepare-assets.mjs'})[path.slice(7)]):resolve(root,'services/browser-preview/runtime',path.slice(8));return send(res,await readFile(file),'application/octet-stream');}
+    if(req.url.startsWith('/fixed/')){const path=req.url.slice(7),asset=profiles.flatMap(p=>p.assetManifest).find(a=>a.path===path);if(!asset)throw Error('asset denied');return send(res,await readFile(resolve(root,'.local/browser-preview/app-assets/browser-preview-assets',asset.sha256,path)),'application/octet-stream');}
     res.writeHead(404);res.end('denied');
   }catch(error){res.writeHead(500);res.end(String(error));}
 });
@@ -61,6 +61,18 @@ try {
   await page.screenshot({path:resolve(out,'queue.png')});evidence.cases.push({name:'queue-real-playback-replay-seed-boundaries',passed:true});
   await load('mesa');const mesa=await run({parameters:{steps:12},seed:7});assert.equal(mesa.model,'mesa-schelling');assert.equal(await page.locator('canvas.preview-grid').count(),1);assert.deepEqual(await run({parameters:{steps:12},seed:7}),mesa);assert.notDeepEqual(await run({parameters:{steps:12,homophily:0.8},seed:8}),mesa);const mesaZero=await run({parameters:{steps:4},seed:0}),mesaMax=await run({parameters:{steps:4},seed:4294967295});assert.notDeepEqual(mesaZero,mesaMax);await page.screenshot({path:resolve(out,'mesa.png')});evidence.cases.push({name:'mesa-real-grid-ordinary-steps',passed:true});
   const legacyAdapter=await readFile(resolve(root,'tests/fixtures/preview-legacy-run.py'),'utf8');
+  // Each new page has a fresh browser context; refresh must reload the same frozen package.
+  for(const name of ['queue','mesa']) {
+    const reopened=await browser.newPage();
+    try {
+      await reopened.goto(appOrigin);await reopened.waitForFunction(()=>window.acceptanceReady);
+      for(const phase of ['cold-independent-page','refresh']) {
+        if(phase==='refresh'){await reopened.reload();await reopened.waitForFunction(()=>window.acceptanceReady);}
+        const trace=await reopened.evaluate(async name=>{await loadFixture(name);return runFixture({parameters:name==='mesa'?{steps:12}:{},seed:7});},name);
+        assert.deepEqual(trace,name==='mesa'?mesa:queue);evidence.cases.push({name:name+'-'+phase,passed:true});
+      }
+    } finally {await reopened.close();}
+  }
   for(const [i,name] of ['queue','mesa'].entries()){
     fixtures.set('legacy-'+name,await makeFixture(profiles[i],name,null,legacyAdapter));await load('legacy-'+name);
     const input={parameters:name==='mesa'?{steps:12}:{},seed:7},legacy=await run(input);

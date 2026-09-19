@@ -5,6 +5,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {build} from 'esbuild';
 import {Miniflare} from 'miniflare';
+import {productionHttpFailure} from '../../services/model-proxy/openai-gateway-responses.ts';
 import {profile} from '../m2/production-profile-fixture.ts';
 import {profileDigest} from '../../services/model-proxy/production-profile.ts';
 import {modelCallReference} from '../../services/model-budget/core.ts';
@@ -12,7 +13,7 @@ import {moneyReference} from '../../services/model-budget/production-money.ts';
 const key=n=>n.toString(16).padStart(64,'0');
 const tokenPolicy={version:'g5-openai-luna-20260916-v1',maxReservationAttemptsPerTurn:8,maxDispatchedCallsPerTurn:8,maxInputTokensPerCall:262144,maxOutputTokensPerCall:4096,maxReservedTokensPerTurn:2129920};
 
-test('real production Guard and ledgers isolate terminal billing uncertainty, retain holds and reject unknown execution after restart',{timeout:60000},async()=>{
+for(const failureStatus of [502,504,null]) test('HTTP '+failureStatus+': real production Guard and ledgers isolate terminal billing uncertainty, retain holds and reject unknown execution after restart',{timeout:60000},async()=>{
  const directory=await mkdtemp(join(tmpdir(),'g5-bounded-billing-')),sha=await profileDigest(profile);
  const policy={schemaVersion:1,windowId:'g5-bounded-test',phase:'A',principals:[{tenantId:'tenant-a',userId:'user-a'}],profilePin:{provider:'openai',model:profile.model,profileSha256:sha,rateCardSha256:'b'.repeat(64),inputNanodollarsPerToken:profile.rates.inputNanodollarsPerToken,outputNanodollarsPerToken:profile.rates.outputNanodollarsPerToken},totalNanodollars:20000000000,turnNanodollars:5000000000,maxUpstreamDispatches:147,maxSimulationRuns:39,maxServiceRuns:0,maxTasks:66,durationMs:7200000,billingPolicy:{mode:'bounded-pending',maxUnknownCalls:3,maxUnknownNanodollars:1000000000}};
  const bundle=await build({stdin:{contents:`
@@ -47,7 +48,7 @@ test('real production Guard and ledgers isolate terminal billing uncertainty, re
   await rpc('PRODUCTION_MODEL_BUDGET','markUnknown',[first.moneyRef,'provider-failure']);
   // A closed money reservation alone cannot release an unknown provider execution.
   await assert.rejects(guard('settleTrustedCall',[first.call.callKey]),/settlement-unconfirmed/);
-  await rpc('G5_TOKEN_BUDGET','finish',['tenant-a',first.reference,{outcome:'failed',errorCode:'provider-failure',providerRequestId:'req-ended-1',usage:{kind:'unknown',observedAt:Date.now()}}]);
+  await rpc('G5_TOKEN_BUDGET','finish',['tenant-a',first.reference,{outcome:'failed',errorCode:'rejected-auth',providerRequestId:'req-ended-1',usage:{kind:'unknown',observedAt:Date.now()}}]);
   await rpc('TOOL_BRIDGE_AGENT','fixturePending',[first.identity,true]);
   await assert.rejects(guard('settleTrustedCall',[first.call.callKey]),/ledger-unsettled/);
   await rpc('TOOL_BRIDGE_AGENT','fixturePending',[first.identity,false]);
@@ -67,8 +68,8 @@ test('real production Guard and ledgers isolate terminal billing uncertainty, re
   await rpc('G5_TOKEN_BUDGET','markUnknown',['tenant-a',second.reference]);await rpc('PRODUCTION_MODEL_BUDGET','markUnknown',[second.moneyRef,'outcome-unknown']);await guard('markUnknown',[second.call.callKey]);
   await closeLedgers(second);await assert.rejects(guard('closeTrustedTurn',[second.t.key,second.identity]),/turn-unsettled/);
   await assert.rejects(guard('registerTask',[task(3)]),/charge-unsettled/);
-  // A local deadline terminal still does not prove the remote execution ended.
-  await rpc('G5_TOKEN_BUDGET','finish',['tenant-a',second.reference,{outcome:'failed',errorCode:'deadline',providerRequestId:'req-not-confirmed-ended',usage:{kind:'unknown',observedAt:Date.now()}}]);
+  // A gateway failure or local deadline does not prove remote execution ended.
+  await rpc('G5_TOKEN_BUDGET','finish',['tenant-a',second.reference,{outcome:'failed',errorCode:failureStatus===null?'deadline':productionHttpFailure(failureStatus),providerRequestId:'req-not-confirmed-ended',usage:{kind:'unknown',observedAt:Date.now()}}]);
   await assert.rejects(guard('settleTrustedCall',[second.call.callKey]),/billing-terminal-unconfirmed/);
   await assert.rejects(guard('registerTask',[task(3)]),/charge-unsettled/);
 
