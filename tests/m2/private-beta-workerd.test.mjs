@@ -10,7 +10,7 @@ import {betaPolicy} from './private-beta-fixture.ts';
 import {modelCallReference} from '../../services/model-budget/core.ts';
 
 test('standing Beta real SQLite/D1: invite scopes, cross-project contention, restart, pending usage, quarantine and pinned budgets',{timeout:90000},async()=>{
- const dir=await mkdtemp(join(tmpdir(),'private-beta-')),policy={...await betaPolicy(),maxCallsPerUserDay:1,maxCallsPerDay:2};
+ const dir=await mkdtemp(join(tmpdir(),'private-beta-')),policy={...await betaPolicy(),maxCallsPerUserDay:1,maxCallsPerDay:2,maxNanodollarsPerUserDay:600,maxNanodollarsPerDay:600,maxNanodollarsTotal:1200,maxNanodollarsPerTurn:500,maxPendingNanodollars:1200};
  const bundled=await build({stdin:{contents:`
  import {DurableObject,env as workerEnv} from 'cloudflare:workers';
  const originalNow=Date.now;Date.now=()=>originalNow()+Number(workerEnv.TEST_CLOCK_OFFSET??0);
@@ -59,6 +59,7 @@ test('standing Beta real SQLite/D1: invite scopes, cross-project contention, res
   const competing=await Promise.allSettled([accept('alice',1),accept('alice',2)]);assert.equal(competing.filter(r=>r.status==='fulfilled').length,1);
   const project=competing[0].status==='fulfilled'?1:2,first=request('alice',project);
   await accept('bob');await assert.rejects(accept('carol'),/capacity-full/);
+  await assert.rejects(budget('alice','reserve',first.identity.scope.tenantId,{...first,callId:'over-budget',inputTokenUpperBound:10000}),/budget-limit/);
   const ref=modelCallReference((await budget('alice','reserve',first.identity.scope.tenantId,first)).record);
   assert.equal((await budget('alice','dispatch',first.identity.scope.tenantId,ref)).authorized,true);
   await mf.dispose();mf=new Miniflare(options);await mf.ready;
@@ -91,7 +92,7 @@ test('standing Beta real SQLite/D1: invite scopes, cross-project contention, res
   // Even a purported released Workspace cannot erase a model execution unknown.
   await rpc('workspace',workspaceAgentName(second.identity.scope.tenantId,second.identity.scope.workspaceId),'setState',{found:true,turnId:second.identity.turnId,terminal:true,released:true,resourceWait:false,finishedAt:null});
   await cap('monitor');assert.equal((await cap('snapshot')).quarantined,1);
-  const before=await cap('snapshot');assert.ok(before.usage.some(x=>x.status==='billing-pending'&&x.reservedNanodollars>0));
+  const before=await cap('snapshot');assert.ok(before.alerts.some(a=>a.code==='daily-budget-warning'));assert.ok(before.usage.some(x=>x.status==='billing-pending'&&x.reservedNanodollars>0));
   await cap('pause');assert.equal((await cap('snapshot')).paused,true);
   await assert.rejects(cap('authorizeTurn',scope('carol'),actor('carol'),request('carol').identity.turnId),/paused/);
   await assert.rejects(cap('resume'),/release-unconfirmed/);
