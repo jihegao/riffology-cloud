@@ -34,7 +34,7 @@ for(const beta of [false,true])test((beta?'Private Beta':'Pi developer')+' Works
  export class Artifacts extends DurableObject{}
  ${beta?"export {PiDeveloperBudget as Developer} from './services/model-budget/pi-developer-durable.ts';":'export class Developer extends DurableObject {async assertQuiet(){}async admitTurn(){}}'}
  export {PrivateBetaCapacity} from './services/model-budget/private-beta-capacity.ts';
- export class Historical extends DurableObject {async assertExecutionIsolated(){return {};}}
+ export class Historical extends DurableObject {async assertExecutionQuiet(){return {};}async assertExecutionIsolated(){return {};}}
  export class Runtime extends DurableObject{}
  export class Capacity extends DurableObject{}
  export default {async fetch(request,env){const {method,...input}=await request.json();try{const stub=env.WORKSPACE_AGENT.getByName(workspaceAgentName(input.scope.tenantId,input.scope.workspaceId));let value;if(method==='stop')value=await env.MANAGED_TURN_RUNTIME.getByName('managed-product-v1:tenant:project').stop();else if(method==='seed')value=await stub.seed(input.scope);else if(method==='seedRuns')value=await stub.seedRuns(input.scope,input.actor);else value=await stub[method](input);return Response.json({ok:true,value});}catch(e){return Response.json({ok:false,error:e.message});}}};`;
