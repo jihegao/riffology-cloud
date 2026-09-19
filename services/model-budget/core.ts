@@ -91,6 +91,27 @@ export type ModelBudgetSnapshot = {
   pending: number;
   records: ModelCallRecord[];
 };
+export type ModelExecutionBlocker = {
+  schemaVersion: 1;
+  callKey: string;
+  turnKey: string;
+  status: ModelCallStatus;
+  reconciliation: ModelCallRecord['reconciliation'];
+  acceptedAt: number;
+  dispatchedAt: number | null;
+  finishedAt: number | null;
+  terminalOutcome: ModelCallOutcome | null;
+  terminalErrorCode: string | null;
+  providerRequestIdPresent: boolean;
+  usageKind: ModelUsageEvidence['kind'] | null;
+};
+export type ModelExecutionBlockerInventory = {
+  schemaVersion: 1;
+  total: number;
+  confirmedEnded: number;
+  blocked: number;
+  blockers: ModelExecutionBlocker[];
+};
 export type ModelBudgetStorage = Pick<DurableObjectStorage, 'sql' | 'transactionSync' | 'sync'>;
 
 type Row = Record<string, SqlStorageValue>;
@@ -534,13 +555,39 @@ export class SqlTenantModelBudget {
     await this.#ready;
     for (const row of this.#rows('SELECT * FROM model_calls')) {
       const record = await this.#verified(row);
-      const terminal = record.terminal;
-      const ended = record.status === 'not-dispatched' || !!terminal?.providerRequestId && (
-        record.status === 'completed' && terminal.outcome === 'completed' ||
-        record.status === 'failed' && terminal.outcome === 'failed' && ['rejected-auth', 'rate-limited'].includes(String(terminal.errorCode))
-      );
-      if (!ended) throw Error('pi-developer-execution-unconfirmed');
+      if (!this.#executionEnded(record)) throw Error('pi-developer-execution-unconfirmed');
     }
+  }
+
+  #executionEnded(record: ModelCallRecord): boolean {
+    const terminal = record.terminal;
+    return record.status === 'not-dispatched' || !!terminal?.providerRequestId && (
+      record.status === 'completed' && terminal.outcome === 'completed' ||
+      record.status === 'failed' && terminal.outcome === 'failed' && ['rejected-auth', 'rate-limited'].includes(String(terminal.errorCode))
+    );
+  }
+
+  /** Read-only, redacted inventory for operator reconciliation. It exposes
+   * ledger digests and terminal classifications, never request payloads,
+   * identities, user input, or raw provider/request identifiers. */
+  async executionBlockers(): Promise<ModelExecutionBlockerInventory> {
+    await this.#ready;
+    const records = await Promise.all(this.#rows('SELECT * FROM model_calls ORDER BY accepted_at,call_key').map(row => this.#verified(row)));
+    const blockers = records.filter(record => !this.#executionEnded(record)).map(record => ({
+      schemaVersion: 1 as const,
+      callKey: record.callKey,
+      turnKey: record.turnKey,
+      status: record.status,
+      reconciliation: record.reconciliation,
+      acceptedAt: record.acceptedAt,
+      dispatchedAt: record.dispatchedAt,
+      finishedAt: record.finishedAt,
+      terminalOutcome: record.terminal?.outcome ?? null,
+      terminalErrorCode: record.terminal?.errorCode ?? null,
+      providerRequestIdPresent: record.terminal?.providerRequestId !== null && record.terminal?.providerRequestId !== undefined,
+      usageKind: record.terminal?.usage.kind ?? null,
+    }));
+    return structuredClone({schemaVersion: 1 as const,total: records.length,confirmedEnded: records.length-blockers.length,blocked: blockers.length,blockers});
   }
 
   async snapshot(identityValue: unknown): Promise<ModelBudgetSnapshot> {
