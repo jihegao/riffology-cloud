@@ -1,3 +1,5 @@
+import {privateBetaPolicy,privateBetaCandidate,authorizePrivateBeta,PRIVATE_BETA_CAPACITY_ACTOR} from '../model-budget/private-beta-policy.ts';
+import type {PrivateBetaCapacity} from '../model-budget/private-beta-capacity.ts';
 import {piDeveloperOwner,piDeveloperPolicy} from '../model-budget/pi-developer-policy.ts';
 import type {PiDeveloperBudget} from '../model-budget/pi-developer-durable.ts';
 import {managedProjectPolicy,requireManagedAdmission,managedProductActorName,resolveManagedRoute,type ManagedAcceptancePolicy} from './managed-route.ts';
@@ -111,6 +113,8 @@ import type { TrustedPiCapacityNamespace } from '../capacity/client.ts';
 import { turnOperationTracer } from '../turn/operation-telemetry.ts';
 
 export interface WorkspaceAgentEnv {
+  PRIVATE_BETA_POLICY_JSON?:string;
+  PRIVATE_BETA_CAPACITY?:DurableObjectNamespace<PrivateBetaCapacity>;
   WORKSPACE_AGENT: DurableObjectNamespace<WorkspaceAgent>;
   TENANT_QUOTA: DurableObjectNamespace<TenantQuota>;
   PROJECT_RUNTIME: DurableObjectNamespace<ProjectRuntime>;
@@ -468,10 +472,11 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const command=normalizeToolCommand(input.command),scope=this.#ready(command.scope);
     const saved=(await this.#turns.snapshot(scope)).turns[command.turnId];if(!saved||saved.dispatchId!==command.dispatchId)throw Error('project-preparation-denied');
     const identity=turnRuntimeIdentity({scope,sessionId:saved.sessionId,turnId:command.turnId,dispatchId:command.dispatchId,generation:scope.workspaceGeneration}),runtime=this.env.PRODUCT_TURN_RUNTIME.getByName(await turnRuntimeActorName(identity));
+    if(this.ctx.storage.kv.get<{privateBeta?:boolean}>('pi-developer-turn:'+command.turnId)?.privateBeta)await this.#betaControl().authorizeTool(scope,saved.actor,command.turnId,command.deadlineAt);
     if(!await runtime.projectPreparationRequired(identity))return {ready:true as const};
     const authorize=async()=>{const state=await this.#turns.snapshot(scope),turn=state.turns[command.turnId];
       if(state.activeTurnId!==command.turnId||!turn||!['starting','running'].includes(turn.status)||turn.dispatchId!==command.dispatchId||turn.cancelRequestedAt!==null||turn.finishedAt!==null||command.deadlineAt<=Date.now())throw Error('project-preparation-denied');
-      const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('project-preparation-denied');return turn;
+      const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('project-preparation-denied');if(this.ctx.storage.kv.get<{privateBeta?:boolean}>('pi-developer-turn:'+command.turnId)?.privateBeta)await this.#betaControl().authorizeTool(scope,turn.actor,command.turnId,command.deadlineAt);return turn;
     };
     await authorize();
     const result=await runtime.prepareProjectTool({identity,command,observeOnly:input.observeOnly});await authorize();const warm=await this.#leases().current(identity);return warm?{...result,actorId:await workspaceSandboxActor(warm.lease,'project')}:result;
@@ -850,14 +855,22 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return this.#managedRuntime(policy).cleanup(scope);
   }
 
+  #developerCandidate(scope:TurnScope,actor:TurnActor){return this.env.PRIVATE_BETA_POLICY_JSON!==undefined?privateBetaCandidate(this.env.PRIVATE_BETA_POLICY_JSON):piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,scope.tenantId,actor.userId,scope.projectId);}
+  #betaControl(){const stub=this.env.PRIVATE_BETA_CAPACITY?.getByName(PRIVATE_BETA_CAPACITY_ACTOR);if(!stub)throw Error('private-beta-unconfigured');return stub;}
+  async privateBetaReleaseState(input:{scope:TurnScope;actor:TurnActor;sessionId:string;requestKey:string}){
+    const scope=this.#maintenanceScope(input.scope),state=await this.#turns.snapshot(scope);
+    const turn=Object.values(state.turns).find(t=>t.actor.userId===input.actor.userId&&t.actor.authVersion===input.actor.authVersion&&t.sessionId===input.sessionId&&t.requestKey===input.requestKey);
+    const terminal=!!turn&&['completed','failed','cancelled','interrupted'].includes(turn.status);
+    return {found:!!turn,turnId:turn?.id??null,terminal,finishedAt:turn?.finishedAt??null,released:terminal&&state.activeTurnId===null&&state.releaseHold===null&&state.recoveryHold===null,resourceWait:state.resourceWait!==null};
+  }
   #developerBudget(tenantId:string){const stub=this.env.PI_DEVELOPER_BUDGET?.getByName(modelBudgetTenantName(tenantId));if(!stub)throw Error('pi-developer-budget-unavailable');return stub;}
   async piDeveloperTurnAuthorization(input:{identity:TurnRuntimeIdentity;actor:TurnActor}){
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope);
     if(!this.ctx.storage.kv.get('pi-developer-turn:'+identity.turnId))return false;
-    if(!piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,scope.tenantId,input.actor.userId,scope.projectId)||this.#store.read()?.task.budgetRoute||this.#managedRoute())throw Error('pi-developer-admission-denied');
+    if(!this.#developerCandidate(scope,input.actor)||this.#store.read()?.task.budgetRoute||this.#managedRoute())throw Error('pi-developer-admission-denied');
     const state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
     if(!turn||turn.status!=='running'||state.activeTurnId!==turn.id||turn.actor.userId!==input.actor.userId||turn.actor.authVersion!==input.actor.authVersion||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation||turn.cancelRequestedAt!==null)throw Error('pi-developer-turn-denied');
-    const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('pi-developer-admission-denied');return true;
+    const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('pi-developer-admission-denied');if(this.env.PRIVATE_BETA_POLICY_JSON!==undefined)await this.#betaControl().authorizeTurn(scope,input.actor,identity.turnId);return true;
   }
   #g5Guard(){const guard=this.env.G5_WINDOW_GUARD?.getByName(G5_GLOBAL_ACTOR);if(!guard)throw Error('g5-workspace-guard-required');return guard;}
   async #g5StartTask(taskKey:string,identity?:TurnRuntimeIdentity){
@@ -869,7 +882,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   async #g5TurnStart(turn:import('../turn/protocol.ts').TurnRecord,phase:'capacity'|'runtime'){
     const route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);
     if(!route){
-      if(this.ctx.storage.kv.get('pi-developer-turn:'+turn.id)){if(!piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,turn.scope.tenantId,turn.actor.userId,turn.scope.projectId))throw Error('pi-developer-admission-denied');return;}
+      if(this.ctx.storage.kv.get('pi-developer-turn:'+turn.id)){if(!this.#developerCandidate(turn.scope,turn.actor))throw Error('pi-developer-admission-denied');if(this.env.PRIVATE_BETA_POLICY_JSON!==undefined)await this.#betaControl().authorizeTurn(turn.scope,turn.actor,turn.id);return;}
       // Journal commit can survive a lost sync ACK before the route callback runs.
       // Missing provenance in a configured G5 Workspace never authorizes a legacy start.
       if(this.env.G5_CONTROLLED_WINDOW_JSON!==undefined)throw Error('g5-turn-route-unavailable');
@@ -957,7 +970,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   submitTurn(input: { scope: TurnScope; actor: TurnActor; sessionId: string; key: string; body: { message: unknown } }) {
     // Serialize admission through the durable journal commit. DO input gates
     // alone do not cover the external preflight/catalog awaits in this method.
-    if(!this.#managedRoute()&&!piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,input.scope.tenantId,input.actor.userId,input.scope.projectId))return this.#submitTurn(input);
+    if(!this.#managedRoute()&&!this.#developerCandidate(input.scope,input.actor))return this.#submitTurn(input);
     const next=this.#managedSubmitTail.then(()=>this.#submitTurn(input));
     this.#managedSubmitTail=next.catch(()=>{});return next;
   }
@@ -966,7 +979,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     let scope:TurnScope;
     try{scope=this.#ready(input.scope);trace('ready',true);}catch(error){trace('ready',false,error);throw error;}
     const selected=this.#managedRoute();
-    const developer=!selected&&!this.#store.read()?.task.budgetRoute&&piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,scope.tenantId,input.actor.userId,scope.projectId);
+    const developer=!selected&&!this.#store.read()?.task.budgetRoute&&this.#developerCandidate(scope,input.actor);
     if(selected||developer){
       const state=await this.#turns.snapshot(scope);
       const prior=Object.values(state.turns).find(turn=>turn.sessionId===input.sessionId&&turn.requestKey===input.key&&turn.actor.userId===input.actor.userId);
@@ -997,7 +1010,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
         if(!ledger)throw Error('pi-developer-historical-ledger-unavailable');
         await ledger.assertTurnExecutionIsolated(scope.tenantId,identity);
       }
-      await this.#developerBudget(scope.tenantId).admitTurn(scope,input.actor.userId,input.sessionId,input.key);
+      await this.#developerBudget(scope.tenantId).admitTurn(scope,input.actor.userId,input.sessionId,input.key,input.actor);
     }else if(!managed&&this.env.G5_CONTROLLED_WINDOW_JSON!==undefined){
       await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
       const task=await g5TaskKey(this.env.G5_CONTROLLED_WINDOW_JSON,'turn',scope.tenantId,input.actor.userId,{scope,sessionId:input.sessionId,key:input.key},input.body);
@@ -1007,7 +1020,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     }else if(!managed){await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,input.actor.userId,'turn',{scope,sessionId:input.sessionId,key:input.key},input.body);}
 
     this.#ready(scope);
-    return engine.submit(scope,input.actor,input.sessionId,input.key,input.body,trace,developer?async turn=>{this.ctx.storage.kv.put('pi-developer-turn:'+turn.id,{policyId:piDeveloperPolicy(this.env.PI_DEVELOPER_POLICY_JSON)!.policyId});await this.ctx.storage.sync();}:route?async turn=>{const prior=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);if(prior&&JSON.stringify(prior)!==JSON.stringify(route))throw Error('g5-turn-route-conflict');this.ctx.storage.kv.put('g5-turn-route:'+turn.id,route!);this.ctx.storage.kv.put('g5-submission:'+route!.taskKey,turn.id);await this.ctx.storage.sync();await this.#g5Guard().bindTask(route!.taskKey,turn.id);}:undefined);
+    return engine.submit(scope,input.actor,input.sessionId,input.key,input.body,trace,developer?async turn=>{const beta=privateBetaPolicy(this.env.PRIVATE_BETA_POLICY_JSON);this.ctx.storage.kv.put('pi-developer-turn:'+turn.id,{policyId:beta?.policyId??piDeveloperPolicy(this.env.PI_DEVELOPER_POLICY_JSON)!.policyId,...(beta?{privateBeta:true}:{})});await this.ctx.storage.sync();if(beta)await this.#betaControl().bindTurn({scope,actor:input.actor,sessionId:input.sessionId,requestKey:input.key},turn.id);}:route?async turn=>{const prior=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);if(prior&&JSON.stringify(prior)!==JSON.stringify(route))throw Error('g5-turn-route-conflict');this.ctx.storage.kv.put('g5-turn-route:'+turn.id,route!);this.ctx.storage.kv.put('g5-submission:'+route!.taskKey,turn.id);await this.ctx.storage.sync();await this.#g5Guard().bindTask(route!.taskKey,turn.id);}:undefined);
   }
   async cancelTurn(input: { scope: TurnScope; actor: TurnActor; turnId: string }) {
     const turn=await this.#engine().cancel(this.#ready(input.scope), input.actor, input.turnId);if(!this.#managedRoute()&&['completed','failed','cancelled','interrupted'].includes(turn.status))await this.#g5Terminal(turn);return turn;
@@ -1015,8 +1028,15 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   async replayTurnEvents(input: { scope: TurnScope; afterSequence: number; limit: number }) {
     return this.#turns.replay(this.#ready(input.scope), input.afterSequence, input.limit);
   }
-  async turnSnapshot(input: { scope: TurnScope }) {
+  async turnSnapshot(input: { scope: TurnScope; actor?:TurnActor }) {
     const scope=this.#ready(input.scope),snapshot=await this.#turns.view(scope),managed=this.#managedRoute();
+    if(!managed&&this.env.PRIVATE_BETA_POLICY_JSON!==undefined){
+      let admitted=false,blocked:string|null=null;
+      if(input.actor&&this.#developerCandidate(scope,input.actor)&&!this.#store.read()?.task.budgetRoute&&!Object.keys(snapshot.turns).some(id=>this.ctx.storage.kv.get('g5-turn-route:'+id))){
+        try{await authorizePrivateBeta(this.env.CATALOG,scope,input.actor);admitted=true;}catch{blocked='private-beta-admission-denied';}
+      }
+      return {...snapshot,runtimeBackend:'pi' as const,...(admitted?{piDeveloperState:{billingMode:'observe',blocked,privateBeta:true}}:{})};
+    }
     if(!managed){
       const policy=piDeveloperPolicy(this.env.PI_DEVELOPER_POLICY_JSON);
       const developer=!!policy&&piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,scope.tenantId,policy.userId,scope.projectId)&&!this.#store.read()?.task.budgetRoute&&!Object.keys(snapshot.turns).some(id=>this.ctx.storage.kv.get('g5-turn-route:'+id));

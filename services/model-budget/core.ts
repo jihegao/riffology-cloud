@@ -762,3 +762,5 @@ export function modelCallReference(record: ModelCallRecord): ModelCallReference 
   return { identity: structuredClone(record.identity), callId: record.callId, requestId: record.requestId, digest: record.digest, reservationId: record.reservationId };
 }
 export function modelBudgetTenantName(tenantId: string): string { return `tenant-model-budget:${identifier(tenantId)}`; }
+
+export {normalizedRequest as modelCallRequest, callKey as modelBudgetCallKey};

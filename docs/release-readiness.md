@@ -7,7 +7,7 @@ source/window, not that the current deployment passes. This 2026-09-20 snapshot
 includes the authenticated Chrome/CDP Queue/Mesa acceptance and #87's bounded
 paid Pi acceptance linked below. Neither proves other accounts, full ACL
 isolation or standing Private Beta capacity. GitHub and source were checked for
-this update; live Worker settings were not re-read on 2026-09-20.
+this update; live Worker settings were re-read on 2026-09-20: version `ef30dd39-4ea0-4476-888c-8fdd1b964ecd`, all execution gates closed.
 
 ## Private Beta definition and standing capacity
 
@@ -19,26 +19,29 @@ This is the product definition and intended operating policy. Standing capacity
 is not yet signed off or declared open. [#104: 邀请制内测运行与常态容量](https://github.com/jihegao/riffology-cloud/issues/104)
 owns the frozen operating packet, implementation gaps, stop conditions and exit
 criteria. #87 stays CLOSED / Done; its expired window must not be reopened or
-extended. If Beta starts immediately, #104 is the new P0; current priority,
+extended. The user confirmed immediate work; #104 is P0 / In progress. Current priority,
 status, milestone and owner remain in the Delivery Project.
 
 | Boundary | Private Beta contract |
 | --- | --- |
 | Supported path | Pi request → edit Python → save Revision → Browser Preview → change parameters → refresh/leave and continue. Preview is always local/unverified |
 | Outside the commitment | Verified Experiment/Evidence, public signup, commercial SLA, Credits/payments and high user concurrency |
-| Admission and hard limits | Explicit user AND project allowlists; one active Turn per user across projects; daily dispatch and fee limits, cumulative exposure, call/Turn/tool/release timeouts and global concurrency caps. Freeze actual values in #104 before opening |
+| Admission and hard limits | Accepted ordinary invitation plus active user/personal tenant/owner membership; owned personal projects inherit admission with no additional count cap. One active Turn per user across projects; global two (native Pi remains one). UTC daily 80 calls/US$2 per user, 240 calls/US$5 global; cumulative US$20. See the confirmed packet in #104 |
 | Standing operation | Pi/M2 capacity remains available within approved budgets and safety limits; no per-session #87 acceptance window. Day changes and policy/project changes never erase unknown records or reservations |
 | Execution safety | No automatic retry or provider fallback. Unknown execution immediately isolates the original run and pauses affected admission; use the global kill switch when scope is unknown or global controls fail |
 | Operations | Capacity monitoring, fee alerts and named response owner; verify runtime/tool/container release after each terminal Turn. Unconfirmed release keeps capacity occupied |
 | Historical billing | #101 independently reconciles the seven isolated historical calls, preserving their usage/fees/reservations. Historical fee uncertainty does not block normal Beta; new execution risk still pauses affected capacity. New pending fees retain reservations within explicit caps |
 | Gates | Only required Pi/M2 routes may open for the allowlist: M2_TURNS_ENABLED, M2_MODEL_PROVIDER_ENABLED and PRODUCTION_MODEL_ENABLED. G5 admission, M3 cloud Preview/WS/Service and M4 Simulation remain closed; local Browser Preview does not require them |
 
-The current [Pi policy parser](../services/model-budget/pi-developer-policy.ts)
-supports an owner observation mode and the fixed #87 single-project 30-minute
-packet. It does not supply this standing multi-user/daily-budget contract. #104
-must close those gaps and verify the actual invited identities (#92) and relevant
-second-principal isolation (#71) before claiming that scope is accepted. This
-documentation update performs no deployment, gate change or paid request.
+The legacy [Pi policy parser](../services/model-budget/pi-developer-policy.ts)
+remains unchanged for #87. The [standing policy](../services/model-budget/private-beta-policy.ts)
+and [global capacity authority](../services/model-budget/private-beta-capacity.ts)
+add persistent daily/cumulative reservation limits and cross-project occupancy;
+the existing per-tenant Pi ledger remains the dispatch/terminal authority.
+Implementation evidence and operating steps are in [the operating note](private-beta-operations.md).
+Current actual invited identities (#92) and second-principal isolation (#71),
+closed-gate deployment, paid acceptance and seven-day observation remain separate
+from local tests; none is inferred from the version name.
 
 ## Release identity
 

@@ -22,6 +22,7 @@ async function fixture(t,handle,{mobile=false}={}){
       if(url.pathname==='/api/admin/tenants')return json(route,{tenants:[]});
       if(url.pathname==='/api/admin/invitations')return json(route,{invitations:[]});
       if(url.pathname==='/api/admin/models')return json(route,{models:[]});
+      if(url.pathname==='/api/admin/private-beta')return json(route,{error:'private-beta-unconfigured'},503);
       if(url.pathname==='/api/admin/audit')return json(route,{events:[]});
       throw Error(`unexpected admin request ${url.pathname}`);
     }
@@ -123,4 +124,19 @@ test('operator uploads canonical model content with client checks and idempotent
   await page.locator('#notice').filter({ hasText: '不能超过 8 MiB' }).waitFor(); assert.equal(calls.length, before);
   await input.setInputFiles({ name: 'wrong.json', mimeType: 'application/json', buffer: Buffer.from('wrong') });
   await page.locator('#notice').filter({ hasText: 'SHA-256 与模型摘要不一致' }).waitFor(); assert.equal(calls.length, before);
+});
+
+
+test('operator Beta panel shows capacity and conservative exposure, pauses once and cannot resume while resources remain',async t=>{
+ let paused=false,posts=0;
+ const page=await fixture(t,async(route,path)=>{
+  if(path!=='/api/admin/private-beta')return false;
+  if(route.request().method()==='POST'){posts++;assert.deepEqual(JSON.parse(route.request().postData()),{action:'pause'});paused=true;await json(route,{paused:true});}
+  else await json(route,{enabled:true,paused,active:1,quarantined:0,limits:{maxActiveTurns:2,maxNanodollarsTotal:20000000000},usage:[{reservedNanodollars:600000000}],alerts:[]});
+  return true;
+ });
+ await page.goto('https://admin.test/admin');await page.waitForFunction(()=>document.querySelector('#private-beta-status').textContent.includes('$0.60'));
+ assert.match(await page.locator('#private-beta-status').innerText(),/占用 1\/2/);
+ await page.locator('#private-beta-pause').click();await page.waitForFunction(()=>document.querySelector('#private-beta-pause').disabled);
+ assert.equal(posts,1);assert.equal(await page.locator('#private-beta-resume').isDisabled(),true);
 });

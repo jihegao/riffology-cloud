@@ -19,6 +19,12 @@
       <div class="heading"><div><p class="eyebrow">OPERATIONS</p><h1>平台状态</h1><p id="updated-at">只展示平台元数据</p></div><button id="refresh" class="button">刷新</button></div>
       <div id="metrics" class="metric-grid" aria-live="polite"></div>
 
+      <section class="card" id="private-beta-panel" aria-labelledby="private-beta-heading">
+        <h2 id="private-beta-heading">Private Beta 容量</h2>
+        <p id="private-beta-status" role="status">读取内测状态中…</p>
+        <button id="private-beta-pause" class="button" type="button">暂停内测任务</button>
+        <button id="private-beta-resume" class="button" type="button">恢复内测任务</button>
+      </section>
       <section class="card admin-section" aria-labelledby="invite-heading">
         <div class="section-heading"><div><h2 id="invite-heading">邀请</h2><p>令牌仅在首次创建成功后显示一次。</p></div></div>
         <form id="issue-form" class="issue-form">

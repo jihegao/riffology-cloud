@@ -1,3 +1,5 @@
+import {PRIVATE_BETA_CAPACITY_ACTOR} from '../model-budget/private-beta-policy.ts';
+import type {PrivateBetaCapacity} from '../model-budget/private-beta-capacity.ts';
 import {piDeveloperOwner} from '../model-budget/pi-developer-policy.ts';
 import {managedTestingOwner} from '../workspace/managed-route.ts';
 import {matchesManagedProjectBootstrap} from '../workspace/managed-bootstrap.ts';
@@ -16,7 +18,7 @@ import {createGatewaySimulationServices} from './simulation-services.ts';
 import {R2ModelContentUploadPort} from '../runtime/model-upload.ts';
 import {acceptedInvitationProjectAdmission} from '../catalog/project-admission.ts';
 // Optional until the model-content binding is configured for an environment.
-type GatewayRuntimeEnv=GatewayEnv & {INVITED_PROJECT_ADMISSION_ENABLED?:string;PI_DEVELOPER_POLICY_JSON?:string;MANAGED_TESTING_JSON?:string;MANAGED_PROJECT_BOOTSTRAP_JSON?:string;M4_SIMULATION_ENABLED?:unknown;G5_WINDOW_GUARD?:DurableObjectNamespace<G5ControlledWindow>;G5_CONTROLLED_WINDOW_JSON?:string;G5_ADMISSION_ENABLED?:string;G4_CONTROLLED_WINDOW_JSON?:string;TENANT_MODEL_BUDGET?:G4TaskBudgetNamespace;TRUSTED_PI_CAPACITY?:DurableObjectNamespace<import('../capacity/durable.ts').TrustedPiCapacity>;MODEL_CONTENT?:R2Bucket;TOOL_ARTIFACT_STORE?:DurableObjectNamespace<import('../artifacts/durable.ts').ToolArtifactStore>;M3_SERVICE_ENABLED?:unknown;M3_PREVIEW_ENABLED?:unknown;M3_PREVIEW_WS_ENABLED?:unknown;M3_PREVIEW_ORIGIN?:string;BROWSER_PREVIEW_EXECUTION_ORIGIN?:string;M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?:string};
+type GatewayRuntimeEnv=GatewayEnv & {PRIVATE_BETA_CAPACITY?:DurableObjectNamespace<PrivateBetaCapacity>;INVITED_PROJECT_ADMISSION_ENABLED?:string;PI_DEVELOPER_POLICY_JSON?:string;MANAGED_TESTING_JSON?:string;MANAGED_PROJECT_BOOTSTRAP_JSON?:string;M4_SIMULATION_ENABLED?:unknown;G5_WINDOW_GUARD?:DurableObjectNamespace<G5ControlledWindow>;G5_CONTROLLED_WINDOW_JSON?:string;G5_ADMISSION_ENABLED?:string;G4_CONTROLLED_WINDOW_JSON?:string;TENANT_MODEL_BUDGET?:G4TaskBudgetNamespace;TRUSTED_PI_CAPACITY?:DurableObjectNamespace<import('../capacity/durable.ts').TrustedPiCapacity>;MODEL_CONTENT?:R2Bucket;TOOL_ARTIFACT_STORE?:DurableObjectNamespace<import('../artifacts/durable.ts').ToolArtifactStore>;M3_SERVICE_ENABLED?:unknown;M3_PREVIEW_ENABLED?:unknown;M3_PREVIEW_WS_ENABLED?:unknown;M3_PREVIEW_ORIGIN?:string;BROWSER_PREVIEW_EXECUTION_ORIGIN?:string;M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?:string};
 import {R2ModelContentPort} from '../runtime/content.ts';
 import { createAuth } from './auth.ts';
 import { catalogDatabase } from '../catalog/database.ts';
@@ -35,6 +37,7 @@ import {runRevisionGcMaintenance} from './revision-gc-maintenance.ts';
 import {runGatewayScheduledDomains} from './scheduled.ts';
 export { TenantQuota } from '../quota/durable.ts';
 export { TenantModelBudget } from '../model-budget/durable.ts';
+export {PrivateBetaCapacity} from '../model-budget/private-beta-capacity.ts';
 export {PiDeveloperBudget} from '../model-budget/pi-developer-durable.ts';
 export { G5ControlledWindow } from '../model-budget/g5-window-durable.ts';
 export { G5TenantModelBudget } from '../model-budget/g5-token-durable.ts';
@@ -95,7 +98,7 @@ export default {
       }
       return await auth.handler(request);
     }
-    return await gateway(request,{testingSimulationAvailable:(principal,tenantId)=>managedTestingOwner(env.MANAGED_TESTING_JSON,tenantId,principal.userId),executionAvailability:{service:env.M3_SERVICE_ENABLED==='true',preview:env.M3_PREVIEW_ENABLED==='true',simulation:env.M4_SIMULATION_ENABLED==='true'},g4ComputeCounts:createGatewayG4ComputeServices(env),g4WindowSnapshot:createGatewayG4WindowServices(env as unknown as Parameters<typeof createGatewayG4WindowServices>[0]),origin:env.APP_ORIGIN,database,modelContent:env.MODEL_CONTENT?new R2ModelContentPort(env.MODEL_CONTENT):undefined,modelUpload:env.MODEL_CONTENT?new R2ModelContentUploadPort(env.MODEL_CONTENT):undefined,
+    return await gateway(request,{testingSimulationAvailable:(principal,tenantId)=>managedTestingOwner(env.MANAGED_TESTING_JSON,tenantId,principal.userId),executionAvailability:{service:env.M3_SERVICE_ENABLED==='true',preview:env.M3_PREVIEW_ENABLED==='true',simulation:env.M4_SIMULATION_ENABLED==='true'},g4ComputeCounts:createGatewayG4ComputeServices(env),g4WindowSnapshot:createGatewayG4WindowServices(env as unknown as Parameters<typeof createGatewayG4WindowServices>[0]),origin:env.APP_ORIGIN,database,...(env.PRIVATE_BETA_CAPACITY?{privateBeta:{snapshot:()=>env.PRIVATE_BETA_CAPACITY!.getByName(PRIVATE_BETA_CAPACITY_ACTOR).snapshot(),pause:(actor:import('../turn/protocol.ts').TurnActor)=>env.PRIVATE_BETA_CAPACITY!.getByName(PRIVATE_BETA_CAPACITY_ACTOR).pause(actor),resume:(actor:import('../turn/protocol.ts').TurnActor)=>env.PRIVATE_BETA_CAPACITY!.getByName(PRIVATE_BETA_CAPACITY_ACTOR).resume(actor)}}:{}),modelContent:env.MODEL_CONTENT?new R2ModelContentPort(env.MODEL_CONTENT):undefined,modelUpload:env.MODEL_CONTENT?new R2ModelContentUploadPort(env.MODEL_CONTENT):undefined,
       admitProject:async(principal,tenantId,key,body)=>{
         if(piDeveloperOwner(env.PI_DEVELOPER_POLICY_JSON,tenantId,principal.userId))return null;
         if(managedTestingOwner(env.MANAGED_TESTING_JSON,tenantId,principal.userId))return null;

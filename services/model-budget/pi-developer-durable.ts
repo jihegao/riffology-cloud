@@ -1,3 +1,6 @@
+import {privateBetaPolicy,authorizePrivateBeta,PRIVATE_BETA_CAPACITY_ACTOR} from './private-beta-policy.ts';
+import type {PrivateBetaCapacity} from './private-beta-capacity.ts';
+import type {TurnActor} from '../turn/protocol.ts';
 import {DurableObject} from 'cloudflare:workers';
 import {SqlTenantModelBudget, modelBudgetTenantName, modelBudgetTurnKey, type ModelCallRequest, type ModelCallReference, type ModelCallTerminal, type ModelReleaseProof, type ModelCallRecord, type ModelExecutionIsolationManifest} from './core.ts';
 import {piDeveloperPolicy, piDeveloperOwner, type PiDeveloperPolicyV2} from './pi-developer-policy.ts';
@@ -7,6 +10,9 @@ import {turnDigest,type TurnScope} from '../turn/protocol.ts';
 
 type HistoricalLedger = {getByName(name:string):{assertExecutionIsolated(tenantId:string,manifest:ModelExecutionIsolationManifest):Promise<unknown>}};
 interface Env {
+  PRIVATE_BETA_POLICY_JSON?:string;
+  PRIVATE_BETA_CAPACITY?:DurableObjectNamespace<PrivateBetaCapacity>;
+  CATALOG:D1Database;
   G4_CONTROLLED_WINDOW_JSON?:string;
   G5_CONTROLLED_WINDOW_JSON?:string;
   TENANT_MODEL_BUDGET?:HistoricalLedger;
@@ -16,7 +22,7 @@ interface Env {
   PRODUCTION_MODEL_PROFILE_JSON:string;
   M2_MODEL_BUDGET_POLICY_VERSION:string;
 }
-type Quote = {policyId:string; profileSha256:string; profile:ProductionProfile; reservedNanodollars:number};
+type Quote = {privateBeta?:true;policyId:string; profileSha256:string; profile:ProductionProfile; reservedNanodollars:number};
 
 /** Separate, bounded acceptance accounting. Actor identity does not depend on
  * policy/period IDs, so policy changes cannot erase unknown execution. */
@@ -71,14 +77,48 @@ export class PiDeveloperBudget extends DurableObject<Env> {
     }
   }
 
+  #betaControl(){const stub=this.env.PRIVATE_BETA_CAPACITY?.getByName(PRIVATE_BETA_CAPACITY_ACTOR);if(!stub)throw Error('private-beta-unconfigured');return stub;}
+  async #betaQuiet(scope:TurnScope){
+    const p=privateBetaPolicy(this.env.PRIVATE_BETA_POLICY_JSON);if(!p)throw Error('private-beta-unconfigured');
+    if(!p.enabled||Date.now()<p.startsAt||Date.now()>=p.reviewAt)throw Error('private-beta-paused');
+    if(!this.env.TENANT_MODEL_BUDGET||!this.env.G5_TOKEN_BUDGET)throw Error('pi-developer-historical-ledger-unavailable');
+    const entry=p.historicalIsolation.find(h=>h.tenantId===scope.tenantId);
+    for(const ledger of ['legacy','g5'] as const){
+      const manifest=entry?.manifests.find(m=>m.ledger===ledger)??{schemaVersion:1 as const,ledger,proofs:[]};
+      const namespace=ledger==='legacy'?this.env.TENANT_MODEL_BUDGET:this.env.G5_TOKEN_BUDGET;
+      await namespace.getByName(modelBudgetTenantName(scope.tenantId)).assertExecutionIsolated(scope.tenantId,manifest);
+    }
+    await this.#core(scope.tenantId).assertExecutionQuiet();
+  }
+  async #betaReserve(tenantId:string,request:ModelCallRequest){
+    if(request.identity.scope.tenantId!==tenantId)throw Error('private-beta-admission-denied');
+    await authorizePrivateBeta(this.env.CATALOG,request.identity.scope,request.actor);
+    const core=this.#core(tenantId),prior=await core.lookup(request.identity,request.callId);
+    if(!prior)await this.#betaQuiet(request.identity.scope);
+    await this.#betaControl().reserve(request);
+    const p=privateBetaPolicy(this.env.PRIVATE_BETA_POLICY_JSON)!;
+    const profile=productionProfile(JSON.parse(this.env.PRODUCTION_MODEL_PROFILE_JSON)),profileSha256=await profileDigest(profile);
+    if(profileSha256!==p.profileSha256)throw Error('private-beta-profile-denied');
+    const quote:Quote={privateBeta:true,policyId:p.policyId,profileSha256,profile,reservedNanodollars:conservativeCost(profile,request.inputTokenUpperBound,request.maxOutputTokens)};
+    const result=await core.reserve(request);
+    const existing=this.ctx.storage.sql.exec<{document:string}>('SELECT document FROM pi_developer_usage WHERE call_key=?',result.record.callKey).toArray()[0];
+    if(existing&&existing.document!==JSON.stringify(quote))throw Error('pi-developer-policy-conflict');
+    this.ctx.storage.sql.exec('INSERT OR IGNORE INTO pi_developer_usage VALUES(?,?)',result.record.callKey,JSON.stringify(quote));await this.ctx.storage.sync();return result;
+  }
+  async #observeBeta(core:SqlTenantModelBudget,reference:ModelCallReference){
+    const record=await core.lookup(reference.identity,reference.callId);
+    if(record&&this.#quote(record).privateBeta)await this.#betaControl().observeCall(record);
+  }
   async assertQuiet(scope:TurnScope,userId:string) {
+    if(this.env.PRIVATE_BETA_POLICY_JSON!==undefined)return this.#betaQuiet(scope);
     const core=this.#core(scope.tenantId),policy=this.#policy(scope,userId);
     await this.#configured(policy);
     await this.#assertHistoricalIsolation(policy);
     await core.assertExecutionQuiet();
   }
 
-  async admitTurn(scope:TurnScope,userId:string,sessionId:string,requestKey:string) {
+  async admitTurn(scope:TurnScope,userId:string,sessionId:string,requestKey:string,actor?:TurnActor) {
+    if(this.env.PRIVATE_BETA_POLICY_JSON!==undefined){if(!actor||actor.userId!==userId)throw Error('private-beta-admission-denied');await this.#betaQuiet(scope);return this.#betaControl().admitTurn({scope,actor,sessionId,requestKey});}
     const next=this.#reserveTail.then(async()=>{
       await this.assertQuiet(scope,userId);const policy=this.#policy(scope,userId);
       const document={schemaVersion:1 as const,policyId:policy.policyId,scope,sessionId,requestKey},key=await turnDigest({schemaVersion:1,purpose:'pi-developer-human-turn',scope,sessionId,requestKey});
@@ -97,6 +137,7 @@ export class PiDeveloperBudget extends DurableObject<Env> {
     return next;
   }
   async #reserve(tenantId:string,request:ModelCallRequest) {
+    if(this.env.PRIVATE_BETA_POLICY_JSON!==undefined)return this.#betaReserve(tenantId,request);
     if(request.identity.scope.tenantId!==tenantId)throw Error('pi-developer-admission-denied');
     const policy=this.#policy(request.identity.scope,request.actor.userId),core=this.#core(tenantId),prior=await core.lookup(request.identity,request.callId),now=Date.now(),configured=await this.#configured(policy);
     if(request.deadlineAt>policy.expiresAt||request.deadlineAt-now>policy.maxCallDurationMs)throw Error('pi-developer-packet-limit');
@@ -134,15 +175,27 @@ export class PiDeveloperBudget extends DurableObject<Env> {
   async dispatch(tenantId:string,reference:ModelCallReference) {
     const core=this.#core(tenantId),record=await core.lookup(reference.identity,reference.callId);
     if(!record)throw Error('pi-developer-admission-denied');
+    if(this.#quote(record).privateBeta){
+      await authorizePrivateBeta(this.env.CATALOG,record.identity.scope,record.actor);
+      const row=this.ctx.storage.sql.exec<{request_json:string}>('SELECT request_json FROM model_calls WHERE call_key=?',record.callKey).one();
+      await this.#betaControl().checkDispatch(JSON.parse(row.request_json));
+      const result=await core.dispatch(reference);if(!result.authorized)await this.#observeBeta(core,reference);return result;
+    }
     const policy=this.#policy(record.identity.scope,record.actor.userId),configured=await this.#configured(policy),quote=this.#quote(record);
     await this.#assertHistoricalIsolation(policy);
     if(quote.policyId!==policy.policyId||quote.profileSha256!==configured.profileSha256)throw Error('pi-developer-profile-denied');
     return core.dispatch(reference);
   }
-  async markUnknown(tenantId:string,reference:ModelCallReference) {return this.#core(tenantId).markUnknown(reference);}
-  async finish(tenantId:string,reference:ModelCallReference,terminal:ModelCallTerminal) {return this.#core(tenantId).finish(reference,terminal);}
-  async releaseUndispatched(tenantId:string,reference:ModelCallReference,proof:ModelReleaseProof) {return this.#core(tenantId).releaseUndispatched(reference,proof);}
+  async markUnknown(tenantId:string,reference:ModelCallReference) {const core=this.#core(tenantId),result=await core.markUnknown(reference);await this.#observeBeta(core,reference);return result;}
+  async finish(tenantId:string,reference:ModelCallReference,terminal:ModelCallTerminal) {const core=this.#core(tenantId),result=await core.finish(reference,terminal);await this.#observeBeta(core,reference);return result;}
+  async releaseUndispatched(tenantId:string,reference:ModelCallReference,proof:ModelReleaseProof) {const core=this.#core(tenantId),result=await core.releaseUndispatched(reference,proof);await this.#observeBeta(core,reference);return result;}
 
+  /** Read-only original-call authority for capacity reconciliation after ACK loss. */
+  async privateBetaCall(identity:TurnRuntimeIdentity,callId:string){
+    const record=await this.#core(identity.scope.tenantId).lookup(identity,callId);
+    if(record&&!this.#quote(record).privateBeta)throw Error('private-beta-identity-conflict');
+    return record;
+  }
   async snapshot(tenantId:string,identity:TurnRuntimeIdentity) {
     const snapshot=await this.#core(tenantId).snapshot(identity);
     const policy=piDeveloperPolicy(this.env.PI_DEVELOPER_POLICY_JSON),quotes=this.ctx.storage.sql.exec<{call_key:string;document:string}>('SELECT call_key,document FROM pi_developer_usage').toArray().map(row=>({callKey:row.call_key,quote:this.#parseQuote(row.document)}));
