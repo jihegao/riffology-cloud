@@ -95,10 +95,14 @@ export type ModelExecutionBlocker = {
   schemaVersion: 1;
   callKey: string;
   turnKey: string;
+  provider: string;
+  model: string;
   status: ModelCallStatus;
   reconciliation: ModelCallRecord['reconciliation'];
   acceptedAt: number;
+  deadlineAt: number;
   dispatchedAt: number | null;
+  unknownAt: number | null;
   finishedAt: number | null;
   terminalOutcome: ModelCallOutcome | null;
   terminalErrorCode: string | null;
@@ -577,10 +581,14 @@ export class SqlTenantModelBudget {
       schemaVersion: 1 as const,
       callKey: record.callKey,
       turnKey: record.turnKey,
+      provider: record.provider,
+      model: record.model,
       status: record.status,
       reconciliation: record.reconciliation,
       acceptedAt: record.acceptedAt,
+      deadlineAt: record.deadlineAt,
       dispatchedAt: record.dispatchedAt,
+      unknownAt: record.unknownAt,
       finishedAt: record.finishedAt,
       terminalOutcome: record.terminal?.outcome ?? null,
       terminalErrorCode: record.terminal?.errorCode ?? null,

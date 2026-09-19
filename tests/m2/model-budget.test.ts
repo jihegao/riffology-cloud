@@ -307,8 +307,8 @@ test('developer blocker inventory is read-only and redacts identities and extern
  assert.deepEqual(after,before);
  assert.equal(inventory.total,1);assert.equal(inventory.confirmedEnded,0);assert.equal(inventory.blocked,1);
  assert.deepEqual(inventory.blockers,[{
-  schemaVersion:1,callKey:before.records[0]!.callKey,turnKey:before.records[0]!.turnKey,status:'failed',reconciliation:'pending',
-  acceptedAt:before.records[0]!.acceptedAt,dispatchedAt:before.records[0]!.dispatchedAt,finishedAt:before.records[0]!.finishedAt,
+  schemaVersion:1,callKey:before.records[0]!.callKey,turnKey:before.records[0]!.turnKey,provider:'provider-a',model:'model-a',status:'failed',reconciliation:'pending',
+  acceptedAt:before.records[0]!.acceptedAt,deadlineAt:before.records[0]!.deadlineAt,dispatchedAt:before.records[0]!.dispatchedAt,unknownAt:before.records[0]!.unknownAt,finishedAt:before.records[0]!.finishedAt,
   terminalOutcome:'failed',terminalErrorCode:'provider-failure',providerRequestIdPresent:true,usageKind:'unknown',
  }]);
  const serialized=JSON.stringify(inventory);
