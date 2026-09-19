@@ -314,3 +314,20 @@ test('developer blocker inventory is read-only and redacts identities and extern
  const serialized=JSON.stringify(inventory);
  for(const secret of ['provider-secret','request-a','session-a','dispatch-a','workspace-a'])assert.equal(serialized.includes(secret),false);
 });
+
+test('private operator correlation returns only exact unresolved request identifiers',async t=>{
+ const f=fixture(t),host=f.host(),call=await dispatch(host);
+ await host.finish(call.reference,{outcome:'failed',errorCode:'provider-failure',providerRequestId:'provider-secret',usage:{kind:'unknown',observedAt:1000}});
+ const before=await host.snapshot(identity()),key=before.records[0]!.callKey;
+ assert.deepEqual(await host.executionBlockerCorrelation(key),{schemaVersion:1,callKey:key,requestId:'request-a',providerRequestId:'provider-secret'});
+ assert.deepEqual(await host.snapshot(identity()),before);
+ await assert.rejects(host.executionBlockerCorrelation('f'.repeat(64)),/model-execution-blocker-absent/);
+ await assert.rejects(host.executionBlockerCorrelation('not-a-sha'),/invalid-turn-sha/);
+});
+
+test('private operator correlation rejects calls whose execution is confirmed ended',async t=>{
+ const f=fixture(t),host=f.host(),call=await dispatch(host);
+ await host.finish(call.reference,{outcome:'failed',errorCode:'rejected-auth',providerRequestId:'provider-secret',usage:{kind:'unknown',observedAt:1000}});
+ const key=(await host.snapshot(identity())).records[0]!.callKey;
+ await assert.rejects(host.executionBlockerCorrelation(key),/model-execution-blocker-ended/);
+});

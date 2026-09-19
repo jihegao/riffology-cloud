@@ -116,6 +116,12 @@ export type ModelExecutionBlockerInventory = {
   blocked: number;
   blockers: ModelExecutionBlocker[];
 };
+export type ModelExecutionBlockerCorrelation = {
+  schemaVersion: 1;
+  callKey: string;
+  requestId: string;
+  providerRequestId: string | null;
+};
 export type ModelBudgetStorage = Pick<DurableObjectStorage, 'sql' | 'transactionSync' | 'sync'>;
 
 type Row = Record<string, SqlStorageValue>;
@@ -596,6 +602,24 @@ export class SqlTenantModelBudget {
       usageKind: record.terminal?.usage.kind ?? null,
     }));
     return structuredClone({schemaVersion: 1 as const,total: records.length,confirmedEnded: records.length-blockers.length,blocked: blockers.length,blockers});
+  }
+
+  /** Private operator correlation for one exact unresolved blocker. This is
+   * intentionally separate from the redacted inventory and returns no
+   * identity, actor, payload, reservation, or token/accounting fields. */
+  async executionBlockerCorrelation(callKeyValue: unknown): Promise<ModelExecutionBlockerCorrelation> {
+    const key = sha(callKeyValue);
+    await this.#ready;
+    const row = this.#get(key);
+    if (!row) reject('model-execution-blocker-absent');
+    const record = await this.#verified(row);
+    if (this.#executionEnded(record)) reject('model-execution-blocker-ended');
+    return structuredClone({
+      schemaVersion: 1 as const,
+      callKey: record.callKey,
+      requestId: record.requestId,
+      providerRequestId: record.terminal?.providerRequestId ?? null,
+    });
   }
 
   async snapshot(identityValue: unknown): Promise<ModelBudgetSnapshot> {
