@@ -18,9 +18,9 @@ test('closed project admission explains the restriction instead of asking for a 
  assert.equal(f.calls.filter(c=>c.method==='POST').length,0);
 });
 const screenshotDir=process.env.WORKSPACE_LAYOUT_EVIDENCE_DIR?pathToFileURL(resolve(process.env.WORKSPACE_LAYOUT_EVIDENCE_DIR)+'/'):new URL('../../.local/workspace-layout-screenshots/',import.meta.url);
-async function fixture(t,{mismatched=false,unavailableLayoutStorage=false,activePolling=false,pagedServices=false,projectFlow=false,longTitle=false,legacyLayout=null}={}){
+async function fixture(t,{mismatched=false,unavailableLayoutStorage=false,activePolling=false,pagedServices=false,projectFlow=false,longTitle=false,legacyLayout=null,deferAuthentication=false,authenticationStatus=200}={}){
  const browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||'chrome'});t.after(()=>browser.close());const context=await browser.newContext({viewport:{width:1600,height:900}});t.after(()=>context.close());if(unavailableLayoutStorage)await context.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw new DOMException('Storage disabled','SecurityError');}}));if(legacyLayout)await context.addInitScript(value=>localStorage.setItem('riffology:workspace-layout:t:w',JSON.stringify(value)),legacyLayout);const page=await context.newPage(),errors=[],calls=[];page.setDefaultTimeout(8000);page.on('pageerror',e=>errors.push(e.message));t.after(()=>assert.deepEqual(errors,[]));
- let projectStatus=projectFlow?'absent':'ready',projectListError=false;await page.addInitScript(()=>{const now=Date.now;window.layoutClockOffset=0;Date.now=()=>now()+window.layoutClockOffset;});let revision='revision-a',failedPreview=false,holdFilter=null,held=[];
+ let projectStatus=projectFlow?'absent':'ready',projectListError=false,releaseAuthentication;const authenticationGate=deferAuthentication?new Promise(resolve=>{releaseAuthentication=resolve;}):null;await page.addInitScript(()=>{const now=Date.now;window.layoutClockOffset=0;Date.now=()=>now()+window.layoutClockOffset;});let revision='revision-a',failedPreview=false,holdFilter=null,held=[];
  const delayed=async(route,path,value)=>{const frozen=structuredClone(value);if(holdFilter?.(path,route.request().method()))await new Promise(resolve=>held.push(resolve));return json(route,frozen);};const sha=()=>revision==='revision-a'?'a'.repeat(64):'b'.repeat(64),version=()=>({revisionId:revision,filesSha256:sha(),specSha256:'c'.repeat(64)});
  const service=(id,rev)=>({runId:id,deliveryStatus:'delivered',runStatus:'running',stopRequestedAt:null,updatedAt:1,version:{revisionId:rev,filesSha256:rev==='revision-a'?'a'.repeat(64):'b'.repeat(64)}});
  let services=mismatched?[service('run-b','revision-b'),service('run-a','revision-a')]:[service('run-a','revision-a')];
@@ -34,7 +34,7 @@ async function fixture(t,{mismatched=false,unavailableLayoutStorage=false,active
   const req=route.request(),url=new URL(req.url()),path=url.pathname;if(url.origin===previewOrigin)return route.fulfill({contentType:'text/html',body:`<!doctype html><html lang="zh"><meta charset="utf-8"><body style="font:16px sans-serif;background:#f0f8f4;color:#254e3f;padding:28px"><small>LOCAL UI FIXTURE · ${current.runId}</small><h1>排队模型</h1><p>这是浏览器验收使用的受控页面，不是云端仿真证据。</p><div style="display:flex;gap:12px;margin-top:35px"><div style="height:100px;width:24%;background:#89b99e"></div><div style="height:70px;width:24%;background:#bedacb"></div><div style="height:40px;width:24%;background:#dcebe2"></div></div><script>parent.postMessage({type:'riffology-preview-ready',nonce:'${'a'.repeat(64)}'},'${origin}')</script></body></html>`});
   assert.equal(url.origin,origin);if(!path.startsWith('/api/')){const name=path==='/'?'index.html':path.slice(1);return route.fulfill({status:files[name]?200:404,contentType:name.endsWith('.js')?'application/javascript':name.endsWith('.css')?'text/css':'text/html',body:files[name]||''});}
   calls.push({path,method:req.method(),body:req.postData(),key:req.headers()['idempotency-key']});
-if(path==='/api/auth/get-session')return json(route,{user:{id:'u'}});if(path==='/api/me')return json(route,{execution:{service:true,preview:true,simulation:true},tenants:[{id:'t'}]});if(path==='/api/models')return json(route,{models:[]});if(path==='/api/tenants/t/projects'){const project={id:'p',title:longTitle?'很长的项目标题'.repeat(17):'排队与服务能力研究',status:projectStatus,workspace_id:'w'};if(req.method()==='POST'){projectStatus='provisioning';return json(route,{project:{...project,status:projectStatus}},202);}if(projectListError)return json(route,{error:'unrelated-list-error'},503);return json(route,{projects:projectStatus==='absent'?[]:[project]});}
+if(path==='/api/me'){if(authenticationGate)await authenticationGate;if(authenticationStatus!==200)return json(route,{error:'authentication_required'},authenticationStatus);return json(route,{execution:{service:true,preview:true,simulation:true},tenants:[{id:'t'}]});}if(path==='/api/models')return json(route,{models:[]});if(path==='/api/tenants/t/projects'){const project={id:'p',title:longTitle?'很长的项目标题'.repeat(17):'排队与服务能力研究',status:projectStatus,workspace_id:'w'};if(req.method()==='POST'){projectStatus='provisioning';return json(route,{project:{...project,status:projectStatus}},202);}if(projectListError)return json(route,{error:'unrelated-list-error'},503);return json(route,{projects:projectStatus==='absent'?[]:[project]});}
   if(path==='/api/workspaces/w')return json(route,{schemaVersion:3,activeTurnId:null,resourceWait:null,releaseHold:null,recoveryHold:null,sessions:{s:{id:'s',title:'排队研究',createdAt:1}},turns:{t:{id:'t',sessionId:'s',message:'建立一个排队模型，比较增加服务台后的等待时间。',status:'completed',saveStatus:'saved',createdAt:1}}});
   if(path==='/api/workspaces/w/browser-preview'&&req.method()==='GET')return json(route,{currentRevisionId:null,revisionId:null,build:null,stale:false,modelSpec:null,reasonCode:'preview-no-saved-revision',delivery:null});
   if(path==='/api/workspaces/w/events')return json(route,{events:[{sequence:1,turnId:'t',type:'assistant.message',payload:{text:'模型已经保存。可以先查看假设，再修改服务台数量，比较不同种子下的结果。'}}],nextSequence:2,hasMore:false,snapshotRequired:false});
@@ -48,9 +48,40 @@ if(path==='/api/auth/get-session')return json(route,{user:{id:'u'}});if(path==='
   if(path==='/api/workspaces/w/previews'){if(failedPreview){failedPreview=false;return json(route,{error:'preview-unavailable'},503);}if(req.method()==='POST'){const body=JSON.parse(req.postData());current={previewId:'preview-'+body.runId,runId:body.runId,expiresAt:Date.now()+3600000,revokedAt:null};available={...current,bootstrapUrl:previewOrigin+'/__riff/bootstrap'};return delayed(route,path,available);}return delayed(route,path,{current,available});}
   if(path.endsWith('/tickets'))return json(route,{ticket:'f'.repeat(64),expiresAt:Date.now()+10000});throw Error('unexpected API '+path);
  });
- await page.goto(origin+(projectFlow?'/':'/#/workspace/p'));if(projectFlow){await page.locator('#new-project').waitFor();return {page,calls,setStatus(value){projectStatus=value;},failList(value){projectListError=value;},async refresh(){await page.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));},async expire(){await page.evaluate(()=>window.layoutClockOffset=310000);}};}await page.locator('#message-input:not([disabled])').waitFor();await page.locator('#workspace-preview iframe').waitFor({state:'attached'});await page.waitForFunction(()=>document.querySelector('#workspace-comparison button')?.disabled===false&&document.querySelector('.simulation-form button[type=submit]')?.disabled===false);
+ await page.goto(origin+(projectFlow?'/':'/#/workspace/p'));if(deferAuthentication||authenticationStatus!==200)return {page,calls,releaseAuthentication(){releaseAuthentication?.();}};if(projectFlow){await page.locator('#new-project').waitFor();return {page,calls,setStatus(value){projectStatus=value;},failList(value){projectListError=value;},async refresh(){await page.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));},async expire(){await page.evaluate(()=>window.layoutClockOffset=310000);}};}await page.locator('#message-input:not([disabled])').waitFor();await page.locator('#workspace-preview iframe').waitFor({state:'attached'});await page.waitForFunction(()=>document.querySelector('#workspace-comparison button')?.disabled===false&&document.querySelector('.simulation-form button[type=submit]')?.disabled===false);
  return {page,calls,dropPreview(){current=null;available=null;},holdReads(filter){holdFilter=filter;return {count:()=>held.length,allowNew(){holdFilter=null;},release(){holdFilter=null;for(const resolve of held)resolve();held=[];}};},rejectResults(){experiments[0]={...experiments[0],status:'completed',evidenceRejection:{reason:'Rejected newest result'}};group={...group,status:'completed',progress:{...group.progress,active:0,completed:1,rejected:1},runs:[{...group.runs[0],status:'completed',evidenceRejection:{reason:'Rejected newest result'}}],summary:[{configurationId:'base',metrics:{wait:{count:0,missing:1,mean:null,baselineMean:null,delta:null}}}]};},setRevision(value){revision=value;},failPreview(){failedPreview=true;},services:()=>services,async shot(name){await mkdir(screenshotDir,{recursive:true});await page.screenshot({path:new URL(name+'.png',screenshotDir).pathname,fullPage:true});}};
 }
+
+test('authentication bootstrap stays neutral until authoritative /api/me resolves and restores a deep link',async t=>{
+ const f=await fixture(t,{deferAuthentication:true}),p=f.page;
+ assert.equal(await p.locator('#login').isVisible(),false);
+ assert.deepEqual(f.calls.map(call=>call.path),['/api/me']);
+ f.releaseAuthentication();
+ await p.locator('#message-input:not([disabled])').waitFor();
+ assert.equal(await p.locator('#workspace').isVisible(),true);
+ assert.equal(await p.locator('#login').isVisible(),false);
+ assert.equal(f.calls.some(call=>call.path==='/api/auth/get-session'),false);
+});
+
+test('an authoritative 401 exposes the login entry instead of a Workspace deep link',async t=>{
+ const f=await fixture(t,{authenticationStatus:401}),p=f.page;
+ await p.locator('#login').waitFor({state:'visible'});
+ assert.equal(await p.locator('#workspace').isVisible(),false);
+ assert.equal(await p.locator('#google').isVisible(),true);
+ assert.deepEqual(f.calls.map(call=>call.path),['/api/me']);
+});
+
+test('authenticated invitation state and transient bootstrap failures do not impersonate sign-out',async t=>{
+ const invited=await fixture(t,{authenticationStatus:404}),invitedPage=invited.page;
+ await invitedPage.locator('#invitation').waitFor({state:'visible'});
+ assert.equal(await invitedPage.locator('#login').isVisible(),false);
+ const unavailable=await fixture(t,{authenticationStatus:503}),unavailablePage=unavailable.page;
+ await unavailablePage.locator('#notice').waitFor({state:'visible'});
+ assert.equal(await unavailablePage.locator('#login').isVisible(),false);
+ assert.equal(await unavailablePage.locator('#app').isVisible(),false);
+ assert.equal(await unavailablePage.locator('#workspace').isVisible(),false);
+ assert.match(await unavailablePage.locator('#notice').innerText(),/服务暂不可用/);
+});
 
 test('actual Workspace keeps resizable accessible split, presentation preferences and same saved state across responsive reopen',async t=>{
  const f=await fixture(t,{longTitle:true}),p=f.page;await p.locator('.simulation-form input[name=servers]').waitFor();let bounds=await p.locator('.workspace-grid').boundingBox(),agent=await p.locator('#workspace-agent').boundingBox();assert.ok(Math.abs(agent.width/bounds.width-.35)<.03);assert.equal(await p.locator('#canvas-preview').isVisible(),true);assert.equal(await p.locator('.files-panel').isVisible(),false);assert.equal(f.calls.filter(c=>c.method==='POST'&&!c.path.endsWith('/tickets')).length,0);assert.equal(await p.locator('[data-workspace-depth]').count(),0);assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await f.shot('desktop-explore');

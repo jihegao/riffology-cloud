@@ -50,6 +50,7 @@ const notice = $('#notice');
 const dialog = $('#project-dialog');
 let tenant = null;
 let authenticated = false;
+let authenticationResolved = false;
 let viewGeneration = 0;
 let listGeneration = 0;
 let pollTimer = null;
@@ -274,7 +275,7 @@ function stopEventStream() {
 
 function accountView() {
   if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();}
-  $('#login').hidden = authenticated;
+  $('#login').hidden = !authenticationResolved || authenticated;
   const workspaceRoutePending = Boolean(workspaceProjectIdFromHash()) && !activeProject;
   $('#app').hidden = !tenant || Boolean(activeProject) || workspaceRoutePending;
   $('#workspace').hidden = !tenant || !activeProject;
@@ -755,15 +756,15 @@ async function load() {
   workspaceEvents = [];
   workspaceFiles = null;
   workspaceFilesError = '';
+  authenticated = false;
+  tenant = null;
+  authenticationResolved = false;
+  accountView();
   try {
-    const session = await api('/api/auth/get-session');
-    if (generation !== viewGeneration) return;
-    authenticated = Boolean(session?.user);
-    tenant = null;
-    accountView();
-    if (!authenticated) return;
     const user = await api('/api/me');
     if (generation !== viewGeneration) return;
+    authenticated = true;
+    authenticationResolved = true;
     executionAvailability={service:user.execution?.service===true,preview:user.execution?.preview===true,simulation:user.execution?.simulation===true};
     tenant = user.tenants[0] || null;
     accountView();
@@ -771,6 +772,15 @@ async function load() {
     if (tenant) { await Promise.all([renderProjects(), loadModels()]); }
   } catch (error) {
     if (generation !== viewGeneration) return;
+    if (error.status === 401) {
+      authenticated = false;
+      authenticationResolved = true;
+      tenant = null;
+    } else if (error.status === 404) {
+      authenticated = true;
+      authenticationResolved = true;
+      tenant = null;
+    }
     accountView();
     show(error.status === 404 && authenticated ? '输入邀请码，启用你的个人空间。' : error.message, error.status !== 404);
   }
