@@ -8,7 +8,7 @@ import {productionProfile, profileDigest, conservativeCost, type ProductionProfi
 import type {TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
 import {turnDigest,type TurnScope} from '../turn/protocol.ts';
 
-type HistoricalLedger = {getByName(name:string):{assertExecutionIsolated(tenantId:string,manifest:ModelExecutionIsolationManifest):Promise<unknown>}};
+type HistoricalLedger = {getByName(name:string):{assertExecutionIsolated(tenantId:string,manifest:ModelExecutionIsolationManifest):Promise<unknown>;assertExecutionQuiet(tenantId:string):Promise<unknown>}};
 interface Env {
   PRIVATE_BETA_POLICY_JSON?:string;
   PRIVATE_BETA_CAPACITY?:DurableObjectNamespace<PrivateBetaCapacity>;
@@ -86,7 +86,9 @@ export class PiDeveloperBudget extends DurableObject<Env> {
     for(const ledger of ['legacy','g5'] as const){
       const manifest=entry?.manifests.find(m=>m.ledger===ledger)??{schemaVersion:1 as const,ledger,proofs:[]};
       const namespace=ledger==='legacy'?this.env.TENANT_MODEL_BUDGET:this.env.G5_TOKEN_BUDGET;
-      await namespace.getByName(modelBudgetTenantName(scope.tenantId)).assertExecutionIsolated(scope.tenantId,manifest);
+      const ledgerActor=namespace.getByName(modelBudgetTenantName(scope.tenantId));
+      if(manifest.proofs.length)await ledgerActor.assertExecutionIsolated(scope.tenantId,manifest);
+      else await ledgerActor.assertExecutionQuiet(scope.tenantId);
     }
     await this.#core(scope.tenantId).assertExecutionQuiet();
   }
