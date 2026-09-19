@@ -1,3 +1,4 @@
+import {privateBetaCandidate} from '../model-budget/private-beta-policy.ts';
 import {piDeveloperOwner} from '../model-budget/pi-developer-policy.ts';
 import type {PiDeveloperBudget} from '../model-budget/pi-developer-durable.ts';
 import {workspaceAgentName} from '../workspace/protocol.ts';
@@ -37,6 +38,7 @@ export type G5ProxyGuard={
 };
 export type G5ProviderFailureEvidence={schemaVersion:1;stage:'admission'|'provider-dispatch'|'budget-finish';errorCode:string;observedAt:number};
 export interface ModelProxyHttpEnv {
+ PRIVATE_BETA_POLICY_JSON?:string;
  PI_DEVELOPER_POLICY_JSON?:string;
  PI_DEVELOPER_BUDGET?:{getByName(name:string):PiDeveloperBudget};
  G5_CONTROLLED_WINDOW_JSON?:string;
@@ -196,7 +198,7 @@ export async function handleModelProxyRequest(request: Request, env: ModelProxyH
   const tenantId = claims.identity.scope.tenantId;
   let guard:G5ProxyGuard|null=null,route:Awaited<ReturnType<G5ProxyGuard['lookupTrustedTurnRoute']>>=null;
   let developer=false;
-  if(piDeveloperOwner(env.PI_DEVELOPER_POLICY_JSON,tenantId,claims.actor.userId,claims.identity.scope.projectId)){
+  if(env.PRIVATE_BETA_POLICY_JSON!==undefined?privateBetaCandidate(env.PRIVATE_BETA_POLICY_JSON):piDeveloperOwner(env.PI_DEVELOPER_POLICY_JSON,tenantId,claims.actor.userId,claims.identity.scope.projectId)){
     try{developer=await env.WORKSPACE_AGENT?.getByName(workspaceAgentName(tenantId,claims.identity.scope.workspaceId)).piDeveloperTurnAuthorization?.({identity:claims.identity,actor:claims.actor})===true;}catch{return denied();}
   }
   if(developer&&!env.PI_DEVELOPER_BUDGET)return denied();

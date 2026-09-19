@@ -39,6 +39,7 @@ export interface GatewayServices {
   publicationArtifacts?:PublicationArtifacts;
   researchExports?:GatewayResearchExports;
   simulations?:GatewaySimulations;
+  privateBeta?:{snapshot():Promise<unknown>;pause(actor:TurnActor):Promise<unknown>;resume(actor:TurnActor):Promise<unknown>};
   origin:string;
   database:Database;
   modelContent?:ModelContentPort;
@@ -56,7 +57,7 @@ export interface GatewayServices {
     submit(scope:TurnScope,actor:TurnActor,sessionId:string,key:string,body:{message:unknown}):Promise<unknown>;
     cancel(scope:TurnScope,actor:TurnActor,turnId:string):Promise<unknown>;
     replay(scope:TurnScope,afterSequence:number,limit:number):Promise<unknown>;
-    snapshot(scope:TurnScope):Promise<unknown>;
+    snapshot(scope:TurnScope,actor?:TurnActor):Promise<unknown>;
     files(scope:TurnScope):Promise<unknown>;
     diff(scope:TurnScope):Promise<unknown>;
     artifact(scope:TurnScope,artifactId:string):Promise<unknown>;
@@ -76,6 +77,7 @@ async function turnCall<T>(operation:()=>Promise<T>):Promise<T>{
   try{return await operation();}catch(error){const code=error instanceof Error?error.message:'';
     if(code.includes('idempotency-conflict'))throw new CatalogError('idempotency_conflict');
     if(['pi-developer-execution-unconfirmed','pi-developer-execution-isolation-unconfirmed','pi-developer-historical-execution-unconfirmed','pi-developer-historical-g5-denied','pi-developer-admission-denied','pi-developer-budget-unavailable','pi-developer-historical-ledger-unavailable','pi-developer-packet-limit','pi-developer-policy-conflict','pi-developer-usage-missing','pi-developer-usage-invalid'].includes(code))throw new HttpError(code,409);
+    if(['private-beta-paused','private-beta-user-busy','private-beta-capacity-full','private-beta-budget-limit','private-beta-admission-denied','private-beta-policy-conflict','private-beta-turn-denied','private-beta-time-limit','private-beta-unconfigured','private-beta-release-unconfirmed'].includes(code))throw new HttpError(code,409);
     if(code==='workspace-recovery-hold')throw new HttpError(code,409);
     if(new Set(['managed-execution-unknown','managed-usage-unknown','managed-original-unresolved','managed-cleanup-unconfirmed','managed-input-in-flight','managed-session-base-unavailable','managed-session-limit-or-cleanup-pending','managed-admission-denied','managed-policy-immutable','managed-route-existing-turn-history','managed-window-expired','managed-turn-limit','managed-observed-cost-limit','managed-reservation-limit','managed-observed-cost-exceeds-hold','managed-observation-failed']).has(code))throw new HttpError(code,409);
     if(code.includes('not-found'))throw new CatalogError('not_found');
@@ -151,6 +153,17 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     if(url.pathname==='/api/models'&&request.method==='GET')return json({models:(await models.published()).map(publicModel)});
     const modelDetail=/^\/api\/models\/([A-Za-z0-9._-]{1,128})\/versions\/([A-Za-z0-9._-]{1,64})$/.exec(url.pathname);
     if(modelDetail&&request.method==='GET')return json(publicModel(await models.getPublished(modelDetail[1],modelDetail[2])));
+    if(url.pathname==='/api/admin/private-beta'){
+      await admin.require(principal);
+      if(url.search)throw new CatalogError('invalid_input');
+      if(!services.privateBeta)throw new HttpError('private-beta-unconfigured',503);
+      if(request.method==='GET')return json(await services.privateBeta.snapshot());
+      if(request.method!=='POST')throw new CatalogError('invalid_input');
+      const body=bodyOnly(await readJson(request),'action');
+      if(body.action!=='pause'&&body.action!=='resume')throw new CatalogError('invalid_input');
+      const result=await turnCall(()=>body.action==='pause'?services.privateBeta!.pause(principal):services.privateBeta!.resume(principal));
+      return json(result);
+    }
     if(url.pathname==='/api/admin/overview'&&request.method==='GET')return json(await admin.overview(principal));
     if(url.pathname==='/api/admin/tenants'&&request.method==='GET')return json({tenants:await admin.tenants(principal)});
     if(url.pathname==='/api/admin/invitations'&&request.method==='GET')return json({invitations:await admin.invitations(principal)});
@@ -350,7 +363,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       if(!services.turns)throw Error('turn-service-not-configured');
       const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),turnScope=await catalog.workspace(principal,turnMatch[1]);
       const turnActor={userId:principal.userId,authVersion:principal.authVersion};
-      if(workspace&&request.method==='GET'&&url.search==='')return g5Read(request,services,turnScope,turnActor,json(await turnCall(()=>services.turns!.snapshot(turnScope))));
+      if(workspace&&request.method==='GET'&&url.search==='')return g5Read(request,services,turnScope,turnActor,json(await turnCall(()=>services.turns!.snapshot(turnScope,turnActor))));
       if(files&&request.method==='GET'&&url.search==='')return g5Read(request,services,turnScope,turnActor,json(await turnCall(()=>services.turns!.files(turnScope))));
       if(diff&&request.method==='GET'&&url.search==='')return json(await turnCall(()=>services.turns!.diff(turnScope)));
       if(artifact&&request.method==='GET'&&url.search==='')return await artifactContent(await turnCall(()=>services.turns!.artifact(turnScope,artifact[2])));

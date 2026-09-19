@@ -159,6 +159,28 @@ async function uploadModelContent(item, input) {
   finally { input.value = ''; input.disabled = false; }
 }
 
+async function refreshPrivateBeta() {
+  const status=$('#private-beta-status');if(!status)return;
+  try {
+    const state=await api('/api/admin/private-beta');
+    const cost=(state.usage||[]).reduce((sum,row)=>sum+Number(row.reservedNanodollars||0),0)/1e9;
+    const latest=state.alerts?.[0];
+    status.textContent=`${state.enabled&&!state.paused?'开放':'暂停'} · 占用 ${state.active}/${state.limits.maxActiveTurns} · 隔离 ${state.quarantined} · 累计保守暴露 $${cost.toFixed(2)} / $${(state.limits.maxNanodollarsTotal/1e9).toFixed(2)}${latest?' · 告警：'+latest.code:''}`;
+    $('#private-beta-pause').disabled=state.paused;
+    $('#private-beta-resume').disabled=!state.paused||state.active>0;
+  } catch {
+    status.textContent='内测容量状态暂不可用，不能据此判断任务已停止或资源已释放。';
+    $('#private-beta-resume').disabled=true;
+  }
+}
+for(const action of ['pause','resume']) {
+  const button=$('#private-beta-'+action);if(button)button.onclick=async()=>{
+    button.disabled=true;
+    try{await api('/api/admin/private-beta',{method:'POST',body:JSON.stringify({action})});await refreshPrivateBeta();}
+    catch(error){show(error.code==='private-beta-release-unconfirmed'?'仍有任务或资源尚未确认释放，不能恢复。':error.message,true);button.disabled=false;}
+  };
+}
+
 async function refresh() {
   if (!operator || loading) return;
   const generation = viewGeneration;
@@ -168,7 +190,7 @@ async function refresh() {
       api('/api/admin/overview'), api('/api/admin/tenants'), api('/api/admin/invitations'), api('/api/admin/audit'), api('/api/admin/models'),
     ]);
     if (generation !== viewGeneration) return;
-    renderOverview(overview); renderTenants(tenants.tenants); renderInvitations(invitations.invitations); renderAudit(audit.events); renderModels(models.models || []); show('');
+    renderOverview(overview); renderTenants(tenants.tenants); renderInvitations(invitations.invitations); renderAudit(audit.events); renderModels(models.models || []); show(''); await refreshPrivateBeta();
   } catch (error) {
     if (generation !== viewGeneration) return;
     if (error.status === 401 || error.status === 404) {

@@ -218,6 +218,15 @@ async function loadModels() {
 
 function managedBlockMessage(code) {
   const messages = {
+    'private-beta-paused': '内测容量已暂停；项目和保存的模型仍可访问，请等待管理员恢复。',
+    'private-beta-user-busy': '你在另一个项目中仍有任务执行或等待释放。请等该任务结束后再发送。',
+    'private-beta-capacity-full': '内测运行名额暂时已满，请等待现有任务结束。',
+    'private-beta-budget-limit': '已达到内测调用或费用上限，或存在待核对费用。请联系管理员查看额度状态；重复发送不会解除限制。',
+    'private-beta-admission-denied': '当前账号或项目不在有效内测邀请范围内。',
+    'private-beta-policy-conflict': '内测策略与已冻结的额度记录不一致，已暂停执行。',
+    'private-beta-time-limit': '任务已达到内测执行时限，请保留原任务供核对。',
+    'private-beta-turn-denied': '当前任务已暂停或隔离，不能继续执行，请联系管理员核对原任务。',
+    'private-beta-unconfigured': '内测容量配置尚未就绪。',
     'pi-developer-execution-unconfirmed': '账号存在执行结果尚未确认的模型调用。请停止重试并核对原任务；新建项目不能绕过此状态。',
     'pi-developer-execution-isolation-unconfirmed': '历史任务尚未完成可靠隔离。请停止重试并核对原任务；费用待核对本身不会解除或制造隔离证明。',
     'pi-developer-historical-execution-unconfirmed': '历史任务的执行结果尚未确认，请先核对原任务。',

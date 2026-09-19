@@ -168,16 +168,16 @@ test('fixed supplementary targets use non-Cloudflare DNS and a non-DNS TCP port'
 });
 
 test('an uncooperative HTTP transport is cancelled at the fixed item deadline and retained as unknown', { timeout: 6500 }, async t => {
-  const input = await fixture(t); let aborted = false, attempts = 0;
+  const input = await fixture(t); let aborted = false, attempts = 0, pendingSignal;
   const start = Date.now();
   const output = await runEgressProbe(input, { transport: request => {
     if (request.url.endsWith('/probe/go-live-g0-20260906/status')) {
-      attempts++; request.signal.addEventListener('abort', () => { aborted = true; }, { once: true });
+      attempts++; pendingSignal = request.signal; pendingSignal.addEventListener('abort', () => { aborted = true; }, { once: true });
       return new Promise(() => {});
     }
     return Promise.resolve(deny());
   }, exec: successExec });
-  assert.ok(Date.now() - start < 5500); assert.equal(aborted, true); assert.equal(attempts, 1);
+  assert.ok(Date.now() - start < 5500); assert.equal(pendingSignal.aborted, true); assert.equal(aborted, true); assert.equal(attempts, 1);
   assert.equal(output.rows.find(row => row.id === 'trusted-management').category, 'timeout-unconfirmed');
   assert.equal(output.requiredHttpBoundaryPassed, false); assert.equal(output.passed, false); assert.equal(output.cleanupConfirmed, true);
 });

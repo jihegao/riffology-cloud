@@ -1,3 +1,5 @@
+import {betaPolicy} from './private-beta-fixture.ts';
+import {profile} from './production-profile-fixture.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,readFile,rm} from 'node:fs/promises';
@@ -8,7 +10,8 @@ import {Miniflare} from 'miniflare';
 
 // Actual WorkspaceAgent, durable journal and D1 authorization. Readiness and
 // provider/quota responses are explicit fixtures; this test sends no model input.
-test('Pi developer Workspace preserves markers across restart, serializes admission and rejects other actors',{timeout:45000},async()=>{
+for(const beta of [false,true])test((beta?'Private Beta':'Pi developer')+' Workspace preserves markers across restart, serializes admission and rejects other actors',{timeout:45000},async()=>{
+ const standing=await betaPolicy();
  const scope={tenantId:'tenant',projectId:'project',workspaceId:'workspace',workspaceGeneration:1},actor={userId:'owner',authVersion:1};
  const policy={schemaVersion:1,policyId:'issue77-production-v1',scope,userId:'owner',enabled:true,syntheticOnly:true,maxTurns:6,maxSessions:2,observedStopUsd:5,maxDurationMs:7200000,maxTurnObservationMs:300000,maxSimulationRuns:12};
  const entry=`
@@ -29,15 +32,17 @@ test('Pi developer Workspace preserves markers across restart, serializes admiss
  }
  export class Quota extends DurableObject{async snapshot(){return {capacity:2,occupied:1,available:1,unknown:1,configuredPolicyMatches:true,leases:[{status:'unknown',projectId:'private-other-project',operationId:'private-operation'}]};}}
  export class Artifacts extends DurableObject{}
- export class Developer extends DurableObject {async assertQuiet(){}async admitTurn(){}}
+ ${beta?"export {PiDeveloperBudget as Developer} from './services/model-budget/pi-developer-durable.ts';":'export class Developer extends DurableObject {async assertQuiet(){}async admitTurn(){}}'}
+ export {PrivateBetaCapacity} from './services/model-budget/private-beta-capacity.ts';
+ export class Historical extends DurableObject {async assertExecutionIsolated(){return {};}}
  export class Runtime extends DurableObject{}
  export class Capacity extends DurableObject{}
  export default {async fetch(request,env){const {method,...input}=await request.json();try{const stub=env.WORKSPACE_AGENT.getByName(workspaceAgentName(input.scope.tenantId,input.scope.workspaceId));let value;if(method==='stop')value=await env.MANAGED_TURN_RUNTIME.getByName('managed-product-v1:tenant:project').stop();else if(method==='seed')value=await stub.seed(input.scope);else if(method==='seedRuns')value=await stub.seedRuns(input.scope,input.actor);else value=await stub[method](input);return Response.json({ok:true,value});}catch(e){return Response.json({ok:false,error:e.message});}}};`;
  const directory=await mkdtemp(join(tmpdir(),'managed-workspace-')),workerName='managed-workspace';let mf;
  try{
  const bundled=await build({stdin:{contents:entry,sourcefile:'managed-workspace.ts',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'neutral',target:'es2024',external:['cloudflare:workers'],logLevel:'silent'});
- const classes={WORKSPACE_AGENT:'Workspace',MANAGED_TURN_RUNTIME:'Managed',TENANT_QUOTA:'Quota',TOOL_ARTIFACT_STORE:'Artifacts',PI_DEVELOPER_BUDGET:'Developer',PRODUCT_TURN_RUNTIME:'Runtime',TRUSTED_PI_CAPACITY:'Capacity'};
- const options={host:'127.0.0.1',port:0,inspectorPort:0,cf:{},resourcePersistencePath:directory,telemetry:{enabled:false},logRequests:false,workers:[{config:{type:'worker',name:workerName,compatibilityDate:'2026-09-06',manifest:{mainModule:'worker.mjs',modules:{'worker.mjs':{type:'esm',contents:bundled.outputFiles[0].text}}},env:{CATALOG:{type:'d1',id:'catalog',name:'catalog'},M2_TURNS_ENABLED:{type:'text',value:'true'},G5_CONTROLLED_WINDOW_JSON:{type:'text',value:'{}'},PI_DEVELOPER_POLICY_JSON:{type:'text',value:JSON.stringify({schemaVersion:1,policyId:'developer-v1',tenantId:scope.tenantId,userId:actor.userId,enabled:true,billingMode:'observe'})},MANAGED_TESTING_JSON:{type:'text',value:JSON.stringify({schemaVersion:2,policyId:'owner-online-testing',tenantId:scope.tenantId,userId:actor.userId,enabled:true})},...Object.fromEntries(Object.entries(classes).map(([key,exportName])=>[key,{type:'durable-object',worker:workerName,exportName}]))},exports:Object.fromEntries(Object.values(classes).map(name=>[name,{type:'durable-object',storage:'sqlite'}]))},dev:{unsafeRegisterWorker:false,outboundService:{type:'fetcher',handler:()=>new Response('disabled',{status:403})}}}]};mf=new Miniflare(options);await mf.ready;
+ const classes={PRIVATE_BETA_CAPACITY:'PrivateBetaCapacity',TENANT_MODEL_BUDGET:'Historical',G5_TOKEN_BUDGET:'Historical',WORKSPACE_AGENT:'Workspace',MANAGED_TURN_RUNTIME:'Managed',TENANT_QUOTA:'Quota',TOOL_ARTIFACT_STORE:'Artifacts',PI_DEVELOPER_BUDGET:'Developer',PRODUCT_TURN_RUNTIME:'Runtime',TRUSTED_PI_CAPACITY:'Capacity'};
+ const options={host:'127.0.0.1',port:0,inspectorPort:0,cf:{},resourcePersistencePath:directory,telemetry:{enabled:false},logRequests:false,workers:[{config:{type:'worker',name:workerName,compatibilityDate:'2026-09-06',manifest:{mainModule:'worker.mjs',modules:{'worker.mjs':{type:'esm',contents:bundled.outputFiles[0].text}}},env:{...(beta?{PRIVATE_BETA_POLICY_JSON:{type:'text',value:JSON.stringify(standing)},PRODUCTION_MODEL_PROFILE_JSON:{type:'text',value:JSON.stringify(profile)},M2_MODEL_BUDGET_POLICY_VERSION:{type:'text',value:'beta-token-v1'}}:{}),CATALOG:{type:'d1',id:'catalog',name:'catalog'},M2_TURNS_ENABLED:{type:'text',value:'true'},G5_CONTROLLED_WINDOW_JSON:{type:'text',value:'{}'},PI_DEVELOPER_POLICY_JSON:{type:'text',value:JSON.stringify({schemaVersion:1,policyId:'developer-v1',tenantId:scope.tenantId,userId:actor.userId,enabled:true,billingMode:'observe'})},MANAGED_TESTING_JSON:{type:'text',value:JSON.stringify({schemaVersion:2,policyId:'owner-online-testing',tenantId:scope.tenantId,userId:actor.userId,enabled:true})},...Object.fromEntries(Object.entries(classes).map(([key,exportName])=>[key,{type:'durable-object',worker:workerName,exportName}]))},exports:Object.fromEntries(Object.values(classes).map(name=>[name,{type:'durable-object',storage:'sqlite'}]))},dev:{unsafeRegisterWorker:false,outboundService:{type:'fetcher',handler:()=>new Response('disabled',{status:403})}}}]};mf=new Miniflare(options);await mf.ready;
  const db=await mf.getD1Database('CATALOG',workerName),sql=(await readFile('services/catalog/migrations/0001_catalog.sql','utf8')).replace(/--[^\n]*/g,'');for(const statement of sql.match(/\s*CREATE TRIGGER[\s\S]*?END;|[^;]+;/g)??[])if(statement.trim())await db.prepare(statement).run();
  await db.batch([
  db.prepare("INSERT INTO catalog_users(id,identity_issuer,identity_subject,normalized_email,created_at,updated_at) VALUES('owner','test','owner','owner@example.test',1,1)"),
@@ -45,17 +50,24 @@ test('Pi developer Workspace preserves markers across restart, serializes admiss
  db.prepare("INSERT INTO catalog_memberships(tenant_id,user_id,created_at,updated_at) VALUES('tenant','owner',1,1)"),
  db.prepare("INSERT INTO catalog_projects(id,tenant_id,owner_user_id,workspace_id,title,starter_version,status,created_at,updated_at) VALUES('project','tenant','owner','workspace','synthetic','empty-v1','ready',1,1)"),
  db.prepare("INSERT INTO catalog_workspaces(id,tenant_id,project_id,owner_user_id,status,created_at,updated_at) VALUES('workspace','tenant','project','owner','ready',1,1)")]);
+ if(beta){
+  for(const file of ['0004_operator_invitations.sql','0005_initial_operator.sql']){
+   const migration=(await readFile('services/catalog/migrations/'+file,'utf8')).replace(/--[^\n]*/g,'');for(const statement of migration.match(/\s*CREATE TRIGGER[\s\S]*?END;|[^;]+;/g)??[])if(statement.trim())await db.prepare(statement).run();
+  }
+  await db.prepare("INSERT INTO catalog_invitations(id,token_hash,normalized_email,state,purpose,issued_by,created_at,expires_at) VALUES('invite',?,'owner@example.test','pending','user','owner',1,?)").bind('a'.repeat(64),Date.now()+86400000).run();
+  await db.prepare("UPDATE catalog_invitations SET state='accepted',accepted_by='owner',accepted_at=? WHERE id='invite'").bind(Date.now()).run();
+ }
  const rpc=async(method,input={})=>(await mf.dispatchFetch('http://test/',{method:'POST',body:JSON.stringify({method,scope,actor,...input})})).json();
  assert.equal((await rpc('seed')).ok,true);
  const created=await rpc('createSession',{key:'session',body:{title:'Synthetic'}});assert.equal(created.ok,true,JSON.stringify(created));const sessionId=created.value.session.id;
  const input={sessionId,key:'first',body:{message:'synthetic FCFS'}};
  const pair=await Promise.all([rpc('submitTurn',input),rpc('submitTurn',{...input,key:'second'})]);assert.equal(pair.filter(r=>r.ok).length,1,JSON.stringify(pair));assert.equal(pair.find(r=>!r.ok).error,'managed-input-in-flight');
  const winner=pair.find(r=>r.ok).value.turn;assert.equal(winner.requestKey,'first');
- assert.deepEqual((await rpc('markerForTest',{turnId:winner.id})).value,{policyId:'developer-v1'});await mf.dispose();mf=new Miniflare(options);await mf.ready;
+ assert.deepEqual((await rpc('markerForTest',{turnId:winner.id})).value,beta?{policyId:standing.policyId,privateBeta:true}:{policyId:'developer-v1'});await mf.dispose();mf=new Miniflare(options);await mf.ready;
  assert.equal((await rpc('submitTurn',{...input,key:'after-restart'})).error,'managed-input-in-flight');
  const replays=await Promise.all([rpc('submitTurn',input),rpc('submitTurn',input)]);for(const replay of replays){assert.equal(replay.ok,true,JSON.stringify(replay));assert.equal(replay.value.replayed,true);assert.equal(replay.value.turn.id,winner.id);}
  assert.equal((await rpc('submitTurn',{...input,body:{message:'different'}})).error,'turn-idempotency-conflict');
- const view=await rpc('turnSnapshot');assert.equal(Object.keys(view.value.turns).length,1);assert.equal(view.value.runtimeBackend,'pi');assert.deepEqual(view.value.piDeveloperState,{billingMode:'observe',blocked:null});
+ const view=await rpc('turnSnapshot');assert.equal(Object.keys(view.value.turns).length,1);assert.equal(view.value.runtimeBackend,'pi');assert.deepEqual(view.value.piDeveloperState,{billingMode:'observe',blocked:null,...(beta?{privateBeta:true}:{})});
  assert.equal((await rpc('submitTurn',{...input,actor:{userId:'other',authVersion:1}})).ok,false);
  const identity={scope,sessionId,turnId:winner.id,dispatchId:'forged-dispatch',generation:1};
  assert.equal((await rpc('piDeveloperTurnAuthorization',{identity})).ok,false);

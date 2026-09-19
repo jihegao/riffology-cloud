@@ -10,7 +10,7 @@
 
 - 状态顺序：`Backlog → Ready → In progress → In review → Acceptance → Done`。Ready 表示任务已明确且可开始；Acceptance 表示实现具备、目标环境或用户验收尚未完成。已合并的实现不得重新作为待开发排期。
 - 每个进入 Ready 的 Issue 顶部必须说明：本次交付、明确不做的范围、依赖/阻塞、可验证的完成条件、证据位置；必须有一个明确交付负责人。给编码 Agent 一个这样的具体任务。
-- 同时实际推进最多两项：一项 Pi 恢复、一项已部署功能验收。Acceptance 队列不代表所有任务都已开始；执行记录应指出当前选中的那一项。
+- 同时实际推进最多两项：一项 Pi 内测常态容量、一项已部署功能验收。Acceptance 队列不代表所有任务都已开始；执行记录应指出当前选中的那一项。
 - 验收发现缺陷时拆最小修复并关联原验收项；大父 Issue 只提取当前必要子范围，不将完整架构/商业化范围拖入当前里程碑。
 - 阻塞用 `blocked` 标签，并在 Issue 写清原因、下一项安全动作和解除条件。缺证据保持 pending，不伪造成功，也不反复重跑未知请求。
 - 新增事项自动加入 Backlog；不要开启“关闭 Issue → Done”“合并 PR → Done”或“Done → 自动关闭 Issue”。Done 和 Issue 关闭都按各自验收条件人工确认；纯文档/离线任务按自身范围验收。
@@ -18,8 +18,11 @@
 
 ## 当前产品方向
 
-- 当前里程碑：[Pi 线上恢复与核心流程验收](https://github.com/jihegao/riffology-cloud/milestone/1)。目标是用户无需手动启动服务，通过 Pi 提需求、实际修改 Python 模型、保存、预览、修改参数，并能刷新/离开后继续。
-- Pi 最小恢复与验收由 [#87](https://github.com/jihegao/riffology-cloud/issues/87) 承接；先核对最新实现与原执行阻塞。`docs/pi-developer-mode.md` 是现有开发者模式边界，不重复实现已合并的功能。
+- 当前版本定义为 **Riffology Cloud Private Beta（邀请制内测版）**：面向受邀用户的受控内测版本，支持 Pi 提需求、修改 Python、保存 Revision、Browser Preview、参数修改与刷新/离开后继续。不承诺 Verified Experiment/Evidence、公开注册、商业 SLA、Credits/支付或多用户高并发。
+- 当前里程碑仍为 [Pi 线上恢复与核心流程验收](https://github.com/jihegao/riffology-cloud/milestone/1)。[#87](https://github.com/jihegao/riffology-cloud/issues/87) 已完成执行隔离与有界核心流程验收，保持关闭；`docs/pi-developer-mode.md` 保留现有实现和证据边界，不重复开发或恢复已结束的临时窗口。
+- 常态容量由 [#104：邀请制内测运行与常态容量](https://github.com/jihegao/riffology-cloud/issues/104) 承接。目标是在冻结名单和预算内持续开放 Pi/M2；立即启动内测时作为新的 P0。开通前冻结用户/项目名单、每日调用与费用、每用户一个 active Turn、全局并发和超时硬限额、监控告警、停止与退出标准。当前版本命名不等于常态容量已开通。
+- 保留全局 kill switch，禁止自动 retry/provider fallback；未知执行立即隔离并暂停相关容量，不能通过新项目、policy 或窗口绕过。Turn 结束检查 runtime/tool/container 释放，释放未确认不返还容量；G5/M3/M4 继续关闭。
+- [#101](https://github.com/jihegao/riffology-cloud/issues/101) 独立核对历史费用，不阻塞正常内测；原 usage、费用和预留保留。发现新的执行风险或原隔离失效证据时仍须暂停相关容量。
 - 核心流程稳定后再推进首个官方 Queue 案例、受邀用户验证、邮箱入口和可选仿真技能；之后依据用户证据推进公开试用与商业化。邮箱登录仅在真实受邀者被现有登录阻挡时提前。
 - 全面 Managed 替换、多 Agent、全面性能优化、完整 Credits/支付及团队/教学管理不自动成为当前前置。#73 保留 `retain-current-runtime` 的归档决策及证据边界；重启实验需要明确的新问题和执行范围。
 - 官方案例沿普通作者建模、实验、提交、非作者审核、冻结发布、新用户复制运行的路径；不通过直接写库或管理员专用内容通道代替用户流程。

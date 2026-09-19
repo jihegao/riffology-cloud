@@ -11,7 +11,7 @@ interface WorkspaceTurnActor {
   submitTurn(input: { scope: TurnScope; actor: TurnActor; sessionId: string; key: string; body: { message: unknown } }): Promise<unknown>;
   cancelTurn(input: { scope: TurnScope; actor: TurnActor; turnId: string }): Promise<unknown>;
   replayTurnEvents(input: { scope: TurnScope; afterSequence: number; limit: number }): Promise<unknown>;
-  turnSnapshot(input: { scope: TurnScope }): Promise<unknown>;
+  turnSnapshot(input: { scope: TurnScope; actor?:TurnActor }): Promise<unknown>;
   listFiles(input:{scope:TurnScope}):Promise<unknown>;
   diffFiles(input:{scope:TurnScope}):Promise<unknown>;
   readArtifact(input:{scope:TurnScope;artifactId:string}):Promise<unknown>;
@@ -46,7 +46,7 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
     },
     async submit(scope: TurnScope, caller: TurnActor, sessionId: string, key: string, body: { message: unknown }) {
       try{
-        const {managed,configured,piEnabled}=selection(scope,await actor(scope).turnSnapshot({scope}));
+        const {managed,configured,piEnabled}=selection(scope,await actor(scope).turnSnapshot({scope,actor:caller}));
         if(managed){if(!configured?.enabled||configured.userId!==caller.userId)throw Error('managed-admission-denied');requireTurnRuntime('true',typeof env.MANAGED_TURN_RUNTIME?.getByName==='function');}
         else requireTurnRuntime(piEnabled,env.M2_TURN_RUNTIME_CONFIGURED!==false);
         const result=await actor(scope).submitTurn({scope,actor:caller,sessionId,key,body});
@@ -59,8 +59,8 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
     async replay(scope: TurnScope, afterSequence: number, limit: number) {
       return actor(scope).replayTurnEvents({ scope, afterSequence, limit });
     },
-    async snapshot(scope: TurnScope) {
-      const value = await actor(scope).turnSnapshot({ scope });
+    async snapshot(scope: TurnScope,caller?:TurnActor) {
+      const value = await actor(scope).turnSnapshot({ scope,...(caller?{actor:caller}:{}) });
       if (!value || typeof value !== 'object' || Array.isArray(value)) return value;
       const {runtimeBackend,...snapshot}=value as Record<string,unknown>;
       const {managed,configured,piEnabled}=selection(scope,value);
