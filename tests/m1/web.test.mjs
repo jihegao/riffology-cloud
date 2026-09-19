@@ -322,7 +322,7 @@ test('direct workspace hash does not flash the project list while ownership is b
     if (path === '/api/workspaces/workspace-direct/events') { await json(route, { events: [], nextSequence: 0, hasMore: false, oldestSequence: 1, snapshotRequired: false }); return true; }
   });
   await page.goto('https://ui.test/#/workspace/project-direct');
-  await waitFor(() => page.locator('#login').evaluate(element => element.hidden));
+  await page.locator('#login[hidden]').waitFor({state:'attached'});
   assert.equal(await page.locator('#app').isVisible(), false);
   release();
   await page.locator('#workspace:not([hidden])').waitFor();
