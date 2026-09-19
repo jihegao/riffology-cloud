@@ -1027,6 +1027,22 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       return {...snapshot,runtimeBackend:'managed' as const,managedState:{stopped:typeof value.stopped==='string'?value.stopped:null,unresolved:Number.isSafeInteger(value.unresolved)?value.unresolved:null,cleanupPending:value.cleanupPending===true}};
     }catch{return {...snapshot,runtimeBackend:'managed' as const,managedState:{unavailable:true}};}
   }
+  /** Private maintenance RPC for an exact persisted terminal turn. It only
+   * observes the existing ProductTurnRuntime identity and advances the matching
+   * release hold; it does not run model settlement or claim queued work. */
+  async reconcileRuntimeRelease(input:{identity:TurnRuntimeIdentity}){
+    const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
+    if(!turn||!['completed','failed','cancelled','interrupted'].includes(turn.status)||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation)throw Error('turn-release-scope-denied');
+    if(state.releaseHold===null)return {schemaVersion:1 as const,releaseHold:null};
+    await this.#engine().reconcileRelease(scope,identity);
+    const after=await this.#turns.view(scope);
+    return {schemaVersion:1 as const,releaseHold:after.releaseHold};
+  }
+  async runtimeReleaseSnapshot(input:{identity:TurnRuntimeIdentity}){
+    const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
+    if(!turn||!['completed','failed','cancelled','interrupted'].includes(turn.status)||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation)throw Error('turn-release-scope-denied');
+    return {schemaVersion:1 as const,status:turn.status,persistenceOutcome:turn.persistenceOutcome,active:state.activeTurnId!==null,releaseHold:state.releaseHold?{status:state.releaseHold.status,matches:state.releaseHold.turnId===identity.turnId}:null};
+  }
   async g5TurnAuthority(input:{identity:TurnRuntimeIdentity;userId:string}){
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
     if(!turn||turn.actor.userId!==input.userId||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation||turn.status!=='completed'||turn.executionOutcome!=='completed'||turn.persistenceOutcome!=='saved'||!turn.checkpoint||state.activeTurnId!==null||state.releaseHold!==null||state.recoveryHold!==null)throw Error('g5-turn-authority-unsettled');

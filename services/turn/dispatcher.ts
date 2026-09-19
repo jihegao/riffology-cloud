@@ -81,7 +81,7 @@ export interface TurnCapacityPort{
   releaseNeverStarted(input:{scope:TurnScope;sessionId:string;turnId:string;generation:number;ticketId:string|null;operationId:string;leaseId:string|null;reasonCode:string;observedAt:number}):Promise<{proofId:string;releasedAt:number}>;
 }
 
-type ExpectedReceipt={scope:TurnScope;sessionId:string;turnId:string;dispatchId:string;generation:number};
+export type ExpectedReceipt={scope:TurnScope;sessionId:string;turnId:string;dispatchId:string;generation:number};
 const EVENT_TYPES=new Set<TurnRuntimeEvent['type']>(['assistant.delta','assistant.message','tool.started','tool.updated','tool.completed','provider.status']);
 const PHASES=new Set<TurnRuntimeReceipt['phase']>(['accepted','absent','unknown','running','terminal']);
 const OUTCOMES=new Set<NonNullable<TurnRuntimeReceipt['outcome']>>(['completed','failed','cancelled','interrupted']);
@@ -227,11 +227,33 @@ export class TurnDispatcher {
     return {receipt:validateReceipt(await this.runtime.cancel(exact),expected,turn.resourceLease!),neverStarted:null};
   }
 
+  /** Reconciles only an already-persisted terminal release hold. Supplying an
+   * expected identity fences private maintenance callers to the exact durable
+   * turn; this path never claims queued work or accepts a runtime turn. */
+  async reconcileRelease(rawScope:TurnScope,expected?:ExpectedReceipt):Promise<TurnRecord|null>{
+    const scope=validateScope(rawScope),release=this.journal.releaseRecovery?.(scope);
+    if(!release)return null;
+    if(expected&&JSON.stringify(release.identity)!==JSON.stringify(expected))throw Error('turn-release-scope-denied');
+    if(!this.journal.advanceRelease)throw Error('turn-release-journal-required');
+    const observedAt=Math.max(0,this.clock()),age=Math.max(0,observedAt-release.hold.since),correlationId=release.resourceLease.operationId,holdReason=release.hold.status==='recovery-hold'?'release_recovery_hold':'release_pending',queued=this.journal.queuedBehindRelease?.(scope)??0;
+    this.emit({route:'turn.operation',metric:'release_hold_count',stage:'release',reasonCategory:holdReason,attempt:1,durationMs:null,value:1,correlationId});
+    this.emit({route:'turn.operation',metric:'release_hold_age',stage:'release',reasonCategory:holdReason,attempt:1,durationMs:age,value:1,correlationId});
+    this.emit({route:'turn.operation',metric:'hold_start_attempts',stage:'capacity',reasonCategory:holdReason,attempt:0,durationMs:null,value:0,correlationId});
+    if(queued>0)this.emit({route:'turn.operation',metric:'queued_behind_release',stage:'capacity',reasonCategory:holdReason,attempt:1,durationMs:age,value:queued,correlationId});
+    const receipt=validateReceipt(await this.runtime.observe({...release.identity,capacityLease:release.resourceLease}),release.identity,release.resourceLease);
+    if(receipt.resourceDisposition.status==='active')throw Error('invalid-turn-runtime-receipt');
+    await this.journal.advanceRelease(scope,receipt.resourceDisposition);
+    const released=receipt.resourceDisposition.status==='released',handedOff=receipt.resourceDisposition.status==='handed-off';
+    if(!handedOff)this.emit({route:'turn.operation',metric:'release_result',stage:'release',reasonCategory:released?'release_confirmed':receipt.resourceDisposition.status==='recovery-hold'?'release_recovery_hold':'release_pending',attempt:1,durationMs:null,value:released?1:0,correlationId});
+    if(released)this.emit({route:'turn.operation',metric:'release_confirmation_delay',stage:'release',reasonCategory:'release_confirmed',attempt:1,durationMs:age,value:1,correlationId});
+    return released||handedOff?null:release.turn;
+  }
+
   async tick(rawScope:TurnScope,generation:number):Promise<TurnRecord|null>{
     const scope=validateScope(rawScope),runtimeGeneration=positive(generation);
     if(scope.workspaceGeneration!==runtimeGeneration)throw Error('turn-runtime-generation-conflict');
     const recovery=this.journal.recovery?.(scope);if(recovery){if(!this.journal.advanceRecovery)throw Error('turn-recovery-journal-required');const receipt=validateReceipt(await this.runtime.observe({...recovery.identity,capacityLease:recovery.resourceLease}),recovery.identity,recovery.resourceLease),resolution=receipt.phase==='terminal'&&receipt.checkpoint?'committed':receipt.phase==='terminal'&&receipt.persistenceErrorCode==='turn-checkpoint-aborted'?'aborted':'pending';await this.journal.advanceRecovery(scope,resolution);this.emit({route:'turn.operation',metric:'checkpoint_result',stage:'checkpoint',reasonCategory:resolution==='committed'?'checkpoint_committed':resolution==='aborted'?'checkpoint_aborted':'checkpoint_pending',attempt:1,durationMs:null,value:resolution==='committed'?1:0,correlationId:recovery.resourceLease.operationId});return recovery.turn;}
-    const release=this.journal.releaseRecovery?.(scope);if(release){if(!this.journal.advanceRelease)throw Error('turn-release-journal-required');const observedAt=Math.max(0,this.clock()),age=Math.max(0,observedAt-release.hold.since),correlationId=release.resourceLease.operationId,holdReason=release.hold.status==='recovery-hold'?'release_recovery_hold':'release_pending',queued=this.journal.queuedBehindRelease?.(scope)??0;this.emit({route:'turn.operation',metric:'release_hold_count',stage:'release',reasonCategory:holdReason,attempt:1,durationMs:null,value:1,correlationId});this.emit({route:'turn.operation',metric:'release_hold_age',stage:'release',reasonCategory:holdReason,attempt:1,durationMs:age,value:1,correlationId});this.emit({route:'turn.operation',metric:'hold_start_attempts',stage:'capacity',reasonCategory:holdReason,attempt:0,durationMs:null,value:0,correlationId});if(queued>0)this.emit({route:'turn.operation',metric:'queued_behind_release',stage:'capacity',reasonCategory:holdReason,attempt:1,durationMs:age,value:queued,correlationId});const receipt=validateReceipt(await this.runtime.observe({...release.identity,capacityLease:release.resourceLease}),release.identity,release.resourceLease);if(receipt.resourceDisposition.status==='active')throw Error('invalid-turn-runtime-receipt');await this.journal.advanceRelease(scope,receipt.resourceDisposition);const released=receipt.resourceDisposition.status==='released',handedOff=receipt.resourceDisposition.status==='handed-off';if(!handedOff)this.emit({route:'turn.operation',metric:'release_result',stage:'release',reasonCategory:released?'release_confirmed':receipt.resourceDisposition.status==='recovery-hold'?'release_recovery_hold':'release_pending',attempt:1,durationMs:null,value:released?1:0,correlationId});if(released)this.emit({route:'turn.operation',metric:'release_confirmation_delay',stage:'release',reasonCategory:'release_confirmed',attempt:1,durationMs:age,value:1,correlationId});if(!released&&!handedOff)return release.turn;}
+    const releasePending=await this.reconcileRelease(scope);if(releasePending)return releasePending;
     const initialCleanup=this.journal.pendingInitialBaseCleanup?.(scope);if(initialCleanup){if(!this.capacity||!this.journal.completeInitialBaseCleanup)throw Error('turn-capacity-journal-required');const proof=await this.capacity.releaseNeverStarted({scope,sessionId:initialCleanup.turn.sessionId,turnId:initialCleanup.turn.id,generation:runtimeGeneration,ticketId:initialCleanup.wait.ticketId,operationId:initialCleanup.wait.operationId,leaseId:initialCleanup.wait.leaseId,reasonCode:initialCleanup.wait.reasonCode,observedAt:initialCleanup.turn.finishedAt!});return this.journal.completeInitialBaseCleanup(scope,{turnId:initialCleanup.turn.id,ticketId:initialCleanup.wait.ticketId,operationId:initialCleanup.wait.operationId,leaseId:initialCleanup.wait.leaseId,...proof});}
     const pendingCancel=this.journal.pendingResourceCancellation?.(scope);if(pendingCancel){if(!this.capacity||!this.journal.completeResourceCancellation)throw Error('turn-capacity-journal-required');const proof=await this.capacity.releaseNeverStarted({scope,sessionId:pendingCancel.turn.sessionId,turnId:pendingCancel.turn.id,generation:runtimeGeneration,ticketId:pendingCancel.wait.ticketId,operationId:pendingCancel.wait.operationId,leaseId:null,reasonCode:'turn-cancelled-before-capacity-dispatch',observedAt:pendingCancel.requestedAt});return this.journal.completeResourceCancellation(scope,{turnId:pendingCancel.turn.id,ticketId:pendingCancel.wait.ticketId,operationId:pendingCancel.wait.operationId,...proof});}
     let acquired:Extract<TurnCapacityReceipt,{status:'acquired'}>|null=null;
