@@ -47,3 +47,52 @@ for(const dispatchAdjustment of [undefined,1]) test(`chained rollover preserves 
  const wrongDispatch=f.guard({...window2,windowId:'g5-chain-bad-dispatch',maxUpstreamDispatches:window2.maxUpstreamDispatches+1,rollover:{...binding2,targetWindowId:'g5-chain-bad-dispatch',newIntentNamespace:'g5-chain-bad-dispatch-',receiptSha256:'4'.repeat(64)}});await assert.rejects(wrongDispatch.registerRollover(wrongDispatch.configured!.rollover),/rollover-cap-conservation/);
  const registered=await third.registerRollover(binding2);assert.equal(registered.sourceWindowId,window1.windowId);await assert.rejects(third.registerTask({...task(20,'turn'),intentKeySha256:q1.sourceIntentKeySha256}),/intent-replay-denied/);await assert.rejects(third.registerTask({...task(21,'turn'),intentKeySha256:q2.sourceIntentKeySha256}),/intent-replay-denied/);await third.admitTask(task(5,'project'));assert.equal(third.snapshot().calls.filter((value:any)=>value.state==='unknown').length,2);
 });
+
+const billing={mode:'bounded-pending' as const,maxUnknownCalls:3,maxUnknownNanodollars:1_000_000};
+const billingProof=(c:G5Call,reservedNanodollars=66_000)=>({callKey:c.key,turnKey:c.turnKey,turnId:c.turnId,reservationId:c.reservationId,reservedNanodollars,providerRequestId:'provider-ended',executionTerminal:true,toolsQuiescent:true,receiptSha256:'e'.repeat(64)});
+const billingTurnProof=(c:G5Call)=>({turnKey:c.turnKey,turnId:c.turnId,heldCallKeys:[c.key],ledgersClosed:true,toolsQuiescent:true,receiptSha256:'d'.repeat(64)});
+test('bounded billing retains full hold across restart and windows, closes execution only, rejects replay',async t=>{
+ const f=fixture(t),p={...policy,billingPolicy:billing},g=f.guard(p),c=call(1);await ready(g);await g.reserveCall(c);await g.claimDispatch(c.key);await g.markUnknown(c.key);
+ await assert.rejects(g.holdBilling(c.key,{...billingProof(c),executionTerminal:false}),/billing-hold-unconfirmed/);
+ f.lose();await assert.rejects(g.holdBilling(c.key,billingProof(c)),/lost-after-commit/);
+ const restarted=f.guard(p);assert.equal((await restarted.holdBilling(c.key,billingProof(c))).billingSettled,false);
+ await assert.rejects(restarted.admitTask(task(2)),/turn-unsettled/);
+ await assert.rejects(restarted.closeBillingTurn(c.turnKey,{...billingTurnProof(c),toolsQuiescent:false}),/billing-turn-unconfirmed/);
+ await restarted.closeBillingTurn(c.turnKey,billingTurnProof(c));assert.equal((await restarted.claimDispatch(c.key)).authorized,false);
+ await assert.rejects(restarted.registerTask({...task(2),intentKeySha256:task(1).intentKeySha256}),/intent-replay-denied/);
+ await assert.rejects(restarted.recordUsage(c.key,usage),/billing-reconciliation-required/);
+ const next=f.guard({...p,windowId:'bounded-next'});await ready(next,2);
+ assert.deepEqual(next.billingSummary(),{unknownCalls:1,unknownNanodollars:66_000});
+ assert.equal(next.snapshot().calls[0].accounted,66_000);assert.equal(next.snapshot().calls[0].state,'billing-held');
+ assert.equal(next.snapshot().turns.find(row=>row.key===c.turnKey)!.state,'billing-held');
+ await assert.rejects(f.guard({...policy,windowId:'strict-next'}).registerTask(task(3)),/charge-unsettled/);
+});
+test('bounded billing caps count and amount before dispatch, with no reset via a new window',async t=>{
+ const f=fixture(t),p={...policy,billingPolicy:{...billing,maxUnknownCalls:1}},g=f.guard(p),c=call(1);await ready(g);await g.reserveCall(c);await g.claimDispatch(c.key);await g.holdBilling(c.key,billingProof(c));await g.closeBillingTurn(c.turnKey,billingTurnProof(c));
+ await assert.rejects(g.registerTask(task(2)),/billing-uncertainty-limit/);
+ await assert.rejects(f.guard({...p,windowId:'limit-next'}).registerTask(task(2)),/billing-uncertainty-limit/);
+});
+test('bounded billing reserves uncertainty headroom and keeps original policy and execution fences',async t=>{
+ const f=fixture(t),p={...policy,billingPolicy:{...billing,maxUnknownNanodollars:65_999}},g=f.guard(p);await ready(g);
+ await assert.rejects(g.reserveCall(call(1)),/billing-uncertainty-limit/);assert.equal(g.snapshot().calls.length,0);
+ await assert.rejects(f.guard({...p,billingPolicy:billing}).reserveCall(call(1)),/policy-conflict/);
+ for(const b of [{...billing,maxUnknownCalls:0},{...billing,maxUnknownCalls:33},{...billing,maxUnknownNanodollars:20_000_000_001},{...billing,maxUnknownNanodollars:1.2},{...billing,extra:true}])assert.throws(()=>g5WindowPolicy({...policy,billingPolicy:b}));
+});
+test('strict windows cannot acquire a billing exception and unknown execution still blocks bounded windows',async t=>{
+ const f=fixture(t),g=f.guard(),c=call(1);await ready(g);await g.reserveCall(c);await g.claimDispatch(c.key);await g.markUnknown(c.key);
+ await assert.rejects(g.holdBilling(c.key,billingProof(c)),/billing-policy-required/);
+ await assert.rejects(f.guard({...policy,windowId:'new-bounded',billingPolicy:billing}).registerTask(task(2)),/charge-unsettled/);
+});
+
+test('legacy unknown amounts also count toward bounded policy even before quarantine classification',async t=>{
+ const f=fixture(t),g=f.guard(),c=call(1);await ready(g);await g.reserveCall(c);await g.claimDispatch(c.key);await g.markUnknown(c.key);
+ const next=f.guard({...policy,windowId:'bounded-after-legacy',billingPolicy:{...billing,maxUnknownCalls:1}});
+ assert.deepEqual(next.billingExposure(),{unknownCalls:1,unknownNanodollars:66_000});
+ await assert.rejects(next.registerTask(task(2)),/billing-uncertainty-limit/);
+});
+
+test('remaining unknown-money headroom includes all holds before a second dispatch',async t=>{
+ const f=fixture(t),p={...policy,billingPolicy:{...billing,maxUnknownNanodollars:100_000}},g=f.guard(p),c=call(1);await ready(g);await g.reserveCall(c);await g.claimDispatch(c.key);await g.holdBilling(c.key,billingProof(c));await g.closeBillingTurn(c.turnKey,billingTurnProof(c));await ready(g,2);
+ await assert.rejects(g.reserveCall(call(2,2)),/billing-uncertainty-limit/);
+ assert.equal(g.snapshot().calls.length,1);assert.equal(g.billingExposure().unknownNanodollars,66_000);
+});

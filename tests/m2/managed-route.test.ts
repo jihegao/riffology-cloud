@@ -28,7 +28,7 @@ test('Gateway opens only the pinned Managed scope and owner while global Pi gate
  assert.equal(((await services.snapshot({...scope,projectId:'other'})) as {admission:{state:string}}).admission.state,'maintenance');
 });
 test('Gateway rejects a configured Managed project when its binding is absent even if Pi enabled',async()=>{
- const services=createGatewayTurnServices({M2_TURNS_ENABLED:'true',MANAGED_ACCEPTANCE_JSON:JSON.stringify(policy),WORKSPACE_AGENT:{getByName(){throw Error('must-not-resolve');}}});
+ const services=createGatewayTurnServices({M2_TURNS_ENABLED:'true',MANAGED_ACCEPTANCE_JSON:JSON.stringify(policy),WORKSPACE_AGENT:{getByName(){return {async turnSnapshot(){return {runtimeBackend:'managed'};}} as any;}}});
  await assert.rejects(services.submit(scope,{userId:'owner',authVersion:1},'session','key',{message:'x'}),/turn_runtime_unavailable/);
 });
 
@@ -57,5 +57,29 @@ test('Account testing admits only its exact owner and tenant; old acceptance and
  assert.deepEqual(managedProjectPolicy({...policy,enabled:false},scope,testing),{...policy,enabled:false});
  assert.deepEqual(resolveManagedRoute(undefined,scope,policy,true,testing),policy);
  assert.throws(()=>requireManagedAdmission(undefined,policy,scope,'owner',testing));
- assert.throws(()=>resolveManagedRoute(undefined,scope,null,true,testing),/existing-turn-history/);
+ assert.equal(resolveManagedRoute(undefined,scope,null,true,testing),null);
+ assert.equal(resolveManagedRoute(undefined,scope,null,true,{...testing,enabled:false}),null);
+ assert.equal(resolveManagedRoute(undefined,scope,null,false,testing)?.schemaVersion,2);
+});
+
+test('Gateway reports the authoritative legacy Pi gate under account-wide Managed testing',async()=>{
+ const services=createGatewayTurnServices({M2_TURNS_ENABLED:'false',MANAGED_TESTING_JSON:JSON.stringify(testing),MANAGED_TURN_RUNTIME:{getByName(){}},WORKSPACE_AGENT:{getByName(){return {async turnSnapshot(){return {runtimeBackend:'pi',turns:{old:{status:'completed'}}};}} as any;}}});
+ const snapshot=await services.snapshot(scope) as any;
+ assert.equal(snapshot.admission.state,'maintenance');
+ assert.equal(snapshot.admission.reasonCode,'turn_runtime_not_ready');
+ assert.equal(snapshot.turns.old.status,'completed');
+ assert.equal(Object.hasOwn(snapshot,'runtimeBackend'),false);
+});
+
+for(const enabled of [false,true]) test(`Pi query and submit agree with Managed enabled=${enabled} and absent binding`,async()=>{
+ let calls=0;
+ const services=createGatewayTurnServices({M2_TURNS_ENABLED:'true',M2_TURN_RUNTIME_CONFIGURED:true,MANAGED_TESTING_JSON:JSON.stringify({...testing,enabled}),WORKSPACE_AGENT:{getByName(){return {async turnSnapshot(){return {runtimeBackend:'pi'};},async submitTurn(){calls++;return {accepted:true};}} as any;}}});
+ assert.equal((await services.snapshot(scope) as any).admission.state,'enabled');
+ assert.deepEqual(await services.submit(scope,{userId:'owner',authVersion:1},'session','key',{message:'x'}),{accepted:true});
+ assert.equal(calls,1);
+});
+test('persisted Managed binding cannot fall back to Pi after configuration removal',async()=>{
+ const services=createGatewayTurnServices({M2_TURNS_ENABLED:'true',WORKSPACE_AGENT:{getByName(){return {async turnSnapshot(){return {runtimeBackend:'managed'};},async submitTurn(){throw Error('must-not-submit');}} as any;}}});
+ assert.equal((await services.snapshot(scope) as any).admission.state,'maintenance');
+ await assert.rejects(services.submit(scope,{userId:'owner',authVersion:1},'session','key',{message:'x'}),/managed-admission-denied/);
 });

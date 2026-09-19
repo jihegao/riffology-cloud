@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "issue-73-luna-agents",
+  "evidenceKind": "bounded-partial-pilot",
+  "definitionSha256": "9dd01cbf4e6bf30400c20eb614f84f6d2e48e7117c6b8fd6274b64b4898294ff",
+  "provider": "openai",
+  "api": "agents-v1",
+  "sdkVersion": "7.17.0",
+  "requestedModel": "gpt-5.6-luna",
+  "returnedModel": "gpt-5.6-luna",
+  "condition": "baseline",
+  "environmentType": "openai_hosted",
+  "multiAgent": false,
+  "networkAccess": "disabled",
+  "sessionTurnsCompletedByProvider": 3,
+  "acceptedDownloadedTurns": 2,
+  "runAccepted": false,
+  "decision": "blocked",
+  "decisionReason": "The pilot exceeded its approved aggregate token cap and Turn 3 artifacts were not downloaded before the matrix was stopped.",
+  "usage": {
+    "inputTokens": 937920,
+    "cachedInputTokens": 887227,
+    "outputTokens": 20093,
+    "reasoningTokens": 3830,
+    "totalTokens": 958013
+  },
+  "approvedAggregateTokenCap": 360000,
+  "tokenCapBreached": true,
+  "observedModelCostUsd": 0.05199474,
+  "estimatedSandboxCostUsdUpperBound": 0.015,
+  "sandboxEstimateBasis": "The observed 1 GB Session lifecycle was less than 10 minutes; pricing is per eligible minute with a 5-minute minimum.",
+  "turns": [
+    {
+      "turn": 1,
+      "providerStatus": "completed",
+      "usageTokens": 321425,
+      "acceptedAfterOfflineReverification": true,
+      "modelExecutionVerified": true,
+      "parameterExperimentCompleted": true,
+      "runCount": 12,
+      "commandCalls": 14,
+      "failedCommands": 3,
+      "repairIterations": 3,
+      "artifactCount": 2,
+      "manifestSha256": "9b8bae6a346c665921d6d23e3150936aa33170a2c5e792f438a854e3ae46588d",
+      "projectZipSha256": "f18c1030bc743fcda09e153b7d13cfbf9f52e9f0f14b5600cbe88ed22dcb5132"
+    },
+    {
+      "turn": 2,
+      "providerStatus": "completed",
+      "usageTokens": 274855,
+      "acceptedAfterOfflineReverification": true,
+      "modelExecutionVerified": true,
+      "parameterExperimentCompleted": true,
+      "runCount": 9,
+      "commandCalls": 6,
+      "failedCommands": 0,
+      "repairIterations": 0,
+      "artifactCount": 2,
+      "manifestSha256": "2efacdc96958c6549b493a31c7451199024399f81c51c5e98054f5001acc5de4",
+      "projectZipSha256": "4089fe01ed7ff2e267b744bee1ff8ecaab2a9b2dab224a8d00afbfa5f16057b8",
+      "continuity": {
+        "retainedCodeFiles": 5,
+        "changedCodeFiles": 3
+      }
+    },
+    {
+      "turn": 3,
+      "providerStatus": "completed",
+      "usageTokens": 361733,
+      "acceptedAfterOfflineReverification": false,
+      "rejectionReason": "required-artifacts-not-downloaded-before-budget-stop"
+    }
+  ],
+  "resourceCleanup": {
+    "sessionStatusBeforeDelete": "idle",
+    "sessionDeleted": true,
+    "matchingLiveSessionsAfterDelete": 0
+  },
+  "harnessCorrections": [
+    "Use the environment proxy explicitly instead of bypassing the configured network path.",
+    "Retrieve persisted Turn usage when terminal stream events omit usage.",
+    "Interpret hosted command status when exit_code is null and match shell-wrapped commands.",
+    "Reserve maxTokensPerTurn before each request and stop on insufficient aggregate headroom.",
+    "Remove simulation-methodology prompts from the common artifact contract and score those dimensions independently from inspectable reports and execution evidence."
+  ]
+}

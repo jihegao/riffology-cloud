@@ -11,6 +11,9 @@ Sandbox、D1 和 R2 构成云端服务；本地候选支持 Python 标准库 Que
 
 ## 文档
 
+- [当前发布与验收状态](docs/release-readiness.md)：源码、部署记录、真实验收边界及后续负责人。
+- [Queue 受邀用户研究指南](docs/invited-queue-research.md)与[本轮本地验证](docs/invited-queue-delivery-validation.md)：首个官方案例、三人研究验收及未冻结的生产执行条件。
+- [#73 实验结论](docs/issue-73-luna-agents-adr.md)与[质量回归](docs/research-quality-regression.md)：保留当前运行时，复用已有负面实验发现。
 - [当前多阶段开发计划](docs/issues-subagent-plan-20260915.md)与[实施验收记录](docs/issues-development-log-20260915.md)：#64 浏览器 Preview、#65 UI、#46/#37 生产验收及 #35 官方模型。
 - [研究闭环 Issues 执行顺序](docs/research-loop-execution-plan.md)：第一阶段签收后的 8 个交付批次、依赖、接口兼容和验收门槛。
 - [MVP 系统概要设计](docs/mvp-system-design.md)：产品范围、功能模块、架构、核心流程、持久化与验收标准。

@@ -8,9 +8,9 @@ import { fileURLToPath } from 'node:url';
 import { RELEASE_DIRECTORY } from '../../services/runtime/release-probe.mjs';
 
 const moduleURL=new URL('../../services/runtime/release-probe.mjs',import.meta.url).href;
-const wrapper=`import {readFile} from 'node:fs/promises';
-const {runReleaseProbe}=await import(process.argv[1]);
-const result=await runReleaseProbe(JSON.parse(await readFile('/dev/stdin','utf8')),{storageDirectory:process.argv[2]});
+const wrapper=`const {runReleaseProbe}=await import(process.argv[1]);
+let input='';process.stdin.setEncoding('utf8');for await(const chunk of process.stdin)input+=chunk;
+const result=await runReleaseProbe(JSON.parse(input),{storageDirectory:process.argv[2]});
 process.stdout.write(JSON.stringify(result)+'\\n');if(result.status==='rejected')process.exitCode=1;`;
 const input=(command,requestId='request-0001',extras={})=>({command,directory:RELEASE_DIRECTORY,requestId,...extras});
 async function fixture(t){

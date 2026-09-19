@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "issue-73-luna-agents",
+  "definitionSha256": "104790fe9ae11ee9ef4b1f7d1a98067989f0661bcf2284590b2a46338579b3fa",
+  "provider": "openai",
+  "api": "agents-v1",
+  "model": "gpt-5.6-luna",
+  "sdkVersion": "7.17.0",
+  "fixtureVersion": "schelling-v1",
+  "conditions": {
+    "baseline": {
+      "runs": 1,
+      "acceptedTasks": 0,
+      "acceptedTaskRate": 0,
+      "firstRunSuccessRate": 1,
+      "autonomousDebugSuccessRate": 0,
+      "modelExecutionVerifiedRate": 0.6666666666666666,
+      "parameterExperimentRate": 1,
+      "skillReadRate": 0,
+      "fabricatedResultIncidents": 0,
+      "meanToolCalls": 4,
+      "meanRepairIterations": 0.3333333333333333,
+      "totalTokens": 209746,
+      "unknownUsageTurns": 1,
+      "totalWallTimeMs": 276556,
+      "modelCostUsd": 0.01983782,
+      "estimatedSandboxCostUsd": 0.010499999999999999,
+      "estimatedTotalCostUsd": 0.030337819999999998,
+      "costPerAcceptedTaskUsd": null,
+      "artifactCount": 6,
+      "dimensionRates": {
+        "assumptionsExplicit": 0.6666666666666666,
+        "entitiesStateInteractionsExplicit": 0,
+        "feedbackExplicit": 0,
+        "emergentQuantityDefined": 0.6666666666666666,
+        "implementationVerifiedBeforeInterpretation": 0.6666666666666666,
+        "sensitivityAnalysis": 0.6666666666666666,
+        "machineReadableArtifacts": 0.6666666666666666
+      }
+    },
+    "simulation-skill": {
+      "runs": 0,
+      "acceptedTasks": 0,
+      "acceptedTaskRate": 0,
+      "firstRunSuccessRate": 0,
+      "autonomousDebugSuccessRate": 0,
+      "modelExecutionVerifiedRate": 0,
+      "parameterExperimentRate": 0,
+      "skillReadRate": 0,
+      "fabricatedResultIncidents": 0,
+      "meanToolCalls": 0,
+      "meanRepairIterations": 0,
+      "totalTokens": 0,
+      "unknownUsageTurns": 0,
+      "totalWallTimeMs": 0,
+      "modelCostUsd": 0,
+      "estimatedSandboxCostUsd": 0,
+      "estimatedTotalCostUsd": 0,
+      "costPerAcceptedTaskUsd": null,
+      "artifactCount": 0,
+      "dimensionRates": {
+        "assumptionsExplicit": 0,
+        "entitiesStateInteractionsExplicit": 0,
+        "feedbackExplicit": 0,
+        "emergentQuantityDefined": 0,
+        "implementationVerifiedBeforeInterpretation": 0,
+        "sensitivityAnalysis": 0,
+        "machineReadableArtifacts": 0
+      }
+    }
+  },
+  "decision": "blocked"
+}

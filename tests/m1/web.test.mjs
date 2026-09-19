@@ -43,6 +43,43 @@ if (url.pathname === '/api/me') return json(route, { execution:{service:true,pre
   });
   return page;
 }
+
+test('research entry points do not fabricate an unpublished Queue case or start computation', async t => {
+  const calls = [];
+  const page = await pageFixture(t, async route => { calls.push(route.request().method()); });
+  await page.goto('https://ui.test/');
+  await page.getByText('Queue 官方案例尚未发布。你可以先描述自己的研究问题。').waitFor();
+  assert.equal(await page.locator('#start-queue').isDisabled(), true);
+  await page.locator('#start-question').click();
+  await page.locator('#project-dialog[open]').waitFor();
+  assert.equal(await page.locator('#project-model').inputValue(), '');
+  assert.ok(calls.every(method => method === 'GET'));
+});
+
+test('Queue entry uses only published catalog versions and normal independent-copy creation', async t => {
+  const calls = [], versions = [
+    {model_id:'queue-research',version:'v1',title:'Queue',status:'published'},
+    {model_id:'queue-research',version:'draft',title:'Draft Queue',status:'draft'},
+  ];
+  const page = await pageFixture(t, async (route, path) => {
+    calls.push({method:route.request().method(),path});
+    if (path === '/api/models') { await json(route, {models:versions}); return true; }
+  }, {mobile:true});
+  await page.goto('https://ui.test/');
+  await page.waitForFunction(() => !document.querySelector('#start-queue').disabled);
+  await page.locator('#start-queue').click();
+  assert.equal(await page.locator('#models .model-card').count(), 1);
+  assert.equal(await page.locator('#models .model-card').evaluate(node => node === document.activeElement), true);
+  await page.getByRole('button', {name:'使用此版本',exact:true}).click();
+  assert.equal(await page.locator('#project-model').inputValue(), 'queue-research@v1');
+  assert.ok(calls.every(call => call.method === 'GET'));
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  await page.locator('#project-cancel').click();
+  versions.splice(0);
+  await page.locator('#models-refresh').click();
+  await page.getByText('Queue 官方案例尚未发布。你可以先描述自己的研究问题。').waitFor();
+  assert.equal(await page.locator('#start-queue').isDisabled(), true);
+});
 async function waitFor(check) { for (let i = 0; i < 100; i++) { if (check()) return; await new Promise(resolve => setTimeout(resolve, 20)); } assert.ok(check(), 'condition timed out'); }
 
 test('project filters use saved-model and preview metadata without executing or deleting projects',async t=>{
@@ -525,8 +562,11 @@ test('history truncation reads the full 2048-event retained window within the pa
     }
   });
   await page.goto('https://ui.test/#/workspace/project-retained-boundary'); await page.locator('#workspace:not([hidden])').waitFor();
-  await waitFor(() => reads === 12); assert.equal(reads, 12); assert.equal(mutations, 0); assert.match(await page.locator('#turns').innerText(), /边界回复/); assert.match(await page.locator('#turns').innerText(), /这里只显示近期对话回复/);
-  await page.reload(); await page.locator('#workspace:not([hidden])').waitFor(); await waitFor(() => reads === 24); assert.equal(mutations, 0);
+  await waitFor(() => reads === 12);
+  // Receiving the last request precedes applying its response to the DOM.
+  await page.waitForFunction(() => document.querySelector('#turns').textContent.includes('边界回复'));
+  assert.equal(reads, 12); assert.equal(mutations, 0); assert.match(await page.locator('#turns').innerText(), /边界回复/); assert.match(await page.locator('#turns').innerText(), /这里只显示近期对话回复/);
+  await page.reload(); await page.locator('#workspace:not([hidden])').waitFor(); await waitFor(() => reads === 24); await page.waitForFunction(() => document.querySelector('#turns').textContent.includes('边界回复')); assert.equal(mutations, 0);
 });
 
 test('history window advances by rereading a retained suffix and rejects no progress', async t => {
@@ -543,10 +583,10 @@ test('history window advances by rereading a retained suffix and rejects no prog
       return true;
     }
   });
-  await page.goto('https://ui.test/#/workspace/project-retained-progress'); await page.locator('#workspace:not([hidden])').waitFor(); await waitFor(() => reads >= 4); assert.match(await page.locator('#turns').innerText(), /新片段/); assert.equal(await page.locator('#message-error').innerText(), '');
+  await page.goto('https://ui.test/#/workspace/project-retained-progress'); await page.locator('#workspace:not([hidden])').waitFor(); await waitFor(() => reads >= 4); await page.waitForFunction(() => document.querySelector('#turns').textContent.includes('新片段')); assert.match(await page.locator('#turns').innerText(), /新片段/); assert.equal(await page.locator('#message-error').innerText(), '');
   noProgressReads = 0;
   const stalled = await pageFixture(t, async (route, path) => { if (path === '/api/tenants/tenant-a/projects') { await json(route, { projects: [{ id: 'project-stalled', workspace_id: 'workspace-stalled', title: '无进展', status: 'ready' }] }); return true; } if (path === '/api/workspaces/workspace-stalled') { await json(route, { schemaVersion: 1, nextSequence: 3, activeTurnId: null, sessions: {}, turns: {} }); return true; } if (path === '/api/workspaces/workspace-stalled/events') { noProgressReads++; await json(route, { events: [], nextSequence: 3, hasMore: false, oldestSequence: 2, snapshotRequired: true }); return true; } });
-  await stalled.goto('https://ui.test/#/workspace/project-stalled'); await stalled.locator('#workspace:not([hidden])').waitFor(); await waitFor(() => noProgressReads === 2); assert.equal(noProgressReads, 2); assert.match(await stalled.locator('#message-error').innerText(), /无法推进/);
+  await stalled.goto('https://ui.test/#/workspace/project-stalled'); await stalled.locator('#workspace:not([hidden])').waitFor(); await waitFor(() => noProgressReads === 2); await stalled.waitForFunction(() => document.querySelector('#message-error').textContent.includes('无法推进')); assert.equal(noProgressReads, 2); assert.match(await stalled.locator('#message-error').innerText(), /无法推进/);
 });
 
 test('assistant deltas merge once per Turn and prefer the final message safely', async t => {

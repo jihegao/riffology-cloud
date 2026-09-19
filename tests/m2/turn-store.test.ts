@@ -5,6 +5,7 @@ import { TurnJournal } from '../../services/turn/journal.ts';
 const KEY='m2:turn-journal',scope={tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1},actor={userId:'user-a',authVersion:1};
 function fixture(){
  let values=new Map<string,unknown>(),durable=new Map<string,unknown>(),failSync=false,hold=false;const pending:Array<{commit():void;fail():void}>=[],events:string[]=[];
+ let notifyHeld!:()=>void;const held=new Promise<void>(resolve=>{notifyHeld=resolve;});
  const storage={
   kv:{get:(key:string)=>{events.push('get');return values.get(key);},put:(key:string,value:unknown)=>{events.push('put');values.set(key,value);}},
   transaction:async<T>(operation:(tx:DurableObjectTransaction)=>Promise<T>)=>{events.push('transaction-start');const before=structuredClone(values);try{return await operation({get:async(key:string)=>{events.push('get');return values.get(key);},put:async(key:string,value:unknown)=>{events.push('put');values.set(key,value);},list:async({prefix}:{prefix:string})=>new Map([...values].filter(([key])=>key.startsWith(prefix))),delete:async(key:string)=>values.delete(key),setAlarm:async(at:number)=>values.set('test:alarm',at),deleteAlarm:async()=>values.delete('test:alarm')} as unknown as DurableObjectTransaction);}catch(error){values=before;events.push('rollback');throw error;}},
@@ -12,15 +13,15 @@ function fixture(){
    events.push('sync');const snapshot=structuredClone(values);
    if(failSync)return Promise.reject(Error('injected-sync-failure'));
    if(!hold){durable=snapshot;return Promise.resolve();}
-   return new Promise<void>((resolve,reject)=>pending.push({commit(){durable=snapshot;resolve();},fail(){reject(Error('injected-sync-failure'));}}));
+   return new Promise<void>((resolve,reject)=>{pending.push({commit(){durable=snapshot;resolve();},fail(){reject(Error('injected-sync-failure'));}});notifyHeld();});
   },
  } as unknown as DurableObjectStorage;
- return {storage,store:()=>new DurableTurnStore(storage),events,pending,hold:(v:boolean)=>{hold=v;},failSync:(v:boolean)=>{failSync=v;},peek:()=>structuredClone(values.get(KEY)),persisted:()=>structuredClone(durable.get(KEY)),seed:(v:unknown)=>values.set(KEY,v)};
+ return {storage,held,store:()=>new DurableTurnStore(storage),events,pending,hold:(v:boolean)=>{hold=v;},failSync:(v:boolean)=>{failSync=v;},peek:()=>structuredClone(values.get(KEY)),persisted:()=>structuredClone(durable.get(KEY)),seed:(v:unknown)=>values.set(KEY,v)};
 }
-test('durable turn store acknowledges only after SQLite sync and detaches aliases',async()=>{
+test('durable turn store acknowledges only after SQLite sync and detaches aliases',{timeout:5000},async()=>{
  const f=fixture();f.hold(true);const journal=new TurnJournal(f.store(),()=>1000);let resolved=false;
  const result=journal.createSession(scope,actor,'session-key',{title:'Session'}).then(value=>{resolved=true;return value;});
- for(let i=0;i<20&&f.pending.length===0;i++)await new Promise<void>(resolve=>setImmediate(resolve));assert.equal(resolved,false);assert.ok(f.peek());assert.equal(f.persisted(),undefined);assert.equal(f.events.at(-1),'sync');assert.ok(f.events.indexOf('transaction-start')<f.events.indexOf('put'));
+ await f.held;assert.equal(resolved,false);assert.ok(f.peek());assert.equal(f.persisted(),undefined);assert.equal(f.events.at(-1),'sync');assert.ok(f.events.indexOf('transaction-start')<f.events.indexOf('put'));
  f.pending[0]!.commit();const created=await result;assert.equal(created.replayed,false);created.session.title='mutated';assert.equal((f.persisted() as any).sessions[created.session.id].title,'Session');
 });
 test('sync uncertainty preserves an idempotent accepted session for readback',async()=>{
@@ -132,13 +133,13 @@ test('large runtime receipts append and replay atomically with one durable write
  await assert.rejects(rebuilt.appendRuntimeBatch(scope,[{...inputs[0]!,eventId:'wrong-dispatch',dispatchId:'other'}]),/turn-runtime-scope-denied/);assert.deepEqual(f.peek(),before);
 });
 
-test('runtime batch never acknowledges before sync and replays after lost durability acknowledgement',async()=>{
+test('runtime batch never acknowledges before sync and replays after lost durability acknowledgement',{timeout:5000},async()=>{
  const f=fixture(),journal=new TurnJournal(f.store(),()=>1000);
  const session=(await journal.createSession(scope,actor,'session',{title:'Session'})).session;
  await journal.submit(scope,actor,session.id,'turn',{message:'Message'});const turn=(await journal.claim(scope,1))!.turn;
  const input={turnId:turn.id,dispatchId:turn.dispatchId!,runtimeGeneration:1,eventId:'delta',type:'assistant.delta' as const,at:1000,payload:{text:'hello'}};
  f.hold(true);let resolved=false;const pending=journal.appendRuntimeBatch(scope,[input]).then(r=>{resolved=true;return r;});
- for(let i=0;i<20&&f.pending.length===0;i++)await new Promise<void>(resolve=>setImmediate(resolve));
+ await f.held;
  assert.equal(resolved,false);f.pending[0]!.commit();await pending;assert.equal(resolved,true);
  f.hold(false);f.failSync(true);await assert.rejects(journal.appendRuntimeBatch(scope,[{...input,eventId:'delta-2'}]),/sync-failure/);
  f.failSync(false);const replay=await new TurnJournal(f.store(),()=>1000).appendRuntimeBatch(scope,[{...input,eventId:'delta-2'}]);assert.equal(replay[0]!.replayed,true);

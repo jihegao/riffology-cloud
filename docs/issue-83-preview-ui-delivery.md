@@ -29,3 +29,9 @@ Validation (2026-09-19, Asia/Shanghai):
 Local deployment manifests, test logs and independent readbacks are retained in
 `.local/issue83-20260919/`. Local execution is not cloud Experiment/Evidence
 verification. Broader Queue/Mesa acceptance in issue 78 is outside this change.
+
+Repository closeout, 2026-09-19: `git ls-remote --heads origin main` and local
+`main` both resolve to `727c40f11a5b5e2fd2eebace05e4bd3971955432`. The issue
+comment's “尚未推送” statement is superseded. This read-only source check does not
+repeat deployment verification or satisfy the remaining online interaction matrix.
+See [current release readiness](release-readiness.md) for the candidate and gaps.

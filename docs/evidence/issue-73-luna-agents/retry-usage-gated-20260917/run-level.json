@@ -1,0 +1,134 @@
+[
+  {
+    "runId": "r01-baseline",
+    "repetition": 1,
+    "condition": "baseline",
+    "sessionRef": "sha256:ce8695e39c3530f415542467b14f513437198da1b67aa743bc924bfb360a6ecc",
+    "expectedModel": "gpt-5.6-luna",
+    "providerModel": "gpt-5.6-luna",
+    "environmentType": "openai_hosted",
+    "installedSkillNames": [],
+    "simulationSkillRead": false,
+    "accepted": false,
+    "rejectionReasons": [
+      "usage-unavailable:turn-3"
+    ],
+    "failureCategories": [
+      "provider-outcome-unknown"
+    ],
+    "costState": "unknown-provider-outcome",
+    "modelCostUsd": 0.01983782,
+    "estimatedSandboxCostUsd": 0.010499999999999999,
+    "totalSessionWallTimeMs": 363224,
+    "sessionDeleted": true,
+    "turns": [
+      {
+        "turn": 1,
+        "turnRef": "sha256:e1a65cde6ff3775cb7efaf7c08b6fb9c20277d437ae0c3e9df2e22677781e4a1",
+        "status": "completed",
+        "accepted": true,
+        "rejectionReasons": [],
+        "usage": {
+          "input_tokens": 110961,
+          "input_tokens_details": {
+            "cached_tokens": 89476
+          },
+          "output_tokens": 5012,
+          "output_tokens_details": {
+            "reasoning_tokens": 516
+          },
+          "total_tokens": 115973
+        },
+        "usageKnown": true,
+        "usageError": null,
+        "wallTimeMs": 159435,
+        "toolCalls": 5,
+        "repairIterations": 0,
+        "simulationSkillRead": false,
+        "artifactCount": 2,
+        "artifactSha256": {
+          "manifest": "feb0682b0740a4527e944e4dd5f752b51180d5637aa2d08d3abe8ba91adb4c5e",
+          "projectZip": "8872e29ed668d3ee9d543dd01b4f4089eea3a157be1a0a3f435e6684d6bbf82a"
+        },
+        "modelExecutionVerified": true,
+        "parameterExperimentCompleted": true,
+        "dimensions": {
+          "assumptionsExplicit": true,
+          "entitiesStateInteractionsExplicit": false,
+          "feedbackExplicit": false,
+          "emergentQuantityDefined": true,
+          "implementationVerifiedBeforeInterpretation": true,
+          "sensitivityAnalysis": true,
+          "machineReadableArtifacts": true
+        },
+        "fabricatedResultIncidents": 0,
+        "reconciledAfterObserverFailure": false
+      },
+      {
+        "turn": 2,
+        "turnRef": "sha256:71f26e461673e612c9e212acf3c0464b523c706909813b69e0e0fd1112a3edab",
+        "status": "completed",
+        "accepted": true,
+        "rejectionReasons": [],
+        "usage": {
+          "input_tokens": 89803,
+          "input_tokens_details": {
+            "cached_tokens": 83265
+          },
+          "output_tokens": 3970,
+          "output_tokens_details": {
+            "reasoning_tokens": 256
+          },
+          "total_tokens": 93773
+        },
+        "usageKnown": true,
+        "usageError": null,
+        "wallTimeMs": 59768,
+        "toolCalls": 3,
+        "repairIterations": 0,
+        "simulationSkillRead": false,
+        "artifactCount": 2,
+        "artifactSha256": {
+          "manifest": "f60d55b81049ce21cc978552c0fac0547fd0689478db48b0e2a2e66c4806ff4b",
+          "projectZip": "07e18c6329f2f6724c4bc615dd96c30ab8784e9c890cfdc6506f61efa7f92d3b"
+        },
+        "modelExecutionVerified": true,
+        "parameterExperimentCompleted": true,
+        "dimensions": {
+          "assumptionsExplicit": true,
+          "entitiesStateInteractionsExplicit": false,
+          "feedbackExplicit": false,
+          "emergentQuantityDefined": true,
+          "implementationVerifiedBeforeInterpretation": true,
+          "sensitivityAnalysis": true,
+          "machineReadableArtifacts": true
+        },
+        "fabricatedResultIncidents": 0,
+        "reconciledAfterObserverFailure": false
+      },
+      {
+        "turn": 3,
+        "turnRef": "sha256:92f578c888e4045134ecb19b4d061990e3fa0ba5fd8943aa6fcebff65bdc3e81",
+        "status": "completed",
+        "accepted": false,
+        "rejectionReasons": [
+          "at-least-three-seeds-required"
+        ],
+        "usage": null,
+        "usageKnown": false,
+        "usageError": null,
+        "wallTimeMs": 57353,
+        "toolCalls": 4,
+        "repairIterations": 1,
+        "simulationSkillRead": false,
+        "artifactCount": 2,
+        "artifactSha256": {},
+        "modelExecutionVerified": false,
+        "parameterExperimentCompleted": false,
+        "dimensions": {},
+        "fabricatedResultIncidents": 0,
+        "reconciledAfterObserverFailure": false
+      }
+    ]
+  }
+]

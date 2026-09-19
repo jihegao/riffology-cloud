@@ -1,0 +1,92 @@
+{
+  "experimentId": "issue-73-luna-agents",
+  "fixtureVersion": "schelling-v1",
+  "provider": "openai",
+  "api": "agents-v1",
+  "model": "gpt-5.6-luna",
+  "reasoningEffort": "low",
+  "sdkVersion": "7.17.0",
+  "conditions": [
+    "baseline",
+    "simulation-skill"
+  ],
+  "repetitionsPerCondition": 2,
+  "turnsPerSession": 3,
+  "hostedPackages": {
+    "python": [
+      "mesa==3.5.1",
+      "numpy==2.3.3",
+      "pandas==2.3.2",
+      "matplotlib==3.10.6",
+      "networkx==3.5"
+    ]
+  },
+  "networkAccess": "disabled",
+  "multiAgent": false,
+  "mcp": false,
+  "prompts": [
+    {
+      "turn": 1,
+      "sha256": "43a8126b8d3b9071a8aec720276a5529ab91549feed2a4011670242da90ccaf2",
+      "text": "# Fixture: Schelling segregation, version 1\n\nCreate a Mesa model of Schelling segregation.\n\nRequirements:\n\n- implement the model, not only explain it;\n- expose grid size, population density, and similarity threshold;\n- run a parameter experiment over at least four similarity thresholds and at\n  least three fixed random seeds per threshold;\n- save run-level quantitative results to a machine-readable CSV or JSON file;\n- generate at least one analysis or plot artifact derived from those results;\n- verify the code actually runs in this environment;\n- report assumptions, implementation decisions, results, uncertainty, and limitations;\n- never report simulation values that were not produced by executed code;\n- keep the editable project under `/workspace/project`;\n- finish by producing the two Turn 1 files required by the artifact contract.\n\nYou may choose the project file structure. Use only synthetic data and do not\naccess the network.\n\n# Artifact contract\n\nFor each Turn `N`, create both of these files:\n\n- `/workspace/outputs/turn-N-project.zip`: a ZIP of the complete editable\n  `/workspace/project` directory, including source, tests, machine-readable raw\n  results, derived summaries, plots, and reports available at that Turn.\n- `/workspace/outputs/turn-N-manifest.json`: UTF-8 JSON matching the schema below.\n\nThe manifest must have this shape:\n\n```json\n{\n  \"schemaVersion\": 1,\n  \"fixtureVersion\": \"schelling-v1\",\n  \"turn\": 1,\n  \"executed\": true,\n  \"runtime\": {\n    \"python\": \"actual version\",\n    \"mesa\": \"actual version\"\n  },\n  \"verificationCommands\": [\n    {\"command\": \"exact executed command\", \"exitCode\": 0}\n  ],\n  \"workspaceFiles\": [\n    {\n      \"path\": \"path relative to /workspace/project\",\n      \"kind\": \"source|config|test|result|plot|report|other\",\n      \"sha256\": \"64 lowercase hex characters\"\n    }\n  ],\n  \"experiment\": {\n    \"parametersVaried\": [\"parameter names\"],\n    \"parameterValues\": {\"parameter\": [0.1, 0.2]},\n    \"seeds\": [101, 202, 303],\n    \"steps\": 50,\n    \"primaryMetrics\": [\"metric names\"],\n    \"runCount\": 12\n  },\n  \"changes\": {\n    \"inspectedFiles\": [\"relative paths\"],\n    \"modifiedFiles\": [\"relative paths\"]\n  },\n  \"assumptions\": [\"...\"],\n  \"limitations\": [\"...\"]\n}\n```\n\nHash every regular file included in the project ZIP and list it exactly once in\n`workspaceFiles`. `verificationCommands` must contain commands actually executed\nin this Turn with their real exit codes. Use Python's standard library or another\navailable local tool to create the ZIP. Read back the manifest and ZIP listing\nbefore completing the Turn.\n\nClassify Python model and experiment-runner files as `source`, Python test files\nas `test`, CSV/JSON experiment outputs as `result`, plots as `plot`, and Markdown\nanalysis as `report`. Keep a file's classification stable across Turns unless\nits actual role changes; in particular, an existing model or runner `.py` file\nmust remain `source` after it is edited.\n\nThe caller independently scores modeling-methodology dimensions from the\nproject report, executed commands, raw run files, seeds, parameter coverage,\nand artifact contents. Do not add fields solely to anticipate the evaluator.\n",
+      "requiredArtifacts": [
+        "/workspace/outputs/turn-1-manifest.json",
+        "/workspace/outputs/turn-1-project.zip"
+      ]
+    },
+    {
+      "turn": 2,
+      "sha256": "a095d51c5af9719e30cf1cb6dc0d4a807dd12f6e2b7b6b63ab623892cd02af21",
+      "text": "# Continuity Turn 2\n\nContinue in the existing project and Session. Do not rebuild it from scratch.\n\nAdd a `mobility_noise` parameter. With probability `mobility_noise`, an unhappy\nagent chooses a random empty location instead of its preferred destination.\n\nRun experiments for `mobility_noise = 0.0, 0.1, 0.3` and compare them with the\nprevious similarity-threshold results. Keep old and new results distinguishable.\nVerify the modified code and finish by producing the two Turn 2 files required\nby the artifact contract.\n\n# Artifact contract\n\nFor each Turn `N`, create both of these files:\n\n- `/workspace/outputs/turn-N-project.zip`: a ZIP of the complete editable\n  `/workspace/project` directory, including source, tests, machine-readable raw\n  results, derived summaries, plots, and reports available at that Turn.\n- `/workspace/outputs/turn-N-manifest.json`: UTF-8 JSON matching the schema below.\n\nThe manifest must have this shape:\n\n```json\n{\n  \"schemaVersion\": 1,\n  \"fixtureVersion\": \"schelling-v1\",\n  \"turn\": 1,\n  \"executed\": true,\n  \"runtime\": {\n    \"python\": \"actual version\",\n    \"mesa\": \"actual version\"\n  },\n  \"verificationCommands\": [\n    {\"command\": \"exact executed command\", \"exitCode\": 0}\n  ],\n  \"workspaceFiles\": [\n    {\n      \"path\": \"path relative to /workspace/project\",\n      \"kind\": \"source|config|test|result|plot|report|other\",\n      \"sha256\": \"64 lowercase hex characters\"\n    }\n  ],\n  \"experiment\": {\n    \"parametersVaried\": [\"parameter names\"],\n    \"parameterValues\": {\"parameter\": [0.1, 0.2]},\n    \"seeds\": [101, 202, 303],\n    \"steps\": 50,\n    \"primaryMetrics\": [\"metric names\"],\n    \"runCount\": 12\n  },\n  \"changes\": {\n    \"inspectedFiles\": [\"relative paths\"],\n    \"modifiedFiles\": [\"relative paths\"]\n  },\n  \"assumptions\": [\"...\"],\n  \"limitations\": [\"...\"]\n}\n```\n\nHash every regular file included in the project ZIP and list it exactly once in\n`workspaceFiles`. `verificationCommands` must contain commands actually executed\nin this Turn with their real exit codes. Use Python's standard library or another\navailable local tool to create the ZIP. Read back the manifest and ZIP listing\nbefore completing the Turn.\n\nClassify Python model and experiment-runner files as `source`, Python test files\nas `test`, CSV/JSON experiment outputs as `result`, plots as `plot`, and Markdown\nanalysis as `report`. Keep a file's classification stable across Turns unless\nits actual role changes; in particular, an existing model or runner `.py` file\nmust remain `source` after it is edited.\n\nThe caller independently scores modeling-methodology dimensions from the\nproject report, executed commands, raw run files, seeds, parameter coverage,\nand artifact contents. Do not add fields solely to anticipate the evaluator.\n",
+      "requiredArtifacts": [
+        "/workspace/outputs/turn-2-manifest.json",
+        "/workspace/outputs/turn-2-project.zip"
+      ]
+    },
+    {
+      "turn": 3,
+      "sha256": "b3276abd6fc265a8ca9efbae3779bb0b463dbc0b458289b278dee5a4133c254c",
+      "text": "# Continuity Turn 3\n\nContinue in the same existing project and Session.\n\nChange the default similarity threshold to `0.45`. Before editing, inspect the\nexisting project and identify which files require modification. Make the minimum\nnecessary source/configuration changes, rerun verification, and keep historical\nexperiment outputs distinguishable from the new verification output.\n\nFinish by producing the two Turn 3 files required by the artifact contract.\n\n# Artifact contract\n\nFor each Turn `N`, create both of these files:\n\n- `/workspace/outputs/turn-N-project.zip`: a ZIP of the complete editable\n  `/workspace/project` directory, including source, tests, machine-readable raw\n  results, derived summaries, plots, and reports available at that Turn.\n- `/workspace/outputs/turn-N-manifest.json`: UTF-8 JSON matching the schema below.\n\nThe manifest must have this shape:\n\n```json\n{\n  \"schemaVersion\": 1,\n  \"fixtureVersion\": \"schelling-v1\",\n  \"turn\": 1,\n  \"executed\": true,\n  \"runtime\": {\n    \"python\": \"actual version\",\n    \"mesa\": \"actual version\"\n  },\n  \"verificationCommands\": [\n    {\"command\": \"exact executed command\", \"exitCode\": 0}\n  ],\n  \"workspaceFiles\": [\n    {\n      \"path\": \"path relative to /workspace/project\",\n      \"kind\": \"source|config|test|result|plot|report|other\",\n      \"sha256\": \"64 lowercase hex characters\"\n    }\n  ],\n  \"experiment\": {\n    \"parametersVaried\": [\"parameter names\"],\n    \"parameterValues\": {\"parameter\": [0.1, 0.2]},\n    \"seeds\": [101, 202, 303],\n    \"steps\": 50,\n    \"primaryMetrics\": [\"metric names\"],\n    \"runCount\": 12\n  },\n  \"changes\": {\n    \"inspectedFiles\": [\"relative paths\"],\n    \"modifiedFiles\": [\"relative paths\"]\n  },\n  \"assumptions\": [\"...\"],\n  \"limitations\": [\"...\"]\n}\n```\n\nHash every regular file included in the project ZIP and list it exactly once in\n`workspaceFiles`. `verificationCommands` must contain commands actually executed\nin this Turn with their real exit codes. Use Python's standard library or another\navailable local tool to create the ZIP. Read back the manifest and ZIP listing\nbefore completing the Turn.\n\nClassify Python model and experiment-runner files as `source`, Python test files\nas `test`, CSV/JSON experiment outputs as `result`, plots as `plot`, and Markdown\nanalysis as `report`. Keep a file's classification stable across Turns unless\nits actual role changes; in particular, an existing model or runner `.py` file\nmust remain `source` after it is edited.\n\nThe caller independently scores modeling-methodology dimensions from the\nproject report, executed commands, raw run files, seeds, parameter coverage,\nand artifact contents. Do not add fields solely to anticipate the evaluator.\n",
+      "requiredArtifacts": [
+        "/workspace/outputs/turn-3-manifest.json",
+        "/workspace/outputs/turn-3-project.zip"
+      ]
+    }
+  ],
+  "skill": {
+    "name": "riffology-simulation",
+    "description": "Design, implement, execute, and evaluate complex-system simulations when results must be reproducible and traceable to real runs.",
+    "sha256": "7530d3b0374f13bce859c0edf35197c1911079ffa77e5e50cce15154fa1509dd",
+    "files": [
+      "riffology-simulation/agents/openai.yaml",
+      "riffology-simulation/SKILL.md"
+    ]
+  },
+  "definitionSha256": "104790fe9ae11ee9ef4b1f7d1a98067989f0661bcf2284590b2a46338579b3fa",
+  "runs": [
+    {
+      "id": "r01-baseline",
+      "repetition": 1,
+      "condition": "baseline",
+      "skillEnabled": false
+    },
+    {
+      "id": "r01-simulation-skill",
+      "repetition": 1,
+      "condition": "simulation-skill",
+      "skillEnabled": true
+    },
+    {
+      "id": "r02-simulation-skill",
+      "repetition": 2,
+      "condition": "simulation-skill",
+      "skillEnabled": true
+    },
+    {
+      "id": "r02-baseline",
+      "repetition": 2,
+      "condition": "baseline",
+      "skillEnabled": false
+    }
+  ]
+}

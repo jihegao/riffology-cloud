@@ -151,7 +151,19 @@ function scheduleProjectRefresh(projects) {
   } else if (!document.hidden) pollTimer=setTimeout(renderProjects,3000);
 }
 
+function renderResearchStart() {
+  const button = $('#start-queue'), status = $('#queue-start-status');
+  if (!button || !status) return;
+  const available = modelsStatus === 'ready' && models.some(model => model.model_id === 'queue-research');
+  button.disabled = !available;
+  status.textContent = modelsStatus === 'loading' ? '正在检查官方案例…'
+    : modelsStatus === 'error' ? '暂时无法读取案例目录，请刷新目录。'
+    : available ? '已发布的 Queue 版本见下方目录；选择版本后创建独立副本。'
+    : 'Queue 官方案例尚未发布。你可以先描述自己的研究问题。';
+}
+
 function renderModels() {
+  renderResearchStart();
   const box = $('#models');
   const status = $('#models-status');
   if (!box || !status) return;
@@ -161,7 +173,7 @@ function renderModels() {
   if (!models.length) { status.textContent = '当前暂无可用的官方模型。'; return; }
   status.textContent = '选择固定版本开始独立项目。';
   for (const model of models) {
-    const card = document.createElement('article'); card.className = 'model-card';
+    const card = document.createElement('article'); card.className = 'model-card'; card.dataset.modelId = model.model_id; card.tabIndex = -1;
     const title = document.createElement('h3'); title.textContent = model.title || model.model_id;
     const description = document.createElement('p'); description.textContent = model.description || '暂无说明。';
     const version = document.createElement('small'); version.textContent = `版本 ${model.version}`;
@@ -967,6 +979,12 @@ function openProjectDialog(model = null) {
   dialog.showModal();
 }
 $('#new-project').onclick = () => openProjectDialog();
+$('#start-question')?.addEventListener('click', () => openProjectDialog());
+$('#start-queue')?.addEventListener('click', () => {
+  if (modelsStatus !== 'ready') return;
+  const card = [...document.querySelectorAll('#models .model-card')].find(value => value.dataset.modelId === 'queue-research');
+  if (card) { card.scrollIntoView({block:'center'}); card.focus(); }
+});
 function closeDialog() { if (!creating) dialog.close(); }
 $('#project-close').onclick = closeDialog;
 $('#project-cancel').onclick = closeDialog;
