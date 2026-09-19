@@ -6,12 +6,16 @@ import {join} from 'node:path';
 import {build} from 'esbuild';
 import {Miniflare} from 'miniflare';
 // Reuse the established native receipt fixtures; actual Workspace/guard/three ledger DOs below are production classes.
-async function authorityScenario(profile='cold',lostAck=false){
+async function authorityScenario(profile='cold',lostAck=false,settlementBlocked=false){
  const directory=await mkdtemp(join(tmpdir(),'g5-workspace-authority-'));
  let entry=(await readFile('tests/m2/workspace-turn-workerd.test.mjs','utf8')).match(/const entry = `([\s\S]*?)`;\n/)[1];
  entry=`import {g5TaskKey} from './services/model-budget/g5-admission.ts';
  import {G5_GLOBAL_ACTOR} from './services/model-budget/g5-window.ts';
- export {G5ControlledWindow} from './services/model-budget/g5-window-durable.ts';
+ import {G5ControlledWindow as ProductionG5ControlledWindow} from './services/model-budget/g5-window-durable.ts';
+ export class G5ControlledWindow extends ProductionG5ControlledWindow{
+  async closeTrustedTurn(taskKey,identity){if(${settlementBlocked}){const attempts=(this.ctx.storage.kv.get('fixture-close-attempts')??0)+1;this.ctx.storage.kv.put('fixture-close-attempts',attempts);await this.ctx.storage.sync();throw Error('g5-authority-turn-unsettled');}return super.closeTrustedTurn(taskKey,identity);}
+  async closeAttemptsForTest(){return this.ctx.storage.kv.get('fixture-close-attempts')??0;}
+ }
  export {G5TenantModelBudget} from './services/model-budget/g5-token-durable.ts';
  export {ProductionModelBudget} from './services/model-budget/production-durable.ts';
  export {ToolBridgeAgent} from './services/tools/durable.ts';
@@ -20,6 +24,7 @@ async function authorityScenario(profile='cold',lostAck=false){
  import {toolBridgeActorName} from './services/tools/identity.ts';\n`+entry;
  entry=entry.replace("const {project}=await new ProjectCatalog(db,new Set(['blank-v1'])).create({userId:'alpha',authVersion:1},'tenant-alpha','workspace-turn-test',{title:'Fixture',starterVersion:'blank-v1'});", `const body={title:'Fixture',starterVersion:'blank-v1'},task=await g5TaskKey(env.G5_CONTROLLED_WINDOW_JSON,'project','tenant-alpha','alpha',{key:'workspace-turn-test'},body),guard=env.G5_WINDOW_GUARD.getByName(G5_GLOBAL_ACTOR);await guard.registerTask(task);const created=await guard.claimTaskCreate(task.key);if(!created.authorized)throw Error('fixture-project-create-denied');const policy=JSON.parse(env.G5_CONTROLLED_WINDOW_JSON);const {project}=await new ProjectCatalog(db,new Set(['blank-v1'])).create({userId:'alpha',authVersion:1},'tenant-alpha','workspace-turn-test',body,{kind:'g5',taskKey:task.key,windowId:policy.windowId,profileSha256:policy.profilePin.profileSha256});await guard.bindTask(task.key,project.id);`);
  entry=entry.replace("if(input.method==='calls')", `if(input.method==='guard')return Response.json({ok:true,value:await env.G5_WINDOW_GUARD.getByName(G5_GLOBAL_ACTOR).snapshot()});
+ if(input.method==='guardCloseAttempts')return Response.json({ok:true,value:await env.G5_WINDOW_GUARD.getByName(G5_GLOBAL_ACTOR).closeAttemptsForTest()});
  if(input.method==='closeGate')return Response.json({ok:true,value:await env.G5_WINDOW_GUARD.getByName(G5_GLOBAL_ACTOR).closeAdmission()});
  if(input.method==='ledgers'){const identity=input.identity;return Response.json({ok:true,value:await Promise.all([env.G5_TOKEN_BUDGET.getByName(modelBudgetTenantName(identity.scope.tenantId)).turnSettlement(identity.scope.tenantId,identity),env.PRODUCTION_MODEL_BUDGET.getByName(PRODUCTION_MONEY_ACTOR).turnSettlement(identity),env.TOOL_BRIDGE_AGENT.getByName(await toolBridgeActorName(identity.scope,identity.turnId,identity.dispatchId)).turnSettlement(identity)])});}
  if(input.method==='calls')`);
@@ -56,9 +61,12 @@ async function authorityScenario(profile='cold',lostAck=false){
    await assert.rejects(rpc('runAlarm',{task,scope}),/g5-turn-route-unavailable/);
    const journal=await rpc('journal',{task,scope}),saved=journal.turns[turn.id];assert.equal(saved.status,'queued');assert.equal(journal.resourceWait,null,'guard denies before capacity request');assert.equal(saved.dispatchId,null);assert.equal(await rpc('calls',{turnId:turn.id}),null,'no native accept');const guard=await rpc('guard');assert.equal(guard.calls.length,0);assert.equal(guard.tasks.find(t=>JSON.parse(t.document).kind==='turn').state,'create-claimed');return;
   }
-  const first=await rpc('submitTurn',{task,scope,actor,sessionId:session.id,key:'first',message:'synthetic nonce fixture'});await until(()=>rpc('snapshot',{task,scope}),value=>value.turns[first.turn.id]?.status==='completed');await rpc('runAlarm',{task,scope});const closed=await until(()=>rpc('guard'),value=>value.turns.some(t=>t.turn_id===first.turn.id&&t.state==='closed'));assert.equal(closed.calls.length,0,'no provider calls occur in this fixture');const identity={scope,sessionId:session.id,turnId:first.turn.id,dispatchId:await rpc('dispatch',{task,scope,turnId:first.turn.id}),generation:1};const ledgers=await rpc('ledgers',{identity});assert.deepEqual(ledgers.map(r=>[r.domain,r.closed,r.active,r.pending,r.unknown]),[['model',true,0,0,0],['money',true,0,0,0],['tool',true,0,0,0]]);assert.equal((await rpc('calls',{turnId:first.turn.id})).accept_count,1);
+  const first=await rpc('submitTurn',{task,scope,actor,sessionId:session.id,key:'first',message:'synthetic nonce fixture'});await until(()=>rpc('snapshot',{task,scope}),value=>value.turns[first.turn.id]?.status==='completed');await rpc('runAlarm',{task,scope});
+  if(settlementBlocked){assert.equal(await rpc('guardCloseAttempts'),1);await rpc('runAlarm',{task,scope});assert.equal(await rpc('guardCloseAttempts'),1);await mf.dispose();mf=new Miniflare(options);await mf.ready;await rpc('runAlarm',{task,scope});assert.equal(await rpc('guardCloseAttempts'),1,'durable blocked state suppresses retry after actor restart');return;}
+  const closed=await until(()=>rpc('guard'),value=>value.turns.some(t=>t.turn_id===first.turn.id&&t.state==='closed'));assert.equal(closed.calls.length,0,'no provider calls occur in this fixture');const identity={scope,sessionId:session.id,turnId:first.turn.id,dispatchId:await rpc('dispatch',{task,scope,turnId:first.turn.id}),generation:1};const ledgers=await rpc('ledgers',{identity});assert.deepEqual(ledgers.map(r=>[r.domain,r.closed,r.active,r.pending,r.unknown]),[['model',true,0,0,0],['money',true,0,0,0],['tool',true,0,0,0]]);assert.equal((await rpc('calls',{turnId:first.turn.id})).accept_count,1);
   const running=await rpc('submitTurn',{task,scope,actor,sessionId:session.id,key:'running',message:'running-cancel'});await until(()=>rpc('snapshot',{task,scope}),value=>value.turns[running.turn.id]?.status==='running');const {session:other}=await rpc('createSession',{task,scope,actor,key:'second-session',title:'Synthetic second'});const queued=await rpc('submitTurn',{task,scope,actor,sessionId:other.id,key:'queued',message:'synthetic must not execute'});assert.equal(queued.turn.status,'queued');assert.equal(await rpc('calls',{turnId:queued.turn.id}),null);await rpc('closeGate');await assert.rejects(rpc('cancelTurn',{task,scope,actor,turnId:running.turn.id}),/fixture-dropped-cancel-response/);await mf.dispose();mf=new Miniflare(options);await mf.ready;await rpc('runAlarm',{task,scope}).catch(error=>assert.match(error.message,/deadline-or-closed/));assert.equal(await rpc('calls',{turnId:queued.turn.id}),null);const final=await rpc('snapshot',{task,scope});assert.equal(final.turns[queued.turn.id].status,'queued');
  }finally{await mf?.dispose();await rm(directory,{recursive:true,force:true});}
 }
 test('G5 production Workspace and private authority close real Turn ledgers; closed window blocks queued native execution',{timeout:60000},()=>authorityScenario());
+test('G5 terminal authority blocker is attempted once and does not create an alarm request storm',{timeout:60000},()=>authorityScenario('cold',false,true));
 for(const profile of ['cold','warm'])test(`G5 ${profile} journal durability ACK loss survives restart without capacity or native start`,{timeout:60000},()=>authorityScenario(profile,true));
