@@ -29,7 +29,7 @@ test('Pi developer Workspace preserves markers across restart, serializes admiss
  }
  export class Quota extends DurableObject{async snapshot(){return {capacity:2,occupied:1,available:1,unknown:1,configuredPolicyMatches:true,leases:[{status:'unknown',projectId:'private-other-project',operationId:'private-operation'}]};}}
  export class Artifacts extends DurableObject{}
- export class Developer extends DurableObject {async assertQuiet(){}}
+ export class Developer extends DurableObject {async assertQuiet(){}async admitTurn(){}}
  export class Runtime extends DurableObject{}
  export class Capacity extends DurableObject{}
  export default {async fetch(request,env){const {method,...input}=await request.json();try{const stub=env.WORKSPACE_AGENT.getByName(workspaceAgentName(input.scope.tenantId,input.scope.workspaceId));let value;if(method==='stop')value=await env.MANAGED_TURN_RUNTIME.getByName('managed-product-v1:tenant:project').stop();else if(method==='seed')value=await stub.seed(input.scope);else if(method==='seedRuns')value=await stub.seedRuns(input.scope,input.actor);else value=await stub[method](input);return Response.json({ok:true,value});}catch(e){return Response.json({ok:false,error:e.message});}}};`;

@@ -10,7 +10,7 @@ import { modelBudgetTenantName, modelCallReference } from '../../services/model-
 
 test('Workerd TenantModelBudget preserves tenant scope, dispatch fence and policy across restart', { timeout: 45_000 }, async () => {
   const directory = await mkdtemp(join(tmpdir(), 'm2-model-budget-workerd-'));
-  const methods = ['reserve', 'lookup', 'dispatch', 'markUnknown', 'finish', 'releaseUndispatched', 'snapshot'];
+  const methods = ['reserve', 'lookup', 'dispatch', 'markUnknown', 'finish', 'releaseUndispatched', 'snapshot', 'closeTurnAdmission', 'executionIsolationCandidate', 'recordExecutionIsolation'];
   const bundle = await build({ stdin: { contents: `export {TenantModelBudget} from './services/model-budget/durable.ts';
     export default {async fetch(request,env){
       if(request.method!=='POST'||new URL(request.url).pathname!=='/_model-budget-test')return new Response('no-public-route',{status:404});
@@ -32,6 +32,7 @@ test('Workerd TenantModelBudget preserves tenant scope, dispatch fence and polic
         MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL: { type: 'text', value: '80' },
         MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL: { type: 'text', value: '20' },
         MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN: { type: 'text', value: '120' },
+        M2_MODEL_TURN_CAPABILITY_KEY: { type: 'text', value: 'fixture-model-turn-capability-key-32-bytes' },
         TENANT_MODEL_BUDGET: { type: 'durable-object', worker: 'm2-model-budget-local', exportName: 'TenantModelBudget' },
       },
       exports: { TenantModelBudget: { type: 'durable-object', storage: 'sqlite' } },
@@ -72,6 +73,10 @@ test('Workerd TenantModelBudget preserves tenant scope, dispatch fence and polic
     const tenantB = await actorB.reserve('tenant-b', request('tenant-b', { budgetPolicyVersion: 'policy-v2' }));
     assert.equal(tenantB.record.identity.scope.tenantId, 'tenant-b');
     assert.equal((await actorB.snapshot('tenant-b', identity('tenant-b'))).attempts, 1);
+    const tenantCIdentity=identity('tenant-c'),actorC=namespace.getByName(modelBudgetTenantName('tenant-c')),tenantCRequest=request('tenant-c',{budgetPolicyVersion:'policy-v2',deadlineAt:Date.now()+100});
+    const tenantC=await actorC.reserve('tenant-c',tenantCRequest),tenantCRef=modelCallReference(tenantC.record);await actorC.dispatch('tenant-c',tenantCRef);await actorC.markUnknown('tenant-c',tenantCRef);await actorC.closeTurnAdmission('tenant-c',tenantCIdentity);await new Promise(resolve=>setTimeout(resolve,120));
+    const candidate=await actorC.executionIsolationCandidate('tenant-c',tenantC.record.callKey),proof={schemaVersion:1,callKey:candidate.blocker.callKey,turnKey:candidate.blocker.turnKey,recordDigest:candidate.recordDigest,evidenceSha256:'e'.repeat(64),isolatedAt:Date.now(),classification:'runtime-absent-and-fenced'};
+    await assert.rejects(actorC.recordExecutionIsolation('tenant-c',proof,'f'.repeat(64)),/authority-invalid/);
     assert.equal((await mf.dispatchFetch('http://model-budget-local.test/')).status, 404);
   } finally { try { await mf?.dispose(); } finally { await rm(directory, { recursive: true, force: true }); } }
 });

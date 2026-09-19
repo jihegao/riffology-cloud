@@ -29,6 +29,7 @@ export class ProductTurnRuntime extends DurableObject<ProductTurnRuntimeEnv>{
   #host=new ProductTurnRuntimeHost(this.ctx,this.env,release);
   async accept(input:Parameters<TurnRuntimePort['accept']>[0]){return this.#host.accept(input);}
   async workspaceRuntimeState(identity:TurnRuntimeIdentity){return this.#host.workspaceRuntimeState(identity);}
+  async fenceExecution(identity:TurnRuntimeIdentity){return this.#host.fenceExecution(identity);}
   async projectPreparationRequired(identity:TurnRuntimeIdentity){return this.#host.projectPreparationRequired(identity);}
   async prepareProjectTool(input:Parameters<ProductTurnRuntimeHost['prepareProjectTool']>[0]){return this.#host.prepareProjectTool(input);}
   async currentObserverExecution(input:Parameters<ProductTurnRuntimeHost['currentObserverExecution']>[0]){return this.#host.currentObserverExecution(input);}

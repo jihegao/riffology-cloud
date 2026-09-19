@@ -122,6 +122,33 @@ export type ModelExecutionBlockerCorrelation = {
   requestId: string;
   providerRequestId: string | null;
 };
+export type ModelExecutionIsolationCandidate = {
+  schemaVersion: 1;
+  identity: TurnRuntimeIdentity;
+  blocker: ModelExecutionBlocker;
+  recordDigest: string;
+};
+export type ModelExecutionIsolationProof = {
+  schemaVersion: 1;
+  callKey: string;
+  turnKey: string;
+  recordDigest: string;
+  evidenceSha256: string;
+  isolatedAt: number;
+  classification: 'runtime-released' | 'runtime-absent-and-fenced';
+};
+export type ModelExecutionIsolationManifest = {
+  schemaVersion: 1;
+  ledger: 'legacy' | 'g5';
+  proofs: { callKey: string; proofDigest: string }[];
+};
+export type ModelExecutionIsolationSnapshot = {
+  schemaVersion: 1;
+  ledger: ModelExecutionIsolationManifest['ledger'];
+  blocked: number;
+  isolated: number;
+  proofs: { callKey: string; proofDigest: string; evidenceSha256: string; classification: ModelExecutionIsolationProof['classification']; isolatedAt: number }[];
+};
 export type ModelBudgetStorage = Pick<DurableObjectStorage, 'sql' | 'transactionSync' | 'sync'>;
 
 type Row = Record<string, SqlStorageValue>;
@@ -164,6 +191,9 @@ function stableTurnIdentity(identity: TurnRuntimeIdentity) {
 }
 async function turnKey(identity: TurnRuntimeIdentity): Promise<string> {
   return turnDigest({ schemaVersion: 1, purpose: 'model-budget-turn', ...stableTurnIdentity(identity) });
+}
+export async function modelBudgetTurnKey(value: unknown): Promise<string> {
+  return turnKey(turnRuntimeIdentity(value));
 }
 async function callKey(identity: TurnRuntimeIdentity, callId: string): Promise<string> {
   return turnDigest({ schemaVersion: 1, purpose: 'model-budget-call', ...stableTurnIdentity(identity), callId });
@@ -246,6 +276,25 @@ function normalizedRelease(value: unknown): ModelReleaseProof {
   if (!['cancelled-before-dispatch', 'proxy-pre-dispatch-failed', 'deadline-before-dispatch'].includes(String(value.reason))) reject('invalid-model-release-proof');
   return { confirmationId: identifier(value.confirmationId), reason: value.reason as ModelReleaseProof['reason'], observedAt: positive(value.observedAt) };
 }
+function normalizedIsolationProof(value: unknown): ModelExecutionIsolationProof {
+  exact(value, ['schemaVersion', 'callKey', 'turnKey', 'recordDigest', 'evidenceSha256', 'isolatedAt', 'classification'], 'invalid-model-execution-isolation');
+  if (value.schemaVersion !== 1 || !['runtime-released', 'runtime-absent-and-fenced'].includes(String(value.classification))) reject('invalid-model-execution-isolation');
+  return {
+    schemaVersion: 1,
+    callKey: sha(value.callKey), turnKey: sha(value.turnKey), recordDigest: sha(value.recordDigest), evidenceSha256: sha(value.evidenceSha256),
+    isolatedAt: positive(value.isolatedAt), classification: value.classification as ModelExecutionIsolationProof['classification'],
+  };
+}
+function normalizedIsolationManifest(value: unknown): ModelExecutionIsolationManifest {
+  exact(value, ['schemaVersion', 'ledger', 'proofs'], 'invalid-model-execution-isolation-manifest');
+  if (value.schemaVersion !== 1 || !['legacy', 'g5'].includes(String(value.ledger)) || !Array.isArray(value.proofs) || value.proofs.length < 1 || value.proofs.length > 64) reject('invalid-model-execution-isolation-manifest');
+  const proofs = value.proofs.map(item => {
+    exact(item, ['callKey', 'proofDigest'], 'invalid-model-execution-isolation-manifest');
+    return { callKey: sha(item.callKey), proofDigest: sha(item.proofDigest) };
+  });
+  if (new Set(proofs.map(item => item.callKey)).size !== proofs.length) reject('invalid-model-execution-isolation-manifest');
+  return {schemaVersion: 1, ledger: value.ledger as ModelExecutionIsolationManifest['ledger'], proofs};
+}
 
 /** Tenant-scoped product quota ledger. It records calls and token bounds only.
  * Prices, balances, payment and settlement belong to the future TenantBilling authority. */
@@ -291,7 +340,10 @@ export class SqlTenantModelBudget {
       ) STRICT;
       CREATE UNIQUE INDEX IF NOT EXISTS model_one_active_call_per_turn ON model_calls(turn_key) WHERE status IN ('reserved','dispatched','unknown');
       CREATE INDEX IF NOT EXISTS model_calls_by_turn ON model_calls(turn_key,accepted_at,call_key);
-      CREATE TABLE IF NOT EXISTS model_turn_admission_closures(turn_key TEXT PRIMARY KEY,identity_json TEXT NOT NULL,closed_at INTEGER NOT NULL) STRICT;`);
+      CREATE TABLE IF NOT EXISTS model_turn_admission_closures(turn_key TEXT PRIMARY KEY,identity_json TEXT NOT NULL,closed_at INTEGER NOT NULL) STRICT;
+      CREATE TABLE IF NOT EXISTS model_execution_isolations(
+        call_key TEXT PRIMARY KEY, document TEXT NOT NULL, digest TEXT NOT NULL UNIQUE
+      ) STRICT;`);
       const meta = this.#rows('SELECT * FROM model_budget_meta WHERE singleton=1')[0];
       if (meta && meta.tenant_id !== this.#policy.tenantId) reject('model-budget-tenant-conflict');
       if (!meta) this.#storage.sql.exec('INSERT INTO model_budget_meta VALUES (1,?,?,?,?,?,?,?)', this.#policy.tenantId, this.#policy.version, this.#policy.maxReservationAttemptsPerTurn, this.#policy.maxDispatchedCallsPerTurn, this.#policy.maxInputTokensPerCall, this.#policy.maxOutputTokensPerCall, this.#policy.maxReservedTokensPerTurn);
@@ -577,31 +629,89 @@ export class SqlTenantModelBudget {
     );
   }
 
+  #blocker(record: ModelCallRecord): ModelExecutionBlocker {
+    return {
+      schemaVersion: 1, callKey: record.callKey, turnKey: record.turnKey, provider: record.provider, model: record.model,
+      status: record.status, reconciliation: record.reconciliation, acceptedAt: record.acceptedAt, deadlineAt: record.deadlineAt,
+      dispatchedAt: record.dispatchedAt, unknownAt: record.unknownAt, finishedAt: record.finishedAt,
+      terminalOutcome: record.terminal?.outcome ?? null, terminalErrorCode: record.terminal?.errorCode ?? null,
+      providerRequestIdPresent: record.terminal?.providerRequestId !== null && record.terminal?.providerRequestId !== undefined,
+      usageKind: record.terminal?.usage.kind ?? null,
+    };
+  }
+  async #recordDigest(record: ModelCallRecord): Promise<string> {
+    // Bind only immutable request/admission identity. Provider reconciliation,
+    // usage and accounting may advance later without invalidating a proven
+    // execution fence or allowing another call to take this record's place.
+    return turnDigest({schemaVersion:1,purpose:'model-execution-isolation-record',callKey:record.callKey,turnKey:record.turnKey,requestDigest:record.digest,reservationId:record.reservationId,acceptedAt:record.acceptedAt,deadlineAt:record.deadlineAt,provider:record.provider,model:record.model,payloadSha256:record.payloadSha256});
+  }
+  async #isolation(callKeyValue: unknown): Promise<{proof:ModelExecutionIsolationProof;digest:string}|null> {
+    const key=sha(callKeyValue),row=this.#rows('SELECT document,digest FROM model_execution_isolations WHERE call_key=?',key)[0];
+    if(!row)return null;
+    const proof=normalizedIsolationProof(JSON.parse(row.document as string)),digest=sha(row.digest);
+    if(proof.callKey!==key||digest!==await turnDigest(proof))reject('invalid-persisted-model-execution-isolation');
+    return {proof,digest};
+  }
+  #turnExecutionClosed(record:ModelCallRecord):boolean {
+    const row=this.#rows('SELECT identity_json FROM model_turn_admission_closures WHERE turn_key=?',record.turnKey)[0];
+    if(!row)return false;
+    try{return sameIdentity(turnRuntimeIdentity(JSON.parse(row.identity_json as string)),record.identity);}catch{return false;}
+  }
+
   /** Read-only, redacted inventory for operator reconciliation. It exposes
    * ledger digests and terminal classifications, never request payloads,
    * identities, user input, or raw provider/request identifiers. */
   async executionBlockers(): Promise<ModelExecutionBlockerInventory> {
     await this.#ready;
     const records = await Promise.all(this.#rows('SELECT * FROM model_calls ORDER BY accepted_at,call_key').map(row => this.#verified(row)));
-    const blockers = records.filter(record => !this.#executionEnded(record)).map(record => ({
-      schemaVersion: 1 as const,
-      callKey: record.callKey,
-      turnKey: record.turnKey,
-      provider: record.provider,
-      model: record.model,
-      status: record.status,
-      reconciliation: record.reconciliation,
-      acceptedAt: record.acceptedAt,
-      deadlineAt: record.deadlineAt,
-      dispatchedAt: record.dispatchedAt,
-      unknownAt: record.unknownAt,
-      finishedAt: record.finishedAt,
-      terminalOutcome: record.terminal?.outcome ?? null,
-      terminalErrorCode: record.terminal?.errorCode ?? null,
-      providerRequestIdPresent: record.terminal?.providerRequestId !== null && record.terminal?.providerRequestId !== undefined,
-      usageKind: record.terminal?.usage.kind ?? null,
-    }));
+    const blockers = records.filter(record => !this.#executionEnded(record)).map(record => this.#blocker(record));
     return structuredClone({schemaVersion: 1 as const,total: records.length,confirmedEnded: records.length-blockers.length,blocked: blockers.length,blockers});
+  }
+
+  /** Private exact-call input for the operator that verifies Workspace/runtime
+   * isolation. It reveals the durable Turn identity but never request IDs,
+   * actor, payload, reservation, usage, or provider response content. */
+  async executionIsolationCandidate(callKeyValue: unknown): Promise<ModelExecutionIsolationCandidate> {
+    const key=sha(callKeyValue);await this.#ready;const row=this.#get(key);
+    if(!row)reject('model-execution-blocker-absent');const record=await this.#verified(row);
+    if(this.#executionEnded(record))reject('model-execution-blocker-ended');
+    return structuredClone({schemaVersion:1,identity:record.identity,blocker:this.#blocker(record),recordDigest:await this.#recordDigest(record)});
+  }
+
+  /** Append-only operator attestation. This never changes call status,
+   * reconciliation, reservations, usage, or provider/billing facts. */
+  async recordExecutionIsolation(value: unknown): Promise<{proof:ModelExecutionIsolationProof;proofDigest:string}> {
+    const proof=normalizedIsolationProof(value);await this.#ready;const row=this.#get(proof.callKey);
+    if(!row)reject('model-execution-blocker-absent');const record=await this.#verified(row),now=this.#now();
+    if(this.#executionEnded(record)||!this.#turnExecutionClosed(record)||record.callKey!==proof.callKey||record.turnKey!==proof.turnKey||record.deadlineAt>proof.isolatedAt||proof.isolatedAt>now||(await this.#recordDigest(record))!==proof.recordDigest)reject('model-execution-isolation-denied');
+    const digest=await turnDigest(proof),prior=await this.#isolation(proof.callKey);
+    if(prior){if(prior.digest!==digest)reject('model-execution-isolation-conflict');return structuredClone({proof:prior.proof,proofDigest:prior.digest});}
+    this.#storage.sql.exec('INSERT INTO model_execution_isolations VALUES(?,?,?)',proof.callKey,canonical(proof),digest);await this.#storage.sync();
+    return structuredClone({proof,proofDigest:digest});
+  }
+
+  /** Admission accepts only the exact frozen set of unresolved historical
+   * calls. New/missing blockers, changed records, or proof drift fail closed. */
+  async assertExecutionIsolated(value: unknown): Promise<ModelExecutionIsolationSnapshot> {
+    const manifest=normalizedIsolationManifest(value);await this.#ready;
+    const records=await Promise.all(this.#rows('SELECT * FROM model_calls ORDER BY call_key').map(row=>this.#verified(row))),byKey=new Map(records.map(record=>[record.callKey,record])),blockers=records.filter(record=>!this.#executionEnded(record));
+    const expected=new Map(manifest.proofs.map(item=>[item.callKey,item.proofDigest])),proofs:ModelExecutionIsolationSnapshot['proofs']=[];
+    if(blockers.some(record=>!expected.has(record.callKey)))reject('pi-developer-execution-isolation-unconfirmed');
+    for(const item of manifest.proofs){const record=byKey.get(item.callKey),stored=await this.#isolation(item.callKey);if(!record||!this.#turnExecutionClosed(record)||!stored||stored.digest!==item.proofDigest||stored.proof.turnKey!==record.turnKey||stored.proof.recordDigest!==(await this.#recordDigest(record)))reject('pi-developer-execution-isolation-unconfirmed');proofs.push({callKey:record.callKey,proofDigest:stored.digest,evidenceSha256:stored.proof.evidenceSha256,classification:stored.proof.classification,isolatedAt:stored.proof.isolatedAt});}
+    return structuredClone({schemaVersion:1,ledger:manifest.ledger,blocked:blockers.length,isolated:proofs.length,proofs});
+  }
+
+  /** Redundant workspace-local fence. Tenant-wide admission still requires
+   * the frozen exact-set manifest; this only permits an old Turn when each of
+   * its unresolved calls has a current append-only isolation proof. */
+  async assertTurnExecutionIsolated(value: unknown): Promise<void> {
+    const identity=turnRuntimeIdentity(value);this.#scope(identity);const key=await turnKey(identity);await this.#ready;
+    const records=await Promise.all(this.#rows('SELECT * FROM model_calls WHERE turn_key=? ORDER BY call_key',key).map(row=>this.#verified(row)));
+    for(const record of records){
+      if(this.#executionEnded(record))continue;
+      const stored=await this.#isolation(record.callKey);
+      if(!this.#turnExecutionClosed(record)||!stored||stored.proof.turnKey!==record.turnKey||stored.proof.recordDigest!==(await this.#recordDigest(record)))reject('pi-developer-execution-isolation-unconfirmed');
+    }
   }
 
   /** Private operator correlation for one exact unresolved blocker. This is

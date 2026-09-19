@@ -1,7 +1,8 @@
 import {DurableObject} from 'cloudflare:workers';
 import {SqlTenantModelBudget,modelBudgetTenantName,type ModelBudgetPolicy,type ModelCallReference} from './core.ts';
 import type {TenantModelBudgetEnv} from './durable.ts';
-export interface G5TokenEnv {G5_TOKEN_BUDGET:DurableObjectNamespace<G5TenantModelBudget>;G5_TOKEN_BUDGET_POLICY_JSON?:string}
+import {verifyExecutionIsolationAuthority} from './execution-isolation-capability.ts';
+export interface G5TokenEnv {G5_TOKEN_BUDGET:DurableObjectNamespace<G5TenantModelBudget>;G5_TOKEN_BUDGET_POLICY_JSON?:string;M2_MODEL_TURN_CAPABILITY_KEY:string}
 const decimal=(v:string)=>{if(typeof v!=='string'||!/^[1-9][0-9]{0,8}$/.test(v))throw Error('invalid-model-budget-configuration');return Number(v);};
 /** Additive export/namespace. Keeps old G4 actors, configuration and state intact.
  * This private token ledger alone cannot authorize provider/network execution. */
@@ -15,6 +16,10 @@ export class G5TenantModelBudget extends DurableObject<G5TokenEnv>{
  async finish(tenantId:string,reference:ModelCallReference,terminal:unknown){return this.#forTenant(tenantId).finish(reference,terminal);}
  async releaseUndispatched(tenantId:string,reference:ModelCallReference,proof:unknown){return this.#forTenant(tenantId).releaseUndispatched(reference,proof);}
  async assertExecutionQuiet(tenantId:string){return this.#forTenant(tenantId).assertExecutionQuiet();}
+ async executionIsolationCandidate(tenantId:string,callKey:unknown){return this.#forTenant(tenantId).executionIsolationCandidate(callKey);}
+ async recordExecutionIsolation(tenantId:string,proof:unknown,authority:unknown){await verifyExecutionIsolationAuthority(this.env.M2_MODEL_TURN_CAPABILITY_KEY,'g5',tenantId,proof,authority);return this.#forTenant(tenantId).recordExecutionIsolation(proof);}
+ async assertExecutionIsolated(tenantId:string,manifest:unknown){return this.#forTenant(tenantId).assertExecutionIsolated(manifest);}
+ async assertTurnExecutionIsolated(tenantId:string,identity:unknown){return this.#forTenant(tenantId).assertTurnExecutionIsolated(identity);}
  async executionBlockers(tenantId:string){return this.#forTenant(tenantId).executionBlockers();}
  async executionBlockerCorrelation(tenantId:string,callKey:unknown){return this.#forTenant(tenantId).executionBlockerCorrelation(callKey);}
  async snapshot(tenantId:string,identity:unknown){return this.#forTenant(tenantId).snapshot(identity);}
