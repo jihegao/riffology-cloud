@@ -92,10 +92,13 @@ export class ProjectCatalog {
     const existing = `SELECT 1 FROM catalog_creation_intents WHERE actor_user_id=? AND tenant_id=? AND operation='project.create' AND idempotency_key=?`;
     await this.db.batch([
       sql(`INSERT INTO catalog_projects(id,tenant_id,owner_user_id,workspace_id,title,starter_version,source_model_version_id,source_model_id,source_model_version,source_digest,status,generation,created_at,updated_at)
-        SELECT ?,?,?,?, ?,?,?,?,?,?,'provisioning',1,?,? WHERE EXISTS (${ownership}) AND NOT EXISTS (${existing}) AND (?
+        SELECT ?,?,?,?, ?,?,?,?,?,?,'provisioning',1,?,? WHERE EXISTS (${ownership}) AND NOT EXISTS (${existing})
+          AND (? IS NULL OR EXISTS (SELECT 1 FROM catalog_invitations i WHERE i.id=? AND i.state='accepted' AND i.purpose='user' AND i.issued_by IS NOT NULL AND i.accepted_by=?)) AND (?
           OR EXISTS (SELECT 1 FROM catalog_model_versions mv WHERE mv.id=? AND mv.model_id=? AND mv.version=? AND mv.status='published' AND mv.starter_version=? AND mv.content_sha256=?))`,
         projectId, tenantId, principal.userId, workspaceId, input.title, input.starterVersion??null, source?.id??null, source?.modelId??null, source?.version??null, source?.digest??null, now, now,
-        tenantId, principal.userId, principal.authVersion, principal.userId, tenantId, key, source===null?1:0, source?.id??null, source?.modelId??null, source?.version??null, input.starterVersion??null, source?.digest??null),
+        tenantId, principal.userId, principal.authVersion, principal.userId, tenantId, key,
+        admission?.invitationId??null,admission?.invitationId??null,principal.userId,
+        source===null?1:0, source?.id??null, source?.modelId??null, source?.version??null, input.starterVersion??null, source?.digest??null),
       sql(`INSERT INTO catalog_workspaces(id,project_id,tenant_id,owner_user_id,generation,status,created_at,updated_at)
         SELECT workspace_id,id,tenant_id,owner_user_id,generation,'provisioning',?,? FROM catalog_projects WHERE id=?`, now, now, projectId),
       sql(`INSERT INTO catalog_project_budget_routes(project_id,tenant_id,route_json) SELECT id,tenant_id,? FROM catalog_projects WHERE id=? AND ? IS NOT NULL`,route?JSON.stringify(route):null,projectId,route?JSON.stringify(route):null),

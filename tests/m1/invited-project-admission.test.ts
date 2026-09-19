@@ -95,3 +95,18 @@ test('invited admission identity is immutable across an idempotent replay',async
     await assert.rejects(projects.create(f.principal,f.tenantId,'same-key',body,undefined,{...admission,invitationId:'forged'}),{message:'idempotency_conflict'});
   }finally{f.db.sqlite.close();}
 });
+
+test('project creation rechecks the admitted invitation identity atomically',async()=>{
+  const f=await acceptedFixture();
+  try{
+    const {ProjectCatalog}=await import('../../services/catalog/projects.ts');
+    const projects=new ProjectCatalog(f.db,new Set(['blank-v1']));
+    const admission=(await acceptedInvitationProjectAdmission(f.db,'true',f.principal,f.tenantId))!;
+    const admin=new OperatorCatalog(f.db),issued=await admin.issue({userId:'operator',authVersion:1},'other-invite',{email:'other@example.test',expiresInDays:7});
+    const otherIdentity:VerifiedIdentity={subject:'auth-other',email:'other@example.test',emailVerified:true,platformVersion:1};
+    await new Admission(f.db).accept(otherIdentity,issued.token!);
+    await assert.rejects(projects.create(f.principal,f.tenantId,'wrong-invitation',{title:'Must not exist',starterVersion:'blank-v1'},undefined,{...admission,invitationId:issued.invitation.id}),{message:'not_found'});
+    assert.equal(f.db.count('catalog_projects'),0);
+    assert.equal((f.db.sqlite.prepare("SELECT count(*) AS n FROM catalog_audit_log WHERE action='project.admission'").get() as {n:number}).n,0);
+  }finally{f.db.sqlite.close();}
+});
