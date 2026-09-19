@@ -1,5 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {dirname,resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {Admission,type VerifiedIdentity} from '../../services/catalog/admission.ts';
 import {OperatorCatalog} from '../../services/catalog/admin.ts';
 import {acceptedInvitationProjectAdmission,INVITED_PROJECT_POLICY_VERSION} from '../../services/catalog/project-admission.ts';
@@ -8,6 +11,14 @@ import {HttpError} from '../../services/gateway/http.ts';
 import {SqliteCatalog} from './sqlite-database.ts';
 
 const origin='https://invited-project.test';
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'../..');
+
+test('only the reviewed phase1 deployment enables invited project admission',()=>{
+  const flag=(path:string)=>JSON.parse(readFileSync(resolve(root,path),'utf8')).vars.INVITED_PROJECT_ADMISSION_ENABLED;
+  assert.equal(flag('infra/wrangler.gateway-local.jsonc'),'false');
+  assert.equal(flag('infra/wrangler.gateway-staging.jsonc'),'false');
+  assert.equal(flag('infra/wrangler.phase1-staging.jsonc'),'true');
+});
 
 async function acceptedFixture(){
   const db=new SqliteCatalog(),now=Date.now();db.seed('operator');
