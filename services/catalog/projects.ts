@@ -2,6 +2,7 @@ import { statement as sql, type Database } from './database.ts';
 import { CatalogError, createProjectInput, digest, opaqueId, type Principal, type Project } from './contracts.ts';
 import type { TurnScope } from '../turn/protocol.ts';
 import type { ModelCatalog } from './models.ts';
+import {projectCreationAdmission,type ProjectCreationAdmission} from './project-admission.ts';
 export type ProjectBudgetRoute={kind:'g5';taskKey:string;windowId:string;profileSha256:string};
 export function projectBudgetRoute(raw:unknown):ProjectBudgetRoute {
   if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new CatalogError('invalid_input');
@@ -62,15 +63,20 @@ export class ProjectCatalog {
     return this.resolveWorkspace(principal,workspaceId,false);
   }
 
-  async create(principal: Principal, tenantId: string, key: string, body: unknown, budgetRoute?:ProjectBudgetRoute): Promise<{ project: Project; replayed: boolean }> {
+  async create(principal: Principal, tenantId: string, key: string, body: unknown, budgetRoute?:ProjectBudgetRoute, creationAdmission?:ProjectCreationAdmission): Promise<{ project: Project; replayed: boolean }> {
     opaqueId(tenantId); opaqueId(key);
     const input = createProjectInput(body, this.starters);
     const route=budgetRoute===undefined?undefined:projectBudgetRoute(budgetRoute);
+    const admission=creationAdmission===undefined?undefined:projectCreationAdmission(creationAdmission);
     // Replay the original intent before resolving the current model status. A
     // withdrawn model must not make an already committed copy unreplayable.
     const prior = await this.db.query<{project_id:string;payload_hash:string;title:string;source_model_id:string|null;source_model_version:string|null}>(sql(`SELECT i.project_id,i.payload_hash,p.title,p.source_model_id,p.source_model_version FROM catalog_creation_intents i JOIN catalog_projects p ON p.id=i.project_id AND p.tenant_id=i.tenant_id WHERE i.actor_user_id=? AND i.tenant_id=? AND i.operation='project.create' AND i.idempotency_key=? AND EXISTS (${ownership})`,principal.userId,tenantId,key,tenantId,principal.userId,principal.authVersion));
     if (prior[0]) {
       if(route){const saved=await this.db.query<{route_json:string}>(sql('SELECT route_json FROM catalog_project_budget_routes WHERE project_id=? AND tenant_id=?',prior[0].project_id,tenantId));if(!saved[0]||saved[0].route_json!==JSON.stringify(route))throw new CatalogError('idempotency_conflict');}
+      const savedAdmission=await this.db.query<{reason_code:string;request_id:string}>(sql(`SELECT reason_code,request_id FROM catalog_audit_log
+        WHERE action='project.admission' AND target_type='project' AND target_id=? AND actor_user_id=? AND tenant_id=?`,prior[0].project_id,principal.userId,tenantId));
+      if(admission){if(!savedAdmission[0]||savedAdmission[0].reason_code!==admission.policyVersion||savedAdmission[0].request_id!==admission.invitationId)throw new CatalogError('idempotency_conflict');}
+      else if(savedAdmission[0])throw new CatalogError('idempotency_conflict');
       const replayInput = input.modelId ? {title:input.title,modelId:prior[0].source_model_id,modelVersion:prior[0].source_model_version} : {title:input.title,starterVersion:input.starterVersion};
       if ((await digest(JSON.stringify(replayInput))) !== prior[0].payload_hash) throw new CatalogError('idempotency_conflict');
       return {project:await this.get(principal,tenantId,prior[0].project_id),replayed:true};
@@ -86,10 +92,13 @@ export class ProjectCatalog {
     const existing = `SELECT 1 FROM catalog_creation_intents WHERE actor_user_id=? AND tenant_id=? AND operation='project.create' AND idempotency_key=?`;
     await this.db.batch([
       sql(`INSERT INTO catalog_projects(id,tenant_id,owner_user_id,workspace_id,title,starter_version,source_model_version_id,source_model_id,source_model_version,source_digest,status,generation,created_at,updated_at)
-        SELECT ?,?,?,?, ?,?,?,?,?,?,'provisioning',1,?,? WHERE EXISTS (${ownership}) AND NOT EXISTS (${existing}) AND (?
+        SELECT ?,?,?,?, ?,?,?,?,?,?,'provisioning',1,?,? WHERE EXISTS (${ownership}) AND NOT EXISTS (${existing})
+          AND (? IS NULL OR EXISTS (SELECT 1 FROM catalog_invitations i WHERE i.id=? AND i.state='accepted' AND i.purpose='user' AND i.issued_by IS NOT NULL AND i.accepted_by=?)) AND (?
           OR EXISTS (SELECT 1 FROM catalog_model_versions mv WHERE mv.id=? AND mv.model_id=? AND mv.version=? AND mv.status='published' AND mv.starter_version=? AND mv.content_sha256=?))`,
         projectId, tenantId, principal.userId, workspaceId, input.title, input.starterVersion??null, source?.id??null, source?.modelId??null, source?.version??null, source?.digest??null, now, now,
-        tenantId, principal.userId, principal.authVersion, principal.userId, tenantId, key, source===null?1:0, source?.id??null, source?.modelId??null, source?.version??null, input.starterVersion??null, source?.digest??null),
+        tenantId, principal.userId, principal.authVersion, principal.userId, tenantId, key,
+        admission?.invitationId??null,admission?.invitationId??null,principal.userId,
+        source===null?1:0, source?.id??null, source?.modelId??null, source?.version??null, input.starterVersion??null, source?.digest??null),
       sql(`INSERT INTO catalog_workspaces(id,project_id,tenant_id,owner_user_id,generation,status,created_at,updated_at)
         SELECT workspace_id,id,tenant_id,owner_user_id,generation,'provisioning',?,? FROM catalog_projects WHERE id=?`, now, now, projectId),
       sql(`INSERT INTO catalog_project_budget_routes(project_id,tenant_id,route_json) SELECT id,tenant_id,? FROM catalog_projects WHERE id=? AND ? IS NOT NULL`,route?JSON.stringify(route):null,projectId,route?JSON.stringify(route):null),
@@ -99,6 +108,11 @@ export class ProjectCatalog {
         SELECT ?,p.id,p.workspace_id,p.tenant_id,p.generation,'workspace.provision','pending',0,?,?,?, ?,p.source_model_version_id,p.source_model_id,p.source_model_version,m.content_ref,m.content_sha256 FROM catalog_projects p LEFT JOIN catalog_model_versions m ON m.id=p.source_model_version_id WHERE p.id=?`, outboxId,now,now,now,principal.authVersion,projectId),
       sql(`INSERT INTO catalog_audit_log(id,actor_user_id,action,target_type,target_id,tenant_id,reason_code,outcome,request_id,created_at)
         SELECT ?,owner_user_id,?,'project',id,tenant_id,'owner-request','accepted',?,? FROM catalog_projects WHERE id=?`,crypto.randomUUID(),source?'project.copy':'project.create',intentId,now,projectId),
+      sql(`INSERT INTO catalog_audit_log(id,actor_user_id,action,target_type,target_id,tenant_id,reason_code,outcome,request_id,created_at)
+        SELECT 'project-admission:'||p.id,p.owner_user_id,'project.admission','project',p.id,p.tenant_id,?,'completed',?,?
+        FROM catalog_projects p JOIN catalog_invitations i ON i.id=? AND i.accepted_by=p.owner_user_id
+        WHERE p.id=? AND i.state='accepted' AND i.purpose='user' AND i.issued_by IS NOT NULL AND ? IS NOT NULL`,
+        admission?.policyVersion??'owner-request',admission?.invitationId??'none',now,admission?.invitationId??'none',projectId,admission?.invitationId??null),
     ]);
     const rows = await this.db.query<{project_id: string; payload_hash: string}>(sql(`SELECT project_id,payload_hash FROM catalog_creation_intents
       WHERE actor_user_id=? AND tenant_id=? AND operation='project.create' AND idempotency_key=? AND EXISTS (${ownership})`,
