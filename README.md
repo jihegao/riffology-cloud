@@ -2,7 +2,7 @@
 
 面向受邀用户的受控内测版本。支持 Pi 驱动的 Python 建模、保存和本地预览；不包含生产级 SLA、权威云端实验或公开商业服务。容量在预算和安全门限内持续开放。
 
-以上是 Private Beta 的版本定义与运行目标。截至 2026-09-20，#87 核心流程验收已完成并关闭；其临时执行门禁在验收后关闭。常态容量由 [#104：邀请制内测运行与常态容量](https://github.com/jihegao/riffology-cloud/issues/104) 承接，名单、预算和 7 天观察期已获确认；实现与运行验收正在交付，尚未宣告常态开通。Browser Preview 结果始终是 local/unverified。
+以上是 Private Beta 的版本定义与运行目标。截至 2026-09-20，#87 核心流程验收已完成并关闭；其临时执行门禁在验收后关闭。常态容量由 [#104：邀请制内测运行与常态容量](https://github.com/jihegao/riffology-cloud/issues/104) 承接，名单、预算和 7 天观察期已获确认；准入、持久配额和运行保护已实现并部署，正在进行运行验收。实际开通/暂停状态以服务端门禁及该 Issue 的最新证据为准。Browser Preview 结果始终是 local/unverified。
 
 Riffology Cloud 是一个多租户、持久化的 AI 仿真建模工作台。
 用户围绕 Project 和 Pi Agent Session 工作，Workspace 提供文件、运行与插件能力，

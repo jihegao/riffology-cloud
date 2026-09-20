@@ -15,12 +15,27 @@ this update; live Worker settings were re-read on 2026-09-20: version `ef30dd39-
 
 > 面向受邀用户的受控内测版本。支持 Pi 驱动的 Python 建模、保存和本地预览；不包含生产级 SLA、权威云端实验或公开商业服务。容量在预算和安全门限内持续开放。
 
-This is the product definition and intended operating policy. Standing capacity
-is not yet signed off or declared open. [#104: 邀请制内测运行与常态容量](https://github.com/jihegao/riffology-cloud/issues/104)
-owns the frozen operating packet, implementation gaps, stop conditions and exit
-criteria. #87 stays CLOSED / Done; its expired window must not be reopened or
-extended. The user confirmed immediate work; #104 is P0 / In progress. Current priority,
-status, milestone and owner remain in the Delivery Project.
+This is the product definition and operating contract. The implementation in
+[PR #105](https://github.com/jihegao/riffology-cloud/pull/105) is merged and deployed;
+[#104](https://github.com/jihegao/riffology-cloud/issues/104) owns the frozen packet,
+current open/paused state, acceptance evidence, stop conditions and exit criteria.
+The seven-day observation is not complete. #87 stays CLOSED / Done; its expired
+window must not be reopened or extended. Current priority, status, milestone and
+owner remain in the Delivery Project.
+
+The 2026-09-20 release includes the new-tenant historical-ledger check in
+[PR #109](https://github.com/jihegao/riffology-cloud/pull/109) and the independent G5
+alarm stop in [PR #107](https://github.com/jihegao/riffology-cloud/pull/107).
+Both PRs passed full CI; their combined M2 suite passed 834 tests. The closed-gate
+release `2d216a3a-4d26-4646-a5fd-ae598f474167` was independently read back with
+unchanged bindings and Worker SHA256
+`c7fe8321ec59022de05a2ca93968cf63706f892cd277fb495b64f799e5b8e226`, matching the build.
+The first invited submission before #109 was rejected before admission: original
+Workspace and global Beta capacity both showed zero Turns/calls/reservations.
+It is not paid-execution acceptance. The deployment, continuous alarm observation
+and subsequent original-project acceptance are recorded in #104 and
+[#106](https://github.com/jihegao/riffology-cloud/issues/106); source/CI evidence
+alone does not establish them.
 
 | Boundary | Private Beta contract |
 | --- | --- |
@@ -106,7 +121,7 @@ author/reviewer/test identities remain required where specified.
 ## Next execution packet
 
 1. Start from the Project's current milestone, [Pi online recovery and core-flow acceptance](https://github.com/jihegao/riffology-cloud/milestone/1).
-2. Pi track: [#87](https://github.com/jihegao/riffology-cloud/issues/87) stays closed. Prepare [#104](https://github.com/jihegao/riffology-cloud/issues/104)'s standing Private Beta policy and actual limits; open only after its implementation, scope-specific checks and operating packet are ready. The expired project-specific acceptance window is not a standing production policy.
+2. Pi track: [#87](https://github.com/jihegao/riffology-cloud/issues/87) stays closed. Complete [#104](https://github.com/jihegao/riffology-cloud/issues/104)'s deployed Private Beta acceptance and observation; operate only within its frozen limits after new execution risks are resolved. The expired project-specific acceptance window is not a standing production policy.
 3. Historical provider usage and fee reconciliation continues only in P1 #101. Do not retry, settle, refund or rewrite the seven original records.
 4. Acceptance track: #78/#90/#87 are Done; select one of #71/#92/#83/#65 as capacity and dependencies permit, prioritizing the invited identity/isolation evidence needed by #104. At most one Pi standing-capacity task and one deployed-feature acceptance task are active. Record deployment/model identity, steps, results and remaining gaps on the issue.
 5. #35's first official Queue case, #75 email access and #85 skills are the next batch after the core path stabilizes. Other broad architecture/commercial tasks remain candidates; #73 retains its archived decision.
