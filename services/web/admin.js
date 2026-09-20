@@ -100,7 +100,13 @@ function renderInvitations(items) {
       button.className = 'button compact'; button.type = 'button'; button.textContent = '撤销';
       button.onclick = () => revokeInvitation(item, button);
       action.append(button);
-    } else action.textContent = '—';
+    } else if (item.state === 'accepted' && (item.access_state === 'active' || item.access_state === 'revoked')) {
+      const button = document.createElement('button');
+      const next = item.access_state === 'active' ? 'revoke' : 'restore';
+      button.className = 'button compact'; button.type = 'button'; button.textContent = next === 'revoke' ? '撤销访问' : '恢复访问';
+      button.onclick = () => changeInvitationAccess(item, next, button);
+      action.append(button);
+    } else action.textContent = item.state === 'accepted' && item.access_state === 'blocked' ? '需处理生命周期状态' : '—';
     row.append(action); body.append(row);
   }
 }
@@ -262,6 +268,19 @@ async function revokeInvitation(item, button) {
   try {
     await api(`/api/admin/invitations/${encodeURIComponent(item.id)}/revoke`, { method: 'POST', body: '{}' });
     show('邀请已撤销。'); await refresh();
+  } catch (error) { show(error.message, true); }
+  finally { button.disabled = false; }
+}
+
+async function changeInvitationAccess(item, action, button) {
+  const revoking = action === 'revoke';
+  const verb = revoking ? '撤销访问' : '恢复访问';
+  const warning = revoking ? '旧会话将立即失效，邀请接受历史和项目不会删除。' : '旧会话不会恢复，用户必须重新登录。';
+  if (!confirm(`${verb}：${item.normalized_email}？\n${warning}`)) return;
+  button.disabled = true;
+  try {
+    await api(`/api/admin/invitations/${encodeURIComponent(item.id)}/access`, { method: 'POST', body: JSON.stringify({ action }) });
+    show(`${verb}已完成。`); await refresh();
   } catch (error) { show(error.message, true); }
   finally { button.disabled = false; }
 }

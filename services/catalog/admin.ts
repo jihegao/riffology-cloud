@@ -3,9 +3,11 @@ import { statement as sql, type Database } from './database.ts';
 import { CatalogError, digest, opaqueId, type Principal } from './contracts.ts';
 
 export type InvitationState = 'pending' | 'accepted' | 'revoked' | 'expired';
+export type InvitationAccessState = 'active' | 'revoked' | 'blocked';
 export interface InvitationSummary {
   id: string; normalized_email: string; state: InvitationState; created_at: number;
   expires_at: number; accepted_at: number | null; revoked_at: number | null;
+  access_state?: InvitationAccessState | null;
 }
 export interface TenantSummary {
   id: string; status: 'active' | 'suspended' | 'deleting'; created_at: number;
@@ -79,8 +81,17 @@ export class OperatorCatalog {
     const now = this.clock();
     return this.db.query<InvitationSummary>(sql(`SELECT id,normalized_email,
       CASE WHEN state='pending' AND expires_at<=? THEN 'expired' ELSE state END AS state,
-      created_at,expires_at,accepted_at,revoked_at FROM catalog_invitations
-      WHERE EXISTS (${operator}) ORDER BY created_at DESC,id LIMIT 100`, now, principal.userId, principal.authVersion));
+      created_at,expires_at,accepted_at,revoked_at,
+      CASE WHEN state<>'accepted' THEN NULL
+        WHEN EXISTS (SELECT 1 FROM catalog_platform_roles r WHERE r.user_id=accepted_by AND r.status='active') THEN 'blocked'
+        WHEN EXISTS (SELECT 1 FROM catalog_users u JOIN catalog_tenants t ON t.owner_user_id=u.id AND t.kind='personal'
+          JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=u.id AND m.role='owner'
+          WHERE u.id=accepted_by AND u.status='active' AND t.status='active' AND m.status='active') THEN 'active'
+        WHEN EXISTS (SELECT 1 FROM catalog_users u JOIN catalog_tenants t ON t.owner_user_id=u.id AND t.kind='personal'
+          JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=u.id AND m.role='owner'
+          WHERE u.id=accepted_by AND u.status='revoked' AND t.status='active' AND m.status='active') THEN 'revoked'
+        ELSE 'blocked' END AS access_state
+      FROM catalog_invitations WHERE EXISTS (${operator}) ORDER BY created_at DESC,id LIMIT 100`, now, principal.userId, principal.authVersion));
   }
 
   async audit(principal: Principal): Promise<AuditSummary[]> {
@@ -145,6 +156,64 @@ export class OperatorCatalog {
     const rows = await this.db.query<InvitationSummary>(sql(`SELECT id,normalized_email,state,created_at,expires_at,accepted_at,revoked_at
       FROM catalog_invitations WHERE id=? AND state='revoked' AND EXISTS (${operator})`, invitationId, principal.userId, principal.authVersion));
     if (!rows[0]) throw new CatalogError('not_found');
+    return rows[0];
+  }
+
+  async access(principal: Principal, invitationId: string, value: unknown): Promise<InvitationSummary> {
+    opaqueId(invitationId);
+    const input=exactObject(value,['action']),action=input.action;
+    if(action!=='revoke'&&action!=='restore')throw new CatalogError('invalid_input');
+    const now=this.clock();
+    const target=`SELECT i.accepted_by FROM catalog_invitations i
+      JOIN catalog_users u ON u.id=i.accepted_by
+      JOIN catalog_tenants t ON t.owner_user_id=u.id AND t.kind='personal' AND t.status='active'
+      JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=u.id AND m.role='owner' AND m.status='active'
+      WHERE i.id=? AND i.state='accepted' AND i.purpose='user' AND i.issued_by IS NOT NULL
+      AND i.accepted_by<>? AND NOT EXISTS (SELECT 1 FROM catalog_platform_roles r WHERE r.user_id=i.accepted_by AND r.status='active')`;
+    const toStatus=action==='revoke'?'revoked':'active';
+    const userUpdate=action==='revoke'
+      ? `UPDATE catalog_users SET status='revoked',auth_version=auth_version+1,updated_at=?
+        WHERE id=(${target}) AND status='active' AND EXISTS (${operator})`
+      : `UPDATE catalog_users SET status='active',updated_at=?
+        WHERE id=(${target}) AND status='revoked' AND EXISTS (${operator})`;
+    const actionName=`invitation.access.${action}`,userAction=`user.access.${action}`;
+    const reasonCode=`accepted-invitation-access-${action}-v1`;
+    const updateValues=[now,invitationId,principal.userId,principal.userId,principal.authVersion];
+    await this.db.batch([
+      sql(userUpdate,...updateValues),
+      sql(`INSERT INTO catalog_audit_log(id,actor_user_id,tenant_id,action,target_type,target_id,reason_code,outcome,request_id,created_at)
+        SELECT ?,?,t.id,?,'invitation',i.id,?,'completed',i.id||':access:${action}:'||u.auth_version,?
+        FROM catalog_invitations i JOIN catalog_users u ON u.id=i.accepted_by
+        JOIN catalog_tenants t ON t.owner_user_id=u.id AND t.kind='personal' AND t.status='active'
+        JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=u.id AND m.role='owner' AND m.status='active'
+        WHERE i.id=? AND i.state='accepted' AND i.purpose='user' AND i.issued_by IS NOT NULL
+        AND i.accepted_by<>? AND u.status=? AND u.updated_at=? AND EXISTS (${operator})
+        AND NOT EXISTS (SELECT 1 FROM catalog_platform_roles r WHERE r.user_id=i.accepted_by AND r.status='active')
+        AND NOT EXISTS (SELECT 1 FROM catalog_audit_log a WHERE a.action=? AND a.target_type='invitation' AND a.target_id=i.id
+          AND a.request_id=i.id||':access:${action}:'||u.auth_version)`,
+        crypto.randomUUID(),principal.userId,actionName,reasonCode,now,invitationId,principal.userId,toStatus,now,
+        principal.userId,principal.authVersion,actionName),
+      sql(`INSERT INTO catalog_audit_log(id,actor_user_id,tenant_id,action,target_type,target_id,reason_code,outcome,request_id,created_at)
+        SELECT ?,?,t.id,?,'user',u.id,?,'completed',i.id||':access:${action}:'||u.auth_version,?
+        FROM catalog_invitations i JOIN catalog_users u ON u.id=i.accepted_by
+        JOIN catalog_tenants t ON t.owner_user_id=u.id AND t.kind='personal' AND t.status='active'
+        JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=u.id AND m.role='owner' AND m.status='active'
+        WHERE i.id=? AND i.state='accepted' AND i.purpose='user' AND i.issued_by IS NOT NULL
+        AND i.accepted_by<>? AND u.status=? AND u.updated_at=? AND EXISTS (${operator})
+        AND NOT EXISTS (SELECT 1 FROM catalog_platform_roles r WHERE r.user_id=i.accepted_by AND r.status='active')
+        AND NOT EXISTS (SELECT 1 FROM catalog_audit_log a WHERE a.action=? AND a.target_type='user' AND a.target_id=u.id
+          AND a.request_id=i.id||':access:${action}:'||u.auth_version)`,
+        crypto.randomUUID(),principal.userId,userAction,reasonCode,now,invitationId,principal.userId,toStatus,now,
+        principal.userId,principal.authVersion,userAction),
+    ]);
+    const rows=await this.db.query<InvitationSummary>(sql(`SELECT i.id,i.normalized_email,i.state,i.created_at,i.expires_at,i.accepted_at,i.revoked_at,? AS access_state
+      FROM catalog_invitations i JOIN catalog_users u ON u.id=i.accepted_by
+      JOIN catalog_tenants t ON t.owner_user_id=u.id AND t.kind='personal' AND t.status='active'
+      JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=u.id AND m.role='owner' AND m.status='active'
+      WHERE i.id=? AND i.state='accepted' AND i.purpose='user' AND i.issued_by IS NOT NULL
+      AND i.accepted_by<>? AND u.status=? AND NOT EXISTS (SELECT 1 FROM catalog_platform_roles r WHERE r.user_id=i.accepted_by AND r.status='active')
+      AND EXISTS (${operator})`,toStatus,invitationId,principal.userId,toStatus,principal.userId,principal.authVersion));
+    if(!rows[0])throw new CatalogError('not_found');
     return rows[0];
   }
 }

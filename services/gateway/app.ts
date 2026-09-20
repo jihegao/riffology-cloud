@@ -173,6 +173,8 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     }
     const revoke=/^\/api\/admin\/invitations\/([A-Za-z0-9_-]{1,128})\/revoke$/.exec(url.pathname);
     if(revoke&&request.method==='POST')return json(await admin.revoke(principal,revoke[1],await readJson(request)));
+    const invitationAccess=/^\/api\/admin\/invitations\/([A-Za-z0-9_-]{1,128})\/access$/.exec(url.pathname);
+    if(invitationAccess&&request.method==='POST')return json(await admin.access(principal,invitationAccess[1],await readJson(request)));
     if(url.pathname==='/api/admin/audit'&&request.method==='GET')return json({events:await admin.audit(principal)});
     if(url.pathname==='/api/admin/models'&&request.method==='GET')return json({models:await models.all(principal)});
     if(url.pathname==='/api/admin/models'&&request.method==='POST'){const result=await models.createDraft(principal,idempotencyKey(request),await readJson(request));return json(result,result.replayed?200:201);}

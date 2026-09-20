@@ -84,6 +84,24 @@ test('replayed invitation response never invents a plaintext token',async t=>{
   assert.equal(await page.locator('#issued-token').inputValue(),'');assert.match(await page.locator('#token-title').innerText(),/不会再次显示/);
 });
 
+test('operator revokes and restores accepted invitation access without changing invitation history',async t=>{
+  let access='active';const calls=[];
+  const invitation=()=>({id:'accepted-one',normalized_email:'accepted@example.test',state:'accepted',access_state:access,created_at:1_800_000_000_000,expires_at:1_800_604_800_000,accepted_at:1_800_000_000_100,revoked_at:null});
+  const page=await fixture(t,async(route,path)=>{
+    if(path==='/api/admin/invitations'&&route.request().method()==='GET'){await json(route,{invitations:[invitation()]});return true;}
+    if(path==='/api/admin/invitations/accepted-one/access'){
+      const body=JSON.parse(route.request().postData());calls.push(body);access=body.action==='revoke'?'revoked':'active';await json(route,invitation());return true;
+    }
+  },{mobile:true});
+  page.on('dialog',dialog=>dialog.accept());
+  await page.goto('https://admin.test/admin');await page.locator('#admin-app:not([hidden])').waitFor();
+  await page.getByRole('button',{name:'撤销访问'}).click();await waitFor(()=>calls.length===1);await page.getByRole('button',{name:'恢复访问'}).waitFor();
+  await page.getByRole('button',{name:'恢复访问'}).click();await waitFor(()=>calls.length===2);await page.getByRole('button',{name:'撤销访问'}).waitFor();
+  assert.deepEqual(calls,[{action:'revoke'},{action:'restore'}]);
+  assert.equal(await page.locator('#invitations').getByText('已接受').count(),1);
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+});
+
 test('operator manages published model metadata with safe text and idempotent lifecycle actions', async t => {
   const calls = [], actionKeys = [], states = new Map([['model-a', 'draft']]); let createAttempts = 0, validateAttempts = 0;
   const page = await fixture(t, async (route, path) => {

@@ -63,6 +63,7 @@ test('operator API denies tenant owners, then exposes invitation and platform me
   try{
     await f.handle('/api/invitations/accept',{method:'POST',headers:f.headers,body:JSON.stringify({token:invite})});
     assert.equal((await f.handle('/api/admin/overview',{headers:{cookie:f.cookie}})).status,404);
+    assert.equal((await f.handle('/api/admin/invitations/missing/access',{method:'POST',headers:f.headers,body:JSON.stringify({action:'revoke'})})).status,404);
     const now=Date.now();
     const catalogUserId=String(f.db.sqlite.prepare("SELECT id FROM catalog_users WHERE identity_issuer='better-auth' AND identity_subject=?").get(f.user.id)!.id);
     f.db.sqlite.prepare(`INSERT INTO catalog_platform_roles(user_id,role,status,created_at,updated_at) VALUES (?,'operator','active',?,?)`).run(catalogUserId,now,now);
@@ -77,6 +78,18 @@ test('operator API denies tenant owners, then exposes invitation and platform me
     assert.equal((await f.handle('/api/admin/tenants',{headers:{cookie:f.cookie}})).status,200);
     assert.equal((await f.handle('/api/admin/audit',{headers:{cookie:f.cookie}})).status,200);
     assert.equal((await f.handle(`/api/admin/invitations/${result.invitation.id}/revoke`,{method:'POST',headers:f.headers,body:'{}'})).status,200);
+    f.db.seed('access-target');
+    f.db.sqlite.prepare("UPDATE catalog_users SET normalized_email='access-target@example.test' WHERE id='access-target'").run();
+    f.db.sqlite.prepare(`INSERT INTO catalog_invitations(id,token_hash,normalized_email,issued_by,created_at,expires_at)
+      VALUES ('accepted-target',?,'access-target@example.test',?,?,?)`).run('e'.repeat(64),catalogUserId,now-1,now+60_000);
+    f.db.sqlite.prepare("UPDATE catalog_invitations SET state='accepted',accepted_by='access-target',accepted_at=? WHERE id='accepted-target'").run(now);
+    assert.equal((await f.handle('/api/admin/invitations/accepted-target/access',{method:'POST',headers:{...f.headers,origin:'https://attacker.test'},body:JSON.stringify({action:'revoke'})})).status,403);
+    const revokeAccess=await f.handle('/api/admin/invitations/accepted-target/access',{method:'POST',headers:f.headers,body:JSON.stringify({action:'revoke'})});
+    assert.equal(revokeAccess.status,200);assert.equal((await revokeAccess.json() as {access_state:string}).access_state,'revoked');
+    assert.deepEqual({...f.db.sqlite.prepare("SELECT status,auth_version FROM catalog_users WHERE id='access-target'").get()!},{status:'revoked',auth_version:2});
+    const restoreAccess=await f.handle('/api/admin/invitations/accepted-target/access',{method:'POST',headers:f.headers,body:JSON.stringify({action:'restore'})});
+    assert.equal(restoreAccess.status,200);assert.equal((await restoreAccess.json() as {access_state:string}).access_state,'active');
+    assert.deepEqual({...f.db.sqlite.prepare("SELECT status,auth_version FROM catalog_users WHERE id='access-target'").get()!},{status:'active',auth_version:2});
     f.db.sqlite.prepare("UPDATE catalog_platform_roles SET status='revoked',updated_at=? WHERE user_id=?").run(now+1,catalogUserId);
     assert.equal((await f.handle('/api/admin/overview',{headers:{cookie:f.cookie}})).status,404);
   }finally{f.db.sqlite.close();}

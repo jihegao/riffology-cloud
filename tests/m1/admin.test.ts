@@ -77,6 +77,65 @@ test('revoke is idempotent, audited once, and cannot revoke an accepted invitati
   }finally{db.sqlite.close();}
 });
 
+test('accepted invitation access revoke and restore fence old sessions without mutating invitation or tenant history',async()=>{
+  const {db,admin}=fixture();
+  try{
+    const accepted=await admin.issue(operator,'accepted-access',{email:'accepted@example.test',expiresInDays:7});
+    db.seed('accepted-user');
+    db.sqlite.prepare("UPDATE catalog_users SET normalized_email='accepted@example.test' WHERE id='accepted-user'").run();
+    db.sqlite.prepare("UPDATE catalog_invitations SET state='accepted',accepted_by='accepted-user',accepted_at=? WHERE id=?").run(1_800_000_000_001,accepted.invitation.id);
+    const listed=(await admin.invitations(operator)).find(item=>item.id===accepted.invitation.id)!;
+    assert.equal(listed.access_state,'active');
+
+    const revoked=await admin.access(operator,accepted.invitation.id,{action:'revoke'});
+    assert.equal(revoked.state,'accepted');assert.equal(revoked.access_state,'revoked');
+    const user=db.sqlite.prepare("SELECT status,auth_version FROM catalog_users WHERE id='accepted-user'").get()!;
+    assert.deepEqual({...user},{status:'revoked',auth_version:2});
+    assert.equal(db.sqlite.prepare("SELECT status FROM catalog_tenants WHERE id='tenant-accepted-user'").get()!.status,'active');
+    assert.equal(db.sqlite.prepare("SELECT status FROM catalog_memberships WHERE tenant_id='tenant-accepted-user'").get()!.status,'active');
+    assert.deepEqual({...db.sqlite.prepare("SELECT state,revoked_at FROM catalog_invitations WHERE id=?").get(accepted.invitation.id)!},{state:'accepted',revoked_at:null});
+    const revokeAudit=db.sqlite.prepare("SELECT action,target_type,target_id,tenant_id,request_id,reason_code FROM catalog_audit_log WHERE action LIKE '%.access.revoke' ORDER BY action").all();
+    assert.equal(revokeAudit.length,2);assert.equal(new Set(revokeAudit.map(row=>row.request_id)).size,1);
+    assert.deepEqual(revokeAudit.map(row=>row.target_type).sort(),['invitation','user']);
+    assert.equal(revokeAudit.every(row=>row.tenant_id==='tenant-accepted-user'&&row.reason_code==='accepted-invitation-access-revoke-v1'),true);
+
+    await admin.access(operator,accepted.invitation.id,{action:'revoke'});
+    assert.equal(db.sqlite.prepare("SELECT auth_version FROM catalog_users WHERE id='accepted-user'").get()!.auth_version,2);
+    assert.equal(db.sqlite.prepare("SELECT count(*) n FROM catalog_audit_log WHERE action LIKE '%.access.revoke'").get()!.n,2);
+
+    const restored=await admin.access(operator,accepted.invitation.id,{action:'restore'});
+    assert.equal(restored.access_state,'active');
+    assert.deepEqual({...db.sqlite.prepare("SELECT status,auth_version FROM catalog_users WHERE id='accepted-user'").get()!},{status:'active',auth_version:2});
+    const restoreAudit=db.sqlite.prepare("SELECT action,target_type,request_id,reason_code FROM catalog_audit_log WHERE action LIKE '%.access.restore' ORDER BY action").all();
+    assert.equal(restoreAudit.length,2);assert.equal(new Set(restoreAudit.map(row=>row.request_id)).size,1);
+    assert.equal(restoreAudit.every(row=>row.reason_code==='accepted-invitation-access-restore-v1'),true);
+    await admin.access(operator,accepted.invitation.id,{action:'restore'});
+    assert.equal(db.sqlite.prepare("SELECT count(*) n FROM catalog_audit_log WHERE action LIKE '%.access.restore'").get()!.n,2);
+  }finally{db.sqlite.close();}
+});
+
+test('accepted invitation access operations fail closed for unsafe lifecycle and operator targets',async()=>{
+  const {db,admin}=fixture();
+  try{
+    const accepted=await admin.issue(operator,'blocked-access',{email:'blocked@example.test',expiresInDays:7});
+    db.seed('blocked-user');
+    db.sqlite.prepare("UPDATE catalog_users SET normalized_email='blocked@example.test' WHERE id='blocked-user'").run();
+    db.sqlite.prepare("UPDATE catalog_invitations SET state='accepted',accepted_by='blocked-user',accepted_at=? WHERE id=?").run(1_800_000_000_001,accepted.invitation.id);
+    db.sqlite.prepare("UPDATE catalog_memberships SET status='revoked' WHERE user_id='blocked-user'").run();
+    await assert.rejects(admin.access(operator,accepted.invitation.id,{action:'revoke'}),{message:'not_found'});
+    db.sqlite.prepare("UPDATE catalog_memberships SET status='active' WHERE user_id='blocked-user'").run();
+    db.sqlite.prepare("UPDATE catalog_tenants SET status='suspended' WHERE owner_user_id='blocked-user'").run();
+    await assert.rejects(admin.access(operator,accepted.invitation.id,{action:'revoke'}),{message:'not_found'});
+    db.sqlite.prepare("UPDATE catalog_tenants SET status='active' WHERE owner_user_id='blocked-user'").run();
+    db.sqlite.prepare("INSERT INTO catalog_platform_roles(user_id,role,status,created_at,updated_at) VALUES ('blocked-user','operator','active',?,?)").run(1_800_000_000_000,1_800_000_000_000);
+    await assert.rejects(admin.access(operator,accepted.invitation.id,{action:'revoke'}),{message:'not_found'});
+    await assert.rejects(admin.access(owner,accepted.invitation.id,{action:'revoke'}),{message:'not_found'});
+    await assert.rejects(admin.access(operator,accepted.invitation.id,{action:'invalid'}),{message:'invalid_input'});
+    assert.deepEqual({...db.sqlite.prepare("SELECT status,auth_version FROM catalog_users WHERE id='blocked-user'").get()!},{status:'active',auth_version:1});
+    assert.equal(db.sqlite.prepare("SELECT count(*) n FROM catalog_audit_log WHERE action LIKE '%.access.%'").get()!.n,0);
+  }finally{db.sqlite.close();}
+});
+
 test('overview, tenant list and audit expose platform metadata without project content fields',async()=>{
   const {db,admin}=fixture();
   try{
