@@ -89,7 +89,11 @@ export class OperatorCatalog {
           WHERE u.id=accepted_by AND u.status='active' AND t.status='active' AND m.status='active') THEN 'active'
         WHEN EXISTS (SELECT 1 FROM catalog_users u JOIN catalog_tenants t ON t.owner_user_id=u.id AND t.kind='personal'
           JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=u.id AND m.role='owner'
-          WHERE u.id=accepted_by AND u.status='revoked' AND t.status='active' AND m.status='active') THEN 'revoked'
+          WHERE u.id=accepted_by AND u.status='revoked' AND t.status='active' AND m.status='active'
+          AND EXISTS (SELECT 1 FROM catalog_audit_log ai JOIN catalog_audit_log au ON au.request_id=ai.request_id
+            WHERE ai.action='invitation.access.revoke' AND ai.target_type='invitation' AND ai.target_id=catalog_invitations.id
+            AND au.action='user.access.revoke' AND au.target_type='user' AND au.target_id=u.id
+            AND ai.request_id=catalog_invitations.id||':access:revoke:'||u.auth_version)) THEN 'revoked'
         ELSE 'blocked' END AS access_state
       FROM catalog_invitations WHERE EXISTS (${operator}) ORDER BY created_at DESC,id LIMIT 100`, now, principal.userId, principal.authVersion));
   }
@@ -164,12 +168,17 @@ export class OperatorCatalog {
     const input=exactObject(value,['action']),action=input.action;
     if(action!=='revoke'&&action!=='restore')throw new CatalogError('invalid_input');
     const now=this.clock();
+    const revokeProof=`EXISTS (SELECT 1 FROM catalog_audit_log ai JOIN catalog_audit_log au ON au.request_id=ai.request_id
+      WHERE ai.action='invitation.access.revoke' AND ai.target_type='invitation' AND ai.target_id=i.id
+      AND au.action='user.access.revoke' AND au.target_type='user' AND au.target_id=u.id
+      AND ai.request_id=i.id||':access:revoke:'||u.auth_version)`;
     const target=`SELECT i.accepted_by FROM catalog_invitations i
       JOIN catalog_users u ON u.id=i.accepted_by
       JOIN catalog_tenants t ON t.owner_user_id=u.id AND t.kind='personal' AND t.status='active'
       JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=u.id AND m.role='owner' AND m.status='active'
       WHERE i.id=? AND i.state='accepted' AND i.purpose='user' AND i.issued_by IS NOT NULL
-      AND i.accepted_by<>? AND NOT EXISTS (SELECT 1 FROM catalog_platform_roles r WHERE r.user_id=i.accepted_by AND r.status='active')`;
+      AND i.accepted_by<>? AND NOT EXISTS (SELECT 1 FROM catalog_platform_roles r WHERE r.user_id=i.accepted_by AND r.status='active')
+      ${action==='restore'?`AND ${revokeProof}`:''}`;
     const toStatus=action==='revoke'?'revoked':'active';
     const userUpdate=action==='revoke'
       ? `UPDATE catalog_users SET status='revoked',auth_version=auth_version+1,updated_at=?
@@ -212,7 +221,11 @@ export class OperatorCatalog {
       JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=u.id AND m.role='owner' AND m.status='active'
       WHERE i.id=? AND i.state='accepted' AND i.purpose='user' AND i.issued_by IS NOT NULL
       AND i.accepted_by<>? AND u.status=? AND NOT EXISTS (SELECT 1 FROM catalog_platform_roles r WHERE r.user_id=i.accepted_by AND r.status='active')
-      AND EXISTS (${operator})`,toStatus,invitationId,principal.userId,toStatus,principal.userId,principal.authVersion));
+      AND EXISTS (SELECT 1 FROM catalog_audit_log ai JOIN catalog_audit_log au ON au.request_id=ai.request_id
+        WHERE ai.action=? AND ai.target_type='invitation' AND ai.target_id=i.id
+        AND au.action=? AND au.target_type='user' AND au.target_id=u.id
+        AND ai.request_id=i.id||':access:${action}:'||u.auth_version)
+      AND EXISTS (${operator})`,toStatus,invitationId,principal.userId,toStatus,actionName,userAction,principal.userId,principal.authVersion));
     if(!rows[0])throw new CatalogError('not_found');
     return rows[0];
   }

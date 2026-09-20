@@ -129,9 +129,13 @@ test('accepted invitation access operations fail closed for unsafe lifecycle and
     db.sqlite.prepare("UPDATE catalog_tenants SET status='active' WHERE owner_user_id='blocked-user'").run();
     db.sqlite.prepare("INSERT INTO catalog_platform_roles(user_id,role,status,created_at,updated_at) VALUES ('blocked-user','operator','active',?,?)").run(1_800_000_000_000,1_800_000_000_000);
     await assert.rejects(admin.access(operator,accepted.invitation.id,{action:'revoke'}),{message:'not_found'});
+    db.sqlite.prepare("UPDATE catalog_platform_roles SET status='revoked' WHERE user_id='blocked-user'").run();
+    db.sqlite.prepare("UPDATE catalog_users SET status='revoked',auth_version=2,updated_at=? WHERE id='blocked-user'").run(1_800_000_000_000);
+    assert.equal((await admin.invitations(operator)).find(item=>item.id===accepted.invitation.id)!.access_state,'blocked');
+    await assert.rejects(admin.access(operator,accepted.invitation.id,{action:'restore'}),{message:'not_found'});
     await assert.rejects(admin.access(owner,accepted.invitation.id,{action:'revoke'}),{message:'not_found'});
     await assert.rejects(admin.access(operator,accepted.invitation.id,{action:'invalid'}),{message:'invalid_input'});
-    assert.deepEqual({...db.sqlite.prepare("SELECT status,auth_version FROM catalog_users WHERE id='blocked-user'").get()!},{status:'active',auth_version:1});
+    assert.deepEqual({...db.sqlite.prepare("SELECT status,auth_version FROM catalog_users WHERE id='blocked-user'").get()!},{status:'revoked',auth_version:2});
     assert.equal(db.sqlite.prepare("SELECT count(*) n FROM catalog_audit_log WHERE action LIKE '%.access.%'").get()!.n,0);
   }finally{db.sqlite.close();}
 });
