@@ -67,7 +67,7 @@ promoting local Preview to Evidence.
 
 | Item | Evidence / status |
 | --- | --- |
-| Source baseline | Remote `main`: `090ce7f6c6761dfb6acac511596e6740718c9864`, checked 2026-09-20. [PR #119](https://github.com/jihegao/riffology-cloud/pull/119) is merged and its full `check` job passed; earlier #102/#103 execution-isolation evidence remains historical input rather than the current source identity |
+| Source baseline | Deployed application source: `090ce7f6c6761dfb6acac511596e6740718c9864`; evidence-index merge: `9a06d3929a2e3637c00c8698636937cbdabe758b`, both checked 2026-09-20. [PR #119](https://github.com/jihegao/riffology-cloud/pull/119) is merged and its full `check` job passed; earlier #102/#103 execution-isolation evidence remains historical input rather than the deployed source identity |
 | PR #84 | [Merged and deployed](https://github.com/jihegao/riffology-cloud/pull/84), merge `4f564105e11dec7bac9338e770a52c57455279c9`; [Ubuntu CI passed](https://github.com/jihegao/riffology-cloud/actions/runs/35408200559) |
 | #84 Gateway deployment record | `530dce72-65a6-4247-b69b-955a432188d2`, 100% at publication; PR records actual Worker byte comparison, static resource hashes and configuration readback |
 | #84 execution Worker deployment record | `d5fb4b8a-d2d8-4007-b454-d97816405b22`, 100%; retained through the #90 acceptance release and observed in the authenticated Chrome/CDP trace |
