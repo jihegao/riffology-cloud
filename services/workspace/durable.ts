@@ -1,4 +1,5 @@
 import {privateBetaPolicy,privateBetaCandidate,authorizePrivateBeta,PRIVATE_BETA_CAPACITY_ACTOR} from '../model-budget/private-beta-policy.ts';
+import {privateBetaNativeReleaseGuard} from '../model-budget/private-beta-release.ts';
 import type {PrivateBetaCapacity} from '../model-budget/private-beta-capacity.ts';
 import {piDeveloperOwner,piDeveloperPolicy} from '../model-budget/pi-developer-policy.ts';
 import type {PiDeveloperBudget} from '../model-budget/pi-developer-durable.ts';
@@ -862,7 +863,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const scope=this.#maintenanceScope(input.scope),state=await this.#turns.snapshot(scope);
     const turn=Object.values(state.turns).find(t=>t.actor.userId===input.actor.userId&&t.actor.authVersion===input.actor.authVersion&&t.sessionId===input.sessionId&&t.requestKey===input.requestKey);
     const terminal=!!turn&&['completed','failed','cancelled','interrupted'].includes(turn.status);
-    return {found:!!turn,turnId:turn?.id??null,terminal,finishedAt:turn?.finishedAt??null,released:terminal&&state.activeTurnId===null&&state.releaseHold===null&&state.recoveryHold===null,resourceWait:state.resourceWait!==null};
+    return {found:!!turn,turnId:turn?.id??null,terminal,finishedAt:turn?.finishedAt??null,released:terminal&&state.activeTurnId===null&&state.releaseHold===null&&state.recoveryHold===null,resourceWait:state.resourceWait!==null,releaseGuard:terminal&&privateBetaNativeReleaseGuard(new DurableTurnStore(this.ctx.storage).read()?.releaseHold,turn?.id??null)};
   }
   #developerBudget(tenantId:string){const stub=this.env.PI_DEVELOPER_BUDGET?.getByName(modelBudgetTenantName(tenantId));if(!stub)throw Error('pi-developer-budget-unavailable');return stub;}
   async piDeveloperTurnAuthorization(input:{identity:TurnRuntimeIdentity;actor:TurnActor}){
