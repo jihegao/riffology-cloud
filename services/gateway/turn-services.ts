@@ -8,6 +8,7 @@ interface WorkspaceTurnActor {
   managedAcceptanceStatus?(input:{scope:TurnScope;actor:TurnActor}):Promise<unknown>;
   cleanupManagedAcceptance?(input:{scope:TurnScope;actor:TurnActor}):Promise<unknown>;
   createSession(input: { scope: TurnScope; actor: TurnActor; key: string; body: { title: unknown } }): Promise<unknown>;
+  turnReceipt?(input:{scope:TurnScope;actor:TurnActor;sessionId:string;key:string}):Promise<unknown>;
   submitTurn(input: { scope: TurnScope; actor: TurnActor; sessionId: string; key: string; body: { message: unknown } }): Promise<unknown>;
   cancelTurn(input: { scope: TurnScope; actor: TurnActor; turnId: string }): Promise<unknown>;
   replayTurnEvents(input: { scope: TurnScope; afterSequence: number; limit: number }): Promise<unknown>;
@@ -43,6 +44,9 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
     async cleanupManagedAcceptance(scope:TurnScope,caller:TurnActor){const stub=actor(scope);if(!stub.cleanupManagedAcceptance)throw Error('managed-product-runtime-not-configured');return stub.cleanupManagedAcceptance({scope,actor:caller});},
     async createSession(scope: TurnScope, caller: TurnActor, key: string, body: { title: unknown }) {
       return actor(scope).createSession({ scope, actor: caller, key, body });
+    },
+    async receipt(scope:TurnScope,caller:TurnActor,sessionId:string,key:string){
+      const stub=actor(scope);if(!stub.turnReceipt)throw Error('turn-receipt-not-configured');return stub.turnReceipt({scope,actor:caller,sessionId,key});
     },
     async submit(scope: TurnScope, caller: TurnActor, sessionId: string, key: string, body: { message: unknown }) {
       try{

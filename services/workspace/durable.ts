@@ -5,10 +5,10 @@ import {piDeveloperOwner,piDeveloperPolicy} from '../model-budget/pi-developer-p
 import type {PiDeveloperBudget} from '../model-budget/pi-developer-durable.ts';
 import {managedProjectPolicy,requireManagedAdmission,managedProductActorName,resolveManagedRoute,type ManagedAcceptancePolicy} from './managed-route.ts';
 import type {TurnRuntimePort} from '../turn/dispatcher.ts';
-import {g5TaskKey} from '../model-budget/g5-admission.ts';
+import {g5TaskKey,g5TaskRecovery} from '../model-budget/g5-admission.ts';
 import {g5FixtureClaimContract} from '../model-budget/g5-fixture-manifest.ts';
 import {g5B2RunEvidence} from '../model-budget/g5-b2-evidence.ts';
-import {G5_GLOBAL_ACTOR,g5WindowPolicy} from '../model-budget/g5-window.ts';
+import {G5_GLOBAL_ACTOR,g5WindowPolicy,type G5TaskRecovery} from '../model-budget/g5-window.ts';
 import type {G5TenantModelBudget} from '../model-budget/g5-token-durable.ts';
 import {G4BrowserBuildHold,g4BuildHoldUntil} from '../browser-preview/g4-build-hold.ts';
 import {sandboxActorIds} from '../sandbox/policy.ts';
@@ -132,7 +132,7 @@ export interface WorkspaceAgentEnv {
   PI_DEVELOPER_BUDGET?:{getByName(name:string):PiDeveloperBudget};
   G5_CONTROLLED_WINDOW_JSON?:string;
   G5_TOKEN_BUDGET?:DurableObjectNamespace<G5TenantModelBudget>;
-  G5_WINDOW_GUARD?:{getByName(name:string):{registerTask(task:unknown):Promise<unknown>;claimTaskCreate(key:string):Promise<{authorized:boolean}>;bindTask(key:string,id:string):Promise<unknown>;checkTaskStart(key:string):Promise<{authorized:boolean}>;claimTaskStart(key:string,identity?:TurnRuntimeIdentity):Promise<{authorized:boolean;alreadyStarted:boolean;grantId:string|null}>;confirmTaskStartGrant(key:string,grantId:string):Promise<{confirmed:boolean}>;checkTaskContinue(key:string,grantId:string):Promise<{authorized:boolean}>;cancelUnstartedTask(key:string):Promise<unknown>;closeTrustedTurn(key:string,identity:TurnRuntimeIdentity):Promise<unknown>}};
+  G5_WINDOW_GUARD?:{getByName(name:string):{registerTask(task:unknown):Promise<unknown>;claimTaskCreate(key:string):Promise<{authorized:boolean}>;bindTask(key:string,id:string):Promise<unknown>;taskBinding(key:string,id:string):Promise<{found:boolean;bound:boolean}>;taskBindingForIntent(task:G5TaskRecovery,id:string):Promise<{found:boolean;bound:boolean;taskKey:string|null;windowId:string|null;profileSha256:string|null}>;repairTaskBinding(task:G5TaskRecovery,id:string):Promise<{found:true;bound:true;taskKey:string;windowId:string;profileSha256:string}>;checkTaskStart(key:string):Promise<{authorized:boolean}>;claimTaskStart(key:string,identity?:TurnRuntimeIdentity):Promise<{authorized:boolean;alreadyStarted:boolean;grantId:string|null}>;confirmTaskStartGrant(key:string,grantId:string):Promise<{confirmed:boolean}>;checkTaskContinue(key:string,grantId:string):Promise<{authorized:boolean}>;cancelUnstartedTask(key:string):Promise<unknown>;closeTrustedTurn(key:string,identity:TurnRuntimeIdentity):Promise<unknown>}};
   G4_BROWSER_BUILD_HOLD_SCOPES_JSON?:string;
   MANAGED_ACCEPTANCE_JSON?:string;
   MANAGED_TESTING_JSON?:string;
@@ -969,6 +969,29 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   async createSession(input: { scope: TurnScope; actor: TurnActor; key: string; body: { title: unknown } }) {
     return this.#turns.createSession(this.#ready(input.scope), input.actor, input.key, input.body);
   }
+  async turnReceipt(input:{scope:TurnScope;actor:TurnActor;sessionId:string;key:string}){
+    const scope=this.#ready(input.scope),receipt=await this.#turns.receipt(scope,input.actor,input.sessionId,input.key),turn=receipt.turn,managed=this.#managedRoute();
+    if(!managed){
+      const developerRoute=this.ctx.storage.kv.get<{privateBeta?:boolean}>('pi-developer-turn:'+turn.id),g5Route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);
+      if(developerRoute){
+        if(developerRoute.privateBeta&&!await this.#betaControl().turnBinding({scope,actor:input.actor,sessionId:input.sessionId,requestKey:input.key},turn.id).then(result=>result.bound))throw Error('turn-receipt-not-found');
+      }else if(g5Route){
+        if(g5Route.kind!=='g5'||!await this.#g5Guard().taskBinding(g5Route.taskKey,turn.id).then(result=>result.bound))throw Error('turn-receipt-not-found');
+      }else if(this.env.PRIVATE_BETA_POLICY_JSON!==undefined||piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,scope.tenantId,input.actor.userId,scope.projectId)||this.env.G5_CONTROLLED_WINDOW_JSON!==undefined)throw Error('turn-receipt-not-found');
+    }
+    return {accepted:true,turn};
+  }
+  async #bindDeveloperTurn(scope:TurnScope,actor:TurnActor,sessionId:string,key:string,turn:import('../turn/protocol.ts').TurnRecord){
+    const beta=privateBetaPolicy(this.env.PRIVATE_BETA_POLICY_JSON),marker={policyId:beta?.policyId??piDeveloperPolicy(this.env.PI_DEVELOPER_POLICY_JSON)!.policyId,...(beta?{privateBeta:true}:{})},prior=this.ctx.storage.kv.get('pi-developer-turn:'+turn.id);
+    if(prior&&JSON.stringify(prior)!==JSON.stringify(marker))throw Error('pi-developer-turn-route-conflict');
+    this.ctx.storage.kv.put('pi-developer-turn:'+turn.id,marker);await this.ctx.storage.sync();
+    if(beta)await this.#betaControl().bindTurn({scope,actor,sessionId,requestKey:key},turn.id);
+  }
+  async #bindG5Turn(route:WorkspaceBudgetRoute,turn:import('../turn/protocol.ts').TurnRecord,recovery?:G5TaskRecovery){
+    const prior=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);if(prior&&JSON.stringify(prior)!==JSON.stringify(route))throw Error('g5-turn-route-conflict');
+    this.ctx.storage.kv.put('g5-turn-route:'+turn.id,route);this.ctx.storage.kv.put('g5-submission:'+route.taskKey,turn.id);await this.ctx.storage.sync();
+    if(recovery){const repaired=await this.#g5Guard().repairTaskBinding(recovery,turn.id);if(repaired.taskKey!==route.taskKey||repaired.windowId!==route.windowId||repaired.profileSha256!==route.profileSha256)throw Error('g5-turn-route-conflict');}else await this.#g5Guard().bindTask(route.taskKey,turn.id);
+  }
   #managedSubmitTail:Promise<unknown>=Promise.resolve();
   submitTurn(input: { scope: TurnScope; actor: TurnActor; sessionId: string; key: string; body: { message: unknown } }) {
     // Serialize admission through the durable journal commit. DO input gates
@@ -983,17 +1006,23 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     try{scope=this.#ready(input.scope);trace('ready',true);}catch(error){trace('ready',false,error);throw error;}
     const selected=this.#managedRoute();
     const developer=!selected&&!this.#store.read()?.task.budgetRoute&&this.#developerCandidate(scope,input.actor);
-    if(selected||developer){
-      const state=await this.#turns.snapshot(scope);
-      const prior=Object.values(state.turns).find(turn=>turn.sessionId===input.sessionId&&turn.requestKey===input.key&&turn.actor.userId===input.actor.userId);
-      if(prior){
+    const state=await this.#turns.snapshot(scope),prior=Object.values(state.turns).find(turn=>turn.sessionId===input.sessionId&&turn.requestKey===input.key&&turn.actor.userId===input.actor.userId),replay=prior?await this.#turns.submit(scope,input.actor,input.sessionId,input.key,input.body):null,persistedDeveloperRoute=prior&&this.ctx.storage.kv.get<{privateBeta?:boolean}>('pi-developer-turn:'+prior.id),developerEligible=!selected&&!this.#store.read()?.task.budgetRoute,betaAdmission=prior&&developerEligible&&this.env.PRIVATE_BETA_POLICY_JSON!==undefined?await this.#betaControl().turnBinding({scope,actor:input.actor,sessionId:input.sessionId,requestKey:input.key},prior.id).then(result=>result.found):false;
+    let recoveredG5:{route:WorkspaceBudgetRoute;task:G5TaskRecovery}|undefined;
+    if(prior&&!selected&&!developer&&!persistedDeveloperRoute&&!betaAdmission&&this.env.G5_WINDOW_GUARD){const task=await g5TaskRecovery('turn',scope.tenantId,input.actor.userId,{scope,sessionId:input.sessionId,key:input.key},input.body) as G5TaskRecovery,binding=await this.#g5Guard().taskBindingForIntent(task,prior.id);if(binding.found&&binding.taskKey&&binding.windowId&&binding.profileSha256)recoveredG5={task,route:{kind:'g5',taskKey:binding.taskKey,windowId:binding.windowId,profileSha256:binding.profileSha256}};}
+    if(prior&&(selected||developer||persistedDeveloperRoute||betaAdmission||recoveredG5)){
+        const validated=replay!;
         if(selected&&selected.userId!==input.actor.userId)throw Error('managed-admission-denied');
         const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(input.actor,scope.workspaceId);
         if(!sameScope(allowed,scope))throw Error('managed-admission-denied');
-        // Original idempotency validation remains the journal's authority;
-        // replay is read-only with respect to model admission, even if stopped.
-        return this.#turns.submit(scope,input.actor,input.sessionId,input.key,input.body);
-      }
+        // Original idempotency validation remains the journal's authority.
+        // An explicit developer retry may repair only its post-commit route;
+        // it never creates another Turn or provider request.
+        if(persistedDeveloperRoute?.privateBeta||betaAdmission){if(this.env.PRIVATE_BETA_POLICY_JSON===undefined)throw Error('private-beta-unconfigured');await this.#bindDeveloperTurn(scope,input.actor,input.sessionId,input.key,validated.turn);}
+        else if(developer&&!persistedDeveloperRoute)await this.#bindDeveloperTurn(scope,input.actor,input.sessionId,input.key,validated.turn);
+        else if(recoveredG5)await this.#bindG5Turn(recoveredG5.route,validated.turn,recoveredG5.task);
+        return validated;
+    }
+    if(selected||developer){
       if(Object.values(state.turns).some(turn=>!['completed','failed','cancelled','interrupted'].includes(turn.status))||state.releaseHold||state.recoveryHold)throw Error('managed-input-in-flight');
     }
     const managed=await this.#managedAdmit(scope,input.actor);
@@ -1023,7 +1052,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     }else if(!managed){await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,input.actor.userId,'turn',{scope,sessionId:input.sessionId,key:input.key},input.body);}
 
     this.#ready(scope);
-    return engine.submit(scope,input.actor,input.sessionId,input.key,input.body,trace,developer?async turn=>{const beta=privateBetaPolicy(this.env.PRIVATE_BETA_POLICY_JSON);this.ctx.storage.kv.put('pi-developer-turn:'+turn.id,{policyId:beta?.policyId??piDeveloperPolicy(this.env.PI_DEVELOPER_POLICY_JSON)!.policyId,...(beta?{privateBeta:true}:{})});await this.ctx.storage.sync();if(beta)await this.#betaControl().bindTurn({scope,actor:input.actor,sessionId:input.sessionId,requestKey:input.key},turn.id);}:route?async turn=>{const prior=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);if(prior&&JSON.stringify(prior)!==JSON.stringify(route))throw Error('g5-turn-route-conflict');this.ctx.storage.kv.put('g5-turn-route:'+turn.id,route!);this.ctx.storage.kv.put('g5-submission:'+route!.taskKey,turn.id);await this.ctx.storage.sync();await this.#g5Guard().bindTask(route!.taskKey,turn.id);}:undefined);
+    return engine.submit(scope,input.actor,input.sessionId,input.key,input.body,trace,developer?turn=>this.#bindDeveloperTurn(scope,input.actor,input.sessionId,input.key,turn):route?turn=>this.#bindG5Turn(route!,turn):undefined);
   }
   async cancelTurn(input: { scope: TurnScope; actor: TurnActor; turnId: string }) {
     const turn=await this.#engine().cancel(this.#ready(input.scope), input.actor, input.turnId);if(!this.#managedRoute()&&['completed','failed','cancelled','interrupted'].includes(turn.status))await this.#g5Terminal(turn);return turn;

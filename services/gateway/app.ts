@@ -54,6 +54,7 @@ export interface GatewayServices {
   g5ReadonlyReads?:GatewayG5ReadonlyReads;
   turns?:{
     createSession(scope:TurnScope,actor:TurnActor,key:string,body:{title:unknown}):Promise<unknown>;
+    receipt(scope:TurnScope,actor:TurnActor,sessionId:string,key:string):Promise<unknown>;
     submit(scope:TurnScope,actor:TurnActor,sessionId:string,key:string,body:{message:unknown}):Promise<unknown>;
     cancel(scope:TurnScope,actor:TurnActor,turnId:string):Promise<unknown>;
     replay(scope:TurnScope,afterSequence:number,limit:number):Promise<unknown>;
@@ -347,6 +348,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       }catch(error){if(error instanceof CatalogError||error instanceof HttpError)throw error;const code=error instanceof Error?error.message:'';if(/scope|owner|access|policy.*denied/.test(code))throw new HttpError('managed_acceptance_denied',403);throw new HttpError('managed_acceptance_unavailable',503);}
     }
     const turns=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/sessions\/([A-Za-z0-9_-]{1,128})\/turns$/.exec(url.pathname);
+    const turnReceipt=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/sessions\/([A-Za-z0-9_-]{1,128})\/turns\/receipt$/.exec(url.pathname);
     const cancel=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/turns\/([A-Za-z0-9_-]{1,128})\/cancel$/.exec(url.pathname);
     const events=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/events$/.exec(url.pathname);
     const observationArtifact=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/turns\/([A-Za-z0-9_-]{1,128})\/observations\/([A-Za-z0-9_-]{1,128})\/artifacts\/(state|view)$/.exec(url.pathname);
@@ -358,7 +360,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       const caller={userId:principal.userId,authVersion:principal.authVersion};
       return await observerArtifactContent(await turnCall(()=>services.observations!.artifact(turnScope,caller,observationArtifact[2]!,observationArtifact[3]!,observationArtifact[4]! as 'state'|'view')));
     }
-    const turnMatch=workspace??files??diff??artifact??sessions??turns??cancel??events;
+    const turnMatch=workspace??files??diff??artifact??sessions??turns??turnReceipt??cancel??events;
     if(turnMatch){
       if(!services.turns)throw Error('turn-service-not-configured');
       const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),turnScope=await catalog.workspace(principal,turnMatch[1]);
@@ -374,6 +376,9 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       if(turns&&request.method==='POST'){
         const body=bodyOnly(await readJson(request),'message');
         const result=await turnCall(()=>services.turns!.submit(turnScope,turnActor,turns[2],idempotencyKey(request),{message:body.message}));return json(publicResult(result,'turn'),replayed(result)?200:202);
+      }
+      if(turnReceipt&&request.method==='GET'&&url.search===''){
+        const result=await turnCall(()=>services.turns!.receipt(turnScope,turnActor,turnReceipt[2],idempotencyKey(request)));return json(publicResult(result,'turn'));
       }
       if(cancel&&request.method==='POST'){
         const body=await readJson(request);if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).length)throw new CatalogError('invalid_input');

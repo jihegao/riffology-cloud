@@ -19,10 +19,12 @@ for(const beta of [false,true])test((beta?'Private Beta':'Pi developer')+' Works
  import {WorkspaceAgent as ProductionWorkspace} from './services/workspace/durable.ts';
  import {WORKSPACE_STATE_KEY} from './services/workspace/shared-alarm.ts';
  import {workspaceAgentName} from './services/workspace/protocol.ts';
+ import {PRIVATE_BETA_CAPACITY_ACTOR} from './services/model-budget/private-beta-policy.ts';
  export class Workspace extends ProductionWorkspace {
   async markerForTest(input){return this.ctx.storage.kv.get('pi-developer-turn:'+input.turnId)??null;}
   async seed(scope){const now=Date.now();await this.ctx.storage.put(WORKSPACE_STATE_KEY,{task:{id:'task',tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:scope.workspaceId,generation:1,starterVersion:'empty-v1',authVersion:1,createdAt:now,deadlineAt:now+3600000},projection:{outcome:'ready'},projectionConfirmed:true,wakeAt:null});}
   async seedRuns(scope,actor){const common={actor,status:'completed',released:true,releaseProof:{kind:'runtime-stopped',confirmationId:'actual-stored-release',observedAt:123},stop:{confirmationId:'actual-stored-stop',observedAt:122,nativeRunning:false,fenced:true},result:{artifactSha256:'a'.repeat(64)}};await this.ctx.storage.put('simulation:run:own',{...common,scope,runId:'own'});await this.ctx.storage.put('simulation:run:other',{...common,scope:{...scope,projectId:'private-other-project'},runId:'private-other-run'});}
+  async dropBetaBindingForTest(input){this.ctx.storage.kv.delete('pi-developer-turn:'+input.turnId);await this.ctx.storage.sync();return this.env.PRIVATE_BETA_CAPACITY.getByName(PRIVATE_BETA_CAPACITY_ACTOR).dropBindingForTest({scope:input.scope,actor:input.actor,sessionId:input.sessionId,requestKey:input.key});}
   async alarm(){} // Keep this admission-only test from starting a runtime.
  }
  export class Managed extends DurableObject{
@@ -33,7 +35,8 @@ for(const beta of [false,true])test((beta?'Private Beta':'Pi developer')+' Works
  export class Quota extends DurableObject{async snapshot(){return {capacity:2,occupied:1,available:1,unknown:1,configuredPolicyMatches:true,leases:[{status:'unknown',projectId:'private-other-project',operationId:'private-operation'}]};}}
  export class Artifacts extends DurableObject{}
  ${beta?"export {PiDeveloperBudget as Developer} from './services/model-budget/pi-developer-durable.ts';":'export class Developer extends DurableObject {async assertQuiet(){}async admitTurn(){}}'}
- export {PrivateBetaCapacity} from './services/model-budget/private-beta-capacity.ts';
+ import {PrivateBetaCapacity as ProductionPrivateBetaCapacity} from './services/model-budget/private-beta-capacity.ts';
+ export class PrivateBetaCapacity extends ProductionPrivateBetaCapacity {async dropBindingForTest(input){this.ctx.storage.sql.exec("UPDATE beta_slots SET turn_id=NULL,status='admitting' WHERE document=?",JSON.stringify(input));await this.ctx.storage.sync();}}
  export class Historical extends DurableObject {async assertExecutionQuiet(){return {};}async assertExecutionIsolated(){return {};}}
  export class Runtime extends DurableObject{}
  export class Capacity extends DurableObject{}
@@ -63,6 +66,12 @@ for(const beta of [false,true])test((beta?'Private Beta':'Pi developer')+' Works
  const input={sessionId,key:'first',body:{message:'synthetic FCFS'}};
  const pair=await Promise.all([rpc('submitTurn',input),rpc('submitTurn',{...input,key:'second'})]);assert.equal(pair.filter(r=>r.ok).length,1,JSON.stringify(pair));assert.equal(pair.find(r=>!r.ok).error,'managed-input-in-flight');
  const winner=pair.find(r=>r.ok).value.turn;assert.equal(winner.requestKey,'first');
+ const receipt=await rpc('turnReceipt',{sessionId,key:'first'});assert.equal(receipt.ok,true,JSON.stringify(receipt));assert.equal(receipt.value.accepted,true);assert.equal(receipt.value.turn.id,winner.id);
+ if(beta){
+  await rpc('dropBetaBindingForTest',{sessionId,key:'first',turnId:winner.id});options.workers[0].config.env.PRIVATE_BETA_POLICY_JSON.value=JSON.stringify({...standing,enabled:false});await mf.dispose();mf=new Miniflare(options);await mf.ready;
+  const missing=await rpc('turnReceipt',{sessionId,key:'first'});assert.equal(missing.ok,false);assert.equal(missing.error,'turn-receipt-not-found');const pausedRetry=await rpc('submitTurn',input);assert.equal(pausedRetry.ok,false);assert.match(pausedRetry.error,/private-beta-paused/);assert.equal((await rpc('turnReceipt',{sessionId,key:'first'})).ok,false);
+  options.workers[0].config.env.PRIVATE_BETA_POLICY_JSON.value=JSON.stringify(standing);await mf.dispose();mf=new Miniflare(options);await mf.ready;const repaired=await rpc('submitTurn',input);assert.equal(repaired.ok,true,JSON.stringify(repaired));assert.equal(repaired.value.replayed,true);assert.equal(repaired.value.turn.id,winner.id);assert.equal((await rpc('turnReceipt',{sessionId,key:'first'})).value.accepted,true);
+ }
  assert.deepEqual((await rpc('markerForTest',{turnId:winner.id})).value,beta?{policyId:standing.policyId,privateBeta:true}:{policyId:'developer-v1'});await mf.dispose();mf=new Miniflare(options);await mf.ready;
  assert.equal((await rpc('submitTurn',{...input,key:'after-restart'})).error,'managed-input-in-flight');
  const replays=await Promise.all([rpc('submitTurn',input),rpc('submitTurn',input)]);for(const replay of replays){assert.equal(replay.ok,true,JSON.stringify(replay));assert.equal(replay.value.replayed,true);assert.equal(replay.value.turn.id,winner.id);}

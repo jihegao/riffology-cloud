@@ -71,6 +71,7 @@ let sessionIntent = null;
 let creatingSession = false;
 let messageIntent = null;
 let sendingMessage = false;
+let reconcilingMessageIntent = false;
 const recoveryId = value => typeof value === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(value);
 const recoveryKey = workspaceId => `riffology:conversation:${tenant.id}:${workspaceId}`;
 function readConversation(key) {
@@ -91,6 +92,9 @@ function saveConversation(key, patch) {
 }
 function canSubmitConversation() {
   return Boolean(activeProject?.status === 'ready' && workspaceSnapshot && !workspaceSnapshot.piDeveloperState?.blocked && !['maintenance','unavailable'].includes(workspaceSnapshot.admission?.state));
+}
+function renderMessageAction() {
+  $('#message-submit').textContent = reconcilingMessageIntent ? '正在确认上次请求…' : messageIntent ? '重试上次请求' : '发送';
 }
 
 let eventSource = null;
@@ -399,6 +403,7 @@ function appendAssistantMessage(events) {
 function renderWorkspace() {
   const box = $('#turns');
   box.replaceChildren();
+  renderMessageAction();
   if (!workspaceSnapshot) {
     $('#message-submit').disabled = true; $('#new-session').disabled = true; $('#session-select').disabled = true;
     $('#message-input').readOnly = Boolean(messageIntent);
@@ -418,7 +423,6 @@ function renderWorkspace() {
   $('#message-submit').disabled = maintenance || unavailable || sendingMessage;
   $('#new-session').disabled = maintenance || unavailable || creatingSession || Boolean(messageIntent);
   $('#message-input').readOnly = Boolean(messageIntent);
-  $('#message-submit').textContent = messageIntent ? '重试上次请求' : '发送';
   $('#session-select').disabled = maintenance || unavailable || Boolean(messageIntent) || Boolean(sessionIntent);
   const sessions = Object.values(workspaceSnapshot.sessions || {}).sort((a, b) => (b.updatedAt ?? b.createdAt) - (a.updatedAt ?? a.createdAt));
   if (messageIntent) selectedSessionId = messageIntent.sessionId;
@@ -588,6 +592,27 @@ function connectEventStream(workspaceId, cursor, generation) {
   };
 }
 
+async function reconcileMessageRecovery(workspaceId,generation){
+  const current=messageIntent;
+  if(!current)return '';
+  reconcilingMessageIntent=true;renderMessageAction();
+  try{
+    const receipt=await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/sessions/${encodeURIComponent(current.sessionId)}/turns/receipt`,{headers:{'Idempotency-Key':current.key}});
+    if(generation!==viewGeneration||activeProject?.workspace_id!==workspaceId||messageIntent?.key!==current.key)return '';
+    if(receipt?.accepted!==true||receipt.turn?.sessionId!==current.sessionId||receipt.turn?.message!==current.message)return '上次请求的服务端回执与本地记录不一致；已保留原内容，请勿直接重发。';
+    if(readConversation(recoveryKey(workspaceId)).messageIntent?.key!==current.key)return '';
+    saveConversation(recoveryKey(workspaceId),{messageIntent:null,draft:'',selectedSessionId:current.sessionId});
+    messageIntent=null;selectedSessionId=current.sessionId;$('#message-input').value='';
+    return '上次请求已由服务端接收，编辑框已恢复。';
+  }catch(error){
+    if(generation!==viewGeneration||activeProject?.workspace_id!==workspaceId)return '';
+    if(error.status===404)return '';
+    return `暂时无法核对上次请求：${error.message}`;
+  }finally{
+    if(generation===viewGeneration&&activeProject?.workspace_id===workspaceId){reconcilingMessageIntent=false;renderMessageAction();}
+  }
+}
+
 async function refreshWorkspace(generation = viewGeneration) {
   if (!activeProject || generation !== viewGeneration) return;
   if(activeProject.status!=='ready')return;
@@ -598,12 +623,16 @@ async function refreshWorkspace(generation = viewGeneration) {
     workspaceSnapshot = snapshot;
     workspaceEvents = replay.events;
     workspaceHistoryTruncated = replay.historyTruncated === true;
+    const recoveryNotice=await reconcileMessageRecovery(workspaceId,generation);
+    if(generation !== viewGeneration || activeProject?.workspace_id !== workspaceId) return;
     renderWorkspace();renderModelState();
+    if(recoveryNotice)$('#message-error').textContent=recoveryNotice;
     void refreshWorkspaceFiles(generation);
     workspaceDiff=null;workspaceDiffError='';renderWorkspaceDiff();if(workspaceArtifactPanel==='diff')void refreshWorkspaceDiff(generation);
     connectEventStream(workspaceId, replay.cursor, generation);
   } catch (error) {
     if (generation !== viewGeneration) return;
+    reconcilingMessageIntent=false;renderMessageAction();
     $('#message-error').textContent = error.message;
   } finally {
     if (generation === viewGeneration) snapshotRecovery = false;
@@ -632,6 +661,7 @@ function openWorkspace(project) {
   sessionIntent = recovery.sessionIntent || null;
   creatingSession = false;
   messageIntent = recovery.messageIntent || null;
+  reconcilingMessageIntent = Boolean(messageIntent);
   $('#message-input').value = messageIntent?.message ?? recovery.draft ?? '';
   $('#new-session').textContent = sessionIntent ? '重试新建对话' : '新建对话';
   const browserRoute=browserPreviewRoute(location);
@@ -962,11 +992,14 @@ $('#message-form').onsubmit = async event => {
       saveConversation(savedKey, {messageIntent:null, selectedSessionId:attemptedIntent.sessionId, draft:attemptedIntent.message});
       messageIntent = null;
     }
-    $('#message-error').textContent = error.message;
-    $('#message-submit').textContent = messageIntent ? '重试' : '发送';
+    const recoveryNotice=messageIntent?await reconcileMessageRecovery(workspaceId,generation):'';
+    if(generation!==viewGeneration||activeProject?.workspace_id!==workspaceId)return;
+    $('#message-error').textContent = recoveryNotice||error.message;
+    renderMessageAction();
   } finally {
     sendingMessage = false;
     $('#message-input').readOnly = Boolean(messageIntent);
+    renderMessageAction();
     $('#message-submit').disabled = !canSubmitConversation();
   }
 };
