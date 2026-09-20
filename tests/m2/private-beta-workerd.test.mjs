@@ -78,7 +78,8 @@ test('standing Beta real SQLite/D1: invite scopes, cross-project contention, res
   // A terminal UI alone cannot return the slot while resources are unreleased.
   const {workspaceAgentName}=await import('../../services/workspace/protocol.ts');
   const ws=workspaceAgentName(first.identity.scope.tenantId,first.identity.scope.workspaceId);
-  await rpc('workspace',ws,'setState',{found:true,turnId:first.identity.turnId,terminal:true,released:false,resourceWait:false,finishedAt:null});
+  await rpc('workspace',ws,'setState',{found:true,turnId:first.identity.turnId,terminal:true,released:false,resourceWait:false,finishedAt:Date.now()-policy.releaseTimeoutMs-1000,releaseGuard:true});
+  await cap('monitor');assert.equal((await cap('snapshot')).quarantined,0);
   await assert.rejects(accept('carol'),/capacity-full/);
   await rpc('workspace',ws,'setState',{found:true,turnId:first.identity.turnId,terminal:true,released:true,resourceWait:false,finishedAt:null});
   await accept('carol');assert.equal((await cap('snapshot')).active,2);
@@ -110,6 +111,19 @@ test('standing Beta real SQLite/D1: invite scopes, cross-project contention, res
   await rpc('workspace',workspaceAgentName(scope('carol').tenantId,scope('carol').workspaceId),'setState',{found:true,turnId:request('carol').identity.turnId,terminal:true,released:true,resourceWait:false,finishedAt:Date.now()});
   await cap('resume');assert.equal((await cap('snapshot')).active,0);assert.equal((await cap('snapshot')).paused,false);
   assert.equal((await cap('snapshot')).usage.reduce((n,r)=>n+r.reservedNanodollars,0),before.usage.reduce((n,r)=>n+r.reservedNanodollars,0));
+  // A known native guard remains occupied and is bounded by the original Turn
+  // deadline, even across actor restart; expiry still requires explicit resume.
+  options.workers[0].config.env.TEST_CLOCK_OFFSET.value=String(86400000);
+  await mf.dispose();mf=new Miniflare(options);await mf.ready;
+  await accept('bob',2);const guardedWs=workspaceAgentName(scope('bob',2).tenantId,scope('bob',2).workspaceId);
+  const guardedState={found:true,turnId:request('bob',2).identity.turnId,terminal:true,released:false,resourceWait:false,finishedAt:Date.now()+86400000-policy.releaseTimeoutMs-1000,releaseGuard:true};
+  await rpc('workspace',guardedWs,'setState',guardedState);await cap('monitor');assert.equal((await cap('snapshot')).active,1);assert.equal((await cap('snapshot')).quarantined,0);
+  options.workers[0].config.env.TEST_CLOCK_OFFSET.value=String(86400000+policy.maxTurnDurationMs+1000);
+  await mf.dispose();mf=new Miniflare(options);await mf.ready;
+  await cap('monitor');assert.equal((await cap('snapshot')).quarantined,1);
+  await rpc('workspace',guardedWs,'setState',{...guardedState,released:true,releaseGuard:false});await cap('monitor');assert.equal((await cap('snapshot')).quarantined,1);
+  await cap('resume');assert.equal((await cap('snapshot')).active,0);
+  options.workers[0].config.env.TEST_CLOCK_OFFSET.value='0';await mf.dispose();mf=new Miniflare(options);await mf.ready;
   // No manifest is not an exemption: the real old ledger must be quiet.
   const historical={...request('carol'),budgetPolicyVersion:'legacy-test',callId:'legacy-unknown'};
   const old=await rpc('legacy','tenant-carol','reserve','tenant-carol',historical),oldRef=modelCallReference(old.record);

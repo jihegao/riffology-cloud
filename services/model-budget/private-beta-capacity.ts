@@ -1,4 +1,5 @@
 import {DurableObject} from 'cloudflare:workers';
+import {privateBetaReleaseDeadline} from './private-beta-release.ts';
 import {privateBetaPolicy,authorizePrivateBeta,PRIVATE_BETA_CAPACITY_ACTOR,type PrivateBetaPolicy} from './private-beta-policy.ts';
 import {turnDigest,type TurnScope,type TurnActor} from '../turn/protocol.ts';
 import {workspaceAgentName} from '../workspace/protocol.ts';
@@ -18,7 +19,7 @@ interface Env {
   PRIVATE_BETA_CAPACITY:DurableObjectNamespace<PrivateBetaCapacity>;
   PI_DEVELOPER_BUDGET:{getByName(name:string):{privateBetaCall(identity:ModelCallRequest['identity'],callId:string):Promise<ModelCallRecord|null>}};
   WORKSPACE_AGENT:{getByName(name:string):{
-    privateBetaReleaseState(input:Admission):Promise<{found:boolean;turnId:string|null;terminal:boolean;released:boolean;resourceWait:boolean;finishedAt:number|null}>;
+    privateBetaReleaseState(input:Admission):Promise<{found:boolean;turnId:string|null;terminal:boolean;released:boolean;resourceWait:boolean;finishedAt:number|null;releaseGuard?:boolean}>;
     cancelTurn(input:{scope:TurnScope;actor:TurnActor;turnId:string}):Promise<unknown>;
   }};
 }
@@ -77,7 +78,7 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
           const unresolved=this.ctx.storage.sql.exec("SELECT key FROM beta_calls WHERE slot_key=? AND status IN ('reserved','dispatched','unknown')",slot.key).toArray();
           if(!unresolved.length){this.ctx.storage.sql.exec("UPDATE beta_slots SET status='released',turn_id=? WHERE key=?",state.turnId,slot.key);continue;}
         }
-        const deadline=state.terminal&&state.finishedAt!==null?state.finishedAt+p.releaseTimeoutMs:slot.created_at+p.maxTurnDurationMs;
+        const deadline=privateBetaReleaseDeadline(slot.created_at,p,state);
         let revoked=false;try{await authorizePrivateBeta(this.env.CATALOG,admission.scope,admission.actor);}catch{revoked=true;}
         if(this.ctx.storage.kv.get('beta-paused')===true||slot.status==='quarantined'||!p.enabled||Date.now()>=p.reviewAt||revoked||Date.now()>=deadline){
           this.ctx.storage.sql.exec("UPDATE beta_slots SET status='quarantined' WHERE key=?",slot.key);
