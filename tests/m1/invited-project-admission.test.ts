@@ -76,6 +76,23 @@ test('current user, auth version, membership and Tenant status are fail-closed',
   }finally{f.db.sqlite.close();}
 });
 
+test('accepted invitation access revoke fences the old principal and restore requires a new auth version',async()=>{
+  const f=await acceptedFixture();
+  try{
+    const admin=new OperatorCatalog(f.db),operator={userId:'operator',authVersion:1};
+    await admin.access(operator,f.invitationId,{action:'revoke'});
+    await assert.rejects(new Admission(f.db).principal(f.identity),{message:'not_found'});
+    assert.equal(await acceptedInvitationProjectAdmission(f.db,'true',f.principal,f.tenantId),null);
+    await admin.access(operator,f.invitationId,{action:'restore'});
+    await assert.rejects(new Admission(f.db).principal(f.identity),{message:'not_found'});
+    const refreshedIdentity={...f.identity,platformVersion:2},refreshed=await new Admission(f.db).principal(refreshedIdentity);
+    assert.equal(refreshed.userId,f.principal.userId);assert.equal(refreshed.authVersion,2);
+    assert.deepEqual(await acceptedInvitationProjectAdmission(f.db,'true',refreshed,f.tenantId),{
+      kind:'accepted-invitation',invitationId:f.invitationId,policyVersion:INVITED_PROJECT_POLICY_VERSION,
+    });
+  }finally{f.db.sqlite.close();}
+});
+
 test('invited project uses ordinary idempotency, has no budget route and writes scoped policy audit',async()=>{
   const f=await acceptedFixture();let enabled:unknown='true',fallbackCalls=0;
   try{
