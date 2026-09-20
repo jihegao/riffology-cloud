@@ -74,6 +74,12 @@ test('enabled admission derives the workspace actor and forwards one exact reque
   ]);
 });
 
+test('receipt lookup bypasses execution admission and forwards only the exact read scope',async()=>{
+ const calls:unknown[]=[];const services=createGatewayTurnServices({M2_TURNS_ENABLED:'false',WORKSPACE_AGENT:{getByName(name){calls.push(name);return {async turnReceipt(input:unknown){calls.push(input);return {accepted:true};}} as any;}}});
+ assert.deepEqual(await services.receipt(scope,actor,'session-a','request-a'),{accepted:true});
+ assert.deepEqual(calls,['workspace:tenant-a:workspace-a',{scope,actor,sessionId:'session-a',key:'request-a'}]);
+});
+
 test('workspace snapshot carries admission without changing the private actor payload', async () => {
   const calls: unknown[] = [];
   const services = createGatewayTurnServices({ M2_TURNS_ENABLED: 'false', WORKSPACE_AGENT: { getByName() {

@@ -36,6 +36,7 @@ if (url.pathname === '/api/me') return json(route, { execution:{service:true,pre
       if (/^\/api\/workspaces\/[^/]+\/files$/.test(url.pathname)) return json(route, { schemaVersion: 1, revision: null, files: [] });
       if (/^\/api\/workspaces\/[^/]+\/diff$/.test(url.pathname)) return json(route, { schemaVersion: 1, revision: null, summary: { added: 0, modified: 0, deleted: 0 }, changes: [] });
       if (/^\/api\/workspaces\/[^/]+\/services$/.test(url.pathname) && route.request().method()==='GET') return json(route, { items: [], nextCursor: null });
+      if (/^\/api\/workspaces\/[^/]+\/sessions\/[^/]+\/turns\/receipt$/.test(url.pathname) && route.request().method()==='GET') return json(route,{error:'not_found'},404);
       throw Error(`unexpected request ${url.pathname}`);
     }
     const name = url.pathname === '/' ? 'index.html' : url.pathname.slice(1);
@@ -448,13 +449,40 @@ test('message retry reuses one session and the exact Turn idempotency intent', a
   await page.locator('#message-input').fill('构建模型');
   await page.locator('#message-submit').click();
   await page.locator('#message-submit:not([disabled])').waitFor();
-  assert.equal(await page.locator('#message-submit').innerText(), '重试');
+  assert.equal(await page.locator('#message-submit').innerText(), '重试上次请求');
   await page.locator('#message-submit').click();
   await page.locator('.turn-card.user').waitFor();
   assert.equal(attempts.length, 2);
   assert.deepEqual(attempts[0], attempts[1]);
   assert.deepEqual(JSON.parse(attempts[0].body), { message: '构建模型' });
   assert.equal(await page.locator('.turn-card.user p').innerText(), '构建模型');
+});
+
+test('a committed Turn with a lost response is reconciled before retry is offered', async t => {
+  const workspaceId = 'workspace-lost-reply', sessionId = 'session-lost-reply', message = '研究假设也是可以改的页面吗';
+  let accepted = false, posts = 0, receipts = 0, requestKey = null;
+  const page = await pageFixture(t, async (route, path) => {
+    if (path === '/api/tenants/tenant-a/projects') {
+      await json(route, { projects: [{ id: 'project-lost-reply', workspace_id: workspaceId, title: '回执恢复', status: 'ready' }] }); return true;
+    }
+    if (path === `/api/workspaces/${workspaceId}`) {
+      await json(route, { schemaVersion: 1, nextSequence: 1, activeTurnId: null, sessions: { [sessionId]: { id: sessionId, title: '主对话', createdAt: 1 } }, turns: {} }); return true;
+    }
+    if (path === `/api/workspaces/${workspaceId}/events`) {
+      await json(route, { events: [], nextSequence: 0, hasMore: false, oldestSequence: 1, snapshotRequired: false }); return true;
+    }
+    if (path === `/api/workspaces/${workspaceId}/sessions/${sessionId}/turns/receipt`) {
+      receipts++; assert.equal(route.request().headers()['idempotency-key'], requestKey);
+      await json(route, accepted ? { accepted: true, turn: { id: 'turn-lost-reply', sessionId, message, status: 'queued' } } : { error: 'not_found' }, accepted ? 200 : 404); return true;
+    }
+    if (path === `/api/workspaces/${workspaceId}/sessions/${sessionId}/turns` && route.request().method() === 'POST') {
+      posts++; requestKey = route.request().headers()['idempotency-key']; assert.match(requestKey, /^[A-Za-z0-9_-]{1,128}$/); assert.equal(JSON.parse(route.request().postData()).message, message); accepted = true; await route.abort('failed'); return true;
+    }
+  });
+  await page.goto('https://ui.test/'); await page.locator('.project-open').click();
+  await page.locator('#message-input').fill(message); await page.locator('#message-submit').click();
+  await page.getByText('上次请求已由服务端接收，编辑框已恢复。', { exact: true }).waitFor();
+  assert.equal(posts, 1); assert.equal(receipts, 1); assert.equal(await page.locator('#message-input').isEditable(), true); assert.equal(await page.locator('#message-input').inputValue(), ''); assert.equal(await page.locator('#message-submit').innerText(), '发送');
 });
 
 test('active Turn consumes named SSE events and stop acts on the persisted Turn id', async t => {
@@ -905,7 +933,7 @@ test('a persisted oversized message intent is released before retry preflight', 
     if (path === `/api/tenants/tenant-a/projects`) { await json(route, { projects: [{ id: 'project-old-oversized-intent', workspace_id: workspaceId, title: '旧请求', status: 'ready' }] }); return true; }
     if (path === `/api/workspaces/${workspaceId}`) { await json(route, { schemaVersion: 1, sessions: { [sessionId]: { id: sessionId, title: '主对话', createdAt: 1 } }, turns: {}, activeTurnId: null }); return true; }
     if (path.endsWith('/events')) { await json(route, { events: [], nextSequence: 0, hasMore: false, snapshotRequired: false }); return true; }
-    if (path.includes('/turns')) { posts++; await json(route, {}); return true; }
+    if (path === `/api/workspaces/${workspaceId}/sessions/${sessionId}/turns` && route.request().method()==='POST') { posts++; await json(route, {}); return true; }
   });
   const message = '界'.repeat(3000);
   await page.addInitScript(({ key, message: value, sessionId: sid }) => sessionStorage.setItem(key, JSON.stringify({ schemaVersion: 1, draft: value, messageIntent: { key: 'old-key', sessionId: sid, message: value } })), { key: `riffology:conversation:tenant-a:${workspaceId}`, message, sessionId });

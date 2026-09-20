@@ -136,6 +136,9 @@ export class G5ControlledWindow extends DurableObject<G5WindowEnv>{
  async registerTask(task:unknown){this.#enabled();await this.#assertActiveRolloverAuthority();return this.#guard().registerTask(task);}
  async claimTaskCreate(key:string){this.#enabled();await this.#assertActiveRolloverAuthority();return this.#guard().claimTaskCreate(key);}
  async bindTask(key:string,boundId:string){await this.#assertActiveRolloverAuthority();return this.#guard().bindTask(key,boundId);}
+ async taskBinding(key:string,boundId:string){return this.#guard().taskBinding(key,boundId);}
+ async taskBindingForIntent(task:unknown,boundId:string){return this.#guard().taskBindingForIntent(task,boundId);}
+ async repairTaskBinding(task:unknown,boundId:string){const guard=this.#guard(),binding=await guard.taskBindingForIntent(task,boundId);if(!binding.found||!binding.taskKey)throw Error('g5-window-intent-absent');await guard.bindTask(binding.taskKey,boundId);return {...binding,bound:true};}
  async checkTaskStart(key:string,identity?:unknown){this.#enabled();await this.#assertActiveRolloverAuthority();return this.#guard().checkTaskStart(key,identity);}
  async claimTaskStart(key:string,identity?:unknown){this.#enabled();await this.#assertActiveRolloverAuthority();return this.#guard().claimTaskStart(key,identity);}
  async confirmTaskStartGrant(key:string,grantId:string){await this.#assertActiveRolloverAuthority();return this.#guard().confirmTaskStartGrant(key,grantId);}

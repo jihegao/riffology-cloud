@@ -13,6 +13,13 @@ test('session and turn submissions are durable idempotent intents with payload c
  const first=await f.journal.submit(scope,actor,s.id,'turn-key',{message:'hello'}),again=await f.journal.submit(scope,actor,s.id,'turn-key',{message:'hello'});assert.equal(again.replayed,true);assert.equal(again.turn.id,first.turn.id);
  await assert.rejects(f.journal.submit(scope,actor,s.id,'turn-key',{message:'changed'}),/idempotency/);assert.equal(Object.keys(f.store.snapshot()!.turns).length,1);
 });
+test('submission receipt is a read-only exact actor, session and idempotency-key lookup',async()=>{
+ const f=fixture(),s=await session(f.journal),submitted=await f.journal.submit(scope,actor,s.id,'receipt-key',{message:'accepted before reply loss'}),before=f.store.snapshot();
+ const receipt=await f.journal.receipt(scope,actor,s.id,'receipt-key');assert.equal(receipt.turn.id,submitted.turn.id);assert.deepEqual(f.store.snapshot(),before);
+ await assert.rejects(f.journal.receipt(scope,actor,s.id,'other-key'),/receipt-not-found/);
+ await assert.rejects(f.journal.receipt(scope,{...actor,authVersion:2},s.id,'receipt-key'),/receipt-not-found/);
+ const other=await session(f.journal,'other-session');await assert.rejects(f.journal.receipt(scope,actor,other.id,'receipt-key'),/receipt-not-found/);
+});
 test('one workspace-wide claim serializes turns across sessions and survives claim replay',async()=>{
  const f=fixture(),one=await queued(f.journal,'one'),s2=await session(f.journal,'session-two'),two=(await f.journal.submit(scope,actor,s2.id,'two',{message:'second'})).turn;
  const claimed=await f.journal.claim(scope,1);assert.equal(claimed!.turn.id,one.id);assert.equal(claimed!.replayed,false);

@@ -99,6 +99,13 @@ export class TurnJournal{
       const turn:TurnRecord={id,sessionId:session.id,scope:s,actor:a,requestKey:key,payloadSha256,message:normalized.message,status:'queued',createdAt:at,updatedAt:at,startedAt:null,finishedAt:null,startedSequence:null,terminalSequence:null,dispatchId:null,runtimeGeneration:null,cancelRequestedAt:null,cancelDisposition:null,base:null,resourceLease:null,executionOutcome:null,errorCode:null,persistenceOutcome:null,persistenceErrorCode:null,checkpoint:null};
       state.turns[id]=turn;state.turnIntents[ik]={payloadSha256,turnId:id};event(state,turn,'turn.queued',at,{});return {state,value:{turn,replayed:false}};});
   }
+  async receipt(rawScope:TurnScope,rawActor:TurnActor,sessionId:string,key:string){
+    const s=scope(rawScope),a=actor(rawActor),sid=turnId(sessionId),ik=`${intent(a.userId,key)}|${sid}`,state=requireState(this.#store.read(),s),session=sessionOf(state,sid,s);
+    if(session.actorUserId!==a.userId||session.actorAuthVersion!==a.authVersion)throw Error('turn-receipt-not-found');
+    const prior=state.turnIntents[ik],turn=prior&&state.turns[prior.turnId];
+    if(!prior||!turn||turn.sessionId!==sid||turn.requestKey!==key||turn.payloadSha256!==prior.payloadSha256)throw Error('turn-receipt-not-found');
+    owned(turn,a);return {turn:structuredClone(turn)};
+  }
   async claim(rawScope:TurnScope,runtimeGeneration:number){
     const result=this.#claimTail.then(()=>this.#claim(rawScope,runtimeGeneration));
     this.#claimTail=result.catch(()=>{});return result;

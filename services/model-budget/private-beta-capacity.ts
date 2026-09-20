@@ -1,7 +1,7 @@
 import {DurableObject} from 'cloudflare:workers';
 import {privateBetaReleaseDeadline} from './private-beta-release.ts';
 import {privateBetaPolicy,authorizePrivateBeta,PRIVATE_BETA_CAPACITY_ACTOR,type PrivateBetaPolicy} from './private-beta-policy.ts';
-import {turnDigest,type TurnScope,type TurnActor} from '../turn/protocol.ts';
+import {turnDigest,turnId,type TurnScope,type TurnActor} from '../turn/protocol.ts';
 import {workspaceAgentName} from '../workspace/protocol.ts';
 import {modelCallRequest,modelBudgetCallKey,type ModelCallRequest,type ModelCallRecord,modelBudgetTenantName} from './core.ts';
 import {productionProfile,profileDigest,conservativeCost} from '../model-proxy/production-profile.ts';
@@ -54,6 +54,10 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
     this.ctx.storage.sql.exec('INSERT OR IGNORE INTO beta_policy VALUES(1,?)',digest);
     await this.ctx.storage.sync();
   }
+  async #assertPinned(p:PrivateBetaPolicy){
+    const digest=await turnDigest({...p,enabled:false}),prior=this.ctx.storage.sql.exec<{digest:string}>('SELECT digest FROM beta_policy WHERE singleton=1').toArray()[0];
+    if(!prior)throw Error('private-beta-policy-unpinned');if(prior.digest!==digest)throw Error('private-beta-policy-conflict');
+  }
   async #alert(key:string,code:string){
     const prior=this.ctx.storage.sql.exec('SELECT key FROM beta_alerts WHERE key=?',key).toArray().length;
     this.ctx.storage.sql.exec('INSERT OR IGNORE INTO beta_alerts VALUES(?,?,?)',key,Date.now(),code);
@@ -105,11 +109,16 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
     return {key,replayed:false};
   });}
   async bindTurn(input:Admission,turnId:string){return this.#serial(async()=>{
-    const p=this.#policy();const key=await turnDigest({purpose:'private-beta-admission',...input});
+    const p=this.#policy();await this.#assertPinned(p);const key=await turnDigest({purpose:'private-beta-admission',...input});
     const row=this.ctx.storage.sql.exec<Slot>('SELECT * FROM beta_slots WHERE key=?',key).toArray()[0];
     if(!row||row.document!==JSON.stringify(input)||!['admitting','active'].includes(row.status)||Date.now()>=row.created_at+p.maxTurnDurationMs||row.turn_id&&row.turn_id!==turnId)throw Error('private-beta-identity-conflict');
     this.ctx.storage.sql.exec("UPDATE beta_slots SET turn_id=?,status='active' WHERE key=?",turnId,key);await this.ctx.storage.sync();
   });}
+  async turnBinding(input:Admission,rawTurnId:string){
+    const p=this.#policy(false),expected=turnId(rawTurnId),key=await turnDigest({purpose:'private-beta-admission',...input});
+    const row=this.ctx.storage.sql.exec<Slot>('SELECT * FROM beta_slots WHERE key=?',key).toArray()[0];
+    const found=!!row&&row.document===JSON.stringify(input);if(!found)return {found:false,bound:false};await this.#assertPinned(p);return {found:true,bound:row.turn_id===expected&&row.status!=='admitting'};
+  }
   #checkLimits(p:PrivateBetaPolicy,userId:string,cost:number,slot:string|null){
     const day=new Date(Date.now()).toISOString().slice(0,10);
     const totals=this.ctx.storage.sql.exec<{total:number;daily:number;user_daily:number;calls:number;user_calls:number;pending:number;pending_cost:number;turn_cost:number;turn_calls:number}>(`SELECT

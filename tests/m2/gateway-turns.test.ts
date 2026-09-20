@@ -16,6 +16,7 @@ async function fixture(){
  const artifactId=`artifact-${'a'.repeat(60)}`,artifactContent=new TextEncoder().encode(JSON.stringify({kind:'read',content:'x'.repeat(20_000)})),artifactSha=[...new Uint8Array(await crypto.subtle.digest('SHA-256',artifactContent))].map(byte=>byte.toString(16).padStart(2,'0')).join('');
  const services={origin,database:db,identity:async()=>({subject:'subject-a',email:'alice@example.test',emailVerified:true,platformVersion:1}),turns:{
   createSession:(scope:any,actor:any,key:string,body:any)=>journal.createSession(scope,actor,key,body),
+  receipt:async(scope:any,actor:any,sessionId:string,key:string)=>({accepted:true,...await journal.receipt(scope,actor,sessionId,key)}),
   submit:(scope:any,actor:any,sessionId:string,key:string,body:any)=>journal.submit(scope,actor,sessionId,key,body),
   cancel:(scope:any,actor:any,turnId:string)=>journal.cancel(scope,actor,turnId),
   replay:(scope:any,afterSequence:number,limit:number)=>journal.replay(scope,afterSequence,limit),
@@ -34,6 +35,8 @@ test('authenticated ready workspace exposes durable session, turn, cancel, snaps
   const replay=await f.post(`/api/workspaces/${f.workspaceId}/sessions`,'session-one',{title:'Session'});assert.equal(replay.status,200);assert.equal((await replay.json() as any).session.id,s.session.id);
   assert.equal((await f.post(`/api/workspaces/${f.workspaceId}/sessions`,'session-one',{title:'Changed'})).status,409);
   const submitted=await f.post(`/api/workspaces/${f.workspaceId}/sessions/${s.session.id}/turns`,'turn-one',{message:'Build a model'});assert.equal(submitted.status,202);const t=await submitted.json() as any;assert.equal(t.turn.payloadSha256,undefined);assert.equal(t.turn.requestKey,undefined);assert.equal(t.turn.dispatchId,undefined);assert.equal(t.turn.resourceLease,undefined);assert.deepEqual(t.turn.actor,{userId:'user-a'});
+  const receiptResponse=await f.get(`/api/workspaces/${f.workspaceId}/sessions/${s.session.id}/turns/receipt`,{'idempotency-key':'turn-one'});assert.equal(receiptResponse.status,200);const receipt=await receiptResponse.json() as any;assert.equal(receipt.accepted,true);assert.equal(receipt.turn.id,t.turn.id);assert.equal(receipt.turn.requestKey,undefined);assert.equal(receipt.turn.payloadSha256,undefined);
+  assert.equal((await f.get(`/api/workspaces/${f.workspaceId}/sessions/${s.session.id}/turns/receipt`,{'idempotency-key':'missing'})).status,404);
   const turnReplay=await f.post(`/api/workspaces/${f.workspaceId}/sessions/${s.session.id}/turns`,'turn-one',{message:'Build a model'});assert.equal(turnReplay.status,200);assert.equal((await turnReplay.json() as any).turn.id,t.turn.id);
   const events=await (await f.get(`/api/workspaces/${f.workspaceId}/events?after_sequence=0&limit=10`)).json() as any;assert.equal(events.events.length,1);assert.equal(events.events[0].type,'turn.queued');
   const cancelled=await f.post(`/api/workspaces/${f.workspaceId}/turns/${t.turn.id}/cancel`,'unused',{});assert.equal(cancelled.status,200);assert.equal((await cancelled.json() as any).status,'cancelled');

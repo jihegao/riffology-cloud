@@ -54,10 +54,12 @@ test('standing Beta real SQLite/D1: invite scopes, cross-project contention, res
     db.prepare("INSERT INTO catalog_projects(id,tenant_id,owner_user_id,workspace_id,title,starter_version,status,created_at,updated_at) VALUES(?,?,?,?,'fixture','empty-v1','ready',1,1)").bind(s.projectId,s.tenantId,user,s.workspaceId),
     db.prepare("INSERT INTO catalog_workspaces(id,tenant_id,project_id,owner_user_id,status,created_at,updated_at) VALUES(?,?,?,?,'ready',1,1)").bind(s.workspaceId,s.tenantId,s.projectId,user)]);}
   }
-  await assert.rejects(accept('outsider'),/admission-denied/);
-  await assert.rejects(cap('admitTurn',{...admission('alice'),scope:scope('bob')}),/admission-denied/);
-  const competing=await Promise.allSettled([accept('alice',1),accept('alice',2)]);assert.equal(competing.filter(r=>r.status==='fulfilled').length,1);
-  const project=competing[0].status==='fulfilled'?1:2,first=request('alice',project);
+ await assert.rejects(accept('outsider'),/admission-denied/);
+ await assert.rejects(cap('admitTurn',{...admission('alice'),scope:scope('bob')}),/admission-denied/);
+ assert.deepEqual(await cap('turnBinding',admission('alice'),'turn-alice-1'),{found:false,bound:false});
+ const competing=await Promise.allSettled([accept('alice',1),accept('alice',2)]);assert.equal(competing.filter(r=>r.status==='fulfilled').length,1);
+ const project=competing[0].status==='fulfilled'?1:2,first=request('alice',project);
+ assert.deepEqual(await cap('turnBinding',admission('alice',project),first.identity.turnId),{found:true,bound:true});assert.deepEqual(await cap('turnBinding',admission('alice',project),'wrong-turn'),{found:true,bound:false});
   await accept('bob');await assert.rejects(accept('carol'),/capacity-full/);
   await assert.rejects(budget('alice','reserve',first.identity.scope.tenantId,{...first,callId:'over-budget',inputTokenUpperBound:10000}),/budget-limit/);
   const ref=modelCallReference((await budget('alice','reserve',first.identity.scope.tenantId,first)).record);
@@ -132,6 +134,7 @@ test('standing Beta real SQLite/D1: invite scopes, cross-project contention, res
   // New policy ID cannot reset cumulative exposure or occupied slots.
   options.workers[0].config.env.PRIVATE_BETA_POLICY_JSON.value=JSON.stringify({...policy,policyId:'replacement'});
   await mf.dispose();mf=new Miniflare(options);await mf.ready;
+  await assert.rejects(cap('turnBinding',admission('alice'),'turn-alice-1'),/policy-conflict/);
   await assert.rejects(cap('monitor'),/policy-conflict/);
  }finally{await mf?.dispose();await rm(dir,{recursive:true,force:true});}
 });
