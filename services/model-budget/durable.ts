@@ -33,7 +33,7 @@ export class TenantModelBudget extends DurableObject<TenantModelBudgetEnv>{
     return new G4WindowGuard(this.ctx.storage,g4WindowPolicy(this.env.G4_CONTROLLED_WINDOW_JSON===undefined?undefined:JSON.parse(this.env.G4_CONTROLLED_WINDOW_JSON)));
   }
   async g4AdmitTask(tenantId:string,task:G4Task){if(task.tenantId!==tenantId)throw Error('g4-window-actor-scope-denied');const guard=this.#g4(tenantId);const result=this.ctx.storage.transactionSync(()=>guard.taskSync(task));await this.ctx.storage.sync();return result;}
-  async g4WindowSnapshot(tenantId:string){if(!this.env.TENANT_MODEL_BUDGET.idFromName(modelBudgetTenantName(tenantId)).equals(this.ctx.id))throw Error('g4-window-actor-scope-denied');return readG4WindowSnapshot(this.ctx.storage,g4WindowPolicy(this.env.G4_CONTROLLED_WINDOW_JSON===undefined?undefined:JSON.parse(this.env.G4_CONTROLLED_WINDOW_JSON)));}
+  async g4WindowSnapshot(tenantId:string){if(!this.env.TENANT_MODEL_BUDGET.idFromName(modelBudgetTenantName(tenantId)).equals(this.ctx.id))throw Error('g4-window-actor-scope-denied');const configured=g4WindowPolicy(this.env.G4_CONTROLLED_WINDOW_JSON===undefined?undefined:JSON.parse(this.env.G4_CONTROLLED_WINDOW_JSON));return readG4WindowSnapshot(this.ctx.storage,configured?.tenantId===tenantId?configured:null);}
   async closeTurnAdmission(tenantId:string,identity:unknown){return this.#forTenant(tenantId).closeTurnAdmission(identity);}
   async turnSettlement(tenantId:string,identity:unknown){return this.#forTenant(tenantId).turnSettlement(identity);}
   async reserve(tenantId:string,request:unknown){return this.#forTenant(tenantId).reserve(request);}
