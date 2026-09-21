@@ -1,15 +1,16 @@
-# Current release readiness — 2026-09-20
+# Current release readiness — 2026-09-21
 
 This is the release and acceptance evidence index. Live priority, status and
 ownership are maintained in the [Delivery Project](https://github.com/users/jihegao/projects/1),
 not in a parallel Markdown task list. Historical records prove only their own
-source/window, not that the current deployment passes. This 2026-09-20 snapshot
+source/window, not that the current deployment passes. This 2026-09-21 snapshot
 includes the authenticated Chrome/CDP Queue/Mesa acceptance, #71's current-version
 browser-isolation acceptance, #87's bounded paid Pi acceptance and #92's real
-invitee revocation/audit acceptance linked below. They do not complete the
+invitee revocation/audit acceptance and revoked-session migration linked below.
+They do not complete the
 seven-day standing-capacity observation. GitHub, source and live Worker settings
-were re-read on 2026-09-20: Gateway version
-`dbb4f919-858b-497d-aab9-3ea8f5ab55da` serves 100%; only the three approved
+were re-read on 2026-09-21: Gateway version
+`2175756e-615d-4525-883b-34395a5bc50e` serves 100%; only the three approved
 Pi/M2 gates are open, while G5 and M3/M4 remain closed.
 
 ## Private Beta definition and standing capacity
@@ -67,7 +68,7 @@ promoting local Preview to Evidence.
 
 | Item | Evidence / status |
 | --- | --- |
-| Source baseline | Deployed application source: `090ce7f6c6761dfb6acac511596e6740718c9864`; evidence-index merge: `9a06d3929a2e3637c00c8698636937cbdabe758b`, both checked 2026-09-20. [PR #119](https://github.com/jihegao/riffology-cloud/pull/119) is merged and its full `check` job passed; earlier #102/#103 execution-isolation evidence remains historical input rather than the deployed source identity |
+| Source baseline | Deployed application source: `0f1caa5` from [PR #124](https://github.com/jihegao/riffology-cloud/pull/124), checked 2026-09-21. Its full CI passed after one unrelated existing M0 timing test was retried successfully. PR #119 remains the accepted-invite revocation baseline; earlier #102/#103 execution-isolation evidence remains historical input rather than the deployed source identity |
 | PR #84 | [Merged and deployed](https://github.com/jihegao/riffology-cloud/pull/84), merge `4f564105e11dec7bac9338e770a52c57455279c9`; [Ubuntu CI passed](https://github.com/jihegao/riffology-cloud/actions/runs/35408200559) |
 | #84 Gateway deployment record | `530dce72-65a6-4247-b69b-955a432188d2`, 100% at publication; PR records actual Worker byte comparison, static resource hashes and configuration readback |
 | #84 execution Worker deployment record | `d5fb4b8a-d2d8-4007-b454-d97816405b22`, 100%; retained through the #90 acceptance release and observed in the authenticated Chrome/CDP trace |
@@ -75,7 +76,7 @@ promoting local Preview to Evidence.
 | PR #97–#100 | Merged #87 blocker inventory, exact release-hold reconciliation and private request correlation. [The latest #87 record](https://github.com/jihegao/riffology-cloud/issues/87#issuecomment-5741935018) identifies deployed Gateway version `f4da845a-96a5-42b8-bbb3-21fc18e44bcb`, exact merged source `5ac8fa5`, preserved bindings and closed execution gates. These changes expose and reconcile existing records; they do not retry, settle or replay them |
 | PR #102 / #87 | [Execution isolation merged](https://github.com/jihegao/riffology-cloud/pull/102), merge `162c8917102333b2f4395abf8e07cfd5ea4cf98f`; exact append-only HMAC proof, runtime tombstone and accept/fence serialization. Production acceptance ended on Gateway version `ef30dd39-4ea0-4476-888c-8fdd1b964ecd`, 100%, with all execution gates closed and 89 bindings preserved |
 | PR #91 / #90 Gateway | [Auth bootstrap fix merged](https://github.com/jihegao/riffology-cloud/pull/91), merge `c3683695`; Gateway version `ff3fae53-eeb1-4da1-824c-155cf7754268`, deployment `051de36d-4f70-4544-af4d-a3558dec6b6d`, 100%. [Authenticated acceptance](https://github.com/jihegao/riffology-cloud/issues/78#issuecomment-5740806289) records exact Queue/Mesa identities, scoped requests and before/after counts |
-| Current Private Beta Gateway | PR #119 merge `090ce7f`; deployment `84ce4a10-d2bd-4ff4-91ba-cafc26abf514`, 100% version `dbb4f919-858b-497d-aab9-3ea8f5ab55da`, 91 bindings. M2 Turn/model/provider gates are open only under #104's frozen policy; G5 and M3/M4 remain closed |
+| Current Private Beta Gateway | PR #124 merge `0f1caa5`; deployment `190835a0-cd24-4aec-9cde-da07863a5442`, 100% version `2175756e-615d-4525-883b-34395a5bc50e`, 91 bindings. The frozen release overlay matched the prior live version on all 91 bindings before upload. M2 Turn/model/provider gates are open only under #104's frozen policy; G5 and M3/M4 remain closed |
 | #71 browser isolation | [Current production acceptance](https://github.com/jihegao/riffology-cloud/issues/71#issuecomment-5750074199) covers two projects, Queue/Mesa, opaque storage denial, BroadcastChannel positive/negative controls, cancel/refresh/late-message behavior, a second authenticated principal, GET-only request trace and unchanged scoped compute counts. Browser Execution remains 100% version `d5fb4b8a-d2d8-4007-b454-d97816405b22` |
 | Earlier readback | [Pre-#84 allowlisted snapshot](evidence/invited-queue/release-readback-20260919.json): Gateway `0ca0acc2-fed7-43fe-9fdf-dd19d1e9b9c5`, execution `ead25cd0-74c1-43cd-b604-64dc1b8325d4`; retained as historical evidence only |
 | Rollback | Freeze actual active Worker/assets/configuration before a future release; historical `727c40f` is not automatically the current operational rollback target. No database reversal or ledger reset. |
@@ -114,7 +115,7 @@ alone do not prove authenticated acceptance or zero cloud execution.
 | A: #83 | Code already on remote main; [issue record corrected](https://github.com/jihegao/riffology-cloud/issues/83#issuecomment-5736868137); historical aa interaction proof retained | Release maintainer: complete current-version refresh, narrow viewport, stale/current version and failure-state matrix before closure |
 | A: #78/#90 complete; #64/#65 remain | #90 fixed auth bootstrap and #78 is Done. [Authenticated Chrome/CDP acceptance](https://github.com/jihegao/riffology-cloud/issues/78#issuecomment-5740806289) covers exact Queue/Mesa revisions/packages, embedded and independent-page runs, refresh/reopen persistence, method/origin/path trace and unchanged scoped authoritative counts | #65 still carries UI/navigation/error/narrow-screen checks. #64 retains its broader unaccepted Verify scope outside this milestone; the #78 result does not authorize or prove Verify |
 | A: #71 complete | [Current production acceptance](https://github.com/jihegao/riffology-cloud/issues/71#issuecomment-5750074199) passed for two projects and a second authenticated principal; same-frame BroadcastChannel positive controls worked while cross-project delivery stayed empty. Current immutable runtime hashes matched a 37/37 real Chrome/Pyodide suite | [#71 CLOSED / Done](https://github.com/jihegao/riffology-cloud/issues/71). Preview remains local/unverified; this does not accept #64 Verify |
-| A: #92 complete | [PR #119](https://github.com/jihegao/riffology-cloud/pull/119) adds reversible accepted-invite access revocation without mutating invitation acceptance, tenant, membership or projects. On the current deployment a real invitee passed active → revoked → restored: the old session was denied both before and after restore, a fresh Google login reopened the original project, and a foreign workspace stayed hidden | [#92](https://github.com/jihegao/riffology-cloud/issues/92) owns the completed admission/revocation evidence. Paired invitation/user audit events share request IDs; user `auth_version` advanced while the accepted invitation and four projects remained intact. Broader tenant/member/deletion lifecycle remains #93 |
+| A: #92 complete | [PR #119](https://github.com/jihegao/riffology-cloud/pull/119) adds reversible accepted-invite access revocation without mutating invitation acceptance, tenant, membership or projects. [PR #124](https://github.com/jihegao/riffology-cloud/pull/124) keeps the pre-revocation Session read-only and adds an explicit draft-preserving migration to a new Session. On the current deployment the real invitee refreshed into `Session 2` with the original draft editable and Send enabled; no Turn or provider/model request was submitted | [#92](https://github.com/jihegao/riffology-cloud/issues/92) owns the admission/revocation evidence; [#123](https://github.com/jihegao/riffology-cloud/issues/123) owns the post-restore conversation defect and production acceptance. Paired invitation/user audit events share request IDs; user `auth_version` advanced while the accepted invitation and four projects remained intact. Broader tenant/member/deletion lifecycle remains #93 |
 | B: #87 complete; related #46/#37/#68 remain | PR #102 merged; 7/7 historical calls have exact execution-isolation proof. One bounded authenticated Turn created and saved a Python Queue model and Revision, produced a runnable Preview, retained modified parameters after refresh, and ended quiet/released. The 8/8 provider-call ceiling was reached without retry or fallback, so no second Turn was submitted | [#87 CLOSED / Done](https://github.com/jihegao/riffology-cloud/issues/87#issuecomment-5743576761), with [#103 evidence merged](https://github.com/jihegao/riffology-cloud/pull/103). Historical per-request usage/billing remains independent P1 #101; Preview is local/unverified. Standing capacity is #104; full parent issues remain later candidates |
 | C: #35 | Existing publication/copy implementation; honest Queue entry added; no official Queue published | Author + distinct reviewer: ordinary author → baseline/comparison/export → submit → non-author approval → new-user copy and independent run |
 | D: invited users | 0 observed participants; no research outcomes claimed | Product owner: 3 participants; all explore, at least 2 independently compare and return in a second visit; record intervention and unknown cost separately |
@@ -125,7 +126,8 @@ The #78 closeout covers one authenticated target account and both frozen Queue/M
 projects. #71 subsequently added current-version two-project storage/channel probes,
 a second authenticated principal, current request traces and unchanged scoped
 compute counters. #92 now adds real-invitee admission, reversible access revocation,
-session invalidation and paired audit evidence. Distinct author/reviewer identities
+session invalidation, paired audit evidence and an explicit migration from the
+read-only historical Session to a new current-principal Session. Distinct author/reviewer identities
 remain required for official model publication.
 
 ## Next execution packet
