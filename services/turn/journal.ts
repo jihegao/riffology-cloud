@@ -298,9 +298,9 @@ export class TurnJournal{
   }
   publicationHasActiveTurn(rawScope:TurnScope):boolean{return requireState(this.#store.read(),scope(rawScope)).activeTurnId!==null;}
   async workspaceRevision(rawScope:TurnScope){return this.workspaceRevisionSnapshot(rawScope);}
-  async view(rawScope:TurnScope):Promise<TurnJournalView>{const state=await this.snapshot(rawScope),turns:TurnJournalView['turns']={};
+  async view(rawScope:TurnScope,rawActor?:TurnActor):Promise<TurnJournalView>{const state=await this.snapshot(rawScope),current=rawActor===undefined?null:actor(rawActor),turns:TurnJournalView['turns']={};
     for(const [id,turn] of Object.entries(state.turns)){const {actor:privateActor,requestKey:_,payloadSha256:__,dispatchId:___,base:____,resourceLease:_____,startedSequence:______,terminalSequence:_______,...safe}=turn;turns[id]={...safe,actor:{userId:privateActor.userId},timing:deriveTurnTiming(turn,state.events,Date.now())};}
-    const sessions:TurnJournalView['sessions']={};for(const [id,session] of Object.entries(state.sessions)){const {actorUserId:_,actorAuthVersion:__,...safe}=session;sessions[id]=safe;}
+    const sessions:TurnJournalView['sessions']={};for(const [id,session] of Object.entries(state.sessions)){const {actorUserId,actorAuthVersion,...safe}=session;sessions[id]={...safe,...(current?{canContinue:actorUserId===current.userId&&actorAuthVersion===current.authVersion}:{})};}
     const resourceWait=state.resourceWait&&{status:state.resourceWait.status,reasonCode:state.resourceWait.reasonCode,since:state.resourceWait.since,nextAttemptAt:state.resourceWait.nextAttemptAt},releaseHold=state.releaseHold&&{status:state.releaseHold.status,reasonCode:state.releaseHold.reasonCode,since:state.releaseHold.since,nextAttemptAt:state.releaseHold.nextAttemptAt},recoveryHold=state.recoveryHold&&{status:state.recoveryHold.status,reasonCode:state.recoveryHold.reasonCode,since:state.recoveryHold.since,nextAttemptAt:state.recoveryHold.nextAttemptAt};return {schemaVersion:3,scope:state.scope,nextSequence:state.nextSequence,activeTurnId:state.activeTurnId,resourceWait,releaseHold,recoveryHold,sessions,turns};
   }
 }
