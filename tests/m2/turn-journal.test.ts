@@ -112,9 +112,10 @@ test('resource wait blocks ordinary claim and an exact atomic lease consume star
  const view=await f.journal.view(scope);assert.deepEqual(Object.keys(view.resourceWait??{}),['status','reasonCode','since','nextAttemptAt']);assert.equal((view.resourceWait as any).ticketId,undefined);await assert.rejects(f.journal.consumeResourceLeaseAndClaim(scope,1,{...waiting,leaseId:'lease-one',ticketId:'wrong-ticket'}),/resource-wait-conflict/);
  const claimed=(await f.journal.consumeResourceLeaseAndClaim(scope,1,{turnId:first.id,ticketId:'ticket-one',operationId:'operation-one',leaseId:'lease-one'}))!.turn;assert.equal(claimed.id,first.id);assert.deepEqual(claimed.resourceLease,{operationId:'operation-one',leaseId:'lease-one'});assert.equal(f.store.snapshot()!.resourceWait,null);assert.equal(f.store.snapshot()!.turns[second.id]!.status,'queued');
 });
-test('public view excludes idempotency hashes, dispatch capability and actor auth version',async()=>{
- const f=fixture(),turn=await queued(f.journal),claim=(await f.journal.claim(scope,1))!.turn,view=await f.journal.view(scope);const publicTurn=view.turns[turn.id] as any,publicSession=view.sessions[turn.sessionId] as any;
+test('public view excludes idempotency hashes and capability values while exposing only current continuation eligibility',async()=>{
+ const f=fixture(),turn=await queued(f.journal),claim=(await f.journal.claim(scope,1))!.turn,view=await f.journal.view(scope,actor),stale=await f.journal.view(scope,{...actor,authVersion:2});const publicTurn=view.turns[turn.id] as any,publicSession=view.sessions[turn.sessionId] as any;
  assert.equal(publicTurn.requestKey,undefined);assert.equal(publicTurn.payloadSha256,undefined);assert.equal(publicTurn.dispatchId,undefined);assert.equal(publicTurn.base,undefined);assert.equal(publicTurn.startedSequence,undefined);assert.equal(publicTurn.terminalSequence,undefined);assert.deepEqual(publicTurn.actor,{userId:'user-a'});assert.equal(publicSession.actorUserId,undefined);assert.equal(publicSession.actorAuthVersion,undefined);
+ assert.equal(publicSession.canContinue,true);assert.equal(stale.sessions[turn.sessionId]!.canContinue,false);assert.equal((await f.journal.view(scope)).sessions[turn.sessionId]!.canContinue,undefined);
  const started=(await f.journal.replay(scope,0,10)).events.find(row=>row.type==='turn.started')!;assert.deepEqual(started.payload,{});assert.ok(claim.dispatchId);
 });
 test('actor version, session ownership, generation and malformed payloads fail closed',async()=>{

@@ -1061,7 +1061,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return this.#turns.replay(this.#ready(input.scope), input.afterSequence, input.limit);
   }
   async turnSnapshot(input: { scope: TurnScope; actor?:TurnActor }) {
-    const scope=this.#ready(input.scope),snapshot=await this.#turns.view(scope),managed=this.#managedRoute();
+    const scope=this.#ready(input.scope),snapshot=await this.#turns.view(scope,input.actor),managed=this.#managedRoute();
     if(!managed&&this.env.PRIVATE_BETA_POLICY_JSON!==undefined){
       let admitted=false,blocked:string|null=null;
       if(input.actor&&this.#developerCandidate(scope,input.actor)&&!this.#store.read()?.task.budgetRoute&&!Object.keys(snapshot.turns).some(id=>this.ctx.storage.kv.get('g5-turn-route:'+id))){

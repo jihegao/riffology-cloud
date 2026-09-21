@@ -90,11 +90,16 @@ function saveConversation(key, patch) {
   try { sessionStorage.setItem(key, JSON.stringify({schemaVersion:1,...readConversation(key),...patch})); }
   catch { throw Error('无法保存待确认请求，请检查浏览器存储后重试。'); }
 }
-function canSubmitConversation() {
+function canCreateConversation() {
   return Boolean(activeProject?.status === 'ready' && workspaceSnapshot && !workspaceSnapshot.piDeveloperState?.blocked && !['maintenance','unavailable'].includes(workspaceSnapshot.admission?.state));
 }
+function selectedSessionCanContinue() {
+  return !selectedSessionId || workspaceSnapshot?.sessions?.[selectedSessionId]?.canContinue !== false;
+}
+function canSubmitConversation() { return canCreateConversation() && selectedSessionCanContinue(); }
+function staleMessageIntent() { return Boolean(messageIntent && workspaceSnapshot?.sessions?.[messageIntent.sessionId]?.canContinue === false); }
 function renderMessageAction() {
-  $('#message-submit').textContent = reconcilingMessageIntent ? '正在确认上次请求…' : messageIntent ? '重试上次请求' : '发送';
+  $('#message-submit').textContent = reconcilingMessageIntent ? '正在确认上次请求…' : staleMessageIntent() ? '旧对话不可继续' : messageIntent ? '重试上次请求' : '发送';
 }
 
 let eventSource = null;
@@ -419,14 +424,17 @@ function renderWorkspace() {
   if (maintenance) appendTurnCard('system', '当前环境暂停接收新任务。', '草稿会保留；已接收回合仍可继续观察、取消和读取保存结果。');
   if (unavailable) appendTurnCard('system', '当前执行环境暂不可用。', '平台正在恢复运行资源，请稍后重试；草稿会保留。');
   if (workspaceHistoryTruncated) appendTurnCard('system', '这里只显示近期对话回复。', '较早回复已超出显示保留范围；项目文件和实验结果仍可查看。');
-  $('#message-input').disabled = maintenance || unavailable;
-  $('#message-submit').disabled = maintenance || unavailable || sendingMessage;
-  $('#new-session').disabled = maintenance || unavailable || creatingSession || Boolean(messageIntent);
-  $('#message-input').readOnly = Boolean(messageIntent);
-  $('#session-select').disabled = maintenance || unavailable || Boolean(messageIntent) || Boolean(sessionIntent);
   const sessions = Object.values(workspaceSnapshot.sessions || {}).sort((a, b) => (b.updatedAt ?? b.createdAt) - (a.updatedAt ?? a.createdAt));
   if (messageIntent) selectedSessionId = messageIntent.sessionId;
   else if (!selectedSessionId || !workspaceSnapshot.sessions?.[selectedSessionId]) selectedSessionId = sessions[0]?.id || null;
+  const staleIntent=staleMessageIntent();
+  $('#message-input').disabled = maintenance || unavailable;
+  $('#message-submit').disabled = maintenance || unavailable || sendingMessage || !selectedSessionCanContinue();
+  $('#new-session').disabled = maintenance || unavailable || creatingSession || Boolean(messageIntent) && !staleIntent;
+  $('#new-session').textContent = staleIntent ? '转到新对话' : sessionIntent ? '重试新建对话' : '新建对话';
+  $('#message-input').readOnly = Boolean(messageIntent);
+  $('#session-select').disabled = maintenance || unavailable || Boolean(messageIntent) || Boolean(sessionIntent);
+  renderMessageAction();
   try { saveConversation(recoveryKey(activeProject.workspace_id), {selectedSessionId}); } catch (error) { $('#message-error').textContent = error.message; }
   const sessionSelect = $('#session-select');
   if (sessionSelect) {
@@ -437,6 +445,7 @@ function renderWorkspace() {
     sessionSelect.disabled = !sessions.length;
   }
   if (workspaceSnapshot.piDeveloperState?.blocked) appendTurnCard('system', managedBlockMessage(workspaceSnapshot.piDeveloperState.blocked) || '执行状态暂时无法核对，请联系管理员。');
+  if (workspaceSnapshot.sessions?.[selectedSessionId]?.canContinue === false) appendTurnCard('system', '这个历史对话在账号撤权后已变为只读。', '旧权限不会复活；转到新对话后会保留当前草稿，但不会自动重试原请求。');
   if (workspaceSnapshot.managedState?.stopped) {
     appendTurnCard('system', managedBlockMessage(workspaceSnapshot.managedState.stopped) || '项目因上一轮异常暂停接收新请求，需要核对后恢复。');
   }
@@ -595,6 +604,7 @@ function connectEventStream(workspaceId, cursor, generation) {
 async function reconcileMessageRecovery(workspaceId,generation){
   const current=messageIntent;
   if(!current)return '';
+  if(workspaceSnapshot?.sessions?.[current.sessionId]?.canContinue===false){reconcilingMessageIntent=false;renderMessageAction();return '原对话因账号访问版本变化已变为只读；请使用“转到新对话”保留草稿并继续。';}
   reconcilingMessageIntent=true;renderMessageAction();
   try{
     const receipt=await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/sessions/${encodeURIComponent(current.sessionId)}/turns/receipt`,{headers:{'Idempotency-Key':current.key}});
@@ -918,7 +928,8 @@ $('#files-tab').onclick=()=>selectArtifactPanel('files');
 $('#diff-tab').onclick=()=>selectArtifactPanel('diff');
 
 $('#new-session').onclick = async () => {
-  if (!canSubmitConversation() || creatingSession || messageIntent) return;
+  const migratingIntent=staleMessageIntent()?messageIntent:null;
+  if (!canCreateConversation() || creatingSession || messageIntent && !migratingIntent) return;
   const workspaceId = activeProject.workspace_id;
   sessionIntent ??= { key: crypto.randomUUID(), title: `Session ${Object.keys(workspaceSnapshot?.sessions || {}).length + 1}` };
   const current = sessionIntent, savedKey = recoveryKey(workspaceId);
@@ -928,12 +939,13 @@ $('#new-session').onclick = async () => {
     saveConversation(savedKey, {sessionIntent:current, draft:$('#message-input').value});
     const created = await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/sessions`, { method: 'POST', headers: { 'Idempotency-Key': current.key }, body: JSON.stringify({ title: current.title }) });
     if (activeProject?.workspace_id !== workspaceId) return;
-    saveConversation(savedKey, {selectedSessionId:created.session.id, sessionIntent:null});
+    saveConversation(savedKey, {selectedSessionId:created.session.id, sessionIntent:null,...(migratingIntent?{messageIntent:null,draft:migratingIntent.message}:{})});
     selectedSessionId = created.session.id; sessionIntent = null;
+    if(migratingIntent){messageIntent=null;$('#message-input').value=migratingIntent.message;$('#message-input').readOnly=false;}
     button.textContent = '新建对话';
     await refreshWorkspace(viewGeneration);
-  } catch (error) { if (activeProject?.workspace_id === workspaceId) { $('#message-error').textContent = error.message; button.textContent = '重试新建 Session'; } }
-  finally { creatingSession = false; button.disabled = !canSubmitConversation() || Boolean(messageIntent); }
+  } catch (error) { if (activeProject?.workspace_id === workspaceId) { $('#message-error').textContent = error.message; button.textContent = migratingIntent?'重试转到新对话':'重试新建 Session'; } }
+  finally { creatingSession = false; button.disabled = !canCreateConversation() || Boolean(messageIntent) && !staleMessageIntent(); }
 };
 
 $('#message-form').onsubmit = async event => {

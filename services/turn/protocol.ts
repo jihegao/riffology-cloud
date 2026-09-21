@@ -43,7 +43,7 @@ export type TurnJournalState = {
   turnIntents:Record<string,{payloadSha256:string;turnId:string}>;
   eventReceipts:Record<string,{payloadSha256:string;sequence:number;event:TurnEvent}>; events:TurnEvent[];
 };
-export type PublicSessionRecord = Omit<SessionRecord,'actorUserId'|'actorAuthVersion'>;
+export type PublicSessionRecord = Omit<SessionRecord,'actorUserId'|'actorAuthVersion'>&{canContinue?:boolean};
 export type PublicTurnRecord = Omit<TurnRecord,'actor'|'requestKey'|'payloadSha256'|'dispatchId'|'base'|'resourceLease'|'startedSequence'|'terminalSequence'>&{actor:{userId:string}};
 export type TurnJournalView = {
   schemaVersion:3; scope:TurnScope; nextSequence:number; activeTurnId:string|null;
