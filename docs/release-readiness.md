@@ -1,5 +1,35 @@
 # Current release readiness — 2026-09-23
 
+## 2026-09-23 rejected-session capacity repair
+
+[PR #135](https://github.com/jihegao/riffology-cloud/pull/135) repairs
+[#134](https://github.com/jihegao/riffology-cloud/issues/134): an old Session
+rejected after an auth-version change had already reserved the user's Beta slot.
+Session/input checks now precede admission. The original Workspace must prove an
+immutable Session mismatch, no matching Turn and a quiet journal; the capacity
+record must have no bound Turn or calls before it can be returned. The original
+slot and alerts remain, with a new release audit.
+
+Gateway version `a2770d8a-5873-4d51-8189-3cf43b530f23` is deployed at 100%. Independent readback
+confirmed all 91 bindings, runtime/container configuration, budgets and gates
+were preserved, and downloaded Worker bytes match the release bundle.
+The uploader omitted the frozen observability setting; it was restored from the
+pre-release snapshot and independently verified before acceptance. All 17 public
+assets checked match source bytes.
+CI, local M2 838/838, UI 21/21 and TypeScript passed.
+
+Authenticated read-only acceptance confirmed the original unbound slot was
+automatically released and total occupied/quarantined slots became 0/0. The
+73 observed Beta calls and 1,122,985,350 nanodollar conservative reservation
+were unchanged. The original Workspace retained nextSequence=648 and no active
+Turn or resource/release/recovery hold; the original draft was preserved after
+refresh. No request was resubmitted, and no model/tool or paid execution
+acceptance is claimed. #104's observation scope remains separate.
+
+[Release and acceptance evidence](evidence/releases/beta-rejected-session-20260923.json).
+The UI release record below is the preceding deployment.
+
+
 ## 2026-09-23 UI release and independent readback
 
 PRs #130, #131, #132 and #133 are merged in dependency order. Before merge, all

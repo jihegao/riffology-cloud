@@ -1,0 +1,74 @@
+{
+  "at": "2026-09-22T18:29:47.421Z",
+  "sourceCommit": "7fb8725822938bfada3bbbb93dca4f8622dbdac0",
+  "deployment": "fb3b06dc-9051-480a-9a85-c9732189b629",
+  "version": "a2770d8a-5873-4d51-8189-3cf43b530f23",
+  "percentage": 100,
+  "previousDeployment": "6a54ca89-bd48-4ddc-8fac-8ae35d834930",
+  "previousVersion": "cb6935dc-dfed-4d62-8e88-8aa82215ff59",
+  "bindings": 91,
+  "bindingsPreserved": true,
+  "runtimeConfigurationPreserved": true,
+  "assetMetadataNormalization": "Implicit root base path is now explicit /; all other asset configuration unchanged",
+  "workerSha256": "72505f9d810b62debfca4103c3d3ab27f2d9f8ad6e1c23668629b28cd3a009e2",
+  "workerBytes": 5216906,
+  "issue": 134,
+  "pr": 135,
+  "implementationCommit": "a3cc16eeacf0742bdc11021d16ccd01e57be42e0",
+  "ci": "https://github.com/jihegao/riffology-cloud/actions/runs/35765881555",
+  "checks": {
+    "m2": 838,
+    "ui": 21,
+    "typecheck": true,
+    "targetedWorkerd": true
+  },
+  "acceptance": {
+    "date": "2026-09-23",
+    "sources": [
+      "Authenticated Cloudflare Data Studio SELECT queries",
+      "Authenticated Safari Workspace GET and original tab refresh"
+    ],
+    "originalSlot": {
+      "statusBefore": "quarantined",
+      "statusAfter": "released",
+      "boundTurnId": null,
+      "calls": 0,
+      "retained": true
+    },
+    "capacity": {
+      "occupied": 0,
+      "quarantined": 0,
+      "recoveryAudits": 1,
+      "recoveredAt": "2026-09-22T18:29:31Z"
+    },
+    "betaUsageBeforeAndAfter": {
+      "calls": 73,
+      "observedCalls": 73,
+      "reservedNanodollars": 1122985350
+    },
+    "workspaceBeforeAndAfter": {
+      "nextSequence": 648,
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": null,
+      "recoveryHold": null
+    },
+    "originalTab": {
+      "session": "Session 2",
+      "draftPreserved": true,
+      "busyErrorAbsentAfterRefresh": true,
+      "retryButtonEnabled": true,
+      "requestResubmitted": false
+    },
+    "paidExecutionAcceptance": false
+  },
+  "limits": [
+    "No model/tool request or paid execution acceptance was performed.",
+    "Existing queued/running/unknown executions and call reservations retain their original protections."
+  ],
+  "deploymentAdjustment": {
+    "observability": "Wrangler omitted the frozen observability setting on upload; the exact prior configuration was restored with the script-settings API and independently verified.",
+    "restoredAt": "2026-09-22T18:29:43.070Z"
+  },
+  "publicAssetsMatched": 17
+}
