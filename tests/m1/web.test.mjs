@@ -507,7 +507,7 @@ test('a first-session submission stays busy through delayed requests, a stale sn
   });
   await page.goto('https://ui.test/');await page.locator('.project-open').click();await page.locator('#message-input').fill(message);
   const turns=await page.locator('#turns').elementHandle();await page.locator('#message-submit').click();
-  await page.getByRole('button',{name:'正在处理…',exact:true}).waitFor();assert.equal(await page.locator('#message-form').getAttribute('aria-busy'),'true');assert.equal(await page.locator('#new-session').isDisabled(),true);
+  await page.getByRole('button',{name:'正在处理…',exact:true}).waitFor();assert.equal(await page.locator('#message-form').getAttribute('aria-busy'),'true');assert.equal(await page.locator('#message-input').getAttribute('readonly'),'');assert.equal(await page.locator('#new-session').isDisabled(),true);
   await waitFor(()=>sessionPosts===1);await page.locator('#new-session').evaluate(button=>button.click());await page.locator('#message-form').evaluate(form=>form.requestSubmit());await page.keyboard.press('Enter');assert.equal(sessionPosts,1);
   await page.locator('[data-locale-select]').selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');await page.getByRole('button',{name:'Processing…',exact:true}).waitFor();assert.equal(await page.locator('#message-status').innerText(),'Submitting request.');assert.equal(await page.evaluate(node=>node===document.querySelector('#turns'),turns),true);
   releaseSession();await waitFor(()=>turnPosts===1);await page.locator('#message-form').evaluate(form=>form.requestSubmit());assert.equal(turnPosts,1);
@@ -1060,4 +1060,67 @@ test('stored HTTP notices switch language without a refresh or another product r
  assert.equal(await page.locator('#notice').innerText(),'The service is unavailable. Try again later.');
  assert.equal(await page.evaluate(()=>window.noticeNode===document.querySelector('#notice span')),true);
  assert.deepEqual(calls.slice(before),[]);assert.equal(new URL(page.url()).hash,'');
+});
+
+test('accepted snapshot clears composer state even when only the recovery cleanup write fails', { timeout: 10000 }, async t => {
+  const workspaceId = 'workspace-storage-cleanup', sessionId = 'session-storage-cleanup', turnId = 'turn-storage-cleanup', message = '保留已接收回合';
+  let accepted = false;
+  const page = await pageFixture(t, async (route, path) => {
+    if (path === '/api/tenants/tenant-a/projects') { await json(route, { projects: [{ id: 'project-storage-cleanup', workspace_id: workspaceId, title: '存储清理', status: 'ready' }] }); return true; }
+    if (path === `/api/workspaces/${workspaceId}`) { await json(route, { schemaVersion: 1, sessions: { [sessionId]: { id: sessionId, title: '主对话', createdAt: 1 } }, turns: accepted ? { [turnId]: { id: turnId, sessionId, message, status: 'queued', createdAt: 2 } } : {}, activeTurnId: null }); return true; }
+    if (path.endsWith('/events')) { await json(route, { events: [], nextSequence: 0, hasMore: false, snapshotRequired: false }); return true; }
+    if (path === `/api/workspaces/${workspaceId}/sessions/${sessionId}/turns`) { accepted = true; await json(route, { turn: { id: turnId, sessionId, message, status: 'queued' } }, 202); return true; }
+  });
+  await page.addInitScript(() => {
+    const setItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = function (key, value) {
+      const next = JSON.parse(String(value)), previous = JSON.parse(this.getItem(key) || 'null');
+      if (String(key).startsWith('riffology:conversation:') && next.messageIntent === null && previous?.messageIntent?.acceptedTurnId) throw Error('quota cleanup failure');
+      return setItem.call(this, key, value);
+    };
+  });
+  page.setDefaultTimeout(2000);
+  await page.goto('https://ui.test/#/workspace/project-storage-cleanup');
+  await page.locator('#message-input').fill(message); await page.locator('#message-submit').click();
+  await page.locator(`[data-turn-id="${turnId}"]`).waitFor(); await page.locator('#message-input:not([readonly])').waitFor();
+  assert.equal(await page.locator('#message-input').inputValue(), '');
+  assert.equal(await page.locator('#message-submit').isDisabled(), false);
+  assert.match(await page.evaluate(key => sessionStorage.getItem(key), `riffology:conversation:tenant-a:${workspaceId}`), /turn-storage-cleanup/);
+});
+
+test('an older overlapping workspace snapshot cannot replace a newer snapshot', { timeout: 10000 }, async t => {
+  const workspaceId = 'workspace-overlap'; let workspaceReads = 0, releaseOld;
+  const oldSnapshot = new Promise(resolve => { releaseOld = resolve; });
+  const page = await pageFixture(t, async (route, path) => {
+    if (path === '/api/tenants/tenant-a/projects') { await json(route, { projects: [{ id: 'project-overlap', workspace_id: workspaceId, title: '快照顺序', status: 'ready' }] }); return true; }
+    if (path === `/api/workspaces/${workspaceId}`) {
+      workspaceReads++;
+      if (workspaceReads === 2) { await oldSnapshot; await json(route, { schemaVersion: 1, sessions: { old: { id: 'old', title: '旧快照', createdAt: 2 } }, turns: {}, activeTurnId: null }); return true; }
+      await json(route, { schemaVersion: 1, sessions: { [workspaceReads === 3 ? 'new' : 'base']: { id: workspaceReads === 3 ? 'new' : 'base', title: workspaceReads === 3 ? '新快照' : '初始快照', createdAt: 1 } }, turns: {}, activeTurnId: null }); return true;
+    }
+    if (path.endsWith('/events')) { await json(route, { events: [], nextSequence: 0, hasMore: false, snapshotRequired: false }); return true; }
+  });
+  page.setDefaultTimeout(2000);
+  await page.goto('https://ui.test/#/workspace/project-overlap'); await page.locator('#session-select option[value=base]').waitFor({ state: 'attached' });
+  await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange'))); await waitFor(() => workspaceReads === 2);
+  await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange'))); await page.locator('#session-select option[value=new]').waitFor({ state: 'attached' });
+  releaseOld(); await page.waitForTimeout(30);
+  assert.equal(await page.locator('#session-select').inputValue(), 'new');
+  assert.equal(await page.locator('#session-select option[value=old]').count(), 0);
+});
+
+test('ordinary-site sign-out failure leaves locale switching available and writes only the preference', { timeout: 10000 }, async t => {
+  const writes = [];
+  const page = await pageFixture(t, async (route, path) => {
+    if (route.request().method() !== 'GET') writes.push({ path, method: route.request().method() });
+    if (path === '/api/me') { await json(route, { userId: 'fixture-user', execution: { service: true, preview: true, simulation: true }, tenants: [{ id: 'tenant-a' }] }); return true; }
+    if (path === '/api/me/locale') { await json(route, { locale: route.request().method() === 'PUT' ? JSON.parse(route.request().postData()).locale : null }); return true; }
+    if (path === '/api/auth/sign-out') { await json(route, { error: 'failed' }, 503); return true; }
+  });
+  await page.goto('https://ui.test/'); await page.locator('#sign-out').click(); await page.locator('#notice').filter({ hasText: '服务暂不可用' }).waitFor();
+  writes.length = 0;
+  await page.locator('[data-locale-select]').selectOption('en'); await page.waitForFunction(() => document.documentElement.lang === 'en');
+  await waitFor(() => writes.length === 1);
+  assert.deepEqual(writes, [{ path: '/api/me/locale', method: 'PUT' }]);
+  assert.equal(await page.locator('#sign-out').isVisible(), true);
 });

@@ -185,3 +185,18 @@ test('locale switch updates admin platform labels and display formatting without
   assert.match(await page.locator('#invitations tr').first().innerText(), /Pending/);
   assert.deepEqual(writes, [...writesBeforeLocale, {path:'/api/me/locale', method:'PUT'}]);
 });
+
+test('admin sign-out failure leaves locale switching available and writes only the preference', async t => {
+  const writes = [];
+  const page = await fixture(t, async (route, path) => {
+    if (route.request().method() !== 'GET') writes.push({ path, method: route.request().method() });
+    if (path === '/api/me/locale') { await json(route, { locale: route.request().method() === 'PUT' ? JSON.parse(route.request().postData()).locale : null }); return true; }
+    if (path === '/api/auth/sign-out') { await json(route, { error: 'failed' }, 503); return true; }
+  });
+  await page.goto('https://admin.test/admin'); await page.locator('#admin-app:not([hidden])').waitFor();
+  await page.locator('#sign-out').click(); await page.locator('#notice').filter({ hasText: '服务暂不可用' }).waitFor();
+  writes.length = 0;
+  await page.locator('[data-locale-select]').selectOption('en'); await page.waitForFunction(() => document.documentElement.lang === 'en');
+  assert.deepEqual(writes, [{ path: '/api/me/locale', method: 'PUT' }]);
+  assert.equal(await page.locator('#admin-app').isVisible(), true);
+});
