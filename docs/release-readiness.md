@@ -25,7 +25,7 @@ this is not evidence that the changes described below are deployed.
 [#128 A](https://github.com/jihegao/riffology-cloud/issues/128) adds the shared
 Chinese/English shell, optional account locale metadata, display formatting and
 incremental copy checks. [The i18n contract](i18n.md) lists the exact foundation
-coverage and the later full product-copy migration. Locale switching retains the
+coverage and the full product-copy migration below. Locale switching retains the
 current Workspace nodes, draft, Session, Preview and unresolved submission intent;
 fixture checks assert the only added write is the account preference PUT.
 The account read degrades without breaking identity bootstrap, while writes
@@ -61,6 +61,16 @@ Local fixtures cover handoff, pending-request recovery, storage failures,
 Workspace navigation and closed gates. This is local implementation evidence,
 not deployment or authenticated server-experiment acceptance. No live experiment
 or gate change is part of this delivery.
+
+[#128 B](https://github.com/jihegao/riffology-cloud/issues/128) extends the foundation
+to all product panels, dynamic notices, errors and accessibility labels, with
+887 matching keys per locale. Explicit bindings retain form values, focus, user
+content, iframe identity and unresolved request keys during language changes.
+The copy guard removes JavaScript CJK exceptions and inventories the remaining
+technical English literals. Local browser checks exercise both languages and
+narrow-screen layout; exact final suite counts and CI are recorded in the Issue/PR.
+This implementation is stacked after #129 and requires the same additive locale
+migration. It is not merged, deployed or authenticated production acceptance.
 
 ## Private Beta definition and standing capacity
 

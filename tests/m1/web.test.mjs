@@ -1048,3 +1048,16 @@ test('Pi historical execution block disables sends after reload while retaining 
  await page.getByText('账号存在执行结果尚未确认的模型调用。请停止重试并核对原任务；新建项目不能绕过此状态。').waitFor();
  assert.equal(await page.locator('#message-submit').isDisabled(),true);assert.equal(await page.locator('#message-input').inputValue(),'保留的草稿');assert.equal(posts,0);
 });
+
+test('stored HTTP notices switch language without a refresh or another product request',async t=>{
+ const calls=[];const page=await pageFixture(t,async(route,path)=>{
+  calls.push({path,method:route.request().method()});
+  if(path==='/api/tenants/tenant-a/projects'){await json(route,{error:'temporarily_unavailable'},503);return true;}
+ });
+ await page.goto('https://ui.test/');await page.locator('#notice').filter({hasText:'服务暂不可用'}).waitFor();
+ const before=calls.length;await page.evaluate(()=>window.noticeNode=document.querySelector('#notice span'));
+ await page.locator('[data-locale-select]').selectOption('en');
+ assert.equal(await page.locator('#notice').innerText(),'The service is unavailable. Try again later.');
+ assert.equal(await page.evaluate(()=>window.noticeNode===document.querySelector('#notice span')),true);
+ assert.deepEqual(calls.slice(before),[]);assert.equal(new URL(page.url()).hash,'');
+});

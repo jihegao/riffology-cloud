@@ -39,6 +39,9 @@ function bind(node, attribute, key, vars = {}) {
 }
 
 export function bindText(node, key, vars) { return bind(node, null, key, vars); }
+export function bindValue(node, value) {
+  return bindText(node, () => String((typeof value === 'function' ? value() : value) ?? ''));
+}
 export function bindAttribute(node, attribute, key, vars) {
   if (!attributes.has(attribute)) throw new TypeError('Only presentation attributes can be localized');
   return bind(node, attribute, key, vars);

@@ -254,7 +254,7 @@ test('standalone Preview carries its frozen draft into actual Workspace Runs wit
  const f=await fixture(t,{standalone:true}),p=f.page;
  await p.locator('[data-parameter=servers]').fill('3');await p.locator('[data-browser-preview-seed]').fill('42');
  await p.locator('[data-browser-preview-action=verify]').click();
- await p.waitForURL('**/#/workspace/p');await p.locator('#canvas-runs').waitFor();
+ await p.waitForURL('**/#/workspace/p');await p.locator('#workspace:not(.browser-preview-standalone)').waitFor();await p.locator('#canvas-runs').waitFor();
  await p.locator('[data-verify-handoff-action=submit]:not([disabled])').waitFor();
  assert.equal(await p.locator('#workspace').evaluate(node=>node.classList.contains('browser-preview-standalone')),false);
  const draft=await p.evaluate(()=>JSON.parse(sessionStorage.getItem('riffology:browser-preview:verify:t:p:w:handoff')));
@@ -280,4 +280,26 @@ test('actual Workspace scoped gate denies Verify despite the account hint and re
  assert.equal(await q.locator('[data-browser-preview-action=verify]').isDisabled(),true);
  await q.locator('[data-workspace-tab=runs]').click();assert.equal(await q.locator('[data-verify-handoff-action=submit]').isDisabled(),true);
  assert.equal(await q.evaluate(k=>sessionStorage.getItem(k),key),saved);assert.equal(open.calls.filter(c=>c.path.endsWith('/browser-preview/verify')&&c.method==='POST').length,0);
+});
+
+test('full Workspace locale change retains user content and every existing form and preview node',async t=>{
+ const f=await fixture(t),p=f.page;
+ await p.locator('#message-input').fill('Untranslated user draft 中文');
+ await p.locator('[data-parameter=servers]').fill('3');await p.locator('[data-browser-preview-seed]').fill('41');
+ await p.locator('[data-workspace-tab=runs]').click();await p.locator('.simulation-form input[name=servers]').fill('2');
+ await p.locator('[data-workspace-tab=preview]').click();
+ await p.evaluate(()=>{window.kept={nodes:[...document.querySelectorAll('#workspace input,#workspace textarea,#workspace select,#workspace iframe,#turns p,#turns small')],values:[...document.querySelectorAll('#workspace input,#workspace textarea,#workspace select')].map(n=>n.value),user:[document.querySelector('#workspace-title').textContent,document.querySelector('#session-select').textContent,...[...document.querySelectorAll('.turn-card.user p,.turn-card.assistant p')].map(n=>n.textContent)]};});
+ const before=f.calls.length;await p.locator('[data-locale-select]').selectOption('en');
+ assert.match(await p.locator('#workspace-back').innerText(),/Back to projects/);
+ assert.match(await p.locator('#workspace-meta').innerText(),/Research workspace/);
+ assert.match(await p.locator('[data-workspace-divider]').getAttribute('aria-valuetext'),/Conversation/);
+ assert.equal(await p.locator('.turn-card.user small').first().innerText(),'Completed');
+ assert.equal(await p.evaluate(()=>window.kept.nodes.every(n=>n.isConnected)),true);
+ assert.deepEqual(await p.locator('#workspace input,#workspace textarea,#workspace select').evaluateAll(ns=>ns.map(n=>n.value)),await p.evaluate(()=>window.kept.values));
+ assert.deepEqual(await p.evaluate(()=>[document.querySelector('#workspace-title').textContent,document.querySelector('#session-select').textContent,...[...document.querySelectorAll('.turn-card.user p,.turn-card.assistant p')].map(n=>n.textContent)]),await p.evaluate(()=>window.kept.user));
+ await p.waitForTimeout(50);assert.deepEqual(f.calls.slice(before).filter(c=>c.method!=='GET').map(c=>[c.method,c.path]),[['PUT','/api/me/locale']]);
+ await p.locator('[data-workspace-tab=model]').click();assert.equal(await p.locator('#canvas-model').isVisible(),true);
+ await p.locator('[data-workspace-tab=runs]').click();assert.equal(await p.locator('.simulation-form input[name=servers]').inputValue(),'2');
+ await f.shot('i18n-b-en-desktop');await p.setViewportSize({width:390,height:844});
+ assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await f.shot('i18n-b-en-mobile');
 });
