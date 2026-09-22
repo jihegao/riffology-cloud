@@ -86,7 +86,7 @@ test('an original pending Verify key wins over a newer draft and confirmation re
   }, {key: originalKey(scopeA), pendingValue: pending, newerValue: newer});
   await enter(page);
   assert.equal(await page.evaluate(value => window.panel.handoff(value), draft()), true);
-  await page.getByRole('button', {name: 'Confirm server experiment'}).click();
+  await page.locator('[data-verify-handoff-action="submit"]').click();
   await page.waitForFunction(() => calls.some(call => call.method === 'POST'));
   assert.deepEqual(JSON.parse((await posts(page))[0].body), pending);
 });
@@ -95,7 +95,7 @@ test('unknown receipt recovery uses only the exact GET key, preserves wrong or a
   const page = await fixture(t, {mode: 'unknown'});
   await enter(page);
   assert.equal(await page.evaluate(value => window.panel.handoff(value), draft()), true);
-  await page.getByRole('button', {name: 'Confirm server experiment'}).click();
+  await page.locator('[data-verify-handoff-action="submit"]').click();
   await page.waitForFunction(() => calls.some(call => call.method === 'POST'));
   const pending = await page.evaluate(() => JSON.parse(sessionStorage.getItem(window.pendingKey)));
   await page.evaluate(() => { window.panel.leave(); window.mode = 'wrong-captured'; window.panel.enter({tenantId: 'tenant-a', projectId: 'project-a', workspaceId: 'work-a', canVerify: true}); window.panel.setCanVerify(true); });
@@ -124,6 +124,59 @@ test('a storage read failure blocks a new handoff instead of treating it as an e
   assert.equal(await page.evaluate(value => window.panel.handoff(value), draft()), false);
   assert.equal(await page.evaluate(() => storageWrites), 0);
   assert.deepEqual(await posts(page), []);
+});
+
+test('a valid JSON but invalid pending schema blocks handoff instead of being treated as empty storage', async t => {
+  const page = await fixture(t);
+  const fallbackDraft = {...draft(), revisionId: 'revision-fallback'};
+  await page.evaluate(({key, value}) => {
+    sessionStorage.setItem(key, JSON.stringify({intent: 'experiment', revisionId: 'bad id'}));
+    sessionStorage.setItem(key + ':handoff', JSON.stringify(value));
+  }, {key: originalKey(scopeA), value: fallbackDraft});
+  await enter(page);
+  assert.equal(await page.evaluate(value => window.panel.handoff(value), draft()), false);
+  assert.equal(await page.evaluate(key => sessionStorage.getItem(key), originalKey(scopeA)), JSON.stringify({intent: 'experiment', revisionId: 'bad id'}));
+  assert.deepEqual(await page.evaluate(key => JSON.parse(sessionStorage.getItem(key)), handoffKey(scopeA)), fallbackDraft);
+  assert.deepEqual(await posts(page), []);
+});
+
+test('a draft removal failure preserves the minted key and a later confirmation never generates another', async t => {
+  const page = await fixture(t);
+  await enter(page);
+  assert.equal(await page.evaluate(value => window.panel.handoff(value), draft()), true);
+  await page.evaluate(key => {
+    const remove = Storage.prototype.removeItem;
+    Storage.prototype.removeItem = function (candidate) {
+      if (candidate === key) throw Error('draft-remove-denied');
+      return remove.call(this, candidate);
+    };
+  }, handoffKey(scopeA));
+  await page.locator('[data-verify-handoff-action="submit"]').click();
+  await page.waitForFunction(() => document.body.textContent.includes('Could not save Verify inputs'));
+  const pending = await page.evaluate(() => JSON.parse(sessionStorage.getItem(window.pendingKey)));
+  assert.equal((await posts(page)).length, 0);
+  await page.evaluate(() => { window.panel.leave(); window.panel.enter({tenantId: 'tenant-a', projectId: 'project-a', workspaceId: 'work-a', canVerify: true}); window.panel.setCanVerify(true); });
+  await page.locator('[data-verify-handoff-action="submit"]').click();
+  await page.waitForFunction(() => calls.some(call => call.method === 'POST'));
+  assert.deepEqual(JSON.parse((await posts(page))[0].body), pending);
+});
+
+test('an accepted pending Verify clears an older handoff draft so it cannot reappear on the next enter', async t => {
+  const page = await fixture(t);
+  const pending = {...draft(), idempotencyKey: 'verify-existing'};
+  const staleDraft = {...draft(), revisionId: 'revision-stale', seed: 99};
+  await page.evaluate(({key, pendingValue, staleValue}) => {
+    sessionStorage.setItem(key, JSON.stringify(pendingValue));
+    sessionStorage.setItem(key + ':handoff', JSON.stringify(staleValue));
+  }, {key: originalKey(scopeA), pendingValue: pending, staleValue: staleDraft});
+  await enter(page);
+  await page.locator('[data-verify-handoff-action="submit"]').click();
+  await page.waitForFunction(() => calls.some(call => call.method === 'POST'));
+  await page.evaluate(() => { window.panel.leave(); window.panel.enter({tenantId: 'tenant-a', projectId: 'project-a', workspaceId: 'work-a', canVerify: true}); window.panel.setCanVerify(true); });
+  await page.waitForTimeout(20);
+  assert.equal(await page.evaluate(key => sessionStorage.getItem(key), originalKey(scopeA)), null);
+  assert.equal(await page.evaluate(key => sessionStorage.getItem(key), handoffKey(scopeA)), null);
+  assert.equal(await page.getByRole('button', {name: 'Confirm server experiment'}).count(), 0);
 });
 
 test('a timed-out POST retains its key and recovery confirms it through the exact receipt GET', async t => {
