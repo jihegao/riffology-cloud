@@ -98,13 +98,13 @@ test('authenticated invitation state and transient bootstrap failures do not imp
 
 test('lost submit reply is reconciled by an exact read-only receipt without a duplicate Turn POST',async t=>{
  const message='研究假设也是可以改的页面吗',f=await fixture(t,{messageRecovery:{key:'lost-reply-key',message,receipt:'accepted'}}),p=f.page;
- await p.getByText('上次请求已由服务端接收，编辑框已恢复。',{exact:true}).waitFor();assert.equal(await p.locator('#message-input').isEditable(),true);assert.equal(await p.locator('#message-input').inputValue(),'');assert.equal(await p.locator('#message-submit').innerText(),'发送');
- assert.equal(f.calls.filter(call=>call.path.endsWith('/turns/receipt')&&call.method==='GET'&&call.key==='lost-reply-key').length,1);assert.equal(f.calls.filter(call=>call.path.endsWith('/turns')&&call.method==='POST').length,0);assert.equal(await p.evaluate(()=>JSON.parse(sessionStorage.getItem('riffology:conversation:t:w')).messageIntent),null);
+  await p.getByText('上次请求已由服务端接收，编辑框已恢复。',{exact:true}).waitFor();assert.equal(await p.locator('#message-input').isEditable(),false);assert.equal(await p.locator('#message-input').inputValue(),message);assert.equal(await p.locator('#message-submit').innerText(),'正在处理…');
+  assert.equal(f.calls.filter(call=>call.path.endsWith('/turns/receipt')&&call.method==='GET'&&call.key==='lost-reply-key').length,1);assert.equal(f.calls.filter(call=>call.path.endsWith('/turns')&&call.method==='POST').length,0);assert.equal((await p.evaluate(()=>JSON.parse(sessionStorage.getItem('riffology:conversation:t:w')).messageIntent)).key,'lost-reply-key');await p.reload();await p.getByRole('button',{name:'正在处理…',exact:true}).waitFor();assert.equal(f.calls.filter(call=>call.path.endsWith('/turns')&&call.method==='POST').length,0);
 });
 
 test('receipt loading never flashes Send, and an absent receipt keeps the frozen explicit retry',async t=>{
  const message='保留未确认请求',accepted=await fixture(t,{messageRecovery:{key:'pending-key',message,receipt:'accepted',defer:true}}),acceptedPage=accepted.page;
- await acceptedPage.getByRole('button',{name:'正在确认上次请求…',exact:true}).waitFor();assert.equal(await acceptedPage.locator('#message-input').isEditable(),false);accepted.releaseReceipt();await acceptedPage.getByRole('button',{name:'发送',exact:true}).waitFor();assert.equal(accepted.calls.filter(call=>call.path.endsWith('/turns')&&call.method==='POST').length,0);
+  await acceptedPage.getByRole('button',{name:'正在确认上次请求…',exact:true}).waitFor();assert.equal(await acceptedPage.locator('#message-input').isEditable(),false);accepted.releaseReceipt();await acceptedPage.getByRole('button',{name:'正在处理…',exact:true}).waitFor();assert.equal(accepted.calls.filter(call=>call.path.endsWith('/turns')&&call.method==='POST').length,0);
  const missing=await fixture(t,{messageRecovery:{key:'missing-key',message,receipt:'missing'}}),missingPage=missing.page;await missingPage.getByRole('button',{name:'重试上次请求',exact:true}).waitFor();assert.equal(await missingPage.locator('#message-input').isEditable(),false);await missingPage.locator('#message-input').focus();await missingPage.keyboard.press('Backspace');assert.equal(await missingPage.locator('#message-input').inputValue(),message);assert.equal(missing.calls.filter(call=>call.path.endsWith('/turns')&&call.method==='POST').length,0);
 });
 

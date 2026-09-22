@@ -709,12 +709,12 @@ async function refreshWorkspace(generation = viewGeneration) {
     workspaceDiff=null;workspaceDiffError='';renderWorkspaceDiff();if(workspaceArtifactPanel==='diff')void refreshWorkspaceDiff(generation);
     connectEventStream(workspaceId, replay.cursor, generation);
   } catch (error) {
-    if (generation !== viewGeneration) return;
+    if (generation !== viewGeneration || refreshSequence!==workspaceRefreshSequence || activeProject?.workspace_id !== workspaceId) return;
     reconcilingMessageIntent=false;updateComposerState();
     bindValue($('#message-error'), () => (errorMessage(error)));
     if(awaitingMessageVisibility())scheduleVisibilityRecovery(workspaceId,generation);
   } finally {
-    if (generation === viewGeneration) snapshotRecovery = false;
+    if (generation === viewGeneration && refreshSequence===workspaceRefreshSequence && activeProject?.workspace_id === workspaceId) snapshotRecovery = false;
   }
 }
 
