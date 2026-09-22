@@ -41,7 +41,7 @@ export const REQUIRED_EXPORTS=Object.freeze([
 export const REQUIRED_CONTAINERS=Object.freeze(['ProjectRuntime','ProjectToolSandbox','TrustedPiSandbox','ServiceSandbox']);
 export const REQUIRED_MIGRATIONS=Object.freeze([
   '0001_catalog.sql','0002_auth.sql','0003_provisioning.sql','0004_operator_invitations.sql',
-  '0005_initial_operator.sql','0006_model_catalog.sql','0007_model_content_checks.sql','0008_preview_routes.sql','0009_model_submissions.sql','0010_project_budget_routes.sql',
+  '0005_initial_operator.sql','0006_model_catalog.sql','0007_model_content_checks.sql','0008_preview_routes.sql','0009_model_submissions.sql','0010_project_budget_routes.sql','0011_user_locale_preferences.sql',
 ]);
 const REGISTRY=`registry.cloudflare.com/${ACCOUNT_ID}/`;
 const DIGEST=/^sha256:[a-f0-9]{64}$/;
@@ -107,7 +107,7 @@ export function validateStagingTopology(config,migrations,{release=false}={}){
     check('private-services',same(serviceBindings,['MODEL_PROXY','TOOL_BRIDGE'])&&services.every(value=>value.service===WORKER_NAME)&&services.find(value=>value.binding==='MODEL_PROXY')?.entrypoint==='ModelProxyService'&&services.find(value=>value.binding==='TOOL_BRIDGE')?.entrypoint==='ToolBridgeService','use-only-two-self-bound-private-services'),
     check('dedicated-storage',config.d1_databases?.length===1&&config.d1_databases[0]?.database_name===STAGING_DATABASE.name&&config.d1_databases[0]?.database_id===STAGING_DATABASE.id&&r2.length===2&&r2.some(value=>value.binding==='WORKSPACE_CHECKPOINTS'&&value.bucket_name===STAGING_CHECKPOINT_BUCKET)&&r2.some(value=>value.binding==='MODEL_CONTENT'&&value.bucket_name===STAGING_MODEL_BUCKET)&&STAGING_CHECKPOINT_BUCKET!==STAGING_MODEL_BUCKET,'use-dedicated-staging-d1-and-r2-buckets'),
     check('recovery-cron',same(config.triggers?.crons??[],['* * * * *']),'retain-one-bounded-staging-recovery-sweep'),
-    check('catalog-migrations',same(migrations,REQUIRED_MIGRATIONS),'include-catalog-migrations-0001-through-0010'),
+    check('catalog-migrations',same(migrations,REQUIRED_MIGRATIONS),'include-catalog-migrations-0001-through-0011'),
     check('no-local-runtime-inputs',!JSON.stringify(config).includes('127.0.0.1')&&!JSON.stringify(config).includes('localhost')&&!Object.hasOwn(config.vars??{},'M1_GOOGLE_OAUTH_EGRESS_CAPABILITY')&&!Object.keys(config.vars??{}).some(name=>name.startsWith('M3_VERTICAL_')),'remove-loopback-local-proxy-and-vertical-telemetry-inputs'),
   ];
 }

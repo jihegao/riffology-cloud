@@ -187,7 +187,11 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     if(url.pathname==='/api/me' && request.method==='GET'){
       const tenants=await services.database.query<{id:string}>(sql(`SELECT t.id FROM catalog_tenants t JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=t.owner_user_id
         JOIN catalog_users u ON u.id=t.owner_user_id WHERE t.owner_user_id=? AND t.status='active' AND m.status='active' AND u.status='active' AND u.auth_version=?`,principal.userId,principal.authVersion));
-      const preference=await localePreferences.get(principal);
+      // A presentation preference read cannot turn a valid authenticated
+      // bootstrap into an outage. The dedicated preference endpoint keeps its
+      // normal fail-closed behaviour for callers that need an exact result.
+      let preference:{locale:'zh-CN'|'en'|null}={locale:null};
+      try{preference=await localePreferences.get(principal);}catch{}
       return json({userId:principal.userId,tenants,locale:preference.locale,...(services.executionAvailability?{execution:{...services.executionAvailability,simulation:services.executionAvailability.simulation||tenants.some(t=>services.testingSimulationAvailable?.(principal,t.id))}}:{})});
     }
     if(url.pathname==='/api/me/locale'){
