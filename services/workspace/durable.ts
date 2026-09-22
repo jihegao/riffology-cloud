@@ -863,7 +863,15 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const scope=this.#maintenanceScope(input.scope),state=await this.#turns.snapshot(scope);
     const turn=Object.values(state.turns).find(t=>t.actor.userId===input.actor.userId&&t.actor.authVersion===input.actor.authVersion&&t.sessionId===input.sessionId&&t.requestKey===input.requestKey);
     const terminal=!!turn&&['completed','failed','cancelled','interrupted'].includes(turn.status);
-    return {found:!!turn,turnId:turn?.id??null,terminal,finishedAt:turn?.finishedAt??null,released:terminal&&state.activeTurnId===null&&state.releaseHold===null&&state.recoveryHold===null,resourceWait:state.resourceWait!==null,releaseGuard:terminal&&privateBetaNativeReleaseGuard(new DurableTurnStore(this.ctx.storage).read()?.releaseHold,turn?.id??null)};
+    // Session ownership/version is immutable. A mismatched original actor can
+    // never commit this request, including a delayed retry of the old POST.
+    // Mere absence (a lost ACK or an in-flight admission) is not such proof.
+    const session=state.sessions[input.sessionId];
+    const rejectedSession=!!session&&(session.actorUserId!==input.actor.userId||session.actorAuthVersion!==input.actor.authVersion)&&
+      state.activeTurnId===null&&state.releaseHold===null&&state.recoveryHold===null&&state.resourceWait===null&&
+      Object.values(state.turns).every(t=>['completed','failed','cancelled','interrupted'].includes(t.status))&&
+      !Object.values(state.turns).some(t=>t.actor.userId===input.actor.userId&&t.sessionId===input.sessionId&&t.requestKey===input.requestKey);
+    return {found:!!turn,turnId:turn?.id??null,terminal,finishedAt:turn?.finishedAt??null,released:terminal&&state.activeTurnId===null&&state.releaseHold===null&&state.recoveryHold===null,resourceWait:state.resourceWait!==null,rejectedSession,releaseGuard:terminal&&privateBetaNativeReleaseGuard(new DurableTurnStore(this.ctx.storage).read()?.releaseHold,turn?.id??null)};
   }
   #developerBudget(tenantId:string){const stub=this.env.PI_DEVELOPER_BUDGET?.getByName(modelBudgetTenantName(tenantId));if(!stub)throw Error('pi-developer-budget-unavailable');return stub;}
   async piDeveloperTurnAuthorization(input:{identity:TurnRuntimeIdentity;actor:TurnActor}){
@@ -1032,6 +1040,9 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     if(!managed&&this.env.G4_CONTROLLED_WINDOW_JSON!==undefined)await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
     let route:WorkspaceBudgetRoute|undefined;
     if(developer){
+      // Reject immutable Session mismatches and malformed input before reserving
+      // user capacity. submit() still rechecks inside the journal transaction.
+      this.#turns.validateSubmission(scope,input.actor,input.sessionId,input.key,input.body);
       await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(input.actor,scope.workspaceId);
       const state=await this.#turns.snapshot(scope);
       if(Object.values(state.turns).some(t=>this.ctx.storage.kv.get('g5-turn-route:'+t.id)))throw Error('pi-developer-historical-g5-denied');

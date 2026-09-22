@@ -92,6 +92,12 @@ export class TurnJournal{
       if(prior){const session=state.sessions[prior.sessionId];if(!session||session.actorAuthVersion!==a.authVersion)throw Error('turn-session-not-found');if(prior.payloadSha256!==payloadSha256)throw Error('turn-idempotency-conflict');return {state,value:{session,replayed:true}};}
       const session:SessionRecord={id,scope:s,actorUserId:a.userId,actorAuthVersion:a.authVersion,title:normalized.title,createdAt:at,updatedAt:at,head:null};state.sessions[id]=session;state.sessionIntents[ik]={payloadSha256,sessionId:id};return {state,value:{session,replayed:false}};});
   }
+  validateSubmission(rawScope:TurnScope,rawActor:TurnActor,sessionId:string,key:string,input:{message:unknown}){
+    const s=scope(rawScope),a=actor(rawActor),sid=turnId(sessionId);
+    message(input?.message);intent(a.userId,key);
+    const session=sessionOf(requireState(this.#store.read(),s),sid,s);
+    if(session.actorUserId!==a.userId||session.actorAuthVersion!==a.authVersion)throw Error('turn-session-not-found');
+  }
   async submit(rawScope:TurnScope,rawActor:TurnActor,sessionId:string,key:string,input:{message:unknown}){
     const s=scope(rawScope),a=actor(rawActor),sid=turnId(sessionId),normalized={message:message(input?.message)},payloadSha256=await turnDigest(normalized),id=crypto.randomUUID(),at=nowValid(this.#clock()),ik=`${intent(a.userId,key)}|${sid}`;
     return this.#store.transact(current=>{const state=requireState(current,s);const session=sessionOf(state,sid,s);if(session.actorUserId!==a.userId||session.actorAuthVersion!==a.authVersion)throw Error('turn-session-not-found');

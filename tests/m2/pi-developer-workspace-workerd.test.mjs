@@ -36,11 +36,15 @@ for(const beta of [false,true])test((beta?'Private Beta':'Pi developer')+' Works
  export class Artifacts extends DurableObject{}
  ${beta?"export {PiDeveloperBudget as Developer} from './services/model-budget/pi-developer-durable.ts';":'export class Developer extends DurableObject {async assertQuiet(){}async admitTurn(){}}'}
  import {PrivateBetaCapacity as ProductionPrivateBetaCapacity} from './services/model-budget/private-beta-capacity.ts';
- export class PrivateBetaCapacity extends ProductionPrivateBetaCapacity {async dropBindingForTest(input){this.ctx.storage.sql.exec("UPDATE beta_slots SET turn_id=NULL,status='admitting' WHERE document=?",JSON.stringify(input));await this.ctx.storage.sync();}}
+ export class PrivateBetaCapacity extends ProductionPrivateBetaCapacity {
+  async dropBindingForTest(input){this.ctx.storage.sql.exec("UPDATE beta_slots SET turn_id=NULL,status='admitting' WHERE document=?",JSON.stringify(input));await this.ctx.storage.sync();}
+  async quarantineUnboundForTest(){this.ctx.storage.sql.exec("UPDATE beta_slots SET status='quarantined' WHERE turn_id IS NULL");await this.ctx.storage.sync();}
+  async operationsForTest(){return this.ctx.storage.sql.exec('SELECT action FROM beta_operations').toArray();}
+ }
  export class Historical extends DurableObject {async assertExecutionQuiet(){return {};}async assertExecutionIsolated(){return {};}}
  export class Runtime extends DurableObject{}
  export class Capacity extends DurableObject{}
- export default {async fetch(request,env){const {method,...input}=await request.json();try{const stub=env.WORKSPACE_AGENT.getByName(workspaceAgentName(input.scope.tenantId,input.scope.workspaceId));let value;if(method==='stop')value=await env.MANAGED_TURN_RUNTIME.getByName('managed-product-v1:tenant:project').stop();else if(method==='seed')value=await stub.seed(input.scope);else if(method==='seedRuns')value=await stub.seedRuns(input.scope,input.actor);else value=await stub[method](input);return Response.json({ok:true,value});}catch(e){return Response.json({ok:false,error:e.message});}}};`;
+ export default {async fetch(request,env){const {method,...input}=await request.json();try{const stub=env.WORKSPACE_AGENT.getByName(workspaceAgentName(input.scope.tenantId,input.scope.workspaceId));let value;if(method==='betaForTest')value=await env.PRIVATE_BETA_CAPACITY.getByName(PRIVATE_BETA_CAPACITY_ACTOR)[input.action](...(input.args??[]));else if(method==='stop')value=await env.MANAGED_TURN_RUNTIME.getByName('managed-product-v1:tenant:project').stop();else if(method==='seed')value=await stub.seed(input.scope);else if(method==='seedRuns')value=await stub.seedRuns(input.scope,input.actor);else value=await stub[method](input);return Response.json({ok:true,value});}catch(e){return Response.json({ok:false,error:e.message});}}};`;
  const directory=await mkdtemp(join(tmpdir(),'managed-workspace-')),workerName='managed-workspace';let mf;
  try{
  const bundled=await build({stdin:{contents:entry,sourcefile:'managed-workspace.ts',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'neutral',target:'es2024',external:['cloudflare:workers'],logLevel:'silent'});
@@ -62,10 +66,32 @@ for(const beta of [false,true])test((beta?'Private Beta':'Pi developer')+' Works
  }
  const rpc=async(method,input={})=>(await mf.dispatchFetch('http://test/',{method:'POST',body:JSON.stringify({method,scope,actor,...input})})).json();
  assert.equal((await rpc('seed')).ok,true);
- const created=await rpc('createSession',{key:'session',body:{title:'Synthetic'}});assert.equal(created.ok,true,JSON.stringify(created));const sessionId=created.value.session.id;
+ const created=await rpc('createSession',{key:'session',body:{title:'Synthetic'}});assert.equal(created.ok,true,JSON.stringify(created));let sessionId=created.value.session.id;
+ if(beta){
+  const cap=async(action,...args)=>{const result=await rpc('betaForTest',{action,args});assert.equal(result.ok,true,JSON.stringify(result));return result.value;};
+  await db.prepare("UPDATE catalog_users SET auth_version=2 WHERE id='owner'").run();actor.authVersion=2;
+  const rejected={scope,actor:{...actor},sessionId,requestKey:'stale-session'};
+  assert.equal((await rpc('submitTurn',{sessionId,key:rejected.requestKey,body:{message:'must not reserve'}})).error,'turn-session-not-found');
+  assert.equal((await cap('snapshot')).active,0);
+  // Reproduce the pre-fix sequence: reserve first, then fail journal validation.
+  await cap('admitTurn',rejected);await cap('quarantineUnboundForTest');
+  const before=await cap('snapshot');assert.equal(before.quarantined,1);assert.deepEqual(before.usage,[]);
+  await mf.dispose();mf=new Miniflare(options);await mf.ready;
+  const proof=(await rpc('privateBetaReleaseState',rejected)).value;assert.equal(proof.rejectedSession,true);assert.equal(proof.found,false);
+  await cap('monitor');const after=await cap('snapshot');assert.equal(after.active,0);assert.deepEqual(after.usage,before.usage);
+  assert.equal((await cap('operationsForTest')).filter(x=>x.action.startsWith('release-rejected-session:')).length,1);
+  await cap('monitor');assert.equal((await cap('operationsForTest')).length,1);
+  assert.equal((await rpc('submitTurn',{sessionId,key:rejected.requestKey,body:{message:'late old POST'}})).error,'turn-session-not-found');
+  assert.equal((await rpc('privateBetaReleaseState',{...rejected,sessionId:'missing'})).value.rejectedSession,false);
+  const fresh=await rpc('createSession',{key:'current-session',body:{title:'Current'}});assert.equal(fresh.ok,true);sessionId=fresh.value.session.id;
+  assert.equal((await rpc('privateBetaReleaseState',{...rejected,sessionId})).value.rejectedSession,false);
+  assert.equal((await rpc('submitTurn',{sessionId,key:'invalid',body:{message:''}})).error,'invalid-turn-message');
+  assert.equal((await cap('snapshot')).active,0);
+ }
  const input={sessionId,key:'first',body:{message:'synthetic FCFS'}};
  const pair=await Promise.all([rpc('submitTurn',input),rpc('submitTurn',{...input,key:'second'})]);assert.equal(pair.filter(r=>r.ok).length,1,JSON.stringify(pair));assert.equal(pair.find(r=>!r.ok).error,'managed-input-in-flight');
  const winner=pair.find(r=>r.ok).value.turn;assert.equal(winner.requestKey,'first');
+ if(beta)assert.equal((await rpc('privateBetaReleaseState',{sessionId:created.value.session.id,requestKey:'stale-session'})).value.rejectedSession,false,'another queued Turn prevents rejected-session release proof');
  const receipt=await rpc('turnReceipt',{sessionId,key:'first'});assert.equal(receipt.ok,true,JSON.stringify(receipt));assert.equal(receipt.value.accepted,true);assert.equal(receipt.value.turn.id,winner.id);
  if(beta){
   await rpc('dropBetaBindingForTest',{sessionId,key:'first',turnId:winner.id});options.workers[0].config.env.PRIVATE_BETA_POLICY_JSON.value=JSON.stringify({...standing,enabled:false});await mf.dispose();mf=new Miniflare(options);await mf.ready;
