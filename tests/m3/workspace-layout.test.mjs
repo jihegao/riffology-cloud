@@ -3,10 +3,16 @@ import assert from 'node:assert/strict';
 import {readFile,mkdir} from 'node:fs/promises';
 import {chromium} from 'playwright';
 import {resolve} from 'node:path';
+import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 const origin='https://workspace.test',previewOrigin='https://p-'+ 'a'.repeat(40)+'.preview.test';
 const names=['index.html','app.js', 'i18n.js', 'i18n-bindings.js', 'locale-preference.js','project-status.js','browser-preview.js','verify-handoff.js','layout.js','export.js','publication.js','evidence.js','evidence.css','services.js','previews.js','simulation.js','comparison.js','styles.css','workspace.css'];
 const files=Object.fromEntries(await Promise.all(names.map(async name=>[name,await readFile(new URL('../../services/web/'+name,import.meta.url),'utf8')])));
+const digest=value=>createHash('sha256').update(value).digest('hex');
+const hostSource=`export class BrowserPreviewRuntime { constructor(){ } async load(){ return {manifest:{projectId:'p',revisionId:'revision-a',packageIdentity:'${'a'.repeat(64)}'},spec:{parameters:{servers:{type:'integer',default:1,minimum:1,maximum:4}}},visualization:{}} } async run(){return {snapshots:[]}} cancel(){} dispose(){} }`;
+const rendererSource=`export class PreviewPlayer { constructor(){} clear(){} load(){} play(){} pause(){} step(){} restart(){} }`;
+const hostHash=digest(hostSource),rendererHash=digest(rendererSource);
+
 test('closed project admission explains the restriction instead of asking for a refresh',async t=>{
  const f=await fixture(t,{projectFlow:true}),p=f.page;
  await p.route('**/api/tenants/t/projects',route=>route.request().method()==='POST'
@@ -35,13 +41,15 @@ async function fixture(t,{mismatched=false,unavailableLayoutStorage=false,active
  const json=(route,body,status=200)=>route.fulfill({status,contentType:'application/json',body:JSON.stringify(body)});
  await page.route('**/*',async route=>{
   const req=route.request(),url=new URL(req.url()),path=url.pathname;if(url.origin===previewOrigin)return route.fulfill({contentType:'text/html',body:`<!doctype html><html lang="zh"><meta charset="utf-8"><body style="font:16px sans-serif;background:#f0f8f4;color:#254e3f;padding:28px"><small>LOCAL UI FIXTURE · ${current.runId}</small><h1>排队模型</h1><p>这是浏览器验收使用的受控页面，不是云端仿真证据。</p><div style="display:flex;gap:12px;margin-top:35px"><div style="height:100px;width:24%;background:#89b99e"></div><div style="height:70px;width:24%;background:#bedacb"></div><div style="height:40px;width:24%;background:#dcebe2"></div></div><script>parent.postMessage({type:'riffology-preview-ready',nonce:'${'a'.repeat(64)}'},'${origin}')</script></body></html>`});
-  assert.equal(url.origin,origin);if(!path.startsWith('/api/')){const name=path==='/'?'index.html':path.slice(1);return route.fulfill({status:files[name]?200:404,contentType:name.endsWith('.js')?'application/javascript':name.endsWith('.css')?'text/css':'text/html',body:files[name]||''});}
+  assert.equal(url.origin,origin);if(path===`/browser-preview-assets/${hostHash}/host.mjs`)return route.fulfill({contentType:'application/javascript',body:hostSource});if(path===`/browser-preview-assets/${rendererHash}/renderer.mjs`)return route.fulfill({contentType:'application/javascript',body:rendererSource});if(!path.startsWith('/api/')){const name=path==='/'?'index.html':path.slice(1);return route.fulfill({status:files[name]?200:404,contentType:name.endsWith('.js')?'application/javascript':name.endsWith('.css')?'text/css':'text/html',body:files[name]||''});}
   calls.push({path,method:req.method(),body:req.postData(),key:req.headers()['idempotency-key']});
 if(path==='/api/me'){if(authenticationGate)await authenticationGate;if(authenticationStatus!==200)return json(route,{error:'authentication_required'},authenticationStatus);return json(route,{userId:'fixture-user',locale:storedLocale,execution:{service:true,preview:true,simulation:true},tenants:[{id:'t'}]});}if(path==='/api/me/locale'){storedLocale=JSON.parse(req.postData()).locale;return json(route,{locale:storedLocale});}if(path==='/api/models')return json(route,{models:[]});if(path==='/api/tenants/t/projects'){const project={id:'p',title:longTitle?'很长的项目标题'.repeat(17):'排队与服务能力研究',status:projectStatus,workspace_id:'w'};if(req.method()==='POST'){projectStatus='provisioning';return json(route,{project:{...project,status:projectStatus}},202);}if(projectListError)return json(route,{error:'unrelated-list-error'},503);return json(route,{projects:projectStatus==='absent'?[]:[project]});}
   if(path==='/api/workspaces/w')return json(route,{schemaVersion:3,activeTurnId:null,resourceWait:null,releaseHold:null,recoveryHold:null,sessions:{s:{id:'s',title:'排队研究',createdAt:1,...(messageRecovery?.stale?{canContinue:false}:{})},...(createdConversation?{s2:{id:'s2',title:'Session 2',createdAt:2,canContinue:true}}:{})},turns:{t:{id:'t',sessionId:'s',message:'建立一个排队模型，比较增加服务台后的等待时间。',status:'completed',saveStatus:'saved',createdAt:1}}});
   if(path==='/api/workspaces/w/sessions'&&req.method()==='POST'){createdConversation=true;return json(route,{session:{id:'s2',title:'Session 2',createdAt:2,canContinue:true}},201);}
   if(path==='/api/workspaces/w/sessions/s/turns/receipt'){if(receiptGate)await receiptGate;if(messageRecovery?.receipt==='accepted')return json(route,{accepted:true,turn:{id:'recovered-turn',sessionId:'s',message:messageRecovery.message,status:'completed',persistenceOutcome:'saved',createdAt:2}});if(messageRecovery?.receipt==='error')return json(route,{error:'temporarily_unavailable'},503);return json(route,{error:'not_found'},404);}
-  if(path==='/api/workspaces/w/browser-preview'&&req.method()==='GET')return json(route,{currentRevisionId:null,revisionId:null,build:null,stale:false,modelSpec:null,reasonCode:'preview-no-saved-revision',delivery:null});
+  if(path==='/api/workspaces/w/browser-preview'&&req.method()==='GET')return json(route,{currentRevisionId:'revision-a',build:{status:'ready',revisionId:'revision-a',packageIdentity:'a'.repeat(64)},canVerify:true,stale:false,delivery:{assetBaseUrl:'/browser-preview-assets',hostModule:{url:`/browser-preview-assets/${hostHash}/host.mjs`,sha256:hostHash,byteLength:Buffer.byteLength(hostSource)},rendererModule:{url:`/browser-preview-assets/${rendererHash}/renderer.mjs`,sha256:rendererHash,byteLength:Buffer.byteLength(rendererSource)}}});if(path==='/api/workspaces/w/browser-preview/packages/'+ 'a'.repeat(64))return route.fulfill({contentType:'application/octet-stream',body:'x'});
+  if(path==='/api/workspaces/w/browser-preview/verify'&&req.method()==='POST'){const body=JSON.parse(req.postData());const {idempotencyKey,...captured}=body;return json(route,{verificationId:idempotencyKey,captured,experiment:{id:'verified-a'}},202);}
+  if(path.startsWith('/api/workspaces/w/browser-preview/verify/'))return json(route,{status:'absent',experiment:null});
   if(path==='/api/workspaces/w/events')return json(route,{events:[{sequence:1,turnId:'t',type:'assistant.message',payload:{text:'模型已经保存。可以先查看假设，再修改服务台数量，比较不同种子下的结果。'}}],nextSequence:2,hasMore:false,snapshotRequired:false});
   if(path==='/api/workspaces/w/model')return delayed(route,path,model());if(path==='/api/workspaces/w/files')return delayed(route,path,{revision:{...version(),committedAt:1},files:[{path:'model/run.py',kind:'file',size:1024},{path:'model/model-spec.json',kind:'file',size:512}]});if(path==='/api/workspaces/w/diff')return delayed(route,path,{revision:version(),summary:{added:0,modified:1,deleted:0},changes:[{path:revision+'-changed.py',change:'modified',type:'file',size:1}]});
   if(path==='/api/workspaces/w/evidence')return json(route,{items:[],nextCursor:null});
@@ -227,4 +235,16 @@ test('locale selection leaves unresolved receipt frozen and usable without local
  assert.equal(await p.locator('#message-input').inputValue(),message);assert.equal(await p.locator('#message-input').isEditable(),false);
  assert.equal(f.calls.filter(c=>c.method==='POST'&&c.path.endsWith('/turns')).length,0);
  assert.equal(await p.evaluate(()=>JSON.parse(sessionStorage.getItem('riffology:conversation:t:w')).messageIntent.key),'locale-receipt');
+});
+
+test('Preview handoff opens Runs without POST and confirmation submits its frozen input',async t=>{
+ const f=await fixture(t),p=f.page;
+ await p.locator('#workspace-browser-preview [data-parameter=servers]').fill('2');
+ await p.locator('#workspace-browser-preview [data-browser-preview-seed]').fill('9');
+ await p.locator('#workspace-browser-preview [data-browser-preview-action=verify]').click();
+ await p.locator('#canvas-runs').waitFor();
+ assert.equal(f.calls.filter(c=>c.path.endsWith('/browser-preview/verify')&&c.method==='POST').length,0);
+ await p.getByRole('button',{name:'确认提交服务器实验',exact:true}).click();
+ await p.waitForTimeout(20);
+ const post=f.calls.find(c=>c.path.endsWith('/browser-preview/verify')&&c.method==='POST');assert.ok(post);assert.deepEqual(JSON.parse(post.body).parameters,{servers:2});assert.equal(JSON.parse(post.body).seed,9);
 });
