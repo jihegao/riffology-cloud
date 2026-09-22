@@ -2,61 +2,61 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#f6f8f5"><title>平台管理 · Riffology Cloud</title>
+  <meta name="theme-color" content="#f6f8f5"><title data-i18n-title="admin.documentTitle">平台管理 · Riffology Cloud</title>
   <link rel="stylesheet" href="./styles.css"><link rel="stylesheet" href="./admin.css">
 </head>
 <body>
   <a class="skip" href="#main" data-i18n="shell.skip">跳到主要内容</a>
   <header class="topbar">
     <a class="brand" href="/admin" aria-label="Riffology Cloud 管理首页" data-i18n-aria-label="shell.home"><span class="mark">R</span><span>Riffology <small>platform</small></span></a>
-    <div class="account-actions"><label class="locale-control"><span data-i18n="shell.language">语言</span><select data-locale-select aria-label="语言" data-i18n-aria-label="shell.language"><option value="zh-CN">中文</option><option value="en">English</option></select></label><span id="locale-status" class="locale-status" role="status" aria-live="polite"></span><span class="role">平台运维</span><a class="button" href="/">用户端</a><button id="sign-out" class="button" hidden data-i18n="shell.signOut">退出</button></div>
+    <div class="account-actions"><label class="locale-control"><span data-i18n="shell.language">语言</span><select data-locale-select aria-label="语言" data-i18n-aria-label="shell.language"><option value="zh-CN">中文</option><option value="en">English</option></select></label><span id="locale-status" class="locale-status" role="status" aria-live="polite"></span><span class="role" data-i18n="admin.role">平台运维</span><a class="button" href="/" data-i18n="admin.userApp">用户端</a><button id="sign-out" class="button" hidden data-i18n="shell.signOut">退出</button></div>
   </header>
   <main id="main" class="container admin-container" tabindex="-1">
     <section id="notice" class="notice" role="status" aria-live="polite" hidden></section>
     <section id="admin-login" class="card login"><p class="eyebrow">OPERATIONS</p><h1 data-i18n="admin.loginTitle">管理员登录</h1><p data-i18n="admin.loginCopy">使用拥有平台管理权限的 Google 账号登录。</p><button id="google" class="button primary" data-i18n="admin.signIn">使用 Google 登录</button></section>
-    <section id="admin-denied" class="card login" hidden><p class="eyebrow">NO ACCESS</p><h1>没有管理权限</h1><p>当前账号不是平台运维人员。</p><a class="button" href="/">返回用户端</a></section>
+    <section id="admin-denied" class="card login" hidden><p class="eyebrow">NO ACCESS</p><h1 data-i18n="admin.deniedTitle">没有管理权限</h1><p data-i18n="admin.deniedCopy">当前账号不是平台运维人员。</p><a class="button" href="/" data-i18n="admin.returnUserApp">返回用户端</a></section>
     <section id="admin-app" hidden>
-      <div class="heading"><div><p class="eyebrow">OPERATIONS</p><h1>平台状态</h1><p id="updated-at">只展示平台元数据</p></div><button id="refresh" class="button">刷新</button></div>
+      <div class="heading"><div><p class="eyebrow">OPERATIONS</p><h1 data-i18n="admin.statusTitle">平台状态</h1><p id="updated-at" data-i18n="admin.metadataOnly">只展示平台元数据</p></div><button id="refresh" class="button" data-i18n="admin.refresh">刷新</button></div>
       <div id="metrics" class="metric-grid" aria-live="polite"></div>
 
       <section class="card" id="private-beta-panel" aria-labelledby="private-beta-heading">
-        <h2 id="private-beta-heading">Private Beta 容量</h2>
-        <p id="private-beta-status" role="status">读取内测状态中…</p>
-        <button id="private-beta-pause" class="button" type="button">暂停内测任务</button>
-        <button id="private-beta-resume" class="button" type="button">恢复内测任务</button>
+        <h2 id="private-beta-heading" data-i18n="admin.betaTitle">Private Beta 容量</h2>
+        <p id="private-beta-status" role="status" data-i18n="admin.betaLoading">读取内测状态中…</p>
+        <button id="private-beta-pause" class="button" type="button" data-i18n="admin.betaPause">暂停内测任务</button>
+        <button id="private-beta-resume" class="button" type="button" data-i18n="admin.betaResume">恢复内测任务</button>
       </section>
       <section class="card admin-section" aria-labelledby="invite-heading">
-        <div class="section-heading"><div><h2 id="invite-heading">邀请</h2><p>令牌仅在首次创建成功后显示一次。</p></div></div>
+        <div class="section-heading"><div><h2 id="invite-heading" data-i18n="admin.invitesTitle">邀请</h2><p data-i18n="admin.invitesCopy">令牌仅在首次创建成功后显示一次。</p></div></div>
         <form id="issue-form" class="issue-form">
-          <label for="issue-email">Google 账号邮箱<input id="issue-email" type="email" autocomplete="off" maxlength="320" required placeholder="name@example.com"></label>
-          <label for="issue-days">有效期<select id="issue-days"><option value="1">1 天</option><option value="7" selected>7 天</option><option value="30">30 天</option></select></label>
-          <button id="issue-submit" class="button primary" type="submit">创建邀请</button>
-          <button id="issue-reset" class="button" type="button" hidden>取消重试</button>
+          <label for="issue-email"><span data-i18n="admin.email">Google 账号邮箱</span><input id="issue-email" type="email" autocomplete="off" maxlength="320" required placeholder="name@example.com"></label>
+          <label for="issue-days"><span data-i18n="admin.expiry">有效期</span><select id="issue-days"><option value="1" data-i18n="admin.days1">1 天</option><option value="7" selected data-i18n="admin.days7">7 天</option><option value="30" data-i18n="admin.days30">30 天</option></select></label>
+          <button id="issue-submit" class="button primary" type="submit" data-i18n="admin.createInvite">创建邀请</button>
+          <button id="issue-reset" class="button" type="button" hidden data-i18n="admin.cancelRetry">取消重试</button>
         </form>
-        <div id="token-panel" class="token-panel" role="status" hidden><strong id="token-title"></strong><input id="issued-token" readonly aria-label="新邀请码"><button id="copy-token" class="button" type="button">复制</button></div>
-        <div class="table-wrap"><table><thead><tr><th>邮箱</th><th>状态</th><th>创建时间</th><th>到期时间</th><th>操作</th></tr></thead><tbody id="invitations"></tbody></table></div>
+        <div id="token-panel" class="token-panel" role="status" hidden><strong id="token-title"></strong><input id="issued-token" readonly aria-label="新邀请码" data-i18n-aria-label="admin.newInviteToken"><button id="copy-token" class="button" type="button" data-i18n="admin.copy">复制</button></div>
+        <div class="table-wrap"><table><thead><tr><th data-i18n="admin.emailHeader">邮箱</th><th data-i18n="admin.status">状态</th><th data-i18n="admin.createdAt">创建时间</th><th data-i18n="admin.expiresAt">到期时间</th><th data-i18n="admin.actions">操作</th></tr></thead><tbody id="invitations"></tbody></table></div>
       </section>
 
-      <section id="model-submissions" class="card admin-section" aria-label="用户模型审核"></section>
+      <section id="model-submissions" class="card admin-section" aria-label="用户模型审核" data-i18n-aria-label="admin.modelSubmissions"></section>
       <section class="card admin-section" aria-labelledby="model-heading">
-        <div class="section-heading"><div><h2 id="model-heading">官方模型目录</h2><p>创建草稿后上传规范包，再验证和发布。</p></div></div>
+        <div class="section-heading"><div><h2 id="model-heading" data-i18n="admin.modelsTitle">官方模型目录</h2><p data-i18n="admin.modelsCopy">创建草稿后上传规范包，再验证和发布。</p></div></div>
         <form id="model-form" class="issue-form">
-          <label>模型 ID<input id="model-id" required maxlength="120"></label><label>版本<input id="model-version" required maxlength="40" placeholder="1.0.0"></label>
-          <label>标题<input id="model-title" required maxlength="160"></label><label>说明<input id="model-description" required maxlength="2000"></label>
-          <label>Starter 版本<input id="model-starter" required maxlength="120" value="blank-v1"></label><label>内容引用<input id="model-content-ref" required maxlength="500"></label><label>内容 SHA-256<input id="model-content-sha" required pattern="[a-f0-9]{64}" maxlength="64"></label>
-          <button id="model-submit" class="button primary" type="submit">创建草稿</button><button id="model-reset" class="button" type="button" hidden>取消重试</button>
+          <label><span data-i18n="admin.modelId">模型 ID</span><input id="model-id" required maxlength="120"></label><label><span data-i18n="admin.version">版本</span><input id="model-version" required maxlength="40" placeholder="1.0.0"></label>
+          <label><span data-i18n="admin.title">标题</span><input id="model-title" required maxlength="160"></label><label><span data-i18n="admin.description">说明</span><input id="model-description" required maxlength="2000"></label>
+          <label><span data-i18n="admin.starterVersion">Starter 版本</span><input id="model-starter" required maxlength="120" value="blank-v1"></label><label><span data-i18n="admin.contentRef">内容引用</span><input id="model-content-ref" required maxlength="500"></label><label><span data-i18n="admin.contentSha">内容 SHA-256</span><input id="model-content-sha" required pattern="[a-f0-9]{64}" maxlength="64"></label>
+          <button id="model-submit" class="button primary" type="submit" data-i18n="admin.createDraft">创建草稿</button><button id="model-reset" class="button" type="button" hidden data-i18n="admin.cancelRetry">取消重试</button>
         </form>
-        <div class="table-wrap"><table><thead><tr><th>模型</th><th>版本</th><th>标题</th><th>状态</th><th>说明</th><th>操作</th></tr></thead><tbody id="models"></tbody></table></div>
+        <div class="table-wrap"><table><thead><tr><th data-i18n="admin.model">模型</th><th data-i18n="admin.version">版本</th><th data-i18n="admin.title">标题</th><th data-i18n="admin.status">状态</th><th data-i18n="admin.description">说明</th><th data-i18n="admin.actions">操作</th></tr></thead><tbody id="models"></tbody></table></div>
       </section>
 
       <section class="card admin-section" aria-labelledby="tenant-heading">
-        <div class="section-heading"><div><h2 id="tenant-heading">租户</h2><p>仅显示生命周期和项目计数，不读取项目内容。</p></div></div>
-        <div class="table-wrap"><table><thead><tr><th>租户 ID</th><th>状态</th><th>项目</th><th>准备中</th><th>就绪</th><th>失败</th><th>创建时间</th></tr></thead><tbody id="tenants"></tbody></table></div>
+        <div class="section-heading"><div><h2 id="tenant-heading" data-i18n="admin.tenantsTitle">租户</h2><p data-i18n="admin.tenantsCopy">仅显示生命周期和项目计数，不读取项目内容。</p></div></div>
+        <div class="table-wrap"><table><thead><tr><th data-i18n="admin.tenantId">租户 ID</th><th data-i18n="admin.status">状态</th><th data-i18n="admin.projects">项目</th><th data-i18n="admin.provisioning">准备中</th><th data-i18n="admin.ready">就绪</th><th data-i18n="admin.failed">失败</th><th data-i18n="admin.createdAt">创建时间</th></tr></thead><tbody id="tenants"></tbody></table></div>
       </section>
 
       <section class="card admin-section" aria-labelledby="audit-heading">
-        <div class="section-heading"><div><h2 id="audit-heading">审计事件</h2><p>最近 100 条平台元数据事件。</p></div></div>
-        <div class="table-wrap"><table><thead><tr><th>时间</th><th>动作</th><th>目标</th><th>结果</th><th>原因</th><th>请求 ID</th></tr></thead><tbody id="audit"></tbody></table></div>
+        <div class="section-heading"><div><h2 id="audit-heading" data-i18n="admin.auditTitle">审计事件</h2><p data-i18n="admin.auditCopy">最近 100 条平台元数据事件。</p></div></div>
+        <div class="table-wrap"><table><thead><tr><th data-i18n="admin.time">时间</th><th data-i18n="admin.action">动作</th><th data-i18n="admin.target">目标</th><th data-i18n="admin.result">结果</th><th data-i18n="admin.reason">原因</th><th data-i18n="admin.requestId">请求 ID</th></tr></thead><tbody id="audit"></tbody></table></div>
       </section>
     </section>
   </main>

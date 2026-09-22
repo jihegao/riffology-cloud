@@ -1,0 +1,39 @@
+{
+  "admin.js": {
+    "card metric": 1,
+    "button compact": 3
+  },
+  "app.js": {
+    "button compact": 1,
+    "file-empty file-error": 2,
+    "card project": 1
+  },
+  "comparison.js": {
+    "button primary": 1
+  },
+  "evidence.js": {
+    "button primary": 1
+  },
+  "i18n-bindings.js": {
+    "A platform text node is required": 1,
+    "Only presentation attributes can be localized": 1
+  },
+  "layout.js": {
+    "Home": 4,
+    "End": 4
+  },
+  "previews.js": {
+    "allow-scripts allow-same-origin allow-forms": 1
+  },
+  "publication.js": {
+    "button primary": 1
+  },
+  "simulation.js": {
+    "meta simulation-pending": 1,
+    "button primary": 1,
+    "button compact": 1
+  },
+  "verify-handoff.js": {
+    "button primary": 1
+  }
+}

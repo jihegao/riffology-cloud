@@ -13,12 +13,12 @@ test('browser Preview opens through production Gateway and durable Workspace, re
  const browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||'chrome'});t.after(()=>browser.close());
  const context=await browser.newContext();t.after(()=>context.close());const page=await context.newPage();
  const requests=[],errors=[],responses=[];page.on('pageerror',e=>errors.push(e.message));
- const panel=await readFile(new URL('../../services/web/previews.js',import.meta.url),'utf8');
- const client=`import {createPreviewPanel} from '/previews.js';const api=async(path,options={})=>{const r=await fetch(path,{...options,headers:{'content-type':'application/json',...options.headers}});if(!r.ok)throw Object.assign(Error('http-error'),{status:r.status});return r.json();};window.panel=createPreviewPanel({root:document.querySelector('#root'),api});await window.panel.enter(${JSON.stringify({tenantId:f.scope.tenantId,workspaceId:f.scope.workspaceId,canOpen:true})});window.panel.selectRun(${JSON.stringify(f.runId)});window.panelReady=true;`;
+ const modules=Object.fromEntries(await Promise.all(['previews.js','i18n.js','i18n-bindings.js'].map(async name=>[name,await readFile(new URL(`../../services/web/${name}`,import.meta.url),'utf8')])));
+ const client=`import {createPreviewPanel} from '/previews.js';import {setLocale} from '/i18n.js';setLocale('zh-CN');const api=async(path,options={})=>{const r=await fetch(path,{...options,headers:{'content-type':'application/json',...options.headers}});if(!r.ok)throw Object.assign(Error('http-error'),{status:r.status});return r.json();};window.panel=createPreviewPanel({root:document.querySelector('#root'),api});await window.panel.enter(${JSON.stringify({tenantId:f.scope.tenantId,workspaceId:f.scope.workspaceId,canOpen:true})});window.panel.selectRun(${JSON.stringify(f.runId)});window.panelReady=true;`;
  await page.route('**/*',async route=>{
   const incoming=route.request(),url=new URL(incoming.url()),headers=await incoming.allHeaders();requests.push({url:url.href,method:incoming.method(),headers});
   if(url.origin===control&&!url.pathname.startsWith('/api/')){
-   if(url.pathname==='/previews.js')return route.fulfill({contentType:'application/javascript',body:panel});
+   if(Object.hasOwn(modules,url.pathname.slice(1)))return route.fulfill({contentType:'application/javascript',body:modules[url.pathname.slice(1)]});
    if(url.pathname==='/panel.js')return route.fulfill({contentType:'application/javascript',body:client});
    if(url.pathname==='/'){
     // The shell can outlive a gates-false foundation deployment. Its narrowly

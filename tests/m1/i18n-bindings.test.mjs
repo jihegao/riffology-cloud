@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {setLocale, t, formatNumber} from '../../services/web/i18n.js';
-import {bindText, bindAttribute, unbindI18n} from '../../services/web/i18n-bindings.js';
+import {setLocale, t, formatNumber, msg, uiError, errorMessage} from '../../services/web/i18n.js';
+import {bindText, bindAttribute, unbindI18n, bindValue} from '../../services/web/i18n-bindings.js';
 const node = () => ({textContent:'',value:'user draft',attributes:{},setAttribute(name,value){this.attributes[name]=value;},removeAttribute(name){delete this.attributes[name];}});
 
 test('only explicit labels change; values, identities and unrelated user text remain intact', () => {
@@ -32,4 +32,36 @@ test('interpolation stays text and a failing display getter cannot interrupt oth
   bindText(healthy,'shell.signOut');setLocale('zh-CN',{persist:false});
   assert.equal(broken.textContent,'existing');assert.equal(healthy.textContent,'退出');
   for(const n of [unsafe,broken,healthy])unbindI18n(n);
+});
+
+
+test('stored notices and errors retain their keys and formatted values until presentation', () => {
+  setLocale('zh-CN',{persist:false});
+  const label=node(),error=node(),notice=msg('files.revision',()=>({p0:'revision-a',p1:formatNumber(1234),p2:'unchanged-time'}));
+  bindValue(label,notice);bindValue(error,errorMessage(uiError('error.requestFailed')));
+  const before=label.textContent;setLocale('en',{persist:false});
+  assert.notEqual(label.textContent,before);assert.match(label.textContent,/Revision revision-a/);
+  assert.match(label.textContent,/1,234/);assert.equal(error.textContent,'The request failed. Try again later.');
+  assert.equal(label.value,'user draft');unbindI18n(label);unbindI18n(error);
+});
+
+test('finalization releases transient records without requiring a language change', async () => {
+  const original = globalThis.FinalizationRegistry;
+  let collected, registry;
+  globalThis.FinalizationRegistry = class {
+    constructor(callback) { collected=callback;registry=new Map(); }
+    register(target,record,token) { registry.set(token,record); }
+    unregister(token) { return registry.delete(token); }
+  };
+  let bindings;
+  try { bindings=await import('../../services/web/i18n-bindings.js?finalization-test'); }
+  finally { globalThis.FinalizationRegistry=original; }
+  const label=node();let reads=0;
+  bindings.bindText(label,()=>{reads++;return 'value';});
+  assert.equal(registry.size,1);const record=[...registry.values()][0];
+  collected(record);const before=reads;
+  setLocale('en',{persist:false});setLocale('zh-CN',{persist:false});
+  assert.equal(reads,before);
+  bindings.bindText(label,'shell.signOut');assert.equal(registry.size,1);
+  bindings.unbindI18n(label);assert.equal(registry.size,0);
 });

@@ -72,6 +72,12 @@ export function createVerifyHandoffPanel({root, api, onVerified = () => {}, requ
     } catch { if (token === generation && scope === context) { messageKey = 'verifyHandoff.unconfirmed'; render(); } }
     finally { if (token === generation && scope === context) { recovering = false; updateButton(); } }
   }
+  async function confirmedReceipt(scope, current) {
+    const {idempotencyKey, ...captured} = current;
+    const value = await request(`/api/workspaces/${encodeURIComponent(scope.workspaceId)}/browser-preview/verify/${encodeURIComponent(idempotencyKey)}`);
+    if (value?.status !== 'accepted' || value.verificationId !== idempotencyKey || !value.experiment || canonical(value.captured) !== canonical(captured)) throw Error('receipt');
+    return value;
+  }
   async function submit() {
     if (!draft || storageBlocked || submitting || recovering || context?.canVerify !== true) return;
     let current = draft;
@@ -82,9 +88,10 @@ export function createVerifyHandoffPanel({root, api, onVerified = () => {}, requ
     try {
       const value = await request(`/api/workspaces/${encodeURIComponent(scope.workspaceId)}/browser-preview/verify`, {method: 'POST', headers: {'Idempotency-Key': current.idempotencyKey}, body: JSON.stringify(current)});
       if (token !== generation || scope !== context || draft !== current) return;
-      const {idempotencyKey, ...captured} = current;
-      if (!value || value.verificationId !== idempotencyKey || !value.experiment || canonical(value.captured) !== canonical(captured)) throw Error('receipt');
-      write(handoffKey(), null); write(key(), null); draft = null; messageKey = 'verifyHandoff.accepted'; onVerified(value); render();
+      if (!value || value.verificationId !== current.idempotencyKey || !value.experiment) throw Error('receipt');
+      const receipt = await confirmedReceipt(scope, current);
+      if (token !== generation || scope !== context || draft !== current) return;
+      write(handoffKey(), null); write(key(), null); draft = null; messageKey = 'verifyHandoff.accepted'; onVerified(receipt); render();
     } catch { if (token === generation && scope === context && draft === current) { messageKey = 'verifyHandoff.unconfirmed'; render(); } }
     finally { if (token === generation && scope === context) { submitting = false; updateButton(); } }
   }

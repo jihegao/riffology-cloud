@@ -3,6 +3,7 @@ import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 
+const modules=Object.fromEntries(await Promise.all(['i18n.js','i18n-bindings.js'].map(async name=>[name,await readFile(new URL('../../services/web/'+name,import.meta.url),'utf8')])));
 const source = await readFile(new URL('../../services/web/simulation.js', import.meta.url), 'utf8');
 
 test('simulation panel uses saved model/version and never invokes Pi turns', () => {
@@ -19,7 +20,7 @@ test('simulation panel has bounded active polling, cancellation and terminal sta
 test('simulation panel renders typed parameters, retries one pending request and shows saved results', async t => {
   const browser = await chromium.launch({ headless: true, channel: process.env.M1_BROWSER_CHANNEL || 'chrome' });
   t.after(() => browser.close());
-  const context = await browser.newContext(); t.after(() => context.close());
+  const context = await browser.newContext({locale:'zh-CN'}); t.after(() => context.close());
   const page = await context.newPage(); const files = {};
   for (const name of ['index.html', 'app.js', 'i18n.js', 'i18n-bindings.js', 'locale-preference.js','project-status.js', 'browser-preview.js', 'verify-handoff.js', 'layout.js', 'export.js', 'publication.js', 'evidence.js', 'evidence.css', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'styles.css', 'workspace.css']) files[name] = await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8');
   let experiments = [], posts = 0, failOnce = true, changedSpec = false;const attempts=[];
@@ -67,7 +68,7 @@ if (path === '/api/me') return json(route, { execution:{service:true,preview:tru
   assert.equal(await page.locator('#workspace-simulation input[name="warm"]').count(),0);
   assert.match(await page.locator('.simulation-pending').innerText(),/"warm":true/);
   await page.getByText('重试实验',{exact:true}).click();
-  await page.locator('#workspace-simulation').getByText(/completed/).waitFor();assert.equal(posts,2);assert.deepEqual(attempts[0],attempts[1]);
+  await page.locator('#workspace-simulation').getByText(/已完成/).waitFor();assert.equal(posts,2);assert.deepEqual(attempts[0],attempts[1]);
   await page.getByText('刷新模型与实验',{exact:true}).click();
   await page.waitForFunction(()=>document.querySelector('#workspace-simulation input[name="servers"]')?.value==='2');assert.equal(posts,2);
   assert.match(await page.locator('#workspace-simulation').innerText(),/版本 r/);
@@ -75,11 +76,11 @@ if (path === '/api/me') return json(route, { execution:{service:true,preview:tru
 
 test('pending experiments unlock only confirmed rejection and preserve ambiguous conflicts',async t=>{
  const browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||'chrome'});t.after(()=>browser.close());const page=await browser.newPage();
- await page.route('https://panel.test/**',route=>route.fulfill({contentType:route.request().url().endsWith('.js')?'application/javascript':'text/html',body:route.request().url().endsWith('.js')?source:'<div id="panel"></div>'}));await page.goto('https://panel.test/');
+ await page.route('https://panel.test/**',route=>route.fulfill({contentType:route.request().url().endsWith('.js')?'application/javascript':'text/html',body:route.request().url().endsWith('.js')?(modules[new URL(route.request().url()).pathname.slice(1)]??source):'<div id="panel"></div>'}));await page.goto('https://panel.test/');
  for(const [status,code,unlocked] of [[400,'simulation-input-invalid',true],[409,'simulation-model-stale',true],[409,'simulation-idempotency-conflict',false],[400,'unexpected',false]]){
   const expected=await page.evaluate(async({status,code})=>{
    window.simPanel?.leave();window.attempts=[];const pending={key:'same-key',body:{revisionId:'old',filesSha256:'f',specSha256:'s',parameters:{servers:2},seed:99}};sessionStorage.setItem('riffology:simulation-intent:t:w',JSON.stringify(pending));
-   const {createSimulationPanel}=await import('/simulation.js');window.simPanel=createSimulationPanel({root:document.querySelector('#panel'),api:async(path,options)=>{if(options?.method==='POST'){window.attempts.push({key:options.headers['Idempotency-Key'],body:options.body});throw Object.assign(Error('rejected'),{status,code});}return path.endsWith('/model')?{canRun:true,version:{revisionId:'new',filesSha256:'n',specSha256:'s'},spec:{parameters:{servers:{type:'integer',default:1}}}}:{items:[]};}});await window.simPanel.enter({tenantId:'t',workspaceId:'w'});return {key:pending.key,body:JSON.stringify(pending.body)};
+   (await import('/i18n.js')).setLocale('zh-CN',{persist:false});const {createSimulationPanel}=await import('/simulation.js');window.simPanel=createSimulationPanel({root:document.querySelector('#panel'),api:async(path,options)=>{if(options?.method==='POST'){window.attempts.push({key:options.headers['Idempotency-Key'],body:options.body});throw Object.assign(Error('rejected'),{status,code});}return path.endsWith('/model')?{canRun:true,version:{revisionId:'new',filesSha256:'n',specSha256:'s'},spec:{parameters:{servers:{type:'integer',default:1}}}}:{items:[]};}});await window.simPanel.enter({tenantId:'t',workspaceId:'w'});return {key:pending.key,body:JSON.stringify(pending.body)};
   },{status,code});
   await page.getByText('重试实验',{exact:true}).click();await page.waitForFunction(()=>window.attempts.length===1);await page.locator('button[type="submit"]:not([disabled])').waitFor();assert.equal(await page.locator('input[name="servers"]').isEnabled(),unlocked);assert.equal(await page.locator('input[name="servers"]').inputValue(),'2');assert.equal(await page.locator('input[name="seed"]').inputValue(),'99');assert.deepEqual(await page.evaluate(()=>window.attempts[0]),expected);
   assert.equal(await page.evaluate(()=>sessionStorage.getItem('riffology:simulation-intent:t:w')===null),unlocked);
@@ -89,11 +90,11 @@ test('pending experiments unlock only confirmed rejection and preserve ambiguous
 test('Model view restores persisted semantics, bounds and warnings safely on desktop and mobile',async t=>{
  const browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||'chrome'});t.after(()=>browser.close());const page=await browser.newPage();
  const css=await readFile(new URL('../../services/web/workspace.css',import.meta.url),'utf8');
- await page.route('https://model.test/**',route=>route.fulfill({contentType:route.request().url().endsWith('.js')?'application/javascript':'text/html',body:route.request().url().endsWith('.js')?source:`<style>body{font-family:system-ui;margin:16px;--line:#d8e8de;--muted:#52655b}button,input{padding:8px}.simulation-form{display:grid;gap:12px}${css}</style><div id="panel"></div>`}));
+ await page.route('https://model.test/**',route=>route.fulfill({contentType:route.request().url().endsWith('.js')?'application/javascript':'text/html',body:route.request().url().endsWith('.js')?(modules[new URL(route.request().url()).pathname.slice(1)]??source):`<style>body{font-family:system-ui;margin:16px;--line:#d8e8de;--muted:#52655b}button,input{padding:8px}.simulation-form{display:grid;gap:12px}${css}</style><div id="panel"></div>`}));
  await page.goto('https://model.test/');
  await page.evaluate(async()=>{
   window.fixture={version:{revisionId:'saved-revision-'+ 'r'.repeat(64),filesSha256:'f'.repeat(64),specSha256:'s'.repeat(64)},canRun:false,reasonCode:null,spec:{schemaVersion:1,researchQuestion:'How does capacity affect waiting?',scope:'Airport check-in, 4 hours',entities:['Passenger','Counter'],mechanisms:['Arrival','Queue','Service'],assumptions:['FCFS','<img src=x onerror=alert(1)>'],limitations:['No abandonment'],parameters:{capacity:{type:'integer',default:2,minimum:1,maximum:8,unit:'counters'},mode:{type:'enum',default:'normal',values:['normal','priority']},priority:{type:'boolean',default:false}},metrics:{wait:{unit:'minutes',description:'Mean waiting time'}},execution:{entrypoint:'model/run.py',dependencyLock:'app/requirements.lock'}}};
-  const {createSimulationPanel}=await import('/simulation.js');window.reads=0;window.panel=createSimulationPanel({root:document.querySelector('#panel'),api:async(path,options)=>{if(options)throw Error('read must not execute');window.reads++;return path.endsWith('/model')?structuredClone(window.fixture):{items:[{experimentId:'e',runId:'invalid-current-'+ 'x'.repeat(64),version:window.fixture.version,status:'failed',parameters:{capacity:2},seed:42,errorCode:'simulation-result-invalid'},{experimentId:'old',runId:'invalid-old',version:{filesSha256:'old',specSha256:'old'},status:'failed',parameters:{capacity:2},seed:42,errorCode:'simulation-result-invalid'}]};}});await window.panel.enter({tenantId:'t',workspaceId:'w'});
+  (await import('/i18n.js')).setLocale('zh-CN',{persist:false});const {createSimulationPanel}=await import('/simulation.js');window.reads=0;window.panel=createSimulationPanel({root:document.querySelector('#panel'),api:async(path,options)=>{if(options)throw Error('read must not execute');window.reads++;return path.endsWith('/model')?structuredClone(window.fixture):{items:[{experimentId:'e',runId:'invalid-current-'+ 'x'.repeat(64),version:window.fixture.version,status:'failed',parameters:{capacity:2},seed:42,errorCode:'simulation-result-invalid'},{experimentId:'old',runId:'invalid-old',version:{filesSha256:'old',specSha256:'old'},status:'failed',parameters:{capacity:2},seed:42,errorCode:'simulation-result-invalid'}]};}});await window.panel.enter({tenantId:'t',workspaceId:'w'});
  });
  const view=page.locator('.model-view');
  for(const text of ['研究问题','范围与边界','实体与资源','机制与规则','假设','限制与未包含的机制','参数定义','输出指标','最小 1','最大 8','单位 counters','Mean waiting time']){assert.ok((await view.innerText()).includes(text),text);}

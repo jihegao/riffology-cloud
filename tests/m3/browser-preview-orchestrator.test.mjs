@@ -15,7 +15,7 @@ async function setup(configure=async()=>{}){const f=await fixture();await config
  return {f,ports,body,service:()=>new BrowserPreviewOrchestrator(f.storage,f.scope,{...ports,simulations:simulations()}),revoke:()=>{allowed=false;},get starts(){return starts;},newHead:()=>{head={...head,receipt:{...head.receipt,revisionId:'revision-b',filesSha256:'d'.repeat(64)}};}};
 }
 test('historical Verify freezes original saved model and actual SimulationHost intent survives refresh without rerun',async()=>{
- const s=await setup();s.newHead();const result=await s.service().verify(actor,s.body);assert.equal(result.experiment.version.revisionId,'revision-a');assert.equal(result.experiment.stale,true);assert.equal(s.starts,0);
+ const s=await setup();s.newHead();const result=await s.service().verify(actor,s.body);assert.deepEqual(Object.keys(result).sort(),['experiment','verificationId']);assert.equal(result.experiment.version.revisionId,'revision-a');assert.equal(result.experiment.stale,true);assert.equal(s.starts,0);
  const before=structuredClone(s.f.storage.values),read=await s.service().verification(actor,'verify-a');assert.equal(read.status,'accepted');assert.equal(read.experiment.runId,result.experiment.runId);assert.equal(read.captured.revisionId,'revision-a');assert.equal(Object.hasOwn(read.captured,'idempotencyKey'),false);assert.deepEqual(s.f.storage.values,before);
  const repeated=await s.service().verify(actor,s.body);assert.equal(repeated.experiment.runId,result.experiment.runId);await assert.rejects(s.service().verify(actor,{...s.body,parameters:{customers:31}}),/idempotency-conflict/);assert.equal([...s.f.storage.values.keys()].filter(k=>k.startsWith('simulation:run:')).length,1);assert.equal(s.starts,0);
 });

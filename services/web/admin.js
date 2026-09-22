@@ -1,5 +1,6 @@
 import {createPublicationPanel} from './publication.js';
-import {applyTranslations,getLocale,installLocaleSelector,setLocale,t} from './i18n.js';
+import {applyTranslations,errorMessage,formatDate,formatNumber,getLocale,installLocaleSelector,msg,setLocale,t,uiError} from './i18n.js';
+import {bindAttribute,bindValue} from './i18n-bindings.js';
 import {createLocalePreferenceController} from './locale-preference.js';
 const $ = selector => document.querySelector(selector);
 const publicationPanel=createPublicationPanel({root:$('#model-submissions'),api,admin:true});
@@ -15,9 +16,9 @@ const modelUploadIntents = new Map();
 let viewGeneration = 0;
 
 function show(message, error = false) {
-  notice.textContent = message;
+  bindValue(notice, message);
   notice.className = `notice${error ? ' error' : ''}`;
-  notice.hidden = !message;
+  notice.hidden = !String(message ?? '');
 }
 
 const localeStatus = $('#locale-status');
@@ -26,8 +27,8 @@ const localePreferences = createLocalePreferenceController({
   write: locale => api('/api/me/locale', {method:'PUT', body:JSON.stringify({locale})}),
   currentLocale: getLocale,
   applyLocale: locale => { setLocale(locale); applyTranslations(); },
-  onSaveFailure: () => { if (localeStatus) localeStatus.textContent = t('locale.saveFailed'); },
-  onSaveSuccess: () => { if (localeStatus) localeStatus.textContent = ''; },
+  onSaveFailure: () => { if (localeStatus) bindValue(localeStatus, msg('locale.saveFailed')); },
+  onSaveSuccess: () => { if (localeStatus) bindValue(localeStatus, ''); },
 });
 installLocaleSelector({onChange: locale => localePreferences.select(locale)});
 
@@ -37,11 +38,11 @@ async function api(path, options = {}) {
     headers: { 'Content-Type': 'application/json', ...options.headers },
   });
   if (!response.ok) {
-    const messages = { 400: '输入格式不正确', 401: '请先登录', 403: '请求来源未通过验证', 404: '当前账号没有平台管理权限', 409: '这次重试的内容与首次请求不同', 503: '服务暂不可用，请稍后再试' };
+    const messages = { 400: 'admin.error.invalidInput', 401: 'admin.error.signInRequired', 403: 'admin.error.originRejected', 404: 'admin.error.noAdminAccess', 409: 'admin.error.retryMismatch', 503: 'admin.error.unavailable' };
     let code;
     try { code = (await response.json())?.error; } catch {}
-    const message = code === 'not_ready' ? '模型内容包尚未通过验证，请核对上传内容和摘要后重试' : messages[response.status] || '请求失败，请稍后重试';
-    throw Object.assign(new Error(message), { status: response.status, code });
+    const key = code === 'not_ready' ? 'admin.error.modelNotReady' : messages[response.status] || 'admin.error.requestFailed';
+    throw Object.assign(uiError(key), { status: response.status, code });
   }
   return response.status === 204 ? null : response.json();
 }
@@ -60,105 +61,113 @@ function textCell(value) {
   return cell;
 }
 
+function platformCell(value) {
+  const cell = document.createElement('td');
+  bindValue(cell, value);
+  return cell;
+}
+
 function statusCell(value) {
   const cell = document.createElement('td');
   const badge = document.createElement('span');
   const allowed = new Set(['active', 'suspended', 'deleting', 'pending', 'accepted', 'revoked', 'expired', 'completed', 'failed', 'unknown', 'draft', 'validated', 'published']);
   badge.className = `status ${allowed.has(value) ? value : ''}`;
-  badge.textContent = ({ active: '正常', suspended: '已暂停', deleting: '删除中', pending: '待使用', accepted: '已接受', revoked: '已撤销', expired: '已过期', completed: '完成', failed: '失败', unknown: '未知', draft: '草稿', validated: '已验证', published: '已发布' })[value] || value;
+  const labels = { active: 'admin.status.active', suspended: 'admin.status.suspended', deleting: 'admin.status.deleting', pending: 'admin.status.pending', accepted: 'admin.status.accepted', revoked: 'admin.status.revoked', expired: 'admin.status.expired', completed: 'admin.status.completed', failed: 'admin.status.failed', unknown: 'admin.status.unknown', draft: 'admin.status.draft', validated: 'admin.status.validated', published: 'admin.status.published' };
+  if (labels[value]) bindValue(badge, msg(labels[value]));
+  else badge.textContent = String(value ?? '');
   cell.append(badge);
   return cell;
 }
 
 function time(value) {
-  return Number.isFinite(value) ? new Date(value).toLocaleString('zh-CN', { hour12: false }) : '—';
+  return Number.isFinite(value) ? msg('admin.date', () => ({value:formatDate(new Date(value), {dateStyle:'medium', timeStyle:'medium', hour12:false})})) : msg('admin.notAvailable');
 }
 
 function renderOverview(value) {
   const definitions = [
-    ['租户', value.tenants, `${value.activeTenants} 正常`],
-    ['项目', value.projects, `${value.provisioningProjects} 准备中`],
-    ['失败项目', value.failedProjects, '需人工检查'],
-    ['待用邀请', value.pendingInvitations, '尚未过期'],
-    ['未知任务', value.unknownOutbox, '需先协调状态'],
+    ['admin.metric.tenants', value.tenants, msg('admin.metric.activeTenants', () => ({count:formatNumber(value.activeTenants)}))],
+    ['admin.metric.projects', value.projects, msg('admin.metric.provisioningProjects', () => ({count:formatNumber(value.provisioningProjects)}))],
+    ['admin.metric.failedProjects', value.failedProjects, msg('admin.metric.manualCheck')],
+    ['admin.metric.pendingInvitations', value.pendingInvitations, msg('admin.metric.notExpired')],
+    ['admin.metric.unknownOutbox', value.unknownOutbox, msg('admin.metric.coordinateFirst')],
   ];
   const box = $('#metrics');
   box.replaceChildren();
   for (const [label, amount, detail] of definitions) {
     const card = document.createElement('article');
     card.className = 'card metric';
-    const name = document.createElement('p'); name.textContent = label;
-    const number = document.createElement('strong'); number.textContent = String(amount);
-    const note = document.createElement('small'); note.textContent = detail;
+    const name = document.createElement('p'); bindValue(name, msg(label));
+    const number = document.createElement('strong'); bindValue(number, () => formatNumber(amount));
+    const note = document.createElement('small'); bindValue(note, detail);
     card.append(name, number, note); box.append(card);
   }
-  $('#updated-at').textContent = `数据时间 ${time(value.updatedAt)} · 只展示平台元数据`;
+  bindValue($('#updated-at'), msg('admin.updatedAt', () => ({time:String(time(value.updatedAt))})));
 }
 
 function emptyRow(body, columns, message) {
   const row = document.createElement('tr');
-  const cell = textCell(message); cell.colSpan = columns; cell.className = 'empty-cell';
+  const cell = platformCell(message); cell.colSpan = columns; cell.className = 'empty-cell';
   row.append(cell); body.append(row);
 }
 
 function renderInvitations(items) {
   const body = $('#invitations'); body.replaceChildren();
-  if (!items.length) return emptyRow(body, 5, '暂无邀请。');
+  if (!items.length) return emptyRow(body, 5, msg('admin.emptyInvitations'));
   for (const item of items) {
     const row = document.createElement('tr');
-    row.append(textCell(item.normalized_email), statusCell(item.state), textCell(time(item.created_at)), textCell(time(item.expires_at)));
+    row.append(textCell(item.normalized_email), statusCell(item.state), platformCell(time(item.created_at)), platformCell(time(item.expires_at)));
     const action = document.createElement('td');
     if (item.state === 'pending') {
       const button = document.createElement('button');
-      button.className = 'button compact'; button.type = 'button'; button.textContent = '撤销';
+      button.className = 'button compact'; button.type = 'button'; bindValue(button, msg('admin.revoke'));
       button.onclick = () => revokeInvitation(item, button);
       action.append(button);
     } else if (item.state === 'accepted' && (item.access_state === 'active' || item.access_state === 'revoked')) {
       const button = document.createElement('button');
       const next = item.access_state === 'active' ? 'revoke' : 'restore';
-      button.className = 'button compact'; button.type = 'button'; button.textContent = next === 'revoke' ? '撤销访问' : '恢复访问';
+      button.className = 'button compact'; button.type = 'button'; bindValue(button, msg(next === 'revoke' ? 'admin.revokeAccess' : 'admin.restoreAccess'));
       button.onclick = () => changeInvitationAccess(item, next, button);
       action.append(button);
-    } else action.textContent = item.state === 'accepted' && item.access_state === 'blocked' ? '需处理生命周期状态' : '—';
+    } else bindValue(action, msg(item.state === 'accepted' && item.access_state === 'blocked' ? 'admin.lifecycleRequired' : 'admin.notAvailable'));
     row.append(action); body.append(row);
   }
 }
 
 function renderTenants(items) {
   const body = $('#tenants'); body.replaceChildren();
-  if (!items.length) return emptyRow(body, 7, '暂无租户。');
+  if (!items.length) return emptyRow(body, 7, msg('admin.emptyTenants'));
   for (const item of items) {
     const row = document.createElement('tr');
-    row.append(textCell(item.id), statusCell(item.status), textCell(item.projects), textCell(item.provisioning), textCell(item.ready), textCell(item.failed), textCell(time(item.created_at)));
+    row.append(textCell(item.id), statusCell(item.status), platformCell(() => formatNumber(item.projects)), platformCell(() => formatNumber(item.provisioning)), platformCell(() => formatNumber(item.ready)), platformCell(() => formatNumber(item.failed)), platformCell(time(item.created_at)));
     body.append(row);
   }
 }
 
 function renderAudit(items) {
   const body = $('#audit'); body.replaceChildren();
-  if (!items.length) return emptyRow(body, 6, '暂无审计事件。');
+  if (!items.length) return emptyRow(body, 6, msg('admin.emptyAudit'));
   for (const item of items) {
     const row = document.createElement('tr');
-    row.append(textCell(time(item.created_at)), textCell(item.action), textCell(`${item.target_type}:${item.target_id}`), statusCell(item.outcome), textCell(item.reason_code), textCell(item.request_id));
+    row.append(platformCell(time(item.created_at)), textCell(item.action), textCell(`${item.target_type}:${item.target_id}`), statusCell(item.outcome), textCell(item.reason_code), textCell(item.request_id));
     body.append(row);
   }
 }
 
 function renderModels(items) {
   const body = $('#models'); body.replaceChildren();
-  if (!items.length) return emptyRow(body, 6, '暂无已发布或待处理的模型元数据。');
+  if (!items.length) return emptyRow(body, 6, msg('admin.emptyModels'));
   for (const item of items) {
     const row = document.createElement('tr');
     row.append(textCell(item.model_id), textCell(item.version), textCell(item.title), statusCell(item.status), textCell(item.description));
     const action = document.createElement('td');
     if (item.status === 'draft') {
-      const label = document.createElement('label'); label.textContent = '上传规范包';
-      const input = document.createElement('input'); input.type = 'file'; input.accept = '.json,application/json'; input.setAttribute('aria-label', '上传规范包');
+      const label = document.createElement('label'); const text = document.createElement('span'); bindValue(text, msg('admin.uploadPackage')); label.append(text);
+      const input = document.createElement('input'); input.type = 'file'; input.accept = '.json,application/json'; bindAttribute(input, 'aria-label', 'admin.uploadPackage');
       input.onchange = () => uploadModelContent(item, input);
       label.append(input); action.append(label);
     }
-    const next = item.status === 'draft' ? ['validate', '验证'] : item.status === 'validated' ? ['publish', '发布'] : item.status === 'published' ? ['withdraw', '撤回'] : null;
-    if (next) { const button = document.createElement('button'); button.className = 'button compact'; button.type = 'button'; button.textContent = next[1]; button.onclick = () => mutateModel(item, next[0], button); action.append(button); } else action.textContent = '—';
+    const next = item.status === 'draft' ? ['validate', 'admin.validate'] : item.status === 'validated' ? ['publish', 'admin.publish'] : item.status === 'published' ? ['withdraw', 'admin.withdraw'] : null;
+    if (next) { const button = document.createElement('button'); button.className = 'button compact'; button.type = 'button'; bindValue(button, msg(next[1])); button.onclick = () => mutateModel(item, next[0], button); action.append(button); } else bindValue(action, msg('admin.notAvailable'));
     row.append(action); body.append(row);
   }
 }
@@ -167,14 +176,14 @@ async function uploadModelContent(item, input) {
   const file = input.files?.[0]; if (!file) return;
   input.disabled = true;
   try {
-    if (file.size > 8 * 1024 * 1024) throw new Error('规范包不能超过 8 MiB。');
+    if (file.size > 8 * 1024 * 1024) throw uiError('admin.error.packageTooLarge');
     const digest = [...new Uint8Array(await crypto.subtle.digest('SHA-256', await file.arrayBuffer()))].map(byte => byte.toString(16).padStart(2, '0')).join('');
-    if (digest !== String(item.content_sha256 || '').toLowerCase()) throw new Error('规范包 SHA-256 与模型摘要不一致，请核对文件后重试。');
+    if (digest !== String(item.content_sha256 || '').toLowerCase()) throw uiError('admin.error.packageHashMismatch');
     const key = `${item.id || item.model_id}@${item.version}:${digest}`;
     let intent = modelUploadIntents.get(key); if (!intent) { intent = { key: crypto.randomUUID() }; modelUploadIntents.set(key, intent); }
     await api(`/api/admin/models/${encodeURIComponent(item.id || item.model_id)}/content`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Idempotency-Key': intent.key }, body: file });
-    modelUploadIntents.delete(key); await refresh(); show('内容包已上传，可以验证。');
-  } catch (error) { show(`${error.message}；重试会保持相同请求。`, true); }
+    modelUploadIntents.delete(key); await refresh(); show(msg('admin.packageUploaded'));
+  } catch (error) { show(msg('admin.retrySameRequest', () => ({message:errorMessage(error)})), true); }
   finally { input.value = ''; input.disabled = false; }
 }
 
@@ -184,11 +193,16 @@ async function refreshPrivateBeta() {
     const state=await api('/api/admin/private-beta');
     const cost=(state.usage||[]).reduce((sum,row)=>sum+Number(row.reservedNanodollars||0),0)/1e9;
     const latest=state.alerts?.[0];
-    status.textContent=`${state.enabled&&!state.paused?'开放':'暂停'} · 占用 ${state.active}/${state.limits.maxActiveTurns} · 隔离 ${state.quarantined} · 累计保守暴露 $${cost.toFixed(2)} / $${(state.limits.maxNanodollarsTotal/1e9).toFixed(2)}${latest?' · 告警：'+latest.code:''}`;
+    bindValue(status, msg('admin.betaStatus', () => ({
+      state:String(msg(state.enabled&&!state.paused ? 'admin.betaOpen' : 'admin.betaPaused')),
+      active:formatNumber(state.active), maximum:formatNumber(state.limits.maxActiveTurns), quarantined:formatNumber(state.quarantined),
+      cost:formatNumber(cost, {style:'currency', currency:'USD'}), maximumCost:formatNumber(state.limits.maxNanodollarsTotal / 1e9, {style:'currency', currency:'USD'}),
+      alert:latest ? ` · ${String(msg('admin.alert'))}: ${latest.code}` : '',
+    })));
     $('#private-beta-pause').disabled=state.paused;
     $('#private-beta-resume').disabled=!state.paused||state.active>0;
   } catch {
-    status.textContent='内测容量状态暂不可用，不能据此判断任务已停止或资源已释放。';
+    bindValue(status, msg('admin.betaUnavailable'));
     $('#private-beta-resume').disabled=true;
   }
 }
@@ -196,7 +210,7 @@ for(const action of ['pause','resume']) {
   const button=$('#private-beta-'+action);if(button)button.onclick=async()=>{
     button.disabled=true;
     try{await api('/api/admin/private-beta',{method:'POST',body:JSON.stringify({action})});await refreshPrivateBeta();}
-    catch(error){show(error.code==='private-beta-release-unconfirmed'?'仍有任务或资源尚未确认释放，不能恢复。':error.message,true);button.disabled=false;}
+    catch(error){show(error.code==='private-beta-release-unconfirmed'?msg('admin.error.releaseUnconfirmed'):errorMessage(error),true);button.disabled=false;}
   };
 }
 
@@ -215,7 +229,7 @@ async function refresh() {
     if (error.status === 401 || error.status === 404) {
       operator = false; if (error.status === 401) authenticated = false; accountView();
     }
-    show(error.message, true);
+    show(errorMessage(error), true);
   } finally {
     loading = false; $('#refresh').disabled = false;
   }
@@ -227,14 +241,14 @@ async function mutateModel(item, action, button) {
   if (!intent) { intent = { key: crypto.randomUUID() }; modelActionIntents.set(key, intent); }
   button.disabled = true;
   const id = item.id || item.model_id;
-  try { await api(`/api/admin/models/${encodeURIComponent(id)}/` + action, { method: 'POST', headers: { 'Idempotency-Key': intent.key }, body: '{}' }); modelActionIntents.delete(key); show(`${action === 'validate' ? '模型内容包已验证' : action === 'publish' ? '模型已发布' : '模型已撤回'}。`); await refresh(); }
-  catch (error) { button.disabled = false; button.textContent = '重试'; show(`${error.message}；重试会保持相同请求。`, true); }
+  try { await api(`/api/admin/models/${encodeURIComponent(id)}/` + action, { method: 'POST', headers: { 'Idempotency-Key': intent.key }, body: '{}' }); modelActionIntents.delete(key); show(msg(action === 'validate' ? 'admin.modelValidated' : action === 'publish' ? 'admin.modelPublished' : 'admin.modelWithdrawn')); await refresh(); }
+  catch (error) { button.disabled = false; bindValue(button, msg('admin.retry')); show(msg('admin.retrySameRequest', () => ({message:errorMessage(error)})), true); }
 }
 
 function resetIssueIntent() {
   issueIntent = null;
   $('#issue-email').disabled = false; $('#issue-days').disabled = false;
-  $('#issue-submit').disabled = false; $('#issue-submit').textContent = '创建邀请';
+  $('#issue-submit').disabled = false; bindValue($('#issue-submit'), msg('admin.createInvite'));
   $('#issue-reset').hidden = true;
 }
 
@@ -250,20 +264,20 @@ $('#issue-form').onsubmit = async event => {
   try {
     const result = await api('/api/admin/invitations', { method: 'POST', headers: { 'Idempotency-Key': current.key }, body: JSON.stringify(current.payload) });
     $('#issued-token').value = result.token || '';
-    $('#token-title').textContent = result.token ? `请立即保存 ${result.invitation.normalized_email} 的邀请码` : '请求已成功执行，但邀请码不会再次显示；请撤销后重新创建。';
+    bindValue($('#token-title'), result.token ? msg('admin.tokenCreated', () => ({email:result.invitation.normalized_email})) : msg('admin.tokenUnavailable'));
     $('#token-panel').hidden = false;
-    show(result.token ? '邀请已创建。' : '已确认原请求成功。');
+    show(msg(result.token ? 'admin.inviteCreated' : 'admin.originalRequestConfirmed'));
     resetIssueIntent(); $('#issue-email').value = '';
     await refresh();
   } catch (error) {
-    $('#issue-submit').disabled = false; $('#issue-submit').textContent = '重试同一请求';
-    show(`${error.message}；重试会保持相同请求。`, true);
+    $('#issue-submit').disabled = false; bindValue($('#issue-submit'), msg('admin.retrySameRequestButton'));
+    show(msg('admin.retrySameRequest', () => ({message:errorMessage(error)})), true);
   }
 };
 
-$('#issue-reset').onclick = () => { resetIssueIntent(); show('已取消本次重试，可创建新邀请。'); };
+$('#issue-reset').onclick = () => { resetIssueIntent(); show(msg('admin.inviteRetryCancelled')); };
 
-$('#model-reset').onclick = () => { modelIntent = null; $('#model-submit').disabled = false; $('#model-submit').textContent = '创建草稿'; $('#model-reset').hidden = true; show('已取消本次重试，可创建新草稿。'); };
+$('#model-reset').onclick = () => { modelIntent = null; $('#model-submit').disabled = false; bindValue($('#model-submit'), msg('admin.createDraft')); $('#model-reset').hidden = true; show(msg('admin.modelRetryCancelled')); };
 
 $('#model-form').onsubmit = async event => {
   event.preventDefault(); if (!operator || loading) return;
@@ -271,53 +285,53 @@ $('#model-form').onsubmit = async event => {
   if (Object.values(payload).some(value => !value)) return;
   modelIntent ??= { key: crypto.randomUUID(), payload };
   const current = modelIntent; $('#model-submit').disabled = true; $('#model-reset').hidden = false;
-  try { await api('/api/admin/models', { method: 'POST', headers: { 'Idempotency-Key': current.key }, body: JSON.stringify(current.payload) }); modelIntent = null; $('#model-submit').disabled = false; $('#model-reset').hidden = true; show('模型草稿已创建。'); await refresh(); }
-  catch (error) { $('#model-submit').disabled = false; $('#model-submit').textContent = '重试同一请求'; show(`${error.message}；重试会保持相同请求。`, true); }
+  try { await api('/api/admin/models', { method: 'POST', headers: { 'Idempotency-Key': current.key }, body: JSON.stringify(current.payload) }); modelIntent = null; $('#model-submit').disabled = false; $('#model-reset').hidden = true; show(msg('admin.modelDraftCreated')); await refresh(); }
+  catch (error) { $('#model-submit').disabled = false; bindValue($('#model-submit'), msg('admin.retrySameRequestButton')); show(msg('admin.retrySameRequest', () => ({message:errorMessage(error)})), true); }
 };
 
 async function revokeInvitation(item, button) {
-  if (!confirm(`撤销发给 ${item.normalized_email} 的邀请？`)) return;
+  if (!confirm(String(msg('admin.confirmRevokeInvitation', () => ({email:item.normalized_email}))))) return;
   button.disabled = true;
   try {
     await api(`/api/admin/invitations/${encodeURIComponent(item.id)}/revoke`, { method: 'POST', body: '{}' });
-    show('邀请已撤销。'); await refresh();
-  } catch (error) { show(error.message, true); }
+    show(msg('admin.inviteRevoked')); await refresh();
+  } catch (error) { show(errorMessage(error), true); }
   finally { button.disabled = false; }
 }
 
 async function changeInvitationAccess(item, action, button) {
   const revoking = action === 'revoke';
-  const verb = revoking ? '撤销访问' : '恢复访问';
-  const warning = revoking ? '旧会话将立即失效，邀请接受历史和项目不会删除。' : '旧会话不会恢复，用户必须重新登录。';
-  if (!confirm(`${verb}：${item.normalized_email}？\n${warning}`)) return;
+  const verb = revoking ? 'admin.revokeAccess' : 'admin.restoreAccess';
+  const warning = revoking ? 'admin.confirmAccessRevokeWarning' : 'admin.confirmAccessRestoreWarning';
+  if (!confirm(String(msg('admin.confirmAccessChange', () => ({verb:String(msg(verb)), email:item.normalized_email, warning:String(msg(warning))}))))) return;
   button.disabled = true;
   try {
     await api(`/api/admin/invitations/${encodeURIComponent(item.id)}/access`, { method: 'POST', body: JSON.stringify({ action }) });
-    show(`${verb}已完成。`); await refresh();
-  } catch (error) { show(error.message, true); }
+    show(msg(revoking ? 'admin.accessRevoked' : 'admin.accessRestored')); await refresh();
+  } catch (error) { show(errorMessage(error), true); }
   finally { button.disabled = false; }
 }
 
 $('#copy-token').onclick = async () => {
   const input = $('#issued-token');
   if (!input.value) return;
-  try { await navigator.clipboard.writeText(input.value); show('邀请码已复制。'); }
-  catch { input.select(); show('请复制选中的邀请码。'); }
+  try { await navigator.clipboard.writeText(input.value); show(msg('admin.tokenCopied')); }
+  catch { input.select(); show(msg('admin.copySelectedToken')); }
 };
 
 $('#google').onclick = async () => {
   try {
     const data = await api('/api/auth/sign-in/social', { method: 'POST', body: JSON.stringify({ provider: 'google', callbackURL: location.origin + '/admin' }) });
     if (data?.url) location.assign(data.url);
-  } catch (error) { show(error.message, true); }
+  } catch (error) { show(errorMessage(error), true); }
 };
 
 $('#sign-out').onclick = async () => {
-  const button = $('#sign-out'); button.disabled = true; viewGeneration++; localePreferences.begin();
+  const button = $('#sign-out'); button.disabled = true; viewGeneration++; const localeStart=localePreferences.begin();
   try {
     await api('/api/auth/sign-out', { method: 'POST', body: '{}' });
-    authenticated = false; operator = false; resetIssueIntent(); accountView(); show('已退出登录。');
-  } catch (error) { show(error.message, true); }
+    authenticated = false; operator = false; resetIssueIntent(); accountView(); show(msg('admin.signedOut'));
+  } catch (error) { if(authenticated&&operatorUserId)localePreferences.activate(operatorUserId,viewGeneration,localeStart);show(errorMessage(error), true); }
   finally { button.disabled = false; }
 };
 
@@ -339,7 +353,7 @@ async function load() {
   } catch (error) {
     if (generation !== viewGeneration) return;
     if (error.status === 401) authenticated = false;
-    operator = false; accountView(); show(error.status === 404 && authenticated ? '当前账号没有平台管理权限。' : error.message, error.status !== 404);
+    operator = false; accountView(); show(error.status === 404 && authenticated ? msg('admin.error.noAdminAccess') : errorMessage(error), error.status !== 404);
   }
 }
 

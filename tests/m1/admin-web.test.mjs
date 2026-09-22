@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 
-const files = Object.fromEntries(await Promise.all(['admin.html','admin.js', 'i18n.js', 'locale-preference.js','publication.js','styles.css','admin.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
+const files = Object.fromEntries(await Promise.all(['admin.html','admin.js', 'i18n.js', 'i18n-bindings.js', 'locale-preference.js','publication.js','styles.css','admin.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
 let browser;
 before(async()=>{browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||'chrome'});});
 after(async()=>{await browser?.close();});
@@ -158,4 +158,45 @@ test('operator Beta panel shows capacity and conservative exposure, pauses once 
  assert.match(await page.locator('#private-beta-status').innerText(),/占用 1\/2/);
  await page.locator('#private-beta-pause').click();await page.waitForFunction(()=>document.querySelector('#private-beta-pause').disabled);
  assert.equal(posts,1);assert.equal(await page.locator('#private-beta-resume').isDisabled(),true);
+});
+
+test('locale switch updates admin platform labels and display formatting without rebuilding user metadata or an in-flight form', async t => {
+  const writes = [];
+  const page = await fixture(t, async (route, path) => {
+    if (route.request().method() !== 'GET') writes.push({path, method:route.request().method()});
+    if (path === '/api/admin/invitations' && route.request().method() === 'POST') { await route.abort('failed'); return true; }
+    if (path === '/api/admin/invitations' && route.request().method() === 'GET') { await json(route, {invitations:[{id:'invite-locale', normalized_email:'owner@example.test', state:'pending', created_at:1_800_000_000_000, expires_at:1_800_604_800_000}]}); return true; }
+    if (path === '/api/admin/models' && route.request().method() === 'GET') { await json(route, {models:[{id:'model-locale', model_id:'queue', version:'1.0.0', title:'用户模型标题', description:'User supplied description', status:'draft'}]}); return true; }
+  });
+  await page.goto('https://admin.test/admin'); await page.locator('#admin-app:not([hidden])').waitFor();
+  await page.locator('#issue-email').fill('draft@example.test');
+  await page.locator('#issue-submit').click(); await page.locator('#issue-submit:not([disabled])').waitFor();
+  const writesBeforeLocale = [...writes];
+  const row = page.locator('#models tr').first();
+  await page.locator('[data-locale-select]').selectOption('en');
+  await page.getByRole('heading', {name:'Platform status'}).waitFor();
+  assert.equal(await page.locator('#issue-email').inputValue(), 'draft@example.test');
+  assert.equal(await page.locator('#issue-email').isDisabled(), true);
+  assert.equal(await page.getByRole('button', {name:'Retry same request'}).count(), 1);
+  assert.equal(await row.innerText().then(value => value.includes('用户模型标题')), true);
+  assert.equal(await row.innerText().then(value => value.includes('User supplied description')), true);
+  assert.equal(await page.getByRole('button', {name:'Revoke'}).count(), 1);
+  assert.match(await page.locator('#private-beta-status').innerText(), /Beta capacity status is unavailable/);
+  assert.match(await page.locator('#invitations tr').first().innerText(), /Pending/);
+  assert.deepEqual(writes, [...writesBeforeLocale, {path:'/api/me/locale', method:'PUT'}]);
+});
+
+test('admin sign-out failure leaves locale switching available and writes only the preference', async t => {
+  const writes = [];
+  const page = await fixture(t, async (route, path) => {
+    if (route.request().method() !== 'GET') writes.push({ path, method: route.request().method() });
+    if (path === '/api/me/locale') { await json(route, { locale: route.request().method() === 'PUT' ? JSON.parse(route.request().postData()).locale : null }); return true; }
+    if (path === '/api/auth/sign-out') { await json(route, { error: 'failed' }, 503); return true; }
+  });
+  await page.goto('https://admin.test/admin'); await page.locator('#admin-app:not([hidden])').waitFor();
+  await page.locator('#sign-out').click(); await page.locator('#notice').filter({ hasText: '服务暂不可用' }).waitFor();
+  writes.length = 0;
+  await page.locator('[data-locale-select]').selectOption('en'); await page.waitForFunction(() => document.documentElement.lang === 'en');
+  assert.deepEqual(writes, [{ path: '/api/me/locale', method: 'PUT' }]);
+  assert.equal(await page.locator('#admin-app').isVisible(), true);
 });

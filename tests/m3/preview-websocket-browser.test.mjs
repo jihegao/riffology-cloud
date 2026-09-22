@@ -19,13 +19,13 @@ test('Chrome Preview uses actual WSS, enforces CSP and closes on session revocat
  const directory=await mkdtemp(join(tmpdir(),'riff-preview-wss-'));t.after(()=>rm(directory,{recursive:true,force:true}));
  execFileSync('openssl',['req','-x509','-newkey','rsa:2048','-nodes','-keyout',join(directory,'key.pem'),'-out',join(directory,'cert.pem'),'-days','1','-subj','/CN=preview.example.test'],{stdio:'ignore',timeout:10000});
  const control='https://app.example.test',requests=[],upgrades=[],adapterErrors=[];
- const panel=await readFile(new URL('../../services/web/previews.js',import.meta.url),'utf8');
- const client=`import {createPreviewPanel} from '/previews.js';const api=async(path,options={})=>{const r=await fetch(path,{...options,headers:{'content-type':'application/json',...options.headers}});if(!r.ok)throw Object.assign(Error('http-error'),{status:r.status});return r.json();};window.panel=createPreviewPanel({root:document.querySelector('#root'),api});await window.panel.enter(${JSON.stringify({tenantId:f.scope.tenantId,workspaceId:f.scope.workspaceId,canOpen:true})});window.panel.selectRun(${JSON.stringify(f.runId)});window.panelReady=true;`;
+ const modules=Object.fromEntries(await Promise.all(['previews.js','i18n.js','i18n-bindings.js'].map(async name=>[name,await readFile(new URL(`../../services/web/${name}`,import.meta.url),'utf8')])));
+ const client=`import {createPreviewPanel} from '/previews.js';import {setLocale} from '/i18n.js';setLocale('zh-CN');const api=async(path,options={})=>{const r=await fetch(path,{...options,headers:{'content-type':'application/json',...options.headers}});if(!r.ok)throw Object.assign(Error('http-error'),{status:r.status});return r.json();};window.panel=createPreviewPanel({root:document.querySelector('#root'),api});await window.panel.enter(${JSON.stringify({tenantId:f.scope.tenantId,workspaceId:f.scope.workspaceId,canOpen:true})});window.panel.selectRun(${JSON.stringify(f.runId)});window.panelReady=true;`;
  const server=createServer({key:await readFile(join(directory,'key.pem')),cert:await readFile(join(directory,'cert.pem'))},async(req,res)=>{
   try{
    const url=new URL(req.url,'https://'+req.headers.host);requests.push(url.href);
    if(url.origin===control&&!url.pathname.startsWith('/api/')){
-    if(url.pathname==='/previews.js'||url.pathname==='/panel.js'){res.writeHead(200,{'content-type':'application/javascript'});return res.end(url.pathname==='/previews.js'?panel:client);}
+    if(url.pathname==='/panel.js'||Object.hasOwn(modules,url.pathname.slice(1))){res.writeHead(200,{'content-type':'application/javascript'});return res.end(url.pathname==='/panel.js'?client:modules[url.pathname.slice(1)]);}
     if(url.pathname==='/'){res.writeHead(200,{'content-type':'text/html','content-security-policy':"default-src 'self'; script-src 'self'; connect-src 'self'; frame-src https://*.preview.example.test; frame-ancestors 'none'"});return res.end('<!doctype html><div id="root"></div><script type="module" src="/panel.js"></script>');}
     res.writeHead(404);return res.end();
    }

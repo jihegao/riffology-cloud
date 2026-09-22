@@ -27,7 +27,7 @@ const screenshotDir=process.env.WORKSPACE_LAYOUT_EVIDENCE_DIR?pathToFileURL(reso
 async function fixture(t,{mismatched=false,unavailableLayoutStorage=false,activePolling=false,pagedServices=false,projectFlow=false,longTitle=false,legacyLayout=null,deferAuthentication=false,authenticationStatus=200,messageRecovery=null,standalone=false,previewGate=true}={}){
  const browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||'chrome'});t.after(()=>browser.close());const context=await browser.newContext({locale:'zh-CN',viewport:{width:1600,height:900}});t.after(()=>context.close());if(unavailableLayoutStorage)await context.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw new DOMException('Storage disabled','SecurityError');}}));if(legacyLayout)await context.addInitScript(value=>localStorage.setItem('riffology:workspace-layout:t:w',JSON.stringify(value)),legacyLayout);const page=await context.newPage(),errors=[],calls=[];page.setDefaultTimeout(8000);page.on('pageerror',e=>errors.push(e.message));t.after(()=>assert.deepEqual(errors,[]));
  if(messageRecovery)await context.addInitScript(value=>sessionStorage.setItem('riffology:conversation:t:w',JSON.stringify({schemaVersion:1,selectedSessionId:'s',draft:value.message,messageIntent:{key:value.key,sessionId:'s',message:value.message},sessionIntent:null})),messageRecovery);
- let storedLocale=null;
+ let storedLocale=null,verifiedReceipt=null;
  let projectStatus=projectFlow?'absent':'ready',projectListError=false,releaseAuthentication,createdConversation=false;const authenticationGate=deferAuthentication?new Promise(resolve=>{releaseAuthentication=resolve;}):null;await page.addInitScript(()=>{const now=Date.now;window.layoutClockOffset=0;Date.now=()=>now()+window.layoutClockOffset;});let revision='revision-a',failedPreview=false,holdFilter=null,held=[];
  let releaseReceipt;const receiptGate=messageRecovery?.defer?new Promise(resolve=>{releaseReceipt=resolve;}):null;
  const delayed=async(route,path,value)=>{const frozen=structuredClone(value);if(holdFilter?.(path,route.request().method()))await new Promise(resolve=>held.push(resolve));return json(route,frozen);};const sha=()=>revision==='revision-a'?'a'.repeat(64):'b'.repeat(64),version=()=>({revisionId:revision,filesSha256:sha(),specSha256:'c'.repeat(64)});
@@ -48,8 +48,8 @@ if(path==='/api/me'){if(authenticationGate)await authenticationGate;if(authentic
   if(path==='/api/workspaces/w/sessions'&&req.method()==='POST'){createdConversation=true;return json(route,{session:{id:'s2',title:'Session 2',createdAt:2,canContinue:true}},201);}
   if(path==='/api/workspaces/w/sessions/s/turns/receipt'){if(receiptGate)await receiptGate;if(messageRecovery?.receipt==='accepted')return json(route,{accepted:true,turn:{id:'recovered-turn',sessionId:'s',message:messageRecovery.message,status:'completed',persistenceOutcome:'saved',createdAt:2}});if(messageRecovery?.receipt==='error')return json(route,{error:'temporarily_unavailable'},503);return json(route,{error:'not_found'},404);}
   if(path==='/api/workspaces/w/browser-preview'&&req.method()==='GET')return json(route,{currentRevisionId:'revision-a',build:{status:'ready',revisionId:'revision-a',packageIdentity:'a'.repeat(64)},canVerify:previewGate,stale:false,delivery:{assetBaseUrl:'/browser-preview-assets',hostModule:{url:`/browser-preview-assets/${hostHash}/host.mjs`,sha256:hostHash,byteLength:Buffer.byteLength(hostSource)},rendererModule:{url:`/browser-preview-assets/${rendererHash}/renderer.mjs`,sha256:rendererHash,byteLength:Buffer.byteLength(rendererSource)}}});if(path==='/api/workspaces/w/browser-preview/packages/'+ 'a'.repeat(64))return route.fulfill({contentType:'application/octet-stream',body:'x'});
-  if(path==='/api/workspaces/w/browser-preview/verify'&&req.method()==='POST'){const body=JSON.parse(req.postData());const {idempotencyKey,...captured}=body;return json(route,{verificationId:idempotencyKey,captured,experiment:{id:'verified-a'}},202);}
-  if(path.startsWith('/api/workspaces/w/browser-preview/verify/'))return json(route,{status:'absent',experiment:null});
+  if(path==='/api/workspaces/w/browser-preview/verify'&&req.method()==='POST'){const body=JSON.parse(req.postData());const {idempotencyKey,...captured}=body;verifiedReceipt={status:'accepted',verificationId:idempotencyKey,captured,experiment:{id:'verified-a'}};return json(route,{verificationId:idempotencyKey,experiment:verifiedReceipt.experiment},202);}
+  if(path.startsWith('/api/workspaces/w/browser-preview/verify/'))return json(route,verifiedReceipt??{status:'absent',experiment:null});
   if(path==='/api/workspaces/w/events')return json(route,{events:[{sequence:1,turnId:'t',type:'assistant.message',payload:{text:'模型已经保存。可以先查看假设，再修改服务台数量，比较不同种子下的结果。'}}],nextSequence:2,hasMore:false,snapshotRequired:false});
   if(path==='/api/workspaces/w/model')return delayed(route,path,model());if(path==='/api/workspaces/w/files')return delayed(route,path,{revision:{...version(),committedAt:1},files:[{path:'model/run.py',kind:'file',size:1024},{path:'model/model-spec.json',kind:'file',size:512}]});if(path==='/api/workspaces/w/diff')return delayed(route,path,{revision:version(),summary:{added:0,modified:1,deleted:0},changes:[{path:revision+'-changed.py',change:'modified',type:'file',size:1}]});
   if(path==='/api/workspaces/w/evidence')return json(route,{items:[],nextCursor:null});
@@ -98,13 +98,13 @@ test('authenticated invitation state and transient bootstrap failures do not imp
 
 test('lost submit reply is reconciled by an exact read-only receipt without a duplicate Turn POST',async t=>{
  const message='研究假设也是可以改的页面吗',f=await fixture(t,{messageRecovery:{key:'lost-reply-key',message,receipt:'accepted'}}),p=f.page;
- await p.getByText('上次请求已由服务端接收，编辑框已恢复。',{exact:true}).waitFor();assert.equal(await p.locator('#message-input').isEditable(),true);assert.equal(await p.locator('#message-input').inputValue(),'');assert.equal(await p.locator('#message-submit').innerText(),'发送');
- assert.equal(f.calls.filter(call=>call.path.endsWith('/turns/receipt')&&call.method==='GET'&&call.key==='lost-reply-key').length,1);assert.equal(f.calls.filter(call=>call.path.endsWith('/turns')&&call.method==='POST').length,0);assert.equal(await p.evaluate(()=>JSON.parse(sessionStorage.getItem('riffology:conversation:t:w')).messageIntent),null);
+  await p.getByText('上次请求已由服务端接收，编辑框已恢复。',{exact:true}).waitFor();assert.equal(await p.locator('#message-input').isEditable(),false);assert.equal(await p.locator('#message-input').inputValue(),message);assert.equal(await p.locator('#message-submit').innerText(),'正在处理…');
+  assert.equal(f.calls.filter(call=>call.path.endsWith('/turns/receipt')&&call.method==='GET'&&call.key==='lost-reply-key').length,1);assert.equal(f.calls.filter(call=>call.path.endsWith('/turns')&&call.method==='POST').length,0);assert.equal((await p.evaluate(()=>JSON.parse(sessionStorage.getItem('riffology:conversation:t:w')).messageIntent)).key,'lost-reply-key');await p.reload();await p.getByRole('button',{name:'正在处理…',exact:true}).waitFor();assert.equal(f.calls.filter(call=>call.path.endsWith('/turns')&&call.method==='POST').length,0);
 });
 
 test('receipt loading never flashes Send, and an absent receipt keeps the frozen explicit retry',async t=>{
  const message='保留未确认请求',accepted=await fixture(t,{messageRecovery:{key:'pending-key',message,receipt:'accepted',defer:true}}),acceptedPage=accepted.page;
- await acceptedPage.getByRole('button',{name:'正在确认上次请求…',exact:true}).waitFor();assert.equal(await acceptedPage.locator('#message-input').isEditable(),false);accepted.releaseReceipt();await acceptedPage.getByRole('button',{name:'发送',exact:true}).waitFor();assert.equal(accepted.calls.filter(call=>call.path.endsWith('/turns')&&call.method==='POST').length,0);
+  await acceptedPage.getByRole('button',{name:'正在确认上次请求…',exact:true}).waitFor();assert.equal(await acceptedPage.locator('#message-input').isEditable(),false);accepted.releaseReceipt();await acceptedPage.getByRole('button',{name:'正在处理…',exact:true}).waitFor();assert.equal(accepted.calls.filter(call=>call.path.endsWith('/turns')&&call.method==='POST').length,0);
  const missing=await fixture(t,{messageRecovery:{key:'missing-key',message,receipt:'missing'}}),missingPage=missing.page;await missingPage.getByRole('button',{name:'重试上次请求',exact:true}).waitFor();assert.equal(await missingPage.locator('#message-input').isEditable(),false);await missingPage.locator('#message-input').focus();await missingPage.keyboard.press('Backspace');assert.equal(await missingPage.locator('#message-input').inputValue(),message);assert.equal(missing.calls.filter(call=>call.path.endsWith('/turns')&&call.method==='POST').length,0);
 });
 
@@ -254,7 +254,7 @@ test('standalone Preview carries its frozen draft into actual Workspace Runs wit
  const f=await fixture(t,{standalone:true}),p=f.page;
  await p.locator('[data-parameter=servers]').fill('3');await p.locator('[data-browser-preview-seed]').fill('42');
  await p.locator('[data-browser-preview-action=verify]').click();
- await p.waitForURL('**/#/workspace/p');await p.locator('#canvas-runs').waitFor();
+ await p.waitForURL('**/#/workspace/p');await p.locator('#workspace:not(.browser-preview-standalone)').waitFor();await p.locator('#canvas-runs').waitFor();
  await p.locator('[data-verify-handoff-action=submit]:not([disabled])').waitFor();
  assert.equal(await p.locator('#workspace').evaluate(node=>node.classList.contains('browser-preview-standalone')),false);
  const draft=await p.evaluate(()=>JSON.parse(sessionStorage.getItem('riffology:browser-preview:verify:t:p:w:handoff')));
@@ -280,4 +280,26 @@ test('actual Workspace scoped gate denies Verify despite the account hint and re
  assert.equal(await q.locator('[data-browser-preview-action=verify]').isDisabled(),true);
  await q.locator('[data-workspace-tab=runs]').click();assert.equal(await q.locator('[data-verify-handoff-action=submit]').isDisabled(),true);
  assert.equal(await q.evaluate(k=>sessionStorage.getItem(k),key),saved);assert.equal(open.calls.filter(c=>c.path.endsWith('/browser-preview/verify')&&c.method==='POST').length,0);
+});
+
+test('full Workspace locale change retains user content and every existing form and preview node',async t=>{
+ const f=await fixture(t),p=f.page;
+ await p.locator('#message-input').fill('Untranslated user draft 中文');
+ await p.locator('[data-parameter=servers]').fill('3');await p.locator('[data-browser-preview-seed]').fill('41');
+ await p.locator('[data-workspace-tab=runs]').click();await p.locator('.simulation-form input[name=servers]').fill('2');
+ await p.locator('[data-workspace-tab=preview]').click();
+ await p.evaluate(()=>{window.kept={nodes:[...document.querySelectorAll('#workspace input,#workspace textarea,#workspace select,#workspace iframe,#turns p,#turns small')],values:[...document.querySelectorAll('#workspace input,#workspace textarea,#workspace select')].map(n=>n.value),user:[document.querySelector('#workspace-title').textContent,document.querySelector('#session-select').textContent,...[...document.querySelectorAll('.turn-card.user p,.turn-card.assistant p')].map(n=>n.textContent)]};});
+ const before=f.calls.length;await p.locator('[data-locale-select]').selectOption('en');
+ assert.match(await p.locator('#workspace-back').innerText(),/Back to projects/);
+ assert.match(await p.locator('#workspace-meta').innerText(),/Research workspace/);
+ assert.match(await p.locator('[data-workspace-divider]').getAttribute('aria-valuetext'),/Conversation/);
+ assert.equal(await p.locator('.turn-card.user small').first().innerText(),'Completed');
+ assert.equal(await p.evaluate(()=>window.kept.nodes.every(n=>n.isConnected)),true);
+ assert.deepEqual(await p.locator('#workspace input,#workspace textarea,#workspace select').evaluateAll(ns=>ns.map(n=>n.value)),await p.evaluate(()=>window.kept.values));
+ assert.deepEqual(await p.evaluate(()=>[document.querySelector('#workspace-title').textContent,document.querySelector('#session-select').textContent,...[...document.querySelectorAll('.turn-card.user p,.turn-card.assistant p')].map(n=>n.textContent)]),await p.evaluate(()=>window.kept.user));
+ await p.waitForTimeout(50);assert.deepEqual(f.calls.slice(before).filter(c=>c.method!=='GET').map(c=>[c.method,c.path]),[['PUT','/api/me/locale']]);
+ await p.locator('[data-workspace-tab=model]').click();assert.equal(await p.locator('#canvas-model').isVisible(),true);
+ await p.locator('[data-workspace-tab=runs]').click();assert.equal(await p.locator('.simulation-form input[name=servers]').inputValue(),'2');
+ await f.shot('i18n-b-en-desktop');await p.setViewportSize({width:390,height:844});
+ assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await f.shot('i18n-b-en-mobile');
 });
