@@ -1,13 +1,11 @@
 import {createPublicationPanel} from './publication.js';
-import {applyTranslations,installLocaleSelector,setLocale,t} from './i18n.js';
+import {applyTranslations,getLocale,installLocaleSelector,setLocale,t} from './i18n.js';
+import {createLocalePreferenceController} from './locale-preference.js';
 const $ = selector => document.querySelector(selector);
 const publicationPanel=createPublicationPanel({root:$('#model-submissions'),api,admin:true});
 const notice = $('#notice');
 let authenticated = false;
 let operatorUserId=null;
-let localeChangeVersion=0;
-let localeWriteRunning=false;
-let pendingLocaleWrite=null;
 let operator = false;
 let loading = false;
 let issueIntent = null;
@@ -22,19 +20,16 @@ function show(message, error = false) {
   notice.hidden = !message;
 }
 
-async function flushLocaleWrites() {
- if(localeWriteRunning)return;localeWriteRunning=true;
- while(pendingLocaleWrite){const next=pendingLocaleWrite;pendingLocaleWrite=null;
-  if(!authenticated||operatorUserId!==next.userId||viewGeneration!==next.generation)continue;
-  try { await api('/api/me/locale',{method:'PUT',body:JSON.stringify({locale:next.locale})}); }
-  catch { if(localeChangeVersion===next.version&&authenticated&&operatorUserId===next.userId&&viewGeneration===next.generation)show(t('locale.saveFailed'),true); }
- }
- localeWriteRunning=false;
-}
-installLocaleSelector({onChange:locale=>{
- const version=++localeChangeVersion,userId=operatorUserId;
- if(authenticated&&userId){pendingLocaleWrite={version,userId,locale,generation:viewGeneration};void flushLocaleWrites();}
-}});
+const localeStatus = $('#locale-status');
+const localePreferences = createLocalePreferenceController({
+  read: () => api('/api/me/locale'),
+  write: locale => api('/api/me/locale', {method:'PUT', body:JSON.stringify({locale})}),
+  currentLocale: getLocale,
+  applyLocale: locale => { setLocale(locale); applyTranslations(); },
+  onSaveFailure: () => { if (localeStatus) localeStatus.textContent = t('locale.saveFailed'); },
+  onSaveSuccess: () => { if (localeStatus) localeStatus.textContent = ''; },
+});
+installLocaleSelector({onChange: locale => localePreferences.select(locale)});
 
 async function api(path, options = {}) {
   const response = await fetch(path, {
@@ -318,7 +313,7 @@ $('#google').onclick = async () => {
 };
 
 $('#sign-out').onclick = async () => {
-  const button = $('#sign-out'); button.disabled = true; viewGeneration++;
+  const button = $('#sign-out'); button.disabled = true; viewGeneration++; localePreferences.begin();
   try {
     await api('/api/auth/sign-out', { method: 'POST', body: '{}' });
     authenticated = false; operator = false; resetIssueIntent(); accountView(); show('已退出登录。');
@@ -330,14 +325,14 @@ $('#refresh').onclick = refresh;
 
 async function load() {
   const generation = ++viewGeneration;
-  const localeVersion=localeChangeVersion;
+  const localeStart = localePreferences.begin();
   try {
     const session = await api('/api/auth/get-session');
     if (generation !== viewGeneration) return;
     operatorUserId=typeof session?.user?.id==='string'?session.user.id:null;
     authenticated = Boolean(session?.user); operator = false; accountView();
     if (!authenticated) return;
-    try { const preference=await api('/api/me/locale');if(generation===viewGeneration&&localeVersion===localeChangeVersion&&preference?.locale){setLocale(preference.locale);applyTranslations();} } catch (error) { if(generation!==viewGeneration)return; }
+    localePreferences.activate(operatorUserId, generation, localeStart);
     await api('/api/admin/overview');
     if (generation !== viewGeneration) return;
     operator = true; accountView(); await refresh();
