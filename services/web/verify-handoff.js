@@ -1,21 +1,103 @@
 import {browserPreviewRequest} from './browser-preview.js';
 import {t} from './i18n.js';
 import {bindText} from './i18n-bindings.js';
-const id=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(v),hash=v=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
-const canonical=v=>v&&typeof v==='object'&&!Array.isArray(v)?'{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+canonical(v[k])).join(',')+'}':Array.isArray(v)?'['+v.map(canonical).join(',')+']':JSON.stringify(v);
-export function createVerifyHandoffPanel({root,api,onVerified=()=>{},requestTimeoutMs=15000}){
- if(!root||typeof api!=='function'||!Number.isInteger(requestTimeoutMs)||requestTimeoutMs<1)throw Error('invalid-verify-handoff-panel');const win=root.ownerDocument.defaultView,requests=new Set();let context=null,draft=null,broken=false,submitting=false,message='',generation=0;
- const base=()=>`riffology:browser-preview:verify:${context.tenantId}:${context.projectId}:${context.workspaceId}`,draftKey=()=>base()+':handoff';
- const valid=v=>v&&['intent,packageIdentity,parameters,revisionId,seed','idempotencyKey,intent,packageIdentity,parameters,revisionId,seed'].includes(Object.keys(v).sort().join(','))&&v.intent==='experiment'&&(v.idempotencyKey===undefined||id(v.idempotencyKey))&&id(v.revisionId)&&hash(v.packageIdentity)&&Number.isInteger(v.seed)&&v.seed>=0&&v.seed<=4294967295&&v.parameters&&typeof v.parameters==='object'&&!Array.isArray(v.parameters)&&Object.keys(v.parameters).length<=64&&Object.entries(v.parameters).every(([k,x])=>id(k)&&(typeof x==='boolean'||typeof x==='number'&&Number.isFinite(x)&&Math.abs(x)<=Number.MAX_SAFE_INTEGER||typeof x==='string'&&x.length<=1024));
- const read=k=>{try{const text=win.sessionStorage.getItem(k);if(text===null)return {value:null};const value=JSON.parse(text);return {value:valid(value)?value:null};}catch{return {error:true};}};
- const write=(k,v)=>{try{if(v)win.sessionStorage.setItem(k,JSON.stringify(v));else win.sessionStorage.removeItem(k);}catch{throw Error(t('verifyHandoff.storageFailed'));}};
- const request=(url,options={})=>browserPreviewRequest(api,url,options,requests,{requestTimeoutMs});
- function render(){root.replaceChildren();const s=root.ownerDocument.createElement('section');s.className='verify-handoff';const h=root.ownerDocument.createElement('h2');h.textContent=t('verifyHandoff.title');s.append(h);let f,b;const p=root.ownerDocument.createElement('p');p.className='meta';p.setAttribute('role','status');p.textContent=message||(!draft?t('verifyHandoff.empty'):t('verifyHandoff.ready'));s.append(p);if(draft){f=root.ownerDocument.createElement('p');f.className='meta';f.textContent=t('verifyHandoff.frozen',{revisionId:draft.revisionId,packageIdentity:draft.packageIdentity.slice(0,12),seed:draft.seed,parameters:JSON.stringify(draft.parameters)});s.append(f);b=root.ownerDocument.createElement('button');b.type='button';b.className='button primary';b.dataset.verifyHandoffAction='submit';b.disabled=broken||submitting||context?.canVerify!==true;b.textContent=submitting?t('verifyHandoff.submitting'):t('verifyHandoff.submit');s.append(b);}bindText(h,'verifyHandoff.title');bindText(p,()=>message||(!draft?t('verifyHandoff.empty'):t('verifyHandoff.ready')));if(draft){bindText(f,()=>t('verifyHandoff.frozen',{revisionId:draft.revisionId,packageIdentity:draft.packageIdentity.slice(0,12),seed:draft.seed,parameters:JSON.stringify(draft.parameters)}));bindText(b,()=>submitting?t('verifyHandoff.submitting'):t('verifyHandoff.submit'));}root.append(s);}
- async function recover(){if(!draft?.idempotencyKey||broken)return;const current=draft,token=generation,scope=context;try{const value=await request(`/api/workspaces/${encodeURIComponent(scope.workspaceId)}/browser-preview/verify/${encodeURIComponent(current.idempotencyKey)}`);if(token!==generation||scope!==context||draft!==current)return;const {idempotencyKey,...captured}=current;if(value?.status==='accepted'&&value.verificationId===idempotencyKey&&value.experiment&&canonical(value.captured)===canonical(captured)){write(base(),null);draft=null;message=t('verifyHandoff.recovered');onVerified(value);render();}}catch{if(token===generation&&scope===context){message=t('verifyHandoff.unconfirmed');render();}}}
- async function submit(){if(!draft||broken||submitting||context?.canVerify!==true)return;let current=draft;if(!current.idempotencyKey){current={...current,idempotencyKey:win.crypto.randomUUID()};try{write(base(),current);draft=current;write(draftKey(),null);}catch(e){message=e.message;render();return;}}const token=generation,scope=context;submitting=true;render();try{const value=await request(`/api/workspaces/${encodeURIComponent(scope.workspaceId)}/browser-preview/verify`,{method:'POST',headers:{'Idempotency-Key':current.idempotencyKey},body:JSON.stringify(current)});if(token!==generation||scope!==context||draft!==current)return;const {idempotencyKey,...captured}=current;if(!value||value.verificationId!==idempotencyKey||!value.experiment||canonical(value.captured)!==canonical(captured))throw Error('receipt');write(base(),null);draft=null;message=t('verifyHandoff.accepted');onVerified(value);}catch{if(token===generation&&scope===context&&draft===current)message=t('verifyHandoff.unconfirmed');}finally{if(token===generation&&scope===context){submitting=false;render();}}}
- function handoff(value){if(!context||context.canVerify!==true||!valid(value)||broken)return false;if(draft?.idempotencyKey){message=t('verifyHandoff.pending');render();return true;}try{draft=structuredClone(value);write(draftKey(),draft);message=t('verifyHandoff.created');render();return true;}catch(e){message=e.message;render();return false;}}
- function enter(v){leave();if(!v||!id(v.tenantId)||!id(v.projectId)||!id(v.workspaceId))throw Error('invalid-verify-handoff-context');context={...v,canVerify:false};generation++;const pending=read(base());if(pending.error){broken=true;message=t('verifyHandoff.storageFailed');}else if(pending.value)draft=pending.value;else{const saved=read(draftKey());broken=Boolean(saved.error);draft=saved.value;if(broken)message=t('verifyHandoff.storageFailed');}render();void recover();}
- function setCanVerify(value){if(context){context.canVerify=value===true;render();}}
- function leave(){generation++;for(const c of requests)c.abort();requests.clear();context=null;draft=null;broken=false;submitting=false;message='';root.replaceChildren();}
- root.addEventListener('click',e=>{const b=e.target.closest('[data-verify-handoff-action=submit]');if(b&&!b.disabled)void submit();});return {enter,leave,handoff,recover,setCanVerify,dispose:leave};
+
+const id = value => typeof value === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(value);
+const hash = value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
+const MAX_BYTES = 16_384;
+const canonical = value => value && typeof value === 'object' && !Array.isArray(value)
+  ? `{${Object.keys(value).sort().map(key => `${JSON.stringify(key)}:${canonical(value[key])}`).join(',')}}`
+  : Array.isArray(value) ? `[${value.map(canonical).join(',')}]` : JSON.stringify(value);
+
+export function createVerifyHandoffPanel({root, api, onVerified = () => {}, requestTimeoutMs = 15_000}) {
+  if (!root || typeof api !== 'function' || !Number.isInteger(requestTimeoutMs) || requestTimeoutMs < 1) throw Error('invalid-verify-handoff-panel');
+  const win = root.ownerDocument.defaultView;
+  const requests = new Set();
+  const nodes = {};
+  let context = null, draft = null, storageBlocked = false, submitting = false, recovering = false, messageKey = '', generation = 0;
+  const key = () => `riffology:browser-preview:verify:${context.tenantId}:${context.projectId}:${context.workspaceId}`;
+  const handoffKey = () => `${key()}:handoff`;
+  const validBase = value => value && value.intent === 'experiment' && id(value.revisionId) && hash(value.packageIdentity)
+    && Number.isInteger(value.seed) && value.seed >= 0 && value.seed <= 4294967295
+    && value.parameters && typeof value.parameters === 'object' && !Array.isArray(value.parameters)
+    && Object.keys(value.parameters).length <= 64
+    && Object.entries(value.parameters).every(([name, item]) => id(name) && (typeof item === 'boolean' || typeof item === 'number' && Number.isFinite(item) && Math.abs(item) <= Number.MAX_SAFE_INTEGER || typeof item === 'string' && item.length <= 1024));
+  const validPending = value => validBase(value) && Object.keys(value).sort().join(',') === 'idempotencyKey,intent,packageIdentity,parameters,revisionId,seed' && id(value.idempotencyKey);
+  const validDraft = value => validBase(value) && Object.keys(value).sort().join(',') === 'intent,packageIdentity,parameters,revisionId,seed';
+  function read(storageKey, validator) {
+    try {
+      const text = win.sessionStorage.getItem(storageKey);
+      if (text === null) return {value: null};
+      if (text.length > MAX_BYTES) return {error: true};
+      const value = JSON.parse(text);
+      return validator(value) ? {value} : {error: true};
+    } catch { return {error: true}; }
+  }
+  function write(storageKey, value) {
+    try { if (value) win.sessionStorage.setItem(storageKey, JSON.stringify(value)); else win.sessionStorage.removeItem(storageKey); }
+    catch { throw Error('verifyHandoff.storageFailed'); }
+  }
+  const request = (url, options = {}) => browserPreviewRequest(api, url, options, requests, {requestTimeoutMs});
+  const status = () => messageKey ? t(messageKey) : !draft ? t('verifyHandoff.empty') : t('verifyHandoff.ready');
+  const buttonText = () => submitting ? t('verifyHandoff.submitting') : draft?.idempotencyKey ? t('verifyHandoff.retry') : t('verifyHandoff.submit');
+  function updateButton() { if (nodes.button) { nodes.button.disabled = storageBlocked || submitting || recovering || context?.canVerify !== true; bindText(nodes.button, buttonText); } }
+  function render() {
+    root.replaceChildren(); Object.keys(nodes).forEach(key => delete nodes[key]);
+    const section = root.ownerDocument.createElement('section'); section.className = 'verify-handoff';
+    nodes.title = root.ownerDocument.createElement('h2'); bindText(nodes.title, 'verifyHandoff.title'); section.append(nodes.title);
+    nodes.status = root.ownerDocument.createElement('p'); nodes.status.className = 'meta'; nodes.status.setAttribute('role', 'status'); bindText(nodes.status, status); section.append(nodes.status);
+    if (draft) {
+      nodes.frozen = root.ownerDocument.createElement('p'); nodes.frozen.className = 'meta'; bindText(nodes.frozen, () => t('verifyHandoff.frozen', {revisionId: draft.revisionId, packageIdentity: draft.packageIdentity.slice(0, 12), seed: draft.seed, parameters: JSON.stringify(draft.parameters)})); section.append(nodes.frozen);
+      nodes.button = root.ownerDocument.createElement('button'); nodes.button.type = 'button'; nodes.button.className = 'button primary'; nodes.button.dataset.verifyHandoffAction = 'submit'; section.append(nodes.button); updateButton();
+    }
+    root.append(section);
+  }
+  async function recover() {
+    if (!draft?.idempotencyKey || storageBlocked || recovering) return;
+    const current = draft, token = generation, scope = context; recovering = true; updateButton();
+    try {
+      const value = await request(`/api/workspaces/${encodeURIComponent(scope.workspaceId)}/browser-preview/verify/${encodeURIComponent(current.idempotencyKey)}`);
+      if (token !== generation || scope !== context || draft !== current) return;
+      const {idempotencyKey, ...captured} = current;
+      if (value?.status === 'accepted' && value.verificationId === idempotencyKey && value.experiment && canonical(value.captured) === canonical(captured)) {
+        write(handoffKey(), null); write(key(), null); draft = null; messageKey = 'verifyHandoff.recovered'; onVerified(value); render();
+      }
+    } catch { if (token === generation && scope === context) { messageKey = 'verifyHandoff.unconfirmed'; render(); } }
+    finally { if (token === generation && scope === context) { recovering = false; updateButton(); } }
+  }
+  async function submit() {
+    if (!draft || storageBlocked || submitting || recovering || context?.canVerify !== true) return;
+    let current = draft;
+    try {
+      if (!validPending(current)) { current = {...draft, idempotencyKey: win.crypto.randomUUID()}; write(key(), current); draft = current; write(handoffKey(), null); }
+    } catch (error) { messageKey = error.message; render(); return; }
+    const token = generation, scope = context; submitting = true; updateButton();
+    try {
+      const value = await request(`/api/workspaces/${encodeURIComponent(scope.workspaceId)}/browser-preview/verify`, {method: 'POST', headers: {'Idempotency-Key': current.idempotencyKey}, body: JSON.stringify(current)});
+      if (token !== generation || scope !== context || draft !== current) return;
+      const {idempotencyKey, ...captured} = current;
+      if (!value || value.verificationId !== idempotencyKey || !value.experiment || canonical(value.captured) !== canonical(captured)) throw Error('receipt');
+      write(handoffKey(), null); write(key(), null); draft = null; messageKey = 'verifyHandoff.accepted'; onVerified(value); render();
+    } catch { if (token === generation && scope === context && draft === current) { messageKey = 'verifyHandoff.unconfirmed'; render(); } }
+    finally { if (token === generation && scope === context) { submitting = false; updateButton(); } }
+  }
+  function handoff(value) {
+    if (!context || context.canVerify !== true || storageBlocked || !validDraft(value)) return false;
+    if (draft?.idempotencyKey) { messageKey = 'verifyHandoff.pending'; render(); return true; }
+    try { draft = structuredClone(value); write(handoffKey(), draft); messageKey = 'verifyHandoff.created'; render(); return true; }
+    catch (error) { messageKey = error.message; render(); return false; }
+  }
+  function enter(value) {
+    leave(); if (!value || !id(value.tenantId) || !id(value.projectId) || !id(value.workspaceId)) throw Error('invalid-verify-handoff-context');
+    context = {...value, canVerify: false}; generation++;
+    const pending = read(key(), validPending);
+    if (pending.error) { storageBlocked = true; messageKey = 'verifyHandoff.storageFailed'; }
+    else if (pending.value) draft = pending.value;
+    else { const saved = read(handoffKey(), validDraft); storageBlocked = Boolean(saved.error); draft = saved.value; if (storageBlocked) messageKey = 'verifyHandoff.storageFailed'; }
+    render(); void recover();
+  }
+  function setCanVerify(value) { if (context) { context.canVerify = value === true; updateButton(); } }
+  function leave() { generation++; for (const controller of requests) controller.abort(); requests.clear(); context = null; draft = null; storageBlocked = submitting = recovering = false; messageKey = ''; root.replaceChildren(); }
+  root.addEventListener('click', event => { const button = event.target.closest('[data-verify-handoff-action=submit]'); if (button && !button.disabled) void submit(); });
+  return {enter, leave, handoff, recover, setCanVerify, dispose: leave};
 }
