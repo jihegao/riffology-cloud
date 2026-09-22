@@ -44,3 +44,24 @@ test('stored notices and errors retain their keys and formatted values until pre
   assert.match(label.textContent,/1,234/);assert.equal(error.textContent,'The request failed. Try again later.');
   assert.equal(label.value,'user draft');unbindI18n(label);unbindI18n(error);
 });
+
+test('finalization releases transient records without requiring a language change', async () => {
+  const original = globalThis.FinalizationRegistry;
+  let collected, registry;
+  globalThis.FinalizationRegistry = class {
+    constructor(callback) { collected=callback;registry=new Map(); }
+    register(target,record,token) { registry.set(token,record); }
+    unregister(token) { return registry.delete(token); }
+  };
+  let bindings;
+  try { bindings=await import('../../services/web/i18n-bindings.js?finalization-test'); }
+  finally { globalThis.FinalizationRegistry=original; }
+  const label=node();let reads=0;
+  bindings.bindText(label,()=>{reads++;return 'value';});
+  assert.equal(registry.size,1);const record=[...registry.values()][0];
+  collected(record);const before=reads;
+  setLocale('en',{persist:false});setLocale('zh-CN',{persist:false});
+  assert.equal(reads,before);
+  bindings.bindText(label,'shell.signOut');assert.equal(registry.size,1);
+  bindings.unbindI18n(label);assert.equal(registry.size,0);
+});

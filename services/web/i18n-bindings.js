@@ -3,12 +3,14 @@ import {subscribe, t} from './i18n.js';
 // Only explicitly registered platform labels are touched. Values, user content,
 // iframe documents and the containing panels are never discovered or rebuilt.
 const records = new Set();
+const finalized = new FinalizationRegistry(record => records.delete(record));
+function release(record) { records.delete(record); finalized.unregister(record); }
 const slots = new WeakMap();
 const attributes = new Set(['aria-label', 'aria-valuetext', 'title', 'placeholder', 'alt']);
 
 function update(record) {
   const node = record.node.deref();
-  if (!node) { records.delete(record); return; }
+  if (!node) { release(record); return; }
   try {
     const text = typeof record.key === 'function'
       ? record.key()
@@ -27,9 +29,10 @@ function bind(node, attribute, key, vars = {}) {
   let bindings = slots.get(node);
   if (!bindings) { bindings = new Map(); slots.set(node, bindings); }
   const previous = bindings.get(property);
-  if (previous) records.delete(previous);
+  if (previous) release(previous);
   const record = {node:new WeakRef(node), attribute, key, vars};
   bindings.set(property, record); records.add(record);
+  finalized.register(node, record, record);
   // A dynamic binding owns this property, including when HTML provided its
   // initial fallback. A subsequent static shell pass cannot overwrite it.
   if (!attribute) node.removeAttribute?.('data-i18n');
@@ -47,7 +50,7 @@ export function bindAttribute(node, attribute, key, vars) {
   return bind(node, attribute, key, vars);
 }
 export function unbindI18n(node) {
-  for (const record of slots.get(node)?.values() ?? []) records.delete(record);
+  for (const record of slots.get(node)?.values() ?? []) release(record);
   slots.delete(node);
 }
 subscribe(() => { for (const record of records) update(record); });
