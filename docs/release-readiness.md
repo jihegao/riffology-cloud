@@ -1,9 +1,38 @@
-# Current release readiness — 2026-09-21
+# Current release readiness — 2026-09-23
+
+## 2026-09-23 UI release and independent readback
+
+PRs #130, #131, #132 and #133 are merged in dependency order. Before merge, all
+10 inline review findings were addressed, including durable message receipts,
+storage failures, overlapping refreshes, the real Verify POST/GET contract and
+locale binding lifetime. [Final code CI](https://github.com/jihegao/riffology-cloud/actions/runs/35759421134)
+and the complete relevant local suites passed (M1 275; M3 962 with 10 conditional
+skips; check:ui 21; TypeScript).
+
+Application source `1c643fceed1e6b62c3605647a99750ac1a9b3637` is deployed as Gateway version
+`cb6935dc-dfed-4d62-8e88-8aa82215ff59`, deployment `6a54ca89-bd48-4ddc-8fac-8ae35d834930`, at 100%.
+The actual Catalog received additive migration `0011_user_locale_preferences.sql`.
+Independent API readback matched all 91 existing bindings, runtime/container
+configuration, gates, budgets and secrets metadata to the frozen prior version.
+Downloaded Worker bytes match the release bundle SHA256
+`c866085214de1fc0f4dc22ee7a41dbb1b366a3f73bee8621b77f8b209602fb45`. The Browser Execution Worker was not changed.
+
+All 17 checked public HTML/JS resources match the source bytes. A fresh anonymous
+browser passed Chinese/English switching, refresh persistence, the admin shell
+and 390px layout without horizontal overflow or script errors; its captured
+application requests were GET-only. This is public/static verification, not
+authenticated user or paid execution acceptance. #126/#128/#129 remain Acceptance;
+#65/#83 and #104 retain their separate outstanding acceptance/observation scope.
+
+[Machine-readable release evidence](evidence/releases/ui-20260923.json) records
+source, PRs, CI, deployment, hashes and verification limits. The following dated
+records preserve earlier implementation and acceptance snapshots.
+
 
 This is the release and acceptance evidence index. Live priority, status and
 ownership are maintained in the [Delivery Project](https://github.com/users/jihegao/projects/1),
 not in a parallel Markdown task list. Historical records prove only their own
-source/window, not that the current deployment passes. This 2026-09-21 snapshot
+source/window, not that the current deployment passes. The earlier 2026-09-21 snapshot
 includes the authenticated Chrome/CDP Queue/Mesa acceptance, #71's current-version
 browser-isolation acceptance, #87's bounded paid Pi acceptance and #92's real
 invitee revocation/audit acceptance and revoked-session migration linked below.
@@ -127,7 +156,7 @@ promoting local Preview to Evidence.
 
 | Item | Evidence / status |
 | --- | --- |
-| Source baseline | Deployed application source: `0f1caa5` from [PR #124](https://github.com/jihegao/riffology-cloud/pull/124), checked 2026-09-21. Its full CI passed after one unrelated existing M0 timing test was retried successfully. PR #119 remains the accepted-invite revocation baseline; earlier #102/#103 execution-isolation evidence remains historical input rather than the deployed source identity |
+| Source baseline | Deployed application source: `1c643fceed1e6b62c3605647a99750ac1a9b3637` from the merged #130–#133 stack, checked 2026-09-23. Final code CI and independent Worker/assets readback passed; authenticated acceptance remains separate |
 | PR #84 | [Merged and deployed](https://github.com/jihegao/riffology-cloud/pull/84), merge `4f564105e11dec7bac9338e770a52c57455279c9`; [Ubuntu CI passed](https://github.com/jihegao/riffology-cloud/actions/runs/35408200559) |
 | #84 Gateway deployment record | `530dce72-65a6-4247-b69b-955a432188d2`, 100% at publication; PR records actual Worker byte comparison, static resource hashes and configuration readback |
 | #84 execution Worker deployment record | `d5fb4b8a-d2d8-4007-b454-d97816405b22`, 100%; retained through the #90 acceptance release and observed in the authenticated Chrome/CDP trace |
@@ -135,7 +164,7 @@ promoting local Preview to Evidence.
 | PR #97–#100 | Merged #87 blocker inventory, exact release-hold reconciliation and private request correlation. [The latest #87 record](https://github.com/jihegao/riffology-cloud/issues/87#issuecomment-5741935018) identifies deployed Gateway version `f4da845a-96a5-42b8-bbb3-21fc18e44bcb`, exact merged source `5ac8fa5`, preserved bindings and closed execution gates. These changes expose and reconcile existing records; they do not retry, settle or replay them |
 | PR #102 / #87 | [Execution isolation merged](https://github.com/jihegao/riffology-cloud/pull/102), merge `162c8917102333b2f4395abf8e07cfd5ea4cf98f`; exact append-only HMAC proof, runtime tombstone and accept/fence serialization. Production acceptance ended on Gateway version `ef30dd39-4ea0-4476-888c-8fdd1b964ecd`, 100%, with all execution gates closed and 89 bindings preserved |
 | PR #91 / #90 Gateway | [Auth bootstrap fix merged](https://github.com/jihegao/riffology-cloud/pull/91), merge `c3683695`; Gateway version `ff3fae53-eeb1-4da1-824c-155cf7754268`, deployment `051de36d-4f70-4544-af4d-a3558dec6b6d`, 100%. [Authenticated acceptance](https://github.com/jihegao/riffology-cloud/issues/78#issuecomment-5740806289) records exact Queue/Mesa identities, scoped requests and before/after counts |
-| Current Private Beta Gateway | PR #124 merge `0f1caa5`; deployment `190835a0-cd24-4aec-9cde-da07863a5442`, 100% version `2175756e-615d-4525-883b-34395a5bc50e`, 91 bindings. The frozen release overlay matched the prior live version on all 91 bindings before upload. M2 Turn/model/provider gates are open only under #104's frozen policy; G5 and M3/M4 remain closed |
+| Current Private Beta Gateway | Source `1c643fceed1e6b62c3605647a99750ac1a9b3637`; deployment `6a54ca89-bd48-4ddc-8fac-8ae35d834930`, 100% version `cb6935dc-dfed-4d62-8e88-8aa82215ff59`, 91 bindings preserved. Only additive locale schema plus Gateway code/assets changed; frozen Pi/M2 capacity policy and closed G5/M3/M4 gates are unchanged |
 | #71 browser isolation | [Current production acceptance](https://github.com/jihegao/riffology-cloud/issues/71#issuecomment-5750074199) covers two projects, Queue/Mesa, opaque storage denial, BroadcastChannel positive/negative controls, cancel/refresh/late-message behavior, a second authenticated principal, GET-only request trace and unchanged scoped compute counts. Browser Execution remains 100% version `d5fb4b8a-d2d8-4007-b454-d97816405b22` |
 | Earlier readback | [Pre-#84 allowlisted snapshot](evidence/invited-queue/release-readback-20260919.json): Gateway `0ca0acc2-fed7-43fe-9fdf-dd19d1e9b9c5`, execution `ead25cd0-74c1-43cd-b604-64dc1b8325d4`; retained as historical evidence only |
 | Rollback | Freeze actual active Worker/assets/configuration before a future release; historical `727c40f` is not automatically the current operational rollback target. No database reversal or ledger reset. |

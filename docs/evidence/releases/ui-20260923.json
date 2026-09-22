@@ -1,0 +1,160 @@
+{
+  "date": "2026-09-23",
+  "sourceCommit": "1c643fceed1e6b62c3605647a99750ac1a9b3637",
+  "mergedPullRequests": [
+    {
+      "number": 130,
+      "head": "d6ed737472cffb3d9144e417ba169d0d62689273",
+      "mergeCommit": "c88c9cdfc984c88b6fc80b03c3578585a5782dea",
+      "url": "https://github.com/jihegao/riffology-cloud/pull/130"
+    },
+    {
+      "number": 131,
+      "head": "5a4f31cab2c82b2d95cd31f874ae55a294f9cada",
+      "mergeCommit": "7e75b3ead7c27a3a869ff23086a132f0f88dd0a4",
+      "url": "https://github.com/jihegao/riffology-cloud/pull/131"
+    },
+    {
+      "number": 132,
+      "head": "b6204dca4db9003c61292c213277b722d105d32d",
+      "mergeCommit": "f22dcf42f887a942cd883767afb25dd9d3051549",
+      "url": "https://github.com/jihegao/riffology-cloud/pull/132"
+    },
+    {
+      "number": 133,
+      "head": "fcccddfe8ea76bd28f1a1c5c144806fe5efc6acb",
+      "mergeCommit": "1c643fceed1e6b62c3605647a99750ac1a9b3637",
+      "url": "https://github.com/jihegao/riffology-cloud/pull/133"
+    }
+  ],
+  "reviewFindingsResolved": 10,
+  "codeCI": "https://github.com/jihegao/riffology-cloud/actions/runs/35759421134",
+  "localChecks": {
+    "ui": 21,
+    "typecheck": "passed",
+    "m1": 275,
+    "m3": {
+      "passed": 962,
+      "conditionalSkips": 10
+    }
+  },
+  "deployment": {
+    "at": "2026-09-22T17:32:49.965Z",
+    "sourceCommit": "1c643fceed1e6b62c3605647a99750ac1a9b3637",
+    "deployment": "6a54ca89-bd48-4ddc-8fac-8ae35d834930",
+    "version": "cb6935dc-dfed-4d62-8e88-8aa82215ff59",
+    "percentage": 100,
+    "previousDeployment": "190835a0-cd24-4aec-9cde-da07863a5442",
+    "previousVersion": "2175756e-615d-4525-883b-34395a5bc50e",
+    "bindings": 91,
+    "bindingsPreserved": true,
+    "runtimeConfigurationPreserved": true,
+    "assetMetadataNormalization": "Implicit root base path is now explicit /; all other asset configuration unchanged",
+    "workerSha256": "c866085214de1fc0f4dc22ee7a41dbb1b366a3f73bee8621b77f8b209602fb45",
+    "workerBytes": 5215238
+  },
+  "localeMigration": "0011_user_locale_preferences.sql",
+  "publicReadback": {
+    "at": "2026-09-22T17:33:01.870Z",
+    "origin": "https://m1.riff-demo.gaojihe.cn",
+    "identity": "anonymous fresh browser context",
+    "assets": [
+      {
+        "file": "index.html",
+        "status": 200,
+        "sha256": "1c0b4c788e271021e0989ca44fafe24ef4b6cd0c684a48262e9e9d99a3aca31e"
+      },
+      {
+        "file": "app.js",
+        "status": 200,
+        "sha256": "4eedf670c9b84735c29c7f663b5cb9f89d507f2e0fe08e8fd3e90b24b84b23de"
+      },
+      {
+        "file": "i18n.js",
+        "status": 200,
+        "sha256": "4025d67c47389c5f2be3beef96488580b6273e9a61faba3cf03a95cac4949e06"
+      },
+      {
+        "file": "i18n-bindings.js",
+        "status": 200,
+        "sha256": "d54d8c9cc94dd68383eb5dcd7947b7cead768dc283fec43c3f74bf30e303a095"
+      },
+      {
+        "file": "locale-preference.js",
+        "status": 200,
+        "sha256": "32651ec625225572f67f3e165687ad11be1028014dc1672a79018eccc01506a3"
+      },
+      {
+        "file": "verify-handoff.js",
+        "status": 200,
+        "sha256": "570dc33eae85459d536a17781df01e2458fa8479d795d9812d8141a8956107a6"
+      },
+      {
+        "file": "admin.html",
+        "status": 200,
+        "sha256": "d04ea1c538d89d92fe20a9a107a86920c865fc9c3762014923e6af751a924387"
+      },
+      {
+        "file": "admin.js",
+        "status": 200,
+        "sha256": "b10ac25c29a6d4bf50ed61926cf869b4233cfa8c72b7de2aa2ba529d0e51565b"
+      },
+      {
+        "file": "layout.js",
+        "status": 200,
+        "sha256": "e67ef7ebc2af83d3ddd570ac41852ccd878e31a78ced20f9d28927ac32295f38"
+      },
+      {
+        "file": "services.js",
+        "status": 200,
+        "sha256": "b2e9a9aba4a510aecd576f9d7f20c7e1cef405eb05e0695ae2eb9343b3ffc59a"
+      },
+      {
+        "file": "previews.js",
+        "status": 200,
+        "sha256": "1a1fb72e1e9a0df7ecd703ebafdb1e73844a3b6d32c689ce8471907f758b3423"
+      },
+      {
+        "file": "browser-preview.js",
+        "status": 200,
+        "sha256": "db7536966e841878a85e6fc40b9ac7f4450b70fedadd95e7e259d71898f474ba"
+      },
+      {
+        "file": "simulation.js",
+        "status": 200,
+        "sha256": "9724c4576c13eee1f70485500f17a333408817f72184ae09ed221822418e4a46"
+      },
+      {
+        "file": "comparison.js",
+        "status": 200,
+        "sha256": "9df87ec7e1ee33b9299630ba7dfbf3d6d1d80aa82534029d1c68642e7b29a982"
+      },
+      {
+        "file": "evidence.js",
+        "status": 200,
+        "sha256": "c24fd8ff0db0b7e70d549166e3cf8482a71eb83db3e0014b76c5135d31223041"
+      },
+      {
+        "file": "publication.js",
+        "status": 200,
+        "sha256": "d69578af118e85a93c7e02e520dfd0b00515ff95389e082d5a613c7e60c60c5f"
+      },
+      {
+        "file": "export.js",
+        "status": 200,
+        "sha256": "31991b636dbb69f5baa28e1a8b0c775d187aef9558d18c6a5bb4d5c0af3934ab"
+      }
+    ],
+    "requestCount": 49,
+    "nonGetRequests": 0,
+    "scriptErrors": [],
+    "localePersistence": "passed",
+    "narrowViewport": "passed"
+  },
+  "authenticatedAcceptance": false,
+  "paidExecutionAcceptance": false,
+  "remaining": "Issues #126/#128/#129 remain Acceptance; #65/#83 original production acceptance gaps and #104 standing-capacity observation are unchanged.",
+  "validatedHead": "fcccddfe8ea76bd28f1a1c5c144806fe5efc6acb",
+  "validatedTree": "173fdadc42d4ec33ca341f2de63c02d32fc81c31",
+  "deployedTree": "173fdadc42d4ec33ca341f2de63c02d32fc81c31"
+}
