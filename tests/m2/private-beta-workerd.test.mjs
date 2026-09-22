@@ -15,7 +15,10 @@ test('standing Beta real SQLite/D1: invite scopes, cross-project contention, res
  import {DurableObject,env as workerEnv} from 'cloudflare:workers';
  const originalNow=Date.now;Date.now=()=>originalNow()+Number(workerEnv.TEST_CLOCK_OFFSET??0);
  import {PrivateBetaCapacity as BaseCapacity} from './services/model-budget/private-beta-capacity.ts';
- export class PrivateBetaCapacity extends BaseCapacity {async observeCall(record){if(this.env.DROP_FINISH_ACK==='true'&&record.status==='completed')throw Error('fixture-lost-finish-ack');return super.observeCall(record);}}
+ export class PrivateBetaCapacity extends BaseCapacity {
+  async observeCall(record){if(this.env.DROP_FINISH_ACK==='true'&&record.status==='completed')throw Error('fixture-lost-finish-ack');return super.observeCall(record);}
+  async setBindingForTest(user,id){this.ctx.storage.sql.exec("UPDATE beta_slots SET turn_id=? WHERE user_id=? AND status!='released'",id,user);await this.ctx.storage.sync();}
+ }
  export {PiDeveloperBudget} from './services/model-budget/pi-developer-durable.ts';
  export {TenantModelBudget} from './services/model-budget/durable.ts';
  export {G5TenantModelBudget} from './services/model-budget/g5-token-durable.ts';
@@ -92,6 +95,13 @@ test('standing Beta real SQLite/D1: invite scopes, cross-project contention, res
   await db.prepare("UPDATE catalog_users SET status='active' WHERE id='bob'").run();
   await budget('bob','dispatch',second.identity.scope.tenantId,secondRef);await budget('bob','markUnknown',second.identity.scope.tenantId,secondRef);
   assert.equal((await cap('snapshot')).quarantined,1);
+  // A rejected-session projection cannot release a bound slot, or an unbound
+  // slot carrying any model-call record. Missing binding is never no execution.
+  const bobWs=workspaceAgentName(second.identity.scope.tenantId,second.identity.scope.workspaceId);
+  await rpc('workspace',bobWs,'setState',{found:false,turnId:null,terminal:false,released:false,resourceWait:false,finishedAt:null,rejectedSession:true});
+  await cap('monitor');assert.equal((await cap('snapshot')).quarantined,1);
+  await cap('setBindingForTest','bob',null);await cap('monitor');assert.equal((await cap('snapshot')).quarantined,1);
+  await cap('setBindingForTest','bob',second.identity.turnId);
   // Even a purported released Workspace cannot erase a model execution unknown.
   await rpc('workspace',workspaceAgentName(second.identity.scope.tenantId,second.identity.scope.workspaceId),'setState',{found:true,turnId:second.identity.turnId,terminal:true,released:true,resourceWait:false,finishedAt:null});
   await cap('monitor');assert.equal((await cap('snapshot')).quarantined,1);

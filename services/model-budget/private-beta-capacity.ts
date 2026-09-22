@@ -19,7 +19,7 @@ interface Env {
   PRIVATE_BETA_CAPACITY:DurableObjectNamespace<PrivateBetaCapacity>;
   PI_DEVELOPER_BUDGET:{getByName(name:string):{privateBetaCall(identity:ModelCallRequest['identity'],callId:string):Promise<ModelCallRecord|null>}};
   WORKSPACE_AGENT:{getByName(name:string):{
-    privateBetaReleaseState(input:Admission):Promise<{found:boolean;turnId:string|null;terminal:boolean;released:boolean;resourceWait:boolean;finishedAt:number|null;releaseGuard?:boolean}>;
+    privateBetaReleaseState(input:Admission):Promise<{found:boolean;turnId:string|null;terminal:boolean;released:boolean;resourceWait:boolean;finishedAt:number|null;releaseGuard?:boolean;rejectedSession?:boolean}>;
     cancelTurn(input:{scope:TurnScope;actor:TurnActor;turnId:string}):Promise<unknown>;
   }};
 }
@@ -77,6 +77,14 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
           if(record&&!['reserved','dispatched'].includes(record.status))await this.#applyObservation(record);
         }
         const state=await bounded(workspace.privateBetaReleaseState(admission));
+        if(slot.turn_id===null&&!state.found&&state.turnId===null&&state.rejectedSession===true&&
+          !this.ctx.storage.sql.exec('SELECT key FROM beta_calls WHERE slot_key=? LIMIT 1',slot.key).toArray().length){
+          // Definitively rejected before a Turn existed, rather than an unknown
+          // execution. Keep the original slot and alerts, with an audit entry.
+          this.ctx.storage.sql.exec("UPDATE beta_slots SET status='released' WHERE key=?",slot.key);
+          this.ctx.storage.sql.exec('INSERT INTO beta_operations(action,actor_json,at) VALUES(?,?,?)','release-rejected-session:'+slot.key,JSON.stringify(admission.actor),Date.now());
+          continue;
+        }
         if((slot.status!=='quarantined'||releaseQuarantine)&&state.found&&(!slot.turn_id||state.turnId===slot.turn_id)&&state.terminal&&state.released&&!state.resourceWait){
           // Unknown model calls still occupy the slot even if a projection says released.
           const unresolved=this.ctx.storage.sql.exec("SELECT key FROM beta_calls WHERE slot_key=? AND status IN ('reserved','dispatched','unknown')",slot.key).toArray();
