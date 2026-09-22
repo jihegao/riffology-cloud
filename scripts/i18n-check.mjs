@@ -3,7 +3,7 @@ import {readFile, readdir} from 'node:fs/promises';
 import {dictionary, locales} from '../services/web/i18n.js';
 
 const files = ['services/web/index.html', 'services/web/admin.html'];
-const sharedShellKeys = ['shell.skip', 'shell.home', 'shell.language', 'shell.signOut', 'shell.signIn', 'home.loginEyebrow', 'home.loginTitle', 'home.loginCopy', 'home.projectsEyebrow', 'home.projectsTitle', 'home.personalWorkspace', 'home.newProject', 'admin.loginTitle', 'admin.loginCopy', 'admin.signIn', 'locale.saveFailed'];
+const sharedShellKeys = ['shell.skip', 'shell.home', 'shell.language', 'shell.signOut', 'shell.signIn', 'home.loginEyebrow', 'home.loginTitle', 'home.loginCopy', 'home.projectsEyebrow', 'home.projectsTitle', 'home.personalWorkspace', 'home.newProject', 'admin.loginTitle', 'admin.loginCopy', 'admin.signIn', 'locale.saveFailed', 'composer.send', 'composer.processing', 'composer.confirming', 'composer.retry', 'composer.stale', 'composer.processingStatus', 'composer.awaitingStatus', 'composer.confirmingStatus', 'composer.awaitingRefreshError', 'composer.refreshFailed', 'composer.invalidResponse', 'composer.receiptAccepted', 'composer.receiptStorageFailure'];
 const expected = new Set(sharedShellKeys);
 const reference = new Set(Object.keys(dictionary['zh-CN']));
 assert.deepEqual(reference, expected, 'extend the explicit A-scope guard before adding a dictionary key');

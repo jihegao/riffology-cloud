@@ -460,7 +460,8 @@ test('message retry reuses one session and the exact Turn idempotency intent', a
 
 test('a committed Turn with a lost response is reconciled before retry is offered', async t => {
   const workspaceId = 'workspace-lost-reply', sessionId = 'session-lost-reply', message = '研究假设也是可以改的页面吗';
-  let accepted = false, posts = 0, receipts = 0, requestKey = null;
+  let accepted = false, posts = 0, receipts = 0, requestKey = null, releaseReceipt;
+  const receiptGate=new Promise(resolve=>{releaseReceipt=resolve;});
   const page = await pageFixture(t, async (route, path) => {
     if (path === '/api/tenants/tenant-a/projects') {
       await json(route, { projects: [{ id: 'project-lost-reply', workspace_id: workspaceId, title: '回执恢复', status: 'ready' }] }); return true;
@@ -472,7 +473,7 @@ test('a committed Turn with a lost response is reconciled before retry is offere
       await json(route, { events: [], nextSequence: 0, hasMore: false, oldestSequence: 1, snapshotRequired: false }); return true;
     }
     if (path === `/api/workspaces/${workspaceId}/sessions/${sessionId}/turns/receipt`) {
-      receipts++; assert.equal(route.request().headers()['idempotency-key'], requestKey);
+      receipts++; assert.equal(route.request().headers()['idempotency-key'], requestKey);await receiptGate;
       await json(route, accepted ? { accepted: true, turn: { id: 'turn-lost-reply', sessionId, message, status: 'queued' } } : { error: 'not_found' }, accepted ? 200 : 404); return true;
     }
     if (path === `/api/workspaces/${workspaceId}/sessions/${sessionId}/turns` && route.request().method() === 'POST') {
@@ -481,8 +482,40 @@ test('a committed Turn with a lost response is reconciled before retry is offere
   });
   await page.goto('https://ui.test/'); await page.locator('.project-open').click();
   await page.locator('#message-input').fill(message); await page.locator('#message-submit').click();
+  await waitFor(()=>receipts===1);assert.equal(await page.locator('#message-submit').isDisabled(),true);await page.locator('#message-form').evaluate(form=>form.requestSubmit());await page.keyboard.press('Enter');assert.equal(posts,1);
+  releaseReceipt();
   await page.getByText('上次请求已由服务端接收，编辑框已恢复。', { exact: true }).waitFor();
   assert.equal(posts, 1); assert.equal(receipts, 1); assert.equal(await page.locator('#message-input').isEditable(), true); assert.equal(await page.locator('#message-input').inputValue(), ''); assert.equal(await page.locator('#message-submit').innerText(), '发送');
+  assert.equal(await page.locator('[data-turn-id="turn-lost-reply"]').count(),1);
+  await page.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));
+  await page.locator('[data-turn-id="turn-lost-reply"]').waitFor();
+  assert.equal(await page.locator('[data-turn-id="turn-lost-reply"]').count(),1);
+});
+
+test('a first-session submission stays busy through delayed requests, a stale snapshot, refresh failure, and locale changes', async t => {
+  const workspaceId='workspace-visible-turn',message='等待回合显示';
+  let releaseSession,releaseTurn,sessionPosts=0,turnPosts=0,sessionCreated=false,accepted=false,visible=false,failRefresh=false;
+  const sessionGate=new Promise(resolve=>{releaseSession=resolve;}),turnGate=new Promise(resolve=>{releaseTurn=resolve;});
+  const page=await pageFixture(t,async(route,path)=>{
+    if(path==='/api/me'){await json(route,{userId:'fixture-user',execution:{service:true,preview:true,simulation:true},tenants:[{id:'tenant-a'}]});return true;}
+    if(path==='/api/me/locale'){await json(route,{locale:route.request().method()==='PUT'?JSON.parse(route.request().postData()).locale:null});return true;}
+    if(path==='/api/tenants/tenant-a/projects'){await json(route,{projects:[{id:'project-visible-turn',workspace_id:workspaceId,title:'可见性',status:'ready'}]});return true;}
+    if(path===`/api/workspaces/${workspaceId}`){if(accepted&&failRefresh){failRefresh=false;await route.abort('failed');return true;}await json(route,{schemaVersion:1,activeTurnId:null,sessions:sessionCreated?{s:{id:'s',title:'主对话',createdAt:1}}:{},turns:visible?{'turn-visible':{id:'turn-visible',sessionId:'s',message,status:'queued',createdAt:2}}:{}});return true;}
+    if(path===`/api/workspaces/${workspaceId}/events`){await json(route,{events:[],nextSequence:0,hasMore:false,snapshotRequired:false});return true;}
+    if(path===`/api/workspaces/${workspaceId}/sessions`){sessionPosts++;await sessionGate;sessionCreated=true;await json(route,{session:{id:'s',title:'主对话'}},201);return true;}
+    if(path===`/api/workspaces/${workspaceId}/sessions/s/turns`){turnPosts++;await turnGate;accepted=true;failRefresh=true;await json(route,{turn:{id:'turn-visible',sessionId:'s',message,status:'queued'}},202);return true;}
+  });
+  await page.goto('https://ui.test/');await page.locator('.project-open').click();await page.locator('#message-input').fill(message);
+  const turns=await page.locator('#turns').elementHandle();await page.locator('#message-submit').click();
+  await page.getByRole('button',{name:'正在处理…',exact:true}).waitFor();assert.equal(await page.locator('#message-form').getAttribute('aria-busy'),'true');assert.equal(await page.locator('#new-session').isDisabled(),true);
+  await waitFor(()=>sessionPosts===1);await page.locator('#new-session').evaluate(button=>button.click());await page.locator('#message-form').evaluate(form=>form.requestSubmit());await page.keyboard.press('Enter');assert.equal(sessionPosts,1);
+  await page.locator('[data-locale-select]').selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');await page.getByRole('button',{name:'Processing…',exact:true}).waitFor();assert.equal(await page.locator('#message-status').innerText(),'Submitting request.');assert.equal(await page.evaluate(node=>node===document.querySelector('#turns'),turns),true);
+  releaseSession();await waitFor(()=>turnPosts===1);await page.locator('#message-form').evaluate(form=>form.requestSubmit());assert.equal(turnPosts,1);
+  releaseTurn();await page.getByText('The request was accepted and is waiting to appear in the conversation.',{exact:true}).waitFor();
+  assert.equal(await page.locator('#message-submit').isDisabled(),true);await page.locator('#message-form').evaluate(form=>form.requestSubmit());assert.equal(turnPosts,1);
+  await page.reload();await page.getByRole('button',{name:'Processing…',exact:true}).waitFor();assert.equal(await page.locator('#message-submit').isDisabled(),true);await page.locator('#message-form').evaluate(form=>form.requestSubmit());assert.equal(turnPosts,1);
+  visible=true;await page.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));await page.locator('[data-turn-id="turn-visible"]').waitFor();await page.locator('#message-submit:not([disabled])').waitFor();
+  assert.equal(turnPosts,1);assert.equal(await page.locator('[data-turn-id="turn-visible"]').count(),1);assert.equal(await page.locator('#message-input').inputValue(),'');
 });
 
 test('active Turn consumes named SSE events and stop acts on the persisted Turn id', async t => {

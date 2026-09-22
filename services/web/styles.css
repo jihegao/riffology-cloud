@@ -9,4 +9,6 @@
 /* Author card layout must not override the native hidden attribute used by filters. */
 .project[hidden] { display: none; }
 
+.composer .button:disabled{background:#dfe5e0;border-color:#d0d8d1;color:#68766d;cursor:default}
+
 .research-start{margin-bottom:24px}.research-choice{border:1px solid var(--line);border-radius:12px;padding:18px;min-width:0}.research-choice h3{margin-top:0}.research-choice p{line-height:1.6}
