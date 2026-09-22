@@ -3,10 +3,16 @@ import assert from 'node:assert/strict';
 import {readFile,mkdir} from 'node:fs/promises';
 import {chromium} from 'playwright';
 import {resolve} from 'node:path';
+import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 const origin='https://workspace.test',previewOrigin='https://p-'+ 'a'.repeat(40)+'.preview.test';
-const names=['index.html','app.js', 'i18n.js', 'locale-preference.js','project-status.js','browser-preview.js','layout.js','export.js','publication.js','evidence.js','evidence.css','services.js','previews.js','simulation.js','comparison.js','styles.css','workspace.css'];
+const names=['index.html','app.js', 'i18n.js', 'i18n-bindings.js', 'locale-preference.js','project-status.js','browser-preview.js','verify-handoff.js','layout.js','export.js','publication.js','evidence.js','evidence.css','services.js','previews.js','simulation.js','comparison.js','styles.css','workspace.css'];
 const files=Object.fromEntries(await Promise.all(names.map(async name=>[name,await readFile(new URL('../../services/web/'+name,import.meta.url),'utf8')])));
+const digest=value=>createHash('sha256').update(value).digest('hex');
+const hostSource=`export class BrowserPreviewRuntime { constructor(){ } async load(){ return {manifest:{projectId:'p',revisionId:'revision-a',packageIdentity:'${'a'.repeat(64)}'},spec:{parameters:{servers:{type:'integer',default:1,minimum:1,maximum:4}}},visualization:{}} } async run(){return {snapshots:[]}} cancel(){} dispose(){} }`;
+const rendererSource=`export class PreviewPlayer { constructor(){} clear(){} load(){} play(){} pause(){} step(){} restart(){} }`;
+const hostHash=digest(hostSource),rendererHash=digest(rendererSource);
+
 test('closed project admission explains the restriction instead of asking for a refresh',async t=>{
  const f=await fixture(t,{projectFlow:true}),p=f.page;
  await p.route('**/api/tenants/t/projects',route=>route.request().method()==='POST'
@@ -18,7 +24,7 @@ test('closed project admission explains the restriction instead of asking for a 
  assert.equal(f.calls.filter(c=>c.method==='POST').length,0);
 });
 const screenshotDir=process.env.WORKSPACE_LAYOUT_EVIDENCE_DIR?pathToFileURL(resolve(process.env.WORKSPACE_LAYOUT_EVIDENCE_DIR)+'/'):new URL('../../.local/workspace-layout-screenshots/',import.meta.url);
-async function fixture(t,{mismatched=false,unavailableLayoutStorage=false,activePolling=false,pagedServices=false,projectFlow=false,longTitle=false,legacyLayout=null,deferAuthentication=false,authenticationStatus=200,messageRecovery=null}={}){
+async function fixture(t,{mismatched=false,unavailableLayoutStorage=false,activePolling=false,pagedServices=false,projectFlow=false,longTitle=false,legacyLayout=null,deferAuthentication=false,authenticationStatus=200,messageRecovery=null,standalone=false,previewGate=true}={}){
  const browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||'chrome'});t.after(()=>browser.close());const context=await browser.newContext({locale:'zh-CN',viewport:{width:1600,height:900}});t.after(()=>context.close());if(unavailableLayoutStorage)await context.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw new DOMException('Storage disabled','SecurityError');}}));if(legacyLayout)await context.addInitScript(value=>localStorage.setItem('riffology:workspace-layout:t:w',JSON.stringify(value)),legacyLayout);const page=await context.newPage(),errors=[],calls=[];page.setDefaultTimeout(8000);page.on('pageerror',e=>errors.push(e.message));t.after(()=>assert.deepEqual(errors,[]));
  if(messageRecovery)await context.addInitScript(value=>sessionStorage.setItem('riffology:conversation:t:w',JSON.stringify({schemaVersion:1,selectedSessionId:'s',draft:value.message,messageIntent:{key:value.key,sessionId:'s',message:value.message},sessionIntent:null})),messageRecovery);
  let storedLocale=null;
@@ -35,13 +41,15 @@ async function fixture(t,{mismatched=false,unavailableLayoutStorage=false,active
  const json=(route,body,status=200)=>route.fulfill({status,contentType:'application/json',body:JSON.stringify(body)});
  await page.route('**/*',async route=>{
   const req=route.request(),url=new URL(req.url()),path=url.pathname;if(url.origin===previewOrigin)return route.fulfill({contentType:'text/html',body:`<!doctype html><html lang="zh"><meta charset="utf-8"><body style="font:16px sans-serif;background:#f0f8f4;color:#254e3f;padding:28px"><small>LOCAL UI FIXTURE · ${current.runId}</small><h1>排队模型</h1><p>这是浏览器验收使用的受控页面，不是云端仿真证据。</p><div style="display:flex;gap:12px;margin-top:35px"><div style="height:100px;width:24%;background:#89b99e"></div><div style="height:70px;width:24%;background:#bedacb"></div><div style="height:40px;width:24%;background:#dcebe2"></div></div><script>parent.postMessage({type:'riffology-preview-ready',nonce:'${'a'.repeat(64)}'},'${origin}')</script></body></html>`});
-  assert.equal(url.origin,origin);if(!path.startsWith('/api/')){const name=path==='/'?'index.html':path.slice(1);return route.fulfill({status:files[name]?200:404,contentType:name.endsWith('.js')?'application/javascript':name.endsWith('.css')?'text/css':'text/html',body:files[name]||''});}
+  assert.equal(url.origin,origin);if(path===`/browser-preview-assets/${hostHash}/host.mjs`)return route.fulfill({contentType:'application/javascript',body:hostSource});if(path===`/browser-preview-assets/${rendererHash}/renderer.mjs`)return route.fulfill({contentType:'application/javascript',body:rendererSource});if(!path.startsWith('/api/')){const name=path==='/'?'index.html':path.slice(1);return route.fulfill({status:files[name]?200:404,contentType:name.endsWith('.js')?'application/javascript':name.endsWith('.css')?'text/css':'text/html',body:files[name]||''});}
   calls.push({path,method:req.method(),body:req.postData(),key:req.headers()['idempotency-key']});
 if(path==='/api/me'){if(authenticationGate)await authenticationGate;if(authenticationStatus!==200)return json(route,{error:'authentication_required'},authenticationStatus);return json(route,{userId:'fixture-user',locale:storedLocale,execution:{service:true,preview:true,simulation:true},tenants:[{id:'t'}]});}if(path==='/api/me/locale'){storedLocale=JSON.parse(req.postData()).locale;return json(route,{locale:storedLocale});}if(path==='/api/models')return json(route,{models:[]});if(path==='/api/tenants/t/projects'){const project={id:'p',title:longTitle?'很长的项目标题'.repeat(17):'排队与服务能力研究',status:projectStatus,workspace_id:'w'};if(req.method()==='POST'){projectStatus='provisioning';return json(route,{project:{...project,status:projectStatus}},202);}if(projectListError)return json(route,{error:'unrelated-list-error'},503);return json(route,{projects:projectStatus==='absent'?[]:[project]});}
   if(path==='/api/workspaces/w')return json(route,{schemaVersion:3,activeTurnId:null,resourceWait:null,releaseHold:null,recoveryHold:null,sessions:{s:{id:'s',title:'排队研究',createdAt:1,...(messageRecovery?.stale?{canContinue:false}:{})},...(createdConversation?{s2:{id:'s2',title:'Session 2',createdAt:2,canContinue:true}}:{})},turns:{t:{id:'t',sessionId:'s',message:'建立一个排队模型，比较增加服务台后的等待时间。',status:'completed',saveStatus:'saved',createdAt:1}}});
   if(path==='/api/workspaces/w/sessions'&&req.method()==='POST'){createdConversation=true;return json(route,{session:{id:'s2',title:'Session 2',createdAt:2,canContinue:true}},201);}
   if(path==='/api/workspaces/w/sessions/s/turns/receipt'){if(receiptGate)await receiptGate;if(messageRecovery?.receipt==='accepted')return json(route,{accepted:true,turn:{id:'recovered-turn',sessionId:'s',message:messageRecovery.message,status:'completed',persistenceOutcome:'saved',createdAt:2}});if(messageRecovery?.receipt==='error')return json(route,{error:'temporarily_unavailable'},503);return json(route,{error:'not_found'},404);}
-  if(path==='/api/workspaces/w/browser-preview'&&req.method()==='GET')return json(route,{currentRevisionId:null,revisionId:null,build:null,stale:false,modelSpec:null,reasonCode:'preview-no-saved-revision',delivery:null});
+  if(path==='/api/workspaces/w/browser-preview'&&req.method()==='GET')return json(route,{currentRevisionId:'revision-a',build:{status:'ready',revisionId:'revision-a',packageIdentity:'a'.repeat(64)},canVerify:previewGate,stale:false,delivery:{assetBaseUrl:'/browser-preview-assets',hostModule:{url:`/browser-preview-assets/${hostHash}/host.mjs`,sha256:hostHash,byteLength:Buffer.byteLength(hostSource)},rendererModule:{url:`/browser-preview-assets/${rendererHash}/renderer.mjs`,sha256:rendererHash,byteLength:Buffer.byteLength(rendererSource)}}});if(path==='/api/workspaces/w/browser-preview/packages/'+ 'a'.repeat(64))return route.fulfill({contentType:'application/octet-stream',body:'x'});
+  if(path==='/api/workspaces/w/browser-preview/verify'&&req.method()==='POST'){const body=JSON.parse(req.postData());const {idempotencyKey,...captured}=body;return json(route,{verificationId:idempotencyKey,captured,experiment:{id:'verified-a'}},202);}
+  if(path.startsWith('/api/workspaces/w/browser-preview/verify/'))return json(route,{status:'absent',experiment:null});
   if(path==='/api/workspaces/w/events')return json(route,{events:[{sequence:1,turnId:'t',type:'assistant.message',payload:{text:'模型已经保存。可以先查看假设，再修改服务台数量，比较不同种子下的结果。'}}],nextSequence:2,hasMore:false,snapshotRequired:false});
   if(path==='/api/workspaces/w/model')return delayed(route,path,model());if(path==='/api/workspaces/w/files')return delayed(route,path,{revision:{...version(),committedAt:1},files:[{path:'model/run.py',kind:'file',size:1024},{path:'model/model-spec.json',kind:'file',size:512}]});if(path==='/api/workspaces/w/diff')return delayed(route,path,{revision:version(),summary:{added:0,modified:1,deleted:0},changes:[{path:revision+'-changed.py',change:'modified',type:'file',size:1}]});
   if(path==='/api/workspaces/w/evidence')return json(route,{items:[],nextCursor:null});
@@ -53,7 +61,7 @@ if(path==='/api/me'){if(authenticationGate)await authenticationGate;if(authentic
   if(path==='/api/workspaces/w/previews'){if(failedPreview){failedPreview=false;return json(route,{error:'preview-unavailable'},503);}if(req.method()==='POST'){const body=JSON.parse(req.postData());current={previewId:'preview-'+body.runId,runId:body.runId,expiresAt:Date.now()+3600000,revokedAt:null};available={...current,bootstrapUrl:previewOrigin+'/__riff/bootstrap'};return delayed(route,path,available);}return delayed(route,path,{current,available});}
   if(path.endsWith('/tickets'))return json(route,{ticket:'f'.repeat(64),expiresAt:Date.now()+10000});throw Error('unexpected API '+path);
  });
- await page.goto(origin+(projectFlow?'/':'/#/workspace/p'));if(deferAuthentication||authenticationStatus!==200)return {page,calls,releaseAuthentication(){releaseAuthentication?.();}};if(projectFlow){await page.locator('#new-project').waitFor();return {page,calls,setStatus(value){projectStatus=value;},failList(value){projectListError=value;},async refresh(){await page.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));},async expire(){await page.evaluate(()=>window.layoutClockOffset=310000);}};}await page.locator('#message-input:not([disabled])').waitFor();await page.locator('#workspace-preview iframe').waitFor({state:'attached'});await page.waitForFunction(()=>document.querySelector('#workspace-comparison button')?.disabled===false&&document.querySelector('.simulation-form button[type=submit]')?.disabled===false);
+ await page.goto(origin+(projectFlow?'/':standalone?'/#/workspace/p/browser-preview/revision-a/'+ 'a'.repeat(64):'/#/workspace/p'));if(standalone){await page.locator('[data-browser-preview-action=run]:not([disabled])').waitFor();return {page,calls};}if(deferAuthentication||authenticationStatus!==200)return {page,calls,releaseAuthentication(){releaseAuthentication?.();}};if(projectFlow){await page.locator('#new-project').waitFor();return {page,calls,setStatus(value){projectStatus=value;},failList(value){projectListError=value;},async refresh(){await page.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));},async expire(){await page.evaluate(()=>window.layoutClockOffset=310000);}};}await page.locator('#message-input:not([disabled])').waitFor();await page.locator('#workspace-preview iframe').waitFor({state:'attached'});await page.waitForFunction(()=>document.querySelector('#workspace-comparison button')?.disabled===false);
  return {page,calls,releaseReceipt(){releaseReceipt?.();},dropPreview(){current=null;available=null;},holdReads(filter){holdFilter=filter;return {count:()=>held.length,allowNew(){holdFilter=null;},release(){holdFilter=null;for(const resolve of held)resolve();held=[];}};},rejectResults(){experiments[0]={...experiments[0],status:'completed',evidenceRejection:{reason:'Rejected newest result'}};group={...group,status:'completed',progress:{...group.progress,active:0,completed:1,rejected:1},runs:[{...group.runs[0],status:'completed',evidenceRejection:{reason:'Rejected newest result'}}],summary:[{configurationId:'base',metrics:{wait:{count:0,missing:1,mean:null,baselineMean:null,delta:null}}}]};},setRevision(value){revision=value;},failPreview(){failedPreview=true;},services:()=>services,async shot(name){await mkdir(screenshotDir,{recursive:true});await page.screenshot({path:new URL(name+'.png',screenshotDir).pathname,fullPage:true});}};
 }
 
@@ -107,7 +115,7 @@ test('a revoked-version pending intent migrates explicitly to a new conversation
 });
 
 test('actual Workspace keeps resizable accessible split, presentation preferences and same saved state across responsive reopen',async t=>{
- const f=await fixture(t,{longTitle:true}),p=f.page;await p.locator('.simulation-form input[name=servers]').waitFor();let bounds=await p.locator('.workspace-grid').boundingBox(),agent=await p.locator('#workspace-agent').boundingBox();assert.ok(Math.abs(agent.width/bounds.width-.35)<.03);assert.equal(await p.locator('#canvas-preview').isVisible(),true);assert.equal(await p.locator('.files-panel').isVisible(),false);assert.equal(f.calls.filter(c=>c.method==='POST'&&!c.path.endsWith('/tickets')).length,0);assert.equal(await p.locator('[data-workspace-depth]').count(),0);assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await f.shot('desktop-explore');
+ const f=await fixture(t,{longTitle:true}),p=f.page;let bounds=await p.locator('.workspace-grid').boundingBox(),agent=await p.locator('#workspace-agent').boundingBox();assert.ok(Math.abs(agent.width/bounds.width-.35)<.03);assert.equal(await p.locator('#canvas-preview').isVisible(),true);assert.equal(await p.locator('.files-panel').isVisible(),false);assert.equal(f.calls.filter(c=>c.method==='POST'&&!c.path.endsWith('/tickets')).length,0);assert.equal(await p.locator('[data-workspace-depth]').count(),0);assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await f.shot('desktop-explore');await p.getByRole('tab',{name:'Runs',exact:true}).click();await p.locator('.simulation-form input[name=servers]').waitFor();
  const divider=p.locator('[data-workspace-divider]');await divider.focus();await p.keyboard.press('ArrowRight');assert.equal(await divider.getAttribute('aria-valuenow'),'37');const d=await divider.boundingBox();await p.mouse.move(d.x+5,d.y+30);await p.mouse.down();await p.mouse.move(bounds.x+bounds.width*.43,d.y+30);await p.mouse.up();assert.equal(await divider.getAttribute('aria-valuenow'),'43');
  await p.getByRole('tab',{name:'Model',exact:true}).click();await p.locator('#workspace-model h2').waitFor();assert.match(await p.locator('#workspace-model').innerText(),/先到先服务/);assert.equal(await p.locator('#workspace-export').isVisible(),true);assert.equal(await p.locator('#canvas-model #workspace-publication').isVisible(),true);assert.match(await p.locator('#workspace-publication').innerText(),/完整研究历史供管理员审核/);await f.shot('desktop-model');await p.reload();await p.locator('#workspace-model h2').waitFor();assert.equal(await divider.getAttribute('aria-valuenow'),'43');assert.equal(await p.locator('#canvas-model').isVisible(),true);
  await p.getByRole('tab',{name:'Runs',exact:true}).click();await p.locator('.comparison-form').waitFor();assert.equal(await p.locator('#canvas-runs').isVisible(),true);assert.equal(await p.locator('#workspace-evidence').isVisible(),true);assert.match(await p.locator('#workspace-run-history').innerText(),/single-a/);await f.shot('desktop-experiment');
@@ -119,10 +127,10 @@ test('actual Workspace keeps resizable accessible split, presentation preference
 
 test('current frame binds labels and Stop to its actual service, explicit new model run rebinds, stopped results survive reopen',async t=>{
  const f=await fixture(t,{mismatched:true}),p=f.page;await p.waitForFunction(()=>document.querySelector('#workspace-services').textContent.includes('revision-a'));assert.doesNotMatch(await p.locator('#workspace-services').innerText(),/模型版本：revision-b/);
- f.setRevision('revision-b');await p.getByRole('button',{name:'刷新模型与实验',exact:true}).click();await p.waitForFunction(()=>document.querySelector('#workspace-model-status').dataset.state==='old');assert.match(await p.locator('#workspace-model-status').innerText(),/revision-a.*revision-b/);await f.shot('old-preview-new-model');
- await p.locator('.simulation-form input[name=servers]').fill('2');await p.locator('.simulation-form button[type=submit]').click();await p.waitForFunction(()=>document.querySelector('.latest-result').textContent.includes('2.1'));assert.equal(f.calls.filter(c=>/\/turns/.test(c.path)&&c.method==='POST').length,0);
- await p.getByRole('button',{name:'运行已保存模型',exact:true}).click();await p.waitForFunction(()=>document.querySelector('#workspace-preview iframe')&&document.querySelector('#workspace-services').textContent.includes('revision-b'));assert.equal(f.calls.filter(c=>c.path.endsWith('/services')&&c.method==='POST').length,1);const bind=f.calls.filter(c=>c.path.endsWith('/previews')&&c.method==='POST').at(-1);assert.equal(JSON.parse(bind.body).runId,'run-b');await f.shot('new-model-preview');
- await p.locator('#workspace-services [data-service-action=stop]').click();await p.waitForFunction(()=>!document.querySelector('#workspace-preview iframe'));assert.equal(f.calls.filter(c=>c.path.endsWith('/services/run-b/stop')).length,1);assert.equal(f.calls.filter(c=>c.path.endsWith('/services/run-a/stop')).length,0);await p.reload();await p.locator('.latest-result').waitFor();assert.match(await p.locator('.latest-result').innerText(),/2.1/);assert.equal(await p.locator('#workspace-preview iframe').count(),0);await p.waitForFunction(()=>document.querySelector('#workspace-model-status').dataset.state==='stopped');assert.equal(f.calls.filter(c=>c.path.endsWith('/services')&&c.method==='POST').length,1);
+ f.setRevision('revision-b');await p.getByRole('tab',{name:'Runs',exact:true}).click();await p.getByRole('button',{name:'刷新模型与实验',exact:true}).click();await p.waitForFunction(()=>document.querySelector('#workspace-model-status').dataset.state==='old');assert.match(await p.locator('#workspace-model-status').innerText(),/revision-a.*revision-b/);await f.shot('old-preview-new-model');
+ await p.getByRole('tab',{name:'Runs',exact:true}).click();await p.locator('.simulation-form input[name=servers]').fill('2');await p.locator('.simulation-form button[type=submit]').click();await p.waitForFunction(()=>document.querySelector('.latest-result').textContent.includes('2.1'));assert.equal(f.calls.filter(c=>/\/turns/.test(c.path)&&c.method==='POST').length,0);
+ await p.getByRole('tab',{name:'Preview',exact:true}).click();await p.getByRole('button',{name:'运行已保存模型',exact:true}).click();await p.waitForFunction(()=>document.querySelector('#workspace-preview iframe')&&document.querySelector('#workspace-services').textContent.includes('revision-b'));assert.equal(f.calls.filter(c=>c.path.endsWith('/services')&&c.method==='POST').length,1);const bind=f.calls.filter(c=>c.path.endsWith('/previews')&&c.method==='POST').at(-1);assert.equal(JSON.parse(bind.body).runId,'run-b');await f.shot('new-model-preview');
+ await p.locator('#workspace-services [data-service-action=stop]').click();await p.waitForFunction(()=>!document.querySelector('#workspace-preview iframe'));assert.equal(f.calls.filter(c=>c.path.endsWith('/services/run-b/stop')).length,1);assert.equal(f.calls.filter(c=>c.path.endsWith('/services/run-a/stop')).length,0);await p.reload();await p.getByRole('tab',{name:'Runs',exact:true}).click();await p.locator('.latest-result').waitFor();assert.match(await p.locator('.latest-result').innerText(),/2.1/);assert.equal(await p.locator('#workspace-preview iframe').count(),0);await p.waitForFunction(()=>document.querySelector('#workspace-model-status').dataset.state==='stopped');assert.equal(f.calls.filter(c=>c.path.endsWith('/services')&&c.method==='POST').length,1);
 });
 
 test('closing Preview remains closed on refresh and recover remains an explicit working action',async t=>{
@@ -136,13 +144,13 @@ test('blocked localStorage getter keeps Workspace and layout interactions usable
 
 test('late same-workspace model reads cannot overwrite a newer saved version or swallow its reload',{timeout:15000},async t=>{
  const f=await fixture(t),p=f.page,hold=f.holdReads(path=>path.endsWith('/model'));
- await p.getByRole('button',{name:'刷新模型与实验',exact:true}).click();await p.getByRole('tab',{name:'Runs',exact:true}).click();await p.getByRole('button',{name:'刷新比较与模型',exact:true}).click();await waitHeld(hold,2);
+ await p.getByRole('tab',{name:'Runs',exact:true}).click();await p.getByRole('button',{name:'刷新模型与实验',exact:true}).click();await p.getByRole('button',{name:'刷新比较与模型',exact:true}).click();await waitHeld(hold,2);
  hold.allowNew();f.setRevision('revision-b');await p.getByRole('tab',{name:'Inspect',exact:true}).click();await p.locator('#files-refresh').click();await p.waitForFunction(()=>document.querySelector('#workspace-model-status').textContent.includes('新版本 revision-b'));
- hold.release();await p.getByRole('tab',{name:'Preview',exact:true}).click();await p.waitForFunction(()=>document.querySelector('.simulation-form input[name=servers]').value==='3');assert.match(await p.locator('#workspace-model-status').innerText(),/revision-a.*revision-b/);await p.getByRole('tab',{name:'Runs',exact:true}).click();assert.equal(await p.locator('[data-configuration=baseline] input[type=number]').first().inputValue(),'3');assert.equal(f.calls.filter(c=>c.method==='POST'&&!c.path.endsWith('/tickets')).length,0);
+ hold.release();await p.getByRole('tab',{name:'Runs',exact:true}).click();await p.waitForFunction(()=>document.querySelector('.simulation-form input[name=servers]').value==='3');assert.match(await p.locator('#workspace-model-status').innerText(),/revision-a.*revision-b/);await p.getByRole('tab',{name:'Runs',exact:true}).click();assert.equal(await p.locator('[data-configuration=baseline] input[type=number]').first().inputValue(),'3');assert.equal(f.calls.filter(c=>c.method==='POST'&&!c.path.endsWith('/tickets')).length,0);
 });
 test('late simulation and comparison polls cannot undo a newer rejection-aware reload',{timeout:15000},async t=>{
  const f=await fixture(t,{activePolling:true}),p=f.page,hold=f.holdReads(path=>path.endsWith('/experiments')||path.endsWith('/experiment-groups/group-a'));await waitHeld(hold,2);
- hold.allowNew();f.rejectResults();await p.getByRole('button',{name:'刷新模型与实验',exact:true}).click();await p.getByRole('tab',{name:'Runs',exact:true}).click();await p.getByRole('button',{name:'刷新比较与模型',exact:true}).click();await p.waitForFunction(()=>document.querySelector('#workspace-run-history').textContent.includes('Rejected newest result')&&document.querySelector('#workspace-comparison').textContent.includes('已否定'));
+ hold.allowNew();f.rejectResults();await p.getByRole('tab',{name:'Runs',exact:true}).click();await p.getByRole('button',{name:'刷新模型与实验',exact:true}).click();await p.getByRole('button',{name:'刷新比较与模型',exact:true}).click();await p.waitForFunction(()=>document.querySelector('#workspace-run-history').textContent.includes('Rejected newest result')&&document.querySelector('#workspace-comparison').textContent.includes('已否定'));
  hold.release();await p.waitForTimeout(100);assert.match(await p.locator('#workspace-run-history').innerText(),/Rejected newest result/);assert.doesNotMatch(await p.locator('#workspace-comparison').innerText(),/99/);assert.equal(f.calls.filter(c=>c.method==='POST'&&!c.path.endsWith('/tickets')).length,0);
 });
 
@@ -153,7 +161,7 @@ test('a Preview read started before Stop cannot reopen the stopped iframe', {tim
 });
 test('a poll started before submission cannot remove the newly accepted Run', {timeout:15000},async t=>{
  const f=await fixture(t,{activePolling:true}),p=f.page,hold=f.holdReads(path=>path.endsWith('/experiments'));await waitHeld(hold,1);hold.allowNew();
- await p.locator('.simulation-form input[name=servers]').fill('2');await p.locator('.simulation-form button[type=submit]').click();await p.waitForFunction(()=>document.querySelector('#workspace-run-history').textContent.includes('single-new'));hold.release();await p.waitForTimeout(100);assert.match(await p.locator('#workspace-run-history').textContent(),/single-new/);assert.equal(f.calls.filter(c=>c.path.endsWith('/experiments')&&c.method==='POST').length,1);
+ await p.getByRole('tab',{name:'Runs',exact:true}).click();await p.locator('.simulation-form input[name=servers]').fill('2');await p.locator('.simulation-form button[type=submit]').click();await p.waitForFunction(()=>document.querySelector('#workspace-run-history').textContent.includes('single-new'));hold.release();await p.waitForTimeout(100);assert.match(await p.locator('#workspace-run-history').textContent(),/single-new/);assert.equal(f.calls.filter(c=>c.path.endsWith('/experiments')&&c.method==='POST').length,1);
 });
 
 test('new Files and Diff reads keep their head after older responses arrive', {timeout:15000},async t=>{
@@ -187,7 +195,7 @@ test('project failures and timeouts stay actionable, unrelated list errors are n
  f.failList(true);await f.refresh();await p.waitForFunction(()=>document.querySelector('#notice').textContent.includes('服务暂不可用'));f.failList(false);await f.refresh();await p.waitForTimeout(100);assert.match(await p.locator('#notice').innerText(),/服务暂不可用/);
 });
 test('legacy depth restores a view and four tabs support keyboard navigation without execution',async t=>{
- const f=await fixture(t,{legacyLayout:{depth:'inspect',mobile:'preview'}}),p=f.page;assert.equal(await p.locator('#canvas-inspect').isVisible(),true);await p.getByRole('tab',{name:'Inspect',exact:true}).focus();await p.keyboard.press('Home');assert.equal(await p.locator('#canvas-preview').isVisible(),true);await p.keyboard.press('ArrowRight');assert.equal(await p.locator('#canvas-model').isVisible(),true);await p.keyboard.press('ArrowRight');assert.equal(await p.locator('#canvas-runs').isVisible(),true);await p.keyboard.press('End');assert.equal(await p.locator('#canvas-inspect').isVisible(),true);assert.equal(await p.locator('#workspace-runtime-details').isVisible(),true);assert.equal(f.calls.filter(c=>c.method==='POST'&&!c.path.endsWith('/tickets')).length,0);
+ const f=await fixture(t,{legacyLayout:{depth:'inspect',mobile:'preview'}}),p=f.page;assert.equal(await p.locator('#canvas-inspect').isVisible(),true);await p.getByRole('tab',{name:'Inspect',exact:true}).focus();await p.keyboard.press('Home');assert.equal(await p.locator('#canvas-model').isVisible(),true);await p.keyboard.press('ArrowRight');assert.equal(await p.locator('#canvas-preview').isVisible(),true);await p.keyboard.press('ArrowRight');assert.equal(await p.locator('#canvas-runs').isVisible(),true);await p.keyboard.press('End');assert.equal(await p.locator('#canvas-inspect').isVisible(),true);assert.equal(await p.locator('#workspace-runtime-details').isVisible(),true);assert.equal(f.calls.filter(c=>c.method==='POST'&&!c.path.endsWith('/tickets')).length,0);
 });
 
 test('Managed retry explains the durable block and cancelled saves do not claim model completion',async t=>{
@@ -227,4 +235,49 @@ test('locale selection leaves unresolved receipt frozen and usable without local
  assert.equal(await p.locator('#message-input').inputValue(),message);assert.equal(await p.locator('#message-input').isEditable(),false);
  assert.equal(f.calls.filter(c=>c.method==='POST'&&c.path.endsWith('/turns')).length,0);
  assert.equal(await p.evaluate(()=>JSON.parse(sessionStorage.getItem('riffology:conversation:t:w')).messageIntent.key),'locale-receipt');
+});
+
+test('Preview handoff opens Runs without POST and confirmation submits its frozen input',async t=>{
+ const f=await fixture(t),p=f.page;
+ await p.locator('#workspace-browser-preview [data-parameter=servers]').fill('2');
+ await p.locator('#workspace-browser-preview [data-browser-preview-seed]').fill('9');
+ await p.locator('#workspace-browser-preview [data-browser-preview-action=verify]').click();
+ await p.locator('#canvas-runs').waitFor();
+ assert.equal(f.calls.filter(c=>c.path.endsWith('/browser-preview/verify')&&c.method==='POST').length,0);
+ await p.getByRole('button',{name:'确认提交服务器实验',exact:true}).click();
+ await p.waitForTimeout(20);
+ const post=f.calls.find(c=>c.path.endsWith('/browser-preview/verify')&&c.method==='POST');assert.ok(post);assert.deepEqual(JSON.parse(post.body).parameters,{servers:2});assert.equal(JSON.parse(post.body).seed,9);
+});
+
+
+test('standalone Preview carries its frozen draft into actual Workspace Runs without execution',async t=>{
+ const f=await fixture(t,{standalone:true}),p=f.page;
+ await p.locator('[data-parameter=servers]').fill('3');await p.locator('[data-browser-preview-seed]').fill('42');
+ await p.locator('[data-browser-preview-action=verify]').click();
+ await p.waitForURL('**/#/workspace/p');await p.locator('#canvas-runs').waitFor();
+ await p.locator('[data-verify-handoff-action=submit]:not([disabled])').waitFor();
+ assert.equal(await p.locator('#workspace').evaluate(node=>node.classList.contains('browser-preview-standalone')),false);
+ const draft=await p.evaluate(()=>JSON.parse(sessionStorage.getItem('riffology:browser-preview:verify:t:p:w:handoff')));
+ assert.deepEqual(draft,{revisionId:'revision-a',packageIdentity:'a'.repeat(64),parameters:{servers:3},seed:42,intent:'experiment'});
+ assert.equal(f.calls.filter(c=>c.method==='POST'&&!c.path.endsWith('/tickets')).length,0);
+ await p.locator('[data-verify-handoff-action=submit]').click();
+ await p.waitForFunction(()=>sessionStorage.getItem('riffology:browser-preview:verify:t:p:w:handoff')===null);
+ const posts=f.calls.filter(c=>c.path.endsWith('/browser-preview/verify')&&c.method==='POST');assert.equal(posts.length,1);const {idempotencyKey,...captured}=JSON.parse(posts[0].body);assert.ok(idempotencyKey);assert.deepEqual(captured,draft);
+});
+
+test('actual Workspace scoped gate denies Verify despite the account hint and refresh failure preserves a draft',async t=>{
+ const f=await fixture(t,{previewGate:false}),p=f.page;
+ await p.locator('[data-browser-preview-action=run]:not([disabled])').waitFor();
+ assert.equal(await p.locator('[data-browser-preview-action=verify]').isDisabled(),true);
+ await p.locator('[data-browser-preview-action=run]').click();
+ assert.equal(f.calls.filter(c=>c.method==='POST'&&!c.path.endsWith('/tickets')).length,0);
+ const open=await fixture(t),q=open.page;
+ await q.locator('[data-browser-preview-action=verify]:not([disabled])').click();await q.locator('#canvas-runs').waitFor();
+ const key='riffology:browser-preview:verify:t:p:w:handoff',saved=await q.evaluate(k=>sessionStorage.getItem(k),key);
+ await q.route('**/api/workspaces/w/browser-preview',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:'preview-unavailable'})}));
+ await q.locator('[data-workspace-tab=preview]').click();await q.locator('[data-browser-preview-action=refresh]').click();
+ await q.waitForFunction(()=>document.querySelector('#workspace-browser-preview [role=status]').textContent.includes('无法恢复'));
+ assert.equal(await q.locator('[data-browser-preview-action=verify]').isDisabled(),true);
+ await q.locator('[data-workspace-tab=runs]').click();assert.equal(await q.locator('[data-verify-handoff-action=submit]').isDisabled(),true);
+ assert.equal(await q.evaluate(k=>sessionStorage.getItem(k),key),saved);assert.equal(open.calls.filter(c=>c.path.endsWith('/browser-preview/verify')&&c.method==='POST').length,0);
 });
