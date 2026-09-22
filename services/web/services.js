@@ -1,5 +1,5 @@
 import {errorMessage,formatDate,msg} from './i18n.js';
-import {bindValue} from './i18n-bindings.js';
+import {bindAttribute,bindValue} from './i18n-bindings.js';
 const terminalRuns = new Set(['stopped', 'failed', 'cancelled']);
 const deliveryLabels = Object.fromEntries(['resolving','ready','delivery-unknown','delivered','cancelled','failed'].map(value=>[value,msg(`service.delivery.${value}`)]));
 const runLabels = Object.fromEntries(['queued','starting','running','unknown','stopping','stopped','failed','cancelled'].map(value=>[value,msg(`service.run.${value}`)]));
@@ -22,7 +22,7 @@ export function createServicePanel({ root, inspectRoot = null, api, onPreviewRun
   function render() {
     if (!current) return;
     const heading = element('h3',workspaceMode?msg('service.workspaceTitle'):msg('service.title')),note=element('p',workspaceMode?msg('service.workspaceNote'):msg('service.note'));
-    const controls = element('div'), select = element('select'); select.dataset.serviceDuration = ''; select.setAttribute('aria-label', String(msg('service.duration')));
+    const controls = element('div'), select = element('select'); select.dataset.serviceDuration = ''; bindAttribute(select, 'aria-label', 'service.duration');
     for (const [value, label] of [[60000, 'service.duration1'], [300000, 'service.duration5'], [900000, 'service.duration15']]) { const option = element('option', msg(label)); option.value = String(value); select.append(option); }
     select.value = String(pending?.maxDurationMs ?? duration); select.disabled = Boolean(pending) || posting || !current.canStart;
     if(workspaceMode){const durationBox=element('details');durationBox.dataset.inspectOnly='';durationBox.append(element('summary',msg('service.duration')),select);controls.append(durationBox);}else controls.append(select);controls.append(button(()=>pending?msg('service.retryStart'):workspaceMode?msg('service.workspaceStart'):msg('service.start'),'start',posting||!current.canStart),button(()=>workspaceMode?msg('service.workspaceRefresh'):msg('service.refresh'),'refresh'));

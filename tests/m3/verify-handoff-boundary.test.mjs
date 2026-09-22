@@ -32,8 +32,8 @@ async function fixture(t, {mode = 'absent'} = {}) {
       if (options.method === 'POST') {
         if (window.mode === 'unknown' || window.mode === 'hanging') return new Promise(() => {});
         const submitted = JSON.parse(options.body);
-        const {idempotencyKey, ...captured} = submitted;
-        return Promise.resolve({verificationId: idempotencyKey, captured, experiment: {id: 'experiment-a'}});
+        window.mode = 'accepted';
+        return Promise.resolve({verificationId: submitted.idempotencyKey, experiment: {id: 'experiment-a'}});
       }
       const key = path.split('/').at(-1);
       const stored = JSON.parse(sessionStorage.getItem(window.pendingKey) || 'null');
@@ -89,6 +89,20 @@ test('an original pending Verify key wins over a newer draft and confirmation re
   await page.locator('[data-verify-handoff-action="submit"]').click();
   await page.waitForFunction(() => calls.some(call => call.method === 'POST'));
   assert.deepEqual(JSON.parse((await posts(page))[0].body), pending);
+});
+
+test('a successful Verify POST confirms the matching captured receipt through GET before clearing the pending request', async t => {
+  const page = await fixture(t);
+  await enter(page);
+  assert.equal(await page.evaluate(value => window.panel.handoff(value), draft()), true);
+  await page.locator('[data-verify-handoff-action="submit"]').click();
+  await page.waitForFunction(() => verified.length === 1);
+  const [post] = await posts(page);
+  const pending = JSON.parse(post.body);
+  const reads = await page.evaluate(() => calls.filter(call => call.method === 'GET').map(call => call.path));
+  assert.ok(reads.includes(`/api/workspaces/${scopeA.workspaceId}/browser-preview/verify/${pending.idempotencyKey}`));
+  assert.equal(await page.evaluate(() => sessionStorage.getItem(window.pendingKey)), null);
+  assert.deepEqual(await page.evaluate(() => Object.keys(verified[0]).sort()), ['captured', 'experiment', 'status', 'verificationId']);
 });
 
 test('unknown receipt recovery uses only the exact GET key, preserves wrong or absent receipts, and does not consume another scope', async t => {
