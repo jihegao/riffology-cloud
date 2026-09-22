@@ -5,7 +5,7 @@ import {chromium} from 'playwright';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 const origin='https://workspace.test',previewOrigin='https://p-'+ 'a'.repeat(40)+'.preview.test';
-const names=['index.html','app.js','project-status.js','browser-preview.js','layout.js','export.js','publication.js','evidence.js','evidence.css','services.js','previews.js','simulation.js','comparison.js','styles.css','workspace.css'];
+const names=['index.html','app.js', 'i18n.js', 'locale-preference.js','project-status.js','browser-preview.js','layout.js','export.js','publication.js','evidence.js','evidence.css','services.js','previews.js','simulation.js','comparison.js','styles.css','workspace.css'];
 const files=Object.fromEntries(await Promise.all(names.map(async name=>[name,await readFile(new URL('../../services/web/'+name,import.meta.url),'utf8')])));
 test('closed project admission explains the restriction instead of asking for a refresh',async t=>{
  const f=await fixture(t,{projectFlow:true}),p=f.page;
@@ -19,8 +19,9 @@ test('closed project admission explains the restriction instead of asking for a 
 });
 const screenshotDir=process.env.WORKSPACE_LAYOUT_EVIDENCE_DIR?pathToFileURL(resolve(process.env.WORKSPACE_LAYOUT_EVIDENCE_DIR)+'/'):new URL('../../.local/workspace-layout-screenshots/',import.meta.url);
 async function fixture(t,{mismatched=false,unavailableLayoutStorage=false,activePolling=false,pagedServices=false,projectFlow=false,longTitle=false,legacyLayout=null,deferAuthentication=false,authenticationStatus=200,messageRecovery=null}={}){
- const browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||'chrome'});t.after(()=>browser.close());const context=await browser.newContext({viewport:{width:1600,height:900}});t.after(()=>context.close());if(unavailableLayoutStorage)await context.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw new DOMException('Storage disabled','SecurityError');}}));if(legacyLayout)await context.addInitScript(value=>localStorage.setItem('riffology:workspace-layout:t:w',JSON.stringify(value)),legacyLayout);const page=await context.newPage(),errors=[],calls=[];page.setDefaultTimeout(8000);page.on('pageerror',e=>errors.push(e.message));t.after(()=>assert.deepEqual(errors,[]));
+ const browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||'chrome'});t.after(()=>browser.close());const context=await browser.newContext({locale:'zh-CN',viewport:{width:1600,height:900}});t.after(()=>context.close());if(unavailableLayoutStorage)await context.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw new DOMException('Storage disabled','SecurityError');}}));if(legacyLayout)await context.addInitScript(value=>localStorage.setItem('riffology:workspace-layout:t:w',JSON.stringify(value)),legacyLayout);const page=await context.newPage(),errors=[],calls=[];page.setDefaultTimeout(8000);page.on('pageerror',e=>errors.push(e.message));t.after(()=>assert.deepEqual(errors,[]));
  if(messageRecovery)await context.addInitScript(value=>sessionStorage.setItem('riffology:conversation:t:w',JSON.stringify({schemaVersion:1,selectedSessionId:'s',draft:value.message,messageIntent:{key:value.key,sessionId:'s',message:value.message},sessionIntent:null})),messageRecovery);
+ let storedLocale=null;
  let projectStatus=projectFlow?'absent':'ready',projectListError=false,releaseAuthentication,createdConversation=false;const authenticationGate=deferAuthentication?new Promise(resolve=>{releaseAuthentication=resolve;}):null;await page.addInitScript(()=>{const now=Date.now;window.layoutClockOffset=0;Date.now=()=>now()+window.layoutClockOffset;});let revision='revision-a',failedPreview=false,holdFilter=null,held=[];
  let releaseReceipt;const receiptGate=messageRecovery?.defer?new Promise(resolve=>{releaseReceipt=resolve;}):null;
  const delayed=async(route,path,value)=>{const frozen=structuredClone(value);if(holdFilter?.(path,route.request().method()))await new Promise(resolve=>held.push(resolve));return json(route,frozen);};const sha=()=>revision==='revision-a'?'a'.repeat(64):'b'.repeat(64),version=()=>({revisionId:revision,filesSha256:sha(),specSha256:'c'.repeat(64)});
@@ -36,7 +37,7 @@ async function fixture(t,{mismatched=false,unavailableLayoutStorage=false,active
   const req=route.request(),url=new URL(req.url()),path=url.pathname;if(url.origin===previewOrigin)return route.fulfill({contentType:'text/html',body:`<!doctype html><html lang="zh"><meta charset="utf-8"><body style="font:16px sans-serif;background:#f0f8f4;color:#254e3f;padding:28px"><small>LOCAL UI FIXTURE · ${current.runId}</small><h1>排队模型</h1><p>这是浏览器验收使用的受控页面，不是云端仿真证据。</p><div style="display:flex;gap:12px;margin-top:35px"><div style="height:100px;width:24%;background:#89b99e"></div><div style="height:70px;width:24%;background:#bedacb"></div><div style="height:40px;width:24%;background:#dcebe2"></div></div><script>parent.postMessage({type:'riffology-preview-ready',nonce:'${'a'.repeat(64)}'},'${origin}')</script></body></html>`});
   assert.equal(url.origin,origin);if(!path.startsWith('/api/')){const name=path==='/'?'index.html':path.slice(1);return route.fulfill({status:files[name]?200:404,contentType:name.endsWith('.js')?'application/javascript':name.endsWith('.css')?'text/css':'text/html',body:files[name]||''});}
   calls.push({path,method:req.method(),body:req.postData(),key:req.headers()['idempotency-key']});
-if(path==='/api/me'){if(authenticationGate)await authenticationGate;if(authenticationStatus!==200)return json(route,{error:'authentication_required'},authenticationStatus);return json(route,{execution:{service:true,preview:true,simulation:true},tenants:[{id:'t'}]});}if(path==='/api/models')return json(route,{models:[]});if(path==='/api/tenants/t/projects'){const project={id:'p',title:longTitle?'很长的项目标题'.repeat(17):'排队与服务能力研究',status:projectStatus,workspace_id:'w'};if(req.method()==='POST'){projectStatus='provisioning';return json(route,{project:{...project,status:projectStatus}},202);}if(projectListError)return json(route,{error:'unrelated-list-error'},503);return json(route,{projects:projectStatus==='absent'?[]:[project]});}
+if(path==='/api/me'){if(authenticationGate)await authenticationGate;if(authenticationStatus!==200)return json(route,{error:'authentication_required'},authenticationStatus);return json(route,{userId:'fixture-user',locale:storedLocale,execution:{service:true,preview:true,simulation:true},tenants:[{id:'t'}]});}if(path==='/api/me/locale'){storedLocale=JSON.parse(req.postData()).locale;return json(route,{locale:storedLocale});}if(path==='/api/models')return json(route,{models:[]});if(path==='/api/tenants/t/projects'){const project={id:'p',title:longTitle?'很长的项目标题'.repeat(17):'排队与服务能力研究',status:projectStatus,workspace_id:'w'};if(req.method()==='POST'){projectStatus='provisioning';return json(route,{project:{...project,status:projectStatus}},202);}if(projectListError)return json(route,{error:'unrelated-list-error'},503);return json(route,{projects:projectStatus==='absent'?[]:[project]});}
   if(path==='/api/workspaces/w')return json(route,{schemaVersion:3,activeTurnId:null,resourceWait:null,releaseHold:null,recoveryHold:null,sessions:{s:{id:'s',title:'排队研究',createdAt:1,...(messageRecovery?.stale?{canContinue:false}:{})},...(createdConversation?{s2:{id:'s2',title:'Session 2',createdAt:2,canContinue:true}}:{})},turns:{t:{id:'t',sessionId:'s',message:'建立一个排队模型，比较增加服务台后的等待时间。',status:'completed',saveStatus:'saved',createdAt:1}}});
   if(path==='/api/workspaces/w/sessions'&&req.method()==='POST'){createdConversation=true;return json(route,{session:{id:'s2',title:'Session 2',createdAt:2,canContinue:true}},201);}
   if(path==='/api/workspaces/w/sessions/s/turns/receipt'){if(receiptGate)await receiptGate;if(messageRecovery?.receipt==='accepted')return json(route,{accepted:true,turn:{id:'recovered-turn',sessionId:'s',message:messageRecovery.message,status:'completed',persistenceOutcome:'saved',createdAt:2}});if(messageRecovery?.receipt==='error')return json(route,{error:'temporarily_unavailable'},503);return json(route,{error:'not_found'},404);}
@@ -198,4 +199,32 @@ test('Managed retry explains the durable block and cancelled saves do not claim 
  await p.locator('#message-input').fill('Retry');await p.locator('#message-submit').click();
  await p.waitForFunction(()=>document.querySelector('#message-error').textContent.includes('执行状态未确认'));
  assert.doesNotMatch(await p.locator('#message-error').innerText(),/服务暂不可用/);
+});
+
+
+test('locale switching retains Workspace nodes, drafts, selected Session and Preview with account restore',async t=>{
+ const f=await fixture(t),p=f.page;
+ await p.locator('#message-input').fill('Keep this user draft 中文');
+ await p.evaluate(()=>{window.localeNodes={turns:document.querySelector('#turns'),frame:document.querySelector('#workspace-preview iframe'),session:document.querySelector('#session-select').value};});
+ const before=f.calls.length;
+ await p.locator('[data-locale-select]').selectOption('en');
+ await p.waitForFunction(()=>document.documentElement.lang==='en');
+ await p.waitForFunction(()=>document.querySelector('#sign-out').textContent==='Sign out');
+ assert.equal(await p.locator('#message-input').inputValue(),'Keep this user draft 中文');
+ assert.equal(await p.evaluate(()=>window.localeNodes.turns===document.querySelector('#turns')&&window.localeNodes.frame===document.querySelector('#workspace-preview iframe')&&window.localeNodes.session===document.querySelector('#session-select').value),true);
+ await p.waitForTimeout(100);
+ const writes=f.calls.slice(before).filter(c=>c.method!=='GET');
+ assert.equal(writes.length,1);assert.equal(writes[0].path,'/api/me/locale');assert.equal(writes[0].method,'PUT');assert.deepEqual(JSON.parse(writes[0].body),{locale:'en'});
+ await p.reload();await p.locator('#message-input:not([disabled])').waitFor();
+ assert.equal(await p.locator('html').getAttribute('lang'),'en');assert.equal(await p.locator('#message-input').inputValue(),'Keep this user draft 中文');
+ await p.setViewportSize({width:390,height:844});assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+});
+
+test('locale selection leaves unresolved receipt frozen and usable without localStorage',async t=>{
+ const message='保留未确认请求',f=await fixture(t,{unavailableLayoutStorage:true,messageRecovery:{key:'locale-receipt',message,receipt:'missing'}}),p=f.page;
+ await p.getByRole('button',{name:'重试上次请求',exact:true}).waitFor();
+ await p.locator('[data-locale-select]').selectOption('en');
+ assert.equal(await p.locator('#message-input').inputValue(),message);assert.equal(await p.locator('#message-input').isEditable(),false);
+ assert.equal(f.calls.filter(c=>c.method==='POST'&&c.path.endsWith('/turns')).length,0);
+ assert.equal(await p.evaluate(()=>JSON.parse(sessionStorage.getItem('riffology:conversation:t:w')).messageIntent.key),'locale-receipt');
 });

@@ -16,6 +16,7 @@ import { ProjectCatalog,projectBudgetRoute,type ProjectBudgetRoute } from '../ca
 import {projectCreationAdmission,type ProjectCreationAdmission} from '../catalog/project-admission.ts';
 import { ModelCatalog, type ModelVersion } from '../catalog/models.ts';
 import { OperatorCatalog } from '../catalog/admin.ts';
+import { LocalePreferences } from '../catalog/locale-preferences.ts';
 import { statement as sql, type Database } from '../catalog/database.ts';
 import { HttpError, json, readJson, requireOrigin } from './http.ts';
 import {sameScope,type TurnActor,type TurnScope} from '../turn/protocol.ts';
@@ -127,6 +128,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       return json(await admission.accept(identity,(body as {token?:unknown}).token));
     }
     const principal=await admission.principal(identity);
+    const localePreferences=new LocalePreferences(services.database);
     const admin=new OperatorCatalog(services.database);
     const models=new ModelCatalog(services.database,Date.now,services.modelContent,services.modelUpload);
     const windowRoute=/^\/api\/tenants\/([A-Za-z0-9_-]{1,128})\/g4-window$/.exec(url.pathname);
@@ -185,7 +187,18 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     if(url.pathname==='/api/me' && request.method==='GET'){
       const tenants=await services.database.query<{id:string}>(sql(`SELECT t.id FROM catalog_tenants t JOIN catalog_memberships m ON m.tenant_id=t.id AND m.user_id=t.owner_user_id
         JOIN catalog_users u ON u.id=t.owner_user_id WHERE t.owner_user_id=? AND t.status='active' AND m.status='active' AND u.status='active' AND u.auth_version=?`,principal.userId,principal.authVersion));
-      return json({userId:principal.userId,tenants,...(services.executionAvailability?{execution:{...services.executionAvailability,simulation:services.executionAvailability.simulation||tenants.some(t=>services.testingSimulationAvailable?.(principal,t.id))}}:{})});
+      // A presentation preference read cannot turn a valid authenticated
+      // bootstrap into an outage. The dedicated preference endpoint keeps its
+      // normal fail-closed behaviour for callers that need an exact result.
+      let preference:{locale:'zh-CN'|'en'|null}={locale:null};
+      try{preference=await localePreferences.get(principal);}catch{}
+      return json({userId:principal.userId,tenants,locale:preference.locale,...(services.executionAvailability?{execution:{...services.executionAvailability,simulation:services.executionAvailability.simulation||tenants.some(t=>services.testingSimulationAvailable?.(principal,t.id))}}:{})});
+    }
+    if(url.pathname==='/api/me/locale'){
+      if(url.search)throw new CatalogError('invalid_input');
+      if(request.method==='GET')return json(await localePreferences.get(principal));
+      if(request.method==='PUT'){const body=bodyOnly(await readJson(request),'locale');return json(await localePreferences.set(principal,body.locale));}
+      throw new HttpError('method_not_allowed',405);
     }
     const exportRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/research-export$/.exec(url.pathname);
     if(exportRoute){

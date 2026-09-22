@@ -8,6 +8,8 @@ import {createServicePanel} from './services.js';
 import {createPreviewPanel} from './previews.js';
 import {createComparisonPanel} from './comparison.js';
 import {createSimulationPanel} from './simulation.js';
+import {applyTranslations,getLocale,installLocaleSelector,setLocale,t} from './i18n.js';
+import {createLocalePreferenceController} from './locale-preference.js';
 const $ = selector => document.querySelector(selector);
 function filterProjectCards(){const filter=$('#project-filter')?.value??'all',search=($('#project-search')?.value??'').toLowerCase();for(const card of document.querySelectorAll('#projects .project'))card.hidden=!card.dataset.title.toLowerCase().includes(search)||(filter==='ordinary'&&card.dataset.acceptance==='true')||(filter==='acceptance'&&card.dataset.acceptance!=='true')||(filter==='preview'&&card.dataset.previewReady!=='true');}
 $('#project-filter')?.addEventListener('change',filterProjectCards);$('#project-search')?.addEventListener('input',filterProjectCards);
@@ -50,6 +52,7 @@ const notice = $('#notice');
 const dialog = $('#project-dialog');
 let tenant = null;
 let authenticated = false;
+let accountUserId = null;
 let authenticationResolved = false;
 let viewGeneration = 0;
 let listGeneration = 0;
@@ -138,6 +141,17 @@ function show(message, error = false, action = null, project = null) {
   notice.className = `notice${error ? ' error' : ''}`;
   notice.hidden = !message;
 }
+
+const localeStatus = $('#locale-status');
+const localePreferences = createLocalePreferenceController({
+  read: () => api('/api/me/locale'),
+  write: locale => api('/api/me/locale', {method:'PUT', body:JSON.stringify({locale})}),
+  currentLocale: getLocale,
+  applyLocale: locale => { setLocale(locale); applyTranslations(); },
+  onSaveFailure: () => { if (localeStatus) localeStatus.textContent = t('locale.saveFailed'); },
+  onSaveSuccess: () => { if (localeStatus) localeStatus.textContent = ''; },
+});
+installLocaleSelector({onChange: locale => localePreferences.select(locale)});
 
 function syncProjectNotice(projects) {
   if (!projectNotice || projectNotice.tenantId !== tenant?.id || projectNotice.kind !== 'preparing') return;
@@ -803,6 +817,7 @@ function workspaceProjectIdFromHash() {
 async function load() {
   servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();
   const generation = ++viewGeneration;
+  const localeStart = localePreferences.begin();
   stopPolling();
   stopEventStream();
   activeProject = null;
@@ -811,6 +826,7 @@ async function load() {
   workspaceFiles = null;
   workspaceFilesError = '';
   authenticated = false;
+  accountUserId = null;
   tenant = null;
   authenticationResolved = false;
   accountView();
@@ -818,7 +834,9 @@ async function load() {
     const user = await api('/api/me');
     if (generation !== viewGeneration) return;
     authenticated = true;
+    accountUserId = user.userId;
     authenticationResolved = true;
+    localePreferences.activate(accountUserId, generation, localeStart, {locale:user.locale});
     executionAvailability={service:user.execution?.service===true,preview:user.execution?.preview===true,simulation:user.execution?.simulation===true};
     tenant = user.tenants[0] || null;
     accountView();
@@ -828,6 +846,7 @@ async function load() {
     if (generation !== viewGeneration) return;
     if (error.status === 401) {
       authenticated = false;
+      accountUserId = null;
       authenticationResolved = true;
       tenant = null;
     } else if (error.status === 404) {
@@ -849,6 +868,7 @@ $('#google').onclick = async () => {
 
 $('#sign-out').onclick = async () => {
   viewGeneration++;
+  localePreferences.begin();
   servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();
   stopEventStream();
   stopPolling();
@@ -857,6 +877,7 @@ $('#sign-out').onclick = async () => {
   try {
     await api('/api/auth/sign-out', { method: 'POST', body: '{}' });
     authenticated = false;
+    accountUserId = null;
     tenant = null;
     activeProject = null;
     workspaceSnapshot = null;

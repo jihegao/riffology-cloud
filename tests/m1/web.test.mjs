@@ -5,14 +5,14 @@ import { chromium } from 'playwright';
 import { JSON_REQUEST_MAX_BYTES } from '../../services/gateway/http.ts';
 import { renderWorkspace } from '../../ui/workspace.js';
 
-const files = Object.fromEntries(await Promise.all(['index.html', 'app.js','project-status.js', 'browser-preview.js', 'layout.js', 'export.js', 'publication.js', 'evidence.js', 'evidence.css', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'styles.css', 'workspace.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
+const files = Object.fromEntries(await Promise.all(['index.html', 'app.js', 'i18n.js', 'locale-preference.js','project-status.js', 'browser-preview.js', 'layout.js', 'export.js', 'publication.js', 'evidence.js', 'evidence.css', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'styles.css', 'workspace.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
 const workspaceUiSource = await readFile(new URL('../../ui/workspace.js', import.meta.url), 'utf8');
 let browser;
 before(async () => { browser = await chromium.launch({ headless: true, channel: process.env.M1_BROWSER_CHANNEL || 'chrome' }); });
 after(async () => { await browser?.close(); });
 const json = (route, body, status = 200) => route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
 async function pageFixture(t, handle, options = {}) {
-  const context = await browser.newContext({ viewport: options.mobile ? { width: 390, height: 844 } : { width: 1200, height: 800 } });
+  const context = await browser.newContext({locale:'zh-CN', viewport: options.mobile ? { width: 390, height: 844 } : { width: 1200, height: 800 } });
   t.after(() => context.close());
   const page = await context.newPage();
   const errors = [];

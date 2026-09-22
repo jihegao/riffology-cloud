@@ -1,0 +1,27 @@
+{
+  "admin.html": [
+    "admin.loginCopy",
+    "admin.loginTitle",
+    "admin.signIn",
+    "shell.home",
+    "shell.language",
+    "shell.language",
+    "shell.signOut",
+    "shell.skip"
+  ],
+  "index.html": [
+    "home.loginCopy",
+    "home.loginEyebrow",
+    "home.loginTitle",
+    "home.newProject",
+    "home.personalWorkspace",
+    "home.projectsEyebrow",
+    "home.projectsTitle",
+    "shell.home",
+    "shell.language",
+    "shell.language",
+    "shell.signIn",
+    "shell.signOut",
+    "shell.skip"
+  ]
+}
