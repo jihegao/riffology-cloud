@@ -79,6 +79,7 @@ let messageIntent = null;
 let sendingMessage = false;
 let reconcilingMessageIntent = false;
 let recoveredReceiptTurn = null;
+let workspaceRefreshSequence = 0;
 const recoveryId = value => typeof value === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(value);
 const recoveryKey = workspaceId => `riffology:conversation:${tenant.id}:${workspaceId}`;
 function readConversation(key) {
@@ -117,7 +118,7 @@ function updateComposerState() {
   const input=$('#message-input'),submit=$('#message-submit'),newSession=$('#new-session');
   const admission=workspaceSnapshot?.admission;
   const unavailable=admission?.state==='unavailable',maintenance=admission?.state==='maintenance'||Boolean(workspaceSnapshot?.piDeveloperState?.blocked);
-  input.readOnly=Boolean(messageIntent);
+  input.readOnly=Boolean(messageIntent)||sendingMessage;
   input.disabled=maintenance||unavailable;
   submit.disabled=maintenance||unavailable||sendingMessage||reconcilingMessageIntent||awaitingMessageVisibility()||!canSubmitConversation();
   newSession.disabled=maintenance||unavailable||sendingMessage||reconcilingMessageIntent||creatingSession||Boolean(messageIntent)&&!staleMessageIntent();
@@ -127,14 +128,13 @@ function acceptedTurnIsRendered() {
   const current=messageIntent,turnId=current?.acceptedTurnId;
   if(!recoveryId(turnId)||!recoveryId(current.sessionId))return false;
   const snapshotTurn=workspaceSnapshot?.turns?.[turnId];
-  const receiptTurn=recoveredReceiptTurn?.id===turnId&&recoveredReceiptTurn.sessionId===current.sessionId&&recoveredReceiptTurn.message===current.message?recoveredReceiptTurn:null;
-  if(!receiptTurn&&(!snapshotTurn||snapshotTurn.sessionId!==current.sessionId||snapshotTurn.message!==current.message))return false;
+  if(!snapshotTurn||snapshotTurn.sessionId!==current.sessionId||snapshotTurn.message!==current.message)return false;
   return [...document.querySelectorAll('#turns [data-turn-id]')].filter(node=>node.dataset.turnId===turnId).length===1;
 }
 function resolveVisibleMessageIntent(workspaceId) {
   const current=messageIntent;
   if(!current?.acceptedTurnId||!acceptedTurnIsRendered())return false;
-  if(readConversation(recoveryKey(workspaceId)).messageIntent?.key===current.key)saveConversation(recoveryKey(workspaceId),{messageIntent:null,draft:'',selectedSessionId:current.sessionId});
+  try{if(readConversation(recoveryKey(workspaceId)).messageIntent?.key===current.key)saveConversation(recoveryKey(workspaceId),{messageIntent:null,draft:'',selectedSessionId:current.sessionId});}catch{}
   messageIntent=null;$('#message-input').value='';updateComposerState();return true;
 }
 
@@ -692,14 +692,15 @@ async function refreshWorkspace(generation = viewGeneration) {
   if (!activeProject || generation !== viewGeneration) return;
   if(activeProject.status!=='ready')return;
   const workspaceId = activeProject.workspace_id;
+  const refreshSequence=++workspaceRefreshSequence;
   try {
     const [snapshot, replay] = await Promise.all([api(`/api/workspaces/${encodeURIComponent(workspaceId)}`), readWorkspaceEvents(workspaceId)]);
-    if (generation !== viewGeneration || activeProject?.workspace_id !== workspaceId) return;
+    if (generation !== viewGeneration || refreshSequence!==workspaceRefreshSequence || activeProject?.workspace_id !== workspaceId) return;
     workspaceSnapshot = snapshot;
     workspaceEvents = replay.events;
     workspaceHistoryTruncated = replay.historyTruncated === true;
     const recoveryNotice=awaitingMessageVisibility()?'':await reconcileMessageRecovery(workspaceId,generation);
-    if(generation !== viewGeneration || activeProject?.workspace_id !== workspaceId) return;
+    if(generation !== viewGeneration || refreshSequence!==workspaceRefreshSequence || activeProject?.workspace_id !== workspaceId) return;
     renderWorkspace();renderModelState();
     if(resolveVisibleMessageIntent(workspaceId))stopVisibilityRecovery();
     else if(awaitingMessageVisibility())scheduleVisibilityRecovery(workspaceId,generation);
@@ -924,7 +925,7 @@ $('#google').onclick = async () => {
 
 $('#sign-out').onclick = async () => {
   viewGeneration++;
-  localePreferences.begin();
+  const localeStart=localePreferences.begin();
   servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();
   stopEventStream();
   stopVisibilityRecovery();pendingVisibilityReads=0;sendingMessage=false;recoveredReceiptTurn=null;
@@ -952,7 +953,7 @@ $('#sign-out').onclick = async () => {
     $('#projects').replaceChildren();
     accountView();
     show(msg('account.signedOut'));
-  } catch (error) { if(authenticated&&tenant&&activeProject){previewPanel.enter({workspaceId:activeProject.workspace_id,tenantId:tenant.id,canOpen:activeProject.status==='ready'&&executionAvailability.preview,paused:!executionAvailability.preview});servicePanel.open({workspaceId:activeProject.workspace_id,tenantId:tenant.id,canStart:activeProject.status==='ready'&&executionAvailability.service});void refreshWorkspace(viewGeneration);}show(errorMessage(error), true); }
+  } catch (error) { if(authenticated&&accountUserId)localePreferences.activate(accountUserId,viewGeneration,localeStart);if(authenticated&&tenant&&activeProject){previewPanel.enter({workspaceId:activeProject.workspace_id,tenantId:tenant.id,canOpen:activeProject.status==='ready'&&executionAvailability.preview,paused:!executionAvailability.preview});servicePanel.open({workspaceId:activeProject.workspace_id,tenantId:tenant.id,canStart:activeProject.status==='ready'&&executionAvailability.service});void refreshWorkspace(viewGeneration);}show(errorMessage(error), true); }
   finally { button.disabled = false; }
 };
 

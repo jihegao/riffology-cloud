@@ -327,11 +327,11 @@ $('#google').onclick = async () => {
 };
 
 $('#sign-out').onclick = async () => {
-  const button = $('#sign-out'); button.disabled = true; viewGeneration++; localePreferences.begin();
+  const button = $('#sign-out'); button.disabled = true; viewGeneration++; const localeStart=localePreferences.begin();
   try {
     await api('/api/auth/sign-out', { method: 'POST', body: '{}' });
     authenticated = false; operator = false; resetIssueIntent(); accountView(); show(msg('admin.signedOut'));
-  } catch (error) { show(errorMessage(error), true); }
+  } catch (error) { if(authenticated&&operatorUserId)localePreferences.activate(operatorUserId,viewGeneration,localeStart);show(errorMessage(error), true); }
   finally { button.disabled = false; }
 };
 

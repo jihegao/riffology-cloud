@@ -485,7 +485,7 @@ test('a committed Turn with a lost response is reconciled before retry is offere
   await waitFor(()=>receipts===1);assert.equal(await page.locator('#message-submit').isDisabled(),true);await page.locator('#message-form').evaluate(form=>form.requestSubmit());await page.keyboard.press('Enter');assert.equal(posts,1);
   releaseReceipt();
   await page.getByText('上次请求已由服务端接收，编辑框已恢复。', { exact: true }).waitFor();
-  assert.equal(posts, 1); assert.equal(receipts, 1); assert.equal(await page.locator('#message-input').isEditable(), true); assert.equal(await page.locator('#message-input').inputValue(), ''); assert.equal(await page.locator('#message-submit').innerText(), '发送');
+  assert.equal(posts, 1); assert.equal(receipts, 1); assert.equal(await page.locator('#message-input').isEditable(), false); assert.equal(await page.locator('#message-input').inputValue(), message); assert.equal(await page.locator('#message-submit').innerText(), '正在处理…');
   assert.equal(await page.locator('[data-turn-id="turn-lost-reply"]').count(),1);
   await page.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));
   await page.locator('[data-turn-id="turn-lost-reply"]').waitFor();
