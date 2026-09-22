@@ -1,0 +1,28 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp, mkdir, cp, writeFile, readFile, rm} from 'node:fs/promises';
+import {join} from 'node:path';
+import {tmpdir} from 'node:os';
+import {spawnSync} from 'node:child_process';
+
+test('i18n check rejects new hardcoded copy, missing translations and shell regressions', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'i18n-guard-'));
+  t.after(() => rm(root, {recursive:true, force:true}));
+  await mkdir(join(root, 'scripts'));
+  await mkdir(join(root, 'services'));
+  await cp('services/web', join(root, 'services/web'), {recursive:true});
+  await writeFile(join(root, 'package.json'), '{"type":"module"}');
+  for (const file of ['i18n-check.mjs', 'i18n-legacy-cjk.json', 'i18n-shell-declarations.json']) await cp('scripts/' + file, join(root, 'scripts', file));
+  const run = () => spawnSync(process.execPath, ['scripts/i18n-check.mjs'], {cwd:root, encoding:'utf8'});
+  assert.equal(run().status, 0);
+  await writeFile(join(root, 'services/web/new-panel.js'), "button.textContent = '新增不可翻译的按钮';");
+  const newCopy = run(); assert.notEqual(newCopy.status, 0); assert.match(newCopy.stderr, /new hardcoded CJK/);
+  await rm(join(root, 'services/web/new-panel.js'));
+  const dictionary = await readFile(join(root, 'services/web/i18n.js'), 'utf8');
+  await writeFile(join(root, 'services/web/i18n.js'), dictionary.replace("'shell.skip': 'Skip to main content',", ''));
+  const missingKey = run(); assert.notEqual(missingKey.status, 0); assert.match(missingKey.stderr, /en must contain exactly/);
+  await writeFile(join(root, 'services/web/i18n.js'), dictionary);
+  const html = await readFile(join(root, 'services/web/index.html'), 'utf8');
+  await writeFile(join(root, 'services/web/index.html'), html.replace(' data-i18n="shell.skip"', ''));
+  const missingDeclaration = run(); assert.notEqual(missingDeclaration.status, 0); assert.match(missingDeclaration.stderr, /do not replace translated shell declarations/);
+});

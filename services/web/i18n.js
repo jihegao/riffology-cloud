@@ -70,12 +70,12 @@ export function t(key, vars = {}, fallback = '') {
 
 export function setLocale(value, {persist = true} = {}) {
   const next = supported.includes(value) ? value : 'zh-CN';
-  if (next === current) return current;
-  current = next;
   if (persist) {
     try { storage()?.setItem('riffology:locale', next); }
     catch {}
   }
+  if (next === current) return current;
+  current = next;
   for (const listener of listeners) listener(current);
   return current;
 }

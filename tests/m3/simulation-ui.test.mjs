@@ -21,7 +21,7 @@ test('simulation panel renders typed parameters, retries one pending request and
   t.after(() => browser.close());
   const context = await browser.newContext(); t.after(() => context.close());
   const page = await context.newPage(); const files = {};
-  for (const name of ['index.html', 'app.js','project-status.js', 'browser-preview.js', 'layout.js', 'export.js', 'publication.js', 'evidence.js', 'evidence.css', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'styles.css', 'workspace.css']) files[name] = await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8');
+  for (const name of ['index.html', 'app.js', 'i18n.js', 'locale-preference.js','project-status.js', 'browser-preview.js', 'layout.js', 'export.js', 'publication.js', 'evidence.js', 'evidence.css', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'styles.css', 'workspace.css']) files[name] = await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8');
   let experiments = [], posts = 0, failOnce = true, changedSpec = false;const attempts=[];
   const json = (route, body, status = 200) => route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
   await page.route('**/*', async route => {

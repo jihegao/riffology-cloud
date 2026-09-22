@@ -4,20 +4,21 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 
-const files = Object.fromEntries(await Promise.all(['admin.html','admin.js','publication.js','styles.css','admin.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
+const files = Object.fromEntries(await Promise.all(['admin.html','admin.js', 'i18n.js', 'locale-preference.js','publication.js','styles.css','admin.css'].map(async name => [name, await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8')])));
 let browser;
 before(async()=>{browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||'chrome'});});
 after(async()=>{await browser?.close();});
 const json=(route,body,status=200)=>route.fulfill({status,contentType:'application/json',body:JSON.stringify(body)});
 const overview={tenants:1,activeTenants:1,projects:2,provisioningProjects:1,failedProjects:0,pendingInvitations:0,unknownOutbox:0,updatedAt:1_800_000_000_000};
 async function fixture(t,handle,{mobile=false}={}){
-  const context=await browser.newContext({viewport:mobile?{width:390,height:844}:{width:1200,height:800}});t.after(()=>context.close());
+  const context=await browser.newContext({locale:'zh-CN',viewport:mobile?{width:390,height:844}:{width:1200,height:800}});t.after(()=>context.close());
   const page=await context.newPage(),errors=[];page.on('pageerror',error=>errors.push(error.message));t.after(()=>assert.deepEqual(errors,[]));
   await page.route('**/*',async route=>{
     const url=new URL(route.request().url());assert.equal(url.origin,'https://admin.test');
     if(url.pathname.startsWith('/api/')){
       if(await handle(route,url.pathname))return;
       if(url.pathname==='/api/auth/get-session')return json(route,{user:{id:'operator'}});
+      if(url.pathname==='/api/me/locale')return json(route,{locale:null});
       if(url.pathname==='/api/admin/overview')return json(route,overview);
       if(url.pathname==='/api/admin/tenants')return json(route,{tenants:[]});
       if(url.pathname==='/api/admin/invitations')return json(route,{invitations:[]});

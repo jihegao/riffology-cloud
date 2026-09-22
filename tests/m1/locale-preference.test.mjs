@@ -145,3 +145,23 @@ test('locale storage exceptions do not prevent locale reads or changes', async (
     else delete globalThis.window;
   }
 });
+
+
+test('getItem and setItem failures preserve switching, and an unchanged explicit choice persists', async () => {
+  const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'window');
+  const writes = [];
+  Object.defineProperty(globalThis, 'window', {configurable:true, value:{localStorage:{
+    getItem() { throw Error('read denied'); },
+    setItem() { throw Error('write denied'); },
+  }}});
+  try {
+    const module = await import(`../../services/web/i18n.js?method-failures=${Date.now()}`);
+    assert.equal(module.setLocale('zh-CN'), 'zh-CN');
+    window.localStorage.setItem = (key, value) => writes.push([key, value]);
+    assert.equal(module.setLocale('zh-CN'), 'zh-CN');
+    assert.deepEqual(writes, [['riffology:locale', 'zh-CN']]);
+  } finally {
+    if (descriptor) Object.defineProperty(globalThis, 'window', descriptor);
+    else delete globalThis.window;
+  }
+});

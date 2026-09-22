@@ -13,6 +13,33 @@ were re-read on 2026-09-21: Gateway version
 `2175756e-615d-4525-883b-34395a5bc50e` serves 100%; only the three approved
 Pi/M2 gates are open, while G5 and M3/M4 remain closed.
 
+## 2026-09-22 local delivery evidence
+
+[#65](https://github.com/jihegao/riffology-cloud/issues/65#issuecomment-5774124958)
+and [#83](https://github.com/jihegao/riffology-cloud/issues/83#issuecomment-5777186998)
+record the local layout (23 checks) and preview panel (21 checks) results. Their
+remaining authenticated production matrix is separate from those fixtures.
+The #65 readback identified Gateway version `2175756e-615d-4525-883b-34395a5bc50e`;
+this is not evidence that the changes described below are deployed.
+
+[#128 A](https://github.com/jihegao/riffology-cloud/issues/128) adds the shared
+Chinese/English shell, optional account locale metadata, display formatting and
+incremental copy checks. [The i18n contract](i18n.md) lists the exact foundation
+coverage and the later full product-copy migration. Locale switching retains the
+current Workspace nodes, draft, Session, Preview and unresolved submission intent;
+fixture checks assert the only added write is the account preference PUT.
+The account read degrades without breaking identity bootstrap, while writes
+recheck account activity and auth version in SQL after admission.
+
+Local validation covers the real Gateway asset graph, ordinary/admin/Workspace
+browser fixtures, preference races, storage denial, post-admission revocation,
+additive migration and the existing M0–M3 regression suites. Exact command results
+and CI are recorded in the linked Issue/PR. This foundation requires additive
+migration `0011_user_locale_preferences.sql` before publishing the new assets.
+It has not been deployed or accepted with a current production account; no new
+Turn, paid provider call, experiment, gate or historical billing mutation was
+performed for this delivery. A alone does not satisfy or close the full #128.
+
 ## Private Beta definition and standing capacity
 
 **Riffology Cloud Private Beta — 邀请制内测版**
