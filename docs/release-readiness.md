@@ -40,6 +40,15 @@ It has not been deployed or accepted with a current production account; no new
 Turn, paid provider call, experiment, gate or historical billing mutation was
 performed for this delivery. A alone does not satisfy or close the full #128.
 
+[#126](https://github.com/jihegao/riffology-cloud/issues/126) adds composer progress
+through Session creation, Turn submission and confirmed message visibility. The
+accepted Turn ID remains in the recovery intent until the matching message is
+rendered; late replies cannot unlock another Workspace. The local UI checks cover
+46 web cases, 25 Workspace layout cases and 3 independent lifecycle cases,
+including rejected browser storage and held receipts with no duplicate POST.
+This change depends on the #128 A foundation and has not been deployed or
+accepted against a production submission.
+
 ## Private Beta definition and standing capacity
 
 **Riffology Cloud Private Beta — 邀请制内测版**

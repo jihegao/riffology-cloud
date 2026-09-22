@@ -35,10 +35,10 @@
         <section class="workspace-main" id="workspace-agent" aria-label="建模助手">
           <div class="session-controls" aria-label="对话管理"><label for="session-select">对话</label><select id="session-select"></select><button id="new-session" class="button" type="button">新建对话</button></div>
           <div id="turns" class="turn-list" aria-live="polite"></div>
-          <form id="message-form" class="composer">
+          <form id="message-form" class="composer" aria-busy="false">
             <label for="message-input">描述你的研究问题或模型修改</label>
             <textarea id="message-input" rows="4" maxlength="16000" required placeholder="例如：创建一个单服务台排队模型，并解释等待时间如何变化。"></textarea>
-            <div class="composer-actions"><span id="message-error" role="status"></span><button id="cancel-turn" class="button" type="button" hidden>停止回合</button><button id="message-submit" class="button primary" type="submit">发送</button></div>
+            <div class="composer-actions"><span id="message-status" role="status" aria-live="polite"></span><span id="message-error" role="alert"></span><button id="cancel-turn" class="button" type="button" hidden>停止回合</button><button id="message-submit" class="button primary" type="submit">发送</button></div>
           </form>
         </section>
         <div class="workspace-divider" data-workspace-divider role="separator" tabindex="0" aria-label="调整对话与模型宽度" aria-orientation="vertical" aria-controls="workspace-agent workspace-canvas" aria-valuemin="25" aria-valuemax="60" aria-valuenow="35"></div>
