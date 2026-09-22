@@ -1,3 +1,6 @@
+import {formatNumber} from './i18n.js';
+import {bindAttribute} from './i18n-bindings.js';
+
 /** Presentation preferences only. Panels retain their original execution state. */
 export function createWorkspaceLayout({root,storage}){
  if(storage===undefined)try{storage=window.localStorage;}catch{storage=null;}
@@ -7,7 +10,7 @@ export function createWorkspaceLayout({root,storage}){
  const save=()=>{if(context)try{storage?.setItem(key(),JSON.stringify({ratio,depth,view,mobile}));}catch{}};
  function limits(){const width=grid.getBoundingClientRect().width;return {min:Math.max(25,Math.min(45,240/Math.max(1,width)*100)),max:Math.min(60,Math.max(45,(width-340)/Math.max(1,width)*100))};}
  function render(){
-  const {min,max}=limits(),shown=Math.min(max,Math.max(min,ratio));grid.style.setProperty('--agent-width',`${shown}%`);separator.setAttribute('aria-valuenow',String(Math.round(shown)));separator.setAttribute('aria-valuemin',String(Math.ceil(min)));separator.setAttribute('aria-valuemax',String(Math.floor(max)));separator.setAttribute('aria-valuetext',`对话 ${Math.round(shown)}%，模型 ${100-Math.round(shown)}%`);
+  const {min,max}=limits(),shown=Math.min(max,Math.max(min,ratio));grid.style.setProperty('--agent-width',`${shown}%`);separator.setAttribute('aria-valuenow',String(Math.round(shown)));separator.setAttribute('aria-valuemin',String(Math.ceil(min)));separator.setAttribute('aria-valuemax',String(Math.floor(max)));bindAttribute(separator,'aria-valuetext','layout.widths',()=>({chat:formatNumber(Math.round(shown)),model:formatNumber(100-Math.round(shown))}));
   root.dataset.depth=view==='inspect'?'inspect':view==='runs'?'experiment':'explore';root.dataset.mobilePane=mobile;
   for(const node of root.querySelectorAll('[data-workspace-view]'))node.hidden=node.dataset.workspaceView!==view;
   for(const tab of root.querySelectorAll('[data-workspace-tab]')){const selected=tab.dataset.workspaceTab===view;tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;}
