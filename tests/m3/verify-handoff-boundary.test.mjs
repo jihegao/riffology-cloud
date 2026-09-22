@@ -4,7 +4,7 @@ import {chromium} from 'playwright';
 import {readFile} from 'node:fs/promises';
 
 const rootUrl = new URL('../../services/web/', import.meta.url);
-const assets = ['verify-handoff.js', 'browser-preview.js', 'i18n.js'];
+const assets = ['verify-handoff.js', 'browser-preview.js', 'i18n.js', 'i18n-bindings.js'];
 const originalKey = scope => `riffology:browser-preview:verify:${scope.tenantId}:${scope.projectId}:${scope.workspaceId}`;
 const handoffKey = scope => `${originalKey(scope)}:handoff`;
 const scopeA = {tenantId: 'tenant-a', projectId: 'project-a', workspaceId: 'work-a', canVerify: true};

@@ -5,7 +5,7 @@ import {chromium} from 'playwright';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 const origin='https://workspace.test',previewOrigin='https://p-'+ 'a'.repeat(40)+'.preview.test';
-const names=['index.html','app.js', 'i18n.js', 'locale-preference.js','project-status.js','browser-preview.js','layout.js','export.js','publication.js','evidence.js','evidence.css','services.js','previews.js','simulation.js','comparison.js','styles.css','workspace.css'];
+const names=['index.html','app.js', 'i18n.js', 'i18n-bindings.js', 'locale-preference.js','project-status.js','browser-preview.js','verify-handoff.js','layout.js','export.js','publication.js','evidence.js','evidence.css','services.js','previews.js','simulation.js','comparison.js','styles.css','workspace.css'];
 const files=Object.fromEntries(await Promise.all(names.map(async name=>[name,await readFile(new URL('../../services/web/'+name,import.meta.url),'utf8')])));
 test('closed project admission explains the restriction instead of asking for a refresh',async t=>{
  const f=await fixture(t,{projectFlow:true}),p=f.page;

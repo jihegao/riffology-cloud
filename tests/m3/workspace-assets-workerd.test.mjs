@@ -16,7 +16,7 @@ test('actual Gateway serves the complete real Workspace asset dependency graph i
   const contents=files[path];const references=path.endsWith('.html')?[...contents.matchAll(/(?:src|href)=["'](\.\/[^"']+)["']/g)].map(m=>m[1]):path.endsWith('.js')?[...contents.matchAll(/(?:from\s*|import\s*)["'](\.\/[^"']+)["']/g)].map(m=>m[1]):[];
   for(const relative of references)queue.push(new URL(relative,'https://assets.test'+path).pathname);
  }
- assert.ok(seen.has('/i18n.js'));assert.ok(seen.has('/locale-preference.js'));assert.ok(seen.has('/publication.js'));assert.ok(seen.has('/admin.js'));assert.ok(seen.has('/layout.js'));assert.ok(seen.has('/evidence.js'));assert.ok(seen.has('/export.js'));
+ assert.ok(seen.has('/i18n.js'));assert.ok(seen.has('/i18n-bindings.js'));assert.ok(seen.has('/verify-handoff.js'));assert.ok(seen.has('/locale-preference.js'));assert.ok(seen.has('/publication.js'));assert.ok(seen.has('/admin.js'));assert.ok(seen.has('/layout.js'));assert.ok(seen.has('/evidence.js'));assert.ok(seen.has('/export.js'));
  const adminAlias=await mf.dispatchFetch('https://assets.test/admin');assert.equal(adminAlias.status,200);assert.equal(await adminAlias.text(),files['/admin.html']);
  assert.equal((await mf.dispatchFetch('https://assets.test/publication.js',{method:'POST'})).status,404);
  assert.equal((await mf.dispatchFetch('https://assets.test/private.js')).status,404);

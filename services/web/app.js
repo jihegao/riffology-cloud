@@ -8,6 +8,7 @@ import {createServicePanel} from './services.js';
 import {createPreviewPanel} from './previews.js';
 import {createComparisonPanel} from './comparison.js';
 import {createSimulationPanel} from './simulation.js';
+import {createVerifyHandoffPanel} from './verify-handoff.js';
 import {applyTranslations,getLocale,installLocaleSelector,setLocale,subscribe,t} from './i18n.js';
 import {createLocalePreferenceController} from './locale-preference.js';
 const $ = selector => document.querySelector(selector);
@@ -40,7 +41,7 @@ function renderModelState(){
   }
   status.dataset.state=state;status.textContent=text;
 }
-const browserPreviewPanel=createBrowserPreviewPanel({root:$('#workspace-browser-preview'),api,onVerified:()=>{void simulationPanel.reload();void comparisonPanel.reload();}});
+const browserPreviewPanel=createBrowserPreviewPanel({root:$('#workspace-browser-preview'),api,onVerified:()=>{void simulationPanel.reload();void comparisonPanel.reload();},onVerifyHandoff:draft=>{const accepted=verifyHandoffPanel.handoff(draft);if(accepted)workspaceLayout.select('runs');return accepted;},onVerificationAvailability:allowed=>verifyHandoffPanel.setCanVerify(allowed)});
 const previewPanel=createPreviewPanel({root:$('#workspace-preview'),api,autoRestore:true,onState:value=>{const pinned=value.available?.runId||value.current?.runId;if(pinned)servicePanel.selectRun(pinned);}});
 const servicePanel=createServicePanel({root:$('#workspace-services'),inspectRoot:$('#workspace-runtime-details'),api,workspaceMode:true,onPreparingRun:runId=>previewPanel.prepareRun(runId),onPreviewRun:(runId,options)=>options?.automatic?previewPanel.restoreRun(runId):previewPanel.openRun(runId),onState:detail=>{observedService=detail;renderModelState();if(detail.stopRequestedAt||['stopped','failed','cancelled'].includes(detail.runStatus))previewPanel.stoppedRun(detail.runId);}});
 const comparisonPanel=createComparisonPanel({root:$('#workspace-comparison'),api});
@@ -48,6 +49,7 @@ const publicationPanel=createPublicationPanel({root:$('#workspace-publication'),
 const exportPanel=createExportPanel({root:$('#workspace-export')});
 const evidencePanel=createEvidencePanel({root:$('#workspace-evidence'),api,onAssessment:()=>{void comparisonPanel.reload();void simulationPanel.reload();}});
 const simulationPanel=createSimulationPanel({root:$('#workspace-simulation'),modelRoot:$('#workspace-model'),historyRoot:$('#workspace-run-history'),api,onModel:model=>{observedModel=model;renderModelState();}});
+const verifyHandoffPanel=createVerifyHandoffPanel({root:$('#workspace-verify-handoff'),api,onVerified:()=>{void simulationPanel.reload();void comparisonPanel.reload();}});
 const notice = $('#notice');
 const dialog = $('#project-dialog');
 let tenant = null;
@@ -357,7 +359,7 @@ function stopEventStream() {
 }
 
 function accountView() {
-  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();}
+  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();}
   $('#login').hidden = !authenticationResolved || authenticated;
   const workspaceRoutePending = Boolean(workspaceProjectIdFromHash()) && !activeProject;
   $('#app').hidden = !tenant || Boolean(activeProject) || workspaceRoutePending;
@@ -758,7 +760,8 @@ function openWorkspace(project) {
   selectArtifactPanel('files');
   if(standalone)workspaceLayout.select('preview');
   void browserPreviewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id,canOpen:ready,canVerify:executionAvailability.simulation,standalone,...(standalone?browserRoute:{})});
-  if(standalone){servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();return;}
+  verifyHandoffPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id,canVerify:false});
+  if(standalone){servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();return;}
   previewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,canOpen:ready&&executionAvailability.preview,paused:!executionAvailability.preview});
   servicePanel.open({workspaceId:project.workspace_id,tenantId:tenant.id,canStart:ready&&executionAvailability.service});
   if(ready){void simulationPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});void comparisonPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});}else{simulationPanel.leave();comparisonPanel.leave();}
@@ -866,7 +869,7 @@ function workspaceProjectIdFromHash() {
 }
 
 async function load() {
-  servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();
+  servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();
   const generation = ++viewGeneration;
   const localeStart = localePreferences.begin();
   stopPolling();
@@ -920,7 +923,7 @@ $('#google').onclick = async () => {
 $('#sign-out').onclick = async () => {
   viewGeneration++;
   localePreferences.begin();
-  servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();
+  servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();
   stopEventStream();
   stopVisibilityRecovery();pendingVisibilityReads=0;sendingMessage=false;recoveredReceiptTurn=null;
   stopPolling();
