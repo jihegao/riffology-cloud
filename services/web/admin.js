@@ -1,9 +1,13 @@
 import {createPublicationPanel} from './publication.js';
+import {applyTranslations,installLocaleSelector,setLocale,t} from './i18n.js';
 const $ = selector => document.querySelector(selector);
 const publicationPanel=createPublicationPanel({root:$('#model-submissions'),api,admin:true});
 const notice = $('#notice');
 let authenticated = false;
 let operatorUserId=null;
+let localeChangeVersion=0;
+let localeWriteRunning=false;
+let pendingLocaleWrite=null;
 let operator = false;
 let loading = false;
 let issueIntent = null;
@@ -17,6 +21,20 @@ function show(message, error = false) {
   notice.className = `notice${error ? ' error' : ''}`;
   notice.hidden = !message;
 }
+
+async function flushLocaleWrites() {
+ if(localeWriteRunning)return;localeWriteRunning=true;
+ while(pendingLocaleWrite){const next=pendingLocaleWrite;pendingLocaleWrite=null;
+  if(!authenticated||operatorUserId!==next.userId||viewGeneration!==next.generation)continue;
+  try { await api('/api/me/locale',{method:'PUT',body:JSON.stringify({locale:next.locale})}); }
+  catch { if(localeChangeVersion===next.version&&authenticated&&operatorUserId===next.userId&&viewGeneration===next.generation)show(t('locale.saveFailed'),true); }
+ }
+ localeWriteRunning=false;
+}
+installLocaleSelector({onChange:locale=>{
+ const version=++localeChangeVersion,userId=operatorUserId;
+ if(authenticated&&userId){pendingLocaleWrite={version,userId,locale,generation:viewGeneration};void flushLocaleWrites();}
+}});
 
 async function api(path, options = {}) {
   const response = await fetch(path, {
@@ -312,12 +330,14 @@ $('#refresh').onclick = refresh;
 
 async function load() {
   const generation = ++viewGeneration;
+  const localeVersion=localeChangeVersion;
   try {
     const session = await api('/api/auth/get-session');
     if (generation !== viewGeneration) return;
     operatorUserId=typeof session?.user?.id==='string'?session.user.id:null;
     authenticated = Boolean(session?.user); operator = false; accountView();
     if (!authenticated) return;
+    try { const preference=await api('/api/me/locale');if(generation===viewGeneration&&localeVersion===localeChangeVersion&&preference?.locale){setLocale(preference.locale);applyTranslations();} } catch (error) { if(generation!==viewGeneration)return; }
     await api('/api/admin/overview');
     if (generation !== viewGeneration) return;
     operator = true; accountView(); await refresh();

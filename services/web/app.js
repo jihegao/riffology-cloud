@@ -8,6 +8,7 @@ import {createServicePanel} from './services.js';
 import {createPreviewPanel} from './previews.js';
 import {createComparisonPanel} from './comparison.js';
 import {createSimulationPanel} from './simulation.js';
+import {applyTranslations,installLocaleSelector,setLocale,t} from './i18n.js';
 const $ = selector => document.querySelector(selector);
 function filterProjectCards(){const filter=$('#project-filter')?.value??'all',search=($('#project-search')?.value??'').toLowerCase();for(const card of document.querySelectorAll('#projects .project'))card.hidden=!card.dataset.title.toLowerCase().includes(search)||(filter==='ordinary'&&card.dataset.acceptance==='true')||(filter==='acceptance'&&card.dataset.acceptance!=='true')||(filter==='preview'&&card.dataset.previewReady!=='true');}
 $('#project-filter')?.addEventListener('change',filterProjectCards);$('#project-search')?.addEventListener('input',filterProjectCards);
@@ -50,6 +51,10 @@ const notice = $('#notice');
 const dialog = $('#project-dialog');
 let tenant = null;
 let authenticated = false;
+let accountUserId = null;
+let localeChangeVersion = 0;
+let localeWriteRunning = false;
+let pendingLocaleWrite = null;
 let authenticationResolved = false;
 let viewGeneration = 0;
 let listGeneration = 0;
@@ -138,6 +143,20 @@ function show(message, error = false, action = null, project = null) {
   notice.className = `notice${error ? ' error' : ''}`;
   notice.hidden = !message;
 }
+
+async function flushLocaleWrites() {
+ if(localeWriteRunning)return;localeWriteRunning=true;
+ while(pendingLocaleWrite){const next=pendingLocaleWrite;pendingLocaleWrite=null;
+  if(!authenticated||accountUserId!==next.userId||viewGeneration!==next.generation)continue;
+  try { await api('/api/me/locale',{method:'PUT',body:JSON.stringify({locale:next.locale})}); }
+  catch { if(localeChangeVersion===next.version&&authenticated&&accountUserId===next.userId&&viewGeneration===next.generation)show(t('locale.saveFailed'),true); }
+ }
+ localeWriteRunning=false;
+}
+installLocaleSelector({onChange:locale=>{
+ const version=++localeChangeVersion,userId=accountUserId;
+ if(authenticated&&userId){pendingLocaleWrite={version,userId,locale,generation:viewGeneration};void flushLocaleWrites();}
+}});
 
 function syncProjectNotice(projects) {
   if (!projectNotice || projectNotice.tenantId !== tenant?.id || projectNotice.kind !== 'preparing') return;
@@ -811,14 +830,18 @@ async function load() {
   workspaceFiles = null;
   workspaceFilesError = '';
   authenticated = false;
+  accountUserId = null;
   tenant = null;
   authenticationResolved = false;
   accountView();
   try {
+    const localeVersion=localeChangeVersion;
     const user = await api('/api/me');
     if (generation !== viewGeneration) return;
     authenticated = true;
+    accountUserId = user.userId;
     authenticationResolved = true;
+    if (user.locale && localeVersion===localeChangeVersion) { setLocale(user.locale); applyTranslations(); }
     executionAvailability={service:user.execution?.service===true,preview:user.execution?.preview===true,simulation:user.execution?.simulation===true};
     tenant = user.tenants[0] || null;
     accountView();
@@ -828,6 +851,7 @@ async function load() {
     if (generation !== viewGeneration) return;
     if (error.status === 401) {
       authenticated = false;
+      accountUserId = null;
       authenticationResolved = true;
       tenant = null;
     } else if (error.status === 404) {
@@ -857,6 +881,7 @@ $('#sign-out').onclick = async () => {
   try {
     await api('/api/auth/sign-out', { method: 'POST', body: '{}' });
     authenticated = false;
+    accountUserId = null;
     tenant = null;
     activeProject = null;
     workspaceSnapshot = null;
