@@ -47,7 +47,7 @@ if (path === '/api/me') return json(route, { execution:{service:true,preview:tru
     }
     const name = path === '/' ? 'index.html' : path.slice(1); return route.fulfill({ status: files[name] ? 200 : 404, contentType: name.endsWith('.js') ? 'application/javascript' : name.endsWith('.css') ? 'text/css' : 'text/html', body: files[name] || '' });
   });
-  await page.goto('https://ui.test/'); await page.locator('.project-open').click(); await page.locator('#workspace-simulation input[name="servers"]').waitFor();
+  await page.goto('https://ui.test/'); await page.locator('.project-open').click(); await page.locator('[data-workspace-tab=runs]').click(); await page.locator('#workspace-simulation input[name="servers"]').waitFor();
   assert.equal(await page.locator('#workspace-simulation input[name="servers"]').getAttribute('type'), 'number'); assert.equal(await page.locator('#workspace-simulation input[name="warm"]').getAttribute('type'), 'checkbox'); assert.equal(await page.locator('#workspace-simulation select[name="mode"]').count(), 1); assert.equal(posts, 0);
   await page.locator('#workspace-simulation input[name="servers"]').fill('2');
   await page.locator('#workspace-simulation input[name="seed"]').fill('99');

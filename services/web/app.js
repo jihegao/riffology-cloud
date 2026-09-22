@@ -41,7 +41,7 @@ function renderModelState(){
   }
   status.dataset.state=state;status.textContent=text;
 }
-const browserPreviewPanel=createBrowserPreviewPanel({root:$('#workspace-browser-preview'),api,onVerified:()=>{void simulationPanel.reload();void comparisonPanel.reload();},onVerifyHandoff:draft=>{const accepted=verifyHandoffPanel.handoff(draft);if(accepted)workspaceLayout.select('runs');return accepted;},onVerificationAvailability:allowed=>verifyHandoffPanel.setCanVerify(allowed)});
+const browserPreviewPanel=createBrowserPreviewPanel({root:$('#workspace-browser-preview'),api,onVerified:()=>{void simulationPanel.reload();void comparisonPanel.reload();},onVerifyHandoff:draft=>{const accepted=verifyHandoffPanel.handoff(draft);if(accepted){workspaceLayout.select('runs');if(browserPreviewRoute(location)&&activeProject)location.hash=`/workspace/${encodeURIComponent(activeProject.id)}`;}return accepted;},onVerificationAvailability:allowed=>verifyHandoffPanel.setCanVerify(allowed)});
 const previewPanel=createPreviewPanel({root:$('#workspace-preview'),api,autoRestore:true,onState:value=>{const pinned=value.available?.runId||value.current?.runId;if(pinned)servicePanel.selectRun(pinned);}});
 const servicePanel=createServicePanel({root:$('#workspace-services'),inspectRoot:$('#workspace-runtime-details'),api,workspaceMode:true,onPreparingRun:runId=>previewPanel.prepareRun(runId),onPreviewRun:(runId,options)=>options?.automatic?previewPanel.restoreRun(runId):previewPanel.openRun(runId),onState:detail=>{observedService=detail;renderModelState();if(detail.stopRequestedAt||['stopped','failed','cancelled'].includes(detail.runStatus))previewPanel.stoppedRun(detail.runId);}});
 const comparisonPanel=createComparisonPanel({root:$('#workspace-comparison'),api});
@@ -759,9 +759,9 @@ function openWorkspace(project) {
   renderWorkspaceDiff();
   selectArtifactPanel('files');
   if(standalone)workspaceLayout.select('preview');
-  void browserPreviewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id,canOpen:ready,canVerify:executionAvailability.simulation,standalone,...(standalone?browserRoute:{})});
-  verifyHandoffPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id,canVerify:false});
-  if(standalone){servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();return;}
+  verifyHandoffPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id});
+  void browserPreviewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id,canOpen:ready,standalone,...(standalone?browserRoute:{})});
+  if(standalone){servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();return;}
   previewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,canOpen:ready&&executionAvailability.preview,paused:!executionAvailability.preview});
   servicePanel.open({workspaceId:project.workspace_id,tenantId:tenant.id,canStart:ready&&executionAvailability.service});
   if(ready){void simulationPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});void comparisonPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});}else{simulationPanel.leave();comparisonPanel.leave();}

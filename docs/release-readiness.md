@@ -49,6 +49,19 @@ including rejected browser storage and held receipts with no duplicate POST.
 This change depends on the #128 A foundation and has not been deployed or
 accepted against a production submission.
 
+[#129](https://github.com/jihegao/riffology-cloud/issues/129) orders the canvas as
+Model / Preview / Runs / Inspect while retaining Preview as the initial tab.
+The existing experiment form now lives in Runs. Preview hands off a frozen
+Revision, package identity, parameters and seed without a POST; Runs requires
+explicit confirmation and preserves the original request identity until its
+matching receipt is known. Standalone Preview returns to Workspace Runs with
+the frozen draft. Only the current Workspace preview response enables Verify;
+loading, missing availability and failed restoration leave it unavailable.
+Local fixtures cover handoff, pending-request recovery, storage failures,
+Workspace navigation and closed gates. This is local implementation evidence,
+not deployment or authenticated server-experiment acceptance. No live experiment
+or gate change is part of this delivery.
+
 ## Private Beta definition and standing capacity
 
 **Riffology Cloud Private Beta — 邀请制内测版**

@@ -28,25 +28,32 @@ export function createVerifyHandoffPanel({root, api, onVerified = () => {}, requ
     try {
       const text = win.sessionStorage.getItem(storageKey);
       if (text === null) return {value: null};
-      if (text.length > MAX_BYTES) return {error: true};
+      if (new TextEncoder().encode(text).byteLength > MAX_BYTES) return {error: true};
       const value = JSON.parse(text);
       return validator(value) ? {value} : {error: true};
     } catch { return {error: true}; }
   }
   function write(storageKey, value) {
-    try { if (value) win.sessionStorage.setItem(storageKey, JSON.stringify(value)); else win.sessionStorage.removeItem(storageKey); }
+    try {
+      if (value) {
+        const text = JSON.stringify(value);
+        if (new TextEncoder().encode(text).byteLength > MAX_BYTES) throw Error('oversized-verify-intent');
+        win.sessionStorage.setItem(storageKey, text);
+      } else win.sessionStorage.removeItem(storageKey);
+    }
     catch { throw Error('verifyHandoff.storageFailed'); }
   }
   const request = (url, options = {}) => browserPreviewRequest(api, url, options, requests, {requestTimeoutMs});
-  const status = () => messageKey ? t(messageKey) : !draft ? t('verifyHandoff.empty') : t('verifyHandoff.ready');
+  const status = () => context?.canVerify !== true && draft ? t('verifyHandoff.disabled') : messageKey ? t(messageKey) : !draft ? t('verifyHandoff.empty') : t('verifyHandoff.ready');
   const buttonText = () => submitting ? t('verifyHandoff.submitting') : draft?.idempotencyKey ? t('verifyHandoff.retry') : t('verifyHandoff.submit');
-  function updateButton() { if (nodes.button) { nodes.button.disabled = storageBlocked || submitting || recovering || context?.canVerify !== true; bindText(nodes.button, buttonText); } }
+  function updateButton() { if (nodes.button) { nodes.button.disabled = storageBlocked || submitting || recovering || context?.canVerify !== true; bindText(nodes.button, buttonText); } if (nodes.status) bindText(nodes.status, status); }
   function render() {
     root.replaceChildren(); Object.keys(nodes).forEach(key => delete nodes[key]);
     const section = root.ownerDocument.createElement('section'); section.className = 'verify-handoff';
     nodes.title = root.ownerDocument.createElement('h2'); bindText(nodes.title, 'verifyHandoff.title'); section.append(nodes.title);
     nodes.status = root.ownerDocument.createElement('p'); nodes.status.className = 'meta'; nodes.status.setAttribute('role', 'status'); bindText(nodes.status, status); section.append(nodes.status);
     if (draft) {
+      const boundary = root.ownerDocument.createElement('p'); bindText(boundary, 'verifyHandoff.boundary'); section.append(boundary);
       nodes.frozen = root.ownerDocument.createElement('p'); nodes.frozen.className = 'meta'; bindText(nodes.frozen, () => t('verifyHandoff.frozen', {revisionId: draft.revisionId, packageIdentity: draft.packageIdentity.slice(0, 12), seed: draft.seed, parameters: JSON.stringify(draft.parameters)})); section.append(nodes.frozen);
       nodes.button = root.ownerDocument.createElement('button'); nodes.button.type = 'button'; nodes.button.className = 'button primary'; nodes.button.dataset.verifyHandoffAction = 'submit'; section.append(nodes.button); updateButton();
     }
@@ -84,7 +91,7 @@ export function createVerifyHandoffPanel({root, api, onVerified = () => {}, requ
   function handoff(value) {
     if (!context || context.canVerify !== true || storageBlocked || !validDraft(value)) return false;
     if (draft?.idempotencyKey) { messageKey = 'verifyHandoff.pending'; render(); return true; }
-    try { draft = structuredClone(value); write(handoffKey(), draft); messageKey = 'verifyHandoff.created'; render(); return true; }
+    try { const next = structuredClone(value); write(handoffKey(), next); draft = next; messageKey = 'verifyHandoff.created'; render(); return true; }
     catch (error) { messageKey = error.message; render(); return false; }
   }
   function enter(value) {
