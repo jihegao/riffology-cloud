@@ -28,8 +28,8 @@
   "affectedWorkspace": "168f5da2-3f96-46fd-8ed0-e9e588ae0d7a",
   "capacityEvidence": {
     "source": "Authenticated Cloudflare Durable Objects Data Studio SELECT queries on the original capacity object before and after browser recovery",
-    "originalSlot": {"statusBefore": "quarantined", "statusAfter": "quarantined", "boundTurn": true, "observedCalls": 7, "otherCallStatuses": 0},
-    "beforeAndAfter": {"quarantinedSlots": 1, "releasedSlots": 18, "observedCalls": 80, "otherCallStatuses": 0, "reservedNanodollars": 1207105250},
+    "originalSlot": {"statusBefore": "quarantined", "statusAfterBrowserRecovery": "quarantined", "statusAfterOperatorRecovery": "released", "boundTurn": true, "observedCalls": 7, "otherCallStatuses": 0},
+    "beforeAndAfterBrowserRecovery": {"quarantinedSlots": 1, "releasedSlots": 18, "observedCalls": 80, "otherCallStatuses": 0, "reservedNanodollars": 1207105250},
     "alert": "execution-or-release-unconfirmed",
     "rawIdentities": "Retained locally; not published in the Issue or repository"
   },
@@ -40,11 +40,22 @@
     "editDraftClicked": true,
     "draftEditableAfterWithdrawal": true,
     "sendOrRetryClicked": false,
-    "newTurnOrPaidExecutionAcceptance": false
+    "newTurnOrPaidExecutionAcceptance": false,
+    "draftEditableAfterOperatorRecoveryAndReload": true,
+    "sendButtonVisibleAfterOperatorRecoveryAndReload": true
+  },
+  "operatorRecovery": {
+    "at": "2026-09-24T13:56:38.850Z",
+    "authorization": "Explicit user authorization in the task conversation for guarded recovery of the original isolated slot",
+    "source": "Authenticated Cloudflare remote preview calling the existing Durable Object snapshot, original Workspace privateBetaReleaseState, and guarded capacity resume methods; independent Data Studio SELECT readback",
+    "originalTurnProof": {"found": true, "boundTurnMatched": true, "terminal": true, "released": true, "resourceWait": false, "releaseGuard": false},
+    "preconditions": {"activeSlots": 1, "quarantinedSlots": 1, "paused": false, "observedCalls": 80, "otherCallStatuses": 0},
+    "result": {"resumeAuditRecorded": true, "activeSlots": 0, "quarantinedSlots": 0, "releasedSlots": 19, "observedCalls": 80, "otherCallStatuses": 0, "reservedNanodollars": 1207105250},
+    "newTurnOrProviderOrToolRequestSubmitted": false,
+    "rawIdentities": "Retained locally; not published in the Issue or repository"
   },
   "remaining": [
-    "The original bound quarantined slot still occupies this user's Private Beta capacity. No release action was performed.",
-    "An operator must adjudicate the original Turn's current execution and resource release proof under #104 before restoring send capacity; the existing resume path enforces all-slot release checks.",
+    "No new paid Send was submitted as part of this recovery; paid execution acceptance remains a separate scope under #104.",
     "Browser Preview python-stdlib/v1 compatibility is a separate defect; this release does not change that adapter."
   ]
 }
