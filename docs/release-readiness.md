@@ -1,4 +1,38 @@
-# Current release readiness — 2026-09-23
+# Current release readiness — 2026-09-24
+
+## 2026-09-24 Private Beta draft recovery and capacity diagnosis
+
+[PR #138](https://github.com/jihegao/riffology-cloud/pull/138) implements
+[#137](https://github.com/jihegao/riffology-cloud/issues/137)'s safe draft
+recovery path. A pending Private Beta request can be withdrawn only after its
+original Workspace confirms no matching Turn; a durable fence blocks a late POST
+under the original idempotency key. The browser then restores the same draft for
+editing. A caller-scoped capacity read distinguishes admission, running,
+release waiting and isolated states without exposing other users' identities.
+Unknown or accepted requests retain the original recovery identity.
+
+Source `8c3cf69fce35c0cb1d5a93e82471c81973462cc4` is deployed as Gateway
+version `9c7b7298-7743-43b4-84f2-c7145bf9f27b`, deployment
+`388a54f5-b172-4f5e-8a2a-98154de596cc`, at 100%. Independent API readback
+matched all 91 frozen bindings and runtime configuration; downloaded Worker
+bytes matched the release bundle and all 17 checked public assets matched source.
+The [CI run](https://github.com/jihegao/riffology-cloud/actions/runs/36004367509)
+and complete local checks passed with zero failures (UI 21, M1 277, M2 840,
+M3 962 passed and 10 conditional skips).
+
+Authenticated read-only Data Studio queries identified the affected user's
+original bound slot in the reported Workspace as **quarantined**, with seven
+observed calls and a release-unconfirmed alert. Before and after the authenticated
+browser recovery, the capacity ledger held one quarantined slot, 18 released
+slots, 80 observed calls and 1,207,105,250 nanodollars of conservative
+reservation. The original Safari tab showed `review-required`; **Edit draft**
+restored the unchanged text to an editable input. No Send/Retry or paid execution
+was submitted. The original slot remains isolated pending operator adjudication
+of the original Turn and release proof under #104; this UI release does not
+claim restored send capacity. The Preview `python-stdlib/v1` incompatibility is
+separate.
+
+[Release and acceptance evidence](evidence/releases/beta-busy-composer-20260924.json).
 
 ## 2026-09-23 rejected-session capacity repair
 
