@@ -26,11 +26,20 @@ observed calls and a release-unconfirmed alert. Before and after the authenticat
 browser recovery, the capacity ledger held one quarantined slot, 18 released
 slots, 80 observed calls and 1,207,105,250 nanodollars of conservative
 reservation. The original Safari tab showed `review-required`; **Edit draft**
-restored the unchanged text to an editable input. No Send/Retry or paid execution
-was submitted. The original slot remains isolated pending operator adjudication
-of the original Turn and release proof under #104; this UI release does not
-claim restored send capacity. The Preview `python-stdlib/v1` incompatibility is
-separate.
+restored the unchanged text to an editable input.
+
+After explicit user authorization on 2026-09-24, the original Workspace's
+read-only release method confirmed the bound Turn was terminal and released,
+with no resource wait or native release guard. The capacity snapshot showed
+only one quarantined slot and 80 observed calls, with no unresolved calls.
+The existing guarded `resume()` method released that slot and wrote a `resume`
+audit entry at 13:56:38 UTC. Independent Data Studio SELECTs then confirmed
+19 released slots, zero occupied/quarantined slots, and the same 80 observed
+calls and 1,207,105,250 nanodollar conservative reservation. The original
+authenticated Safari Workspace retained the editable draft and visible Send
+button after refresh. No Send/Retry, new Turn, provider or tool request was
+submitted, so paid execution acceptance remains separate under #104. The
+Preview `python-stdlib/v1` incompatibility is separate.
 
 [Release and acceptance evidence](evidence/releases/beta-busy-composer-20260924.json).
 
