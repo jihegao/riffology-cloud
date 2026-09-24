@@ -115,13 +115,15 @@ function renderMessageAction() {
   form?.setAttribute('aria-busy',String(processing||reconcilingMessageIntent));
 }
 function updateComposerState() {
-  const input=$('#message-input'),submit=$('#message-submit'),newSession=$('#new-session');
+  const input=$('#message-input'),submit=$('#message-submit'),newSession=$('#new-session'),edit=$('#message-edit');
   const admission=workspaceSnapshot?.admission;
   const unavailable=admission?.state==='unavailable',maintenance=admission?.state==='maintenance'||Boolean(workspaceSnapshot?.piDeveloperState?.blocked);
   input.readOnly=Boolean(messageIntent)||sendingMessage;
   input.disabled=maintenance||unavailable;
   submit.disabled=maintenance||unavailable||sendingMessage||reconcilingMessageIntent||awaitingMessageVisibility()||!canSubmitConversation();
   newSession.disabled=maintenance||unavailable||sendingMessage||reconcilingMessageIntent||creatingSession||Boolean(messageIntent)&&!staleMessageIntent();
+  edit.hidden=!messageIntent||Boolean(messageIntent.acceptedTurnId)||workspaceSnapshot?.piDeveloperState?.privateBeta!==true;
+  edit.disabled=edit.hidden||sendingMessage||reconcilingMessageIntent||maintenance||unavailable;
   renderMessageAction();
 }
 function acceptedTurnIsRendered() {
@@ -670,8 +672,8 @@ function connectEventStream(workspaceId, cursor, generation) {
 async function reconcileMessageRecovery(workspaceId,generation){
   const current=messageIntent;
   if(!current)return '';
-  if(workspaceSnapshot?.sessions?.[current.sessionId]?.canContinue===false){reconcilingMessageIntent=false;renderMessageAction();return msg('session.accessChanged');}
-  reconcilingMessageIntent=true;renderMessageAction();
+  if(workspaceSnapshot?.sessions?.[current.sessionId]?.canContinue===false){reconcilingMessageIntent=false;updateComposerState();return msg('session.accessChanged');}
+  reconcilingMessageIntent=true;updateComposerState();
   try{
     const receipt=await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/sessions/${encodeURIComponent(current.sessionId)}/turns/receipt`,{headers:{'Idempotency-Key':current.key}});
     if(generation!==viewGeneration||activeProject?.workspace_id!==workspaceId||messageIntent?.key!==current.key)return '';
@@ -681,10 +683,17 @@ async function reconcileMessageRecovery(workspaceId,generation){
     return t('composer.receiptAccepted');
   }catch(error){
     if(generation!==viewGeneration||activeProject?.workspace_id!==workspaceId)return '';
+    if(error.status===404&&workspaceSnapshot?.piDeveloperState?.privateBeta===true){
+      try{
+        const status=await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/private-beta-capacity`);
+        const key={'available':'admission.betaStatus.available','admitting':'admission.betaStatus.admitting','running':'admission.betaStatus.running','release-pending':'admission.betaStatus.release','review-required':'admission.betaStatus.review','unknown':'admission.betaStatus.unknown'}[status?.state];
+        return key?msg(key):'';
+      }catch{return '';}
+    }
     if(error.status===404)return '';
     return msg('turn.receiptUnavailable', () => ({p0: errorMessage(error)}));
   }finally{
-    if(generation===viewGeneration&&activeProject?.workspace_id===workspaceId){reconcilingMessageIntent=false;renderMessageAction();}
+    if(generation===viewGeneration&&activeProject?.workspace_id===workspaceId){reconcilingMessageIntent=false;updateComposerState();}
   }
 }
 
@@ -1092,6 +1101,25 @@ $('#message-form').onsubmit = async event => {
   } finally {
     if(generation===viewGeneration&&activeProject?.workspace_id===workspaceId){sendingMessage=false;updateComposerState();}
   }
+};
+
+$('#message-edit').onclick = async () => {
+  if(!messageIntent||messageIntent.acceptedTurnId||workspaceSnapshot?.piDeveloperState?.privateBeta!==true||sendingMessage||reconcilingMessageIntent||!activeProject)return;
+  const current=messageIntent,workspaceId=activeProject.workspace_id,generation=viewGeneration;
+  sendingMessage=true;updateComposerState();bindValue($('#message-error'), () => (''));
+  try{
+    const result=await api(`/api/workspaces/${encodeURIComponent(workspaceId)}/sessions/${encodeURIComponent(current.sessionId)}/turns/withdraw`,{method:'POST',headers:{'Idempotency-Key':current.key},body:JSON.stringify({message:current.message})});
+    if(generation!==viewGeneration||activeProject?.workspace_id!==workspaceId||messageIntent?.key!==current.key)return;
+    if(result?.withdrawn!==true||result?.accepted!==false)throw Error(t('composer.invalidResponse'));
+    saveConversation(recoveryKey(workspaceId),{messageIntent:null,selectedSessionId:current.sessionId,draft:current.message});
+    messageIntent=null;recoveredReceiptTurn=null;$('#message-input').value=current.message;
+    bindValue($('#message-error'), () => (t('composer.draftRestored')));
+  }catch(error){
+    if(generation===viewGeneration&&activeProject?.workspace_id===workspaceId&&messageIntent?.key===current.key){
+      const recoveryNotice=error.code==='turn-intent-accepted'?await reconcileMessageRecovery(workspaceId,generation):'';
+      bindValue($('#message-error'), () => (recoveryNotice||errorMessage(error)));
+    }
+  }finally{if(generation===viewGeneration&&activeProject?.workspace_id===workspaceId){sendingMessage=false;updateComposerState();}}
 };
 
 $('#cancel-turn').onclick = async () => {

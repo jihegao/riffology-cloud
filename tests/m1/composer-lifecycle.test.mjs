@@ -26,6 +26,7 @@ async function fixture(t, handle, intent) {
     if (path.endsWith('/events')) return json(route, {events:[], nextSequence:0, hasMore:false, snapshotRequired:false});
     if (path.endsWith('/model')) return json(route, {version:null, spec:null, canRun:false, reasonCode:'model_not_saved'});
     if (path.endsWith('/browser-preview')) return json(route, {currentRevisionId:null, revisionId:null, build:null, stale:false, modelSpec:null, reasonCode:'preview-no-saved-revision', delivery:null});
+    if (path.endsWith('/private-beta-capacity')) return json(route,{state:'available'});
     if (path.endsWith('/files')) return json(route, {revision:null, files:[]});
     if (path.endsWith('/diff')) return json(route, {revision:null, summary:{added:0,modified:0,deleted:0},changes:[]});
     if (path.endsWith('/previews')) return json(route, {current:null, available:null});
@@ -69,4 +70,34 @@ for(const denyStorage of [false,true])test(`receipt confirmation blocks duplicat
   await p.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));await p.waitForTimeout(100);
   assert.equal(await p.locator('[data-turn-id="accepted-turn"]').count(),1);
   assert.equal(f.calls.filter(c=>c.method==='POST').length,0);
+});
+
+test('a pending Beta draft can be fenced and edited without submitting another Turn', async t => {
+  const intent={key:'old-key',sessionId:'s',message:'Explain the preview error'};
+  const f=await fixture(t,async(route,path)=>{
+    if(path==='/api/workspaces/a'){await json(route,{schemaVersion:3,activeTurnId:null,sessions:{s:{id:'s',title:'Session',createdAt:1}},turns:{},piDeveloperState:{privateBeta:true,blocked:null}});return true;}
+    if(path.endsWith('/turns/receipt')){await json(route,{error:'not_found'},404);return true;}
+    if(path.endsWith('/turns/withdraw')){assert.equal(route.request().headers()['idempotency-key'],intent.key);assert.deepEqual(JSON.parse(route.request().postData()),{message:intent.message});await json(route,{withdrawn:true,accepted:false});return true;}
+  },intent);
+  const p=f.page;await p.locator('#message-edit:visible:not([disabled])').waitFor();
+  assert.equal(await p.locator('#message-input').isEditable(),false);
+  await p.locator('#message-edit').click();await p.locator('#message-input:not([readonly])').waitFor();
+  assert.equal(await p.locator('#message-input').inputValue(),intent.message);
+  assert.equal((await p.evaluate(()=>JSON.parse(sessionStorage.getItem('riffology:conversation:tenant:a')))).messageIntent,null);
+  assert.equal(f.calls.filter(c=>c.method==='POST'&&c.path.endsWith('/turns')).length,0);
+  assert.equal(f.calls.filter(c=>c.method==='POST'&&c.path.endsWith('/turns/withdraw')).length,1);
+});
+
+test('an accepted or unavailable withdrawal keeps the original request locked', async t => {
+  const intent={key:'old-key',sessionId:'s',message:'Original request'};
+  const f=await fixture(t,async(route,path)=>{
+    if(path==='/api/workspaces/a'){await json(route,{schemaVersion:3,activeTurnId:null,sessions:{s:{id:'s',title:'Session',createdAt:1}},turns:{},piDeveloperState:{privateBeta:true,blocked:null}});return true;}
+    if(path.endsWith('/turns/receipt')){await json(route,{error:'not_found'},404);return true;}
+    if(path.endsWith('/turns/withdraw')){await json(route,{error:'turn-intent-accepted'},409);return true;}
+  },intent);
+  const p=f.page;await p.locator('#message-edit:visible:not([disabled])').waitFor();await p.locator('#message-edit').click();
+  await p.waitForFunction(()=>document.querySelector('#message-error').textContent.length>0);
+  assert.equal(await p.locator('#message-input').isEditable(),false);
+  assert.equal((await p.evaluate(()=>JSON.parse(sessionStorage.getItem('riffology:conversation:tenant:a')))).messageIntent.key,intent.key);
+  assert.equal(f.calls.filter(c=>c.method==='POST'&&c.path.endsWith('/turns')).length,0);
 });

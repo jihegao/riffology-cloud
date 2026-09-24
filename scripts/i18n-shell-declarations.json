@@ -1,5 +1,6 @@
 {
   "index.html": [
+    "composer.editDraft",
     "composer.send",
     "home.loginCopy",
     "home.loginEyebrow",
