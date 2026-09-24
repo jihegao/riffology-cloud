@@ -19,7 +19,7 @@ interface Env {
   PRIVATE_BETA_CAPACITY:DurableObjectNamespace<PrivateBetaCapacity>;
   PI_DEVELOPER_BUDGET:{getByName(name:string):{privateBetaCall(identity:ModelCallRequest['identity'],callId:string):Promise<ModelCallRecord|null>}};
   WORKSPACE_AGENT:{getByName(name:string):{
-    privateBetaReleaseState(input:Admission):Promise<{found:boolean;turnId:string|null;terminal:boolean;released:boolean;resourceWait:boolean;finishedAt:number|null;releaseGuard?:boolean;rejectedSession?:boolean}>;
+    privateBetaReleaseState(input:Admission):Promise<{found:boolean;turnId:string|null;terminal:boolean;released:boolean;resourceWait:boolean;finishedAt:number|null;releaseGuard?:boolean;rejectedSession?:boolean;withdrawn?:boolean}>;
     cancelTurn(input:{scope:TurnScope;actor:TurnActor;turnId:string}):Promise<unknown>;
   }};
 }
@@ -77,12 +77,12 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
           if(record&&!['reserved','dispatched'].includes(record.status))await this.#applyObservation(record);
         }
         const state=await bounded(workspace.privateBetaReleaseState(admission));
-        if(slot.turn_id===null&&!state.found&&state.turnId===null&&state.rejectedSession===true&&
+        if(slot.turn_id===null&&!state.found&&state.turnId===null&&(state.rejectedSession===true||state.withdrawn===true)&&
           !this.ctx.storage.sql.exec('SELECT key FROM beta_calls WHERE slot_key=? LIMIT 1',slot.key).toArray().length){
           // Definitively rejected before a Turn existed, rather than an unknown
           // execution. Keep the original slot and alerts, with an audit entry.
           this.ctx.storage.sql.exec("UPDATE beta_slots SET status='released' WHERE key=?",slot.key);
-          this.ctx.storage.sql.exec('INSERT INTO beta_operations(action,actor_json,at) VALUES(?,?,?)','release-rejected-session:'+slot.key,JSON.stringify(admission.actor),Date.now());
+          this.ctx.storage.sql.exec('INSERT INTO beta_operations(action,actor_json,at) VALUES(?,?,?)',(state.withdrawn?'release-withdrawn-intent:':'release-rejected-session:')+slot.key,JSON.stringify(admission.actor),Date.now());
           continue;
         }
         if((slot.status!=='quarantined'||releaseQuarantine)&&state.found&&(!slot.turn_id||state.turnId===slot.turn_id)&&state.terminal&&state.released&&!state.resourceWait){
@@ -216,5 +216,19 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
     return {schemaVersion:1,enabled:policy.enabled&&Date.now()>=policy.startsAt&&Date.now()<policy.reviewAt,reviewAt:policy.reviewAt,limits:{maxActiveTurns:policy.maxActiveTurns,maxNanodollarsPerDay:policy.maxNanodollarsPerDay,maxNanodollarsTotal:policy.maxNanodollarsTotal},lastMonitorAt:this.ctx.storage.kv.get('beta-last-monitor')??null,paused:this.ctx.storage.kv.get('beta-paused')===true,active:this.#slots().length,quarantined:this.#slots().filter(s=>s.status==='quarantined').length,
       usage:this.ctx.storage.sql.exec('SELECT day,status,count(*) calls,sum(cost) reservedNanodollars FROM beta_calls GROUP BY day,status').toArray(),
       alerts:this.ctx.storage.sql.exec('SELECT at,code FROM beta_alerts ORDER BY at DESC LIMIT 100').toArray()};
+  }
+  async userStatus(scope:TurnScope,actor:TurnActor){
+    this.#policy(false);
+    await authorizePrivateBeta(this.env.CATALOG,scope,actor);
+    const slot=this.#slots().find(row=>row.user_id===actor.userId);
+    if(!slot)return {state:'available' as const};
+    if(slot.status==='quarantined')return {state:'review-required' as const};
+    if(!slot.turn_id)return {state:'admitting' as const};
+    try{
+      const original=JSON.parse(slot.document) as Admission;
+      const workspace=this.env.WORKSPACE_AGENT.getByName(workspaceAgentName(original.scope.tenantId,original.scope.workspaceId));
+      const state=await bounded(workspace.privateBetaReleaseState(original));
+      return {state:state.terminal?'release-pending' as const:'running' as const};
+    }catch{return {state:'unknown' as const};}
   }
 }

@@ -871,7 +871,10 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       state.activeTurnId===null&&state.releaseHold===null&&state.recoveryHold===null&&state.resourceWait===null&&
       Object.values(state.turns).every(t=>['completed','failed','cancelled','interrupted'].includes(t.status))&&
       !Object.values(state.turns).some(t=>t.actor.userId===input.actor.userId&&t.sessionId===input.sessionId&&t.requestKey===input.requestKey);
-    return {found:!!turn,turnId:turn?.id??null,terminal,finishedAt:turn?.finishedAt??null,released:terminal&&state.activeTurnId===null&&state.releaseHold===null&&state.recoveryHold===null,resourceWait:state.resourceWait!==null,rejectedSession,releaseGuard:terminal&&privateBetaNativeReleaseGuard(new DurableTurnStore(this.ctx.storage).read()?.releaseHold,turn?.id??null)};
+    const withdrawn=!!this.ctx.storage.kv.get(await this.#withdrawnTurnKey(input))&&
+      !turn&&state.activeTurnId===null&&state.releaseHold===null&&state.recoveryHold===null&&state.resourceWait===null&&
+      Object.values(state.turns).every(t=>['completed','failed','cancelled','interrupted'].includes(t.status));
+    return {found:!!turn,turnId:turn?.id??null,terminal,finishedAt:turn?.finishedAt??null,released:terminal&&state.activeTurnId===null&&state.releaseHold===null&&state.recoveryHold===null,resourceWait:state.resourceWait!==null,rejectedSession,withdrawn,releaseGuard:terminal&&privateBetaNativeReleaseGuard(new DurableTurnStore(this.ctx.storage).read()?.releaseHold,turn?.id??null)};
   }
   #developerBudget(tenantId:string){const stub=this.env.PI_DEVELOPER_BUDGET?.getByName(modelBudgetTenantName(tenantId));if(!stub)throw Error('pi-developer-budget-unavailable');return stub;}
   async piDeveloperTurnAuthorization(input:{identity:TurnRuntimeIdentity;actor:TurnActor}){
@@ -1001,6 +1004,25 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     if(recovery){const repaired=await this.#g5Guard().repairTaskBinding(recovery,turn.id);if(repaired.taskKey!==route.taskKey||repaired.windowId!==route.windowId||repaired.profileSha256!==route.profileSha256)throw Error('g5-turn-route-conflict');}else await this.#g5Guard().bindTask(route.taskKey,turn.id);
   }
   #managedSubmitTail:Promise<unknown>=Promise.resolve();
+  async #withdrawnTurnKey(input:{scope:TurnScope;actor:TurnActor;sessionId:string;requestKey:string}){
+    return 'withdrawn-turn:'+await turnDigest({scope:input.scope,actor:input.actor,sessionId:input.sessionId,requestKey:input.requestKey});
+  }
+  withdrawTurn(input:{scope:TurnScope;actor:TurnActor;sessionId:string;key:string;body:{message:unknown}}){
+    const next=this.#managedSubmitTail.then(async()=>{
+      const scope=this.#ready(input.scope);
+      if(this.env.PRIVATE_BETA_POLICY_JSON===undefined||!this.#developerCandidate(scope,input.actor))throw Error('turn-withdrawal-not-supported');
+      this.#turns.validateSubmission(scope,input.actor,input.sessionId,input.key,input.body);
+      const state=await this.#turns.snapshot(scope);
+      if(Object.values(state.turns).some(t=>t.actor.userId===input.actor.userId&&t.sessionId===input.sessionId&&t.requestKey===input.key))throw Error('turn-intent-accepted');
+      const marker=await this.#withdrawnTurnKey({scope,actor:input.actor,sessionId:input.sessionId,requestKey:input.key});
+      const digest=await turnDigest({message:input.body.message});
+      const prior=this.ctx.storage.kv.get<string>(marker);
+      if(prior&&prior!==digest)throw Error('turn-idempotency-conflict');
+      this.ctx.storage.kv.put(marker,digest);await this.ctx.storage.sync();
+      return {withdrawn:true,accepted:false};
+    });
+    this.#managedSubmitTail=next.catch(()=>{});return next;
+  }
   submitTurn(input: { scope: TurnScope; actor: TurnActor; sessionId: string; key: string; body: { message: unknown } }) {
     // Serialize admission through the durable journal commit. DO input gates
     // alone do not cover the external preflight/catalog awaits in this method.
@@ -1012,6 +1034,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const trace=(stage:TurnAdmissionStage,transportSuccess:boolean,error?:unknown)=>traceTurnAdmission(this.env.M2_TURN_ADMISSION_TELEMETRY,stage,transportSuccess,error);
     let scope:TurnScope;
     try{scope=this.#ready(input.scope);trace('ready',true);}catch(error){trace('ready',false,error);throw error;}
+    if(this.ctx.storage.kv.get(await this.#withdrawnTurnKey({scope,actor:input.actor,sessionId:input.sessionId,requestKey:input.key})))throw Error('turn-intent-withdrawn');
     const selected=this.#managedRoute();
     const developer=!selected&&!this.#store.read()?.task.budgetRoute&&this.#developerCandidate(scope,input.actor);
     const state=await this.#turns.snapshot(scope),prior=Object.values(state.turns).find(turn=>turn.sessionId===input.sessionId&&turn.requestKey===input.key&&turn.actor.userId===input.actor.userId),replay=prior?await this.#turns.submit(scope,input.actor,input.sessionId,input.key,input.body):null,persistedDeveloperRoute=prior&&this.ctx.storage.kv.get<{privateBeta?:boolean}>('pi-developer-turn:'+prior.id),developerEligible=!selected&&!this.#store.read()?.task.budgetRoute,betaAdmission=prior&&developerEligible&&this.env.PRIVATE_BETA_POLICY_JSON!==undefined?await this.#betaControl().turnBinding({scope,actor:input.actor,sessionId:input.sessionId,requestKey:input.key},prior.id).then(result=>result.found):false;

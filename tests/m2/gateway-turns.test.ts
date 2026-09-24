@@ -17,6 +17,7 @@ async function fixture(){
  const services={origin,database:db,identity:async()=>({subject:'subject-a',email:'alice@example.test',emailVerified:true,platformVersion:1}),turns:{
   createSession:(scope:any,actor:any,key:string,body:any)=>journal.createSession(scope,actor,key,body),
   receipt:async(scope:any,actor:any,sessionId:string,key:string)=>({accepted:true,...await journal.receipt(scope,actor,sessionId,key)}),
+  withdraw:async(_scope:any,_actor:any,_sessionId:string,_key:string,body:any)=>({withdrawn:body.message==='Draft',accepted:false}),
   submit:(scope:any,actor:any,sessionId:string,key:string,body:any)=>journal.submit(scope,actor,sessionId,key,body),
   cancel:(scope:any,actor:any,turnId:string)=>journal.cancel(scope,actor,turnId),
   replay:(scope:any,afterSequence:number,limit:number)=>journal.replay(scope,afterSequence,limit),
@@ -74,6 +75,30 @@ test('workspace turn routes fail closed on ownership, revocation, CSRF, shape an
   assert.equal((await f.get(`/api/workspaces/${f.workspaceId}/files`)).status,404);
   assert.equal((await f.get(`/api/workspaces/${f.workspaceId}/diff`)).status,404);
   assert.equal((await f.get(`/api/workspaces/${f.workspaceId}/artifacts/${f.artifactId}`)).status,404);
+ }finally{f.db.sqlite.close();}
+});
+
+test('withdrawal accepts only the original authenticated key and one message body',async()=>{
+ const f=await fixture();try{f.ready();
+  const session=await (await f.post(`/api/workspaces/${f.workspaceId}/sessions`,'withdraw-session',{title:'Draft'})).json() as any;
+  const path=`/api/workspaces/${f.workspaceId}/sessions/${session.session.id}/turns/withdraw`;
+  assert.equal((await f.post(path,'original',{message:'Draft'})).status,200);
+  assert.equal((await f.post(path,'',{message:'Draft'})).status,400);
+  assert.equal((await f.post(path,'original',{message:'Draft',extra:true})).status,400);
+  assert.equal((await f.post(path,'original',{message:'Draft'},'https://attacker.test')).status,403);
+  f.db.sqlite.prepare('UPDATE catalog_users SET auth_version=2 WHERE id=?').run('user-a');
+  assert.equal((await f.post(path,'original',{message:'Draft'})).status,404);
+ }finally{f.db.sqlite.close();}
+});
+
+test('Private Beta status read exposes only the caller-scoped state',async()=>{
+ const f=await fixture();try{f.ready();
+  (f.services as any).privateBeta={userStatus:async(scope:any,actor:any)=>{assert.equal(scope.workspaceId,f.workspaceId);assert.deepEqual(actor,{userId:'user-a',authVersion:1});return {state:'review-required'};}};
+  const path=`/api/workspaces/${f.workspaceId}/private-beta-capacity`;
+  assert.deepEqual(await (await f.get(path)).json(),{state:'review-required'});
+  assert.equal((await f.get('/api/workspaces/unknown/private-beta-capacity')).status,404);
+  f.db.sqlite.prepare('UPDATE catalog_users SET auth_version=2 WHERE id=?').run('user-a');
+  assert.equal((await f.get(path)).status,404);
  }finally{f.db.sqlite.close();}
 });
 

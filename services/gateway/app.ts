@@ -40,7 +40,7 @@ export interface GatewayServices {
   publicationArtifacts?:PublicationArtifacts;
   researchExports?:GatewayResearchExports;
   simulations?:GatewaySimulations;
-  privateBeta?:{snapshot():Promise<unknown>;pause(actor:TurnActor):Promise<unknown>;resume(actor:TurnActor):Promise<unknown>};
+  privateBeta?:{snapshot():Promise<unknown>;pause(actor:TurnActor):Promise<unknown>;resume(actor:TurnActor):Promise<unknown>;userStatus?(scope:TurnScope,actor:TurnActor):Promise<unknown>};
   origin:string;
   database:Database;
   modelContent?:ModelContentPort;
@@ -57,6 +57,7 @@ export interface GatewayServices {
     createSession(scope:TurnScope,actor:TurnActor,key:string,body:{title:unknown}):Promise<unknown>;
     receipt(scope:TurnScope,actor:TurnActor,sessionId:string,key:string):Promise<unknown>;
     submit(scope:TurnScope,actor:TurnActor,sessionId:string,key:string,body:{message:unknown}):Promise<unknown>;
+    withdraw?(scope:TurnScope,actor:TurnActor,sessionId:string,key:string,body:{message:unknown}):Promise<unknown>;
     cancel(scope:TurnScope,actor:TurnActor,turnId:string):Promise<unknown>;
     replay(scope:TurnScope,afterSequence:number,limit:number):Promise<unknown>;
     snapshot(scope:TurnScope,actor?:TurnActor):Promise<unknown>;
@@ -80,7 +81,7 @@ async function turnCall<T>(operation:()=>Promise<T>):Promise<T>{
     if(code.includes('idempotency-conflict'))throw new CatalogError('idempotency_conflict');
     if(['pi-developer-execution-unconfirmed','pi-developer-execution-isolation-unconfirmed','pi-developer-historical-execution-unconfirmed','pi-developer-historical-g5-denied','pi-developer-admission-denied','pi-developer-budget-unavailable','pi-developer-historical-ledger-unavailable','pi-developer-packet-limit','pi-developer-policy-conflict','pi-developer-usage-missing','pi-developer-usage-invalid'].includes(code))throw new HttpError(code,409);
     if(['private-beta-paused','private-beta-user-busy','private-beta-capacity-full','private-beta-budget-limit','private-beta-admission-denied','private-beta-policy-conflict','private-beta-turn-denied','private-beta-time-limit','private-beta-unconfigured','private-beta-release-unconfirmed'].includes(code))throw new HttpError(code,409);
-    if(code==='workspace-recovery-hold')throw new HttpError(code,409);
+    if(['workspace-recovery-hold','turn-intent-withdrawn','turn-intent-accepted','turn-withdrawal-not-supported'].includes(code))throw new HttpError(code,409);
     if(new Set(['managed-execution-unknown','managed-usage-unknown','managed-original-unresolved','managed-cleanup-unconfirmed','managed-input-in-flight','managed-session-base-unavailable','managed-session-limit-or-cleanup-pending','managed-admission-denied','managed-policy-immutable','managed-route-existing-turn-history','managed-window-expired','managed-turn-limit','managed-observed-cost-limit','managed-reservation-limit','managed-observed-cost-exceeds-hold','managed-observation-failed']).has(code))throw new HttpError(code,409);
     if(code.includes('not-found'))throw new CatalogError('not_found');
     if(code.startsWith('invalid-'))throw new CatalogError('invalid_input');throw error;}
@@ -364,6 +365,8 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     }
     const turns=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/sessions\/([A-Za-z0-9_-]{1,128})\/turns$/.exec(url.pathname);
     const turnReceipt=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/sessions\/([A-Za-z0-9_-]{1,128})\/turns\/receipt$/.exec(url.pathname);
+    const turnWithdraw=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/sessions\/([A-Za-z0-9_-]{1,128})\/turns\/withdraw$/.exec(url.pathname);
+    const betaStatus=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/private-beta-capacity$/.exec(url.pathname);
     const cancel=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/turns\/([A-Za-z0-9_-]{1,128})\/cancel$/.exec(url.pathname);
     const events=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/events$/.exec(url.pathname);
     const observationArtifact=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/turns\/([A-Za-z0-9_-]{1,128})\/observations\/([A-Za-z0-9_-]{1,128})\/artifacts\/(state|view)$/.exec(url.pathname);
@@ -375,7 +378,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       const caller={userId:principal.userId,authVersion:principal.authVersion};
       return await observerArtifactContent(await turnCall(()=>services.observations!.artifact(turnScope,caller,observationArtifact[2]!,observationArtifact[3]!,observationArtifact[4]! as 'state'|'view')));
     }
-    const turnMatch=workspace??files??diff??artifact??sessions??turns??turnReceipt??cancel??events;
+    const turnMatch=workspace??files??diff??artifact??sessions??turns??turnReceipt??turnWithdraw??betaStatus??cancel??events;
     if(turnMatch){
       if(!services.turns)throw Error('turn-service-not-configured');
       const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),turnScope=await catalog.workspace(principal,turnMatch[1]);
@@ -394,6 +397,15 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       }
       if(turnReceipt&&request.method==='GET'&&url.search===''){
         const result=await turnCall(()=>services.turns!.receipt(turnScope,turnActor,turnReceipt[2],idempotencyKey(request)));return json(publicResult(result,'turn'));
+      }
+      if(turnWithdraw&&request.method==='POST'&&url.search===''){
+        const body=bodyOnly(await readJson(request),'message');
+        if(!services.turns.withdraw)throw new HttpError('turn-withdrawal-not-supported',409);
+        return json(await turnCall(()=>services.turns!.withdraw!(turnScope,turnActor,turnWithdraw[2],idempotencyKey(request),{message:body.message})));
+      }
+      if(betaStatus&&request.method==='GET'&&url.search===''){
+        if(!services.privateBeta?.userStatus)throw new HttpError('private-beta-unconfigured',503);
+        return json(await turnCall(()=>services.privateBeta!.userStatus!(turnScope,turnActor)));
       }
       if(cancel&&request.method==='POST'){
         const body=await readJson(request);if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).length)throw new CatalogError('invalid_input');

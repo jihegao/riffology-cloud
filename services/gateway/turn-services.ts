@@ -10,6 +10,7 @@ interface WorkspaceTurnActor {
   createSession(input: { scope: TurnScope; actor: TurnActor; key: string; body: { title: unknown } }): Promise<unknown>;
   turnReceipt?(input:{scope:TurnScope;actor:TurnActor;sessionId:string;key:string}):Promise<unknown>;
   submitTurn(input: { scope: TurnScope; actor: TurnActor; sessionId: string; key: string; body: { message: unknown } }): Promise<unknown>;
+  withdrawTurn?(input:{scope:TurnScope;actor:TurnActor;sessionId:string;key:string;body:{message:unknown}}):Promise<unknown>;
   cancelTurn(input: { scope: TurnScope; actor: TurnActor; turnId: string }): Promise<unknown>;
   replayTurnEvents(input: { scope: TurnScope; afterSequence: number; limit: number }): Promise<unknown>;
   turnSnapshot(input: { scope: TurnScope; actor?:TurnActor }): Promise<unknown>;
@@ -56,6 +57,10 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
         const result=await actor(scope).submitTurn({scope,actor:caller,sessionId,key,body});
         traceTurnAdmission(env.M2_TURN_ADMISSION_TELEMETRY,'gateway',true);return result;
       }catch(error){traceTurnAdmission(env.M2_TURN_ADMISSION_TELEMETRY,'gateway',false,error);throw error;}
+    },
+    async withdraw(scope:TurnScope,caller:TurnActor,sessionId:string,key:string,body:{message:unknown}){
+      const stub=actor(scope);if(!stub.withdrawTurn)throw Error('turn-withdrawal-not-supported');
+      return stub.withdrawTurn({scope,actor:caller,sessionId,key,body});
     },
     async cancel(scope: TurnScope, caller: TurnActor, turnId: string) {
       return actor(scope).cancelTurn({ scope, actor: caller, turnId });

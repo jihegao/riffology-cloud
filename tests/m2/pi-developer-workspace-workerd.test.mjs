@@ -69,6 +69,7 @@ for(const beta of [false,true])test((beta?'Private Beta':'Pi developer')+' Works
  const created=await rpc('createSession',{key:'session',body:{title:'Synthetic'}});assert.equal(created.ok,true,JSON.stringify(created));let sessionId=created.value.session.id;
  if(beta){
   const cap=async(action,...args)=>{const result=await rpc('betaForTest',{action,args});assert.equal(result.ok,true,JSON.stringify(result));return result.value;};
+  assert.deepEqual(await cap('userStatus',scope,{...actor}),{state:'available'});
   await db.prepare("UPDATE catalog_users SET auth_version=2 WHERE id='owner'").run();actor.authVersion=2;
   const rejected={scope,actor:{...actor},sessionId,requestKey:'stale-session'};
   assert.equal((await rpc('submitTurn',{sessionId,key:rejected.requestKey,body:{message:'must not reserve'}})).error,'turn-session-not-found');
@@ -76,6 +77,7 @@ for(const beta of [false,true])test((beta?'Private Beta':'Pi developer')+' Works
   // Reproduce the pre-fix sequence: reserve first, then fail journal validation.
   await cap('admitTurn',rejected);await cap('quarantineUnboundForTest');
   const before=await cap('snapshot');assert.equal(before.quarantined,1);assert.deepEqual(before.usage,[]);
+  assert.deepEqual(await cap('userStatus',scope,{...actor}),{state:'review-required'});
   await mf.dispose();mf=new Miniflare(options);await mf.ready;
   const proof=(await rpc('privateBetaReleaseState',rejected)).value;assert.equal(proof.rejectedSession,true);assert.equal(proof.found,false);
   await cap('monitor');const after=await cap('snapshot');assert.equal(after.active,0);assert.deepEqual(after.usage,before.usage);
@@ -87,12 +89,27 @@ for(const beta of [false,true])test((beta?'Private Beta':'Pi developer')+' Works
   assert.equal((await rpc('privateBetaReleaseState',{...rejected,sessionId})).value.rejectedSession,false);
   assert.equal((await rpc('submitTurn',{sessionId,key:'invalid',body:{message:''}})).error,'invalid-turn-message');
   assert.equal((await cap('snapshot')).active,0);
+  const withdrawn={sessionId,key:'withdrawn-draft',body:{message:'keep this draft'}};
+  await cap('admitTurn',{scope,actor:{...actor},sessionId,requestKey:withdrawn.key});
+  assert.equal((await cap('snapshot')).active,1);
+  assert.deepEqual(await cap('userStatus',scope,{...actor}),{state:'admitting'});
+  assert.deepEqual((await rpc('withdrawTurn',withdrawn)).value,{withdrawn:true,accepted:false});
+  assert.equal((await rpc('withdrawTurn',withdrawn)).value.withdrawn,true);
+  assert.equal((await rpc('withdrawTurn',{...withdrawn,body:{message:'changed'}})).error,'turn-idempotency-conflict');
+  assert.equal((await rpc('privateBetaReleaseState',{scope,actor:{...actor},sessionId,requestKey:withdrawn.key})).value.withdrawn,true);
+  await cap('monitor');assert.equal((await cap('snapshot')).active,0);
+  assert.deepEqual(await cap('userStatus',scope,{...actor}),{state:'available'});
+  assert.equal((await cap('operationsForTest')).filter(x=>x.action.startsWith('release-withdrawn-intent:')).length,1);
+  await mf.dispose();mf=new Miniflare(options);await mf.ready;
+  assert.equal((await rpc('submitTurn',withdrawn)).error,'turn-intent-withdrawn');
+  assert.equal((await rpc('turnReceipt',{sessionId,key:withdrawn.key})).error,'turn-receipt-not-found');
  }
  const input={sessionId,key:'first',body:{message:'synthetic FCFS'}};
  const pair=await Promise.all([rpc('submitTurn',input),rpc('submitTurn',{...input,key:'second'})]);assert.equal(pair.filter(r=>r.ok).length,1,JSON.stringify(pair));assert.equal(pair.find(r=>!r.ok).error,'managed-input-in-flight');
  const winner=pair.find(r=>r.ok).value.turn;assert.equal(winner.requestKey,'first');
  if(beta)assert.equal((await rpc('privateBetaReleaseState',{sessionId:created.value.session.id,requestKey:'stale-session'})).value.rejectedSession,false,'another queued Turn prevents rejected-session release proof');
  const receipt=await rpc('turnReceipt',{sessionId,key:'first'});assert.equal(receipt.ok,true,JSON.stringify(receipt));assert.equal(receipt.value.accepted,true);assert.equal(receipt.value.turn.id,winner.id);
+ if(beta)assert.equal((await rpc('withdrawTurn',input)).error,'turn-intent-accepted');
  if(beta){
   await rpc('dropBetaBindingForTest',{sessionId,key:'first',turnId:winner.id});options.workers[0].config.env.PRIVATE_BETA_POLICY_JSON.value=JSON.stringify({...standing,enabled:false});await mf.dispose();mf=new Miniflare(options);await mf.ready;
   const missing=await rpc('turnReceipt',{sessionId,key:'first'});assert.equal(missing.ok,false);assert.equal(missing.error,'turn-receipt-not-found');const pausedRetry=await rpc('submitTurn',input);assert.equal(pausedRetry.ok,false);assert.match(pausedRetry.error,/private-beta-paused/);assert.equal((await rpc('turnReceipt',{sessionId,key:'first'})).ok,false);

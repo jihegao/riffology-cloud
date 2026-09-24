@@ -38,7 +38,7 @@
           <form id="message-form" class="composer" aria-busy="false">
             <label for="message-input" data-i18n="site.messageLabel">描述你的研究问题或模型修改</label>
             <textarea id="message-input" rows="4" maxlength="16000" required placeholder="例如：创建一个单服务台排队模型，并解释等待时间如何变化。" data-i18n-placeholder="site.messagePlaceholder"></textarea>
-            <div class="composer-actions"><span id="message-status" role="status" aria-live="polite"></span><span id="message-error" role="alert"></span><button id="cancel-turn" class="button" type="button" hidden data-i18n="site.stopTurn">停止回合</button><button id="message-submit" class="button primary" type="submit" data-i18n="composer.send">发送</button></div>
+            <div class="composer-actions"><span id="message-status" role="status" aria-live="polite"></span><span id="message-error" role="alert"></span><button id="cancel-turn" class="button" type="button" hidden data-i18n="site.stopTurn">停止回合</button><button id="message-edit" class="button" type="button" hidden data-i18n="composer.editDraft"></button><button id="message-submit" class="button primary" type="submit" data-i18n="composer.send">发送</button></div>
           </form>
         </section>
         <div class="workspace-divider" data-workspace-divider role="separator" tabindex="0" aria-label="调整对话与模型宽度" data-i18n-aria-label="site.resizeWorkspace" aria-orientation="vertical" aria-controls="workspace-agent workspace-canvas" aria-valuemin="25" aria-valuemax="60" aria-valuenow="35"></div>
