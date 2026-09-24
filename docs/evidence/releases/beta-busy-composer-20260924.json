@@ -1,0 +1,50 @@
+{
+  "at": "2026-09-24T13:33:50.501Z",
+  "issue": 137,
+  "pr": 138,
+  "sourceCommit": "8c3cf69fce35c0cb1d5a93e82471c81973462cc4",
+  "ci": "https://github.com/jihegao/riffology-cloud/actions/runs/36004367509",
+  "deployment": "388a54f5-b172-4f5e-8a2a-98154de596cc",
+  "version": "9c7b7298-7743-43b4-84f2-c7145bf9f27b",
+  "percentage": 100,
+  "previousDeployment": "fb3b06dc-9051-480a-9a85-c9732189b629",
+  "previousVersion": "a2770d8a-5873-4d51-8189-3cf43b530f23",
+  "bindings": 91,
+  "bindingsPreserved": true,
+  "runtimeConfigurationPreserved": true,
+  "workerSha256": "d9977d628eddecb9ec93991e598361c1fb1859b6bba5dd3025e6c8e8f2b2f116",
+  "workerBytes": 5221220,
+  "publicAssetsMatched": 17,
+  "checks": {
+    "typecheck": true,
+    "ui": {"passed": 21, "failed": 0},
+    "m0": {"passed": 350, "skipped": 1, "failed": 0},
+    "m1": {"passed": 277, "failed": 0},
+    "m2": {"passed": 840, "failed": 0},
+    "m3": {"passed": 962, "skipped": 10, "failed": 0},
+    "issue73": {"passed": 30, "failed": 0},
+    "researchQuality": {"passed": 8, "failed": 0}
+  },
+  "affectedWorkspace": "168f5da2-3f96-46fd-8ed0-e9e588ae0d7a",
+  "capacityEvidence": {
+    "source": "Authenticated Cloudflare Durable Objects Data Studio SELECT queries on the original capacity object before and after browser recovery",
+    "originalSlot": {"statusBefore": "quarantined", "statusAfter": "quarantined", "boundTurn": true, "observedCalls": 7, "otherCallStatuses": 0},
+    "beforeAndAfter": {"quarantinedSlots": 1, "releasedSlots": 18, "observedCalls": 80, "otherCallStatuses": 0, "reservedNanodollars": 1207105250},
+    "alert": "execution-or-release-unconfirmed",
+    "rawIdentities": "Retained locally; not published in the Issue or repository"
+  },
+  "browserAcceptance": {
+    "source": "Original authenticated Safari Workspace after deployment and refresh",
+    "capacityMessage": "review-required",
+    "originalDraftPreserved": true,
+    "editDraftClicked": true,
+    "draftEditableAfterWithdrawal": true,
+    "sendOrRetryClicked": false,
+    "newTurnOrPaidExecutionAcceptance": false
+  },
+  "remaining": [
+    "The original bound quarantined slot still occupies this user's Private Beta capacity. No release action was performed.",
+    "An operator must adjudicate the original Turn's current execution and resource release proof under #104 before restoring send capacity; the existing resume path enforces all-slot release checks.",
+    "Browser Preview python-stdlib/v1 compatibility is a separate defect; this release does not change that adapter."
+  ]
+}
