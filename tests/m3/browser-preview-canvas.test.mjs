@@ -14,6 +14,8 @@ import {checkedPackage} from '../../services/browser-preview/runtime/package-loa
 import {fixture} from './browser-preview-test-fixture.mjs';
 import retainedIndex from '../../services/browser-preview/execution/retained/pre-142.json' with {type:'json'};
 import pre142Profiles from '../../services/browser-preview/execution/retained/profiles-pre-142.json' with {type:'json'};
+import baselineIndex from '../../services/browser-preview/execution/retained/727c40f.json' with {type:'json'};
+import {browserPreviewStaticIndex} from '../../services/browser-preview/execution/assets/static-index.ts';
 
 test('saved Python Canvas source is opt-in, versioned, and requires a draw hook',async()=>{
   assert.equal(PREVIEW_VALIDATION_VERSION,'reviewed-platform-adapters/v3');
@@ -54,6 +56,27 @@ test('pre-142 retained host and dependency lock remain byte-exact for future sou
     assert.equal(bytes.length,asset.byteLength);
     assert.equal(await previewSha256(bytes),asset.sha256);
   }
+});
+
+test('every historical delivery byte remains available in a clean checkout',async()=>{
+  const generated=new Set(profiles.flatMap(profile=>profile.assetManifest.map(asset=>`/browser-preview-assets/${asset.sha256}/${asset.path}`)));
+  generated.add(browserPreviewStaticIndex.delivery.hostModule.url);
+  generated.add(browserPreviewStaticIndex.delivery.rendererModule.url);
+  for(const profile of profiles)generated.add(browserPreviewStaticIndex.versions[profile.runtime.assetSha256].frameDocument.url);
+  const historical=new Map([...baselineIndex.assets,...retainedIndex.assets].map(asset=>[asset.url,asset]));
+  let frozen=0;
+  for(const asset of historical.values()){
+    if(generated.has(asset.url))continue;
+    const bucket=asset.kind==='app'?'app-assets':'execution-assets';
+    const locations=[`../../services/browser-preview/execution/retained/bytes/${asset.file}`,`../../services/browser-preview/execution/retained/pre-142-bytes/${bucket}/${asset.file}`];
+    let bytes=null;
+    for(const location of locations){try{bytes=await readFile(new URL(location,import.meta.url));break;}catch(error){if(error.code!=='ENOENT')throw error;}}
+    assert.ok(bytes,`missing retained bytes: ${asset.url}`);
+    assert.equal(bytes.length,asset.byteLength,asset.url);
+    assert.equal(await previewSha256(bytes),asset.sha256,asset.url);
+    frozen++;
+  }
+  assert.ok(frozen>=12);
 });
 
 test('unchanged server model/run.py executes the same Canvas model source without visual APIs',async()=>{
