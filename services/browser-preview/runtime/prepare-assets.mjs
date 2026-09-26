@@ -18,7 +18,7 @@ for (const expected of metadata.assets) {
     await writeFile(path,bytes);
   }
 }
-const sources = ['worker.mjs','host.mjs','frame.mjs','renderer.mjs','package-loader.mjs','protocol.mjs','sha256.mjs','frame.html'];
+const sources = ['worker.mjs','host.mjs','frame.mjs','renderer.mjs','canvas.mjs','package-loader.mjs','protocol.mjs','sha256.mjs','frame.html'];
 const runtimeAssets = await Promise.all(sources.map(async file => {const bytes = await readFile(new URL(file,import.meta.url)); return {path:'runtime/'+file,sha256:await previewSha256(bytes),byteLength:bytes.length};}));
 for (const [path,file] of [['source/contract.ts','services/browser-preview/contract.ts'],['source/model-spec.ts','services/simulation/model-spec.ts'],['source/package-lock.json','package-lock.json'],['source/prepare-assets.mjs','services/browser-preview/runtime/prepare-assets.mjs']]) {
   const bytes = await readFile(resolve(root,file));runtimeAssets.push({path,sha256:await previewSha256(bytes),byteLength:bytes.length});
