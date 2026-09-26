@@ -1,0 +1,34 @@
+{
+  "date": "2026-09-27",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/144",
+  "parent_acceptance": "https://github.com/jihegao/riffology-cloud/issues/142",
+  "pull_request": "https://github.com/jihegao/riffology-cloud/pull/145",
+  "merge_commit": "f539808743814dd0e5d1c9076e0a064d8780a5f0",
+  "ci": "https://github.com/jihegao/riffology-cloud/actions/runs/36269254523",
+  "reported_package": {
+    "workspace_id": "026fb1f1-d90c-4ec2-93a1-5b905f61d193",
+    "saved_revision_prefix": "ee4a2fad",
+    "model_run_sha256": "a890429ddc618701134a4f99fcd5c2d97ec59e48b1ef892abf1121f41be741b6",
+    "diagnosis": "Saved model/run.py differs from the canonical python-stdlib/v1 adapter; existing saved Revision remains unsupported and was not rewritten. The original failed Python Canvas source bytes were not available, so a full repair of that exact authored draw implementation was not asserted."
+  },
+  "gateway": {
+    "version": "5b65b932-ba17-4c5c-9a0d-fae3c5627e96",
+    "deployment": "70ee13c4-7ae4-4a0b-8246-d46c85dd5549",
+    "traffic_percent": 100,
+    "previous_version": "9274412e-f806-4bc4-be1a-82d48cc021f3",
+    "worker_sha256": "7a31f4d806cd9cc8493676c753f54e032fb8eced207795c574ba5d203b690819",
+    "readback": "91 bindings, runtime/container metadata and observability settings matched frozen predecessor; downloaded Worker bytes matched release bundle",
+    "public_assets": "22 web files, 54 app assets and two Browser Execution frames returned 200 and matched source bytes (78/78)"
+  },
+  "trusted_pi_container": {
+    "application": "riffology-m3-trusted-pi-staging",
+    "application_version": 7,
+    "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue144-trusted-pi@sha256:065d76cb1f5f24c8f77a2762f676d9fa21a36c7317fb439bfd29a849c07b2290",
+    "image_source_checks": "trusted-pi-release.mjs, product-tool-bridge.mjs and controlled-pi.mjs SHA256 in the local built image matched merged source",
+    "rollout": "completed; one of one target instances; healthy 1; no reported health errors",
+    "logs_enabled": true,
+    "other_gateway_bound_apps": "four other applications retained their versions, image digests and log settings"
+  },
+  "pre_release_checks": "UI 21/21; TypeScript; M2 843/843; M3 852 passed/10 conditional skipped plus 16/16, 9/9 and 90/90; real Chromium/Pyodide 47/47; CI passed",
+  "acceptance_scope": "Public/static and read-only deployment verification only. No new authenticated Pi/provider Turn, saved replacement Revision, user traffic project Preview, server Experiment/Verify or paid execution acceptance. Browser Preview remains local/unverified."
+}

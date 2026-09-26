@@ -1,4 +1,38 @@
-# Current release readiness — 2026-09-26
+# Current release readiness — 2026-09-27
+
+## 2026-09-27 Python Canvas adapter repair release
+
+[Issue #144](https://github.com/jihegao/riffology-cloud/issues/144) fixes an
+acceptance defect in [#142](https://github.com/jihegao/riffology-cloud/issues/142):
+an authored package could declare `python-canvas` and `draw(...)`, yet retain a
+noncanonical `model/run.py` and fail the Browser Preview `python-stdlib/v1`
+compatibility check. [PR #145](https://github.com/jihegao/riffology-cloud/pull/145)
+adds a trusted adapter installation tool, prevents a near-match wrapper from
+being written directly, and guides the author to check the adapter first.
+`python-canvas` remains supported. The saved Revision that exposed the defect
+was not rewritten; it needs a new, compatible Revision for Preview acceptance.
+
+Merge commit `f539808743814dd0e5d1c9076e0a064d8780a5f0` is deployed as
+Gateway version `5b65b932-ba17-4c5c-9a0d-fae3c5627e96` (deployment
+`70ee13c4-7ae4-4a0b-8246-d46c85dd5549`) at 100% and Trusted Pi container
+application version 7 with image digest
+`sha256:065d76cb1f5f24c8f77a2762f676d9fa21a36c7317fb439bfd29a849c07b2290`.
+The one-instance rollout completed, the instance is healthy, container logs
+are enabled, and the other four Gateway-bound container applications retained
+their prior versions and images. Independent Gateway readback matched all 91
+bindings, runtime and observability settings; downloaded Worker bytes matched
+the release bundle. All 22 public web files, 54 app assets and two Browser
+Execution frames returned 200 with expected bytes. The Browser Execution
+Worker itself was not changed.
+
+Before release, `check:ui` 21/21, TypeScript, M2 843/843, M3 852 passed with
+10 conditional skips plus 16/16, 9/9 and 90/90, real Chromium/Pyodide 47/47,
+and [CI](https://github.com/jihegao/riffology-cloud/actions/runs/36269254523)
+passed. Release verification was static/read-only. No new authenticated Pi
+Turn, provider call, model Revision save or paid execution was performed;
+the reported traffic project and a fresh `python-canvas` Revision still need
+authenticated acceptance. Browser Preview results remain local/unverified.
+[Release evidence](evidence/releases/issue-144-20260927.json).
 
 ## 2026-09-26 Python Canvas Browser Preview release
 
