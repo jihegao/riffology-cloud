@@ -30,7 +30,7 @@ test('actual release resolveOptions injects generation policy and original adapt
  const release=createProductTrustedPiRelease({clock:()=>now,modelFetch:async()=>{throw Error('generation-test-must-not-call-model');},toolFetch:async input=>{calls.push(new URL(input).pathname);return Response.json({model:null,experiments:[]});}});
  const options=await release.resolveOptions({identity,actor,executionDeadlineAt:now+600000});
  assert.deepEqual(calls,['/v1/research']);assert.deepEqual(options.fixedSkills.map(s=>s.name),['simulation']);
- const content=options.fixedSkills[0].content;assert.ok(content.includes(adapter));assert.ok(content.includes(adapterSha));
+ const content=options.fixedSkills[0].content;assert.ok(content.includes('project_install_preview_adapter'));assert.ok(content.includes(adapterSha));assert.equal(content.includes(adapter),false);
  for(const path of contract.sourcePaths)assert.ok(content.includes(path));
  assert.match(content,/six|mesa.*3\.5\.1/i);assert.match(content,/Queue code must remain CPython 3\.11 compatible/);assert.match(content,/Preserve existing working SimPy and server Preview/);
  assert.match(content,/do not convert them/i);assert.match(content,/Do not generate JavaScript/);assert.match(content,/steps and horizon are ordinary parameters/);assert.match(content,/Do not clamp, coerce, truncate/);
