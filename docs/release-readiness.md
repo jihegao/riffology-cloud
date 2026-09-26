@@ -1,4 +1,33 @@
-# Current release readiness — 2026-09-24
+# Current release readiness — 2026-09-26
+
+## 2026-09-26 Python Canvas Browser Preview release
+
+[Issue #142](https://github.com/jihegao/riffology-cloud/issues/142) and
+[PR #143](https://github.com/jihegao/riffology-cloud/pull/143) add the optional
+`python-canvas` profile. The model's Python `draw` entry runs in the isolated
+browser Pyodide Worker and paints the Canvas; historical grid/lane profiles
+retain their pinned assets. Browser output remains local/unverified.
+
+Merge commit `525855ef483a92d1ddb40aa80f433f1a1b7e9d6d` was deployed as
+Gateway version `9274412e-f806-4bc4-be1a-82d48cc021f3` (deployment
+`9ef49c36-94ad-4a64-8ab8-1386c0e45a12`) and Browser Execution version
+`2bb13fde-5d8c-469b-b772-101575f4838b` (deployment
+`1a5e39c7-b08f-4e4e-96e7-02b80ba9db76`), each at 100%. The independent
+Gateway readback matched all 91 prior bindings, runtime and observability
+settings; its downloaded Worker bytes matched the release bundle SHA256
+`7a31f4d806cd9cc8493676c753f54e032fb8eced207795c574ba5d203b690819`.
+The Execution Worker retained its four bindings and observability settings.
+The new and retained execution frames each returned HTTP 200 from the actual
+execution origin, byte-for-byte matching local assets and retaining the
+site-limited frame CSP. All 22 public web files and 54 app assets checked on
+the main origin also matched source bytes.
+
+Pre-merge Chromium/Pyodide 47/47 and frozen browser regression 37/37 passed;
+`npm run test:m3` and [CI](https://github.com/jihegao/riffology-cloud/actions/runs/36216285592)
+passed. Production checks above are static/read-only. Authenticated user flow,
+the existing traffic Revision and Safari/WebKit remain unverified; #141 retains
+its separate model-content scope. No server Experiment, Verify or paid Turn was
+run for this release. [Release evidence](evidence/releases/issue-142-20260926.json).
 
 ## 2026-09-24 Private Beta draft recovery and capacity diagnosis
 

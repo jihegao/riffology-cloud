@@ -1,0 +1,33 @@
+{
+  "date": "2026-09-26",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/142",
+  "pull_request": "https://github.com/jihegao/riffology-cloud/pull/143",
+  "merge_commit": "525855ef483a92d1ddb40aa80f433f1a1b7e9d6d",
+  "ci": "https://github.com/jihegao/riffology-cloud/actions/runs/36216285592",
+  "gateway": {
+    "version": "9274412e-f806-4bc4-be1a-82d48cc021f3",
+    "deployment": "9ef49c36-94ad-4a64-8ab8-1386c0e45a12",
+    "traffic_percent": 100,
+    "worker_sha256": "7a31f4d806cd9cc8493676c753f54e032fb8eced207795c574ba5d203b690819",
+    "readback": "91 bindings and runtime/observability settings matched frozen predecessor; downloaded Worker bytes matched release bundle",
+    "public_assets": "22 web files and 54 application assets returned 200 and matched source bytes"
+  },
+  "browser_execution": {
+    "version": "2bb13fde-5d8c-469b-b772-101575f4838b",
+    "deployment": "1a5e39c7-b08f-4e4e-96e7-02b80ba9db76",
+    "traffic_percent": 100,
+    "readback": "four bindings and observability settings matched frozen predecessor",
+    "frames": [
+      {
+        "sha256": "53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5",
+        "result": "HTTP 200; bytes matched source; CSP frame-ancestors restricted to main origin"
+      },
+      {
+        "sha256": "16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225",
+        "result": "HTTP 200; bytes matched source; CSP frame-ancestors restricted to main origin"
+      }
+    ]
+  },
+  "pre_merge_tests": "Chromium/Pyodide 47/47, frozen browser regression 37/37, npm run test:m3 and CI passed",
+  "acceptance_scope": "Public/static and read-only release verification only. No authenticated user flow, existing traffic Revision, Safari/WebKit, server Experiment/Verify or paid Turn acceptance. Browser output remains local/unverified."
+}
