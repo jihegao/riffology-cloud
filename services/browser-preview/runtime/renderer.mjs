@@ -1,7 +1,7 @@
 import {validateTrace, LIMITS} from './protocol.mjs';
 export class PreviewPlayer {
   constructor(container, metricContainer) {this.container = container; this.metricContainer = metricContainer; this.index = 0;}
-  load(trace, visualization) {this.pause(); validateTrace(trace); if (new TextEncoder().encode(JSON.stringify(trace)).length > LIMITS.cacheBytes) throw Error('runtime-cache-limit'); this.trace = trace; this.visualization = visualization; this.index = 0; this.render();}
+  load(trace, visualization, paint=null) {this.pause(); validateTrace(trace); if (new TextEncoder().encode(JSON.stringify(trace)).length > LIMITS.cacheBytes) throw Error('runtime-cache-limit');if(visualization.renderer==='python-canvas'&&typeof paint!=='function')throw Error('runtime-canvas-paint-missing');this.trace = trace; this.visualization = visualization;this.paint=paint; this.index = 0; this.render();}
   clear() {this.pause(); this.trace = null; this.container.replaceChildren(); this.metricContainer.replaceChildren();}
   pause() {clearInterval(this.timer); this.timer = null;}
   play(speed = 5) {this.pause(); if (!Number.isFinite(speed) || speed < 1 || speed > 60) throw Error('runtime-playback-speed-invalid'); this.timer = setInterval(() => this.step(), 1000 / speed);}
@@ -10,9 +10,11 @@ export class PreviewPlayer {
   render() {
     if (!this.trace) return;
     const snapshot = this.trace.snapshots[this.index];
-    this.container.replaceChildren(); this.metricContainer.replaceChildren();
+    if(this.visualization.renderer!=='python-canvas')this.container.replaceChildren();this.metricContainer.replaceChildren();
     this.container.dataset.frame = String(snapshot.frame);
-    if (snapshot.space.type === 'grid') {
+    if(this.visualization.renderer==='python-canvas'){
+      this.paint(this.index);
+    } else if (snapshot.space.type === 'grid') {
       this.container.style.display = 'block';
       const canvas=document.createElement('canvas');canvas.className='preview-grid';canvas.width=600;canvas.height=420;canvas.style.maxWidth='100%';canvas.setAttribute('role','img');canvas.setAttribute('aria-label',`Frame ${snapshot.frame}: ${snapshot.agents.length} agents on ${snapshot.space.width} by ${snapshot.space.height} grid`);
       const ctx=canvas.getContext('2d');ctx.fillStyle='#f1f5f9';ctx.fillRect(0,0,600,420);

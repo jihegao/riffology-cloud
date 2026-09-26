@@ -2,8 +2,8 @@ import {workspaceArchiveReader} from '../turn-runtime/workspace-file-index.ts';
 import {parseModelSpec,type ModelSpec} from '../simulation/model-spec.ts';
 import {BROWSER_PREVIEW_SCHEMA,BROWSER_PREVIEW_SOURCE_PATHS,PREVIEW_COMPATIBLE_ADAPTER_SHA256,previewSha256,type PreviewBuildReason,type PreviewPackageIdentityInput,type PreviewRuntime,type PreviewSourcePath} from './contract.ts';
 import {PREVIEW_LIMITS,type PreviewProfileRegistry,type TrustedPreviewProfile} from './profiles.ts';
-export const PREVIEW_VALIDATION_VERSION='reviewed-platform-adapters/v2';
-export type PreviewVisualization={schema:'riffology.visualization/v1';protocol:'riffology.visual/v0.1';renderer:'grid'|'lane';metricKeys:string[]};
+export const PREVIEW_VALIDATION_VERSION='reviewed-platform-adapters/v3';
+export type PreviewVisualization={schema:'riffology.visualization/v1';protocol:'riffology.visual/v0.1';renderer:'grid'|'lane'|'python-canvas';metricKeys:string[]};
 export type SavedPreviewSource={projectId:string;revisionId:string;filesSha256:string};
 export type CompatiblePreview={identity:PreviewPackageIdentityInput;files:Map<PreviewSourcePath,Uint8Array>;spec:ModelSpec;visualization:PreviewVisualization;profile:TrustedPreviewProfile};
 export type PreviewCompatibility={status:'compatible';value:CompatiblePreview}|{status:'unsupported';reasonCode:PreviewBuildReason};
@@ -11,11 +11,11 @@ function reject(code:PreviewBuildReason):never{throw Error(code);}
 function json(bytes:Uint8Array):unknown{return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}
 export function parsePreviewVisualization(raw:unknown,spec:ModelSpec):PreviewVisualization{
  const r=raw as Partial<PreviewVisualization>;
- if(!r||typeof r!=='object'||Array.isArray(r)||Object.keys(r).sort().join(',')!=='metricKeys,protocol,renderer,schema'||r.schema!=='riffology.visualization/v1'||r.protocol!=='riffology.visual/v0.1'||!['grid','lane'].includes(r.renderer!)||!Array.isArray(r.metricKeys)||!r.metricKeys.length||r.metricKeys.length>64||r.metricKeys.some(k=>typeof k!=='string'||!Object.hasOwn(spec.metrics,k))||new Set(r.metricKeys).size!==r.metricKeys.length)reject('visualization-invalid');
+ if(!r||typeof r!=='object'||Array.isArray(r)||Object.keys(r).sort().join(',')!=='metricKeys,protocol,renderer,schema'||r.schema!=='riffology.visualization/v1'||r.protocol!=='riffology.visual/v0.1'||!['grid','lane','python-canvas'].includes(r.renderer!)||!Array.isArray(r.metricKeys)||!r.metricKeys.length||r.metricKeys.length>64||r.metricKeys.some(k=>typeof k!=='string'||!Object.hasOwn(spec.metrics,k))||new Set(r.metricKeys).size!==r.metricKeys.length)reject('visualization-invalid');
  return {schema:r.schema,protocol:r.protocol,renderer:r.renderer!,metricKeys:[...r.metricKeys]};
 }
 /** Conservative token policy explains unsupported code; HTTP/Worker isolation is separate. */
-function pythonPolicy(bytes:Uint8Array,profile:TrustedPreviewProfile,model:boolean){
+function pythonPolicy(bytes:Uint8Array,profile:TrustedPreviewProfile,model:boolean,canvas=false){
  let source:string;try{source=new TextDecoder('utf-8',{fatal:true}).decode(bytes);}catch{return reject('python-unsupported');}
  if(source.includes('\0')||source.includes('\\\n'))reject('python-unsupported');
  // Preserve line structure and identifiers while ignoring Python strings/comments.
@@ -31,6 +31,7 @@ function pythonPolicy(bytes:Uint8Array,profile:TrustedPreviewProfile,model:boole
  if(/\b(?:eval|exec|compile|__import__|importlib|micropip|js|pyodide|socket|subprocess|requests|urllib)\b/.test(tokens)||model&&/\b(?:open|input|globals|locals|vars|getattr|setattr|delattr|breakpoint)\b/.test(tokens))reject('python-unsupported');
  if(!model&&!/\bfrom\s+model\s+import\s+run\b|\bimport\s+model\b/.test(tokens))reject('python-unsupported');
  if(model&&!/^def\s+run\s*\(\s*config\s*\)\s*:/m.test(tokens))reject('python-unsupported');
+ if(model&&canvas&&!/^(?:async\s+)?def\s+draw\s*\(\s*snapshot\s*,\s*canvas\s*,\s*event\s*=\s*None\s*\)\s*:/m.test(tokens))reject('python-unsupported');
  if(model)for(const line of tokens.split('\n'))if(line&&/^\S/.test(line)&&!/^\s*(?:def\s|class\s|from\s|import\s|@|[A-Za-z_][A-Za-z0-9_]*\s*=)/.test(line)&&!/^\s*[\])}]/.test(line))reject('python-unsupported');
  if(model)for(const line of tokens.split('\n'))if(/^[A-Za-z_][A-Za-z0-9_]*\s*=.*\b[A-Za-z_][A-Za-z0-9_.]*\s*\(/.test(line))reject('python-unsupported');
 }
@@ -54,7 +55,7 @@ export async function validateSavedPreview(source:SavedPreviewSource,archiveByte
   if(!r||typeof r!=='object'||Array.isArray(r)||Object.keys(r).sort().join(',')!=='packages,schemaVersion'||r.schemaVersion!==1||!r.packages||typeof r.packages!=='object'||Array.isArray(r.packages)||JSON.stringify(Object.entries(r.packages).sort())!==JSON.stringify(Object.entries(profile.packages).sort()))reject('dependency-unsupported');
   // Verify must re-run this exact model, not a separate generated server implementation.
   if(!PREVIEW_COMPATIBLE_ADAPTER_SHA256.includes(await previewSha256(files.get('model/run.py')!)))reject('python-unsupported');
-  pythonPolicy(files.get('model/model.py')!,profile,true);pythonPolicy(files.get('model/run.py')!,profile,false);
+  pythonPolicy(files.get('model/model.py')!,profile,true,visualization.renderer==='python-canvas');pythonPolicy(files.get('model/run.py')!,profile,false);
   const sources=await Promise.all(BROWSER_PREVIEW_SOURCE_PATHS.map(async path=>({path,sha256:await previewSha256(files.get(path)!),byteLength:files.get(path)!.length})));
   return {status:'compatible',value:{identity:{schema:BROWSER_PREVIEW_SCHEMA,...source,sources,runtime:profile.runtime},files,spec,visualization,profile}};
  }catch(e){const reason=e instanceof Error?e.message:'';if(['source-missing','source-too-large','model-spec-invalid','visualization-invalid','dependency-unsupported','python-unsupported'].includes(reason))return {status:'unsupported',reasonCode:reason as PreviewBuildReason};throw e;}

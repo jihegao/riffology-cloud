@@ -7,6 +7,7 @@ import {platformPreviewDelivery} from '../../services/browser-preview/platform-d
 import {createTrustedPreviewRegistry} from '../../services/browser-preview/profiles.ts';
 import {canonicalPreviewJson,previewSha256} from '../../services/browser-preview/contract.ts';
 import {productionPreviewRegistry} from '../../services/browser-preview/production-registry.ts';
+import pre142Profiles from '../../services/browser-preview/execution/retained/profiles-pre-142.json' with {type:'json'};
 const actor={userId:'user-a',authVersion:1};
 async function setup(configure=async()=>{}){const f=await fixture();await configure(f);await f.host().alarm();let allowed=true,head={identity:f.source.identity,receipt:f.source.receipt},starts=0;
  const simulations=()=>new SimulationHost(f.storage,f.scope,{authorize:async()=>allowed,hold:()=>{},quota:{},start:async()=>{starts++;throw Error('no-native-execution-on-submit');},observe:async()=>{},stop:async()=>{},destroy:async()=>{},running:async()=>false,publish:async()=>{}},()=>1000);
@@ -27,6 +28,16 @@ test('ACL revocation during source or R2 await refuses private read and creates 
 test('explicit historical profile survives removed current registry only with frozen delivery',async()=>{
  const s=await setup();s.ports.registry=async()=>{throw Error('current-registry-unavailable');};const view=await s.service().view(actor,'revision-a','python-stdlib/v1');assert.equal(view.build.status,'ready');assert.equal(view.delivery.profile.verified,true);const bytes=await s.service().bytes(actor,s.body.packageIdentity);assert.ok(bytes.bytes.length>0);
  s.ports.delivery=()=>{throw Error('missing-retained-version');};const absent=await s.service().view(actor,'revision-a','python-stdlib/v1');assert.equal(absent.build,null);assert.equal(absent.reasonCode,'preview-runtime-unavailable');await assert.rejects(s.service().bytes(actor,s.body.packageIdentity),/source-unavailable/);
+});
+test('retained pre-142 ready package survives view and bytes without rebuilding or receipt mutation',async()=>{
+ const frozen=pre142Profiles[0];const oldRegistry=await createTrustedPreviewRegistry([{runtime:frozen.runtime,packages:frozen.packages,assets:frozen.assetManifest,trust:'verified-platform'}]);
+ const s=await setup(async f=>{f.ports.registry=async()=>oldRegistry;});
+ const old=s.f.host().read('revision-a','python-stdlib/v1');assert.equal(old.state.status,'ready');assert.equal(old.profile.runtime.assetSha256,frozen.runtime.assetSha256);
+ s.f.ports.registry=productionPreviewRegistry;s.ports.registry=productionPreviewRegistry;
+ const before=structuredClone(s.f.storage.values),puts=s.f.puts;
+ const view=await s.service().view(actor,'revision-a','python-stdlib/v1');assert.equal(view.build.status,'ready');assert.equal(view.build.packageIdentity,old.state.packageIdentity);assert.equal(view.delivery.profile.runtime.assetSha256,frozen.runtime.assetSha256);
+ const bytes=await s.service().bytes(actor,old.state.packageIdentity);assert.equal(bytes.manifest.packageIdentity,old.state.packageIdentity);
+ assert.deepEqual(s.f.storage.values,before);assert.equal(s.f.puts,puts);assert.equal(s.f.host().read('revision-a','python-stdlib/v1').receipt.packageIdentity,old.receipt.packageIdentity);
 });
 test('view of a retained v1 ready row rearms migration before exposing an unavailable package',async()=>{
  const currentRegistry=await productionPreviewRegistry(),current=currentRegistry.resolve('python-stdlib/v1'),oldAssets=[...current.assets,{path:'runtime/retired-v1-marker.bin',sha256:'e'.repeat(64),byteLength:1}].sort((a,b)=>a.path<b.path?-1:1),old={...current,runtime:{...current.runtime,assetSha256:await previewSha256(canonicalPreviewJson(oldAssets))},assets:oldAssets},oldRegistry=await createTrustedPreviewRegistry([old]);

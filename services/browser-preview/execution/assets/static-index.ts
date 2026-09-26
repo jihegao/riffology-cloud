@@ -4,65 +4,67 @@ export const browserPreviewStaticIndex = {
   "runtimeProfiles": [
     "28cd56fae7755f8b100e00d96aed82dc11757e38733fd3f0a3d1efe28c7fbd4c",
     "64f7b7606d47dd508ee0046b08ac4720dbd9bff46790de58ad2b7e40a23e6520",
+    "6b0c95c5700b9561172dce4fa3419ad7224cfbc2e5d8871366b27c16f854e94d",
     "b5355cc5925224d224540792525cdefa0ae00deacc3d330608065f90c740eed2",
-    "b6cb6c0e726d007c281f991eaea0d2aae415113328444de47c0681d85b553fd9"
+    "b6cb6c0e726d007c281f991eaea0d2aae415113328444de47c0681d85b553fd9",
+    "ed19f7bd56866879a612a2018939630b275bc8b4b7becef2d68fbde27d2e8041"
   ],
   "delivery": {
     "hostModule": {
-      "url": "/browser-preview-assets/9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0/host.bundle.mjs",
-      "sha256": "9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0",
-      "byteLength": 41203
+      "url": "/browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs",
+      "sha256": "e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e",
+      "byteLength": 45189
     },
     "rendererModule": {
-      "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
-      "sha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
-      "byteLength": 6909
+      "url": "/browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+      "sha256": "05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5",
+      "byteLength": 7224
     },
     "assetBaseUrl": "/browser-preview-assets",
     "frameDocument": {
-      "url": "/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
-      "sha256": "53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5",
-      "byteLength": 5944,
-      "scriptSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf"
+      "url": "/runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+      "sha256": "16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225",
+      "byteLength": 12075,
+      "scriptSha256": "16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0"
     }
   },
   "versions": {
-    "b6cb6c0e726d007c281f991eaea0d2aae415113328444de47c0681d85b553fd9": {
+    "ed19f7bd56866879a612a2018939630b275bc8b4b7becef2d68fbde27d2e8041": {
       "hostModule": {
-        "url": "/browser-preview-assets/9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0/host.bundle.mjs",
-        "sha256": "9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0",
-        "byteLength": 41203
+        "url": "/browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs",
+        "sha256": "e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e",
+        "byteLength": 45189
       },
       "rendererModule": {
-        "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
-        "sha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
-        "byteLength": 6909
+        "url": "/browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+        "sha256": "05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5",
+        "byteLength": 7224
       },
       "assetBaseUrl": "/browser-preview-assets",
       "frameDocument": {
-        "url": "/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
-        "sha256": "53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5",
-        "byteLength": 5944,
-        "scriptSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf"
+        "url": "/runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+        "sha256": "16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225",
+        "byteLength": 12075,
+        "scriptSha256": "16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0"
       }
     },
-    "64f7b7606d47dd508ee0046b08ac4720dbd9bff46790de58ad2b7e40a23e6520": {
+    "6b0c95c5700b9561172dce4fa3419ad7224cfbc2e5d8871366b27c16f854e94d": {
       "hostModule": {
-        "url": "/browser-preview-assets/9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0/host.bundle.mjs",
-        "sha256": "9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0",
-        "byteLength": 41203
+        "url": "/browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs",
+        "sha256": "e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e",
+        "byteLength": 45189
       },
       "rendererModule": {
-        "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
-        "sha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
-        "byteLength": 6909
+        "url": "/browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+        "sha256": "05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5",
+        "byteLength": 7224
       },
       "assetBaseUrl": "/browser-preview-assets",
       "frameDocument": {
-        "url": "/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
-        "sha256": "53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5",
-        "byteLength": 5944,
-        "scriptSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf"
+        "url": "/runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+        "sha256": "16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225",
+        "byteLength": 12075,
+        "scriptSha256": "16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0"
       }
     },
     "b5355cc5925224d224540792525cdefa0ae00deacc3d330608065f90c740eed2": {
@@ -102,14 +104,76 @@ export const browserPreviewStaticIndex = {
         "byteLength": 5944,
         "scriptSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf"
       }
+    },
+    "b6cb6c0e726d007c281f991eaea0d2aae415113328444de47c0681d85b553fd9": {
+      "hostModule": {
+        "url": "/browser-preview-assets/9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0/host.bundle.mjs",
+        "sha256": "9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0",
+        "byteLength": 41203
+      },
+      "rendererModule": {
+        "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+        "sha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
+        "byteLength": 6909
+      },
+      "assetBaseUrl": "/browser-preview-assets",
+      "frameDocument": {
+        "url": "/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
+        "sha256": "53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5",
+        "byteLength": 5944,
+        "scriptSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf"
+      }
+    },
+    "64f7b7606d47dd508ee0046b08ac4720dbd9bff46790de58ad2b7e40a23e6520": {
+      "hostModule": {
+        "url": "/browser-preview-assets/9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0/host.bundle.mjs",
+        "sha256": "9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0",
+        "byteLength": 41203
+      },
+      "rendererModule": {
+        "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+        "sha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
+        "byteLength": 6909
+      },
+      "assetBaseUrl": "/browser-preview-assets",
+      "frameDocument": {
+        "url": "/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
+        "sha256": "53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5",
+        "byteLength": 5944,
+        "scriptSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf"
+      }
     }
   },
   "assets": [
+    {
+      "url": "/browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+      "file": "browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+      "sha256": "05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5",
+      "byteLength": 7224,
+      "contentType": "text/javascript",
+      "kind": "app"
+    },
     {
       "url": "/browser-preview-assets/0ad7104a3cde648e5486a718799f3852f1d782ff19d4bfc13db9dc631df083f8/assets/micropip-0.11.1-py3-none-any.whl",
       "file": "browser-preview-assets/0ad7104a3cde648e5486a718799f3852f1d782ff19d4bfc13db9dc631df083f8/assets/micropip-0.11.1-py3-none-any.whl",
       "sha256": "0ad7104a3cde648e5486a718799f3852f1d782ff19d4bfc13db9dc631df083f8",
       "byteLength": 115486,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e/delivery/worker.bundle.mjs",
+      "file": "browser-preview-assets/0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e/delivery/worker.bundle.mjs",
+      "sha256": "0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e",
+      "byteLength": 1651861,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0/delivery/frame.bundle.mjs",
+      "file": "browser-preview-assets/16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0/delivery/frame.bundle.mjs",
+      "sha256": "16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0",
+      "byteLength": 11942,
       "contentType": "application/octet-stream",
       "kind": "app"
     },
@@ -258,6 +322,14 @@ export const browserPreviewStaticIndex = {
       "kind": "app"
     },
     {
+      "url": "/browser-preview-assets/6e84d6d066a91819769093d7d5bf6cf67339a2c708087dc5b41934f5bc9fd931/runtime/host.mjs",
+      "file": "browser-preview-assets/6e84d6d066a91819769093d7d5bf6cf67339a2c708087dc5b41934f5bc9fd931/runtime/host.mjs",
+      "sha256": "6e84d6d066a91819769093d7d5bf6cf67339a2c708087dc5b41934f5bc9fd931",
+      "byteLength": 8382,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
       "url": "/browser-preview-assets/70682ba25f1503dde0d9d3d98a889480b42b903a5d863b0a7118bc4173aa02c8/assets/cycler-0.12.1-py3-none-any.whl",
       "file": "browser-preview-assets/70682ba25f1503dde0d9d3d98a889480b42b903a5d863b0a7118bc4173aa02c8/assets/cycler-0.12.1-py3-none-any.whl",
       "sha256": "70682ba25f1503dde0d9d3d98a889480b42b903a5d863b0a7118bc4173aa02c8",
@@ -282,6 +354,14 @@ export const browserPreviewStaticIndex = {
       "kind": "app"
     },
     {
+      "url": "/browser-preview-assets/831ec2706b7c113a456bf413d7df96b82aafbbf4a20ec7de8bbe91908d8dd878/source/prepare-assets.mjs",
+      "file": "browser-preview-assets/831ec2706b7c113a456bf413d7df96b82aafbbf4a20ec7de8bbe91908d8dd878/source/prepare-assets.mjs",
+      "sha256": "831ec2706b7c113a456bf413d7df96b82aafbbf4a20ec7de8bbe91908d8dd878",
+      "byteLength": 5809,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
       "url": "/browser-preview-assets/8512aee3e4b36b5a79523628d97d0d34612a366aecbb5b44a08c7ae45dd50d57/assets/scipy-1.18.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
       "file": "browser-preview-assets/8512aee3e4b36b5a79523628d97d0d34612a366aecbb5b44a08c7ae45dd50d57/assets/scipy-1.18.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
       "sha256": "8512aee3e4b36b5a79523628d97d0d34612a366aecbb5b44a08c7ae45dd50d57",
@@ -298,10 +378,26 @@ export const browserPreviewStaticIndex = {
       "kind": "app"
     },
     {
+      "url": "/browser-preview-assets/86218f40282014072b1850363814edd71bb9f7d604f641d79dc5682fd837cb3c/runtime/worker.mjs",
+      "file": "browser-preview-assets/86218f40282014072b1850363814edd71bb9f7d604f641d79dc5682fd837cb3c/runtime/worker.mjs",
+      "sha256": "86218f40282014072b1850363814edd71bb9f7d604f641d79dc5682fd837cb3c",
+      "byteLength": 9168,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
       "url": "/browser-preview-assets/8c3e4bb64e23a66a4c9effc4a5a09a2aafc1db7d70b8451ba3ba5b7fe6d18dd2/assets/pyparsing-3.3.2-py3-none-any.whl",
       "file": "browser-preview-assets/8c3e4bb64e23a66a4c9effc4a5a09a2aafc1db7d70b8451ba3ba5b7fe6d18dd2/assets/pyparsing-3.3.2-py3-none-any.whl",
       "sha256": "8c3e4bb64e23a66a4c9effc4a5a09a2aafc1db7d70b8451ba3ba5b7fe6d18dd2",
       "byteLength": 122781,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14/runtime/package-loader.mjs",
+      "file": "browser-preview-assets/91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14/runtime/package-loader.mjs",
+      "sha256": "91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14",
+      "byteLength": 4861,
       "contentType": "application/octet-stream",
       "kind": "app"
     },
@@ -370,6 +466,14 @@ export const browserPreviewStaticIndex = {
       "kind": "app"
     },
     {
+      "url": "/browser-preview-assets/b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54/runtime/renderer.mjs",
+      "file": "browser-preview-assets/b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54/runtime/renderer.mjs",
+      "sha256": "b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54",
+      "byteLength": 3275,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
       "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
       "file": "browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
       "sha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
@@ -382,6 +486,14 @@ export const browserPreviewStaticIndex = {
       "file": "browser-preview-assets/c8eaf8e55b79c2a7e765bdce5c1b84e05a43a585a16a00efadd96a0b7913914e/assets/pytz-2026.1.post1-py2.py3-none-any.whl",
       "sha256": "c8eaf8e55b79c2a7e765bdce5c1b84e05a43a585a16a00efadd96a0b7913914e",
       "byteLength": 510489,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/d0a6afcbb85b92d2ff5924a70b32b1e44ce691752cdbd1bf45d3cd8c9a4866a8/runtime/frame.mjs",
+      "file": "browser-preview-assets/d0a6afcbb85b92d2ff5924a70b32b1e44ce691752cdbd1bf45d3cd8c9a4866a8/runtime/frame.mjs",
+      "sha256": "d0a6afcbb85b92d2ff5924a70b32b1e44ce691752cdbd1bf45d3cd8c9a4866a8",
+      "byteLength": 7619,
       "contentType": "application/octet-stream",
       "kind": "app"
     },
@@ -406,6 +518,22 @@ export const browserPreviewStaticIndex = {
       "file": "browser-preview-assets/df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8/source/model-spec.ts",
       "sha256": "df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8",
       "byteLength": 7670,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs",
+      "file": "browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs",
+      "sha256": "e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e",
+      "byteLength": 45189,
+      "contentType": "text/javascript",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/ecc8d10e925d552eae08bca0a43c6ad5cdc53a1f83889b71c2d56eecf1cc3aeb/runtime/canvas.mjs",
+      "file": "browser-preview-assets/ecc8d10e925d552eae08bca0a43c6ad5cdc53a1f83889b71c2d56eecf1cc3aeb/runtime/canvas.mjs",
+      "sha256": "ecc8d10e925d552eae08bca0a43c6ad5cdc53a1f83889b71c2d56eecf1cc3aeb",
+      "byteLength": 2106,
       "contentType": "application/octet-stream",
       "kind": "app"
     },
@@ -448,6 +576,15 @@ export const browserPreviewStaticIndex = {
       "byteLength": 4845,
       "contentType": "application/octet-stream",
       "kind": "app"
+    },
+    {
+      "url": "/runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+      "file": "runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+      "sha256": "16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225",
+      "byteLength": 12075,
+      "contentType": "text/html",
+      "kind": "frame",
+      "scriptSha256": "16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0"
     },
     {
       "url": "/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",

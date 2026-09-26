@@ -19,7 +19,7 @@ export async function checkedPackage(envelope, profiles, digest=previewSha256) {
     files.set(f.path, bytes);
   }
   const visualization = JSON.parse(new TextDecoder('utf-8', {fatal:true}).decode(files.get('model/visualization.json')));
-  if (!visualization || Object.keys(visualization).sort().join(',') !== 'metricKeys,protocol,renderer,schema' || visualization.schema !== 'riffology.visualization/v1' || visualization.protocol !== 'riffology.visual/v0.1' || !['grid','lane'].includes(visualization.renderer) || !Array.isArray(visualization.metricKeys) || !visualization.metricKeys.length || visualization.metricKeys.length > 64 || visualization.metricKeys.some(k => typeof k !== 'string' || k.length > 128)) throw Error('runtime-visualization-invalid');
+  if (!visualization || Object.keys(visualization).sort().join(',') !== 'metricKeys,protocol,renderer,schema' || visualization.schema !== 'riffology.visualization/v1' || visualization.protocol !== 'riffology.visual/v0.1' || !['grid','lane','python-canvas'].includes(visualization.renderer) || !Array.isArray(visualization.metricKeys) || !visualization.metricKeys.length || visualization.metricKeys.length > 64 || visualization.metricKeys.some(k => typeof k !== 'string' || k.length > 128)) throw Error('runtime-visualization-invalid');
   const spec = parseModelSpec(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(files.get('model/model-spec.json'))));
   if (!PREVIEW_COMPATIBLE_ADAPTER_SHA256.includes(manifest.sources.find(s=>s.path==='model/run.py').sha256)) throw Error('runtime-server-adapter-mismatch');
   if (spec.execution.entrypoint !== 'model/run.py' || spec.execution.dependencyLock !== 'app/requirements.lock') throw Error('runtime-model-entrypoint-invalid');

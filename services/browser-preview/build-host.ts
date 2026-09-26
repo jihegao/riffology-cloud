@@ -1,4 +1,6 @@
 import {projectBrowserBuildAlarm} from './g4-build-hold.ts';
+import pre142Profiles from './execution/retained/profiles-pre-142.json' with {type:'json'};
+import baselineProfiles from './execution/retained/profiles-727c40f.json' with {type:'json'};
 import type { ModelSpec } from '../simulation/model-spec.ts';
 import type { TurnScope } from '../turn/protocol.ts';
 import {sameScope} from '../turn/protocol.ts';
@@ -16,6 +18,8 @@ export interface SavedPreviewBuild {schemaVersion:1;validationVersion?:string;st
 const ids:PreviewRuntime['profileId'][]=['python-stdlib/v1','mesa-3.5.1/v1'];
 function rowKey(revision:string,profile:string){return ROW+revision+':'+profile;}
 function equal(a:unknown,b:unknown){return canonicalPreviewJson(a)===canonicalPreviewJson(b);}
+const retainedProfiles=[...pre142Profiles,...baselineProfiles].map(profile=>({runtime:profile.runtime,packages:profile.packages,assets:profile.assetManifest,trust:'verified-platform'}));
+function reviewedRetained(row:SavedPreviewBuild){return row.profile?.trust==='verified-platform'&&retainedProfiles.some(profile=>equal(row.profile,profile));}
 
 /** Durable references and receipts are written only by server-resolved builds. */
 export class BrowserPreviewBuildHost{
@@ -29,11 +33,11 @@ export class BrowserPreviewBuildHost{
  receipt(identity:string):PreviewBuildReceipt|null{const r=this.storage.kv.get<PreviewBuildReceipt>(RECEIPT+identity)??null;if(r&&!equal(r.scope,{tenantId:this.scope.tenantId,projectId:this.scope.projectId,workspaceId:this.scope.workspaceId}))throw Error('browser-preview-read-denied');return structuredClone(r);}
  source(revision:string):PreviewDiscovery|null{const source=this.storage.kv.get<PreviewDiscovery>(discoveryKey(revision))??null;if(source&&!sameScope(sourceScope(source),this.scope))throw Error('browser-preview-read-denied');return structuredClone(source);}
  initial():PreviewDiscovery|null{const revision=this.storage.kv.get<string>('browser-preview:initial-source');return revision?this.source(revision):null;}
- /** A ready package is bound to the exact trusted runtime profile that built it. */
+ /** Ready packages keep their frozen profile; only old unsupported decisions may be retried. */
  async rearmStaleReady(revision:string):Promise<boolean>{
   const source=this.source(revision);if(!source)return false;
   let registry:PreviewProfileRegistry;try{registry=await this.ports.registry();}catch{return false;}
-  const needsRefresh=(row:SavedPreviewBuild|null,current:TrustedPreviewProfile|null)=>current!==null&&!!row&&(row.state.status==='ready'&&!equal(row.profile,current)||row.state.status==='unsupported'&&row.validationVersion!==PREVIEW_VALIDATION_VERSION);
+  const needsRefresh=(row:SavedPreviewBuild|null,current:TrustedPreviewProfile|null)=>current!==null&&!!row&&(row.state.status==='ready'&&!equal(row.profile,current)&&!reviewedRetained(row)||row.state.status==='unsupported'&&row.validationVersion!==PREVIEW_VALIDATION_VERSION);
   try{
    await this.#guard(source);
    const stale=ids.some(id=>needsRefresh(this.read(revision,id),registry.resolve(id)));if(!stale)return false;
