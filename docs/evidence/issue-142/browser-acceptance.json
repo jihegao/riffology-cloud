@@ -5,7 +5,7 @@
       "runtimeVersion": "pyodide-314.0.6/v1",
       "adapterVersion": "riffology.model-run/v1",
       "pythonVersion": "3.14.2",
-      "assetSha256": "8d9ab50d1061b7ad0e64c4f56497dda6b6642b01997552a006b7a4807af55987",
+      "assetSha256": "ed19f7bd56866879a612a2018939630b275bc8b4b7becef2d68fbde27d2e8041",
       "visualProtocol": "riffology.visual/v0.1",
       "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
       "dependencies": []
@@ -15,7 +15,7 @@
       "runtimeVersion": "pyodide-314.0.6/v1",
       "adapterVersion": "riffology.model-run/v1",
       "pythonVersion": "3.14.2",
-      "assetSha256": "a509075778f7ab3c57c50fcd94387d6167d15671c7765b13c8613d4165068da5",
+      "assetSha256": "6b0c95c5700b9561172dce4fa3419ad7224cfbc2e5d8871366b27c16f854e94d",
       "visualProtocol": "riffology.visual/v0.1",
       "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
       "dependencies": [
@@ -134,7 +134,7 @@
     {
       "name": "traffic-python-canvas-real-road-intersection-signal-car-pointer-playback",
       "passed": true,
-      "packageIdentity": "ac6c5625373275e35140ff921a3cce9a931edeac1a7a4baca0956982caf6dc3b"
+      "packageIdentity": "fb84d39a13915aca3fcfdbbb9f58364e0fd77569e91804ea8e3e15bbef884e73"
     },
     {
       "name": "traffic-canvas-cancel-removes-opaque-frame",
@@ -158,6 +158,14 @@
     },
     {
       "name": "python-canvas-stuck-draw-killed-and-next-package-safe",
+      "passed": true
+    },
+    {
+      "name": "python-canvas-playback-does-not-reset-stuck-paint-deadline",
+      "passed": true
+    },
+    {
+      "name": "python-canvas-pointer-draw-has-paint-deadline-and-next-package-safe",
       "passed": true
     },
     {
@@ -191,7 +199,7 @@
     {
       "name": "legal-million-cell-grid-fixed-canvas",
       "passed": true,
-      "ms": 14.200000047683716,
+      "ms": 9.199999988079071,
       "nodes": 1,
       "width": 600,
       "height": 420
@@ -316,51 +324,51 @@
   "cspDiagnostics": [
     {
       "directive": "connect-src",
-      "blockedURI": "http://127.0.0.1:63779/canvas-exfil"
+      "blockedURI": "http://127.0.0.1:50263/canvas-exfil"
     },
     {
       "directive": "connect-src",
-      "blockedURI": "http://localhost:63780/api/canvas-exfil"
+      "blockedURI": "http://localhost:50264/api/canvas-exfil"
     },
     {
       "directive": "connect-src",
-      "blockedURI": "http://127.0.0.1:63779/canvas-constructor-exfil"
+      "blockedURI": "http://127.0.0.1:50263/canvas-constructor-exfil"
     },
     {
       "directive": "connect-src",
-      "blockedURI": "http://localhost:63780/api/canvas-constructor-exfil"
+      "blockedURI": "http://localhost:50264/api/canvas-constructor-exfil"
     },
     {
       "directive": "connect-src",
-      "blockedURI": "http://127.0.0.1:63779/fetch"
+      "blockedURI": "http://127.0.0.1:50263/fetch"
     },
     {
       "directive": "connect-src",
-      "blockedURI": "http://localhost:63780/api/private"
+      "blockedURI": "http://localhost:50264/api/private"
     },
     {
       "directive": "connect-src",
-      "blockedURI": "http://127.0.0.1:63779/xhr"
+      "blockedURI": "http://127.0.0.1:50263/xhr"
     },
     {
       "directive": "connect-src",
-      "blockedURI": "ws://127.0.0.1:63779/ws"
+      "blockedURI": "ws://127.0.0.1:50263/ws"
     },
     {
       "directive": "connect-src",
-      "blockedURI": "http://127.0.0.1:63779/events"
+      "blockedURI": "http://127.0.0.1:50263/events"
     },
     {
       "directive": "script-src-elem",
-      "blockedURI": "http://127.0.0.1:63779/module.mjs"
+      "blockedURI": "http://127.0.0.1:50263/module.mjs"
     },
     {
       "directive": "script-src-elem",
-      "blockedURI": "http://127.0.0.1:63778/exfil?q=source"
+      "blockedURI": "http://127.0.0.1:50262/exfil?q=source"
     },
     {
       "directive": "connect-src",
-      "blockedURI": "http://127.0.0.1:63779/evil-1.0-py3-none-any.whl"
+      "blockedURI": "http://127.0.0.1:50263/evil-1.0-py3-none-any.whl"
     }
   ],
   "passed": true

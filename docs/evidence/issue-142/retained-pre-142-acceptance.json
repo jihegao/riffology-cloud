@@ -158,7 +158,7 @@
     {
       "name": "legal-million-cell-grid-fixed-canvas",
       "passed": true,
-      "ms": 18.600000023841858,
+      "ms": 8.5,
       "nodes": 1,
       "width": 600,
       "height": 420
@@ -283,35 +283,35 @@
   "cspDiagnostics": [
     {
       "directive": "connect-src",
-      "blockedURI": "http://127.0.0.1:56642/fetch"
+      "blockedURI": "http://127.0.0.1:50704/fetch"
     },
     {
       "directive": "connect-src",
-      "blockedURI": "http://localhost:56643/api/private"
+      "blockedURI": "http://localhost:50705/api/private"
     },
     {
       "directive": "connect-src",
-      "blockedURI": "http://127.0.0.1:56642/xhr"
+      "blockedURI": "http://127.0.0.1:50704/xhr"
     },
     {
       "directive": "connect-src",
-      "blockedURI": "ws://127.0.0.1:56642/ws"
+      "blockedURI": "ws://127.0.0.1:50704/ws"
     },
     {
       "directive": "connect-src",
-      "blockedURI": "http://127.0.0.1:56642/events"
+      "blockedURI": "http://127.0.0.1:50704/events"
     },
     {
       "directive": "script-src-elem",
-      "blockedURI": "http://127.0.0.1:56642/module.mjs"
+      "blockedURI": "http://127.0.0.1:50704/module.mjs"
     },
     {
       "directive": "script-src-elem",
-      "blockedURI": "http://127.0.0.1:56641/exfil?q=source"
+      "blockedURI": "http://127.0.0.1:50703/exfil?q=source"
     },
     {
       "directive": "connect-src",
-      "blockedURI": "http://127.0.0.1:56642/evil-1.0-py3-none-any.whl"
+      "blockedURI": "http://127.0.0.1:50704/evil-1.0-py3-none-any.whl"
     }
   ],
   "passed": true

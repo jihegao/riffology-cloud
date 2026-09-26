@@ -4,7 +4,8 @@ import {sha256Hex} from './sha256.mjs';
 let port, worker, workerURL, canvas, activeRequest, activeIndex=0, sequence=0, inFlight=false, queuedPaint=null, ready=false, pendingPaint=null, started=false, diagnostics=0, invalidMessages=0, paintedMessages=0;
 const exact=(value,fields)=>value!==null&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).sort().join(',')===fields.sort().join(',');
 const stop=()=>{worker?.terminate();worker=null;if(workerURL)URL.revokeObjectURL(workerURL);workerURL=null;canvas?.remove();canvas=null;activeRequest=null;inFlight=false;queuedPaint=null;pendingPaint=null;ready=false;};
-const sendPaint=message=>{if(!worker||!activeRequest)return;inFlight=true;pendingPaint={sequence:++sequence,index:message.index,token:message.token};worker.postMessage({schema:MESSAGE_SCHEMA,type:'paint',requestId:activeRequest.requestId,packageIdentity:activeRequest.packageIdentity,...pendingPaint});};
+const notifyPaintDispatched=()=>port.postMessage({schema:MESSAGE_SCHEMA,type:'paint-dispatched',requestId:activeRequest.requestId,packageIdentity:activeRequest.packageIdentity,index:pendingPaint.index,token:pendingPaint.token});
+const sendPaint=message=>{if(!worker||!activeRequest)return;inFlight=true;pendingPaint={sequence:++sequence,index:message.index,token:message.token};worker.postMessage({schema:MESSAGE_SCHEMA,type:'paint',requestId:activeRequest.requestId,packageIdentity:activeRequest.packageIdentity,...pendingPaint});notifyPaintDispatched();};
 // Python can reach Worker.postMessage through Pyodide. Reject its output in this
 // opaque frame before a large or repeated message reaches the application port.
 const allowedWorkerMessage=message=>{
@@ -73,6 +74,7 @@ self.addEventListener('message', event => {
           const y=Math.max(0,Math.min(420,Math.round((event.clientY-bounds.top)*420/bounds.height)));
           inFlight=true;pendingPaint={sequence:++sequence,index:activeIndex,token:0};
           worker.postMessage({schema:MESSAGE_SCHEMA,type:'pointer',requestId:activeRequest.requestId,packageIdentity:activeRequest.packageIdentity,...pendingPaint,event:{x,y,button:event.button}});
+          notifyPaintDispatched();
         });
       }
       worker.onmessage = event => {const message=event.data;if(!allowedWorkerMessage(message)){rejectWorkerMessage();return;}port.postMessage(message);if(message.type==='painted'&&canvasMode){inFlight=false;pendingPaint=null;if(queuedPaint){const next=queuedPaint;queuedPaint=null;sendPaint(next);}}if(message.type==='error'||message.type==='result'&&!canvasMode)stop();};
