@@ -98,7 +98,7 @@ test('cleanup recovers a lost submission response from the ungated snapshot and 
 
 test('cleanup cannot report success while a terminal turn still has a resource hold',async t=>{
   const originalFetch=globalThis.fetch;globalThis.fetch=async(url)=>String(url).endsWith('/cancel')?Response.json({id:'turn-held',status:'cancelled'}):Response.json({schemaVersion:3,activeTurnId:null,resourceWait:null,releaseHold:{status:'release-pending'},recoveryHold:null,sessions:{'session-a':{}},turns:{'turn-held':{id:'turn-held',sessionId:'session-a',message:'message-held',status:'cancelled',cancelDisposition:'cancelled',startedAt:1,runtimeGeneration:1,checkpoint:null}}});t.after(()=>{globalThis.fetch=originalFetch;});
-  const result=await cancelOutstandingTurn({origin:'https://m1.riff-demo.gaojihe.cn',workspaceId:'workspace-a',sessionId:'session-a',cookie:'private-cookie'},{turnId:'turn-held'},{pollMs:0,deadlineMs:5});assert.equal(result.status,'blocked');assert.equal(result.reasonCode,'acceptance-outstanding-turn-cleanup-unconfirmed');assert.equal(result.last.workspace.releaseHold.status,'release-pending');
+  const result=await cancelOutstandingTurn({origin:'https://m1.riff-demo.gaojihe.cn',workspaceId:'workspace-a',sessionId:'session-a',cookie:'private-cookie'},{turnId:'turn-held'},{pollMs:10,deadlineMs:1_000});assert.equal(result.status,'blocked');assert.equal(result.reasonCode,'acceptance-outstanding-turn-cleanup-unconfirmed');assert.equal(result.last.workspace.releaseHold.status,'release-pending');
 });
 
 test('malformed workspace snapshots cannot prove a lost submission absent',async t=>{
