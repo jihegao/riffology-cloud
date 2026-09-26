@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 
 export const PRODUCT_TOOL_BRIDGE_URL='https://tool-bridge.riffology.internal/v1/tool';
-const ID=/^[A-Za-z0-9_-]{1,128}$/,TOOL_CALL_ID=/^[A-Za-z0-9_-]{1,128}(?:\|[A-Za-z0-9_-]{1,128})?$/,OPERATIONS=new Map([['project_read','read'],['project_read_page','read_page'],['project_write','write'],['project_edit','edit'],['project_list','list'],['project_search','search'],['project_bash','bash']]),MAX_RESPONSE_BYTES=256*1024,encoder=new TextEncoder();
+const ID=/^[A-Za-z0-9_-]{1,128}$/,TOOL_CALL_ID=/^[A-Za-z0-9_-]{1,128}(?:\|[A-Za-z0-9_-]{1,128})?$/,OPERATIONS=new Map([['project_read','read'],['project_read_page','read_page'],['project_write','write'],['project_edit','edit'],['project_list','list'],['project_search','search'],['project_install_preview_adapter','write'],['project_bash','bash']]),MAX_RESPONSE_BYTES=256*1024,encoder=new TextEncoder();
 function fail(code){throw Error(code);}
 function exact(value,keys,code){if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype||Object.keys(value).length!==keys.length||keys.some(key=>!Object.hasOwn(value,key)))fail(code);}
 function id(value){if(typeof value!=='string'||!ID.test(value))fail('invalid-product-tool-bridge');return value;}
@@ -25,6 +25,7 @@ export const productToolDefinitions=Object.freeze([
   {name:'project_edit',label:'Edit project file',description:'Replace exact text in one UTF-8 project file.',parameters:object({path:string,oldText:string,newText:string,replaceAll:{type:'boolean'}})},
   {name:'project_list',label:'List project files',description:'List entries below a project workspace path. Use an empty path for the root.',parameters:object({path:string})},
   {name:'project_search',label:'Search project files',description:'Search UTF-8 project files below a path.',parameters:object({path:string,query:string,maxResults:integer})},
+  {name:'project_install_preview_adapter',label:'Install platform preview adapter',description:'Write the reviewed platform-owned model/run.py bytes required by Browser Preview. Takes no arguments and preserves model/model.py.',parameters:object({})},
   {name:'project_bash',label:'Run project command',description:'Run a bounded shell script inside the isolated project workspace.',parameters:object({script:string,timeoutMs:integer})},
 ].map(value=>Object.freeze(value)));
 
@@ -36,10 +37,15 @@ export const productToolDefinitions=Object.freeze([
 export function createProductToolBridge(rawIdentity,options={}){
   const expected=identity(rawIdentity),fetchImpl=options.fetchImpl??globalThis.fetch,clock=options.clock??Date.now;if(typeof fetchImpl!=='function'||typeof clock!=='function')fail('invalid-product-tool-bridge');
   const executionDeadlineAt=positive(options.executionDeadlineAt);
+  const previewAdapter=options.previewAdapter??null;
+  if(previewAdapter!==null&&(typeof previewAdapter.content!=='string'||typeof previewAdapter.sha256!=='string'||createHash('sha256').update(previewAdapter.content).digest('hex')!==previewAdapter.sha256||previewAdapter.content.length>16384))fail('invalid-preview-adapter');
   const checkDeadline=()=>{const observed=positive(clock());if(observed>=executionDeadlineAt)fail('product-tool-execution-expired');return observed;};
   return Object.freeze({definitions:productToolDefinitions,async execute(call){
     if(!call||typeof call!=='object'||!OPERATIONS.has(call.name)||JSON.stringify(call.scope)!==JSON.stringify({tenantId:expected.scope.tenantId,projectId:expected.scope.projectId,sessionId:expected.sessionId}))fail('product-tool-scope-denied');call.signal?.throwIfAborted();
-    const operation=OPERATIONS.get(call.name),savedCommandId=commandId(expected,call.toolCallId,call.name);checkDeadline();const command={schemaVersion:2,scope:expected.scope,turnId:expected.turnId,dispatchId:expected.dispatchId,commandId:savedCommandId,executionDeadlineAt,operation,arguments:args(call.args)};
+    const operation=OPERATIONS.get(call.name),savedCommandId=commandId(expected,call.toolCallId,call.name);checkDeadline();const input=args(call.args);
+    if(call.name==='project_install_preview_adapter'&&(Object.keys(input).length!==0||previewAdapter===null))fail('preview-adapter-unavailable');
+    if(call.name==='project_write'&&previewAdapter!==null&&input.path==='model/run.py'&&typeof input.content==='string'&&input.content.includes('riffology.model-run/v1')&&createHash('sha256').update(input.content).digest('hex')!==previewAdapter.sha256)fail('preview-adapter-use-platform-tool');
+    const command={schemaVersion:2,scope:expected.scope,turnId:expected.turnId,dispatchId:expected.dispatchId,commandId:savedCommandId,executionDeadlineAt,operation,arguments:call.name==='project_install_preview_adapter'?{path:'model/run.py',content:previewAdapter.content}:input};
     const body=JSON.stringify(command);call.signal?.throwIfAborted();checkDeadline();
     const response=await fetchImpl(PRODUCT_TOOL_BRIDGE_URL,{method:'POST',headers:{'content-type':'application/json','accept':'application/json'},body,signal:call.signal});if(response.status!==200){if(response.status===409){const error=await boundedJson(response);if(error?.error==='tool-idempotency-conflict'||error?.error==='tool-turn-active-command')fail(error.error);}await response.body?.cancel().catch(()=>{});fail('product-tool-request-failed');}
     const record=terminal(await boundedJson(response),expected,operation,savedCommandId,executionDeadlineAt);if(record.status!=='completed')fail('product-tool-effect-failed');const text=JSON.stringify(record.result);if(encoder.encode(text).byteLength>64*1024)fail('product-tool-response-too-large');return {content:[{type:'text',text}],details:{operation,status:'completed'}};

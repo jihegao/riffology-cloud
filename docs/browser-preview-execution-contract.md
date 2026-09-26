@@ -4,13 +4,13 @@
 
 2026-09-17 ADR：采用“每次 Run 新建 opaque-origin iframe + 已核验 classic blob Worker”，不采用每次 Run 随机子域。原因是固定执行 origin 会让 IndexedDB、Cache Storage、OPFS 和 BroadcastChannel 跨 Run/项目共享；随机子域则引入 DNS/TLS、路由、清理和来源许可生命周期。opaque iframe 在浏览器来源模型中直接得到每实例唯一、不持久化的来源，同时仍可用一次性 MessageChannel 接收已核验 bytes。代价是 frame 不能再用同源 module Worker，所以 frame IIFE 内联并由 CSP hash 授权，worker IIFE 从已核验资产创建 blob URL；终止时必须 terminate Worker、revoke blob URL、关闭 channel 并移除 iframe。旧 static-delivery/v1 不兼容且不得 retain；旧 package 必须由兼容构建重新产生新 profile identity，缺少新资产时 fail closed。
 
-## 2026-09-26 Python Canvas 可选模式（#142，本地候选，未部署）
+## 2026-09-26 Python Canvas 可选模式（#142，已部署；认证项目验收待完成）
 
 保存的 `model/visualization.json` 可选择 `renderer:"python-canvas"`；其余字段仍是原闭合 schema。`model/model.py` 继续提供同一个 `run(config)` 和原 grid/lane 快照协议，供浏览器和服务端复算；还需提供 `draw(snapshot, canvas, event=None)`。隔离 iframe 显示固定 600×420 画布并一次性转交 `OffscreenCanvas` 给 Pyodide Worker。Python 使用 `clear`、`rect`、`circle`、`line` 绘制当前快照，主页面的通用 grid/lane renderer 不解释模型图形。主页面仍验证并缓存 trace，以驱动播放、单步和本地指标显示。`pointerdown` 事件只传有界坐标、按键和当前快照给 `draw`，只改变视觉表现，不修改已算出的仿真状态，也不进入服务端 Verify。
 
 每次运行有新的 opaque-origin iframe/Worker、已核验的固定资产及冻结包身份。画布消息绑定 requestId/packageIdentity，帧序号和递增 token；frame 最多保留一个待绘帧，指针事件在绘制忙时丢弃，并在转发 Worker 消息前限制类型、字段、大小和数量。主页面保留 30 秒执行超时、10 秒单次绘制看门狗以及从运行开始算起的 120 秒绝对会话时限；取消、重跑、离开均终止 Worker 和移除 iframe。由于 Python 能伪造 Worker ACK，10 秒绘制看门狗是尽力而为，120 秒绝对会话时限是无论 ACK 如何都强制终止的上限；绘制 ACK 和像素内容不可作为可信执行证明。旧 grid/lane 包使用原保留的 profile、host、frame 和 renderer 字节，读取已就绪包不会因当前 profile 更新而自动覆盖其 receipt。新模式的 profile/资产 SHA 是独立身份。
 
-绘图桥接的 JS 函数及 `Object.freeze` 不是安全沙箱：Python 可通过 Pyodide 的 JS 能力或函数构造器取得 Worker 全局对象。真正的浏览器隔离仍由无 `allow-same-origin` 的 opaque iframe、`connect-src 'none'` 等执行 CSP、不可改写的子 Worker 拒绝构造器、无凭据资产交付及主页面超时终止共同提供。真实浏览器负向测试须覆盖绘图函数内的网络/API/子 Worker/伪造 ACK 尝试，并按服务端请求日志核对零越界请求。当前代码与本地测试均不代表生产部署或认证用户验收。
+绘图桥接的 JS 函数及 `Object.freeze` 不是安全沙箱：Python 可通过 Pyodide 的 JS 能力或函数构造器取得 Worker 全局对象。真正的浏览器隔离仍由无 `allow-same-origin` 的 opaque iframe、`connect-src 'none'` 等执行 CSP、不可改写的子 Worker 拒绝构造器、无凭据资产交付及主页面超时终止共同提供。真实浏览器负向测试须覆盖绘图函数内的网络/API/子 Worker/伪造 ACK 尝试，并按服务端请求日志核对零越界请求。发布证据见 `docs/release-readiness.md`；本地测试和静态读回不能代替认证用户验收。
 
 ## 同源模型与输入
 

@@ -8,8 +8,26 @@ const providerToolCallId=`fc_${'a'.repeat(26)}|call_${'b'.repeat(48)}`;
 function record(command,overrides={}){return {schemaVersion:1,scope:command.scope,turnId:command.turnId,dispatchId:command.dispatchId,commandId:command.commandId,digest:'a'.repeat(64),deadlineAt:Math.min(now+115000,command.executionDeadlineAt),operation:command.operation,status:'completed',effectId:'effect-a',acceptedAt:now,updatedAt:now,dispatchedAt:now,unknownAt:null,finishedAt:now,lastObservedAt:now,outcome:'completed',errorCode:null,result:{text:'ok'},command:null,...overrides};}
 function fixture(transform=(value)=>value,boundIdentity=identity){const sent=[];return {sent,bridge:createProductToolBridge(boundIdentity,{clock:()=>now,executionDeadlineAt:now+600000,fetchImpl:async(url,init)=>{const command=JSON.parse(init.body);sent.push({url:String(url),init,command});return Response.json(transform(record(command)));}})};}
 
-test('release exposes exactly seven remote project tools with closed argument schemas',()=>{
-  assert.deepEqual(productToolDefinitions.map(value=>value.name),['project_read','project_read_page','project_write','project_edit','project_list','project_search','project_bash']);for(const definition of productToolDefinitions){assert.equal(definition.parameters.type,'object');assert.equal(definition.parameters.additionalProperties,false);assert.deepEqual(definition.parameters.required,Object.keys(definition.parameters.properties));}
+test('release exposes bounded project tools with closed argument schemas',()=>{
+  assert.deepEqual(productToolDefinitions.map(value=>value.name),['project_read','project_read_page','project_write','project_edit','project_list','project_search','project_install_preview_adapter','project_bash']);for(const definition of productToolDefinitions){assert.equal(definition.parameters.type,'object');assert.equal(definition.parameters.additionalProperties,false);assert.deepEqual(definition.parameters.required,Object.keys(definition.parameters.properties));}
+});
+test('platform preview adapter tool sends only the pinned bytes as one scoped write',async()=>{
+  const content='reviewed-adapter\n',sha256=await import('node:crypto').then(({createHash})=>createHash('sha256').update(content).digest('hex'));
+  const sent=[],bridge=createProductToolBridge(identity,{clock:()=>now,executionDeadlineAt:now+600000,previewAdapter:{content,sha256},fetchImpl:async(_,init)=>{const command=JSON.parse(init.body);sent.push(command);return Response.json(record(command));}});
+  const call={scope,name:'project_install_preview_adapter',toolCallId:'install-a',args:{}};
+  await bridge.execute(call);await bridge.execute(call);
+  assert.equal(sent.length,2);assert.deepEqual(sent[0],sent[1]);assert.equal(sent[0].operation,'write');assert.deepEqual(sent[0].arguments,{path:'model/run.py',content});
+  await assert.rejects(bridge.execute({...call,args:{path:'other.py'}}),/preview-adapter-unavailable/);assert.equal(sent.length,2);
+  assert.throws(()=>createProductToolBridge(identity,{executionDeadlineAt:now+600000,previewAdapter:{content,sha256:'0'.repeat(64)}}),/invalid-preview-adapter/);
+});
+test('a lookalike platform adapter cannot be written while server-only wrappers remain available',async()=>{
+  const content='"""riffology.model-run/v1"""\n',sha256=(await import('node:crypto')).createHash('sha256').update(content).digest('hex');
+  const sent=[],bridge=createProductToolBridge(identity,{clock:()=>now,executionDeadlineAt:now+600000,previewAdapter:{content,sha256},fetchImpl:async(_,init)=>{const command=JSON.parse(init.body);sent.push(command);return Response.json(record(command));}});
+  const call={scope,name:'project_write',toolCallId:'write-a',args:{path:'model/run.py',content:content+'# near miss\n'}};
+  await assert.rejects(bridge.execute(call),/preview-adapter-use-platform-tool/);assert.equal(sent.length,0);
+  await bridge.execute({...call,toolCallId:'write-b',args:{path:'model/run.py',content}});
+  await bridge.execute({...call,toolCallId:'write-c',args:{path:'model/run.py',content:'#!/usr/bin/env python3\n# server-only wrapper\n'}});
+  assert.equal(sent.length,2);
 });
 test('paged read preserves exact paging and version arguments',async()=>{const f=fixture();await f.bridge.execute({scope,name:'project_read_page',toolCallId:'provider-page-a',args:{path:'model/large.txt',offset:8192,maxBytes:8192,expectedSha256:'a'.repeat(64)}});assert.equal(f.sent[0].command.operation,'read_page');assert.deepEqual(f.sent[0].command.arguments,{path:'model/large.txt',offset:8192,maxBytes:8192,expectedSha256:'a'.repeat(64)});});
 test('one Pi tool call becomes one identity-bound Tool Bridge command and a bounded model result',async()=>{
