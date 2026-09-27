@@ -2,6 +2,19 @@
 
 The authoritative operating packet and delivery status are in [#104](https://github.com/jihegao/riffology-cloud/issues/104). This note describes implementation and verification, not a second task board. Owner: @jihegao. No standing paid capacity is declared open by this source change.
 
+For an explicitly authorized review-date extension, deploy the same policy with
+only `reviewAt` increased, then invoke the deployment-only `extendReview` RPC
+with the previous deadline and its exact pinned policy digest. Admission remains
+blocked by the old pin until that step succeeds. The RPC reconstructs the prior
+digest from the new configuration, requires no occupied slots and no
+reserved/dispatched/unknown calls, then atomically updates only the policy pin
+and appends an audit record. It preserves pause, all slot/call/fee records,
+alerts, limits, policy/actor identity and start time. Repeating the same accepted
+transition is idempotent. A mismatched deployment or unresolved execution stays
+blocked; this operation does not reconcile, release resources or dispatch work.
+Rolling configuration back to the old deadline after acceptance fails closed
+with a policy conflict; retain the accepted deadline during any code rollback.
+
 ## Confirmed limits
 
 The user confirmed accepted ordinary administrator invitations plus active user, personal tenant and owner membership. All owned personal projects inherit admission; no new project-count limit is imposed. Each request rechecks current D1 identity and project scope. Bootstrap operator status alone does not grant Beta admission.
