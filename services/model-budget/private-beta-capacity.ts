@@ -155,6 +155,33 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
   }
   async pause(actor?:TurnActor){this.#policy(false);this.ctx.storage.sql.exec('INSERT INTO beta_operations(action,actor_json,at) VALUES(?,?,?)','pause',actor?JSON.stringify(actor):null,Date.now());this.ctx.storage.kv.put('beta-paused',true);await this.ctx.storage.sync();await this.ctx.storage.setAlarm(Date.now()+1);return {paused:true};}
   async resume(actor?:TurnActor){return this.#serial(async()=>{const p=this.#policy(false);await this.#pin(p);await this.#reconcile(p,true);if(this.#slots().length)throw Error('private-beta-release-unconfirmed');this.ctx.storage.sql.exec('INSERT INTO beta_operations(action,actor_json,at) VALUES(?,?,?)','resume',actor?JSON.stringify(actor):null,Date.now());this.ctx.storage.kv.put('beta-paused',false);await this.ctx.storage.sync();return {paused:false};});}
+
+  /** Deployment-only RPC: explicitly accept a later review date from the new
+   * trusted configuration. No public route, reconciliation, release or dispatch.
+   * Reconstructing the previous digest proves every other policy field stayed
+   * fixed. The old pin keeps admission closed until this guarded step succeeds. */
+  extendReview(input:{previousReviewAt:number;expectedPolicySha256:string},actor?:TurnActor){return this.#serial(async()=>{
+    const policy=this.#policy(false);
+    if(!input||Object.keys(input).sort().join(',')!=='expectedPolicySha256,previousReviewAt'||!Number.isSafeInteger(input.previousReviewAt)||input.previousReviewAt<=policy.startsAt||policy.reviewAt<=input.previousReviewAt||policy.reviewAt<=Date.now()||!/^[a-f0-9]{64}$/.test(input.expectedPolicySha256))throw Error('private-beta-review-extension-invalid');
+    const previousDigest=await turnDigest({...policy,enabled:false,reviewAt:input.previousReviewAt});
+    if(previousDigest!==input.expectedPolicySha256)throw Error('private-beta-policy-conflict');
+    const digest=await turnDigest({...policy,enabled:false});
+    const action=`extend-review:${input.previousReviewAt}:${policy.reviewAt}:${previousDigest}:${digest}`;
+    const replayed=this.ctx.storage.transactionSync(()=>{
+      const prior=this.ctx.storage.sql.exec<{digest:string}>('SELECT digest FROM beta_policy WHERE singleton=1').toArray()[0];
+      if(!prior)throw Error('private-beta-policy-unpinned');
+      if(prior.digest===digest&&this.ctx.storage.sql.exec('SELECT id FROM beta_operations WHERE action=?',action).toArray().length)return true;
+      if(prior.digest!==previousDigest)throw Error('private-beta-policy-conflict');
+      // An expired running Turn or unresolved call cannot gain time through an
+      // extension. Operators must settle the original identities separately.
+      if(this.#slots().length||this.ctx.storage.sql.exec("SELECT key FROM beta_calls WHERE status IN ('reserved','dispatched','unknown') LIMIT 1").toArray().length)throw Error('private-beta-release-unconfirmed');
+      this.ctx.storage.sql.exec('UPDATE beta_policy SET digest=? WHERE singleton=1',digest);
+      this.ctx.storage.sql.exec('INSERT INTO beta_operations(action,actor_json,at) VALUES(?,?,?)',action,actor?JSON.stringify(actor):null,Date.now());
+      return false;
+    });
+    await this.ctx.storage.sync();
+    return {previousReviewAt:input.previousReviewAt,reviewAt:policy.reviewAt,policySha256:digest,replayed};
+  });}
   async reserve(raw:ModelCallRequest){return this.#serial(async()=>{
     const request=modelCallRequest(raw),p=this.#policy();await this.#pin(p);
     await authorizePrivateBeta(this.env.CATALOG,request.identity.scope,request.actor);
@@ -213,7 +240,9 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
   });}
   async snapshot(){
     const policy=this.#policy(false);
-    return {schemaVersion:1,enabled:policy.enabled&&Date.now()>=policy.startsAt&&Date.now()<policy.reviewAt,reviewAt:policy.reviewAt,limits:{maxActiveTurns:policy.maxActiveTurns,maxNanodollarsPerDay:policy.maxNanodollarsPerDay,maxNanodollarsTotal:policy.maxNanodollarsTotal},lastMonitorAt:this.ctx.storage.kv.get('beta-last-monitor')??null,paused:this.ctx.storage.kv.get('beta-paused')===true,active:this.#slots().length,quarantined:this.#slots().filter(s=>s.status==='quarantined').length,
+    const policySha256=await turnDigest({...policy,enabled:false});
+    const pinnedPolicySha256=this.ctx.storage.sql.exec<{digest:string}>('SELECT digest FROM beta_policy WHERE singleton=1').toArray()[0]?.digest??null;
+    return {schemaVersion:1,policySha256,pinnedPolicySha256,enabled:policy.enabled&&Date.now()>=policy.startsAt&&Date.now()<policy.reviewAt,reviewAt:policy.reviewAt,limits:{maxActiveTurns:policy.maxActiveTurns,maxNanodollarsPerDay:policy.maxNanodollarsPerDay,maxNanodollarsTotal:policy.maxNanodollarsTotal},lastMonitorAt:this.ctx.storage.kv.get('beta-last-monitor')??null,paused:this.ctx.storage.kv.get('beta-paused')===true,active:this.#slots().length,quarantined:this.#slots().filter(s=>s.status==='quarantined').length,
       usage:this.ctx.storage.sql.exec('SELECT day,status,count(*) calls,sum(cost) reservedNanodollars FROM beta_calls GROUP BY day,status').toArray(),
       alerts:this.ctx.storage.sql.exec('SELECT at,code FROM beta_alerts ORDER BY at DESC LIMIT 100').toArray()};
   }
