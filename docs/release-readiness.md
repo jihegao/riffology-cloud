@@ -1,5 +1,36 @@
 # Current release readiness — 2026-09-27
 
+## 2026-09-27 authorized Private Beta review extension
+
+[Issue #146](https://github.com/jihegao/riffology-cloud/issues/146) and
+[PR #147](https://github.com/jihegao/riffology-cloud/pull/147) extend #104's
+existing policy through **2026-10-20 23:59:59.999 Asia/Shanghai**
+(`2026-10-20T15:59:59.999Z`), following explicit user authorization. The original
+September 27 deadline had expired. Policy ID, actor, start time, daily/cumulative
+budgets, concurrency, pause and execution gates remain unchanged.
+
+Merge `ff3b2bfaa4a323f0a3d910014a4b8d3a6ceef90f` is deployed at 100% as Gateway
+`88385f28-9a2a-4c19-b3b6-67f6c870ff02`, deployment
+`c668acf4-e79c-40f3-a579-5281f6a95b14`. Independent readback confirmed all 91
+bindings, with only policy `reviewAt` changed, preserved runtime and observability
+settings, and exact deployed Worker bytes. Containers and browser assets were
+not changed. TypeScript, local M2 844/844 and
+[full repository CI](https://github.com/jihegao/riffology-cloud/actions/runs/36301107311)
+passed; real Workerd/SQLite tests cover unsafe transitions, preserved ledgers,
+atomic audit/pin updates, restart and idempotence.
+
+The deployment-only `extendReview` RPC verified the original pinned digest,
+zero occupied slots and no unresolved calls before updating the pin and appending
+its audit. A separate post-operation snapshot confirmed the configured and
+persisted digests both equal `e7c6a97e7b28f79c77c2a0510242a6b53f6a780ae665e8714bc1b6a350e29eaa`,
+`enabled=true`, `paused=false`, active/quarantined=0/0. All **104 observed calls**,
+**1,573,785,050 nanodollars** of conservative reservation, limits and alerts
+matched the pre-operation snapshot. No Send/Retry, new Turn, provider/tool
+request or paid acceptance was performed. #104 remains Acceptance for its
+broader participation and exit criteria.
+
+[Release and operation evidence](evidence/releases/beta-review-extension-20260927.json).
+
 ## 2026-09-27 Python Canvas adapter repair release
 
 [Issue #144](https://github.com/jihegao/riffology-cloud/issues/144) fixes an
