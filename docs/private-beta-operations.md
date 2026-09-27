@@ -15,6 +15,11 @@ blocked; this operation does not reconcile, release resources or dispatch work.
 Rolling configuration back to the old deadline after acceptance fails closed
 with a policy conflict; retain the accepted deadline during any code rollback.
 
+The authorized 2026-09-27 extension sets the current review deadline to
+**2026-10-20 23:59:59.999 Asia/Shanghai**; the original seven-day observation
+remains historical evidence, not completed acceptance. See
+[the release record](evidence/releases/beta-review-extension-20260927.json).
+
 ## Confirmed limits
 
 The user confirmed accepted ordinary administrator invitations plus active user, personal tenant and owner membership. All owned personal projects inherit admission; no new project-count limit is imposed. Each request rechecks current D1 identity and project scope. Bootstrap operator status alone does not grant Beta admission.

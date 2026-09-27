@@ -1,0 +1,47 @@
+{
+  "date": "2026-09-27",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/146",
+  "parent": "https://github.com/jihegao/riffology-cloud/issues/104",
+  "implementation_pr": "https://github.com/jihegao/riffology-cloud/pull/147",
+  "merge_commit": "ff3b2bfaa4a323f0a3d910014a4b8d3a6ceef90f",
+  "ci": "https://github.com/jihegao/riffology-cloud/actions/runs/36301107311",
+  "authorization": "User explicitly requested extension through October 20, interpreted and announced as 2026-10-20 23:59:59.999 Asia/Shanghai. No quota increase or user request replay.",
+  "gateway": {
+    "at": "2026-09-27T07:01:50.642Z",
+    "version": "88385f28-9a2a-4c19-b3b6-67f6c870ff02",
+    "deployment": "c668acf4-e79c-40f3-a579-5281f6a95b14",
+    "trafficPercent": 100,
+    "bindings": 91,
+    "changedPolicyFields": [
+      "reviewAt"
+    ],
+    "reviewAt": 1792511999999,
+    "workerSha256": "adc2994d1156b83965504e5b05e522d48f95e9184e915d3293ff684dad22a4ab",
+    "settingsPreserved": true
+  },
+  "policy": {
+    "policyId": "private-beta-20260920-v1",
+    "previousReviewAt": "2026-09-26T23:19:19.093Z",
+    "reviewAt": "2026-10-20T15:59:59.999Z",
+    "actorUnchanged": true,
+    "onlyChangedField": "reviewAt",
+    "migration": "Deployment-only extendReview, original digest verified, no occupied slots or unresolved calls, atomic pin and audit update; invoked once; replayed=false.",
+    "previousPolicySha256": "da46bace883e2724c796b683e6e901c3077c1bd5763d3d30edc539854e593f1f"
+  },
+  "capacity_readback": {
+    "checkedAt": "2026-09-27T07:02:20.713Z",
+    "reviewAt": 1792511999999,
+    "policySha256": "e7c6a97e7b28f79c77c2a0510242a6b53f6a780ae665e8714bc1b6a350e29eaa",
+    "pinConfirmed": true,
+    "enabled": true,
+    "paused": false,
+    "active": 0,
+    "quarantined": 0,
+    "calls": 104,
+    "reservedNanodollars": 1573785050,
+    "usageLimitsAlertsUnchanged": true,
+    "newTurnOrProviderSubmitted": false
+  },
+  "validation": "TypeScript, focused real Workerd/SQLite migration regression, full local M2 844/844, and full repository CI passed. Independent production readback matched all 91 expected bindings, runtime/settings, and deployed Worker bundle bytes.",
+  "acceptance_scope": "Policy/capacity operation only. No Send/Retry, new Turn, provider/tool dispatch, budget increase, gate change, historical usage adjustment or model Revision save. No new paid execution acceptance claimed. #104 remains Acceptance for full Private Beta exit criteria."
+}
