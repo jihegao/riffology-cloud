@@ -51,6 +51,7 @@
     "@cloudflare/sandbox": "0.12.9",
     "@earendil-works/pi-coding-agent": "0.85.0",
     "@earendil-works/pi-server": "0.85.0",
+    "acorn": "8.15.0",
     "better-auth": "1.7.3",
     "fflate": "0.8.3",
     "openai": "7.17.0",

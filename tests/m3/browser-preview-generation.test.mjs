@@ -1,16 +1,19 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFile} from 'node:fs/promises';
-import {BROWSER_PREVIEW_GENERATION_CONTRACT as contract,BROWSER_PREVIEW_SERVER_ADAPTER as adapter,BROWSER_PREVIEW_SERVER_ADAPTER_SHA256 as adapterSha,createProductTrustedPiRelease} from '../../services/trusted-pi/release-candidate.mjs';
-import {BROWSER_PREVIEW_SOURCE_PATHS,canonicalPreviewJson,previewSha256} from '../../services/browser-preview/contract.ts';
+import {BROWSER_PREVIEW_GENERATION_CONTRACT as contract,BROWSER_PREVIEW_JAVASCRIPT_EXAMPLE as javascriptExample,BROWSER_PREVIEW_SERVER_ADAPTER as adapter,BROWSER_PREVIEW_SERVER_ADAPTER_SHA256 as adapterSha,createProductTrustedPiRelease} from '../../services/trusted-pi/release-candidate.mjs';
+import {BROWSER_PREVIEW_JAVASCRIPT_SOURCE_PATHS,BROWSER_PREVIEW_SOURCE_PATHS,canonicalPreviewJson,previewSha256} from '../../services/browser-preview/contract.ts';
 import {PREVIEW_LIMITS,PREVIEW_SOURCE_LOCKS,createTrustedPreviewRegistry} from '../../services/browser-preview/profiles.ts';
 import {inspectGeneratedBrowserPreview} from '../../services/browser-preview/generation.mjs';
 import {initialWorkspaceArchive} from '../../services/workspace/initial-archive.ts';
 import {workspaceArchiveReader} from '../../services/turn-runtime/workspace-file-index.ts';
+import {validateFrontendScene} from '../../services/browser-preview/runtime/js-scene.mjs';
 const encode=s=>new TextEncoder().encode(s);
 const now=1800000000000,identity={scope:{tenantId:'tenant-test',projectId:'project-test',workspaceId:'workspace-test',workspaceGeneration:1},sessionId:'session-test',turnId:'turn-test',dispatchId:'dispatch-test',generation:1},actor={userId:'user-test',authVersion:1};
 test('fixed generation contract shares package paths, profiles, seed and limits',()=>{
  assert.deepEqual(contract.sourcePaths,BROWSER_PREVIEW_SOURCE_PATHS);
+ assert.deepEqual([...contract.sourcePaths,...contract.javascriptSourcePaths],BROWSER_PREVIEW_JAVASCRIPT_SOURCE_PATHS);
+ assert.deepEqual(contract.javascriptManifest,{schema:'riffology.browser-js/v1',hostApi:'riffology.browser-host/v1',entry:'frontend/main.mjs',width:600,height:420});
  assert.deepEqual(contract.mesaPackages,PREVIEW_SOURCE_LOCKS['mesa-3.5.1/v1']);
  assert.deepEqual(contract.profiles,{stdlib:'python-stdlib/v1',mesa:'mesa-3.5.1/v1'});
  assert.equal(contract.seedMaximum,4294967295);assert.equal(contract.maxSteps,PREVIEW_LIMITS.maxSteps);assert.equal(contract.frames,PREVIEW_LIMITS.frames);assert.equal(contract.resultBytes,PREVIEW_LIMITS.resultBytes);
@@ -25,15 +28,22 @@ test('embedded adapter equals canonical server-owned implementation in integrate
  const original=await readFile(new URL('../../services/run/model_run_adapter.py',import.meta.url));
  assert.deepEqual(encode(adapter),new Uint8Array(original));assert.equal(await previewSha256(original),adapterSha);
 });
+test('embedded JavaScript example is executable and matches the exact scene contract',async()=>{
+ assert.doesNotMatch(javascriptExample,/\b(?:import|eval|Function|fetch|Worker|postMessage)\b/);
+ const module=await import('data:text/javascript;base64,'+Buffer.from(javascriptExample).toString('base64'));
+ const scene=module.render({snapshot:{metrics:{completed:42}}});
+ assert.deepEqual(validateFrontendScene(scene),scene);
+ assert.deepEqual(scene.marks[0],{kind:'rect',id:'completed',x:20,y:40,width:42,height:24,fill:'#2563eb'});
+});
 test('actual release resolveOptions injects generation policy and original adapter with legacy/evidence guards',async()=>{
  const calls=[];
  const release=createProductTrustedPiRelease({clock:()=>now,modelFetch:async()=>{throw Error('generation-test-must-not-call-model');},toolFetch:async input=>{calls.push(new URL(input).pathname);return Response.json({model:null,experiments:[]});}});
  const options=await release.resolveOptions({identity,actor,executionDeadlineAt:now+600000});
  assert.deepEqual(calls,['/v1/research']);assert.deepEqual(options.fixedSkills.map(s=>s.name),['simulation']);
  const content=options.fixedSkills[0].content;assert.ok(content.includes('project_install_preview_adapter'));assert.ok(content.includes(adapterSha));assert.equal(content.includes(adapter),false);
- for(const path of contract.sourcePaths)assert.ok(content.includes(path));
+ for(const path of [...contract.sourcePaths,...contract.javascriptSourcePaths])assert.ok(content.includes(path));
  assert.match(content,/six|mesa.*3\.5\.1/i);assert.match(content,/Queue code must remain CPython 3\.11 compatible/);assert.match(content,/Preserve existing working SimPy and server Preview/);
- assert.match(content,/do not convert them/i);assert.match(content,/Do not generate JavaScript/);assert.match(content,/steps and horizon are ordinary parameters/);assert.match(content,/Do not clamp, coerce, truncate/);
+ assert.match(content,/do not convert them/i);assert.match(content,/renderer:"javascript-canvas"/);assert.match(content,/exports exactly a named function render/);assert.match(content,/event is null, \{type:"pointer",x:number,y:number,button:integer\}, or \{type:"select",id:string\}/);assert.match(content,/only M1 frontend events/);assert.ok(content.includes(javascriptExample));for(const fields of ['x,y,width,height,fill','x,y,radius,fill','x1,y1,x2,y2,stroke,width','x,y,text,fill,size'])assert.ok(content.includes(fields));assert.match(content,/steps and horizon are ordinary parameters/);assert.match(content,/Do not clamp, coerce, truncate/);
  assert.match(content,/unverified visualization/);assert.match(content,/server independently recomputes/);assert.match(content,/baseline and intervention/);assert.match(content,/never fabricate a second configuration/);
  assert.doesNotMatch(content,/pip install|micropip\.install|wrangler deploy/);
 });

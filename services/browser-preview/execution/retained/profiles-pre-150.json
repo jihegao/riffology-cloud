@@ -1,0 +1,442 @@
+[
+  {
+    "runtime": {
+      "profileId": "python-stdlib/v1",
+      "runtimeVersion": "pyodide-314.0.6/v1",
+      "adapterVersion": "riffology.model-run/v1",
+      "pythonVersion": "3.14.2",
+      "assetSha256": "ed19f7bd56866879a612a2018939630b275bc8b4b7becef2d68fbde27d2e8041",
+      "visualProtocol": "riffology.visual/v0.1",
+      "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
+      "dependencies": []
+    },
+    "packages": {},
+    "assetManifest": [
+      {
+        "path": "assets/pyodide-lock.json",
+        "sha256": "3fdaef09e9e365c85e002737720f8d0ab8f278c1c244a2dde6a37663cf488ad4",
+        "byteLength": 114440
+      },
+      {
+        "path": "assets/pyodide.asm.mjs",
+        "sha256": "2ac5eba365ec12839c75c03b39b3be1dd63b798852cc460b014b52238be042f7",
+        "byteLength": 1250344
+      },
+      {
+        "path": "assets/pyodide.asm.wasm",
+        "sha256": "3a0a00dfeaa348ac20f9ef09904233d32d33f644339662d4af368f8a2010f37a",
+        "byteLength": 9598218
+      },
+      {
+        "path": "assets/pyodide.mjs",
+        "sha256": "69e3f6ccec3e14b465df60be577ca62f536251406b9a00cce019eac5252a2495",
+        "byteLength": 17931
+      },
+      {
+        "path": "assets/python_stdlib.zip",
+        "sha256": "80c5be6babfe03297069703410c3c29404dcf2525d2b128746bae5536f94831f",
+        "byteLength": 2545564
+      },
+      {
+        "path": "delivery/frame.bundle.mjs",
+        "sha256": "16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0",
+        "byteLength": 11942
+      },
+      {
+        "path": "delivery/worker.bundle.mjs",
+        "sha256": "0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e",
+        "byteLength": 1651861
+      },
+      {
+        "path": "runtime/canvas.mjs",
+        "sha256": "ecc8d10e925d552eae08bca0a43c6ad5cdc53a1f83889b71c2d56eecf1cc3aeb",
+        "byteLength": 2106
+      },
+      {
+        "path": "runtime/frame.html",
+        "sha256": "4c0cec31da970cc4c3f547be87c792de128831e6f0269a7b81428596c8be46ac",
+        "byteLength": 161
+      },
+      {
+        "path": "runtime/frame.mjs",
+        "sha256": "d0a6afcbb85b92d2ff5924a70b32b1e44ce691752cdbd1bf45d3cd8c9a4866a8",
+        "byteLength": 7619
+      },
+      {
+        "path": "runtime/host.mjs",
+        "sha256": "6e84d6d066a91819769093d7d5bf6cf67339a2c708087dc5b41934f5bc9fd931",
+        "byteLength": 8382
+      },
+      {
+        "path": "runtime/package-loader.mjs",
+        "sha256": "91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14",
+        "byteLength": 4861
+      },
+      {
+        "path": "runtime/protocol.mjs",
+        "sha256": "ddc80a8321dec64e3373312dc4cbc709eec9d0d34477d7fe61e4b09378c7a197",
+        "byteLength": 5356
+      },
+      {
+        "path": "runtime/renderer.mjs",
+        "sha256": "b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54",
+        "byteLength": 3275
+      },
+      {
+        "path": "runtime/sha256.mjs",
+        "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24",
+        "byteLength": 2241
+      },
+      {
+        "path": "runtime/worker.mjs",
+        "sha256": "86218f40282014072b1850363814edd71bb9f7d604f641d79dc5682fd837cb3c",
+        "byteLength": 9168
+      },
+      {
+        "path": "source/contract.ts",
+        "sha256": "2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f",
+        "byteLength": 8961
+      },
+      {
+        "path": "source/model-spec.ts",
+        "sha256": "df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8",
+        "byteLength": 7670
+      },
+      {
+        "path": "source/package-lock.json",
+        "sha256": "a86cb7e6e748499e673303ba621ec011850ba9f3e7743f8e27162039ce5f47b5",
+        "byteLength": 214516
+      },
+      {
+        "path": "source/prepare-assets.mjs",
+        "sha256": "831ec2706b7c113a456bf413d7df96b82aafbbf4a20ec7de8bbe91908d8dd878",
+        "byteLength": 5809
+      }
+    ],
+    "verified": true
+  },
+  {
+    "runtime": {
+      "profileId": "mesa-3.5.1/v1",
+      "runtimeVersion": "pyodide-314.0.6/v1",
+      "adapterVersion": "riffology.model-run/v1",
+      "pythonVersion": "3.14.2",
+      "assetSha256": "6b0c95c5700b9561172dce4fa3419ad7224cfbc2e5d8871366b27c16f854e94d",
+      "visualProtocol": "riffology.visual/v0.1",
+      "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
+      "dependencies": [
+        {
+          "name": "contourpy",
+          "version": "1.3.3",
+          "sha256": "d1270323c10ab24141e40a854dcd407625cb4341c9b83301f1111e7db037b57f"
+        },
+        {
+          "name": "cycler",
+          "version": "0.12.1",
+          "sha256": "70682ba25f1503dde0d9d3d98a889480b42b903a5d863b0a7118bc4173aa02c8"
+        },
+        {
+          "name": "decorator",
+          "version": "5.2.1",
+          "sha256": "70c5b218495d55cd610752b01dc3d9f593dfd720bec271b5bebe4d86b51ae3c0"
+        },
+        {
+          "name": "fonttools",
+          "version": "4.62.1",
+          "sha256": "94f246abe8cd46f0695dc9256cde3966bc637b80148fe72a1e7b0e6623d62144"
+        },
+        {
+          "name": "kiwisolver",
+          "version": "1.5.0",
+          "sha256": "f8b19816e2cf8e36fc2adfabb60ad24dad422dfaffa6087173d829d9924fcc07"
+        },
+        {
+          "name": "matplotlib",
+          "version": "3.10.8",
+          "sha256": "2d127e0fbdfdd139b90c2eb487950913771846991330460fce3b183ba79d8ddb"
+        },
+        {
+          "name": "mesa",
+          "version": "3.5.1",
+          "sha256": "528f14add1b13f86f4780cf2cf067aea019885b2628720e352447cd0571234f7"
+        },
+        {
+          "name": "micropip",
+          "version": "0.11.1",
+          "sha256": "0ad7104a3cde648e5486a718799f3852f1d782ff19d4bfc13db9dc631df083f8"
+        },
+        {
+          "name": "networkx",
+          "version": "3.6.1",
+          "sha256": "adaee63a7a2088b1bad68ceb2486a8e7fa7dc43b8a90d27de91dd36e2f058126"
+        },
+        {
+          "name": "numpy",
+          "version": "2.4.6",
+          "sha256": "32959d4137cec8143d75016d029281df3d2e80a232896ed903c2b59e1c44ee9f"
+        },
+        {
+          "name": "packaging",
+          "version": "26.1",
+          "sha256": "f58ad9d3cde3f3051e3bc82df1db19ff0aa940439dfd5f5d470da61c5ea033bf"
+        },
+        {
+          "name": "pandas",
+          "version": "3.0.2",
+          "sha256": "99cef063109bb03956af3987b2351c4d6615060732597e224e9fc49ecd345392"
+        },
+        {
+          "name": "pillow",
+          "version": "12.2.0",
+          "sha256": "18b0c6a423b9b9ffe0b6679f8ebe9dc619d557c5647bfda449583d276d79d422"
+        },
+        {
+          "name": "pyparsing",
+          "version": "3.3.2",
+          "sha256": "8c3e4bb64e23a66a4c9effc4a5a09a2aafc1db7d70b8451ba3ba5b7fe6d18dd2"
+        },
+        {
+          "name": "python-dateutil",
+          "version": "2.9.0.post0",
+          "sha256": "9c1d350424840e15c16450ac0b0d6007e908d266746b61d64760dd77263085af"
+        },
+        {
+          "name": "pytz",
+          "version": "2026.1.post1",
+          "sha256": "c8eaf8e55b79c2a7e765bdce5c1b84e05a43a585a16a00efadd96a0b7913914e"
+        },
+        {
+          "name": "scipy",
+          "version": "1.18.0",
+          "sha256": "8512aee3e4b36b5a79523628d97d0d34612a366aecbb5b44a08c7ae45dd50d57"
+        },
+        {
+          "name": "setuptools",
+          "version": "82.0.1",
+          "sha256": "5dc47f9c9e9da126476870464a9608a63134ed23a2fa587966e5091b736a338f"
+        },
+        {
+          "name": "six",
+          "version": "1.17.0",
+          "sha256": "29edb1e328c61cad6ac21a2ff92c7d274a2b662eb7c12b2d147f04917b765ad6"
+        },
+        {
+          "name": "tqdm",
+          "version": "4.67.3",
+          "sha256": "f08716f1e1307718c01c03748408ffed22cbbe3c2a098a0d0cb8f616e0642a63"
+        }
+      ]
+    },
+    "packages": {
+      "mesa": "3.5.1",
+      "networkx": "3.6.1",
+      "numpy": "2.4.6",
+      "pandas": "3.0.2",
+      "scipy": "1.18.0",
+      "tqdm": "4.67.3"
+    },
+    "assetManifest": [
+      {
+        "path": "assets/contourpy-1.3.3-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+        "sha256": "d1270323c10ab24141e40a854dcd407625cb4341c9b83301f1111e7db037b57f",
+        "byteLength": 118875
+      },
+      {
+        "path": "assets/cycler-0.12.1-py3-none-any.whl",
+        "sha256": "70682ba25f1503dde0d9d3d98a889480b42b903a5d863b0a7118bc4173aa02c8",
+        "byteLength": 8321
+      },
+      {
+        "path": "assets/decorator-5.2.1-py3-none-any.whl",
+        "sha256": "70c5b218495d55cd610752b01dc3d9f593dfd720bec271b5bebe4d86b51ae3c0",
+        "byteLength": 9167
+      },
+      {
+        "path": "assets/fonttools-4.62.1-py3-none-any.whl",
+        "sha256": "94f246abe8cd46f0695dc9256cde3966bc637b80148fe72a1e7b0e6623d62144",
+        "byteLength": 1152647
+      },
+      {
+        "path": "assets/kiwisolver-1.5.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+        "sha256": "f8b19816e2cf8e36fc2adfabb60ad24dad422dfaffa6087173d829d9924fcc07",
+        "byteLength": 36616
+      },
+      {
+        "path": "assets/matplotlib-3.10.8-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+        "sha256": "2d127e0fbdfdd139b90c2eb487950913771846991330460fce3b183ba79d8ddb",
+        "byteLength": 6982033
+      },
+      {
+        "path": "assets/mesa-3.5.1-py3-none-any.whl",
+        "sha256": "528f14add1b13f86f4780cf2cf067aea019885b2628720e352447cd0571234f7",
+        "byteLength": 275085
+      },
+      {
+        "path": "assets/micropip-0.11.1-py3-none-any.whl",
+        "sha256": "0ad7104a3cde648e5486a718799f3852f1d782ff19d4bfc13db9dc631df083f8",
+        "byteLength": 115486
+      },
+      {
+        "path": "assets/networkx-3.6.1-py3-none-any.whl",
+        "sha256": "adaee63a7a2088b1bad68ceb2486a8e7fa7dc43b8a90d27de91dd36e2f058126",
+        "byteLength": 1084840
+      },
+      {
+        "path": "assets/numpy-2.4.6-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+        "sha256": "32959d4137cec8143d75016d029281df3d2e80a232896ed903c2b59e1c44ee9f",
+        "byteLength": 2918760
+      },
+      {
+        "path": "assets/packaging-26.1-py3-none-any.whl",
+        "sha256": "f58ad9d3cde3f3051e3bc82df1db19ff0aa940439dfd5f5d470da61c5ea033bf",
+        "byteLength": 95852
+      },
+      {
+        "path": "assets/pandas-3.0.2-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+        "sha256": "99cef063109bb03956af3987b2351c4d6615060732597e224e9fc49ecd345392",
+        "byteLength": 4177814
+      },
+      {
+        "path": "assets/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+        "sha256": "18b0c6a423b9b9ffe0b6679f8ebe9dc619d557c5647bfda449583d276d79d422",
+        "byteLength": 1037807
+      },
+      {
+        "path": "assets/pyodide-lock.json",
+        "sha256": "3fdaef09e9e365c85e002737720f8d0ab8f278c1c244a2dde6a37663cf488ad4",
+        "byteLength": 114440
+      },
+      {
+        "path": "assets/pyodide.asm.mjs",
+        "sha256": "2ac5eba365ec12839c75c03b39b3be1dd63b798852cc460b014b52238be042f7",
+        "byteLength": 1250344
+      },
+      {
+        "path": "assets/pyodide.asm.wasm",
+        "sha256": "3a0a00dfeaa348ac20f9ef09904233d32d33f644339662d4af368f8a2010f37a",
+        "byteLength": 9598218
+      },
+      {
+        "path": "assets/pyodide.mjs",
+        "sha256": "69e3f6ccec3e14b465df60be577ca62f536251406b9a00cce019eac5252a2495",
+        "byteLength": 17931
+      },
+      {
+        "path": "assets/pyparsing-3.3.2-py3-none-any.whl",
+        "sha256": "8c3e4bb64e23a66a4c9effc4a5a09a2aafc1db7d70b8451ba3ba5b7fe6d18dd2",
+        "byteLength": 122781
+      },
+      {
+        "path": "assets/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "sha256": "9c1d350424840e15c16450ac0b0d6007e908d266746b61d64760dd77263085af",
+        "byteLength": 229892
+      },
+      {
+        "path": "assets/python_stdlib.zip",
+        "sha256": "80c5be6babfe03297069703410c3c29404dcf2525d2b128746bae5536f94831f",
+        "byteLength": 2545564
+      },
+      {
+        "path": "assets/pytz-2026.1.post1-py2.py3-none-any.whl",
+        "sha256": "c8eaf8e55b79c2a7e765bdce5c1b84e05a43a585a16a00efadd96a0b7913914e",
+        "byteLength": 510489
+      },
+      {
+        "path": "assets/scipy-1.18.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+        "sha256": "8512aee3e4b36b5a79523628d97d0d34612a366aecbb5b44a08c7ae45dd50d57",
+        "byteLength": 14029768
+      },
+      {
+        "path": "assets/setuptools-82.0.1-py3-none-any.whl",
+        "sha256": "5dc47f9c9e9da126476870464a9608a63134ed23a2fa587966e5091b736a338f",
+        "byteLength": 756856
+      },
+      {
+        "path": "assets/six-1.17.0-py2.py3-none-any.whl",
+        "sha256": "29edb1e328c61cad6ac21a2ff92c7d274a2b662eb7c12b2d147f04917b765ad6",
+        "byteLength": 11050
+      },
+      {
+        "path": "assets/tqdm-4.67.3-py3-none-any.whl",
+        "sha256": "f08716f1e1307718c01c03748408ffed22cbbe3c2a098a0d0cb8f616e0642a63",
+        "byteLength": 78374
+      },
+      {
+        "path": "delivery/frame.bundle.mjs",
+        "sha256": "16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0",
+        "byteLength": 11942
+      },
+      {
+        "path": "delivery/worker.bundle.mjs",
+        "sha256": "0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e",
+        "byteLength": 1651861
+      },
+      {
+        "path": "runtime/canvas.mjs",
+        "sha256": "ecc8d10e925d552eae08bca0a43c6ad5cdc53a1f83889b71c2d56eecf1cc3aeb",
+        "byteLength": 2106
+      },
+      {
+        "path": "runtime/frame.html",
+        "sha256": "4c0cec31da970cc4c3f547be87c792de128831e6f0269a7b81428596c8be46ac",
+        "byteLength": 161
+      },
+      {
+        "path": "runtime/frame.mjs",
+        "sha256": "d0a6afcbb85b92d2ff5924a70b32b1e44ce691752cdbd1bf45d3cd8c9a4866a8",
+        "byteLength": 7619
+      },
+      {
+        "path": "runtime/host.mjs",
+        "sha256": "6e84d6d066a91819769093d7d5bf6cf67339a2c708087dc5b41934f5bc9fd931",
+        "byteLength": 8382
+      },
+      {
+        "path": "runtime/package-loader.mjs",
+        "sha256": "91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14",
+        "byteLength": 4861
+      },
+      {
+        "path": "runtime/protocol.mjs",
+        "sha256": "ddc80a8321dec64e3373312dc4cbc709eec9d0d34477d7fe61e4b09378c7a197",
+        "byteLength": 5356
+      },
+      {
+        "path": "runtime/renderer.mjs",
+        "sha256": "b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54",
+        "byteLength": 3275
+      },
+      {
+        "path": "runtime/sha256.mjs",
+        "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24",
+        "byteLength": 2241
+      },
+      {
+        "path": "runtime/worker.mjs",
+        "sha256": "86218f40282014072b1850363814edd71bb9f7d604f641d79dc5682fd837cb3c",
+        "byteLength": 9168
+      },
+      {
+        "path": "source/contract.ts",
+        "sha256": "2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f",
+        "byteLength": 8961
+      },
+      {
+        "path": "source/model-spec.ts",
+        "sha256": "df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8",
+        "byteLength": 7670
+      },
+      {
+        "path": "source/package-lock.json",
+        "sha256": "a86cb7e6e748499e673303ba621ec011850ba9f3e7743f8e27162039ce5f47b5",
+        "byteLength": 214516
+      },
+      {
+        "path": "source/prepare-assets.mjs",
+        "sha256": "831ec2706b7c113a456bf413d7df96b82aafbbf4a20ec7de8bbe91908d8dd878",
+        "byteLength": 5809
+      }
+    ],
+    "verified": true
+  }
+]
