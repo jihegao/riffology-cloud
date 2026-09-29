@@ -6,6 +6,7 @@ const spec = { schemaVersion: 1, researchQuestion: 'How does capacity affect wai
 
 test('parses a strict versioned model spec and resolves defaults/overrides', () => {
   const parsed = parseModelSpec(spec);
+  assert.ok(!('kind' in parsed.execution));
   assert.equal(parsed.execution.entrypoint, 'model/run.py');
   assert.deepEqual(resolveParameters(parsed, { counters: 6, priority: 'priority' }), { counters: 6, priority: 'priority', abandonment: false, rate: 1.5 });
   assert.deepEqual(validateMetrics(parsed, { meanWait: 2.5, throughput: 12 }), { meanWait: 2.5, throughput: 12 });

@@ -32,7 +32,9 @@ export async function validateCandidateArtifact(raw:unknown,bytes:Uint8Array):Pr
 export function packageCandidateModel(files:Readonly<Record<string,Uint8Array>>,rawSpec:unknown):Uint8Array{
  const spec=parseModelSpec(rawSpec);
  if(Object.hasOwn(files,'model/model-spec.json'))throw Error('candidate-model-spec-conflict');
- if(!(files[spec.execution.entrypoint] instanceof Uint8Array)||!(files[spec.execution.dependencyLock] instanceof Uint8Array))throw Error('candidate-model-contract-missing');
+ if('kind' in spec.execution){
+  if(!(files[spec.execution.businessIr] instanceof Uint8Array)||!(files[spec.execution.bundle] instanceof Uint8Array))throw Error('candidate-model-contract-missing');
+ }else if(!(files[spec.execution.entrypoint] instanceof Uint8Array)||!(files[spec.execution.dependencyLock] instanceof Uint8Array))throw Error('candidate-model-contract-missing');
  return initialWorkspaceArchive({...files,'model/model-spec.json':new TextEncoder().encode(JSON.stringify(spec))});
 }
 /** Feed this snapshot to the existing RevisionStoreCheckpointPort. That port

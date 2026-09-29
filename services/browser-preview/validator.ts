@@ -47,7 +47,7 @@ export async function validateSavedPreview(source:SavedPreviewSource,archiveByte
   for(const path of BROWSER_PREVIEW_SOURCE_PATHS){try{files.set(path,archive.read([{path,maxBytes:path==='model/model-spec.json'||path==='model/visualization.json'?32768:path==='app/requirements.lock'?65536:PREVIEW_LIMITS.sourceBytes}]).get(path)!);}catch(e){reject(e instanceof Error&&e.message==='workspace-content-limit'?'source-too-large':'source-missing');}}
   if([...files.values()].reduce((n,b)=>n+b.length,0)>PREVIEW_LIMITS.bundleBytes)reject('source-too-large');
   let spec:ModelSpec;try{spec=parseModelSpec(json(files.get('model/model-spec.json')!));}catch{reject('model-spec-invalid');}
-  if(spec.execution.entrypoint!=='model/run.py'||spec.execution.dependencyLock!=='app/requirements.lock')reject('model-spec-invalid');
+  if('kind' in spec.execution||spec.execution.entrypoint!=='model/run.py'||spec.execution.dependencyLock!=='app/requirements.lock')reject('model-spec-invalid');
   if(spec.parameters.steps&&(spec.parameters.steps.type!=='integer'||typeof spec.parameters.steps.default!=='number'||spec.parameters.steps.default<1||spec.parameters.steps.default>PREVIEW_LIMITS.maxSteps||spec.parameters.steps.minimum===undefined||spec.parameters.steps.minimum<1||spec.parameters.steps.maximum===undefined||spec.parameters.steps.maximum>PREVIEW_LIMITS.maxSteps))reject('model-spec-invalid');
   let visualization:PreviewVisualization;try{visualization=parsePreviewVisualization(json(files.get('model/visualization.json')!),spec);}catch{reject('visualization-invalid');}
   let lock:unknown;try{lock=json(files.get('app/requirements.lock')!);}catch{reject('dependency-unsupported');}

@@ -10,6 +10,8 @@ export type ParameterDefinition = {
   values?: string[];
 };
 export type MetricDefinition = { unit?: string; description?: string };
+export type PythonExecution = { entrypoint: string; dependencyLock: string };
+export type CompilerExecution = {kind:'compiler-v01'; businessIr:string; bundle:string};
 export type ModelSpec = {
   schemaVersion: 1;
   researchQuestion: string;
@@ -20,7 +22,7 @@ export type ModelSpec = {
   parameters: Record<string, ParameterDefinition>;
   metrics: Record<string, MetricDefinition>;
   limitations: string[];
-  execution: { entrypoint: string; dependencyLock: string };
+  execution: PythonExecution | CompilerExecution;
 };
 export type ParameterValues = Record<string, number | string | boolean>;
 
@@ -110,9 +112,20 @@ export function parseModelSpec(raw: unknown): ModelSpec {
   for (const [key, item] of Object.entries(map(value.parameters))) parameters[name(key)] = parameter(item);
   const metrics: Record<string, MetricDefinition> = {};
   for (const [key, item] of Object.entries(map(value.metrics))) metrics[name(key)] = metric(item);
-  const execution = object(value.execution, ['entrypoint', 'dependencyLock']);
-  const entrypoint = path(execution.entrypoint, 'model', '.py'), dependencyLock = path(execution.dependencyLock, 'app', '.lock');
-  return { schemaVersion: 1, researchQuestion: text(value.researchQuestion), scope: text(value.scope), entities: list(value.entities), mechanisms: list(value.mechanisms), assumptions: list(value.assumptions), parameters, metrics, limitations: list(value.limitations), execution: { entrypoint, dependencyLock } };
+  let execution:PythonExecution|CompilerExecution;
+  if (value.execution && typeof value.execution === 'object' && Object.hasOwn(value.execution, 'kind')) {
+    const compiler = object(value.execution, ['kind', 'businessIr', 'bundle']);
+    if (compiler.kind !== 'compiler-v01' || Object.keys(parameters).length !== 0 || Object.keys(metrics).length === 0) reject();
+    const businessIr = path(compiler.businessIr, 'model', '.json');
+    const bundle = path(compiler.bundle, 'model', '.simpack');
+    if (businessIr === 'model/model-spec.json') reject();
+    execution = {kind:'compiler-v01', businessIr, bundle};
+  } else {
+    const python = object(value.execution, ['entrypoint', 'dependencyLock']);
+    const entrypoint = path(python.entrypoint, 'model', '.py'), dependencyLock = path(python.dependencyLock, 'app', '.lock');
+    execution = {entrypoint, dependencyLock};
+  }
+  return { schemaVersion: 1, researchQuestion: text(value.researchQuestion), scope: text(value.scope), entities: list(value.entities), mechanisms: list(value.mechanisms), assumptions: list(value.assumptions), parameters, metrics, limitations: list(value.limitations), execution };
 }
 
 export function resolveParameters(spec: ModelSpec, raw: unknown = {}): ParameterValues {

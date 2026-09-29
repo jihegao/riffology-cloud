@@ -12,6 +12,18 @@ test('candidate fixes one Responses model, simulation policy and eight remote to
   const options=await release([]).resolveOptions({identity,actor,executionDeadlineAt:now+600000});assert.deepEqual(options.selectedModel,{provider:PRODUCT_PI_PROVIDER,id:PRODUCT_PI_MODEL});assert.deepEqual(options.allowedModels,[options.selectedModel]);assert.equal(options.providerDefinitions[0].config.api,'openai-responses');assert.equal(options.providerDefinitions[0].config.baseUrl,'https://model-proxy.riffology.internal/v1');assert.equal(options.providerDefinitions[0].config.models[0].contextWindow,PRODUCT_PI_MAX_INPUT_TOKENS);assert.equal(options.providerDefinitions[0].config.models[0].maxTokens,PRODUCT_PI_MAX_OUTPUT_TOKENS);assert.match(options.systemPrompt,/project_\*/);assert.match(options.systemPrompt,/call the appropriate project tool again/);assert.deepEqual(options.fixedSkills.map(value=>value.name),['simulation']);assert.deepEqual(options.bridge.definitions.map(value=>value.name),['project_read','project_read_page','project_write','project_edit','project_list','project_search','project_install_preview_adapter','project_bash']);
   const host=await createControlledPiSession({...options,trustedCwd:'/var/lib/riffology/pi',scope:{tenantId:'tenant-a',projectId:'project-a',sessionId:'session-a'}});t.after(()=>host.dispose());assert.deepEqual(host.inspect().model,options.selectedModel);assert.deepEqual(host.inspect().tools,options.bridge.definitions.map(value=>value.name));assert.ok(host.inspect().systemPrompt.includes(options.fixedSkills[0].content));
 });
+test('candidate gives compiler v0.1 a source-preserving public CLI authoring contract',async()=>{
+  const options=await release([]).resolveOptions({identity,actor,executionDeadlineAt:now+600000}),skill=options.fixedSkills[0].content;
+  assert.match(skill,/public sim-engine 0\.1\.0 CLI only through bounded project_bash/);
+  assert.match(skill,/sim-engine seal model\/business-ir\.draft\.json model\/business-ir\.json; sim-engine validate model\/business-ir\.json; sim-engine compile model\/business-ir\.json model\/model\.simpack/);
+  assert.match(skill,/"kind":"compiler-v01","businessIr":"model\/business-ir\.json","bundle":"model\/model\.simpack"/);
+  assert.match(skill,/Set parameters to an empty object for compiler-v01/);
+  assert.match(skill,/only finite numeric run metrics/);
+  assert.match(skill,/Do not declare string stop_reason as a numeric metric/);
+  assert.match(skill,/do not execute the saved bundle online, create a Run or durable result, verify an Experiment or Evidence claim/);
+  assert.match(skill,/Do not use sim-engine run or Browser Preview as a substitute/);
+  assert.match(skill,/Do not import package internals, call repository scripts, hand-write a \.simpack/);
+});
 test('candidate installs canonical preview adapter through an identity-bound project write',async()=>{
   const log=[],options=await release(log).resolveOptions({identity,actor,executionDeadlineAt:now+600000});
   await options.bridge.execute({scope:{tenantId:'tenant-a',projectId:'project-a',sessionId:'session-a'},name:'project_install_preview_adapter',toolCallId:'install-adapter',args:{}});

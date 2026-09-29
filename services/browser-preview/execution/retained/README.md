@@ -1,9 +1,11 @@
 # Retained release 727c40f
 
 `727c40f.json` and `profiles-727c40f.json` are copied verbatim in content from
-release `727c40f`'s static index and runtime profiles. The two unique files under
-`bytes/` are the original host bundle and package-lock, verified against that
-index. Shared assets are reproduced by the current pinned asset preparation.
+release `727c40f`'s static index and runtime profiles. The files under `bytes/`
+retain the original host bundle, package-lock, and pre-compiler Model Spec,
+verified against that index. Other shared assets are reproduced by the current
+pinned asset preparation. The old Model Spec must remain available because the
+current source accepts a compiler execution contract and has a different hash.
 No old profile hash is redirected to a new host.
 
 Normal `execution/materialize.mjs` includes this baseline automatically and

@@ -8,18 +8,27 @@ RUN python3 -m pip install --no-cache-dir --no-deps simpy==4.1.1
 # Independent relocatable CPython: do not replace the historical system Python.
 # Official standalone release asset bytes are verified by BuildKit before extraction.
 ADD --checksum=sha256:4eb8731e2dbc9644dca24e71a9e7615f7fb04720342ea65f3c30ea3a6a00b792 https://github.com/astral-sh/python-build-standalone/releases/download/20251217/cpython-3.14.2%2B20251217-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz /tmp/python-mesa.tar.gz
-RUN test "$(uname -m)" = x86_64 && mkdir -p /opt/riffology/python-mesa \
-    && tar -xzf /tmp/python-mesa.tar.gz --strip-components=1 -C /opt/riffology/python-mesa && rm /tmp/python-mesa.tar.gz
+RUN test "$(uname -m)" = x86_64 && mkdir -p /opt/riffology/python-mesa /opt/riffology/python-compiler \
+    && tar -xzf /tmp/python-mesa.tar.gz --strip-components=1 -C /opt/riffology/python-mesa \
+    && tar -xzf /tmp/python-mesa.tar.gz --strip-components=1 -C /opt/riffology/python-compiler \
+    && rm /tmp/python-mesa.tar.gz
+ADD --checksum=sha256:7c5ae380240fd2238671160e4830956f8055830a8317edf5c05e495b3823cd88 https://files.pythonhosted.org/packages/48/72/920ed1224c94a8a5a69e6c1275ac7fe4eb911ba8feffddf469f1629d47f3/simpy-4.1.1-py3-none-any.whl /tmp/simpy-4.1.1-py3-none-any.whl
+COPY --chown=root:root --chmod=0444 services/project-tools/vendor/sim_engine_compiler-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl /tmp/sim_engine_compiler-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl
+RUN echo 'e7bcd9271dd42106b78e87176e3485b290536f5291c0440872b814fc549858f7  /tmp/sim_engine_compiler-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl' | sha256sum -c - \
+    && /opt/riffology/python-compiler/bin/python3 -m pip install --no-cache-dir --no-index --no-deps /tmp/simpy-4.1.1-py3-none-any.whl /tmp/sim_engine_compiler-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl \
+    && /opt/riffology/python-compiler/bin/python3 -c "import importlib.metadata as m,sim_engine_compiler as s,sys; assert sys.version.split()[0] == '3.14.2' and m.version('simpy') == '4.1.1' and m.version('sim-engine-compiler') == s.__version__ == '0.1.0' and s.native_available()" \
+    && rm /tmp/simpy-4.1.1-py3-none-any.whl /tmp/sim_engine_compiler-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl
 COPY --chown=root:root --chmod=0444 services/run/mesa-cpython-profile.json /opt/riffology/mesa-cpython-profile.json
 COPY --chown=root:root --chmod=0444 services/run/mesa-cpython-requirements.txt /opt/riffology/mesa-cpython-requirements.txt
 RUN /opt/riffology/python-mesa/bin/python3 -m pip install --no-cache-dir --no-deps --only-binary=:all: --require-hashes -r /opt/riffology/mesa-cpython-requirements.txt \
     && /opt/riffology/python-mesa/bin/python3 -m pip check \
-    && /opt/riffology/python-mesa/bin/python3 -c "import sys; assert sys.version.split()[0] == '3.14.2'"
+    && /opt/riffology/python-mesa/bin/python3 -c "import importlib.metadata as m,sys; assert sys.version.split()[0] == '3.14.2' and not any(d.metadata['Name'].lower() in ('simpy','sim-engine-compiler') for d in m.distributions())"
 COPY --chown=root:root --chmod=0555 services/project-tools/process_quiescence.py /opt/riffology/process_quiescence.py
 COPY --chown=root:root --chmod=0555 services/project-tools/workspace_archive.py /opt/riffology/workspace_archive.py
 COPY --chown=root:root --chmod=0555 services/project-tools/project_network_fence.py /opt/riffology/project_network_fence.py
 COPY --chown=root:root --chmod=0555 services/run/simulation_observation.py /opt/riffology/simulation_observation.py
 COPY --chown=root:root --chmod=0555 services/run/simulation_process.py /opt/riffology/simulation_process.py
+COPY --chown=root:root --chmod=0555 services/run/compiler_model_adapter.py /opt/riffology/compiler_model_adapter.py
 
 COPY --chown=root:root --chmod=0555 services/run/service_process.py /opt/riffology/service_process.py
 COPY --chown=root:root --chmod=0555 services/run/service_upload.py /opt/riffology/service_upload.py

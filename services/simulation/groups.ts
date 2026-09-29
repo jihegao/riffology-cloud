@@ -58,6 +58,9 @@ export class ExperimentGroupHost{
   const g=await this.get(id);if(g.requestJson!==JSON.stringify(request)||g.actor.authVersion!==actor.authVersion)throw Error('simulation-idempotency-conflict');return g;
  }
  async submit(actor:TurnActor,key:string,raw:unknown,plan:SimulationPlan,runtimeImage:string,stillCurrent:()=>boolean){
+  // v0.1 Business edits produce distinct immutable bundles. The existing group
+  // contract compares parameter overrides within one frozen Plan.
+  if(plan.compiler)throw Error('compiler-group-unsupported');
   const request=experimentGroupRequest(raw),prior=await this.replay(actor,key,request);if(prior)return prior;
   if(!this.canRun()||!runtimeImage||runtimeImage.length>512)throw Error('simulation-unavailable');
   if(JSON.stringify(modelVersion(plan))!==JSON.stringify({revisionId:request.revisionId,filesSha256:request.filesSha256,specSha256:request.specSha256}))throw Error('simulation-model-stale');

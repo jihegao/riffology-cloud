@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
@@ -30,4 +31,23 @@ test('Trusted Pi image dependency and fail-closed release are fixed', async () =
   assert.equal(lock.packages['node_modules/@earendil-works/pi-server'].version, '0.85.0');
   const release = await import('../../services/trusted-pi/release-unconfigured.mjs');
   await assert.rejects(release.resolveOptions(), /release-not-configured/);
+});
+
+test('Project Tools images install the same pinned compiler authoring toolchain', async () => {
+  const names=['services/project-tools/Dockerfile.cloud','services/project-tools/Dockerfile.vertical'];
+  const sources=await Promise.all(names.map(name=>readFile(new URL(name,root),'utf8')));
+  const wheel=await readFile(new URL('services/project-tools/vendor/sim_engine_compiler-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl',root));
+  assert.equal(createHash('sha256').update(wheel).digest('hex'),'e7bcd9271dd42106b78e87176e3485b290536f5291c0440872b814fc549858f7');
+  for(const source of sources){
+    assert.match(source,/cpython-3\.14\.2%2B20251217-x86_64-unknown-linux-gnu-install_only_stripped\.tar\.gz/);
+    assert.match(source,/sha256:4eb8731e2dbc9644dca24e71a9e7615f7fb04720342ea65f3c30ea3a6a00b792/);
+    assert.match(source,/simpy-4\.1\.1-py3-none-any\.whl/);
+    assert.match(source,/sha256:7c5ae380240fd2238671160e4830956f8055830a8317edf5c05e495b3823cd88/);
+    assert.match(source,/vendor\/sim_engine_compiler-0\.1\.0-cp312-abi3-manylinux_2_28_x86_64\.whl/);
+    assert.match(source,/e7bcd9271dd42106b78e87176e3485b290536f5291c0440872b814fc549858f7  \/tmp\/sim_engine_compiler/);
+    assert.match(source,/pip install --no-cache-dir --no-deps --no-index/);
+    assert.match(source,/ln -s \/opt\/riffology\/python-compiler\/bin\/sim-engine \/usr\/bin\/sim-engine/);
+    assert.match(source,/sim-engine --version/);
+  }
+  assert.equal(sources[0].match(/python-compiler/g)?.length,sources[1].match(/python-compiler/g)?.length);
 });

@@ -2,7 +2,12 @@ import {MESA_SERVER_PROFILE,mesaSourcePackages} from './server-profile.ts';
 import {workspaceArchiveReader} from '../turn-runtime/workspace-file-index.ts';
 import {previewSource,previewSourceFilesSha256,type PreviewSource} from '../preview/source.ts';
 import {parseModelSpec,type ModelSpec} from './model-spec.ts';
-export type SimulationPlan={source:PreviewSource;spec:ModelSpec;specSha256:string;entrypointSha256:string;dependencyLockSha256:string;executionProfile?:typeof MESA_SERVER_PROFILE};
+import {inspectCompilerBundle,type CompilerIdentity} from './compiler-bundle.ts';
+type PlanBase={source:PreviewSource;spec:ModelSpec;specSha256:string};
+export type SimulationPlan=PlanBase&(
+  {entrypointSha256:string;dependencyLockSha256:string;executionProfile?:typeof MESA_SERVER_PROFILE;compiler?:never;businessSha256?:never;bundleSha256?:never}
+  |{compiler:CompilerIdentity;businessSha256:string;bundleSha256:string;executionProfile:'sim-engine-compiler-0.1.0/v1';entrypointSha256?:never;dependencyLockSha256?:never}
+);
 export async function digest(value:Uint8Array|string){const bytes=typeof value==='string'?new TextEncoder().encode(value):value;return [...new Uint8Array(await crypto.subtle.digest('SHA-256',Uint8Array.from(bytes)))].map(b=>b.toString(16).padStart(2,'0')).join('');}
 async function readModel(raw:PreviewSource,bytes:Uint8Array){
  const source=previewSource(raw),archive=workspaceArchiveReader(bytes);
@@ -15,6 +20,13 @@ async function readModel(raw:PreviewSource,bytes:Uint8Array){
 }
 async function checkedPlan(model:Awaited<ReturnType<typeof readModel>>):Promise<SimulationPlan>{
  const {source,archive,spec,specSha256}=model;
+ if('kind' in spec.execution){
+   let files:Map<string,Uint8Array>;
+   try{files=new Map([...archive.read([{path:spec.execution.businessIr,maxBytes:1024*1024}]),...archive.read([{path:spec.execution.bundle,maxBytes:2*1024*1024}])]);}catch{throw Error('model-contract-mismatch');}
+   const business=files.get(spec.execution.businessIr)!,bundle=files.get(spec.execution.bundle)!;
+   const compiler=await inspectCompilerBundle(bundle,business);
+   return {source,spec,specSha256,businessSha256:await digest(business),bundleSha256:compiler.bundleSha256,compiler,executionProfile:'sim-engine-compiler-0.1.0/v1'};
+ }
  let files:Map<string,Uint8Array>;
  try{files=archive.read([{path:spec.execution.entrypoint,maxBytes:1024*1024},{path:spec.execution.dependencyLock,maxBytes:65536}]);}catch{throw Error('model-contract-mismatch');}
  const lockBytes=files.get(spec.execution.dependencyLock)!;
@@ -29,6 +41,7 @@ export type ModelInspection = {
  spec: ModelSpec|null;
  reasonCode: string|null;
  canRun: boolean;
+ compiler?:CompilerIdentity;
 };
 /** Read the saved semantic model even when its execution contract is invalid. */
 export async function inspectModel(raw:PreviewSource,bytes:Uint8Array,runtimeAvailable:boolean):Promise<ModelInspection>{
@@ -40,12 +53,12 @@ export async function inspectModel(raw:PreviewSource,bytes:Uint8Array,runtimeAva
  }
  const {source,spec,specSha256}=model;
  const version={revisionId:source.kind==='saved-turn'?source.revision.revisionId:null,filesSha256:previewSourceFilesSha256(source),specSha256};
- try{await checkedPlan(model);}catch(error){
+ let plan:SimulationPlan;try{plan=await checkedPlan(model);}catch(error){
   const code=error instanceof Error?error.message:'';
-  if(['model-contract-mismatch','model-dependencies-invalid','model-dependencies-unsupported'].includes(code))return {version,spec,reasonCode:code,canRun:false};
+  if(['model-contract-mismatch','model-dependencies-invalid','model-dependencies-unsupported','compiler-bundle-invalid'].includes(code))return {version,spec,reasonCode:code,canRun:false};
   throw error;
  }
- return {version,spec,reasonCode:null,canRun:runtimeAvailable};
+ return {version,spec,reasonCode:null,canRun:runtimeAvailable,...(plan.compiler?{compiler:plan.compiler}:{})};
 }
 export async function simulationPlan(raw:PreviewSource,bytes:Uint8Array):Promise<SimulationPlan>{
  return checkedPlan(await readModel(raw,bytes));
