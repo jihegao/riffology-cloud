@@ -87,6 +87,20 @@ test('pending experiments unlock only confirmed rejection and preserve ambiguous
  }
 });
 
+test('compiler model and completed Run show their frozen identities without rendering source HTML',async t=>{
+ const browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||'chrome'});t.after(()=>browser.close());const page=await browser.newPage();
+ await page.route('https://compiler-panel.test/**',route=>route.fulfill({contentType:route.request().url().endsWith('.js')?'application/javascript':'text/html',body:route.request().url().endsWith('.js')?(modules[new URL(route.request().url()).pathname.slice(1)]??source):'<div id="panel"></div>'}));await page.goto('https://compiler-panel.test/');
+ await page.evaluate(async()=>{
+  (await import('/i18n.js')).setLocale('zh-CN',{persist:false});const {createSimulationPanel}=await import('/simulation.js');const compiler={compilerVersion:'0.1.0',bundleId:'a'.repeat(64),planFingerprint:'b'.repeat(64),bundleSha256:'c'.repeat(64)};const spec={researchQuestion:'<img src=x onerror=alert(1)>',scope:'B1',entities:[],mechanisms:[],assumptions:[],limitations:[],parameters:{},metrics:{completed_sorties:{}},execution:{kind:'compiler-v01',businessIr:'model/business-ir.json',bundle:'model/model.simpack'}};
+  const model={version:{revisionId:'revision',filesSha256:'f'.repeat(64),specSha256:'s'.repeat(64)},spec,compiler,reasonCode:null,canRun:true};const run={experimentId:'run-b1',runId:'run-b1',version:model.version,status:'completed',parameters:{},seed:7,result:{metrics:{completed_sorties:2},compiler:{...compiler,resultSha256:'d'.repeat(64),stopReason:'duration'}}};
+  window.panel=createSimulationPanel({root:document.querySelector('#panel'),api:async path=>path.endsWith('/model')?model:{items:[run]}});await window.panel.enter({tenantId:'t',workspaceId:'w'});
+ });
+ assert.match(await page.locator('.model-view').innerText(),/编译器 0\.1\.0.*包 a{12}.*Plan b{12}/);
+ assert.equal(await page.locator('img').count(),0);
+ await page.getByText('查看编译包与结果标识').click();
+ assert.match(await page.locator('.simulation-experiment pre').innerText(),/"resultSha256": "d{64}"/);
+});
+
 test('Model view restores persisted semantics, bounds and warnings safely on desktop and mobile',async t=>{
  const browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||'chrome'});t.after(()=>browser.close());const page=await browser.newPage();
  const css=await readFile(new URL('../../services/web/workspace.css',import.meta.url),'utf8');

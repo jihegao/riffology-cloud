@@ -39,7 +39,16 @@ export class SimulationNative{
    const receipt=JSON.parse(result.stdout);if(receipt.token!==token||receipt.offset!==offset||receipt.bytes!==chunk.length||receipt.total!==bytes.length||offset+chunk.length===bytes.length&&receipt.complete!==true)throw Error('simulation-upload-invalid');
   }
   stage="control-write";
-  await this.sandbox.writeFile(`/var/lib/riffology/services/${token}.input.json`,JSON.stringify({schemaVersion:1,token,runId:input.runId,filesSha256:previewSourceFilesSha256(input.plan.source),specSha256:input.plan.specSha256,entrypoint:input.plan.spec.execution.entrypoint,entrypointSha256:input.plan.entrypointSha256,dependencyLock:input.plan.spec.execution.dependencyLock,dependencyLockSha256:input.plan.dependencyLockSha256,parameters:input.parameters,seed:input.seed,deadlineAt:input.deadlineAt}));
+  const execution=input.plan.spec.execution;
+  let control:Record<string,unknown>;
+  if('kind' in execution){
+    if(!input.plan.compiler||input.plan.executionProfile!=='sim-engine-compiler-0.1.0/v1')throw Error('simulation-source-mismatch');
+    control={schemaVersion:2,token,runId:input.runId,filesSha256:previewSourceFilesSha256(input.plan.source),specSha256:input.plan.specSha256,businessIr:execution.businessIr,businessSha256:input.plan.businessSha256,bundle:execution.bundle,bundleSha256:input.plan.bundleSha256,executionProfile:input.plan.executionProfile,parameters:input.parameters,seed:input.seed,deadlineAt:input.deadlineAt};
+  }else{
+    if(input.plan.compiler)throw Error('simulation-source-mismatch');
+    control={schemaVersion:1,token,runId:input.runId,filesSha256:previewSourceFilesSha256(input.plan.source),specSha256:input.plan.specSha256,entrypoint:execution.entrypoint,entrypointSha256:input.plan.entrypointSha256,dependencyLock:execution.dependencyLock,dependencyLockSha256:input.plan.dependencyLockSha256,parameters:input.parameters,seed:input.seed,deadlineAt:input.deadlineAt};
+  }
+  await this.sandbox.writeFile(`/var/lib/riffology/services/${token}.input.json`,JSON.stringify(control));
   stage="native-start";
   return await this.operation('start');
   }catch(error){const message=error instanceof Error?error.message:'';console.error('simulation-start-unconfirmed',{runId:input.runId,stage,code:/^[a-z0-9-]{1,100}$/.test(message)?message:'transport-error'});throw error;}

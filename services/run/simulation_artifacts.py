@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import json
+import math
 import os
 import re
 import stat
@@ -16,13 +18,69 @@ _MEDIA_TYPES = {"json": "application/json", "csv": "text/csv", "txt": "text/plai
 _MAX_FILES = 4
 _MAX_FILE_BYTES = 16_384
 _MAX_TOTAL_BYTES = 32_768
+_SHA = re.compile(r"^[a-f0-9]{64}$")
+
+
+def _compiler_identity(value: Any) -> None:
+    fields = {
+        "bundleSha256", "bundleId", "businessFingerprint", "planFingerprint",
+        "compilerVersion", "runtimeVersion", "domainPack", "irVersions",
+        "executionProfile", "resultSha256", "stopReason",
+    }
+    if type(value) is not dict or set(value) != fields:
+        raise ValueError("invalid-simulation-result")
+    for key in ("bundleSha256", "bundleId", "businessFingerprint", "planFingerprint", "resultSha256"):
+        if type(value[key]) is not str or not _SHA.fullmatch(value[key]):
+            raise ValueError("invalid-simulation-result")
+    for key in ("compilerVersion", "runtimeVersion", "stopReason"):
+        if type(value[key]) is not str or not value[key] or len(value[key]) > 256:
+            raise ValueError("invalid-simulation-result")
+    if value["compilerVersion"] != "0.1.0" or value["runtimeVersion"] != "0.1.0":
+        raise ValueError("invalid-simulation-result")
+    nested = {
+        "domainPack": {"name", "version"},
+        "irVersions": {"business", "core", "plan", "lineage"},
+        "executionProfile": {"semantic", "rng", "work", "resource_dispatch_index"},
+    }
+    for key, fields in nested.items():
+        if type(value[key]) is not dict or set(value[key]) != fields or any(type(item) is not str or not item or len(item) > 256 for item in value[key].values()):
+            raise ValueError("invalid-simulation-result")
+    if (
+        value["domainPack"] != {"name": "aircraft-support", "version": "aircraft-support-pack/v0.1"}
+        or value["irVersions"] != {"business": "aircraft-business-ir/v1", "core": "simulation-core-ir/v2", "plan": "aircraft-support-plan/v1alpha2", "lineage": "compiler-lineage/v2"}
+        or value["executionProfile"].get("semantic") not in ("legacy-minute-v1", "event-time-v2")
+        or {key: item for key, item in value["executionProfile"].items() if key != "semantic"} != {"rng": "legacy-sequential-v1", "work": "stable-topological-serial", "resource_dispatch_index": "absent"}
+    ):
+        raise ValueError("invalid-simulation-result")
+    try:
+        json_value = json.dumps(value, allow_nan=False, separators=(",", ":"))
+    except (TypeError, ValueError, RecursionError) as exc:
+        raise ValueError("invalid-simulation-result") from exc
+    if len(json_value.encode("utf-8")) > 16_384:
+        raise ValueError("invalid-simulation-result")
 
 
 def _valid_result(result: Any) -> None:
-    if type(result) is not dict or set(result) not in ({"schemaVersion", "metrics"}, {"schemaVersion", "metrics", "outputs"}):
+    if type(result) is not dict:
         raise ValueError("invalid-simulation-result")
-    if result.get("schemaVersion") != 1 or type(result.get("metrics")) is not dict:
+    if result.get("schemaVersion") == 1:
+        if set(result) not in ({"schemaVersion", "metrics"}, {"schemaVersion", "metrics", "outputs"}) or type(result.get("metrics")) is not dict:
+            raise ValueError("invalid-simulation-result")
+        return
+    if result.get("schemaVersion") != 2 or set(result) != {"schemaVersion", "metrics", "compiler"} or type(result.get("metrics")) is not dict:
         raise ValueError("invalid-simulation-result")
+    if not result["metrics"]:
+        raise ValueError("invalid-simulation-result")
+    for key, value in result["metrics"].items():
+        if type(key) is not str or not key or type(value) not in (int, float) or type(value) is float and not math.isfinite(value):
+            raise ValueError("invalid-simulation-result")
+    _compiler_identity(result["compiler"])
+
+
+def validate_result(result: Any) -> dict[str, Any]:
+    """Validate the exact finite result envelope before platform publication."""
+    _valid_result(result)
+    return result
 
 
 def _read_regular(path: Path) -> bytes:

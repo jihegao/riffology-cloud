@@ -3,6 +3,9 @@ import {EXPORT_README,REPLAY_PY} from './replay.ts';
 import {digest,modelVersion,simulationPlan,type SimulationPlan} from '../simulation/source.ts';
 import {validateMetrics} from '../simulation/model-spec.ts';
 import {publicExperiment,type SimulationRecord} from '../simulation/host.ts';
+import {checkedCompilerResult} from '../simulation/compiler-result.ts';
+import {checkedNativeObservation} from '../simulation/native-observation.ts';
+import {simulationToken} from '../simulation/native.ts';
 import type {ExperimentGroupRecord} from '../simulation/groups.ts';
 import {previewSourceScope,previewSourceFilesSha256,type PreviewSource} from '../preview/source.ts';
 import {workspaceArchiveReader,workspaceFileIndex} from '../turn-runtime/workspace-file-index.ts';
@@ -11,6 +14,7 @@ import {sameScope,scope as checkedScope,type TurnScope} from '../turn/protocol.t
 export type ResearchSnapshot={schemaVersion:1;exportId:string;createdAt:number;scope:TurnScope;current:PreviewSource;runs:SimulationRecord[];groups:ExperimentGroupRecord[];claims:Record<string,unknown>[];assessments:Record<string,unknown>[]};
 export type ExportPorts={source(source:PreviewSource,maxBytes:number):Promise<Uint8Array>;artifact(key:string,maxBytes:number):Promise<Uint8Array|null>;authorize():Promise<void>};
 const encode=(value:string)=>new TextEncoder().encode(value),json=(value:unknown)=>encode(JSON.stringify(value,null,2));
+const COMPILER_RUNTIME={pythonVersion:'3.14.2',pythonAssetSha256:'4eb8731e2dbc9644dca24e71a9e7615f7fb04720342ea65f3c30ea3a6a00b792',compiler:{package:'sim-engine-compiler',version:'0.1.0',wheelSha256:'e7bcd9271dd42106b78e87176e3485b290536f5291c0440872b814fc549858f7'},simpy:{package:'simpy',version:'4.1.1',wheelSha256:'7c5ae380240fd2238671160e4830956f8055830a8317edf5c05e495b3823cd88'}} as const;
 const same=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
 function fail(code='export-source-mismatch'):never{throw Error(code);}
 const CLAIM_KEYS=['schemaVersion','claimId','createdAt','kind','metric','unit','value','version','experimentId','experimentStatus','armId','baselineMean','interventionMean','count','baselineCount','plannedCount','references','excluded','assumptions','limitations','scientificValidity'];
@@ -41,13 +45,23 @@ export async function buildResearchExport(snapshot:ResearchSnapshot,ports:Export
   let checked:SimulationPlan;try{checked=await simulationPlan(entry.source,bytes);}catch(error){const code=error instanceof Error?error.message:'';fail(code.includes('dependencies')?'export-dependencies-invalid':'export-model-spec-invalid');}
   const inspection={spec:checked.spec,version:modelVersion(checked),reasonCode:null};
   if(entry.plan&&!same({...checked,source:null},{...entry.plan,source:null}))fail();
-  const reader=workspaceArchiveReader(bytes),paths=reader.read([{path:'model/model-spec.json',maxBytes:32768},{path:inspection.spec.execution.dependencyLock,maxBytes:65536}]);
-  const spec=paths.get('model/model-spec.json')!,lock=paths.get(inspection.spec.execution.dependencyLock)!;let lockData:{packages:Record<string,string>};try{lockData=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(lock));}catch{fail('export-dependencies-invalid');}
-  if(!lockData.packages||typeof lockData.packages!=='object'||Array.isArray(lockData.packages))fail('export-dependencies-invalid');
-  const archivePath=`sources/${key}/source.tar`,specPath=`sources/${key}/model-spec.json`,lockPath=`environment/${key}/requirements.lock`;
-  files.add(archivePath,bytes);files.add(specPath,spec);files.add(lockPath,lock);files.add(`environment/${key}/requirements.txt`,encode((checked.executionProfile?checked.executionProfile.dependencies.map(item=>`${item.name}==${item.version} --hash=sha256:${item.sha256}`):Object.entries(lockData.packages).map(([name,version])=>`${name}==${version}`)).join('\n')+'\n'));
-  if(checked.executionProfile)files.add(`environment/${key}/execution-profile.json`,json(checked.executionProfile));
-  sources.push({key,filesSha256:key,specSha256:inspection.version.specSha256,revisionIds:[...entry.revisions],archivePath,specPath,lockPath,dependencyLockSha256:await digest(lock),execution:inspection.spec.execution,...(checked.executionProfile?{executionProfile:checked.executionProfile}:{}),reasonCode:inspection.reasonCode});
+  const reader=workspaceArchiveReader(bytes),spec=reader.read([{path:'model/model-spec.json',maxBytes:32768}]).get('model/model-spec.json')!;
+  const archivePath=`sources/${key}/source.tar`,specPath=`sources/${key}/model-spec.json`;
+  files.add(archivePath,bytes);files.add(specPath,spec);
+  if(checked.compiler){
+   const compilerPath=`environment/${key}/compiler.json`,compilerRuntimePath=`environment/${key}/compiler-runtime.json`;
+   files.add(compilerPath,json(checked.compiler));files.add(compilerRuntimePath,json(COMPILER_RUNTIME));
+   sources.push({key,filesSha256:key,specSha256:inspection.version.specSha256,revisionIds:[...entry.revisions],archivePath,specPath,compilerPath,compilerRuntimePath,compilerRuntime:COMPILER_RUNTIME,compiler:checked.compiler,execution:inspection.spec.execution,reasonCode:inspection.reasonCode});
+  }else{
+   if('kind' in inspection.spec.execution)fail('export-model-spec-invalid');
+   const lock=reader.read([{path:inspection.spec.execution.dependencyLock,maxBytes:65536}]).get(inspection.spec.execution.dependencyLock)!;
+   let lockData:{packages:Record<string,string>};try{lockData=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(lock));}catch{fail('export-dependencies-invalid');}
+   if(!lockData.packages||typeof lockData.packages!=='object'||Array.isArray(lockData.packages))fail('export-dependencies-invalid');
+   const lockPath=`environment/${key}/requirements.lock`;
+   files.add(lockPath,lock);files.add(`environment/${key}/requirements.txt`,encode((checked.executionProfile?checked.executionProfile.dependencies.map(item=>`${item.name}==${item.version} --hash=sha256:${item.sha256}`):Object.entries(lockData.packages).map(([name,version])=>`${name}==${version}`)).join('\n')+'\n'));
+   if(checked.executionProfile)files.add(`environment/${key}/execution-profile.json`,json(checked.executionProfile));
+   sources.push({key,filesSha256:key,specSha256:inspection.version.specSha256,revisionIds:[...entry.revisions],archivePath,specPath,lockPath,dependencyLockSha256:await digest(lock),execution:inspection.spec.execution,...(checked.executionProfile?{executionProfile:checked.executionProfile}:{}),reasonCode:inspection.reasonCode});
+  }
  }
  const runs=[];
  for(const run of snapshot.runs){
@@ -56,8 +70,12 @@ export async function buildResearchExport(snapshot:ResearchSnapshot,ports:Export
   if(run.result){
    const prefix=`simulation-results-v1/${scope.tenantId}/${scope.projectId}/${scope.workspaceId}/${run.runId}`,bytes=await ports.artifact(`${prefix}/${run.result.artifactSha256}.json`,65536);if(!bytes)fail('export-result-missing');if(bytes.byteLength>65536||await digest(bytes)!==run.result.artifactSha256)fail();
    let raw:Record<string,unknown>;try{raw=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{fail();}
-   const allowed=['schemaVersion','runId','experimentId','version','parameters','seed','runtimeImage','pythonVersion','metrics','outputs'];if(!raw||Object.keys(raw).some(k=>!allowed.includes(k))||raw.schemaVersion!==1||raw.runId!==run.runId||raw.experimentId!==run.experimentId||!same(raw.version,modelVersion(run.input.plan))||!same(raw.parameters,run.input.parameters)||raw.seed!==run.input.seed||raw.runtimeImage!==run.input.runtimeImage||typeof raw.pythonVersion!=='string'||!/^3\.[0-9]+\.[0-9]+$/.test(raw.pythonVersion)||!same(raw.metrics,run.result.metrics)||!same(raw.outputs||[],run.result.outputs||[]))fail();
-   if(run.input.plan.executionProfile&&raw.pythonVersion!==run.input.plan.executionProfile.pythonVersion)fail('export-environment-mismatch');
+   const compiler=run.input.plan.compiler;
+   const allowed=['schemaVersion','runId','experimentId','version','parameters','seed','runtimeImage','pythonVersion','metrics','outputs','nativeObservation',...(compiler?['compiler']:[])];if(!raw||Object.keys(raw).some(k=>!allowed.includes(k))||raw.schemaVersion!==(compiler?2:1)||raw.runId!==run.runId||raw.experimentId!==run.experimentId||!same(raw.version,modelVersion(run.input.plan))||!same(raw.parameters,run.input.parameters)||raw.seed!==run.input.seed||raw.runtimeImage!==run.input.runtimeImage||typeof raw.pythonVersion!=='string'||!/^3\.[0-9]+\.[0-9]+$/.test(raw.pythonVersion)||!same(raw.metrics,run.result.metrics)||!same(raw.outputs||[],run.result.outputs||[])||!same(raw.compiler??null,run.result.compiler??null))fail();
+   if(compiler&&raw.nativeObservation===undefined)fail();
+   if(raw.nativeObservation!==undefined){try{checkedNativeObservation(raw.nativeObservation,run.runId,modelVersion(run.input.plan).filesSha256,await simulationToken(run.input),await digest('simulation-stop:'+await simulationToken(run.input)));}catch{fail();}}
+   if(compiler){try{if(!same(checkedCompilerResult(raw.compiler,compiler),run.result.compiler)||raw.outputs!==undefined)fail();}catch{fail();}}
+   if(compiler&&raw.pythonVersion!=='3.14.2'||!compiler&&run.input.plan.executionProfile&&raw.pythonVersion!==run.input.plan.executionProfile.pythonVersion)fail('export-environment-mismatch');
    validateMetrics(run.input.plan.spec,raw.metrics);resultPath=`results/${run.runId}/result.json`;files.add(resultPath,bytes);
    for(const output of run.result.outputs||[]){const value=await ports.artifact(`${prefix}/outputs/${output.sha256}`,16384);if(!value||value.byteLength!==output.size||await digest(value)!==output.sha256)fail();files.add(`results/${run.runId}/outputs/${output.path}`,value);}
   }

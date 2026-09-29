@@ -1,5 +1,6 @@
 import {simulationToken} from './native.ts';
 import {checkedNativeObservation} from './native-observation.ts';
+import {checkedCompilerResult} from './compiler-result.ts';
 import {digest,modelVersion,simulationPlan,type SimulationPlan} from './source.ts';
 import {validateMetrics,resolveParameters} from './model-spec.ts';
 import {scope as checkedScope,actor as checkedActor,turnId,type TurnScope,type TurnActor} from '../turn/protocol.ts';
@@ -43,8 +44,14 @@ async function checkedReference(scope:TurnScope,ports:VerificationPorts,run:Simu
  const v=version(modelVersion(run.input.plan)),hash=run.result.artifactSha256;if(!SHA.test(hash))fail('evidence-source-mismatch');
  let saved:Record<string,number>;try{saved=validateMetrics(run.input.plan.spec,run.result.metrics);}catch{fail('evidence-source-mismatch');}if(!Object.hasOwn(saved,metric))fail('evidence-metric-missing');
  const bytes=await ports.artifact(artifactKey(scope,run.runId,hash));if(!bytes)fail('evidence-artifact-unavailable');if(bytes.byteLength>65536||await digest(bytes)!==hash)fail('evidence-source-mismatch');
- let raw:Record<string,unknown>;try{raw=object(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes)),['schemaVersion','runId','experimentId','version','parameters','seed','runtimeImage','pythonVersion','metrics'],['outputs','nativeObservation']);if(raw.nativeObservation!==undefined)checkedNativeObservation(raw.nativeObservation,run.runId,modelVersion(run.input.plan).filesSha256,await simulationToken(run.input),await digest('simulation-stop:'+await simulationToken(run.input)));}catch{fail('evidence-source-mismatch');}
- if(raw.schemaVersion!==1||raw.runId!==run.runId||raw.experimentId!==run.experimentId||!equal(raw.version,v)||!equal(raw.parameters,run.input.parameters)||raw.seed!==run.input.seed||raw.runtimeImage!==run.input.runtimeImage||typeof raw.pythonVersion!=='string'||!/^3\.[0-9]+\.[0-9]+$/.test(raw.pythonVersion)||!equal(raw.metrics,saved)||!equal(raw.outputs??[],run.result.outputs??[]))fail('evidence-source-mismatch');
+ const compiler=verifiedPlan.compiler;
+ let raw:Record<string,unknown>;try{
+  raw=object(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes)),['schemaVersion','runId','experimentId','version','parameters','seed','runtimeImage','pythonVersion','metrics'],['outputs','nativeObservation',...(compiler?['compiler']:[])]);
+  if(compiler&&raw.nativeObservation===undefined)fail('evidence-source-mismatch');
+  if(raw.nativeObservation!==undefined)checkedNativeObservation(raw.nativeObservation,run.runId,modelVersion(run.input.plan).filesSha256,await simulationToken(run.input),await digest('simulation-stop:'+await simulationToken(run.input)));
+  if(compiler&&(!equal(checkedCompilerResult(raw.compiler,compiler),run.result.compiler)||raw.outputs!==undefined)||!compiler&&run.result.compiler!==undefined)fail('evidence-source-mismatch');
+ }catch{fail('evidence-source-mismatch');}
+ if(raw.schemaVersion!==(compiler?2:1)||raw.runId!==run.runId||raw.experimentId!==run.experimentId||!equal(raw.version,v)||!equal(raw.parameters,run.input.parameters)||raw.seed!==run.input.seed||raw.runtimeImage!==run.input.runtimeImage||typeof raw.pythonVersion!=='string'||!/^3\.[0-9]+\.[0-9]+$/.test(raw.pythonVersion)||compiler&&raw.pythonVersion!=='3.14.2'||!equal(raw.metrics,saved)||!equal(raw.outputs??[],run.result.outputs??[]))fail('evidence-source-mismatch');
  return {experimentId:run.experimentId,runId:run.runId,armId,version:v,metric,value:saved[metric]!,artifactSha256:hash,seed:run.input.seed};
 }
 function indexKey(claim:Pick<EvidenceClaim,'createdAt'|'claimId'>){return INDEX+String(claim.createdAt).padStart(16,'0')+':'+claim.claimId;}

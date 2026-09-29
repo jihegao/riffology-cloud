@@ -3,7 +3,7 @@
 import fcntl, hashlib, json, os, re, resource, stat, subprocess, sys, time
 from pathlib import Path
 sys.path.insert(0, '/opt/riffology')
-from simulation_artifacts import collect_outputs
+from simulation_artifacts import collect_outputs, validate_result
 import process_quiescence as fence
 import workspace_archive as archive
 from service_process import child_setup, write, read_json, project_path
@@ -18,7 +18,9 @@ INPUT_ROOT = Path('/run-input')
 OUTPUT_ROOT = Path('/run-output')
 TOKEN = re.compile(r'^[a-f0-9]{52}$')
 SHA = re.compile(r'^[a-f0-9]{64}$')
-FIELDS = {'schemaVersion','token','runId','filesSha256','specSha256','entrypoint','entrypointSha256','dependencyLock','dependencyLockSha256','parameters','seed','deadlineAt'}
+FIELDS_V1 = {'schemaVersion','token','runId','filesSha256','specSha256','entrypoint','entrypointSha256','dependencyLock','dependencyLockSha256','parameters','seed','deadlineAt'}
+FIELDS_V2 = {'schemaVersion','token','runId','filesSha256','specSha256','businessIr','businessSha256','bundle','bundleSha256','executionProfile','parameters','seed','deadlineAt'}
+COMPILER_PROFILE = 'sim-engine-compiler-0.1.0/v1'
 MAX_JSON = 65536
 
 def now(): return int(time.time() * 1000)
@@ -30,20 +32,32 @@ def digest(path):
         for chunk in iter(lambda: stream.read(1024 * 1024), b''): h.update(chunk)
     return h.hexdigest()
 def validate(control, token):
-    exact(control, FIELDS)
-    if type(control['schemaVersion']) is not int or control['schemaVersion'] != 1 or control['token'] != token or type(control['runId']) is not str or not re.fullmatch(r'[A-Za-z0-9_-]{1,128}', control['runId']): raise ValueError('invalid-simulation-input')
-    for key in ('filesSha256','specSha256','entrypointSha256','dependencyLockSha256'):
+    if type(control) is not dict or type(control.get('schemaVersion')) is not int or control['schemaVersion'] not in (1, 2): raise ValueError('invalid-simulation-input')
+    version = control['schemaVersion']; exact(control, FIELDS_V1 if version == 1 else FIELDS_V2)
+    if control['token'] != token or type(control['runId']) is not str or not re.fullmatch(r'[A-Za-z0-9_-]{1,128}', control['runId']): raise ValueError('invalid-simulation-input')
+    digest_fields = ('filesSha256','specSha256','entrypointSha256','dependencyLockSha256') if version == 1 else ('filesSha256','specSha256','businessSha256','bundleSha256')
+    for key in digest_fields:
         if type(control[key]) is not str or not SHA.fullmatch(control[key]): raise ValueError('invalid-simulation-digest')
     if type(control['seed']) is not int or not 0 <= control['seed'] <= 4294967295: raise ValueError('invalid-simulation-seed')
     if type(control['deadlineAt']) is not int or control['deadlineAt'] <= 0: raise ValueError('invalid-simulation-deadline')
-    project_path(control['entrypoint'], {'model'}, '.py')
-    project_path(control['dependencyLock'], {'app'}, '.lock')
-    if control['entrypoint'] == control['dependencyLock'] or type(control['parameters']) is not dict: raise ValueError('invalid-simulation-input')
+    if version == 1:
+        project_path(control['entrypoint'], {'model'}, '.py')
+        project_path(control['dependencyLock'], {'app'}, '.lock')
+        if control['entrypoint'] == control['dependencyLock'] or type(control['parameters']) is not dict: raise ValueError('invalid-simulation-input')
+    else:
+        project_path(control['businessIr'], {'model'}, '.json')
+        project_path(control['bundle'], {'model'}, '.simpack')
+        if control['businessIr'] == control['bundle'] or control['executionProfile'] != COMPILER_PROFILE or control['parameters'] != {}: raise ValueError('invalid-simulation-input')
     return control
 def envelope(exit_code, result, python_version=None, native_observation=None):
     return {'exitCode': int(exit_code), 'result': result, 'pythonVersion': python_version or sys.version.split()[0], **({'nativeObservation': native_observation} if native_observation is not None else {})}
 
 def execution_runtime(control):
+    if control['schemaVersion'] == 2:
+        executable = '/opt/riffology/python-compiler/bin/python3'
+        probe = subprocess.run([executable, '-I', '-c', 'import sys,json,importlib.metadata as m;print(json.dumps({"pythonVersion":sys.version.split()[0],"packages":{p:m.version(p) for p in sys.argv[1:]}}))', 'sim-engine-compiler', 'simpy'], stdin=subprocess.DEVNULL, capture_output=True, text=True, check=True, timeout=10, env={'PATH':'/usr/bin:/bin','LANG':'C.UTF-8'})
+        if json.loads(probe.stdout) != {'pythonVersion':'3.14.2','packages':{'sim-engine-compiler':'0.1.0','simpy':'4.1.1'}}: raise ValueError('simulation-dependencies-mismatch')
+        return executable, '3.14.2'
     lock = read_json(WORKSPACE / control['dependencyLock']); exact(lock, {'schemaVersion','packages'})
     if type(lock['schemaVersion']) is not int or lock['schemaVersion'] != 1 or type(lock['packages']) is not dict:
         raise ValueError('unsupported-simulation-dependencies')
@@ -86,7 +100,8 @@ def monitor(token, control):
         executable, python_version = execution_runtime(control)
         INPUT_ROOT.mkdir(mode=0o755, exist_ok=True)
         input_path = INPUT_ROOT / 'input.json'
-        write(input_path, {'schemaVersion': 1, 'runId': control['runId'], 'parameters': control['parameters'], 'seed': control['seed']})
+        child_input = {'schemaVersion': 1, 'runId': control['runId'], 'parameters': control['parameters'], 'seed': control['seed']} if control['schemaVersion'] == 1 else {'schemaVersion':2,'runId':control['runId'],'businessIr':control['businessIr'],'businessSha256':control['businessSha256'],'bundle':control['bundle'],'bundleSha256':control['bundleSha256'],'executionProfile':control['executionProfile'],'parameters':control['parameters'],'seed':control['seed']}
+        write(input_path, child_input)
         os.chown(input_path, 0, 0); os.chmod(input_path, 0o444)
         with fence.spawn_lock() as directory:
             fence.require_unsealed(directory)
@@ -102,7 +117,8 @@ def monitor(token, control):
                     child_setup()
                     observation.report_child(write_fd)
                 try:
-                    child = subprocess.Popen([executable, '-B', control['entrypoint'], '--input', str(input_path), '--output', str(OUTPUT_ROOT / 'result.json')], cwd=WORKSPACE, env={'PATH':'/usr/local/bin:/usr/bin:/bin','HOME':'/tmp','LANG':'C.UTF-8','PYTHONUNBUFFERED':'1','OPENBLAS_NUM_THREADS':'1','OMP_NUM_THREADS':'1','MKL_NUM_THREADS':'1'}, stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr, close_fds=True, start_new_session=True, preexec_fn=setup_observed, pass_fds=(write_fd,))
+                    program = control['entrypoint'] if control['schemaVersion'] == 1 else '/opt/riffology/compiler_model_adapter.py'
+                    child = subprocess.Popen([executable, '-B', program, '--input', str(input_path), '--output', str(OUTPUT_ROOT / 'result.json')], cwd=WORKSPACE, env={'PATH':'/usr/local/bin:/usr/bin:/bin','HOME':'/tmp','LANG':'C.UTF-8','PYTHONUNBUFFERED':'1','OPENBLAS_NUM_THREADS':'1','OMP_NUM_THREADS':'1','MKL_NUM_THREADS':'1'}, stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr, close_fds=True, start_new_session=True, preexec_fn=setup_observed, pass_fds=(write_fd,))
                 except Exception:
                     os.close(read_fd)
                     raise
@@ -133,8 +149,9 @@ def monitor(token, control):
             try:
                 result = read_json(OUTPUT_ROOT / 'result.json', MAX_JSON)
                 result = collect_outputs(result, OUTPUT_ROOT)
-                if type(result['schemaVersion']) is not int or result['schemaVersion'] != 1 or type(result['metrics']) is not dict:
-                    raise ValueError('invalid-simulation-result')
+                validate_result(result)
+                if result['schemaVersion'] != control['schemaVersion']: raise ValueError('invalid-simulation-result')
+                if control['schemaVersion'] == 2 and (result['compiler']['bundleSha256'] != control['bundleSha256'] or result['compiler']['businessFingerprint'] != read_json(WORKSPACE / control['businessIr'], 4 * 1024 * 1024)['fingerprint']): raise ValueError('invalid-simulation-result')
                 json.dumps(result, allow_nan=False)
             except Exception:
                 code, result = 4, None
@@ -162,7 +179,10 @@ def start(token):
     if digest(source) != control['filesSha256']: raise ValueError('simulation-archive-mismatch')
     restored = archive.restore(WORKSPACE, ARCHIVES, token)
     if restored['sha256'] != control['filesSha256']: raise ValueError('simulation-archive-mismatch')
-    if digest(WORKSPACE / 'model/model-spec.json') != control['specSha256'] or digest(WORKSPACE / control['entrypoint']) != control['entrypointSha256'] or digest(WORKSPACE / control['dependencyLock']) != control['dependencyLockSha256']: raise ValueError('simulation-source-mismatch')
+    if digest(WORKSPACE / 'model/model-spec.json') != control['specSha256']: raise ValueError('simulation-source-mismatch')
+    if control['schemaVersion'] == 1:
+        if digest(WORKSPACE / control['entrypoint']) != control['entrypointSha256'] or digest(WORKSPACE / control['dependencyLock']) != control['dependencyLockSha256']: raise ValueError('simulation-source-mismatch')
+    elif digest(WORKSPACE / control['businessIr']) != control['businessSha256'] or digest(WORKSPACE / control['bundle']) != control['bundleSha256']: raise ValueError('simulation-source-mismatch')
     execution_runtime(control)
     protect_tree()
     with fence.spawn_lock() as directory:
