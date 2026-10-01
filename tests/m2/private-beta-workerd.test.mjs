@@ -6,7 +6,8 @@ import {join} from 'node:path';
 import {build} from 'esbuild';
 import {Miniflare} from 'miniflare';
 import {profile} from './production-profile-fixture.ts';
-import {betaPolicy} from './private-beta-fixture.ts';
+import {betaPolicy,meterOnlyPolicy} from './private-beta-fixture.ts';
+import {turnDigest} from '../../services/turn/protocol.ts';
 import {modelCallReference} from '../../services/model-budget/core.ts';
 
 test('standing Beta real SQLite/D1: invite scopes, cross-project contention, restart, pending usage, quarantine and pinned budgets',{timeout:90000},async()=>{
@@ -17,6 +18,7 @@ test('standing Beta real SQLite/D1: invite scopes, cross-project contention, res
  import {PrivateBetaCapacity as BaseCapacity} from './services/model-budget/private-beta-capacity.ts';
  export class PrivateBetaCapacity extends BaseCapacity {
   async observeCall(record){if(this.env.DROP_FINISH_ACK==='true'&&record.status==='completed')throw Error('fixture-lost-finish-ack');return super.observeCall(record);}
+  async setCostForTest(key,cost){const row=key?{key}:this.ctx.storage.sql.exec('SELECT key,cost FROM beta_calls ORDER BY key LIMIT 1').one();this.ctx.storage.sql.exec('UPDATE beta_calls SET cost=? WHERE key=?',cost,row.key);await this.ctx.storage.sync();return row;}
   async setBindingForTest(user,id){this.ctx.storage.sql.exec("UPDATE beta_slots SET turn_id=? WHERE user_id=? AND status!='released'",id,user);await this.ctx.storage.sync();}
  }
  export {PiDeveloperBudget} from './services/model-budget/pi-developer-durable.ts';
@@ -146,5 +148,59 @@ test('standing Beta real SQLite/D1: invite scopes, cross-project contention, res
   await mf.dispose();mf=new Miniflare(options);await mf.ready;
   await assert.rejects(cap('turnBinding',admission('alice'),'turn-alice-1'),/policy-conflict/);
   await assert.rejects(cap('monitor'),/policy-conflict/);
+  // Same actor v2 removes every monetary/call quota, including the hidden
+  // tenant ledger's 64-dispatch ceiling; all original quotes remain unchanged.
+  const meter={...meterOnlyPolicy(policy),warningCallsPerMinute:1,warningNanodollarsPerMinute:1,billingPendingWarningMs:60000};
+  options.workers[0].config.env.PRIVATE_BETA_POLICY_JSON.value=JSON.stringify(meter);
+  await mf.dispose();mf=new Miniflare(options);await mf.ready;
+  const originalUsage=(await cap('snapshot')).usage;
+  await assert.rejects(cap('admitTurn',admission('alice',1,'meter-admission')),/policy-conflict/);
+  const migrationState=await cap('migrationState');
+  const migration={previousPolicy:policy,expectedPolicySha256:await turnDigest({...policy,enabled:false}),expectedLedgerSha256:migrationState.ledgerSha256};
+  await cap('removeQuotas',migration);assert.equal((await cap('snapshot')).quotaMode,'meter-only');
+  assert.deepEqual((await cap('snapshot')).usage,originalUsage);
+  const meterAdmission=admission('alice',1,'meter-admission'),meterTurn='turn-alice-meter';
+  await budget('alice','admitTurn',meterAdmission.scope,'alice',meterAdmission.sessionId,meterAdmission.requestKey,meterAdmission.actor);await cap('bindTurn',meterAdmission,meterTurn);
+  await assert.rejects(cap('admitTurn',admission('alice',2,'other-project')),/user-busy/);
+  await assert.rejects(cap('admitTurn',admission('outsider',2,'outsider')),/admission-denied/);
+  await assert.rejects(cap('admitTurn',{...admission('alice',2,'cross-identity'),scope:scope('bob',2)}),/admission-denied/);
+  const meterRequest=n=>({...request('alice',1,n),callId:'meter-'+n,requestId:'meter-request-'+n,inputTokenUpperBound:10000,identity:{...request('alice').identity,turnId:meterTurn}});
+  let meterLastRef;
+  for(let n=1;n<=65;n++){
+    const req=meterRequest(n);meterLastRef=modelCallReference((await budget('alice','reserve',req.identity.scope.tenantId,req)).record);
+    assert.equal((await budget('alice','dispatch',req.identity.scope.tenantId,meterLastRef)).authorized,true);
+    await budget('alice','finish',req.identity.scope.tenantId,meterLastRef,{outcome:'completed',errorCode:null,providerRequestId:'meter-ended-'+n,usage:{kind:'unknown',observedAt:Date.now()}});
+  }
+  const meterSnapshot=await budget('alice','snapshot',meterAdmission.scope.tenantId,meterRequest(65).identity);
+  assert.equal(meterSnapshot.dispatchedCalls,65);assert.equal(meterSnapshot.turnQuotasEnforced,false);assert.equal(meterSnapshot.pending,65);assert.ok(meterSnapshot.usage.every(u=>u.observedNanodollars===null&&u.reservedNanodollars>0));
+  await assert.rejects(budget('alice','reserve',meterAdmission.scope.tenantId,{...meterRequest(66),inputTokenUpperBound:10001}),/token-bound-exceeded|call-limit/);
+  await assert.rejects(cap('authorizeTool',meterAdmission.scope,meterAdmission.actor,meterTurn,Date.now()+meter.maxToolDurationMs+1000),/time-limit/);
+  await assert.rejects(cap('reserve',{...meterRequest(66),deadlineAt:Date.now()+meter.maxCallDurationMs+1000}),/time-limit/);
+  await cap('monitor');const warnings=await cap('snapshot');assert.ok(warnings.alerts.some(a=>a.code==='call-rate-anomaly'));assert.ok(warnings.alerts.some(a=>a.code==='fee-rate-anomaly'));
+  options.workers[0].config.env.TEST_CLOCK_OFFSET.value='120000';await mf.dispose();mf=new Miniflare(options);await mf.ready;
+  await cap('monitor');assert.ok((await cap('snapshot')).alerts.some(a=>a.code==='billing-pending-stale'));
+  const retained=(await cap('snapshot')).usage.reduce((n,r)=>n+r.reservedNanodollars,0);assert.ok(retained>policy.maxNanodollarsTotal);
+  options.workers[0].config.env.TEST_CLOCK_OFFSET.value='0';await mf.dispose();mf=new Miniflare(options);await mf.ready;
+  // Aggregate metering overflow is an error, never a rounded or zero charge.
+  const savedCost=await cap('setCostForTest',null,Number.MAX_SAFE_INTEGER);
+  await assert.rejects(cap('reserve',meterRequest(66)),/metering-invalid/);
+  await assert.rejects(cap('snapshot'),/metering-invalid/);
+  await cap('setCostForTest',savedCost.key,savedCost.cost);
+  // Explicit Run admission shares the policy pin, identity, pause and isolation.
+  assert.equal((await cap('authorizeRunAdmission',scope('bob',2),actor('bob'))).quotaMode,'meter-only');
+  db=await mf.getD1Database('CATALOG','beta-test');await db.prepare("UPDATE catalog_users SET status='revoked' WHERE id='alice'").run();
+  await assert.rejects(cap('authorizeTurn',meterAdmission.scope,meterAdmission.actor,meterTurn),/admission-denied/);
+  await db.prepare("UPDATE catalog_users SET status='active' WHERE id='alice'").run();
+  const unknownReq=meterRequest(66),unknownRef=modelCallReference((await budget('alice','reserve',meterAdmission.scope.tenantId,unknownReq)).record);
+  await budget('alice','dispatch',meterAdmission.scope.tenantId,unknownRef);await budget('alice','markUnknown',meterAdmission.scope.tenantId,unknownRef);
+  await assert.rejects(cap('authorizeRunAdmission',scope('bob',2),actor('bob')),/execution-unconfirmed/);
+  await assert.rejects(budget('alice','admitTurn',scope('alice',2),'alice','new-session','unknown-new-project',actor('alice')),/execution-unconfirmed/);
+  await assert.rejects(cap('authorizeTurn',meterAdmission.scope,meterAdmission.actor,meterTurn),/turn-denied/);
+  options.workers[0].config.env.TEST_CLOCK_OFFSET.value='86400000';await mf.dispose();mf=new Miniflare(options);await mf.ready;
+  await assert.rejects(budget('alice','admitTurn',scope('alice',2),'alice','new-session','unknown-next-day',actor('alice')),/execution-unconfirmed/);
+  assert.ok((await cap('snapshot')).quarantined>0);
+  await cap('pause');await assert.rejects(cap('authorizeRunAdmission',scope('bob',2),actor('bob')),/paused/);
+  await assert.rejects(cap('resume'),/release-unconfirmed/);
+  assert.ok((await cap('snapshot')).usage.reduce((n,r)=>n+r.reservedNanodollars,0)>=retained);
  }finally{await mf?.dispose();await rm(dir,{recursive:true,force:true});}
 });

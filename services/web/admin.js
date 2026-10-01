@@ -193,10 +193,10 @@ async function refreshPrivateBeta() {
     const state=await api('/api/admin/private-beta');
     const cost=(state.usage||[]).reduce((sum,row)=>sum+Number(row.reservedNanodollars||0),0)/1e9;
     const latest=state.alerts?.[0];
-    bindValue(status, msg('admin.betaStatus', () => ({
-      state:String(msg(state.enabled&&!state.paused ? 'admin.betaOpen' : 'admin.betaPaused')),
+    bindValue(status, msg(state.quotaMode==='meter-only'?(state.policyReady===false?'admin.betaPolicyPending':'admin.betaMeterOnly'):'admin.betaStatus', () => ({
+      state:String(msg(state.enabled&&!state.paused&&state.policyReady!==false ? 'admin.betaOpen' : 'admin.betaPaused')),
       active:formatNumber(state.active), maximum:formatNumber(state.limits.maxActiveTurns), quarantined:formatNumber(state.quarantined),
-      cost:formatNumber(cost, {style:'currency', currency:'USD'}), maximumCost:formatNumber(state.limits.maxNanodollarsTotal / 1e9, {style:'currency', currency:'USD'}),
+      cost:formatNumber(cost, {style:'currency', currency:'USD'}), maximumCost:state.limits.maxNanodollarsTotal===null?'':formatNumber(state.limits.maxNanodollarsTotal / 1e9, {style:'currency', currency:'USD'}),
       alert:latest ? ` · ${String(msg('admin.alert'))}: ${latest.code}` : '',
     })));
     $('#private-beta-pause').disabled=state.paused;

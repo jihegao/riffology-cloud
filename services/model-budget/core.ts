@@ -80,6 +80,7 @@ export type ModelBudgetSnapshot = {
   tenantId: string;
   policyVersion: string;
   configuredPolicyMatches: boolean;
+  turnQuotasEnforced?:false;
   turnKey: string;
   maxReservationAttemptsPerTurn: number;
   maxDispatchedCallsPerTurn: number;
@@ -304,11 +305,13 @@ export class SqlTenantModelBudget {
   #clock: () => number;
   #id: () => string;
   #ready: Promise<void>;
+  #enforceTurnQuotas:boolean;
   readonly g4:G4WindowGuard;
 
-  constructor(storage: ModelBudgetStorage, policy: ModelBudgetPolicy, clock: () => number = Date.now, id: () => string = () => crypto.randomUUID(),g4Policy:G4WindowPolicy|null=null) {
+  constructor(storage: ModelBudgetStorage, policy: ModelBudgetPolicy, clock: () => number = Date.now, id: () => string = () => crypto.randomUUID(),g4Policy:G4WindowPolicy|null=null,enforceTurnQuotas=true) {
     if (!storage?.sql?.exec || !storage.transactionSync || !storage.sync) reject('sqlite-model-budget-storage-required');
     this.#storage = storage;
+    this.#enforceTurnQuotas = enforceTurnQuotas;
     this.g4=new G4WindowGuard(storage,g4Policy,clock);
     this.#policy = configuredPolicy(structuredClone(policy));
     this.#clock = clock;
@@ -462,13 +465,13 @@ export class SqlTenantModelBudget {
       if (this.#rows('SELECT call_key FROM model_calls WHERE request_id=?', request.requestId).length) reject('model-request-id-conflict');
       const attempts = Number(this.#rows('SELECT count(*) AS n FROM model_calls WHERE turn_key=?', keys.turn)[0]?.n ?? 0);
       const dispatched = Number(this.#rows('SELECT count(*) AS n FROM model_calls WHERE turn_key=? AND dispatched_at IS NOT NULL', keys.turn)[0]?.n ?? 0);
-      if (!Number.isSafeInteger(attempts) || attempts >= this.#policy.maxReservationAttemptsPerTurn) reject('model-turn-attempt-limit');
-      if (!Number.isSafeInteger(dispatched) || dispatched >= this.#policy.maxDispatchedCallsPerTurn) reject('model-turn-call-limit');
+      if (!Number.isSafeInteger(attempts) || this.#enforceTurnQuotas && attempts >= this.#policy.maxReservationAttemptsPerTurn) reject('model-turn-attempt-limit');
+      if (!Number.isSafeInteger(dispatched) || this.#enforceTurnQuotas && dispatched >= this.#policy.maxDispatchedCallsPerTurn) reject('model-turn-call-limit');
       if (this.#rows("SELECT call_key FROM model_calls WHERE turn_key=? AND status IN ('reserved','dispatched','unknown')", keys.turn).length) reject('model-turn-active-call');
       const reservationTokens = request.inputTokenUpperBound + request.maxOutputTokens;
       const accounted = Number(this.#rows('SELECT coalesce(sum(accounted_tokens),0) AS n FROM model_calls WHERE turn_key=?', keys.turn)[0]?.n ?? 0);
       if (!Number.isSafeInteger(reservationTokens) || !Number.isSafeInteger(accounted)
-        || reservationTokens > this.#policy.maxReservedTokensPerTurn - accounted) reject('model-turn-token-budget-exhausted');
+        || !Number.isSafeInteger(accounted+reservationTokens) || this.#enforceTurnQuotas && reservationTokens > this.#policy.maxReservedTokensPerTurn - accounted) reject('model-turn-token-budget-exhausted');
       this.g4.reserveSync(request,keys.call,keys.turn);
       const reservationId = identifier(this.#id());
       this.#storage.sql.exec(
@@ -739,11 +742,12 @@ export class SqlTenantModelBudget {
     await this.#ready;
     const records = await Promise.all(this.#rows('SELECT * FROM model_calls WHERE turn_key=? ORDER BY accepted_at,call_key', key).map(row => this.#verified(row)));
     const accountedTokens = records.reduce((sum, row) => sum + row.accountedTokens, 0);
-    if (!Number.isSafeInteger(accountedTokens) || accountedTokens > this.#policy.maxReservedTokensPerTurn) reject('model-budget-ledger-inconsistent');
+    if (!Number.isSafeInteger(accountedTokens) || this.#enforceTurnQuotas && accountedTokens > this.#policy.maxReservedTokensPerTurn) reject('model-budget-ledger-inconsistent');
     return structuredClone({
       tenantId: this.#policy.tenantId,
       policyVersion: this.#meta().policy_version as string,
       configuredPolicyMatches: this.#policyMatches(),
+      ...(!this.#enforceTurnQuotas?{turnQuotasEnforced:false as const}:{}),
       turnKey: key,
       maxReservationAttemptsPerTurn: this.#policy.maxReservationAttemptsPerTurn,
       maxDispatchedCallsPerTurn: this.#policy.maxDispatchedCallsPerTurn,

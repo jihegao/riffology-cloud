@@ -42,7 +42,7 @@ export class PiDeveloperBudget extends DurableObject<Env> {
       maxReservationAttemptsPerTurn:128,maxDispatchedCallsPerTurn:64,
       maxInputTokensPerCall:profile.limits.maxInputTokens,maxOutputTokensPerCall:profile.limits.maxOutputTokens,
       maxReservedTokensPerTurn:4194304,
-    });
+    },Date.now,()=>crypto.randomUUID(),null,privateBetaPolicy(this.env.PRIVATE_BETA_POLICY_JSON)?.schemaVersion!==2);
   }
 
   #policy(scope:TurnScope,userId:string):PiDeveloperPolicyV2 {
