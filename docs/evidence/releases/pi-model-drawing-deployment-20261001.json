@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "kind": "pi-model-authored-drawing-container-deployment",
+  "date": "2026-10-01",
+  "issue": 161,
+  "pr": 162,
+  "testedSource": "25c09071912fdb8f0e5edf3f6799bd69331fcea5",
+  "mergedSource": "60597e28795f27faf7477ec7994d1f7fd283cbec",
+  "codeCi": {
+    "url": "https://github.com/jihegao/riffology-cloud/actions/runs/36849986686",
+    "conclusion": "success"
+  },
+  "rollout": {
+    "schemaVersion": 1,
+    "observedAt": "2026-10-01T10:54:19.866990+00:00",
+    "applicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+    "applicationVersion": 9,
+    "applicationImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue161-trusted-pi@sha256:2f0d2bb404a58f265ed413ef5a253b2ae36bc35f6108e00c290dfc45d7ef7413",
+    "rolloutId": "b0c4e738-49c7-40d8-9d25-71efc3f75e57",
+    "status": "completed",
+    "targetVersion": 9,
+    "targetImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue161-trusted-pi@sha256:2f0d2bb404a58f265ed413ef5a253b2ae36bc35f6108e00c290dfc45d7ef7413",
+    "percentage": 100,
+    "versionDistribution": {
+      "target_version_instances": 1,
+      "current_version_instances": 0,
+      "target_version_percentage": 100
+    },
+    "activeInstances": 0,
+    "assignedInstances": 0,
+    "healthErrors": [],
+    "complete": true
+  },
+  "actualImageSourceProof": {
+    "schemaVersion": 1,
+    "observedAt": "2026-10-01T10:45:40.780973+00:00",
+    "source": "25c09071912fdb8f0e5edf3f6799bd69331fcea5",
+    "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue161-trusted-pi@sha256:2f0d2bb404a58f265ed413ef5a253b2ae36bc35f6108e00c290dfc45d7ef7413",
+    "incrementalBase": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-trusted-pi@sha256:234999f2c74c6d98d79d829f4734f8adc3cd2c80e4c2b11ac7f23203afce9bd7",
+    "buildNetwork": "none",
+    "proofNetwork": "none",
+    "allCurrentSourceFilesMatch": true,
+    "copies": [
+      {
+        "source": "services/trusted-pi/package.json",
+        "target": "/opt/riffology/package.json",
+        "sha256": "0dde532fe23b810bd09b978f990d48342f7378429f2b2c48f30e055993fa6ebe"
+      },
+      {
+        "source": "services/trusted-pi/package-lock.json",
+        "target": "/opt/riffology/package-lock.json",
+        "sha256": "ad20b5c766c411c5ba42a4fc997890fe3494ab8adb96cf5d75031366b3d144fc"
+      },
+      {
+        "source": "services/runtime/controlled-pi.mjs",
+        "target": "/opt/riffology/runtime/controlled-pi.mjs",
+        "sha256": "623efc2d8e5b9ca1e884b6a27a030ecb306efc3827c7ac39a6890b388b22bcff"
+      },
+      {
+        "source": "services/trusted-pi/trusted-pi-turn-host.mjs",
+        "target": "/opt/riffology/trusted-pi/trusted-pi-turn-host.mjs",
+        "sha256": "9964e7ab863207ce9b9a911e03bfcb4f99afc61fb6508d2d6611b66931be516b"
+      },
+      {
+        "source": "services/trusted-pi/product-model-transport.mjs",
+        "target": "/opt/riffology/trusted-pi/product-model-transport.mjs",
+        "sha256": "c2bece021f34f0b929e796238d132a819281d172b5d8fd3a6f431ed9d46801c6"
+      },
+      {
+        "source": "services/trusted-pi/product-tool-bridge.mjs",
+        "target": "/opt/riffology/trusted-pi/product-tool-bridge.mjs",
+        "sha256": "3a73176be6e17c17e9cfb681861844fae73099d7f4b6d95d7d90a543fb186e4b"
+      },
+      {
+        "source": "services/trusted-pi/release-candidate.mjs",
+        "target": "/opt/riffology/trusted-pi/release-candidate.mjs",
+        "sha256": "ae762d98010c943c7fee1e0ec86ce1c39de7143b5e47b10f151f19c582c744d6"
+      },
+      {
+        "source": "services/trusted-pi/release-candidate.mjs",
+        "target": "/opt/riffology/trusted-pi/trusted-pi-release.mjs",
+        "sha256": "ae762d98010c943c7fee1e0ec86ce1c39de7143b5e47b10f151f19c582c744d6"
+      },
+      {
+        "source": "services/trusted-pi/research-context.mjs",
+        "target": "/opt/riffology/trusted-pi/research-context.mjs",
+        "sha256": "b472a054942246b5e4ba917920bb40f134ba31ae1fc4701c43f8e8491de6d0aa"
+      },
+      {
+        "source": "services/trusted-pi/runtime_supervisor.py",
+        "target": "/opt/riffology/runtime_supervisor.py",
+        "sha256": "79e2bdedaedba063364513d853eb8325f229ba55b1e51df46cbcee359807e29c"
+      }
+    ]
+  },
+  "localBrowserEvidence": "pi-model-drawing-local-20261001.json",
+  "authoringAcceptance": {
+    "status": "pending user retest",
+    "performed": false,
+    "project": "81424f92-23fb-40fd-8eb1-9c8ea45c690b",
+    "originalRevision": "5a7b947d7b0494ded21c694ec087e095032de58f8092d3a1871ed70910963e59",
+    "originalPackageIdentity": "d9b453b0ed184895b8844120dddf77868282fd83cf499801279357fb4e15433a",
+    "frozenOriginalRevisionAutomaticallyChanged": false,
+    "nextStep": "Refresh original project, request distinct state colors through Pi, save a new Revision, run/restart and step/play Browser Preview.",
+    "browserPreviewProvenance": "local/unverified"
+  },
+  "paidRunAcceptancePerformed": false,
+  "configurationReadback": {
+    "onlyTrustedPiImageChanged": true,
+    "originalApplicationIdRetained": true,
+    "all93GatewayBindingsExact": true,
+    "gatewayVersionAndDeploymentUnchanged": true,
+    "other14ApplicationConfigurationsAndLimitsExact": true,
+    "trustedPiConfigurationExceptImageExact": true,
+    "originalNativeInstancesCurrentlyPresent": 0,
+    "allFiveDashInventoriesComplete": true,
+    "invitedRunsRemainDisabled": true,
+    "G5M3M4RemainClosed": true,
+    "beforeObservedAt": "2026-10-01T10:43:49.663435+00:00",
+    "afterObservedAt": "2026-10-01T10:56:14.663038+00:00"
+  },
+  "gateway": {
+    "version": "4a9e5852-fd66-4097-be04-35f5f341b59d",
+    "deployment": "0b122554-037b-482d-9045-2ff371517a58",
+    "newWorkerDeployRequired": false,
+    "all93BindingsUnchanged": true
+  },
+  "betaDeploymentGuard": {
+    "originalState": "Open",
+    "pausePerformedOnce": true,
+    "resumePerformedOnce": true,
+    "finalState": "Open",
+    "finalActive": 0,
+    "finalQuarantined": 0,
+    "scope": "existing original operator UI, original capacity actor/policy; no new provider authoring acceptance",
+    "resumeObservedDate": "2026-10-01",
+    "historicalAlertsAndReservationsNotCleared": true,
+    "originalExecutionGatesAndLimitsPreserved": true
+  }
+}
