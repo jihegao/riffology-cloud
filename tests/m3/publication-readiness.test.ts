@@ -45,3 +45,12 @@ test('public readiness never returns internal exception messages',async()=>{
  const source=await preparePublication(f.snapshot,{...f.ports,source:async()=>{throw Error(secret);}},false);assert.equal(JSON.stringify(source).includes(secret),false);assert.ok(source.readiness.checks.some(c=>c.code==='publication-source-unavailable'));
  const artifact=await preparePublication(f.snapshot,{...f.ports,artifact:async()=>{throw Error(secret);}},false);assert.equal(JSON.stringify(artifact).includes(secret),false);assert.ok(artifact.readiness.checks.some(c=>c.code==='publication-export-unavailable'));
 });
+
+test('invited server results wait for release authority before publication and explain failures and stale versions',async()=>{
+ const f=await fixture();for(const run of f.snapshot.runs)run.runAdmission={kind:'invited-runs',policyId:'runs-v1'};
+ f.snapshot.runs[0]!.released=false;let result=await preparePublication(f.snapshot,f.ports,false);assert.equal(result.readiness.ready,false);assert.ok(result.readiness.diagnostics?.includes('run-release-pending'));
+ for(const run of f.snapshot.runs){run.released=true;run.releaseProof={kind:'runtime-stopped',confirmationId:'proof-'+run.runId,observedAt:3};}
+ result=await preparePublication(f.snapshot,f.ports,false);assert.equal(result.readiness.ready,true);
+ f.snapshot.runs[0]!.status='failed';result=await preparePublication(f.snapshot,f.ports,false);assert.equal(result.readiness.ready,false);assert.ok(result.readiness.diagnostics?.includes('run-failed'));
+ for(const run of f.snapshot.runs)run.input.plan={...run.input.plan,specSha256:'f'.repeat(64)};result=await preparePublication(f.snapshot,f.ports,false);assert.ok(result.readiness.diagnostics?.includes('model-version-mismatch'));
+});

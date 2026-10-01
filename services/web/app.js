@@ -10,7 +10,7 @@ import {createPreviewPanel} from './previews.js';
 import {createComparisonPanel} from './comparison.js';
 import {createSimulationPanel} from './simulation.js';
 import {createVerifyHandoffPanel} from './verify-handoff.js';
-import {applyTranslations,getLocale,installLocaleSelector,setLocale,subscribe,t,msg,uiError,errorMessage,formatDate,formatNumber} from './i18n.js';
+import {applyTranslations,getLocale,installLocaleSelector,setLocale,subscribe,t,msg,uiError,errorMessage,cloudRunError,formatDate,formatNumber} from './i18n.js';
 import {createLocalePreferenceController} from './locale-preference.js';
 const $ = selector => document.querySelector(selector);
 function filterProjectCards(){const filter=$('#project-filter')?.value??'all',search=($('#project-search')?.value??'').toLowerCase();for(const card of document.querySelectorAll('#projects .project'))card.hidden=!card.dataset.title.toLowerCase().includes(search)||(filter==='ordinary'&&card.dataset.acceptance==='true')||(filter==='acceptance'&&card.dataset.acceptance!=='true')||(filter==='preview'&&card.dataset.previewReady!=='true');}
@@ -46,7 +46,7 @@ const browserPreviewPanel=createBrowserPreviewPanel({root:$('#workspace-browser-
 const previewPanel=createPreviewPanel({root:$('#workspace-preview'),api,autoRestore:true,onState:value=>{const pinned=value.available?.runId||value.current?.runId;if(pinned)servicePanel.selectRun(pinned);}});
 const servicePanel=createServicePanel({root:$('#workspace-services'),inspectRoot:$('#workspace-runtime-details'),api,workspaceMode:true,onPreparingRun:runId=>previewPanel.prepareRun(runId),onPreviewRun:(runId,options)=>options?.automatic?previewPanel.restoreRun(runId):previewPanel.openRun(runId),onState:detail=>{observedService=detail;renderModelState();if(detail.stopRequestedAt||['stopped','failed','cancelled'].includes(detail.runStatus))previewPanel.stoppedRun(detail.runId);}});
 const comparisonPanel=createComparisonPanel({root:$('#workspace-comparison'),api});
-const publicationPanel=createPublicationPanel({root:$('#workspace-publication'),api});
+const publicationPanel=createPublicationPanel({root:$('#workspace-publication'),api,onOpenRuns:()=>workspaceLayout.select('runs')});
 const exportPanel=createExportPanel({root:$('#workspace-export')});
 const evidencePanel=createEvidencePanel({root:$('#workspace-evidence'),api,onAssessment:()=>{void comparisonPanel.reload();void simulationPanel.reload();}});
 const simulationPanel=createSimulationPanel({root:$('#workspace-simulation'),modelRoot:$('#workspace-model'),historyRoot:$('#workspace-run-history'),api,onModel:model=>{observedModel=model;renderModelState();}});
@@ -343,7 +343,7 @@ async function api(path, options = {}) {
     if (code === 'g5_admission_disabled') messages[409] = msg('error.projectsPaused');
     if (code === 'turn_runtime_not_ready') messages[503] = msg('error.turnsPaused');
     const blocked = managedBlockMessage(code);
-    const localizedMessage = blocked || messages[response.status] || msg('error.requestFailed');
+    const localizedMessage = blocked || cloudRunError({code,localizedMessage:messages[response.status]||msg('error.requestFailed')});
     throw Object.assign(new Error(String(localizedMessage)), {localizedMessage, status: response.status, code, retryable: !blocked && code !== 'turn_runtime_not_ready' });
   }
   if(responseType==='bytes'){const length=Number(response.headers.get('content-length'));if(length>33554432)throw uiError('error.resourceTooLarge');if(typeof onProgress==='function'&&response.body){const reader=response.body.getReader(),chunks=[];let size=0;try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>33554432)throw uiError('error.resourceTooLarge');chunks.push(value);onProgress(size,length);}}catch(error){await reader.cancel().catch(()=>{});throw error;}const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}return bytes;}const bytes=new Uint8Array(await response.arrayBuffer());if(bytes.length>33554432)throw uiError('error.resourceTooLarge');return bytes;}

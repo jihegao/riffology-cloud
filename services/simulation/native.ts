@@ -23,7 +23,7 @@ export class SimulationNative{
   }else if(raw.stop!==null||raw.result!==null)throw Error('simulation-native-invalid');
   return {status:raw.status,result:raw.result,stop:raw.stop};
  }
- async start(bytes:Uint8Array){
+ async start(bytes:Uint8Array,beforeNativeStart?:()=>Promise<void>){
   const input=this.input;let stage="source";
   try{
   const token=await simulationToken(input),actual=await simulationPlan(input.plan.source,bytes);
@@ -49,6 +49,11 @@ export class SimulationNative{
     control={schemaVersion:1,token,runId:input.runId,filesSha256:previewSourceFilesSha256(input.plan.source),specSha256:input.plan.specSha256,entrypoint:execution.entrypoint,entrypointSha256:input.plan.entrypointSha256,dependencyLock:execution.dependencyLock,dependencyLockSha256:input.plan.dependencyLockSha256,parameters:input.parameters,seed:input.seed,deadlineAt:input.deadlineAt};
   }
   await this.sandbox.writeFile(`/var/lib/riffology/services/${token}.input.json`,JSON.stringify(control));
+  stage="native-authorization";
+  // Uploads and control writes can yield. Recheck the original actor and
+  // request after them, immediately before the one native start operation.
+  await beforeNativeStart?.();
+  if(Date.now()>=input.deadlineAt)throw Error('simulation-deadline');
   stage="native-start";
   return await this.operation('start');
   }catch(error){const message=error instanceof Error?error.message:'';console.error('simulation-start-unconfirmed',{runId:input.runId,stage,code:/^[a-z0-9-]{1,100}$/.test(message)?message:'transport-error'});throw error;}

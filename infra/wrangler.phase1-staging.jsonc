@@ -77,7 +77,8 @@
     "M4_SIMULATION_ENABLED": "false",
     "M4_SIMULATION_IMAGE": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-phase1-simulation@sha256:be02d18823ae778f3eb3d73e87772e90549c4f2a5a2e22777067ea5e6775f888",
     "PHASE1_RELEASE_PROFILE": "isolated-acceptance",
-    "TENANT_QUOTA_UPGRADE_FROM": "m1-v1"
+    "TENANT_QUOTA_UPGRADE_FROM": "m1-v1",
+    "INVITED_RUNS_POLICY_JSON": "{\"schemaVersion\":1,\"policyId\":\"invited-runs-v1\",\"enabled\":false,\"maxActiveRuns\":1,\"maxRunsPerUser\":1,\"maxGroupRuns\":8,\"durationMs\":600000,\"releaseGuardMs\":360000,\"quietMs\":30000}"
   },
   "d1_databases": [
     {
@@ -152,6 +153,10 @@
       {
         "name": "PRIVATE_BETA_CAPACITY",
         "class_name": "PrivateBetaCapacity"
+      },
+      {
+        "name": "INVITED_RUN_CAPACITY",
+        "class_name": "InvitedRunCapacity"
       }
     ]
   },
@@ -271,6 +276,10 @@
       "container": "riffology-phase1-simulation"
     },
     "PrivateBetaCapacity": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "InvitedRunCapacity": {
       "type": "durable-object",
       "storage": "sqlite"
     }

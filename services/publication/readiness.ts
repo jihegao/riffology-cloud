@@ -5,7 +5,7 @@ import {workspaceArchiveReader,workspaceFileIndex} from '../turn-runtime/workspa
 import {verifyModelContent,MODEL_CONTENT_MAX_BYTES,MODEL_CONTENT_MAX_FILE_BYTES} from '../runtime/content.ts';
 
 export type PublicationVersion=ReturnType<typeof modelVersion>;
-export type PublicationReadiness={schemaVersion:1;ready:boolean;version:PublicationVersion|null;checks:Array<{code:string;passed:boolean}>;exampleGroupIds:string[];baselineRunIds:string[];limitations:string[]};
+export type PublicationReadiness={schemaVersion:1;ready:boolean;version:PublicationVersion|null;checks:Array<{code:string;passed:boolean}>;exampleGroupIds:string[];baselineRunIds:string[];limitations:string[];diagnostics?:string[]};
 export type FrozenPublication={readiness:PublicationReadiness;manifest:Awaited<ReturnType<typeof buildResearchExport>>['manifest'];exportBytes:Uint8Array;exportSha256:string;contentBytes:Uint8Array;contentSha256:string};
 const publicFailure=(error:unknown,kind:'source'|'export')=>{const code=error instanceof Error?error.message:'';return /^(?:invalid-model-spec|model-spec-(?:missing|too-large)|model-contract-mismatch|simulation-dependencies-invalid|export-(?:source-mismatch|result-missing|dependencies-invalid|model-spec-invalid|evidence-mismatch|sensitive-file|too-large)|publication-(?:source-path-unsupported|content-too-large))$/.test(code)?code:`publication-${kind}-unavailable`;};
 const same=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
@@ -39,9 +39,15 @@ export async function preparePublication(snapshot:ResearchSnapshot,ports:ExportP
  try{archive=await ports.source(snapshot.current,MODEL_CONTENT_MAX_BYTES);plan=await simulationPlan(snapshot.current,archive);}catch(error){check(publicFailure(error,'source'),false);return {readiness,frozen:null};}
  const version=readiness.version=modelVersion(plan),spec=plan.spec;readiness.limitations=[...spec.limitations];
  check('persistent-spec',true);check('declared-parameters',Object.keys(spec.parameters).length>0);check('declared-metrics',Object.keys(spec.metrics).length>0);check('limitations-and-scope',spec.limitations.length>0&&!!spec.scope.trim());
+ const currentRuns=snapshot.runs.filter(run=>sameModel(modelVersion(run.input.plan),version));
+ readiness.diagnostics=[];
+ if(!currentRuns.length)readiness.diagnostics.push('no-cloud-runs');
+ if(currentRuns.some(run=>run.runAdmission&&!run.released))readiness.diagnostics.push('run-release-pending');
+ if(currentRuns.some(run=>['failed','cancelled','unknown'].includes(run.status)))readiness.diagnostics.push('run-failed');
+ if(snapshot.runs.length&&!currentRuns.length)readiness.diagnostics.push('model-version-mismatch');
  const rejected=(runId:string)=>snapshot.assessments.some(a=>a.scope==='run'?a.runId===runId:a.scope==='model'&&sameModel(a.version as PublicationVersion,version));
  check('model-not-rejected',!snapshot.assessments.some(a=>a.scope==='model'&&sameModel(a.version as PublicationVersion,version)));
- const eligible=(run:ResearchSnapshot['runs'][number])=>{if(run.status!=='completed'||!run.result||!sameModel(modelVersion(run.input.plan),version)||rejected(run.runId))return false;try{validateMetrics(spec,run.result.metrics);return true;}catch{return false;}};
+ const eligible=(run:ResearchSnapshot['runs'][number])=>{if(run.status!=='completed'||!run.result||run.runAdmission&&(!run.released||!run.releaseProof)||!sameModel(modelVersion(run.input.plan),version)||rejected(run.runId))return false;try{validateMetrics(spec,run.result.metrics);return true;}catch{return false;}};
  for(const group of snapshot.groups){
   if(group.status!=='completed'||group.cancelledAt!==null||group.errorCode||!sameModel(modelVersion(group.plan),version))continue;
   const baseline=group.configurations.find(c=>c.role==='baseline'),interventions=group.configurations.filter(c=>c.role==='intervention');
