@@ -1,7 +1,9 @@
 # Invited Cloud Runs — #136
 
-Implementation candidate, 2026-10-01. Deployment and ordinary authenticated,
-paid container acceptance are pending. This document describes the new route;
+Gateway implementation deployed, 2026-10-01, from main `759d598`; invited Run
+admission remains disabled. The native image rollout and ordinary authenticated,
+paid container acceptance are pending. See the integrated release record in
+[release readiness](release-readiness.md). This document describes the new route;
 live status and ownership remain in [#136](https://github.com/jihegao/riffology-cloud/issues/136)
 and the Delivery Project. Browser Preview remains local/unverified.
 

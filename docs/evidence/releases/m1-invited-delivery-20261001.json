@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "kind": "m1-invited-delivery-staged-release",
+  "date": "2026-10-01",
+  "source": "759d598bc608b0bf924c2375f006ca48f1328228",
+  "buildTree": "94658f9cb811395d5fd4b95f67cf76336d2a32a5",
+  "prs": [
+    154,
+    156,
+    157
+  ],
+  "ci": [
+    "https://github.com/jihegao/riffology-cloud/actions/runs/36816815417",
+    "https://github.com/jihegao/riffology-cloud/actions/runs/36815550596",
+    "https://github.com/jihegao/riffology-cloud/actions/runs/36818445357"
+  ],
+  "gateway": {
+    "version": "7bed27a8-8b2b-4d57-b4e2-d3ede382aa45",
+    "deployment": "c55c3808-7535-4ceb-a8ef-0ba7732aa374",
+    "percentage": 100,
+    "sourceTag": "source-759d598bc608b0bf924c2375f006ca48f1328228",
+    "downloadedEntrySha256": "bdced9278237c6d257e267f63ca34872683fcacb8a92cdf00de628d8380ae4e1",
+    "downloadedEntryBytes": 5610773,
+    "localBundleMatches": true,
+    "bindingCount": 93,
+    "originalBindingCount": 91,
+    "newBindings": [
+      "INVITED_RUN_CAPACITY",
+      "INVITED_RUNS_POLICY_JSON"
+    ],
+    "originalNamespaceIdsPreserved": true,
+    "originalFiveContainerApplicationsPreserved": true
+  },
+  "browserExecution": {
+    "version": "c94df077-02a1-460f-8158-e47a338e68af",
+    "deployment": "a6fdeb9f-d885-4c72-9e02-968315351edb",
+    "percentage": 100,
+    "sourceTag": "source-759d598bc608b0bf924c2375f006ca48f1328228",
+    "downloadedEntrySha256": "b76b05f96d345a0ecf280cdb4414c1dd0c56bf71041dc3c72199db8e8c6c07c1",
+    "downloadedEntryBytes": 49003,
+    "localBundleMatches": true,
+    "originalFourBindingsAndRuntimePreserved": true
+  },
+  "catalogMigration": "0012_project_archives.sql",
+  "gates": {
+    "privateBetaPolicySchema": 2,
+    "privateBetaActor": "private-beta-capacity-v1",
+    "privateBetaPaused": true,
+    "privateBetaActive": 0,
+    "privateBetaQuarantined": 0,
+    "invitedRunsEnabled": false,
+    "G5Enabled": false,
+    "M3Enabled": false,
+    "M4Enabled": false
+  },
+  "evidence": {
+    "meterOnlyMigration": "private-beta-meter-only-20261001.json",
+    "staticBytes": "m1-static-20261001.json",
+    "staticRejections": "m1-static-rejections-20261001.json",
+    "archiveMigration": "project-archive-migration-20261001.json",
+    "nativeResourceReadback": "native-resource-readback-20261001.json"
+  },
+  "acceptance": {
+    "publicStatic": true,
+    "ordinaryAuthenticatedUser": false,
+    "paidRun": false,
+    "currentNativeContainerImages": false,
+    "browserResultAuthority": "local/unverified"
+  },
+  "remaining": [
+    "One frozen project remains native-release-unconfirmed; strict read-only historical Runtime/capacity proof repair is in progress",
+    "Three replacement container images are built but have not been rolled out",
+    "Actual ordinary invited login and new-project Pi/Revision/Preview/Run/comparison/publication acceptance are pending",
+    "Cross-identity and cancellation/timeout/release live acceptance are pending"
+  ]
+}

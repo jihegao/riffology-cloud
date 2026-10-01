@@ -1,0 +1,38 @@
+{
+  "observedAt": "2026-10-01T05:47:03Z",
+  "frameUrl": "https://riffology-browser-execution.jihe-gao.workers.dev/runtime/fcc19ea0998fec53cd5e9875ac19c37d6aed6af7cdab13425acab767b853f2a5/js-frame.html",
+  "scope": "public static request rejection with synthetic noncredential headers; no authenticated user or execution",
+  "results": [
+    {
+      "case": "query",
+      "status": 404,
+      "curlExit": 0,
+      "denied": true
+    },
+    {
+      "case": "cookie",
+      "status": 404,
+      "curlExit": 0,
+      "denied": true
+    },
+    {
+      "case": "authorization",
+      "status": 404,
+      "curlExit": 0,
+      "denied": true
+    },
+    {
+      "case": "post",
+      "status": 404,
+      "curlExit": 0,
+      "denied": true
+    },
+    {
+      "case": "options",
+      "status": 404,
+      "curlExit": 0,
+      "denied": true
+    }
+  ],
+  "schemaVersion": 1
+}

@@ -1,6 +1,56 @@
 # Current release readiness — 2026-10-01
 
 
+## 2026-10-01 integrated M1 deployment and bounded archive migration
+
+[PR #154](https://github.com/jihegao/riffology-cloud/pull/154),
+[PR #156](https://github.com/jihegao/riffology-cloud/pull/156) and
+[PR #157](https://github.com/jihegao/riffology-cloud/pull/157) are merged. Main
+`759d598bc608b0bf924c2375f006ca48f1328228` is deployed at 100% as Gateway
+`7bed27a8-8b2b-4d57-b4e2-d3ede382aa45` and Browser Execution
+`c94df077-02a1-460f-8158-e47a338e68af`. Downloaded entry modules match the
+release bundles exactly. The original 91 Gateway bindings and their namespace
+identities are preserved, with only the previously authorized v2 policy change
+and two additional disabled invited Run bindings; the Execution Worker's four
+bindings and runtime settings are unchanged. Catalog migration `0012` was applied
+through the normal migration command. All five original container applications
+and images remain unchanged.
+
+Public/static reads matched all 71 fixed assets and 22 web files across eight
+retained runtime profiles. All three execution frames retained their expected
+CSP, credential rejection and site-limited framing. Five synthetic JS-frame
+query/cookie/Authorization/method negative checks returned 404. Two initially
+inconclusive static GETs were rechecked; both matched. These checks do not cover
+an authenticated author's saved Revision or actual browser interaction.
+
+The archive cutoff is `2026-10-01T05:30:00.086Z`: three ordinary invited owners
+and nine existing projects, excluding the initial operator's projects. The
+frozen digest is `4a8434a9a940539c90a7cd79ed55204c3592b53d8e031a6418cc5c93593c59d0`.
+Per-project dry-runs, original metadata attempt keys and independent manifest
+readback show eight completed archives at epoch 1 and one
+`native-release-unconfirmed` blocked project at epoch 0. All original identities
+are preserved; no project/model/session/ledger was deleted. The entire manifest
+has **not** passed acceptance.
+
+Original G5/TenantQuota native quiet checks passed. Full original application
+inventories showed 23 inactive instances and no active instance across five
+applications. That observation does not prove the blocked historical Pi Turn's
+Runtime release. Its archive read path constructs a historical release factory;
+a minimal strictly read-only Runtime/capacity proof fix is being validated.
+Private Beta remains paused (active/quarantined 0/0), invited Runs remain disabled,
+and G5/M3/M4 gates remain closed. Three new container images are built/pushed but
+not rolled out; actual local Docker CPython compiler export/replay passed 2/2.
+The temporary quota, archive and native-read Workers were removed.
+
+Ordinary invited-user Pi/Revision/Preview/Run/comparison/publication and
+cross-identity/release acceptance remain pending. The available browser login is
+an initial operator and cannot substitute for an ordinary invited identity.
+Browser Preview stays local/unverified. The four child issues remain Acceptance
+and open. [Deployment and linked redacted evidence](evidence/releases/m1-invited-delivery-20261001.json)
+separate merged source, deployed Workers, static verification, metadata migration
+and unperformed authenticated/paid acceptance.
+
+
 ## 2026-10-01 same-actor meter-only policy migration
 
 [#153](https://github.com/jihegao/riffology-cloud/issues/153) and
@@ -37,8 +87,9 @@ invited-user Run admission route and a fixed global SQLite capacity actor. It
 reuses immutable Simulation/ExperimentGroup/native result and publication paths,
 requires #153's same-actor v2 meter-only migration, and integrates #152's archive
 write fence. The checked-in Run policy is disabled; G5/M3/M4 and managed gates
-retain their existing states. This is a source candidate, not a deployment or
-ordinary authenticated/paid acceptance record.
+retain their existing states. The route is deployed in the integrated Gateway above with admission disabled;
+its native container images and ordinary authenticated/paid acceptance remain
+pending.
 
 Global/per-user native concurrency is one, each Run has a 600-second deadline,
 and a comparison has at most eight sequential children. Terminal results retain
