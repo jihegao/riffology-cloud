@@ -1,5 +1,6 @@
 import {readFileSync,writeFileSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';
+import {closeInvitedRunsAdmission} from './invited-runs-gate.mjs';
 const pinned=value=>typeof value==='string'&&/^[a-zA-Z0-9./:_-]+@sha256:[a-f0-9]{64}$/.test(value);
 /** Produce a reviewable candidate; never deploy or silently open admission. */
 export function phase1Config(base,{simulationImage,trustedPiImage}){
@@ -17,7 +18,7 @@ export function phase1Config(base,{simulationImage,trustedPiImage}){
  config.vars.TENANT_QUOTA_CAPACITY='2';
  config.vars.TENANT_QUOTA_POLICY_VERSION='phase1-preview-simulation-v1';
  config.vars.TENANT_QUOTA_UPGRADE_FROM=base.vars.TENANT_QUOTA_POLICY_VERSION;
- return config;
+ return closeInvitedRunsAdmission(config);
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
  const [basePath,simulationImage,trustedPiImage,output]=process.argv.slice(2);if(!basePath||!output)throw Error('usage: phase1-config.mjs BASE_JSON SIMULATION_IMAGE TRUSTED_PI_IMAGE OUTPUT_JSON');

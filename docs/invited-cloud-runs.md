@@ -46,6 +46,13 @@ dispatch and immediately before native start. Archive integration #152 supplies
 fence across submit/alarm work. Frozen old projects cannot admit a new execution.
 Stopping, original lease lookup and release reconciliation remain available when
 execution is closed; they never create a new native model intent.
+Closing only `M4_SIMULATION_ENABLED` or `M2_TURNS_ENABLED` does not close this
+independent route. An emergency configuration sets the same
+`INVITED_RUNS_POLICY_JSON.enabled` to `false`, retaining its policy ID, limits,
+binding and ledger. Phase1/G4/vertical historical release generators now close
+that bit in both paused and legacy enabled overlays. Their version readback
+rejects an enabled, malformed or duplicate Run policy binding before claiming
+closure. Original history, observation, stop and release RPCs remain available.
 The final native check occurs after archive upload and control-file preparation,
 so a kill, actor revocation, cancellation, deadline or uncertain timed-out start
 during preparation prevents the model process from launching.

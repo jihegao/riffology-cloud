@@ -29,7 +29,7 @@ const quietEvidence=(value=config())=>({schemaVersion:1,status:'passed',quietMs:
 
 test('staging vertical topology is complete with turn admission paused',()=>{
   const foundationChecks=validateStagingTopology(config(),migrations());
-  assert.equal(foundationChecks.length,17);
+  assert.equal(foundationChecks.length,18);
   assert.deepEqual(foundationChecks.filter(value=>value.status!=='passed'),[]);
   assert.deepEqual(validateStagingTopology(config(),migrations(),{release:true}).filter(value=>value.status!=='passed').map(value=>value.name),['execution-gates-controlled-release']);
 });
@@ -117,6 +117,14 @@ test('release predeploy independently proves the currently deployed turn gate is
   assert.deepEqual(validatePredeployGateClosed(version,deployment),{name:'predeploy-turn-gate-closed',status:'passed'});
   assert.equal(validatePredeployGateClosed({...version,resources:{bindings:[{name:'M2_TURNS_ENABLED',type:'plain_text',text:'true'}]}},deployment).status,'blocked');
   assert.equal(validatePredeployGateClosed(version,{versions:[{version_id:id,percentage:99}]}).status,'blocked');
+});
+
+test('legacy close readback rejects an enabled or malformed independent invited Run policy',()=>{
+ const policy=JSON.parse(readFileSync(new URL('../../infra/wrangler.phase1-staging.jsonc',import.meta.url),'utf8')).vars.INVITED_RUNS_POLICY_JSON;
+ const head='a'.repeat(40),id='12345678-1234-1234-1234-123456789abc',value=config();value.vars.INVITED_RUNS_POLICY_JSON=policy;
+ const fixture=deployedFixture(value,head,id,false);
+ assert.equal(validatePredeployGateClosed(fixture.version,fixture.deployment).status,'passed');assert.equal(validateDeployedWorkerVersion(fixture.manifest,fixture.version,fixture.deployment,{turnsEnabled:false,containerApps:fixture.containerApps}).status,'passed');
+ for(const raw of [JSON.stringify({...JSON.parse(policy),enabled:true}),'{}']){const bad=structuredClone(fixture.version);bad.resources.bindings.find(binding=>binding.name==='INVITED_RUNS_POLICY_JSON').text=raw;assert.equal(validatePredeployGateClosed(bad,fixture.deployment).status,'blocked');assert.equal(validateDeployedWorkerVersion(fixture.manifest,bad,fixture.deployment,{turnsEnabled:false,containerApps:fixture.containerApps}).status,'blocked');value.vars.INVITED_RUNS_POLICY_JSON=raw;assert.ok(validateStagingTopology(value,migrations()).some(check=>check.name==='invited-runs-admission-closed'&&check.status==='blocked'));}
 });
 
 test('release control-plane JSON reads retry boundedly without accepting failed or malformed output',async()=>{
