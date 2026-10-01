@@ -71,3 +71,8 @@ test('Verify ready admission rechecks after awaited source and rejects wrong Wor
 test('authenticated preview reads expose only the workspace scoped Verify availability',async()=>{
  const s=await setup();assert.equal((await s.service().view(actor,'revision-a')).canVerify,true);s.ports.canVerify=()=>false;assert.equal((await s.service().view(actor,'revision-a')).canVerify,false);await assert.rejects(s.service().verify(actor,s.body),/simulation-unavailable/);assert.equal(s.starts,0);
 });
+
+test('archived history reads keep frozen package bytes and never rearm a build or enable Verify',async()=>{
+ const s=await setup();s.ports.readOnly=()=>true;let rearms=0;const original=s.ports.builds.rearmStaleReady;s.ports.builds.rearmStaleReady=async()=>{rearms++;throw Error('archived-read-must-not-rearm');};
+ try{const before=structuredClone(s.f.storage.values),view=await s.service().view(actor);assert.equal(view.canVerify,false);assert.equal(view.build.status,'ready');const bytes=await s.service().bytes(actor,s.body.packageIdentity);assert.equal(bytes.manifest.packageIdentity,s.body.packageIdentity);assert.equal(rearms,0);assert.deepEqual(s.f.storage.values,before);assert.equal(s.starts,0);}finally{s.ports.builds.rearmStaleReady=original;}
+});

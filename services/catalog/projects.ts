@@ -20,7 +20,7 @@ const correlatedOwnership = `SELECT 1 FROM catalog_memberships m JOIN catalog_us
   JOIN catalog_tenants t ON t.id=m.tenant_id
   WHERE m.tenant_id=p.tenant_id AND m.user_id=? AND m.status='active' AND m.role='owner'
   AND u.status='active' AND u.auth_version=? AND t.status='active' AND t.owner_user_id=u.id`;
-const projectColumns = `p.id,p.tenant_id,p.workspace_id,p.title,p.starter_version,p.source_model_version_id,p.source_model_id,p.source_model_version,p.source_digest,p.status,p.generation,p.created_at,p.updated_at`;
+const projectColumns = `p.id,p.tenant_id,p.workspace_id,p.title,p.starter_version,p.source_model_version_id,p.source_model_id,p.source_model_version,p.source_digest,p.status,p.generation,p.archived_at,p.archive_epoch,p.created_at,p.updated_at`;
 
 export class ProjectCatalog {
   private readonly db: Database;
@@ -29,11 +29,22 @@ export class ProjectCatalog {
   constructor(db: Database, allowedStarters: ReadonlySet<string>, models?: ModelCatalog) { this.db = db; this.starters = allowedStarters; this.models=models; }
 
   async list(principal: Principal, tenantId: string): Promise<Project[]> {
-    opaqueId(tenantId);
-    const allowed = await this.db.query(sql(ownership, tenantId, principal.userId, principal.authVersion));
-    if (!allowed.length) throw new CatalogError('not_found');
-    return this.db.query<Project>(sql(`SELECT ${projectColumns} FROM catalog_projects p WHERE p.tenant_id=?
-      AND EXISTS (${ownership}) ORDER BY p.created_at DESC,p.id LIMIT 100`, tenantId, tenantId, principal.userId, principal.authVersion));
+    return (await this.listPage(principal,tenantId)).projects;
+  }
+
+  async listPage(principal:Principal,tenantId:string,options:{view?:'active'|'archived'|'all';before?:string;limit?:number}={}):Promise<{projects:Project[];nextCursor:string|null}>{
+    opaqueId(tenantId);const view=options.view??'active',limit=options.limit??100;
+    if(!['active','archived','all'].includes(view)||!Number.isSafeInteger(limit)||limit<1||limit>100)throw new CatalogError('invalid_input');
+    let before:{createdAt:number;id:string}|null=null;
+    if(options.before!==undefined){try{before=JSON.parse(atob(options.before));}catch{throw new CatalogError('invalid_input');}
+      if(!before||Object.keys(before).sort().join(',')!=='createdAt,id'||!Number.isSafeInteger(before.createdAt)||before.createdAt<0)throw new CatalogError('invalid_input');opaqueId(before.id);}
+    const allowed=await this.db.query(sql(ownership,tenantId,principal.userId,principal.authVersion));if(!allowed.length)throw new CatalogError('not_found');
+    const rows=await this.db.query<Project>(sql(`SELECT ${projectColumns} FROM catalog_projects p WHERE p.tenant_id=?
+      AND EXISTS (${ownership}) AND (?='all' OR (?='active' AND p.archived_at IS NULL) OR (?='archived' AND p.archived_at IS NOT NULL))
+      AND (? IS NULL OR p.created_at<? OR (p.created_at=? AND p.id>?)) ORDER BY p.created_at DESC,p.id ASC LIMIT ?`,
+      tenantId,tenantId,principal.userId,principal.authVersion,view,view,view,before?.createdAt??null,before?.createdAt??null,before?.createdAt??null,before?.id??null,limit+1));
+    const projects=rows.slice(0,limit),last=projects.at(-1);
+    return {projects,nextCursor:rows.length>limit&&last?btoa(JSON.stringify({createdAt:last.created_at,id:last.id})):null};
   }
 
   async get(principal: Principal, tenantId: string, projectId: string): Promise<Project> {
@@ -44,20 +55,23 @@ export class ProjectCatalog {
     return rows[0];
   }
 
-  private async resolveWorkspace(principal:Principal,workspaceId:string,requireReady:boolean):Promise<TurnScope>{
+  private async resolveWorkspace(principal:Principal,workspaceId:string,requireReady:boolean,writable=false):Promise<TurnScope>{
     opaqueId(workspaceId);
-    const rows=await this.db.query<{tenantId:string;projectId:string;workspaceId:string;workspaceGeneration:number;projectGeneration:number;projectStatus:string;workspaceStatus:string}>(sql(`SELECT p.tenant_id AS tenantId,p.id AS projectId,w.id AS workspaceId,
-      w.generation AS workspaceGeneration,p.generation AS projectGeneration,p.status AS projectStatus,w.status AS workspaceStatus
+    const rows=await this.db.query<{tenantId:string;projectId:string;workspaceId:string;workspaceGeneration:number;projectGeneration:number;projectStatus:string;workspaceStatus:string;archivedAt:number|null}>(sql(`SELECT p.tenant_id AS tenantId,p.id AS projectId,w.id AS workspaceId,
+      w.generation AS workspaceGeneration,p.generation AS projectGeneration,p.status AS projectStatus,w.status AS workspaceStatus,p.archived_at AS archivedAt
       FROM catalog_workspaces w JOIN catalog_projects p ON p.id=w.project_id AND p.tenant_id=w.tenant_id AND p.workspace_id=w.id
       WHERE w.id=? AND p.generation=w.generation AND EXISTS (${correlatedOwnership})`,workspaceId,principal.userId,principal.authVersion));
     const row=rows[0];if(!row)throw new CatalogError('not_found');
+    if(writable&&row.archivedAt!==null)throw new CatalogError('project_archived');
     if(requireReady&&(row.projectStatus!=='ready'||row.workspaceStatus!=='ready'))throw new CatalogError('not_ready');
     return {tenantId:row.tenantId,projectId:row.projectId,workspaceId:row.workspaceId,workspaceGeneration:row.workspaceGeneration};
   }
 
   async workspace(principal:Principal,workspaceId:string):Promise<TurnScope>{
-    return this.resolveWorkspace(principal,workspaceId,true);
+    return this.resolveWorkspace(principal,workspaceId,true,true);
   }
+
+  async writableWorkspace(principal:Principal,workspaceId:string):Promise<TurnScope>{return this.resolveWorkspace(principal,workspaceId,false,true);}
 
   async maintenanceWorkspace(principal:Principal,workspaceId:string):Promise<TurnScope>{
     return this.resolveWorkspace(principal,workspaceId,false);

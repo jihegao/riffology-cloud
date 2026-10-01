@@ -1,7 +1,7 @@
 import {DurableObject} from 'cloudflare:workers';
 import {privateBetaReleaseDeadline} from './private-beta-release.ts';
 import {privateBetaPolicy,privateBetaPolicyGates,assertPrivateBetaHistoricalIsolation,authorizePrivateBeta,PRIVATE_BETA_CAPACITY_ACTOR,type PrivateBetaPolicy,type PrivateBetaHistoricalLedger} from './private-beta-policy.ts';
-import {turnDigest,turnId,type TurnScope,type TurnActor} from '../turn/protocol.ts';
+import {scope as checkedScope,turnDigest,turnId,type TurnScope,type TurnActor} from '../turn/protocol.ts';
 import {workspaceAgentName} from '../workspace/protocol.ts';
 import {modelCallRequest,modelBudgetCallKey,type ModelCallRequest,type ModelCallRecord,modelBudgetTenantName} from './core.ts';
 import {productionProfile,profileDigest,conservativeCost} from '../model-proxy/production-profile.ts';
@@ -330,6 +330,14 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
     return {schemaVersion:1,policySchemaVersion:policy.schemaVersion,quotaMode:policy.schemaVersion===2?'meter-only':'limited',policyReady:policySha256===pinnedPolicySha256,policySha256,pinnedPolicySha256,enabled:policy.enabled&&Date.now()>=policy.startsAt&&Date.now()<policy.reviewAt,reviewAt:policy.reviewAt,limits:{maxActiveTurns:policy.maxActiveTurns,maxNanodollarsPerDay:policy.schemaVersion===1?policy.maxNanodollarsPerDay:null,maxNanodollarsTotal:policy.schemaVersion===1?policy.maxNanodollarsTotal:null},lastMonitorAt:this.ctx.storage.kv.get('beta-last-monitor')??null,paused:this.ctx.storage.kv.get('beta-paused')===true,active:this.#slots().length,quarantined:this.#slots().filter(s=>s.status==='quarantined').length,
       usage:this.#usage(),
       alerts:this.ctx.storage.sql.exec('SELECT at,code FROM beta_alerts ORDER BY at DESC LIMIT 100').toArray()};
+  }
+  /** Private metadata proof. Never monitors, releases or retries an execution. */
+  async archiveQuiescence(rawScope:TurnScope){
+    const scope=checkedScope(rawScope);this.#policy(false);
+    const sameProject=(other:TurnScope)=>other.tenantId===scope.tenantId&&other.projectId===scope.projectId;
+    const slots=this.#slots().filter(row=>sameProject((JSON.parse(row.document) as Admission).scope));
+    const calls=this.ctx.storage.sql.exec<{document:string}>("SELECT document FROM beta_calls WHERE status IN ('reserved','dispatched','unknown')").toArray().filter(row=>sameProject(modelCallRequest(JSON.parse(row.document)).identity.scope));
+    return {activeSlots:slots.length,unresolvedCalls:calls.length,quiescent:slots.length===0&&calls.length===0};
   }
   async userStatus(scope:TurnScope,actor:TurnActor){
     this.#policy(false);

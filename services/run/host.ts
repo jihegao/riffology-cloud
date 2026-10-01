@@ -35,6 +35,7 @@ export class ServiceRunHost{
  /** Persist cancellation with the task before its first alarm can dispatch it. */
  async acceptStopped(raw:ServiceRunTask){return this.#materialize(await this.#save(raw,true));}
  async snapshot(){const task=await this.#task();if(!task)return null;return this.#materialize(task);}
+ async archiveQuiescence(){const task=await this.#task();if(!task)throw Error('service-run-not-found');const journal=this.#journal(task),run=await journal.get(task.runId),state=await this.#coordinator(journal).state(task.runId);return {runId:task.runId,released:TERMINAL.has(run.status)&&state!==null&&(state.denied||state.released||state.acquisitionClosed)};}
  async stop(){const task=await this.#task();if(!task)throw Error('service-run-not-found');return this.#materialize(await this.#save(task,true));}
  alarm(){if(!this.#active)this.#active=this.#advance().finally(()=>{this.#active=null;});return this.#active;}
  async #advance():Promise<ServiceRunRecord|null>{

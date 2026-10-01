@@ -11,7 +11,7 @@ import type {PreviewSource} from '../preview/source.ts';
 type Saved=BrowserBuildSource;
 type Capture={schemaVersion:1;scope:TurnScope;actor:TurnActor;input:PreviewVerifyRequest;request:ExperimentRequest;serverKey:string;source?:BrowserBuildSource};
 export interface BrowserPreviewOrchestratorPorts{
- authorize(actor:TurnActor):Promise<void>;authorizeVerify?(actor:TurnActor):Promise<void>;checkScope():void;
+ readOnly?():boolean;authorize(actor:TurnActor):Promise<void>;authorizeVerify?(actor:TurnActor):Promise<void>;checkScope():void;
  head():Saved|null;saved(revisionId:string):Saved|null;checkSource?(source:BrowserBuildSource):void;
  registry():Promise<PreviewProfileRegistry>;builds:BrowserPreviewBuildHost;bucket:PreviewObjectBucket;
  files(source:PreviewSource):Promise<Uint8Array>;simulations:SimulationHost;canVerify():boolean;image:string;
@@ -31,19 +31,19 @@ export class BrowserPreviewOrchestrator{
   await this.#authorize(actor);
   if(profileId!==undefined&&(typeof profileId!=='string'||!['python-stdlib/v1','mesa-3.5.1/v1'].includes(profileId)))throw Error('browser-preview-input-invalid');
   const head=this.ports.head(),revision=revisionId??(head?sourceRevision(head):null)??null;
-  if(!revision)return {canVerify:this.ports.canVerify(),currentRevisionId:null,revisionId:null,build:null,stale:false,modelSpec:null,reasonCode:'preview-no-saved-revision',delivery:null};
-  const saved=this.#saved(revision);const status=this.ports.builds.read(revision,profileId)?.state.status;if(status==='ready'||status==='unsupported'){await this.ports.builds.rearmStaleReady(revision);await this.#authorize(actor);}const row=this.ports.builds.read(revision,profileId);let delivery=null,reasonCode:string|null=null;
+  if(!revision)return {canVerify:!this.ports.readOnly?.()&&this.ports.canVerify(),currentRevisionId:null,revisionId:null,build:null,stale:false,modelSpec:null,reasonCode:'preview-no-saved-revision',delivery:null};
+  const saved=this.#saved(revision);const status=this.ports.builds.read(revision,profileId)?.state.status;if(!this.ports.readOnly?.()&&(status==='ready'||status==='unsupported')){await this.ports.builds.rearmStaleReady(revision);await this.#authorize(actor);}const row=this.ports.builds.read(revision,profileId);let delivery=null,reasonCode:string|null=null;
   if(row?.state.status==='ready'){
    if(!row.profile||row.profile.trust!=='verified-platform')reasonCode='preview-runtime-unavailable';
    else {let config:unknown=null;try{config=this.ports.delivery(row.profile.runtime.assetSha256);}catch{/* Historical immutable delivery may be unavailable. */}if(!config||typeof config!=='object')reasonCode='preview-runtime-unavailable';else delivery={...config,profile:{runtime:row.profile.runtime,packages:row.profile.packages,assetManifest:row.profile.assets,verified:true}};}
   }
   this.#stillSaved(saved);const current=this.#currentRevision()??null;
-  return {canVerify:this.ports.canVerify(),currentRevisionId:current,revisionId:revision,sourceKind:saved.kind==='initial-workspace'?'initial-workspace':'saved-turn',referenceSha256:saved.kind==='initial-workspace'?saved.referenceSha256:null,build:reasonCode?null:row?.state??null,stale:current!==null&&revision!==current,modelSpec:row?.modelSpec??null,reasonCode:reasonCode??(!row?'preview-discovery-pending':null),delivery};
+  return {canVerify:!this.ports.readOnly?.()&&this.ports.canVerify(),currentRevisionId:current,revisionId:revision,sourceKind:saved.kind==='initial-workspace'?'initial-workspace':'saved-turn',referenceSha256:saved.kind==='initial-workspace'?saved.referenceSha256:null,build:reasonCode?null:row?.state??null,stale:current!==null&&revision!==current,modelSpec:row?.modelSpec??null,reasonCode:reasonCode??(!row?'preview-discovery-pending':null),delivery};
  }
  async bytes(actor:TurnActor,identity:string){
   if(!/^[a-f0-9]{64}$/.test(identity))throw Error('browser-preview-input-invalid');await this.#authorize(actor);
   const receipt=this.ports.builds.receipt(identity);if(!receipt)throw Error('browser-preview-not-found');const saved=this.#saved(receipt.revisionId);
-  if(this.ports.builds.read(receipt.revisionId)?.state.status==='ready'){await this.ports.builds.rearmStaleReady(receipt.revisionId);await this.#authorize(actor);}
+  if(!this.ports.readOnly?.()&&this.ports.builds.read(receipt.revisionId)?.state.status==='ready'){await this.ports.builds.rearmStaleReady(receipt.revisionId);await this.#authorize(actor);}
   const result=await readPreviewPackage(this.ports.bucket,{tenantId:this.scope.tenantId,projectId:this.scope.projectId,workspaceId:this.scope.workspaceId},receipt);
   const row=this.ports.builds.read(receipt.revisionId,result.manifest.runtime.profileId);
   try{this.ports.delivery(result.manifest.runtime.assetSha256);}catch{throw Error('browser-preview-source-unavailable');}
