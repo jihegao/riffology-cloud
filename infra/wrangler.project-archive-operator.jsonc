@@ -1,0 +1,13 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "riffology-project-archive-operator",
+  "main": "../scripts/model/project-archive-operator.ts",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "preview_urls": false,
+  "observability": {"enabled": true, "head_sampling_rate": 1},
+  "secrets": {"required": ["PROJECT_ARCHIVE_OPERATOR_CAPABILITY"]},
+  "vars": {"PROJECT_ARCHIVE_OPERATOR_SCOPE_JSON": "{}"},
+  "d1_databases": [{"binding": "CATALOG", "database_name": "riffology-catalog-staging-v3-20260911", "database_id": "f122099b-8eaa-4eca-83a0-755de0f8b46b"}],
+  "durable_objects": {"bindings": [{"name": "WORKSPACE_AGENT", "class_name": "WorkspaceAgent", "script_name": "riffology-m1-gateway-staging"}]}
+}
