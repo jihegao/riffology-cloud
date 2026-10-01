@@ -279,6 +279,8 @@ export async function gateway(request:Request, services:GatewayServices):Promise
         if(/conflict|stale/.test(code))throw new HttpError(code,409);
         if(/input-invalid|contract-invalid|invalid-browser-preview|invalid-turn-id/.test(code))throw new HttpError('browser-preview-input-invalid',400);
         if(code==='simulation-capacity')throw new HttpError(code,429);
+        if(code==='invited-runs-group-limit')throw new HttpError(code,400);
+        if(/^invited-runs-|^private-beta-/.test(code))throw new HttpError(code,503);
         throw new HttpError('browser-preview-unavailable',503);
       }
     }
@@ -290,7 +292,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       const scope=creating?await catalog.workspace(principal,workspaceId!):await catalog.maintenanceWorkspace(principal,workspaceId!);
       if(!services.simulations)throw new HttpError('simulation-unavailable',503);
       try{
-        if(resource==='model'&&!id&&request.method==='GET'&&!url.search)return g5Read(request,services,scope,principal,json(await services.simulations.model(scope)));
+        if(resource==='model'&&!id&&request.method==='GET'&&!url.search)return g5Read(request,services,scope,principal,json(await services.simulations.model(scope,principal)));
         if(creating&&resource==='experiment-groups'&&!url.search)return json(await services.simulations.submitGroup(scope,principal,idempotencyKey(request),experimentGroupRequest(await readJson(request,32768))),202);
         if(creating&&!url.search)return json(await services.simulations.submit(scope,principal,idempotencyKey(request),experimentRequest(await readJson(request))),202);
         if(resource==='experiment-groups'&&request.method==='GET'&&!action){
@@ -310,6 +312,8 @@ export async function gateway(request:Request, services:GatewayServices):Promise
         if(['simulation-idempotency-conflict','simulation-model-stale'].includes(code))throw new HttpError(code,409);
         if(code==='simulation-not-found')throw new HttpError(code,404);
         if(code==='simulation-capacity')throw new HttpError(code,429);
+        if(code==='invited-runs-group-limit')throw new HttpError(code,400);
+        if(/^invited-runs-|^private-beta-/.test(code))throw new HttpError(code,503);
         if(['simulation-input-invalid','invalid-model-spec','model-spec-missing','model-spec-invalid','model-contract-mismatch','model-dependencies-invalid','model-dependencies-unsupported'].includes(code))throw new HttpError(code,400);
         throw new HttpError('simulation-unavailable',503);
       }

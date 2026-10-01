@@ -1,4 +1,4 @@
-import {msg,t,uiError,errorMessage,formatNumber} from './i18n.js';
+import {msg,t,uiError,errorMessage,cloudRunError,formatNumber} from './i18n.js';
 import {bindValue,bindAttribute} from './i18n-bindings.js';
 const TERMINAL = new Set(['completed', 'partial', 'failed', 'cancelled']);
 const safeId = value => typeof value === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(value);
@@ -54,7 +54,8 @@ export function createComparisonPanel({root, api}) {
     form.append(configs);form.append(button(msg('compare.add'),()=>{draft.interventions.push({label:t('compare.intervention', ({p0: draft.interventions.length+1})),parameters:defaults(model.spec)});renderEditor();},draft.interventions.length>=3));
     const seedLabel=node('label',msg('compare.seeds'));const seeds=node('input');seeds.name='seeds';seeds.required=true;seeds.value=draft.seeds;const count=node('p',undefined,'comparison-count');const countSeeds=()=>{const n=draft.seeds.trim()?draft.seeds.trim().split(/[\s,，]+/).length:0;bindValue(count,()=>(msg('compare.count', () => ({p0: formatNumber(n), p1: formatNumber((1+draft.interventions.length)*n)}))));};seeds.oninput=()=>{draft.seeds=seeds.value;countSeeds();};countSeeds();seedLabel.append(seeds);form.append(seedLabel,count);
     const actions=node('div',undefined,'comparison-actions');actions.append(button(msg('compare.reset'),()=>{draft=freshDraft();renderEditor();}));const run=node('button',msg('compare.run'),'button primary');run.type='submit';run.disabled=loading||busy||!model.canRun;actions.append(run);form.append(actions);
-    if(!model.canRun)form.append(node('p',msg('compare.unavailable'),'model-warning'));
+    if(!model.canRun)form.append(node('p',model.capabilityReason?cloudRunError(model.capabilityReason):msg('compare.unavailable'),'model-warning'));
+    if(model.runLimits)form.append(node('p',msg('run.resourceLimits',()=>({active:model.runLimits.maxActiveRuns,user:model.runLimits.maxRunsPerUser,seconds:model.runLimits.durationMs/1000,group:model.runLimits.maxGroupRuns})),'meta'));
     form.onsubmit=event=>{event.preventDefault();void submit();};editor.append(form);
   }
   function renderHistory() {
@@ -63,7 +64,7 @@ export function createComparisonPanel({root, api}) {
     for(const group of groups){
       const article=node('article',undefined,'comparison-group');article.dataset.groupId=group.groupId;
       article.append(node('h3',group.hypothesis),node('p',msg('compare.groupStatus',()=>({status:t('run.status.'+group.status,{},group.status),id:group.groupId}))),node('p',msg('compare.revision', () => ({p0: group.version?.revisionId??msg('model.initial'), p1: group.repetitions ?? group.seeds?.length}))));
-      if(group.errorCode)article.append(node('p',msg('compare.statusReason', () => ({p0: group.errorCode})),'model-warning'));
+      if(group.errorCode)article.append(node('p',cloudRunError(group.errorCode),'model-warning'));
       if(group.stale)article.append(node('p',msg('compare.stale'),'model-warning'));
       const p=group.progress||{};article.append(node('p',msg('compare.progress', () => ({p0: formatNumber(p.total??0), p1: formatNumber(p.pending??0), p2: formatNumber(p.active??0), p3: formatNumber(p.completed??0), p4: formatNumber(p.failed??0), p5: formatNumber(p.cancelled??0), p6: p.rejected ? msg('compare.rejectedCount',{value:formatNumber(p.rejected)}) : ''}))));
       if(p.rejected)article.append(node('p',msg('compare.rejectedWarning'),'model-warning'));
@@ -88,11 +89,11 @@ export function createComparisonPanel({root, api}) {
     try{const [m,page]=await Promise.all([api(path('/model')),api(path('/experiment-groups'))]);if(!valid())return;
       if(draft&&model?.version&&(model.version.filesSha256!==m.version?.filesSha256||model.version.specSha256!==m.version?.specSha256)){draft=null;mark(msg('compare.modelChanged'));}
       model=m;groups=(page.items||[]).filter(g=>safeId(g.groupId));cursor=page.nextCursor||null;
-    }catch(error){if(valid())mark(errorMessage(error)||msg('compare.readFailed'));}finally{if(valid()){loading=false;renderEditor();renderHistory();schedule();}}
+    }catch(error){if(valid())mark(cloudRunError(error)||msg('compare.readFailed'));}finally{if(valid()){loading=false;renderEditor();renderHistory();schedule();}}
   }
   async function loadMore(){
     if(!cursor||loading)return;const token=generation,epoch=++readEpoch,valid=()=>token===generation&&epoch===readEpoch;clearTimeout(timer);loading=true;renderHistory();
-    try{const page=await api(path(`/experiment-groups?before=${encodeURIComponent(cursor)}`));if(!valid())return;groups=[...groups,...(page.items||[]).filter(g=>safeId(g.groupId)&&!groups.some(old=>old.groupId===g.groupId))];cursor=page.nextCursor||null;}catch(error){if(valid())mark(errorMessage(error)||msg('compare.historyFailed'));}finally{if(valid()){loading=false;renderHistory();schedule();}}
+    try{const page=await api(path(`/experiment-groups?before=${encodeURIComponent(cursor)}`));if(!valid())return;groups=[...groups,...(page.items||[]).filter(g=>safeId(g.groupId)&&!groups.some(old=>old.groupId===g.groupId))];cursor=page.nextCursor||null;}catch(error){if(valid())mark(cloudRunError(error)||msg('compare.historyFailed'));}finally{if(valid()){loading=false;renderHistory();schedule();}}
   }
   async function submit(){
     if(pending)return submitPending();if(busy||loading||!model?.canRun)return;
@@ -100,15 +101,16 @@ export function createComparisonPanel({root, api}) {
     if(!draft.hypothesis.trim()||!seeds.length||seeds.length>20||new Set(seeds).size!==seeds.length||seeds.some(s=>!Number.isSafeInteger(s)||s<0||s>4294967295)){mark(msg('compare.invalidSeeds'));return;}
     const labels=[draft.baseline,...draft.interventions].map(c=>c.label.trim());if(labels.some(label=>!label)||new Set(labels).size!==labels.length){mark(msg('compare.invalidNames'));return;}
     const body={...model.version,hypothesis:draft.hypothesis.trim(),baseline:structuredClone(draft.baseline),interventions:structuredClone(draft.interventions),seeds};
+    if(model.runLimits&&seeds.length*(draft.interventions.length+1)>model.runLimits.maxGroupRuns){mark(msg('run.error.invited-runs-group-limit'));return;}
     const attempt={key:crypto.randomUUID(),body};if(!persist(attempt)){mark(msg('compare.storageFailed'));return;}pending=attempt;await submitPending();
   }
   async function submitPending(){if(!pending||busy||loading)return;const token=generation,attempt=pending;busy=true;renderEditor();try{
     const group=await api(path('/experiment-groups'),{method:'POST',headers:{'Idempotency-Key':attempt.key},body:JSON.stringify(attempt.body),signal:AbortSignal.timeout(15000)});
     if(token!==generation)return;if(!safeId(group?.groupId))throw uiError('compare.receiptInvalid');persist(null);pending=null;groups=[group,...groups.filter(g=>g.groupId!==group.groupId)];mark(msg('compare.accepted'));
-  }catch(error){if(token!==generation)return;mark(errorMessage(error)||msg('compare.unconfirmed'));const known=['simulation-input-invalid','invalid-model-spec','model-spec-missing','model-spec-invalid','model-contract-mismatch','model-dependencies-invalid','model-dependencies-unsupported'];if(error.status===400&&known.includes(error.code)||error.status===409&&error.code==='simulation-model-stale'||error.status===413&&error.code==='body_too_large'){persist(null);pending=null;draft=null;const previousMessage=message;mark(msg('compare.refreshRequired', {p0:previousMessage}));model=null;}}
+  }catch(error){if(token!==generation)return;mark(cloudRunError(error)||msg('compare.unconfirmed'));const known=['simulation-input-invalid','invalid-model-spec','model-spec-missing','model-spec-invalid','model-contract-mismatch','model-dependencies-invalid','model-dependencies-unsupported'];if(error.status===400&&known.includes(error.code)||error.status===409&&error.code==='simulation-model-stale'||error.status===413&&error.code==='body_too_large'){persist(null);pending=null;draft=null;const previousMessage=message;mark(msg('compare.refreshRequired', {p0:previousMessage}));model=null;}}
     finally{if(token===generation){busy=false;renderEditor();renderHistory();schedule();}}
   }
-  async function cancel(groupId){if(busy)return;const token=generation;busy=true;renderHistory();try{await api(path(`/experiment-groups/${encodeURIComponent(groupId)}/cancel`),{method:'POST',body:'{}',signal:AbortSignal.timeout(15000)});if(token===generation){mark(msg('compare.stopAccepted'));await load();}}catch(error){if(token===generation)mark(errorMessage(error)||msg('compare.stopUnconfirmed'));}finally{if(token===generation){busy=false;renderHistory();}}}
+  async function cancel(groupId){if(busy)return;const token=generation;busy=true;renderHistory();try{await api(path(`/experiment-groups/${encodeURIComponent(groupId)}/cancel`),{method:'POST',body:'{}',signal:AbortSignal.timeout(15000)});if(token===generation){mark(msg('compare.stopAccepted'));await load();}}catch(error){if(token===generation)mark(cloudRunError(error)||msg('compare.stopUnconfirmed'));}finally{if(token===generation){busy=false;renderHistory();}}}
   async function enter(value){leave();if(!safeId(value?.tenantId)||!safeId(value?.workspaceId))throw Error('invalid-comparison-context');context=value;try{const saved=JSON.parse(sessionStorage.getItem(storageKey())||'null');if(saved?.key&&saved?.body)pending=saved;}catch{}setup();await load();}
   function leave(){generation++;clearTimeout(timer);context=null;model=null;groups=[];cursor=null;pending=null;busy=false;loading=false;draft=null;message='';rawOpen=new Set();root.replaceChildren();editor=history=status=null;}
   return {enter,leave,reload:load};

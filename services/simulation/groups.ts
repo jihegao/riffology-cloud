@@ -1,3 +1,4 @@
+import type {InvitedRunAdmission} from './invited-policy.ts';
 import {assessmentForRun,evidenceAssessments} from './evidence-adapter.ts';
 import {actor as checkedActor,scope as checkedScope,turnId,type TurnActor,type TurnScope} from '../turn/protocol.ts';
 import {experimentRequest,projectSimulationWake,type SimulationHost,type SimulationRecord} from './host.ts';
@@ -10,7 +11,7 @@ export type ExperimentGroupRequest={revisionId:string|null;filesSha256:string;sp
 export type GroupConfiguration=GroupConfigurationInput&{configurationId:string;role:'baseline'|'intervention'};
 export type GroupStatus='queued'|'running'|'completed'|'partial'|'failed'|'cancelled';
 type Child={runId:string;configurationId:string;seed:number;cancelled:boolean};
-export type ExperimentGroupRecord={schemaVersion:1;groupId:string;scope:TurnScope;actor:TurnActor;key:string;requestJson:string;plan:SimulationPlan;runtimeImage:string;hypothesis:string;configurations:GroupConfiguration[];seeds:number[];children:Child[];status:GroupStatus;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null};
+export type ExperimentGroupRecord={runAdmission?:InvitedRunAdmission;schemaVersion:1;groupId:string;scope:TurnScope;actor:TurnActor;key:string;requestJson:string;plan:SimulationPlan;runtimeImage:string;hypothesis:string;configurations:GroupConfiguration[];seeds:number[];children:Child[];status:GroupStatus;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null};
 export type GroupRun={evidenceRejection?:{assessmentId:string;scope:'run'|'model';reason:string};runId:string;configurationId:string;seed:number;status:SimulationRecord['status']|'pending';errorCode:string|null;result:SimulationRecord['result'];released:boolean};
 export type GroupMetric={count:number;missing:number;mean:number|null;baselineMean:number|null;delta:number|null;errorCode:null|'simulation-metric-overflow'};
 export type ExperimentGroupView={groupId:string;version:ReturnType<typeof modelVersion>;hypothesis:string;configurations:GroupConfiguration[];seeds:number[];repetitions:number;metrics:Record<string,MetricDefinition>;status:GroupStatus;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null;stale:boolean;progress:{rejected:number;total:number;pending:number;active:number;completed:number;failed:number;cancelled:number};runs:GroupRun[];summary:Array<{configurationId:string;metrics:Record<string,GroupMetric>}>};
@@ -41,8 +42,8 @@ export function experimentGroupRequest(raw:unknown):ExperimentGroupRequest{
  * Admission and cancellation both transact against this same Workspace storage. */
 export class ExperimentGroupHost{
  #advancing=false;
- readonly storage:DurableObjectStorage;readonly scope:TurnScope;readonly runs:SimulationHost;readonly canRun:()=>boolean;readonly clock:()=>number;
- constructor(storage:DurableObjectStorage,scope:TurnScope,runs:SimulationHost,canRun:()=>boolean,clock=Date.now){this.storage=storage;this.scope=checkedScope(scope);this.runs=runs;this.canRun=canRun;this.clock=clock;}
+ readonly storage:DurableObjectStorage;readonly scope:TurnScope;readonly runs:SimulationHost;readonly canRun:()=>boolean;readonly clock:()=>number;readonly maxChildren:number;readonly authorizeGroup?:(group:ExperimentGroupRecord)=>Promise<boolean>;
+ constructor(storage:DurableObjectStorage,scope:TurnScope,runs:SimulationHost,canRun:()=>boolean,clock=Date.now,maxChildren=80,authorizeGroup?:(group:ExperimentGroupRecord)=>Promise<boolean>){this.storage=storage;this.scope=checkedScope(scope);this.runs=runs;this.canRun=canRun;this.clock=clock;this.maxChildren=maxChildren;this.authorizeGroup=authorizeGroup;}
  async #project(tx:DurableObjectTransaction){
   const active=[...(await tx.list<ExperimentGroupRecord>({prefix:GROUP_PREFIX})).values()].some(g=>!FINAL.has(g.status)&&g.status!=='partial');
   if(active)await tx.put(GROUP_WAKE_KEY,this.clock()+2000);else await tx.delete(GROUP_WAKE_KEY);
@@ -57,18 +58,18 @@ export class ExperimentGroupHost{
   checkedActor(actor);turnId(key);const id=await this.storage.get<string>(GROUP_INTENT+await digest(JSON.stringify([actor.userId,key])));if(!id)return null;
   const g=await this.get(id);if(g.requestJson!==JSON.stringify(request)||g.actor.authVersion!==actor.authVersion)throw Error('simulation-idempotency-conflict');return g;
  }
- async submit(actor:TurnActor,key:string,raw:unknown,plan:SimulationPlan,runtimeImage:string,stillCurrent:()=>boolean){
+ async submit(actor:TurnActor,key:string,raw:unknown,plan:SimulationPlan,runtimeImage:string,stillCurrent:()=>boolean,runAdmission?:InvitedRunAdmission){
   // v0.1 Business edits produce distinct immutable bundles. The existing group
   // contract compares parameter overrides within one frozen Plan.
   if(plan.compiler)throw Error('compiler-group-unsupported');
-  const request=experimentGroupRequest(raw),prior=await this.replay(actor,key,request);if(prior)return prior;
+  const request=experimentGroupRequest(raw);if(request.seeds.length*(request.interventions.length+1)>this.maxChildren)throw Error('invited-runs-group-limit');const prior=await this.replay(actor,key,request);if(prior)return prior;
   if(!this.canRun()||!runtimeImage||runtimeImage.length>512)throw Error('simulation-unavailable');
   if(JSON.stringify(modelVersion(plan))!==JSON.stringify({revisionId:request.revisionId,filesSha256:request.filesSha256,specSha256:request.specSha256}))throw Error('simulation-model-stale');
   const configurations:GroupConfiguration[]=[request.baseline,...request.interventions].map((c,i)=>({...c,parameters:resolveParameters(plan.spec,c.parameters),configurationId:i===0?'baseline':`intervention-${i}`,role:i===0?'baseline':'intervention'}));
   // Seed-major order interleaves the baseline and interventions deterministically.
   const children=request.seeds.flatMap(seed=>configurations.map(c=>({runId:crypto.randomUUID(),configurationId:c.configurationId,seed,cancelled:false})));
   const groupId=crypto.randomUUID(),now=this.clock(),intent=GROUP_INTENT+await digest(JSON.stringify([actor.userId,key]));
-  const record:ExperimentGroupRecord={schemaVersion:1,groupId,scope:this.scope,actor:checkedActor(actor),key,requestJson:JSON.stringify(request),plan:structuredClone(plan),runtimeImage,hypothesis:request.hypothesis,configurations,seeds:request.seeds,children,status:'queued',createdAt:now,updatedAt:now,cancelledAt:null,errorCode:null};
+  const record:ExperimentGroupRecord={...(runAdmission?{runAdmission}:{}),schemaVersion:1,groupId,scope:this.scope,actor:checkedActor(actor),key,requestJson:JSON.stringify(request),plan:structuredClone(plan),runtimeImage,hypothesis:request.hypothesis,configurations,seeds:request.seeds,children,status:'queued',createdAt:now,updatedAt:now,cancelledAt:null,errorCode:null};
   if(new TextEncoder().encode(JSON.stringify(record)).byteLength>120000)invalid();
   const g=await this.storage.transaction(async tx=>{
    const priorId=await tx.get<string>(intent);if(priorId){const prior=(await tx.get<ExperimentGroupRecord>(GROUP_PREFIX+priorId))!;if(prior.requestJson!==record.requestJson||prior.actor.authVersion!==actor.authVersion)throw Error('simulation-idempotency-conflict');return prior;}
@@ -135,13 +136,13 @@ export class ExperimentGroupHost{
   }
   if(children.some(c=>c.status!=='pending'&&!c.released))return;
   if(g.cancelledAt!==null)return;
-  if(!this.canRun()){await this.#change(id,v=>{v.errorCode='simulation-unavailable';});return;}
+  if(!this.canRun()||this.authorizeGroup&&!await this.authorizeGroup(g)){if(g.runAdmission)await this.cancel(id,'invited-runs-paused');else await this.#change(id,v=>{v.errorCode='simulation-unavailable';});return;}
   if(!await this.runs.authorizeActor(g.actor)){await this.cancel(id,'simulation-access-revoked');return;}
   g=await this.get(id);children=await this.#children(g);
   const child=children.find(c=>c.status==='pending');if(!child||g.cancelledAt!==null)return;
   const configuration=g.configurations.find(c=>c.configurationId===child.configurationId)!;
   const body={...modelVersion(g.plan),parameters:configuration.parameters,seed:child.seed};
-  await this.runs.submit(g.actor,`group-${child.runId}`,body,g.plan,g.runtimeImage,()=>true,{runId:child.runId,groupId:id,permit:async tx=>{
+  await this.runs.submit(g.actor,`group-${child.runId}`,body,g.plan,g.runtimeImage,()=>true,{runId:child.runId,groupId:id,...(g.runAdmission?{runAdmission:g.runAdmission}:{}),permit:async tx=>{
    const current=await tx.get<ExperimentGroupRecord>(GROUP_PREFIX+id);
    if(!current||current.cancelledAt!==null||!this.canRun())return false;
    for(const sibling of current.children){if(sibling.runId===child.runId)break;const prior=await tx.get<SimulationRecord>('simulation:run:'+sibling.runId);if(!prior?.released)return false;}

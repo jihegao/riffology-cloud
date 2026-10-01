@@ -4,7 +4,7 @@ import {experimentGroupRequest} from '../../services/simulation/groups.ts';
 import {modelVersion} from '../../services/simulation/source.ts';
 import {GROUP_RESERVATION,GROUP_WAKE_KEY} from '../../services/simulation/group-state.ts';
 import {SIMULATION_WAKE_KEY,TURN_WAKE_KEY} from '../../services/workspace/shared-alarm.ts';
-import {groupFixture,plan,actor} from './group-fixture.ts';
+import {groupFixture,plan,actor,scope} from './group-fixture.ts';
 
 test('group acceptance is atomic across lost acknowledgement/reopen and freezes all child identities without submitting runs',async t=>{
  const f=groupFixture(t);await f.storage.put(TURN_WAKE_KEY,1200);f.loseSync();
@@ -97,4 +97,20 @@ test('eighty planned children do not consume eighty active slots or inherit a gr
 
 test('child admission acknowledgement loss reconstructs association without duplicate Run',async t=>{
  const f=groupFixture(t),g=await f.groups.submit(actor,'group',f.request,plan,'image',()=>true);f.loseSync();await f.groups.alarm();f.reopen();await f.groups.alarm();assert.equal((await f.host.list()).items.length,1);assert.equal((await f.host.get(g.children[0]!.runId)).groupId,g.groupId);assert.equal((await f.storage.get<string[]>(GROUP_RESERVATION+g.groupId))!.length,3);
+});
+
+test('invited groups enforce eight children before any reservation and cancel pending children when the shared gate stops',async t=>{
+ const {ExperimentGroupHost}=await import('../../services/simulation/groups.ts');const f=groupFixture(t);let authorized=true;
+ const groups=new ExperimentGroupHost(f.storage,scope,f.host,()=>true,()=>f.q.now,8,async()=>authorized);
+ await assert.rejects(groups.submit(actor,'oversized',{...f.request,seeds:[1,2,3,4,5]},plan,'image',()=>true,{kind:'invited-runs',policyId:'runs-v1'}),/invited-runs-group-limit/);
+ assert.equal((await f.storage.list({prefix:GROUP_RESERVATION})).size,0);assert.equal((await f.host.list()).items.length,0);
+ const group=await groups.submit(actor,'invited',f.request,plan,'image',()=>true,{kind:'invited-runs',policyId:'runs-v1'});assert.equal(group.runAdmission?.kind,'invited-runs');authorized=false;await groups.alarm();await groups.alarm();
+ assert.equal((await groups.get(group.groupId)).status,'cancelled');assert.deepEqual(await f.storage.get(GROUP_RESERVATION+group.groupId),[]);assert.equal(f.starts.length,0);
+});
+
+test('new invited capability cannot revive planned legacy children under a replacement admission route',async t=>{
+ const {ExperimentGroupHost}=await import('../../services/simulation/groups.ts');const f=groupFixture(t);let children=0;f.host.ports.admitRun=async(_actor,_key,_request,_runId,child)=>{children++;assert.equal(child?.runAdmission?.kind,'invited-runs');return child.runAdmission;};
+ const groups=new ExperimentGroupHost(f.storage,scope,f.host,()=>true,()=>f.q.now,8,async group=>group.runAdmission?.kind==='invited-runs');
+ const legacy=await groups.submit(actor,'old-window',f.request,plan,'image',()=>true);await groups.alarm();assert.equal(children,0);assert.equal((await groups.get(legacy.groupId)).errorCode,'simulation-unavailable');assert.equal((await f.host.list()).items.length,0);
+ const invited=await groups.submit(actor,'new-window',f.request,plan,'image',()=>true,{kind:'invited-runs',policyId:'runs-v1'});await groups.alarm();assert.equal(children,1);assert.equal((await f.host.get(invited.children[0].runId)).runAdmission?.kind,'invited-runs');assert.equal((await groups.get(legacy.groupId)).status,'queued');
 });

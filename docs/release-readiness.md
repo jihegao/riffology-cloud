@@ -1,5 +1,29 @@
 # Current release readiness — 2026-09-27
 
+## 2026-10-01 invited Cloud Runs implementation candidate
+
+[#136](https://github.com/jihegao/riffology-cloud/issues/136) adds the ordinary
+invited-user Run admission route and a fixed global SQLite capacity actor. It
+reuses immutable Simulation/ExperimentGroup/native result and publication paths,
+requires #153's same-actor v2 meter-only migration, and integrates #152's archive
+write fence. The checked-in Run policy is disabled; G5/M3/M4 and managed gates
+retain their existing states. This is a source candidate, not a deployment or
+ordinary authenticated/paid acceptance record.
+
+Global/per-user native concurrency is one, each Run has a 600-second deadline,
+and a comparison has at most eight sequential children. Terminal results retain
+capacity until the existing 360-second guard, 30-second quiet checks and original
+stop proof settle. Unknown execution globally isolates this Run actor and cannot
+be bypassed through a new project or policy. No call or monetary quota is added;
+original model/billing ledgers stay intact. The UI explains capacity/migration,
+release and publication failures in both languages and links readiness to Runs.
+
+[Admission, exact resource values, deployment order, local tests and pending live
+acceptance](invited-cloud-runs.md). Browser Preview stays local/unverified. The
+compiler single-Run route remains intact; Python parameter comparisons remain
+the minimal research comparison route.
+
+
 ## 2026-09-27 authorized Private Beta review extension
 
 [Issue #146](https://github.com/jihegao/riffology-cloud/issues/146) and
