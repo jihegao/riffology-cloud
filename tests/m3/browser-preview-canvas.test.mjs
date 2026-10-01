@@ -18,7 +18,7 @@ import baselineIndex from '../../services/browser-preview/execution/retained/727
 import {browserPreviewStaticIndex} from '../../services/browser-preview/execution/assets/static-index.ts';
 
 test('saved Python Canvas source is opt-in, versioned, and requires a draw hook',async()=>{
-  assert.equal(PREVIEW_VALIDATION_VERSION,'reviewed-platform-adapters/v3');
+ assert.equal(PREVIEW_VALIDATION_VERSION,'reviewed-platform-adapters/v4');
   const f=await fixture(0),registry=await f.ports.registry(),raw=await makeFixture(profiles[0],'traffic');
   const files=Object.fromEntries(raw.files.map(item=>[item.path,Buffer.from(item.base64,'base64')]));
   const source=async values=>{const archive=initialWorkspaceArchive(values);return {archive,identity:{projectId:f.scope.projectId,revisionId:'revision-canvas',filesSha256:await previewSha256(archive)}};};
@@ -68,7 +68,7 @@ test('every historical delivery byte remains available in a clean checkout',asyn
   for(const asset of historical.values()){
     if(generated.has(asset.url))continue;
     const bucket=asset.kind==='app'?'app-assets':'execution-assets';
-    const locations=[`../../services/browser-preview/execution/retained/bytes/${asset.file}`,`../../services/browser-preview/execution/retained/pre-142-bytes/${bucket}/${asset.file}`];
+    const locations=[`../../services/browser-preview/execution/retained/pre-150-bytes/${bucket}/${asset.file}`,`../../services/browser-preview/execution/retained/bytes/${asset.file}`,`../../services/browser-preview/execution/retained/pre-142-bytes/${bucket}/${asset.file}`];
     let bytes=null;
     for(const location of locations){try{bytes=await readFile(new URL(location,import.meta.url));break;}catch(error){if(error.code!=='ENOENT')throw error;}}
     assert.ok(bytes,`missing retained bytes: ${asset.url}`);

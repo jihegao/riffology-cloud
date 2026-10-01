@@ -1,14 +1,24 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {canonicalPreviewJson,createPreviewManifest,parsePreviewIdentityInput,parsePreviewManifest,parsePreviewRunInput,parsePreviewVerifyRequest,previewBuildView,previewPackageIdentity} from '../../services/browser-preview/contract.ts';
+import {BROWSER_PREVIEW_JAVASCRIPT_SCHEMA,BROWSER_PREVIEW_JAVASCRIPT_SOURCE_PATHS,canonicalPreviewJson,createPreviewManifest,parseBrowserJsManifest,parsePreviewIdentityInput,parsePreviewManifest,parsePreviewRunInput,parsePreviewVerifyRequest,previewBuildView,previewPackageIdentity} from '../../services/browser-preview/contract.ts';
 import {previewIdentityFixture as fixture,previewRunFixture} from '../../services/browser-preview/fixtures/identity.ts';
 test('identity freezes saved revision, all source files, dependency closure and runtime assets',async()=>{
  const identity=await previewPackageIdentity(fixture);
+ assert.equal(identity,'375bcbd0a4e4bf073c4929c2356fea551b4ba0f3f758c8b5c7aa2babda24be6e');
  assert.equal(await previewPackageIdentity({...fixture,sources:[...fixture.sources].reverse()}),identity);
  const cases=[{...fixture,revisionId:'revision-other'},{...fixture,projectId:'project-other'},{...fixture,filesSha256:'c'.repeat(64)},{...fixture,sources:fixture.sources.map((f,i)=>i===0?{...f,sha256:'d'.repeat(64)}:f)},{...fixture,runtime:{...fixture.runtime,assetSha256:'e'.repeat(64)}},{...fixture,runtime:{...fixture.runtime,dependencies:[{name:'numpy',version:'2.4.6',sha256:'f'.repeat(64)}]}}];
  for(const changed of cases)assert.notEqual(await previewPackageIdentity(changed),identity);
  const manifest=await createPreviewManifest(fixture);assert.deepEqual(await parsePreviewManifest(manifest),manifest);
  await assert.rejects(parsePreviewManifest({...manifest,packageIdentity:'0'.repeat(64)}),/contract-invalid/);
+});
+test('javascript package is explicit v2 while v1 remains the exact five-file contract',async()=>{
+ const js={...fixture,schema:BROWSER_PREVIEW_JAVASCRIPT_SCHEMA,sources:BROWSER_PREVIEW_JAVASCRIPT_SOURCE_PATHS.map((path,i)=>({path,sha256:(i+1).toString(16).repeat(64),byteLength:20+i}))};
+ const parsed=parsePreviewIdentityInput(js);assert.equal(parsed.schema,BROWSER_PREVIEW_JAVASCRIPT_SCHEMA);assert.deepEqual(parsed.sources.map(f=>f.path),BROWSER_PREVIEW_JAVASCRIPT_SOURCE_PATHS);
+ assert.notEqual(await previewPackageIdentity(parsed),await previewPackageIdentity(fixture));
+ assert.throws(()=>parsePreviewIdentityInput({...fixture,sources:js.sources}),/contract-invalid/);
+ assert.throws(()=>parsePreviewIdentityInput({...js,sources:fixture.sources}),/contract-invalid/);
+ assert.deepEqual(parseBrowserJsManifest({schema:'riffology.browser-js/v1',hostApi:'riffology.browser-host/v1',entry:'frontend/main.mjs',width:600,height:420}),{schema:'riffology.browser-js/v1',hostApi:'riffology.browser-host/v1',entry:'frontend/main.mjs',width:600,height:420});
+ for(const bad of [{schema:'riffology.browser-js/v1',hostApi:'riffology.browser-host/v1',entry:'https://cdn/x.mjs',width:600,height:420},{schema:'riffology.browser-js/v1',hostApi:'riffology.browser-host/v1',entry:'frontend/main.mjs',width:601,height:420,dependencies:[]}])assert.throws(()=>parseBrowserJsManifest(bad),/contract-invalid/);
 });
 test('schema refuses unknown fields, source traversal, private metadata and getter evaluation',()=>{
  for(const changed of [{...fixture,session:'secret'},{...fixture,schema:'riffology.browser-preview/v2'},{...fixture,sources:[...fixture.sources.slice(1),fixture.sources[1]]},{...fixture,sources:fixture.sources.map((f,i)=>i===0?{...f,path:'../session.json'}:f)}])assert.throws(()=>parsePreviewIdentityInput(changed),/contract-invalid/);

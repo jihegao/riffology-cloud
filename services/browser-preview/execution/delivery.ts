@@ -29,7 +29,8 @@ export async function serveBrowserPreviewAppAsset(request:Request,port:StaticAss
  if(!asset)return deny(404);
  return checkedStaticAsset(request,port,asset,new Headers({'Cross-Origin-Resource-Policy':'same-origin'}));
 }
-type DeliveryDescriptor={hostModule:{url:string;sha256:string;byteLength:number};rendererModule:{url:string;sha256:string;byteLength:number};frameDocument:{url:string;sha256:string;byteLength:number;scriptSha256:string};assetBaseUrl:string};
+type FrameDescriptor={url:string;sha256:string;byteLength:number;scriptSha256:string};
+type DeliveryDescriptor={hostModule:{url:string;sha256:string;byteLength:number};rendererModule:{url:string;sha256:string;byteLength:number};frameDocument:FrameDescriptor;jsFrameDocument?:FrameDescriptor;assetBaseUrl:string};
 export function selectBrowserPreviewDelivery(index:{delivery:DeliveryDescriptor;versions:Record<string,DeliveryDescriptor>},executionOrigin:string,assetSha256?:string){const delivery=assetSha256===undefined?index.delivery:index.versions[assetSha256];if(!delivery)throw Error('browser-preview-delivery-version-unavailable');return {...delivery,executionOrigin};}
 export function browserPreviewDelivery(executionOrigin:string,assetSha256?:string){return selectBrowserPreviewDelivery(browserPreviewStaticIndex,executionOrigin,assetSha256);}
 export function findExecutionAsset(path:string){return browserPreviewStaticIndex.assets.find(a=>a.kind!=='app'&&a.url===path)??null;}

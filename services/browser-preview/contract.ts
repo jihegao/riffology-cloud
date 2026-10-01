@@ -1,5 +1,8 @@
 /** Immutable package metadata. This schema is not a Python security validator. */
 export const BROWSER_PREVIEW_SCHEMA = 'riffology.browser-preview/v1' as const;
+export const BROWSER_PREVIEW_JAVASCRIPT_SCHEMA = 'riffology.browser-preview/v2' as const;
+export const BROWSER_JS_SCHEMA = 'riffology.browser-js/v1' as const;
+export const BROWSER_JS_HOST_API = 'riffology.browser-host/v1' as const;
 /** Reviewed platform wrappers only. Both invoke the same saved model.run(config).
  * The newer wrapper additionally emits server trace-audit evidence; accepting
  * the legacy wrapper for local playback does not manufacture that evidence. */
@@ -8,17 +11,21 @@ export const PREVIEW_COMPATIBLE_ADAPTER_SHA256 = Object.freeze([
  'fa7987095bbc29f2c6d87e9b0f815415f88c9079ad7070fb7fe8b91e7ebf0898',
 ]);
 export const BROWSER_PREVIEW_SOURCE_PATHS = ['model/model.py','model/run.py','model/model-spec.json','model/visualization.json','app/requirements.lock'] as const;
+export const BROWSER_PREVIEW_JAVASCRIPT_SOURCE_PATHS = [...BROWSER_PREVIEW_SOURCE_PATHS,'frontend/manifest.json','frontend/main.mjs'] as const;
+export const BROWSER_JS_ENTRY_MAX_BYTES=128*1024;
 export const BROWSER_PREVIEW_SEED_MAX = 4294967295;
-export type PreviewSourcePath = typeof BROWSER_PREVIEW_SOURCE_PATHS[number];
+export type PreviewSourcePath = typeof BROWSER_PREVIEW_JAVASCRIPT_SOURCE_PATHS[number];
 export type PreviewFile = {path:PreviewSourcePath;sha256:string;byteLength:number};
 export type PreviewDependency = {name:string;version:string;sha256:string};
 export type PreviewRuntime = {profileId:'python-stdlib/v1'|'mesa-3.5.1/v1';runtimeVersion:string;adapterVersion:string;pythonVersion:string;assetSha256:string;visualProtocol:'riffology.visual/v0.1';limitsSha256:string;dependencies:PreviewDependency[]};
-export type PreviewPackageIdentityInput = {schema:typeof BROWSER_PREVIEW_SCHEMA;projectId:string;revisionId:string;filesSha256:string;sources:PreviewFile[];runtime:PreviewRuntime};
+export type PreviewPackageSchema=typeof BROWSER_PREVIEW_SCHEMA|typeof BROWSER_PREVIEW_JAVASCRIPT_SCHEMA;
+export type PreviewPackageIdentityInput = {schema:PreviewPackageSchema;projectId:string;revisionId:string;filesSha256:string;sources:PreviewFile[];runtime:PreviewRuntime};
 export type BrowserPreviewManifest = PreviewPackageIdentityInput & {packageIdentity:string};
+export type BrowserJsManifest={schema:typeof BROWSER_JS_SCHEMA;hostApi:typeof BROWSER_JS_HOST_API;entry:'frontend/main.mjs';width:600;height:420};
 export type PreviewParameters = Record<string,string|number|boolean>;
 export type PreviewRunInput = {parameters:PreviewParameters;seed:number};
 export type PreviewVerifyRequest = PreviewRunInput & {revisionId:string;packageIdentity:string;intent:'experiment';idempotencyKey:string};
-export type PreviewBuildReason = 'source-missing'|'source-unavailable'|'model-spec-invalid'|'visualization-invalid'|'dependency-unsupported'|'python-unsupported'|'profile-unavailable'|'source-too-large'|'storage-unavailable'|'object-conflict'|'build-internal';
+export type PreviewBuildReason = 'source-missing'|'source-unavailable'|'model-spec-invalid'|'visualization-invalid'|'frontend-invalid'|'javascript-unsupported'|'dependency-unsupported'|'python-unsupported'|'profile-unavailable'|'source-too-large'|'storage-unavailable'|'object-conflict'|'build-internal';
 export type PreviewBuildState =
  | {status:'not_requested';revisionId:string;profileId:PreviewRuntime['profileId']}
  | {status:'building';revisionId:string;profileId:PreviewRuntime['profileId'];buildIdentity:string;attempt:number}
@@ -45,11 +52,17 @@ export function parsePreviewRuntime(raw:unknown):PreviewRuntime{
 }
 export function parsePreviewIdentityInput(raw:unknown):PreviewPackageIdentityInput{
  const r=object(raw,['schema','projectId','revisionId','filesSha256','sources','runtime']);
- if(r.schema!==BROWSER_PREVIEW_SCHEMA||!Array.isArray(r.sources)||r.sources.length!==BROWSER_PREVIEW_SOURCE_PATHS.length)fail();
- const sources=r.sources.map(f=>{const p=object(f,['path','sha256','byteLength']);if(!BROWSER_PREVIEW_SOURCE_PATHS.includes(p.path as PreviewSourcePath))fail();return {path:p.path as PreviewSourcePath,sha256:text(p.sha256,hashPattern),byteLength:integer(p.byteLength,1024*1024)};});
+ const paths=r.schema===BROWSER_PREVIEW_SCHEMA?BROWSER_PREVIEW_SOURCE_PATHS:r.schema===BROWSER_PREVIEW_JAVASCRIPT_SCHEMA?BROWSER_PREVIEW_JAVASCRIPT_SOURCE_PATHS:null;
+ if(!paths||!Array.isArray(r.sources)||r.sources.length!==paths.length)fail();
+ const sources=r.sources.map(f=>{const p=object(f,['path','sha256','byteLength']);if(!paths.includes(p.path as never))fail();const maximum=p.path==='frontend/main.mjs'?BROWSER_JS_ENTRY_MAX_BYTES:1024*1024;return {path:p.path as PreviewSourcePath,sha256:text(p.sha256,hashPattern),byteLength:integer(p.byteLength,maximum)};});
  if(new Set(sources.map(f=>f.path)).size!==sources.length)fail();
- sources.sort((a,b)=>BROWSER_PREVIEW_SOURCE_PATHS.indexOf(a.path)-BROWSER_PREVIEW_SOURCE_PATHS.indexOf(b.path));
- return {schema:BROWSER_PREVIEW_SCHEMA,projectId:text(r.projectId,idPattern),revisionId:text(r.revisionId,idPattern),filesSha256:text(r.filesSha256,hashPattern),sources,runtime:parsePreviewRuntime(r.runtime)};
+ sources.sort((a,b)=>paths.indexOf(a.path as never)-paths.indexOf(b.path as never));
+ return {schema:r.schema as PreviewPackageSchema,projectId:text(r.projectId,idPattern),revisionId:text(r.revisionId,idPattern),filesSha256:text(r.filesSha256,hashPattern),sources,runtime:parsePreviewRuntime(r.runtime)};
+}
+export function parseBrowserJsManifest(raw:unknown):BrowserJsManifest{
+ const r=object(raw,['schema','hostApi','entry','width','height']);
+ if(r.schema!==BROWSER_JS_SCHEMA||r.hostApi!==BROWSER_JS_HOST_API||r.entry!=='frontend/main.mjs'||r.width!==600||r.height!==420)fail();
+ return {schema:BROWSER_JS_SCHEMA,hostApi:BROWSER_JS_HOST_API,entry:'frontend/main.mjs',width:600,height:420};
 }
 /** Sorted JSON keys; arrays have schema-defined ordering, never locale ordering. */
 export function canonicalPreviewJson(raw:unknown):string{

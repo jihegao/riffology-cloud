@@ -1,0 +1,598 @@
+{
+  "schema": "riffology.browser-static-delivery/v3",
+  "runtimeProfiles": [
+    "28cd56fae7755f8b100e00d96aed82dc11757e38733fd3f0a3d1efe28c7fbd4c",
+    "64f7b7606d47dd508ee0046b08ac4720dbd9bff46790de58ad2b7e40a23e6520",
+    "6b0c95c5700b9561172dce4fa3419ad7224cfbc2e5d8871366b27c16f854e94d",
+    "b5355cc5925224d224540792525cdefa0ae00deacc3d330608065f90c740eed2",
+    "b6cb6c0e726d007c281f991eaea0d2aae415113328444de47c0681d85b553fd9",
+    "ed19f7bd56866879a612a2018939630b275bc8b4b7becef2d68fbde27d2e8041"
+  ],
+  "delivery": {
+    "hostModule": {
+      "url": "/browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs",
+      "sha256": "e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e",
+      "byteLength": 45189
+    },
+    "rendererModule": {
+      "url": "/browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+      "sha256": "05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5",
+      "byteLength": 7224
+    },
+    "assetBaseUrl": "/browser-preview-assets",
+    "frameDocument": {
+      "url": "/runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+      "sha256": "16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225",
+      "byteLength": 12075,
+      "scriptSha256": "16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0"
+    }
+  },
+  "versions": {
+    "ed19f7bd56866879a612a2018939630b275bc8b4b7becef2d68fbde27d2e8041": {
+      "hostModule": {
+        "url": "/browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs",
+        "sha256": "e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e",
+        "byteLength": 45189
+      },
+      "rendererModule": {
+        "url": "/browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+        "sha256": "05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5",
+        "byteLength": 7224
+      },
+      "assetBaseUrl": "/browser-preview-assets",
+      "frameDocument": {
+        "url": "/runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+        "sha256": "16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225",
+        "byteLength": 12075,
+        "scriptSha256": "16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0"
+      }
+    },
+    "6b0c95c5700b9561172dce4fa3419ad7224cfbc2e5d8871366b27c16f854e94d": {
+      "hostModule": {
+        "url": "/browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs",
+        "sha256": "e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e",
+        "byteLength": 45189
+      },
+      "rendererModule": {
+        "url": "/browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+        "sha256": "05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5",
+        "byteLength": 7224
+      },
+      "assetBaseUrl": "/browser-preview-assets",
+      "frameDocument": {
+        "url": "/runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+        "sha256": "16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225",
+        "byteLength": 12075,
+        "scriptSha256": "16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0"
+      }
+    },
+    "b5355cc5925224d224540792525cdefa0ae00deacc3d330608065f90c740eed2": {
+      "hostModule": {
+        "url": "/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+        "sha256": "38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1",
+        "byteLength": 41203
+      },
+      "rendererModule": {
+        "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+        "sha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
+        "byteLength": 6909
+      },
+      "assetBaseUrl": "/browser-preview-assets",
+      "frameDocument": {
+        "url": "/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
+        "sha256": "53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5",
+        "byteLength": 5944,
+        "scriptSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf"
+      }
+    },
+    "28cd56fae7755f8b100e00d96aed82dc11757e38733fd3f0a3d1efe28c7fbd4c": {
+      "hostModule": {
+        "url": "/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+        "sha256": "38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1",
+        "byteLength": 41203
+      },
+      "rendererModule": {
+        "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+        "sha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
+        "byteLength": 6909
+      },
+      "assetBaseUrl": "/browser-preview-assets",
+      "frameDocument": {
+        "url": "/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
+        "sha256": "53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5",
+        "byteLength": 5944,
+        "scriptSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf"
+      }
+    },
+    "b6cb6c0e726d007c281f991eaea0d2aae415113328444de47c0681d85b553fd9": {
+      "hostModule": {
+        "url": "/browser-preview-assets/9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0/host.bundle.mjs",
+        "sha256": "9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0",
+        "byteLength": 41203
+      },
+      "rendererModule": {
+        "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+        "sha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
+        "byteLength": 6909
+      },
+      "assetBaseUrl": "/browser-preview-assets",
+      "frameDocument": {
+        "url": "/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
+        "sha256": "53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5",
+        "byteLength": 5944,
+        "scriptSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf"
+      }
+    },
+    "64f7b7606d47dd508ee0046b08ac4720dbd9bff46790de58ad2b7e40a23e6520": {
+      "hostModule": {
+        "url": "/browser-preview-assets/9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0/host.bundle.mjs",
+        "sha256": "9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0",
+        "byteLength": 41203
+      },
+      "rendererModule": {
+        "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+        "sha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
+        "byteLength": 6909
+      },
+      "assetBaseUrl": "/browser-preview-assets",
+      "frameDocument": {
+        "url": "/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
+        "sha256": "53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5",
+        "byteLength": 5944,
+        "scriptSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf"
+      }
+    }
+  },
+  "assets": [
+    {
+      "url": "/browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+      "file": "browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+      "sha256": "05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5",
+      "byteLength": 7224,
+      "contentType": "text/javascript",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/0ad7104a3cde648e5486a718799f3852f1d782ff19d4bfc13db9dc631df083f8/assets/micropip-0.11.1-py3-none-any.whl",
+      "file": "browser-preview-assets/0ad7104a3cde648e5486a718799f3852f1d782ff19d4bfc13db9dc631df083f8/assets/micropip-0.11.1-py3-none-any.whl",
+      "sha256": "0ad7104a3cde648e5486a718799f3852f1d782ff19d4bfc13db9dc631df083f8",
+      "byteLength": 115486,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e/delivery/worker.bundle.mjs",
+      "file": "browser-preview-assets/0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e/delivery/worker.bundle.mjs",
+      "sha256": "0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e",
+      "byteLength": 1651861,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0/delivery/frame.bundle.mjs",
+      "file": "browser-preview-assets/16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0/delivery/frame.bundle.mjs",
+      "sha256": "16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0",
+      "byteLength": 11942,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/18b0c6a423b9b9ffe0b6679f8ebe9dc619d557c5647bfda449583d276d79d422/assets/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "file": "browser-preview-assets/18b0c6a423b9b9ffe0b6679f8ebe9dc619d557c5647bfda449583d276d79d422/assets/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "sha256": "18b0c6a423b9b9ffe0b6679f8ebe9dc619d557c5647bfda449583d276d79d422",
+      "byteLength": 1037807,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf/delivery/frame.bundle.mjs",
+      "file": "browser-preview-assets/288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf/delivery/frame.bundle.mjs",
+      "sha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf",
+      "byteLength": 5811,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/29edb1e328c61cad6ac21a2ff92c7d274a2b662eb7c12b2d147f04917b765ad6/assets/six-1.17.0-py2.py3-none-any.whl",
+      "file": "browser-preview-assets/29edb1e328c61cad6ac21a2ff92c7d274a2b662eb7c12b2d147f04917b765ad6/assets/six-1.17.0-py2.py3-none-any.whl",
+      "sha256": "29edb1e328c61cad6ac21a2ff92c7d274a2b662eb7c12b2d147f04917b765ad6",
+      "byteLength": 11050,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/2ac5eba365ec12839c75c03b39b3be1dd63b798852cc460b014b52238be042f7/assets/pyodide.asm.mjs",
+      "file": "browser-preview-assets/2ac5eba365ec12839c75c03b39b3be1dd63b798852cc460b014b52238be042f7/assets/pyodide.asm.mjs",
+      "sha256": "2ac5eba365ec12839c75c03b39b3be1dd63b798852cc460b014b52238be042f7",
+      "byteLength": 1250344,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8/source/package-lock.json",
+      "file": "browser-preview-assets/2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8/source/package-lock.json",
+      "sha256": "2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8",
+      "byteLength": 214212,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/2d127e0fbdfdd139b90c2eb487950913771846991330460fce3b183ba79d8ddb/assets/matplotlib-3.10.8-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "file": "browser-preview-assets/2d127e0fbdfdd139b90c2eb487950913771846991330460fce3b183ba79d8ddb/assets/matplotlib-3.10.8-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "sha256": "2d127e0fbdfdd139b90c2eb487950913771846991330460fce3b183ba79d8ddb",
+      "byteLength": 6982033,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f/source/contract.ts",
+      "file": "browser-preview-assets/2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f/source/contract.ts",
+      "sha256": "2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f",
+      "byteLength": 8961,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/32959d4137cec8143d75016d029281df3d2e80a232896ed903c2b59e1c44ee9f/assets/numpy-2.4.6-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "file": "browser-preview-assets/32959d4137cec8143d75016d029281df3d2e80a232896ed903c2b59e1c44ee9f/assets/numpy-2.4.6-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "sha256": "32959d4137cec8143d75016d029281df3d2e80a232896ed903c2b59e1c44ee9f",
+      "byteLength": 2918760,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+      "file": "browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+      "sha256": "38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1",
+      "byteLength": 41203,
+      "contentType": "text/javascript",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/3a0a00dfeaa348ac20f9ef09904233d32d33f644339662d4af368f8a2010f37a/assets/pyodide.asm.wasm",
+      "file": "browser-preview-assets/3a0a00dfeaa348ac20f9ef09904233d32d33f644339662d4af368f8a2010f37a/assets/pyodide.asm.wasm",
+      "sha256": "3a0a00dfeaa348ac20f9ef09904233d32d33f644339662d4af368f8a2010f37a",
+      "byteLength": 9598218,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/3fdaef09e9e365c85e002737720f8d0ab8f278c1c244a2dde6a37663cf488ad4/assets/pyodide-lock.json",
+      "file": "browser-preview-assets/3fdaef09e9e365c85e002737720f8d0ab8f278c1c244a2dde6a37663cf488ad4/assets/pyodide-lock.json",
+      "sha256": "3fdaef09e9e365c85e002737720f8d0ab8f278c1c244a2dde6a37663cf488ad4",
+      "byteLength": 114440,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/49e63ea216c19622ce8a61b7ecfa1d570dad714da4438503e95aab6e11977b52/runtime/frame.mjs",
+      "file": "browser-preview-assets/49e63ea216c19622ce8a61b7ecfa1d570dad714da4438503e95aab6e11977b52/runtime/frame.mjs",
+      "sha256": "49e63ea216c19622ce8a61b7ecfa1d570dad714da4438503e95aab6e11977b52",
+      "byteLength": 2276,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/4c0cec31da970cc4c3f547be87c792de128831e6f0269a7b81428596c8be46ac/runtime/frame.html",
+      "file": "browser-preview-assets/4c0cec31da970cc4c3f547be87c792de128831e6f0269a7b81428596c8be46ac/runtime/frame.html",
+      "sha256": "4c0cec31da970cc4c3f547be87c792de128831e6f0269a7b81428596c8be46ac",
+      "byteLength": 161,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/5139f59cfb287705c920e147f5abe2a02f6b018db775b7331eb18f5f6a045044/runtime/renderer.mjs",
+      "file": "browser-preview-assets/5139f59cfb287705c920e147f5abe2a02f6b018db775b7331eb18f5f6a045044/runtime/renderer.mjs",
+      "sha256": "5139f59cfb287705c920e147f5abe2a02f6b018db775b7331eb18f5f6a045044",
+      "byteLength": 2992,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/528f14add1b13f86f4780cf2cf067aea019885b2628720e352447cd0571234f7/assets/mesa-3.5.1-py3-none-any.whl",
+      "file": "browser-preview-assets/528f14add1b13f86f4780cf2cf067aea019885b2628720e352447cd0571234f7/assets/mesa-3.5.1-py3-none-any.whl",
+      "sha256": "528f14add1b13f86f4780cf2cf067aea019885b2628720e352447cd0571234f7",
+      "byteLength": 275085,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/5dc47f9c9e9da126476870464a9608a63134ed23a2fa587966e5091b736a338f/assets/setuptools-82.0.1-py3-none-any.whl",
+      "file": "browser-preview-assets/5dc47f9c9e9da126476870464a9608a63134ed23a2fa587966e5091b736a338f/assets/setuptools-82.0.1-py3-none-any.whl",
+      "sha256": "5dc47f9c9e9da126476870464a9608a63134ed23a2fa587966e5091b736a338f",
+      "byteLength": 756856,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/69e3f6ccec3e14b465df60be577ca62f536251406b9a00cce019eac5252a2495/assets/pyodide.mjs",
+      "file": "browser-preview-assets/69e3f6ccec3e14b465df60be577ca62f536251406b9a00cce019eac5252a2495/assets/pyodide.mjs",
+      "sha256": "69e3f6ccec3e14b465df60be577ca62f536251406b9a00cce019eac5252a2495",
+      "byteLength": 17931,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/6e2e0a600f43cf1cf418095e7666a573d7c6142ac179ccc3de0c513635fcfba8/runtime/host.mjs",
+      "file": "browser-preview-assets/6e2e0a600f43cf1cf418095e7666a573d7c6142ac179ccc3de0c513635fcfba8/runtime/host.mjs",
+      "sha256": "6e2e0a600f43cf1cf418095e7666a573d7c6142ac179ccc3de0c513635fcfba8",
+      "byteLength": 5395,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/6e84d6d066a91819769093d7d5bf6cf67339a2c708087dc5b41934f5bc9fd931/runtime/host.mjs",
+      "file": "browser-preview-assets/6e84d6d066a91819769093d7d5bf6cf67339a2c708087dc5b41934f5bc9fd931/runtime/host.mjs",
+      "sha256": "6e84d6d066a91819769093d7d5bf6cf67339a2c708087dc5b41934f5bc9fd931",
+      "byteLength": 8382,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/70682ba25f1503dde0d9d3d98a889480b42b903a5d863b0a7118bc4173aa02c8/assets/cycler-0.12.1-py3-none-any.whl",
+      "file": "browser-preview-assets/70682ba25f1503dde0d9d3d98a889480b42b903a5d863b0a7118bc4173aa02c8/assets/cycler-0.12.1-py3-none-any.whl",
+      "sha256": "70682ba25f1503dde0d9d3d98a889480b42b903a5d863b0a7118bc4173aa02c8",
+      "byteLength": 8321,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/70c5b218495d55cd610752b01dc3d9f593dfd720bec271b5bebe4d86b51ae3c0/assets/decorator-5.2.1-py3-none-any.whl",
+      "file": "browser-preview-assets/70c5b218495d55cd610752b01dc3d9f593dfd720bec271b5bebe4d86b51ae3c0/assets/decorator-5.2.1-py3-none-any.whl",
+      "sha256": "70c5b218495d55cd610752b01dc3d9f593dfd720bec271b5bebe4d86b51ae3c0",
+      "byteLength": 9167,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/80c5be6babfe03297069703410c3c29404dcf2525d2b128746bae5536f94831f/assets/python_stdlib.zip",
+      "file": "browser-preview-assets/80c5be6babfe03297069703410c3c29404dcf2525d2b128746bae5536f94831f/assets/python_stdlib.zip",
+      "sha256": "80c5be6babfe03297069703410c3c29404dcf2525d2b128746bae5536f94831f",
+      "byteLength": 2545564,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/831ec2706b7c113a456bf413d7df96b82aafbbf4a20ec7de8bbe91908d8dd878/source/prepare-assets.mjs",
+      "file": "browser-preview-assets/831ec2706b7c113a456bf413d7df96b82aafbbf4a20ec7de8bbe91908d8dd878/source/prepare-assets.mjs",
+      "sha256": "831ec2706b7c113a456bf413d7df96b82aafbbf4a20ec7de8bbe91908d8dd878",
+      "byteLength": 5809,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/8512aee3e4b36b5a79523628d97d0d34612a366aecbb5b44a08c7ae45dd50d57/assets/scipy-1.18.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "file": "browser-preview-assets/8512aee3e4b36b5a79523628d97d0d34612a366aecbb5b44a08c7ae45dd50d57/assets/scipy-1.18.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "sha256": "8512aee3e4b36b5a79523628d97d0d34612a366aecbb5b44a08c7ae45dd50d57",
+      "byteLength": 14029768,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24/runtime/sha256.mjs",
+      "file": "browser-preview-assets/85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24/runtime/sha256.mjs",
+      "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24",
+      "byteLength": 2241,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/86218f40282014072b1850363814edd71bb9f7d604f641d79dc5682fd837cb3c/runtime/worker.mjs",
+      "file": "browser-preview-assets/86218f40282014072b1850363814edd71bb9f7d604f641d79dc5682fd837cb3c/runtime/worker.mjs",
+      "sha256": "86218f40282014072b1850363814edd71bb9f7d604f641d79dc5682fd837cb3c",
+      "byteLength": 9168,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/8c3e4bb64e23a66a4c9effc4a5a09a2aafc1db7d70b8451ba3ba5b7fe6d18dd2/assets/pyparsing-3.3.2-py3-none-any.whl",
+      "file": "browser-preview-assets/8c3e4bb64e23a66a4c9effc4a5a09a2aafc1db7d70b8451ba3ba5b7fe6d18dd2/assets/pyparsing-3.3.2-py3-none-any.whl",
+      "sha256": "8c3e4bb64e23a66a4c9effc4a5a09a2aafc1db7d70b8451ba3ba5b7fe6d18dd2",
+      "byteLength": 122781,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14/runtime/package-loader.mjs",
+      "file": "browser-preview-assets/91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14/runtime/package-loader.mjs",
+      "sha256": "91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14",
+      "byteLength": 4861,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/91f2bbd0ce334a8ce2144e6f26728cf292c5dfd3fa7943864cdd2d2e1ef30d57/source/prepare-assets.mjs",
+      "file": "browser-preview-assets/91f2bbd0ce334a8ce2144e6f26728cf292c5dfd3fa7943864cdd2d2e1ef30d57/source/prepare-assets.mjs",
+      "sha256": "91f2bbd0ce334a8ce2144e6f26728cf292c5dfd3fa7943864cdd2d2e1ef30d57",
+      "byteLength": 5796,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/94f246abe8cd46f0695dc9256cde3966bc637b80148fe72a1e7b0e6623d62144/assets/fonttools-4.62.1-py3-none-any.whl",
+      "file": "browser-preview-assets/94f246abe8cd46f0695dc9256cde3966bc637b80148fe72a1e7b0e6623d62144/assets/fonttools-4.62.1-py3-none-any.whl",
+      "sha256": "94f246abe8cd46f0695dc9256cde3966bc637b80148fe72a1e7b0e6623d62144",
+      "byteLength": 1152647,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/99cef063109bb03956af3987b2351c4d6615060732597e224e9fc49ecd345392/assets/pandas-3.0.2-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "file": "browser-preview-assets/99cef063109bb03956af3987b2351c4d6615060732597e224e9fc49ecd345392/assets/pandas-3.0.2-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "sha256": "99cef063109bb03956af3987b2351c4d6615060732597e224e9fc49ecd345392",
+      "byteLength": 4177814,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/9c1d350424840e15c16450ac0b0d6007e908d266746b61d64760dd77263085af/assets/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+      "file": "browser-preview-assets/9c1d350424840e15c16450ac0b0d6007e908d266746b61d64760dd77263085af/assets/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+      "sha256": "9c1d350424840e15c16450ac0b0d6007e908d266746b61d64760dd77263085af",
+      "byteLength": 229892,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0/host.bundle.mjs",
+      "file": "browser-preview-assets/9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0/host.bundle.mjs",
+      "sha256": "9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0",
+      "byteLength": 41203,
+      "contentType": "text/javascript",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717/delivery/worker.bundle.mjs",
+      "file": "browser-preview-assets/a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717/delivery/worker.bundle.mjs",
+      "sha256": "a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717",
+      "byteLength": 1646213,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/a86cb7e6e748499e673303ba621ec011850ba9f3e7743f8e27162039ce5f47b5/source/package-lock.json",
+      "file": "browser-preview-assets/a86cb7e6e748499e673303ba621ec011850ba9f3e7743f8e27162039ce5f47b5/source/package-lock.json",
+      "sha256": "a86cb7e6e748499e673303ba621ec011850ba9f3e7743f8e27162039ce5f47b5",
+      "byteLength": 214516,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/adaee63a7a2088b1bad68ceb2486a8e7fa7dc43b8a90d27de91dd36e2f058126/assets/networkx-3.6.1-py3-none-any.whl",
+      "file": "browser-preview-assets/adaee63a7a2088b1bad68ceb2486a8e7fa7dc43b8a90d27de91dd36e2f058126/assets/networkx-3.6.1-py3-none-any.whl",
+      "sha256": "adaee63a7a2088b1bad68ceb2486a8e7fa7dc43b8a90d27de91dd36e2f058126",
+      "byteLength": 1084840,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54/runtime/renderer.mjs",
+      "file": "browser-preview-assets/b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54/runtime/renderer.mjs",
+      "sha256": "b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54",
+      "byteLength": 3275,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+      "file": "browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+      "sha256": "c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80",
+      "byteLength": 6909,
+      "contentType": "text/javascript",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/c8eaf8e55b79c2a7e765bdce5c1b84e05a43a585a16a00efadd96a0b7913914e/assets/pytz-2026.1.post1-py2.py3-none-any.whl",
+      "file": "browser-preview-assets/c8eaf8e55b79c2a7e765bdce5c1b84e05a43a585a16a00efadd96a0b7913914e/assets/pytz-2026.1.post1-py2.py3-none-any.whl",
+      "sha256": "c8eaf8e55b79c2a7e765bdce5c1b84e05a43a585a16a00efadd96a0b7913914e",
+      "byteLength": 510489,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/d0a6afcbb85b92d2ff5924a70b32b1e44ce691752cdbd1bf45d3cd8c9a4866a8/runtime/frame.mjs",
+      "file": "browser-preview-assets/d0a6afcbb85b92d2ff5924a70b32b1e44ce691752cdbd1bf45d3cd8c9a4866a8/runtime/frame.mjs",
+      "sha256": "d0a6afcbb85b92d2ff5924a70b32b1e44ce691752cdbd1bf45d3cd8c9a4866a8",
+      "byteLength": 7619,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/d1270323c10ab24141e40a854dcd407625cb4341c9b83301f1111e7db037b57f/assets/contourpy-1.3.3-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "file": "browser-preview-assets/d1270323c10ab24141e40a854dcd407625cb4341c9b83301f1111e7db037b57f/assets/contourpy-1.3.3-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "sha256": "d1270323c10ab24141e40a854dcd407625cb4341c9b83301f1111e7db037b57f",
+      "byteLength": 118875,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/ddc80a8321dec64e3373312dc4cbc709eec9d0d34477d7fe61e4b09378c7a197/runtime/protocol.mjs",
+      "file": "browser-preview-assets/ddc80a8321dec64e3373312dc4cbc709eec9d0d34477d7fe61e4b09378c7a197/runtime/protocol.mjs",
+      "sha256": "ddc80a8321dec64e3373312dc4cbc709eec9d0d34477d7fe61e4b09378c7a197",
+      "byteLength": 5356,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8/source/model-spec.ts",
+      "file": "browser-preview-assets/df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8/source/model-spec.ts",
+      "sha256": "df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8",
+      "byteLength": 7670,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs",
+      "file": "browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs",
+      "sha256": "e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e",
+      "byteLength": 45189,
+      "contentType": "text/javascript",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/ecc8d10e925d552eae08bca0a43c6ad5cdc53a1f83889b71c2d56eecf1cc3aeb/runtime/canvas.mjs",
+      "file": "browser-preview-assets/ecc8d10e925d552eae08bca0a43c6ad5cdc53a1f83889b71c2d56eecf1cc3aeb/runtime/canvas.mjs",
+      "sha256": "ecc8d10e925d552eae08bca0a43c6ad5cdc53a1f83889b71c2d56eecf1cc3aeb",
+      "byteLength": 2106,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/f08716f1e1307718c01c03748408ffed22cbbe3c2a098a0d0cb8f616e0642a63/assets/tqdm-4.67.3-py3-none-any.whl",
+      "file": "browser-preview-assets/f08716f1e1307718c01c03748408ffed22cbbe3c2a098a0d0cb8f616e0642a63/assets/tqdm-4.67.3-py3-none-any.whl",
+      "sha256": "f08716f1e1307718c01c03748408ffed22cbbe3c2a098a0d0cb8f616e0642a63",
+      "byteLength": 78374,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/f420e78080ca2310ed591ccc990d67809914e5acfb819ee34559bebde65a61cc/runtime/worker.mjs",
+      "file": "browser-preview-assets/f420e78080ca2310ed591ccc990d67809914e5acfb819ee34559bebde65a61cc/runtime/worker.mjs",
+      "sha256": "f420e78080ca2310ed591ccc990d67809914e5acfb819ee34559bebde65a61cc",
+      "byteLength": 5994,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/f58ad9d3cde3f3051e3bc82df1db19ff0aa940439dfd5f5d470da61c5ea033bf/assets/packaging-26.1-py3-none-any.whl",
+      "file": "browser-preview-assets/f58ad9d3cde3f3051e3bc82df1db19ff0aa940439dfd5f5d470da61c5ea033bf/assets/packaging-26.1-py3-none-any.whl",
+      "sha256": "f58ad9d3cde3f3051e3bc82df1db19ff0aa940439dfd5f5d470da61c5ea033bf",
+      "byteLength": 95852,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/f8b19816e2cf8e36fc2adfabb60ad24dad422dfaffa6087173d829d9924fcc07/assets/kiwisolver-1.5.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "file": "browser-preview-assets/f8b19816e2cf8e36fc2adfabb60ad24dad422dfaffa6087173d829d9924fcc07/assets/kiwisolver-1.5.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "sha256": "f8b19816e2cf8e36fc2adfabb60ad24dad422dfaffa6087173d829d9924fcc07",
+      "byteLength": 36616,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396/runtime/package-loader.mjs",
+      "file": "browser-preview-assets/fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396/runtime/package-loader.mjs",
+      "sha256": "fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396",
+      "byteLength": 4845,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+      "file": "runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+      "sha256": "16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225",
+      "byteLength": 12075,
+      "contentType": "text/html",
+      "kind": "frame",
+      "scriptSha256": "16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0"
+    },
+    {
+      "url": "/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
+      "file": "runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
+      "sha256": "53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5",
+      "byteLength": 5944,
+      "contentType": "text/html",
+      "kind": "frame",
+      "scriptSha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf"
+    }
+  ]
+}

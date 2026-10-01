@@ -18,14 +18,14 @@ for (const expected of metadata.assets) {
     await writeFile(path,bytes);
   }
 }
-const sources = ['worker.mjs','host.mjs','frame.mjs','renderer.mjs','canvas.mjs','package-loader.mjs','protocol.mjs','sha256.mjs','frame.html'];
+const sources = ['worker.mjs','host.mjs','frame.mjs','js-frame.mjs','js-scene.mjs','renderer.mjs','canvas.mjs','package-loader.mjs','protocol.mjs','sha256.mjs','frame.html','js-frame.html'];
 const runtimeAssets = await Promise.all(sources.map(async file => {const bytes = await readFile(new URL(file,import.meta.url)); return {path:'runtime/'+file,sha256:await previewSha256(bytes),byteLength:bytes.length};}));
 for (const [path,file] of [['source/contract.ts','services/browser-preview/contract.ts'],['source/model-spec.ts','services/simulation/model-spec.ts'],['source/package-lock.json','package-lock.json'],['source/prepare-assets.mjs','services/browser-preview/runtime/prepare-assets.mjs']]) {
   const bytes = await readFile(resolve(root,file));runtimeAssets.push({path,sha256:await previewSha256(bytes),byteLength:bytes.length});
 }
 // Execution bundles do not import the registry: hash actual bytes before producing it.
 const executionBuildOptions={bundle:true,format:'iife',platform:'browser',target:'es2022',external:['node:*','ws'],workerDefine:{'import.meta.url':'self.location.href'}};
-for (const entry of ['worker','frame']) {
+for (const entry of ['worker','frame','js-frame']) {
   const path = resolve(output,`${entry}.bundle.mjs`);
   const {workerDefine,...sharedExecutionBuildOptions}=executionBuildOptions;
   await build({entryPoints:[resolve(root,`services/browser-preview/runtime/${entry}.mjs`)],...sharedExecutionBuildOptions,...(entry==='worker'?{define:workerDefine}:{}),outfile:path,logLevel:'warning'});

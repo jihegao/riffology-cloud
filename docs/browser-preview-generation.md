@@ -1,6 +1,6 @@
 # Browser Preview Agent 生成约定
 
-日期：2026-09-15；2026-09-27 增补 #144 适配器生成缺陷。固定 release skill、保存后兼容检查及浏览器运行已接线；#144 的平台工具修复仍需评审、发布和认证项目新 Revision 验收。
+日期：2026-09-15；2026-10-01 整合 #150 JavaScript 前端与已合并的 #122 compiler v0.1。固定 release skill、保存后兼容检查及浏览器运行已接线；#144 平台工具修复已部署，认证项目新 Revision 验收仍待完成。#150 的新前端资产与 compiler 容器尚待发布，不能据本地检查宣称线上可用。
 
 平台真实注入入口是 `services/trusted-pi/release-candidate.mjs` 的 `resolveOptions().fixedSkills`，仍为一个 simulation skill；通用 Python/旧 SimPy/server Preview 政策保留。受信 Tool Bridge 提供 `project_install_preview_adapter`，把固定适配器作为一次有身份、幂等的项目写入；模型不再抄写长模板。候选测试核对固定策略、工具字节及 canonical server 实现。
 
@@ -13,12 +13,19 @@
 | `model/model.py` | 共享 `def run(config)`，config 仅 parameters/seed，导入时不执行模型，返回 model/snapshots |
 | `model/run.py` | 由 `project_install_preview_adapter` 工具写入平台 canonical standalone adapter，服务器再次执行 model.run |
 | `model/model-spec.json` | 既有严格 schemaVersion1，execution 指向 model/run.py 与 app/requirements.lock |
-| `model/visualization.json` | 严格声明 schema riffology.visualization/v1、protocol riffology.visual/v0.1、renderer grid/lane/python-canvas、metricKeys；Canvas 另需 `model.py` 的 `draw` |
+| `model/visualization.json` | 严格声明 schema riffology.visualization/v1、protocol riffology.visual/v0.1、renderer grid/lane/python-canvas/javascript-canvas、metricKeys；Python Canvas 另需 `model.py` 的 `draw` |
 | `app/requirements.lock` | 原 schemaVersion1/packages JSON；Queue 空包，Mesa 固定六个根 |
+| `frontend/manifest.json`、`frontend/main.mjs` | 仅 javascript-canvas 必需；固定版本 manifest 与受限 `render(context)`，组成严格七文件包 |
 
 Mesa 源锁固定 mesa3.5.1、networkx3.6.1、numpy2.4.6、pandas3.0.2、scipy1.18.0、tqdm4.67.3。完整浏览器 wheel 闭包与 server native wheel 闭包由平台 profile 分别冻结；生成的 lock 不添加任意 transitive 最新依赖或 micropip/pip 指令。Queue server 保留历史 CPython3.11.14，Browser3.14.2，生成代码必须3.11兼容；Mesa 两端3.14.2。版本与数值结果对照由真实运行验收确认，不能仅凭同 Python 源码宣称完全一致。
 
-平台先从相同保存 Spec 解析参数与默认值；模型不能 clamp/coerce/truncate 输入。seed 整数0..4294967295。steps/horizon 是普通 Spec 参数，播放速度只影响显示；声明 steps 时 integer/minimum≥1/maximum≤500，horizon 不偷换步数。每 frame 严格沿用 visual/v0.1，grid 不增加 torus 等协议外字段。metricKeys 为唯一非空 Spec.metrics 子集；末 frame 必须具有全部 Spec 声明指标。Agent 不生成 JS/HTML/每模型前端或 Worker，不把根级 visualization.json 混入出版路径。
+平台先从相同保存 Spec 解析参数与默认值；模型不能 clamp/coerce/truncate 输入。seed 整数0..4294967295。steps/horizon 是普通 Spec 参数，播放速度只影响显示；声明 steps 时 integer/minimum≥1/maximum≤500，horizon 不偷换步数。每 frame 严格沿用 visual/v0.1，grid 不增加 torus 等协议外字段。metricKeys 为唯一非空 Spec.metrics 子集；末 frame 必须具有全部 Spec 声明指标。仅用户要求模型专用前端时生成受限 JavaScript；不生成 HTML、每模型 Worker、远程依赖或根级 visualization.json。
+
+## JavaScript 前端边界
+
+`frontend/main.mjs` 仅导出命名函数 `render(context)`，UTF-8 源码最多 128 KiB。静态解析拒绝 import、eval/Function、WebAssembly、网络、存储、DOM、Worker 与 postMessage。Python 仍负责实际计算和 trace；前端只读取冻结 Revision、package identity、参数、seed、当前 snapshot/index 及 pointer/select 事件，返回经过大小和数值边界检查的 Canvas scene。scene 不得报告模型成功、替换 Python 指标或生成 Verified Evidence。
+
+代码运行在 opaque sandbox frame 内的锁定 Worker；frame CSP 与 Worker 限制隔离主站身份、token、浏览器存储和网络。旧 grid/lane/python-canvas v1 包继续使用其原固定资产。2026-10-01 主干整合重新生成 runtime 与 execution 清单，保留原版本字节；compiler v0.1 的冻结 Business IR/.simpack 仍走服务器执行，不能借新 JavaScript 前端宣称 Browser Preview 支持 compiler。
 
 ## Canonical server adapter 与发布材料
 

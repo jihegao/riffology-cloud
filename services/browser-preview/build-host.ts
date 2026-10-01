@@ -1,6 +1,7 @@
 import {projectBrowserBuildAlarm} from './g4-build-hold.ts';
 import pre142Profiles from './execution/retained/profiles-pre-142.json' with {type:'json'};
 import baselineProfiles from './execution/retained/profiles-727c40f.json' with {type:'json'};
+import pre150Profiles from './execution/retained/profiles-pre-150.json' with {type:'json'};
 import type { ModelSpec } from '../simulation/model-spec.ts';
 import type { TurnScope } from '../turn/protocol.ts';
 import {sameScope} from '../turn/protocol.ts';
@@ -18,7 +19,7 @@ export interface SavedPreviewBuild {schemaVersion:1;validationVersion?:string;st
 const ids:PreviewRuntime['profileId'][]=['python-stdlib/v1','mesa-3.5.1/v1'];
 function rowKey(revision:string,profile:string){return ROW+revision+':'+profile;}
 function equal(a:unknown,b:unknown){return canonicalPreviewJson(a)===canonicalPreviewJson(b);}
-const retainedProfiles=[...pre142Profiles,...baselineProfiles].map(profile=>({runtime:profile.runtime,packages:profile.packages,assets:profile.assetManifest,trust:'verified-platform'}));
+const retainedProfiles=[...pre142Profiles,...baselineProfiles,...pre150Profiles].map(profile=>({runtime:profile.runtime,packages:profile.packages,assets:profile.assetManifest,trust:'verified-platform'}));
 function reviewedRetained(row:SavedPreviewBuild){return row.profile?.trust==='verified-platform'&&retainedProfiles.some(profile=>equal(row.profile,profile));}
 
 /** Durable references and receipts are written only by server-resolved builds. */

@@ -1,12 +1,12 @@
 {
   "schema": "riffology.browser-runtime-delivery/v1",
   "profiles": [
-    "45cf9e40a847850817f5e62d8754e53afdaffd1c8ca7ad3aed6e355ef94ab28e",
-    "95d5d55774fc32295889a818792bc2cbf2b25202027801bda2ead4203fc5fd52"
+    "0120c8c54ad6806b8db2499c0e1d22f6a2fe821d2c42a60e4b70ee4029f962f1",
+    "0f06754b97c574b123c5832d015eac9db80ba153e37648d435497c14ce671373"
   ],
   "host": {
-    "sha256": "3fc62f4e4437a7931f6d7ca873b7d83a973c48f88d07ba2a34632ca44cb15bd2",
-    "byteLength": 45799
+    "sha256": "678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2",
+    "byteLength": 53165
   },
   "esbuildVersion": "0.28.1",
   "buildOptions": {
