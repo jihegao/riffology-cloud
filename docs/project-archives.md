@@ -29,6 +29,27 @@ proved conservatively blocks its own tenant. A proved different project retains
 its isolation and does not block this archive. These checks never stop, release,
 expire or rewrite historical execution and fee records.
 
+`ProductTurnRuntime.archiveRuntimeResources` validates the original actor and
+full runtime identity, then SELECTs existing runtime/release/retention metadata
+and its immutable isolation tombstone. It never constructs release ports or a
+LazyProjectLifecycle, initializes storage, observes native processes, schedules
+an alarm, or calls stop/release. Running, unknown and release-pending records
+stay unresolved. A matching `runtime-released` tombstone preserves original
+terminal evidence. `runtime-absent-and-fenced` retains that classification: it
+can close the original execution's archive check only while all independent
+resource authorities are quiet, and cannot return capacity or authorize work.
+Absence without that exact tombstone does not prove release.
+
+`TrustedPiCapacity.archiveResources` SELECTs the original cold and paired
+ledgers without policy initialization, queue promotion, gate rollback or alarm
+maintenance. Every nonterminal ticket/pair for the project blocks archive,
+including older generations and orphan resources. Missing/corrupt authority is
+blocked; an entirely absent paired schema is distinguished from an incomplete
+paired schema. Warm handoffs match their saved original session, Turn, dispatch,
+operation and binding, then require immutable release proof for the exact lease.
+Legacy release metadata also retains its original operation and confirmation
+timing validation. These private RPCs expose resource metadata only.
+
 Browser package reads on archived projects skip build rearming. New Sessions,
 Turns, Runs, Services, Verify, publication freezes, evidence edits and callbacks
 are denied by the same fence. Public history and read-only export remain

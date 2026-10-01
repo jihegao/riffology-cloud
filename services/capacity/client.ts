@@ -9,11 +9,14 @@ import type {
   TrustedPiCapacityStopProof,
   TrustedPiCapacityTicketReference,
 } from './core.ts';
+import type {TurnScope} from '../turn/protocol.ts';
+import type {PairArchiveRecord} from './paired.ts';
 
 export const TRUSTED_PI_CAPACITY_ACTOR = 'trusted-pi-capacity:application';
 export function trustedPiCapacityActorName(): typeof TRUSTED_PI_CAPACITY_ACTOR { return TRUSTED_PI_CAPACITY_ACTOR; }
 
 export interface TrustedPiCapacityPort {
+  archiveResources?(scope:TurnScope,requestId?:string):Promise<{scope:TurnScope;quiescent:boolean;coldUnresolved:number;pairUnresolved:number;pair:PairArchiveRecord|null}>;
   request(identity: TrustedPiCapacityIdentity): Promise<TrustedPiCapacityRequestResult>;
   lookup(identity: TrustedPiCapacityIdentity): Promise<TrustedPiCapacityRequestResult | null>;
   dispatch(reference: TrustedPiCapacityDispatchReference): Promise<TrustedPiCapacityDispatchResult>;

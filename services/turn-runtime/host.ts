@@ -1,7 +1,7 @@
 import type {ToolCommand} from '../tools/protocol.ts';
 import { actor, message, turnBaseCheckpoints, turnDigest, type TurnResourceLease } from '../turn/protocol.ts';
 import type { TurnRuntimePort } from '../turn/dispatcher.ts';
-import { ProductTurnRuntimeCore, storedProductTurnRuntimeIdentity, type ProductTurnRuntimeStorage } from './core.ts';
+import { ProductTurnRuntimeCore, readProductTurnArchiveState, storedProductTurnRuntimeIdentity, type ProductTurnRuntimeStorage } from './core.ts';
 import { sameTurnRuntimeIdentity, turnRuntimeActorName, turnRuntimeIdentity, type TurnRuntimeIdentity } from './identity.ts';
 import type { ProductTurnRuntimeRelease } from './release.ts';
 
@@ -66,6 +66,12 @@ export class ProductTurnRuntimeHost implements TurnRuntimePort{
     return (await this.#for(identity)).accept(input);
   }
   async workspaceRuntimeState(raw:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(raw),core=await this.#for(identity,true);await core.ready();return core.workspaceRuntimeState(identity);}
+  archiveRuntimeResources(raw:TurnRuntimeIdentity){return this.#isolationExclusive(async()=>{
+    const identity=turnRuntimeIdentity(raw);await this.#assertActor(identity);
+    const isolation=await this.#isolation(identity),runtime=readProductTurnArchiveState(this.#ctx.storage,identity);
+    if(isolation&&runtime&&(isolation.classification==='runtime-absent-and-fenced'||runtime.phase!=='terminal'||runtime.resourceDisposition?.status!=='released'))throw Error('product-turn-runtime-isolation-invalid');
+    return {identity,runtime,isolation};
+  });}
   fenceExecution(raw:TurnRuntimeIdentity){return this.#isolationExclusive(()=>this.#fenceExecution(raw));}
   async #fenceExecution(raw:TurnRuntimeIdentity){
     const identity=turnRuntimeIdentity(raw);await this.#assertActor(identity);const prior=await this.#isolation(identity);if(prior)return {...prior,runtime:null};

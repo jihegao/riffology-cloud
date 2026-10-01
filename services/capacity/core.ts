@@ -1,3 +1,4 @@
+import {scope as checkedScope,type TurnScope} from '../turn/protocol.ts';
 export const TRUSTED_PI_CAPACITY = 1;
 
 export type TrustedPiCapacityScope = {
@@ -140,6 +141,27 @@ function stopProof(value: unknown, kind: TrustedPiCapacityStopProof['kind']): Tr
   if (value.kind !== kind) reject('invalid-capacity-stop-proof');
   identifier(value.proofId); positiveInteger(value.observedAt, 'invalid-capacity-observation-time');
   return { kind, proofId: value.proofId, observedAt: value.observedAt };
+}
+
+/** Reads the original ledger without constructing it, pinning a policy,
+ * promoting tickets, changing release state, or scheduling an alarm. */
+export function readTrustedPiArchiveQuiescence(storage:Pick<TrustedPiCapacityStorage,'sql'>,rawScope:TurnScope){
+  const scope=checkedScope(rawScope),tables=new Set(storage.sql.exec<{name:string}>("SELECT name FROM sqlite_master WHERE type='table'").toArray().map(row=>row.name));
+  if(!tables.has('trusted_pi_capacity_meta')||!tables.has('trusted_pi_capacity_tickets'))reject('trusted-pi-capacity-archive-proof-missing');
+  const meta=storage.sql.exec<Row>('SELECT capacity,policy_version FROM trusted_pi_capacity_meta WHERE singleton=1').toArray()[0];if(!meta||meta.capacity!==1)reject('trusted-pi-capacity-archive-proof-invalid');identifier(meta.policy_version);
+  let unresolved=0;
+  for(const row of storage.sql.exec<Row>('SELECT * FROM trusted_pi_capacity_tickets WHERE tenant_id=?',scope.tenantId).toArray()){
+    const identity=trustedPiCapacityIdentity(JSON.parse(row.identity_json as string));
+    for(const key of IDENTITY_KEYS)if(row[key.replace(/[A-Z]/g,letter=>'_'+letter.toLowerCase())]!==identity[key as keyof TrustedPiCapacityIdentity])reject('trusted-pi-capacity-archive-scope-denied');
+    if(identity.projectId!==scope.projectId&&identity.workspaceId!==scope.workspaceId)continue;
+    if(identity.projectId!==scope.projectId||!['queued','held','dispatched','released','cancelled'].includes(row.status as string))reject('trusted-pi-capacity-archive-proof-invalid');
+    if(row.status==='released'||row.status==='cancelled'){
+      const proof=stopProof(JSON.parse(row.proof_json as string),row.status==='released'?'runtime-released':'never-started');
+      positiveInteger(row.finished_at);if(row.proof_id!==proof.proofId||(row.finished_at as number)<proof.observedAt)reject('trusted-pi-capacity-archive-proof-invalid');
+      if(row.status==='released'){identifier(row.lease_id);identifier(row.dispatch_id);}else if(row.dispatch_id!==null)reject('trusted-pi-capacity-archive-proof-invalid');
+    }else unresolved++;
+  }
+  return {scope,unresolved,quiescent:unresolved===0};
 }
 
 /** Application-wide, fail-closed capacity ledger for the single TrustedPi
