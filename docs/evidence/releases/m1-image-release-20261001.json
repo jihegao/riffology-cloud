@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "kind": "gateway-and-image-rollout-request-readback",
+  "observedAt": "2026-10-01T06:51:45.306094+00:00",
+  "source": "aa76856080f536f3481779f082fe62dafad3d9a9",
+  "gatewayVersion": "4a9e5852-fd66-4097-be04-35f5f341b59d",
+  "gatewayDeployment": "0b122554-037b-482d-9045-2ff371517a58",
+  "percentage": 100,
+  "downloadedEntrySha256": "197e31dd91aa7d79c04f71a312949f99f8a1bce80e9a6288a6f0d0ff13a91ac9",
+  "downloadedEntryBytes": 5623055,
+  "localBundleMatches": true,
+  "bindingCount": 93,
+  "onlyCurrentM4ImageBindingChanged": true,
+  "originalNamespaceIdsPreserved": true,
+  "runtimeRoutesSchedulesAndObservabilityPreserved": true,
+  "otherTwelveApplicationsExact": true,
+  "images": [
+    {
+      "application": "riffology-phase1-simulation",
+      "applicationId": "a03836ca-d275-4f7d-898f-bc16d0875089",
+      "applicationSummaryImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-g4-20260915-simulation@sha256:bdceaa26a9dd4ecf82182327ea6ca07f3e968c4b132d79adf3c0cfac6a58fcf2",
+      "requestedTargetImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-simulation@sha256:88a8d86b15e9f40da3f08ea90b53a46aa7d324341d4a1ea2a0606ecd57798b51",
+      "summaryImageMatchesTarget": false,
+      "maxInstances": 1,
+      "resourceConfigurationPreserved": true
+    },
+    {
+      "application": "riffology-m3-trusted-pi-staging",
+      "applicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+      "applicationSummaryImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-trusted-pi@sha256:234999f2c74c6d98d79d829f4734f8adc3cd2c80e4c2b11ac7f23203afce9bd7",
+      "requestedTargetImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-trusted-pi@sha256:234999f2c74c6d98d79d829f4734f8adc3cd2c80e4c2b11ac7f23203afce9bd7",
+      "summaryImageMatchesTarget": true,
+      "maxInstances": 1,
+      "resourceConfigurationPreserved": true
+    },
+    {
+      "application": "riffology-m3-project-tools-staging",
+      "applicationId": "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650",
+      "applicationSummaryImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-project-tools-staging@sha256:b21324f5d19ab76c6924192d572d087e599d5243bb99ab9cd4e23180793e616a",
+      "requestedTargetImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-project-tools@sha256:e6341979a848f40c06328317759e52fefd700470fc4952d2301c382d16152c39",
+      "summaryImageMatchesTarget": false,
+      "maxInstances": 1,
+      "resourceConfigurationPreserved": true
+    }
+  ],
+  "rolloutCompletionRequiresSeparateVersionAuthorityRead": true,
+  "invitedRunsEnabled": false,
+  "G5Enabled": false,
+  "M3Enabled": false,
+  "M4Enabled": false,
+  "ordinaryAuthenticatedAcceptancePerformed": false,
+  "paidRunAcceptancePerformed": false,
+  "rolloutScope": "application-wide; deployment is not native execution acceptance"
+}

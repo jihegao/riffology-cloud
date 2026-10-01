@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-01T06:51:35.046897+00:00",
+  "requestCount": 9,
+  "method": "GET-only; one request per original application, versions, and exact rollout; no polling",
+  "applications": [
+    {
+      "name": "riffology-phase1-simulation",
+      "applicationId": "a03836ca-d275-4f7d-898f-bc16d0875089",
+      "originalRolloutId": "f77c4fff-8414-4c3e-a624-326cbde8e53a",
+      "expectedImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-simulation@sha256:88a8d86b15e9f40da3f08ea90b53a46aa7d324341d4a1ea2a0606ecd57798b51",
+      "expectedImageDigest": "sha256:88a8d86b15e9f40da3f08ea90b53a46aa7d324341d4a1ea2a0606ecd57798b51",
+      "application": {
+        "ok": true,
+        "observedAt": "2026-10-01T06:51:29.344802+00:00",
+        "id": "a03836ca-d275-4f7d-898f-bc16d0875089",
+        "version": 3,
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-simulation@sha256:88a8d86b15e9f40da3f08ea90b53a46aa7d324341d4a1ea2a0606ecd57798b51",
+        "activeRolloutId": null
+      },
+      "versions": {
+        "ok": true,
+        "observedAt": "2026-10-01T06:51:29.346021+00:00",
+        "items": [
+          {
+            "version": 3,
+            "percentage": 100,
+            "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-simulation@sha256:88a8d86b15e9f40da3f08ea90b53a46aa7d324341d4a1ea2a0606ecd57798b51"
+          },
+          {
+            "version": 2,
+            "percentage": 0,
+            "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-g4-20260915-simulation@sha256:bdceaa26a9dd4ecf82182327ea6ca07f3e968c4b132d79adf3c0cfac6a58fcf2"
+          }
+        ]
+      },
+      "rollout": {
+        "ok": true,
+        "observedAt": "2026-10-01T06:51:29.346924+00:00",
+        "id": "f77c4fff-8414-4c3e-a624-326cbde8e53a",
+        "status": "completed",
+        "currentVersion": 2,
+        "targetVersion": 3,
+        "targetImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-simulation@sha256:88a8d86b15e9f40da3f08ea90b53a46aa7d324341d4a1ea2a0606ecd57798b51",
+        "lastUpdated": null,
+        "progress": {
+          "updated_instances": 1,
+          "total_instances": 1,
+          "current_step": 1,
+          "total_steps": 1,
+          "version_distribution": {
+            "target_version_instances": 1,
+            "current_version_instances": 0,
+            "target_version_percentage": 100
+          }
+        }
+      },
+      "version100AndRolloutCompleted": true,
+      "applicationSummaryMatchesTarget": true,
+      "conclusion": "complete"
+    },
+    {
+      "name": "riffology-m3-trusted-pi-staging",
+      "applicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+      "originalRolloutId": "ced50c00-e148-4b5f-a053-e3790b8bac08",
+      "expectedImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-trusted-pi@sha256:234999f2c74c6d98d79d829f4734f8adc3cd2c80e4c2b11ac7f23203afce9bd7",
+      "expectedImageDigest": "sha256:234999f2c74c6d98d79d829f4734f8adc3cd2c80e4c2b11ac7f23203afce9bd7",
+      "application": {
+        "ok": true,
+        "observedAt": "2026-10-01T06:51:31.157209+00:00",
+        "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+        "version": 8,
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-trusted-pi@sha256:234999f2c74c6d98d79d829f4734f8adc3cd2c80e4c2b11ac7f23203afce9bd7",
+        "activeRolloutId": null
+      },
+      "versions": {
+        "ok": true,
+        "observedAt": "2026-10-01T06:51:31.157869+00:00",
+        "items": [
+          {
+            "version": 8,
+            "percentage": 100,
+            "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-trusted-pi@sha256:234999f2c74c6d98d79d829f4734f8adc3cd2c80e4c2b11ac7f23203afce9bd7"
+          },
+          {
+            "version": 7,
+            "percentage": 0,
+            "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue144-trusted-pi@sha256:065d76cb1f5f24c8f77a2762f676d9fa21a36c7317fb439bfd29a849c07b2290"
+          }
+        ]
+      },
+      "rollout": {
+        "ok": true,
+        "observedAt": "2026-10-01T06:51:31.267105+00:00",
+        "id": "ced50c00-e148-4b5f-a053-e3790b8bac08",
+        "status": "completed",
+        "currentVersion": 7,
+        "targetVersion": 8,
+        "targetImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-trusted-pi@sha256:234999f2c74c6d98d79d829f4734f8adc3cd2c80e4c2b11ac7f23203afce9bd7",
+        "lastUpdated": null,
+        "progress": {
+          "updated_instances": 1,
+          "total_instances": 1,
+          "current_step": 1,
+          "total_steps": 1,
+          "version_distribution": {
+            "target_version_instances": 1,
+            "current_version_instances": 0,
+            "target_version_percentage": 100
+          }
+        }
+      },
+      "version100AndRolloutCompleted": true,
+      "applicationSummaryMatchesTarget": true,
+      "conclusion": "complete"
+    },
+    {
+      "name": "riffology-m3-project-tools-staging",
+      "applicationId": "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650",
+      "originalRolloutId": "217ad8c2-e553-46da-a305-79f2596e889c",
+      "expectedImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-project-tools@sha256:e6341979a848f40c06328317759e52fefd700470fc4952d2301c382d16152c39",
+      "expectedImageDigest": "sha256:e6341979a848f40c06328317759e52fefd700470fc4952d2301c382d16152c39",
+      "application": {
+        "ok": true,
+        "observedAt": "2026-10-01T06:51:32.692105+00:00",
+        "id": "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650",
+        "version": 3,
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-project-tools@sha256:e6341979a848f40c06328317759e52fefd700470fc4952d2301c382d16152c39",
+        "activeRolloutId": null
+      },
+      "versions": {
+        "ok": true,
+        "observedAt": "2026-10-01T06:51:33.101150+00:00",
+        "items": [
+          {
+            "version": 3,
+            "percentage": 100,
+            "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-project-tools@sha256:e6341979a848f40c06328317759e52fefd700470fc4952d2301c382d16152c39"
+          },
+          {
+            "version": 2,
+            "percentage": 0,
+            "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-project-tools-staging@sha256:b21324f5d19ab76c6924192d572d087e599d5243bb99ab9cd4e23180793e616a"
+          }
+        ]
+      },
+      "rollout": {
+        "ok": true,
+        "observedAt": "2026-10-01T06:51:33.510705+00:00",
+        "id": "217ad8c2-e553-46da-a305-79f2596e889c",
+        "status": "completed",
+        "currentVersion": 2,
+        "targetVersion": 3,
+        "targetImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-project-tools@sha256:e6341979a848f40c06328317759e52fefd700470fc4952d2301c382d16152c39",
+        "lastUpdated": null,
+        "progress": {
+          "updated_instances": 1,
+          "total_instances": 1,
+          "current_step": 1,
+          "total_steps": 1,
+          "version_distribution": {
+            "target_version_instances": 1,
+            "current_version_instances": 0,
+            "target_version_percentage": 100
+          }
+        }
+      },
+      "version100AndRolloutCompleted": true,
+      "applicationSummaryMatchesTarget": true,
+      "conclusion": "complete"
+    }
+  ],
+  "allVersion100AndRolloutCompleted": true
+}

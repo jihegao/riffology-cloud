@@ -1,8 +1,8 @@
 # Riffology Cloud Private Beta
 
-面向受邀用户的受控内测版本。支持 Pi 驱动的 Python 建模、保存和本地预览；不包含生产级 SLA、权威云端实验或公开商业服务。容量在预算和安全门限内持续开放。
+面向受邀用户的受控内测版本。支持 Pi 驱动的 Python 建模、保存和本地预览；不包含生产级 SLA 或公开商业服务。Pi 的调用与费用策略已迁移为 meter-only，保留并发、时限、隔离和 kill switch。受邀云端实验已实现，其真实用户验收与持续开放另行核对。
 
-以上是 Private Beta 的版本定义与运行目标。截至 2026-09-20，#87 核心流程验收已完成并关闭；其临时执行门禁在验收后关闭。常态容量由 [#104：邀请制内测运行与常态容量](https://github.com/jihegao/riffology-cloud/issues/104) 承接，名单、预算和 7 天观察期已获确认；准入、持久配额和运行保护已实现并部署，正在进行运行验收。实际开通/暂停状态以服务端门禁及该 Issue 的最新证据为准。Browser Preview 结果始终是 local/unverified。
+截至 2026-10-01，#87 核心流程验收保持完成并关闭，常态容量由 [#104](https://github.com/jihegao/riffology-cloud/issues/104) 承接。[#153](https://github.com/jihegao/riffology-cloud/issues/153) 在原 actor 保留账本并迁移策略；[#152](https://github.com/jihegao/riffology-cloud/issues/152) 的 9 个冻结旧项目已可恢复归档；[#150](https://github.com/jihegao/riffology-cloud/issues/150) 的受限 JS 前端已合并并发布。普通受邀新项目与 Runs 的当前版本线上验收仍待实际账号登录。开关、镜像发布与验收分别记录在[当前发布状态](docs/release-readiness.md)。Browser Preview 结果始终是 local/unverified。
 
 Riffology Cloud 是一个多租户、持久化的 AI 仿真建模工作台。
 用户围绕 Project 和 Pi Agent Session 工作，Workspace 提供文件、运行与插件能力，
@@ -15,7 +15,7 @@ Sandbox、D1 和 R2 构成云端服务；本地候选支持 Python 标准库 Que
 
 ## 文档
 
-- [受邀 Cloud Runs 候选与发布顺序](docs/invited-cloud-runs.md)：#136 复用现有实验路径，依赖 #153 原 actor 策略迁移与 #152 归档隔离；源码候选保持门禁关闭，真实部署和受邀付费验收另行记录。
+- [受邀 Cloud Runs 与验收边界](docs/invited-cloud-runs.md)：#136 复用现有实验路径、#153 原 actor 策略迁移与 #152 归档隔离；独立门禁保持关闭，普通受邀真实执行验收仍 pending。
 
 - [当前发布与验收状态](docs/release-readiness.md)：源码、部署记录、真实验收边界及后续负责人。
 - [Queue 受邀用户研究指南](docs/invited-queue-research.md)与[本轮本地验证](docs/invited-queue-delivery-validation.md)：首个官方案例、三人研究验收及未冻结的生产执行条件。

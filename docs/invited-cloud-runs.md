@@ -1,11 +1,17 @@
 # Invited Cloud Runs — #136
 
-Gateway implementation deployed, 2026-10-01, from main `759d598`; invited Run
-admission remains disabled. The native image rollout and ordinary authenticated,
-paid container acceptance are pending. See the integrated release record in
-[release readiness](release-readiness.md). This document describes the new route;
-live status and ownership remain in [#136](https://github.com/jihegao/riffology-cloud/issues/136)
-and the Delivery Project. Browser Preview remains local/unverified.
+Gateway implementation is deployed from main `aa768560`, 2026-10-01, as
+`4a9e5852-fd66-4097-be04-35f5f341b59d`. Simulation, Trusted Pi and Project Tools
+image rollouts have completed at 100%. Original Beta capacity is Open under the
+same-actor v2 meter-only pin; the dedicated invited Run policy **remains disabled**.
+An actual ordinary invited login is required for the first fresh-project single,
+comparison and release acceptance before standing Runs are declared available.
+The current browser identity is the initial operator and cannot substitute.
+See [release readiness](release-readiness.md) and the
+[current evidence index](evidence/releases/m1-invited-delivery-20261001.json).
+Delivery status and ownership remain in
+[#136](https://github.com/jihegao/riffology-cloud/issues/136) and the Delivery
+Project. Browser Preview remains local/unverified.
 
 ## Admission and identity
 

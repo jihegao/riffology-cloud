@@ -1,26 +1,29 @@
 {
   "schemaVersion": 1,
-  "kind": "m1-invited-delivery-staged-release",
+  "kind": "m1-invited-delivery-current-release",
   "date": "2026-10-01",
-  "source": "759d598bc608b0bf924c2375f006ca48f1328228",
-  "buildTree": "94658f9cb811395d5fd4b95f67cf76336d2a32a5",
+  "source": "aa76856080f536f3481779f082fe62dafad3d9a9",
+  "buildTree": "25635086957c077ebeb550939dd942a2ebebc7da",
   "prs": [
     154,
     156,
-    157
+    157,
+    158,
+    159
   ],
   "ci": [
     "https://github.com/jihegao/riffology-cloud/actions/runs/36816815417",
     "https://github.com/jihegao/riffology-cloud/actions/runs/36815550596",
-    "https://github.com/jihegao/riffology-cloud/actions/runs/36818445357"
+    "https://github.com/jihegao/riffology-cloud/actions/runs/36818445357",
+    "https://github.com/jihegao/riffology-cloud/actions/runs/36822583579"
   ],
   "gateway": {
-    "version": "7bed27a8-8b2b-4d57-b4e2-d3ede382aa45",
-    "deployment": "c55c3808-7535-4ceb-a8ef-0ba7732aa374",
+    "version": "4a9e5852-fd66-4097-be04-35f5f341b59d",
+    "deployment": "0b122554-037b-482d-9045-2ff371517a58",
     "percentage": 100,
-    "sourceTag": "source-759d598bc608b0bf924c2375f006ca48f1328228",
-    "downloadedEntrySha256": "bdced9278237c6d257e267f63ca34872683fcacb8a92cdf00de628d8380ae4e1",
-    "downloadedEntryBytes": 5610773,
+    "sourceTag": "source-aa76856080f536f3481779f082fe62dafad3d9a9",
+    "downloadedEntrySha256": "197e31dd91aa7d79c04f71a312949f99f8a1bce80e9a6288a6f0d0ff13a91ac9",
+    "downloadedEntryBytes": 5623055,
     "localBundleMatches": true,
     "bindingCount": 93,
     "originalBindingCount": 91,
@@ -29,7 +32,8 @@
       "INVITED_RUNS_POLICY_JSON"
     ],
     "originalNamespaceIdsPreserved": true,
-    "originalFiveContainerApplicationsPreserved": true
+    "currentM4ImageVarUpdated": true,
+    "runtimeRoutesSchedulesAndObservabilityPreserved": true
   },
   "browserExecution": {
     "version": "c94df077-02a1-460f-8158-e47a338e68af",
@@ -45,32 +49,90 @@
   "gates": {
     "privateBetaPolicySchema": 2,
     "privateBetaActor": "private-beta-capacity-v1",
-    "privateBetaPaused": true,
+    "privateBetaPaused": false,
     "privateBetaActive": 0,
     "privateBetaQuarantined": 0,
     "invitedRunsEnabled": false,
     "G5Enabled": false,
     "M3Enabled": false,
-    "M4Enabled": false
+    "M4Enabled": false,
+    "privateBetaReviewAt": 1792511999999
   },
   "evidence": {
     "meterOnlyMigration": "private-beta-meter-only-20261001.json",
     "staticBytes": "m1-static-20261001.json",
     "staticRejections": "m1-static-rejections-20261001.json",
     "archiveMigration": "project-archive-migration-20261001.json",
-    "nativeResourceReadback": "native-resource-readback-20261001.json"
+    "nativeResourceReadback": "native-resource-readback-20261001.json",
+    "initialStagedRelease": "m1-invited-delivery-staged-20261001.json",
+    "strictReadOnlyRepair": "m1-readonly-release-20261001.json",
+    "archiveCompletion": "project-archive-completion-20261001.json",
+    "preImageNativeReadback": "native-pre-image-rollout-20261001.json",
+    "actualImageSourceProof": "container-source-proof-20261001.json",
+    "imageWorkerReadback": "m1-image-release-20261001.json",
+    "containerVersionAuthority": "container-version-readback-20261001.json",
+    "guardedBetaResume": "private-beta-resume-20261001.json"
   },
   "acceptance": {
     "publicStatic": true,
     "ordinaryAuthenticatedUser": false,
     "paidRun": false,
-    "currentNativeContainerImages": false,
+    "currentNativeContainerImages": true,
     "browserResultAuthority": "local/unverified"
   },
   "remaining": [
-    "One frozen project remains native-release-unconfirmed; strict read-only historical Runtime/capacity proof repair is in progress",
-    "Three replacement container images are built but have not been rolled out",
-    "Actual ordinary invited login and new-project Pi/Revision/Preview/Run/comparison/publication acceptance are pending",
-    "Cross-identity and cancellation/timeout/release live acceptance are pending"
-  ]
+    "Ordinary invited-user new-project Pi/Revision/Preview/Run/comparison/publication acceptance requires an actual authenticated ordinary identity",
+    "Cross-identity and cancellation/timeout/release live acceptance remain pending",
+    "Invited Run standing admission remains disabled until the first ordinary authenticated case is accepted"
+  ],
+  "archive": {
+    "frozenProjects": 9,
+    "frozenOwners": 3,
+    "archived": 9,
+    "currentBlockers": 0,
+    "receiptCount": 10,
+    "priorBlockedReceiptPreserved": true,
+    "originalIdentityPreserved": true,
+    "ordinaryOwnerRestoreAcceptance": false
+  },
+  "observedAt": "2026-10-01T06:53:01.693787+00:00",
+  "containers": [
+    {
+      "application": "riffology-phase1-simulation",
+      "applicationId": "a03836ca-d275-4f7d-898f-bc16d0875089",
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-simulation@sha256:88a8d86b15e9f40da3f08ea90b53a46aa7d324341d4a1ea2a0606ecd57798b51",
+      "version": 3,
+      "percentage": 100,
+      "rolloutId": "f77c4fff-8414-4c3e-a624-326cbde8e53a",
+      "rolloutStatus": "completed",
+      "maxInstances": 1
+    },
+    {
+      "application": "riffology-m3-trusted-pi-staging",
+      "applicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-trusted-pi@sha256:234999f2c74c6d98d79d829f4734f8adc3cd2c80e4c2b11ac7f23203afce9bd7",
+      "version": 8,
+      "percentage": 100,
+      "rolloutId": "ced50c00-e148-4b5f-a053-e3790b8bac08",
+      "rolloutStatus": "completed",
+      "maxInstances": 1
+    },
+    {
+      "application": "riffology-m3-project-tools-staging",
+      "applicationId": "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650",
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-project-tools@sha256:e6341979a848f40c06328317759e52fefd700470fc4952d2301c382d16152c39",
+      "version": 3,
+      "percentage": 100,
+      "rolloutId": "217ad8c2-e553-46da-a305-79f2596e889c",
+      "rolloutStatus": "completed",
+      "maxInstances": 1
+    }
+  ],
+  "otherTwelveAccountApplicationsExact": true,
+  "issueStages": {
+    "153": "Acceptance / blocked: actual ordinary invited login required",
+    "152": "Acceptance / blocked: actual ordinary invited login required",
+    "136": "Acceptance / blocked: actual ordinary invited login required",
+    "150": "Acceptance / blocked: actual ordinary invited login required"
+  }
 }

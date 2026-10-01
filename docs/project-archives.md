@@ -200,6 +200,13 @@ revocation, frozen-manifest and pagination tests; production Workspace/D1
 Workerd archive/blocked-Run/restart/late-callback/restore tests; browser history,
 page navigation and original-key retry tests; existing project/runtime suites.
 These fixtures use no provider calls and do not establish current authenticated
-production acceptance. Deployment readback, frozen production manifest and the
-actual per-item migration remain required and belong in #152/#148 and the release
-index when executed by the root release coordinator.
+production acceptance. The controlled production migration is now complete:
+the original cutoff `2026-10-01T05:30:00.086Z` and immutable manifest cover three
+ordinary invited owners and nine projects. All nine have matching completed
+receipts and `archive_epoch=1`; a tenth receipt records the explicit reviewed
+continuation of the original blocked project. The original nine receipts,
+including its blocked receipt, and all frozen identity fields remain unchanged.
+No content or ledger was deleted. [Initial migration](evidence/releases/project-archive-migration-20261001.json)
+and [completion readback](evidence/releases/project-archive-completion-20261001.json)
+remain separate observations. Ordinary authenticated owner restore, cross-owner
+rejection and browser acceptance are still pending; #152 is Acceptance/open.

@@ -1,6 +1,6 @@
 # Private Beta operation — #104
 
-The authoritative operating packet and delivery status are in [#104](https://github.com/jihegao/riffology-cloud/issues/104). This note describes implementation and verification, not a second task board. Owner: @jihegao. No standing paid capacity is declared open by this source change.
+The authoritative operating packet and delivery status are in [#104](https://github.com/jihegao/riffology-cloud/issues/104). Owner: @jihegao. The 2026-10-01 same-actor v2 migration preserves the original ledger, usage and reservations while removing call/fee quotas; its [migration proof](evidence/releases/private-beta-meter-only-20261001.json) remains a historical paused snapshot. Current pause/open state and ordinary authenticated acceptance are separately recorded in [release readiness](release-readiness.md).
 
 For an explicitly authorized review-date extension, deploy the same policy with
 only `reviewAt` increased, then invoke the deployment-only `extendReview` RPC

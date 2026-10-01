@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-01T06:20:15.120138+00:00",
+  "source": "aa76856080f536f3481779f082fe62dafad3d9a9",
+  "pr": 159,
+  "ci": "https://github.com/jihegao/riffology-cloud/actions/runs/36822583579",
+  "gatewayVersion": "62538dbd-5667-446e-8fde-c39c3f798d53",
+  "gatewayDeployment": "366d5249-7c71-4bf8-9ae1-c8c99e590d5c",
+  "percentage": 100,
+  "bindingCount": 93,
+  "all93BindingsExact": true,
+  "runtimeAndObservabilityExact": true,
+  "all15AccountContainerApplicationsExact": true,
+  "routesAndSubdomainExact": true,
+  "downloadedEntrySha256": "197e31dd91aa7d79c04f71a312949f99f8a1bce80e9a6288a6f0d0ff13a91ac9",
+  "downloadedEntryBytes": 5623055,
+  "localBundleMatches": true,
+  "originalPrivateBetaActorAndPausedPolicyPreserved": true,
+  "invitedRunsRemainDisabled": true,
+  "replacementImagesDeployed": false,
+  "historicalArchiveBlockerResolved": false
+}
