@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 1,
+  "kind": "pi-model-authored-drawing-local-verification",
+  "date": "2026-10-01",
+  "source": "25c09071912fdb8f0e5edf3f6799bd69331fcea5",
+  "pr": 162,
+  "issue": 161,
+  "paidAuthoringAcceptancePerformed": false,
+  "browserPreviewProvenance": "local/unverified",
+  "fullCheck": {
+    "exitCode": 0,
+    "nodePassed": 2590,
+    "conditionalNodeSkips": 13,
+    "nodeFailed": 0,
+    "pythonPassed": 8
+  },
+  "targetedPolicyAndCompatibilityPassed": 13,
+  "typecheckPassed": true,
+  "browser": {
+    "runtime": "actual Chromium/Pyodide",
+    "passed": true,
+    "caseCount": 48,
+    "cases": [
+      {
+        "name": "queue-real-playback-replay-seed-boundaries",
+        "passed": true
+      },
+      {
+        "name": "mesa-real-grid-ordinary-steps",
+        "passed": true
+      },
+      {
+        "name": "traffic-python-canvas-real-road-intersection-signal-car-pointer-playback",
+        "passed": true,
+        "packageIdentity": "5d08a56486e1bf09afb5e77149bb6a26fd69a0051c25a9aba9a6e3d2476f12f2"
+      },
+      {
+        "name": "traffic-canvas-cancel-removes-opaque-frame",
+        "passed": true
+      },
+      {
+        "name": "pi-draw-example-real-fire-four-colors-seed-parameter-playback",
+        "passed": true,
+        "packageIdentity": "a2786f44886d7ef5e591dd26098cb9210cf55a9f7c937bb40288bd6d9c22e7f3"
+      },
+      {
+        "name": "python-canvas-draw-network-denied-by-real-csp",
+        "passed": true
+      },
+      {
+        "name": "python-canvas-js-constructor-csp-contained-wrong-identity-ack-ignored",
+        "passed": true
+      },
+      {
+        "name": "python-canvas-oversize-worker-message-dropped-before-app-port",
+        "passed": true
+      },
+      {
+        "name": "python-canvas-worker-message-burst-terminates-session-and-next-run-recovers",
+        "passed": true
+      },
+      {
+        "name": "python-canvas-stuck-draw-killed-and-next-package-safe",
+        "passed": true
+      },
+      {
+        "name": "python-canvas-playback-does-not-reset-stuck-paint-deadline",
+        "passed": true
+      },
+      {
+        "name": "python-canvas-pointer-draw-has-paint-deadline-and-next-package-safe",
+        "passed": true
+      },
+      {
+        "name": "python-canvas-exact-forged-ack-cannot-extend-absolute-session",
+        "passed": true
+      },
+      {
+        "name": "queue-cold-independent-page",
+        "passed": true
+      },
+      {
+        "name": "queue-refresh",
+        "passed": true
+      },
+      {
+        "name": "mesa-cold-independent-page",
+        "passed": true
+      },
+      {
+        "name": "mesa-refresh",
+        "passed": true
+      },
+      {
+        "name": "legacy-platform-adapter-real-queue",
+        "passed": true
+      },
+      {
+        "name": "legacy-platform-adapter-real-mesa",
+        "passed": true
+      },
+      {
+        "name": "legal-million-cell-grid-fixed-canvas",
+        "passed": true,
+        "ms": 6.799999997019768,
+        "nodes": 1,
+        "width": 600,
+        "height": 420
+      },
+      {
+        "name": "seed-overflow",
+        "passed": true
+      },
+      {
+        "name": "unknown-param",
+        "passed": true
+      },
+      {
+        "name": "out-of-range",
+        "passed": true
+      },
+      {
+        "name": "top-steps",
+        "passed": true
+      },
+      {
+        "name": "tampered-source-keeps-valid-package",
+        "passed": true
+      },
+      {
+        "name": "malicious-fetch",
+        "passed": true
+      },
+      {
+        "name": "malicious-app-api",
+        "passed": true
+      },
+      {
+        "name": "malicious-xhr",
+        "passed": true
+      },
+      {
+        "name": "malicious-websocket",
+        "passed": true
+      },
+      {
+        "name": "malicious-eventsource",
+        "passed": true
+      },
+      {
+        "name": "malicious-dynamic-import-trap",
+        "passed": true
+      },
+      {
+        "name": "malicious-dynamic-import-same-origin",
+        "passed": true
+      },
+      {
+        "name": "malicious-subworker",
+        "passed": true
+      },
+      {
+        "name": "malicious-blob-subworker",
+        "passed": true
+      },
+      {
+        "name": "malicious-forged-connected",
+        "passed": true
+      },
+      {
+        "name": "malicious-forged-window-message",
+        "passed": true
+      },
+      {
+        "name": "malicious-micropip-real-installed-awaited-denial",
+        "passed": true
+      },
+      {
+        "name": "opaque-frame-parent-dom-and-app-cookie-denied",
+        "passed": true,
+        "parentDenied": true,
+        "cookieDenied": true,
+        "cookie": "",
+        "origin": "null"
+      },
+      {
+        "name": "cancel-infinite-next-valid-run",
+        "passed": true
+      },
+      {
+        "name": "timeout-infinite-next-valid-run",
+        "passed": true
+      },
+      {
+        "name": "python-output-limit-before-postMessage",
+        "passed": true
+      },
+      {
+        "name": "js-output-limit-survives-python-len-monkeypatch",
+        "passed": true
+      },
+      {
+        "name": "trusted-input-parser-captured-before-model-import",
+        "passed": true
+      },
+      {
+        "name": "opaque-worker-persistent-storage-apis-denied-across-runs",
+        "passed": true
+      },
+      {
+        "name": "opaque-worker-broadcastchannel-separated-concurrent-runs",
+        "passed": true
+      },
+      {
+        "name": "late-asset-loader-cannot-overwrite-new-package",
+        "passed": true
+      },
+      {
+        "name": "external-postMessage-cannot-submit-or-render",
+        "passed": true
+      },
+      {
+        "name": "server-traps-zero-api-zero-execution-cookies",
+        "passed": true
+      }
+    ],
+    "artifactSha256": {
+      "acceptance.json": "701330672d15a472948610c0b5808fbd0b588e5e590decc63ac83e8edaf951e4",
+      "logs.json": "f8a74f2b064c54241515c4b593d549ad38f5cba76fe9842a3c391a3625b9e6ac",
+      "fire-frame1.png": "8563d956d1ef28c39a6e71192ba9c3035f16e4d922660bfba09499292c54e4f3"
+    },
+    "forestPixelsAtFrame1": {
+      "empty": "#e5e7eb",
+      "healthy": "#16a34a",
+      "burning": "#ef4444",
+      "burned": "#374151"
+    }
+  },
+  "mergedSource": "60597e28795f27faf7477ec7994d1f7fd283cbec",
+  "ci": {
+    "url": "https://github.com/jihegao/riffology-cloud/actions/runs/36849986686",
+    "conclusion": "success"
+  }
+}

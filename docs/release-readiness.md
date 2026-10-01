@@ -1,6 +1,54 @@
 # Current release readiness — 2026-10-01
 
-## 2026-10-01 current release, complete frozen archive and guarded Pi resume
+## 2026-10-01 Pi model-authored drawing repair (#161)
+
+[PR #162](https://github.com/jihegao/riffology-cloud/pull/162) is merged as
+`60597e28795f27faf7477ec7994d1f7fd283cbec`; its tested head
+`25c09071912fdb8f0e5edf3f6799bd69331fcea5` passed
+[GitHub CI](https://github.com/jihegao/riffology-cloud/actions/runs/36849986686).
+New Python models default to model-authored `python-canvas` drawing; explicit
+JavaScript requests retain `javascript-canvas`. Natural-language requests for
+state colors or layers trigger drawing in a new Revision of an existing model.
+Simulation space and visual renderer are selected independently.
+
+Trusted Pi is now **v9 at 100%**, replacing the v8 image below. Its original
+application ID remains `a03628c4-f032-461f-a65b-612ccac11a06`; rollout
+`b0c4e738-49c7-40d8-9d25-71efc3f75e57` is completed, with healthy target
+allocation and zero current-version instances. The image digest is
+`sha256:2f0d2bb404a58f265ed413ef5a253b2ae36bc35f6108e00c290dfc45d7ef7413`.
+An offline incremental build retains the deployed v8 runtime/dependencies and
+updates only the two active copies of the reviewed Pi release module. A pull of
+the immutable registry image followed by read-only/no-network Docker reads
+matched all ten retained COPY files to the current source.
+
+Independent reads confirm all 93 Gateway bindings and its deployed version
+remain exact; the other 14 application configurations and limits are unchanged.
+All five current native Dash inventories are complete and show zero instances
+before restoring the original Beta. The operator paused and resumed the original
+capacity actor once each; its final observed state is Open, active/quarantined
+0/0. Historical alerts/reservations remain. Invited Runs and G5/M3/M4 stay closed.
+
+The real Chromium/Pyodide suite passes **48/48**, including the same draw example
+injected into Pi, four distinct forest-state colors, clearing each frame, seed
+and density changes, restart, step/playback and existing JavaScript/isolation
+regressions. The local full check passes 2,590 Node cases and eight Python cases;
+13 existing environment-conditional Node cases are skipped. These are local
+checks and preserve Browser Preview's local/unverified provenance.
+
+The original fire model remains the user retest entry point:
+[workspace](https://m1.riff-demo.gaojihe.cn/#/workspace/81424f92-23fb-40fd-8eb1-9c8ea45c690b).
+Its frozen grid Revision/package is preserved. The author must refresh, ask Pi
+to add the requested state colors while preserving computation/parameters,
+save a new Revision and restart/step/play Browser Preview. Refreshing the old
+Revision alone cannot change its drawing. No fresh paid authoring Turn or Run
+acceptance was performed for this release; **#161 remains Acceptance/open**
+until the ordinary author retest provides its new Revision/package evidence.
+
+[Deployment, identities and source proof](evidence/releases/pi-model-drawing-deployment-20261001.json)
+and [local browser checks](evidence/releases/pi-model-drawing-local-20261001.json)
+record the separate source, merge, deployment and pending authoring stages.
+
+## Earlier 2026-10-01 release, complete frozen archive and guarded Pi resume
 
 PRs [#154](https://github.com/jihegao/riffology-cloud/pull/154),
 [#156](https://github.com/jihegao/riffology-cloud/pull/156),
