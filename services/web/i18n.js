@@ -2,6 +2,18 @@ const supported = ['zh-CN', 'en'];
 
 export const dictionary = Object.freeze({
   "zh-CN": Object.freeze({
+  "project.archived": "已归档",
+  "project.archive": "归档项目",
+  "project.restore": "恢复项目",
+  "project.archivedView": "归档项目",
+  "project.archivedHelp": "项目已归档，可查看历史；恢复后才能继续修改或运行。",
+  "project.archiveBlocked": "项目仍有执行、初始化或释放状态待确认，暂时不能归档。",
+  "project.archiveDone": "项目已归档，历史资料已保留。",
+  "project.restoreDone": "项目已恢复；没有自动运行任何请求。",
+  "project.pagination": "项目分页",
+  "project.previous": "上一页",
+  "project.next": "下一页",
+
   "shell.skip": "跳到主要内容",
   "shell.home": "Riffology Cloud 首页",
   "shell.language": "语言",
@@ -902,6 +914,18 @@ export const dictionary = Object.freeze({
   "service.confirmedOld": "上次确认时间（旧状态）：{time}"
 }),
   "en": Object.freeze({
+  "project.archived": "Archived",
+  "project.archive": "Archive project",
+  "project.restore": "Restore project",
+  "project.archivedView": "Archived projects",
+  "project.archivedHelp": "This project is archived. History is available; restore it to edit or run.",
+  "project.archiveBlocked": "Execution, provisioning or resource release is still unresolved. This project cannot be archived yet.",
+  "project.archiveDone": "Project archived. Historical records are preserved.",
+  "project.restoreDone": "Project restored. No request was automatically run.",
+  "project.pagination": "Project pages",
+  "project.previous": "Previous page",
+  "project.next": "Next page",
+
   "shell.skip": "Skip to main content",
   "shell.home": "Riffology Cloud home",
   "shell.language": "Language",

@@ -14,7 +14,8 @@ import {applyTranslations,getLocale,installLocaleSelector,setLocale,subscribe,t,
 import {createLocalePreferenceController} from './locale-preference.js';
 const $ = selector => document.querySelector(selector);
 function filterProjectCards(){const filter=$('#project-filter')?.value??'all',search=($('#project-search')?.value??'').toLowerCase();for(const card of document.querySelectorAll('#projects .project'))card.hidden=!card.dataset.title.toLowerCase().includes(search)||(filter==='ordinary'&&card.dataset.acceptance==='true')||(filter==='acceptance'&&card.dataset.acceptance!=='true')||(filter==='preview'&&card.dataset.previewReady!=='true');}
-$('#project-filter')?.addEventListener('change',filterProjectCards);$('#project-search')?.addEventListener('input',filterProjectCards);
+let listedArchiveView=false;
+$('#project-filter')?.addEventListener('change',()=>{const archived=$('#project-filter').value==='archived';if(archived!==listedArchiveView){listedArchiveView=archived;projectPageBefore=null;projectPageStack=[];void renderProjects();}else filterProjectCards();});$('#project-search')?.addEventListener('input',filterProjectCards);
 async function loadProjectSummaries(jobs,generation,requestNumber){let next=0;async function lane(){while(next<jobs.length&&generation===viewGeneration&&requestNumber===listGeneration){const {project,card,summary}=jobs[next++];if(!project.workspace_id||project.status!=='ready'){bindValue(summary, () => (msg('workspace.summary.unready')));continue;}const base=`/api/workspaces/${encodeURIComponent(project.workspace_id)}`;const [model,preview]=await Promise.all(['/model','/browser-preview'].map(s=>api(base+s,{signal:AbortSignal.timeout(15000)}).catch(()=>null)));if(generation!==viewGeneration||requestNumber!==listGeneration||!card.isConnected)return;const value=projectModelSummary(model,preview);bindValue(summary, () => (value.text));card.dataset.previewReady=String(value.previewReady);filterProjectCards();}}await Promise.all([lane(),lane()]);}
 const workspaceLayout=createWorkspaceLayout({root:$('#workspace')});
 let observedModel=null,observedService=null;
@@ -99,7 +100,7 @@ function saveConversation(key, patch) {
   catch { throw uiError('workspace.error.storage'); }
 }
 function canCreateConversation() {
-  return Boolean(activeProject?.status === 'ready' && workspaceSnapshot && !workspaceSnapshot.piDeveloperState?.blocked && !['maintenance','unavailable'].includes(workspaceSnapshot.admission?.state));
+  return Boolean(activeProject?.status === 'ready' && !activeProject.archived_at && workspaceSnapshot && !workspaceSnapshot.piDeveloperState?.blocked && !['maintenance','unavailable'].includes(workspaceSnapshot.admission?.state));
 }
 function selectedSessionCanContinue() {
   return !selectedSessionId || workspaceSnapshot?.sessions?.[selectedSessionId]?.canContinue !== false;
@@ -340,6 +341,8 @@ async function api(path, options = {}) {
     let code = null;
     try { const body = await response.clone().json(); if (typeof body?.error === 'string') code = body.error; } catch {}
     const messages = { 400: msg('error.invalidRequest'), 401: msg('error.signIn'), 403: msg('error.accessChanged'), 404: msg('error.notInvited'), 409: msg('error.conflict'), 413: msg('error.requestTooLarge'), 429: projectLimit ? msg('error.projectLimit') : msg('error.rateLimit'), 503: msg('error.unavailable') };
+    if(code==='project_archived')messages[409]=msg('project.archivedHelp');
+    if(code==='project_busy')messages[409]=msg('project.archiveBlocked');
     if (code === 'g5_admission_disabled') messages[409] = msg('error.projectsPaused');
     if (code === 'turn_runtime_not_ready') messages[503] = msg('error.turnsPaused');
     const blocked = managedBlockMessage(code);
@@ -708,7 +711,7 @@ async function refreshWorkspace(generation = viewGeneration) {
     workspaceSnapshot = snapshot;
     workspaceEvents = replay.events;
     workspaceHistoryTruncated = replay.historyTruncated === true;
-    const recoveryNotice=awaitingMessageVisibility()?'':await reconcileMessageRecovery(workspaceId,generation);
+    const recoveryNotice=activeProject.archived_at||awaitingMessageVisibility()?'':await reconcileMessageRecovery(workspaceId,generation);
     if(generation !== viewGeneration || refreshSequence!==workspaceRefreshSequence || activeProject?.workspace_id !== workspaceId) return;
     renderWorkspace();renderModelState();
     if(resolveVisibleMessageIntent(workspaceId))stopVisibilityRecovery();
@@ -716,7 +719,7 @@ async function refreshWorkspace(generation = viewGeneration) {
     if(recoveryNotice)bindValue($('#message-error'), () => (recoveryNotice));
     void refreshWorkspaceFiles(generation);
     workspaceDiff=null;workspaceDiffError='';renderWorkspaceDiff();if(workspaceArtifactPanel==='diff')void refreshWorkspaceDiff(generation);
-    connectEventStream(workspaceId, replay.cursor, generation);
+    if(!activeProject.archived_at)connectEventStream(workspaceId, replay.cursor, generation);
   } catch (error) {
     if (generation !== viewGeneration || refreshSequence!==workspaceRefreshSequence || activeProject?.workspace_id !== workspaceId) return;
     reconcilingMessageIntent=false;updateComposerState();
@@ -759,11 +762,12 @@ function openWorkspace(project) {
   if (!standalone&&location.hash !== `#/workspace/${encodeURIComponent(project.id)}`) history.replaceState(null, '', `#/workspace/${encodeURIComponent(project.id)}`);
   bindValue($('#workspace-title'), () => (project.title));
   $('#workspace-title').title = project.title;
-  const ready=project.status==='ready';
-  bindValue($('#workspace-meta'), () => (ready?msg('workspace.meta.ready'):project.status==='provisioning'?msg('workspace.meta.preparing'):msg('workspace.meta.recovering')));
+  const ready=project.status==='ready'&&!project.archived_at,readable=project.status==='ready';
+  $('#workspace').classList.toggle('archived',Boolean(project.archived_at));
+  bindValue($('#workspace-meta'), () => (project.archived_at?msg('project.archivedHelp'):ready?msg('workspace.meta.ready'):project.status==='provisioning'?msg('workspace.meta.preparing'):msg('workspace.meta.recovering')));
   $('#message-input').disabled=!ready;$('#message-submit').disabled=true;$('#new-session').disabled=true;
   $('#session-select').disabled=!ready;$('#cancel-turn').hidden=true;
-  $('#files-refresh').disabled=!ready;$('#files-tab').disabled=!ready;$('#diff-tab').disabled=!ready;
+  $('#files-refresh').disabled=!readable;$('#files-tab').disabled=!readable;$('#diff-tab').disabled=!readable;
   bindValue($('#message-error'), () => (''));
   accountView();workspaceLayout.refresh();
   renderWorkspace();renderModelState();
@@ -772,17 +776,20 @@ function openWorkspace(project) {
   selectArtifactPanel('files');
   if(standalone)workspaceLayout.select('preview');
   verifyHandoffPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id});
-  void browserPreviewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id,canOpen:ready,standalone,...(standalone?browserRoute:{})});
+  void browserPreviewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id,canOpen:readable,standalone,...(standalone?browserRoute:{})});
   if(standalone){servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();return;}
   previewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,canOpen:ready&&executionAvailability.preview,paused:!executionAvailability.preview});
   servicePanel.open({workspaceId:project.workspace_id,tenantId:tenant.id,canStart:ready&&executionAvailability.service});
-  if(ready){void simulationPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});void comparisonPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});}else{simulationPanel.leave();comparisonPanel.leave();}
-  exportPanel.enter({workspaceId:project.workspace_id});publicationPanel.enter({workspaceId:project.workspace_id});
-  void evidencePanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});
-  if(!ready){$('#turns').replaceChildren();appendTurnCard('system',msg('workspace.unreadyHelp'));bindValue($('#files-meta'), () => (msg('workspace.unready')));$('#workspace-files').replaceChildren();}
+  if(readable){void simulationPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});void comparisonPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});}else{simulationPanel.leave();comparisonPanel.leave();}
+  exportPanel.enter({workspaceId:project.workspace_id});publicationPanel.enter({workspaceId:project.workspace_id,readOnly:Boolean(project.archived_at)});
+  void evidencePanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,readOnly:Boolean(project.archived_at)});
+  if(!readable){$('#turns').replaceChildren();appendTurnCard('system',msg('workspace.unreadyHelp'));bindValue($('#files-meta'), () => (msg('workspace.unready')));$('#workspace-files').replaceChildren();}
   void refreshWorkspace(viewGeneration);
 }
 
+const archiveRequestKeys=new Map();
+let projectPageBefore=null;
+let projectPageStack=[];
 async function renderProjects() {
   stopPolling();
   if (!tenant || document.hidden) return;
@@ -791,7 +798,9 @@ async function renderProjects() {
   const box = $('#projects');
   box.setAttribute('aria-busy', 'true');
   try {
-    const data = await api(`/api/tenants/${encodeURIComponent(tenant.id)}/projects`);
+    const view=$('#project-filter')?.value==='archived'?'archived':'active';
+    const query=new URLSearchParams({view});if(projectPageBefore)query.set('before',projectPageBefore);
+    const data = await api(`/api/tenants/${encodeURIComponent(tenant.id)}/projects${view==='active'&&!projectPageBefore?'':'?'+query}`);
     if (generation !== viewGeneration || requestNumber !== listGeneration) return;
     const projects = [...data.projects];
     if (pendingProject && pendingProjectTenantId !== tenant.id) pendingProject = null;
@@ -799,7 +808,10 @@ async function renderProjects() {
     if (pendingProject && projects.some(project => project.id === pendingProject.id)) pendingProject = null;
     const requestedProjectId = workspaceProjectIdFromHash();
     if (requestedProjectId) {
-      const requested = projects.find(project => project.id === requestedProjectId && project.workspace_id);
+      let requested = projects.find(project => project.id === requestedProjectId && project.workspace_id);
+      if(!requested)requested=await api(`/api/tenants/${encodeURIComponent(tenant.id)}/projects/${encodeURIComponent(requestedProjectId)}`).then(value=>value.project??value).catch(()=>null);
+      if(generation!==viewGeneration||requestNumber!==listGeneration)return;
+      if(requested&&(requested.id!==requestedProjectId||!requested.workspace_id))requested=null;
       if (requested) { openWorkspace(requested); return; }
       history.replaceState(null, '', location.pathname + location.search);
       if (activeProject) {
@@ -845,7 +857,7 @@ async function renderProjects() {
       const status = document.createElement('span');
       const labels = { provisioning: msg('project.status.provisioning'), ready: msg('project.status.ready'), failed: msg('project.status.failed'), deleting: msg('project.status.deleting') };
       status.className = `status ${Object.hasOwn(labels, project.status) ? project.status : ''}`;
-      bindValue(status, () => (labels[project.status] || msg('common.unknown')));
+      bindValue(status, () => (project.archived_at?msg('project.archived'):labels[project.status] || msg('common.unknown')));
       const detail = document.createElement('p');
       detail.className = 'meta';
       bindValue(detail, () => (project.source_model_id && project.source_model_version ? msg('project.origin.official', () => ({p0: project.source_model_id, p1: project.source_model_version})) : msg('project.origin.blank')));
@@ -854,8 +866,16 @@ async function renderProjects() {
       if(isAcceptanceProject(project.title)){const tag=document.createElement('span');tag.className='meta';bindValue(tag, () => (msg('project.acceptance')));open.append(tag);}
       if (!open.disabled) open.onclick = () => openWorkspace(project);
       card.append(open);
+      const archive=document.createElement('button');archive.type='button';archive.className='button compact';bindValue(archive,()=>msg(project.archived_at?'project.restore':'project.archive'));archive.disabled=!['ready','failed'].includes(project.status);
+      archive.onclick=async()=>{archive.disabled=true;const action=project.archived_at?'restore':'archive',path=`/api/tenants/${encodeURIComponent(tenant.id)}/projects/${encodeURIComponent(project.id)}/${action}`;
+        const storageKey=`project-archive:${tenant.id}:${project.id}:${action}`;let key=archiveRequestKeys.get(storageKey);try{key=key||localStorage.getItem(storageKey);}catch{}if(!key){key=crypto.randomUUID();try{localStorage.setItem(storageKey,key);}catch{}}archiveRequestKeys.set(storageKey,key);
+        try{const receipt=await api(path,{method:'POST',headers:{'Idempotency-Key':key},body:'{}'});archiveRequestKeys.delete(storageKey);try{localStorage.removeItem(storageKey);}catch{}if(receipt.outcome!=='completed')show(msg('project.archiveBlocked'),true);else show(msg(action==='archive'?'project.archiveDone':'project.restoreDone'));await renderProjects();}catch(error){show(errorMessage(error),true);archive.disabled=false;}
+      };card.append(archive);
       box.append(card);
     }
+    const pages=document.createElement('nav');pages.setAttribute('aria-label',String(msg('project.pagination')));
+    if(projectPageStack.length){const previous=document.createElement('button');previous.type='button';previous.className='button';bindValue(previous,()=>msg('project.previous'));previous.onclick=()=>{projectPageBefore=projectPageStack.pop()??null;void renderProjects();};pages.append(previous);}
+    if(data.nextCursor){const next=document.createElement('button');next.type='button';next.className='button';bindValue(next,()=>msg('project.next'));next.onclick=()=>{projectPageStack.push(projectPageBefore);projectPageBefore=data.nextCursor;void renderProjects();};pages.append(next);}box.append(pages);
     scheduleProjectRefresh(projects);
     filterProjectCards();void loadProjectSummaries(summaryJobs,generation,requestNumber);
   } catch (error) {
