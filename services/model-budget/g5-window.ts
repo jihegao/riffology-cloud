@@ -209,3 +209,15 @@ export function readG5WindowSnapshot(storage:ModelBudgetStorage,configured:G5Win
  if(tables.length!==5)fail('schema-incomplete');
  return {schemaVersion:1,activePolicy:configured,windows:storage.sql.exec('SELECT * FROM g5_windows ORDER BY started_at,window_id').toArray(),tasks:storage.sql.exec('SELECT * FROM g5_tasks ORDER BY accepted_at,key').toArray(),turns:storage.sql.exec('SELECT * FROM g5_turns ORDER BY window_id,key').toArray(),calls:storage.sql.exec('SELECT * FROM g5_calls ORDER BY window_id,key').toArray(),rollovers:storage.sql.exec('SELECT * FROM g5_rollovers ORDER BY registered_at,target_window_id').toArray()};
 }
+
+/** All historical windows, including closed/expired windows. No policy, schema,
+ * admission, retry or settlement write is performed by this resource proof. */
+export function readG5NativeExecutionQuiet(storage:ModelBudgetStorage){
+ const snapshot=readG5WindowSnapshot(storage,null),tenants=new Set<string>();
+ for(const row of snapshot.tasks){
+  const document=JSON.parse(String(row.document)) as G5Task;id(document.tenantId);tenants.add(document.tenantId);
+  if(!['project','turn','group','simulation','service'].includes(document.kind)||row.start_at===undefined||![0,1].includes(Number(row.start_confirmed)))fail('native-execution-unconfirmed');
+  if(row.start_at!==null&&(typeof row.start_at!=='number'||!Number.isSafeInteger(row.start_at)||row.start_confirmed!==1))fail('native-execution-unconfirmed');
+ }
+ return {schemaVersion:1 as const,quiescent:true as const,tenantIds:[...tenants].sort(),tasks:snapshot.tasks.length};
+}

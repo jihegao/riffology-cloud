@@ -5,7 +5,7 @@ import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {SqlInvitedRunCapacity} from '../../services/simulation/invited-capacity.ts';
-import {invitedRunsPolicy,type InvitedRunsPolicy} from '../../services/simulation/invited-policy.ts';
+import {invitedRunsPolicy,INVITED_RUN_CONFIRMATION_GRACE_MS,type InvitedRunsPolicy} from '../../services/simulation/invited-policy.ts';
 import {leaseReference,type LeaseRequest,type QuotaStorage} from '../../services/quota/core.ts';
 const policy:InvitedRunsPolicy={schemaVersion:1,policyId:'beta-runs-v1',enabled:true,maxActiveRuns:1,maxRunsPerUser:1,maxGroupRuns:8,durationMs:600000,releaseGuardMs:360000,quietMs:30000};
 const actor={userId:'invited-a',authVersion:1};
@@ -48,7 +48,7 @@ test('unknown execution persists global stop across restart and policy changes, 
 });
 test('expired execution plus release guard quarantines without returning capacity; disable retains lookup and release',async t=>{
  const f=fixture(t),h=f.core(),lease=(await h.acquire(f.request(),actor)).lease!,ref=leaseReference(lease);await h.dispatch(ref);f.now+=600000;
- assert.equal((await h.snapshot()).paused,false);f.now+=360000;assert.equal((await h.snapshot()).unknown,1);assert.equal((await h.snapshot()).occupied,1);
+ assert.equal((await h.snapshot()).paused,false);f.now+=360000+INVITED_RUN_CONFIRMATION_GRACE_MS;assert.equal((await h.snapshot()).unknown,1);assert.equal((await h.snapshot()).occupied,1);
  f.reopen();const disabled=f.core({...policy,enabled:false});assert.equal((await disabled.lookup(ref.tenantId,ref.operationId))?.lease?.status,'unknown');await disabled.confirmStopped(ref,{kind:'runtime-stopped',confirmationId:'late-stop',observedAt:f.now});assert.equal((await disabled.snapshot()).occupied,0);
 });
 test('meter-only execution records observed duration and preserves all historical receipts beyond arbitrary call totals',async t=>{

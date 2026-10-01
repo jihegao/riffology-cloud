@@ -3,8 +3,9 @@ import type {TurnActor,TurnScope} from '../turn/protocol.ts';
 import {PRIVATE_BETA_CAPACITY_ACTOR} from '../model-budget/private-beta-policy.ts';
 import type {LeaseRequest,LeaseReference,StopConfirmation} from '../quota/core.ts';
 import {SqlInvitedRunCapacity} from './invited-capacity.ts';
-import {invitedRunsPolicy,INVITED_RUN_CAPACITY_ACTOR} from './invited-policy.ts';
-interface Env{
+import {invitedRunsPolicy,INVITED_RUN_CAPACITY_ACTOR,INVITED_RUN_CONFIRMATION_GRACE_MS} from './invited-policy.ts';
+import {assertInvitedRunResourceQuiet,type InvitedResourceQuietEnv} from './invited-resource-quiet.ts';
+interface Env extends InvitedResourceQuietEnv{
  INVITED_RUNS_POLICY_JSON?:string;
  INVITED_RUN_CAPACITY:DurableObjectNamespace<InvitedRunCapacity>;
  PRIVATE_BETA_CAPACITY?:{getByName(name:string):{authorizeRunAdmission(scope:TurnScope,actor:TurnActor):Promise<unknown>}};
@@ -19,9 +20,12 @@ export class InvitedRunCapacity extends DurableObject<Env>{
  }
  async #authorize(request:LeaseRequest,actor:TurnActor){
   const beta=this.env.PRIVATE_BETA_CAPACITY?.getByName(PRIVATE_BETA_CAPACITY_ACTOR);if(!beta?.authorizeRunAdmission)throw Error('invited-runs-policy-migration-required');
-  await beta.authorizeRunAdmission({tenantId:request.tenantId,projectId:request.projectId,workspaceId:request.workspaceId,workspaceGeneration:request.generation},actor);
+  const scope={tenantId:request.tenantId,projectId:request.projectId,workspaceId:request.workspaceId,workspaceGeneration:request.generation};
+  await beta.authorizeRunAdmission(scope,actor);
+  await assertInvitedRunResourceQuiet(this.env,scope);
+  await beta.authorizeRunAdmission(scope,actor);
  }
- async acquire(request:LeaseRequest,actor:TurnActor){const core=this.#core();await this.#authorize(request,actor);const result=await core.acquire(request,actor);if(result.lease?.status!=='stopped')await this.ctx.storage.setAlarm(request.deadlineAt+invitedRunsPolicy(this.env.INVITED_RUNS_POLICY_JSON)!.releaseGuardMs);return result;}
+ async acquire(request:LeaseRequest,actor:TurnActor){const core=this.#core();await this.#authorize(request,actor);const result=await core.acquire(request,actor);if(result.lease?.status!=='stopped')await this.ctx.storage.setAlarm(request.deadlineAt+invitedRunsPolicy(this.env.INVITED_RUNS_POLICY_JSON)!.releaseGuardMs+INVITED_RUN_CONFIRMATION_GRACE_MS);return result;}
  async dispatch(reference:LeaseReference){const core=this.#core();await this.#authorize(reference,await core.owner(reference));return core.dispatch(reference);}
  lookup(tenantId:string,operationId:string){return this.#core().lookup(tenantId,operationId);}
  markUnknown(reference:LeaseReference){return this.#core().markUnknown(reference);}
