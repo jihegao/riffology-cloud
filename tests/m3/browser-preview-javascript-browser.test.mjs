@@ -5,6 +5,7 @@ import test from 'node:test';
 import {spawnSync} from 'node:child_process';
 import {build} from 'esbuild';
 import {chromium} from 'playwright';
+import {JS_LIMITS} from '../../services/browser-preview/runtime/js-scene.mjs';
 
 const packageIdentity='a'.repeat(64);
 const manifest={schema:'riffology.browser-js/v1',hostApi:'riffology.browser-host/v1',entry:'frontend/main.mjs',width:600,height:420};
@@ -89,6 +90,22 @@ test('actual pointer delivery is bounded to the per-second event budget',{timeou
  const f=await fixture(t),parameters={servers:1,customers:3,arrival_rate:1,service_rate:1},trace=pythonTrace(parameters,3);
  const source=`export function render(context){return {schema:'riffology.browser-scene/v1',background:'#334455',marks:[{kind:'rect',id:'target',x:0,y:0,width:600,height:420,fill:context.event?'#556677':'#334455'}]};}`;
  await f.open({source,revisionId:'revision-events',parameters,seed:3,trace});
- const canvas=f.page.frameLocator('iframe.runtime').locator('canvas');for(let i=0;i<48;i++)await canvas.click({position:{x:10,y:10},force:true});await f.page.waitForTimeout(250);
- const painted=await f.page.evaluate(()=>messages.filter(message=>message.type==='painted'&&message.token===0).length);assert.ok(painted>0);assert.ok(painted<=32,`painted=${painted}`);
+ const canvas=f.page.frameLocator('iframe.runtime').locator('canvas'),click=()=>canvas.click({position:{x:10,y:10}});
+ // Real clicks can span seconds on CI. Control only the iframe's monotonic
+ // budget clock; browser input, Worker rendering and timers stay real.
+ await canvas.evaluate(()=>{
+  window.__eventClockNow=1000;
+  Object.defineProperty(performance,'now',{value:()=>window.__eventClockNow});
+ });
+ const painted=()=>f.page.evaluate(()=>messages.filter(message=>message.type==='painted'&&message.token===0).length);
+ // Await each accepted render so a busy Worker cannot hide a missing limiter.
+ for(let i=0;i<JS_LIMITS.eventsPerSecond;i++){
+  await click();await f.page.waitForFunction(expected=>messages.filter(message=>message.type==='painted'&&message.token===0).length===expected,i+1);
+ }
+ for(let i=0;i<16;i++)await click();await f.page.waitForTimeout(250);
+ assert.equal(await painted(),JS_LIMITS.eventsPerSecond);
+ await canvas.evaluate(canvas=>{canvas.ownerDocument.defaultView.__eventClockNow=1999;});await click();await f.page.waitForTimeout(250);
+ assert.equal(await painted(),JS_LIMITS.eventsPerSecond);
+ await canvas.evaluate(canvas=>{canvas.ownerDocument.defaultView.__eventClockNow=2000;});await click();
+ await f.page.waitForFunction(expected=>messages.filter(message=>message.type==='painted'&&message.token===0).length===expected,JS_LIMITS.eventsPerSecond+1);
 });
