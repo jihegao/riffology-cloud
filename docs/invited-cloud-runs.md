@@ -28,6 +28,17 @@ terminal execution with billing pending stays distinct from execution unknown.
 It also rechecks the original Legacy and G5 actors against the exact historical
 isolation manifests and quiet-execution proof; a new project cannot bypass an
 unresolved old execution. Missing historical bindings fail closed.
+Model-call proof is separate from resource release. Every reservation, dispatch
+and native-start gate also reads the original `TENANT_QUOTA` actors for the
+current tenant, all current accepted-invitation active personal-owner tenants
+from D1 (without a page limit), frozen historical tenants, and tenants recorded
+in every original G5 window. Any outstanding Simulation/Service lease, or an
+unknown/expired Workspace lease, refuses the new Run. The original fixed G5
+actor refuses any unconfirmed historical native start grant. These private RPCs
+only SELECT existing metadata; empty original actors stay uninitialized, and no
+policy is pinned, admission opened or release fabricated. Legacy M4, M3 Service
+and G5 admission flags must stay closed. Beta actor/kill authorization is checked
+again after all resource reads.
 
 Authorization is checked at submit, each child scheduling attempt, reservation,
 dispatch and immediately before native start. Archive integration #152 supplies
@@ -54,6 +65,7 @@ registration, or restore an expired controlled window.
 | Run deadline | 600 seconds | Existing `SimulationHost` default and root native runner deadline |
 | Release assignment guard | 360 seconds | Existing finite-run/container release guard |
 | Continuous quiet observation | 30 seconds | Existing `destroy` / running-state release checks |
+| Release confirmation grace | 120 seconds | Bounded allowance for alarm/stop observation and release readback, after the full guard |
 
 These are conservative resource bounds, not measured throughput. Groups freeze
 all child IDs, then admit one child at a time. The next child's execution deadline
@@ -74,13 +86,18 @@ The full reproducible artifact/export checks and human publication review remain
 An unconfirmed native start/observation/stop or release operation marks the
 original Run lease unknown and pauses the global Run actor. Reconciliation only
 observes/stops that original identity. A reservation still unsettled after its
-600-second deadline plus the 360-second release guard is quarantined by the actor
+600-second deadline plus the 360-second release guard and 120-second confirmation
+grace is quarantined by the actor
 alarm; its capacity remains held. It cannot be bypassed by another project,
 user, policy ID or runtime provider. Trustworthy release can settle the original
 lease, but does not automatically resume the paused actor. An operator resumes
 only after zero occupied leases and review of the original receipts. The common
 Private Beta kill switch also cancels pending children and requests stop for
 accepted Runs. No new request is admitted while either route is paused.
+The grace never extends the native 600-second execution deadline or shortens the
+360-second guard measured from trusted stop observation. Continuous quiet runs
+in parallel with that guard. Ordinary timeout followed by confirmed release
+within the bounded grace can admit the next Run; missing proof still quarantines.
 
 No call-count, money, daily or cumulative compute quota exists in this route.
 The actor retains every reservation/denial/release receipt, dispatch timestamps,
@@ -143,6 +160,13 @@ four M3 stages (876 passed / 12 conditional container tests skipped; Browser
 Preview 16; release scripts 9; model scripts 90). Subsequent targeted tests cover
 the final upload-time authorization fence and historical-group route guard.
 The skipped container tests and authenticated paid acceptance remain pending.
+Post-review checks additionally cover original Quota/G5 proofs without writes,
+cross-identity old Service unknown, frozen old Simulation held, expired G5 native
+start, missing authority and dispatch/final-check denial through actual
+Workerd/D1/SQLite. Joint Host/capacity tests cover 2-second and 90-second stop
+observation delays, the full guard, release and the next Run without a false pause.
+The post-review targeted set passed 63 checks; original Quota/G5/Service
+regressions passed another 46, including Workerd. Typecheck and UI were rerun.
 
 Use the repository README asset preparation before full suites. On this macOS
 host, set `M1_BROWSER_CHANNEL=chromium` and prepend

@@ -8,13 +8,15 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {SimulationHost,publicExperiment,publishSimulationResult,type SimulationPorts} from '../../services/simulation/host.ts';
 import {modelVersion,digest,type SimulationPlan} from '../../services/simulation/source.ts';
+import {SqlInvitedRunCapacity} from '../../services/simulation/invited-capacity.ts';
 import {SqlTenantQuota} from '../../services/quota/core.ts';
 import {fixture,scope,actor,spec as serviceSpec} from './run-fixture.ts';
 import {SIMULATION_WAKE_KEY,TURN_WAKE_KEY} from '../../services/workspace/shared-alarm.ts';
 const spec={schemaVersion:1 as const,researchQuestion:'Queue?',scope:'One queue',entities:['customer'],mechanisms:['FCFS'],assumptions:[],parameters:{servers:{type:'integer' as const,default:1,minimum:1,maximum:4}},metrics:{wait:{unit:'min'}},limitations:[],execution:{entrypoint:'model/run.py',dependencyLock:'app/requirements.lock'}};
 const plan:SimulationPlan={source:serviceSpec().plan.source,spec,specSha256:'1'.repeat(64),entrypointSha256:'2'.repeat(64),dependencyLockSha256:'3'.repeat(64)};
-function setup(t:Parameters<typeof fixture>[0]){
- const q=fixture(t),quota=new SqlTenantQuota(q.storage,{tenantId:scope.tenantId,capacity:1,version:'v1'},()=>q.now);
+function setup(t:Parameters<typeof fixture>[0],invited=false){
+ const q=fixture(t),originalExec=q.storage.sql.exec.bind(q.storage.sql);q.storage.sql.exec=((...args)=>{const result=originalExec(...args);return {...result,one:()=>result.toArray()[0]};}) as typeof q.storage.sql.exec;
+ const quota=invited?new SqlInvitedRunCapacity(q.storage,{schemaVersion:1,policyId:'runs-v1',enabled:true,maxActiveRuns:1,maxRunsPerUser:1,maxGroupRuns:8,durationMs:600000,releaseGuardMs:360000,quietMs:30000},()=>q.now):new SqlTenantQuota(q.storage,{tenantId:scope.tenantId,capacity:1,version:'v1'},()=>q.now);
  const dir=mkdtempSync(join(tmpdir(),'simulation-host-')),file=join(dir,'state.db');let db=new DatabaseSync(file),fail=false;db.exec('CREATE TABLE kv(k TEXT PRIMARY KEY,v TEXT)');
  const get=async<T,>(key:string):Promise<T|undefined>=>{const row=db.prepare('SELECT v FROM kv WHERE k=?').get(key);return row?JSON.parse(String(row.v)):undefined;};
  const put=async(key:string,value:unknown)=>{db.prepare('INSERT OR REPLACE INTO kv VALUES(?,?)').run(key,JSON.stringify(value));};
@@ -23,11 +25,11 @@ function setup(t:Parameters<typeof fixture>[0]){
  const storage={...transaction,transaction:async<T,>(fn:(tx:typeof transaction)=>Promise<T>)=>{db.exec('BEGIN IMMEDIATE');try{const value=await fn(transaction);db.exec('COMMIT');return value;}catch(e){db.exec('ROLLBACK');throw e;}},sync:async()=>{if(fail){fail=false;throw Error('lost-ack');}}} as unknown as DurableObjectStorage;
  let starts=0,stops=0,publishes=0,observes=0,nativeResult=false,failStart=false,failRelease=false;
  const stopped=()=>({status:'stopped' as const,stop:{confirmationId:'a'.repeat(64),observedAt:q.now,fenced:true as const},result:nativeResult?{exitCode:0,result:{schemaVersion:1,metrics:{wait:2}},pythonVersion:'3.11.1'}:null});
- const ports:SimulationPorts={quota:{acquire:r=>quota.acquire(r),lookup:(_t,id)=>quota.lookup(id),dispatch:r=>quota.dispatch(r),confirmStopped:async(r,p)=>{const result=await quota.confirmStopped(r,p);if(failRelease){failRelease=false;throw Error('lost-release-ack');}return result;}},start:async()=>{starts++;if(failStart)throw Error('lost-start-ack');return {status:'running',result:null,stop:null};},observe:async()=>{observes++;return nativeResult?stopped():{status:'running',result:null,stop:null};},stop:async()=>{stops++;return stopped();},destroy:async()=>{},running:async()=>false,publish:async()=>{publishes++;return {metrics:{wait:2},artifactSha256:'9'.repeat(64)};},authorize:async()=>true,hold:()=>{}};
- const host=()=>new SimulationHost(storage,scope,ports,()=>q.now,{durationMs:10000,releaseGuardMs:100,quietMs:50});
+ const ports:SimulationPorts={quota:{acquire:r=>quota instanceof SqlInvitedRunCapacity?quota.acquire(r,actor):quota.acquire(r),lookup:(_t,id)=>quota instanceof SqlInvitedRunCapacity?quota.lookup(_t,id):quota.lookup(id),dispatch:r=>quota.dispatch(r),confirmStopped:async(r,p)=>{const result=await quota.confirmStopped(r,p);if(failRelease){failRelease=false;throw Error('lost-release-ack');}return result;}},start:async()=>{starts++;if(failStart)throw Error('lost-start-ack');return {status:'running',result:null,stop:null};},observe:async()=>{observes++;return nativeResult?stopped():{status:'running',result:null,stop:null};},stop:async()=>{stops++;return stopped();},destroy:async()=>{},running:async()=>false,publish:async()=>{publishes++;return {metrics:{wait:2},artifactSha256:'9'.repeat(64)};},authorize:async()=>true,hold:()=>{}};
+ const host=()=>new SimulationHost(storage,scope,ports,()=>q.now,invited?{durationMs:600000,releaseGuardMs:360000,quietMs:30000}:{durationMs:10000,releaseGuardMs:100,quietMs:50});
  const request={...modelVersion(plan),parameters:{servers:2},seed:42};
  t.after(()=>{db.close();rmSync(dir,{recursive:true,force:true});});
- return {q,storage,ports,host,request,get starts(){return starts;},get observes(){return observes;},get stops(){return stops;},get publishes(){return publishes;},complete(){nativeResult=true;},loseStart(){failStart=true;},loseRelease(){failRelease=true;},loseSync(){fail=true;},reopen(){db.close();db=new DatabaseSync(file);}};
+ return {q,quota,storage,ports,host,request,get starts(){return starts;},get observes(){return observes;},get stops(){return stops;},get publishes(){return publishes;},complete(){nativeResult=true;},loseStart(){failStart=true;},loseRelease(){failRelease=true;},loseSync(){fail=true;},reopen(){db.close();db=new DatabaseSync(file);}};
 }
 test('durable receipt and shared alarm survive lost ack/reopen; same key freezes one run',async t=>{
  const f=setup(t),h=f.host();await f.storage.put(TURN_WAKE_KEY,1200);f.loseSync();await assert.rejects(h.submit(actor,'key',f.request,plan,'image',()=>true),/lost-ack/);f.reopen();
@@ -124,4 +126,14 @@ test('invited Run keeps admission identity, isolates lost native ACK and cancels
 
 test('time limit stops the original run, persists failed deadline and requires resource release',async t=>{
  const f=setup(t),host=f.host(),run=await host.submit(actor,'deadline',f.request,plan,'image',()=>true);await host.alarm();f.q.now+=10001;await host.alarm();const final=await host.get(run.runId);assert.equal(final.status,'failed');assert.equal(final.errorCode,'simulation-deadline');assert.equal(final.released,false);assert.equal(f.starts,1);assert.equal(f.stops,1);await host.alarm();f.q.now+=101;await host.alarm();assert.equal((await host.get(run.runId)).released,true);
+});
+
+for(const observationLag of [2000,90000])test(`normal timeout plus ${observationLag}ms stop observation retains the full guard and permits next Run after confirmed release`,async t=>{
+ const f=setup(t,true),host=f.host(),quota=f.quota as SqlInvitedRunCapacity;
+ f.ports.admitRun=async()=>({kind:'invited-runs',policyId:'runs-v1'});
+ const run=await host.submit(actor,'invited-timeout',f.request,plan,'image',()=>true);await host.alarm();
+ f.q.now=run.input.deadlineAt+observationLag;await host.alarm();await host.alarm();assert.equal((await host.get(run.runId)).status,'failed');assert.equal((await host.get(run.runId)).releaseBegunAt,f.q.now);
+ f.q.now=run.input.deadlineAt+360000;assert.equal((await quota.snapshot()).paused,false);await host.alarm();assert.equal((await host.get(run.runId)).released,false,'guard begins at observed stop, not the native deadline');
+ f.q.now=run.input.deadlineAt+360000+observationLag;await host.alarm();assert.equal((await host.get(run.runId)).released,true);assert.equal((await quota.snapshot()).occupied,0);assert.equal((await quota.snapshot()).paused,false);
+ const next=await host.submit(actor,'after-confirmed-timeout',f.request,plan,'image',()=>true);await host.alarm();assert.equal((await host.get(next.runId)).status,'running');assert.equal(f.starts,2);
 });

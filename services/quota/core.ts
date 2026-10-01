@@ -50,6 +50,23 @@ export function leaseReference(lease: Lease): LeaseReference {
     generation: lease.generation, operation: lease.operation, operationId: lease.operationId, deadlineAt: lease.deadlineAt, leaseId: lease.leaseId, ...(lease.operation !== 'workspace-runtime' ? {runId: lease.runId} : {}) } as LeaseReference;
 }
 
+/** Internal historical-resource proof. Empty original actors stay empty: this
+ * check never initializes, pins, upgrades, expires or releases a quota ledger. */
+export function readTenantNativeExecutionQuiet(storage:Pick<QuotaStorage,'sql'>,tenantId:string,now=Date.now()){
+ quotaIdentifier(tenantId);
+ const tables=storage.sql.exec<{name:string}>("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('quota_meta','quota_leases','quota_operations','quota_workspaces')").toArray();
+ if(!tables.length)return {tenantId,quiescent:true as const};
+ if(tables.length!==4)reject('quota-native-execution-unconfirmed');
+ const meta=storage.sql.exec<{tenant_id:string}>('SELECT tenant_id FROM quota_meta WHERE singleton=1').toArray();
+ if(meta.length!==1||meta[0]!.tenant_id!==tenantId)reject('quota-native-execution-unconfirmed');
+ const leases=storage.sql.exec<{request_json:string;status:string;deadline_at:number}>("SELECT request_json,status,deadline_at FROM quota_leases WHERE status!='stopped'").toArray();
+ for(const row of leases){
+  const request=requestValue(JSON.parse(row.request_json));
+  if(request.tenantId!==tenantId||request.deadlineAt!==row.deadline_at||!['held','dispatched','unknown'].includes(row.status)||request.operation!=='workspace-runtime'||row.status==='unknown'||row.deadline_at<=now)reject('quota-native-execution-unconfirmed');
+ }
+ return {tenantId,quiescent:true as const};
+}
+
 /** Private platform primitive: no identity assertion in these arguments grants
  * authority. The DO adapter validates its name, and its binding must remain
  * accessible only to the authenticated platform and trusted runtime supervisor. */

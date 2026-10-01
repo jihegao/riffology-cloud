@@ -3,6 +3,9 @@
  * that limit requires a separate measured capacity change. */
 export type InvitedRunsPolicy={schemaVersion:1;policyId:string;enabled:boolean;maxActiveRuns:1;maxRunsPerUser:1;maxGroupRuns:number;durationMs:number;releaseGuardMs:number;quietMs:number};
 export const INVITED_RUN_CAPACITY_ACTOR='invited-run-capacity-v1';
+// Bounded alarm/stop-observation/readback grace after the full assignment guard.
+// This never extends the native execution deadline or returns occupied capacity.
+export const INVITED_RUN_CONFIRMATION_GRACE_MS=120000;
 export function invitedRunsPolicy(raw:unknown):InvitedRunsPolicy|null{
  if(raw===undefined)return null;
  const p=(typeof raw==='string'?JSON.parse(raw):raw) as InvitedRunsPolicy;

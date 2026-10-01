@@ -1,4 +1,5 @@
 import {invitedRunsPolicy,INVITED_RUN_CAPACITY_ACTOR,type InvitedRunsPolicy} from '../simulation/invited-policy.ts';
+import {assertInvitedRunResourceQuiet} from '../simulation/invited-resource-quiet.ts';
 import type {InvitedRunCapacity} from '../simulation/invited-capacity-durable.ts';
 import {leaseReference,type LeaseRequest,type LeaseReference} from '../quota/core.ts';
 import {privateBetaPolicy,privateBetaCandidate,authorizePrivateBeta,PRIVATE_BETA_CAPACITY_ACTOR} from '../model-budget/private-beta-policy.ts';
@@ -135,7 +136,7 @@ export interface WorkspaceAgentEnv {
   PI_DEVELOPER_BUDGET?:{getByName(name:string):PiDeveloperBudget};
   G5_CONTROLLED_WINDOW_JSON?:string;
   G5_TOKEN_BUDGET?:DurableObjectNamespace<G5TenantModelBudget>;
-  G5_WINDOW_GUARD?:{getByName(name:string):{registerTask(task:unknown):Promise<unknown>;claimTaskCreate(key:string):Promise<{authorized:boolean}>;bindTask(key:string,id:string):Promise<unknown>;taskBinding(key:string,id:string):Promise<{found:boolean;bound:boolean}>;taskBindingForIntent(task:G5TaskRecovery,id:string):Promise<{found:boolean;bound:boolean;taskKey:string|null;windowId:string|null;profileSha256:string|null}>;repairTaskBinding(task:G5TaskRecovery,id:string):Promise<{found:true;bound:true;taskKey:string;windowId:string;profileSha256:string}>;checkTaskStart(key:string):Promise<{authorized:boolean}>;claimTaskStart(key:string,identity?:TurnRuntimeIdentity):Promise<{authorized:boolean;alreadyStarted:boolean;grantId:string|null}>;confirmTaskStartGrant(key:string,grantId:string):Promise<{confirmed:boolean}>;checkTaskContinue(key:string,grantId:string):Promise<{authorized:boolean}>;cancelUnstartedTask(key:string):Promise<unknown>;closeTrustedTurn(key:string,identity:TurnRuntimeIdentity):Promise<unknown>}};
+  G5_WINDOW_GUARD?:{getByName(name:string):{assertNativeExecutionQuiet():Promise<import('../simulation/invited-resource-quiet.ts').HistoricalNativeQuiet>;registerTask(task:unknown):Promise<unknown>;claimTaskCreate(key:string):Promise<{authorized:boolean}>;bindTask(key:string,id:string):Promise<unknown>;taskBinding(key:string,id:string):Promise<{found:boolean;bound:boolean}>;taskBindingForIntent(task:G5TaskRecovery,id:string):Promise<{found:boolean;bound:boolean;taskKey:string|null;windowId:string|null;profileSha256:string|null}>;repairTaskBinding(task:G5TaskRecovery,id:string):Promise<{found:true;bound:true;taskKey:string;windowId:string;profileSha256:string}>;checkTaskStart(key:string):Promise<{authorized:boolean}>;claimTaskStart(key:string,identity?:TurnRuntimeIdentity):Promise<{authorized:boolean;alreadyStarted:boolean;grantId:string|null}>;confirmTaskStartGrant(key:string,grantId:string):Promise<{confirmed:boolean}>;checkTaskContinue(key:string,grantId:string):Promise<{authorized:boolean}>;cancelUnstartedTask(key:string):Promise<unknown>;closeTrustedTurn(key:string,identity:TurnRuntimeIdentity):Promise<unknown>}};
   G4_BROWSER_BUILD_HOLD_SCOPES_JSON?:string;
   MANAGED_ACCEPTANCE_JSON?:string;
   MANAGED_TESTING_JSON?:string;
@@ -272,6 +273,8 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const policy=this.#invitedRunsPolicy();if(!policy?.enabled)throw Error('invited-runs-paused');
     const base=this.#betaControl(),beta=base as typeof base & {authorizeRunAdmission?(scope:TurnScope,actor:TurnActor):Promise<unknown>};
     if(!beta.authorizeRunAdmission)throw Error('invited-runs-policy-migration-required');
+    await beta.authorizeRunAdmission(scope,actor);this.#assertRunWritable(scope);
+    await assertInvitedRunResourceQuiet(this.env,scope);this.#assertRunWritable(scope);
     await beta.authorizeRunAdmission(scope,actor);this.#assertRunWritable(scope);
     const snapshot=await this.#invitedRunCapacity().snapshot();this.#assertRunWritable(scope);
     if(!snapshot.policyReady||snapshot.paused||snapshot.unknown)throw Error('invited-runs-paused');
