@@ -1,6 +1,62 @@
-# Current release readiness — 2026-10-01
+# Current release readiness — 2026-10-02
 
-## 2026-10-01 Pi model-authored drawing repair (#161)
+## 2026-10-02 user-authorized Invited Runs opening (#136)
+
+The user confirmed that the local Fire Model preview works and explicitly asked
+to open cloud experiments. The ordinary invited owner has an active personal
+membership, auth version 2, no platform role and no initial-operator invitation.
+The fresh project is ready and unarchived. Its saved drawing Revision is
+`9adee17195e958f3e373fc2c5ec497071b9cb565537ba6ccb36f07f673874a99`, with
+Preview package
+`bf8799b38ad0652b650f07d9ea6abfdb7f9c946a745a4b12cb9600841e6e3409`.
+This records the author's local/unverified confirmation for #161; it is not a
+server experiment or independently verified scientific result.
+
+**Invited Runs are now enabled** for current accepted invitees through the
+existing independent policy, within the original Beta review window ending
+October 20, 23:59:59.999 Asia/Shanghai. Gateway version
+`89e90822-d6e7-4036-8f17-99d08d7ca42e` is deployed at 100%, deployment
+`117a944c-55b0-47c7-9906-b80da5aecee2`. Only the original
+`invited-runs-v1` policy's `enabled` bit changed. Downloaded Gateway entry bytes
+still match source `aa76856080f536f3481779f082fe62dafad3d9a9`; all other
+92 bindings, namespace identities and runtime settings match the prior version.
+Version annotations identify this opening operation. The deployment used locked
+Wrangler 4.129.0 with `--containers-rollout none`; all 15 container application
+configurations, images, versions and limits are unchanged, including Trusted Pi
+v9. Browser Execution retains its earlier deployed version.
+
+The original fixed Run actor reports policyReady/enabled true, paused false,
+occupied/unknown 0/0. Its bounds remain global/user concurrency 1, 600 seconds per
+Run, eight sequential children per group, 360-second release guard, 30-second
+quiet and 120-second confirmation grace. The original Beta remains Open,
+active/quarantined 0/0 with the same v2 meter-only pin, 30 historical slots,
+124 calls, three alerts and 11 operations. Its complete ledger digest matches
+before/after. All five current native Dash inventories are complete and empty.
+G5 admission, M3 Service and legacy M4 stay closed. Calls and fee hard quotas
+remain removed; original metering, reservations and unknown-execution rules stay
+in force.
+
+Read-only refreshes in the authenticated ordinary owner's Safari session show
+both **Run experiment** and **Run and compare** enabled. The retained comparison
+draft is not submitted. No experiment POST, Run acquire/dispatch, paid authoring
+Turn or automatic retry was performed. The same Run actor still reports zero
+reservations/dispatches after the UI reads; this does not claim zero cloud billing
+for the deployment or metadata requests. The expiring metadata reader was
+removed after its original-actor snapshots; its capability and task-owned proxy
+are cleaned up.
+
+[#136](https://github.com/jihegao/riffology-cloud/issues/136) remains
+**Acceptance/open**, P0, owned by @jihegao in the original M1 milestone. The
+ordinary-session blocker is resolved. Actual single/comparison execution,
+persistent results, publication readiness, cancellation/timeout/release,
+lost-receipt recovery and second-identity checks remain pending. The next user
+case can use [this Fire Model](https://m1.riff-demo.gaojihe.cn/#/workspace/81424f92-23fb-40fd-8eb1-9c8ea45c690b),
+with density 0.5 versus 0.6, one initial fire and seeds 42/43 (four children).
+
+[Opening, actor and authenticated UI evidence](evidence/releases/invited-runs-open-20261002.json)
+and [the Run operating contract](invited-cloud-runs.md) record this scope.
+
+## Earlier 2026-10-01 Pi model-authored drawing repair (#161)
 
 [PR #162](https://github.com/jihegao/riffology-cloud/pull/162) is merged as
 `60597e28795f27faf7477ec7994d1f7fd283cbec`; its tested head

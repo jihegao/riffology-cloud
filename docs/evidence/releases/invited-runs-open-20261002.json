@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "releaseDate": "2026-10-02",
+  "timezone": "Asia/Shanghai",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/136",
+  "authorization": {
+    "source": "Direct user message in current task",
+    "text": "本地预览没问题了，开云端实验门禁",
+    "scope": "Open independent Invited Runs for current accepted beta users; preserve original policy, ledger and technical limits",
+    "automaticPaidAcceptance": false
+  },
+  "gateway": {
+    "name": "riffology-m1-gateway-staging",
+    "sourceCommit": "aa76856080f536f3481779f082fe62dafad3d9a9",
+    "previousVersion": "4a9e5852-fd66-4097-be04-35f5f341b59d",
+    "version": "89e90822-d6e7-4036-8f17-99d08d7ca42e",
+    "deployment": "117a944c-55b0-47c7-9906-b80da5aecee2",
+    "allocationPercent": 100,
+    "entrySha256": "197e31dd91aa7d79c04f71a312949f99f8a1bce80e9a6288a6f0d0ff13a91ac9",
+    "entryBytes": 5623055,
+    "sameDownloadedEntryBeforeAfter": true,
+    "bindingCount": 93,
+    "onlyChangedBinding": "INVITED_RUNS_POLICY_JSON",
+    "allOther92BindingsExact": true,
+    "runtimeSettingsExceptBindingsAndVersionAnnotationsExact": true,
+    "versionAnnotations": {
+      "workers/message": "Issue 136 user-authorized Invited Runs opening; same bundle and original limits",
+      "workers/triggered_by": "upload"
+    },
+    "lockedWrangler": "4.129.0",
+    "dryRunEntryExact": true,
+    "containersRollout": "none"
+  },
+  "policy": {
+    "schemaVersion": 1,
+    "policyId": "invited-runs-v1",
+    "enabled": true,
+    "maxActiveRuns": 1,
+    "maxRunsPerUser": 1,
+    "maxGroupRuns": 8,
+    "durationMs": 600000,
+    "releaseGuardMs": 360000,
+    "quietMs": 30000
+  },
+  "actors": {
+    "privateBetaActor": "private-beta-capacity-v1",
+    "invitedActor": "invited-run-capacity-v1",
+    "betaBeforeObservedAt": "2026-10-01T16:25:09.541Z",
+    "betaAfterUIObservedAt": "2026-10-01T16:29:11.826Z",
+    "betaPolicyPin": "67885be43123d0ba94f06c7c06200b9fdd4dcf23b6adacf44a8f525466536e86",
+    "betaPolicyReady": true,
+    "betaEnabled": true,
+    "betaPaused": false,
+    "betaActive": 0,
+    "betaQuarantined": 0,
+    "betaReviewAt": 1792511999999,
+    "betaLedgerBeforeAfterExact": true,
+    "betaLedgerSha256": "771001ca7a11d18877d225aee7c8ce0e07dc108a0f8c3426d4ab11e30c3c3dd2",
+    "betaCounts": {
+      "slotCount": 30,
+      "callCount": 124,
+      "alertCount": 3,
+      "operationCount": 11
+    },
+    "invitedSnapshotBefore": {
+      "schemaVersion": 1,
+      "policyId": "invited-runs-v1",
+      "policyReady": true,
+      "enabled": false,
+      "paused": false,
+      "occupied": 0,
+      "unknown": 0,
+      "limits": {
+        "maxActiveRuns": 1,
+        "maxRunsPerUser": 1,
+        "maxGroupRuns": 8,
+        "durationMs": 600000,
+        "confirmationGraceMs": 120000
+      },
+      "observed": {
+        "runs": 0,
+        "dispatched": 0,
+        "released": 0,
+        "supervisedMs": 0
+      },
+      "leases": []
+    },
+    "invitedSnapshotAfterUI": {
+      "schemaVersion": 1,
+      "policyId": "invited-runs-v1",
+      "policyReady": true,
+      "enabled": true,
+      "paused": false,
+      "occupied": 0,
+      "unknown": 0,
+      "limits": {
+        "maxActiveRuns": 1,
+        "maxRunsPerUser": 1,
+        "maxGroupRuns": 8,
+        "durationMs": 600000,
+        "confirmationGraceMs": 120000
+      },
+      "observed": {
+        "runs": 0,
+        "dispatched": 0,
+        "released": 0,
+        "supervisedMs": 0
+      },
+      "leases": []
+    },
+    "invitedSnapshotMetadataEffects": "Normal fixed-actor snapshot may initialize its original policy pin or expire an existing lease; no acquire, dispatch, resume or replacement actor was invoked."
+  },
+  "containers": {
+    "observedAt": "2026-10-01T16:26:28.771242+00:00",
+    "accountApplications": 15,
+    "allConfigurationsLimitsImagesVersionsExact": true,
+    "trustedPiVersion": 9,
+    "trustedPiImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue161-trusted-pi@sha256:2f0d2bb404a58f265ed413ef5a253b2ae36bc35f6108e00c290dfc45d7ef7413",
+    "simulationVersion": 3,
+    "toolsVersion": 3,
+    "fiveCurrentDashInventoriesComplete": true,
+    "currentNativeInstances": 0
+  },
+  "browserExecutionVersion": "c94df077-02a1-460f-8158-e47a338e68af",
+  "legacyFlags": {
+    "M4_SIMULATION_ENABLED": "false",
+    "M3_SERVICE_ENABLED": "false",
+    "G5_ADMISSION_ENABLED": "false"
+  },
+  "ordinaryOwner": {
+    "observedAt": "2026-10-01T16:27:19.663423+00:00",
+    "proof": "SELECT-only Catalog query for the exact project route ID",
+    "projectId": "81424f92-23fb-40fd-8eb1-9c8ea45c690b",
+    "projectCreatedAt": 1790838640531,
+    "projectStatus": "ready",
+    "archivedAt": null,
+    "archiveEpoch": 0,
+    "ownerUserIdSha256": "9cb1781a0e6aa30d6093a4a26744ea189386c2f1d337ffb9ca8c9ea1f505558d",
+    "authVersion": 2,
+    "userTenantMembershipActive": true,
+    "acceptedOrdinaryInvitation": true,
+    "initialOperatorInvitation": false,
+    "activePlatformRole": false
+  },
+  "authorPreview": {
+    "projectUrl": "https://m1.riff-demo.gaojihe.cn/#/workspace/81424f92-23fb-40fd-8eb1-9c8ea45c690b",
+    "revisionId": "9adee17195e958f3e373fc2c5ec497071b9cb565537ba6ccb36f07f673874a99",
+    "packageIdentity": "bf8799b38ad0652b650f07d9ea6abfdb7f9c946a745a4b12cb9600841e6e3409",
+    "confirmation": "The author reports local preview works; authenticated Safari shows this saved Revision/package and the completed/saved visual repair Turn.",
+    "provenance": "local/unverified",
+    "noIndependentNewVisualExecutionByThisTask": true
+  },
+  "authenticatedUI": {
+    "identityScope": "One ordinary invited owner, auth version 2",
+    "browser": "Existing private Safari project session",
+    "actions": "Read-only refresh of model, preview status and comparison; no Run submission",
+    "runExperimentEnabled": true,
+    "runAndCompareEnabled": true,
+    "comparisonHistoryEmpty": true,
+    "verificationHistoryEmpty": true,
+    "existingPiComparisonDraftPreserved": true,
+    "retryPreviousRequestNotInvoked": true,
+    "observedBetweenUTC": [
+      "2026-10-01T16:27:19.663423Z",
+      "2026-10-01T16:31:38Z"
+    ]
+  },
+  "executionBoundary": {
+    "experimentPostsByTask": 0,
+    "runAcquireDispatchByTask": 0,
+    "piAuthoringTurnsByTask": 0,
+    "paidCloudRunAcceptance": false,
+    "authoritativeInvitedRunReservationsAfterUI": 0,
+    "authoritativeInvitedRunDispatchesAfterUI": 0,
+    "cloudBillingNotAssessed": true
+  },
+  "temporaryReader": {
+    "name": "riffology-invited-read-20261002",
+    "sourceSha256": "1b04c4570a9556e328b29fab6cba55dd2471d48a4ab727e4719478a9db4ec4bc",
+    "fixedOriginalActorsOnly": true,
+    "rpcMethods": [
+      "snapshot",
+      "migrationState"
+    ],
+    "expiresAt": 1790873320949,
+    "capabilityStoredPrivatelyThenRemoved": true,
+    "removedAfterReadback": true,
+    "deletionConfirmedBySettings404": true,
+    "noProviderToolExecutionOrResumeBindings": true
+  },
+  "projectStatus": "Acceptance",
+  "priority": "P0",
+  "assignee": "jihegao",
+  "milestone": 2,
+  "pendingAcceptance": [
+    "actual single Run",
+    "baseline and different intervention with at least two seeds",
+    "persistent result and current-version publication readiness",
+    "refresh/reentry and same-intent lost-receipt recovery",
+    "failure/cancel/timeout and authoritative release",
+    "second identity, cross-project denial and shared capacity contention"
+  ],
+  "recordedAt": "2026-10-01T16:32:47.354161+00:00"
+}

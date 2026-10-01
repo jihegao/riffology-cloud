@@ -165,7 +165,11 @@ per-run duration and group-size bounds. The shared guard itself verifies origina
 legacy/G5 execution isolation against the same authorities and frozen exact proofs
 as Pi; absent proofs require execution-quiet original ledgers. A fresh Run project
 cannot bypass an old unknown in either ledger. It does not reserve or release a Pi slot and does not open M3/M4 gates
-by itself. Runs rollout and real execution remain separate acceptance under #136.
+by itself. The independent Invited Runs policy was enabled on 2026-10-02 after
+explicit user authorization and ordinary owner/local preview confirmation;
+its [opening evidence](evidence/releases/invited-runs-open-20261002.json) records
+original pins, unchanged ledgers and enabled authenticated UI. Actual execution
+and full acceptance remain separate under #136.
 
 Local evidence: strict v1/v2 parsing; real Workerd/SQLite migration with rollback
 injection, stale snapshot refusal, unchanged gate checks, occupied/unknown/fee
@@ -205,5 +209,11 @@ The panel exposes redacted capacity, conservative fee exposure, monitor time and
 Deploy with execution gates closed first, preserving live bindings, secrets, container images, namespaces, policy manifests and static asset identities. The checked-in phase1 configuration is a template and does not contain every current live binding; derive the release overlay from the current Worker version/settings rather than replacing live configuration with the template. Add only the new SQLite DO binding/export and the reviewed Beta policy. Independently read back the resulting version and all execution flags.
 
 Open only Pi/M2 paths after scope-specific checks. Keep G5 admission, all M3 cloud paths and M4 disabled. Verify actual invited authentication, project creation, Python edits, saved Revision, Browser Preview, parameter persistence and continued conversation. Include a real second identity and cross-project negative checks; fixtures are not that evidence. Record original Turn/call/Revision identities, budgets before/after, request traces and release proofs. Browser Preview remains local/unverified.
+
+The separately authorized #136 opening uses `INVITED_RUNS_POLICY_JSON`, retaining
+those closed legacy flags. Its standing route stays within this original Beta
+window and kill switch, with global/user concurrency 1, 600-second Runs and at
+most eight sequential group children. See [Invited Cloud Runs](invited-cloud-runs.md)
+for its distinct admission, release and remaining acceptance contract.
 
 During the seven-day observation, record meaningful failures, revisits, budget warnings, pause/resume events and unresolved resources in #104. Review expiry automatically prevents new admission; extension requires an explicit reviewed policy evolution preserving all cumulative exposure, not a new actor or ledger. Do not mark #104 Done or reopen #87 merely because code is merged, a homepage returns 200, or one account succeeds. Close only after its documented acceptance and observation exit conditions are satisfied.

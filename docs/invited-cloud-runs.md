@@ -1,14 +1,18 @@
 # Invited Cloud Runs — #136
 
-Gateway implementation is deployed from main `aa768560`, 2026-10-01, as
-`4a9e5852-fd66-4097-be04-35f5f341b59d`. Simulation, Trusted Pi and Project Tools
-image rollouts have completed at 100%. Original Beta capacity is Open under the
-same-actor v2 meter-only pin; the dedicated invited Run policy **remains disabled**.
-An actual ordinary invited login is required for the first fresh-project single,
-comparison and release acceptance before standing Runs are declared available.
-The current browser identity is the initial operator and cannot substitute.
+On 2026-10-02 the user confirmed the local Fire Model preview and explicitly
+authorized cloud experiments. The dedicated invited Run policy is **enabled**
+on Gateway `89e90822-d6e7-4036-8f17-99d08d7ca42e` at 100%. Only the existing
+`invited-runs-v1` policy's enabled bit changed; downloaded entry bytes still
+match source `aa768560`. All other 92 bindings and all 15 container application
+configurations, images, versions and limits are preserved, including Trusted Pi
+v9. Original Beta is Open under its same-actor v2 meter-only pin; G5/M3/legacy
+M4 remain closed. The existing Beta review ends October 20, 23:59:59.999
+Asia/Shanghai. The fixed Run actor is ready, unpaused and occupied/unknown 0/0.
+The authenticated ordinary owner can now see enabled single and comparison
+buttons. Actual execution, release and full #136 acceptance remain pending.
 See [release readiness](release-readiness.md) and the
-[current evidence index](evidence/releases/m1-invited-delivery-20261001.json).
+[current opening evidence](evidence/releases/invited-runs-open-20261002.json).
 Delivery status and ownership remain in
 [#136](https://github.com/jihegao/riffology-cloud/issues/136) and the Delivery
 Project. Browser Preview remains local/unverified.
@@ -144,6 +148,12 @@ Business-IR revision comparison remains `compiler-group-unsupported`, as in
 4. Only after those readbacks, enable the same Run policy (`enabled:true` only)
    and independently verify the binding, image, actor pin, limits and original
    Beta admission state. The configured Beta review window remains authoritative.
+   This step completed on 2026-10-02. Checked-in candidate profiles intentionally
+   retain their safe disabled defaults. Subsequent authorized live overlays must
+   reconcile the current standing policy and original namespace/image identities;
+   publishing a historical closed profile is not a routine update to this opening.
+   Closing admission uses `enabled:false` on this same policy, preserving the
+   capacity binding and original ledger for lookup, stop and release.
 5. Use only new personal projects and an ordinary currently accepted invitee.
    Freeze a small Queue Revision and record all request/Revision/package identities.
    Complete a single Run, then baseline + a different parameter intervention with
