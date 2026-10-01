@@ -1,12 +1,16 @@
 # Browser Preview Agent 生成约定
 
-日期：2026-09-15；2026-10-01 整合 #150 JavaScript 前端与已合并的 #122 compiler v0.1。固定 release skill、保存后兼容检查及浏览器运行已接线；#144 平台工具修复已部署，认证项目新 Revision 验收仍待完成。#150 的新前端资产与 compiler 容器尚待发布，不能据本地检查宣称线上可用。
+日期：2026-09-15；2026-10-01 整合 #150 JavaScript 前端与已合并的 #122 compiler v0.1。#144、#150 的 Worker/前端资产及三个容器镜像已发布，普通用户完整验收仍待完成，当前版本以 `docs/release-readiness.md` 为准。#161 修复 Pi 可视化选择：新模型默认生成模型绘图代码，候选发布与用户重新测试分别记录。
 
 平台真实注入入口是 `services/trusted-pi/release-candidate.mjs` 的 `resolveOptions().fixedSkills`，仍为一个 simulation skill；通用 Python/旧 SimPy/server Preview 政策保留。受信 Tool Bridge 提供 `project_install_preview_adapter`，把固定适配器作为一次有身份、幂等的项目写入；模型不再抄写长模板。候选测试核对固定策略、工具字节及 canonical server 实现。
 
 ## 保存资产与生成选择
 
 新 interacting-agent/grid 模型优先 Mesa；Queue/lane 或用户明确 non-Mesa 用普通 Python 标准库。已有模型保持既有路径/profile 与 server Preview，除非任务要求迁移。Browser unsupported 不应诱发依赖安装、每模型部署或伪造 ready。
+
+#161 的新模型默认使用模型自绘：Python 模型选 `python-canvas`，明确要求 JavaScript 前端时选 `javascript-canvas`。模拟的 grid/lane 空间与显示方式分开选择；网格模型无需使用共享 grid renderer。用户只需描述颜色、形状、图层或交互，不必指定 Canvas/renderer。固定 skill 提供可直接运行的森林火灾 `draw` 示例，并要求按实际状态调整颜色、每帧清屏以及背景→实体的绘制顺序。空地、健康、着火、烧毁应可辨认；同一 `run(config)` 快照仍是绘图和指标的来源。
+
+共享 grid/lane 仅保留给没有视觉修改请求的现有工作模型，或用户明确要求的基本共享显示。共享 grid 只把 `group-b` 画成橙色，其余 agent 状态都为蓝色，不能满足任意状态配色。现有模型收到“用不同颜色区分状态”等要求时，在新 Revision 中添加绘图并切换显示模式；保持计算、参数、seed 和指标，除非用户也要求修改它们。历史包按冻结身份保留，不自动改写，不通过合并/重命名状态适配两色网格。
 
 | 保存路径 | 固定约定 |
 | --- | --- |

@@ -1,13 +1,15 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFile} from 'node:fs/promises';
-import {BROWSER_PREVIEW_GENERATION_CONTRACT as contract,BROWSER_PREVIEW_JAVASCRIPT_EXAMPLE as javascriptExample,BROWSER_PREVIEW_SERVER_ADAPTER as adapter,BROWSER_PREVIEW_SERVER_ADAPTER_SHA256 as adapterSha,createProductTrustedPiRelease} from '../../services/trusted-pi/release-candidate.mjs';
+import {BROWSER_PREVIEW_GENERATION_CONTRACT as contract,BROWSER_PREVIEW_JAVASCRIPT_EXAMPLE as javascriptExample,BROWSER_PREVIEW_PYTHON_DRAW_EXAMPLE as pythonDrawExample,BROWSER_PREVIEW_SERVER_ADAPTER as adapter,BROWSER_PREVIEW_SERVER_ADAPTER_SHA256 as adapterSha,createProductTrustedPiRelease} from '../../services/trusted-pi/release-candidate.mjs';
 import {BROWSER_PREVIEW_JAVASCRIPT_SOURCE_PATHS,BROWSER_PREVIEW_SOURCE_PATHS,canonicalPreviewJson,previewSha256} from '../../services/browser-preview/contract.ts';
 import {PREVIEW_LIMITS,PREVIEW_SOURCE_LOCKS,createTrustedPreviewRegistry} from '../../services/browser-preview/profiles.ts';
 import {inspectGeneratedBrowserPreview} from '../../services/browser-preview/generation.mjs';
 import {initialWorkspaceArchive} from '../../services/workspace/initial-archive.ts';
 import {workspaceArchiveReader} from '../../services/turn-runtime/workspace-file-index.ts';
 import {validateFrontendScene} from '../../services/browser-preview/runtime/js-scene.mjs';
+import {makeFixture} from '../../services/browser-preview/runtime/fixtures.mjs';
+import {productionPreviewRegistry} from '../../services/browser-preview/production-registry.ts';
 const encode=s=>new TextEncoder().encode(s);
 const now=1800000000000,identity={scope:{tenantId:'tenant-test',projectId:'project-test',workspaceId:'workspace-test',workspaceGeneration:1},sessionId:'session-test',turnId:'turn-test',dispatchId:'dispatch-test',generation:1},actor={userId:'user-test',authVersion:1};
 test('fixed generation contract shares package paths, profiles, seed and limits',()=>{
@@ -45,7 +47,18 @@ test('actual release resolveOptions injects generation policy and original adapt
  assert.match(content,/six|mesa.*3\.5\.1/i);assert.match(content,/Queue code must remain CPython 3\.11 compatible/);assert.match(content,/Preserve existing working SimPy and server Preview/);
  assert.match(content,/do not convert them/i);assert.match(content,/renderer:"javascript-canvas"/);assert.match(content,/exports exactly a named function render/);assert.match(content,/event is null, \{type:"pointer",x:number,y:number,button:integer\}, or \{type:"select",id:string\}/);assert.match(content,/only M1 frontend events/);assert.ok(content.includes(javascriptExample));for(const fields of ['x,y,width,height,fill','x,y,radius,fill','x1,y1,x2,y2,stroke,width','x,y,text,fill,size'])assert.ok(content.includes(fields));assert.match(content,/steps and horizon are ordinary parameters/);assert.match(content,/Do not clamp, coerce, truncate/);
  assert.match(content,/unverified visualization/);assert.match(content,/server independently recomputes/);assert.match(content,/baseline and intervention/);assert.match(content,/never fabricate a second configuration/);
+ assert.ok(content.includes(pythonDrawExample));assert.match(content,/New models use model-authored drawing by default/);assert.match(content,/a new Revision/);
+ assert.doesNotMatch(content,/Choose python-canvas only when|Choose javascript-canvas only|Only when the user requests a model-specific/);
  assert.doesNotMatch(content,/pip install|micropip\.install|wrangler deploy/);
+});
+test('Pi forest drawing example builds against the actual saved-source validator and platform adapter',async()=>{
+ const [profile]=JSON.parse(await readFile(new URL('../../services/browser-preview/runtime/assets/profiles.json',import.meta.url),'utf8'));
+ const fixture=await makeFixture(profile,'fire',null,adapter);
+ const files=Object.fromEntries(fixture.files.map(file=>[file.path,new Uint8Array(Buffer.from(file.base64,'base64'))]));
+ const archive=initialWorkspaceArchive(files),source={projectId:'project-test',revisionId:'revision-fire',filesSha256:await workspaceArchiveReader(archive).sha256()};
+ const result=await inspectGeneratedBrowserPreview(source,archive,'stdlib',{registry:await productionPreviewRegistry()});
+ assert.equal(result.status,'compatible');assert.equal(result.value.visualization.renderer,'python-canvas');
+ assert.ok(new TextDecoder().decode(result.value.files.get('model/model.py')).includes(pythonDrawExample));
 });
 async function generatedFixture({wrapper=adapter,parameters={steps:{type:'integer',default:2,minimum:1,maximum:500},mode:{type:'enum',default:'base',values:['base','other']},enabled:{type:'boolean',default:true},'arrival-rate':{type:'number',default:0.5,minimum:0,maximum:1}}}={}){
  const files={
