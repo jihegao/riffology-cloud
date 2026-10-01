@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { validatePhase1Inventory } from './phase1-inventory.mjs';
+import {readFileSync} from 'node:fs';
 
 const sha = 'a'.repeat(64);
 const base = { vars: { TENANT_QUOTA_POLICY_VERSION: 'm1-v1' }, durable_objects: { bindings: [] }, containers: [
@@ -50,3 +51,12 @@ test('requireInactive blocks a live instance while normal inventory accepts it',
  });
 
 test('rejects live app resource expansion despite unchanged local config',()=>{const input=make();input.apps[0].max_instances=2;const result=validatePhase1Inventory({...input,deployment:{versions:[{version_id:'v1',percentage:100}]},workerSha:'b'.repeat(40),gatesOpen:false});assert.equal(result.status,'blocked');assert.equal(result.checks.find(x=>x.name==='container-apps').status,'blocked');});
+
+test('closed inventory requires the independent Run policy closed and its original identity retained',()=>{
+ const input=make(),policy=JSON.parse(JSON.parse(readFileSync(new URL('../../infra/wrangler.phase1-staging.jsonc',import.meta.url),'utf8')).vars.INVITED_RUNS_POLICY_JSON),raw=JSON.stringify(policy);
+ input.config.vars.INVITED_RUNS_POLICY_JSON=raw;const binding={name:'INVITED_RUNS_POLICY_JSON',type:'plain_text',text:raw};input.version.resources.bindings.push(binding);
+ const validate=()=>validatePhase1Inventory({...input,deployment:{versions:[{version_id:'v1',percentage:100}]},workerSha:'b'.repeat(40),gatesOpen:false});
+ assert.equal(validate().status,'passed');
+ for(const drift of [{...policy,enabled:true},{...policy,policyId:'replacement-ledger'},{}]){binding.text=JSON.stringify(drift);assert.equal(validate().checks.find(check=>check.name==='invited-runs-admission-closed').status,'blocked');}
+ binding.text=raw;input.version.resources.bindings.push({...binding});assert.equal(validate().status,'blocked');input.version.resources.bindings.pop();input.version.resources.bindings.pop();assert.equal(validate().status,'blocked');
+});

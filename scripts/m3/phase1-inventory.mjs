@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import {invitedRunsAdmissionClosed,deployedInvitedRunsAdmissionClosed} from './invited-runs-gate.mjs';
 
 const SHA40 = /^[a-f0-9]{40}$/;
 const IMAGE = /^[A-Za-z0-9./:_-]+@sha256:[a-f0-9]{64}$/;
@@ -59,6 +60,8 @@ export function validatePhase1Inventory({ config, version, deployment, apps, ins
 
   const expectedGate = gatesOpen === true ? 'true' : gatesOpen === false ? 'false' : null;
   checks.push(check('gates', expectedGate !== null && GATES.every(name => versionPlainText(version, name) === expectedGate), 'four-gate-values-must-match-gatesOpen'));
+  const configuredRunPolicy=config?.vars?.INVITED_RUNS_POLICY_JSON;
+  checks.push(check('invited-runs-admission-closed',invitedRunsAdmissionClosed(config?.vars)&&deployedInvitedRunsAdmissionClosed(versionBindings(version)??[])&&(configuredRunPolicy===undefined||versionPlainText(version,'INVITED_RUNS_POLICY_JSON')===configuredRunPolicy),'independent-run-admission-must-remain-closed-with-original-configured-policy'));
   const simulation = containers?.find(row => row.class_name === 'SimulationSandbox');
   checks.push(check('simulation-image', simulation !== undefined && versionPlainText(version, 'M4_SIMULATION_IMAGE') === simulation.image && IMAGE.test(simulation.image ?? '')));
   checks.push(check('quota', versionPlainText(version, 'TENANT_QUOTA_POLICY_VERSION') === 'phase1-preview-simulation-v1' && versionPlainText(version, 'TENANT_QUOTA_CAPACITY') === '2', 'phase1-quota-policy-and-capacity-mismatch'));
