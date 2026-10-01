@@ -1,4 +1,4 @@
-import {privateBetaPolicy,authorizePrivateBeta,PRIVATE_BETA_CAPACITY_ACTOR} from './private-beta-policy.ts';
+import {privateBetaPolicy,assertPrivateBetaHistoricalIsolation,authorizePrivateBeta,PRIVATE_BETA_CAPACITY_ACTOR} from './private-beta-policy.ts';
 import type {PrivateBetaCapacity} from './private-beta-capacity.ts';
 import type {TurnActor} from '../turn/protocol.ts';
 import {DurableObject} from 'cloudflare:workers';
@@ -82,14 +82,7 @@ export class PiDeveloperBudget extends DurableObject<Env> {
     const p=privateBetaPolicy(this.env.PRIVATE_BETA_POLICY_JSON);if(!p)throw Error('private-beta-unconfigured');
     if(!p.enabled||Date.now()<p.startsAt||Date.now()>=p.reviewAt)throw Error('private-beta-paused');
     if(!this.env.TENANT_MODEL_BUDGET||!this.env.G5_TOKEN_BUDGET)throw Error('pi-developer-historical-ledger-unavailable');
-    const entry=p.historicalIsolation.find(h=>h.tenantId===scope.tenantId);
-    for(const ledger of ['legacy','g5'] as const){
-      const manifest=entry?.manifests.find(m=>m.ledger===ledger)??{schemaVersion:1 as const,ledger,proofs:[]};
-      const namespace=ledger==='legacy'?this.env.TENANT_MODEL_BUDGET:this.env.G5_TOKEN_BUDGET;
-      const ledgerActor=namespace.getByName(modelBudgetTenantName(scope.tenantId));
-      if(manifest.proofs.length)await ledgerActor.assertExecutionIsolated(scope.tenantId,manifest);
-      else await ledgerActor.assertExecutionQuiet(scope.tenantId);
-    }
+    await assertPrivateBetaHistoricalIsolation(p,scope.tenantId,this.env.TENANT_MODEL_BUDGET,this.env.G5_TOKEN_BUDGET);
     await this.#core(scope.tenantId).assertExecutionQuiet();
   }
   async #betaReserve(tenantId:string,request:ModelCallRequest){
