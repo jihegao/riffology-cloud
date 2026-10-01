@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "manifestDigest": "4a8434a9a940539c90a7cd79ed55204c3592b53d8e031a6418cc5c93593c59d0",
+  "ok": true,
+  "quiescent": true,
+  "recordedAt": "2026-10-01T05:35:48.206215+00:00",
+  "responseSha256": "c4f9d51dbeb6059f36494c85e4ec159de43630ba71c631fa022c8450a1a6e0cb",
+  "scope": "original global G5 and TenantQuota native execution read; not historical ProductTurnRuntime release proof",
+  "containerApplications": [
+    {
+      "application": "riffology-m1-project-staging",
+      "observedInstances": 3,
+      "states": {
+        "inactive": 3
+      },
+      "paginationComplete": true,
+      "recordedAt": "2026-10-01T05:36:01.092807+00:00",
+      "responseSha256": "b62a82b7d057bfc9f3fa9d6bcbc1c6758ec03f3bae6050b447b8fcb911143cb3"
+    },
+    {
+      "application": "riffology-m3-project-tools-staging",
+      "observedInstances": 10,
+      "states": {
+        "inactive": 10
+      },
+      "paginationComplete": true,
+      "recordedAt": "2026-10-01T05:35:58.467687+00:00",
+      "responseSha256": "2de7bb96c2bed4f3a0f4222715b6c9ed7411800a182cb0014562c8a586793b4d"
+    },
+    {
+      "application": "riffology-m3-service-staging",
+      "observedInstances": 0,
+      "states": {},
+      "paginationComplete": true,
+      "recordedAt": "2026-10-01T05:35:51.456365+00:00",
+      "responseSha256": "94ea916d8e0368959f817ba974999b75672539179626b04e072e4d35b648012b"
+    },
+    {
+      "application": "riffology-m3-trusted-pi-staging",
+      "observedInstances": 10,
+      "states": {
+        "inactive": 10
+      },
+      "paginationComplete": true,
+      "recordedAt": "2026-10-01T05:35:54.289495+00:00",
+      "responseSha256": "4e932ab933761b4d44cc647f564b0fa6a97e3168554f04518b879083e1f56298"
+    },
+    {
+      "application": "riffology-phase1-simulation",
+      "observedInstances": 0,
+      "states": {},
+      "paginationComplete": true,
+      "recordedAt": "2026-10-01T05:35:47.775196+00:00",
+      "responseSha256": "94ea916d8e0368959f817ba974999b75672539179626b04e072e4d35b648012b"
+    }
+  ],
+  "temporaryReaderRemoved": true
+}
