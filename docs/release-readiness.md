@@ -1,4 +1,34 @@
-# Current release readiness — 2026-09-27
+# Current release readiness — 2026-10-01
+
+
+## 2026-10-01 same-actor meter-only policy migration
+
+[#153](https://github.com/jihegao/riffology-cloud/issues/153) and
+[PR #156](https://github.com/jihegao/riffology-cloud/pull/156) remove the Pi
+call/monetary quotas, including hidden aggregate Turn limits, while retaining
+invitation/owner checks, original historical isolation, per-call token limits,
+concurrency, deadlines, kill switch, release proof and request identities.
+Source `d28142725bcefb6cb069d2efdddaf856c0b97b47` is deployed as Gateway
+`29713453-8529-484b-820e-c64bdb538549`. The original
+`private-beta-capacity-v1` actor was explicitly paused and migrated once from
+v1 to v2; no new actor, policy ID or ledger was substituted.
+
+Independent authority reads confirmed configured and pinned digest
+`67885be43123d0ba94f06c7c06200b9fdd4dcf23b6adacf44a8f525466536e86`.
+All 28 slots, 114 calls, three alerts, their hashes and the
+1,703,306,300-nanodollar conservative reservation matched the pre-migration
+snapshot. One migration audit was appended (seven to eight operations); no
+request was replayed. The original 91 bindings change only the policy JSON;
+all namespace IDs, five container applications, execution gates and historical
+isolation remain intact. The pool remains paused during this integration
+rollout. This is a deployed policy migration, not ordinary invited-user Pi or
+paid Run acceptance.
+
+[Redacted migration/readback evidence](evidence/releases/private-beta-meter-only-20261001.json).
+Private raw snapshots and the frozen operation plan remain separate from public
+source. #153 remains Acceptance until the ordinary authenticated paths and
+remaining failure/release matrix are covered.
+
 
 ## 2026-10-01 invited Cloud Runs implementation candidate
 
