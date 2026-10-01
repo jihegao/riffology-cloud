@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-01T06:42:59.960193+00:00",
+  "kind": "pre-image-rollout-native-readback",
+  "originalNativeAuthoritiesQuiescent": true,
+  "manifestDigest": "4a8434a9a940539c90a7cd79ed55204c3592b53d8e031a6418cc5c93593c59d0",
+  "applications": [
+    {
+      "application": "riffology-phase1-simulation",
+      "instances": 0,
+      "active": 0,
+      "paginationComplete": true
+    },
+    {
+      "application": "riffology-m1-project-staging",
+      "instances": 3,
+      "active": 0,
+      "paginationComplete": true
+    },
+    {
+      "application": "riffology-m3-trusted-pi-staging",
+      "instances": 10,
+      "active": 0,
+      "paginationComplete": true
+    },
+    {
+      "application": "riffology-m3-service-staging",
+      "instances": 0,
+      "active": 0,
+      "paginationComplete": true
+    },
+    {
+      "application": "riffology-m3-project-tools-staging",
+      "instances": 10,
+      "active": 0,
+      "paginationComplete": true
+    }
+  ],
+  "inactiveInstances": 23,
+  "privateBetaPaused": true,
+  "invitedRunsEnabled": false,
+  "noProviderOrRunAcceptanceSubmitted": true
+}

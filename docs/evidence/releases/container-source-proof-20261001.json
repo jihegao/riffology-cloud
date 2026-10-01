@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-01T06:41:04.745690+00:00",
+  "source": "aa76856080f536f3481779f082fe62dafad3d9a9",
+  "mode": "offline-docker-readonly-network-none",
+  "images": [
+    {
+      "name": "simulation",
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-simulation@sha256:88a8d86b15e9f40da3f08ea90b53a46aa7d324341d4a1ea2a0606ecd57798b51",
+      "dockerfileSha256": "0c649c065b85be635cba0a3fe3a294f444ed9760dcfb357f995f5e25578ea17b",
+      "actualImageFileHashesMatch": true,
+      "copies": [
+        {
+          "source": "services/project-tools/vendor/sim_engine_compiler-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl",
+          "target": "/tmp/sim_engine_compiler-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl",
+          "sha256": "e7bcd9271dd42106b78e87176e3485b290536f5291c0440872b814fc549858f7",
+          "removedAfterVerifiedInstall": true
+        },
+        {
+          "source": "services/run/mesa-cpython-profile.json",
+          "target": "/opt/riffology/mesa-cpython-profile.json",
+          "sha256": "687dd9af126df20cd5003763d7a54ca42e957ea62528ecc98e2dd5bc30409272",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/run/mesa-cpython-requirements.txt",
+          "target": "/opt/riffology/mesa-cpython-requirements.txt",
+          "sha256": "1f02505ff7a3c8528193b87182977388e65b0aaa61074fe892a96bcb328e82f1",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/project-tools/process_quiescence.py",
+          "target": "/opt/riffology/process_quiescence.py",
+          "sha256": "add12d51c5f80621ecb8ab2817f06c9d01a755f771061ea5b2f023f4d947b185",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/project-tools/workspace_archive.py",
+          "target": "/opt/riffology/workspace_archive.py",
+          "sha256": "7a86cef42158390ad1e8274480b3d865e725eb5afe67a6b86c1b8e285cd4ac6e",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/project-tools/project_network_fence.py",
+          "target": "/opt/riffology/project_network_fence.py",
+          "sha256": "296da7b8a1476771c5b7f2b65a199196538a2d4180f2b273577c004b37044f97",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/run/simulation_observation.py",
+          "target": "/opt/riffology/simulation_observation.py",
+          "sha256": "e3122d0c7f96c6e845673cd47704e275ccb84b2d6e173179508fca2a7c6d4cb6",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/run/simulation_process.py",
+          "target": "/opt/riffology/simulation_process.py",
+          "sha256": "fc7424002b7e202a8b378f6068423092c1b429fd46471c4edea952748835e02c",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/run/compiler_model_adapter.py",
+          "target": "/opt/riffology/compiler_model_adapter.py",
+          "sha256": "cd5c0522a520d44ef3883a4e509f5ea3cf6510459e83ffcfed24ad96f4e74221",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/run/service_process.py",
+          "target": "/opt/riffology/service_process.py",
+          "sha256": "78c9a5e13510099060547b549c66205e8a01713177a3cef113588beec56616d8",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/run/service_upload.py",
+          "target": "/opt/riffology/service_upload.py",
+          "sha256": "65ff750411affa7b0e1f476781c2420b4a844b686ca509c42668b1350a319059",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/run/simulation_artifacts.py",
+          "target": "/opt/riffology/simulation_artifacts.py",
+          "sha256": "7cc91125ac46a5196848be4562c761e7d1bbfcc2c96f0504089113eb96dd481d",
+          "removedAfterVerifiedInstall": false
+        }
+      ]
+    },
+    {
+      "name": "trusted-pi",
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-trusted-pi@sha256:234999f2c74c6d98d79d829f4734f8adc3cd2c80e4c2b11ac7f23203afce9bd7",
+      "dockerfileSha256": "1615cd075eb09438992b07a346874e19a082df465897d5fc1699acb606e9d684",
+      "actualImageFileHashesMatch": true,
+      "copies": [
+        {
+          "source": "services/trusted-pi/package.json",
+          "target": "/opt/riffology/package.json",
+          "sha256": "0dde532fe23b810bd09b978f990d48342f7378429f2b2c48f30e055993fa6ebe",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/trusted-pi/package-lock.json",
+          "target": "/opt/riffology/package-lock.json",
+          "sha256": "ad20b5c766c411c5ba42a4fc997890fe3494ab8adb96cf5d75031366b3d144fc",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/runtime/controlled-pi.mjs",
+          "target": "/opt/riffology/runtime/controlled-pi.mjs",
+          "sha256": "623efc2d8e5b9ca1e884b6a27a030ecb306efc3827c7ac39a6890b388b22bcff",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/trusted-pi/trusted-pi-turn-host.mjs",
+          "target": "/opt/riffology/trusted-pi/trusted-pi-turn-host.mjs",
+          "sha256": "9964e7ab863207ce9b9a911e03bfcb4f99afc61fb6508d2d6611b66931be516b",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/trusted-pi/product-model-transport.mjs",
+          "target": "/opt/riffology/trusted-pi/product-model-transport.mjs",
+          "sha256": "c2bece021f34f0b929e796238d132a819281d172b5d8fd3a6f431ed9d46801c6",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/trusted-pi/product-tool-bridge.mjs",
+          "target": "/opt/riffology/trusted-pi/product-tool-bridge.mjs",
+          "sha256": "3a73176be6e17c17e9cfb681861844fae73099d7f4b6d95d7d90a543fb186e4b",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/trusted-pi/release-candidate.mjs",
+          "target": "/opt/riffology/trusted-pi/release-candidate.mjs",
+          "sha256": "dadd5a54cdec857c01f469e080f1f4712b8741700ba86b8c221eeb694ff9f9a1",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/trusted-pi/release-candidate.mjs",
+          "target": "/opt/riffology/trusted-pi/trusted-pi-release.mjs",
+          "sha256": "dadd5a54cdec857c01f469e080f1f4712b8741700ba86b8c221eeb694ff9f9a1",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/trusted-pi/research-context.mjs",
+          "target": "/opt/riffology/trusted-pi/research-context.mjs",
+          "sha256": "b472a054942246b5e4ba917920bb40f134ba31ae1fc4701c43f8e8491de6d0aa",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/trusted-pi/runtime_supervisor.py",
+          "target": "/opt/riffology/runtime_supervisor.py",
+          "sha256": "79e2bdedaedba063364513d853eb8325f229ba55b1e51df46cbcee359807e29c",
+          "removedAfterVerifiedInstall": false
+        }
+      ]
+    },
+    {
+      "name": "project-tools",
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-project-tools@sha256:e6341979a848f40c06328317759e52fefd700470fc4952d2301c382d16152c39",
+      "dockerfileSha256": "9cd2185dd7996962b089732e5b237026da870796b81d5ede80c8f5b297a5b349",
+      "actualImageFileHashesMatch": true,
+      "copies": [
+        {
+          "source": "services/project-tools/vendor/sim_engine_compiler-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl",
+          "target": "/tmp/sim_engine_compiler-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl",
+          "sha256": "e7bcd9271dd42106b78e87176e3485b290536f5291c0440872b814fc549858f7",
+          "removedAfterVerifiedInstall": true
+        },
+        {
+          "source": "services/project-tools/file_service.py",
+          "target": "/opt/riffology/file_service.py",
+          "sha256": "16ba015d2b867a32e1af3681b5d1cbc079af72cf4a091c57aa2c73d9cc3c3a94",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/project-tools/process_quiescence.py",
+          "target": "/opt/riffology/process_quiescence.py",
+          "sha256": "add12d51c5f80621ecb8ab2817f06c9d01a755f771061ea5b2f023f4d947b185",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/project-tools/project_network_fence.py",
+          "target": "/opt/riffology/project_network_fence.py",
+          "sha256": "296da7b8a1476771c5b7f2b65a199196538a2d4180f2b273577c004b37044f97",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/project-tools/effect_wrapper.py",
+          "target": "/opt/riffology/effect_wrapper.py",
+          "sha256": "3e2bdd8d8cfd07b21da6dca1f357d09c0df5bcf92addd66420986ddb39d5c199",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/project-tools/workspace_archive.py",
+          "target": "/opt/riffology/workspace_archive.py",
+          "sha256": "7a86cef42158390ad1e8274480b3d865e725eb5afe67a6b86c1b8e285cd4ac6e",
+          "removedAfterVerifiedInstall": false
+        },
+        {
+          "source": "services/project-tools/platform_workspace_archive.py",
+          "target": "/opt/riffology/platform_workspace_archive.py",
+          "sha256": "cf58567ea62243beb89f1246070417b84fa2d5e059a5845cbaa966a5b33fa8b4",
+          "removedAfterVerifiedInstall": false
+        }
+      ]
+    }
+  ],
+  "copyCount": 29
+}

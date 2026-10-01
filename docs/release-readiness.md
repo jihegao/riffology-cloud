@@ -1,7 +1,71 @@
 # Current release readiness — 2026-10-01
 
+## 2026-10-01 current release, complete frozen archive and guarded Pi resume
 
-## 2026-10-01 integrated M1 deployment and bounded archive migration
+PRs [#154](https://github.com/jihegao/riffology-cloud/pull/154),
+[#156](https://github.com/jihegao/riffology-cloud/pull/156),
+[#157](https://github.com/jihegao/riffology-cloud/pull/157) and the minimal
+strictly read-only archive proof repair
+[#159](https://github.com/jihegao/riffology-cloud/pull/159) are merged.
+The final source check [passed](https://github.com/jihegao/riffology-cloud/actions/runs/36822583579).
+Source `aa76856080f536f3481779f082fe62dafad3d9a9` is deployed at 100% as
+Gateway `4a9e5852-fd66-4097-be04-35f5f341b59d`; downloaded entry bytes match
+the source bundle. Browser Execution remains `c94df077-02a1-460f-8158-e47a338e68af`.
+All 93 Gateway bindings retain their namespace identities. The image release
+changes only the three intended application image pins and the current
+`M4_SIMULATION_IMAGE` reference; historical release-image JSONs stay intact.
+Runtime, routes, schedules and observability remain as frozen.
+
+Simulation v3, Trusted Pi v8 and Project Tools v3 are each at 100%, with their
+original application IDs and completed rollouts. Single-application, version
+allocation and exact original rollout reads agree on the new image digests;
+earlier application-list snapshots lagged those transitions. The other twelve
+account applications, including Project Runtime and Service, remain unchanged.
+Actual offline, read-only/no-network Docker reads matched all retained COPY
+files to the current source; the two compiler wheels were hash-verified during
+installation and removed as specified. Native CPython compiler export/replay
+passed 2/2. These are image/build checks, not authenticated user Run acceptance.
+
+The original cutoff `2026-10-01T05:30:00.086Z` and manifest digest
+`4a8434a9a940539c90a7cd79ed55204c3592b53d8e031a6418cc5c93593c59d0`
+now reconcile **9/9 archived projects across three ordinary invited owners**,
+all at epoch 1. The initial nine receipts, including the blocked receipt, remain
+exact; one reviewed metadata continuation adds the tenth receipt for that same
+frozen project. Independent manifest and SELECT-only identity reads confirm all
+frozen identities and current archive markers. No content, ledger or project was
+deleted. The strictly read-only proof path does not construct release factories,
+stop or replay work, fabricate release, or change the original resource ledgers.
+Ordinary owner restore and cross-owner browser acceptance remain pending.
+
+After the original resource checks and completed image rollouts, an authenticated
+operator invoked the original guarded Beta resume once. Independent before/after
+reads show **Open, active/quarantined 0/0**, v2 meter-only pin/config digest
+`67885be43123d0ba94f06c7c06200b9fdd4dcf23b6adacf44a8f525466536e86`,
+28 slots, 114 calls, three historical alerts and 1,703,306,300-nanodollar
+reservation unchanged; one resume audit takes operations from eight to nine.
+The original review deadline remains October 20, 23:59:59.999 Asia/Shanghai.
+The migration did not auto-resume. G5/M3/M4 remain closed. **Invited Runs remain
+disabled** until the first ordinary authenticated case can be accepted; its
+separate global/user concurrency 1, 600-second Run, eight-child group,
+360-second release guard and 30-second quiet bounds are deployed.
+
+Public/static verification previously matched 71 fixed assets and 22 web files,
+retaining eight runtime identities, all three execution-frame CSPs and five JS
+credential/method negative checks. This release preserves those asset bytes and
+receipts. Browser Preview remains local/unverified. The browser's available
+login is the initial operator, so no ordinary invited new-project Pi/Revision/JS
+Preview, single/comparison Run, publication, cancellation/timeout/release or
+second-identity acceptance is claimed. The four issues stay **Acceptance/open**,
+with the concrete login blocker recorded. The next safe step is an actual
+ordinary invited login, then scoped fresh-project acceptance on this deployment.
+
+[Current deployment and linked redacted evidence](evidence/releases/m1-invited-delivery-20261001.json)
+separates source/CI, Worker and image deployment, static checks, all-nine metadata
+migration, guarded resume, and pending authenticated/paid acceptance. Earlier
+8/9 and paused observations below remain historical snapshots.
+
+
+## Historical: 2026-10-01 initial staged deployment and 8/9 archive snapshot
 
 [PR #154](https://github.com/jihegao/riffology-cloud/pull/154),
 [PR #156](https://github.com/jihegao/riffology-cloud/pull/156) and
@@ -46,7 +110,7 @@ Ordinary invited-user Pi/Revision/Preview/Run/comparison/publication and
 cross-identity/release acceptance remain pending. The available browser login is
 an initial operator and cannot substitute for an ordinary invited identity.
 Browser Preview stays local/unverified. The four child issues remain Acceptance
-and open. [Deployment and linked redacted evidence](evidence/releases/m1-invited-delivery-20261001.json)
+and open. [Initial staged deployment record](evidence/releases/m1-invited-delivery-staged-20261001.json)
 separate merged source, deployed Workers, static verification, metadata migration
 and unperformed authenticated/paid acceptance.
 
