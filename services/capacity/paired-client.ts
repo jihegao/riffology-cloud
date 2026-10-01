@@ -1,9 +1,10 @@
 import type {TurnScope} from '../turn/protocol.ts';
-import type {WorkspaceLeaseRef,TurnBinding,PairDomain,PairLease,PairSnapshot,PairHandoffProofs,DomainReleaseProof} from './paired.ts';
+import type {WorkspaceLeaseRef,TurnBinding,PairDomain,PairLease,PairSnapshot,PairHandoffProofs,DomainReleaseProof,PairArchiveRecord} from './paired.ts';
 import {TRUSTED_PI_CAPACITY_ACTOR} from './client.ts';
 /** Versioned separate RPCs; never reinterpret an existing cold ticket. The
  * implementation must share cold's physical allocator actor and SQLite store. */
 export interface WorkspacePairedCapacityPort{
+ archiveResources?(scope:TurnScope,requestId?:string):Promise<{scope:TurnScope;quiescent:boolean;coldUnresolved:number;pairUnresolved:number;pair:PairArchiveRecord|null}>;
  requestPair(scope:TurnScope,requestId:string):Promise<PairLease>;
  cancelPairRequest(scope:TurnScope,requestId:string):Promise<{lease:PairLease|null;cancelledAt:number}>;
  lookupPair(scope:TurnScope,requestId:string):Promise<PairLease|null>;

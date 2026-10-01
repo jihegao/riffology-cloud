@@ -28,9 +28,9 @@ test('Model inspection returning after archive reflects the closed gate while pr
  const specText=JSON.stringify(spec);
  let armed=false,entered=false,release;
  globalThis.__modelInspectionBarrier=async()=>{if(armed){armed=false;entered=true;await new Promise(resolve=>{const timer=setTimeout(resolve,15000);release=()=>{clearTimeout(timer);resolve();};});}};
- export class Capacity extends DurableObject{}
+ export class Capacity extends DurableObject{async archiveResources(scope){return {scope,quiescent:true,coldUnresolved:0,pairUnresolved:0,pair:null};}}
  // Native release is an exact-identity fixture; no runtime is allocated.
- export class ReleasedRuntime extends DurableObject{async seed(identity){this.ctx.storage.kv.put('identity',identity);await this.ctx.storage.sync();}async workspaceRuntimeState(identity){if(JSON.stringify(this.ctx.storage.kv.get('identity'))!==JSON.stringify(identity))throw Error('fixture-runtime-scope-denied');return {phase:'terminal',resourceDisposition:{status:'released'}};}}
+ export class ReleasedRuntime extends DurableObject{async seed(identity){this.ctx.storage.kv.put('identity',identity);await this.ctx.storage.sync();}async archiveRuntimeResources(identity){if(JSON.stringify(this.ctx.storage.kv.get('identity'))!==JSON.stringify(identity))throw Error('fixture-runtime-scope-denied');return {identity,runtime:null,isolation:{classification:'runtime-released',fencedAt:1}};}}
  export class NeverExecute extends DurableObject{async start(){throw Error('unexpected-native-start');}}
  export class Workspace extends Base{
   async seed(){const journal=new TurnJournal(new DurableTurnStore(this.ctx.storage)),session=(await journal.createSession(scope,actor,'session',{title:'Model'})).session;await journal.submit(scope,actor,session.id,'turn',{message:'Saved model'});const turn=(await journal.claim(scope,1)).turn,identity={scope,sessionId:session.id,turnId:turn.id,dispatchId:turn.dispatchId,generation:1},encode=text=>new TextEncoder().encode(text),filesArchive=initialWorkspaceArchive({'model/model-spec.json':encode(specText),'model/run.py':encode('print(1)'),'app/requirements.lock':encode('{"schemaVersion":1,"packages":{}}')});

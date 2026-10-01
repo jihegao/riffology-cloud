@@ -1,3 +1,4 @@
+import {trustedPiCapacityActorName} from '../capacity/client.ts';
 import {WorkspaceArchiveFence} from './archive-fence.ts';
 import {statement as sqlArchive} from '../catalog/database.ts';
 import {ProjectArchives,type ArchiveTarget,type ArchiveAction} from '../catalog/project-archives.ts';
@@ -43,7 +44,7 @@ import {boundedResearchContext} from '../simulation/research-context.ts';
 import {ExperimentGroupHost,experimentGroupRequest,g5TerminalGroupAuthority,type ExperimentGroupRequest} from '../simulation/groups.ts';
 import type {ExperimentGroupRecord} from '../simulation/groups.ts';
 import {GROUP_PREFIX} from '../simulation/group-state.ts';
-import {turnRuntimeIdentity,type TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
+import {sameTurnRuntimeIdentity,turnRuntimeIdentity,type TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
 import {SimulationHost,experimentRequest,publicExperiment,publishSimulationResult,type ExperimentRequest} from '../simulation/host.ts';
 import {SimulationNative,simulationToken,type SimulationSandboxApi,type SimulationInput} from '../simulation/native.ts';
 import {simulationPlan,modelVersion,inspectModel,digest} from '../simulation/source.ts';
@@ -200,6 +201,8 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       try{const proof=await namespace.getByName(modelBudgetTenantName(scope.tenantId)).archiveQuiescence(scope.tenantId,scope);if(!sameScope(proof.scope,scope)||!proof.quiescent)blockers.push(name+'-execution-unconfirmed');}catch{blockers.push(name+'-quiescence-unconfirmed');}
     }
     try{const proof=await this.env.TENANT_QUOTA.getByName(tenantQuotaName(scope.tenantId)).archiveQuiescence(scope.tenantId,scope);if(!sameScope(proof.scope,scope)||!proof.quiescent)blockers.push('original-native-resource-unconfirmed');}catch{blockers.push('original-native-authority-unconfirmed');}
+    let runtimeCapacityQuiet=false;
+    try{const proof=await this.env.TRUSTED_PI_CAPACITY.getByName(trustedPiCapacityActorName()).archiveResources?.(scope);if(!proof)throw Error('runtime-capacity-proof-missing');runtimeCapacityQuiet=sameScope(proof.scope,scope)&&proof.quiescent;if(!runtimeCapacityQuiet)blockers.push('runtime-capacity-unreleased');}catch{blockers.push('runtime-capacity-unconfirmed');}
     if(this.env.G5_WINDOW_GUARD){try{const proof=await this.#g5Guard().archiveQuiescence(scope);if(!sameScope(proof.scope,scope)||!proof.quiescent)blockers.push(proof.ambiguousStarts?'g5-native-scope-unconfirmed':'g5-native-start-unconfirmed');}catch{blockers.push('g5-native-authority-unconfirmed');}}else if(this.env.PRIVATE_BETA_POLICY_JSON!==undefined)blockers.push('g5-native-authority-unconfirmed');
     const journal=new DurableTurnStore(this.ctx.storage).read();
     if(journal&&(journal.activeTurnId||journal.resourceWait||journal.releaseHold||journal.recoveryHold||Object.values(journal.turns).some(t=>!['completed','failed','cancelled','interrupted'].includes(t.status))))blockers.push('turn-or-release-unconfirmed');
@@ -207,16 +210,21 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       if(!turn.resourceLease)continue;
       if(!turn.dispatchId||!turn.runtimeGeneration){blockers.push('native-release-unconfirmed');continue;}
       try{
-        const identity=turnRuntimeIdentity({scope:turn.scope,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration}),proof=await this.env.PRODUCT_TURN_RUNTIME.getByName(await turnRuntimeActorName(identity)).workspaceRuntimeState(identity),disposition=proof.resourceDisposition;
-        const released=disposition.status==='released'||disposition.status==='handed-off'&&await this.#leases().archiveReleaseConfirmed(identity,disposition.lease);
-        if(proof.phase!=='terminal'||!released)blockers.push('native-release-unconfirmed');
+        const identity=turnRuntimeIdentity({scope:turn.scope,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration}),proof=await this.env.PRODUCT_TURN_RUNTIME.getByName(await turnRuntimeActorName(identity)).archiveRuntimeResources(identity),runtime=proof.runtime,disposition=runtime?.resourceDisposition;
+        if(!sameTurnRuntimeIdentity(proof.identity,identity)||runtime&&(runtime.resourceLease.operationId!==turn.resourceLease.operationId||runtime.resourceLease.leaseId!==turn.resourceLease.leaseId))throw Error('native-release-scope-denied');
+        const released=runtime?.phase==='terminal'&&(disposition?.status==='released'||disposition?.status==='handed-off'&&await this.#leases().archiveReleaseConfirmed(identity,disposition.lease,disposition.binding,disposition.operationId))||proof.isolation?.classification==='runtime-released';
+        // An immutable absent-and-fenced tombstone closes original execution;
+        // it is not a release receipt and never returns capacity. All original
+        // resource authorities remain independent archive preconditions.
+        const isolatedAbsent=runtime===null&&proof.isolation?.classification==='runtime-absent-and-fenced'&&runtimeCapacityQuiet;
+        if(!released&&!isolatedAbsent)blockers.push('native-release-unconfirmed');
       }catch{blockers.push('native-release-unconfirmed');}
     }
     const runs=await this.ctx.storage.list<{released?:boolean}>({prefix:'simulation:run:'});if([...runs.values()].some(r=>r.released!==true))blockers.push('run-release-unconfirmed');
     const groups=await this.ctx.storage.list<{status:string}>({prefix:'simulation:group:'});if([...groups.values()].some(r=>!['completed','failed','cancelled','partial'].includes(r.status)))blockers.push('experiment-group-active');
     for(const wake of ['browser-preview:wake-at','m2:turn:wake-at','m3:service:wake-at','m3:observer:wake-at','m4:simulation:wake-at'])if(this.ctx.storage.kv.get(wake)!=null)blockers.push('pending-work');
     if(this.#webSockets.size)blockers.push('preview-active');
-    const lease=this.#leases().currentLease();if(lease){try{const current=await this.#leases().leaseForDrain(lease.lease);if(!['released','cancelled'].includes(current.status))blockers.push('runtime-lease-unreleased');}catch{blockers.push('runtime-release-unconfirmed');}}
+    const lease=this.#leases().currentLease();if(lease){try{if(!await this.#leases().archiveCurrentReleaseConfirmed(lease.lease))blockers.push('runtime-lease-unreleased');}catch{blockers.push('runtime-release-unconfirmed');}}
     const tables=new Set(this.ctx.storage.sql.exec<{name:string}>("SELECT name FROM sqlite_master WHERE type='table'").toArray().map(r=>r.name));
     if(tables.has('observer_calls')){const active=this.ctx.storage.sql.exec<{n:number}>("SELECT count(*) AS n FROM observer_calls WHERE json_extract(record_json,'$.status') IN ('accepted','running','unknown')").one().n;if(active)blockers.push('observer-release-unconfirmed');}
     if(tables.has('service_intents')){

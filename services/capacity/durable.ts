@@ -1,7 +1,7 @@
 import {DurableObject} from 'cloudflare:workers';
-import {SqlTrustedPiCapacity,type TrustedPiCapacityDispatchReference,type TrustedPiCapacityIdentity,type TrustedPiCapacityLeaseReference,type TrustedPiCapacityStopProof,type TrustedPiCapacityTicketReference} from './core.ts';
+import {SqlTrustedPiCapacity,readTrustedPiArchiveQuiescence,type TrustedPiCapacityDispatchReference,type TrustedPiCapacityIdentity,type TrustedPiCapacityLeaseReference,type TrustedPiCapacityStopProof,type TrustedPiCapacityTicketReference} from './core.ts';
 import {trustedPiCapacityActorName} from './client.ts';
-import {SqlWorkspacePairedCapacity,type WorkspaceLeaseRef,type TurnBinding,type PairDomain,type QuiescenceProof,type PairHandoffProofs,type DomainReleaseProof} from './paired.ts';
+import {SqlWorkspacePairedCapacity,readWorkspacePairArchiveResources,type WorkspaceLeaseRef,type TurnBinding,type PairDomain,type QuiescenceProof,type PairHandoffProofs,type DomainReleaseProof} from './paired.ts';
 import {workspaceAgentName} from '../workspace/protocol.ts';
 import type {TurnScope} from '../turn/protocol.ts';
 export interface TrustedPiCapacityEnv{
@@ -15,6 +15,11 @@ export interface TrustedPiCapacityEnv{
 export class TrustedPiCapacity extends DurableObject<TrustedPiCapacityEnv>{
  #queue:Promise<void>=Promise.resolve();
  #core:SqlTrustedPiCapacity|null=null;#pair:SqlWorkspacePairedCapacity|null=null;
+ archiveResources(scope:TurnScope,requestId?:string){
+  if(!this.env.TRUSTED_PI_CAPACITY.idFromName(trustedPiCapacityActorName()).equals(this.ctx.id))throw Error('trusted-pi-capacity-actor-scope-denied');
+  const cold=readTrustedPiArchiveQuiescence(this.ctx.storage,scope),paired=readWorkspacePairArchiveResources(this.ctx.storage,scope,requestId);
+  return {scope:cold.scope,quiescent:cold.quiescent&&paired.quiescent,coldUnresolved:cold.unresolved,pairUnresolved:paired.unresolved,pair:paired.pair};
+ }
  #ledger(forcePair=false){if(forcePair&&!this.#pair)this.#core=null;const expected=this.env.TRUSTED_PI_CAPACITY.idFromName(trustedPiCapacityActorName());if(!expected.equals(this.ctx.id))throw Error('trusted-pi-capacity-actor-scope-denied');if(this.env.TRUSTED_PI_CAPACITY_LIMIT!=='1')throw Error('invalid-trusted-pi-capacity-limit');
   if(!this.#core){const paired=forcePair||this.env.M2_WORKSPACE_RUNTIME_REUSE_ENABLED==='true'||this.ctx.storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='paired_capacity_meta'").toArray().length>0;
    this.#core=new SqlTrustedPiCapacity(this.ctx.storage,this.env.TRUSTED_PI_CAPACITY_POLICY_VERSION,Date.now,()=>crypto.randomUUID(),paired?{enqueued:(id,at)=>this.#pair!.admissionHook().enqueued(id,at),beforePromote:()=>this.#pair!.admissionHook().beforePromote(),canPromote:id=>this.#pair!.admissionHook().canPromote(id)}:undefined);

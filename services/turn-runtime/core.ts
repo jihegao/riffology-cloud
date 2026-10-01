@@ -67,6 +67,15 @@ function releaseState(value:unknown,identity:TurnRuntimeIdentity,lease:TurnResou
   if(value.status==='released'){if(!proof||releasedAt===null||releasedAt<proof.observedAt||nextAttemptAt!==releasedAt)reject('invalid-product-turn-release-state');}else if(releasedAt!==null)reject('invalid-product-turn-release-state');
   return {schemaVersion:2,operationId:lease.operationId,leaseId:lease.leaseId,begunAt,deadlineAt,attempts,nextAttemptAt,absentSince,status:value.status as ReleaseState['status'],reasonCode,proof,releasedAt};
 }
+function persistedReleaseState(value:Record<string,unknown>,identity:TurnRuntimeIdentity,lease:TurnResourceLease,deadlineMs:number):ReleaseState{
+  if(value.schemaVersion===1){
+    exact(value,['schemaVersion','operationId','begunAt','attempts','nextAttemptAt','absentSince','confirmedAt'],'invalid-product-turn-release-state');
+    const begunAt=positive(value.begunAt),confirmedAt=value.confirmedAt===null?null:positive(value.confirmedAt),absentSince=value.absentSince===null?null:positive(value.absentSince),nextAttemptAt=positive(value.nextAttemptAt);
+    if(value.operationId!==turnCheckpointOperationId(identity)||absentSince!==null&&absentSince<begunAt||confirmedAt!==null&&(absentSince===null||confirmedAt<absentSince||nextAttemptAt!==confirmedAt))reject('invalid-product-turn-release-state');
+    const proof=confirmedAt===null?null:{kind:'runtime-released' as const,proofId:'legacy-release',observedAt:confirmedAt};
+    return {schemaVersion:2,operationId:lease.operationId,leaseId:lease.leaseId,begunAt,deadlineAt:begunAt+deadlineMs,attempts:positive(value.attempts),nextAttemptAt,absentSince,status:confirmedAt===null?'release-pending':'released',reasonCode:confirmedAt===null?'trusted-pi-release-pending':'trusted-pi-release-confirmed',proof,releasedAt:confirmedAt};
+  }return releaseState(value,identity,lease);
+}
 function checkpointRecovery(value:unknown,identity:TurnRuntimeIdentity,prepared:TurnCheckpointIntent|null,settledAt:number):CheckpointRecoveryState{
   if(value&&typeof value==='object'&&!Array.isArray(value)&&(value as Record<string,unknown>).schemaVersion===1){
     exact(value,['schemaVersion','operationId','firstFailedAt','attempts','lastErrorCode','nextAttemptAt','deadlineAt'],'invalid-product-turn-checkpoint-recovery');
@@ -130,6 +139,29 @@ function stored(value:unknown):State{
   }catch{reject('invalid-persisted-product-turn-runtime');}
 }
 export function storedProductTurnRuntimeIdentity(value:unknown):TurnRuntimeIdentity{return stored(value).identity;}
+/** Archive inspection reads existing metadata only. In particular it must not
+ * construct runtime/release ports, initialize schema, or observe native state. */
+export function readProductTurnArchiveState(storage:ProductTurnRuntimeStorage,raw:TurnRuntimeIdentity){
+  const identity=turnRuntimeIdentity(raw),tables=new Set(storage.sql.exec<{name:string}>("SELECT name FROM sqlite_master WHERE type='table'").toArray().map(row=>row.name));
+  if(!tables.has('product_turn_runtime'))return null;
+  const row=storage.sql.exec<Row>('SELECT value FROM product_turn_runtime WHERE singleton=1').toArray()[0];if(!row)return null;
+  const state=stored(JSON.parse(row.value as string));if(!sameTurnRuntimeIdentity(state.identity,identity))reject('product-turn-runtime-scope-denied');
+  const binding=new SqlExecutionBindingStore(storage).readExisting(identity);if(binding&&(binding.backend!=='pi'||binding.inputSha256!==state.messageSha256))reject('execution-binding-conflict');
+  const resourceBinding={operationId:state.resourceLease.operationId,leaseId:state.resourceLease.leaseId,turnId:identity.turnId,dispatchId:identity.dispatchId,generation:identity.generation};
+  let disposition:TurnResourceDisposition|null=state.phase==='terminal'?null:{status:'active',...resourceBinding};
+  if(state.phase==='terminal'){
+    const retained=tables.has('product_turn_retention')?storage.sql.exec<Row>('SELECT value FROM product_turn_retention WHERE singleton=1').toArray()[0]:null;
+    if(retained){
+      disposition=normalizeResourceDisposition(JSON.parse(retained.value as string));
+      for(const [key,value] of Object.entries(resourceBinding))if(disposition[key as keyof TurnResourceDisposition]!==value)reject('product-turn-runtime-scope-denied');
+      if(disposition.status==='handed-off'&&!sameTurnRuntimeIdentity({...identity,scope:disposition.lease.scope},identity))reject('product-turn-runtime-scope-denied');
+    }else{
+      const released=tables.has('product_turn_release')?storage.sql.exec<Row>('SELECT value FROM product_turn_release WHERE singleton=1').toArray()[0]:null;
+      if(released){const proof=persistedReleaseState(JSON.parse(released.value as string),identity,state.resourceLease,DEFAULT_RELEASE_TIMING.deadlineMs);disposition=proof.status==='released'?{status:'released',...resourceBinding,proofId:proof.proof!.proofId,releasedAt:proof.releasedAt!}:{status:proof.status,...resourceBinding,reasonCode:proof.reasonCode,since:proof.begunAt,nextAttemptAt:proof.nextAttemptAt};}
+    }
+  }
+  return {identity:state.identity,phase:state.phase,executionDeadlineAt:state.executionDeadlineAt??null,resourceLease:state.resourceLease,resourceDisposition:disposition};
+}
 function execution(value:unknown,expected:TurnRuntimeIdentity,allowRetirement=false):TurnExecutionObservation{
   exact(value,['identity','phase','outcome',...Object.hasOwn(value as object,'executionErrorCode')?['executionErrorCode']:[],...Object.hasOwn(value as object,'events')?['events']:[],...Object.hasOwn(value as object,'stopped')?['stopped']:[]],'invalid-product-turn-execution-receipt');
   const identity=turnRuntimeIdentity(value.identity);if(!sameTurnRuntimeIdentity(identity,expected))reject('product-turn-runtime-scope-denied');if(!['absent','unknown','running','terminal',...(allowRetirement?['retiring']:[])].includes(value.phase as string))reject('invalid-product-turn-execution-receipt');
@@ -156,7 +188,7 @@ export class ProductTurnRuntimeCore implements TurnRuntimePort{
   #read():State|null{const row=this.#storage.sql.exec<Row>('SELECT value FROM product_turn_runtime WHERE singleton=1').toArray()[0];return row?stored(JSON.parse(row.value as string)):null;}
   async #write(state:State){stored(state);this.#storage.transactionSync(()=>this.#storage.sql.exec('INSERT INTO product_turn_runtime VALUES(1,?) ON CONFLICT(singleton) DO UPDATE SET value=excluded.value',JSON.stringify(state)));await this.#storage.sync();}
   async #discardUnstarted(identity:TurnRuntimeIdentity){const state=this.#checked(identity);if(!state||state.capacityDispatchConfirmed||state.nativeStartReserved)return;this.#storage.transactionSync(()=>this.#storage.sql.exec('DELETE FROM product_turn_runtime WHERE singleton=1'));await this.#storage.sync();}
-  #readRelease(identity:TurnRuntimeIdentity):ReleaseState|null{if(!this.#storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='product_turn_release'").toArray().length)return null;const row=this.#storage.sql.exec<Row>('SELECT value FROM product_turn_release WHERE singleton=1').toArray()[0];if(!row)return null;const runtime=this.#checked(identity)??reject('product-turn-runtime-not-found'),value=JSON.parse(row.value as string) as Record<string,unknown>;if(value.schemaVersion===1){exact(value,['schemaVersion','operationId','begunAt','attempts','nextAttemptAt','absentSince','confirmedAt'],'invalid-product-turn-release-state');const begunAt=positive(value.begunAt),confirmedAt=value.confirmedAt===null?null:positive(value.confirmedAt),proof=confirmedAt===null?null:{kind:'runtime-released' as const,proofId:'legacy-release',observedAt:confirmedAt};return {schemaVersion:2,operationId:runtime.resourceLease.operationId,leaseId:runtime.resourceLease.leaseId,begunAt,deadlineAt:begunAt+this.#releaseTiming.deadlineMs,attempts:positive(value.attempts),nextAttemptAt:confirmedAt??positive(value.nextAttemptAt),absentSince:value.absentSince===null?null:positive(value.absentSince),status:confirmedAt===null?'release-pending':'released',reasonCode:confirmedAt===null?'trusted-pi-release-pending':'trusted-pi-release-confirmed',proof,releasedAt:confirmedAt};}return releaseState(value,identity,runtime.resourceLease);}
+  #readRelease(identity:TurnRuntimeIdentity):ReleaseState|null{if(!this.#storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='product_turn_release'").toArray().length)return null;const row=this.#storage.sql.exec<Row>('SELECT value FROM product_turn_release WHERE singleton=1').toArray()[0];if(!row)return null;const runtime=this.#checked(identity)??reject('product-turn-runtime-not-found'),value=JSON.parse(row.value as string) as Record<string,unknown>;return persistedReleaseState(value,identity,runtime.resourceLease,this.#releaseTiming.deadlineMs);}
   async #writeRelease(identity:TurnRuntimeIdentity,state:ReleaseState){const runtime=this.#checked(identity);if(!runtime)reject('product-turn-runtime-not-found');releaseState(state,identity,runtime.resourceLease);this.#storage.transactionSync(()=>this.#storage.sql.exec('INSERT INTO product_turn_release VALUES(1,?) ON CONFLICT(singleton) DO UPDATE SET value=excluded.value',JSON.stringify(state)));await this.#storage.sync();}
   async #ensureReleaseTable(){if(this.#releaseTableReady)return;this.#storage.transactionSync(()=>this.#storage.sql.exec('CREATE TABLE IF NOT EXISTS product_turn_release (singleton INTEGER PRIMARY KEY CHECK(singleton=1), value TEXT NOT NULL) STRICT;'));await this.#storage.sync();this.#releaseTableReady=true;}
   async #armRelease(at:number){if(this.#storage.setAlarm){const runtime=this.#read(),recovery=runtime?this.#readCheckpointRecovery(runtime.identity,runtime):null;await this.#storage.setAlarm(Math.min(at,recovery?.nextAttemptAt??at));await this.#storage.sync();}}
