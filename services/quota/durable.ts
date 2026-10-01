@@ -1,5 +1,5 @@
 import { DurableObject } from 'cloudflare:workers';
-import { SqlTenantQuota, quotaIdentifier, readTenantNativeExecutionQuiet, type LeaseRequest, type LeaseReference, type StopConfirmation } from './core.ts';
+import { SqlTenantQuota, quotaIdentifier, readTenantNativeExecutionQuiet, readProjectNativeQuiescence, type LeaseRequest, type LeaseReference, type StopConfirmation } from './core.ts';
 export interface TenantQuotaEnv {
   TENANT_QUOTA: DurableObjectNamespace<TenantQuota>;
   TENANT_QUOTA_CAPACITY: string;
@@ -32,6 +32,7 @@ export class TenantQuota extends DurableObject<TenantQuotaEnv> {
   async confirmStopped(reference: LeaseReference, confirmation: StopConfirmation) { return this.#forTenant(reference.tenantId).confirmStopped(reference, confirmation); }
   async snapshot(tenantId: string) { return this.#forTenant(tenantId).snapshot(); }
   async assertNativeExecutionQuiet(tenantId:string){if(!this.env.TENANT_QUOTA.idFromName(tenantQuotaName(tenantId)).equals(this.ctx.id))throw Error('quota-actor-scope-denied');return readTenantNativeExecutionQuiet(this.ctx.storage,tenantId);}
+  async archiveQuiescence(tenantId:string,scope:import('../turn/protocol.ts').TurnScope){if(scope.tenantId!==tenantId||!this.env.TENANT_QUOTA.idFromName(tenantQuotaName(tenantId)).equals(this.ctx.id))throw Error('quota-actor-scope-denied');return readProjectNativeQuiescence(this.ctx.storage,scope);}
   async lookup(tenantId: string, operationId: string) { return this.#forTenant(tenantId).lookup(operationId); }
   async reconcile(tenantId: string) { return this.#forTenant(tenantId).reconcile(); }
 }

@@ -140,7 +140,7 @@ export interface WorkspaceAgentEnv {
   PI_DEVELOPER_BUDGET?:{getByName(name:string):PiDeveloperBudget};
   G5_CONTROLLED_WINDOW_JSON?:string;
   G5_TOKEN_BUDGET?:DurableObjectNamespace<G5TenantModelBudget>;
-  G5_WINDOW_GUARD?:{getByName(name:string):{assertNativeExecutionQuiet():Promise<import('../simulation/invited-resource-quiet.ts').HistoricalNativeQuiet>;registerTask(task:unknown):Promise<unknown>;claimTaskCreate(key:string):Promise<{authorized:boolean}>;bindTask(key:string,id:string):Promise<unknown>;taskBinding(key:string,id:string):Promise<{found:boolean;bound:boolean}>;taskBindingForIntent(task:G5TaskRecovery,id:string):Promise<{found:boolean;bound:boolean;taskKey:string|null;windowId:string|null;profileSha256:string|null}>;repairTaskBinding(task:G5TaskRecovery,id:string):Promise<{found:true;bound:true;taskKey:string;windowId:string;profileSha256:string}>;checkTaskStart(key:string):Promise<{authorized:boolean}>;claimTaskStart(key:string,identity?:TurnRuntimeIdentity):Promise<{authorized:boolean;alreadyStarted:boolean;grantId:string|null}>;confirmTaskStartGrant(key:string,grantId:string):Promise<{confirmed:boolean}>;checkTaskContinue(key:string,grantId:string):Promise<{authorized:boolean}>;cancelUnstartedTask(key:string):Promise<unknown>;closeTrustedTurn(key:string,identity:TurnRuntimeIdentity):Promise<unknown>}};
+  G5_WINDOW_GUARD?:{getByName(name:string):{archiveQuiescence(scope:TurnScope):Promise<{scope:TurnScope;quiescent:boolean;ambiguousStarts:number}>;assertNativeExecutionQuiet():Promise<import('../simulation/invited-resource-quiet.ts').HistoricalNativeQuiet>;registerTask(task:unknown):Promise<unknown>;claimTaskCreate(key:string):Promise<{authorized:boolean}>;bindTask(key:string,id:string):Promise<unknown>;taskBinding(key:string,id:string):Promise<{found:boolean;bound:boolean}>;taskBindingForIntent(task:G5TaskRecovery,id:string):Promise<{found:boolean;bound:boolean;taskKey:string|null;windowId:string|null;profileSha256:string|null}>;repairTaskBinding(task:G5TaskRecovery,id:string):Promise<{found:true;bound:true;taskKey:string;windowId:string;profileSha256:string}>;checkTaskStart(key:string):Promise<{authorized:boolean}>;claimTaskStart(key:string,identity?:TurnRuntimeIdentity):Promise<{authorized:boolean;alreadyStarted:boolean;grantId:string|null}>;confirmTaskStartGrant(key:string,grantId:string):Promise<{confirmed:boolean}>;checkTaskContinue(key:string,grantId:string):Promise<{authorized:boolean}>;cancelUnstartedTask(key:string):Promise<unknown>;closeTrustedTurn(key:string,identity:TurnRuntimeIdentity):Promise<unknown>}};
   G4_BROWSER_BUILD_HOLD_SCOPES_JSON?:string;
   MANAGED_ACCEPTANCE_JSON?:string;
   MANAGED_TESTING_JSON?:string;
@@ -199,6 +199,8 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       if(!namespace){if(this.env.PRIVATE_BETA_POLICY_JSON!==undefined)blockers.push(name+'-ledger-unavailable');continue;}
       try{const proof=await namespace.getByName(modelBudgetTenantName(scope.tenantId)).archiveQuiescence(scope.tenantId,scope);if(!sameScope(proof.scope,scope)||!proof.quiescent)blockers.push(name+'-execution-unconfirmed');}catch{blockers.push(name+'-quiescence-unconfirmed');}
     }
+    try{const proof=await this.env.TENANT_QUOTA.getByName(tenantQuotaName(scope.tenantId)).archiveQuiescence(scope.tenantId,scope);if(!sameScope(proof.scope,scope)||!proof.quiescent)blockers.push('original-native-resource-unconfirmed');}catch{blockers.push('original-native-authority-unconfirmed');}
+    if(this.env.G5_WINDOW_GUARD){try{const proof=await this.#g5Guard().archiveQuiescence(scope);if(!sameScope(proof.scope,scope)||!proof.quiescent)blockers.push(proof.ambiguousStarts?'g5-native-scope-unconfirmed':'g5-native-start-unconfirmed');}catch{blockers.push('g5-native-authority-unconfirmed');}}else if(this.env.PRIVATE_BETA_POLICY_JSON!==undefined)blockers.push('g5-native-authority-unconfirmed');
     const journal=new DurableTurnStore(this.ctx.storage).read();
     if(journal&&(journal.activeTurnId||journal.resourceWait||journal.releaseHold||journal.recoveryHold||Object.values(journal.turns).some(t=>!['completed','failed','cancelled','interrupted'].includes(t.status))))blockers.push('turn-or-release-unconfirmed');
     for(const turn of Object.values(journal?.turns??{})){
@@ -236,6 +238,9 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const actual=await catalog.target(input.actor,scope.tenantId,scope.projectId,input.target.manifestId??undefined),receipt=await catalog.receipt(input.actor,scope.projectId,input.action,input.requestKey);
     if(!receipt||receipt.outcome!=='completed'||receipt.archive_epoch!==actual.epoch||(actual.archivedAt!==null)!==(input.action==='archive'))throw Error('project_busy');
     const fence=this.#archiveFence.get();if(!fence){if(input.action==='restore')return;throw Error('project_busy');}
+    // Several completed request keys may acknowledge the same archived epoch.
+    // Return the immutable receipt without replacing that epoch's current fence.
+    if(input.action==='archive'&&fence.state==='archived'&&fence.epoch===actual.epoch&&sameScope(fence.scope,scope))return;
     const id=input.actor.userId+':'+input.action+':'+input.requestKey;if(fence.operationId!==id)throw Error('project_busy');
     await this.#archiveFence.finish(id,actual.epoch,actual.archivedAt!==null);
   }

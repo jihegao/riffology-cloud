@@ -1,3 +1,4 @@
+import {scope as checkedScope} from '../turn/protocol.ts';
 export const MAX_LEASE_MS = 15 * 60_000;
 export type QuotaPolicy = { tenantId: string; capacity: number; version: string };
 type LeaseRequestBase = {
@@ -65,6 +66,24 @@ export function readTenantNativeExecutionQuiet(storage:Pick<QuotaStorage,'sql'>,
   if(request.tenantId!==tenantId||request.deadlineAt!==row.deadline_at||!['held','dispatched','unknown'].includes(row.status)||request.operation!=='workspace-runtime'||row.status==='unknown'||row.deadline_at<=now)reject('quota-native-execution-unconfirmed');
  }
  return {tenantId,quiescent:true as const};
+}
+
+/** Archive reads the original ledger without initializing or pinning it. A
+ * project's earlier generations and orphan leases remain part of its scope. */
+export function readProjectNativeQuiescence(storage:Pick<QuotaStorage,'sql'>,rawScope:import('../turn/protocol.ts').TurnScope){
+ const scope=checkedScope(rawScope);
+ const tables=storage.sql.exec<{name:string}>("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('quota_meta','quota_leases','quota_operations','quota_workspaces')").toArray();
+ if(!tables.length)return {scope,quiescent:true,unreleasedLeases:0};
+ if(tables.length!==4)reject('quota-native-execution-unconfirmed');
+ const meta=storage.sql.exec<{tenant_id:string}>('SELECT tenant_id FROM quota_meta WHERE singleton=1').toArray();
+ if(meta.length!==1||meta[0]!.tenant_id!==scope.tenantId)reject('quota-native-execution-unconfirmed');
+ let unreleasedLeases=0;
+ for(const row of storage.sql.exec<{request_json:string;status:string;deadline_at:number}>('SELECT request_json,status,deadline_at FROM quota_leases').toArray()){
+  const request=requestValue(JSON.parse(row.request_json));
+  if(request.tenantId!==scope.tenantId||request.deadlineAt!==row.deadline_at||!['held','dispatched','unknown','stopped'].includes(row.status))reject('quota-native-execution-unconfirmed');
+  if(request.projectId===scope.projectId&&row.status!=='stopped')unreleasedLeases++;
+ }
+ return {scope,quiescent:unreleasedLeases===0,unreleasedLeases};
 }
 
 /** Private platform primitive: no identity assertion in these arguments grants

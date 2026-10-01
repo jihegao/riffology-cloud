@@ -1,4 +1,5 @@
 import {turnRuntimeIdentity,type TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
+import {scope as checkedScope,type TurnScope} from '../turn/protocol.ts';
 import type {ModelBudgetStorage} from './core.ts';
 export const G5_GLOBAL_ACTOR='g5-controlled-global-v1';
 export type G5RolloverQuarantine={sourceWindowId:string;sourceCallKey:string;sourceTurnKey:string;sourceProjectId:string;sourceSessionId:string;sourceTurnId:string;sourceIntentKeySha256:string;sourceTasks:number;sourceDispatches:number;sourceSimulationRuns:number;sourceServiceRuns:number;sourceReservedNanodollars:number;sourceMoneyPeriod:string;sourceAuthorityReceiptSha256:string;sourceTokenState?:'failed-pending';};
@@ -220,4 +221,25 @@ export function readG5NativeExecutionQuiet(storage:ModelBudgetStorage){
   if(row.start_at!==null&&(typeof row.start_at!=='number'||!Number.isSafeInteger(row.start_at)||row.start_confirmed!==1))fail('native-execution-unconfirmed');
  }
  return {schemaVersion:1 as const,quiescent:true as const,tenantIds:[...tenants].sort(),tasks:snapshot.tasks.length};
+}
+
+/** Metadata-only proof over original windows; never initializes or pins a new
+ * window. Uncorrelated native grants conservatively block their own tenant. */
+export function readG5ProjectNativeQuiescence(storage:ModelBudgetStorage,rawScope:TurnScope){
+ const scope=checkedScope(rawScope),snapshot=readG5WindowSnapshot(storage,null);let unconfirmedStarts=0,ambiguousStarts=0;
+ const project=(row:Record<string,unknown>):string|null=>{
+  const document=JSON.parse(String(row.document)) as G5Task;
+  if(row.runtime_identity!=null){const identity=turnRuntimeIdentity(JSON.parse(String(row.runtime_identity)));if(identity.scope.tenantId!==document.tenantId)fail('native-execution-unconfirmed');return identity.scope.projectId;}
+  if(document.kind==='project'&&row.bound_id!=null)return id(row.bound_id);
+  if(row.parent_turn_key!=null){const parent=snapshot.tasks.find(value=>value.key===row.parent_turn_key);if(parent?.runtime_identity){const identity=turnRuntimeIdentity(JSON.parse(String(parent.runtime_identity)));if(identity.scope.tenantId!==document.tenantId)fail('native-execution-unconfirmed');return identity.scope.projectId;}}
+  return null;
+ };
+ for(const row of snapshot.tasks){
+  const document=JSON.parse(String(row.document)) as G5Task;id(document.tenantId);
+  if(document.tenantId!==scope.tenantId)continue;
+  const projectId=project(row);if(projectId!==null&&projectId!==scope.projectId)continue;
+  if(!['project','turn','group','simulation','service'].includes(document.kind)||row.start_at===undefined||![0,1].includes(Number(row.start_confirmed)))fail('native-execution-unconfirmed');
+  if(row.start_at!==null&&(typeof row.start_at!=='number'||!Number.isSafeInteger(row.start_at)||row.start_at<1||row.start_confirmed!==1)){unconfirmedStarts++;if(projectId===null)ambiguousStarts++;}
+ }
+ return {scope,quiescent:unconfirmedStarts===0,unconfirmedStarts,ambiguousStarts};
 }
