@@ -1,0 +1,26 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import operator from './private-beta-quota-operator.ts';
+import {betaPolicy} from '../../tests/m2/private-beta-fixture.ts';
+import {turnDigest} from '../../services/turn/protocol.ts';
+test('temporary quota operator freezes one actor/digest/migration, expires, and cannot resume, replay or change request arguments',async()=>{
+ const policy=await betaPolicy(),old=await turnDigest({...policy,enabled:false}),target='f'.repeat(64),ledger='e'.repeat(64),secret='a'.repeat(64),calls=[];
+ let paused=true;
+ const cap={migrationState:async()=>({actor:'private-beta-capacity-v1',pinnedPolicySha256:old,ledgerSha256:ledger,paused}),snapshot:async()=>({schemaVersion:1,policySha256:target,pinnedPolicySha256:old,paused}),pause:async actor=>{calls.push(['pause',actor]);paused=true;return {paused};},removeQuotas:async(input,actor)=>{calls.push(['remove',input,actor]);return {policySha256:target,replayed:false};}};
+ const frozen={schemaVersion:1,actor:'private-beta-capacity-v1',expiresAt:Date.now()+60000,operator:{userId:'operator',authVersion:1},policySha256s:[old,target],migration:{previousPolicy:policy,expectedPolicySha256:old,expectedLedgerSha256:ledger}};
+ const env={PRIVATE_BETA_QUOTA_OPERATOR_CAPABILITY:secret,PRIVATE_BETA_QUOTA_OPERATOR_SCOPE_JSON:JSON.stringify(frozen),PRIVATE_BETA_CAPACITY:{getByName(name){assert.equal(name,frozen.actor);return cap;}}};
+ const invoke=(input,headers={},changedEnv=env)=>operator.fetch(new Request('https://operator.test/operate',{method:'POST',headers:{authorization:'Bearer '+secret,'content-type':'application/json',...headers},body:JSON.stringify(input)}),changedEnv);
+ assert.equal((await invoke({action:'snapshot'},{authorization:'Bearer wrong'})).status,404);assert.equal(calls.length,0);
+ assert.equal((await invoke({action:'snapshot'})).status,200);
+ for(const action of ['resume','replay','reserve','markUnknown'])assert.equal((await invoke({action,confirmation:'test'})).status,400);
+ assert.equal((await invoke({action:'remove-quotas',confirmation:'remove-only-call-fee-quotas'})).status,409);
+ assert.equal((await invoke({action:'remove-quotas',confirmation:'remove-only-call-fee-quotas',previousPolicy:policy},{'x-beta-mutation':target})).status,400);
+ assert.equal((await invoke({action:'remove-quotas',confirmation:'remove-only-call-fee-quotas'},{'x-beta-mutation':target},{...env,PRIVATE_BETA_QUOTA_OPERATOR_SCOPE_JSON:JSON.stringify({...frozen,migration:undefined})})).status,409);
+ paused=false;assert.equal((await invoke({action:'remove-quotas',confirmation:'remove-only-call-fee-quotas'},{'x-beta-mutation':target})).status,409);paused=true;
+ assert.equal((await invoke({action:'remove-quotas',confirmation:'remove-only-call-fee-quotas'},{'x-beta-mutation':target},{...env,PRIVATE_BETA_QUOTA_OPERATOR_SCOPE_JSON:JSON.stringify({...frozen,expiresAt:Date.now()-1})})).status,503);
+ assert.equal(calls.length,0);
+ const result=await invoke({action:'remove-quotas',confirmation:'remove-only-call-fee-quotas'},{'x-beta-mutation':target});assert.equal(result.status,200);
+ assert.deepEqual(calls,[['remove',frozen.migration,frozen.operator]]);
+ assert.equal((await invoke({action:'pause',confirmation:'pause-original-pool'},{'x-beta-mutation':'pause'})).status,200);
+ assert.equal(calls.length,2);
+});
