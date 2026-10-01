@@ -18,6 +18,12 @@ export function pairReference(lease:WorkspaceBindingLease):WorkspaceLeaseRef{ret
 export class WorkspaceRuntimeLeases implements TurnCapacityPort{
  readonly #storage:Store;readonly #pair:WorkspacePairedCapacityPort;readonly #cold:TurnCapacityPort;readonly #enabled:()=>boolean;readonly #version:()=>unknown;readonly #clock:()=>number;
  constructor(storage:Store,pair:WorkspacePairedCapacityPort,cold:TurnCapacityPort,enabled:()=>boolean,version:()=>unknown,clock=Date.now){this.#storage=storage;this.#pair=pair;this.#cold=cold;this.#enabled=enabled;this.#version=version;this.#clock=clock;}
+ async archiveReleaseConfirmed(identity:TurnRuntimeIdentity,lease:WorkspaceBindingLease){
+  const saved=this.#storage.kv.get<Selection>(key(identity.turnId));
+  if(!saved||saved.mode!=='warm'||!saved.lease||!equal(saved.lease,lease)||!sameScope(saved.scope,identity.scope))return false;
+  const physical=await this.#pair.lookupPair(saved.scope,saved.requestId);
+  return !!physical&&equal(physical.ref,pairReference(lease))&&physical.status==='released';
+ }
  async #selection(input:Acquire):Promise<Selection>{
   const scope=checkedScope(input.scope),sessionId=turnId(input.sessionId),id=turnId(input.turnId),operationId=turnId(input.operationId);
   if(scope.workspaceGeneration!==input.generation)throw Error('workspace-runtime-generation-denied');

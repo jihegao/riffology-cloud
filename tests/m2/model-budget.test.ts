@@ -333,6 +333,20 @@ test('private operator correlation rejects calls whose execution is confirmed en
  await assert.rejects(host.executionBlockerCorrelation(key),/model-execution-blocker-ended/);
 });
 
+test('archive proof blocks exact-scope unknown execution and preserves outside-scope isolation and billing',async t=>{
+ const f=fixture(t),host=f.host(),call=await dispatch(host),scope=identity().scope;
+ await host.markUnknown(call.reference);
+ const before=await host.snapshot(identity());
+ assert.deepEqual(await host.archiveQuiescence(scope),{scope,quiescent:false,unresolvedCalls:1});
+ const outside={...scope,projectId:'other-project',workspaceId:'other-workspace'};
+ assert.deepEqual(await host.archiveQuiescence(outside),{scope:outside,quiescent:true,unresolvedCalls:0});
+ const generation={...scope,workspaceGeneration:2};
+ assert.deepEqual(await host.archiveQuiescence(generation),{scope:generation,quiescent:false,unresolvedCalls:1});
+ await assert.rejects(host.archiveQuiescence({...scope,tenantId:'foreign'}),/actor-scope-denied/);
+ assert.deepEqual(await host.snapshot(identity()),before);
+ await assert.rejects(host.assertExecutionQuiet(),/execution-unconfirmed/);
+});
+
 test('append-only execution isolation proves an exact blocker without changing its billing record',async t=>{
  const f=fixture(t),host=f.host(),call=await dispatch(host);
  await host.finish(call.reference,{outcome:'failed',errorCode:'provider-failure',providerRequestId:'provider-secret',usage:{kind:'unknown',observedAt:1000}});

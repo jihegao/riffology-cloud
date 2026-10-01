@@ -21,6 +21,7 @@ export class G5TenantModelBudget extends DurableObject<G5TokenEnv>{
  async assertExecutionIsolated(tenantId:string,manifest:unknown){return this.#forTenant(tenantId).assertExecutionIsolated(manifest);}
  async assertTurnExecutionIsolated(tenantId:string,identity:unknown){return this.#forTenant(tenantId).assertTurnExecutionIsolated(identity);}
  async executionBlockers(tenantId:string){return this.#forTenant(tenantId).executionBlockers();}
+ async archiveQuiescence(tenantId:string,scope:import('../turn/protocol.ts').TurnScope){return this.#forTenant(tenantId).archiveQuiescence(scope);}
  async executionBlockerCorrelation(tenantId:string,callKey:unknown){return this.#forTenant(tenantId).executionBlockerCorrelation(callKey);}
  async snapshot(tenantId:string,identity:unknown){return this.#forTenant(tenantId).snapshot(identity);}
  async closeTurnAdmission(tenantId:string,identity:unknown){return this.#forTenant(tenantId).closeTurnAdmission(identity);}

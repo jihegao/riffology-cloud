@@ -41,7 +41,7 @@ test('standing Beta real SQLite/D1: invite scopes, cross-project contention, res
  const accept=async(user,project=1)=>{const a=admission(user,project);await budget(user,'admitTurn',a.scope,user,a.sessionId,a.requestKey,a.actor);await cap('bindTurn',a,request(user,project).identity.turnId);};
  try{
   mf=new Miniflare(options);await mf.ready;let db=await mf.getD1Database('CATALOG','beta-test');
-  for(const filename of ['0001_catalog.sql','0004_operator_invitations.sql','0005_initial_operator.sql']){
+  for(const filename of ['0001_catalog.sql','0004_operator_invitations.sql','0005_initial_operator.sql','0012_project_archives.sql']){
    const sql=(await readFile('services/catalog/migrations/'+filename,'utf8')).replace(/--[^\n]*/g,'');for(const statement of sql.match(/\s*CREATE TRIGGER[\s\S]*?END;|[^;]+;/g)??[])if(statement.trim())await db.prepare(statement).run();
   }
   for(const [idx,user] of ['alice','bob','carol','outsider'].entries()){

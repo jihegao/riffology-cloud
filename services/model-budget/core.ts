@@ -1,5 +1,5 @@
 import {G4WindowGuard,type G4WindowPolicy} from './g4-window.ts';
-import { actor as validateActor, positive, sha, turnDigest, type TurnActor } from '../turn/protocol.ts';
+import { actor as validateActor, positive, sha, turnDigest, scope as checkedScope, type TurnActor, type TurnScope } from '../turn/protocol.ts';
 import { turnRuntimeIdentity, type TurnRuntimeIdentity } from '../turn-runtime/identity.ts';
 
 export const MAX_MODEL_RESERVATION_MS = 15 * 60_000;
@@ -666,6 +666,16 @@ export class SqlTenantModelBudget {
     const records = await Promise.all(this.#rows('SELECT * FROM model_calls ORDER BY accepted_at,call_key').map(row => this.#verified(row)));
     const blockers = records.filter(record => !this.#executionEnded(record)).map(record => this.#blocker(record));
     return structuredClone({schemaVersion: 1 as const,total: records.length,confirmedEnded: records.length-blockers.length,blocked: blockers.length,blockers});
+  }
+
+  /** Metadata-only archive proof. Existing isolation attestations and accounting
+   * remain intact; unresolved calls from earlier project generations also block. */
+  async archiveQuiescence(scopeValue: TurnScope) {
+    const scope=checkedScope(scopeValue);if(scope.tenantId!==this.#policy.tenantId)reject('model-budget-actor-scope-denied');
+    await this.#ready;
+    const records=await Promise.all(this.#rows('SELECT * FROM model_calls ORDER BY call_key').map(row=>this.#verified(row)));
+    const matching=records.filter(record=>record.identity.scope.tenantId===scope.tenantId&&record.identity.scope.projectId===scope.projectId),unresolvedCalls=matching.filter(record=>!this.#executionEnded(record)).length;
+    return {scope,quiescent:unresolvedCalls===0,unresolvedCalls};
   }
 
   /** Private exact-call input for the operator that verifies Workspace/runtime

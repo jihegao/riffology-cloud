@@ -1,6 +1,6 @@
 export class CatalogError extends Error {
   readonly status: number;
-  constructor(code: 'invalid_input' | 'not_found' | 'idempotency_conflict' | 'not_ready') {
+  constructor(code: 'invalid_input' | 'not_found' | 'idempotency_conflict' | 'not_ready' | 'project_archived' | 'project_busy') {
     super(code); this.status = code === 'invalid_input' ? 400 : code === 'not_found' ? 404 : 409;
   }
 }
@@ -11,6 +11,7 @@ export interface Project {
   id: string; tenant_id: string; workspace_id: string; title: string; starter_version: string;
   source_model_version_id?: string | null; source_model_id?: string | null; source_model_version?: string | null; source_digest?: string | null;
   status: 'provisioning' | 'ready' | 'failed' | 'deleting'; generation: number;
+  archived_at?: number | null; archive_epoch?: number;
   created_at: number; updated_at: number;
 }
 export function opaqueId(value: unknown): string {

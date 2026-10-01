@@ -60,7 +60,7 @@ test('Workspace service outbox delivers through real shared alarms and survives 
  const until=async(read,predicate)=>{const end=Date.now()+12000;let result;do{result=await read();if(predicate(result))return result;await wait(100);}while(Date.now()<end);assert.fail('condition timed out: '+JSON.stringify(result));};
  try{
   mf=new Miniflare(options('true'));await mf.ready;let db=await mf.getD1Database('CATALOG',worker);
-  for(const filename of ['0001_catalog.sql','0002_auth.sql','0003_provisioning.sql','0004_operator_invitations.sql','0005_initial_operator.sql','0006_model_catalog.sql','0007_model_content_checks.sql','0010_project_budget_routes.sql']){const schema=(await readFile(`services/catalog/migrations/${filename}`,'utf8')).replace(/--[^\n]*/g,'');for(const statement of schema.match(/\s*CREATE\s+TRIGGER[\s\S]*?\bEND\s*;|[^;]+;/gi)||[])await db.prepare(statement.trim()).run();}
+  for(const filename of ['0001_catalog.sql','0002_auth.sql','0003_provisioning.sql','0004_operator_invitations.sql','0005_initial_operator.sql','0006_model_catalog.sql','0007_model_content_checks.sql','0010_project_budget_routes.sql','0012_project_archives.sql']){const schema=(await readFile(`services/catalog/migrations/${filename}`,'utf8')).replace(/--[^\n]*/g,'');for(const statement of schema.match(/\s*CREATE\s+TRIGGER[\s\S]*?\bEND\s*;|[^;]+;/gi)||[])await db.prepare(statement.trim()).run();}
   const expiresAt=Date.now()+120000,principal={userId:'user-a',authVersion:1,subject:'auth-user-a',sessionId:'auth-session-a',expiresAt},nonce='19'.repeat(32);
   const inserts=[
    ["INSERT INTO auth_user(id,name,email,emailVerified,createdAt,updatedAt) VALUES('auth-user-a','Fixture','fixture@example.test',1,1,1)"],

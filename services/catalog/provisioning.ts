@@ -41,7 +41,7 @@ const ownership=`SELECT 1 FROM catalog_memberships m JOIN catalog_tenants t ON t
 const joined=`FROM catalog_outbox o JOIN catalog_projects p ON p.id=o.project_id AND p.tenant_id=o.tenant_id AND p.workspace_id=o.workspace_id
  JOIN catalog_workspaces w ON w.id=o.workspace_id AND w.project_id=p.id AND w.tenant_id=p.tenant_id`;
 const current=`o.kind='workspace.provision' AND o.generation=p.generation AND o.generation=w.generation
- AND p.status<>'deleting' AND w.status<>'deleting'`;
+ AND p.status<>'deleting' AND w.status<>'deleting' AND p.archived_at IS NULL`;
 const taskColumns=`o.id,o.tenant_id AS tenantId,o.project_id AS projectId,o.workspace_id AS workspaceId,
  o.generation,o.actor_auth_version AS authVersion,p.starter_version AS starterVersion,o.source_model_version_id AS sourceModelVersionId,o.source_model_id AS sourceModelId,o.source_model_version AS sourceModelVersion,o.source_content_ref AS sourceContentRef,o.source_content_sha256 AS sourceContentSha256,o.created_at AS createdAt,o.deadline_at AS deadlineAt,(SELECT route_json FROM catalog_project_budget_routes br WHERE br.project_id=p.id AND br.tenant_id=p.tenant_id) AS budgetRouteJson`;
 type DispatchRow=ProvisioningTask & {state:string};
