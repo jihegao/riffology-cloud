@@ -47,5 +47,15 @@
     "Ordinary invited-user Pi and Runs authenticated acceptance",
     "An audit was appended by the guarded transaction; independent old audit-prefix byte comparison is not exposed by the read-only RPC",
     "Pool remains paused during the integration rollout; no auto-resume"
-  ]
+  ],
+  "configuration": {
+    "bindingCount": 91,
+    "changedBindings": [
+      "PRIVATE_BETA_POLICY_JSON"
+    ],
+    "originalDurableObjectNamespaceIdsPreserved": true,
+    "allFiveContainerApplicationsExact": true,
+    "routesAndWorkersDevPreserved": true,
+    "executionGatesAndHistoricalIsolationPreserved": true
+  }
 }
