@@ -1,3 +1,5 @@
+import {ProjectArchives} from '../catalog/project-archives.ts';
+import type {GatewayProjectArchives} from './project-archive-services.ts';
 import type {GatewayBrowserPreviews} from './browser-preview-services.ts';
 import {parsePreviewVerifyRequest,type PreviewRuntime} from '../browser-preview/contract.ts';
 import {SubmissionCatalog} from '../catalog/submissions.ts';
@@ -31,6 +33,7 @@ import type {GatewayObservations} from './observer-services.ts';
 import type {GatewayG5ReadonlyReads} from './g5-read-services.ts';
 
 export interface GatewayServices {
+  projectArchives?:GatewayProjectArchives;
   executionAvailability?:{service:boolean;preview:boolean;simulation:boolean};
   testingSimulationAvailable?:(principal:Principal,tenantId:string)=>boolean;
   g4WindowSnapshot?(tenantId:string,actor:TurnActor):Promise<unknown>;
@@ -78,6 +81,7 @@ async function serviceCall<T>(operation:()=>Promise<T>):Promise<T>{
 }
 async function turnCall<T>(operation:()=>Promise<T>):Promise<T>{
   try{return await operation();}catch(error){const code=error instanceof Error?error.message:'';
+    if(['project_archived','project_busy'].includes(code))throw new HttpError(code,409);
     if(code.includes('idempotency-conflict'))throw new CatalogError('idempotency_conflict');
     if(['pi-developer-execution-unconfirmed','pi-developer-execution-isolation-unconfirmed','pi-developer-historical-execution-unconfirmed','pi-developer-historical-g5-denied','pi-developer-admission-denied','pi-developer-budget-unavailable','pi-developer-historical-ledger-unavailable','pi-developer-packet-limit','pi-developer-policy-conflict','pi-developer-usage-missing','pi-developer-usage-invalid'].includes(code))throw new HttpError(code,409);
     if(['private-beta-paused','private-beta-user-busy','private-beta-capacity-full','private-beta-budget-limit','private-beta-admission-denied','private-beta-policy-conflict','private-beta-turn-denied','private-beta-time-limit','private-beta-unconfigured','private-beta-release-unconfirmed'].includes(code))throw new HttpError(code,409);
@@ -129,6 +133,23 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       return json(await admission.accept(identity,(body as {token?:unknown}).token));
     }
     const principal=await admission.principal(identity);
+    // All workspace mutations share the Catalog archive boundary, including
+    // maintenance POSTs. Workspace's durable fence closes already-admitted races.
+    const writeWorkspace=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})(?:\/|$)/.exec(url.pathname);
+    if(writeWorkspace&&(request.method!=='GET'||request.headers.get('upgrade')))await new ProjectCatalog(services.database,new Set()).writableWorkspace(principal,writeWorkspace[1]!);
+    const archiveCatalog=new ProjectArchives(services.database);
+    const archiveRoute=/^\/api\/tenants\/([A-Za-z0-9_-]{1,128})\/projects\/([A-Za-z0-9_-]{1,128})\/(archive|restore)$/.exec(url.pathname);
+    if(archiveRoute){if(request.method!=='POST'||url.search)throw new CatalogError('invalid_input');const body=await readJson(request);if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).length)throw new CatalogError('invalid_input');if(!services.projectArchives)throw new HttpError('archive_unavailable',503);return json(await services.projectArchives.transition(principal,archiveRoute[1]!,archiveRoute[2]!,archiveRoute[3]! as 'archive'|'restore',idempotencyKey(request)));}
+    const manifestRoute=/^\/api\/admin\/project-archives(?:\/([A-Za-z0-9_-]{1,128})(?:\/projects\/([A-Za-z0-9_-]{1,128}))?)?$/.exec(url.pathname);
+    if(manifestRoute){
+      if(url.search)throw new CatalogError('invalid_input');
+      if(!manifestRoute[1]&&request.method==='POST'){const body=bodyOnly(await readJson(request),'cutoffAt');return json(await archiveCatalog.freeze(principal,body.cutoffAt as number,idempotencyKey(request)),201);}
+      if(manifestRoute[1]&&!manifestRoute[2]&&request.method==='GET')return json(await archiveCatalog.manifest(principal,manifestRoute[1]));
+      if(manifestRoute[1]&&manifestRoute[2]&&request.method==='POST'){
+        const body=bodyOnly(await readJson(request),'dryRun');if(typeof body.dryRun!=='boolean')throw new CatalogError('invalid_input');const manifest=await archiveCatalog.manifest(principal,manifestRoute[1]),item=manifest.items.find(i=>i.project_id===manifestRoute[2]);if(!item)throw new CatalogError('not_found');if(!services.projectArchives)throw new HttpError('archive_unavailable',503);return json(await services.projectArchives.transition(principal,item.tenant_id,item.project_id,'archive',idempotencyKey(request),manifest.id,body.dryRun));
+      }
+      throw new CatalogError('invalid_input');
+    }
     const localePreferences=new LocalePreferences(services.database);
     const admin=new OperatorCatalog(services.database);
     const models=new ModelCatalog(services.database,Date.now,services.modelContent,services.modelUpload);
@@ -258,6 +279,8 @@ export async function gateway(request:Request, services:GatewayServices):Promise
         if(/conflict|stale/.test(code))throw new HttpError(code,409);
         if(/input-invalid|contract-invalid|invalid-browser-preview|invalid-turn-id/.test(code))throw new HttpError('browser-preview-input-invalid',400);
         if(code==='simulation-capacity')throw new HttpError(code,429);
+        if(code==='invited-runs-group-limit')throw new HttpError(code,400);
+        if(/^invited-runs-|^private-beta-/.test(code))throw new HttpError(code,503);
         throw new HttpError('browser-preview-unavailable',503);
       }
     }
@@ -269,7 +292,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       const scope=creating?await catalog.workspace(principal,workspaceId!):await catalog.maintenanceWorkspace(principal,workspaceId!);
       if(!services.simulations)throw new HttpError('simulation-unavailable',503);
       try{
-        if(resource==='model'&&!id&&request.method==='GET'&&!url.search)return g5Read(request,services,scope,principal,json(await services.simulations.model(scope)));
+        if(resource==='model'&&!id&&request.method==='GET'&&!url.search)return g5Read(request,services,scope,principal,json(await services.simulations.model(scope,principal)));
         if(creating&&resource==='experiment-groups'&&!url.search)return json(await services.simulations.submitGroup(scope,principal,idempotencyKey(request),experimentGroupRequest(await readJson(request,32768))),202);
         if(creating&&!url.search)return json(await services.simulations.submit(scope,principal,idempotencyKey(request),experimentRequest(await readJson(request))),202);
         if(resource==='experiment-groups'&&request.method==='GET'&&!action){
@@ -289,6 +312,8 @@ export async function gateway(request:Request, services:GatewayServices):Promise
         if(['simulation-idempotency-conflict','simulation-model-stale'].includes(code))throw new HttpError(code,409);
         if(code==='simulation-not-found')throw new HttpError(code,404);
         if(code==='simulation-capacity')throw new HttpError(code,429);
+        if(code==='invited-runs-group-limit')throw new HttpError(code,400);
+        if(/^invited-runs-|^private-beta-/.test(code))throw new HttpError(code,503);
         if(['simulation-input-invalid','invalid-model-spec','model-spec-missing','model-spec-invalid','model-contract-mismatch','model-dependencies-invalid','model-dependencies-unsupported'].includes(code))throw new HttpError(code,400);
         throw new HttpError('simulation-unavailable',503);
       }
@@ -297,7 +322,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     if(previewRoute){
       if(request.method!=='POST'&&!(request.method==='GET'&&!previewRoute[2]))throw new CatalogError('not_found');
       if(url.search!=='')throw new CatalogError('invalid_input');
-      const scope=await new ProjectCatalog(services.database,new Set(['blank-v1']),models).workspace(principal,previewRoute[1]!);
+      const previewCatalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),scope=request.method==='GET'?await previewCatalog.maintenanceWorkspace(principal,previewRoute[1]!):await previewCatalog.workspace(principal,previewRoute[1]!);
       if(!identity.browserSession)throw new HttpError('authentication_required',401);
       const browser=browserPrincipal(identity,principal);
       if(!services.previews)throw Error('preview-not-configured');
@@ -373,7 +398,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     if(observationArtifact){
       if(request.method!=='GET')throw new CatalogError('not_found');
       if(url.search!=='')throw new CatalogError('invalid_input');
-      const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),turnScope=await catalog.workspace(principal,observationArtifact[1]!);
+      const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),turnScope=await catalog.maintenanceWorkspace(principal,observationArtifact[1]!);
       if(!services.observations)throw Error('observer-services-not-configured');
       const caller={userId:principal.userId,authVersion:principal.authVersion};
       return await observerArtifactContent(await turnCall(()=>services.observations!.artifact(turnScope,caller,observationArtifact[2]!,observationArtifact[3]!,observationArtifact[4]! as 'state'|'view')));
@@ -381,7 +406,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     const turnMatch=workspace??files??diff??artifact??sessions??turns??turnReceipt??turnWithdraw??betaStatus??cancel??events;
     if(turnMatch){
       if(!services.turns)throw Error('turn-service-not-configured');
-      const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),turnScope=await catalog.workspace(principal,turnMatch[1]);
+      const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),turnScope=request.method==='GET'?await catalog.maintenanceWorkspace(principal,turnMatch[1]):await catalog.workspace(principal,turnMatch[1]);
       const turnActor={userId:principal.userId,authVersion:principal.authVersion};
       if(workspace&&request.method==='GET'&&url.search==='')return g5Read(request,services,turnScope,turnActor,json(await turnCall(()=>services.turns!.snapshot(turnScope,turnActor))));
       if(files&&request.method==='GET'&&url.search==='')return g5Read(request,services,turnScope,turnActor,json(await turnCall(()=>services.turns!.files(turnScope))));
@@ -428,7 +453,8 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models);
       if(request.method==='GET'){
         if(match[2])return json(await catalog.get(principal,match[1],match[2]));
-        return json({projects:await catalog.list(principal,match[1])});
+        if([...url.searchParams.keys()].some(k=>!['view','before','limit'].includes(k))||['view','before','limit'].some(k=>url.searchParams.getAll(k).length>1))throw new CatalogError('invalid_input');
+        return json(await catalog.listPage(principal,match[1],{view:(url.searchParams.get('view')??'active') as 'active'|'archived'|'all',before:url.searchParams.get('before')??undefined,limit:cursor(url,'limit',100,100)}));
       }
       if(request.method==='POST'&&!match[2]){
         const body=await readJson(request),key=request.headers.get('idempotency-key')??'';

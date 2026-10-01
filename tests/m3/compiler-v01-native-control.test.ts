@@ -24,3 +24,33 @@ test('native dispatch binds the exact frozen compiler files and fixed interprete
  assert.equal(control.schemaVersion,2);assert.equal(control.bundleSha256,plan.compiler?.bundleSha256);assert.equal(control.businessSha256,plan.businessSha256);
  assert.equal(control.executionProfile,'sim-engine-compiler-0.1.0/v1');
 });
+
+for(const code of ['private-beta-paused','private-beta-admission-denied','private-beta-execution-unconfirmed','simulation-access-revoked'])test(`upload completion rechecks ${code} before any native start`,async()=>{
+ const root=new URL('../fixtures/compiler-v01/model/',import.meta.url);
+ const archive=initialWorkspaceArchive({'model/model-spec.json':readFileSync(new URL('model-spec.json',root)),'model/business-ir.json':readFileSync(new URL('business-ir.json',root)),'model/model.simpack':readFileSync(new URL('model.simpack',root))});
+ const scope={tenantId:'t',projectId:'p',workspaceId:'w',workspaceGeneration:1};
+ const source={kind:'saved-turn' as const,identity:{scope,sessionId:'s',turnId:'t',dispatchId:'d',generation:1},revision:{revisionId:'r',objectKey:'opaque',filesSha256:await digest(archive),sessionSha256:'a'.repeat(64),committedAt:1}};
+ const plan=await simulationPlan(source,archive),input:SimulationInput={runId:'compiler-gate',plan,parameters:{},seed:7,deadlineAt:Date.now()+60000,runtimeImage:'image'};
+ const token=await simulationToken(input);let uploads=0,starts=0,controlWritten=false;
+ const sandbox={writeFile:async(path:string)=>{if(path.endsWith('.input.json'))controlWritten=true;},exec:async(command:string)=>{
+  if(command.includes('service_upload.py')){uploads++;return {success:true,exitCode:0,stdout:JSON.stringify({token,offset:0,bytes:archive.length,total:archive.length,complete:true})};}
+  starts++;throw Error('native-must-not-start');
+ }} as unknown as SimulationSandboxApi;
+ await assert.rejects(new SimulationNative(sandbox,input).start(archive,async()=>{assert.equal(uploads,1);assert.equal(controlWritten,true);throw Error(code);}),new RegExp(code));
+ assert.equal(starts,0);
+});
+
+test('deadline elapsed during upload rejects the native start after final authorization',async()=>{
+ const root=new URL('../fixtures/compiler-v01/model/',import.meta.url);
+ const archive=initialWorkspaceArchive({'model/model-spec.json':readFileSync(new URL('model-spec.json',root)),'model/business-ir.json':readFileSync(new URL('business-ir.json',root)),'model/model.simpack':readFileSync(new URL('model.simpack',root))});
+ const scope={tenantId:'t',projectId:'p',workspaceId:'w',workspaceGeneration:1};
+ const source={kind:'saved-turn' as const,identity:{scope,sessionId:'s',turnId:'t',dispatchId:'d',generation:1},revision:{revisionId:'r',objectKey:'opaque',filesSha256:await digest(archive),sessionSha256:'a'.repeat(64),committedAt:1}};
+ const plan=await simulationPlan(source,archive),input:SimulationInput={runId:'compiler-expired',plan,parameters:{},seed:7,deadlineAt:Date.now()-1,runtimeImage:'image'};
+ const token=await simulationToken(input);let starts=0,checks=0;
+ const sandbox={writeFile:async()=>{},exec:async(command:string)=>{
+  if(command.includes('service_upload.py'))return {success:true,exitCode:0,stdout:JSON.stringify({token,offset:0,bytes:archive.length,total:archive.length,complete:true})};
+  starts++;throw Error('native-must-not-start');
+ }} as unknown as SimulationSandboxApi;
+ await assert.rejects(new SimulationNative(sandbox,input).start(archive,async()=>{checks++;}),/simulation-deadline/);
+ assert.equal(checks,1);assert.equal(starts,0);
+});

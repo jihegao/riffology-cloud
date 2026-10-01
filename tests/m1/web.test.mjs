@@ -37,6 +37,7 @@ if (url.pathname === '/api/me') return json(route, { execution:{service:true,pre
       if (/^\/api\/workspaces\/[^/]+\/diff$/.test(url.pathname)) return json(route, { schemaVersion: 1, revision: null, summary: { added: 0, modified: 0, deleted: 0 }, changes: [] });
       if (/^\/api\/workspaces\/[^/]+\/services$/.test(url.pathname) && route.request().method()==='GET') return json(route, { items: [], nextCursor: null });
       if (/^\/api\/workspaces\/[^/]+\/sessions\/[^/]+\/turns\/receipt$/.test(url.pathname) && route.request().method()==='GET') return json(route,{error:'not_found'},404);
+      if(/^\/api\/tenants\/[^/]+\/projects\/[^/]+$/.test(url.pathname)&&route.request().method()==='GET')return json(route,{error:'not_found'},404);
       throw Error(`unexpected request ${url.pathname}`);
     }
     const name = url.pathname === '/' ? 'index.html' : url.pathname.slice(1);
@@ -1123,4 +1124,32 @@ test('ordinary-site sign-out failure leaves locale switching available and write
   await waitFor(() => writes.length === 1);
   assert.deepEqual(writes, [{ path: '/api/me/locale', method: 'PUT' }]);
   assert.equal(await page.locator('#sign-out').isVisible(), true);
+});
+
+
+test('project page navigation and archived view preserve server cursors and expose retryable owner archive',async t=>{
+ const calls=[];let attempts=0,archived=false;const page=await pageFixture(t,async(route,path)=>{
+  const url=new URL(route.request().url());calls.push({path,method:route.request().method(),key:route.request().headers()['idempotency-key'],query:url.search});
+  if(path==='/api/tenants/tenant-a/projects'){
+   const old={id:'old',workspace_id:'old-workspace',title:'Old history',status:'ready',archived_at:123};
+   if(url.searchParams.get('view')==='archived')return json(route,{projects:[old],nextCursor:null}),true;
+   if(url.searchParams.get('before')==='page-two')return json(route,{projects:[{id:'p2',workspace_id:'w2',title:'Page two',status:'ready'}],nextCursor:null}),true;
+   return json(route,{projects:archived?[]:[{id:'p1',workspace_id:'w1',title:'Page one',status:'ready'}],nextCursor:'page-two'}),true;
+  }
+  if(path==='/api/tenants/tenant-a/projects/p1/archive'){attempts++;if(attempts===1)return json(route,{error:'temporarily_unavailable'},503),true;archived=true;return json(route,{outcome:'completed',archive_epoch:1}),true;}
+ });
+ await page.goto('https://ui.test/');await page.getByRole('button',{name:'下一页',exact:true}).click();await page.getByRole('heading',{name:'Page two',exact:true}).waitFor();await page.getByRole('button',{name:'上一页',exact:true}).click();await page.getByRole('heading',{name:'Page one',exact:true}).waitFor();
+ await page.getByRole('button',{name:'归档项目',exact:true}).click();await page.getByRole('button',{name:'归档项目',exact:true}).waitFor({state:'visible'});await page.getByRole('button',{name:'归档项目',exact:true}).click();await waitFor(()=>archived);
+ const mutations=calls.filter(c=>c.method==='POST');assert.equal(mutations.length,2);assert.equal(mutations[0].key,mutations[1].key);assert.ok(calls.some(c=>c.query.includes('before=page-two')));
+ await page.locator('#project-filter').selectOption('archived');await page.getByRole('heading',{name:'Old history',exact:true}).waitFor();assert.equal(await page.getByRole('button',{name:'恢复项目',exact:true}).count(),1);
+});
+
+test('archived project deep link outside the current page shows history with disabled composer',async t=>{
+ const calls=[];const page=await pageFixture(t,async(route,path)=>{calls.push({path,method:route.request().method()});
+  if(path==='/api/tenants/tenant-a/projects')return json(route,{projects:[],nextCursor:null}),true;
+  if(path==='/api/tenants/tenant-a/projects/old')return json(route,{id:'old',workspace_id:'old-workspace',title:'Archived history',status:'ready',archived_at:123}),true;
+  if(path==='/api/workspaces/old-workspace')return json(route,{archived:true,schemaVersion:1,nextSequence:1,activeTurnId:null,sessions:{},turns:{},piDeveloperState:{blocked:'project_archived'}}),true;
+  if(path==='/api/workspaces/old-workspace/events')return json(route,{events:[],nextSequence:0,hasMore:false,oldestSequence:1,snapshotRequired:false}),true;
+ });
+ await page.goto('https://ui.test/#/workspace/old');await page.getByRole('heading',{name:'Archived history',exact:true}).waitFor();assert.equal(await page.locator('#message-input').isDisabled(),true);assert.equal(await page.locator('#new-session').isDisabled(),true);assert.match(await page.locator('#workspace-meta').innerText(),/项目已归档/);assert.ok(calls.every(c=>c.method==='GET'));
 });

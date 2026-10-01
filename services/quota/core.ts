@@ -1,3 +1,4 @@
+import {scope as checkedScope} from '../turn/protocol.ts';
 export const MAX_LEASE_MS = 15 * 60_000;
 export type QuotaPolicy = { tenantId: string; capacity: number; version: string };
 type LeaseRequestBase = {
@@ -48,6 +49,41 @@ function requestValue(value: unknown, reference = false): LeaseRequest {
 export function leaseReference(lease: Lease): LeaseReference {
   return { tenantId: lease.tenantId, projectId: lease.projectId, workspaceId: lease.workspaceId,
     generation: lease.generation, operation: lease.operation, operationId: lease.operationId, deadlineAt: lease.deadlineAt, leaseId: lease.leaseId, ...(lease.operation !== 'workspace-runtime' ? {runId: lease.runId} : {}) } as LeaseReference;
+}
+
+/** Internal historical-resource proof. Empty original actors stay empty: this
+ * check never initializes, pins, upgrades, expires or releases a quota ledger. */
+export function readTenantNativeExecutionQuiet(storage:Pick<QuotaStorage,'sql'>,tenantId:string,now=Date.now()){
+ quotaIdentifier(tenantId);
+ const tables=storage.sql.exec<{name:string}>("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('quota_meta','quota_leases','quota_operations','quota_workspaces')").toArray();
+ if(!tables.length)return {tenantId,quiescent:true as const};
+ if(tables.length!==4)reject('quota-native-execution-unconfirmed');
+ const meta=storage.sql.exec<{tenant_id:string}>('SELECT tenant_id FROM quota_meta WHERE singleton=1').toArray();
+ if(meta.length!==1||meta[0]!.tenant_id!==tenantId)reject('quota-native-execution-unconfirmed');
+ const leases=storage.sql.exec<{request_json:string;status:string;deadline_at:number}>("SELECT request_json,status,deadline_at FROM quota_leases WHERE status!='stopped'").toArray();
+ for(const row of leases){
+  const request=requestValue(JSON.parse(row.request_json));
+  if(request.tenantId!==tenantId||request.deadlineAt!==row.deadline_at||!['held','dispatched','unknown'].includes(row.status)||request.operation!=='workspace-runtime'||row.status==='unknown'||row.deadline_at<=now)reject('quota-native-execution-unconfirmed');
+ }
+ return {tenantId,quiescent:true as const};
+}
+
+/** Archive reads the original ledger without initializing or pinning it. A
+ * project's earlier generations and orphan leases remain part of its scope. */
+export function readProjectNativeQuiescence(storage:Pick<QuotaStorage,'sql'>,rawScope:import('../turn/protocol.ts').TurnScope){
+ const scope=checkedScope(rawScope);
+ const tables=storage.sql.exec<{name:string}>("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('quota_meta','quota_leases','quota_operations','quota_workspaces')").toArray();
+ if(!tables.length)return {scope,quiescent:true,unreleasedLeases:0};
+ if(tables.length!==4)reject('quota-native-execution-unconfirmed');
+ const meta=storage.sql.exec<{tenant_id:string}>('SELECT tenant_id FROM quota_meta WHERE singleton=1').toArray();
+ if(meta.length!==1||meta[0]!.tenant_id!==scope.tenantId)reject('quota-native-execution-unconfirmed');
+ let unreleasedLeases=0;
+ for(const row of storage.sql.exec<{request_json:string;status:string;deadline_at:number}>('SELECT request_json,status,deadline_at FROM quota_leases').toArray()){
+  const request=requestValue(JSON.parse(row.request_json));
+  if(request.tenantId!==scope.tenantId||request.deadlineAt!==row.deadline_at||!['held','dispatched','unknown','stopped'].includes(row.status))reject('quota-native-execution-unconfirmed');
+  if(request.projectId===scope.projectId&&row.status!=='stopped')unreleasedLeases++;
+ }
+ return {scope,quiescent:unreleasedLeases===0,unreleasedLeases};
 }
 
 /** Private platform primitive: no identity assertion in these arguments grants

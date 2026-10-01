@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import {validateBrowserPreviewWebAssets} from './materialize-browser-preview-web.mjs';
+import {closeInvitedRunsAdmission,invitedRunsAdmissionClosed,deployedInvitedRunsAdmissionClosed} from './invited-runs-gate.mjs';
 import {mkdtempSync,readFileSync,rmSync,writeFileSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {resolve} from 'node:path';
@@ -41,7 +42,7 @@ export const REQUIRED_EXPORTS=Object.freeze([
 export const REQUIRED_CONTAINERS=Object.freeze(['ProjectRuntime','ProjectToolSandbox','TrustedPiSandbox','ServiceSandbox']);
 export const REQUIRED_MIGRATIONS=Object.freeze([
   '0001_catalog.sql','0002_auth.sql','0003_provisioning.sql','0004_operator_invitations.sql',
-  '0005_initial_operator.sql','0006_model_catalog.sql','0007_model_content_checks.sql','0008_preview_routes.sql','0009_model_submissions.sql','0010_project_budget_routes.sql','0011_user_locale_preferences.sql',
+  '0005_initial_operator.sql','0006_model_catalog.sql','0007_model_content_checks.sql','0008_preview_routes.sql','0009_model_submissions.sql','0010_project_budget_routes.sql','0011_user_locale_preferences.sql','0012_project_archives.sql',
 ]);
 const REGISTRY=`registry.cloudflare.com/${ACCOUNT_ID}/`;
 const DIGEST=/^sha256:[a-f0-9]{64}$/;
@@ -63,6 +64,7 @@ const json=path=>JSON.parse(readFileSync(path,'utf8'));
 export function createStagingConfigOverlay(root,{turnsEnabled=true,workerSha=null}={}){
   const sourcePath=resolve(root,STAGING_CONFIG),config=json(sourcePath);
   config.vars={...config.vars,M2_TURNS_ENABLED:turnsEnabled?'true':'false'};
+  closeInvitedRunsAdmission(config);
   if(workerSha!==null){
     config.vars={...config.vars,
       [RELEASE_METADATA_VARS.workerSourceSha]:workerSha,
@@ -95,6 +97,7 @@ export function validateStagingTopology(config,migrations,{release=false}={}){
     check('worker-identity',config.name===WORKER_NAME&&config.account_id===ACCOUNT_ID&&config.workers_dev===false&&config.preview_urls===false,'use-existing-dedicated-staging-worker'),
     check('staging-origins',config.vars?.APP_ORIGIN===CONTROL_ORIGIN&&config.vars?.M3_PREVIEW_ORIGIN===PREVIEW_ORIGIN&&routes.length===3&&control&&previewBase&&preview?.pattern===PREVIEW_ROUTE,'declare-control-and-preview-base-custom-domains-plus-the-preview-wildcard-route'),
     check(release?'execution-gates-controlled-release':'turn-admission-paused',gatesValid,release?'release-requires-five-vertical-gates-true-and-observer-false':'maintenance-requires-turn-admission-false-with-read-and-preview-gates-retained'),
+    check('invited-runs-admission-closed',invitedRunsAdmissionClosed(config.vars),'historical-release-does-not-authorize-independent-invited-runs'),
     check('tenant-capacity',config.vars?.TENANT_QUOTA_CAPACITY==='1'&&config.vars?.TRUSTED_PI_CAPACITY_LIMIT==='1'&&config.vars?.TRUSTED_PI_CAPACITY_POLICY_VERSION==='m2-trusted-pi-v1'&&containers.every(value=>value.max_instances===1),'retain-single-tenant-and-application-trusted-pi-capacity'),
     check('turn-operation-telemetry',config.vars?.M2_TURN_OPERATION_TELEMETRY==='true','enable-bounded-turn-lifecycle-metrics'),
     check('worker-version-metadata',config.version_metadata?.binding===WORKER_VERSION_METADATA_BINDING,'bind-queryable-worker-version-metadata'),
@@ -107,7 +110,7 @@ export function validateStagingTopology(config,migrations,{release=false}={}){
     check('private-services',same(serviceBindings,['MODEL_PROXY','TOOL_BRIDGE'])&&services.every(value=>value.service===WORKER_NAME)&&services.find(value=>value.binding==='MODEL_PROXY')?.entrypoint==='ModelProxyService'&&services.find(value=>value.binding==='TOOL_BRIDGE')?.entrypoint==='ToolBridgeService','use-only-two-self-bound-private-services'),
     check('dedicated-storage',config.d1_databases?.length===1&&config.d1_databases[0]?.database_name===STAGING_DATABASE.name&&config.d1_databases[0]?.database_id===STAGING_DATABASE.id&&r2.length===2&&r2.some(value=>value.binding==='WORKSPACE_CHECKPOINTS'&&value.bucket_name===STAGING_CHECKPOINT_BUCKET)&&r2.some(value=>value.binding==='MODEL_CONTENT'&&value.bucket_name===STAGING_MODEL_BUCKET)&&STAGING_CHECKPOINT_BUCKET!==STAGING_MODEL_BUCKET,'use-dedicated-staging-d1-and-r2-buckets'),
     check('recovery-cron',same(config.triggers?.crons??[],['* * * * *']),'retain-one-bounded-staging-recovery-sweep'),
-    check('catalog-migrations',same(migrations,REQUIRED_MIGRATIONS),'include-catalog-migrations-0001-through-0011'),
+    check('catalog-migrations',same(migrations,REQUIRED_MIGRATIONS),'include-catalog-migrations-0001-through-0012'),
     check('no-local-runtime-inputs',!JSON.stringify(config).includes('127.0.0.1')&&!JSON.stringify(config).includes('localhost')&&!Object.hasOwn(config.vars??{},'M1_GOOGLE_OAUTH_EGRESS_CAPABILITY')&&!Object.keys(config.vars??{}).some(name=>name.startsWith('M3_VERTICAL_')),'remove-loopback-local-proxy-and-vertical-telemetry-inputs'),
   ];
 }
@@ -191,7 +194,7 @@ export function validateWorkerVersionResources(manifest,version,{turnsEnabled=tr
   if(expected?.bindings){const gate=expected.bindings.find(value=>value.name==='M2_TURNS_ENABLED'&&value.type==='plain_text');if(gate)gate.text=expectedGate;}
   const handlersValid=expected!==null&&observed!==null&&expected.handlers.every(required=>observed.handlers.some(value=>JSON.stringify(value)===JSON.stringify(required)));
   const resourcesValid=expected!==null&&observed!==null&&JSON.stringify({...observed,handlers:undefined})===JSON.stringify({...expected,handlers:undefined})&&handlersValid;
-  const valid=WORKER_VERSION_ID.test(id??'')&&version?.annotations?.['workers/tag']===manifest?.workerVersionTag&&resourcesValid&&containerImagesMatch(manifest,containerApps);
+  const valid=WORKER_VERSION_ID.test(id??'')&&version?.annotations?.['workers/tag']===manifest?.workerVersionTag&&resourcesValid&&containerImagesMatch(manifest,containerApps)&&deployedInvitedRunsAdmissionClosed(version?.resources?.bindings??[]);
   return check('worker-version-resources',valid,`candidate-requires-exact-tagged-turns-${turnsEnabled?'enabled':'disabled'}-resources-and-container-images`);
 }
 export function validateDeployedWorkerVersion(manifest,version,deployment,{turnsEnabled=true,containerApps=null}={}){
@@ -201,8 +204,8 @@ export function validateDeployedWorkerVersion(manifest,version,deployment,{turns
 }
 export function validatePredeployGateClosed(version,deployment){
   const id=version?.id,versions=deployment?.versions??[],bindings=version?.resources?.bindings??[];
-  const valid=WORKER_VERSION_ID.test(id??'')&&versions.length===1&&versions[0]?.version_id===id&&versions[0]?.percentage===100&&bindings.some(value=>value?.type==='plain_text'&&value?.name==='M2_TURNS_ENABLED'&&value?.text==='false');
-  return check('predeploy-turn-gate-closed',valid,'release-predeploy-requires-current-sole-100-percent-version-with-turn-admission-false');
+  const valid=WORKER_VERSION_ID.test(id??'')&&versions.length===1&&versions[0]?.version_id===id&&versions[0]?.percentage===100&&bindings.some(value=>value?.type==='plain_text'&&value?.name==='M2_TURNS_ENABLED'&&value?.text==='false')&&deployedInvitedRunsAdmissionClosed(bindings);
+  return check('predeploy-turn-gate-closed',valid,'release-predeploy-requires-current-sole-100-percent-version-with-turn-and-invited-run-admission-closed');
 }
 
 export function inspectTrustedPiImageContent(reference,password,runner=spawnSync){

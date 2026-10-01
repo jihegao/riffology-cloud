@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "kind": "private-beta-same-actor-meter-only-migration",
+  "date": "2026-10-01",
+  "source": "d28142725bcefb6cb069d2efdddaf856c0b97b47",
+  "pr": 156,
+  "ci": "https://github.com/jihegao/riffology-cloud/actions/runs/36815550596",
+  "gatewayVersion": "29713453-8529-484b-820e-c64bdb538549",
+  "actor": "private-beta-capacity-v1",
+  "policyBefore": "e7c6a97e7b28f79c77c2a0510242a6b53f6a780ae665e8714bc1b6a350e29eaa",
+  "policyAfter": "67885be43123d0ba94f06c7c06200b9fdd4dcf23b6adacf44a8f525466536e86",
+  "ledgerBeforeSha256": "64843b70891fbafd2cd25193cfc8f721cab10d357b9964c37730b10f67168787",
+  "preserved": {
+    "slotSha256": "91462e03fae8f0b2497dfd0a7e4503bc65fe54aeebf0f1ccb9a92223a2c3db3b",
+    "callSha256": "c24ef11054f344440013d71304eba04fc412e4ea752b74637ba44f4380392de2",
+    "alertSha256": "f8df1f55c97ef8ec628743848e8951b026713bdad593d434d963e6df339c91cb",
+    "slotCount": 28,
+    "callCount": 114,
+    "alertCount": 3,
+    "paused": true
+  },
+  "operationsBefore": 7,
+  "operationsAfter": 8,
+  "reservedNanodollars": 1703306300,
+  "checks": {
+    "actor": true,
+    "slotSha256": true,
+    "callSha256": true,
+    "alertSha256": true,
+    "slotCount": true,
+    "callCount": true,
+    "alertCount": true,
+    "paused": true,
+    "policyAndPinMatch": true,
+    "oneAuditAdded": true,
+    "usageExact": true,
+    "occupancyExact": true,
+    "originalFrozenLedgerAcknowledged": true,
+    "notReplayed": true
+  },
+  "execution": {
+    "operationInvokesProviderToolOrRun": false,
+    "authoritativeBetaModelCallDelta": 0,
+    "newPaidAcceptancePerformed": false
+  },
+  "remaining": [
+    "Ordinary invited-user Pi and Runs authenticated acceptance",
+    "An audit was appended by the guarded transaction; independent old audit-prefix byte comparison is not exposed by the read-only RPC",
+    "Pool remains paused during the integration rollout; no auto-resume"
+  ],
+  "configuration": {
+    "bindingCount": 91,
+    "changedBindings": [
+      "PRIVATE_BETA_POLICY_JSON"
+    ],
+    "originalDurableObjectNamespaceIdsPreserved": true,
+    "allFiveContainerApplicationsExact": true,
+    "routesAndWorkersDevPreserved": true,
+    "executionGatesAndHistoricalIsolationPreserved": true
+  }
+}

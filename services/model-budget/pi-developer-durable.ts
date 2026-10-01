@@ -111,6 +111,7 @@ export class PiDeveloperBudget extends DurableObject<Env> {
     await this.#assertHistoricalIsolation(policy);
     await core.assertExecutionQuiet();
   }
+  async archiveQuiescence(tenantId:string,scope:TurnScope){return this.#core(tenantId).archiveQuiescence(scope);}
 
   async admitTurn(scope:TurnScope,userId:string,sessionId:string,requestKey:string,actor?:TurnActor) {
     if(this.env.PRIVATE_BETA_POLICY_JSON!==undefined){if(!actor||actor.userId!==userId)throw Error('private-beta-admission-denied');await this.#betaQuiet(scope);return this.#betaControl().admitTurn({scope,actor,sessionId,requestKey});}

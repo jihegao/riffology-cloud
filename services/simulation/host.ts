@@ -1,3 +1,4 @@
+import type {InvitedRunAdmission} from './invited-policy.ts';
 import type {WorkspaceBudgetRoute} from '../workspace/protocol.ts';
 import {checkedNativeObservation} from './native-observation.ts';
 import {GROUP_RESERVATION,GROUP_WAKE_KEY} from './group-state.ts';
@@ -11,10 +12,12 @@ import {simulationToken,type SimulationInput,type NativeObservation} from './nat
 import {BROWSER_BUILD_WAKE_KEY,applyWorkspaceAlarm,SIMULATION_WAKE_KEY,WORKSPACE_STATE_KEY,TURN_WAKE_KEY,SERVICE_WAKE_KEY,OBSERVER_WAKE_KEY} from '../workspace/shared-alarm.ts';
 export type ExperimentRequest={revisionId:string|null;filesSha256:string;specSha256:string;parameters:ParameterValues;seed:number};
 type Status='queued'|'waiting_for_capacity'|'preparing'|'running'|'finalizing'|'stopping'|'unknown'|'completed'|'failed'|'cancelled';
-export type SimulationRecord={budgetRoute?:WorkspaceBudgetRoute;experimentId:string;groupId?:string;runId:string;scope:TurnScope;actor:TurnActor;key:string;requestJson:string;input:SimulationInput;status:Status;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null;attempt:number;quotaClaimed:boolean;releaseProof:StopConfirmation|null;lease:LeaseReference|null;dispatchClaimed?:boolean;startClaimed:boolean;stop:NativeObservation['stop'];result:null|{metrics:Record<string,number>;artifactSha256:string;outputs?:SimulationOutput[];compiler?:CompilerResult};releaseBegunAt:number|null;quietSince:number|null;released:boolean};
+export type SimulationRecord={runAdmission?:InvitedRunAdmission;budgetRoute?:WorkspaceBudgetRoute;experimentId:string;groupId?:string;runId:string;scope:TurnScope;actor:TurnActor;key:string;requestJson:string;input:SimulationInput;status:Status;createdAt:number;updatedAt:number;cancelledAt:number|null;errorCode:string|null;attempt:number;quotaClaimed:boolean;releaseProof:StopConfirmation|null;lease:LeaseReference|null;dispatchClaimed?:boolean;startClaimed:boolean;stop:NativeObservation['stop'];result:null|{metrics:Record<string,number>;artifactSha256:string;outputs?:SimulationOutput[];compiler?:CompilerResult};releaseBegunAt:number|null;quietSince:number|null;released:boolean};
 export interface SimulationPorts{
- admitRun?(actor:TurnActor,key:string,request:ExperimentRequest,runId:string):Promise<WorkspaceBudgetRoute|void>;
+ admitRun?(actor:TurnActor,key:string,request:ExperimentRequest,runId:string,child?:GroupChildAdmission):Promise<WorkspaceBudgetRoute|InvitedRunAdmission|void>;
  createdRun?(record:SimulationRecord):Promise<void>;
+ authorizeRun?(record:SimulationRecord):Promise<boolean>;
+ unknownRun?(record:SimulationRecord):Promise<void>;
  beforeStart?(record:SimulationRecord,stage:'capacity'|'native'):Promise<void>;
  quota:{acquire(request:LeaseRequest):Promise<Acquisition>;lookup(tenantId:string,operationId:string):Promise<Acquisition|null>;dispatch(lease:LeaseReference):Promise<{authorized:boolean;lease:unknown}>;confirmStopped(lease:LeaseReference,proof:StopConfirmation):Promise<unknown>};
  start(input:SimulationInput):Promise<NativeObservation>;
@@ -34,7 +37,7 @@ export function experimentRequest(raw:unknown):ExperimentRequest{
  if(r.revisionId!==null&&(typeof r.revisionId!=='string'||!/^[A-Za-z0-9_-]{1,128}$/.test(r.revisionId))||! /^[a-f0-9]{64}$/.test(r.filesSha256)||! /^[a-f0-9]{64}$/.test(r.specSha256)||!Number.isSafeInteger(r.seed)||r.seed<0||r.seed>4294967295||!r.parameters||typeof r.parameters!=='object'||Array.isArray(r.parameters)||Object.keys(r.parameters).length>64||JSON.stringify(r).length>8192)throw Error('simulation-input-invalid');
  return structuredClone(r);
 }
-export function publicExperiment(r:SimulationRecord,currentFilesSha:string|null){return {experimentId:r.experimentId,runId:r.runId,version:modelVersion(r.input.plan),...(r.input.plan.compiler?{compiler:r.input.plan.compiler}:{}),parameters:r.input.parameters,seed:r.input.seed,status:r.status,createdAt:r.createdAt,updatedAt:r.updatedAt,errorCode:r.errorCode,result:r.result,stale:currentFilesSha!==null&&currentFilesSha!==modelVersion(r.input.plan).filesSha256};}
+export function publicExperiment(r:SimulationRecord,currentFilesSha:string|null){return {experimentId:r.experimentId,runId:r.runId,version:modelVersion(r.input.plan),...(r.input.plan.compiler?{compiler:r.input.plan.compiler}:{}),parameters:r.input.parameters,seed:r.input.seed,status:r.status,createdAt:r.createdAt,updatedAt:r.updatedAt,errorCode:r.errorCode,result:r.result,released:r.released,releasePending:TERMINAL.has(r.status)&&!r.released,stale:currentFilesSha!==null&&currentFilesSha!==modelVersion(r.input.plan).filesSha256};}
 /** Runs and group admission share one logical simulation wake. */
 export async function projectSimulationWake(tx:DurableObjectTransaction,now:number){
  const active=[...(await tx.list<SimulationRecord>({prefix:PREFIX})).values()].some(r=>!r.released);
@@ -44,7 +47,7 @@ export async function projectSimulationWake(tx:DurableObjectTransaction,now:numb
  const state=await tx.get<{wakeAt:number|null}>(WORKSPACE_STATE_KEY);
  await applyWorkspaceAlarm(tx,state?.wakeAt,await tx.get(TURN_WAKE_KEY),await tx.get(SERVICE_WAKE_KEY),await tx.get(OBSERVER_WAKE_KEY),wake,await tx.get(BROWSER_BUILD_WAKE_KEY));
 }
-export type GroupChildAdmission={runId:string;groupId:string;permit(tx:DurableObjectTransaction):Promise<boolean>};
+export type GroupChildAdmission={runId:string;groupId:string;runAdmission?:InvitedRunAdmission;permit(tx:DurableObjectTransaction):Promise<boolean>};
 /** Workspace-owned intents, state and wake commit together. External effects
  * are fenced in durable state before dispatch. Unknown requests only observe. */
 export class SimulationHost{
@@ -70,7 +73,7 @@ export class SimulationHost{
   const version=modelVersion(plan);if(JSON.stringify(version)!==JSON.stringify({revisionId:request.revisionId,filesSha256:request.filesSha256,specSha256:request.specSha256}))throw Error('simulation-model-stale');
   const parameters=resolveParameters(plan.spec,request.parameters),now=this.clock(),runId=child?turnId(child.runId):crypto.randomUUID();
   const record:SimulationRecord={experimentId:child?.groupId??runId,...(child?{groupId:child.groupId}:{}),runId,scope:this.scope,actor:checkedActor(actor),key,requestJson:JSON.stringify(request),input:{runId,plan,parameters,seed:request.seed,deadlineAt:now+this.policy.durationMs,runtimeImage:image},status:'queued',createdAt:now,updatedAt:now,cancelledAt:null,errorCode:null,attempt:0,quotaClaimed:false,releaseProof:null,lease:null,dispatchClaimed:false,startClaimed:false,stop:null,result:null,releaseBegunAt:null,quietSince:null,released:false};
-  const budgetRoute=await this.ports.admitRun?.(actor,intent,request,runId);if(budgetRoute)record.budgetRoute=budgetRoute;
+  const budgetRoute=await this.ports.admitRun?.(actor,intent,request,runId,child);if(budgetRoute?.kind==='invited-runs')record.runAdmission=budgetRoute;else if(budgetRoute)record.budgetRoute=budgetRoute;
   const result=await this.storage.transaction(async tx=>{
    const existing=await tx.get<string>(intent);if(existing){const r=(await tx.get<SimulationRecord>(PREFIX+existing))!;if(r.requestJson!==record.requestJson||r.actor.authVersion!==actor.authVersion||(child&&(r.runId!==child.runId||r.groupId!==child.groupId||r.experimentId!==child.groupId)))throw Error('simulation-idempotency-conflict');return r;}
    if(!stillCurrent())throw Error('simulation-model-stale');
@@ -89,7 +92,7 @@ export class SimulationHost{
  async authorizeActor(actor:TurnActor){return this.#bounded(()=>this.ports.authorize(checkedActor(actor)));}
  async alarm(){
   if(this.#advancing)return;this.#advancing=true;
-  try{const records=[...(await this.storage.list<SimulationRecord>({prefix:PREFIX})).values()].filter(r=>!r.released);for(const r of records){try{await this.#advance(r.runId);}catch{await this.#change(r.runId,current=>{if(!TERMINAL.has(current.status)){current.status='unknown';current.errorCode=current.dispatchClaimed&&!current.startClaimed?'simulation-dispatch-unconfirmed':'simulation-operation-unconfirmed';}});}}}
+  try{const records=[...(await this.storage.list<SimulationRecord>({prefix:PREFIX})).values()].filter(r=>!r.released);for(const r of records){try{await this.#advance(r.runId);}catch{const unknown=await this.#change(r.runId,current=>{if(!TERMINAL.has(current.status)){current.status='unknown';current.errorCode=current.dispatchClaimed&&!current.startClaimed?'simulation-dispatch-unconfirmed':'simulation-operation-unconfirmed';}});try{await this.ports.unknownRun?.(unknown);}catch{}}}}
   finally{this.#advancing=false;await this.storage.transaction(tx=>this.#project(tx));await this.storage.sync();}
  }
  async #advance(id:string){
@@ -100,7 +103,7 @@ export class SimulationHost{
   // replayed as authorization. Even observe/stop may wake a Sandbox, so this
   // recovery path must settle the lease without touching native resources.
   if(r.dispatchClaimed&&!r.startClaimed){await this.#releaseNeverStarted(r);return;}
-  const allowed=await this.#bounded(()=>this.ports.authorize(r.actor));
+  const allowed=await this.#bounded(async()=>await this.ports.authorize(r.actor)&&(!this.ports.authorizeRun||await this.ports.authorizeRun(r)));
   if(!allowed&&!r.cancelledAt)r=await this.#change(id,v=>{v.cancelledAt=this.clock();v.errorCode='simulation-access-revoked';});
   const expired=this.clock()>=r.input.deadlineAt;
   // Lookup the original operation even on cancellation: an acquire ack may
@@ -143,13 +146,14 @@ export class SimulationHost{
   }else if(r.cancelledAt||this.clock()>=r.input.deadlineAt){observation=await this.#bounded(()=>this.ports.stop(r.input));}
   else observation=await this.#bounded(()=>this.ports.observe(r.input));
   r=await this.get(id);
+  if(observation.status==='absent')await this.ports.unknownRun?.(r);
   if(observation.status!=='stopped'){await this.#change(id,v=>{v.status=v.cancelledAt?'stopping':observation.status==='running'?'running':'unknown';});return;}
   if(!observation.stop||observation.stop.observedAt<r.createdAt)throw Error('simulation-stop-invalid');
   let result:SimulationRecord['result']=null,errorCode:string|null=null;
   if(!r.cancelledAt&&observation.result!==null){
    await this.#change(id,v=>{if(!v.cancelledAt)v.status='finalizing';});
    try{result=await this.#bounded(()=>this.ports.publish(r,observation.result));}catch(error){if(error instanceof Error&&error.message==='simulation-result-invalid')errorCode='simulation-result-invalid';else throw error;}
-  }else errorCode=r.cancelledAt?null:'simulation-execution-failed';
+  }else errorCode=r.cancelledAt?null:expired?'simulation-deadline':'simulation-execution-failed';
   await this.#change(id,v=>{v.stop=observation.stop;v.result=v.cancelledAt?null:result;v.status=v.cancelledAt?'cancelled':result?'completed':'failed';v.errorCode=errorCode;v.releaseBegunAt=this.clock();});
  }
  async #releaseNeverStarted(r:SimulationRecord){
