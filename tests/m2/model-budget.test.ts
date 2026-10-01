@@ -76,7 +76,7 @@ function fixture(t: { after(fn: () => void): void }, configured: ModelBudgetPoli
     },
     async sync() { if (failSync) throw Error('injected-sync-unknown'); },
   } as unknown as ModelBudgetStorage;
-  const host = (nextPolicy = configured) => new SqlTenantModelBudget(storage, nextPolicy, () => now, () => `reservation-${++id}`);
+  const host = (nextPolicy = configured,enforceTurnQuotas=true) => new SqlTenantModelBudget(storage, nextPolicy, () => now, () => `reservation-${++id}`,null,enforceTurnQuotas);
   t.after(() => { database.close(); rmSync(directory, { recursive: true }); });
   return {
     host,
@@ -378,4 +378,23 @@ test('later provider reconciliation cannot invalidate an immutable execution fen
  const other=identity({sessionId:'session-b',turnId:'turn-b',dispatchId:'dispatch-b'}),extra=await dispatch(host,request({identity:other,callId:'call-b',requestId:'request-b',deadlineAt:3_000,payloadSha256:'b'.repeat(64)}));
  await host.markUnknown(extra.reference);
  await assert.rejects(host.assertExecutionIsolated(manifest),/execution-isolation-unconfirmed/);
+});
+
+test('meter-only ledger preserves original metadata and conservative unknown usage across quota exhaustion and restart',async t=>{
+ const f=fixture(t),limited=f.host();
+ const first=await dispatch(limited);await limited.finish(first.reference,{outcome:'completed',errorCode:null,providerRequestId:'known-terminal',usage:{kind:'unknown',observedAt:f.now}});
+ await assert.rejects(limited.reserve(request({callId:'call-2',requestId:'request-2'})),/token-budget-exhausted/);
+ f.reopen();let host=f.host(policy,false);
+ for(let n=2;n<=5;n++){
+  const value=request({callId:'call-'+n,requestId:'request-'+n}),sent=await dispatch(host,value);
+  await host.finish(sent.reference,{outcome:'completed',errorCode:null,providerRequestId:'ended-'+n,usage:{kind:'unknown',observedAt:f.now}});
+ }
+ f.reopen();host=f.host(policy,false);const state=await host.snapshot(identity());
+ assert.equal(state.attempts,5);assert.equal(state.dispatchedCalls,5);assert.equal(state.accountedTokens,400);assert.equal(state.pending,5);assert.equal(state.maxReservedTokensPerTurn,120);assert.equal(state.turnQuotasEnforced,false);
+ assert.equal((await host.reserve(request({callId:'call-5',requestId:'request-5'}))).replayed,true);
+ await assert.rejects(host.reserve(request({callId:'over-input',requestId:'over-input',inputTokenUpperBound:81})),/call-limit-exceeded/);
+ const unknown=await dispatch(host,request({callId:'unknown',requestId:'unknown'}));await host.markUnknown(unknown.reference);
+ await assert.rejects(host.reserve(request({callId:'after-unknown',requestId:'after-unknown'})),/active-call/);
+ f.reopen();host=f.host(policy,false);assert.equal((await host.snapshot(identity())).active,1);
+ await assert.rejects(host.assertExecutionQuiet(),/execution-unconfirmed/);
 });

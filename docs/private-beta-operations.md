@@ -20,7 +20,163 @@ The authorized 2026-09-27 extension sets the current review deadline to
 remains historical evidence, not completed acceptance. See
 [the release record](evidence/releases/beta-review-extension-20260927.json).
 
-## Confirmed limits
+## #153 meter-only policy and guarded migration
+
+[#153](https://github.com/jihegao/riffology-cloud/issues/153) implements the
+2026-09-28 decision to remove call and monetary quotas. Schema v2 explicitly sets
+`quotaMode: "meter-only"` and **omits** every daily/user/Turn/pending call and
+nanodollar ceiling, plus `alertPercent`. Increasing v1 limits or changing actor,
+policy ID, epoch, review deadline or price is not this migration. v1 remains
+supported and retains its original behavior until the original actor accepts v2.
+This source change does not claim that v2 is deployed or authenticated acceptance
+has passed.
+
+Retain v1's admission, day boundary, policy ID, profile digest, start/review time,
+concurrency, call/tool/Turn/release timeouts, monitor interval and historical
+isolation manifests exactly. Add `warningCallsPerMinute`,
+`warningNanodollarsPerMinute` and `billingPendingWarningMs` as positive integer
+observation thresholds (the latter at least 60 seconds). They trigger alerts,
+never quota refusals. Freeze operational warning values with the deployment
+packet; 60 calls/minute, US$1/minute and one hour of missing usage are reasonable
+initial warning values for owner review. Changes to these pinned values require
+a separately reviewed evolution; they are not a mutable quota workaround.
+
+The migration release sequence is:
+
+1. Preserve the original live settings, policy JSON, actor identity, secrets,
+   container images and private authoritative ledger export. Pause new work
+   through the existing kill switch, and record the resulting pause/audit state.
+   Do not replay any unknown request or release a held slot to prepare migration.
+2. First deploy the code with **unchanged v1 JSON**, so the original pause and
+   authority reads are available before configuration evolution. Then deploy the
+   reviewed v2 JSON on the **same**
+   `PRIVATE_BETA_CAPACITY_ACTOR = private-beta-capacity-v1`. No namespace/actor or
+   model-budget policy-version reset is needed. Mismatched configured/persisted
+   digests keep new Pi/provider/tool admission closed. A fresh unpinned v2 actor
+   cannot silently initialize an empty replacement ledger.
+3. Invoke deployment-only `migrationState()` and retain its redacted
+   `ledgerSha256`, original pin, slot/call/alert/audit counts and pause state.
+   Retain the corresponding `snapshot()` usage-by-status and conservative
+   reservations. The checksum covers full original slots, calls, alerts, audits,
+   metering and pause, including immutable request identities; public evidence
+   contains only hashes and aggregate statistics.
+4. Invoke deployment-only `removeQuotas({previousPolicy, expectedPolicySha256,
+   expectedLedgerSha256}, operator)` with the full frozen v1 policy and those
+   exact original checksums. The RPC verifies unchanged execution gates, checks
+   that authoritative rows did not change since the snapshot, then atomically
+   updates only the pin and writes one migration/audit. Original occupied,
+   quarantined, unknown, billing-pending, cost and historical audit rows remain.
+   It never reconciles, releases, requests a provider/tool or resumes capacity.
+5. Independently reread the original authority. Configured/persisted digests must
+   match the expected v2 digest; every prior slot/call/reservation/status and pause
+   must match, with exactly one migration/audit appended. A stale state checksum
+   requires diagnosis and a fresh authority read; do not replay a model request.
+   A lost RPC acknowledgement can be checked and the **same** migration arguments
+   safely repeated: the committed transition returns `replayed: true` without a
+   second audit. A failed SQLite transaction leaves the original pin and rows.
+6. Resume only through the existing guarded operator path after authoritative
+   release of all held resources. Then complete invited-identity and bounded
+   live request acceptance with current deployment/Revision/Turn/call identities.
+   Record #153/#104 and the release index truthfully. A code rollback must retain
+   accepted v2 configuration and understand its ledger; restoring v1 JSON after
+   migration fails closed with a policy conflict. Never recreate the actor.
+
+The offline operator preparation entry point is
+`scripts/model/private-beta-quota-migration.mjs`:
+
+```sh
+node scripts/model/private-beta-quota-migration.mjs \
+  .local/issue-153/v1-policy.json \
+  .local/issue-153/migration-state.json \
+  .local/issue-153/snapshot.json \
+  .local/issue-153/private-plan.json
+```
+
+It binds the exact paused original pin/counters, generates the v2 JSON, expected
+next digest and `removeQuotas` arguments, and writes a new file mode 0600. It
+performs **no** remote operation. Keep full policies, snapshots and private
+exports in controlled `.local` evidence; publish only source/version identities,
+redacted hashes and aggregates. `migrationState()` supplies independent
+`slotSha256`, `callSha256`, `alertSha256` and `operationSha256` as well as the
+whole-ledger hash. After migration the first three and pause must match; audit
+count increases by exactly one, and the original audit prefix remains intact.
+
+For a capability-protected deployment-only RPC bridge, use
+`scripts/model/private-beta-quota-operator.ts` and the **separate**
+`infra/wrangler.private-beta-quota-operator.jsonc` template. Set the actual
+existing Gateway `script_name`/account from its live configuration in a private
+local overlay; never import this entry point into the product Gateway. Set a new
+`PRIVATE_BETA_QUOTA_OPERATOR_CAPABILITY` secret and a private
+`PRIVATE_BETA_QUOTA_OPERATOR_SCOPE_JSON` with exactly:
+
+- `schemaVersion: 1`, original `actor`, `operator: {userId, authVersion}` and
+  `expiresAt` no more than 30 minutes after scope preparation;
+- `policySha256s: [originalV1Digest, reviewedV2Digest]`;
+- optional `migration` equal to `private-plan.json`'s `rpc.arguments`.
+
+With no `migration` property it cannot migrate. POST `/operate` with its separate
+Bearer capability and `{action: "snapshot"}` returns the redacted
+`{state, snapshot}` required by the prepare CLI. `{action: "pause",
+confirmation: "pause-original-pool"}` also requires `X-Beta-Mutation: pause`.
+After freezing the plan, redeploy only the temporary scope with its exact
+`migration` arguments. `{action: "remove-quotas", confirmation:
+"remove-only-call-fee-quotas"}` requires `X-Beta-Mutation` equal to the v2
+policy digest, actual v2 configuration and persisted pause. The bridge only
+forwards the frozen arguments; callers cannot supply another policy/checksum.
+There is no resume, replay, call, tool or ledger-write action. Errors are redacted,
+expired scope fails closed and the default template's empty scope is inert.
+Delete the temporary operator Worker and its capability after independent
+readback; keep its frozen source/config checksums in controlled operation evidence.
+Normal resume, if authorized and justified by independent original resource
+release, continues through the existing operator path.
+
+Pi retains original `model_budget_meta`, call records, dispatch fencing and
+conservative unknown-usage accounting. Only the v2 Beta route stops enforcing
+aggregate per-Turn attempts/dispatch/token budgets; snapshots mark
+`turnQuotasEnforced: false` while preserving old metadata for inspection. Per-call
+input/output token bounds, safe-integer overflow checks, one live model call,
+identity/digest checks, time limits and historical execution isolation remain.
+There is no automatic retry or provider fallback. v2 also removes the daily
+rollover dispatch restriction; rollover does not clear uncertainty or reservations.
+
+The operator panel distinguishes meter-only operation from a monetary maximum;
+null limits are never displayed as zero. `policyReady` shows whether deployment
+and stored pin agree. Trend warnings use precise timestamps for new calls:
+`call-rate-anomaly` and `fee-rate-anomaly`. `billing-pending-stale` retains the
+original missing-usage cost and alerts after its first durable observation ages
+past the configured threshold. Historical missing usage starts this observation
+clock at first monitor, with no invented historical timestamp or zero amount.
+The monitor continues while billing-pending records exist, even after resource
+release. Existing execution/release alerts remain. The owner inspects the
+original provider/Turn identity and fee trend in `/admin`, pauses immediately
+for unexplained activity or execution uncertainty, and records the incident and
+next safe read-only action in #104/#153. Billing-only investigation stays separate
+under #101; neither a warning nor absent usage is settlement evidence. Logs/panel
+are the implemented alert channels; no external notifications are claimed.
+
+[#136](https://github.com/jihegao/riffology-cloud/issues/136) has a separate Runs
+resource actor and its own compute-release proof. `authorizeRunAdmission(scope,
+actor)` is a read-only guard that requires migrated v2, current invitation/owner,
+valid window, matching original pin and an unpaused Beta pool. It rejects global
+quarantine or reserved/dispatched/unknown model execution; credible terminal
+billing-pending records alone do not block it. Runs must call this guard at
+admission and immediately before native start, retain their own concurrency,
+per-run duration and group-size bounds. The shared guard itself verifies original
+legacy/G5 execution isolation against the same authorities and frozen exact proofs
+as Pi; absent proofs require execution-quiet original ledgers. A fresh Run project
+cannot bypass an old unknown in either ledger. It does not reserve or release a Pi slot and does not open M3/M4 gates
+by itself. Runs rollout and real execution remain separate acceptance under #136.
+
+Local evidence: strict v1/v2 parsing; real Workerd/SQLite migration with rollback
+injection, stale snapshot refusal, unchanged gate checks, occupied/unknown/fee
+preservation and restart/replay; real D1 invitation/revocation tests; 65 serial
+credible terminal calls on one v2 Turn crossing v1 daily/Turn/pending/money and
+hidden 64-dispatch ceilings; conservative missing usage; anomaly/stale warnings;
+metering overflow refusal; retained per-call/time/pause/unknown/new-project/day
+boundaries. These are local fixtures with outbound network disabled, not live
+paid or authenticated production acceptance.
+
+## Historical v1 packet (effective until explicit migration)
 
 The user confirmed accepted ordinary administrator invitations plus active user, personal tenant and owner membership. All owned personal projects inherit admission; no new project-count limit is imposed. Each request rechecks current D1 identity and project scope. Bootstrap operator status alone does not grant Beta admission.
 
