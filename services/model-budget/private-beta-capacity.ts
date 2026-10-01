@@ -1,6 +1,6 @@
 import {DurableObject} from 'cloudflare:workers';
 import {privateBetaReleaseDeadline} from './private-beta-release.ts';
-import {privateBetaPolicy,authorizePrivateBeta,PRIVATE_BETA_CAPACITY_ACTOR,type PrivateBetaPolicy} from './private-beta-policy.ts';
+import {privateBetaPolicy,privateBetaPolicyGates,assertPrivateBetaHistoricalIsolation,authorizePrivateBeta,PRIVATE_BETA_CAPACITY_ACTOR,type PrivateBetaPolicy,type PrivateBetaHistoricalLedger} from './private-beta-policy.ts';
 import {turnDigest,turnId,type TurnScope,type TurnActor} from '../turn/protocol.ts';
 import {workspaceAgentName} from '../workspace/protocol.ts';
 import {modelCallRequest,modelBudgetCallKey,type ModelCallRequest,type ModelCallRecord,modelBudgetTenantName} from './core.ts';
@@ -17,6 +17,7 @@ type Slot={key:string;user_id:string;document:string;created_at:number;turn_id:s
 interface Env {
   PRIVATE_BETA_POLICY_JSON?:string; PRODUCTION_MODEL_PROFILE_JSON:string; CATALOG:D1Database;
   PRIVATE_BETA_CAPACITY:DurableObjectNamespace<PrivateBetaCapacity>;
+  TENANT_MODEL_BUDGET?:PrivateBetaHistoricalLedger;G5_TOKEN_BUDGET?:PrivateBetaHistoricalLedger;
   PI_DEVELOPER_BUDGET:{getByName(name:string):{privateBetaCall(identity:ModelCallRequest['identity'],callId:string):Promise<ModelCallRecord|null>}};
   WORKSPACE_AGENT:{getByName(name:string):{
     privateBetaReleaseState(input:Admission):Promise<{found:boolean;turnId:string|null;terminal:boolean;released:boolean;resourceWait:boolean;finishedAt:number|null;releaseGuard?:boolean;rejectedSession?:boolean;withdrawn?:boolean}>;
@@ -35,7 +36,9 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
       CREATE UNIQUE INDEX IF NOT EXISTS beta_user_active ON beta_slots(user_id) WHERE status!='released';
       CREATE TABLE IF NOT EXISTS beta_calls(key TEXT PRIMARY KEY,slot_key TEXT NOT NULL,user_id TEXT NOT NULL,day TEXT NOT NULL,document TEXT NOT NULL,cost INTEGER NOT NULL,status TEXT NOT NULL) STRICT;
       CREATE TABLE IF NOT EXISTS beta_operations(id INTEGER PRIMARY KEY, action TEXT NOT NULL, actor_json TEXT, at INTEGER NOT NULL) STRICT;
-      CREATE TABLE IF NOT EXISTS beta_alerts(key TEXT PRIMARY KEY,at INTEGER NOT NULL,code TEXT NOT NULL) STRICT;`);
+      CREATE TABLE IF NOT EXISTS beta_alerts(key TEXT PRIMARY KEY,at INTEGER NOT NULL,code TEXT NOT NULL) STRICT;
+      CREATE TABLE IF NOT EXISTS beta_policy_migrations(from_digest TEXT PRIMARY KEY,to_digest TEXT NOT NULL,previous_document TEXT NOT NULL,next_document TEXT NOT NULL,ledger_digest TEXT NOT NULL,at INTEGER NOT NULL) STRICT;
+      CREATE TABLE IF NOT EXISTS beta_call_metering(call_key TEXT PRIMARY KEY,accepted_at INTEGER,billing_pending_at INTEGER) STRICT;`);
   }
   #serial<T>(action:()=>Promise<T>):Promise<T>{const next=this.#tail.then(action);this.#tail=next.catch(()=>{});return next;}
   #slots(){return this.ctx.storage.sql.exec<Slot>("SELECT * FROM beta_slots WHERE status!='released'").toArray();}
@@ -50,6 +53,7 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
     // Kill switch is mutable; limits, epoch, price and identity policy are pinned.
     const digest=await turnDigest({...p,enabled:false});
     const prior=this.ctx.storage.sql.exec<{digest:string}>('SELECT digest FROM beta_policy WHERE singleton=1').toArray()[0];
+    if(!prior&&p.schemaVersion===2)throw Error('private-beta-policy-unpinned');
     if(prior&&prior.digest!==digest)throw Error('private-beta-policy-conflict');
     this.ctx.storage.sql.exec('INSERT OR IGNORE INTO beta_policy VALUES(1,?)',digest);
     await this.ctx.storage.sync();
@@ -128,6 +132,7 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
     const found=!!row&&row.document===JSON.stringify(input);if(!found)return {found:false,bound:false};await this.#assertPinned(p);return {found:true,bound:row.turn_id===expected&&row.status!=='admitting'};
   }
   #checkLimits(p:PrivateBetaPolicy,userId:string,cost:number,slot:string|null){
+    if(!Number.isSafeInteger(cost)||cost<0)throw Error('private-beta-metering-invalid');
     const day=new Date(Date.now()).toISOString().slice(0,10);
     const totals=this.ctx.storage.sql.exec<{total:number;daily:number;user_daily:number;calls:number;user_calls:number;pending:number;pending_cost:number;turn_cost:number;turn_calls:number}>(`SELECT
       coalesce(sum(cost),0) total,coalesce(sum(CASE WHEN day=? THEN cost ELSE 0 END),0) daily,
@@ -136,6 +141,8 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
       coalesce(sum(status IN ('reserved','dispatched','unknown','billing-pending')),0) pending,
       coalesce(sum(CASE WHEN status IN ('reserved','dispatched','unknown','billing-pending') THEN cost ELSE 0 END),0) pending_cost,
       coalesce(sum(CASE WHEN slot_key=? THEN cost ELSE 0 END),0) turn_cost,coalesce(sum(slot_key=?),0) turn_calls FROM beta_calls`,day,day,userId,day,day,userId,slot,slot).one();
+    if(Object.values(totals).some(n=>!Number.isSafeInteger(n)||n<0)||!Number.isSafeInteger(totals.total+cost))throw Error('private-beta-metering-invalid');
+    if(p.schemaVersion===2)return totals;
     const increment=1;
     if(totals.total+cost>p.maxNanodollarsTotal||totals.daily+cost>p.maxNanodollarsPerDay||totals.user_daily+cost>p.maxNanodollarsPerUserDay||totals.calls+increment>p.maxCallsPerDay||totals.user_calls+increment>p.maxCallsPerUserDay||totals.pending+increment>p.maxPendingCalls||totals.pending_cost+cost>p.maxPendingNanodollars||slot&&(totals.turn_cost+cost>p.maxNanodollarsPerTurn||totals.turn_calls+1>p.maxCallsPerTurn))throw Error('private-beta-budget-limit');
     return totals;
@@ -182,6 +189,58 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
     await this.ctx.storage.sync();
     return {previousReviewAt:input.previousReviewAt,reviewAt:policy.reviewAt,policySha256:digest,replayed};
   });}
+  #migrationLedger(){return {
+    slots:this.ctx.storage.sql.exec('SELECT * FROM beta_slots ORDER BY key').toArray(),
+    calls:this.ctx.storage.sql.exec('SELECT * FROM beta_calls ORDER BY key').toArray(),
+    alerts:this.ctx.storage.sql.exec('SELECT * FROM beta_alerts ORDER BY key').toArray(),
+    operations:this.ctx.storage.sql.exec('SELECT * FROM beta_operations ORDER BY id').toArray(),
+    metering:this.ctx.storage.sql.exec('SELECT * FROM beta_call_metering ORDER BY call_key').toArray(),
+    paused:this.ctx.storage.kv.get('beta-paused')??null,
+  };}
+  /** Deployment-only read: redacted checksum of all original identities and
+   * authoritative rows. No reconciliation, mutation or provider/tool request. */
+  migrationState(){return this.#serial(async()=>{
+    this.#policy(false);const ledger=this.#migrationLedger();
+    return {actor:PRIVATE_BETA_CAPACITY_ACTOR,pinnedPolicySha256:this.ctx.storage.sql.exec<{digest:string}>('SELECT digest FROM beta_policy WHERE singleton=1').toArray()[0]?.digest??null,
+      ledgerSha256:await turnDigest(ledger),slotSha256:await turnDigest(ledger.slots),callSha256:await turnDigest(ledger.calls),alertSha256:await turnDigest(ledger.alerts),operationSha256:await turnDigest(ledger.operations),slotCount:ledger.slots.length,callCount:ledger.calls.length,operationCount:ledger.operations.length,alertCount:ledger.alerts.length,paused:ledger.paused};
+  });}
+  /** Explicit, guarded schema evolution in the ORIGINAL actor. Unknown and
+   * occupied slots may migrate, but cannot be released or gain a new identity,
+   * epoch, deadline, profile or execution gate. No public route exposes this. */
+  removeQuotas(input:{previousPolicy:unknown;expectedPolicySha256:string;expectedLedgerSha256:string},actor?:TurnActor){return this.#serial(async()=>{
+    const policy=this.#policy(false);
+    if(!input||Object.keys(input).sort().join(',')!=='expectedLedgerSha256,expectedPolicySha256,previousPolicy'||policy.schemaVersion!==2||![input.expectedPolicySha256,input.expectedLedgerSha256].every(d=>typeof d==='string'&&/^[a-f0-9]{64}$/.test(d)))throw Error('private-beta-quota-migration-invalid');
+    const previous=privateBetaPolicy(input.previousPolicy);
+    if(previous?.schemaVersion!==1)throw Error('private-beta-quota-migration-invalid');
+    const previousDigest=await turnDigest({...previous,enabled:false}),digest=await turnDigest({...policy,enabled:false});
+    if(previousDigest!==input.expectedPolicySha256||await turnDigest(privateBetaPolicyGates(previous))!==await turnDigest(privateBetaPolicyGates(policy)))throw Error('private-beta-policy-conflict');
+    const ledger=this.#migrationLedger(),ledgerText=JSON.stringify(ledger),ledgerDigest=await turnDigest(ledger);
+    const action=`remove-quotas:${previousDigest}:${digest}`;
+    const replayed=this.ctx.storage.transactionSync(()=>{
+      const prior=this.ctx.storage.sql.exec<{digest:string}>('SELECT digest FROM beta_policy WHERE singleton=1').toArray()[0];
+      if(!prior)throw Error('private-beta-policy-unpinned');
+      const migration=this.ctx.storage.sql.exec<{to_digest:string;ledger_digest:string}>('SELECT to_digest,ledger_digest FROM beta_policy_migrations WHERE from_digest=?',previousDigest).toArray()[0];
+      if(prior.digest===digest&&migration?.to_digest===digest&&migration.ledger_digest===input.expectedLedgerSha256&&this.ctx.storage.sql.exec('SELECT id FROM beta_operations WHERE action=?',action).toArray().length)return true;
+      if(prior.digest!==previousDigest||migration)throw Error('private-beta-policy-conflict');
+      if(ledgerDigest!==input.expectedLedgerSha256||JSON.stringify(this.#migrationLedger())!==ledgerText)throw Error('private-beta-migration-state-conflict');
+      this.ctx.storage.sql.exec('UPDATE beta_policy SET digest=? WHERE singleton=1',digest);
+      this.ctx.storage.sql.exec('INSERT INTO beta_policy_migrations VALUES(?,?,?,?,?,?)',previousDigest,digest,JSON.stringify(previous),JSON.stringify(policy),ledgerDigest,Date.now());
+      this.ctx.storage.sql.exec('INSERT INTO beta_operations(action,actor_json,at) VALUES(?,?,?)',action,actor?JSON.stringify(actor):null,Date.now());
+      return false;
+    });
+    await this.ctx.storage.sync();return {actor:PRIVATE_BETA_CAPACITY_ACTOR,policySha256:digest,previousPolicySha256:previousDigest,ledgerSha256:input.expectedLedgerSha256,replayed};
+  });}
+  /** Runs share invitation, kill-switch and original execution isolation, with
+   * their own resource admission. This method never reserves a Pi Turn slot. */
+  authorizeRunAdmission(scope:TurnScope,actor:TurnActor){return this.#serial(async()=>{
+    const p=this.#policy();if(p.schemaVersion!==2)throw Error('private-beta-meter-only-required');
+    await this.#assertPinned(p);await authorizePrivateBeta(this.env.CATALOG,scope,actor);
+    await assertPrivateBetaHistoricalIsolation(p,scope.tenantId,this.env.TENANT_MODEL_BUDGET,this.env.G5_TOKEN_BUDGET);
+    // Original authority reads may await other actors; revoke/pause still wins.
+    await authorizePrivateBeta(this.env.CATALOG,scope,actor);this.#policy();
+    if(this.#slots().some(s=>s.status==='quarantined')||this.ctx.storage.sql.exec("SELECT key FROM beta_calls WHERE status IN ('reserved','dispatched','unknown') LIMIT 1").toArray().length)throw Error('private-beta-execution-unconfirmed');
+    return {quotaMode:p.quotaMode,policySha256:await turnDigest({...p,enabled:false})};
+  });}
   async reserve(raw:ModelCallRequest){return this.#serial(async()=>{
     const request=modelCallRequest(raw),p=this.#policy();await this.#pin(p);
     await authorizePrivateBeta(this.env.CATALOG,request.identity.scope,request.actor);
@@ -197,7 +256,10 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
     if(request.deadlineAt<=Date.now()||request.deadlineAt>Date.now()+p.maxCallDurationMs||request.deadlineAt>slot.created_at+p.maxTurnDurationMs||request.deadlineAt>p.reviewAt)throw Error('private-beta-time-limit');
     const cost=conservativeCost(profile,request.inputTokenUpperBound,request.maxOutputTokens);
     this.#checkLimits(p,request.actor.userId,cost,slot.key);
-    this.ctx.storage.sql.exec("INSERT INTO beta_calls VALUES(?,?,?,?,?,?,'reserved')",key,slot.key,request.actor.userId,new Date(Date.now()).toISOString().slice(0,10),JSON.stringify(request),cost);
+    this.ctx.storage.transactionSync(()=>{
+      this.ctx.storage.sql.exec("INSERT INTO beta_calls VALUES(?,?,?,?,?,?,'reserved')",key,slot.key,request.actor.userId,new Date(Date.now()).toISOString().slice(0,10),JSON.stringify(request),cost);
+      this.ctx.storage.sql.exec('INSERT INTO beta_call_metering VALUES(?,?,NULL)',key,Date.now());
+    });
     await this.ctx.storage.sync();return {key,replayed:false};
   });}
   async checkDispatch(request:ModelCallRequest){return this.#serial(async()=>{
@@ -206,7 +268,7 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
     const key=await modelBudgetCallKey(request.identity,request.callId);
     const row=this.ctx.storage.sql.exec<{document:string;slot_key:string;day:string;status:string}>('SELECT * FROM beta_calls WHERE key=?',key).toArray()[0];
     const slot=this.#slots().find(s=>s.key===row?.slot_key);
-    if(!row||row.document!==JSON.stringify(request)||!slot||slot.status!=='active'||Date.now()>=slot.created_at+p.maxTurnDurationMs||row.day!==new Date(Date.now()).toISOString().slice(0,10)||!['reserved','dispatched'].includes(row.status))throw Error('private-beta-turn-denied');
+    if(!row||row.document!==JSON.stringify(request)||!slot||slot.status!=='active'||Date.now()>=slot.created_at+p.maxTurnDurationMs||p.schemaVersion===1&&row.day!==new Date(Date.now()).toISOString().slice(0,10)||!['reserved','dispatched'].includes(row.status))throw Error('private-beta-turn-denied');
     this.ctx.storage.sql.exec("UPDATE beta_calls SET status='dispatched' WHERE key=?",key);await this.ctx.storage.sync();
   });}
   async observeCall(record:ModelCallRecord){return this.#serial(()=>this.#applyObservation(record));}
@@ -221,6 +283,10 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
     const status=record.status==='not-dispatched'?'not-dispatched':ended?(terminal.usage.kind==='verified'?'observed':'billing-pending'):'unknown';
     // Reservations never shrink. An ACK loss can only over-count exposure.
     this.ctx.storage.sql.exec('UPDATE beta_calls SET status=? WHERE key=?',status,record.callKey);
+    if(status==='billing-pending'){
+      this.ctx.storage.sql.exec('INSERT OR IGNORE INTO beta_call_metering VALUES(?,NULL,?)',record.callKey,Date.now());
+      this.ctx.storage.sql.exec('UPDATE beta_call_metering SET billing_pending_at=coalesce(billing_pending_at,?) WHERE call_key=?',Date.now(),record.callKey);
+    }
     if(status==='unknown'){
       this.ctx.storage.sql.exec("UPDATE beta_slots SET status='quarantined' WHERE key=?",row.slot_key);
       await this.#alert(row.slot_key,'execution-unknown');await this.ctx.storage.setAlarm(Date.now()+1);
@@ -231,19 +297,38 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
   async monitor(){return this.#serial(async()=>{
     const p=this.#policy(false);await this.#pin(p);await this.#reconcile(p);
     const day=new Date(Date.now()).toISOString().slice(0,10);
-    const totals=this.ctx.storage.sql.exec<{cost:number}>('SELECT coalesce(sum(cost),0) cost FROM beta_calls WHERE day=?',day).one();
-    if(totals.cost*100>=p.maxNanodollarsPerDay*p.alertPercent)await this.#alert('budget:'+day,'daily-budget-warning');
-    const cumulative=this.ctx.storage.sql.exec<{cost:number}>('SELECT coalesce(sum(cost),0) cost FROM beta_calls').one();
-    if(cumulative.cost*100>=p.maxNanodollarsTotal*p.alertPercent)await this.#alert('budget:total','cumulative-budget-warning');
+    if(p.schemaVersion===1){
+      const totals=this.ctx.storage.sql.exec<{cost:number}>('SELECT coalesce(sum(cost),0) cost FROM beta_calls WHERE day=?',day).one();
+      if(totals.cost*100>=p.maxNanodollarsPerDay*p.alertPercent)await this.#alert('budget:'+day,'daily-budget-warning');
+      const cumulative=this.ctx.storage.sql.exec<{cost:number}>('SELECT coalesce(sum(cost),0) cost FROM beta_calls').one();
+      if(cumulative.cost*100>=p.maxNanodollarsTotal*p.alertPercent)await this.#alert('budget:total','cumulative-budget-warning');
+    }else{
+      const now=Date.now(),minute=Math.floor(now/60_000);
+      const trend=this.ctx.storage.sql.exec<{calls:number;cost:number}>('SELECT count(*) calls,coalesce(sum(c.cost),0) cost FROM beta_calls c JOIN beta_call_metering m ON m.call_key=c.key WHERE m.accepted_at>?',now-60_000).one();
+      if(!Number.isSafeInteger(trend.cost)||trend.cost<0)throw Error('private-beta-metering-invalid');
+      if(trend.calls>=p.warningCallsPerMinute)await this.#alert('call-rate:'+minute,'call-rate-anomaly');
+      if(trend.cost>=p.warningNanodollarsPerMinute)await this.#alert('fee-rate:'+minute,'fee-rate-anomaly');
+      // Historical missing usage starts its age clock at the first observed
+      // monitor; it is never silently cleared or called a zero charge.
+      this.ctx.storage.sql.exec("INSERT OR IGNORE INTO beta_call_metering SELECT key,NULL,? FROM beta_calls WHERE status='billing-pending'",now);
+      const pending=this.ctx.storage.sql.exec<{key:string}>("SELECT c.key FROM beta_calls c JOIN beta_call_metering m ON m.call_key=c.key WHERE c.status='billing-pending' AND m.billing_pending_at<=?",now-p.billingPendingWarningMs).toArray();
+      for(const row of pending)await this.#alert('billing:'+row.key,'billing-pending-stale');
+    }
     this.ctx.storage.kv.put('beta-last-monitor',Date.now());await this.ctx.storage.sync();
-    if(this.#slots().length)await this.ctx.storage.setAlarm(Date.now()+p.monitorIntervalMs);
+    if(this.#slots().length||p.schemaVersion===2&&this.ctx.storage.sql.exec("SELECT key FROM beta_calls WHERE status='billing-pending' LIMIT 1").toArray().length)await this.ctx.storage.setAlarm(Date.now()+p.monitorIntervalMs);
   });}
+  #usage(){
+    const usage=this.ctx.storage.sql.exec<{day:string;status:string;calls:number;reservedNanodollars:number}>('SELECT day,status,count(*) calls,sum(cost) reservedNanodollars FROM beta_calls GROUP BY day,status').toArray();
+    let total=0;
+    for(const row of usage){total+=row.reservedNanodollars;if(!Number.isSafeInteger(row.calls)||row.calls<0||!Number.isSafeInteger(row.reservedNanodollars)||row.reservedNanodollars<0||!Number.isSafeInteger(total))throw Error('private-beta-metering-invalid');}
+    return usage;
+  }
   async snapshot(){
     const policy=this.#policy(false);
     const policySha256=await turnDigest({...policy,enabled:false});
     const pinnedPolicySha256=this.ctx.storage.sql.exec<{digest:string}>('SELECT digest FROM beta_policy WHERE singleton=1').toArray()[0]?.digest??null;
-    return {schemaVersion:1,policySha256,pinnedPolicySha256,enabled:policy.enabled&&Date.now()>=policy.startsAt&&Date.now()<policy.reviewAt,reviewAt:policy.reviewAt,limits:{maxActiveTurns:policy.maxActiveTurns,maxNanodollarsPerDay:policy.maxNanodollarsPerDay,maxNanodollarsTotal:policy.maxNanodollarsTotal},lastMonitorAt:this.ctx.storage.kv.get('beta-last-monitor')??null,paused:this.ctx.storage.kv.get('beta-paused')===true,active:this.#slots().length,quarantined:this.#slots().filter(s=>s.status==='quarantined').length,
-      usage:this.ctx.storage.sql.exec('SELECT day,status,count(*) calls,sum(cost) reservedNanodollars FROM beta_calls GROUP BY day,status').toArray(),
+    return {schemaVersion:1,policySchemaVersion:policy.schemaVersion,quotaMode:policy.schemaVersion===2?'meter-only':'limited',policyReady:policySha256===pinnedPolicySha256,policySha256,pinnedPolicySha256,enabled:policy.enabled&&Date.now()>=policy.startsAt&&Date.now()<policy.reviewAt,reviewAt:policy.reviewAt,limits:{maxActiveTurns:policy.maxActiveTurns,maxNanodollarsPerDay:policy.schemaVersion===1?policy.maxNanodollarsPerDay:null,maxNanodollarsTotal:policy.schemaVersion===1?policy.maxNanodollarsTotal:null},lastMonitorAt:this.ctx.storage.kv.get('beta-last-monitor')??null,paused:this.ctx.storage.kv.get('beta-paused')===true,active:this.#slots().length,quarantined:this.#slots().filter(s=>s.status==='quarantined').length,
+      usage:this.#usage(),
       alerts:this.ctx.storage.sql.exec('SELECT at,code FROM beta_alerts ORDER BY at DESC LIMIT 100').toArray()};
   }
   async userStatus(scope:TurnScope,actor:TurnActor){
