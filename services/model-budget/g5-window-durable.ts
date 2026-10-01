@@ -1,5 +1,5 @@
 import {DurableObject} from 'cloudflare:workers';
-import {G5_GLOBAL_ACTOR,G5WindowGuard,g5AdmissionContract,g5FinalAuthorityResult,g5FinalTaskCounts,g5FixtureRequestKey,g5RolloverQuarantines,g5WindowPolicy,readG5WindowSnapshot} from './g5-window.ts';
+import {G5_GLOBAL_ACTOR,G5WindowGuard,g5AdmissionContract,g5FinalAuthorityResult,g5FinalTaskCounts,g5FixtureRequestKey,g5RolloverQuarantines,g5WindowPolicy,readG5WindowSnapshot,readG5ProjectNativeQuiescence} from './g5-window.ts';
 import {rolloverTokenMatches} from './g5-rollover-token.ts';
 import {turnRuntimeIdentity,type TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
 import {turnDigest} from '../turn/protocol.ts';
@@ -185,4 +185,5 @@ export class G5ControlledWindow extends DurableObject<G5WindowEnv>{
  async markUnknown(key:string,rawFailure?:unknown){const failure=providerFailureEvidence(rawFailure);if(failure){const context=this.#context(key);await this.#save({...context,failure});}return this.#guard().markUnknown(key);}
  async closeAdmission(){return this.#guard().closeAdmission();}
  async snapshot(){if(!this.env.G5_WINDOW_GUARD.idFromName(G5_GLOBAL_ACTOR).equals(this.ctx.id))throw Error('g5-window-actor-scope-denied');return readG5WindowSnapshot(this.ctx.storage,g5WindowPolicy(this.env.G5_CONTROLLED_WINDOW_JSON===undefined?undefined:JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON)));}
+ async archiveQuiescence(scope:import('../turn/protocol.ts').TurnScope){if(!this.env.G5_WINDOW_GUARD.idFromName(G5_GLOBAL_ACTOR).equals(this.ctx.id))throw Error('g5-window-actor-scope-denied');return readG5ProjectNativeQuiescence(this.ctx.storage,scope);}
 }

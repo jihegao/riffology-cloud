@@ -1,4 +1,5 @@
 import {turnRuntimeIdentity,type TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
+import {scope as checkedScope,type TurnScope} from '../turn/protocol.ts';
 import type {ModelBudgetStorage} from './core.ts';
 export const G5_GLOBAL_ACTOR='g5-controlled-global-v1';
 export type G5RolloverQuarantine={sourceWindowId:string;sourceCallKey:string;sourceTurnKey:string;sourceProjectId:string;sourceSessionId:string;sourceTurnId:string;sourceIntentKeySha256:string;sourceTasks:number;sourceDispatches:number;sourceSimulationRuns:number;sourceServiceRuns:number;sourceReservedNanodollars:number;sourceMoneyPeriod:string;sourceAuthorityReceiptSha256:string;sourceTokenState?:'failed-pending';};
@@ -208,4 +209,25 @@ export function readG5WindowSnapshot(storage:ModelBudgetStorage,configured:G5Win
  const names=new Set(tables.map(value=>value.name));if(tables.length===4&&['g5_windows','g5_tasks','g5_calls','g5_turns'].every(name=>names.has(name)))return {schemaVersion:1,activePolicy:configured,windows:storage.sql.exec('SELECT * FROM g5_windows ORDER BY started_at,window_id').toArray(),tasks:storage.sql.exec('SELECT * FROM g5_tasks ORDER BY accepted_at,key').toArray(),turns:storage.sql.exec('SELECT * FROM g5_turns ORDER BY window_id,key').toArray(),calls:storage.sql.exec('SELECT * FROM g5_calls ORDER BY window_id,key').toArray(),rollovers:[]};
  if(tables.length!==5)fail('schema-incomplete');
  return {schemaVersion:1,activePolicy:configured,windows:storage.sql.exec('SELECT * FROM g5_windows ORDER BY started_at,window_id').toArray(),tasks:storage.sql.exec('SELECT * FROM g5_tasks ORDER BY accepted_at,key').toArray(),turns:storage.sql.exec('SELECT * FROM g5_turns ORDER BY window_id,key').toArray(),calls:storage.sql.exec('SELECT * FROM g5_calls ORDER BY window_id,key').toArray(),rollovers:storage.sql.exec('SELECT * FROM g5_rollovers ORDER BY registered_at,target_window_id').toArray()};
+}
+
+/** Metadata-only proof over original windows; never initializes or pins a new
+ * window. Uncorrelated native grants conservatively block their own tenant. */
+export function readG5ProjectNativeQuiescence(storage:ModelBudgetStorage,rawScope:TurnScope){
+ const scope=checkedScope(rawScope),snapshot=readG5WindowSnapshot(storage,null);let unconfirmedStarts=0,ambiguousStarts=0;
+ const project=(row:Record<string,unknown>):string|null=>{
+  const document=JSON.parse(String(row.document)) as G5Task;
+  if(row.runtime_identity!=null){const identity=turnRuntimeIdentity(JSON.parse(String(row.runtime_identity)));if(identity.scope.tenantId!==document.tenantId)fail('native-execution-unconfirmed');return identity.scope.projectId;}
+  if(document.kind==='project'&&row.bound_id!=null)return id(row.bound_id);
+  if(row.parent_turn_key!=null){const parent=snapshot.tasks.find(value=>value.key===row.parent_turn_key);if(parent?.runtime_identity){const identity=turnRuntimeIdentity(JSON.parse(String(parent.runtime_identity)));if(identity.scope.tenantId!==document.tenantId)fail('native-execution-unconfirmed');return identity.scope.projectId;}}
+  return null;
+ };
+ for(const row of snapshot.tasks){
+  const document=JSON.parse(String(row.document)) as G5Task;id(document.tenantId);
+  if(document.tenantId!==scope.tenantId)continue;
+  const projectId=project(row);if(projectId!==null&&projectId!==scope.projectId)continue;
+  if(!['project','turn','group','simulation','service'].includes(document.kind)||row.start_at===undefined||![0,1].includes(Number(row.start_confirmed)))fail('native-execution-unconfirmed');
+  if(row.start_at!==null&&(typeof row.start_at!=='number'||!Number.isSafeInteger(row.start_at)||row.start_at<1||row.start_confirmed!==1)){unconfirmedStarts++;if(projectId===null)ambiguousStarts++;}
+ }
+ return {scope,quiescent:unconfirmedStarts===0,unconfirmedStarts,ambiguousStarts};
 }

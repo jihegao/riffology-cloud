@@ -20,6 +20,15 @@ historical isolation manifests or billing. Every started historical Turn must
 have released native resources; a warm handoff requires its exact persisted
 physical lease to be released. Missing authority stays blocked.
 
+The original TenantQuota is read directly without initializing or upgrading its
+ledger. Any held, dispatched or unknown workspace/simulation/service lease for
+the project, including an orphan lease or earlier generation, blocks archival.
+Original G5 native grants are also read without opening a window. Unconfirmed
+grants correlated to the project block it; a grant whose project cannot be
+proved conservatively blocks its own tenant. A proved different project retains
+its isolation and does not block this archive. These checks never stop, release,
+expire or rewrite historical execution and fee records.
+
 Browser package reads on archived projects skip build rearming. New Sessions,
 Turns, Runs, Services, Verify, publication freezes, evidence edits and callbacks
 are denied by the same fence. Public history and read-only export remain
@@ -33,7 +42,8 @@ Wrangler deployment migration workflow before deploying its Gateway/Workspace
 bundle. Do not issue SQL metadata patches. The Gateway needs no new binding.
 Deploy the updated ServiceRun class (read-only release proof) and
 PrivateBetaCapacity, TenantModelBudget, G5TenantModelBudget and PiDeveloperBudget
-classes (read-only scope proofs) with the Gateway.
+classes (read-only scope proofs), plus TenantQuota and G5ControlledWindow
+(read-only original native-resource proofs) with the Gateway.
 
 Owner requests use a fresh `Idempotency-Key`, an origin-validated authenticated
 session and body `{}`:
