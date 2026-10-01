@@ -188,6 +188,10 @@ test('standing Beta real SQLite/D1: invite scopes, cross-project contention, res
   await cap('setCostForTest',savedCost.key,savedCost.cost);
   // Explicit Run admission shares the policy pin, identity, pause and isolation.
   assert.equal((await cap('authorizeRunAdmission',scope('bob',2),actor('bob'))).quotaMode,'meter-only');
+  // The original legacy unknown cannot gain authority via a fresh Cloud Run
+  // project, although the new Beta and Runs ledgers themselves are quiet.
+  await assert.rejects(cap('authorizeRunAdmission',scope('carol',2),actor('carol')),/execution-unconfirmed/);
+  await assert.rejects(accept('carol',2),/execution-unconfirmed/);
   db=await mf.getD1Database('CATALOG','beta-test');await db.prepare("UPDATE catalog_users SET status='revoked' WHERE id='alice'").run();
   await assert.rejects(cap('authorizeTurn',meterAdmission.scope,meterAdmission.actor,meterTurn),/admission-denied/);
   await db.prepare("UPDATE catalog_users SET status='active' WHERE id='alice'").run();

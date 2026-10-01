@@ -161,8 +161,10 @@ valid window, matching original pin and an unpaused Beta pool. It rejects global
 quarantine or reserved/dispatched/unknown model execution; credible terminal
 billing-pending records alone do not block it. Runs must call this guard at
 admission and immediately before native start, retain their own concurrency,
-per-run duration and group-size bounds, and verify original legacy/G5 execution
-isolation. It does not reserve or release a Pi slot and does not open M3/M4 gates
+per-run duration and group-size bounds. The shared guard itself verifies original
+legacy/G5 execution isolation against the same authorities and frozen exact proofs
+as Pi; absent proofs require execution-quiet original ledgers. A fresh Run project
+cannot bypass an old unknown in either ledger. It does not reserve or release a Pi slot and does not open M3/M4 gates
 by itself. Runs rollout and real execution remain separate acceptance under #136.
 
 Local evidence: strict v1/v2 parsing; real Workerd/SQLite migration with rollback

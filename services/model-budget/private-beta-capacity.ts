@@ -1,6 +1,6 @@
 import {DurableObject} from 'cloudflare:workers';
 import {privateBetaReleaseDeadline} from './private-beta-release.ts';
-import {privateBetaPolicy,privateBetaPolicyGates,authorizePrivateBeta,PRIVATE_BETA_CAPACITY_ACTOR,type PrivateBetaPolicy} from './private-beta-policy.ts';
+import {privateBetaPolicy,privateBetaPolicyGates,assertPrivateBetaHistoricalIsolation,authorizePrivateBeta,PRIVATE_BETA_CAPACITY_ACTOR,type PrivateBetaPolicy,type PrivateBetaHistoricalLedger} from './private-beta-policy.ts';
 import {turnDigest,turnId,type TurnScope,type TurnActor} from '../turn/protocol.ts';
 import {workspaceAgentName} from '../workspace/protocol.ts';
 import {modelCallRequest,modelBudgetCallKey,type ModelCallRequest,type ModelCallRecord,modelBudgetTenantName} from './core.ts';
@@ -17,6 +17,7 @@ type Slot={key:string;user_id:string;document:string;created_at:number;turn_id:s
 interface Env {
   PRIVATE_BETA_POLICY_JSON?:string; PRODUCTION_MODEL_PROFILE_JSON:string; CATALOG:D1Database;
   PRIVATE_BETA_CAPACITY:DurableObjectNamespace<PrivateBetaCapacity>;
+  TENANT_MODEL_BUDGET?:PrivateBetaHistoricalLedger;G5_TOKEN_BUDGET?:PrivateBetaHistoricalLedger;
   PI_DEVELOPER_BUDGET:{getByName(name:string):{privateBetaCall(identity:ModelCallRequest['identity'],callId:string):Promise<ModelCallRecord|null>}};
   WORKSPACE_AGENT:{getByName(name:string):{
     privateBetaReleaseState(input:Admission):Promise<{found:boolean;turnId:string|null;terminal:boolean;released:boolean;resourceWait:boolean;finishedAt:number|null;releaseGuard?:boolean;rejectedSession?:boolean;withdrawn?:boolean}>;
@@ -233,7 +234,10 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
    * their own resource admission. This method never reserves a Pi Turn slot. */
   authorizeRunAdmission(scope:TurnScope,actor:TurnActor){return this.#serial(async()=>{
     const p=this.#policy();if(p.schemaVersion!==2)throw Error('private-beta-meter-only-required');
-    await this.#assertPinned(p);await authorizePrivateBeta(this.env.CATALOG,scope,actor);this.#policy();
+    await this.#assertPinned(p);await authorizePrivateBeta(this.env.CATALOG,scope,actor);
+    await assertPrivateBetaHistoricalIsolation(p,scope.tenantId,this.env.TENANT_MODEL_BUDGET,this.env.G5_TOKEN_BUDGET);
+    // Original authority reads may await other actors; revoke/pause still wins.
+    await authorizePrivateBeta(this.env.CATALOG,scope,actor);this.#policy();
     if(this.#slots().some(s=>s.status==='quarantined')||this.ctx.storage.sql.exec("SELECT key FROM beta_calls WHERE status IN ('reserved','dispatched','unknown') LIMIT 1").toArray().length)throw Error('private-beta-execution-unconfirmed');
     return {quotaMode:p.quotaMode,policySha256:await turnDigest({...p,enabled:false})};
   });}

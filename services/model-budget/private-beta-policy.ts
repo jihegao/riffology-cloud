@@ -2,7 +2,7 @@ import {acceptedInvitationProjectAdmission} from '../catalog/project-admission.t
 import {catalogDatabase} from '../catalog/database.ts';
 import {ProjectCatalog} from '../catalog/projects.ts';
 import {sameScope, type TurnActor, type TurnScope} from '../turn/protocol.ts';
-import type {ModelExecutionIsolationManifest} from './core.ts';
+import {modelBudgetTenantName,type ModelExecutionIsolationManifest} from './core.ts';
 
 export const PRIVATE_BETA_CAPACITY_ACTOR = 'private-beta-capacity-v1';
 type PrivateBetaGates = {
@@ -65,4 +65,22 @@ export async function authorizePrivateBeta(db:D1Database,scope:TurnScope,actor:T
   if(!await acceptedInvitationProjectAdmission(database,'true',actor,scope.tenantId))throw Error('private-beta-admission-denied');
   const allowed=await new ProjectCatalog(database,new Set()).workspace(actor,scope.workspaceId);
   if(!sameScope(allowed,scope))throw Error('private-beta-admission-denied');
+}
+
+export type PrivateBetaHistoricalLedger={getByName(name:string):{
+  assertExecutionQuiet(tenantId:string):Promise<unknown>;
+  assertExecutionIsolated(tenantId:string,manifest:ModelExecutionIsolationManifest):Promise<unknown>;
+}};
+/** Reuse the original historical authorities, never a new project/window. An
+ * accepted immutable proof only isolates its exact original execution blocker;
+ * absent proofs still require the old ledger to be execution-quiet. */
+export async function assertPrivateBetaHistoricalIsolation(policy:PrivateBetaPolicy,tenantId:string,legacy:PrivateBetaHistoricalLedger|undefined,g5:PrivateBetaHistoricalLedger|undefined){
+  if(!legacy||!g5)throw Error('private-beta-historical-ledger-unavailable');
+  const entry=policy.historicalIsolation.find(h=>h.tenantId===tenantId);
+  for(const ledger of ['legacy','g5'] as const){
+    const manifest=entry?.manifests.find(m=>m.ledger===ledger)??{schemaVersion:1 as const,ledger,proofs:[]};
+    const authority=(ledger==='legacy'?legacy:g5).getByName(modelBudgetTenantName(tenantId));
+    if(manifest.proofs.length)await authority.assertExecutionIsolated(tenantId,manifest);
+    else await authority.assertExecutionQuiet(tenantId);
+  }
 }
