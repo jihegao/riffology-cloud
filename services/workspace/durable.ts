@@ -681,6 +681,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const model=await inspectModel(source,await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source),this.#simulationCanRun());
     if(this.#invitedRunCandidate()&&input.actor){try{await this.#authorizeInvitedRun(scope,input.actor);}catch(error){model.canRun=false;model.capabilityReason=error instanceof Error&&/^(invited-runs-|private-beta-)/.test(error.message)?error.message:'invited-runs-unavailable';}}
     if(this.#invitedRunCandidate())model.runLimits=this.#invitedRunsPolicy()!;
+    if(!this.#simulationCanRun()){model.canRun=false;if(this.#archiveFence.get())model.capabilityReason='project_archived';}
     this.#ready(scope);return model;
   }
   async submitExperiment(input:{scope:TurnScope;actor:TurnActor;key:string;body:ExperimentRequest}){
