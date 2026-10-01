@@ -5,7 +5,7 @@
       "runtimeVersion": "pyodide-314.0.6/v1",
       "adapterVersion": "riffology.model-run/v1",
       "pythonVersion": "3.14.2",
-      "assetSha256": "945ee1eea0d2799f37c5990cb6b40387a2958de05423a342a6daaa3a90e2b0df",
+      "assetSha256": "0120c8c54ad6806b8db2499c0e1d22f6a2fe821d2c42a60e4b70ee4029f962f1",
       "visualProtocol": "riffology.visual/v0.1",
       "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
       "dependencies": []
@@ -49,8 +49,8 @@
       },
       {
         "path": "delivery/worker.bundle.mjs",
-        "sha256": "775d1956a0696a5f26668b457a43097345ce165dfeba90a5a9e901982b7d594d",
-        "byteLength": 1653840
+        "sha256": "a8324250c1d0268eab9915ec62491ba9fce266b50d7069030507b7ef8bdf3a16",
+        "byteLength": 1654476
       },
       {
         "path": "runtime/canvas.mjs",
@@ -119,8 +119,8 @@
       },
       {
         "path": "source/model-spec.ts",
-        "sha256": "df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8",
-        "byteLength": 7670
+        "sha256": "b625401e119d9fd6c8188c204059fe8fdaf78a7ea5cb3e1e3517eef2b3d9c798",
+        "byteLength": 8464
       },
       {
         "path": "source/package-lock.json",
@@ -141,7 +141,7 @@
       "runtimeVersion": "pyodide-314.0.6/v1",
       "adapterVersion": "riffology.model-run/v1",
       "pythonVersion": "3.14.2",
-      "assetSha256": "14fff6dc40b06746af4484c17c888770639b76705ce42bcf249f927bbf04f385",
+      "assetSha256": "0f06754b97c574b123c5832d015eac9db80ba153e37648d435497c14ce671373",
       "visualProtocol": "riffology.visual/v0.1",
       "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
       "dependencies": [
@@ -393,8 +393,8 @@
       },
       {
         "path": "delivery/worker.bundle.mjs",
-        "sha256": "775d1956a0696a5f26668b457a43097345ce165dfeba90a5a9e901982b7d594d",
-        "byteLength": 1653840
+        "sha256": "a8324250c1d0268eab9915ec62491ba9fce266b50d7069030507b7ef8bdf3a16",
+        "byteLength": 1654476
       },
       {
         "path": "runtime/canvas.mjs",
@@ -463,8 +463,8 @@
       },
       {
         "path": "source/model-spec.ts",
-        "sha256": "df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8",
-        "byteLength": 7670
+        "sha256": "b625401e119d9fd6c8188c204059fe8fdaf78a7ea5cb3e1e3517eef2b3d9c798",
+        "byteLength": 8464
       },
       {
         "path": "source/package-lock.json",

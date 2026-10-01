@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "researchQuestion": "How does support duration affect sortie completion?",
+  "scope": "Synthetic aircraft B1 daily operations",
+  "entities": ["aircraft", "mission", "support job"],
+  "mechanisms": ["aircraft support before mission launch"],
+  "assumptions": ["synthetic B1 example from sim-engine-compiler 0.1.0"],
+  "parameters": {},
+  "metrics": {
+    "completed_sorties": {"unit": "count"},
+    "cancelled_sorties": {"unit": "count"}
+  },
+  "limitations": ["synthetic validation case, not an operational aircraft model"],
+  "execution": {
+    "kind": "compiler-v01",
+    "businessIr": "model/business-ir.json",
+    "bundle": "model/model.simpack"
+  }
+}

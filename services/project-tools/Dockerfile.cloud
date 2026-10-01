@@ -8,6 +8,24 @@ RUN useradd --create-home --uid 10001 --shell /usr/sbin/nologin project \
     && chmod 0755 /opt/riffology /var/lib/riffology \
     && chmod 0700 /var/lib/riffology/effects /var/lib/riffology/archives
 
+# Compiler authoring uses an independent, reproducible CPython toolchain. The
+# system Python remains reserved for the platform-owned Project Tools helpers.
+ADD --checksum=sha256:4eb8731e2dbc9644dca24e71a9e7615f7fb04720342ea65f3c30ea3a6a00b792 https://github.com/astral-sh/python-build-standalone/releases/download/20251217/cpython-3.14.2%2B20251217-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz /tmp/python-compiler.tar.gz
+ADD --checksum=sha256:7c5ae380240fd2238671160e4830956f8055830a8317edf5c05e495b3823cd88 https://files.pythonhosted.org/packages/48/72/920ed1224c94a8a5a69e6c1275ac7fe4eb911ba8feffddf469f1629d47f3/simpy-4.1.1-py3-none-any.whl /tmp/simpy-4.1.1-py3-none-any.whl
+COPY --chown=root:root --chmod=0444 vendor/sim_engine_compiler-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl /tmp/sim_engine_compiler-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl
+RUN test "$(uname -m)" = x86_64 \
+    && echo "e7bcd9271dd42106b78e87176e3485b290536f5291c0440872b814fc549858f7  /tmp/sim_engine_compiler-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl" | sha256sum -c - \
+    && mkdir -p /opt/riffology/python-compiler \
+    && tar -xzf /tmp/python-compiler.tar.gz --strip-components=1 -C /opt/riffology/python-compiler \
+    && /opt/riffology/python-compiler/bin/python3 -m pip install --no-cache-dir --no-deps --no-index \
+       /tmp/simpy-4.1.1-py3-none-any.whl \
+       /tmp/sim_engine_compiler-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl \
+    && /opt/riffology/python-compiler/bin/python3 -m pip check \
+    && /opt/riffology/python-compiler/bin/python3 -c "import simpy, sim_engine_compiler, sys; assert sys.version.split()[0] == '3.14.2'; assert simpy.__version__ == '4.1.1'" \
+    && /opt/riffology/python-compiler/bin/sim-engine --version \
+    && ln -s /opt/riffology/python-compiler/bin/sim-engine /usr/bin/sim-engine \
+    && rm /tmp/python-compiler.tar.gz /tmp/simpy-4.1.1-py3-none-any.whl /tmp/sim_engine_compiler-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl
+
 COPY --chown=root:root --chmod=0555 file_service.py /opt/riffology/file_service.py
 COPY --chown=root:root --chmod=0555 process_quiescence.py /opt/riffology/process_quiescence.py
 COPY --chown=root:root --chmod=0555 project_network_fence.py /opt/riffology/project_network_fence.py

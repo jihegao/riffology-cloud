@@ -2,20 +2,20 @@
 export const browserPreviewStaticIndex = {
   "schema": "riffology.browser-static-delivery/v3",
   "runtimeProfiles": [
-    "14fff6dc40b06746af4484c17c888770639b76705ce42bcf249f927bbf04f385",
+    "0120c8c54ad6806b8db2499c0e1d22f6a2fe821d2c42a60e4b70ee4029f962f1",
+    "0f06754b97c574b123c5832d015eac9db80ba153e37648d435497c14ce671373",
     "28cd56fae7755f8b100e00d96aed82dc11757e38733fd3f0a3d1efe28c7fbd4c",
     "64f7b7606d47dd508ee0046b08ac4720dbd9bff46790de58ad2b7e40a23e6520",
     "6b0c95c5700b9561172dce4fa3419ad7224cfbc2e5d8871366b27c16f854e94d",
-    "945ee1eea0d2799f37c5990cb6b40387a2958de05423a342a6daaa3a90e2b0df",
     "b5355cc5925224d224540792525cdefa0ae00deacc3d330608065f90c740eed2",
     "b6cb6c0e726d007c281f991eaea0d2aae415113328444de47c0681d85b553fd9",
     "ed19f7bd56866879a612a2018939630b275bc8b4b7becef2d68fbde27d2e8041"
   ],
   "delivery": {
     "hostModule": {
-      "url": "/browser-preview-assets/1ca24d025bf657d8f2d101c2830bd96dea5f1c9048bf03b66eb84ce9d8443455/host.bundle.mjs",
-      "sha256": "1ca24d025bf657d8f2d101c2830bd96dea5f1c9048bf03b66eb84ce9d8443455",
-      "byteLength": 52555
+      "url": "/browser-preview-assets/678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2/host.bundle.mjs",
+      "sha256": "678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2",
+      "byteLength": 53165
     },
     "rendererModule": {
       "url": "/browser-preview-assets/e640951bbc86715d41994d1b11f363ac60bf818cfabbf577770bad4bc8e4c23a/renderer.bundle.mjs",
@@ -37,11 +37,11 @@ export const browserPreviewStaticIndex = {
     }
   },
   "versions": {
-    "945ee1eea0d2799f37c5990cb6b40387a2958de05423a342a6daaa3a90e2b0df": {
+    "0120c8c54ad6806b8db2499c0e1d22f6a2fe821d2c42a60e4b70ee4029f962f1": {
       "hostModule": {
-        "url": "/browser-preview-assets/1ca24d025bf657d8f2d101c2830bd96dea5f1c9048bf03b66eb84ce9d8443455/host.bundle.mjs",
-        "sha256": "1ca24d025bf657d8f2d101c2830bd96dea5f1c9048bf03b66eb84ce9d8443455",
-        "byteLength": 52555
+        "url": "/browser-preview-assets/678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2/host.bundle.mjs",
+        "sha256": "678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2",
+        "byteLength": 53165
       },
       "rendererModule": {
         "url": "/browser-preview-assets/e640951bbc86715d41994d1b11f363ac60bf818cfabbf577770bad4bc8e4c23a/renderer.bundle.mjs",
@@ -62,11 +62,11 @@ export const browserPreviewStaticIndex = {
         "scriptSha256": "ebbb126a44583b8d619b7100eab233f3f0810acaaa232850826ad3621f78b3eb"
       }
     },
-    "14fff6dc40b06746af4484c17c888770639b76705ce42bcf249f927bbf04f385": {
+    "0f06754b97c574b123c5832d015eac9db80ba153e37648d435497c14ce671373": {
       "hostModule": {
-        "url": "/browser-preview-assets/1ca24d025bf657d8f2d101c2830bd96dea5f1c9048bf03b66eb84ce9d8443455/host.bundle.mjs",
-        "sha256": "1ca24d025bf657d8f2d101c2830bd96dea5f1c9048bf03b66eb84ce9d8443455",
-        "byteLength": 52555
+        "url": "/browser-preview-assets/678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2/host.bundle.mjs",
+        "sha256": "678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2",
+        "byteLength": 53165
       },
       "rendererModule": {
         "url": "/browser-preview-assets/e640951bbc86715d41994d1b11f363ac60bf818cfabbf577770bad4bc8e4c23a/renderer.bundle.mjs",
@@ -252,14 +252,6 @@ export const browserPreviewStaticIndex = {
       "kind": "app"
     },
     {
-      "url": "/browser-preview-assets/1ca24d025bf657d8f2d101c2830bd96dea5f1c9048bf03b66eb84ce9d8443455/host.bundle.mjs",
-      "file": "browser-preview-assets/1ca24d025bf657d8f2d101c2830bd96dea5f1c9048bf03b66eb84ce9d8443455/host.bundle.mjs",
-      "sha256": "1ca24d025bf657d8f2d101c2830bd96dea5f1c9048bf03b66eb84ce9d8443455",
-      "byteLength": 52555,
-      "contentType": "text/javascript",
-      "kind": "app"
-    },
-    {
       "url": "/browser-preview-assets/288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf/delivery/frame.bundle.mjs",
       "file": "browser-preview-assets/288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf/delivery/frame.bundle.mjs",
       "sha256": "288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf",
@@ -396,6 +388,14 @@ export const browserPreviewStaticIndex = {
       "kind": "app"
     },
     {
+      "url": "/browser-preview-assets/678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2/host.bundle.mjs",
+      "file": "browser-preview-assets/678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2/host.bundle.mjs",
+      "sha256": "678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2",
+      "byteLength": 53165,
+      "contentType": "text/javascript",
+      "kind": "app"
+    },
+    {
       "url": "/browser-preview-assets/69e3f6ccec3e14b465df60be577ca62f536251406b9a00cce019eac5252a2495/assets/pyodide.mjs",
       "file": "browser-preview-assets/69e3f6ccec3e14b465df60be577ca62f536251406b9a00cce019eac5252a2495/assets/pyodide.mjs",
       "sha256": "69e3f6ccec3e14b465df60be577ca62f536251406b9a00cce019eac5252a2495",
@@ -440,14 +440,6 @@ export const browserPreviewStaticIndex = {
       "file": "browser-preview-assets/70c5b218495d55cd610752b01dc3d9f593dfd720bec271b5bebe4d86b51ae3c0/assets/decorator-5.2.1-py3-none-any.whl",
       "sha256": "70c5b218495d55cd610752b01dc3d9f593dfd720bec271b5bebe4d86b51ae3c0",
       "byteLength": 9167,
-      "contentType": "application/octet-stream",
-      "kind": "app"
-    },
-    {
-      "url": "/browser-preview-assets/775d1956a0696a5f26668b457a43097345ce165dfeba90a5a9e901982b7d594d/delivery/worker.bundle.mjs",
-      "file": "browser-preview-assets/775d1956a0696a5f26668b457a43097345ce165dfeba90a5a9e901982b7d594d/delivery/worker.bundle.mjs",
-      "sha256": "775d1956a0696a5f26668b457a43097345ce165dfeba90a5a9e901982b7d594d",
-      "byteLength": 1653840,
       "contentType": "application/octet-stream",
       "kind": "app"
     },
@@ -572,6 +564,14 @@ export const browserPreviewStaticIndex = {
       "kind": "app"
     },
     {
+      "url": "/browser-preview-assets/a8324250c1d0268eab9915ec62491ba9fce266b50d7069030507b7ef8bdf3a16/delivery/worker.bundle.mjs",
+      "file": "browser-preview-assets/a8324250c1d0268eab9915ec62491ba9fce266b50d7069030507b7ef8bdf3a16/delivery/worker.bundle.mjs",
+      "sha256": "a8324250c1d0268eab9915ec62491ba9fce266b50d7069030507b7ef8bdf3a16",
+      "byteLength": 1654476,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
       "url": "/browser-preview-assets/a86cb7e6e748499e673303ba621ec011850ba9f3e7743f8e27162039ce5f47b5/source/package-lock.json",
       "file": "browser-preview-assets/a86cb7e6e748499e673303ba621ec011850ba9f3e7743f8e27162039ce5f47b5/source/package-lock.json",
       "sha256": "a86cb7e6e748499e673303ba621ec011850ba9f3e7743f8e27162039ce5f47b5",
@@ -592,6 +592,14 @@ export const browserPreviewStaticIndex = {
       "file": "browser-preview-assets/b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54/runtime/renderer.mjs",
       "sha256": "b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54",
       "byteLength": 3275,
+      "contentType": "application/octet-stream",
+      "kind": "app"
+    },
+    {
+      "url": "/browser-preview-assets/b625401e119d9fd6c8188c204059fe8fdaf78a7ea5cb3e1e3517eef2b3d9c798/source/model-spec.ts",
+      "file": "browser-preview-assets/b625401e119d9fd6c8188c204059fe8fdaf78a7ea5cb3e1e3517eef2b3d9c798/source/model-spec.ts",
+      "sha256": "b625401e119d9fd6c8188c204059fe8fdaf78a7ea5cb3e1e3517eef2b3d9c798",
+      "byteLength": 8464,
       "contentType": "application/octet-stream",
       "kind": "app"
     },
