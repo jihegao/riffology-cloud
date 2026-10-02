@@ -1,5 +1,59 @@
 # Current release readiness — 2026-10-02
 
+## 2026-10-02 #165 parameter drafts and real Cloud Runs acceptance
+
+[PR #166](https://github.com/jihegao/riffology-cloud/pull/166) and
+[PR #167](https://github.com/jihegao/riffology-cloud/pull/167) are merged; both final
+heads passed full GitHub CI. Gateway version
+`ca4a8598-a35c-4234-8140-14990e90af2d` is deployed at 100%, deployment
+`ef079f8a-c7bd-4796-aced-591893e6e7e8`, from merged source
+`6855c1ea1c7111340c973541ae6f2ad3910d054a`. Downloaded entry bytes match the
+reviewed build. All 2,672 tracked files in the deployment source mirror were
+compared with the merged tree; all 93 bindings, fixed actors, policy pins and runtime limits are
+preserved. Trusted Pi's original application is v11 at 100%, image
+`sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c`;
+the other 14 applications retain their configurations and images.
+
+Cold preparation now has its own persistent, bounded deadline before one native
+start. The real single Run took 32.675 seconds from capacity acquisition to
+dispatch, completed and released its original runtime without unknown or the
+former 15-second self-pause. This interval is acquisition-to-dispatch evidence,
+not an assertion that the model program was already running during preparation.
+Cancellation, revocation, kill switch, one-shot submission and original release
+fences remain; canceled failures retain their safe stage/code diagnostics.
+
+The ordinary invited owner used the original Fire Model and saved Revisions.
+Manual parameters survived refresh. A natural-language Pi request actually
+completed `project_set_experiment_parameters`; its identity-derived command and
+atomic receipt match the saved draft, with `executionSubmitted=false`. Preview,
+single Runs and Comparison fields filled automatically. A manual single-form
+override after Pi survived refresh; manual Comparison densities/seeds also
+survived refresh while the submitted group retained its frozen inputs. The new
+saved Revision's code/spec hashes remain unchanged. The old unaccepted single intent stayed frozen until its
+original-key observation received a trusted stale-Revision 409; native counts
+were unchanged. Both historical canceled comparison groups remain intact.
+
+The author ran Preview locally and stepped its animation; those results remain
+**local/unverified**. A new server single Run and one new comparison group used
+frozen source and independent server computation. The group has density 0.5/0.6,
+seeds 42/43 and four serial children; refresh and leaving/reentering through the
+project list continued the same group. Actual completion, metrics, artifact hashes and each original release confirmation are
+in the acceptance evidence linked below. No result is promoted from Preview.
+The same ordinary owner checked Model publication readiness: all 11 automated checks passed, including current
+baseline/comparison and reproducible export; human review is still required.
+
+[Acceptance evidence](evidence/releases/issue165-parameter-runs-acceptance-20261002.json)
+records deployments, ordinary identity scope, actual tool arguments/receipt,
+request trace, usage, Run results and release confirmations. Model usage is
+observed, not invoice settlement; native costs are not inferred as zero.
+Historical reservations and alerts remain. Invited Runs and Beta remain Open
+within their original review window; G5/M3/M4 remain closed. Temporary readers,
+tails and task-owned tunnels are removed after final authoritative readback.
+
+#165's acceptance conditions are satisfied within this scope. #136 stays **Acceptance/open** for the
+wider failure/cancellation/timeout/lost-receipt, isolation, second-identity and
+publication matrix; this one owner's success does not complete that matrix.
+
 ## 2026-10-02 user-authorized Invited Runs opening (#136)
 
 The user confirmed that the local Fire Model preview works and explicitly asked
