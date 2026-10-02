@@ -18,15 +18,16 @@ test('draft and original tool receipt survive ACK loss/restart; observe never re
  assert.equal(readParameterDraft(storage,{...version,revisionId:'new-identical-files'})!.draftId,'cmd-a');assert.equal(readParameterDraft(storage,{...version,filesSha256:'f'.repeat(64)}),null);
  await assert.rejects(parameterDraftEffect({...input,command:{...input.command,arguments:{...input.command.arguments,seed:43}}}),/tool-idempotency-conflict/);
 });
-for(const reason of ['scope','revoked','stale','range','group-limit','compiler'])test(`parameter draft rejects ${reason} before any draft mutation`,async t=>{
+for(const reason of ['scope','revoked','stale','range','undeclared-seed','group-limit','compiler'])test(`parameter draft rejects ${reason} before any draft mutation`,async t=>{
  const {storage,input}=setup(t);
  if(reason==='scope'){await assert.rejects(parameterDraftEffect({...input,scope:{...scope,projectId:'other-project'}}),/scope-denied/);return;}
  if(reason==='revoked')input.authorize=async()=>{throw Error('private-beta-admission-denied');};
  if(reason==='stale')input.command.arguments.revisionId='old-rev';
  if(reason==='range')input.command.arguments.parameters={density:2};
+ if(reason==='undeclared-seed')input.command.arguments.parameters={density:0.5,seed:42};
  if(reason==='group-limit')(input.command.arguments.comparison as {seeds:number[]}).seeds=[1,2,3,4,5];
  if(reason==='compiler')input.model=async()=>({...model,compiler:{} as NonNullable<ModelInspection['compiler']>});
- const receipt=await parameterDraftEffect(input);assert.equal(receipt.outcome,'failed');assert.equal(receipt.result!.executionSubmitted,false);assert.equal(readParameterDraft(storage,version),null);
+ const receipt=await parameterDraftEffect(input);assert.equal(receipt.outcome,'failed');if(reason==='undeclared-seed')assert.equal(receipt.errorCode,'simulation-input-invalid');assert.equal(receipt.result!.executionSubmitted,false);assert.equal(readParameterDraft(storage,version),null);
  assert.deepEqual(await parameterDraftEffect({...input,observeOnly:true}),receipt);
 });
 test('observe missing receipt remains absent; final authorization and current-model fence reject yielded changes',async t=>{
