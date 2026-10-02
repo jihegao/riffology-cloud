@@ -37,6 +37,7 @@ async function checkedPlan(model:Awaited<ReturnType<typeof readModel>>):Promise<
 export function modelVersion(plan:SimulationPlan){return {revisionId:plan.source.kind==='saved-turn'?plan.source.revision.revisionId:null,filesSha256:previewSourceFilesSha256(plan.source),specSha256:plan.specSha256};}
 
 export type ModelInspection = {
+ experimentDraft?:import('./parameter-draft.ts').ExperimentParameterDraft|null;
  version: {revisionId:string|null;filesSha256:string;specSha256:string}|null;
  spec: ModelSpec|null;
  reasonCode: string|null;

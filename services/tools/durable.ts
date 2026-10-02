@@ -29,7 +29,14 @@ type G5FixtureWorkspaceAuthority={identity:ReturnType<typeof turnRuntimeIdentity
 export class ToolBridgeAgent extends DurableObject<ToolBridgeEnv>{
   #ownedLedger:SqlToolLedger|null=null;
   get #ledger(){return this.#ownedLedger??=new SqlToolLedger(this.ctx.storage);}
-  get #dispatcher(){return new ToolDispatcher(this.#ledger,new ProjectSandboxFileEffects(this.env.M2_PROJECT_EFFECT_CAPABILITY_KEY,actorId=>getSandbox(this.env.PROJECT_SANDBOX,actorId,{sleepAfter:'5m'}),Date.now,this.env.WORKSPACE_AGENT?async(command,observeOnly)=>this.env.WORKSPACE_AGENT!.getByName(workspaceAgentName(command.scope.tenantId,command.scope.workspaceId)).prepareProjectTool({command,observeOnly}):undefined),new ToolArtifactMaterializer(this.env.TOOL_ARTIFACT_STORE.getByName(TOOL_ARTIFACT_STORE_ACTOR)));}
+  get #dispatcher(){
+    const files=new ProjectSandboxFileEffects(this.env.M2_PROJECT_EFFECT_CAPABILITY_KEY,actorId=>getSandbox(this.env.PROJECT_SANDBOX,actorId,{sleepAfter:'5m'}),Date.now,this.env.WORKSPACE_AGENT?async(command,observeOnly)=>this.env.WORKSPACE_AGENT!.getByName(workspaceAgentName(command.scope.tenantId,command.scope.workspaceId)).prepareProjectTool({command,observeOnly}):undefined);
+    const draft=(command:import('./protocol.ts').ToolCommand,effectId:string,observeOnly:boolean)=>{if(!this.env.WORKSPACE_AGENT)throw Error('parameter-draft-unavailable');return this.env.WORKSPACE_AGENT.getByName(workspaceAgentName(command.scope.tenantId,command.scope.workspaceId)).experimentParameterEffect({command,effectId,observeOnly});};
+    return new ToolDispatcher(this.#ledger,{
+      execute:input=>input.command.operation==='experiment_parameters'?draft(input.command,input.effectId,false):files.execute(input),
+      observe:input=>input.command.operation==='experiment_parameters'?draft(input.command,input.reference.effectId,true):files.observe(input),
+    },new ToolArtifactMaterializer(this.env.TOOL_ARTIFACT_STORE.getByName(TOOL_ARTIFACT_STORE_ACTOR)));
+  }
   async #settlementIdentity(value:unknown){const identity=turnRuntimeIdentity(value),name=await toolBridgeActorName(identity.scope,identity.turnId,identity.dispatchId);if(!this.env.TOOL_BRIDGE_AGENT.idFromName(name).equals(this.ctx.id))throw Error('tool-bridge-actor-scope-denied');return identity;}
   async nativeAttemptSnapshot(raw:unknown){
     const identity=await this.#settlementIdentity(raw);

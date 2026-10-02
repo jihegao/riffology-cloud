@@ -9,7 +9,7 @@ function record(command,overrides={}){return {schemaVersion:1,scope:command.scop
 function fixture(transform=(value)=>value,boundIdentity=identity){const sent=[];return {sent,bridge:createProductToolBridge(boundIdentity,{clock:()=>now,executionDeadlineAt:now+600000,fetchImpl:async(url,init)=>{const command=JSON.parse(init.body);sent.push({url:String(url),init,command});return Response.json(transform(record(command)));}})};}
 
 test('release exposes bounded project tools with closed argument schemas',()=>{
-  assert.deepEqual(productToolDefinitions.map(value=>value.name),['project_read','project_read_page','project_write','project_edit','project_list','project_search','project_install_preview_adapter','project_bash']);for(const definition of productToolDefinitions){assert.equal(definition.parameters.type,'object');assert.equal(definition.parameters.additionalProperties,false);assert.deepEqual(definition.parameters.required,Object.keys(definition.parameters.properties));}
+  assert.deepEqual(productToolDefinitions.map(value=>value.name),['project_read','project_read_page','project_write','project_edit','project_list','project_search','project_install_preview_adapter','project_set_experiment_parameters','project_bash']);for(const definition of productToolDefinitions){assert.equal(definition.parameters.type,'object');assert.equal(definition.parameters.additionalProperties,false);assert.deepEqual(definition.parameters.required,Object.keys(definition.parameters.properties));}
 });
 test('platform preview adapter tool sends only the pinned bytes as one scoped write',async()=>{
   const content='reviewed-adapter\n',sha256=await import('node:crypto').then(({createHash})=>createHash('sha256').update(content).digest('hex'));

@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 
 export const PRODUCT_TOOL_BRIDGE_URL='https://tool-bridge.riffology.internal/v1/tool';
-const ID=/^[A-Za-z0-9_-]{1,128}$/,TOOL_CALL_ID=/^[A-Za-z0-9_-]{1,128}(?:\|[A-Za-z0-9_-]{1,128})?$/,OPERATIONS=new Map([['project_read','read'],['project_read_page','read_page'],['project_write','write'],['project_edit','edit'],['project_list','list'],['project_search','search'],['project_install_preview_adapter','write'],['project_bash','bash']]),MAX_RESPONSE_BYTES=256*1024,encoder=new TextEncoder();
+const ID=/^[A-Za-z0-9_-]{1,128}$/,TOOL_CALL_ID=/^[A-Za-z0-9_-]{1,128}(?:\|[A-Za-z0-9_-]{1,128})?$/,OPERATIONS=new Map([['project_read','read'],['project_read_page','read_page'],['project_write','write'],['project_edit','edit'],['project_list','list'],['project_search','search'],['project_install_preview_adapter','write'],['project_bash','bash'],['project_set_experiment_parameters','experiment_parameters']]),MAX_RESPONSE_BYTES=256*1024,encoder=new TextEncoder();
 function fail(code){throw Error(code);}
 function exact(value,keys,code){if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype||Object.keys(value).length!==keys.length||keys.some(key=>!Object.hasOwn(value,key)))fail(code);}
 function id(value){if(typeof value!=='string'||!ID.test(value))fail('invalid-product-tool-bridge');return value;}
@@ -26,6 +26,7 @@ export const productToolDefinitions=Object.freeze([
   {name:'project_list',label:'List project files',description:'List entries below a project workspace path. Use an empty path for the root.',parameters:object({path:string})},
   {name:'project_search',label:'Search project files',description:'Search UTF-8 project files below a path.',parameters:object({path:string,query:string,maxResults:integer})},
   {name:'project_install_preview_adapter',label:'Install platform preview adapter',description:'Write the reviewed platform-owned model/run.py bytes required by Browser Preview. Takes no arguments and preserves model/model.py.',parameters:object({})},
+  {name:'project_set_experiment_parameters',label:'Set experiment parameters',description:'Set the current saved model parameter draft in Preview and Runs, without editing model code or starting an experiment. Read the saved Revision from research context first. parameters are validated overrides; comparison is null for single/preview, or the requested hypothesis, interventions and seeds.',parameters:object({revisionId:{anyOf:[string,{type:'null'}]},parameters:{type:'object',additionalProperties:{anyOf:[{type:'number'},string,{type:'boolean'}]}},seed:{type:'integer',minimum:0,maximum:4294967295},comparison:{anyOf:[{type:'null'},object({hypothesis:string,interventions:{type:'array',minItems:1,maxItems:3,items:object({label:string,parameters:{type:'object',additionalProperties:{anyOf:[{type:'number'},string,{type:'boolean'}]}}})},seeds:{type:'array',minItems:1,maxItems:8,items:{type:'integer',minimum:0,maximum:4294967295}}})]}})},
   {name:'project_bash',label:'Run project command',description:'Run a bounded shell script inside the isolated project workspace.',parameters:object({script:string,timeoutMs:integer})},
 ].map(value=>Object.freeze(value)));
 

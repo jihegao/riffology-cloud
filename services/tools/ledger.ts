@@ -1,7 +1,7 @@
 import {turnRuntimeIdentity,type TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
 import type { TurnScope } from '../turn/protocol.ts';
 import { jsonPayload, positive, sameScope, scope as validateScope, sha, turnDigest, turnId } from '../turn/protocol.ts';
-import { normalizeToolCommand, normalizeToolCommandIntent, toolCommandDigest, toolCommandIntentDigest, type ToolCommand, type ToolCommandIntent, type ToolOperation } from './protocol.ts';
+import { normalizeToolCommand, normalizeToolCommandIntent, toolOperation, toolCommandDigest, toolCommandIntentDigest, type ToolCommand, type ToolCommandIntent, type ToolOperation } from './protocol.ts';
 import { TOOL_LEDGER_SCHEMA } from './ledger-schema.ts';
 
 export type ToolCommandStatus='accepted'|'dispatched'|'unknown'|'completed'|'failed'|'cancelled';
@@ -65,7 +65,7 @@ export class SqlToolLedger{
       const command=row.command_json===null?null:normalizeToolCommand(JSON.parse(row.command_json as string));
       const result=row.result_json===null?null:jsonPayload(JSON.parse(row.result_json as string));
       const record:ToolCommandRecord={schemaVersion:1,scope,turnId:turnId(row.turn_id),dispatchId:turnId(row.dispatch_id),commandId:turnId(row.command_id),digest:sha(row.digest),deadlineAt:positive(row.deadline_at),operation:row.operation as ToolOperation,status,effectId:row.effect_id===null?null:turnId(row.effect_id),acceptedAt:positive(row.accepted_at),updatedAt:positive(row.updated_at),dispatchedAt:row.dispatched_at===null?null:positive(row.dispatched_at),unknownAt:row.unknown_at===null?null:positive(row.unknown_at),lastObservedAt:row.last_observed_at===null?null:positive(row.last_observed_at),finishedAt:row.finished_at===null?null:positive(row.finished_at),outcome:row.outcome as ToolCommandRecord['outcome'],errorCode:row.error_code===null?null:turnId(row.error_code),result,command};
-      if(!['read','read_page','write','edit','list','search','bash'].includes(record.operation)||record.updatedAt<record.acceptedAt)throw Error();
+      toolOperation(record.operation);if(record.updatedAt<record.acceptedAt)throw Error();
       if(command&&(command.commandId!==record.commandId||command.turnId!==record.turnId||command.dispatchId!==record.dispatchId||command.deadlineAt!==record.deadlineAt||command.operation!==record.operation||!sameScope(command.scope,scope)))throw Error();
       if(ACTIVE.has(status)!==(command!==null)||TERMINAL.has(status)!==(record.finishedAt!==null&&record.outcome===status&&result!==null))throw Error();
       if((status==='dispatched'||status==='unknown')&&!record.effectId)throw Error();
