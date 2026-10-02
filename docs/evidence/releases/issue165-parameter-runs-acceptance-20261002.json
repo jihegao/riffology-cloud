@@ -1,0 +1,1611 @@
+{
+  "schemaVersion": 1,
+  "releaseDate": "2026-10-02",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/165",
+  "authorization": {
+    "source": "Direct user request in current task",
+    "scope": "Fix, commit, merge, deploy and authenticated manual/Pi parameter E2E on original invited Fire model; existing policies and resource bounds",
+    "noUnknownRequestReplay": true
+  },
+  "source": {
+    "implementationPr": 166,
+    "head": "3a839e6478553726ba6e23ac55b23b01eff6c8ba",
+    "merged": "edb3aa305276d9b74bc0c7c15dd79a6df541a3da",
+    "ci": "https://github.com/jihegao/riffology-cloud/actions/runs/36956747028",
+    "followupPr": 167,
+    "followupHead": "481306ef53998dd1220cbca79dd3e97c1a2fe939",
+    "followupStatus": "Merged and deployed",
+    "followupMerged": "6855c1ea1c7111340c973541ae6f2ad3910d054a",
+    "followupCi": "https://github.com/jihegao/riffology-cloud/actions/runs/36959243761",
+    "all2672TrackedDeploymentSourceFilesExact": true
+  },
+  "deploymentV10": {
+    "observedAt": "2026-10-02T03:01:23.321070+00:00",
+    "gatewayVersion": "6f371a18-883b-444b-bfe0-01766954ace0",
+    "gatewayDeployment": "f98972a3-fef5-42cf-88e2-9fe9407726e7",
+    "entrypoint": "index.js",
+    "gatewaySha256": "c280d017e8e9a80fc09da481ed13199b25dc8a9fa9a13e66be384858979ffb18",
+    "workerBytesMatchDryRun": true,
+    "all93BindingsAndPoliciesPreserved": true,
+    "onlyTrustedPiApplicationChanged": true,
+    "trustedPiVersion": 10,
+    "trustedPiImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:15d0b9fda5296e7f187c5bad547a4fcb5dac9aca6fa2ede638a12f908d290ce4",
+    "webAssets": [
+      {
+        "path": "/app.js",
+        "sha256": "3f7775031b94c9d9c416c8ebe348bb2e19f7322be4a37d7ec4f870a6e881bf62",
+        "bytes": 81911
+      },
+      {
+        "path": "/simulation.js",
+        "sha256": "925a5f7d16a25605c855a8861517f609f0cc297efad7f85c3779ac85df39bf51",
+        "bytes": 19247
+      },
+      {
+        "path": "/comparison.js",
+        "sha256": "132bb7056ccf2db10e30a8d8fe8f09346044505ee31f4228ce534adfb4c33f96",
+        "bytes": 17724
+      },
+      {
+        "path": "/browser-preview.js",
+        "sha256": "16c4cd504997f3b0a2579a3e58d7721344846c8e4272524b19295caff3db0cc5",
+        "bytes": 23822
+      },
+      {
+        "path": "/i18n.js",
+        "sha256": "57108fac7ddfe3e21f03031843b98ad938a95f2c133fbf0e8baf0bdb8d4f0a63",
+        "bytes": 137049
+      }
+    ],
+    "allInstancesInactive": true
+  },
+  "piV10Rollout": {
+    "schemaVersion": 1,
+    "observedAt": "2026-10-02T02:59:03.257936+00:00",
+    "applicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+    "applicationVersion": 9,
+    "applicationImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue161-trusted-pi@sha256:2f0d2bb404a58f265ed413ef5a253b2ae36bc35f6108e00c290dfc45d7ef7413",
+    "rolloutId": "0c7cf0e8-0534-4c50-9771-77e1400040ec",
+    "status": "progressing",
+    "targetVersion": 10,
+    "targetImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:15d0b9fda5296e7f187c5bad547a4fcb5dac9aca6fa2ede638a12f908d290ce4",
+    "percentage": 100,
+    "versionDistribution": {
+      "target_version_instances": 1,
+      "current_version_instances": 0,
+      "target_version_percentage": 100
+    },
+    "activeInstances": 0,
+    "assignedInstances": 0,
+    "healthErrors": [],
+    "complete": false
+  },
+  "scope": {
+    "tenantId": "bb6742b4-3e8d-44ea-9284-5cd7848ecc20",
+    "projectId": "81424f92-23fb-40fd-8eb1-9c8ea45c690b",
+    "workspaceId": "3b5b6df0-a455-4568-9ee3-f04221bc5be8",
+    "workspaceGeneration": 1
+  },
+  "identityRange": {
+    "ordinaryInvitedOwner": true,
+    "authVersion": 2,
+    "platformRole": null,
+    "secondIdentityAcceptance": false
+  },
+  "manualPreview": {
+    "parameters": {
+      "width": 30,
+      "height": 20,
+      "density": 0.5,
+      "initial_fires": 1,
+      "steps": 100
+    },
+    "seed": 42,
+    "revisionId": "51270f97df2f4d14bd7318a679472ec9bcbf7e52a06cadec28e0b95ea1f8700b",
+    "packageId": "0ec9e093a75fed959f651cedcc0636537c8a65a4f728bff60de4e20f019ddf8b",
+    "refreshRestoredInput": true,
+    "localCompleted": true,
+    "stepChangedFrame": true,
+    "provenance": "local/unverified",
+    "actorObservedBefore": {
+      "runs": 1,
+      "dispatched": 1,
+      "released": 1,
+      "supervisedMs": 386262
+    },
+    "actorObservedAfter": {
+      "runs": 1,
+      "dispatched": 1,
+      "released": 1,
+      "supervisedMs": 386262
+    },
+    "nativeExperimentDispatchDelta": 0
+  },
+  "failedPiDraft": {
+    "identity": {
+      "scope": {
+        "tenantId": "bb6742b4-3e8d-44ea-9284-5cd7848ecc20",
+        "projectId": "81424f92-23fb-40fd-8eb1-9c8ea45c690b",
+        "workspaceId": "3b5b6df0-a455-4568-9ee3-f04221bc5be8",
+        "workspaceGeneration": 1
+      },
+      "sessionId": "d9c15368-e134-48ca-b30a-d7c396a97704",
+      "turnId": "48af966c-615a-4de6-8f66-61675f4de725",
+      "dispatchId": "f1929b2f-220d-46c1-9465-42b5df58762e",
+      "generation": 1
+    },
+    "status": "completed",
+    "persistenceOutcome": "saved",
+    "revision": "c2c19698d3f0f549d2436d62b0a0332dd30638e772ed0b0b25f754959eb25849",
+    "unchangedFilesSha256": "4ca85800d20837ab17ca60d7f9fd9c74cebf1b3319a6573b11960e5fa52a8a57",
+    "unchangedSpecSha256": "5049d4562421ef6adb8c80bfd63af96b0f7b0def59e65680375ced5234be6575",
+    "tool": "project_set_experiment_parameters",
+    "toolStatus": "failed",
+    "cause": "Undeclared random seed duplicated into baseline/intervention parameter overrides; server rejected without draft mutation",
+    "draftApplied": false,
+    "nativeDispatchDelta": 0,
+    "originalResourceDisposition": {
+      "status": "released",
+      "operationId": "1b6e536b-0264-4037-b59f-ae2379435e6b",
+      "leaseId": "b1e7150a-f1d8-4f1c-84b3-8a819c4bdcdb",
+      "turnId": "48af966c-615a-4de6-8f66-61675f4de725",
+      "dispatchId": "f1929b2f-220d-46c1-9465-42b5df58762e",
+      "generation": 1,
+      "proofId": "b1e7150a-f1d8-4f1c-84b3-8a819c4bdcdb",
+      "releasedAt": 1790910967914
+    },
+    "modelCalls": [
+      {
+        "callId": "call-0b2a1f6a56af0e6c9c6cd162bbaac99e9c824489da5670b8e001120a5f07",
+        "billingStatus": "observed",
+        "observedNanodollars": 4187900,
+        "invoiceVerified": false
+      },
+      {
+        "callId": "call-9bb71cc39913c638d5a7ae0fc2f9b892ceb1f48480caba658df23859bc20",
+        "billingStatus": "observed",
+        "observedNanodollars": 4233200,
+        "invoiceVerified": false
+      }
+    ],
+    "observedNanodollars": 8421100
+  },
+  "singleRun": {
+    "gatewayVersion": "6f371a18-883b-444b-bfe0-01766954ace0",
+    "record": {
+      "experimentId": "5a0d45e8-2bcd-44e3-8ccc-8692b88ec32b",
+      "runId": "5a0d45e8-2bcd-44e3-8ccc-8692b88ec32b",
+      "version": {
+        "revisionId": "c2c19698d3f0f549d2436d62b0a0332dd30638e772ed0b0b25f754959eb25849",
+        "filesSha256": "4ca85800d20837ab17ca60d7f9fd9c74cebf1b3319a6573b11960e5fa52a8a57",
+        "specSha256": "5049d4562421ef6adb8c80bfd63af96b0f7b0def59e65680375ced5234be6575"
+      },
+      "parameters": {
+        "width": 30,
+        "height": 20,
+        "density": 0.5,
+        "initial_fires": 1,
+        "steps": 100
+      },
+      "seed": 42,
+      "status": "completed",
+      "createdAt": 1790911006720,
+      "updatedAt": 1790911426598,
+      "errorCode": null,
+      "failure": null,
+      "result": {
+        "metrics": {
+          "burned_trees": 37,
+          "burning_trees": 0,
+          "empty_tiles": 304,
+          "healthy_trees": 259
+        },
+        "artifactSha256": "e120765447ffefb0797777f4ece2476a7fdc42ee0c4f9ea7a850718c22aa31c3",
+        "outputs": [
+          {
+            "path": "summary.json",
+            "sha256": "9a9ccb4bb7eb1b75f19d963fafa5c342539f31a0054e74049ad57344073b2174",
+            "size": 240,
+            "mediaType": "application/json"
+          },
+          {
+            "path": "trace-audit.json",
+            "sha256": "e9686cbb2800d55a71b8d2822d3c04a4bf33a42fc2db179400021f6f570808ad",
+            "size": 522,
+            "mediaType": "application/json"
+          }
+        ]
+      },
+      "released": true,
+      "releasePending": false,
+      "stale": false,
+      "evidenceRejection": null
+    },
+    "originalLease": {
+      "tenantId": "bb6742b4-3e8d-44ea-9284-5cd7848ecc20",
+      "projectId": "81424f92-23fb-40fd-8eb1-9c8ea45c690b",
+      "workspaceId": "3b5b6df0-a455-4568-9ee3-f04221bc5be8",
+      "generation": 1,
+      "operation": "simulation-run",
+      "operationId": "sim-5a0d45e8-2bcd-44e3-8ccc-8692b88ec32b-0",
+      "runId": "5a0d45e8-2bcd-44e3-8ccc-8692b88ec32b",
+      "deadlineAt": 1790911606720,
+      "leaseId": "69d68c86-b8c3-4c99-ae5a-985051e8e8db",
+      "status": "stopped",
+      "acquiredAt": 1790911020869,
+      "dispatchedAt": 1790911053544,
+      "unknownAt": null,
+      "stoppedAt": 1790911426579,
+      "confirmation": {
+        "kind": "runtime-stopped",
+        "confirmationId": "bab1399dc430463b82cb35675383b64e131a3cbf598ea35a2b3e3ad794b6a1a5",
+        "observedAt": 1790911426478
+      },
+      "expired": false
+    },
+    "acquireToDispatchMs": 32675,
+    "noUnknown": true,
+    "releaseStatus": "confirmed",
+    "observedAt": "2026-10-02T03:24:49.712Z",
+    "globalOccupiedAfter": 0,
+    "globalUnknownAfter": 0
+  },
+  "pending": [],
+  "limitsPreserved": {
+    "userAndGlobalRunConcurrency": 1,
+    "durationMs": 600000,
+    "maxGroupRuns": 8,
+    "releaseGuardMs": 360000,
+    "quietMs": 30000,
+    "confirmationGraceMs": 120000,
+    "globalKillSwitchRetained": true,
+    "autoProviderRetryOrFallback": false,
+    "legacyG5M3M4Open": false
+  },
+  "limitations": [
+    "Browser Preview is local/unverified",
+    "This is one ordinary invited identity; wider #136 isolation/failure/second-identity matrix remains pending",
+    "Observed model usage is not invoice settlement; native container invoice costs are not inferred as zero",
+    "Two seeds validate the product flow and deterministic repeat; they do not establish a density effect or critical threshold"
+  ],
+  "piSeedImageSourceProof": {
+    "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+    "sourceHead": "481306ef53998dd1220cbca79dd3e97c1a2fe939",
+    "baseImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:15d0b9fda5296e7f187c5bad547a4fcb5dac9aca6fa2ede638a12f908d290ce4",
+    "buildNetwork": "none",
+    "proofNetwork": "none",
+    "readOnlyProof": true,
+    "copies": [
+      {
+        "path": "/opt/riffology/trusted-pi/release-candidate.mjs",
+        "sha256": "474d883823f7fb8d48fff5f7d322b80482856e70222bbd838886ecfcaa28ee78"
+      },
+      {
+        "path": "/opt/riffology/trusted-pi/trusted-pi-release.mjs",
+        "sha256": "474d883823f7fb8d48fff5f7d322b80482856e70222bbd838886ecfcaa28ee78"
+      },
+      {
+        "path": "/opt/riffology/trusted-pi/product-tool-bridge.mjs",
+        "sha256": "e536e9231a7fa41be956e3066535a62b7de460b37a4e5a40937c67d9f5981e74"
+      }
+    ]
+  },
+  "deploymentV11": {
+    "observedAt": "2026-10-02T03:34:07.503130+00:00",
+    "gatewayVersion": "ca4a8598-a35c-4234-8140-14990e90af2d",
+    "gatewayDeployment": "ef079f8a-c7bd-4796-aced-591893e6e7e8",
+    "entrypoint": "index.js",
+    "gatewaySha256": "5c33908489385ef7941780c7503bdb24f8e8bd4b8b6bfffe3eaf740d5226c59d",
+    "workerBytesMatchDryRun": true,
+    "all93BindingsAndPoliciesPreserved": true,
+    "onlyTrustedPiApplicationChanged": true,
+    "trustedPiVersion": 11,
+    "trustedPiImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+    "webAssets": [
+      {
+        "path": "/app.js",
+        "sha256": "3f7775031b94c9d9c416c8ebe348bb2e19f7322be4a37d7ec4f870a6e881bf62",
+        "bytes": 81911
+      },
+      {
+        "path": "/simulation.js",
+        "sha256": "925a5f7d16a25605c855a8861517f609f0cc297efad7f85c3779ac85df39bf51",
+        "bytes": 19247
+      },
+      {
+        "path": "/comparison.js",
+        "sha256": "132bb7056ccf2db10e30a8d8fe8f09346044505ee31f4228ce534adfb4c33f96",
+        "bytes": 17724
+      },
+      {
+        "path": "/browser-preview.js",
+        "sha256": "16c4cd504997f3b0a2579a3e58d7721344846c8e4272524b19295caff3db0cc5",
+        "bytes": 23822
+      },
+      {
+        "path": "/i18n.js",
+        "sha256": "57108fac7ddfe3e21f03031843b98ad938a95f2c133fbf0e8baf0bdb8d4f0a63",
+        "bytes": 137049
+      }
+    ],
+    "allInstancesInactive": true
+  },
+  "piV11Rollout": {
+    "schemaVersion": 1,
+    "observedAt": "2026-10-02T03:33:39.754240+00:00",
+    "applicationId": "a03628c4-f032-461f-a65b-612ccac11a06",
+    "applicationVersion": 11,
+    "applicationImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+    "rolloutId": "e6da2870-7da9-42e5-9cac-e37ed34208eb",
+    "status": "completed",
+    "targetVersion": 11,
+    "targetImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+    "percentage": 100,
+    "versionDistribution": {
+      "target_version_instances": 1,
+      "current_version_instances": 0,
+      "target_version_percentage": 100
+    },
+    "activeInstances": 0,
+    "assignedInstances": 0,
+    "healthErrors": [],
+    "complete": true
+  },
+  "successfulPiDraft": {
+    "gatewayVersion": "ca4a8598-a35c-4234-8140-14990e90af2d",
+    "trustedPiVersion": 11,
+    "identity": {
+      "scope": {
+        "tenantId": "bb6742b4-3e8d-44ea-9284-5cd7848ecc20",
+        "projectId": "81424f92-23fb-40fd-8eb1-9c8ea45c690b",
+        "workspaceId": "3b5b6df0-a455-4568-9ee3-f04221bc5be8",
+        "workspaceGeneration": 1
+      },
+      "sessionId": "d9c15368-e134-48ca-b30a-d7c396a97704",
+      "turnId": "6605e161-8810-48de-bd21-147ec57b9946",
+      "dispatchId": "dd57e282-9328-4e39-8873-4d8ab854ee51",
+      "generation": 1
+    },
+    "status": "completed",
+    "persistenceOutcome": "saved",
+    "savedRevision": "ebcb8b53b5032127310355a4dedce3e32159b1985a464b8516f86ae4da264f3d",
+    "filesSha256": "4ca85800d20837ab17ca60d7f9fd9c74cebf1b3319a6573b11960e5fa52a8a57",
+    "specSha256": "5049d4562421ef6adb8c80bfd63af96b0f7b0def59e65680375ced5234be6575",
+    "tool": "project_set_experiment_parameters",
+    "toolArguments": {
+      "revisionId": "c2c19698d3f0f549d2436d62b0a0332dd30638e772ed0b0b25f754959eb25849",
+      "parameters": {
+        "width": 30,
+        "height": 20,
+        "density": 0.5,
+        "initial_fires": 1,
+        "steps": 100
+      },
+      "seed": 42,
+      "comparison": {
+        "hypothesis": "密度 0.6 相较 0.5 是否增加燃烧树木数",
+        "interventions": [
+          {
+            "label": "密度 0.6",
+            "parameters": {
+              "width": 30,
+              "height": 20,
+              "density": 0.6,
+              "initial_fires": 1,
+              "steps": 100
+            }
+          }
+        ],
+        "seeds": [
+          42,
+          43
+        ]
+      }
+    },
+    "toolResult": {
+      "draft": {
+        "draftId": "cmd-86b1387eec3fcd9a1e811aa20eed10b4c70598d2cfd586b5ded155188073",
+        "version": {
+          "revisionId": "c2c19698d3f0f549d2436d62b0a0332dd30638e772ed0b0b25f754959eb25849",
+          "filesSha256": "4ca85800d20837ab17ca60d7f9fd9c74cebf1b3319a6573b11960e5fa52a8a57",
+          "specSha256": "5049d4562421ef6adb8c80bfd63af96b0f7b0def59e65680375ced5234be6575"
+        },
+        "parameters": {
+          "width": 30,
+          "height": 20,
+          "density": 0.5,
+          "initial_fires": 1,
+          "steps": 100
+        },
+        "seed": 42,
+        "comparison": {
+          "revisionId": "c2c19698d3f0f549d2436d62b0a0332dd30638e772ed0b0b25f754959eb25849",
+          "filesSha256": "4ca85800d20837ab17ca60d7f9fd9c74cebf1b3319a6573b11960e5fa52a8a57",
+          "specSha256": "5049d4562421ef6adb8c80bfd63af96b0f7b0def59e65680375ced5234be6575",
+          "hypothesis": "密度 0.6 相较 0.5 是否增加燃烧树木数",
+          "baseline": {
+            "label": "Baseline",
+            "parameters": {
+              "width": 30,
+              "height": 20,
+              "density": 0.5,
+              "initial_fires": 1,
+              "steps": 100
+            }
+          },
+          "interventions": [
+            {
+              "label": "密度 0.6",
+              "parameters": {
+                "width": 30,
+                "height": 20,
+                "density": 0.6,
+                "initial_fires": 1,
+                "steps": 100
+              }
+            }
+          ],
+          "seeds": [
+            42,
+            43
+          ]
+        },
+        "updatedAt": 1790912228208
+      },
+      "executionSubmitted": false
+    },
+    "originalCommandIdDerivedAndMatched": true,
+    "toolStatus": "completed",
+    "originalResourceDisposition": {
+      "status": "released",
+      "operationId": "0bbd3be0-b045-4ec5-9f17-f78adbdf0294",
+      "leaseId": "a3285dc0-d278-4867-b68f-786c2c7db1ba",
+      "turnId": "6605e161-8810-48de-bd21-147ec57b9946",
+      "dispatchId": "dd57e282-9328-4e39-8873-4d8ab854ee51",
+      "generation": 1,
+      "proofId": "a3285dc0-d278-4867-b68f-786c2c7db1ba",
+      "releasedAt": 1790912615631
+    },
+    "releaseJournal": {
+      "schemaVersion": 1,
+      "status": "completed",
+      "persistenceOutcome": "saved",
+      "active": false,
+      "releaseHold": null,
+      "recoveryHold": null
+    },
+    "observedAt": "2026-10-02T03:46:43.045Z",
+    "modelCalls": 2,
+    "observedNanodollars": 9219300,
+    "billingStatus": "observed",
+    "invoiceVerified": false,
+    "nativeExperimentObservedBefore": {
+      "runs": 2,
+      "dispatched": 2,
+      "released": 2,
+      "supervisedMs": 759297
+    },
+    "nativeDispatchDelta": 0,
+    "codeAndModelSpecUnchanged": true
+  },
+  "draftUiAcceptance": {
+    "agentDraftId": "cmd-86b1387eec3fcd9a1e811aa20eed10b4c70598d2cfd586b5ded155188073",
+    "singleAutomaticFields": {
+      "parameters": {
+        "width": 30,
+        "height": 20,
+        "density": 0.5,
+        "initial_fires": 1,
+        "steps": 100
+      },
+      "seed": 42
+    },
+    "singleManualOverrideAfterAgent": {
+      "parameters": {
+        "width": 30,
+        "height": 20,
+        "density": 0.55,
+        "initial_fires": 2,
+        "steps": 100
+      },
+      "seed": 44,
+      "refreshRestored": true,
+      "restoredToAgentValuesAfterVerification": true
+    },
+    "comparisonAutomaticFields": {
+      "revisionId": "c2c19698d3f0f549d2436d62b0a0332dd30638e772ed0b0b25f754959eb25849",
+      "filesSha256": "4ca85800d20837ab17ca60d7f9fd9c74cebf1b3319a6573b11960e5fa52a8a57",
+      "specSha256": "5049d4562421ef6adb8c80bfd63af96b0f7b0def59e65680375ced5234be6575",
+      "hypothesis": "密度 0.6 相较 0.5 是否增加燃烧树木数",
+      "baseline": {
+        "label": "Baseline",
+        "parameters": {
+          "width": 30,
+          "height": 20,
+          "density": 0.5,
+          "initial_fires": 1,
+          "steps": 100
+        }
+      },
+      "interventions": [
+        {
+          "label": "密度 0.6",
+          "parameters": {
+            "width": 30,
+            "height": 20,
+            "density": 0.6,
+            "initial_fires": 1,
+            "steps": 100
+          }
+        }
+      ],
+      "seeds": [
+        42,
+        43
+      ]
+    },
+    "comparisonRefreshRestored": true,
+    "previewAutomaticFields": {
+      "parameters": {
+        "width": 30,
+        "height": 20,
+        "density": 0.5,
+        "initial_fires": 1,
+        "steps": 100
+      },
+      "seed": 42,
+      "revisionId": "ebcb8b53b5032127310355a4dedce3e32159b1985a464b8516f86ae4da264f3d",
+      "packageId": "bcbdeb9157d3fdb3d36db2d48ade674aca21fa63729a7d5e0f9dabb0de093d74",
+      "localCompleted": true,
+      "frameMetricsBeforeStep": {
+        "healthy_trees": 295,
+        "burning_trees": 1,
+        "burned_trees": 0,
+        "empty_tiles": 304
+      },
+      "frameMetricsAfterStep": {
+        "healthy_trees": 292,
+        "burning_trees": 3,
+        "burned_trees": 1,
+        "empty_tiles": 304
+      },
+      "provenance": "local/unverified"
+    },
+    "comparisonManualOverrideAfterAgent": {
+      "baselineDensity": 0.52,
+      "interventionDensity": 0.62,
+      "seeds": [
+        44,
+        45
+      ],
+      "refreshRestored": true,
+      "submittedGroupInputUnchanged": true,
+      "restoredToAgentValuesAfterVerification": true,
+      "additionalSubmission": false
+    }
+  },
+  "oldUnacceptedSingleIntent": {
+    "revisionId": "51270f97df2f4d14bd7318a679472ec9bcbf7e52a06cadec28e0b95ea1f8700b",
+    "parameters": {
+      "width": 30,
+      "height": 20,
+      "density": 0.7,
+      "initial_fires": 3,
+      "steps": 100
+    },
+    "seed": 42,
+    "originalKeyObservedOnce": true,
+    "authoritativeOriginalRunAbsentBeforeObservation": true,
+    "receipt": {
+      "at": 1790912427238,
+      "httpStatus": 409,
+      "code": "simulation-model-stale",
+      "gatewayVersion": "ca4a8598-a35c-4234-8140-14990e90af2d"
+    },
+    "nativeObservedBeforeAndAfter": {
+      "runs": 2,
+      "dispatched": 2,
+      "released": 2
+    },
+    "clearedOnlyAfterTrustedStaleReceipt": true,
+    "cancelledComparisonGroupsReplayed": false
+  },
+  "comparison": {
+    "gatewayVersion": "ca4a8598-a35c-4234-8140-14990e90af2d",
+    "groupId": "2514d689-9a62-48c1-96eb-5cb0663b375f",
+    "submissionCount": 1,
+    "ordinaryUiSubmission": true,
+    "refreshDuringExecutionRestoredOriginalGroup": true,
+    "pending": false,
+    "leaveAndReenterViaProjectListContinuedOriginalGroup": true,
+    "record": {
+      "groupId": "2514d689-9a62-48c1-96eb-5cb0663b375f",
+      "version": {
+        "revisionId": "ebcb8b53b5032127310355a4dedce3e32159b1985a464b8516f86ae4da264f3d",
+        "filesSha256": "4ca85800d20837ab17ca60d7f9fd9c74cebf1b3319a6573b11960e5fa52a8a57",
+        "specSha256": "5049d4562421ef6adb8c80bfd63af96b0f7b0def59e65680375ced5234be6575"
+      },
+      "hypothesis": "密度 0.6 相较 0.5 是否增加燃烧树木数",
+      "configurations": [
+        {
+          "label": "Baseline",
+          "parameters": {
+            "width": 30,
+            "height": 20,
+            "density": 0.5,
+            "initial_fires": 1,
+            "steps": 100
+          },
+          "configurationId": "baseline",
+          "role": "baseline"
+        },
+        {
+          "label": "密度 0.6",
+          "parameters": {
+            "width": 30,
+            "height": 20,
+            "density": 0.6,
+            "initial_fires": 1,
+            "steps": 100
+          },
+          "configurationId": "intervention-1",
+          "role": "intervention"
+        }
+      ],
+      "seeds": [
+        42,
+        43
+      ],
+      "repetitions": 2,
+      "metrics": {
+        "healthy_trees": {
+          "unit": "trees",
+          "description": "Trees that remain healthy in the final snapshot"
+        },
+        "burning_trees": {
+          "unit": "trees",
+          "description": "Trees burning in the final snapshot"
+        },
+        "burned_trees": {
+          "unit": "trees",
+          "description": "Trees that have burned in the final snapshot"
+        },
+        "empty_tiles": {
+          "unit": "tiles",
+          "description": "Tiles without trees"
+        }
+      },
+      "status": "completed",
+      "createdAt": 1790912823349,
+      "updatedAt": 1790914502827,
+      "cancelledAt": null,
+      "errorCode": null,
+      "stale": false,
+      "progress": {
+        "rejected": 0,
+        "total": 4,
+        "pending": 0,
+        "active": 0,
+        "completed": 4,
+        "failed": 0,
+        "cancelled": 0
+      },
+      "runs": [
+        {
+          "runId": "b33ed6f9-4301-4632-9587-c69ca999b2f4",
+          "configurationId": "baseline",
+          "seed": 42,
+          "status": "completed",
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "burned_trees": 37,
+              "burning_trees": 0,
+              "empty_tiles": 304,
+              "healthy_trees": 259
+            },
+            "artifactSha256": "e610bcf8711a9c1c88f3d6c9c6025e28910fc96feda126f7854802186bd39d2a",
+            "outputs": [
+              {
+                "path": "summary.json",
+                "sha256": "9a9ccb4bb7eb1b75f19d963fafa5c342539f31a0054e74049ad57344073b2174",
+                "size": 240,
+                "mediaType": "application/json"
+              },
+              {
+                "path": "trace-audit.json",
+                "sha256": "e9686cbb2800d55a71b8d2822d3c04a4bf33a42fc2db179400021f6f570808ad",
+                "size": 522,
+                "mediaType": "application/json"
+              }
+            ]
+          },
+          "released": true
+        },
+        {
+          "runId": "d48b734c-09a9-467f-aaae-66229410ba13",
+          "configurationId": "intervention-1",
+          "seed": 42,
+          "status": "completed",
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "burned_trees": 38,
+              "burning_trees": 0,
+              "empty_tiles": 249,
+              "healthy_trees": 313
+            },
+            "artifactSha256": "1e0abb7bba863453e7fd80f145723ea7931f087dee776fca22ea11cd840fb986",
+            "outputs": [
+              {
+                "path": "summary.json",
+                "sha256": "1e15e7fb9324ae56beaa3a62ec9b3d749b00c77981f59f59688abf78303ad6b3",
+                "size": 240,
+                "mediaType": "application/json"
+              },
+              {
+                "path": "trace-audit.json",
+                "sha256": "21c3d0c6b895968a16aa12684e5a265b0f726b5d5d136c606f88fc911baf4a3d",
+                "size": 368,
+                "mediaType": "application/json"
+              }
+            ]
+          },
+          "released": true
+        },
+        {
+          "runId": "482ab734-b665-498c-8581-d76ef6e6d37e",
+          "configurationId": "baseline",
+          "seed": 43,
+          "status": "completed",
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "burned_trees": 16,
+              "burning_trees": 0,
+              "empty_tiles": 291,
+              "healthy_trees": 293
+            },
+            "artifactSha256": "a27907a514771ae584f2fce385770fd0b37299f7185f90ef955e79ef188b9e7a",
+            "outputs": [
+              {
+                "path": "summary.json",
+                "sha256": "dfca31dadd29df46934ff381e29d7f8e69cfda50acf644c94eb9691a3119fe2f",
+                "size": 238,
+                "mediaType": "application/json"
+              },
+              {
+                "path": "trace-audit.json",
+                "sha256": "ce61fe626c7e0b1d3f4efda2fe39189813a72f6dfe8d44b0a75f0bec4a0130f7",
+                "size": 264,
+                "mediaType": "application/json"
+              }
+            ]
+          },
+          "released": true
+        },
+        {
+          "runId": "29ce6482-19f8-47ec-9b69-d3f8ee32881a",
+          "configurationId": "intervention-1",
+          "seed": 43,
+          "status": "completed",
+          "errorCode": null,
+          "result": {
+            "metrics": {
+              "burned_trees": 5,
+              "burning_trees": 0,
+              "empty_tiles": 231,
+              "healthy_trees": 364
+            },
+            "artifactSha256": "cc7900783063aed83604319e3d1689ddf676f1cfe904050e8587025154a0088e",
+            "outputs": [
+              {
+                "path": "summary.json",
+                "sha256": "3443eae9bfc00d279125997e0af8570950ba80e27f882c9abf4de8335e927ae4",
+                "size": 237,
+                "mediaType": "application/json"
+              },
+              {
+                "path": "trace-audit.json",
+                "sha256": "dcec2f95241e3e16df04ba27a8705dce5dc1a6f5520a92e3ae52bf7907b3f3ee",
+                "size": 184,
+                "mediaType": "application/json"
+              }
+            ]
+          },
+          "released": true
+        }
+      ],
+      "summary": [
+        {
+          "configurationId": "baseline",
+          "metrics": {
+            "healthy_trees": {
+              "count": 2,
+              "missing": 0,
+              "mean": 276,
+              "baselineMean": 276,
+              "delta": 0,
+              "errorCode": null
+            },
+            "burning_trees": {
+              "count": 2,
+              "missing": 0,
+              "mean": 0,
+              "baselineMean": 0,
+              "delta": 0,
+              "errorCode": null
+            },
+            "burned_trees": {
+              "count": 2,
+              "missing": 0,
+              "mean": 26.5,
+              "baselineMean": 26.5,
+              "delta": 0,
+              "errorCode": null
+            },
+            "empty_tiles": {
+              "count": 2,
+              "missing": 0,
+              "mean": 297.5,
+              "baselineMean": 297.5,
+              "delta": 0,
+              "errorCode": null
+            }
+          }
+        },
+        {
+          "configurationId": "intervention-1",
+          "metrics": {
+            "healthy_trees": {
+              "count": 2,
+              "missing": 0,
+              "mean": 338.5,
+              "baselineMean": 276,
+              "delta": 62.5,
+              "errorCode": null
+            },
+            "burning_trees": {
+              "count": 2,
+              "missing": 0,
+              "mean": 0,
+              "baselineMean": 0,
+              "delta": 0,
+              "errorCode": null
+            },
+            "burned_trees": {
+              "count": 2,
+              "missing": 0,
+              "mean": 21.5,
+              "baselineMean": 26.5,
+              "delta": -5,
+              "errorCode": null
+            },
+            "empty_tiles": {
+              "count": 2,
+              "missing": 0,
+              "mean": 240,
+              "baselineMean": 297.5,
+              "delta": -57.5,
+              "errorCode": null
+            }
+          }
+        }
+      ]
+    },
+    "childEvidence": [
+      {
+        "configurationId": "baseline",
+        "record": {
+          "experimentId": "2514d689-9a62-48c1-96eb-5cb0663b375f",
+          "runId": "b33ed6f9-4301-4632-9587-c69ca999b2f4",
+          "version": {
+            "revisionId": "ebcb8b53b5032127310355a4dedce3e32159b1985a464b8516f86ae4da264f3d",
+            "filesSha256": "4ca85800d20837ab17ca60d7f9fd9c74cebf1b3319a6573b11960e5fa52a8a57",
+            "specSha256": "5049d4562421ef6adb8c80bfd63af96b0f7b0def59e65680375ced5234be6575"
+          },
+          "parameters": {
+            "width": 30,
+            "height": 20,
+            "density": 0.5,
+            "initial_fires": 1,
+            "steps": 100
+          },
+          "seed": 42,
+          "status": "completed",
+          "createdAt": 1790912827731,
+          "updatedAt": 1790913244801,
+          "errorCode": null,
+          "failure": null,
+          "result": {
+            "metrics": {
+              "burned_trees": 37,
+              "burning_trees": 0,
+              "empty_tiles": 304,
+              "healthy_trees": 259
+            },
+            "artifactSha256": "e610bcf8711a9c1c88f3d6c9c6025e28910fc96feda126f7854802186bd39d2a",
+            "outputs": [
+              {
+                "path": "summary.json",
+                "sha256": "9a9ccb4bb7eb1b75f19d963fafa5c342539f31a0054e74049ad57344073b2174",
+                "size": 240,
+                "mediaType": "application/json"
+              },
+              {
+                "path": "trace-audit.json",
+                "sha256": "e9686cbb2800d55a71b8d2822d3c04a4bf33a42fc2db179400021f6f570808ad",
+                "size": 522,
+                "mediaType": "application/json"
+              }
+            ]
+          },
+          "released": true,
+          "releasePending": false,
+          "stale": false,
+          "evidenceRejection": null
+        },
+        "originalLease": {
+          "tenantId": "bb6742b4-3e8d-44ea-9284-5cd7848ecc20",
+          "projectId": "81424f92-23fb-40fd-8eb1-9c8ea45c690b",
+          "workspaceId": "3b5b6df0-a455-4568-9ee3-f04221bc5be8",
+          "generation": 1,
+          "operation": "simulation-run",
+          "operationId": "sim-b33ed6f9-4301-4632-9587-c69ca999b2f4-0",
+          "runId": "b33ed6f9-4301-4632-9587-c69ca999b2f4",
+          "deadlineAt": 1790913427731,
+          "leaseId": "84e9692e-15cb-409c-97b3-99e54367a823",
+          "status": "stopped",
+          "acquiredAt": 1790912839495,
+          "dispatchedAt": 1790912871872,
+          "unknownAt": null,
+          "stoppedAt": 1790913244797,
+          "confirmation": {
+            "kind": "runtime-stopped",
+            "confirmationId": "04e7a79fb1b353e43a9c092766a4c0043ebd99092b4765ffd9ab823a04f51bde",
+            "observedAt": 1790913244666
+          },
+          "expired": false
+        },
+        "acquireToDispatchMs": 32377
+      },
+      {
+        "configurationId": "intervention-1",
+        "record": {
+          "experimentId": "2514d689-9a62-48c1-96eb-5cb0663b375f",
+          "runId": "d48b734c-09a9-467f-aaae-66229410ba13",
+          "version": {
+            "revisionId": "ebcb8b53b5032127310355a4dedce3e32159b1985a464b8516f86ae4da264f3d",
+            "filesSha256": "4ca85800d20837ab17ca60d7f9fd9c74cebf1b3319a6573b11960e5fa52a8a57",
+            "specSha256": "5049d4562421ef6adb8c80bfd63af96b0f7b0def59e65680375ced5234be6575"
+          },
+          "parameters": {
+            "width": 30,
+            "height": 20,
+            "density": 0.6,
+            "initial_fires": 1,
+            "steps": 100
+          },
+          "seed": 42,
+          "status": "completed",
+          "createdAt": 1790913247329,
+          "updatedAt": 1790913668277,
+          "errorCode": null,
+          "failure": null,
+          "result": {
+            "metrics": {
+              "burned_trees": 38,
+              "burning_trees": 0,
+              "empty_tiles": 249,
+              "healthy_trees": 313
+            },
+            "artifactSha256": "1e0abb7bba863453e7fd80f145723ea7931f087dee776fca22ea11cd840fb986",
+            "outputs": [
+              {
+                "path": "summary.json",
+                "sha256": "1e15e7fb9324ae56beaa3a62ec9b3d749b00c77981f59f59688abf78303ad6b3",
+                "size": 240,
+                "mediaType": "application/json"
+              },
+              {
+                "path": "trace-audit.json",
+                "sha256": "21c3d0c6b895968a16aa12684e5a265b0f726b5d5d136c606f88fc911baf4a3d",
+                "size": 368,
+                "mediaType": "application/json"
+              }
+            ]
+          },
+          "released": true,
+          "releasePending": false,
+          "stale": false,
+          "evidenceRejection": null
+        },
+        "originalLease": {
+          "tenantId": "bb6742b4-3e8d-44ea-9284-5cd7848ecc20",
+          "projectId": "81424f92-23fb-40fd-8eb1-9c8ea45c690b",
+          "workspaceId": "3b5b6df0-a455-4568-9ee3-f04221bc5be8",
+          "generation": 1,
+          "operation": "simulation-run",
+          "operationId": "sim-d48b734c-09a9-467f-aaae-66229410ba13-0",
+          "runId": "d48b734c-09a9-467f-aaae-66229410ba13",
+          "deadlineAt": 1790913847329,
+          "leaseId": "fc9ca3e0-88de-4704-a500-5bd13ba40b25",
+          "status": "stopped",
+          "acquiredAt": 1790913258526,
+          "dispatchedAt": 1790913294963,
+          "unknownAt": null,
+          "stoppedAt": 1790913668289,
+          "confirmation": {
+            "kind": "runtime-stopped",
+            "confirmationId": "2c1e2edd69481ee3ddd6eea8c61aebb1c17b07845a3176511d38e2d990fe12e8",
+            "observedAt": 1790913668156
+          },
+          "expired": false
+        },
+        "acquireToDispatchMs": 36437
+      },
+      {
+        "configurationId": "baseline",
+        "record": {
+          "experimentId": "2514d689-9a62-48c1-96eb-5cb0663b375f",
+          "runId": "482ab734-b665-498c-8581-d76ef6e6d37e",
+          "version": {
+            "revisionId": "ebcb8b53b5032127310355a4dedce3e32159b1985a464b8516f86ae4da264f3d",
+            "filesSha256": "4ca85800d20837ab17ca60d7f9fd9c74cebf1b3319a6573b11960e5fa52a8a57",
+            "specSha256": "5049d4562421ef6adb8c80bfd63af96b0f7b0def59e65680375ced5234be6575"
+          },
+          "parameters": {
+            "width": 30,
+            "height": 20,
+            "density": 0.5,
+            "initial_fires": 1,
+            "steps": 100
+          },
+          "seed": 43,
+          "status": "completed",
+          "createdAt": 1790913670349,
+          "updatedAt": 1790914085437,
+          "errorCode": null,
+          "failure": null,
+          "result": {
+            "metrics": {
+              "burned_trees": 16,
+              "burning_trees": 0,
+              "empty_tiles": 291,
+              "healthy_trees": 293
+            },
+            "artifactSha256": "a27907a514771ae584f2fce385770fd0b37299f7185f90ef955e79ef188b9e7a",
+            "outputs": [
+              {
+                "path": "summary.json",
+                "sha256": "dfca31dadd29df46934ff381e29d7f8e69cfda50acf644c94eb9691a3119fe2f",
+                "size": 238,
+                "mediaType": "application/json"
+              },
+              {
+                "path": "trace-audit.json",
+                "sha256": "ce61fe626c7e0b1d3f4efda2fe39189813a72f6dfe8d44b0a75f0bec4a0130f7",
+                "size": 264,
+                "mediaType": "application/json"
+              }
+            ]
+          },
+          "released": true,
+          "releasePending": false,
+          "stale": false,
+          "evidenceRejection": null
+        },
+        "originalLease": {
+          "tenantId": "bb6742b4-3e8d-44ea-9284-5cd7848ecc20",
+          "projectId": "81424f92-23fb-40fd-8eb1-9c8ea45c690b",
+          "workspaceId": "3b5b6df0-a455-4568-9ee3-f04221bc5be8",
+          "generation": 1,
+          "operation": "simulation-run",
+          "operationId": "sim-482ab734-b665-498c-8581-d76ef6e6d37e-0",
+          "runId": "482ab734-b665-498c-8581-d76ef6e6d37e",
+          "deadlineAt": 1790914270349,
+          "leaseId": "705e32e1-907b-424e-8812-771b03350d19",
+          "status": "stopped",
+          "acquiredAt": 1790913681511,
+          "dispatchedAt": 1790913712751,
+          "unknownAt": null,
+          "stoppedAt": 1790914085430,
+          "confirmation": {
+            "kind": "runtime-stopped",
+            "confirmationId": "89f61dfdf59671f0ed89602ec168dfd50cefac05709e1dc939d98953625c5633",
+            "observedAt": 1790914085317
+          },
+          "expired": false
+        },
+        "acquireToDispatchMs": 31240
+      },
+      {
+        "configurationId": "intervention-1",
+        "record": {
+          "experimentId": "2514d689-9a62-48c1-96eb-5cb0663b375f",
+          "runId": "29ce6482-19f8-47ec-9b69-d3f8ee32881a",
+          "version": {
+            "revisionId": "ebcb8b53b5032127310355a4dedce3e32159b1985a464b8516f86ae4da264f3d",
+            "filesSha256": "4ca85800d20837ab17ca60d7f9fd9c74cebf1b3319a6573b11960e5fa52a8a57",
+            "specSha256": "5049d4562421ef6adb8c80bfd63af96b0f7b0def59e65680375ced5234be6575"
+          },
+          "parameters": {
+            "width": 30,
+            "height": 20,
+            "density": 0.6,
+            "initial_fires": 1,
+            "steps": 100
+          },
+          "seed": 43,
+          "status": "completed",
+          "createdAt": 1790914087945,
+          "updatedAt": 1790914502745,
+          "errorCode": null,
+          "failure": null,
+          "result": {
+            "metrics": {
+              "burned_trees": 5,
+              "burning_trees": 0,
+              "empty_tiles": 231,
+              "healthy_trees": 364
+            },
+            "artifactSha256": "cc7900783063aed83604319e3d1689ddf676f1cfe904050e8587025154a0088e",
+            "outputs": [
+              {
+                "path": "summary.json",
+                "sha256": "3443eae9bfc00d279125997e0af8570950ba80e27f882c9abf4de8335e927ae4",
+                "size": 237,
+                "mediaType": "application/json"
+              },
+              {
+                "path": "trace-audit.json",
+                "sha256": "dcec2f95241e3e16df04ba27a8705dce5dc1a6f5520a92e3ae52bf7907b3f3ee",
+                "size": 184,
+                "mediaType": "application/json"
+              }
+            ]
+          },
+          "released": true,
+          "releasePending": false,
+          "stale": false,
+          "evidenceRejection": null
+        },
+        "originalLease": {
+          "tenantId": "bb6742b4-3e8d-44ea-9284-5cd7848ecc20",
+          "projectId": "81424f92-23fb-40fd-8eb1-9c8ea45c690b",
+          "workspaceId": "3b5b6df0-a455-4568-9ee3-f04221bc5be8",
+          "generation": 1,
+          "operation": "simulation-run",
+          "operationId": "sim-29ce6482-19f8-47ec-9b69-d3f8ee32881a-0",
+          "runId": "29ce6482-19f8-47ec-9b69-d3f8ee32881a",
+          "deadlineAt": 1790914687945,
+          "leaseId": "7f2b0f35-fb3b-411d-951a-46c6c19d18d9",
+          "status": "stopped",
+          "acquiredAt": 1790914099397,
+          "dispatchedAt": 1790914130947,
+          "unknownAt": null,
+          "stoppedAt": 1790914502730,
+          "confirmation": {
+            "kind": "runtime-stopped",
+            "confirmationId": "48d69b0ff2de959f8a8b72313b5ed97f686e3f73259e877045fc899c55408765",
+            "observedAt": 1790914502622
+          },
+          "expired": false
+        },
+        "acquireToDispatchMs": 31550
+      }
+    ],
+    "allOriginalResourcesReleased": true,
+    "everyNextChildAcquiredAfterPreviousOriginalStop": true,
+    "aggregatesRecalculatedFromActualResults": true,
+    "observedAt": "2026-10-02T04:18:02.028Z"
+  },
+  "publicationReadiness": {
+    "recordedAfterUiAt": "2026-10-02T04:17:33.853868+00:00",
+    "ordinaryInvitedOwnerUi": true,
+    "revisionId": "ebcb8b53b5032127310355a4dedce3e32159b1985a464b8516f86ae4da264f3d",
+    "allAutomatedChecksPassed": true,
+    "checks": [
+      {
+        "code": "saved-revision",
+        "passed": true
+      },
+      {
+        "code": "no-active-unsaved-state",
+        "passed": true
+      },
+      {
+        "code": "persistent-spec",
+        "passed": true
+      },
+      {
+        "code": "declared-parameters",
+        "passed": true
+      },
+      {
+        "code": "declared-metrics",
+        "passed": true
+      },
+      {
+        "code": "limitations-and-scope",
+        "passed": true
+      },
+      {
+        "code": "model-not-rejected",
+        "passed": true
+      },
+      {
+        "code": "successful-baseline",
+        "passed": true
+      },
+      {
+        "code": "complete-example-comparison",
+        "passed": true
+      },
+      {
+        "code": "complete-reproducible-export",
+        "passed": true
+      },
+      {
+        "code": "copyable-model-content",
+        "passed": true
+      }
+    ],
+    "humanReviewStillRequired": true,
+    "publicationSubmitted": false,
+    "modelChangeAndSecondIdentityPublicationFences": "pending in #136"
+  },
+  "ledgerRetention": {
+    "originalAndFinalPolicyPinsExact": true,
+    "originalAlertsHashExact": true,
+    "initialCounts": {
+      "slotCount": 31,
+      "callCount": 125,
+      "operationCount": 11,
+      "alertCount": 4
+    },
+    "finalCounts": {
+      "slotCount": 33,
+      "callCount": 129,
+      "operationCount": 16,
+      "alertCount": 4
+    },
+    "newAuthoringSlots": 2,
+    "newModelCalls": 4,
+    "guardedOriginalCapacityOperations": 5,
+    "historicalRowsDeleted": false
+  },
+  "finalState": {
+    "observedAt": "2026-10-02T04:18:02.028Z",
+    "modelVersion": {
+      "revisionId": "ebcb8b53b5032127310355a4dedce3e32159b1985a464b8516f86ae4da264f3d",
+      "filesSha256": "4ca85800d20837ab17ca60d7f9fd9c74cebf1b3319a6573b11960e5fa52a8a57",
+      "specSha256": "5049d4562421ef6adb8c80bfd63af96b0f7b0def59e65680375ced5234be6575"
+    },
+    "beta": {
+      "policySha256": "67885be43123d0ba94f06c7c06200b9fdd4dcf23b6adacf44a8f525466536e86",
+      "pinnedPolicySha256": "67885be43123d0ba94f06c7c06200b9fdd4dcf23b6adacf44a8f525466536e86",
+      "quotaMode": "meter-only",
+      "policyReady": true,
+      "enabled": true,
+      "reviewAt": 1792511999999,
+      "paused": false,
+      "active": 0,
+      "quarantined": 0,
+      "usageSummary": {
+        "callCount": 129,
+        "allObserved": true,
+        "invoiceVerified": false,
+        "historicalUsageRowsRetained": true
+      }
+    },
+    "invited": {
+      "policyId": "invited-runs-v1",
+      "policyReady": true,
+      "enabled": true,
+      "paused": false,
+      "occupied": 0,
+      "unknown": 0,
+      "limits": {
+        "maxActiveRuns": 1,
+        "maxRunsPerUser": 1,
+        "maxGroupRuns": 8,
+        "durationMs": 600000,
+        "confirmationGraceMs": 120000
+      },
+      "observed": {
+        "runs": 6,
+        "dispatched": 6,
+        "released": 6,
+        "supervisedMs": 2250010
+      }
+    },
+    "historicalCancelledGroupsPreserved": true,
+    "journal": {
+      "activeTurnId": null,
+      "resourceWait": null,
+      "releaseHold": null,
+      "recoveryHold": null
+    },
+    "nativeInventory": {
+      "observedAt": "2026-10-02T04:17:03.808811+00:00",
+      "gatewayVersion": "ca4a8598-a35c-4234-8140-14990e90af2d",
+      "gatewayDeployment": "ef079f8a-c7bd-4796-aced-591893e6e7e8",
+      "bindingCount": 93,
+      "applicationCount": 15,
+      "trustedPiImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+      "trustedPiVersion": 11,
+      "instances": 0,
+      "activeOrUnknown": [],
+      "allInstancesInactive": true,
+      "privateBetaPolicyDigest": "e52e9cfcf54768ed1753a053201bf084aaf9c2e9c84a70737a2f13a433fb66e9",
+      "invitedRunsEnabled": true,
+      "legacyFlags": {
+        "M4_SIMULATION_ENABLED": "false",
+        "M3_SERVICE_ENABLED": "false",
+        "G5_ADMISSION_ENABLED": "false"
+      }
+    }
+  },
+  "requestTrace": {
+    "schemaVersion": 1,
+    "credentialsHeadersBodiesLogsExcluded": true,
+    "queryStringsRemoved": true,
+    "scopePathsRedacted": true,
+    "duplicateExactEventsRemoved": true,
+    "httpScope": "Gateway workspace API paths; identities were redacted by the collector",
+    "identityAttribution": "Correlated action times plus frozen original-scope authoritative receipts/counters; trace alone does not identify a user or Workspace",
+    "gatewayEventCounts": {
+      "6f371a18-883b-444b-bfe0-01766954ace0": 190,
+      "ca4a8598-a35c-4234-8140-14990e90af2d": 895
+    },
+    "outcomeCounts": {
+      "ok": 1079,
+      "canceled": 6
+    },
+    "httpRequestCounts": [
+      {
+        "method": "POST",
+        "path": "/api/workspaces/REDACTED/sessions/REDACTED/turns/withdraw",
+        "status": 200,
+        "count": 1
+      },
+      {
+        "method": "POST",
+        "path": "/api/workspaces/REDACTED/sessions/REDACTED/turns",
+        "status": 202,
+        "count": 2
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspaces/REDACTED/events",
+        "status": 200,
+        "count": 59
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspaces/REDACTED/files",
+        "status": 200,
+        "count": 12
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspaces/REDACTED/experiments",
+        "status": 200,
+        "count": 389
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspaces/REDACTED/experiment-groups",
+        "status": 200,
+        "count": 9
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspaces/REDACTED/model",
+        "status": 200,
+        "count": 25
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspaces/REDACTED/events",
+        "status": null,
+        "count": 3
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspaces/REDACTED/browser-preview",
+        "status": 200,
+        "count": 7
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspaces/REDACTED/browser-preview/packages/REDACTED",
+        "status": 200,
+        "count": 5
+      },
+      {
+        "method": "POST",
+        "path": "/api/workspaces/REDACTED/browser-preview/verify",
+        "status": 202,
+        "count": 1
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspaces/REDACTED/browser-preview/verify/REDACTED",
+        "status": 200,
+        "count": 1
+      },
+      {
+        "method": "POST",
+        "path": "/api/workspaces/REDACTED/experiments",
+        "status": 409,
+        "count": 1
+      },
+      {
+        "method": "POST",
+        "path": "/api/workspaces/REDACTED/experiment-groups",
+        "status": 202,
+        "count": 1
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspaces/REDACTED/experiment-groups/REDACTED",
+        "status": 200,
+        "count": 563
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspaces/REDACTED/experiment-groups/REDACTED",
+        "status": null,
+        "count": 2
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspaces/REDACTED/evidence",
+        "status": 200,
+        "count": 1
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspaces/REDACTED/services",
+        "status": 200,
+        "count": 1
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspaces/REDACTED/experiments",
+        "status": null,
+        "count": 1
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspaces/REDACTED/publication-readiness",
+        "status": 200,
+        "count": 1
+      }
+    ],
+    "postRequests": [
+      {
+        "at": 1790910531582,
+        "gatewayVersion": "6f371a18-883b-444b-bfe0-01766954ace0",
+        "outcome": "ok",
+        "method": "POST",
+        "path": "/api/workspaces/REDACTED/sessions/REDACTED/turns/withdraw",
+        "status": 200
+      },
+      {
+        "at": 1790910546608,
+        "gatewayVersion": "6f371a18-883b-444b-bfe0-01766954ace0",
+        "outcome": "ok",
+        "method": "POST",
+        "path": "/api/workspaces/REDACTED/sessions/REDACTED/turns",
+        "status": 202
+      },
+      {
+        "at": 1790911003055,
+        "gatewayVersion": "6f371a18-883b-444b-bfe0-01766954ace0",
+        "outcome": "ok",
+        "method": "POST",
+        "path": "/api/workspaces/REDACTED/browser-preview/verify",
+        "status": 202
+      },
+      {
+        "at": 1790912196126,
+        "gatewayVersion": "ca4a8598-a35c-4234-8140-14990e90af2d",
+        "outcome": "ok",
+        "method": "POST",
+        "path": "/api/workspaces/REDACTED/sessions/REDACTED/turns",
+        "status": 202
+      },
+      {
+        "at": 1790912427238,
+        "gatewayVersion": "ca4a8598-a35c-4234-8140-14990e90af2d",
+        "outcome": "ok",
+        "method": "POST",
+        "path": "/api/workspaces/REDACTED/experiments",
+        "status": 409
+      },
+      {
+        "at": 1790912819537,
+        "gatewayVersion": "ca4a8598-a35c-4234-8140-14990e90af2d",
+        "outcome": "ok",
+        "method": "POST",
+        "path": "/api/workspaces/REDACTED/experiment-groups",
+        "status": 202
+      }
+    ]
+  },
+  "cleanup": {
+    "remote": {
+      "observedAt": "2026-10-02T04:18:35.496272+00:00",
+      "tailClientsStopped": 2,
+      "uniqueTailsRemoved": [
+        {
+          "tailId": "dfd1ef7b7a114c869d8e3965abb19ca7",
+          "httpStatus": 200,
+          "success": true
+        }
+      ],
+      "readerRemoved": {
+        "name": "riffology-issue165-control",
+        "httpStatus": 200,
+        "readbackHttpStatus": 404
+      },
+      "remoteCapabilityFileRemoved": true
+    },
+    "local": {
+      "observedAt": "2026-10-02T04:19:37.674457+00:00",
+      "taskProcessesStopped": [
+        {
+          "pid": 89605,
+          "wasRunning": true,
+          "stopRequested": true
+        },
+        {
+          "pid": 89657,
+          "wasRunning": true,
+          "stopRequested": true
+        },
+        {
+          "pid": 95346,
+          "wasRunning": true,
+          "stopRequested": true
+        },
+        {
+          "pid": 95350,
+          "wasRunning": true,
+          "stopRequested": true
+        }
+      ],
+      "allTaskProcessesAbsent": true,
+      "taskPorts": [
+        18798,
+        18799
+      ],
+      "taskListenersAbsent": true,
+      "localCapabilityFileRemoved": true,
+      "preexistingUserProxyAndOAuthFilesPreserved": true
+    }
+  },
+  "verification": {
+    "fullCI": {
+      "implementation": "success",
+      "followup": "success"
+    },
+    "focusedFollowupTestsPassed": 29,
+    "localM2Passed": 869,
+    "typecheck": "passed",
+    "realWorkerdPreparationDelayMs": 16050,
+    "realToolBridgeWorkspaceDraftRouting": "passed",
+    "paidE2E": {
+      "newAuthoringTurns": 2,
+      "newModelCalls": 4,
+      "observedModelNanodollars": 17640400,
+      "invoiceVerified": false,
+      "singleRunsCompletedAndReleased": 1,
+      "comparisonRunsCompletedAndReleased": 4,
+      "automaticProviderRetryOrFallback": false
+    }
+  }
+}
