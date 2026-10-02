@@ -8,6 +8,7 @@ import {sameScope,turnId,type TurnScope} from '../turn/protocol.ts';
 
 export type ExperimentParameterDraft={draftId:string;version:NonNullable<ModelInspection['version']>;parameters:ParameterValues;seed:number;comparison:ExperimentGroupRequest|null;updatedAt:number};
 const KEY='simulation:parameter-draft',PREFIX='simulation:parameter-effect:';
+function draftParameters(spec:NonNullable<ModelInspection['spec']>,raw:unknown){try{return resolveParameters(spec,raw);}catch(error){if(error instanceof Error&&error.message==='invalid-model-spec')throw Error('simulation-input-invalid');throw error;}}
 export function readParameterDraft(storage:Pick<DurableObjectStorage,'kv'>,version:ModelInspection['version']){
  const draft=storage.kv.get<ExperimentParameterDraft>(KEY);
  return draft&&version&&draft.version.filesSha256===version.filesSha256&&draft.version.specSha256===version.specSha256?draft:null;
@@ -26,7 +27,7 @@ export async function parameterDraftEffect(input:{storage:Pick<DurableObjectStor
  try{
   await input.authorize();const model=await input.model(),args=parameterDraftArguments(command.arguments);
   if(!model.spec||!model.version||args.revisionId!==model.version.revisionId)throw Error('simulation-model-stale');
-  const previous=readParameterDraft(storage,model.version),parameters=resolveParameters(model.spec,{...(previous?.parameters??{}),...args.parameters});
+  const previous=readParameterDraft(storage,model.version),parameters=draftParameters(model.spec,{...(previous?.parameters??{}),...args.parameters});
   let comparison:ExperimentGroupRequest|null=null;
   if(args.comparison!==null){
    if(model.compiler)throw Error('compiler-group-unsupported');
@@ -34,7 +35,7 @@ export async function parameterDraftEffect(input:{storage:Pick<DurableObjectStor
    if(!value||typeof value!=='object'||Object.keys(value).sort().join(',')!=='hypothesis,interventions,seeds')throw Error('simulation-input-invalid');
    comparison=experimentGroupRequest({...model.version,hypothesis:value.hypothesis,baseline:{label:'Baseline',parameters},interventions:value.interventions,seeds:value.seeds});
    if(comparison.seeds.length*(comparison.interventions.length+1)>(input.maxGroupRuns??8))throw Error('invited-runs-group-limit');
-   comparison.interventions=comparison.interventions.map(c=>({...c,parameters:resolveParameters(model.spec!,{...parameters,...c.parameters})}));
+   comparison.interventions=comparison.interventions.map(c=>({...c,parameters:draftParameters(model.spec!,{...parameters,...c.parameters})}));
   }
   await input.authorize();input.assertCurrent(model.version);
   draft={draftId:command.commandId,version:model.version,parameters,seed:args.seed,comparison,updatedAt:now()};

@@ -70,3 +70,12 @@ test('tool cutoff rejects at and after expiry and rechecks immediately before di
   for(const time of [now,now+1]){const bridge=createProductToolBridge(identity,{clock:()=>time,executionDeadlineAt:now,fetchImpl:async()=>{calls++;}});await assert.rejects(bridge.execute(call),/execution-expired/);}
   let ticks=0;const bridge=createProductToolBridge(identity,{clock:()=>++ticks===1?now:now+1,executionDeadlineAt:now+1,fetchImpl:async()=>{calls++;}});await assert.rejects(bridge.execute(call),/execution-expired/);assert.equal(calls,0);
 });
+
+test('parameter draft terminal validation is actionable while arbitrary effect errors remain private',async()=>{
+  const call={scope,name:'project_set_experiment_parameters',toolCallId:'parameters-a',args:{revisionId:'saved-a',parameters:{density:0.5,seed:42},seed:42,comparison:null}};
+  for(const errorCode of ['simulation-input-invalid','simulation-model-stale','private-implementation-secret']){
+    const f=fixture(value=>({...value,status:'failed',outcome:'failed',errorCode,result:{executionSubmitted:false}}));
+    await assert.rejects(f.bridge.execute(call),{message:errorCode.startsWith('simulation-')?errorCode:'product-tool-effect-failed'});
+    assert.equal(f.sent.length,1);
+  }
+});
