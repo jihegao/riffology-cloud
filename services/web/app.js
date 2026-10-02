@@ -50,7 +50,7 @@ const comparisonPanel=createComparisonPanel({root:$('#workspace-comparison'),api
 const publicationPanel=createPublicationPanel({root:$('#workspace-publication'),api,onOpenRuns:()=>workspaceLayout.select('runs')});
 const exportPanel=createExportPanel({root:$('#workspace-export')});
 const evidencePanel=createEvidencePanel({root:$('#workspace-evidence'),api,onAssessment:()=>{void comparisonPanel.reload();void simulationPanel.reload();}});
-const simulationPanel=createSimulationPanel({root:$('#workspace-simulation'),modelRoot:$('#workspace-model'),historyRoot:$('#workspace-run-history'),api,onModel:model=>{observedModel=model;renderModelState();}});
+const simulationPanel=createSimulationPanel({root:$('#workspace-simulation'),modelRoot:$('#workspace-model'),historyRoot:$('#workspace-run-history'),api,onModel:model=>{browserPreviewPanel.applyParameterDraft(model?.experimentDraft);observedModel=model;renderModelState();}});
 const verifyHandoffPanel=createVerifyHandoffPanel({root:$('#workspace-verify-handoff'),api,onVerified:()=>{void simulationPanel.reload();void comparisonPanel.reload();}});
 const notice = $('#notice');
 const dialog = $('#project-dialog');
@@ -647,6 +647,7 @@ function connectEventStream(workspaceId, cursor, generation) {
       if (!workspaceEvents.some(item => item.eventId === value.eventId)) workspaceEvents.push(value);
       cursor = Math.max(cursor, Number(event.lastEventId || value.sequence || 0));
       renderWorkspace();
+      if(type==='tool.completed'&&value.payload?.name==='project_set_experiment_parameters'){void simulationPanel.reload();void comparisonPanel.reload();}
       if(resolveVisibleMessageIntent(workspaceId))stopVisibilityRecovery();
       if (['turn.completed', 'turn.failed', 'turn.cancelled', 'turn.interrupted'].includes(type)) void refreshWorkspace(generation);
     } catch { bindValue($('#message-error'), () => (msg('error.eventFormat'))); }

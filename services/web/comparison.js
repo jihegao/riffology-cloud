@@ -7,7 +7,7 @@ const button = (text, action, disabled = false) => { const b = node('button', te
 const defaults = spec => Object.fromEntries(Object.entries(spec?.parameters || {}).map(([key, value]) => [key, value.default]));
 
 export function createComparisonPanel({root, api}) {
-  let context = null, generation = 0, readEpoch = 0, model = null, groups = [], cursor = null, pending = null, timer = null, busy = false, loading = false, message = '';
+  let context = null, generation = 0, readEpoch = 0, model = null, groups = [], cursor = null, pending = null, timer = null, busy = false, loading = false, message = '', lastAgentDraft = null;
   let draft = null, editor, history, status, rawOpen = new Set();
   const storageKey = () => `riffology:comparison-intent:${context.tenantId}:${context.workspaceId}`;
   const path = suffix => `/api/workspaces/${encodeURIComponent(context.workspaceId)}${suffix}`;
@@ -15,6 +15,9 @@ export function createComparisonPanel({root, api}) {
   const active = () => groups.some(g => !TERMINAL.has(g.status));
   const persist = value => { try { if (value) sessionStorage.setItem(storageKey(), JSON.stringify(value)); else sessionStorage.removeItem(storageKey()); return true; } catch { return false; } };
   const mark = text => { message = text; if (status) bindValue(status,()=>(message)); };
+  const inputKey=()=>`riffology:comparison-input:${context.tenantId}:${context.workspaceId}`;
+  function rememberInput(){if(!model?.version||pending||!draft)return;try{sessionStorage.setItem(inputKey(),JSON.stringify({version:model.version,draft,agentDraftId:lastAgentDraft}));}catch{}}
+  function restoreInput(){try{const saved=JSON.parse(sessionStorage.getItem(inputKey())||'null');if(saved?.version?.filesSha256===model?.version?.filesSha256&&saved?.version?.specSha256===model?.version?.specSha256&&saved.draft){draft=saved.draft;lastAgentDraft=saved.agentDraftId??null;}}catch{}}
   function setup() {
     root.replaceChildren(); root.append(node('h2', msg('compare.title')));
     root.append(node('p', msg('compare.description')));
@@ -49,14 +52,14 @@ export function createComparisonPanel({root, api}) {
       const fieldset = node('fieldset'); fieldset.dataset.configuration = index === 0 ? 'baseline' : `intervention-${index}`; fieldset.append(node('legend',index === 0 ? msg('compare.baseline') : msg('compare.intervention', () => ({p0: index}))));
       const label = node('label',msg('compare.configName')); const name = node('input'); name.name='label'; name.required=true; name.maxLength=80; name.value=config.label; name.oninput=()=>{config.label=name.value;}; label.append(name); fieldset.append(label);
       for (const [key, def] of Object.entries(model.spec.parameters || {})) fieldset.append(typedField(key,def,config.parameters,frozen));
-      if (index > 0 && draft.interventions.length > 1) fieldset.append(button(msg('compare.remove'),()=>{draft.interventions.splice(index-1,1);renderEditor();})); configs.append(fieldset);
+      if (index > 0 && draft.interventions.length > 1) fieldset.append(button(msg('compare.remove'),()=>{draft.interventions.splice(index-1,1);rememberInput();renderEditor();})); configs.append(fieldset);
     }
-    form.append(configs);form.append(button(msg('compare.add'),()=>{draft.interventions.push({label:t('compare.intervention', ({p0: draft.interventions.length+1})),parameters:defaults(model.spec)});renderEditor();},draft.interventions.length>=3));
+    form.append(configs);form.append(button(msg('compare.add'),()=>{draft.interventions.push({label:t('compare.intervention', ({p0: draft.interventions.length+1})),parameters:defaults(model.spec)});rememberInput();renderEditor();},draft.interventions.length>=3));
     const seedLabel=node('label',msg('compare.seeds'));const seeds=node('input');seeds.name='seeds';seeds.required=true;seeds.value=draft.seeds;const count=node('p',undefined,'comparison-count');const countSeeds=()=>{const n=draft.seeds.trim()?draft.seeds.trim().split(/[\s,，]+/).length:0;bindValue(count,()=>(msg('compare.count', () => ({p0: formatNumber(n), p1: formatNumber((1+draft.interventions.length)*n)}))));};seeds.oninput=()=>{draft.seeds=seeds.value;countSeeds();};countSeeds();seedLabel.append(seeds);form.append(seedLabel,count);
-    const actions=node('div',undefined,'comparison-actions');actions.append(button(msg('compare.reset'),()=>{draft=freshDraft();renderEditor();}));const run=node('button',msg('compare.run'),'button primary');run.type='submit';run.disabled=loading||busy||!model.canRun;actions.append(run);form.append(actions);
+    const actions=node('div',undefined,'comparison-actions');actions.append(button(msg('compare.reset'),()=>{draft=freshDraft();rememberInput();renderEditor();}));const run=node('button',msg('compare.run'),'button primary');run.type='submit';run.disabled=loading||busy||!model.canRun;actions.append(run);form.append(actions);
     if(!model.canRun)form.append(node('p',model.capabilityReason?cloudRunError(model.capabilityReason):msg('compare.unavailable'),'model-warning'));
     if(model.runLimits)form.append(node('p',msg('run.resourceLimits',()=>({active:model.runLimits.maxActiveRuns,user:model.runLimits.maxRunsPerUser,seconds:model.runLimits.durationMs/1000,group:model.runLimits.maxGroupRuns})),'meta'));
-    form.onsubmit=event=>{event.preventDefault();void submit();};editor.append(form);
+    form.oninput=()=>rememberInput();form.onchange=()=>rememberInput();form.onsubmit=event=>{event.preventDefault();void submit();};editor.append(form);
   }
   function renderHistory() {
     if(!history)return;history.replaceChildren();history.append(node('h3',msg('compare.history')));
@@ -75,7 +78,7 @@ export function createComparisonPanel({root, api}) {
       const scroll=node('div',undefined,'comparison-table');scroll.append(table);article.append(scroll);
       if(!TERMINAL.has(group.status))article.append(button(msg('compare.stop'),()=>void cancel(group.groupId),busy));
       const detail=node('details');detail.open=rawOpen.has(group.groupId);detail.ontoggle=()=>{if(detail.open)rawOpen.add(group.groupId);else rawOpen.delete(group.groupId);};detail.append(node('summary',msg('compare.details', () => ({p0: group.runs?.length??0}))));
-      for(const run of group.runs||[]){const row=node('section',undefined,'comparison-run');row.append(node('h4',msg('compare.runStatus',()=>({configuration:run.configurationId,seed:run.seed,status:t('run.status.'+run.status,{},run.status)}))),node('p',run.runId||msg('compare.unassigned')));if(run.evidenceRejection)row.append(node('p',msg('compare.rejection', () => ({p0: run.evidenceRejection.reason})),'model-warning'));if(run.errorCode)row.append(node('p',msg('compare.failure', () => ({p0: run.errorCode})),'model-warning'));row.append(node('pre',JSON.stringify({runId:run.runId,version:group.version,configuration:group.configurations?.find(c=>c.configurationId===run.configurationId),seed:run.seed,status:run.status,errorCode:run.errorCode,result:run.result,released:run.released,evidenceRejection:run.evidenceRejection},null,2)));detail.append(row);}
+      for(const run of group.runs||[]){const row=node('section',undefined,'comparison-run');row.append(node('h4',msg('compare.runStatus',()=>({configuration:run.configurationId,seed:run.seed,status:t('run.status.'+run.status,{},run.status)}))),node('p',run.runId||msg('compare.unassigned')));if(run.evidenceRejection)row.append(node('p',msg('compare.rejection', () => ({p0: run.evidenceRejection.reason})),'model-warning'));if(run.errorCode)row.append(node('p',msg('compare.failure', () => ({p0: run.errorCode})),'model-warning'));row.append(node('pre',JSON.stringify({runId:run.runId,version:group.version,configuration:group.configurations?.find(c=>c.configurationId===run.configurationId),seed:run.seed,status:run.status,errorCode:run.errorCode,failure:run.failure,result:run.result,released:run.released,evidenceRejection:run.evidenceRejection},null,2)));detail.append(row);}
       article.append(detail);history.append(article);
     }
     if(cursor)history.append(button(msg('compare.more'),()=>void loadMore(),loading));
@@ -88,7 +91,13 @@ export function createComparisonPanel({root, api}) {
     if(!context)return;const token=generation,epoch=++readEpoch,valid=()=>token===generation&&epoch===readEpoch;clearTimeout(timer);loading=true;renderEditor();
     try{const [m,page]=await Promise.all([api(path('/model')),api(path('/experiment-groups'))]);if(!valid())return;
       if(draft&&model?.version&&(model.version.filesSha256!==m.version?.filesSha256||model.version.specSha256!==m.version?.specSha256)){draft=null;mark(msg('compare.modelChanged'));}
-      model=m;groups=(page.items||[]).filter(g=>safeId(g.groupId));cursor=page.nextCursor||null;
+      model=m;
+      if(!pending){
+        if(!draft)restoreInput();
+        const incoming=m.experimentDraft;
+        if(incoming?.comparison&&incoming.draftId!==lastAgentDraft&&incoming.version?.filesSha256===m.version?.filesSha256&&incoming.version?.specSha256===m.version?.specSha256){const c=incoming.comparison;draft={hypothesis:c.hypothesis,baseline:structuredClone(c.baseline),interventions:structuredClone(c.interventions),seeds:c.seeds.join(', ')};lastAgentDraft=incoming.draftId;rememberInput();}
+      }
+      groups=(page.items||[]).filter(g=>safeId(g.groupId));cursor=page.nextCursor||null;
     }catch(error){if(valid())mark(cloudRunError(error)||msg('compare.readFailed'));}finally{if(valid()){loading=false;renderEditor();renderHistory();schedule();}}
   }
   async function loadMore(){
@@ -112,6 +121,6 @@ export function createComparisonPanel({root, api}) {
   }
   async function cancel(groupId){if(busy)return;const token=generation;busy=true;renderHistory();try{await api(path(`/experiment-groups/${encodeURIComponent(groupId)}/cancel`),{method:'POST',body:'{}',signal:AbortSignal.timeout(15000)});if(token===generation){mark(msg('compare.stopAccepted'));await load();}}catch(error){if(token===generation)mark(cloudRunError(error)||msg('compare.stopUnconfirmed'));}finally{if(token===generation){busy=false;renderHistory();}}}
   async function enter(value){leave();if(!safeId(value?.tenantId)||!safeId(value?.workspaceId))throw Error('invalid-comparison-context');context=value;try{const saved=JSON.parse(sessionStorage.getItem(storageKey())||'null');if(saved?.key&&saved?.body)pending=saved;}catch{}setup();await load();}
-  function leave(){generation++;clearTimeout(timer);context=null;model=null;groups=[];cursor=null;pending=null;busy=false;loading=false;draft=null;message='';rawOpen=new Set();root.replaceChildren();editor=history=status=null;}
+  function leave(){generation++;clearTimeout(timer);context=null;model=null;groups=[];cursor=null;pending=null;busy=false;loading=false;draft=null;lastAgentDraft=null;message='';rawOpen=new Set();root.replaceChildren();editor=history=status=null;}
   return {enter,leave,reload:load};
 }

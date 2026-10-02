@@ -1,7 +1,8 @@
+import {parameterDraftArguments} from '../simulation/parameter-draft-input.ts';
 import type { TurnScope } from '../turn/protocol.ts';
 import { positive, scope as validateScope, sha, turnDigest, turnId } from '../turn/protocol.ts';
 
-export type ToolOperation='read'|'read_page'|'write'|'edit'|'list'|'search'|'bash';
+export type ToolOperation='read'|'read_page'|'write'|'edit'|'list'|'search'|'bash'|'experiment_parameters';
 export type ToolCommand={
   schemaVersion:1;
   scope:TurnScope;
@@ -22,7 +23,11 @@ export type ToolCommandIntent={
   operation:ToolOperation;
   arguments:Record<string,unknown>;
 };
-const OPERATIONS=new Set<ToolOperation>(['read','read_page','write','edit','list','search','bash']);
+const OPERATIONS=new Set<ToolOperation>(['read','read_page','write','edit','list','search','bash','experiment_parameters']);
+export function toolOperation(value:unknown):ToolOperation{
+  if(typeof value!=='string'||!OPERATIONS.has(value as ToolOperation))throw Error('invalid-tool-operation');
+  return value as ToolOperation;
+}
 const encoder=new TextEncoder();
 function plain(value:unknown):Record<string,unknown>{
   if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype)throw Error('invalid-tool-arguments');
@@ -46,6 +51,7 @@ export function workspacePath(value:unknown,allowRoot=false):string{
 function args(operation:ToolOperation,value:unknown):Record<string,unknown>{
   const input=plain(value);
   switch(operation){
+    case 'experiment_parameters':return parameterDraftArguments(input);
     case 'read': exact(input,['path']);return {path:workspacePath(input.path)};
     case 'read_page': {
       exact(input,['path','offset','maxBytes','expectedSha256']);

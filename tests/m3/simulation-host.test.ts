@@ -137,3 +137,33 @@ for(const observationLag of [2000,90000])test(`normal timeout plus ${observation
  f.q.now=run.input.deadlineAt+360000+observationLag;await host.alarm();assert.equal((await host.get(run.runId)).released,true);assert.equal((await quota.snapshot()).occupied,0);assert.equal((await quota.snapshot()).paused,false);
  const next=await host.submit(actor,'after-confirmed-timeout',f.request,plan,'image',()=>true);await host.alarm();assert.equal((await host.get(next.runId)).status,'running');assert.equal(f.starts,2);
 });
+
+function delayedPreparation(f:ReturnType<typeof setup>){
+ let finish!:()=>void,entered!:()=>void,prepares=0;const reached=new Promise<void>(r=>{entered=r;}),pending=new Promise<void>(r=>{finish=r;}),held:Promise<unknown>[]=[];
+ f.ports.hold=p=>{held.push(p);};f.ports.prepare=async(_input,check)=>{prepares++;entered();await pending;await check();};
+ return {reached,finish,settle:()=>Promise.all(held),get prepares(){return prepares;}};
+}
+test('cold preparation beyond 15 seconds holds its original lease without dispatch, pause or native start',async t=>{
+ const f=setup(t,true),prep=delayedPreparation(f),h=f.host();let unknown=0;f.ports.admitRun=async()=>({kind:'invited-runs',policyId:'runs-v1'});f.ports.unknownRun=async()=>{unknown++;};
+ const run=await h.submit(actor,'cold',f.request,plan,'image',()=>true);await h.alarm();await prep.reached;f.q.now+=16000;await h.alarm();
+ const preparing=await h.get(run.runId);assert.equal(preparing.status,'preparing');assert.equal(preparing.startClaimed,false);assert.equal(preparing.dispatchClaimed,false);assert.equal(preparing.preparation!.deadlineAt,121000);assert.equal((await f.quota.snapshot()).occupied,1);assert.equal(unknown,0);assert.equal(f.starts,0);
+ prep.finish();await prep.settle();await h.alarm();assert.equal(f.starts,1);assert.equal(prep.prepares,1);assert.equal((await h.get(run.runId)).status,'running');assert.equal(unknown,0);
+});
+for(const trigger of ['cancel','kill','deadline'] as const)test(`preparation ${trigger} fences late completion and preserves failure until confirmed resource release`,async t=>{
+ const f=setup(t,true),prep=delayedPreparation(f),h=f.host();let allowed=true;f.ports.authorizeRun=async()=>allowed;
+ const run=await h.submit(actor,'prep-'+trigger,f.request,plan,'image',()=>true);await h.alarm();await prep.reached;
+ if(trigger==='cancel')await h.cancel(run.runId);else if(trigger==='kill')allowed=false;else f.q.now+=120001;
+ await h.alarm();assert.equal(f.starts,0);assert.equal((await h.get(run.runId)).released,false);assert.equal((await h.get(run.runId)).preparation!.readyAt,null);
+ await h.alarm();f.q.now+=360001;await h.alarm();assert.equal((await h.get(run.runId)).released,false,'pending preparation cannot return capacity');
+ prep.finish();await prep.settle();await h.alarm();f.q.now+=30001;f.loseRelease();await h.alarm();assert.equal((await h.get(run.runId)).released,false);
+ const original=(await h.get(run.runId)).failure;f.reopen();await f.host().alarm();const final=await h.get(run.runId);
+ assert.equal(final.released,true);assert.equal(final.status,trigger==='deadline'?'failed':'cancelled');assert.equal(final.result,null);assert.deepEqual(final.failure,original);assert.ok(final.errorCode);assert.equal(f.starts,0);assert.equal(f.observes,0);assert.equal(f.stops,0);assert.equal(prep.prepares,1);
+});
+test('restart during preparation cancels that preparation without restarting it or touching a model process',async t=>{
+ const f=setup(t,true),prep=delayedPreparation(f),h=f.host(),run=await h.submit(actor,'prep-restart',f.request,plan,'image',()=>true);await h.alarm();await prep.reached;f.reopen();const restarted=f.host();await restarted.alarm();
+ assert.equal((await h.get(run.runId)).failure?.code,'simulation-preparation-interrupted');assert.equal(f.starts,0);prep.finish();await prep.settle();await restarted.alarm();f.q.now+=360001;await restarted.alarm();assert.equal((await h.get(run.runId)).released,true);assert.equal(prep.prepares,1);assert.equal((await h.get(run.runId)).result,null);
+});
+test('lost native start ACK after completed preparation stays observation-only and retains original failure when cancelled',async t=>{
+ const f=setup(t,true),prep=delayedPreparation(f),h=f.host();let isolated=0;f.ports.unknownRun=async()=>{isolated++;};const run=await h.submit(actor,'prepared-ack-loss',f.request,plan,'image',()=>true);await h.alarm();await prep.reached;prep.finish();await prep.settle();f.loseStart();await h.alarm();assert.equal(isolated,1);const failure=(await h.get(run.runId)).failure;assert.equal(failure?.code,'lost-start-ack');
+ f.reopen();await f.host().alarm();assert.equal(f.starts,1);assert.equal(f.observes,1);await h.cancel(run.runId);await h.alarm();assert.deepEqual((await h.get(run.runId)).failure,failure);assert.equal((await h.get(run.runId)).errorCode,'simulation-operation-unconfirmed');
+});

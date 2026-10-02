@@ -1,3 +1,4 @@
+import {parameterDraftEffect,readParameterDraft} from '../simulation/parameter-draft.ts';
 import {trustedPiCapacityActorName} from '../capacity/client.ts';
 import {WorkspaceArchiveFence} from './archive-fence.ts';
 import {statement as sqlArchive} from '../catalog/database.ts';
@@ -396,20 +397,19 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       unknownRun:async record=>{if(!record.runAdmission)return;const observed=record.lease?null:await this.#invitedRunCapacity().lookup(record.scope.tenantId,`sim-${record.runId}-${record.attempt}`);const reference=record.lease??(observed?.lease?leaseReference(observed.lease):null);if(reference)await this.#invitedRunCapacity().markUnknown(reference);},
       beforeStart:async(record,stage)=>{this.#assertRunWritable(scope);if(record.runAdmission){if(record.runAdmission.policyId!==this.#invitedRunsPolicy()?.policyId)throw Error('invited-runs-policy-conflict');await this.#authorizeInvitedRun(scope,record.actor);return;}const managed=this.#managedRoute();if(managed){requireManagedAdmission(this.env.MANAGED_ACCEPTANCE_JSON,managed,record.scope,record.actor.userId,this.env.MANAGED_TESTING_JSON);await this.#managedRuntime(managed).reserveSimulation(record.scope,record.runId);return;}if(!record.budgetRoute)return;await this.#g5StartTask(record.budgetRoute.taskKey);},
       quota:this.#simulationQuota(scope),
-      start:async input=>{
-        this.#assertRunWritable(scope);
+      prepare:async(input,check)=>{
+        await check();this.#assertRunWritable(scope);
         if(input.runtimeImage!==this.env.M4_SIMULATION_IMAGE)throw Error('simulation-image-changed');
-        const sandbox=await this.#simulationSandbox(input);
         const bytes=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(input.plan.source);
-        const record=await this.#simulations(scope).get(input.runId);if(record.runAdmission)await this.#authorizeInvitedRun(scope,record.actor);this.#assertRunWritable(scope);
-        return new SimulationNative(sandbox,input).start(bytes,record.runAdmission?async()=>{
-          await this.#authorizeInvitedRun(scope,record.actor);
-          const current=await this.#simulations(scope).get(input.runId);this.#assertRunWritable(scope);
-          if(current.cancelledAt!==null)throw Error('simulation-access-revoked');
-          if(current.status!=='preparing'||!current.startClaimed)throw Error('simulation-operation-unconfirmed');
-          if(current.input.deadlineAt<=Date.now())throw Error('simulation-deadline');
-          if(current.runAdmission?.policyId!==this.#invitedRunsPolicy()?.policyId)throw Error('invited-runs-policy-conflict');
-        }:undefined);
+        await check();
+        await new SimulationNative(await this.#simulationSandbox(input),input).prepare(bytes,check);
+      },
+      start:async input=>{
+        const current=await this.#simulations(scope).get(input.runId);this.#assertRunWritable(scope);
+        if(current.cancelledAt!==null||current.status!=='preparing'||!current.startClaimed)throw Error('simulation-access-revoked');
+        if(current.input.deadlineAt<=Date.now())throw Error('simulation-deadline');
+        if(input.runtimeImage!==this.env.M4_SIMULATION_IMAGE)throw Error('simulation-image-changed');
+        return new SimulationNative(await this.#simulationSandbox(input),input).operation('start');
       },
       observe:async input=>new SimulationNative(await this.#simulationSandbox(input),input).operation('observe'),
       stop:async input=>new SimulationNative(await this.#simulationSandbox(input),input).operation('stop'),
@@ -652,6 +652,22 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const latest=await this.#leases().authoritative(identity),end=await this.#turns.snapshot(scope),last=end.turns[identity.turnId];if(latest.closing||this.#leases().selection(identity)?.closing||end.activeTurnId!==identity.turnId||last?.cancelRequestedAt!==null||input.deadlineAt<=Date.now())throw Error('warm-outbound-authority-denied');
     return {actorId,identity,actor:turn.actor,executionDeadlineAt:binding.executionDeadlineAt,lease:binding.lease,binding:binding.binding};
   }
+  async experimentParameterEffect(input:{command:ToolCommand;effectId:string;observeOnly:boolean}){
+    const command=normalizeToolCommand(input.command),scope=this.#maintenanceScope(command.scope);
+    const apply=()=>parameterDraftEffect({storage:this.ctx.storage,scope,command,effectId:input.effectId,observeOnly:input.observeOnly,
+      model:()=>this.modelSpec({scope}),maxGroupRuns:this.#invitedRunsPolicy()?.maxGroupRuns??8,
+      authorize:async()=>{
+        this.#assertRunWritable(scope);const state=await this.#turns.snapshot(scope),turn=state.turns[command.turnId];
+        if(state.activeTurnId!==command.turnId||!turn||!['starting','running'].includes(turn.status)||turn.dispatchId!==command.dispatchId||turn.cancelRequestedAt!==null||turn.finishedAt!==null||command.deadlineAt<=Date.now())throw Error('parameter-draft-turn-denied');
+        const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('parameter-draft-scope-denied');
+        if(this.ctx.storage.kv.get<{privateBeta?:boolean}>('pi-developer-turn:'+command.turnId)?.privateBeta)await this.#betaControl().authorizeTool(scope,turn.actor,command.turnId,command.deadlineAt);
+        const latest=await this.#turns.snapshot(scope),current=latest.turns[command.turnId];
+        if(latest.activeTurnId!==command.turnId||!current||!['starting','running'].includes(current.status)||current.dispatchId!==command.dispatchId||current.cancelRequestedAt!==null||current.finishedAt!==null||command.deadlineAt<=Date.now())throw Error('parameter-draft-turn-denied');
+        this.#assertRunWritable(scope);
+      },assertCurrent:version=>{this.#assertRunWritable(scope);const head=this.#turns.workspaceRevisionSnapshot(scope);if(version.revisionId!==null&&(head?.receipt.revisionId!==version.revisionId||head?.receipt.filesSha256!==version.filesSha256))throw Error('simulation-model-stale');},
+    });
+    return input.observeOnly?apply():this.#archiveWrite(scope,apply);
+  }
   async prepareProjectTool(input:{command:ToolCommand;observeOnly:boolean}){
     return this.#archiveWrite(input.command.scope,async()=>{
     const command=normalizeToolCommand(input.command),scope=this.#ready(command.scope);
@@ -690,6 +706,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     if(this.#invitedRunCandidate()&&input.actor){try{await this.#authorizeInvitedRun(scope,input.actor);}catch(error){model.canRun=false;model.capabilityReason=error instanceof Error&&/^(invited-runs-|private-beta-)/.test(error.message)?error.message:'invited-runs-unavailable';}}
     if(this.#invitedRunCandidate())model.runLimits=this.#invitedRunsPolicy()!;
     if(!this.#simulationCanRun()){model.canRun=false;if(this.#archiveFence.get())model.capabilityReason='project_archived';}
+    model.experimentDraft=readParameterDraft(this.ctx.storage,model.version);
     this.#ready(scope);return model;
   }
   async submitExperiment(input:{scope:TurnScope;actor:TurnActor;key:string;body:ExperimentRequest}){

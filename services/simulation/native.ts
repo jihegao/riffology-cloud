@@ -6,6 +6,11 @@ export type SimulationInput={runId:string;plan:SimulationPlan;parameters:Paramet
 export type NativeObservation={status:'absent'|'running'|'stopped';result:unknown|null;stop:{confirmationId:string;observedAt:number;fenced:true}|null};
 export interface SimulationSandboxApi extends ServiceSandboxApi{destroy():Promise<void>;releaseState():Promise<{running:boolean}>}
 export async function simulationToken(input:SimulationInput){return (await digest(JSON.stringify(input))).slice(0,52);}
+/** Safe diagnostics persist without native/project stdout. */
+export class SimulationOperationError extends Error{
+ readonly stage:string;
+ constructor(stage:string,code:string){super(/^[a-z0-9-]{1,100}$/.test(code)?code:'transport-error');this.stage=stage;}
+}
 export class SimulationNative{
  readonly sandbox:SimulationSandboxApi;readonly input:SimulationInput;
  constructor(sandbox:SimulationSandboxApi,input:SimulationInput){this.sandbox=sandbox;this.input=input;}
@@ -23,17 +28,20 @@ export class SimulationNative{
   }else if(raw.stop!==null||raw.result!==null)throw Error('simulation-native-invalid');
   return {status:raw.status,result:raw.result,stop:raw.stop};
  }
- async start(bytes:Uint8Array,beforeNativeStart?:()=>Promise<void>){
+ async prepare(bytes:Uint8Array,check:()=>Promise<void>=async()=>{}){
   const input=this.input;let stage="source";
   try{
+  await check();
   const token=await simulationToken(input),actual=await simulationPlan(input.plan.source,bytes);
   if(JSON.stringify(actual)!==JSON.stringify(input.plan))throw Error('simulation-source-mismatch');
   for(let offset=0;offset<bytes.length;offset+=262144){
    const chunk=bytes.subarray(offset,offset+262144);let binary='';for(let i=0;i<chunk.length;i+=8192)binary+=String.fromCharCode(...chunk.subarray(i,i+8192));
    stage="archive-write";
    const path=`/var/lib/riffology/archives/${token}.${offset}.chunk.json`;
+   await check();
    await this.sandbox.writeFile(path,JSON.stringify({offset,total:bytes.length,sha256:previewSourceFilesSha256(input.plan.source),data:btoa(binary)}));
    stage="archive-upload";
+   await check();
    const result=await this.sandbox.exec(`python3 /opt/riffology/service_upload.py ${token} < ${path}`,{timeout:15000,cwd:'/var/lib/riffology',env:{PATH:'/usr/local/bin:/usr/bin:/bin'}});
    if(!result.success||result.exitCode!==0)throw Error('simulation-upload-unconfirmed');
    const receipt=JSON.parse(result.stdout);if(receipt.token!==token||receipt.offset!==offset||receipt.bytes!==chunk.length||receipt.total!==bytes.length||offset+chunk.length===bytes.length&&receipt.complete!==true)throw Error('simulation-upload-invalid');
@@ -48,14 +56,15 @@ export class SimulationNative{
     if(input.plan.compiler)throw Error('simulation-source-mismatch');
     control={schemaVersion:1,token,runId:input.runId,filesSha256:previewSourceFilesSha256(input.plan.source),specSha256:input.plan.specSha256,entrypoint:execution.entrypoint,entrypointSha256:input.plan.entrypointSha256,dependencyLock:execution.dependencyLock,dependencyLockSha256:input.plan.dependencyLockSha256,parameters:input.parameters,seed:input.seed,deadlineAt:input.deadlineAt};
   }
+  await check();
   await this.sandbox.writeFile(`/var/lib/riffology/services/${token}.input.json`,JSON.stringify(control));
-  stage="native-authorization";
-  // Uploads and control writes can yield. Recheck the original actor and
-  // request after them, immediately before the one native start operation.
+  await check();
+  }catch(error){const code=error instanceof Error?error.message:'transport-error';throw new SimulationOperationError(stage,code);}
+ }
+ async start(bytes:Uint8Array,beforeNativeStart?:()=>Promise<void>){
+  await this.prepare(bytes);
   await beforeNativeStart?.();
-  if(Date.now()>=input.deadlineAt)throw Error('simulation-deadline');
-  stage="native-start";
-  return await this.operation('start');
-  }catch(error){const message=error instanceof Error?error.message:'';console.error('simulation-start-unconfirmed',{runId:input.runId,stage,code:/^[a-z0-9-]{1,100}$/.test(message)?message:'transport-error'});throw error;}
+  if(Date.now()>=this.input.deadlineAt)throw Error('simulation-deadline');
+  return this.operation('start');
  }
 }
