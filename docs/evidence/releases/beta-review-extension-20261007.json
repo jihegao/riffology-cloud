@@ -1,0 +1,128 @@
+{
+  "date": "2026-10-07",
+  "timezone": "Asia/Shanghai",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/104",
+  "authorization": "User explicitly extended trial-account validity through 2026-12-31. User separately authorized the 30-minute capability-protected maintenance Worker and standard User-Agent client format after automatic approval reviews.",
+  "scope": "Same original Private Beta v2 meter-only policy; existing invited personal owners/projects and enabled Invited Runs inherit its review date. No user Turn/provider/tool/experiment request submitted.",
+  "gateway": {
+    "observedAt": "2026-10-06T16:41:15.807110+00:00",
+    "version": "76380e93-a2ab-4cd8-9340-e3587d3956f6",
+    "deployment": "b0d46e8a-77bb-42cf-93d6-0d36d756b537",
+    "trafficPercent": 100,
+    "bindings": 93,
+    "changedPolicyFields": [
+      "reviewAt"
+    ],
+    "codeSha256": "5c33908489385ef7941780c7503bdb24f8e8bd4b8b6bfffe3eaf740d5226c59d",
+    "codeBytesUnchanged": true,
+    "runtimeAndAssetsUnchanged": true,
+    "containerApplicationsUnchanged": 15,
+    "legacyFlags": {
+      "G5_ADMISSION_ENABLED": "false",
+      "M3_SERVICE_ENABLED": "false",
+      "M4_SIMULATION_ENABLED": "false"
+    }
+  },
+  "policy": {
+    "policyId": "private-beta-20260920-v1",
+    "schemaVersion": 2,
+    "quotaMode": "meter-only",
+    "actor": "private-beta-capacity-v1",
+    "previousReviewAt": "2026-10-20T15:59:59.999Z",
+    "reviewAt": "2026-12-31T15:59:59.999Z",
+    "reviewAtMs": 1798732799999,
+    "changedFields": [
+      "reviewAt"
+    ],
+    "startsAtUnchanged": true,
+    "previousPolicySha256": "67885be43123d0ba94f06c7c06200b9fdd4dcf23b6adacf44a8f525466536e86",
+    "policySha256": "695cdd9ece91081e201a3dd03ba2ad7451931a0b588addc6454a1f6db9638031",
+    "pinConfirmed": true,
+    "extendReview": {
+      "observedAt": "2026-10-06T16:40:23.713Z",
+      "invocations": 1,
+      "replayed": false,
+      "operator": "active operator identity and authVersion checked against Catalog; private identifiers retained locally"
+    }
+  },
+  "capacity_readback": {
+    "observedAt": "2026-10-06T16:41:00.241Z",
+    "enabled": true,
+    "paused": false,
+    "active": 0,
+    "quarantined": 0,
+    "slotCount": 33,
+    "callCount": 129,
+    "alertCount": 4,
+    "operationCountBefore": 16,
+    "operationCountAfter": 17,
+    "reservedNanodollars": 1979072050,
+    "usageUnchanged": true,
+    "componentHashesUnchanged": {
+      "slotSha256": "7749dcf68c19a7a050b8a71272f7143669deb058c0df77703cde757ca99235aa",
+      "callSha256": "b7eda21e3b3f0cfc8bdb0dfb1bd5bf0a6712ec516a80930d160a7298c129fbf3",
+      "alertSha256": "b8dcb9aa5bb032a0f400c4ead584fa10eba7d6dcfd038a6df4e09cebbdc02da1"
+    },
+    "ledgerSha256Before": "237f8186a8d96755dd594928a987c1bd9b817dc627463ba5f3e759791b2f752b",
+    "ledgerSha256After": "fef171a629ff23851ed2edc763c0b104acbceb147bfce5facd21aff617795368",
+    "ledgerHashChange": "One extend-review audit appended; original slots, calls, alerts, pause, metering and fees preserved."
+  },
+  "invited_runs": {
+    "policyId": "invited-runs-v1",
+    "policyReady": true,
+    "enabled": true,
+    "paused": false,
+    "occupied": 0,
+    "unknown": 0,
+    "limits": {
+      "maxActiveRuns": 1,
+      "maxRunsPerUser": 1,
+      "maxGroupRuns": 8,
+      "durationMs": 600000,
+      "confirmationGraceMs": 120000
+    },
+    "observed": {
+      "runs": 6,
+      "dispatched": 6,
+      "released": 6,
+      "supervisedMs": 2250010
+    }
+  },
+  "zero_new_execution_evidence": {
+    "requestTrace": [
+      {
+        "method": "GET",
+        "path": "/snapshot",
+        "at": "2026-10-06T16:38:54.900Z"
+      },
+      {
+        "method": "POST",
+        "path": "/extend",
+        "at": "2026-10-06T16:40:23.713Z"
+      },
+      {
+        "method": "GET",
+        "path": "/snapshot",
+        "at": "2026-10-06T16:41:00.241Z"
+      }
+    ],
+    "authoritativeProviderCallCountUnchanged": true,
+    "authoritativeCallHashUnchanged": true,
+    "authoritativeRunRecordsUnchanged": true,
+    "claimBoundary": "No new model/tool/Run execution in this operation. This does not claim zero billing for metadata, Workers deployment or other cloud infrastructure."
+  },
+  "validation": {
+    "existingWorkerdSQLiteReviewExtension": "passed",
+    "exactV2PolicyParsingAndDigest": "passed; only reviewAt changed",
+    "deployment": "100%, all 93 binding identities retained, downloaded code bytes and full runtime/assets config match the original version",
+    "containers": "All 15 original applications retain identity, version, configuration, image, scheduling and max_instances",
+    "paidOrAuthenticatedUserAcceptance": "No new paid execution or ordinary-user acceptance performed. Earlier #165 user acceptance remains historical evidence."
+  },
+  "cleanup": {
+    "temporaryWorker": "riffology-beta-extension-20261007",
+    "deleted": true,
+    "settingsReadback": "10007 script not found"
+  },
+  "operatorSourceSha256": "a73d2117a914bb8db7014bc933b2e3620ac077a0d7cb2ca8410fd447bcf4537a",
+  "remaining_scope": "#104 remains Acceptance/open for standing operation and full exit criteria; this extension does not complete those criteria or settle #101 historical fees."
+}

@@ -1,4 +1,38 @@
-# Current release readiness — 2026-10-02
+# Current release readiness — 2026-10-07
+
+## 2026-10-07 user-authorized trial validity extension through December 31
+
+The current Private Beta review deadline is **2026-12-31 23:59:59.999
+Asia/Shanghai** (`2026-12-31T15:59:59.999Z`). Existing invited accounts and
+personal projects, including enabled Invited Runs, inherit this deadline.
+Gateway `76380e93-a2ab-4cd8-9340-e3587d3956f6` is deployed at 100%, deployment
+`b0d46e8a-77bb-42cf-93d6-0d36d756b537`. Of 93 bindings, only the original
+v2 meter-only policy's `reviewAt` changed. Downloaded Gateway entry bytes,
+all namespace identities, runtime/assets settings and all 15 container
+application identities, versions, images and limits match the original release.
+
+The existing protected `extendReview` RPC ran once on
+`private-beta-capacity-v1`, with the exact old pin, zero occupancy/unresolved
+execution and active operator verification. Independent readback confirms
+configured/persisted pin `695cdd9ece91081e201a3dd03ba2ad7451931a0b588addc6454a1f6db9638031`,
+Open capacity and active/quarantined 0/0. All 33 original slots, 129 observed
+calls, four historical alerts, usage and 1,979,072,050-nanodollar conservative
+reservation remain unchanged; one extension audit takes operations from 16 to 17.
+Invited Runs remain ready, enabled, unpaused and occupied/unknown 0/0; their six
+original dispatched/released leases and records remain exact. G5/M3/legacy M4
+remain closed. Concurrency, timeouts, kill switch and fee history are preserved.
+
+[Redacted release evidence](evidence/releases/beta-review-extension-20261007.json)
+records explicit user authorization, deployment, original actor checksums,
+request trace, authoritative execution counters and independent readbacks.
+The temporary capability-protected maintenance Worker and task credential were
+removed after verification. The existing Workerd/SQLite extension regression
+and exact deployed v2 policy parser/digest checks passed. No new user
+Turn/provider/tool/experiment execution or ordinary-user acceptance was performed;
+metadata/deployment cloud costs are not represented as zero. #104 stays
+**Acceptance/open** for standing-operation exit criteria; the extension does
+not settle #101 or replace remaining acceptance. Earlier dates below are
+historical release snapshots.
 
 ## 2026-10-02 #165 parameter drafts and real Cloud Runs acceptance
 
