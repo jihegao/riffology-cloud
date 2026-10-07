@@ -14,4 +14,4 @@ http.createServer(async(req,res)=>{
   const data=await readFile(file);
   res.writeHead(200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream','Cache-Control':'no-store'});res.end(data);
  }catch{res.writeHead(404,{'Content-Type':'text/plain; charset=utf-8'});res.end('Not found');}
-}).listen(port,'127.0.0.1',()=>console.log(`Riffology UI preview: http://127.0.0.1:${port}`));
+}).listen(port,'127.0.0.1',()=>console.log(`riffoid UI preview: http://127.0.0.1:${port}`));

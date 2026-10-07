@@ -1,4 +1,4 @@
-# Riffology Cloud MVP 系统概要设计
+# riffoid MVP 系统概要设计
 
 日期：2026-09-05  
 状态：设计基线；功能与验收均待实现  
@@ -10,7 +10,7 @@
 
 ## 1. 产品定义与范围
 
-Riffology Cloud 是一个多租户、持久化的 Pi Agent Workspace 服务，首个产品场景是 Python 仿真建模。用户在项目内用自然语言创建和修改模型，运行仿真，查看结果，并在后续 Session 中继续工作。
+riffoid 是一个多租户、持久化的 Pi Agent Workspace 服务，首个产品场景是 Python 仿真建模。用户在项目内用自然语言创建和修改模型，运行仿真，查看结果，并在后续 Session 中继续工作。
 
 主界面采用 PI WEB 风格的极简 Session 交互。Workspace 提供文件、运行和插件能力；Browser 是可选内置插件，负责交互预览和 Agent 观察。关闭 Browser Panel 后，对话、文件和实验仍可正常使用。
 

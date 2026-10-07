@@ -1,4 +1,6 @@
-# Riffology Cloud 工作约定
+# riffoid 工作约定
+
+当前 reviewAt 以已执行的 [PR #169](https://github.com/jihegao/riffology-cloud/pull/169) / #104 最新证据为准：2026-12-31 23:59:59.999 Asia/Shanghai；其文档尚未合并，下文旧 10 月 20 日 reviewAt 已被替代。M1 验收截止仍为 10 月 20 日，历史费用与账本保留。
 
 ## 任务入口与分工
 
@@ -18,7 +20,7 @@
 
 ## 当前产品方向
 
-- 当前版本定义为 **Riffology Cloud Private Beta（邀请制内测版）**：面向受邀用户的受控内测版本，支持 Pi 提需求、修改 Python、保存 Revision、Browser Preview、参数修改与刷新/离开后继续。不承诺 Verified Experiment/Evidence、公开注册、商业 SLA、Credits/支付或多用户高并发。
+- 当前版本定义为 **riffoid Private Beta（邀请制内测版）**：面向受邀用户的受控内测版本，支持 Pi 提需求、修改 Python、保存 Revision、Browser Preview、参数修改与刷新/离开后继续。不承诺 Verified Experiment/Evidence、公开注册、商业 SLA、Credits/支付或多用户高并发。
 - 当前里程碑仍为 [Pi 线上恢复与核心流程验收](https://github.com/jihegao/riffology-cloud/milestone/1)。[#87](https://github.com/jihegao/riffology-cloud/issues/87) 已完成执行隔离与有界核心流程验收，保持关闭；`docs/pi-developer-mode.md` 保留现有实现和证据边界，不重复开发或恢复已结束的临时窗口。
 - 常态容量由 [#104：邀请制内测运行与常态容量](https://github.com/jihegao/riffology-cloud/issues/104) 承接。[#153](https://github.com/jihegao/riffology-cloud/issues/153) 已在原 `private-beta-capacity-v1` 完成 v2 meter-only 迁移：所有当前有效受邀用户及其新个人项目可参与，调用次数和费用额度不再作为准入上限；原计量、费用预留、历史隔离与审计保留。每用户一个 active Turn、全局并发、单次/Turn/tool 时限、监控告警及停止/退出标准仍为硬边界；授权 reviewAt 仍为 2026-10-20 23:59:59.999 Asia/Shanghai。实际开通/暂停和未覆盖验收以 #104 与发布索引最新证据为准。
 - [#152](https://github.com/jihegao/riffology-cloud/issues/152) 的冻结旧项目清单已完成 3 个普通受邀 owner／9 个项目可恢复归档，原身份与历史回执保留。下一轮线上验收使用全新项目；owner 恢复与跨身份验收尚待真实认证身份。不得恢复旧项目或重放旧请求来绕过归档/执行边界。

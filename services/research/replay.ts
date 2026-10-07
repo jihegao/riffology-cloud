@@ -110,7 +110,7 @@ def main():
 if __name__ == '__main__':
     main()
 `;
-export const EXPORT_README=`# Riffology research package
+export const EXPORT_README=`# riffoid research package
 
 This ZIP is a snapshot of the saved project and all selected persisted research history at export time. Source archives and result envelopes retain their original bytes and digests. manifest.json inventories every included file. Internal sessions, authentication state and runtime control receipts are not exported.
 
