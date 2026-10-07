@@ -1,0 +1,600 @@
+{
+  "schema": "riffology.browser-local-runs-fix/v1",
+  "observedAt": "2026-10-07T15:16:11.294839+00:00",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/171",
+  "source": {
+    "base": "e55104b",
+    "implementationCommit": "13efaa441d396e253725b1754886729dd76a8a51",
+    "files": [
+      {
+        "path": "package.json",
+        "sha256": "ed7ba0f55abfacb4709aebf8efe5d51a7af08e0f4d206f09b18b63698d1bdf23"
+      },
+      {
+        "path": "scripts/i18n-check.mjs",
+        "sha256": "497d9b6ae35a181bdd5fcee78f985e124d380debc2e9fc54a1a06ec14c95b316"
+      },
+      {
+        "path": "services/gateway/index.ts",
+        "sha256": "528731e4699efe861e8b073a401f49e7042fba8a3e5e9ca2ad097ce0e6d9b489"
+      },
+      {
+        "path": "services/web/app.js",
+        "sha256": "1eaf14432c09a6aa02b182a7cc27e94bcd3b35fe5a6684271f77eaca1fac73eb"
+      },
+      {
+        "path": "services/web/comparison.js",
+        "sha256": "2eb1ad8e447e292bf0ee7a19082af77508e908c54e46f55164192afb8e4ad9a0"
+      },
+      {
+        "path": "services/web/i18n.js",
+        "sha256": "f1b3d338644bf3149221ee36cee81e05da36991479eaa2be774e71aeb1023754"
+      },
+      {
+        "path": "services/web/local-runs.js",
+        "sha256": "ee34ad93570ba12cfe194e566f6a9c59abe1402289f1957b7463ec6ddf1022fa"
+      },
+      {
+        "path": "services/web/simulation.js",
+        "sha256": "a1074a15741e468b8d4c96f787226a047af67dc6e05bdb01c624cfb354e679a1"
+      },
+      {
+        "path": "services/web/workspace.css",
+        "sha256": "72185e7743ffb7dd1df0d54dd5e3c90e4c309c4f02d1170b63a0ecf470a14e1c"
+      },
+      {
+        "path": "tests/m1/web.test.mjs",
+        "sha256": "6f8b6c3988b5a97408aebafa2b9b6f9642aa207b9575ad89795b2c4f9ce06323"
+      },
+      {
+        "path": "tests/m3/local-runs-pyodide.test.mjs",
+        "sha256": "1b3b6f2286cd8591e2f349578172cf0afc269159ce2c5ab290d6efeb80917e3a"
+      },
+      {
+        "path": "tests/m3/local-runs-ui.test.mjs",
+        "sha256": "49d5ac16eb822a3e7c716f6ac5334987db779039f2e9a02b872baa70cd9b0588"
+      },
+      {
+        "path": "tests/m3/simulation-ui.test.mjs",
+        "sha256": "eafce933ddbebea376a814a46723d01c2e3e8f3870ff9b00b083fe49325753bf"
+      },
+      {
+        "path": "tests/m3/workspace-layout.test.mjs",
+        "sha256": "e03596724bd3a2cd8bc3fbd7fd73cd78b4d305376377b4b57dff386a9305f0fb"
+      }
+    ],
+    "additionalValidationChanges": [
+      "two original cloud Workspace tests now explicitly select cloud"
+    ]
+  },
+  "behavior": {
+    "default": "browser-local",
+    "resultAuthority": "local/unverified",
+    "maxSequentialChildren": 8,
+    "historyRecordsPerScope": 20,
+    "scope": [
+      "tenantId",
+      "projectId",
+      "workspaceId"
+    ],
+    "historicalRecordsAutomaticallyEvicted": false,
+    "cloudFallback": false,
+    "serverWritesFromLocalController": false,
+    "cloudExperimentEvidenceAndPublicationContractsChanged": false,
+    "lifecycle": [
+      "explicit stop",
+      "refresh/leave interruption",
+      "bounded runtime timeout",
+      "late response fencing",
+      "Web Locks per tenant across tabs",
+      "package authorization and identity recheck between children",
+      "download local history"
+    ]
+  },
+  "validation": {
+    "environment": {
+      "node": "26.10.0",
+      "ciNode": "25.3.0",
+      "browser": "Playwright Chromium 1243",
+      "openssl": "3.6.4"
+    },
+    "checkUi": "passed (21)",
+    "typecheck": "passed",
+    "m0": "350 passed, 1 opt-in skipped; preflight/evidence self-tests passed",
+    "m1": "290 passed",
+    "m2": "869 passed",
+    "m3Primary": "943 passed, 12 opt-in skipped; two original cloud test failures fixed by explicitly selecting cloud, then all 29 Workspace tests passed",
+    "m3Runtime": "20 passed",
+    "m3Phase1": "13 passed",
+    "model": "92 passed",
+    "issue73": "30 passed",
+    "researchQuality": "8 Python tests passed",
+    "localUi": "18 passed (included in M3)",
+    "realPyodide": "1 passed (included in M3, rerun after final styles)",
+    "mobile": "390px with expanded frozen-record details, no page horizontal overflow",
+    "executionNote": "npm run check was interrupted after missing legacy fixture module wiring; check:ui/typecheck/M0/M1/M2 completed in its corrected run. M3 and later commands were run explicitly. The final M3 primary run had two cloud expectation failures; only test selection changed, and its entire 29-test Workspace file then passed. No assertion of an uninterrupted npm run check exit 0 or remote CI success.",
+    "logs": {
+      "full-check-final": {
+        "sha256": "8ea2635aa6c6b5fa218011d4aee3c85086bd134d118cfeff578cd531a669f26f",
+        "summaries": [
+          "ℹ tests 21",
+          "ℹ pass 21",
+          "ℹ fail 0",
+          "ℹ skipped 0",
+          "ℹ tests 351",
+          "ℹ pass 350",
+          "ℹ fail 0",
+          "ℹ skipped 1",
+          "ℹ tests 290",
+          "ℹ pass 290",
+          "ℹ fail 0",
+          "ℹ skipped 0",
+          "ℹ tests 869",
+          "ℹ pass 869",
+          "ℹ fail 0",
+          "ℹ skipped 0",
+          "ℹ tests 942",
+          "ℹ pass 916",
+          "ℹ fail 13",
+          "ℹ skipped 12"
+        ]
+      },
+      "m3-final": {
+        "sha256": "f1c554ace9e865a3d43d803a94db542f5ea72cfd4b31c63807e08fc548315072",
+        "summaries": [
+          "ℹ tests 957",
+          "ℹ pass 943",
+          "ℹ fail 2",
+          "ℹ skipped 12"
+        ]
+      },
+      "layout-final": {
+        "sha256": "e5e209fc18fff74fb049f3ba6100d2a740fdc22882274429f9d56faa365517d3",
+        "summaries": [
+          "ℹ tests 29",
+          "ℹ pass 29",
+          "ℹ fail 0",
+          "ℹ skipped 0"
+        ]
+      },
+      "runtime-final": {
+        "sha256": "cdbaad803fdf05903803609f61167cb6a3f780e9d91659b38992724628106b9a",
+        "summaries": [
+          "ℹ tests 20",
+          "ℹ pass 20",
+          "ℹ fail 0",
+          "ℹ skipped 0"
+        ]
+      },
+      "phase1-final": {
+        "sha256": "a22a930981ecd69d79312572322ff5b8c8a00dd6315c4a199f1acb1558b75001",
+        "summaries": [
+          "ℹ tests 13",
+          "ℹ pass 13",
+          "ℹ fail 0",
+          "ℹ skipped 0"
+        ]
+      },
+      "model-final": {
+        "sha256": "9528f5653293a7c725d0a0cd2e3063a23a955f97d7ffdb6f4d6fd27eb5fbd559",
+        "summaries": [
+          "ℹ tests 92",
+          "ℹ pass 92",
+          "ℹ fail 0",
+          "ℹ skipped 0"
+        ]
+      },
+      "issue73-final": {
+        "sha256": "4bf41b54a78e7b8d8f0292d7b588b6b6c352139d67245482482047b6ce5a1c8b",
+        "summaries": [
+          "ℹ tests 30",
+          "ℹ pass 30",
+          "ℹ fail 0",
+          "ℹ skipped 0"
+        ]
+      },
+      "python-final": {
+        "sha256": "e3282e13d2cf64d655e89232d40cdc2a99386042377c643fe6dcc76e3b2e3382",
+        "summaries": []
+      },
+      "real-final": {
+        "sha256": "75352950863ea2b86fa5f13be5a2474c403ae16fd94002730660501f39e32fd6",
+        "summaries": [
+          "ℹ tests 1",
+          "ℹ pass 1",
+          "ℹ fail 0",
+          "ℹ skipped 0"
+        ]
+      }
+    }
+  },
+  "pyodideFixture": {
+    "environment": "local-fixture",
+    "model": "fire",
+    "version": {
+      "revisionId": "revision-cb885e8652f7c0a6faf569a0a6704851770dc2790008514b6c6b2cdc85068614",
+      "filesSha256": "cb885e8652f7c0a6faf569a0a6704851770dc2790008514b6c6b2cdc85068614",
+      "specSha256": "608353ed8149e9befe5652759f1f76719fa990aa537accc52330b474aabdf8c3"
+    },
+    "runtime": {
+      "profileId": "python-stdlib/v1",
+      "runtimeVersion": "pyodide-314.0.6/v1",
+      "adapterVersion": "riffology.model-run/v1",
+      "pythonVersion": "3.14.2",
+      "assetSha256": "0120c8c54ad6806b8db2499c0e1d22f6a2fe821d2c42a60e4b70ee4029f962f1",
+      "visualProtocol": "riffology.visual/v0.1",
+      "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
+      "dependencies": []
+    },
+    "packageIdentity": "a2786f44886d7ef5e591dd26098cb9210cf55a9f7c937bb40288bd6d9c22e7f3",
+    "records": [
+      {
+        "id": "d5a71be8-b7f2-48ab-972f-3c277a46a19a",
+        "execution": "browser-local",
+        "kind": "comparison",
+        "status": "completed",
+        "createdAt": "2026-10-07T15:11:00.401Z",
+        "version": {
+          "revisionId": "revision-cb885e8652f7c0a6faf569a0a6704851770dc2790008514b6c6b2cdc85068614",
+          "filesSha256": "cb885e8652f7c0a6faf569a0a6704851770dc2790008514b6c6b2cdc85068614",
+          "specSha256": "608353ed8149e9befe5652759f1f76719fa990aa537accc52330b474aabdf8c3"
+        },
+        "packageIdentity": "a2786f44886d7ef5e591dd26098cb9210cf55a9f7c937bb40288bd6d9c22e7f3",
+        "runtime": {
+          "profileId": "python-stdlib/v1",
+          "runtimeVersion": "pyodide-314.0.6/v1",
+          "adapterVersion": "riffology.model-run/v1",
+          "pythonVersion": "3.14.2",
+          "assetSha256": "0120c8c54ad6806b8db2499c0e1d22f6a2fe821d2c42a60e4b70ee4029f962f1",
+          "visualProtocol": "riffology.visual/v0.1",
+          "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
+          "dependencies": []
+        },
+        "hypothesis": "Fire density comparison",
+        "configurations": [
+          {
+            "configurationId": "0",
+            "label": "Baseline",
+            "parameters": {
+              "steps": 3,
+              "width": 4,
+              "height": 2,
+              "density": 0.5
+            }
+          },
+          {
+            "configurationId": "1",
+            "label": "Intervention 1",
+            "parameters": {
+              "steps": 3,
+              "width": 4,
+              "height": 2,
+              "density": 0.6
+            }
+          }
+        ],
+        "seeds": [
+          42,
+          43
+        ],
+        "metrics": {
+          "healthy_trees": {},
+          "burning_trees": {},
+          "burned_trees": {},
+          "empty_tiles": {}
+        },
+        "runs": [
+          {
+            "configurationId": "0",
+            "parameters": {
+              "steps": 3,
+              "width": 4,
+              "height": 2,
+              "density": 0.5
+            },
+            "seed": 42,
+            "status": "completed",
+            "metrics": {
+              "healthy_trees": 0,
+              "burning_trees": 1,
+              "burned_trees": 5,
+              "empty_tiles": 2
+            }
+          },
+          {
+            "configurationId": "0",
+            "parameters": {
+              "steps": 3,
+              "width": 4,
+              "height": 2,
+              "density": 0.5
+            },
+            "seed": 43,
+            "status": "completed",
+            "metrics": {
+              "healthy_trees": 1,
+              "burning_trees": 0,
+              "burned_trees": 5,
+              "empty_tiles": 2
+            }
+          },
+          {
+            "configurationId": "1",
+            "parameters": {
+              "steps": 3,
+              "width": 4,
+              "height": 2,
+              "density": 0.6
+            },
+            "seed": 42,
+            "status": "completed",
+            "metrics": {
+              "healthy_trees": 0,
+              "burning_trees": 1,
+              "burned_trees": 5,
+              "empty_tiles": 2
+            }
+          },
+          {
+            "configurationId": "1",
+            "parameters": {
+              "steps": 3,
+              "width": 4,
+              "height": 2,
+              "density": 0.6
+            },
+            "seed": 43,
+            "status": "completed",
+            "metrics": {
+              "healthy_trees": 1,
+              "burning_trees": 0,
+              "burned_trees": 5,
+              "empty_tiles": 2
+            }
+          }
+        ]
+      }
+    ],
+    "appRequests": [
+      {
+        "url": "/",
+        "method": "GET"
+      },
+      {
+        "url": "/styles.css",
+        "method": "GET"
+      },
+      {
+        "url": "/workspace.css",
+        "method": "GET"
+      },
+      {
+        "url": "/favicon.ico",
+        "method": "GET"
+      },
+      {
+        "url": "/local-runs.js",
+        "method": "GET"
+      },
+      {
+        "url": "/simulation.js",
+        "method": "GET"
+      },
+      {
+        "url": "/comparison.js",
+        "method": "GET"
+      },
+      {
+        "url": "/i18n.js",
+        "method": "GET"
+      },
+      {
+        "url": "/i18n-bindings.js",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview.js",
+        "method": "GET"
+      },
+      {
+        "url": "/api/workspaces/workspace/model",
+        "method": "GET"
+      },
+      {
+        "url": "/api/workspaces/workspace/experiments",
+        "method": "GET"
+      },
+      {
+        "url": "/api/workspaces/workspace/experiment-groups",
+        "method": "GET"
+      },
+      {
+        "url": "/api/workspaces/workspace/model",
+        "method": "GET"
+      },
+      {
+        "url": "/api/workspaces/workspace/browser-preview?revisionId=revision-cb885e8652f7c0a6faf569a0a6704851770dc2790008514b6c6b2cdc85068614",
+        "method": "GET"
+      },
+      {
+        "url": "/api/workspaces/workspace/browser-preview/packages/a2786f44886d7ef5e591dd26098cb9210cf55a9f7c937bb40288bd6d9c22e7f3",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2/host.bundle.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/e640951bbc86715d41994d1b11f363ac60bf818cfabbf577770bad4bc8e4c23a/renderer.bundle.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2/host.bundle.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/e640951bbc86715d41994d1b11f363ac60bf818cfabbf577770bad4bc8e4c23a/renderer.bundle.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/3fdaef09e9e365c85e002737720f8d0ab8f278c1c244a2dde6a37663cf488ad4/assets/pyodide-lock.json",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/2ac5eba365ec12839c75c03b39b3be1dd63b798852cc460b014b52238be042f7/assets/pyodide.asm.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/3a0a00dfeaa348ac20f9ef09904233d32d33f644339662d4af368f8a2010f37a/assets/pyodide.asm.wasm",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/69e3f6ccec3e14b465df60be577ca62f536251406b9a00cce019eac5252a2495/assets/pyodide.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/80c5be6babfe03297069703410c3c29404dcf2525d2b128746bae5536f94831f/assets/python_stdlib.zip",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0/delivery/frame.bundle.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/ebbb126a44583b8d619b7100eab233f3f0810acaaa232850826ad3621f78b3eb/delivery/js-frame.bundle.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/a8324250c1d0268eab9915ec62491ba9fce266b50d7069030507b7ef8bdf3a16/delivery/worker.bundle.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/ecc8d10e925d552eae08bca0a43c6ad5cdc53a1f83889b71c2d56eecf1cc3aeb/runtime/canvas.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/4c0cec31da970cc4c3f547be87c792de128831e6f0269a7b81428596c8be46ac/runtime/frame.html",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/d0a6afcbb85b92d2ff5924a70b32b1e44ce691752cdbd1bf45d3cd8c9a4866a8/runtime/frame.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/7af5d4677757a6ef5bfa886fa9e4578e0aa3a59595bb3395083b7cdeeb064ffb/runtime/host.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/bd3a0c065e226cbe7d6c5755b80d24c2c4248c60e17cb205ca59bf707471f888/runtime/js-frame.html",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/19888142cc5f4891ff48b39439097d13f2144cbf46181d134623dae254f99632/runtime/js-frame.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/6b3c56af12009b9b053d0ce097ea9633b47123950e891baa83e71a07773dbf05/runtime/js-scene.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/e848f7d59438be4745473308d7d0d7caca5585fa741cf25ec47f3e7ac129f950/runtime/package-loader.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/ddc80a8321dec64e3373312dc4cbc709eec9d0d34477d7fe61e4b09378c7a197/runtime/protocol.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/2d445184bcea93f59dc0b2e650c96d418b6e08fae1c17d7f7ba648c6ab694f04/runtime/renderer.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24/runtime/sha256.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/86218f40282014072b1850363814edd71bb9f7d604f641d79dc5682fd837cb3c/runtime/worker.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/4875e2d9e8db8bf82f15d1eb950c0327377c5651efafbae42f0e5c94eadb026e/source/contract.ts",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/b625401e119d9fd6c8188c204059fe8fdaf78a7ea5cb3e1e3517eef2b3d9c798/source/model-spec.ts",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/9243ccf1179d9a487059ed507474543c2dc3c7beb9c1456f93ee94d77aaaa4cd/source/package-lock.json",
+        "method": "GET"
+      },
+      {
+        "url": "/browser-preview-assets/c1e77f046229eef182b4ab91531f092772efc21dcdaa1adc13c4702f4ad8eadd/source/prepare-assets.mjs",
+        "method": "GET"
+      },
+      {
+        "url": "/api/workspaces/workspace/browser-preview?revisionId=revision-cb885e8652f7c0a6faf569a0a6704851770dc2790008514b6c6b2cdc85068614",
+        "method": "GET"
+      },
+      {
+        "url": "/api/workspaces/workspace/browser-preview?revisionId=revision-cb885e8652f7c0a6faf569a0a6704851770dc2790008514b6c6b2cdc85068614",
+        "method": "GET"
+      },
+      {
+        "url": "/api/workspaces/workspace/browser-preview?revisionId=revision-cb885e8652f7c0a6faf569a0a6704851770dc2790008514b6c6b2cdc85068614",
+        "method": "GET"
+      },
+      {
+        "url": "/api/workspaces/workspace/browser-preview?revisionId=revision-cb885e8652f7c0a6faf569a0a6704851770dc2790008514b6c6b2cdc85068614",
+        "method": "GET"
+      }
+    ],
+    "executionRequests": [
+      {
+        "url": "/runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+        "cookie": null
+      },
+      {
+        "url": "/runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+        "cookie": null
+      },
+      {
+        "url": "/runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+        "cookie": null
+      },
+      {
+        "url": "/runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+        "cookie": null
+      }
+    ],
+    "serverWrites": 0,
+    "cloudExecution": false,
+    "realPyodide": true,
+    "cpythonMatched": true,
+    "framesAfter": 0
+  },
+  "deployment": {
+    "status": "blocked-not-uploaded",
+    "target": "https://m1.riff-demo.gaojihe.cn",
+    "worker": "riffology-m1-gateway-staging",
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "reason": "original OAuth expired and refresh failed; equivalent-scope browser renewal selected a different account, whose only accepted membership does not include target",
+    "dryRun": "passed; local bundle from historical 2026-10-07 settings snapshot, not fresh authenticated target readback",
+    "mustRecheckBeforeUpload": [
+      "member role and scopes for original account",
+      "current single live version and settings",
+      "93 original bindings and policy pins",
+      "all 15 container application configurations",
+      "current active/unresolved execution and release state"
+    ],
+    "deployed": false,
+    "authenticatedProductAcceptance": false,
+    "newPaidExecution": false,
+    "cloudTimeoutFixed": false,
+    "remainingCloudAcceptance": "https://github.com/jihegao/riffology-cloud/issues/136"
+  },
+  "documentation": [
+    "https://developers.cloudflare.com/workers/wrangler/commands/general/",
+    "https://developers.cloudflare.com/workers/wrangler/commands/workers/"
+  ]
+}

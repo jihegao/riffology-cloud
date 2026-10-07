@@ -1,4 +1,37 @@
-# Current release readiness — 2026-10-02
+# Current release readiness — 2026-10-07
+
+## 2026-10-07 #171 Browser-local Runs implementation; deployment pending
+
+Runs now defaults to **browser-local/unverified** single execution and
+baseline/intervention multi-seed comparison for compatible Python models. It
+reuses #64's fixed Pyodide package and opaque frame, freezes source/package/runtime
+identity and inputs, runs at most eight children sequentially, and retains
+individual metrics with valid/missing counts, means and deltas. Explicit stop,
+refresh/leave interruption, cross-tab Web Locks, per-child authorization rechecks,
+history restoration/download and bounded storage prevent silent replay or loss.
+Existing cloud submissions retain their explicit choice and original receipt
+contracts; local metrics do not enter Experiment/Evidence/publication APIs.
+Terminal historical cloud pause/timeout messages now describe the past run.
+
+Local checks cover the CI stages. M0/M1/M2 and all later stages passed; the M3
+primary run's two original cloud expectations were corrected to select cloud
+explicitly, then its entire 29-test Workspace file passed. Eighteen new local
+interaction tests passed. The real pinned Fire fixture's four Pyodide children
+match CPython, release every iframe, and produce only GET application requests
+with fixture write count zero. Styled desktop/mobile inspection and 390px expanded
+history checks passed. These are local fixture results, not authenticated target
+acceptance or paid execution. Details, exact counts and the interrupted/resumed
+check sequence are in the [implementation evidence](evidence/browser-local-runs-fix-20261007.json).
+
+Implementation is **not deployed**. Original Cloudflare OAuth expired and could
+not refresh; equivalent-scope browser renewal selected another account, without
+access to the target account. A historical-snapshot dry run passed, but fresh
+settings/resources/capacity readback, actual upload, static readback and authenticated
+local Runs acceptance still require the original account login. No cloud Run/Turn
+was submitted. The latest user-project cloud timeout remains outside this fix;
+#136 stays open for its independent acceptance matrix. #171 remains open and
+must not be marked Done on code/PR evidence alone.
+
 
 ## 2026-10-02 #165 parameter drafts and real Cloud Runs acceptance
 
