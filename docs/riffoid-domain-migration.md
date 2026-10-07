@@ -97,9 +97,11 @@ APP_ORIGIN／CSP／auth 值、DNS/routes 和 OAuth callback 清单。不要新�
 ## 本次验证记录
 
 [脱敏准备记录](evidence/riffoid-brand-preparation-20261007.json) 保存检查范围和本地日志摘要。
-既有 CI suites 已逐项运行：2,614 项 Node 测试通过、13 项 opt-in 跳过，Python 研究质量 8 项通过。
+既有 CI suites 已逐项在本地运行：按主检查阶段汇总为 2,614 次 Node 测试通过、13 次 opt-in 跳过，Python 研究质量 8 项通过。
+此口径把 TLS 单项初次失败替换为 OpenSSL 3 复验通过，包含 `check:ui` 的 21 次执行在 `test:m1` 通配中重复计入；不代表独立唯一测试数，额外专项复验另列。
+本地 Node 为 26.10.0；现有 CI 配置为 25.3.0，不能把本地结果当作该 CI 环境已通过。
 最初 `npm run check` 在未改动的 TLS fixture 失败：系统 LibreSSL 不支持 `pkey -check`；
 使用已有 OpenSSL 3 后整个 15 项 preflight 文件通过，并显式完成被中断的其余 suites。
 因此不宣称最初整条命令退出成功。导出研究包最后一次文字修改后的 16 项 ACL／摘要／回执回归与 typecheck 通过。
 新增迁移检查 3 项均通过，四个品牌页面离线截图无脚本错误；编辑文档本地链接与 diff 检查通过。
-GitHub CI 尚待草稿 PR 的独立运行；线上配置、新域认证、真实普通用户与付费执行均未验收。
+已观察到品牌代码 head `d09596fea7ef718c029f1e9ee1ac0a672beed7a5` 的 [GitHub CI run 37620856225](https://github.com/jihegao/riffology-cloud/actions/runs/37620856225) / job `112790470041` 在执行测试前失败。独立复核返回耗时 2 秒、`runner_id=0`、runner name 为空；连接器返回 `steps=[]`，日志读取为 404。两条 annotations 暂未取到，原因未知；不能称为测试失败或推断账单原因。本次未请求重跑 CI。线上配置、新域认证、真实普通用户与付费执行均未验收。

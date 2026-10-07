@@ -6,15 +6,11 @@
     "node": "26.10.0",
     "wrangler": "4.129.0",
     "browser": "existing Chromium via M1_BROWSER_CHANNEL=chromium",
-    "tlsTest": "existing OpenSSL 3.6.4; default system LibreSSL 3.3.6 does not support pkey -check"
+    "tlsTest": "existing OpenSSL 3.6.4; default system LibreSSL 3.3.6 does not support pkey -check",
+    "ciNode": "25.3.0 (configured in .github/workflows/check.yml); CI job did not execute steps"
   },
   "validation": {
     "ciSuites": "All existing CI suites exercised locally. npm run check initially exited 1 at one unrelated TLS fixture; remaining suites were run explicitly. No claim that the initial monolithic command passed.",
-    "uniqueNodeTests": {
-      "passed": 2614,
-      "skipped": 13,
-      "remainingFailures": 0
-    },
     "pythonResearchQualityTestsPassed": 8,
     "tlsFailure": "Existing test and implementation unchanged; reproduced with default LibreSSL. Full 15-test TLS/preflight file passed using existing OpenSSL 3.",
     "afterLastSourceChange": "Typecheck and 16 research-export ACL/digest/receipt tests passed after export README brand update.",
@@ -22,7 +18,31 @@
     "preservation": "No infra, schema, actor, runtime or fixed-asset changes; existing cookie/storage/protocol tokens in edited source preserved.",
     "linksAndDiff": "Edited documents local links and git diff --check passed.",
     "browser": "App, admin, prototype workspace and prototype login titles/wordmarks checked with local intercepted requests; no page script errors; four screenshots visually reviewed.",
-    "githubCI": "Pending after draft PR creation; not claimed passed."
+    "githubCI": {
+      "status": "observed-pre-execution-failure",
+      "sourceHead": "d09596fea7ef718c029f1e9ee1ac0a672beed7a5",
+      "runId": 37620856225,
+      "jobId": 112790470041,
+      "url": "https://github.com/jihegao/riffology-cloud/actions/runs/37620856225",
+      "conclusion": "failure",
+      "durationSeconds": 2,
+      "runnerId": 0,
+      "runnerName": "",
+      "steps": [],
+      "logs": "404 BlobNotFound",
+      "annotations": {
+        "reportedCount": 2,
+        "retrieved": false
+      },
+      "cause": "Unknown; no executed test step. Do not classify as a source-test failure or infer a billing cause.",
+      "evidenceScope": "Steps and missing logs observed through the connected tools; duration, runner fields and annotation count supplied by independent PR review. No CI rerun requested."
+    },
+    "nodeSuiteTestExecutions": {
+      "passed": 2614,
+      "skipped": 13,
+      "remainingFailures": 0,
+      "countingMethod": "Sum of passing results from primary local suite runs after substituting the one successful OpenSSL 3 TLS verification for its initial failure. Includes 21 check:ui executions also counted by the test:m1 wildcard; not a count of unique tests. Additional targeted reruns are reported separately and excluded from this tally."
+    }
   },
   "executionBoundaries": {
     "merged": false,
