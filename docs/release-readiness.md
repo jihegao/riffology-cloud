@@ -1,4 +1,51 @@
-# Current release readiness — 2026-10-07
+# Current release readiness — 2026-10-08
+
+## 2026-10-08 #171 Browser-local Runs deployed; authenticated owner acceptance
+
+[PR #172](https://github.com/jihegao/riffology-cloud/pull/172) is merged as
+`abcc406d6e8ec5a6f68932db7e30906cb70e3de2`. Gateway version
+`aeddf112-a2be-45da-868c-ed576c55d5ec` is deployed at 100%, deployment
+`c6ff55e4-2364-4920-94e0-b8784a1824b5`. Downloaded Worker entry bytes match the
+reviewed minified build; all 23 web assets match source SHA-256. Fresh before/after
+readback confirms all 93 bindings, compatibility settings, policy pins and all
+15 container applications unchanged. No new namespace, capacity policy or image
+was introduced. G5/M3/M4 remain closed.
+
+The original ordinary invited owner used the existing Fire project's saved
+Revision in Safari. Runs defaults to browser-local execution. One single run
+completed with density 0.7, three initial fires and seed 142; a density 0.5/0.6
+comparison completed all four children for seeds 42/43, with valid/missing counts
+2/0 per configuration. Explicit stop produced a cancelled local record. Refresh
+during preparation stopped the request and retained a failed record with
+`Load failed` and a cancelled child, without automatic replay. Completed records,
+manual drafts and the local default survived refresh and leaving/reentering the
+project. The downloaded history preserves frozen Revision/package/runtime,
+inputs, per-child metrics and the stopped records. These results remain
+**local/unverified**, separate from cloud experiments and publication evidence.
+
+The existing authenticated project count route returned exactly equal JSON
+before and after these local runs: Turn, simulation and service admission/dispatch
+fences and all supported native attempt/tool counters are unchanged. Unsupported
+counts remain null. This is project-scoped counter evidence; the target request
+trace, global invited Runs ledger/capacity and second identity remain pending.
+It does not establish global zero cloud execution or settle historical fees.
+The local fixture separately proves GET-only requests, zero fixture writes,
+per-child frame release and Pyodide/CPython metric equality.
+
+The final full M3 rerun passed: primary suite 945 pass / 12 opt-in skip / 0 fail,
+plus browser runtime 20, phase1 13 and model validation 92. Earlier UI, typecheck,
+M0/M1/M2, #73 and Python checks remain recorded in the October 7 evidence.
+GitHub CI did not start because of the account billing/spending-limit failure;
+it is not reported as a passing remote check. Original OAuth access was renewed
+with the same scopes. A proposed temporary reader and an additional raw tail
+were rejected by automatic approval and were never created. The task's original
+CLI tail failed its TLS connection and its subscription is confirmed absent.
+
+[Release and owner acceptance evidence](evidence/releases/issue171-local-runs-release-20261008.json)
+records identities, metrics, deployment hashes, resource invariants, scoped
+counts and remaining coverage. #171 is **Acceptance/open**, with the login blocker
+resolved; #136 retains the cloud timeout and wider cloud acceptance matrix.
+The October 7 section below is the historical pre-deployment snapshot.
 
 ## 2026-10-07 #171 Browser-local Runs implementation; deployment pending
 
