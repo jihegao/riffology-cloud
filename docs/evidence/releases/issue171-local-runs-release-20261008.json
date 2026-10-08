@@ -1,0 +1,861 @@
+{
+  "schema": "riffology.delivery-evidence/v1",
+  "date": "2026-10-08",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/171",
+  "implementationPullRequest": "https://github.com/jihegao/riffology-cloud/pull/172",
+  "status": {
+    "implemented": true,
+    "merged": true,
+    "deployed": true,
+    "publicStaticVerified": true,
+    "authenticatedOwnerLocalAcceptance": true,
+    "paidExecutionAcceptance": false,
+    "project": "Acceptance",
+    "issueOpen": true
+  },
+  "source": {
+    "reviewedHead": "863e3e038077eb1661476b9433bab0d6e2ca07f1",
+    "mergedCommit": "abcc406d6e8ec5a6f68932db7e30906cb70e3de2",
+    "priorEvidence": "docs/evidence/browser-local-runs-fix-20261007.json",
+    "unrelatedUnmergedPullRequestsExcluded": [
+      169,
+      170
+    ]
+  },
+  "deployment": {
+    "worker": "riffology-m1-gateway-staging",
+    "origin": "https://m1.riff-demo.gaojihe.cn",
+    "previousVersion": "76380e93-a2ab-4cd8-9340-e3587d3956f6",
+    "version": "aeddf112-a2be-45da-868c-ed576c55d5ec",
+    "deployment": "c6ff55e4-2364-4920-94e0-b8784a1824b5",
+    "percentage": 100,
+    "entry": {
+      "modules": [
+        {
+          "name": "index.js",
+          "sha256": "6c058d14c7ba114152ba62682768e61c835307e16e2fa75795c2b71fce5fb98b"
+        }
+      ],
+      "expectedEntrySha256": "6c058d14c7ba114152ba62682768e61c835307e16e2fa75795c2b71fce5fb98b",
+      "entryMatch": true
+    },
+    "static": {
+      "origin": "https://m1.riff-demo.gaojihe.cn",
+      "files": [
+        {
+          "path": "/admin.css",
+          "sha256": "bc53389a7d0eda05d95b92edd43a0aa496129e5945bf58ebba762419992bc54a",
+          "byteLength": 2470
+        },
+        {
+          "path": "/admin",
+          "sha256": "d04ea1c538d89d92fe20a9a107a86920c865fc9c3762014923e6af751a924387",
+          "byteLength": 8274
+        },
+        {
+          "path": "/admin.js",
+          "sha256": "87f50e3f2acc6d0dc82c2ed015ad8713745ec7e65a2b01e2cedc2e095f45c41c",
+          "byteLength": 20477
+        },
+        {
+          "path": "/app.js",
+          "sha256": "1eaf14432c09a6aa02b182a7cc27e94bcd3b35fe5a6684271f77eaca1fac73eb",
+          "byteLength": 82240
+        },
+        {
+          "path": "/browser-preview.js",
+          "sha256": "16c4cd504997f3b0a2579a3e58d7721344846c8e4272524b19295caff3db0cc5",
+          "byteLength": 23822
+        },
+        {
+          "path": "/comparison.js",
+          "sha256": "2eb1ad8e447e292bf0ee7a19082af77508e908c54e46f55164192afb8e4ad9a0",
+          "byteLength": 18964
+        },
+        {
+          "path": "/evidence.css",
+          "sha256": "689b6c524bbdafe1c629498be17fefde27718b704151ce138c3e6c276d19bf22",
+          "byteLength": 1002
+        },
+        {
+          "path": "/evidence.js",
+          "sha256": "9b8b3ccd44b17b86969ad3a8ed9f3cfaf99fd1de8bafc1a8af565131713a67b7",
+          "byteLength": 11359
+        },
+        {
+          "path": "/export.js",
+          "sha256": "31991b636dbb69f5baa28e1a8b0c775d187aef9558d18c6a5bb4d5c0af3934ab",
+          "byteLength": 4767
+        },
+        {
+          "path": "/i18n-bindings.js",
+          "sha256": "d54d8c9cc94dd68383eb5dcd7947b7cead768dc283fec43c3f74bf30e303a095",
+          "byteLength": 2559
+        },
+        {
+          "path": "/i18n.js",
+          "sha256": "f1b3d338644bf3149221ee36cee81e05da36991479eaa2be774e71aeb1023754",
+          "byteLength": 143377
+        },
+        {
+          "path": "/",
+          "sha256": "96f3a7f7eeac0cd0d482b15a19b67f0f4a0e4c67ba7bdbae39bfbce59aa71fd7",
+          "byteLength": 14425
+        },
+        {
+          "path": "/layout.js",
+          "sha256": "e67ef7ebc2af83d3ddd570ac41852ccd878e31a78ced20f9d28927ac32295f38",
+          "byteLength": 4859
+        },
+        {
+          "path": "/local-runs.js",
+          "sha256": "ee34ad93570ba12cfe194e566f6a9c59abe1402289f1957b7463ec6ddf1022fa",
+          "byteLength": 16574
+        },
+        {
+          "path": "/locale-preference.js",
+          "sha256": "32651ec625225572f67f3e165687ad11be1028014dc1672a79018eccc01506a3",
+          "byteLength": 2182
+        },
+        {
+          "path": "/previews.js",
+          "sha256": "1a1fb72e1e9a0df7ecd703ebafdb1e73844a3b6d32c689ce8471907f758b3423",
+          "byteLength": 15111
+        },
+        {
+          "path": "/project-status.js",
+          "sha256": "c513b2234d9b43a5f41b2daf2bb97c23c6f7ef784f3967bce2748c23bb6c9ef8",
+          "byteLength": 940
+        },
+        {
+          "path": "/publication.js",
+          "sha256": "bad56dcb76bb02498868772cb402a1f9eaeeac9c7513d1902270f97aff0d6da8",
+          "byteLength": 9756
+        },
+        {
+          "path": "/services.js",
+          "sha256": "b2e9a9aba4a510aecd576f9d7f20c7e1cef405eb05e0695ae2eb9343b3ffc59a",
+          "byteLength": 17559
+        },
+        {
+          "path": "/simulation.js",
+          "sha256": "a1074a15741e468b8d4c96f787226a047af67dc6e05bdb01c624cfb354e679a1",
+          "byteLength": 20362
+        },
+        {
+          "path": "/styles.css",
+          "sha256": "2dfed44aaa1ecb2e66342be7cd6a3df77224be05a38519664143ed75cae6b37a",
+          "byteLength": 4283
+        },
+        {
+          "path": "/verify-handoff.js",
+          "sha256": "570dc33eae85459d536a17781df01e2458fa8479d795d9812d8141a8956107a6",
+          "byteLength": 9571
+        },
+        {
+          "path": "/workspace.css",
+          "sha256": "72185e7743ffb7dd1df0d54dd5e3c90e4c309c4f02d1170b63a0ecf470a14e1c",
+          "byteLength": 19782
+        }
+      ],
+      "matchedSource": true
+    },
+    "preservation": {
+      "bindings": 93,
+      "bindingsExactEqual": true,
+      "containerApplications": 15,
+      "containerApplicationsExactEqual": true,
+      "runtimeSettingsExactEqual": true,
+      "compatibilityDate": "2026-09-09",
+      "compatibilityFlags": [
+        "nodejs_compat",
+        "nodejs_compat_do_not_populate_process_env"
+      ],
+      "policyPinsUnchanged": true,
+      "G5M3M4": "closed",
+      "newNamespaces": false,
+      "newPolicies": false,
+      "newImages": false
+    }
+  },
+  "authenticatedAcceptance": {
+    "browser": "Safari",
+    "identityRange": "Original ordinary invited owner of the named existing project; one authenticated identity only",
+    "projectId": "81424f92-23fb-40fd-8eb1-9c8ea45c690b",
+    "workspaceId": "3b5b6df0-a455-4568-9ee3-f04221bc5be8",
+    "executionDefault": "browser-local",
+    "resultAuthority": "local/unverified",
+    "records": [
+      {
+        "id": "1cc58554-8faa-47aa-b550-5ddd30434d40",
+        "execution": "browser-local",
+        "kind": "single",
+        "status": "failed",
+        "createdAt": "2026-10-08T02:32:41.267Z",
+        "version": {
+          "revisionId": "ebcb8b53b5032127310355a4dedce3e32159b1985a464b8516f86ae4da264f3d",
+          "filesSha256": "4ca85800d20837ab17ca60d7f9fd9c74cebf1b3319a6573b11960e5fa52a8a57",
+          "specSha256": "5049d4562421ef6adb8c80bfd63af96b0f7b0def59e65680375ced5234be6575"
+        },
+        "packageIdentity": null,
+        "runtime": null,
+        "hypothesis": "",
+        "configurations": [
+          {
+            "label": "Local single run",
+            "parameters": {
+              "width": 30,
+              "height": 20,
+              "density": 0.7,
+              "initial_fires": 3,
+              "steps": 100
+            }
+          }
+        ],
+        "seeds": [
+          142
+        ],
+        "metrics": {
+          "healthy_trees": {
+            "unit": "trees",
+            "description": "Trees that remain healthy in the final snapshot"
+          },
+          "burning_trees": {
+            "unit": "trees",
+            "description": "Trees burning in the final snapshot"
+          },
+          "burned_trees": {
+            "unit": "trees",
+            "description": "Trees that have burned in the final snapshot"
+          },
+          "empty_tiles": {
+            "unit": "tiles",
+            "description": "Tiles without trees"
+          }
+        },
+        "runs": [
+          {
+            "configurationId": "0",
+            "parameters": {
+              "width": 30,
+              "height": 20,
+              "density": 0.7,
+              "initial_fires": 3,
+              "steps": 100
+            },
+            "seed": 142,
+            "status": "cancelled",
+            "metrics": null
+          }
+        ],
+        "error": "Load failed"
+      },
+      {
+        "id": "053efdca-36c6-41a2-8f38-006f8d304fe1",
+        "execution": "browser-local",
+        "kind": "single",
+        "status": "cancelled",
+        "createdAt": "2026-10-08T02:32:14.306Z",
+        "version": {
+          "revisionId": "ebcb8b53b5032127310355a4dedce3e32159b1985a464b8516f86ae4da264f3d",
+          "filesSha256": "4ca85800d20837ab17ca60d7f9fd9c74cebf1b3319a6573b11960e5fa52a8a57",
+          "specSha256": "5049d4562421ef6adb8c80bfd63af96b0f7b0def59e65680375ced5234be6575"
+        },
+        "packageIdentity": null,
+        "runtime": null,
+        "hypothesis": "",
+        "configurations": [
+          {
+            "label": "Local single run",
+            "parameters": {
+              "width": 30,
+              "height": 20,
+              "density": 0.7,
+              "initial_fires": 3,
+              "steps": 100
+            }
+          }
+        ],
+        "seeds": [
+          142
+        ],
+        "metrics": {
+          "healthy_trees": {
+            "unit": "trees",
+            "description": "Trees that remain healthy in the final snapshot"
+          },
+          "burning_trees": {
+            "unit": "trees",
+            "description": "Trees burning in the final snapshot"
+          },
+          "burned_trees": {
+            "unit": "trees",
+            "description": "Trees that have burned in the final snapshot"
+          },
+          "empty_tiles": {
+            "unit": "tiles",
+            "description": "Tiles without trees"
+          }
+        },
+        "runs": [
+          {
+            "configurationId": "0",
+            "parameters": {
+              "width": 30,
+              "height": 20,
+              "density": 0.7,
+              "initial_fires": 3,
+              "steps": 100
+            },
+            "seed": 142,
+            "status": "cancelled",
+            "metrics": null
+          }
+        ]
+      },
+      {
+        "id": "77f06350-2179-4734-aca9-929696b367f9",
+        "execution": "browser-local",
+        "kind": "comparison",
+        "status": "completed",
+        "createdAt": "2026-10-08T02:31:33.204Z",
+        "version": {
+          "revisionId": "ebcb8b53b5032127310355a4dedce3e32159b1985a464b8516f86ae4da264f3d",
+          "filesSha256": "4ca85800d20837ab17ca60d7f9fd9c74cebf1b3319a6573b11960e5fa52a8a57",
+          "specSha256": "5049d4562421ef6adb8c80bfd63af96b0f7b0def59e65680375ced5234be6575"
+        },
+        "packageIdentity": "bcbdeb9157d3fdb3d36db2d48ade674aca21fa63729a7d5e0f9dabb0de093d74",
+        "runtime": {
+          "profileId": "python-stdlib/v1",
+          "runtimeVersion": "pyodide-314.0.6/v1",
+          "adapterVersion": "riffology.model-run/v1",
+          "pythonVersion": "3.14.2",
+          "assetSha256": "0120c8c54ad6806b8db2499c0e1d22f6a2fe821d2c42a60e4b70ee4029f962f1",
+          "visualProtocol": "riffology.visual/v0.1",
+          "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
+          "dependencies": []
+        },
+        "hypothesis": "密度 0.6 相较 0.5 是否增加燃烧树木数",
+        "configurations": [
+          {
+            "configurationId": "0",
+            "label": "Baseline",
+            "parameters": {
+              "width": 30,
+              "height": 20,
+              "density": 0.5,
+              "initial_fires": 1,
+              "steps": 100
+            }
+          },
+          {
+            "configurationId": "1",
+            "label": "密度 0.6",
+            "parameters": {
+              "width": 30,
+              "height": 20,
+              "density": 0.6,
+              "initial_fires": 1,
+              "steps": 100
+            }
+          }
+        ],
+        "seeds": [
+          42,
+          43
+        ],
+        "metrics": {
+          "healthy_trees": {
+            "unit": "trees",
+            "description": "Trees that remain healthy in the final snapshot"
+          },
+          "burning_trees": {
+            "unit": "trees",
+            "description": "Trees burning in the final snapshot"
+          },
+          "burned_trees": {
+            "unit": "trees",
+            "description": "Trees that have burned in the final snapshot"
+          },
+          "empty_tiles": {
+            "unit": "tiles",
+            "description": "Tiles without trees"
+          }
+        },
+        "runs": [
+          {
+            "configurationId": "0",
+            "parameters": {
+              "width": 30,
+              "height": 20,
+              "density": 0.5,
+              "initial_fires": 1,
+              "steps": 100
+            },
+            "seed": 42,
+            "status": "completed",
+            "metrics": {
+              "healthy_trees": 259,
+              "burning_trees": 0,
+              "burned_trees": 37,
+              "empty_tiles": 304
+            }
+          },
+          {
+            "configurationId": "0",
+            "parameters": {
+              "width": 30,
+              "height": 20,
+              "density": 0.5,
+              "initial_fires": 1,
+              "steps": 100
+            },
+            "seed": 43,
+            "status": "completed",
+            "metrics": {
+              "healthy_trees": 293,
+              "burning_trees": 0,
+              "burned_trees": 16,
+              "empty_tiles": 291
+            }
+          },
+          {
+            "configurationId": "1",
+            "parameters": {
+              "width": 30,
+              "height": 20,
+              "density": 0.6,
+              "initial_fires": 1,
+              "steps": 100
+            },
+            "seed": 42,
+            "status": "completed",
+            "metrics": {
+              "healthy_trees": 313,
+              "burning_trees": 0,
+              "burned_trees": 38,
+              "empty_tiles": 249
+            }
+          },
+          {
+            "configurationId": "1",
+            "parameters": {
+              "width": 30,
+              "height": 20,
+              "density": 0.6,
+              "initial_fires": 1,
+              "steps": 100
+            },
+            "seed": 43,
+            "status": "completed",
+            "metrics": {
+              "healthy_trees": 364,
+              "burning_trees": 0,
+              "burned_trees": 5,
+              "empty_tiles": 231
+            }
+          }
+        ]
+      },
+      {
+        "id": "2fe33d44-9518-4800-a6ea-b627718e7891",
+        "execution": "browser-local",
+        "kind": "single",
+        "status": "completed",
+        "createdAt": "2026-10-08T02:30:41.962Z",
+        "version": {
+          "revisionId": "ebcb8b53b5032127310355a4dedce3e32159b1985a464b8516f86ae4da264f3d",
+          "filesSha256": "4ca85800d20837ab17ca60d7f9fd9c74cebf1b3319a6573b11960e5fa52a8a57",
+          "specSha256": "5049d4562421ef6adb8c80bfd63af96b0f7b0def59e65680375ced5234be6575"
+        },
+        "packageIdentity": "bcbdeb9157d3fdb3d36db2d48ade674aca21fa63729a7d5e0f9dabb0de093d74",
+        "runtime": {
+          "profileId": "python-stdlib/v1",
+          "runtimeVersion": "pyodide-314.0.6/v1",
+          "adapterVersion": "riffology.model-run/v1",
+          "pythonVersion": "3.14.2",
+          "assetSha256": "0120c8c54ad6806b8db2499c0e1d22f6a2fe821d2c42a60e4b70ee4029f962f1",
+          "visualProtocol": "riffology.visual/v0.1",
+          "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
+          "dependencies": []
+        },
+        "hypothesis": "",
+        "configurations": [
+          {
+            "label": "Local single run",
+            "parameters": {
+              "width": 30,
+              "height": 20,
+              "density": 0.7,
+              "initial_fires": 3,
+              "steps": 100
+            }
+          }
+        ],
+        "seeds": [
+          142
+        ],
+        "metrics": {
+          "healthy_trees": {
+            "unit": "trees",
+            "description": "Trees that remain healthy in the final snapshot"
+          },
+          "burning_trees": {
+            "unit": "trees",
+            "description": "Trees burning in the final snapshot"
+          },
+          "burned_trees": {
+            "unit": "trees",
+            "description": "Trees that have burned in the final snapshot"
+          },
+          "empty_tiles": {
+            "unit": "tiles",
+            "description": "Tiles without trees"
+          }
+        },
+        "runs": [
+          {
+            "configurationId": "0",
+            "parameters": {
+              "width": 30,
+              "height": 20,
+              "density": 0.7,
+              "initial_fires": 3,
+              "steps": 100
+            },
+            "seed": 142,
+            "status": "completed",
+            "metrics": {
+              "healthy_trees": 8,
+              "burning_trees": 0,
+              "burned_trees": 411,
+              "empty_tiles": 181
+            }
+          }
+        ]
+      }
+    ],
+    "comparisonSampleCounts": {
+      "baseline": {
+        "valid": 2,
+        "missing": 0
+      },
+      "intervention": {
+        "valid": 2,
+        "missing": 0
+      }
+    },
+    "stop": {
+      "observed": true,
+      "result": "cancelled local record; cancelled child; no metrics"
+    },
+    "refreshDuringPreparation": {
+      "observed": true,
+      "result": "failed local record with Load failed, child cancelled; no automatic replay",
+      "notClaimed": "Not reported as an interrupted status or a successful execution"
+    },
+    "refreshAndLeaveReenter": {
+      "completedRecordIdsPreserved": true,
+      "manualDraftsPreserved": true,
+      "browserLocalDefaultPreserved": true,
+      "noActiveStopControl": true,
+      "noAutomaticReplayObserved": true
+    },
+    "download": {
+      "schemaVersion": 1,
+      "recordCount": 4,
+      "sha256": "20c1b0eb54ed6a1f33e6cfd4344222760c97e096700f9708ea686259f28b0491",
+      "credentialsIncluded": false
+    }
+  },
+  "authoritativeScopedCounters": {
+    "source": "Existing authenticated GET /api/workspaces/{workspaceId}/g4-compute-counts",
+    "scope": {
+      "tenantId": "bb6742b4-3e8d-44ea-9284-5cd7848ecc20",
+      "projectId": "81424f92-23fb-40fd-8eb1-9c8ea45c690b",
+      "workspaceId": "3b5b6df0-a455-4568-9ee3-f04221bc5be8",
+      "workspaceGeneration": 1
+    },
+    "readOnly": true,
+    "noAddedCalls": true,
+    "entireBeforeAfterJsonEqual": true,
+    "beforeSha256": "8538745f2561834b8ecdbca1cb94b6173fc08d00575597689f3cef4fbbeb17e9",
+    "afterSha256": "8538745f2561834b8ecdbca1cb94b6173fc08d00575597689f3cef4fbbeb17e9",
+    "durableFencesBeforeAndAfter": {
+      "turns": {
+        "admitted": 5,
+        "dispatchClaimed": 5
+      },
+      "simulation": {
+        "admitted": 9,
+        "dispatchClaimed": 8,
+        "startClaimed": 8
+      },
+      "service": {
+        "admitted": 0,
+        "deliveryClaimed": 0
+      }
+    },
+    "projectRuntimeAttemptsBeforeAndAfter": {
+      "init": 1,
+      "startProcess": 0,
+      "execControl": 1,
+      "execFilework": 0,
+      "taskStart": 1
+    },
+    "nativeDispatchCountersBeforeAndAfter": [
+      {
+        "turnId": "521cd9fc-c6e3-4fc1-914a-9d571907d27c",
+        "dispatchId": "b7f6afb6-2cda-4665-80b0-1041a5448f1e",
+        "actorSelection": "cold-turn-dispatch",
+        "projectTools": {
+          "schema": "riffology.g4-native-attempts/v1",
+          "actorId": "c11defa269bd7104df0ad93a9a9451651cae2e27d023d39521233f545927e1e2",
+          "supported": true,
+          "noAddedCalls": true,
+          "semantics": "attempt-before-call",
+          "attempts": {
+            "init": 1,
+            "startProcess": 21,
+            "execControl": 0,
+            "execFilework": 0,
+            "taskStart": 0
+          }
+        },
+        "trustedPi": {
+          "schema": "riffology.g4-native-attempts/v1",
+          "actorId": "c7a3a804d8c4c38a5a98b36ce190ae89b95f1e651891b54ac76009e108af0d93",
+          "supported": true,
+          "noAddedCalls": true,
+          "semantics": "attempt-before-call",
+          "attempts": {
+            "init": 1,
+            "startProcess": 1,
+            "execControl": 0,
+            "execFilework": 0,
+            "taskStart": 1
+          }
+        },
+        "toolLedger": {
+          "supported": true,
+          "noAddedCalls": true,
+          "admitted": 16,
+          "dispatched": 16
+        }
+      },
+      {
+        "turnId": "65bf580c-861a-4eb9-b04b-5ca2e26ff7a5",
+        "dispatchId": "4c184b00-f49c-4bce-be1b-a8c8edfbcaba",
+        "actorSelection": "cold-turn-dispatch",
+        "projectTools": {
+          "schema": "riffology.g4-native-attempts/v1",
+          "actorId": "17ee0c858e8364dd4bba9e3f0829e49ff58b9ede61fd9e33cc91ca2ac18972dd",
+          "supported": true,
+          "noAddedCalls": true,
+          "semantics": "attempt-before-call",
+          "attempts": {
+            "init": 1,
+            "startProcess": 12,
+            "execControl": 0,
+            "execFilework": 0,
+            "taskStart": 0
+          }
+        },
+        "trustedPi": {
+          "schema": "riffology.g4-native-attempts/v1",
+          "actorId": "46c31a280834f2b119cae5461d5c73d81b23fee116f4b951b81328ab7df34f86",
+          "supported": true,
+          "noAddedCalls": true,
+          "semantics": "attempt-before-call",
+          "attempts": {
+            "init": 1,
+            "startProcess": 1,
+            "execControl": 0,
+            "execFilework": 0,
+            "taskStart": 1
+          }
+        },
+        "toolLedger": {
+          "supported": true,
+          "noAddedCalls": true,
+          "admitted": 7,
+          "dispatched": 7
+        }
+      },
+      {
+        "turnId": "51475044-69d6-4c2f-b87e-0003904f0508",
+        "dispatchId": "6fcf4f61-5add-4fe2-a52f-00a7723e0966",
+        "actorSelection": "cold-turn-dispatch",
+        "projectTools": {
+          "schema": "riffology.g4-native-attempts/v1",
+          "actorId": "65151cb50b0b1b78a175bb667dadad605e2a3e8face151dc173610252c181921",
+          "supported": true,
+          "noAddedCalls": true,
+          "semantics": "attempt-before-call",
+          "attempts": {
+            "init": 1,
+            "startProcess": 5,
+            "execControl": 0,
+            "execFilework": 0,
+            "taskStart": 0
+          }
+        },
+        "trustedPi": {
+          "schema": "riffology.g4-native-attempts/v1",
+          "actorId": "d2c0530cc913b0ef5865965713b853e0316785d7e5a988e322117462192ac83d",
+          "supported": true,
+          "noAddedCalls": true,
+          "semantics": "attempt-before-call",
+          "attempts": {
+            "init": 1,
+            "startProcess": 1,
+            "execControl": 0,
+            "execFilework": 0,
+            "taskStart": 1
+          }
+        },
+        "toolLedger": {
+          "supported": false,
+          "noAddedCalls": true,
+          "admitted": null,
+          "dispatched": null
+        }
+      },
+      {
+        "turnId": "48af966c-615a-4de6-8f66-61675f4de725",
+        "dispatchId": "f1929b2f-220d-46c1-9465-42b5df58762e",
+        "actorSelection": "cold-turn-dispatch",
+        "projectTools": {
+          "schema": "riffology.g4-native-attempts/v1",
+          "actorId": "de21e083726e066674ecbe7869f344ada40e3c77c24883087d021ed3a897f742",
+          "supported": true,
+          "noAddedCalls": true,
+          "semantics": "attempt-before-call",
+          "attempts": {
+            "init": 1,
+            "startProcess": 5,
+            "execControl": 0,
+            "execFilework": 0,
+            "taskStart": 0
+          }
+        },
+        "trustedPi": {
+          "schema": "riffology.g4-native-attempts/v1",
+          "actorId": "275578a70dc73d9732fc0dae1a81b23fa8f8831632edb0ff45f4b73b9b3b554c",
+          "supported": true,
+          "noAddedCalls": true,
+          "semantics": "attempt-before-call",
+          "attempts": {
+            "init": 1,
+            "startProcess": 1,
+            "execControl": 0,
+            "execFilework": 0,
+            "taskStart": 1
+          }
+        },
+        "toolLedger": {
+          "supported": true,
+          "noAddedCalls": true,
+          "admitted": 1,
+          "dispatched": 1
+        }
+      },
+      {
+        "turnId": "6605e161-8810-48de-bd21-147ec57b9946",
+        "dispatchId": "dd57e282-9328-4e39-8873-4d8ab854ee51",
+        "actorSelection": "cold-turn-dispatch",
+        "projectTools": {
+          "schema": "riffology.g4-native-attempts/v1",
+          "actorId": "4d74f9dc80882846c0ced30f1c1a383255cc8e0115946ed03f6f68f48b4e9dd6",
+          "supported": true,
+          "noAddedCalls": true,
+          "semantics": "attempt-before-call",
+          "attempts": {
+            "init": 1,
+            "startProcess": 5,
+            "execControl": 0,
+            "execFilework": 0,
+            "taskStart": 0
+          }
+        },
+        "trustedPi": {
+          "schema": "riffology.g4-native-attempts/v1",
+          "actorId": "75bb11c7b4d8f40b5902c9ae80754704e6c68c4357d65b0abe08a1400722041e",
+          "supported": true,
+          "noAddedCalls": true,
+          "semantics": "attempt-before-call",
+          "attempts": {
+            "init": 1,
+            "startProcess": 1,
+            "execControl": 0,
+            "execFilework": 0,
+            "taskStart": 1
+          }
+        },
+        "toolLedger": {
+          "supported": true,
+          "noAddedCalls": true,
+          "admitted": 1,
+          "dispatched": 1
+        }
+      }
+    ],
+    "successfulNativeExecutions": null,
+    "interpretation": "No change in these project-scoped admission/dispatch/start fences or supported native attempt/tool counters. Unsupported/null counts are not zero. The inactive G4 provider window does not measure global Beta provider or invited Runs capacity. No global zero-cloud-execution claim without a target request trace and global counters."
+  },
+  "verification": {
+    "fullM3Rerun": {
+      "command": "npm run test:m3",
+      "exitCode": 0,
+      "primary": {
+        "passed": 945,
+        "skipped": 12,
+        "failed": 0
+      },
+      "browserRuntimePassed": 20,
+      "phase1Passed": 13,
+      "modelValidationPassed": 92
+    },
+    "priorStages": "See October 7 evidence for UI/typecheck/M0/M1/M2/issue73/Python and interrupted/resumed composite checks",
+    "newLocalInteractionCasesPassed": 18,
+    "realPinnedPyodideFixture": {
+      "children": 4,
+      "matchesCPython": true,
+      "remainingFrames": 0,
+      "requests": "GET only",
+      "fixtureWrites": 0,
+      "scope": "fixture, separate from target authenticated acceptance"
+    },
+    "mobileFixture": {
+      "width": 390,
+      "expandedHistoryNoHorizontalPageOverflow": true
+    },
+    "githubCI": {
+      "runId": 37642622901,
+      "jobId": 112866007197,
+      "started": false,
+      "passed": false,
+      "blocker": "GitHub account payments/spending-limit prevented the job from starting; no billing changes performed"
+    }
+  },
+  "cleanupAndAccess": {
+    "oauth": "Original account; equivalent existing scopes renewed by user authorization",
+    "temporaryReader": "Automatically rejected; never created",
+    "additionalRawTail": "Automatically rejected; never created",
+    "originalCliTail": "TLS WebSocket connection failed; existing task-owned subscription confirmed absent",
+    "taskTail": {
+      "tailId": "ec113f50cd594c6688d95d01efb4c16a",
+      "present": false
+    }
+  },
+  "remainingCoverage": [
+    "Target authenticated request trace unavailable after tail TLS failure; project counters do not replace the missing trace",
+    "Global invited Runs occupancy/unknown/release and fee ledger readback not collected; no temporary reader created",
+    "Second authenticated identity and cross-project live isolation remain pending; targeted fixture coverage is separate",
+    "Target live iframe/native resource inspection not captured; fixture frame release passed",
+    "Independent cloud failure/timeout/cancellation/lost-receipt/isolation/publication acceptance remains under issue 136",
+    "GitHub remote CI blocked externally by billing; local checks are not mislabeled as remote CI",
+    "Existing deployed policy review date differs from the latest supplied AGENTS date; this release preserves current live pins and grants no renewal"
+  ],
+  "preservedHistoricalState": "No old cloud Run/Turn replay, archive restoration, model/source/spec edit, fee reset, policy or capacity change, automatic retry/provider fallback, or local-metric promotion into authoritative Evidence/publication."
+}
