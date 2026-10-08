@@ -112,7 +112,7 @@
   },
   "authorization": "User provided public fields and authorized read-only binding classification, documentation and PR173 push. Public field provision is NOT approval to modify OAuth/security/live source.",
   "remaining": {
-    "originalCloudflareZoneMetadata": "Still pending prior WAF/DNS/SSL-TLS/Network/Transforms/Skip/order and transport conflicts; do not bypass denied APIs or expand permissions",
+    "originalCloudflareZoneMetadata": "Partially collected: userWAFnone/SSLFull/PseudoIPv4Off and parent-inspected DNS/Managed Transform limited facts in docs/evidence/riffoid-original-zone-user-fields-20261008.json; custom Request Header Transform pending parent question, no duplicate investigation",
     "liveClientAssociation": "Not independently verifiable through Secret value; separate owner confirmation/current authorized nonsecret evidence at action time, no secret request",
     "securityResourcesRollbackAndPlatformAcceptance": "Unchanged pending actual key/pin/replay namespace/migration/complete production snapshot/platform validation and explicit exact-package approval"
   },
@@ -124,8 +124,8 @@
     "experimentsPaidRunsInstallsMerge": false
   },
   "documentationSha256": {
-    "docs/riffoid-two-account-configuration-package.md": "55b25323ba66e8b79416873639fe92ac3831359efc4830a301bddaaaab422c8b",
-    "docs/riffoid-two-account-security-overlay.example.jsonc": "b04fe19eee9426083f9be4778899aa9ff9b83103b5c373fd47d51838463dda74",
+    "docs/riffoid-two-account-configuration-package.md": "4265a369395646a6b9eec8d70c8db0eb480287b4a387333087e841ef3a8eec2d",
+    "docs/riffoid-two-account-security-overlay.example.jsonc": "52eec1fb69c4a449f2ce3a820feafb5df33701c5ea429ad79152887a7f432722",
     "docs/riffoid-entry-signature.md": "0072ca4008c67e8cbced3c4fbcc746141afb9b2b3707b58519586545a3196154",
     "infra/riffoid-forward-rollback.request.jsonc": "a31e55186a0960ed7fc76d27e4fd1c212c141fc17fe44d523e927341c50a062a"
   },
@@ -134,5 +134,6 @@
     "runtimeTestsOrExperimentsRun": false,
     "liveOAuthOperations": false,
     "sourceChanges": false
-  }
+  },
+  "oldZoneSupplement": "docs/evidence/riffoid-original-zone-user-fields-20261008.json"
 }

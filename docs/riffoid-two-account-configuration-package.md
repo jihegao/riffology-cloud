@@ -8,12 +8,14 @@
 
 **Google公开字段更新（11:10–11:27 UTC用户提供）**：完整client ID、三条redirect、两条JS origins、Branding域与空白链接已收齐，非Google独立读回；11:30:24 UTC现有授权CloudflareGET确认live `GOOGLE_CLIENT_ID`为`secret_text`，未读或比对Secret值，活跃client对应仍未独立确认。本次仅拟向该用户提供client新增新callback，资料不等于OAuth修改批准；[公开字段与绑定类型证据](evidence/riffoid-google-public-fields-20261008.json)。旧Cloudflare字段仍待，不再索要已收齐的Google公开字段。
 
+**旧zone资料补充（用户11:33 UTC及父任务附件核查）**：WAF无规则/SSLFull/PseudoIPv4Off是用户报告；父任务DNS导出只证实候选同名记录及相关wildcard在该快照中的限定结论，Managed Transform截图未显示zone名且未显示自定义Request Header Transform列表，后者已由父任务询问、待答；本任务不重复下载或扩大调查。[限定来源证据](evidence/riffoid-original-zone-user-fields-20261008.json)。资料不是修改批准。
+
 ## 账号、资源与通道
 
 | 范围 | 已实际读取 | 尚缺 / 不能推断 |
 | --- | --- | --- |
 | 原账号 | `8b0d70250211aa10d89e20605a1c7e5e`，Jihe.gao@gmail.com；memberships返回 accepted / `Super Administrator - All Privileges` | 账号角色不等于当前 OAuth/token 能读取或写入每个 endpoint |
-| 原 zone | gaojihe.cn，`c97b548800561fada1a912c234696db1`，active/full，Free Website；NS abdullah/isla.ns.cloudflare.com | WAF规则及顺序/Skip、内部DNS记录、TLS/Network/Transforms当前值未读出 |
+| 原 zone | gaojihe.cn，`c97b548800561fada1a912c234696db1`，active/full，Free Website；用户11:33 UTC报告WAF无规则/SSLFull/PseudoIPv4Off；父任务DNS导出及Managed Transform截图限定结论见下文 | 不是新API读回；截图zone名称不可见，自定义Request Header Transform列表未显示、已询问待答；完整当前route/resource/security与平台验收仍待 |
 | 原 Gateway | `riffology-m1-gateway-staging`；现 active版本 `aeddf112-a2be-45da-868c-ed576c55d5ec`，100%；workers.dev=false、previews=false | 发布前重新冻结完整93 bindings/vars/assets/config，不能用精简模板部署 |
 | 原 Execution | `riffology-browser-execution`；现 active版本 `c94df077-02a1-460f-8158-e47a338e68af`，100% | 发布前重读完整4 bindings/固定资产/摘要/CSP，原独立 origin不变 |
 | 新账号 / zone | `3232ebc7e9bb0199b92e3d70b07825af` / riffoid.com `b0b0079990e13eb20a17a2d3c41403b8`，Free；现Safari session可读；唯一active成员，DNS0、zone routes0、Worker项目0、custom rules表空、SSL Full、Pseudo IPv4 Off | 成员角色图标/API scopes与 managed-transform开关的状态没有文本读值；不能当作写入通道已验证 |
@@ -24,7 +26,7 @@
 
 ## 推荐 transport 与精确差异
 
-推荐 **`https://riffoid-transport.gaojihe.cn`**，备选 **`https://m1-transport.riff-demo.gaojihe.cn`**。两者属于已核验原账号zone的命名空间，没有匹配上面四条路由或两个Gateway Custom Domains；公开DNS读值均NXDOMAIN。推荐一级hostname便于精确审计、不混入旧App/preview前缀。但DNS API未读取成功，不能宣称内部记录不存在或可直接创建。
+推荐 **`https://riffoid-transport.gaojihe.cn`**，备选 **`https://m1-transport.riff-demo.gaojihe.cn`**。两者属于已核验原账号zone的命名空间，没有匹配上面四条路由或两个Gateway Custom Domains；公开DNS读值均NXDOMAIN。推荐一级hostname便于精确审计、不混入旧App/preview前缀。DNS API未读取成功；后来父任务检查用户DNS导出`gaojihe.cn.txt`（导出标2026-10-08 11:29:57，未标时区），两候选均无同名记录。导出三wildcard仅`*.preview.local.riffology.gaojihe.cn`、`*.preview.m1.riff-demo.gaojihe.cn`、`*.preview.riff-demo.gaojihe.cn`，均不覆盖候选；无`*.gaojihe.cn`或`*.riff-demo.gaojihe.cn`。这是导出快照，不证明当前所有资源/route无冲突或可直接创建；不发布完整导出/无关记录。
 
 拟在**原账号**给现Gateway增加一个精确Custom Domain，保留原两个domain/四条路由，Gateway仍用原绑定；**新账号**拟创建轻量`riffoid-entry`，精确Custom Domain `app.riffoid.com`，固定public HTTPS目标，`global_fetch_strictly_public`，无D1/R2/DO/container/service-binding/auth-secret。两边均关闭未批准的workers.dev/preview aliases，按精确topology拒绝其他host。[官方Custom Domains](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/)会创建DNS并签发对应证书，包括多级subdomain；必须核验目标没有冲突CNAME、具体证书/TLS成功，不能假定wildcard覆盖。无跨账号CNAME/SaaS/service binding。
 
@@ -45,7 +47,7 @@ Google精确from/to以用户2026-10-08 11:10–11:27 UTC清单为来源（非独
 | Branding authorized domains | `gaojihe.cn` | 保持原项，当前不拟新增 |
 | Homepage / Privacy / Terms | 三项均空 | 保持空，不填造法律链接 |
 
-只有实际需要并另获精确from/to批准时才建议增加JS origin或Branding域，不因新callback自动增补这些字段。原三条callback全部保留供原流程/回退，资料收齐不是OAuth修改授权；旧Cloudflare安全/DNS/Transform等资料仍待。Execution只联动APP_ORIGIN与唯一frame-ancestors为新canonical；固定独立 `https://riffology-browser-execution.jihe-gao.workers.dev`、assets/摘要/门禁保持，不添加双ancestor。
+只有实际需要并另获精确from/to批准时才建议增加JS origin或Branding域，不因新callback自动增补这些字段。原三条callback全部保留供原流程/回退，资料收齐不是OAuth修改授权；旧Cloudflare资料现部分收齐，限定结论见下述补充；自定义Request Header Transform等未覆盖项仍待。Execution只联动APP_ORIGIN与唯一frame-ancestors为新canonical；固定独立 `https://riffology-browser-execution.jihe-gao.workers.dev`、assets/摘要/门禁保持，不添加双ancestor。
 
 可审阅表达式/配置字段见[非执行安全草案](riffoid-two-account-security-overlay.example.jsonc)。Free方案官方有5条custom rules容量，但原zone现用量/顺序未知；新表空不等于两条表达式已编译或有效。没有付款升级、新凭据或权限授权。
 
@@ -85,7 +87,9 @@ http.host eq "riffoid-transport.gaojihe.cn" and cf.worker.upstream_zone ne "riff
 现原账号SDK GET读取WAF entrypoint及DNS/managed_headers/header-transforms返回10000，SSL与pseudo_ipv4返回9109；不是ruleset不存在的404，也不是没有账号角色。官方[WAF entrypoint读取](https://developers.cloudflare.com/waf/custom-rules/custom-rulesets/)要求Zone WAF Read或Write；没有为此申请新grant、创建token、扩scope或反复尝试拒绝endpoint。
 
 1. **Google非秘密字段已由用户提供**：完整ID、现redirect/JS origins/Branding域与空白链接见上表及[字段证据](evidence/riffoid-google-public-fields-20261008.json)。来源是用户11:10–11:27 UTC，非独立Google读回。原Gateway11:30:24 UTC实际GET只确认绑定`secret_text`，未读取Secret值；活跃client关联留待行动时现owner确认/现授权非秘密证据，不重复索要已提供字段、不请求Secret、新SafariJS权限或绕过接口。[客户端列表](https://console.cloud.google.com/auth/clients?pli=1&project=gen-lang-client-0139341395)和[Branding入口](https://console.cloud.google.com/auth/branding?project=gen-lang-client-0139341395)仅为已有参考链接，本轮未操作Google页面或OAuth流程。
-2. **原Cloudflare只读权限/元数据**：目标明确为原账号`8b0d70250211aa10d89e20605a1c7e5e` / gaojihe.cn zone `c97b548800561fada1a912c234696db1`。现认证拒绝WAF与DNS/Transforms读取、设置读取；所需读取权限分别是该zone的**Zone WAF Read、DNS Read、Zone Settings Read**，Transforms/rulesets还须对应现产品read权限核验。只列缺项，不授予、扩scope或创建token，也不绕过API拒绝去获取同一受限数据。用户可在[既有原账号zone入口](https://dash.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/gaojihe.cn)自行提供Security Rules规则顺序/action/Skip、DNS两候选hostname冲突、SSL/TLS与Network/PseudoIPv4、Managed/Request Header Transform现值；这是用户手工清单，不是本代理另取会话突破权限。
+2. **原Cloudflare限定资料已部分收齐**：原账号`8b0d70250211aa10d89e20605a1c7e5e` / gaojihe.cn zone`c97b548800561fada1a912c234696db1`。此前认证API读取WAF/DNS/Transforms/settings失败的记录保留，不绕过、不扩scope/token；本轮不重复调查。用户11:33 UTC报告Security/WAF无规则、SSLFull、PseudoIPv4Off，非独立截图/API证明。父任务只读检查DNS导出：两候选无同名记录，三preview wildcard不覆盖候选，未标时区的导出时间与快照边界见上文。
+
+   父任务实际像素检查`image.png`显示Managed Transforms / HTTP request headers：**Remove visitor IP headers关闭**；**Add True-Client-IP左置灰显、显为未启用，灰显原因未知**。截图未显示zone名称，仅结合用户旧zone上下文归属，不能称独立核验zone；截图未展示自定义Request Header Transform列表。父任务已询问用户自定义规则有无，待答，本任务不重复索要。完整当前route/resource/security/平台边界仍需行动时冻结，旧zone截图不证明新zone入口原生IP/WAF边界。只记录[限定结论和来源](evidence/riffoid-original-zone-user-fields-20261008.json)，不上传完整DNS/截图或无关数据。这些资料不是修改权限批准。
 3. **新账号最小发布通道选项**：优先用户在[现新账号Workers & Pages入口](https://dash.cloudflare.com/3232ebc7e9bb0199b92e3d70b07825af/workers-and-pages)和[riffoid.com zone入口](https://dash.cloudflare.com/3232ebc7e9bb0199b92e3d70b07825af/riffoid.com)手工执行逐项批准的Worker/Custom Domain/安全差异；不需要给代理新token。若已有新账号授权CLI/CI通道，可以先提供其存在/账号归属和权限元数据供只读核验，不提供秘密。没有现通道时停止；新OAuth登录/grant/token必须另有精确范围批准，当前不生成。本包尚有来源校验和现配置缺值，**现在不能执行部署**。
 
 原Cloudflaretab已恢复account home；本任务新开的Google客户端list只读tab保留便于手工提供清单，其他用户tab保持。没有读取私有项目内容、浏览器历史、profile、cookie或secret。

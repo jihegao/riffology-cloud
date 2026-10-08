@@ -186,7 +186,7 @@
     }
   },
   "mustVerifyBeforeExecution": [
-    "Old WAF order/Skip/capacity, internal DNS conflict, IP transforms and TLS (zone/plan/ownership/member role/routes/domains now read)",
+    "Original-zone WAFnone/SSLFull/PseudoIPv4Off reported by user and DNS/Managed Transform limited attachment findings recorded; custom Request Header Transform pending, full current route/resource/security snapshot and source/native-IP platform acceptance still required",
     "Exact selected transport route and TLS; no default/worker.dev/alternate-host bypass",
     "Signed-entry implementation/regressions reviewed; separately approve actual key creation/public pin/new replay namespace plus exact source/IP WAF platform proof and complete config",
     "Both rules expression support and actual platform-generated provenance under new Custom Domain Worker fetch",
@@ -287,5 +287,13 @@
     "rateLimits": "Installed BetterAuth1.7.3 unchanged: basic30/60s, sign-in3/10s and original stricter endpoints",
     "currentRuntimeMode": "defaults disabled; no production key/pin/namespace or native-IP boundary configured; shared-limited remains prohibited for deployment",
     "newSecretsPermissionsServiceBindings": "One entry-only private-key Secret and one original-account SQLite replay DO requested, not created; no original auth secret reuse/service binding/cross-account CNAME"
+  },
+  "originalZoneUserAndParentAttachmentSupplement": {
+    "evidence": "docs/evidence/riffoid-original-zone-user-fields-20261008.json",
+    "WAFSSLAndPseudoIPv4": "User11:33UTC: no WAF rules / SSLFull / PseudoIPv4Off; not independently verified via screenshot/API",
+    "DNS": "Parent-inspected export2026-10-08 11:29:57(no timezone): two candidates no same-name records, only three preview wildcard names not covering candidates; export does not prove routes/resources",
+    "ManagedTransforms": "Parent pixel inspection: Remove visitor IP headersOff; AddTrueClientIP left-greyed appears disabled, reason unknown. No zone name; old-zone attribution from user context only. No custom Request Header Transform list.",
+    "pending": "Custom Request Header Transform existence/list already asked by parent; awaiting user reply; no duplicate download/investigation",
+    "changeAuthorization": false
   }
 }

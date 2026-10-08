@@ -1,0 +1,60 @@
+{
+  "schema": "riffoid-original-zone-user-attachments-v1",
+  "recordedUTC": "2026-10-08T11:37:49.977260+00:00",
+  "scope": "Bounded parent-task attachment conclusions and user reports only; no repeated download, fresh zone API query, full attachment publication or online changes",
+  "userReport": {
+    "source": "User2026-10-08 11:33UTC, not independent screenshot/API verification",
+    "zoneContext": "gaojihe.cn original account",
+    "SecurityWAF": "No rules reported",
+    "SSL": "Full reported",
+    "PseudoIPv4": "Off reported"
+  },
+  "dnsExport": {
+    "source": "Parent task read-only inspection of provided DNS export gaojihe.cn.txt",
+    "libraryFileId": "libfile_262d0e8835708191807e997b72b71d48",
+    "exportTimestampText": "2026-10-08 11:29:57",
+    "timestampTimezone": "Not specified; do not label UTC",
+    "candidateNames": [
+      "riffoid-transport.gaojihe.cn",
+      "m1-transport.riff-demo.gaojihe.cn"
+    ],
+    "sameNameRecordsInExport": false,
+    "wildcardNamesInExport": [
+      "*.preview.local.riffology.gaojihe.cn",
+      "*.preview.m1.riff-demo.gaojihe.cn",
+      "*.preview.riff-demo.gaojihe.cn"
+    ],
+    "candidateCoveredByTheseWildcards": false,
+    "absentWildcards": [
+      "*.gaojihe.cn",
+      "*.riff-demo.gaojihe.cn"
+    ],
+    "limits": "Export snapshot only; does not prove present DNS, ownership of every resource, absence of other resource/custom domain/route conflicts or deployment readiness",
+    "fullExportUploaded": false
+  },
+  "managedTransformImage": {
+    "source": "Parent task actual pixel inspection of image.png",
+    "libraryFileId": "libfile_c7eba04bff048191abafac7f0fc1203a",
+    "displayedSection": "Managed Transforms / HTTP request headers",
+    "RemoveVisitorIPHeaders": "Off",
+    "AddTrueClientIP": "Left-position greyed control, appears not enabled; greyed reason unknown",
+    "zoneNameVisible": false,
+    "zoneAttribution": "Original zone from current user context only, not independent zone verification",
+    "customRequestHeaderTransformListVisible": false,
+    "fullImageUploaded": false
+  },
+  "stillPending": [
+    "Custom Request Header Transform rules existence/list/order; parent already asked user, awaiting reply",
+    "Action-time complete route/resource/TLS/native-IP/security snapshot and real platform acceptance; DNS export is not route/resource inventory",
+    "New-zone direct-visitor/native-IP boundary remains separately required; old-zone screenshot does not prove it",
+    "Production signing key/pin/replay namespace/migration/full rollback freeze and explicit exact-package approval unchanged"
+  ],
+  "authorization": "Read-only reporting/documentation/push only; provided fields/files do not authorize DNS/WAF/TLS/Transform/OAuth/deployment changes",
+  "noRepeatedDownloadOrInvestigation": true,
+  "noCompleteUnrelatedAttachmentDataPublished": true,
+  "productionChanges": false,
+  "documentationSha256": {
+    "docs/riffoid-two-account-configuration-package.md": "4265a369395646a6b9eec8d70c8db0eb480287b4a387333087e841ef3a8eec2d",
+    "docs/riffoid-two-account-security-overlay.example.jsonc": "52eec1fb69c4a449f2ce3a820feafb5df33701c5ea429ad79152887a7f432722"
+  }
+}
