@@ -1,0 +1,161 @@
+{
+  "status": "CODE_FROZEN_CONFIGURATION_PENDING_NOT_READY_TO_CUTOVER",
+  "authorization": "User 2026-10-08T12:33:01Z Sentinel_d74bc92248288191a1631d8044d57811; approval packet a0ab4881d585831d0b0d7e220d69632c681a8c46",
+  "sourceCommit": "9c6d8d4f6b83c47dd8741ac9153b9ef20b5d0c5a",
+  "artifacts": [
+    {
+      "name": "entry",
+      "source": "services/entry/index.ts",
+      "date": "2026-09-06",
+      "flags": [
+        "global_fetch_strictly_public",
+        "enable_request_signal"
+      ],
+      "file": "entry.worker.mjs",
+      "bytes": 16198,
+      "sha256": "856eb92c777ee04a569dfe53f5bec44d90566341e9c2d3632bf7f4c75de9a0eb",
+      "exports": [
+        "default",
+        "entry",
+        "entryResponse"
+      ],
+      "gzipBytes": 4832
+    },
+    {
+      "name": "gateway",
+      "source": "services/gateway/index.ts",
+      "date": "2026-09-09",
+      "flags": [
+        "nodejs_compat",
+        "nodejs_compat_do_not_populate_process_env",
+        "enable_request_signal"
+      ],
+      "file": "gateway.worker.mjs",
+      "bytes": 5497752,
+      "sha256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290",
+      "exports": [
+        "ContainerProxy",
+        "EntryReplayGuard",
+        "G5ControlledWindow",
+        "G5TenantModelBudget",
+        "InvitedRunCapacity",
+        "ManagedProductRuntime",
+        "ModelProxyService",
+        "ObserverExecutor",
+        "PiDeveloperBudget",
+        "PrivateBetaCapacity",
+        "ProductTurnRuntime",
+        "ProductionModelBudget",
+        "ProjectRuntime",
+        "ProjectToolSandbox",
+        "RevisionStore",
+        "ServiceRun",
+        "ServiceRuntime",
+        "ServiceSandbox",
+        "SimulationSandbox",
+        "TenantModelBudget",
+        "TenantQuota",
+        "ToolArtifactStore",
+        "ToolBridgeAgent",
+        "ToolBridgeService",
+        "TrustedPiCapacity",
+        "TrustedPiSandbox",
+        "WorkspaceAgent",
+        "default"
+      ],
+      "gzipBytes": 1044006
+    },
+    {
+      "name": "execution",
+      "source": "services/browser-preview/execution/index.ts",
+      "date": "2026-09-05",
+      "flags": [
+        "nodejs_compat",
+        "nodejs_compat_do_not_populate_process_env"
+      ],
+      "file": "execution.worker.mjs",
+      "bytes": 48591,
+      "sha256": "f1802d653be025811c81334c2cce92bd2d8c408a8cabd30cf039704ef7e88717",
+      "exports": [
+        "default"
+      ],
+      "gzipBytes": 7848
+    },
+    {
+      "name": "forward-rollback",
+      "source": "services/gateway/forward-rollback.ts",
+      "date": "2026-09-09",
+      "flags": [
+        "nodejs_compat",
+        "nodejs_compat_do_not_populate_process_env",
+        "enable_request_signal"
+      ],
+      "file": "forward-rollback.worker.mjs",
+      "bytes": 5498336,
+      "sha256": "319121c411ed2c45e5f952784adbc4823e0e36dabe3d0ee7298b4db8befbce5a",
+      "exports": [
+        "ContainerProxy",
+        "EntryReplayGuard",
+        "G5ControlledWindow",
+        "G5TenantModelBudget",
+        "InvitedRunCapacity",
+        "ManagedProductRuntime",
+        "ModelProxyService",
+        "ObserverExecutor",
+        "PiDeveloperBudget",
+        "PrivateBetaCapacity",
+        "ProductTurnRuntime",
+        "ProductionModelBudget",
+        "ProjectRuntime",
+        "ProjectToolSandbox",
+        "RevisionStore",
+        "ServiceRun",
+        "ServiceRuntime",
+        "ServiceSandbox",
+        "SimulationSandbox",
+        "TenantModelBudget",
+        "TenantQuota",
+        "ToolArtifactStore",
+        "ToolBridgeAgent",
+        "ToolBridgeService",
+        "TrustedPiCapacity",
+        "TrustedPiSandbox",
+        "WorkspaceAgent",
+        "default"
+      ],
+      "gzipBytes": 1044166
+    }
+  ],
+  "entryBootstrap": {
+    "file": "entry.disabled.json",
+    "sha256": "de0f84cf099ca4a12947f67db7351160f9f6b6a656c6bc519051240d23f453df",
+    "mode": "disabled",
+    "privateKeyIncluded": false,
+    "domainBindingIncluded": false,
+    "nativeIpAckIncluded": false
+  },
+  "gatewayAndRollbackExportsEqual": true,
+  "replayNamespaceId": null,
+  "migrationHistory": null,
+  "publicPin": null,
+  "productionConfigurationSnapshots": null,
+  "productionAssetsHashes": null,
+  "liveReadback": {
+    "attemptUTC": "2026-10-08T12:37:42.409013+00:00",
+    "status": "BLOCKED_EXISTING_AUTH_EXPIRED",
+    "sandboxAndApprovedNetworkReadBothFailed": true,
+    "message": "Existing Wrangler authentication expired; non-interactive refresh failed",
+    "newLoginTokenGrant": false,
+    "metadataObtainedThisRound": false,
+    "productionChanges": false
+  },
+  "platformAcceptance": "not run",
+  "productionChanges": false,
+  "currentMain": "25609953f5c3b69dcb44e520d7e7ed1253d18fe4",
+  "checks": {
+    "allFourBundlesAndBuilderNodeSyntax": "passed",
+    "sha256RecomputedFromFiles": "passed",
+    "gatewayRollbackExportsEqual": true,
+    "runtimeOrPaidTestsRun": false
+  }
+}
