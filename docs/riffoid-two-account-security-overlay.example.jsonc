@@ -112,11 +112,78 @@
   },
   "oauthAndExecutionDifferenceAfterApproval": {
     "googleAddOnly": "https://app.riffoid.com/api/auth/callback/google",
-    "googleCurrentConsoleList": "Existing session/client list read: Default Gemini Project / Riffology M1 staging / Web application. Callback/JS origin/authorized domain values not read; no secret fields.",
+    "googleCurrentConsoleList": "User2026-10-08 11:10–11:27UTC provided full public fields; not independent Google readback. Live Gateway GOOGLE_CLIENT_ID is secret_text, no value read or active association confirmed.",
     "executionAppOriginAndSingleAncestor": "https://app.riffoid.com",
     "executionOriginUnchanged": "https://riffology-browser-execution.jihe-gao.workers.dev",
     "executionResourcesAssetsPins": "Unchanged4 bindings/Worker/assets; no same-site execution or extra ancestor",
-    "manualReadbackUrl": "https://console.cloud.google.com/auth/clients?pli=1&project=gen-lang-client-0139341395"
+    "manualReadbackUrl": "https://console.cloud.google.com/auth/clients?pli=1&project=gen-lang-client-0139341395",
+    "googlePublicFieldsSource": "docs/evidence/riffoid-google-public-fields-20261008.json",
+    "googleProposedFromTo": {
+      "authorizedToApply": false,
+      "targetClientId": {
+        "from": "316292203808-3s6ijnugpiq6hk25vmkj0hgokt2diq86.apps.googleusercontent.com",
+        "to": "316292203808-3s6ijnugpiq6hk25vmkj0hgokt2diq86.apps.googleusercontent.com",
+        "source": "User-provided, active live association not independently confirmed"
+      },
+      "authorizedRedirectUris": {
+        "from": [
+          "https://m1.riff-demo.gaojihe.cn/api/auth/callback/google",
+          "http://127.0.0.1:8795/api/auth/callback/google",
+          "https://app.local.riffology.gaojihe.cn:8797/api/auth/callback/google"
+        ],
+        "to": [
+          "https://m1.riff-demo.gaojihe.cn/api/auth/callback/google",
+          "http://127.0.0.1:8795/api/auth/callback/google",
+          "https://app.local.riffology.gaojihe.cn:8797/api/auth/callback/google",
+          "https://app.riffoid.com/api/auth/callback/google"
+        ],
+        "addOnly": [
+          "https://app.riffoid.com/api/auth/callback/google"
+        ],
+        "remove": []
+      },
+      "authorizedJavaScriptOrigins": {
+        "from": [
+          "https://m1.riff-demo.gaojihe.cn",
+          "http://127.0.0.1:8795"
+        ],
+        "to": [
+          "https://m1.riff-demo.gaojihe.cn",
+          "http://127.0.0.1:8795"
+        ],
+        "action": "No proposed change; suggest addition only if actually required and separately reviewed/approved"
+      },
+      "branding": {
+        "authorizedDomains": {
+          "from": [
+            "gaojihe.cn"
+          ],
+          "to": [
+            "gaojihe.cn"
+          ],
+          "action": "No proposed change; riffoid.com only if actually required and separately approved"
+        },
+        "homePage": {
+          "from": "",
+          "to": ""
+        },
+        "privacyPolicy": {
+          "from": "",
+          "to": ""
+        },
+        "termsOfService": {
+          "from": "",
+          "to": ""
+        },
+        "legalUrlsInvented": false
+      },
+      "clientSecretScopesNewClient": "No changes proposed; no Secret read/create/copy/rotation, no new client or scopes"
+    },
+    "googleLiveBindingClassification": {
+      "name": "GOOGLE_CLIENT_ID",
+      "type": "secret_text",
+      "publicValueRead": false
+    }
   },
   "mustVerifyBeforeExecution": [
     "Old WAF order/Skip/capacity, internal DNS conflict, IP transforms and TLS (zone/plan/ownership/member role/routes/domains now read)",
@@ -125,7 +192,8 @@
     "Both rules expression support and actual platform-generated provenance under new Custom Domain Worker fetch",
     "Current complete rollback snapshot remains unchanged at action time",
     "Existing authorized deployment channel for new account; do not create token or grant permissions implicitly",
-    "Explicit security/OAuth/CSP/configuration approval for the reviewed exact package"
+    "Explicit security/OAuth/CSP/configuration approval for the reviewed exact package",
+    "Google public fields complete as user-provided; active Secret-bound client association not independently confirmed; exact add-only callback action still needs approval, never read Secret or ask repeated public fields"
   ],
   "realNoPaidAcceptanceBeforeOpeningAuth": [
     "Real direct transport, forged CF-Worker/IP, outside-zone Worker, Worker-to-app and alternate-host tests; all not run. Same-zone peer transport test must meet explicitly selected trust boundary; WAF-only does not block it.",

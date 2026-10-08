@@ -1,0 +1,138 @@
+{
+  "schema": "riffoid-google-public-fields-v1",
+  "recordedUTC": "2026-10-08T11:32:41.686210+00:00",
+  "scope": "User-provided Google public configuration and read-only Cloudflare binding-type metadata; documentation/push only, no experiments",
+  "baselineRemoteHead": "eb7588830bb524f63fc8956b41c2f732224309ed",
+  "userProvided": {
+    "source": "User2026-10-08 11:10–11:27UTC",
+    "independentGoogleReadback": false,
+    "clientName": "Riffology M1 staging (previous candidate context)",
+    "clientId": "316292203808-3s6ijnugpiq6hk25vmkj0hgokt2diq86.apps.googleusercontent.com",
+    "authorizedRedirectUris": [
+      "https://m1.riff-demo.gaojihe.cn/api/auth/callback/google",
+      "http://127.0.0.1:8795/api/auth/callback/google",
+      "https://app.local.riffology.gaojihe.cn:8797/api/auth/callback/google"
+    ],
+    "authorizedJavaScriptOrigins": [
+      "https://m1.riff-demo.gaojihe.cn",
+      "http://127.0.0.1:8795"
+    ],
+    "branding": {
+      "authorizedDomains": [
+        "gaojihe.cn"
+      ],
+      "homePage": "",
+      "privacyPolicy": "",
+      "termsOfService": ""
+    }
+  },
+  "liveGatewayReadback": {
+    "recordedUTC": "2026-10-08T11:30:24.390Z",
+    "method": "Existing installed Wrangler authenticated GET only, active deployment/version metadata; GOOGLE_CLIENT_ID type, plaintext value only if publicly exposed",
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "workerName": "riffology-m1-gateway-staging",
+    "deploymentId": "c6ff55e4-2364-4920-94e0-b8784a1824b5",
+    "versionId": "aeddf112-a2be-45da-868c-ed576c55d5ec",
+    "percentage": 100,
+    "googleBinding": {
+      "name": "GOOGLE_CLIENT_ID",
+      "type": "secret_text",
+      "publicValueRead": false
+    },
+    "productionChanges": false,
+    "secretsValuesRead": false,
+    "credentialsExtracted": false,
+    "OAuthRequests": false
+  },
+  "liveClientAssociation": {
+    "confirmed": false,
+    "reason": "GOOGLE_CLIENT_ID binding is secret_text. Stopped at binding type; no Secret value read or compared. User-provided full client ID does not independently prove active binding match.",
+    "requestingSecretOrRepeatedGooglePublicFields": false
+  },
+  "proposedOAuthDifference": {
+    "authorizedToApply": false,
+    "targetClientId": {
+      "from": "316292203808-3s6ijnugpiq6hk25vmkj0hgokt2diq86.apps.googleusercontent.com",
+      "to": "316292203808-3s6ijnugpiq6hk25vmkj0hgokt2diq86.apps.googleusercontent.com",
+      "source": "User-provided, active live association not independently confirmed"
+    },
+    "authorizedRedirectUris": {
+      "from": [
+        "https://m1.riff-demo.gaojihe.cn/api/auth/callback/google",
+        "http://127.0.0.1:8795/api/auth/callback/google",
+        "https://app.local.riffology.gaojihe.cn:8797/api/auth/callback/google"
+      ],
+      "to": [
+        "https://m1.riff-demo.gaojihe.cn/api/auth/callback/google",
+        "http://127.0.0.1:8795/api/auth/callback/google",
+        "https://app.local.riffology.gaojihe.cn:8797/api/auth/callback/google",
+        "https://app.riffoid.com/api/auth/callback/google"
+      ],
+      "addOnly": [
+        "https://app.riffoid.com/api/auth/callback/google"
+      ],
+      "remove": []
+    },
+    "authorizedJavaScriptOrigins": {
+      "from": [
+        "https://m1.riff-demo.gaojihe.cn",
+        "http://127.0.0.1:8795"
+      ],
+      "to": [
+        "https://m1.riff-demo.gaojihe.cn",
+        "http://127.0.0.1:8795"
+      ],
+      "action": "No proposed change; suggest addition only if actually required and separately reviewed/approved"
+    },
+    "branding": {
+      "authorizedDomains": {
+        "from": [
+          "gaojihe.cn"
+        ],
+        "to": [
+          "gaojihe.cn"
+        ],
+        "action": "No proposed change; riffoid.com only if actually required and separately approved"
+      },
+      "homePage": {
+        "from": "",
+        "to": ""
+      },
+      "privacyPolicy": {
+        "from": "",
+        "to": ""
+      },
+      "termsOfService": {
+        "from": "",
+        "to": ""
+      },
+      "legalUrlsInvented": false
+    },
+    "clientSecretScopesNewClient": "No changes proposed; no Secret read/create/copy/rotation, no new client or scopes"
+  },
+  "authorization": "User provided public fields and authorized read-only binding classification, documentation and PR173 push. Public field provision is NOT approval to modify OAuth/security/live source.",
+  "remaining": {
+    "originalCloudflareZoneMetadata": "Still pending prior WAF/DNS/SSL-TLS/Network/Transforms/Skip/order and transport conflicts; do not bypass denied APIs or expand permissions",
+    "liveClientAssociation": "Not independently verifiable through Secret value; separate owner confirmation/current authorized nonsecret evidence at action time, no secret request",
+    "securityResourcesRollbackAndPlatformAcceptance": "Unchanged pending actual key/pin/replay namespace/migration/complete production snapshot/platform validation and explicit exact-package approval"
+  },
+  "preserved": "Internal identity/history/pins/ledger/namespaces/actors/assets, December31trial/October20M1, original callback entries/8h session; no cutover or48h deadline start",
+  "productionChanges": {
+    "OAuthSecuritySource": false,
+    "dateDomainsDNSWAFTransformsCSP": false,
+    "keysSecretsPermissionsResources": false,
+    "experimentsPaidRunsInstallsMerge": false
+  },
+  "documentationSha256": {
+    "docs/riffoid-two-account-configuration-package.md": "55b25323ba66e8b79416873639fe92ac3831359efc4830a301bddaaaab422c8b",
+    "docs/riffoid-two-account-security-overlay.example.jsonc": "b04fe19eee9426083f9be4778899aa9ff9b83103b5c373fd47d51838463dda74",
+    "docs/riffoid-entry-signature.md": "0072ca4008c67e8cbced3c4fbcc746141afb9b2b3707b58519586545a3196154",
+    "infra/riffoid-forward-rollback.request.jsonc": "a31e55186a0960ed7fc76d27e4fd1c212c141fc17fe44d523e927341c50a062a"
+  },
+  "validation": {
+    "method": "Parse JSON and verify exact user-provided lists, single proposed addition, provenance and no-approval/no-secret-read flags; git diff --check",
+    "runtimeTestsOrExperimentsRun": false,
+    "liveOAuthOperations": false,
+    "sourceChanges": false
+  }
+}

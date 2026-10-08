@@ -147,12 +147,20 @@
     {
       "owner": "Both zones / original Google client / original Execution",
       "request": "Exact TLS/DNS/routes/WAF/native-IP/transforms/canonical/transport/OAuth callback/domain/Execution single-ancestor/CSP package and real acceptance",
-      "missing": "Transport route/TLS and native source boundary verified; Google full public client/callback/origin/domain values and current original-zone authorized configuration readback; no bypass of denied APIs"
+      "missing": "Transport route/TLS/native source boundary and original-zone authorized configuration readback still pending; Google public fields complete via user, live Secret-bound client association unconfirmed; add-only new callback not authorized, no secret read or repeated public-field request"
     },
     {
       "owner": "Original application resources / coordinated cutover",
       "request": "Freeze complete config/assets/version and forward rollback with same replay namespace/migration; actual successful cutover starts approved48h recovery",
       "missing": "Complete production rollback snapshot/asset hashes and platform validation; cutoverUTC/untilnull; do not rawrollback across DO lifecycle, clear store or extend original8h session"
     }
-  ]
+  ],
+  "status": "HISTORICAL_DATE_STAGE_GOOGLE_FIELDS_SUPPLEMENTED",
+  "googlePublicFieldSupplement": {
+    "currentEvidence": "docs/evidence/riffoid-google-public-fields-20261008.json",
+    "publicFieldsComplete": "User2026-10-08 11:10–11:27UTC, not independentGoogleReadback",
+    "liveBinding": "secret_text, no value read; activeclient match not independently confirmed",
+    "OAuthChangeApproved": false,
+    "originalCloudflareStillPending": true
+  }
 }

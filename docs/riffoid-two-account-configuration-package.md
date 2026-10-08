@@ -2,9 +2,11 @@
 
 **签名资源回退补充**：创建防重放DO class迁移后不能直接rollback旧Gateway version，必须准备保留class/namespace的前向单域回退包；以[签名生产申请及回退](riffoid-entry-signature.md#轮换撤回与回退)为当前准据。旧版本ID仍为冻结基线，不是跨migration回退证明。
 
-**后续06:44:24 UTC授权更新**：用户批准入口专属签名/原子防重放实现与离线测试、推送；生产密钥创建配置仍另确认。当前已增加默认disabled的signed-entry-v1代码；WAF-only同zone反例由新script持钥验证处理，但原生IP入口WAF/Transform平台证明仍缺。精确协议/容量/生产Secret与新SQLite namespace申请见[签名配置与回退](riffoid-entry-signature.md)。下列“签名尚未实现”属于先前配置收敛基线，不能当成当前代码状态；真实生产key/pin/resource/安全设置仍未创建，缺现Google/旧zone字段不阻塞本地实现。
+**后续06:44:24 UTC授权更新**：用户批准入口专属签名/原子防重放实现与离线测试、推送；生产密钥创建配置仍另确认。当前已增加默认disabled的signed-entry-v1代码；WAF-only同zone反例由新script持钥验证处理，但原生IP入口WAF/Transform平台证明仍缺。精确协议/容量/生产Secret与新SQLite namespace申请见[签名配置与回退](riffoid-entry-signature.md)。下列“签名尚未实现”属于先前配置收敛基线，不能当成当前代码状态；真实生产key/pin/resource/安全设置仍未创建，当时Google/旧zone字段缺口不阻塞本地实现；Google公开字段现已由用户提供，见下述更新。
 
 **状态：准备与只读核验完成到下列边界；不可部署、不可切流。** 当前生产代码未改，新应用模式仍默认 disabled。共享 auth bucket 的可用性阻碍未解除；下列 WAF 方案也不证明特定入口 script 的身份。此包是具体事实、拟议差异、缺值和验收步骤，不是执行授权或完整 live overlay。[只读证据](evidence/riffoid-two-account-configuration-readback-20261008.json)冻结本轮结果；05:45的旧证据保留为历史，不覆盖。
+
+**Google公开字段更新（11:10–11:27 UTC用户提供）**：完整client ID、三条redirect、两条JS origins、Branding域与空白链接已收齐，非Google独立读回；11:30:24 UTC现有授权CloudflareGET确认live `GOOGLE_CLIENT_ID`为`secret_text`，未读或比对Secret值，活跃client对应仍未独立确认。本次仅拟向该用户提供client新增新callback，资料不等于OAuth修改批准；[公开字段与绑定类型证据](evidence/riffoid-google-public-fields-20261008.json)。旧Cloudflare字段仍待，不再索要已收齐的Google公开字段。
 
 ## 账号、资源与通道
 
@@ -16,7 +18,7 @@
 | 原 Execution | `riffology-browser-execution`；现 active版本 `c94df077-02a1-460f-8158-e47a338e68af`，100% | 发布前重读完整4 bindings/固定资产/摘要/CSP，原独立 origin不变 |
 | 新账号 / zone | `3232ebc7e9bb0199b92e3d70b07825af` / riffoid.com `b0b0079990e13eb20a17a2d3c41403b8`，Free；现Safari session可读；唯一active成员，DNS0、zone routes0、Worker项目0、custom rules表空、SSL Full、Pseudo IPv4 Off | 成员角色图标/API scopes与 managed-transform开关的状态没有文本读值；不能当作写入通道已验证 |
 | 新账号发布 | 当前 CLI accounts只返回原账号；Safari原已打开的新账号tab读配置成功 | 未执行任何部署表单。现native text可读但不能操作表单；最小通道是用户使用既有新账号console手工执行获准包，或提供已存在的新账号授权CLI/CI通道供核验；不创建token/login |
-| Google | 既有Google session成功；Default Gemini Project（`gen-lang-client-0139341395`）→ Google Auth Platform客户端，`Riffology M1 staging`，Web应用，创建2026-09-06，client ID仅显示`316292203808-3s6i...` | 完整client ID、现redirect URI / JS origins / Branding authorized domains及链接未读；原生URL/text接口没有client详情link或表单值，不猜完整ID，不读secret视图 |
+| Google | 用户11:10–11:27 UTC提供完整公开字段（下列from/to）；之前独立console列表仅为候选名/截断ID。11:30:24 UTC实际CloudflareGET确认原Gateway `GOOGLE_CLIENT_ID`绑定类型`secret_text` | 未读取Secret值、不独立宣称活跃client匹配；用户清单非Google独立读回，非修改批准。无需再提供这些公开字段或任何Secret |
 
 原 Gateway两个Custom Domains实际为 `m1.riff-demo.gaojihe.cn`、`preview.m1.riff-demo.gaojihe.cn`，均属上述原zone和production environment。原zone四条Workers路由实际为 `riffology.gaojihe.cn/*`、`share.gaojihe.cn/api/assignments*`、`*.preview.riff-demo.gaojihe.cn/*`、`*.preview.m1.riff-demo.gaojihe.cn/*`；保持它们与原Worker对应关系，不迁移、替换或删除。
 
@@ -28,7 +30,22 @@
 
 Gateway拟议配置差异：APP_ORIGIN从 `https://m1.riff-demo.gaojihe.cn` 改为 `https://app.riffoid.com`；APP_TRANSPORT_ORIGIN拟为经批准且创建验收后的首选地址；LEGACY_RECOVERY_ORIGIN为原App域；LEGACY_RECOVERY_UNTIL为**真实成功切流UTC +48小时**。当前尚无成功切流，时间字段为空。TWO_ACCOUNT_AUTH_MODE仍disabled，没有可部署的可信IP mode，不可把shared-limited用作替代。
 
-现列表中的`Riffology M1 staging`只是待匹配候选；完整公开client ID与原Gateway OAuth绑定的对应关系未确认，不能仅凭名称断言就是正在使用的client。Google拟只向经确认的原client增补 `https://app.riffoid.com/api/auth/callback/google`，保留旧callback供回退；具体现清单必须先读。只有实际需要时才增加 `riffoid.com` authorized domain / 新JS origin / consent links，列出逐项from/to后按行动时批准，不换client/secret/scopes。Execution只联动APP_ORIGIN与唯一frame-ancestors为新canonical；固定独立 `https://riffology-browser-execution.jihe-gao.workers.dev`、assets/摘要/门禁保持，不添加双ancestor。
+用户提供的client ID为`316292203808-3s6ijnugpiq6hk25vmkj0hgokt2diq86.apps.googleusercontent.com`。live Gateway绑定为Secret，只读核对止于类型，不能仅凭client名称/用户清单断言实际绑定相同；本轮不读Secret、不换client/secret/scopes或申请新权限。
+
+Google精确from/to以用户2026-10-08 11:10–11:27 UTC清单为来源（非独立Google读回、未批准执行）：
+
+| 字段 | from（用户提供） | to（仅拟议） |
+| --- | --- | --- |
+| Client ID | `316292203808-3s6ijnugpiq6hk25vmkj0hgokt2diq86.apps.googleusercontent.com` | 保持同一用户提供ID；活跃绑定对应未独立确认 |
+| Redirect URI 1 | `https://m1.riff-demo.gaojihe.cn/api/auth/callback/google` | 保留原项 |
+| Redirect URI 2 | `http://127.0.0.1:8795/api/auth/callback/google` | 保留原项 |
+| Redirect URI 3 | `https://app.local.riffology.gaojihe.cn:8797/api/auth/callback/google` | 保留原项 |
+| 新增 Redirect URI | 无 | **仅拟新增** `https://app.riffoid.com/api/auth/callback/google` |
+| JS origins | `https://m1.riff-demo.gaojihe.cn`；`http://127.0.0.1:8795` | 保持两项，当前不拟新增 |
+| Branding authorized domains | `gaojihe.cn` | 保持原项，当前不拟新增 |
+| Homepage / Privacy / Terms | 三项均空 | 保持空，不填造法律链接 |
+
+只有实际需要并另获精确from/to批准时才建议增加JS origin或Branding域，不因新callback自动增补这些字段。原三条callback全部保留供原流程/回退，资料收齐不是OAuth修改授权；旧Cloudflare安全/DNS/Transform等资料仍待。Execution只联动APP_ORIGIN与唯一frame-ancestors为新canonical；固定独立 `https://riffology-browser-execution.jihe-gao.workers.dev`、assets/摘要/门禁保持，不添加双ancestor。
 
 可审阅表达式/配置字段见[非执行安全草案](riffoid-two-account-security-overlay.example.jsonc)。Free方案官方有5条custom rules容量，但原zone现用量/顺序未知；新表空不等于两条表达式已编译或有效。没有付款升级、新凭据或权限授权。
 
@@ -67,7 +84,7 @@ http.host eq "riffoid-transport.gaojihe.cn" and cf.worker.upstream_zone ne "riff
 
 现原账号SDK GET读取WAF entrypoint及DNS/managed_headers/header-transforms返回10000，SSL与pseudo_ipv4返回9109；不是ruleset不存在的404，也不是没有账号角色。官方[WAF entrypoint读取](https://developers.cloudflare.com/waf/custom-rules/custom-rulesets/)要求Zone WAF Read或Write；没有为此申请新grant、创建token、扩scope或反复尝试拒绝endpoint。
 
-1. **Google非秘密字段**：已优先使用现Safari原生URL/text接口，客户端list只有截断ID，未提供详情link或input值；到此停止，不申请启用JavaScript/新系统权限。当前实际页面是[客户端列表](https://console.cloud.google.com/auth/clients?pli=1&project=gen-lang-client-0139341395)，请在`Riffology M1 staging`详情手工提供**完整公开client ID、Authorized redirect URIs全部条目、Authorized JavaScript origins全部条目**；[Branding入口](https://console.cloud.google.com/auth/branding?project=gen-lang-client-0139341395)提供**Authorized domains及主页/隐私/条款链接**（此详情页尚未读取）。不要提供client secret/token/code/cookie。原生文本没有其他表单值接口，本轮不引入Accessibility或抓取source。现callback清单未读，不能把拟增补callback当成已验证diff。
+1. **Google非秘密字段已由用户提供**：完整ID、现redirect/JS origins/Branding域与空白链接见上表及[字段证据](evidence/riffoid-google-public-fields-20261008.json)。来源是用户11:10–11:27 UTC，非独立Google读回。原Gateway11:30:24 UTC实际GET只确认绑定`secret_text`，未读取Secret值；活跃client关联留待行动时现owner确认/现授权非秘密证据，不重复索要已提供字段、不请求Secret、新SafariJS权限或绕过接口。[客户端列表](https://console.cloud.google.com/auth/clients?pli=1&project=gen-lang-client-0139341395)和[Branding入口](https://console.cloud.google.com/auth/branding?project=gen-lang-client-0139341395)仅为已有参考链接，本轮未操作Google页面或OAuth流程。
 2. **原Cloudflare只读权限/元数据**：目标明确为原账号`8b0d70250211aa10d89e20605a1c7e5e` / gaojihe.cn zone `c97b548800561fada1a912c234696db1`。现认证拒绝WAF与DNS/Transforms读取、设置读取；所需读取权限分别是该zone的**Zone WAF Read、DNS Read、Zone Settings Read**，Transforms/rulesets还须对应现产品read权限核验。只列缺项，不授予、扩scope或创建token，也不绕过API拒绝去获取同一受限数据。用户可在[既有原账号zone入口](https://dash.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/gaojihe.cn)自行提供Security Rules规则顺序/action/Skip、DNS两候选hostname冲突、SSL/TLS与Network/PseudoIPv4、Managed/Request Header Transform现值；这是用户手工清单，不是本代理另取会话突破权限。
 3. **新账号最小发布通道选项**：优先用户在[现新账号Workers & Pages入口](https://dash.cloudflare.com/3232ebc7e9bb0199b92e3d70b07825af/workers-and-pages)和[riffoid.com zone入口](https://dash.cloudflare.com/3232ebc7e9bb0199b92e3d70b07825af/riffoid.com)手工执行逐项批准的Worker/Custom Domain/安全差异；不需要给代理新token。若已有新账号授权CLI/CI通道，可以先提供其存在/账号归属和权限元数据供只读核验，不提供秘密。没有现通道时停止；新OAuth登录/grant/token必须另有精确范围批准，当前不生成。本包尚有来源校验和现配置缺值，**现在不能执行部署**。
 
@@ -96,7 +113,7 @@ PR172/174已整合，main基线 `25609953f5c3b69dcb44e520d7e7ed1253d18fe4`。[Is
 ### 精简生产配置与资源批准清单（本轮仅准备）
 
 - 新账号`3232ebc7e9bb0199b92e3d70b07825af` / riffoid.com zone`b0b0079990e13eb20a17a2d3c41403b8`：指定入口Worker/name与`app.riffoid.com`绑定、入口09-06及`global_fetch_strictly_public,enable_request_signal`；单独创建并仅绑定入口的`ENTRY_SIGNING_PRIVATE_JWK` Secret、公开key ID（真实值未生成/待批准），不复制原auth/provider秘密或绑定应用数据。
-- 原账号`8b0d70250211aa10d89e20605a1c7e5e` / Gateway：保留live09-09并追加`enable_request_signal`；完整93原bindings/config上增加公开`ENTRY_SIGNING_PUBLIC_KEYS_JSON`（public pin待获准生成并核验）及独立SQLite`ENTRY_REPLAY / EntryReplayGuard`、拟migration tag`entry-replay-v1`（实际namespace ID/完整migration history待创建后核验）。两侧canonical/transport/mode应作为同一完整包，transport拟`riffoid-transport.gaojihe.cn`，不能跨账号CNAME或假定service binding；Googleclient完整公开ID和现callback/origins/domains仍缺。
-- 精确DNS/route/TLS、两zone所需WAF/native-IP/Transform边界、Google新canonical callback/origins/domain和原Execution单一ancestor/APP_ORIGIN/CSP差异：仅批准核验过的完整值，保留原Googlecallback、身份/历史/assets/actor/namespace/pins/ledger，不打开M3/G5/付费执行。新zonePseudoIPv4应保持Off；平台来源/IP/已绑定header稳定性和真实原用户验收待后续获准执行，不能以fixture替代。
+- 原账号`8b0d70250211aa10d89e20605a1c7e5e` / Gateway：保留live09-09并追加`enable_request_signal`；完整93原bindings/config上增加公开`ENTRY_SIGNING_PUBLIC_KEYS_JSON`（public pin待获准生成并核验）及独立SQLite`ENTRY_REPLAY / EntryReplayGuard`、拟migration tag`entry-replay-v1`（实际namespace ID/完整migration history待创建后核验）。两侧canonical/transport/mode应作为同一完整包，transport拟`riffoid-transport.gaojihe.cn`，不能跨账号CNAME或假定service binding；Google公开字段已由用户收齐；活跃client关联未独立确认（Secret绑定未读），OAuth差异尚未批准。
+- 精确DNS/route/TLS、两zone所需WAF/native-IP/Transform边界、Google仅拟新增canonical callback（JS origins/Branding域保持原项，实际需要才另批准）和原Execution单一ancestor/APP_ORIGIN/CSP差异：仅批准核验过的完整值，保留原Googlecallback、身份/历史/assets/actor/namespace/pins/ledger，不打开M3/G5/付费执行。新zonePseudoIPv4应保持Off；平台来源/IP/已绑定header稳定性和真实原用户验收待后续获准执行，不能以fixture替代。
 - 上线前冻结当前Gateway/Execution/入口完整config、assets hashes/version及保留同一replay namespace/migration的前向回退包；本地build仍LOCAL_BUILD_NOT_PRODUCTION_FROZEN，缺实际namespace ID/完整migration/config/assets snapshot/平台验证。回退恢复原APP_ORIGIN、整组删除4个topology vars并保留所有原资源及replay数据；不以旧version跨DO lifecycle raw rollback。
 - 仅真实成功切流时记录UTC并启动已批准48h服务端恢复（现在cutover/until仍空）；旧静态指南与本机原字节Runs导出继续保留，原8h session不延长。平台abort到达时停止尚未进入业务的验证/流观察；无回执结果未知按原key核，已提交操作用原业务cancel，不承诺FIN撤销，FIN不列为独立部署阻断。

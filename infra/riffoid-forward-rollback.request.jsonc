@@ -45,13 +45,15 @@
     "assetsBindingsWorkerOrigin": "Restore frozen original full package, no extra ancestor or namespace change"
   },
   "oauth": {
-    "originalClientAndOldCallback": "Retain exact verified existing values; no new client, scopes or secret"
+    "originalClientAndOldCallback": "Retain exact verified existing values; no new client, scopes or secret",
+    "publicFieldsEvidence": "docs/evidence/riffoid-google-public-fields-20261008.json",
+    "liveClientAssociation": "GOOGLE_CLIENT_ID is secret_text; no value read or independent match. User public fields complete, no OAuth change approval"
   },
   "requiredProductionFreezeMissing": [
     "Actual replay namespace ID after separately approved creation and complete migration history",
     "Complete current Gateway and Execution configuration, assets hashes and bindings, preserving original93 bindings plus replay",
     "Approved target DNS/routes/WAF/Transform and rollback order",
-    "Current Google client/callback/origin/domain list",
+    "Action-time client association and freeze of user-provided Google list; no Secret value read or repeated public-field request",
     "Built forward rollback Worker and asset hash/version and actual platform validation"
   ],
   "offlineVerification": "Build and test source entrypoint; local synthetic same namespace retention/replay, original auth/identity/CSRF/assets behavior. Does not freeze or deploy a production artifact.",
