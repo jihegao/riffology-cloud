@@ -5,6 +5,8 @@ import {ProjectCatalog} from '../catalog/projects.ts';
 import type {TurnActor,TurnScope} from '../turn/protocol.ts';
 import {publicResult} from './app.ts';
 import {HttpError,json} from './http.ts';
+import {localRecoveryPage,localRecoveryScript,localRecoveryStyle} from './recovery-local.ts';
+import {g5ReadHeaders} from './transport-headers.ts';
 
 export interface RecoveryServices {
   canonical:string;origin:string;until:number;database:Database;
@@ -13,13 +15,13 @@ export interface RecoveryServices {
   receipt(scope:TurnScope,actor:TurnActor,sessionId:string,key:string):Promise<unknown>;
 }
 const recoveryScript=`const out=document.querySelector('pre');
-document.querySelector('form').addEventListener('submit',async event=>{
+document.querySelector('form')?.addEventListener('submit',async event=>{
 event.preventDefault();const data=new FormData(event.target),workspace=data.get('workspace'),session=data.get('session'),key=data.get('key');
 if(!/^[A-Za-z0-9_-]{1,128}$/.test(workspace)||session&&!/^[A-Za-z0-9_-]{1,128}$/.test(session)||key&&!/^[A-Za-z0-9_-]{1,128}$/.test(key)||!!session!==!!key){out.textContent='Invalid workspace, session or original request key.';return;}
 const path='/api/workspaces/'+workspace+(session?'/sessions/'+session+'/turns/receipt':'');
 out.textContent='Reading original record…';try{const response=await fetch(path,{method:'GET',credentials:'same-origin',cache:'no-store',headers:session?{'idempotency-key':key}:{}});out.textContent=JSON.stringify(await response.json(),null,2);}catch{out.textContent='Read failed. No request was replayed.';}
 });`;
-function asset(content:string,type:string){return new Response(content,{headers:{'content-type':type,'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer','content-security-policy':"default-src 'none'; script-src 'self'; connect-src 'self'; form-action 'none'; frame-ancestors 'none'; base-uri 'none'"}});}
+function asset(content:string,type:string,localOnly=false){return new Response(content,{headers:{'content-type':type,'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer','content-security-policy':`default-src 'none'; script-src 'self'; style-src 'self'; connect-src ${localOnly?"'none'":"'self'"}; form-action 'none'; frame-ancestors 'none'; base-uri 'none'`}});}
 /** Deliberately separate from the full app: no startup, writes, refresh, SSE,
  * Preview/Execution or pending-intent replay. The caller supplies read-only auth. */
 export async function legacyRecovery(request:Request,services:RecoveryServices,now=Date.now()):Promise<Response>{
@@ -28,9 +30,13 @@ export async function legacyRecovery(request:Request,services:RecoveryServices,n
     if(url.origin!==services.origin)throw new HttpError('origin_denied',403);
     if(request.method!=='GET'||request.headers.has('upgrade'))throw new HttpError('legacy_read_only',403);
     if(url.search)throw new HttpError('invalid_input',400);
-    if(now>=services.until)throw new HttpError('legacy_recovery_expired',410);
-    if(url.pathname==='/')return asset(`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Original records</title><h1>Original records — read only</h1><p>This temporary page uses your existing session to inspect original records. It does not submit or resume work. Sign in separately at the new application.</p><p><a href="${services.canonical}/" rel="noreferrer">Open application</a></p><form><p><label>Workspace ID <input name="workspace" required maxlength="128"></label></p><p><label>Original Session ID (receipt only) <input name="session" maxlength="128"></label></p><p><label>Original request key (receipt only) <input name="key" maxlength="128"></label></p><button>Read original record</button></form><pre></pre><script src="/legacy-recovery.js" defer></script></html>`,'text/html; charset=utf-8');
+    if(url.pathname==='/')return asset(`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Original records</title><h1>Original records — read only</h1><p>${now>=services.until?'The server recovery window has ended.':'This temporary page uses your existing session to inspect original server records.'} It does not submit or resume work. Sign in separately at the new application.</p><p><a href="${services.canonical}/" rel="noreferrer">Open application</a> · <a href="/legacy-local-runs/">View/export saved browser-local Runs</a></p>${now>=services.until?'':'<form><p><label>Workspace ID <input name="workspace" required maxlength="128"></label></p><p><label>Original Session ID (receipt only) <input name="session" maxlength="128"></label></p><p><label>Original request key (receipt only) <input name="key" maxlength="128"></label></p><button>Read original record</button></form><pre></pre>'}<script src="/legacy-recovery.js" defer></script></html>`,'text/html; charset=utf-8');
     if(url.pathname==='/legacy-recovery.js')return asset(recoveryScript,'text/javascript; charset=utf-8');
+    if(url.pathname==='/legacy-local-runs/')return asset(localRecoveryPage(services.canonical),'text/html; charset=utf-8',true);
+    if(url.pathname==='/legacy-local-runs.js')return asset(localRecoveryScript,'text/javascript; charset=utf-8',true);
+    if(url.pathname==='/legacy-local-runs.css')return asset(localRecoveryStyle,'text/css; charset=utf-8',true);
+    if(now>=services.until)throw new HttpError('legacy_recovery_expired',410);
+    if(g5ReadHeaders.some(name=>request.headers.has(name)))throw new HttpError('legacy_g5_read_session_unavailable',403);
     const supplied=request.headers.get('origin');
     if(request.headers.get('sec-fetch-site')==='cross-site'||supplied!==null&&supplied!==services.origin)throw new HttpError('origin_denied',403);
     const snapshot=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})$/.exec(url.pathname);

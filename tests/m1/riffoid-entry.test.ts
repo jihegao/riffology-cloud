@@ -2,8 +2,22 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {entry,entryResponse} from '../../services/entry/index.ts';
 import {appTopology,publicHttpsOrigin} from '../../services/gateway/origins.ts';
+import {publicTransportHeaders} from '../../services/gateway/transport-headers.ts';
 const canonical='https://app.riffoid.com',transport='https://transport.example.test',legacy='https://old.example.test';
 const env={APP_ORIGIN:canonical,APP_TRANSPORT_ORIGIN:transport};
+
+test('entry and Gateway preserve exactly the two untrusted G5 read proof inputs and drop internal authority claims',async()=>{
+  const proof={'x-riffology-g5-read-session':'original-session','x-riffology-g5-read-capability':'original-capability'};
+  const input={...proof,'x-riffology-user':'forged','x-riffology-g5-authority':'forged','x-riffology-oauth-egress':'forged','cf-connecting-ip':'1.2.3.4','x-forwarded-for':'1.2.3.4'};
+  await entry(new Request(canonical+'/api/workspaces/w',{headers:input}),env,async req=>{
+    const filtered=publicTransportHeaders(req.headers);
+    for(const [name,value] of Object.entries(proof))assert.equal(filtered.get(name),value);
+    for(const name of Object.keys(input).filter(name=>!(name in proof)))assert.equal(filtered.get(name),null,name);
+    return new Response('{}');
+  });
+  const filtered=publicTransportHeaders(new Headers(input));
+  assert.deepEqual(Object.fromEntries(filtered),proof);
+});
 
 test('strict configured topology has an explicit opt-in and reversible single-origin default',()=>{
   assert.deepEqual(appTopology({APP_ORIGIN:legacy}),{canonical:legacy,transport:legacy,proxied:false});

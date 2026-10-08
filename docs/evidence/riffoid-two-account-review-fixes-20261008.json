@@ -1,0 +1,165 @@
+{
+  "date": "2026-10-08",
+  "scope": "Three requested review fixes and decision preparation only; no live change",
+  "baseline": {
+    "local": "d1bebfdf894d6296060531b9d3e270541ddb79e5",
+    "remote": "de96b8da38fd49e4d87079a5ecaca6ed96483cb9",
+    "tree": "fdf736e571d979925a61bbc49f9c3482fce26fa4",
+    "main": "25609953f5c3b69dcb44e520d7e7ed1253d18fe4"
+  },
+  "checks": [
+    {
+      "log": ".local/review-fixes-focused.log",
+      "sha256": "eacb2a9cecdb3ff986f0a543b6030aa6dbda84a11f57cdd77b3108e726b2efed",
+      "countsInCommandOrder": {
+        "tests": [
+          16
+        ],
+        "pass": [
+          16
+        ],
+        "fail": [
+          0
+        ],
+        "skipped": [
+          0
+        ]
+      }
+    },
+    {
+      "log": ".local/review-fixes-m1.log",
+      "sha256": "a231204603cbaf9598563ef6f379ef57e5374d5c9b4f0b3be26c4cd2390930f6",
+      "countsInCommandOrder": {
+        "tests": [
+          323
+        ],
+        "pass": [
+          323
+        ],
+        "fail": [
+          0
+        ],
+        "skipped": [
+          0
+        ]
+      }
+    },
+    {
+      "log": ".local/review-fixes-m3.log",
+      "sha256": "97b342fa768f2921f888757dd5ae28a221220268becbafcd7e1b07e5bb82a8da",
+      "countsInCommandOrder": {
+        "tests": [
+          957,
+          20,
+          13,
+          92
+        ],
+        "pass": [
+          945,
+          20,
+          13,
+          92
+        ],
+        "fail": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "skipped": [
+          12,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "log": ".local/review-fixes-static-workerd.log",
+      "sha256": "1ed6f5ab61665da1f2a118def320c2103bf72891d272d3e39de50e7984676041",
+      "countsInCommandOrder": {
+        "tests": [
+          2
+        ],
+        "pass": [
+          2
+        ],
+        "fail": [
+          0
+        ],
+        "skipped": [
+          0
+        ]
+      }
+    }
+  ],
+  "typecheck": "passed before full affected regression; production code unchanged afterwards",
+  "verificationStage": "Full M1/M3 on final production code, then enhanced production Gateway static test assertion (2 tests) passed; no source changes after full run",
+  "priorWholeCheck": "Previous integrated baseline npm run check passed; M0/M2/UI/quality not rerun for this focused Gateway/header/local-viewer repair",
+  "coverage": "Focused 16 and supplementary 2 overlap full suites; do not add to totals or call independent scenarios",
+  "environment": {
+    "os": "macOS",
+    "node": "26.10.0",
+    "python": "3.9.6",
+    "browser": "existing cached isolated Chromium",
+    "openssl": "existing 3.6.4; no install"
+  },
+  "localHistory": {
+    "data": "synthetic only, fresh browser context; never read user history",
+    "serverExpiry": "server APIs 410; static root/script/local-viewer/CSS 200",
+    "storageWrites": 0,
+    "identityReadsOnExpiredStaticAndAPIs": 0,
+    "export": "original stored text; damaged text preserved; states/pending intent unchanged",
+    "network": "all browser routes intercepted; DNS disabled, service workers blocked; no API/write/execution/upload/replay",
+    "isolation": "new canonical origin has no transferred history"
+  },
+  "g5": {
+    "allowedInputs": [
+      "x-riffology-g5-read-session",
+      "x-riffology-g5-read-capability"
+    ],
+    "authority": "Untrusted proof inputs; existing authenticated Catalog/Workspace/G5 Guard scope/capability/authVersion/order/expiry and revoke checks retained",
+    "chain": "production entry -> production header-filter helper -> production Gateway app -> actual local D1/Workspace/G5 Guard, provisioned identity and fixture authority snapshots; does not claim real Google or platform WAF proof",
+    "negative": "forged session/capability, missing capability, order, authVersion, expiry/restart and Catalog revoke denied; original attestation/reopen accepted",
+    "legacy": "either G5 proof header denied403 legacy_g5_read_session_unavailable, not unrecorded200",
+    "internalHeaders": "other x-riffology authority/identity/egress and forwarded/CF claims still stripped"
+  },
+  "browserAccess": {
+    "availableCUAOrExistingBrowserTools": false,
+    "automationReadCheck": {
+      "api": "AEDeterminePermissionToAutomateTarget with askUserIfNeeded=false",
+      "Safari": "-1744 errAEEventWouldRequireUserConsent",
+      "Google Chrome for Testing": "-1744 errAEEventWouldRequireUserConsent"
+    },
+    "sessionIdentity": "unknown, not inferred logged out",
+    "permissionPromptOrChange": false,
+    "profileCookieReadOrCDPAttach": false,
+    "alternative": "user manually reads existing dashboard account/zone/role/plan/rules metadata, without new OS permissions"
+  },
+  "decisionsDocument": "docs/riffoid-two-account-decisions.md",
+  "authAvailability": "disabled by default; shared-limited explicitly not deployable; WAF upstream_zone provenance design proposed but unimplemented/unverified",
+  "actionsNotPerformed": [
+    "Cloudflare deployment or DNS/domain/route mutation",
+    "OAuth/CSP/WAF/security mutation",
+    "new login or credential/permission creation",
+    "install",
+    "paid execution",
+    "merge",
+    "real user-history reads",
+    "data/identity/resource migration"
+  ],
+  "preserved": {
+    "trialReviewAt": "2026-12-31T15:59:59.999Z",
+    "M1Deadline": "2026-10-20",
+    "resourcesIdentityHistory": "original identifiers, bindings, namespaces, actor names, pins and ledgers"
+  },
+  "remaining": [
+    "new account/zone/roles and transport/routes/TLS/WAF metadata",
+    "approved exact WAF and original-limit client-IP design with real negative proof",
+    "Google/Gateway/Execution exact configuration package approval",
+    "48h recovery decision and actual UTC cutover",
+    "complete current-version rollback package",
+    "actual cross-account Google/identity/streams/isolation verification",
+    "remote CI runner availability (previous heads had no started steps)"
+  ]
+}

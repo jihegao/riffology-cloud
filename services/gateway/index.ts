@@ -25,6 +25,7 @@ type GatewayRuntimeEnv=Omit<GatewayEnv,'APP_ORIGIN'> & {APP_ORIGIN:string;APP_TR
 import {R2ModelContentPort} from '../runtime/content.ts';
 import { createAuth } from './auth.ts';
 import {appTopology,requireRequestHost} from './origins.ts';
+import {publicTransportHeaders} from './transport-headers.ts';
 import {legacyRecovery} from './recovery.ts';
 import { catalogDatabase } from '../catalog/database.ts';
 import { gateway } from './app.ts';
@@ -78,17 +79,15 @@ export default {
       if(url.origin===topology.canonical)return json({error:'origin_denied'},403);
       if(url.origin===topology.transport||url.origin===topology.recovery){
         if(request.headers.has('upgrade'))return json({error:'upgrade_denied'},403);
-        // Public forwarding claims carry no client identity or capability.
-        const headers=new Headers(request.headers);
-        for(const name of [...headers.keys()])if(/^(?:forwarded$|x-forwarded-|cf-|x-riffology-)/i.test(name))headers.delete(name);
-        request=new Request(request,{headers});
+        // Strip forwarding/identity assertions. Preserve only the exact G5 read
+        // protocol inputs; the original authenticated authority validates them.
+        request=new Request(request,{headers:publicTransportHeaders(request.headers)});
       }
       if(url.origin===topology.recovery){
         const database=catalogDatabase(env.CATALOG);
-        const auth=createAuth({database:env.CATALOG,catalog:database,origin:topology.canonical,secret:env.BETTER_AUTH_SECRET,googleClientId:env.GOOGLE_CLIENT_ID,googleClientSecret:env.GOOGLE_CLIENT_SECRET,readOnlySession:true,sharedTransportRateLimit:true});
         const turns=createGatewayTurnServices(env);
         return legacyRecovery(request,{canonical:topology.canonical,origin:topology.recovery,until:topology.recoveryUntil!,database,
-          identity:async req=>sessionIdentity(await auth.api.getSession({headers:req.headers,query:{disableCookieCache:true,disableRefresh:true}})),
+          identity:async req=>{const auth=createAuth({database:env.CATALOG,catalog:database,origin:topology.canonical,secret:env.BETTER_AUTH_SECRET,googleClientId:env.GOOGLE_CLIENT_ID,googleClientSecret:env.GOOGLE_CLIENT_SECRET,readOnlySession:true,sharedTransportRateLimit:true});return sessionIdentity(await auth.api.getSession({headers:req.headers,query:{disableCookieCache:true,disableRefresh:true}}));},
           snapshot:turns.recoverySnapshot,receipt:turns.recoveryReceipt});
       }
     }

@@ -51,6 +51,15 @@ test('legacy permits only explicit reads: no auth callback/signout/refresh, app 
     assert.equal((await f.recover('/api/me',{headers:{'sec-fetch-site':'cross-site'}})).status,403);
     const page=await (await f.recover('/')).text();assert.match(page,/href="https:\/\/app.riffoid.com\/"/);assert.doesNotMatch(page,/app\.js|browser-preview|localStorage|sessionStorage/);
     assert.equal((await legacyRecovery(new Request(legacy+'/api/me'),f.services,f.services.until)).status,410);
+    let identities=0;const staticServices={...f.services,identity:async()=>{identities++;throw Error('static page must not read identity');}};
+    for(const path of ['/','/legacy-recovery.js','/legacy-local-runs/','/legacy-local-runs.js','/legacy-local-runs.css'])assert.equal((await legacyRecovery(new Request(legacy+path),staticServices,f.services.until)).status,200,path);
+    assert.doesNotMatch(await (await legacyRecovery(new Request(legacy+'/'),staticServices,f.services.until)).text(),/<form/);
+    for(const path of ['/api/me','/api/auth/get-session','/api/workspaces/'+f.scope.workspaceId])assert.equal((await legacyRecovery(new Request(legacy+path),staticServices,f.services.until)).status,410,path);
+    for(const name of ['x-riffology-g5-read-session','x-riffology-g5-read-capability']){
+      const denied=await legacyRecovery(new Request(legacy+'/api/workspaces/'+f.scope.workspaceId,{headers:{[name]:'proof'}}),staticServices);
+      assert.equal(denied.status,403);assert.equal((await denied.json() as any).error,'legacy_g5_read_session_unavailable');
+    }
+    assert.equal(identities,0);
     f.db.sqlite.exec('UPDATE catalog_users SET auth_version=2');assert.equal((await f.recover('/api/me')).status,404);
     f.db.sqlite.exec("UPDATE catalog_users SET status='revoked'");assert.equal((await f.recover('/api/workspaces/'+f.scope.workspaceId)).status,404);
   }finally{f.db.sqlite.close();}

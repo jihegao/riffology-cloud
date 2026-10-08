@@ -1,6 +1,6 @@
 # riffoid 双账号入口准备 — 更新至 2026-10-08
 
-**2026-10-08 已完成本地入口/Gateway 接线与离线验证，尚不具备线上切换条件。** 新代码以显式配置进入双账号模式，但新应用默认返回 503；认证可用性策略未批准前保持关闭。无新配置时保持单域行为。入口模板的 origin 留空且没有账号或域名绑定。线上资源、认证和配置变更，以及真实双账号网络与 Google 登录验收，均待后续独立批准。2026-10-07 的透明代理阻碍及证据保留为历史基线。
+**2026-10-08 已完成本地入口/Gateway 接线与离线验证，尚不具备线上切换条件。** 新代码以显式配置进入双账号模式，但新应用默认返回 503；共享限流 DoS 尚未解决，禁止部署 shared-limited 版本。无新配置时保持单域行为。推送/推进部署及利用既有浏览器会话只读核验已有后续授权；新登录、持久凭据/权限和具体安全配置变更仍按行动时边界处理。参见[最新最小决策与配置差异](riffoid-two-account-decisions.md)。2026-10-07 的透明代理阻碍及早期授权记录保留为历史基线。
 
 用户已确认域名在新 Cloudflare 账号 `jihe.gao@theidsa.org` 购入；应用、Workers、D1、R2、DO 留在原账号。14:48 的“好”授权双账号入口离线方案与测试，不授权线上资源/认证变更。本任务未登录新账号、查看 Safari、安装、部署、绑定域名、改 DNS/OAuth/CSP、改权限/凭据、付费运行或合并。Cloudflare for SaaS 仅为另行评估的备选，未启用。
 
@@ -127,9 +127,9 @@ git diff --check
 
 Gateway 把 URL 路由 origin 与 canonical 安全 origin 分开。代理模式剥离转发/IP/内部能力声明；canonical 直达旧 Gateway 拒绝。公开 transport 直接请求仍需原身份与 Catalog 权限，不能宣称入口专属。BetterAuth 保留原秘钥、表、cookiePrefix、Google主体映射、邀请/撤回门禁、固定 trustedOrigins 和 CSRF。代理模式不信任 IP 头，使用原数据库限流的共享 per-path 桶；原 60秒/30 次配置及 BetterAuth 更严格 endpoint 规则保留。本地 1.7.3 的 `/sign-in*`、`/sign-up*` 等规则为 **10秒/3次**。匿名直接 transport 请求可耗尽共享桶，阻断其他人的登录；这是未解决的公开可用性阻碍，不能靠扩大限额、关闭限流或信任任意 forwarded IP 通过验收。
 
-`TWO_ACCOUNT_AUTH_MODE` 在双账号模式默认 `disabled`，新应用/transport 全部返回 `503 two_account_auth_disabled`，在认证、存储及外网调用之前拒绝；旧域恢复独立保留。只接受 `disabled` 与 `shared-limited`，其他值失败关闭。离线联合测试显式选用 `shared-limited`，仅说明原保护在共享模式仍生效。后续可选择继续关闭，或明确接受受控 Beta 的共享桶风险并限制范围；若要可信客户端 IP/仅入口可达，需要独立审阅的认证通道、防重放和运维方案，所需新凭据/权限另批准。本次未新增此信任机制，也未提供公开上线保证。
+`TWO_ACCOUNT_AUTH_MODE` 在双账号模式默认 `disabled`，新应用/transport 全部返回 `503 two_account_auth_disabled`，在认证、存储及外网调用之前拒绝；旧域恢复独立保留。只接受 `disabled` 与 `shared-limited`，其他值失败关闭。离线联合测试显式选用 `shared-limited`，仅说明原保护在共享模式仍生效。最新指令禁止部署共享桶可用性阻碍版本；不再将接受该风险作为上线选项。无新增秘密的 WAF 来源核验候选、适用条件和失败回退见最新决策文档；本次未实现该新信任机制，默认仍关闭。
 
-[legacyRecovery](../services/gateway/recovery.ts) 是独立只读页面，没有完整 App 启动、local/sessionStorage、自动请求、草稿复制、SSE、Preview 或写入。用户显式填写原 workspace（或原 session/key）后才 GET 原记录。仅允许无 query 的 GET `/api/me`、`/api/auth/get-session`、`/api/workspaces/:id`、`/api/workspaces/:id/sessions/:sid/turns/receipt`，前两者返回安全的身份/session摘要；认证/授权仍来自原会话与 Catalog。POST、旧 callback、其他读路由、Upgrade 均拒绝；期限到达合法读请求返回410，不携带 code/state/draft 跨域跳转。
+[legacyRecovery](../services/gateway/recovery.ts) 的服务端恢复页面没有完整 App 启动、自动请求、草稿复制、SSE、Preview 或写入。用户显式填写原 workspace（或原 session/key）后才 GET 原记录。仅允许无 query 的 GET `/api/me`、`/api/auth/get-session`、`/api/workspaces/:id`、`/api/workspaces/:id/sessions/:sid/turns/receipt`，前两者返回安全的身份/session摘要；认证/授权仍来自原会话与 Catalog。POST、旧 callback、其他读路由、Upgrade 均拒绝；期限到达服务端读请求返回410。静态指南和单独的 `/legacy-local-runs/` 本地查看/原文导出仍可用，后者仅在用户点击后读取匹配原 native key 的本机 localStorage，不引入旧 App/local-runs.js、restore、运行或存储写入，不跨域传输，也不携带 code/state/draft 跨域跳转。原域和浏览器 profile 必须保留。
 
 只读 auth 使用 `deferSessionRefresh` 与服务端 `disableRefresh`，绕开 auth handler 的数据库 rate-limit 写入；离线验证有效旧会话不刷新，过期会话不删除。新 `recoveryTurnSnapshot` RPC 只读原 journal 并保留原 actor/scope/name，不调用原 snapshot 的 `assertQuiet`、budgetStatus、运行协调或 admission。首版 hot fixture 仅证明已启动实例的恢复读取不写；后续审查发现原 constructor 会持久化 journal 迁移、创建 Preview discovery/index 并设置 alarm。现 constructor 仅在内存读取/校验，原迁移事务延后到正常应用 RPC/handler/alarm 的一次性准备边界；原迁移与 discovery 算法未改。新增真实 Workerd 重启测试分别从缺 discovery index 的 v7 与历史 v1 journal 恢复：constructor 加恢复 snapshot/receipt 的 SQLite `total_changes()` 为 **0**，KV/journal/alarm 原样保留、outbound 为0。随后正常 receipt RPC 确认迁移到 v7、创建原 discovery/index 并保留正常 alarm 维护。已有到期 alarm 属于正常执行路径，本改动不取消既有任务，不能把恢复读取零写扩展为全局无后台活动。
 

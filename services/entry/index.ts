@@ -1,9 +1,10 @@
 import {HttpError,json,requireOrigin} from '../gateway/http.ts';
 import {publicHttpsOrigin,requireRequestHost} from '../gateway/origins.ts';
+import {g5ReadHeaders} from '../gateway/transport-headers.ts';
 
 export interface EntryEnv {APP_ORIGIN:string;APP_TRANSPORT_ORIGIN:string;}
 type Send=(request:Request)=>Promise<Response>;
-const requestHeaders=['accept','accept-language','content-type','cookie','origin','referer','sec-fetch-site','sec-fetch-mode','sec-fetch-dest','idempotency-key','last-event-id','range','if-none-match','if-modified-since','user-agent'];
+const requestHeaders=['accept','accept-language','content-type','cookie','origin','referer','sec-fetch-site','sec-fetch-mode','sec-fetch-dest','idempotency-key','last-event-id','range','if-none-match','if-modified-since','user-agent',...g5ReadHeaders];
 function checkedLocation(location:string,request:Request,canonical:string):void {
   if(/[\\\u0000-\u0020\u007f]/u.test(location)||/^\/\//.test(location)||/%(?:00|0a|0d|5c)/i.test(location))throw Error('unsafe-upstream-location');
   if(!location.startsWith('/')&&!location.startsWith('https://'))throw Error('unsafe-upstream-location');

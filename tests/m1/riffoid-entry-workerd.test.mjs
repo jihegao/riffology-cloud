@@ -88,13 +88,17 @@ test('two local Workerd Workers: actual Gateway auth, canonical PKCE callback, o
 });
 
 test('unselected proxy auth mode keeps the actual Gateway application closed before any auth/storage/network work',{timeout:45000},async()=>{
-  let outbound=0;const mf=worker('closed-proxy',await bundle('services/gateway/index.ts'),{APP_ORIGIN:text(canonical),APP_TRANSPORT_ORIGIN:text(transport)},()=>{outbound++;return new Response('offline-denied',{status:403});});
+  let outbound=0;const mf=worker('closed-proxy',await bundle('services/gateway/index.ts'),{APP_ORIGIN:text(canonical),APP_TRANSPORT_ORIGIN:text(transport),LEGACY_RECOVERY_ORIGIN:text(legacy),LEGACY_RECOVERY_UNTIL:text('2026-01-01T00:00:00.000Z')},()=>{outbound++;return new Response('offline-denied',{status:403});});
   try{
     await mf.ready;
     for(const [path,method] of [['/','GET'],['/api/auth/sign-in/social','POST'],['/api/auth/callback/google','GET'],['/api/me','GET']]){
       const response=await dispatch(mf,transport+path,{method,headers:method==='POST'?{origin:canonical,'content-type':'application/json'}:{},body:method==='POST'?'{}':undefined});
       assert.equal(response.status,503);assert.equal((await response.json()).error,'two_account_auth_disabled');
     }
+    // No auth secrets, Catalog, assets or DO bindings: static recovery must not
+    // construct BetterAuth or access storage, including after server expiry.
+    for(const path of ['/','/legacy-recovery.js','/legacy-local-runs/','/legacy-local-runs.js','/legacy-local-runs.css'])assert.equal((await dispatch(mf,legacy+path)).status,200,path);
+    for(const path of ['/api/me','/api/workspaces/w'])assert.equal((await dispatch(mf,legacy+path)).status,410,path);
     assert.equal(outbound,0);
   }finally{await mf.dispose();}
 });
