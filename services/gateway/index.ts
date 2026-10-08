@@ -99,7 +99,7 @@ export default {
     if(url.pathname.startsWith('/browser-preview-assets/')){if(!env.ASSETS)return json({error:'assets_not_configured'},503);const asset=await serveBrowserPreviewAppAsset(request,env.ASSETS);return asset??json({error:'not_found'},404);}
     if(!url.pathname.startsWith('/api/')){
       if(request.method!=='GET'&&request.method!=='HEAD')return json({error:'not_found'},404);
-      if(!['/','/index.html','/app.js','/i18n.js','/i18n-bindings.js','/locale-preference.js','/project-status.js','/layout.js','/services.js','/previews.js','/browser-preview.js','/verify-handoff.js','/simulation.js','/comparison.js','/export.js','/publication.js','/evidence.js','/evidence.css','/styles.css','/workspace.css','/admin','/admin.html','/admin.js','/admin.css'].includes(url.pathname))return json({error:'not_found'},404);
+      if(!['/','/index.html','/app.js','/i18n.js','/i18n-bindings.js','/locale-preference.js','/project-status.js','/layout.js','/services.js','/previews.js','/browser-preview.js','/verify-handoff.js','/simulation.js','/comparison.js','/local-runs.js','/export.js','/publication.js','/evidence.js','/evidence.css','/styles.css','/workspace.css','/admin','/admin.html','/admin.js','/admin.css'].includes(url.pathname))return json({error:'not_found'},404);
       if(!env.ASSETS)return json({error:'assets_not_configured'},503);
       const assetRequest=['/admin','/'].includes(url.pathname)
         ? new Request(new URL(url.pathname==='/'?'/index.html':'/admin.html',url),{method:request.method,headers:request.headers})

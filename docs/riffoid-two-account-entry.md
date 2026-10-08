@@ -4,7 +4,7 @@
 
 用户已确认域名在新 Cloudflare 账号 `jihe.gao@theidsa.org` 购入；应用、Workers、D1、R2、DO 留在原账号。14:48 的“好”授权双账号入口离线方案与测试，不授权线上资源/认证变更。本任务未登录新账号、查看 Safari、安装、部署、绑定域名、改 DNS/OAuth/CSP、改权限/凭据、付费运行或合并。Cloudflare for SaaS 仅为另行评估的备选，未启用。
 
-品牌由 [PR #170](https://github.com/jihegao/riffology-cloud/pull/170) 负责，其 head 为 `9799c5c80c2c980a4c34ea446ce800dd1139f880`。本地品牌快照 tree `9d3169fad9dfffdd9e805faa91e026f45ed81e61` 与 GitHub head 的 tree 相同；本机旧提交 SHA 不冒充远端 head。本 PR 从 main `e55104bec3966a2c6f096ba9910712732979f055` 单独分支，没有复制品牌修改。原 checkout 保持原状、未中断其他任务。详见 PR170 的[既有迁移设计](https://github.com/jihegao/riffology-cloud/blob/9799c5c80c2c980a4c34ea446ce800dd1139f880/docs/riffoid-domain-migration.md)。
+品牌由 [PR #170](https://github.com/jihegao/riffology-cloud/pull/170) 负责，其 head 为 `9799c5c80c2c980a4c34ea446ce800dd1139f880`。本地品牌快照 tree `9d3169fad9dfffdd9e805faa91e026f45ed81e61` 与 GitHub head 的 tree 相同；本机旧提交 SHA 不冒充远端 head。本 PR 最初从 main `e55104bec3966a2c6f096ba9910712732979f055` 单独分支，后续整合最新 main 的 PR172/174；没有复制品牌 PR170 修改。原 checkout 保持原状、未中断其他任务。详见 PR170 的[既有迁移设计](https://github.com/jihegao/riffology-cloud/blob/9799c5c80c2c980a4c34ea446ce800dd1139f880/docs/riffoid-domain-migration.md)。
 
 [Issue #104](https://github.com/jihegao/riffology-cloud/issues/104) / [PR #169](https://github.com/jihegao/riffology-cloud/pull/169) 是试用续期的证据：reviewAt 保留 `2026-12-31T15:59:59.999Z`，M1 截止仍为 10 月 20 日。内部名称、原 auth/Catalog 身份、邀请、项目、Revision、Run、归档、DO namespace/class/actor、D1/R2/bindings、镜像、策略 pin、meter-only 计量、历史费用/预留和审计均保留；不重建账户、补发邀请、搬库或清账。#104 维持其实际 Acceptance/open，不把本准备当作退出验收。
 
@@ -139,9 +139,33 @@ Gateway 把 URL 路由 origin 与 canonical 安全 origin 分开。代理模式�
 
 首版本地证据见 [2026-10-08 JSON](evidence/riffoid-two-account-local-20261008.json)，其中 constructor unchanged 的陈述只适用于首版。后续修复以 [冷启动/认证门禁证据](evidence/riffoid-two-account-fixes-20261008.json) 为准。双 Worker 测试运行两个独立本机 Workerd；global fetch 仍构造固定公网 HTTPS，测试 harness 将其送到另一本机实例，不使用生产 service binding。Miniflare HTTP bridge 会带入 loopback Host，测试专用 adapter 恢复为 URL Host；生产无此 adapter，Host负向边界由 Node 测试覆盖。Google token/JWKS 使用本地签名 fixture，不是真实 Google；全新离线 Chromium 仅使用已有缓存，无现有浏览器 profile/Safari，所有请求拦截。最终离线测试没有未拦截的外部请求；没有部署、付费执行或完整产品验收。
 
-下一次批准应针对完整可回退配置包分别覆盖：①只读核验两账号/zone/完整原绑定和账本；②创建/绑定新账号无状态入口及旧账号独立公网 transport；③原 Gateway、Google 精确 callback 与原 Execution/CSP 联动变更和明确恢复期限；④指定真实受邀身份的新域登录/旧域恢复/权限负向/SSE/Preview验收；⑤若需 Turn/Run 付费验收，再单独明确 identity/project/provider/时限/费用与释放观察。远端 push/PR 更新也需本轮父线程另行明确授权；当前只有本地 commit。
+下一次批准应针对完整可回退配置包分别覆盖：①只读核验两账号/zone/完整原绑定和账本；②创建/绑定新账号无状态入口及旧账号独立公网 transport；③原 Gateway、Google 精确 callback 与原 Execution/CSP 联动变更和明确恢复期限；④指定真实受邀身份的新域登录/旧域恢复/权限负向/SSE/Preview验收；⑤若需 Turn/Run 付费验收，再单独明确 identity/project/provider/时限/费用与释放观察。后续新增推送授权与实际只读核验见下节；本节测试证据仍不代表真实上线验收。
 
 首版本地回归：M1 **317/317**、M2 **869/869**，补充 **5个文件的所选 M3 10/10**，均零失败、零跳过。三组共 **1196 次测试执行**，文件不重复但覆盖有重叠，不能称为1196个独立验收场景或完整 M3。首版新14项已包含在M1，单独定向11项也与M1重复，不累计。初次 Chrome/资产前置失败与修复过程记录在首版 JSON。后续冷启动与门禁修复的完整回归结果记录于修复证据；没有远端 CI 或真实双账号验收。
 
 
 本轮修复最终回归：M1 **321/321**、M2 **869/869**，均零失败/跳过；完整 `test:m3` 命令四组分别为 926通过/12跳过、20通过、13通过、92通过，合计 **1051通过、12跳过、0失败**（1063项登记）。跳过项需要真实 compiler/Mesa/Docker运行产物，本次未启用这些验收，不计为通过。首轮 M3 的 TLS fixture 因系统 LibreSSL 不支持 `pkey -check` 失败；用本机已安装 OpenSSL 3.6.4 复验15项通过，再重跑完整 M3 成功。最终 typecheck、RPC AST 核对、diff 与本地文档链接/JSON 校验通过。4项新增测试（模式默认关闭、实际Gateway拒绝、v7/v1真实冷启动）已包含在321中，定向复验不累计。没有运行远端 CI、全仓 M0/其余研究套件或真实双账号验收。
+
+
+## 2026-10-08 推送授权与部署只读核验
+
+用户在 02:53:25 UTC 新增“授权推送上线”。该授权允许推送候选和推进既定部署，但新登录、持久凭据/权限、安全配置差异与恢复期限仍须按最新指令明确处理。本任务已用现有 GitHub 连接器更新独立草稿 PR173；Git CLI 缺认证，未读取或配置凭据。首个远端 commit `cd60b89c94b1ecc3a0a08554a0c8f662fad0820d` 的 tree `f734e4c30ee3dca6f35519b19a63d219ebcf54e3` 与本地修复 commit `938248a284f2ec3eff64d4d5178ec8f36b401f00` 完全相同。随后核验发现线上已部署 PR172，因此整合最新 main `25609953f5c3b69dcb44e520d7e7ed1253d18fe4`（PR172/174），保留浏览器本地 Runs 及既有上线证据；原 e55104b 基线不可直接覆盖当前服务。整合后验证与发布证据见 [只读核验/推送记录](evidence/riffoid-two-account-publish-readback-20261008.json)。
+
+CLI `whoami` 实际确认现有 OAuth 登录为原账号 `jihe.gao@gmail.com`、account ID `8b0d70250211aa10d89e20605a1c7e5e`；不读取或输出其 token。新账号 `jihe.gao@theidsa.org` 的认证、account/zone ID 和角色仍未核验。公开 DNS 仅确认 riffoid.com 使用 Cloudflare nameservers，不能据此认定账号/zone 归属。
+
+当前可回退基线是 Gateway deployment `c6ff55e4-2364-4920-94e0-b8784a1824b5` / version `aeddf112-a2be-45da-868c-ed576c55d5ec`，93 bindings，2026-10-08 PR172 发布；其 APP_ORIGIN 仍为 `https://m1.riff-demo.gaojihe.cn`，Execution 为 `https://riffology-browser-execution.jihe-gao.workers.dev`。Execution deployment `a6fdeb9f-d885-4c72-9e02-968315351edb` / version `c94df077-02a1-460f-8158-e47a338e68af`，4 bindings，APP_ORIGIN 仍为旧域。原账号只读列表确认15个 container 应用；没有启动/停止/更新。Gateway 非秘密 policy 的 reviewAt 确认为 `2026-12-31T15:59:59.999Z`。历史 #169 版本不能单独作为本次回退目标，必须保留 PR172 的当前功能与完整配置。版本 API 不返回 secret_text 的值；本次仅回读元数据、非秘密绑定与白名单 origin/policy 字段，没有读取应用用户库或调用运行/容量 DO。
+
+尚缺完整 live settings/routes/zones/TLS/WAF/资产版本、镜像与账本摘要的冻结组合，以及两个账号的实际配置权限。原账号当前没有配置 APP_TRANSPORT_ORIGIN 或恢复模式；不能把旧恢复 hostname 同时当作新 transport，也不能假定未核验的 workers.dev 地址已启用。若需要启用 workers.dev、添加 Access/mTLS 或可信 IP 通道，应列精确安全差异并另确认，不能绕过原账号已知注册限制或用跨账号 CNAME 代替。
+
+必须确认的安全/恢复差异：
+
+- 认证模式：目前保持 `disabled`。选 `shared-limited` 须明确接受匿名访客可耗尽全站 3次/10秒登录桶的受控可用性风险；可信转发通道需要另审认证/防重放/凭据与运维方案。
+- Google：拟在原 client 增补 `https://app.riffoid.com/api/auth/callback/google`，不替换 client/secret/scopes；旧 `https://m1.riff-demo.gaojihe.cn/api/auth/callback/google` 的撤除时间另定。当前 Google console 清单未回读；若需 authorized domain `riffoid.com`、JS origin 或 consent links，再按实际现值列 diff，不能直接改。
+- 原 Gateway：APP_ORIGIN 从旧域改为 `https://app.riffoid.com`，增加精确已核验的 APP_TRANSPORT_ORIGIN、TWO_ACCOUNT_AUTH_MODE、旧恢复 origin 与 UTC 截止；仍使用原秘密、身份、库与 bindings。
+- 原 Execution：APP_ORIGIN 从旧域改为新 canonical，使 frame-ancestors 切到新域；EXECUTION_ORIGIN 和固定资产保持原值，不增加同站执行、不扩为双 ancestor。该安全差异尚未执行。
+- 恢复窗口建议：新域正式切流后48小时，须确认确切 UTC 起止。原 Cookie/session 沿用既有8小时会话有效期，不延长、不跨域复制；过期旧会话在新域重新登录原同一身份。期满合法恢复 API 返回410，旧静态引导可继续保留，删除入口/数据不在本方案中。
+
+上线顺序仍为：冻结当前完整配置/代码/资产/绑定与回退版本 → 核验新账号/zone/权限和独立 transport → 确认上述安全差异与恢复期限 → 保持新应用关闭准备候选 → 真实受邀身份的固定路由/认证/CSRF/Cookie/SSE/隔离负向验收 → 按批准范围切流。未知请求继续按原key观察，禁重放。异常时维护入口并整组恢复当前 Gateway/Execution、routes 与 Google 清单；不覆盖新域产生的原库数据，不清理旧账本/预留，不撤原域或更换 namespace。
+
+
+整合最新 main 后，全仓 `npm run check` 退出0：UI21、M0 350通过/1条件跳过、M1 321、M2 869、M3四组945通过/12条件跳过 +20+13+92、Issue73 30、Python质量8，typecheck及M0证据/预检自测通过。M3合计1070通过、12跳过；各阶段覆盖会重叠，不汇总为独立验收场景。现 live Gateway compatibility_date 为2026-09-09，临时副本只替换本地 fixture 日期的4项复验也通过，未修改生产日期。测试环境是macOS/Node26.10/Python3.9，CI是Ubuntu/Node25.3/Python3.12。首个远端 CI [#151](https://github.com/jihegao/riffology-cloud/actions/runs/37720443885) 失败，实际 runner_id=0、steps=[]，没有执行验证；具体失败注释的连接器端点不开放，不能断言该次根因。历史PR172的#146账户账单/限额故障仅作旁证。本地完整检查足以继续源码审阅与候选准备，不能宣称远端CI通过或代替真实双账号上线验收。没有执行Cloudflare部署/切流或Google/安全变更。

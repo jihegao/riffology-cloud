@@ -1,0 +1,809 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-08",
+  "scope": "authorized-publication-and-read-only-release-inventory; no Cloudflare deployment",
+  "productionReady": false,
+  "authorization": {
+    "source": "User 2026-10-08 02:53:25 UTC: authorizes push and deployment",
+    "specificSecurityOrCredentialChangesNotAuthorized": true,
+    "recoveryDeadlineNotSelected": true
+  },
+  "source": {
+    "fixLocalCommit": "938248a284f2ec3eff64d4d5178ec8f36b401f00",
+    "latestMainIntegrated": "25609953f5c3b69dcb44e520d7e7ed1253d18fe4",
+    "codeIntegrationLocalCommit": "ba03def3fdb4b16c70de56f2759a6d7566d2b102",
+    "preserved": "PR172 default browser-local Runs and PR174 release evidence; excludes unmerged brand PR170",
+    "firstRemoteCommit": "cd60b89c94b1ecc3a0a08554a0c8f662fad0820d",
+    "firstRemoteTree": "f734e4c30ee3dca6f35519b19a63d219ebcf54e3",
+    "treeEqualToFixLocalCommit": true,
+    "publishedPR": 173,
+    "finalRemoteSha": "Read back from PR173 after publishing this evidence; not self-referenced here"
+  },
+  "verification": {
+    "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH M1_BROWSER_CHANNEL=chromium npm run check",
+    "exitCode": 0,
+    "groups": [
+      {
+        "stage": "check:ui",
+        "tests": 21,
+        "pass": 21,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "stage": "test:m0",
+        "tests": 351,
+        "pass": 350,
+        "fail": 0,
+        "skipped": 1
+      },
+      {
+        "stage": "test:m1",
+        "tests": 321,
+        "pass": 321,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "stage": "test:m2",
+        "tests": 869,
+        "pass": 869,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "stage": "test:m3",
+        "tests": 957,
+        "pass": 945,
+        "fail": 0,
+        "skipped": 12
+      },
+      {
+        "stage": "test:m3",
+        "tests": 20,
+        "pass": 20,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "stage": "test:m3",
+        "tests": 13,
+        "pass": 13,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "stage": "test:m3",
+        "tests": 92,
+        "pass": 92,
+        "fail": 0,
+        "skipped": 0
+      },
+      {
+        "stage": "issue73:validate",
+        "tests": 30,
+        "pass": 30,
+        "fail": 0,
+        "skipped": 0
+      }
+    ],
+    "pythonQuality": {
+      "tests": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "typecheck": "passed",
+    "m0EvidenceAndPreflightSelfTests": "passed",
+    "localLog": ".local/integrated-check.log",
+    "logSha256": "23f7e35aa871ba6a9a841a9af1b66490e83b1185c9f1faea2bf2fcfe49d6563d",
+    "liveCompatibilityProbe": {
+      "productionCompatibilityDate": "2026-09-09",
+      "method": "Exclusive temporary copies of the 2 committed Workerd fixture files replace only 2026-09-06 with live 2026-09-09, then are removed.",
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "skipped": 0,
+      "localLog": ".local/integrated-live-compat.log",
+      "logSha256": "8dc1c7f2c2aec92bd3e4211f3da46b1bf6b7c0e3a630a48cb62b887660f37da2",
+      "includedCoverageOverlapsM1": true
+    },
+    "environmentDifferences": {
+      "localNode": "26.10.0",
+      "ciNode": "25.3.0",
+      "localPython": "3.9.6",
+      "ciPython": "3.12",
+      "localOS": "macOS",
+      "ciOS": "ubuntu-latest"
+    },
+    "testCountsNotIndependentAcceptanceScenarios": true
+  },
+  "remoteCI": {
+    "run": 37720443885,
+    "runNumber": 151,
+    "sha": "cd60b89c94b1ecc3a0a08554a0c8f662fad0820d",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "id": 113126622386,
+        "runner_id": 0,
+        "runner_name": "",
+        "steps": [],
+        "status": "completed",
+        "conclusion": "failure",
+        "started_at": "2026-10-08T02:58:05Z",
+        "completed_at": "2026-10-08T02:58:07Z"
+      }
+    ],
+    "annotationsAccess": "Connector rejects check-run annotations endpoint; specific account-level reason not confirmed for this run.",
+    "priorAccountBillingEvidence": "PR172 documents run146 blocked by billing/spending limit; only historical evidence, not proof of run151's exact annotation."
+  },
+  "CIJudgment": "Runner ID 0 and no steps prove run151 did not execute validation. Exact account-level annotation is unavailable through the connector; previous run146 billing/spending failure is historical corroboration only. Full local stages are sufficient for source review and candidate preparation, not proof of remote CI, target networking/authentication or deployment acceptance.",
+  "cloudflareReadOnly": {
+    "oldAccountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "authenticatedEmail": "jihe.gao@gmail.com",
+    "newAccountAuthenticated": false,
+    "gateway": {
+      "version": "aeddf112-a2be-45da-868c-ed576c55d5ec",
+      "deployment": "c6ff55e4-2364-4920-94e0-b8784a1824b5",
+      "bindings": [
+        {
+          "name": "ASSETS",
+          "type": "assets"
+        },
+        {
+          "database_id": "f122099b-8eaa-4eca-83a0-755de0f8b46b",
+          "id": "f122099b-8eaa-4eca-83a0-755de0f8b46b",
+          "name": "CATALOG",
+          "type": "d1"
+        },
+        {
+          "name": "CF_VERSION_METADATA",
+          "type": "version_metadata"
+        },
+        {
+          "class_name": "G5TenantModelBudget",
+          "name": "G5_TOKEN_BUDGET",
+          "namespace_id": "b0459d59d5d24e85aede77be0c6c0125",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "G5ControlledWindow",
+          "name": "G5_WINDOW_GUARD",
+          "namespace_id": "ffe112b19d644ee98e1f12b5a0da78a6",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "InvitedRunCapacity",
+          "name": "INVITED_RUN_CAPACITY",
+          "namespace_id": "fe74096f53f2408c906b21b013d2050a",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "ManagedProductRuntime",
+          "name": "MANAGED_TURN_RUNTIME",
+          "namespace_id": "2a68e72561bd4e82834f486331d84427",
+          "type": "durable_object_namespace"
+        },
+        {
+          "bucket_name": "riffology-m3-model-content-staging",
+          "name": "MODEL_CONTENT",
+          "type": "r2_bucket"
+        },
+        {
+          "entrypoint": "ModelProxyService",
+          "environment": "production",
+          "name": "MODEL_PROXY",
+          "service": "riffology-m1-gateway-staging",
+          "type": "service"
+        },
+        {
+          "class_name": "PiDeveloperBudget",
+          "name": "PI_DEVELOPER_BUDGET",
+          "namespace_id": "5648367a33bb40cc832c21c423be46e0",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "PrivateBetaCapacity",
+          "name": "PRIVATE_BETA_CAPACITY",
+          "namespace_id": "0137654f83614ad1bbaa4b8fc3b57f0e",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "ProductionModelBudget",
+          "name": "PRODUCTION_MODEL_BUDGET",
+          "namespace_id": "f651eb616fce447eab1c9dac17ed24c2",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "ProductTurnRuntime",
+          "name": "PRODUCT_TURN_RUNTIME",
+          "namespace_id": "9ef65fe251c64afdb425dfe50db1926d",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "ProjectRuntime",
+          "name": "PROJECT_RUNTIME",
+          "namespace_id": "fa42f2fd7ae24a0690d9efe649fadaf6",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "ProjectToolSandbox",
+          "name": "PROJECT_SANDBOX",
+          "namespace_id": "bd4b82ecc2d742098ed6c470229b5dc0",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "RevisionStore",
+          "name": "REVISION_STORE",
+          "namespace_id": "3d352133b52d48d1be27557a2cb5240c",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "ServiceRun",
+          "name": "SERVICE_RUN",
+          "namespace_id": "20df82d10b544438aab8fcbbcb86a063",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "ServiceRuntime",
+          "name": "SERVICE_RUNTIME",
+          "namespace_id": "f357862e96764091837dd7df1d811cd6",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "ServiceSandbox",
+          "name": "SERVICE_SANDBOX",
+          "namespace_id": "918293516c824d868fc719f325b0b269",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "SimulationSandbox",
+          "name": "SIMULATION_SANDBOX",
+          "namespace_id": "61afc653d0054bce8d731f3020075c70",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "TenantModelBudget",
+          "name": "TENANT_MODEL_BUDGET",
+          "namespace_id": "06557a80c4a64faf8a892337e6dfcbd3",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "TenantQuota",
+          "name": "TENANT_QUOTA",
+          "namespace_id": "7b126a0dad674acb80d9bce41b8d7097",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "ToolArtifactStore",
+          "name": "TOOL_ARTIFACT_STORE",
+          "namespace_id": "485f243625a94d4b83256b85b1c8cdaf",
+          "type": "durable_object_namespace"
+        },
+        {
+          "entrypoint": "ToolBridgeService",
+          "environment": "production",
+          "name": "TOOL_BRIDGE",
+          "service": "riffology-m1-gateway-staging",
+          "type": "service"
+        },
+        {
+          "class_name": "ToolBridgeAgent",
+          "name": "TOOL_BRIDGE_AGENT",
+          "namespace_id": "fe7963e2f5ce4e0eb803d925708e743b",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "TrustedPiCapacity",
+          "name": "TRUSTED_PI_CAPACITY",
+          "namespace_id": "cc60581b919a47e1a8683dc447e9e7ca",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "TrustedPiSandbox",
+          "name": "TRUSTED_PI_SANDBOX",
+          "namespace_id": "ac0e9a31323e463b9a05696dad1b30d5",
+          "type": "durable_object_namespace"
+        },
+        {
+          "class_name": "WorkspaceAgent",
+          "name": "WORKSPACE_AGENT",
+          "namespace_id": "64bf54d3461746cebcf6ede7cf8a2e31",
+          "type": "durable_object_namespace"
+        },
+        {
+          "bucket_name": "riffology-workspace-checkpoints-staging-v3-20260911",
+          "name": "WORKSPACE_CHECKPOINTS",
+          "type": "r2_bucket"
+        }
+      ],
+      "bindingCount": 93,
+      "script": {
+        "etag": "be5a16e112bfd23d972a47dc387c453ff5436aa550f27e86cd0f5693c74b0c0b",
+        "handlers": [
+          "fetch",
+          "scheduled"
+        ],
+        "named_handlers": [
+          {
+            "name": "G5ControlledWindow",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "G5TenantModelBudget",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "InvitedRunCapacity",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "ManagedProductRuntime",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "ObserverExecutor",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "PiDeveloperBudget",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "PrivateBetaCapacity",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "ProductTurnRuntime",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "ProductionModelBudget",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "ProjectRuntime",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "ProjectToolSandbox",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "RevisionStore",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "ServiceRun",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "ServiceRuntime",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "ServiceSandbox",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "SimulationSandbox",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "TenantModelBudget",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "TenantQuota",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "ToolArtifactStore",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "ToolBridgeAgent",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "TrustedPiCapacity",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "TrustedPiSandbox",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "WorkspaceAgent",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "ContainerProxy",
+            "handlers": [
+              "fetch"
+            ]
+          },
+          {
+            "name": "ModelProxyService",
+            "handlers": [
+              "probeProductionModels",
+              "fetch"
+            ]
+          },
+          {
+            "name": "ToolBridgeService",
+            "handlers": [
+              "fetch"
+            ]
+          }
+        ],
+        "last_deployed_from": "wrangler"
+      },
+      "scriptRuntime": {
+        "exports": {
+          "G5ControlledWindow": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "G5TenantModelBudget": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "InvitedRunCapacity": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ManagedProductRuntime": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "PiDeveloperBudget": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "PrivateBetaCapacity": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ProductTurnRuntime": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ProductionModelBudget": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ProjectRuntime": {
+            "type": "durable-object",
+            "storage": "sqlite",
+            "container": "riffology-m1-project-staging"
+          },
+          "ProjectToolSandbox": {
+            "type": "durable-object",
+            "storage": "sqlite",
+            "container": "riffology-m3-project-tools-staging"
+          },
+          "RevisionStore": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ServiceRun": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ServiceRuntime": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ServiceSandbox": {
+            "type": "durable-object",
+            "storage": "sqlite",
+            "container": "riffology-m3-service-staging"
+          },
+          "SimulationSandbox": {
+            "type": "durable-object",
+            "storage": "sqlite",
+            "container": "riffology-phase1-simulation"
+          },
+          "TenantModelBudget": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "TenantQuota": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ToolArtifactStore": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ToolBridgeAgent": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "TrustedPiCapacity": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "TrustedPiSandbox": {
+            "type": "durable-object",
+            "storage": "sqlite",
+            "container": "riffology-m3-trusted-pi-staging"
+          },
+          "WorkspaceAgent": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          }
+        },
+        "assets": {
+          "html_handling": "none",
+          "not_found_handling": "none",
+          "serve_directly": false,
+          "raw_run_worker_first": true,
+          "base_path": "/"
+        },
+        "compatibility_date": "2026-09-09",
+        "compatibility_flags": [
+          "nodejs_compat",
+          "nodejs_compat_do_not_populate_process_env"
+        ],
+        "usage_model": "standard",
+        "containers": [
+          {
+            "class_name": "ProjectRuntime",
+            "name": "riffology-m1-project-staging"
+          },
+          {
+            "class_name": "ProjectToolSandbox",
+            "name": "riffology-m3-project-tools-staging"
+          },
+          {
+            "class_name": "TrustedPiSandbox",
+            "name": "riffology-m3-trusted-pi-staging"
+          },
+          {
+            "class_name": "ServiceSandbox",
+            "name": "riffology-m3-service-staging"
+          },
+          {
+            "class_name": "SimulationSandbox",
+            "name": "riffology-phase1-simulation"
+          }
+        ]
+      }
+    },
+    "execution": {
+      "version": "c94df077-02a1-460f-8158-e47a338e68af",
+      "deployment": "a6fdeb9f-d885-4c72-9e02-968315351edb",
+      "bindingCount": 4,
+      "script": {
+        "etag": "0956a74b4e552ad4d830bf752400cbb173dbd7c105075d9b201eca2d79201367",
+        "handlers": [
+          "fetch"
+        ],
+        "last_deployed_from": "wrangler"
+      },
+      "scriptRuntime": {
+        "assets": {
+          "html_handling": "none",
+          "not_found_handling": "none",
+          "serve_directly": false,
+          "raw_run_worker_first": true,
+          "base_path": "/"
+        },
+        "compatibility_date": "2026-09-05",
+        "compatibility_flags": [
+          "nodejs_compat",
+          "nodejs_compat_do_not_populate_process_env"
+        ],
+        "usage_model": "standard"
+      }
+    },
+    "origins": {
+      "APP_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
+      "BROWSER_PREVIEW_EXECUTION_ORIGIN": "https://riffology-browser-execution.jihe-gao.workers.dev"
+    },
+    "privateBeta": {
+      "policyId": "private-beta-20260920-v1",
+      "reviewAt": "2026-12-31T15:59:59.999Z"
+    },
+    "newPublicDnsNameservers": [
+      "jeff.ns.cloudflare.com",
+      "shubhi.ns.cloudflare.com"
+    ],
+    "pending": [
+      "new account/zone/roles readback",
+      "existing route/domain/zone/TLS/WAF metadata",
+      "distinct original-account transport hostname",
+      "exact Google console readback/security diff approval",
+      "recovery deadline in UTC",
+      "auth availability policy decision",
+      "complete assets/container/version/config rollback packet"
+    ],
+    "writesToCloudflare": 0,
+    "containerApps": [
+      {
+        "id": "a03836ca-d275-4f7d-898f-bc16d0875089",
+        "name": "riffology-phase1-simulation",
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-simulation@sha256:88a8d86b15e9f40da3f08ea90b53a46aa7d324341d4a1ea2a0606ecd57798b51",
+        "version": 3
+      },
+      {
+        "id": "a03c0a4c-7533-4190-ba2b-ff4fecaabb48",
+        "name": "riffology-m3-service-staging",
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m3-service-staging@sha256:b531681f42a065217b19a492d2741fd7c6b936a72bb082a588272bce233d63d8",
+        "version": 1
+      },
+      {
+        "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+        "name": "riffology-m3-trusted-pi-staging",
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+        "version": 11
+      },
+      {
+        "id": "a03156a6-9bf5-43fb-8b7f-a1f5b8d1a650",
+        "name": "riffology-m3-project-tools-staging",
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-project-tools@sha256:e6341979a848f40c06328317759e52fefd700470fc4952d2301c382d16152c39",
+        "version": 3
+      },
+      {
+        "id": "a035c941-2207-406e-97aa-a42ab6e9d249",
+        "name": "riffology-m1-project-staging",
+        "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m1-project-staging@sha256:bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00",
+        "version": 2
+      },
+      {
+        "id": "a03693b8-f5be-4247-9280-f0c38435d911",
+        "name": "riffology-m0-release-completion-staging",
+        "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "version": 1
+      },
+      {
+        "id": "a03a6e91-25cb-4a8d-89a8-be522368dde4",
+        "name": "riffology-m0-release-staging",
+        "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "version": 5
+      },
+      {
+        "id": "a039ed42-159d-43db-be13-69315bce5189",
+        "name": "riffology-m0-pi-live-project-staging",
+        "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+        "version": 1
+      },
+      {
+        "id": "a03ddc7e-1c6e-4cea-93ec-ac03d7b0073a",
+        "name": "riffology-m0-pi-live-trusted-staging",
+        "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "version": 1
+      },
+      {
+        "id": "a0321718-f17e-4ccf-974a-fd447dde5920",
+        "name": "riffology-m0-pi-host-staging",
+        "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "version": 1
+      },
+      {
+        "id": "a036b418-dcce-4d2f-bd3d-6debf982ea6f",
+        "name": "riffology-m0-recovery-staging",
+        "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "version": 1
+      },
+      {
+        "id": "a03c0d4b-d529-4d81-a2b6-bfb901222a18",
+        "name": "riffology-m0-files-project-staging",
+        "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+        "version": 1
+      },
+      {
+        "id": "a0332851-f795-46df-9f8e-ee0ddc220095",
+        "name": "riffology-m0-preview-staging",
+        "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+        "version": 1
+      },
+      {
+        "id": "a03313e4-fa9d-4de2-ac2c-d2cc69efd875",
+        "name": "riffology-m0-project-staging",
+        "image": "docker.io/jihegao/riffology-m0-project@sha256:c010768e37d6ad06da137308d30faf32b9ec7fcc21916f29f146c281c7a6946e",
+        "version": 1
+      },
+      {
+        "id": "a03ea65b-b039-4f56-8422-36c719b87b72",
+        "name": "riffology-m0-trusted-staging",
+        "image": "docker.io/jihegao/riffology-m0-trusted-proxy@sha256:4be14ca3e2191e2a2941d4eb0ff7ac904c5a694b60ee839f75ac429eac7f3e67",
+        "version": 1
+      }
+    ]
+  },
+  "securityDiffAndRecoveryProposal": {
+    "gateway": {
+      "APP_ORIGIN": {
+        "from": "https://m1.riff-demo.gaojihe.cn",
+        "to": "https://app.riffoid.com"
+      },
+      "APP_TRANSPORT_ORIGIN": "Distinct old-account public HTTPS hostname/route not verified; cannot fill or share legacy recovery host.",
+      "TWO_ACCOUNT_AUTH_MODE": "disabled until explicit availability decision",
+      "LEGACY_RECOVERY_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
+      "LEGACY_RECOVERY_UNTIL": "Propose 48h after cutover; exact UTC cutoff requires decision"
+    },
+    "google": {
+      "proposedAddCallback": "https://app.riffoid.com/api/auth/callback/google",
+      "oldCallbackRemoval": "Not performed; current console list and bounded timing must be confirmed.",
+      "optionalDomainAndConsentDiff": "riffoid.com authorized-domain/consent links/JS origin only if required by actual existing console configuration; needs precise approved diff",
+      "clientSecretsAndScopes": "unchanged"
+    },
+    "execution": {
+      "APP_ORIGIN": {
+        "from": "https://m1.riff-demo.gaojihe.cn",
+        "to": "https://app.riffoid.com"
+      },
+      "frameAncestors": "Canonical new app only; no extra dual ancestor",
+      "EXECUTION_ORIGIN": "https://riffology-browser-execution.jihe-gao.workers.dev"
+    },
+    "recoverySessions": "Original 8h session validity retained; no extension/copy; expired sessions reauthenticate same identity on new canonical domain",
+    "authorityLimitation": "Legacy Beta/G5 exact receipt unavailable; no authority-check bypass"
+  },
+  "actionsNotPerformed": [
+    "Cloudflare deploy/upload/traffic/route/domain/DNS mutation",
+    "Google OAuth/CSP/Access/WAF/security mutation",
+    "new account login or credential/permission changes",
+    "paid Turn/Run/provider/tool execution",
+    "merge",
+    "install",
+    "delete old entry or data"
+  ],
+  "remainingActionTimeBlockers": [
+    "new account/zone/roles readback",
+    "existing route/domain/zone/TLS/WAF metadata",
+    "distinct original-account transport hostname",
+    "exact Google console readback/security diff approval",
+    "recovery deadline in UTC",
+    "auth availability policy decision",
+    "complete assets/container/version/config rollback packet"
+  ]
+}
