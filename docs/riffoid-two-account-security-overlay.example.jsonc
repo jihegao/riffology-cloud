@@ -7,16 +7,23 @@
     "serverRecoveryHoursAfterSuccessfulCutover": 48,
     "securityRulesOAuthNewCredentialsOrPermissions": false,
     "signedEntryImplementationAndPush": true,
-    "productionKeyGenerationConfigurationReplayResourceAndSecurityChanges": false,
+    "productionKeyGenerationConfigurationReplayResourceAndSecurityChanges": true,
     "ordinaryDeploymentPreviouslyAuthorized": true,
-    "thisRoundExecution": "Documentation/push only; no online operations"
+    "thisRoundExecution": "Read-only original-account freeze and local builds/documentation; no production writes",
+    "exactSecurityOAuthCredentialsReplayPacketApproved": true,
+    "approvalProvenance": {
+      "packetCommit": "a0ab4881d585831d0b0d7e220d69632c681a8c46",
+      "approvedUTC": "2026-10-08T12:33:01Z",
+      "newPermissionsApproved": false,
+      "privateKeyUserOnly": true
+    }
   },
   "newAccount": {
     "accountId": "3232ebc7e9bb0199b92e3d70b07825af",
     "zoneName": "riffoid.com",
     "zoneId": "b0b0079990e13eb20a17a2d3c41403b8",
     "plan": "Free",
-    "observed": "DNS0, zone routes0, no Worker projects, custom rules table empty, SSL/TLS Full; member active; exact policy icons/API scopes not read; Pseudo IPv4 Off; managed-header toggle states unread",
+    "observed": "Latest parent-reported connector result: riffoid-entry and app.riffoid.com present; date2026-09-06, flags global_fetch_strictly_public+enable_request_signal; aliases off, source WAF block present, mode disabled. No key/pin. Historical DNS0/empty table is superseded.",
     "proposedEntryName": "riffoid-entry",
     "proposedCustomDomain": "app.riffoid.com",
     "compatibilityFlag": "global_fetch_strictly_public",
@@ -26,10 +33,11 @@
       "action": "block",
       "description": "riffoid entry direct visitors only",
       "expression": "http.host eq \"app.riffoid.com\" and cf.worker.upstream_zone ne \"\"",
-      "position": "Before any existing rule that could Skip the provenance gate; current observed table empty",
+      "position": "Before any Skip; current rule present per parent connector, actual response/provenance tests pending",
       "enabledOnlyAfterApproval": true
     },
-    "consoleWriteChannelVerified": false
+    "consoleWriteChannelVerified": true,
+    "consoleWriteChannelProvenance": "Parent connector; this task did not repeat writes"
   },
   "originalAccount": {
     "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
@@ -41,7 +49,7 @@
     "zoneId": "c97b548800561fada1a912c234696db1",
     "primaryCandidateTransport": "https://riffoid-transport.gaojihe.cn",
     "alternativeCandidateTransport": "https://m1-transport.riff-demo.gaojihe.cn",
-    "candidateDnsStatus": "Parent-inspected user DNS export snapshot has no same-name candidate records or covering listed wildcard; prior publicNXDOMAIN/routes metadata preserved. Not proof of present resource/route readiness.",
+    "candidateDnsStatus": "Fresh exact DNS read rejected code10000; historical user export does not prove current readiness",
     "newRuleForPrimaryCandidate": {
       "phase": "http_request_firewall_custom",
       "scope": "zone",
@@ -100,7 +108,9 @@
     "gatewaySubdomainSettings": {
       "enabled": false,
       "previewsEnabled": false
-    }
+    },
+    "latestFreezeEvidence": "docs/evidence/riffoid-original-account-live-freeze-20261008.json",
+    "existingZoneWorkerRoutesProvenance": "Historical readback only; latest same-scope route read failed, no retry/expansion"
   },
   "gatewayConfigurationDifferenceAfterApproval": {
     "APP_ORIGIN": {
@@ -114,18 +124,18 @@
   },
   "oauthAndExecutionDifferenceAfterApproval": {
     "googleAddOnly": "https://app.riffoid.com/api/auth/callback/google",
-    "googleCurrentConsoleList": "User2026-10-08 11:10–11:27UTC provided full public fields; not independent Google readback. Live Gateway GOOGLE_CLIENT_ID is secret_text, no value read or active association confirmed.",
+    "googleCurrentConsoleList": "User-provided full public fields and user2026-10-08T12:39:44Z confirms current old client association. No independent Google read or Secret value read; add-only callback approved but application not verified.",
     "executionAppOriginAndSingleAncestor": "https://app.riffoid.com",
     "executionOriginUnchanged": "https://riffology-browser-execution.jihe-gao.workers.dev",
     "executionResourcesAssetsPins": "Unchanged4 bindings/Worker/assets; no same-site execution or extra ancestor",
     "manualReadbackUrl": "https://console.cloud.google.com/auth/clients?pli=1&project=gen-lang-client-0139341395",
     "googlePublicFieldsSource": "docs/evidence/riffoid-google-public-fields-20261008.json",
     "googleProposedFromTo": {
-      "authorizedToApply": false,
+      "authorizedToApply": true,
       "targetClientId": {
         "from": "316292203808-3s6ijnugpiq6hk25vmkj0hgokt2diq86.apps.googleusercontent.com",
         "to": "316292203808-3s6ijnugpiq6hk25vmkj0hgokt2diq86.apps.googleusercontent.com",
-        "source": "User-provided, active live association not independently confirmed"
+        "source": "User-confirmed active association at12:39:44Z; not independently read"
       },
       "authorizedRedirectUris": {
         "from": [
@@ -188,14 +198,14 @@
     }
   },
   "mustVerifyBeforeExecution": [
-    "Requested old-zone public fields complete by user/parent bounded sources; action-time complete route/resource/security freeze and source/native-IP real platform acceptance remain separate",
-    "Exact selected transport route and TLS; no default/worker.dev/alternate-host bypass",
-    "Signed-entry implementation/regressions reviewed; separately approve actual key creation/public pin/new replay namespace plus exact source/IP WAF platform proof and complete config",
-    "Both rules expression support and actual platform-generated provenance under new Custom Domain Worker fetch",
-    "Current complete rollback snapshot remains unchanged at action time",
-    "Existing authorized deployment channel for new account; do not create token or grant permissions implicitly",
-    "Explicit security/OAuth/CSP/configuration approval for the reviewed exact package",
-    "Google public fields complete as user-provided; active Secret-bound client association not independently confirmed; exact add-only callback action still needs approval, never read Secret or ask repeated public fields"
+    "Current zone route/DNS/WAF/Transform state through existing authorized console; API denied, do not expand scopes or overwrite unread rules",
+    "Exact transport Custom Domain and TLS with no aliases/bypass; original domains/routes unchanged",
+    "User public ring without d, verified entry Secret presence without reading value, and once-allocated SQLite replay namespace",
+    "Modern exports metadata: preserve22 existing class/namespace identities; add EntryReplayGuard only; no legacy migrations/tag",
+    "Refresh current deployment and binding/assets hashes immediately before action, stop on drift",
+    "Real source/native-IP/header and replay/cancellation platform acceptance before coordinated canonical/Execution/signed switch",
+    "Approved add-only Google callback on already user-confirmed client; retain current lists/secret/scopes",
+    "Freeze complete post-resource forward rollback with actual namespace ID; no half topology and no recovery clock before successful cutover"
   ],
   "realNoPaidAcceptanceBeforeOpeningAuth": [
     "Real direct transport, forged CF-Worker/IP, outside-zone Worker, Worker-to-app and alternate-host tests; all not run. Same-zone peer transport test must meet explicitly selected trust boundary; WAF-only does not block it.",
@@ -210,29 +220,35 @@
     "actualPlatformTests": "Not run",
     "optionAConditional": "Trust all workers/routes/writers/forwarders in entire riffoid.com zone, subject to audit and explicit acceptance; no per-script proof.",
     "recommendation": "Stronger script-specific crypto provenance implemented offline; new source-native IP WAF/transform platform boundary remains required before activation.",
-    "optionBOfflineImplementation": "Offline signed-entry-v1 crypto and atomic replay code now implemented; real Secret/public pin/replay namespace/configuration unapproved and absent."
+    "optionBOfflineImplementation": "Offline signed-entry-v1 crypto and atomic replay implemented; exact production packet approved. User key/public pin and replay still absent; no activation."
   },
   "signedEntryProductionRequest": {
     "implementation": "docs/riffoid-entry-signature.md",
     "entryAccountId": "3232ebc7e9bb0199b92e3d70b07825af",
     "gatewayAccountId": "8b0d70250211aa10d89e20605a1c7e5e",
     "entryOnlySecret": "ENTRY_SIGNING_PRIVATE_JWK (strict EC/P-256 private JWK; value not generated or saved)",
-    "entryPublicVar": "ENTRY_SIGNING_KEY_ID (approved unique ID to be chosen)",
+    "entryPublicVar": "ENTRY_SIGNING_KEY_ID; approved proposed riffoid-entry-20261008-a, not yet configured",
     "gatewayPublicVar": "ENTRY_SIGNING_PUBLIC_KEYS_JSON (strict public JWK ring of1-2 IDs; no d/private values)",
     "gatewayNewBinding": {
       "name": "ENTRY_REPLAY",
       "className": "EntryReplayGuard",
       "namespaceId": null,
       "storage": "sqlite",
-      "requestedMigrationTag": "entry-replay-v1",
-      "newSqliteClasses": [
-        "EntryReplayGuard"
-      ],
       "fixedActorNames": "riffoid-entry-replay-v1:0..63",
-      "perShardRowsMax": 4096
+      "perShardRowsMax": 4096,
+      "lifecycleMode": "modern-exports",
+      "exportsAddition": {
+        "EntryReplayGuard": {
+          "type": "durable-object",
+          "storage": "sqlite"
+        }
+      },
+      "legacyMigrationsAllowed": false,
+      "legacyTagProposalSuperseded": true,
+      "currentNamespaceCount": 22
     },
     "entryNativeIpBoundaryAfterRealVerification": "ENTRY_NATIVE_IP_BOUNDARY=cloudflare-direct-visitor-waf-v1",
-    "currentModeBothSides": "disabled",
+    "currentModeBothSides": "New entry disabled (parent-reported); old Gateway remains original single-origin with all topology/security vars absent",
     "requestedModeOnlyAfterCompleteApprovedPackage": "signed-entry-v1",
     "lifetimeMs": 30000,
     "futureSkewMs": 5000,
@@ -240,7 +256,7 @@
     "nonceBitLength": 256,
     "realCredentialsOrResourcesCreated": false,
     "rollback": {
-      "strategy": "Forward deployment preserving EntryReplayGuard class/export/migration history/ENTRY_REPLAY namespace",
+      "strategy": "Forward deployment retaining modern exports (22 originals plus EntryReplayGuard) and exact once-allocated ENTRY_REPLAY namespace; no legacy migration history",
       "rawPreMigrationGatewayVersionRollback": "Unavailable after DO class lifecycle migration, per Cloudflare documented limit",
       "restoreAPP_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
       "removeTopologyVarsTogether": [
@@ -250,7 +266,7 @@
         "LEGACY_RECOVERY_UNTIL"
       ],
       "replayData": "Retain; no deleteAll/namespace recreation/snapshot restore",
-      "productionRollbackArtifact": "Local build exists; full production namespace/config/assets/migration freeze and platform validation still missing",
+      "productionRollbackArtifact": "Current93/4 config and code/assets frozen locally; full final rollback pending public pin, actual replay namespace and platform validation",
       "sourceEntrypoint": "services/gateway/forward-rollback.ts",
       "configurationRequest": "infra/riffoid-forward-rollback.request.jsonc",
       "localBuildCommand": "node scripts/m1/build-riffoid-forward-rollback.mjs"
@@ -271,7 +287,7 @@
       ],
       "hiddenRequestSignalPassthrough": false,
       "productionChangesExecuted": false,
-      "originalSingleOriginImpact": "Native disconnect signals now enabled on entire Gateway; local original auth/session/CSRF/assets and real single-origin SSE disconnect verified; actual platform pending",
+      "originalSingleOriginImpact": "Proposed enable_request_signal applies across Gateway; local auth/session/CSRF/assets and single-origin SSE behavior verified historically. Current live Gateway still original2flags; platform verification pending.",
       "entryFixtureCompatibilityDate": "2026-09-06",
       "gatewayCompatibilityDateUnchanged": "2026-09-09",
       "dateSource": "infra/riffoid-compatibility-dates.json; live Gateway GET2026-10-08T08:40:44.103Z"
@@ -281,14 +297,15 @@
       "missingReceipt": "Result remains unknown; reconcile with original business request key, no auto retry",
       "alreadyCommittedOperation": "Use original business cancel; TCP FIN is not transaction rollback",
       "preHeaderFINIndependentDeploymentBlocker": false
-    }
+    },
+    "resourceStateProvenance": "No signing key/pin/replay; only parent-reported disabled entry/domain/WAF created"
   },
   "implementedOfflineCode": {
     "entry": "ECDSA P-256/SHA256 sign canonical target/method/path/query/time/nonce/native-IP/body/allowlisted-header digests. Private key isolated, body bounded, defaults disabled.",
     "gateway": "Verify fixed pin/signature/header digest, atomically claim nonce in separate DO, verify bounded body and time/cancellation again; only then set trusted auth IP input. Original identity/Catalog/CSRF/G5 remain.",
     "rateLimits": "Installed BetterAuth1.7.3 unchanged: basic30/60s, sign-in3/10s and original stricter endpoints",
     "currentRuntimeMode": "defaults disabled; no production key/pin/namespace or native-IP boundary configured; shared-limited remains prohibited for deployment",
-    "newSecretsPermissionsServiceBindings": "One entry-only private-key Secret and one original-account SQLite replay DO requested, not created; no original auth secret reuse/service binding/cross-account CNAME"
+    "newSecretsPermissionsServiceBindings": "Approved user-only entry signing Secret and original-account SQLite replay DO not yet provisioned; no new scopes, auth secret reuse, service binding or cross-account CNAME"
   },
   "originalZoneUserAndParentAttachmentSupplement": {
     "evidence": "docs/evidence/riffoid-original-zone-user-fields-20261008.json",
@@ -296,7 +313,7 @@
     "DNS": "Parent-inspected export2026-10-08 11:29:57(no timezone): two candidates no same-name records, only three preview wildcard names not covering candidates; export does not prove routes/resources",
     "ManagedTransforms": "Parent pixel inspection: Remove visitor IP headersOff; AddTrueClientIP left-greyed appears disabled, reason unknown. No zone name; old-zone attribution from user context only. No custom Request Header Transform list.",
     "pending": "Requested public fields complete; user11:45:38UTC reports custom Request Header Transform rulesnone, not independent API/screenshot readback",
-    "changeAuthorization": false,
+    "changeAuthorization": true,
     "customRequestHeaderTransformUserReport": {
       "timestampUTC": "2026-10-08T11:45:38Z",
       "messageId": "Sentinel_2a89fa6fdc84819185c0160147d76fd3",
@@ -311,5 +328,6 @@
     "chatRepoLogsSharedWorkspace": "Never place private JWK here",
     "publicOnlyMayReturn": "keyId and strict public JWK ring without d",
     "proposedPublicKeyId": "riffoid-entry-20261008-a"
-  }
+  },
+  "currentEvidenceSupplement": "docs/riffoid-original-account-live-freeze-20261008.md; historical console fields below retain provenance and are not fresh API readback"
 }

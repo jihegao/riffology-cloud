@@ -1,6 +1,6 @@
 {
   "status": "NON_EXECUTABLE_UNFROZEN_TEMPLATE",
-  "scope": "Forward single-origin rollback after replay class migration. Not a Wrangler config or deployment payload.",
+  "scope": "Forward single-origin rollback after add-only modern DO export creation; not a Wrangler config or deployment payload.",
   "gateway": {
     "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
     "workerName": "riffology-m1-gateway-staging",
@@ -13,16 +13,17 @@
       "LEGACY_RECOVERY_UNTIL"
     ],
     "mustPreserve": {
-      "allOriginalBindingsVarsSecretsAssetsContainersRoutes": "Copy complete verified frozen production configuration; this file is not that snapshot",
+      "allOriginalBindingsVarsSecretsAssetsContainersRoutes": "Current93bindings/22namespaceIDs/5container links/code/assets frozen; live zone routes not freshly readable. Full local base under .local/riffoid-live-freeze-20261008; final pin/allocated namespace still missing",
       "ENTRY_REPLAY": {
         "className": "EntryReplayGuard",
         "namespaceId": null,
         "action": "Retain EXACT pre-rollback namespace; never create/recreate/delete/clear"
       },
       "allDurableObjectExports": "Original production exports plus EntryReplayGuard",
-      "migrationHistory": null,
-      "migrationAction": "Retain exact post-signature migration history; no new/renamed/deleted class lifecycle change",
-      "dataIdentityHistoryLedgerPolicyPins": "Unchanged; trial December31 and M1 October20"
+      "dataIdentityHistoryLedgerPolicyPins": "Unchanged; trial December31 and M1 October20",
+      "lifecycleMode": "modern-exports",
+      "legacyMigrationsAllowed": false,
+      "exportsAction": "Retain verified original22 exports plus EntryReplayGuard and exact namespace IDs; no class deletion/storage conversion"
     },
     "compatibilityFlags": [
       "nodejs_compat",
@@ -31,9 +32,10 @@
     ],
     "compatibilityDate": "2026-09-09",
     "buildCommand": "node scripts/m1/build-riffoid-forward-rollback.mjs",
-    "localBuildOutput": ".local/riffoid-forward-rollback/worker.mjs + manifest.json (not a frozen production package)",
+    "localBuildOutput": ".local/riffoid-live-freeze-20261008/candidates/{gateway,forward-rollback}.worker.mjs and manifest.json; non-executable requests pending public pin and actual namespace ID",
     "compatibilityDateAction": "Retain verified live Gateway date; entry fixture2026-09-06 is separate",
-    "compatibilityDateSource": "infra/riffoid-compatibility-dates.json"
+    "compatibilityDateSource": "infra/riffoid-compatibility-dates.json",
+    "productionCandidatePreparationCommand": "node scripts/m1/prepare-riffoid-live-candidates.mjs (local only, consumes read-only snapshots; no cloud calls)"
   },
   "entry": {
     "action": "Stop new admission; TWO_ACCOUNT_AUTH_MODE=disabled on the existing entry",
@@ -42,20 +44,20 @@
   "execution": {
     "APP_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
     "singleFrameAncestor": "https://m1.riff-demo.gaojihe.cn",
-    "assetsBindingsWorkerOrigin": "Restore frozen original full package, no extra ancestor or namespace change"
+    "assetsBindingsWorkerOrigin": "Use exact downloaded current49,003-byte Worker SHA b76b05f96d345a0ecf280cdb4414c1dd0c56bf71041dc3c72199db8e8c6c07c1, original4bindings and fixed assets; only APP_ORIGIN changes"
   },
   "oauth": {
     "originalClientAndOldCallback": "Retain exact verified existing values; no new client, scopes or secret",
     "publicFieldsEvidence": "docs/evidence/riffoid-google-public-fields-20261008.json",
-    "liveClientAssociation": "GOOGLE_CLIENT_ID is secret_text; no value read or independent match. User public fields complete, no OAuth change approval"
+    "liveClientAssociation": "User confirmed current public client at2026-10-08T12:39:44Z; exact add-only callback approved12:33:01Z. No independent Google readback or Secret access."
   },
   "requiredProductionFreezeMissing": [
-    "Actual replay namespace ID after separately approved creation and complete migration history",
-    "Complete current Gateway and Execution configuration, assets hashes and bindings, preserving original93 bindings plus replay",
-    "Approved target DNS/routes/WAF/Transform and rollback order",
-    "Action-time client association and freeze of user-provided Google list; no Secret value read or repeated public-field request",
-    "Built forward rollback Worker and asset hash/version and actual platform validation"
+    "Strict user-generated public ring without d; agent never handles private key",
+    "Once-allocated actual replay namespace ID and post-addition modern exports/bindings snapshot",
+    "Fresh authorized old-zone DNS/routes/WAF/Transform readback and transport TLS; current scoped API reads denied",
+    "Complete post-resource forward rollback hash/version and actual no-paid platform validation"
   ],
   "offlineVerification": "Build and test source entrypoint; local synthetic same namespace retention/replay, original auth/identity/CSRF/assets behavior. Does not freeze or deploy a production artifact.",
-  "noProductionKeyResourcePermissionSecurityOrDeploymentChanges": true
+  "noProductionKeyResourcePermissionSecurityOrDeploymentChanges": true,
+  "freezeSupplement": "docs/riffoid-original-account-live-freeze-20261008.md"
 }
