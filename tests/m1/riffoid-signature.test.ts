@@ -108,11 +108,26 @@ test('valid cryptographic signatures still fail with expired/future timestamps, 
     await denied(req,verifier(k,store));
   }assert.equal(store.calls,0);
 });
-test('replay RPC timeout and cancellation fail closed, with no retry after a late claim',async()=>{
+test('unresolved replay RPC times out and pre-claim cancellation fails closed (does not prove late persistence)',async()=>{
   const k=await keys(),req=await signed(k);let claims=0;
   const store={getByName(){return {claim(){claims++;return new Promise<'accepted'>(()=>{});}};}};
   await assert.rejects(()=>verifyEntry(req,canonical,transport,{ENTRY_SIGNING_PUBLIC_KEYS_JSON:JSON.stringify(k.ring),ENTRY_REPLAY:store}),{message:'entry_replay_unavailable'});assert.equal(claims,1);
   const abort=new AbortController(),fresh=await signed(k);const pending=verifyEntry(new Request(fresh,{signal:abort.signal}),canonical,transport,{ENTRY_SIGNING_PUBLIC_KEYS_JSON:JSON.stringify(k.ring),ENTRY_REPLAY:store});abort.abort();await assert.rejects(()=>pending);assert.equal(claims,1);
+});
+test('simulated store: RPC already issued may persist after timeout/cancellation; same proof replay denied, no auth or retry',{timeout:10000},async()=>{
+  const k=await keys();
+  for(const failure of ['timeout','cancel']){
+    let resolveIssued!:()=>void,release!:()=>void,resolvePersisted!:()=>void;
+    const issued=new Promise<void>(resolve=>{resolveIssued=resolve;}),hold=new Promise<void>(resolve=>{release=resolve;}),persisted=new Promise<void>(resolve=>{resolvePersisted=resolve;});
+    const nonces=new Set<string>();let claims=0,auth=0;
+    const store={getByName(){return {async claim(v:ReplayClaim){claims++;if(nonces.has(v.nonce))return 'replay' as const;resolveIssued();await hold;nonces.add(v.nonce);resolvePersisted();return 'accepted' as const;}};}};
+    const req=await signed(k),abort=new AbortController(),env={ENTRY_SIGNING_PUBLIC_KEYS_JSON:JSON.stringify(k.ring),ENTRY_REPLAY:store};
+    const admission=verifyEntry(new Request(req,{signal:abort.signal}),canonical,transport,env).then(()=>{auth++;});
+    await issued;if(failure==='cancel')abort.abort();
+    await assert.rejects(()=>admission,{message:'entry_replay_unavailable'});assert.equal(claims,1);assert.equal(auth,0);assert.equal(nonces.size,0);
+    release();await persisted;assert.equal(nonces.size,1);assert.equal(claims,1,'late completion does not issue another RPC');assert.equal(auth,0);
+    await assert.rejects(()=>verifyEntry(new Request(req),canonical,transport,env).then(()=>{auth++;}),{message:'entry_replay_denied'});assert.equal(claims,2,'second RPC is the explicit replay test only');assert.equal(auth,0);
+  }
 });
 test('bounded uploads preserve8MiB only on the original model route, and concurrent allocations reject without queue',async()=>{
   const url=transport+'/api/admin/models/model-a/content',body='x'.repeat(8*1024*1024);

@@ -2,6 +2,7 @@ import {HttpError,json,requireOrigin} from '../gateway/http.ts';
 import {publicHttpsOrigin,requireRequestHost} from '../gateway/origins.ts';
 import {g5ReadHeaders} from '../gateway/transport-headers.ts';
 import {signEntry,signedRequestCapacity,pathQuery,type SigningEnv} from './signature.ts';
+import {requestAbortBridge,abortableResponse} from './abort.ts';
 
 export interface EntryEnv extends SigningEnv {APP_ORIGIN:string;APP_TRANSPORT_ORIGIN:string;TWO_ACCOUNT_AUTH_MODE?:string;}
 type Send=(request:Request)=>Promise<Response>;
@@ -37,6 +38,7 @@ export function entryResponse(response:Response,request:Request,canonical:string
  * mandatory even when a caller accesses the transport hostname directly. */
 export async function entry(request:Request,env:EntryEnv,send:Send=fetch):Promise<Response> {
   let releaseCapacity=()=>{};
+  let bridge:ReturnType<typeof requestAbortBridge>|undefined;
   try{
     const canonical=publicHttpsOrigin(env.APP_ORIGIN),transport=publicHttpsOrigin(env.APP_TRANSPORT_ORIGIN);
     if(canonical.origin===transport.origin)throw Error('entry-loop');
@@ -49,6 +51,10 @@ export async function entry(request:Request,env:EntryEnv,send:Send=fetch):Promis
     const mode=env.TWO_ACCOUNT_AUTH_MODE??'disabled';
     if(mode==='disabled')return json({error:'two_account_auth_disabled'},503);
     if(mode!=='signed-entry-v1'&&mode!=='shared-limited')return json({error:'entry_signing_not_configured'},503);
+    if(mode==='signed-entry-v1'){
+      bridge=requestAbortBridge(request.signal);
+      request=new Request(request,{signal:bridge.signal});
+    }
     // Preserve the platform's original serialized path/query, including a bare
     // trailing "?" that URL.search omits. Concatenation cannot change the host.
     const target=transport.origin+pathQuery(request);
@@ -63,13 +69,13 @@ export async function entry(request:Request,env:EntryEnv,send:Send=fetch):Promis
     let upstream=new Request(target,init);
     if(mode==='signed-entry-v1'){releaseCapacity=signedRequestCapacity(request);upstream=await signEntry(upstream,request,canonical.origin,env);}
     const response=await send(upstream);
-    try{return entryResponse(response,request,canonical.origin);}catch{
+    try{const result=entryResponse(response,request,canonical.origin);if(!bridge)return result;const streaming=abortableResponse(result,bridge);bridge=undefined;return streaming;}catch{
       if(response.body)void response.body.cancel().catch(()=>{});
       return json({error:'upstream_response_denied'},502);
     }
   }catch(error){
     if(error instanceof HttpError)return json({error:error.message},error.status);
     return json({error:'entry_unavailable'},502);
-  }finally{releaseCapacity();}
+  }finally{releaseCapacity();bridge?.dispose();}
 }
 export default {fetch(request:Request,env:EntryEnv){return entry(request,env);}} satisfies ExportedHandler<EntryEnv>;

@@ -27,6 +27,7 @@ import { createAuth } from './auth.ts';
 import {appTopology,requireRequestHost} from './origins.ts';
 import {publicTransportHeaders} from './transport-headers.ts';
 import {verifyEntry,signedRequestCapacity,type VerificationEnv} from '../entry/signature.ts';
+import {requestAbortBridge,abortableResponse} from '../entry/abort.ts';
 import {legacyRecovery} from './recovery.ts';
 import { catalogDatabase } from '../catalog/database.ts';
 import { gateway } from './app.ts';
@@ -72,7 +73,7 @@ async function dispatch(env:GatewayRuntimeEnv, item:{task:WorkspaceTask;mode:'ac
   if(item.mode==='accept')await actor.accept(item.task);
   else await actor.reconcile(item.task);
 }
-export default {
+const gatewayHandler={
   async fetch(request:Request,env:GatewayRuntimeEnv):Promise<Response>{
     let releaseSignedCapacity=()=>{};
     try {
@@ -166,6 +167,15 @@ export default {
     const database=catalogDatabase(env.CATALOG);
     await runGatewayScheduledDomains(async()=>{const work=await new ProvisioningCatalog(database).sweep(10),results=await Promise.allSettled(work.map(item=>dispatch(env,item)));if(results.some(result=>result.status==='rejected'))throw Error('workspace-dispatch-incomplete');},()=>runRevisionGcMaintenance(database,env.REVISION_STORE));
   },
+} satisfies ExportedHandler<GatewayRuntimeEnv>;
+export default {
+  ...gatewayHandler,
+  async fetch(request:Request,env:GatewayRuntimeEnv):Promise<Response>{
+    if(env.TWO_ACCOUNT_AUTH_MODE!=='signed-entry-v1'||new URL(request.url).origin!==env.APP_TRANSPORT_ORIGIN)return gatewayHandler.fetch(request,env);
+    const bridge=requestAbortBridge(request.signal);
+    try{return abortableResponse(await gatewayHandler.fetch(new Request(request,{signal:bridge.signal}),env),bridge);}
+    catch(error){bridge.dispose();throw error;}
+  }
 } satisfies ExportedHandler<GatewayRuntimeEnv>;
 
 export { ProductionModelBudget } from '../model-budget/production-durable.ts';

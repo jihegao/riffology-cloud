@@ -23,7 +23,7 @@
   "verification": {
     "fullCheckExitCode": 0,
     "fullCheckStage": "Full repository check passed before final proof-size/raw-URI guards. Final affected completeM1/M3 plus typecheck rerun afterwards; other suites unchanged.",
-    "finalChangedCodeRevalidation": "Typecheck and completeM1/M3 passed after final proof-size/rawURI/native-target equality guards; no subsequent production edits",
+    "finalChangedCodeRevalidation": "Historical proof-size/rawURI stage passed then; superseded by current cancellation/rollback source changes and affected full M1/M3 rerun in current evidence",
     "finalM1": {
       "passed": 341,
       "failed": 0,
@@ -246,5 +246,14 @@
     "staticLocalExportAfterExpiry": true
   },
   "preserved": "Original resources/identity/history/ledger/namespace/actor/model pins/meter-only/December31trial/October20M1; no brand duplication or merge",
-  "remainingReadback": "OldzoneWAF/DNS/Transform/settings endpointpermissions denied; Googleclient fullID/binding/callback/origin/domains manual nonsecret list pending; do not requestSafariJS permission or bypass refusals"
+  "remainingReadback": "OldzoneWAF/DNS/Transform/settings endpointpermissions denied; Googleclient fullID/binding/callback/origin/domains manual nonsecret list pending; do not requestSafariJS permission or bypass refusals",
+  "status": "HISTORICAL_STAGE_SUPERSEDED_BY_CANCELLATION_REVIEW",
+  "reviewCorrection": {
+    "currentEvidence": "docs/evidence/riffoid-entry-review-offline-20261008.json",
+    "oldUnresolvedRpcTest": "Proved timeout and pre-claim cancellation only, not actual late persistence; misleading title corrected",
+    "oldSyntheticCancellation": "Manual AbortController/stream.cancel did not prove incoming native HTTP disconnect or ignored subrequest-signal behavior",
+    "subsequentProductionSourceChanges": "Standard abort bridges in signed entry/Gateway and forward rollback entrypoint now added; old source/log hashes remain frozen historical values",
+    "actualLateSqliteNow": "Separate current evidence injects delayed RPC and fixture-only waitUntil then observes real local SQLite persistence and entry_replay_denied",
+    "currentFINLimit": "Pre-header graceful FIN immediate native cancellation unproven; actual reset and open SSE only, actual platform pending"
+  }
 }

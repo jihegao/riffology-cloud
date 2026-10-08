@@ -84,3 +84,9 @@ PR172/174已整合，main基线 `25609953f5c3b69dcb44e520d7e7ed1253d18fe4`。[Is
 成功切流才记录UTC和48小时server恢复截止。原session8小时不延长/复制；期限后API410，静态指南与`/legacy-local-runs/`原字节导出继续保留，无自动迁移/import/replay。legacy G5权威receipt仍503 recovery_authority_unprepared，不推断原执行失败；新canonical原权限路径与proof不变。
 
 失败则关闭新准入、原key只读观察并确认释放，恢复**整组**被冻结的原Gateway/Execution版本、origin/assets/config及旧domain入口，保留原Googlecallback；不回退到早于PR172的版本，不恢复数据库覆盖新数据，不清账/搬库/重建身份或DO，不删除原入口/新域数据。内部名称/历史资源/meter-only/策略pin/12月31trial及10月20M1全部保持；48小时不是删除域名授权。
+
+### 取消信号与前向回退的精确追加申请（离线、未执行）
+
+兼容日期2026-09-06保持；新入口flags `[global_fetch_strictly_public,enable_request_signal]`，原Gateway从`[nodejs_compat,nodejs_compat_do_not_populate_process_env]`追加`enable_request_signal`。不使用隐藏request_signal_passthrough；signed两层标准AbortController桥接仅在真实原生信号到达时传播。实际TCP reset/已开SSE本地链通过，响应头前普通FIN即时取消未证明，仍需平台验收。原Gateway staging config没有被改为该overlay。
+
+[前向回退源入口](../services/gateway/forward-rollback.ts)与[非可执行配置申请](../infra/riffoid-forward-rollback.request.jsonc)已可本地build/test；保留全部DO exports/实际既有ENTRY_REPLAY namespace/migration，恢复原APP_ORIGIN且整组移除transport/mode/recovery4 vars。实际生产namespace ID、完整配置/migration/assets freeze和平台验证仍缺，本地artifact状态LOCAL_BUILD_NOT_PRODUCTION_FROZEN，不能用旧Gateway version跨DO lifecycle迁移回滚。详见[评审实现与边界](riffoid-entry-signature.md)。

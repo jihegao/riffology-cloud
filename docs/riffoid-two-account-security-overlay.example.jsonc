@@ -180,7 +180,29 @@
         "LEGACY_RECOVERY_UNTIL"
       ],
       "replayData": "Retain; no deleteAll/namespace recreation/snapshot restore",
-      "productionRollbackArtifact": "Must freeze and platform-validate before rollout approval; not deployed"
+      "productionRollbackArtifact": "Local build exists; full production namespace/config/assets/migration freeze and platform validation still missing",
+      "sourceEntrypoint": "services/gateway/forward-rollback.ts",
+      "configurationRequest": "infra/riffoid-forward-rollback.request.jsonc",
+      "localBuildCommand": "node scripts/m1/build-riffoid-forward-rollback.mjs"
+    },
+    "compatibilityFlagsExactChange": {
+      "compatibilityDateUnchanged": "2026-09-06",
+      "entry": [
+        "global_fetch_strictly_public",
+        "enable_request_signal"
+      ],
+      "gatewayBefore": [
+        "nodejs_compat",
+        "nodejs_compat_do_not_populate_process_env"
+      ],
+      "gatewayAfter": [
+        "nodejs_compat",
+        "nodejs_compat_do_not_populate_process_env",
+        "enable_request_signal"
+      ],
+      "hiddenRequestSignalPassthrough": false,
+      "productionChangesExecuted": false,
+      "originalSingleOriginImpact": "Native disconnect signals now enabled on entire Gateway; local original auth/session/CSRF/assets and real single-origin SSE disconnect verified; actual platform pending"
     }
   },
   "implementedOfflineCode": {

@@ -42,7 +42,7 @@ RPC最长2秒；超时、binding缺失、写入失败、容量满、取消均失
 
 一般请求body≤32768 bytes、5秒、8192 chunks；原精确`POST /api/admin/models/<id>/content`保持8MiB/30秒上限。下游原8KiB JSON、12/32KiB专用route及operator/draft权限限制仍在，不扩大业务准入。完整摘要需要有限缓冲，不能处理无限/未验证流上传；超限413。拒绝压缩/stacked transfer、重复或非法Content-Length、Length+Transfer-Encoding并存、声明长度不匹配。平台已解chunk framing的单一chunked可以有限读取但不转发framing头。
 
-每isolate在读body至响应headers期间最多32个普通有body请求、一个8MiB上传；读取阶段另有同上限守卫，无排队/扩容/重试，满则503。字节拷贝和buffer内存有固定上界，但真实CPU/latency/平台配额仍需平台负载验收。无body GET/HEAD不分配上传buffer；SSE响应绝不read/clone/text/arrayBuffer，保持原cursor、逐块/cancel、cache-control no-store,no-transform。nonce只在打开HTTP响应前确认，长SSE不持RPC/上传slot。断线后的新观察由原客户端协议发起新HTTP请求/新签名，不能重放Turn/Run。
+每isolate在读body至响应headers期间最多32个普通有body请求、一个8MiB上传；读取阶段另有同上限守卫，无排队/扩容/重试，满则503。字节拷贝和buffer内存有固定上界，但真实CPU/latency/平台配额仍需平台负载验收。无body GET/HEAD不分配上传buffer；SSE响应不整流读取/clone/text/arrayBuffer；仅在下游pull时逐块读取，保持原cursor和取消传播、cache-control no-store,no-transform。nonce只在打开HTTP响应前确认，长SSE不持RPC/上传slot。断线后的新观察由原客户端协议发起新HTTP请求/新签名，不能重放Turn/Run。
 
 原BetterAuth数据库30/60秒及sign-in3/10秒保持。只有经实际签名/nonce/body验证的request会由Gateway设置x-riffoid-client-ip，并将其选为唯一auth IP header；内部IPv6统一规范化。单域和旧只读恢复不采纳custom-IP，未验证请求在auth创建/写rate rows之前拒绝。
 
@@ -53,7 +53,8 @@ RPC最长2秒；超时、binding缺失、写入失败、容量满、取消均失
 1. 新账号`3232ebc7e9bb0199b92e3d70b07825af` / riffoid.com zone `b0b0079990e13eb20a17a2d3c41403b8`：指定单一riffoid-entry Worker新增**Secret ENTRY_SIGNING_PRIVATE_JWK**，仅五字段`kty=EC,crv=P-256,x,y,d`；普通var ENTRY_SIGNING_KEY_ID为唯一公开ID。创建/保存/注入真实私钥动作须行动时确认，本次没有生成生产key，也不把key值写入文件/PR/日志。新入口无原auth/provider秘密及应用数据绑定。
 2. 原账号`8b0d70250211aa10d89e20605a1c7e5e` / Gateway riffology-m1-gateway-staging：新增公开var ENTRY_SIGNING_PUBLIC_KEYS_JSON，严格`{keyId:{kty,crv,x,y}}`，最多2个ID，禁止d/私钥。公钥来自上述获准生成动作，先核对pin及算法，不能让请求指定或自动下载公钥。
 3. 同原Gateway新增ENTRY_REPLAY绑定，class EntryReplayGuard及**新SQLite namespace**；申请新的migration tag `entry-replay-v1` / new_sqlite_classes `[EntryReplayGuard]`，实际namespace ID待批准后创建回读。这是独立安全资源，原93 bindings/DO namespaces/class/actor/budgets不改；从完整live configuration做加法overlay，不能部署精简模板。无新D1/R2/container/service binding。
-4. 完成原zone/Google现配置缺口及精确transport/两条WAF规则批准、原生IP平台验收后才设ENTRY_NATIVE_IP_BOUNDARY。两边TWO_ACCOUNT_AUTH_MODE仍disabled直到完整公钥/Secret/DO/URL/Google/CSP包审阅并获准启用`signed-entry-v1`。canonical/transport/recovery/Execution现差异沿[配置包](riffoid-two-account-configuration-package.md)；此实现授权不包含线上更改。
+4. 两侧都显式新增`enable_request_signal`；日期保持2026-09-06。新入口flags精确为`[global_fetch_strictly_public,enable_request_signal]`；原Gateway从`[nodejs_compat,nodejs_compat_do_not_populate_process_env]`变为该两项加`enable_request_signal`。原Gateway staging线上配置未编辑，此处仅完整overlay申请。不能假定升级日期会启用该flag，不使用隐藏`request_signal_passthrough`。
+5. 完成原zone/Google现配置缺口及精确transport/两条WAF规则批准、原生IP平台验收后才设ENTRY_NATIVE_IP_BOUNDARY。两边TWO_ACCOUNT_AUTH_MODE仍disabled直到完整公钥/Secret/DO/URL/Google/CSP包审阅并获准启用`signed-entry-v1`。canonical/transport/recovery/Execution现差异沿[配置包](riffoid-two-account-configuration-package.md)；此实现授权不包含线上更改。
 
 ### 轮换、撤回与回退
 
@@ -65,8 +66,26 @@ RPC最长2秒；超时、binding缺失、写入失败、容量满、取消均失
 
 真实成功切流才启动已批准48h服务端恢复；现在无cutoverUTC/until。server过期API410，旧静态指南及本机原字节Runs导出继续保留；内部身份/历史/12月31trial/10月20M1不变。线上验收必须覆盖实际平台IP/来源、原Google主体/权限撤回/CSRF/G5/SSE/跨账号TLS与fail-close，不能以本地合成IP/身份/临时key替代。
 
-## 完成的本地验证
+## 取消链与回退评审补充
 
-全仓npm run check退出0，含UI21、M0350通过/1条件跳过、M2869、Issue7330、Python8及M1/M3。自审补proof大小和原始URI（保留空尾问号）守卫后，最终typecheck通过、完整M1 **341/341**、完整M3 **1070通过/12条件跳过/0失败**；没有随后生产代码变更。定向17项和Workerd集成项重叠完整回归，不叠加总数。
+原生Incoming Request.signal在Workerd中默认带IGNORE_FOR_SUBREQUESTS，直接传给fetch不保证取消。两侧signed路径现在使用[标准AbortController桥接](../services/entry/abort.ts)，将原生abort转换为普通signal，body重建保持该signal；监听延续至响应body结束/取消，按pull逐块读取，取消上游reader，无预读/整流buffer/重试/隐藏flag。Gateway原单域路径仍使用原handler，新增flag对整个Worker生效；本地原单域session、CSRF、assets和真实SSE断开已另验证。参考[Cloudflare Request.signal文档](https://developers.cloudflare.com/workers/runtime-apis/request/#properties)与[Workerd明确IGNORE_FOR_SUBREQUESTS代码](https://github.com/cloudflare/workerd/blob/cb61e82b35bf4cac7fc69821743337b8ca498bd5/src/workerd/io/worker-entrypoint.c%2B%2B#L463-L472)。
+
+新[真实HTTP测试](../tests/m1/riffoid-cancellation-workerd.test.mjs)使用直接Workerd loopback sockets；普通Miniflare dispatch/proxy和fetcher会掩盖断开/增加header，故网络适配器用保留全部签名头的Node HTTP转发。客户实际TCP reset触发入口原生abort，标准桥接取消出站fetch；适配器在真实出站连接取消后reset下游socket，Gateway原生abort再经普通桥接停止验证/观察。关闭flag对照不会产生原生abort。不是手动AbortController取消，也不是生产TLS/DNS/跨账号证据。
+
+晚提交分开两类：[模拟store单测](../tests/m1/riffoid-signature.test.ts)证明RPC已发起后超时/取消→晚persist→同proof replay拒绝/零auth/no retry；真实本地Workerd测试注入DO首次RPC2300ms延迟，并以**仅fixture的ctx.waitUntil**确保延迟RPC活到真实SQLite commit（生产claim是同步事务，无该延迟/后台任务）。先查询真实DO issued表确认已收到RPC，再断开/超时；最终原nonce真实落盘，精确同proof重放返回`entry_replay_denied`且第二claim仅来自明确负向重放；auth入口probe=0、原D1 auth_rate_limit=0。不能把本测试延迟机制声称为生产DO调度/持久化时延保证。
+
+真实SSE串起生产entry/Gateway handler、同SQLite replay和生产turnEventStream；producer位于测试asset adapter、authorize/replay和身份是fixture，不是完整真实Catalog用户的应用SSE验收。实际下游首chunk、Last-Event-ID=12、两侧native abort、observer polls停止、单fetch/claim和零auth均验证；原单域Gateway增加flag后也真实断流停止观察。原应用身份/G5/SSE行为另由已有本地回归支持，不合并宣称真实用户验收。
+
+**响应头前普通TCP FIN仍未证明即时取消**：直接HTTP延迟fixture实际观察两侧native abort=0，Gateway2秒timeout使该fixture零auth、nonce晚落盘、无重试；这不证明较快RPC/认证路径在FIN后一定不会继续。TCP reset和已开SSE证据不能替代该缺口。上线包仍不可用作完整取消链验收，须后续获准真实Cloudflare跨账号验收分别覆盖FIN/reset、body/RPC等待和SSE；如平台不能保证所需取消语义，继续关闭并明确阻碍，不能伪造signal/Origin或放宽验签。
+
+前向回退交付[源entrypoint](../services/gateway/forward-rollback.ts)、[非可执行配置申请](../infra/riffoid-forward-rollback.request.jsonc)、[本地构建器](../scripts/m1/build-riffoid-forward-rollback.mjs)和[实际Workerd验证](../tests/m1/riffoid-forward-rollback-workerd.test.mjs)。源入口export集合与Gateway完全一致、保留所有原DO和EntryReplayGuard；要求原canonical、整组删除4个topology vars且保留ENTRY_REPLAY绑定，半配置503。相同本地namespace/SQLite数据经worker重建后仍拒绝原nonce；原session ID/user ID/expiry原样、wrong Origin403且session不变、原资产/CSP与单域SSE保持。构建输出`.local/riffoid-forward-rollback/worker.mjs`及manifest明确LOCAL_BUILD_NOT_PRODUCTION_FROZEN；namespace ID、完整migration history、93+1 bindings/secret references、assets hashes、生产版本/routes/security/Google完整列表及平台验证仍缺，不能把此template/本地build当作冻结生产artifact。保留数据、不清namespace、不用旧版本跨migration raw rollback。
+
+## 完成的本地验证（历史阶段与当前评审阶段分开）
+
+全仓npm run check退出0，含UI21、M0350通过/1条件跳过、M2869、Issue7330、Python8及M1/M3。自审补proof大小和原始URI（保留空尾问号）守卫后，最终typecheck通过、完整M1 **341/341**、完整M3 **1070通过/12条件跳过/0失败**；这是取消链评审前的历史阶段；当前新增桥接与回退源入口后再次运行affected完整回归，最新结果见下述评审证据。定向17项和Workerd集成项重叠完整回归，不叠加总数。
 
 实际本地双Workerd测试含原Google/PKCE/Catalog、被撤回身份拒绝、无效/重放proof零auth-rate写、两个原生IP fixture独立限流及sign-in3/10限制；实际SQLiteDO24并发只accept1、重启持久拒绝、满容量/限量清理/写失败事务回滚；签名后的实际G5 GET/attestation/reopen/权限与顺序期限负向/重启通过。SSE逐块/cancel、local Runs原文零写与过期静态/API边界通过。所有native-IP/identity/key均synthetic，真实平台/Google/付费执行未运行。命令阶段、源代码/日志SHA256、自审发现和未覆盖边界见[冻结证据](evidence/riffoid-entry-signature-offline-20261008.json)。
+
+当前取消链/晚提交/前向回退阶段、准确命令/源代码和日志hash、旧证据纠正及FIN边界见[评审证据](evidence/riffoid-entry-review-offline-20261008.json)。
+
+当前评审后typecheck通过；完整M1 **348/348**；完整M3 **1070通过/12条件跳过/0失败**，这三项命令退出0。未重复未受影响的UI/M0/M2/Issue73/Python；其全仓check结果仅保持为上一阶段证据。当前生产源入口没有在上述完整回归后再编辑。
