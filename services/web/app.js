@@ -7,6 +7,7 @@ import {createEvidencePanel} from './evidence.js';
 import {createWorkspaceLayout} from './layout.js';
 import {createServicePanel} from './services.js';
 import {createPreviewPanel} from './previews.js';
+import {createLocalRuns} from './local-runs.js';
 import {createComparisonPanel} from './comparison.js';
 import {createSimulationPanel} from './simulation.js';
 import {createVerifyHandoffPanel} from './verify-handoff.js';
@@ -46,11 +47,12 @@ function renderModelState(){
 const browserPreviewPanel=createBrowserPreviewPanel({root:$('#workspace-browser-preview'),api,onVerified:()=>{void simulationPanel.reload();void comparisonPanel.reload();},onVerifyHandoff:draft=>{const accepted=verifyHandoffPanel.handoff(draft);if(accepted){workspaceLayout.select('runs');if(browserPreviewRoute(location)&&activeProject)location.hash=`/workspace/${encodeURIComponent(activeProject.id)}`;}return accepted;},onVerificationAvailability:allowed=>verifyHandoffPanel.setCanVerify(allowed)});
 const previewPanel=createPreviewPanel({root:$('#workspace-preview'),api,autoRestore:true,onState:value=>{const pinned=value.available?.runId||value.current?.runId;if(pinned)servicePanel.selectRun(pinned);}});
 const servicePanel=createServicePanel({root:$('#workspace-services'),inspectRoot:$('#workspace-runtime-details'),api,workspaceMode:true,onPreparingRun:runId=>previewPanel.prepareRun(runId),onPreviewRun:(runId,options)=>options?.automatic?previewPanel.restoreRun(runId):previewPanel.openRun(runId),onState:detail=>{observedService=detail;renderModelState();if(detail.stopRequestedAt||['stopped','failed','cancelled'].includes(detail.runStatus))previewPanel.stoppedRun(detail.runId);}});
-const comparisonPanel=createComparisonPanel({root:$('#workspace-comparison'),api});
+const localRuns=createLocalRuns({api});
+const comparisonPanel=createComparisonPanel({root:$('#workspace-comparison'),api,localRuns});
 const publicationPanel=createPublicationPanel({root:$('#workspace-publication'),api,onOpenRuns:()=>workspaceLayout.select('runs')});
 const exportPanel=createExportPanel({root:$('#workspace-export')});
 const evidencePanel=createEvidencePanel({root:$('#workspace-evidence'),api,onAssessment:()=>{void comparisonPanel.reload();void simulationPanel.reload();}});
-const simulationPanel=createSimulationPanel({root:$('#workspace-simulation'),modelRoot:$('#workspace-model'),historyRoot:$('#workspace-run-history'),api,onModel:model=>{browserPreviewPanel.applyParameterDraft(model?.experimentDraft);observedModel=model;renderModelState();}});
+const simulationPanel=createSimulationPanel({root:$('#workspace-simulation'),modelRoot:$('#workspace-model'),historyRoot:$('#workspace-run-history'),api,localRuns,onModel:model=>{browserPreviewPanel.applyParameterDraft(model?.experimentDraft);observedModel=model;renderModelState();}});
 const verifyHandoffPanel=createVerifyHandoffPanel({root:$('#workspace-verify-handoff'),api,onVerified:()=>{void simulationPanel.reload();void comparisonPanel.reload();}});
 const notice = $('#notice');
 const dialog = $('#project-dialog');
@@ -366,7 +368,7 @@ function stopEventStream() {
 }
 
 function accountView() {
-  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();}
+  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();localRuns.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();}
   $('#login').hidden = !authenticationResolved || authenticated;
   const workspaceRoutePending = Boolean(workspaceProjectIdFromHash()) && !activeProject;
   $('#app').hidden = !tenant || Boolean(activeProject) || workspaceRoutePending;
@@ -778,10 +780,10 @@ function openWorkspace(project) {
   if(standalone)workspaceLayout.select('preview');
   verifyHandoffPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id});
   void browserPreviewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id,canOpen:readable,standalone,...(standalone?browserRoute:{})});
-  if(standalone){servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();return;}
+  if(standalone){localRuns.leave();servicePanel.close();previewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();return;}
   previewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,canOpen:ready&&executionAvailability.preview,paused:!executionAvailability.preview});
   servicePanel.open({workspaceId:project.workspace_id,tenantId:tenant.id,canStart:ready&&executionAvailability.service});
-  if(readable){void simulationPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});void comparisonPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});}else{simulationPanel.leave();comparisonPanel.leave();}
+  if(readable){localRuns.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id,readOnly:Boolean(project.archived_at)});void simulationPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});void comparisonPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id});}else{localRuns.leave();simulationPanel.leave();comparisonPanel.leave();}
   exportPanel.enter({workspaceId:project.workspace_id});publicationPanel.enter({workspaceId:project.workspace_id,readOnly:Boolean(project.archived_at)});
   void evidencePanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,readOnly:Boolean(project.archived_at)});
   if(!readable){$('#turns').replaceChildren();appendTurnCard('system',msg('workspace.unreadyHelp'));bindValue($('#files-meta'), () => (msg('workspace.unready')));$('#workspace-files').replaceChildren();}
@@ -902,7 +904,7 @@ function workspaceProjectIdFromHash() {
 }
 
 async function load() {
-  servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();
+  servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();localRuns.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();
   const generation = ++viewGeneration;
   const localeStart = localePreferences.begin();
   stopPolling();
@@ -956,7 +958,7 @@ $('#google').onclick = async () => {
 $('#sign-out').onclick = async () => {
   viewGeneration++;
   const localeStart=localePreferences.begin();
-  servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();
+  servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();localRuns.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();
   stopEventStream();
   stopVisibilityRecovery();pendingVisibilityReads=0;sendingMessage=false;recoveredReceiptTurn=null;
   stopPolling();

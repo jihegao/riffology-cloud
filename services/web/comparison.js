@@ -1,4 +1,4 @@
-import {msg,t,uiError,errorMessage,cloudRunError,formatNumber} from './i18n.js';
+import {msg,t,uiError,errorMessage,cloudRunError,historicalRunError,formatNumber} from './i18n.js';
 import {bindValue,bindAttribute} from './i18n-bindings.js';
 const TERMINAL = new Set(['completed', 'partial', 'failed', 'cancelled']);
 const safeId = value => typeof value === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(value);
@@ -6,8 +6,10 @@ const node = (tag, text, className) => { const n = document.createElement(tag); 
 const button = (text, action, disabled = false) => { const b = node('button', text, 'button'); b.type = 'button'; b.disabled = disabled; b.onclick = action; return b; };
 const defaults = spec => Object.fromEntries(Object.entries(spec?.parameters || {}).map(([key, value]) => [key, value.default]));
 
-export function createComparisonPanel({root, api}) {
+export function createComparisonPanel({root, api,localRuns=null}) {
   let context = null, generation = 0, readEpoch = 0, model = null, groups = [], cursor = null, pending = null, timer = null, busy = false, loading = false, message = '', lastAgentDraft = null;
+  let execution=localRuns?'local':'cloud';
+  localRuns?.subscribe(()=>{if(context){renderEditor();renderHistory();}});
   let draft = null, editor, history, status, rawOpen = new Set();
   const storageKey = () => `riffology:comparison-intent:${context.tenantId}:${context.workspaceId}`;
   const path = suffix => `/api/workspaces/${encodeURIComponent(context.workspaceId)}${suffix}`;
@@ -36,7 +38,7 @@ export function createComparisonPanel({root, api}) {
     label.append(input); return label;
   }
   function renderEditor() {
-    if (!editor) return; editor.replaceChildren(); const frozen = !!pending;
+    if (!editor) return; editor.replaceChildren(); const frozen = !!pending||Boolean(localRuns?.busy);
     const refresh = button(msg('compare.refresh'), () => void load(), loading || busy); editor.append(refresh);
     if (pending) {
       editor.append(node('p', msg('compare.pending'), 'model-warning'));
@@ -46,28 +48,30 @@ export function createComparisonPanel({root, api}) {
     if (!model?.spec || !model?.version) { editor.append(node('p',msg('compare.noModel'))); return; }
     if (!draft) draft = freshDraft();
     const form = node('form', undefined, 'comparison-form');
-    const question = node('label', msg('compare.hypothesis')); const hypothesis = node('input'); hypothesis.name = 'hypothesis'; hypothesis.required = true; hypothesis.maxLength = 2000; hypothesis.value = draft.hypothesis; hypothesis.oninput = () => { draft.hypothesis = hypothesis.value; }; question.append(hypothesis); form.append(question);
+    if(localRuns)form.append(localRuns.selector(execution,value=>{execution=value;renderEditor();},frozen),node('p',msg(execution==='local'?'localRuns.boundary':'localRuns.cloudBoundary'),'meta'));
+    const question = node('label', msg('compare.hypothesis')); const hypothesis = node('input'); hypothesis.name = 'hypothesis'; hypothesis.required = true; hypothesis.maxLength = 2000; hypothesis.disabled=frozen;hypothesis.value = draft.hypothesis; hypothesis.oninput = () => { draft.hypothesis = hypothesis.value; }; question.append(hypothesis); form.append(question);
     const configs = node('div', undefined, 'comparison-configs');
     for (const [index, config] of [draft.baseline, ...draft.interventions].entries()) {
       const fieldset = node('fieldset'); fieldset.dataset.configuration = index === 0 ? 'baseline' : `intervention-${index}`; fieldset.append(node('legend',index === 0 ? msg('compare.baseline') : msg('compare.intervention', () => ({p0: index}))));
-      const label = node('label',msg('compare.configName')); const name = node('input'); name.name='label'; name.required=true; name.maxLength=80; name.value=config.label; name.oninput=()=>{config.label=name.value;}; label.append(name); fieldset.append(label);
+      const label = node('label',msg('compare.configName')); const name = node('input'); name.name='label'; name.required=true; name.maxLength=80; name.disabled=frozen;name.value=config.label; name.oninput=()=>{config.label=name.value;}; label.append(name); fieldset.append(label);
       for (const [key, def] of Object.entries(model.spec.parameters || {})) fieldset.append(typedField(key,def,config.parameters,frozen));
-      if (index > 0 && draft.interventions.length > 1) fieldset.append(button(msg('compare.remove'),()=>{draft.interventions.splice(index-1,1);rememberInput();renderEditor();})); configs.append(fieldset);
+      if (index > 0 && draft.interventions.length > 1) fieldset.append(button(msg('compare.remove'),()=>{draft.interventions.splice(index-1,1);rememberInput();renderEditor();},frozen)); configs.append(fieldset);
     }
-    form.append(configs);form.append(button(msg('compare.add'),()=>{draft.interventions.push({label:t('compare.intervention', ({p0: draft.interventions.length+1})),parameters:defaults(model.spec)});rememberInput();renderEditor();},draft.interventions.length>=3));
-    const seedLabel=node('label',msg('compare.seeds'));const seeds=node('input');seeds.name='seeds';seeds.required=true;seeds.value=draft.seeds;const count=node('p',undefined,'comparison-count');const countSeeds=()=>{const n=draft.seeds.trim()?draft.seeds.trim().split(/[\s,，]+/).length:0;bindValue(count,()=>(msg('compare.count', () => ({p0: formatNumber(n), p1: formatNumber((1+draft.interventions.length)*n)}))));};seeds.oninput=()=>{draft.seeds=seeds.value;countSeeds();};countSeeds();seedLabel.append(seeds);form.append(seedLabel,count);
-    const actions=node('div',undefined,'comparison-actions');actions.append(button(msg('compare.reset'),()=>{draft=freshDraft();rememberInput();renderEditor();}));const run=node('button',msg('compare.run'),'button primary');run.type='submit';run.disabled=loading||busy||!model.canRun;actions.append(run);form.append(actions);
-    if(!model.canRun)form.append(node('p',model.capabilityReason?cloudRunError(model.capabilityReason):msg('compare.unavailable'),'model-warning'));
-    if(model.runLimits)form.append(node('p',msg('run.resourceLimits',()=>({active:model.runLimits.maxActiveRuns,user:model.runLimits.maxRunsPerUser,seconds:model.runLimits.durationMs/1000,group:model.runLimits.maxGroupRuns})),'meta'));
+    form.append(configs);form.append(button(msg('compare.add'),()=>{draft.interventions.push({label:t('compare.intervention', ({p0: draft.interventions.length+1})),parameters:defaults(model.spec)});rememberInput();renderEditor();},frozen||draft.interventions.length>=3));
+    const seedLabel=node('label',msg('compare.seeds'));const seeds=node('input');seeds.name='seeds';seeds.required=true;seeds.disabled=frozen;seeds.value=draft.seeds;const count=node('p',undefined,'comparison-count');const countSeeds=()=>{const n=draft.seeds.trim()?draft.seeds.trim().split(/[\s,，]+/).length:0;bindValue(count,()=>(msg('compare.count', () => ({p0: formatNumber(n), p1: formatNumber((1+draft.interventions.length)*n)}))));};seeds.oninput=()=>{draft.seeds=seeds.value;countSeeds();};countSeeds();seedLabel.append(seeds);form.append(seedLabel,count);
+    const actions=node('div',undefined,'comparison-actions');actions.append(button(msg('compare.reset'),()=>{draft=freshDraft();rememberInput();renderEditor();},frozen));const run=node('button',msg(execution==='local'?'localRuns.runComparison':'compare.run'),'button primary');run.type='submit';run.disabled=loading||busy||(execution==='local'?!localRuns.eligible(model)||localRuns.busy:!model.canRun);actions.append(run);form.append(actions);
+    if(execution==='local'&&!localRuns.eligible(model))form.append(node('p',msg('localRuns.unavailable'),'model-warning'));
+    if(execution==='cloud'&&!model.canRun)form.append(node('p',model.capabilityReason?cloudRunError(model.capabilityReason):msg('compare.unavailable'),'model-warning'));
+    if(execution==='cloud'&&model.runLimits)form.append(node('p',msg('run.resourceLimits',()=>({active:model.runLimits.maxActiveRuns,user:model.runLimits.maxRunsPerUser,seconds:model.runLimits.durationMs/1000,group:model.runLimits.maxGroupRuns})),'meta'));
     form.oninput=()=>rememberInput();form.onchange=()=>rememberInput();form.onsubmit=event=>{event.preventDefault();void submit();};editor.append(form);
   }
   function renderHistory() {
-    if(!history)return;history.replaceChildren();history.append(node('h3',msg('compare.history')));
+    if(!history)return;history.replaceChildren();if(localRuns){const localHistory=node('section');localRuns.renderHistory(localHistory,'comparison',model?.version);history.append(localHistory);}history.append(node('h3',msg('compare.history')));
     if(!groups.length)history.append(node('p',msg('compare.empty')));
     for(const group of groups){
       const article=node('article',undefined,'comparison-group');article.dataset.groupId=group.groupId;
       article.append(node('h3',group.hypothesis),node('p',msg('compare.groupStatus',()=>({status:t('run.status.'+group.status,{},group.status),id:group.groupId}))),node('p',msg('compare.revision', () => ({p0: group.version?.revisionId??msg('model.initial'), p1: group.repetitions ?? group.seeds?.length}))));
-      if(group.errorCode)article.append(node('p',cloudRunError(group.errorCode),'model-warning'));
+      if(group.errorCode)article.append(node('p',historicalRunError(group.errorCode,group.status),'model-warning'));
       if(group.stale)article.append(node('p',msg('compare.stale'),'model-warning'));
       const p=group.progress||{};article.append(node('p',msg('compare.progress', () => ({p0: formatNumber(p.total??0), p1: formatNumber(p.pending??0), p2: formatNumber(p.active??0), p3: formatNumber(p.completed??0), p4: formatNumber(p.failed??0), p5: formatNumber(p.cancelled??0), p6: p.rejected ? msg('compare.rejectedCount',{value:formatNumber(p.rejected)}) : ''}))));
       if(p.rejected)article.append(node('p',msg('compare.rejectedWarning'),'model-warning'));
@@ -105,11 +109,12 @@ export function createComparisonPanel({root, api}) {
     try{const page=await api(path(`/experiment-groups?before=${encodeURIComponent(cursor)}`));if(!valid())return;groups=[...groups,...(page.items||[]).filter(g=>safeId(g.groupId)&&!groups.some(old=>old.groupId===g.groupId))];cursor=page.nextCursor||null;}catch(error){if(valid())mark(cloudRunError(error)||msg('compare.historyFailed'));}finally{if(valid()){loading=false;renderHistory();schedule();}}
   }
   async function submit(){
-    if(pending)return submitPending();if(busy||loading||!model?.canRun)return;
+    if(pending)return submitPending();if(busy||loading||!model?.version||(execution==='cloud'&&!model.canRun))return;
     const seeds=draft.seeds.trim()?draft.seeds.trim().split(/[\s,，]+/).map(Number):[];
     if(!draft.hypothesis.trim()||!seeds.length||seeds.length>20||new Set(seeds).size!==seeds.length||seeds.some(s=>!Number.isSafeInteger(s)||s<0||s>4294967295)){mark(msg('compare.invalidSeeds'));return;}
     const labels=[draft.baseline,...draft.interventions].map(c=>c.label.trim());if(labels.some(label=>!label)||new Set(labels).size!==labels.length){mark(msg('compare.invalidNames'));return;}
     const body={...model.version,hypothesis:draft.hypothesis.trim(),baseline:structuredClone(draft.baseline),interventions:structuredClone(draft.interventions),seeds};
+    if(execution==='local'){const token=generation;try{await localRuns.execute('comparison',model,body);}catch(error){if(token===generation)mark(errorMessage(error));}finally{if(token===generation){renderEditor();renderHistory();}}return;}
     if(model.runLimits&&seeds.length*(draft.interventions.length+1)>model.runLimits.maxGroupRuns){mark(msg('run.error.invited-runs-group-limit'));return;}
     const attempt={key:crypto.randomUUID(),body};if(!persist(attempt)){mark(msg('compare.storageFailed'));return;}pending=attempt;await submitPending();
   }
@@ -120,7 +125,7 @@ export function createComparisonPanel({root, api}) {
     finally{if(token===generation){busy=false;renderEditor();renderHistory();schedule();}}
   }
   async function cancel(groupId){if(busy)return;const token=generation;busy=true;renderHistory();try{await api(path(`/experiment-groups/${encodeURIComponent(groupId)}/cancel`),{method:'POST',body:'{}',signal:AbortSignal.timeout(15000)});if(token===generation){mark(msg('compare.stopAccepted'));await load();}}catch(error){if(token===generation)mark(cloudRunError(error)||msg('compare.stopUnconfirmed'));}finally{if(token===generation){busy=false;renderHistory();}}}
-  async function enter(value){leave();if(!safeId(value?.tenantId)||!safeId(value?.workspaceId))throw Error('invalid-comparison-context');context=value;try{const saved=JSON.parse(sessionStorage.getItem(storageKey())||'null');if(saved?.key&&saved?.body)pending=saved;}catch{}setup();await load();}
+  async function enter(value){leave();if(!safeId(value?.tenantId)||!safeId(value?.workspaceId))throw Error('invalid-comparison-context');context=value;try{const saved=JSON.parse(sessionStorage.getItem(storageKey())||'null');if(saved?.key&&saved?.body)pending=saved;}catch{}execution=pending?'cloud':localRuns?'local':'cloud';setup();await load();}
   function leave(){generation++;clearTimeout(timer);context=null;model=null;groups=[];cursor=null;pending=null;busy=false;loading=false;draft=null;lastAgentDraft=null;message='';rawOpen=new Set();root.replaceChildren();editor=history=status=null;}
   return {enter,leave,reload:load};
 }

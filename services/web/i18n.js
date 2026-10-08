@@ -2,6 +2,40 @@ const supported = ['zh-CN', 'en'];
 
 export const dictionary = Object.freeze({
   "zh-CN": Object.freeze({
+  "localRuns.historyFull": "本地历史已达到 20 组。请先下载记录，再按需清理浏览器存储；系统不会自动删除旧结果。",
+  "localRuns.export": "下载本地历史",
+  "localRuns.execution": "执行位置",
+  "localRuns.local": "浏览器本地（默认）",
+  "localRuns.cloud": "云端核验",
+  "localRuns.boundary": "结果为本地／未核验，仅保存在当前浏览器。最多 8 个顺序子运行；刷新或离开会停止计算，不会自动重跑。正式 Evidence 和发布检查需要云端独立重算。",
+  "localRuns.cloudBoundary": "点击提交会请求独立云端实验，并使用当前云端容量与时限。",
+  "localRuns.history": "本地运行历史（未核验）",
+  "localRuns.empty": "当前浏览器尚无本地运行记录。",
+  "localRuns.single": "本地单次运行",
+  "localRuns.runSingle": "在本地运行",
+  "localRuns.runComparison": "在本地运行并比较",
+  "localRuns.cancel": "停止本地运行",
+  "localRuns.comparison": "本地结果比较（未核验；差值 = 干预均值 − 基线均值）",
+  "localRuns.details": "查看冻结输入、执行身份和逐项结果",
+  "localRuns.record": "{status} / {id} / 模型版本 {revision}",
+  "localRuns.stale": "这是旧模型版本的本地结果，不用于当前版本核验。",
+  "localRuns.invalidInput": "本地运行输入无效，请核对参数和随机种子。",
+  "localRuns.busy": "当前已有本地任务，请先等待完成或停止。",
+  "localRuns.unavailable": "当前模型无法本地运行。请检查浏览器兼容性；编译型模型需使用云端路径。",
+  "localRuns.packageUnavailable": "本地运行包尚未就绪，请刷新或在 Preview 查看准备状态。",
+  "localRuns.identityMismatch": "运行包与冻结模型版本不一致，已停止本地运行。",
+  "localRuns.invalidResult": "本地结果缺少声明的有效指标，不能计入比较。",
+  "localRuns.storageFailed": "无法保存本地运行历史，请检查浏览器存储；本地计算已停止或未开始。",
+  "localRuns.interrupted": "上次本地任务被页面离开或刷新中断，已保留完成项；不会自动继续或重跑。",
+  "localRuns.groupLimit": "本地对照每组最多 8 个顺序子运行，请减少配置或随机种子。",
+  "localRuns.status.preparing": "准备本地运行",
+  "localRuns.status.running": "本地运行中",
+  "localRuns.status.completed": "本地完成／未核验",
+  "localRuns.status.failed": "本地失败",
+  "localRuns.status.cancelled": "本地已停止",
+  "localRuns.status.interrupted": "本地已中断",
+  "run.history.paused": "该历史运行当时因云端暂停或执行未确认而终止；当前准入状态以提交区为准。",
+  "run.history.deadline": "该运行因达到时限而失败。资源释放状态见该运行记录。",
   "project.archived": "已归档",
   "project.archive": "归档项目",
   "project.restore": "恢复项目",
@@ -951,6 +985,40 @@ export const dictionary = Object.freeze({
   "service.confirmedOld": "上次确认时间（旧状态）：{time}"
 }),
   "en": Object.freeze({
+  "localRuns.historyFull": "Local history has reached 20 tasks. Download records before clearing browser storage if needed; older results are never removed automatically.",
+  "localRuns.export": "Download local history",
+  "localRuns.execution": "Execution location",
+  "localRuns.local": "Browser locally (default)",
+  "localRuns.cloud": "Cloud verification",
+  "localRuns.boundary": "Results are local/unverified and saved only in this browser. Up to 8 sequential runs; refreshing or leaving stops computation without automatically rerunning. Evidence and publication checks require independent cloud computation.",
+  "localRuns.cloudBoundary": "Submitting requests an independent cloud experiment within current cloud capacity and time limits.",
+  "localRuns.history": "Local run history (unverified)",
+  "localRuns.empty": "No local run records in this browser yet.",
+  "localRuns.single": "Local single run",
+  "localRuns.runSingle": "Run in browser",
+  "localRuns.runComparison": "Run and compare locally",
+  "localRuns.cancel": "Stop local run",
+  "localRuns.comparison": "Local comparison (unverified; difference = intervention mean minus baseline mean)",
+  "localRuns.details": "View frozen inputs, execution identity and individual results",
+  "localRuns.record": "{status} / {id} / revision {revision}",
+  "localRuns.stale": "These local results belong to an older model version and do not verify the current version.",
+  "localRuns.invalidInput": "Invalid local run input. Check parameters and random seeds.",
+  "localRuns.busy": "A local task is active. Wait for completion or stop it first.",
+  "localRuns.unavailable": "This model cannot run locally. Check browser compatibility; compiler models require the cloud path.",
+  "localRuns.packageUnavailable": "The local package is not ready. Refresh or check its preparation status in Preview.",
+  "localRuns.identityMismatch": "The package does not match the frozen model version. Local execution stopped.",
+  "localRuns.invalidResult": "Local results lack valid declared metrics and cannot count toward the comparison.",
+  "localRuns.storageFailed": "Local run history could not be saved. Check browser storage; local computation stopped or did not start.",
+  "localRuns.interrupted": "The previous local task was interrupted by leaving or refreshing. Completed samples are retained; nothing resumes or reruns automatically.",
+  "localRuns.groupLimit": "A local comparison supports up to 8 sequential runs. Reduce configurations or random seeds.",
+  "localRuns.status.preparing": "Preparing locally",
+  "localRuns.status.running": "Running locally",
+  "localRuns.status.completed": "Completed locally / unverified",
+  "localRuns.status.failed": "Local failure",
+  "localRuns.status.cancelled": "Local run stopped",
+  "localRuns.status.interrupted": "Local run interrupted",
+  "run.history.paused": "This historical run ended while cloud capacity was paused or execution was unconfirmed. Current admission is shown in the submission form.",
+  "run.history.deadline": "This run failed after reaching its time limit. See its record for resource release status.",
   "project.archived": "Archived",
   "project.archive": "Archive project",
   "project.restore": "Restore project",
@@ -2002,4 +2070,12 @@ export function cloudRunError(error) {
  const code=typeof error==='string'?error:error?.code;
  const key='run.error.'+code;
  return Object.hasOwn(dictionary[current],key)?msg(key):typeof error==='string'?error:errorMessage(error);
+}
+
+export function historicalRunError(code,status) {
+ if(['completed','failed','cancelled','partial'].includes(status)){
+  if(['invited-runs-paused','private-beta-execution-unconfirmed'].includes(code))return msg('run.history.paused');
+  if(code==='simulation-deadline')return msg('run.history.deadline');
+ }
+ return cloudRunError(code);
 }
