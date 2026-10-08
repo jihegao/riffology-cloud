@@ -44,7 +44,6 @@
     "fullImageUploaded": false
   },
   "stillPending": [
-    "Custom Request Header Transform rules existence/list/order; parent already asked user, awaiting reply",
     "Action-time complete route/resource/TLS/native-IP/security snapshot and real platform acceptance; DNS export is not route/resource inventory",
     "New-zone direct-visitor/native-IP boundary remains separately required; old-zone screenshot does not prove it",
     "Production signing key/pin/replay namespace/migration/full rollback freeze and explicit exact-package approval unchanged"
@@ -54,7 +53,14 @@
   "noCompleteUnrelatedAttachmentDataPublished": true,
   "productionChanges": false,
   "documentationSha256": {
-    "docs/riffoid-two-account-configuration-package.md": "4265a369395646a6b9eec8d70c8db0eb480287b4a387333087e841ef3a8eec2d",
-    "docs/riffoid-two-account-security-overlay.example.jsonc": "52eec1fb69c4a449f2ce3a820feafb5df33701c5ea429ad79152887a7f432722"
-  }
+    "docs/riffoid-two-account-configuration-package.md": "2878a709eddbf5d3c810021fdb8b7eca05fad0217dbcbf152d9573c04b2bcde6",
+    "docs/riffoid-two-account-security-overlay.example.jsonc": "47bcbdddfb4a7cd336865b1e40c151ca7cc92d939cb15b5480dd309c0f2cc44d"
+  },
+  "customRequestHeaderTransformUserReport": {
+    "source": "User2026-10-08T11:45:38Z, messageSentinel_2a89fa6fdc84819185c0160147d76fd3",
+    "reportedRules": "None",
+    "independentApiOrScreenshotReadback": false
+  },
+  "requestedPublicFieldsCollectionComplete": true,
+  "finalApprovalPacket": "docs/riffoid-production-approval-packet.md"
 }

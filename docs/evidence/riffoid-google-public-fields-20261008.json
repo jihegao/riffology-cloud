@@ -47,7 +47,9 @@
   "liveClientAssociation": {
     "confirmed": false,
     "reason": "GOOGLE_CLIENT_ID binding is secret_text. Stopped at binding type; no Secret value read or compared. User-provided full client ID does not independently prove active binding match.",
-    "requestingSecretOrRepeatedGooglePublicFields": false
+    "requestingSecretOrRepeatedGooglePublicFields": false,
+    "statelessAuthorizationRedirectProbe": "Not performed: existing POST social-sign-in route generates OAuth state/PKCE and database verification/rate state; no supported stateless read-only authorization redirect available in inspected source",
+    "onlyPublicValueOwnerMustConfirm": "316292203808-3s6ijnugpiq6hk25vmkj0hgokt2diq86.apps.googleusercontent.com is the active old Gateway client_id; no Secret value or full OAuth URL/state/code requested"
   },
   "proposedOAuthDifference": {
     "authorizedToApply": false,
@@ -112,7 +114,7 @@
   },
   "authorization": "User provided public fields and authorized read-only binding classification, documentation and PR173 push. Public field provision is NOT approval to modify OAuth/security/live source.",
   "remaining": {
-    "originalCloudflareZoneMetadata": "Partially collected: userWAFnone/SSLFull/PseudoIPv4Off and parent-inspected DNS/Managed Transform limited facts in docs/evidence/riffoid-original-zone-user-fields-20261008.json; custom Request Header Transform pending parent question, no duplicate investigation",
+    "originalCloudflareZoneMetadata": "Previously requested public fields complete, including user11:45:38UTC custom Request Header Transformnone; user/parent-attachment provenance preserved, action-time freeze/platform validation still separate",
     "liveClientAssociation": "Not independently verifiable through Secret value; separate owner confirmation/current authorized nonsecret evidence at action time, no secret request",
     "securityResourcesRollbackAndPlatformAcceptance": "Unchanged pending actual key/pin/replay namespace/migration/complete production snapshot/platform validation and explicit exact-package approval"
   },
@@ -124,8 +126,8 @@
     "experimentsPaidRunsInstallsMerge": false
   },
   "documentationSha256": {
-    "docs/riffoid-two-account-configuration-package.md": "4265a369395646a6b9eec8d70c8db0eb480287b4a387333087e841ef3a8eec2d",
-    "docs/riffoid-two-account-security-overlay.example.jsonc": "52eec1fb69c4a449f2ce3a820feafb5df33701c5ea429ad79152887a7f432722",
+    "docs/riffoid-two-account-configuration-package.md": "2878a709eddbf5d3c810021fdb8b7eca05fad0217dbcbf152d9573c04b2bcde6",
+    "docs/riffoid-two-account-security-overlay.example.jsonc": "47bcbdddfb4a7cd336865b1e40c151ca7cc92d939cb15b5480dd309c0f2cc44d",
     "docs/riffoid-entry-signature.md": "0072ca4008c67e8cbced3c4fbcc746141afb9b2b3707b58519586545a3196154",
     "infra/riffoid-forward-rollback.request.jsonc": "a31e55186a0960ed7fc76d27e4fd1c212c141fc17fe44d523e927341c50a062a"
   },
@@ -135,5 +137,6 @@
     "liveOAuthOperations": false,
     "sourceChanges": false
   },
-  "oldZoneSupplement": "docs/evidence/riffoid-original-zone-user-fields-20261008.json"
+  "oldZoneSupplement": "docs/evidence/riffoid-original-zone-user-fields-20261008.json",
+  "finalApprovalPacket": "docs/riffoid-production-approval-packet.md"
 }

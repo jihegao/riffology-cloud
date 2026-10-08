@@ -7,7 +7,9 @@
     "serverRecoveryHoursAfterSuccessfulCutover": 48,
     "securityRulesOAuthNewCredentialsOrPermissions": false,
     "signedEntryImplementationAndPush": true,
-    "productionKeyGenerationConfigurationReplayResourceAndSecurityChanges": false
+    "productionKeyGenerationConfigurationReplayResourceAndSecurityChanges": false,
+    "ordinaryDeploymentPreviouslyAuthorized": true,
+    "thisRoundExecution": "Documentation/push only; no online operations"
   },
   "newAccount": {
     "accountId": "3232ebc7e9bb0199b92e3d70b07825af",
@@ -39,14 +41,14 @@
     "zoneId": "c97b548800561fada1a912c234696db1",
     "primaryCandidateTransport": "https://riffoid-transport.gaojihe.cn",
     "alternativeCandidateTransport": "https://m1-transport.riff-demo.gaojihe.cn",
-    "candidateDnsStatus": "Public DNS NXDOMAIN; no listed Gateway domains/zone route conflict. DNS API read denied/unavailable; internal availability not proved.",
+    "candidateDnsStatus": "Parent-inspected user DNS export snapshot has no same-name candidate records or covering listed wildcard; prior publicNXDOMAIN/routes metadata preserved. Not proof of present resource/route readiness.",
     "newRuleForPrimaryCandidate": {
       "phase": "http_request_firewall_custom",
       "scope": "zone",
       "action": "block",
       "description": "riffoid transport from approved entry zone only",
       "expression": "http.host eq \"riffoid-transport.gaojihe.cn\" and cf.worker.upstream_zone ne \"riffoid.com\"",
-      "position": "Before any Skip that could bypass the provenance gate; original list not read",
+      "position": "Before any Skip; old-zone no WAFrules is user11:33UTC report, refresh at action time",
       "enabledOnlyAfterApproval": true
     },
     "plan": "Free Website",
@@ -186,7 +188,7 @@
     }
   },
   "mustVerifyBeforeExecution": [
-    "Original-zone WAFnone/SSLFull/PseudoIPv4Off reported by user and DNS/Managed Transform limited attachment findings recorded; custom Request Header Transform pending, full current route/resource/security snapshot and source/native-IP platform acceptance still required",
+    "Requested old-zone public fields complete by user/parent bounded sources; action-time complete route/resource/security freeze and source/native-IP real platform acceptance remain separate",
     "Exact selected transport route and TLS; no default/worker.dev/alternate-host bypass",
     "Signed-entry implementation/regressions reviewed; separately approve actual key creation/public pin/new replay namespace plus exact source/IP WAF platform proof and complete config",
     "Both rules expression support and actual platform-generated provenance under new Custom Domain Worker fetch",
@@ -293,7 +295,21 @@
     "WAFSSLAndPseudoIPv4": "User11:33UTC: no WAF rules / SSLFull / PseudoIPv4Off; not independently verified via screenshot/API",
     "DNS": "Parent-inspected export2026-10-08 11:29:57(no timezone): two candidates no same-name records, only three preview wildcard names not covering candidates; export does not prove routes/resources",
     "ManagedTransforms": "Parent pixel inspection: Remove visitor IP headersOff; AddTrueClientIP left-greyed appears disabled, reason unknown. No zone name; old-zone attribution from user context only. No custom Request Header Transform list.",
-    "pending": "Custom Request Header Transform existence/list already asked by parent; awaiting user reply; no duplicate download/investigation",
-    "changeAuthorization": false
+    "pending": "Requested public fields complete; user11:45:38UTC reports custom Request Header Transform rulesnone, not independent API/screenshot readback",
+    "changeAuthorization": false,
+    "customRequestHeaderTransformUserReport": {
+      "timestampUTC": "2026-10-08T11:45:38Z",
+      "messageId": "Sentinel_2a89fa6fdc84819185c0160147d76fd3",
+      "rules": "none",
+      "independentlyReadback": false
+    }
+  },
+  "actionTimeApprovalPacket": "docs/riffoid-production-approval-packet.md",
+  "privateSigningKeyHandoff": {
+    "owner": "User on trusted non-agent-shared device; user directly enters Secret into new-account Workerconsole",
+    "agentGeneratesReadsOrTransmitsPrivateKey": false,
+    "chatRepoLogsSharedWorkspace": "Never place private JWK here",
+    "publicOnlyMayReturn": "keyId and strict public JWK ring without d",
+    "proposedPublicKeyId": "riffoid-entry-20261008-a"
   }
 }

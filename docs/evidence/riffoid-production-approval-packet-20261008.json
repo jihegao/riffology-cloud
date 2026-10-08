@@ -1,0 +1,112 @@
+{
+  "schema": "riffoid-final-bounded-approval-packet-v1",
+  "recordedUTC": "2026-10-08T11:57:00.983746+00:00",
+  "baselineRemoteHead": "9af3f84f9624a49ad6881a13af8eb428ac254e59",
+  "scope": "Final bounded configuration/documentation preparation only; no online changes or new experiments",
+  "packet": "docs/riffoid-production-approval-packet.md",
+  "ordinaryDeploymentPreviouslyAuthorized": true,
+  "actionTimeConfirmationRequired": [
+    "User-owned generation/storage/direct console injection of one entry-private signing Secret and publickeyID/publicpin",
+    "Entry and Gateway explicit compatibility flags; Gateway09-09 preserved, Entry09-06; Execution09-05/flags preserved",
+    "Two exact zone WAF Block expressions and primary transport/custom domains",
+    "One add-only Google callback; Gateway/Execution canonical/origin/singleancestor-CSP",
+    "Dedicated original-account SQLite ENTRY_REPLAY/EntryReplayGuard lifecycle migration and same-namespace forward rollback"
+  ],
+  "publicFieldsCollectionComplete": true,
+  "latestUserReport": {
+    "timestampUTC": "2026-10-08T11:45:38Z",
+    "messageId": "Sentinel_2a89fa6fdc84819185c0160147d76fd3",
+    "customRequestHeaderTransformRules": "None",
+    "independentReadback": false
+  },
+  "clientAssociation": {
+    "bindingType": "secret_text",
+    "secretValueRead": false,
+    "publicClientIdOwnerMustConfirm": "316292203808-3s6ijnugpiq6hk25vmkj0hgokt2diq86.apps.googleusercontent.com",
+    "independentlyMatched": false,
+    "statelessOAuthProbeSupported": false,
+    "reason": "Existing Gateway only permits POST social sign-in, auth account.storeStateStrategy=database; installed BetterAuth generateState setsOAuthState and generates verification/PKCE. No redirect probe was performed, no new login/state."
+  },
+  "privateKeyHandoff": {
+    "proposedPublicKeyId": "riffoid-entry-20261008-a",
+    "algorithm": "ECDSA P-256 / SHA-256",
+    "privateJwkFields": [
+      "kty",
+      "crv",
+      "x",
+      "y",
+      "d"
+    ],
+    "publicJwkFields": [
+      "kty",
+      "crv",
+      "x",
+      "y"
+    ],
+    "generated": false,
+    "userOwnedTrustedNonAgentSharedDevice": true,
+    "agentReadsOrTransmitsPrivateKey": false,
+    "chatRepoLogsSharedWorkspace": "Forbidden",
+    "documentationContainsOnlyUserRunOfflineInstructions": true
+  },
+  "selectedTargets": {
+    "entryAccount": "3232ebc7e9bb0199b92e3d70b07825af",
+    "entryZone": "b0b0079990e13eb20a17a2d3c41403b8",
+    "entryWorker": "riffoid-entry",
+    "canonical": "https://app.riffoid.com",
+    "originalAccount": "8b0d70250211aa10d89e20605a1c7e5e",
+    "originalZone": "c97b548800561fada1a912c234696db1",
+    "gatewayWorker": "riffology-m1-gateway-staging",
+    "transport": "https://riffoid-transport.gaojihe.cn",
+    "alternativeTransportExecuted": false,
+    "executionWorker": "riffology-browser-execution",
+    "executionOriginUnchanged": "https://riffology-browser-execution.jihe-gao.workers.dev",
+    "replayBinding": "ENTRY_REPLAY",
+    "replayClass": "EntryReplayGuard",
+    "requestedMigrationTag": "entry-replay-v1",
+    "actualNamespaceId": null
+  },
+  "WAF": [
+    {
+      "zone": "riffoid.com",
+      "phase": "http_request_firewall_custom",
+      "action": "block",
+      "expression": "http.host eq \"app.riffoid.com\" and cf.worker.upstream_zone ne \"\""
+    },
+    {
+      "zone": "gaojihe.cn",
+      "phase": "http_request_firewall_custom",
+      "action": "block",
+      "expression": "http.host eq \"riffoid-transport.gaojihe.cn\" and cf.worker.upstream_zone ne \"riffoid.com\""
+    }
+  ],
+  "credentialsAndChannel": "Existing logged-in consoles first. No new token/login/grant/role. User directly configures new entry; old-account full package via existing approved deployment channel, stop if missing capabilities. PublickeyID/publicring only returned to agent.",
+  "remainingDeliverables": [
+    "Production entry bundle and full Gateway/Execution config+assets/version hash package; not created/deployed this round",
+    "User-owned real private-key operation and resulting publicring",
+    "Actual allocated replay namespace ID and complete existing+new migration history readback",
+    "Full same-namespace forward rollback production freeze; local build remains non-frozen",
+    "Real two-account platform acceptance, separately listed and not performed"
+  ],
+  "preserved": "Original93 entries (do not claim93+1 total) and all identity/data/namespaces/actors/assets/pins/ledger/meter-only; December31trial/October20M1; original8h session; cutoverUTC/untilnull, approved48h only actualsuccessfulcutover",
+  "FINContract": "Platformabortarrival stops pre-business verification/observer; missingreceipt unknown by originalkey; committedoperation originalbusinesscancel, not TCPFINrollback, FIN not independent deployment blocker",
+  "productionChanges": false,
+  "runtimeExperimentsOrKeyGenerationExecuted": false,
+  "validation": "JSON/from-to/WAF consistency/source-reference/hash/diff checks only; generation snippet reviewed as documentation, NOT executed",
+  "officialSources": [
+    "https://developers.cloudflare.com/workers/configuration/secrets/",
+    "https://developers.cloudflare.com/durable-objects/reference/durable-objects-migrations/"
+  ],
+  "documentationSha256": {
+    "docs/riffoid-production-approval-packet.md": "f2f452904a97780231bd63c3da71886af2a04c25430b1f35454e1cd5e6e6a4a5",
+    "docs/riffoid-two-account-configuration-package.md": "2878a709eddbf5d3c810021fdb8b7eca05fad0217dbcbf152d9573c04b2bcde6",
+    "docs/riffoid-two-account-security-overlay.example.jsonc": "47bcbdddfb4a7cd336865b1e40c151ca7cc92d939cb15b5480dd309c0f2cc44d"
+  },
+  "inspectedSourceSha256": {
+    "services/gateway/index.ts": "5f606c136a0be6abdafcf2bdcce0fd29af115959ac50b31b15a17057ca76a4a0",
+    "services/gateway/auth.ts": "e3ba29536e57c1f148933e68a855a7bda48b05253e33f83d934f58af40e1770e",
+    "services/gateway/origins.ts": "006599ab63494f808344dd1ba9eb7fded543ca343c9868fac28f715cf2391719",
+    "services/gateway/google-oauth-egress.ts": "18a3a1d81899650b483baa620ad9716f80ec4352ee05c47a0f51aad706c1ca3d",
+    "services/browser-preview/execution/index.ts": "838d147b3a7935c9d805a2f59eb7ff8d998a43e9ea3d8d77b5cfb2d77348e74d"
+  }
+}
