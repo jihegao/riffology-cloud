@@ -4,7 +4,9 @@
 
 **05:32:17 UTC后续确认**：Safari Automation提示和实际切流成功后48小时server恢复已批准，不再重复请批。原生Safari可见文本读取成功：新account `3232ebc7e9bb0199b92e3d70b07825af`、riffoid.com zone `b0b0079990e13eb20a17a2d3c41403b8`、Free，DNS0/Worker Routes0/Worker项目0；规则表空，SSL/TLS Full。原Gateway/Execution部署及完整resources再读未变化。下文未知ID/8小时或48小时提议属于早期记录，当前以[最新只读证据](evidence/riffoid-two-account-browser-readback-20261008.json)及[明确不可执行的安全差异草案](riffoid-two-account-security-overlay.example.jsonc)为准。尚无切流成功时刻，因此没有计算或开始LEGACY_RECOVERY_UNTIL；静态指南/本机导出继续保留。
 
-用户已确认域名在新 Cloudflare 账号 `jihe.gao@theidsa.org` 购入；应用、Workers、D1、R2、DO 留在原账号。14:48 的“好”授权双账号入口离线方案与测试，不授权线上资源/认证变更。本任务未登录新账号、查看 Safari、安装、部署、绑定域名、改 DNS/OAuth/CSP、改权限/凭据、付费运行或合并。Cloudflare for SaaS 仅为另行评估的备选，未启用。
+**06:21只读配置收敛**：[配置审阅包](riffoid-two-account-configuration-package.md)补齐原gaojihe.cn zone/Free/会员角色/Gateway domains/Workers routes、别名关闭及Google既有client list。原Zone WAF/DNS/设置/Transforms被现凭据拒绝，Google详情表单值未读；停止依赖新权限的步骤，交精确手工字段/链接与发布通道选项。`cf.worker.upstream_zone`仅证明zone，同zone其他Worker直达transport可伪造custom IP；若目标是仅入口script可信，必须更强来源校验，不能靠两条规则上线。最新[只读配置证据](evidence/riffoid-two-account-configuration-readback-20261008.json)与非执行草案为当前准据；下面早期未知项保留历史。
+
+用户已确认域名在新 Cloudflare 账号 `jihe.gao@theidsa.org` 购入；应用、Workers、D1、R2、DO 留在原账号。14:48 的“好”授权双账号入口离线方案与测试，不授权线上资源/认证变更。2026-10-07初始方案阶段未登录新账号、查看Safari或操作线上；2026-10-08获准后只读使用既有Safari session，仍无新登录、安装、部署、绑定域名、改DNS/OAuth/CSP、改权限/凭据、付费运行或合并。Cloudflare for SaaS 仅为另行评估的备选，未启用。
 
 品牌由 [PR #170](https://github.com/jihegao/riffology-cloud/pull/170) 负责，其 head 为 `9799c5c80c2c980a4c34ea446ce800dd1139f880`。本地品牌快照 tree `9d3169fad9dfffdd9e805faa91e026f45ed81e61` 与 GitHub head 的 tree 相同；本机旧提交 SHA 不冒充远端 head。本 PR 最初从 main `e55104bec3966a2c6f096ba9910712732979f055` 单独分支，后续整合最新 main 的 PR172/174；没有复制品牌 PR170 修改。原 checkout 保持原状、未中断其他任务。详见 PR170 的[既有迁移设计](https://github.com/jihegao/riffology-cloud/blob/9799c5c80c2c980a4c34ea446ce800dd1139f880/docs/riffoid-domain-migration.md)。
 
@@ -27,7 +29,7 @@
 
 ## 本地接线与后续配置设计
 
-建议使用**原账号内一个明确、独立的公开 HTTPS transport hostname**，仍指向原 Gateway Worker 和原 bindings，不新建应用数据资源。精确 hostname 与存在性待回读；不凭空填写 workers.dev 地址，也不自行启用原配置中关闭的 workers.dev。新账号 App Custom Domain 绑定轻量入口 Worker，DNS 不跨账号 CNAME。是否新增该旧账号 hostname/route 属后续明确批准项。
+建议使用**原账号内一个明确、独立的公开 HTTPS transport hostname**，仍指向原 Gateway Worker 和原 bindings，不新建应用数据资源。首选`riffoid-transport.gaojihe.cn`，备选`m1-transport.riff-demo.gaojihe.cn`；zone归属/现路由已核验，内部DNS冲突及具体新hostname/TLS仍待核验；不凭空填写 workers.dev 地址，也不自行启用原配置中关闭的 workers.dev。新账号 App Custom Domain 绑定轻量入口 Worker，DNS 不跨账号 CNAME。是否新增该旧账号 hostname/route 属后续明确批准项。
 
 | 轴 | 固定配置与检查 | 用途 |
 | --- | --- | --- |
