@@ -2,6 +2,8 @@
 
 **2026-10-08 已完成本地入口/Gateway 接线与离线验证，尚不具备线上切换条件。** 新代码以显式配置进入双账号模式，但新应用默认返回 503；共享限流 DoS 尚未解决，禁止部署 shared-limited 版本。无新配置时保持单域行为。推送/推进部署及利用既有浏览器会话只读核验已有后续授权；新登录、持久凭据/权限和具体安全配置变更仍按行动时边界处理。参见[最新最小决策与配置差异](riffoid-two-account-decisions.md)。2026-10-07 的透明代理阻碍及早期授权记录保留为历史基线。
 
+**05:32:17 UTC后续确认**：Safari Automation提示和实际切流成功后48小时server恢复已批准，不再重复请批。原生Safari可见文本读取成功：新account `3232ebc7e9bb0199b92e3d70b07825af`、riffoid.com zone `b0b0079990e13eb20a17a2d3c41403b8`、Free，DNS0/Worker Routes0/Worker项目0；规则表空，SSL/TLS Full。原Gateway/Execution部署及完整resources再读未变化。下文未知ID/8小时或48小时提议属于早期记录，当前以[最新只读证据](evidence/riffoid-two-account-browser-readback-20261008.json)及[明确不可执行的安全差异草案](riffoid-two-account-security-overlay.example.jsonc)为准。尚无切流成功时刻，因此没有计算或开始LEGACY_RECOVERY_UNTIL；静态指南/本机导出继续保留。
+
 用户已确认域名在新 Cloudflare 账号 `jihe.gao@theidsa.org` 购入；应用、Workers、D1、R2、DO 留在原账号。14:48 的“好”授权双账号入口离线方案与测试，不授权线上资源/认证变更。本任务未登录新账号、查看 Safari、安装、部署、绑定域名、改 DNS/OAuth/CSP、改权限/凭据、付费运行或合并。Cloudflare for SaaS 仅为另行评估的备选，未启用。
 
 品牌由 [PR #170](https://github.com/jihegao/riffology-cloud/pull/170) 负责，其 head 为 `9799c5c80c2c980a4c34ea446ce800dd1139f880`。本地品牌快照 tree `9d3169fad9dfffdd9e805faa91e026f45ed81e61` 与 GitHub head 的 tree 相同；本机旧提交 SHA 不冒充远端 head。本 PR 最初从 main `e55104bec3966a2c6f096ba9910712732979f055` 单独分支，后续整合最新 main 的 PR172/174；没有复制品牌 PR170 修改。原 checkout 保持原状、未中断其他任务。详见 PR170 的[既有迁移设计](https://github.com/jihegao/riffology-cloud/blob/9799c5c80c2c980a4c34ea446ce800dd1139f880/docs/riffoid-domain-migration.md)。

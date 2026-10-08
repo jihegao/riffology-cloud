@@ -1,0 +1,86 @@
+{
+  "status": "DRAFT_NOT_DEPLOYABLE",
+  "scope": "Reviewable no-new-secret provenance candidate. Not a Wrangler config or executable API payload.",
+  "approved": {
+    "pushAndDeploymentPreparation": true,
+    "safariAutomationAndExistingSessionReadonly": true,
+    "serverRecoveryHoursAfterSuccessfulCutover": 48,
+    "securityRulesOAuthNewCredentialsOrPermissions": false
+  },
+  "newAccount": {
+    "accountId": "3232ebc7e9bb0199b92e3d70b07825af",
+    "zoneName": "riffoid.com",
+    "zoneId": "b0b0079990e13eb20a17a2d3c41403b8",
+    "plan": "Free",
+    "observed": "DNS0, zone routes0, no Worker projects, custom rules table empty, SSL/TLS Full; member active; exact policy icons/API scopes not read",
+    "proposedEntryName": "riffoid-entry",
+    "proposedCustomDomain": "app.riffoid.com",
+    "compatibilityFlag": "global_fetch_strictly_public",
+    "newRule": {
+      "phase": "http_request_firewall_custom",
+      "scope": "zone",
+      "action": "block",
+      "description": "riffoid entry direct visitors only",
+      "expression": "http.host eq \"app.riffoid.com\" and cf.worker.upstream_zone ne \"\"",
+      "position": "Before any existing rule that could Skip the provenance gate; current observed table empty",
+      "enabledOnlyAfterApproval": true
+    }
+  },
+  "originalAccount": {
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "gatewayName": "riffology-m1-gateway-staging",
+    "gatewayVersion": "aeddf112-a2be-45da-868c-ed576c55d5ec",
+    "executionName": "riffology-browser-execution",
+    "executionVersion": "c94df077-02a1-460f-8158-e47a338e68af",
+    "candidateZoneName": "gaojihe.cn",
+    "zoneId": null,
+    "zoneOwnershipPlanRolesRulesRoutesVerified": false,
+    "primaryCandidateTransport": "https://riffoid-transport.gaojihe.cn",
+    "alternativeCandidateTransport": "https://m1-transport.riff-demo.gaojihe.cn",
+    "candidateDnsStatus": "Both NXDOMAIN as of readback; not established transport origins",
+    "newRuleForPrimaryCandidate": {
+      "phase": "http_request_firewall_custom",
+      "scope": "zone",
+      "action": "block",
+      "description": "riffoid transport from approved entry zone only",
+      "expression": "http.host eq \"riffoid-transport.gaojihe.cn\" and cf.worker.upstream_zone ne \"riffoid.com\"",
+      "position": "Before any Skip that could bypass the provenance gate; original list not read",
+      "enabledOnlyAfterApproval": true
+    }
+  },
+  "proposedCodeDifferenceNotImplemented": {
+    "entry": "Drop client IP/forwarded/custom IP assertions; validate only native direct-visitor Cloudflare IP after platform Worker-source gate; set x-riffoid-client-ip; genuine Origin and two G5 proof inputs unchanged",
+    "gateway": "Use x-riffoid-client-ip only as original auth rate bucket input on exact authenticated platform/WAF transport; reject missing/invalid provenance or IP without fallback; preserve cookie/Catalog/CSRF/identity checks",
+    "rateLimits": "Installed BetterAuth1.7.3 unchanged: basic30/60s, sign-in3/10s and original stricter endpoints",
+    "currentRuntimeMode": "disabled; shared-limited is not deployable; no new mode enabled or implementation committed",
+    "newSecretsPermissionsServiceBindings": "none proposed for this WAF route; no cross-account service binding or CNAME"
+  },
+  "gatewayConfigurationDifferenceAfterApproval": {
+    "APP_ORIGIN": {"from": "https://m1.riff-demo.gaojihe.cn", "to": "https://app.riffoid.com"},
+    "APP_TRANSPORT_ORIGIN": "Selected and verified original-account hostname, not currently configured",
+    "LEGACY_RECOVERY_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
+    "LEGACY_RECOVERY_UNTIL": "Exact successful cutover UTC +48h; cutover not performed, so unset",
+    "resourcesIdentityHistoryPolicyPins": "Preserve all93 bindings, namespaces, actor names, resources, private-beta-20260920-v1 reviewAt2026-12-31T15:59:59.999Z and October20 M1"
+  },
+  "oauthAndExecutionDifferenceAfterApproval": {
+    "googleAddOnly": "https://app.riffoid.com/api/auth/callback/google",
+    "googleCurrentConsoleList": "Not read; keep original client/secret/scopes and old callback for rollback; domain/consent/JS origins only if verified necessary and specifically approved",
+    "executionAppOriginAndSingleAncestor": "https://app.riffoid.com",
+    "executionOriginUnchanged": "https://riffology-browser-execution.jihe-gao.workers.dev",
+    "executionResourcesAssetsPins": "Unchanged4 bindings/Worker/assets; no same-site execution or extra ancestor"
+  },
+  "mustVerifyBeforeExecution": [
+    "Old zone ID, ownership, plan, existing roles, routes/custom domains, WAF order/Skip, IP transforms and TLS",
+    "Exact selected transport route and TLS; no default/worker.dev/alternate-host bypass",
+    "Both rules expression support and actual platform-generated provenance under new Custom Domain Worker fetch",
+    "Current complete rollback snapshot remains unchanged at action time",
+    "Existing authorized deployment channel for new account; do not create token or grant permissions implicitly",
+    "Explicit security/OAuth/CSP/configuration approval for the reviewed exact package"
+  ],
+  "realNoPaidAcceptanceBeforeOpeningAuth": [
+    "Direct transport, forged CF-Worker/IP, outside-zone Worker, Worker-to-app and alternate hosts denied",
+    "Two visitor IPs have independent original auth limits; one IP still hits original strict limits",
+    "Original Google identity/canonical callback/host-only cookie/Catalog revocation/CSRF/G5 proof preserved",
+    "Original SSE cursor/cancellation, isolated Execution and expired server/local export boundaries preserved"
+  ]
+}
