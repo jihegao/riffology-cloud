@@ -186,7 +186,6 @@
       "localBuildCommand": "node scripts/m1/build-riffoid-forward-rollback.mjs"
     },
     "compatibilityFlagsExactChange": {
-      "compatibilityDateUnchanged": "2026-09-06",
       "entry": [
         "global_fetch_strictly_public",
         "enable_request_signal"
@@ -202,7 +201,16 @@
       ],
       "hiddenRequestSignalPassthrough": false,
       "productionChangesExecuted": false,
-      "originalSingleOriginImpact": "Native disconnect signals now enabled on entire Gateway; local original auth/session/CSRF/assets and real single-origin SSE disconnect verified; actual platform pending"
+      "originalSingleOriginImpact": "Native disconnect signals now enabled on entire Gateway; local original auth/session/CSRF/assets and real single-origin SSE disconnect verified; actual platform pending",
+      "entryFixtureCompatibilityDate": "2026-09-06",
+      "gatewayCompatibilityDateUnchanged": "2026-09-09",
+      "dateSource": "infra/riffoid-compatibility-dates.json; live Gateway GET2026-10-08T08:40:44.103Z"
+    },
+    "cancellationContract": {
+      "onPlatformAbort": "Stop verification that has not entered business and stream observation when actual platform abort arrives",
+      "missingReceipt": "Result remains unknown; reconcile with original business request key, no auto retry",
+      "alreadyCommittedOperation": "Use original business cancel; TCP FIN is not transaction rollback",
+      "preHeaderFINIndependentDeploymentBlocker": false
     }
   },
   "implementedOfflineCode": {

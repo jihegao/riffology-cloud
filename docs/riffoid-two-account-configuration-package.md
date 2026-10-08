@@ -87,6 +87,16 @@ PR172/174已整合，main基线 `25609953f5c3b69dcb44e520d7e7ed1253d18fe4`。[Is
 
 ### 取消信号与前向回退的精确追加申请（离线、未执行）
 
-兼容日期2026-09-06保持；新入口flags `[global_fetch_strictly_public,enable_request_signal]`，原Gateway从`[nodejs_compat,nodejs_compat_do_not_populate_process_env]`追加`enable_request_signal`。不使用隐藏request_signal_passthrough；signed两层标准AbortController桥接仅在真实原生信号到达时传播。实际TCP reset/已开SSE本地链通过，响应头前普通FIN即时取消未证明，仍需平台验收。原Gateway staging config没有被改为该overlay。
+入口fixture/template日期2026-09-06；Gateway及前向回退保留实际live日期2026-09-09（2026-10-08T08:40:44.103Z现授权GET回读），不得从入口fixture继承日期；新入口flags `[global_fetch_strictly_public,enable_request_signal]`，原Gateway从`[nodejs_compat,nodejs_compat_do_not_populate_process_env]`追加`enable_request_signal`。不使用隐藏request_signal_passthrough；signed两层标准AbortController桥接仅在真实原生信号到达时传播。实际TCP reset/已开SSE本地链通过，响应头前普通FIN即时取消未证明；准确承诺为平台abort到达后停止尚未进入业务的验证/流观察，无回执按原key核对未知结果，已提交操作走原业务cancel，不承诺FIN撤销。FIN不是禁止所有部署的独立阻断。原Gateway staging config没有被改为该overlay。
 
 [前向回退源入口](../services/gateway/forward-rollback.ts)与[非可执行配置申请](../infra/riffoid-forward-rollback.request.jsonc)已可本地build/test；保留全部DO exports/实际既有ENTRY_REPLAY namespace/migration，恢复原APP_ORIGIN且整组移除transport/mode/recovery4 vars。实际生产namespace ID、完整配置/migration/assets freeze和平台验证仍缺，本地artifact状态LOCAL_BUILD_NOT_PRODUCTION_FROZEN，不能用旧Gateway version跨DO lifecycle迁移回滚。详见[评审实现与边界](riffoid-entry-signature.md)。
+
+日期及当前取消语义以[日期专项证据](evidence/riffoid-entry-date-correction-20261008.json)为准；09-06普通local/staging简化文件不代表live Gateway date。
+
+### 精简生产配置与资源批准清单（本轮仅准备）
+
+- 新账号`3232ebc7e9bb0199b92e3d70b07825af` / riffoid.com zone`b0b0079990e13eb20a17a2d3c41403b8`：指定入口Worker/name与`app.riffoid.com`绑定、入口09-06及`global_fetch_strictly_public,enable_request_signal`；单独创建并仅绑定入口的`ENTRY_SIGNING_PRIVATE_JWK` Secret、公开key ID（真实值未生成/待批准），不复制原auth/provider秘密或绑定应用数据。
+- 原账号`8b0d70250211aa10d89e20605a1c7e5e` / Gateway：保留live09-09并追加`enable_request_signal`；完整93原bindings/config上增加公开`ENTRY_SIGNING_PUBLIC_KEYS_JSON`（public pin待获准生成并核验）及独立SQLite`ENTRY_REPLAY / EntryReplayGuard`、拟migration tag`entry-replay-v1`（实际namespace ID/完整migration history待创建后核验）。两侧canonical/transport/mode应作为同一完整包，transport拟`riffoid-transport.gaojihe.cn`，不能跨账号CNAME或假定service binding；Googleclient完整公开ID和现callback/origins/domains仍缺。
+- 精确DNS/route/TLS、两zone所需WAF/native-IP/Transform边界、Google新canonical callback/origins/domain和原Execution单一ancestor/APP_ORIGIN/CSP差异：仅批准核验过的完整值，保留原Googlecallback、身份/历史/assets/actor/namespace/pins/ledger，不打开M3/G5/付费执行。新zonePseudoIPv4应保持Off；平台来源/IP/已绑定header稳定性和真实原用户验收待后续获准执行，不能以fixture替代。
+- 上线前冻结当前Gateway/Execution/入口完整config、assets hashes/version及保留同一replay namespace/migration的前向回退包；本地build仍LOCAL_BUILD_NOT_PRODUCTION_FROZEN，缺实际namespace ID/完整migration/config/assets snapshot/平台验证。回退恢复原APP_ORIGIN、整组删除4个topology vars并保留所有原资源及replay数据；不以旧version跨DO lifecycle raw rollback。
+- 仅真实成功切流时记录UTC并启动已批准48h服务端恢复（现在cutover/until仍空）；旧静态指南与本机原字节Runs导出继续保留，原8h session不延长。平台abort到达时停止尚未进入业务的验证/流观察；无回执结果未知按原key核，已提交操作用原业务cancel，不承诺FIN撤销，FIN不列为独立部署阻断。

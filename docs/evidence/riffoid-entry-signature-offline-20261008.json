@@ -254,6 +254,7 @@
     "oldSyntheticCancellation": "Manual AbortController/stream.cancel did not prove incoming native HTTP disconnect or ignored subrequest-signal behavior",
     "subsequentProductionSourceChanges": "Standard abort bridges in signed entry/Gateway and forward rollback entrypoint now added; old source/log hashes remain frozen historical values",
     "actualLateSqliteNow": "Separate current evidence injects delayed RPC and fixture-only waitUntil then observes real local SQLite persistence and entry_replay_denied",
-    "currentFINLimit": "Pre-header graceful FIN immediate native cancellation unproven; actual reset and open SSE only, actual platform pending"
+    "currentFINLimit": "Pre-header graceful FIN immediate native cancellation unproven; actual reset and open SSE only, actual platform pending",
+    "currentDateAndCancellationContract": "docs/evidence/riffoid-entry-date-correction-20261008.json; Gateway date09-09; entryfixture09-06; platform abort arrival contract, originalkey unknown reconciliation/original business cancel, FIN not independent deployment blocker"
   }
 }

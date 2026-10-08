@@ -53,7 +53,7 @@ RPC最长2秒；超时、binding缺失、写入失败、容量满、取消均失
 1. 新账号`3232ebc7e9bb0199b92e3d70b07825af` / riffoid.com zone `b0b0079990e13eb20a17a2d3c41403b8`：指定单一riffoid-entry Worker新增**Secret ENTRY_SIGNING_PRIVATE_JWK**，仅五字段`kty=EC,crv=P-256,x,y,d`；普通var ENTRY_SIGNING_KEY_ID为唯一公开ID。创建/保存/注入真实私钥动作须行动时确认，本次没有生成生产key，也不把key值写入文件/PR/日志。新入口无原auth/provider秘密及应用数据绑定。
 2. 原账号`8b0d70250211aa10d89e20605a1c7e5e` / Gateway riffology-m1-gateway-staging：新增公开var ENTRY_SIGNING_PUBLIC_KEYS_JSON，严格`{keyId:{kty,crv,x,y}}`，最多2个ID，禁止d/私钥。公钥来自上述获准生成动作，先核对pin及算法，不能让请求指定或自动下载公钥。
 3. 同原Gateway新增ENTRY_REPLAY绑定，class EntryReplayGuard及**新SQLite namespace**；申请新的migration tag `entry-replay-v1` / new_sqlite_classes `[EntryReplayGuard]`，实际namespace ID待批准后创建回读。这是独立安全资源，原93 bindings/DO namespaces/class/actor/budgets不改；从完整live configuration做加法overlay，不能部署精简模板。无新D1/R2/container/service binding。
-4. 两侧都显式新增`enable_request_signal`；日期保持2026-09-06。新入口flags精确为`[global_fetch_strictly_public,enable_request_signal]`；原Gateway从`[nodejs_compat,nodejs_compat_do_not_populate_process_env]`变为该两项加`enable_request_signal`。原Gateway staging线上配置未编辑，此处仅完整overlay申请。不能假定升级日期会启用该flag，不使用隐藏`request_signal_passthrough`。
+4. 两侧都显式新增`enable_request_signal`；新入口fixture/template日期为2026-09-06；原Gateway及前向回退保持已核验live日期2026-09-09，两者不能混用。新入口flags精确为`[global_fetch_strictly_public,enable_request_signal]`；原Gateway从`[nodejs_compat,nodejs_compat_do_not_populate_process_env]`变为该两项加`enable_request_signal`。原Gateway staging线上配置未编辑，此处仅完整overlay申请。不能假定兼容日期会启用该flag，不使用隐藏`request_signal_passthrough`。
 5. 完成原zone/Google现配置缺口及精确transport/两条WAF规则批准、原生IP平台验收后才设ENTRY_NATIVE_IP_BOUNDARY。两边TWO_ACCOUNT_AUTH_MODE仍disabled直到完整公钥/Secret/DO/URL/Google/CSP包审阅并获准启用`signed-entry-v1`。canonical/transport/recovery/Execution现差异沿[配置包](riffoid-two-account-configuration-package.md)；此实现授权不包含线上更改。
 
 ### 轮换、撤回与回退
@@ -76,7 +76,7 @@ RPC最长2秒；超时、binding缺失、写入失败、容量满、取消均失
 
 真实SSE串起生产entry/Gateway handler、同SQLite replay和生产turnEventStream；producer位于测试asset adapter、authorize/replay和身份是fixture，不是完整真实Catalog用户的应用SSE验收。实际下游首chunk、Last-Event-ID=12、两侧native abort、observer polls停止、单fetch/claim和零auth均验证；原单域Gateway增加flag后也真实断流停止观察。原应用身份/G5/SSE行为另由已有本地回归支持，不合并宣称真实用户验收。
 
-**响应头前普通TCP FIN仍未证明即时取消**：直接HTTP延迟fixture实际观察两侧native abort=0，Gateway2秒timeout使该fixture零auth、nonce晚落盘、无重试；这不证明较快RPC/认证路径在FIN后一定不会继续。TCP reset和已开SSE证据不能替代该缺口。上线包仍不可用作完整取消链验收，须后续获准真实Cloudflare跨账号验收分别覆盖FIN/reset、body/RPC等待和SSE；如平台不能保证所需取消语义，继续关闭并明确阻碍，不能伪造signal/Origin或放宽验签。
+**响应头前普通TCP FIN仍未证明即时取消**：直接HTTP延迟fixture实际观察两侧native abort=0，Gateway2秒timeout使该fixture零auth、nonce晚落盘、无重试；这不证明较快RPC/认证路径在FIN后一定不会继续。TCP reset和已开SSE证据不能替代该缺口。准确承诺是：平台abort实际到达时，停止尚未进入业务的验证和流观察；没有回执的结果仍未知，按原业务request key核对、不自动重试；已经提交的操作使用原业务cancel，不承诺TCP FIN撤销或事务回滚。该FIN观察不是禁止所有部署的独立阻断，真实平台取消/未知结果语义仍属后续获准验收范围，不能伪造signal/Origin或放宽验签。
 
 前向回退交付[源entrypoint](../services/gateway/forward-rollback.ts)、[非可执行配置申请](../infra/riffoid-forward-rollback.request.jsonc)、[本地构建器](../scripts/m1/build-riffoid-forward-rollback.mjs)和[实际Workerd验证](../tests/m1/riffoid-forward-rollback-workerd.test.mjs)。源入口export集合与Gateway完全一致、保留所有原DO和EntryReplayGuard；要求原canonical、整组删除4个topology vars且保留ENTRY_REPLAY绑定，半配置503。相同本地namespace/SQLite数据经worker重建后仍拒绝原nonce；原session ID/user ID/expiry原样、wrong Origin403且session不变、原资产/CSP与单域SSE保持。构建输出`.local/riffoid-forward-rollback/worker.mjs`及manifest明确LOCAL_BUILD_NOT_PRODUCTION_FROZEN；namespace ID、完整migration history、93+1 bindings/secret references、assets hashes、生产版本/routes/security/Google完整列表及平台验证仍缺，不能把此template/本地build当作冻结生产artifact。保留数据、不清namespace、不用旧版本跨migration raw rollback。
 
@@ -89,3 +89,5 @@ RPC最长2秒；超时、binding缺失、写入失败、容量满、取消均失
 当前取消链/晚提交/前向回退阶段、准确命令/源代码和日志hash、旧证据纠正及FIN边界见[评审证据](evidence/riffoid-entry-review-offline-20261008.json)。
 
 当前评审后typecheck通过；完整M1 **348/348**；完整M3 **1070通过/12条件跳过/0失败**，这三项命令退出0。未重复未受影响的UI/M0/M2/Issue73/Python；其全仓check结果仅保持为上一阶段证据。当前生产源入口没有在上述完整回归后再编辑。
+
+日期专项更正：2026-10-08T08:40:44.103Z以现有授权对原Gateway deployment/active version做GET，只回读非敏感metadata。当前100%版本`aeddf112-a2be-45da-868c-ed576c55d5ec`、deployment`c6ff55e4-2364-4920-94e0-b8784a1824b5`的live compatibility_date为**2026-09-09**，flags仍为原两项，bindings93。之前把09-06入口fixture日期写为Gateway继承日期，已纠正模板/build manifest/overlay和对应本地Gateway fixtures；入口09-06保持独立。仓库旧简化staging config和一般本地config的09-06不是完整live配置来源，未改线上日期或资源。新日期证据及针对性测试见[日期专项证据](evidence/riffoid-entry-date-correction-20261008.json)。

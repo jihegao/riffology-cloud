@@ -29,9 +29,11 @@
       "nodejs_compat_do_not_populate_process_env",
       "enable_request_signal"
     ],
-    "compatibilityDate": "2026-09-06",
+    "compatibilityDate": "2026-09-09",
     "buildCommand": "node scripts/m1/build-riffoid-forward-rollback.mjs",
-    "localBuildOutput": ".local/riffoid-forward-rollback/worker.mjs + manifest.json (not a frozen production package)"
+    "localBuildOutput": ".local/riffoid-forward-rollback/worker.mjs + manifest.json (not a frozen production package)",
+    "compatibilityDateAction": "Retain verified live Gateway date; entry fixture2026-09-06 is separate",
+    "compatibilityDateSource": "infra/riffoid-compatibility-dates.json"
   },
   "entry": {
     "action": "Stop new admission; TWO_ACCOUNT_AUTH_MODE=disabled on the existing entry",

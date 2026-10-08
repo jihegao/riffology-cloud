@@ -121,7 +121,6 @@
     "notProven": "Production Cloudflare persistence/latency/scheduling/costs; fixture waitUntil must not be confused with production behavior"
   },
   "cancellation": {
-    "compatibilityDateUnchanged": "2026-09-06",
     "entryFlags": [
       "global_fetch_strictly_public",
       "enable_request_signal"
@@ -149,8 +148,10 @@
       "delayedFixtureAuthRateRows": 0,
       "delayedFixtureNoncePersisted": true,
       "immediateCancellationProven": false,
-      "limitation": "2s timeout prevents auth in delayed fixture only. Faster RPC/auth could continue after FIN. Reset/open-SSE evidence does not prove universal pre-header FIN cancellation."
-    }
+      "limitation": "Historical local pre-header FIN observation unchanged. No promise of immediate FIN transaction reversal; platform abort stops pre-business verification/observation when it arrives; missing receipt stays unknown by originalkey and committed business cancellation uses original cancel. FIN is not an independent deployment blocker."
+    },
+    "entryFixtureCompatibilityDate": "2026-09-06",
+    "gatewayCompatibilityDateUnchanged": "2026-09-09"
   },
   "forwardRollback": {
     "entrypoint": "services/gateway/forward-rollback.ts",
@@ -190,7 +191,13 @@
         "WorkspaceAgent",
         "default"
       ],
-      "compatibilityDate": "2026-09-06",
+      "compatibilityDate": "2026-09-09",
+      "compatibilityDateSource": {
+        "snapshot": "docs/evidence/riffoid-two-account-publish-readback-20261008.json",
+        "jsonPointer": "/cloudflareReadOnly/gateway/scriptRuntime/compatibility_date",
+        "versionId": "aeddf112-a2be-45da-868c-ed576c55d5ec",
+        "freshLiveReadbackUTC": "2026-10-08T08:40:44.103Z"
+      },
       "compatibilityFlags": [
         "nodejs_compat",
         "nodejs_compat_do_not_populate_process_env",
@@ -221,7 +228,9 @@
       "Complete current Gateway/Execution/entry configuration and bindings/secret references/assets hashes/version",
       "Exact DNS/routes/WAF/Transform rollback order, full Google public client/callback/origins/domains",
       "Production-built package and actual platform validation"
-    ]
+    ],
+    "historicalManifestCompatibilityDate": "2026-09-06 (incorrect inherited entry fixture date, corrected by date-only follow-up)",
+    "manifestStage": "Current date-corrected local manifest09-09; this document source/log hashes remain historical8e5f9b1 stage, current correction hashes in date-correction evidence"
   },
   "independentSelfReview": {
     "fixed": [
@@ -232,7 +241,6 @@
       "Raw pre-migration Worker rollback forbidden after DO lifecycle migration; source forward rollback preserves export and local namespace"
     ],
     "remaining": [
-      "Pre-header FIN native immediate cancellation not proven",
       "Actual two-account IP/WAF/transforms/public TLS/header stability/Google/BETTER_AUTH/Catalog revocation/SSE/Execution platform acceptance",
       "Complete frozen production forward rollback artifact absent; current build is local only"
     ]
@@ -249,5 +257,12 @@
     "M1ReviewAt": "2026-10-20 23:59:59.999 Asia/Shanghai",
     "recovery": "Approved48h starts only actual successful cutover; cutoverUTC/until remain null; original8h session not extended; local static Runs original-byte export persists after server deadline"
   },
-  "publication": "Same draft PR173; final exact remote head/tree/local equality and CI readback reported in PR/final, not invented in self-referential source evidence"
+  "publication": "Same draft PR173; final exact remote head/tree/local equality and CI readback reported in PR/final, not invented in self-referential source evidence",
+  "status": "HISTORICAL_CANCELLATION_REVIEW_STAGE_DATE_CORRECTED",
+  "dateCorrection": {
+    "currentEvidence": "docs/evidence/riffoid-entry-date-correction-20261008.json",
+    "oldUnifiedDateIncorrect": "2026-09-06 belonged to entry fixture; Gateway live and forward rollback retain2026-09-09",
+    "oldManifest": "Historical local build manifest09-06 superseded; new build manifest09-09",
+    "currentFINContract": "Platform abort arrival stops pre-business verification/observation; unknown receipt reconciles originalkey; committed work uses originalcancel; FIN not independent deployment blocker"
+  }
 }

@@ -1,0 +1,158 @@
+{
+  "schema": "riffoid-entry-date-correction-v1",
+  "scope": "Gateway date correction and cancellation wording only; local preparation, no online change",
+  "baselineRemoteHead": "8e5f9b149dca2273da63f1810d21bf5e39c58de7",
+  "liveReadback": {
+    "recordedUTC": "2026-10-08T08:40:44.103Z",
+    "method": "Authenticated installed Wrangler GET, existing authorization, hardcoded original Gateway deployments and active version metadata only",
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "workerName": "riffology-m1-gateway-staging",
+    "deploymentId": "c6ff55e4-2364-4920-94e0-b8784a1824b5",
+    "versionId": "aeddf112-a2be-45da-868c-ed576c55d5ec",
+    "percentage": 100,
+    "compatibilityDate": "2026-09-09",
+    "compatibilityFlags": [
+      "nodejs_compat",
+      "nodejs_compat_do_not_populate_process_env"
+    ],
+    "bindingCount": 93,
+    "productionChanges": false,
+    "credentialsExtracted": false
+  },
+  "dates": {
+    "entryFixtureCompatibilityDate": "2026-09-06",
+    "gatewayCompatibilityDateUnchanged": "2026-09-09",
+    "forwardRollbackCompatibilityDate": "2026-09-09"
+  },
+  "cancellationContract": {
+    "onPlatformAbort": "Stop verification that has not entered business and stream observation when actual platform abort arrives",
+    "missingReceipt": "Unknown outcome; reconcile original business request key, no automatic retry",
+    "committedOperation": "Use original business cancel; no promise that TCP FIN undoes committed work",
+    "FINIndependentDeploymentBlocker": false,
+    "FINObservationUnchanged": "Pre-header graceful FIN native counters0 in delayed local fixture; reset/open-SSE results not extrapolated to universal immediate FIN cancellation"
+  },
+  "productionSourceCodeChanged": false,
+  "productionChanges": false,
+  "recordedUTC": "2026-10-08T08:48:11.766335+00:00",
+  "verification": {
+    "typecheckExitCode": 0,
+    "targetedExitCode": 0,
+    "targetedPass": 10,
+    "fullM1ExitCode": 0,
+    "fullM1Pass": 350,
+    "failed": 0,
+    "skipped": 0,
+    "M3": "Not rerun for this date/config/wording-only follow-up; prior8e5f9b1 stage1070pass/12conditional skips/0fail remains historical; production Worker source unchanged",
+    "scope": "No additional research or experiments; affected date/manifests/HTTP/auth/rollback fixtures only; focused counts overlap full M1"
+  },
+  "localManifest": {
+    "status": "LOCAL_BUILD_NOT_PRODUCTION_FROZEN",
+    "source": "services/gateway/forward-rollback.ts",
+    "sha256": "319121c411ed2c45e5f952784adbc4823e0e36dabe3d0ee7298b4db8befbce5a",
+    "exports": [
+      "ContainerProxy",
+      "EntryReplayGuard",
+      "G5ControlledWindow",
+      "G5TenantModelBudget",
+      "InvitedRunCapacity",
+      "ManagedProductRuntime",
+      "ModelProxyService",
+      "ObserverExecutor",
+      "PiDeveloperBudget",
+      "PrivateBetaCapacity",
+      "ProductTurnRuntime",
+      "ProductionModelBudget",
+      "ProjectRuntime",
+      "ProjectToolSandbox",
+      "RevisionStore",
+      "ServiceRun",
+      "ServiceRuntime",
+      "ServiceSandbox",
+      "SimulationSandbox",
+      "TenantModelBudget",
+      "TenantQuota",
+      "ToolArtifactStore",
+      "ToolBridgeAgent",
+      "ToolBridgeService",
+      "TrustedPiCapacity",
+      "TrustedPiSandbox",
+      "WorkspaceAgent",
+      "default"
+    ],
+    "compatibilityDate": "2026-09-09",
+    "compatibilityDateSource": {
+      "snapshot": "docs/evidence/riffoid-two-account-publish-readback-20261008.json",
+      "jsonPointer": "/cloudflareReadOnly/gateway/scriptRuntime/compatibility_date",
+      "versionId": "aeddf112-a2be-45da-868c-ed576c55d5ec",
+      "freshLiveReadbackUTC": "2026-10-08T08:40:44.103Z"
+    },
+    "compatibilityFlags": [
+      "nodejs_compat",
+      "nodejs_compat_do_not_populate_process_env",
+      "enable_request_signal"
+    ],
+    "replayNamespaceId": null,
+    "migrationHistory": null,
+    "productionConfigurationSnapshot": null,
+    "assetsHashes": null,
+    "platformValidation": "not run"
+  },
+  "firstReadFailure": {
+    "result": "Transient fetch failed, no API authorization error or permissions expansion; same hardcoded GET path subsequently succeeded",
+    "secretsOrInstalledPackagesEdited": false
+  },
+  "sourceSha256": {
+    "infra/riffoid-compatibility-dates.json": "bf0b7740331e27ffac10bb7c9c48844713fd0557848e635af7d47af73878a0ab",
+    "infra/riffoid-forward-rollback.request.jsonc": "57f2ea0e6bee9ae0b46b51d7dd9c9e898b68ab29141379c6cc9a71ae918495e1",
+    "scripts/m1/build-riffoid-forward-rollback.mjs": "c5d672647d5ef76ef728767b5696b429cb36dd225631b744b7a790f995f83c6a",
+    "tests/m1/riffoid-compatibility-dates.test.mjs": "f022fe96aff72fe50176f7e365e0e2de0fa376f4f1c3abe65914640dca49ef95",
+    "tests/m1/riffoid-cancellation-workerd.test.mjs": "74070e2eeda7540183be5fc20d708f684944652dbc6ffa43aba1a9fd615932fe",
+    "tests/m1/riffoid-entry-workerd.test.mjs": "dea2266fdbe21d6be4eb9dbac5f6f64749e3aefd6c95b4ded0ddc6adffa63f86",
+    "tests/m1/riffoid-forward-rollback-workerd.test.mjs": "c68333db3527047823c21e25ee4738fae56811d448c4d1bfec3ba54e2b0606c5",
+    "docs/riffoid-entry-signature.md": "e630ffb1557339102636a48179481867a0ef6acbb448db6352e9b754ff733ff4",
+    "docs/riffoid-two-account-configuration-package.md": "aa027dc69f69be3758716056cbe83ac618116e2e0d9416f5051f1da1ce1fddc1",
+    "docs/riffoid-two-account-security-overlay.example.jsonc": "62b46aa2fd4a65f2a7c6725ce7e47d3cebff7a766d7d86c9fb19a3af9e1de8d3"
+  },
+  "productionSourceSha256": {
+    "services/entry/abort.ts": "e6dab51637321b1c9db81882b9a139edadb61b2e5eac9aa5ce8575a61b16a7c6",
+    "services/entry/index.ts": "dfbf9a7d0914d5087f6e8a27f460d8c4bc649f7d35ba422c34812f65d6392724",
+    "services/entry/signature.ts": "1183a3444d1c29032933456c55691a77ba55ebf223e7fb27932e85155003ee67",
+    "services/entry/replay.ts": "d9584df12ba6eb2939444cd4e5b3cb11a10a400fbb5250eb9e791d31da20889b",
+    "services/gateway/index.ts": "5f606c136a0be6abdafcf2bdcce0fd29af115959ac50b31b15a17057ca76a4a0",
+    "services/gateway/auth.ts": "e3ba29536e57c1f148933e68a855a7bda48b05253e33f83d934f58af40e1770e",
+    "services/gateway/forward-rollback.ts": "dff59377cc87fe16409e007056e3f4a2d3a3b392966a557c8a2200fb9b890d18"
+  },
+  "logSha256": {
+    ".local/date-correction-targeted.log": "81392948f771969535f8fa8f4b91dfb74c1585879e737df8af61047716594a89",
+    ".local/date-correction-typecheck.log": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+    ".local/date-correction-m1.log": "699fdd25c2d2158f8a7ac6db7f925dedaa359fd5e326e9fb503f1f4c8c2f383d"
+  },
+  "unchanged": [
+    "Actual Cloudflare compatibility dates, resources, bindings and credentials",
+    "Production services code, original internal identity/history/assets/actor/namespaces/pins/ledger/meter-only",
+    "Trial2026-12-31T15:59:59.999Z and M1review2026-10-20 23:59:59.999 Asia/Shanghai",
+    "No deployments/DNS/domain/OAuth/CSP/WAF/Transform/key/permission/namespace/migration/merge/install/paidrun changes"
+  ],
+  "productionApprovalChecklist": [
+    {
+      "owner": "New entry account3232ebc7e9bb0199b92e3d70b07825af / zoneb0b0079990e13eb20a17a2d3c41403b8",
+      "request": "One specified entry Worker/name +app.riffoid.com binding, entry09-06 flags; entry-only private JWK Secret and public key ID",
+      "missing": "Exact final Worker/name, production signing key creation/value and key ID separately approved; no existing auth secret copy"
+    },
+    {
+      "owner": "Original Gateway account8b0d70250211aa10d89e20605a1c7e5e",
+      "request": "Retain live09-09, appendenable_request_signal; add public pin ring and independent ENTRY_REPLAY SQLite class/migration to full93bindings package",
+      "missing": "Public pin, actual replay namespace ID, exact complete migration history; resources creation/configuration separately approved"
+    },
+    {
+      "owner": "Both zones / original Google client / original Execution",
+      "request": "Exact TLS/DNS/routes/WAF/native-IP/transforms/canonical/transport/OAuth callback/domain/Execution single-ancestor/CSP package and real acceptance",
+      "missing": "Transport route/TLS and native source boundary verified; Google full public client/callback/origin/domain values and current original-zone authorized configuration readback; no bypass of denied APIs"
+    },
+    {
+      "owner": "Original application resources / coordinated cutover",
+      "request": "Freeze complete config/assets/version and forward rollback with same replay namespace/migration; actual successful cutover starts approved48h recovery",
+      "missing": "Complete production rollback snapshot/asset hashes and platform validation; cutoverUTC/untilnull; do not rawrollback across DO lifecycle, clear store or extend original8h session"
+    }
+  ]
+}
