@@ -4,7 +4,7 @@ import {entry,entryResponse} from '../../services/entry/index.ts';
 import {appTopology,publicHttpsOrigin} from '../../services/gateway/origins.ts';
 import {publicTransportHeaders} from '../../services/gateway/transport-headers.ts';
 const canonical='https://app.riffoid.com',transport='https://transport.example.test',legacy='https://old.example.test';
-const env={APP_ORIGIN:canonical,APP_TRANSPORT_ORIGIN:transport};
+const env={APP_ORIGIN:canonical,APP_TRANSPORT_ORIGIN:transport,TWO_ACCOUNT_AUTH_MODE:'shared-limited'};
 
 test('entry and Gateway preserve exactly the two untrusted G5 read proof inputs and drop internal authority claims',async()=>{
   const proof={'x-riffology-g5-read-session':'original-session','x-riffology-g5-read-capability':'original-capability'};
@@ -67,7 +67,7 @@ test('entry streams SSE chunks and propagates consumer cancellation without buff
 });
 
 test('proxy authentication defaults closed, requires explicit shared-limited mode and rejects arbitrary trust settings',()=>{
-  assert.equal(appTopology(env).authentication,'disabled');
+  assert.equal(appTopology({...env,TWO_ACCOUNT_AUTH_MODE:undefined}).authentication,'disabled');
   assert.equal(appTopology({...env,TWO_ACCOUNT_AUTH_MODE:'shared-limited'}).authentication,'shared-limited');
   for(const value of ['true','trusted-forwarded-ip','any',''])assert.throws(()=>appTopology({...env,TWO_ACCOUNT_AUTH_MODE:value}));
   assert.throws(()=>appTopology({APP_ORIGIN:canonical,TWO_ACCOUNT_AUTH_MODE:'shared-limited'}));

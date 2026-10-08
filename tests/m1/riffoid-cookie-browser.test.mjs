@@ -42,7 +42,7 @@ test('fresh offline Chromium: canonical Google state/session cookies remain host
       if(url.origin===canonical&&url.pathname==='/')response=new Response('<!doctype html><title>Offline browser driver</title>',{headers:{'content-type':'text/html'}});
       else{
         const request=new Request(url,{method:browserRequest.method(),headers:await browserRequest.allHeaders(),body:browserRequest.postDataBuffer()??undefined});
-        if(url.origin===canonical)response=await entry(request,{APP_ORIGIN:canonical,APP_TRANSPORT_ORIGIN:transport},backend);
+        if(url.origin===canonical)response=await entry(request,{APP_ORIGIN:canonical,APP_TRANSPORT_ORIGIN:transport,TWO_ACCOUNT_AUTH_MODE:'shared-limited'},backend);
         else if(url.origin===legacy)response=await legacyRecovery(request,{canonical,origin:legacy,until:Date.now()+60000,database:db,identity:async req=>sessionIdentity(await readonly.api.getSession({headers:req.headers,query:{disableCookieCache:true,disableRefresh:true}})),snapshot:async()=>{throw Error('not-used');},receipt:async()=>{throw Error('not-used');}});
         else response=await backend(request);
       }

@@ -1,5 +1,9 @@
 # 双账号入口配置审阅包（2026-10-08）
 
+**签名资源回退补充**：创建防重放DO class迁移后不能直接rollback旧Gateway version，必须准备保留class/namespace的前向单域回退包；以[签名生产申请及回退](riffoid-entry-signature.md#轮换撤回与回退)为当前准据。旧版本ID仍为冻结基线，不是跨migration回退证明。
+
+**后续06:44:24 UTC授权更新**：用户批准入口专属签名/原子防重放实现与离线测试、推送；生产密钥创建配置仍另确认。当前已增加默认disabled的signed-entry-v1代码；WAF-only同zone反例由新script持钥验证处理，但原生IP入口WAF/Transform平台证明仍缺。精确协议/容量/生产Secret与新SQLite namespace申请见[签名配置与回退](riffoid-entry-signature.md)。下列“签名尚未实现”属于先前配置收敛基线，不能当成当前代码状态；真实生产key/pin/resource/安全设置仍未创建，缺现Google/旧zone字段不阻塞本地实现。
+
 **状态：准备与只读核验完成到下列边界；不可部署、不可切流。** 当前生产代码未改，新应用模式仍默认 disabled。共享 auth bucket 的可用性阻碍未解除；下列 WAF 方案也不证明特定入口 script 的身份。此包是具体事实、拟议差异、缺值和验收步骤，不是执行授权或完整 live overlay。[只读证据](evidence/riffoid-two-account-configuration-readback-20261008.json)冻结本轮结果；05:45的旧证据保留为历史，不覆盖。
 
 ## 账号、资源与通道

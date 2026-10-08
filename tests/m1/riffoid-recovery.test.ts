@@ -67,7 +67,7 @@ test('legacy permits only explicit reads: no auth callback/signout/refresh, app 
 test('lost accepted response is never replayed; original authenticated key recovers exact turn and cross-scope/revoked reads fail closed',async()=>{
   const f=await fixture();try{
     let calls=0;const path=`/api/workspaces/${f.scope.workspaceId}/sessions/${f.s.session.id}/turns`;
-    const response=await entry(new Request(canonical+path,{method:'POST',headers:{cookie:f.cookie,origin:canonical,'content-type':'application/json','idempotency-key':'original-key'},body:'{"message":"Original draft"}'}),{APP_ORIGIN:canonical,APP_TRANSPORT_ORIGIN:transport},async request=>{calls++;assert.equal((await f.app(request)).status,202);throw Error('lost accepted reply');});
+    const response=await entry(new Request(canonical+path,{method:'POST',headers:{cookie:f.cookie,origin:canonical,'content-type':'application/json','idempotency-key':'original-key'},body:'{"message":"Original draft"}'}),{APP_ORIGIN:canonical,APP_TRANSPORT_ORIGIN:transport,TWO_ACCOUNT_AUTH_MODE:'shared-limited'},async request=>{calls++;assert.equal((await f.app(request)).status,202);throw Error('lost accepted reply');});
     assert.equal(response.status,502);assert.equal(calls,1);assert.equal(Object.keys(f.store.read()!.turns).length,1);
     const snapshot=JSON.stringify(f.store.read()),receipt=await f.recover(path+'/receipt',{headers:{'idempotency-key':'original-key'}});assert.equal(receipt.status,200);
     const value=await receipt.json() as any;assert.equal(value.turn.id,Object.keys(f.store.read()!.turns)[0]);assert.equal(value.turn.requestKey,undefined);assert.equal(value.turn.payloadSha256,undefined);assert.equal(JSON.stringify(f.store.read()),snapshot);
@@ -78,17 +78,17 @@ test('lost accepted response is never replayed; original authenticated key recov
 test('real BetterAuth canonical callback/trusted origins stay fixed on actual transport URL and spoofed forwarding cannot redirect sign-in',async()=>{
   const f=await fixture();try{
     const options=authOptions(f.config);assert.equal(options.baseURL,canonical);assert.deepEqual(options.trustedOrigins,[canonical]);assert.deepEqual(options.advanced.ipAddress?.ipAddressHeaders,[]);assert.equal(options.rateLimit.enabled,true);assert.equal(options.rateLimit.max,30);
-    const response=await entry(new Request(canonical+'/api/auth/sign-in/social',{method:'POST',headers:{origin:canonical,'content-type':'application/json','x-forwarded-host':'evil.test'},body:JSON.stringify({provider:'google',callbackURL:canonical+'/',disableRedirect:true})}),{APP_ORIGIN:canonical,APP_TRANSPORT_ORIGIN:transport},req=>f.auth.handler(req));
+    const response=await entry(new Request(canonical+'/api/auth/sign-in/social',{method:'POST',headers:{origin:canonical,'content-type':'application/json','x-forwarded-host':'evil.test'},body:JSON.stringify({provider:'google',callbackURL:canonical+'/',disableRedirect:true})}),{APP_ORIGIN:canonical,APP_TRANSPORT_ORIGIN:transport,TWO_ACCOUNT_AUTH_MODE:'shared-limited'},req=>f.auth.handler(req));
     assert.equal(response.status,200);const value=await response.json() as any;assert.equal(new URL(value.url).searchParams.get('redirect_uri'),canonical+'/api/auth/callback/google');assert.ok(response.headers.getSetCookie().length);assert.ok(response.headers.getSetCookie().every(cookie=>!cookie.includes('Domain=')));
     const denied=await f.auth.handler(new Request(transport+'/api/auth/sign-in/social',{method:'POST',headers:{origin:canonical,'content-type':'application/json'},body:JSON.stringify({provider:'google',callbackURL:'https://evil.test/'})}));assert.equal(denied.status,403);
     const replay=await f.auth.handler(new Request(transport+'/api/auth/callback/google?code=fixture&state=invalid'));assert.equal(replay.status,302);assert.ok(replay.headers.get('location')!.startsWith(canonical));
-    const signout=await entry(new Request(canonical+'/api/auth/sign-out',{method:'POST',headers:{cookie:f.cookie,origin:canonical,'content-type':'application/json'},body:'{}'}),{APP_ORIGIN:canonical,APP_TRANSPORT_ORIGIN:transport},req=>f.auth.handler(req));assert.equal(signout.status,200);assert.equal(f.db.sqlite.prepare('SELECT id FROM auth_session WHERE id=?').get(f.session.id),undefined);
+    const signout=await entry(new Request(canonical+'/api/auth/sign-out',{method:'POST',headers:{cookie:f.cookie,origin:canonical,'content-type':'application/json'},body:'{}'}),{APP_ORIGIN:canonical,APP_TRANSPORT_ORIGIN:transport,TWO_ACCOUNT_AUTH_MODE:'shared-limited'},req=>f.auth.handler(req));assert.equal(signout.status,200);assert.equal(f.db.sqlite.prepare('SELECT id FROM auth_session WHERE id=?').get(f.session.id),undefined);
   }finally{f.db.sqlite.close();}
 });
 test('real gateway SSE through entry keeps cursor, rejects cross-site streams, and rechecks catalog revocation',async()=>{
   const f=await fixture();try{
     await f.journal.submit(f.scope,f.actor,f.s.session.id,'queued',{message:'fixture'});
-    const path=`/api/workspaces/${f.scope.workspaceId}/events?after_sequence=0`,env={APP_ORIGIN:canonical,APP_TRANSPORT_ORIGIN:transport};
+    const path=`/api/workspaces/${f.scope.workspaceId}/events?after_sequence=0`,env={APP_ORIGIN:canonical,APP_TRANSPORT_ORIGIN:transport,TWO_ACCOUNT_AUTH_MODE:'shared-limited'};
     assert.equal((await entry(new Request(canonical+path,{headers:{cookie:f.cookie,accept:'text/event-stream',origin:canonical,'sec-fetch-site':'cross-site'}}),env,f.app)).status,403);
     const response=await entry(new Request(canonical+path,{headers:{cookie:f.cookie,accept:'text/event-stream',origin:canonical,'last-event-id':'0'}}),env,f.app);assert.equal(response.status,200);
     const reader=response.body!.getReader();assert.match(new TextDecoder().decode((await reader.read()).value),/id: 1\nevent: turn\.queued/);

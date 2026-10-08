@@ -1,11 +1,13 @@
 {
   "status": "DRAFT_NOT_DEPLOYABLE",
-  "scope": "Reviewable zone-only provenance candidate with explicit same-zone peer Worker counterexample. Not deployable, not a Wrangler config or executable API payload.",
+  "scope": "Signed-entry offline implementation and reviewable production configuration request. Production key/public pin/replay namespace absent; not deployable or executable.",
   "approved": {
     "pushAndDeploymentPreparation": true,
     "safariAutomationAndExistingSessionReadonly": true,
     "serverRecoveryHoursAfterSuccessfulCutover": 48,
-    "securityRulesOAuthNewCredentialsOrPermissions": false
+    "securityRulesOAuthNewCredentialsOrPermissions": false,
+    "signedEntryImplementationAndPush": true,
+    "productionKeyGenerationConfigurationReplayResourceAndSecurityChanges": false
   },
   "newAccount": {
     "accountId": "3232ebc7e9bb0199b92e3d70b07825af",
@@ -98,13 +100,6 @@
       "previewsEnabled": false
     }
   },
-  "proposedCodeDifferenceNotImplemented": {
-    "entry": "Drop client IP/forwarded/custom IP assertions; validate only native direct-visitor Cloudflare IP after platform Worker-source gate; set x-riffoid-client-ip; genuine Origin and two G5 proof inputs unchanged",
-    "gateway": "Only use validated x-riffoid-client-ip for original auth buckets after an approved and actually verified provenance mechanism. Zone-only WAF is insufficient for per-entry-script guarantee. Missing/invalid proof/IP rejects; no fallback; identity/Catalog/CSRF unchanged.",
-    "rateLimits": "Installed BetterAuth1.7.3 unchanged: basic30/60s, sign-in3/10s and original stricter endpoints",
-    "currentRuntimeMode": "disabled; shared-limited is not deployable; no new mode enabled or implementation committed",
-    "newSecretsPermissionsServiceBindings": "none proposed for this WAF route; no cross-account service binding or CNAME"
-  },
   "gatewayConfigurationDifferenceAfterApproval": {
     "APP_ORIGIN": {
       "from": "https://m1.riff-demo.gaojihe.cn",
@@ -126,7 +121,7 @@
   "mustVerifyBeforeExecution": [
     "Old WAF order/Skip/capacity, internal DNS conflict, IP transforms and TLS (zone/plan/ownership/member role/routes/domains now read)",
     "Exact selected transport route and TLS; no default/worker.dev/alternate-host bypass",
-    "Choose explicit zone-wide trust boundary or approved stronger script-specific provenance; same-zone peer counterexample cannot be mislabeled denied",
+    "Signed-entry implementation/regressions reviewed; separately approve actual key creation/public pin/new replay namespace plus exact source/IP WAF platform proof and complete config",
     "Both rules expression support and actual platform-generated provenance under new Custom Domain Worker fetch",
     "Current complete rollback snapshot remains unchanged at action time",
     "Existing authorized deployment channel for new account; do not create token or grant permissions implicitly",
@@ -144,7 +139,55 @@
     "sameZoneOtherWorkerDirectFetch": "Matches riffoid.com at old transport; may forge custom IP and bypass new app rule. Two rules alone do not deny this attack.",
     "actualPlatformTests": "Not run",
     "optionAConditional": "Trust all workers/routes/writers/forwarders in entire riffoid.com zone, subject to audit and explicit acceptance; no per-script proof.",
-    "optionBLargerUnimplemented": "Dedicated private-key signature/public-key pin and atomic replay state. Requires explicit new-credential/resource approval; not generated/configured.",
-    "recommendation": "Stronger script-specific source validation required to meet same-zone peer denial/entry-only trust goal; no approved key or replay state yet."
+    "recommendation": "Stronger script-specific crypto provenance implemented offline; new source-native IP WAF/transform platform boundary remains required before activation.",
+    "optionBOfflineImplementation": "Offline signed-entry-v1 crypto and atomic replay code now implemented; real Secret/public pin/replay namespace/configuration unapproved and absent."
+  },
+  "signedEntryProductionRequest": {
+    "implementation": "docs/riffoid-entry-signature.md",
+    "entryAccountId": "3232ebc7e9bb0199b92e3d70b07825af",
+    "gatewayAccountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "entryOnlySecret": "ENTRY_SIGNING_PRIVATE_JWK (strict EC/P-256 private JWK; value not generated or saved)",
+    "entryPublicVar": "ENTRY_SIGNING_KEY_ID (approved unique ID to be chosen)",
+    "gatewayPublicVar": "ENTRY_SIGNING_PUBLIC_KEYS_JSON (strict public JWK ring of1-2 IDs; no d/private values)",
+    "gatewayNewBinding": {
+      "name": "ENTRY_REPLAY",
+      "className": "EntryReplayGuard",
+      "namespaceId": null,
+      "storage": "sqlite",
+      "requestedMigrationTag": "entry-replay-v1",
+      "newSqliteClasses": [
+        "EntryReplayGuard"
+      ],
+      "fixedActorNames": "riffoid-entry-replay-v1:0..63",
+      "perShardRowsMax": 4096
+    },
+    "entryNativeIpBoundaryAfterRealVerification": "ENTRY_NATIVE_IP_BOUNDARY=cloudflare-direct-visitor-waf-v1",
+    "currentModeBothSides": "disabled",
+    "requestedModeOnlyAfterCompleteApprovedPackage": "signed-entry-v1",
+    "lifetimeMs": 30000,
+    "futureSkewMs": 5000,
+    "replayRpcTimeoutMs": 2000,
+    "nonceBitLength": 256,
+    "realCredentialsOrResourcesCreated": false,
+    "rollback": {
+      "strategy": "Forward deployment preserving EntryReplayGuard class/export/migration history/ENTRY_REPLAY namespace",
+      "rawPreMigrationGatewayVersionRollback": "Unavailable after DO class lifecycle migration, per Cloudflare documented limit",
+      "restoreAPP_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
+      "removeTopologyVarsTogether": [
+        "APP_TRANSPORT_ORIGIN",
+        "TWO_ACCOUNT_AUTH_MODE",
+        "LEGACY_RECOVERY_ORIGIN",
+        "LEGACY_RECOVERY_UNTIL"
+      ],
+      "replayData": "Retain; no deleteAll/namespace recreation/snapshot restore",
+      "productionRollbackArtifact": "Must freeze and platform-validate before rollout approval; not deployed"
+    }
+  },
+  "implementedOfflineCode": {
+    "entry": "ECDSA P-256/SHA256 sign canonical target/method/path/query/time/nonce/native-IP/body/allowlisted-header digests. Private key isolated, body bounded, defaults disabled.",
+    "gateway": "Verify fixed pin/signature/header digest, atomically claim nonce in separate DO, verify bounded body and time/cancellation again; only then set trusted auth IP input. Original identity/Catalog/CSRF/G5 remain.",
+    "rateLimits": "Installed BetterAuth1.7.3 unchanged: basic30/60s, sign-in3/10s and original stricter endpoints",
+    "currentRuntimeMode": "defaults disabled; no production key/pin/namespace or native-IP boundary configured; shared-limited remains prohibited for deployment",
+    "newSecretsPermissionsServiceBindings": "One entry-only private-key Secret and one original-account SQLite replay DO requested, not created; no original auth secret reuse/service binding/cross-account CNAME"
   }
 }

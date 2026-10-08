@@ -1,5 +1,9 @@
 # riffoid 双账号入口准备 — 更新至 2026-10-08
 
+**签名资源回退补充**：若创建EntryReplayGuard class migration，不能直接rollback到旧Gateway version；需保留新class/namespace的前向单域回退包，见[当前回退规程](riffoid-entry-signature.md#轮换撤回与回退)。下文旧version ID仅冻结基线，不证明跨migration可直接回滚。
+
+**后续06:44:24 UTC授权更新**：用户批准入口专属签名/原子防重放实现与离线测试、推送；生产密钥创建配置仍另确认。当前已增加默认disabled的signed-entry-v1代码；WAF-only同zone反例由新script持钥验证处理，但原生IP入口WAF/Transform平台证明仍缺。精确协议/容量/生产Secret与新SQLite namespace申请见[签名配置与回退](riffoid-entry-signature.md)。下列“签名尚未实现”属于先前配置收敛基线，不能当成当前代码状态；真实生产key/pin/resource/安全设置仍未创建，缺现Google/旧zone字段不阻塞本地实现。
+
 **2026-10-08 已完成本地入口/Gateway 接线与离线验证，尚不具备线上切换条件。** 新代码以显式配置进入双账号模式，但新应用默认返回 503；共享限流 DoS 尚未解决，禁止部署 shared-limited 版本。无新配置时保持单域行为。推送/推进部署及利用既有浏览器会话只读核验已有后续授权；新登录、持久凭据/权限和具体安全配置变更仍按行动时边界处理。参见[最新最小决策与配置差异](riffoid-two-account-decisions.md)。2026-10-07 的透明代理阻碍及早期授权记录保留为历史基线。
 
 **05:32:17 UTC后续确认**：Safari Automation提示和实际切流成功后48小时server恢复已批准，不再重复请批。原生Safari可见文本读取成功：新account `3232ebc7e9bb0199b92e3d70b07825af`、riffoid.com zone `b0b0079990e13eb20a17a2d3c41403b8`、Free，DNS0/Worker Routes0/Worker项目0；规则表空，SSL/TLS Full。原Gateway/Execution部署及完整resources再读未变化。下文未知ID/8小时或48小时提议属于早期记录，当前以[最新只读证据](evidence/riffoid-two-account-browser-readback-20261008.json)及[明确不可执行的安全差异草案](riffoid-two-account-security-overlay.example.jsonc)为准。尚无切流成功时刻，因此没有计算或开始LEGACY_RECOVERY_UNTIL；静态指南/本机导出继续保留。

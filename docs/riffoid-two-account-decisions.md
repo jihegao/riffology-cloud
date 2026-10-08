@@ -1,5 +1,9 @@
 # 双账号迁移最小决策与具体差异
 
+**签名资源回退补充**：新增EntryReplayGuard class migration后禁止跨迁移直接rollback旧Gateway version；上线前须准备保留class/namespace的前向单域回退包，见[当前规程](riffoid-entry-signature.md#轮换撤回与回退)。旧版本ID是资源基线，不能冒充这一新增资源后的可执行回退证明。
+
+**后续06:44:24 UTC授权更新**：用户批准入口专属签名/原子防重放实现与离线测试、推送；生产密钥创建配置仍另确认。当前已增加默认disabled的signed-entry-v1代码；WAF-only同zone反例由新script持钥验证处理，但原生IP入口WAF/Transform平台证明仍缺。精确协议/容量/生产Secret与新SQLite namespace申请见[签名配置与回退](riffoid-entry-signature.md)。下列“签名尚未实现”属于先前配置收敛基线，不能当成当前代码状态；真实生产key/pin/resource/安全设置仍未创建，缺现Google/旧zone字段不阻塞本地实现。
+
 2026-10-08：候选已获推送及推进部署授权。用户在05:32:17 UTC明确允许触发 Safari Automation 提示，并批准切换后48小时服务端只读恢复；不再重复询问这两项。本文件列出尚需事实核验和行动时批准的具体安全差异。尚无 Cloudflare/Google/安全配置变更或真实双账号验收。新应用默认关闭；不部署 shared-limited 的共享限流 DoS 版本。最新事实/精确缺口见[配置审阅包](riffoid-two-account-configuration-package.md)与[本轮只读证据](evidence/riffoid-two-account-configuration-readback-20261008.json)；05:45的Safari记录保留历史。
 
 ## 只读浏览器访问事实和最小用户动作

@@ -9,5 +9,5 @@
   "preview_urls": false,
   // No account_id, routes, secrets, storage or service bindings.
   // Empty origins deliberately fail closed until approved values are resolved.
-  "vars": {"APP_ORIGIN": "", "APP_TRANSPORT_ORIGIN": ""}
+  "vars": {"APP_ORIGIN": "", "APP_TRANSPORT_ORIGIN": "", "TWO_ACCOUNT_AUTH_MODE": "disabled"}
 }

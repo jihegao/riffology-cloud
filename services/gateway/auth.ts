@@ -13,6 +13,7 @@ export interface AuthConfiguration {
   googleOAuthEgress?: GoogleOAuthEgressConfiguration;
   readOnlySession?: boolean;
   sharedTransportRateLimit?: boolean;
+  verifiedEntryIp?: boolean;
 }
 /** No email/password endpoint, public signup bypass, cookie session cache or account linking. */
 export function authOptions(config: AuthConfiguration) {
@@ -37,7 +38,7 @@ export function authOptions(config: AuthConfiguration) {
     session:{modelName:'auth_session',expiresIn:60*60*8,updateAge:60*15,cookieCache:{enabled:false},...(config.readOnlySession?{deferSessionRefresh:true}:{}),
       additionalFields:{platformVersion:{type:'number' as const,required:true,defaultValue:1,input:false}}},
     rateLimit:{enabled:true,storage:'database' as const,modelName:'auth_rate_limit',window:60,max:30},
-    advanced:{cookiePrefix:'riffology',useSecureCookies:url.protocol==='https:',...(config.sharedTransportRateLimit?{ipAddress:{ipAddressHeaders:[]}}:{})},
+    advanced:{cookiePrefix:'riffology',useSecureCookies:url.protocol==='https:',...(config.verifiedEntryIp?{ipAddress:{ipAddressHeaders:['x-riffoid-client-ip']}}:config.sharedTransportRateLimit?{ipAddress:{ipAddressHeaders:[]}}:{})},
     // Deliberately omit raw error logging; identity tokens/provider payloads are private.
     logger:{disabled:true},
     databaseHooks:{

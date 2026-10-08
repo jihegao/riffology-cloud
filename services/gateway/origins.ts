@@ -8,7 +8,7 @@ export interface AppOriginConfiguration {
   LEGACY_RECOVERY_UNTIL?:string;
   BROWSER_PREVIEW_EXECUTION_ORIGIN?:string;
 }
-export type AppTopology={canonical:string;transport:string;recovery?:string;recoveryUntil?:number;proxied:boolean;authentication?:'disabled'|'shared-limited'};
+export type AppTopology={canonical:string;transport:string;recovery?:string;recoveryUntil?:number;proxied:boolean;authentication?:'disabled'|'shared-limited'|'signed-entry-v1'};
 
 /** Configured origins only. Host and forwarding headers never configure routing. */
 export function publicHttpsOrigin(value:string):URL {
@@ -25,7 +25,7 @@ export function appTopology(env:AppOriginConfiguration):AppTopology {
   const canonical=publicHttpsOrigin(env.APP_ORIGIN),transport=publicHttpsOrigin(env.APP_TRANSPORT_ORIGIN);
   if(canonical.origin===transport.origin)throw Error('transport-origin-overlap');
   const authentication=env.TWO_ACCOUNT_AUTH_MODE??'disabled';
-  if(authentication!=='disabled'&&authentication!=='shared-limited')throw Error('invalid-two-account-auth-mode');
+  if(authentication!=='disabled'&&authentication!=='shared-limited'&&authentication!=='signed-entry-v1')throw Error('invalid-two-account-auth-mode');
   const result:AppTopology={authentication,canonical:canonical.origin,transport:transport.origin,proxied:true};
   if(env.LEGACY_RECOVERY_ORIGIN!==undefined||env.LEGACY_RECOVERY_UNTIL!==undefined){
     if(!env.LEGACY_RECOVERY_ORIGIN||!env.LEGACY_RECOVERY_UNTIL)throw Error('incomplete-recovery-topology');
