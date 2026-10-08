@@ -1,6 +1,6 @@
-# riffoid 双账号入口准备 — 2026-10-07
+# riffoid 双账号入口准备 — 更新至 2026-10-08
 
-**本交付为方案与离线验证，尚不具备上线条件。** 公开 HTTPS Worker 转发可作为传输方式，但透明代理不能接入现有单 APP_ORIGIN 应用。本 PR 没有改 Gateway、BetterAuth、Execution 或线上配置；没有可部署的入口 Worker / Wrangler 配置。上线接线、真实双账号网络和认证验收待后续批准。
+**2026-10-08 已完成本地入口/Gateway 接线与离线验证，尚不具备线上切换条件。** 新代码以显式配置进入双账号模式，但新应用默认返回 503；认证可用性策略未批准前保持关闭。无新配置时保持单域行为。入口模板的 origin 留空且没有账号或域名绑定。线上资源、认证和配置变更，以及真实双账号网络与 Google 登录验收，均待后续独立批准。2026-10-07 的透明代理阻碍及证据保留为历史基线。
 
 用户已确认域名在新 Cloudflare 账号 `jihe.gao@theidsa.org` 购入；应用、Workers、D1、R2、DO 留在原账号。14:48 的“好”授权双账号入口离线方案与测试，不授权线上资源/认证变更。本任务未登录新账号、查看 Safari、安装、部署、绑定域名、改 DNS/OAuth/CSP、改权限/凭据、付费运行或合并。Cloudflare for SaaS 仅为另行评估的备选，未启用。
 
@@ -12,7 +12,7 @@
 
 [Cloudflare Fetch 官方文档](https://developers.cloudflare.com/workers/runtime-apis/fetch/) 明确 Worker 间可以使用 public fetch；[`global_fetch_strictly_public`](https://developers.cloudflare.com/workers/configuration/compatibility-flags/#global-fetch-strictly-public) 让请求走公开入口及其安全规则。计划在新账号轻量 Worker 显式开启该 flag，固定请求旧账号的已核验 HTTPS 地址；不用跨账号 CNAME，不假定跨账号 service binding，不依靠 resolveOverride/Host 伪装。真实 Cloudflare 网络、TLS、WAF/Access、循环/路由及性能没有通过离线 fixture 验收。
 
-当前源码：
+2026-10-07 未接线基线（新配置缺省模式仍保留此行为）：
 
 - [Gateway index](../services/gateway/index.ts) 先以 `request.url.origin === env.APP_ORIGIN` 选择 App，其他来源进入仍关闭的严格 Preview 分支。
 - [Gateway app](../services/gateway/app.ts) 再检查 URL origin，写请求通过 [requireOrigin](../services/gateway/http.ts) 严格检查浏览器 Origin 和 cross-site 元数据；SSE 也有来源限制。
@@ -23,7 +23,7 @@
 
 旧域同时承担完整 App 和新域 transport 时，GET 页面、OAuth callback 与无 Origin 请求无法靠浏览器 Origin 区分“旧恢复入口”和“新主域传输”。这是接线阻碍：不能凭一个可伪造的 `x-forwarded-host` 或 `x-canonical-origin` 选择认证模式。当前透明转发 probe 仅用于证明阻碍，不能上线。
 
-## 可审阅的后续接线设计
+## 本地接线与后续配置设计
 
 建议使用**原账号内一个明确、独立的公开 HTTPS transport hostname**，仍指向原 Gateway Worker 和原 bindings，不新建应用数据资源。精确 hostname 与存在性待回读；不凭空填写 workers.dev 地址，也不自行启用原配置中关闭的 workers.dev。新账号 App Custom Domain 绑定轻量入口 Worker，DNS 不跨账号 CNAME。是否新增该旧账号 hostname/route 属后续明确批准项。
 
@@ -33,11 +33,11 @@
 | 公网传输地址 | 拟新增 APP_TRANSPORT_ORIGIN = 精确已回读的原账号 HTTPS origin | 新 Worker 的单一 fetch 目标；Gateway 精确 URL 路由 |
 | 旧恢复来源 | LEGACY_RECOVERY_ORIGIN = `https://m1.riff-demo.gaojihe.cn` | 独立只读恢复页面/路径/旧 session reader |
 
-这些是**拟议字段，并未接入源码**。Gateway index/app 的 URL 路由需显式识别 transport 和恢复来源；各分支的 `requireOrigin`、SSE、Preview、asset request 等必须同时审阅。transport URL 保留实际值，不通过合成一个“来自新域的 Request”绕过既有 URL 校验；浏览器 Origin/Referer/Fetch Metadata 保留实际来源，不反射或生成。鉴权仍使用原 session 与 Catalog，`services.origin` 的路由/安全含义必须拆开；不能只改一处比较。
+这些字段已接入本地源码，未配置到线上。Gateway index/app 显式识别 transport 和恢复来源；各分支的 `requireOrigin`、SSE、Preview、asset request 等仍须在候选部署包中独立审阅。transport URL 保留实际值，不通过合成一个“来自新域的 Request”绕过既有 URL 校验；浏览器 Origin/Referer/Fetch Metadata 保留实际来源，不反射或生成。鉴权仍使用原 session 与 Catalog，`services.origin` 的路由/安全含义必须拆开；不能只改一处比较。
 
 公开 transport 本身不是代理身份认证：直接访问也不能得到特权，不靠入口 Worker 的过滤或“请求经过代理”授予用户权限。Backend 必须独立执行同一认证、邀请/归档/项目权限、CSRF、并发、kill switch、限时与释放门禁。若实际部署必须保证“只有入口 Worker 可访问”，或要求可信转发 IP，需另行选定经过认证的通道与防重放设计；本准备没有新增共享 secret/token/mTLS/Access 凭据，不能声称已具备这个保证。
 
-新入口 Worker 后续应只接受精确 App HTTPS origin；官网/www、相似域、HTTP、非预期端口及 Host 不一致拒绝。固定配置构造上游 URL，保持原 pathname/query，绝不将 client path 作为新 URL 的基址。移除客户端提供的 forwarded/身份/内部 capability headers，按审阅过的请求头清单转发 Cookie、Origin、Content-Type、idempotency-key、Last-Event-ID 等。API 仍为相对 /api，不增加跨域 CORS。
+新入口 Worker 只接受精确 App HTTPS origin；官网/www、相似域、HTTP、非预期端口及 Host 不一致拒绝。固定配置构造上游 URL，保持原 pathname/query，绝不将 client path 作为新 URL 的基址。移除客户端提供的 forwarded/身份/内部 capability headers，按审阅过的请求头清单转发 Cookie、Origin、Content-Type、idempotency-key、Last-Event-ID 等。API 仍为相对 /api，不增加跨域 CORS。
 
 全程 `redirect: manual`，不自动跟随跨域重定向，不重试 POST/Turn/Run/provider/tool，不改变请求 key 或 body。失败保留原身份/原 key，通过既有只读 receipt 核对；未知执行隔离、暂停，不能换域/项目后重发。按原 Gateway 大小和时限约束处理输入，不把代理当成新的执行容器或资金准入点。
 
@@ -47,11 +47,11 @@
 
 规范 auth 实例固定新 APP_ORIGIN，trustedOrigins 仅新域；不打开 trustedProxyHeaders、disableCSRFCheck、disableOriginCheck 或跨子域 Cookie。原 BETTER_AUTH_SECRET、Google client/secret、OAuth egress、cookiePrefix `riffology` 与数据库全部留原账号；轻量入口不复制这些秘密。
 
-真实库的离线 sign-in/social 在 transport URL 下、固定新 baseURL 配置中生成新域 callback、state/PKCE 和 Secure host-only Cookie；恶意 forwarded-host 不改变 callback。**这是库级可行性，不是现 Gateway 已接通**：Workerd 仍拒绝该组合。Google token exchange、真实 code/state、跨账号回程未验收。
+真实库的离线 sign-in/social 在 transport URL 下、固定新 baseURL 配置中生成新域 callback、state/PKCE 和 Secure host-only Cookie；恶意 forwarded-host 不改变 callback。**这是 2026-10-07 方案阶段的库级证据**：当时未拆 transport/canonical 的 Gateway 在 Workerd 中拒绝该组合。2026-10-08 本地接线已通过双 Workerd 联合 fixture；真实 Google token exchange、code/state 与跨账号回程仍未验收。
 
 - Set-Cookie 每条原样独立转发；不合并，不改 Domain/SameSite/Secure/HttpOnly/Path。现有 host-only Cookie 经入口响应由浏览器归属 app.riffoid.com；原旧域 Cookie 不会自动迁移。新域重新登录同一 Google 身份，真实验收再比对原 auth subject/Catalog user/tenant/project/Run，不能仅因登录成功而宣称身份保留。
 - Location 必须由 canonical auth/路由正确生成；若发现旧域 Location，修正源逻辑并重测，不能盲目字符串替换。保留 Google callback query/state 到固定传输端点供服务器验证；禁止把旧域 callback 的 code/state 用 302/307/308 搬到新域。未完成的旧登录先结束或过期。
-- 当前库 sign-in/social 返回 JSON 内的 Google授权 URL；离线 response probe 只允许相对/规范 App Location，**不是完整 OAuth proxy**。若正式接线出现 provider Location，须逐路径/目的地址审阅，不追加任意外域 redirect。
+- 当前库 sign-in/social 返回 JSON 内的 Google授权 URL；2026-10-07 的离线 response probe 只允许相对/规范 App Location。2026-10-08 入口实现另逐路径允许 sign-in 的精确 Google authorization URL 与精确 canonical callback；没有追加任意外域 redirect。
 - 旧恢复模式仅开放经原 session/Catalog 权限检查的明确 GET 路径（session、workspace snapshot、原 receipt、必要状态），逐条确认读不触发 reconciliation/执行或危险数据库副作用。禁止开放所有 GET；get-session 的默认 session 刷新也要按只读承诺明确处理和验证。
 - 旧入口不加载现有可自动恢复/发送的完整 App 启动流程，不 sign-in/sign-out/accept invitation、建项目、改参数、Turn/Run 或升级 WS。安全导航仅固定静态路径到新域临时 302；query 私密文本不随导航搬迁。遗留 API 返回明确迁移提示/拒绝写，不使用会重发 body 的 307/308。
 - 未提交草稿手工保存；不迁移 sessionStorage/localStorage 的 pending intent/请求 key，不把私有内容放入 URL。服务端已保存内容保持原身份恢复；新提交由用户明确新动作发起。
@@ -73,7 +73,7 @@ Browser Execution 保持原独立 workers.dev origin、Worker、固定 frame/脚
 | 新账号 | 官网/www | 官网独立静态内容/隐私条款/TLS、固定 www → 官网 redirect 单列；本次未制作或发布，不承载 API |
 | 原账号 | 原 Gateway 与所有数据/执行资源 | 模板候选 account ID `8b0d70250211aa10d89e20605a1c7e5e`、Worker `riffology-m1-gateway-staging` **不是本次 live 证明**；核验原 active script/version、完整 settings/assets/bindings 和新旧精确 route |
 | 原账号 | 拟独立 public transport hostname | 精确 URL/zone/route/TLS 待核验和批准；仍指向原 Gateway，不跨账号 CNAME；现有模板 workers_dev=false，不自行开启 |
-| 原账号 | canonical/恢复分流及原 auth | 从实时完整配置做 overlay；新 APP_ORIGIN、拟议 APP_TRANSPORT_ORIGIN、旧恢复来源/路径/期限。原秘钥、OAuth egress、邀请/账本/门禁保留 |
+| 原账号 | canonical/恢复分流及原 auth | 从实时完整配置做 overlay；新 APP_ORIGIN、拟议 APP_TRANSPORT_ORIGIN、旧恢复来源/路径/期限。原秘钥、OAuth egress、邀请/账本/门禁保留；新增 TWO_ACCOUNT_AUTH_MODE 默认 disabled，shared-limited 的共享限流风险需单独决策 |
 | 原账号 | Browser Execution | 精确 execution URL/Worker/version/hash 待回读；只调整批准的 APP_ORIGIN/ancestor，固定资产、独立站点与执行开关保留 |
 | 原 Google OAuth client | 原身份/provider/scopes | 增补精确新 callback，按实际需要登记 JS origin/authorized domain/consent links；不换 client、scopes/secret。旧 callback 有界结束后撤除另批准 |
 | 两账号 | 安全/可观测性 | 不削弱原 WAF/Access；若公共 Worker 请求被阻挡，记录阻碍，另审确切策略，不变换 UA/IP/headers 绕过。rate-limit/IP来源、日志脱敏、SSE缓存/限时需验证 |
@@ -83,7 +83,7 @@ Browser Execution 保持原独立 workers.dev origin、Worker、固定 frame/脚
 ## 后续批准点与验收
 
 1. 先只读核验两账号/zone/Worker/route/TLS/安全策略、原完整 deployment/资产/镜像/namespace/策略 pin/12月31期限/账本摘要，以及 Google callback 清单。使用已有授权访问；本次不登录新账号或新建凭据。
-2. 接线实现经过独立 review 和离线联合测试后，再提交精确的入口 Worker/flag、原 public transport route、新旧 URL 分支、canonical/auth、Execution/CSP 的配置 diff 与完整 live overlay。**当前缺上述生产接线，不能请求立即切换。**
+2. 接线实现经过独立 review 和离线联合测试后，先决定认证可用性策略：保持关闭、明确限定的受控共享限流，或经过批准的新认证传输/可信 IP 方案。再提交精确的入口 Worker/flag、原 public transport route、新旧 URL 分支、TWO_ACCOUNT_AUTH_MODE、canonical/auth、Execution/CSP 的配置 diff 与完整 live overlay。**本地接线已有；实际账号/transport/DNS/OAuth/Execution 的完整批准配置包仍缺，不能请求立即切换。**
 3. 单独批准该具体 Cloudflare 资源/DNS/TLS/路由/安全配置及现 Google OAuth callback/domain/consent diff。若需权限/凭据变化，给出方案和风险另批准；本准备不包含这种授权。
 4. 冻结切换与恢复窗口、旧域只读期限、原 active versions/hashes/traffic 以及回退动作，再批准真实双账号网络/指定身份认证验收。任何付费 Turn/Run 另明确身份/原项目/请求/费用与时限，不由入口测试扩权。
 
@@ -98,13 +98,13 @@ Browser Execution 保持原独立 workers.dev origin、Worker、固定 frame/脚
 
 ## 按整组回退
 
-冻结 A（现旧域可恢复基线）、B（两账号候选）、C（新域完成）的准确资源/版本/配置组合：新入口 Worker/version/flag/上游、两边routes/DNS/TLS、原Gateway代码/hash/完整vars/assets/bindings、Execution版本/CSP/ancestor、Google callbacks 与安全规则。不要混合不同canonical的版本分流。
+冻结 A（现旧域可恢复基线）、B（两账号候选）、C（新域完成）的准确资源/版本/配置组合：新入口 Worker/version/flag/上游、两边routes/DNS/TLS、原Gateway代码/hash/完整vars/assets/bindings、Execution版本/CSP/ancestor、Google callbacks 与安全规则。不要混合不同canonical的版本分流。恢复单域代码/配置时，将 APP_TRANSPORT_ORIGIN、TWO_ACCOUNT_AUTH_MODE、LEGACY_RECOVERY_ORIGIN、LEGACY_RECOVERY_UNTIL 作为同组移除，并恢复原 APP_ORIGIN；遗留半组配置会失败关闭。
 
 异常时停止新准入并保留原请求观察/释放；按已批准组合恢复 Gateway/Execution、入口路由和 Google callbacks。恢复原旧域可登录方案与12月31策略时，已保存新域会话不跨域复制，用户重新登录原同一身份；未确认请求保持原key核对，不自动提交。入口可先返回无执行的维护响应，避免流量落到不匹配组合。新入口或transport的解绑/删除只在回退明确授权和观察完成后进行。
 
 数据、meter-only、原容量actor/pin、12月31 reviewAt、历史计量/预留/审计保持现值；不能回到仅10月20配置的旧Worker。Worker rollback 不恢复外部数据库/资源状态，[Cloudflare rollback限制](https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/) 应在冻结版本前核对。本准备未实施任何回退或暂停线上容量。
 
-## 本次可复查证据
+## 2026-10-07 方案阶段证据
 
 - [离线 probe](../scripts/m1/riffoid-public-hop.ts)：无 fetch、无 Worker export、无配置文件、生产模块不导入；固定旧 HTTPS transport、保留真实 Origin，故意证明当前拒绝。
 - [Node 边界测试](../tests/m1/riffoid-two-account.test.ts)：12项；含真实 BetterAuth 1.7.3、Gateway、Execution拒绝、Cookie/Location/SSE、CSRF/Host/upgrade。
@@ -119,4 +119,29 @@ npm run typecheck
 git diff --check
 ```
 
-本机Workerd需临时loopback端口，沙箱首次EPERM后仅本地测试获准。初次fixture缺auth schema时session读503，已初始化原schema后复验通过；Node初次邀请hash fixture不合schema，已修正。工具连接曾临时中断，恢复后继续完成验证；没有把失败尝试算通过。GitHub SSH/HTTPS拉取无法认证，采用连接器读取PR元数据并核对已存在本地tree，发布草稿使用GitHub连接器，不读取凭据。Delivery Project网页读取失败，未改状态；PR记录离线范围及未覆盖项。真实两账号资源ID、公网路由、生产接线、Google身份/Cookie浏览器端、流/隔离与实际上线验收仍是明确缺口。
+本机Workerd需临时loopback端口，沙箱首次EPERM后仅本地测试获准。初次fixture缺auth schema时session读503，已初始化原schema后复验通过；Node初次邀请hash fixture不合schema，已修正。工具连接曾临时中断，恢复后继续完成验证；没有把失败尝试算通过。GitHub SSH/HTTPS拉取无法认证，采用连接器读取PR元数据并核对已存在本地tree，发布草稿使用GitHub连接器，不读取凭据。Delivery Project网页读取失败，未改状态；PR记录离线范围及未覆盖项。上述缺口是 2026-10-07 阶段结论。2026-10-08 已补本地接线、合成 Google/全新浏览器 Cookie 和流边界测试；真实两账号资源 ID、公网路由、真实 Google 身份及线上流/隔离验收仍缺。
+
+## 2026-10-08 本地实现与证据边界
+
+入口实现为 [services/entry/index.ts](../services/entry/index.ts)，配置边界为 [origins.ts](../services/gateway/origins.ts)。仅从固定 APP_TRANSPORT_ORIGIN 构造公网 HTTPS 请求，保持真实 transport URL 与浏览器 Origin，单次 fetch、manual redirect、原 body/key/cursor、无缓冲 SSE；WebSocket/Upgrade 拒绝。出口不携带转发身份或内部 capability。Cookie 要求原 `__Secure-riffology.*`、host-only、Secure/HttpOnly/SameSite=Lax/Path=/；Location 只允许新 canonical，或 sign-in 响应的精确 Google authorization URL/精确 callback。没有 D1/R2/DO/容器/service binding 或认证 secret。
+
+Gateway 把 URL 路由 origin 与 canonical 安全 origin 分开。代理模式剥离转发/IP/内部能力声明；canonical 直达旧 Gateway 拒绝。公开 transport 直接请求仍需原身份与 Catalog 权限，不能宣称入口专属。BetterAuth 保留原秘钥、表、cookiePrefix、Google主体映射、邀请/撤回门禁、固定 trustedOrigins 和 CSRF。代理模式不信任 IP 头，使用原数据库限流的共享 per-path 桶；原 60秒/30 次配置及 BetterAuth 更严格 endpoint 规则保留。本地 1.7.3 的 `/sign-in*`、`/sign-up*` 等规则为 **10秒/3次**。匿名直接 transport 请求可耗尽共享桶，阻断其他人的登录；这是未解决的公开可用性阻碍，不能靠扩大限额、关闭限流或信任任意 forwarded IP 通过验收。
+
+`TWO_ACCOUNT_AUTH_MODE` 在双账号模式默认 `disabled`，新应用/transport 全部返回 `503 two_account_auth_disabled`，在认证、存储及外网调用之前拒绝；旧域恢复独立保留。只接受 `disabled` 与 `shared-limited`，其他值失败关闭。离线联合测试显式选用 `shared-limited`，仅说明原保护在共享模式仍生效。后续可选择继续关闭，或明确接受受控 Beta 的共享桶风险并限制范围；若要可信客户端 IP/仅入口可达，需要独立审阅的认证通道、防重放和运维方案，所需新凭据/权限另批准。本次未新增此信任机制，也未提供公开上线保证。
+
+[legacyRecovery](../services/gateway/recovery.ts) 是独立只读页面，没有完整 App 启动、local/sessionStorage、自动请求、草稿复制、SSE、Preview 或写入。用户显式填写原 workspace（或原 session/key）后才 GET 原记录。仅允许无 query 的 GET `/api/me`、`/api/auth/get-session`、`/api/workspaces/:id`、`/api/workspaces/:id/sessions/:sid/turns/receipt`，前两者返回安全的身份/session摘要；认证/授权仍来自原会话与 Catalog。POST、旧 callback、其他读路由、Upgrade 均拒绝；期限到达合法读请求返回410，不携带 code/state/draft 跨域跳转。
+
+只读 auth 使用 `deferSessionRefresh` 与服务端 `disableRefresh`，绕开 auth handler 的数据库 rate-limit 写入；离线验证有效旧会话不刷新，过期会话不删除。新 `recoveryTurnSnapshot` RPC 只读原 journal 并保留原 actor/scope/name，不调用原 snapshot 的 `assertQuiet`、budgetStatus、运行协调或 admission。首版 hot fixture 仅证明已启动实例的恢复读取不写；后续审查发现原 constructor 会持久化 journal 迁移、创建 Preview discovery/index 并设置 alarm。现 constructor 仅在内存读取/校验，原迁移事务延后到正常应用 RPC/handler/alarm 的一次性准备边界；原迁移与 discovery 算法未改。新增真实 Workerd 重启测试分别从缺 discovery index 的 v7 与历史 v1 journal 恢复：constructor 加恢复 snapshot/receipt 的 SQLite `total_changes()` 为 **0**，KV/journal/alarm 原样保留、outbound 为0。随后正常 receipt RPC 确认迁移到 v7、创建原 discovery/index 并保留正常 alarm 维护。已有到期 alarm 属于正常执行路径，本改动不取消既有任务，不能把恢复读取零写扩展为全局无后台活动。
+
+恢复专用 `recoveryTurnReceipt` 保留原 scope/session/actor/authVersion/key 检查；需要 Beta/G5 外部权威 binding 核验的旧回执返回 `503 recovery_authority_unprepared`，因为相关权威 DO 冷启动会初始化持久化表，尚没有验证为纯读的接线。不得用本地 journal 取代权威检查；普通应用 `turnReceipt` 仍按原 Beta/G5 binding 核验。旧会话身份与授权 workspace snapshot 仍可读取；Beta/G5 精确旧回执恢复暂不可用是明确限制。
+
+[入口模板](../infra/wrangler.riffoid-entry.template.jsonc) 与 [原账号 overlay 示例](riffoid-two-account-gateway-overlay.example.jsonc) 仅供审阅。实际两账号 ID、zone ID、transport hostname/route、恢复截止时间、完整 Gateway/Execution 版本/vars/bindings/assets 与 Google console readback 均待批准后核验；不得直接用空模板发布。原线上 Wrangler 配置、schema/migrations、namespace/class/actor、容量策略与 December31 trial/October20 M1 截止没有改动。Execution 代码及资产没有改动，后续只在批准完整包内调整其 APP_ORIGIN/ancestor，仍保留原独立站点。
+
+首版本地证据见 [2026-10-08 JSON](evidence/riffoid-two-account-local-20261008.json)，其中 constructor unchanged 的陈述只适用于首版。后续修复以 [冷启动/认证门禁证据](evidence/riffoid-two-account-fixes-20261008.json) 为准。双 Worker 测试运行两个独立本机 Workerd；global fetch 仍构造固定公网 HTTPS，测试 harness 将其送到另一本机实例，不使用生产 service binding。Miniflare HTTP bridge 会带入 loopback Host，测试专用 adapter 恢复为 URL Host；生产无此 adapter，Host负向边界由 Node 测试覆盖。Google token/JWKS 使用本地签名 fixture，不是真实 Google；全新离线 Chromium 仅使用已有缓存，无现有浏览器 profile/Safari，所有请求拦截。最终离线测试没有未拦截的外部请求；没有部署、付费执行或完整产品验收。
+
+下一次批准应针对完整可回退配置包分别覆盖：①只读核验两账号/zone/完整原绑定和账本；②创建/绑定新账号无状态入口及旧账号独立公网 transport；③原 Gateway、Google 精确 callback 与原 Execution/CSP 联动变更和明确恢复期限；④指定真实受邀身份的新域登录/旧域恢复/权限负向/SSE/Preview验收；⑤若需 Turn/Run 付费验收，再单独明确 identity/project/provider/时限/费用与释放观察。远端 push/PR 更新也需本轮父线程另行明确授权；当前只有本地 commit。
+
+首版本地回归：M1 **317/317**、M2 **869/869**，补充 **5个文件的所选 M3 10/10**，均零失败、零跳过。三组共 **1196 次测试执行**，文件不重复但覆盖有重叠，不能称为1196个独立验收场景或完整 M3。首版新14项已包含在M1，单独定向11项也与M1重复，不累计。初次 Chrome/资产前置失败与修复过程记录在首版 JSON。后续冷启动与门禁修复的完整回归结果记录于修复证据；没有远端 CI 或真实双账号验收。
+
+
+本轮修复最终回归：M1 **321/321**、M2 **869/869**，均零失败/跳过；完整 `test:m3` 命令四组分别为 926通过/12跳过、20通过、13通过、92通过，合计 **1051通过、12跳过、0失败**（1063项登记）。跳过项需要真实 compiler/Mesa/Docker运行产物，本次未启用这些验收，不计为通过。首轮 M3 的 TLS fixture 因系统 LibreSSL 不支持 `pkey -check` 失败；用本机已安装 OpenSSL 3.6.4 复验15项通过，再重跑完整 M3 成功。最终 typecheck、RPC AST 核对、diff 与本地文档链接/JSON 校验通过。4项新增测试（模式默认关闭、实际Gateway拒绝、v7/v1真实冷启动）已包含在321中，定向复验不累计。没有运行远端 CI、全仓 M0/其余研究套件或真实双账号验收。

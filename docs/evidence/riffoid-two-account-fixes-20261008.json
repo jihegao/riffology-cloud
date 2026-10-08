@@ -1,0 +1,240 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-08",
+  "scope": "local-blocker-fixes-and-offline-verification-only",
+  "productionReady": false,
+  "source": {
+    "repository": "jihegao/riffology-cloud",
+    "baseLocalCommit": "ee645935737dad65a4a38bebb2a2533d325d0ee2",
+    "localBranch": "codex/riffoid-two-account-local-20261008",
+    "preparationPR": 173,
+    "remoteUpdatesPerformed": false,
+    "brandPR": 170,
+    "brandChangesRepeated": false
+  },
+  "supersedes": {
+    "file": "riffoid-two-account-local-20261008.json",
+    "statements": [
+      "Constructor compatibility transaction unchanged and excluded from zero-write assertion was true only for the first implementation.",
+      "Cold startup limitation is addressed for the tested Workspace recovery paths; normal maintenance is now deferred.",
+      "Shared auth protection is retained, but the new application now defaults closed pending an explicit availability decision."
+    ],
+    "historicalEvidencePreserved": true
+  },
+  "authorization": {
+    "localFixesTestsCommit": true,
+    "pushPRUpdatesComments": false,
+    "deploymentOnlineConfiguration": false,
+    "newCredentialsPermissions": false,
+    "installationPaidExecutionMerge": false
+  },
+  "changes": {
+    "coldRecovery": "Constructor only validates/normalizes the journal in memory; recovery snapshot and receipt exclude persistent startup maintenance.",
+    "normalMaintenance": "The original startup transaction is memoized at all 98 normal public RPC/handler/alarm boundaries. No journal migration or Preview discovery algorithm changes.",
+    "guardedReceipts": "Recovery receipt returns unavailable before cold Beta/G5 binding-authority RPCs; original normal receipt retains authoritative binding verification.",
+    "authentication": "TWO_ACCOUNT_AUTH_MODE defaults disabled. Exact accepted values disabled/shared-limited; invalid values and incomplete rollback configuration fail closed.",
+    "defaultClosedResponse": "503 two_account_auth_disabled before auth/storage/outbound work on the actual Gateway transport routes.",
+    "limits": "Original database protection remains: 30/60s basic configuration and installed BetterAuth 1.7.3 sign-in/sign-up default 3/10s rule. No forwarded-IP trust, limit increase or tracking disable."
+  },
+  "verification": [
+    {
+      "command": "M1_BROWSER_CHANNEL=chromium npm run test:m1",
+      "exitCode": 0,
+      "groups": [
+        {
+          "tests": 321,
+          "pass": 321,
+          "fail": 0,
+          "skipped": 0
+        }
+      ],
+      "totals": {
+        "tests": 321,
+        "pass": 321,
+        "fail": 0,
+        "skipped": 0
+      },
+      "localLog": ".local/fix-m1-final.log",
+      "logSha256": "290af297f88e8f0503bcb705138cded43f34e87f44e9b01c5184db34581097cf"
+    },
+    {
+      "command": "npm run test:m2",
+      "exitCode": 0,
+      "groups": [
+        {
+          "tests": 869,
+          "pass": 869,
+          "fail": 0,
+          "skipped": 0
+        }
+      ],
+      "totals": {
+        "tests": 869,
+        "pass": 869,
+        "fail": 0,
+        "skipped": 0
+      },
+      "localLog": ".local/fix-m2.log",
+      "logSha256": "561644bb65cdac76a95b2b2ab9d426f7ea14de2314f81a47e436488279cf2fc7"
+    },
+    {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH M1_BROWSER_CHANNEL=chromium npm run test:m3",
+      "exitCode": 0,
+      "groups": [
+        {
+          "tests": 938,
+          "pass": 926,
+          "fail": 0,
+          "skipped": 12
+        },
+        {
+          "tests": 20,
+          "pass": 20,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "tests": 13,
+          "pass": 13,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "tests": 92,
+          "pass": 92,
+          "fail": 0,
+          "skipped": 0
+        }
+      ],
+      "totals": {
+        "tests": 1063,
+        "pass": 1051,
+        "fail": 0,
+        "skipped": 12
+      },
+      "localLog": ".local/fix-m3-openssl.log",
+      "logSha256": "4a9ddddff6211e3b298b2c0b00017c71865636245712ee403cacd28117050044"
+    }
+  ],
+  "additionalChecks": [
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "localLog": ".local/fix-typecheck-final.log",
+      "logSha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f"
+    },
+    {
+      "check": "AST review of public Workspace methods",
+      "normalBoundaries": 98,
+      "unchangedNormalBodiesAfterRemovingPreparation": 97,
+      "receiptRefactorReviewedSeparately": true,
+      "recoveryBoundariesExcludePreparation": true,
+      "localLog": ".local/fix-rpc-review.log",
+      "logSha256": "d2d6ae95a3883e9cf5ae7fa1c7c24931434eef966707d387295bfb1692a723cf"
+    },
+    {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH node --test tests/m3/vertical-runtime-preflight.test.mjs",
+      "exitCode": 0,
+      "tests": 15,
+      "pass": 15,
+      "fail": 0,
+      "skipped": 0,
+      "localLog": ".local/fix-m3-tls.log",
+      "logSha256": "64acd281855216e610560e036bfbb984f8872a6757fbfa6f6eec8596991f2331"
+    }
+  ],
+  "coldProof": {
+    "testFile": "tests/m1/riffoid-recovery-cold-workerd.test.mjs",
+    "fixtures": [
+      "current schemaVersion 7 with missing discovery index",
+      "valid legacy schemaVersion 1 with missing discovery index and preserved future alarm"
+    ],
+    "restart": "Dispose and recreate Miniflare with the same resourcePersistencePath; first production request is recovery snapshot.",
+    "assertions": [
+      "SQLite total_changes() sees seed writes before restart and equals zero for cold constructor plus recovery snapshot/receipt and permission denials after restart.",
+      "Persisted KV/journal/alarm serialization remains exactly equal; legacy schema remains persisted v1, current remains v7; discovery index stays absent.",
+      "Original user/session/key receipt succeeds; another user, changed authVersion or key is denied with original receipt error.",
+      "A following normal receipt persists v7 and the original discovery record/index/alarm maintenance.",
+      "Beta and G5 markers force recovery-authority-unprepared without record changes or outbound calls."
+    ],
+    "outboundRequests": 0,
+    "dueAlarmScope": "Existing due alarms are normal application events; not cancelled or claimed as zero global activity."
+  },
+  "testStatistics": {
+    "newTests": 4,
+    "includedInM1": true,
+    "targetedExecutionsNotAdded": true,
+    "previousImplementation": {
+      "M1": 317,
+      "M2": 869,
+      "selectedM3": 10,
+      "totalExecutions": 1196,
+      "independentAcceptanceScenarios": false,
+      "coverageOverlap": true,
+      "fullM3": false
+    },
+    "currentM3": {
+      "fullCommand": true,
+      "registered": 1063,
+      "pass": 1051,
+      "skipped": 12,
+      "fail": 0,
+      "skipReasons": [
+        "COMPILER_V01_PYTHON/COMPILER_V01_NATIVE_RESULT artifacts absent",
+        "M4 simulation Docker/Mesa acceptance not enabled"
+      ],
+      "skipsCountedAsPass": false
+    },
+    "notRun": [
+      "remote CI",
+      "M0 and remaining whole-repository research/issue73 checks",
+      "real two-account networking/OAuth or paid execution"
+    ]
+  },
+  "failedAttempts": [
+    {
+      "scope": "new cold fixture first attempt",
+      "reason": "Outdated Miniflare persistence option",
+      "correction": "Use repository-supported resourcePersistencePath; actual restart then passed."
+    },
+    {
+      "scope": "first full M3 attempt",
+      "tests": 938,
+      "pass": 925,
+      "fail": 1,
+      "skipped": 12,
+      "reason": "System LibreSSL 3.3.6 does not support fixture pkey -check.",
+      "correction": "Existing OpenSSL 3.6.4 selected only for local command; TLS 15/15 then complete M3 command passed.",
+      "localLog": ".local/fix-m3.log",
+      "logSha256": "885f5ca326ad06d94a1658dfc3151d6056731674d45cd20e3bd2f2c17d9ec81f"
+    }
+  ],
+  "remainingBlockers": [
+    "Public shared sign-in bucket can be exhausted by anonymous direct transport traffic. Default closed; shared-limited is a controlled opt-in with unresolved availability risk, not a public-scale fix.",
+    "Authenticated transport/trusted client-IP design requires explicit threat/operational review and separately authorized credentials or permission changes. Not implemented.",
+    "Beta/G5 exact legacy recovery receipts are unavailable until a pure authoritative read boundary is safely designed and verified; normal canonical receipt authority is preserved.",
+    "Actual account/zone IDs, transport hostname/routes/TLS/WAF, full live configuration and Google/Execution callback/ancestor diff pending approved readback.",
+    "Real two-account, Google identity, SSE/BrowserExecution and rollback acceptance pending later approval."
+  ],
+  "preservation": {
+    "originalCheckout": "clean at 068b1f295fc3ee25b46919b30bdbcf178f387b81",
+    "preparationCheckout": "clean at 327287233d16d0bcce6bc79ad1e87deae874ea4e",
+    "unchangedTrackedAreas": [
+      "all infra",
+      "services/turn/store.ts",
+      "services/browser-preview",
+      "services/catalog/migrations",
+      "services/model-budget",
+      "services/capacity",
+      "services/web",
+      "services/workspace/protocol.ts",
+      "services/gateway/auth.ts",
+      "package.json",
+      "package-lock.json"
+    ],
+    "identitiesHistoryBillingPoliciesBindings": "unchanged",
+    "trialReviewAt": "2026-12-31T15:59:59.999Z",
+    "M1Deadline": "2026-10-20"
+  },
+  "approvalAndRollback": "See docs/riffoid-two-account-entry.md for exact account roles/pending IDs, availability decision, complete version/config overlay, real acceptance and grouped rollback steps."
+}

@@ -21,9 +21,11 @@ import {createGatewaySimulationServices} from './simulation-services.ts';
 import {R2ModelContentUploadPort} from '../runtime/model-upload.ts';
 import {acceptedInvitationProjectAdmission} from '../catalog/project-admission.ts';
 // Optional until the model-content binding is configured for an environment.
-type GatewayRuntimeEnv=GatewayEnv & {PRIVATE_BETA_CAPACITY?:DurableObjectNamespace<PrivateBetaCapacity>;INVITED_RUNS_POLICY_JSON?:string;INVITED_PROJECT_ADMISSION_ENABLED?:string;PI_DEVELOPER_POLICY_JSON?:string;MANAGED_TESTING_JSON?:string;MANAGED_PROJECT_BOOTSTRAP_JSON?:string;M4_SIMULATION_ENABLED?:unknown;G5_WINDOW_GUARD?:DurableObjectNamespace<G5ControlledWindow>;G5_CONTROLLED_WINDOW_JSON?:string;G5_ADMISSION_ENABLED?:string;G4_CONTROLLED_WINDOW_JSON?:string;TENANT_MODEL_BUDGET?:G4TaskBudgetNamespace;TRUSTED_PI_CAPACITY?:DurableObjectNamespace<import('../capacity/durable.ts').TrustedPiCapacity>;MODEL_CONTENT?:R2Bucket;TOOL_ARTIFACT_STORE?:DurableObjectNamespace<import('../artifacts/durable.ts').ToolArtifactStore>;M3_SERVICE_ENABLED?:unknown;M3_PREVIEW_ENABLED?:unknown;M3_PREVIEW_WS_ENABLED?:unknown;M3_PREVIEW_ORIGIN?:string;BROWSER_PREVIEW_EXECUTION_ORIGIN?:string;M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?:string};
+type GatewayRuntimeEnv=Omit<GatewayEnv,'APP_ORIGIN'> & {APP_ORIGIN:string;APP_TRANSPORT_ORIGIN?:string;TWO_ACCOUNT_AUTH_MODE?:string;LEGACY_RECOVERY_ORIGIN?:string;LEGACY_RECOVERY_UNTIL?:string;PRIVATE_BETA_CAPACITY?:DurableObjectNamespace<PrivateBetaCapacity>;INVITED_RUNS_POLICY_JSON?:string;INVITED_PROJECT_ADMISSION_ENABLED?:string;PI_DEVELOPER_POLICY_JSON?:string;MANAGED_TESTING_JSON?:string;MANAGED_PROJECT_BOOTSTRAP_JSON?:string;M4_SIMULATION_ENABLED?:unknown;G5_WINDOW_GUARD?:DurableObjectNamespace<G5ControlledWindow>;G5_CONTROLLED_WINDOW_JSON?:string;G5_ADMISSION_ENABLED?:string;G4_CONTROLLED_WINDOW_JSON?:string;TENANT_MODEL_BUDGET?:G4TaskBudgetNamespace;TRUSTED_PI_CAPACITY?:DurableObjectNamespace<import('../capacity/durable.ts').TrustedPiCapacity>;MODEL_CONTENT?:R2Bucket;TOOL_ARTIFACT_STORE?:DurableObjectNamespace<import('../artifacts/durable.ts').ToolArtifactStore>;M3_SERVICE_ENABLED?:unknown;M3_PREVIEW_ENABLED?:unknown;M3_PREVIEW_WS_ENABLED?:unknown;M3_PREVIEW_ORIGIN?:string;BROWSER_PREVIEW_EXECUTION_ORIGIN?:string;M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?:string};
 import {R2ModelContentPort} from '../runtime/content.ts';
 import { createAuth } from './auth.ts';
+import {appTopology,requireRequestHost} from './origins.ts';
+import {legacyRecovery} from './recovery.ts';
 import { catalogDatabase } from '../catalog/database.ts';
 import { gateway } from './app.ts';
 import { HttpError, json, readJson, requireOrigin } from './http.ts';
@@ -70,8 +72,30 @@ async function dispatch(env:GatewayRuntimeEnv, item:{task:WorkspaceTask;mode:'ac
 export default {
   async fetch(request:Request,env:GatewayRuntimeEnv):Promise<Response>{
     try {
-    const url=new URL(request.url);
-    if(url.origin!==env.APP_ORIGIN)return previewHost(request,env,catalogDatabase(env.CATALOG));
+    const topology=appTopology(env),url=new URL(request.url);
+    if(topology.proxied){
+      requireRequestHost(request);
+      if(url.origin===topology.canonical)return json({error:'origin_denied'},403);
+      if(url.origin===topology.transport||url.origin===topology.recovery){
+        if(request.headers.has('upgrade'))return json({error:'upgrade_denied'},403);
+        // Public forwarding claims carry no client identity or capability.
+        const headers=new Headers(request.headers);
+        for(const name of [...headers.keys()])if(/^(?:forwarded$|x-forwarded-|cf-|x-riffology-)/i.test(name))headers.delete(name);
+        request=new Request(request,{headers});
+      }
+      if(url.origin===topology.recovery){
+        const database=catalogDatabase(env.CATALOG);
+        const auth=createAuth({database:env.CATALOG,catalog:database,origin:topology.canonical,secret:env.BETTER_AUTH_SECRET,googleClientId:env.GOOGLE_CLIENT_ID,googleClientSecret:env.GOOGLE_CLIENT_SECRET,readOnlySession:true,sharedTransportRateLimit:true});
+        const turns=createGatewayTurnServices(env);
+        return legacyRecovery(request,{canonical:topology.canonical,origin:topology.recovery,until:topology.recoveryUntil!,database,
+          identity:async req=>sessionIdentity(await auth.api.getSession({headers:req.headers,query:{disableCookieCache:true,disableRefresh:true}})),
+          snapshot:turns.recoverySnapshot,receipt:turns.recoveryReceipt});
+      }
+    }
+    if(url.origin!==topology.transport)return previewHost(request,env,catalogDatabase(env.CATALOG));
+    // Shared public transport cannot establish trustworthy client IPs. Keep the
+    // whole application closed unless this limited mode is explicitly selected.
+    if(topology.proxied&&topology.authentication!=='shared-limited')return json({error:'two_account_auth_disabled'},503);
     if(url.pathname.startsWith('/browser-preview-assets/')){if(!env.ASSETS)return json({error:'assets_not_configured'},503);const asset=await serveBrowserPreviewAppAsset(request,env.ASSETS);return asset??json({error:'not_found'},404);}
     if(!url.pathname.startsWith('/api/')){
       if(request.method!=='GET'&&request.method!=='HEAD')return json({error:'not_found'},404);
@@ -88,8 +112,8 @@ export default {
     if(!env.BETTER_AUTH_SECRET||!env.GOOGLE_CLIENT_ID||!env.GOOGLE_CLIENT_SECRET)return json({error:'authentication_not_configured'},503);
     const database=catalogDatabase(env.CATALOG);
     const googleOAuthEgress=env.M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?{capability:env.M1_GOOGLE_OAUTH_EGRESS_CAPABILITY}:undefined;
-    const auth=createAuth({database:env.CATALOG,catalog:database,origin:env.APP_ORIGIN,secret:env.BETTER_AUTH_SECRET,googleClientId:env.GOOGLE_CLIENT_ID,googleClientSecret:env.GOOGLE_CLIENT_SECRET,googleOAuthEgress});
-    if(new URL(request.url).origin!==env.APP_ORIGIN)return json({error:'origin_denied'},403);
+    const auth=createAuth({database:env.CATALOG,catalog:database,origin:env.APP_ORIGIN,secret:env.BETTER_AUTH_SECRET,googleClientId:env.GOOGLE_CLIENT_ID,googleClientSecret:env.GOOGLE_CLIENT_SECRET,googleOAuthEgress,sharedTransportRateLimit:topology.proxied});
+    if(new URL(request.url).origin!==topology.transport)return json({error:'origin_denied'},403);
     if(new URL(request.url).pathname.startsWith('/api/auth/')){
       const path=new URL(request.url).pathname;
       const allowed=request.method==='GET'?['/api/auth/get-session','/api/auth/callback/google','/api/auth/error']:request.method==='POST'?['/api/auth/sign-in/social','/api/auth/sign-out']:[];
@@ -102,7 +126,7 @@ export default {
       }
       return await auth.handler(request);
     }
-    return await gateway(request,{testingSimulationAvailable:(principal,tenantId)=>managedTestingOwner(env.MANAGED_TESTING_JSON,tenantId,principal.userId),executionAvailability:{service:env.M3_SERVICE_ENABLED==='true',preview:env.M3_PREVIEW_ENABLED==='true',simulation:env.M4_SIMULATION_ENABLED==='true'||invitedRunsPolicy(env.INVITED_RUNS_POLICY_JSON)?.enabled===true},g4ComputeCounts:createGatewayG4ComputeServices(env),g4WindowSnapshot:createGatewayG4WindowServices(env as unknown as Parameters<typeof createGatewayG4WindowServices>[0]),origin:env.APP_ORIGIN,database,...(env.PRIVATE_BETA_CAPACITY?{privateBeta:{snapshot:()=>env.PRIVATE_BETA_CAPACITY!.getByName(PRIVATE_BETA_CAPACITY_ACTOR).snapshot(),userStatus:(scope:import('../turn/protocol.ts').TurnScope,actor:import('../turn/protocol.ts').TurnActor)=>env.PRIVATE_BETA_CAPACITY!.getByName(PRIVATE_BETA_CAPACITY_ACTOR).userStatus(scope,actor),pause:(actor:import('../turn/protocol.ts').TurnActor)=>env.PRIVATE_BETA_CAPACITY!.getByName(PRIVATE_BETA_CAPACITY_ACTOR).pause(actor),resume:(actor:import('../turn/protocol.ts').TurnActor)=>env.PRIVATE_BETA_CAPACITY!.getByName(PRIVATE_BETA_CAPACITY_ACTOR).resume(actor)}}:{}),modelContent:env.MODEL_CONTENT?new R2ModelContentPort(env.MODEL_CONTENT):undefined,modelUpload:env.MODEL_CONTENT?new R2ModelContentUploadPort(env.MODEL_CONTENT):undefined,
+    return await gateway(request,{testingSimulationAvailable:(principal,tenantId)=>managedTestingOwner(env.MANAGED_TESTING_JSON,tenantId,principal.userId),executionAvailability:{service:env.M3_SERVICE_ENABLED==='true',preview:env.M3_PREVIEW_ENABLED==='true',simulation:env.M4_SIMULATION_ENABLED==='true'||invitedRunsPolicy(env.INVITED_RUNS_POLICY_JSON)?.enabled===true},g4ComputeCounts:createGatewayG4ComputeServices(env),g4WindowSnapshot:createGatewayG4WindowServices(env as unknown as Parameters<typeof createGatewayG4WindowServices>[0]),origin:env.APP_ORIGIN,transportOrigin:topology.transport,database,...(env.PRIVATE_BETA_CAPACITY?{privateBeta:{snapshot:()=>env.PRIVATE_BETA_CAPACITY!.getByName(PRIVATE_BETA_CAPACITY_ACTOR).snapshot(),userStatus:(scope:import('../turn/protocol.ts').TurnScope,actor:import('../turn/protocol.ts').TurnActor)=>env.PRIVATE_BETA_CAPACITY!.getByName(PRIVATE_BETA_CAPACITY_ACTOR).userStatus(scope,actor),pause:(actor:import('../turn/protocol.ts').TurnActor)=>env.PRIVATE_BETA_CAPACITY!.getByName(PRIVATE_BETA_CAPACITY_ACTOR).pause(actor),resume:(actor:import('../turn/protocol.ts').TurnActor)=>env.PRIVATE_BETA_CAPACITY!.getByName(PRIVATE_BETA_CAPACITY_ACTOR).resume(actor)}}:{}),modelContent:env.MODEL_CONTENT?new R2ModelContentPort(env.MODEL_CONTENT):undefined,modelUpload:env.MODEL_CONTENT?new R2ModelContentUploadPort(env.MODEL_CONTENT):undefined,
       admitProject:async(principal,tenantId,key,body)=>{
         if(piDeveloperOwner(env.PI_DEVELOPER_POLICY_JSON,tenantId,principal.userId))return null;
         if(managedTestingOwner(env.MANAGED_TESTING_JSON,tenantId,principal.userId))return null;

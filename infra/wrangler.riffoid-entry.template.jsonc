@@ -1,0 +1,13 @@
+{
+  // LOCAL PREPARATION TEMPLATE. Do not deploy. Resolve account/route/TLS and
+  // obtain the separately approved complete configuration packet first.
+  "name": "riffoid-entry-preparation",
+  "main": "../services/entry/index.ts",
+  "compatibility_date": "2026-09-06",
+  "compatibility_flags": ["global_fetch_strictly_public"],
+  "workers_dev": false,
+  "preview_urls": false,
+  // No account_id, routes, secrets, storage or service bindings.
+  // Empty origins deliberately fail closed until approved values are resolved.
+  "vars": {"APP_ORIGIN": "", "APP_TRANSPORT_ORIGIN": ""}
+}
