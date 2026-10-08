@@ -1,6 +1,6 @@
 # 获批后的关闭入口候选
 
-用户2026-10-08 12:33:01 UTC（Sentinel_d74bc92248288191a1631d8044d57811）批准固定生产包a0ab4881；此批准不证明活跃Google client关联事实。此次只构建无私钥的候选并读回GitHub main，不进行任何线上写入。入口完整单文件为`entry.worker.mjs`（ES module，16,198 bytes），SHA-256：
+用户2026-10-08 12:33:01 UTC（Sentinel_d74bc92248288191a1631d8044d57811）批准固定生产包a0ab4881；此批准本身不证明活跃Google client关联事实；用户随后2026-10-08 12:39:44UTC（Sentinel_7e50dcd00afc8191bcba47be71cc6966）明确确认提供的公开Client ID就是旧站使用的client，不再索要此事实。此次只构建无私钥的候选并读回GitHub main，不进行任何线上写入。入口完整单文件为`entry.worker.mjs`（ES module，16,198 bytes），SHA-256：
 
 ```text
 856eb92c777ee04a569dfe53f5bec44d90566341e9c2d3632bf7f4c75de9a0eb
@@ -13,3 +13,5 @@
 **原账号准确阻塞**：新鲜metadata GET在sandbox和已批准网络执行均失败：existing Wrangler auth token expired，非交互refresh失败。未登录/创建token/扩权限，未取得本轮当前版本或完整settings。因此历史Gateway93/Execution4绑定与版本只是前次快照，不能覆盖现在线上配置。恢复既有授权通道并重新核对当前完整metadata/settings/namespace history及code/assets/version是原账号发布前置；不因生产批准跳过这个防覆盖步骤。当前原站由本任务零写保持。
 
 `manifest.json`固定四个代码候选hash及28个Gateway/forward rollback相同exports。其余三个大包在工作区`.local/riffoid-approved-20261008/`；入口与bootstrap小包附于此处。replay namespace/public pin/migration history/完整生产配置/assets仍null，状态是CODE_FROZEN_CONFIGURATION_PENDING_NOT_READY_TO_CUTOVER；不是冻结生产回退包。代码语法和hash核对通过，本轮没有runtime/模型/工具/Turn/Run或付费验收；文件gzip大小仅构建指标，不代表计量成本/额度验证。未升级/订阅计划。
+
+Google callback已在批准范围，client关联现已由用户确认（不是独立Google API读回）；当前代理没有可用的Google Cloud OAuth client管理通道，原Wrangler授权也已过期。本轮没有修改callback。后续用户在既有Google控制台仅追加`https://app.riffoid.com/api/auth/callback/google`、保留原三redirect及其他全部设置；不要新login/token/grant或读取Secret来补通道。

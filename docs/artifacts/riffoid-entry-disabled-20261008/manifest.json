@@ -157,5 +157,13 @@
     "sha256RecomputedFromFiles": "passed",
     "gatewayRollbackExportsEqual": true,
     "runtimeOrPaidTestsRun": false
+  },
+  "googleClientAssociation": {
+    "publicClientId": "316292203808-3s6ijnugpiq6hk25vmkj0hgokt2diq86.apps.googleusercontent.com",
+    "confirmedBy": "User 2026-10-08T12:39:44Z Sentinel_7e50dcd00afc8191bcba47be71cc6966",
+    "independentGoogleApiReadback": false,
+    "callbackAdditionAuthorized": true,
+    "callbackChangedThisRound": false,
+    "managementChannel": "User existing console; no callable authorized OAuth client management tool"
   }
 }
