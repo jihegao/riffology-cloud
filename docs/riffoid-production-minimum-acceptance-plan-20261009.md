@@ -1,5 +1,7 @@
 # 当前可执行检查与真实双账号验收边界
 
+后续顺序以[下一短窗口只读计划](riffoid-next-conditional-window-plan-20261009.md)为准：先核实入口实际native来源/IP与版本，派生切流专用回退申请，再按目的选择匿名hop后回退或正式条件切流。现冻结回退manifest仅适用于旧单域安全阶段，APP_ORIGIN仍inherit/latest且guard锁当前安全version；切流后不能原样执行，必须显式旧APP_ORIGIN并基于真实新发布状态派生guard，保留原三模块/同namespace。当前没有这些可执行新申请，也没有新生产动作。
+
 ## 2026-10-09 04:35UTC 已完成的本轮范围
 
 用户04:29:51UTC明确允许精确transport绑定后，同一工具调用获准执行。04:33:49UTC仅发出一次受控PUT，04:33:51UTC成功；04:34完整domains和domain ID独立GET确认绑定，域名总数11→12、原11条完整对象未变。domain ID `9f0e5e9924f4c95948932d5fab37621a1075ddb5`，certificate ID `7c91ea00-d3d8-41f3-9cdb-7e6071170066`；原账号、原zone、原Gateway。PUT deprecated environment为空，GET为production，其他身份/证书字段一致。Gateway写后active部署仍为冻结 `57ea9670-0fef-420b-8bd2-cd044c89fd2d`，version `6edef49b-ca5c-4c97-bcec-5c141b079bb1`。
