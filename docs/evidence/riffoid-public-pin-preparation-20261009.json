@@ -1,0 +1,287 @@
+{
+  "status": "PUBLIC_PIN_PREPARED_NO_PRODUCTION_WRITES",
+  "recordedUTC": "2026-10-09T00:32:10.327100+00:00",
+  "delegatedScope": "Public-key import check, read-only old production drift comparison, local candidate/forward rollback preparation only",
+  "userPublicKeyProvidedUTC": "2026-10-09T00:26:00Z",
+  "userReportsPrivateKeyGeneratedAndSecretSaved": true,
+  "publicPin": {
+    "recordedUTC": "2026-10-09T00:30:08.873Z",
+    "keyId": "riffoid-entry-20261008-a",
+    "publicRing": {
+      "riffoid-entry-20261008-a": {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "gbxhqRvnRy8T0KDbcfguu4B-ZL035vlfLkKZC5z_eZo",
+        "y": "xg356coIB_x-n1iQJoCKdOuky8VdAxN-LeSkiIZcsXg"
+      }
+    },
+    "fileSha256": "a1bb7476581887d50c2ffb441946e6672b1aca1135c735a0dc2b7111daccf1ff",
+    "canonicalRingSha256": "57fa641fec5d9525005d5550e4ea33b25e06b1f1ebcba49dac34123c431f7f2a",
+    "rfc7638Thumbprint": "FauX-M6dHO_kyhCvVXB4ubgZoDVSBKH2xwYOSzYaFr8",
+    "strictFourFields": true,
+    "coordinateBytes": 32,
+    "publicKeyImport": true,
+    "algorithm": {
+      "name": "ECDSA",
+      "namedCurve": "P-256"
+    },
+    "keyType": "public",
+    "keyUsages": [
+      "verify"
+    ],
+    "extractable": false,
+    "gatewayActualVerifierInvalidSignatureRejected": true,
+    "replayClaims": 0,
+    "privateKeyGeneratedReadTransmittedInjected": false,
+    "privatePublicMatchProven": false,
+    "productionChanges": false
+  },
+  "newEntrySecretMetadata": {
+    "source": "Parent new-account connector readback, not performed by this old-account task",
+    "recordedUTC": "2026-10-09T00:27:00Z",
+    "accountId": "3232ebc7e9bb0199b92e3d70b07825af",
+    "workerName": "riffoid-entry",
+    "secretName": "ENTRY_SIGNING_PRIVATE_JWK",
+    "type": "secret_text",
+    "present": true,
+    "valueRead": false,
+    "privatePublicMatchProven": false,
+    "TWO_ACCOUNT_AUTH_MODE": "disabled",
+    "compatibilityDate": "2026-09-06",
+    "compatibilityFlags": [
+      "global_fetch_strictly_public",
+      "enable_request_signal"
+    ]
+  },
+  "repositoryBaseline": {
+    "main": "25609953f5c3b69dcb44e520d7e7ed1253d18fe4",
+    "priorRemotePR173Head": "10aabe26073e348f0fe6a12621e0a8d3f4cd409a",
+    "draft": true,
+    "merged": false
+  },
+  "freshDriftComparison": {
+    "recordedUTC": "2026-10-09T00:28:56.054Z",
+    "workers": [
+      {
+        "worker": "riffology-m1-gateway-staging",
+        "versionId": "aeddf112-a2be-45da-868c-ed576c55d5ec",
+        "deploymentId": "c6ff55e4-2364-4920-94e0-b8784a1824b5",
+        "bindings": 93,
+        "allFrozenFieldsEqual": true,
+        "snapshotSha256": "ecb2185c5c6216bce36d3f8f3f99cc104bebad001fbfbd8a9156941d93a3a2de"
+      },
+      {
+        "worker": "riffology-browser-execution",
+        "versionId": "c94df077-02a1-460f-8158-e47a338e68af",
+        "deploymentId": "a6fdeb9f-d885-4c72-9e02-968315351edb",
+        "bindings": 4,
+        "allFrozenFieldsEqual": true,
+        "snapshotSha256": "f2beced033d02d1510d835ea3c12aabd4928d53abd813cb3046da1172055cf05"
+      }
+    ],
+    "productionChanges": false
+  },
+  "freshCodeAndNamespacesAndDomains": {
+    "recordedUTC": "2026-10-09T00:29:26.632Z",
+    "productionChanges": false,
+    "credentialValuesRead": false,
+    "workers": [
+      {
+        "worker": "riffology-m1-gateway-staging",
+        "defaultEnvironment": "production",
+        "currentMigrationTag": null,
+        "serviceSnapshotSha256": "ae5f26bb66bd311cb6260df61f5a67964c2c8ed86fff78d408ee82c762aa7d1b",
+        "entrypoint": "index.js",
+        "modules": [
+          {
+            "name": "index.js",
+            "type": "application/javascript+module",
+            "bytes": 2956059,
+            "sha256": "6c058d14c7ba114152ba62682768e61c835307e16e2fa75795c2b71fce5fb98b",
+            "localName": "riffology-m1-gateway-staging.module-0.bin"
+          }
+        ]
+      },
+      {
+        "worker": "riffology-browser-execution",
+        "defaultEnvironment": "production",
+        "currentMigrationTag": null,
+        "serviceSnapshotSha256": "fc57f05202e4a3e6cc183027787614dc2bd37411e41702f09edd819ed8023db4",
+        "entrypoint": "index.js",
+        "modules": [
+          {
+            "name": "index.js",
+            "type": "application/javascript+module",
+            "bytes": 49003,
+            "sha256": "b76b05f96d345a0ecf280cdb4414c1dd0c56bf71041dc3c72199db8e8c6c07c1",
+            "localName": "riffology-browser-execution.module-0.bin"
+          }
+        ]
+      }
+    ],
+    "reads": [
+      {
+        "name": "namespaceMetadata",
+        "status": "read-success",
+        "snapshotSha256": "fc49398869ea1044e1d9a65b045f4a22cf02bdb99613856e5262b748f68621eb",
+        "count": 22
+      },
+      {
+        "name": "domains",
+        "status": "read-success",
+        "snapshotSha256": "21a45c5799b5bda104af79be18701df6db1fe9311473ed620a67154574dcf5bd",
+        "count": 2
+      }
+    ]
+  },
+  "readAttemptHistory": {
+    "attempt1": {
+      "outcome": "fetch failed",
+      "exitCode": 1,
+      "snapshotReceived": false
+    },
+    "attempt2": {
+      "outcome": "success",
+      "snapshotReceived": true,
+      "exitCode": 0
+    },
+    "loginRetried": false,
+    "permissionExpanded": false,
+    "productionWrites": 0
+  },
+  "previousZoneReadFailuresRetained": {
+    "evidence": "riffoid-original-account-live-freeze-20261008.json",
+    "DNS": 10000,
+    "WAF": 10000,
+    "routesCode": null,
+    "deniedEndpointsRetried": false,
+    "permissionsExpanded": false
+  },
+  "localCandidates": {
+    "status": "PUBLIC_PIN_AND_CURRENT_BASE_PREPARED_FINAL_PRODUCTION_ROLLBACK_PENDING",
+    "publicRingFileSha256": "a1bb7476581887d50c2ffb441946e6672b1aca1135c735a0dc2b7111daccf1ff",
+    "canonicalRingSha256": "57fa641fec5d9525005d5550e4ea33b25e06b1f1ebcba49dac34123c431f7f2a",
+    "candidateBindingCount": 95,
+    "requestsNonExecutable": true,
+    "actualReplayNamespaceId": null,
+    "original22NamespaceIdentityRetained": true,
+    "modernExportsOriginal22PlusEntryReplayGuard": true,
+    "noLegacyMigrations": true,
+    "artifacts": [
+      {
+        "name": "gateway",
+        "source": "services/gateway/index.ts",
+        "sha256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290",
+        "bytes": 5497752,
+        "codeExports": [
+          "ContainerProxy",
+          "EntryReplayGuard",
+          "G5ControlledWindow",
+          "G5TenantModelBudget",
+          "InvitedRunCapacity",
+          "ManagedProductRuntime",
+          "ModelProxyService",
+          "ObserverExecutor",
+          "PiDeveloperBudget",
+          "PrivateBetaCapacity",
+          "ProductTurnRuntime",
+          "ProductionModelBudget",
+          "ProjectRuntime",
+          "ProjectToolSandbox",
+          "RevisionStore",
+          "ServiceRun",
+          "ServiceRuntime",
+          "ServiceSandbox",
+          "SimulationSandbox",
+          "TenantModelBudget",
+          "TenantQuota",
+          "ToolArtifactStore",
+          "ToolBridgeAgent",
+          "ToolBridgeService",
+          "TrustedPiCapacity",
+          "TrustedPiSandbox",
+          "WorkspaceAgent",
+          "default"
+        ]
+      },
+      {
+        "name": "forward-rollback",
+        "source": "services/gateway/forward-rollback.ts",
+        "sha256": "319121c411ed2c45e5f952784adbc4823e0e36dabe3d0ee7298b4db8befbce5a",
+        "bytes": 5498336,
+        "codeExports": [
+          "ContainerProxy",
+          "EntryReplayGuard",
+          "G5ControlledWindow",
+          "G5TenantModelBudget",
+          "InvitedRunCapacity",
+          "ManagedProductRuntime",
+          "ModelProxyService",
+          "ObserverExecutor",
+          "PiDeveloperBudget",
+          "PrivateBetaCapacity",
+          "ProductTurnRuntime",
+          "ProductionModelBudget",
+          "ProjectRuntime",
+          "ProjectToolSandbox",
+          "RevisionStore",
+          "ServiceRun",
+          "ServiceRuntime",
+          "ServiceSandbox",
+          "SimulationSandbox",
+          "TenantModelBudget",
+          "TenantQuota",
+          "ToolArtifactStore",
+          "ToolBridgeAgent",
+          "ToolBridgeService",
+          "TrustedPiCapacity",
+          "TrustedPiSandbox",
+          "WorkspaceAgent",
+          "default"
+        ]
+      },
+      {
+        "name": "execution-preserved",
+        "sha256": "b76b05f96d345a0ecf280cdb4414c1dd0c56bf71041dc3c72199db8e8c6c07c1",
+        "bytes": 49003,
+        "source": "Exact downloaded current production module; no recompilation or code change"
+      }
+    ],
+    "requestSha256": {
+      "gateway-stage.request.json": "fb83ec211ae266be0a4b6ddef0d4e43e7217e0923bdd00eac04b26811c5e1828",
+      "forward-rollback.request.json": "32e2c3b5fa6411a3ca3c513b42776ffecf71e2f6fcfef0e8c3953b657bebad81",
+      "execution-origin-only.request.json": "8b6562b43c623518f330b2a91d4ae2a5291a4acc6ed23bd454a12fccaa56f921",
+      "manifest.json": "4389b13e3de1ff578f909985d17c070e9ca472877b84aa87fcb1d8c864d5bd75"
+    }
+  },
+  "validation": {
+    "publicOnlyImport": true,
+    "actualGatewayVerifierRejectedInvalidSignatureBeforeReplay": true,
+    "replayClaims": 0,
+    "buildExitCode": 0,
+    "threeModulesSyntaxCheckExitCode": 0,
+    "requestBindingAndPublicPinAssertions": true,
+    "gitDiffCheckExitCode": 0,
+    "fullRegressionTestsRerun": false,
+    "previous23Web71RuntimeAssetsRedownloaded": false,
+    "realTwoAccountAcceptance": false,
+    "cloudCISuccessClaimed": false
+  },
+  "remainingGates": [
+    "Current authorized old-zone DNS/routes/WAF/Transform readback and exact approved transport WAF",
+    "Google approved add-only callback actual application confirmation",
+    "Approved transport Custom Domain/TLS after preconditions; no bind this turn",
+    "Once-allocated actual replay ID and complete post-resource forward rollback freeze; no allocate this turn",
+    "Real no-paid signature/source/native-IP/replay/auth/CSRF/SSE/isolatedExecution verification; imported public key and Secret metadata do not prove match",
+    "Coordinated canonical/Execution/signed switch only after preceding gates; recovery T+48h only after successful cutover"
+  ],
+  "agentPrivateKeyGeneratedReadTransmittedInjected": false,
+  "productionWrites": 0,
+  "transportBound": false,
+  "replayAllocated": false,
+  "entryEnabled": false,
+  "canonicalExecutionOriginChanged": false,
+  "recoveryClockStarted": false,
+  "providerModelToolTurnRunPaidExecution": false,
+  "dataIdentityHistoryPinsLedgerTrialM1Changed": false
+}

@@ -1,6 +1,6 @@
 {
   "status": "DRAFT_NOT_DEPLOYABLE",
-  "scope": "Signed-entry offline implementation and reviewable production configuration request. Production key/public pin/replay namespace absent; not deployable or executable.",
+  "scope": "Signed-entry preparation; user public pin validated/imported locally. Replay namespace and platform/security gates remain absent; not deployable or executable.",
   "approved": {
     "pushAndDeploymentPreparation": true,
     "safariAutomationAndExistingSessionReadonly": true,
@@ -23,7 +23,7 @@
     "zoneName": "riffoid.com",
     "zoneId": "b0b0079990e13eb20a17a2d3c41403b8",
     "plan": "Free",
-    "observed": "Latest parent-reported connector result: riffoid-entry and app.riffoid.com present; date2026-09-06, flags global_fetch_strictly_public+enable_request_signal; aliases off, source WAF block present, mode disabled. No key/pin. Historical DNS0/empty table is superseded.",
+    "observed": "Parent connector2026-10-09T00:27Z: ENTRY_SIGNING_PRIVATE_JWK type secret_text exists, value unread, mode disabled, originaldate/flags. Does not prove key match; public pin not applied to old Gateway.",
     "proposedEntryName": "riffoid-entry",
     "proposedCustomDomain": "app.riffoid.com",
     "compatibilityFlag": "global_fetch_strictly_public",
@@ -200,7 +200,7 @@
   "mustVerifyBeforeExecution": [
     "Current zone route/DNS/WAF/Transform state through existing authorized console; API denied, do not expand scopes or overwrite unread rules",
     "Exact transport Custom Domain and TLS with no aliases/bypass; original domains/routes unchanged",
-    "User public ring without d, verified entry Secret presence without reading value, and once-allocated SQLite replay namespace",
+    "User public ring imported locally and entry Secret presence confirmed by parent; actual key match and once-allocated SQLite replay namespace still pending",
     "Modern exports metadata: preserve22 existing class/namespace identities; add EntryReplayGuard only; no legacy migrations/tag",
     "Refresh current deployment and binding/assets hashes immediately before action, stop on drift",
     "Real source/native-IP/header and replay/cancellation platform acceptance before coordinated canonical/Execution/signed switch",
@@ -220,14 +220,14 @@
     "actualPlatformTests": "Not run",
     "optionAConditional": "Trust all workers/routes/writers/forwarders in entire riffoid.com zone, subject to audit and explicit acceptance; no per-script proof.",
     "recommendation": "Stronger script-specific crypto provenance implemented offline; new source-native IP WAF/transform platform boundary remains required before activation.",
-    "optionBOfflineImplementation": "Offline signed-entry-v1 crypto and atomic replay implemented; exact production packet approved. User key/public pin and replay still absent; no activation."
+    "optionBOfflineImplementation": "Signed-entry-v1 crypto and atomic replay implemented; exact production packet approved. User public ring validated locally and entry Secret existence confirmed by parent. No old production pin/replay or activation."
   },
   "signedEntryProductionRequest": {
     "implementation": "docs/riffoid-entry-signature.md",
     "entryAccountId": "3232ebc7e9bb0199b92e3d70b07825af",
     "gatewayAccountId": "8b0d70250211aa10d89e20605a1c7e5e",
-    "entryOnlySecret": "ENTRY_SIGNING_PRIVATE_JWK (strict EC/P-256 private JWK; value not generated or saved)",
-    "entryPublicVar": "ENTRY_SIGNING_KEY_ID; approved proposed riffoid-entry-20261008-a, not yet configured",
+    "entryOnlySecret": "ENTRY_SIGNING_PRIVATE_JWK; user reports saved, parent confirmed name/type presence only; agent never reads value",
+    "entryPublicVar": "ENTRY_SIGNING_KEY_ID=riffoid-entry-20261008-a proposed, new-side value not confirmed",
     "gatewayPublicVar": "ENTRY_SIGNING_PUBLIC_KEYS_JSON (strict public JWK ring of1-2 IDs; no d/private values)",
     "gatewayNewBinding": {
       "name": "ENTRY_REPLAY",
@@ -254,7 +254,7 @@
     "futureSkewMs": 5000,
     "replayRpcTimeoutMs": 2000,
     "nonceBitLength": 256,
-    "realCredentialsOrResourcesCreated": false,
+    "realCredentialsOrResourcesCreated": true,
     "rollback": {
       "strategy": "Forward deployment retaining modern exports (22 originals plus EntryReplayGuard) and exact once-allocated ENTRY_REPLAY namespace; no legacy migration history",
       "rawPreMigrationGatewayVersionRollback": "Unavailable after DO class lifecycle migration, per Cloudflare documented limit",
@@ -266,7 +266,7 @@
         "LEGACY_RECOVERY_UNTIL"
       ],
       "replayData": "Retain; no deleteAll/namespace recreation/snapshot restore",
-      "productionRollbackArtifact": "Current93/4 config and code/assets frozen locally; full final rollback pending public pin, actual replay namespace and platform validation",
+      "productionRollbackArtifact": "Fresh same93/4 base and code hashes verified; actual public pin in local candidate. Final production rollback still pending actual replay ID, post-resource snapshot and security/platform validation.",
       "sourceEntrypoint": "services/gateway/forward-rollback.ts",
       "configurationRequest": "infra/riffoid-forward-rollback.request.jsonc",
       "localBuildCommand": "node scripts/m1/build-riffoid-forward-rollback.mjs"
@@ -298,14 +298,43 @@
       "alreadyCommittedOperation": "Use original business cancel; TCP FIN is not transaction rollback",
       "preHeaderFINIndependentDeploymentBlocker": false
     },
-    "resourceStateProvenance": "No signing key/pin/replay; only parent-reported disabled entry/domain/WAF created"
+    "resourceStateProvenance": "User saved entry Secret; parent name/type existence check only. Public ring in local candidates; no old production pin or replay provisioned.",
+    "publicRing": {
+      "riffoid-entry-20261008-a": {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "gbxhqRvnRy8T0KDbcfguu4B-ZL035vlfLkKZC5z_eZo",
+        "y": "xg356coIB_x-n1iQJoCKdOuky8VdAxN-LeSkiIZcsXg"
+      }
+    },
+    "publicPinValidationEvidence": "docs/evidence/riffoid-public-pin-preparation-20261009.json",
+    "entrySecretMetadata": {
+      "source": "Parent new-account connector readback, not performed by this old-account task",
+      "recordedUTC": "2026-10-09T00:27:00Z",
+      "accountId": "3232ebc7e9bb0199b92e3d70b07825af",
+      "workerName": "riffoid-entry",
+      "secretName": "ENTRY_SIGNING_PRIVATE_JWK",
+      "type": "secret_text",
+      "present": true,
+      "valueRead": false,
+      "privatePublicMatchProven": false,
+      "TWO_ACCOUNT_AUTH_MODE": "disabled",
+      "compatibilityDate": "2026-09-06",
+      "compatibilityFlags": [
+        "global_fetch_strictly_public",
+        "enable_request_signal"
+      ]
+    },
+    "realSigningSecretExists": true,
+    "productionGatewayPublicPinApplied": false,
+    "gatewayReplayResourceCreated": false
   },
   "implementedOfflineCode": {
     "entry": "ECDSA P-256/SHA256 sign canonical target/method/path/query/time/nonce/native-IP/body/allowlisted-header digests. Private key isolated, body bounded, defaults disabled.",
     "gateway": "Verify fixed pin/signature/header digest, atomically claim nonce in separate DO, verify bounded body and time/cancellation again; only then set trusted auth IP input. Original identity/Catalog/CSRF/G5 remain.",
     "rateLimits": "Installed BetterAuth1.7.3 unchanged: basic30/60s, sign-in3/10s and original stricter endpoints",
-    "currentRuntimeMode": "defaults disabled; no production key/pin/namespace or native-IP boundary configured; shared-limited remains prohibited for deployment",
-    "newSecretsPermissionsServiceBindings": "Approved user-only entry signing Secret and original-account SQLite replay DO not yet provisioned; no new scopes, auth secret reuse, service binding or cross-account CNAME"
+    "currentRuntimeMode": "Entry disabled with user Secret present (name/type only); old single-origin Gateway has no production public pin/replay/native-IP topology. Actual public ring only in local candidates; shared-limited prohibited for deployment.",
+    "newSecretsPermissionsServiceBindings": "User-only entry Secret exists per parent name/type readback; actual public pin only in local candidates; original-account SQLite replay DO not yet provisioned. No new scopes or private-key access."
   },
   "originalZoneUserAndParentAttachmentSupplement": {
     "evidence": "docs/evidence/riffoid-original-zone-user-fields-20261008.json",
@@ -327,7 +356,8 @@
     "agentGeneratesReadsOrTransmitsPrivateKey": false,
     "chatRepoLogsSharedWorkspace": "Never place private JWK here",
     "publicOnlyMayReturn": "keyId and strict public JWK ring without d",
-    "proposedPublicKeyId": "riffoid-entry-20261008-a"
+    "proposedPublicKeyId": "riffoid-entry-20261008-a",
+    "status": "User generation/injection reported2026-10-09T00:26Z, parent existence/type readback00:27Z; private/public match pending real verification"
   },
-  "currentEvidenceSupplement": "docs/riffoid-original-account-live-freeze-20261008.md; historical console fields below retain provenance and are not fresh API readback"
+  "currentEvidenceSupplement": "docs/riffoid-public-pin-preparation-20261009.md; Oct8 historical freeze retained"
 }

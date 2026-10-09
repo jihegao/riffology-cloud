@@ -1,5 +1,7 @@
 # riffoid 原账号现网冻结与最小剩余步骤（2026-10-08）
 
+后续状态见[2026-10-09公钥准备补充](riffoid-public-pin-preparation-20261009.md)：用户公开ring已校验并进入本地候选，新侧Secret仅名称/类型存在已回读；下文保留10月8日当时证据，公钥缺项已解除，其他生产门槛仍未齐备。
+
 本轮完成原账号只读冻结、候选构建与配置申请修订，**没有生产写入或真实双账号验收**。用户12:33:01UTC已批准固定版本[精确生产包](https://github.com/jihegao/riffology-cloud/blob/a0ab4881d585831d0b0d7e220d69632c681a8c46/docs/riffoid-production-approval-packet.md)，12:39:44UTC已确认旧Google公开client关联；不重复请求笼统批准或公开清单。该已批准文件保留原样，本补充纠正行动时发现的DO生命周期差异，未扩大账号、资源数量、安全表达式或切流范围。
 
 [机器可读证据](evidence/riffoid-original-account-live-freeze-20261008.json)记录hash、实际版本、读取失败、构建结果和缺项。原93绑定的非秘密值、Secret名称/类型、下载模块和资产保存在本机忽略目录 `.local/riffoid-live-freeze-20261008/`，不向PR披露完整内部策略/身份清单，不读取Secret值。只读快照不是现网变更锁：将来每次写入前须重读并逐项比较，漂移即停止、重建候选，不能覆盖近期发布。

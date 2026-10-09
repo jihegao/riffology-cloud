@@ -13,7 +13,7 @@
       "LEGACY_RECOVERY_UNTIL"
     ],
     "mustPreserve": {
-      "allOriginalBindingsVarsSecretsAssetsContainersRoutes": "Current93bindings/22namespaceIDs/5container links/code/assets frozen; live zone routes not freshly readable. Full local base under .local/riffoid-live-freeze-20261008; final pin/allocated namespace still missing",
+      "allOriginalBindingsVarsSecretsAssetsContainersRoutes": "Fresh2026-10-09 same93bindings/22namespaceIDs/5container links/code/assets config verified; public pin now in local95binding candidates. Final actual replay ID and current zone/security readback remain missing",
       "ENTRY_REPLAY": {
         "className": "EntryReplayGuard",
         "namespaceId": null,
@@ -23,7 +23,20 @@
       "dataIdentityHistoryLedgerPolicyPins": "Unchanged; trial December31 and M1 October20",
       "lifecycleMode": "modern-exports",
       "legacyMigrationsAllowed": false,
-      "exportsAction": "Retain verified original22 exports plus EntryReplayGuard and exact namespace IDs; no class deletion/storage conversion"
+      "exportsAction": "Retain verified original22 exports plus EntryReplayGuard and exact namespace IDs; no class deletion/storage conversion",
+      "ENTRY_SIGNING_PUBLIC_KEYS_JSON": {
+        "type": "plain_text",
+        "publicRing": {
+          "riffoid-entry-20261008-a": {
+            "kty": "EC",
+            "crv": "P-256",
+            "x": "gbxhqRvnRy8T0KDbcfguu4B-ZL035vlfLkKZC5z_eZo",
+            "y": "xg356coIB_x-n1iQJoCKdOuky8VdAxN-LeSkiIZcsXg"
+          }
+        },
+        "source": "infra/riffoid-entry-public-keys.json",
+        "action": "Retain exact public ring; no d/private values"
+      }
     },
     "compatibilityFlags": [
       "nodejs_compat",
@@ -32,7 +45,7 @@
     ],
     "compatibilityDate": "2026-09-09",
     "buildCommand": "node scripts/m1/build-riffoid-forward-rollback.mjs",
-    "localBuildOutput": ".local/riffoid-live-freeze-20261008/candidates/{gateway,forward-rollback}.worker.mjs and manifest.json; non-executable requests pending public pin and actual namespace ID",
+    "localBuildOutput": ".local/riffoid-live-freeze-20261009/candidates/{gateway,forward-rollback}.worker.mjs and manifest.json; non-executable requests with actual public ring, replay ID pending",
     "compatibilityDateAction": "Retain verified live Gateway date; entry fixture2026-09-06 is separate",
     "compatibilityDateSource": "infra/riffoid-compatibility-dates.json",
     "productionCandidatePreparationCommand": "node scripts/m1/prepare-riffoid-live-candidates.mjs (local only, consumes read-only snapshots; no cloud calls)"
@@ -52,12 +65,11 @@
     "liveClientAssociation": "User confirmed current public client at2026-10-08T12:39:44Z; exact add-only callback approved12:33:01Z. No independent Google readback or Secret access."
   },
   "requiredProductionFreezeMissing": [
-    "Strict user-generated public ring without d; agent never handles private key",
     "Once-allocated actual replay namespace ID and post-addition modern exports/bindings snapshot",
     "Fresh authorized old-zone DNS/routes/WAF/Transform readback and transport TLS; current scoped API reads denied",
     "Complete post-resource forward rollback hash/version and actual no-paid platform validation"
   ],
   "offlineVerification": "Build and test source entrypoint; local synthetic same namespace retention/replay, original auth/identity/CSRF/assets behavior. Does not freeze or deploy a production artifact.",
   "noProductionKeyResourcePermissionSecurityOrDeploymentChanges": true,
-  "freezeSupplement": "docs/riffoid-original-account-live-freeze-20261008.md"
+  "freezeSupplement": "docs/riffoid-public-pin-preparation-20261009.md"
 }
