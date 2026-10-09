@@ -1,5 +1,15 @@
 # Maintenance protocol validation — implementation only
 
+October 10 update: [fresh preflight evidence](evidence/riffoid-cutover-preflight-20261010.json)
+rechecks the unchanged active Gateway/entry/Execution identities, exact code hashes,
+95/5/4 binding digests, WAF and telemetry metadata. The existing targeted suite
+passed 45 tests and typecheck; maintenance bundles and non-executable requests are
+in `.local/riffoid-cutover-20261010/candidates/manifest.json`. Runtime source and
+production configuration were unchanged. Actual visitor IPs, maintenance interval,
+post-state guards and original rollback payload remain unresolved; this is not a
+ready-to-publish manifest. The Mac is locked, so the existing authenticated browser
+and original Google identity are presently unavailable. Formal T remains null.
+
 The user authorized writing and reviewing temporary validation code on October 9
 at 06:51:09 UTC, and allows the old application to be unavailable during a future
 maintenance window. This supersedes the proposed old-canonical/alternate-audience

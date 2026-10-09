@@ -1,4 +1,41 @@
-# Current release readiness — 2026-10-08
+# Current release readiness — 2026-10-10
+
+## 2026-10-10 #173 domain cutover preflight refreshed; real acceptance pending
+
+[PR #173](https://github.com/jihegao/riffology-cloud/pull/173) remains a draft.
+The new `app.riffoid.com` domain has valid HTTPS and returns
+`503/two_account_auth_disabled`; the old application's curl homepage returns 200
+with the existing strict CSP and `no-store`. No cutover T or 48-hour recovery
+deadline has started. Python-client 403 responses are recorded separately and do
+not replace the curl control or establish Browser Execution frame acceptance.
+
+Fresh two-account readback matches the frozen safety-stage Gateway
+`6edef49b-ca5c-4c97-bcec-5c141b079bb1`, entry
+`c110d7a7-fc81-4bb1-b27a-4ca8147a7fff` and Execution
+`c94df077-02a1-460f-8158-e47a338e68af`, with 95/5/4 bindings.
+Each settings binding list exactly matches its immutable version's list; full
+settings/resource and every binding digest were frozen locally. All three exact
+`content/v2` module hashes match the previous evidence. Both WAF Block expressions
+remain enabled; account/zone Logpush, observability destinations and relevant live
+Tail lists were empty at readback. Persisted logs remain enabled. These observations
+do not prove future capture absence or zero background work.
+
+The existing maintenance/signature/entry/topology/forward-restore selection passed
+45 Node/Workerd tests, including actual fixture replay and real 30-second expiry;
+typecheck passed. Local maintenance bundles and non-executable metadata requests
+were generated for review, preserving all 23 Gateway SQLite exports. No runtime
+source was edited, candidate was uploaded, credential was read or platform execution
+test was run. Global activity and infrastructure cost are not claimed zero.
+
+Two actual visitor exits, an available original Google/browser identity, a quiet
+publisher window, current semantically read-only in-flight observation, complete
+rollback payload and temporary logging-change acceptance remain prerequisites.
+The Mac was locked, preventing use of its existing authenticated browser. Delivery
+Project could not be read: the existing CLI token lacks `read:project`, and the
+browser attempt timed out; no scope was expanded or Project phase invented.
+[Current evidence](evidence/riffoid-cutover-preflight-20261010.json) records the
+fresh versions/hashes, checks, candidate identities and concrete remaining gaps.
+
 
 ## 2026-10-08 #171 Browser-local Runs deployed; authenticated owner acceptance
 
