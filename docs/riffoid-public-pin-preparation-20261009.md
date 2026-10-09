@@ -1,5 +1,7 @@
 # riffoid 用户公钥准备补充（2026-10-09）
 
+> 后续生产状态（2026-10-09 02:41UTC）：旧单域安全阶段已部署并完整回读，Gateway版本 `6edef49b-ca5c-4c97-bcec-5c141b079bb1`，95 bindings/23 SQLite exports，实际replay namespace `3cfeafa707c5491fba4ead3f0954bc8e`、retry0，完整实际ID前向回退已冻结。见[生产证据](evidence/riffoid-safety-stage-production-20261009.json)与[真实平台最小验收计划](riffoid-production-minimum-acceptance-plan-20261009.md)。原授权路径问题已修复且官方whoami/全部GET通过，无需重新登录。下面保留00:26–00:49UTC准备阶段历史，不能把其“生产写入0/namespace null”等描述当成最新状态；真实双账号验收仍未完成。
+
 用户00:26UTC提供公开ring并报告本人已生成/保存私钥、向新Worker保存Secret。本轮只完成公开导入校验、旧侧现网只读漂移比较、候选及前向回退配置完善；**生产写入0、transport绑定0、replay分配0、入口启用0**。已有精确批准继续有效，不再要求用户重新生成私钥或再次批准同一包。
 
 [机器证据](evidence/riffoid-public-pin-preparation-20261009.json)和[严格公开ring](../infra/riffoid-entry-public-keys.json)可审阅。代理没有生成、读取、传输或注入私钥；仓库仅保存用户已提供的四字段公开JWK，不包含d。
