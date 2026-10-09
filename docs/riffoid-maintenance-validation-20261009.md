@@ -22,6 +22,21 @@ malformed or expired. It never opens the application automatically. An existing
 explicit recovery pair, if present, retains the original recovery handler; this
 pre-T protocol-only window must not invent T or start its future 48-hour clock.
 
+This is an **HTTP business-entry fence**, not a platform shutdown. The unchanged
+Gateway scheduled handler still dispatches provisioning via `sweep(10)` and runs
+Revision GC concurrently; existing in-flight DO/runtime work, alarms and other
+delivery paths are not cancelled or paused. Consequently the test's own zero
+model/tool/Turn/Run calls do not prove zero account activity or zero platform cost.
+Before a future window, check existing in-flight work through previously available,
+semantically read-only observation only. `recoveryTurnSnapshot` is a pure journal
+view, while ordinary `turnSnapshot` performs preparation/admission/budget work and
+is not an interchangeable read. Constructor/actor activation and authoritative
+coverage also need review before RPC use. No recovery pair is currently configured;
+do not invent T, add an access path/helper Worker, start a session, invoke GC or
+reconciliation, or pause cron/background work to obtain a clean-looking result.
+If an authoritative read-only inventory is unavailable, report that gap and defer
+the maintenance publication decision; no current in-flight-zero claim is made.
+
 The fixed route is `/__riffoid-validation/<run>/<A|B>/<ui|observe|run|cleanup>`;
 query strings, nonempty body, Cookie, Authorization, Upgrade, supplied proof,
 client-IP claims and supplied control headers are rejected at native entry.
@@ -94,6 +109,22 @@ The original account (`8b0d70250211aa10d89e20605a1c7e5e`) retains Gateway
 (`3232ebc7e9bb0199b92e3d70b07825af`) retains entry `riffoid-entry` and the app domain.
 These IDs are historical frozen evidence, not a fresh read in this task.
 
+Parent connector readbacks at 07:26–07:27 UTC are now recorded in
+[entry/rule evidence](evidence/riffoid-entry-baseline-and-log-privacy-20261009.json).
+The entry remains disabled with five bindings, actual latest/active version
+`c110d7a7-fc81-4bb1-b27a-4ca8147a7fff` and deployment
+`5e920993-ee9d-4a7e-b6fe-39ef494f35fd`. Original delivered 16198-byte SHA256
+`856eb92c777ee04a569dfe53f5bec44d90566341e9c2d3632bf7f4c75de9a0eb`
+becomes the parent's extracted 16197-byte SHA256
+`7a71a528d3ee7014621848e16801aeddd12c8f39edd3431720d089f337bb7dc4`
+by removing exactly one final LF; original bytes are preserved. This proves that
+byte comparison, not whether the API or extraction caused the LF difference.
+Full raw multipart/settings/bindings receipts remain required before publication.
+Both WAF IDs/expressions are attested; new-zone pseudo IPv4 is off and the supplied
+six managed transforms are disabled. Only late-request-transform entrypoint
+absence was observed, not all phases/snippets. Native IP is still unobserved and
+the native-boundary marker remains unset.
+
 Before any deployment, the user must approve the reviewed exact bundles and full
 configuration, a quiet single-publisher maintenance interval, one run/two actual
 IPs, native/WAF/header preflight, the three security rows/tombstone and the exact
@@ -102,6 +133,13 @@ Also approve fail-closed shutdown and guarded forward restoration. Existing logs
 Logpush/tails must be read-only checked for proof/header/body persistence; otherwise
 stop, without global logging changes. No persistent credential or new resource
 is required. Independent peer coverage is pending because no peer Worker is allowed.
+
+The [official logging-contract review](riffoid-validation-privacy-window-20261009.md)
+does not establish privacy under the current `logs.persist=true` settings. It
+provides a separately approvable, conditional one-field change per existing
+entry/Gateway Worker, plus exact restoration and metadata-only pipeline guards.
+It has not been applied or authorized by this document. HTTP fencing does not
+stop background work, whose persisted logs would also be unavailable temporarily.
 
 Protocol-only temporary Gateway metadata has 98 bindings: historical 95 with
 explicit new APP_ORIGIN, transport/mode and one config; no invented pre-T recovery
@@ -124,8 +162,9 @@ SQLite exports/namespaces/assets/containers. Restore Execution's explicit old
 origin only if it was actually changed in an approved later cutover; restore entry
 original bundle/config, keeping its Secret reference. For protocol-only adapter
 removal use the frozen exact safety-stage Gateway bundle. Do not raw-roll back
-across DO lifecycle or delete/reset the namespace. Entry baseline bundle/hash and
-actual future post-state remain required blockers. API outages mean pending cleanup,
+across DO lifecycle or delete/reset the namespace. Entry baseline digest is now
+matched; full raw baseline receipts, privacy checks and actual future post-state
+remain required blockers. API outages mean pending cleanup,
 not claimed physical removal. T remains unset; formal successful cutover will
 separately set accepted T and real T+48h recovery.
 
