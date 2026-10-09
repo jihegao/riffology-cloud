@@ -1,6 +1,7 @@
 import {HttpError} from '../gateway/http.ts';
 import {g5ReadHeaders} from '../gateway/transport-headers.ts';
 import {requireRequestHost} from '../gateway/origins.ts';
+import type {ValidationClaim} from './validation-policy.ts';
 
 export const forwardedHeaders=['accept','accept-language','content-type','cookie','origin','referer','sec-fetch-site','sec-fetch-mode','sec-fetch-dest','idempotency-key','last-event-id','range','if-none-match','if-modified-since','user-agent',...g5ReadHeaders] as const;
 export const proofHeader='x-riffoid-entry-proof',signatureHeader='x-riffoid-entry-signature',clientIpHeader='x-riffoid-client-ip';
@@ -21,7 +22,11 @@ export function signedRequestCapacity(request:Request):()=>void {
 export type Proof=[version:'riffoid-entry-v1',kid:string,canonical:string,transport:string,method:string,pathQuery:string,issued:number,expires:number,nonce:string,ip:string,bodyHash:string,headerHash:string];
 export interface SigningEnv {ENTRY_SIGNING_KEY_ID?:string;ENTRY_SIGNING_PRIVATE_JWK?:string;ENTRY_NATIVE_IP_BOUNDARY?:string;}
 export interface ReplayClaim {nonce:string;issued:number;expires:number;}
-export interface ReplayNamespace {getByName(name:string):{claim(value:ReplayClaim):Promise<'accepted'|'replay'|'full'>};}
+export interface ReplayNamespace {getByName(name:string):{
+  claim(value:ReplayClaim):Promise<'accepted'|'replay'|'full'>;
+  validationTake?(value:ValidationClaim):Promise<'accepted'|'spent'>;
+  validationCleanup?(run:string):Promise<number>;
+};}
 export interface VerificationEnv {ENTRY_SIGNING_PUBLIC_KEYS_JSON?:string;ENTRY_REPLAY?:ReplayNamespace;}
 export function base64url(bytes:Uint8Array):string {return btoa(String.fromCharCode(...bytes)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
 function decode(value:string,size?:number):Uint8Array<ArrayBuffer> {

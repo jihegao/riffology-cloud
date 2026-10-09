@@ -1,0 +1,11 @@
+// Review-only: nulls deliberately fail validationConfig. NOT deployable.
+// One separately approved maintenance run; no token/Secret/credential value.
+// notBefore/expires are actual UTC epoch milliseconds, at most 120 seconds apart.
+// A/B must be two actual distinct normalized native public IPs, never spoofed.
+{
+  "version": 1,
+  "run": null,
+  "notBefore": null,
+  "expires": null,
+  "ips": { "A": null, "B": null }
+}

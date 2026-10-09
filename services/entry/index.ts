@@ -3,8 +3,10 @@ import {publicHttpsOrigin,requireRequestHost} from '../gateway/origins.ts';
 import {g5ReadHeaders} from '../gateway/transport-headers.ts';
 import {signEntry,signedRequestCapacity,pathQuery,type SigningEnv} from './signature.ts';
 import {requestAbortBridge,abortableResponse} from './abort.ts';
+import {VALIDATION_PREFIX,type ValidationEnv} from './validation-policy.ts';
+import {validationEntry} from './validation-entry.ts';
 
-export interface EntryEnv extends SigningEnv {APP_ORIGIN:string;APP_TRANSPORT_ORIGIN:string;TWO_ACCOUNT_AUTH_MODE?:string;}
+export interface EntryEnv extends SigningEnv,ValidationEnv {APP_ORIGIN:string;APP_TRANSPORT_ORIGIN:string;TWO_ACCOUNT_AUTH_MODE?:string;}
 type Send=(request:Request)=>Promise<Response>;
 const requestHeaders=['accept','accept-language','content-type','cookie','origin','referer','sec-fetch-site','sec-fetch-mode','sec-fetch-dest','idempotency-key','last-event-id','range','if-none-match','if-modified-since','user-agent',...g5ReadHeaders];
 function checkedLocation(location:string,request:Request,canonical:string):void {
@@ -48,6 +50,12 @@ export async function entry(request:Request,env:EntryEnv,send:Send=fetch):Promis
     if(request.headers.has('upgrade'))throw new HttpError('upgrade_denied',403);
     if(!['GET','HEAD','POST','PUT','PATCH','DELETE'].includes(request.method))throw new HttpError('method_not_allowed',405);
     if(!['GET','HEAD'].includes(request.method))requireOrigin(request,canonical.origin);
+    // Temporary config presence fences the application even if invalid/expired.
+    if(env.RIFFOID_VALIDATION_CONFIG_JSON!==undefined){
+      if(url.pathname.startsWith(VALIDATION_PREFIX))return validationEntry(request,env,send);
+      return json({error:'validation_maintenance'},503);
+    }
+    if(url.pathname.startsWith(VALIDATION_PREFIX))throw new HttpError('validation_closed',403);
     const mode=env.TWO_ACCOUNT_AUTH_MODE??'disabled';
     if(mode==='disabled')return json({error:'two_account_auth_disabled'},503);
     if(mode!=='signed-entry-v1'&&mode!=='shared-limited')return json({error:'entry_signing_not_configured'},503);

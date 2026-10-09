@@ -1,0 +1,678 @@
+{
+  "status": "NON_EXECUTABLE_VALIDATION_POST_STATE_ENTRY_BASELINE_AND_APPROVAL_MISSING",
+  "mustNotDeploy": true,
+  "preparedUTC": "2026-10-09T05:12:48.921961+00:00",
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "worker": "riffology-m1-gateway-staging",
+  "derivedFromFrozenManifestSHA256": "166edc28179125b796a6afbc0d4ca7a06c7cf4309dcab78db2b93688b7fa8c1f",
+  "historicalSafetyStageVersion": "6edef49b-ca5c-4c97-bcec-5c141b079bb1",
+  "historicalSafetyStageDeployment": "57ea9670-0fef-420b-8bd2-cd044c89fd2d",
+  "productionMutation": false,
+  "metadata": {
+    "compatibility_date": "2026-09-09",
+    "compatibility_flags": [
+      "nodejs_compat",
+      "nodejs_compat_do_not_populate_process_env",
+      "enable_request_signal"
+    ],
+    "usage_model": "standard",
+    "tags": [],
+    "tail_consumers": [],
+    "logpush": false,
+    "observability": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "redact_query_string": false,
+      "logs": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "persist": true,
+        "invocation_logs": true
+      },
+      "traces": {
+        "enabled": false,
+        "persist": true,
+        "head_sampling_rate": 1
+      }
+    },
+    "annotations": {
+      "workers/message": "PR 172 abcc406 local Runs; exact original assets routing and cloud resources",
+      "workers/tag": "issue171",
+      "workers/triggered_by": "version_upload"
+    },
+    "bindings": [
+      {
+        "name": "APP_ORIGIN",
+        "type": "plain_text",
+        "text": "https://m1.riff-demo.gaojihe.cn"
+      },
+      {
+        "name": "ASSETS",
+        "type": "assets"
+      },
+      {
+        "name": "BETTER_AUTH_SECRET",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "BROWSER_PREVIEW_EXECUTION_ORIGIN",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "CATALOG",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "CF_VERSION_METADATA",
+        "type": "version_metadata"
+      },
+      {
+        "name": "ENTRY_REPLAY",
+        "type": "durable_object_namespace",
+        "class_name": "EntryReplayGuard",
+        "namespace_id": "3cfeafa707c5491fba4ead3f0954bc8e",
+        "retry": {
+          "max_attempts": 0
+        }
+      },
+      {
+        "name": "ENTRY_SIGNING_PUBLIC_KEYS_JSON",
+        "type": "plain_text",
+        "text": "{\"riffoid-entry-20261008-a\":{\"kty\":\"EC\",\"crv\":\"P-256\",\"x\":\"gbxhqRvnRy8T0KDbcfguu4B-ZL035vlfLkKZC5z_eZo\",\"y\":\"xg356coIB_x-n1iQJoCKdOuky8VdAxN-LeSkiIZcsXg\"}}"
+      },
+      {
+        "name": "G4_BROWSER_BUILD_HOLD_SCOPES_JSON",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "G4_CONTROLLED_WINDOW_JSON",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "G5_ADMISSION_ENABLED",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "G5_CONTROLLED_WINDOW_JSON",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "G5_TOKEN_BUDGET",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "G5_TOKEN_BUDGET_POLICY_JSON",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "G5_WINDOW_GUARD",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "GOOGLE_CLIENT_ID",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "GOOGLE_CLIENT_SECRET",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "INVITED_PROJECT_ADMISSION_ENABLED",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "INVITED_RUN_CAPACITY",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "INVITED_RUNS_POLICY_JSON",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_LAZY_PROJECT_ENABLED",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_MODEL_BUDGET_POLICY_VERSION",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_MODEL_CAPABILITY_TTL_MS",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_MODEL_ID",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_MODEL_MAX_INPUT_TOKENS_PER_CALL",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_MODEL_MAX_OUTPUT_TOKENS_PER_CALL",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_MODEL_PROVIDER",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_MODEL_PROVIDER_ENABLED",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_MODEL_PROXY_REQUEST_KEY",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_MODEL_TURN_CAPABILITY_KEY",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_OPENCODE_GO_API_KEY",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_PROJECT_EFFECT_CAPABILITY_KEY",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_TOOL_BRIDGE_REQUEST_KEY",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_TURN_ADMISSION_TELEMETRY",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_TURN_OPERATION_TELEMETRY",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_TURNS_ENABLED",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_WORKER_SOURCE_SHA",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_WORKSPACE_RUNTIME_REUSE_ENABLED",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M2_WORKSPACE_RUNTIME_VERSION",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M3_OBSERVER_ENABLED",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M3_PREVIEW_ENABLED",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M3_PREVIEW_ORIGIN",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M3_PREVIEW_WS_ENABLED",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M3_SERVICE_ENABLED",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M3_SERVICE_IMAGE",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M4_SIMULATION_ENABLED",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "M4_SIMULATION_IMAGE",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "MANAGED_ACCEPTANCE_JSON",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "MANAGED_OPENAI_API_KEY",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "MANAGED_PROJECT_BOOTSTRAP_JSON",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "MANAGED_TESTING_JSON",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "MANAGED_TESTING_PATCH_SHA256",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "MANAGED_TURN_RUNTIME",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "MODEL_BUDGET_MAX_DISPATCHED_CALLS_PER_TURN",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "MODEL_BUDGET_POLICY_VERSION",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "MODEL_CONTENT",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "MODEL_PROXY",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "PHASE1_RELEASE_PROFILE",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "PI_DEVELOPER_BUDGET",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "PI_DEVELOPER_POLICY_JSON",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "PRIVATE_BETA_CAPACITY",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "PRIVATE_BETA_POLICY_JSON",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "PRODUCTION_ACCEPTED_EVIDENCE_SHA256",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "PRODUCTION_AI_GATEWAY_TOKEN",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "PRODUCTION_MODEL_BUDGET",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "PRODUCTION_MODEL_ENABLED",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "PRODUCTION_MODEL_PROFILE_JSON",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "PRODUCTION_MONEY_POLICY_JSON",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "PRODUCTION_OPENAI_API_KEY",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "PRODUCT_TURN_RUNTIME",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "PROJECT_RUNTIME",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "PROJECT_SANDBOX",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "REVISION_STORE",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "SERVICE_RUN",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "SERVICE_RUNTIME",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "SERVICE_SANDBOX",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "SIMULATION_SANDBOX",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "TENANT_MODEL_BUDGET",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "TENANT_QUOTA",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "TENANT_QUOTA_CAPACITY",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "TENANT_QUOTA_POLICY_VERSION",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "TENANT_QUOTA_UPGRADE_FROM",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "TOOL_ARTIFACT_STORE",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "TOOL_BRIDGE",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "TOOL_BRIDGE_AGENT",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "TRUSTED_PI_CAPACITY",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "TRUSTED_PI_CAPACITY_LIMIT",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "TRUSTED_PI_CAPACITY_POLICY_VERSION",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "TRUSTED_PI_SANDBOX",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "WORKSPACE_AGENT",
+        "type": "inherit",
+        "version_id": "latest"
+      },
+      {
+        "name": "WORKSPACE_CHECKPOINTS",
+        "type": "inherit",
+        "version_id": "latest"
+      }
+    ],
+    "main_module": "index.js",
+    "exports": {
+      "G5ControlledWindow": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "G5TenantModelBudget": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "InvitedRunCapacity": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ManagedProductRuntime": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "PiDeveloperBudget": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "PrivateBetaCapacity": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ProductTurnRuntime": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ProductionModelBudget": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ProjectRuntime": {
+        "type": "durable-object",
+        "storage": "sqlite",
+        "container": "riffology-m1-project-staging"
+      },
+      "ProjectToolSandbox": {
+        "type": "durable-object",
+        "storage": "sqlite",
+        "container": "riffology-m3-project-tools-staging"
+      },
+      "RevisionStore": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ServiceRun": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ServiceRuntime": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ServiceSandbox": {
+        "type": "durable-object",
+        "storage": "sqlite",
+        "container": "riffology-m3-service-staging"
+      },
+      "SimulationSandbox": {
+        "type": "durable-object",
+        "storage": "sqlite",
+        "container": "riffology-phase1-simulation"
+      },
+      "TenantModelBudget": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "TenantQuota": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ToolArtifactStore": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ToolBridgeAgent": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "TrustedPiCapacity": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "TrustedPiSandbox": {
+        "type": "durable-object",
+        "storage": "sqlite",
+        "container": "riffology-m3-trusted-pi-staging"
+      },
+      "WorkspaceAgent": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "EntryReplayGuard": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      }
+    },
+    "containers": [
+      {
+        "class_name": "ProjectRuntime",
+        "name": "riffology-m1-project-staging"
+      },
+      {
+        "class_name": "ProjectToolSandbox",
+        "name": "riffology-m3-project-tools-staging"
+      },
+      {
+        "class_name": "TrustedPiSandbox",
+        "name": "riffology-m3-trusted-pi-staging"
+      },
+      {
+        "class_name": "ServiceSandbox",
+        "name": "riffology-m3-service-staging"
+      },
+      {
+        "class_name": "SimulationSandbox",
+        "name": "riffology-phase1-simulation"
+      }
+    ],
+    "keep_assets": true,
+    "keep_bindings": [
+      "secret_text",
+      "secret_key"
+    ]
+  },
+  "removeVarsTogether": [
+    "APP_TRANSPORT_ORIGIN",
+    "TWO_ACCOUNT_AUTH_MODE",
+    "LEGACY_RECOVERY_ORIGIN",
+    "LEGACY_RECOVERY_UNTIL"
+  ],
+  "namespaceIdentityFile": "namespace-identity.FROZEN.json",
+  "postChangeGuardFile": "post-change-guard.TEMPLATE.json",
+  "newMigration": false,
+  "namespaceDeleteRenameTransferReset": false,
+  "credentialValuesRead": false,
+  "publisherOrNetworkCodeIncluded": false,
+  "wireCaveat": "Envelope is a review artifact, not API input. No executable uploader or wrangler deployment configuration is included.",
+  "purpose": "Return to exact pre-test single-origin safety-stage code/config, not cutover and not raw version rollback",
+  "modules": [
+    {
+      "name": "index.js",
+      "localPath": "modules/gateway-safety-stage.worker.mjs",
+      "bytes": 5497752,
+      "sha256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290",
+      "type": "application/javascript+module"
+    }
+  ],
+  "codeStrategy": "Forward-publish exact actual safety-stage code bytes and same namespaces, removing only approved temporary validation code/config",
+  "removeTemporaryPlainBinding": [
+    "RIFFOID_VALIDATION_CONFIG_JSON"
+  ],
+  "runtimeExperimentStarted": false
+}
