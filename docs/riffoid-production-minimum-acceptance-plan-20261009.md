@@ -1,5 +1,20 @@
 # 当前可执行检查与真实双账号验收边界
 
+## 2026-10-09 04:35UTC 已完成的本轮范围
+
+用户04:29:51UTC明确允许精确transport绑定后，同一工具调用获准执行。04:33:49UTC仅发出一次受控PUT，04:33:51UTC成功；04:34完整domains和domain ID独立GET确认绑定，域名总数11→12、原11条完整对象未变。domain ID `9f0e5e9924f4c95948932d5fab37621a1075ddb5`，certificate ID `7c91ea00-d3d8-41f3-9cdb-7e6071170066`；原账号、原zone、原Gateway。PUT deprecated environment为空，GET为production，其他身份/证书字段一致。Gateway写后active部署仍为冻结 `57ea9670-0fef-420b-8bd2-cd044c89fd2d`，version `6edef49b-ca5c-4c97-bcec-5c141b079bb1`。
+
+五次真实匿名HTTPS GET均正常TLS校验通过、不跟随跳转、不改写Origin/Host/IP、无Cookie发送/设置：
+
+| 地址 | 结果 | 证据边界 |
+| --- | --- | --- |
+| transport 首页 / get-session | 各403，Cloudflare拦截页 | 外部匿名直接访问被拒绝；未独立核实具体WAF rule ID命中 |
+| 旧首页 | 200 | 静态首页可达，旧CSP仍在 |
+| 旧 get-session | 200/null | 匿名session，非真实登录验收 |
+| 新 app.riffoid.com 首页 | 503/two_account_auth_disabled | 入口保持关闭 |
+
+[本轮绑定与公开检查完整证据](evidence/riffoid-transport-bound-public-checks-20261009.json)保留一次受控重试、前次未知回执及审批拒绝历史。此次域名动作按相关性核对全domains、Gateway active/latest；未重读整个DO/config/code资源集，不能将之前完整安全快照当作本轮重新读取。没有代码/vars/bindings/namespace/普通DNS写操作，没有配置切流、登录、私钥接触或付费业务执行。下方正向签名、真实IP、OAuth/CSRF/SSE/Execution及其他身份验收仍待后续协调范围和批准；48小时恢复计时未启动。
+
 当前本任务只接线既有批准的 transport Custom Domain，保持旧 canonical、入口 disabled、Execution 和 native-IP-boundary 不变。所有请求都使用实际 HTTPS URL；不覆写 Host、Origin、cf-worker 或访客IP，不用跨账号CNAME/service binding，不新建测试Worker、peer或身份。
 
 ## 无需配置窗口的最小检查
