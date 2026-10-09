@@ -62,7 +62,17 @@
   "oauth": {
     "originalClientAndOldCallback": "Retain exact verified existing values; no new client, scopes or secret",
     "publicFieldsEvidence": "docs/evidence/riffoid-google-public-fields-20261008.json",
-    "liveClientAssociation": "User confirmed current public client at2026-10-08T12:39:44Z; exact add-only callback approved12:33:01Z. No independent Google readback or Secret access."
+    "liveClientAssociation": "User confirmed current public client at2026-10-08T12:39:44Z; exact add-only callback approved12:33:01Z. No independent Google readback or Secret access.",
+    "callbackStatus": "User2026-10-09T00:44:41Z confirms add-only callback saved; not independently read",
+    "authorizedDomains": {
+      "approvedTo": [
+        "gaojihe.cn",
+        "riffoid.com"
+      ],
+      "status": "Add-only riffoid.com approved00:44:41Z, user confirms saved00:45:56Z; no independent Google readback",
+      "rollbackAction": "Retain gaojihe.cn and any actually saved approved riffoid.com; do not remove authorized domain as ordinary rollback"
+    },
+    "supplementEvidence": "docs/evidence/riffoid-google-domain-supplement-20261009.json"
   },
   "requiredProductionFreezeMissing": [
     "Once-allocated actual replay namespace ID and post-addition modern exports/bindings snapshot",

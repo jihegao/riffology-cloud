@@ -23,7 +23,7 @@
     "zoneName": "riffoid.com",
     "zoneId": "b0b0079990e13eb20a17a2d3c41403b8",
     "plan": "Free",
-    "observed": "Parent connector2026-10-09T00:27Z: ENTRY_SIGNING_PRIVATE_JWK type secret_text exists, value unread, mode disabled, originaldate/flags. Does not prove key match; public pin not applied to old Gateway.",
+    "observed": "Parent connector00:38UTC: public key ID correct plain_text, original4bindings inherited and total5; Secret secret_text exists/value unread, mode disabled, date/flags unchanged. Does not prove key match; no old production public pin/replay.",
     "proposedEntryName": "riffoid-entry",
     "proposedCustomDomain": "app.riffoid.com",
     "compatibilityFlag": "global_fetch_strictly_public",
@@ -124,7 +124,7 @@
   },
   "oauthAndExecutionDifferenceAfterApproval": {
     "googleAddOnly": "https://app.riffoid.com/api/auth/callback/google",
-    "googleCurrentConsoleList": "User-provided full public fields and user2026-10-08T12:39:44Z confirms current old client association. No independent Google read or Secret value read; add-only callback approved but application not verified.",
+    "googleCurrentConsoleList": "User2026-10-09T00:44:41Z confirms callback saved and approves add-only riffoid.com Authorized domain; user00:45:56Z confirms domain saved. No independent Google readback; actual OAuth acceptance pending",
     "executionAppOriginAndSingleAncestor": "https://app.riffoid.com",
     "executionOriginUnchanged": "https://riffology-browser-execution.jihe-gao.workers.dev",
     "executionResourcesAssetsPins": "Unchanged4 bindings/Worker/assets; no same-site execution or extra ancestor",
@@ -171,9 +171,19 @@
             "gaojihe.cn"
           ],
           "to": [
-            "gaojihe.cn"
+            "gaojihe.cn",
+            "riffoid.com"
           ],
-          "action": "No proposed change; riffoid.com only if actually required and separately approved"
+          "action": "Add only riffoid.com, retain gaojihe.cn; exact approval00:44:41Z and user save confirmation00:45:56Z, no independent Google readback",
+          "addOnly": [
+            "riffoid.com"
+          ],
+          "remove": [],
+          "savedConfirmed": true,
+          "independentReadback": false,
+          "officialRequirement": "https://support.google.com/cloud/answer/15549049?hl=en",
+          "savedConfirmedByUserUTC": "2026-10-09T00:45:56Z",
+          "savedConfirmationMessageId": "Sentinel_035f7cd63b2c81918eb469da77469ff0"
         },
         "homePage": {
           "from": "",
@@ -195,6 +205,56 @@
       "name": "GOOGLE_CLIENT_ID",
       "type": "secret_text",
       "publicValueRead": false
+    },
+    "googleApplicationEvidence": {
+      "source": "User report relayed by parent; no independent Google console/API read",
+      "reportedUTC": "2026-10-09T00:44:41Z",
+      "userExactQuote": "Google callback 已保存. 同意补授权域名",
+      "clientId": "316292203808-3s6ijnugpiq6hk25vmkj0hgokt2diq86.apps.googleusercontent.com",
+      "callback": {
+        "addOnly": "https://app.riffoid.com/api/auth/callback/google",
+        "savedConfirmedByUser": true,
+        "independentReadback": false,
+        "oauthAcceptanceProven": false
+      },
+      "authorizedDomains": {
+        "fromPreviouslyReported": [
+          "gaojihe.cn"
+        ],
+        "approvedAddOnly": [
+          "riffoid.com"
+        ],
+        "approvedTo": [
+          "gaojihe.cn",
+          "riffoid.com"
+        ],
+        "approvedUTC": "2026-10-09T00:44:41Z",
+        "userHasBeenGuidedByParent": true,
+        "applicationStatus": "USER_CONFIRMED_SAVED_NOT_INDEPENDENTLY_READ",
+        "savedConfirmed": true,
+        "independentReadback": false,
+        "savedConfirmedByUserUTC": "2026-10-09T00:45:56Z",
+        "savedConfirmationMessageId": "Sentinel_035f7cd63b2c81918eb469da77469ff0",
+        "savedConfirmationExactQuote": "授权域名已保存"
+      },
+      "unchangedAuthorizedScope": [
+        "originalRedirectCallbacks",
+        "authorizedJavaScriptOrigins",
+        "homePage",
+        "privacyPolicy",
+        "termsOfService",
+        "clientId",
+        "clientSecret",
+        "scopes"
+      ],
+      "officialRequirement": {
+        "url": "https://support.google.com/cloud/answer/15549049?hl=en",
+        "scope": "Domains used in Branding or OAuth client configurations must first be registered in Branding Authorized domains",
+        "previousPlanOmissionAcknowledged": true,
+        "originalFixedApprovalPacketRewritten": false
+      },
+      "noNewOauthCredentialOrScope": true,
+      "oauthActualAcceptance": "NOT_RUN"
     }
   },
   "mustVerifyBeforeExecution": [
@@ -204,7 +264,7 @@
     "Modern exports metadata: preserve22 existing class/namespace identities; add EntryReplayGuard only; no legacy migrations/tag",
     "Refresh current deployment and binding/assets hashes immediately before action, stop on drift",
     "Real source/native-IP/header and replay/cancellation platform acceptance before coordinated canonical/Execution/signed switch",
-    "Approved add-only Google callback on already user-confirmed client; retain current lists/secret/scopes",
+    "Callback and add-only Branding Authorized domain riffoid.com saved per user reports; no independent Google read. Actual OAuth acceptance pending; retain gaojihe.cn and original lists/URLs/secret/scopes",
     "Freeze complete post-resource forward rollback with actual namespace ID; no half topology and no recovery clock before successful cutover"
   ],
   "realNoPaidAcceptanceBeforeOpeningAuth": [
@@ -227,7 +287,7 @@
     "entryAccountId": "3232ebc7e9bb0199b92e3d70b07825af",
     "gatewayAccountId": "8b0d70250211aa10d89e20605a1c7e5e",
     "entryOnlySecret": "ENTRY_SIGNING_PRIVATE_JWK; user reports saved, parent confirmed name/type presence only; agent never reads value",
-    "entryPublicVar": "ENTRY_SIGNING_KEY_ID=riffoid-entry-20261008-a proposed, new-side value not confirmed",
+    "entryPublicVar": "ENTRY_SIGNING_KEY_ID=riffoid-entry-20261008-a plain_text; parent PATCH and independent GET2026-10-09T00:38Z verified",
     "gatewayPublicVar": "ENTRY_SIGNING_PUBLIC_KEYS_JSON (strict public JWK ring of1-2 IDs; no d/private values)",
     "gatewayNewBinding": {
       "name": "ENTRY_REPLAY",
@@ -327,7 +387,33 @@
     },
     "realSigningSecretExists": true,
     "productionGatewayPublicPinApplied": false,
-    "gatewayReplayResourceCreated": false
+    "gatewayReplayResourceCreated": false,
+    "newEntryPublicConfiguration": {
+      "source": "Parent connector PATCH followed by independent GET; this documentation task did not call production",
+      "recordedUTC": "2026-10-09T00:38:00Z",
+      "accountId": "3232ebc7e9bb0199b92e3d70b07825af",
+      "workerName": "riffoid-entry",
+      "publicBinding": {
+        "name": "ENTRY_SIGNING_KEY_ID",
+        "type": "plain_text",
+        "text": "riffoid-entry-20261008-a"
+      },
+      "prior4BindingsPreservedViaInherit": true,
+      "totalBindings": 5,
+      "secret": {
+        "name": "ENTRY_SIGNING_PRIVATE_JWK",
+        "type": "secret_text",
+        "present": true,
+        "valueRead": false
+      },
+      "TWO_ACCOUNT_AUTH_MODE": "disabled",
+      "compatibilityDate": "2026-09-06",
+      "compatibilityFlags": [
+        "global_fetch_strictly_public",
+        "enable_request_signal"
+      ],
+      "privatePublicMatchProven": false
+    }
   },
   "implementedOfflineCode": {
     "entry": "ECDSA P-256/SHA256 sign canonical target/method/path/query/time/nonce/native-IP/body/allowlisted-header digests. Private key isolated, body bounded, defaults disabled.",

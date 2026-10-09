@@ -16,6 +16,16 @@ FauX-M6dHO_kyhCvVXB4ubgZoDVSBKH2xwYOSzYaFr8
 
 父线程新账号连接器00:27UTC回读：`riffoid-entry` 的 `ENTRY_SIGNING_PRIVATE_JWK` 存在、类型secret_text，未读值；date **2026-09-06**、flags `[global_fetch_strictly_public,enable_request_signal]`、mode **disabled**保持。本任务不重复新側操作。**Secret名称/类型存在、公钥导入成功均不证明私钥内容与公钥匹配**；这只能由之后获准的实际签名/验签确认，不读取Secret或让用户发送私钥来证明。
 
+## Google追加批准与新侧公开配置最新状态
+
+用户 **2026-10-09 00:44:41UTC** 原话：“Google callback 已保存. 同意补授权域名”。新增 `https://app.riffoid.com/api/auth/callback/google` 的保存状态来自用户确认，**未独立读取Google，也不是OAuth实际登录验收**。
+
+原固定批准包只保留Branding `gaojihe.cn`，遗漏了新callback域的必需前置。[Google官方Branding说明](https://support.google.com/cloud/answer/15549049?hl=en)要求Branding及client配置使用的域名预先列入Authorized domains。现按用户此次精确追加批准：**保留gaojihe.cn，仅新增riffoid.com**；主页/隐私/条款、JS origins、原callbacks、scopes、client及secret不改。父线程已指导用户本人操作。用户随后 **00:45:56UTC** 明确回复“授权域名已保存”（Sentinel_035f7cd63b2c81918eb469da77469ff0）；据此记录为**用户确认已保存、未独立读取Google**，不再列保存pending，也不把该确认当成实际OAuth验收。不改写原a0ab4881固定批准包的历史，也不自动发起Branding发布/其他认证修改。
+
+父线程新账号连接器 **00:38UTC** 已PATCH并独立GET核验 `ENTRY_SIGNING_KEY_ID=riffoid-entry-20261008-a`、类型plain_text；原4bindings通过inherit保留，共5bindings。Secret仍secret_text、值未读；mode disabled、date09-06和双flags不变。公开key ID缺项已解除，不需要用户额外手工操作，本任务不重复生产操作。Secret及key ID存在仍不证明私钥/公钥匹配。
+
+追加批准、应用确认与回读来源分列在[Google授权域名补充证据](evidence/riffoid-google-domain-supplement-20261009.json)。
+
 ## 旧侧本次只读刷新
 
 第一次Wrangler SDK读取遇到连接层fetch failed，未取得快照；原失败保留。一次受限、同隔离授权、同scope重试成功，未重新登录、扩权限或重试此前被拒绝的zone DNS/routes/WAF。
@@ -35,9 +45,9 @@ Gateway stage和forward rollback申请件现在都包含实际 `ENTRY_SIGNING_PU
 ## 剩余具体门槛
 
 1. **旧zone现状**：用户既有授权控制台确认当前DNS冲突/覆盖wildcard、全部routes、WAF规则及Skip顺序、request-header Transforms；然后按既有批准应用唯一transport精确WAF并回报非秘密规则ID/表达式/顺序。先前DNS/WAF读取code10000、routes错误code未知继续保留，代理不扩大权限。
-2. **Google add-only callback应用确认**：既有client关联已确认，只待 `https://app.riffoid.com/api/auth/callback/google` 实际加入后的公开清单确认；不改原callbacks、JS origins、Branding、client/scopes/Secret。
-3. **安全阶段与完整回退**：上述前置补齐并重新核对base后，才沿批准单域阶段发布实际公钥和一次创建replay；读取真实namespace ID、现代23exports、完整post-resource配置/版本/assets，冻结前向回退。**本轮明确不发布、不分配**，当前仍不是完整生产回退包。
-4. **transport域/TLS及真实验收**：按批准顺序接线唯一原账号Custom Domain；实际验证入口Secret对应签名与本公钥匹配、来源/WAF/原生IP、伪造proof/同zonepeer/重放及replay故障失败关闭、原Google主体/限流/Catalog/CSRF/Cookie/Location、SSE和隔离Execution。不伪造Origin或放宽Host；不跑付费执行。
-5. **协调切流**：验收满足后才切Gateway canonical、Execution唯一ancestor、entry signed；成功T之后才设置成对T+48h恢复vars。当前旧APP_ORIGIN/Execution不改，没有T或48h计时，原8h session、身份/历史/pins/ledger、12月31trial及上海10月20M1不变。
+
+2. **安全阶段与完整回退**：上述前置补齐并重新核对base后，才沿批准单域阶段发布实际公钥和一次创建replay；读取真实namespace ID、现代23exports、完整post-resource配置/版本/assets，冻结前向回退。**本轮明确不发布、不分配**，当前仍不是完整生产回退包。
+3. **transport域/TLS及真实验收**：callback和授权域名保存均已由用户确认，但实际OAuth登录/主体/回调验收仍未执行。按批准顺序接线唯一原账号Custom Domain；实际验证入口Secret对应签名与本公钥匹配、来源/WAF/原生IP、伪造proof/同zonepeer/重放及replay故障失败关闭、原Google主体/限流/Catalog/CSRF/Cookie/Location、SSE和隔离Execution。不伪造Origin或放宽Host；不跑付费执行。
+4. **协调切流**：验收满足后才切Gateway canonical、Execution唯一ancestor、entry signed；成功T之后才设置成对T+48h恢复vars。当前旧APP_ORIGIN/Execution不改，没有T或48h计时，原8h session、身份/历史/pins/ledger、12月31trial及上海10月20M1不变。
 
 具体回退顺序沿[原冻结说明](riffoid-original-account-live-freeze-20261008.md)和[更新后的回退申请](../infra/riffoid-forward-rollback.request.jsonc)：停入口admission、前向恢复旧origin并整组移除topology vars、Execution恢复旧唯一ancestor，保留实际replay ID与全部23exports及资产资源，不raw rollback跨DO生命周期、不清数据或顺手删Secret。
