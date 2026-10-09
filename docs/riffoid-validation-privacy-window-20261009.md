@@ -8,6 +8,17 @@ baseline and still need a fresh read. Both have logs enabled, sampling 1,
 consumers and Workers `logpush=false`. These facts do **not** prove that full
 protocol headers cannot be persisted. See [baseline evidence](evidence/riffoid-entry-baseline-and-log-privacy-20261009.json).
 
+The parent's October 9 07:44 UTC metadata-only readback adds eight successful
+GETs: account Logpush jobs, corresponding zone Logpush jobs, account observability
+destinations and the relevant entry/Gateway script's tails, for both accounts.
+All returned HTTP 200 with empty lists. These are instantaneous connector
+observations, with no business logs read and no Tail opened; raw responses were
+not received locally. Recheck before publication because jobs/subscriptions can
+change. The snapshot does not change `persist=true`, enumerate every integration
+or custom-field rule, or establish future proof privacy. The parent has requested
+temporary publication, both persist=false changes and restoration, and a single
+test of at most 120 seconds; user approval is still pending in this task.
+
 ## Official field contracts and limits
 
 Workers Logs describes invocation records as request/response metadata alongside
@@ -80,7 +91,8 @@ full proof/signature. IP export must also be absent or expressly resolved before
 an IP-private claim. Check other existing capture/integration configuration;
 unknown capture prevents approval. Do not silently alter or disable account-wide
 jobs, add a redaction Worker, expand permissions or start an experiment to discover
-what was logged. The current receipts do not yet satisfy these requirements.
+what was logged. The 07:44 empty-list snapshot supplies eight endpoint observations;
+fresh publication-time settings/pipeline guards and explicit approval remain required.
 
 ## Verification, failure and restoration
 

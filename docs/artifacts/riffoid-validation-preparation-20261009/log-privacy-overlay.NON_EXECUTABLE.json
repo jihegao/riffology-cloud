@@ -106,5 +106,13 @@
   "noLiveTailOrBusinessLogQueries": true,
   "failure": "close entry; keep ordinary HTTP fenced and privacy overlay until validation invocation drain is established; unknown write uses GET only",
   "restoration": "forward restore original code/config/namespace identities with secret references; restore exact original observability after drain, independently GET receipt",
-  "background": "HTTP fence does not pause scheduled provisioning/GC, alarms or existing in-flight DO/runtime work"
+  "background": "HTTP fence does not pause scheduled provisioning/GC, alarms or existing in-flight DO/runtime work",
+  "historicalPipelineSnapshot": {
+    "evidenceFile": "../../evidence/riffoid-entry-baseline-and-log-privacy-20261009.json",
+    "section": "logPipelineSnapshot",
+    "parentReadUTCMinute": "2026-10-09T07:44Z",
+    "eightGETs200Empty": true,
+    "notAFuturePublicationGuard": true
+  },
+  "parentPublicationApprovalRequestPending": true
 }

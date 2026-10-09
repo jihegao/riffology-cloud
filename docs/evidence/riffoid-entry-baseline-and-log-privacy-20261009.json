@@ -120,7 +120,8 @@
     "provesNoWholeProofHeaderBodyPersistence": false,
     "tailConsumersEmptyAndLogpushFalseDoNotProveAllLoggingSafe": true,
     "approvedPathSchemaAndExistingPipelinesStillNeedReadOnlyReview": true,
-    "noObservabilityChangeAuthorizedOrPerformed": true
+    "noObservabilityChangeAuthorizedOrPerformed": true,
+    "pipelineListsSnapshotNowAttestedEmpty": "2026-10-09T07:44Z; eight GET 200 empty; publication-time recheck mandatory"
   },
   "nativeIngressGuard": {
     "WAFRuleIDAndExactExpressionsReadbackGapResolved": true,
@@ -153,10 +154,8 @@
       "restoration": true
     },
     "requiredPendingMetadata": [
-      "fresh full entry/Gateway settings and log destinations",
-      "active live Tail sessions distinct from configured consumers",
-      "account Workers Trace exports and existing integrations",
-      "both zones HTTP jobs fields/filters and http_log_custom_fields"
+      "fresh full entry/Gateway settings and per-script destinations plus publication-time pipeline recheck",
+      "existing integrations and other capture configuration; current eight endpoint lists are empty, not a universal retention guarantee"
     ],
     "productionLogValuesQueried": false,
     "productionSettingsWritten": false,
@@ -171,5 +170,75 @@
     "inFlightReadPerformed": false,
     "authoritativeReadOnlyInventoryPending": true,
     "backgroundPausePerformed": false
+  },
+  "logPipelineSnapshot": {
+    "sourceParentThread": "01a118f1-ea45-739a-9e7d-6f57ef7cd010",
+    "parentReadUTCMinute": "2026-10-09T07:44Z",
+    "kind": "parent successful two-connector metadata-only readback summary; raw responses not received locally",
+    "readCount": 8,
+    "reads": [
+      {
+        "method": "GET",
+        "path": "/accounts/3232ebc7e9bb0199b92e3d70b07825af/logpush/jobs",
+        "httpStatus": 200,
+        "result": []
+      },
+      {
+        "method": "GET",
+        "path": "/zones/b0b0079990e13eb20a17a2d3c41403b8/logpush/jobs",
+        "httpStatus": 200,
+        "result": []
+      },
+      {
+        "method": "GET",
+        "path": "/accounts/3232ebc7e9bb0199b92e3d70b07825af/workers/observability/destinations",
+        "httpStatus": 200,
+        "result": []
+      },
+      {
+        "method": "GET",
+        "path": "/accounts/3232ebc7e9bb0199b92e3d70b07825af/workers/scripts/riffoid-entry/tails",
+        "httpStatus": 200,
+        "result": []
+      },
+      {
+        "method": "GET",
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/logpush/jobs",
+        "httpStatus": 200,
+        "result": []
+      },
+      {
+        "method": "GET",
+        "path": "/zones/c97b548800561fada1a912c234696db1/logpush/jobs",
+        "httpStatus": 200,
+        "result": []
+      },
+      {
+        "method": "GET",
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/observability/destinations",
+        "httpStatus": 200,
+        "result": []
+      },
+      {
+        "method": "GET",
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/tails",
+        "httpStatus": 200,
+        "result": []
+      }
+    ],
+    "instantaneousOnly": true,
+    "mustRecheckBeforePublication": true,
+    "doesNotPreventLaterSubscriptionOrJobChanges": true,
+    "noBusinessLogsRead": true,
+    "noTailOpened": true,
+    "currentPersistRemainsTrue": true,
+    "currentNoProofPersistenceEstablished": false,
+    "doesNotEnumerateAllPossibleCaptureOrCustomFieldRules": true
+  },
+  "approvalStatus": {
+    "parentHasRequestedTemporaryDeploymentAndBothPersistFalsePlusRestorationAndSingle120SecondMaximumTest": true,
+    "userReplyReceivedInThisTask": false,
+    "productionApprovalNotAssumed": true,
+    "productionWritesByThisTask": 0
   }
 }
