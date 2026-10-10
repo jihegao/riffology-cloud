@@ -1,6 +1,6 @@
 import {readFileSync} from 'node:fs';
 import {buildPacket} from '../../../scripts/m1/riffoid-validation-coordinator.mjs';
-import {hashBytes,stateMetadata,expectedBody} from '../../../scripts/m1/riffoid-validation-evidence.mjs';
+import {hashBytes,hashJSON,stateMetadata,expectedBody} from '../../../scripts/m1/riffoid-validation-evidence.mjs';
 export const shapes=JSON.parse(readFileSync(new URL('./riffoid-public-api-shapes.json',import.meta.url),'utf8'));
 export const start=2_000_000_000_000;
 export function inputFixture(){
@@ -16,7 +16,7 @@ export function inputFixture(){
     metadata.exports=w==='gateway'?{EntryReplayGuard:{type:'durable-object',storage:'sqlite'},Existing:{type:'durable-object',storage:'sqlite'}}:{};
     baselines[w]={worker:'fixture-'+w,version:w+'-v0',deployment:w+'-d0',snapshotSHA256:'b'.repeat(64),metadata,modules:[module(w+'.mjs')]};
   }
-  return {config:{version:1,run:'offline_fixture_fixed_run_20261009',notBefore:start,expires:start+300000,ips:{A:'198.51.100.23',B:'198.51.100.24'}},baselines,
+  return {preservation:Object.fromEntries(['entry','gateway'].map(w=>[w,{assets:{standard:'keep-assets-contract-v1',accountId:'a'.repeat(32),worker:baselines[w].worker,hasAssets:false,bindingsSHA256:hashJSON([]),configEvidence:'NO_ASSETS',configSHA256:null}}])),config:{version:1,run:'offline_fixture_fixed_run_20261009',notBefore:start,expires:start+300000,ips:{A:'198.51.100.23',B:'198.51.100.24'}},baselines,
     validation:{entry:{main_module:'entry-validation.mjs',modules:[module('entry-validation.mjs')]},gateway:{main_module:'gateway-validation.mjs',exports:baselines.gateway.metadata.exports,modules:[module('gateway-validation.mjs')]}}};
 }
 export const packetFixture=()=>buildPacket(inputFixture());

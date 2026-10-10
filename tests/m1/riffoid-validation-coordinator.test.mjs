@@ -21,7 +21,7 @@ function fixture(){
     containers:[{name:'fixture-existing-container'}],keep_assets:true,logpush:false,tail_consumers:[]});
   const baseline=worker=>({worker:'fixture-'+worker,version:worker+'-v0',deployment:worker+'-d0',snapshotSHA256:'b'.repeat(64),metadata:metadata(worker),modules:[module(worker+'.mjs')]});
   const baselines={entry:baseline('entry'),gateway:baseline('gateway')};
-  return {config:{version:1,run,notBefore:start,expires:start+300000,ips:{A:'198.51.100.23',B:'198.51.100.24'}},baselines,
+  return {preservation:Object.fromEntries(['entry','gateway'].map(w=>[w,{assets:{standard:'keep-assets-contract-v1',accountId:'a'.repeat(32),worker:baselines[w].worker,hasAssets:false,bindingsSHA256:digest([]),configEvidence:'NO_ASSETS',configSHA256:null}}])),config:{version:1,run,notBefore:start,expires:start+300000,ips:{A:'198.51.100.23',B:'198.51.100.24'}},baselines,
     validation:{entry:{main_module:'entry-validation.mjs',modules:[module('entry-validation.mjs')]},
       gateway:{main_module:'gateway-validation.mjs',exports:baselines.gateway.metadata.exports,modules:[module('gateway-validation.mjs')]}}};
 }
@@ -29,7 +29,7 @@ function receipt(packet,state,phase,at=state.lastEventAt??start-1000){
   const p=packet.phases[phase],worker=p.worker,prior=state.versions[worker]??packet.baselineGuards[worker];
   return {phase,run,worker:packet.baselineGuards[worker].worker,priorVersion:prior.version,priorDeployment:prior.deployment,
     version:phase+'-fixture-version',activeVersion:phase+'-fixture-version',latestVersion:phase+'-fixture-version',deployment:phase+'-fixture-deployment',requestId:phase+'-fixture-request',
-    metadataSHA256:p.metadataSHA256,modulesSHA256:p.modulesSHA256,startedAt:at,readbackAt:at,fullStateMatches:true,quietPublisher:true,pipelineGuardPassed:true};
+    metadataSHA256:p.metadataSHA256,modulesSHA256:p.modulesSHA256,startedAt:at,readbackAt:at,fullStateMatches:true,preservationMatches:true,coverage:{mainModule:true,metadata:true,modules:true,namedResources:true,assets:true,assetsRetentionContract:true,containers:true},assets:{standard:'keep-assets-contract-v1',accountId:'a'.repeat(32),worker:packet.baselineGuards[p.worker].worker,hasAssets:false,bindingsSHA256:digest([]),configEvidence:'NO_ASSETS',configSHA256:null,keepAssetsRequested:true,explicitAssetsUploadForbidden:true,associationConfigMatches:true,assetContractAccepted:true,assetConfigReadbackVerified:false,configUpdateClaim:'NO_CONFIG_UPDATE_REQUESTED',assetBytesAudited:false,assetSetIdentityVerified:false,contentInventoryAudited:false,contentSHA256:null,coverageComplete:true},quietPublisher:true,pipelineGuardPassed:true};
 }
 function event(type,fields={}){return {type,run,...fields};}
 function published(packet,state,type,phases,now){return advance(packet,state,event(type,{receipts:phases.map(p=>receipt(packet,state,p,now))}),now);}
@@ -218,4 +218,12 @@ test('offline module byte/hash verification detects source drift with no network
     await assert.rejects(()=>verifyCodeReferences(input,join(dir,'input.json')));
     const rejected=spawnSync(process.execPath,[cli,inputPath],{encoding:'utf8'});assert.equal(rejected.status,1);assert.equal(rejected.stdout,'');
   }finally{await rm(dir,{recursive:true,force:true});}
+});
+
+
+test('coordinator refuses claimed preservation with inconsistent contract/coverage and never confuses byte audit',()=>{
+  const p=buildPacket(fixture()),state=initialState(p);
+  for(const edit of [r=>delete r.coverage,r=>r.coverage.assetsRetentionContract=false,r=>r.assets.assetBytesAudited=true,r=>r.assets.hasAssets=true,r=>r.fullStateMatches=false]){
+    const rows=['gatewayObserve','entryObserve'].map(x=>receipt(p,state,x));edit(rows[0]);assert.throws(()=>advance(p,state,event('observationPublished',{receipts:rows}),start));
+  }
 });

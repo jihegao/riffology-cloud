@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {listMetadata,collectPipelineGuard,containerSnapshot,containerConfigurationSHA256,collectContainerAssociations,assetPreservationEvidence} from '../../scripts/m1/riffoid-validation-resources.mjs';
+import {listMetadata,collectPipelineGuard,containerSnapshot,containerConfigurationSHA256,collectContainerAssociations,assetPreservationEvidence,assetSnapshot,assertPreservationReadback} from '../../scripts/m1/riffoid-validation-resources.mjs';
 import {connectorMetadataTransport,sdkReadOnlyFetch,cloudflareTransport} from '../../scripts/m1/riffoid-validation-transport.mjs';
 import {hashJSON} from '../../scripts/m1/riffoid-validation-evidence.mjs';
 const account='a'.repeat(32),zone='b'.repeat(32),worker='fixture-gateway',scope={accountId:account,zoneId:zone,worker};
@@ -65,9 +65,9 @@ test('unsupported Secret/environment or command fields reject without inspecting
   const command=configuration();command.command=['synthetic-sensitive'];assert.throws(()=>containerConfigurationSHA256(command),e=>!String(e).includes('synthetic-sensitive'));
 });
 test('asset preservation distinguishes contract/config match from full content inventory',()=>{
-  const artifact={metadata:{keep_assets:true,bindings:[{type:'assets',name:'ASSETS'}]}},runtime={assets:{base_path:'/',serve_directly:true}},expected={hasAssets:true,configSHA256:hashJSON(runtime.assets)};
-  const r=assetPreservationEvidence(artifact,runtime,{has_assets:true},expected);assert.equal(r.associationConfigMatches,true);assert.equal(r.coverageComplete,false);assert.equal(r.contentInventoryAudited,false);assert.equal(r.contentSHA256,null);
-  runtime.assets.serve_directly=false;assert.equal(assetPreservationEvidence(artifact,runtime,{has_assets:true},expected).associationConfigMatches,false);
+  const artifact={metadata:{keep_assets:true,bindings:[{type:'assets',name:'ASSETS'}]}},runtime={assets:{html_handling:'none',not_found_handling:'none'}},expected=assetSnapshot({accountId:account,worker},artifact,runtime,{id:worker,has_assets:true});
+  const r=assetPreservationEvidence(artifact,runtime,{id:worker,has_assets:true},expected,{accountId:account,worker});assert.equal(r.associationConfigMatches,true);assert.equal(r.assetContractAccepted,true);assert.equal(r.assetBytesAudited,false);assert.equal(r.assetSetIdentityVerified,false);assert.equal(r.coverageComplete,false);assert.equal(r.contentInventoryAudited,false);assert.equal(r.contentSHA256,null);
+  runtime.assets.html_handling='force-trailing-slash';assert.equal(assetPreservationEvidence(artifact,runtime,{id:worker,has_assets:true},expected,{accountId:account,worker}).associationConfigMatches,false);
 });
 
 test('malformed destination script/field arrays cannot leak nested sensitive data into receipts',async()=>{
@@ -91,4 +91,39 @@ test('namespace repeated/overlapping pages, missing last page and page limit fai
 test('namespace transport accepts only bounded page/per_page GET and never namespace pagination on unrelated paths',async()=>{
   const {validateControlRequest}=await import('../../scripts/m1/riffoid-validation-transport.mjs');const p='/accounts/'+'a'.repeat(32)+'/workers/durable_objects/namespaces';
   assert.doesNotThrow(()=>validateControlRequest('GET',p+'?page=2&per_page=50'));for(const query of ['?page=0','?per_page=1001','?page=1&page=2','?page_token=anything'])assert.throws(()=>validateControlRequest('GET',p+query));assert.throws(()=>validateControlRequest('GET',p+'/id?page=2'));
+});
+
+
+test('retention snapshot cannot migrate scope, omit config, alter bindings, or accept overriding upload controls',()=>{
+  const scope={accountId:account,worker},artifact={metadata:{keep_assets:true,bindings:[{type:'assets',name:'ASSETS'}]}},runtime={assets:{html_handling:'none'}},script={id:worker,has_assets:true};
+  const expected=assetSnapshot(scope,artifact,runtime,script);
+  for(const edit of [e=>e.accountId='c'.repeat(32),e=>e.worker='other-worker',e=>e.standard='other-standard',e=>e.extra=true]){
+    const e=structuredClone(expected);edit(e);assert.throws(()=>assetPreservationEvidence(artifact,runtime,script,e,scope));
+  }
+  for(const value of [undefined,null,[],false])assert.throws(()=>assetPreservationEvidence(artifact,{assets:value},script,expected,scope));
+  for(const bindings of [[],[{name:'OTHER',type:'assets'}],[{name:'ASSETS',type:'assets'},{name:'EXTRA',type:'assets'}]]){
+    const a=structuredClone(artifact);a.metadata.bindings=bindings;assert.throws(()=>assetPreservationEvidence(a,runtime,script,expected,scope));
+  }
+  assert.throws(()=>assetPreservationEvidence(artifact,runtime,{...script,id:'other-worker'},expected,scope));
+  for(const assets of [undefined,{}, {jwt:'fixture'}, {config:{html_handling:'none'}}]){const a=structuredClone(artifact);a.metadata.assets=assets;assert.throws(()=>assetPreservationEvidence(a,runtime,script,expected,scope));}
+  for(const keep of [false,undefined,'true']){const a=structuredClone(artifact);a.metadata.keep_assets=keep;assert.throws(()=>assetPreservationEvidence(a,runtime,script,expected,scope));}
+  assert.equal(assetPreservationEvidence(artifact,runtime,script,undefined,scope).assetContractAccepted,false);
+});
+test('no-assets receipt requires authoritative absence and cannot fake audit or preservation flags',()=>{
+  const scope={accountId:account,worker},artifact={metadata:{keep_assets:true,bindings:[]}},script={id:worker,has_assets:false};
+  const expected=assetSnapshot(scope,artifact,{},script),a=assetPreservationEvidence(artifact,{},script,expected,scope),r={assets:a,coverage:{mainModule:true,metadata:true,modules:true,namedResources:true,assets:true,assetsRetentionContract:true,containers:true},preservationMatches:true,fullStateMatches:true};
+  assert.doesNotThrow(()=>assertPreservationReadback(r,expected,scope));
+  for(const runtime of [{assets:{}},{assets:null}])assert.throws(()=>assetPreservationEvidence(artifact,runtime,script,undefined,scope));
+  for(const edit of [x=>x.assets.assetBytesAudited=true,x=>x.assets.hasAssets=true,x=>x.coverage.namedResources=false,x=>x.assets.accountId='c'.repeat(32),x=>x.assets.worker='other',x=>x.assets.assetContractAccepted=false,x=>x.fullStateMatches=false]){const x=structuredClone(r);edit(x);assert.throws(()=>assertPreservationReadback(x,expected,scope));}
+});
+
+
+test('unexposed config is explicit narrow contract evidence, never a fake observed configuration or audit',()=>{
+  const scope={accountId:account,worker},artifact={metadata:{keep_assets:true,bindings:[{name:'ASSETS',type:'assets'}]}},script={id:worker,has_assets:true};
+  const expected=assetSnapshot(scope,artifact,{},script),a=assetPreservationEvidence(artifact,{},script,expected,scope);
+  assert.equal(a.assetContractAccepted,true);assert.equal(a.configEvidence,'NOT_EXPOSED_BY_VERSION_API');assert.equal(a.configSHA256,null);assert.equal(a.assetConfigReadbackVerified,false);
+  const r={assets:a,coverage:{mainModule:true,metadata:true,modules:true,namedResources:true,assets:false,assetsRetentionContract:true,containers:true},preservationMatches:true,fullStateMatches:false};assert.doesNotThrow(()=>assertPreservationReadback(r,expected,scope));
+  for(const edit of [x=>x.assets.assetConfigReadbackVerified=true,x=>x.assets.configEvidence='OBSERVED_ROUTING_CONFIG',x=>x.fullStateMatches=true]){const x=structuredClone(r);edit(x);assert.throws(()=>assertPreservationReadback(x,expected,scope));}
+  const observed=assetSnapshot(scope,artifact,{assets:{html_handling:'none'}},script);assert.equal(assetPreservationEvidence(artifact,{},script,observed,scope).assetContractAccepted,false);assert.equal(assetPreservationEvidence(artifact,{assets:{}},script,expected,scope).assetContractAccepted,false);
+  for(const c of [null,[],{jwt:'fixture'},{headers:{authorization:'fixture'}},{html_handling:'unknown'},{run_worker_first:[1]},{run_worker_first:['https://example.test']},{run_worker_first:['!/private/*']},{run_worker_first:true}])assert.throws(()=>assetSnapshot(scope,artifact,{assets:c},script));
 });

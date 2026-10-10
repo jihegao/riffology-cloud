@@ -8,6 +8,8 @@ import {validationConfig,validationCanonical,validationTransport,
   VALIDATION_MAX_WINDOW_MS,VALIDATION_CLEANUP_MS} from '../../services/entry/validation-policy.ts';
 import {hashJSON,stateMetadata,validateRedactedSecretKey,parseProtocolReceipt,protocolTerminalEvidence,pendingDecisions,restorationEligibility,approvalRecord} from './riffoid-validation-evidence.mjs';
 
+import {assertPreservationReadback,validateFrozenAssetSnapshot} from './riffoid-validation-resources.mjs';
+
 export const digest=hashJSON;
 const copy=value=>structuredClone(value);
 const marker='cloudflare-direct-visitor-waf-v1';
@@ -25,6 +27,7 @@ function validateBaseline(b){
   assert.equal(new Set(m.bindings.map(b=>b.name)).size,m.bindings.length);
   assert.equal(m.observability?.logs?.persist,true,'baseline must independently establish persist=true');
   assert.equal(m.keep_assets,true,'full write metadata must explicitly preserve existing assets');
+  assert.ok(!Object.hasOwn(m,'assets'),'explicit assets upload/configuration forbidden');
   assert.ok(!m.bindings.some(b=>b.name===configName||b.name==='ENTRY_NATIVE_IP_BOUNDARY'),'unexpected baseline temporary state');
   for(const b of m.bindings){
     if(b.type==='secret_text')assert.deepEqual(Object.keys(b).sort(),['name','type'],'redacted reference only');
@@ -78,13 +81,14 @@ export function pendingPhaseTemplates(input){
   const c={version:1,run:null,notBefore:null,expires:null,ips:{A:null,B:null}};
   assert.deepEqual(input.config,c,'template must contain no live window or visitor inputs');
   return {status:'NON_EXECUTABLE_PHASE_TEMPLATES',productionAuthorized:false,config:c,phases:derivePhases(input,c),
-    blockedBy:['raw authenticated transport connection','full asset/container preservation proof','fresh complete baseline consistency','original user execution inputs']};
+    blockedBy:['raw authenticated transport connection','frozen asset retention contract and container preservation evidence','fresh complete baseline consistency','original user execution inputs']};
 }
 export function buildPacket(input){
   const authorization=input.riskAuthorization?approvalRecord(input.riskAuthorization):null;
   const c=validationConfig({RIFFOID_VALIDATION_CONFIG_JSON:JSON.stringify(input.config)});
   assert.equal(c.expires-c.notBefore,VALIDATION_MAX_WINDOW_MS,'this packet freezes the reviewed 300s maximum');
   const phases=derivePhases(input,c);
+  for(const w of ['entry','gateway'])validateFrozenAssetSnapshot(input.preservation?.[w]?.assets,{worker:input.baselines[w].worker},input.baselines[w].metadata);
   return {status:'OFFLINE_REVIEW_PACKET_NOT_AUTHORIZED_FOR_UPLOAD',run:c.run,config:c,configSHA256:digest(c),
     baselineGuards:Object.fromEntries(Object.entries(input.baselines).map(([k,b])=>[k,{worker:b.worker,version:b.version,deployment:b.deployment,snapshotSHA256:b.snapshotSHA256,metadataSHA256:digest(stateMetadata(b.metadata)),modulesSHA256:digest(b.modules),...(b.resourcesSHA256?{resourcesSHA256:b.resourcesSHA256}:{})}])),
     ...(input.preservation?{preservation:copy(input.preservation)}:{}),
@@ -115,7 +119,7 @@ function readbacks(packet,state,ids,receipts,now,minimumStart=state.lastEventAt?
     assert.equal(r.activeVersion,r.version);assert.equal(r.latestVersion,r.version);
     assert.ok(Number.isSafeInteger(r.startedAt)&&r.startedAt>=earliest,'publication precedes required prior evidence');
     assert.ok(Number.isSafeInteger(r.readbackAt)&&r.readbackAt>=r.startedAt&&r.readbackAt<=now,'invalid publication/readback time');
-    assert.equal(r.fullStateMatches,true);assert.equal(r.quietPublisher,true);assert.equal(r.pipelineGuardPassed,true);
+    assertPreservationReadback(r,packet.preservation?.[worker]?.assets,{worker:r.worker});assert.equal(r.quietPublisher,true);assert.equal(r.pipelineGuardPassed,true);
     const registry=state.identities[worker],knownVersion=registry.versions.find(v=>v.version===r.version);
     if(knownVersion){
       assert.equal(r.metadataSHA256,knownVersion.metadataSHA256,'known Worker/version cannot change metadata');

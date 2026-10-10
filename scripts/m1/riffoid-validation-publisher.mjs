@@ -6,7 +6,7 @@ import {join} from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {hashJSON,hashBytes,stateMetadata,wireMetadata,approvalRecord,restorationEligibility,parseProtocolReceipt,protocolTerminalEvidence} from './riffoid-validation-evidence.mjs';
 import {jsonResult} from './riffoid-validation-transport.mjs';
-import {collectPipelineGuard,collectContainerAssociations,assetPreservationEvidence,collectNamespaces} from './riffoid-validation-resources.mjs';
+import {collectPipelineGuard,collectContainerAssociations,assetPreservationEvidence,assetSnapshot,assertPreservationReadback,validateFrozenAssetSnapshot,collectNamespaces} from './riffoid-validation-resources.mjs';
 export const publicationPhases=['gatewayObserve','entryObserve','entryReady','entryStop','gatewayRestorePrivacy','entryRestorePrivacy','gatewayRestoreLogs','entryRestoreLogs'];
 const base=(account,worker)=>`/accounts/${account}/workers/scripts/${worker}`;
 const identity=raw=>{const ds=raw.result.deployments;assert.ok(Array.isArray(ds)&&ds.length);const d=ds[0];assert.equal(d.strategy,'percentage');assert.equal(d.versions.length,1);assert.equal(d.versions[0].percentage,100);return {deployment:d.id,version:d.versions[0].version_id};};
@@ -17,7 +17,7 @@ export function buildWrite(packet,phase,moduleBytes,accountId,requestId){
   assert.equal(p.metadata.keep_assets,true);assert.ok(!Object.hasOwn(p.metadata,'assets'),'explicit assets upload/configuration forbidden');assert.equal(moduleBytes.length,p.modules.length);
   const boundary='riffoid-'+hashJSON({packet:hashJSON(packet),phase,requestId}).slice(0,24),wire=wireMetadata(p.metadata),parts=[Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="metadata"\r\nContent-Type: application/json\r\n\r\n${JSON.stringify(wire)}\r\n`)];
   for(let i=0;i<p.modules.length;i++){
-    const m=p.modules[i];assert.ok(!['metadata','assets'].includes(m.name),'reserved multipart part forbidden');assert.match(m.name,/^[A-Za-z0-9_.-]+$/);assert.equal(moduleBytes[i].length,m.bytes);assert.equal(hashBytes(moduleBytes[i]),m.sha256);
+    const m=p.modules[i];assert.ok(!['metadata','assets','_headers','_redirects'].includes(m.name),'reserved multipart part forbidden');assert.match(m.name,/^[A-Za-z0-9_.-]+$/);assert.equal(moduleBytes[i].length,m.bytes);assert.equal(hashBytes(moduleBytes[i]),m.sha256);
     parts.push(Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="${m.name}"; filename="${m.name}"\r\nContent-Type: application/javascript+module\r\n\r\n`),Buffer.from(moduleBytes[i]),Buffer.from('\r\n'));
   }
   parts.push(Buffer.from(`--${boundary}--\r\n`));
@@ -43,6 +43,7 @@ async function collectResourceEvidence(transport,accountId,worker,artifact,runti
     containers=await collectContainerAssociations(transport,accountId,artifact,runtime,preservation?.containerSnapshots);for(const x of containers.snapshots)resources.push({path:`/accounts/${accountId}/containers/applications/${x.id}`,sha256:hashJSON(x)});
   }
   let pipeline={pipelineGuardPassed:false};if(preservation?.pipelineScope){assert.equal(preservation.pipelineScope.accountId,accountId);assert.equal(preservation.pipelineScope.worker,worker);pipeline=await collectPipelineGuard(transport,preservation.pipelineScope);}
+  if(preservation?.assets){const snapshot=assetSnapshot({accountId,worker},artifact,runtime,{id:worker,has_assets:preservation.assets.hasAssets});assert.equal(hashJSON(snapshot),hashJSON(preservation.assets),'frozen asset association/configuration drift');resources.push({kind:'asset-retention-contract',accountId,worker,sha256:hashJSON(snapshot)});}
   return {resources,resourcesSHA256:hashJSON(resources),namespaceCoverage,containers,pipeline};
 }
 export async function collectReadback(transport,accountId,worker,artifact,preservation){
@@ -67,25 +68,26 @@ export async function collectReadback(transport,accountId,worker,artifact,preser
   const firstResources=await collectResourceEvidence(transport,accountId,worker,artifact,runtime,preservation);
   const inventory=jsonResult(await transport.request({path:`/accounts/${accountId}/workers/scripts`}));assert.ok(Array.isArray(inventory.result));
   const script=inventory.result.find(s=>s.id===worker);assert.ok(script,'authoritative Worker inventory missing target');
-  const assets=assetPreservationEvidence(artifact,runtime,script,preservation?.assets);
+  const assets=assetPreservationEvidence(artifact,runtime,script,preservation?.assets,{accountId,worker});
   const secondResources=await collectResourceEvidence(transport,accountId,worker,artifact,runtime,preservation);
   assert.equal(secondResources.resourcesSHA256,firstResources.resourcesSHA256,'resources changed during independent GETs');
   assert.equal(hashJSON(secondResources.pipeline),hashJSON({...firstResources.pipeline,...(secondResources.pipeline.observedAt!==undefined?{observedAt:secondResources.pipeline.observedAt}:{})}),'pipeline changed during independent GETs');
   const again=jsonResult(await transport.request({path:`/accounts/${accountId}/workers/scripts`})).result;assert.ok(Array.isArray(again));assert.equal(again.find(s=>s.id===worker)?.has_assets,script.has_assets,'asset presence changed during resource GETs');
   const {resources,namespaceCoverage,containers,pipeline}=secondResources;
-  const coverage={mainModule:true,metadata:true,modules:true,namedResources:namespaceCoverage,assets:assets.coverageComplete,containers:containers.associationMatches&&containers.configurationMatches};
-  // Public Worker settings omit container associations and there is no public
-  // GET asset inventory in the reviewed contract. Resource GETs establish their
-  // existing identities, but do not prove the Worker's complete association.
+  const coverage={mainModule:true,metadata:true,modules:true,namedResources:namespaceCoverage,assets:assets.coverageComplete,assetsRetentionContract:assets.assetContractAccepted,containers:containers.associationMatches&&containers.configurationMatches};
+  // The keep_assets gate covers existing-set retention, not a full asset audit.
+  // Routing configuration is reported independently when actually observed;
+  // the reviewed public version schema does not expose it.
   // Bracket every namespace/container/pipeline read, not merely the source reads.
   assert.equal(hashJSON((await get('/settings')).result),hashJSON(settings.result),'settings changed during resource GETs');
   assert.equal(hashJSON((await get('/script-settings')).result),hashJSON(global.result),'global settings changed during resource GETs');
   assert.deepEqual(identity(await get('/deployments')),first,'deployment changed during resource GETs');
   assert.equal((await get('/versions')).result.items[0].id,first.version,'latest inheritance source changed during resource GETs');
-  const fullStateMatches=Object.values(coverage).every(Boolean);
+  const preservationMatches=['mainModule','metadata','modules','namedResources','assetsRetentionContract','containers'].every(k=>coverage[k]===true);
+  const fullStateMatches=preservationMatches&&coverage.assets;
   return {...first,activeVersion:first.version,latestVersion:first.version,metadataSHA256:hashJSON(observed),modulesSHA256:hashJSON(modules),
-    resourcesSHA256:hashJSON(resources),runtimeResources:{containers:structuredClone(runtime.containers),exports:structuredClone(runtime.exports)},coverage,fullStateMatches,assets,containers,pipeline,workerLoggingGuardPassed:true,pipelineGuardPassed:pipeline.pipelineGuardPassed,quietPublisher:false,productionAuthorized:false,
-    limitations:['independent account/zone pipeline and publisher quiescence evidence required',...(fullStateMatches?[]:['full asset/container association proof unavailable; fail closed'])]};
+    resourcesSHA256:hashJSON(resources),runtimeResources:{containers:structuredClone(runtime.containers),exports:structuredClone(runtime.exports)},coverage,preservationMatches,fullStateMatches,assets,containers,pipeline,workerLoggingGuardPassed:true,pipelineGuardPassed:pipeline.pipelineGuardPassed,quietPublisher:false,productionAuthorized:false,
+    limitations:['independent account/zone pipeline and publisher quiescence evidence required',...(preservationMatches?[]:['frozen resource/asset retention contract incomplete; fail closed']),...(assets.hasAssets?['asset bytes and complete asset-set identity not audited']:[])]};
 }
 export class FileJournal{
   constructor(directory){this.directory=directory;this.lockOwner=null;}
@@ -116,7 +118,7 @@ export class FileJournal{
   }
 }
 export class Publisher{
-  constructor({packet,accounts,transport,journal,liveCapability=null}){this.packet=structuredClone(packet);this.packetHash=hashJSON(packet);this.accounts=accounts;this.transport=transport;this.journal=journal;this.liveCapability=liveCapability;this.cursor=0;this.busy=false;this.pending=null;this.current=structuredClone(packet.baselineGuards);this.artifacts=Object.fromEntries(['entry','gateway'].map(w=>[w,packet.phases[w+'RestoreLogs']]));this.registry={};for(const w of ['entry','gateway']){const b=packet.baselineGuards[w],p=packet.preservation?.[w],rows=(p?.reads??[]).map(r=>({path:r.path,sha256:r.sha256}));if(p?.namespaces)rows.push({path:`/accounts/${accounts[w]}/workers/durable_objects/namespaces`,sha256:hashJSON([...p.namespaces].sort((a,b)=>a.id.localeCompare(b.id)))});if(p?.containerSnapshots)for(const c of packet.phases[w+'RestoreLogs'].metadata.containers){const x=p.containerSnapshots.find(s=>s.name===c.name);assert.ok(x);rows.push({path:`/accounts/${accounts[w]}/containers/applications/${x.id}`,sha256:hashJSON(x)});}const expected=hashJSON(rows);if(b.resourcesSHA256)assert.equal(b.resourcesSHA256,expected);this.registry[w]={versions:new Map([[b.version,[b.metadataSHA256,b.modulesSHA256,expected]]]),deployments:new Map([[b.deployment,b.version]])};}}
+  constructor({packet,accounts,transport,journal,liveCapability=null}){this.packet=structuredClone(packet);this.packetHash=hashJSON(packet);this.accounts=accounts;this.transport=transport;this.journal=journal;this.liveCapability=liveCapability;this.cursor=0;this.busy=false;this.pending=null;this.current=structuredClone(packet.baselineGuards);this.artifacts=Object.fromEntries(['entry','gateway'].map(w=>[w,packet.phases[w+'RestoreLogs']]));this.registry={};for(const w of ['entry','gateway']){const b=packet.baselineGuards[w],p=packet.preservation?.[w],rows=(p?.reads??[]).map(r=>({path:r.path,sha256:r.sha256}));if(p?.namespaces)rows.push({path:`/accounts/${accounts[w]}/workers/durable_objects/namespaces`,sha256:hashJSON([...p.namespaces].sort((a,b)=>a.id.localeCompare(b.id)))});if(p?.containerSnapshots)for(const c of packet.phases[w+'RestoreLogs'].metadata.containers){const x=p.containerSnapshots.find(s=>s.name===c.name);assert.ok(x);rows.push({path:`/accounts/${accounts[w]}/containers/applications/${x.id}`,sha256:hashJSON(x)});}validateFrozenAssetSnapshot(p?.assets,{accountId:accounts[w],worker:b.worker},packet.phases[w+'RestoreLogs'].metadata);if(p?.assets)rows.push({kind:'asset-retention-contract',accountId:accounts[w],worker:b.worker,sha256:hashJSON(p.assets)});const expected=hashJSON(rows);if(b.resourcesSHA256)assert.equal(b.resourcesSHA256,expected);this.registry[w]={versions:new Map([[b.version,[b.metadataSHA256,b.modulesSHA256,expected]]]),deployments:new Map([[b.deployment,b.version]])};}}
   async assertLockOwned(){const lock=await this.journal.lockState();assert.equal(lock.status,'PRESENT_OWNER_RECORDED','publisher lock lost; stop original request');assert.equal(lock.owned,true,'publisher lock owner changed; stop original request');}
   async prepare(phase,requestId,moduleBytes){assert.equal(this.transport.mode,'dry-run','prepare cannot dispatch an HTTP upload');const w=buildWrite(this.packet,phase,moduleBytes,this.accounts[this.packet.phases[phase].worker],requestId);return {dryRun:true,method:w.method,path:w.path,bytes:w.body.length,bodySHA256:hashBytes(w.body)};}
   async skipExpiredStop(state,now=Date.now()){
@@ -152,7 +154,7 @@ export class Publisher{
     try{
       await this.journal.lock();locked=true;
       if(this.cursor===0)assert.equal((await this.journal.records()).length,0,'existing completed chain must be reconstructed before publication');
-      const pre=await collectReadback(this.transport,account,prior.worker,this.artifacts[w],this.packet.preservation?.[w]);assert.equal(pre.version,prior.version);assert.equal(pre.deployment,prior.deployment);assert.equal(pre.fullStateMatches,true,'pre-write full state incomplete');assert.equal(pre.pipelineGuardPassed,true,'independent pipeline evidence incomplete');
+      const pre=await collectReadback(this.transport,account,prior.worker,this.artifacts[w],this.packet.preservation?.[w]);assert.equal(pre.version,prior.version);assert.equal(pre.deployment,prior.deployment);assertPreservationReadback(pre,this.packet.preservation?.[w]?.assets,{accountId:account,worker:prior.worker});assert.equal(pre.pipelineGuardPassed,true,'independent pipeline evidence incomplete');
       await this.assertLockOwned();const at=Date.now();assert.ok(cap.notBefore<=at&&at<cap.expires,'live approval expired during preflight');
       if(['gatewayObserve','entryObserve','entryReady'].includes(phase))assert.ok(at<this.packet.config.expires);
       if(phase==='entryReady')assert.ok(at<this.packet.schedule.markerReadbackDeadline,'marker deadline passed during preflight');
@@ -163,7 +165,7 @@ export class Publisher{
       if(phase==='entryReady')assert.ok(putAt<this.packet.schedule.markerReadbackDeadline);
       const ack=jsonResult(await this.transport.request(write));const receipt=await collectReadback(this.transport,account,prior.worker,p,this.packet.preservation?.[w]);
       assert.equal(ack.result.id,prior.worker,'original upload acknowledgement script mismatch');
-      this.checkIdentity(w,receipt);assert.equal(receipt.fullStateMatches,true,'post-write state incomplete');assert.equal(receipt.pipelineGuardPassed,true,'independent pipeline evidence incomplete');
+      this.checkIdentity(w,receipt);assertPreservationReadback(receipt,this.packet.preservation?.[w]?.assets,{accountId:account,worker:prior.worker});assert.equal(receipt.pipelineGuardPassed,true,'independent pipeline evidence incomplete');
       await this.assertLockOwned();await this.journal.append(requestId,'terminal',{phase,requestId,receipt,ackScript:ack.result.id,observedVersion:receipt.version,readbackAt:Date.now()});
       await this.assertLockOwned();this.registry[w].versions.set(receipt.version,[receipt.metadataSHA256,receipt.modulesSHA256,receipt.resourcesSHA256]);this.registry[w].deployments.set(receipt.deployment,receipt.version);
       this.current[w]={...prior,version:receipt.version,deployment:receipt.deployment};this.artifacts[w]=p;this.cursor++;this.pending=null;
@@ -191,7 +193,7 @@ export class Publisher{
       const unknown=rows.find(r=>r.name===intent.requestId+'.unknown.json');if(unknown){assert.equal(unknown.value.requestId,intent.requestId);assert.equal(unknown.value.phase,intent.phase);assert.equal(unknown.value.stopFurtherTest,true);assert.equal(unknown.value.automaticLogsRestore,false);}
       if(!done||unknown){if(done)pendingTerminal=1;assert.equal(pending,null);if(requirePending)assert.equal(intent.requestId,requestId);pending={requestId:intent.requestId,phase:intent.phase,worker:w,prior:structuredClone(prior),startedAt:intent.startedAt,terminalCandidatePresent:!!done};break;}
       const r=done.value.receipt,p=this.packet.phases[intent.phase];assert.equal(done.value.requestId,intent.requestId);assert.equal(done.value.phase,intent.phase);assert.equal(done.value.ackScript,prior.worker);assert.equal(done.value.observedVersion,r.version);assert.ok(done.value.readbackAt>=intent.startedAt);
-      assert.equal(r.fullStateMatches,true);assert.equal(r.pipelineGuardPassed,true);assert.equal(r.metadataSHA256,p.metadataSHA256);assert.equal(r.modulesSHA256,p.modulesSHA256);
+      assertPreservationReadback(r,this.packet.preservation?.[w]?.assets,{accountId:this.accounts[w],worker:prior.worker});assert.equal(r.pipelineGuardPassed,true);assert.equal(r.metadataSHA256,p.metadataSHA256);assert.equal(r.modulesSHA256,p.modulesSHA256);
       assert.equal(r.resourcesSHA256,this.registry[w].versions.get(prior.version)[2],'terminal resources differ from frozen ledger');this.checkIdentity(w,r);
       this.registry[w].versions.set(r.version,[r.metadataSHA256,r.modulesSHA256,r.resourcesSHA256]);this.registry[w].deployments.set(r.deployment,r.version);this.current[w]={...prior,version:r.version,deployment:r.deployment};this.artifacts[w]=p;this.cursor++;consumed++;
     }
@@ -213,14 +215,16 @@ export class Publisher{
     const lock=await this.journal.lockState(),observed={};
     for(const w of ['gateway','entry']){
       const prior=shadow.current[w],r=await collectReadback(this.transport,this.accounts[w],prior.worker,shadow.artifacts[w],this.packet.preservation?.[w]);
-      assert.equal(r.version,prior.version);assert.equal(r.deployment,prior.deployment);assert.equal(r.metadataSHA256,shadow.registry[w].versions.get(prior.version)[0]);assert.equal(r.modulesSHA256,shadow.registry[w].versions.get(prior.version)[1]);shadow.checkIdentity(w,r);observed[w]=r;
+      assert.equal(r.version,prior.version);assert.equal(r.deployment,prior.deployment);assert.equal(r.metadataSHA256,shadow.registry[w].versions.get(prior.version)[0]);assert.equal(r.modulesSHA256,shadow.registry[w].versions.get(prior.version)[1]);shadow.checkIdentity(w,r);assertPreservationReadback(r,this.packet.preservation?.[w]?.assets,{accountId:this.accounts[w],worker:prior.worker});observed[w]=r;
     }
     // Bracket the earlier Worker while the other account was read. These GETs
     // detect observed cross-account identity drift; they are not an atomic
     // account transaction or a replacement for external publisher exclusion.
     for(const w of ['gateway','entry']){
       const path=base(this.accounts[w],shadow.current[w].worker),get=async suffix=>jsonResult(await this.transport.request({path:path+suffix}));
-      const r=observed[w],resource=await collectResourceEvidence(this.transport,this.accounts[w],shadow.current[w].worker,shadow.artifacts[w],r.runtimeResources,this.packet.preservation?.[w]);
+      const r=observed[w],frozenAssets=this.packet.preservation?.[w]?.assets;let runtime=r.runtimeResources;
+      if(frozenAssets){const version=await get('/versions/'+r.version);assert.equal(version.result.id,r.version);runtime=version.result.resources.script_runtime;assert.equal(hashJSON(version.result.resources.bindings),hashJSON(shadow.artifacts[w].metadata.bindings),'asset bindings changed during cross-account reconstruction');const list=jsonResult(await this.transport.request({path:`/accounts/${this.accounts[w]}/workers/scripts`})).result;const script=list.find(s=>s.id===shadow.current[w].worker);assert.ok(script);const a=assetPreservationEvidence(shadow.artifacts[w],runtime,script,frozenAssets,{accountId:this.accounts[w],worker:script.id});assert.equal(a.assetContractAccepted,true,'asset contract changed during cross-account reconstruction');}
+      const resource=await collectResourceEvidence(this.transport,this.accounts[w],shadow.current[w].worker,shadow.artifacts[w],runtime,this.packet.preservation?.[w]);
       assert.equal(resource.resourcesSHA256,r.resourcesSHA256,'resources changed during cross-account reconstruction');assert.equal(resource.pipeline.evidenceSHA256,r.pipeline.evidenceSHA256,'pipeline changed during cross-account reconstruction');
       const latest=await get('/versions');assert.equal(latest.result.items[0].id,r.version,'latest changed during cross-account reconstruction');
       const settings=(await get('/settings')).result;wireMetadata({...shadow.artifacts[w].metadata,bindings:settings.bindings});
@@ -233,5 +237,5 @@ export class Publisher{
     const after=await this.journal.lockState();assert.equal(hashJSON(lock),hashJSON(after),'lock changed during GET reconstruction');this.adopt(shadow);
     return {status:'COMPLETED_CHAIN_RESTORED_READ_ONLY',cursor:this.cursor,nextPhase:publicationPhases[this.cursor]??null,observed,lock,lockAcquisitionBlocked:lock.status!=='ABSENT',productionAuthorized:false,productionActionsExecuted:0};
   }
-  async reconcile(requestId){assert.equal(this.busy,false);assert.ok(this.pending&&this.pending.requestId===requestId);const p=this.pending,w=p.worker;const observed=await collectReadback(this.transport,this.accounts[w],p.prior.worker,this.packet.phases[p.phase],this.packet.preservation?.[w]);this.checkIdentity(w,observed);return {status:'READ_ONLY_ORIGINAL_WRITE_PENDING',requestId,observed,productionAuthorized:false};}
+  async reconcile(requestId){assert.equal(this.busy,false);assert.ok(this.pending&&this.pending.requestId===requestId);const p=this.pending,w=p.worker;const observed=await collectReadback(this.transport,this.accounts[w],p.prior.worker,this.packet.phases[p.phase],this.packet.preservation?.[w]);this.checkIdentity(w,observed);assertPreservationReadback(observed,this.packet.preservation?.[w]?.assets,{accountId:this.accounts[w],worker:p.prior.worker});return {status:'READ_ONLY_ORIGINAL_WRITE_PENDING',requestId,observed,productionAuthorized:false};}
 }

@@ -4,6 +4,7 @@ import {readFile,mkdtemp,rm,readdir} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {cloudflareTransport,jsonResult} from '../../scripts/m1/riffoid-validation-transport.mjs';
+import {assetSnapshot} from '../../scripts/m1/riffoid-validation-resources.mjs';
 import {buildWrite,collectReadback,Publisher,FileJournal,publicationPhases} from '../../scripts/m1/riffoid-validation-publisher.mjs';
 import {preparePackage} from '../../scripts/m1/riffoid-validation-prepare.mjs';
 import {writeFile} from 'node:fs/promises';
@@ -12,7 +13,7 @@ import {hashJSON,hashBytes,stateMetadata,wireMetadata,approvalRecord,restoration
 import {inputFixture,moduleBytes,readbackFixture,start} from './fixtures/riffoid-offline-fixtures.mjs';
 const risk=JSON.parse(await readFile(new URL('../../docs/evidence/riffoid-risk-authorization-20261010.json',import.meta.url),'utf8'));
 const account='a'.repeat(32),accounts={entry:account,gateway:account};
-function input(){const x=inputFixture();x.riskAuthorization=structuredClone(risk);x.preservation={};for(const w of ['entry','gateway']){x.preservation[w]={namespaces:[{id:'fixture-existing-replay'}],reads:[]};x.baselines[w].metadata.containers=[];x.baselines[w].metadata.bindings=x.baselines[w].metadata.bindings.map(b=>b.name==='ENTRY_SIGNING_PRIVATE_JWK'?{name:b.name,type:'secret_text'}:b);}return x;}
+function input(){const x=inputFixture();x.riskAuthorization=structuredClone(risk);const assetDefaults=x.preservation;x.preservation={};for(const w of ['entry','gateway']){x.preservation[w]={assets:assetDefaults[w].assets,namespaces:[{id:'fixture-existing-replay'}],reads:[]};x.baselines[w].metadata.containers=[];x.baselines[w].metadata.bindings=x.baselines[w].metadata.bindings.map(b=>b.name==='ENTRY_SIGNING_PRIVATE_JWK'?{name:b.name,type:'secret_text'}:b);}return x;}
 function rawJSON(d){return {status:200,contentType:'application/json',bytes:Buffer.from(JSON.stringify(d))};}
 function apiFixture(p,phase,prior){
   const f=readbackFixture(p,phase,prior),calls=[];
@@ -64,11 +65,11 @@ test('GET-derived modules and runtime export readback work; drift/omitted cf-ent
   const g=apiFixture(p,'gatewayObserve',prior),wrapped={request:async args=>{const x=await g.transport.request(args);if(x.mainModule)delete x.mainModule;return x;}};
   await assert.rejects(()=>collectReadback(wrapped,account,'fixture-gateway',p.phases.gatewayObserve),/cf-entrypoint/);
 });
-test('actual asset/container readback gaps stay blocked rather than trusting upload intent',async()=>{
-  const x=input();x.baselines.gateway.metadata.bindings.push({name:'ASSETS',type:'assets'});x.baselines.gateway.metadata.containers=[{class_name:'Existing',name:'existing'}];const p=buildPacket(x),f=apiFixture(p,'gatewayObserve',{version:'gateway-v0',deployment:'gateway-d0'});
-  f.f.version.result.resources.script_runtime.containers=structuredClone(p.phases.gatewayObserve.metadata.containers);
-  const r=await collectReadback(f.transport,account,'fixture-gateway',p.phases.gatewayObserve);assert.equal(r.fullStateMatches,false);assert.equal(r.coverage.assets,false);assert.equal(r.coverage.containers,false);
+test('contradictory asset presence rejects rather than trusting upload intent',async()=>{
+  const {x}=assetInput();const p=buildPacket(x),f=apiFixture(p,'gatewayObserve',{version:'gateway-v0',deployment:'gateway-d0'});
+  await assert.rejects(()=>collectReadback(f.transport,account,'fixture-gateway',p.phases.gatewayObserve),/asset binding without assets/);
 });
+
 test('durable exclusive journal is retained for unknown writes and rejects a second owner',async()=>{
   const d=await mkdtemp(join(tmpdir(),'riffoid-journal-'));try{
     const a=new FileJournal(d),b=new FileJournal(d);await a.lock();await assert.rejects(()=>b.lock());await a.append('original','intent',{bodySHA256:'a'.repeat(64)});assert.equal(await b.hasPending(),true);
@@ -77,7 +78,7 @@ test('durable exclusive journal is retained for unknown writes and rejects a sec
 });
 test('version/deployment identity also binds resource snapshot hashes',()=>{
   const p=buildPacket(input()),pub=new Publisher({packet:p,accounts,transport:cloudflareTransport(),journal:{}});
-  const b=p.baselineGuards.gateway,resources=[{path:`/accounts/${account}/workers/durable_objects/namespaces`,sha256:hashJSON([{id:'fixture-existing-replay'}])}];pub.checkIdentity('gateway',{...b,resourcesSHA256:hashJSON(resources)});
+  const b=p.baselineGuards.gateway;pub.checkIdentity('gateway',{...b,resourcesSHA256:pub.registry.gateway.versions.get(b.version)[2]});
   assert.throws(()=>pub.checkIdentity('gateway',{...b,resourcesSHA256:hashJSON([{changed:true}])}));
   assert.throws(()=>pub.checkIdentity('gateway',{...b,version:'another-version',resourcesSHA256:hashJSON([])}));
 });
@@ -124,7 +125,7 @@ test('natural expiry checkpoint survives restart and rejects missing or altered 
   try{
     const journal=new FileJournal(d),pub=new Publisher({packet:p,accounts,transport:{mode:'read-only'},journal});
     for(const [i,phase]of ['gatewayObserve','entryObserve','entryReady'].entries()){
-      const w=p.phases[phase].worker,b=pub.current[w],requestId='step_'+i,r={version:'version_'+i,deployment:'deployment_'+i,metadataSHA256:p.phases[phase].metadataSHA256,modulesSHA256:p.phases[phase].modulesSHA256,resourcesSHA256:pub.registry[w].versions.get(b.version)[2],fullStateMatches:true,pipelineGuardPassed:true};
+      const w=p.phases[phase].worker,b=pub.current[w],requestId='step_'+i,derived=await collectReadback(apiFixture(p,phase,b).transport,account,b.worker,p.phases[phase],p.preservation[w]),r={...derived,version:'version_'+i,deployment:'deployment_'+i,metadataSHA256:p.phases[phase].metadataSHA256,modulesSHA256:p.phases[phase].modulesSHA256,resourcesSHA256:pub.registry[w].versions.get(b.version)[2],fullStateMatches:true,preservationMatches:true,pipelineGuardPassed:true};
       await journal.append(requestId,'intent',{packetSHA256:hashJSON(p),phase,requestId,worker:w,priorVersion:b.version,priorDeployment:b.deployment,bodySHA256:'a'.repeat(64),startedAt:start+i});
       await journal.append(requestId,'terminal',{phase,requestId,receipt:r,ackScript:b.worker,observedVersion:r.version,readbackAt:start+i+1});pub.current[w]={...b,version:r.version,deployment:r.deployment};pub.registry[w].versions.set(r.version,[r.metadataSHA256,r.modulesSHA256,r.resourcesSHA256]);pub.registry[w].deployments.set(r.deployment,r.version);pub.cursor++;
     }
@@ -251,4 +252,94 @@ test('existing container configuration changes independently during Worker inven
     return f.transport.request(args);
   }};
   await assert.rejects(()=>collectReadback(t,account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway),/configuration or identity drift/);assert.ok(readsAfter>0);
+});
+
+function assetInput(){
+  const x=input();x.baselines.gateway.metadata.bindings.push({name:'ASSETS',type:'assets'});
+  const runtime={assets:{html_handling:'none',not_found_handling:'none'}};
+  x.preservation.gateway.assets=assetSnapshot({accountId:account,worker:x.baselines.gateway.worker},{metadata:x.baselines.gateway.metadata},runtime,{id:x.baselines.gateway.worker,has_assets:true});
+  return {x,runtime};
+}
+function assetAPI(p,phase,current,runtime){
+  const f=apiFixture(p,phase,current);
+  f.f.afterDeployment.result.deployments[0].id=current.deployment;f.f.afterDeployment.result.deployments[0].versions[0].version_id=current.version;f.f.latestVersions.result.items[0].id=current.version;f.f.version.result.id=current.version;
+  if(Object.hasOwn(runtime,'assets'))f.f.version.result.resources.script_runtime.assets=structuredClone(runtime.assets);else delete f.f.version.result.resources.script_runtime.assets;
+  const transport={mode:'read-only',request:async args=>args.path.endsWith('/workers/scripts')?rawJSON({success:true,result:[{id:'fixture-gateway',has_assets:true}]}):f.transport.request(args)};
+  return {...f,transport};
+}
+test('asset retention readback passes preservation with full byte coverage false, still rejects resource and module drift',async()=>{
+  const {x,runtime}=assetInput(),p=buildPacket(x),f=assetAPI(p,'gatewayObserve',p.baselineGuards.gateway,runtime);
+  const r=await collectReadback(f.transport,account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway);
+  assert.equal(r.preservationMatches,true);assert.equal(r.fullStateMatches,false);assert.equal(r.coverage.assets,false);assert.equal(r.coverage.assetsRetentionContract,true);assert.equal(r.assets.assetBytesAudited,false);
+  const pub=new Publisher({packet:p,accounts,transport:{mode:'read-only'},journal:{}});assert.equal(pub.registry.gateway.versions.get(p.baselineGuards.gateway.version)[2],r.resourcesSHA256);
+  for(const edit of [g=>g.f.version.result.resources.script_runtime.assets.html_handling='force-trailing-slash',g=>g.f.version.result.resources.bindings.find(b=>b.type==='assets').name='OTHER']){const g=assetAPI(p,'gatewayObserve',p.baselineGuards.gateway,runtime);edit(g);await assert.rejects(()=>collectReadback(g.transport,account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway));}
+  const g=assetAPI(p,'gatewayObserve',p.baselineGuards.gateway,runtime);await assert.rejects(()=>collectReadback({request:async args=>{const r=await g.transport.request(args);if(r.mainModule)r.bytes=Buffer.from('not the frozen module');return r;}},account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway));
+  const containers=assetAPI(p,'gatewayObserve',p.baselineGuards.gateway,runtime);containers.f.version.result.resources.script_runtime.containers=[{name:'foreign'}];assert.equal((await collectReadback(containers.transport,account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway)).preservationMatches,false);
+  const missing=structuredClone(p.preservation.gateway);delete missing.namespaces;const incomplete=await collectReadback(f.transport,account,'fixture-gateway',p.phases.gatewayObserve,missing);assert.equal(incomplete.preservationMatches,false);
+});
+test('asset-enabled publisher computes retention gate without byte-audit override; post-write drift stays original unknown',async()=>{
+  for(const postDrift of [false,true]){
+    const {x,runtime}=assetInput(),now=Date.now();x.config.notBefore=now-1000;x.config.expires=x.config.notBefore+300000;
+    x.preservation.gateway.pipelineScope={accountId:account,zoneId:'b'.repeat(32),worker:'fixture-gateway'};const p=buildPacket(x),dir=await mkdtemp(join(tmpdir(),'riffoid-assets-write-'));
+    try{
+      let phase='gatewayRestoreLogs',current=p.baselineGuards.gateway,puts=0;
+      const transport={mode:'live',request:async args=>{
+        if(args.method==='PUT'){puts++;phase='gatewayObserve';current={version:'new-v',deployment:'new-d'};return rawJSON({success:true,result:{id:'fixture-gateway'}});}
+        if(args.path===`/zones/${'b'.repeat(32)}`)return rawJSON({success:true,result:{id:'b'.repeat(32),account:{id:account}}});
+        if(args.path.includes('/logpush/jobs')||args.path.includes('/destinations')||args.path.endsWith('/tails'))return rawJSON({success:true,result:[]});
+        const seen=structuredClone(runtime);if(postDrift&&puts)seen.assets.html_handling='force-trailing-slash';
+        return assetAPI(p,phase,current,seen).transport.request(args);
+      }};
+      const journal=new FileJournal(dir),pub=new Publisher({packet:p,accounts,transport,journal,liveCapability:{productionWritesPermitted:true,packetSHA256:hashJSON(p),notBefore:now-2000,expires:now+350000,singlePublisher:true,resourcesCoverageEstablished:true}});
+      const args={phase:'gatewayObserve',requestId:'original',moduleBytes:moduleBytes(p.phases.gatewayObserve),coordinationState:initialState(p),now};
+      if(postDrift){await assert.rejects(()=>pub.publish(args),/asset association\/configuration drift/);assert.equal(pub.pending.requestId,'original');assert.equal(pub.cursor,0);assert.equal(await journal.hasPending(),true);assert.ok((await readdir(dir)).includes('publisher.lock'));}
+      else {const r=await pub.publish(args);assert.equal(r.preservationMatches,true);assert.equal(r.fullStateMatches,false);assert.equal(r.assets.assetContractAccepted,true);assert.equal(r.assets.assetBytesAudited,false);assert.equal(pub.cursor,1);assert.equal(await journal.hasPending(),false);}
+      assert.equal(puts,1); // In-memory fixture only; no HTTP or deployment.
+    }finally{await rm(dir,{recursive:true});}
+  }
+});
+
+
+test('asset contract rejects reserved configuration modules and claimed receipts cannot bypass coordinator gates',async()=>{
+  for(const name of ['assets','metadata','_headers','_redirects']){
+    const p=buildPacket(input()),phase=p.phases.gatewayObserve;phase.modules[0].name=name;phase.metadata.main_module=name;phase.preparedMetadataSHA256=hashJSON(phase.metadata);phase.metadataSHA256=hashJSON(stateMetadata(phase.metadata));phase.modulesSHA256=hashJSON(phase.modules);
+    const bytes=Buffer.from('fixture');phase.modules[0].bytes=bytes.length;phase.modules[0].sha256=hashBytes(bytes);phase.modulesSHA256=hashJSON(phase.modules);
+    assert.throws(()=>buildWrite(p,'gatewayObserve',[bytes],account,'original'),/reserved multipart/);
+  }
+  const {x,runtime}=assetInput();delete runtime.assets;x.preservation.gateway.assets=assetSnapshot({accountId:account,worker:'fixture-gateway'},{metadata:x.baselines.gateway.metadata},runtime,{id:'fixture-gateway',has_assets:true});
+  const p=buildPacket(x),s=initialState(p),receipts=[];
+  for(const [phase,w]of [['gatewayObserve','gateway'],['entryObserve','entry']]){
+    const t=w==='gateway'?assetAPI(p,phase,{version:phase+'-new',deployment:phase+'-new-deployment'},runtime).transport:apiFixture(p,phase,p.baselineGuards[w]).transport;
+    const r=await collectReadback(t,account,p.baselineGuards[w].worker,p.phases[phase],p.preservation[w]);
+    receipts.push({...r,phase,worker:p.baselineGuards[w].worker,run:p.run,priorVersion:p.baselineGuards[w].version,priorDeployment:p.baselineGuards[w].deployment,startedAt:start-1,readbackAt:start-1,requestId:phase,quietPublisher:true,pipelineGuardPassed:true});
+  }
+  assert.equal(receipts[0].assets.assetConfigReadbackVerified,false);assert.equal(receipts[0].fullStateMatches,false);assert.equal(receipts[0].preservationMatches,true);
+  assert.equal(advance(p,s,{type:'observationPublished',run:p.run,receipts},start).phase,'observing');
+  for(const edit of [r=>r.assets.configEvidence='OBSERVED_ROUTING_CONFIG',r=>r.assets.assetConfigReadbackVerified=true,r=>r.assets.accountId='c'.repeat(32),r=>r.coverage.assets=true]){const rs=structuredClone(receipts);edit(rs[0]);assert.throws(()=>advance(p,s,{type:'observationPublished',run:p.run,receipts:rs},start));}
+});
+
+
+test('asset completed restart rechecks both scopes and refuses cross-account config, binding or presence drift',async()=>{
+  for(const drift of [null,'gateway-config','gateway-binding','entry-presence']){
+    const {x,runtime}=assetInput(),p=buildPacket(x),dir=await mkdtemp(join(tmpdir(),'riffoid-assets-restore-'));
+    try{
+      const j=new FileJournal(dir),b=p.baselineGuards.gateway,current={version:'asset-completed-v',deployment:'asset-completed-d'},f=assetAPI(p,'gatewayObserve',current,runtime);
+      const r=await collectReadback(f.transport,account,b.worker,p.phases.gatewayObserve,p.preservation.gateway);r.pipelineGuardPassed=true;
+      await j.append('completed','intent',{packetSHA256:hashJSON(p),phase:'gatewayObserve',requestId:'completed',worker:'gateway',priorVersion:b.version,priorDeployment:b.deployment,bodySHA256:'a'.repeat(64),startedAt:start});
+      await j.append('completed','terminal',{requestId:'completed',phase:'gatewayObserve',receipt:r,ackScript:b.worker,observedVersion:r.version,readbackAt:start+1});
+      const entry=apiFixture(p,'entryRestoreLogs',p.baselineGuards.entry);entry.f.afterDeployment.result.deployments[0].id=p.baselineGuards.entry.deployment;entry.f.afterDeployment.result.deployments[0].versions[0].version_id=p.baselineGuards.entry.version;entry.f.latestVersions.result.items[0].id=p.baselineGuards.entry.version;entry.f.version.result.id=p.baselineGuards.entry.version;
+      let readEntry=false;
+      const transport={mode:'read-only',request:async args=>{
+        if(args.path.endsWith('/workers/scripts'))return rawJSON({success:true,result:[{id:'fixture-gateway',has_assets:true},{id:'fixture-entry',has_assets:readEntry&&drift==='entry-presence'}]});
+        if(args.path.includes('/fixture-entry')){readEntry=true;return entry.transport.request(args);}
+        const response=await f.transport.request(args);
+        if(readEntry&&args.path.includes('/versions/')&&drift){const d=JSON.parse(response.bytes);if(drift==='gateway-config')d.result.resources.script_runtime.assets.html_handling='force-trailing-slash';if(drift==='gateway-binding')d.result.resources.bindings.find(b=>b.type==='assets').name='OTHER';return rawJSON(d);}
+        return response;
+      }};
+      const before=await j.records(),pub=new Publisher({packet:p,accounts,transport,journal:j});
+      if(drift){await assert.rejects(()=>pub.restoreCompletedChain());assert.equal(pub.cursor,0);}
+      else{const restored=await pub.restoreCompletedChain();assert.equal(restored.cursor,1);assert.equal(restored.observed.gateway.preservationMatches,true);assert.equal(restored.observed.gateway.fullStateMatches,false);assert.equal(restored.productionActionsExecuted,0);}
+      assert.deepEqual(await j.records(),before);
+    }finally{await rm(dir,{recursive:true});}
+  }
 });

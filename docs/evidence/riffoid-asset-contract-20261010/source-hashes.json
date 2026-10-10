@@ -1,0 +1,9 @@
+{
+  "scripts/m1/riffoid-validation-resources.mjs": "e4b2f8b683e6236c9c333ca1d377e5079073953637ea6ca8a9df5078dbd754c1",
+  "scripts/m1/riffoid-validation-publisher.mjs": "a15257537fc6af025e4c749e591ff08beecaada3e187faf7b404f1047eef6e66",
+  "scripts/m1/riffoid-validation-coordinator.mjs": "f9e8cfbdde8dbf7ba8d5c3fe3187400e04b935ce5064c00c7ea8fb4e49f20a4d",
+  "tests/m1/riffoid-validation-resources.test.mjs": "730fa3fff22a01a2b4c5537139daff76f91cfc86359fc097c85bd926d4471991",
+  "tests/m1/riffoid-validation-live-adapter.test.mjs": "af1f84a7a88b9a14d20368cf59fa1ca3f957bc6344ef6433bdf5a252380cab9d",
+  "tests/m1/riffoid-validation-coordinator.test.mjs": "e8c7ce7bdfe43d092fa9c19f09d29448e128e77bdbda112603858f5926f832f1",
+  "tests/m1/fixtures/riffoid-offline-fixtures.mjs": "57833cd671fa74a3910d7cf324577c28ac6a61981e11c168cfde4abbdc992beb"
+}

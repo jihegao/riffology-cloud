@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "preparedAt": "2026-10-10T09:32:08.782637+00:00",
+  "status": "INDEPENDENTLY_ACCEPTED_OFFLINE_NOT_YET_PUSHED",
+  "baseCommit": "a5adf902245fa2ae5af9f3ecfc3bd5a63f5099e9",
+  "standard": "keep-assets-contract-v1",
+  "sourceHashes": {
+    "scripts/m1/riffoid-validation-resources.mjs": "e4b2f8b683e6236c9c333ca1d377e5079073953637ea6ca8a9df5078dbd754c1",
+    "scripts/m1/riffoid-validation-publisher.mjs": "a15257537fc6af025e4c749e591ff08beecaada3e187faf7b404f1047eef6e66",
+    "scripts/m1/riffoid-validation-coordinator.mjs": "f9e8cfbdde8dbf7ba8d5c3fe3187400e04b935ce5064c00c7ea8fb4e49f20a4d",
+    "tests/m1/riffoid-validation-resources.test.mjs": "730fa3fff22a01a2b4c5537139daff76f91cfc86359fc097c85bd926d4471991",
+    "tests/m1/riffoid-validation-live-adapter.test.mjs": "af1f84a7a88b9a14d20368cf59fa1ca3f957bc6344ef6433bdf5a252380cab9d",
+    "tests/m1/riffoid-validation-coordinator.test.mjs": "e8c7ce7bdfe43d092fa9c19f09d29448e128e77bdbda112603858f5926f832f1",
+    "tests/m1/fixtures/riffoid-offline-fixtures.mjs": "57833cd671fa74a3910d7cf324577c28ac6a61981e11c168cfde4abbdc992beb"
+  },
+  "checks": {
+    "localFixtures": {
+      "tests": 105,
+      "pass": 105,
+      "fail": 0,
+      "log": "seventh.txt"
+    },
+    "independentFixtures": {
+      "tests": 105,
+      "pass": 105,
+      "fail": 0,
+      "log": "independent-fixtures.txt"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "log": "typecheck.txt",
+      "command": "npm run typecheck"
+    },
+    "independentTypecheck": {
+      "exitCode": 0,
+      "log": "independent-typecheck.txt"
+    },
+    "independentDiffCheck": {
+      "exitCode": 0,
+      "log": "independent-diff-check.txt"
+    },
+    "fixtureCommand": "node --test tests/m1/riffoid-validation-evidence.test.mjs tests/m1/riffoid-validation-coordinator.test.mjs tests/m1/riffoid-validation-offline-publisher.test.mjs tests/m1/riffoid-validation-cleanup-ui.test.mjs tests/m1/riffoid-validation-live-adapter.test.mjs tests/m1/riffoid-validation-resources.test.mjs"
+  },
+  "review": "independent-review.json",
+  "ci": {
+    "status": "NOT_VERIFIED",
+    "userConfirmedQuotaExhausted": true,
+    "nonblockingForThisPush": true,
+    "userConfirmationAt": "2026-10-10T09:10:29Z",
+    "rerunRequested": false
+  },
+  "httpCapability": {
+    "primaryConnectorAuthenticated": true,
+    "personalConnectorAuthenticated": true,
+    "rawResponseExposed": false,
+    "alreadyAuthenticatedSDKClientExposed": false,
+    "resourceOAuthScopesFreshlyVerified": false,
+    "credentialAccess": false,
+    "sdkInstalled": false,
+    "details": "raw-http-integration.md"
+  },
+  "boundaries": {
+    "retentionContractImplemented": true,
+    "assetBytesAudited": false,
+    "assetSetIdentityVerified": false,
+    "unexposedRoutingConfigVerified": false,
+    "liveContainerAssociationSourceConfirmed": false,
+    "freshProductionBaselineCollected": false,
+    "originalStoppedMigrationReinvestigatedForThisImplementation": false,
+    "absolutePlatformDrainRequired": false,
+    "applicationTerminalRiskRecord": "../riffoid-risk-authorization-20261010.json"
+  },
+  "productionWrites": 0,
+  "deployments": 0,
+  "experiments": 0,
+  "providerCalls": 0,
+  "pushesAtFreeze": 0,
+  "originalDirtyCheckoutEdited": false
+}
