@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-10T14:56:40.560Z",
+  "basisHead": "d607c7ad1791fca1102025dda60fa6f215a838ed",
+  "status": "ORIGINAL_WRITE_READ_ONLY_RECONCILED_RECOVERY_PENDING_NEW_USER_APPROVAL",
+  "originalRequestId": "riffoid_ba89353a815d438bab7af9a80543f29a_gatewayObserve",
+  "packetSHA256": "d6d11dce90053d3ba1ff4503aa6b1af8a92e1982befab3883df8f9e2f1c2690b",
+  "actualWrites": [
+    {
+      "worker": "riffology-m1-gateway-staging",
+      "phase": "gatewayObserve",
+      "callerPUTDispatches": 1,
+      "automaticRetries": 0,
+      "acknowledged": true,
+      "version": "a5ddd8f0-628b-4c90-8fa4-10177ffee906",
+      "deployment": "855e041d-5daa-42c4-b582-6a80b70fd3ed",
+      "firstReadback": "UNKNOWN_METADATA_ORDER_MISMATCH",
+      "originalUnknownAndLockRetained": true
+    }
+  ],
+  "actualProtocolRequestsInitiated": 0,
+  "entryUnchanged": {
+    "version": "c110d7a7-fc81-4bb1-b27a-4ca8147a7fff",
+    "deployment": "5e920993-ee9d-4a7e-b6fe-39ef494f35fd"
+  },
+  "executionWorkerWrites": 0,
+  "fullReadback": {
+    "gateway": {
+      "elapsedMS": 88714.960833,
+      "callerGETDispatches": 36,
+      "metadataSHA256": "c126a1225a5c6e8bb065eff5b2cbb00852fdfe73c5ed8d66a52a840abcd17366",
+      "mainModule": true,
+      "metadata": true,
+      "modules": true,
+      "namedResources": true,
+      "containers": true,
+      "assetsRetentionContract": true,
+      "assetsBytesAndCompleteSetAudited": false
+    },
+    "entry": {
+      "elapsedMS": 46980.446875,
+      "callerGETDispatches": 22,
+      "mainModule": true,
+      "metadata": true,
+      "modules": true,
+      "namedResources": true,
+      "containers": true,
+      "assetsRetentionContract": true
+    }
+  },
+  "diagnosis": {
+    "bindingCount": 98,
+    "uniqueNames": 98,
+    "valuesEqualByName": true,
+    "nonBindingDifferences": [],
+    "rawArrayOrderChanged": true,
+    "fix": "Align observed bindings to the frozen expected name order; reject duplicate, missing or unexpected names and all value/resource drift; original packet hashes and payload stay unchanged."
+  },
+  "logs": {
+    "gatewayPersist": false,
+    "entryPersist": true,
+    "scopedPipelinesEmpty": true,
+    "platformTelemetryDrain": "UNPROVEN"
+  },
+  "recovery": {
+    "planSHA256": "d99d92fd180ad9f7206200c8d4f38edc3d0e589ccaf765d909dd667527fda887",
+    "phases": [
+      "gatewayRestorePrivacy",
+      "gatewayRestoreLogs"
+    ],
+    "worker": "riffology-m1-gateway-staging",
+    "bindings": 95,
+    "moduleSHA256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290",
+    "prepared": true,
+    "productionWritesExecuted": 0,
+    "newExplicitApprovalRequired": true,
+    "lateTelemetryRisk": true,
+    "originalUnknownAndLockRetained": true,
+    "noProtocolResume": true
+  },
+  "validation": {
+    "relatedTestsPassed": 49,
+    "recoveryPackageCheck": {
+      "networkRequestsExecuted": 0,
+      "productionWritesExecuted": 0
+    },
+    "gitDiffCheck": "PASS"
+  },
+  "acceptance": {
+    "maintenance": "NOT_RUN",
+    "formalCutover": "NOT_STARTED",
+    "authenticatedNewDomain": "PENDING",
+    "paidExecution": "NOT_RUN",
+    "T": null,
+    "recoveryUntil": null
+  },
+  "limitations": [
+    "not a platform-wide request census",
+    "not proof of internal telemetry drain",
+    "no complete asset byte/set audit",
+    "fresh readbacks are bracketed independent GETs, not atomic snapshots",
+    "recovery and later cutover require their actual evidence"
+  ]
+}

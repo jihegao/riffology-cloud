@@ -55,6 +55,13 @@ async function collectResourceEvidence(transport,accountId,worker,artifact,runti
   if(preservation?.assets){const snapshot=assetSnapshot({accountId,worker},artifact,runtime,{id:worker,has_assets:preservation.assets.hasAssets});assert.equal(hashJSON(snapshot),hashJSON(preservation.assets),'frozen asset association/configuration drift');resources.push({kind:'asset-retention-contract',accountId,worker,sha256:hashJSON(snapshot)});}
   return {resources,resourcesSHA256:hashJSON(resources),namespaceCoverage,containers,pipeline};
 }
+export function bindingsInExpectedOrder(actual,expected){
+  assert.ok(Array.isArray(actual)&&Array.isArray(expected),'complete binding arrays required');
+  const index=new Map();for(const b of actual){assert.ok(b&&typeof b.name==='string'&&b.name);assert.ok(!index.has(b.name),'duplicate observed binding name');index.set(b.name,b);}
+  assert.equal(new Set(expected.map(b=>b.name)).size,expected.length,'duplicate expected binding name');
+  assert.equal(actual.length,expected.length,'binding set size drift');
+  return expected.map(b=>{assert.ok(index.has(b.name),'binding name set drift');return structuredClone(index.get(b.name));});
+}
 export async function collectReadback(transport,accountId,worker,artifact,preservation,readBudget={}){
   const sourceTransport=transport,startedAt=Date.now(),start=performance.now();let dispatches=0;
   const timeoutMS=readBudget.timeoutMS??60000,maxGETDispatches=readBudget.maxGETDispatches??128,perGETTimeoutMS=readBudget.perGETTimeoutMS??15000,sourceGETTimeoutMS=readBudget.sourceGETTimeoutMS??perGETTimeoutMS;
@@ -78,9 +85,10 @@ export async function collectReadback(transport,accountId,worker,artifact,preser
   // Reject key values before any evidence is persisted or returned.
   wireMetadata({...artifact.metadata,bindings:settings.result.bindings});
   const observed=structuredClone(settings.result);
+  observed.bindings=bindingsInExpectedOrder(observed.bindings,artifact.metadata.bindings);
   if(!('exports'in observed)&&'exports'in artifact.metadata)observed.exports=version.result.resources.script_runtime.exports??{};
   assert.equal(hashJSON(observed),hashJSON(stateMetadata(artifact.metadata)),'observable metadata/runtime export drift');
-  assert.equal(hashJSON(version.result.resources.bindings),hashJSON(settings.result.bindings),'immutable version bindings differ');
+  assert.equal(hashJSON(bindingsInExpectedOrder(version.result.resources.bindings,artifact.metadata.bindings)),hashJSON(observed.bindings),'immutable version bindings differ');
   for(const k of ['compatibility_date','compatibility_flags'])assert.deepEqual(version.result.resources.script_runtime[k],settings.result[k]);
   if(version.result.resources.script_runtime.exports)assert.deepEqual(version.result.resources.script_runtime.exports,artifact.metadata.exports);
   for(const k of ['observability','logpush'])assert.deepEqual(global.result[k],settings.result[k]);
@@ -256,6 +264,7 @@ export class Publisher{
       const latest=await get('/versions');assert.equal(latest.result.items[0].id,r.version,'latest changed during cross-account reconstruction');
       const settings=(await get('/settings')).result;wireMetadata({...shadow.artifacts[w].metadata,bindings:settings.bindings});
       if(!Object.hasOwn(settings,'exports')&&Object.hasOwn(shadow.artifacts[w].metadata,'exports'))settings.exports=shadow.artifacts[w].metadata.exports;
+      settings.bindings=bindingsInExpectedOrder(settings.bindings,shadow.artifacts[w].metadata.bindings);
       assert.equal(hashJSON(settings),r.metadataSHA256,'settings changed during cross-account reconstruction');
       const globals=(await get('/script-settings')).result;for(const k of ['observability','logpush'])assert.equal(hashJSON(globals[k]),hashJSON(settings[k]));
       assert.deepEqual(scriptTailConsumers(globals),settings.tail_consumers);assert.equal(hashJSON(globals),r.scriptSettingsSHA256,'raw script settings changed during cross-account reconstruction');

@@ -408,3 +408,16 @@ test('asset completed restart rechecks both scopes and refuses cross-account con
     }finally{await rm(dir,{recursive:true});}
   }
 });
+
+// Actual Cloudflare upload reordered the complete binding array. Names and values remain strict.
+test('readback tolerates binding order only, preserving every value and duplicate guard',async()=>{
+ const p=buildPacket(input()),phase=p.phases.gatewayObserve;
+ const f=apiFixture(p,'gatewayObserve',p.baselineGuards.gateway);
+ f.f.scriptAndVersionSettings.result.bindings.reverse();f.f.version.result.resources.bindings.reverse();
+ const r=await collectReadback(f.transport,account,'fixture-gateway',phase,p.preservation.gateway);assert.equal(r.metadataSHA256,phase.metadataSHA256);
+ for(const mutate of [b=>b[0].name=b[1].name,b=>b[0].name='unexpected',b=>b[0].type='unexpected',b=>b.pop()]){
+  const g=apiFixture(p,'gatewayObserve',p.baselineGuards.gateway);mutate(g.f.scriptAndVersionSettings.result.bindings);
+  await assert.rejects(()=>collectReadback(g.transport,account,'fixture-gateway',phase,p.preservation.gateway));
+ }
+ const g=apiFixture(p,'gatewayObserve',p.baselineGuards.gateway);g.f.version.result.resources.bindings[0].type='unexpected';await assert.rejects(()=>collectReadback(g.transport,account,'fixture-gateway',phase,p.preservation.gateway),/immutable version bindings differ/);
+});
