@@ -39,8 +39,8 @@ test('approved wording is consumed without granting production authorization; al
 });
 test('publisher read-budget opt-in remains bounded and does not arm publication',()=>{
   const p=buildPacket(input());let dispatches=0;const args={packet:p,accounts,transport:{mode:'read-only',request:()=>dispatches++},journal:{}};
-  const pub=new Publisher({...args,readBudget:{timeoutMS:180000,maxGETDispatches:128}});assert.equal(pub.liveCapability,null);assert.equal(dispatches,0);
-  for(const readBudget of [{timeoutMS:180001},{timeoutMS:0},{timeoutMS:NaN},{maxGETDispatches:257},{perGETTimeoutMS:30001},{automaticRetries:1}])assert.throws(()=>new Publisher({...args,readBudget}));assert.equal(dispatches,0);
+  const pub=new Publisher({...args,readBudget:{timeoutMS:180000,maxGETDispatches:128,sourceGETTimeoutMS:60000}});assert.equal(pub.liveCapability,null);assert.equal(dispatches,0);
+  for(const readBudget of [{timeoutMS:180001},{timeoutMS:0},{timeoutMS:NaN},{maxGETDispatches:257},{perGETTimeoutMS:30001},{sourceGETTimeoutMS:60001},{sourceGETTimeoutMS:0},{automaticRetries:1}])assert.throws(()=>new Publisher({...args,readBudget}));assert.equal(dispatches,0);
 });
 test('default dry-run dispatches zero HTTP; read-only and prepare cannot upload',async()=>{
   let calls=0;const x=input(),p=buildPacket(x),write=buildWrite(p,'gatewayObserve',moduleBytes(p.phases.gatewayObserve),account,'original');
@@ -115,6 +115,19 @@ test('explicit longer GET stays under the whole budget; default 15s and the hard
   await assert.rejects(()=>collectReadback(make(),account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway),/per-GET budget/);
   clock=0;const r=await collectReadback(make(),account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway,{timeoutMS:120000,perGETTimeoutMS:30000});assert.equal(r.readObservation.perGETTimeoutMS,30000);assert.equal(r.readObservation.elapsedMS,20000);
   await assert.rejects(()=>collectReadback(make(),account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway,{perGETTimeoutMS:30001}));
+ }finally{if(original)Object.defineProperty(performance,'now',original);else delete performance.now;}
+});
+test('60s source allowance accepts complete 50s bytes while other GETs still reject beyond 30s',async()=>{
+ const original=Object.getOwnPropertyDescriptor(performance,'now');let clock=0;
+ Object.defineProperty(performance,'now',{configurable:true,value:()=>clock});
+ try{
+  const p=buildPacket(input()),source=`/accounts/${account}/workers/scripts/fixture-gateway`;
+  const make=target=>{const f=apiFixture(p,'gatewayObserve',p.baselineGuards.gateway);return {request:async args=>{if(args.path===target)clock+=50000;return f.transport.request(args);}};};
+  const budget={timeoutMS:180000,perGETTimeoutMS:30000,sourceGETTimeoutMS:60000};
+  const r=await collectReadback(make(source),account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway,budget);
+  assert.equal(r.readObservation.elapsedMS,50000);assert.equal(r.readObservation.sourceGETTimeoutMS,60000);
+  clock=0;await assert.rejects(()=>collectReadback(make(source+'/settings'),account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway,budget),/per-GET budget/);
+  clock=0;await assert.rejects(()=>collectReadback(make(source),account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway,{timeoutMS:180000,perGETTimeoutMS:30000}),/per-GET budget/);
  }finally{if(original)Object.defineProperty(performance,'now',original);else delete performance.now;}
 });
 test('contradictory asset presence rejects rather than trusting upload intent',async()=>{

@@ -13,7 +13,7 @@ import {validateEntrypoint} from './riffoid-validation-mime.mjs';
 export function singleNativeRequest(url,{method,headers,body,timeoutMS=15000,maxBytes=16*1024*1024,allowGzipGET=false}={}){
   const target=new URL(url);assert.ok(['https:','http:'].includes(target.protocol));
   assert.equal(target.username,'');assert.equal(target.password,'');assert.equal(target.hash,'');
-  assert.ok(['GET','PUT'].includes(method));assert.ok(timeoutMS>0&&timeoutMS<=(method==='GET'?30000:15000));
+  assert.ok(['GET','PUT'].includes(method));assert.ok(timeoutMS>0&&timeoutMS<=(method==='GET'?60000:15000));
   assert.equal(typeof allowGzipGET,'boolean');assert.ok(!allowGzipGET||method==='GET','gzip negotiation is GET-only');
   assert.ok(maxBytes>0&&maxBytes<=16*1024*1024);assert.ok(body===undefined||Buffer.isBuffer(body)||body instanceof Uint8Array);
   const secure=target.protocol==='https:',core=secure?https:http;
@@ -55,8 +55,8 @@ export function singleNativeRequest(url,{method,headers,body,timeoutMS=15000,max
   });
 }
 
-export function nativeOnceTransport({mode='read-only',scope,tokenForAccount,authorizeWrite,timeoutMS=15000,readTimeoutMS=timeoutMS}={}){
-  assert.ok(Number.isSafeInteger(readTimeoutMS)&&readTimeoutMS>0&&readTimeoutMS<=30000);assert.ok(Number.isSafeInteger(timeoutMS)&&timeoutMS>0&&timeoutMS<=15000);assert.ok(['read-only','live'].includes(mode));assert.equal(typeof tokenForAccount,'function');assert.ok(Array.isArray(scope)&&scope.length===2);
+export function nativeOnceTransport({mode='read-only',scope,tokenForAccount,authorizeWrite,timeoutMS=15000,readTimeoutMS=timeoutMS,sourceReadTimeoutMS=readTimeoutMS}={}){
+  assert.ok(Number.isSafeInteger(sourceReadTimeoutMS)&&sourceReadTimeoutMS>0&&sourceReadTimeoutMS<=60000);assert.ok(Number.isSafeInteger(readTimeoutMS)&&readTimeoutMS>0&&readTimeoutMS<=30000);assert.ok(Number.isSafeInteger(timeoutMS)&&timeoutMS>0&&timeoutMS<=15000);assert.ok(['read-only','live'].includes(mode));assert.equal(typeof tokenForAccount,'function');assert.ok(Array.isArray(scope)&&scope.length===2);
   for(const row of scope){assert.match(row.accountId,/^[a-f0-9]{32}$/);assert.match(row.zoneId,/^[a-f0-9]{32}$/);assert.ok(Array.isArray(row.workers)&&row.workers.every(w=>/^[a-z0-9_-]+$/.test(w)));}
   if(mode==='live')assert.equal(typeof authorizeWrite,'function','exact durable intent authorizer required');
   // These flags can change core TLS behavior before imports and must be absent.
@@ -69,6 +69,6 @@ export function nativeOnceTransport({mode='read-only',scope,tokenForAccount,auth
     if(method==='GET')assert.equal(body,undefined,'GET body forbidden');
     else {assert.equal(mode,'live');assert.ok(Buffer.isBuffer(body)||body instanceof Uint8Array);assert.ok(body.length>0&&body.length<=16*1024*1024);assert.match(contentType??'',/^multipart\/form-data; boundary=[A-Za-z0-9_-]{1,70}$/);await authorizeWrite({accountId:row.accountId,method,path,bodySHA256:hashBytes(body),bytes:body.length});}
     const token=await tokenForAccount(row.accountId);assert.ok(typeof token==='string'&&token.length>0&&!/[\r\n]/.test(token),'credential reference invalid');
-    return singleNativeRequest(parsed,{method,headers:{authorization:'Bearer '+token,...(contentType?{'content-type':contentType}:{})},body,timeoutMS:method==='GET'?readTimeoutMS:timeoutMS,allowGzipGET:method==='GET'});
+    return singleNativeRequest(parsed,{method,headers:{authorization:'Bearer '+token,...(contentType?{'content-type':contentType}:{})},body,timeoutMS:method==='GET'?(/^\/accounts\/[a-f0-9]{32}\/workers\/scripts\/[a-z0-9_-]+$/.test(path)?sourceReadTimeoutMS:readTimeoutMS):timeoutMS,allowGzipGET:method==='GET'});
   }});
 }
