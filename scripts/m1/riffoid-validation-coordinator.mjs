@@ -6,7 +6,7 @@ import {readFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import {validationConfig,validationCanonical,validationTransport,
   VALIDATION_MAX_WINDOW_MS,VALIDATION_CLEANUP_MS} from '../../services/entry/validation-policy.ts';
-import {hashJSON,stateMetadata,validateRedactedSecretKey,parseProtocolReceipt,protocolTerminalEvidence,pendingDecisions,restorationEligibility} from './riffoid-validation-evidence.mjs';
+import {hashJSON,stateMetadata,validateRedactedSecretKey,parseProtocolReceipt,protocolTerminalEvidence,pendingDecisions,restorationEligibility,approvalRecord} from './riffoid-validation-evidence.mjs';
 
 export const digest=hashJSON;
 const copy=value=>structuredClone(value);
@@ -27,9 +27,9 @@ function validateBaseline(b){
   assert.equal(m.keep_assets,true,'full write metadata must explicitly preserve existing assets');
   assert.ok(!m.bindings.some(b=>b.name===configName||b.name==='ENTRY_NATIVE_IP_BOUNDARY'),'unexpected baseline temporary state');
   for(const b of m.bindings){
-    assert.notEqual(b.type,'secret_text','plaintext Secret payloads are forbidden');
+    if(b.type==='secret_text')assert.deepEqual(Object.keys(b).sort(),['name','type'],'redacted reference only');
     if(b.type==='secret_key')validateRedactedSecretKey(b);
-    if(b.name==='ENTRY_SIGNING_PRIVATE_JWK')assert.equal(b.type,'secret_key','private key reference only');
+    if(b.name==='ENTRY_SIGNING_PRIVATE_JWK')assert.ok(['secret_text','secret_key'].includes(b.type),'private key reference only');
   }
 }
 function validateModules(modules,metadata){
@@ -43,9 +43,7 @@ function validateModules(modules,metadata){
     assert.ok(typeof m.path==='string'&&/\.(mjs|js)$/.test(m.path),'code references only');
   }
 }
-export function buildPacket(input){
-  const c=validationConfig({RIFFOID_VALIDATION_CONFIG_JSON:JSON.stringify(input.config)});
-  assert.equal(c.expires-c.notBefore,VALIDATION_MAX_WINDOW_MS,'this packet freezes the reviewed 300s maximum');
+function derivePhases(input,c){
   for(const b of Object.values(input.baselines))validateBaseline(b);
   assert.deepEqual(Object.keys(input.baselines).sort(),['entry','gateway']);
   const phases={};
@@ -73,13 +71,28 @@ export function buildPacket(input){
     add(worker+'RestorePrivacy',worker,privacy,baseline.modules);
     add(worker+'RestoreLogs',worker,baseline.metadata,baseline.modules);
   }
+  return phases;
+}
+export function pendingPhaseTemplates(input){
+  approvalRecord(input.riskAuthorization);
+  const c={version:1,run:null,notBefore:null,expires:null,ips:{A:null,B:null}};
+  assert.deepEqual(input.config,c,'template must contain no live window or visitor inputs');
+  return {status:'NON_EXECUTABLE_PHASE_TEMPLATES',productionAuthorized:false,config:c,phases:derivePhases(input,c),
+    blockedBy:['raw authenticated transport connection','full asset/container preservation proof','fresh complete baseline consistency','original user execution inputs']};
+}
+export function buildPacket(input){
+  const authorization=input.riskAuthorization?approvalRecord(input.riskAuthorization):null;
+  const c=validationConfig({RIFFOID_VALIDATION_CONFIG_JSON:JSON.stringify(input.config)});
+  assert.equal(c.expires-c.notBefore,VALIDATION_MAX_WINDOW_MS,'this packet freezes the reviewed 300s maximum');
+  const phases=derivePhases(input,c);
   return {status:'OFFLINE_REVIEW_PACKET_NOT_AUTHORIZED_FOR_UPLOAD',run:c.run,config:c,configSHA256:digest(c),
-    baselineGuards:Object.fromEntries(Object.entries(input.baselines).map(([k,b])=>[k,{worker:b.worker,version:b.version,deployment:b.deployment,snapshotSHA256:b.snapshotSHA256,metadataSHA256:digest(stateMetadata(b.metadata)),modulesSHA256:digest(b.modules)}])),
-    decisions:copy(pendingDecisions),productionAuthorized:false,
+    baselineGuards:Object.fromEntries(Object.entries(input.baselines).map(([k,b])=>[k,{worker:b.worker,version:b.version,deployment:b.deployment,snapshotSHA256:b.snapshotSHA256,metadataSHA256:digest(stateMetadata(b.metadata)),modulesSHA256:digest(b.modules),...(b.resourcesSHA256?{resourcesSHA256:b.resourcesSHA256}:{})}])),
+    ...(input.preservation?{preservation:copy(input.preservation)}:{}),
+    decisions:authorization?copy(authorization.decisions):copy(pendingDecisions),...(authorization?{riskAuthorization:authorization}:{}),productionAuthorized:false,
     budgets:{freshProofs:3,primaryAccepts:2,verifierCalls:4,observes:2,begins:2,normalOutgoingHTTPS:8,optionalCleanupHTTPS:1,windowMS:VALIDATION_MAX_WINDOW_MS,cleanupMS:VALIDATION_CLEANUP_MS},
     schedule:{start:c.notBefore,markerReadbackDeadline:c.notBefore+180_000,operatorCueDeadline:c.notBefore+225_000,
       latestAStart:c.expires-45_000,latestBStart:c.expires-10_000,stop:c.expires,cleanupBefore:c.expires+VALIDATION_CLEANUP_MS},
-    phases,remainingExternalRequirements:['production publisher/readback authenticity and quiet publisher evidence','native A/B original browser receipts','user decision on application-scope restoration standard','user decision on unknown-state log closure policy']};
+    phases,remainingExternalRequirements:['production publisher/readback authenticity and quiet publisher evidence','native A/B original browser receipts',...(!authorization?['user decision on application-scope restoration standard','user decision on unknown-state log closure policy']:[])]};
 }
 export function initialState(packet){
   const identities=Object.fromEntries(Object.entries(packet.baselineGuards).map(([worker,b])=>[worker,{
@@ -131,7 +144,7 @@ export function advance(packet,previous,event,now){
   assert.notEqual(s.phase,'pending-unknown','only read-only reconciliation of the original request may resolve unknown state');
   if(event.type==='unknown'){
     assert.ok(typeof event.requestId==='string'&&event.requestId);
-    return {...s,lastEventAt:now,phase:'pending-unknown',unknownRequestId:event.requestId,requiredAction:'read-only reconcile original request; no retry, no logs restoration'};
+    return {...s,lastEventAt:now,phase:'pending-unknown',unknownRequestId:event.requestId,reportDueAt:now+600000,stopFurtherTest:true,automaticLogsRestore:false,requiredAction:'read-only reconcile original request; hold confirmed logs off; report within ten minutes; new approval required to restore'};
   }
   if(event.type==='observationPublished'){
     assert.equal(s.phase,'frozen');assert.ok(now<c.expires);
@@ -183,7 +196,14 @@ export function advance(packet,previous,event,now){
     s.applicationTerminalEvidence=evidence;s.phase='application-terminal-pending-decision';
     s.restoration=restorationEligibility(packet,evidence);
   }else if(event.type==='restorePrivacy'||event.type==='restoreLogs'){
-    assert.fail('BLOCKED_USER_DECISION: application restoration standard and unknown log closure policy are not approved');
+    assert.equal(restorationEligibility(packet,s.applicationTerminalEvidence).status,'ELIGIBLE_APPLICATION_SCOPE','BLOCKED_USER_DECISION');
+    if(event.type==='restorePrivacy'){
+      assert.equal(s.phase,'application-terminal-pending-decision');
+      readbacks(packet,s,['gatewayRestorePrivacy','entryRestorePrivacy'],event.receipts,now);s.phase='privacy-restored';
+    }else{
+      assert.equal(s.phase,'privacy-restored');
+      readbacks(packet,s,['gatewayRestoreLogs','entryRestoreLogs'],event.receipts,now);s.phase='restored';
+    }
   }else assert.fail('unsupported event');
   s.lastEventAt=now;return s;
 }

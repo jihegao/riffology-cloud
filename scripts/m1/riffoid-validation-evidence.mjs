@@ -21,7 +21,10 @@ export function validateRedactedSecretKey(binding){
 export function wireMetadata(metadata){
   const result=structuredClone(metadata);
   result.bindings=result.bindings.map(b=>{
-    assert.notEqual(b.type,'secret_text');
+    if(b.type==='secret_text'){
+      exactKeys(b,['name','type']);assert.ok(typeof b.name==='string'&&b.name);
+      return {name:b.name,type:'inherit',version_id:'latest'};
+    }
     if(b.type!=='secret_key')return b;
     validateRedactedSecretKey(b);
     // Script upload cannot pin inherit to a fixed version. Its only legal
@@ -79,7 +82,26 @@ export function protocolTerminalEvidence(packet,rows,context){
 }
 export const pendingDecisions=Object.freeze({restorationStandard:'pending-user-decision',unknownLogClosure:'pending-user-decision'});
 export function restorationEligibility(packet,evidence){
-  assert.deepEqual(packet.decisions,pendingDecisions,'this offline patch cannot grant user approval');
+  if(packet.riskAuthorization){
+    assert.deepEqual(packet.decisions,approvedDecisions);
+    assert.deepEqual(packet.riskAuthorization,approvalRecord(packet.riskAuthorization.record));
+    return {status:evidence?'ELIGIBLE_APPLICATION_SCOPE':'BLOCKED_APPLICATION_RECEIPTS',productionAuthorized:false,platformDrain:'unproven'};
+  }
+  assert.deepEqual(packet.decisions,pendingDecisions,'approval record required');
   return {status:'BLOCKED_USER_DECISION',reasons:[...Object.keys(pendingDecisions),...(!evidence?['missing-application-terminal-evidence']:[])],
     productionAuthorized:false,platformDrain:'unproven'};
+}
+export const approvedDecisions=Object.freeze({restorationStandard:'USER_APPROVED_APPLICATION_SCOPE_WITH_LATE_TELEMETRY_RISK',unknownLogClosure:'USER_APPROVED_HOLD_CONFIRMED_LOGS_OFF_UNTIL_NEW_APPROVAL'});
+const proposal='还需确认两项日志处置：\n1. 所有测试请求都有完整结束回执后恢复日志，但接受平台内部迟到遥测仍可能被保存的残余风险。\n2. 若请求结果不明，立即停测、不重发，保持两端日志持久化关闭；10 分钟内向你报告，等你另行批准再恢复。日志关闭时间可能超过 300 秒，期间会缺少持久化诊断记录。\n\n这两项也允许吗？若不接受，就先不开测试窗口。';
+export function approvalRecord(record){
+  assert.equal(record.basisHead,'3dc896ade535cd2c51d30ffe7fe829b9b8cd03c8');
+  assert.equal(record.proposal.messageId,'Sentinel_bf80f53465588191a3367e6492972f11');assert.equal(record.proposal.text,proposal);
+  assert.equal(record.confirmation.messageId,'Sentinel_e4884fe864f4819180a77c591b8290aa');
+  assert.equal(record.confirmation.timeUTC,'2026-10-10T03:35:40Z');assert.equal(record.confirmation.text,'确认两项日志处置');
+  for(const [k,v]of Object.entries(approvedDecisions))assert.equal(record.decisions[k].status,v);
+  for(const k of ['stopFurtherTest','additionalUserApprovalToRestore','durationMayExceed300Seconds','persistentDiagnosticGapAccepted'])assert.equal(record.decisions.unknownLogClosure[k],true);
+  assert.equal(record.decisions.unknownLogClosure.retry,false);assert.equal(record.decisions.unknownLogClosure.automaticLogsRestore,false);
+  assert.equal(record.decisions.unknownLogClosure.reportWithinMS,600000);assert.equal(record.decisions.restorationStandard.platformDrainProven,false);
+  assert.equal(record.thisTask.productionAuthorized,false);assert.equal(record.thisTask.productionWritesPermitted,false);
+  return {record:structuredClone(record),sha256:hashJSON(record),decisions:structuredClone(approvedDecisions),authority:'user wording supplied by parent; not a platform receipt',productionAuthorized:false};
 }

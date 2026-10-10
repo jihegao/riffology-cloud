@@ -53,12 +53,12 @@ for(const outcome of ['success','timeout','network-disconnected','receipt-lost']
     {APP_ORIGIN:canonical,APP_TRANSPORT_ORIGIN:transport,TWO_ACCOUNT_AUTH_MODE:'signed-entry-v1',RIFFOID_VALIDATION_CONFIG_JSON:JSON.stringify(config)},async()=>{throw Error('no outbound UI');});
   const script=(await response.text()).match(/<script>([\s\S]*)<\/script>/)[1],nodes=Object.fromEntries(['observe','run','cleanup','result'].map(id=>[id,{disabled:false,textContent:''}]));
   let elapsed=0;const timers=[],calls=[];
-  const context={document:{getElementById:id=>nodes[id]},performance:{now:()=>elapsed},AbortController,
+  const context={document:{getElementById:id=>nodes[id]},performance:{now:()=>elapsed},AbortController,TextEncoder,
     setTimeout:(fn,delay)=>{const t={fn,delay,cleared:false};timers.push(t);return t;},clearTimeout:t=>t.cleared=true,
     fetch:async(url,options)=>{calls.push({url,options});
       if(outcome==='timeout')return await new Promise((_,reject)=>options.signal.addEventListener('abort',()=>reject(Error('timeout')),{once:true}));
       if(outcome!=='success')throw Error(outcome);
-      return {ok:true,json:async()=>({slot:'A',case:'cleanup',passed:true,results:[{case:'cleanup',status:200,code:'expired_control_rows_removed',removed:2}]})};
+      return Response.json({slot:'A',case:'cleanup',passed:true,nativeIpMatches:true,results:[{case:'cleanup',status:200,code:'expired_control_rows_removed',removed:2}]});
     }};
   vm.runInNewContext(script,context);const scheduled=timers[0];elapsed=scheduled.delay;
   nodes.result.textContent='saved original Run receipt';scheduled.fn();nodes.cleanup.onclick();
@@ -68,4 +68,15 @@ for(const outcome of ['success','timeout','network-disconnected','receipt-lost']
   assert.equal(calls[0].options.body,'');assert.equal(nodes.cleanup.disabled,true);
   assert.ok(nodes.result.textContent.startsWith('saved original Run receipt'));
   assert.ok(nodes.result.textContent.includes(outcome==='success'?'expired_control_rows_removed':'cleanup unknown; do not retry'));
+});
+
+test('unknown original Observe halts Run and scheduled cleanup with zero follow-up fetches',async()=>{
+  const now=Date.now(),run='offline_unknown_halt_20261010',config={version:1,run,notBefore:now-1000,expires:now+299000,ips:{A:'198.51.100.23',B:'198.51.100.24'}};
+  const response=await entry(new Request(`${canonical}/__riffoid-validation/${run}/A/ui`,{headers:{host:'app.riffoid.com','cf-connecting-ip':config.ips.A}}),{APP_ORIGIN:canonical,APP_TRANSPORT_ORIGIN:transport,TWO_ACCOUNT_AUTH_MODE:'signed-entry-v1',RIFFOID_VALIDATION_CONFIG_JSON:JSON.stringify(config)},async()=>{throw Error('no forwarding');});
+  const script=(await response.text()).match(/<script>([\s\S]*)<\/script>/)[1],nodes=Object.fromEntries(['observe','run','cleanup','result'].map(id=>[id,{disabled:false,textContent:''}]));
+  let elapsed=0;const timers=[],calls=[];
+  vm.runInNewContext(script,{document:{getElementById:id=>nodes[id]},performance:{now:()=>elapsed},AbortController,TextEncoder,setTimeout:(fn,delay)=>{const t={fn,delay,cleared:false};timers.push(t);return t;},clearTimeout:t=>t.cleared=true,fetch:async url=>{calls.push(url);throw Error('lost original response');}});
+  nodes.observe.onclick();for(let i=0;i<8;i++)await Promise.resolve();
+  elapsed=timers[0].delay;timers[0].fn();nodes.run.onclick();nodes.cleanup.onclick();nodes.observe.onclick();for(let i=0;i<8;i++)await Promise.resolve();
+  assert.equal(calls.length,1);assert.ok(calls[0].endsWith('/A/observe'));assert.equal(timers[0].cleared,true);for(const id of ['observe','run','cleanup'])assert.equal(nodes[id].disabled,true);assert.ok(nodes.result.textContent.includes('do not retry'));
 });
