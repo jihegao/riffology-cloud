@@ -1,5 +1,14 @@
 # Current release readiness — 2026-10-10
 
+## 2026-10-11 域名切换续作：恢复后完整预检及固定载荷（未开启）
+
+原 Gateway 与原日志恢复后，Gateway、Entry、Browser Execution 均已重新完成源码、完整绑定、资产保留合同、关联资源和前后部署身份读回；当前版本分别为 `a00f97bc`、`c110d7a7`、`c94df077`，绑定数为 95/5/4。两 zone WAF、Managed Transforms、Pseudo IPv4 与 ruleset/snippet 元数据也已重新读取。原三个 unknown 记录及其锁保持原样，当前配置读回不改写历史请求终态。
+
+正式切换和失败关闭/前向恢复共七份固定载荷已离线准备，使用三个当前线上模块的原字节；Gateway 切流为 97 绑定、Entry 为 6、Execution 为 4，T 和恢复期限仍为空。包 SHA `c2d84bdbf75122886e426064003ae2275dc89a6791c46c0245c82dfacf35a0bf`；未将未发生的 T 写入恢复配置。维护控制器新增严格 GET-only 部署/版本列表解码桥，源码/配置/版本详情仍独立原生读取；PUT 单次原生传输不变。相关 52 项检查及八阶段零网络/零写入模板检查通过。完整资产字节/集合、平台内部遥测排空和 proxy HTTP 尝试数没有据此证明。
+
+本次准备没有新增生产写入、开启维护窗口或发起协议/模型/Turn/Run。真实双网络协议和认证新域验收仍待完成，PR173 保持 draft/unmerged，T/recoveryUntil=null。[完整基线、固定载荷摘要及证据边界](evidence/riffoid-post-recovery-preparation-20261011.json)。
+
+
 ## 2026-10-10 15:45 UTC original Gateway restored; domain cutover pending
 
 The [approved original-write recovery evidence](evidence/riffoid-original-write-restored-20261010.json) confirms the original Gateway module and all95 bindings,23 SQLite exports,5 existing container associations and frozen asset-retention contract after two recovery PUTs, each dispatched once. Temporary validation configuration is removed. Original observability is restored, including logs.persist=true, traces disabled, logpush=false and empty tails. Current Gateway version is a00f97bc-f0da-4e04-97b0-8f96f0a26a89, deployment d78a6f03-2552-4076-8ad5-7abd1802654c; independent bracketed GET readback completed at15:45:27.679 UTC.

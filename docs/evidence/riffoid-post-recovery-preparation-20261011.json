@@ -1,0 +1,535 @@
+{
+  "schema": "riffoid-post-recovery-preparation-v1",
+  "timeUTC": "2026-10-10T16:13:18Z",
+  "localDate": "2026-10-11",
+  "status": "PREPARED_NOT_ARMED",
+  "readback": {
+    "gateway": {
+      "worker": "riffology-m1-gateway-staging",
+      "version": "a00f97bc-f0da-4e04-97b0-8f96f0a26a89",
+      "deployment": "d78a6f03-2552-4076-8ad5-7abd1802654c",
+      "metadataSHA256": "5441264ebfd7a5a5af5c93503afef1ba12791bff86410c490545da4ddc426e47",
+      "modulesSHA256": "b8123f8c3eeb18029113b5d71474583128e146870c4f31ecae5b606b6d4b9463",
+      "resourcesSHA256": "71870d9ae8cdc8235653d2a55cec532d5b05fdfe1ad44d8b3bd7c8327dc0668e",
+      "coverage": {
+        "mainModule": true,
+        "metadata": true,
+        "modules": true,
+        "namedResources": true,
+        "assets": false,
+        "assetsRetentionContract": true,
+        "containers": true
+      },
+      "preservationMatches": true,
+      "fullStateMatches": false,
+      "pipelineGuardPassed": true,
+      "readObservation": {
+        "startedAt": 1791647996846,
+        "completedAt": 1791648099324,
+        "elapsedMS": 102473.98729199999,
+        "callerGETDispatches": 36,
+        "maxGETDispatches": 128,
+        "timeoutMS": 180000,
+        "perGETTimeoutMS": 30000,
+        "sourceGETTimeoutMS": 60000,
+        "proxyHTTPAttempts": "NOT_EXPOSED",
+        "snapshotAtomic": false,
+        "bracketVerified": true
+      }
+    },
+    "entry": {
+      "worker": "riffoid-entry",
+      "version": "c110d7a7-fc81-4bb1-b27a-4ca8147a7fff",
+      "deployment": "5e920993-ee9d-4a7e-b6fe-39ef494f35fd",
+      "metadataSHA256": "95da23b6ab891f6b5e5dcdb6b707b1eb4fc6f288cc6ab94c2baf2a365ad99d21",
+      "modulesSHA256": "0fb3b015d14b96aad8efe673917eaf854a865a93688341688d983f0cb9429e7b",
+      "resourcesSHA256": "ab97a2155533d50933994c6e0933d0ae2a2341c5a30246cc659896629948eac2",
+      "coverage": {
+        "mainModule": true,
+        "metadata": true,
+        "modules": true,
+        "namedResources": true,
+        "assets": true,
+        "assetsRetentionContract": true,
+        "containers": true
+      },
+      "preservationMatches": true,
+      "fullStateMatches": true,
+      "pipelineGuardPassed": true,
+      "readObservation": {
+        "startedAt": 1791648099324,
+        "completedAt": 1791648147794,
+        "elapsedMS": 48469.09166600001,
+        "callerGETDispatches": 22,
+        "maxGETDispatches": 128,
+        "timeoutMS": 180000,
+        "perGETTimeoutMS": 30000,
+        "sourceGETTimeoutMS": 60000,
+        "proxyHTTPAttempts": "NOT_EXPOSED",
+        "snapshotAtomic": false,
+        "bracketVerified": true
+      }
+    },
+    "execution": {
+      "worker": "riffology-browser-execution",
+      "version": "c94df077-02a1-460f-8158-e47a338e68af",
+      "deployment": "a6fdeb9f-d885-4c72-9e02-968315351edb",
+      "metadataSHA256": "4ad0d93fb7a0678ce3b6f341a78acd345d4cd6322987fc309a8f54e3feca6d5d",
+      "modulesSHA256": "7c2bd25fc98d8609ff595fb1ccd907b649c0e2c659dbca577e59eb426f8c3b76",
+      "resourcesSHA256": "a903ad5216ebcf933a97f41bb169002f28423bc0f2ef8974ff661056d7fc9f78",
+      "coverage": {
+        "mainModule": true,
+        "metadata": true,
+        "modules": true,
+        "namedResources": true,
+        "assets": false,
+        "assetsRetentionContract": true,
+        "containers": true
+      },
+      "preservationMatches": true,
+      "fullStateMatches": false,
+      "pipelineGuardPassed": true,
+      "readObservation": {
+        "startedAt": 1791648300380,
+        "completedAt": 1791648355906,
+        "elapsedMS": 55525.76,
+        "callerGETDispatches": 22,
+        "maxGETDispatches": 128,
+        "timeoutMS": 180000,
+        "perGETTimeoutMS": 30000,
+        "sourceGETTimeoutMS": 60000,
+        "proxyHTTPAttempts": "NOT_EXPOSED",
+        "snapshotAtomic": false,
+        "bracketVerified": true
+      }
+    }
+  },
+  "security": {
+    "gateway": [
+      {
+        "path": "/zones/c97b548800561fada1a912c234696db1/rulesets/phases/http_request_firewall_custom/entrypoint",
+        "status": 200,
+        "success": true,
+        "result": {
+          "id": "f7a4a167ff2d4c8da0ba2c46e38f5d9b",
+          "phase": "http_request_firewall_custom",
+          "rules": [
+            {
+              "id": "af184f41fd024d6a9180486a9e98d03a",
+              "action": "block",
+              "enabled": true,
+              "index": 0,
+              "expression": "http.host eq \"riffoid-transport.gaojihe.cn\" and cf.worker.upstream_zone ne \"riffoid.com\""
+            }
+          ]
+        },
+        "errors": []
+      },
+      {
+        "path": "/zones/c97b548800561fada1a912c234696db1/managed_headers",
+        "status": 200,
+        "success": true,
+        "result": {
+          "managed_request_headers": [
+            {
+              "enabled": false,
+              "has_conflict": false,
+              "id": "add_client_certificate_headers"
+            },
+            {
+              "enabled": false,
+              "has_conflict": false,
+              "id": "add_visitor_location_headers"
+            },
+            {
+              "enabled": false,
+              "has_conflict": false,
+              "id": "remove_visitor_ip_headers"
+            },
+            {
+              "enabled": false,
+              "has_conflict": false,
+              "id": "add_waf_credential_check_status_header"
+            }
+          ],
+          "managed_response_headers": [
+            {
+              "enabled": false,
+              "has_conflict": false,
+              "id": "remove_x-powered-by_header"
+            },
+            {
+              "enabled": false,
+              "has_conflict": false,
+              "id": "add_security_headers"
+            }
+          ]
+        },
+        "errors": []
+      },
+      {
+        "path": "/zones/c97b548800561fada1a912c234696db1/settings/pseudo_ipv4",
+        "status": 200,
+        "success": true,
+        "result": {
+          "id": "pseudo_ipv4",
+          "value": "off",
+          "modified_on": null,
+          "editable": true
+        },
+        "errors": []
+      },
+      {
+        "path": "/zones/c97b548800561fada1a912c234696db1/rulesets",
+        "status": 200,
+        "success": true,
+        "result": [
+          {
+            "id": "70339d97bdb34195bbf054b1ebe81f76",
+            "phase": "http_request_sanitize",
+            "kind": "managed"
+          },
+          {
+            "id": "77454fe2d30c4220b5701f6fdfb893ba",
+            "phase": "http_request_firewall_managed",
+            "kind": "managed"
+          },
+          {
+            "id": "4d21379b4f9f4bb088e0729962c8b3cf",
+            "phase": "ddos_l7",
+            "kind": "managed"
+          },
+          {
+            "id": "f7a4a167ff2d4c8da0ba2c46e38f5d9b",
+            "phase": "http_request_firewall_custom",
+            "kind": "zone"
+          }
+        ],
+        "errors": []
+      },
+      {
+        "path": "/zones/c97b548800561fada1a912c234696db1/snippets",
+        "status": 200,
+        "success": true,
+        "result": null,
+        "result_info": {
+          "page": 1,
+          "per_page": 25,
+          "total_pages": 0,
+          "count": 0,
+          "total_count": 0
+        }
+      }
+    ],
+    "entry": [
+      {
+        "path": "/zones/b0b0079990e13eb20a17a2d3c41403b8/rulesets/phases/http_request_firewall_custom/entrypoint",
+        "status": 200,
+        "success": true,
+        "result": {
+          "id": "bf9425f26625489f8d63e68577b3fc4f",
+          "phase": "http_request_firewall_custom",
+          "rules": [
+            {
+              "id": "90b1eaa4897640d8bbc2b264387e4946",
+              "action": "block",
+              "enabled": true,
+              "index": 0,
+              "expression": "http.host eq \"app.riffoid.com\" and cf.worker.upstream_zone ne \"\""
+            }
+          ]
+        },
+        "errors": []
+      },
+      {
+        "path": "/zones/b0b0079990e13eb20a17a2d3c41403b8/managed_headers",
+        "status": 200,
+        "success": true,
+        "result": {
+          "managed_request_headers": [
+            {
+              "enabled": false,
+              "has_conflict": false,
+              "id": "add_client_certificate_headers"
+            },
+            {
+              "enabled": false,
+              "has_conflict": false,
+              "id": "add_visitor_location_headers"
+            },
+            {
+              "enabled": false,
+              "has_conflict": false,
+              "id": "remove_visitor_ip_headers"
+            },
+            {
+              "enabled": false,
+              "has_conflict": false,
+              "id": "add_waf_credential_check_status_header"
+            }
+          ],
+          "managed_response_headers": [
+            {
+              "enabled": false,
+              "has_conflict": false,
+              "id": "remove_x-powered-by_header"
+            },
+            {
+              "enabled": false,
+              "has_conflict": false,
+              "id": "add_security_headers"
+            }
+          ]
+        },
+        "errors": []
+      },
+      {
+        "path": "/zones/b0b0079990e13eb20a17a2d3c41403b8/settings/pseudo_ipv4",
+        "status": 200,
+        "success": true,
+        "result": {
+          "id": "pseudo_ipv4",
+          "value": "off",
+          "modified_on": null,
+          "editable": true
+        },
+        "errors": []
+      },
+      {
+        "path": "/zones/b0b0079990e13eb20a17a2d3c41403b8/rulesets",
+        "status": 200,
+        "success": true,
+        "result": [
+          {
+            "id": "70339d97bdb34195bbf054b1ebe81f76",
+            "phase": "http_request_sanitize",
+            "kind": "managed"
+          },
+          {
+            "id": "77454fe2d30c4220b5701f6fdfb893ba",
+            "phase": "http_request_firewall_managed",
+            "kind": "managed"
+          },
+          {
+            "id": "4d21379b4f9f4bb088e0729962c8b3cf",
+            "phase": "ddos_l7",
+            "kind": "managed"
+          },
+          {
+            "id": "bf9425f26625489f8d63e68577b3fc4f",
+            "phase": "http_request_firewall_custom",
+            "kind": "zone"
+          }
+        ],
+        "errors": []
+      },
+      {
+        "path": "/zones/b0b0079990e13eb20a17a2d3c41403b8/snippets",
+        "status": 200,
+        "success": true,
+        "result": null,
+        "result_info": {
+          "page": 1,
+          "per_page": 25,
+          "total_pages": 0,
+          "count": 0,
+          "total_count": 0
+        }
+      }
+    ]
+  },
+  "formalPackage": {
+    "observedAt": "2026-10-10T16:09:45.779Z",
+    "status": "OFFLINE_FIXED_PAYLOADS_NOT_AUTHORIZED_OR_ARMED",
+    "packageSHA256": "c2d84bdbf75122886e426064003ae2275dc89a6791c46c0245c82dfacf35a0bf",
+    "networkRequestsExecuted": 0,
+    "productionWritesExecuted": 0,
+    "formalT": null,
+    "recoveryUntil": null,
+    "source": "Current exact deployed module bytes; configuration-only formal cutover",
+    "baselineIdentity": {
+      "gateway": {
+        "worker": "riffology-m1-gateway-staging",
+        "version": "a00f97bc-f0da-4e04-97b0-8f96f0a26a89",
+        "deployment": "d78a6f03-2552-4076-8ad5-7abd1802654c",
+        "metadataSHA256": "5441264ebfd7a5a5af5c93503afef1ba12791bff86410c490545da4ddc426e47",
+        "modules": [
+          {
+            "name": "index.js",
+            "bytes": 5497752,
+            "sha256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290"
+          }
+        ]
+      },
+      "entry": {
+        "worker": "riffoid-entry",
+        "version": "c110d7a7-fc81-4bb1-b27a-4ca8147a7fff",
+        "deployment": "5e920993-ee9d-4a7e-b6fe-39ef494f35fd",
+        "metadataSHA256": "95da23b6ab891f6b5e5dcdb6b707b1eb4fc6f288cc6ab94c2baf2a365ad99d21",
+        "modules": [
+          {
+            "name": "worker.js",
+            "bytes": 16197,
+            "sha256": "7a71a528d3ee7014621848e16801aeddd12c8f39edd3431720d089f337bb7dc4"
+          }
+        ]
+      },
+      "execution": {
+        "worker": "riffology-browser-execution",
+        "version": "c94df077-02a1-460f-8158-e47a338e68af",
+        "deployment": "a6fdeb9f-d885-4c72-9e02-968315351edb",
+        "metadataSHA256": "4ad0d93fb7a0678ce3b6f341a78acd345d4cd6322987fc309a8f54e3feca6d5d",
+        "modules": [
+          {
+            "name": "index.js",
+            "bytes": 49003,
+            "sha256": "b76b05f96d345a0ecf280cdb4414c1dd0c56bf71041dc3c72199db8e8c6c07c1"
+          }
+        ]
+      }
+    },
+    "phases": {
+      "gatewayCanonical": {
+        "worker": "riffology-m1-gateway-staging",
+        "bindingCount": 97,
+        "changedBindingNames": [
+          "APP_ORIGIN",
+          "APP_TRANSPORT_ORIGIN",
+          "TWO_ACCOUNT_AUTH_MODE"
+        ],
+        "modulesUnchanged": true,
+        "metadataSHA256": "97da5e3727d969b0e53c36422fa6e92b0a37c1b7017c0b765bc51c8e671a44d5",
+        "bodySHA256": "368543462ad8692ba04514654b34e4b0d02fa5b0cbfff435c96def40e2bbbda0",
+        "bodyBytes": 5522981
+      },
+      "executionCanonical": {
+        "worker": "riffology-browser-execution",
+        "bindingCount": 4,
+        "changedBindingNames": [
+          "APP_ORIGIN"
+        ],
+        "modulesUnchanged": true,
+        "metadataSHA256": "229fa99c116ecf757ec56251a55abd8e73b0beb4b0720ef3b26c67bdde71b6fa",
+        "bodySHA256": "cd599a24447e3b110e50a652b3c5ec1120c7362ef7bea47deabb75a19228e21b",
+        "bodyBytes": 50320
+      },
+      "entryEnabled": {
+        "worker": "riffoid-entry",
+        "bindingCount": 6,
+        "changedBindingNames": [
+          "TWO_ACCOUNT_AUTH_MODE",
+          "ENTRY_NATIVE_IP_BOUNDARY"
+        ],
+        "modulesUnchanged": true,
+        "metadataSHA256": "66d642c885684d243a3fa5322859140470158c68b585cd2ea168ed3be9f76f73",
+        "bodySHA256": "173c1c8e6d2b51f6cf67b32ac24a47721cb9cc9c5ca25ad1fd82fc2058c05084",
+        "bodyBytes": 17564
+      },
+      "gatewayRollback": {
+        "worker": "riffology-m1-gateway-staging",
+        "bindingCount": 95,
+        "changedBindingNames": [
+          "APP_ORIGIN"
+        ],
+        "modulesUnchanged": true,
+        "metadataSHA256": "5441264ebfd7a5a5af5c93503afef1ba12791bff86410c490545da4ddc426e47",
+        "bodySHA256": "579cbc7d03e646f12945bb887f0ef05636aea3a8df56c504566d59e85cfa74ba",
+        "bodyBytes": 5522813
+      },
+      "executionRollback": {
+        "worker": "riffology-browser-execution",
+        "bindingCount": 4,
+        "changedBindingNames": [
+          "APP_ORIGIN"
+        ],
+        "modulesUnchanged": true,
+        "metadataSHA256": "4ad0d93fb7a0678ce3b6f341a78acd345d4cd6322987fc309a8f54e3feca6d5d",
+        "bodySHA256": "2968d26986d8220ab5429848c0a8917779eac2ca913dfa1d37ceeff6395a48ca",
+        "bodyBytes": 50328
+      },
+      "entryRollback": {
+        "worker": "riffoid-entry",
+        "bindingCount": 5,
+        "changedBindingNames": [],
+        "modulesUnchanged": true,
+        "metadataSHA256": "95da23b6ab891f6b5e5dcdb6b707b1eb4fc6f288cc6ab94c2baf2a365ad99d21",
+        "bodySHA256": "b9b45fd2fc8ad7c70ae830b3c871460662095c135db08d823f15c4e92969c1e2",
+        "bodyBytes": 17459
+      },
+      "entryClose": {
+        "worker": "riffoid-entry",
+        "bindingCount": 6,
+        "changedBindingNames": [
+          "TWO_ACCOUNT_AUTH_MODE",
+          "ENTRY_NATIVE_IP_BOUNDARY"
+        ],
+        "modulesUnchanged": true,
+        "metadataSHA256": "44c58d903a4b7dbc0cd6d2f3d6c08ebd18bd151d13f6636cec15459d0aeffb05",
+        "bodySHA256": "22bdcad52b8c64cdfde02282c1df3f20a651187e37862cf09e22632741d352ea",
+        "bodyBytes": 17557
+      }
+    },
+    "unchanged": {
+      "gatewayNamespaces": 23,
+      "gatewayContainerAssociations": 5,
+      "secretReferences": true,
+      "assetRetention": "keep-assets-contract-v1",
+      "executionDate": "2026-09-05",
+      "formalCode": true
+    },
+    "guards": {
+      "nativeProtocolReceipts": null,
+      "singlePublisher": null,
+      "freshPostProtocolBaseline": null,
+      "window": null,
+      "formalAcceptanceScope": null
+    },
+    "recoveryTemplate": {
+      "afterAcceptedTOnly": true,
+      "gatewayAdditionalBindings": {
+        "LEGACY_RECOVERY_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
+        "LEGACY_RECOVERY_UNTIL": null
+      },
+      "exactUntil": "T + 48 hours",
+      "payloadNotPreparedUntilActualT": true
+    },
+    "originalUnknownRemains": true,
+    "limitations": [
+      "asset bytes and full asset-set identity not audited",
+      "decoded deployment/version-list GETs do not expose proxy HTTP attempts",
+      "formal candidate publicly serves invited users after enabling; it has no tester-only allowlist",
+      "real native protocol, authenticated acceptance scope and post-protocol baseline remain required",
+      "all three previous unknown journals and locks retained; no test request was replayed"
+    ]
+  },
+  "validation": {
+    "targetedTests": {
+      "passed": 52,
+      "failed": 0,
+      "sourceHead": "028fa131bf3a32b78aab348b779ae275ce6d28b3"
+    },
+    "maintenanceControllerOfflineCheck": {
+      "phases": 8,
+      "networkRequestsExecuted": 0,
+      "productionWritesExecuted": 0
+    },
+    "formalPreparation": {
+      "payloads": 7,
+      "networkRequestsExecuted": 0,
+      "productionWritesExecuted": 0
+    }
+  },
+  "productionWritesAfterApprovedRecovery": 0,
+  "newMaintenanceWindowOpened": false,
+  "newProtocolBrowserOperations": 0,
+  "formalT": null,
+  "recoveryUntil": null,
+  "previousUnknownRecordsPreserved": true,
+  "notes": [
+    "This records successful readonly baseline collectors, not atomic snapshots or proxy-attempt counts.",
+    "All three exact deployed module byte hashes are retained in the formal configuration-only payloads.",
+    "The maintenance candidate source remains separately frozen at 6ed830a17f2321de27446758074aff47550c99ea.",
+    "The expired original protocol was not resumed; all three historical unknown journals and locks remain unchanged.",
+    "Fresh publisher exclusion, current browser cooperation, actual native protocol and agreed authenticated acceptance coverage remain required."
+  ]
+}
