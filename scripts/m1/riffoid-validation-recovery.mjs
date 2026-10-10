@@ -61,3 +61,60 @@ export class GatewayRecoveryPublisher{
   finally{this.busy=false;if(locked&&!this.pending&&((await this.journal.lockState()).owned))await this.journal.unlock();}
  }
 }
+
+// Manual execution of the already approved second write after an interrupted
+// privacy write has been independently read back. Both unknown journals stay intact.
+export function assertPrivacyReconciliation({packet,plan,receipt}){
+ assert.equal(receipt.metadataSHA256,packet.phases.gatewayRestorePrivacy.metadataSHA256);
+ assert.equal(receipt.modulesSHA256,packet.phases.gatewayRestorePrivacy.modulesSHA256);
+ assert.equal(receipt.resourcesSHA256,plan.source.resourcesSHA256);
+ assert.equal(receipt.preservationMatches,true);assert.equal(receipt.pipelineGuardPassed,true);
+ assert.equal(receipt.readObservation?.bracketVerified,true);
+ assert.ok(receipt.version&&receipt.deployment);assert.notEqual(receipt.version,plan.source.version);assert.notEqual(receipt.deployment,plan.source.deployment);
+ assertPreservationReadback(receipt,packet.preservation.gateway.assets,{accountId:plan.accountId,worker:plan.worker});
+}
+export async function checkInterruptedRecoveryJournal({plan,interruptedJournal,interruptedLockSHA256}){
+ const lock=await interruptedJournal.lockState();assert.equal(lock.status,'PRESENT_OWNER_RECORDED');assert.equal(lock.sha256,interruptedLockSHA256);
+ const w=plan.writes[0],rows=await interruptedJournal.records();assert.equal(rows.length,2,'only the first recovery intent and unknown may exist');
+ const intent=rows.find(r=>r.name===w.requestId+'.intent.json'),unknown=rows.find(r=>r.name===w.requestId+'.unknown.json');assert.ok(intent&&unknown);
+ for(const r of [intent,unknown]){assert.equal(r.value.phase,'gatewayRestorePrivacy');assert.equal(r.value.requestId,w.requestId);assert.equal(r.value.originalRequestId,plan.originalRequestId);}
+ assert.equal(intent.value.planSHA256,hashJSON(plan));assert.equal(intent.value.bodySHA256,w.bodySHA256);assert.equal(intent.value.priorVersion,plan.source.version);assert.equal(intent.value.priorDeployment,plan.source.deployment);
+ assert.equal(unknown.value.automaticRetry,false);assert.equal(unknown.value.automaticLogsRestore,false);
+ return hashJSON(rows);
+}
+export class GatewayApprovedLogsPublisher{
+ constructor({packet,accounts,plan,privacyReadback,interruptedJournal,interruptedLockSHA256,transport,journal,originalJournal,approval,readBudget={}}){
+  this.packet=structuredClone(packet);this.accounts=accounts;this.plan=structuredClone(plan);this.planHash=hashJSON(plan);this.current=structuredClone(privacyReadback);
+  this.interruptedJournal=interruptedJournal;this.interruptedLockSHA256=interruptedLockSHA256;this.transport=transport;this.journal=journal;this.originalJournal=originalJournal;this.approval=approval;this.readBudget=readBudget;this.busy=false;this.pending=null;this.attempted=false;
+  assert.equal(plan.originalPacketSHA256,hashJSON(packet));assert.equal(plan.retainsOriginalUnknown,true);assert.equal(plan.resumesProtocol,false);assert.deepEqual(plan.writes.map(w=>w.phase),gatewayRecoveryPhases);
+  assertPrivacyReconciliation({packet,plan,receipt:privacyReadback});
+ }
+ async retainedJournals(){return {original:await checkOriginalRecoveryJournal(this),interrupted:await checkInterruptedRecoveryJournal(this)};}
+ async authorizeWrite(request){
+  assert.equal(hashJSON(this.packet),this.plan.originalPacketSHA256);assert.equal(hashJSON(this.plan),this.planHash);requireGatewayRecoveryApproval(this.plan,this.approval);
+  assert.ok(this.busy&&this.attempted&&this.pending);assert.equal((await this.journal.lockState()).owned,true);assert.deepEqual(await this.retainedJournals(),this.retainedHashes);
+  const w=this.plan.writes[1];assert.equal(this.pending.requestId,w.requestId);assert.equal(this.pending.phase,'gatewayRestoreLogs');
+  for(const [k,v] of Object.entries({accountId:this.plan.accountId,method:'PUT',path:w.path,bodySHA256:w.bodySHA256,bytes:w.bytes}))assert.equal(request[k],v);
+  const rows=await this.journal.records();assert.equal(rows.length,1);const intent=rows[0];assert.equal(intent.name,w.requestId+'.intent.json');
+  for(const [k,v] of Object.entries({phase:w.phase,requestId:w.requestId,originalRequestId:this.plan.originalRequestId,planSHA256:this.planHash,bodySHA256:w.bodySHA256,priorVersion:this.current.version,priorDeployment:this.current.deployment,privacyReadbackSHA256:hashJSON(this.current),interruptedJournalSHA256:this.retainedHashes.interrupted}))assert.equal(intent.value[k],v);
+ }
+ async publish({phase,moduleBytes}){
+  assert.equal(phase,'gatewayRestoreLogs');assert.equal(this.transport.mode,'live');assert.equal(this.busy,false);assert.equal(this.pending,null);assert.equal(this.attempted,false);assert.equal(await this.journal.hasPending(),false);
+  assert.equal(hashJSON(this.packet),this.plan.originalPacketSHA256);assert.equal(hashJSON(this.plan),this.planHash);requireGatewayRecoveryApproval(this.plan,this.approval);assertPrivacyReconciliation({packet:this.packet,plan:this.plan,receipt:this.current});
+  const w=this.plan.writes[1],write=buildWrite(this.packet,phase,moduleBytes,this.plan.accountId,w.requestId);assert.equal(hashBytes(write.body),w.bodySHA256);assert.equal(write.body.length,w.bytes);
+  this.retainedHashes=await this.retainedJournals();this.busy=true;let locked=false;
+  try{
+   await this.journal.lock();locked=true;
+   const pre=await collectReadback(this.transport,this.plan.accountId,this.plan.worker,this.packet.phases.gatewayRestorePrivacy,this.packet.preservation.gateway,this.readBudget);
+   assertPrivacyReconciliation({packet:this.packet,plan:this.plan,receipt:pre});for(const k of ['version','deployment','resourcesSHA256'])assert.equal(pre[k],this.current[k]);
+   requireGatewayRecoveryApproval(this.plan,this.approval);assert.deepEqual(await this.retainedJournals(),this.retainedHashes);assert.equal((await this.journal.lockState()).owned,true);
+   await this.journal.append(w.requestId,'intent',{phase,requestId:w.requestId,originalRequestId:this.plan.originalRequestId,planSHA256:this.planHash,bodySHA256:w.bodySHA256,priorVersion:this.current.version,priorDeployment:this.current.deployment,privacyReadbackSHA256:hashJSON(this.current),interruptedJournalSHA256:this.retainedHashes.interrupted,startedAt:Date.now()});
+   this.attempted=true;this.pending={phase,requestId:w.requestId};const ack=jsonResult(await this.transport.request(write));
+   const receipt=await collectReadback(this.transport,this.plan.accountId,this.plan.worker,this.packet.phases.gatewayRestoreLogs,this.packet.preservation.gateway,this.readBudget);
+   assert.equal(ack.result.id,this.plan.worker);assert.equal(receipt.resourcesSHA256,pre.resourcesSHA256);assertPreservationReadback(receipt,this.packet.preservation.gateway.assets,{accountId:this.plan.accountId,worker:this.plan.worker});assert.equal(receipt.pipelineGuardPassed,true);
+   assert.deepEqual(await this.retainedJournals(),this.retainedHashes);assert.equal((await this.journal.lockState()).owned,true);
+   await this.journal.append(w.requestId,'terminal',{phase,requestId:w.requestId,originalRequestId:this.plan.originalRequestId,receipt,readbackAt:Date.now(),originalUnknownRetained:true,interruptedRecoveryUnknownRetained:true});this.pending=null;return {phase,receipt,originalUnknownRetained:true,interruptedRecoveryUnknownRetained:true,protocolAcceptance:false};
+  }catch(e){if(this.pending)await this.journal.append(w.requestId,'unknown',{phase,requestId:w.requestId,originalRequestId:this.plan.originalRequestId,automaticRetry:false,automaticLogsRestore:false,reportDueAt:Date.now()+600000}).catch(()=>{});throw e;}
+  finally{this.busy=false;if(locked&&!this.pending&&((await this.journal.lockState()).owned))await this.journal.unlock();}
+ }
+}
