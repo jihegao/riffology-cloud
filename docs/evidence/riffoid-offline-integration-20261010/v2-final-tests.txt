@@ -1,0 +1,22 @@
+✔ all stages carry complete metadata/module manifests, preserve Secret references/resources, and do not mutate baselines (1.797541ms)
+✔ fixed maximum and baseline drift/Secret plaintext/incomplete modules are rejected (2.092042ms)
+✔ changing frozen time or metadata cannot silently continue the same coordination journal (0.564792ms)
+✔ full fixture closes observation → marker → one A/B batch → expiry → cleanup/drain → privacy restore → logs restore (1.521667ms)
+✔ both observes and timely independently matched marker readback are required; waiting in chat does not extend the window (1.411167ms)
+✔ duplicate accepted begin codes cannot substitute for a verified primary receipt (2.135459ms)
+✔ P2 time order: backdated Run, restore and logs receipts cannot precede cue or drain (0.776083ms)
+✔ P2 identity binding: baseline/seen versions cannot change content and deployments cannot change version (0.544667ms)
+✔ P2 ordered readback: a later delivery cannot hide a future or out-of-order publication/readback (0.450375ms)
+✔ P2 consistent identity reuse: a known version with unchanged content accepts a new deployment binding (0.428125ms)
+✔ early failure removes marker but retains cleanup route; expiration/partial/unknown drain cannot unlock restoration (0.76975ms)
+✔ unknown write/cleanup receipts freeze original request identity and forbid retries or restoration (0.440042ms)
+✔ stale publisher/readback mismatch rejects atomically without changing the previous state (0.246875ms)
+✔ offline module byte/hash verification detects source drift with no network (260.451458ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 366.815875

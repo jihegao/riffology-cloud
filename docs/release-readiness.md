@@ -1,5 +1,11 @@
 # Current release readiness — 2026-10-10
 
+## 2026-10-10 PR173 offline maintenance repair integration; no deployment
+
+The draft [PR173](https://github.com/jihegao/riffology-cloud/pull/173) receives the frozen v2 + v3-p2 repair on its current head. Marker-before-begin, fixed 300-second single-round bounds and original A-page cleanup are covered by local fixtures. The serial publisher/readback adapter has no live transport. Original unknown-write identities retain their version/content and deployment/version ledger checks without retry or cursor advance. Terminal evidence is limited to the two Observe, two Run and one cleanup application operations; no platform drain is claimed.
+
+[Fresh integrated-code validation and retained failure evidence](evidence/riffoid-offline-integration-20261010/summary.json) records actual commands/results and source hashes. The prior failed fixtures and superseded internal review are retained. The parent reported independent rechecks accepted the frozen archives; that report does not replace current deployment or user acceptance. Both restorationStandard and unknownLogClosure remain pending and productionAuthorized stays false. No deployment, authenticated native-IP acceptance, platform test or paid execution is performed. Project reading remains unavailable; no status is invented or changed.
+
 ## 2026-10-10 #173 domain cutover preflight refreshed; real acceptance pending
 
 [PR #173](https://github.com/jihegao/riffology-cloud/pull/173) remains a draft.

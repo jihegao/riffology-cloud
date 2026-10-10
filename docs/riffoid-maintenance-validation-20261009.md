@@ -1,5 +1,7 @@
 # Maintenance protocol validation — implementation only
 
+October 10 offline integration: the reviewed v2 + v3-p2 repair uses a fixed 300-second single-round schedule, checks the marker before begin, and deduplicates the original A-page cleanup. See [current contract](riffoid-validation-offline-adapter-20261009.md) and [fresh integration evidence](evidence/riffoid-offline-integration-20261010/summary.json). The user approved PR173 push/deployment at 00:53 UTC; this task performs source integration and PR push only. Restoration and unknown-log decisions remain pending; no deployment or new live protocol request is made. The earlier preflight and authorization paragraphs below are dated history.
+
 October 10 update: [fresh preflight evidence](evidence/riffoid-cutover-preflight-20261010.json)
 rechecks the unchanged active Gateway/entry/Execution identities, exact code hashes,
 95/5/4 binding digests, WAF and telemetry metadata. The existing targeted suite
@@ -26,7 +28,7 @@ Both existing Workers use real `APP_ORIGIN=https://app.riffoid.com`, fixed
 The Gateway's original `appTopology` produces the verifier's canonical/transport;
 there is no alternate audience or caller-supplied origin. The temporary
 `RIFFOID_VALIDATION_CONFIG_JSON` contains only one run, two distinct actual native
-public IPs and a UTC epoch interval of 45–120 seconds; its example deliberately
+public IPs and a UTC epoch interval of 45–300 seconds; its example deliberately
 contains nulls. Config presence fences normal business routes with 503, even if
 malformed or expired. It never opens the application automatically. An existing
 explicit recovery pair, if present, retains the original recovery handler; this
@@ -86,7 +88,7 @@ table stores only `run_id, slot, mask, expires`; the original `claim` method and
 already spent/unknown cases are never reissued. Maximum authorized batch is
 three fresh proofs, two primary nonce accepts, four verifier calls, two observes
 and two begin leases. Each fetch is bounded to five seconds, budget RPC to two,
-invocation to 45 and window to 120. Summary reads are at most 1024 bytes.
+invocation to 45 and window to 300. Summary reads are at most 1024 bytes.
 
 Normal complete protocol flow is **eight outgoing HTTPS requests**, plus one
 optional cleanup. This is **not an aggregate HTTP hard cap**: additional denied
@@ -113,6 +115,12 @@ erasing security state. Original replay nonces and their lifecycle are preserved
 No alarms, namespace migration/reset or new Worker/domain/Secret is introduced.
 
 ## Future exact approval and guards
+
+The [isolated offline repair](riffoid-validation-isolated-repair-20261009.md)
+aligns the maximum with the recorded 300-second approval ceiling, moves the marker
+check before begin consumption, and supplies an offline stage/receipt validator.
+Historical readbacks below remain dated evidence. Actual publication, native
+browser coordination and both risk decisions are still pending. Application terminal evidence does not prove platform drain.
 
 The original account (`8b0d70250211aa10d89e20605a1c7e5e`) retains Gateway
 `riffology-m1-gateway-staging`, all D1/R2/DO and Browser Execution. The new account

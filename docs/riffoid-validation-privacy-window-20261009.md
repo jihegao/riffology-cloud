@@ -1,5 +1,7 @@
 # Validation logging privacy — review only, October 9
 
+October 10 current boundary: [the integrated offline contract](riffoid-validation-offline-adapter-20261009.md) supersedes historical restoration assumptions below. The fixed maximum is 300 seconds; application terminal evidence cannot prove internal telemetry drain. User publication authorization does not resolve restorationStandard or unknownLogClosure; both remain pending, productionAuthorized:false. No logging or production configuration change is performed by this integration.
+
 No production setting was changed, no real log/header/Secret value was queried,
 and no real-time Tail subscription was started. Parent summaries establish the
 entry's current settings; Gateway settings come from the historical frozen safety
@@ -106,7 +108,7 @@ so do not set the native-boundary marker from these logging facts.
 At completion/failure, close entry and maintain the privacy overlay while any
 validation invocation can still be in flight. Expired config continues to fence
 business HTTP. Resolve unknown invocations using approved metadata only; do not
-assume a 120-second wall-clock expiration itself drains all delivery. Restore
+assume a 300-second wall-clock expiration itself drains all delivery. Restore
 original entry code/five bindings and Gateway code/config through guarded forward
 publication with original DO identities. Restore **persist=true** to each exact
 captured baseline only after no validation invocation can emit a full proof into

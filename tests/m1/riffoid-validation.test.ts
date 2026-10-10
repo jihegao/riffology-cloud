@@ -10,7 +10,8 @@ function req(operation='run',init:RequestInit={}){return new Request(`${canonica
 
 test('temporary config is strict, distinct two native IPs, fixed duration and no capabilities',()=>{
   const good=env(),c=validationConfig(good);assert.equal(c.version,1);
-  for(const change of [{ips:{A:c.ips.A,B:c.ips.A}},{expires:c.notBefore+120001},{notBefore:-1},{run:'short'},
+  assert.doesNotThrow(()=>validationConfig({...good,RIFFOID_VALIDATION_CONFIG_JSON:JSON.stringify({...c,expires:c.notBefore+300000})}));
+  for(const change of [{ips:{A:c.ips.A,B:c.ips.A}},{expires:c.notBefore+300001},{notBefore:-1},{run:'short'},
     {token:'not-accepted'},{ips:{A:'198.51.100.023',B:c.ips.B}},{ips:{A:c.ips.A,B:c.ips.B,C:'unexpected'}}]){
     assert.throws(()=>validationConfig({...good,RIFFOID_VALIDATION_CONFIG_JSON:JSON.stringify({...c,...change})}));
   }
@@ -38,7 +39,7 @@ test('no oracle: unknown source, credentials, caller proof/case, nonempty body, 
   assert.equal((await entry(req(),unconfigured,send)).status,403);assert.equal(sends,0);
 });
 test('UI stores no credential and uses exact same-origin empty POST; run cannot sign without actual global begin acceptance',async()=>{
-  let calls=0;const c=env();
+  let calls=0;const c={...env(),ENTRY_NATIVE_IP_BOUNDARY:'cloudflare-direct-visitor-waf-v1'};
   const ui=await entry(req('ui',{method:'GET'}),c,async()=>{throw Error('unexpected-outbound');});
   assert.equal(ui.status,200);assert.equal(ui.headers.get('set-cookie'),null);const text=await ui.text();
   assert.ok(text.includes("credentials:'omit'"));assert.ok(text.includes("body:''"));assert.ok(!/localStorage|sessionStorage|document\.cookie/.test(text));
@@ -47,4 +48,20 @@ test('UI stores no credential and uses exact same-origin empty POST; run cannot 
   const response=await entry(req(),c,async()=>{calls++;throw Error('offline-lost-control-receipt');});
   assert.equal(response.status,503);assert.equal(calls,1);const result=await response.json() as {retry:boolean;spent:boolean;results:unknown[]};assert.equal(result.retry,false);assert.equal(result.spent,true);
   assert.deepEqual(result.results,[]);
+});
+
+test('missing or wrong marker refuses Run before begin, while observation remains available without a key',async()=>{
+  for(const marker of [undefined,'unconfirmed']){
+    const c={...env(),ENTRY_NATIVE_IP_BOUNDARY:marker};let begin=0,observations=0;
+    const send=async(request:Request)=>{
+      const action=request.headers.get('x-riffoid-validation-case');
+      if(action==='begin')begin++;
+      if(action==='observe'){observations++;return Response.json({case:'observe',status:200,code:'accepted'});}
+      throw Error('unexpected signing or lease consumption');
+    };
+    const early=await entry(req('run'),c,send);
+    assert.equal(early.status,503);assert.deepEqual(await early.json(),{error:'validation_not_ready'});assert.equal(begin,0);
+    const observed=await entry(req('observe'),c,send);
+    assert.equal(observed.status,200);assert.equal(observations,1);assert.equal(begin,0);
+  }
 });

@@ -1,0 +1,20 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=2",
+    "tests/m1/riffoid-validation-workerd.test.mjs",
+    "tests/m1/riffoid-entry-workerd.test.mjs",
+    "tests/m1/riffoid-two-account-workerd.test.mjs",
+    "tests/m1/riffoid-replay-workerd.test.mjs",
+    "tests/m1/riffoid-cancellation-workerd.test.mjs",
+    "tests/m1/riffoid-forward-rollback-workerd.test.mjs",
+    "tests/m1/riffoid-recovery-workerd.test.mjs",
+    "tests/m1/riffoid-recovery-cold-workerd.test.mjs"
+  ],
+  "exitCode": 1,
+  "completedUTC": "2026-10-10T01:01:57.576415+00:00",
+  "logSHA256": "a2bd8af04b14710eeaf4e834a0917a46683962410635c492e45cf9d52c299076",
+  "scope": "local loopback Workerd/SQLite fixtures; outbound denied except fixture loopback; no Cloudflare production or provider request",
+  "logNormalization": "absolute integration-worktree path redaction, trailing whitespace and terminal blank lines only"
+}

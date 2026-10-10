@@ -1,6 +1,7 @@
 import {HttpError,json,requireOrigin} from '../gateway/http.ts';
 import {requireRequestHost} from '../gateway/origins.ts';
 import {base64url,clientIp,forwarded,pathQuery,proofHeader,signatureHeader,signEntry,type SigningEnv} from './signature.ts';
+import {cleanupOnceSource} from './validation-cleanup-ui.ts';
 import {validationConfig,validationTime,validationTopology,validationRoute,validationEmptyBody,validationNoCredentials,
   VALIDATION_CASE_HEADER,VALIDATION_INVOCATION_MS,VALIDATION_FETCH_MS,validationCanonical,validationTransport,
   type ValidationEnv,type ValidationConfig,type ValidationSlot} from './validation-policy.ts';
@@ -75,9 +76,12 @@ async function waitPast(expires:number,c:ValidationConfig,signal:AbortSignal):Pr
   }
   validationTime(c);if(signal.aborted)throw Error('cancelled');
 }
-async function ui(run:string,slot:ValidationSlot):Promise<Response> {
-  const root=JSON.stringify(VALIDATION_PATH(run,slot));
-  const script=`const root=${root};for(const op of ['observe','run','cleanup'])document.getElementById(op).onclick=async()=>{document.getElementById(op).disabled=true;try{const r=await fetch(root+op,{method:'POST',body:'',credentials:'omit',mode:'same-origin',redirect:'error',cache:'no-store'});document.getElementById('result').textContent=JSON.stringify(await r.json());}catch{document.getElementById('result').textContent='unknown; do not retry';}};`;
+async function ui(c:ValidationConfig,slot:ValidationSlot):Promise<Response> {
+  const root=JSON.stringify(VALIDATION_PATH(c.run,slot));
+  const script=`${cleanupOnceSource};const root=${root};const report=t=>{const out=document.getElementById('result');out.textContent+=(out.textContent?'\\n':'')+t;};
+const post=async(op,signal)=>{const r=await fetch(root+op,{method:'POST',body:'',credentials:'omit',mode:'same-origin',redirect:'error',cache:'no-store',signal});const result=await r.json();report(JSON.stringify(result));if(!r.ok||result.passed!==true)throw Error('unknown');};
+for(const op of ['observe','run'])document.getElementById(op).onclick=async()=>{document.getElementById(op).disabled=true;try{await post(op);}catch{report('unknown; do not retry');}};
+${slot==='A'?`const cleanup=cleanupOnce({serverNow:${Date.now()},expires:${c.expires},monotonicNow:()=>performance.now(),setTimer:(f,ms)=>setTimeout(f,ms),disable:()=>document.getElementById('cleanup').disabled=true,report,send:async()=>{const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),5000);try{await post('cleanup',controller.signal);}finally{clearTimeout(timer);}}});document.getElementById('cleanup').onclick=()=>{void cleanup();};`:''}`;
   const digest=base64url(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(script))));
   const hash=digest.replace(/-/g,'+').replace(/_/g,'/')+'=';
   return new Response(`<!doctype html><meta charset="utf-8"><title>Riffoid protocol validation</title><p>Maintenance test ${slot}. Ordinary application closed. No OAuth or business execution.</p><button id="observe">Observe native source</button><button id="run">Run once</button>${slot==='A'?'<button id="cleanup">Cleanup after deadline</button>':'<button id="cleanup" hidden>Unavailable</button>'}<pre id="result"></pre><script>${script}</script>`,
@@ -101,7 +105,7 @@ export async function validationEntry(request:Request,env:Env,send:Send):Promise
     if(request.headers.has('cf-worker')||request.headers.has(proofHeader)||request.headers.has(signatureHeader)||
       [...request.headers.keys()].some(k=>k.startsWith('x-riffoid-validation-'))||clientIp(request.headers.get('cf-connecting-ip'))!==c.ips[route.slot])
       throw new HttpError('validation_source_denied',403);
-    if(route.operation==='ui'){if(request.method!=='GET')throw new HttpError('validation_scope_denied',403);return ui(c.run,route.slot);}
+    if(route.operation==='ui'){if(request.method!=='GET')throw new HttpError('validation_scope_denied',403);return ui(c,route.slot);}
     if(request.method!=='POST'||cleanup&&route.slot!=='A')throw new HttpError('validation_scope_denied',403);
     requireOrigin(request,validationCanonical);await validationEmptyBody(request);validationTime(c,cleanup);
     controller=new AbortController();abort=()=>controller?.abort();request.signal.addEventListener('abort',abort,{once:true});
@@ -112,6 +116,10 @@ export async function validationEntry(request:Request,env:Env,send:Send):Promise
       expect(result,200,cleanup?'expired_control_rows_removed':'accepted');
       return json({slot:route.slot,case:action,passed:true,nativeIpMatches:true,results:[result]});
     }
+    // Observation deliberately works before the marker exists. A premature Run
+    // must not consume its durable begin lease or touch the signing key.
+    if(env.ENTRY_NATIVE_IP_BOUNDARY!=='cloudflare-direct-visitor-waf-v1')
+      throw new HttpError('validation_not_ready',503);
     if(c.expires-Date.now()<(route.slot==='A'?45_000:10_000))throw new HttpError('validation_closed',403);
     stage='begin';
     const begin=await exchange(target(native,'begin',signal),'begin',send,signal);expect(begin,200,'accepted');results.push(begin);

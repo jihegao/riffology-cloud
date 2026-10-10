@@ -5,7 +5,7 @@ export const VALIDATION_PREFIX='/__riffoid-validation/';
 export const VALIDATION_ACTOR='riffoid-entry-replay-v1:0';
 export const VALIDATION_CASE_HEADER='x-riffoid-validation-case';
 export const VALIDATION_TABLE='riffoid_validation_budget_v1';
-export const VALIDATION_MAX_WINDOW_MS=120_000,VALIDATION_CLEANUP_MS=30_000;
+export const VALIDATION_MAX_WINDOW_MS=300_000,VALIDATION_CLEANUP_MS=30_000;
 export const VALIDATION_INVOCATION_MS=45_000,VALIDATION_FETCH_MS=5_000;
 export const validationCanonical='https://app.riffoid.com';
 export const validationTransport='https://riffoid-transport.gaojihe.cn';

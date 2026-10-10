@@ -10,7 +10,7 @@ import {proofHeader,signatureHeader,forwardedHeaders,replayShard,base64url} from
 const run='offline_workerd_validation_20261009',text=value=>({type:'text',value});
 const strict=key=>Object.fromEntries(Object.entries(key).filter(([n])=>['kty','crv','x','y','d'].includes(n)));
 async function bundle(contents){return (await build({stdin:{contents,resolveDir:process.cwd(),sourcefile:'validation-test-only.mjs'},bundle:true,write:false,format:'esm',platform:'neutral',target:'es2024',mainFields:['module','main'],conditions:['workerd','worker','browser'],external:['cloudflare:workers','node:*'],logLevel:'silent'})).outputFiles[0].text;}
-function worker(name,code,env,outbound,extra={}){return new Miniflare({host:'127.0.0.1',port:0,inspectorPort:0,cf:{},telemetry:{enabled:false},logRequests:false,...extra,workers:[{config:{type:'worker',name,compatibilityDate:'2026-09-09',compatibilityFlags:['nodejs_compat','nodejs_compat_do_not_populate_process_env','global_fetch_strictly_public','enable_request_signal'],manifest:{mainModule:'worker.mjs',modules:{'worker.mjs':{type:'esm',contents:code}}},env,...(env.ENTRY_REPLAY?{exports:{EntryReplayGuard:{type:'durable-object',storage:'sqlite'}}}:{})},dev:{unsafeRegisterWorker:false,outboundService:{type:'fetcher',handler:outbound}}}]});}
+function worker(name,code,env,outbound,extra={}){const options={host:'127.0.0.1',port:0,inspectorPort:0,cf:{},telemetry:{enabled:false},logRequests:false,...extra,workers:[{config:{type:'worker',name,compatibilityDate:'2026-09-09',compatibilityFlags:['nodejs_compat','nodejs_compat_do_not_populate_process_env','global_fetch_strictly_public','enable_request_signal'],manifest:{mainModule:'worker.mjs',modules:{'worker.mjs':{type:'esm',contents:code}}},env,...(env.ENTRY_REPLAY?{exports:{EntryReplayGuard:{type:'durable-object',storage:'sqlite'}}}:{})},dev:{unsafeRegisterWorker:false,outboundService:{type:'fetcher',handler:outbound}}}]};const mf=new Miniflare(options);mf.fixtureOptions=options;return mf;}
 const gatewaySource=`import handler from './services/gateway/index.ts';export * from './services/gateway/index.ts';export default {fetch(req,env,ctx){const headers=new Headers(req.headers);headers.set('host',new URL(req.url).host);return handler.fetch(new Request(req,{headers}),env,ctx);}};`;
 const entrySource=`import handler from './services/entry/index.ts';export default {fetch(req,env,ctx){const headers=new Headers(req.headers);headers.set('host',new URL(req.url).host);headers.set('cf-connecting-ip',headers.get('x-fixture-native-ip')||'198.51.100.23');headers.delete('x-fixture-native-ip');return handler.fetch(new Request(req,{headers}),env,ctx);}};`;
 
@@ -20,14 +20,14 @@ test('real-time unused expiry and exact-proof replay through actual entry/Gatewa
   const pair=await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign','verify']);
   const privateKey=JSON.stringify(strict(await crypto.subtle.exportKey('jwk',pair.privateKey)));
   const publicKeys=JSON.stringify({'fixture-validation':strict(await crypto.subtle.exportKey('jwk',pair.publicKey))});
-  const now=Date.now(),config=JSON.stringify({version:1,run,notBefore:now-1000,expires:now+119000,ips:{A:'198.51.100.23',B:'198.51.100.24'}});
+  const now=Date.now(),config=JSON.stringify({version:1,run,notBefore:now-1000,expires:now+299000,ips:{A:'198.51.100.23',B:'198.51.100.24'}});
   const [gwCode,entryCode]=await Promise.all([bundle(gatewaySource),bundle(entrySource)]);
   let gw,front,unknown=0,outgoing=0,originalA,expiryUnseen=true;
   const proofDigests=new Set();
   const env={APP_ORIGIN:text(canonical),APP_TRANSPORT_ORIGIN:text(transport),TWO_ACCOUNT_AUTH_MODE:text('signed-entry-v1'),RIFFOID_VALIDATION_CONFIG_JSON:text(config)};
   try{
     gw=worker('validation-gateway',gwCode,{...env,ENTRY_SIGNING_PUBLIC_KEYS_JSON:text(publicKeys),ENTRY_REPLAY:{type:'durable-object',worker:'validation-gateway',exportName:'EntryReplayGuard'}},()=>{unknown++;return new Response('offline-denied',{status:403});});await gw.ready;
-    front=worker('validation-entry',entryCode,{...env,ENTRY_NATIVE_IP_BOUNDARY:text('cloudflare-direct-visitor-waf-v1'),ENTRY_SIGNING_KEY_ID:text('fixture-validation'),ENTRY_SIGNING_PRIVATE_JWK:text(privateKey)},async request=>{
+    front=worker('validation-entry',entryCode,{...env,ENTRY_SIGNING_KEY_ID:text('fixture-validation'),ENTRY_SIGNING_PRIVATE_JWK:text(privateKey)},async request=>{
       outgoing++;assert.equal(new URL(request.url).origin,transport);assert.equal(request.headers.get('cookie'),null);
       const action=request.headers.get('x-riffoid-validation-case'),encoded=request.headers.get(proofHeader);
       const body=await request.arrayBuffer();assert.equal(body.byteLength,0);
@@ -46,6 +46,11 @@ test('real-time unused expiry and exact-proof replay through actual entry/Gatewa
     });await front.ready;
     const post=(slot,operation)=>front.dispatchFetch(`${canonical}/__riffoid-validation/${run}/${slot}/${operation}`,{method:'POST',headers:{origin:canonical,'x-fixture-native-ip':slot==='A'?'198.51.100.23':'198.51.100.24'},body:''});
     for(const slot of ['A','B']){const r=await post(slot,'observe');assert.equal(r.status,200);assert.equal((await r.json()).nativeIpMatches,true);}
+    const premature=await post('A','run');assert.equal(premature.status,503);assert.deepEqual(await premature.json(),{error:'validation_not_ready'});
+    assert.equal(outgoing,2,'premature Run after observation must not consume begin or sign');
+    // Fixture-only update of the existing entry runtime, same run/config/key.
+    front.fixtureOptions.workers[0].config.env.ENTRY_NATIVE_IP_BOUNDARY=text('cloudflare-direct-visitor-waf-v1');
+    await front.setOptions(front.fixtureOptions);
     const competing=Array.from({length:6},()=>post('A','run'));
     const b=await post('B','run');const summaryB=await b.json();assert.equal(b.status,200,JSON.stringify(summaryB));assert.equal(summaryB.results.at(-1).ipMatches,true);
     const responses=await Promise.all(competing),successes=responses.filter(r=>r.status===200);

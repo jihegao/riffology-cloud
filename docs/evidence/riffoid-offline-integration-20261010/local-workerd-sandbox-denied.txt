@@ -1,0 +1,247 @@
+✖ actual HTTP disconnect during upload emits native abort only with enable_request_signal, no hop/auth/retry (100.016667ms)
+✖ actual HTTP Entry→Gateway disconnect after real SQLite DO RPC issued: late persistence burns nonce, zero auth/no retry (96.227708ms)
+✖ actual HTTP bounded DO timeout also commits late and rejects explicit replay before auth (75.106708ms)
+✖ real HTTP SSE disconnect stops production turnEventStream observation across both bridges, preserving cursor and no retry (90.840417ms)
+✖ graceful pre-header FIN: bounded timeout prevents auth in delayed fixture; immediate native cancellation remains unproven (92.524542ms)
+✖ two local Workerd Workers: actual Gateway auth, canonical PKCE callback, original identity, recovery/CSRF/rate-limit and stream-safe entry (216.9765ms)
+✖ unselected proxy auth mode keeps the actual Gateway application closed before any auth/storage/network work (98.075792ms)
+
+  #  /opt/homebrew/Cellar/node/26.10.0_1/bin/node[22628]: void node::InternalCallbackScope::Close() at ../src/api/callback.cc:185
+  #  Assertion failed: (env_->execution_async_id()) == (0)
+
+----- Native stack trace -----
+
+ 1: 0x1081828bc node::(anonymous namespace)::DefaultAbortHandler(char const*, char const*) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 2: 0x108182864 node::Assert(node::AssertionInfo const&) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 3: 0x106e0b948 node::InternalCallbackScope::Close() [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 4: 0x106e0b634 node::InternalCallbackScope::~InternalCallbackScope() [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 5: 0x106e7b818 node::Environment::RunAndClearNativeImmediates(bool) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 6: 0x106e7ac1c node::Environment::CheckImmediate(uv_check_s*) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 7: 0x102f403dc uv__run_check [/opt/homebrew/Cellar/libuv/1.53.0/lib/libuv.1.0.0.dylib]
+ 8: 0x102f3ac80 uv_run [/opt/homebrew/Cellar/libuv/1.53.0/lib/libuv.1.0.0.dylib]
+ 9: 0x106e0c334 node::SpinEventLoopInternal(node::Environment*) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+10: 0x106f42d58 node::NodeMainInstance::Run(node::ExitCode*, node::Environment*) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+11: 0x106f42aac node::NodeMainInstance::Run() [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+12: 0x106ead518 node::Start(int, char**) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+13: 0x19de0d158 start [/usr/lib/dyld]
+✖ tests/m1/riffoid-forward-rollback-workerd.test.mjs (572.878125ms)
+✖ cold recovery preserves current v7 saved journal/discovery/alarm; normal RPC still performs original maintenance (35.6665ms)
+✖ cold recovery preserves legacy v1 saved journal/discovery/alarm; normal RPC still performs original maintenance (32.227416ms)
+✖ production WorkspaceAgent recovery RPC reads persisted state without budget/runtime calls or new journal/alarm changes (33.22175ms)
+
+  #  /opt/homebrew/Cellar/node/26.10.0_1/bin/node[22634]: void node::InternalCallbackScope::Close() at ../src/api/callback.cc:185
+  #  Assertion failed: (env_->execution_async_id()) == (0)
+
+----- Native stack trace -----
+
+ 1: 0x1055f68bc node::(anonymous namespace)::DefaultAbortHandler(char const*, char const*) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 2: 0x1055f6864 node::Assert(node::AssertionInfo const&) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 3: 0x10427f948 node::InternalCallbackScope::Close() [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 4: 0x10427f634 node::InternalCallbackScope::~InternalCallbackScope() [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 5: 0x1043e5594 node::PerIsolatePlatformData::RunForegroundTask(std::__1::unique_ptr<v8::Task, std::__1::default_delete<v8::Task>>) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 6: 0x1043e4640 node::PerIsolatePlatformData::FlushForegroundTasksInternal() [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 7: 0x1006d64fc uv__async_io [/opt/homebrew/Cellar/libuv/1.53.0/lib/libuv.1.0.0.dylib]
+ 8: 0x1006e5604 uv__io_poll [/opt/homebrew/Cellar/libuv/1.53.0/lib/libuv.1.0.0.dylib]
+ 9: 0x1006d6c50 uv_run [/opt/homebrew/Cellar/libuv/1.53.0/lib/libuv.1.0.0.dylib]
+10: 0x104280334 node::SpinEventLoopInternal(node::Environment*) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+11: 0x1043b6d58 node::NodeMainInstance::Run(node::ExitCode*, node::Environment*) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+12: 0x1043b6aac node::NodeMainInstance::Run() [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+13: 0x104321518 node::Start(int, char**) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+14: 0x19de0d158 start [/usr/lib/dyld]
+✖ tests/m1/riffoid-replay-workerd.test.mjs (264.05825ms)
+✖ unchanged real Gateway in local Workerd cannot serve a canonical app via a transparent public hop (86.062125ms)
+✖ real-time unused expiry and exact-proof replay through actual entry/Gateway/SQLite, simultaneous duplicate runs cannot sign again (94.447875ms)
+
+  #  /opt/homebrew/Cellar/node/26.10.0_1/bin/node[22640]: void node::InternalCallbackScope::Close() at ../src/api/callback.cc:185
+  #  Assertion failed: (env_->execution_async_id()) == (0)
+
+----- Native stack trace -----
+
+ 1: 0x1077de8bc node::(anonymous namespace)::DefaultAbortHandler(char const*, char const*) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 2: 0x1077de864 node::Assert(node::AssertionInfo const&) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 3: 0x106467948 node::InternalCallbackScope::Close() [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 4: 0x106467634 node::InternalCallbackScope::~InternalCallbackScope() [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 5: 0x1065cd594 node::PerIsolatePlatformData::RunForegroundTask(std::__1::unique_ptr<v8::Task, std::__1::default_delete<v8::Task>>) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 6: 0x1065cc640 node::PerIsolatePlatformData::FlushForegroundTasksInternal() [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+ 7: 0x1026c64fc uv__async_io [/opt/homebrew/Cellar/libuv/1.53.0/lib/libuv.1.0.0.dylib]
+ 8: 0x1026d5604 uv__io_poll [/opt/homebrew/Cellar/libuv/1.53.0/lib/libuv.1.0.0.dylib]
+ 9: 0x1026c6c50 uv_run [/opt/homebrew/Cellar/libuv/1.53.0/lib/libuv.1.0.0.dylib]
+10: 0x106468334 node::SpinEventLoopInternal(node::Environment*) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+11: 0x10659ed58 node::NodeMainInstance::Run(node::ExitCode*, node::Environment*) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+12: 0x10659eaac node::NodeMainInstance::Run() [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+13: 0x106509518 node::Start(int, char**) [/opt/homebrew/Cellar/node/26.10.0_1/lib/libnode.147.dylib]
+14: 0x19de0d158 start [/usr/lib/dyld]
+ℹ tests 14
+ℹ suites 0
+ℹ pass 0
+ℹ fail 14
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1737.77725
+
+✖ failing tests:
+
+test at tests/m1/riffoid-cancellation-workerd.test.mjs:27:1
+✖ actual HTTP disconnect during upload emits native abort only with enable_request_signal, no hop/auth/retry (100.016667ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at tests/m1/riffoid-cancellation-workerd.test.mjs:29:1
+✖ actual HTTP Entry→Gateway disconnect after real SQLite DO RPC issued: late persistence burns nonce, zero auth/no retry (96.227708ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at tests/m1/riffoid-cancellation-workerd.test.mjs:31:1
+✖ actual HTTP bounded DO timeout also commits late and rejects explicit replay before auth (75.106708ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at tests/m1/riffoid-cancellation-workerd.test.mjs:33:1
+✖ real HTTP SSE disconnect stops production turnEventStream observation across both bridges, preserving cursor and no retry (90.840417ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at tests/m1/riffoid-cancellation-workerd.test.mjs:35:1
+✖ graceful pre-header FIN: bounded timeout prevents auth in delayed fixture; immediate native cancellation remains unproven (92.524542ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at tests/m1/riffoid-entry-workerd.test.mjs:26:1
+✖ two local Workerd Workers: actual Gateway auth, canonical PKCE callback, original identity, recovery/CSRF/rate-limit and stream-safe entry (216.9765ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at tests/m1/riffoid-entry-workerd.test.mjs:105:1
+✖ unselected proxy auth mode keeps the actual Gateway application closed before any auth/storage/network work (98.075792ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at tests/m1/riffoid-forward-rollback-workerd.test.mjs:1:1
+✖ tests/m1/riffoid-forward-rollback-workerd.test.mjs (572.878125ms)
+  'test failed'
+
+test at tests/m1/riffoid-recovery-cold-workerd.test.mjs:31:34
+✖ cold recovery preserves current v7 saved journal/discovery/alarm; normal RPC still performs original maintenance (35.6665ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at tests/m1/riffoid-recovery-cold-workerd.test.mjs:31:34
+✖ cold recovery preserves legacy v1 saved journal/discovery/alarm; normal RPC still performs original maintenance (32.227416ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at tests/m1/riffoid-recovery-workerd.test.mjs:7:1
+✖ production WorkspaceAgent recovery RPC reads persisted state without budget/runtime calls or new journal/alarm changes (33.22175ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at tests/m1/riffoid-replay-workerd.test.mjs:1:1
+✖ tests/m1/riffoid-replay-workerd.test.mjs (264.05825ms)
+  'test failed'
+
+test at tests/m1/riffoid-two-account-workerd.test.mjs:8:1
+✖ unchanged real Gateway in local Workerd cannot serve a canonical app via a transparent public hop (86.062125ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at tests/m1/riffoid-validation-workerd.test.mjs:19:1
+✖ real-time unused expiry and exact-proof replay through actual entry/Gateway/SQLite, simultaneous duplicate runs cannot sign again (94.447875ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
