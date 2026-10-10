@@ -1,0 +1,38 @@
+✔ manual early cleanup consumes no request; scheduled and manual triggers share one consumed flag (0.545334ms)
+✔ manual first and concurrent cleanup clicks cannot race the timer into another POST (0.058958ms)
+✔ timeout keeps cleanup attempt consumed; no automatic or manual retry (0.061708ms)
+✔ network-disconnected keeps cleanup attempt consumed; no automatic or manual retry (0.041083ms)
+✔ receipt-lost keeps cleanup attempt consumed; no automatic or manual retry (0.046333ms)
+✔ sleep past cleanup interval produces pending with zero POST; abandoned page has no invented receipt (0.043083ms)
+✔ actual A UI embeds one cleanup timer, bounded POST and matching CSP; B schedules no cleanup (9.948875ms)
+✖ rendered original A page: success, abort timer and duplicate triggers produce at most one cleanup fetch (2.092083ms)
+✔ rendered original A page: timeout, abort timer and duplicate triggers produce at most one cleanup fetch (0.863208ms)
+✔ rendered original A page: network-disconnected, abort timer and duplicate triggers produce at most one cleanup fetch (0.4335ms)
+✔ rendered original A page: receipt-lost, abort timer and duplicate triggers produce at most one cleanup fetch (0.456916ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 10
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 107.1075
+
+✖ failing tests:
+
+test at tests/m1/riffoid-validation-cleanup-ui.test.mjs:50:82
+✖ rendered original A page: success, abort timer and duplicate triggers produce at most one cleanup fetch (2.092083ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(nodes.result.textContent.includes(outcome==='success'?'expired_control_rows_removed':'cleanup unknown; do not retry'))
+  
+      at TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-cleanup-ui.test.mjs:70:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

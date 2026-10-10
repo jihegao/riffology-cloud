@@ -4,11 +4,11 @@ import {readFile,mkdtemp,rm,readdir} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {cloudflareTransport,jsonResult} from '../../scripts/m1/riffoid-validation-transport.mjs';
-import {buildWrite,collectReadback,Publisher,FileJournal} from '../../scripts/m1/riffoid-validation-publisher.mjs';
+import {buildWrite,collectReadback,Publisher,FileJournal,publicationPhases} from '../../scripts/m1/riffoid-validation-publisher.mjs';
 import {preparePackage} from '../../scripts/m1/riffoid-validation-prepare.mjs';
 import {writeFile} from 'node:fs/promises';
 import {buildPacket,digest,initialState,advance} from '../../scripts/m1/riffoid-validation-coordinator.mjs';
-import {hashJSON,hashBytes,wireMetadata,approvalRecord,restorationEligibility} from '../../scripts/m1/riffoid-validation-evidence.mjs';
+import {hashJSON,hashBytes,stateMetadata,wireMetadata,approvalRecord,restorationEligibility} from '../../scripts/m1/riffoid-validation-evidence.mjs';
 import {inputFixture,moduleBytes,readbackFixture,start} from './fixtures/riffoid-offline-fixtures.mjs';
 const risk=JSON.parse(await readFile(new URL('../../docs/evidence/riffoid-risk-authorization-20261010.json',import.meta.url),'utf8'));
 const account='a'.repeat(32),accounts={entry:account,gateway:account};
@@ -17,8 +17,8 @@ function rawJSON(d){return {status:200,contentType:'application/json',bytes:Buff
 function apiFixture(p,phase,prior){
   const f=readbackFixture(p,phase,prior),calls=[];
   const transport={mode:'read-only',async request({path}){calls.push(path);let d;
-    if(path.endsWith('/workers/scripts'))d={success:true,result:[{id:'fixture-gateway',has_assets:false}]};
-    else if(path.endsWith('/durable_objects/namespaces'))d={success:true,result:[{id:'fixture-existing-replay'}]};
+    if(path.endsWith('/workers/scripts'))d={success:true,result:[{id:p.baselineGuards[p.phases[phase].worker].worker,has_assets:false}]};
+    else if(path.includes('/durable_objects/namespaces?'))d={success:true,result:[{id:'fixture-existing-replay'}]};
     else if(path.endsWith('/deployments'))d=f.afterDeployment;
     else if(path.endsWith('/versions'))d=f.latestVersions;
     else if(path.includes('/versions/'))d=f.version;
@@ -124,12 +124,12 @@ test('natural expiry checkpoint survives restart and rejects missing or altered 
   try{
     const journal=new FileJournal(d),pub=new Publisher({packet:p,accounts,transport:{mode:'read-only'},journal});
     for(const [i,phase]of ['gatewayObserve','entryObserve','entryReady'].entries()){
-      const w=p.phases[phase].worker,b=pub.current[w],requestId='step_'+i,r={version:'version_'+i,deployment:'deployment_'+i,metadataSHA256:p.phases[phase].metadataSHA256,modulesSHA256:p.phases[phase].modulesSHA256,resourcesSHA256:'c'.repeat(64)};
-      await journal.append(requestId,'intent',{packetSHA256:hashJSON(p),phase,requestId,worker:w,priorVersion:b.version,priorDeployment:b.deployment,startedAt:start+i});
-      await journal.append(requestId,'terminal',{phase,requestId,receipt:r});pub.current[w]={...b,version:r.version,deployment:r.deployment};pub.cursor++;
+      const w=p.phases[phase].worker,b=pub.current[w],requestId='step_'+i,r={version:'version_'+i,deployment:'deployment_'+i,metadataSHA256:p.phases[phase].metadataSHA256,modulesSHA256:p.phases[phase].modulesSHA256,resourcesSHA256:pub.registry[w].versions.get(b.version)[2],fullStateMatches:true,pipelineGuardPassed:true};
+      await journal.append(requestId,'intent',{packetSHA256:hashJSON(p),phase,requestId,worker:w,priorVersion:b.version,priorDeployment:b.deployment,bodySHA256:'a'.repeat(64),startedAt:start+i});
+      await journal.append(requestId,'terminal',{phase,requestId,receipt:r,ackScript:b.worker,observedVersion:r.version,readbackAt:start+i+1});pub.current[w]={...b,version:r.version,deployment:r.deployment};pub.registry[w].versions.set(r.version,[r.metadataSHA256,r.modulesSHA256,r.resourcesSHA256]);pub.registry[w].deployments.set(r.deployment,r.version);pub.cursor++;
     }
     await pub.skipExpiredStop({packetSHA256:hashJSON(p),phase:'stopped'},p.config.expires);
-    const b=pub.current.gateway;await journal.append('restore','intent',{packetSHA256:hashJSON(p),phase:'gatewayRestorePrivacy',requestId:'restore',worker:'gateway',priorVersion:b.version,priorDeployment:b.deployment,startedAt:p.config.expires+1});
+    const b=pub.current.gateway;await journal.append('restore','intent',{packetSHA256:hashJSON(p),phase:'gatewayRestorePrivacy',requestId:'restore',worker:'gateway',priorVersion:b.version,priorDeployment:b.deployment,bodySHA256:'a'.repeat(64),startedAt:p.config.expires+1});
     const make=j=>new Publisher({packet:p,accounts,transport:{mode:'read-only'},journal:j});
     const loaded=make(journal);await loaded.restoreOriginalPending('restore');assert.equal(loaded.cursor,4);assert.equal(loaded.pending.requestId,'restore');assert.equal(await journal.hasPending(),true);
     const rows=await journal.records();for(const edit of [r=>r.filter(x=>!x.name.endsWith('.skip.json')),r=>{r.find(x=>x.name.endsWith('.skip.json')).value.current.gateway.version='changed';return r;},r=>{r.find(x=>x.name.endsWith('.skip.json')).value.recordedAt=p.config.expires-1;return r;}]){await assert.rejects(()=>make({records:async()=>edit(structuredClone(rows))}).restoreOriginalPending('restore'));}
@@ -142,4 +142,113 @@ test('resource read drift is bracketed by final deployment and latest-version ch
     const transport={request:async args=>{const r=await f.transport.request(args);if(args.path.endsWith('/workers/scripts'))resourceRead=true;if(resourceRead&&args.path.endsWith('/deployments')&&change==='deployment')return rawJSON({...f.f.afterDeployment,result:{deployments:[{...f.f.afterDeployment.result.deployments[0],id:'changed-after-resource'}]}});if(resourceRead&&args.path.endsWith('/versions')&&change==='latest')return rawJSON({...f.f.latestVersions,result:{items:[{id:'changed-latest'}]}});return r;}};
     await assert.rejects(()=>collectReadback(transport,account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway),/changed during resource|source changed/);
   }
+});
+
+async function completedJournal(p,journal,count){
+  const pub=new Publisher({packet:p,accounts,transport:{mode:'read-only'},journal});
+  for(const [i,phase]of publicationPhases.slice(0,count).entries()){
+    const w=p.phases[phase].worker,prior=pub.current[w],requestId='completed_'+i,f=apiFixture(p,phase,prior),r=await collectReadback(f.transport,account,prior.worker,p.phases[phase],p.preservation[w]);r.pipelineGuardPassed=true;
+    await journal.append(requestId,'intent',{packetSHA256:hashJSON(p),phase,requestId,worker:w,priorVersion:prior.version,priorDeployment:prior.deployment,bodySHA256:'a'.repeat(64),startedAt:start+i});
+    await journal.append(requestId,'terminal',{phase,requestId,receipt:r,ackScript:prior.worker,observedVersion:r.version,readbackAt:start+i+1});
+    pub.current[w]={...prior,version:r.version,deployment:r.deployment};pub.artifacts[w]=p.phases[phase];pub.registry[w].versions.set(r.version,[r.metadataSHA256,r.modulesSHA256,r.resourcesSHA256]);pub.registry[w].deployments.set(r.deployment,r.version);pub.cursor++;
+  }
+  const fixtures={};for(const w of ['gateway','entry']){
+    const phase=publicationPhases.find(phase=>p.phases[phase]===pub.artifacts[w]),f=apiFixture(p,phase,pub.current[w]);f.f.afterDeployment.result.deployments[0].id=pub.current[w].deployment;f.f.afterDeployment.result.deployments[0].versions[0].version_id=pub.current[w].version;f.f.version.result.id=pub.current[w].version;f.f.latestVersions.result.items[0].id=pub.current[w].version;fixtures[w]=f;
+  }
+  const calls=[];const transport={mode:'read-only',request:async args=>{assert.ok(!args.method||args.method==='GET');calls.push(args.path);if(args.path.endsWith('/workers/scripts'))return rawJSON({success:true,result:['entry','gateway'].map(w=>({id:p.baselineGuards[w].worker,has_assets:false}))});return fixtures[args.path.includes('/fixture-entry/')||args.path.endsWith('/fixture-entry')?'entry':'gateway'].transport.request(args);}};
+  return {pub,transport,calls};
+}
+for(const count of [1,3,4,8])test(`readonly restart rebuilds ${count} completed phases and reads both current Worker identities with zero PUT`,async()=>{
+  const p=buildPacket(input()),d=await mkdtemp(join(tmpdir(),'riffoid-completed-'));try{
+    const j=new FileJournal(d),fixture=await completedJournal(p,j,count),before=await j.records();const restart=new Publisher({packet:p,accounts,transport:fixture.transport,journal:new FileJournal(d)});const r=await restart.restoreCompletedChain();assert.equal(r.cursor,count);assert.equal(r.nextPhase,publicationPhases[count]??null);assert.equal(r.productionActionsExecuted,0);assert.equal(r.lockAcquisitionBlocked,false);assert.deepEqual(restart.current,fixture.pub.current);assert.deepEqual(await j.records(),before);assert.ok(fixture.calls.some(p=>p.includes('/fixture-entry/'))&&fixture.calls.some(p=>p.includes('/fixture-gateway/')));
+  }finally{await rm(d,{recursive:true});}
+});
+test('completed chain with unowned or invalid lock remains locked; non-owner cannot release it',async()=>{
+  const p=buildPacket(input()),d=await mkdtemp(join(tmpdir(),'riffoid-lock-owner-'));try{
+    const owner=new FileJournal(d);await owner.lock();const f=await completedJournal(p,owner,1),j=new FileJournal(d);await assert.rejects(()=>j.unlock(),/only the instance/);const pub=new Publisher({packet:p,accounts,transport:f.transport,journal:j}),r=await pub.restoreCompletedChain();assert.equal(r.lockAcquisitionBlocked,true);assert.equal(r.lock.owned,false);await assert.rejects(()=>j.lock());
+    await writeFile(join(d,'publisher.lock'),'legacy owner unknown');assert.equal((await j.lockState()).status,'UNVERIFIED_LEGACY_OR_INVALID');await assert.rejects(()=>owner.unlock());assert.ok((await readdir(d)).includes('publisher.lock'));
+  }finally{await rm(d,{recursive:true});}
+});
+test('orphan receipts, unknown intent and changed current identity reject completed restart without mutation or PUT',async()=>{
+  for(const variant of ['unknown','orphan','drift']){const p=buildPacket(input()),d=await mkdtemp(join(tmpdir(),'riffoid-bad-chain-'));try{
+    const j=new FileJournal(d),f=await completedJournal(p,j,1);
+    if(variant==='unknown'){const b=f.pub.current.entry;await j.append('unresolved','intent',{packetSHA256:hashJSON(p),phase:'entryObserve',requestId:'unresolved',worker:'entry',priorVersion:b.version,priorDeployment:b.deployment,bodySHA256:'a'.repeat(64),startedAt:start+2});}
+    if(variant==='orphan')await j.append('orphan','terminal',{requestId:'orphan'});
+    const transport=variant==='drift'?{...f.transport,request:async args=>args.path.endsWith('/fixture-gateway/deployments')?rawJSON({success:true,result:{deployments:[{id:'drift',strategy:'percentage',versions:[{version_id:'drift',percentage:100}]}]}}):f.transport.request(args)}:f.transport;
+    const restart=new Publisher({packet:p,accounts,transport,journal:j});await assert.rejects(()=>restart.restoreCompletedChain());assert.equal(restart.cursor,0);assert.equal(restart.pending,null);assert.equal(restart.current.gateway.version,p.baselineGuards.gateway.version);
+  }finally{await rm(d,{recursive:true});}}
+});
+test('write preparation rejects explicit assets upload/configuration and reserved multipart assets parts',()=>{
+  const p=buildPacket(input()),phase=p.phases.gatewayObserve;phase.metadata.assets={jwt:'synthetic-not-a-token'};phase.preparedMetadataSHA256=hashJSON(phase.metadata);phase.metadataSHA256=hashJSON(stateMetadata(phase.metadata));
+  assert.throws(()=>buildWrite(p,'gatewayObserve',moduleBytes(phase),account,'forbidden'),/explicit assets/);
+  const q=buildPacket(input()),m=q.phases.gatewayObserve,originalBytes=moduleBytes(m);m.modules[0].name='assets';m.metadata.main_module='assets';m.modulesSHA256=hashJSON(m.modules);m.preparedMetadataSHA256=hashJSON(m.metadata);m.metadataSHA256=hashJSON(stateMetadata(m.metadata));assert.throws(()=>buildWrite(q,'gatewayObserve',originalBytes,account,'reserved'),/reserved multipart/);
+});
+
+test('terminal JSON plus durable unknown remains original-pending across restart and cannot become completed',async()=>{
+  const p=buildPacket(input()),d=await mkdtemp(join(tmpdir(),'riffoid-terminal-unknown-'));try{
+    const j=new FileJournal(d),f=await completedJournal(p,j,1);await j.lock();await j.append('completed_0','unknown',{requestId:'completed_0',phase:'gatewayObserve',stopFurtherTest:true,automaticLogsRestore:false});assert.equal(await j.hasPending(),true);
+    const make=()=>new Publisher({packet:p,accounts,transport:f.transport,journal:new FileJournal(d)});const rejected=make();await assert.rejects(()=>rejected.restoreCompletedChain(),/unknown intent/);assert.equal(rejected.cursor,0);
+    const pending=make();await pending.restoreOriginalPending('completed_0');assert.equal(pending.cursor,0);assert.equal(pending.pending.terminalCandidatePresent,true);await pending.reconcile('completed_0');assert.equal(await j.hasPending(),true);assert.ok((await readdir(d)).includes('publisher.lock'));assert.equal(pending.pending.requestId,'completed_0');
+  }finally{await rm(d,{recursive:true});}
+});
+
+test('completed restart brackets the first account when it drifts during the second account GET',async()=>{
+  const p=buildPacket(input()),d=await mkdtemp(join(tmpdir(),'riffoid-cross-account-drift-'));try{
+    const j=new FileJournal(d),f=await completedJournal(p,j,1);let entryRead=false,gatewayReadsAfterDrift=0;
+    const transport={...f.transport,request:async args=>{
+      if(args.path.includes('/fixture-entry/'))entryRead=true;
+      if(entryRead&&args.path.includes('/fixture-gateway/')){gatewayReadsAfterDrift++;if(args.path.endsWith('/versions'))return rawJSON({success:true,result:{items:[{id:'changed-gateway-version'}]}});}
+      return f.transport.request(args);
+    }};
+    const pub=new Publisher({packet:p,accounts,transport,journal:j});await assert.rejects(()=>pub.restoreCompletedChain(),/cross-account reconstruction/);assert.ok(gatewayReadsAfterDrift>0);assert.equal(pub.cursor,0);assert.equal(pub.pending,null);assert.equal(pub.current.gateway.version,p.baselineGuards.gateway.version);
+  }finally{await rm(d,{recursive:true});}
+});
+
+function livePreflightFixture(variant,stage,onFinalLock){
+  const now=Date.now(),x=input();x.config={...x.config,notBefore:now-1000,expires:now+299000};x.preservation.gateway.pipelineScope={accountId:account,zoneId:'b'.repeat(32),worker:'fixture-gateway'};
+  const p=buildPacket(x),b=p.baselineGuards.gateway,f=apiFixture(p,'gatewayRestoreLogs',b);f.f.afterDeployment.result.deployments[0].id=b.deployment;f.f.afterDeployment.result.deployments[0].versions[0].version_id=b.version;f.f.version.result.id=b.version;f.f.latestVersions.result.items[0].id=b.version;
+  let owned=true,lockReads=0,puts=0,unlocks=0;const records=[];
+  const journal={hasPending:async()=>false,records:async()=>[],lock:async()=>{},lockState:async()=>{lockReads++;if(lockReads===2)onFinalLock?.();return {status:owned||variant==='replaced'?'PRESENT_OWNER_RECORDED':'ABSENT',owned};},append:async(id,kind,value)=>{records.push({id,kind,value});if(stage==='intent'&&kind==='intent')owned=false;},unlock:async()=>{unlocks++;}};
+  const transport={mode:'live',request:async args=>{
+    if(args.method==='PUT'){puts++;throw Error('unexpected mock PUT');}
+    if(args.path.endsWith('/workers/scripts')&&stage==='preflight')owned=false;
+    if(args.path===`/zones/${'b'.repeat(32)}`)return rawJSON({success:true,result:{id:'b'.repeat(32),account:{id:account}}});
+    if(args.path.includes('/logpush/jobs')||args.path.includes('/observability/destinations?')||args.path.endsWith('/tails'))return rawJSON({success:true,result:[]});
+    return f.transport.request(args);
+  }};
+  const cap={productionWritesPermitted:true,packetSHA256:hashJSON(p),notBefore:now-1000,expires:now+200000,singlePublisher:true,resourcesCoverageEstablished:true},pub=new Publisher({packet:p,accounts,transport,journal,liveCapability:cap});
+  return {p,pub,cap,records,counts:()=>({puts,unlocks,lockReads})};
+}
+for(const variant of ['lost','replaced'])for(const stage of ['preflight','intent'])test(`${variant} lock during ${stage} blocks PUT and never unlocks someone else's lock`,async()=>{
+  const f=livePreflightFixture(variant,stage);await assert.rejects(()=>f.pub.publish({phase:'gatewayObserve',requestId:'original',moduleBytes:moduleBytes(f.p.phases.gatewayObserve),coordinationState:initialState(f.p)}),/publisher lock/);
+  assert.equal(f.counts().puts,0);assert.equal(f.counts().unlocks,0);assert.ok(f.counts().lockReads>0);assert.equal(f.records.filter(r=>r.kind==='intent').length,stage==='intent'?1:0);if(stage==='intent'){assert.equal(f.pub.pending.requestId,'original');assert.equal(f.records.at(-1).kind,'unknown');}
+});
+test('deadline crossing during final lock await is rechecked before any PUT',async()=>{
+  const originalNow=Date.now;let clock=originalNow();Date.now=()=>clock;try{
+    let f;f=livePreflightFixture('unchanged','none',()=>{clock=f.cap.expires+1;});await assert.rejects(()=>f.pub.publish({phase:'gatewayObserve',requestId:'expiry_original',moduleBytes:moduleBytes(f.p.phases.gatewayObserve),coordinationState:initialState(f.p)}),/approval expired before PUT/);assert.equal(f.counts().puts,0);assert.equal(f.pub.pending.requestId,'expiry_original');assert.equal(f.records.at(-1).kind,'unknown');
+  }finally{Date.now=originalNow;}
+});
+for(const kind of ['namespace','pipeline'])test(`${kind} mutation during later resource GETs is re-read and rejected even with unchanged Worker version`,async()=>{
+  const x=input();if(kind==='pipeline')x.preservation.gateway.pipelineScope={accountId:account,zoneId:'b'.repeat(32),worker:'fixture-gateway'};const p=buildPacket(x),f=apiFixture(p,'gatewayObserve',p.baselineGuards.gateway);let changed=false,readsAfter=0;
+  const t={request:async args=>{
+    if(args.path.endsWith('/workers/scripts'))changed=true;
+    if(kind==='namespace'&&changed&&args.path.includes('/durable_objects/namespaces?')){readsAfter++;return rawJSON({success:true,result:[]});}
+    if(args.path===`/zones/${'b'.repeat(32)}`)return rawJSON({success:true,result:{id:'b'.repeat(32),account:{id:account}}});
+    if(args.path.includes('/logpush/jobs')||args.path.includes('/observability/destinations?')||args.path.endsWith('/tails')){const mutate=kind==='pipeline'&&changed&&args.path===`/accounts/${account}/logpush/jobs`;if(mutate)readsAfter++;return rawJSON({success:true,result:mutate?[{id:1,enabled:true}]:[]});}
+    return f.transport.request(args);
+  }};
+  await assert.rejects(()=>collectReadback(t,account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway),/complete target|pipeline changed/);assert.ok(readsAfter>0);
+});
+
+test('existing container configuration changes independently during Worker inventory GET and is rejected on second pass',async()=>{
+  const {containerSnapshot}=await import('../../scripts/m1/riffoid-validation-resources.mjs');const ns='d'.repeat(32),app={id:'existing-app',name:'fixture-container',account_id:account,version:3,durable_objects:{namespace_id:ns},max_instances:1,scheduling_policy:'default',configuration:{image:`registry.cloudflare.com/${account}/fixture@sha256:${'c'.repeat(64)}`,vcpu:0.25,memory:'1GiB',memory_mib:1024,disk:{size_mb:4000,size:'4GB'},network:{assign_ipv4:'none',assign_ipv6:'none',mode:'public'},command:[],entrypoint:[],runtime:'runc',observability:{logs:{enabled:true}}}};
+  const x=input(),m=x.baselines.gateway.metadata;m.containers=[{class_name:'Existing',name:app.name}];m.exports.Existing.container=app.name;m.bindings.find(b=>b.type==='durable_object_namespace').namespace_id=ns;m.bindings.find(b=>b.type==='durable_object_namespace').class_name='Existing';x.preservation.gateway.namespaces=[{id:ns}];x.preservation.gateway.containerSnapshots=[containerSnapshot(app)];const p=buildPacket(x),f=apiFixture(p,'gatewayObserve',p.baselineGuards.gateway);f.f.version.result.resources.script_runtime.containers=structuredClone(m.containers);let changed=false,readsAfter=0;
+  const t={request:async args=>{
+    if(args.path.endsWith('/workers/scripts'))changed=true;
+    if(args.path.includes('/durable_objects/namespaces?'))return rawJSON({success:true,result:[{id:ns}]});
+    if(args.path.endsWith('/containers/applications?per_page=500'))return rawJSON({success:true,result:[{id:app.id,name:app.name}]});
+    if(args.path.endsWith('/containers/applications/'+app.id)){if(changed)readsAfter++;return rawJSON({success:true,result:{...app,version:changed?4:3}});}
+    return f.transport.request(args);
+  }};
+  await assert.rejects(()=>collectReadback(t,account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway),/configuration or identity drift/);assert.ok(readsAfter>0);
 });

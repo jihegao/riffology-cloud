@@ -7,8 +7,8 @@ export function validateControlRequest(method,path){
     const pathname=parsed.pathname.slice('/client/v4'.length);assert.equal(path.split('?')[0],pathname,'path normalization forbidden');
     assert.ok(/^\/zones\/[a-f0-9]{32}(?:\/logpush\/jobs|\/rulesets\/phases\/http_log_custom_fields\/entrypoint)?$/.test(pathname)||/^\/accounts\/[a-f0-9]{32}\/(?:logpush\/jobs|workers\/observability\/destinations|workers\/scripts(?:\/[a-z0-9_-]+(?:\/(?:settings|script-settings|deployments|versions(?:\/[a-zA-Z0-9_-]+)?|content\/v2|tails))?)?|containers\/applications(?:\/[a-zA-Z0-9_-]+)?|workers\/durable_objects\/namespaces(?:\/[a-zA-Z0-9_-]+)?)$/.test(pathname),'unsupported control-plane path');
     const keys=[...parsed.searchParams.keys()];assert.equal(new Set(keys).size,keys.length);
-    const allowed=method==='PUT'?['bindings_inherit']:pathname.endsWith('/destinations')?['page','perPage']:pathname.endsWith('/containers/applications')?['per_page','page_token']:[];assert.ok(keys.every(k=>allowed.includes(k)));
-    for(const[k,v]of parsed.searchParams)assert.ok(k==='page_token'?/^[A-Za-z0-9_.~=-]{1,512}$/.test(v):k==='bindings_inherit'?v==='strict':/^\d{1,4}$/.test(v));
+    const allowed=method==='PUT'?['bindings_inherit']:pathname.endsWith('/destinations')?['page','perPage']:pathname.endsWith('/containers/applications')?['per_page','page_token']:pathname.endsWith('/durable_objects/namespaces')?['page','per_page']:[];assert.ok(keys.every(k=>allowed.includes(k)));
+    for(const[k,v]of parsed.searchParams){if(['page','perPage','per_page'].includes(k))assert.ok(Number(v)>=1&&Number(v)<=1000);assert.ok(k==='page_token'?/^[A-Za-z0-9_.~=-]{1,512}$/.test(v):k==='bindings_inherit'?v==='strict':/^\d{1,4}$/.test(v));}
     if(method==='PUT')assert.ok(/\/workers\/scripts\/[a-z0-9_-]+\?bindings_inherit=strict$/.test(path),'only existing Worker upload permitted');
 }
 export function cloudflareTransport({authorizedFetch,mode='dry-run',timeoutMS=15000,maxBytes=16*1024*1024}={}){

@@ -1,0 +1,61 @@
+✔ approved wording is consumed without granting production authorization; altered evidence rejects (3.163916ms)
+✔ default dry-run dispatches zero HTTP; read-only and prepare cannot upload (1.347042ms)
+✔ wire multipart keeps public/resources and inherits redacted Secret text without material (7.090375ms)
+✔ raw HTTP preserves cf-entrypoint, body bytes and origin; bounds hangs and rejects redirects (11.61675ms)
+✔ GET-derived modules and runtime export readback work; drift/omitted cf-entrypoint reject (1.513666ms)
+✖ actual asset/container readback gaps stay blocked rather than trusting upload intent (0.656292ms)
+✔ durable exclusive journal is retained for unknown writes and rejects a second owner (26.401375ms)
+✔ version/deployment identity also binds resource snapshot hashes (0.682333ms)
+✔ unapproved live publication performs no HTTP; missing full preflight creates no intent or PUT (0.913125ms)
+✔ mutable/custom transport cannot turn prepare into a network upload (0.536167ms)
+✔ missing Observe originals or forged terminal evidence block before any network write (1.0195ms)
+✔ restart loads original unknown journal and GET reconciliation never clears it (9.527459ms)
+✔ package CLI prepares all eight exact multipart files offline without overwriting prior packet (5.034042ms)
+✔ natural expiry checkpoint survives restart and rejects missing or altered identity/time (30.653ms)
+✔ destination numeric pagination requires all pages and rejects overlap, loops and limits (1.064542ms)
+✔ container cursor pagination consumes next token and rejects duplicates/repeated token (0.121166ms)
+✔ pipeline guard reads exact owned zone and every scoped inventory; no flag setter (0.494458ms)
+✔ nonempty sinks remain blocked; evidence excludes destination and filter values (0.13125ms)
+✔ zone jobs trigger bounded custom-field metadata; structured absence accepted but guard still blocked (0.444667ms)
+✔ connector bridge supports decoded metadata only and rejects G5/source/other scopes/writes (0.468875ms)
+✔ SDK bridge preserves binary bytes/header with retries disabled; decoded objects do not fake raw HTTP (7.4915ms)
+✔ expanded raw transport accepts only reviewed paths and query keys, with dry-run zero HTTP (1.365209ms)
+✔ existing container configuration, export/name, account and DO namespace must all match (0.863417ms)
+✔ unsupported Secret/environment or command fields reject without inspecting/logging values (0.240125ms)
+✔ asset preservation distinguishes contract/config match from full content inventory (0.0675ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 24
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 190.814542
+
+✖ failing tests:
+
+test at tests/m1/riffoid-validation-live-adapter.test.mjs:67:1
+✖ actual asset/container readback gaps stay blocked rather than trusting upload intent (0.656292ms)
+  AssertionError [ERR_ASSERTION]: Worker container associations differ
+  + actual - expected
+  
+  + []
+  - [
+  -   {
+  -     class_name: 'Existing',
+  -     name: 'existing'
+  -   }
+  - ]
+  
+      at collectContainerAssociations (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/scripts/m1/riffoid-validation-resources.mjs:66:24)
+      at collectReadback (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/scripts/m1/riffoid-validation-publisher.mjs:76:22)
+      at async TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-live-adapter.test.mjs:69:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ { class_name: 'Existing', name: 'existing' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,57 @@
+✔ approved wording is consumed without granting production authorization; altered evidence rejects (3.108083ms)
+✔ default dry-run dispatches zero HTTP; read-only and prepare cannot upload (1.268833ms)
+✔ wire multipart keeps public/resources and inherits redacted Secret text without material (7.090875ms)
+✔ raw HTTP preserves cf-entrypoint, body bytes and origin; bounds hangs and rejects redirects (12.1625ms)
+✖ GET-derived modules and runtime export readback work; drift/omitted cf-entrypoint reject (2.112209ms)
+✖ actual asset/container readback gaps stay blocked rather than trusting upload intent (0.609042ms)
+✔ durable exclusive journal is retained for unknown writes and rejects a second owner (26.014958ms)
+✔ version/deployment identity also binds resource snapshot hashes (0.695583ms)
+✔ unapproved live publication performs no HTTP; missing full preflight creates no intent or PUT (0.960708ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 7
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 139.381375
+
+✖ failing tests:
+
+test at tests/m1/riffoid-validation-live-adapter.test.mjs:55:1
+✖ GET-derived modules and runtime export readback work; drift/omitted cf-entrypoint reject (2.112209ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(raw.contentType?.startsWith('application/json'))
+  
+      at jsonResult (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/scripts/m1/riffoid-validation-transport.mjs:32:39)
+      at collectReadback (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/scripts/m1/riffoid-validation-publisher.mjs:59:15)
+      at async TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-live-adapter.test.mjs:57:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/m1/riffoid-validation-live-adapter.test.mjs:63:1
+✖ actual asset/container readback gaps stay blocked rather than trusting upload intent (0.609042ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(raw.contentType?.startsWith('application/json'))
+  
+      at jsonResult (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/scripts/m1/riffoid-validation-transport.mjs:32:39)
+      at collectReadback (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/scripts/m1/riffoid-validation-publisher.mjs:59:15)
+      at async TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-live-adapter.test.mjs:65:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

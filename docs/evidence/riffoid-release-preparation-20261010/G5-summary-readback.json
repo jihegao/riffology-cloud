@@ -1,0 +1,29 @@
+{
+  "observedAt": "2026-10-10T08:31:03.822Z",
+  "worker": "riffology-m1-gateway-staging",
+  "version": "6edef49b-ca5c-4c97-bcec-5c141b079bb1",
+  "variable": "G5_CONTROLLED_WINDOW_JSON",
+  "type": "plain_text",
+  "settings": {
+    "utf8Bytes": 4919,
+    "jsonParseable": true,
+    "sha256": "069be46bf5a21b151e3551c7132853ffa46d1be64e7d7974b11912482e49ce5d"
+  },
+  "immutableVersion": {
+    "utf8Bytes": 4919,
+    "jsonParseable": true,
+    "sha256": "069be46bf5a21b151e3551c7132853ffa46d1be64e7d7974b11912482e49ce5d"
+  },
+  "authorization": {
+    "proposalMessage": "Sentinel_1e2bf65d956481918faf17d9e6c2f450",
+    "confirmationMessage": "Sentinel_cfccf69e0e1481919edc330496a4e97f",
+    "confirmationUTC": "2026-10-10T08:29:47Z",
+    "confirmation": "\u5141\u8bb8",
+    "scope": "original connector; fixed Personal Worker/version; plain_text variable only; UTF8 length/JSON parse/SHA256; no raw value returned or saved"
+  },
+  "conclusion": "both authorized API projections agree; earlier 2457-byte projection supports truncation diagnosis, no remaining difference for this exact field; not full Worker baseline certification",
+  "productionWrites": 0,
+  "SecretValuesRead": false,
+  "rawValueReturnedOrSaved": false,
+  "attemptsThisRound": 1
+}

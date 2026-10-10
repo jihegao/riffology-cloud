@@ -73,3 +73,22 @@ test('asset preservation distinguishes contract/config match from full content i
 test('malformed destination script/field arrays cannot leak nested sensitive data into receipts',async()=>{
   for(const row of [{id:1,scripts:[{token:'synthetic-sensitive'}]},{id:1,output_options:{field_names:[{token:'synthetic-sensitive'}]}}]){const t={request:async({path})=>path===`/zones/${zone}`?ok({id:zone,account:{id:account}}):path.endsWith('/logpush/jobs')&&path.startsWith('/accounts/')?ok([row]):ok([])};await assert.rejects(()=>collectPipelineGuard(t,scope),e=>!String(e).includes('synthetic-sensitive'));}
 });
+
+test('namespace pagination covers the exact frozen 23 targets across pages including unrelated namespaces',async()=>{
+  const {collectNamespaces}=await import('../../scripts/m1/riffoid-validation-resources.mjs');const account='a'.repeat(32),targets=Array.from({length:23},(_,i)=>({id:'target-'+i,use_sqlite:true})),foreign=Array.from({length:37},(_,i)=>({id:'other-'+i}));const pages=[[...targets.slice(0,13),...foreign],targets.slice(13)],paths=[];
+  const t={request:async({path})=>{paths.push(path);const page=Number(new URL('https://test.invalid'+path).searchParams.get('page'));return {status:200,contentType:'application/json',bytes:Buffer.from(JSON.stringify({success:true,result:pages[page-1],result_info:{page,per_page:50,total_pages:2,total_count:60}}))};}};
+  const r=await collectNamespaces(t,account,targets.map(t=>t.id),targets);assert.equal(r.coverageComplete,true);assert.equal(r.selected.length,23);assert.equal(paths.length,2);assert.ok(paths[1].endsWith('?page=2&per_page=50'));
+  await assert.rejects(()=>collectNamespaces(t,account,targets.map(t=>t.id),targets.slice(1)),/set must equal/);
+  await assert.rejects(()=>collectNamespaces(t,account,[...targets.map(t=>t.id),'missing'],targets),/complete target/);
+});
+test('namespace repeated/overlapping pages, missing last page and page limit fail closed',async()=>{
+  const {collectNamespaces,listMetadata}=await import('../../scripts/m1/riffoid-validation-resources.mjs');const account='a'.repeat(32),path=`/accounts/${account}/workers/durable_objects/namespaces`;
+  const raw=(items,info)=>({status:200,contentType:'application/json',bytes:Buffer.from(JSON.stringify({success:true,result:items,result_info:info}))});
+  await assert.rejects(()=>collectNamespaces({request:async()=>raw([{id:'same'}],{total_pages:2})},account,['same'],[{id:'same'}]),/duplicate/);
+  await assert.rejects(()=>collectNamespaces({request:async()=>raw([{id:'target'}],{total_count:90})},account,['target'],[{id:'target'}]));
+  let n=0;await assert.rejects(()=>listMetadata({request:async()=>raw(Array.from({length:50},(_,i)=>({id:(n++)+'-'+i})),{})},path,{kind:'namespace',maxPages:2}),/page limit/);
+});
+test('namespace transport accepts only bounded page/per_page GET and never namespace pagination on unrelated paths',async()=>{
+  const {validateControlRequest}=await import('../../scripts/m1/riffoid-validation-transport.mjs');const p='/accounts/'+'a'.repeat(32)+'/workers/durable_objects/namespaces';
+  assert.doesNotThrow(()=>validateControlRequest('GET',p+'?page=2&per_page=50'));for(const query of ['?page=0','?per_page=1001','?page=1&page=2','?page_token=anything'])assert.throws(()=>validateControlRequest('GET',p+query));assert.throws(()=>validateControlRequest('GET',p+'/id?page=2'));
+});

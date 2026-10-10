@@ -1,0 +1,19 @@
+✔ manual early cleanup consumes no request; scheduled and manual triggers share one consumed flag (0.548542ms)
+✔ manual first and concurrent cleanup clicks cannot race the timer into another POST (0.060125ms)
+✔ timeout keeps cleanup attempt consumed; no automatic or manual retry (0.067958ms)
+✔ network-disconnected keeps cleanup attempt consumed; no automatic or manual retry (0.042ms)
+✔ receipt-lost keeps cleanup attempt consumed; no automatic or manual retry (0.046875ms)
+✔ sleep past cleanup interval produces pending with zero POST; abandoned page has no invented receipt (0.042084ms)
+✔ actual A UI embeds one cleanup timer, bounded POST and matching CSP; B schedules no cleanup (10.043916ms)
+✔ rendered original A page: success, abort timer and duplicate triggers produce at most one cleanup fetch (0.754ms)
+✔ rendered original A page: timeout, abort timer and duplicate triggers produce at most one cleanup fetch (0.545ms)
+✔ rendered original A page: network-disconnected, abort timer and duplicate triggers produce at most one cleanup fetch (0.401958ms)
+✔ rendered original A page: receipt-lost, abort timer and duplicate triggers produce at most one cleanup fetch (0.428167ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 105.317667

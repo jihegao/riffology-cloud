@@ -7,17 +7,18 @@ const objectKeys=(x,keys)=>assert.ok(x&&Object.keys(x).every(k=>keys.includes(k)
 export async function listMetadata(transport,path,{kind='complete',maxPages=20}={}){
   let token,page=1;const items=[],seenTokens=new Set(),seenItems=new Set(),receipts=[];
   for(let n=0;n<maxPages;n++){
-    const query=kind==='cursor'?`?per_page=500${token?'&page_token='+encodeURIComponent(token):''}`:kind==='number'?`?page=${page}&perPage=50`:'';
+    const query=kind==='cursor'?`?per_page=500${token?'&page_token='+encodeURIComponent(token):''}`:['number','namespace'].includes(kind)?`?page=${page}&${kind==='namespace'?'per_page':'perPage'}=50`:'';
     const d=jsonResult(await transport.request({path:path+query}));assert.ok(Array.isArray(d.result),'authoritative array required');
     for(const x of d.result){const key=x.id??x.slug;assert.ok(['string','number'].includes(typeof key),'stable metadata item identity required');assert.ok(!seenItems.has(key),'duplicate/overlapping page');seenItems.add(key);items.push(x);}
     receipts.push({path:path+query,count:d.result.length});
     const info=d.result_info??{};
     if(kind==='cursor'){
       const next=info.next_page_token;if(!next)return {items,receipts,complete:true};assert.equal(typeof next,'string');assert.ok(!seenTokens.has(next),'repeated cursor');seenTokens.add(next);token=next;
-    }else if(kind==='number'){
+    }else if(['number','namespace'].includes(kind)){
       if(info.page!==undefined)assert.equal(info.page,page);
-      if(info.total_pages!==undefined){assert.ok(Number.isSafeInteger(info.total_pages)&&info.total_pages>=page);if(page===info.total_pages)return {items,receipts,complete:true};}
-      else if(d.result.length<50)return {items,receipts,complete:true};
+      if(kind==='namespace'){assert.ok(!info.next_page_token);if(info.per_page!==undefined)assert.equal(info.per_page,50);if(info.total_count!==undefined)assert.ok(Number.isSafeInteger(info.total_count)&&info.total_count>=items.length);}
+      if(info.total_pages!==undefined){assert.ok(Number.isSafeInteger(info.total_pages)&&info.total_pages>=page);if(page===info.total_pages){if(kind==='namespace'&&info.total_count!==undefined)assert.equal(items.length,info.total_count);return {items,receipts,complete:true};}}
+      else if(d.result.length<50){if(kind==='namespace'&&info.total_count!==undefined)assert.equal(items.length,info.total_count);return {items,receipts,complete:true};}
       page++;
     }else{assert.ok(!info.next_page_token&&(!info.total_pages||info.total_pages===1),'unexpected pagination; incomplete');return {items,receipts,complete:true};}
   }
@@ -80,9 +81,23 @@ export async function collectContainerAssociations(transport,accountId,artifact,
   return {associationMatches:true,configurationMatches:true,snapshots,evidenceSHA256:hashJSON(snapshots),scopeLimit:'application identity/version and reviewed configuration; operational health, instance census and full account inventory not asserted'};
 }
 export function assetPreservationEvidence(artifact,runtime,inventoryScript,expected){
-  const result={keepAssetsRequested:artifact.metadata.keep_assets===true,hasAssets:inventoryScript.has_assets,configSHA256:runtime.assets===undefined?null:hashJSON(runtime.assets),contentInventoryAudited:false,contentSHA256:null};
+  const result={keepAssetsRequested:artifact.metadata.keep_assets===true,hasAssets:inventoryScript.has_assets,configSHA256:runtime.assets===undefined?null:hashJSON(runtime.assets),contentInventoryAudited:false,contentSHA256:null,explicitAssetsUploadForbidden:!Object.hasOwn(artifact.metadata,'assets'),acceptanceStandard:'PENDING_CONTRACT_STANDARD_APPROVAL'};
   if(inventoryScript.has_assets===false&&!artifact.metadata.bindings.some(b=>b.type==='assets'))return {...result,coverageComplete:true,associationConfigMatches:true};
   assert.equal(result.keepAssetsRequested,true);
+  assert.equal(result.explicitAssetsUploadForbidden,true,'explicit assets upload forbidden');
   const associationConfigMatches=!!expected&&expected.hasAssets===true&&result.hasAssets===true&&result.configSHA256===expected.configSHA256;
-  return {...result,associationConfigMatches,coverageComplete:false,scopeLimit:'keep_assets retains existing assets by upload contract; matching configuration proves configuration only, not every asset byte or asset-set identity'};
+  return {...result,associationConfigMatches,contractCandidateReady:associationConfigMatches&&result.keepAssetsRequested&&result.explicitAssetsUploadForbidden,coverageComplete:false,scopeLimit:'keep_assets retains existing assets by upload contract; matching configuration proves configuration only, not every asset byte or asset-set identity'};
+}
+
+export async function collectNamespaces(transport,accountId,targetIds,expected){
+  id(accountId);assert.ok(Array.isArray(targetIds));const targets=[...new Set(targetIds)].sort();
+  assert.equal(targets.length,targetIds.length,'duplicate target namespace binding');assert.ok(targets.every(v=>typeof v==='string'&&v.length>0));
+  const path=`/accounts/${accountId}/workers/durable_objects/namespaces`;
+  const inventory=await listMetadata(transport,path,{kind:'namespace'});
+  for(const n of inventory.items)objectKeys(n,['id','class','name','script','use_sqlite']);
+  const selected=inventory.items.filter(n=>targets.includes(n.id)).sort((a,b)=>a.id.localeCompare(b.id));
+  assert.deepEqual(selected.map(n=>n.id),targets,'complete target namespace set required');
+  const coverageComplete=Array.isArray(expected);
+  if(coverageComplete){assert.deepEqual([...expected].map(n=>n.id).sort(),targets,'frozen namespace set must equal all target bindings');assert.equal(hashJSON(selected),hashJSON([...expected].sort((a,b)=>a.id.localeCompare(b.id))),'frozen namespace metadata drift');}
+  return {path,selected,pages:inventory.receipts,coverageComplete,sha256:hashJSON(selected)};
 }

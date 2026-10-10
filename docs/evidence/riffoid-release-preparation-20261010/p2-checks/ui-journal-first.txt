@@ -1,0 +1,207 @@
+✖ manual early cleanup consumes no request; scheduled and manual triggers share one consumed flag (0.647792ms)
+✖ manual first and concurrent cleanup clicks cannot race the timer into another POST (0.082583ms)
+✖ timeout keeps cleanup attempt consumed; no automatic or manual retry (0.048625ms)
+✖ network-disconnected keeps cleanup attempt consumed; no automatic or manual retry (0.040834ms)
+✖ receipt-lost keeps cleanup attempt consumed; no automatic or manual retry (0.036708ms)
+✖ sleep past cleanup interval produces pending with zero POST; abandoned page has no invented receipt (0.042709ms)
+✖ actual A UI embeds one cleanup timer, bounded POST and matching CSP; B schedules no cleanup (10.876542ms)
+✖ rendered original A page: success, abort timer and duplicate triggers produce at most one cleanup fetch (0.856916ms)
+✖ rendered original A page: timeout, abort timer and duplicate triggers produce at most one cleanup fetch (0.516667ms)
+✖ rendered original A page: network-disconnected, abort timer and duplicate triggers produce at most one cleanup fetch (0.49925ms)
+✖ rendered original A page: receipt-lost, abort timer and duplicate triggers produce at most one cleanup fetch (0.399208ms)
+✖ unknown original Observe halts Run and scheduled cleanup with zero follow-up fetches (0.460292ms)
+✔ approved wording is consumed without granting production authorization; altered evidence rejects (4.108625ms)
+✔ default dry-run dispatches zero HTTP; read-only and prepare cannot upload (1.546084ms)
+✔ wire multipart keeps public/resources and inherits redacted Secret text without material (7.62175ms)
+✔ raw HTTP preserves cf-entrypoint, body bytes and origin; bounds hangs and rejects redirects (11.764042ms)
+✔ GET-derived modules and runtime export readback work; drift/omitted cf-entrypoint reject (1.748833ms)
+✔ actual asset/container readback gaps stay blocked rather than trusting upload intent (0.648834ms)
+✔ durable exclusive journal is retained for unknown writes and rejects a second owner (25.736208ms)
+✔ version/deployment identity also binds resource snapshot hashes (0.629084ms)
+✔ unapproved live publication performs no HTTP; missing full preflight creates no intent or PUT (0.912541ms)
+✔ mutable/custom transport cannot turn prepare into a network upload (0.610417ms)
+✔ missing Observe originals or forged terminal evidence block before any network write (1.075041ms)
+✔ restart loads original unknown journal and GET reconciliation never clears it (8.736375ms)
+✔ package CLI prepares all eight exact multipart files offline without overwriting prior packet (4.834459ms)
+✖ natural expiry checkpoint survives restart and rejects missing or altered identity/time (27.681541ms)
+✔ resource read drift is bracketed by final deployment and latest-version checks (1.386417ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 14
+ℹ fail 13
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 191.105792
+
+✖ failing tests:
+
+test at tests/m1/riffoid-validation-cleanup-ui.test.mjs:15:1
+✖ manual early cleanup consumes no request; scheduled and manual triggers share one consumed flag (0.647792ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-cleanup-ui.test.mjs:16:28)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/m1/riffoid-validation-cleanup-ui.test.mjs:21:1
+✖ manual first and concurrent cleanup clicks cannot race the timer into another POST (0.082583ms)
+  TypeError [Error]: Cannot read properties of undefined (reading 'fn')
+      at TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-cleanup-ui.test.mjs:23:39)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at tests/m1/riffoid-validation-cleanup-ui.test.mjs:25:72
+✖ timeout keeps cleanup attempt consumed; no automatic or manual retry (0.048625ms)
+  TypeError [Error]: Cannot read properties of undefined (reading 'fn')
+      at TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-cleanup-ui.test.mjs:27:33)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/m1/riffoid-validation-cleanup-ui.test.mjs:25:72
+✖ network-disconnected keeps cleanup attempt consumed; no automatic or manual retry (0.040834ms)
+  TypeError [Error]: Cannot read properties of undefined (reading 'fn')
+      at TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-cleanup-ui.test.mjs:27:33)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/m1/riffoid-validation-cleanup-ui.test.mjs:25:72
+✖ receipt-lost keeps cleanup attempt consumed; no automatic or manual retry (0.036708ms)
+  TypeError [Error]: Cannot read properties of undefined (reading 'fn')
+      at TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-cleanup-ui.test.mjs:27:33)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/m1/riffoid-validation-cleanup-ui.test.mjs:30:1
+✖ sleep past cleanup interval produces pending with zero POST; abandoned page has no invented receipt (0.042709ms)
+  TypeError [Error]: Cannot read properties of undefined (reading 'fn')
+      at TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-cleanup-ui.test.mjs:31:59)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/m1/riffoid-validation-cleanup-ui.test.mjs:35:1
+✖ actual A UI embeds one cleanup timer, bounded POST and matching CSP; B schedules no cleanup (10.876542ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(script.includes('setTimeout(()=>controller.abort(),5000)'))
+  
+      at TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-cleanup-ui.test.mjs:44:26)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/m1/riffoid-validation-cleanup-ui.test.mjs:50:82
+✖ rendered original A page: success, abort timer and duplicate triggers produce at most one cleanup fetch (0.856916ms)
+  evalmachine.<anonymous>:26
+  document.getElementById('stop').onclick=halt;
+                                         ^
+  
+  TypeError: Cannot set properties of undefined (setting 'onclick')
+      at evalmachine.<anonymous>:26:40
+      at Script.runInContext (node:vm:150:12)
+      at Script.runInNewContext (node:vm:155:17)
+      at Object.runInNewContext (node:vm:311:38)
+      at TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-cleanup-ui.test.mjs:63:6)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/m1/riffoid-validation-cleanup-ui.test.mjs:50:82
+✖ rendered original A page: timeout, abort timer and duplicate triggers produce at most one cleanup fetch (0.516667ms)
+  evalmachine.<anonymous>:26
+  document.getElementById('stop').onclick=halt;
+                                         ^
+  
+  TypeError: Cannot set properties of undefined (setting 'onclick')
+      at evalmachine.<anonymous>:26:40
+      at Script.runInContext (node:vm:150:12)
+      at Script.runInNewContext (node:vm:155:17)
+      at Object.runInNewContext (node:vm:311:38)
+      at TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-cleanup-ui.test.mjs:63:6)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/m1/riffoid-validation-cleanup-ui.test.mjs:50:82
+✖ rendered original A page: network-disconnected, abort timer and duplicate triggers produce at most one cleanup fetch (0.49925ms)
+  evalmachine.<anonymous>:26
+  document.getElementById('stop').onclick=halt;
+                                         ^
+  
+  TypeError: Cannot set properties of undefined (setting 'onclick')
+      at evalmachine.<anonymous>:26:40
+      at Script.runInContext (node:vm:150:12)
+      at Script.runInNewContext (node:vm:155:17)
+      at Object.runInNewContext (node:vm:311:38)
+      at TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-cleanup-ui.test.mjs:63:6)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/m1/riffoid-validation-cleanup-ui.test.mjs:50:82
+✖ rendered original A page: receipt-lost, abort timer and duplicate triggers produce at most one cleanup fetch (0.399208ms)
+  evalmachine.<anonymous>:26
+  document.getElementById('stop').onclick=halt;
+                                         ^
+  
+  TypeError: Cannot set properties of undefined (setting 'onclick')
+      at evalmachine.<anonymous>:26:40
+      at Script.runInContext (node:vm:150:12)
+      at Script.runInNewContext (node:vm:155:17)
+      at Object.runInNewContext (node:vm:311:38)
+      at TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-cleanup-ui.test.mjs:63:6)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/m1/riffoid-validation-cleanup-ui.test.mjs:73:1
+✖ unknown original Observe halts Run and scheduled cleanup with zero follow-up fetches (0.460292ms)
+  evalmachine.<anonymous>:26
+  document.getElementById('stop').onclick=halt;
+                                         ^
+  
+  TypeError: Cannot set properties of undefined (setting 'onclick')
+      at evalmachine.<anonymous>:26:40
+      at Script.runInContext (node:vm:150:12)
+      at Script.runInNewContext (node:vm:155:17)
+      at Object.runInNewContext (node:vm:311:38)
+      at TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-cleanup-ui.test.mjs:78:6)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at tests/m1/riffoid-validation-live-adapter.test.mjs:122:1
+✖ natural expiry checkpoint survives restart and rejects missing or altered identity/time (27.681541ms)
+  AssertionError [ERR_ASSERTION]: The "string" argument must be of type string. Received type undefined (undefined)
+      at Publisher.replayRecords (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/scripts/m1/riffoid-validation-publisher.mjs:188:232)
+      at Publisher.restoreOriginalPending (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/scripts/m1/riffoid-validation-publisher.mjs:206:39)
+      at async TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-live-adapter.test.mjs:134:32)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /^[a-f0-9]{64}$/,
+    operator: 'match',
+    diff: 'simple'
+  }
