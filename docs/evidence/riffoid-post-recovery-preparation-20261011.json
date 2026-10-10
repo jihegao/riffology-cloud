@@ -1,6 +1,6 @@
 {
   "schema": "riffoid-post-recovery-preparation-v1",
-  "timeUTC": "2026-10-10T16:13:18Z",
+  "timeUTC": "2026-10-10T16:33:41Z",
   "localDate": "2026-10-11",
   "status": "PREPARED_NOT_ARMED",
   "readback": {
@@ -530,6 +530,269 @@
     "All three exact deployed module byte hashes are retained in the formal configuration-only payloads.",
     "The maintenance candidate source remains separately frozen at 6ed830a17f2321de27446758074aff47550c99ea.",
     "The expired original protocol was not resumed; all three historical unknown journals and locks remain unchanged.",
-    "Fresh publisher exclusion, current browser cooperation, actual native protocol and agreed authenticated acceptance coverage remain required."
-  ]
+    "Fresh publisher exclusion, current browser cooperation, actual native protocol and agreed authenticated acceptance coverage remain required.",
+    "The current capacity deadline is the authorized December 31 extension documented in Issue104; October20 is historical capacity authorization and remains the M1 deadline. This task does not change that policy."
+  ],
+  "domains": {
+    "observedBeforeUTC": "2026-10-10 16:26:23 UTC",
+    "scope": "Existing account domain and zone certificate inventories; no TLS network handshake claim from certificate metadata",
+    "writes": 0,
+    "metadataCallerGETs": 7,
+    "proxyHTTPAttempts": "NOT_EXPOSED",
+    "accounts": {
+      "gateway": {
+        "inventoryCount": 12,
+        "fullDomainInventorySHA256": "b65bdef00757e10c89313cfc492c7925cd490db340178ac8eeeb90eaec2ae6c6",
+        "targetDomains": [
+          {
+            "id": "bbaf6f610bf9d72ea58237b21ca279fd0c921539",
+            "zone_id": "c97b548800561fada1a912c234696db1",
+            "zone_name": "gaojihe.cn",
+            "hostname": "m1.riff-demo.gaojihe.cn",
+            "service": "riffology-m1-gateway-staging",
+            "environment": "production",
+            "cert_id": "b3106443-b1ce-477c-a9a2-b0c4e8185e59",
+            "previews_enabled": false,
+            "enabled": true
+          },
+          {
+            "id": "9c4d2f673dc0d66249bd3663cfe157eaf288aa4c",
+            "zone_id": "c97b548800561fada1a912c234696db1",
+            "zone_name": "gaojihe.cn",
+            "hostname": "preview.m1.riff-demo.gaojihe.cn",
+            "service": "riffology-m1-gateway-staging",
+            "environment": "production",
+            "cert_id": "4f65b0a7-f414-4559-8f48-24a70e568c3d",
+            "previews_enabled": false,
+            "enabled": true
+          },
+          {
+            "id": "9f0e5e9924f4c95948932d5fab37621a1075ddb5",
+            "zone_id": "c97b548800561fada1a912c234696db1",
+            "zone_name": "gaojihe.cn",
+            "hostname": "riffoid-transport.gaojihe.cn",
+            "service": "riffology-m1-gateway-staging",
+            "environment": "production",
+            "cert_id": "7c91ea00-d3d8-41f3-9cdb-7e6071170066",
+            "previews_enabled": false,
+            "enabled": true
+          }
+        ],
+        "certificates": [
+          {
+            "id": "b3106443-b1ce-477c-a9a2-b0c4e8185e59",
+            "type": "advanced",
+            "hosts": [
+              "gaojihe.cn",
+              "m1.riff-demo.gaojihe.cn",
+              "*.m1.riff-demo.gaojihe.cn"
+            ],
+            "status": "active",
+            "certificates": [
+              {
+                "id": "4c9caabf-037c-4dc1-aaf4-0b4af83a34ac",
+                "hosts": [
+                  "gaojihe.cn",
+                  "m1.riff-demo.gaojihe.cn",
+                  "*.m1.riff-demo.gaojihe.cn"
+                ],
+                "status": "active",
+                "expires_on": "2026-12-05T15:09:07.000000Z"
+              },
+              {
+                "id": "50589e74-1c69-45d3-a5a5-221a6c4e10fc",
+                "hosts": [
+                  "gaojihe.cn",
+                  "m1.riff-demo.gaojihe.cn",
+                  "*.m1.riff-demo.gaojihe.cn"
+                ],
+                "status": "active",
+                "expires_on": "2026-12-05T15:11:33.000000Z"
+              }
+            ]
+          },
+          {
+            "id": "4f65b0a7-f414-4559-8f48-24a70e568c3d",
+            "type": "advanced",
+            "hosts": [
+              "gaojihe.cn",
+              "preview.m1.riff-demo.gaojihe.cn",
+              "*.preview.m1.riff-demo.gaojihe.cn"
+            ],
+            "status": "active",
+            "certificates": [
+              {
+                "id": "bdc20e3a-ce12-4ce2-af97-ee500a36ae07",
+                "hosts": [
+                  "gaojihe.cn",
+                  "preview.m1.riff-demo.gaojihe.cn",
+                  "*.preview.m1.riff-demo.gaojihe.cn"
+                ],
+                "status": "active",
+                "expires_on": "2026-12-08T12:55:40.000000Z"
+              },
+              {
+                "id": "c407afc0-86da-453a-a86a-da6146956c8f",
+                "hosts": [
+                  "gaojihe.cn",
+                  "preview.m1.riff-demo.gaojihe.cn",
+                  "*.preview.m1.riff-demo.gaojihe.cn"
+                ],
+                "status": "active",
+                "expires_on": "2026-12-08T12:58:20.000000Z"
+              }
+            ]
+          },
+          {
+            "id": "7c91ea00-d3d8-41f3-9cdb-7e6071170066",
+            "type": "advanced",
+            "hosts": [
+              "gaojihe.cn",
+              "riffoid-transport.gaojihe.cn",
+              "*.riffoid-transport.gaojihe.cn"
+            ],
+            "status": "active",
+            "certificates": [
+              {
+                "id": "601c5907-cb3f-4d67-9edf-1cbde0d884dd",
+                "hosts": [
+                  "gaojihe.cn",
+                  "riffoid-transport.gaojihe.cn",
+                  "*.riffoid-transport.gaojihe.cn"
+                ],
+                "status": "active",
+                "expires_on": "2027-01-07T04:33:51.000000Z"
+              },
+              {
+                "id": "5c4f79f6-3451-41e7-82f2-86dc0378f1cc",
+                "hosts": [
+                  "gaojihe.cn",
+                  "riffoid-transport.gaojihe.cn",
+                  "*.riffoid-transport.gaojihe.cn"
+                ],
+                "status": "active",
+                "expires_on": "2027-01-07T04:36:14.000000Z"
+              }
+            ]
+          }
+        ]
+      },
+      "entry": {
+        "inventoryCount": 1,
+        "fullDomainInventorySHA256": "c4329e98eaed3d77148adc3bcca133a459e35b7b2efcf78f60cd5b6c655ad5fe",
+        "targetDomains": [
+          {
+            "id": "5d2ca21f254eb34b4c5eae02a51bb7f44fe9c813",
+            "zone_id": "b0b0079990e13eb20a17a2d3c41403b8",
+            "zone_name": "riffoid.com",
+            "hostname": "app.riffoid.com",
+            "service": "riffoid-entry",
+            "environment": "production",
+            "cert_id": "cb535a92-198f-4870-8c78-3b18d876278a",
+            "previews_enabled": false,
+            "enabled": true
+          }
+        ],
+        "certificates": [
+          {
+            "id": "cb535a92-198f-4870-8c78-3b18d876278a",
+            "type": "advanced",
+            "hosts": [
+              "riffoid.com",
+              "app.riffoid.com",
+              "*.app.riffoid.com"
+            ],
+            "status": "active",
+            "certificates": [
+              {
+                "id": "9c9bf018-5358-496c-a26e-3af30917e26a",
+                "hosts": [
+                  "riffoid.com",
+                  "app.riffoid.com",
+                  "*.app.riffoid.com"
+                ],
+                "status": "active",
+                "expires_on": "2027-01-06T15:10:14.000000Z"
+              },
+              {
+                "id": "84755f38-f2df-4cf3-9e5c-04e4a47caf9b",
+                "hosts": [
+                  "riffoid.com",
+                  "app.riffoid.com",
+                  "*.app.riffoid.com"
+                ],
+                "status": "active",
+                "expires_on": "2027-01-06T15:07:56.000000Z"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "aliases": {
+      "gateway": {
+        "enabled": false,
+        "previews_enabled": false
+      },
+      "entry": {
+        "enabled": false,
+        "previews_enabled": false
+      },
+      "execution": {
+        "enabled": true,
+        "previews_enabled": false
+      }
+    }
+  },
+  "capacityAuthorizationReconciled": {
+    "source": "Existing Safari authenticated GET /api/admin/private-beta and latest Issue #104 body",
+    "observedBeforeUTC": "2026-10-10T16:16:37Z",
+    "snapshotScope": "Pi private-beta ledger only; constructor initialization and platform-wide work not excluded",
+    "active": 0,
+    "quarantined": 0,
+    "paused": false,
+    "enabled": true,
+    "quotaMode": "meter-only",
+    "schemaVersion": 1,
+    "policySchemaVersion": 2,
+    "policySHA256": "695cdd9ece91081e201a3dd03ba2ad7451931a0b588addc6454a1f6db9638031",
+    "reviewAt": "2026-12-31T15:59:59.999Z",
+    "currentAuthorizationSource": "https://github.com/jihegao/riffology-cloud/issues/104",
+    "historicalOctober20DeadlineSupersededForCapacity": true,
+    "milestoneOctober20Unchanged": true,
+    "policyWrites": 0
+  },
+  "formalController": {
+    "implementation": "Fixed 3-step activation and exact known-failure close/forward-restore queue; caller connects approved native transport",
+    "checks": {
+      "tests": 19,
+      "pass": 19,
+      "fail": 0,
+      "commands": [
+        "node --test tests/m1/riffoid-formal-native-intent-authorizer.test.mjs tests/m1/riffoid-formal-fixed-publisher.test.mjs"
+      ],
+      "realFileJournalFixture": true,
+      "productionHTTP": 0
+    },
+    "sourceFiles": [
+      "scripts/m1/riffoid-formal-native-intent-authorizer.mjs",
+      "scripts/m1/riffoid-formal-fixed-publisher.mjs",
+      "tests/m1/riffoid-formal-native-intent-authorizer.test.mjs",
+      "tests/m1/riffoid-formal-fixed-publisher.test.mjs"
+    ],
+    "pending": [
+      "new original native A/B protocol and complete restoration receipts",
+      "fresh post-protocol exact deployment guards",
+      "reviewed authenticated acceptance capabilities and scope",
+      "actual live native transport session and externally approved bounded capability"
+    ],
+    "armed": false,
+    "formalT": null
+  },
+  "credentials": {
+    "primaryProfileRenewed": true,
+    "sameExistingFiveScopesVerified": true,
+    "credentialValuesExported": false,
+    "productionResourcesMutated": false
+  }
 }

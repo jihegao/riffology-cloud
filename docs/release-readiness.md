@@ -1,4 +1,4 @@
-# Current release readiness — 2026-10-10
+# Current release readiness — 2026-10-11
 
 ## 2026-10-11 域名切换续作：恢复后完整预检及固定载荷（未开启）
 
@@ -7,6 +7,11 @@
 正式切换和失败关闭/前向恢复共七份固定载荷已离线准备，使用三个当前线上模块的原字节；Gateway 切流为 97 绑定、Entry 为 6、Execution 为 4，T 和恢复期限仍为空。包 SHA `c2d84bdbf75122886e426064003ae2275dc89a6791c46c0245c82dfacf35a0bf`；未将未发生的 T 写入恢复配置。维护控制器新增严格 GET-only 部署/版本列表解码桥，源码/配置/版本详情仍独立原生读取；PUT 单次原生传输不变。相关 52 项检查及八阶段零网络/零写入模板检查通过。完整资产字节/集合、平台内部遥测排空和 proxy HTTP 尝试数没有据此证明。
 
 本次准备没有新增生产写入、开启维护窗口或发起协议/模型/Turn/Run。真实双网络协议和认证新域验收仍待完成，PR173 保持 draft/unmerged，T/recoveryUntil=null。[完整基线、固定载荷摘要及证据边界](evidence/riffoid-post-recovery-preparation-20261011.json)。
+
+
+正式控制器已补齐三步激活与已知失败的入口关闭/前向恢复队列；19 项真实文件 journal 的离线检查通过，覆盖重复/并发提交、失去写回执、入口顺序和后台漂移。固定载荷仍未 armed，正式 live 会话、协议后完整部署守卫及真实验收范围待落实。域名/证书与三 Worker 别名均已只读核对；仅 Execution 保留原 workers.dev 地址，新账号凭据完成原五项权限续期。
+
+当前容量快照 active/quarantined=0/0、meter-only、pin `695cdd9e…`、reviewAt=2026-12-31；#104 顶部及 PR169 确认该期限为 10 月 7 日已批准并完成的续期。10 月 20 日是历史容量期限，M1 截止仍为 10 月 20 日。容量策略本次未改，快照仅覆盖 Pi 账本。手机实时配合及认证验收资源待回复，本轮仍无新窗口或生产发布。
 
 
 ## 2026-10-10 15:45 UTC original Gateway restored; domain cutover pending
