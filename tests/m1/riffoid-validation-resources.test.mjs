@@ -43,7 +43,7 @@ test('connector bridge supports decoded metadata only and rejects G5/source/othe
 });
 test('SDK bridge preserves binary bytes/header with retries disabled; decoded objects do not fake raw HTTP',async()=>{
   let options,calls=0;const fetch=sdkReadOnlyFetch({get(path,o){calls++;options=o;return {asResponse:async()=>new Response(new Uint8Array([0,255]),{headers:{'cf-entrypoint':'index.js','content-type':'application/octet-stream','set-cookie':'excluded'}})};}});
-  const t=cloudflareTransport({mode:'read-only',authorizedFetch:fetch}),r=await t.request({path:`/accounts/${account}/workers/scripts/${worker}`});assert.equal(r.mainModule,'index.js');assert.deepEqual([...r.bytes],[0,255]);assert.equal(options.maxRetries,0);assert.equal(options.fetchOptions.redirect,'error');assert.equal(calls,1);
+  const t=cloudflareTransport({mode:'read-only',authorizedFetch:fetch}),r=await t.request({path:`/accounts/${account}/workers/scripts/${worker}`});assert.equal(r.mainModule,'index.js');assert.deepEqual([...r.bytes],[0,255]);assert.equal(options.maxRetries,0);assert.equal(options.fetchOptions.redirect,'manual');assert.equal(calls,1);
   await assert.rejects(()=>fetch('https://api.cloudflare.com/client/v4/accounts/'+account+'/workers/scripts/'+worker,{method:'PUT'}));
   const missing=sdkReadOnlyFetch({get(){return {result:'decoded'};}});await assert.rejects(()=>missing('https://api.cloudflare.com/client/v4/accounts/'+account+'/workers/scripts/'+worker,{method:'GET'}),/decoded connector/);
   await assert.rejects(()=>fetch('https://api.cloudflare.com/client/v4/accounts/'+account+'/workers/scripts/'+worker+'/secrets',{method:'GET'}));

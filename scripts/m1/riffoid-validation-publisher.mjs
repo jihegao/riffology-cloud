@@ -6,6 +6,7 @@ import {join} from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {hashJSON,hashBytes,stateMetadata,wireMetadata,approvalRecord,restorationEligibility,parseProtocolReceipt,protocolTerminalEvidence} from './riffoid-validation-evidence.mjs';
 import {jsonResult} from './riffoid-validation-transport.mjs';
+import {multipartModules} from './riffoid-validation-mime.mjs';
 import {collectPipelineGuard,collectContainerAssociations,assetPreservationEvidence,assetSnapshot,assertPreservationReadback,validateFrozenAssetSnapshot,collectNamespaces} from './riffoid-validation-resources.mjs';
 export const publicationPhases=['gatewayObserve','entryObserve','entryReady','entryStop','gatewayRestorePrivacy','entryRestorePrivacy','gatewayRestoreLogs','entryRestoreLogs'];
 const base=(account,worker)=>`/accounts/${account}/workers/scripts/${worker}`;
@@ -24,11 +25,8 @@ export function buildWrite(packet,phase,moduleBytes,accountId,requestId){
   return {method:'PUT',path:base(accountId,packet.baselineGuards[p.worker].worker)+'?bindings_inherit=strict',contentType:`multipart/form-data; boundary=${boundary}`,body:Buffer.concat(parts)};
 }
 async function modulesFrom(raw,expected){
-  assert.equal(raw.status,200);assert.ok(raw.mainModule,'cf-entrypoint readback required; never infer main module');
-  const form=await new Response(raw.bytes,{headers:{'content-type':raw.contentType}}).formData(),values=[];
-  for(const [name,value]of form){if(name==='metadata')continue;assert.ok(typeof value!=='string');values.push({name,bytes:Buffer.from(await value.arrayBuffer())});}
-  assert.equal(values.length,expected.length);assert.equal(new Set(values.map(x=>x.name)).size,values.length);
-  return expected.map(m=>{const x=values.find(v=>v.name===m.name);assert.ok(x);return {...m,bytes:x.bytes.length,sha256:hashBytes(x.bytes)};});
+  const values=multipartModules(raw,expected);
+  return expected.map((m,i)=>({...m,bytes:values[i].bytes.length,sha256:hashBytes(values[i].bytes)}));
 }
 async function collectResourceEvidence(transport,accountId,worker,artifact,runtime,preservation){
   const resources=[];
@@ -46,7 +44,22 @@ async function collectResourceEvidence(transport,accountId,worker,artifact,runti
   if(preservation?.assets){const snapshot=assetSnapshot({accountId,worker},artifact,runtime,{id:worker,has_assets:preservation.assets.hasAssets});assert.equal(hashJSON(snapshot),hashJSON(preservation.assets),'frozen asset association/configuration drift');resources.push({kind:'asset-retention-contract',accountId,worker,sha256:hashJSON(snapshot)});}
   return {resources,resourcesSHA256:hashJSON(resources),namespaceCoverage,containers,pipeline};
 }
-export async function collectReadback(transport,accountId,worker,artifact,preservation){
+export async function collectReadback(transport,accountId,worker,artifact,preservation,readBudget={}){
+  const sourceTransport=transport,startedAt=Date.now(),start=performance.now();let dispatches=0;
+  const timeoutMS=readBudget.timeoutMS??60000,maxGETDispatches=readBudget.maxGETDispatches??128;
+  assert.ok(Number.isSafeInteger(timeoutMS)&&timeoutMS>0&&timeoutMS<=120000);
+  assert.ok(Number.isSafeInteger(maxGETDispatches)&&maxGETDispatches>0&&maxGETDispatches<=256);
+  transport={async request(args){
+    assert.equal(args.method??'GET','GET');assert.equal(args.body,undefined);
+    const invocationStart=performance.now(),remaining=timeoutMS-(invocationStart-start),invocationLimit=Math.min(15000,remaining);assert.ok(remaining>0,'readback budget expired; late evidence rejected');
+    assert.ok(dispatches<maxGETDispatches,'readback GET dispatch budget exhausted');dispatches++;let timer;
+    try{
+      const late=new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('readback budget expired; late evidence rejected; proxy termination unconfirmed')),invocationLimit);});
+      const raw=await Promise.race([sourceTransport.request(args),late]);
+      assert.ok(performance.now()-invocationStart<invocationLimit,'readback per-GET budget expired; late evidence rejected');
+      assert.ok(performance.now()-start<timeoutMS,'readback budget expired; late evidence rejected');return raw;
+    }finally{clearTimeout(timer);}
+  }};
   const path=base(accountId,worker),get=async suffix=>jsonResult(await transport.request({path:path+suffix}));
   const first=identity(await get('/deployments')),versions=await get('/versions');assert.equal(versions.result.items[0].id,first.version,'latest inheritance source differs from active');
   const version=await get('/versions/'+first.version),settings=await get('/settings'),global=await get('/script-settings');
@@ -85,9 +98,11 @@ export async function collectReadback(transport,accountId,worker,artifact,preser
   assert.equal((await get('/versions')).result.items[0].id,first.version,'latest inheritance source changed during resource GETs');
   const preservationMatches=['mainModule','metadata','modules','namedResources','assetsRetentionContract','containers'].every(k=>coverage[k]===true);
   const fullStateMatches=preservationMatches&&coverage.assets;
+  assert.ok(performance.now()-start<timeoutMS,'readback budget expired before receipt; late evidence rejected');
   return {...first,activeVersion:first.version,latestVersion:first.version,metadataSHA256:hashJSON(observed),modulesSHA256:hashJSON(modules),
     resourcesSHA256:hashJSON(resources),runtimeResources:{containers:structuredClone(runtime.containers),exports:structuredClone(runtime.exports)},coverage,preservationMatches,fullStateMatches,assets,containers,pipeline,workerLoggingGuardPassed:true,pipelineGuardPassed:pipeline.pipelineGuardPassed,quietPublisher:false,productionAuthorized:false,
-    limitations:['independent account/zone pipeline and publisher quiescence evidence required',...(preservationMatches?[]:['frozen resource/asset retention contract incomplete; fail closed']),...(assets.hasAssets?['asset bytes and complete asset-set identity not audited']:[])]};
+    readObservation:{startedAt,completedAt:Date.now(),elapsedMS:performance.now()-start,callerGETDispatches:dispatches,maxGETDispatches,timeoutMS,proxyHTTPAttempts:'NOT_EXPOSED',snapshotAtomic:false,bracketVerified:true},
+    limitations:['independent account/zone pipeline and publisher quiescence evidence required','caller read budget does not attest proxy termination or HTTP attempt count',...(preservationMatches?[]:['frozen resource/asset retention contract incomplete; fail closed']),...(assets.hasAssets?['asset bytes and complete asset-set identity not audited']:[])]};
 }
 export class FileJournal{
   constructor(directory){this.directory=directory;this.lockOwner=null;}

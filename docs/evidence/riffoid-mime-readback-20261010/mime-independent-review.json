@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-10T10:07:22.711Z",
+  "reviewer": "publisher_independent_review",
+  "status": "ACCEPTED_FINAL_OFFLINE_SOURCE_SCOPE",
+  "sourceSHA256": {
+    "scripts/m1/riffoid-validation-mime.mjs": "8537d55425eea9de899b9c7cc1a1a268a972368126db8f3e31193319d59ff95c",
+    "scripts/m1/riffoid-validation-publisher.mjs": "1f77e6a5ccd52489ddb0d4be0a1540dac1d5817deceece6f74869dc39e0e1d56",
+    "scripts/m1/riffoid-validation-transport.mjs": "d720b3463ac57002aff82706d449867b86978739419c21be24c1981155611456",
+    "tests/m1/riffoid-validation-mime.test.mjs": "2c39079fdeca80bf6fcd89ade2c2668fe6c9d00433603fed0dd1b4fa2e94be35",
+    "tests/m1/riffoid-validation-live-adapter.test.mjs": "b59a36af7daf884cecad6e8a01e0f90c374b419c3aa2667fbb65ce8200ef0aa2",
+    "tests/m1/fixtures/riffoid-offline-fixtures.mjs": "57833cd671fa74a3910d7cf324577c28ac6a61981e11c168cfde4abbdc992beb",
+    "tests/m1/riffoid-validation-resources.test.mjs": "c73ab3f37263c750caae537b943a30f06681c81f248f0dca9251f55e8c48e750"
+  },
+  "sourceHashesMatchedBeforeAfter": true,
+  "tests": {
+    "initialIndependent125": {
+      "pass": 125,
+      "fail": 0,
+      "log": "mime-independent-fixtures.txt",
+      "acceptedAsFinal": false
+    },
+    "finalIndependent127": {
+      "tests": 127,
+      "pass": 127,
+      "fail": 0,
+      "log": "mime-independent-fixtures.SEVEN_FINAL.txt"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "log": "mime-independent-typecheck.FINAL.txt",
+      "command": "node /Users/jihegao/apps/riffology-cloud/node_modules/typescript/bin/tsc --noEmit"
+    },
+    "diffCheck": {
+      "exitCode": 0,
+      "log": "mime-independent-diff-check.DOC_FINAL.txt"
+    },
+    "publicRetryMockCases": 20
+  },
+  "resolvedFindings": [
+    {
+      "priority": "P2",
+      "file": "scripts/m1/riffoid-validation-publisher.mjs",
+      "description": "Promise.race timer alone did not reject >15s GET resolution before delayed timer callback. Original isolated monotonic clock model accepted16,001ms result and dispatched secondGET.",
+      "fix": "Per-invocation frozen start/limit and explicit monotonic elapsed after awaited result; overall deadline rechecked before receipt. Raw transport similarly brackets fetch and body completion and enforces1..16MiB response cap.",
+      "independentReproductionAfterFix": {
+        "callerGETDispatches": 1,
+        "rejectedWith": "readback per-GET budget expired; late evidence rejected"
+      },
+      "evidence": [
+        "invocation-deadline-counterexample.mjs",
+        "invocation-deadline-counterexample.initial.json",
+        "invocation-deadline-counterexample.FINAL.json"
+      ]
+    }
+  ],
+  "remainingReproducibleP1P2": [],
+  "accepted": {
+    "mime": "Original source bytes, optional filename with strict name agreement, authoritative single entrypoint, complete frozen module set, CRLF/boundary framing, length/hash matching and bounded headers/count/body.",
+    "redirect": "Manual request option, reject followed responses/all3xx/Location before bodyread; SDK retains length/encoding evidence and maxRetries0.",
+    "GET": "Allowlisted semantic control-plane GET only; default60s aggregate/15s caller invocation/128 caller dispatches, no outer retry; actual proxy attempts/termination unexposed.",
+    "write": "Non-dry-run rawPUT rejected before authenticated dispatch; SDK/metadataGET-only; dry-run preparation remains offline."
+  },
+  "documentation": {
+    "reviewed": [
+      "docs/evidence/riffoid-mime-readback-20261010/mime-and-retry-contract.md",
+      "docs/release-readiness.md new first section"
+    ],
+    "boundariesAccurate": true,
+    "minorWordingClarification": "Resolved: raw bridge defaults15s, configurable up to30s; publisher hard15s invocation limit.",
+    "historicalCapabilityObservations": "Parent-retained earlier read-only receipts; no new independent production GET.",
+    "finalFileSHA256": {
+      "docs/evidence/riffoid-mime-readback-20261010/mime-and-retry-contract.md": "f0f9581371e15e1f9e9ba0320358814bda7d3e03f500bff3370a49b66b3d911c",
+      "docs/release-readiness.md": "ba81300ec0affca95d1f97ecf6377038c684e8d2211bbd0aff5768ecfe72caaa"
+    }
+  },
+  "remainingExternalBoundaries": [
+    "Actual deployed MCP proxy source/retry policy not attested; PUT replay policy unestablished at all layers.",
+    "Complete fresh scoped baselines and actual container association readback source pending.",
+    "Original run/window/native-identity inputs and operational publisher/configuration exclusion pending.",
+    "Asset full-content/set audit unperformed; unexposed routing configuration remains unverified under accepted retention contract.",
+    "CI remains NOT_VERIFIED; user-confirmed quota nonblocking for this authorized push."
+  ],
+  "productionRequests": 0,
+  "productionWrites": 0,
+  "experiments": 0,
+  "credentialAccess": false,
+  "implementationFilesModified": false,
+  "normalPR173PushAccepted": true,
+  "deploymentAccepted": false,
+  "retainedEvidence": {
+    "mime-independent-fixtures.txt": {
+      "sha256": "fb4ac52ab63f80fa03a8131add733337489003cc47a1132c39b2c31589a5c140",
+      "bytes": 13600
+    },
+    "mime-independent-fixtures.REPAIRED.txt": {
+      "sha256": "230a76983915ec09d749e38e96f850cec60bdcc8f8c0c7008f133e930ea35fab",
+      "bytes": 13698
+    },
+    "mime-independent-fixtures.FINAL.txt": {
+      "sha256": "aedf7a483aa7c97f02f3e775788952a624d2d87de5ed37c8e64620650fd02811",
+      "bytes": 13806
+    },
+    "mime-independent-typecheck.FINAL.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "mime-independent-diff-check.FINAL.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invocation-deadline-counterexample.initial.json": {
+      "sha256": "663c3b1f9b6bad9b5e70b65de36b9212bd9c0ce709e82aa50d587ce5432e4859",
+      "bytes": 390
+    },
+    "invocation-deadline-counterexample.FINAL.json": {
+      "sha256": "9e0b6aecebab82665a9e1d40fd12d614b164a3198cfc98bed6ca4612a1f68242",
+      "bytes": 127
+    },
+    "retry-offline-harness.mjs": {
+      "sha256": "4692d12ff2e254872f1c9d37a218dd0bdadc994999159a5746df746860213fce",
+      "bytes": 2946
+    },
+    "retry-offline-counterexamples.json": {
+      "sha256": "06b7e2d351eb7392b2578b2c9595c4d3cf365f3947e27b39843a7d8dbf31c3cc",
+      "bytes": 5101
+    },
+    "retry-setup-failure.json": {
+      "sha256": "08efc2421bbb0dd18bca9334f80751454dfc1bc1a5ba3d79e79fa989c28e16fd",
+      "bytes": 318
+    },
+    "mime-independent-freeze-change.json": {
+      "sha256": "c9aa6a71442103a4065719f9f336d5fbb5c18b32fa09fb6eac6fe0818a07bd8d",
+      "bytes": 1612
+    },
+    "mime-independent-fixtures.SEVEN_FINAL.txt": {
+      "sha256": "1fecdd78cc39c6b19f95a3024a29bdd64093ef02330718614aa120978be6019a",
+      "bytes": 13775
+    },
+    "mime-independent-diff-check.DOC_FINAL.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "mime-independent-source-hashes.SEVEN_BEFORE.json": {
+      "sha256": "e0f4d0da0d2d2b750c5a23086efbf12be89081e215de6aab7801c89156810b95",
+      "bytes": 827
+    },
+    "mime-independent-source-hashes.SEVEN_AFTER.json": {
+      "sha256": "e0f4d0da0d2d2b750c5a23086efbf12be89081e215de6aab7801c89156810b95",
+      "bytes": 827
+    }
+  }
+}

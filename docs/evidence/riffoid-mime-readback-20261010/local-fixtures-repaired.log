@@ -1,0 +1,766 @@
+TAP version 13
+# Subtest: cleanup is unarmed with no timer or request until one local authorization
+ok 1 - cleanup is unarmed with no timer or request until one local authorization
+  ---
+  duration_ms: 0.434708
+  type: 'test'
+  ...
+# Subtest: missing coordinator confirmation or permanent Stop cannot arm cleanup
+ok 2 - missing coordinator confirmation or permanent Stop cannot arm cleanup
+  ---
+  duration_ms: 0.067916
+  type: 'test'
+  ...
+# Subtest: early click is unspent; timer and concurrent clicks consume only one request
+ok 3 - early click is unspent; timer and concurrent clicks consume only one request
+  ---
+  duration_ms: 0.071459
+  type: 'test'
+  ...
+# Subtest: timeout: armed cleanup is never retried
+ok 4 - timeout: armed cleanup is never retried
+  ---
+  duration_ms: 0.076875
+  type: 'test'
+  ...
+# Subtest: network-disconnected: armed cleanup is never retried
+ok 5 - network-disconnected: armed cleanup is never retried
+  ---
+  duration_ms: 0.052791
+  type: 'test'
+  ...
+# Subtest: receipt-lost: armed cleanup is never retried
+ok 6 - receipt-lost: armed cleanup is never retried
+  ---
+  duration_ms: 0.051667
+  type: 'test'
+  ...
+# Subtest: missed interval and abandoned unarmed page produce zero POST
+ok 7 - missed interval and abandoned unarmed page produce zero POST
+  ---
+  duration_ms: 0.099292
+  type: 'test'
+  ...
+# Subtest: both UI pages expose local Stop; A starts unarmed and B has no cleanup scheduler
+ok 8 - both UI pages expose local Stop; A starts unarmed and B has no cleanup scheduler
+  ---
+  duration_ms: 21.97575
+  type: 'test'
+  ...
+# Subtest: rendered A success: successful own Run + external confirmation + one arm uses at most one cleanup
+ok 9 - rendered A success: successful own Run + external confirmation + one arm uses at most one cleanup
+  ---
+  duration_ms: 1.029291
+  type: 'test'
+  ...
+# Subtest: rendered A timeout: successful own Run + external confirmation + one arm uses at most one cleanup
+ok 10 - rendered A timeout: successful own Run + external confirmation + one arm uses at most one cleanup
+  ---
+  duration_ms: 2.127875
+  type: 'test'
+  ...
+# Subtest: rendered A network-disconnected: successful own Run + external confirmation + one arm uses at most one cleanup
+ok 11 - rendered A network-disconnected: successful own Run + external confirmation + one arm uses at most one cleanup
+  ---
+  duration_ms: 1.396792
+  type: 'test'
+  ...
+# Subtest: rendered A receipt-lost: successful own Run + external confirmation + one arm uses at most one cleanup
+ok 12 - rendered A receipt-lost: successful own Run + external confirmation + one arm uses at most one cleanup
+  ---
+  duration_ms: 0.815666
+  type: 'test'
+  ...
+# Subtest: B unknown leaves A cleanup unarmed; operator cannot authorize without both receipts and can Stop A
+ok 13 - B unknown leaves A cleanup unarmed; operator cannot authorize without both receipts and can Stop A
+  ---
+  duration_ms: 1.215208
+  type: 'test'
+  ...
+# Subtest: manual Stop aborts an in-flight original Run without follow-up RPC or clearing unknown
+ok 14 - manual Stop aborts an in-flight original Run without follow-up RPC or clearing unknown
+  ---
+  duration_ms: 0.597083
+  type: 'test'
+  ...
+# Subtest: Stop cancels an armed cleanup timer; even invoking its old callback produces no request
+ok 15 - Stop cancels an armed cleanup timer; even invoking its old callback produces no request
+  ---
+  duration_ms: 0.587
+  type: 'test'
+  ...
+# Subtest: all stages carry complete metadata/module manifests, preserve Secret references/resources, and do not mutate baselines
+ok 16 - all stages carry complete metadata/module manifests, preserve Secret references/resources, and do not mutate baselines
+  ---
+  duration_ms: 3.667417
+  type: 'test'
+  ...
+# Subtest: fixed maximum and baseline drift/Secret plaintext/incomplete modules are rejected
+ok 17 - fixed maximum and baseline drift/Secret plaintext/incomplete modules are rejected
+  ---
+  duration_ms: 2.542458
+  type: 'test'
+  ...
+# Subtest: changing frozen time or metadata cannot silently continue the same coordination journal
+ok 18 - changing frozen time or metadata cannot silently continue the same coordination journal
+  ---
+  duration_ms: 1.33325
+  type: 'test'
+  ...
+# Subtest: full fixture proves scoped application terminal state but pending user decisions block all restoration
+ok 19 - full fixture proves scoped application terminal state but pending user decisions block all restoration
+  ---
+  duration_ms: 5.615
+  type: 'test'
+  ...
+# Subtest: both observes and timely independently matched marker readback are required; waiting in chat does not extend the window
+ok 20 - both observes and timely independently matched marker readback are required; waiting in chat does not extend the window
+  ---
+  duration_ms: 3.888666
+  type: 'test'
+  ...
+# Subtest: duplicate accepted begin codes cannot substitute for a verified primary receipt
+ok 21 - duplicate accepted begin codes cannot substitute for a verified primary receipt
+  ---
+  duration_ms: 2.478792
+  type: 'test'
+  ...
+# Subtest: P2 time order: backdated Run, cleanup and terminal events cannot precede cue or actual completion
+ok 22 - P2 time order: backdated Run, cleanup and terminal events cannot precede cue or actual completion
+  ---
+  duration_ms: 3.925709
+  type: 'test'
+  ...
+# Subtest: P2 identity binding: baseline/seen versions cannot change content and deployments cannot change version
+ok 23 - P2 identity binding: baseline/seen versions cannot change content and deployments cannot change version
+  ---
+  duration_ms: 2.352333
+  type: 'test'
+  ...
+# Subtest: P2 ordered readback: a later delivery cannot hide a future or out-of-order publication/readback
+ok 24 - P2 ordered readback: a later delivery cannot hide a future or out-of-order publication/readback
+  ---
+  duration_ms: 1.689792
+  type: 'test'
+  ...
+# Subtest: P2 consistent identity reuse: a known version with unchanged content accepts a new deployment binding
+ok 25 - P2 consistent identity reuse: a known version with unchanged content accepts a new deployment binding
+  ---
+  duration_ms: 1.599708
+  type: 'test'
+  ...
+# Subtest: early failure removes marker but retains cleanup route; expiration/partial/unknown drain cannot unlock restoration
+ok 26 - early failure removes marker but retains cleanup route; expiration/partial/unknown drain cannot unlock restoration
+  ---
+  duration_ms: 3.049958
+  type: 'test'
+  ...
+# Subtest: unknown write/cleanup receipts freeze original request identity and forbid retries or restoration
+ok 27 - unknown write/cleanup receipts freeze original request identity and forbid retries or restoration
+  ---
+  duration_ms: 1.760458
+  type: 'test'
+  ...
+# Subtest: stale publisher/readback mismatch rejects atomically without changing the previous state
+ok 28 - stale publisher/readback mismatch rejects atomically without changing the previous state
+  ---
+  duration_ms: 0.832459
+  type: 'test'
+  ...
+# Subtest: offline module byte/hash verification detects source drift with no network
+ok 29 - offline module byte/hash verification detects source drift with no network
+  ---
+  duration_ms: 268.077708
+  type: 'test'
+  ...
+# Subtest: coordinator refuses claimed preservation with inconsistent contract/coverage and never confuses byte audit
+ok 30 - coordinator refuses claimed preservation with inconsistent contract/coverage and never confuses byte audit
+  ---
+  duration_ms: 1.708458
+  type: 'test'
+  ...
+# Subtest: normal exact fixed protocol derives scoped terminal evidence with explicit platform gaps; approval remains pending
+ok 31 - normal exact fixed protocol derives scoped terminal evidence with explicit platform gaps; approval remains pending
+  ---
+  duration_ms: 3.476375
+  type: 'test'
+  ...
+# Subtest: timeout or an unavailable verifier is never replaced by expiry, counters or cleanup
+ok 32 - timeout or an unavailable verifier is never replaced by expiry, counters or cleanup
+  ---
+  duration_ms: 2.125208
+  type: 'test'
+  ...
+# Subtest: network-disconnected or an unavailable verifier is never replaced by expiry, counters or cleanup
+ok 33 - network-disconnected or an unavailable verifier is never replaced by expiry, counters or cleanup
+  ---
+  duration_ms: 1.047167
+  type: 'test'
+  ...
+# Subtest: receipt-lost or an unavailable verifier is never replaced by expiry, counters or cleanup
+ok 34 - receipt-lost or an unavailable verifier is never replaced by expiry, counters or cleanup
+  ---
+  duration_ms: 0.997375
+  type: 'test'
+  ...
+# Subtest: extra/duplicate/missing receipt, aliases, malformed body and partial accepted results reject
+ok 35 - extra/duplicate/missing receipt, aliases, malformed body and partial accepted results reject
+  ---
+  duration_ms: 5.006208
+  type: 'test'
+  ...
+# Subtest: Run cannot precede marker/cue or deadline; cleanup cannot precede termination or miss its fixed interval
+ok 36 - Run cannot precede marker/cue or deadline; cleanup cannot precede termination or miss its fixed interval
+  ---
+  duration_ms: 1.991625
+  type: 'test'
+  ...
+# Subtest: approved wording is consumed without granting production authorization; altered evidence rejects
+ok 37 - approved wording is consumed without granting production authorization; altered evidence rejects
+  ---
+  duration_ms: 4.577833
+  type: 'test'
+  ...
+# Subtest: default dry-run dispatches zero HTTP; read-only and prepare cannot upload
+ok 38 - default dry-run dispatches zero HTTP; read-only and prepare cannot upload
+  ---
+  duration_ms: 2.327209
+  type: 'test'
+  ...
+# Subtest: wire multipart keeps public/resources and inherits redacted Secret text without material
+ok 39 - wire multipart keeps public/resources and inherits redacted Secret text without material
+  ---
+  duration_ms: 11.869125
+  type: 'test'
+  ...
+# Subtest: raw HTTP preserves cf-entrypoint, body bytes and origin; bounds hangs and rejects redirects
+ok 40 - raw HTTP preserves cf-entrypoint, body bytes and origin; bounds hangs and rejects redirects
+  ---
+  duration_ms: 13.251458
+  type: 'test'
+  ...
+# Subtest: GET-derived modules and runtime export readback work; drift/omitted cf-entrypoint reject
+ok 41 - GET-derived modules and runtime export readback work; drift/omitted cf-entrypoint reject
+  ---
+  duration_ms: 2.358834
+  type: 'test'
+  ...
+# Subtest: readback GET dispatch budget stops before another request and reports only caller observations
+ok 42 - readback GET dispatch budget stops before another request and reports only caller observations
+  ---
+  duration_ms: 0.744083
+  type: 'test'
+  ...
+# Subtest: late host GET result is rejected without further dispatch or proxy-termination claim
+ok 43 - late host GET result is rejected without further dispatch or proxy-termination claim
+  ---
+  duration_ms: 9.921
+  type: 'test'
+  ...
+# Subtest: a delayed timer cannot admit a host GET arriving beyond the single-invocation deadline
+ok 44 - a delayed timer cannot admit a host GET arriving beyond the single-invocation deadline
+  ---
+  duration_ms: 0.504583
+  type: 'test'
+  ...
+# Subtest: contradictory asset presence rejects rather than trusting upload intent
+ok 45 - contradictory asset presence rejects rather than trusting upload intent
+  ---
+  duration_ms: 0.641625
+  type: 'test'
+  ...
+# Subtest: durable exclusive journal is retained for unknown writes and rejects a second owner
+ok 46 - durable exclusive journal is retained for unknown writes and rejects a second owner
+  ---
+  duration_ms: 22.704042
+  type: 'test'
+  ...
+# Subtest: version/deployment identity also binds resource snapshot hashes
+ok 47 - version/deployment identity also binds resource snapshot hashes
+  ---
+  duration_ms: 0.685208
+  type: 'test'
+  ...
+# Subtest: unapproved live publication performs no HTTP; missing full preflight creates no intent or PUT
+ok 48 - unapproved live publication performs no HTTP; missing full preflight creates no intent or PUT
+  ---
+  duration_ms: 0.761917
+  type: 'test'
+  ...
+# Subtest: mutable/custom transport cannot turn prepare into a network upload
+ok 49 - mutable/custom transport cannot turn prepare into a network upload
+  ---
+  duration_ms: 0.708792
+  type: 'test'
+  ...
+# Subtest: missing Observe originals or forged terminal evidence block before any network write
+ok 50 - missing Observe originals or forged terminal evidence block before any network write
+  ---
+  duration_ms: 0.945042
+  type: 'test'
+  ...
+# Subtest: restart loads original unknown journal and GET reconciliation never clears it
+ok 51 - restart loads original unknown journal and GET reconciliation never clears it
+  ---
+  duration_ms: 11.047541
+  type: 'test'
+  ...
+# Subtest: package CLI prepares all eight exact multipart files offline without overwriting prior packet
+ok 52 - package CLI prepares all eight exact multipart files offline without overwriting prior packet
+  ---
+  duration_ms: 5.168583
+  type: 'test'
+  ...
+# Subtest: natural expiry checkpoint survives restart and rejects missing or altered identity/time
+ok 53 - natural expiry checkpoint survives restart and rejects missing or altered identity/time
+  ---
+  duration_ms: 37.053375
+  type: 'test'
+  ...
+# Subtest: resource read drift is bracketed by final deployment and latest-version checks
+ok 54 - resource read drift is bracketed by final deployment and latest-version checks
+  ---
+  duration_ms: 1.130792
+  type: 'test'
+  ...
+# Subtest: readonly restart rebuilds 1 completed phases and reads both current Worker identities with zero PUT
+ok 55 - readonly restart rebuilds 1 completed phases and reads both current Worker identities with zero PUT
+  ---
+  duration_ms: 9.710917
+  type: 'test'
+  ...
+# Subtest: readonly restart rebuilds 3 completed phases and reads both current Worker identities with zero PUT
+ok 56 - readonly restart rebuilds 3 completed phases and reads both current Worker identities with zero PUT
+  ---
+  duration_ms: 23.489
+  type: 'test'
+  ...
+# Subtest: readonly restart rebuilds 4 completed phases and reads both current Worker identities with zero PUT
+ok 57 - readonly restart rebuilds 4 completed phases and reads both current Worker identities with zero PUT
+  ---
+  duration_ms: 33.973042
+  type: 'test'
+  ...
+# Subtest: readonly restart rebuilds 8 completed phases and reads both current Worker identities with zero PUT
+ok 58 - readonly restart rebuilds 8 completed phases and reads both current Worker identities with zero PUT
+  ---
+  duration_ms: 67.397792
+  type: 'test'
+  ...
+# Subtest: completed chain with unowned or invalid lock remains locked; non-owner cannot release it
+ok 59 - completed chain with unowned or invalid lock remains locked; non-owner cannot release it
+  ---
+  duration_ms: 14.624583
+  type: 'test'
+  ...
+# Subtest: orphan receipts, unknown intent and changed current identity reject completed restart without mutation or PUT
+ok 60 - orphan receipts, unknown intent and changed current identity reject completed restart without mutation or PUT
+  ---
+  duration_ms: 49.371542
+  type: 'test'
+  ...
+# Subtest: write preparation rejects explicit assets upload/configuration and reserved multipart assets parts
+ok 61 - write preparation rejects explicit assets upload/configuration and reserved multipart assets parts
+  ---
+  duration_ms: 0.920542
+  type: 'test'
+  ...
+# Subtest: terminal JSON plus durable unknown remains original-pending across restart and cannot become completed
+ok 62 - terminal JSON plus durable unknown remains original-pending across restart and cannot become completed
+  ---
+  duration_ms: 16.0945
+  type: 'test'
+  ...
+# Subtest: completed restart brackets the first account when it drifts during the second account GET
+ok 63 - completed restart brackets the first account when it drifts during the second account GET
+  ---
+  duration_ms: 13.593041
+  type: 'test'
+  ...
+# Subtest: lost lock during preflight blocks PUT and never unlocks someone else's lock
+ok 64 - lost lock during preflight blocks PUT and never unlocks someone else's lock
+  ---
+  duration_ms: 1.323042
+  type: 'test'
+  ...
+# Subtest: lost lock during intent blocks PUT and never unlocks someone else's lock
+ok 65 - lost lock during intent blocks PUT and never unlocks someone else's lock
+  ---
+  duration_ms: 1.099958
+  type: 'test'
+  ...
+# Subtest: replaced lock during preflight blocks PUT and never unlocks someone else's lock
+ok 66 - replaced lock during preflight blocks PUT and never unlocks someone else's lock
+  ---
+  duration_ms: 0.937208
+  type: 'test'
+  ...
+# Subtest: replaced lock during intent blocks PUT and never unlocks someone else's lock
+ok 67 - replaced lock during intent blocks PUT and never unlocks someone else's lock
+  ---
+  duration_ms: 1.009959
+  type: 'test'
+  ...
+# Subtest: deadline crossing during final lock await is rechecked before any PUT
+ok 68 - deadline crossing during final lock await is rechecked before any PUT
+  ---
+  duration_ms: 1.035417
+  type: 'test'
+  ...
+# Subtest: namespace mutation during later resource GETs is re-read and rejected even with unchanged Worker version
+ok 69 - namespace mutation during later resource GETs is re-read and rejected even with unchanged Worker version
+  ---
+  duration_ms: 0.473584
+  type: 'test'
+  ...
+# Subtest: pipeline mutation during later resource GETs is re-read and rejected even with unchanged Worker version
+ok 70 - pipeline mutation during later resource GETs is re-read and rejected even with unchanged Worker version
+  ---
+  duration_ms: 0.52075
+  type: 'test'
+  ...
+# Subtest: existing container configuration changes independently during Worker inventory GET and is rejected on second pass
+ok 71 - existing container configuration changes independently during Worker inventory GET and is rejected on second pass
+  ---
+  duration_ms: 0.844875
+  type: 'test'
+  ...
+# Subtest: asset retention readback passes preservation with full byte coverage false, still rejects resource and module drift
+ok 72 - asset retention readback passes preservation with full byte coverage false, still rejects resource and module drift
+  ---
+  duration_ms: 1.639458
+  type: 'test'
+  ...
+# Subtest: asset-enabled publisher computes retention gate without byte-audit override; post-write drift stays original unknown
+ok 73 - asset-enabled publisher computes retention gate without byte-audit override; post-write drift stays original unknown
+  ---
+  duration_ms: 37.95675
+  type: 'test'
+  ...
+# Subtest: asset contract rejects reserved configuration modules and claimed receipts cannot bypass coordinator gates
+ok 74 - asset contract rejects reserved configuration modules and claimed receipts cannot bypass coordinator gates
+  ---
+  duration_ms: 3.833042
+  type: 'test'
+  ...
+# Subtest: asset completed restart rechecks both scopes and refuses cross-account config, binding or presence drift
+ok 75 - asset completed restart rechecks both scopes and refuses cross-account config, binding or presence drift
+  ---
+  duration_ms: 38.340583
+  type: 'test'
+  ...
+# Subtest: no-filename MIME preserves non-ASCII, combining characters, invalid UTF-8 and exact line endings
+ok 76 - no-filename MIME preserves non-ASCII, combining characters, invalid UTF-8 and exact line endings
+  ---
+  duration_ms: 1.272292
+  type: 'test'
+  ...
+# Subtest: filename and no-filename parts, wire order, empty module and quoted boundaries are supported
+ok 77 - filename and no-filename parts, wire order, empty module and quoted boundaries are supported
+  ---
+  duration_ms: 0.223958
+  type: 'test'
+  ...
+# Subtest: boundary-prefix lookalikes inside payload are bytes; a payload trailing CRLF is retained
+ok 78 - boundary-prefix lookalikes inside payload are bytes; a payload trailing CRLF is retained
+  ---
+  duration_ms: 0.14325
+  type: 'test'
+  ...
+# Subtest: missing, combined and duplicate authoritative entrypoints are rejected
+ok 79 - missing, combined and duplicate authoritative entrypoints are rejected
+  ---
+  duration_ms: 0.479333
+  type: 'test'
+  ...
+# Subtest: missing, duplicate, unexpected modules and duplicate frozen descriptors fail closed
+ok 80 - missing, duplicate, unexpected modules and duplicate frozen descriptors fail closed
+  ---
+  duration_ms: 0.448958
+  type: 'test'
+  ...
+# Subtest: LF-only separators, wrong/duplicate boundary, truncation and epilogues are rejected
+ok 81 - LF-only separators, wrong/duplicate boundary, truncation and epilogues are rejected
+  ---
+  duration_ms: 0.262417
+  type: 'test'
+  ...
+# Subtest: part-length and frozen-length truncations, folded/duplicate headers and ambiguous disposition fail
+ok 82 - part-length and frozen-length truncations, folded/duplicate headers and ambiguous disposition fail
+  ---
+  duration_ms: 0.398834
+  type: 'test'
+  ...
+# Subtest: manual HTTP 301 rejects before body read and never dispatches a followup
+ok 83 - manual HTTP 301 rejects before body read and never dispatches a followup
+  ---
+  duration_ms: 15.15875
+  type: 'test'
+  ...
+# Subtest: manual HTTP 302 rejects before body read and never dispatches a followup
+ok 84 - manual HTTP 302 rejects before body read and never dispatches a followup
+  ---
+  duration_ms: 0.389541
+  type: 'test'
+  ...
+# Subtest: manual HTTP 303 rejects before body read and never dispatches a followup
+ok 85 - manual HTTP 303 rejects before body read and never dispatches a followup
+  ---
+  duration_ms: 0.377542
+  type: 'test'
+  ...
+# Subtest: manual HTTP 307 rejects before body read and never dispatches a followup
+ok 86 - manual HTTP 307 rejects before body read and never dispatches a followup
+  ---
+  duration_ms: 0.364125
+  type: 'test'
+  ...
+# Subtest: manual HTTP 308 rejects before body read and never dispatches a followup
+ok 87 - manual HTTP 308 rejects before body read and never dispatches a followup
+  ---
+  duration_ms: 0.501
+  type: 'test'
+  ...
+# Subtest: already-followed response and 200 Location cannot be accepted as original-origin evidence
+ok 88 - already-followed response and 200 Location cannot be accepted as original-origin evidence
+  ---
+  duration_ms: 0.401792
+  type: 'test'
+  ...
+# Subtest: missing entrypoint stays missing; combined duplicate HTTP entrypoints are rejected
+ok 89 - missing entrypoint stays missing; combined duplicate HTTP entrypoints are rejected
+  ---
+  duration_ms: 5.722625
+  type: 'test'
+  ...
+# Subtest: HTTP Content-Length mismatch/truncation and maximum body bound are rejected
+ok 90 - HTTP Content-Length mismatch/truncation and maximum body bound are rejected
+  ---
+  duration_ms: 1.085084
+  type: 'test'
+  ...
+# Subtest: SDK raw bridge preserves length checks and rejects redirects, without SDK retries
+ok 91 - SDK raw bridge preserves length checks and rejects redirects, without SDK retries
+  ---
+  duration_ms: 1.739666
+  type: 'test'
+  ...
+# Subtest: raw adapter blocks unestablished PUT replay policy and paid/non-control requests before dispatch
+ok 92 - raw adapter blocks unestablished PUT replay policy and paid/non-control requests before dispatch
+  ---
+  duration_ms: 4.184167
+  type: 'test'
+  ...
+# Subtest: hidden bounded host GET retries do not induce an outer loop; network/429/503 failures stay rejected
+ok 93 - hidden bounded host GET retries do not induce an outer loop; network/429/503 failures stay rejected
+  ---
+  duration_ms: 0.552625
+  type: 'test'
+  ...
+# Subtest: pure multipart builder preserves references/resources and validates actual module bytes; production target rejected
+ok 94 - pure multipart builder preserves references/resources and validates actual module bytes; production target rejected
+  ---
+  duration_ms: 13.322792
+  type: 'test'
+  ...
+# Subtest: P2 secret guard: inline key fields, nested key data and legacy secret_key version_id reject at baseline and builder
+ok 95 - P2 secret guard: inline key fields, nested key data and legacy secret_key version_id reject at baseline and builder
+  ---
+  duration_ms: 4.300875
+  type: 'test'
+  ...
+# Subtest: P2 inheritance: latest must equal the frozen prior active version before any fixture PUT
+ok 96 - P2 inheritance: latest must equal the frozen prior active version before any fixture PUT
+  ---
+  duration_ms: 1.719
+  type: 'test'
+  ...
+# Subtest: all phases simulate serial pre-write GET → one PUT → independent GET; readback coverage remains incomplete and approval blocked
+ok 97 - all phases simulate serial pre-write GET → one PUT → independent GET; readback coverage remains incomplete and approval blocked
+  ---
+  duration_ms: 2.671458
+  type: 'test'
+  ...
+# Subtest: GET bytes/config drive hashes; upload hash claims and opaque platform etag cannot hide drift
+ok 98 - GET bytes/config drive hashes; upload hash claims and opaque platform etag cannot hide drift
+  ---
+  duration_ms: 0.858334
+  type: 'test'
+  ...
+# Subtest: unknown timeout: only GET reconciliation of original identity; never another PUT or automatic resume
+ok 99 - unknown timeout: only GET reconciliation of original identity; never another PUT or automatic resume
+  ---
+  duration_ms: 1.261875
+  type: 'test'
+  ...
+# Subtest: unknown network-disconnected: only GET reconciliation of original identity; never another PUT or automatic resume
+ok 100 - unknown network-disconnected: only GET reconciliation of original identity; never another PUT or automatic resume
+  ---
+  duration_ms: 1.195167
+  type: 'test'
+  ...
+# Subtest: unknown receipt-lost: only GET reconciliation of original identity; never another PUT or automatic resume
+ok 101 - unknown receipt-lost: only GET reconciliation of original identity; never another PUT or automatic resume
+  ---
+  duration_ms: 1.091375
+  type: 'test'
+  ...
+# Subtest: pre-write guard drift sends no fixture PUT; post-write rejected readback freezes without replay
+ok 102 - pre-write guard drift sends no fixture PUT; post-write rejected readback freezes without replay
+  ---
+  duration_ms: 1.387959
+  type: 'test'
+  ...
+# Subtest: serial lock, stale identities, changing deployments, partial rollouts and missing fields fail closed
+ok 103 - serial lock, stale identities, changing deployments, partial rollouts and missing fields fail closed
+  ---
+  duration_ms: 2.139916
+  type: 'test'
+  ...
+# Subtest: multipart GET module parts are independently parsed and extras are rejected
+ok 104 - multipart GET module parts are independently parsed and extras are rejected
+  ---
+  duration_ms: 3.185709
+  type: 'test'
+  ...
+# Subtest: P2 unknown identity: baseline version/deployment cannot label temporary bytes/settings
+ok 105 - P2 unknown identity: baseline version/deployment cannot label temporary bytes/settings
+  ---
+  duration_ms: 1.107875
+  type: 'test'
+  ...
+# Subtest: P2 unknown identity: historical published version cannot acquire restored bytes/settings
+ok 106 - P2 unknown identity: historical published version cannot acquire restored bytes/settings
+  ---
+  duration_ms: 2.288291
+  type: 'test'
+  ...
+# Subtest: P2 unknown identity: baseline and historical deployment cannot rebind to another version
+ok 107 - P2 unknown identity: baseline and historical deployment cannot rebind to another version
+  ---
+  duration_ms: 2.793959
+  type: 'test'
+  ...
+# Subtest: P2 unknown identity: consistent GET leaves pending, cursor and identity ledger unchanged
+ok 108 - P2 unknown identity: consistent GET leaves pending, cursor and identity ledger unchanged
+  ---
+  duration_ms: 1.023125
+  type: 'test'
+  ...
+# Subtest: destination numeric pagination requires all pages and rejects overlap, loops and limits
+ok 109 - destination numeric pagination requires all pages and rejects overlap, loops and limits
+  ---
+  duration_ms: 1.244083
+  type: 'test'
+  ...
+# Subtest: container cursor pagination consumes next token and rejects duplicates/repeated token
+ok 110 - container cursor pagination consumes next token and rejects duplicates/repeated token
+  ---
+  duration_ms: 0.168916
+  type: 'test'
+  ...
+# Subtest: pipeline guard reads exact owned zone and every scoped inventory; no flag setter
+ok 111 - pipeline guard reads exact owned zone and every scoped inventory; no flag setter
+  ---
+  duration_ms: 0.734375
+  type: 'test'
+  ...
+# Subtest: nonempty sinks remain blocked; evidence excludes destination and filter values
+ok 112 - nonempty sinks remain blocked; evidence excludes destination and filter values
+  ---
+  duration_ms: 0.19525
+  type: 'test'
+  ...
+# Subtest: zone jobs trigger bounded custom-field metadata; structured absence accepted but guard still blocked
+ok 113 - zone jobs trigger bounded custom-field metadata; structured absence accepted but guard still blocked
+  ---
+  duration_ms: 0.625917
+  type: 'test'
+  ...
+# Subtest: connector bridge supports decoded metadata only and rejects G5/source/other scopes/writes
+ok 114 - connector bridge supports decoded metadata only and rejects G5/source/other scopes/writes
+  ---
+  duration_ms: 0.588166
+  type: 'test'
+  ...
+# Subtest: SDK bridge preserves binary bytes/header with retries disabled; decoded objects do not fake raw HTTP
+ok 115 - SDK bridge preserves binary bytes/header with retries disabled; decoded objects do not fake raw HTTP
+  ---
+  duration_ms: 13.724625
+  type: 'test'
+  ...
+# Subtest: expanded raw transport accepts only reviewed paths and query keys, with dry-run zero HTTP
+ok 116 - expanded raw transport accepts only reviewed paths and query keys, with dry-run zero HTTP
+  ---
+  duration_ms: 7.889375
+  type: 'test'
+  ...
+# Subtest: existing container configuration, export/name, account and DO namespace must all match
+ok 117 - existing container configuration, export/name, account and DO namespace must all match
+  ---
+  duration_ms: 2.806959
+  type: 'test'
+  ...
+# Subtest: unsupported Secret/environment or command fields reject without inspecting/logging values
+ok 118 - unsupported Secret/environment or command fields reject without inspecting/logging values
+  ---
+  duration_ms: 0.608834
+  type: 'test'
+  ...
+# Subtest: asset preservation distinguishes contract/config match from full content inventory
+ok 119 - asset preservation distinguishes contract/config match from full content inventory
+  ---
+  duration_ms: 0.307167
+  type: 'test'
+  ...
+# Subtest: malformed destination script/field arrays cannot leak nested sensitive data into receipts
+ok 120 - malformed destination script/field arrays cannot leak nested sensitive data into receipts
+  ---
+  duration_ms: 0.139
+  type: 'test'
+  ...
+# Subtest: namespace pagination covers the exact frozen 23 targets across pages including unrelated namespaces
+ok 121 - namespace pagination covers the exact frozen 23 targets across pages including unrelated namespaces
+  ---
+  duration_ms: 3.833
+  type: 'test'
+  ...
+# Subtest: namespace repeated/overlapping pages, missing last page and page limit fail closed
+ok 122 - namespace repeated/overlapping pages, missing last page and page limit fail closed
+  ---
+  duration_ms: 0.228625
+  type: 'test'
+  ...
+# Subtest: namespace transport accepts only bounded page/per_page GET and never namespace pagination on unrelated paths
+ok 123 - namespace transport accepts only bounded page/per_page GET and never namespace pagination on unrelated paths
+  ---
+  duration_ms: 0.396625
+  type: 'test'
+  ...
+# Subtest: retention snapshot cannot migrate scope, omit config, alter bindings, or accept overriding upload controls
+ok 124 - retention snapshot cannot migrate scope, omit config, alter bindings, or accept overriding upload controls
+  ---
+  duration_ms: 0.551541
+  type: 'test'
+  ...
+# Subtest: no-assets receipt requires authoritative absence and cannot fake audit or preservation flags
+ok 125 - no-assets receipt requires authoritative absence and cannot fake audit or preservation flags
+  ---
+  duration_ms: 0.373208
+  type: 'test'
+  ...
+# Subtest: unexposed config is explicit narrow contract evidence, never a fake observed configuration or audit
+ok 126 - unexposed config is explicit narrow contract evidence, never a fake observed configuration or audit
+  ---
+  duration_ms: 2.07025
+  type: 'test'
+  ...
+1..126
+# tests 126
+# suites 0
+# pass 126
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 570.712334

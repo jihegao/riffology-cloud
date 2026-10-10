@@ -1,0 +1,11 @@
+# Independent MIME/manual/retry-budget review
+
+Final frozen offline implementation accepted. Seven suites:127/127; existing TypeScript and git diff --check exit0. The seven files in [source hashes](mime-independent-source-hashes.SEVEN_AFTER.json) match before and after final tests. No implementation modification, production request, credentials access or experiment occurred.
+
+Initial125 passing fixtures did not eliminate an independent P2: a16,001ms GET resolution could beat a delayed timer callback and trigger another GET. [Original model](invocation-deadline-counterexample.initial.json) and125-pass log are retained. The fix checks elapsed monotonic time per invocation and before final receipt; raw transport checks fetch/body completion as well. [Independent recheck](invocation-deadline-counterexample.FINAL.json) rejects with calls=1. No remaining reproducible P1/P2 found in this scope.
+
+Byte MIME parsing supports no-filename parts while preserving all source bytes/line endings. It rejects incomplete or ambiguous framing, missing/duplicate entrypoint/module, extras, length/hash drift and encoded source. Manual redirect rejects all3xx/Location/followed responses before body reads. SDK preserves length/encoding headers and disables SDK retries. Default GET observations are60s/15s/128 caller dispatches and do not claim actual proxy attempts or immediate termination. Raw actualPUT is blocked before authenticated dispatch; dry-run prepares without network.
+
+The two public host source versions and20 offline mocks remain separate from deployed-version attestation. GET bounded retry can be accepted by semantic endpoint, budget and deployment/configuration brackets; default host PUT/paid replay remains blocked. Actual container associations, fresh complete baseline, run/window/native identity and operational exclusion still need evidence. Asset full-content audit is separate and unperformed. CI is unverified under the user quota decision. Normal PR173 push is accepted within this offline scope; deployment is not accepted.
+
+New contract/readiness prose accurately records these boundaries, the originalP2 and127 result. The wording clarification is resolved: raw transport defaults15s and permits configuration up to30s; publisher GET limit remains15s. [Detailed report and retained evidence](mime-independent-review.json).

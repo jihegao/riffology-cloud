@@ -1,0 +1,208 @@
+{
+  "tests": 20,
+  "pass": 20,
+  "productionRequests": 0,
+  "execution": "Pinned helpers with Node built-in TypeScript type erasure; mocked fetch, clocks/sleeps, logging and synthetic body. No network.",
+  "results": [
+    {
+      "commit": "37cc36c01e19e674519442d0fee03ebc8827e9ae",
+      "name": "200-single",
+      "method": "GET",
+      "fetchCalls": 1,
+      "bodiesRead": 0,
+      "sleepMS": 0,
+      "resultStatus": 200,
+      "error": null
+    },
+    {
+      "commit": "37cc36c01e19e674519442d0fee03ebc8827e9ae",
+      "name": "status-500",
+      "method": "GET",
+      "fetchCalls": 1,
+      "bodiesRead": 0,
+      "sleepMS": 0,
+      "resultStatus": 500,
+      "error": null
+    },
+    {
+      "commit": "37cc36c01e19e674519442d0fee03ebc8827e9ae",
+      "name": "status-503",
+      "method": "GET",
+      "fetchCalls": 1,
+      "bodiesRead": 0,
+      "sleepMS": 0,
+      "resultStatus": 503,
+      "error": null
+    },
+    {
+      "commit": "37cc36c01e19e674519442d0fee03ebc8827e9ae",
+      "name": "429-no-hints",
+      "method": "GET",
+      "fetchCalls": 4,
+      "bodiesRead": 0,
+      "sleepMS": 3500,
+      "resultStatus": 429,
+      "error": null
+    },
+    {
+      "commit": "37cc36c01e19e674519442d0fee03ebc8827e9ae",
+      "name": "network-errors",
+      "method": "GET",
+      "fetchCalls": 4,
+      "bodiesRead": 0,
+      "sleepMS": 3500,
+      "resultStatus": null,
+      "error": "offline fetch failure"
+    },
+    {
+      "commit": "37cc36c01e19e674519442d0fee03ebc8827e9ae",
+      "name": "429-retryafter6",
+      "method": "GET",
+      "fetchCalls": 4,
+      "bodiesRead": 0,
+      "sleepMS": 18000,
+      "resultStatus": 429,
+      "error": null
+    },
+    {
+      "commit": "37cc36c01e19e674519442d0fee03ebc8827e9ae",
+      "name": "429-retryafter90",
+      "method": "GET",
+      "fetchCalls": 4,
+      "bodiesRead": 0,
+      "sleepMS": 90000,
+      "resultStatus": 429,
+      "error": null
+    },
+    {
+      "commit": "37cc36c01e19e674519442d0fee03ebc8827e9ae",
+      "name": "429-ratelimit6",
+      "method": "GET",
+      "fetchCalls": 4,
+      "bodiesRead": 0,
+      "sleepMS": 3500,
+      "resultStatus": 429,
+      "error": null
+    },
+    {
+      "commit": "37cc36c01e19e674519442d0fee03ebc8827e9ae",
+      "name": "429-retryafter5",
+      "method": "GET",
+      "fetchCalls": 4,
+      "bodiesRead": 0,
+      "sleepMS": 15000,
+      "resultStatus": 429,
+      "error": null
+    },
+    {
+      "commit": "37cc36c01e19e674519442d0fee03ebc8827e9ae",
+      "name": "PUT-body-retry",
+      "method": "PUT",
+      "fetchCalls": 4,
+      "bodiesRead": 1,
+      "sleepMS": 3500,
+      "resultStatus": 429,
+      "error": null
+    },
+    {
+      "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+      "name": "200-single",
+      "method": "GET",
+      "fetchCalls": 1,
+      "bodiesRead": 0,
+      "sleepMS": 0,
+      "resultStatus": 200,
+      "error": null
+    },
+    {
+      "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+      "name": "status-500",
+      "method": "GET",
+      "fetchCalls": 1,
+      "bodiesRead": 0,
+      "sleepMS": 0,
+      "resultStatus": 500,
+      "error": null
+    },
+    {
+      "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+      "name": "status-503",
+      "method": "GET",
+      "fetchCalls": 1,
+      "bodiesRead": 0,
+      "sleepMS": 0,
+      "resultStatus": 503,
+      "error": null
+    },
+    {
+      "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+      "name": "429-no-hints",
+      "method": "GET",
+      "fetchCalls": 4,
+      "bodiesRead": 0,
+      "sleepMS": 3500,
+      "resultStatus": 429,
+      "error": null
+    },
+    {
+      "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+      "name": "network-errors",
+      "method": "GET",
+      "fetchCalls": 4,
+      "bodiesRead": 0,
+      "sleepMS": 3500,
+      "resultStatus": null,
+      "error": "offline fetch failure"
+    },
+    {
+      "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+      "name": "429-retryafter6",
+      "method": "GET",
+      "fetchCalls": 1,
+      "bodiesRead": 0,
+      "sleepMS": 0,
+      "resultStatus": 429,
+      "error": null
+    },
+    {
+      "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+      "name": "429-retryafter90",
+      "method": "GET",
+      "fetchCalls": 1,
+      "bodiesRead": 0,
+      "sleepMS": 0,
+      "resultStatus": 429,
+      "error": null
+    },
+    {
+      "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+      "name": "429-ratelimit6",
+      "method": "GET",
+      "fetchCalls": 1,
+      "bodiesRead": 0,
+      "sleepMS": 0,
+      "resultStatus": 429,
+      "error": null
+    },
+    {
+      "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+      "name": "429-retryafter5",
+      "method": "GET",
+      "fetchCalls": 4,
+      "bodiesRead": 0,
+      "sleepMS": 15000,
+      "resultStatus": 429,
+      "error": null
+    },
+    {
+      "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+      "name": "PUT-body-retry",
+      "method": "PUT",
+      "fetchCalls": 4,
+      "bodiesRead": 4,
+      "sleepMS": 3500,
+      "resultStatus": 429,
+      "error": null
+    }
+  ]
+}

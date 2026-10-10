@@ -1,0 +1,26 @@
+{
+  "startedAt": "2026-10-10T09:47:52.247Z",
+  "target": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging",
+  "method": "GET",
+  "callerFetchInvocations": 1,
+  "underlyingHTTPAttempts": "NOT_EXPOSED",
+  "rawBytesReturned": false,
+  "productionWrites": 0,
+  "credentialAccess": false,
+  "status": 200,
+  "contentType": "multipart/form-data; boundary=adb3d5eeb57bc884b30eefeef186f49618e6b861ff318e1499ecd60202ce",
+  "entrypoint": "index.js",
+  "bodyBytes": 5497935,
+  "bodySHA256": "525475b0c309be0aff6340059a9730a2b545843b182d59319556e8b82b719614",
+  "modules": [
+    {
+      "name": "index.js",
+      "bytes": 5497752,
+      "sha256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290"
+    }
+  ],
+  "metadataPartCount": 0,
+  "moduleBytesParsedWithoutTextReencoding": true,
+  "hostRetryPolicy": "NOT_CONTROLLED_BY_CALLER_UPSTREAM_DEFAULT_3",
+  "completedAt": "2026-10-10T09:47:52.735Z"
+}

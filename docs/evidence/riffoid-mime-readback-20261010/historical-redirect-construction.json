@@ -1,0 +1,19 @@
+{
+  "observedAt": "2026-10-10T09:45:40.619Z",
+  "networkRequests": 0,
+  "productionWrites": 0,
+  "checks": [
+    {
+      "label": "bounded-read-options",
+      "constructed": false,
+      "errorClass": "TypeError",
+      "message": "Invalid redirect value, must be one of \"follow\" or \"manual\" (\"error\" won't be implemented since it does not make sense at the edge; use \"manual\" and check the response status code)."
+    },
+    {
+      "label": "redirect-only",
+      "constructed": false,
+      "errorClass": "TypeError",
+      "message": "Invalid redirect value, must be one of \"follow\" or \"manual\" (\"error\" won't be implemented since it does not make sense at the edge; use \"manual\" and check the response status code)."
+    }
+  ]
+}

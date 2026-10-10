@@ -27,7 +27,7 @@ function apiFixture(p,phase,prior){
     else if(path.endsWith('/settings'))d=f.scriptAndVersionSettings;
     else{
       const boundary='fixture-readback',name=p.phases[phase].modules[0].name,b=moduleBytes(p.phases[phase])[0];
-      return {status:200,mainModule:p.phases[phase].metadata.main_module,contentType:'multipart/form-data; boundary='+boundary,bytes:Buffer.concat([Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="${name}"; filename="${name}"\r\nContent-Type: application/javascript+module\r\n\r\n`),b,Buffer.from(`\r\n--${boundary}--\r\n`)])};
+      return {status:200,mainModule:p.phases[phase].metadata.main_module,contentType:'multipart/form-data; boundary='+boundary,bytes:Buffer.concat([Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="${name}"\r\nContent-Type: application/javascript+module\r\n\r\n`),b,Buffer.from(`\r\n--${boundary}--\r\n`)])};
     }return rawJSON(d);
   }};f.version.result.resources.script_runtime.containers=[];return {transport,f,calls};
 }
@@ -52,7 +52,7 @@ test('wire multipart keeps public/resources and inherits redacted Secret text wi
 });
 test('raw HTTP preserves cf-entrypoint, body bytes and origin; bounds hangs and rejects redirects',async()=>{
   let observed;const t=cloudflareTransport({mode:'read-only',authorizedFetch:async(url,options)=>{observed={url,options};return new Response(new Uint8Array([0,255,10]),{headers:{'content-type':'application/octet-stream','cf-entrypoint':'index.js'}});}});
-  const path=`/accounts/${account}/workers/scripts/fixture-gateway`;const r=await t.request({path});assert.deepEqual([...r.bytes],[0,255,10]);assert.equal(r.mainModule,'index.js');assert.equal(observed.url,'https://api.cloudflare.com/client/v4'+path);assert.equal(observed.options.redirect,'error');
+  const path=`/accounts/${account}/workers/scripts/fixture-gateway`;const r=await t.request({path});assert.deepEqual([...r.bytes],[0,255,10]);assert.equal(r.mainModule,'index.js');assert.equal(observed.url,'https://api.cloudflare.com/client/v4'+path);assert.equal(observed.options.redirect,'manual');
   const hanging=cloudflareTransport({mode:'read-only',timeoutMS:10,authorizedFetch:()=>new Promise(()=>{})});await assert.rejects(()=>hanging.request({path}),/no retry/);
   const redirect=cloudflareTransport({mode:'read-only',authorizedFetch:async()=>new Response('',{status:302,headers:{location:'https://elsewhere.test'}})});await assert.rejects(()=>redirect.request({path}));
   await assert.rejects(()=>t.request({path:path+'/secrets'}));assert.throws(()=>jsonResult({status:200,contentType:'application/json',bytes:Buffer.from('{"success":false}') }));
@@ -64,6 +64,26 @@ test('GET-derived modules and runtime export readback work; drift/omitted cf-ent
   f.f.version.result.resources.bindings[0].text='drift';await assert.rejects(()=>collectReadback(f.transport,account,'fixture-gateway',p.phases.gatewayObserve));
   const g=apiFixture(p,'gatewayObserve',prior),wrapped={request:async args=>{const x=await g.transport.request(args);if(x.mainModule)delete x.mainModule;return x;}};
   await assert.rejects(()=>collectReadback(wrapped,account,'fixture-gateway',p.phases.gatewayObserve),/cf-entrypoint/);
+});
+test('readback GET dispatch budget stops before another request and reports only caller observations',async()=>{
+  const p=buildPacket(input()),f=apiFixture(p,'gatewayObserve',p.baselineGuards.gateway);
+  await assert.rejects(()=>collectReadback(f.transport,account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway,{maxGETDispatches:1}),/dispatch budget/);assert.equal(f.calls.length,1);
+  f.calls.length=0;const r=await collectReadback(f.transport,account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway);
+  assert.equal(r.readObservation.callerGETDispatches,f.calls.length);assert.equal(r.readObservation.proxyHTTPAttempts,'NOT_EXPOSED');assert.equal(r.readObservation.snapshotAtomic,false);assert.equal(r.readObservation.bracketVerified,true);assert.ok(r.readObservation.elapsedMS<r.readObservation.timeoutMS);
+});
+test('late host GET result is rejected without further dispatch or proxy-termination claim',async()=>{
+  const p=buildPacket(input()),f=apiFixture(p,'gatewayObserve',p.baselineGuards.gateway);let calls=0;
+  const transport={request:async args=>{calls++;await new Promise(resolve=>setTimeout(resolve,40));return f.transport.request(args);}};
+  await assert.rejects(()=>collectReadback(transport,account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway,{timeoutMS:10}),/late evidence rejected; proxy termination unconfirmed/);assert.equal(calls,1);
+});
+test('a delayed timer cannot admit a host GET arriving beyond the single-invocation deadline',async()=>{
+  const original=Object.getOwnPropertyDescriptor(performance,'now');let clock=0,calls=0;
+  Object.defineProperty(performance,'now',{configurable:true,value:()=>clock});
+  try{
+    const p=buildPacket(input()),f=apiFixture(p,'gatewayObserve',p.baselineGuards.gateway);
+    const transport={request:async args=>{calls++;clock+=16001;return f.transport.request(args);}};
+    await assert.rejects(()=>collectReadback(transport,account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway),/per-GET budget expired/);assert.equal(calls,1);
+  }finally{if(original)Object.defineProperty(performance,'now',original);else delete performance.now;}
 });
 test('contradictory asset presence rejects rather than trusting upload intent',async()=>{
   const {x}=assetInput();const p=buildPacket(x),f=apiFixture(p,'gatewayObserve',{version:'gateway-v0',deployment:'gateway-d0'});
