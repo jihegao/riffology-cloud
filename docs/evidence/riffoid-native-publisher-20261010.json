@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-10T13:38:45.985Z",
+  "status": "NATIVE_AUTH_AND_BRACKETED_READBACK_COMPLETE_NO_DEPLOYMENT",
+  "sourceParent": "ed9c065d97dc9236614f7f6c94d0acdb93ac87be",
+  "oauth": {
+    "bothApprovedProfilesCreated": true,
+    "permissions": [
+      "account:read",
+      "user:read",
+      "workers_scripts:write",
+      "zone:read",
+      "offline_access"
+    ],
+    "credentialValuesExported": false
+  },
+  "transport": {
+    "writer": "native Node HTTPS, one fresh HTTP/1.1/TLS socket, no replay/redirect/proxy/fallback",
+    "PUTDeadlineMS": 15000,
+    "GETOptInDeadlineMS": 30000,
+    "wholeReadbackBudgetMS": 120000,
+    "configurationGETs": "existing connector, read-only; HTTP attempt count not exposed"
+  },
+  "checks": {
+    "preservationSevenSuites": {
+      "pass": 135,
+      "fail": 0
+    },
+    "nativeLoopbackFaults": {
+      "pass": 20,
+      "fail": 0
+    },
+    "paidOrProductionExecutionEvidence": false,
+    "retainedLocalLogDigests": {
+      "native-preservation-135-checks.log": "1fc85abf66778d1b821b851c6a69afb044b0c6ed604bae8ef6335b54a45afa36",
+      "native-once-fault-tests.log": "fe40661cc806a9ec591deed4c018f0cffd466b12e5c1fddb94da43b0fb217f57"
+    }
+  },
+  "readbacks": {
+    "gateway": {
+      "version": "6edef49b-ca5c-4c97-bcec-5c141b079bb1",
+      "deployment": "57ea9670-0fef-420b-8bd2-cd044c89fd2d",
+      "metadataSHA256": "5441264ebfd7a5a5af5c93503afef1ba12791bff86410c490545da4ddc426e47",
+      "modulesSHA256": "b8123f8c3eeb18029113b5d71474583128e146870c4f31ecae5b606b6d4b9463",
+      "resourcesSHA256": "71870d9ae8cdc8235653d2a55cec532d5b05fdfe1ad44d8b3bd7c8327dc0668e",
+      "scriptSettingsSHA256": "1b970dd180239f490dd89ef94a2e456c4b18625c61d79aabdb93cb665b770ee0",
+      "scriptTailConsumersRepresentation": "null",
+      "coverage": {
+        "mainModule": true,
+        "metadata": true,
+        "modules": true,
+        "namedResources": true,
+        "assets": false,
+        "assetsRetentionContract": true,
+        "containers": true
+      },
+      "preservationMatches": true,
+      "fullStateMatches": false,
+      "readObservation": {
+        "startedAt": 1791639388101,
+        "completedAt": 1791639475235,
+        "elapsedMS": 87132.080833,
+        "callerGETDispatches": 36,
+        "maxGETDispatches": 128,
+        "timeoutMS": 120000,
+        "perGETTimeoutMS": 30000,
+        "proxyHTTPAttempts": "NOT_EXPOSED",
+        "snapshotAtomic": false,
+        "bracketVerified": true
+      },
+      "pipelineGuardPassed": true,
+      "assetConfigEvidence": "OBSERVED_ROUTING_CONFIG",
+      "assetConfigSHA256": "230aa3731463e2654d70b1e002200add2ae146174dc9842bd6e194c9c849af39"
+    },
+    "entry": {
+      "version": "c110d7a7-fc81-4bb1-b27a-4ca8147a7fff",
+      "deployment": "5e920993-ee9d-4a7e-b6fe-39ef494f35fd",
+      "metadataSHA256": "95da23b6ab891f6b5e5dcdb6b707b1eb4fc6f288cc6ab94c2baf2a365ad99d21",
+      "modulesSHA256": "0fb3b015d14b96aad8efe673917eaf854a865a93688341688d983f0cb9429e7b",
+      "resourcesSHA256": "ab97a2155533d50933994c6e0933d0ae2a2341c5a30246cc659896629948eac2",
+      "scriptSettingsSHA256": "1b970dd180239f490dd89ef94a2e456c4b18625c61d79aabdb93cb665b770ee0",
+      "scriptTailConsumersRepresentation": "null",
+      "coverage": {
+        "mainModule": true,
+        "metadata": true,
+        "modules": true,
+        "namedResources": true,
+        "assets": true,
+        "assetsRetentionContract": true,
+        "containers": true
+      },
+      "preservationMatches": true,
+      "fullStateMatches": true,
+      "readObservation": {
+        "startedAt": 1791639479064,
+        "completedAt": 1791639525983,
+        "elapsedMS": 46918.939167000004,
+        "callerGETDispatches": 22,
+        "maxGETDispatches": 128,
+        "timeoutMS": 120000,
+        "perGETTimeoutMS": 30000,
+        "proxyHTTPAttempts": "NOT_EXPOSED",
+        "snapshotAtomic": false,
+        "bracketVerified": true
+      },
+      "pipelineGuardPassed": true,
+      "assetConfigEvidence": "NO_ASSETS",
+      "assetConfigSHA256": null
+    }
+  },
+  "formalCutoverT": null,
+  "recoveryUntil": null,
+  "productionWrites": 0,
+  "maintenanceWindowOpened": false,
+  "providerCalls": 0,
+  "limitations": [
+    "Gateway existing assets retain keep_assets contract; complete byte/set audit unperformed",
+    "readbacks are bracketed, not atomic and do not prove external publisher exclusion",
+    "browser protocol and formal authenticated cutover acceptance still pending",
+    "earlier readback timeout and schema differences retained; no failed request was a PUT"
+  ]
+}

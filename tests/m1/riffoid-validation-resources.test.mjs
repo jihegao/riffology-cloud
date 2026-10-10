@@ -53,6 +53,20 @@ test('expanded raw transport accepts only reviewed paths and query keys, with dr
   await t.request({path:`/zones/${zone}/logpush/jobs`});await t.request({path:`/accounts/${account}/containers/applications?per_page=500&page_token=next_token`});
   for(const path of [`/zones/${zone}/dns_records`,`/accounts/${account}/workers/observability/destinations?token=secret`,`/accounts/${account}/workers/scripts/../${worker}`])await assert.rejects(()=>t.request({path}));assert.equal(calls,0);
 });
+test('independent pipeline inventories dispatch together and preserve scoped order',{timeout:1000},async()=>{
+  let release,count=0;const gate=new Promise(resolve=>release=resolve);
+  const scope={accountId:account,zoneId:'b'.repeat(32),worker:'gateway'};
+  const t={request:async({path})=>{if(path===`/zones/${scope.zoneId}`)return ok({id:scope.zoneId,account:{id:account}});count++;if(count===4)release();await gate;return ok([]);}};
+  const r=await collectPipelineGuard(t,scope);assert.equal(count,4);assert.equal(r.pipelineGuardPassed,true);assert.equal(r.inventories[0].path,`/accounts/${account}/logpush/jobs`);
+});
+test('five existing application details dispatch together without changing association checks',{timeout:1000},async()=>{
+  const apps=Array.from({length:5},(_,i)=>({...application(),id:'app-'+i,name:'container-'+i,durable_objects:{namespace_id:(i+1).toString().repeat(32)}}));
+  const metadata={containers:apps.map((x,i)=>({class_name:'Existing'+i,name:x.name})),bindings:apps.map((x,i)=>({type:'durable_object_namespace',class_name:'Existing'+i,namespace_id:x.durable_objects.namespace_id}))};
+  const runtime={containers:metadata.containers,exports:Object.fromEntries(apps.map((x,i)=>['Existing'+i,{container:x.name}]))};
+  let release,count=0;const gate=new Promise(resolve=>release=resolve);
+  const t={request:async({path})=>{if(path.includes('/applications?'))return ok(apps);count++;if(count===5)release();await gate;return ok(apps.find(x=>path.endsWith('/'+x.id)));}};
+  const r=await collectContainerAssociations(t,account,{metadata},runtime,apps.map(containerSnapshot));assert.equal(count,5);assert.deepEqual(r.snapshots,apps.map(containerSnapshot));assert.equal(r.configurationMatches,true);
+});
 test('existing container configuration, export/name, account and DO namespace must all match',async()=>{
   const app=application(),snapshot=containerSnapshot(app),metadata={containers:[{class_name:'Existing',name:app.name}],bindings:[{type:'durable_object_namespace',class_name:'Existing',namespace_id:app.durable_objects.namespace_id}]};
   const artifact={metadata},runtime={containers:structuredClone(metadata.containers),exports:{Existing:{container:app.name}}},t={request:async({path})=>path.includes('/applications?')?ok([app]):ok(app)};
@@ -69,6 +83,14 @@ test('asset preservation distinguishes contract/config match from full content i
   const r=assetPreservationEvidence(artifact,runtime,{id:worker,has_assets:true},expected,{accountId:account,worker});assert.equal(r.associationConfigMatches,true);assert.equal(r.assetContractAccepted,true);assert.equal(r.assetBytesAudited,false);assert.equal(r.assetSetIdentityVerified,false);assert.equal(r.coverageComplete,false);assert.equal(r.contentInventoryAudited,false);assert.equal(r.contentSHA256,null);
   runtime.assets.html_handling='force-trailing-slash';assert.equal(assetPreservationEvidence(artifact,runtime,{id:worker,has_assets:true},expected,{accountId:account,worker}).associationConfigMatches,false);
 });
+test('actual version-runtime asset flags stay observed and verbatim; drift cannot downgrade',()=>{
+  const artifact={metadata:{keep_assets:true,bindings:[{type:'assets',name:'ASSETS'}]}},runtime={assets:{html_handling:'none',not_found_handling:'none',serve_directly:false,raw_run_worker_first:true,base_path:'/'}},owned={accountId:account,worker},script={id:worker,has_assets:true};
+  const frozen=assetSnapshot(owned,artifact,runtime,script);assert.equal(frozen.configEvidence,'OBSERVED_ROUTING_CONFIG');assert.equal(frozen.configSHA256,hashJSON(runtime.assets));
+  assert.equal(assetPreservationEvidence(artifact,runtime,script,frozen,owned).assetContractAccepted,true);
+  for(const edit of [r=>r.assets.serve_directly=true,r=>r.assets.raw_run_worker_first=false,r=>delete r.assets]){const r=structuredClone(runtime);edit(r);assert.equal(assetPreservationEvidence(artifact,r,script,frozen,owned).assetContractAccepted,false);}
+  for(const edit of [r=>r.assets.raw_run_worker_first='true',r=>r.assets.base_path='/other/',r=>r.assets.unknown='unsupported']){const r=structuredClone(runtime);edit(r);assert.throws(()=>assetSnapshot(owned,artifact,r,script));}
+  assert.equal(artifact.metadata.assets,undefined);
+});
 
 test('malformed destination script/field arrays cannot leak nested sensitive data into receipts',async()=>{
   for(const row of [{id:1,scripts:[{token:'synthetic-sensitive'}]},{id:1,output_options:{field_names:[{token:'synthetic-sensitive'}]}}]){const t={request:async({path})=>path===`/zones/${zone}`?ok({id:zone,account:{id:account}}):path.endsWith('/logpush/jobs')&&path.startsWith('/accounts/')?ok([row]):ok([])};await assert.rejects(()=>collectPipelineGuard(t,scope),e=>!String(e).includes('synthetic-sensitive'));}
@@ -80,6 +102,13 @@ test('namespace pagination covers the exact frozen 23 targets across pages inclu
   const r=await collectNamespaces(t,account,targets.map(t=>t.id),targets);assert.equal(r.coverageComplete,true);assert.equal(r.selected.length,23);assert.equal(paths.length,2);assert.ok(paths[1].endsWith('?page=2&per_page=50'));
   await assert.rejects(()=>collectNamespaces(t,account,targets.map(t=>t.id),targets.slice(1)),/set must equal/);
   await assert.rejects(()=>collectNamespaces(t,account,[...targets.map(t=>t.id),'missing'],targets),/complete target/);
+});
+test('observed namespace container flag is frozen and drift cannot be dropped',async()=>{
+  const {collectNamespaces}=await import('../../scripts/m1/riffoid-validation-resources.mjs');
+  const a='a'.repeat(32),row={id:'target',class:'Existing',name:'existing',script:'gateway',use_sqlite:true,use_containers:true};
+  const t=x=>({request:async()=>ok([x])});
+  const actual=await collectNamespaces(t(row),a,['target'],[row]);assert.deepEqual(actual.selected,[row]);assert.equal(actual.coverageComplete,true);
+  for(const edit of [x=>x.use_containers=false,x=>delete x.use_containers,x=>x.use_containers='true',x=>x.unknown=true]){const x=structuredClone(row);edit(x);await assert.rejects(()=>collectNamespaces(t(x),a,['target'],[row]));}
 });
 test('namespace repeated/overlapping pages, missing last page and page limit fail closed',async()=>{
   const {collectNamespaces,listMetadata}=await import('../../scripts/m1/riffoid-validation-resources.mjs');const account='a'.repeat(32),path=`/accounts/${account}/workers/durable_objects/namespaces`;

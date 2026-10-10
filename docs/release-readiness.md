@@ -898,3 +898,12 @@ Relevant source and required fixtures from PR head `6ed830a17f2321de27446758074a
 Current blocker: the existing MCP proxy may replay PUT and the reviewed non-dry-run adapter rejects writes before dispatch. The original local Wrangler OAuth expired on 2026-10-09; existing credentials do not supply a usable non-replaying writer for both accounts. Supplemental authorization for two native OAuth logins is pending; no grant or credential-value export was initiated. Previously approved application-terminal/late-telemetry log handling remains accepted; no absolute platform drain prerequisite is added. A native writer still needs independently checked all-layer non-replay, fresh complete raw readback, quiet-publisher/resource guards and actual A/B browser receipts before publication. New origin last observed `503/two_account_auth_disabled`; `T` and `recoveryUntil` remain null. Formal authentication/Execution/48-hour recovery acceptance is still separate.
 
 Evidence: [browser and control-plane follow-up](evidence/riffoid-browser-followup-20261010.json). PR remains draft/unmerged; no Issue closure or Done transition.
+
+
+## 2026-10-10 本机授权与完整发布读回
+
+原、新账号的最小权限 Wrangler 本机 OAuth 均已完成，凭据仅保存在权限 0600 的本机命名配置。独立 Node HTTPS 通道使用一次新 HTTP/1.1/TLS 连接，不自动重试、跳转、代理或 fallback；PUT 保持 15 秒，GET 可明确采用 30 秒且完整读回仍限 120 秒。生产写入还必须绑定原始 durable intent、账号、body hash、阶段和批准窗口。原 MCP PUT 继续禁用；缺少的日志/容器元数据使用现有连接器只读获取。
+
+7 组 preservation 检查 **135/135**、本机 HTTP 故障检查 **20/20** 通过。真实 Gateway/Entry 完整源码及全部资源读回均通过前后部署/latest/settings 括号校验，版本仍为 `6edef49b` / `c110d7a7`。原始 API 的 `use_containers`、实际资产路由字段及 nullable Tail 表示已纳入校验；Gateway 接受已批准的 keep_assets 保留合同，完整资产字节/集合审计仍未执行。无 DO 绑定、runtime/container exports 关联的 Entry 可确认没有本 Worker 的容器关联；这不宣称账号全局没有容器活动。
+
+[本轮证据](evidence/riffoid-native-publisher-20261010.json)记录实际读回、测试范围及限制。先前字段差异和超时保留为失败证据。此快照没有生产 PUT、维护窗口、模型/tool/Turn/Run、正式切换或 T/recoveryUntil；双出口原始浏览器回执、排他协调和正式认证验收仍待完成。PR 保持 draft/unmerged，CI 不伪称通过，未关闭 Issue 或设置 Done。

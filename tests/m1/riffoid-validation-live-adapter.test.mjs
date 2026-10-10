@@ -37,6 +37,11 @@ test('approved wording is consumed without granting production authorization; al
   for(const edit of [r=>r.confirmation.text='yes',r=>r.proposal.text+=' ',r=>r.decisions.unknownLogClosure.retry=true,r=>r.thisTask.productionWritesPermitted=true]){const r=structuredClone(risk);edit(r);assert.throws(()=>approvalRecord(r));}
   const s=advance(p,initialState(p),{run:p.run,type:'unknown',requestId:'original'},start);assert.equal(s.reportDueAt,start+600000);assert.equal(s.automaticLogsRestore,false);assert.throws(()=>advance(p,s,{run:p.run,type:'restoreLogs'},start+1));
 });
+test('publisher read-budget opt-in remains bounded and does not arm publication',()=>{
+  const p=buildPacket(input());let dispatches=0;const args={packet:p,accounts,transport:{mode:'read-only',request:()=>dispatches++},journal:{}};
+  const pub=new Publisher({...args,readBudget:{timeoutMS:120000,maxGETDispatches:128}});assert.equal(pub.liveCapability,null);assert.equal(dispatches,0);
+  for(const readBudget of [{timeoutMS:120001},{timeoutMS:0},{timeoutMS:NaN},{maxGETDispatches:257},{perGETTimeoutMS:30001},{automaticRetries:1}])assert.throws(()=>new Publisher({...args,readBudget}));assert.equal(dispatches,0);
+});
 test('default dry-run dispatches zero HTTP; read-only and prepare cannot upload',async()=>{
   let calls=0;const x=input(),p=buildPacket(x),write=buildWrite(p,'gatewayObserve',moduleBytes(p.phases.gatewayObserve),account,'original');
   const t=cloudflareTransport({authorizedFetch:async()=>{calls++;throw Error('must not send');}});const r=await t.request(write);assert.equal(r.dryRun,true);assert.equal(calls,0);
@@ -65,6 +70,23 @@ test('GET-derived modules and runtime export readback work; drift/omitted cf-ent
   const g=apiFixture(p,'gatewayObserve',prior),wrapped={request:async args=>{const x=await g.transport.request(args);if(x.mainModule)delete x.mainModule;return x;}};
   await assert.rejects(()=>collectReadback(wrapped,account,'fixture-gateway',p.phases.gatewayObserve),/cf-entrypoint/);
 });
+test('runtime omission proves no container association only with no DO bindings or container exports',async()=>{
+  const x=input();x.baselines.entry.metadata.bindings=x.baselines.entry.metadata.bindings.filter(b=>b.type!=='durable_object_namespace');delete x.baselines.entry.metadata.containers;x.preservation.entry.containerSnapshots=[];delete x.preservation.entry.namespaces;
+  const p=buildPacket(x),f=apiFixture(p,'entryObserve',p.baselineGuards.entry);delete f.f.version.result.resources.script_runtime.containers;
+  const r=await collectReadback(f.transport,account,'fixture-entry',p.phases.entryObserve,p.preservation.entry);assert.equal(r.preservationMatches,true);assert.equal(r.containers.absenceEvidence,'NO_DO_BINDINGS_AND_NO_RUNTIME_OR_EXPORT_ASSOCIATIONS');const pub=new Publisher({packet:p,accounts,transport:f.transport,journal:{}});assert.equal(pub.registry.entry.versions.get(p.baselineGuards.entry.version)[2],r.resourcesSHA256);
+  const g=apiFixture(p,'entryObserve',p.baselineGuards.entry);delete g.f.version.result.resources.script_runtime.containers;g.f.version.result.resources.script_runtime.exports={Unexpected:{container:'unknown'}};await assert.rejects(()=>collectReadback(g.transport,account,'fixture-entry',p.phases.entryObserve,p.preservation.entry));
+  const q=buildPacket(input()),h=apiFixture(q,'gatewayObserve',q.baselineGuards.gateway);delete h.f.version.result.resources.script_runtime.containers;
+  const unknown=await collectReadback(h.transport,account,'fixture-gateway',q.phases.gatewayObserve,q.preservation.gateway);assert.equal(unknown.coverage.containers,false);assert.equal(unknown.preservationMatches,false);
+});
+test('actual null script tails match explicit empty version tails while raw representation stays bracketed',async()=>{
+  const p=buildPacket(input()),prior=p.baselineGuards.gateway;
+  const f=apiFixture(p,'gatewayObserve',prior);f.f.scriptSettings.result.tail_consumers=null;
+  const r=await collectReadback(f.transport,account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway);
+  assert.equal(r.scriptTailConsumersRepresentation,'null');assert.equal(r.scriptSettingsSHA256,hashJSON(f.f.scriptSettings.result));
+  for(const value of [undefined,'empty',[{service:'unexpected'}]]){const g=apiFixture(p,'gatewayObserve',prior);g.f.scriptSettings.result.tail_consumers=value;await assert.rejects(()=>collectReadback(g.transport,account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway));}
+  const g=apiFixture(p,'gatewayObserve',prior);let reads=0;const t={request:async args=>{const raw=await g.transport.request(args);if(args.path.endsWith('/script-settings')){const d=JSON.parse(raw.bytes);d.result.tail_consumers=reads++===0?null:[];return rawJSON(d);}return raw;}};
+  await assert.rejects(()=>collectReadback(t,account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway),/global settings changed/);
+});
 test('readback GET dispatch budget stops before another request and reports only caller observations',async()=>{
   const p=buildPacket(input()),f=apiFixture(p,'gatewayObserve',p.baselineGuards.gateway);
   await assert.rejects(()=>collectReadback(f.transport,account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway,{maxGETDispatches:1}),/dispatch budget/);assert.equal(f.calls.length,1);
@@ -84,6 +106,16 @@ test('a delayed timer cannot admit a host GET arriving beyond the single-invocat
     const transport={request:async args=>{calls++;clock+=16001;return f.transport.request(args);}};
     await assert.rejects(()=>collectReadback(transport,account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway),/per-GET budget expired/);assert.equal(calls,1);
   }finally{if(original)Object.defineProperty(performance,'now',original);else delete performance.now;}
+});
+test('explicit longer GET stays under the whole budget; default 15s and the hard 30s cap remain',{timeout:1000},async()=>{
+ const original=Object.getOwnPropertyDescriptor(performance,'now');let clock=0;
+ Object.defineProperty(performance,'now',{configurable:true,value:()=>clock});
+ try{const p=buildPacket(input());
+  const make=()=>{const f=apiFixture(p,'gatewayObserve',p.baselineGuards.gateway);let calls=0;return {request:async args=>{if(calls++===0)clock+=20000;return f.transport.request(args);}};};
+  await assert.rejects(()=>collectReadback(make(),account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway),/per-GET budget/);
+  clock=0;const r=await collectReadback(make(),account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway,{timeoutMS:120000,perGETTimeoutMS:30000});assert.equal(r.readObservation.perGETTimeoutMS,30000);assert.equal(r.readObservation.elapsedMS,20000);
+  await assert.rejects(()=>collectReadback(make(),account,'fixture-gateway',p.phases.gatewayObserve,p.preservation.gateway,{perGETTimeoutMS:30001}));
+ }finally{if(original)Object.defineProperty(performance,'now',original);else delete performance.now;}
 });
 test('contradictory asset presence rejects rather than trusting upload intent',async()=>{
   const {x}=assetInput();const p=buildPacket(x),f=apiFixture(p,'gatewayObserve',{version:'gateway-v0',deployment:'gateway-d0'});

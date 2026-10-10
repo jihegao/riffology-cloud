@@ -28,15 +28,14 @@ export async function collectPipelineGuard(transport,scope){
   const {accountId,zoneId,worker}=scope;id(accountId);id(zoneId);assert.match(worker,/^[a-z0-9_-]+$/);
   const zone=jsonResult(await transport.request({path:`/zones/${zoneId}`})).result;assert.equal(zone.id,zoneId);assert.equal(zone.account?.id,accountId,'zone ownership mismatch');
   const paths=[`/accounts/${accountId}/logpush/jobs`,`/zones/${zoneId}/logpush/jobs`,`/accounts/${accountId}/workers/observability/destinations`,`/accounts/${accountId}/workers/scripts/${worker}/tails`];
-  const inventories=[];
-  for(const path of paths){
+  const inventories=await Promise.all(paths.map(async path=>{
     const r=await listMetadata(transport,path,{kind:path.endsWith('/destinations')?'number':'complete'});
     // Keep only allowlisted metadata; URLs, destination_conf, headers, filter
     // expressions and websocket URLs never become receipts.
     const names=(a,pattern)=>{if(a===undefined)return undefined;assert.ok(Array.isArray(a)&&a.length<=1000);assert.ok(a.every(v=>typeof v==='string'&&pattern.test(v)),'invalid metadata names; no values retained');return [...a];};
     const rows=r.items.map(x=>{assert.ok(x.enabled===undefined||typeof x.enabled==='boolean');assert.ok(x.dataset===undefined||typeof x.dataset==='string'&&/^[a-z0-9_-]{1,128}$/.test(x.dataset));return {id:x.id??x.slug,dataset:x.dataset,enabled:x.enabled,scripts:names(x.scripts,/^[a-z0-9_-]{1,128}$/),fieldNames:names(x.output_options?.field_names,/^[A-Za-z][A-Za-z0-9_]{0,127}$/),filterPresent:!!x.filter};});
-    inventories.push({path,pages:r.receipts,complete:r.complete,rows});
-  }
+    return {path,pages:r.receipts,complete:r.complete,rows};
+  }));
   let customFields={status:'NOT_APPLICABLE_NO_ZONE_LOGPUSH_JOBS'};
   if(inventories[1].rows.length){
     const path=`/zones/${zoneId}/rulesets/phases/http_log_custom_fields/entrypoint`,raw=await transport.request({path});
@@ -68,16 +67,16 @@ export async function collectContainerAssociations(transport,accountId,artifact,
   id(accountId);assert.deepEqual(runtime.containers,artifact.metadata.containers,'Worker container associations differ');
   if(runtime.containers.length===0)return {associationMatches:true,configurationMatches:true,snapshots:[]};
   assert.ok(Array.isArray(expected)&&expected.length===runtime.containers.length,'frozen existing application snapshots required');
-  const listed=await listMetadata(transport,`/accounts/${accountId}/containers/applications`,{kind:'cursor'}),snapshots=[];
-  for(const row of runtime.containers){
+  const listed=await listMetadata(transport,`/accounts/${accountId}/containers/applications`,{kind:'cursor'});
+  const snapshots=await Promise.all(runtime.containers.map(async row=>{
     const matches=listed.items.filter(x=>x.name===row.name);assert.equal(matches.length,1,'existing application name must be unique');
     assert.equal(runtime.exports[row.class_name]?.container,row.name,'export/application association differs');
     const baseline=expected.find(x=>x.name===row.name);assert.ok(baseline);assert.equal(matches[0].id,baseline.id);
     const actual=containerSnapshot(jsonResult(await transport.request({path:`/accounts/${accountId}/containers/applications/${baseline.id}`})).result);
     assert.equal(actual.account_id,accountId);assert.deepEqual(actual,baseline,'existing application configuration or identity drift');
     const bindings=artifact.metadata.bindings.filter(b=>b.type==='durable_object_namespace'&&b.class_name===row.class_name);assert.equal(bindings.length,1);assert.equal(bindings[0].namespace_id,actual.durable_objects.namespace_id,'DO/application namespace association differs');
-    snapshots.push(actual);
-  }
+    return actual;
+  }));
   return {associationMatches:true,configurationMatches:true,snapshots,evidenceSHA256:hashJSON(snapshots),scopeLimit:'application identity/version and reviewed configuration; operational health, instance census and full account inventory not asserted'};
 }
 export const assetRetentionStandard='keep-assets-contract-v1';
@@ -92,10 +91,14 @@ function assetConfig(runtime,hasAssets){
   if(!Object.hasOwn(runtime,'assets'))return {configEvidence:hasAssets?'NOT_EXPOSED_BY_VERSION_API':'NO_ASSETS',configSHA256:null};
   assert.equal(hasAssets,true,'asset configuration without assets');const c=runtime.assets;
   assert.ok(c&&typeof c==='object'&&!Array.isArray(c),'explicit null or malformed asset configuration');
-  objectKeys(c,['html_handling','not_found_handling','run_worker_first']);
+  objectKeys(c,['html_handling','not_found_handling','run_worker_first','serve_directly','raw_run_worker_first','base_path']);
   if(c.html_handling!==undefined)assert.ok(['auto-trailing-slash','force-trailing-slash','drop-trailing-slash','none'].includes(c.html_handling));
   if(c.not_found_handling!==undefined)assert.ok(['none','404-page','single-page-application'].includes(c.not_found_handling));
   if(c.run_worker_first!==undefined)assert.ok(Array.isArray(c.run_worker_first)&&c.run_worker_first.length>0&&c.run_worker_first.length<=100&&c.run_worker_first.every(v=>typeof v==='string'&&v.length<=512&&/^!?\/[^\s?#]*$/.test(v))&&c.run_worker_first.some(v=>!v.startsWith('!')));
+  // Observed version-runtime representation. Preserve/hash it verbatim; do not
+  // turn these internal readback fields into an explicit assets upload.
+  for(const k of ['serve_directly','raw_run_worker_first'])if(c[k]!==undefined)assert.equal(typeof c[k],'boolean');
+  if(c.base_path!==undefined)assert.equal(c.base_path,'/','only observed root asset base path supported');
   return {configEvidence:'OBSERVED_ROUTING_CONFIG',configSHA256:hashJSON(c)};
 }
 export function validateFrozenAssetSnapshot(snapshot,scope,metadata){
@@ -154,7 +157,10 @@ export async function collectNamespaces(transport,accountId,targetIds,expected){
   assert.equal(targets.length,targetIds.length,'duplicate target namespace binding');assert.ok(targets.every(v=>typeof v==='string'&&v.length>0));
   const path=`/accounts/${accountId}/workers/durable_objects/namespaces`;
   const inventory=await listMetadata(transport,path,{kind:'namespace'});
-  for(const n of inventory.items)objectKeys(n,['id','class','name','script','use_sqlite']);
+  for(const n of inventory.items){
+    objectKeys(n,['id','class','name','script','use_sqlite','use_containers']);
+    for(const k of ['use_sqlite','use_containers'])if(Object.hasOwn(n,k))assert.equal(typeof n[k],'boolean','namespace storage/container flag must be boolean');
+  }
   const selected=inventory.items.filter(n=>targets.includes(n.id)).sort((a,b)=>a.id.localeCompare(b.id));
   assert.deepEqual(selected.map(n=>n.id),targets,'complete target namespace set required');
   const coverageComplete=Array.isArray(expected);
