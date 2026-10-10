@@ -1,5 +1,13 @@
 # Current release readiness — 2026-10-10
 
+## 2026-10-10 15:45 UTC original Gateway restored; domain cutover pending
+
+The [approved original-write recovery evidence](evidence/riffoid-original-write-restored-20261010.json) confirms the original Gateway module and all95 bindings,23 SQLite exports,5 existing container associations and frozen asset-retention contract after two recovery PUTs, each dispatched once. Temporary validation configuration is removed. Original observability is restored, including logs.persist=true, traces disabled, logpush=false and empty tails. Current Gateway version is a00f97bc-f0da-4e04-97b0-8f96f0a26a89, deployment d78a6f03-2552-4076-8ad5-7abd1802654c; independent bracketed GET readback completed at15:45:27.679 UTC.
+
+The privacy restore PUT reached its deadline; GET reconciliation confirmed it applied. The approved logs restore returned success after6.142 seconds, but its initial post-write version GET timed out; a separate complete readback subsequently confirmed the restored state. All three intent/unknown pairs and locks are retained. No original unknown is converted into a terminal receipt, no PUT is retried, and the old protocol window remains stopped. The explicit two-write approval accepted possible late persisted telemetry; platform drain is unproven. Asset preservation meets keep-assets-contract-v1; complete asset-set identity and bytes are not audited.
+
+The reviewed logs-only continuation is in234e078661ff4d3f699ef84999ac62ea53cb7de3; live-adapter/recovery checks pass52/52. Entry and Browser Execution receive no writes in this recovery. Domain cutover, two-network protocol verification, authenticated new-domain acceptance and formal T/recoveryUntil remain pending. No model, Turn or Run request is initiated, and no global zero-execution claim is made. Earlier sections below are dated historical snapshots, including the earlier pending-recovery approval.
+
 ## 2026-10-10 PR173 MIME bytes and method-specific retry boundary
 
 The publisher now parses raw MIME bytes for modules with or without filename, preserving exact source hashes and line endings. Manual redirects are explicitly rejected; missing/duplicate entrypoints, modules, malformed boundaries and truncation fail closed. Local seven suites pass127/127 with typecheck/diff checks. The [contract and evidence](evidence/riffoid-mime-readback-20261010/mime-and-retry-contract.md) supersede the prior inference that the authenticated execute sandbox lacks raw responses: a historical original-Gateway GET supplied exact byte/header/digest evidence, without certifying a complete fresh baseline. This implementation/review round performs no new production GET/PUT or experiment.
