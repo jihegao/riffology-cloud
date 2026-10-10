@@ -1,5 +1,8 @@
 # Current release readiness — 2026-10-11
 
+October 11 later preflight: the frozen five-minute round stopped before durable intent or PUT because the native Zone-ownership GET exceeded30 seconds. The original Gateway and logging remain restored; no server maintenance configuration or browser protocol operation was published. The exact configuration/identity GET router is repaired, with6 boundary checks and two actual decoded Zone-ownership readbacks passing. Source/module evidence and every PUT remain native. See [preflight and routing repair](evidence/riffoid-zone-reader-preflight-20261011.json). The user currently has no second invited identity without target-project permission or existing idle Session for the agreed formal acceptance; these observations remain pending. Fresh phone cooperation is requested before another window. T/recoveryUntil remain null.
+
+
 ## 2026-10-11 域名切换续作：恢复后完整预检及固定载荷（未开启）
 
 原 Gateway 与原日志恢复后，Gateway、Entry、Browser Execution 均已重新完成源码、完整绑定、资产保留合同、关联资源和前后部署身份读回；当前版本分别为 `a00f97bc`、`c110d7a7`、`c94df077`，绑定数为 95/5/4。两 zone WAF、Managed Transforms、Pseudo IPv4 与 ruleset/snippet 元数据也已重新读取。原三个 unknown 记录及其锁保持原样，当前配置读回不改写历史请求终态。

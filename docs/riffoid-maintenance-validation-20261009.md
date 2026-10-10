@@ -1,5 +1,8 @@
 # Maintenance protocol validation — implementation only
 
+October 11 later preflight: the frozen five-minute round stopped before durable intent or PUT because the native Zone-ownership GET exceeded30 seconds. The original Gateway and logging remain restored; no server maintenance configuration or browser protocol operation was published. The exact configuration/identity GET router is repaired, with6 boundary checks and two actual decoded Zone-ownership readbacks passing. Source/module evidence and every PUT remain native. See [preflight and routing repair](evidence/riffoid-zone-reader-preflight-20261011.json). The user currently has no second invited identity without target-project permission or existing idle Session for the agreed formal acceptance; these observations remain pending. Fresh phone cooperation is requested before another window. T/recoveryUntil remain null.
+
+
 October 11 continuation: [post-recovery preparation](evidence/riffoid-post-recovery-preparation-20261011.json) records fresh complete Gateway/Entry/Execution readbacks, current WAF/header-policy inventories, and seven offline fixed configuration-only formal cutover/restoration bodies. The three historical unknown journals and locks remain unchanged. The old protocol is not resumed; no new window or browser protocol operation has opened in this preparation. Targeted checks pass 52/52. Both actual native-IP/signature receipts and agreed authenticated acceptance remain required; T/recoveryUntil are null. Deployment/version-list metadata may use a strictly scoped decoded GET bridge; source/modules and other native evidence preserve their actual provenance. Neither asset-set byte coverage nor platform telemetry drain is claimed.
 
 

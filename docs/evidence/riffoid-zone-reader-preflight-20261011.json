@@ -1,0 +1,83 @@
+{
+  "date": "2026-10-11",
+  "observedAtUTC": "2026-10-10T17:00:17Z",
+  "status": "READ_ONLY_PREFLIGHT_FAILED_BEFORE_MUTATION_ROUTING_REPAIRED",
+  "PR": 173,
+  "sourceParent": "afc572063a60575aff1af71ab478598b946838c5",
+  "scope": "Two existing accounts; existing Gateway and riffoid-entry configuration-only maintenance validation. Browser Execution received no request in this stopped controller.",
+  "originalProduction": {
+    "gatewayVersion": "a00f97bc-f0da-4e04-97b0-8f96f0a26a89",
+    "entryVersion": "c110d7a7-fc81-4bb1-b27a-4ca8147a7fff",
+    "executionVersion": "c94df077-02a1-460f-8158-e47a338e68af",
+    "basis": "prior complete independent restoration and post-recovery readbacks; no subsequent PUT was dispatched by this controller"
+  },
+  "stoppedRound": {
+    "run": "riffoid_2c6dfae4f48c4af5942d039c1a0c4c3a",
+    "packetSHA256": "0fb72441d54b1450ef1f91165e6d660063c27078856f738945c74013c9fc2ab6",
+    "notBefore": 1791651638992,
+    "expires": 1791651938992,
+    "failedRead": "GET /zones/c97b548800561fada1a912c234696db1",
+    "readLimitMS": 30000,
+    "error": "readback budget expired; late evidence rejected; proxy termination unconfirmed",
+    "pendingMutation": null,
+    "workerPUTsStarted": 0,
+    "workerPUTsCompleted": 0,
+    "durableMutationIntents": 0,
+    "protocolObserveRunCleanupRequestsStarted": 0,
+    "disposition": "Own controller terminated before durable intent or PUT. Packet and stop record retained; server maintenance configuration was never published. Do not reuse this stopped round.",
+    "historicalUnknownJournalsAndLocks": "unchanged"
+  },
+  "repair": {
+    "helper": "scripts/m1/riffoid-native-metadata-routing.mjs",
+    "helperSHA256": "951004b465cfd105661a7e7b7d38bc32168f8cc08fd397014c255e05cea61b41",
+    "test": "tests/m1/riffoid-native-metadata-routing.test.mjs",
+    "testSHA256": "6c9a349fb8892f01e994f56a4c5f01cdabbd6f7ed3b14ed1620b8756502821f9",
+    "privateCallerSHA256": "330c75f6135f5185e819c7b03d577c0f3548e633699f87dbf794561c32359723",
+    "changes": "Exact scoped configuration-only and identity GETs use existing decoded connector. Zone ownership, zone logpush, custom log fields and script tails are included. Native source/module/settings/version-detail evidence and all native single-attempt PUTs are retained.",
+    "readRoutingChecks": {
+      "passed": 6,
+      "failed": 0
+    },
+    "offlineTemplateCheck": {
+      "phases": 8,
+      "networkRequestsExecuted": 0,
+      "productionWritesExecuted": 0
+    },
+    "actualZoneOwnershipReadbacks": [
+      {
+        "account": "8b0d70250211aa10d89e20605a1c7e5e",
+        "zone": "c97b548800561fada1a912c234696db1",
+        "success": true,
+        "status": 200,
+        "provenance": "decoded existing-connector GET"
+      },
+      {
+        "account": "3232ebc7e9bb0199b92e3d70b07825af",
+        "zone": "b0b0079990e13eb20a17a2d3c41403b8",
+        "success": true,
+        "status": 200,
+        "provenance": "decoded existing-connector GET"
+      }
+    ],
+    "provenance": "Decoded metadata does not expose proxy HTTP attempt counts or supply raw source/body/header evidence."
+  },
+  "credentials": {
+    "original": "Existing same-account same-five-scopes OAuth refreshed; expiration 2026-10-10T17:51:09.305Z",
+    "primary": "Existing same-account same-five-scopes OAuth refreshed; expiration 2026-10-10T17:52:44.446Z",
+    "storage": "owner-only local profiles; credential values are not retained in this evidence",
+    "earlierContinuation": "One unsubmitted original OAuth request was canceled; a later unsubmitted original flow timed out and was canceled before the completed renewal."
+  },
+  "acceptance": {
+    "nativeTwoNetworkProtocol": "pending",
+    "formalAcceptanceResources": "User replied temporarily unavailable for an invited identity without the target project permission and an existing idle Session for read-only SSE.",
+    "formalCutover": "pending",
+    "T": null,
+    "recoveryUntil": null
+  },
+  "limits": [
+    "This controller initiated no business execution request; no account-wide zero-execution, cost-zero or platform drain assertion.",
+    "No source or production configuration was changed by the stopped preflight.",
+    "No acceptance resource or permission was created to replace the missing existing resources.",
+    "Full asset byte/set audit and Cloudflare internal telemetry drain remain unproven."
+  ]
+}
