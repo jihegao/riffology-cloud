@@ -1,0 +1,282 @@
+{
+  "schemaVersion": 1,
+  "dateShanghai": "2026-10-10",
+  "sourcePR": 173,
+  "sourceHead": "04f00d66c970e491aec0a4a893d5d92ce7eacc79",
+  "observationIntervalUTC": [
+    "2026-10-10T11:17:00Z",
+    "2026-10-10T11:27:00Z"
+  ],
+  "intervalPrecision": "Minute bounds for the browser follow-up; not HTTP server timestamps",
+  "status": "BASELINES_AND_127_OFFLINE_CHECKS_COMPLETE_WRITER_AUTHORIZATION_PENDING_CUTOVER_NOT_STARTED",
+  "deliveryProject": {
+    "source": "Safari accessibility view of the existing Delivery Project tab",
+    "url": "https://github.com/users/jihegao/projects/1/views/1",
+    "readSucceeded": true,
+    "view": "全部规划",
+    "filter": "is:issue",
+    "matchingItems": 49,
+    "selectedVisibleItems": [
+      {
+        "issue": 104,
+        "status": "Acceptance",
+        "priority": "P0",
+        "assignee": "jihegao",
+        "milestone": "Pi 线上恢复与核心流程验收"
+      },
+      {
+        "issue": 171,
+        "status": "Acceptance",
+        "priority": "P0",
+        "assignee": "jihegao",
+        "milestone": "Pi 线上恢复与核心流程验收"
+      }
+    ],
+    "pr173ProjectStage": "Not established by the issue-filtered view",
+    "projectMutation": false
+  },
+  "originalApplicationAuthentication": {
+    "origin": "https://m1.riff-demo.gaojihe.cn",
+    "source": "Existing Safari Google account chooser and authenticated application UI",
+    "accountSelected": "jihe.gao@gmail.com",
+    "publicClientId": "316292203808-3s6ijnugpiq6hk25vmkj0hgokt2diq86.apps.googleusercontent.com",
+    "redirectCallback": "https://m1.riff-demo.gaojihe.cn/api/auth/callback/google",
+    "scopes": [
+      "email",
+      "profile",
+      "openid"
+    ],
+    "result": "Authenticated project list and logout control visible; existing historical project titles present",
+    "identitySubjectComparisonAtNewOrigin": "pending",
+    "normalSignInStateAndSessionWrites": true,
+    "newProjectCreated": false,
+    "historicalProjectOpenedOrRestored": false,
+    "oauthCodeStateCookieOrSecretPersistedInThisEvidence": false
+  },
+  "piCapacityRead": {
+    "source": "Authenticated Safari navigation to existing GET /api/admin/private-beta",
+    "method": "GET",
+    "path": "/api/admin/private-beta",
+    "semanticReview": "app.ts GET delegates to PrivateBetaCapacity.snapshot; snapshot reads policy, pinned digest, stored slots, usage and alerts without reconcile/monitor/admission/release calls. Existing actor constructor has CREATE TABLE IF NOT EXISTS; this is not a no-storage-initialization claim.",
+    "visibleFields": {
+      "schemaVersion": 1,
+      "policySchemaVersion": 2,
+      "quotaMode": "meter-only",
+      "policyReady": true,
+      "policySha256": "695cdd9ece91081e201a3dd03ba2ad7451931a0b588addc6454a1f6db9638031",
+      "pinnedPolicySha256": "695cdd9ece91081e201a3dd03ba2ad7451931a0b588addc6454a1f6db9638031",
+      "enabled": true,
+      "reviewAt": 1798732799999,
+      "maxActiveTurns": 2,
+      "maxNanodollarsPerDay": null,
+      "maxNanodollarsTotal": null,
+      "lastMonitorAt": 1790912622357,
+      "paused": false,
+      "active": 0,
+      "quarantined": 0
+    },
+    "coverage": "Pi capacity ledger only; the AX text clips the remainder of usage/alerts, and no complete response payload is frozen",
+    "globalAccountInFlightZeroProven": false,
+    "otherRunsContainersProvisioningRevisionGcAndAlarmCoverage": "pending",
+    "policyDeadlineDiscrepancy": "Observed reviewAt is 2026-12-31 23:59:59.999 Asia/Shanghai; current AGENTS working agreement authorizes through 2026-10-20 23:59:59.999 Asia/Shanghai. No policy changed and no wider execution authorization inferred."
+  },
+  "newOriginPublicControl": {
+    "source": "curl with normal TLS verification",
+    "origin": "https://app.riffoid.com",
+    "status": 503,
+    "error": "two_account_auth_disabled"
+  },
+  "accessLimitations": {
+    "macLocked": false,
+    "cloudflareConnector": "Read-only capability probe rejected before execution: MCP tool call requires approval, but approval policy is never",
+    "wrangler": {
+      "version": "4.129.0",
+      "whoami": "not authenticated",
+      "loginOrGrantInitiated": false
+    },
+    "currentSafariCloudflareAccount": "Existing new-account session cannot access original account Gateway; page displays Page not found / possible permission limitation",
+    "originalCloudflareLogin": "Separate Safari private window at the official login page; user requested to sign in without sharing credentials",
+    "googleClientConsole": "Opened existing project client page but loading did not yield configuration fields during this observation",
+    "twoActualExits": "User coordination requested; no reply or observed pair yet",
+    "localGitWrite": "git add/commit failed before staging: .git/index.lock Operation not permitted",
+    "prEvidenceBackfill": "GitHub comment request rejected before execution: MCP tool call requires approval, but approval policy is never; no comment posted",
+    "followupDocumentation": "Three local files saved and checked; not committed or pushed"
+  },
+  "priorTests": "The earlier 45 targeted tests and typecheck passed; not rerun for this browser/document follow-up",
+  "productionConfigurationWrites": 0,
+  "newResourceCreated": false,
+  "privateKeyRead": false,
+  "modelToolTurnRunRequestsSubmitted": 0,
+  "globalZeroActivityOrCostClaim": false,
+  "formalCutoverT": null,
+  "recoveryUntil": null,
+  "laterFollowup": {
+    "source": "Safari private-window accessibility readback and explicit user replies",
+    "dateShanghai": "2026-10-10",
+    "originalCloudflare": {
+      "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+      "accountLoginConfirmed": true,
+      "worker": "riffology-m1-gateway-staging",
+      "latestActiveVersion": "6edef49b-ca5c-4c97-bcec-5c141b079bb1",
+      "activePercent": 100,
+      "entryReplayNamespace": "3cfeafa707c5491fba4ead3f0954bc8e",
+      "workersDev": "disabled",
+      "fullSettingsAndRollbackBytesRetained": true,
+      "secretsOpened": false
+    },
+    "visitorExitPreparation": {
+      "url": "https://app.riffoid.com/cdn-cgi/trace",
+      "desktopSource": "Safari native trace view at 2026-10-10T11:40:49Z",
+      "phoneSource": "User reported ip line after disabling Wi-Fi and using mobile data",
+      "distinctPublicIPs": true,
+      "rawIPsPersistedInPublicEvidence": false,
+      "addressesStoredInIgnoredLocalFileMode": "0600",
+      "actualMaintenanceObserveRequests": 0,
+      "nativeBoundaryMarkerSet": false,
+      "reconfirmBeforeWindow": true
+    },
+    "dashboardEditorSideEffect": {
+      "action": "Opened existing deployed Gateway code editor to find download; no code edit or Deploy action",
+      "automaticPreviewRequest": {
+        "method": "GET",
+        "path": "/",
+        "responseUTC": "2026-10-10T11:36:51Z",
+        "status": 503,
+        "error": "assets_not_configured"
+      },
+      "interpretation": "Dashboard preview lacks configured assets; not a production-app availability result",
+      "consoleConnectedByEditor": true,
+      "editorClosedAfterInspection": true,
+      "freshLiveTailAndCaptureState": "All three relevant tails lists empty at 2026-10-10T11:55:56Z; preceding dashboard console connection acknowledged",
+      "downloadFileRetained": true,
+      "clipboardCopyOnlyNotACompleteFrozenRollbackFile": false,
+      "textEditAttempt": "Computer Use was not approved to use TextEdit; app route stopped",
+      "automaticPreviewRequests": [
+        {
+          "method": "GET",
+          "path": "/",
+          "responseUTC": "2026-10-10T11:36:51Z",
+          "status": 503,
+          "error": "assets_not_configured"
+        },
+        {
+          "method": "GET",
+          "path": "/",
+          "responseUTC": "2026-10-10T11:52:57Z",
+          "status": 503,
+          "error": "assets_not_configured"
+        }
+      ],
+      "laterTextEditResult": "Approved after user permission switch; fresh complete module saved and SHA-256 matched to API module identity; editor closed"
+    },
+    "permissionRepair": {
+      "userReportedModeSwitched": true,
+      "effectiveReadOnlyProbe": "Cloudflare connector GET succeeded after switch; native shell GitHub network still rejected by sandbox proxy; no privileged shell bypass",
+      "priorKnownFailures": "Approval-required Cloudflare/GitHub calls rejected before execution under never; .git write blocked"
+    },
+    "currentReviewedPreparation": {
+      "sourceHead": "6ed830a17f2321de27446758074aff47550c99ea",
+      "relevantFilesFromExactCommit": 44,
+      "checkoutCoverage": "Relevant source/tests and required fixtures over an isolated old base; not a complete checkout of every file at this head",
+      "offlineChecks": {
+        "suites": 7,
+        "tests": 127,
+        "pass": 127,
+        "fail": 0,
+        "typecheck": "passed",
+        "previousAttempts": "Two retained failures from omitted fixture/evidence files in isolated preparation; final run after exact dependency retrieval passed"
+      },
+      "candidateGateway": {
+        "bytes": 5486832,
+        "sha256": "2bf8f1fb8dd1ce96e78aa7b586e2c405cb3e69579c36adddf7c650e757e16e42",
+        "allHistoricalSQLiteExports": 23,
+        "existingContainerAssociations": 5
+      },
+      "candidateEntry": {
+        "bytes": 35550,
+        "sha256": "1f1a9f667c2075e863ee55041cfe8353e77e91ebed79eed18fdd63a5cb113c38"
+      },
+      "phaseTemplates": 8,
+      "status": "NON_EXECUTABLE_PHASE_TEMPLATES",
+      "run": null,
+      "notBefore": null,
+      "expires": null,
+      "oldCandidateStatus": "SUPERSEDED_BY_PR_HEAD_6ed830a_DO_NOT_DEPLOY",
+      "productionWrites": 0
+    },
+    "freshProductionReads": {
+      "baselines": [
+        {
+          "worker": "riffology-m1-gateway-staging",
+          "version": "6edef49b-ca5c-4c97-bcec-5c141b079bb1",
+          "deployment": "57ea9670-0fef-420b-8bd2-cd044c89fd2d",
+          "observedAt": "2026-10-10T11:57:50.122Z",
+          "activePercent": 100,
+          "moduleBytes": 5497752,
+          "moduleSHA256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290",
+          "completeModuleSavedPrivateMode": "0600"
+        },
+        {
+          "worker": "riffoid-entry",
+          "version": "c110d7a7-fc81-4bb1-b27a-4ca8147a7fff",
+          "deployment": "5e920993-ee9d-4a7e-b6fe-39ef494f35fd",
+          "observedAt": "2026-10-10T11:57:51.015Z",
+          "activePercent": 100,
+          "moduleBytes": 16197,
+          "moduleSHA256": "7a71a528d3ee7014621848e16801aeddd12c8f39edd3431720d089f337bb7dc4",
+          "completeModuleSavedPrivateMode": "0600"
+        },
+        {
+          "worker": "riffology-browser-execution",
+          "version": "c94df077-02a1-460f-8158-e47a338e68af",
+          "deployment": "a6fdeb9f-d885-4c72-9e02-968315351edb",
+          "observedAt": "2026-10-10T11:57:49.300Z",
+          "activePercent": 100,
+          "moduleBytes": 49003,
+          "moduleSHA256": "b76b05f96d345a0ecf280cdb4414c1dd0c56bf71041dc3c72199db8e8c6c07c1",
+          "completeModuleSavedPrivateMode": "0600"
+        }
+      ],
+      "completeSettingsAndBindingsMatchedPriorFreeze": true,
+      "bindingCounts": [
+        95,
+        5,
+        4
+      ],
+      "gatewayVersionRuntimeActuallyExposesAssetsAndContainerAssociations": true,
+      "assetContentAuditPerformed": false,
+      "pipelines": {
+        "observedAt": "2026-10-10T11:55:56Z",
+        "exactScopedLists": 8,
+        "allReturnedEmpty": true,
+        "bothRelevantWafBlocksEnabled": true,
+        "bothPseudoIPv4Off": true,
+        "allSixManagedTransformsDisabledPerZone": true,
+        "scope": "Returned configured inventories only; not platform telemetry buffer drain"
+      },
+      "containers": {
+        "observedAt": "2026-10-10T11:59:11Z",
+        "applicationsRead": 15,
+        "unfilteredReads": 15,
+        "returnedInstances": 8,
+        "returnedInstanceStates": {
+          "inactive": 8
+        },
+        "noOtherStatesInReturnedRecords": true,
+        "platformWideZeroActivityProven": false,
+        "instanceStartStopWrites": 0
+      }
+    },
+    "writerBoundary": {
+      "currentMcpPut": "BLOCKED_BEFORE_DISPATCH_POSSIBLE_HOST_REPLAY",
+      "latestReviewedRawAdapter": "GET_ONLY_IN_NON_DRY_RUN",
+      "nativeWranglerOriginalCredentialExpirationUTC": "2026-10-09T03:26:33.156Z",
+      "credentialValuesPrintedOrPersistedInEvidence": false,
+      "newOAuthGrantInitiated": false,
+      "userSupplementalOAuthQuestion": "pending",
+      "newOriginOpened": false,
+      "formalCutoverT": null,
+      "recoveryUntil": null
+    }
+  }
+}
