@@ -39,8 +39,8 @@ test('approved wording is consumed without granting production authorization; al
 });
 test('publisher read-budget opt-in remains bounded and does not arm publication',()=>{
   const p=buildPacket(input());let dispatches=0;const args={packet:p,accounts,transport:{mode:'read-only',request:()=>dispatches++},journal:{}};
-  const pub=new Publisher({...args,readBudget:{timeoutMS:120000,maxGETDispatches:128}});assert.equal(pub.liveCapability,null);assert.equal(dispatches,0);
-  for(const readBudget of [{timeoutMS:120001},{timeoutMS:0},{timeoutMS:NaN},{maxGETDispatches:257},{perGETTimeoutMS:30001},{automaticRetries:1}])assert.throws(()=>new Publisher({...args,readBudget}));assert.equal(dispatches,0);
+  const pub=new Publisher({...args,readBudget:{timeoutMS:180000,maxGETDispatches:128}});assert.equal(pub.liveCapability,null);assert.equal(dispatches,0);
+  for(const readBudget of [{timeoutMS:180001},{timeoutMS:0},{timeoutMS:NaN},{maxGETDispatches:257},{perGETTimeoutMS:30001},{automaticRetries:1}])assert.throws(()=>new Publisher({...args,readBudget}));assert.equal(dispatches,0);
 });
 test('default dry-run dispatches zero HTTP; read-only and prepare cannot upload',async()=>{
   let calls=0;const x=input(),p=buildPacket(x),write=buildWrite(p,'gatewayObserve',moduleBytes(p.phases.gatewayObserve),account,'original');
