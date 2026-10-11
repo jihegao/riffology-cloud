@@ -93,7 +93,7 @@ ${slot==='A'?`const cleanup=cleanupOnce({serverNow,expires:${c.expires},monotoni
   const digest=base64url(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(script))));
   const hash=digest.replace(/-/g,'+').replace(/_/g,'/')+'=';
   return new Response(`<!doctype html><meta charset="utf-8"><title>Riffoid protocol validation</title><p>Maintenance test ${slot}. Ordinary application closed. No OAuth or business execution.</p><button id="observe">Observe native source</button><button id="run">Run once</button><button id="stop">Stop this original page locally</button>${slot==='A'?'<p>Cleanup starts unarmed. After the coordinator confirms both original Run receipts, authorize it once here. Unknown on either side: Stop both original pages.</p><button id="armCleanup" disabled>Authorize cleanup once after both receipts</button><button id="cleanup" disabled>Cleanup after deadline</button>':'<button id="armCleanup" hidden disabled>Unavailable</button><button id="cleanup" hidden disabled>Unavailable</button>'}<pre id="result"></pre><script>${script}</script>`,
-    {headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store','referrer-policy':'no-referrer','x-content-type-options':'nosniff',
+    {headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-store','referrer-policy':'same-origin','x-content-type-options':'nosniff',
       'content-security-policy':`default-src 'none'; script-src 'sha256-${hash}'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'`}});
 }
 function VALIDATION_PATH(run:string,slot:ValidationSlot):string {return `/__riffoid-validation/${run}/${slot}/`;}

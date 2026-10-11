@@ -1,5 +1,9 @@
 # Current release readiness — 2026-10-11
 
+2026-10-11 17:00:55 Asia/Shanghai：[两份 Observe 403 与完整恢复证据](evidence/riffoid-origin-denied-recovery-20261011-66559c.json)。本轮两次维护发布后，电脑 Safari 与手机各一次 Observe 明确返回 `403/origin_denied`，Run/entryReady/cleanup 均未发起；单独批准后的四次各一次恢复全部通过完整读回，原 Gateway/entry 代码、95/5 绑定和日志已恢复。Gateway 当前版本 `7467fa4a-dc57-4178-aae0-ee5fa00db6be`，entry `7c04a21d-c95a-4a4c-a6b8-e21282fdc1f0`；Browser Execution 本轮未发布或重读。四份历史未知记录保留，没有新未知发布。403 定位于验收页 `no-referrer` 在 Safari 的同源 POST 将原生 Origin 变为 null；最小 `same-origin` 修复与夹具校正进入 PR #173/#175，19 项相关测试、类型检查及 2 项本地 Workerd 回归通过，尚未部署或完成线上验收。
+
+用户随后明确允许取消完整 A/B 验证、改为直接切换；后续发布状态必须标为**尚未验收**，先准备正式配置及旧入口回退，切换后至少确认一次现有登录和项目访问。此前双网络协议和第二身份/空闲 Session 不再作为直接切换前提，其未覆盖范围保留。当前尚未正式切换，T/recoveryUntil 仍为空；普通业务健康仍未知。完整资产集合、平台遥测排空、账号全局零执行/费用均不作成功声明。
+
 2026-10-11 16:03:42 Asia/Shanghai：[零发布预检停止与完整只读核对](evidence/riffoid-native-preflight-20261011-c100.json)。`80e5ed67…b0c10` 获批时已不足以完成预检，未启动；获明确批准的 `6a6c6069…7eefd` 在第二次原生 Worker 清单 GET 超时后停止，32 次 GET 发出、31 次完成，首次 PUT 前失败，无 intent/unknown 写入，进程已确认退出。独立诊断随后完成 Gateway 36 次 GET（约 87 秒）及 entry 22 次 GET（约 59 秒），前后原生部署/版本、源码、完整配置、资源和日志管道核对通过；仍为原恢复版 `6d580077…202135` 和原 entry `c110d7a7…7fff`。本轮 PUT／A/B Observe／Run／cleanup 均为零；原四份 unknown、历史数据及日志设置保持。超时原因未确定，keep-assets 不代表完整资产审计，不宣称平台遥测排空或全局零执行/费用。取消的包与配合时段不复用；后续必须留足逐阶段完整读取时间。协议及真实第二身份／已有空闲 Session 验收仍 pending，正式 T/recoveryUntil=null。
 
 2026-10-11 15:07:51 Asia/Shanghai：本轮新恢复批准已执行。原 Gateway 代码、95 个绑定和原日志已恢复，版本 `6d580077-1042-4242-9ca5-665008202135` / deployment `be951946-ead9-4da9-814f-d493d2d13520`。两次原生 PUT 分别应答 5.127 秒和 6.104 秒，各一次、零自动重试/重定向；前后完整独立读回通过，临时维护配置已移除。原四个 unknown 及锁保留，本轮验收不重跑。后续部署/版本身份列表已限定为原生 GET，6 项边界检查及八阶段零网络模板检查通过；配置清单仍使用原严格解码范围，未扩大写入或权限范围。最初读回不一致的传播/读取原因仍未确定。资产字节与平台内部遥测排空未证明，用户接受恢复日志后可能保存迟到遥测。域名切换及真实 A/B 协议尚未验收，正式第二身份和既有空闲 Session 仍缺失；T/recoveryUntil=null。[本轮恢复与读取修复证据](evidence/riffoid-native-maintenance-20261011-5599.json)。
