@@ -1,5 +1,9 @@
 # Maintenance protocol validation — acceptance pending
 
+2026-10-11 17:30:27 Asia/Shanghai：[直接切换中止及独立确认](evidence/riffoid-direct-cutover-partial-20261011.json)。用户取消完整 A/B 并选择直接切换，状态“尚未验收”。Gateway97绑定已发布/完整读回；Browser Execution一次PUT收到响应，但原严格检查因平台只读 `annotations.workers/triggered_by` 从 `version_upload` 变为 `upload` 停止，控制器已退出，原未知记录和锁保留。随后5原生GET定位注释差异，再78个GET完整独立确认三个当前Worker的代码、可写配置、namespace/容器及资产保留合同。Gateway当前 `34969c4a-d82c-4092-b026-33491dea789c`；Execution `3e96532e-dbeb-4c8c-b147-7e71939b0472`；entry `7c04a21d-c95a-4a4c-a6b8-e21282fdc1f0` 仍disabled。新业务未开放，旧完整应用中断，T/recoveryUntil仍空，登录/项目最小检查未启动。原5份历史未知保留；平台注释确认不代表业务健康。
+
+当前阻塞是用户此前保留的“未知后另行批准”决定：固定继续包已准备，仅需entry与实际T+48h的Gateway两次发布；或两次恢复旧Gateway/Execution。20项离线发布边界及实际99绑定multipart/只读注释处理检查通过；新scope尚未执行。不会重试原PUT、重跑A/B或清理记录。PR #173保持blocked，#175源码修复In review/P1；不标Done、不关Issue。
+
 2026-10-11 17:00:55 Asia/Shanghai：[两份 Observe 403 与完整恢复证据](evidence/riffoid-origin-denied-recovery-20261011-66559c.json)。本轮两次维护发布后，电脑 Safari 与手机各一次 Observe 明确返回 `403/origin_denied`，Run/entryReady/cleanup 均未发起；单独批准后的四次各一次恢复全部通过完整读回，原 Gateway/entry 代码、95/5 绑定和日志已恢复。Gateway 当前版本 `7467fa4a-dc57-4178-aae0-ee5fa00db6be`，entry `7c04a21d-c95a-4a4c-a6b8-e21282fdc1f0`；Browser Execution 本轮未发布或重读。四份历史未知记录保留，没有新未知发布。403 定位于验收页 `no-referrer` 在 Safari 的同源 POST 将原生 Origin 变为 null；最小 `same-origin` 修复与夹具校正进入 PR #173/#175，19 项相关测试、类型检查及 2 项本地 Workerd 回归通过，尚未部署或完成线上验收。
 
 用户随后明确允许取消完整 A/B 验证、改为直接切换；后续发布状态必须标为**尚未验收**，先准备正式配置及旧入口回退，切换后至少确认一次现有登录和项目访问。此前双网络协议和第二身份/空闲 Session 不再作为直接切换前提，其未覆盖范围保留。当前尚未正式切换，T/recoveryUntil 仍为空；普通业务健康仍未知。完整资产集合、平台遥测排空、账号全局零执行/费用均不作成功声明。

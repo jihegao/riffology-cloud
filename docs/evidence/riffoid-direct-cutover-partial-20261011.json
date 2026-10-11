@@ -1,0 +1,117 @@
+{
+  "observedAt": "2026-10-11T09:30:27.647Z",
+  "status": "PARTIAL_DIRECT_CUTOVER_STOPPED_POST_PUBLICATION_READONLY_ANNOTATION_MISMATCH",
+  "sourceHead": "9fca6ab73315b4618e7795b6170d75269a5b984a",
+  "releaseAcceptance": "尚未验收",
+  "userScope": {
+    "fullABCancelled": true,
+    "directCutoverAuthorized": true,
+    "minimumCheck": "one existing login and project access",
+    "paidBusinessAuthorized": false
+  },
+  "originalRestoration": {
+    "completed": true,
+    "evidence": "riffoid-origin-denied-recovery-20261011-66559c.json"
+  },
+  "formalPackageSHA256": "df2926ffdf3d9e7dc9c3b7ca4cdd77a2a19e637b400608215447ca1cc847f53a",
+  "publications": [
+    {
+      "phase": "gatewayCanonical",
+      "attempts": 1,
+      "nativeRetries": 0,
+      "fullReadbackPassed": true,
+      "version": "34969c4a-d82c-4092-b026-33491dea789c",
+      "deployment": "f3365aca-6757-467d-ac45-4b91714f01df",
+      "readbackAt": 1791710606527
+    },
+    {
+      "phase": "executionCanonical",
+      "attempts": 1,
+      "nativeRetries": 0,
+      "ackReceived": true,
+      "originalFullReadbackPassed": false,
+      "originalOutcome": "unknown; preserved",
+      "independentlyObservedVersion": "3e96532e-dbeb-4c8c-b147-7e71939b0472",
+      "independentlyObservedDeployment": "a7f6f18e-4f60-4b94-86a9-f011fa729f59"
+    }
+  ],
+  "mismatch": {
+    "field": "annotations.workers/triggered_by",
+    "original": "version_upload",
+    "postUpload": "upload",
+    "platformReadOnly": true,
+    "otherMetadataDiffs": 0,
+    "source": "five native GETs and subsequent complete independent readbacks",
+    "scope": "platform-generated audit metadata, not application health"
+  },
+  "independentConfirmation": {
+    "callerGETs": 78,
+    "gateway": {
+      "version": "34969c4a-d82c-4092-b026-33491dea789c",
+      "deployment": "f3365aca-6757-467d-ac45-4b91714f01df",
+      "readbackAt": 1791710916904
+    },
+    "entry": {
+      "version": "7c04a21d-c95a-4a4c-a6b8-e21282fdc1f0",
+      "deployment": "fda2ecd6-c8a2-4e6a-b321-2b65c23cc123",
+      "authentication": "disabled",
+      "readbackAt": 1791710970174
+    },
+    "execution": {
+      "version": "3e96532e-dbeb-4c8c-b147-7e71939b0472",
+      "deployment": "a7f6f18e-4f60-4b94-86a9-f011fa729f59",
+      "readbackAt": 1791711027647
+    },
+    "sourceAndMutableConfigMatched": true,
+    "namedResourcesAndAssetRetentionContractMatched": true,
+    "pipelineGuardsPassed": true
+  },
+  "current": {
+    "gatewayBindings": 97,
+    "executionBindings": 4,
+    "entryBindings": 5,
+    "newBusinessEntryOpen": false,
+    "oldFullApplicationAvailable": false,
+    "formalT": null,
+    "recoveryUntil": null,
+    "ordinaryBusinessHealth": "unknown"
+  },
+  "stop": {
+    "controllerTerminated": true,
+    "exitCode": 1,
+    "entryEnabledPUTs": 0,
+    "recoveryClockPUTs": 0,
+    "newProtocolRequests": 0,
+    "minimumLoginProjectCheckStarted": false,
+    "originalIntentUnknownLockRetained": true,
+    "totalHistoricalUnknownRecords": 5,
+    "automaticRetry": false,
+    "automaticRollback": false
+  },
+  "preparedDecision": {
+    "packageSHA256": "22dfc77d7f3a32e2cca50d0c463261c05c05f3cbf9fbd6d46ab1688933da0991",
+    "frozenPlanSHA256": "0747e8629064e90b5632e85002a910df333c1f33c3aea4ba7dcb6ec3104cc194",
+    "status": "AWAITING_EXPLICIT_POST_UNKNOWN_DECISION",
+    "continuePUTs": 2,
+    "continueKnownFailureRollbackPUTs": 4,
+    "restoreOldAlternativePUTs": 2,
+    "annotation": "do not upload server read-only triggered_by; preserve message/tag and verify returned audit metadata",
+    "validation": {
+      "publisherBoundaryTests": 20,
+      "passed": 20,
+      "actual99BindingMultipartClock": "passed offline fixture only",
+      "actualReadOnlyAnnotationBoundary": "passed"
+    }
+  },
+  "limitations": {
+    "globalZeroExecutionClaim": false,
+    "zeroCostClaim": false,
+    "assetFullBytesAndSetAudited": false,
+    "telemetryDrainProven": false,
+    "ordinaryBusinessAcceptance": false,
+    "fullAB": false,
+    "secondIdentity": false,
+    "SSE": false,
+    "browserExecutionIsolationAcceptance": false
+  }
+}
