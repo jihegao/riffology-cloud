@@ -1,5 +1,11 @@
 # Current release readiness — 2026-10-11
 
+2026-10-11 18:08 Asia/Shanghai：[正式配置切换及最小登录/项目检查](evidence/riffoid-direct-cutover-completed-20261011.json)。用户批准固定继续包 `22dfc77d…0991` 并保持独占发布后，仅发出 entry、Gateway 恢复配置两次各一次 PUT；196 次调用端配置 GET 全部完成，发布后 entry 22 GET、Gateway 36 GET 完整读回通过。entry 当前 `668e19e6-6f23-49e0-b4f6-06459790a496`（6绑定），Gateway `2227852e-2802-40e9-92e4-0a1b4ff8aab9`（99绑定），Execution 保持已独立确认的 `3e96532e-dbeb-4c8c-b147-7e71939b0472`（4绑定），三者原代码和原日志配置保留。实际入口发布读回时间 T 为 `2026-10-11T10:03:41.535Z`，旧入口只读原记录恢复截止 `2026-10-13T10:03:41.535Z`（北京时间10月13日18:03:41），并非自动回退旧业务。
+
+新入口 https://app.riffoid.com 已开放；原有 Google 身份在原生 Safari 完成一次正常登录，项目列表及现有项目「22」/原 Session 1 读取成功，随后返回项目列表。没有点击 Send/Run、创建身份/项目/Session 或恢复归档；没有收集账号级权威执行计数，故不宣称全局零执行/费用。该项目原模型显示尚未通过运行检查，未运行模型。这只是单一身份/项目的最小 UI 检查，身份角色/邀请路径、完整 A/B、第二身份/权限隔离、SSE、Browser Execution、付费执行、实际48小时到期与旧记录访问均未验收。上线状态 **尚未验收**；PR #173保持 draft/open、Project Acceptance/P1、M1、负责人jihegao，不标Done、不关Issue。原待决定阻塞已解除；#175最小源码修复继续 In review/P1，未合并/未部署。
+
+本轮控制器正常 exit0、pending为空，未使用回退、无新未知；原五份历史未知及原停止会话锁经哈希核对保留，原 PUT/A/B/Observe/Run/cleanup 均未重试。完整资产字节/集合、平台遥测排空及代理内部 HTTP 尝试次数仍不作成功声明。本条为当前状态，下方按时间保留历史记录。
+
 2026-10-11 17:30:27 Asia/Shanghai：[直接切换中止及独立确认](evidence/riffoid-direct-cutover-partial-20261011.json)。用户取消完整 A/B 并选择直接切换，状态“尚未验收”。Gateway97绑定已发布/完整读回；Browser Execution一次PUT收到响应，但原严格检查因平台只读 `annotations.workers/triggered_by` 从 `version_upload` 变为 `upload` 停止，控制器已退出，原未知记录和锁保留。随后5原生GET定位注释差异，再78个GET完整独立确认三个当前Worker的代码、可写配置、namespace/容器及资产保留合同。Gateway当前 `34969c4a-d82c-4092-b026-33491dea789c`；Execution `3e96532e-dbeb-4c8c-b147-7e71939b0472`；entry `7c04a21d-c95a-4a4c-a6b8-e21282fdc1f0` 仍disabled。新业务未开放，旧完整应用中断，T/recoveryUntil仍空，登录/项目最小检查未启动。原5份历史未知保留；平台注释确认不代表业务健康。
 
 当前阻塞是用户此前保留的“未知后另行批准”决定：固定继续包已准备，仅需entry与实际T+48h的Gateway两次发布；或两次恢复旧Gateway/Execution。20项离线发布边界及实际99绑定multipart/只读注释处理检查通过；新scope尚未执行。不会重试原PUT、重跑A/B或清理记录。PR #173保持blocked，#175源码修复In review/P1；不标Done、不关Issue。
