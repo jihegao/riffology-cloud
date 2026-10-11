@@ -8,8 +8,8 @@ test('exact zone ownership and pipeline metadata use the existing decoded GET re
  for(const path of ['/zones/'+z,'/zones/'+z+'/logpush/jobs','/zones/'+z+'/rulesets/phases/http_log_custom_fields/entrypoint','/accounts/'+a+'/logpush/jobs','/accounts/'+a+'/workers/observability/destinations?page=1&perPage=50','/accounts/'+a+'/workers/scripts/gateway/tails','/accounts/'+a+'/containers/applications?per_page=500','/accounts/'+a+'/containers/applications/existing'])assert.deepEqual(route({path}),{role:'gateway',kind:'configuration'});
  assert.deepEqual(route({path:'/zones/'+y}),{role:'entry',kind:'configuration'});
 });
-test('exact existing Worker deployment/version lists remain decoded identity GETs',()=>{
- for(const suffix of ['deployments','versions'])assert.deepEqual(route({path:'/accounts/'+b+'/workers/scripts/entry/'+suffix}),{role:'entry',kind:'identity'});
+test('existing Worker deployment/version lists cannot use the decoded connector',()=>{
+ for(const suffix of ['deployments','versions'])assert.equal(route({path:'/accounts/'+b+'/workers/scripts/entry/'+suffix}),null);
 });
 test('PUT and source/settings/version-detail evidence cannot use the connector',()=>{
  assert.equal(route({method:'PUT',path:'/accounts/'+a+'/workers/scripts/gateway?bindings_inherit=strict',body:Buffer.from('fixed')}),null);

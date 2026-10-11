@@ -1,4 +1,6 @@
-# Maintenance protocol validation — implementation only
+# Maintenance protocol validation — acceptance pending
+
+2026-10-11 15:07:51 Asia/Shanghai：本轮新恢复批准已执行。原 Gateway 代码、95 个绑定和原日志已恢复，版本 `6d580077-1042-4242-9ca5-665008202135` / deployment `be951946-ead9-4da9-814f-d493d2d13520`。两次原生 PUT 分别应答 5.127 秒和 6.104 秒，各一次、零自动重试/重定向；前后完整独立读回通过，临时维护配置已移除。原四个 unknown 及锁保留，本轮验收不重跑。后续部署/版本身份列表已限定为原生 GET，6 项边界检查及八阶段零网络模板检查通过；配置清单仍使用原严格解码范围，未扩大写入或权限范围。最初读回不一致的传播/读取原因仍未确定。资产字节与平台内部遥测排空未证明，用户接受恢复日志后可能保存迟到遥测。域名切换及真实 A/B 协议尚未验收，正式第二身份和既有空闲 Session 仍缺失；T/recoveryUntil=null。[本轮恢复与读取修复证据](evidence/riffoid-native-maintenance-20261011-5599.json)。
 
 2026-10-11 14:56 Asia/Shanghai 本轮记录：Gateway 单次原生 PUT 在 6.294 秒应答，随后 deployments 的 active 与 versions 的 latest 不一致，控制器立即停止并保留原 intent、unknown 和锁。另一次仅 GET 的完整核对确认临时维护版本 `ef94e323` / `2461c5da` 已生效、日志持久化关闭，既有资源保持。Entry 与 Browser Execution 未发布；A/B Observe、Run、cleanup 均未发起。本轮不重跑。两次各一次的原 Gateway 恢复载荷已冻结并离线核对，计划 SHA `ee5ce9366d1ddf5c902184e92f2fe1b037ae4f99b078051819a9bc8d88688276`，恢复尚未发出 HTTP，需本轮新批准。平台内部遥测排空及资产字节未证明；恢复日志可能保存迟到遥测。[本轮停止、只读核对与恢复包证据](evidence/riffoid-native-maintenance-20261011-5599.json)。正式切换未开始，T/recoveryUntil=null；第二受邀身份与既有空闲 Session 仍缺失。
 

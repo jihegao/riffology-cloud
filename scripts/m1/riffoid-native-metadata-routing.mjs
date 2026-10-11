@@ -1,4 +1,4 @@
-// Configuration-only decoded GET routing. PUTs and module/source evidence stay
+// Configuration-only decoded GET routing. Identity GETs, PUTs and module/source evidence stay
 // on the caller's original native transport; this helper performs no HTTP.
 import assert from 'node:assert/strict';
 import {validateControlRequest} from './riffoid-validation-transport.mjs';
@@ -24,7 +24,7 @@ export function createMetadataReadRouter(scopes){
     const pathname=path.split('?')[0];
     for(const [role,s] of frozen){
       const script='/accounts/'+s.accountId+'/workers/scripts/'+s.worker;
-      if([script+'/deployments',script+'/versions'].includes(pathname))return {role,kind:'identity'};
+      // Deployment/version identities must use the caller's native GET reader.
       const allowed=['/zones/'+s.zoneId,'/zones/'+s.zoneId+'/logpush/jobs',
         '/zones/'+s.zoneId+'/rulesets/phases/http_log_custom_fields/entrypoint',
         '/accounts/'+s.accountId+'/logpush/jobs','/accounts/'+s.accountId+'/workers/observability/destinations',
