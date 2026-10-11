@@ -1,0 +1,93 @@
+{
+  "recordedAt": "2026-10-11T06:56:39Z",
+  "status": "MAINTENANCE_BATCH_STOPPED_ORIGINAL_REQUEST_UNKNOWN_RETAINED",
+  "formalCutover": {
+    "T": null,
+    "recoveryUntil": null,
+    "accepted": false
+  },
+  "run": "riffoid_5599ecb0f04a47a1bd066638fa29defc",
+  "packetSHA256": "ad8ee0da21e07824ee7376f00fd3ff5f2bb583afe132e52355323c1f136cf95b",
+  "originalRequestId": "riffoid_5599ecb0f04a47a1bd066638fa29defc_gatewayObserve",
+  "window": {
+    "notBefore": 1791701828922,
+    "expires": 1791702128922
+  },
+  "publication": {
+    "gatewayPUTDispatches": 1,
+    "gatewayPUTAcknowledgements": 1,
+    "nativePUTElapsedMS": 6293.770916000009,
+    "automaticRetries": 0,
+    "redirectsFollowed": 0,
+    "entryPUTDispatches": 0,
+    "executionPUTDispatches": 0,
+    "controllerStopped": true
+  },
+  "protocol": {
+    "nativeAObserve": 0,
+    "nativeBObserve": 0,
+    "nativeARun": 0,
+    "nativeBRun": 0,
+    "cleanupRequests": 0,
+    "receiptsPassed": 0,
+    "accepted": false
+  },
+  "failure": {
+    "phase": "gatewayObserve-post-readback",
+    "reason": "deployments active version a00f97bc-f0da-4e04-97b0-8f96f0a26a89 differed from versions latest ef94e323-c2a7-4dc4-aea4-09c86094b3d2",
+    "rootCause": "UNCONFIRMED; transport freshness or API propagation has not been distinguished",
+    "furtherPublicationStopped": true,
+    "originalIntentUnknownAndLockRetained": true
+  },
+  "currentGatewayReadback": {
+    "version": "ef94e323-c2a7-4dc4-aea4-09c86094b3d2",
+    "deployment": "2461c5da-e60b-4d7d-a737-1fa2a9e6cfec",
+    "metadataSHA256": "5dc9e08259253940ff8736df831eaf5bbf217cf8dc186cd97f21a1b00532113a",
+    "modulesSHA256": "cb2786e3808d87b8b59369baedda26e33dd89088f0695ba30f3e3a5856127461",
+    "resourcesSHA256": "71870d9ae8cdc8235653d2a55cec532d5b05fdfe1ad44d8b3bd7c8327dc0668e",
+    "startedAt": 1791701683717,
+    "completedAt": 1791701760879,
+    "callerGETDispatches": 36,
+    "bracketVerified": true,
+    "logsPersist": false,
+    "preservationMatches": true,
+    "fullStateMatches": false,
+    "assetsRetentionContract": true,
+    "assetBytesAudited": false,
+    "identityTransport": "native one-dispatch GET; separate observation of the original request",
+    "configurationTransport": "decoded exact configuration GET; proxy HTTP attempts not exposed",
+    "restored": false
+  },
+  "recovery": {
+    "planSHA256": "ee5ce9366d1ddf5c902184e92f2fe1b037ae4f99b078051819a9bc8d88688276",
+    "approval": "PENDING_NEW_EXPLICIT_USER_APPROVAL",
+    "phases": [
+      {
+        "phase": "gatewayRestorePrivacy",
+        "requestId": "riffoid_5599ecb0f04a47a1bd066638fa29defc_recoverPrivacy",
+        "method": "PUT",
+        "bodySHA256": "7e71d5b199e209d975db1784bcdb0cc72e441985c68a9068463afb0086e5be3e",
+        "bytes": 5522814
+      },
+      {
+        "phase": "gatewayRestoreLogs",
+        "requestId": "riffoid_5599ecb0f04a47a1bd066638fa29defc_recoverLogs",
+        "method": "PUT",
+        "bodySHA256": "9fa35b36a478f7d3af64b97fa9f01856d233e488622d527adefad43cbdce0a48",
+        "bytes": 5522813
+      }
+    ],
+    "restoresOriginalBindings": 95,
+    "restoresOriginalModuleSHA256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290",
+    "offlineCheckPassed": true,
+    "networkRequestsExecuted": 0,
+    "productionWritesExecuted": 0,
+    "retainsAllUnknownJournals": true,
+    "resumesProtocol": false
+  },
+  "limits": [
+    "No platform-internal telemetry drain claim; restoring logs can preserve late telemetry.",
+    "Zero browser-protocol dispatches does not prove zero general traffic, global cloud execution or cost.",
+    "Formal authenticated acceptance still lacks a second invited identity without target-project permission and an existing idle Session for read-only SSE."
+  ]
+}
