@@ -11,6 +11,9 @@ export interface AuthConfiguration {
   googleClientId: string;
   googleClientSecret: string;
   googleOAuthEgress?: GoogleOAuthEgressConfiguration;
+  readOnlySession?: boolean;
+  sharedTransportRateLimit?: boolean;
+  verifiedEntryIp?: boolean;
 }
 /** No email/password endpoint, public signup bypass, cookie session cache or account linking. */
 export function authOptions(config: AuthConfiguration) {
@@ -32,10 +35,10 @@ export function authOptions(config: AuthConfiguration) {
     user:{modelName:'auth_user',changeEmail:{enabled:false},deleteUser:{enabled:false}},
     account:{modelName:'auth_account',accountLinking:{enabled:false},encryptOAuthTokens:true,storeStateStrategy:'database' as const},
     verification:{modelName:'auth_verification'},
-    session:{modelName:'auth_session',expiresIn:60*60*8,updateAge:60*15,cookieCache:{enabled:false},
+    session:{modelName:'auth_session',expiresIn:60*60*8,updateAge:60*15,cookieCache:{enabled:false},...(config.readOnlySession?{deferSessionRefresh:true}:{}),
       additionalFields:{platformVersion:{type:'number' as const,required:true,defaultValue:1,input:false}}},
     rateLimit:{enabled:true,storage:'database' as const,modelName:'auth_rate_limit',window:60,max:30},
-    advanced:{cookiePrefix:'riffology',useSecureCookies:url.protocol==='https:'},
+    advanced:{cookiePrefix:'riffology',useSecureCookies:url.protocol==='https:',...(config.verifiedEntryIp?{ipAddress:{ipAddressHeaders:['x-riffoid-client-ip']}}:config.sharedTransportRateLimit?{ipAddress:{ipAddressHeaders:[]}}:{})},
     // Deliberately omit raw error logging; identity tokens/provider payloads are private.
     logger:{disabled:true},
     databaseHooks:{

@@ -1,0 +1,57 @@
+{
+  "status": "NON_EXECUTABLE_UNFROZEN_TEMPLATE",
+  "scope": "Forward single-origin rollback after replay class migration. Not a Wrangler config or deployment payload.",
+  "gateway": {
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "workerName": "riffology-m1-gateway-staging",
+    "codeEntrypoint": "services/gateway/forward-rollback.ts",
+    "restoreAPP_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
+    "removeVarsTogether": [
+      "APP_TRANSPORT_ORIGIN",
+      "TWO_ACCOUNT_AUTH_MODE",
+      "LEGACY_RECOVERY_ORIGIN",
+      "LEGACY_RECOVERY_UNTIL"
+    ],
+    "mustPreserve": {
+      "allOriginalBindingsVarsSecretsAssetsContainersRoutes": "Copy complete verified frozen production configuration; this file is not that snapshot",
+      "ENTRY_REPLAY": {
+        "className": "EntryReplayGuard",
+        "namespaceId": null,
+        "action": "Retain EXACT pre-rollback namespace; never create/recreate/delete/clear"
+      },
+      "allDurableObjectExports": "Original production exports plus EntryReplayGuard",
+      "migrationHistory": null,
+      "migrationAction": "Retain exact post-signature migration history; no new/renamed/deleted class lifecycle change",
+      "dataIdentityHistoryLedgerPolicyPins": "Unchanged; trial December31 and M1 October20"
+    },
+    "compatibilityFlags": [
+      "nodejs_compat",
+      "nodejs_compat_do_not_populate_process_env",
+      "enable_request_signal"
+    ],
+    "compatibilityDate": "2026-09-06",
+    "buildCommand": "node scripts/m1/build-riffoid-forward-rollback.mjs",
+    "localBuildOutput": ".local/riffoid-forward-rollback/worker.mjs + manifest.json (not a frozen production package)"
+  },
+  "entry": {
+    "action": "Stop new admission; TWO_ACCOUNT_AUTH_MODE=disabled on the existing entry",
+    "deleteKeysOrWorker": false
+  },
+  "execution": {
+    "APP_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
+    "singleFrameAncestor": "https://m1.riff-demo.gaojihe.cn",
+    "assetsBindingsWorkerOrigin": "Restore frozen original full package, no extra ancestor or namespace change"
+  },
+  "oauth": {
+    "originalClientAndOldCallback": "Retain exact verified existing values; no new client, scopes or secret"
+  },
+  "requiredProductionFreezeMissing": [
+    "Actual replay namespace ID after separately approved creation and complete migration history",
+    "Complete current Gateway and Execution configuration, assets hashes and bindings, preserving original93 bindings plus replay",
+    "Approved target DNS/routes/WAF/Transform and rollback order",
+    "Current Google client/callback/origin/domain list",
+    "Built forward rollback Worker and asset hash/version and actual platform validation"
+  ],
+  "offlineVerification": "Build and test source entrypoint; local synthetic same namespace retention/replay, original auth/identity/CSRF/assets behavior. Does not freeze or deploy a production artifact.",
+  "noProductionKeyResourcePermissionSecurityOrDeploymentChanges": true
+}

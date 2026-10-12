@@ -1,0 +1,23 @@
+{
+  // Review-only variable overlay, not a Wrangler deployment configuration.
+  // Apply to a freshly read FULL existing-account configuration only after
+  // explicit online approval; preserve every existing binding, secret and gate.
+  "gatewayVariables": {
+    "APP_ORIGIN": "https://app.riffoid.com",
+    "APP_TRANSPORT_ORIGIN": "",
+    "TWO_ACCOUNT_AUTH_MODE": "disabled",
+    "LEGACY_RECOVERY_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
+    "LEGACY_RECOVERY_UNTIL": ""
+  },
+  "executionWorkerVariables": {
+    "APP_ORIGIN": "https://app.riffoid.com"
+  },
+  "unresolved": [
+    "both actual Cloudflare account IDs and role/zone ownership readback",
+    "original Gateway's distinct exact public HTTPS transport origin/route",
+    "approved recovery expiry in exact UTC ISO format",
+    "current complete Gateway/Execution versions, origins, asset hashes and bindings",
+    "Google callback registration and original OAuth egress/WAF interaction",
+    "coordinated rollback configuration packet and authorized smoke identity/project"
+  ]
+}

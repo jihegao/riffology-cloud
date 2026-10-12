@@ -1,0 +1,253 @@
+{
+  "schema": "riffoid-entry-review-offline-v1",
+  "recordedUTC": "2026-10-08T08:12:27.496988+00:00",
+  "scope": "Preparation and offline verification only; draft PR173. Not deployed, platform acceptance missing.",
+  "authorization": "User2026-10-08T06:44:24Z implementation/local synthetic tests/push; subsequent review fixes and rollback templates requested; production credentials/resources/config separately confirmed",
+  "baseline": {
+    "localHead": "a3672b3bddbb34b9fa1700b2468f8e01d4fd2952",
+    "remoteHead": "3dac7695497f9722ccbdd9aff9745075331cad4b",
+    "tree": "29f05ee5bbac9e8fcccda7c5b40fab9a2251e248",
+    "main": "25609953f5c3b69dcb44e520d7e7ed1253d18fe4",
+    "brandPR170Excluded": true
+  },
+  "sourceSha256": {
+    "services/entry/abort.ts": "e6dab51637321b1c9db81882b9a139edadb61b2e5eac9aa5ce8575a61b16a7c6",
+    "services/entry/index.ts": "dfbf9a7d0914d5087f6e8a27f460d8c4bc649f7d35ba422c34812f65d6392724",
+    "services/entry/signature.ts": "1183a3444d1c29032933456c55691a77ba55ebf223e7fb27932e85155003ee67",
+    "services/entry/replay.ts": "d9584df12ba6eb2939444cd4e5b3cb11a10a400fbb5250eb9e791d31da20889b",
+    "services/gateway/index.ts": "5f606c136a0be6abdafcf2bdcce0fd29af115959ac50b31b15a17057ca76a4a0",
+    "services/gateway/auth.ts": "e3ba29536e57c1f148933e68a855a7bda48b05253e33f83d934f58af40e1770e",
+    "services/gateway/forward-rollback.ts": "dff59377cc87fe16409e007056e3f4a2d3a3b392966a557c8a2200fb9b890d18",
+    "infra/wrangler.gateway-local.jsonc": "9e458db5956b9320985033db8da1c8cbd763ab8bca4e44b398d2fde03a7e1bc6",
+    "infra/wrangler.riffoid-entry.template.jsonc": "4a1568ee3c15315ea02a8d84d104010085567fe9c953e39a8021e8d8d933fe37",
+    "infra/riffoid-forward-rollback.request.jsonc": "6dde705d81d3cfafe00faf0d7c84e261b7d88b11c4d062c8bc5a69bfa95f4138",
+    "scripts/m1/build-riffoid-forward-rollback.mjs": "4dc66430d66cfbf985d528f403ae3bf8751fecef21a6d903a62dd6ed726609dd",
+    "tests/m1/riffoid-signature.test.ts": "0f78b34dbf99bd09d28b14fa8bddffca15cf5bf5d49e9026083db861d582d785",
+    "tests/m1/riffoid-entry-workerd.test.mjs": "bcf07119985b8f55b6b716cd8dc75d86ad6bcf3613b829ba2b747a87865aceac",
+    "tests/m1/riffoid-cancellation-workerd.test.mjs": "6c0b4a308dab2f57b92da9366f59eeca1b7b308e14bee1c78497a2f729e1c85d",
+    "tests/m1/riffoid-forward-rollback-workerd.test.mjs": "8765cb61871ea5ee526c9a82d03ef010ce89f4f44f1bcb6aecc81e86e540b425"
+  },
+  "logSha256": {
+    ".local/review-typecheck.log": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+    ".local/review-http-final.log": "950e12731f2398fa68271780f7d67170dccadcdd4806921f3b0ba227f7ad8130",
+    ".local/review-forward-rollback.log": "904cac4345441eaa7e50de1d37a170e9f406ad361ffb2c13423567cce5aec783",
+    ".local/review-final-m1.log": "99f15a7c841fd49e22769be9b37205b565751e7b87f8a7b077f9fa3add98cb1c",
+    ".local/review-final-m3.log": "58a2a8b6e0dcbb65489940e1f1cdb9235e348f81f7487317eaf9b415ded9833e"
+  },
+  "environment": {
+    "OS": "macOS",
+    "Node": "26.10.0",
+    "Python": "3.9.6",
+    "network": "Direct loopback Workerd sockets; Node HTTP adapter retains exact signed headers, propagates actual upstream socket cancellation with downstream TCP reset; no production service binding, TLS or public account traffic",
+    "synthetic": "Only temporary runtime ECDSA keys, native IP, invited identity, Google/authority/producer fixtures. Existing dependencies/browser cache; no install."
+  },
+  "verification": {
+    "typecheckExitCode": 0,
+    "fullM1ExitCode": 0,
+    "fullM3ExitCode": 0,
+    "suiteStages": {
+      "M1": {
+        "tests": [
+          348
+        ],
+        "pass": [
+          348
+        ],
+        "fail": [
+          0
+        ],
+        "skipped": [
+          0
+        ],
+        "sumPassed": 348,
+        "sumFailed": 0,
+        "sumConditionalSkipped": 0
+      },
+      "M3": {
+        "tests": [
+          957,
+          20,
+          13,
+          92
+        ],
+        "pass": [
+          945,
+          20,
+          13,
+          92
+        ],
+        "fail": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "skipped": [
+          12,
+          0,
+          0,
+          0
+        ],
+        "sumPassed": 1070,
+        "sumFailed": 0,
+        "sumConditionalSkipped": 12
+      }
+    },
+    "fullM1Passed": 348,
+    "fullM3Passed": 1070,
+    "fullM3ConditionalSkipped": 12,
+    "failed": 0,
+    "noSubsequentProductionSourceEdits": true,
+    "otherSuites": "Prior full check UI21/M0350+1skip/M2869/Issue7330/Python8 remain historical; not repeated or claimed current full check.",
+    "focusedOverlap": "5 actual HTTP cases +1 forward rollback integration and unit cases are included in M1, never added to full counts."
+  },
+  "correctedOldEvidence": {
+    "file": "docs/evidence/riffoid-entry-signature-offline-20261008.json",
+    "unresolvedRpc": "Old promise never resolved and abort before claim; did not prove late persistence. Renamed precisely.",
+    "manualCancellation": "Old AbortController/body.cancel fixtures did not prove native incoming HTTP abort or outgoing fetch cancellation. Historical source/log hashes retained; current bridges supersede them."
+  },
+  "simulatedLateClaim": {
+    "test": "simulated store: RPC already issued may persist after timeout/cancellation; same proof replay denied, no auth or retry",
+    "store": "Explicit deferred fake Set store, not DO",
+    "sequence": "RPCissued→timeout/cancel rejection with1claim/0auth/0persist→release→1persist/0retry→explicit same proof entry_replay_denied/2claims/0auth"
+  },
+  "actualLateClaim": {
+    "storage": "Actual local Workerd SQLite EntryReplayGuard sync production transaction",
+    "timingInjection": "Fixture subclass delays first RPC2300ms and fixture-only ctx.waitUntil keeps it alive; production claim has no delay/waitUntil/background job",
+    "issuedProof": "Query actual DO fixture_issued table before client reset, not just a Gateway-side counter",
+    "sequence": "Actual client TCP reset or2s verifier timeout→admission rejected→actual SQLite row appears→exact same raw HTTP proof returns403 entry_replay_denied",
+    "authEvidence": "Test-only build probe at original createAuth entry remains0, D1 auth_rate_limit rows0; source probe is not shipped",
+    "retryEvidence": "one initial entry hop/claim; second claim only explicit negative replay, no automatic fetch/claim retry",
+    "notProven": "Production Cloudflare persistence/latency/scheduling/costs; fixture waitUntil must not be confused with production behavior"
+  },
+  "cancellation": {
+    "compatibilityDateUnchanged": "2026-09-06",
+    "entryFlags": [
+      "global_fetch_strictly_public",
+      "enable_request_signal"
+    ],
+    "gatewayFlagsBefore": [
+      "nodejs_compat",
+      "nodejs_compat_do_not_populate_process_env"
+    ],
+    "gatewayFlagsAfter": [
+      "nodejs_compat",
+      "nodejs_compat_do_not_populate_process_env",
+      "enable_request_signal"
+    ],
+    "hiddenRequestSignalPassthrough": false,
+    "standardBridge": "Incoming signal → standard new AbortController; ordinary signal copied through body request rebuild; listener/response reader survive to EOF/cancel; pull-driven chunks with highWaterMark0, no eager/full buffer/retry",
+    "realResetUpload": "Native abort only with enable flag; no entry hop, auth probe or auth rate rows, no retry",
+    "realResetRpc": "Both native abort counters1, actual RPC issued, late SQLite row and replay denied; auth probe0/rate rows0",
+    "realOpenSse": "Actual HTTP first chunk, bound Last-Event-ID12, production Entry/Gateway handler and turnEventStream; both native abort1, observer polls stop, single hop/claim, zero auth",
+    "sseFixtureBoundary": "Production turnEventStream injected through test assets; synthetic authorize/replay/scope, not full real user Catalog application SSE acceptance",
+    "originalSingleOriginImpact": "Real single-origin Gateway SSE native abort/observer stop after enable flag; original user/session/expiry, wrong-Origin CSRF denial, assets CSP preserved in rollback test",
+    "preHeaderFIN": {
+      "observedEntryNativeAborts": 0,
+      "observedGatewayNativeAborts": 0,
+      "delayedFixtureAuthCalls": 0,
+      "delayedFixtureAuthRateRows": 0,
+      "delayedFixtureNoncePersisted": true,
+      "immediateCancellationProven": false,
+      "limitation": "2s timeout prevents auth in delayed fixture only. Faster RPC/auth could continue after FIN. Reset/open-SSE evidence does not prove universal pre-header FIN cancellation."
+    }
+  },
+  "forwardRollback": {
+    "entrypoint": "services/gateway/forward-rollback.ts",
+    "request": "infra/riffoid-forward-rollback.request.jsonc",
+    "buildCommand": "node scripts/m1/build-riffoid-forward-rollback.mjs",
+    "localManifest": {
+      "status": "LOCAL_BUILD_NOT_PRODUCTION_FROZEN",
+      "source": "services/gateway/forward-rollback.ts",
+      "sha256": "319121c411ed2c45e5f952784adbc4823e0e36dabe3d0ee7298b4db8befbce5a",
+      "exports": [
+        "ContainerProxy",
+        "EntryReplayGuard",
+        "G5ControlledWindow",
+        "G5TenantModelBudget",
+        "InvitedRunCapacity",
+        "ManagedProductRuntime",
+        "ModelProxyService",
+        "ObserverExecutor",
+        "PiDeveloperBudget",
+        "PrivateBetaCapacity",
+        "ProductTurnRuntime",
+        "ProductionModelBudget",
+        "ProjectRuntime",
+        "ProjectToolSandbox",
+        "RevisionStore",
+        "ServiceRun",
+        "ServiceRuntime",
+        "ServiceSandbox",
+        "SimulationSandbox",
+        "TenantModelBudget",
+        "TenantQuota",
+        "ToolArtifactStore",
+        "ToolBridgeAgent",
+        "ToolBridgeService",
+        "TrustedPiCapacity",
+        "TrustedPiSandbox",
+        "WorkspaceAgent",
+        "default"
+      ],
+      "compatibilityDate": "2026-09-06",
+      "compatibilityFlags": [
+        "nodejs_compat",
+        "nodejs_compat_do_not_populate_process_env",
+        "enable_request_signal"
+      ],
+      "replayNamespaceId": null,
+      "migrationHistory": null,
+      "productionConfigurationSnapshot": null,
+      "assetsHashes": null,
+      "platformValidation": "not run"
+    },
+    "sameExportsAsGateway": true,
+    "localSameNamespaceReplaySurvivesWorkerRestart": true,
+    "sameOriginalUserAndSessionAndExpiry": true,
+    "originalCSRFAssetsSingleOriginSseVerified": true,
+    "guard503": "Wrong canonical/any retained topology var/missing binding; namespace identity must separately be frozen and verified, not inferred from binding shape",
+    "removeVars": [
+      "APP_TRANSPORT_ORIGIN",
+      "TWO_ACCOUNT_AUTH_MODE",
+      "LEGACY_RECOVERY_ORIGIN",
+      "LEGACY_RECOVERY_UNTIL"
+    ],
+    "restoreOrigin": "https://m1.riff-demo.gaojihe.cn",
+    "retain": "All original DO exports/93bindings/resources/data plus exact ENTRY_REPLAY namespace/migration history; no delete/recreate/clear/snapshot rollback",
+    "productionFrozen": false,
+    "missing": [
+      "Actual replay namespace ID and complete post-migration history",
+      "Complete current Gateway/Execution/entry configuration and bindings/secret references/assets hashes/version",
+      "Exact DNS/routes/WAF/Transform rollback order, full Google public client/callback/origins/domains",
+      "Production-built package and actual platform validation"
+    ]
+  },
+  "independentSelfReview": {
+    "fixed": [
+      "Native cleanup signal may be ignored by subrequests; use standard bridge, enable flag both sides, no hidden flag/date assumption",
+      "Miniflare fetcher/front-proxy masks socket cancellation; use direct sockets and actual Node HTTP adapter",
+      "Node fetch adds signed allowlist headers, can falsely reject at header hash; exact raw HTTP replay now asserts entry_replay_denied and second claim",
+      "Old unresolved/pre-claim test mislabeled late persistence",
+      "Raw pre-migration Worker rollback forbidden after DO lifecycle migration; source forward rollback preserves export and local namespace"
+    ],
+    "remaining": [
+      "Pre-header FIN native immediate cancellation not proven",
+      "Actual two-account IP/WAF/transforms/public TLS/header stability/Google/BETTER_AUTH/Catalog revocation/SSE/Execution platform acceptance",
+      "Complete frozen production forward rollback artifact absent; current build is local only"
+    ]
+  },
+  "productionChanges": {
+    "deployment": false,
+    "domainsDNSWAFTransformsOAuthCSP": false,
+    "credentialsKeysPermissionsNamespaces": false,
+    "installsPaidRunsMergeDataMigration": false
+  },
+  "preserved": {
+    "identityHistoryLedgerNamespaceActorPins": "Original; no live reads/writes to data",
+    "trialUntilUTC": "2026-12-31T15:59:59.999Z",
+    "M1ReviewAt": "2026-10-20 23:59:59.999 Asia/Shanghai",
+    "recovery": "Approved48h starts only actual successful cutover; cutoverUTC/until remain null; original8h session not extended; local static Runs original-byte export persists after server deadline"
+  },
+  "publication": "Same draft PR173; final exact remote head/tree/local equality and CI readback reported in PR/final, not invented in self-referential source evidence"
+}
