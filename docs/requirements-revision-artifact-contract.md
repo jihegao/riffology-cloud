@@ -211,6 +211,10 @@ FrozenRunInput 规范内容生成 runBindingSha256；实际 backend runtime/adap
 
 registry 精确列出 model/schema/profile/op/RNG/单位/数据 schema、native/browser、观测/预算、参数作用阶段和 cancel/release 能力。Agent 给匹配理由，平台再次严格检查；缺口明确拒绝，不删规则、换后端/随机语义或用估算动画冒充计算。
 
+按 2026-10-12 的建模方向调整，Mesa 是可选依赖；Agent 自主实现算法与 Python/JS，固定六包或源码关键词不能作为领域建模准入。依赖校验依据实际环境、完整传递闭包及锁定摘要，新增依赖须经过可复现解析、打包和目标运行时验证。旧 profile/包继续按原版本解释；本提案不直接修改已部署的依赖与网络策略。Browser 的纯 Python wheel 与 WASM 二进制 wheel 支持须分别检查，参见 [Pyodide 加载包文档](https://pyodide.org/en/stable/usage/loading-packages.html)，native 成功不能替代 browser 成功。
+
+Agent 的实现/调试循环在原任务预算内进行：实际运行、接收文件/元素/帧/字段诊断、修正、再验证，最终冻结依赖与 Revision。候选自报 trace 不证明代码执行；调试工具和目标运行时需保留可核对记录。网络/身份隔离、时限/输出预算及释放检查继续保留，未知执行沿原请求隔离核对，不能借调试自动重放。该循环和诊断工具尚待 #183 实现，未宣称当前 Managed 已支持。
+
 | 实际计算范围 | 接入边界 |
 | --- | --- |
 | CPython/Pyodide stdlib、Mesa固定 profile | 已有链；当前标量/grid/lane合同仍适用。JS 消费真实输出，不另造指标计算。 |
