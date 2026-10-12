@@ -57,7 +57,7 @@ associations and all 15 account container configurations. Only deployment
 annotations differ in script settings. These comparisons do not establish
 container instance health or real turn release behavior.
 
-All 91 live Gateway assets match local SHA-256: 23 web files and 68 immutable
+All 91 Gateway assets listed in this release manifest match local SHA-256: 23 web files and 68 immutable
 Preview assets. Only `app.js` and `i18n.js` differ from the preceding brand release;
 all eight saved runtime profiles remain available. All three isolated frame
 responses match their pinned hashes and CSP; query, Cookie, Authorization and an

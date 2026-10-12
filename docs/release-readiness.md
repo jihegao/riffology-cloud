@@ -15,7 +15,7 @@ release's complete domain/brand source.
 
 M1 passed 348, M2 passed 921, UI passed 21, and typecheck passed. M2/UI inputs
 are unchanged from the tested composite; counts overlap with focused checks.
-CI was not executed. All 91 live assets match pinned SHA-256, all three isolated
+CI was not executed. All 91 manifest-listed live assets match pinned SHA-256; all three isolated
 frames and four rejection checks pass. Full platform snapshots preserve 99
 bindings, 23 SQLite exports, 5 Gateway container associations, 15 account container
 configurations and existing policies. Entry, Browser Execution and www versions

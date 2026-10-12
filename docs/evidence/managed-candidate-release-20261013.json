@@ -721,7 +721,8 @@
     "staticReadback": "managed-candidate-release-20261013/static-readback.json",
     "realModelPackageIdentity": null,
     "productionRevisionIdentity": null,
-    "reasonNoProductionRevision": "No new authenticated model save/run occurred during this release; the deployed Worker/asset identities do not substitute for a production model Revision/package receipt."
+    "reasonNoProductionRevision": "No new authenticated model save/run occurred during this release; the deployed Worker/asset identities do not substitute for a production model Revision/package receipt.",
+    "scope": "The 91 entries of this release asset manifest were checked; this is not enumeration of every historical/platform asset namespace."
   },
   "validation": {
     "environment": {
