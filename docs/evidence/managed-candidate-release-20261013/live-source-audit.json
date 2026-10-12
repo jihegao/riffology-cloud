@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "scope": "offline read-only source/bundle provenance; no network or Worker evaluation",
+  "observedAt": "2026-10-12T16:50:07.401Z",
+  "source": {
+    "baseline": "8e5f9b149dca2273da63f1810d21bf5e39c58de7",
+    "tree": "d7f40f660ab09e57c900d576940f092df7738d54",
+    "historicalManifestRef": "9c6d8d4f6b83c47dd8741ac9153b9ef20b5d0c5a",
+    "historicalObjectAvailable": false,
+    "laterRef": "04f00d66c970e491aec0a4a893d5d92ce7eacc79",
+    "changedGatewayDependencyInputs": [
+      {
+        "path": "services/entry/replay.ts",
+        "baselineBlob": "b4f48545fd7a90b958b6990e682c4168320ff279",
+        "laterBlob": "5d615df63a6700a08be0c5c125baff2074faa812"
+      },
+      {
+        "path": "services/entry/signature.ts",
+        "baselineBlob": "33a3026c2e2b9b54917709064e5042077d497a94",
+        "laterBlob": "e27e97d1bfd0d259fab3f496544fb02e8ad93418"
+      },
+      {
+        "path": "services/gateway/index.ts",
+        "baselineBlob": "a156301f00238e4fff69a621b6592abe83d4d89b",
+        "laterBlob": "3b74d4fe3b18df10f65c7b4a395c50d65b423fd1"
+      }
+    ],
+    "otherRepositoryInputsEqualToLaterRef": 261,
+    "workspaceBlob": "d11d1bc305c8fea416609ca870cf12707b75d5a0",
+    "workspaceSameBlobAtLaterRef": true,
+    "dependencyLockSHA256": "9243ccf1179d9a487059ed507474543c2dc3c7beb9c1456f93ee94d77aaaa4cd"
+  },
+  "builder": {
+    "esbuild": "0.28.1",
+    "node": "v26.10.0",
+    "options": {
+      "entryPoints": [
+        "services/gateway/index.ts"
+      ],
+      "bundle": true,
+      "write": false,
+      "metafile": true,
+      "format": "esm",
+      "platform": "neutral",
+      "target": "es2024",
+      "mainFields": [
+        "module",
+        "main"
+      ],
+      "conditions": [
+        "workerd",
+        "worker",
+        "browser"
+      ],
+      "external": [
+        "cloudflare:workers",
+        "node:*"
+      ],
+      "logLevel": "silent"
+    },
+    "sourceLoading": "all services inputs are immutable git show baseline bytes",
+    "historicalModulePathLabelPrefix": "../../../../../apps/riffology-cloud/",
+    "pathLabelRestorations": 1039
+  },
+  "bundle": {
+    "downloadedLocalPath": "Retained local exact old module: primary/.local/riffoid-brand-20261013/gateway-exact.worker.mjs",
+    "rawLive": {
+      "bytes": 5497752,
+      "sha256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290"
+    },
+    "memoryOutput": {
+      "bytes": 5460348,
+      "sha256": "588820d21da3a38e42269a63676d0a0ee2161c7dc8253f286322c86907886df2"
+    },
+    "restoredGeneratedPathLabels": {
+      "bytes": 5497752,
+      "sha256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290"
+    },
+    "fullByteEquality": true
+  },
+  "runtime": {
+    "snapshotScope": "local frozen platform readbacks; no new online query",
+    "brandVersion": "92f2ffa0-07db-4e14-b81f-45b1b54f0ec1",
+    "bindingCount": 99,
+    "sqliteExports": {
+      "EntryReplayGuard": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "G5ControlledWindow": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "G5TenantModelBudget": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "InvitedRunCapacity": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ManagedProductRuntime": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "PiDeveloperBudget": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "PrivateBetaCapacity": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ProductTurnRuntime": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ProductionModelBudget": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ProjectRuntime": {
+        "type": "durable-object",
+        "storage": "sqlite",
+        "container": "riffology-m1-project-staging"
+      },
+      "ProjectToolSandbox": {
+        "type": "durable-object",
+        "storage": "sqlite",
+        "container": "riffology-m3-project-tools-staging"
+      },
+      "RevisionStore": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ServiceRun": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ServiceRuntime": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ServiceSandbox": {
+        "type": "durable-object",
+        "storage": "sqlite",
+        "container": "riffology-m3-service-staging"
+      },
+      "SimulationSandbox": {
+        "type": "durable-object",
+        "storage": "sqlite",
+        "container": "riffology-phase1-simulation"
+      },
+      "TenantModelBudget": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "TenantQuota": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ToolArtifactStore": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "ToolBridgeAgent": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "TrustedPiCapacity": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      },
+      "TrustedPiSandbox": {
+        "type": "durable-object",
+        "storage": "sqlite",
+        "container": "riffology-m3-trusted-pi-staging"
+      },
+      "WorkspaceAgent": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      }
+    },
+    "sqliteCount": 23,
+    "missingSQLiteExports": [],
+    "parsedCodeExports": [
+      "ContainerProxy",
+      "EntryReplayGuard",
+      "G5ControlledWindow",
+      "G5TenantModelBudget",
+      "InvitedRunCapacity",
+      "ManagedProductRuntime",
+      "ModelProxyService",
+      "ObserverExecutor",
+      "PiDeveloperBudget",
+      "PrivateBetaCapacity",
+      "ProductTurnRuntime",
+      "ProductionModelBudget",
+      "ProjectRuntime",
+      "ProjectToolSandbox",
+      "RevisionStore",
+      "ServiceRun",
+      "ServiceRuntime",
+      "ServiceSandbox",
+      "SimulationSandbox",
+      "TenantModelBudget",
+      "TenantQuota",
+      "ToolArtifactStore",
+      "ToolBridgeAgent",
+      "ToolBridgeService",
+      "TrustedPiCapacity",
+      "TrustedPiSandbox",
+      "WorkspaceAgent",
+      "default"
+    ],
+    "extraCodeExports": [
+      "ContainerProxy",
+      "ModelProxyService",
+      "ObserverExecutor",
+      "ToolBridgeService",
+      "default"
+    ],
+    "containerAssociations": [
+      {
+        "class_name": "ProjectRuntime",
+        "name": "riffology-m1-project-staging"
+      },
+      {
+        "class_name": "ProjectToolSandbox",
+        "name": "riffology-m3-project-tools-staging"
+      },
+      {
+        "class_name": "TrustedPiSandbox",
+        "name": "riffology-m3-trusted-pi-staging"
+      },
+      {
+        "class_name": "ServiceSandbox",
+        "name": "riffology-m3-service-staging"
+      },
+      {
+        "class_name": "SimulationSandbox",
+        "name": "riffology-phase1-simulation"
+      }
+    ],
+    "containerAssociationsCount": 5
+  },
+  "limits": [
+    "Historical manifest sourceCommit is not present in local Git; 8e5f is proved an executable-equivalent baseline, not a claim about original build authorship.",
+    "No namespace ID, image digest, target configuration, static asset namespace, authentication, or paid execution is revalidated online by this audit.",
+    "04f adds undeployed maintenance validation code; a source match against 04f alone does not preserve the current live executable.",
+    "Container associations are five on this Worker; that count does not describe all account container applications."
+  ],
+  "productionChanges": 0,
+  "networkRequests": 0,
+  "workerExecutions": 0,
+  "auditScript": {
+    "localPath": "/private/tmp/riffology192-live-source-audit/audit-live-source.mjs",
+    "sha256": "c0f3ccb19fe956de6acafa8632efe17ffb9a31a6ceea8e24f2b4d3c91581566e"
+  }
+}
