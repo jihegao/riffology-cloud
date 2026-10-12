@@ -20,13 +20,27 @@ const workerSource=`
  import {RevisionStore as BaseRevisionStore} from './services/turn-runtime/revision-store.ts';
  import {revisionStoreActorName} from './services/turn-runtime/revision-store-client.ts';
  import {managedCandidateRecoveryFiles} from './services/turn-runtime/managed-candidate.ts';
- export class RevisionStore extends BaseRevisionStore {async faultObserveForTest(enabled){this.ctx.storage.kv.put("test:observe-fault",enabled);await this.ctx.storage.sync();}async observe(input){if(this.ctx.storage.kv.get("test:observe-fault"))throw Error("synthetic-observe-unavailable");return super.observe(input);}async faultCommitForTest(mode){this.ctx.storage.kv.put('test:commit-fault',mode);await this.ctx.storage.sync();}async commitsForTest(){return this.ctx.storage.kv.get('test:commit-count')??0;}async commit(input){const mode=this.ctx.storage.kv.get('test:commit-fault');this.ctx.storage.kv.delete('test:commit-fault');this.ctx.storage.kv.put('test:commit-count',(this.ctx.storage.kv.get('test:commit-count')??0)+1);await this.ctx.storage.sync();if(mode==='before')throw Error('synthetic-commit-before-write');const result=await super.commit(input);if(mode==='after')throw Error('synthetic-commit-lost-ack');return result;}}
+ import {TurnDispatcher} from './services/turn/dispatcher.ts';
+ import {TurnJournal} from './services/turn/journal.ts';
+ import {MemoryTurnStore} from './services/turn/store.ts';
+ export class RevisionStore extends BaseRevisionStore {async faultObserveForTest(enabled){this.ctx.storage.kv.put("test:observe-fault",enabled);await this.ctx.storage.sync();}async observe(input){if(this.ctx.storage.kv.get("test:observe-fault"))throw Error("synthetic-observe-unavailable");return super.observe(input);}async faultCommitForTest(mode){this.ctx.storage.kv.put('test:commit-fault',mode);await this.ctx.storage.sync();}async commitsForTest(){return this.ctx.storage.kv.get('test:commit-count')??0;}async commit(input){const mode=this.ctx.storage.kv.get('test:commit-fault');this.ctx.storage.kv.delete('test:commit-fault');this.ctx.storage.kv.put('test:commit-count',(this.ctx.storage.kv.get('test:commit-count')??0)+1);await this.ctx.storage.sync();if(mode==='before')throw Error('synthetic-commit-before-write');const result=await super.commit(input);if(mode==='late-accounting')await new Promise(resolve=>setTimeout(resolve,5));if(mode==='after')throw Error('synthetic-commit-lost-ack');return result;}}
  export class ManagedProductRuntime extends BaseManagedProductRuntime {async legacyStopForTest(){const b=this.ctx.storage.kv.get('budget');b.stopped='managed-execution-unknown';this.ctx.storage.kv.put('budget',b);await this.ctx.storage.sync();}async partialClosureForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:"turn:"})){if(!row.deletion){row.closed=false;this.ctx.storage.kv.put(key,row);}}await this.ctx.storage.sync();}async tickForTest(){await super.alarm();}async pendingClosedForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:"turn:"})){row.receipt=null;row.checkpoint=null;row.closed=true;this.ctx.storage.kv.put(key,row);}await this.ctx.storage.sync();}async seedUnreservedForTest(input,withBinding){const identity={scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation},managedInput={identity,actor:input.actor,message:input.message,base:input.base};this.ctx.storage.kv.put('turn:'+identity.turnId,{input,managedInput,reserved:false,operation:null,observation:null,checkpoint:null,persistenceError:null,closed:false,cleanupRequested:false,cost:null,cancelRequested:false,receipt:null});await this.ctx.storage.sync();if(withBinding)await new SqlExecutionBindingStore(this.ctx.storage).reserve({schemaVersion:1,identity,backend:'managed-agents',inputSha256:await turnDigest(managedInput),reservedAt:Date.now(),remoteSessionId:null,remoteTurnId:null});}async interruptedCleanupForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:'turn:'})){row.cleanupRequested=true;this.ctx.storage.kv.put(key,row);}await this.ctx.storage.sync();throw Error('synthetic-cleanup-interrupted');}async expireForTest(){const budget=this.ctx.storage.kv.get('budget');budget.startedAt=Date.now()-7200001;this.ctx.storage.kv.put('budget',budget);await this.ctx.storage.sync();}}
  export default {async fetch(request,env){
   const b=await request.json(),s=b.input?.scope??b.scope,stub=env.MANAGED.getByName(b.wrong?'wrong-actor':managedProductActorName(s));
   try{
    let value;
-   if(b.action==='legacy-stop')value=await stub.legacyStopForTest();
+   if(b.action==='dispatch-through-journal'){
+    const store=new MemoryTurnStore(),journal=new TurnJournal(store),calls=[];let runtimeReceipt;
+    const session=(await journal.createSession(s,b.actor,'pipeline-session',{title:'Managed pipeline'})).session;
+    await journal.submit(s,b.actor,session.id,'pipeline-turn',{message:'Synthetic candidate pipeline'});
+    // Delay the real commit ACK so ManagedProduct's unmodified report is
+    // strictly later than the R2 Revision, independent of millisecond rounding.
+    await env.REVISION_STORE.getByName(revisionStoreActorName(s)).faultCommitForTest('late-accounting');
+    const runtime={async accept(input){calls.push('accept');runtimeReceipt=await stub.accept(input);return runtimeReceipt;},async observe(input){calls.push('observe');return stub.observe(input);},async cancel(input){calls.push('cancel');return stub.cancel(input);}};
+    const dispatcher=new TurnDispatcher(journal,runtime),turn=await dispatcher.tick(s,s.workspaceGeneration),idle=await dispatcher.tick(s,s.workspaceGeneration);
+    value={turn,idle,state:store.snapshot(),calls,runtimeReceipt};
+   }
+   else if(b.action==='legacy-stop')value=await stub.legacyStopForTest();
    else if(b.action==='partial-closure')value=await stub.partialClosureForTest();
    else if(b.action==='alarm')value=await stub.tickForTest();
    else if(b.action==='pending-closed')value=await stub.pendingClosedForTest();
@@ -85,6 +99,19 @@ async function fixture(testing=false){
  return {calls,sessions,highCost(){inputTokens=2000000;},async call(body:unknown):Promise<any>{const response=await mf.dispatchFetch('http://test/',{method:'POST',body:JSON.stringify(body)});assert.equal(response.status,200);return response.json();},async restart(){await mf.dispose();mf=new Miniflare(options);},async close(){await mf.dispose();await rm(directory,{recursive:true,force:true});},loseDeleteAck(){lostDeleteAck=true;},failAbsence(value=true){failAbsentReads=value;},unknownUsage(){unknownUsage=true;},loseInput(){lostInput=true;},loseCreate(){lostCreate=true;},hideOriginal(){hideOriginal=true;},failReads(value=true){failReads=value;},dropInputs(count=1){dropInputs=count;},setCandidate(value:unknown){candidateOutput=JSON.stringify(value);},invalidCandidate(value=true){candidateOutput=value?JSON.stringify({schemaVersion:1,spec,files:{'model/model.py':'invalid'}}):candidate;},deleteUnconfirmed(){deleteUnconfirmed=true;},failDelete(){deleteFails=true;},failArtifacts(value=true){artifactFails=value;},run(){running=true;}};
 }
 const posts=(f:Awaited<ReturnType<typeof fixture>>)=>f.calls.filter(c=>c.method==='POST');
+for(const version of [1,2] as const)test('Managed Workerd candidate v'+version+' passes its actual late accounting receipt through Dispatcher and Journal',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  if(version===2)f.setCandidate(managedCandidateFixture('airport','javascript-canvas'));
+  const result=await f.call({action:'dispatch-through-journal',scope,actor});assert.equal(result.ok,true,JSON.stringify(result));
+  const {turn,state,runtimeReceipt,idle,calls}=result.value;assert.equal(turn.status,'completed');assert.equal(turn.persistenceOutcome,'saved');assert.deepEqual(turn.checkpoint,runtimeReceipt.checkpoint);
+  assert.deepEqual(state.workspaceHead,turn.checkpoint);assert.deepEqual(state.sessions[turn.sessionId].head,turn.checkpoint);assert.equal(state.activeTurnId,null);assert.equal(state.releaseHold,null);assert.equal(idle,null);assert.deepEqual(calls,['accept']);
+  const report=runtimeReceipt.events.at(-1);assert.ok(report.at>turn.checkpoint.committedAt);assert.equal(report.payload.candidateValidation.schemaVersion,version);assert.equal(report.payload.candidateValidation.execution,'not-recomputed');
+  assert.deepEqual(state.events.find((event:any)=>event.eventId===report.eventId).payload,report.payload);
+  const count=posts(f).length,identity={scope,sessionId:turn.sessionId,turnId:turn.id,dispatchId:turn.dispatchId,generation:turn.runtimeGeneration};await f.restart();
+  const observed=await f.call({action:'observe',input:{...identity,capacityLease:turn.resourceLease}});assert.deepEqual(observed.value,runtimeReceipt);assert.equal(posts(f).length,count);
+  const restored=await f.call({action:'restore',input:identity,receipt:turn.checkpoint});assert.equal(restored.ok,true,JSON.stringify(restored));assert.equal(restored.value.receipt.revisionId,turn.checkpoint.revisionId);
+ }finally{await f.close();}
+});
 test('Managed Workerd saves and restores v2 model/Spec/JS roles, then preserves that view for a legacy continuation',{timeout:60000},async()=>{
  const f=await fixture(true);try{
   const candidate=managedCandidateFixture('airport','javascript-canvas');f.setCandidate(candidate);
