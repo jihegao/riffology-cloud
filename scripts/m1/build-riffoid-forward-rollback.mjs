@@ -1,0 +1,12 @@
+import {build} from 'esbuild';
+import {mkdir,writeFile,readFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+const directory='.local/riffoid-forward-rollback';
+const dates=JSON.parse(await readFile(new URL('../../infra/riffoid-compatibility-dates.json',import.meta.url),'utf8'));
+const result=await build({entryPoints:['services/gateway/forward-rollback.ts'],bundle:true,write:false,metafile:true,format:'esm',platform:'neutral',target:'es2024',mainFields:['module','main'],conditions:['workerd','worker','browser'],external:['cloudflare:workers','node:*'],logLevel:'silent'});
+const code=result.outputFiles[0].text;
+const sha256=createHash('sha256').update(code).digest('hex');
+await mkdir(directory,{recursive:true});
+await writeFile(directory+'/worker.mjs',code);
+await writeFile(directory+'/manifest.json',JSON.stringify({status:'LOCAL_BUILD_NOT_PRODUCTION_FROZEN',source:'services/gateway/forward-rollback.ts',sha256,exports:Object.values(result.metafile.outputs)[0].exports.sort(),compatibilityDate:dates.gatewayCompatibilityDate,compatibilityDateSource:dates.gatewaySource,compatibilityFlags:['nodejs_compat','nodejs_compat_do_not_populate_process_env','enable_request_signal'],replayNamespaceId:null,migrationHistory:null,productionConfigurationSnapshot:null,assetsHashes:null,platformValidation:'not run'},null,2)+'\n');
+console.log(JSON.stringify({status:'LOCAL_BUILD_NOT_PRODUCTION_FROZEN',directory,sha256}));

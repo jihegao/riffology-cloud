@@ -1,0 +1,95 @@
+{
+  "status": "NON_EXECUTABLE_FUTURE_POST_STATE_FULL_BASELINE_RECEIPTS_AND_WINDOW_MISSING",
+  "mustNotDeploy": true,
+  "sourceEvidenceFile": "../../evidence/riffoid-entry-baseline-and-log-privacy-20261009.json",
+  "accountId": "3232ebc7e9bb0199b92e3d70b07825af",
+  "historicalActualBaselineVersion": "c110d7a7-fc81-4bb1-b27a-4ca8147a7fff",
+  "historicalActualBaselineDeployment": "5e920993-ee9d-4a7e-b6fe-39ef494f35fd",
+  "historicalPercentage": 100,
+  "parentReadUTCMinute": "2026-10-09T07:26Z",
+  "expectedActualPostValidationVersion": null,
+  "expectedActualPostValidationDeployment": null,
+  "completeActualPostSnapshot": null,
+  "fullOriginalSettingsBindingsRawReceipt": null,
+  "quietPublisherWindowApproval": null,
+  "sourceModule": {
+    "name": "worker.js",
+    "file": ".local/riffoid-entry-baseline-readback-20261009/modules/entry.disabled.api-extracted-equivalent.worker.mjs",
+    "bytes": 16197,
+    "sha256": "7a71a528d3ee7014621848e16801aeddd12c8f39edd3431720d089f337bb7dc4",
+    "locallyDerivedFromExactDeliveredBytesByRemovingOneLF": true,
+    "parentModuleDigestMatches": true,
+    "productionMultipartRawReceiptRequiredBeforeUse": true,
+    "fileLocation": "review-only local relative to repository root; no module uploaded with this manifest"
+  },
+  "originalDeliveredModule": {
+    "file": "docs/artifacts/riffoid-entry-disabled-20261008/entry.worker.mjs",
+    "bytes": 16198,
+    "sha256": "856eb92c777ee04a569dfe53f5bec44d90566341e9c2d3632bf7f4c75de9a0eb"
+  },
+  "restoreBindingsReviewOnly": [
+    {
+      "name": "APP_ORIGIN",
+      "type": "plain_text",
+      "text": "https://app.riffoid.com"
+    },
+    {
+      "name": "APP_TRANSPORT_ORIGIN",
+      "type": "plain_text",
+      "text": "https://riffoid-transport.gaojihe.cn"
+    },
+    {
+      "name": "ENTRY_SIGNING_KEY_ID",
+      "type": "plain_text",
+      "text": "riffoid-entry-20261008-a"
+    },
+    {
+      "name": "TWO_ACCOUNT_AUTH_MODE",
+      "type": "plain_text",
+      "text": "disabled"
+    },
+    {
+      "name": "ENTRY_SIGNING_PRIVATE_JWK",
+      "type": "inherit",
+      "version_id": "latest"
+    }
+  ],
+  "originalBindingCount": 5,
+  "removeTemporaryConfig": "RIFFOID_VALIDATION_CONFIG_JSON",
+  "nativeBoundaryMarkerBaseline": "not in complete five-binding parent summary; confirm exact raw receipt before removing any subsequently added marker",
+  "compatibilityDate": "2026-09-06",
+  "compatibilityFlags": [
+    "global_fetch_strictly_public",
+    "enable_request_signal"
+  ],
+  "workersDevEnabled": false,
+  "previewURLsEnabled": false,
+  "keepExistingSecretValueByReferenceOnly": true,
+  "observabilityPreserveExactActualBaseline": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true
+    },
+    "redact_query_string": false,
+    "traces": {
+      "enabled": false,
+      "persist": true
+    }
+  },
+  "tailConsumers": [],
+  "logpush": false,
+  "noUploaderOrDomainDNSOAuthPermissionOperation": true,
+  "noActualDeploymentReceipt": true,
+  "notFullCloudflareAPIPayload": true,
+  "worker": "riffoid-entry",
+  "modeToRestore": "disabled",
+  "logPrivacyRestoreRequiresValidationInvocationDrain": true,
+  "nativeBoundaryMarkerSetByThisTask": false,
+  "cleanupRequiresOwnActualResourceIDs": true,
+  "temporaryChannelOrPeerNotCreated": true,
+  "uploaderIncluded": false
+}

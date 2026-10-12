@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "scope": "preparation-and-offline-verification-only",
+  "productionReady": false,
+  "source": {
+    "repository": "jihegao/riffology-cloud",
+    "baseMain": "e55104bec3966a2c6f096ba9910712732979f055",
+    "brandPR": 170,
+    "brandHead": "9799c5c80c2c980a4c34ea446ce800dd1139f880",
+    "brandTreeVerifiedAgainstLocal": "9d3169fad9dfffdd9e805faa91e026f45ed81e61",
+    "originalCheckoutUnchanged": true,
+    "separateBranch": "codex/riffoid-two-account-prep-20261007"
+  },
+  "environment": {
+    "node": "26.10.0",
+    "typescript": "7.0.2",
+    "betterAuth": "1.7.3",
+    "ciNodeConfigured": "25.3.0",
+    "dependencies": "existing local node_modules reused; no installation",
+    "workerd": "local loopback with local D1 only, outbound denied, telemetry disabled"
+  },
+  "verification": [
+    {
+      "command": "node --test tests/m1/riffoid-two-account.test.ts tests/m1/auth-gateway.test.ts tests/m1/google-oauth-egress.test.ts",
+      "exitCode": 0,
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0,
+      "newBoundaryTests": 12,
+      "existingRegressions": 5,
+      "logSha256": "644c69f26b11d9d84945d4f5bbad22c50f891f791e3f97eb3b0a66ee7defebea"
+    },
+    {
+      "command": "node --test tests/m1/riffoid-two-account-workerd.test.mjs",
+      "exitCode": 0,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "outboundHandlerInvocations": 0,
+      "logSha256": "8fad8b91f16d5da0c8bca20f9c5227319759d331fed29e213d592bee6cc428f7"
+    },
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --cached --check",
+      "exitCode": 0
+    }
+  ],
+  "failedAttemptsCorrected": [
+    "Node invitation fixture hash violated schema; replaced with fixed valid 64-hex fixture hash, no live data",
+    "Workerd initial loopback EPERM; offline local-port execution approved",
+    "Workerd initial anonymous session read returned 503 because local fixture auth schema absent; original local schema initialized and test passed",
+    "Executor transport temporarily disconnected; recovered and checks completed"
+  ],
+  "requestScope": {
+    "cloudflareApiRequests": 0,
+    "liveApplicationRequests": 0,
+    "liveGoogleOAuthRequests": 0,
+    "productionTurnRunProviderToolRequests": 0,
+    "credentialValuesRead": false,
+    "externalReads": "official documentation and GitHub only",
+    "caveat": "No production authoritative counters read. Local outbound 0 is not proof of production state or zero cloud infrastructure fees."
+  },
+  "preservation": {
+    "trialReviewAt": "2026-12-31T15:59:59.999Z",
+    "m1AcceptanceDeadline": "2026-10-20 Asia/Shanghai",
+    "internalIdentityAndHistory": "no production source/settings/data writes; original account resources, user mappings, project/Revision/Run/archive identity, policy pins, usage, reservations and audit retained"
+  },
+  "historicalNotFresh": {
+    "gatewayVersion": "76380e93-a2ab-4cd8-9340-e3587d3956f6",
+    "deployment": "b0d46e8a-77bb-42cf-93d6-0d36d756b537",
+    "bindings": 93,
+    "containerApplications": 15,
+    "source": "Issue104/PR169, not re-read in this task"
+  },
+  "accountIds": {
+    "newAccount": null,
+    "newZone": null,
+    "oldAccountTemplateCandidate": "8b0d70250211aa10d89e20605a1c7e5e",
+    "actualIdsVerified": false
+  },
+  "productionChanges": [],
+  "remainingBlockers": [
+    "production Gateway canonical/transport/recovery routing has not been implemented",
+    "actual old-account public transport hostname and new account/zone/resource IDs unverified",
+    "complete live settings/assets/bindings and rollback group unverified",
+    "real public cross-account fetch/TLS/WAF/Access/loopback and SSE behavior unverified",
+    "real Google callback/state and browser Cookie/identity/second-user isolation unverified",
+    "precise Cloudflare/OAuth/CSP/route cutover and rollback approval required",
+    "remote CI unverified; no rerun requested",
+    "Delivery Project page unavailable; no project status mutation"
+  ],
+  "files": {
+    "scripts/m1/riffoid-public-hop.ts": "ca1e9abf376d2c03f08fb366da380762582eb92a5002617d3ec87aca00243e24",
+    "tests/m1/riffoid-two-account.test.ts": "81bf34286ab2599976060c89ad7b63d3be9bb2a597eace68e432e81bf37b84f4",
+    "tests/m1/riffoid-two-account-workerd.test.mjs": "dee6c5ad3cf3a7eb833381215e6c065a7bdeb161f045159583fe3cce4fcf1b1f"
+  }
+}

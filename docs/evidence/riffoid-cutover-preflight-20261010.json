@@ -1,0 +1,259 @@
+{
+  "schemaVersion": 1,
+  "dateShanghai": "2026-10-10",
+  "sourcePR": 173,
+  "sourceHead": "bbd39aedd4cb08730cd40bf7ca121ca19cf8b7b0",
+  "status": "PREFLIGHT_REFRESHED_CANDIDATES_BUILT_CUTOVER_NOT_STARTED",
+  "workerSnapshots": [
+    {
+      "worker": "riffology-m1-gateway-staging",
+      "observedAt": "2026-10-09T20:37:35.810Z",
+      "version": "6edef49b-ca5c-4c97-bcec-5c141b079bb1",
+      "bindingCount": 95,
+      "settingsBindingsMatchVersion": true,
+      "settingsSHA256": "370ffe651c0d6319ad5c5222ffe3f1fb0b55a23f13fa1b4a9257ccc74bab2f0b",
+      "versionResourcesSHA256": "5e0ead658b321e642ff052a835b89f7afa676b6bec87d4e5198cf3de73798d81",
+      "modules": [
+        {
+          "name": "index.js",
+          "bytes": 5497752,
+          "sha256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290"
+        }
+      ],
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "redact_query_string": false,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "persist": true,
+          "invocation_logs": true
+        },
+        "traces": {
+          "enabled": false,
+          "persist": true,
+          "head_sampling_rate": 1
+        }
+      }
+    },
+    {
+      "worker": "riffoid-entry",
+      "observedAt": "2026-10-09T20:37:44.942Z",
+      "version": "c110d7a7-fc81-4bb1-b27a-4ca8147a7fff",
+      "bindingCount": 5,
+      "settingsBindingsMatchVersion": true,
+      "settingsSHA256": "85d91de9fcc7386def82878ed95cf9bcff250d31f49ea7edb856525978d34d52",
+      "versionResourcesSHA256": "d851b8b92ec098fba6cd09b0a0c4fef89c52c6282b1d930104049926aa718a7c",
+      "modules": [
+        {
+          "name": "worker.js",
+          "bytes": 16197,
+          "sha256": "7a71a528d3ee7014621848e16801aeddd12c8f39edd3431720d089f337bb7dc4"
+        }
+      ],
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "redact_query_string": false,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "persist": true,
+          "invocation_logs": true
+        },
+        "traces": {
+          "enabled": false,
+          "persist": true,
+          "head_sampling_rate": 1
+        }
+      }
+    },
+    {
+      "worker": "riffology-browser-execution",
+      "observedAt": "2026-10-09T20:37:40.094Z",
+      "version": "c94df077-02a1-460f-8158-e47a338e68af",
+      "bindingCount": 4,
+      "settingsBindingsMatchVersion": true,
+      "settingsSHA256": "c467da2c4dd0da91c65f2e5148e67bae93c1ec470feb14513f82ba3e0e4ac3f7",
+      "versionResourcesSHA256": "93f3961823548209afd0eb59ddbcf8eef6586f6f812e5ea72c7a6a4b4d88f501",
+      "modules": [
+        {
+          "name": "index.js",
+          "bytes": 49003,
+          "sha256": "b76b05f96d345a0ecf280cdb4414c1dd0c56bf71041dc3c72199db8e8c6c07c1"
+        }
+      ],
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "redact_query_string": false,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "persist": true,
+          "invocation_logs": true
+        },
+        "traces": {
+          "enabled": false,
+          "persist": true,
+          "head_sampling_rate": 1
+        }
+      }
+    }
+  ],
+  "pipelines": [
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/logpush/jobs",
+      "status": 200,
+      "success": true,
+      "itemCount": 0
+    },
+    {
+      "path": "/zones/c97b548800561fada1a912c234696db1/logpush/jobs",
+      "status": 200,
+      "success": true,
+      "itemCount": 0
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/observability/destinations",
+      "status": 200,
+      "success": true,
+      "itemCount": 0
+    },
+    {
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/tails",
+      "status": 200,
+      "success": true,
+      "itemCount": 0
+    },
+    {
+      "path": "/accounts/3232ebc7e9bb0199b92e3d70b07825af/logpush/jobs",
+      "status": 200,
+      "success": true,
+      "itemCount": 0
+    },
+    {
+      "path": "/zones/b0b0079990e13eb20a17a2d3c41403b8/logpush/jobs",
+      "status": 200,
+      "success": true,
+      "itemCount": 0
+    },
+    {
+      "path": "/accounts/3232ebc7e9bb0199b92e3d70b07825af/workers/observability/destinations",
+      "status": 200,
+      "success": true,
+      "itemCount": 0
+    },
+    {
+      "path": "/accounts/3232ebc7e9bb0199b92e3d70b07825af/workers/scripts/riffoid-entry/tails",
+      "status": 200,
+      "success": true,
+      "itemCount": 0
+    }
+  ],
+  "waf": {
+    "appRule": {
+      "id": "90b1eaa4897640d8bbc2b264387e4946",
+      "action": "block",
+      "enabled": true,
+      "expression": "http.host eq \"app.riffoid.com\" and cf.worker.upstream_zone ne \"\""
+    },
+    "transportRule": {
+      "id": "af184f41fd024d6a9180486a9e98d03a",
+      "action": "block",
+      "enabled": true,
+      "expression": "http.host eq \"riffoid-transport.gaojihe.cn\" and cf.worker.upstream_zone ne \"riffoid.com\""
+    },
+    "newZonePseudoIPv4": "off",
+    "bothZoneManagedTransformsAllDisabled": true,
+    "bothZonesRulesetListsHaveNoCustomLogPhase": true,
+    "nativeVisitorTwoIPObservation": "pending"
+  },
+  "resourceObservation": {
+    "gatewaySQLiteNamespaces": 23,
+    "containerApplicationsObserved": 15,
+    "containerConfigurationInstancesAreNotLiveActivityCounts": true,
+    "globalInFlightInventory": "not obtained"
+  },
+  "publicCheck": {
+    "newApp": {
+      "origin": "https://app.riffoid.com",
+      "observedUTC": "2026-10-09T20:32:32Z",
+      "status": 503,
+      "error": "two_account_auth_disabled",
+      "validTLS": true
+    },
+    "oldApp": {
+      "origin": "https://m1.riff-demo.gaojihe.cn",
+      "observedUTC": "2026-10-09T20:45:34Z",
+      "client": "curl",
+      "status": 200,
+      "cacheControl": "no-store",
+      "frameAncestors": "none",
+      "connectSrc": "self",
+      "executionFrameOrigin": "https://riffology-browser-execution.jihe-gao.workers.dev"
+    },
+    "pythonClient": {
+      "oldAppStatus": 403,
+      "transportStatus": 403,
+      "executionRootStatus": 403,
+      "oldCurlControlStatus": 200,
+      "interpretation": "Client response difference observed; no root/frame availability claim from Python responses, and transport 403 alone is not Gateway verifier acceptance"
+    },
+    "executionFrameActualCSP": "not fetched in this turn"
+  },
+  "localVerification": {
+    "typecheck": "passed",
+    "targetedNodeAndWorkerd": {
+      "passed": 45,
+      "failed": 0,
+      "skipped": 0,
+      "includesReal30SecondFixtureExpiry": true,
+      "liveCloudAcceptance": false
+    },
+    "firstSandboxAttempt": "Local listener EPERM; same test selection rerun with local-listener permission then all 45 passed"
+  },
+  "candidate": {
+    "directory": ".local/riffoid-cutover-20261010/candidates",
+    "gateway": {
+      "bytes": 5471940,
+      "sha256": "b1fe23f2501a2ce3e77710ef48fe09e90feead6a4d860c7f11a365ae9e718b25",
+      "maintenanceBindingCount": 98
+    },
+    "entry": {
+      "bytes": 30740,
+      "sha256": "113f1c0c86b2ab4ddc382839a3a20281fc1147173fe12bd2a0c865a7bdfa16c7",
+      "observationOnlyBindingCount": 6,
+      "nativeMarkerIncluded": false
+    },
+    "gatewayRestoreBindingCount": 95,
+    "entryRestoreBindingCount": 5,
+    "executionUnchangedForProtocolOnly": true,
+    "nonExecutable": true,
+    "configRunWindowIPs": null,
+    "actualPostPublicationGuard": null,
+    "originalRollbackModuleBytesDownloadedLocally": false,
+    "sourceCodeNotChangedInThisTurn": true
+  },
+  "remaining": [
+    "Two distinct actual native public exits and both observation receipts",
+    "Quiet single-publisher window; 45–120 second bounded protocol run",
+    "Explicit acceptance of temporary two-Worker persist=false diagnostic loss and guarded restoration",
+    "Semantically read-only current in-flight observation",
+    "Exact baseline rollback module payload retained before publication",
+    "Original Google identity/browser and remaining formal acceptance"
+  ],
+  "accessLimitations": {
+    "macLocked": true,
+    "deliveryProject": "CLI existing token lacks read:project; browser attempt timed out; no scope expansion",
+    "latestPRAndLocalSourceRead": true
+  },
+  "productionWrites": 0,
+  "newResourceCreated": false,
+  "productionPrivateKeyRead": false,
+  "modelToolTurnRunRequestsSubmitted": 0,
+  "globalZeroActivityOrCostClaim": false,
+  "formalCutoverT": null,
+  "recoveryUntil": null
+}

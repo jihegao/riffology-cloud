@@ -1,0 +1,99 @@
+{
+  "status": "GOOGLE_CALLBACK_AND_AUTHORIZED_DOMAIN_USER_CONFIRMED_SAVED_OAUTH_ACCEPTANCE_PENDING",
+  "recordedUTC": "2026-10-09T00:46:59.018631+00:00",
+  "google": {
+    "source": "User report relayed by parent; no independent Google console/API read",
+    "reportedUTC": "2026-10-09T00:44:41Z",
+    "userExactQuote": "Google callback 已保存. 同意补授权域名",
+    "clientId": "316292203808-3s6ijnugpiq6hk25vmkj0hgokt2diq86.apps.googleusercontent.com",
+    "callback": {
+      "addOnly": "https://app.riffoid.com/api/auth/callback/google",
+      "savedConfirmedByUser": true,
+      "independentReadback": false,
+      "oauthAcceptanceProven": false
+    },
+    "authorizedDomains": {
+      "fromPreviouslyReported": [
+        "gaojihe.cn"
+      ],
+      "approvedAddOnly": [
+        "riffoid.com"
+      ],
+      "approvedTo": [
+        "gaojihe.cn",
+        "riffoid.com"
+      ],
+      "approvedUTC": "2026-10-09T00:44:41Z",
+      "userHasBeenGuidedByParent": true,
+      "applicationStatus": "USER_CONFIRMED_SAVED_NOT_INDEPENDENTLY_READ",
+      "savedConfirmed": true,
+      "independentReadback": false,
+      "savedConfirmedByUserUTC": "2026-10-09T00:45:56Z",
+      "savedConfirmationMessageId": "Sentinel_035f7cd63b2c81918eb469da77469ff0",
+      "savedConfirmationExactQuote": "授权域名已保存"
+    },
+    "unchangedAuthorizedScope": [
+      "originalRedirectCallbacks",
+      "authorizedJavaScriptOrigins",
+      "homePage",
+      "privacyPolicy",
+      "termsOfService",
+      "clientId",
+      "clientSecret",
+      "scopes"
+    ],
+    "officialRequirement": {
+      "url": "https://support.google.com/cloud/answer/15549049?hl=en",
+      "scope": "Domains used in Branding or OAuth client configurations must first be registered in Branding Authorized domains",
+      "previousPlanOmissionAcknowledged": true,
+      "originalFixedApprovalPacketRewritten": false
+    },
+    "noNewOauthCredentialOrScope": true,
+    "oauthActualAcceptance": "NOT_RUN"
+  },
+  "newEntryPublicConfiguration": {
+    "source": "Parent connector PATCH followed by independent GET; this documentation task did not call production",
+    "recordedUTC": "2026-10-09T00:38:00Z",
+    "accountId": "3232ebc7e9bb0199b92e3d70b07825af",
+    "workerName": "riffoid-entry",
+    "publicBinding": {
+      "name": "ENTRY_SIGNING_KEY_ID",
+      "type": "plain_text",
+      "text": "riffoid-entry-20261008-a"
+    },
+    "prior4BindingsPreservedViaInherit": true,
+    "totalBindings": 5,
+    "secret": {
+      "name": "ENTRY_SIGNING_PRIVATE_JWK",
+      "type": "secret_text",
+      "present": true,
+      "valueRead": false
+    },
+    "TWO_ACCOUNT_AUTH_MODE": "disabled",
+    "compatibilityDate": "2026-09-06",
+    "compatibilityFlags": [
+      "global_fetch_strictly_public",
+      "enable_request_signal"
+    ],
+    "privatePublicMatchProven": false
+  },
+  "originalApprovalHistory": {
+    "commit": "a0ab4881d585831d0b0d7e220d69632c681a8c46",
+    "packetPath": "docs/riffoid-production-approval-packet.md",
+    "localGitBlobUnchanged": "14468622c168a96238fa27b55eb36d26b50cf247"
+  },
+  "remainingGates": [
+    "Current old-zone DNS/routes/WAF/Transform readback and precise approved transport WAF",
+    "Approved transport/TLS and single-origin safety stage; no writes by this task",
+    "Actual replay namespace ID and complete post-resource forward rollback freeze",
+    "Real signature-key match/source/native-IP/replay/auth/CSRF/SSE/isolatedExecution acceptance before coordinated switch"
+  ],
+  "productionWritesByThisDocumentationTask": 0,
+  "parentReportedPublicConfigWriteRecordedOnly": true,
+  "transportBoundByThisTask": false,
+  "replayAllocatedByThisTask": false,
+  "entryEnabledByThisTask": false,
+  "privateKeyGeneratedReadTransmittedInjectedByThisTask": false,
+  "recoveryClockStartedByThisTask": false,
+  "paidExecution": false
+}

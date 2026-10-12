@@ -1,0 +1,12 @@
+{
+  "entryFixtureCompatibilityDate": "2026-09-06",
+  "gatewayCompatibilityDate": "2026-09-09",
+  "gatewayDateAction": "Retain verified live Gateway date; never inherit the entry fixture date",
+  "gatewaySource": {
+    "snapshot": "docs/evidence/riffoid-two-account-publish-readback-20261008.json",
+    "jsonPointer": "/cloudflareReadOnly/gateway/scriptRuntime/compatibility_date",
+    "versionId": "aeddf112-a2be-45da-868c-ed576c55d5ec",
+    "freshLiveReadbackUTC": "2026-10-08T08:40:44.103Z"
+  },
+  "productionChanges": false
+}

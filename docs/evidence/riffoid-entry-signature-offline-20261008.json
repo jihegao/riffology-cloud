@@ -1,0 +1,260 @@
+{
+  "schema": "riffoid-signed-entry-offline-v1",
+  "date": "2026-10-08",
+  "recordedUTC": "2026-10-08T07:26:34.749615+00:00",
+  "authorization": "User2026-10-08T06:44:24Z approved signed-entry/replay implementation, local synthetic tests and push; production key creation/configuration separately confirmed",
+  "baseline": {
+    "localHead": "f72790fa0950ebdd3bf90e37828089b9ef012d6b",
+    "remoteHead": "fa91b8454c104ba8c3fffae4f732bf996e48602f",
+    "tree": "36d8ed5539f84431f8087c1458827880c2fedeba",
+    "main": "25609953f5c3b69dcb44e520d7e7ed1253d18fe4",
+    "brandPR170Excluded": true,
+    "productionPR172174Preserved": true
+  },
+  "sourceSha256": {
+    "services/entry/index.ts": "c861f918af93ec58b6062660638abda0787bd06b6defe98acfef5045ab52ecda",
+    "services/entry/signature.ts": "1183a3444d1c29032933456c55691a77ba55ebf223e7fb27932e85155003ee67",
+    "services/entry/replay.ts": "d9584df12ba6eb2939444cd4e5b3cb11a10a400fbb5250eb9e791d31da20889b",
+    "services/gateway/index.ts": "ecf306c1f6bd07538c74769eb5c97248c507c6eb28955c9d6da4515ac7e50ddf",
+    "services/gateway/auth.ts": "e3ba29536e57c1f148933e68a855a7bda48b05253e33f83d934f58af40e1770e",
+    "services/gateway/origins.ts": "006599ab63494f808344dd1ba9eb7fded543ca343c9868fac28f715cf2391719",
+    "services/gateway/transport-headers.ts": "40b632329739eb703b101180094270a45694d00939414ab5bb8a7136f2e15cef"
+  },
+  "verification": {
+    "fullCheckExitCode": 0,
+    "fullCheckStage": "Full repository check passed before final proof-size/raw-URI guards. Final affected completeM1/M3 plus typecheck rerun afterwards; other suites unchanged.",
+    "finalChangedCodeRevalidation": "Historical proof-size/rawURI stage passed then; superseded by current cancellation/rollback source changes and affected full M1/M3 rerun in current evidence",
+    "finalM1": {
+      "passed": 341,
+      "failed": 0,
+      "skipped": 0
+    },
+    "finalM3": {
+      "passed": 1070,
+      "failed": 0,
+      "conditionalSkipped": 12
+    },
+    "fullOtherSuites": {
+      "uiPassed": 21,
+      "m0Passed": 350,
+      "m0Skipped": 1,
+      "m2Passed": 869,
+      "issue73Passed": 30,
+      "pythonPassed": 8
+    },
+    "focusedCountsOverlapFull": true,
+    "logs": {
+      "signed-full-check.log": {
+        "sha256": "e8d4aef2dd507de2438306b5c5b27034eaa95ee8b0f124d949fb5dfca41f0679",
+        "bytes": 285729,
+        "summaries": [
+          {
+            "tests": 21,
+            "pass": 21,
+            "fail": 0,
+            "skipped": 0
+          },
+          {
+            "tests": 351,
+            "pass": 350,
+            "fail": 0,
+            "skipped": 1
+          },
+          {
+            "tests": 339,
+            "pass": 339,
+            "fail": 0,
+            "skipped": 0
+          },
+          {
+            "tests": 869,
+            "pass": 869,
+            "fail": 0,
+            "skipped": 0
+          },
+          {
+            "tests": 957,
+            "pass": 945,
+            "fail": 0,
+            "skipped": 12
+          },
+          {
+            "tests": 20,
+            "pass": 20,
+            "fail": 0,
+            "skipped": 0
+          },
+          {
+            "tests": 13,
+            "pass": 13,
+            "fail": 0,
+            "skipped": 0
+          },
+          {
+            "tests": 92,
+            "pass": 92,
+            "fail": 0,
+            "skipped": 0
+          },
+          {
+            "tests": 30,
+            "pass": 30,
+            "fail": 0,
+            "skipped": 0
+          }
+        ]
+      },
+      "signed-final-m1.log": {
+        "sha256": "54d70bfc88c899b45fee265b3775369ef16aad40495d79496f21046d6df5cf65",
+        "bytes": 36308,
+        "summaries": [
+          {
+            "tests": 341,
+            "pass": 341,
+            "fail": 0,
+            "skipped": 0
+          }
+        ]
+      },
+      "signed-final-m3.log": {
+        "sha256": "544a787ff59a1946e4e8d603ebacab784849eac5c5cb8784917b3140184c733d",
+        "bytes": 112638,
+        "summaries": [
+          {
+            "tests": 957,
+            "pass": 945,
+            "fail": 0,
+            "skipped": 12
+          },
+          {
+            "tests": 20,
+            "pass": 20,
+            "fail": 0,
+            "skipped": 0
+          },
+          {
+            "tests": 13,
+            "pass": 13,
+            "fail": 0,
+            "skipped": 0
+          },
+          {
+            "tests": 92,
+            "pass": 92,
+            "fail": 0,
+            "skipped": 0
+          }
+        ]
+      },
+      "signed-focused.log": {
+        "sha256": "5e86f2a8302b75fb2ea6bf7ef445fbd645accd3c93817ce8d0a4b68f89314a6a",
+        "bytes": 2028,
+        "summaries": [
+          {
+            "tests": 17,
+            "pass": 17,
+            "fail": 0,
+            "skipped": 0
+          }
+        ]
+      },
+      "signed-integrated-focused.log": {
+        "sha256": "c05d8ccc014a7912a952ceeebc2d95519ddc8560bbf11ec4db8cd6f142beb4d5",
+        "bytes": 831,
+        "summaries": [
+          {
+            "tests": 5,
+            "pass": 5,
+            "fail": 0,
+            "skipped": 0
+          }
+        ]
+      },
+      "signed-replay-workerd.log": {
+        "sha256": "78687743d5044d4ac7d5d2996d6b74670c0eb5d5aaab9bba09e1b68c41e433c6",
+        "bytes": 250,
+        "summaries": [
+          {
+            "tests": 1,
+            "pass": 1,
+            "fail": 0,
+            "skipped": 0
+          }
+        ]
+      },
+      "signed-auth-workerd.log": {
+        "sha256": "4cfc02d0335a31527c12a6d392f3adaccedd85575607196c0db96b7bb6b49608",
+        "bytes": 402,
+        "summaries": [
+          {
+            "tests": 2,
+            "pass": 2,
+            "fail": 0,
+            "skipped": 0
+          }
+        ]
+      },
+      "signed-typecheck.log": {
+        "sha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+        "bytes": 29,
+        "summaries": []
+      }
+    }
+  },
+  "localSecurityCoverage": [
+    "All12 signed fields/header allowlist tampering and host/path/query/method binding",
+    "Same-zone peer key/custom-IP forgery rejected cryptographically; no actual Cloudflare source-field test",
+    "ActualSQLiteDO24 concurrent claims accept1; restart persists replay denial; scope/clock/capacity/bounded cleanup/write-fault rollback",
+    "Atomic store timeout/failure/full/cancellation fail closed; body mismatch consumes nonce without auth",
+    "Two localWorkerd entry/Gateway originalGoogle/PKCE fixture originalidentity/Cookie/CSRF/readonlyRecovery; replay/forgery no rate-row writes; native-IP fixture separate original auth buckets and signin3/10 limit; Catalog revocation retained",
+    "Actualsigned localEntry -> gatewayapp -> Catalog/Workspace/Guard G5 proof GET/attestation/reopen plus negative scope/order/expiry/revoke/restart",
+    "32KiB/8MiB request body bounds/length and encoding ambiguity/cancel/concurrent allocation; SSE stream/cancel with one fetch",
+    "Private key/public ring validation, exacttime/future-skew, rotation/remove-old-key revocation; oversized proof/header reject before send; lost response never retries",
+    "ExistinglocalRuns raw/damaged export/zero-write/expiry static200 andAPI410 regressions in fullM1"
+  ],
+  "selfReview": {
+    "completed": true,
+    "findingsResolved": [
+      "Decoded single chunked framing must be accepted, while CL+TE/stacked encodings rejected; initialWorkerd400 fixture diagnosed/fixed",
+      "Proof-size guard added before signing/fetch so sender conforms to receiver2048-character limit",
+      "Body allocation held until responseheaders with per-isolate slot guards; bounded replay RPC wait and late-commit fail-close",
+      "DO class migration changes rollback: no raw pre-migrationversion rollback; forward single-origin package must retain class/namespace and remove topology vars together",
+      "Original Request.url empty trailing query marker was lost by URL.search reconstruction; fixed exact path/query concatenation, native/target method/path equality and added raw-URI regressions"
+    ],
+    "remainingLimits": [
+      "Platformdirect-native-IP source gate requires separately approved WAF/Transform setup and real negative tests",
+      "Signature/replay do not solve anonymous/public traffic DoS or guarantee cloud costs/latency",
+      "Actualproduction key/pin/namespace and complete deployable forward-rollbackartifact remain action-time approval/preparation"
+    ]
+  },
+  "productionRequest": "docs/riffoid-entry-signature.md",
+  "credentialBoundary": {
+    "ephemeralSyntheticKeysOnly": true,
+    "productionKeyGeneratedSavedOrConfigured": false,
+    "existingSecretRead": false,
+    "newDependencyInstall": false,
+    "productionResourceSecurityPermissionChanges": false,
+    "paidCloudExecution": false
+  },
+  "platformFixtures": "Miniflare/Workerd native-IP Host adapters and identity/token/authority fixtures are test-only; real outbound requests denied, no productionservice binding or WAF proof",
+  "runtime": "macOS/Node26.10.0/Python3.9.6; existingChromium andOpenSSL3 path used; differs fromCI Ubuntu/Node25.3/Python3.12",
+  "recovery": {
+    "approvedHours": 48,
+    "actualCutover": false,
+    "cutoverUTC": null,
+    "untilUTC": null,
+    "staticLocalExportAfterExpiry": true
+  },
+  "preserved": "Original resources/identity/history/ledger/namespace/actor/model pins/meter-only/December31trial/October20M1; no brand duplication or merge",
+  "remainingReadback": "OldzoneWAF/DNS/Transform/settings endpointpermissions denied; Googleclient fullID/binding/callback/origin/domains manual nonsecret list pending; do not requestSafariJS permission or bypass refusals",
+  "status": "HISTORICAL_STAGE_SUPERSEDED_BY_CANCELLATION_REVIEW",
+  "reviewCorrection": {
+    "currentEvidence": "docs/evidence/riffoid-entry-review-offline-20261008.json",
+    "oldUnresolvedRpcTest": "Proved timeout and pre-claim cancellation only, not actual late persistence; misleading title corrected",
+    "oldSyntheticCancellation": "Manual AbortController/stream.cancel did not prove incoming native HTTP disconnect or ignored subrequest-signal behavior",
+    "subsequentProductionSourceChanges": "Standard abort bridges in signed entry/Gateway and forward rollback entrypoint now added; old source/log hashes remain frozen historical values",
+    "actualLateSqliteNow": "Separate current evidence injects delayed RPC and fixture-only waitUntil then observes real local SQLite persistence and entry_replay_denied",
+    "currentFINLimit": "Pre-header graceful FIN immediate native cancellation unproven; actual reset and open SSE only, actual platform pending",
+    "currentDateAndCancellationContract": "docs/evidence/riffoid-entry-date-correction-20261008.json; Gateway date09-09; entryfixture09-06; platform abort arrival contract, originalkey unknown reconciliation/original business cancel, FIN not independent deployment blocker"
+  }
+}
