@@ -84,7 +84,8 @@ this release. Future releases must reconcile the actual deployed domain/brand
 composition and full live configuration before cutover.
 
 [Release evidence](evidence/managed-candidate-release-20261013.json) records source,
-module, runtime, test identities, exact log hashes and remaining gaps.
+module, runtime, test identities, exact log hashes and remaining gaps. Raw logs
+are retained as gzip archives; recorded log hashes apply to uncompressed bytes.
 [Static readback](evidence/managed-candidate-release-20261013/static-readback.json),
 [live-source audit](evidence/managed-candidate-release-20261013/live-source-audit.json)
 and [composition check](evidence/managed-candidate-release-20261013/source-composition.json)

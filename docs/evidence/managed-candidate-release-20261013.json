@@ -740,7 +740,7 @@
         "sourceCommit": "3e9b97b6d8edeecddd8ce1c995c827dc225a8467",
         "status": "passed",
         "exitCode": 0,
-        "log": "docs/evidence/managed-candidate-release-20261013/m1.log",
+        "log": "docs/evidence/managed-candidate-release-20261013/m1.log.gz",
         "logSha256": "69d2da556374bad98c146afc104aa566ebc3cd6523f3ef2b250d934f43cb3436",
         "logBytes": 37317,
         "summary": "ℹ tests 348\nℹ pass 348\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 37279.401459",
@@ -748,7 +748,10 @@
         "pass": 348,
         "fail": 0,
         "cancelled": 0,
-        "skipped": 0
+        "skipped": 0,
+        "logFormat": "gzip",
+        "compressedSha256": "3e733f1e510650a9397ede8076a68ce5c31b2ec359e122d53459c411bc192046",
+        "compressedBytes": 13229
       },
       {
         "id": "m2",
@@ -756,7 +759,7 @@
         "sourceCommit": "c526ef0d49d77f0202860d5624e5c59c04e222a7",
         "status": "passed",
         "exitCode": 0,
-        "log": "docs/evidence/managed-candidate-release-20261013/m2.log",
+        "log": "docs/evidence/managed-candidate-release-20261013/m2.log.gz",
         "logSha256": "da4eae02383ebe4a19ed142c5cf4fd2b3bff01729dee2452907d7ff726b403d5",
         "logBytes": 99724,
         "summary": "ℹ tests 921\nℹ pass 921\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 185114.5635",
@@ -765,7 +768,10 @@
         "fail": 0,
         "cancelled": 0,
         "skipped": 0,
-        "sourceReuse": "Final source/test/package/lock inputs are identical for this check; immutable source comparison is recorded in source-composition.json. Counts overlap with focused tests and must not be added."
+        "sourceReuse": "Final source/test/package/lock inputs are identical for this check; immutable source comparison is recorded in source-composition.json. Counts overlap with focused tests and must not be added.",
+        "logFormat": "gzip",
+        "compressedSha256": "76eb027e186134461988f38029c6d196c594b77fad41f59af6fceddc8ae9ffea",
+        "compressedBytes": 28943
       },
       {
         "id": "ui",
@@ -773,7 +779,7 @@
         "sourceCommit": "c526ef0d49d77f0202860d5624e5c59c04e222a7",
         "status": "passed",
         "exitCode": 0,
-        "log": "docs/evidence/managed-candidate-release-20261013/ui.log",
+        "log": "docs/evidence/managed-candidate-release-20261013/ui.log.gz",
         "logSha256": "9a66f2727429f3566623ad6116d62c32f00c7fb14df731574cde2c69e03ae8a9",
         "logBytes": 3242,
         "summary": "ℹ tests 21\nℹ pass 21\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 180.795167",
@@ -782,7 +788,10 @@
         "fail": 0,
         "cancelled": 0,
         "skipped": 0,
-        "sourceReuse": "Final source/test/package/lock inputs are identical for this check; immutable source comparison is recorded in source-composition.json. Counts overlap with focused tests and must not be added."
+        "sourceReuse": "Final source/test/package/lock inputs are identical for this check; immutable source comparison is recorded in source-composition.json. Counts overlap with focused tests and must not be added.",
+        "logFormat": "gzip",
+        "compressedSha256": "22c1c13ad882f51cb06bef288348e54672b0df99c1b3d842b43277eb4705f086",
+        "compressedBytes": 1333
       },
       {
         "id": "typecheck",
@@ -790,10 +799,13 @@
         "sourceCommit": "3e9b97b6d8edeecddd8ce1c995c827dc225a8467",
         "status": "passed",
         "exitCode": 0,
-        "log": "docs/evidence/managed-candidate-release-20261013/typecheck.log",
+        "log": "docs/evidence/managed-candidate-release-20261013/typecheck.log.gz",
         "logSha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
         "logBytes": 29,
-        "summary": ""
+        "summary": "",
+        "logFormat": "gzip",
+        "compressedSha256": "b3cd690a82194400cc79b294f2c64116d00da212e291bea6775ecc26080c96c4",
+        "compressedBytes": 47
       },
       {
         "id": "bundle",
@@ -801,10 +813,13 @@
         "sourceCommit": "3e9b97b6d8edeecddd8ce1c995c827dc225a8467",
         "status": "passed",
         "exitCode": 0,
-        "log": "docs/evidence/managed-candidate-release-20261013/bundle.log",
+        "log": "docs/evidence/managed-candidate-release-20261013/bundle.log.gz",
         "logSha256": "3f8932cd7fa706a4baf83b1071fa2722332f384d5c8f702202fd2832595a8387",
         "logBytes": 651,
-        "summary": ""
+        "summary": "",
+        "logFormat": "gzip",
+        "compressedSha256": "fc666299d5493bf9a416aaf6bee168bedda488cc24a5c28634e1958f4d1f983b",
+        "compressedBytes": 411
       },
       {
         "id": "online-static",
@@ -812,10 +827,13 @@
         "sourceCommit": "3e9b97b6d8edeecddd8ce1c995c827dc225a8467",
         "status": "passed",
         "exitCode": 0,
-        "log": "docs/evidence/managed-candidate-release-20261013/online-static.log",
+        "log": "docs/evidence/managed-candidate-release-20261013/online-static.log.gz",
         "logSha256": "e9924084950c059beb38a017a9a7288983afd9201657e29cf2f395955cd27730",
         "logBytes": 423,
-        "summary": ""
+        "summary": "",
+        "logFormat": "gzip",
+        "compressedSha256": "de7c766f6503639c8977a394b1c5c3449b79204c8826441c3e0c659e01fbe0fd",
+        "compressedBytes": 221
       }
     ],
     "sourceReviews": [
