@@ -1,6 +1,41 @@
-# Current release readiness — 2026-10-12
+# Current release readiness — 2026-10-13
 
-## 2026-10-12 Managed candidate implementation checked locally; deployment pending
+## 2026-10-13 Managed candidate and Journal receipt fix deployed; acceptance pending
+
+[PR190](https://github.com/jihegao/riffology-cloud/pull/190) and
+[PR194](https://github.com/jihegao/riffology-cloud/pull/194) are merged. Their
+Managed save/restore, model-authored view preservation and strict late-accounting
+receipt fix are deployed at https://app.riffoid.com in Gateway version
+`728e5141-d859-4416-8c79-9b92b3ed0b16`, deployment
+`6d9f4609-e541-4f6c-a99c-32f18d18510d`, 100% traffic, observed by independent
+Cloudflare readback. Deployed source is `3e9b97b6`, a recorded composition of merged
+feature/fix code, proved live-domain source and the already-deployed riffoid brand.
+It excludes later undeployed domain maintenance code; main alone is not this
+release's complete domain/brand source.
+
+M1 passed 348, M2 passed 921, UI passed 21, and typecheck passed. M2/UI inputs
+are unchanged from the tested composite; counts overlap with focused checks.
+CI was not executed. All 91 manifest-listed live assets match pinned SHA-256; all three isolated
+frames and four rejection checks pass. Full platform snapshots preserve 99
+bindings, 23 SQLite exports, 5 Gateway container associations, 15 account container
+configurations and existing policies. Entry, Browser Execution and www versions
+are unchanged.
+
+[#178](https://github.com/jihegao/riffology-cloud/issues/178) and
+[#192](https://github.com/jihegao/riffology-cloud/issues/192) remain open at
+Acceptance. Anonymous static validation does not establish invited-user save/run,
+second identity, paid execution or formal Evidence acceptance. No production
+Revision/package was created in this release; Browser output remains
+**local/unverified** and candidate reported output **not-recomputed**. Current
+capacity and execution boundaries remain unchanged. General artifacts/debug and
+requirements/SysML/compiler/Rust implementation remain follow-up issues.
+
+[Release record](managed-candidate-release-20261013.md),
+[source/runtime/test evidence](evidence/managed-candidate-release-20261013.json)
+and [static readback](evidence/managed-candidate-release-20261013/static-readback.json)
+provide the deploy identity, preserved source, actual checks and remaining gaps.
+
+## 2026-10-12 Historical pre-deployment Managed candidate snapshot
 
 [PR #190](https://github.com/jihegao/riffology-cloud/pull/190) repairs the existing
 Managed Python/restricted-JS path for [#178](https://github.com/jihegao/riffology-cloud/issues/178).
