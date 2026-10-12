@@ -1,0 +1,326 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-12T03:25:17.292Z",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/178",
+  "pullRequest": "https://github.com/jihegao/riffology-cloud/pull/190",
+  "scope": "Existing Managed Python and restricted-JS artifact compatibility; offline implementation validation",
+  "source": {
+    "baseCommit": "25609953f5c3b69dcb44e520d7e7ed1253d18fe4",
+    "testedRemoteCommit": "b41678889f8152c78783512ed5d47bd64928c602",
+    "testedLocalCommit": "446122c30978a60285b63b8471edc5333bc2a89a",
+    "testedTree": "a04f073681a8cf4aa90b139ee6cee759a7ca1e67",
+    "sourceFiles": [
+      {
+        "path": "scripts/i18n-check.mjs",
+        "byteLength": 26669,
+        "sha256": "7569b339d342c8133c0bebe1d69d1dac93c62f4ccbb332d0544f27c74c533680"
+      },
+      {
+        "path": "services/browser-preview/runtime/protocol.d.mts",
+        "byteLength": 774,
+        "sha256": "3a15b9114c061246cb39f1333c311f5c216359c6be9cc7a3199438afecfc0608"
+      },
+      {
+        "path": "services/browser-preview/validator.ts",
+        "byteLength": 11290,
+        "sha256": "f844c3518dc758b3526e91b5927055b276e771a92d23e92a5991798a2819e298"
+      },
+      {
+        "path": "services/turn-runtime/managed-candidate.ts",
+        "byteLength": 14689,
+        "sha256": "4c3e7a8d2754bbd07517dfff264b6691721924722b9fea9f722e023cf56ed65b"
+      },
+      {
+        "path": "services/turn-runtime/managed-product.ts",
+        "byteLength": 37959,
+        "sha256": "4396a64ed7af0061a3113830ffa42c0f250f09345ab8d7facef695322eb2c28a"
+      },
+      {
+        "path": "services/turn-runtime/managed-testing-instructions.ts",
+        "byteLength": 7017,
+        "sha256": "a5f79656fab42a787af1b3be03683778ecc9cdf9c4c5a15075360c3fd63382e8"
+      },
+      {
+        "path": "services/web/app.js",
+        "byteLength": 82886,
+        "sha256": "56caf30178a62ddab0cad5b0fc9c795b9569467aa0305ec9373564dbc0f96abc"
+      },
+      {
+        "path": "services/web/i18n.js",
+        "byteLength": 143917,
+        "sha256": "5ff866c914a9bc4873d3af495b76341b9d0c0ae4a39b5d68118f87cc411c7de6"
+      },
+      {
+        "path": "tests/m2/fixtures/managed-candidate.ts",
+        "byteLength": 2927,
+        "sha256": "0407ff21a87c1ae95d8a5c9b3e824b5fde41e96403d7f1ac7e9e81c3e2d3a5d1"
+      },
+      {
+        "path": "tests/m2/managed-candidate.test.ts",
+        "byteLength": 8829,
+        "sha256": "b0714686646a2337bb9e131f70b4d593f62cbb59db536e681dfc4240afedb21b"
+      },
+      {
+        "path": "tests/m2/managed-product.test.ts",
+        "byteLength": 48627,
+        "sha256": "f99f9bf39922e944315fa28f74b3b2cc7cd40767938b5883214cd9c8c421e9ef"
+      },
+      {
+        "path": "tests/m3/browser-preview-build.test.ts",
+        "byteLength": 21315,
+        "sha256": "ce5764ff852624544735ae923fb6081f15e4dc60f3a69b0d92efb5e64bbdb5ea"
+      }
+    ]
+  },
+  "environment": {
+    "node": "v26.10.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "miniflare": "5.20260903.0-alpha",
+    "workerd": "1.20260903.1",
+    "compatibilityDate": "2026-09-09",
+    "compatibilityFlags": [
+      "nodejs_compat"
+    ],
+    "browser": "Playwright 1.63.0 chromium-1243 / Google Chrome for Testing",
+    "execution": "Root local process with loopback available; no production deployment"
+  },
+  "testIdentity": {
+    "scope": {
+      "tenantId": "tenant-managed",
+      "projectId": "project-managed",
+      "workspaceId": "workspace-managed",
+      "workspaceGeneration": 1
+    },
+    "actor": {
+      "userId": "test-user",
+      "authVersion": 1
+    },
+    "classification": "synthetic local fixture; no authenticated production user",
+    "provider": "Injected outbound fetch handler; synthetic-key-no-network; no real provider execution"
+  },
+  "checks": [
+    {
+      "id": "m2",
+      "command": "npm run test:m2",
+      "pass": 880,
+      "fail": 0,
+      "logSha256": "5cad86045126c559d248e802b90c9f0e43df19588460b277b2d6a3e1fdc49c5a",
+      "summary": "ℹ tests 880\nℹ suites 0\nℹ pass 880\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 186257.111167",
+      "status": "passed"
+    },
+    {
+      "id": "managed-product",
+      "command": "node --test tests/m2/managed-product.test.ts",
+      "pass": 37,
+      "fail": 0,
+      "logSha256": "4497d862a92f8bf76a0d276cb3783a8492efa546af4641d1a69d8c1ee7798b29",
+      "summary": "ℹ tests 37\nℹ suites 0\nℹ pass 37\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 5414.763166",
+      "status": "passed"
+    },
+    {
+      "id": "ui",
+      "command": "npm run check:ui",
+      "pass": 21,
+      "fail": 0,
+      "logSha256": "3f6e190032fbdbc00cf828ccbf8d7cb8a5cd6af635c6c29564d2a475fc1eba5c",
+      "summary": "ℹ tests 21\nℹ suites 0\nℹ pass 21\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 168.435459",
+      "status": "passed"
+    },
+    {
+      "id": "preview-contracts",
+      "command": "node --test tests/m3/browser-preview-build.test.ts tests/m3/browser-preview-contract.test.ts tests/m3/browser-preview-javascript-contract.test.ts",
+      "pass": 20,
+      "fail": 0,
+      "logSha256": "c3f45c7262874c136750b639396f016323d22886752fa8371315a3a89284575a",
+      "summary": "ℹ tests 20\nℹ suites 0\nℹ pass 20\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 151.694292",
+      "status": "passed"
+    },
+    {
+      "id": "protocol",
+      "command": "node --test services/browser-preview/runtime/protocol.test.mjs",
+      "pass": 1,
+      "fail": 0,
+      "logSha256": "c1ff7d4ed1cddf2e5f30bdedd57ed3dfe372e3ca030677ad41272d4cb0b70d39",
+      "summary": "ℹ tests 1\nℹ suites 0\nℹ pass 1\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 72.449625",
+      "status": "passed"
+    },
+    {
+      "id": "preview-independent",
+      "command": "node --test tests/m3/browser-preview-production-registry.test.mjs tests/m3/browser-preview-build-host.test.mjs tests/m3/browser-preview-canvas.test.mjs tests/m3/browser-preview-javascript-browser.test.mjs",
+      "pass": 19,
+      "fail": 4,
+      "logSha256": "da432a215f8eb272f38e908238fa125e433985969c3f18b86b86435a06ed7bf2",
+      "summary": "ℹ tests 23\nℹ suites 0\nℹ pass 19\nℹ fail 4\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 224.678417",
+      "status": "partial-first-attempt",
+      "unexecuted": 4,
+      "reason": "System Chrome missing; all four rerun successfully with installed Playwright Chromium"
+    },
+    {
+      "id": "javascript-browser",
+      "command": "CHROMIUM_PATH=<installed Playwright chromium-1243 executable> node --test tests/m3/browser-preview-javascript-browser.test.mjs",
+      "pass": 4,
+      "fail": 0,
+      "logSha256": "ee3e65618d0f85ed63f41bb666156402707edd77feaa03d2232c485871623613",
+      "summary": "ℹ tests 4\nℹ suites 0\nℹ pass 4\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 6365.702417",
+      "status": "passed"
+    },
+    {
+      "id": "typecheck",
+      "command": "npm run typecheck",
+      "status": "passed",
+      "logSha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f"
+    },
+    {
+      "id": "whitespace",
+      "command": "git diff --check 25609953f5c3b69dcb44e520d7e7ed1253d18fe4",
+      "status": "passed"
+    }
+  ],
+  "coverage": {
+    "m2Includes": [
+      "37 Managed product Workerd tests",
+      "9 Managed candidate unit tests"
+    ],
+    "separateCountsAreNotAdditive": true,
+    "behaviors": [
+      "v2 R2 files-only Revision save and role-byte restore",
+      "cleanup and actor restart recreate saved context including Spec, visualization and JS files",
+      "legacy v1 preserves saved JS view and reports trace not provided",
+      "invalid airport lane diagnostic persists; re-observation after restart adds no provider POST",
+      "existing Browser Mesa full dependency import closure remains compatible",
+      "existing real CPython Queue trace drives isolated JS frame for parameters, seed, refresh and revision changes"
+    ]
+  },
+  "staticFixturePackages": [
+    {
+      "domain": "road",
+      "source": {
+        "projectId": "offline-managed-178",
+        "revisionId": "fixture-road-f5985bda6a4c800b",
+        "filesSha256": "f5985bda6a4c800beaf5600b10248dbd94f1841d2266705484d7ccc23eeb8363"
+      },
+      "packageIdentity": "3b032a5b3795d2f36da7713e707a120f2a1f6e9c80668498daa1b62b97a84aaa",
+      "profileId": "python-stdlib/v1",
+      "sourcePaths": [
+        "model/model.py",
+        "model/run.py",
+        "model/model-spec.json",
+        "model/visualization.json",
+        "app/requirements.lock"
+      ],
+      "candidateValidation": {
+        "status": "checked",
+        "schemaVersion": 2,
+        "traceValidation": "validated",
+        "execution": "not-recomputed",
+        "profileId": "python-stdlib/v1"
+      },
+      "classification": "static-reported-fixture; model-not-executed; local-unverified"
+    },
+    {
+      "domain": "queue",
+      "source": {
+        "projectId": "offline-managed-178",
+        "revisionId": "fixture-queue-7495db6d9550cdb1",
+        "filesSha256": "7495db6d9550cdb1eb3c4fb36153ce81624ff49a61c7b46a25d3dbd778db1c84"
+      },
+      "packageIdentity": "470fe0ede19ab8d7cab416ed716f753dfd4c2665b30c19767c6397f819120b47",
+      "profileId": "python-stdlib/v1",
+      "sourcePaths": [
+        "model/model.py",
+        "model/run.py",
+        "model/model-spec.json",
+        "model/visualization.json",
+        "app/requirements.lock"
+      ],
+      "candidateValidation": {
+        "status": "checked",
+        "schemaVersion": 2,
+        "traceValidation": "validated",
+        "execution": "not-recomputed",
+        "profileId": "python-stdlib/v1"
+      },
+      "classification": "static-reported-fixture; model-not-executed; local-unverified"
+    },
+    {
+      "domain": "grid",
+      "source": {
+        "projectId": "offline-managed-178",
+        "revisionId": "fixture-grid-65b57d63aef781cd",
+        "filesSha256": "65b57d63aef781cd249c7dc9fab61912f3d16db8668f2e122d035357cae95e87"
+      },
+      "packageIdentity": "b536c946355134408db72fd20b19b91317c9be10c5f8ed113ea476929a3b3178",
+      "profileId": "python-stdlib/v1",
+      "sourcePaths": [
+        "model/model.py",
+        "model/run.py",
+        "model/model-spec.json",
+        "model/visualization.json",
+        "app/requirements.lock"
+      ],
+      "candidateValidation": {
+        "status": "checked",
+        "schemaVersion": 2,
+        "traceValidation": "validated",
+        "execution": "not-recomputed",
+        "profileId": "python-stdlib/v1"
+      },
+      "classification": "static-reported-fixture; model-not-executed; local-unverified"
+    },
+    {
+      "domain": "airport",
+      "source": {
+        "projectId": "offline-managed-178",
+        "revisionId": "fixture-airport-ee19a45441e665d3",
+        "filesSha256": "ee19a45441e665d36fbc48338759daba152379664e5a0dbd1733b3ff1329a5c7"
+      },
+      "packageIdentity": "6d2a08253f7fa6e74efb8ce8c646367f6fb5d542bb9035299686c4b420f58c66",
+      "profileId": "python-stdlib/v1",
+      "sourcePaths": [
+        "model/model.py",
+        "model/run.py",
+        "model/model-spec.json",
+        "model/visualization.json",
+        "app/requirements.lock",
+        "frontend/manifest.json",
+        "frontend/main.mjs"
+      ],
+      "candidateValidation": {
+        "status": "checked",
+        "schemaVersion": 2,
+        "traceValidation": "validated",
+        "execution": "not-recomputed",
+        "profileId": "python-stdlib/v1"
+      },
+      "classification": "static-reported-fixture; model-not-executed; local-unverified"
+    }
+  ],
+  "authority": {
+    "candidate": {
+      "traceValidation": "reported-data-contract-only",
+      "execution": "not-recomputed"
+    },
+    "browser": "local/unverified",
+    "serverEvidence": false,
+    "staticPackageRevisionIds": "Synthetic fixture labels, not production Revision receipts"
+  },
+  "priorLimitations": {
+    "oldAgentEnvironment": "Native Node assertions and loopback EPERM; root reran unchanged source successfully. No production workaround was added.",
+    "firstBrowserAttempt": "Four browser tests did not execute because system Chrome was missing; installed Playwright Chromium rerun passed all four.",
+    "ci": "Runner/account allowance prevented remote CI execution; ignored per user instruction, not reported as passed"
+  },
+  "delivery": {
+    "implementation": "present",
+    "deployment": null,
+    "authenticatedUserAcceptance": "not-performed",
+    "paidExecutionAcceptance": "not-performed"
+  },
+  "remaining": [
+    "Deployment and ordinary invited-user acceptance remain outside this offline PR scope; Issue stays open at Acceptance after merge",
+    "Domain fixtures are reported static traces; no claim of real airport/Queue/grid simulation acceptance",
+    "Pyodide Mesa execution and second production identity are not covered by this record",
+    "General artifact manifest is Cloud Issue 182; capability-based dependencies and bounded actual authoring debug are Cloud Issue 183",
+    "SysML exporter/checker, Rust/WASM and formal Evidence are not implemented by this PR"
+  ]
+}
