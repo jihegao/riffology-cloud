@@ -12,6 +12,21 @@ const terminal=(status:TurnRecord['status'])=>['completed','failed','cancelled',
 const intent=(userId:string,key:string)=>`${userId}|${turnId(key)}`;
 const nowValid=(value:number)=>positive(value);
 const equal=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
+/** Current Managed candidate reports describe supplied data, not execution or
+ * verification. Unknown fields and stronger claims are not accounting-only. */
+function candidateAccountingReport(value:unknown):boolean{
+  if(!value||typeof value!=='object'||Array.isArray(value))return false;
+  const report=value as Record<string,unknown>,keys=Object.keys(report).sort().join(',');
+  if(report.status==='invalid'){
+    if(keys!=='diagnostic,status'||!report.diagnostic||typeof report.diagnostic!=='object'||Array.isArray(report.diagnostic))return false;
+    const diagnostic=report.diagnostic as Record<string,unknown>;
+    if(Object.keys(diagnostic).sort().join(',')!=='file,path,reason')return false;
+    return ([['file',128],['path',256],['reason',128]] as const).every(([key,limit])=>typeof diagnostic[key]==='string'&&diagnostic[key].length>0&&diagnostic[key].length<=limit);
+  }
+  if(report.status!=='checked'||report.execution!=='not-recomputed')return false;
+  if(report.schemaVersion===1)return keys==='execution,schemaVersion,status,traceValidation'&&report.traceValidation==='not-provided';
+  return report.schemaVersion===2&&keys==='execution,profileId,schemaVersion,status,traceValidation'&&report.traceValidation==='validated'&&['python-stdlib/v1','mesa-3.5.1/v1'].includes(report.profileId as string);
+}
 /** Managed accounting is observed after immutable file publication. It does
  * not prove later model/tool execution and cannot move the execution clock.
  * Recognize the deployed exact envelope so existing immutable events recover;
@@ -19,7 +34,8 @@ const equal=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
 function postExecutionAccounting(row:TurnEvent):boolean{
   if(row.type!=='provider.status')return false;
   const p=row.payload;
-  if(Object.keys(p).sort().join(',')!=='backend,billing,resources,usage'||p.backend!=='managed-agents'||p.billing!=='pending'||p.resources!=='session-retained')return false;
+  const hasReport=Object.hasOwn(p,'candidateValidation');
+  if(Object.keys(p).sort().join(',')!==(hasReport?'backend,billing,candidateValidation,resources,usage':'backend,billing,resources,usage')||p.backend!=='managed-agents'||p.billing!=='pending'||p.resources!=='session-retained'||hasReport&&!candidateAccountingReport(p.candidateValidation))return false;
   if(!p.usage||typeof p.usage!=='object'||Array.isArray(p.usage))return false;
   const usage=p.usage as Record<string,unknown>,keys=Object.keys(usage).sort().join(',');
   if(usage.status==='unknown')return keys==='reason,status'&&['missing','invalid'].includes(usage.reason as string);

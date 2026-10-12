@@ -8,6 +8,13 @@ const scope={tenantId:'tenant-managed',projectId:'project-managed',workspaceId:'
 const actor={userId:'user-managed',authVersion:1};
 const checkpoint={revisionId:'revision-managed',objectKey:'turns/managed/revision.json',filesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64),committedAt:1005};
 const stopped:ManagedTurnStopReceipt={kind:'remote-terminal',confirmationId:'remote-proof',observedAt:1004,remoteSessionId:'sess_remote',remoteTurnId:'turn_remote',terminalStatus:'completed'};
+const candidateReports=[
+ ['legacy v1',{status:'checked',schemaVersion:1,traceValidation:'not-provided',execution:'not-recomputed'}],
+ ['stdlib v2',{status:'checked',schemaVersion:2,traceValidation:'validated',execution:'not-recomputed',profileId:'python-stdlib/v1'}],
+ ['Mesa v2',{status:'checked',schemaVersion:2,traceValidation:'validated',execution:'not-recomputed',profileId:'mesa-3.5.1/v1'}],
+ ['invalid candidate',{status:'invalid',diagnostic:{file:'candidate.json',path:'preview.trace.snapshots[1].agents[0].lane',reason:'runtime-agent-invalid'}}],
+] as const;
+const accounting=(candidateValidation:unknown)=>({backend:'managed-agents',usage:{status:'unknown',reason:'missing'},billing:'pending',resources:'session-retained',candidateValidation});
 type Input=Parameters<TurnRuntimePort['accept']>[0];
 function receipt(input:Pick<Input,'scope'|'sessionId'|'turnId'|'dispatchId'|'generation'|'capacityLease'>){
  const {capacityLease,scope,sessionId,turnId,dispatchId,generation}=input;const identity={scope,sessionId,turnId,dispatchId,generation};
@@ -25,6 +32,15 @@ test('Managed remote terminal proof publishes checkpoint through the real Journa
  const f=await fixture();const saved=await f.dispatcher.tick(scope,1);
  assert.equal(saved?.status,'completed');assert.equal(saved?.persistenceOutcome,'saved');assert.deepEqual(saved?.checkpoint,checkpoint);
  assert.equal(f.store.snapshot()!.activeTurnId,null);assert.equal(f.store.snapshot()!.releaseHold,null);assert.deepEqual(f.calls,['accept']);
+});
+for(const [name,candidateValidation]of candidateReports)test(`Managed ${name} report after file commit publishes the original Revision through Dispatcher and Journal`,async()=>{
+ const f=await fixture(),event={eventId:'reported-candidate',type:'provider.status' as const,at:1006,payload:accounting(candidateValidation)};
+ f.runtime.accept=async input=>{f.calls.push('accept');f.setClock(1100);return {...receipt(input),events:[event]};};
+ const saved=await f.dispatcher.tick(scope,1),state=f.store.snapshot()!;
+ assert.equal(saved?.status,'completed');assert.equal(saved?.persistenceOutcome,'saved');assert.deepEqual(saved?.checkpoint,checkpoint);
+ assert.deepEqual(state.workspaceHead,checkpoint);assert.deepEqual(state.sessions[f.turn.sessionId]!.head,checkpoint);assert.equal(state.activeTurnId,null);assert.equal(state.releaseHold,null);assert.deepEqual(f.calls,['accept']);
+ const persisted=state.events.find(row=>row.eventId===event.eventId)!;assert.equal(persisted.at,event.at);assert.deepEqual(persisted.payload,event.payload);
+ assert.equal(await f.dispatcher.tick(scope,1),null);assert.deepEqual(f.calls,['accept']);
 });
 test('Managed terminal checkpoint does not release a separate pending lease',async()=>{
  let released=false;
@@ -82,6 +98,22 @@ for(const usage of [{status:'unknown',reason:'missing'},{status:'observed',input
  assert.equal(saved?.status,'completed');assert.deepEqual(saved?.checkpoint,checkpoint);assert.deepEqual(f.store.snapshot()!.sessions[claimed.sessionId]!.head,checkpoint);assert.equal(f.store.snapshot()!.activeTurnId,null);assert.deepEqual(f.calls,['observe']);
  assert.deepEqual(f.store.snapshot()!.events.find(e=>e.eventId===event.eventId),before);assert.equal(f.store.snapshot()!.events.filter(e=>e.eventId===event.eventId).length,1);assert.deepEqual(before.payload.usage,usage);
 });
+for(const [name,candidateValidation]of candidateReports)for(const usage of [{status:'unknown',reason:'invalid'},{status:'observed',inputTokens:10,outputTokens:2,totalTokens:12,settlement:'pending'}])test(`Managed restored ${name}/${usage.status} report uses observe only and preserves its original event`,async()=>{
+ const f=await fixture(),claimed=(await f.journal.claim(scope,1))!.turn;f.setClock(1100);
+ const event={eventId:'persisted-candidate-report',type:'provider.status' as const,at:1006,payload:{...accounting(candidateValidation),usage}};
+ await f.journal.appendRuntime(scope,{turnId:claimed.id,dispatchId:claimed.dispatchId!,runtimeGeneration:1,...event});
+ await f.journal.beginCheckpoint(scope,{turnId:claimed.id,dispatchId:claimed.dispatchId!,runtimeGeneration:1,outcome:'completed'});
+ const snapshot=f.store.snapshot()!,before=snapshot.events.find(row=>row.eventId===event.eventId)!;
+ const restoredStore=new MemoryTurnStore();await restoredStore.transact(()=>({state:snapshot,value:null}));
+ const restoredJournal=new TurnJournal(restoredStore,()=>2000);
+ f.runtime.accept=async()=>{throw Error('new-input-forbidden');};
+ f.runtime.observe=async input=>{f.calls.push('observe');return {...receipt({...input,capacityLease:input.capacityLease!}),events:[event]};};
+ const restoredDispatcher=new TurnDispatcher(restoredJournal,f.runtime,null,null,()=>2000,undefined,async()=>{throw Error('admission-closed');});
+ const saved=await restoredDispatcher.tick(scope,1),state=restoredStore.snapshot()!;
+ assert.equal(saved?.status,'completed');assert.deepEqual(saved?.checkpoint,checkpoint);assert.deepEqual(state.workspaceHead,checkpoint);assert.deepEqual(state.sessions[claimed.sessionId]!.head,checkpoint);assert.equal(state.activeTurnId,null);assert.deepEqual(f.calls,['observe']);
+ assert.deepEqual(state.events.find(row=>row.eventId===event.eventId),before);assert.equal(state.events.filter(row=>row.eventId===event.eventId).length,1);
+ assert.equal(await restoredDispatcher.tick(scope,1),null);assert.deepEqual(f.calls,['observe']);
+});
 for(const [name,type,payload] of [
  ['unrelated provider status','provider.status',{state:'running'}],
  ['additional execution field','provider.status',{backend:'managed-agents',usage:{status:'unknown',reason:'missing'},billing:'pending',resources:'session-retained',execution:'completed'}],
@@ -89,6 +121,33 @@ for(const [name,type,payload] of [
  ['invalid usage totals','provider.status',{backend:'managed-agents',usage:{status:'observed',inputTokens:10,outputTokens:2,totalTokens:99,settlement:'pending'},billing:'pending',resources:'session-retained'}],
  ['late tool event','tool.completed',{backend:'managed-agents',usage:{status:'unknown',reason:'missing'},billing:'pending',resources:'session-retained'}],
  ['late assistant output','assistant.message',{text:'later execution'}],
+ ['extra execution beside a valid candidate report','provider.status',{...accounting(candidateReports[1][1]),execution:'completed'}],
+ ['foreign backend with a valid candidate report','provider.status',{...accounting(candidateReports[1][1]),backend:'pi'}],
+ ['incorrect usage with a valid candidate report','provider.status',{...accounting(candidateReports[1][1]),usage:{status:'observed',inputTokens:10,outputTokens:2,totalTokens:99,settlement:'pending'}}],
+ ['extra usage execution data','provider.status',{...accounting(candidateReports[1][1]),usage:{status:'unknown',reason:'missing',executedAt:1006}}],
+ ['settled billing with a candidate report','provider.status',{...accounting(candidateReports[1][1]),billing:'settled'}],
+ ['active resources with a candidate report','provider.status',{...accounting(candidateReports[1][1]),resources:'running'}],
+ ['null candidate report','provider.status',accounting(null)],
+ ['array candidate report','provider.status',accounting([candidateReports[1][1]])],
+ ['extra execution in a candidate report','provider.status',accounting({...candidateReports[1][1],executedAt:1006})],
+ ['false recomputed claim','provider.status',accounting({...candidateReports[1][1],execution:'recomputed'})],
+ ['false verified status','provider.status',accounting({...candidateReports[1][1],status:'verified'})],
+ ['false legacy trace validation','provider.status',accounting({...candidateReports[0][1],traceValidation:'validated'})],
+ ['unexpected legacy profile','provider.status',accounting({...candidateReports[0][1],profileId:'python-stdlib/v1'})],
+ ['missing v2 trace validation','provider.status',accounting({...candidateReports[1][1],traceValidation:'not-provided'})],
+ ['unknown candidate version','provider.status',accounting({...candidateReports[1][1],schemaVersion:3})],
+ ['unknown candidate profile','provider.status',accounting({...candidateReports[1][1],profileId:'arbitrary-python/v1'})],
+ ['missing candidate profile','provider.status',accounting({...candidateReports[0][1],schemaVersion:2,traceValidation:'validated'})],
+ ['missing invalid diagnostic','provider.status',accounting({status:'invalid'})],
+ ['extra invalid metadata','provider.status',accounting({...candidateReports[3][1],execution:'completed'})],
+ ['extra diagnostic execution','provider.status',accounting({status:'invalid',diagnostic:{...candidateReports[3][1].diagnostic,executedAt:1006}})],
+ ['empty diagnostic','provider.status',accounting({status:'invalid',diagnostic:{file:'',path:'$',reason:'invalid-json'}})],
+ ['non-text diagnostic','provider.status',accounting({status:'invalid',diagnostic:{file:'candidate.json',path:'$',reason:1}})],
+ ['oversized diagnostic file','provider.status',accounting({status:'invalid',diagnostic:{file:'x'.repeat(129),path:'$',reason:'invalid-json'}})],
+ ['oversized diagnostic path','provider.status',accounting({status:'invalid',diagnostic:{file:'candidate.json',path:'x'.repeat(257),reason:'invalid-json'}})],
+ ['oversized diagnostic reason','provider.status',accounting({status:'invalid',diagnostic:{file:'candidate.json',path:'$',reason:'x'.repeat(129)}})],
+ ['late tool with valid report','tool.completed',accounting(candidateReports[1][1])],
+ ['late assistant with valid report','assistant.message',accounting(candidateReports[1][1])],
 ] as const)test(`Managed checkpoint still rejects ${name} occurring after file commit`,async()=>{
  const f=await fixture();const claimed=(await f.journal.claim(scope,1))!.turn;f.setClock(1100);const event={eventId:'late-execution',type,at:1006,payload};await f.journal.appendRuntime(scope,{turnId:claimed.id,dispatchId:claimed.dispatchId!,runtimeGeneration:1,...event});await f.journal.beginCheckpoint(scope,{turnId:claimed.id,dispatchId:claimed.dispatchId!,runtimeGeneration:1,outcome:'completed'});
  f.runtime.observe=async i=>({...receipt({...i,capacityLease:i.capacityLease!}),events:[event]});await assert.rejects(f.dispatcher.tick(scope,1),/invalid-checkpoint-receipt/);assert.equal(f.store.snapshot()!.turns[claimed.id]!.checkpoint,null);assert.equal(f.store.snapshot()!.turns[claimed.id]!.status,'checkpointing');
