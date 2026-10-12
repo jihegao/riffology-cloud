@@ -1,4 +1,54 @@
-# Current release readiness — 2026-10-08
+# Current release readiness — 2026-10-12
+
+## 2026-10-12 Managed candidate implementation checked locally; deployment pending
+
+[PR #190](https://github.com/jihegao/riffology-cloud/pull/190) repairs the existing
+Managed Python/restricted-JS path for [#178](https://github.com/jihegao/riffology-cloud/issues/178).
+Candidate v2 preserves model-authored grid/lane/Canvas selection and current JS
+roles, checks reported default input/trace/summary, and restores Spec, source,
+adapter, lock, visualization, result and frontend after hosted-session cleanup.
+Legacy v1 keeps its saved view and explicitly reports absent trace validation.
+The existing Browser Mesa runtime dependency closure remains compatible.
+
+The reviewed source is remote commit `b41678889f8152c78783512ed5d47bd64928c602`,
+tree `a04f073681a8cf4aa90b139ee6cee759a7ca1e67`. M2 passed 880 tests (including
+37 Managed Workerd and 9 candidate tests); UI passed 21, Preview contracts 20,
+protocol self-check 1, and typecheck passed. Another 19 Preview registry/build/
+Canvas tests passed. Four actual JS-frame browser checks passed using installed
+Playwright Chromium after an initial system-Chrome-not-found failure. These
+counts overlap and must not be added. Old agent loopback/native-Node failures
+were superseded by the unchanged source's successful root-environment rerun.
+CI did not execute because of the account allowance and is not reported passed.
+
+[Local evidence](evidence/managed-candidate-local-validation-20261012.json) records
+source hashes, synthetic identity, commands, check summaries and fixture package
+identities. Candidate output remains `execution: not-recomputed`; fixture package
+IDs are static examples, not production Revision receipts. Actual JS tests use
+a local CPython Queue trace; they do not establish general airport/ecology models.
+Browser output remains **local/unverified**. Deployment, authenticated invited-user
+acceptance, second identity and paid execution were not performed. After merge,
+#178 remains Acceptance/open; general manifest and actual bounded authoring debug
+remain [#182](https://github.com/jihegao/riffology-cloud/issues/182) and
+[#183](https://github.com/jihegao/riffology-cloud/issues/183). No online gate,
+capacity policy, network authority or historical saved version was changed.
+
+## 2026-10-12 Requirements and Revision contract; design only
+
+[PR #189](https://github.com/jihegao/riffology-cloud/pull/189) supplies the first
+design deliverable for [#179](https://github.com/jihegao/riffology-cloud/issues/179),
+completion condition 6. The [contract](requirements-revision-artifact-contract.md)
+defines stable requirements and source history, trusted user actions, the limited
+SysML 2.0 projection, raw IR locators, artifact roles, frozen inputs and backend
+capability checks. Mesa is optional in the proposed authoring path; actual bounded
+target-runtime debug remains #183. Existing saved profiles retain their meaning.
+
+The reviewed document SHA-256 is
+`88b0a9655fd7b811b5d66ee3cc03274ec965601f197ac19bfd179065d784ed4c`.
+All 13 local references resolve and whitespace checks pass. The official SysML
+sources and pinned compiler snapshot were inspected, but no SysML checker,
+simulation, schema implementation, save integration or user acceptance ran.
+The remaining requirements implementation stays open; design completion does
+not imply that the general workflow, Rust/WASM or formal Evidence is available.
 
 ## 2026-10-08 #171 Browser-local Runs deployed; authenticated owner acceptance
 
