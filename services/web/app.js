@@ -547,6 +547,15 @@ function renderWorkspace() {
     const managedStatus = events.findLast?.(event => event.type === 'provider.status' && event.payload?.backend === 'managed-agents');
     const accounting = managedAccountingSummary(managedStatus?.payload);
     if (accounting) appendTurnCard('system', accounting.usage, accounting.detail);
+    const candidateValidation = managedStatus?.payload?.candidateValidation;
+    if (candidateValidation?.status === 'invalid') {
+      const diagnostic = candidateValidation.diagnostic;
+      if (diagnostic && ['file','path','reason'].every(key => typeof diagnostic[key] === 'string' && diagnostic[key].length <= 256)) {
+        appendTurnCard('system', msg('turn.candidateInvalid'), `${diagnostic.file} · ${diagnostic.path} · ${diagnostic.reason}`);
+      }
+    } else if (candidateValidation?.schemaVersion === 1 && candidateValidation.traceValidation === 'not-provided') {
+      appendTurnCard('system', msg('turn.candidateLegacy'));
+    }
     if (turn.errorCode && !events.some(event => event.type === 'assistant.message')) appendTurnCard('system', msg('turn.incomplete', () => ({p0: turn.errorCode})), turnStatus(turn));
   }
   if(receiptTurn){const card=appendTurnCard('user',receiptTurn.message,turnStatus(receiptTurn));card.dataset.turnId=receiptTurn.id;}

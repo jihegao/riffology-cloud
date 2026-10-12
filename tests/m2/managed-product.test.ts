@@ -5,6 +5,7 @@ import {Miniflare} from 'miniflare';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import {managedCandidateFixture} from './fixtures/managed-candidate.ts';
 const scope={tenantId:'tenant-managed',projectId:'project-managed',workspaceId:'workspace-managed',workspaceGeneration:1};
 const actor={userId:'test-user',authVersion:1};
 const policy={schemaVersion:1,policyId:'additional-production-v1',scope,userId:actor.userId,enabled:true,syntheticOnly:true,maxTurns:6,maxSessions:2,observedStopUsd:5,maxDurationMs:7200000,maxTurnObservationMs:300000,maxSimulationRuns:12};
@@ -18,6 +19,7 @@ const workerSource=`
  import {turnDigest} from './services/turn/protocol.ts';
  import {RevisionStore as BaseRevisionStore} from './services/turn-runtime/revision-store.ts';
  import {revisionStoreActorName} from './services/turn-runtime/revision-store-client.ts';
+ import {managedCandidateRecoveryFiles} from './services/turn-runtime/managed-candidate.ts';
  export class RevisionStore extends BaseRevisionStore {async faultObserveForTest(enabled){this.ctx.storage.kv.put("test:observe-fault",enabled);await this.ctx.storage.sync();}async observe(input){if(this.ctx.storage.kv.get("test:observe-fault"))throw Error("synthetic-observe-unavailable");return super.observe(input);}async faultCommitForTest(mode){this.ctx.storage.kv.put('test:commit-fault',mode);await this.ctx.storage.sync();}async commitsForTest(){return this.ctx.storage.kv.get('test:commit-count')??0;}async commit(input){const mode=this.ctx.storage.kv.get('test:commit-fault');this.ctx.storage.kv.delete('test:commit-fault');this.ctx.storage.kv.put('test:commit-count',(this.ctx.storage.kv.get('test:commit-count')??0)+1);await this.ctx.storage.sync();if(mode==='before')throw Error('synthetic-commit-before-write');const result=await super.commit(input);if(mode==='after')throw Error('synthetic-commit-lost-ack');return result;}}
  export class ManagedProductRuntime extends BaseManagedProductRuntime {async legacyStopForTest(){const b=this.ctx.storage.kv.get('budget');b.stopped='managed-execution-unknown';this.ctx.storage.kv.put('budget',b);await this.ctx.storage.sync();}async partialClosureForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:"turn:"})){if(!row.deletion){row.closed=false;this.ctx.storage.kv.put(key,row);}}await this.ctx.storage.sync();}async tickForTest(){await super.alarm();}async pendingClosedForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:"turn:"})){row.receipt=null;row.checkpoint=null;row.closed=true;this.ctx.storage.kv.put(key,row);}await this.ctx.storage.sync();}async seedUnreservedForTest(input,withBinding){const identity={scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation},managedInput={identity,actor:input.actor,message:input.message,base:input.base};this.ctx.storage.kv.put('turn:'+identity.turnId,{input,managedInput,reserved:false,operation:null,observation:null,checkpoint:null,persistenceError:null,closed:false,cleanupRequested:false,cost:null,cancelRequested:false,receipt:null});await this.ctx.storage.sync();if(withBinding)await new SqlExecutionBindingStore(this.ctx.storage).reserve({schemaVersion:1,identity,backend:'managed-agents',inputSha256:await turnDigest(managedInput),reservedAt:Date.now(),remoteSessionId:null,remoteTurnId:null});}async interruptedCleanupForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:'turn:'})){row.cleanupRequested=true;this.ctx.storage.kv.put(key,row);}await this.ctx.storage.sync();throw Error('synthetic-cleanup-interrupted');}async expireForTest(){const budget=this.ctx.storage.kv.get('budget');budget.startedAt=Date.now()-7200001;this.ctx.storage.kv.put('budget',budget);await this.ctx.storage.sync();}}
  export default {async fetch(request,env){
@@ -42,7 +44,7 @@ const workerSource=`
    else if(b.action==='simulation')value=await stub.reserveSimulation(s,b.runId);
    else if(b.action==='fault-commit')value=await env.REVISION_STORE.getByName(revisionStoreActorName(s)).faultCommitForTest(b.mode);
    else if(b.action==='commit-count')value=await env.REVISION_STORE.getByName(revisionStoreActorName(s)).commitsForTest();
-   else if(b.action==='restore'){const restored=await env.REVISION_STORE.getByName(revisionStoreActorName(s)).restore(b.input,b.receipt);value={backendState:restored.backendState,piSession:restored.piSession,bytes:restored.filesArchive.length,receipt:restored.receipt};}
+   else if(b.action==='restore'){const restored=await env.REVISION_STORE.getByName(revisionStoreActorName(s)).restore(b.input,b.receipt);value={backendState:restored.backendState,piSession:restored.piSession,bytes:restored.filesArchive.length,receipt:restored.receipt,files:managedCandidateRecoveryFiles(restored.filesArchive)};}
    else throw Error('unknown-test-action');
    return Response.json({ok:true,value});
   }catch(error){return Response.json({ok:false,error:error.message});}
@@ -80,9 +82,42 @@ async function fixture(testing=false){
  };
  const worker='managed-product-test';const options:any={host:'127.0.0.1',port:0,inspectorPort:0,cf:{},resourcePersistencePath:directory,telemetry:{enabled:false},logRequests:false,workers:[{config:{type:'worker',name:worker,compatibilityDate:'2026-09-09',compatibilityFlags:['nodejs_compat'],manifest:{mainModule:'worker.mjs',modules:{'worker.mjs':{type:'esm',contents:bundle.outputFiles![0].text}}},env:{MANAGED:{type:'durable-object',worker,exportName:'ManagedProductRuntime'},MANAGED_TURN_RUNTIME:{type:'durable-object',worker,exportName:'ManagedProductRuntime'},REVISION_STORE:{type:'durable-object',worker,exportName:'RevisionStore'},WORKSPACE_CHECKPOINTS:{type:'r2',name:'managed-checkpoints'},MODEL_CONTENT:{type:'r2',name:'managed-content'},...(testing?{MANAGED_TESTING_JSON:{type:'text',value:JSON.stringify({schemaVersion:2,policyId:'owner-online-test',tenantId:scope.tenantId,userId:actor.userId,enabled:true})}}:{MANAGED_ACCEPTANCE_JSON:{type:'text',value:JSON.stringify(policy)}}),MANAGED_OPENAI_API_KEY:{type:'text',value:'synthetic-key-no-network'}},exports:{ManagedProductRuntime:{type:'durable-object',storage:'sqlite'},RevisionStore:{type:'durable-object',storage:'sqlite'}}},dev:{unsafeRegisterWorker:false,outboundService:{type:'fetcher',handler}}}]};
  let mf=new Miniflare(options);
- return {calls,sessions,highCost(){inputTokens=2000000;},async call(body:unknown):Promise<any>{const response=await mf.dispatchFetch('http://test/',{method:'POST',body:JSON.stringify(body)});assert.equal(response.status,200);return response.json();},async restart(){await mf.dispose();mf=new Miniflare(options);},async close(){await mf.dispose();await rm(directory,{recursive:true,force:true});},loseDeleteAck(){lostDeleteAck=true;},failAbsence(value=true){failAbsentReads=value;},unknownUsage(){unknownUsage=true;},loseInput(){lostInput=true;},loseCreate(){lostCreate=true;},hideOriginal(){hideOriginal=true;},failReads(value=true){failReads=value;},dropInputs(count=1){dropInputs=count;},invalidCandidate(value=true){candidateOutput=value?JSON.stringify({schemaVersion:1,spec,files:{'model/model.py':'invalid'}}):candidate;},deleteUnconfirmed(){deleteUnconfirmed=true;},failDelete(){deleteFails=true;},failArtifacts(value=true){artifactFails=value;},run(){running=true;}};
+ return {calls,sessions,highCost(){inputTokens=2000000;},async call(body:unknown):Promise<any>{const response=await mf.dispatchFetch('http://test/',{method:'POST',body:JSON.stringify(body)});assert.equal(response.status,200);return response.json();},async restart(){await mf.dispose();mf=new Miniflare(options);},async close(){await mf.dispose();await rm(directory,{recursive:true,force:true});},loseDeleteAck(){lostDeleteAck=true;},failAbsence(value=true){failAbsentReads=value;},unknownUsage(){unknownUsage=true;},loseInput(){lostInput=true;},loseCreate(){lostCreate=true;},hideOriginal(){hideOriginal=true;},failReads(value=true){failReads=value;},dropInputs(count=1){dropInputs=count;},setCandidate(value:unknown){candidateOutput=JSON.stringify(value);},invalidCandidate(value=true){candidateOutput=value?JSON.stringify({schemaVersion:1,spec,files:{'model/model.py':'invalid'}}):candidate;},deleteUnconfirmed(){deleteUnconfirmed=true;},failDelete(){deleteFails=true;},failArtifacts(value=true){artifactFails=value;},run(){running=true;}};
 }
 const posts=(f:Awaited<ReturnType<typeof fixture>>)=>f.calls.filter(c=>c.method==='POST');
+test('Managed Workerd saves and restores v2 model/Spec/JS roles, then preserves that view for a legacy continuation',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  const candidate=managedCandidateFixture('airport','javascript-canvas');f.setCandidate(candidate);
+  const request=input(),first=await f.call({action:'accept',input:request});assert.ok(first.value?.checkpoint,JSON.stringify(first));
+  assert.equal(first.value.events.at(-1).payload.candidateValidation.traceValidation,'validated');
+  assert.equal(first.value.events.at(-1).payload.candidateValidation.execution,'not-recomputed');
+  const identity={scope,sessionId:request.sessionId,turnId:request.turnId,dispatchId:request.dispatchId,generation:1};
+  const restored=await f.call({action:'restore',input:identity,receipt:first.value.checkpoint});
+  for(const [path,text]of Object.entries(candidate.files))assert.equal(restored.value.files[path],text);
+  assert.deepEqual(JSON.parse(restored.value.files['model/model-spec.json']),candidate.spec);
+  await f.call({action:'cleanup',scope});await f.restart();
+  const second=await f.call({action:'accept',input:input(2,request.sessionId,{workspace:first.value.checkpoint,session:first.value.checkpoint})});assert.ok(second.value?.checkpoint,JSON.stringify(second));
+  const hosted=[...f.sessions.values()][1],context=JSON.parse(hosted.instructions.slice(hosted.instructions.lastIndexOf('\n')+1));
+  for(const [path,text]of Object.entries(candidate.files))assert.equal(context.files[path],text);
+  assert.deepEqual(JSON.parse(context.files['model/model-spec.json']),candidate.spec);
+  assert.equal(context.files['model/run.py'],restored.value.files['model/run.py']);
+  f.setCandidate({schemaVersion:1,spec:candidate.spec,files:Object.fromEntries(['model/model.py','model/results.json','app/requirements.lock'].map(path=>[path,candidate.files[path]]))});
+  const thirdInput=input(3,request.sessionId,{workspace:second.value.checkpoint,session:second.value.checkpoint});
+  const third=await f.call({action:'accept',input:thirdInput});assert.ok(third.value?.checkpoint,JSON.stringify(third));
+  assert.equal(third.value.events.at(-1).payload.candidateValidation.traceValidation,'not-provided');
+  const thirdIdentity={scope,sessionId:thirdInput.sessionId,turnId:thirdInput.turnId,dispatchId:thirdInput.dispatchId,generation:1};
+  const legacy=await f.call({action:'restore',input:thirdIdentity,receipt:third.value.checkpoint});
+  for(const path of ['model/visualization.json','frontend/main.mjs','frontend/manifest.json'])assert.equal(legacy.value.files[path],candidate.files[path]);
+ }finally{await f.close();}
+});
+test('Managed Workerd rejects reported airport lane mismatch with a persisted file/frame/field diagnostic and no checkpoint',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  const candidate=managedCandidateFixture('airport','javascript-canvas');candidate.preview.trace.snapshots[1]!.space={type:'lane',lanes:['road']};f.setCandidate(candidate);
+  const result=await f.call({action:'accept',input:input()});assert.equal(result.value.phase,'terminal');assert.equal(result.value.checkpoint,null);assert.equal(result.value.persistenceErrorCode,'managed-candidate-invalid');
+  assert.deepEqual(result.value.events.at(-1).payload.candidateValidation,{status:'invalid',diagnostic:{file:'candidate.json',path:'preview.trace.snapshots[1].agents[0].lane',reason:'runtime-agent-invalid'}});
+  const count=posts(f).length;await f.restart();assert.deepEqual(await f.call({action:'observe',input:input()}),result);assert.equal(posts(f).length,count);assert.equal((await f.call({action:'status',scope})).value.stopped,null);
+ }finally{await f.close();}
+});
 test('Managed Workerd creates one real SDK input, saves R2 files-only Revision, restores and replays after actor restart',{timeout:60000},async()=>{
  const f=await fixture();try{
   const request=input(),result=await f.call({action:'accept',input:request});assert.equal(result.ok,true,JSON.stringify(result));assert.equal(result.value.phase,'terminal');assert.ok(result.value.checkpoint,JSON.stringify(result));assert.equal(result.value.stopped.kind,'remote-terminal');assert.equal(result.value.resourceDisposition.status,'released');
