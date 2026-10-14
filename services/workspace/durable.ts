@@ -116,6 +116,8 @@ import type {TenantModelBudget} from '../model-budget/durable.ts';
 import type {ProductionModelBudget} from '../model-budget/production-durable.ts';
 import type {ToolBridgeAgent} from '../tools/durable.ts';
 import {toolBridgeActorName} from '../tools/identity.ts';
+import {productToolCommandId} from '../tools/receipt.ts';
+import {workspaceToolReceiptAuthority} from './tool-receipt.ts';
 import {WorkspaceRuntimeLeases,pairReference} from './runtime-leases.ts';
 import {workspacePairedCapacityClient,type WorkspacePairedCapacityPort} from '../capacity/paired-client.ts';
 import {warmTrustedPiActorId,type WarmOutboundRequest} from '../sandbox/warm-authority.ts';
@@ -1356,6 +1358,13 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   }
   async replayTurnEvents(input: { scope: TurnScope; afterSequence: number; limit: number }) {
     return this.#turns.replay(this.#ready(input.scope), input.afterSequence, input.limit);
+  }
+  async toolReceipt(input:{scope:TurnScope;actor:TurnActor;turnId:string;revisionId:string;toolCallId:string;name:string}){
+    const scope=this.#maintenanceScope(input.scope),authorize=async()=>{const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(input.actor,scope.workspaceId);if(!sameScope(actual,scope))throw Error('tool-receipt-not-found');this.#maintenanceScope(scope);};
+    await authorize();const authority=workspaceToolReceiptAuthority(await this.#turns.snapshot(scope),scope,input.actor,input.turnId,input.revisionId,input.toolCallId,input.name),{identity,revisionId,toolCallId,name}=authority,id=identity.turnId,commandId=await productToolCommandId(identity,toolCallId,name);
+    if(!this.env.TOOL_BRIDGE_AGENT)throw Error('tool-receipt-unavailable');
+    const selection=this.#leases().selection(identity),warm=selection?.mode==='warm'&&selection.bound?await this.#leases().current(identity):null,actorId=warm?await workspaceSandboxActor(warm.lease,'project'):(await sandboxActorIds(scope,id,identity.dispatchId)).project;
+    const receipt=await this.env.TOOL_BRIDGE_AGENT.getByName(await toolBridgeActorName(scope,id,identity.dispatchId)).readPersistedReceipt({identity,revisionId,commandId,toolCallId,name,target:{actorId,warm:warm?{lease:warm.lease,bindingEpoch:warm.binding.bindingEpoch}:null}});await authorize();return receipt;
   }
   async turnSnapshot(input: { scope: TurnScope; actor?:TurnActor }) {
     const scope=this.#ready(input.scope),snapshot=await this.#turns.view(scope,input.actor),managed=this.#managedRoute();

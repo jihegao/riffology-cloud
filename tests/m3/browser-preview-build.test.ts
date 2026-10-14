@@ -89,6 +89,16 @@ test('unsupported inputs have stable reasons and never execute or fetch generate
  for(const [overrides,reasonCode] of cases){const f=await fixture(overrides);const result=await f.validate();assert.deepEqual(result,{status:'unsupported',reasonCode});assert.deepEqual(await f.validate(),result);}
  const files={...fileValues};delete files['model/visualization.json'];const archive=initialWorkspaceArchive(files),f=await fixture();assert.deepEqual(await validateSavedPreview({...f.source,filesSha256:await workspaceArchiveReader(archive).sha256()},archive,'python-stdlib/v1',f.registry),{status:'unsupported',reasonCode:'source-missing'});
 });
+test('existing Mesa source keeps the complete registered runtime dependency import closure',async()=>{
+ const profiles=JSON.parse(await readFile(new URL('../../services/browser-preview/runtime/assets/profiles.json',import.meta.url),'utf8'));
+ const registry=await createTrustedPreviewRegistry(profiles.map((profile:any)=>({runtime:profile.runtime,packages:profile.packages,assets:profile.assetManifest,trust:'test-fixture'})));
+ const mesa=registry.resolve('mesa-3.5.1/v1')!;
+ assert.equal(Object.hasOwn(mesa.packages,'packaging'),false);
+ assert.ok(mesa.runtime.dependencies.some(dependency=>dependency.name==='packaging'));
+ const archive=initialWorkspaceArchive({...fileValues,'model/model.py':encode('import packaging\nimport matplotlib\nimport pytz\nimport six\ndef run(config):\n    return {"model":"queue","snapshots":[]}\n'),'app/requirements.lock':encode(JSON.stringify({schemaVersion:1,packages:mesa.packages}))});
+ const source={projectId:'project-test',revisionId:'legacy-mesa-imports',filesSha256:await workspaceArchiveReader(archive).sha256()};
+ assert.equal((await validateSavedPreview(source,archive,'mesa-3.5.1/v1',registry)).status,'compatible');
+});
 test('browser compatibility binds exact platform adapter, even for legacy-looking valid imports',async()=>{
  assert.equal(await previewSha256(fileValues['model/run.py']),PREVIEW_SERVER_ADAPTER_SHA256);
  const f=await fixture({'model/run.py':encode(new TextDecoder().decode(fileValues['model/run.py'])+'\n# changed wrapper semantics or bytes\n')});

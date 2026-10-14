@@ -1,0 +1,1 @@
+{"schema":"riffology.visualization/v1","protocol":"riffology.visual/v0.1","renderer":"python-canvas","metricKeys":["initial_trees","burned_trees","active_fires","trees_remaining","burn_fraction_pct"]}

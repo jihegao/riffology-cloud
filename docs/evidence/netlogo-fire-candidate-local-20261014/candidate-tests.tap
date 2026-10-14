@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: candidate uses the exact canonical adapter and passes the saved Preview contract
+ok 1 - candidate uses the exact canonical adapter and passes the saved Preview contract
+  ---
+  duration_ms: 16.265878
+  type: 'test'
+  ...
+# Subtest: hand-derived setup and spread preserve left ignition, neighbors4, finite boundaries and frozen fronts
+ok 2 - hand-derived setup and spread preserve left ignition, neighbors4, finite boundaries and frozen fronts
+  ---
+  duration_ms: 24.073469
+  type: 'test'
+  ...
+# Subtest: seeded runs reproduce locally without claiming NetLogo seed equivalence
+ok 3 - seeded runs reproduce locally without claiming NetLogo seed equivalence
+  ---
+  duration_ms: 36.417673
+  type: 'test'
+  ...
+# Subtest: embers preserve NetLogo stop timing after a zero-density setup
+ok 4 - embers preserve NetLogo stop timing after a zero-density setup
+  ---
+  duration_ms: 23.160905
+  type: 'test'
+  ...
+# Subtest: all declared parameter extremes produce valid bounded traces
+ok 5 - all declared parameter extremes produce valid bounded traces
+  ---
+  duration_ms: 439.394451
+  type: 'test'
+  ...
+# Subtest: invalid direct model inputs fail closed without coercion or clamping
+ok 6 - invalid direct model inputs fail closed without coercion or clamping
+  ---
+  duration_ms: 18.201577
+  type: 'test'
+  ...
+# Subtest: CPython executes through the shared adapter and persists Fire summary metrics
+ok 7 - CPython executes through the shared adapter and persists Fire summary metrics
+  ---
+  duration_ms: 49.361651
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 725.230877

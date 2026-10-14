@@ -4,9 +4,9 @@
 
 截至 2026-10-07，#87 核心流程验收保持完成并关闭，常态容量由 [#104](https://github.com/jihegao/riffology-cloud/issues/104) 承接。原 actor 的 #153 meter-only 策略保留账本；#152 的 9 个冻结旧项目已可恢复归档；#150 的受限 JS 前端已合并发布；[#168](https://github.com/jihegao/riffology-cloud/pull/168) 已记录 #165 普通受邀作者参数草稿与真实单次／对照 Cloud Runs 验收，完整常态运行与第二身份验收仍按各事项证据处理。Browser Preview 始终是 local/unverified。
 
-当前受邀账户／个人项目及已开启 Invited Runs 的 reviewAt 已延至 **2026-12-31 23:59:59.999 Asia/Shanghai**（`2026-12-31T15:59:59.999Z`）；[#169](https://github.com/jihegao/riffology-cloud/pull/169) 是已执行续期的未合并文档证据，线上 Gateway 为 `76380e93-a2ab-4cd8-9340-e3587d3956f6`，不是待执行计划。M1 验收截止仍为 **2026-10-20**，#101 历史费用核对与 #104 完整运行验收保留。
+当前受邀账户／个人项目及已开启 Invited Runs 的 reviewAt 已延至 **2026-12-31 23:59:59.999 Asia/Shanghai**（`2026-12-31T15:59:59.999Z`）；[#169](https://github.com/jihegao/riffology-cloud/pull/169) 已合并归档该续期；部署版本与后续验收以[发布索引](docs/release-readiness.md)为准。M1 验收截止仍为 **2026-10-20**，#101 历史费用核对与 #104 完整运行验收保留。
 
-正式产品名为 **riffoid**；仓库仍为 `jihegao/riffology-cloud`。品牌工程不更换用户、邀请、项目、Run、资源身份或历史协议。官网／应用域名切换见[迁移准备](docs/riffoid-domain-migration.md)，此次不部署。
+正式产品名为 **riffoid**；仓库仍为 `jihegao/riffology-cloud`。品牌工程不更换用户、邀请、项目、Run、资源身份或历史协议。应用入口为 `https://app.riffoid.com`；域名设计见[迁移准备](docs/riffoid-domain-migration.md)，已发生的发布与未覆盖验收见发布索引。
 
 riffoid 是一个多租户、持久化的 AI 仿真建模工作台。
 用户围绕 Project 和 Pi Agent Session 工作，Workspace 提供文件、运行与插件能力，

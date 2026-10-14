@@ -1,4 +1,6 @@
-# riffoid 品牌与域名迁移准备 — 2026-10-07
+# riffoid 品牌与域名迁移准备 — 2026-10-07（历史设计）
+
+2026-10-14 整合说明：PR #169 已合并；应用域名已切换到 `app.riffoid.com`，官网实际位于 `www.riffoid.com`，apex 跳转到 www。下文是 10 月 7 日的原始离线方案，不是重新切域或回滚指令。当前部署与验收依据[发布索引](release-readiness.md)及 [PR #173](https://github.com/jihegao/riffology-cloud/pull/173)；不复用过期窗口或重放历史请求。
 
 本次只提交品牌源码和离线准备，未合并、部署或修改 Cloudflare / Google 配置。
 域名购买由另一任务处理；费用、OAuth／安全配置变更和正式切换仍须分别批准。

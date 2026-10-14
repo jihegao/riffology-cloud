@@ -1,6 +1,6 @@
 import {deriveTurnTiming} from './timing.ts';
 import {jsonEquivalent} from './json-equivalent.ts';
-import { TURN_EVENT_BYTES_LIMIT, TURN_EVENT_LIMIT, TURN_EVENT_RECEIPT_LIMIT, actor, checkpointReceipt, initialWorkspaceBase, jsonPayload, message, positive, resourceDisposition, verifyHandoffProof, sameScope, scope, title, turnDigest, turnId,
+import { TURN_EVENT_BYTES_LIMIT, TURN_EVENT_LIMIT, TURN_EVENT_RECEIPT_LIMIT, actor, checkpointReceipt, initialWorkspaceBase, jsonPayload, message, positive, resourceDisposition, verifyHandoffProof, sameScope, scope, title, turnDigest, turnId,turnBaseCheckpoints,type TurnBaseCheckpoints,
   type CheckpointReceipt, type InitialWorkspaceBase, type RuntimeEventType, type SessionRecord, type TurnActor, type TurnEvent,
   type TurnEventType, type TurnJournalState, type TurnJournalView, type TurnRecord, type TurnResourceDisposition, type TurnScope } from './protocol.ts';
 import type { AtomicTurnStore } from './store.ts';
@@ -12,6 +12,22 @@ const terminal=(status:TurnRecord['status'])=>['completed','failed','cancelled',
 const intent=(userId:string,key:string)=>`${userId}|${turnId(key)}`;
 const nowValid=(value:number)=>positive(value);
 const equal=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
+/** Current Managed candidate reports describe supplied data, not execution or
+ * verification. Unknown fields and stronger claims are not accounting-only. */
+function candidateAccountingReport(value:unknown):boolean{
+  if(!value||typeof value!=='object'||Array.isArray(value))return false;
+  const report=value as Record<string,unknown>,keys=Object.keys(report).sort().join(',');
+  if(report.status==='invalid'){
+    if(keys!=='diagnostic,status'||!report.diagnostic||typeof report.diagnostic!=='object'||Array.isArray(report.diagnostic))return false;
+    const diagnostic=report.diagnostic as Record<string,unknown>;
+    if(Object.keys(diagnostic).sort().join(',')!=='file,path,reason')return false;
+    return ([['file',128],['path',256],['reason',128]] as const).every(([key,limit])=>typeof diagnostic[key]==='string'&&diagnostic[key].length>0&&diagnostic[key].length<=limit);
+  }
+  if(report.status!=='checked'||report.execution!=='not-recomputed')return false;
+  if(report.schemaVersion===1)return keys==='execution,schemaVersion,status,traceValidation'&&report.traceValidation==='not-provided';
+  if(report.schemaVersion===3)return report.operation==='answer'||report.operation==='design'?keys==='execution,operation,schemaVersion,status,traceValidation'&&report.traceValidation==='not-provided':report.operation==='model'&&keys==='execution,operation,profileId,schemaVersion,status,traceValidation'&&report.traceValidation==='validated'&&['python-stdlib/v1','mesa-3.5.1/v1'].includes(report.profileId as string);
+  return report.schemaVersion===2&&keys==='execution,profileId,schemaVersion,status,traceValidation'&&report.traceValidation==='validated'&&['python-stdlib/v1','mesa-3.5.1/v1'].includes(report.profileId as string);
+}
 /** Managed accounting is observed after immutable file publication. It does
  * not prove later model/tool execution and cannot move the execution clock.
  * Recognize the deployed exact envelope so existing immutable events recover;
@@ -19,7 +35,8 @@ const equal=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
 function postExecutionAccounting(row:TurnEvent):boolean{
   if(row.type!=='provider.status')return false;
   const p=row.payload;
-  if(Object.keys(p).sort().join(',')!=='backend,billing,resources,usage'||p.backend!=='managed-agents'||p.billing!=='pending'||p.resources!=='session-retained')return false;
+  const hasReport=Object.hasOwn(p,'candidateValidation');
+  if(Object.keys(p).sort().join(',')!==(hasReport?'backend,billing,candidateValidation,resources,usage':'backend,billing,resources,usage')||p.backend!=='managed-agents'||p.billing!=='pending'||p.resources!=='session-retained'||hasReport&&!candidateAccountingReport(p.candidateValidation))return false;
   if(!p.usage||typeof p.usage!=='object'||Array.isArray(p.usage))return false;
   const usage=p.usage as Record<string,unknown>,keys=Object.keys(usage).sort().join(',');
   if(usage.status==='unknown')return keys==='reason,status'&&['missing','invalid'].includes(usage.reason as string);
@@ -207,6 +224,24 @@ export class TurnJournal{
       if(!['running','cancelling'].includes(turn.status))throw Error('turn-runtime-scope-denied');
       const cancelDisposition=turn.status==='cancelling'?(input.outcome==='cancelled'?'cancelled':input.outcome==='interrupted'?'interrupted':'already-terminal'):turn.cancelDisposition;
       turn.status='checkpointing';turn.executionOutcome=input.outcome;turn.errorCode=input.errorCode??null;turn.cancelDisposition=cancelDisposition;turn.persistenceOutcome=null;turn.persistenceErrorCode=null;turn.updatedAt=at;event(state,turn,'turn.checkpointing',at,{executionOutcome:input.outcome,errorCode:turn.errorCode,...(cancelDisposition?{cancelDisposition}:{})});return {state,value:turn};});
+  }
+  /** Explicit completed answer. Same scope/base/lease fences as a publication,
+   * with neither an R2 commit nor a mutation of either saved head. */
+  async completeUnchanged(rawScope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;base:TurnBaseCheckpoints;resourceDisposition:TurnResourceDisposition}){
+    const s=scope(rawScope),tid=turnId(input.turnId),dispatchId=turnId(input.dispatchId),generation=positive(input.runtimeGeneration),base=turnBaseCheckpoints(input.base),at=nowValid(this.#clock());
+    return this.#store.transact(current=>{
+      const state=requireState(current,s),turn=state.turns[tid];
+      if(!turn||turn.dispatchId!==dispatchId||turn.runtimeGeneration!==generation||!equal(turn.base,base))throw Error('turn-runtime-scope-denied');
+      const disposition=checkedResource(turn,input.resourceDisposition);if(disposition.status==='handed-off')throw Error('turn-handoff-conflict');
+      if(turn.persistenceOutcome==='unchanged'){applyReleaseDisposition(state,turn,disposition);return {state,value:turn};}
+      if(!['running','cancelling'].includes(turn.status)||state.activeTurnId!==tid)throw Error('turn-runtime-scope-denied');
+      if(!equal(base.workspace,state.workspaceHead)||!equal(base.session,state.sessions[turn.sessionId]!.head))throw Error('turn-checkpoint-base-conflict');
+      if(turn.status==='cancelling')turn.cancelDisposition='already-terminal';
+      turn.status='completed';turn.executionOutcome='completed';turn.persistenceOutcome='unchanged';turn.errorCode=null;turn.persistenceErrorCode=null;turn.finishedAt=at;turn.updatedAt=at;state.activeTurnId=null;
+      applyReleaseDisposition(state,turn,disposition);
+      turn.terminalSequence=event(state,turn,'turn.completed',at,{saved:false,unchanged:true,errorCode:null}).sequence;pruneTerminalEventReceipts(state);
+      return {state,value:turn};
+    });
   }
   async commitCheckpoint(rawScope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;checkpoint:CheckpointReceipt;resourceDisposition?:TurnResourceDisposition}){
     const s=scope(rawScope),tid=turnId(input.turnId),dispatchId=turnId(input.dispatchId),generation=positive(input.runtimeGeneration),at=nowValid(this.#clock()),c=input.checkpoint;

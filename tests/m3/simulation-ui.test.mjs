@@ -3,7 +3,7 @@ import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 
-const modules=Object.fromEntries(await Promise.all(['i18n.js','i18n-bindings.js'].map(async name=>[name,await readFile(new URL('../../services/web/'+name,import.meta.url),'utf8')])));
+const modules=Object.fromEntries(await Promise.all(['artifact-views.js','i18n.js','i18n-bindings.js'].map(async name=>[name,await readFile(new URL('../../services/web/'+name,import.meta.url),'utf8')])));
 const source = await readFile(new URL('../../services/web/simulation.js', import.meta.url), 'utf8');
 
 test('simulation panel uses saved model/version and never invokes Pi turns', () => {
@@ -22,7 +22,7 @@ test('simulation panel renders typed parameters, retries one pending request and
   t.after(() => browser.close());
   const context = await browser.newContext({locale:'zh-CN'}); t.after(() => context.close());
   const page = await context.newPage(); const files = {};
-  for (const name of ['index.html', 'app.js', 'i18n.js', 'i18n-bindings.js', 'locale-preference.js','project-status.js', 'browser-preview.js', 'verify-handoff.js', 'layout.js', 'export.js', 'publication.js', 'evidence.js', 'evidence.css', 'services.js', 'previews.js', 'simulation.js', 'comparison.js', 'styles.css', 'workspace.css']) files[name] = await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8');
+  for (const name of ['artifact-views.js','index.html', 'app.js', 'i18n.js', 'i18n-bindings.js', 'locale-preference.js','project-status.js', 'browser-preview.js', 'verify-handoff.js', 'layout.js', 'export.js', 'publication.js', 'evidence.js', 'evidence.css', 'services.js', 'previews.js', 'simulation.js', 'local-runs.js', 'comparison.js', 'styles.css', 'workspace.css']) files[name] = await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8');
   let experiments = [], posts = 0, failOnce = true, changedSpec = false;const attempts=[];
   const json = (route, body, status = 200) => route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
   await page.route('**/*', async route => {
@@ -52,6 +52,7 @@ if (path === '/api/me') return json(route, { execution:{service:true,preview:tru
   assert.equal(await page.locator('#workspace-simulation input[name="servers"]').getAttribute('type'), 'number'); assert.equal(await page.locator('#workspace-simulation input[name="warm"]').getAttribute('type'), 'checkbox'); assert.equal(await page.locator('#workspace-simulation select[name="mode"]').count(), 1); assert.equal(posts, 0);
   await page.locator('#workspace-simulation input[name="servers"]').fill('2');
   await page.locator('#workspace-simulation input[name="seed"]').fill('99');
+  await page.locator('#workspace-simulation select[name="execution"]').selectOption('cloud');
   await page.locator('#workspace-simulation button[type="submit"]').click();
   await page.getByText('重试实验',{exact:true}).waitFor();assert.equal(posts,1);
   assert.equal(await page.locator('#workspace-simulation input[name="servers"]').inputValue(),'2');

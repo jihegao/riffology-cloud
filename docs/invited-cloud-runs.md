@@ -1,5 +1,19 @@
 # Invited Cloud Runs — #136
 
+## Current review deadline — 2026-10-07
+
+The user-authorized same-actor extension sets Beta admission, including enabled
+Invited Runs, to **2026-12-31 23:59:59.999 Asia/Shanghai**
+(`2026-12-31T15:59:59.999Z`). Independent readback confirms both original pools
+are ready, enabled and unpaused with zero occupancy/unknown execution. All six
+original dispatched/released Run leases and records remain unchanged.
+See [extension evidence](evidence/releases/beta-review-extension-20261007.json)
+and [release readiness](release-readiness.md) for the current deployment and
+acceptance scope. This operation adds no user Run acceptance. The opening below
+is a historical snapshot; its October 20 deadline has been superseded.
+
+## Historical: 2026-10-02 opening
+
 On 2026-10-02 the user confirmed the local Fire Model preview and explicitly
 authorized cloud experiments. The dedicated invited Run policy is **enabled**
 on Gateway `89e90822-d6e7-4036-8f17-99d08d7ca42e` at 100%. Only the existing

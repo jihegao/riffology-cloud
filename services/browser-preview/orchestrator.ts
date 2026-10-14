@@ -8,6 +8,7 @@ import {readPreviewPackage,type PreviewObjectBucket} from './storage.ts';
 import {simulationPlan,modelVersion} from '../simulation/source.ts';
 import {SimulationHost,experimentRequest,publicExperiment,type ExperimentRequest} from '../simulation/host.ts';
 import type {PreviewSource} from '../preview/source.ts';
+import {readModelArtifacts,type ArtifactView} from '../simulation/model-artifacts.ts';
 type Saved=BrowserBuildSource;
 type Capture={schemaVersion:1;scope:TurnScope;actor:TurnActor;input:PreviewVerifyRequest;request:ExperimentRequest;serverKey:string;source?:BrowserBuildSource};
 export interface BrowserPreviewOrchestratorPorts{
@@ -37,8 +38,15 @@ export class BrowserPreviewOrchestrator{
    if(!row.profile||row.profile.trust!=='verified-platform')reasonCode='preview-runtime-unavailable';
    else {let config:unknown=null;try{config=this.ports.delivery(row.profile.runtime.assetSha256);}catch{/* Historical immutable delivery may be unavailable. */}if(!config||typeof config!=='object')reasonCode='preview-runtime-unavailable';else delivery={...config,profile:{runtime:row.profile.runtime,packages:row.profile.packages,assetManifest:row.profile.assets,verified:true}};}
   }
+  let views:{filesSha256:string;items:ArtifactView[]}|null=null;
+  if(row?.state.status==='ready'&&sourceFilesSha(saved)){
+   const bytes=await this.ports.files(sourcePreview(saved));await this.#authorize(actor);this.#stillSaved(saved);
+   if(await previewSha256(bytes)!==sourceFilesSha(saved))throw Error('browser-preview-source-unavailable');
+   // Optional display metadata cannot weaken or alter the existing 5/7-file package.
+   try{const artifacts=readModelArtifacts(bytes);if(artifacts)views={filesSha256:sourceFilesSha(saved)!,items:artifacts.manifest.views.filter(v=>v.section==='preview')};}catch{/* Invalid design metadata leaves the frozen compute package available. */}
+  }
   this.#stillSaved(saved);const current=this.#currentRevision()??null;
-  return {canVerify:!this.ports.readOnly?.()&&this.ports.canVerify(),currentRevisionId:current,revisionId:revision,sourceKind:saved.kind==='initial-workspace'?'initial-workspace':'saved-turn',referenceSha256:saved.kind==='initial-workspace'?saved.referenceSha256:null,build:reasonCode?null:row?.state??null,stale:current!==null&&revision!==current,modelSpec:row?.modelSpec??null,reasonCode:reasonCode??(!row?'preview-discovery-pending':null),delivery};
+  return {canVerify:!this.ports.readOnly?.()&&this.ports.canVerify(),currentRevisionId:current,revisionId:revision,sourceKind:saved.kind==='initial-workspace'?'initial-workspace':'saved-turn',referenceSha256:saved.kind==='initial-workspace'?saved.referenceSha256:null,build:reasonCode?null:row?.state??null,stale:current!==null&&revision!==current,modelSpec:row?.modelSpec??null,reasonCode:reasonCode??(!row?'preview-discovery-pending':null),delivery,views};
  }
  async bytes(actor:TurnActor,identity:string){
   if(!/^[a-f0-9]{64}$/.test(identity))throw Error('browser-preview-input-invalid');await this.#authorize(actor);

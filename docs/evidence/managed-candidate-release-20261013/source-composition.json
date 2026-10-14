@@ -1,0 +1,77 @@
+{
+  "scope": "offline immutable source diff; does not re-run tests or make deployment/authentication claims",
+  "candidate": {
+    "ref": "3e9b97b6d8edeecddd8ce1c995c827dc225a8467",
+    "tree": "2c56db59ca7c050a7e83fc36b2d1d6660ccc943a",
+    "parent": "c27d7e7739216ed0822abcb1c3d3d5ac0336821b"
+  },
+  "baseline": "8e5f9b149dca2273da63f1810d21bf5e39c58de7",
+  "mergedMain": "c27d7e7739216ed0822abcb1c3d3d5ac0336821b",
+  "managed192": "f55cf961b4bf53ad7abb6e05de64c9206168863c",
+  "previousComposite": "c526ef0d49d77f0202860d5624e5c59c04e222a7",
+  "productionDiffFromProvedLiveBaseline": [
+    "services/browser-preview/runtime/protocol.d.mts",
+    "services/browser-preview/validator.ts",
+    "services/turn-runtime/managed-candidate.ts",
+    "services/turn-runtime/managed-product.ts",
+    "services/turn-runtime/managed-testing-instructions.ts",
+    "services/turn/journal.ts",
+    "services/web/admin.html",
+    "services/web/app.js",
+    "services/web/i18n.js",
+    "services/web/index.html"
+  ],
+  "mergedMainSourceRetention": {
+    "services/browser-preview/runtime/protocol.d.mts": {
+      "sameMergedMain": true,
+      "same192": true,
+      "blob": "bda19f5aec78755c8f08a6daa44d16b8d1774669"
+    },
+    "services/browser-preview/validator.ts": {
+      "sameMergedMain": true,
+      "same192": true,
+      "blob": "1f9994283e811e239ccc78c8341af63033412bb5"
+    },
+    "services/turn-runtime/managed-candidate.ts": {
+      "sameMergedMain": true,
+      "same192": true,
+      "blob": "c6f409619d8fb9b2ca65c80f0e818bb549fd46c8"
+    },
+    "services/turn-runtime/managed-product.ts": {
+      "sameMergedMain": true,
+      "same192": true,
+      "blob": "04382f6eaba48caf8540551ddd9dea52fa7168cd"
+    },
+    "services/turn-runtime/managed-testing-instructions.ts": {
+      "sameMergedMain": true,
+      "same192": true,
+      "blob": "b4322b4fe02ebf6a5e109e8b2539e4bb7b182b6d"
+    },
+    "services/turn/journal.ts": {
+      "sameMergedMain": true,
+      "same192": true,
+      "blob": "00d9ad3f31ec4d07e4bca66b4d187ce361cf9b68"
+    },
+    "services/web/app.js": {
+      "sameMergedMain": true,
+      "same192": true,
+      "blob": "4f6e992c30eec0ca73e948c1744202d0dee00ec7"
+    }
+  },
+  "preservedLiveSourceDifferences": [],
+  "previousCompositeM2SourceAndTestDifferences": [],
+  "allSourceDifferencesFromPreviousComposite": [
+    "services/entry/index.ts",
+    "services/entry/replay.ts",
+    "services/entry/signature.ts",
+    "services/entry/validation-entry.ts",
+    "services/entry/validation-gateway.ts",
+    "services/entry/validation-policy.ts",
+    "services/gateway/index.ts"
+  ],
+  "exactLiveBundleAudit": "live-source-audit.json",
+  "rawLiveSHA256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290",
+  "sqliteCount": 23,
+  "containerAssociationCount": 5,
+  "diffCheck": "passed"
+}

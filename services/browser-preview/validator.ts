@@ -15,7 +15,7 @@ export function parsePreviewVisualization(raw:unknown,spec:ModelSpec):PreviewVis
  if(!r||typeof r!=='object'||Array.isArray(r)||Object.keys(r).sort().join(',')!=='metricKeys,protocol,renderer,schema'||r.schema!=='riffology.visualization/v1'||r.protocol!=='riffology.visual/v0.1'||!['grid','lane','python-canvas','javascript-canvas'].includes(r.renderer!)||!Array.isArray(r.metricKeys)||!r.metricKeys.length||r.metricKeys.length>64||r.metricKeys.some(k=>typeof k!=='string'||!Object.hasOwn(spec.metrics,k))||new Set(r.metricKeys).size!==r.metricKeys.length)reject('visualization-invalid');
  return {schema:r.schema,protocol:r.protocol,renderer:r.renderer!,metricKeys:[...r.metricKeys]};
 }
-function javascriptPolicy(bytes:Uint8Array){
+export function validatePreviewJavaScriptSource(bytes:Uint8Array){
  let source:string;try{source=new TextDecoder('utf-8',{fatal:true}).decode(bytes);}catch{return reject('javascript-unsupported');}
  if(!source.length||source.includes('\0')||source.includes('\\\n')||source.includes('${')||new TextEncoder().encode(source).length>BROWSER_JS_ENTRY_MAX_BYTES)reject('javascript-unsupported');
  const tokens=source.replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*|'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"|`(?:\\.|[^`\\])*`/g,m=>m.replace(/[^\n]/g,' '));
@@ -26,12 +26,12 @@ function javascriptPolicy(bytes:Uint8Array){
  if(/\b(?:import|eval|Function|WebAssembly|fetch|XMLHttpRequest|WebSocket|EventSource|navigator|document|window|parent|top|opener|localStorage|sessionStorage|indexedDB|caches|cookieStore|BroadcastChannel|SharedWorker|Worker|postMessage|constructor|prototype|__proto__)\b/.test(tokens))reject('javascript-unsupported');
 }
 /** Conservative token policy explains unsupported code; HTTP/Worker isolation is separate. */
-function pythonPolicy(bytes:Uint8Array,profile:TrustedPreviewProfile,model:boolean,canvas=false){
+export function validatePreviewPythonSource(bytes:Uint8Array,packages:Readonly<Record<string,string>>,model:boolean,canvas=false){
  let source:string;try{source=new TextDecoder('utf-8',{fatal:true}).decode(bytes);}catch{return reject('python-unsupported');}
  if(source.includes('\0')||source.includes('\\\n'))reject('python-unsupported');
  // Preserve line structure and identifiers while ignoring Python strings/comments.
  const tokens=source.replace(/'''[\s\S]*?'''|"""[\s\S]*?"""|'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"|#[^\n]*/g,m=>m.replace(/[^\n]/g,' '));
- const allowed=new Set(['math','random','heapq','collections','itertools','statistics','dataclasses','typing','enum','functools','json',...profile.runtime.dependencies.map(d=>d.name.replace(/-/g,'_')),...(!model?['argparse','pathlib','sys','model']:[])]);
+ const allowed=new Set(['math','random','heapq','collections','itertools','statistics','dataclasses','typing','enum','functools','json',...Object.keys(packages).map(name=>name.replace(/-/g,'_')),...(!model?['argparse','pathlib','sys','model']:[])]);
  // An import is also legal in a one-line compound suite (`if ok: import x`).
  // Match the Python keywords wherever they occur after strings/comments have
  // been blanked so indentation or a preceding colon cannot bypass the allowlist.
@@ -65,14 +65,15 @@ export async function validateSavedPreview(source:SavedPreviewSource,archiveByte
   if(visualization.renderer==='javascript-canvas'){
    for(const path of BROWSER_PREVIEW_JAVASCRIPT_SOURCE_PATHS.slice(BROWSER_PREVIEW_SOURCE_PATHS.length))try{files.set(path,archive.read([{path,maxBytes:path==='frontend/manifest.json'?4096:BROWSER_JS_ENTRY_MAX_BYTES}]).get(path)!);}catch(e){reject(e instanceof Error&&e.message==='workspace-content-limit'?'source-too-large':'source-missing');}
    try{frontend=parseBrowserJsManifest(json(files.get('frontend/manifest.json')!));}catch{reject('frontend-invalid');}
-   javascriptPolicy(files.get('frontend/main.mjs')!);
+   validatePreviewJavaScriptSource(files.get('frontend/main.mjs')!);
   }
   let lock:unknown;try{lock=json(files.get('app/requirements.lock')!);}catch{reject('dependency-unsupported');}
   const r=lock as {schemaVersion?:number;packages?:unknown};
   if(!r||typeof r!=='object'||Array.isArray(r)||Object.keys(r).sort().join(',')!=='packages,schemaVersion'||r.schemaVersion!==1||!r.packages||typeof r.packages!=='object'||Array.isArray(r.packages)||JSON.stringify(Object.entries(r.packages).sort())!==JSON.stringify(Object.entries(profile.packages).sort()))reject('dependency-unsupported');
   // Verify must re-run this exact model, not a separate generated server implementation.
   if(!PREVIEW_COMPATIBLE_ADAPTER_SHA256.includes(await previewSha256(files.get('model/run.py')!)))reject('python-unsupported');
-  pythonPolicy(files.get('model/model.py')!,profile,true,visualization.renderer==='python-canvas');pythonPolicy(files.get('model/run.py')!,profile,false);
+  const imports=Object.fromEntries(profile.runtime.dependencies.map(dependency=>[dependency.name,dependency.version]));
+  validatePreviewPythonSource(files.get('model/model.py')!,imports,true,visualization.renderer==='python-canvas');validatePreviewPythonSource(files.get('model/run.py')!,imports,false);
   const paths=visualization.renderer==='javascript-canvas'?BROWSER_PREVIEW_JAVASCRIPT_SOURCE_PATHS:BROWSER_PREVIEW_SOURCE_PATHS;
   const sources=await Promise.all(paths.map(async path=>({path,sha256:await previewSha256(files.get(path)!),byteLength:files.get(path)!.length})));
   const schema=visualization.renderer==='javascript-canvas'?BROWSER_PREVIEW_JAVASCRIPT_SCHEMA:BROWSER_PREVIEW_SCHEMA;
