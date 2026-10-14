@@ -1,0 +1,244 @@
+{
+  "schema": "riffoid.fire-browser-local/v1",
+  "observedAt": "2026-10-14T00:41:42.916Z",
+  "environment": "isolated-local-browser-harness",
+  "identityScope": "synthetic-local-only",
+  "source": {
+    "projectId": "local-fire-candidate",
+    "revisionId": "local-fire-9e41f7ba851fbd9072c6d835dfb136ead0213b4d2cff1aa3b28665ccc54d17bd",
+    "filesSha256": "9e41f7ba851fbd9072c6d835dfb136ead0213b4d2cff1aa3b28665ccc54d17bd"
+  },
+  "packageIdentity": "05bae6bc3af947f22839132e07202b1355e2e9d1c3bb7cd54797bfb5f7653892",
+  "runtime": {
+    "adapterVersion": "riffology.model-run/v1",
+    "assetSha256": "0120c8c54ad6806b8db2499c0e1d22f6a2fe821d2c42a60e4b70ee4029f962f1",
+    "dependencies": [],
+    "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
+    "profileId": "python-stdlib/v1",
+    "pythonVersion": "3.14.2",
+    "runtimeVersion": "pyodide-314.0.6/v1",
+    "visualProtocol": "riffology.visual/v0.1"
+  },
+  "browserVersion": "153.0.8010.12",
+  "records": [
+    {
+      "name": "frozen-bounded-input",
+      "input": {
+        "parameters": {
+          "density_percent": 57,
+          "steps": 5
+        },
+        "seed": 20261001
+      },
+      "frames": 6,
+      "finalTick": 5,
+      "finalMetrics": {
+        "initial_trees": 523,
+        "burned_trees": 53,
+        "active_fires": 6,
+        "trees_remaining": 470,
+        "burn_fraction_pct": 10.133843212237094
+      },
+      "traceSha256": "925a6848c2c55ee7e0602f054eb84d10c81361d99bc94517ff30c4c57948edbd",
+      "entireTraceMatchesCPython": true
+    },
+    {
+      "name": "higher-density",
+      "input": {
+        "parameters": {
+          "density_percent": 80,
+          "steps": 40
+        },
+        "seed": 20261001
+      },
+      "frames": 41,
+      "finalTick": 40,
+      "finalMetrics": {
+        "initial_trees": 750,
+        "burned_trees": 749,
+        "active_fires": 0,
+        "trees_remaining": 1,
+        "burn_fraction_pct": 99.86666666666666
+      },
+      "traceSha256": "3480e2fdda6c75cf161023f31cf0f11035f251451bc32bdeafaff861d7de5da9",
+      "entireTraceMatchesCPython": true
+    },
+    {
+      "name": "zero-density-ember-stop",
+      "input": {
+        "parameters": {
+          "density_percent": 0,
+          "steps": 80
+        },
+        "seed": 20261001
+      },
+      "frames": 13,
+      "finalTick": 12,
+      "finalMetrics": {
+        "initial_trees": 0,
+        "burned_trees": 0,
+        "active_fires": 0,
+        "trees_remaining": 0,
+        "burn_fraction_pct": 0
+      },
+      "traceSha256": "0b243863e6b87bfc1cc0e4239c5c9f896ff7127c2637aaa8a59be22a972df317",
+      "entireTraceMatchesCPython": true
+    }
+  ],
+  "requestCount": 29,
+  "requests": [
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/678fa6971794b1f5d9cd5ce83b7e4cb99902d80326d933acddc7426ed87acbc2/host.bundle.mjs"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/3fdaef09e9e365c85e002737720f8d0ab8f278c1c244a2dde6a37663cf488ad4/assets/pyodide-lock.json"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/2ac5eba365ec12839c75c03b39b3be1dd63b798852cc460b014b52238be042f7/assets/pyodide.asm.mjs"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/3a0a00dfeaa348ac20f9ef09904233d32d33f644339662d4af368f8a2010f37a/assets/pyodide.asm.wasm"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/69e3f6ccec3e14b465df60be577ca62f536251406b9a00cce019eac5252a2495/assets/pyodide.mjs"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/80c5be6babfe03297069703410c3c29404dcf2525d2b128746bae5536f94831f/assets/python_stdlib.zip"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/16d292a3615a4326f9c7706e857aa4a4339352d09bcc6aa8eb47fbce85b987c0/delivery/frame.bundle.mjs"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/ebbb126a44583b8d619b7100eab233f3f0810acaaa232850826ad3621f78b3eb/delivery/js-frame.bundle.mjs"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/a8324250c1d0268eab9915ec62491ba9fce266b50d7069030507b7ef8bdf3a16/delivery/worker.bundle.mjs"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/ecc8d10e925d552eae08bca0a43c6ad5cdc53a1f83889b71c2d56eecf1cc3aeb/runtime/canvas.mjs"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/4c0cec31da970cc4c3f547be87c792de128831e6f0269a7b81428596c8be46ac/runtime/frame.html"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/d0a6afcbb85b92d2ff5924a70b32b1e44ce691752cdbd1bf45d3cd8c9a4866a8/runtime/frame.mjs"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/7af5d4677757a6ef5bfa886fa9e4578e0aa3a59595bb3395083b7cdeeb064ffb/runtime/host.mjs"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/bd3a0c065e226cbe7d6c5755b80d24c2c4248c60e17cb205ca59bf707471f888/runtime/js-frame.html"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/19888142cc5f4891ff48b39439097d13f2144cbf46181d134623dae254f99632/runtime/js-frame.mjs"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/6b3c56af12009b9b053d0ce097ea9633b47123950e891baa83e71a07773dbf05/runtime/js-scene.mjs"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/e848f7d59438be4745473308d7d0d7caca5585fa741cf25ec47f3e7ac129f950/runtime/package-loader.mjs"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/ddc80a8321dec64e3373312dc4cbc709eec9d0d34477d7fe61e4b09378c7a197/runtime/protocol.mjs"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/2d445184bcea93f59dc0b2e650c96d418b6e08fae1c17d7f7ba648c6ab694f04/runtime/renderer.mjs"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24/runtime/sha256.mjs"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/86218f40282014072b1850363814edd71bb9f7d604f641d79dc5682fd837cb3c/runtime/worker.mjs"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/4875e2d9e8db8bf82f15d1eb950c0327377c5651efafbae42f0e5c94eadb026e/source/contract.ts"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/b625401e119d9fd6c8188c204059fe8fdaf78a7ea5cb3e1e3517eef2b3d9c798/source/model-spec.ts"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/9243ccf1179d9a487059ed507474543c2dc3c7beb9c1456f93ee94d77aaaa4cd/source/package-lock.json"
+    },
+    {
+      "surface": "app",
+      "method": "GET",
+      "path": "/browser-preview-assets/c1e77f046229eef182b4ab91531f092772efc21dcdaa1adc13c4702f4ad8eadd/source/prepare-assets.mjs"
+    },
+    {
+      "surface": "execution",
+      "method": "GET",
+      "path": "/runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+      "cookiePresent": false
+    },
+    {
+      "surface": "execution",
+      "method": "GET",
+      "path": "/runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+      "cookiePresent": false
+    },
+    {
+      "surface": "execution",
+      "method": "GET",
+      "path": "/runtime/16d89d985801e3af7a6bbb2fe1448fadecb797d6b7f14e875783922fcada7225/frame.html",
+      "cookiePresent": false
+    }
+  ],
+  "unexpectedRequests": [],
+  "pageErrors": [],
+  "framesAfterEachRun": 0,
+  "classification": "local/unverified",
+  "productionExecutionChecked": false
+}

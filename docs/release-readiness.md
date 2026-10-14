@@ -1,4 +1,35 @@
-# Current release readiness — 2026-10-13
+# Current release readiness — 2026-10-14
+
+## 2026-10-14 NetLogo Fire private local candidate; publication pending
+
+[#196](https://github.com/jihegao/riffology-cloud/issues/196) prepares the first
+local Python adaptation from simulation-case-library's five NetLogo candidates.
+The example keeps the 31×31 finite world, left-edge ignition/count timing,
+four-neighbor spread and ember lifetime, with model-authored Python Canvas drawing
+and the unchanged platform adapter. Attribution and CC BY-NC-SA 3.0 remain with
+the model; commercial permission is not asserted. Python and NetLogo random
+streams are different, so equal seeds do not identify equal forests.
+
+Seven candidate checks and 15 existing Spec/Preview checks passed; typecheck and
+whitespace checks passed. Three actual local Chromium/Pyodide runs matched their
+complete CPython traces, used only local GET requests and released every iframe.
+At density 57%, seed 20261001 and five ticks, the Python candidate reports 523
+initial trees, 53 newly burned trees and six active fires. These are local
+candidate outputs, not the native library's reference values or production Run
+receipts. The locally generated package has a synthetic identity scope.
+
+Independent agent review found no remaining must-fix issue. This increment does
+not deploy, publish a catalog version, change execution gates or establish
+authenticated owner/second-user acceptance. Browser output remains
+**local/unverified**; native replay, cross-implementation equivalence, research/gold,
+commercial distribution and the ordinary-author/reviewer/new-user publication
+flow remain outside this local delivery. [#35](https://github.com/jihegao/riffology-cloud/issues/35)
+retains its existing official-model acceptance scope.
+
+[Intake and semantic boundaries](netlogo-case-intake-20261014.md),
+[candidate source](../examples/netlogo-fire-candidate/README.md) and
+[local receipt](evidence/netlogo-fire-candidate-local-20261014.json) record pinned
+sources, actual commands, package/runtime identity, screenshots and remaining gaps.
 
 ## 2026-10-13 Managed candidate and Journal receipt fix deployed; acceptance pending
 
