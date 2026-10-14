@@ -16,6 +16,7 @@ type Admission={scope:TurnScope;actor:TurnActor;sessionId:string;requestKey:stri
 type Slot={key:string;user_id:string;document:string;created_at:number;turn_id:string|null;status:string};
 interface Env {
   PRIVATE_BETA_POLICY_JSON?:string; PRODUCTION_MODEL_PROFILE_JSON:string; CATALOG:D1Database;
+  M2_MODEL_PROVIDER?:string;M2_MODEL_ID?:string;PRODUCTION_ACCEPTED_EVIDENCE_SHA256?:string;
   PRIVATE_BETA_CAPACITY:DurableObjectNamespace<PrivateBetaCapacity>;
   TENANT_MODEL_BUDGET?:PrivateBetaHistoricalLedger;G5_TOKEN_BUDGET?:PrivateBetaHistoricalLedger;
   PI_DEVELOPER_BUDGET:{getByName(name:string):{privateBetaCall(identity:ModelCallRequest['identity'],callId:string):Promise<ModelCallRecord|null>}};
@@ -38,6 +39,7 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
       CREATE TABLE IF NOT EXISTS beta_operations(id INTEGER PRIMARY KEY, action TEXT NOT NULL, actor_json TEXT, at INTEGER NOT NULL) STRICT;
       CREATE TABLE IF NOT EXISTS beta_alerts(key TEXT PRIMARY KEY,at INTEGER NOT NULL,code TEXT NOT NULL) STRICT;
       CREATE TABLE IF NOT EXISTS beta_policy_migrations(from_digest TEXT PRIMARY KEY,to_digest TEXT NOT NULL,previous_document TEXT NOT NULL,next_document TEXT NOT NULL,ledger_digest TEXT NOT NULL,at INTEGER NOT NULL) STRICT;
+      CREATE TABLE IF NOT EXISTS beta_model_profile_migrations(transition_digest TEXT PRIMARY KEY,from_digest TEXT NOT NULL,to_digest TEXT NOT NULL,previous_document TEXT NOT NULL,next_document TEXT NOT NULL,ledger_digest TEXT NOT NULL,at INTEGER NOT NULL) STRICT;
       CREATE TABLE IF NOT EXISTS beta_call_metering(call_key TEXT PRIMARY KEY,accepted_at INTEGER,billing_pending_at INTEGER) STRICT;`);
   }
   #serial<T>(action:()=>Promise<T>):Promise<T>{const next=this.#tail.then(action);this.#tail=next.catch(()=>{});return next;}
@@ -203,6 +205,39 @@ export class PrivateBetaCapacity extends DurableObject<Env> {
     this.#policy(false);const ledger=this.#migrationLedger();
     return {actor:PRIVATE_BETA_CAPACITY_ACTOR,pinnedPolicySha256:this.ctx.storage.sql.exec<{digest:string}>('SELECT digest FROM beta_policy WHERE singleton=1').toArray()[0]?.digest??null,
       ledgerSha256:await turnDigest(ledger),slotSha256:await turnDigest(ledger.slots),callSha256:await turnDigest(ledger.calls),alertSha256:await turnDigest(ledger.alerts),operationSha256:await turnDigest(ledger.operations),slotCount:ledger.slots.length,callCount:ledger.calls.length,operationCount:ledger.operations.length,alertCount:ledger.alerts.length,paused:ledger.paused};
+  });}
+  /** Deployment-only profile transition in the original meter-only actor.
+   * Reconstructing the old pin permits only the profile field to change. This
+   * never reconciles execution, reprices history, resumes or dispatches work. */
+  migrateModelProfile(input:{previousProfileSha256:string;expectedPolicySha256:string;expectedLedgerSha256:string},actor?:TurnActor){return this.#serial(async()=>{
+    const policy=this.#policy(false);
+    if(!input||Object.keys(input).sort().join(',')!=='expectedLedgerSha256,expectedPolicySha256,previousProfileSha256'||policy.schemaVersion!==2||![input.previousProfileSha256,input.expectedPolicySha256,input.expectedLedgerSha256].every(d=>typeof d==='string'&&/^[a-f0-9]{64}$/.test(d))||input.previousProfileSha256===policy.profileSha256)throw Error('private-beta-profile-migration-invalid');
+    // Mutable enabled is excluded from both pins and immutable receipts.
+    const previous={...policy,enabled:false,profileSha256:input.previousProfileSha256},next={...policy,enabled:false};
+    const previousDigest=await turnDigest(previous),digest=await turnDigest(next);
+    if(previousDigest!==input.expectedPolicySha256)throw Error('private-beta-policy-conflict');
+    const profile=productionProfile(JSON.parse(this.env.PRODUCTION_MODEL_PROFILE_JSON));
+    if(await profileDigest(profile)!==policy.profileSha256||this.env.M2_MODEL_PROVIDER!=='openai'||this.env.M2_MODEL_ID!==profile.model||this.env.PRODUCTION_ACCEPTED_EVIDENCE_SHA256!==profile.acceptance.evidenceSha256)throw Error('private-beta-profile-denied');
+    const transitionDigest=await turnDigest({purpose:'private-beta-model-profile-migration',previousDigest,digest,ledgerDigest:input.expectedLedgerSha256});
+    const action=`migrate-model-profile:${transitionDigest}`,previousText=JSON.stringify(previous),nextText=JSON.stringify(next);
+    const ledger=this.#migrationLedger(),ledgerText=JSON.stringify(ledger),ledgerDigest=await turnDigest(ledger);
+    const replayed=this.ctx.storage.transactionSync(()=>{
+      const prior=this.ctx.storage.sql.exec<{digest:string}>('SELECT digest FROM beta_policy WHERE singleton=1').toArray()[0];
+      if(!prior)throw Error('private-beta-policy-unpinned');
+      const migration=this.ctx.storage.sql.exec<{from_digest:string;to_digest:string;previous_document:string;next_document:string;ledger_digest:string;at:number}>('SELECT * FROM beta_model_profile_migrations WHERE transition_digest=?',transitionDigest).toArray()[0];
+      const audits=this.ctx.storage.sql.exec<{at:number}>('SELECT at FROM beta_operations WHERE action=?',action).toArray();
+      if(prior.digest===digest&&migration?.from_digest===previousDigest&&migration.to_digest===digest&&migration.previous_document===previousText&&migration.next_document===nextText&&migration.ledger_digest===input.expectedLedgerSha256&&audits.length===1&&audits[0]!.at===migration.at)return true;
+      if(prior.digest!==previousDigest||migration||audits.length)throw Error('private-beta-policy-conflict');
+      if(ledgerDigest!==input.expectedLedgerSha256||JSON.stringify(this.#migrationLedger())!==ledgerText)throw Error('private-beta-migration-state-conflict');
+      if(this.ctx.storage.kv.get('beta-paused')!==true)throw Error('private-beta-profile-migration-requires-pause');
+      if(this.#slots().length||this.ctx.storage.sql.exec("SELECT key FROM beta_calls WHERE status IN ('reserved','dispatched','unknown') LIMIT 1").toArray().length)throw Error('private-beta-release-unconfirmed');
+      const at=Date.now();
+      this.ctx.storage.sql.exec('UPDATE beta_policy SET digest=? WHERE singleton=1',digest);
+      this.ctx.storage.sql.exec('INSERT INTO beta_model_profile_migrations VALUES(?,?,?,?,?,?,?)',transitionDigest,previousDigest,digest,previousText,nextText,ledgerDigest,at);
+      this.ctx.storage.sql.exec('INSERT INTO beta_operations(action,actor_json,at) VALUES(?,?,?)',action,actor?JSON.stringify(actor):null,at);
+      return false;
+    });
+    await this.ctx.storage.sync();return {actor:PRIVATE_BETA_CAPACITY_ACTOR,policySha256:digest,previousPolicySha256:previousDigest,profileSha256:policy.profileSha256,previousProfileSha256:input.previousProfileSha256,ledgerSha256:input.expectedLedgerSha256,transitionSha256:transitionDigest,replayed};
   });}
   /** Explicit, guarded schema evolution in the ORIGINAL actor. Unknown and
    * occupied slots may migrate, but cannot be released or gain a new identity,

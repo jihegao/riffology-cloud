@@ -194,13 +194,29 @@ function validateSnapshot(snapshot, scope, allowedModels, toolNames) {
   if (snapshot.leafId !== null && !seen.has(snapshot.leafId)) deny('Invalid session leaf');
 }
 
+/** Historical references may be retained without entering the dispatch registry. */
+function checkpointModels(models, allowedHistoryModels) {
+  if (!Array.isArray(allowedHistoryModels)) deny('Invalid history model policy');
+  const references = new Set(models.keys());
+  const history = new Set();
+  for (const ref of allowedHistoryModels) {
+    if (!ref || Object.keys(ref).sort().join(',') !== 'id,provider'
+      || typeof ref.provider !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/.test(ref.provider)
+      || typeof ref.id !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._\/-]{0,149}$/.test(ref.id)
+      || history.has(keyOf(ref))) deny('Invalid or duplicate history model');
+    history.add(keyOf(ref));
+    references.add(keyOf(ref));
+  }
+  return references;
+}
+
 /**
  * Trusted Pi host facade. The underlying AgentSession is deliberately private:
  * its executeBash(), setModel(), and session-file APIs are not product APIs.
  * Only platform-provided bridge definitions can call project execution APIs.
  */
 export async function createControlledPiSession({
-  trustedCwd, scope, selectedModel, allowedModels, providerDefinitions,
+  trustedCwd, scope, selectedModel, allowedModels, allowedHistoryModels = [], providerDefinitions,
   resolveCredential, onProviderResponse, onProviderPayload, providerFetch, systemPrompt, fixedSkills = [],
   bridge, snapshot, cancellationGraceMs = 5000,
 }) {
@@ -225,10 +241,11 @@ export async function createControlledPiSession({
     getHostSignal: () => turnController?.signal,
   });
   const selected = canonical(selectedModel);
+  const snapshotModels = checkpointModels(models, allowedHistoryModels);
   const loader = new ControlledResourceLoader({ systemPrompt, fixedSkills });
   let sessionManager;
   if (snapshot) {
-    validateSnapshot(snapshot, binding, models, names);
+    validateSnapshot(snapshot, binding, snapshotModels, names);
     const header = {
       type: 'session', version: 3, id: binding.sessionId, cwd: trustedCwd,
       timestamp: snapshot.createdAt,
@@ -237,6 +254,12 @@ export async function createControlledPiSession({
       [header, ...structuredClone(snapshot.entries)]);
     if (snapshot.leafId === null) sessionManager.resetLeaf();
     else sessionManager.branch(snapshot.leafId);
+    const previous = sessionManager.buildSessionContext().model;
+    if (previous && keyOf(previous) !== keyOf(selected)) {
+      // Record the platform-selected upgrade on this branch, preserving every
+      // historical entry and never making its old model dispatchable.
+      sessionManager.appendModelChange(selected.provider, selected.id);
+    }
   } else {
     sessionManager = SessionManager.inMemory(trustedCwd, { id: binding.sessionId });
   }

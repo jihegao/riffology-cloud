@@ -1,4 +1,59 @@
-# Current release readiness — 2026-10-14
+# Current release readiness — 2026-10-15
+
+## 2026-10-15 GPT-6 Luna source candidate — not deployed
+
+[#209](https://github.com/jihegao/riffology-cloud/issues/209) prepares the product
+Pi default `gpt-6-luna` using the existing OpenAI / AI Gateway path. The source
+candidate preserves the current 262144 input / 4096 output token bounds, request
+deadline, effective reasoning setting, tools and execution gates. A separate,
+release-controlled history reference list accepts saved `gpt-5.6-luna` entries
+without authorizing new calls to that model. Restoring a saved branch preserves
+its original entries and records the current model selection before continuing.
+
+The original `private-beta-capacity-v1` gains a private, deployment-only
+`migrateModelProfile` RPC. It requires the exact old policy pin and ledger digest,
+a paused actor without occupied slots or unresolved calls, and a new configured
+production profile consistent with the model and accepted-evidence bindings.
+Only the policy's profile digest may change. It appends a migration receipt and
+audit, preserving original call/slot/metering/alert rows, reservations and pause
+state; it neither reconciles execution nor resumes or dispatches work. No public
+maintenance route is added.
+
+This is a source candidate, not new account access, deployment or paid/user
+acceptance. Before publication, freeze the actual Worker/image/configuration and
+old pin/ledger, obtain new-model acceptance evidence and a reviewed profile/rate
+quote, pause the original capacity, apply a coherent Worker/Pi image release,
+then perform the guarded transition and independent readback. Keep the original
+policy identity, start/review dates, token policy version, actors and historical
+quotes. Resume only through the existing guarded path after release checks. An
+unknown request is reconciled under its original identity, never retried.
+
+Rollback after any GPT-6 Turn must retain the upgraded checkpoint loader and an
+explicit GPT-6 history reference policy while selecting the reviewed previous
+model for new requests. A blind rollback to the pre-upgrade Pi image would reject
+new GPT-6 checkpoint history. A reverse profile transition also requires a fresh
+original-actor pause, old/current pin and ledger proof; it does not restore an
+earlier ledger snapshot or reuse old-model evidence as new-model acceptance.
+Publish the reviewed image with a new `M2_WORKSPACE_RUNTIME_VERSION` so the
+existing runtime-change lifecycle retires an idle old warm pair. Preserve the
+original per-tenant token-policy version and bounds; Beta calls use their existing
+PiDeveloperBudget quotes, and historical fees remain priced by each original
+profile rather than the new default.
+
+Offline validation: 18 model/Responses tests, 25 adjacent trusted-host/image and
+proxy tests, and three real Workerd/SQLite profile/review/quota migration tests
+passed (46 total), plus typecheck and diff checks. The new protocol fixtures cover
+forward and reverse checkpoint continuation and reject historical-only models
+for new dispatch. The complete controlled-Pi test file aborts under installed
+Node 26/25 with a native `InternalCallbackScope` assertion; the untouched
+`fbc0e46` baseline reproduces the same abort. That broader suite is not recorded
+passed, and no new-model live/provider or authenticated acceptance is claimed.
+
+Official compatibility and migration guidance: [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna)
+and [GPT-6 migration](https://developers.openai.com/api/docs/guides/latest-model).
+Project skills, executable plugins and full HTML project views remain a separate
+design discussion; this candidate does not enable resource discovery or extend
+their permissions.
 
 ## 2026-10-14 Main integration deployed: candidate design, unchanged answers and section views
 
