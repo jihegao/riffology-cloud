@@ -1,6 +1,6 @@
 import {deriveTurnTiming} from './timing.ts';
 import {jsonEquivalent} from './json-equivalent.ts';
-import { TURN_EVENT_BYTES_LIMIT, TURN_EVENT_LIMIT, TURN_EVENT_RECEIPT_LIMIT, actor, checkpointReceipt, initialWorkspaceBase, jsonPayload, message, positive, resourceDisposition, verifyHandoffProof, sameScope, scope, title, turnDigest, turnId,
+import { TURN_EVENT_BYTES_LIMIT, TURN_EVENT_LIMIT, TURN_EVENT_RECEIPT_LIMIT, actor, checkpointReceipt, initialWorkspaceBase, jsonPayload, message, positive, resourceDisposition, verifyHandoffProof, sameScope, scope, title, turnDigest, turnId,turnBaseCheckpoints,type TurnBaseCheckpoints,
   type CheckpointReceipt, type InitialWorkspaceBase, type RuntimeEventType, type SessionRecord, type TurnActor, type TurnEvent,
   type TurnEventType, type TurnJournalState, type TurnJournalView, type TurnRecord, type TurnResourceDisposition, type TurnScope } from './protocol.ts';
 import type { AtomicTurnStore } from './store.ts';
@@ -25,6 +25,7 @@ function candidateAccountingReport(value:unknown):boolean{
   }
   if(report.status!=='checked'||report.execution!=='not-recomputed')return false;
   if(report.schemaVersion===1)return keys==='execution,schemaVersion,status,traceValidation'&&report.traceValidation==='not-provided';
+  if(report.schemaVersion===3)return ['answer','design'].includes(String(report.operation))?keys==='execution,operation,schemaVersion,status,traceValidation'&&report.traceValidation==='not-provided':report.operation==='model'&&keys==='execution,operation,profileId,schemaVersion,status,traceValidation'&&report.traceValidation==='validated'&&['python-stdlib/v1','mesa-3.5.1/v1'].includes(report.profileId as string);
   return report.schemaVersion===2&&keys==='execution,profileId,schemaVersion,status,traceValidation'&&report.traceValidation==='validated'&&['python-stdlib/v1','mesa-3.5.1/v1'].includes(report.profileId as string);
 }
 /** Managed accounting is observed after immutable file publication. It does
@@ -223,6 +224,24 @@ export class TurnJournal{
       if(!['running','cancelling'].includes(turn.status))throw Error('turn-runtime-scope-denied');
       const cancelDisposition=turn.status==='cancelling'?(input.outcome==='cancelled'?'cancelled':input.outcome==='interrupted'?'interrupted':'already-terminal'):turn.cancelDisposition;
       turn.status='checkpointing';turn.executionOutcome=input.outcome;turn.errorCode=input.errorCode??null;turn.cancelDisposition=cancelDisposition;turn.persistenceOutcome=null;turn.persistenceErrorCode=null;turn.updatedAt=at;event(state,turn,'turn.checkpointing',at,{executionOutcome:input.outcome,errorCode:turn.errorCode,...(cancelDisposition?{cancelDisposition}:{})});return {state,value:turn};});
+  }
+  /** Explicit completed answer. Same scope/base/lease fences as a publication,
+   * with neither an R2 commit nor a mutation of either saved head. */
+  async completeUnchanged(rawScope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;base:TurnBaseCheckpoints;resourceDisposition:TurnResourceDisposition}){
+    const s=scope(rawScope),tid=turnId(input.turnId),dispatchId=turnId(input.dispatchId),generation=positive(input.runtimeGeneration),base=turnBaseCheckpoints(input.base),at=nowValid(this.#clock());
+    return this.#store.transact(current=>{
+      const state=requireState(current,s),turn=state.turns[tid];
+      if(!turn||turn.dispatchId!==dispatchId||turn.runtimeGeneration!==generation||!equal(turn.base,base))throw Error('turn-runtime-scope-denied');
+      const disposition=checkedResource(turn,input.resourceDisposition);if(disposition.status==='handed-off')throw Error('turn-handoff-conflict');
+      if(turn.persistenceOutcome==='unchanged'){applyReleaseDisposition(state,turn,disposition);return {state,value:turn};}
+      if(!['running','cancelling'].includes(turn.status)||state.activeTurnId!==tid)throw Error('turn-runtime-scope-denied');
+      if(!equal(base.workspace,state.workspaceHead)||!equal(base.session,state.sessions[turn.sessionId]!.head))throw Error('turn-checkpoint-base-conflict');
+      if(turn.status==='cancelling')turn.cancelDisposition='already-terminal';
+      turn.status='completed';turn.executionOutcome='completed';turn.persistenceOutcome='unchanged';turn.errorCode=null;turn.persistenceErrorCode=null;turn.finishedAt=at;turn.updatedAt=at;state.activeTurnId=null;
+      applyReleaseDisposition(state,turn,disposition);
+      turn.terminalSequence=event(state,turn,'turn.completed',at,{saved:false,unchanged:true,errorCode:null}).sequence;pruneTerminalEventReceipts(state);
+      return {state,value:turn};
+    });
   }
   async commitCheckpoint(rawScope:TurnScope,input:{turnId:string;dispatchId:string;runtimeGeneration:number;checkpoint:CheckpointReceipt;resourceDisposition?:TurnResourceDisposition}){
     const s=scope(rawScope),tid=turnId(input.turnId),dispatchId=turnId(input.dispatchId),generation=positive(input.runtimeGeneration),at=nowValid(this.#clock()),c=input.checkpoint;

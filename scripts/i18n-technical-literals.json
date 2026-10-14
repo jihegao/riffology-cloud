@@ -35,5 +35,9 @@
   },
   "verify-handoff.js": {
     "button primary": 1
+  },
+  "artifact-views.js": {
+    "Home": 1,
+    "End": 1
   }
 }

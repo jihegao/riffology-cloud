@@ -1,4 +1,10 @@
-# Current release readiness — 2026-10-13
+# Current release readiness — 2026-10-14
+
+## 2026-10-14 Candidate design artifacts, section views and unchanged answers (implementation; not deployed)
+
+[#182](https://github.com/jihegao/riffology-cloud/issues/182) / Linear JHG-22 is the selected implementation slice. Candidate v3 separates `answer`, `design` and `model`: answers create no Revision; design documents, SysML text and declarative graphs overlay the frozen base; computation retains the existing v2 validation. Model, Preview and Runs consume a bounded display manifest with one level of platform-owned subtabs. Tabs preserve the loaded package, inputs, playback and historical record identities without creating execution requests.
+
+The [current minimal contract](requirements-revision-artifact-contract.md#0-2026-10-14-最小实现契约182待合并与部署) distinguishes this implemented subset from the remaining requirements/traceability, full SysML semantics, modules and runtime proposals. Source is based on main `957b579fbb9f8cb79a9092605d50094ee6a64dbb`. The implementation does not change production gates or claim a diagnosis of the original user Turn. No production requests were replayed, deployment performed or authenticated/paid acceptance claimed. The existing deployment and Acceptance items below remain authoritative until new release evidence is recorded. Validation: typecheck and UI (21) passed; M0 passed 350 with one conditional skip; M1 passed 290; M2 passed 943; M3 passed 949 with 12 conditional skips, plus runtime/execution 20, phase checks 13 and model checks 92. Archived-experiment checks passed 30 and Python research-quality checks passed 8. Focused checks additionally cover opaque archive/mode preservation, the final Managed integration and bounded research context. Local execution used Node 26, Chromium and OpenSSL 3; the initial Node 25 M0 timeout/LibreSSL TLS failures were isolated and resolved by those local tool selections. GitHub CI uses its configured environment and is reported separately in the PR. Review entry and exact source head are recorded in the implementation PR and #182.
 
 ## 2026-10-13 Managed candidate and Journal receipt fix deployed; acceptance pending
 

@@ -13,6 +13,8 @@ const candidateReports=[
  ['stdlib v2',{status:'checked',schemaVersion:2,traceValidation:'validated',execution:'not-recomputed',profileId:'python-stdlib/v1'}],
  ['Mesa v2',{status:'checked',schemaVersion:2,traceValidation:'validated',execution:'not-recomputed',profileId:'mesa-3.5.1/v1'}],
  ['invalid candidate',{status:'invalid',diagnostic:{file:'candidate.json',path:'preview.trace.snapshots[1].agents[0].lane',reason:'runtime-agent-invalid'}}],
+ ['design v3',{status:'checked',schemaVersion:3,operation:'design',traceValidation:'not-provided',execution:'not-recomputed'}],
+ ['model v3',{status:'checked',schemaVersion:3,operation:'model',traceValidation:'validated',execution:'not-recomputed',profileId:'python-stdlib/v1'}],
 ] as const;
 const accounting=(candidateValidation:unknown)=>({backend:'managed-agents',usage:{status:'unknown',reason:'missing'},billing:'pending',resources:'session-retained',candidateValidation});
 type Input=Parameters<TurnRuntimePort['accept']>[0];
@@ -135,7 +137,7 @@ for(const [name,type,payload] of [
  ['false legacy trace validation','provider.status',accounting({...candidateReports[0][1],traceValidation:'validated'})],
  ['unexpected legacy profile','provider.status',accounting({...candidateReports[0][1],profileId:'python-stdlib/v1'})],
  ['missing v2 trace validation','provider.status',accounting({...candidateReports[1][1],traceValidation:'not-provided'})],
- ['unknown candidate version','provider.status',accounting({...candidateReports[1][1],schemaVersion:3})],
+ ['v3 missing operation','provider.status',accounting({...candidateReports[1][1],schemaVersion:3})],
  ['unknown candidate profile','provider.status',accounting({...candidateReports[1][1],profileId:'arbitrary-python/v1'})],
  ['missing candidate profile','provider.status',accounting({...candidateReports[0][1],schemaVersion:2,traceValidation:'validated'})],
  ['missing invalid diagnostic','provider.status',accounting({status:'invalid'})],
@@ -151,4 +153,31 @@ for(const [name,type,payload] of [
 ] as const)test(`Managed checkpoint still rejects ${name} occurring after file commit`,async()=>{
  const f=await fixture();const claimed=(await f.journal.claim(scope,1))!.turn;f.setClock(1100);const event={eventId:'late-execution',type,at:1006,payload};await f.journal.appendRuntime(scope,{turnId:claimed.id,dispatchId:claimed.dispatchId!,runtimeGeneration:1,...event});await f.journal.beginCheckpoint(scope,{turnId:claimed.id,dispatchId:claimed.dispatchId!,runtimeGeneration:1,outcome:'completed'});
  f.runtime.observe=async i=>({...receipt({...i,capacityLease:i.capacityLease!}),events:[event]});await assert.rejects(f.dispatcher.tick(scope,1),/invalid-checkpoint-receipt/);assert.equal(f.store.snapshot()!.turns[claimed.id]!.checkpoint,null);assert.equal(f.store.snapshot()!.turns[claimed.id]!.status,'checkpointing');
+});
+
+
+test('explicit unchanged completion survives restart, keeps both heads and releases the same lease',async()=>{
+ const f=await fixture();const first=await f.dispatcher.tick(scope,1);f.setClock(2000);
+ const next=(await f.journal.submit(scope,actor,f.turn.sessionId,'answer-request',{message:'Explain the design'})).turn;
+ f.runtime.accept=async input=>({...receipt(input),checkpoint:null,unchanged:input.base});
+ const answer=await f.dispatcher.tick(scope,1),state=f.store.snapshot()!;
+ assert.equal(answer?.persistenceOutcome,'unchanged');assert.equal(answer?.status,'completed');assert.equal(answer?.checkpoint,null);
+ assert.deepEqual(state.workspaceHead,first!.checkpoint);assert.deepEqual(state.sessions[next.sessionId]!.head,first!.checkpoint);assert.equal(state.activeTurnId,null);assert.equal(state.releaseHold,null);
+ assert.deepEqual(state.events.at(-1)!.payload,{saved:false,unchanged:true,errorCode:null});
+ const restored=new MemoryTurnStore();await restored.transact(()=>({state,value:null}));
+ assert.equal(await new TurnDispatcher(new TurnJournal(restored,()=>2100),f.runtime).tick(scope,1),null);
+ const follow=(await f.journal.submit(scope,actor,next.sessionId,'followup-request',{message:'Edit it'})).turn;
+ const claimed=await f.journal.claim(scope,1);assert.equal(claimed?.turn.id,follow.id);assert.deepEqual(claimed?.turn.base?.workspace,first!.checkpoint);
+});
+for(const kind of ['missing-proof','pi','with-checkpoint','wrong-base','release-pending'] as const)test('unchanged receipt boundary: '+kind,async()=>{
+ const f=await fixture();
+ f.runtime.accept=async input=>{const r={...receipt(input),checkpoint:null,unchanged:input.base};
+  if(kind==='missing-proof')return {...r,stopped:null} as TurnRuntimeReceipt;
+  if(kind==='pi')return {...r,backend:'pi'} as unknown as TurnRuntimeReceipt;
+  if(kind==='with-checkpoint')return {...r,checkpoint};
+  if(kind==='wrong-base')return {...r,unchanged:{workspace:checkpoint,session:null}};
+  return {...r,resourceDisposition:{operationId:input.capacityLease.operationId,leaseId:input.capacityLease.leaseId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation,status:'release-pending',reasonCode:'managed-release-pending',since:1005,nextAttemptAt:2000}} as TurnRuntimeReceipt;
+ };
+ if(kind==='release-pending'){assert.equal((await f.dispatcher.tick(scope,1))?.persistenceOutcome,'unchanged');assert.equal(f.store.snapshot()!.releaseHold?.turnId,f.turn.id);}
+ else {await assert.rejects(f.dispatcher.tick(scope,1),/invalid-turn-runtime-receipt|turn-runtime-scope-denied/);assert.equal(f.store.snapshot()!.workspaceHead,null);}
 });

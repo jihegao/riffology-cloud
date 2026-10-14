@@ -1,8 +1,69 @@
-# 需求、追溯与版本化模型产物合同（提案 v1）
+# 需求、追溯与版本化模型产物合同
 
-日期：2026-10-12。负责人：@jihegao。对应 [#179](https://github.com/jihegao/riffology-cloud/issues/179) 完成条件第 6 项的第一阶段设计，评审载体为 [PR #189](https://github.com/jihegao/riffology-cloud/pull/189)，父项 [#177](https://github.com/jihegao/riffology-cloud/issues/177)。本文是接口设计，尚未实现、部署或验收；设计评审通过不能关闭需求功能 Issue。范围、依赖和交付阶段以 Issue / [Delivery Project](https://github.com/users/jihegao/projects/1) 为准，本文不另建任务状态表。
+日期：2026-10-12。负责人：@jihegao。对应 [#179](https://github.com/jihegao/riffology-cloud/issues/179) 完成条件第 6 项的第一阶段设计，评审载体为 [PR #189](https://github.com/jihegao/riffology-cloud/pull/189)，父项 [#177](https://github.com/jihegao/riffology-cloud/issues/177)。第 0 节记录 #182 的最小实现契约；第 1–8 节保留 2026-10-12 的完整能力提案，尚未完整实现、部署或验收。设计评审通过不能关闭需求功能 Issue。范围、依赖和交付阶段以 Issue / [Delivery Project](https://github.com/users/jihegao/projects/1) 为准，本文不另建任务状态表。
 
-源码基线：Cloud `25609953f5c3b69dcb44e520d7e7ed1253d18fe4`；compiler GitHub main `ee6a2aa7a66d8bf2609059aaf8a7c0fe22fe8683`。2026-10-12 复核两个 GitHub main 仍是这些 SHA；本地 clone 的 origin 指向本地仓库，不作为远端状态证据。最初本地 compiler `a1a44c7` 落后远端；补读了远端 bounded profile、IR/layout/runtime、ABM 版本及 Rust result/request 类型。以下新 schema、类型、函数、路径均为提议，尚未注册到生产 reader、Managed 或 Browser Preview。未全面复审这八个远端提交，也未重新执行它们的测试。
+源码基线：Cloud `25609953f5c3b69dcb44e520d7e7ed1253d18fe4`；compiler GitHub main `ee6a2aa7a66d8bf2609059aaf8a7c0fe22fe8683`。2026-10-12 复核两个 GitHub main 仍是这些 SHA；本地 clone 的 origin 指向本地仓库，不作为远端状态证据。最初本地 compiler `a1a44c7` 落后远端；补读了远端 bounded profile、IR/layout/runtime、ABM 版本及 Rust result/request 类型。第 1–8 节的新 schema、类型、函数、路径是该日提议；当前已接线子集见第 0 节，未部署。未全面复审这八个远端提交，也未重新执行它们的测试。
+
+## 0. 2026-10-14 最小实现契约（#182，待合并与部署）
+
+本次源码以 Cloud main `957b579fbb9f8cb79a9092605d50094ee6a64dbb` 为基线，实现范围来自 [#182](https://github.com/jihegao/riffology-cloud/issues/182) / Linear JHG-22；接口关联 #180、#184、#185。原用户项目没有可读的 Turn/candidate 诊断证据，不能据此断言其原始失败原因，也未重放该请求。
+
+### 应放开的约束
+
+| 原约束 | 本次实现 | 继续保留的边界 |
+| --- | --- | --- |
+| 解释问题也强制完整模型和默认运行 trace | `candidate.schemaVersion=3, operation=answer`，完成 Turn 而不创建 Revision | 必须收到原 remote Turn 的 completed 证明；scope、dispatch、base、资源释放与计量仍校验 |
+| 保存产物必须先具备可执行模型 | `operation=design` 只更新设计内容；缺少 ModelSpec 的 Revision 可展示但 canRun=false | 不填造 Spec、结果或 trace；不触发 Preview/Server Run |
+| Managed 文件只能是计算/前端固定角色 | 增加受控 UTF-8 document、sysml、graph 角色，全部进入同一 archive | 不接受 HTML/可执行设计文件、URL、任意 role、任意路径或依赖安装 |
+| Model/Preview/Runs 只有整体页面 | manifest 声明一层子标签；平台负责导航和渲染器 | 不递归嵌套，不运行模型生成的宿主页面代码；标签切换不增加执行请求 |
+
+`operation=model` 仍调用原 candidate v2 校验器校验完整 Spec、源文件、默认输入、报告 trace 和结果一致性。candidate v1/v2 的原字段、文件和验证语义保持不变。Browser Preview v1/v2 仍分别接受原五/七个计算文件；设计视图从同一冻结 Revision 单独读取，通过完整 archive `filesSha256` 与已加载 package 核对，不向旧包追加字段或文件。
+
+### candidate v3
+
+```json
+{"schemaVersion":3,"operation":"answer"}
+```
+
+answer 不接受其他字段；持久化终态为 `persistenceOutcome=unchanged`，checkpoint=null，workspace/session head 均保留。会话接续记录保存最新 Turn 身份，避免把“没有新 Revision”误判成无法继续。重启只观察原请求；资源释放 pending 时仍保持容量 hold。
+
+```json
+{
+  "schemaVersion": 3,
+  "operation": "design",
+  "artifacts": {
+    "schema": "riffology.model-artifacts/v1",
+    "files": [{"path":"design/port.sysml","role":"sysml"}],
+    "views": [
+      {"id":"sysml","section":"model","title":"SysML","renderer":"source","source":"design/port.sysml"},
+      {"id":"scene","section":"preview","title":"运行场景","renderer":"scene","source":"preview.trace"},
+      {"id":"metrics","section":"preview","title":"指标","renderer":"metrics","source":"preview.trace"},
+      {"id":"history","section":"runs","title":"运行记录","renderer":"history","source":"runs.records"}
+    ]
+  },
+  "files": {"design/port.sysml":"part def Crane;"}
+}
+```
+
+平台保存 `artifacts` 到 `model/artifacts.json`。这是结果版本的**完整展示清单**，`files` 是声明文件的增量内容；未提供的声明文件必须已存在于本次授权 base。未提及的原文件（含二进制输入、计算与前端）保留，不做隐式删除。model 操作还需要 `spec`、`preview` 与原 v2 的四/六个计算文件；继承设计清单时不用重复提交其内容。
+
+当前 v1 manifest 只包含 schema/files/views，不接受后续 v2 提案中的 compute/requirements/backendRequirements 等字段。角色与展示如下：
+
+| role / renderer | 路径与显示 |
+| --- | --- |
+| document / document | `design/**/*.md` 或 `.txt`，按文本显示，不执行 Markdown 内嵌 HTML |
+| sysml / source | `design/**/*.sysml` 或 `.txt`，源码显示 |
+| graph / graph | `design/**/*.json`，平台 SVG 节点/连线视图 |
+| Preview scene / metrics | source 固定 `preview.trace`，共用当前 runtime、trace、参数和播放器 |
+| Runs history / metrics | source 固定 `runs.records`，展示平台记录的单次实验和浏览器本地结果；保留每条历史 Revision/seed/参数/状态，不采用候选包自报的指标 |
+
+图文件格式为 `{"schema":"riffology.design-graph/v1","kind":"bdd|ibd|activity|parametric|general","nodes":[{"id":"Crane","label":"Crane"}],"edges":[]}`（kind 取枚举中的一个值）。允许 64 个唯一节点、128 条边、128 字符标签，边端点必须存在。图是作者声明的设计关系，不是 SysML 解析结果；界面明确标明未做 SysML 语义核验。本次没有实现完整四种 SysML 图的符号/语义编辑器或自动追溯验证。
+
+所有 views 使用唯一稳定 id、section、title、renderer、source，未知字段/渲染器/错误来源拒绝保存。最多 24 个设计文件、24 个视图，manifest 32 KiB、每个设计文件 128 KiB、保存的设计内容合计 512 KiB、candidate JSON 512 KiB；完整归档最多 8 MiB/512 文件，设计内容读取上限仍为每文件 128 KiB；其他原文件、权限位和空目录按原归档保留，不执行或重新解释。路径只允许 design 下 ASCII 字母/数字/下划线/连字符组件；拒绝 traversal、绝对路径、链接和远程资源。图文进入受控 DOM/SVG，不加载作者代码。
+
+子标签选择按 tenant/workspace/section 与完整文件摘要（Preview 使用 packageIdentity）绑定，刷新/离开后恢复；视图删除、版本或身份改变时回到概览。Runs 的历史记录继续绑定自己的版本，显示视图不会改写记录。该状态不包含新的执行意图。旧项目没有 manifest 时保持原页面内容。
+
+实现入口：[v3 candidate](../services/turn-runtime/managed-candidate-v3.ts)、[角色与视图校验](../services/simulation/model-artifacts.ts)、[Turn 终态](../services/turn/journal.ts)、[平台子标签/图文](../services/web/artifact-views.js)。验证入口：[candidate 回归](../tests/m2/managed-candidate-v3.test.ts)、[Managed Workerd](../tests/m2/managed-product.test.ts)、[终态与释放](../tests/m2/managed-dispatcher.test.ts)、[Model/Runs 浏览器](../tests/m3/artifact-views.test.mjs)、[Preview 浏览器](../tests/m3/browser-preview-panel.test.mjs)。合并、发布及真实身份验收以 Issue/PR 和发布索引后续证据为准。新终态 `unchanged` 写入后，回退到不认识该终态的旧 Journal reader 会拒绝读取；发布/回退必须保留这个兼容 reader。
 
 ## 1. 扩展点与现有边界
 
@@ -185,7 +246,7 @@ path 只在同一保存 archive 的已声明 roles 中解析，核对 hash/point
 
 ## 5. 同一次 Revision 的产物清单
 
-提议 model/artifacts.json，schema riffology.model-artifacts/v1；描述 product subset，不取代完整 archive filesSha256。manifest 不列自己，不包含自己的 hash/Revision ID/archive hash，避免自引用。提交后派生 `{revisionId,filesSha256,manifestSha256}` binding；Revision ID 由原提交协议产生。
+后续完整 manifest 提议沿用 model/artifacts.json，使用新 schema riffology.model-artifacts/v2（未实现，不由当前 reader 接受）；描述 product subset，不取代完整 archive filesSha256。manifest 不列自己，不包含自己的 hash/Revision ID/archive hash，避免自引用。提交后派生 `{revisionId,filesSha256,manifestSha256}` binding；Revision ID 由原提交协议产生。
 
 ```ts
 type ArtifactRole = 'model-spec' | 'requirements' | 'sysml-text' | 'sysml-map'
@@ -194,12 +255,12 @@ type ArtifactRole = 'model-spec' | 'requirements' | 'sysml-text' | 'sysml-map'
   | 'frontend-module' | 'visualization' | 'input-data' | 'dependency-lock'
   | 'authoring-result';
 type ProductArtifactManifest = {
-  schema: 'riffology.model-artifacts/v1';
+  schema: 'riffology.model-artifacts/v2';
   files: { path: string; role: ArtifactRole; mediaType: string;
     sha256: string; byteLength: number }[];
   entrypoints: { modelSpec: string; requirements: string | null;
     sysml: string | null; elements: string | null; traceability: string | null;
-    compute: string; frontend: string | null; visualization: string | null };
+    compute: string | null; frontend: string | null; visualization: string | null };
   inputData: { id: string; path: string; schema: string; binding: 'saved' }[];
   backendRequirements: BackendRequirements;
 };
@@ -207,7 +268,7 @@ type ProductArtifactManifest = {
 
 roles 各自有 parser/版本/唯一性/引用约束。path 为受控 ASCII 相对路径，拒绝绝对路径、..、backslash、重复规范路径、symlink 和 URL。文件 hash 使用原字节，不为打包重写数据 JSON；manifest 规范序列化按 ASCII key/files.path 排序。不支持的角色/媒体/schema 明确 unsupported，不能仅 hash 通过就 ready。
 
-Python 必需 spec/source/reviewed server-adapter/lock，compute 指向 server-adapter，且与 Spec.execution.entrypoint 一致；compiler 必需 spec/business/bundle，compute 指向 compiler-bundle，且与 Spec.execution.bundle 一致。若额外声明 core-ir，必须与同版 bundle 原成员匹配。model-spec、requirements、sysml-text、sysml-map、element-registry、traceability、frontend-manifest、visualization、dependency-lock 各至多一份，引用必须命中相应 role；input-data/frontend-module/python-source 可多份但入口及闭包明确，禁止重复身份或未声明文件。首版 compute 不接受 Python/compiler 混合调度。声明 requirements/SysML/map/registry/trace 后须整体校验，不从其他 head 补缺。frontend manifest 指定入口及相对模块闭包，各模块声明 role；imports 只落在闭包或预审平台资源。多模块需要新 frontend manifest/profile，不能向现有 browser-js/v1 的 exact keys 临时加 modules/imports。计算与 renderer 分离但共享产物集合。
+设计阶段允许 compute=null，不要求运行 trace；声明可运行的 Python 模型才必需 spec/source/reviewed server-adapter/lock，compute 指向 server-adapter，且与 Spec.execution.entrypoint 一致；compiler 必需 spec/business/bundle，compute 指向 compiler-bundle，且与 Spec.execution.bundle 一致。若额外声明 core-ir，必须与同版 bundle 原成员匹配。model-spec、requirements、sysml-text、sysml-map、element-registry、traceability、frontend-manifest、visualization、dependency-lock 各至多一份，引用必须命中相应 role；input-data/frontend-module/python-source 可多份但入口及闭包明确，禁止重复身份或未声明文件。首版 compute 不接受 Python/compiler 混合调度。声明 requirements/SysML/map/registry/trace 后须整体校验，不从其他 head 补缺。frontend manifest 指定入口及相对模块闭包，各模块声明 role；imports 只落在闭包或预审平台资源。多模块需要新 frontend manifest/profile，不能向现有 browser-js/v1 的 exact keys 临时加 modules/imports。计算与 renderer 分离但共享产物集合。
 
 固定 runtime/wheel/WASM/JS/CSS/Workers/Assets/Widgets 的版本和 hash 由可信 registry 注册；模型不能改 CSP/上限或自报可信依赖。JS 保持既有隔离 frame/宿主验证/消息预算；GIS/Cesium 按 [#151](https://github.com/jihegao/riffology-cloud/issues/151) 注册资源/WebGL能力并真实验收，二维图不标为 Cesium 3D。
 

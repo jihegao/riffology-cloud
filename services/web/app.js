@@ -37,6 +37,8 @@ function renderModelState(){
     state='running';text=msg('workspace.model.running');
   }else if(['queued','starting','unknown'].includes(observedService?.runStatus)){
     state='starting';text=msg('workspace.model.preparing');
+  }else if(observedModel?.artifacts&&!observedModel.spec&&observedModel.reasonCode==='model-spec-missing'){
+    text=msg('views.designSaved');
   }else if(observedModel?.reasonCode){
     state='failed';text=msg('workspace.model.failed');
   }else if(observedModel?.version){
@@ -52,7 +54,7 @@ const comparisonPanel=createComparisonPanel({root:$('#workspace-comparison'),api
 const publicationPanel=createPublicationPanel({root:$('#workspace-publication'),api,onOpenRuns:()=>workspaceLayout.select('runs')});
 const exportPanel=createExportPanel({root:$('#workspace-export')});
 const evidencePanel=createEvidencePanel({root:$('#workspace-evidence'),api,onAssessment:()=>{void comparisonPanel.reload();void simulationPanel.reload();}});
-const simulationPanel=createSimulationPanel({root:$('#workspace-simulation'),modelRoot:$('#workspace-model'),historyRoot:$('#workspace-run-history'),api,localRuns,onModel:model=>{browserPreviewPanel.applyParameterDraft(model?.experimentDraft);observedModel=model;renderModelState();}});
+const simulationPanel=createSimulationPanel({root:$('#workspace-simulation'),modelRoot:$('#workspace-model'),historyRoot:$('#workspace-run-history'),runsRoot:$('#canvas-runs'),api,localRuns,onModel:model=>{browserPreviewPanel.applyParameterDraft(model?.experimentDraft);observedModel=model;renderModelState();}});
 const verifyHandoffPanel=createVerifyHandoffPanel({root:$('#workspace-verify-handoff'),api,onVerified:()=>{void simulationPanel.reload();void comparisonPanel.reload();}});
 const notice = $('#notice');
 const dialog = $('#project-dialog');
@@ -380,6 +382,7 @@ function accountView() {
 function turnStatus(turn) {
   const labels = { queued: msg('turn.status.queued'), running: msg('turn.status.running'), cancelling: msg('turn.status.cancelling'), checkpointing: msg('turn.status.checkpointing'), completed: msg('turn.status.completed'), failed: msg('turn.status.failed'), cancelled: msg('turn.status.cancelled'), interrupted: msg('turn.status.interrupted') };
   if (turn.persistenceOutcome === 'failed') return msg('turn.save.failed', () => ({p0: labels[turn.status] || turn.status}));
+  if (turn.persistenceOutcome === 'unchanged') return msg('turn.save.unchanged');
   if (turn.persistenceOutcome === 'saved') return msg('turn.savedStatus', () => ({status: labels[turn.status] || turn.status, saved: turn.status === 'completed' ? msg('turn.save.saved') : msg('turn.save.recovery')}));
   return labels[turn.status] || turn.status;
 }
