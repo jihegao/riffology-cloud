@@ -84,6 +84,14 @@ function decodeExited(base:ReturnType<typeof identity>,operation:ProjectOperatio
   catch{return READ_ONLY.has(operation)?terminal(base,observedAt,'failed','project-tool-result-too-large',{}):nonterminal(base,observedAt,'unknown');}
 }
 
+export async function persistedProjectEffectReceipt(input:{reference:ToolCommandReference;command:ToolCommand;observation:ProjectEffectProcessObservation;observedAt?:number}):Promise<ToolEffectReceipt>{
+  const command=normalizeToolCommand(input.command),base=identity(input.reference);
+  if(command.turnId!==base.turnId||command.dispatchId!==base.dispatchId||command.commandId!==base.commandId||!sameScope(command.scope,base.scope)||!PROJECT_OPERATIONS.has(command.operation as ProjectOperation)||await toolCommandDigest(command)!==input.reference.digest)reject('project-effect-command-mismatch');
+  const found=validateProjectEffectProcessObservation(input.observation,base.effectId);
+  if(found.phase!=='exited')reject('project-effect-not-terminal');
+  return decodeExited(base,command.operation as ProjectOperation,found,positive(input.observedAt??Date.now()));
+}
+
 /** Converts a platform-owned command into a fixed, no-shell file helper call.
  * The helper receives no tenant, Turn, dispatch, command or effect identity and
  * cannot author the receipt envelope. */

@@ -28,6 +28,26 @@ function startRequest(value:unknown):ProjectEffectStart{
   return {effectId:turnId(value.effectId),program:PROJECT_FILE_PROGRAM,argv:[],cwd:PROJECT_WORKSPACE_ROOT,env:{LANG:'C.UTF-8',PATH:'/usr/bin:/bin',RIFFOLOGY_WORKSPACE_ROOT:PROJECT_WORKSPACE_ROOT},stdin:value.stdin,timeoutMs};
 }
 function cloneObservation(value:ProjectEffectProcessObservation):ProjectEffectProcessObservation{return structuredClone(value);}
+function persistedObservation(row:Row):{phase:StoredPhase;observation:ProjectEffectProcessObservation}{
+  try{
+    const effectId=turnId(row.effect_id),phase=row.phase as StoredPhase,createdAt=positive(row.created_at),updatedAt=positive(row.updated_at);sha(row.start_digest);if(!PHASES.has(phase)||updatedAt<createdAt)throw Error();
+    if(phase==='exited'){
+      if(row.start_json!==null)return reject('invalid-persisted-project-effect');
+      return {phase,observation:validateProjectEffectProcessObservation({schemaVersion:1,effectId,phase:'exited',exitCode:row.exit_code,stdout:row.stdout,stderr:row.stderr},effectId)};
+    }
+    if(row.exit_code!==null||row.stdout!==null||row.stderr!==null||typeof row.start_json!=='string')throw Error();
+    const start=startRequest(JSON.parse(row.start_json));if(start.effectId!==effectId)throw Error();
+    const outward=phase==='running'?'running':'unknown';return {phase,observation:{schemaVersion:1,effectId,phase:outward,exitCode:null,stdout:null,stderr:null}};
+  }catch{reject('invalid-persisted-project-effect');}
+}
+
+/** Reads only an existing terminal row and never initializes storage or calls native. */
+export function readPersistedProjectEffectTerminal(storage:Pick<DurableObjectStorage,'sql'>,rawEffectId:string):ProjectEffectProcessObservation|null{
+  const effectId=turnId(rawEffectId),exists=storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='project_effects'").toArray()[0];
+  if(!exists)return null;
+  const row=storage.sql.exec<Row>('SELECT * FROM project_effects WHERE effect_id=?',effectId).toArray()[0];if(!row)return null;
+  const found=persistedObservation(row);return found.phase==='exited'?cloneObservation(found.observation):null;
+}
 
 /** Persists the one native-start decision before crossing into the container.
  * A prepared/running/unknown effect can only be observed; no later call may
@@ -53,13 +73,7 @@ export class SqlProjectEffectSupervisor implements ProjectEffectSupervisorPort{
   #rows(sql:string,...bindings:(string|number|null)[]):Row[]{return this.#storage.sql.exec<Row>(sql,...bindings).toArray();}
   #get(effectId:string):Row|undefined{return this.#rows('SELECT * FROM project_effects WHERE effect_id=?',effectId)[0];}
   #read(row:Row):{phase:StoredPhase;observation:ProjectEffectProcessObservation}{
-    try{
-      const effectId=turnId(row.effect_id),phase=row.phase as StoredPhase,createdAt=positive(row.created_at),updatedAt=positive(row.updated_at);sha(row.start_digest);if(!PHASES.has(phase)||updatedAt<createdAt)throw Error();
-      if(phase==='exited')return {phase,observation:validateProjectEffectProcessObservation({schemaVersion:1,effectId,phase:'exited',exitCode:row.exit_code,stdout:row.stdout,stderr:row.stderr},effectId)};
-      if(row.exit_code!==null||row.stdout!==null||row.stderr!==null||typeof row.start_json!=='string')throw Error();
-      const start=startRequest(JSON.parse(row.start_json));if(start.effectId!==effectId)throw Error();
-      const outward=phase==='running'?'running':'unknown';return {phase,observation:{schemaVersion:1,effectId,phase:outward,exitCode:null,stdout:null,stderr:null}};
-    }catch{reject('invalid-persisted-project-effect');}
+    return persistedObservation(row);
   }
   async start(value:ProjectEffectStart):Promise<ProjectEffectProcessObservation>{
     const input=startRequest(value),digest=await turnDigest(input);await this.#ready;let created=false;
