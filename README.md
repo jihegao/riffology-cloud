@@ -1,10 +1,14 @@
-# Riffology Cloud Private Beta
+# riffoid Private Beta
 
 面向受邀用户的受控内测版本。支持 Pi 驱动的 Python 建模、保存和本地预览；不包含生产级 SLA 或公开商业服务。Pi 的调用与费用策略已迁移为 meter-only，保留并发、时限、隔离和 kill switch。受邀云端实验已开启，真实执行与完整验收仍待补齐。
 
-截至 2026-10-02，#87 核心流程验收保持完成并关闭，常态容量由 [#104](https://github.com/jihegao/riffology-cloud/issues/104) 承接。[#153](https://github.com/jihegao/riffology-cloud/issues/153) 在原 actor 保留账本并迁移策略；[#152](https://github.com/jihegao/riffology-cloud/issues/152) 的 9 个冻结旧项目已可恢复归档；[#150](https://github.com/jihegao/riffology-cloud/issues/150) 的受限 JS 前端已合并并发布。普通受邀作者已确认 Fire Model 的新绘图版本本地预览通过；[#136](https://github.com/jihegao/riffology-cloud/issues/136) 独立门禁已开，认证页面的单次与对照实验入口已启用，实际云端执行验收仍 pending。开关、镜像发布与验收分别记录在[当前发布状态](docs/release-readiness.md)。Browser Preview 结果始终是 local/unverified。
+截至 2026-10-07，#87 核心流程验收保持完成并关闭，常态容量由 [#104](https://github.com/jihegao/riffology-cloud/issues/104) 承接。原 actor 的 #153 meter-only 策略保留账本；#152 的 9 个冻结旧项目已可恢复归档；#150 的受限 JS 前端已合并发布；[#168](https://github.com/jihegao/riffology-cloud/pull/168) 已记录 #165 普通受邀作者参数草稿与真实单次／对照 Cloud Runs 验收，完整常态运行与第二身份验收仍按各事项证据处理。Browser Preview 始终是 local/unverified。
 
-Riffology Cloud 是一个多租户、持久化的 AI 仿真建模工作台。
+当前受邀账户／个人项目及已开启 Invited Runs 的 reviewAt 已延至 **2026-12-31 23:59:59.999 Asia/Shanghai**（`2026-12-31T15:59:59.999Z`）；[#169](https://github.com/jihegao/riffology-cloud/pull/169) 已合并归档该续期；部署版本与后续验收以[发布索引](docs/release-readiness.md)为准。M1 验收截止仍为 **2026-10-20**，#101 历史费用核对与 #104 完整运行验收保留。
+
+正式产品名为 **riffoid**；仓库仍为 `jihegao/riffology-cloud`。品牌工程不更换用户、邀请、项目、Run、资源身份或历史协议。应用入口为 `https://app.riffoid.com`；域名设计见[迁移准备](docs/riffoid-domain-migration.md)，已发生的发布与未覆盖验收见发布索引。
+
+riffoid 是一个多租户、持久化的 AI 仿真建模工作台。
 用户围绕 Project 和 Pi Agent Session 工作，Workspace 提供文件、运行与插件能力，
 Browser 作为可选内置插件提供交互预览和 Agent 观察。
 
@@ -15,7 +19,7 @@ Sandbox、D1 和 R2 构成云端服务；本地候选支持 Python 标准库 Que
 
 ## 文档
 
-- [受邀 Cloud Runs 与验收边界](docs/invited-cloud-runs.md)：#136 独立门禁已开启，保留原 actor、并发/时限、#153 策略与 #152 归档隔离；普通受邀真实执行验收仍 pending。
+- [受邀 Cloud Runs 与验收边界](docs/invited-cloud-runs.md)：#136 独立门禁已开启，保留原 actor、并发/时限、#153 策略与 #152 归档隔离；指定受邀作者的真实执行验收见 #168，完整范围仍以发布索引为准。
 
 - [当前发布与验收状态](docs/release-readiness.md)：源码、部署记录、真实验收边界及后续负责人。
 - [Queue 受邀用户研究指南](docs/invited-queue-research.md)与[本轮本地验证](docs/invited-queue-delivery-validation.md)：首个官方案例、三人研究验收及未冻结的生产执行条件。
@@ -55,7 +59,7 @@ npm run dev
 管理端覆盖运营概览、模型版本、租户与额度、运行、用量结算和审计。
 顶部可切换评审视角，工作台底部可切换故障示例；修改保存在当前浏览器，可通过右上角重置按钮恢复。
 
-## 状态
+## 历史设计与 M0 状态（以下为早期快照）
 
 已形成基础 MVP 与首个付费版本的设计基线，并完成可交互的 UI 原型。
 原型使用本地示例数据，尚未接入生产后端。M0 已实现受控 Pi 宿主、保存协议、独立 Sandbox、Preview、中断恢复与发布策略探针；T02 本地边界 10 case 和 T07 本地 Chrome 14 case 已有证据，另有本地真实模型调用、取消与恢复子集证据，最新范围见执行状态。T02 的成功写入仅限独立 project 文件，Session 不是安全边界；T07 使用 server-owned synthetic fixture，不等于生产登录或云验收。

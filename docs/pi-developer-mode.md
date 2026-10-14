@@ -1,6 +1,6 @@
 # Pi 开发者模式与测试
 
-本文保留 #87 已完成的恢复验收及现有开发者实现边界。当前版本定义为 **Riffology Cloud Private Beta**，见[发布索引](release-readiness.md#private-beta-definition-and-standing-capacity)。持续内测由 [#104](https://github.com/jihegao/riffology-cloud/issues/104) 承接；下述 schema v2 是已结束的有界验收策略，不能通过修改日期、项目或 policyId 把它当作常态容量。
+本文保留 #87 已完成的恢复验收及现有开发者实现边界。当前版本定义为 **riffoid Private Beta**，见[发布索引](release-readiness.md#private-beta-definition-and-standing-capacity)。持续内测由 [#104](https://github.com/jihegao/riffology-cloud/issues/104) 承接；下述 schema v2 是已结束的有界验收策略，不能通过修改日期、项目或 policyId 把它当作常态容量。
 
 ## 发布状态（2026-09-20）
 
