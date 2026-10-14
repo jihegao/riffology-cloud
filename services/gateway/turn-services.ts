@@ -17,6 +17,7 @@ interface WorkspaceTurnActor {
   listFiles(input:{scope:TurnScope}):Promise<unknown>;
   diffFiles(input:{scope:TurnScope}):Promise<unknown>;
   readArtifact(input:{scope:TurnScope;artifactId:string}):Promise<unknown>;
+  toolReceipt?(input:{scope:TurnScope;actor:TurnActor;turnId:string;revisionId:string;toolCallId:string;name:string}):Promise<unknown>;
 }
 
 interface TurnServicesEnv {
@@ -78,5 +79,6 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
     async files(scope:TurnScope){return actor(scope).listFiles({scope});},
     async diff(scope:TurnScope){return actor(scope).diffFiles({scope});},
     async artifact(scope:TurnScope,artifactId:string){return actor(scope).readArtifact({scope,artifactId});},
+    async toolReceipt(scope:TurnScope,caller:TurnActor,turnId:string,revisionId:string,toolCallId:string,name:string){const stub=actor(scope);if(!stub.toolReceipt)throw Error('tool-receipt-unavailable');return stub.toolReceipt({scope,actor:caller,turnId,revisionId,toolCallId,name});},
   };
 }

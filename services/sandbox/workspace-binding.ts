@@ -10,6 +10,13 @@ function lease(raw:WorkspaceSandboxLease):WorkspaceSandboxLease{return {scope:sc
 function binding(raw:WorkspaceSandboxBinding){const result={lease:lease(raw.lease),identity:turnRuntimeIdentity(raw.identity),bindingEpoch:positive(raw.bindingEpoch),filesSha256:sha(raw.filesSha256)};if(!sameScope(result.lease.scope,result.identity.scope)||result.bindingEpoch>1024)throw Error('workspace-binding-denied');return result;}
 export async function workspaceSandboxActor(leaseInput:WorkspaceSandboxLease,domain:'project'|'trustedPi'){const ref=lease(leaseInput);return `m2-w${domain==='project'?'p':'t'}-${(await turnDigest({schemaVersion:1,ref,domain})).slice(0,55)}`;}
 export async function workspaceBindingToken(input:WorkspaceSandboxBinding){const checked=binding(input);return handoffToken(checked.lease,{sessionId:checked.identity.sessionId,turnId:checked.identity.turnId,dispatchId:checked.identity.dispatchId,bindingEpoch:checked.bindingEpoch});}
+export async function historicalWorkspaceBinding(storage:Pick<DurableObjectStorage,'kv'>,input:{identity:TurnRuntimeIdentity;lease:WorkspaceSandboxLease;bindingEpoch:number},actorId:string,domain:'project'|'trustedPi'){
+ const identity=turnRuntimeIdentity(input.identity),checkedLease=lease(input.lease),bindingEpoch=positive(input.bindingEpoch);
+ if(bindingEpoch>1024||!sameScope(identity.scope,checkedLease.scope)||await workspaceSandboxActor(checkedLease,domain)!==actorId)throw Error('workspace-binding-actor-denied');
+ const saved=storage.kv.get<StoredWorkspaceBinding>(`workspace-binding-history:${bindingEpoch}`);if(!saved)return null;
+ const checked=binding(saved.input),token=await workspaceBindingToken(checked);if(Object.keys(saved).sort().join(',')!=='input,proof,schemaVersion,status,token'||saved.schemaVersion!==1||saved.token!==token||checked.bindingEpoch!==bindingEpoch||!sameTurnRuntimeIdentity(checked.identity,identity)||!same(checked.lease,checkedLease)||!['reserved','active','sealing','sealed','quarantined'].includes(saved.status))throw Error('workspace-binding-history-denied');
+ return structuredClone(checked);
+}
 /** Native actor authority is independent of the coordinator's lease ledger.
  * Each epoch retains its original identity and receipt; no handoff clears old
  * cancellation fences or overwrites historical effect records. */

@@ -44,6 +44,29 @@ function receipt(value:unknown):ToolEffectReceipt{
   return {schemaVersion:1,scope:validateScope(value.scope),turnId:turnId(value.turnId),dispatchId:turnId(value.dispatchId),commandId:turnId(value.commandId),effectId:turnId(value.effectId),phase,outcome,errorCode,result,observedAt:positive(value.observedAt)};
 }
 function canonical(value:unknown):string{return JSON.stringify(value);}
+function persistedRecord(row:Row):ToolCommandRecord{
+  try{
+    const scope=validateScope(JSON.parse(row.scope_json as string)),status=row.status as ToolCommandStatus;
+    if(!ACTIVE.has(status)&&!TERMINAL.has(status))throw Error();
+    const command=row.command_json===null?null:normalizeToolCommand(JSON.parse(row.command_json as string));
+    const result=row.result_json===null?null:jsonPayload(JSON.parse(row.result_json as string));
+    const record:ToolCommandRecord={schemaVersion:1,scope,turnId:turnId(row.turn_id),dispatchId:turnId(row.dispatch_id),commandId:turnId(row.command_id),digest:sha(row.digest),deadlineAt:positive(row.deadline_at),operation:row.operation as ToolOperation,status,effectId:row.effect_id===null?null:turnId(row.effect_id),acceptedAt:positive(row.accepted_at),updatedAt:positive(row.updated_at),dispatchedAt:row.dispatched_at===null?null:positive(row.dispatched_at),unknownAt:row.unknown_at===null?null:positive(row.unknown_at),lastObservedAt:row.last_observed_at===null?null:positive(row.last_observed_at),finishedAt:row.finished_at===null?null:positive(row.finished_at),outcome:row.outcome as ToolCommandRecord['outcome'],errorCode:row.error_code===null?null:turnId(row.error_code),result,command};
+    toolOperation(record.operation);if(record.updatedAt<record.acceptedAt)throw Error();
+    if(command&&(command.commandId!==record.commandId||command.turnId!==record.turnId||command.dispatchId!==record.dispatchId||command.deadlineAt!==record.deadlineAt||command.operation!==record.operation||!sameScope(command.scope,scope)))throw Error();
+    if(ACTIVE.has(status)!==(command!==null)||TERMINAL.has(status)!==(record.finishedAt!==null&&record.outcome===status&&result!==null))throw Error();
+    if((status==='dispatched'||status==='unknown')&&!record.effectId)throw Error();
+    if(TERMINAL.has(status)&&!record.effectId&&(status!=='failed'||record.errorCode!=='tool-deadline-expired'))throw Error();
+    return record;
+  }catch{reject('invalid-persisted-tool-ledger');}
+}
+
+/** Reads an already-created command table without initializing a ledger. */
+export function readExistingToolCommand(storage:Pick<DurableObjectStorage,'sql'>,rawCommandId:string):ToolCommandRecord|null{
+  const commandId=turnId(rawCommandId),exists=storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='tool_commands'").toArray()[0];
+  if(!exists)return null;
+  const row=storage.sql.exec<Row>('SELECT * FROM tool_commands WHERE command_id=?',commandId).toArray()[0];
+  return row?structuredClone(persistedRecord(row)):null;
+}
 
 /** A per-command SQLite ledger. Input payloads remain available while an
  * effect may need recovery and are stripped after a terminal receipt. */
@@ -58,21 +81,7 @@ export class SqlToolLedger{
   ready(){return this.#ready;}
   #rows(sql:string,...bindings:(string|number|null)[]):Row[]{return this.#storage.sql.exec<Row>(sql,...bindings).toArray();}
   #now(){return positive(this.#clock());}
-  #row(row:Row):ToolCommandRecord{
-    try{
-      const scope=validateScope(JSON.parse(row.scope_json as string)),status=row.status as ToolCommandStatus;
-      if(!ACTIVE.has(status)&&!TERMINAL.has(status))throw Error();
-      const command=row.command_json===null?null:normalizeToolCommand(JSON.parse(row.command_json as string));
-      const result=row.result_json===null?null:jsonPayload(JSON.parse(row.result_json as string));
-      const record:ToolCommandRecord={schemaVersion:1,scope,turnId:turnId(row.turn_id),dispatchId:turnId(row.dispatch_id),commandId:turnId(row.command_id),digest:sha(row.digest),deadlineAt:positive(row.deadline_at),operation:row.operation as ToolOperation,status,effectId:row.effect_id===null?null:turnId(row.effect_id),acceptedAt:positive(row.accepted_at),updatedAt:positive(row.updated_at),dispatchedAt:row.dispatched_at===null?null:positive(row.dispatched_at),unknownAt:row.unknown_at===null?null:positive(row.unknown_at),lastObservedAt:row.last_observed_at===null?null:positive(row.last_observed_at),finishedAt:row.finished_at===null?null:positive(row.finished_at),outcome:row.outcome as ToolCommandRecord['outcome'],errorCode:row.error_code===null?null:turnId(row.error_code),result,command};
-      toolOperation(record.operation);if(record.updatedAt<record.acceptedAt)throw Error();
-      if(command&&(command.commandId!==record.commandId||command.turnId!==record.turnId||command.dispatchId!==record.dispatchId||command.deadlineAt!==record.deadlineAt||command.operation!==record.operation||!sameScope(command.scope,scope)))throw Error();
-      if(ACTIVE.has(status)!==(command!==null)||TERMINAL.has(status)!==(record.finishedAt!==null&&record.outcome===status&&result!==null))throw Error();
-      if((status==='dispatched'||status==='unknown')&&!record.effectId)throw Error();
-      if(TERMINAL.has(status)&&!record.effectId&&(status!=='failed'||record.errorCode!=='tool-deadline-expired'))throw Error();
-      return record;
-    }catch{reject('invalid-persisted-tool-ledger');}
-  }
+  #row(row:Row):ToolCommandRecord{return persistedRecord(row);}
   #get(commandId:string):Row|undefined{return this.#rows('SELECT * FROM tool_commands WHERE command_id=?',commandId)[0];}
   #referenced(ref:ToolCommandReference):Row{
     const row=this.#get(ref.commandId);if(!row)reject('tool-command-not-found');

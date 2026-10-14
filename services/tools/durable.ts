@@ -1,4 +1,4 @@
-import {sameScope,scope as validateScope} from '../turn/protocol.ts';
+import {sameScope,scope as validateScope,turnId} from '../turn/protocol.ts';
 import {turnRuntimeIdentity} from '../turn-runtime/identity.ts';
 import {workspaceAgentName} from '../workspace/protocol.ts';
 import type {WorkspaceAgent} from '../workspace/durable.ts';
@@ -7,12 +7,16 @@ import { getSandbox } from '@cloudflare/sandbox';
 import type { ProjectToolSandbox } from '../sandbox/classes.ts';
 import { ToolDispatcher } from './dispatcher.ts';
 import { toolBridgeActorName } from './identity.ts';
-import { SqlToolLedger } from './ledger.ts';
+import { readExistingToolCommand,SqlToolLedger,toolCommandReference } from './ledger.ts';
 import { ProjectSandboxFileEffects } from './project-sandbox.ts';
 import { normalizeToolCommandIntent, type ToolCommandIntent } from './protocol.ts';
 import { ToolArtifactMaterializer } from '../artifacts/materializer.ts';
 import { TOOL_ARTIFACT_STORE_ACTOR, type ToolArtifactStoreNamespace } from '../artifacts/protocol.ts';
 import {g5RepairFixtureProof} from './g5-fixture-authority.ts';
+import {issueProjectEffectCapability} from '../sandbox/capability.ts';
+import {sandboxActorIds} from '../sandbox/policy.ts';
+import {workspaceSandboxActor,type WorkspaceSandboxLease} from '../sandbox/workspace-binding.ts';
+import {publicToolReceipt,toolReceiptCallId,toolReceiptName,toolReceiptOperation} from './receipt.ts';
 
 export interface ToolBridgeEnv{
   WORKSPACE_AGENT?:DurableObjectNamespace<WorkspaceAgent>;
@@ -22,6 +26,7 @@ export interface ToolBridgeEnv{
   M2_PROJECT_EFFECT_CAPABILITY_KEY:string;
 }
 type G5FixtureWorkspaceAuthority={identity:ReturnType<typeof turnRuntimeIdentity>;requestKey:string;source:{revisionId:string|null;filesSha256:string;specSha256:string};checkpointFilesSha256:string;events:Array<{eventId:string;type:string;payload:Record<string,unknown>}>};
+type ReceiptTarget={actorId:string;warm:null|{lease:WorkspaceSandboxLease;bindingEpoch:number}};
 
 /** One internal actor owns the durable Tool Ledger for one immutable Turn
  * dispatch. Public HTTP and project code receive neither this namespace nor
@@ -48,6 +53,21 @@ export class ToolBridgeAgent extends DurableObject<ToolBridgeEnv>{
   }
   async closeTurnAdmission(identity:unknown){return this.#ledger.closeTurnAdmission(await this.#settlementIdentity(identity));}
   async turnSettlement(identity:unknown){return this.#ledger.turnSettlement(await this.#settlementIdentity(identity));}
+  async readPersistedReceipt(input:{identity:unknown;revisionId:string;commandId:string;toolCallId:string;name:string;target:ReceiptTarget}){
+    if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).sort().join(',')!=='commandId,identity,name,revisionId,target,toolCallId')throw Error('invalid-tool-receipt-read');
+    const identity=await this.#settlementIdentity(input.identity),revisionId=turnId(input.revisionId),commandId=turnId(input.commandId),toolCallId=toolReceiptCallId(input.toolCallId),name=toolReceiptName(input.name),operation=toolReceiptOperation(name),target=input.target;
+    if(!target||typeof target!=='object'||Array.isArray(target)||Object.keys(target).sort().join(',')!=='actorId,warm'||typeof target.actorId!=='string')throw Error('invalid-tool-receipt-read');
+    const expectedActor=target.warm?await workspaceSandboxActor(target.warm.lease,'project'):(await sandboxActorIds(identity.scope,identity.turnId,identity.dispatchId)).project;
+    if(target.actorId!==expectedActor)throw Error('tool-receipt-target-denied');
+    const record=readExistingToolCommand(this.ctx.storage,commandId);
+    if(!record)return publicToolReceipt({identity,revisionId,toolCallId,name,commandId,record:null,effect:null});
+    if(!sameScope(record.scope,identity.scope)||record.turnId!==identity.turnId||record.dispatchId!==identity.dispatchId||record.operation!==operation)throw Error('tool-receipt-scope-denied');
+    if(['completed','failed','cancelled'].includes(record.status)||!record.effectId||operation==='experiment_parameters')return publicToolReceipt({identity,revisionId,toolCallId,name,commandId,record,effect:null});
+    if(!record.command)throw Error('invalid-persisted-tool-ledger');
+    const reference=toolCommandReference(record),capability=await issueProjectEffectCapability(this.env.M2_PROJECT_EFFECT_CAPABILITY_KEY,{actorId:target.actorId,command:record.command,effectId:reference.effectId,expiresAt:Date.now()+60_000});
+    const sandbox=this.env.PROJECT_SANDBOX.getByName(target.actorId),effect=await sandbox.readPersistedFileEffectTerminal({identity,reference,command:record.command,capability,warm:target.warm});
+    return publicToolReceipt({identity,revisionId,toolCallId,name,commandId,record,effect});
+  }
   async g5RepairFixtureAuthority(rawIdentity:unknown){const identity=await this.#settlementIdentity(rawIdentity);if(!this.env.WORKSPACE_AGENT)throw Error('g5-fixture-workspace-binding-unavailable');const recordsPromise=this.#ledger.g5FixtureRecords(identity),workspacePromise:Promise<G5FixtureWorkspaceAuthority>=this.env.WORKSPACE_AGENT.getByName(workspaceAgentName(identity.scope.tenantId,identity.scope.workspaceId)).g5FixtureTurnAuthority(identity),[records,workspace]=await Promise.all([recordsPromise,workspacePromise]);if(JSON.stringify(workspace.identity)!==JSON.stringify(identity))throw Error('g5-fixture-workspace-identity-mismatch');return {schemaVersion:1 as const,source:workspace.source,requestKey:workspace.requestKey,repairProof:await g5RepairFixtureProof({identity,records,events:workspace.events,source:workspace.source,checkpointFilesSha256:workspace.checkpointFilesSha256,requestKey:workspace.requestKey})};}
   async run(input:ToolCommandIntent){
     const command=normalizeToolCommandIntent(input),name=await toolBridgeActorName(command.scope,command.turnId,command.dispatchId);
