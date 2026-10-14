@@ -63,3 +63,22 @@ test('design save preserves opaque base files larger than the display reader lim
  const base=initialWorkspaceArchive({'data/large.bin':binary}),next=saved(design(),base);
  assert.equal(workspaceFileDiff(next.filesArchive,base).changes.some(c=>c.path==='data/large.bin'),false);
 });
+
+test('graph kinds and endpoints reject JSON arrays instead of coercing them into identifiers',()=>{
+ assert.throws(()=>parseDesignGraph({...graph,kind:['bdd']}),/design-graph-invalid/);
+ for(const field of ['from','to']){
+  const edge={...graph.edges[0]!,[field]:[graph.edges[0]![field as 'from'|'to']]};
+  assert.throws(()=>parseDesignGraph({...graph,edges:[edge]}),/design-graph-invalid/);
+  assert.throws(()=>saved({...design(),files:{...design().files,'design/bdd.json':JSON.stringify({...graph,edges:[edge]})}}),/managed-candidate-invalid/);
+ }
+});
+
+test('manifest roles and view bindings require strings even when a JSON array spells a valid value',()=>{
+ assert.throws(()=>parseModelArtifacts({...artifacts,files:[{path:'design/architecture.sysml',role:['sysml']}],views:[]}),/model-artifacts-invalid/);
+ const views=[
+  {...artifacts.views[0],source:['design/architecture.sysml']},
+  {...artifacts.views[2],renderer:['scene']},
+  {...artifacts.views[4],section:['runs']},
+ ];
+ for(const view of views)assert.throws(()=>parseModelArtifacts({...artifacts,views:[view]}),/model-view/);
+});

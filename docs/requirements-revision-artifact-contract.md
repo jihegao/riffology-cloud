@@ -4,7 +4,9 @@
 
 源码基线：Cloud `25609953f5c3b69dcb44e520d7e7ed1253d18fe4`；compiler GitHub main `ee6a2aa7a66d8bf2609059aaf8a7c0fe22fe8683`。2026-10-12 复核两个 GitHub main 仍是这些 SHA；本地 clone 的 origin 指向本地仓库，不作为远端状态证据。最初本地 compiler `a1a44c7` 落后远端；补读了远端 bounded profile、IR/layout/runtime、ABM 版本及 Rust result/request 类型。第 1–8 节的新 schema、类型、函数、路径是该日提议；当前已接线子集见第 0 节，未部署。未全面复审这八个远端提交，也未重新执行它们的测试。
 
-## 0. 2026-10-14 最小实现契约（#182，待合并与部署）
+<a id="candidate-v3"></a>
+
+## 0. 2026-10-14 最小实现契约（#182，核心实现；未部署）
 
 本次源码以 Cloud main `957b579fbb9f8cb79a9092605d50094ee6a64dbb` 为基线，实现范围来自 [#182](https://github.com/jihegao/riffology-cloud/issues/182) / Linear JHG-22；接口关联 #180、#184、#185。原用户项目没有可读的 Turn/candidate 诊断证据，不能据此断言其原始失败原因，也未重放该请求。
 

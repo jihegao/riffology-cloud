@@ -138,6 +138,7 @@ for(const [name,type,payload] of [
  ['unexpected legacy profile','provider.status',accounting({...candidateReports[0][1],profileId:'python-stdlib/v1'})],
  ['missing v2 trace validation','provider.status',accounting({...candidateReports[1][1],traceValidation:'not-provided'})],
  ['v3 missing operation','provider.status',accounting({...candidateReports[1][1],schemaVersion:3})],
+ ['v3 array operation','provider.status',accounting({...candidateReports[4][1],operation:['design']})],
  ['unknown candidate profile','provider.status',accounting({...candidateReports[1][1],profileId:'arbitrary-python/v1'})],
  ['missing candidate profile','provider.status',accounting({...candidateReports[0][1],schemaVersion:2,traceValidation:'validated'})],
  ['missing invalid diagnostic','provider.status',accounting({status:'invalid'})],

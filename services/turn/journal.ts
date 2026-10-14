@@ -25,7 +25,7 @@ function candidateAccountingReport(value:unknown):boolean{
   }
   if(report.status!=='checked'||report.execution!=='not-recomputed')return false;
   if(report.schemaVersion===1)return keys==='execution,schemaVersion,status,traceValidation'&&report.traceValidation==='not-provided';
-  if(report.schemaVersion===3)return ['answer','design'].includes(String(report.operation))?keys==='execution,operation,schemaVersion,status,traceValidation'&&report.traceValidation==='not-provided':report.operation==='model'&&keys==='execution,operation,profileId,schemaVersion,status,traceValidation'&&report.traceValidation==='validated'&&['python-stdlib/v1','mesa-3.5.1/v1'].includes(report.profileId as string);
+  if(report.schemaVersion===3)return report.operation==='answer'||report.operation==='design'?keys==='execution,operation,schemaVersion,status,traceValidation'&&report.traceValidation==='not-provided':report.operation==='model'&&keys==='execution,operation,profileId,schemaVersion,status,traceValidation'&&report.traceValidation==='validated'&&['python-stdlib/v1','mesa-3.5.1/v1'].includes(report.profileId as string);
   return report.schemaVersion===2&&keys==='execution,profileId,schemaVersion,status,traceValidation'&&report.traceValidation==='validated'&&['python-stdlib/v1','mesa-3.5.1/v1'].includes(report.profileId as string);
 }
 /** Managed accounting is observed after immutable file publication. It does
