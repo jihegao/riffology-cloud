@@ -21,7 +21,7 @@
     "liveBaselineReproducedExactly": true,
     "deployedModuleSha256": "87560a85eac9b8ddb7fa113260777db938917745ad21442516be53075852ac27",
     "deployedModuleBytes": 5733641,
-    "moduleBodyPersisted": false
+    "moduleBodyIncluded": false
   },
   "deployment": {
     "createdAt": "2026-10-14T06:40:03.797002Z",
