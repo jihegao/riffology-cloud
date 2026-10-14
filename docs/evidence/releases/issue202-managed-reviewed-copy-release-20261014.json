@@ -9,7 +9,7 @@
     "authenticatedReviewedCopyRunTerminal": true,
     "authenticatedReviewedCopyRunReleased": true,
     "acceptance": "passed",
-    "issueOpen": true
+    "issueOpenAtCapture": true
   },
   "evidenceInputs": {
     "deploymentSource": "copyfix-source-provenance.json",

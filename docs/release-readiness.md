@@ -1,12 +1,29 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-14 Reviewed-copy first native Run deployed and accepted
+
+[#202](https://github.com/jihegao/riffology-cloud/issues/202) / [PR #203](https://github.com/jihegao/riffology-cloud/pull/203) removes the unrelated provider Turn prerequisite for the explicitly authorized reviewer’s own new published copy. The narrow Managed schema2 path persists one Run id, rechecks the current reviewer/owner/source/authVersion/policy, rejects a second distinct Run and preserves unknown/cleanup isolation. It does not change Private Beta invitations or routing.
+
+Gateway `9f472694-4aa5-4f0f-8fda-ceddd02e1e88`, deployment `0dbc1645-cba0-4db0-bb87-ace9ce0e119a` at 100%, serves frozen live composite `e422b297e75b8ee1f32caaa43e0d451a5f7a95d9`. Module SHA `517ce37d817efa0f3e17d1add49fadb5e30c91b68d0465dd2ddb40737ffb1818` matches live readback; settings, 99 bindings, 23 SQLite exports, five container associations and asset configuration are preserved. Main’s separate design/v3 slice remains undeployed.
+
+One ordinary UI Run of the published Fire copy completed and released, with the expected five metrics. Scoped counters show zero added provider Turns/Sessions, one native Run and no occupied/unknown tenant lease. This is the designated Managed operator/reviewer scope; a third ordinary non-operator copy is untested. Native cloud fees remain unknown. The one distinct native-only Run allowance is now consumed; this acceptance does not authorize a second Run.
+
+New Workerd 3/3 and live focused/adjacent 54/54 checks passed, as did typecheck and diff checks. The M2 run passed 961/961; it started before the final readonly marker tightening, after which the new Workerd/typecheck/diff checks passed again. Independent code review found no must-fix. CI quota was waived by the user and is not recorded passed. See the [release note](managed-reviewed-copy-release-20261014.md) and [sanitized evidence](evidence/releases/issue202-managed-reviewed-copy-release-20261014.json).
+
+## 2026-10-14 NetLogo Fire published for noncommercial Private Beta
+
+[#196](https://github.com/jihegao/riffology-cloud/issues/196) completed the bounded ordinary-author comparison, different-account frozen-export review, publication, ordinary UI copy and one copied server Run for `netlogo-fire-python-beta@0.1.0`. The copied Run used the authorized Managed operator/reviewer native-only first-Run path delivered by [#202](https://github.com/jihegao/riffology-cloud/issues/202); it is not ordinary Private Beta invited-owner acceptance. All six comparison Runs completed and released; the copied baseline Run also completed and released. The platform-repacked copy archive differs from the author's frozen archive, while the six candidate files and Spec match. Scoped counters show zero added provider Turns or Sessions and one native Run; usage and fees remain unknown. A third ordinary non-operator copy-and-Run identity was not tested.
+
+This remains an invitation-only, noncommercial CC BY-NC-SA 3.0 Beta case. Browser Preview is local/unverified; native NetLogo equivalence, scientific gold and Verified Experiment/Evidence are not claimed. CI quota was waived by the user and CI is not reported passed. #136 broader acceptance remains unfinished and #35 Queue scope is unchanged. See the [release note](netlogo-fire-publication-20261014.md) and [sanitized evidence](evidence/releases/netlogo-fire-publication-20261014.json).
+
 ## 2026-10-14 Read-only tool receipt deployed and owner read accepted
 
 [#199](https://github.com/jihegao/riffology-cloud/issues/199) and
 [PR #200](https://github.com/jihegao/riffology-cloud/pull/200) add a narrowly
 scoped owner read for persisted tool-request terminal evidence. Gateway version
 `3789df91-afc5-4e89-8ea7-1dbe7a88036f`, deployment
-`1a8687ad-a7a5-42a8-a6e5-295ba1b1805f`, is at 100%. A later ordinary-author
+`1a8687ad-a7a5-42a8-a6e5-295ba1b1805f`, was at 100% for this receipt acceptance.
+The later #202 release above supersedes that deployment. A later ordinary-author
 read returned two explicit `not-admitted` receipts and one terminal completed
 cleanup receipt with exit code 0; a different authenticated reviewer received
 404. The workspace had no remaining active Turn or holds. Earlier 503 responses
@@ -30,9 +47,10 @@ limits, usage and alerts. The unchanged review time is the current extension in
 Receipt API usage and fees remain unknown. The full M2
 attempt had 930 passed, zero failed and one cancelled at an existing Workerd
 60-second timeout, so the full suite is not claimed passed. The separate six-Run
-group under [#196](https://github.com/jihegao/riffology-cloud/issues/196) remains
-unfinished and outside #199 acceptance; this entry does not claim
-Fire publication, Group completion or formal Experiment evidence.
+group under [#196](https://github.com/jihegao/riffology-cloud/issues/196) was
+outside #199 acceptance. Its later completed/released comparison, publication and
+authorized copied Run are recorded in the Fire entry above; #199 itself does not
+claim that result or formal Experiment evidence.
 
 [Release note](tool-receipt-release-20261014.md) and
 [sanitized evidence](evidence/releases/issue199-tool-receipt-release-20261014.json)
