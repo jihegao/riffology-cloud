@@ -1,0 +1,388 @@
+{
+  "schema": "riffology.delivery-evidence/v1",
+  "observedAt": "2026-10-14T09:05:45.520992+00:00",
+  "scope": "main integration, production rollout and stale Git/worktree cleanup",
+  "source": {
+    "sourceCommit": "eba528f7b101a67f32565e4aac74a0d4154a7dec",
+    "tree": "21fca48f33078dcb10d67779203c5f9452dd519c",
+    "sha256": "141ee79098a0ed3f799f2fb2c9f5dde3ba65a2d73317227f9e15b1037077d41a",
+    "bytes": 5795550,
+    "testedHead": "1fbb37c6def503cf480bb526cc0013bc71183b7a",
+    "testedTreeMatchesMain": true
+  },
+  "gateway": {
+    "observedAt": "2026-10-14T08:55:50.926062+00:00",
+    "gatewayDeployment": "54f253dd-c7b3-4407-867d-b9856642c1ff",
+    "gatewayVersion": "d9ceec61-1e5f-48cc-8a51-3abdb4b06614",
+    "trafficPercent": 100,
+    "bindingCount": 99,
+    "bindingsIdentical": true,
+    "scriptRuntimeIdentical": true,
+    "settingsIdenticalExceptAnnotations": true,
+    "sqliteExports": 23,
+    "containerAssociations": 5,
+    "accountContainerConfigurations": 15,
+    "accountContainerConfigurationsIdentical": true,
+    "browserExecutionDeploymentUnchanged": true,
+    "browserExecutionVersion": "3e96532e-dbeb-4c8c-b147-7e71939b0472",
+    "gates": {
+      "G5_ADMISSION_ENABLED": "false",
+      "M3_SERVICE_ENABLED": "false",
+      "M4_SIMULATION_ENABLED": "false"
+    },
+    "maintenanceValidationConfigured": false
+  },
+  "gatewayModule": {
+    "sha256": "141ee79098a0ed3f799f2fb2c9f5dde3ba65a2d73317227f9e15b1037077d41a",
+    "bytes": 5795550,
+    "moduleName": "index.js",
+    "fullByteMatch": true
+  },
+  "entry": {
+    "observedAt": "2026-10-14T08:56:32.927Z",
+    "entryDeployment": "164976ef-e58b-484c-a6cc-88e37385ec6a",
+    "entryVersion": "5869db28-cb18-4bcc-8e2a-7364e8c888ce",
+    "trafficPercent": 100,
+    "bindingCount": 6,
+    "fullModuleMatch": true,
+    "bindingsPreserved": true,
+    "runtimePreserved": true,
+    "settingsPreserved": true,
+    "sha256": "8f6c05785fde6378e1d854223cf17ad3b626abe5adba4e6882a876454fc930a3",
+    "wwwDeploymentUnchanged": true,
+    "wwwVersion": "c9e4d060-a412-4dc7-a0c0-13b55b6bacfa"
+  },
+  "staticAssets": {
+    "files": 92,
+    "matched": 92,
+    "retainedImmutableAssets": 68,
+    "retainedRuntimeProfiles": 8,
+    "frames": 3,
+    "rejectedFrameRequests": 4,
+    "evidence": "main-integration-20261014-static.json"
+  },
+  "reviewedMergedPRs": [
+    169,
+    170,
+    173,
+    204
+  ],
+  "includedCorePRs": [
+    198,
+    200,
+    201,
+    203
+  ],
+  "checks": {
+    "ui": {
+      "passed": 21
+    },
+    "typecheck": "passed",
+    "m0": {
+      "passed": 350,
+      "skipped": 1
+    },
+    "m1": {
+      "passed": 549
+    },
+    "m2": {
+      "passed": 961,
+      "skipped": 0
+    },
+    "m3": {
+      "passed": 957,
+      "skipped": 12
+    },
+    "runtimeExecution": {
+      "passed": 20
+    },
+    "phase": {
+      "passed": 13
+    },
+    "model": {
+      "passed": 92
+    },
+    "archivedExperiment": {
+      "passed": 30
+    },
+    "researchQuality": {
+      "passed": 8
+    },
+    "reviewedCopyFocusedWorkerd": {
+      "passed": 3
+    },
+    "workspaceBrowserFinal": {
+      "passed": 29
+    },
+    "sourceScope": "UI/M0/M1 were run on integrated pre-PR203 tree ae535bd4831d8afe01196f3086c7d5e6c7f3be0c; typecheck, full M2/M3 and focused reviewed-copy checks cover PR203; final runtime source equals deployed main tree. Later PR204 changes documentation only.",
+    "initialM3Failure": "Locale test counted the asynchronous initial Preview ticket among locale writes. The initial wait correction targeted a hidden status as visible and timed out; final assertion waits for attached connected status and retains exactly one locale write. Final complete M3 rerun passes.",
+    "hostedCI": "User waived exhausted GitHub quota failures; hosted CI is not claimed passing.",
+    "logDigests": {
+      "rollout-full-check.log": "a5eee6e95bdda792ef87863e797cd4978bccbbcce26a272985a4d29f612db700",
+      "rollout-research.log": "9bd1fb32bf731bc7c9310ed9cbc51bdf14d5aa21221e945b655b7108de74a11d",
+      "rollout-m2-final.log": "e60eea493af8910cdb88d582f89d62b790a25c11a9a2b39b5c6e4b3bc15cb462",
+      "rollout-workspace-final.log": "e40f4b214816c8a8c17c6da3400becd22d3991bf9328dc7c5027965b63765b9d",
+      "rollout-issue73.log": "193873f1222589a0ff0a6da2b61b6ff09c5f873751a10f45f7ea8db17efa2d9e",
+      "rollout-gateway-bundle.log": "02e9328ef4676083c6e7c3982f7b437adc66966381e1ccb35b1f9856abc5f002",
+      "rollout-entry-bundle.log": "7ce2b3a2d13c0e5fa8894f58b66ee96cf1c6ed62bdf682ad5c1172114fdb3d21",
+      "rollout-m3-confirmed.log": "0022428409cadb1d396e46106550000f5a14c27455c0b1979fa3ab141829f519",
+      "rollout203.log": "d03b26b756abb4dc4fca4f07a7ec7196128bf45e1ed55b0095136368aa4b4ba7",
+      "rollout-static-after.log": "606eb03f6134b2e08a98b5b7705d624b99de2c61e0f48d947fca1fffc16545c2"
+    }
+  },
+  "acceptance": {
+    "implemented": true,
+    "merged": true,
+    "deployed": true,
+    "anonymousStaticReadback": "passed",
+    "authenticatedDesignAnswerSubtabs": "pending",
+    "paidDesignAcceptance": "not performed",
+    "separateFireAcceptanceEvidence": "netlogo-fire-publication-20261014.json",
+    "browserPreview": "local/unverified",
+    "sysmlSemanticChecker": "not implemented",
+    "productionTestScope": "Anonymous static GETs and one rejected empty POST to static execution frame. No authenticated project mutation, provider request, Turn or simulation was initiated by this rollout. No account-wide zero-execution or zero-cost assertion."
+  },
+  "rollback": {
+    "requirement": "Any rollback must retain a Journal reader compatible with persistenceOutcome unchanged and the current reviewed-copy/tool-receipt/domain fixes. Do not blindly promote a pre-v3 Worker version after new answers have persisted.",
+    "previousGatewayVersion": "9f472694-4aa5-4f0f-8fda-ceddd02e1e88",
+    "previousEntryVersion": "668e19e6-6f23-49e0-b4f6-06459790a496"
+  },
+  "projectSync": {
+    "deliveryProject": "https://github.com/users/jihegao/projects/1",
+    "status": "not written",
+    "reason": "Restored GitHub CLI token lacks read:project/project scopes; connector has no Project field update capability. Issue/PR/Linear evidence updated separately."
+  },
+  "cleanup": {
+    "remoteDeleted": 16,
+    "remoteBranches": [
+      {
+        "name": "codex/artifact-views-contract-182",
+        "sha": "779c8488a5f9f70840224b8b3cbff2b2522ffc45",
+        "mergedPRs": [
+          198
+        ]
+      },
+      {
+        "name": "codex/beta-review-extension-20261231",
+        "sha": "3d8a775a548379d99d15b09866f6a5224f3d715d",
+        "mergedPRs": [
+          169
+        ]
+      },
+      {
+        "name": "codex/browser-local-runs",
+        "sha": "863e3e038077eb1661476b9433bab0d6e2ca07f1",
+        "mergedPRs": [
+          172
+        ]
+      },
+      {
+        "name": "codex/browser-local-runs-release",
+        "sha": "d813dd7c5f9e9c61d4ff2d84064dad38dbd48a74",
+        "mergedPRs": [
+          174
+        ]
+      },
+      {
+        "name": "codex/issue-150-js-frontend",
+        "sha": "d6d35f7ea6c5d9d2ec7b38dc5388bae4676a00a3",
+        "mergedPRs": [
+          154
+        ]
+      },
+      {
+        "name": "codex/issue-152-readonly-runtime-proof",
+        "sha": "25635086957c077ebeb550939dd942a2ebebc7da",
+        "mergedPRs": [
+          159
+        ]
+      },
+      {
+        "name": "codex/issue-153-no-quota",
+        "sha": "3875e831891e384c64092025314c4a8123adcb39",
+        "mergedPRs": [
+          156
+        ]
+      },
+      {
+        "name": "codex/issue-165-acceptance-evidence",
+        "sha": "481306ef53998dd1220cbca79dd3e97c1a2fe939",
+        "mergedPRs": [
+          167
+        ]
+      },
+      {
+        "name": "codex/issue-165-preparation-deadline",
+        "sha": "3a839e6478553726ba6e23ac55b23b01eff6c8ba",
+        "mergedPRs": [
+          166
+        ]
+      },
+      {
+        "name": "codex/m1-invited-delivery-20261001",
+        "sha": "2b685045ee8297054403f96cb099eea62f614f09",
+        "mergedPRs": [
+          160,
+          158,
+          157
+        ]
+      },
+      {
+        "name": "codex/managed-accounting-checkpoint-fix",
+        "sha": "f55cf961b4bf53ad7abb6e05de64c9206168863c",
+        "mergedPRs": [
+          194
+        ]
+      },
+      {
+        "name": "codex/managed-domain-candidate-178",
+        "sha": "e99fafe14bb32f7a810fd18f0fd5dce65898e15d",
+        "mergedPRs": [
+          190
+        ]
+      },
+      {
+        "name": "codex/managed-release-evidence-20261013",
+        "sha": "39f08d946c5c08c04257313feb4b52832223898e",
+        "mergedPRs": [
+          195
+        ]
+      },
+      {
+        "name": "codex/requirements-revision-contract-179",
+        "sha": "1c42b14be69e79fca7ee5e939a90539e8a705824",
+        "mergedPRs": [
+          189
+        ]
+      },
+      {
+        "name": "codex/riffoid-brand-20261007",
+        "sha": "0380d95d2d09f5b53c7e578032a84599371fae32",
+        "mergedPRs": [
+          170
+        ]
+      },
+      {
+        "name": "codex/riffoid-two-account-prep-20261007",
+        "sha": "1fbb37c6def503cf480bb526cc0013bc71183b7a",
+        "mergedPRs": [
+          173
+        ]
+      }
+    ],
+    "remoteDeletionExpectedShaGuard": true,
+    "localBranchesDeleted": [
+      {
+        "ref": "refs/heads/codex/beta-review-extension-20261231",
+        "sha": "a7a0527e8143cae036d2c8b816c9f95a60d0f762"
+      },
+      {
+        "ref": "refs/heads/codex/browser-local-runs",
+        "sha": "863e3e038077eb1661476b9433bab0d6e2ca07f1"
+      },
+      {
+        "ref": "refs/heads/codex/browser-local-runs-release",
+        "sha": "25609953f5c3b69dcb44e520d7e7ed1253d18fe4"
+      },
+      {
+        "ref": "refs/heads/codex/issue-150-js-frontend",
+        "sha": "3dc2e5a91d81e2c0158c0881dce8728c7c2b6bf8"
+      },
+      {
+        "ref": "refs/heads/codex/issue-152-readonly-runtime-proof",
+        "sha": "25635086957c077ebeb550939dd942a2ebebc7da"
+      },
+      {
+        "ref": "refs/heads/codex/issue-153-no-quota",
+        "sha": "3875e831891e384c64092025314c4a8123adcb39"
+      },
+      {
+        "ref": "refs/heads/codex/issue-165-acceptance-evidence",
+        "sha": "481306ef53998dd1220cbca79dd3e97c1a2fe939"
+      },
+      {
+        "ref": "refs/heads/codex/issue-165-preparation-deadline",
+        "sha": "3a839e6478553726ba6e23ac55b23b01eff6c8ba"
+      },
+      {
+        "ref": "refs/heads/codex/m1-invited-delivery-20261001",
+        "sha": "276c8e22e721e324b262fe6f808899999eb1c772"
+      },
+      {
+        "ref": "refs/heads/codex/pr154-pointer-budget",
+        "sha": "d6d35f7ea6c5d9d2ec7b38dc5388bae4676a00a3"
+      }
+    ],
+    "registeredWorktreesRemoved": [
+      "issue-152-readonly-runtime-proof",
+      "managed-domain-artifacts",
+      "requirements-revision-contract"
+    ],
+    "invalidRegistrationsPruned": 2,
+    "temporaryCheckoutsRemoved": [
+      "riffology-artifact-views-20261014",
+      "riffology-managed-release-20261012"
+    ],
+    "originalDirtyWorkPreserved": true,
+    "gitBundlesAndPrivateArtifactsArchivedLocally": true,
+    "retainedRemoteBranches": [
+      {
+        "name": "codex/compiler-v01-integration",
+        "reason": "main, active task or unique history"
+      },
+      {
+        "name": "codex/fire-reviewed-copy-live-20261014",
+        "reason": "main, active task or unique history"
+      },
+      {
+        "name": "codex/fire-tool-receipt-readonly-20261014",
+        "reason": "main, active task or unique history"
+      },
+      {
+        "name": "codex/invited-runs-open-20261002",
+        "reason": "main, active task or unique history"
+      },
+      {
+        "name": "codex/issue-136-invited-runs",
+        "reason": "main, active task or unique history"
+      },
+      {
+        "name": "codex/issue-152-archive",
+        "reason": "main, active task or unique history"
+      },
+      {
+        "name": "codex/issue-78-acceptance-signoff",
+        "reason": "main, active task or unique history"
+      },
+      {
+        "name": "codex/managed-live-preservation-20261013",
+        "reason": "main, active task or unique history"
+      },
+      {
+        "name": "codex/managed-live-release-20261013",
+        "reason": "main, active task or unique history"
+      },
+      {
+        "name": "codex/managed-reviewed-copy-run-20261014",
+        "reason": "main, active task or unique history"
+      },
+      {
+        "name": "codex/netlogo-fire-intake-20261014",
+        "reason": "main, active task or unique history"
+      },
+      {
+        "name": "codex/pi-model-drawing-20261001",
+        "reason": "main, active task or unique history"
+      },
+      {
+        "name": "codex/pi-model-drawing-evidence-20261001",
+        "reason": "main, active task or unique history"
+      },
+      {
+        "name": "main",
+        "reason": "main, active task or unique history"
+      }
+    ],
+    "retentionReason": "Active Fire task branches, main, unique/unmerged history and the original dirty checkout are retained. Cleanup does not imply pending work was abandoned."
+  }
+}
