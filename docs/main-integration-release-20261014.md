@@ -1,0 +1,26 @@
+# Main integration release — 2026-10-14
+
+Production now serves the merged candidate design/answer/view implementation and the reconciled riffoid domain source. Reviewed PRs were merged in dependency order: [#169](https://github.com/jihegao/riffology-cloud/pull/169) records the already executed Beta deadline extension, [#170](https://github.com/jihegao/riffology-cloud/pull/170) aligns branding, and [#173](https://github.com/jihegao/riffology-cloud/pull/173) reconciles the deployed two-account transport. [#198](https://github.com/jihegao/riffology-cloud/pull/198) supplies candidate v3 design artifacts, one level of Model/Preview/Runs subtabs and answers without a new Revision. The rollout retains #200/#201 read-only tool receipts and the concurrently merged #203 reviewed-copy first-Run fix. The later documentation-only [#204](https://github.com/jihegao/riffology-cloud/pull/204) was also reviewed and merged.
+
+The deployed source is main `eba528f7b101a67f32565e4aac74a0d4154a7dec`, tree `21fca48f33078dcb10d67779203c5f9452dd519c`, exactly matching the final tested tree. Later evidence commits change documentation only.
+
+| Component | Version | Deployment | Traffic |
+| --- | --- | --- | --- |
+| Gateway | `d9ceec61-1e5f-48cc-8a51-3abdb4b06614` | `54f253dd-c7b3-4407-867d-b9856642c1ff` | 100% |
+| Entry | `5869db28-cb18-4bcc-8e2a-7364e8c888ce` | `164976ef-e58b-484c-a6cc-88e37385ec6a` | 100% |
+
+Gateway module SHA-256 is `141ee79098a0ed3f799f2fb2c9f5dde3ba65a2d73317227f9e15b1037077d41a` (5,795,550 bytes). Entry module SHA-256 is `8f6c05785fde6378e1d854223cf17ad3b626abe5adba4e6882a876454fc930a3` (37,296 bytes). Both uploaded modules and post-deployment readbacks match the local bundles byte for byte. All 92 public static files match, including 68 immutable files and all eight retained Browser Preview runtime profiles. Three execution-frame documents match their pinned hashes and isolation headers; query, Cookie, Authorization and an empty POST are rejected as expected.
+
+Fresh comparisons preserve all 99 Gateway bindings, 23 SQLite exports, five Worker container associations, the full 15 account container application configurations, six Entry bindings, both Workers' runtime/settings and existing secret references. Browser Execution and www Worker versions are unchanged. G5 admission, M3 service and M4 simulation remain disabled; maintenance validation has no enabling configuration. No catalog data, invitation policy, ledger or retained model/Revision was changed by this release.
+
+Local validation passed: UI 21, M0 350 with one conditional skip, M1 549, final M2 961, final M3 957 with 12 conditional skips, runtime/execution 20, phase 13, model 92, archived experiments 30, Python research-quality 8, typecheck and diff checks. UI/M0/M1 preceded the concurrent #203 patch; its actual Workerd/D1 3-test suite, typecheck and final full M2/M3 cover that patch. The locale browser test initially counted the asynchronous Preview bootstrap ticket; it now waits for the initial connected status before asserting exactly one locale write. The final full M3 rerun and all 29 Workspace browser tests pass. Hosted GitHub CI was waived by the user for exhausted quota and is not reported as passed.
+
+This rollout establishes deployment and anonymous static verification. The new design/save/answer/subtab flow still needs real authenticated-user acceptance on a fresh invited project; no original request was replayed and no paid execution was initiated by this release. SysML text and platform-rendered structural diagrams are supported; full SysML semantic validation is not implemented. Browser Preview remains local/unverified. The separate Fire acceptance and later authenticated read-only continuity observation are recorded in [its release note](netlogo-fire-publication-20261014.md), not reused as acceptance of the new design features.
+
+Rollback must keep a Journal reader compatible with `persistenceOutcome: unchanged`, as well as the current receipt, reviewed-copy and domain fixes. Do not blindly restore an older pre-v3 Worker after new answers have been persisted. No rollback was needed or performed.
+
+Cleanup removed 16 proven merged remote branches with atomic expected-SHA guards, ten local branches, three clean registered worktrees, two invalid registrations and two obsolete temporary checkouts. Git bundles and byte-verified archives preserve their private evidence; the original dirty checkout, active Fire task branches and unique/unmerged history remain. The current rollout checkout is retained until evidence publication finishes.
+
+The selected #182 slice remains Acceptance. Linear uses In Review because its team has no Acceptance status. GitHub Delivery Project fields could not be updated: the restored CLI token lacks Project scopes and the connector has no Project-write endpoint. Issue/PR/Linear evidence records the actual deployment instead of claiming that those fields were synchronized.
+
+[Sanitized release evidence](evidence/releases/main-integration-release-20261014.json) and [static readback](evidence/releases/main-integration-20261014-static.json) retain exact hashes and verification boundaries. Raw settings, secrets, provider credentials, module bodies and private logs are excluded.
