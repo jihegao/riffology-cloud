@@ -1,5 +1,11 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-15 Pi extensibility audit and permanent-purge scope (planning only)
+
+[#211](https://github.com/jihegao/riffology-cloud/issues/211) records a three-agent source audit of project skills/plugins, dynamic pages, gates, resource authority and test/CI simplification. [The report](pi-extensibility-audit-20261015.md) maps 65 inspected hotspots to replacement invariants and Issues #212–#216, with project skills under #85 and the separate GPT 6 Luna candidate in Draft PR #210. This is a technical decomposition, not new deployed behavior or concurrent work authorization.
+
+The user explicitly selected all 34 projects in the fixed Catalog snapshot and associated historical simulation content for permanent deletion. SELECT-only metadata found 9 archived, 25 non-archived, 0 deleting, one submission and one associated model version; all query rows_written/changes are zero. [Sanitized scope evidence](evidence/releases/pi-extensibility-audit-20261015.json) freezes hashed identities. No data was deleted, runtime stopped, gate changed, provider/product Turn dispatched or deployment performed. Purge remains unimplemented; actual DO/R2 closure, original release, remote copies and backup boundaries are unverified. OpenCode Haiku 5.5 returned 402 without an opinion; Claude Code participation was cancelled by the user. Project fields remain unsynchronized because read:project scope is unavailable.
+
 ## 2026-10-14 Main integration deployed: candidate design, unchanged answers and section views
 
 Main `eba528f7b101a67f32565e4aac74a0d4154a7dec` is deployed to [app.riffoid.com](https://app.riffoid.com): Gateway `d9ceec61-1e5f-48cc-8a51-3abdb4b06614` and Entry `5869db28-cb18-4bcc-8e2a-7364e8c888ce`, both at 100%. PRs #169 → #170 → #173 reconcile the current Beta deadline, branding and signed domain source; #198 design/answer/subtabs and #200/#203 receipt/reviewed-copy fixes are all retained. #204 adds acceptance evidence without changing production code.

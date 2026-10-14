@@ -1,0 +1,465 @@
+{
+  "schema": "riffology-extensibility-audit/v1",
+  "capturedAt": "2026-10-14T22:57:15Z",
+  "sourceCommit": "fbc0e46bde2c8781b71609fa4524d2e75bffaf99",
+  "scope": "All 34 projects in the fixed Catalog snapshot and associated content; later projects excluded. Permanent purge authorized; not implemented or executed.",
+  "targetIdentityFields": [
+    "project_id",
+    "tenant_id",
+    "workspace_id",
+    "owner_user_id",
+    "generation",
+    "workspace_generation",
+    "created_at"
+  ],
+  "targetIdentityDigest": "e418ac2d10eba71eda7a7cb276e5cd325359dd26027fb5adaa0609049a010640",
+  "projectCount": 34,
+  "archivedCount": 9,
+  "nonArchivedCount": 25,
+  "deletingCount": 0,
+  "ownerCount": 4,
+  "submissionCount": 1,
+  "associatedModelVersionCount": 1,
+  "projects": [
+    {
+      "project_sha256": "054c43188ae2b8439bc063d6f47ee862c8d99bc200213d3c2ee4caa01efb23ee",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "fe270437c6275c5ee52def53599147bb43cf2965fe7153b02808ed1d3f7e1047",
+      "identity_sha256": "2d2eb53a43de293de2ca15ad9282d02c5c12045b69311735788ed1521557b47d",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "08ec9341c8749f8950e7ae514ed806d1bab3dc85ba56cb444dd21ec2f9ae672b",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "0501e2d4fdfaf5661427d43737af92e5d4c2fee943927e738004e885e92b8050",
+      "identity_sha256": "9599ddd0511b8adbbd730828646452ccefa627260ec719a04a473a9f345392d9",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "08f3e4d82ffcbed1c8ef5cb22dee1ccf77a1c020345824ad05d0cbad2217e53e",
+      "tenant_sha256": "a6434069dc0ff1d229d911ff2e1fdcab2a2e44c10b999cab61e77568924dbd85",
+      "workspace_sha256": "1ba823f85417de9e4affd8934974a371c1665215f6e552c6026f6d5484b3d34a",
+      "identity_sha256": "b167096255df53712290b108301ad4f86f8b2b122b20306952e6e20d36890969",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": true,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "1579db1f51b5b3cff28ce3df549fc5bfb7d722ca39d6d746f90bfd85304c3b9a",
+      "tenant_sha256": "a6434069dc0ff1d229d911ff2e1fdcab2a2e44c10b999cab61e77568924dbd85",
+      "workspace_sha256": "038b37a4554574979bcdd9d1152070d289237fc78f8366866a424709a9ba3def",
+      "identity_sha256": "53ec116e6ddffa6d23c4583618768b82bf180ffc86501190d83cc31d857f2005",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "1a8b605b6fcf11d769a2bb6abb41efde6c2707f91414a2721e68b9f241065be8",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "ba1249d67007daf9008d0241c0f13e4e92c7b5c232105efbd628a81e3724dd69",
+      "identity_sha256": "fd881a18ab134515111f4e5c75debe5fbb494f25fdf3ecc845248525e3c74bba",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "25fcde798bf636c3df59350fa7fcc695a26d9e933a7490e0d34941a12ac3bbe5",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "921bce294ad506a59b557d4cdad025d3d41bf6dc0e41603bb26785131f233372",
+      "identity_sha256": "b4b00df38abc2b744f06081a2c7b7001b641396cf0baeff73b49a872b0a8151d",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "28b96574930be17487a4334c7cc7705630545c43140f8c0667e604cd4f3eec8d",
+      "tenant_sha256": "a6434069dc0ff1d229d911ff2e1fdcab2a2e44c10b999cab61e77568924dbd85",
+      "workspace_sha256": "416698fb61c896605dd3df6f4c15366fa91151a4c8fe1022fa813e4c4b8fec82",
+      "identity_sha256": "2ea395412f4dbb909baabb89e0bb3085dfaf24710be32dc6c7b4a8f0f7e412cc",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": true,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "34f86d0f37eae82f12821c25c11d2f637eef2e95c90811bff0cd17b4b1dc9af1",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "6d361c02e11088381e0105a44f663f81602bd313b6cd4910175eb3e8bc0c2ba7",
+      "identity_sha256": "41d50ca05c00b58f8a3d400e4ad36693b98119250db21638475ed283365bf059",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "369c27fd32dea76e5aaa64e7a523074bbebab8b25ff12c66be203ec59c21ef85",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "b2311ecdef4cb3328322a1445315f6e1a9c1be013b611b91dca915b74adf5374",
+      "identity_sha256": "f05efa4f44d4b19b16c8a8487ce89f5b5fb8e6637d91d3b82f6b6dee629b5282",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "44338acb52b0157fcb310c54c43f5a2359545a911965d87d6a6d7383ee0c3cd7",
+      "tenant_sha256": "a6434069dc0ff1d229d911ff2e1fdcab2a2e44c10b999cab61e77568924dbd85",
+      "workspace_sha256": "878d014ce0ce879f60592ee5714d4cbc12aaa00613e21916965bc74e587e5bea",
+      "identity_sha256": "b4a60937792eee7fc7dfbfd558de4f6c3bc3cb6692d1c487c32b1d60a8d36e50",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": true,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "45af7bafaca2a736f9db9724ebc4f67223bfee979e974a7ff728f70eed54ff17",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "2c3d26e5a44a220c5ac14b7df24c04a21624a4461c058df0b7757e0aa151a4ac",
+      "identity_sha256": "c8f9d08f0c18f9f91d0a57f14d4e08ffb1a257dbb33d4724a0ec1f66f85de7c4",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "46b0a2aec67f2e0429eac487ca7a5d98d8af0968e25ebb8e72fcde0366b9da36",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "70ae6b71b574bb0f9a1a694ef2b4c4f7e975aae40f0820a40cac2ed16a1cca6f",
+      "identity_sha256": "650f1ae0c174c0f6873adabc6dbf62402cbe0cbfce7bc90cd32979378e80a473",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "4e64625e7895096339a572b83aeb03575d96f9dd3c66e4783e95e3aee0d3df06",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "0ba90c8a45ea2c01d7994eb2bfa049b1a4c829c85457c99ea547e0263503aa80",
+      "identity_sha256": "e9a0b062e8ffedd13742125ee3758cecc6be3300f51264ce902df88c2779f964",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "5ba1062ded69b4751be3e5214e2a2a0f17bcf94995c8b04736e04db5e359d69b",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "58189b017f1d5c032f3eda1a889f8a0670aeed80e0a9cc0f05df6d673f3ecf60",
+      "identity_sha256": "90a6304e1be8d74b4f038ae6d05aea67114a9523ac2472151d50c4019e14ab01",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "6cfad208a4ef2c2356094442171636dfe6f7915183fa306f75651d1de4d25eb0",
+      "tenant_sha256": "a6434069dc0ff1d229d911ff2e1fdcab2a2e44c10b999cab61e77568924dbd85",
+      "workspace_sha256": "96c2cbd664e8a8a2e118a934b4370e124e9ed06e1cda54cdeb021c9b7f7695cc",
+      "identity_sha256": "1d42dbe634cd12ae48a1f7fe40a2fc474604d70b708a2cd135d573f048333201",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "6f9a4620aa25719ca6e870b5bac984748ec3ebc18d0d737af350395f9d3e832a",
+      "tenant_sha256": "a6434069dc0ff1d229d911ff2e1fdcab2a2e44c10b999cab61e77568924dbd85",
+      "workspace_sha256": "18d42705720b463732d80cd78bd9b3d8277a578e4e5b5c238db32f58a1506296",
+      "identity_sha256": "1b8ce7205db0d4e1e51ec4eed87a2b7e8b0eaf0798fc2a45e7f5094767aab7c9",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "7162a8c3844c04e75e1bf3cfd16538ae4d4ffcf45a6e51de11d4026620e2c047",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "8b25846724eefb534ca7f174086db79e9762e38a24950b9e205085b046b85e10",
+      "identity_sha256": "3be3f7fa49ef3eaf657c9f6be01fe7d8b04cd9af535394ad88170dec50f6d25c",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "7993096117cdd03707bcea3694d6feba42e2024875984008ff9781157a110189",
+      "tenant_sha256": "a6434069dc0ff1d229d911ff2e1fdcab2a2e44c10b999cab61e77568924dbd85",
+      "workspace_sha256": "707b46a29cce945f7aeda2c46c4881646f2142a02a6013af6147be8a70195d7e",
+      "identity_sha256": "145501865abea3705169ed3bbb1dd0cf20bafdd03a090c5e513f595861b22c51",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": true,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "87a1c2b27a7ed3295b97a6a4400f0a2dc4d4dd3e46673820b9d074a254e5fdb7",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "33bf31a8c3a2a058bb3de7f92b8781fdaa981382506f120b1a5abe099b62dd94",
+      "identity_sha256": "c1ce5a79a4a6fa5a3aa0becfbc4cbe9742f818b4f431462ce8d76d8e9af35152",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "8dbe0992916c7cb66fbf2f04303f77f573665b8f1da41a07add821ea4d5e7505",
+      "tenant_sha256": "a6434069dc0ff1d229d911ff2e1fdcab2a2e44c10b999cab61e77568924dbd85",
+      "workspace_sha256": "1644bfce5c50d1d1b96b12619854164c1f630ee11708dfff84d664fc022a11c8",
+      "identity_sha256": "7deee79ad9342520f474830f5e0c48fc87f851b1852736d31b79803fc7ee881c",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": true,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "91bfe2bd7c59042cab098d6ab254acdf87493fe9ec04974f331abf8084bbb61e",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "0cf2beb25c070c07ecb6ae392c6f10669b91e4b872aee24d46b0d688b88894cb",
+      "identity_sha256": "a46052254e69f4727b2d89fbdd2f7f50b698af940a0f599312d09ad9fa4433a1",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "926afb180bade6b8da51c9950b56e998d50f5423dd7466d446fe61a4c996c322",
+      "tenant_sha256": "a6434069dc0ff1d229d911ff2e1fdcab2a2e44c10b999cab61e77568924dbd85",
+      "workspace_sha256": "92d43b1e06faa240ae584ec764277772e990e153b8b270edce7e59c22c35e269",
+      "identity_sha256": "b01e1a1dfbb2071146a8d98a69580d8287bafd078aa3c38449ccf45a1bc929e9",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": true,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "92c8a22f8faae7ed45bcfa5aeb9133a510d8342d140cb8042ad3a1f64fb2ee30",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "52b1b9c65a591fbfce81f9ee3d7d9642e1fcd912f518185941ff356abd5f5a94",
+      "identity_sha256": "f117179da3ea50c43093a3e703b4bbc816f4a806ff9902622ad687e98fc2b9c6",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "9dec48b11c7abdbeb2ebd872091d715ebacd5387be8389ff7d0a8d45d4202c06",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "03213f0846064a42ae94e4f0e256cac590cc5dc5381cfdeaca35739cb425c694",
+      "identity_sha256": "8864b484e9e52c48752eef0a4b7f5569f4be137f8018e55042bb86e3010bbf34",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "a57d7454edb3cc4809e2b330e1223cf4f5b90b0ffd12e72bf873173ce71e89c6",
+      "tenant_sha256": "7173d3453dfd14c8d5054988d4799ead219230767c1ce7b2a0ba20b2dc205c21",
+      "workspace_sha256": "3e2fd014daef33d0cc771435ba9d4ade45d76d477af55a6e720bbe0ef8ed6cd5",
+      "identity_sha256": "3bfce79e435c02e4052107bb2809d0d565b94a3d105228a8a21a51d45ea732e5",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": true,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "a892ba55dab5d931a43a3e96511e87a63ed0f6b8c04496ac626de9b36a55e334",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "354ab019696a28b19fd125283230409a62bda27714e9818c83f9ca2843c8160b",
+      "identity_sha256": "d5a0ff3f79610c09f047d5290d7c5abcda6b0ed2d13649d143cb821daaaf05c0",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "b1d375de1e284912262269fb233cae4e2492a8b9d598ac7e261d09859f6545d4",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "1f4b4b31278ff5210dc3979286d21bdb4a865bb10f7d74fc3f252d315876dd4d",
+      "identity_sha256": "d7d923f61b52132d448a6460a32a6dd8c619fc17fe6b04f3c42ada87e9ae2059",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "c3227212c6a40b3c86f560bdfea5b06fc4c4a0afb88fe4b577cf1a8c6d62fb0e",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "1a135efafadc3ccec0731e63e99916d25a28c98362b17d34c4c2c047fa4133a9",
+      "identity_sha256": "89e4fd8260993aa68f253ae50cb6d73b2c272acffa5ae5d1b8524143ba6b8a00",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "d2dcc1a241698c662ecf5235372e43cb6d8afb62e264c5ab17e7d92d8adf9ba1",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "56ee0a2625d7ad80697a1be9bf585d1247840967ad42a8e9ab8fb80a62d7df6e",
+      "identity_sha256": "dcb67277bdabc1b9e6d660d1f9fbf80b7689654e118f13c0ecdc098184237ef3",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "d3af7617cfab85dd0509cda7ea219fd58322f2ca554ab9b3ac8849e38aebccfd",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "d5e2f5e757f650ed11669bb707fc0d99459537a3128b4f5a011b12b281fb3be0",
+      "identity_sha256": "1764b6a4f70708545464e8f259d922755090b0e6f6dbae5069245833614e3d73",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "d7b9bbceeaab833948bf156ff93ba3bd2841cd8a7fde674100df1ec2aae8562c",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "c8f4ea5942a373b3a5849a1999a6c693000daf9fb23a69474d35ab153c1dcc97",
+      "identity_sha256": "28101c63244dd875a8a96a00b9e7b8e37ad5aef44196edce1e0cc9892b31ca9d",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "df3c187144ead993a0bce89008549dd1de9742a8bea8792804786e6ea62fb31c",
+      "tenant_sha256": "f08766acd483671c0c6432c92f72e020604eb544b54b1f050d7a04ce000da758",
+      "workspace_sha256": "d57d2f59061b88c66ecf5f7a2c39302442c7e7bc50d469920f75ba3a4cf68436",
+      "identity_sha256": "b23c3f3ed51ff6720565c9882de4f22db6e1b23f21a383ed40817d0966aa8ca2",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": true,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "f0a779925f5452d31647cd812a081f4bd06e3460e6242c1a675b9830310fb56f",
+      "tenant_sha256": "a6434069dc0ff1d229d911ff2e1fdcab2a2e44c10b999cab61e77568924dbd85",
+      "workspace_sha256": "391e11e103e2c05d91bdf3a21c253cd39783b51bcfbd111f3738e5689ee05ea2",
+      "identity_sha256": "1603e5f1ca728246682173e21f7172922b667157cd263522606c68f4695fff8a",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": true,
+      "status": "ready",
+      "outbox_busy": 0
+    },
+    {
+      "project_sha256": "f3fd6716478430b2e5948d3186eb6b2f2b02805c361cf14e5b3bcdd09087104e",
+      "tenant_sha256": "a91e7d46745479c8bbd7058b6dc27ffde72549d6e62d88097a7b6f5f519b5994",
+      "workspace_sha256": "15cde41a572ab487a21db3bc3ebb474535501603af630dabb2bfd9b625511a04",
+      "identity_sha256": "8e59be9dfa16afe00d4a8705ac5725846b62e9bb6e9c38a086bd36df1f882068",
+      "generation": 1,
+      "workspace_generation": 1,
+      "archived": false,
+      "status": "ready",
+      "outbox_busy": 0
+    }
+  ],
+  "queryEvidence": [
+    {
+      "rowsWritten": 0,
+      "changes": 0,
+      "changedDb": false,
+      "totalAttempts": 1
+    },
+    {
+      "rowsWritten": 0,
+      "changes": 0,
+      "changedDb": false,
+      "totalAttempts": 1
+    },
+    {
+      "rowsWritten": 0,
+      "changes": 0,
+      "changedDb": false,
+      "totalAttempts": 1
+    }
+  ],
+  "actions": {
+    "databaseDeletes": 0,
+    "objectDeletes": 0,
+    "resourceStops": 0,
+    "configurationWrites": 0,
+    "providerModelInvocationsForProduct": 0
+  },
+  "externalDiscussion": {
+    "opencode": {
+      "requestedModel": "opencode/claude-haiku-5-5",
+      "result": "HTTP 402 Insufficient account funds",
+      "modelOpinionReceived": false
+    },
+    "claudeCode": {
+      "result": "Cancelled by user; existing Codex agents requested",
+      "modelOpinionReceived": false
+    },
+    "codexReviewers": [
+      "runtime",
+      "views",
+      "gates-tests"
+    ]
+  },
+  "unverified": [
+    "R2 and DO content/key counts",
+    "shared publication and model-content reference closure",
+    "original execution/container release",
+    "remote Session copies and backup retention",
+    "authenticated acceptance",
+    "Delivery Project fields: token lacks read:project scope"
+  ],
+  "associatedSubmissionSha256": [
+    "ea9d69b9c206f7c18645a0fa9a7963095cde9ae668d427f7fab1ec5ca83365bf"
+  ],
+  "associatedModelVersionSha256": [
+    "ea9d69b9c206f7c18645a0fa9a7963095cde9ae668d427f7fab1ec5ca83365bf"
+  ],
+  "reviewResolution": [
+    "Separate failed/interrupted source save from action success and resource release",
+    "Static browser pages do not acquire cloud execution leases",
+    "Service source mount must be immutable and separate from writer UID/container",
+    "Broker binds frame/view/package/generation and typed methods; no arbitrary app API fetch",
+    "Provider retry/fallback remain disabled including known failures",
+    "Purge tombstone covers original create idempotency digests and model/source roots",
+    "Stop new target model references, recheck/CAS shared references, never recursively delete later projects"
+  ]
+}
