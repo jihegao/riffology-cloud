@@ -18,7 +18,7 @@ The deployed module has SHA-256
 and 5,741,849 bytes; live readback matches it.
 
 Gateway version `9f472694-4aa5-4f0f-8fda-ceddd02e1e88`, version number 219,
-is served by deployment `0dbc1645-cba0-4db0-bb87-ace9ce0e119a` at 100%.
+was served during this acceptance by deployment `0dbc1645-cba0-4db0-bb87-ace9ce0e119a` at 100%.
 Readback preserves 99 bindings, 23 SQLite Durable Object exports, five container
 associations, the compatibility date and the existing asset configuration. No
 namespace, container image, UI source or asset source was added. Asset bytes were
@@ -79,3 +79,5 @@ ordinary non-operator identity has not completed this acceptance.
 contains hashed user/project/workspace/Run identities and excludes credentials,
 headers, settings values, plain-text environment variables, module bodies,
 source archives and raw logs.
+
+A subsequent separate main integration replaced this acceptance deployment at 08:53:29 UTC, after the copied Run and count proof had passed. Read-only follow-up observed Gateway `d9ceec61-1e5f-48cc-8a51-3abdb4b06614`, deployment `54f253dd-c7b3-4407-867d-b9856642c1ff` at 100%, reported source `eba528f7`, and module SHA `141ee79098a0ed3f799f2fb2c9f5dde3ba65a2d73317227f9e15b1037077d41a` (5,795,550 bytes). Its module retains the reviewed-copy helper, readiness RPC and second-Run fence; the original copied Run remains completed/released, with zero provider Turns/Sessions, one native Run and zero occupied/unknown quota. No native Run was repeated on this later version. The deployment identities above describe the actual Fire acceptance interval; broader main-integration acceptance is separate.

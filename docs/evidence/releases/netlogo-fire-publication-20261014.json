@@ -284,5 +284,26 @@
     "GitHub CI did not run because the user identified exhausted quota and waived that hosted check; CI is not reported passed.",
     "#136 broader invited Runs acceptance remains unfinished.",
     "#35 official Queue scope is unchanged."
-  ]
+  ],
+  "laterDeploymentObservation": {
+    "observedAt": "2026-10-14T08:58:07.247Z",
+    "deployedAt": "2026-10-14T08:53:29.820092Z",
+    "gatewayVersion": "d9ceec61-1e5f-48cc-8a51-3abdb4b06614",
+    "deployment": "54f253dd-c7b3-4407-867d-b9856642c1ff",
+    "percentage": 100,
+    "moduleSha256": "141ee79098a0ed3f799f2fb2c9f5dde3ba65a2d73317227f9e15b1037077d41a",
+    "moduleBytes": 5795550,
+    "reviewedCopyHelperPresent": true,
+    "secondRunFencePresent": true,
+    "readinessRpcPresent": true,
+    "originalCopiedRunStillCompletedAndReleased": true,
+    "scopedProviderTurnsAndSessions": 0,
+    "scopedNativeRuns": 1,
+    "tenantOccupiedAndUnknown": 0,
+    "postReleaseCanRun": false,
+    "newNativeExecutionPerformed": false,
+    "classification": "later separate main integration; read-only continuity observation only",
+    "reportedSource": "eba528f7",
+    "reportedSourceBasis": "deployment annotation; Fire task did not reproduce byte correspondence for this later source"
+  }
 }

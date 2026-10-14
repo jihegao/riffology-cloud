@@ -1,10 +1,14 @@
 # Current release readiness — 2026-10-14
 
+## Later main integration observed after Fire acceptance (read-only continuity)
+
+A separate main integration replaced the Fire acceptance deployment at 2026-10-14 08:53:29 UTC: Gateway `d9ceec61-1e5f-48cc-8a51-3abdb4b06614`, deployment `54f253dd-c7b3-4407-867d-b9856642c1ff` at 100%, reported source `eba528f7`. Read-only module observation found SHA `141ee79098a0ed3f799f2fb2c9f5dde3ba65a2d73317227f9e15b1037077d41a` / 5,795,550 bytes, retaining reviewed-copy admission, readiness and the second-Run fence. Original copied-Run terminal/release and scoped 0-provider/1-native counters are retained, with no occupied/unknown quota. No native execution was repeated on this later version. The #202/Fire entries below are acceptance-time snapshots; broader main-integration and design/v3 acceptance remains separately owned.
+
 ## 2026-10-14 Reviewed-copy first native Run deployed and accepted
 
 [#202](https://github.com/jihegao/riffology-cloud/issues/202) / [PR #203](https://github.com/jihegao/riffology-cloud/pull/203) removes the unrelated provider Turn prerequisite for the explicitly authorized reviewer’s own new published copy. The narrow Managed schema2 path persists one Run id, rechecks the current reviewer/owner/source/authVersion/policy, rejects a second distinct Run and preserves unknown/cleanup isolation. It does not change Private Beta invitations or routing.
 
-Gateway `9f472694-4aa5-4f0f-8fda-ceddd02e1e88`, deployment `0dbc1645-cba0-4db0-bb87-ace9ce0e119a` at 100%, serves frozen live composite `e422b297e75b8ee1f32caaa43e0d451a5f7a95d9`. Module SHA `517ce37d817efa0f3e17d1add49fadb5e30c91b68d0465dd2ddb40737ffb1818` matches live readback; settings, 99 bindings, 23 SQLite exports, five container associations and asset configuration are preserved. Main’s separate design/v3 slice remains undeployed.
+Gateway `9f472694-4aa5-4f0f-8fda-ceddd02e1e88`, deployment `0dbc1645-cba0-4db0-bb87-ace9ce0e119a` at 100% during this acceptance, served frozen live composite `e422b297e75b8ee1f32caaa43e0d451a5f7a95d9`. Module SHA `517ce37d817efa0f3e17d1add49fadb5e30c91b68d0465dd2ddb40737ffb1818` matches live readback; settings, 99 bindings, 23 SQLite exports, five container associations and asset configuration are preserved. This repair deployment carried no main design/v3 slice. A separate main integration subsequently replaced it; see the observation below.
 
 One ordinary UI Run of the published Fire copy completed and released, with the expected five metrics. Scoped counters show zero added provider Turns/Sessions, one native Run and no occupied/unknown tenant lease. This is the designated Managed operator/reviewer scope; a third ordinary non-operator copy is untested. Native cloud fees remain unknown. The one distinct native-only Run allowance is now consumed; this acceptance does not authorize a second Run.
 
