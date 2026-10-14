@@ -1,0 +1,10 @@
+{
+  "observedAt": "2026-10-10T09:43:42.653Z",
+  "cloudflareRequest": "function",
+  "standardFetch": "function",
+  "webCryptoDigest": "function",
+  "textEncoder": "function",
+  "responseType": "function",
+  "productionRequests": 0,
+  "productionWrites": 0
+}

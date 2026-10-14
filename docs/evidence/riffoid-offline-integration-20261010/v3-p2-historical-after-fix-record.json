@@ -1,0 +1,20 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "tests/m1/riffoid-validation-coordinator.test.mjs",
+    "tests/m1/riffoid-validation-evidence.test.mjs",
+    "tests/m1/riffoid-validation-offline-publisher.test.mjs",
+    "tests/m1/riffoid-validation-cleanup-ui.test.mjs",
+    "tests/m1/riffoid-validation.test.ts"
+  ],
+  "exitCode": 0,
+  "completedUTC": "2026-10-09T23:09:24.844607+00:00",
+  "logSHA256": "62365785bbcb3205fd9cc9f4bb69c3cb8be404aeddb2446e0fcc352ede6cd4a9",
+  "networkExecution": "none; static fixtures only",
+  "sourceHashes": {
+    "scripts/m1/riffoid-validation-offline-publisher.mjs": "e390fdeb350e4985c0b1220fead8d30d78baeff84c5183fe22892541cc3f5f73",
+    "tests/m1/riffoid-validation-offline-publisher.test.mjs": "ef9be389ce07576e33dafa6f5900da9fd8e96f6b5e422de318eca9a7a505796b",
+    "docs/riffoid-validation-offline-adapter-20261009.md": "239426711ea5d53320bcf7e5c94f1c31994d16d6404a611817b6e7f3a1719cb1"
+  }
+}

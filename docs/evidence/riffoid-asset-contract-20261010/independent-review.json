@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-10T09:26:07.943Z",
+  "reviewer": "publisher_independent_review",
+  "status": "ACCEPTED_OFFLINE_SCOPE_ONLY",
+  "remainingP1": [],
+  "remainingP2": [],
+  "sourceHashes": {
+    "scripts/m1/riffoid-validation-resources.mjs": "e4b2f8b683e6236c9c333ca1d377e5079073953637ea6ca8a9df5078dbd754c1",
+    "scripts/m1/riffoid-validation-publisher.mjs": "a15257537fc6af025e4c749e591ff08beecaada3e187faf7b404f1047eef6e66",
+    "scripts/m1/riffoid-validation-coordinator.mjs": "f9e8cfbdde8dbf7ba8d5c3fe3187400e04b935ce5064c00c7ea8fb4e49f20a4d",
+    "tests/m1/riffoid-validation-resources.test.mjs": "730fa3fff22a01a2b4c5537139daff76f91cfc86359fc097c85bd926d4471991",
+    "tests/m1/riffoid-validation-live-adapter.test.mjs": "af1f84a7a88b9a14d20368cf59fa1ca3f957bc6344ef6433bdf5a252380cab9d",
+    "tests/m1/riffoid-validation-coordinator.test.mjs": "e8c7ce7bdfe43d092fa9c19f09d29448e128e77bdbda112603858f5926f832f1",
+    "tests/m1/fixtures/riffoid-offline-fixtures.mjs": "57833cd671fa74a3910d7cf324577c28ac6a61981e11c168cfde4abbdc992beb"
+  },
+  "additionalReviewedSourceHashes": {
+    "scripts/m1/riffoid-validation-transport.mjs": "85ffef7b9102aabc8170d204eede47c6bad4988e4ffac242539d20dca17ab0b8",
+    "services/entry/validation-cleanup-ui.ts": "37e553fe3fec8696d112d42057d5071c7a382e6c94d90511d5929009c4b3912e",
+    "services/entry/validation-entry.ts": "112198cd6e2e6ba6971b2ee7fd539400ddc4688e0a12c268ffff8c60296a6d10"
+  },
+  "checks": {
+    "fixtures": {
+      "exitCode": 0,
+      "tests": 105,
+      "pass": 105,
+      "log": "independent-fixtures.txt"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "command": "existing TypeScript compiler --noEmit",
+      "log": "independent-typecheck.txt"
+    },
+    "diffCheck": {
+      "exitCode": 0,
+      "log": "independent-diff-check.txt"
+    },
+    "frozenHashesMatchedBeforeAndAfter": true,
+    "independentCounterexamples": {
+      "status": "PASS",
+      "artifact": "independent-counterexamples.json",
+      "crossScopeAndFakeFlagsRejected": 6,
+      "observedToUnexposedDowngradeRejected": true,
+      "unexposedToObservedChangeRejected": true,
+      "explicitNullRejected": true,
+      "unsupportedSensitiveFieldRejectedBeforeValueRead": true,
+      "forbiddenValueReads": 0,
+      "productionRequestsExecuted": 0
+    }
+  },
+  "acceptedScope": [
+    "existing asset-set retention using keep_assets-contract-v1",
+    "frozen account/Worker/presence/bindings/configEvidence snapshot and identity ledger",
+    "three configuration-evidence states with no false byte/config audit claims",
+    "publisher/coordinator/replay/recovery/reconcile retention validation",
+    "existing lock/time/resource/pipeline/unknown/no-retry guards retained",
+    "explicit assets and reserved metadata/assets/_headers/_redirects multipart rejection"
+  ],
+  "notAccepted": [
+    "complete asset-set identity or every asset byte audit",
+    "routing configuration readback when NOT_EXPOSED_BY_VERSION_API",
+    "actual SDK authenticated client/fetch connection or raw cf-entrypoint receipt",
+    "actual container association GET shape absent from reviewed legacy version API schema",
+    "fresh production baseline, publisher quiescence, live packet readiness or production authorization"
+  ],
+  "ci": {
+    "executed": false,
+    "status": "NOT_RUN",
+    "userConfirmedQuotaExhaustedNonblockingForThisReview": true
+  },
+  "productionRequestsExecuted": 0,
+  "productionWritesExecuted": 0,
+  "sourceFilesEditedByReviewer": false,
+  "credentialOrPrivateKeyAccess": false,
+  "officialContractSource": "https://developers.cloudflare.com/workers/static-assets/direct-upload/"
+}

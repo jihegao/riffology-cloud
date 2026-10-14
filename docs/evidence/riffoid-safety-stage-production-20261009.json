@@ -1,0 +1,691 @@
+{
+  "schemaVersion": 1,
+  "dateUTC": "2026-10-09",
+  "scope": "Original-account old-single-origin safety stage; real two-account acceptance pending",
+  "sourcePR": 173,
+  "sourceTree": "cffd1322dc4ed7191db57fe567ff1aa458937d79",
+  "approvalPacket": {
+    "commit": "a0ab4881d585831d0b0d7e220d69632c681a8c46",
+    "unchangedGitBlob": "14468622c168a96238fa27b55eb36d26b50cf247"
+  },
+  "userConfirmedPublisherWindow": [
+    "2026-10-09T02:30:32.000Z",
+    "2026-10-09T02:40:32.000Z"
+  ],
+  "productionPUTAttempts": [
+    {
+      "attempt": 1,
+      "UTC": "2026-10-09T01:50:29.110Z",
+      "outcome": "HTTP400/code10057",
+      "notesRecovered": false,
+      "originalNotesUnavailable": true,
+      "baselineUnchangedVerified": true
+    },
+    {
+      "attempt": 2,
+      "UTC": "2026-10-09T02:21:55.169Z",
+      "outcome": "HTTP400/code10057",
+      "notesCount": 91,
+      "notesTruncated": false,
+      "notes": [
+        {
+          "text": "inherit binding 'APP_ORIGIN' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'BETTER_AUTH_SECRET' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'BROWSER_PREVIEW_EXECUTION_ORIGIN' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'CATALOG' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'G4_BROWSER_BUILD_HOLD_SCOPES_JSON' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'G4_CONTROLLED_WINDOW_JSON' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'G5_ADMISSION_ENABLED' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'G5_CONTROLLED_WINDOW_JSON' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'G5_TOKEN_BUDGET' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'G5_TOKEN_BUDGET_POLICY_JSON' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'G5_WINDOW_GUARD' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'GOOGLE_CLIENT_ID' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'GOOGLE_CLIENT_SECRET' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'INVITED_PROJECT_ADMISSION_ENABLED' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'INVITED_RUNS_POLICY_JSON' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'INVITED_RUN_CAPACITY' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_LAZY_PROJECT_ENABLED' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_MODEL_BUDGET_POLICY_VERSION' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_MODEL_CAPABILITY_TTL_MS' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_MODEL_ID' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_MODEL_MAX_INPUT_TOKENS_PER_CALL' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_MODEL_MAX_OUTPUT_TOKENS_PER_CALL' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_MODEL_PROVIDER' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_MODEL_PROVIDER_ENABLED' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_MODEL_PROXY_REQUEST_KEY' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_MODEL_TURN_CAPABILITY_KEY' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_OPENCODE_GO_API_KEY' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_PROJECT_EFFECT_CAPABILITY_KEY' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_TOOL_BRIDGE_REQUEST_KEY' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_TURNS_ENABLED' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_TURN_ADMISSION_TELEMETRY' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_TURN_OPERATION_TELEMETRY' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_WORKER_SOURCE_SHA' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_WORKSPACE_RUNTIME_REUSE_ENABLED' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M2_WORKSPACE_RUNTIME_VERSION' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M3_OBSERVER_ENABLED' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M3_PREVIEW_ENABLED' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M3_PREVIEW_ORIGIN' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M3_PREVIEW_WS_ENABLED' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M3_SERVICE_ENABLED' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M3_SERVICE_IMAGE' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M4_SIMULATION_ENABLED' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'M4_SIMULATION_IMAGE' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'MANAGED_ACCEPTANCE_JSON' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'MANAGED_OPENAI_API_KEY' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'MANAGED_PROJECT_BOOTSTRAP_JSON' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'MANAGED_TESTING_JSON' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'MANAGED_TESTING_PATCH_SHA256' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'MANAGED_TURN_RUNTIME' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'MODEL_BUDGET_MAX_DISPATCHED_CALLS_PER_TURN' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'MODEL_BUDGET_POLICY_VERSION' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'MODEL_CONTENT' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'MODEL_PROXY' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'PHASE1_RELEASE_PROFILE' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'PI_DEVELOPER_BUDGET' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'PI_DEVELOPER_POLICY_JSON' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'PRIVATE_BETA_CAPACITY' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'PRIVATE_BETA_POLICY_JSON' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'PRODUCTION_ACCEPTED_EVIDENCE_SHA256' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'PRODUCTION_AI_GATEWAY_TOKEN' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'PRODUCTION_MODEL_BUDGET' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'PRODUCTION_MODEL_ENABLED' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'PRODUCTION_MODEL_PROFILE_JSON' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'PRODUCTION_MONEY_POLICY_JSON' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'PRODUCTION_OPENAI_API_KEY' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'PRODUCT_TURN_RUNTIME' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'PROJECT_RUNTIME' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'PROJECT_SANDBOX' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'REVISION_STORE' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'SERVICE_RUN' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'SERVICE_RUNTIME' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'SERVICE_SANDBOX' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'SIMULATION_SANDBOX' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'TENANT_MODEL_BUDGET' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'TENANT_QUOTA' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'TENANT_QUOTA_CAPACITY' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'TENANT_QUOTA_POLICY_VERSION' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'TENANT_QUOTA_UPGRADE_FROM' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'TOOL_ARTIFACT_STORE' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'TOOL_BRIDGE' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'TOOL_BRIDGE_AGENT' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'TRUSTED_PI_CAPACITY' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'TRUSTED_PI_CAPACITY_LIMIT' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'TRUSTED_PI_CAPACITY_POLICY_VERSION' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'TRUSTED_PI_SANDBOX' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'WORKSPACE_AGENT' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        },
+        {
+          "text": "inherit binding 'WORKSPACE_CHECKPOINTS' is invalid: 'version_id' value 'aeddf112-a2be-45da-868c-ed576c55d5ec' is invalid, only the literal 'latest' is supported by this API [code: 10057]"
+        }
+      ],
+      "failureSha256": "ac43f6c79c20085fd3167a22e25dc93c9e5151b0200a3779994dc2e75fa6a8ae",
+      "confirmedCause": "This classic PUT supports only literal latest for inherit.version_id; generic UUID schema is not method-specific success evidence",
+      "baselineUnchangedVerified": true
+    },
+    {
+      "attempt": 3,
+      "UTC": "2026-10-09T02:33:05.190Z",
+      "outcome": "Success inside user-confirmed quiet window",
+      "onlyDifferenceFromAttempt2": "91 inherit.version_id UUID values replaced by latest; all other normalized metadata and code exact",
+      "automaticWriteRetry": false
+    }
+  ],
+  "actualStage": {
+    "recordedUTC": "2026-10-09T02:41:43.527Z",
+    "status": "SAFETY_STAGE_CONFIG_AND_CODE_READBACK_PASSED",
+    "account": "8b0d70250211aa10d89e20605a1c7e5e",
+    "worker": "riffology-m1-gateway-staging",
+    "version": "6edef49b-ca5c-4c97-bcec-5c141b079bb1",
+    "deployment": "57ea9670-0fef-420b-8bd2-cd044c89fd2d",
+    "bindingCount": 95,
+    "modernSQLiteExports": 23,
+    "replayNamespaceId": "3cfeafa707c5491fba4ead3f0954bc8e",
+    "replayAutomaticRetries": 0,
+    "original93BindingsIdentical": true,
+    "original22NamespacesIdentical": true,
+    "assetsConfigIdentical": true,
+    "containersIdentical": true,
+    "executionUntouched": true,
+    "domainsUnchanged": true,
+    "transportBound": false,
+    "topologyVarsAbsent": true,
+    "APP_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
+    "privateKeyHandled": false,
+    "paidModelToolTurnRunInvoked": false,
+    "forwardRollbackFrozen": true,
+    "gatewayCodeSha256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290",
+    "realTwoAccountAcceptance": false,
+    "phaseProductionPUTAttempts": 1,
+    "totalTaskProductionPUTAttempts": 3,
+    "originalRejectedPUTAttempts": 2,
+    "confirmedPublisherWindow": [
+      "2026-10-09T02:30:32.000Z",
+      "2026-10-09T02:40:32.000Z"
+    ],
+    "uploadReceiptUTC": "2026-10-09T02:33:05.190Z",
+    "authPathRecoveredWithoutLogin": true,
+    "authRevocationNotEstablished": true,
+    "noFurtherPUTAfterReceipt": true,
+    "newEntryAnonymousCheck": "TLS network failure, not application acceptance"
+  },
+  "resourceIdentity": {
+    "originalNamespaces": [
+      {
+        "id": "64bf54d3461746cebcf6ede7cf8a2e31",
+        "class": "WorkspaceAgent",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "fa42f2fd7ae24a0690d9efe649fadaf6",
+        "class": "ProjectRuntime",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "7b126a0dad674acb80d9bce41b8d7097",
+        "class": "TenantQuota",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "f357862e96764091837dd7df1d811cd6",
+        "class": "ServiceRuntime",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "20df82d10b544438aab8fcbbcb86a063",
+        "class": "ServiceRun",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "918293516c824d868fc719f325b0b269",
+        "class": "ServiceSandbox",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "fe7963e2f5ce4e0eb803d925708e743b",
+        "class": "ToolBridgeAgent",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "485f243625a94d4b83256b85b1c8cdaf",
+        "class": "ToolArtifactStore",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "06557a80c4a64faf8a892337e6dfcbd3",
+        "class": "TenantModelBudget",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "9ef65fe251c64afdb425dfe50db1926d",
+        "class": "ProductTurnRuntime",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "ac0e9a31323e463b9a05696dad1b30d5",
+        "class": "TrustedPiSandbox",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "bd4b82ecc2d742098ed6c470229b5dc0",
+        "class": "ProjectToolSandbox",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "3d352133b52d48d1be27557a2cb5240c",
+        "class": "RevisionStore",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "cc60581b919a47e1a8683dc447e9e7ca",
+        "class": "TrustedPiCapacity",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "61afc653d0054bce8d731f3020075c70",
+        "class": "SimulationSandbox",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "ffe112b19d644ee98e1f12b5a0da78a6",
+        "class": "G5ControlledWindow",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "f651eb616fce447eab1c9dac17ed24c2",
+        "class": "ProductionModelBudget",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "b0459d59d5d24e85aede77be0c6c0125",
+        "class": "G5TenantModelBudget",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "2a68e72561bd4e82834f486331d84427",
+        "class": "ManagedProductRuntime",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "5648367a33bb40cc832c21c423be46e0",
+        "class": "PiDeveloperBudget",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "0137654f83614ad1bbaa4b8fc3b57f0e",
+        "class": "PrivateBetaCapacity",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      },
+      {
+        "id": "fe74096f53f2408c906b21b013d2050a",
+        "class": "InvitedRunCapacity",
+        "script": "riffology-m1-gateway-staging",
+        "use_sqlite": true
+      }
+    ],
+    "postNamespaceCount": 23,
+    "exactAddedReplayNamespace": "3cfeafa707c5491fba4ead3f0954bc8e",
+    "namespaceSnapshotsSHA256": {
+      "pre": "fc49398869ea1044e1d9a65b045f4a22cf02bdb99613856e5262b748f68621eb",
+      "post": "612067293e13fa260834ce9c488acab610231f639f5cb9981ea2b09e65a68266"
+    },
+    "domains": [
+      {
+        "id": "bbaf6f610bf9d72ea58237b21ca279fd0c921539",
+        "zone_id": "c97b548800561fada1a912c234696db1",
+        "zone_name": "gaojihe.cn",
+        "hostname": "m1.riff-demo.gaojihe.cn",
+        "service": "riffology-m1-gateway-staging",
+        "environment": "production",
+        "cert_id": "b3106443-b1ce-477c-a9a2-b0c4e8185e59",
+        "previews_enabled": false,
+        "enabled": true
+      },
+      {
+        "id": "9c4d2f673dc0d66249bd3663cfe157eaf288aa4c",
+        "zone_id": "c97b548800561fada1a912c234696db1",
+        "zone_name": "gaojihe.cn",
+        "hostname": "preview.m1.riff-demo.gaojihe.cn",
+        "service": "riffology-m1-gateway-staging",
+        "environment": "production",
+        "cert_id": "4f65b0a7-f414-4559-8f48-24a70e568c3d",
+        "previews_enabled": false,
+        "enabled": true
+      }
+    ],
+    "executionVersion": "c94df077-02a1-460f-8158-e47a338e68af",
+    "executionDeployment": "a6fdeb9f-d885-4c72-9e02-968315351edb",
+    "executionCodeSha256": "b76b05f96d345a0ecf280cdb4414c1dd0c56bf71041dc3c72199db8e8c6c07c1"
+  },
+  "forwardRollback": {
+    "status": "FROZEN_EXACT_POST_STAGE_FORWARD_ROLLBACK",
+    "actualStageVersion": "6edef49b-ca5c-4c97-bcec-5c141b079bb1",
+    "actualStageDeployment": "57ea9670-0fef-420b-8bd2-cd044c89fd2d",
+    "replayNamespaceId": "3cfeafa707c5491fba4ead3f0954bc8e",
+    "metadataInheritedBindings": 91,
+    "literal": "latest",
+    "explicitSyntheticBindings": 2,
+    "explicitPublicRing": true,
+    "explicitReplayNamespaceAndRetryZero": true,
+    "modules": [
+      {
+        "name": "index.js",
+        "bytes": 129,
+        "sha256": "c65a69bdfb2c0d18bd5fb2022b04aa0f8f36028132692ec41eac809a7fe6efc8",
+        "type": "application/javascript+module"
+      },
+      {
+        "name": "original-live.mjs",
+        "bytes": 2956059,
+        "sha256": "6c058d14c7ba114152ba62682768e61c835307e16e2fa75795c2b71fce5fb98b",
+        "type": "application/javascript+module"
+      },
+      {
+        "name": "replay.mjs",
+        "bytes": 3046,
+        "sha256": "0db416dedcb4dbfe77783903d7b9342dda88bc53fb8938a228a82d9df97a0ff6",
+        "type": "application/javascript+module"
+      }
+    ],
+    "manifestSha256": "166edc28179125b796a6afbc0d4ca7a06c7cf4309dcab78db2b93688b7fa8c1f",
+    "readGuardNotServerAtomicCAS": true,
+    "requiresSeparateRollbackAuthorizationAndPublisherWindow": true,
+    "noDeleteRecreateRenameTransfer": true
+  },
+  "authContextRecovery": {
+    "UTC": "2026-10-09T02:41:44.036Z",
+    "XDGExplicitAndNotLost": true,
+    "XDG_CONFIG_HOME": "/Users/jihegao/Documents/Codex/2026-10-07/task-3/.riffoid-original-account-auth-20261008",
+    "officialWranglerVersion": "4.129.0",
+    "unscopedEffectiveConfigPath": "/Users/jihegao/.wrangler",
+    "legacyDirectoryCreatedUTC": "2026-10-09T02:35:08.626Z",
+    "legacyDirectoryHasAuthConfig": false,
+    "originalIsolatedConfigPath": "/Users/jihegao/Documents/Codex/2026-10-07/task-3/.riffoid-original-account-auth-20261008/.wrangler",
+    "originalAuthFileMetadata": {
+      "exists": true,
+      "mode": "600",
+      "uid": 501,
+      "gid": 20,
+      "bytes": 338,
+      "modifiedUTC": "2026-10-09T01:34:54.104Z"
+    },
+    "credentialContentsRead": false,
+    "defaultWhoami": "Not authenticated because legacy-home path has no config; does not establish original authorization revocation",
+    "isolatedPathWhoami": {
+      "loggedIn": true,
+      "authType": "OAuth Token",
+      "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+      "tokenPermissions": [
+        "offline_access",
+        "account:read",
+        "workers_scripts:write"
+      ],
+      "officialWhoamiPassedUTC": "2026-10-09T02:43:12.519Z"
+    },
+    "processScopedFix": "Installed official getGlobalConfigPath useLegacyHomeDir default false only in compiled GET-only process; assert resolved original XDG/.wrangler; installed source unchanged",
+    "HOMEChanged": false,
+    "legacyDirectoryChanged": false,
+    "credentialMovedOrCopied": false,
+    "newGrantOrScopeChange": false,
+    "loginAttempted": false,
+    "remainingGETDeadline": "2026-10-09T02:55:00.000Z",
+    "productionWrites": 0,
+    "existingAuthorizationProvenBySuccessfulFullGETReadbackUTC": "2026-10-09T02:41:43.527Z",
+    "userReloginRequired": false,
+    "fullReconciliationSucceeded": true
+  },
+  "anonymousSafetyStageReads": {
+    "UTC": "2026-10-09T02:34:22.606Z",
+    "method": "GET",
+    "requests": 3,
+    "authenticationOrPaidBusinessInvoked": false,
+    "productionWrites": 0,
+    "checks": [
+      {
+        "url": "https://m1.riff-demo.gaojihe.cn/",
+        "status": 200,
+        "contentType": "text/html",
+        "CSP": "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; frame-src https://*.preview.m1.riff-demo.gaojihe.cn https://riffology-browser-execution.jihe-gao.workers.dev; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
+        "setCookieCount": 0,
+        "bodyBytes": 14425,
+        "bodySha256": "96f3a7f7eeac0cd0d482b15a19b67f0f4a0e4c67ba7bdbae39bfbce59aa71fd7",
+        "redirectFollowed": false,
+        "cookiesSent": false,
+        "originOrHostRewritten": false
+      },
+      {
+        "url": "https://m1.riff-demo.gaojihe.cn/api/auth/get-session",
+        "status": 200,
+        "contentType": "application/json",
+        "CSP": null,
+        "setCookieCount": 0,
+        "bodyBytes": 4,
+        "bodySha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        "redirectFollowed": false,
+        "cookiesSent": false,
+        "originOrHostRewritten": false,
+        "anonymousSessionNull": true
+      },
+      {
+        "url": "https://app.riffoid.com/",
+        "error": "Command failed: curl --silent --show-error --max-time 30 --request GET --include https://app.riffoid.com/\ncurl: (35) LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to app.riffoid.com:443 \n",
+        "status": null,
+        "noRetry": true
+      }
+    ]
+  },
+  "offlineLatestPreparation": {
+    "UTC": "2026-10-09T02:31:25.924Z",
+    "checks": {
+      "latestCandidateOnly91InheritanceLiteralChanges": true,
+      "candidateCodeUnchanged": true,
+      "forwardRollbackOriginalLiveBytesAndHashesExact": true,
+      "original22NamespaceIdentitiesRetained": true,
+      "forwardRollback23ModernExports95Bindings": true,
+      "explicitSyntheticBindingsPublicRingReplayRetryZero": true,
+      "replayActualNamespaceIdUnresolvedAndTemplateBlocked": true,
+      "legacyMigrationsAbsentAndAssetsKept": true,
+      "topologyAndRecoveryVarsAbsent": true,
+      "noNetworkOrProductionWrites": true,
+      "noPrivateKeyHandling": true
+    },
+    "checksPassed": 11,
+    "manifestSha256": "8980c09430abe138ba43e4e6aa2259c35157b266e187c7af7069073089bb5eab",
+    "productionWrites": 0
+  },
+  "conditionalWrite": {
+    "serverFullConfigurationCASProven": false,
+    "officialCurrentAPI": "https://developers.cloudflare.com/api/resources/workers/subresources/scripts/methods/update/",
+    "officialHistoricalIssue": "https://github.com/cloudflare/wrangler-legacy/issues/330",
+    "inference": "Documented ETag is script content hash, not proven atomic pin for bindings/Secrets/assets/config; no speculative header or endpoint substitution"
+  },
+  "historyPreserved": {
+    "firstFailureAndSanitizedLog": true,
+    "secondFull91Notes": true,
+    "preUploadConnectionFailures": true,
+    "postUploadPartialReadbackFailures": true,
+    "wrongLegacyAuthenticationPathFailures": true,
+    "partialHandoffAndPendingRollbackArtifacts": true
+  },
+  "boundaries": {
+    "realTwoAccountAcceptance": false,
+    "canonicalStillOld": true,
+    "transportBindingHandledSeparately": true,
+    "entryStillDisabled": true,
+    "nativeIPBoundaryChanged": false,
+    "privateKeyHandled": false,
+    "newOAuthGrantOrScopeExpansion": false,
+    "paidModelToolTurnRun": false,
+    "identityOrHistoricalDataChanged": false,
+    "sessionHours": 8,
+    "trialExpiresUTC": "2026-12-31T15:59:59.999Z",
+    "M1ReviewDate": "2026-10-20 Asia/Shanghai",
+    "cutoverUTC": null,
+    "recoveryUntilUTC": null
+  },
+  "minimumAcceptancePlan": "../riffoid-production-minimum-acceptance-plan-20261009.md"
+}

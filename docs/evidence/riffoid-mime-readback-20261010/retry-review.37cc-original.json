@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-10T09:53:24.201Z",
+  "reviewer": "publisher_independent_review",
+  "status": "PUBLIC_SOURCE_RETRY_POLICY_REVIEWED",
+  "publicSource": {
+    "repository": "cloudflare/mcp",
+    "commit": "37cc36c01e19e674519442d0fee03ebc8827e9ae",
+    "versionIdentifier": "immutable commit (no tag asserted)",
+    "deployedVersionConfirmed": false,
+    "serverInfoVersion": "0.1.0 (not commit attestation)",
+    "sources": [
+      {
+        "file": "src/tools/execute.ts",
+        "url": "https://github.com/cloudflare/mcp/blob/37cc36c01e19e674519442d0fee03ebc8827e9ae/src/tools/execute.ts",
+        "lines": "29-46, 73-77, 87-118, 238-241"
+      },
+      {
+        "file": "src/utils/fetch-retry.ts",
+        "url": "https://github.com/cloudflare/mcp/blob/37cc36c01e19e674519442d0fee03ebc8827e9ae/src/utils/fetch-retry.ts",
+        "lines": "3-16, 18-34, 36-110"
+      },
+      {
+        "file": "src/constants.ts",
+        "url": "https://github.com/cloudflare/mcp/blob/37cc36c01e19e674519442d0fee03ebc8827e9ae/src/constants.ts",
+        "lines": "12-14, 21-28"
+      },
+      {
+        "file": "src/tools/non-codemode.ts",
+        "url": "https://github.com/cloudflare/mcp/blob/37cc36c01e19e674519442d0fee03ebc8827e9ae/src/tools/non-codemode.ts",
+        "lines": "101-105"
+      }
+    ]
+  },
+  "methodPolicy": {
+    "globalOutboundFiltersMethods": false,
+    "documentedHelperMethods": [
+      "GET",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE"
+    ],
+    "putCanEnterRetryLoop": true,
+    "nonCodemodeAlsoUsesRetryHelper": true,
+    "callerExposedRetryConfiguration": false,
+    "serverSideRetryOptionsConfigurable": true,
+    "executeCallOverridesOnlyCallerLabel": true
+  },
+  "triggers": {
+    "httpStatusesRetried": [
+      429
+    ],
+    "fetchThrowsRetried": true,
+    "non429HTTPResponseReturnedImmediately": true,
+    "includes500Retry": false,
+    "abortExceptionNotExplicitlyExcluded": true
+  },
+  "budget": {
+    "maxRetries": 3,
+    "maxFetchAttempts": 4,
+    "baseDelayMS": 1000,
+    "backoffFactor": 2,
+    "jitterMultiplier": "[0.5,1)",
+    "fallbackSleepTotalMS": "[3500,7000)",
+    "positiveNumericRetryAfterSecondsAccepted": true,
+    "httpDateRetryAfterParsed": false,
+    "maxSleepPerRetryMS": 30000,
+    "maxSleepTotalMS": 90000,
+    "perAttemptTimeoutInHelper": false,
+    "totalWallClockBoundInHelper": false,
+    "sleepRespondsToAbort": false,
+    "budgetCaveat": "Sleep bounds exclude fetch latency, redirects, middleware and RPC lifetime; caller timeout is not proof server retry work stopped."
+  },
+  "redirect": {
+    "cloudflareRequestSetsRedirect": false,
+    "rawRequestRedirectInheritedByGlobalOutbound": true,
+    "helperDoesNotOverrideRedirect": true,
+    "integrationMustPreserveManualAndReject3xxAndLocation": true
+  },
+  "conclusion": {
+    "adjustExistingRetryContract": true,
+    "readonlyGET": "Permit existing bounded proxy retry for allowlisted semantic read-only control-plane GETs with explicit request/overall budgets, fresh current deployment/latest/settings/configuration brackets, expiry checks, no use of late evidence, and original-scope identity. Do not add outer retry loops. Public source is a risk model, not deployed runtime attestation.",
+    "writesAndBudgetConsumingActions": "Hard block through this default retry proxy. Require independently established single-dispatch/no automatic replay at every layer before any PUT or paid experiment action. Idempotent method naming, rawBody, journal intent, app loop count and successful status do not establish no proxy replay.",
+    "currentProductionReady": false
+  },
+  "caveats": [
+    "No Request body clone per attempt: code-mode Request body reuse may fail on later attempts in some runtimes; this is not a reliable no-replay policy. Non-code-mode string/body init is independently retryable.",
+    "When a 429 was observed before later network failures, helper may return stale lastResponse 429. Never infer final applied/not-applied state from this.",
+    "Original bytes and authoritative entrypoint requirements remain; retry review does not accept MIME implementation."
+  ],
+  "productionRequests": 0,
+  "productionWrites": 0,
+  "credentialAccess": false,
+  "implementationFilesModified": false,
+  "collectionNote": "Public sources read through web tool. Direct local unauthenticated public raw fetch failed with 'fetch failed'; no sandbox escalation, production fallback or credentials used."
+}

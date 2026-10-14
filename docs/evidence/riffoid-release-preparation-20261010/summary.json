@@ -1,0 +1,113 @@
+{
+  "UTC": "2026-10-10T07:43:13.441178+00:00",
+  "status": "OFFLINE_IMPLEMENTATION_REVIEWED_LIVE_PACKAGE_BLOCKED",
+  "basisHead": "3dc896ade535cd2c51d30ffe7fe829b9b8cd03c8",
+  "remotePR": "https://github.com/jihegao/riffology-cloud/pull/173",
+  "changesPushedThisTask": false,
+  "productionActionsExecuted": 0,
+  "providerCallsExecuted": 0,
+  "originalDirtyCheckoutModified": false,
+  "riskDecisions": "approved exact original transcript; this task grants no production writes",
+  "metadataTemplates": {
+    "phases": 8,
+    "configuration": {
+      "run": null,
+      "notBefore": null,
+      "expires": null,
+      "ips": {
+        "A": null,
+        "B": null
+      }
+    },
+    "gatewayBindings": 95,
+    "gatewayOriginalExports": 23,
+    "gatewayContainers": 5,
+    "secretMaterialIncluded": false,
+    "executable": false
+  },
+  "checks": [
+    {
+      "name": "final offline evidence/coordinator/publisher/cleanup/transport fixtures",
+      "command": "node --test tests/m1/riffoid-validation-evidence.test.mjs tests/m1/riffoid-validation-coordinator.test.mjs tests/m1/riffoid-validation-offline-publisher.test.mjs tests/m1/riffoid-validation-cleanup-ui.test.mjs tests/m1/riffoid-validation-live-adapter.test.mjs",
+      "pass": 61,
+      "fail": 0,
+      "exitCode": 0,
+      "log": "final-fixtures-v3.txt"
+    },
+    {
+      "name": "related Node regression selection",
+      "pass": 45,
+      "fail": 0,
+      "exitCode": 0,
+      "log": "final-node-regression.txt"
+    },
+    {
+      "name": "authorized localhost-only Workerd regression selection",
+      "pass": 15,
+      "fail": 0,
+      "exitCode": 0,
+      "log": "final-workerd.txt"
+    },
+    {
+      "name": "typecheck",
+      "exitCode": 0,
+      "log": "final-typecheck.txt"
+    },
+    {
+      "name": "accidental glob included port-dependent Workerd in sandbox",
+      "pass": 61,
+      "fail": 1,
+      "exitCode": 1,
+      "log": "final-fixtures-v2.txt",
+      "reason": "localhost listen EPERM; native Node assertion during shutdown retained; not production or CI evidence"
+    }
+  ],
+  "gatewayDependencyCheck": {
+    "basisHead": "3dc896ade535cd2c51d30ffe7fe829b9b8cd03c8",
+    "sourceInputCount": 1087,
+    "matched": 1087,
+    "mismatches": [],
+    "dependencyMapping": "existing read-only node_modules; no installs",
+    "moduleSHA256": "ebfd2823f5475de7de0d7367446fd6de99d2274ed19afdc5dc26f3c6ec08dcef",
+    "moduleBytes": 5517655,
+    "productionActionsExecuted": 0
+  },
+  "moduleHashes": {
+    "entry-restore.mjs": {
+      "bytes": 16197,
+      "sha256": "7a71a528d3ee7014621848e16801aeddd12c8f39edd3431720d089f337bb7dc4"
+    },
+    "entry-validation.mjs": {
+      "bytes": 33457,
+      "sha256": "47d7ef49cd794cb5782604d6e9f4c267fc499472fe2ff27bbc79421a6c8ac3c4"
+    },
+    "gateway-restore.mjs": {
+      "bytes": 5497752,
+      "sha256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290"
+    },
+    "gateway-validation.mjs": {
+      "bytes": 5517655,
+      "sha256": "ebfd2823f5475de7de0d7367446fd6de99d2274ed19afdc5dc26f3c6ec08dcef"
+    }
+  },
+  "blockers": [
+    "Gateway asset/five-container association proof and original resource snapshots incomplete; fullStateMatches false",
+    "Caller-authenticated raw HTTP Response channel unavailable: current connector omits cf-entrypoint/headers",
+    "Independent account/zone pipeline evidence adapter not implemented; pipelineGuardPassed false blocks PUT",
+    "Gateway immutable binding projection differs from full settings for G5_CONTROLLED_WINDOW_JSON; truncation versus drift unknown, no live baseline asserted"
+  ],
+  "CI": "run 38015999110 empty-step failure remains UNKNOWN; no rerun or pass claim",
+  "autoReviewRejections": [
+    {
+      "action": "additional full G5 plain_text comparison",
+      "reason": "review considered potential Secret-value read",
+      "executed": false
+    },
+    {
+      "action": "cross-thread progress send",
+      "reason": "delegated assistant text not sufficient direct human messaging authorization",
+      "executed": false
+    }
+  ],
+  "nextSafeAction": "review local prepared artifacts and implement independent resource/pipeline capture through an already authorized raw response channel; no window or user standby requested"
+}

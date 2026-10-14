@@ -1,0 +1,184 @@
+{
+  "observedAt": "2026-10-11T09:00:55Z",
+  "status": "KNOWN_OBSERVE_REJECTION_ORIGINAL_WORKERS_AND_LOGS_RESTORED",
+  "run": "riffoid_66559c613ee4463b9db615c00ca7cb83",
+  "sourceHead": "5e945eee3ac9820908240a6eea5bf9acc2f7f6ae",
+  "oneAttemptPackageSHA256": "e217db21d0481cbf888a7e369a43a6d3ebd8ffdc72aae815aef78675cbee1a99",
+  "recoveryPlanSHA256": "2b3939dfbc2390ab12bfdc693ced5ca4fab5458f9af33c7125203291bfd3c45b",
+  "recoveryApproval": {
+    "source": "human call_305396957dfd478491168fe3a1917f4c",
+    "confirmedAt": "2026-10-11T08:52:30Z",
+    "singlePublisher": true,
+    "lateTelemetryRiskAccepted": true
+  },
+  "maintenancePublications": [
+    {
+      "phase": "gatewayObserve",
+      "version": "4fec4269-6e81-4659-9325-6718967cc0f9",
+      "deployment": "8252fa84-415d-4c86-aae9-d5eca0efb7fe",
+      "nativePutAttempts": 1,
+      "fullReadbackPassed": true
+    },
+    {
+      "phase": "entryObserve",
+      "version": "b35bf3e5-9212-4c18-98c3-90e0dde43c96",
+      "deployment": "2bd235ce-82c9-4527-b6f6-d670cc780d32",
+      "nativePutAttempts": 1,
+      "fullReadbackPassed": true
+    }
+  ],
+  "protocolReceipts": [
+    {
+      "requestId": "riffoid_66559c613ee4463b9db615c00ca7cb83_B_observe",
+      "run": "riffoid_66559c613ee4463b9db615c00ca7cb83",
+      "slot": "B",
+      "operation": "observe",
+      "startedAt": 1791708313934,
+      "receivedAt": 1791708315396,
+      "outcome": "response",
+      "response": {
+        "status": 403,
+        "body": "{\"error\":\"origin_denied\"}"
+      }
+    },
+    {
+      "requestId": "riffoid_66559c613ee4463b9db615c00ca7cb83_A_observe",
+      "run": "riffoid_66559c613ee4463b9db615c00ca7cb83",
+      "slot": "A",
+      "operation": "observe",
+      "startedAt": 1791708318177,
+      "receivedAt": 1791708318485,
+      "outcome": "response",
+      "response": {
+        "status": 403,
+        "body": "{\"error\":\"origin_denied\"}"
+      }
+    }
+  ],
+  "protocol": {
+    "outcome": "known-rejection",
+    "observeRequests": 2,
+    "runRequests": 0,
+    "entryReadyPublications": 0,
+    "cleanupRequests": 0,
+    "newUnknownPublication": false
+  },
+  "restoration": [
+    {
+      "phase": "gatewayRestorePrivacy",
+      "version": "cf10e499-7154-499e-9019-b2a1e78e6927",
+      "deployment": "6815fab2-213a-452c-84b4-b61b1016751d",
+      "readbackAt": 1791708891039,
+      "nativePutAttempts": 1,
+      "fullReadbackPassed": true
+    },
+    {
+      "phase": "entryRestorePrivacy",
+      "version": "f6909ef6-a809-45dc-b98c-570720b9a0c9",
+      "deployment": "276be6e6-26f7-4965-b66d-543a6c012467",
+      "readbackAt": 1791709021062,
+      "nativePutAttempts": 1,
+      "fullReadbackPassed": true
+    },
+    {
+      "phase": "gatewayRestoreLogs",
+      "version": "7467fa4a-dc57-4178-aae0-ee5fa00db6be",
+      "deployment": "7ce29a7d-41f0-4cec-84f1-c69c75fcfa3e",
+      "readbackAt": 1791709159678,
+      "nativePutAttempts": 1,
+      "fullReadbackPassed": true
+    },
+    {
+      "phase": "entryRestoreLogs",
+      "version": "7c04a21d-c95a-4a4c-a6b8-e21282fdc1f0",
+      "deployment": "fda2ecd6-c8a2-4e6a-b321-2b65c23cc123",
+      "readbackAt": 1791709246742,
+      "nativePutAttempts": 1,
+      "fullReadbackPassed": true
+    }
+  ],
+  "current": {
+    "gateway": {
+      "bindings": 95,
+      "originalCodeRestored": true,
+      "originalLogsRestored": true,
+      "metadataSHA256": "5441264ebfd7a5a5af5c93503afef1ba12791bff86410c490545da4ddc426e47",
+      "moduleSHA256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290"
+    },
+    "entry": {
+      "bindings": 5,
+      "authentication": "disabled",
+      "originalCodeRestored": true,
+      "originalLogsRestored": true,
+      "metadataSHA256": "95da23b6ab891f6b5e5dcdb6b707b1eb4fc6f288cc6ab94c2baf2a365ad99d21",
+      "moduleSHA256": "7a71a528d3ee7014621848e16801aeddd12c8f39edd3431720d089f337bb7dc4"
+    },
+    "browserExecution": {
+      "published": false,
+      "reread": false
+    }
+  },
+  "rootCause": {
+    "scope": "validation UI",
+    "sourcePolicy": "no-referrer",
+    "nativeSafariLoopback": {
+      "original": {
+        "originNull": true,
+        "status": 403,
+        "cookiePresent": false,
+        "bodyBytes": 0
+      },
+      "candidate": {
+        "policy": "same-origin",
+        "nativeOriginMatched": true,
+        "status": 200,
+        "cookiePresent": false,
+        "bodyBytes": 0
+      },
+      "externalRequests": 0,
+      "cloudRequests": 0
+    },
+    "chromium": "original and candidate both supplied same-origin Origin; Safari-specific reproduction",
+    "playwrightWebkit": "executable unavailable; native Safari used",
+    "reference": "https://fetch.spec.whatwg.org/#append-a-request-origin-header"
+  },
+  "fix": {
+    "issue": 175,
+    "pr": 173,
+    "change": "referrer-policy: same-origin",
+    "requireOriginUnchanged": true,
+    "status": "SOURCE_PREPARED_NOT_DEPLOYED_NOT_MERGED",
+    "checks": {
+      "targetedTests": {
+        "passed": 19,
+        "failed": 0
+      },
+      "typecheck": "passed",
+      "localWorkerd": {
+        "passed": 2,
+        "failed": 0
+      },
+      "fixtures": "two existing stale fixtures corrected for five-minute cap and explicit entry readiness; product gates unchanged"
+    }
+  },
+  "nextScope": {
+    "source": "latest human instruction",
+    "fullABRequiredForDirectCutover": false,
+    "directCutover": "prepare formal configuration and old-entry rollback",
+    "releaseAcceptance": "尚未验收",
+    "minimumCheck": "one existing login and project access after cutover",
+    "formalT": null,
+    "recoveryUntil": null
+  },
+  "boundaries": {
+    "historicalUnknownRecordsRetained": 4,
+    "replayedRequests": 0,
+    "deletedHistory": false,
+    "globalZeroExecutionClaim": false,
+    "zeroCostClaim": false,
+    "assetBytesAndFullSetAudited": false,
+    "platformTelemetryDrainProven": false,
+    "ordinaryBusinessHealth": "unknown",
+    "phoneNoLongerRequired": true
+  }
+}

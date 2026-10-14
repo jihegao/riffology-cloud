@@ -1,0 +1,19 @@
+{
+  "reviewer": "independent publisher_independent_review agent",
+  "scope": "offline implementation only",
+  "result": "no remaining P1/P2 in offline scope",
+  "newTests": {
+    "passed": 14,
+    "failed": 0
+  },
+  "publisherSHA256": "b220f12344c3dd1c21172e1c60b794671211a1483ea851cac7063fbb63521fcf",
+  "transportSHA256": "0ae07afea25b434b8b3ade75fcfdc2c5dbb18bf6cbe1c720cad1844cf4322e0f",
+  "testSHA256": "43790f6f17a07340b6bb5351c5f03242281a3cf76006f80acb46c14ed266bfdd",
+  "fixed": "durable natural-expiry skip and strict restart replay",
+  "limitations": [
+    "pipeline guard remains false until independent evidence adapter exists",
+    "Gateway assets/container association coverage incomplete",
+    "authorized raw HTTP channel not connected"
+  ],
+  "productionActionsExecuted": 0
+}

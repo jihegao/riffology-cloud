@@ -1,0 +1,167 @@
+{
+  "createdUTC": "2026-10-10T01:04:41.043429+00:00",
+  "scope": "PR173 source integration and publication only; not deployment or production acceptance",
+  "baselinePRHead": "04f00d66c970e491aec0a4a893d5d92ce7eacc79",
+  "branch": "codex/riffoid-two-account-prep-20261007",
+  "frozenV2ArchiveSHA256": "e3d57fc029a2eed103106286a1c4ee094d1b8ca9c5f770c2f5c972ea8e2c8f82",
+  "frozenV3P2ArchiveSHA256": "5abc1981e21162ddd7bdbfdeda2f72343bf12bef96e6840b29d6230e1bed2917",
+  "authorization": {
+    "userMessageUTC": "2026-10-10T00:53:02Z",
+    "userMessageId": "Sentinel_ebbf37f8e0bc81918fd8e186cd1b93b5",
+    "providedByParentDelegation": true,
+    "publicationApproved": true,
+    "deploymentApprovedByUser": true,
+    "thisTaskDeploymentPerformed": false
+  },
+  "riskDecisions": {
+    "restorationStandard": "pending-user-decision",
+    "unknownLogClosure": "pending-user-decision"
+  },
+  "productionAuthorized": false,
+  "CloudflareConfigurationWrites": 0,
+  "productionProtocolRequests": 0,
+  "paidExecutionPerformed": false,
+  "mergePerformed": false,
+  "installationPerformed": false,
+  "dependencyLockMatchesFrozenSource": true,
+  "originalDirtyCheckoutModified": false,
+  "remoteLatestPreflightPreserved": true,
+  "trackedRemoteTree": "b1b630f1bbd87d115b4073066015fef877daccc2",
+  "baselineAcquisition": "exact GitHub API commit/tree/blob bytes verified by Git SHA in a separate local bare repository; worktree initially clean",
+  "tests": {
+    "pass": 111,
+    "fail": 0,
+    "integratedFixturePass": 51,
+    "relatedNodePass": 45,
+    "localWorkerdPass": 15,
+    "typecheckExitCode": 0,
+    "commands": [
+      {
+        "label": "integrated-fixtures",
+        "command": [
+          "node",
+          "--test",
+          "tests/m1/riffoid-validation-coordinator.test.mjs",
+          "tests/m1/riffoid-validation-evidence.test.mjs",
+          "tests/m1/riffoid-validation-offline-publisher.test.mjs",
+          "tests/m1/riffoid-validation-cleanup-ui.test.mjs",
+          "tests/m1/riffoid-validation.test.ts"
+        ],
+        "exitCode": 0,
+        "completedUTC": "2026-10-10T01:01:42.477636+00:00",
+        "logSHA256": "b88152685a2bbfe7cd71b45de990f1986c897d88d1bffc26fdf6ab217c7d26c3",
+        "scope": "local fixtures/type checks only; no production requests or deployment",
+        "logNormalization": "absolute integration-worktree path redaction, trailing whitespace and terminal blank lines only"
+      },
+      {
+        "label": "related-node-regression",
+        "command": [
+          "node",
+          "--test",
+          "tests/m1/riffoid-signature.test.ts",
+          "tests/m1/riffoid-entry.test.ts",
+          "tests/m1/riffoid-two-account.test.ts",
+          "tests/m1/riffoid-recovery.test.ts",
+          "tests/m1/riffoid-compatibility-dates.test.mjs"
+        ],
+        "exitCode": 0,
+        "completedUTC": "2026-10-10T01:01:46.403789+00:00",
+        "logSHA256": "0745585d0a225d9416d415e06a5d686e46ab3fdd88c44e61be94604e845e7e28",
+        "scope": "local fixtures/type checks only; no production requests or deployment",
+        "logNormalization": "absolute integration-worktree path redaction, trailing whitespace and terminal blank lines only"
+      },
+      {
+        "label": "local-workerd-regression",
+        "command": [
+          "node",
+          "--test",
+          "--test-concurrency=2",
+          "tests/m1/riffoid-validation-workerd.test.mjs",
+          "tests/m1/riffoid-entry-workerd.test.mjs",
+          "tests/m1/riffoid-two-account-workerd.test.mjs",
+          "tests/m1/riffoid-replay-workerd.test.mjs",
+          "tests/m1/riffoid-cancellation-workerd.test.mjs",
+          "tests/m1/riffoid-forward-rollback-workerd.test.mjs",
+          "tests/m1/riffoid-recovery-workerd.test.mjs",
+          "tests/m1/riffoid-recovery-cold-workerd.test.mjs"
+        ],
+        "exitCode": 0,
+        "completedUTC": "2026-10-10T01:03:37.328866+00:00",
+        "logSHA256": "775424461dc6588144f695a7f1e4d2e52d423a21707b875646bbc8707129c047",
+        "scope": "local loopback Workerd/SQLite fixtures; outbound denied except fixture loopback; no Cloudflare production or provider request",
+        "priorAttempt": "local-workerd-sandbox-denied-record.json; loopback listen EPERM, preserved",
+        "logNormalization": "absolute integration-worktree path redaction, trailing whitespace and terminal blank lines only"
+      },
+      {
+        "label": "typecheck",
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "completedUTC": "2026-10-10T01:01:42.610330+00:00",
+        "logSHA256": "dac125c794db702133345f3a0d33f3193f975fddc564ca4f1498b0d4132ed500",
+        "scope": "local fixtures/type checks only; no production requests or deployment",
+        "logNormalization": "absolute integration-worktree path redaction, trailing whitespace and terminal blank lines only"
+      }
+    ]
+  },
+  "sourceHashes": {
+    "scripts/m1/riffoid-validation-coordinator.mjs": "fd01cce55c3c2e2fddc2d404fe2c1b972e319a121bbeb44ac2c0747c4cda67f1",
+    "scripts/m1/riffoid-validation-evidence.mjs": "1420a7cc6d8216f96446bb3166876305ad2813fab152433b79a6ac263a7f253f",
+    "scripts/m1/riffoid-validation-offline-publisher.mjs": "e390fdeb350e4985c0b1220fead8d30d78baeff84c5183fe22892541cc3f5f73",
+    "services/entry/validation-cleanup-ui.ts": "670cb0a9877a5074ac2c46131c751226c758952c4f15293ac889cc5fb9fbe5f8",
+    "services/entry/validation-entry.ts": "e0522284050b27345d0d80df60eaca5c968797c87839ad250ce8cf43077aef92",
+    "services/entry/validation-policy.ts": "150782d0cc3857188989eb8c97ec5d58ae73e483f9fca4426a7ceacf44701d14",
+    "tests/m1/fixtures/riffoid-offline-fixtures.mjs": "52d2ba5b652bc8b6f3c6fe2ad3cc83c39581c850213bdd1564a39acac7489fad",
+    "tests/m1/fixtures/riffoid-public-api-shapes.json": "9a93e57f3e209cdb375f51a322f52ac36d384a8fdba72550152ff6c1f2fe4870",
+    "tests/m1/riffoid-validation-cleanup-ui.test.mjs": "621500bc5d4ca6cd7abf390f6209401e3d557fe44d9953c731f912551faa6c72",
+    "tests/m1/riffoid-validation-coordinator.test.mjs": "55e723caf94f2b14d69bcb0cf041fb9010a6a19e1f2d876a53db968ff3dd8206",
+    "tests/m1/riffoid-validation-evidence.test.mjs": "781754010ec320f101c83fcf0500766f37dbc24d6f22ecd39eb384c16db1e303",
+    "tests/m1/riffoid-validation-offline-publisher.test.mjs": "ef9be389ce07576e33dafa6f5900da9fd8e96f6b5e422de318eca9a7a505796b",
+    "tests/m1/riffoid-validation-workerd.test.mjs": "80128d9d417e109402272f7547c44cefb16bf7ed2f4f812ffea7302212364f7c",
+    "tests/m1/riffoid-validation.test.ts": "3d0497435a6582f87618a763f963348eb77cdbb3c0fd6627796f55c116085341"
+  },
+  "entryBuild": {
+    "scope": "local review-only build; no publication",
+    "bytes": 32236,
+    "sha256": "43fea289e7b529714d09365f4fe579b51b08febe9dbd0c28840ceebacb0f6e64",
+    "inputs": [
+      "services/catalog/contracts.ts",
+      "services/gateway/http.ts",
+      "services/gateway/origins.ts",
+      "services/gateway/transport-headers.ts",
+      "services/entry/signature.ts",
+      "services/entry/abort.ts",
+      "services/entry/validation-policy.ts",
+      "services/entry/validation-cleanup-ui.ts",
+      "services/entry/validation-entry.ts",
+      "services/entry/index.ts"
+    ],
+    "productionAuthorized": false
+  },
+  "review": {
+    "parentReportedIndependentFrozenArchiveRechecks": "accepted v2 and v3-p2",
+    "earlierInternalNoP2Report": "superseded; retained as historical evidence, not substituted for external review"
+  },
+  "retainedFailureEvidence": [
+    "v2-before-fix-tests.txt",
+    "v3-p2-before-fix-tests.txt",
+    "historical-internal-review-superseded.md",
+    "local-workerd-sandbox-denied.txt"
+  ],
+  "remainingGaps": [
+    "user restoration/unknown-log risk decisions",
+    "authentic live publisher and receipt evidence",
+    "quiet publisher guard",
+    "complete asset/container configuration preservation",
+    "native A/B user acceptance",
+    "platform internal telemetry semantics"
+  ],
+  "project": {
+    "readAttempt": "failed: restricted GitHub Project page; no CLI credential configured",
+    "statusUpdated": false,
+    "statusInvented": false
+  }
+}

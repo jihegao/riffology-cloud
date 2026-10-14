@@ -1,0 +1,72 @@
+[
+  {
+    "path": "fifth.txt",
+    "sha256": "4ed220924b6db84a06cfb0bf7dbb7cd91aeb5554ba77b792912dee770c4fd451",
+    "bytes": 12764
+  },
+  {
+    "path": "first.txt",
+    "sha256": "e985a76a8c7dec5f34a4e7175158b5f0ed3a74ed3b17ba9aea9037fd45003e76",
+    "bytes": 11693
+  },
+  {
+    "path": "fourth.txt",
+    "sha256": "1b826648facce7bb3498f9e943472974b64c3f680acef76ffcf9fb0427d26634",
+    "bytes": 11308
+  },
+  {
+    "path": "independent-counterexamples.json",
+    "sha256": "62ecf1ed23cae254832d5c03ece422d05d39cc80c82d0885b9a12de068817c1b",
+    "bytes": 290
+  },
+  {
+    "path": "independent-diff-check.txt",
+    "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "bytes": 1
+  },
+  {
+    "path": "independent-fixtures.txt",
+    "sha256": "7404f64cd7009c919b7a5ad6f4966084197c8ab3932e6fdad11ed7288dcdf5f2",
+    "bytes": 11562
+  },
+  {
+    "path": "independent-review.json",
+    "sha256": "d3a1ae305a613356ed948da929909968ced6a02f8e6250d849246115324ebf48",
+    "bytes": 3647
+  },
+  {
+    "path": "independent-typecheck.txt",
+    "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "bytes": 1
+  },
+  {
+    "path": "second.txt",
+    "sha256": "2c60e7334c2bf3cbfccb92abf0ed01f0a315c0a67c17ffdf1b3a9bcd1fe4800c",
+    "bytes": 12761
+  },
+  {
+    "path": "seventh.txt",
+    "sha256": "2b69414a001b703d1fa1bfbc208042d37d4b053a325161325465c04d91662193",
+    "bytes": 11560
+  },
+  {
+    "path": "sixth.txt",
+    "sha256": "309e9e71e259c6eb3a78c0d2e0b61b341cb29af8d11753684b248e2022e238a3",
+    "bytes": 11428
+  },
+  {
+    "path": "source-hashes.json",
+    "sha256": "95d2776c465d8a01b43f52d143270e9d1504fe1c8df8537d6c540e13b05acd72",
+    "bytes": 841
+  },
+  {
+    "path": "third.txt",
+    "sha256": "45e9f0f82dddae22f6ec0546b0d007cdcf37574e6382092483246988f9c9df36",
+    "bytes": 14327
+  },
+  {
+    "path": "typecheck.txt",
+    "sha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+    "bytes": 29
+  }
+]

@@ -1,0 +1,43 @@
+✔ all stages carry complete metadata/module manifests, preserve Secret references/resources, and do not mutate baselines (2.891458ms)
+✔ fixed maximum and baseline drift/Secret plaintext/incomplete modules are rejected (4.072542ms)
+✔ changing frozen time or metadata cannot silently continue the same coordination journal (1.586083ms)
+✔ full fixture proves scoped application terminal state but pending user decisions block all restoration (5.780708ms)
+✔ both observes and timely independently matched marker readback are required; waiting in chat does not extend the window (2.9955ms)
+✔ duplicate accepted begin codes cannot substitute for a verified primary receipt (2.106667ms)
+✔ P2 time order: backdated Run, cleanup and terminal events cannot precede cue or actual completion (3.424333ms)
+✔ P2 identity binding: baseline/seen versions cannot change content and deployments cannot change version (1.959917ms)
+✔ P2 ordered readback: a later delivery cannot hide a future or out-of-order publication/readback (1.60075ms)
+✔ P2 consistent identity reuse: a known version with unchanged content accepts a new deployment binding (1.224958ms)
+✔ early failure removes marker but retains cleanup route; expiration/partial/unknown drain cannot unlock restoration (2.773291ms)
+✔ unknown write/cleanup receipts freeze original request identity and forbid retries or restoration (1.634708ms)
+✔ stale publisher/readback mismatch rejects atomically without changing the previous state (0.882ms)
+✔ offline module byte/hash verification detects source drift with no network (265.184709ms)
+✔ normal exact fixed protocol derives scoped terminal evidence with explicit platform gaps; approval remains pending (4.570708ms)
+✔ timeout or an unavailable verifier is never replaced by expiry, counters or cleanup (1.136167ms)
+✔ network-disconnected or an unavailable verifier is never replaced by expiry, counters or cleanup (0.593083ms)
+✔ receipt-lost or an unavailable verifier is never replaced by expiry, counters or cleanup (0.725292ms)
+✔ extra/duplicate/missing receipt, aliases, malformed body and partial accepted results reject (2.927417ms)
+✔ Run cannot precede marker/cue or deadline; cleanup cannot precede termination or miss its fixed interval (1.419083ms)
+✔ pure multipart builder preserves references/resources and validates actual module bytes; production target rejected (19.752625ms)
+✔ P2 secret guard: inline key fields, nested key data and legacy secret_key version_id reject at baseline and builder (3.340542ms)
+✔ P2 inheritance: latest must equal the frozen prior active version before any fixture PUT (1.912625ms)
+✔ all phases simulate serial pre-write GET → one PUT → independent GET; readback coverage remains incomplete and approval blocked (2.485709ms)
+✔ GET bytes/config drive hashes; upload hash claims and opaque platform etag cannot hide drift (0.996625ms)
+✔ unknown timeout: only GET reconciliation of original identity; never another PUT or automatic resume (1.16575ms)
+✔ unknown network-disconnected: only GET reconciliation of original identity; never another PUT or automatic resume (1.20875ms)
+✔ unknown receipt-lost: only GET reconciliation of original identity; never another PUT or automatic resume (1.053792ms)
+✔ pre-write guard drift sends no fixture PUT; post-write rejected readback freezes without replay (1.354417ms)
+✔ serial lock, stale identities, changing deployments, partial rollouts and missing fields fail closed (2.09925ms)
+✔ multipart GET module parts are independently parsed and extras are rejected (4.561833ms)
+✔ P2 unknown identity: baseline version/deployment cannot label temporary bytes/settings (1.374708ms)
+✔ P2 unknown identity: historical published version cannot acquire restored bytes/settings (2.140584ms)
+✔ P2 unknown identity: baseline and historical deployment cannot rebind to another version (2.834458ms)
+✔ P2 unknown identity: consistent GET leaves pending, cursor and identity ledger unchanged (1.482083ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 418.04925

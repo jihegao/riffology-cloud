@@ -1,0 +1,47 @@
+✔ cleanup is unarmed with no timer or request until one local authorization (0.406625ms)
+✔ missing coordinator confirmation or permanent Stop cannot arm cleanup (0.058625ms)
+✔ early click is unspent; timer and concurrent clicks consume only one request (0.058417ms)
+✔ timeout: armed cleanup is never retried (0.066208ms)
+✔ network-disconnected: armed cleanup is never retried (0.109708ms)
+✔ receipt-lost: armed cleanup is never retried (0.077ms)
+✔ missed interval and abandoned unarmed page produce zero POST (0.071ms)
+✔ both UI pages expose local Stop; A starts unarmed and B has no cleanup scheduler (10.548417ms)
+✔ rendered A success: successful own Run + external confirmation + one arm uses at most one cleanup (0.846041ms)
+✔ rendered A timeout: successful own Run + external confirmation + one arm uses at most one cleanup (0.662666ms)
+✔ rendered A network-disconnected: successful own Run + external confirmation + one arm uses at most one cleanup (0.597917ms)
+✔ rendered A receipt-lost: successful own Run + external confirmation + one arm uses at most one cleanup (0.443917ms)
+✔ B unknown leaves A cleanup unarmed; operator cannot authorize without both receipts and can Stop A (0.825334ms)
+✔ manual Stop aborts an in-flight original Run without follow-up RPC or clearing unknown (0.934458ms)
+✔ Stop cancels an armed cleanup timer; even invoking its old callback produces no request (0.635958ms)
+✔ approved wording is consumed without granting production authorization; altered evidence rejects (3.447834ms)
+✔ default dry-run dispatches zero HTTP; read-only and prepare cannot upload (1.480667ms)
+✔ wire multipart keeps public/resources and inherits redacted Secret text without material (7.797042ms)
+✔ raw HTTP preserves cf-entrypoint, body bytes and origin; bounds hangs and rejects redirects (11.972917ms)
+✔ GET-derived modules and runtime export readback work; drift/omitted cf-entrypoint reject (1.772583ms)
+✔ actual asset/container readback gaps stay blocked rather than trusting upload intent (0.650292ms)
+✔ durable exclusive journal is retained for unknown writes and rejects a second owner (24.195666ms)
+✔ version/deployment identity also binds resource snapshot hashes (0.638208ms)
+✔ unapproved live publication performs no HTTP; missing full preflight creates no intent or PUT (0.855333ms)
+✔ mutable/custom transport cannot turn prepare into a network upload (0.597583ms)
+✔ missing Observe originals or forged terminal evidence block before any network write (1.078ms)
+✔ restart loads original unknown journal and GET reconciliation never clears it (10.105ms)
+✔ package CLI prepares all eight exact multipart files offline without overwriting prior packet (4.952792ms)
+✖ natural expiry checkpoint survives restart and rejects missing or altered identity/time (14.781917ms)
+✔ resource read drift is bracketed by final deployment and latest-version checks (1.274334ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 29
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 177.431042
+
+✖ failing tests:
+
+test at tests/m1/riffoid-validation-live-adapter.test.mjs:122:1
+✖ natural expiry checkpoint survives restart and rejects missing or altered identity/time (14.781917ms)
+  TypeError [Error]: Cannot read properties of undefined (reading '2')
+      at TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-live-adapter.test.mjs:127:271)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

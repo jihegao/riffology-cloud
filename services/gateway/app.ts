@@ -45,6 +45,7 @@ export interface GatewayServices {
   simulations?:GatewaySimulations;
   privateBeta?:{snapshot():Promise<unknown>;pause(actor:TurnActor):Promise<unknown>;resume(actor:TurnActor):Promise<unknown>;userStatus?(scope:TurnScope,actor:TurnActor):Promise<unknown>};
   origin:string;
+  transportOrigin?:string;
   database:Database;
   modelContent?:ModelContentPort;
   modelUpload?:ModelContentUploadPort;
@@ -101,7 +102,7 @@ function replayed(value:unknown):boolean{return !!value&&typeof value==='object'
 function publicSession(value:unknown):unknown{if(!value||typeof value!=='object'||Array.isArray(value))return value;const {actorUserId:_,actorAuthVersion:__,...safe}=value as Record<string,unknown>;return safe;}
 function publicTurn(value:unknown):unknown{if(!value||typeof value!=='object'||Array.isArray(value))return value;const {actor:privateActor,requestKey:_,payloadSha256:__,dispatchId:___,base:____,resourceLease:_____,startedSequence:______,terminalSequence:_______,...safe}=value as Record<string,unknown>,actor=privateActor&&typeof privateActor==='object'&&!Array.isArray(privateActor)?{userId:(privateActor as Record<string,unknown>).userId}:privateActor;return {...safe,actor};}
 async function g5Read(request:Request,services:GatewayServices,scope:TurnScope,actor:TurnActor,response:Response){return services.g5ReadonlyReads?services.g5ReadonlyReads.record(request,scope,actor,response):response;}
-function publicResult(value:unknown,field:'session'|'turn'):unknown{if(!value||typeof value!=='object'||Array.isArray(value)||!Object.hasOwn(value,field))return field==='turn'?publicTurn(value):publicSession(value);const result=value as Record<string,unknown>;return {...result,[field]:field==='turn'?publicTurn(result[field]):publicSession(result[field])};}
+export function publicResult(value:unknown,field:'session'|'turn'):unknown{if(!value||typeof value!=='object'||Array.isArray(value)||!Object.hasOwn(value,field))return field==='turn'?publicTurn(value):publicSession(value);const result=value as Record<string,unknown>;return {...result,[field]:field==='turn'?publicTurn(result[field]):publicSession(result[field])};}
 function publicModel(model:ModelVersion){return {model_id:model.model_id,version:model.version,status:model.status,title:model.title,description:model.description,content_sha256:model.content_sha256,published_at:model.published_at};}
 async function artifactContent(value:unknown):Promise<Response>{
   if(!value||typeof value!=='object'||Array.isArray(value))throw Error('invalid-tool-artifact-read');
@@ -123,7 +124,7 @@ async function observerArtifactContent(value:unknown):Promise<Response>{
 export async function gateway(request:Request, services:GatewayServices):Promise<Response> {
   try {
     const url=new URL(request.url);
-    if(url.origin!==services.origin)throw new HttpError('origin_denied',403);
+    if(url.origin!==(services.transportOrigin??services.origin))throw new HttpError('origin_denied',403);
     if(request.method!=='GET' || request.headers.get('upgrade'))requireOrigin(request,services.origin);
     const identity=await services.identity(request);
     if(!identity)throw new HttpError('authentication_required',401);
@@ -447,7 +448,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
         if([...url.searchParams.keys()].some(key=>!['after_sequence','limit'].includes(key)))throw new CatalogError('invalid_input');
         const after=Math.max(cursor(url,'after_sequence',0,Number.MAX_SAFE_INTEGER),lastEventId(request));
         if(request.headers.get('accept')?.split(',').some(value=>value.trim().split(';')[0]==='text/event-stream')){
-          const suppliedOrigin=request.headers.get('origin');if(suppliedOrigin!==null&&suppliedOrigin!==services.origin)throw new HttpError('origin_denied',403);
+          const suppliedOrigin=request.headers.get('origin');if(request.headers.get('sec-fetch-site')==='cross-site'||suppliedOrigin!==null&&suppliedOrigin!==services.origin)throw new HttpError('origin_denied',403);
           return turnEventStream({scope:turnScope,afterSequence:after,signal:request.signal,
             authorize:async()=>{await catalog.workspace(principal,turnMatch[1]);},
             replay:(sequence,limit)=>turnCall(()=>services.turns!.replay(turnScope,sequence,limit))});

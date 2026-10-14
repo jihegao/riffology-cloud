@@ -1,0 +1,21 @@
+✔ approved wording is consumed without granting production authorization; altered evidence rejects (3.513208ms)
+✔ default dry-run dispatches zero HTTP; read-only and prepare cannot upload (1.329541ms)
+✔ wire multipart keeps public/resources and inherits redacted Secret text without material (7.774875ms)
+✔ raw HTTP preserves cf-entrypoint, body bytes and origin; bounds hangs and rejects redirects (11.599917ms)
+✔ GET-derived modules and runtime export readback work; drift/omitted cf-entrypoint reject (1.502333ms)
+✔ actual asset/container readback gaps stay blocked rather than trusting upload intent (0.673833ms)
+✔ durable exclusive journal is retained for unknown writes and rejects a second owner (22.315958ms)
+✔ version/deployment identity also binds resource snapshot hashes (0.766916ms)
+✔ unapproved live publication performs no HTTP; missing full preflight creates no intent or PUT (1.083833ms)
+✔ mutable/custom transport cannot turn prepare into a network upload (0.63ms)
+✔ missing Observe originals or forged terminal evidence block before any network write (1.397375ms)
+✔ restart loads original unknown journal and GET reconciliation never clears it (10.682792ms)
+✔ package CLI prepares all eight exact multipart files offline without overwriting prior packet (6.666708ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 160.171583

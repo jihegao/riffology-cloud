@@ -1,0 +1,19 @@
+{
+  "name": "riffoid-entry",
+  "account_id": "3232ebc7e9bb0199b92e3d70b07825af",
+  "main": "./entry.worker.mjs",
+  "no_bundle": true,
+  "compatibility_date": "2026-09-06",
+  "compatibility_flags": [
+    "global_fetch_strictly_public",
+    "enable_request_signal"
+  ],
+  "workers_dev": false,
+  "preview_urls": false,
+  "vars": {
+    "APP_ORIGIN": "https://app.riffoid.com",
+    "APP_TRANSPORT_ORIGIN": "https://riffoid-transport.gaojihe.cn",
+    "TWO_ACCOUNT_AUTH_MODE": "disabled",
+    "ENTRY_SIGNING_KEY_ID": "riffoid-entry-20261008-a"
+  }
+}

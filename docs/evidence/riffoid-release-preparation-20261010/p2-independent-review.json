@@ -1,0 +1,47 @@
+{
+  "UTC": "2026-10-10T08:56:17.038416+00:00",
+  "reviewer": "independent publisher_independent_review agent",
+  "result": "accepted offline implementation; no remaining reproducible P1/P2 in this review scope",
+  "checks": {
+    "sixOfflineSuites": {
+      "pass": 97,
+      "fail": 0
+    },
+    "existingTypeScriptNoEmit": "passed independently",
+    "gitDiffCheck": "passed independently"
+  },
+  "hashes": {
+    "scripts/m1/riffoid-validation-publisher.mjs": "9703c901863fb9abf6abbf4ca0ec16041e98758568a8f4b4986a4a2f93a6299e",
+    "scripts/m1/riffoid-validation-resources.mjs": "6b3878c4b4f7d67c142320e2fc3af36867689286d6ca84a828249fbbca277cc6",
+    "scripts/m1/riffoid-validation-transport.mjs": "85ffef7b9102aabc8170d204eede47c6bad4988e4ffac242539d20dca17ab0b8",
+    "services/entry/validation-cleanup-ui.ts": "37e553fe3fec8696d112d42057d5071c7a382e6c94d90511d5929009c4b3912e",
+    "services/entry/validation-entry.ts": "112198cd6e2e6ba6971b2ee7fd539400ddc4688e0a12c268ffff8c60296a6d10",
+    "tests/m1/riffoid-validation-live-adapter.test.mjs": "7f6e0296c134a8b2496ba51c0213fc08e99e55ef0eafc7aa81b1b1be655e0e65",
+    "tests/m1/riffoid-validation-resources.test.mjs": "5e4e2b33d28144294f52dc9f998c895b602f24ba102cf586204990a2470a80bf",
+    "tests/m1/riffoid-validation-cleanup-ui.test.mjs": "d31f6975a6e13cdfceebe9e778683d1242372f7188b7bab3c7ddb139073c4b61"
+  },
+  "fixedAdditionalReviewFindings": [
+    "terminal JSON + unknown retains original pending even after restart",
+    "cross-account cold recovery identity/settings drift",
+    "namespace/container/pipeline independent mutation during readback",
+    "lost/replaced publisher lock before intent/PUT and after write",
+    "deadline rechecked after last lock await with no asynchronous gap before dispatch"
+  ],
+  "scopeLimits": [
+    "assets acceptance standard unapproved",
+    "no full asset content audit",
+    "current full production baseline not established",
+    "no production acceptance or executable live package claim",
+    "raw HTTP connection and external quiet/exclusion evidence still missing"
+  ],
+  "sourceModifiedByReviewer": false,
+  "productionRequestsByReviewer": 0,
+  "productionWritesByReviewer": 0,
+  "initialTypecheckFailure": {
+    "reportedByReviewer": true,
+    "command": "npm run typecheck",
+    "exitCode": 127,
+    "stderr": "sh: tsc: command not found",
+    "resolution": "independent noEmit with existing runtime after local dependency access; no install or scope expansion"
+  }
+}

@@ -1,0 +1,275 @@
+{
+  "recordedAt": "2026-10-11T07:09:49Z",
+  "status": "ORIGINAL_GATEWAY_AND_LOGS_RESTORED_PROTOCOL_NOT_ACCEPTED",
+  "formalCutover": {
+    "T": null,
+    "recoveryUntil": null,
+    "accepted": false
+  },
+  "run": "riffoid_5599ecb0f04a47a1bd066638fa29defc",
+  "packetSHA256": "ad8ee0da21e07824ee7376f00fd3ff5f2bb583afe132e52355323c1f136cf95b",
+  "originalRequestId": "riffoid_5599ecb0f04a47a1bd066638fa29defc_gatewayObserve",
+  "window": {
+    "notBefore": 1791701828922,
+    "expires": 1791702128922
+  },
+  "publication": {
+    "gatewayPUTDispatches": 1,
+    "gatewayPUTAcknowledgements": 1,
+    "nativePUTElapsedMS": 6293.770916000009,
+    "automaticRetries": 0,
+    "redirectsFollowed": 0,
+    "entryPUTDispatches": 0,
+    "executionPUTDispatches": 0,
+    "controllerStopped": true
+  },
+  "protocol": {
+    "nativeAObserve": 0,
+    "nativeBObserve": 0,
+    "nativeARun": 0,
+    "nativeBRun": 0,
+    "cleanupRequests": 0,
+    "receiptsPassed": 0,
+    "accepted": false
+  },
+  "failure": {
+    "phase": "gatewayObserve-post-readback",
+    "reason": "deployments active version a00f97bc-f0da-4e04-97b0-8f96f0a26a89 differed from versions latest ef94e323-c2a7-4dc4-aea4-09c86094b3d2",
+    "rootCause": "UNCONFIRMED; transport freshness or API propagation has not been distinguished",
+    "furtherPublicationStopped": true,
+    "originalIntentUnknownAndLockRetained": true
+  },
+  "currentGatewayReadback": {
+    "phase": "gatewayRestoreLogs",
+    "requestId": "riffoid_5599ecb0f04a47a1bd066638fa29defc_recoverLogs",
+    "readbackAt": 1791702471791,
+    "version": "6d580077-1042-4242-9ca5-665008202135",
+    "deployment": "be951946-ead9-4da9-814f-d493d2d13520",
+    "activeVersion": "6d580077-1042-4242-9ca5-665008202135",
+    "latestVersion": "6d580077-1042-4242-9ca5-665008202135",
+    "metadataSHA256": "5441264ebfd7a5a5af5c93503afef1ba12791bff86410c490545da4ddc426e47",
+    "modulesSHA256": "b8123f8c3eeb18029113b5d71474583128e146870c4f31ecae5b606b6d4b9463",
+    "resourcesSHA256": "71870d9ae8cdc8235653d2a55cec532d5b05fdfe1ad44d8b3bd7c8327dc0668e",
+    "scriptSettingsSHA256": "1b970dd180239f490dd89ef94a2e456c4b18625c61d79aabdb93cb665b770ee0",
+    "coverage": {
+      "mainModule": true,
+      "metadata": true,
+      "modules": true,
+      "namedResources": true,
+      "assets": false,
+      "assetsRetentionContract": true,
+      "containers": true
+    },
+    "preservationMatches": true,
+    "fullStateMatches": false,
+    "pipelineGuardPassed": true,
+    "readObservation": {
+      "startedAt": 1791702400565,
+      "completedAt": 1791702471787,
+      "elapsedMS": 71221.25516700002,
+      "callerGETDispatches": 36,
+      "maxGETDispatches": 128,
+      "timeoutMS": 180000,
+      "perGETTimeoutMS": 30000,
+      "sourceGETTimeoutMS": 60000,
+      "proxyHTTPAttempts": "NOT_EXPOSED",
+      "snapshotAtomic": false,
+      "bracketVerified": true
+    },
+    "restored": true,
+    "logsPersist": true,
+    "originalBindings": 95,
+    "originalExports": 23,
+    "originalContainerAssociations": 5,
+    "originalModuleSHA256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290",
+    "assetBytesAudited": false,
+    "identityTransport": "native one-dispatch GET throughout pre/post readback",
+    "configurationTransport": "same decoded exact configuration GET; proxy attempts not exposed"
+  },
+  "recovery": {
+    "planSHA256": "ee5ce9366d1ddf5c902184e92f2fe1b037ae4f99b078051819a9bc8d88688276",
+    "approval": "ACTUAL_HUMAN_APPROVAL_RECEIVED",
+    "phases": [
+      {
+        "phase": "gatewayRestorePrivacy",
+        "requestId": "riffoid_5599ecb0f04a47a1bd066638fa29defc_recoverPrivacy",
+        "method": "PUT",
+        "bodySHA256": "7e71d5b199e209d975db1784bcdb0cc72e441985c68a9068463afb0086e5be3e",
+        "bytes": 5522814
+      },
+      {
+        "phase": "gatewayRestoreLogs",
+        "requestId": "riffoid_5599ecb0f04a47a1bd066638fa29defc_recoverLogs",
+        "method": "PUT",
+        "bodySHA256": "9fa35b36a478f7d3af64b97fa9f01856d233e488622d527adefad43cbdce0a48",
+        "bytes": 5522813
+      }
+    ],
+    "restoresOriginalBindings": 95,
+    "restoresOriginalModuleSHA256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290",
+    "offlineCheckPassed": true,
+    "networkRequestsExecuted": "TWO_NATIVE_PUTS_AND_FULL_PRE_POST_GETS",
+    "productionWritesExecuted": 2,
+    "retainsAllUnknownJournals": true,
+    "resumesProtocol": false,
+    "approvedAt": 1791702167000,
+    "acceptLateTelemetryRisk": true,
+    "phaseResults": [
+      {
+        "phase": "gatewayRestorePrivacy",
+        "requestId": "riffoid_5599ecb0f04a47a1bd066638fa29defc_recoverPrivacy",
+        "readbackAt": 1791702312562,
+        "version": "aa38d9d4-31f4-4a89-a415-cf2a001e8ad1",
+        "deployment": "5f120693-209f-46fd-bff5-6501cf220931",
+        "activeVersion": "aa38d9d4-31f4-4a89-a415-cf2a001e8ad1",
+        "latestVersion": "aa38d9d4-31f4-4a89-a415-cf2a001e8ad1",
+        "metadataSHA256": "034c3ba72a4da999af96b81eb1b93a86177ebcaed740aa73cd7253ed554b61cf",
+        "modulesSHA256": "b8123f8c3eeb18029113b5d71474583128e146870c4f31ecae5b606b6d4b9463",
+        "resourcesSHA256": "71870d9ae8cdc8235653d2a55cec532d5b05fdfe1ad44d8b3bd7c8327dc0668e",
+        "scriptSettingsSHA256": "c50104ddcf2ce86bd270cfad292d4df03e3501af252af71380c41a713f9f8f10",
+        "coverage": {
+          "mainModule": true,
+          "metadata": true,
+          "modules": true,
+          "namedResources": true,
+          "assets": false,
+          "assetsRetentionContract": true,
+          "containers": true
+        },
+        "preservationMatches": true,
+        "fullStateMatches": false,
+        "pipelineGuardPassed": true,
+        "readObservation": {
+          "startedAt": 1791702251914,
+          "completedAt": 1791702312557,
+          "elapsedMS": 60642.01991599999,
+          "callerGETDispatches": 36,
+          "maxGETDispatches": 128,
+          "timeoutMS": 180000,
+          "perGETTimeoutMS": 30000,
+          "sourceGETTimeoutMS": 60000,
+          "proxyHTTPAttempts": "NOT_EXPOSED",
+          "snapshotAtomic": false,
+          "bracketVerified": true
+        }
+      },
+      {
+        "phase": "gatewayRestoreLogs",
+        "requestId": "riffoid_5599ecb0f04a47a1bd066638fa29defc_recoverLogs",
+        "readbackAt": 1791702471791,
+        "version": "6d580077-1042-4242-9ca5-665008202135",
+        "deployment": "be951946-ead9-4da9-814f-d493d2d13520",
+        "activeVersion": "6d580077-1042-4242-9ca5-665008202135",
+        "latestVersion": "6d580077-1042-4242-9ca5-665008202135",
+        "metadataSHA256": "5441264ebfd7a5a5af5c93503afef1ba12791bff86410c490545da4ddc426e47",
+        "modulesSHA256": "b8123f8c3eeb18029113b5d71474583128e146870c4f31ecae5b606b6d4b9463",
+        "resourcesSHA256": "71870d9ae8cdc8235653d2a55cec532d5b05fdfe1ad44d8b3bd7c8327dc0668e",
+        "scriptSettingsSHA256": "1b970dd180239f490dd89ef94a2e456c4b18625c61d79aabdb93cb665b770ee0",
+        "coverage": {
+          "mainModule": true,
+          "metadata": true,
+          "modules": true,
+          "namedResources": true,
+          "assets": false,
+          "assetsRetentionContract": true,
+          "containers": true
+        },
+        "preservationMatches": true,
+        "fullStateMatches": false,
+        "pipelineGuardPassed": true,
+        "readObservation": {
+          "startedAt": 1791702400565,
+          "completedAt": 1791702471787,
+          "elapsedMS": 71221.25516700002,
+          "callerGETDispatches": 36,
+          "maxGETDispatches": 128,
+          "timeoutMS": 180000,
+          "perGETTimeoutMS": 30000,
+          "sourceGETTimeoutMS": 60000,
+          "proxyHTTPAttempts": "NOT_EXPOSED",
+          "snapshotAtomic": false,
+          "bracketVerified": true
+        }
+      }
+    ],
+    "controllerExited": true,
+    "final": {
+      "cursor": 2,
+      "pendingRequest": null,
+      "originalRequestId": "riffoid_5599ecb0f04a47a1bd066638fa29defc_gatewayObserve",
+      "originalUnknownRetained": true,
+      "protocolAcceptance": false
+    },
+    "nativePUTs": [
+      {
+        "native": {
+          "callerDispatches": 1,
+          "automaticRetries": 0,
+          "redirectsFollowed": 0,
+          "elapsedMS": 5127.227958000003,
+          "tlsAuthorized": true,
+          "peerFingerprint256": "4C:05:A8:08:FB:63:3D:BC:3E:01:FB:1A:B0:08:6B:54:DA:B5:0C:BA:59:50:2C:AA:F3:47:E2:66:C1:9D:FC:71",
+          "httpVersion": "1.1",
+          "connectionReused": false,
+          "contentEncoding": "identity",
+          "wireBytes": 6921,
+          "wireBodySHA256": "e87f27fa58ba4cf8cf61863c34fabc5ffba1587efad47667e211da7e9eb57884"
+        },
+        "responseBytes": 6921
+      },
+      {
+        "native": {
+          "callerDispatches": 1,
+          "automaticRetries": 0,
+          "redirectsFollowed": 0,
+          "elapsedMS": 6103.530708000006,
+          "tlsAuthorized": true,
+          "peerFingerprint256": "4C:05:A8:08:FB:63:3D:BC:3E:01:FB:1A:B0:08:6B:54:DA:B5:0C:BA:59:50:2C:AA:F3:47:E2:66:C1:9D:FC:71",
+          "httpVersion": "1.1",
+          "connectionReused": false,
+          "contentEncoding": "identity",
+          "wireBytes": 6920,
+          "wireBodySHA256": "b5b12281561e7028c2761b836eebd814d9d0445ddf2c6977e2b1d351e9ec4546"
+        },
+        "responseBytes": 6920
+      }
+    ]
+  },
+  "limits": [
+    "No platform-internal telemetry drain claim; restoring logs can preserve late telemetry.",
+    "Zero browser-protocol dispatches does not prove zero general traffic, global cloud execution or cost.",
+    "Formal authenticated acceptance still lacks a second invited identity without target-project permission and an existing idle Session for read-only SSE."
+  ],
+  "maintenanceReconciliation": {
+    "version": "ef94e323-c2a7-4dc4-aea4-09c86094b3d2",
+    "deployment": "2461c5da-e60b-4d7d-a737-1fa2a9e6cfec",
+    "metadataSHA256": "5dc9e08259253940ff8736df831eaf5bbf217cf8dc186cd97f21a1b00532113a",
+    "modulesSHA256": "cb2786e3808d87b8b59369baedda26e33dd89088f0695ba30f3e3a5856127461",
+    "resourcesSHA256": "71870d9ae8cdc8235653d2a55cec532d5b05fdfe1ad44d8b3bd7c8327dc0668e",
+    "startedAt": 1791701683717,
+    "completedAt": 1791701760879,
+    "callerGETDispatches": 36,
+    "bracketVerified": true,
+    "logsPersist": false,
+    "preservationMatches": true,
+    "fullStateMatches": false,
+    "assetsRetentionContract": true,
+    "assetBytesAudited": false,
+    "identityTransport": "native one-dispatch GET; separate observation of the original request",
+    "configurationTransport": "decoded exact configuration GET; proxy HTTP attempts not exposed",
+    "restored": false
+  },
+  "identityReadRepair": {
+    "configurationScopeUnchanged": true,
+    "decodedIdentityGETsForbidden": true,
+    "identityReadsMustUseNative": true,
+    "sourceAndPUTRemainNative": true,
+    "boundaryTestsPassed": 6,
+    "templatePhases": 8,
+    "offlineTemplateHTTP": 0,
+    "offlineTemplatePUT": 0,
+    "newWindowOpened": false,
+    "knownPUTBeforeAndAfterIdentityChecksPassed": true,
+    "rootCause": "The initial mismatch is preserved; propagation and transport freshness have not been distinguished."
+  }
+}

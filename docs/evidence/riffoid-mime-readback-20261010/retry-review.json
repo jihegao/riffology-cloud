@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 2,
+  "reviewedAt": "2026-10-10T10:00:29.171Z",
+  "reviewer": "publisher_independent_review",
+  "status": "TWO_IMMUTABLE_PUBLIC_SOURCE_VERSIONS_REVIEWED",
+  "repository": "cloudflare/mcp",
+  "versions": [
+    {
+      "repository": "cloudflare/mcp",
+      "commit": "37cc36c01e19e674519442d0fee03ebc8827e9ae",
+      "versionIdentifier": "immutable commit (no tag asserted)",
+      "deployedVersionConfirmed": false,
+      "serverInfoVersion": "0.1.0 (not commit attestation)",
+      "sources": [
+        {
+          "file": "src/tools/execute.ts",
+          "url": "https://github.com/cloudflare/mcp/blob/37cc36c01e19e674519442d0fee03ebc8827e9ae/src/tools/execute.ts",
+          "lines": "29-46, 73-77, 87-118, 238-241"
+        },
+        {
+          "file": "src/utils/fetch-retry.ts",
+          "url": "https://github.com/cloudflare/mcp/blob/37cc36c01e19e674519442d0fee03ebc8827e9ae/src/utils/fetch-retry.ts",
+          "lines": "3-16, 18-34, 36-110"
+        },
+        {
+          "file": "src/constants.ts",
+          "url": "https://github.com/cloudflare/mcp/blob/37cc36c01e19e674519442d0fee03ebc8827e9ae/src/constants.ts",
+          "lines": "12-14, 21-28"
+        },
+        {
+          "file": "src/tools/non-codemode.ts",
+          "url": "https://github.com/cloudflare/mcp/blob/37cc36c01e19e674519442d0fee03ebc8827e9ae/src/tools/non-codemode.ts",
+          "lines": "101-105"
+        }
+      ],
+      "methodPolicy": {
+        "globalOutboundFiltersMethods": false,
+        "documentedHelperMethods": [
+          "GET",
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ],
+        "putCanEnterRetryLoop": true,
+        "nonCodemodeAlsoUsesRetryHelper": true,
+        "callerExposedRetryConfiguration": false,
+        "serverSideRetryOptionsConfigurable": true,
+        "executeCallOverridesOnlyCallerLabel": true
+      },
+      "triggers": {
+        "httpStatusesRetried": [
+          429
+        ],
+        "fetchThrowsRetried": true,
+        "non429HTTPResponseReturnedImmediately": true,
+        "includes500Retry": false,
+        "abortExceptionNotExplicitlyExcluded": true
+      },
+      "budget": {
+        "maxRetries": 3,
+        "maxFetchAttempts": 4,
+        "baseDelayMS": 1000,
+        "backoffFactor": 2,
+        "jitterMultiplier": "[0.5,1)",
+        "fallbackSleepTotalMS": "[3500,7000)",
+        "positiveNumericRetryAfterSecondsAccepted": true,
+        "httpDateRetryAfterParsed": false,
+        "maxSleepPerRetryMS": 30000,
+        "maxSleepTotalMS": 90000,
+        "perAttemptTimeoutInHelper": false,
+        "totalWallClockBoundInHelper": false,
+        "sleepRespondsToAbort": false,
+        "budgetCaveat": "Sleep bounds exclude fetch latency, redirects, middleware and RPC lifetime; caller timeout is not proof server retry work stopped."
+      }
+    },
+    {
+      "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+      "mainResolvedVia": "https://api.github.com/repos/cloudflare/mcp/branches/main",
+      "commitDate": "2026-10-09T01:45:30Z",
+      "executeBlobIdenticalToOld": true,
+      "methodFilter": false,
+      "callerExposedRetryOptions": false,
+      "maxRetries": 3,
+      "maxFetchAttempts": 4,
+      "maxDelayMS": 5000,
+      "maxSleepTotalMS": 15000,
+      "fallbackSleepTotalMS": "[3500,7000)",
+      "triggers": [
+        "HTTP 429",
+        "fetch throws"
+      ],
+      "non429ResponseRetried": false,
+      "retryAfter": "Nonnegative integer seconds or HTTP date; fallback exhausted Ratelimit r=0 t, maximum across entries. Server wait above 5s returns current 429 without retry.",
+      "requestBodyClonedBeforeEachNonfinalAttempt": true,
+      "wallClockBoundInHelper": false,
+      "perAttemptTimeoutInHelper": false,
+      "abortAwareSleep": false,
+      "deployedVersionConfirmed": false,
+      "sources": [
+        {
+          "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+          "file": "src/tools/execute.ts",
+          "githubBlobSHA": "84e2f401d979feaad8e2b443066a78aae07415da",
+          "url": "https://github.com/cloudflare/mcp/blob/d5d326e5d4dd09af4af1f2ea9926df2a991582c2/src/tools/execute.ts",
+          "artifact": "public-d5d326e5d4dd09af4af1f2ea9926df2a991582c2-src-tools-execute.ts",
+          "sha256": "37b1f623dcf92f8b795429cc9aec797dbe8c02c6754266aa01bbc2d2ba1a1575",
+          "bytes": 11332
+        },
+        {
+          "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+          "file": "src/utils/fetch-retry.ts",
+          "githubBlobSHA": "79a3f75950e88c9a257b28efc457f06fda42e946",
+          "url": "https://github.com/cloudflare/mcp/blob/d5d326e5d4dd09af4af1f2ea9926df2a991582c2/src/utils/fetch-retry.ts",
+          "artifact": "public-d5d326e5d4dd09af4af1f2ea9926df2a991582c2-src-utils-fetch-retry.ts",
+          "sha256": "644813948835504c0a739e114bd565cd516ac85a7d1d2ac251d6e71a58e91e40",
+          "bytes": 6849
+        },
+        {
+          "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+          "file": "src/constants.ts",
+          "githubBlobSHA": "c415c9970d8a7b1b985dc80ad2d50cdb6e563b2e",
+          "url": "https://github.com/cloudflare/mcp/blob/d5d326e5d4dd09af4af1f2ea9926df2a991582c2/src/constants.ts",
+          "artifact": "public-d5d326e5d4dd09af4af1f2ea9926df2a991582c2-src-constants.ts",
+          "sha256": "2da46097d51c9574d4098669ada3c8489509b750013527517ef610e4189a9560",
+          "bytes": 1922
+        },
+        {
+          "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+          "file": "src/tools/non-codemode.ts",
+          "githubBlobSHA": "303f94d6ea530865d014040e8cbded160e423905",
+          "url": "https://github.com/cloudflare/mcp/blob/d5d326e5d4dd09af4af1f2ea9926df2a991582c2/src/tools/non-codemode.ts",
+          "artifact": "public-d5d326e5d4dd09af4af1f2ea9926df2a991582c2-src-tools-non-codemode.ts",
+          "sha256": "a73125c58129e86ce1ba7c76be3efabd039ca5cf081f67a72bc26594e0d4feea",
+          "bytes": 5278
+        }
+      ]
+    }
+  ],
+  "comparison": {
+    "execute": "Exact same Git blob; both globally retry without method filter and expose no client retry control.",
+    "delay": "Old caps numeric Retry-After at30s; current honors supported server wait <=5s and returns429 when >5s.",
+    "body": "Old reuses consumed Request body; current clones, making body replay effective in offline mock.",
+    "budget": "Old sleep upper bound90s/current15s. Neither is end-to-end request/time budget.",
+    "actualDeployedVersion": "UNKNOWN"
+  },
+  "independentOffline": {
+    "tests": 20,
+    "pass": 20,
+    "sourceBlobsIndependentlySHA1Verified": 8,
+    "index": "public-source-index.json",
+    "counterexamples": "retry-offline-counterexamples.json",
+    "putBodyReadCountsByVersion": [
+      1,
+      4
+    ],
+    "networkCalls": 0,
+    "typescriptTooling": "Existing external TypeScript path was absent; no installation. Used Node built-in type erasure instead.",
+    "retainedInitialSetupFailure": "retry-setup-failure.json"
+  },
+  "conclusion": {
+    "adjustExistingRetryContract": true,
+    "readonlyGET": "Permit existing bounded proxy retry for allowlisted semantic read-only control-plane GETs with explicit request/overall budgets, fresh current deployment/latest/settings/configuration brackets, expiry checks, no use of late evidence, and original-scope identity. Do not add outer retry loops. Public source is a risk model, not deployed runtime attestation.",
+    "writesAndBudgetConsumingActions": "Hard block through this default retry proxy. Require independently established single-dispatch/no automatic replay at every layer before any PUT or paid experiment action. Idempotent method naming, rawBody, journal intent, app loop count and successful status do not establish no proxy replay.",
+    "currentProductionReady": false
+  },
+  "redirect": {
+    "cloudflareRequestSetsRedirect": false,
+    "rawRequestRedirectInheritedByGlobalOutbound": true,
+    "helperDoesNotOverrideRedirect": true,
+    "integrationMustPreserveManualAndReject3xxAndLocation": true
+  },
+  "caveats": [
+    "No Request body clone per attempt: code-mode Request body reuse may fail on later attempts in some runtimes; this is not a reliable no-replay policy. Non-code-mode string/body init is independently retryable.",
+    "When a 429 was observed before later network failures, helper may return stale lastResponse 429. Never infer final applied/not-applied state from this.",
+    "Original bytes and authoritative entrypoint requirements remain; retry review does not accept MIME implementation."
+  ],
+  "productionRequests": 0,
+  "productionWrites": 0,
+  "credentialsRead": false,
+  "implementationFilesModified": false
+}

@@ -1,0 +1,17 @@
+✔ approved wording is consumed without granting production authorization; altered evidence rejects (3.116917ms)
+✔ default dry-run dispatches zero HTTP; read-only and prepare cannot upload (1.373584ms)
+✔ wire multipart keeps public/resources and inherits redacted Secret text without material (8.009375ms)
+✔ raw HTTP preserves cf-entrypoint, body bytes and origin; bounds hangs and rejects redirects (12.597459ms)
+✔ GET-derived modules and runtime export readback work; drift/omitted cf-entrypoint reject (1.916958ms)
+✔ actual asset/container readback gaps stay blocked rather than trusting upload intent (0.591541ms)
+✔ durable exclusive journal is retained for unknown writes and rejects a second owner (24.940416ms)
+✔ version/deployment identity also binds resource snapshot hashes (0.761375ms)
+✔ unapproved live publication performs no HTTP; missing full preflight creates no intent or PUT (0.98025ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 143.013375

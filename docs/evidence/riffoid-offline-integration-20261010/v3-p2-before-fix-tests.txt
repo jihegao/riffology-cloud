@@ -1,0 +1,59 @@
+✖ P2 unknown identity: baseline version/deployment cannot label temporary bytes/settings (2.985292ms)
+✖ P2 unknown identity: historical published version cannot acquire restored bytes/settings (1.837625ms)
+✖ P2 unknown identity: baseline and historical deployment cannot rebind to another version (0.748209ms)
+✔ P2 unknown identity: consistent GET leaves pending, cursor and identity ledger unchanged (0.864541ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 99.762333
+
+✖ failing tests:
+
+test at tests/m1/riffoid-validation-offline-publisher.test.mjs:147:1
+✖ P2 unknown identity: baseline version/deployment cannot label temporary bytes/settings (2.985292ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async rejectsUnknownIdentity (file://<isolated-worktree>/tests/m1/riffoid-validation-offline-publisher.test.mjs:143:3)
+      at async TestContext.<anonymous> (file://<isolated-worktree>/tests/m1/riffoid-validation-offline-publisher.test.mjs:150:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /version identity changed content/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/m1/riffoid-validation-offline-publisher.test.mjs:152:1
+✖ P2 unknown identity: historical published version cannot acquire restored bytes/settings (1.837625ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async rejectsUnknownIdentity (file://<isolated-worktree>/tests/m1/riffoid-validation-offline-publisher.test.mjs:143:3)
+      at async TestContext.<anonymous> (file://<isolated-worktree>/tests/m1/riffoid-validation-offline-publisher.test.mjs:155:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /version identity changed content/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/m1/riffoid-validation-offline-publisher.test.mjs:157:1
+✖ P2 unknown identity: baseline and historical deployment cannot rebind to another version (0.748209ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async rejectsUnknownIdentity (file://<isolated-worktree>/tests/m1/riffoid-validation-offline-publisher.test.mjs:143:3)
+      at async TestContext.<anonymous> (file://<isolated-worktree>/tests/m1/riffoid-validation-offline-publisher.test.mjs:160:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /deployment identity changed version/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

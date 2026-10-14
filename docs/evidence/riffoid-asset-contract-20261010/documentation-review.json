@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-10T09:36:58.121Z",
+  "reviewer": "publisher_independent_review",
+  "status": "ACCEPTED_DOCUMENTATION_SCOPE_ONLY",
+  "scope": "New asset retention standard, raw HTTP integration requirements, summary/evidence index, and new release-readiness section. Earlier historical sections are explicitly superseded.",
+  "reviewedFileSHA256": {
+    "docs/evidence/riffoid-asset-contract-20261010/asset-retention-standard.md": "ffacee6e8782c0b32e34ecc79548981c076189ca8b5e628f11d305e5b7e85f48",
+    "docs/evidence/riffoid-asset-contract-20261010/raw-http-integration.md": "bb600c4483012a0eb5705edcff3fd17e818a78a1e44c5f955498204ba7fb5c42",
+    "docs/evidence/riffoid-asset-contract-20261010/summary.json": "cd9a55b4af46522598826991c5812128acf79e6d087d6a9139bbd7a6e21ad84f",
+    "docs/evidence/riffoid-asset-contract-20261010/retained-checks-index.json": "1b882b258e8fc41003822c56cb34b8d71f68502a02cabf3f31f65438bf2a0754",
+    "docs/release-readiness.md": "b3d0137d62254a5d9cd131c2e23f054591079a1d8345e7bea5d19312e5a82fd3"
+  },
+  "acceptedSourceSHA256": {
+    "scripts/m1/riffoid-validation-resources.mjs": "e4b2f8b683e6236c9c333ca1d377e5079073953637ea6ca8a9df5078dbd754c1",
+    "scripts/m1/riffoid-validation-publisher.mjs": "a15257537fc6af025e4c749e591ff08beecaada3e187faf7b404f1047eef6e66",
+    "scripts/m1/riffoid-validation-coordinator.mjs": "f9e8cfbdde8dbf7ba8d5c3fe3187400e04b935ce5064c00c7ea8fb4e49f20a4d",
+    "tests/m1/riffoid-validation-resources.test.mjs": "730fa3fff22a01a2b4c5537139daff76f91cfc86359fc097c85bd926d4471991",
+    "tests/m1/riffoid-validation-live-adapter.test.mjs": "af1f84a7a88b9a14d20368cf59fa1ca3f957bc6344ef6433bdf5a252380cab9d",
+    "tests/m1/riffoid-validation-coordinator.test.mjs": "e8c7ce7bdfe43d092fa9c19f09d29448e128e77bdbda112603858f5926f832f1",
+    "tests/m1/fixtures/riffoid-offline-fixtures.mjs": "57833cd671fa74a3910d7cf324577c28ac6a61981e11c168cfde4abbdc992beb"
+  },
+  "checks": {
+    "frozenSourceHashesMatched": 7,
+    "retainedEvidenceHashAndByteRecordsMatched": 14,
+    "localMarkdownLinksResolved": 10,
+    "summarySourceHashesMatched": true,
+    "copiedIndependentReviewMatchesOriginal": true,
+    "gitDiffCheckExitCode": 0,
+    "newSourceTestsRun": false,
+    "priorIndependentVerification": "105/105 offline fixtures and existing TypeScript accepted in unchanged independent-review.json"
+  },
+  "findings": [],
+  "boundaries": {
+    "notExposedConfigReadbackClaimed": false,
+    "assetByteAuditClaimed": false,
+    "completeAssetSetIdentityClaimed": false,
+    "actualContainerAssociationReadbackStillPending": true,
+    "rawAuthenticatedClientExposureStillPending": true,
+    "injectedSDKActualBaseURLAndAuthenticatedOriginMustBeCheckedAtIntegration": true,
+    "connectorAuthenticationDoesNotVerifyAllOAuthScopes": true,
+    "connectorAuthenticationEvidence": "Parent-reported capability observations; no new independent API request in this documentation review.",
+    "ciStatus": "NOT_VERIFIED",
+    "userConfirmedQuotaNonblockingForThisPush": true,
+    "applicationTerminalAndLateTelemetryPolicy": "Existing approved risk record; no platform-wide absolute drain requirement reinstated.",
+    "freshProductionBaselineAndOperationalPublisherExclusionStillRequired": true,
+    "normalPR173PushScope": "Accepted unchanged seven source/test files plus new evidence and release-readiness; no deployment or experiment authorization."
+  },
+  "productionRequests": 0,
+  "productionWrites": 0,
+  "credentialAccess": false,
+  "sourceFilesModified": false,
+  "originalIndependentReviewModified": false
+}

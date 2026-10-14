@@ -1,0 +1,135 @@
+✔ cleanup is unarmed with no timer or request until one local authorization (0.411167ms)
+✔ missing coordinator confirmation or permanent Stop cannot arm cleanup (0.057958ms)
+✔ early click is unspent; timer and concurrent clicks consume only one request (0.061875ms)
+✔ timeout: armed cleanup is never retried (0.067583ms)
+✔ network-disconnected: armed cleanup is never retried (0.046ms)
+✔ receipt-lost: armed cleanup is never retried (0.072375ms)
+✔ missed interval and abandoned unarmed page produce zero POST (0.038625ms)
+✔ both UI pages expose local Stop; A starts unarmed and B has no cleanup scheduler (16.6985ms)
+✔ rendered A success: successful own Run + external confirmation + one arm uses at most one cleanup (1.350583ms)
+✔ rendered A timeout: successful own Run + external confirmation + one arm uses at most one cleanup (1.019208ms)
+✔ rendered A network-disconnected: successful own Run + external confirmation + one arm uses at most one cleanup (0.905583ms)
+✔ rendered A receipt-lost: successful own Run + external confirmation + one arm uses at most one cleanup (0.810041ms)
+✔ B unknown leaves A cleanup unarmed; operator cannot authorize without both receipts and can Stop A (1.152167ms)
+✔ manual Stop aborts an in-flight original Run without follow-up RPC or clearing unknown (1.245167ms)
+✔ Stop cancels an armed cleanup timer; even invoking its old callback produces no request (0.753417ms)
+✔ all stages carry complete metadata/module manifests, preserve Secret references/resources, and do not mutate baselines (2.20475ms)
+✔ fixed maximum and baseline drift/Secret plaintext/incomplete modules are rejected (6.11ms)
+✔ changing frozen time or metadata cannot silently continue the same coordination journal (1.633292ms)
+✔ full fixture proves scoped application terminal state but pending user decisions block all restoration (6.352667ms)
+✔ both observes and timely independently matched marker readback are required; waiting in chat does not extend the window (3.056042ms)
+✔ duplicate accepted begin codes cannot substitute for a verified primary receipt (2.284667ms)
+✔ P2 time order: backdated Run, cleanup and terminal events cannot precede cue or actual completion (2.893125ms)
+✔ P2 identity binding: baseline/seen versions cannot change content and deployments cannot change version (1.790416ms)
+✔ P2 ordered readback: a later delivery cannot hide a future or out-of-order publication/readback (1.427041ms)
+✔ P2 consistent identity reuse: a known version with unchanged content accepts a new deployment binding (1.315583ms)
+✔ early failure removes marker but retains cleanup route; expiration/partial/unknown drain cannot unlock restoration (2.760417ms)
+✔ unknown write/cleanup receipts freeze original request identity and forbid retries or restoration (2.142458ms)
+✔ stale publisher/readback mismatch rejects atomically without changing the previous state (1.097542ms)
+✔ offline module byte/hash verification detects source drift with no network (269.593375ms)
+✔ coordinator refuses claimed preservation with inconsistent contract/coverage and never confuses byte audit (1.598667ms)
+✔ normal exact fixed protocol derives scoped terminal evidence with explicit platform gaps; approval remains pending (3.327542ms)
+✔ timeout or an unavailable verifier is never replaced by expiry, counters or cleanup (1.92525ms)
+✔ network-disconnected or an unavailable verifier is never replaced by expiry, counters or cleanup (0.771875ms)
+✔ receipt-lost or an unavailable verifier is never replaced by expiry, counters or cleanup (0.733083ms)
+✔ extra/duplicate/missing receipt, aliases, malformed body and partial accepted results reject (3.285042ms)
+✔ Run cannot precede marker/cue or deadline; cleanup cannot precede termination or miss its fixed interval (1.47525ms)
+✔ approved wording is consumed without granting production authorization; altered evidence rejects (4.655958ms)
+✔ default dry-run dispatches zero HTTP; read-only and prepare cannot upload (1.849ms)
+✔ wire multipart keeps public/resources and inherits redacted Secret text without material (9.923417ms)
+✔ raw HTTP preserves cf-entrypoint, body bytes and origin; bounds hangs and rejects redirects (12.973709ms)
+✔ GET-derived modules and runtime export readback work; drift/omitted cf-entrypoint reject (2.687875ms)
+✔ contradictory asset presence rejects rather than trusting upload intent (0.937625ms)
+✔ durable exclusive journal is retained for unknown writes and rejects a second owner (25.384042ms)
+✔ version/deployment identity also binds resource snapshot hashes (0.751375ms)
+✔ unapproved live publication performs no HTTP; missing full preflight creates no intent or PUT (0.966958ms)
+✔ mutable/custom transport cannot turn prepare into a network upload (0.575166ms)
+✔ missing Observe originals or forged terminal evidence block before any network write (1.181375ms)
+✔ restart loads original unknown journal and GET reconciliation never clears it (10.917ms)
+✔ package CLI prepares all eight exact multipart files offline without overwriting prior packet (5.045584ms)
+✔ natural expiry checkpoint survives restart and rejects missing or altered identity/time (32.896ms)
+✔ resource read drift is bracketed by final deployment and latest-version checks (1.246375ms)
+✔ readonly restart rebuilds 1 completed phases and reads both current Worker identities with zero PUT (13.791083ms)
+✔ readonly restart rebuilds 3 completed phases and reads both current Worker identities with zero PUT (23.487ms)
+✔ readonly restart rebuilds 4 completed phases and reads both current Worker identities with zero PUT (32.913542ms)
+✔ readonly restart rebuilds 8 completed phases and reads both current Worker identities with zero PUT (66.604833ms)
+✔ completed chain with unowned or invalid lock remains locked; non-owner cannot release it (13.062458ms)
+✔ orphan receipts, unknown intent and changed current identity reject completed restart without mutation or PUT (42.048416ms)
+✔ write preparation rejects explicit assets upload/configuration and reserved multipart assets parts (0.680292ms)
+✔ terminal JSON plus durable unknown remains original-pending across restart and cannot become completed (17.826ms)
+✔ completed restart brackets the first account when it drifts during the second account GET (9.628958ms)
+✔ lost lock during preflight blocks PUT and never unlocks someone else's lock (1.252333ms)
+✔ lost lock during intent blocks PUT and never unlocks someone else's lock (1.046834ms)
+✔ replaced lock during preflight blocks PUT and never unlocks someone else's lock (0.917ms)
+✔ replaced lock during intent blocks PUT and never unlocks someone else's lock (0.803208ms)
+✔ deadline crossing during final lock await is rechecked before any PUT (0.920917ms)
+✔ namespace mutation during later resource GETs is re-read and rejected even with unchanged Worker version (0.453167ms)
+✔ pipeline mutation during later resource GETs is re-read and rejected even with unchanged Worker version (0.469042ms)
+✔ existing container configuration changes independently during Worker inventory GET and is rejected on second pass (0.89375ms)
+✔ asset retention readback passes preservation with full byte coverage false, still rejects resource and module drift (1.443708ms)
+✔ asset-enabled publisher computes retention gate without byte-audit override; post-write drift stays original unknown (30.961916ms)
+✖ asset contract rejects reserved configuration modules and claimed receipts cannot bypass coordinator gates (2.56125ms)
+✔ pure multipart builder preserves references/resources and validates actual module bytes; production target rejected (19.15575ms)
+✔ P2 secret guard: inline key fields, nested key data and legacy secret_key version_id reject at baseline and builder (3.531083ms)
+✔ P2 inheritance: latest must equal the frozen prior active version before any fixture PUT (1.888917ms)
+✔ all phases simulate serial pre-write GET → one PUT → independent GET; readback coverage remains incomplete and approval blocked (3.249292ms)
+✔ GET bytes/config drive hashes; upload hash claims and opaque platform etag cannot hide drift (0.669042ms)
+✔ unknown timeout: only GET reconciliation of original identity; never another PUT or automatic resume (0.910042ms)
+✔ unknown network-disconnected: only GET reconciliation of original identity; never another PUT or automatic resume (0.890084ms)
+✔ unknown receipt-lost: only GET reconciliation of original identity; never another PUT or automatic resume (0.778417ms)
+✔ pre-write guard drift sends no fixture PUT; post-write rejected readback freezes without replay (1.38475ms)
+✔ serial lock, stale identities, changing deployments, partial rollouts and missing fields fail closed (1.584958ms)
+✔ multipart GET module parts are independently parsed and extras are rejected (3.226041ms)
+✔ P2 unknown identity: baseline version/deployment cannot label temporary bytes/settings (1.135333ms)
+✔ P2 unknown identity: historical published version cannot acquire restored bytes/settings (1.925542ms)
+✔ P2 unknown identity: baseline and historical deployment cannot rebind to another version (2.724916ms)
+✔ P2 unknown identity: consistent GET leaves pending, cursor and identity ledger unchanged (1.018875ms)
+✔ destination numeric pagination requires all pages and rejects overlap, loops and limits (1.229417ms)
+✔ container cursor pagination consumes next token and rejects duplicates/repeated token (0.173583ms)
+✔ pipeline guard reads exact owned zone and every scoped inventory; no flag setter (0.742292ms)
+✔ nonempty sinks remain blocked; evidence excludes destination and filter values (0.203833ms)
+✔ zone jobs trigger bounded custom-field metadata; structured absence accepted but guard still blocked (0.632959ms)
+✔ connector bridge supports decoded metadata only and rejects G5/source/other scopes/writes (0.643458ms)
+✔ SDK bridge preserves binary bytes/header with retries disabled; decoded objects do not fake raw HTTP (9.542125ms)
+✔ expanded raw transport accepts only reviewed paths and query keys, with dry-run zero HTTP (1.715ms)
+✔ existing container configuration, export/name, account and DO namespace must all match (1.123ms)
+✔ unsupported Secret/environment or command fields reject without inspecting/logging values (0.32925ms)
+✔ asset preservation distinguishes contract/config match from full content inventory (0.304375ms)
+✔ malformed destination script/field arrays cannot leak nested sensitive data into receipts (0.151542ms)
+✔ namespace pagination covers the exact frozen 23 targets across pages including unrelated namespaces (9.039375ms)
+✔ namespace repeated/overlapping pages, missing last page and page limit fail closed (0.313041ms)
+✔ namespace transport accepts only bounded page/per_page GET and never namespace pagination on unrelated paths (0.514458ms)
+✔ retention snapshot cannot migrate scope, omit config, alter bindings, or accept overriding upload controls (0.703333ms)
+✔ no-assets receipt requires authoritative absence and cannot fake audit or preservation flags (0.515125ms)
+✔ unexposed config is explicit narrow contract evidence, never a fake observed configuration or audit (1.209584ms)
+ℹ tests 104
+ℹ suites 0
+ℹ pass 103
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 493.385583
+
+✖ failing tests:
+
+test at tests/m1/riffoid-validation-live-adapter.test.mjs:303:1
+✖ asset contract rejects reserved configuration modules and claimed receipts cannot bypass coordinator gates (2.56125ms)
+  AssertionError [ERR_ASSERTION]: known Worker/version cannot change metadata
+  + actual - expected
+  
+  + '40b5e81a9b3108208e915ee3412d99f6d6cd378ae72e2878cba3b2d685538a26'
+  - 'da7ea4172d4504cfb52b3d5e7b7aba3b7c5a410fed3327e8b8776186ccbeb79d'
+  
+      at readbacks (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/scripts/m1/riffoid-validation-coordinator.mjs:125:14)
+      at advance (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/scripts/m1/riffoid-validation-coordinator.mjs:155:5)
+      at TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-live-adapter.test.mjs:317:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '40b5e81a9b3108208e915ee3412d99f6d6cd378ae72e2878cba3b2d685538a26',
+    expected: 'da7ea4172d4504cfb52b3d5e7b7aba3b7c5a410fed3327e8b8776186ccbeb79d',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -212,6 +212,9 @@ test('Managed retry explains the durable block and cancelled saves do not claim 
 
 test('locale switching retains Workspace nodes, drafts, selected Session and Preview with account restore',async t=>{
  const f=await fixture(t),p=f.page;
+ // The iframe handshake posts its ticket asynchronously after attachment.
+ // Start counting locale writes only after that initial handoff has completed.
+ await p.locator('#workspace-preview').getByText('模型预览已连接。',{exact:true}).waitFor({state:'attached'});
  await p.locator('#message-input').fill('Keep this user draft 中文');
  await p.evaluate(()=>{window.localeNodes={turns:document.querySelector('#turns'),frame:document.querySelector('#workspace-preview iframe'),session:document.querySelector('#session-select').value};});
  const before=f.calls.length;
@@ -222,7 +225,7 @@ test('locale switching retains Workspace nodes, drafts, selected Session and Pre
  assert.equal(await p.evaluate(()=>window.localeNodes.turns===document.querySelector('#turns')&&window.localeNodes.frame===document.querySelector('#workspace-preview iframe')&&window.localeNodes.session===document.querySelector('#session-select').value),true);
  await p.waitForTimeout(100);
  const writes=f.calls.slice(before).filter(c=>c.method!=='GET');
- assert.equal(writes.length,1);assert.equal(writes[0].path,'/api/me/locale');assert.equal(writes[0].method,'PUT');assert.deepEqual(JSON.parse(writes[0].body),{locale:'en'});
+ assert.equal(writes.length,1,JSON.stringify(writes));assert.equal(writes[0].path,'/api/me/locale');assert.equal(writes[0].method,'PUT');assert.deepEqual(JSON.parse(writes[0].body),{locale:'en'});
  await p.reload();await p.locator('#message-input:not([disabled])').waitFor();
  assert.equal(await p.locator('html').getAttribute('lang'),'en');assert.equal(await p.locator('#message-input').inputValue(),'Keep this user draft 中文');
  await p.setViewportSize({width:390,height:844});assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);

@@ -1,0 +1,9 @@
+{
+  "crossScopeAndFakeFlagsRejected": 6,
+  "observedToUnexposedDowngradeRejected": true,
+  "unexposedToObservedChangeRejected": true,
+  "explicitNullRejected": true,
+  "unsupportedSensitiveFieldRejectedBeforeValueRead": true,
+  "forbiddenValueReads": 0,
+  "productionRequestsExecuted": 0
+}

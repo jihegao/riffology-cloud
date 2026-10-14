@@ -1,0 +1,18 @@
+{
+  "scope": "local review-only build; no publication",
+  "bytes": 32236,
+  "sha256": "43fea289e7b529714d09365f4fe579b51b08febe9dbd0c28840ceebacb0f6e64",
+  "inputs": [
+    "services/catalog/contracts.ts",
+    "services/gateway/http.ts",
+    "services/gateway/origins.ts",
+    "services/gateway/transport-headers.ts",
+    "services/entry/signature.ts",
+    "services/entry/abort.ts",
+    "services/entry/validation-policy.ts",
+    "services/entry/validation-cleanup-ui.ts",
+    "services/entry/validation-entry.ts",
+    "services/entry/index.ts"
+  ],
+  "productionAuthorized": false
+}

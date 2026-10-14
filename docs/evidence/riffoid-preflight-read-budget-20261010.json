@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-10",
+  "preparedHead": "6dc8707c1ea63e8501f294a30c560b0aa72c5f27",
+  "status": "FIRST_PREFLIGHT_STOPPED_BEFORE_ANY_MUTATION",
+  "run": "riffoid_6b1eaecb29344f8c8473beccf0663ebf",
+  "packetSHA256": "e9d450e982bc51549fb5bb86512d74b4f34663fac15f5085aeb59317f8fa27b0",
+  "preflightReadFailure": "120-second complete readback budget exhausted during final Worker inventory GET; source GET alone took 29.725 seconds",
+  "PUTDispatches": 0,
+  "durableIntentRecords": 0,
+  "unknownMutationRecords": 0,
+  "phase": "frozen",
+  "cursor": 0,
+  "maintenancePublished": false,
+  "formalCutoverT": null,
+  "recoveryUntil": null,
+  "originalProcessStopped": true,
+  "operatorPrerequisites": {
+    "mobileCurrentTraceConfirmed": true,
+    "singlePublisherConfirmedByHuman": true,
+    "desktopNativeTraceConfirmed": true,
+    "rawIPs": "Private only"
+  },
+  "scopedCapacitySnapshot": {
+    "active": 0,
+    "quarantined": 0,
+    "enabled": true,
+    "paused": false,
+    "quotaMode": "meter-only",
+    "scope": "Authenticated original-app PrivateBetaCapacity snapshot only; not platform census"
+  },
+  "securityReadbacks": {
+    "bothWAFBlocksEnabled": true,
+    "managedTransformsDisabled": true,
+    "pseudoIPv4": "off"
+  },
+  "change": {
+    "completeReadbackMaxMS": 180000,
+    "defaultReadbackMS": 60000,
+    "perGETMaxMS": 30000,
+    "PUTMaxMS": 15000,
+    "automaticRetries": 0,
+    "protocolWindowMS": 300000,
+    "noBudgetIncreaseForProtocolCalls": true
+  },
+  "tests": {
+    "relatedChecks": 114,
+    "evidenceChecks": 6,
+    "operationalDurableIntentGuardChecks": 12
+  },
+  "limitations": [
+    "No maintenance browser Observe/Run/cleanup occurred",
+    "No model/tool/Turn/Run request was submitted by this attempt",
+    "No production cutover occurred",
+    "No paid or authenticated new-origin acceptance is established"
+  ]
+}

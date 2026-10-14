@@ -1,0 +1,425 @@
+{
+  "status": "CURRENT_BASE_AND_LOCAL_CODE_FROZEN_FINAL_PRODUCTION_ROLLBACK_PENDING",
+  "recordedUTC": "2026-10-08T16:47:43.093743+00:00",
+  "repository": {
+    "main": "25609953f5c3b69dcb44e520d7e7ed1253d18fe4",
+    "priorDraftRemoteHead": "cb148e702007ecc638ef47b1eb78c03b5132f9ad",
+    "pr": 173,
+    "draft": true,
+    "merged": false,
+    "brandPR170Included": false
+  },
+  "authorization": {
+    "packetCommit": "a0ab4881d585831d0b0d7e220d69632c681a8c46",
+    "packetApprovedUTC": "2026-10-08T12:33:01Z",
+    "messageId": "Sentinel_d74bc92248288191a1631d8044d57811",
+    "currentGoogleClientConfirmedByUserUTC": "2026-10-08T12:39:44Z",
+    "independentGoogleClientReadback": false,
+    "noNewApprovalAsked": true
+  },
+  "oldAccountAuthentication": {
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "accountName": "Jihe.gao@gmail.com's Account",
+    "officialWranglerDeviceLoginExitCode": 0,
+    "whoamiExitCode": 0,
+    "loginTerminalUTC": "2026-10-08T16:21:24.209Z",
+    "isolatedXdgConfigHome": true,
+    "globalAuthChanged": false,
+    "credentialValueExtractedOrReported": false,
+    "scopes": [
+      "offline_access",
+      "account:read",
+      "workers_scripts:write"
+    ],
+    "emailUserReadScopeAbsent": true
+  },
+  "workers": [
+    {
+      "name": "riffology-m1-gateway-staging",
+      "version": "aeddf112-a2be-45da-868c-ed576c55d5ec",
+      "deployment": "c6ff55e4-2364-4920-94e0-b8784a1824b5",
+      "trafficPercentage": 100,
+      "bindings": 93,
+      "settingsAndVersionBindingsEqual": true,
+      "runtime": {
+        "exports": {
+          "G5ControlledWindow": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "G5TenantModelBudget": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "InvitedRunCapacity": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ManagedProductRuntime": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "PiDeveloperBudget": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "PrivateBetaCapacity": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ProductTurnRuntime": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ProductionModelBudget": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ProjectRuntime": {
+            "type": "durable-object",
+            "storage": "sqlite",
+            "container": "riffology-m1-project-staging"
+          },
+          "ProjectToolSandbox": {
+            "type": "durable-object",
+            "storage": "sqlite",
+            "container": "riffology-m3-project-tools-staging"
+          },
+          "RevisionStore": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ServiceRun": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ServiceRuntime": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ServiceSandbox": {
+            "type": "durable-object",
+            "storage": "sqlite",
+            "container": "riffology-m3-service-staging"
+          },
+          "SimulationSandbox": {
+            "type": "durable-object",
+            "storage": "sqlite",
+            "container": "riffology-phase1-simulation"
+          },
+          "TenantModelBudget": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "TenantQuota": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ToolArtifactStore": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "ToolBridgeAgent": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "TrustedPiCapacity": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          },
+          "TrustedPiSandbox": {
+            "type": "durable-object",
+            "storage": "sqlite",
+            "container": "riffology-m3-trusted-pi-staging"
+          },
+          "WorkspaceAgent": {
+            "type": "durable-object",
+            "storage": "sqlite"
+          }
+        },
+        "assets": {
+          "html_handling": "none",
+          "not_found_handling": "none",
+          "serve_directly": false,
+          "raw_run_worker_first": true,
+          "base_path": "/"
+        },
+        "compatibility_date": "2026-09-09",
+        "compatibility_flags": [
+          "nodejs_compat",
+          "nodejs_compat_do_not_populate_process_env"
+        ],
+        "usage_model": "standard",
+        "containers": [
+          {
+            "class_name": "ProjectRuntime",
+            "name": "riffology-m1-project-staging"
+          },
+          {
+            "class_name": "ProjectToolSandbox",
+            "name": "riffology-m3-project-tools-staging"
+          },
+          {
+            "class_name": "TrustedPiSandbox",
+            "name": "riffology-m3-trusted-pi-staging"
+          },
+          {
+            "class_name": "ServiceSandbox",
+            "name": "riffology-m3-service-staging"
+          },
+          {
+            "class_name": "SimulationSandbox",
+            "name": "riffology-phase1-simulation"
+          }
+        ]
+      },
+      "snapshotSha256": "939c7e04f3a5c0d1ff25ff1fdf792b316aa4c05235409f6f8fb5c169e67e2db7",
+      "serviceSnapshotSha256": "ae5f26bb66bd311cb6260df61f5a67964c2c8ed86fff78d408ee82c762aa7d1b",
+      "modules": [
+        {
+          "name": "index.js",
+          "type": "application/javascript+module",
+          "bytes": 2956059,
+          "sha256": "6c058d14c7ba114152ba62682768e61c835307e16e2fa75795c2b71fce5fb98b"
+        }
+      ]
+    },
+    {
+      "name": "riffology-browser-execution",
+      "version": "c94df077-02a1-460f-8158-e47a338e68af",
+      "deployment": "a6fdeb9f-d885-4c72-9e02-968315351edb",
+      "trafficPercentage": 100,
+      "bindings": 4,
+      "settingsAndVersionBindingsEqual": true,
+      "runtime": {
+        "assets": {
+          "html_handling": "none",
+          "not_found_handling": "none",
+          "serve_directly": false,
+          "raw_run_worker_first": true,
+          "base_path": "/"
+        },
+        "compatibility_date": "2026-09-05",
+        "compatibility_flags": [
+          "nodejs_compat",
+          "nodejs_compat_do_not_populate_process_env"
+        ],
+        "usage_model": "standard"
+      },
+      "snapshotSha256": "fff8b0117946a299eba9ae8cb8d45f2c1812ffffd8dc6b610be2d2cac61fe1e4",
+      "serviceSnapshotSha256": "fc57f05202e4a3e6cc183027787614dc2bd37411e41702f09edd819ed8023db4",
+      "modules": [
+        {
+          "name": "index.js",
+          "type": "application/javascript+module",
+          "bytes": 49003,
+          "sha256": "b76b05f96d345a0ecf280cdb4414c1dd0c56bf71041dc3c72199db8e8c6c07c1"
+        }
+      ]
+    }
+  ],
+  "namespaceLifecycle": {
+    "mode": "modern-exports",
+    "currentLegacyMigrationTag": null,
+    "legacyEntryReplayV1TagSuperseded": true,
+    "noLegacyArrayOrInventedMigrationHistory": true,
+    "requestedAddOnlyExport": {
+      "EntryReplayGuard": {
+        "type": "durable-object",
+        "storage": "sqlite"
+      }
+    },
+    "allOriginalExportsExact": true,
+    "allOriginalNamespaceIdentityExact": true,
+    "replayNamespaceId": null
+  },
+  "permissionReads": [
+    {
+      "name": "namespaceMetadata",
+      "status": "read-success",
+      "snapshotSha256": "fc49398869ea1044e1d9a65b045f4a22cf02bdb99613856e5262b748f68621eb",
+      "count": 22
+    },
+    {
+      "name": "domains",
+      "status": "read-success",
+      "snapshotSha256": "21a45c5799b5bda104af79be18701df6db1fe9311473ed620a67154574dcf5bd",
+      "count": 2
+    },
+    {
+      "name": "routes",
+      "status": "read-denied-or-error",
+      "code": null,
+      "error": "A request to the Cloudflare API (/zones/c97b548800561fada1a912c234696db1/workers/routes) failed.",
+      "permissionExpanded": false,
+      "retried": false
+    },
+    {
+      "name": "dnsPrimary",
+      "status": "read-denied-or-error",
+      "code": 10000,
+      "error": "A request to the Cloudflare API (/zones/c97b548800561fada1a912c234696db1/dns_records?name=riffoid-transport.gaojihe.cn) failed.",
+      "permissionExpanded": false,
+      "retried": false
+    },
+    {
+      "name": "waf",
+      "status": "read-denied-or-error",
+      "code": 10000,
+      "error": "A request to the Cloudflare API (/zones/c97b548800561fada1a912c234696db1/rulesets/phases/http_request_firewall_custom/entrypoint) failed.",
+      "permissionExpanded": false,
+      "retried": false
+    }
+  ],
+  "localCandidates": [
+    {
+      "name": "gateway",
+      "source": "services/gateway/index.ts",
+      "sha256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290",
+      "bytes": 5497752,
+      "codeExports": [
+        "ContainerProxy",
+        "EntryReplayGuard",
+        "G5ControlledWindow",
+        "G5TenantModelBudget",
+        "InvitedRunCapacity",
+        "ManagedProductRuntime",
+        "ModelProxyService",
+        "ObserverExecutor",
+        "PiDeveloperBudget",
+        "PrivateBetaCapacity",
+        "ProductTurnRuntime",
+        "ProductionModelBudget",
+        "ProjectRuntime",
+        "ProjectToolSandbox",
+        "RevisionStore",
+        "ServiceRun",
+        "ServiceRuntime",
+        "ServiceSandbox",
+        "SimulationSandbox",
+        "TenantModelBudget",
+        "TenantQuota",
+        "ToolArtifactStore",
+        "ToolBridgeAgent",
+        "ToolBridgeService",
+        "TrustedPiCapacity",
+        "TrustedPiSandbox",
+        "WorkspaceAgent",
+        "default"
+      ]
+    },
+    {
+      "name": "forward-rollback",
+      "source": "services/gateway/forward-rollback.ts",
+      "sha256": "319121c411ed2c45e5f952784adbc4823e0e36dabe3d0ee7298b4db8befbce5a",
+      "bytes": 5498336,
+      "codeExports": [
+        "ContainerProxy",
+        "EntryReplayGuard",
+        "G5ControlledWindow",
+        "G5TenantModelBudget",
+        "InvitedRunCapacity",
+        "ManagedProductRuntime",
+        "ModelProxyService",
+        "ObserverExecutor",
+        "PiDeveloperBudget",
+        "PrivateBetaCapacity",
+        "ProductTurnRuntime",
+        "ProductionModelBudget",
+        "ProjectRuntime",
+        "ProjectToolSandbox",
+        "RevisionStore",
+        "ServiceRun",
+        "ServiceRuntime",
+        "ServiceSandbox",
+        "SimulationSandbox",
+        "TenantModelBudget",
+        "TenantQuota",
+        "ToolArtifactStore",
+        "ToolBridgeAgent",
+        "ToolBridgeService",
+        "TrustedPiCapacity",
+        "TrustedPiSandbox",
+        "WorkspaceAgent",
+        "default"
+      ]
+    },
+    {
+      "name": "execution-preserved",
+      "sha256": "b76b05f96d345a0ecf280cdb4414c1dd0c56bf71041dc3c72199db8e8c6c07c1",
+      "bytes": 49003,
+      "source": "Exact downloaded current production module; no recompilation or code change"
+    }
+  ],
+  "staticAssets": {
+    "web": {
+      "verified": 23,
+      "expected": 23,
+      "allHashMatches": true,
+      "evidenceSha256": "66d6bdc8122ec1ec7cac9d7e2873dea9446871004b6e407ba888219777249dde"
+    },
+    "runtime": {
+      "verified": 71,
+      "expected": 71,
+      "bytes": 53306908,
+      "frames": 3,
+      "allHashMatches": true,
+      "firstLargePackageTimeoutMs": 30000,
+      "oneBoundedLastPackageRetryMs": 120000,
+      "retryComplete": true,
+      "evidenceSha256": "1590ac8398c483dee6f09eb917cc245d6c7ce9aa677af8b780609f880fafb7c6"
+    },
+    "scopeLimitation": "Current source-backed served web set and71 runtime-index files, not an enumeration of every stored asset namespace object; keep_assets and exact live config required"
+  },
+  "newSideProvenance": {
+    "source": "Parent connector report; not reread or modified by this task",
+    "accountId": "3232ebc7e9bb0199b92e3d70b07825af",
+    "entryName": "riffoid-entry",
+    "domain": "app.riffoid.com",
+    "mode": "disabled",
+    "keyIdPublicPinPrivateSecretReady": false
+  },
+  "verification": {
+    "localCandidateBuildExitCode": 0,
+    "threeWorkerModulesSyntaxCheckExitCode": 0,
+    "gitDiffCheckExitCode": 0,
+    "historicalNotRerun": {
+      "M1Passed": 350,
+      "M3Passed": 1070,
+      "M3Skipped": 12,
+      "targetedPassed": 10
+    },
+    "realTwoAccountAcceptance": false,
+    "cloudCIRunSuccessClaimed": false
+  },
+  "pending": [
+    "Strict user-only generated public ring without d and new entry Secret presence metadata only",
+    "Once-allocated actual replay namespace ID and post-addition modern exports/bindings snapshot",
+    "Current old-zone DNS/routes/WAF/Transform readback via existing authorized console",
+    "Transport Custom Domain/TLS, exact add-only OAuth callback applied/readback",
+    "Real no-paid provenance/IP/signature/replay/SSE/isolatedExecution acceptance",
+    "Complete final forward rollback frozen on post-resource topology"
+  ],
+  "preserved": {
+    "canonicalAndExecutionAPP_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
+    "trialReviewAt": "2026-12-31T15:59:59.999Z",
+    "M1Date": "2026-10-20 Asia/Shanghai",
+    "originalSessionHours": 8,
+    "recoveryTAndUntil": null,
+    "dataIdentityHistoryNamespacesPinsLedgerChanged": false
+  },
+  "productionWrites": 0,
+  "deployments": 0,
+  "privateSigningKeyGeneratedReadTransmittedInjected": false,
+  "permissionExpansion": false,
+  "paidProviderModelToolTurnRun": false,
+  "minimumMissingReadCapabilities": {
+    "zoneId": "c97b548800561fada1a912c234696db1",
+    "DNS": "DNS Read",
+    "routes": "Workers Routes Read",
+    "customWAF": "Zone WAF Read",
+    "requestedOrGranted": false,
+    "alternative": "Existing user-controlled authorized console",
+    "transformReadStillPending": "Transform Rules Read; no additional API probe this turn"
+  }
+}

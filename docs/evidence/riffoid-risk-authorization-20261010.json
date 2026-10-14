@@ -1,0 +1,57 @@
+{
+  "recordedUTC": "2026-10-10T03:38:43.547233+00:00",
+  "basisHead": "3dc896ade535cd2c51d30ffe7fe829b9b8cd03c8",
+  "recordKind": "USER_RISK_DECISIONS_NOT_LIVE_EXECUTION_RECEIPT",
+  "source": "parent delegation transcript_evidence; exact user wording preserved",
+  "proposal": {
+    "messageId": "Sentinel_bf80f53465588191a3367e6492972f11",
+    "timeUTCMinutePrecision": "2026-10-10 00:54 UTC",
+    "text": "还需确认两项日志处置：\n1. 所有测试请求都有完整结束回执后恢复日志，但接受平台内部迟到遥测仍可能被保存的残余风险。\n2. 若请求结果不明，立即停测、不重发，保持两端日志持久化关闭；10 分钟内向你报告，等你另行批准再恢复。日志关闭时间可能超过 300 秒，期间会缺少持久化诊断记录。\n\n这两项也允许吗？若不接受，就先不开测试窗口。"
+  },
+  "confirmation": {
+    "messageId": "Sentinel_e4884fe864f4819180a77c591b8290aa",
+    "timeUTC": "2026-10-10T03:35:40Z",
+    "text": "确认两项日志处置"
+  },
+  "publicationAuthorization": {
+    "messageId": "Sentinel_ebbf37f8e0bc81918fd8e186cd1b93b5",
+    "text": "允许推送 [riffology-cloud PR173](https://github.com/jihegao/riffology-cloud/pull/173 \"Open link\"), 也允许部署，目前是测试期，服务可以断线"
+  },
+  "decisions": {
+    "restorationStandard": {
+      "status": "USER_APPROVED_APPLICATION_SCOPE_WITH_LATE_TELEMETRY_RISK",
+      "required": "all original test operations have complete terminal receipts; exact restoration guards remain mandatory",
+      "platformDrainProven": false
+    },
+    "unknownLogClosure": {
+      "status": "USER_APPROVED_HOLD_CONFIRMED_LOGS_OFF_UNTIL_NEW_APPROVAL",
+      "stopFurtherTest": true,
+      "retry": false,
+      "reportWithinMS": 600000,
+      "automaticLogsRestore": false,
+      "additionalUserApprovalToRestore": true,
+      "durationMayExceed300Seconds": true,
+      "persistentDiagnosticGapAccepted": true
+    }
+  },
+  "doesNotAuthorize": [
+    "skip real publisher/readback authenticity",
+    "skip full-state or asset/container/Secret preservation guards",
+    "raise 300-second single-round or request/proof limits",
+    "read private key",
+    "new resources/credentials",
+    "merge"
+  ],
+  "thisTask": {
+    "productionWritesPermitted": false,
+    "openWindowPermitted": false,
+    "freshNativeTestPermitted": false,
+    "productionAuthorized": false
+  },
+  "execution": {
+    "productionActionsExecuted": 0,
+    "windowStarted": false,
+    "actualRun": null,
+    "actualVisitorIPsStored": false
+  }
+}

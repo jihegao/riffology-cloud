@@ -1,0 +1,16 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "tests/m1/riffoid-validation-coordinator.test.mjs",
+    "tests/m1/riffoid-validation-evidence.test.mjs",
+    "tests/m1/riffoid-validation-offline-publisher.test.mjs",
+    "tests/m1/riffoid-validation-cleanup-ui.test.mjs",
+    "tests/m1/riffoid-validation.test.ts"
+  ],
+  "exitCode": 0,
+  "completedUTC": "2026-10-10T01:01:42.477636+00:00",
+  "logSHA256": "b88152685a2bbfe7cd71b45de990f1986c897d88d1bffc26fdf6ab217c7d26c3",
+  "scope": "local fixtures/type checks only; no production requests or deployment",
+  "logNormalization": "absolute integration-worktree path redaction, trailing whitespace and terminal blank lines only"
+}

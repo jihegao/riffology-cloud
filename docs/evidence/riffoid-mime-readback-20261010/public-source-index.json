@@ -1,0 +1,80 @@
+{
+  "repository": "cloudflare/mcp",
+  "mainResolvedCommit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+  "mainBranchResolutionURL": "https://api.github.com/repos/cloudflare/mcp/branches/main",
+  "deployedVersionConfirmed": false,
+  "records": [
+    {
+      "commit": "37cc36c01e19e674519442d0fee03ebc8827e9ae",
+      "file": "src/tools/execute.ts",
+      "githubBlobSHA": "84e2f401d979feaad8e2b443066a78aae07415da",
+      "url": "https://github.com/cloudflare/mcp/blob/37cc36c01e19e674519442d0fee03ebc8827e9ae/src/tools/execute.ts",
+      "artifact": "public-37cc36c01e19e674519442d0fee03ebc8827e9ae-src-tools-execute.ts",
+      "sha256": "37b1f623dcf92f8b795429cc9aec797dbe8c02c6754266aa01bbc2d2ba1a1575",
+      "bytes": 11332
+    },
+    {
+      "commit": "37cc36c01e19e674519442d0fee03ebc8827e9ae",
+      "file": "src/utils/fetch-retry.ts",
+      "githubBlobSHA": "a636a55ebf0821b47f87d6c7e951263840b982ba",
+      "url": "https://github.com/cloudflare/mcp/blob/37cc36c01e19e674519442d0fee03ebc8827e9ae/src/utils/fetch-retry.ts",
+      "artifact": "public-37cc36c01e19e674519442d0fee03ebc8827e9ae-src-utils-fetch-retry.ts",
+      "sha256": "10774080fcbdd0907951a81919283aa847d66059c9de0f094836432470f21eb0",
+      "bytes": 3771
+    },
+    {
+      "commit": "37cc36c01e19e674519442d0fee03ebc8827e9ae",
+      "file": "src/constants.ts",
+      "githubBlobSHA": "cdc79cc957e326d7473bd93d22e73f3657a28614",
+      "url": "https://github.com/cloudflare/mcp/blob/37cc36c01e19e674519442d0fee03ebc8827e9ae/src/constants.ts",
+      "artifact": "public-37cc36c01e19e674519442d0fee03ebc8827e9ae-src-constants.ts",
+      "sha256": "ab0e64253e5435e800d194b35caf4155d78a8dcdcf7ee3ddc27b27d2e1891d74",
+      "bytes": 1699
+    },
+    {
+      "commit": "37cc36c01e19e674519442d0fee03ebc8827e9ae",
+      "file": "src/tools/non-codemode.ts",
+      "githubBlobSHA": "22de14ba5dd4ed6a74c85d127d25bab971995f7e",
+      "url": "https://github.com/cloudflare/mcp/blob/37cc36c01e19e674519442d0fee03ebc8827e9ae/src/tools/non-codemode.ts",
+      "artifact": "public-37cc36c01e19e674519442d0fee03ebc8827e9ae-src-tools-non-codemode.ts",
+      "sha256": "a83da518157c83cfa7eb92c0d6ed3e16157356a37e2b3cdc3e8cc4c2cc053e51",
+      "bytes": 6435
+    },
+    {
+      "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+      "file": "src/tools/execute.ts",
+      "githubBlobSHA": "84e2f401d979feaad8e2b443066a78aae07415da",
+      "url": "https://github.com/cloudflare/mcp/blob/d5d326e5d4dd09af4af1f2ea9926df2a991582c2/src/tools/execute.ts",
+      "artifact": "public-d5d326e5d4dd09af4af1f2ea9926df2a991582c2-src-tools-execute.ts",
+      "sha256": "37b1f623dcf92f8b795429cc9aec797dbe8c02c6754266aa01bbc2d2ba1a1575",
+      "bytes": 11332
+    },
+    {
+      "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+      "file": "src/utils/fetch-retry.ts",
+      "githubBlobSHA": "79a3f75950e88c9a257b28efc457f06fda42e946",
+      "url": "https://github.com/cloudflare/mcp/blob/d5d326e5d4dd09af4af1f2ea9926df2a991582c2/src/utils/fetch-retry.ts",
+      "artifact": "public-d5d326e5d4dd09af4af1f2ea9926df2a991582c2-src-utils-fetch-retry.ts",
+      "sha256": "644813948835504c0a739e114bd565cd516ac85a7d1d2ac251d6e71a58e91e40",
+      "bytes": 6849
+    },
+    {
+      "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+      "file": "src/constants.ts",
+      "githubBlobSHA": "c415c9970d8a7b1b985dc80ad2d50cdb6e563b2e",
+      "url": "https://github.com/cloudflare/mcp/blob/d5d326e5d4dd09af4af1f2ea9926df2a991582c2/src/constants.ts",
+      "artifact": "public-d5d326e5d4dd09af4af1f2ea9926df2a991582c2-src-constants.ts",
+      "sha256": "2da46097d51c9574d4098669ada3c8489509b750013527517ef610e4189a9560",
+      "bytes": 1922
+    },
+    {
+      "commit": "d5d326e5d4dd09af4af1f2ea9926df2a991582c2",
+      "file": "src/tools/non-codemode.ts",
+      "githubBlobSHA": "303f94d6ea530865d014040e8cbded160e423905",
+      "url": "https://github.com/cloudflare/mcp/blob/d5d326e5d4dd09af4af1f2ea9926df2a991582c2/src/tools/non-codemode.ts",
+      "artifact": "public-d5d326e5d4dd09af4af1f2ea9926df2a991582c2-src-tools-non-codemode.ts",
+      "sha256": "a73125c58129e86ce1ba7c76be3efabd039ca5cf081f67a72bc26594e0d4feea",
+      "bytes": 5278
+    }
+  ]
+}

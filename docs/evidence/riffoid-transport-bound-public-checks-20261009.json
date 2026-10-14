@@ -1,0 +1,437 @@
+{
+  "UTC": "2026-10-09T04:36:20.349025+00:00",
+  "status": "TRANSPORT_BOUND_INDEPENDENT_GET_AND_TLS_ANONYMOUS_GATE_PASSED_ENTRY_DISABLED_REAL_TWO_ACCOUNT_PENDING",
+  "scope": "one explicitly approved controlled retry after previous unknown receipt was reconciled absent; domain-only write, no application configuration cutover",
+  "currentDirectUserApproval": {
+    "recordedUTC": "2026-10-09T04:30:57.084124+00:00",
+    "sourceThread": "01a118f1-ea45-739a-9e7d-6f57ef7cd010",
+    "originalUserMessageId": "Sentinel_14474b60e21c81919511adaec6f7a972",
+    "originalUserText": "允许",
+    "originalUserSentAt": "2026-10-09T04:29:51+00:00",
+    "approvedPromptMessageId": "Sentinel_3024643b33d8819196f3ae87ce28c581",
+    "approvedPromptSentAt": "2026-10-09T03:45:33+00:00",
+    "approvedPromptText": "允许将 riffoid-transport.gaojihe.cn 绑定到旧账号的 riffology-m1-gateway-staging，仅尝试一次并核对结果，保留现有域名，新入口继续关闭。是否允许？",
+    "reviewContextOnly": true,
+    "maximumActualAdditionalPUT": 1,
+    "ifCorrectlyExists": "no write; GET acceptance",
+    "ifUnknownReceipt": "GET only",
+    "entryRemainsDisabled": true,
+    "noAlternateExecutionAfterReviewRejection": true
+  },
+  "previousUnknownPUT": {
+    "UTC": "2026-10-09T03:25:23.837Z",
+    "cause": "ECONNRESET",
+    "successReceipt": false,
+    "postGETsConfirmedAbsentUTC": [
+      "2026-10-09T03:27:05.501Z",
+      "2026-10-09T03:28:48.044Z"
+    ],
+    "historicalEvidence": "riffoid-transport-single-put-reconciliation-20261009.json"
+  },
+  "previousReviewRejections": "riffoid-transport-user-approval-review-rejected-20261009.json",
+  "currentReview": "same previously rejected exec_command allowed after new direct user permission; no alternate tool workaround",
+  "actualAdditionalPUT": 1,
+  "totalActualDomainPUT": 2,
+  "controlledRetryAttempt": {
+    "UTC": "2026-10-09T04:33:49.464Z",
+    "method": "PUT",
+    "endpoint": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/domains",
+    "payload": {
+      "hostname": "riffoid-transport.gaojihe.cn",
+      "service": "riffology-m1-gateway-staging",
+      "zone_id": "c97b548800561fada1a912c234696db1",
+      "zone_name": "gaojihe.cn"
+    },
+    "automaticWriteRetry": false,
+    "receiptUnknownAction": "ONLY_GET_NEVER_REPEAT"
+  },
+  "controlledRetrySuccessReceiptUTC": "2026-10-09T04:33:51.113Z",
+  "PUTResponse": {
+    "id": "9f0e5e9924f4c95948932d5fab37621a1075ddb5",
+    "zone_id": "c97b548800561fada1a912c234696db1",
+    "zone_name": "gaojihe.cn",
+    "hostname": "riffoid-transport.gaojihe.cn",
+    "service": "riffology-m1-gateway-staging",
+    "environment": "",
+    "cert_id": "7c91ea00-d3d8-41f3-9cdb-7e6071170066",
+    "previews_enabled": false,
+    "enabled": true
+  },
+  "GETConfirmedDomain": {
+    "id": "9f0e5e9924f4c95948932d5fab37621a1075ddb5",
+    "zone_id": "c97b548800561fada1a912c234696db1",
+    "zone_name": "gaojihe.cn",
+    "hostname": "riffoid-transport.gaojihe.cn",
+    "service": "riffology-m1-gateway-staging",
+    "environment": "production",
+    "cert_id": "7c91ea00-d3d8-41f3-9cdb-7e6071170066",
+    "previews_enabled": false,
+    "enabled": true
+  },
+  "deprecatedEnvironmentDifference": {
+    "PUT": "",
+    "GET": "production",
+    "interpretation": "observed response difference; identity, service, zone and certificate identical. GET is current authoritative record."
+  },
+  "independentFullDomainGETUTC": "2026-10-09T04:34:09.491Z",
+  "independentDomainIdGETUTC": "2026-10-09T04:34:20.453Z",
+  "domainCountBefore": 11,
+  "domainCountAfter": 12,
+  "allOriginal11CompleteObjectsUnchangedIgnoringListOrder": true,
+  "onlyAdditionalHostname": "riffoid-transport.gaojihe.cn",
+  "gatewayPostActiveDeploymentExactFrozen": true,
+  "gatewayVersion": "6edef49b-ca5c-4c97-bcec-5c141b079bb1",
+  "gatewayDeployment": "57ea9670-0fef-420b-8bd2-cd044c89fd2d",
+  "publicGETChecks": {
+    "UTC": "2026-10-09T04:35:09.131Z",
+    "requestCount": 5,
+    "bindingEvidenceSource": "independent official GET domain.confirmed.post.json",
+    "productionConfigurationWrites": 0,
+    "authenticationOrPaidBusinessInvoked": false,
+    "checks": [
+      {
+        "UTC": "2026-10-09T04:34:54.159Z",
+        "url": "https://riffoid-transport.gaojihe.cn/",
+        "method": "GET",
+        "status": 403,
+        "tlsVerificationEnabled": true,
+        "tlsVerificationResult": 0,
+        "server": "cloudflare",
+        "cfRay": "a47aacefd9c2f6d8-SEA",
+        "cfMitigated": null,
+        "contentType": "text/html; charset=UTF-8",
+        "location": null,
+        "CSP": null,
+        "setCookieCount": 0,
+        "appAuthCookiePresent": false,
+        "bodyBytes": 4545,
+        "bodySha256": "cf6e51a860c9bd44d428ac426f61ecfa507c7aab5abcb577d8801676cec24569",
+        "originHostIPOrWorkerHeadersRewritten": false,
+        "cookiesSent": false,
+        "redirectsFollowed": false,
+        "cloudflareError1020": false,
+        "cloudflareBlockPage": true
+      },
+      {
+        "UTC": "2026-10-09T04:34:57.961Z",
+        "url": "https://riffoid-transport.gaojihe.cn/api/auth/get-session",
+        "method": "GET",
+        "status": 403,
+        "tlsVerificationEnabled": true,
+        "tlsVerificationResult": 0,
+        "server": "cloudflare",
+        "cfRay": "a47aacf7aaa9cf27-SJC",
+        "cfMitigated": null,
+        "contentType": "text/html; charset=UTF-8",
+        "location": null,
+        "CSP": null,
+        "setCookieCount": 0,
+        "appAuthCookiePresent": false,
+        "bodyBytes": 4545,
+        "bodySha256": "cc8bd613c10da8585a278ae8aaf2de7cb8341e6d08d188633eb5640e55e51b35",
+        "originHostIPOrWorkerHeadersRewritten": false,
+        "cookiesSent": false,
+        "redirectsFollowed": false,
+        "cloudflareError1020": false,
+        "cloudflareBlockPage": true
+      },
+      {
+        "UTC": "2026-10-09T04:34:59.941Z",
+        "url": "https://m1.riff-demo.gaojihe.cn/",
+        "method": "GET",
+        "status": 200,
+        "tlsVerificationEnabled": true,
+        "tlsVerificationResult": 0,
+        "server": "cloudflare",
+        "cfRay": "a47aad114a5dc568-SEA",
+        "cfMitigated": null,
+        "contentType": "text/html",
+        "location": null,
+        "CSP": "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; frame-src https://*.preview.m1.riff-demo.gaojihe.cn https://riffology-browser-execution.jihe-gao.workers.dev; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
+        "setCookieCount": 0,
+        "appAuthCookiePresent": false,
+        "bodyBytes": 14425,
+        "bodySha256": "96f3a7f7eeac0cd0d482b15a19b67f0f4a0e4c67ba7bdbae39bfbce59aa71fd7",
+        "originHostIPOrWorkerHeadersRewritten": false,
+        "cookiesSent": false,
+        "redirectsFollowed": false,
+        "cloudflareError1020": false,
+        "cloudflareBlockPage": false
+      },
+      {
+        "UTC": "2026-10-09T04:35:07.682Z",
+        "url": "https://m1.riff-demo.gaojihe.cn/api/auth/get-session",
+        "method": "GET",
+        "status": 200,
+        "tlsVerificationEnabled": true,
+        "tlsVerificationResult": 0,
+        "server": "cloudflare",
+        "cfRay": "a47aad382d2ec8bd-SJC",
+        "cfMitigated": null,
+        "contentType": "application/json",
+        "location": null,
+        "CSP": null,
+        "setCookieCount": 0,
+        "appAuthCookiePresent": false,
+        "bodyBytes": 4,
+        "bodySha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        "originHostIPOrWorkerHeadersRewritten": false,
+        "cookiesSent": false,
+        "redirectsFollowed": false,
+        "anonymousSessionNull": true,
+        "cloudflareError1020": false,
+        "cloudflareBlockPage": false
+      },
+      {
+        "UTC": "2026-10-09T04:35:09.130Z",
+        "url": "https://app.riffoid.com/",
+        "method": "GET",
+        "status": 503,
+        "tlsVerificationEnabled": true,
+        "tlsVerificationResult": 0,
+        "server": "cloudflare",
+        "cfRay": "a47aad4d6ad340f6-SIN",
+        "cfMitigated": null,
+        "contentType": "application/json",
+        "location": null,
+        "CSP": null,
+        "setCookieCount": 0,
+        "appAuthCookiePresent": false,
+        "bodyBytes": 37,
+        "bodySha256": "0e2f77021dc0c76ce9462057f52df92d366753a353d75d4366d619f2e5090ef6",
+        "originHostIPOrWorkerHeadersRewritten": false,
+        "cookiesSent": false,
+        "redirectsFollowed": false,
+        "applicationError": "two_account_auth_disabled",
+        "cloudflareError1020": false,
+        "cloudflareBlockPage": false
+      }
+    ],
+    "directTransportDeniedWithVerifiedTLS": true,
+    "WAFRuleIdHitIndependentlyProven": false,
+    "noClaimOfSignatureOrReplayCoverage": true,
+    "newEntryActivation": false,
+    "stopOnAnyTransport200Or302": false
+  },
+  "configurationChanges": {
+    "accountRole": "original account owns Gateway and transport Custom Domain; new account owns disabled public entry/domain",
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "zoneId": "c97b548800561fada1a912c234696db1",
+    "domainId": "9f0e5e9924f4c95948932d5fab37621a1075ddb5",
+    "certificateId": "7c91ea00-d3d8-41f3-9cdb-7e6071170066",
+    "hostname": "riffoid-transport.gaojihe.cn",
+    "service": "riffology-m1-gateway-staging",
+    "otherDomainObjectsChanged": false,
+    "ordinaryDNSWrite": false,
+    "codeOrVarsUpload": false,
+    "namespaceLifecycleOrBindingsWrite": false,
+    "newEntryEnabled": false,
+    "canonicalChanged": false,
+    "ExecutionChanged": false,
+    "nativeIPBoundaryChanged": false,
+    "privateKeyAccess": false,
+    "credentialOrScopeChange": false,
+    "TLSOrNetworkSecurityChange": false,
+    "authenticatedOrPaidBusinessRequest": false,
+    "identityHistoryLedgerChange": false
+  },
+  "preservedInvariants": [
+    "8-hour session",
+    "trial 2026-12-31T15:59:59.999Z",
+    "M1 2026-10-20 Asia/Shanghai"
+  ],
+  "noSuccessfulCutoverT": true,
+  "recoveryUntilUTC": null,
+  "remainingAcceptance": [
+    "WAF exact rule ID hit not independently proven; Cloudflare block-page 403 observed",
+    "positive signed cross-account hop, private/public key match and replay remain unverified",
+    "real OAuth/session/CSRF, native visitor IP, rate limits, SSE, BrowserExecution isolation and authenticated rights remain pending",
+    "entry must stay disabled and old canonical/Execution stay unchanged until later coordinated approval/window"
+  ],
+  "nextApprovedScope": "No further PUT in this task; signed activation/canonical/Execution/native boundary changes need separately coordinated approval and actual acceptance plan",
+  "rollback": "No rollback performed. Domain-only detach requires explicit approval. Application rollback uses existing frozen forward-rollback package and same namespace in separately approved quiet window; no raw rollback/namespace lifecycle reset.",
+  "networkFailureHistory": [
+    {
+      "UTC": "2026-10-09T03:42:39.742Z",
+      "mode": "get",
+      "resource": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/deployments",
+      "message": "Not logged in. Your auth token has expired and could not be refreshed, and the environment is non-interactive. Run `wrangler login` in an interactive terminal or set a CLOUDFLARE_API_TOKEN.\nRun `wrangler whoami` to check your current authentication status.",
+      "code": null,
+      "status": null,
+      "notes": [],
+      "notesCount": 0,
+      "notesTruncated": false,
+      "writeRetryAllowed": false,
+      "action": "Stop; reconcile original request using read-only GETs",
+      "causeCode": null,
+      "attachMarked": false,
+      "receiptSaved": false,
+      "noWriteRetry": true
+    },
+    {
+      "UTC": "2026-10-09T04:31:03.841Z",
+      "mode": "get",
+      "resource": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/domains",
+      "message": "fetch failed",
+      "code": null,
+      "status": null,
+      "notes": [],
+      "notesCount": 0,
+      "notesTruncated": false,
+      "writeRetryAllowed": false,
+      "action": "Stop; reconcile original request using read-only GETs",
+      "causeCode": "ECONNRESET",
+      "attachMarked": false,
+      "receiptSaved": false,
+      "noWriteRetry": true
+    },
+    {
+      "UTC": "2026-10-09T03:42:45.959Z",
+      "mode": "get",
+      "resource": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/versions?per_page=1",
+      "message": "Not logged in. Your auth token has expired and could not be refreshed, and the environment is non-interactive. Run `wrangler login` in an interactive terminal or set a CLOUDFLARE_API_TOKEN.\nRun `wrangler whoami` to check your current authentication status.",
+      "code": null,
+      "status": null,
+      "notes": [],
+      "notesCount": 0,
+      "notesTruncated": false,
+      "writeRetryAllowed": false,
+      "action": "Stop; reconcile original request using read-only GETs",
+      "causeCode": null,
+      "attachMarked": false,
+      "receiptSaved": false,
+      "noWriteRetry": true
+    },
+    {
+      "UTC": "2026-10-09T03:38:06.839Z",
+      "mode": "get",
+      "resource": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/domains",
+      "message": "fetch failed",
+      "code": null,
+      "status": null,
+      "notes": [],
+      "notesCount": 0,
+      "notesTruncated": false,
+      "writeRetryAllowed": false,
+      "action": "Stop; reconcile original request using read-only GETs",
+      "causeCode": "EPERM",
+      "attachMarked": false,
+      "receiptSaved": false,
+      "noWriteRetry": true
+    }
+  ],
+  "files": {
+    "all-account-domains.post.json": {
+      "sha256": "d897cd7a2fb0428c0d39b346db9ba18fb2fbbc33e55b3c89e35484e9ecf671eb",
+      "mtimeUTC": "2026-10-09T04:34:09.491750+00:00"
+    },
+    "result.json": {
+      "sha256": "150869ab43c39ae208ee35c5d4c997b77a4ab5757d278e97cbe8fe36e6ab6334",
+      "mtimeUTC": "2026-10-09T03:40:07.357243+00:00"
+    },
+    "original-user-approval-context.json": {
+      "sha256": "72aae9d064b9af749acdc8f595abb45aa2fa29dda895e807be39643406aa6ba3",
+      "mtimeUTC": "2026-10-09T03:42:22.044869+00:00"
+    },
+    "gateway-deployments.post.json": {
+      "sha256": "ff6aa1af2cb8d87e9003b85e15c5969d84c5d3789304ae5376c4be4c1c009e1f",
+      "mtimeUTC": "2026-10-09T04:35:38.225233+00:00"
+    },
+    "public-get-only-checks.json": {
+      "sha256": "5efe21713c3bd4dbeba9aba2109298b522c76936976f37d7e62f05aba9441c0d",
+      "mtimeUTC": "2026-10-09T04:35:09.131560+00:00"
+    },
+    "current-direct-user-approval-context.json": {
+      "sha256": "3a28db7fb8a0f78ba6caf632c19e4def334152dd705f632e272f311591d44f58",
+      "mtimeUTC": "2026-10-09T04:30:57.084357+00:00"
+    },
+    "authorization.json": {
+      "sha256": "4fe829fa6d184b76af7615d3f37e85c22a0569e21a61d53a18f4d0e5a66b4369",
+      "mtimeUTC": "2026-10-09T03:37:54.042361+00:00"
+    },
+    "single-action-failure-1791517359742.json": {
+      "sha256": "432103a3c54e335fcefe511f21c69c29786ef574cb3d9c84fa190d8c1d9d915e",
+      "mtimeUTC": "2026-10-09T03:42:39.742654+00:00"
+    },
+    "attach-response.json": {
+      "sha256": "f2f1d1230786570114cd49fe9ad716e3abe8bb34ee03a105087c99a5f976d07b",
+      "mtimeUTC": "2026-10-09T04:33:51.113168+00:00"
+    },
+    "single-action-failure-1791520263841.json": {
+      "sha256": "a295946560c0fa54d512a9db98110a9cf80c09e5a1402abc9088ab3403455734",
+      "mtimeUTC": "2026-10-09T04:31:03.841847+00:00"
+    },
+    "domain.confirmed.post.json": {
+      "sha256": "735340285a4685b5010975aab5a516c9acc286aaec2a6b89cf2124c0fb88eb87",
+      "mtimeUTC": "2026-10-09T04:34:20.453609+00:00"
+    },
+    "attach-attempt.json": {
+      "sha256": "775e720375c2e23a377e6b6bb55e2ddc8fff87d004d35232635c87ffe141d76d",
+      "mtimeUTC": "2026-10-09T04:33:49.464538+00:00"
+    },
+    "gateway-deployments.necessary-pre.json": {
+      "sha256": "ff6aa1af2cb8d87e9003b85e15c5969d84c5d3789304ae5376c4be4c1c009e1f",
+      "mtimeUTC": "2026-10-09T04:31:23.005590+00:00"
+    },
+    "all-account-domains.pre.json": {
+      "sha256": "4de924d51a7ee9e70d273479768b239194318fc028324afa03ca1e307ee97779",
+      "mtimeUTC": "2026-10-09T04:33:14.558174+00:00"
+    },
+    "single-action-failure-1791517365960.json": {
+      "sha256": "276cc848f25c8ee2a8e3c857d140c2d31e96a648dcd7969a5a84091126e8b914",
+      "mtimeUTC": "2026-10-09T03:42:45.960739+00:00"
+    },
+    "second-review-result.json": {
+      "sha256": "b6005163b881166d4b55bff8d63f2185fde164d4b912fcbbddd5494102b9ac79",
+      "mtimeUTC": "2026-10-09T03:44:32.976339+00:00"
+    },
+    "single-action-failure-1791517086839.json": {
+      "sha256": "aff282d652a0c5f52502d5b583c0b7ea66ad70ab257b6cdd8dca8fb47c8c740e",
+      "mtimeUTC": "2026-10-09T03:38:06.840109+00:00"
+    },
+    "exact-domain-request.json": {
+      "sha256": "416356907e7877265f66c3239ac68c6bb3d508844cbb1f6f11981d4ab5963bab",
+      "mtimeUTC": "2026-10-09T04:33:49.464436+00:00"
+    },
+    "target-conflict.immediate-pre.json": {
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "mtimeUTC": "2026-10-09T04:33:32.643563+00:00"
+    },
+    "gateway-latest.necessary-pre.json": {
+      "sha256": "8927713a04c8af4af69d8fbab21f46718b232298f46ea145fc86b6057384e6e9",
+      "mtimeUTC": "2026-10-09T04:32:01.677473+00:00"
+    },
+    "precheck-before-first-review-rejection/gateway-deployments.necessary-pre.json": {
+      "sha256": "ff6aa1af2cb8d87e9003b85e15c5969d84c5d3789304ae5376c4be4c1c009e1f",
+      "mtimeUTC": "2026-10-09T03:38:45.275888+00:00"
+    },
+    "precheck-before-first-review-rejection/all-account-domains.pre.json": {
+      "sha256": "4de924d51a7ee9e70d273479768b239194318fc028324afa03ca1e307ee97779",
+      "mtimeUTC": "2026-10-09T03:38:28.008209+00:00"
+    },
+    "precheck-before-first-review-rejection/target-conflict.immediate-pre.json": {
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "mtimeUTC": "2026-10-09T03:39:12.379483+00:00"
+    },
+    "precheck-before-first-review-rejection/gateway-latest.necessary-pre.json": {
+      "sha256": "8927713a04c8af4af69d8fbab21f46718b232298f46ea145fc86b6057384e6e9",
+      "mtimeUTC": "2026-10-09T03:38:43.596696+00:00"
+    },
+    "precheck-before-second-review-rejection/gateway-deployments.necessary-pre.json": {
+      "sha256": "ff6aa1af2cb8d87e9003b85e15c5969d84c5d3789304ae5376c4be4c1c009e1f",
+      "mtimeUTC": "2026-10-09T03:43:03.720720+00:00"
+    },
+    "precheck-before-second-review-rejection/all-account-domains.pre.json": {
+      "sha256": "4de924d51a7ee9e70d273479768b239194318fc028324afa03ca1e307ee97779",
+      "mtimeUTC": "2026-10-09T03:42:40.681479+00:00"
+    },
+    "precheck-before-second-review-rejection/target-conflict.immediate-pre.json": {
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "mtimeUTC": "2026-10-09T03:43:39.794696+00:00"
+    },
+    "precheck-before-second-review-rejection/gateway-latest.necessary-pre.json": {
+      "sha256": "8927713a04c8af4af69d8fbab21f46718b232298f46ea145fc86b6057384e6e9",
+      "mtimeUTC": "2026-10-09T03:43:22.288053+00:00"
+    }
+  }
+}

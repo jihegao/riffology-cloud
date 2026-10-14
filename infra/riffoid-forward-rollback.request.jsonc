@@ -1,0 +1,85 @@
+{
+  "status": "NON_EXECUTABLE_UNFROZEN_TEMPLATE",
+  "scope": "Forward single-origin rollback after add-only modern DO export creation; not a Wrangler config or deployment payload.",
+  "gateway": {
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "workerName": "riffology-m1-gateway-staging",
+    "codeEntrypoint": "services/gateway/forward-rollback.ts",
+    "restoreAPP_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
+    "removeVarsTogether": [
+      "APP_TRANSPORT_ORIGIN",
+      "TWO_ACCOUNT_AUTH_MODE",
+      "LEGACY_RECOVERY_ORIGIN",
+      "LEGACY_RECOVERY_UNTIL"
+    ],
+    "mustPreserve": {
+      "allOriginalBindingsVarsSecretsAssetsContainersRoutes": "Fresh2026-10-09 same93bindings/22namespaceIDs/5container links/code/assets config verified; public pin now in local95binding candidates. Final actual replay ID and current zone/security readback remain missing",
+      "ENTRY_REPLAY": {
+        "className": "EntryReplayGuard",
+        "namespaceId": null,
+        "action": "Retain EXACT pre-rollback namespace; never create/recreate/delete/clear"
+      },
+      "allDurableObjectExports": "Original production exports plus EntryReplayGuard",
+      "dataIdentityHistoryLedgerPolicyPins": "Unchanged; trial December31 and M1 October20",
+      "lifecycleMode": "modern-exports",
+      "legacyMigrationsAllowed": false,
+      "exportsAction": "Retain verified original22 exports plus EntryReplayGuard and exact namespace IDs; no class deletion/storage conversion",
+      "ENTRY_SIGNING_PUBLIC_KEYS_JSON": {
+        "type": "plain_text",
+        "publicRing": {
+          "riffoid-entry-20261008-a": {
+            "kty": "EC",
+            "crv": "P-256",
+            "x": "gbxhqRvnRy8T0KDbcfguu4B-ZL035vlfLkKZC5z_eZo",
+            "y": "xg356coIB_x-n1iQJoCKdOuky8VdAxN-LeSkiIZcsXg"
+          }
+        },
+        "source": "infra/riffoid-entry-public-keys.json",
+        "action": "Retain exact public ring; no d/private values"
+      }
+    },
+    "compatibilityFlags": [
+      "nodejs_compat",
+      "nodejs_compat_do_not_populate_process_env",
+      "enable_request_signal"
+    ],
+    "compatibilityDate": "2026-09-09",
+    "buildCommand": "node scripts/m1/build-riffoid-forward-rollback.mjs",
+    "localBuildOutput": ".local/riffoid-live-freeze-20261009/candidates/{gateway,forward-rollback}.worker.mjs and manifest.json; non-executable requests with actual public ring, replay ID pending",
+    "compatibilityDateAction": "Retain verified live Gateway date; entry fixture2026-09-06 is separate",
+    "compatibilityDateSource": "infra/riffoid-compatibility-dates.json",
+    "productionCandidatePreparationCommand": "node scripts/m1/prepare-riffoid-live-candidates.mjs (local only, consumes read-only snapshots; no cloud calls)"
+  },
+  "entry": {
+    "action": "Stop new admission; TWO_ACCOUNT_AUTH_MODE=disabled on the existing entry",
+    "deleteKeysOrWorker": false
+  },
+  "execution": {
+    "APP_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
+    "singleFrameAncestor": "https://m1.riff-demo.gaojihe.cn",
+    "assetsBindingsWorkerOrigin": "Use exact downloaded current49,003-byte Worker SHA b76b05f96d345a0ecf280cdb4414c1dd0c56bf71041dc3c72199db8e8c6c07c1, original4bindings and fixed assets; only APP_ORIGIN changes"
+  },
+  "oauth": {
+    "originalClientAndOldCallback": "Retain exact verified existing values; no new client, scopes or secret",
+    "publicFieldsEvidence": "docs/evidence/riffoid-google-public-fields-20261008.json",
+    "liveClientAssociation": "User confirmed current public client at2026-10-08T12:39:44Z; exact add-only callback approved12:33:01Z. No independent Google readback or Secret access.",
+    "callbackStatus": "User2026-10-09T00:44:41Z confirms add-only callback saved; not independently read",
+    "authorizedDomains": {
+      "approvedTo": [
+        "gaojihe.cn",
+        "riffoid.com"
+      ],
+      "status": "Add-only riffoid.com approved00:44:41Z, user confirms saved00:45:56Z; no independent Google readback",
+      "rollbackAction": "Retain gaojihe.cn and any actually saved approved riffoid.com; do not remove authorized domain as ordinary rollback"
+    },
+    "supplementEvidence": "docs/evidence/riffoid-google-domain-supplement-20261009.json"
+  },
+  "requiredProductionFreezeMissing": [
+    "Once-allocated actual replay namespace ID and post-addition modern exports/bindings snapshot",
+    "Fresh authorized old-zone DNS/routes/WAF/Transform readback and transport TLS; current scoped API reads denied",
+    "Complete post-resource forward rollback hash/version and actual no-paid platform validation"
+  ],
+  "offlineVerification": "Build and test source entrypoint; local synthetic same namespace retention/replay, original auth/identity/CSRF/assets behavior. Does not freeze or deploy a production artifact.",
+  "noProductionKeyResourcePermissionSecurityOrDeploymentChanges": true,
+  "freezeSupplement": "docs/riffoid-public-pin-preparation-20261009.md"
+}

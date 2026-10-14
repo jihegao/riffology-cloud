@@ -1,0 +1,7 @@
+{
+  "attempt": "Offline helper transpile using earlier existing TypeScript directory",
+  "error": "MODULE_NOT_FOUND: /Users/jihegao/apps/riffology-cloud/node_modules/typescript",
+  "action": "No install or escalation; switched to Node built-in TypeScript type erasure.",
+  "subsequentOfflineCases": 20,
+  "pass": 20
+}

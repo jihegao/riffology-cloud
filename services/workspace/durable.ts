@@ -188,7 +188,18 @@ export interface WorkspaceAgentEnv {
 export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   constructor(ctx:DurableObjectState,env:WorkspaceAgentEnv){
     super(ctx,env);
-    ctx.blockConcurrencyWhile(async()=>{const store=new DurableTurnStore(ctx.storage);if(store.read())await store.transact(current=>{if(!current)throw Error('invalid-persisted-turn-journal');return {state:current,value:null};});});
+    // Validate and normalize in memory only. A recovery RPC must not persist
+    // migrations, create Preview discoveries, or schedule work on cold start.
+    ctx.blockConcurrencyWhile(async()=>{new DurableTurnStore(ctx.storage).read();});
+  }
+  #normalJournalPreparation:Promise<void>|undefined;
+  async #prepareNormalJournal():Promise<void>{
+    // Preserve the previous startup transaction for normal application RPCs and
+    // alarm handling. Recovery methods deliberately never enter this boundary.
+    return this.#normalJournalPreparation??=this.ctx.blockConcurrencyWhile(async()=>{
+      const store=new DurableTurnStore(this.ctx.storage);
+      if(store.read())await store.transact(current=>{if(!current)throw Error('invalid-persisted-turn-journal');return {state:current,value:null};});
+    });
   }
   #archiveFence=new WorkspaceArchiveFence(this.ctx.storage);
   assertWritableScope(scope:TurnScope):void{this.#maintenanceScope(scope);this.#archiveFence.assertWritable(scope);}
@@ -237,6 +248,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return [...new Set(blockers)];
   }
   async prepareProjectArchive(input:{actor:Principal;target:ArchiveTarget;action:ArchiveAction;operationId:string;dryRun:boolean}){
+    await this.#prepareNormalJournal();
     const scope=this.#maintenanceScope(input.target.scope),catalog=new ProjectArchives(catalogDatabase(this.env.CATALOG));
     const actual=await catalog.target(input.actor,scope.tenantId,scope.projectId,input.target.manifestId??undefined);
     if(actual.epoch!==input.target.epoch||!sameScope(actual.scope,scope)||actual.owner.authVersion!==input.target.owner.authVersion)throw Error('project_busy');
@@ -245,6 +257,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     try{return {blockers:await this.#archiveBlockers(scope)};}catch{ return {blockers:['quiescence-unconfirmed']}; }
   }
   async finishProjectArchive(input:{actor:Principal;target:ArchiveTarget;action:ArchiveAction;operationId:string;requestKey:string}){
+    await this.#prepareNormalJournal();
     const scope=this.#maintenanceScope(input.target.scope),catalog=new ProjectArchives(catalogDatabase(this.env.CATALOG));
     const actual=await catalog.target(input.actor,scope.tenantId,scope.projectId,input.target.manifestId??undefined),receipt=await catalog.receipt(input.actor,scope.projectId,input.action,input.requestKey);
     if(!receipt||receipt.outcome!=='completed'||receipt.archive_epoch!==actual.epoch||(actual.archivedAt!==null)!==(input.action==='archive'))throw Error('project_busy');
@@ -256,6 +269,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     await this.#archiveFence.finish(id,actual.epoch,actual.archivedAt!==null);
   }
   async abortProjectArchive(input:{target:ArchiveTarget;operationId:string}){
+    await this.#prepareNormalJournal();
     this.#maintenanceScope(input.target.scope);
     const held=this.#archiveFence.get();if(!held||held.operationId!==input.operationId)return;
     const rows=await catalogDatabase(this.env.CATALOG).query<{epoch:number;archivedAt:number|null}>(sqlArchive('SELECT archive_epoch AS epoch,archived_at AS archivedAt FROM catalog_projects WHERE id=? AND workspace_id=?',input.target.scope.projectId,input.target.scope.workspaceId));
@@ -310,15 +324,18 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       checkSource:source=>this.#checkBrowserSource(sourceScope(source),source),
     });
   }
-  g4BrowserBuildHold(input:{scope:TurnScope;actor:TurnActor;durationMs:number}){
+  async g4BrowserBuildHold(input:{scope:TurnScope;actor:TurnActor;durationMs:number}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{return this.#g4BuildHoldControl().hold(input);
     });
   }
-  g4BrowserBuildRelease(input:{scope:TurnScope;actor:TurnActor}){
+  async g4BrowserBuildRelease(input:{scope:TurnScope;actor:TurnActor}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{return this.#g4BuildHoldControl().release(input);
     });
   }
   async g4ComputeCounts(input:{scope:TurnScope;actor:TurnActor}){
+    await this.#prepareNormalJournal();
     const scope=this.#maintenanceScope(input.scope),catalog=new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set());
     const authorize=async()=>{this.#maintenanceScope(scope);const actual=await catalog.maintenanceWorkspace(input.actor,scope.workspaceId);if(!sameScope(actual,scope))throw Error('g4-compute-counts-scope-denied');this.#maintenanceScope(scope);};
     await authorize();
@@ -346,21 +363,27 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     }));await authorize();
     return {schema:'riffology.g4-compute-counts/v1',scope,readOnly:true,noAddedCalls:true,...durable,projectRuntime:{identity:state?.identity??null,readyObserved:state?.runtimeReceipt!=null,counter:project},nativeDispatches:samples,successfulNativeExecutions:null,nativeSemantics:'persisted attempt-before-call counters; unsupported stays null; combine stable before/after with all fences and Cloudflare inventory'};
   }
-  browserPreviewView(input:{scope:TurnScope;actor:TurnActor;revisionId?:string;profileId?:PreviewRuntime['profileId']}){
+  async browserPreviewView(input:{scope:TurnScope;actor:TurnActor;revisionId?:string;profileId?:PreviewRuntime['profileId']}){
+    await this.#prepareNormalJournal();
     return this.#archiveRead(input.scope,async()=>{return this.#browser(input.scope).view(input.actor,input.revisionId,input.profileId);
     });
   }
-  browserPreviewPackage(input:{scope:TurnScope;actor:TurnActor;packageIdentity:string}){
+  async browserPreviewPackage(input:{scope:TurnScope;actor:TurnActor;packageIdentity:string}){
+    await this.#prepareNormalJournal();
     return this.#archiveRead(input.scope,async()=>{return this.#browser(input.scope).bytes(input.actor,input.packageIdentity);
     });
   }
-  verifyBrowserPreview(input:{scope:TurnScope;actor:TurnActor;body:unknown}){
+  async verifyBrowserPreview(input:{scope:TurnScope;actor:TurnActor;body:unknown}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{return this.#browser(input.scope).verify(input.actor,input.body);
     });
   }
-  browserPreviewVerification(input:{scope:TurnScope;actor:TurnActor;key:string}){return this.#browser(input.scope).verification(input.actor,input.key);}
-  browserPreviewRetry(input:{scope:TurnScope;actor:TurnActor;key:string}){return this.#browser(input.scope).retryVerification(input.actor,input.key);}
-  retryBrowserPreview(input:{scope:TurnScope;actor:TurnActor;body:unknown}){
+  async browserPreviewVerification(input:{scope:TurnScope;actor:TurnActor;key:string}){
+    await this.#prepareNormalJournal();return this.#browser(input.scope).verification(input.actor,input.key);}
+  async browserPreviewRetry(input:{scope:TurnScope;actor:TurnActor;key:string}){
+    await this.#prepareNormalJournal();return this.#browser(input.scope).retryVerification(input.actor,input.key);}
+  async retryBrowserPreview(input:{scope:TurnScope;actor:TurnActor;body:unknown}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{return this.#browser(input.scope).retry(input.actor,input.body);
     });
   }
@@ -425,6 +448,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   #experimentGroupHost:ExperimentGroupHost|null=null;
   #experimentGroups(scope:TurnScope){return this.#experimentGroupHost??=new ExperimentGroupHost(this.ctx.storage,scope,this.#simulations(scope),()=>this.#simulationCanRun(),Date.now,this.#invitedRunCandidate()?this.#invitedRunsPolicy()!.maxGroupRuns:80,async group=>{if(!group.runAdmission)return this.#legacySimulationCanRun();try{await this.#authorizeInvitedRun(scope,group.actor);return true;}catch{return false;}});}
   async submitExperimentGroup(input:{scope:TurnScope;actor:TurnActor;key:string;body:ExperimentGroupRequest}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#ready(input.scope),host=this.#experimentGroups(scope),request=experimentGroupRequest(input.body),head=this.#turns.workspaceRevisionSnapshot(scope);
     const prior=await host.replay(input.actor,input.key,request);if(prior?.runAdmission)return host.view(prior,head?.receipt.filesSha256??null);
@@ -446,14 +470,17 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async experimentGroup(input:{scope:TurnScope;groupId:string}){
+    await this.#prepareNormalJournal();
     const scope=this.#maintenanceScope(input.scope),host=this.#experimentGroups(scope);
     return host.view(await host.get(input.groupId),this.#turns.workspaceRevisionSnapshot(scope)?.receipt.filesSha256??null);
   }
   async listExperimentGroups(input:{scope:TurnScope;before?:string}){
+    await this.#prepareNormalJournal();
     const scope=this.#maintenanceScope(input.scope);
     return this.#experimentGroups(scope).list(this.#turns.workspaceRevisionSnapshot(scope)?.receipt.filesSha256??null,input.before);
   }
   async cancelExperimentGroup(input:{scope:TurnScope;groupId:string}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#maintenanceScope(input.scope),host=this.#experimentGroups(scope);
     return host.view(await host.cancel(input.groupId),this.#turns.workspaceRevisionSnapshot(scope)?.receipt.filesSha256??null);
@@ -474,6 +501,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   #simulationCanRun(){if(this.#archiveFence.get())return false;return (this.#legacySimulationCanRun()||this.#invitedRunCandidate())&&!!this.env.SIMULATION_SANDBOX?.getByName&&!!this.env.M4_SIMULATION_IMAGE&&!!this.env.WORKSPACE_CHECKPOINTS;}
   #exporting=false;
   async researchExport(input:{scope:TurnScope;actor:TurnActor}):Promise<Response>{
+    await this.#prepareNormalJournal();
     return this.#archiveRead(input.scope,async()=>{
     const scope=this.#maintenanceScope(input.scope);
     if(this.#exporting)throw Error('export-busy');this.#exporting=true;
@@ -496,6 +524,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async publicationPrepare(input:{scope:TurnScope;actor:TurnActor;expected?:PublicationVersion;freeze?:boolean}){
+    await this.#prepareNormalJournal();
     return this.#archiveConditionalWrite(input.scope,input.freeze===true,async()=>{
     if(input.freeze)this.assertWritableScope(input.scope);
     const scope=this.#maintenanceScope(input.scope);if(this.#exporting)throw Error('publication-busy');this.#exporting=true;
@@ -531,37 +560,45 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   }
   async #finishEvidence(scope:TurnScope,items:import('../simulation/evidence.ts').EvidenceView[]){if(this.#archiveFence.get())return items;const result=await this.#evidence(scope).refreshViews(items);this.#maintenanceScope(scope);return result;}
   async createEvidence(input:{scope:TurnScope;actor:TurnActor;body:unknown}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#maintenanceScope(input.scope);await this.#evidenceAccess(scope,input.actor);const ledger=this.#evidence(scope),claim=await ledger.create(evidenceRequest(input.body),input.actor,()=>this.#evidenceAccess(scope,input.actor));await this.#evidenceAccess(scope,input.actor);const result=await ledger.get(claim.claimId,await this.#evidenceHead(scope));await this.#evidenceAccess(scope,input.actor);return (await this.#finishEvidence(scope,[result]))[0]!;
 
     });
   }
   async listEvidence(input:{scope:TurnScope;actor:TurnActor;before?:string}){
+    await this.#prepareNormalJournal();
     return this.#archiveRead(input.scope,async()=>{
     const scope=this.#maintenanceScope(input.scope);await this.#evidenceAccess(scope,input.actor);const result=await this.#evidence(scope).list(await this.#evidenceHead(scope),input.before);await this.#evidenceAccess(scope,input.actor);return {...result,items:await this.#finishEvidence(scope,result.items)};
 
     });
   }
   async evidence(input:{scope:TurnScope;actor:TurnActor;claimId:string}){
+    await this.#prepareNormalJournal();
     return this.#archiveRead(input.scope,async()=>{
     const scope=this.#maintenanceScope(input.scope);await this.#evidenceAccess(scope,input.actor);const ledger=this.#evidence(scope),result=await ledger.get(input.claimId,await this.#evidenceHead(scope));await this.#evidenceAccess(scope,input.actor);return (await this.#finishEvidence(scope,[result]))[0]!;
 
     });
   }
   async rejectEvidence(input:{scope:TurnScope;actor:TurnActor;body:unknown}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#maintenanceScope(input.scope);await this.#evidenceAccess(scope,input.actor);const result=await this.#evidence(scope).reject(input.body,input.actor,()=>this.#evidenceAccess(scope,input.actor));await this.#evidenceAccess(scope,input.actor);return result;
 
     });
   }
   async researchEvidenceExport(input:{scope:TurnScope;actor:TurnActor}){
+    await this.#prepareNormalJournal();
     const scope=this.#maintenanceScope(input.scope);await this.#evidenceAccess(scope,input.actor);const result=await this.#evidence(scope).exportRecords();await this.#evidenceAccess(scope,input.actor);return result;
   }
   #runtimeLeases:WorkspaceRuntimeLeases|null=null;
   #leases(){return this.#runtimeLeases??=new WorkspaceRuntimeLeases(this.ctx.storage,workspacePairedCapacityClient(this.env.TRUSTED_PI_CAPACITY as unknown as {getByName(name:string):WorkspacePairedCapacityPort}),new TrustedPiTurnCapacity(this.env.TRUSTED_PI_CAPACITY),()=>this.env.M2_WORKSPACE_RUNTIME_REUSE_ENABLED==='true'&&this.env.M2_LAZY_PROJECT_ENABLED==='true',()=>this.env.M2_WORKSPACE_RUNTIME_VERSION);}
-  async workspaceRuntimeSelection(input:{identity:TurnRuntimeIdentity}){const identity=turnRuntimeIdentity(input.identity);this.#maintenanceScope(identity.scope);return this.#leases().selection(identity);}
-  async workspaceRuntimeBinding(input:{identity:TurnRuntimeIdentity}){const identity=turnRuntimeIdentity(input.identity);this.#maintenanceScope(identity.scope);return this.#leases().current(identity);}
+  async workspaceRuntimeSelection(input:{identity:TurnRuntimeIdentity}){
+    await this.#prepareNormalJournal();const identity=turnRuntimeIdentity(input.identity);this.#maintenanceScope(identity.scope);return this.#leases().selection(identity);}
+  async workspaceRuntimeBinding(input:{identity:TurnRuntimeIdentity}){
+    await this.#prepareNormalJournal();const identity=turnRuntimeIdentity(input.identity);this.#maintenanceScope(identity.scope);return this.#leases().current(identity);}
   async bindWorkspaceRuntime(input:{identity:TurnRuntimeIdentity;executionDeadlineAt:number}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.identity.scope,async()=>{
     const identity=turnRuntimeIdentity(input.identity),scope=this.#ready(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
     if(!turn||state.activeTurnId!==identity.turnId||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.cancelRequestedAt!==null)throw Error('workspace-runtime-binding-denied');
@@ -572,6 +609,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async workspaceNativeAuthority(input:{context:WorkspaceSandboxBinding;domain:PairDomain}){
+    await this.#prepareNormalJournal();
     this.assertWritableScope(input.context.identity.scope);
     if(!['project','trustedPi'].includes(input.domain))throw Error('workspace-native-authority-denied');
     const identity=turnRuntimeIdentity(input.context.identity),scope=this.#maintenanceScope(identity.scope),{current,lease:physicalLease}=await this.#leases().pairState(identity),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
@@ -580,6 +618,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return {...current,leaseStatus:physicalLease.status,actorId:await workspaceSandboxActor(current.lease,input.domain)};
   }
   async claimWorkspaceNative(input:{context:WorkspaceSandboxBinding;domain:PairDomain}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.context.identity.scope,async()=>{
     const current=await this.workspaceNativeAuthority(input);
     if(current.closing||current.executionDeadlineAt<=Date.now())throw Error('workspace-native-admission-closed');
@@ -592,8 +631,10 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   }
   #runtimeHandoff:WorkspaceRuntimeHandoff|null=null;
   #handoff(){return this.#runtimeHandoff??=new WorkspaceRuntimeHandoff({storage:this.ctx.storage,pair:workspacePairedCapacityClient(this.env.TRUSTED_PI_CAPACITY as unknown as {getByName(name:string):WorkspacePairedCapacityPort}),binding:identity=>this.#leases().pairState(identity),close:identity=>this.closeWorkspaceRuntime({identity}),journal:async identity=>{const state=await this.#turns.snapshot(identity.scope),turn=state.turns[identity.turnId];if(!turn||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId)throw Error('workspace-runtime-handoff-denied');return turn;},native:async(domain,context)=>{const namespace=domain==='project'?this.env.PROJECT_SANDBOX:this.env.TRUSTED_PI_SANDBOX;if(!namespace?.getByName)throw Error('workspace-native-namespace-required');return namespace.getByName(await workspaceSandboxActor(context.lease,domain)) as NativeHandoffRpc;}});}
-  async authorizeWorkspaceLeaseDrain(input:{lease:WorkspaceBindingLease}){this.#maintenanceScope(input.lease.scope);return this.#leases().leaseForDrain(input.lease);}
+  async authorizeWorkspaceLeaseDrain(input:{lease:WorkspaceBindingLease}){
+    await this.#prepareNormalJournal();this.#maintenanceScope(input.lease.scope);return this.#leases().leaseForDrain(input.lease);}
   async drainRuntimeLease(input:{ref:import('../capacity/paired.ts').WorkspaceLeaseRef}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.ref.scope,async()=>{
     this.#maintenanceScope(input.ref.scope);const current=this.#leases().currentLease();if(!current||JSON.stringify(pairReference(current.lease))!==JSON.stringify(input.ref))throw Error('workspace-runtime-drain-denied');const lease=await this.#leases().leaseForDrain(current.lease);if(lease.status==='released')return;if(!lease.binding)throw Error('workspace-runtime-drain-denied');
     const identity=turnRuntimeIdentity({scope:lease.ref.scope,sessionId:lease.binding.sessionId,turnId:lease.binding.turnId,dispatchId:lease.binding.dispatchId,generation:lease.ref.scope.workspaceGeneration}),turn=(await this.#turns.snapshot(identity.scope)).turns[identity.turnId];if(!turn?.resourceLease)throw Error('workspace-runtime-drain-denied');
@@ -601,6 +642,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async settleWorkspaceRuntime(input:RuntimeSettlementInput){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.identity.scope,async()=>{
     const identity=turnRuntimeIdentity(input.identity);this.#maintenanceScope(identity.scope);
     const runtime=await this.env.PRODUCT_TURN_RUNTIME.getByName(await turnRuntimeActorName(identity)).workspaceRuntimeState(identity);
@@ -626,6 +668,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async closeWorkspaceRuntime(input:{identity:TurnRuntimeIdentity}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.identity.scope,async()=>{
     const identity=turnRuntimeIdentity(input.identity);this.#maintenanceScope(identity.scope);
     const {current:binding}=await this.#leases().pairState(identity);
@@ -641,6 +684,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async workspaceRuntimeAuthority(input:WarmOutboundRequest){
+    await this.#prepareNormalJournal();
     this.assertWritableScope(input.scope);
     const scope=this.#ready(input.scope),state=await this.#turns.snapshot(scope),turn=state.turns[input.turnId];
     if(!turn||state.activeTurnId!==input.turnId||!['starting','running'].includes(turn.status)||turn.dispatchId!==input.dispatchId||turn.cancelRequestedAt!==null||turn.finishedAt!==null||input.deadlineAt<=Date.now())throw Error('warm-outbound-authority-denied');
@@ -655,6 +699,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return {actorId,identity,actor:turn.actor,executionDeadlineAt:binding.executionDeadlineAt,lease:binding.lease,binding:binding.binding};
   }
   async experimentParameterEffect(input:{command:ToolCommand;effectId:string;observeOnly:boolean}){
+    await this.#prepareNormalJournal();
     const command=normalizeToolCommand(input.command),scope=this.#maintenanceScope(command.scope);
     const apply=()=>parameterDraftEffect({storage:this.ctx.storage,scope,command,effectId:input.effectId,observeOnly:input.observeOnly,
       model:()=>this.modelSpec({scope}),maxGroupRuns:this.#invitedRunsPolicy()?.maxGroupRuns??8,
@@ -671,6 +716,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return input.observeOnly?apply():this.#archiveWrite(scope,apply);
   }
   async prepareProjectTool(input:{command:ToolCommand;observeOnly:boolean}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.command.scope,async()=>{
     const command=normalizeToolCommand(input.command),scope=this.#ready(command.scope);
     const saved=(await this.#turns.snapshot(scope)).turns[command.turnId];if(!saved||saved.dispatchId!==command.dispatchId)throw Error('project-preparation-denied');
@@ -687,6 +733,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async researchContext(input:{identity:TurnRuntimeIdentity;executionDeadlineAt:number}){
+    await this.#prepareNormalJournal();
     const identity=turnRuntimeIdentity(input.identity),scope=this.#ready(identity.scope);
     const authorize=async()=>{
       if(!Number.isSafeInteger(input.executionDeadlineAt)||input.executionDeadlineAt<=Date.now())throw Error('research-context-expired');
@@ -703,6 +750,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     await authorize();return result;
   }
   async modelSpec(input:{scope:TurnScope;actor?:TurnActor}){
+    await this.#prepareNormalJournal();
     const scope=this.#ready(input.scope),source=await this.#simulationSource(scope);
     const model=await inspectModel(source,await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source),this.#simulationCanRun());
     if(this.#invitedRunCandidate()&&input.actor){try{await this.#authorizeInvitedRun(scope,input.actor);}catch(error){model.canRun=false;model.capabilityReason=error instanceof Error&&/^(invited-runs-|private-beta-)/.test(error.message)?error.message:'invited-runs-unavailable';}}
@@ -726,6 +774,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     this.#ready(scope);return model;
   }
   async submitExperiment(input:{scope:TurnScope;actor:TurnActor;key:string;body:ExperimentRequest}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#ready(input.scope),host=this.#simulations(scope),request=experimentRequest(input.body);
     const prior=await host.replay(input.actor,input.key,request);
@@ -742,14 +791,17 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async listExperiments(input:{scope:TurnScope;before?:string}){
+    await this.#prepareNormalJournal();
     const scope=this.#maintenanceScope(input.scope),page=await this.#simulations(scope).list(input.before),head=this.#turns.workspaceRevisionSnapshot(scope);
     const assessments=await evidenceAssessments(this.ctx.storage);return {items:page.items.map(r=>({...publicExperiment(r,head?.receipt.filesSha256??null),evidenceRejection:assessmentForRun(assessments,r.runId,modelVersion(r.input.plan))??null})),nextCursor:page.nextCursor};
   }
   async experiment(input:{scope:TurnScope;runId:string}){
+    await this.#prepareNormalJournal();
     const scope=this.#maintenanceScope(input.scope),r=await this.#simulations(scope).get(input.runId),head=this.#turns.workspaceRevisionSnapshot(scope);
     return {...publicExperiment(r,head?.receipt.filesSha256??null),evidenceRejection:assessmentForRun(await evidenceAssessments(this.ctx.storage),r.runId,modelVersion(r.input.plan))??null};
   }
   async cancelSimulation(input:{scope:TurnScope;runId:string}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#maintenanceScope(input.scope),r=await this.#simulations(scope).cancel(input.runId),head=this.#turns.workspaceRevisionSnapshot(scope);
     return {...publicExperiment(r,head?.receipt.filesSha256??null),evidenceRejection:assessmentForRun(await evidenceAssessments(this.ctx.storage),r.runId,modelVersion(r.input.plan))??null};
@@ -759,6 +811,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   readonly #webSockets=new Set<AbortController>();
   #observerHost:WorkspaceObserverHost|null=null;
   async fetch(request:Request):Promise<Response>{
+    await this.#prepareNormalJournal();
     let controller:AbortController|undefined;
     try{
       if(this.env.M3_PREVIEW_WS_ENABLED!=='true')throw Error('preview-ws-disabled');
@@ -829,6 +882,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return {kind:'initial-workspace',reference:initialWorkspaceReference({schemaVersion:1,scope,task:state.task,runtime:state.identity,markerNonce:state.markerNonce,markerSha256:state.runtimeReceipt.markerSha256,checkpointRevision:state.runtimeReceipt.checkpointRevision})};
   }
   async submitService(input:{scope:TurnScope;actor:TurnActor;key:string;request:ServiceIntentRequest}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#ready(input.scope);
     if(this.env.M3_SERVICE_ENABLED!=='true')throw Error('service-run-disabled');
@@ -844,6 +898,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async stopService(input:{scope:TurnScope;runId:string}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#maintenanceScope(input.scope);
     return this.#services(scope).stop(input.runId);
@@ -851,6 +906,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async submitServiceRequest(input:{scope:TurnScope;actor:TurnActor;key:string;body:{maxDurationMs:number;expectedRevisionId?:string}}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#ready(input.scope);
     if(this.env.M3_SERVICE_ENABLED!=='true')throw Error('service-run-disabled');
@@ -863,10 +919,12 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async listServices(input:{scope:TurnScope;before?:{createdAt:number;runId:string};limit?:number}){
+    await this.#prepareNormalJournal();
     const scope=this.#maintenanceScope(input.scope);
     return this.#services(scope).list({...(input.before===undefined?{}:{before:input.before}),...(input.limit===undefined?{}:{limit:input.limit})});
   }
   async serviceView(input:{scope:TurnScope;runId:string}){
+    await this.#prepareNormalJournal();
     const scope=this.#maintenanceScope(input.scope),intent=await this.#services(scope).snapshot(input.runId);
     if(intent.task===null||intent.deliveryClaimedAt===null)return {intent,run:null};
     const task=intent.task;
@@ -875,6 +933,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return {intent,run};
   }
   async bindPreview(input:{scope:TurnScope;actor:TurnActor;key:string;runId:string;expectedPreviewId:string|null}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#ready(input.scope);
     if(this.env.M3_PREVIEW_ENABLED!=='true')throw Error('preview-disabled');
@@ -885,14 +944,17 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
 
     });
   }
-  async currentPreview(input:{scope:TurnScope}){return this.#previews(this.#maintenanceScope(input.scope)).current();}
+  async currentPreview(input:{scope:TurnScope}){
+    await this.#prepareNormalJournal();return this.#previews(this.#maintenanceScope(input.scope)).current();}
   async revokePreview(input:{scope:TurnScope;previewId:string;reason:'stopped'|'replaced'|'operator'|'workspace-retired'}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     return this.#previews(this.#maintenanceScope(input.scope)).revoke(input.previewId,input.reason);
 
     });
   }
   async previewTarget(input:{scope:TurnScope;previewId:string}){
+    await this.#prepareNormalJournal();
     const scope=this.#ready(input.scope);
     if(this.env.M3_PREVIEW_ENABLED!=='true')throw Error('preview-disabled');
     const target=await resolvePreviewTarget({binding:id=>this.#previews(scope).authorizeTarget(id),view:runId=>this.serviceView({scope,runId})},input.previewId);
@@ -901,6 +963,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   /** Private trusted-call authority only; no browser cookie or caller actor.
    * The execution endpoint remains unconfigured until its separate gate passes. */
   async authorizeObserverCommand(raw:ObserverCommand){
+    await this.#prepareNormalJournal();
     const command=validateObserverCommand(raw),scope=this.#ready(command.scope);
     const enabled=()=>this.env.M3_OBSERVER_ENABLED==='true'&&this.env.M3_PREVIEW_ENABLED==='true'&&this.env.M2_TURNS_ENABLED==='true';
     if(!enabled())throw Error('observer-disabled');
@@ -937,6 +1000,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   /** Private trusted execution entry. Its namespace is deliberately optional:
    * no call is accepted until the separate executor is configured and gated. */
   async observePreview(raw:ObserverCommand){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(raw.scope,async()=>{
     const command=validateObserverCommand(raw),scope=this.#ready(command.scope);
     if(this.env.M3_OBSERVER_ENABLED!=='true'||this.env.M3_PREVIEW_ENABLED!=='true'||this.env.M2_TURNS_ENABLED!=='true')throw Error('observer-disabled');
@@ -981,6 +1045,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
    * accept/start calls or grant a browser cookie. The executor separately owns
    * the cumulative budget across resources and the observation result. */
   async forwardObserverHttp(raw:{command:ObserverCommand;targetDigest:string},request:Request):Promise<Response>{
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(raw.command.scope,async()=>{
     if(!raw||Object.getPrototypeOf(raw)!==Object.prototype)throw Error('observer-forward-denied');
     const fields=Object.getOwnPropertyDescriptors(raw);
@@ -1022,6 +1087,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async issuePreviewTicket(input:{scope:TurnScope;principal:PreviewBrowserPrincipal;previewId:string;nonce:string}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#ready(input.scope);
     const ticket=await this.#tickets(scope).issue(input.principal,input.previewId,input.nonce);
@@ -1030,6 +1096,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async redeemPreviewTicket(input:{scope:TurnScope;ticket:string;nonce:string}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#ready(input.scope);
     const claims=await this.#tickets(scope).redeem(input.ticket,input.nonce);
@@ -1038,6 +1105,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async exchangePreviewTicket(input:{scope:TurnScope;ticket:string;nonce:string;previewId:string}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#ready(input.scope);
     const previewId=input.previewId;
@@ -1048,11 +1116,13 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async authorizePreviewAccess(input:{scope:TurnScope;access:string;previewId:string}){
+    await this.#prepareNormalJournal();
     const scope=this.#ready(input.scope);
     const claims=await this.#tickets(scope).access(input.access,input.previewId);
     this.#ready(scope);return claims;
   }
   async forwardPreviewHttp(input:{scope:TurnScope;access:string;previewId:string},request:Request):Promise<Response>{
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#ready(input.scope),clean=await serviceHttpRequest(request);
     await this.authorizePreviewAccess(input);
@@ -1066,6 +1136,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async revokePreviewAccess(input:{scope:TurnScope;access:string}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#maintenanceScope(input.scope);
     // Revocation remains available when execution and Preview gates are closed.
@@ -1077,6 +1148,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async serviceSnapshot(input:{scope:TurnScope;runId:string}){
+    await this.#prepareNormalJournal();
     const scope=this.#maintenanceScope(input.scope);
     return this.#services(scope).snapshot(input.runId);
   }
@@ -1098,6 +1170,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     this.ctx.storage.kv.put('managed-product-route-v1',policy);await this.ctx.storage.sync();return policy;
   }
   async managedAcceptanceStatus(input:{scope:TurnScope;actor:TurnActor}){
+    await this.#prepareNormalJournal();
     const scope=this.#maintenanceScope(input.scope),policy=this.#managedRoute();
     if(!policy||policy.userId!==input.actor.userId)throw Error('managed-admission-denied');
     const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(input.actor,scope.workspaceId);
@@ -1111,6 +1184,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return {...budget,resources:{simulations,tenantQuota:{capacity:quota.capacity,occupied:quota.occupied,available:quota.available,unknown:quota.unknown,configuredPolicyMatches:quota.configuredPolicyMatches,leaseStatusCounts}}};
   }
   async cleanupManagedAcceptance(input:{scope:TurnScope;actor:TurnActor}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#maintenanceScope(input.scope),policy=this.#managedRoute();
     if(!policy||policy.userId!==input.actor.userId)throw Error('managed-admission-denied');
@@ -1126,6 +1200,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   #developerCandidate(scope:TurnScope,actor:TurnActor){return this.env.PRIVATE_BETA_POLICY_JSON!==undefined?privateBetaCandidate(this.env.PRIVATE_BETA_POLICY_JSON):piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,scope.tenantId,actor.userId,scope.projectId);}
   #betaControl(){const stub=this.env.PRIVATE_BETA_CAPACITY?.getByName(PRIVATE_BETA_CAPACITY_ACTOR);if(!stub)throw Error('private-beta-unconfigured');return stub;}
   async privateBetaReleaseState(input:{scope:TurnScope;actor:TurnActor;sessionId:string;requestKey:string}){
+    await this.#prepareNormalJournal();
     const scope=this.#maintenanceScope(input.scope),state=await this.#turns.snapshot(scope);
     const turn=Object.values(state.turns).find(t=>t.actor.userId===input.actor.userId&&t.actor.authVersion===input.actor.authVersion&&t.sessionId===input.sessionId&&t.requestKey===input.requestKey);
     const terminal=!!turn&&['completed','failed','cancelled','interrupted'].includes(turn.status);
@@ -1144,6 +1219,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   }
   #developerBudget(tenantId:string){const stub=this.env.PI_DEVELOPER_BUDGET?.getByName(modelBudgetTenantName(tenantId));if(!stub)throw Error('pi-developer-budget-unavailable');return stub;}
   async piDeveloperTurnAuthorization(input:{identity:TurnRuntimeIdentity;actor:TurnActor}){
+    await this.#prepareNormalJournal();
     this.assertWritableScope(input.identity.scope);
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope);
     if(!this.ctx.storage.kv.get('pi-developer-turn:'+identity.turnId))return false;
@@ -1208,14 +1284,18 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     }
     return this.#coordinator;
   }
-  async accept(task: WorkspaceTask) { if(this.#archiveFence.get())throw Error('project_archived');return this.#for(task).accept(task); }
+  async accept(task: WorkspaceTask) {
+    await this.#prepareNormalJournal(); if(this.#archiveFence.get())throw Error('project_archived');return this.#for(task).accept(task); }
   async report(task: WorkspaceTask) {
+    await this.#prepareNormalJournal();
     const coordinator = this.#for(task), state = coordinator.report();
     if (state && JSON.stringify(state.task) !== JSON.stringify(validateWorkspaceTask(task))) throw Error('workspace-task-conflict');
     return state;
   }
-  async stop(task: WorkspaceTask) { if(this.#archiveFence.get())throw Error('project_archived');return this.#for(task).stop(task); }
-  async reconcile(task: WorkspaceTask) { if(this.#archiveFence.get())throw Error('project_archived');return this.#for(task).reconcile(task); }
+  async stop(task: WorkspaceTask) {
+    await this.#prepareNormalJournal(); if(this.#archiveFence.get())throw Error('project_archived');return this.#for(task).stop(task); }
+  async reconcile(task: WorkspaceTask) {
+    await this.#prepareNormalJournal(); if(this.#archiveFence.get())throw Error('project_archived');return this.#for(task).reconcile(task); }
   #maintenanceScope(rawScope:TurnScope):TurnScope{
     const scope=validateTurnScope(rawScope),state=this.#store.read();
     if(!state)throw Error('workspace-actor-scope-denied');
@@ -1245,18 +1325,28 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).resolveInitial(reference,scope);
   }
   async createSession(input: { scope: TurnScope; actor: TurnActor; key: string; body: { title: unknown } }) {
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     return this.#turns.createSession(this.#ready(input.scope), input.actor, input.key, input.body);
 
     });
   }
   async turnReceipt(input:{scope:TurnScope;actor:TurnActor;sessionId:string;key:string}){
+    await this.#prepareNormalJournal();
+    return this.#readTurnReceipt(input,false);
+  }
+  async recoveryTurnReceipt(input:{scope:TurnScope;actor:TurnActor;sessionId:string;key:string}){
+    return this.#readTurnReceipt(input,true);
+  }
+  async #readTurnReceipt(input:{scope:TurnScope;actor:TurnActor;sessionId:string;key:string},readOnly:boolean){
     const scope=this.#ready(input.scope),receipt=await this.#turns.receipt(scope,input.actor,input.sessionId,input.key),turn=receipt.turn,managed=this.#managedRoute();
     if(!managed){
       const developerRoute=this.ctx.storage.kv.get<{privateBeta?:boolean}>('pi-developer-turn:'+turn.id),g5Route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+turn.id);
       if(developerRoute){
+        if(readOnly&&developerRoute.privateBeta)throw Error('recovery-authority-unprepared');
         if(developerRoute.privateBeta&&!await this.#betaControl().turnBinding({scope,actor:input.actor,sessionId:input.sessionId,requestKey:input.key},turn.id).then(result=>result.bound))throw Error('turn-receipt-not-found');
       }else if(g5Route){
+        if(readOnly)throw Error('recovery-authority-unprepared');
         if(g5Route.kind!=='g5'||!await this.#g5Guard().taskBinding(g5Route.taskKey,turn.id).then(result=>result.bound))throw Error('turn-receipt-not-found');
       }else if(this.env.PRIVATE_BETA_POLICY_JSON!==undefined||piDeveloperOwner(this.env.PI_DEVELOPER_POLICY_JSON,scope.tenantId,input.actor.userId,scope.projectId)||this.env.G5_CONTROLLED_WINDOW_JSON!==undefined)throw Error('turn-receipt-not-found');
     }
@@ -1277,7 +1367,8 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   async #withdrawnTurnKey(input:{scope:TurnScope;actor:TurnActor;sessionId:string;requestKey:string}){
     return 'withdrawn-turn:'+await turnDigest({scope:input.scope,actor:input.actor,sessionId:input.sessionId,requestKey:input.requestKey});
   }
-  withdrawTurn(input:{scope:TurnScope;actor:TurnActor;sessionId:string;key:string;body:{message:unknown}}){
+  async withdrawTurn(input:{scope:TurnScope;actor:TurnActor;sessionId:string;key:string;body:{message:unknown}}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const next=this.#managedSubmitTail.then(async()=>{
       const scope=this.#ready(input.scope);
@@ -1296,7 +1387,8 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
 
     });
   }
-  submitTurn(input: { scope: TurnScope; actor: TurnActor; sessionId: string; key: string; body: { message: unknown } }) {
+  async submitTurn(input: { scope: TurnScope; actor: TurnActor; sessionId: string; key: string; body: { message: unknown } }) {
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     // Serialize admission through the durable journal commit. DO input gates
     // alone do not cover the external preflight/catalog awaits in this method.
@@ -1365,13 +1457,19 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return engine.submit(scope,input.actor,input.sessionId,input.key,input.body,trace,developer?turn=>this.#bindDeveloperTurn(scope,input.actor,input.sessionId,input.key,turn):route?turn=>this.#bindG5Turn(route!,turn):undefined);
   }
   async cancelTurn(input: { scope: TurnScope; actor: TurnActor; turnId: string }) {
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     const turn=await this.#engine().cancel(this.#ready(input.scope), input.actor, input.turnId);if(!this.#managedRoute()&&['completed','failed','cancelled','interrupted'].includes(turn.status))await this.#g5Terminal(turn);return turn;
 
     });
   }
   async replayTurnEvents(input: { scope: TurnScope; afterSequence: number; limit: number }) {
+    await this.#prepareNormalJournal();
     return this.#turns.replay(this.#ready(input.scope), input.afterSequence, input.limit);
+  }
+  async recoveryTurnSnapshot(input:{scope:TurnScope;actor:TurnActor}){
+    // Pure journal view: no budget assertQuiet, admission, runtime or reconciliation.
+    return this.#turns.view(this.#maintenanceScope(input.scope),input.actor);
   }
   async toolReceipt(input:{scope:TurnScope;actor:TurnActor;turnId:string;revisionId:string;toolCallId:string;name:string}){
     const scope=this.#maintenanceScope(input.scope),authorize=async()=>{const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(input.actor,scope.workspaceId);if(!sameScope(actual,scope))throw Error('tool-receipt-not-found');this.#maintenanceScope(scope);};
@@ -1381,6 +1479,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const receipt=await this.env.TOOL_BRIDGE_AGENT.getByName(await toolBridgeActorName(scope,id,identity.dispatchId)).readPersistedReceipt({identity,revisionId,commandId,toolCallId,name,target:{actorId,warm:warm?{lease:warm.lease,bindingEpoch:warm.binding.bindingEpoch}:null}});await authorize();return receipt;
   }
   async turnSnapshot(input: { scope: TurnScope; actor?:TurnActor }) {
+    await this.#prepareNormalJournal();
     const scope=this.#ready(input.scope),snapshot=await this.#turns.view(scope,input.actor),managed=this.#managedRoute();
     if(this.#archiveFence.get())return {...snapshot,archived:true,piDeveloperState:{billingMode:'observe',blocked:'project_archived'}};
     if(!managed&&this.env.PRIVATE_BETA_POLICY_JSON!==undefined){
@@ -1408,6 +1507,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
    * observes the existing ProductTurnRuntime identity and advances the matching
    * release hold; it does not run model settlement or claim queued work. */
   async reconcileRuntimeRelease(input:{identity:TurnRuntimeIdentity}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.identity.scope,async()=>{
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
     if(!turn||!['completed','failed','cancelled','interrupted'].includes(turn.status)||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation)throw Error('turn-release-scope-denied');
@@ -1419,6 +1519,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async runtimeReleaseSnapshot(input:{identity:TurnRuntimeIdentity}){
+    await this.#prepareNormalJournal();
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
     if(!turn||!['completed','failed','cancelled','interrupted'].includes(turn.status)||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation)throw Error('turn-release-scope-denied');
     return {schemaVersion:1 as const,status:turn.status,persistenceOutcome:turn.persistenceOutcome,active:state.activeTurnId!==null,releaseHold:state.releaseHold?{status:state.releaseHold.status,matches:state.releaseHold.turnId===identity.turnId}:null,recoveryHold:state.recoveryHold?{matches:state.recoveryHold.turnId===identity.turnId}:null};
@@ -1427,6 +1528,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
    * Workspace reads the ledger-owned identity, proves all execution consumers
    * quiescent, and only then appends a proof back to that source ledger. */
   async attestExecutionIsolation(input:{tenantId:string;ledger:'legacy'|'g5';callKey:string}){
+    await this.#prepareNormalJournal();
     if(!input||Object.keys(input).sort().join(',')!=='callKey,ledger,tenantId'||!['legacy','g5'].includes(input.ledger)||!/^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(input.tenantId)||!/^[a-f0-9]{64}$/.test(input.callKey))throw Error('model-execution-isolation-input-invalid');
     const namespace=input.ledger==='legacy'?this.env.TENANT_MODEL_BUDGET:this.env.G5_TOKEN_BUDGET;
     if(!namespace||!this.env.TOOL_BRIDGE_AGENT)throw Error('model-execution-isolation-authority-unavailable');
@@ -1450,6 +1552,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async g5TurnAuthority(input:{identity:TurnRuntimeIdentity;userId:string}){
+    await this.#prepareNormalJournal();
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
     if(!turn||turn.actor.userId!==input.userId||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation||turn.status!=='completed'||turn.executionOutcome!=='completed'||turn.persistenceOutcome!=='saved'||!turn.checkpoint||state.activeTurnId!==null||state.releaseHold!==null||state.recoveryHold!==null)throw Error('g5-turn-authority-unsettled');
     const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-turn-authority-denied');
@@ -1457,13 +1560,16 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const model=await this.modelSpec({scope});if(!model.version)throw Error('g5-turn-authority-model-absent');const toolEventIds=state.events.filter(event=>event.turnId===identity.turnId&&event.type==='tool.completed').map(event=>event.eventId);if(!toolEventIds.length||model.version.revisionId!==turn.checkpoint.revisionId||model.version.filesSha256!==turn.checkpoint.filesSha256)throw Error('g5-turn-authority-evidence-absent');
     return {schemaVersion:1 as const,identity,requestKey:turn.requestKey,version:model.version,toolEventIds};
   }
-  async g5FixtureTurnAuthority(rawIdentity:TurnRuntimeIdentity){const identity=turnRuntimeIdentity(rawIdentity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId],route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+identity.turnId);if(!turn||route?.kind!=='g5'||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation||turn.status!=='completed'||turn.executionOutcome!=='completed'||turn.persistenceOutcome!=='saved'||!turn.checkpoint||state.activeTurnId!==null||state.releaseHold!==null||state.recoveryHold!==null)throw Error('g5-fixture-turn-authority-unsettled');const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-fixture-turn-authority-denied');const head=this.#turns.workspaceRevisionSnapshot(scope);if(!head||JSON.stringify(head.identity)!==JSON.stringify(identity)||JSON.stringify(head.receipt)!==JSON.stringify(turn.checkpoint))throw Error('g5-fixture-turn-authority-head-mismatch');const model=await this.modelSpec({scope});if(!model.version||model.version.revisionId!==turn.checkpoint.revisionId||model.version.filesSha256!==turn.checkpoint.filesSha256)throw Error('g5-fixture-turn-authority-revision-mismatch');const events=state.events.filter(event=>event.turnId===identity.turnId&&event.type==='tool.completed').map(event=>({eventId:event.eventId,type:event.type,payload:structuredClone(event.payload)}));return {schemaVersion:1 as const,identity,requestKey:turn.requestKey,source:model.version,checkpointFilesSha256:turn.checkpoint.filesSha256,events};}
+  async g5FixtureTurnAuthority(rawIdentity:TurnRuntimeIdentity){
+    await this.#prepareNormalJournal();const identity=turnRuntimeIdentity(rawIdentity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId],route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+identity.turnId);if(!turn||route?.kind!=='g5'||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation||turn.status!=='completed'||turn.executionOutcome!=='completed'||turn.persistenceOutcome!=='saved'||!turn.checkpoint||state.activeTurnId!==null||state.releaseHold!==null||state.recoveryHold!==null)throw Error('g5-fixture-turn-authority-unsettled');const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-fixture-turn-authority-denied');const head=this.#turns.workspaceRevisionSnapshot(scope);if(!head||JSON.stringify(head.identity)!==JSON.stringify(identity)||JSON.stringify(head.receipt)!==JSON.stringify(turn.checkpoint))throw Error('g5-fixture-turn-authority-head-mismatch');const model=await this.modelSpec({scope});if(!model.version||model.version.revisionId!==turn.checkpoint.revisionId||model.version.filesSha256!==turn.checkpoint.filesSha256)throw Error('g5-fixture-turn-authority-revision-mismatch');const events=state.events.filter(event=>event.turnId===identity.turnId&&event.type==='tool.completed').map(event=>({eventId:event.eventId,type:event.type,payload:structuredClone(event.payload)}));return {schemaVersion:1 as const,identity,requestKey:turn.requestKey,source:model.version,checkpointFilesSha256:turn.checkpoint.filesSha256,events};}
   async g5SimulationRunAuthority(input:{identity:TurnRuntimeIdentity;userId:string;taskKey:string;runId:string;artifactSha256:string}){
+    await this.#prepareNormalJournal();
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),record=await this.#simulations(scope).get(input.runId);if(record.actor.userId!==input.userId||!sameScope(record.scope,scope)||record.budgetRoute?.kind!=='g5'||record.budgetRoute.taskKey!==input.taskKey||record.runId!==input.runId||record.status!=='completed'||record.result?.artifactSha256!==input.artifactSha256||record.released!==true||record.releaseProof===null)throw Error('g5-run-authority-unsettled');
     const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(record.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-run-authority-denied');
     return {schemaVersion:1 as const,runId:record.runId,taskKey:record.budgetRoute.taskKey,requestKey:record.key,artifactSha256:record.result.artifactSha256,released:true,active:0,unknown:0,releaseProof:record.releaseProof};
   }
   async g5FixtureTerminalAuthority(input:{identity:TurnRuntimeIdentity;userId:string;runIds:string[];groupId:string|null;claimIds:string[];version:{revisionId:string|null;filesSha256:string;specSha256:string}}){
+    await this.#prepareNormalJournal();
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),turn=(await this.#turns.snapshot(scope)).turns[identity.turnId];if(!turn||turn.actor.userId!==input.userId||turn.status!=='completed'||turn.persistenceOutcome!=='saved'||new Set(input.runIds).size!==input.runIds.length||new Set(input.claimIds).size!==input.claimIds.length||!this.env.WORKSPACE_CHECKPOINTS)throw Error('g5-fixture-terminal-authority-denied');const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-fixture-terminal-authority-denied');
     const runs=[];for(const runId of input.runIds){const record=await this.#simulations(scope).get(runId);if(record.actor.userId!==input.userId||!sameScope(record.scope,scope)||record.status!=='completed'||record.errorCode!==null||!record.result||record.released!==true||record.releaseProof===null||JSON.stringify(modelVersion(record.input.plan))!==JSON.stringify(input.version)||Object.values(record.result.metrics).some(value=>!Number.isFinite(value)||value<0))throw Error('g5-fixture-run-authority-unsettled');const evidence=await g5B2RunEvidence(this.env.WORKSPACE_CHECKPOINTS,scope,record,identity.turnId);runs.push({runId:record.runId,requestKey:record.key,artifactSha256:record.result.artifactSha256,parameters:record.input.parameters,seed:record.input.seed,metrics:record.result.metrics,released:true,releaseProof:record.releaseProof,evidence});}
     let group:null|{groupId:string;runIds:string[];taskKey:string}=null;if(input.groupId!==null){const record=await this.#experimentGroups(scope).get(input.groupId),route=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-group-route:'+input.groupId);const ids=record.children.map(child=>child.runId).sort();if(record.status!=='completed'||record.actor.userId!==input.userId||!sameScope(record.scope,scope)||JSON.stringify(ids)!==JSON.stringify([...input.runIds].sort())||JSON.stringify(modelVersion(record.plan))!==JSON.stringify(input.version)||route?.kind!=='g5')throw Error('g5-fixture-group-authority-unsettled');group={groupId:record.groupId,runIds:ids,taskKey:route.taskKey};}
@@ -1472,12 +1578,14 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return {schemaVersion:1 as const,runs,group,claims,historical};
   }
   async g5SimulationWindowAuthority(input:{identity:TurnRuntimeIdentity;userId:string;windowId:string}){
+    await this.#prepareNormalJournal();
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),turn=(await this.#turns.snapshot(scope)).turns[identity.turnId];if(!turn||turn.actor.userId!==input.userId)throw Error('g5-window-simulation-authority-denied');const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-window-simulation-authority-denied');
     const runs=[...(await this.ctx.storage.list<SimulationRecord>({prefix:'simulation:run:'})).values()].filter(record=>record.budgetRoute?.kind==='g5'&&record.budgetRoute.windowId===input.windowId);for(const record of runs)if(!sameScope(record.scope,scope)||record.actor.userId!==input.userId)throw Error('g5-window-simulation-authority-conflict');
     const groups=[...(await this.ctx.storage.list<ExperimentGroupRecord>({prefix:GROUP_PREFIX})).values()].filter(group=>group.actor.userId===input.userId&&sameScope(group.scope,scope)&&group.children.some(child=>runs.some(run=>run.runId===child.runId)));
     return {schemaVersion:1 as const,...g5TerminalGroupAuthority(runs,groups)};
   }
   async g5ReadonlyCounters(input:{identity:TurnRuntimeIdentity;userId:string;windowId:string}){
+    await this.#prepareNormalJournal();
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),turn=(await this.#turns.snapshot(scope)).turns[identity.turnId];
     if(!turn||turn.actor.userId!==input.userId)throw Error('g5-readonly-counters-authority-denied');
     const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-readonly-counters-authority-denied');
@@ -1490,6 +1598,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return {schemaVersion:1 as const,projectId:scope.projectId,revision:version,simulationRuns:runs.length,groups:groups.length,active:activeRuns+activeGroups,pending:pendingRuns+pendingGroups,unknown:unknownRuns+unknownGroups,runIds:[...runIds].sort(),groupIds:groups.map(group=>group.groupId).sort()};
   }
   async beginG5ReadonlyReadSession(input:{identity:TurnRuntimeIdentity;userId:string;windowId:string;bindingSha256:string;binding:{schemaVersion:1;kind:'before-reopen-readonly';projectId:string;workspaceId:string;revision:{revisionId:string;filesSha256:string;specSha256:string};runIds:string[];groupIds:string[];claimIds:string[]}}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.identity.scope,async()=>{
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),binding=input.binding;
     if(!/^[a-f0-9]{64}$/.test(input.bindingSha256)||await turnDigest(binding)!==input.bindingSha256||binding?.schemaVersion!==1||binding.kind!=='before-reopen-readonly'||binding.projectId!==scope.projectId||binding.workspaceId!==scope.workspaceId)throw Error('g5-read-session-binding-invalid');
@@ -1502,7 +1611,8 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
 
     });
   }
-  async recordG5ReadonlyRead(input:{scope:TurnScope;actor:TurnActor;sessionId:string;capability:string;path:string;status:number;bodySha256:string}){if(this.#archiveFence.get())return {recorded:false};
+  async recordG5ReadonlyRead(input:{scope:TurnScope;actor:TurnActor;sessionId:string;capability:string;path:string;status:number;bodySha256:string}){
+    await this.#prepareNormalJournal();if(this.#archiveFence.get())return {recorded:false};
     return this.#archiveWrite(input.scope,async()=>{
     const scope=this.#maintenanceScope(input.scope),key='g5-read-session:'+input.sessionId,state=await this.ctx.storage.get<any>(key);
     const now=Date.now();if(!state||state.status!=='open'||!Number.isSafeInteger(state.createdAt)||!Number.isSafeInteger(state.expiresAt)||now<state.createdAt||now>=state.expiresAt||state.capability!==input.capability||!sameScope(scope,state.scope)||state.userId!==input.actor.userId||state.authVersion!==input.actor.authVersion||!Number.isSafeInteger(input.status)||input.status!==200||!/^[a-f0-9]{64}$/.test(input.bodySha256))throw Error(now>=Number(state?.expiresAt)?'g5-read-session-expired':'g5-read-session-record-denied');
@@ -1511,6 +1621,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async consumeG5ReadonlyReadSession(input:{identity:TurnRuntimeIdentity;userId:string;windowId:string;bindingSha256:string;sessionId:string;capability:string}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.identity.scope,async()=>{
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),key='g5-read-session:'+input.sessionId,state=await this.ctx.storage.get<any>(key);
     const now=Date.now();if(!state||state.capability!==input.capability||state.windowId!==input.windowId||state.userId!==input.userId||state.bindingSha256!==input.bindingSha256||!sameScope(scope,state.scope))throw Error('g5-read-session-consume-denied');if(!Number.isSafeInteger(state.createdAt)||!Number.isSafeInteger(state.expiresAt)||now<state.createdAt||now>=state.expiresAt)throw Error('g5-read-session-expired');
@@ -1521,6 +1632,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async g5ReadonlyAttestationAuthority(input:{identity:TurnRuntimeIdentity;userId:string;windowId:string;kind:'before-reopen-readonly'|'research-export-readonly';exportSha256?:string}){
+    await this.#prepareNormalJournal();
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];if(!turn||turn.actor.userId!==input.userId||state.activeTurnId!==null||state.releaseHold!==null||state.recoveryHold!==null||!this.env.WORKSPACE_CHECKPOINTS)throw Error('g5-readonly-authority-unsettled');const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-readonly-authority-denied');
     const current=await this.#simulationSource(scope),version=(await this.modelSpec({scope})).version;if(!version)throw Error('g5-readonly-authority-revision-absent');const runs=[...(await this.ctx.storage.list<SimulationRecord>({prefix:'simulation:run:'})).values()].filter(record=>record.budgetRoute?.kind==='g5'&&record.budgetRoute.windowId===input.windowId);if(runs.some(record=>!sameScope(record.scope,scope)||record.actor.userId!==input.userId||record.status!=='completed'||record.errorCode!==null||!record.result||record.released!==true||record.releaseProof===null))throw Error('g5-readonly-authority-run-unsettled');for(const record of runs)await g5B2RunEvidence(this.env.WORKSPACE_CHECKPOINTS,scope,record,identity.turnId);
     const runIds=new Set(runs.map(record=>record.runId)),groups=[...(await this.ctx.storage.list<ExperimentGroupRecord>({prefix:GROUP_PREFIX})).values()].filter(group=>group.actor.userId===input.userId&&sameScope(group.scope,scope)&&group.children.some(child=>runIds.has(child.runId)));g5TerminalGroupAuthority(runs,groups);const evidence=await this.#evidence(scope).exportRecords(),claimIds=evidence.claims.map((claim:any)=>String(claim.claimId)).sort();if(new Set(claimIds).size!==claimIds.length)throw Error('g5-readonly-authority-claim-conflict');const sourceVersions=[version,...runs.map(record=>modelVersion(record.input.plan))].filter((value,index,all)=>all.findIndex(other=>JSON.stringify(other)===JSON.stringify(value))===index).sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b))),facts={schemaVersion:1 as const,kind:input.kind,projectId:scope.projectId,workspaceId:scope.workspaceId,revision:version,runIds:[...runIds].sort(),groupIds:groups.map(group=>group.groupId).sort(),claimIds,sourceVersions};
@@ -1530,6 +1642,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   /** Private plan selection. A future submit intent must freeze this source
    * durably with its idempotency key; this read does not create or start a Run. */
   async previewPlan(input:{scope:TurnScope}){
+    await this.#prepareNormalJournal();
     const scope=this.#ready(input.scope),revision=this.#turns.workspaceRevisionSnapshot(scope);
     if(!this.env.REVISION_STORE?.getByName)throw Error('revision-store-not-configured');
     const store=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope));
@@ -1540,10 +1653,12 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const plan=await store.initialPreviewPlan(reference,scope);this.#ready(scope);return plan;
   }
   async reconcileSimulationCreation(input:{scope:TurnScope;actor:TurnActor;runId:string}){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{const scope=this.#maintenanceScope(input.scope);const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(input.actor,scope.workspaceId);if(!sameScope(scope,actual))throw Error('g5-simulation-reconcile-scope-denied');return publicExperiment(await this.#simulations(scope).reconcileCreatedRun(input.runId),this.#turns.workspaceRevisionSnapshot(scope)?.receipt.filesSha256??null);
     });
   }
   async listFiles(input:{scope:TurnScope}){
+    await this.#prepareNormalJournal();
     const scope=this.#ready(input.scope),revision=await this.#turns.workspaceRevision(scope);
     if(!revision){const initial=await this.#initialWorkspace(scope);return {schemaVersion:1,revision:null,files:workspaceFileIndex(initial.filesArchive).files};}
     if(!this.env.REVISION_STORE?.getByName)throw Error('revision-store-not-configured');
@@ -1551,12 +1666,14 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return {schemaVersion:1,revision:{revisionId:revision.receipt.revisionId,filesSha256:revision.receipt.filesSha256,committedAt:revision.receipt.committedAt},files:index.files};
   }
   async diffFiles(input:{scope:TurnScope}){
+    await this.#prepareNormalJournal();
     const scope=this.#ready(input.scope),revision=await this.#turns.workspaceRevision(scope);
     if(!revision)return {schemaVersion:1,revision:null,baseRevisionId:null,summary:{added:0,modified:0,deleted:0},changes:[]};
     if(!this.env.REVISION_STORE?.getByName)throw Error('revision-store-not-configured');const store=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)),result=await store.diff(revision.identity,revision.receipt);
     return {schemaVersion:1,revision:{revisionId:revision.receipt.revisionId,filesSha256:revision.receipt.filesSha256,committedAt:revision.receipt.committedAt},summary:result.summary,changes:result.changes};
   }
   async readObserverArtifact(raw:ObserverArtifactReadInput){
+    await this.#prepareNormalJournal();
     const input=observerArtifactReadInput(raw);
     this.#maintenanceScope(input.scope);
     const namespace=this.env.OBSERVER_EXECUTOR;
@@ -1574,15 +1691,18 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async readArtifact(input:{scope:TurnScope;artifactId:string}){
+    await this.#prepareNormalJournal();
     const scope=this.#ready(input.scope);
     if(!this.env.TOOL_ARTIFACT_STORE?.getByName)throw Error('tool-artifact-store-not-configured');
     return this.env.TOOL_ARTIFACT_STORE.getByName(TOOL_ARTIFACT_STORE_ACTOR).read(scope,input.artifactId);
   }
   async artifactEventReleaseEligibility(input:ToolArtifactReferenceInput){
+    await this.#prepareNormalJournal();
     this.#maintenanceScope(input.scope);
     return this.#turns.artifactEventReleaseEligibility(input);
   }
   async releaseRetiredArtifactEvent(input:ToolArtifactReferenceInput){
+    await this.#prepareNormalJournal();
     return this.#archiveWrite(input.scope,async()=>{
     this.#maintenanceScope(input.scope);
     if(!this.env.TOOL_ARTIFACT_STORE?.getByName)throw Error('tool-artifact-store-not-configured');
@@ -1591,6 +1711,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async alarm() {
+    await this.#prepareNormalJournal();
     if(this.#archiveFence.get())return;
     const bootstrap=this.#store.read();if(!bootstrap)return;
     const archiveScope={tenantId:bootstrap.task.tenantId,projectId:bootstrap.task.projectId,workspaceId:bootstrap.task.workspaceId,workspaceGeneration:bootstrap.task.generation};

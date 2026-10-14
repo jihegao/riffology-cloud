@@ -1,0 +1,310 @@
+{
+  "source": "actual safety-stage postNamespaces snapshot, historical not fresh read",
+  "actualStageVersion": "6edef49b-ca5c-4c97-bcec-5c141b079bb1",
+  "actualStageDeployment": "57ea9670-0fef-420b-8bd2-cd044c89fd2d",
+  "actualReplayNamespaceId": "3cfeafa707c5491fba4ead3f0954bc8e",
+  "namespaces": [
+    {
+      "id": "64bf54d3461746cebcf6ede7cf8a2e31",
+      "name": "riffology-m1-gateway-staging_WorkspaceAgent",
+      "script": "riffology-m1-gateway-staging",
+      "class": "WorkspaceAgent",
+      "use_sqlite": true
+    },
+    {
+      "id": "fa42f2fd7ae24a0690d9efe649fadaf6",
+      "name": "riffology-m1-gateway-staging_ProjectRuntime",
+      "script": "riffology-m1-gateway-staging",
+      "class": "ProjectRuntime",
+      "use_sqlite": true,
+      "use_containers": true
+    },
+    {
+      "id": "7b126a0dad674acb80d9bce41b8d7097",
+      "name": "riffology-m1-gateway-staging_TenantQuota",
+      "script": "riffology-m1-gateway-staging",
+      "class": "TenantQuota",
+      "use_sqlite": true
+    },
+    {
+      "id": "f357862e96764091837dd7df1d811cd6",
+      "name": "riffology-m1-gateway-staging_ServiceRuntime",
+      "script": "riffology-m1-gateway-staging",
+      "class": "ServiceRuntime",
+      "use_sqlite": true
+    },
+    {
+      "id": "918293516c824d868fc719f325b0b269",
+      "name": "riffology-m1-gateway-staging_ServiceSandbox",
+      "script": "riffology-m1-gateway-staging",
+      "class": "ServiceSandbox",
+      "use_sqlite": true,
+      "use_containers": true
+    },
+    {
+      "id": "3d352133b52d48d1be27557a2cb5240c",
+      "name": "riffology-m1-gateway-staging_RevisionStore",
+      "script": "riffology-m1-gateway-staging",
+      "class": "RevisionStore",
+      "use_sqlite": true
+    },
+    {
+      "id": "20df82d10b544438aab8fcbbcb86a063",
+      "name": "riffology-m1-gateway-staging_ServiceRun",
+      "script": "riffology-m1-gateway-staging",
+      "class": "ServiceRun",
+      "use_sqlite": true
+    },
+    {
+      "id": "fe7963e2f5ce4e0eb803d925708e743b",
+      "name": "riffology-m1-gateway-staging_ToolBridgeAgent",
+      "script": "riffology-m1-gateway-staging",
+      "class": "ToolBridgeAgent",
+      "use_sqlite": true
+    },
+    {
+      "id": "485f243625a94d4b83256b85b1c8cdaf",
+      "name": "riffology-m1-gateway-staging_ToolArtifactStore",
+      "script": "riffology-m1-gateway-staging",
+      "class": "ToolArtifactStore",
+      "use_sqlite": true
+    },
+    {
+      "id": "06557a80c4a64faf8a892337e6dfcbd3",
+      "name": "riffology-m1-gateway-staging_TenantModelBudget",
+      "script": "riffology-m1-gateway-staging",
+      "class": "TenantModelBudget",
+      "use_sqlite": true
+    },
+    {
+      "id": "9ef65fe251c64afdb425dfe50db1926d",
+      "name": "riffology-m1-gateway-staging_ProductTurnRuntime",
+      "script": "riffology-m1-gateway-staging",
+      "class": "ProductTurnRuntime",
+      "use_sqlite": true
+    },
+    {
+      "id": "ac0e9a31323e463b9a05696dad1b30d5",
+      "name": "riffology-m1-gateway-staging_TrustedPiSandbox",
+      "script": "riffology-m1-gateway-staging",
+      "class": "TrustedPiSandbox",
+      "use_sqlite": true,
+      "use_containers": true
+    },
+    {
+      "id": "bd4b82ecc2d742098ed6c470229b5dc0",
+      "name": "riffology-m1-gateway-staging_ProjectToolSandbox",
+      "script": "riffology-m1-gateway-staging",
+      "class": "ProjectToolSandbox",
+      "use_sqlite": true,
+      "use_containers": true
+    },
+    {
+      "id": "cc60581b919a47e1a8683dc447e9e7ca",
+      "name": "riffology-m1-gateway-staging_TrustedPiCapacity",
+      "script": "riffology-m1-gateway-staging",
+      "class": "TrustedPiCapacity",
+      "use_sqlite": true
+    },
+    {
+      "id": "61afc653d0054bce8d731f3020075c70",
+      "name": "riffology-m1-gateway-staging_SimulationSandbox",
+      "script": "riffology-m1-gateway-staging",
+      "class": "SimulationSandbox",
+      "use_sqlite": true,
+      "use_containers": true
+    },
+    {
+      "id": "ffe112b19d644ee98e1f12b5a0da78a6",
+      "name": "riffology-m1-gateway-staging_G5ControlledWindow",
+      "script": "riffology-m1-gateway-staging",
+      "class": "G5ControlledWindow",
+      "use_sqlite": true
+    },
+    {
+      "id": "b0459d59d5d24e85aede77be0c6c0125",
+      "name": "riffology-m1-gateway-staging_G5TenantModelBudget",
+      "script": "riffology-m1-gateway-staging",
+      "class": "G5TenantModelBudget",
+      "use_sqlite": true
+    },
+    {
+      "id": "f651eb616fce447eab1c9dac17ed24c2",
+      "name": "riffology-m1-gateway-staging_ProductionModelBudget",
+      "script": "riffology-m1-gateway-staging",
+      "class": "ProductionModelBudget",
+      "use_sqlite": true
+    },
+    {
+      "id": "2a68e72561bd4e82834f486331d84427",
+      "name": "riffology-m1-gateway-staging_ManagedProductRuntime",
+      "script": "riffology-m1-gateway-staging",
+      "class": "ManagedProductRuntime",
+      "use_sqlite": true
+    },
+    {
+      "id": "5648367a33bb40cc832c21c423be46e0",
+      "name": "riffology-m1-gateway-staging_PiDeveloperBudget",
+      "script": "riffology-m1-gateway-staging",
+      "class": "PiDeveloperBudget",
+      "use_sqlite": true
+    },
+    {
+      "id": "0137654f83614ad1bbaa4b8fc3b57f0e",
+      "name": "riffology-m1-gateway-staging_PrivateBetaCapacity",
+      "script": "riffology-m1-gateway-staging",
+      "class": "PrivateBetaCapacity",
+      "use_sqlite": true
+    },
+    {
+      "id": "fe74096f53f2408c906b21b013d2050a",
+      "name": "riffology-m1-gateway-staging_InvitedRunCapacity",
+      "script": "riffology-m1-gateway-staging",
+      "class": "InvitedRunCapacity",
+      "use_sqlite": true
+    },
+    {
+      "id": "3cfeafa707c5491fba4ead3f0954bc8e",
+      "name": "riffology-m1-gateway-staging_EntryReplayGuard",
+      "script": "riffology-m1-gateway-staging",
+      "class": "EntryReplayGuard",
+      "use_sqlite": true
+    }
+  ],
+  "modernExports": {
+    "G5ControlledWindow": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "G5TenantModelBudget": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "InvitedRunCapacity": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "ManagedProductRuntime": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "PiDeveloperBudget": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "PrivateBetaCapacity": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "ProductTurnRuntime": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "ProductionModelBudget": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "ProjectRuntime": {
+      "type": "durable-object",
+      "storage": "sqlite",
+      "container": "riffology-m1-project-staging"
+    },
+    "ProjectToolSandbox": {
+      "type": "durable-object",
+      "storage": "sqlite",
+      "container": "riffology-m3-project-tools-staging"
+    },
+    "RevisionStore": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "ServiceRun": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "ServiceRuntime": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "ServiceSandbox": {
+      "type": "durable-object",
+      "storage": "sqlite",
+      "container": "riffology-m3-service-staging"
+    },
+    "SimulationSandbox": {
+      "type": "durable-object",
+      "storage": "sqlite",
+      "container": "riffology-phase1-simulation"
+    },
+    "TenantModelBudget": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "TenantQuota": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "ToolArtifactStore": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "ToolBridgeAgent": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "TrustedPiCapacity": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "TrustedPiSandbox": {
+      "type": "durable-object",
+      "storage": "sqlite",
+      "container": "riffology-m3-trusted-pi-staging"
+    },
+    "WorkspaceAgent": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "EntryReplayGuard": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    }
+  },
+  "originalAssetsConfig": {
+    "html_handling": "none",
+    "not_found_handling": "none",
+    "serve_directly": false,
+    "raw_run_worker_first": true,
+    "base_path": "/"
+  },
+  "containers": [
+    {
+      "class_name": "ProjectRuntime",
+      "name": "riffology-m1-project-staging"
+    },
+    {
+      "class_name": "ProjectToolSandbox",
+      "name": "riffology-m3-project-tools-staging"
+    },
+    {
+      "class_name": "TrustedPiSandbox",
+      "name": "riffology-m3-trusted-pi-staging"
+    },
+    {
+      "class_name": "ServiceSandbox",
+      "name": "riffology-m3-service-staging"
+    },
+    {
+      "class_name": "SimulationSandbox",
+      "name": "riffology-phase1-simulation"
+    }
+  ],
+  "staticAssetsConfig": {
+    "html_handling": "none",
+    "not_found_handling": "none",
+    "serve_directly": false,
+    "raw_run_worker_first": true,
+    "base_path": "/"
+  },
+  "secretValues": null
+}
