@@ -27,7 +27,7 @@ export function authOptions(config: AuthConfiguration) {
   }
   const google={clientId:config.googleClientId,clientSecret:config.googleClientSecret,accessType:'online' as const,includeGrantedScopes:false};
   return {
-    appName:'Riffology', database:config.database, secret:config.secret,
+    appName:'riffoid', database:config.database, secret:config.secret,
     baseURL:config.origin, basePath:'/api/auth', trustedOrigins:[config.origin],
     emailAndPassword:{enabled:false},
     socialProviders:config.googleOAuthEgress?{}:{google},

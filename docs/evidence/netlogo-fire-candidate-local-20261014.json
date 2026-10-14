@@ -1,0 +1,289 @@
+{
+  "schema": "riffoid.netlogo-fire-candidate-local/v1",
+  "recordedAt": "2026-10-14T00:43:15.117671+00:00",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/196",
+  "scope": "private-local-engineering-candidate",
+  "platformBaseCommit": "957b579fbb9f8cb79a9092605d50094ee6a64dbb",
+  "sourceLibrary": {
+    "repository": "jihegao/simulation-case-library",
+    "commit": "05bcb541846356fb94326cc79bb6236da6e85e10",
+    "case": "netlogo-fire-7.0.4",
+    "status": "candidate"
+  },
+  "upstreamModel": {
+    "runtimeVersion": "NetLogo 7.0.4",
+    "path": "models/Sample Models/Earth Science/Fire.nlogox",
+    "sha256": "0a2420e463481fb2cd7791aacdc068735db0d900c14d3fece0a93a085246b171",
+    "inspection": "read-only pinned installed source; no native execution",
+    "license": "CC BY-NC-SA 3.0",
+    "copyright": "1997 Uri Wilensky",
+    "commercialPermissionAsserted": false,
+    "bodyIncluded": false
+  },
+  "candidateFiles": [
+    {
+      "path": "examples/netlogo-fire-candidate/README.md",
+      "sha256": "3abb75b07de051065d0f672f11b0d1154b3dc95f649f773fa1267162eefbee03",
+      "byteLength": 4289
+    },
+    {
+      "path": "examples/netlogo-fire-candidate/app/requirements.lock",
+      "sha256": "269f44fe07f30754885b24ede37a8fd28c3b82b6a081e01454900602447e8097",
+      "byteLength": 34
+    },
+    {
+      "path": "examples/netlogo-fire-candidate/docs/SOURCE_AND_LICENSE.md",
+      "sha256": "94870034105cb37e8f33fc41a4bbd295c2d65c3e19057a55b33b2cfccee5f15f",
+      "byteLength": 1403
+    },
+    {
+      "path": "examples/netlogo-fire-candidate/model/model-spec.json",
+      "sha256": "776179d01e8adc25fda68bcf74329d1c5bb301ac787e3c6e3f92bdcfac72e5b0",
+      "byteLength": 2015
+    },
+    {
+      "path": "examples/netlogo-fire-candidate/model/model.py",
+      "sha256": "1ae7f15b8b86461fa6b420eae3a2332f9458eacc2b3e92a9d56157ea153770c8",
+      "byteLength": 4767
+    },
+    {
+      "path": "examples/netlogo-fire-candidate/model/run.py",
+      "sha256": "b0c785d8c08838d9e416eb87aba1c6b5ce9d8b1d6d233cf2fec32de99a0ec7f5",
+      "byteLength": 4219
+    },
+    {
+      "path": "examples/netlogo-fire-candidate/model/visualization.json",
+      "sha256": "e25a9e78a4a14779d6a2f35860ded30abc15679d70ba0132d55ea0305d5119ae",
+      "byteLength": 201
+    }
+  ],
+  "verificationSourceFiles": [
+    {
+      "path": "tests/m3/netlogo-fire-candidate.test.mjs",
+      "sha256": "f8081117a2a0348866d580c05588f2d45f2b75994b427bd39a2285893e380c1d",
+      "byteLength": 8180
+    },
+    {
+      "path": "scripts/model/netlogo-fire-browser-local.mjs",
+      "sha256": "405071c7d4216213d2f2a41752e18e3e2281ed7b4c4ac32aeb0f89bd322eb83d",
+      "byteLength": 10572
+    }
+  ],
+  "localPackage": {
+    "identityScope": "synthetic-local-only",
+    "source": {
+      "projectId": "local-fire-candidate",
+      "revisionId": "local-fire-9e41f7ba851fbd9072c6d835dfb136ead0213b4d2cff1aa3b28665ccc54d17bd",
+      "filesSha256": "9e41f7ba851fbd9072c6d835dfb136ead0213b4d2cff1aa3b28665ccc54d17bd"
+    },
+    "packageIdentity": "05bae6bc3af947f22839132e07202b1355e2e9d1c3bb7cd54797bfb5f7653892",
+    "runtime": {
+      "adapterVersion": "riffology.model-run/v1",
+      "assetSha256": "0120c8c54ad6806b8db2499c0e1d22f6a2fe821d2c42a60e4b70ee4029f962f1",
+      "dependencies": [],
+      "limitsSha256": "dc99f1b861f5dab9b5bb5abe5e8418fec3d76a73e09bb6fe1f4fa34cf1344484",
+      "profileId": "python-stdlib/v1",
+      "pythonVersion": "3.14.2",
+      "runtimeVersion": "pyodide-314.0.6/v1",
+      "visualProtocol": "riffology.visual/v0.1"
+    },
+    "productionRevisionId": null,
+    "productionRunId": null
+  },
+  "checks": [
+    {
+      "command": "npm ci --ignore-scripts --no-audit --no-fund",
+      "exitCode": 0,
+      "installedPackages": 307
+    },
+    {
+      "command": "node --experimental-strip-types services/browser-preview/runtime/prepare-assets.mjs",
+      "exitCode": 0,
+      "manifestUpdated": false,
+      "fixedAssetReceiptsVerified": true
+    },
+    {
+      "command": "node --experimental-strip-types services/browser-preview/execution/materialize.mjs",
+      "exitCode": 0,
+      "indexUpdated": false,
+      "assets": 71
+    },
+    {
+      "command": "node --experimental-strip-types scripts/m3/materialize-browser-preview-web.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node --experimental-strip-types --test tests/m3/netlogo-fire-candidate.test.mjs",
+      "exitCode": 0,
+      "pass": 7,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "command": "node --experimental-strip-types --test tests/m3/model-spec.test.ts tests/m3/browser-preview-contract.test.ts tests/m3/browser-preview-generation.test.mjs",
+      "exitCode": 0,
+      "pass": 15,
+      "fail": 0,
+      "skip": 0
+    },
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0
+    },
+    {
+      "command": "node --experimental-strip-types scripts/model/netlogo-fire-browser-local.mjs",
+      "exitCode": 0,
+      "browserVersion": "153.0.8010.12",
+      "cpythonVersion": "3.10.14",
+      "records": [
+        {
+          "name": "frozen-bounded-input",
+          "input": {
+            "parameters": {
+              "density_percent": 57,
+              "steps": 5
+            },
+            "seed": 20261001
+          },
+          "frames": 6,
+          "finalTick": 5,
+          "finalMetrics": {
+            "initial_trees": 523,
+            "burned_trees": 53,
+            "active_fires": 6,
+            "trees_remaining": 470,
+            "burn_fraction_pct": 10.133843212237094
+          },
+          "traceSha256": "925a6848c2c55ee7e0602f054eb84d10c81361d99bc94517ff30c4c57948edbd",
+          "entireTraceMatchesCPython": true
+        },
+        {
+          "name": "higher-density",
+          "input": {
+            "parameters": {
+              "density_percent": 80,
+              "steps": 40
+            },
+            "seed": 20261001
+          },
+          "frames": 41,
+          "finalTick": 40,
+          "finalMetrics": {
+            "initial_trees": 750,
+            "burned_trees": 749,
+            "active_fires": 0,
+            "trees_remaining": 1,
+            "burn_fraction_pct": 99.86666666666666
+          },
+          "traceSha256": "3480e2fdda6c75cf161023f31cf0f11035f251451bc32bdeafaff861d7de5da9",
+          "entireTraceMatchesCPython": true
+        },
+        {
+          "name": "zero-density-ember-stop",
+          "input": {
+            "parameters": {
+              "density_percent": 0,
+              "steps": 80
+            },
+            "seed": 20261001
+          },
+          "frames": 13,
+          "finalTick": 12,
+          "finalMetrics": {
+            "initial_trees": 0,
+            "burned_trees": 0,
+            "active_fires": 0,
+            "trees_remaining": 0,
+            "burn_fraction_pct": 0
+          },
+          "traceSha256": "0b243863e6b87bfc1cc0e4239c5c9f896ff7127c2637aaa8a59be22a972df317",
+          "entireTraceMatchesCPython": true
+        }
+      ],
+      "localRequestCount": 29,
+      "localMethods": [
+        "GET"
+      ],
+      "unexpectedRequests": [],
+      "pageErrors": [],
+      "framesAfterEachRun": 0,
+      "receiptObservedAt": "2026-10-14T00:41:42.916Z"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "review": {
+    "implementationAgent": "/root/fire_implementation",
+    "independentReviewAgent": "/root/case_intake_review",
+    "mustFixFindingsRemaining": 0,
+    "reviewedBoundaries": [
+      "source mechanism and ember timing",
+      "input and output limits",
+      "non-circular hand-derived tests",
+      "unchanged canonical adapter",
+      "local browser driver",
+      "license attribution in packaged model and docs",
+      "no native/source-equivalence or production authority claims"
+    ],
+    "humanReview": "pending Draft PR"
+  },
+  "artifacts": [
+    {
+      "path": "docs/evidence/netlogo-fire-candidate-local-20261014/browser-receipt.json",
+      "sha256": "845078389b7ceb516a41f8d432580d98c19b3df1143b6a3458b44c5f7acc32e8",
+      "byteLength": 8193
+    },
+    {
+      "path": "docs/evidence/netlogo-fire-candidate-local-20261014/browser-driver.log",
+      "sha256": "7a770b95e3974412cda3a511824d0c0c870235f660b9b70988ba0a155d3b16d8",
+      "byteLength": 1949
+    },
+    {
+      "path": "docs/evidence/netlogo-fire-candidate-local-20261014/candidate-tests.tap",
+      "sha256": "0b560be3222a8024ff693a2af44729fb5708af2396a0b7b323f6bd784a8e6c0b",
+      "byteLength": 1662
+    },
+    {
+      "path": "docs/evidence/netlogo-fire-candidate-local-20261014/fire-initial.png",
+      "sha256": "7007a8c29e62f197702566bbf651077b4ccbff644ecec13f6afaf9245d010da6",
+      "byteLength": 41726
+    },
+    {
+      "path": "docs/evidence/netlogo-fire-candidate-local-20261014/fire-tick5.png",
+      "sha256": "64c102077edb4ecb40f1e38538d6efe263379fcc8befd08372d33ecf089fc1cb",
+      "byteLength": 43772
+    }
+  ],
+  "classification": "local/unverified",
+  "notCovered": [
+    "native NetLogo replay",
+    "cross-implementation random stream or semantic equivalence",
+    "general research or gold acceptance",
+    "commercial distribution authorization",
+    "deployment and CI acceptance",
+    "authenticated author save and server baseline/intervention",
+    "non-author approval and official publication",
+    "new-user copy/run and cross-identity acceptance"
+  ],
+  "productionChanges": {
+    "deployment": false,
+    "catalogWrites": false,
+    "capacityOrGateChanges": false,
+    "productionExecutionChecked": false
+  },
+  "codeSourceCommit": "28b18ffa6c6c9ca37b4d172c07b5a1635145e54c",
+  "hostedCI": {
+    "runId": 38491888673,
+    "checkId": 115618767615,
+    "url": "https://github.com/jihegao/riffology-cloud/actions/runs/38491888673",
+    "conclusion": "failure",
+    "jobStarted": false,
+    "stepsExecuted": 0,
+    "reason": "GitHub reports recent account payments failed or the spending limit needs to be increased",
+    "sourceCommit": "28b18ffa6c6c9ca37b4d172c07b5a1635145e54c",
+    "testFailureEstablished": false,
+    "automaticRetryPerformed": false
+  }
+}

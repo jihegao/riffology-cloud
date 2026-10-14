@@ -68,6 +68,7 @@ export interface GatewayServices {
     files(scope:TurnScope):Promise<unknown>;
     diff(scope:TurnScope):Promise<unknown>;
     artifact(scope:TurnScope,artifactId:string):Promise<unknown>;
+    toolReceipt?(scope:TurnScope,actor:TurnActor,turnId:string,revisionId:string,toolCallId:string,name:string):Promise<unknown>;
     managedAcceptanceStatus?(scope:TurnScope,actor:TurnActor):Promise<unknown>;
     cleanupManagedAcceptance?(scope:TurnScope,actor:TurnActor):Promise<unknown>;
   };
@@ -395,6 +396,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     const betaStatus=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/private-beta-capacity$/.exec(url.pathname);
     const cancel=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/turns\/([A-Za-z0-9_-]{1,128})\/cancel$/.exec(url.pathname);
     const events=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/events$/.exec(url.pathname);
+    const toolReceipt=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/turns\/([A-Za-z0-9_-]{1,128})\/tools\/([^/]{1,384})\/receipt$/.exec(url.pathname);
     const observationArtifact=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/turns\/([A-Za-z0-9_-]{1,128})\/observations\/([A-Za-z0-9_-]{1,128})\/artifacts\/(state|view)$/.exec(url.pathname);
     if(observationArtifact){
       if(request.method!=='GET')throw new CatalogError('not_found');
@@ -404,7 +406,7 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       const caller={userId:principal.userId,authVersion:principal.authVersion};
       return await observerArtifactContent(await turnCall(()=>services.observations!.artifact(turnScope,caller,observationArtifact[2]!,observationArtifact[3]!,observationArtifact[4]! as 'state'|'view')));
     }
-    const turnMatch=workspace??files??diff??artifact??sessions??turns??turnReceipt??turnWithdraw??betaStatus??cancel??events;
+    const turnMatch=workspace??files??diff??artifact??sessions??turns??turnReceipt??turnWithdraw??betaStatus??cancel??events??toolReceipt;
     if(turnMatch){
       if(!services.turns)throw Error('turn-service-not-configured');
       const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),turnScope=request.method==='GET'?await catalog.maintenanceWorkspace(principal,turnMatch[1]):await catalog.workspace(principal,turnMatch[1]);
@@ -436,6 +438,11 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       if(cancel&&request.method==='POST'){
         const body=await readJson(request);if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).length)throw new CatalogError('invalid_input');
         return json(publicTurn(await turnCall(()=>services.turns!.cancel(turnScope,turnActor,cancel[2]))));
+      }
+      if(toolReceipt&&request.method==='GET'){
+        if(!services.turns.toolReceipt||[...url.searchParams.keys()].some(key=>!['name','revision_id'].includes(key))||url.searchParams.getAll('name').length!==1||url.searchParams.getAll('revision_id').length!==1)throw new CatalogError('invalid_input');
+        let toolCallId:string;try{toolCallId=decodeURIComponent(toolReceipt[3]!);}catch{throw new CatalogError('invalid_input');}
+        return json(await turnCall(()=>services.turns!.toolReceipt!(turnScope,turnActor,toolReceipt[2]!,url.searchParams.get('revision_id')!,toolCallId,url.searchParams.get('name')!)));
       }
       if(events&&request.method==='GET'){
         if([...url.searchParams.keys()].some(key=>!['after_sequence','limit'].includes(key)))throw new CatalogError('invalid_input');

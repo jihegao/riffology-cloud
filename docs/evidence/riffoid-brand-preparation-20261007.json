@@ -1,0 +1,194 @@
+{
+  "date": "2026-10-07",
+  "sourceBase": "e55104bec3966a2c6f096ba9910712732979f055",
+  "scope": "riffoid display branding and offline domain preparation; no active migration routing",
+  "environment": {
+    "node": "26.10.0",
+    "wrangler": "4.129.0",
+    "browser": "existing Chromium via M1_BROWSER_CHANNEL=chromium",
+    "tlsTest": "existing OpenSSL 3.6.4; default system LibreSSL 3.3.6 does not support pkey -check",
+    "ciNode": "25.3.0 (configured in .github/workflows/check.yml); CI job did not execute steps"
+  },
+  "validation": {
+    "ciSuites": "All existing CI suites exercised locally. npm run check initially exited 1 at one unrelated TLS fixture; remaining suites were run explicitly. No claim that the initial monolithic command passed.",
+    "pythonResearchQualityTestsPassed": 8,
+    "tlsFailure": "Existing test and implementation unchanged; reproduced with default LibreSSL. Full 15-test TLS/preflight file passed using existing OpenSSL 3.",
+    "afterLastSourceChange": "Typecheck and 16 research-export ACL/digest/receipt tests passed after export README brand update.",
+    "targetedAuthAndMigration": "8 passed (includes 3 new offline migration tests); new tests are also included in test:m1.",
+    "preservation": "No infra, schema, actor, runtime or fixed-asset changes; existing cookie/storage/protocol tokens in edited source preserved.",
+    "linksAndDiff": "Edited documents local links and git diff --check passed.",
+    "browser": "App, admin, prototype workspace and prototype login titles/wordmarks checked with local intercepted requests; no page script errors; four screenshots visually reviewed.",
+    "githubCI": {
+      "status": "observed-pre-execution-failure",
+      "sourceHead": "d09596fea7ef718c029f1e9ee1ac0a672beed7a5",
+      "runId": 37620856225,
+      "jobId": 112790470041,
+      "url": "https://github.com/jihegao/riffology-cloud/actions/runs/37620856225",
+      "conclusion": "failure",
+      "durationSeconds": 2,
+      "runnerId": 0,
+      "runnerName": "",
+      "steps": [],
+      "logs": "404 BlobNotFound",
+      "annotations": {
+        "reportedCount": 2,
+        "retrieved": false
+      },
+      "cause": "Unknown; no executed test step. Do not classify as a source-test failure or infer a billing cause.",
+      "evidenceScope": "Steps and missing logs observed through the connected tools; duration, runner fields and annotation count supplied by independent PR review. No CI rerun requested."
+    },
+    "nodeSuiteTestExecutions": {
+      "passed": 2614,
+      "skipped": 13,
+      "remainingFailures": 0,
+      "countingMethod": "Sum of passing results from primary local suite runs after substituting the one successful OpenSSL 3 TLS verification for its initial failure. Includes 21 check:ui executions also counted by the test:m1 wildcard; not a count of unique tests. Additional targeted reruns are reported separately and excluded from this tally."
+    }
+  },
+  "executionBoundaries": {
+    "merged": false,
+    "deployed": false,
+    "paidModelOrCloudContainerTasks": false,
+    "domainPurchase": false,
+    "cloudflareOrGoogleConfigurationChanges": false,
+    "installedSoftwareOrNewCredentials": false,
+    "originalCheckout": "Remains clean on codex/beta-review-extension-20261231"
+  },
+  "liveInventory": {
+    "status": "unavailable",
+    "reason": "Wrangler whoami reported expired authentication unable to refresh noninteractively; no new login or credential inspection",
+    "existingEvidence": "PR #169 and issue #104; not revalidated live",
+    "reviewAt": "2026-12-31T15:59:59.999Z",
+    "m1AcceptanceDate": "2026-10-20"
+  },
+  "logs": {
+    "check-ui": {
+      "localPath": ".local/check-ui.log",
+      "sha256": "4e6b7b80577e812bb1940d27a1c1ce00b828bcc6c53a1f000c66be4b78dbf187",
+      "summaries": [
+        "ℹ tests 21",
+        "ℹ pass 21",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    "typecheck": {
+      "localPath": ".local/typecheck.log",
+      "sha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+      "summaries": []
+    },
+    "full-check-unsandboxed": {
+      "localPath": ".local/full-check-unsandboxed.log",
+      "sha256": "b4c9d70bf31b958159cff0b192e75474c374b609335d92296d2a5e111d98bdf5",
+      "summaries": [
+        "ℹ tests 21",
+        "ℹ pass 21",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 351",
+        "ℹ pass 350",
+        "ℹ fail 0",
+        "ℹ skipped 1",
+        "ℹ tests 293",
+        "ℹ pass 293",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 869",
+        "ℹ pass 869",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 938",
+        "ℹ pass 925",
+        "ℹ fail 1",
+        "ℹ skipped 12"
+      ]
+    },
+    "tls-baseline": {
+      "localPath": ".local/tls-baseline.log",
+      "sha256": "4b4dab628447e10b66d4e2f6ace9810083f962b1f33c5bbc33ee8b93744ed6ba",
+      "summaries": [
+        "ℹ tests 1",
+        "ℹ pass 0",
+        "ℹ fail 1",
+        "ℹ skipped 0"
+      ]
+    },
+    "tls-openssl3": {
+      "localPath": ".local/tls-openssl3.log",
+      "sha256": "ef2f30d826ea94f4baf9e3d6a52ded8eeadaec92846dcf97f194f60b8e9c66e9",
+      "summaries": [
+        "ℹ tests 15",
+        "ℹ pass 15",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    "m3-runtime": {
+      "localPath": ".local/m3-runtime.log",
+      "sha256": "8af9cf8aa8e03224a9ba2d9c710835df9137496209b29de7fef8e88603ebcf90",
+      "summaries": [
+        "ℹ tests 20",
+        "ℹ pass 20",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    "m3-phase1": {
+      "localPath": ".local/m3-phase1.log",
+      "sha256": "938013c0117251469d3f365a4b03ba439d4668c85538009c49c1baf276c29235",
+      "summaries": [
+        "ℹ tests 13",
+        "ℹ pass 13",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    "model-scripts": {
+      "localPath": ".local/model-scripts.log",
+      "sha256": "8d3fa2ee6212a02ae675aa4ed963ce1dff3650be62e7b9dcb8bf2403759d0017",
+      "summaries": [
+        "ℹ tests 92",
+        "ℹ pass 92",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    "issue73": {
+      "localPath": ".local/issue73.log",
+      "sha256": "d548684a38f24508605e57152c22b95e3fb9c7e15ac9769dd13f0c492957649c",
+      "summaries": [
+        "ℹ tests 30",
+        "ℹ pass 30",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    "research-quality": {
+      "localPath": ".local/research-quality.log",
+      "sha256": "9bd1fb32bf731bc7c9310ed9cbc51bdf14d5aa21221e945b655b7108de74a11d",
+      "summaries": [
+        "Ran 8 tests in 0.000s",
+        "OK"
+      ]
+    },
+    "auth-migration": {
+      "localPath": ".local/auth-migration.log",
+      "sha256": "345a46fac270da5236e9c564ed77ff10816fa070944309819b3b908146bf7d68",
+      "summaries": [
+        "ℹ tests 8",
+        "ℹ pass 8",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    "export-brand-unsandboxed": {
+      "localPath": ".local/export-brand-unsandboxed.log",
+      "sha256": "da5ec369a5ef3813c438fd6a7341251b506e9de00ee357ed677c8b821df5236e",
+      "summaries": [
+        "ℹ tests 16",
+        "ℹ pass 16",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "researchQuestion": "How does tree density affect bounded four-neighbor fire spread in a finite forest?",
+  "scope": "Local unverified Python adaptation of NetLogo Fire 7.0.4 on a fixed non-wrapping 31 by 31 world",
+  "entities": ["forest cells", "active fires", "embers"],
+  "mechanisms": [
+    "independent seeded tree initialization",
+    "unconditional ignition of the full left boundary",
+    "synchronous four-neighbor spread to trees",
+    "irreversible burning and finite ember fading"
+  ],
+  "assumptions": [
+    "no wind",
+    "fire cannot cross an empty cell",
+    "the left boundary ignition is excluded from initial_trees and burned_trees"
+  ],
+  "parameters": {
+    "density_percent": {"type": "integer", "default": 57, "minimum": 0, "maximum": 99, "unit": "percent"},
+    "steps": {"type": "integer", "default": 5, "minimum": 1, "maximum": 80, "unit": "ticks"}
+  },
+  "metrics": {
+    "initial_trees": {"unit": "trees", "description": "Green trees remaining immediately after the full left boundary is ignited"},
+    "burned_trees": {"unit": "trees", "description": "Cumulative trees ignited after setup; excludes the forced left boundary"},
+    "active_fires": {"unit": "fires", "description": "Current leading-edge fire cells"},
+    "trees_remaining": {"unit": "trees", "description": "Green trees not yet ignited"},
+    "burn_fraction_pct": {"unit": "percent", "description": "100 times burned_trees divided by initial_trees; zero when initial_trees is zero"}
+  },
+  "limitations": [
+    "Python random.Random and row-major initialization do not reproduce NetLogo RNG or per-seed worlds",
+    "This candidate has no native NetLogo replay or cross-implementation equivalence evidence",
+    "Browser Preview is local and unverified; it is not a Verified Experiment or research result",
+    "The fixed 31 by 31 world and at most 80 ticks are conservative preview output bounds"
+  ],
+  "execution": {"entrypoint": "model/run.py", "dependencyLock": "app/requirements.lock"}
+}

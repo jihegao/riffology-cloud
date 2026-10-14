@@ -1,4 +1,4 @@
-# Riffology Cloud UI 设计
+# riffoid UI 设计
 
 日期：2026-09-05  
 状态：UI 设计基线；本地评审原型保留示例页面，Workspace 已改为未接入时的真实空状态；生产入口已有部分真实 API 接线  
