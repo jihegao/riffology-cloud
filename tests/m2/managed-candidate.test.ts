@@ -73,9 +73,9 @@ test('Managed legacy v1 candidates remain readable without claiming trace checks
  assert.equal(JSON.parse(new TextDecoder().decode(reader.read([{path:'model/visualization.json',maxBytes:32768}]).get('model/visualization.json')!)).renderer,'lane');
  assert.throws(()=>packageManagedCandidate({...legacy,preview:js.preview}),/managed-candidate-schema/);
 });
-test('Managed candidate limits and instructions keep unknown outputs explicit and do not add new file or calculation protocols',()=>{
+test('Managed candidate limits and instructions keep unknown outputs explicit and retain the current calculation protocols',()=>{
  const candidate=managedCandidateFixture('airport');candidate.preview.trace.snapshots[0]!.agents=Array.from({length:10000},(_,i)=>({id:'flight-'+i,type:'aircraft',state:'moving',lane:'runway',position:1}));
  assert.throws(()=>packageManagedCandidate(candidate),/managed-candidate-too-large/);
- assert.match(managedTestingInstructions,/schemaVersion":2/);assert.match(managedTestingInstructions,/reported data/);assert.match(managedTestingInstructions,/complete output observed/);
+ assert.match(managedTestingInstructions,/schemaVersion":3/);assert.match(managedTestingInstructions,/validates supplied data/);assert.match(managedTestingInstructions,/complete output actually observed/);
  assert.equal(managedTestingInstructions.includes('lanes":["road"]'),false);
 });

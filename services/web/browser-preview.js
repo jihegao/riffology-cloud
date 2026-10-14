@@ -1,3 +1,4 @@
+import {createViewTabs} from './artifact-views.js';
 import {errorMessage,formatNumber,msg,t,uiError} from './i18n.js';
 import {bindText,bindValue} from './i18n-bindings.js';
 const id=value=>typeof value==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(value);
@@ -30,6 +31,7 @@ export function createBrowserPreviewPanel({root,api,runtimeFactory=createBrowser
  if(!root||typeof api!=='function'||!Number.isInteger(requestTimeoutMs)||requestTimeoutMs<1||!Number.isInteger(assetTimeoutMs)||assetTimeoutMs<requestTimeoutMs||assetTimeoutMs>300000)throw Error('invalid-browser-preview-panel');
  const doc=root.ownerDocument,win=doc.defaultView,requests=new Set();let context=null,generation=0,readVersion=0,loading=false,running=false,verifying=false,state=null,message='',engine=null,loaded=null,inputs=null,trace=null,pollTimer=null,verificationReady=false;
  const controls=doc.createElement('div'),form=doc.createElement('form'),visual=doc.createElement('div'),metrics=doc.createElement('div');controls.className='browser-preview-controls';form.className='browser-preview-form';visual.className='browser-preview-visual';metrics.className='browser-preview-metrics';form.onsubmit=e=>e.preventDefault();
+ const viewRoot=doc.createElement('section');viewRoot.id='preview-subviews';const viewTabs=createViewTabs(viewRoot,'preview');
  const verificationAllowed=()=>verificationReady&&state?.canVerify===true;
  const base=scope=>`/api/workspaces/${encodeURIComponent(scope.workspaceId)}/browser-preview`;
  let parameterDraft=null,lastAgentDraft=null;
@@ -42,7 +44,10 @@ export function createBrowserPreviewPanel({root,api,runtimeFactory=createBrowser
  function button(text,action,disabled=false){const b=doc.createElement('button');b.type='button';b.className='button';b.dataset.browserPreviewAction=action;bindValue(b,text);b.disabled=disabled;return b;}
  function paragraph(text,role=null){const p=doc.createElement('p');bindValue(p,text);if(role)p.setAttribute('role',role);return p;}
  function render(){
-  if(!context)return;controls.replaceChildren();const title=doc.createElement('h3');bindValue(title,msg('browser.title'));controls.append(title);
+  if(!context)return;
+  const declared=state?.views?.filesSha256===loaded?.manifest.filesSha256?state?.views?.items??[]:[];
+  viewTabs.update([{id:'_overview',title:msg('views.overview'),nodes:[visual,metrics]},...declared.map(v=>({id:v.id,title:v.title,nodes:v.renderer==='scene'?[visual]:[metrics]}))],context,loaded?.manifest.packageIdentity??'');
+  controls.replaceChildren();const title=doc.createElement('h3');bindValue(title,msg('browser.title'));controls.append(title);
   const status=state?.build?.status;let text=message||(loading?msg('browser.loading'):status==='building'?msg('browser.building'):status==='unsupported'?msg('browser.unsupported',{reason:previewReason(state.build.reasonCode),profile:state.build.profileId}):status==='failed'?msg('browser.buildFailed',{reason:state.build.reasonCode}):!loaded?msg('browser.previewUnavailable'):running?msg('browser.running'):loaded?.sourceKind==='initial-workspace'?msg('browser.initialReady'):msg('browser.ready'));
   controls.append(paragraph(text,'status'));root.dataset.buildStatus=status??'not_requested';
   if(loaded){const stale=state?.currentRevisionId&&state.currentRevisionId!==loaded.manifest.revisionId;const identity=paragraph(msg(loaded.sourceKind==='initial-workspace'?(stale?'browser.staleInitialSource':'browser.initialSource'):(stale?'browser.staleSavedSource':'browser.savedSource'),{revisionId:loaded.manifest.revisionId,packageIdentity:loaded.manifest.packageIdentity.slice(0,12)}));identity.className=stale?'browser-preview-stale':'meta';controls.append(identity);if(loaded.visualization.renderer==='javascript-canvas')controls.append(paragraph(msg('browser.javascriptFrontend')));if(stale)controls.append(paragraph(msg('browser.staleNote',{revisionId:state.currentRevisionId})));}
@@ -77,6 +82,6 @@ export function createBrowserPreviewPanel({root,api,runtimeFactory=createBrowser
  function click(event){const target=event.target.closest?.('[data-browser-preview-action]');if(!target||!root.contains(target)||target.disabled)return;const action=target.dataset.browserPreviewAction;if(action==='retry-build')void retryBuild();else if(action==='refresh')void refresh();else if(action==='run')void run();else if(action==='cancel'){engine?.runtime.cancel();engine?.player.clear();trace=null;message=msg('browser.cancelled');render();}else if(action==='verify')void verify();else if(['play','pause','step','restart'].includes(action))engine?.player[action]();}
  function change(){if(!loaded)return;try{remember();message='';}catch(error){message=errorMessage(error);}const status=controls.querySelector('[role="status"]');if(status)bindValue(status,()=>message||msg('browser.parametersSaved'));}
  function leave(){verificationReady=false;onVerificationAvailability(false);generation++;readVersion++;clearTimeout(pollTimer);for(const controller of requests)controller.abort();requests.clear();engine?.runtime.dispose();engine?.player.clear();engine=null;loaded=null;inputs=null;parameterDraft=null;lastAgentDraft=null;trace=null;state=null;context=null;loading=running=verifying=false;message='';root.removeEventListener('click',click);root.removeEventListener('change',change);root.replaceChildren();}
- async function enter(value){leave();if(!value||!id(value.tenantId)||!id(value.projectId)||!id(value.workspaceId))throw Error('invalid-browser-preview-context');context={...value,canOpen:value.canOpen===true};root.append(controls,form,visual,metrics);root.addEventListener('click',click);root.addEventListener('change',change);render();await refresh();}
+ async function enter(value){leave();if(!value||!id(value.tenantId)||!id(value.projectId)||!id(value.workspaceId))throw Error('invalid-browser-preview-context');context={...value,canOpen:value.canOpen===true};root.append(controls,form,viewRoot);root.addEventListener('click',click);root.addEventListener('change',change);render();await refresh();}
  return {enter,leave,refresh,savedRevision:()=>void refresh(),applyParameterDraft,run,verify};
 }

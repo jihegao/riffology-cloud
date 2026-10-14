@@ -31,7 +31,7 @@ export type TurnRecord = {
   dispatchId:string|null; runtimeGeneration:number|null; cancelRequestedAt:number|null; cancelDisposition:TurnCancelDisposition|null;
   base:TurnBaseCheckpoints|null; resourceLease:TurnResourceLease|null;
   executionOutcome:'completed'|'failed'|'cancelled'|'interrupted'|null; errorCode:string|null;
-  persistenceOutcome:'saved'|'failed'|null; persistenceErrorCode:string|null; checkpoint:CheckpointReceipt|null;
+  persistenceOutcome:'saved'|'unchanged'|'failed'|null; persistenceErrorCode:string|null; checkpoint:CheckpointReceipt|null;
 };
 export type TurnEvent = { sequence:number; eventId:string; turnId:string; workspaceId:string; runtimeGeneration:number; type:TurnEventType; at:number; payload:Record<string,unknown> };
 export type TurnJournalState = {
