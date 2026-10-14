@@ -6,6 +6,43 @@
 
 The [current minimal contract](requirements-revision-artifact-contract.md#0-2026-10-14-最小实现契约182待合并与部署) distinguishes this implemented subset from the remaining requirements/traceability, full SysML semantics, modules and runtime proposals. Source is based on main `957b579fbb9f8cb79a9092605d50094ee6a64dbb`. The implementation does not change production gates or claim a diagnosis of the original user Turn. No production requests were replayed, deployment performed or authenticated/paid acceptance claimed. The existing deployment and Acceptance items below remain authoritative until new release evidence is recorded. Validation: typecheck and UI (21) passed; M0 passed 350 with one conditional skip; M1 passed 290; M2 passed 943; M3 passed 949 with 12 conditional skips, plus runtime/execution 20, phase checks 13 and model checks 92. Archived-experiment checks passed 30 and Python research-quality checks passed 8. Focused checks additionally cover opaque archive/mode preservation, the final Managed integration and bounded research context. Local execution used Node 26, Chromium and OpenSSL 3; the initial Node 25 M0 timeout/LibreSSL TLS failures were isolated and resolved by those local tool selections. GitHub CI uses its configured environment and is reported separately in the PR. Review entry and exact source head are recorded in the implementation PR and #182.
 
+The implementation PR is [#198](https://github.com/jihegao/riffology-cloud/pull/198). Main `a40248a4614d0cba9c0dbdb0637022d1becb8433` was subsequently integrated, preserving the NetLogo intake record below; production source files did not overlap. All seven newly merged NetLogo candidate checks passed against the combined tree. M1 used Node 25.3.0; the other final suites used Node 26. [CI run 38492300904](https://github.com/jihegao/riffology-cloud/actions/runs/38492300904) failed before any step (`runner_id=0`, `steps=[]`), with no downloadable log. Its failure annotation was not accessible through the available connector. The account blocker recorded for the earlier NetLogo CI run below is a relevant lead, not a verified diagnosis of this run. Hosted checks remain pending; no automatic retry was performed.
+
+## 2026-10-14 NetLogo Fire private local candidate; publication pending
+
+[#196](https://github.com/jihegao/riffology-cloud/issues/196) prepares the first
+local Python adaptation from simulation-case-library's five NetLogo candidates.
+The example keeps the 31×31 finite world, left-edge ignition/count timing,
+four-neighbor spread and ember lifetime, with model-authored Python Canvas drawing
+and the unchanged platform adapter. Attribution and CC BY-NC-SA 3.0 remain with
+the model; commercial permission is not asserted. Python and NetLogo random
+streams are different, so equal seeds do not identify equal forests.
+
+Seven candidate checks and 15 existing Spec/Preview checks passed; typecheck and
+whitespace checks passed. Three actual local Chromium/Pyodide runs matched their
+complete CPython traces, used only local GET requests and released every iframe.
+At density 57%, seed 20261001 and five ticks, the Python candidate reports 523
+initial trees, 53 newly burned trees and six active fires. These are local
+candidate outputs, not the native library's reference values or production Run
+receipts. The locally generated package has a synthetic identity scope.
+
+Independent agent review found no remaining must-fix issue. GitHub
+[CI run 38491888673](https://github.com/jihegao/riffology-cloud/actions/runs/38491888673)
+failed before any job step: its authoritative annotation reports failed account
+payments or a spending-limit problem. Hosted CI did not execute and is not passed;
+no automatic retry was attempted. This increment does
+not deploy, publish a catalog version, change execution gates or establish
+authenticated owner/second-user acceptance. Browser output remains
+**local/unverified**; native replay, cross-implementation equivalence, research/gold,
+commercial distribution and the ordinary-author/reviewer/new-user publication
+flow remain outside this local delivery. [#35](https://github.com/jihegao/riffology-cloud/issues/35)
+retains its existing official-model acceptance scope.
+
+[Intake and semantic boundaries](netlogo-case-intake-20261014.md),
+[candidate source](../examples/netlogo-fire-candidate/README.md) and
+[local receipt](evidence/netlogo-fire-candidate-local-20261014.json) record pinned
+sources, actual commands, package/runtime identity, screenshots and remaining gaps.
+
 ## 2026-10-13 Managed candidate and Journal receipt fix deployed; acceptance pending
 
 [PR190](https://github.com/jihegao/riffology-cloud/pull/190) and
