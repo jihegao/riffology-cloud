@@ -19,8 +19,9 @@ The authorized 2026-10-07 same-actor extension sets the current review deadline
 to **2026-12-31 23:59:59.999 Asia/Shanghai**
 (`2026-12-31T15:59:59.999Z`). Independent readback confirms the v2 pin, Open
 capacity and unchanged original slot/call/alert hashes and usage; only one
-extend-review audit was appended. The temporary maintenance Worker and capability
-were removed. See [the release record](evidence/releases/beta-review-extension-20261007.json).
+extend-review audit was appended. The temporary maintenance Worker was removed and its absence verified;
+task credential/capability deletion or revocation remains unverified in the
+recorded evidence. See [the release record](evidence/releases/beta-review-extension-20261007.json).
 The [September 27 extension](evidence/releases/beta-review-extension-20260927.json)
 and original seven-day observation remain historical evidence, not completed
 standing-capacity acceptance.

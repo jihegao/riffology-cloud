@@ -121,7 +121,8 @@
   "cleanup": {
     "temporaryWorker": "riffology-beta-extension-20261007",
     "deleted": true,
-    "settingsReadback": "10007 script not found"
+    "settingsReadback": "10007 script not found",
+    "taskCredentialOrCapability": "unverified: the recorded evidence contains no deletion or revocation result"
   },
   "operatorSourceSha256": "a73d2117a914bb8db7014bc933b2e3620ac077a0d7cb2ca8410fd447bcf4537a",
   "remaining_scope": "#104 remains Acceptance/open for standing operation and full exit criteria; this extension does not complete those criteria or settle #101 historical fees."

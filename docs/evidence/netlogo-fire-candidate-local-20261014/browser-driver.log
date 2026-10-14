@@ -1,0 +1,72 @@
+{
+  "receipt": "/tmp/riffoid-fire-intake-20261014/.local/netlogo-fire-candidate/browser-receipt.json",
+  "packageIdentity": "05bae6bc3af947f22839132e07202b1355e2e9d1c3bb7cd54797bfb5f7653892",
+  "browserVersion": "153.0.8010.12",
+  "records": [
+    {
+      "name": "frozen-bounded-input",
+      "input": {
+        "parameters": {
+          "density_percent": 57,
+          "steps": 5
+        },
+        "seed": 20261001
+      },
+      "frames": 6,
+      "finalTick": 5,
+      "finalMetrics": {
+        "initial_trees": 523,
+        "burned_trees": 53,
+        "active_fires": 6,
+        "trees_remaining": 470,
+        "burn_fraction_pct": 10.133843212237094
+      },
+      "traceSha256": "925a6848c2c55ee7e0602f054eb84d10c81361d99bc94517ff30c4c57948edbd",
+      "entireTraceMatchesCPython": true
+    },
+    {
+      "name": "higher-density",
+      "input": {
+        "parameters": {
+          "density_percent": 80,
+          "steps": 40
+        },
+        "seed": 20261001
+      },
+      "frames": 41,
+      "finalTick": 40,
+      "finalMetrics": {
+        "initial_trees": 750,
+        "burned_trees": 749,
+        "active_fires": 0,
+        "trees_remaining": 1,
+        "burn_fraction_pct": 99.86666666666666
+      },
+      "traceSha256": "3480e2fdda6c75cf161023f31cf0f11035f251451bc32bdeafaff861d7de5da9",
+      "entireTraceMatchesCPython": true
+    },
+    {
+      "name": "zero-density-ember-stop",
+      "input": {
+        "parameters": {
+          "density_percent": 0,
+          "steps": 80
+        },
+        "seed": 20261001
+      },
+      "frames": 13,
+      "finalTick": 12,
+      "finalMetrics": {
+        "initial_trees": 0,
+        "burned_trees": 0,
+        "active_fires": 0,
+        "trees_remaining": 0,
+        "burn_fraction_pct": 0
+      },
+      "traceSha256": "0b243863e6b87bfc1cc0e4239c5c9f896ff7127c2637aaa8a59be22a972df317",
+      "entireTraceMatchesCPython": true
+    }
+  ],
+  "requests": 29,
+  "framesAfterEachRun": 0
+}

@@ -42,5 +42,15 @@
 .browser-preview-controls .button,.browser-preview-link{margin:4px 6px 4px 0}.browser-preview-form{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}.browser-preview-form label{display:flex;flex-direction:column;gap:4px;max-width:180px}.browser-preview-form input,.browser-preview-form select{max-width:100%;padding:8px}.browser-preview-visual canvas{width:100%;max-width:600px;height:auto}.browser-preview-stale{color:#9c6226}.browser-preview-standalone .workspace-grid{display:block}.browser-preview-standalone #workspace-agent,.browser-preview-standalone .workspace-divider,.browser-preview-standalone .workspace-tabs,.browser-preview-standalone #workspace-services,.browser-preview-standalone #workspace-preview,.browser-preview-standalone #workspace-simulation,.browser-preview-standalone #workspace-model-status,.browser-preview-standalone [data-mobile-pane]{display:none!important}.browser-preview-standalone #workspace-canvas{display:block!important;width:100%;max-width:1100px;margin:auto}
 
 /* Keep local preview actions readable as narrow panels wrap. */
+.local-run-record{border-top:1px solid var(--line);margin-top:20px;padding-top:18px;min-width:0;overflow-wrap:anywhere}.local-run-record pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:320px;overflow:auto;font-size:12px}.local-run-record details{margin:12px 0}.local-run-record summary{cursor:pointer;font-size:13px}.simulation-form>p{grid-column:1/-1}
 .browser-preview-controls .button{min-width:120px;flex:0 1 auto;overflow-wrap:normal;line-height:1.4}
 @media(max-width:600px){.browser-preview-controls .button{flex:1 1 120px}}
+
+.workspace-subtabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--border,#d8dee7);margin:0 0 14px;padding:4px 0}
+.workspace-subtabs button{flex:none;border:0;border-radius:6px 6px 0 0;padding:8px 12px;background:transparent;color:inherit;font:inherit;cursor:pointer}
+.workspace-subtabs button[aria-selected="true"]{background:var(--surface,#eef2f6);box-shadow:inset 0 -2px #2563eb;font-weight:600}
+.workspace-subtabs button:focus-visible{outline:2px solid #2563eb;outline-offset:-2px}
+.workspace-subview>[hidden]{display:none!important}
+.design-graph{display:block;width:100%;min-width:320px;height:auto;background:#fff;border:1px solid #d8dee7;border-radius:8px}
+.design-source{white-space:pre-wrap;overflow-wrap:anywhere;max-height:65vh;overflow:auto}
+.workspace-subview{min-width:0}.workspace-subview>section{overflow-x:auto}

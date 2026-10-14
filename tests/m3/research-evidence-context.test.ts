@@ -10,3 +10,11 @@ test('research context preserves whole evidence identities with explicit truncat
 test('research context reports pagination and rejects an oversized unprunable model',()=>{
  const result=boundedResearchContext({model:null,experiments:[],experimentGroups:[],evidence:[],hasMoreEvidence:true});assert.equal(result.truncated.evidence,true);assert.throws(()=>boundedResearchContext({model:{text:'a'.repeat(61000)},experiments:[],experimentGroups:[],evidence:[]}),/research-context-too-large/);
 });
+
+test('large design contents do not displace measured evidence or break bounded research context',()=>{
+ const model={spec:{},artifacts:{revisionId:'design-revision',filesSha256:'f'.repeat(64),manifest:{schema:'riffology.model-artifacts/v1',files:[{path:'design/notes.md',role:'document'}],views:[]},contents:{'design/notes.md':'x'.repeat(128*1024)}}};
+ const result=boundedResearchContext({model,experiments:[{runId:'measured-run'}],experimentGroups:[],evidence:[]});
+ const summary=result.model as {artifacts:Record<string,unknown>};
+ assert.equal(summary.artifacts.contents,undefined);assert.equal(summary.artifacts.contentsOmitted,true);assert.equal(summary.artifacts.revisionId,'design-revision');assert.deepEqual(summary.artifacts.manifest,model.artifacts.manifest);
+ assert.equal(result.experiments.length,1);assert.equal(result.truncated.experiments,false);assert.equal(model.artifacts.contents['design/notes.md'].length,128*1024);
+});

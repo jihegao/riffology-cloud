@@ -1,0 +1,891 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-12T17:05:19.284675+00:00",
+  "releaseDate": "2026-10-13",
+  "timezone": "Asia/Shanghai",
+  "issues": [
+    "https://github.com/jihegao/riffology-cloud/issues/178",
+    "https://github.com/jihegao/riffology-cloud/issues/192"
+  ],
+  "pullRequests": [
+    "https://github.com/jihegao/riffology-cloud/pull/190",
+    "https://github.com/jihegao/riffology-cloud/pull/194"
+  ],
+  "scope": "Managed existing Python/restricted-JS candidate artifact save/restore, model-authored view preservation and strict late-accounting Revision receipt fix; deployed without changing current domain transport, brand, runtime policies or resource identities",
+  "source": {
+    "deployedCommit": "3e9b97b6d8edeecddd8ce1c995c827dc225a8467",
+    "deployedTree": "2c56db59ca7c050a7e83fc36b2d1d6660ccc943a",
+    "releaseBranch": "codex/managed-live-release-20261013",
+    "parents": [
+      "c27d7e7739216ed0822abcb1c3d3d5ac0336821b",
+      "8e5f9b149dca2273da63f1810d21bf5e39c58de7"
+    ],
+    "mergedFeature190": "bad73ba82f4ca07fb46fc3548981a9b259e91d8e",
+    "mergedFix194": "c27d7e7739216ed0822abcb1c3d3d5ac0336821b",
+    "sourceComposition": "managed-candidate-release-20261013/source-composition.json",
+    "liveSourceAudit": "managed-candidate-release-20261013/live-source-audit.json",
+    "mergeBoundary": "Feature PR190 and fix PR194 are merged. The deployed composition additionally preserves executable-equivalent 8e5f domain source and already-deployed #193 brand bytes; this composition itself is captured in the release branch and is not a claim that all existing domain/brand work has merged to main."
+  },
+  "deployment": {
+    "origin": "https://app.riffoid.com",
+    "worker": "riffology-m1-gateway-staging",
+    "account": "8b0d70250211aa10d89e20605a1c7e5e",
+    "version": "728e5141-d859-4416-8c79-9b92b3ed0b16",
+    "deployment": "6d9f4609-e541-4f6c-a99c-32f18d18510d",
+    "createdOn": "2026-10-12T16:56:33.208347Z",
+    "createdOnAsiaShanghai": "2026-10-13T00:56:33.208347+08:00",
+    "trafficPercent": 100,
+    "previousVersion": "92f2ffa0-07db-4e14-b81f-45b1b54f0ec1",
+    "previousDeployment": "e43d4e81-b77d-4415-a00e-6c222120fca9",
+    "method": "Version upload followed by guarded percentage deployment; candidate upload alone was not reported deployed",
+    "clientDeploymentGuard": {
+      "sourceCommit": "3e9b97b6d8edeecddd8ce1c995c827dc225a8467",
+      "candidateVersion": "728e5141-d859-4416-8c79-9b92b3ed0b16",
+      "previousDeployment": "e43d4e81-b77d-4415-a00e-6c222120fca9",
+      "previousVersion": "92f2ffa0-07db-4e14-b81f-45b1b54f0ec1",
+      "bindingsPreserved": 99,
+      "sqliteExportsPreserved": 23,
+      "containerAssociationsPreserved": 5,
+      "accountContainerConfigurationsPreserved": 15,
+      "clientLiveDeploymentGuardPassed": true
+    },
+    "independentConfirmation": "Connected Cloudflare GET deployments returned identical deployment/version at 100%; full local API readbacks compared all resources/settings",
+    "module": {
+      "sha256": "3f9ade64bedbd295495c4ca960e2cd0a3a576ff8681966454ce54371604b8fe7",
+      "bytes": 5738372,
+      "moduleName": "index.js",
+      "fullByteUploadAndReadbackMatch": true,
+      "contentReadbackBoundary": "content/v2 exposes the latest uploaded script; deployment identity/traffic are independently checked, both before and after cutover."
+    }
+  },
+  "preservation": {
+    "deployment": "6d9f4609-e541-4f6c-a99c-32f18d18510d",
+    "version": "728e5141-d859-4416-8c79-9b92b3ed0b16",
+    "createdOn": "2026-10-12T16:56:33.208347Z",
+    "traffic": 100,
+    "bindingsPreserved": 99,
+    "runtimeExactlyPreserved": true,
+    "sqliteExports": 23,
+    "containerAssociations": 5,
+    "containerApplicationConfigurationsPreserved": 15,
+    "changedSettingsFields": [
+      "annotations"
+    ],
+    "bindingFingerprints": [
+      {
+        "name": "APP_ORIGIN",
+        "type": "plain_text",
+        "identitySha256": "c0f455299d200ebb069d4b1f3d860aefa38707ac25e9ca4b88340ee0afa763fa",
+        "matchesBefore": true
+      },
+      {
+        "name": "APP_TRANSPORT_ORIGIN",
+        "type": "plain_text",
+        "identitySha256": "44dbe21c7983ce6e177a9006ccb04bcd4c8e57b09d87b3c8ceff7caf71dc61d1",
+        "matchesBefore": true
+      },
+      {
+        "name": "ASSETS",
+        "type": "assets",
+        "identitySha256": "8fcf498813511a591cb5d595bc281fee2d45f7a27a87f124257a319b543d04c6",
+        "matchesBefore": true
+      },
+      {
+        "name": "BETTER_AUTH_SECRET",
+        "type": "secret_text",
+        "identitySha256": "98f68dbd61cf18ecb8a18ea83bfca754e78b71fc76703a6d600be52fa02d2065",
+        "matchesBefore": true
+      },
+      {
+        "name": "BROWSER_PREVIEW_EXECUTION_ORIGIN",
+        "type": "plain_text",
+        "identitySha256": "1148931501005af57848ee51256a7b895fa5e58f4981ad88857bc05546b295e2",
+        "matchesBefore": true
+      },
+      {
+        "name": "CATALOG",
+        "type": "d1",
+        "identitySha256": "7efa4b6eed39fd0ed5a63a522d2d73da101c9448222cd17c7b8996615dd1e041",
+        "matchesBefore": true
+      },
+      {
+        "name": "CF_VERSION_METADATA",
+        "type": "version_metadata",
+        "identitySha256": "7d85f8a1dadccfda6326117d3d5332b610b1600a7f271ad75fc92d657df139c7",
+        "matchesBefore": true
+      },
+      {
+        "name": "ENTRY_REPLAY",
+        "type": "durable_object_namespace",
+        "identitySha256": "9c4d206ac7cc88050dd2e2ad7c754e256386965bc883ccba5648a844fd577e64",
+        "matchesBefore": true
+      },
+      {
+        "name": "ENTRY_SIGNING_PUBLIC_KEYS_JSON",
+        "type": "plain_text",
+        "identitySha256": "573d3e0c52f4efdc84f7be1d7fef5f14c07d682310114f42d7b346eada7e7a5c",
+        "matchesBefore": true
+      },
+      {
+        "name": "G4_BROWSER_BUILD_HOLD_SCOPES_JSON",
+        "type": "plain_text",
+        "identitySha256": "c8b0ee277df6e9517a95b206b6a5b7f51b87bbae602e42ebeca4e6b7db01f88c",
+        "matchesBefore": true
+      },
+      {
+        "name": "G4_CONTROLLED_WINDOW_JSON",
+        "type": "plain_text",
+        "identitySha256": "332e4c3481c2dfa62e9fbf3e29b504f88b983961a827493cf934172fc01a2a47",
+        "matchesBefore": true
+      },
+      {
+        "name": "G5_ADMISSION_ENABLED",
+        "type": "plain_text",
+        "identitySha256": "83b6721f2536027ff758d81c0a19743c18348341664976a7dd08157282d6b68b",
+        "matchesBefore": true
+      },
+      {
+        "name": "G5_CONTROLLED_WINDOW_JSON",
+        "type": "plain_text",
+        "identitySha256": "e2e734060562b17c232b18a7c65791274c7e18dbc4625cd2444680b61f2f9177",
+        "matchesBefore": true
+      },
+      {
+        "name": "G5_TOKEN_BUDGET",
+        "type": "durable_object_namespace",
+        "identitySha256": "7f665fa2bdafe803114dfc4a2fdb50445bd59d35ac13d6a44b9fae4bbf3312c5",
+        "matchesBefore": true
+      },
+      {
+        "name": "G5_TOKEN_BUDGET_POLICY_JSON",
+        "type": "plain_text",
+        "identitySha256": "037d3f3622e81efa28071edae5fa3786f7980ac465ccdab63b462928bb837428",
+        "matchesBefore": true
+      },
+      {
+        "name": "G5_WINDOW_GUARD",
+        "type": "durable_object_namespace",
+        "identitySha256": "deee7c35080facab0148dbd7ff470e007540b577ac9534ee67df78a648238ef3",
+        "matchesBefore": true
+      },
+      {
+        "name": "GOOGLE_CLIENT_ID",
+        "type": "secret_text",
+        "identitySha256": "ba4c10fb04c1af61a38e6e6961271ddfc572858bdd72b46c1e67b7521fe96508",
+        "matchesBefore": true
+      },
+      {
+        "name": "GOOGLE_CLIENT_SECRET",
+        "type": "secret_text",
+        "identitySha256": "61aefd537b9a12074dffa2e81f356d541b245d9c3125d0c9bd48bdb370fef1ef",
+        "matchesBefore": true
+      },
+      {
+        "name": "INVITED_PROJECT_ADMISSION_ENABLED",
+        "type": "plain_text",
+        "identitySha256": "7d1432cc9951a678113a38832c5ecb53d6a57289a4839c7b119d9a8217aae447",
+        "matchesBefore": true
+      },
+      {
+        "name": "INVITED_RUNS_POLICY_JSON",
+        "type": "plain_text",
+        "identitySha256": "9114f6ff14bde9b5f9965074206976bb224909872b33c8c51975173dfba6487c",
+        "matchesBefore": true
+      },
+      {
+        "name": "INVITED_RUN_CAPACITY",
+        "type": "durable_object_namespace",
+        "identitySha256": "540f009601817bf83be3c96298862f63570a1ef9004e19b3c4fd4ddbbe0da81a",
+        "matchesBefore": true
+      },
+      {
+        "name": "LEGACY_RECOVERY_ORIGIN",
+        "type": "plain_text",
+        "identitySha256": "e329522c4b298167588c2e881c15cf9718366809fc97868bafbbf579f836e1f9",
+        "matchesBefore": true
+      },
+      {
+        "name": "LEGACY_RECOVERY_UNTIL",
+        "type": "plain_text",
+        "identitySha256": "c47f9fb1202d610d020ca17c6d54857ec7f77bc6aeed3cec06a74eff7583ceca",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_LAZY_PROJECT_ENABLED",
+        "type": "plain_text",
+        "identitySha256": "9a8f4171a9be5e7cefbc4406c9bd83c531cf70cfa39f288de6115725bb167d14",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_MODEL_BUDGET_POLICY_VERSION",
+        "type": "plain_text",
+        "identitySha256": "10f84decdb9e0c68f1e8be6bc2964d2c3d19528266a7c611483105af0a5e6a89",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_MODEL_CAPABILITY_TTL_MS",
+        "type": "plain_text",
+        "identitySha256": "cad074c002576af9493b1f1ee380b03af4dbaafa4866e5fc26f887ca0e1aeba9",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_MODEL_ID",
+        "type": "plain_text",
+        "identitySha256": "64e44a21f68a810784842fd58ce2c9b9ec0747a676a868ca71a800606661a418",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_MODEL_MAX_INPUT_TOKENS_PER_CALL",
+        "type": "plain_text",
+        "identitySha256": "59342d42267cacf9de0a287921c096737dbec6d4ccad3f330417c9fdb38b8569",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_MODEL_MAX_OUTPUT_TOKENS_PER_CALL",
+        "type": "plain_text",
+        "identitySha256": "31b9ed8d6eb74da9b4c1c9e41770d67af19093042d1c0f752e9e93cf16579231",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_MODEL_PROVIDER",
+        "type": "plain_text",
+        "identitySha256": "b17ea2f535db23428813090f69dbbea8516bd03fa0408eb72cdbee3e80bd681f",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_MODEL_PROVIDER_ENABLED",
+        "type": "plain_text",
+        "identitySha256": "c0be892730bb728b5792c9c865ea20a7e3249a3a65de268645b0dd1646e3104e",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_MODEL_PROXY_REQUEST_KEY",
+        "type": "secret_text",
+        "identitySha256": "9a0ab39a80b0b2743de7d20a12102de67c13c14c5c6a44304f9b2971b89b4d99",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_MODEL_TURN_CAPABILITY_KEY",
+        "type": "secret_text",
+        "identitySha256": "fc94c1f4ed547871f6c07e32ec261a1bc6d3eafabbcee0a7e3e52f5a8ee69f86",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_OPENCODE_GO_API_KEY",
+        "type": "secret_text",
+        "identitySha256": "9b691bb1f01122e4359ca0995065209179d8329610111c6ea2c1b8dd05b9a9b2",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_PROJECT_EFFECT_CAPABILITY_KEY",
+        "type": "secret_text",
+        "identitySha256": "df46b6da2c333e46d7bef657c77e787f7ff71b5fecb1033cc919da79daa72375",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_TOOL_BRIDGE_REQUEST_KEY",
+        "type": "secret_text",
+        "identitySha256": "2d2f80c8a45883f0745e5122d3c158029695fd0111fa960824e0b516dd5c23ee",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_TURNS_ENABLED",
+        "type": "plain_text",
+        "identitySha256": "bce840440b7077a5dfde4d5c43c92caad0ac7a950cc73e5f33b7d473af6603c3",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_TURN_ADMISSION_TELEMETRY",
+        "type": "plain_text",
+        "identitySha256": "9a1e1924a70317a2522b54743e3a34238ff6421eadbe54cf421e832e0deb04f3",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_TURN_OPERATION_TELEMETRY",
+        "type": "plain_text",
+        "identitySha256": "4a00d182dbcc49c2e17dacc962c5ee612891ba21dbe7e0fa8f1848510784cc27",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_WORKER_SOURCE_SHA",
+        "type": "plain_text",
+        "identitySha256": "00f8c31c4f708d3655bceb156d763122684473d673e51675d3b9f4788dd75449",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_WORKSPACE_RUNTIME_REUSE_ENABLED",
+        "type": "plain_text",
+        "identitySha256": "0803b51482c3f4f066fabd6811a911366f8c03d0394f7fa640e4d063d2b7f831",
+        "matchesBefore": true
+      },
+      {
+        "name": "M2_WORKSPACE_RUNTIME_VERSION",
+        "type": "plain_text",
+        "identitySha256": "94f07de059d03b5198c859bf4c6cc68b770613b3e483f84c89ce373762c4e047",
+        "matchesBefore": true
+      },
+      {
+        "name": "M3_OBSERVER_ENABLED",
+        "type": "plain_text",
+        "identitySha256": "41772cac57a3c9fca2a15f937889d86ab7a929486e3694385113f00c1524a6d2",
+        "matchesBefore": true
+      },
+      {
+        "name": "M3_PREVIEW_ENABLED",
+        "type": "plain_text",
+        "identitySha256": "b3481b6f29a11954f01e105a057212013efd0b3f956bb00dd5151ddce815b42d",
+        "matchesBefore": true
+      },
+      {
+        "name": "M3_PREVIEW_ORIGIN",
+        "type": "plain_text",
+        "identitySha256": "684fec65ba30fe894ad0adc9c4283c00078cf0961efbcec59e6d4dbd17b0dc4b",
+        "matchesBefore": true
+      },
+      {
+        "name": "M3_PREVIEW_WS_ENABLED",
+        "type": "plain_text",
+        "identitySha256": "8c875740690327592ee525374a7596d2620ba37788781892f2e77199000cff30",
+        "matchesBefore": true
+      },
+      {
+        "name": "M3_SERVICE_ENABLED",
+        "type": "plain_text",
+        "identitySha256": "f9104e5c392eabba5a78cf064c2e822ab591ffd95b3578a90b5bf9ab7aa5f898",
+        "matchesBefore": true
+      },
+      {
+        "name": "M3_SERVICE_IMAGE",
+        "type": "plain_text",
+        "identitySha256": "5d67f52ef945a71d8a7e97030246c1c929d24e98e7cad77ee3fddcac223d9916",
+        "matchesBefore": true
+      },
+      {
+        "name": "M4_SIMULATION_ENABLED",
+        "type": "plain_text",
+        "identitySha256": "4935fcafe9112a0fd2bd8cd8944c2feabbcba98350229e5a70efe5ac39ce24db",
+        "matchesBefore": true
+      },
+      {
+        "name": "M4_SIMULATION_IMAGE",
+        "type": "plain_text",
+        "identitySha256": "9bc68566f31b9ef21e4bc90d9b97e0f3403c1cd89a05f35c228e1a8c070a9367",
+        "matchesBefore": true
+      },
+      {
+        "name": "MANAGED_ACCEPTANCE_JSON",
+        "type": "plain_text",
+        "identitySha256": "150f680f02f69c731a69b0c3139e21bce09d80919a9d756a6304ff7817687288",
+        "matchesBefore": true
+      },
+      {
+        "name": "MANAGED_OPENAI_API_KEY",
+        "type": "secret_text",
+        "identitySha256": "7d7333c3f7e88d9db18f1b774c562fd100fcf2365c8561ded03d99a7c197f38f",
+        "matchesBefore": true
+      },
+      {
+        "name": "MANAGED_PROJECT_BOOTSTRAP_JSON",
+        "type": "plain_text",
+        "identitySha256": "2d99a86da27c85a5f3dc87e4f3fa6a98625ddb9be7b49cb68cfd71bb4b1a2a32",
+        "matchesBefore": true
+      },
+      {
+        "name": "MANAGED_TESTING_JSON",
+        "type": "plain_text",
+        "identitySha256": "74cacb3225a72bd2900bebc429fc174f882fd9e33604437a6ff1a3e51b427978",
+        "matchesBefore": true
+      },
+      {
+        "name": "MANAGED_TESTING_PATCH_SHA256",
+        "type": "plain_text",
+        "identitySha256": "fd15ee9c77624ab9501fb7baea871b7f439a658388874e18157146a1139855f4",
+        "matchesBefore": true
+      },
+      {
+        "name": "MANAGED_TURN_RUNTIME",
+        "type": "durable_object_namespace",
+        "identitySha256": "e8485488b80c2adc2a56a646e971a5b142eea5e7695c3e95914b802035bf1752",
+        "matchesBefore": true
+      },
+      {
+        "name": "MODEL_BUDGET_MAX_DISPATCHED_CALLS_PER_TURN",
+        "type": "plain_text",
+        "identitySha256": "a60f82ed9b50205373e4bbe6116d6983cc6ce99ed8814338d1a7cbd04a164716",
+        "matchesBefore": true
+      },
+      {
+        "name": "MODEL_BUDGET_MAX_INPUT_TOKENS_PER_CALL",
+        "type": "plain_text",
+        "identitySha256": "4217813e38788a143f489dde9b1e673c789912b4ec3198731f2ac5534016f6f0",
+        "matchesBefore": true
+      },
+      {
+        "name": "MODEL_BUDGET_MAX_OUTPUT_TOKENS_PER_CALL",
+        "type": "plain_text",
+        "identitySha256": "022ae209e3bf8084c32aad4a0e68969be0836898bfba06d2becb7e53ef685b20",
+        "matchesBefore": true
+      },
+      {
+        "name": "MODEL_BUDGET_MAX_RESERVATION_ATTEMPTS_PER_TURN",
+        "type": "plain_text",
+        "identitySha256": "ecc8aca43c5fd0c96387b38877b88b6e5d24ddf0d19241465275bfbde743e346",
+        "matchesBefore": true
+      },
+      {
+        "name": "MODEL_BUDGET_MAX_RESERVED_TOKENS_PER_TURN",
+        "type": "plain_text",
+        "identitySha256": "14c4a3c7782190279f78c7e12805f85d8424280973ff6e528f2f3dfd99d0b473",
+        "matchesBefore": true
+      },
+      {
+        "name": "MODEL_BUDGET_POLICY_VERSION",
+        "type": "plain_text",
+        "identitySha256": "d26200d6f5fe058878468847ba77a7f6405ff320c03bde19ef2b07063bb96fa8",
+        "matchesBefore": true
+      },
+      {
+        "name": "MODEL_CONTENT",
+        "type": "r2_bucket",
+        "identitySha256": "896cdd72e135b46eb9c45fa084e75800aaf7a77825ef2b5efa35dc80d8030265",
+        "matchesBefore": true
+      },
+      {
+        "name": "MODEL_PROXY",
+        "type": "service",
+        "identitySha256": "200cad6ea615afeca4e825e379d88c18f716b4bcbe3c273b8ef144fa5dd9ea61",
+        "matchesBefore": true
+      },
+      {
+        "name": "PHASE1_RELEASE_PROFILE",
+        "type": "plain_text",
+        "identitySha256": "c7fc606599cf316b77134f7f9a087d2c85a5554c5b18c1df02f3c64f2d0aa5b5",
+        "matchesBefore": true
+      },
+      {
+        "name": "PI_DEVELOPER_BUDGET",
+        "type": "durable_object_namespace",
+        "identitySha256": "2cd38cb40fa93e4cc529e4d23a5cab4c826fe208bf1bb08fae31705f5f784e54",
+        "matchesBefore": true
+      },
+      {
+        "name": "PI_DEVELOPER_POLICY_JSON",
+        "type": "plain_text",
+        "identitySha256": "c922793c72b2a43a47b4ac9bde0991edb7f61f76cd6fe2754e5082119e5c66e7",
+        "matchesBefore": true
+      },
+      {
+        "name": "PRIVATE_BETA_CAPACITY",
+        "type": "durable_object_namespace",
+        "identitySha256": "dd1824af5b356271f455734160b38c13dd7ca6b65dffbf59853666c64dd81981",
+        "matchesBefore": true
+      },
+      {
+        "name": "PRIVATE_BETA_POLICY_JSON",
+        "type": "plain_text",
+        "identitySha256": "3f0055b79669e7f84fd78d73c0a614d5f142321b1897e741e77ba54aca45a52d",
+        "matchesBefore": true
+      },
+      {
+        "name": "PRODUCTION_ACCEPTED_EVIDENCE_SHA256",
+        "type": "plain_text",
+        "identitySha256": "90210aa140975afbb89329ba21ad516988003bfcefea5f325c04ded930dcefc7",
+        "matchesBefore": true
+      },
+      {
+        "name": "PRODUCTION_AI_GATEWAY_TOKEN",
+        "type": "secret_text",
+        "identitySha256": "519b173cd4b7457002c79dfe516029630e418df72e57c033a2ddba7e9f501835",
+        "matchesBefore": true
+      },
+      {
+        "name": "PRODUCTION_MODEL_BUDGET",
+        "type": "durable_object_namespace",
+        "identitySha256": "c070d131029d3ff7808b0474a8b04dbaa59c6e5507d4c53777ba20ad2571a03d",
+        "matchesBefore": true
+      },
+      {
+        "name": "PRODUCTION_MODEL_ENABLED",
+        "type": "plain_text",
+        "identitySha256": "481f3f68d970176ceb9c0c73d6f9a0e91f5515015cafb5147831d42399c2f094",
+        "matchesBefore": true
+      },
+      {
+        "name": "PRODUCTION_MODEL_PROFILE_JSON",
+        "type": "plain_text",
+        "identitySha256": "2f22c6edfbab0d4d8189d3dc534316605e5f61cf1c7675ebbf316bff78846519",
+        "matchesBefore": true
+      },
+      {
+        "name": "PRODUCTION_MONEY_POLICY_JSON",
+        "type": "plain_text",
+        "identitySha256": "952173f6ea1ca95219bd44a175d3551ea9a71058701346f7a6162c47f7d8c1d8",
+        "matchesBefore": true
+      },
+      {
+        "name": "PRODUCTION_OPENAI_API_KEY",
+        "type": "secret_text",
+        "identitySha256": "16cd8fd46867719f34c1e03cb7d15052349b70ad53be91e7141c86e691501ffd",
+        "matchesBefore": true
+      },
+      {
+        "name": "PRODUCT_TURN_RUNTIME",
+        "type": "durable_object_namespace",
+        "identitySha256": "256435e005bd093b36bb87438c9822e833ac050d160f889afe809ca936d9a1f3",
+        "matchesBefore": true
+      },
+      {
+        "name": "PROJECT_RUNTIME",
+        "type": "durable_object_namespace",
+        "identitySha256": "7abbaaec57aea9677e3237fdfa36fc279654bac7df7a786b0436de1ab74245bc",
+        "matchesBefore": true
+      },
+      {
+        "name": "PROJECT_SANDBOX",
+        "type": "durable_object_namespace",
+        "identitySha256": "4d6063db8f4b20ec5ee50e70c01eb0b4f04c1227c2f7360c73766a522f2efeba",
+        "matchesBefore": true
+      },
+      {
+        "name": "REVISION_STORE",
+        "type": "durable_object_namespace",
+        "identitySha256": "1d24426badbf2764c828ac23e8809efbe7062db4d2e2c14c5d5ba5911ac5c6d7",
+        "matchesBefore": true
+      },
+      {
+        "name": "SERVICE_RUN",
+        "type": "durable_object_namespace",
+        "identitySha256": "2f0ea8e16c9780c421ad984236a76b1360c2de8cc33e10ee72f356b1bb017251",
+        "matchesBefore": true
+      },
+      {
+        "name": "SERVICE_RUNTIME",
+        "type": "durable_object_namespace",
+        "identitySha256": "9525b0ffb5b8dcd9521155e1604e6bae749d8be056b5027586f549b32f342f7d",
+        "matchesBefore": true
+      },
+      {
+        "name": "SERVICE_SANDBOX",
+        "type": "durable_object_namespace",
+        "identitySha256": "81f41e79ac458d2f0ca743924fd759eaac3d5e6d886784c44bf3d8a8d64e5515",
+        "matchesBefore": true
+      },
+      {
+        "name": "SIMULATION_SANDBOX",
+        "type": "durable_object_namespace",
+        "identitySha256": "bbb9bc01d589d1fbd2aa82c483a80d5c501f14845398ec71c6e0a31fdbeab388",
+        "matchesBefore": true
+      },
+      {
+        "name": "TENANT_MODEL_BUDGET",
+        "type": "durable_object_namespace",
+        "identitySha256": "8516ad6fd51552a583dce4bd87aed9ad81028214ee5e9cd2d7918cd33be2df48",
+        "matchesBefore": true
+      },
+      {
+        "name": "TENANT_QUOTA",
+        "type": "durable_object_namespace",
+        "identitySha256": "3172145bd4aa8d5070633edce1c7979c17007461a7f337df4463ac3b47a751bd",
+        "matchesBefore": true
+      },
+      {
+        "name": "TENANT_QUOTA_CAPACITY",
+        "type": "plain_text",
+        "identitySha256": "01ed5a76143508bc1a2d1611b89242d12b4420fc1084d529e2e21244369f1d9e",
+        "matchesBefore": true
+      },
+      {
+        "name": "TENANT_QUOTA_POLICY_VERSION",
+        "type": "plain_text",
+        "identitySha256": "2a01bf90dd4603d1d0e6aa904a272c6304a0cef963f1b55a92eeed1cab05c3f3",
+        "matchesBefore": true
+      },
+      {
+        "name": "TENANT_QUOTA_UPGRADE_FROM",
+        "type": "plain_text",
+        "identitySha256": "0c0ef39fb63a7666a3432438753054142504b8ef42f09d32bec063f9634b6152",
+        "matchesBefore": true
+      },
+      {
+        "name": "TOOL_ARTIFACT_STORE",
+        "type": "durable_object_namespace",
+        "identitySha256": "d80f141e6e24c59d7a976b3f41a0bd6e7165dd2a7f0349b1021f18b081aeb98b",
+        "matchesBefore": true
+      },
+      {
+        "name": "TOOL_BRIDGE",
+        "type": "service",
+        "identitySha256": "139e9f8a4abbc2fdf0c80b651b315850a0a614282c1a27709edf0f73662fe928",
+        "matchesBefore": true
+      },
+      {
+        "name": "TOOL_BRIDGE_AGENT",
+        "type": "durable_object_namespace",
+        "identitySha256": "c54d963c60f70c8b1edd23780a5d14b08f4443c0ec0757c26d722e2416e0c30c",
+        "matchesBefore": true
+      },
+      {
+        "name": "TRUSTED_PI_CAPACITY",
+        "type": "durable_object_namespace",
+        "identitySha256": "3aba793ebe6755da31627218bab525361f613cf25950f859aa0b14352eb94e5e",
+        "matchesBefore": true
+      },
+      {
+        "name": "TRUSTED_PI_CAPACITY_LIMIT",
+        "type": "plain_text",
+        "identitySha256": "febe260786d5a0a44e3a15b34e4baf6355dae514187f1f550082e4c08b9ef225",
+        "matchesBefore": true
+      },
+      {
+        "name": "TRUSTED_PI_CAPACITY_POLICY_VERSION",
+        "type": "plain_text",
+        "identitySha256": "3ea26813e758216e4b1ffc5a131bb3c4723127827a4aaf49c3de0fd7292fb02d",
+        "matchesBefore": true
+      },
+      {
+        "name": "TRUSTED_PI_SANDBOX",
+        "type": "durable_object_namespace",
+        "identitySha256": "e2079ce22bf3e42056678e0b992b610890b483bf471dc4ba529d8ba9e135057e",
+        "matchesBefore": true
+      },
+      {
+        "name": "TWO_ACCOUNT_AUTH_MODE",
+        "type": "plain_text",
+        "identitySha256": "bfadbcd782fd8755727aa56646d61627285f8d1ab82466d04a63af7ff9d1fc00",
+        "matchesBefore": true
+      },
+      {
+        "name": "WORKSPACE_AGENT",
+        "type": "durable_object_namespace",
+        "identitySha256": "42bbea95656d189d0ae29792bb976bad4ca2b1c2a5228d44e50e232f8ee0a7c4",
+        "matchesBefore": true
+      },
+      {
+        "name": "WORKSPACE_CHECKPOINTS",
+        "type": "r2_bucket",
+        "identitySha256": "c06dea43aab89c28b277771a212889fa3437eb6a389ffabc68d2225659316119",
+        "matchesBefore": true
+      }
+    ],
+    "otherWorkers": {
+      "method": "Fresh connected Cloudflare GET deployments, compare previous #193 release readback",
+      "workers": {
+        "riffoid-entry": {
+          "deployment": "de01a673-3f7d-4833-873b-9843da28076f",
+          "version": "668e19e6-6f23-49e0-b4f6-06459790a496",
+          "traffic": 100
+        },
+        "riffoid-www": {
+          "deployment": "861bbec0-b9d3-4315-b925-87b198f359d2",
+          "version": "c9e4d060-a412-4dc7-a0c0-13b55b6bacfa",
+          "traffic": 100
+        },
+        "riffology-browser-execution": {
+          "deployment": "a7f6f18e-4f60-4b94-86a9-f011fa729f59",
+          "version": "3e96532e-dbeb-4c8c-b147-7e71939b0472",
+          "traffic": 100
+        }
+      },
+      "matchedPreviousRelease": true,
+      "recordedAt": "2026-10-12T17:03:19.666121+00:00"
+    },
+    "compatibilityDate": "2026-09-09",
+    "compatibilityFlags": [
+      "nodejs_compat",
+      "nodejs_compat_do_not_populate_process_env",
+      "enable_request_signal"
+    ],
+    "scope": "Full before/after API snapshots and version resources compare equal except deployment annotations; plaintext policy values/credentials remain in private local snapshots. Container configuration/identity preservation is not instance health or release acceptance."
+  },
+  "assets": {
+    "files": 91,
+    "ordinaryWebFiles": 23,
+    "immutablePreviewFiles": 68,
+    "changedRelativeToPreviouslyDeployedBrand": [
+      "/app.js",
+      "/i18n.js"
+    ],
+    "immutableAssetsUnchanged": true,
+    "runtimeProfiles": [
+      "0120c8c54ad6806b8db2499c0e1d22f6a2fe821d2c42a60e4b70ee4029f962f1",
+      "0f06754b97c574b123c5832d015eac9db80ba153e37648d435497c14ce671373",
+      "28cd56fae7755f8b100e00d96aed82dc11757e38733fd3f0a3d1efe28c7fbd4c",
+      "64f7b7606d47dd508ee0046b08ac4720dbd9bff46790de58ad2b7e40a23e6520",
+      "6b0c95c5700b9561172dce4fa3419ad7224cfbc2e5d8871366b27c16f854e94d",
+      "b5355cc5925224d224540792525cdefa0ae00deacc3d330608065f90c740eed2",
+      "b6cb6c0e726d007c281f991eaea0d2aae415113328444de47c0681d85b553fd9",
+      "ed19f7bd56866879a612a2018939630b275bc8b4b7becef2d68fbde27d2e8041"
+    ],
+    "allOnlineSha256Matched": true,
+    "executionFramesMatched": 3,
+    "staticReadback": "managed-candidate-release-20261013/static-readback.json",
+    "realModelPackageIdentity": null,
+    "productionRevisionIdentity": null,
+    "reasonNoProductionRevision": "No new authenticated model save/run occurred during this release; the deployed Worker/asset identities do not substitute for a production model Revision/package receipt.",
+    "scope": "The 91 entries of this release asset manifest were checked; this is not enumeration of every historical/platform asset namespace."
+  },
+  "validation": {
+    "environment": {
+      "node": "v26.10.0",
+      "platform": "darwin",
+      "arch": "arm64",
+      "browser": "Playwright Chromium channel chromium, installed chromium-1243",
+      "workerd": "1.20260903.1",
+      "miniflare": "5.20260903.0-alpha"
+    },
+    "testIdentity": "Offline synthetic fixture actors and outbound provider stubs; online anonymous static requests and existing Cloudflare administration grants",
+    "checks": [
+      {
+        "id": "m1",
+        "command": "M1_BROWSER_CHANNEL=chromium node --test --test-concurrency=2 tests/m1/*.test.ts tests/m1/*.test.mjs scripts/m1/model-package.test.mjs",
+        "sourceCommit": "3e9b97b6d8edeecddd8ce1c995c827dc225a8467",
+        "status": "passed",
+        "exitCode": 0,
+        "log": "docs/evidence/managed-candidate-release-20261013/m1.log.gz",
+        "logSha256": "69d2da556374bad98c146afc104aa566ebc3cd6523f3ef2b250d934f43cb3436",
+        "logBytes": 37317,
+        "summary": "ℹ tests 348\nℹ pass 348\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 37279.401459",
+        "tests": 348,
+        "pass": 348,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "logFormat": "gzip",
+        "compressedSha256": "3e733f1e510650a9397ede8076a68ce5c31b2ec359e122d53459c411bc192046",
+        "compressedBytes": 13229
+      },
+      {
+        "id": "m2",
+        "command": "npm run test:m2",
+        "sourceCommit": "c526ef0d49d77f0202860d5624e5c59c04e222a7",
+        "status": "passed",
+        "exitCode": 0,
+        "log": "docs/evidence/managed-candidate-release-20261013/m2.log.gz",
+        "logSha256": "da4eae02383ebe4a19ed142c5cf4fd2b3bff01729dee2452907d7ff726b403d5",
+        "logBytes": 99724,
+        "summary": "ℹ tests 921\nℹ pass 921\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 185114.5635",
+        "tests": 921,
+        "pass": 921,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "sourceReuse": "Final source/test/package/lock inputs are identical for this check; immutable source comparison is recorded in source-composition.json. Counts overlap with focused tests and must not be added.",
+        "logFormat": "gzip",
+        "compressedSha256": "76eb027e186134461988f38029c6d196c594b77fad41f59af6fceddc8ae9ffea",
+        "compressedBytes": 28943
+      },
+      {
+        "id": "ui",
+        "command": "npm run check:ui",
+        "sourceCommit": "c526ef0d49d77f0202860d5624e5c59c04e222a7",
+        "status": "passed",
+        "exitCode": 0,
+        "log": "docs/evidence/managed-candidate-release-20261013/ui.log.gz",
+        "logSha256": "9a66f2727429f3566623ad6116d62c32f00c7fb14df731574cde2c69e03ae8a9",
+        "logBytes": 3242,
+        "summary": "ℹ tests 21\nℹ pass 21\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 180.795167",
+        "tests": 21,
+        "pass": 21,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "sourceReuse": "Final source/test/package/lock inputs are identical for this check; immutable source comparison is recorded in source-composition.json. Counts overlap with focused tests and must not be added.",
+        "logFormat": "gzip",
+        "compressedSha256": "22c1c13ad882f51cb06bef288348e54672b0df99c1b3d842b43277eb4705f086",
+        "compressedBytes": 1333
+      },
+      {
+        "id": "typecheck",
+        "command": "npm run typecheck",
+        "sourceCommit": "3e9b97b6d8edeecddd8ce1c995c827dc225a8467",
+        "status": "passed",
+        "exitCode": 0,
+        "log": "docs/evidence/managed-candidate-release-20261013/typecheck.log.gz",
+        "logSha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+        "logBytes": 29,
+        "summary": "",
+        "logFormat": "gzip",
+        "compressedSha256": "b3cd690a82194400cc79b294f2c64116d00da212e291bea6775ecc26080c96c4",
+        "compressedBytes": 47
+      },
+      {
+        "id": "bundle",
+        "command": "wrangler deploy --dry-run --config .local/issue192-release-20261013/bundle-dryrun.json --outfile .local/issue192-release-20261013/final.multipart",
+        "sourceCommit": "3e9b97b6d8edeecddd8ce1c995c827dc225a8467",
+        "status": "passed",
+        "exitCode": 0,
+        "log": "docs/evidence/managed-candidate-release-20261013/bundle.log.gz",
+        "logSha256": "3f8932cd7fa706a4baf83b1071fa2722332f384d5c8f702202fd2832595a8387",
+        "logBytes": 651,
+        "summary": "",
+        "logFormat": "gzip",
+        "compressedSha256": "fc666299d5493bf9a416aaf6bee168bedda488cc24a5c28634e1958f4d1f983b",
+        "compressedBytes": 411
+      },
+      {
+        "id": "online-static",
+        "command": "node .local/issue192-release-20261013/static-after.mjs",
+        "sourceCommit": "3e9b97b6d8edeecddd8ce1c995c827dc225a8467",
+        "status": "passed",
+        "exitCode": 0,
+        "log": "docs/evidence/managed-candidate-release-20261013/online-static.log.gz",
+        "logSha256": "e9924084950c059beb38a017a9a7288983afd9201657e29cf2f395955cd27730",
+        "logBytes": 423,
+        "summary": "",
+        "logFormat": "gzip",
+        "compressedSha256": "de7c766f6503639c8977a394b1c5c3449b79204c8826441c3e0c659e01fbe0fd",
+        "compressedBytes": 221
+      }
+    ],
+    "sourceReviews": [
+      "Independent Managed/Browser/Journal blob comparison to f55 and domain/Workspace source comparison to proved 8e5f",
+      "Independent exact old-module reconstruction and final source/M2 input comparison",
+      "PR194 automatic review completed without findings"
+    ],
+    "ci": "Not executed due to allowance; ignored per user instruction, never reported passed",
+    "earlierEnvironmentFailure": "Initial M1 attempt used missing system Chrome (66 cases did not execute). Chromium rerun passed 66; final proved-live-source M1 suite then passed all348. Earlier04f composite was replaced because it contained undeployed maintenance inputs.",
+    "staticHttpRequests": 100,
+    "staticScope": "anonymous static GETs plus one rejected empty POST to static frame; no authenticated project, model generation, provider or simulation execution",
+    "automaticApplicationRetries": 0
+  },
+  "status": {
+    "implemented": true,
+    "featureAndFixMerged": true,
+    "deployed": true,
+    "anonymousStaticValidation": "passed",
+    "authenticatedInvitedUserAcceptance": "pending",
+    "secondIdentityIsolationAcceptance": "pending",
+    "paidModelOrSimulationExecutionAcceptance": "not performed",
+    "browserResultsClassification": "local/unverified",
+    "candidateReportedOutputExecution": "not-recomputed",
+    "projectPhase": "Acceptance, open; does not infer Done from merge/deploy"
+  },
+  "executionBoundary": {
+    "releaseAuthorization": "User explicitly requested continue and online deployment; existing account/runtime authority retained",
+    "modelProviderOrRunRequestsStartedByThisRelease": false,
+    "newProjectsOrOldRequestsReplayed": false,
+    "globalRuntimeGatesOrCapacityExpanded": false,
+    "historyOrUsageReset": false,
+    "currentGatePolicyValuesPreserved": true,
+    "authoritativeGlobalExecutionCountersCollected": false,
+    "globalZeroExecutionClaim": false,
+    "note": "Static GET and one explicitly rejected empty POST do not provide authenticated modeling/paid acceptance. Existing unrelated user activity was not treated as zero."
+  },
+  "uploadHistory": {
+    "explicitlyRejectedMultipartAsModuleAttempts": 2,
+    "rejection": "Cloudflare10021 syntax error before version creation/deployment; packaging corrected after explicit rejection",
+    "unusedMainCandidateVersion": "5f7cb7c6-24fa-466d-989e-2ab12ec25c07",
+    "unusedCandidateDeployed": false,
+    "reason": "Live deployment changed concurrently to #193; client guard stopped cutover and source audit excluded missing/undeployed domain inputs",
+    "supersededComposite": "c526ef0d49d77f0202860d5624e5c59c04e222a7",
+    "supersededCompositeDeployed": false,
+    "authentication": "Normal same-scope refresh of existing original OAuth grant; no new grant/scope expansion; credentials retained only in their existing private destination"
+  },
+  "remaining": [
+    "Authenticated invited-user fresh-project v1/v2 save receipt, historical restore, parameter/seed changes and reload acceptance under existing Managed gate remain parent #178 acceptance work.",
+    "General manifest/authoring dependency resolution and bounded real debug remain #182/#183; authoring Mesa root allowlist was not removed by this release, existing saved dependency closures remain intact.",
+    "Requirements/SysML implementation and multi-layer compiler/Rust backend integration remain the planned follow-up issues; PR189 is design only.",
+    "Airport/queue/grid ecology full target-domain acceptance, server recomputation and Verified Evidence are not established by this release.",
+    "Existing domain/brand source reconciliation with main remains separately reviewable; use the recorded composition and actual full live configuration for any next release, not old minimal wrangler config."
+  ]
+}

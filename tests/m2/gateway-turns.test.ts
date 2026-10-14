@@ -102,6 +102,14 @@ test('Private Beta status read exposes only the caller-scoped state',async()=>{
  }finally{f.db.sqlite.close();}
 });
 
+test('owner tool receipt GET requires exact original binding parameters and forwards no client command identity',async()=>{
+ const f=await fixture();try{f.ready();const calls:unknown[]=[];(f.services.turns as any).toolReceipt=async(...input:unknown[])=>{calls.push(input);return {schemaVersion:1,state:'not-admitted',binding:{turnId:'turn-a',revisionId:'revision-a',toolCallId:'call-a|part-b',name:'project_bash',operation:'bash'}};};
+  const path=`/api/workspaces/${f.workspaceId}/turns/turn-a/tools/${encodeURIComponent('call-a|part-b')}/receipt?name=project_bash&revision_id=revision-a`,response=await f.get(path);assert.equal(response.status,200);assert.equal((await response.json() as any).state,'not-admitted');assert.equal(calls.length,1);const forwarded=calls[0] as any[];assert.equal(forwarded[0].workspaceId,f.workspaceId);assert.deepEqual(forwarded[1],{userId:'user-a',authVersion:1});assert.deepEqual(forwarded.slice(2),['turn-a','revision-a','call-a|part-b','project_bash']);
+  assert.equal((await f.get(`/api/workspaces/${f.workspaceId}/turns/turn-a/tools/call-a/receipt?name=project_bash`)).status,400);
+  assert.equal((await f.get(`/api/workspaces/${f.workspaceId}/turns/turn-a/tools/call-a/receipt?name=project_bash&revision_id=revision-a&command_id=forbidden`)).status,400);
+ }finally{f.db.sqlite.close();}
+});
+
 test('workspace recovery hold accepts new queued work while read APIs remain available',async()=>{
  const f=await fixture();try{f.ready();
   const session=await (await f.post(`/api/workspaces/${f.workspaceId}/sessions`,'hold-session',{title:'Hold'})).json() as any;

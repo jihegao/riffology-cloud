@@ -1,6 +1,6 @@
 import {nativeAttemptSnapshot,recordNativeAttempt,execAttemptTag,bindNativeOwner,NATIVE_OWNER_KEY} from '../g4-native-counts.ts';
 import {WorkspaceNativeHost} from './workspace-native-host.ts';
-import type {WorkspaceSandboxBinding} from './workspace-binding.ts';
+import {historicalWorkspaceBinding,type WorkspaceSandboxBinding,type WorkspaceSandboxLease} from './workspace-binding.ts';
 import type {WorkspaceNativeOptions} from './workspace-native.ts';
 import type {WorkspaceAgent} from '../workspace/durable.ts';
 import {ProjectPreparationLedger} from '../project-tools/preparation.ts';
@@ -8,15 +8,16 @@ import { ContainerProxy, Sandbox } from '@cloudflare/sandbox';
 import { MODEL_PROXY_HOST, TOOL_BRIDGE_HOST, projectSandboxOutbound, sandboxActorIds, trustedPiOutbound, type InternalSandboxServices } from './policy.ts';
 import {createObserverNativeReader} from '../turn-runtime/observer-native-read.ts';
 import {readCurrentObserverExecution,trustedPiProcessId} from '../turn-runtime/pi-native.ts';
-import { turnRuntimeIdentity } from '../turn-runtime/identity.ts';
+import { sameTurnRuntimeIdentity,turnRuntimeIdentity,type TurnRuntimeIdentity } from '../turn-runtime/identity.ts';
 import { turnBaseCheckpoints } from '../turn/protocol.ts';
-import { ProjectFileEffectPort } from '../project-tools/effect.ts';
+import { persistedProjectEffectReceipt,ProjectFileEffectPort } from '../project-tools/effect.ts';
 import { SandboxNativeProjectEffectPort } from '../project-tools/native.ts';
-import { SqlProjectEffectSupervisor } from '../project-tools/supervisor.ts';
+import { readPersistedProjectEffectTerminal,SqlProjectEffectSupervisor } from '../project-tools/supervisor.ts';
 import { SandboxProjectWorkspacePort } from '../project-tools/workspace.ts';
 import type { ToolCommandReference } from '../tools/ledger.ts';
 import type { ToolCommand } from '../tools/protocol.ts';
 import { verifyProjectEffectCapability, type ProjectEffectCapability } from './capability.ts';
+import {workspaceBindingStorage} from './workspace-native.ts';
 import { TurnSandboxFence } from './turn-fence.ts';
 
 export { ContainerProxy };
@@ -157,6 +158,16 @@ export class ProjectToolSandbox extends Sandbox<M2SandboxEnv>{
     await this.#assertDispatch(claims);
     if(this.#turnFence.isDispatchFenced(claims))return this.#effects.observePersistedTerminal(input);
     return this.#turnFence.runDispatch(claims,()=>{this.#preparation.assertDispatchUsable(claims);return this.#effects.observe(input);},()=>this.#destroyForFence());
+  }
+  async readPersistedFileEffectTerminal(input:{identity:TurnRuntimeIdentity;reference:ToolCommandReference;command:ToolCommand;capability:ProjectEffectCapability;warm:null|{lease:WorkspaceSandboxLease;bindingEpoch:number}}){
+    const identity=turnRuntimeIdentity(input.identity);
+    const claims=await verifyProjectEffectCapability(this.#capabilityKey,this.#actorId,input.command,input.reference.effectId,input.capability);
+    if(!sameTurnRuntimeIdentity(identity,{scope:claims.scope,sessionId:identity.sessionId,turnId:claims.turnId,dispatchId:claims.dispatchId,generation:claims.scope.workspaceGeneration}))throw Error('project-effect-identity-denied');
+    let storage:Pick<DurableObjectStorage,'sql'>=this.ctx.storage;
+    if(input.warm){const historical=await historicalWorkspaceBinding(this.ctx.storage,{identity,lease:input.warm.lease,bindingEpoch:input.warm.bindingEpoch},this.#actorId,'project');if(!historical)return null;storage=workspaceBindingStorage(this.ctx.storage,historical.bindingEpoch);}
+    else await this.#assertDispatch(claims);
+    const observed=readPersistedProjectEffectTerminal(storage,input.reference.effectId);if(!observed)return null;
+    return await persistedProjectEffectReceipt({reference:input.reference,command:input.command,observation:observed});
   }
   async prepareWorkspaceOnce(identity:ReturnType<typeof turnRuntimeIdentity>,base:Parameters<SandboxProjectWorkspacePort['restoreFiles']>[1],archive:Uint8Array|null,operationId:string,deadlineAt:number){
     identity=turnRuntimeIdentity(identity);if(this.#warm.warm)return (await this.#warm.forIdentity(identity)).prepareWorkspaceOnce(identity,base,archive,operationId,deadlineAt);await this.#assertActor(identity);

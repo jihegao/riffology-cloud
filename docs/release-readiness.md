@@ -1,4 +1,253 @@
-# Current release readiness — 2026-10-07
+# Current release readiness — 2026-10-14
+
+## 2026-10-14 Read-only tool receipt deployed and owner read accepted
+
+[#199](https://github.com/jihegao/riffology-cloud/issues/199) and
+[PR #200](https://github.com/jihegao/riffology-cloud/pull/200) add a narrowly
+scoped owner read for persisted tool-request terminal evidence. Gateway version
+`3789df91-afc5-4e89-8ea7-1dbe7a88036f`, deployment
+`1a8687ad-a7a5-42a8-a6e5-295ba1b1805f`, is at 100%. A later ordinary-author
+read returned two explicit `not-admitted` receipts and one terminal completed
+cleanup receipt with exit code 0; a different authenticated reviewer received
+404. The workspace had no remaining active Turn or holds. Earlier 503 responses
+followed by successful reads are consistent with deployment propagation, without
+proving that cause. No original request was replayed.
+
+Project-scoped compute-count snapshots around three further receipt reads were
+deeply equal, and all four sampled Turn dispatches reported supported no-added-call
+counters for project tools, Trusted Pi and the tool ledger. This is bounded proof
+for those project endpoints; it is not a global-zero or fee claim.
+
+The deployment preserves 99 bindings, 23 SQLite exports, five exactly equal
+Worker container association configurations and the safe list metadata for all
+15 account container applications. Full account application configuration was
+not compared. The prior runtime and asset configuration was preserved; asset
+bytes were not freshly probed. Capacity
+was restored to paused=false, active=0 and quarantined=0 with the same policy hash,
+limits, usage and alerts. The unchanged review time is the current extension in
+[#104](https://github.com/jihegao/riffology-cloud/issues/104):
+2026-12-31 23:59:59.999 Asia/Shanghai. This release made no policy change.
+Receipt API usage and fees remain unknown. The full M2
+attempt had 930 passed, zero failed and one cancelled at an existing Workerd
+60-second timeout, so the full suite is not claimed passed. The separate six-Run
+group under [#196](https://github.com/jihegao/riffology-cloud/issues/196) remains
+unfinished and outside #199 acceptance; this entry does not claim
+Fire publication, Group completion or formal Experiment evidence.
+
+[Release note](tool-receipt-release-20261014.md) and
+[sanitized evidence](evidence/releases/issue199-tool-receipt-release-20261014.json)
+record the exact source/deployment identity, authenticated read boundary and
+remaining gaps.
+
+## 2026-10-14 Candidate design artifacts, section views and unchanged answers (implementation; not deployed)
+
+[#182](https://github.com/jihegao/riffology-cloud/issues/182) / Linear JHG-22 is the selected implementation slice. Candidate v3 separates `answer`, `design` and `model`: answers create no Revision; design documents, SysML text and declarative graphs overlay the frozen base; computation retains the existing v2 validation. Model, Preview and Runs consume a bounded display manifest with one level of platform-owned subtabs. Tabs preserve the loaded package, inputs, playback and historical record identities without creating execution requests.
+
+The [current minimal contract](requirements-revision-artifact-contract.md#candidate-v3) distinguishes this implemented subset from the remaining requirements/traceability, full SysML semantics, modules and runtime proposals. Source is based on main `957b579fbb9f8cb79a9092605d50094ee6a64dbb`. The implementation does not change production gates or claim a diagnosis of the original user Turn. No production requests were replayed, deployment performed or authenticated/paid acceptance claimed. The existing deployment and Acceptance items below remain authoritative until new release evidence is recorded. Validation: typecheck and UI (21) passed; M0 passed 350 with one conditional skip; M1 passed 290; M2 passed 943; M3 passed 949 with 12 conditional skips, plus runtime/execution 20, phase checks 13 and model checks 92. Archived-experiment checks passed 30 and Python research-quality checks passed 8. Focused checks additionally cover opaque archive/mode preservation, the final Managed integration and bounded research context. Local execution used Node 26, Chromium and OpenSSL 3; the initial Node 25 M0 timeout/LibreSSL TLS failures were isolated and resolved by those local tool selections. GitHub CI uses its configured environment and is reported separately in the PR. Review entry and exact source head are recorded in the implementation PR and #182.
+
+The implementation PR is [#198](https://github.com/jihegao/riffology-cloud/pull/198). Main `a40248a4614d0cba9c0dbdb0637022d1becb8433` was subsequently integrated, preserving the NetLogo intake record below; production source files did not overlap. All seven newly merged NetLogo candidate checks passed against the combined tree. M1 used Node 25.3.0; the other final suites used Node 26. [CI run 38492300904](https://github.com/jihegao/riffology-cloud/actions/runs/38492300904) failed before any step (`runner_id=0`, `steps=[]`), with no downloadable log. Its failure annotation was not accessible through the available connector. The account blocker recorded for the earlier NetLogo CI run below is a relevant lead, not a verified diagnosis of this run. Hosted checks did not execute and are not reported as passing. On 2026-10-14 (Asia/Shanghai), the user identified exhausted GitHub quota and explicitly waived this failure for continued delivery. The quota failure no longer blocks this PR; no retry or account settings change was performed.
+
+The final pre-merge review reproduced and fixed JSON array coercion in design enum/source/edge validation and v3 accounting operation classification. Three new regression cases failed before the fix and pass after it. The final full M2 suite passed 946 tests with no skips; focused candidate/dispatcher checks passed 83, view/Preview/research checks passed 21, and typecheck plus whitespace checks passed. Earlier M0/M1/M3/UI results above remain the recorded full-suite evidence; they were not redundantly rerun for this bounded validation fix.
+
+## 2026-10-14 NetLogo Fire private local candidate; publication pending
+
+[#196](https://github.com/jihegao/riffology-cloud/issues/196) prepares the first
+local Python adaptation from simulation-case-library's five NetLogo candidates.
+The example keeps the 31×31 finite world, left-edge ignition/count timing,
+four-neighbor spread and ember lifetime, with model-authored Python Canvas drawing
+and the unchanged platform adapter. Attribution and CC BY-NC-SA 3.0 remain with
+the model; commercial permission is not asserted. Python and NetLogo random
+streams are different, so equal seeds do not identify equal forests.
+
+Seven candidate checks and 15 existing Spec/Preview checks passed; typecheck and
+whitespace checks passed. Three actual local Chromium/Pyodide runs matched their
+complete CPython traces, used only local GET requests and released every iframe.
+At density 57%, seed 20261001 and five ticks, the Python candidate reports 523
+initial trees, 53 newly burned trees and six active fires. These are local
+candidate outputs, not the native library's reference values or production Run
+receipts. The locally generated package has a synthetic identity scope.
+
+Independent agent review found no remaining must-fix issue. GitHub
+[CI run 38491888673](https://github.com/jihegao/riffology-cloud/actions/runs/38491888673)
+failed before any job step: its authoritative annotation reports failed account
+payments or a spending-limit problem. Hosted CI did not execute and is not passed;
+no automatic retry was attempted. This increment does
+not deploy, publish a catalog version, change execution gates or establish
+authenticated owner/second-user acceptance. Browser output remains
+**local/unverified**; native replay, cross-implementation equivalence, research/gold,
+commercial distribution and the ordinary-author/reviewer/new-user publication
+flow remain outside this local delivery. [#35](https://github.com/jihegao/riffology-cloud/issues/35)
+retains its existing official-model acceptance scope.
+
+[Intake and semantic boundaries](netlogo-case-intake-20261014.md),
+[candidate source](../examples/netlogo-fire-candidate/README.md) and
+[local receipt](evidence/netlogo-fire-candidate-local-20261014.json) record pinned
+sources, actual commands, package/runtime identity, screenshots and remaining gaps.
+
+## 2026-10-13 Managed candidate and Journal receipt fix deployed; acceptance pending
+
+[PR190](https://github.com/jihegao/riffology-cloud/pull/190) and
+[PR194](https://github.com/jihegao/riffology-cloud/pull/194) are merged. Their
+Managed save/restore, model-authored view preservation and strict late-accounting
+receipt fix are deployed at https://app.riffoid.com in Gateway version
+`728e5141-d859-4416-8c79-9b92b3ed0b16`, deployment
+`6d9f4609-e541-4f6c-a99c-32f18d18510d`, 100% traffic, observed by independent
+Cloudflare readback. Deployed source is `3e9b97b6`, a recorded composition of merged
+feature/fix code, proved live-domain source and the already-deployed riffoid brand.
+It excludes later undeployed domain maintenance code; main alone is not this
+release's complete domain/brand source.
+
+M1 passed 348, M2 passed 921, UI passed 21, and typecheck passed. M2/UI inputs
+are unchanged from the tested composite; counts overlap with focused checks.
+CI was not executed. All 91 manifest-listed live assets match pinned SHA-256; all three isolated
+frames and four rejection checks pass. Full platform snapshots preserve 99
+bindings, 23 SQLite exports, 5 Gateway container associations, 15 account container
+configurations and existing policies. Entry, Browser Execution and www versions
+are unchanged.
+
+[#178](https://github.com/jihegao/riffology-cloud/issues/178) and
+[#192](https://github.com/jihegao/riffology-cloud/issues/192) remain open at
+Acceptance. Anonymous static validation does not establish invited-user save/run,
+second identity, paid execution or formal Evidence acceptance. No production
+Revision/package was created in this release; Browser output remains
+**local/unverified** and candidate reported output **not-recomputed**. Current
+capacity and execution boundaries remain unchanged. General artifacts/debug and
+requirements/SysML/compiler/Rust implementation remain follow-up issues.
+
+[Release record](managed-candidate-release-20261013.md),
+[source/runtime/test evidence](evidence/managed-candidate-release-20261013.json)
+and [static readback](evidence/managed-candidate-release-20261013/static-readback.json)
+provide the deploy identity, preserved source, actual checks and remaining gaps.
+
+## 2026-10-12 Historical pre-deployment Managed candidate snapshot
+
+[PR #190](https://github.com/jihegao/riffology-cloud/pull/190) repairs the existing
+Managed Python/restricted-JS path for [#178](https://github.com/jihegao/riffology-cloud/issues/178).
+Candidate v2 preserves model-authored grid/lane/Canvas selection and current JS
+roles, checks reported default input/trace/summary, and restores Spec, source,
+adapter, lock, visualization, result and frontend after hosted-session cleanup.
+Legacy v1 keeps its saved view and explicitly reports absent trace validation.
+The existing Browser Mesa runtime dependency closure remains compatible.
+
+The reviewed source is remote commit `b41678889f8152c78783512ed5d47bd64928c602`,
+tree `a04f073681a8cf4aa90b139ee6cee759a7ca1e67`. M2 passed 880 tests (including
+37 Managed Workerd and 9 candidate tests); UI passed 21, Preview contracts 20,
+protocol self-check 1, and typecheck passed. Another 19 Preview registry/build/
+Canvas tests passed. Four actual JS-frame browser checks passed using installed
+Playwright Chromium after an initial system-Chrome-not-found failure. These
+counts overlap and must not be added. Old agent loopback/native-Node failures
+were superseded by the unchanged source's successful root-environment rerun.
+CI did not execute because of the account allowance and is not reported passed.
+
+[Local evidence](evidence/managed-candidate-local-validation-20261012.json) records
+source hashes, synthetic identity, commands, check summaries and fixture package
+identities. Candidate output remains `execution: not-recomputed`; fixture package
+IDs are static examples, not production Revision receipts. Actual JS tests use
+a local CPython Queue trace; they do not establish general airport/ecology models.
+Browser output remains **local/unverified**. Deployment, authenticated invited-user
+acceptance, second identity and paid execution were not performed. After merge,
+#178 remains Acceptance/open; general manifest and actual bounded authoring debug
+remain [#182](https://github.com/jihegao/riffology-cloud/issues/182) and
+[#183](https://github.com/jihegao/riffology-cloud/issues/183). No online gate,
+capacity policy, network authority or historical saved version was changed.
+
+## 2026-10-12 Requirements and Revision contract; design only
+
+[PR #189](https://github.com/jihegao/riffology-cloud/pull/189) supplies the first
+design deliverable for [#179](https://github.com/jihegao/riffology-cloud/issues/179),
+completion condition 6. The [contract](requirements-revision-artifact-contract.md)
+defines stable requirements and source history, trusted user actions, the limited
+SysML 2.0 projection, raw IR locators, artifact roles, frozen inputs and backend
+capability checks. Mesa is optional in the proposed authoring path; actual bounded
+target-runtime debug remains #183. Existing saved profiles retain their meaning.
+
+The reviewed document SHA-256 is
+`88b0a9655fd7b811b5d66ee3cc03274ec965601f197ac19bfd179065d784ed4c`.
+All 13 local references resolve and whitespace checks pass. The official SysML
+sources and pinned compiler snapshot were inspected, but no SysML checker,
+simulation, schema implementation, save integration or user acceptance ran.
+The remaining requirements implementation stays open; design completion does
+not imply that the general workflow, Rust/WASM or formal Evidence is available.
+
+## 2026-10-08 #171 Browser-local Runs deployed; authenticated owner acceptance
+
+[PR #172](https://github.com/jihegao/riffology-cloud/pull/172) is merged as
+`abcc406d6e8ec5a6f68932db7e30906cb70e3de2`. Gateway version
+`aeddf112-a2be-45da-868c-ed576c55d5ec` is deployed at 100%, deployment
+`c6ff55e4-2364-4920-94e0-b8784a1824b5`. Downloaded Worker entry bytes match the
+reviewed minified build; all 23 web assets match source SHA-256. Fresh before/after
+readback confirms all 93 bindings, compatibility settings, policy pins and all
+15 container applications unchanged. No new namespace, capacity policy or image
+was introduced. G5/M3/M4 remain closed.
+
+The original ordinary invited owner used the existing Fire project's saved
+Revision in Safari. Runs defaults to browser-local execution. One single run
+completed with density 0.7, three initial fires and seed 142; a density 0.5/0.6
+comparison completed all four children for seeds 42/43, with valid/missing counts
+2/0 per configuration. Explicit stop produced a cancelled local record. Refresh
+during preparation stopped the request and retained a failed record with
+`Load failed` and a cancelled child, without automatic replay. Completed records,
+manual drafts and the local default survived refresh and leaving/reentering the
+project. The downloaded history preserves frozen Revision/package/runtime,
+inputs, per-child metrics and the stopped records. These results remain
+**local/unverified**, separate from cloud experiments and publication evidence.
+
+The existing authenticated project count route returned exactly equal JSON
+before and after these local runs: Turn, simulation and service admission/dispatch
+fences and all supported native attempt/tool counters are unchanged. Unsupported
+counts remain null. This is project-scoped counter evidence; the target request
+trace, global invited Runs ledger/capacity and second identity remain pending.
+It does not establish global zero cloud execution or settle historical fees.
+The local fixture separately proves GET-only requests, zero fixture writes,
+per-child frame release and Pyodide/CPython metric equality.
+
+The final full M3 rerun passed: primary suite 945 pass / 12 opt-in skip / 0 fail,
+plus browser runtime 20, phase1 13 and model validation 92. Earlier UI, typecheck,
+M0/M1/M2, #73 and Python checks remain recorded in the October 7 evidence.
+GitHub CI did not start because of the account billing/spending-limit failure;
+it is not reported as a passing remote check. Original OAuth access was renewed
+with the same scopes. A proposed temporary reader and an additional raw tail
+were rejected by automatic approval and were never created. The task's original
+CLI tail failed its TLS connection and its subscription is confirmed absent.
+
+[Release and owner acceptance evidence](evidence/releases/issue171-local-runs-release-20261008.json)
+records identities, metrics, deployment hashes, resource invariants, scoped
+counts and remaining coverage. #171 is **Acceptance/open**, with the login blocker
+resolved; #136 retains the cloud timeout and wider cloud acceptance matrix.
+The October 7 section below is the historical pre-deployment snapshot.
+
+## 2026-10-07 #171 Browser-local Runs implementation; deployment pending
+
+Runs now defaults to **browser-local/unverified** single execution and
+baseline/intervention multi-seed comparison for compatible Python models. It
+reuses #64's fixed Pyodide package and opaque frame, freezes source/package/runtime
+identity and inputs, runs at most eight children sequentially, and retains
+individual metrics with valid/missing counts, means and deltas. Explicit stop,
+refresh/leave interruption, cross-tab Web Locks, per-child authorization rechecks,
+history restoration/download and bounded storage prevent silent replay or loss.
+Existing cloud submissions retain their explicit choice and original receipt
+contracts; local metrics do not enter Experiment/Evidence/publication APIs.
+Terminal historical cloud pause/timeout messages now describe the past run.
+
+Local checks cover the CI stages. M0/M1/M2 and all later stages passed; the M3
+primary run's two original cloud expectations were corrected to select cloud
+explicitly, then its entire 29-test Workspace file passed. Eighteen new local
+interaction tests passed. The real pinned Fire fixture's four Pyodide children
+match CPython, release every iframe, and produce only GET application requests
+with fixture write count zero. Styled desktop/mobile inspection and 390px expanded
+history checks passed. These are local fixture results, not authenticated target
+acceptance or paid execution. Details, exact counts and the interrupted/resumed
+check sequence are in the [implementation evidence](evidence/browser-local-runs-fix-20261007.json).
+
+Implementation is **not deployed**. Original Cloudflare OAuth expired and could
+not refresh; equivalent-scope browser renewal selected another account, without
+access to the target account. A historical-snapshot dry run passed, but fresh
+settings/resources/capacity readback, actual upload, static readback and authenticated
+local Runs acceptance still require the original account login. No cloud Run/Turn
+was submitted. The latest user-project cloud timeout remains outside this fix;
+#136 stays open for its independent acceptance matrix. #171 remains open and
+must not be marked Done on code/PR evidence alone.
+
 
 ## 2026-10-07 user-authorized trial validity extension through December 31
 
@@ -25,8 +274,9 @@ remain closed. Concurrency, timeouts, kill switch and fee history are preserved.
 [Redacted release evidence](evidence/releases/beta-review-extension-20261007.json)
 records explicit user authorization, deployment, original actor checksums,
 request trace, authoritative execution counters and independent readbacks.
-The temporary capability-protected maintenance Worker and task credential were
-removed after verification. The existing Workerd/SQLite extension regression
+The temporary capability-protected maintenance Worker was removed and its absence
+was verified. The recorded evidence does not establish deletion or revocation of
+the task credential/capability; that cleanup remains unverified. The existing Workerd/SQLite extension regression
 and exact deployed v2 policy parser/digest checks passed. No new user
 Turn/provider/tool/experiment execution or ordinary-user acceptance was performed;
 metadata/deployment cloud costs are not represented as zero. #104 stays

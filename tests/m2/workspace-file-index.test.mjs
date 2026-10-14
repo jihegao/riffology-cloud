@@ -1,3 +1,4 @@
+import {overlayWorkspaceArchive} from '../../services/turn-runtime/workspace-file-index.ts';
 import assert from 'node:assert/strict';
 import {chmodSync,mkdirSync,mkdtempSync,readFileSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
@@ -7,7 +8,7 @@ import test from 'node:test';
 import {workspaceFileDiff,workspaceFileIndex} from '../../services/turn-runtime/workspace-file-index.ts';
 
 const helper=new URL('../../services/project-tools/workspace_archive.py',import.meta.url).pathname,token='a'.repeat(52);
-function archive(t,changed=false){const root=mkdtempSync(join(tmpdir(),'riffology-file-index-')),workspace=join(root,'workspace'),archives=join(root,'archives');mkdirSync(join(workspace,'model'),{recursive:true,mode:changed?0o700:0o755});mkdirSync(archives,{mode:0o700});writeFileSync(join(workspace,'README.md'),changed?'changed contents\n':'private contents\n',{mode:0o644});if(changed){mkdirSync(join(workspace,'results'),{mode:0o755});writeFileSync(join(workspace,'results','out.csv'),'value\n1\n',{mode:0o644});}else writeFileSync(join(workspace,'model','main.py'),'print(1)\n',{mode:0o644});chmodSync(join(workspace,'README.md'),0o644);t.after(()=>import('node:fs/promises').then(fs=>fs.rm(root,{recursive:true,force:true})));const result=spawnSync('python3',[helper,'freeze',token],{encoding:'utf8',env:{...process.env,RIFFOLOGY_WORKSPACE_ROOT:workspace,RIFFOLOGY_ARCHIVE_ROOT:archives}});assert.equal(result.status,0,result.stderr);return new Uint8Array(readFileSync(join(archives,`${token}.output.tar`)));}
+function archive(t,changed=false,fileMode=0o644){const root=mkdtempSync(join(tmpdir(),'riffology-file-index-')),workspace=join(root,'workspace'),archives=join(root,'archives');mkdirSync(join(workspace,'model'),{recursive:true,mode:changed?0o700:0o755});mkdirSync(archives,{mode:0o700});writeFileSync(join(workspace,'README.md'),changed?'changed contents\n':'private contents\n',{mode:0o644});if(changed){mkdirSync(join(workspace,'results'),{mode:0o755});writeFileSync(join(workspace,'results','out.csv'),'value\n1\n',{mode:0o644});}else writeFileSync(join(workspace,'model','main.py'),'print(1)\n',{mode:0o644});chmodSync(join(workspace,'README.md'),fileMode);t.after(()=>import('node:fs/promises').then(fs=>fs.rm(root,{recursive:true,force:true})));const result=spawnSync('python3',[helper,'freeze',token],{encoding:'utf8',env:{...process.env,RIFFOLOGY_WORKSPACE_ROOT:workspace,RIFFOLOGY_ARCHIVE_ROOT:archives}});assert.equal(result.status,0,result.stderr);return new Uint8Array(readFileSync(join(archives,`${token}.output.tar`)));}
 
 test('indexes canonical workspace archives without exposing file contents',t=>{
   const result=workspaceFileIndex(archive(t));assert.deepEqual(result,{schemaVersion:1,files:[
@@ -31,4 +32,14 @@ test('diffs content, mode, addition and deletion against the parent archive with
     {path:'results',change:'added',type:'directory',size:0,mode:0o755},
     {path:'results/out.csv',change:'added',type:'file',size:8,mode:0o644},
   ]});assert.equal(JSON.stringify(result).includes('changed contents'),false);const genesis=workspaceFileDiff(current,null);assert.deepEqual(genesis.summary,{added:4,modified:0,deleted:0});assert.equal(genesis.changes.every(item=>item.change==='added'),true);
+});
+
+
+test('authoring overlay preserves opaque records, empty directories and modes; new files are not executable',t=>{
+ const base=archive(t,true,0o755),next=overlayWorkspaceArchive(base,{'design/notes.md':new TextEncoder().encode('Design'),'README.md':new TextEncoder().encode('Updated')}),entries=workspaceFileIndex(next).files;
+ assert.deepEqual(entries.find(e=>e.path==='model'),{path:'model',type:'directory',size:0,mode:0o700});
+ assert.equal(entries.find(e=>e.path==='README.md').mode,0o755);assert.equal(entries.find(e=>e.path==='design/notes.md').mode,0o644);
+ assert.equal(workspaceFileDiff(next,base).changes.some(e=>e.path==='results/out.csv'),false);
+ assert.throws(()=>overlayWorkspaceArchive(base,{'model':new Uint8Array([1])}),/invalid-initial-workspace-archive/);
+ assert.throws(()=>overlayWorkspaceArchive(base,{},['model']),/invalid-workspace-file-archive/);
 });
