@@ -1,5 +1,44 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-14 Read-only tool receipt deployed and owner read accepted
+
+[#199](https://github.com/jihegao/riffology-cloud/issues/199) and
+[PR #200](https://github.com/jihegao/riffology-cloud/pull/200) add a narrowly
+scoped owner read for persisted tool-request terminal evidence. Gateway version
+`3789df91-afc5-4e89-8ea7-1dbe7a88036f`, deployment
+`1a8687ad-a7a5-42a8-a6e5-295ba1b1805f`, is at 100%. A later ordinary-author
+read returned two explicit `not-admitted` receipts and one terminal completed
+cleanup receipt with exit code 0; a different authenticated reviewer received
+404. The workspace had no remaining active Turn or holds. Earlier 503 responses
+followed by successful reads are consistent with deployment propagation, without
+proving that cause. No original request was replayed.
+
+Project-scoped compute-count snapshots around three further receipt reads were
+deeply equal, and all four sampled Turn dispatches reported supported no-added-call
+counters for project tools, Trusted Pi and the tool ledger. This is bounded proof
+for those project endpoints; it is not a global-zero or fee claim.
+
+The deployment preserves 99 bindings, 23 SQLite exports, five exactly equal
+Worker container association configurations and the safe list metadata for all
+15 account container applications. Full account application configuration was
+not compared. The prior runtime and asset configuration was preserved; asset
+bytes were not freshly probed. Capacity
+was restored to paused=false, active=0 and quarantined=0 with the same policy hash,
+limits, usage and alerts. The unchanged review time is the current extension in
+[#104](https://github.com/jihegao/riffology-cloud/issues/104):
+2026-12-31 23:59:59.999 Asia/Shanghai. This release made no policy change.
+Receipt API usage and fees remain unknown. The full M2
+attempt had 930 passed, zero failed and one cancelled at an existing Workerd
+60-second timeout, so the full suite is not claimed passed. The separate six-Run
+group under [#196](https://github.com/jihegao/riffology-cloud/issues/196) remains
+unfinished and outside #199 acceptance; this entry does not claim
+Fire publication, Group completion or formal Experiment evidence.
+
+[Release note](tool-receipt-release-20261014.md) and
+[sanitized evidence](evidence/releases/issue199-tool-receipt-release-20261014.json)
+record the exact source/deployment identity, authenticated read boundary and
+remaining gaps.
+
 ## 2026-10-14 NetLogo Fire private local candidate; publication pending
 
 [#196](https://github.com/jihegao/riffology-cloud/issues/196) prepares the first

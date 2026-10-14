@@ -1,0 +1,215 @@
+{
+  "schema": "riffology.delivery-evidence/v1",
+  "date": "2026-10-14",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/199",
+  "implementationPullRequest": "https://github.com/jihegao/riffology-cloud/pull/200",
+  "status": {
+    "implemented": true,
+    "merged": true,
+    "deployed": true,
+    "authenticatedOwnerReadAccepted": true,
+    "crossIdentityRejectionAccepted": true,
+    "paidExecutionPerformedByReceiptEndpoint": false,
+    "project": "Acceptance",
+    "issueOpen": true
+  },
+  "source": {
+    "implementationMerge": "f468bb06663e571d72d8a32f3c34dac10baa9eea",
+    "deployedComposition": "4d0995a57367ffbd5cf18e972936e1afd7372935",
+    "liveBaseline": "3e9b97b6d8edeecddd8ce1c995c827dc225a8467",
+    "liveBaselineSha256": "3f9ade64bedbd295495c4ca960e2cd0a3a576ff8681966454ce54371604b8fe7",
+    "liveBaselineReproducedExactly": true,
+    "deployedModuleSha256": "87560a85eac9b8ddb7fa113260777db938917745ad21442516be53075852ac27",
+    "deployedModuleBytes": 5733641,
+    "moduleBodyPersisted": false
+  },
+  "deployment": {
+    "createdAt": "2026-10-14T06:40:03.797002Z",
+    "version": "3789df91-afc5-4e89-8ea7-1dbe7a88036f",
+    "versionNumber": 218,
+    "deployment": "1a8687ad-a7a5-42a8-a6e5-295ba1b1805f",
+    "percentage": 100,
+    "preservation": {
+      "bindings": 99,
+      "sqliteExports": 23,
+      "containerAssociations": 5,
+      "containerApplications": 15,
+      "containerApplicationListMetadataCompared": true,
+      "containerApplicationListBeforeSha256": "edfa855a9c23b63e1bb58599f1f2a25b53875fbb948f5a859ce414e1fe853237",
+      "containerApplicationListAfterSha256": "edfa855a9c23b63e1bb58599f1f2a25b53875fbb948f5a859ce414e1fe853237",
+      "containerApplicationListMetadataExactEqual": true,
+      "containerApplicationFullConfigurationCompared": false,
+      "workerContainerAssociationConfigurationExactEqual": true,
+      "assetsConfigurationPreserved": true,
+      "assetBytesReprobed": false,
+      "compatibilityDate": "2026-09-09",
+      "compatibilityFlags": [
+        "nodejs_compat",
+        "nodejs_compat_do_not_populate_process_env",
+        "enable_request_signal"
+      ],
+      "newNamespace": false,
+      "newContainerImage": false
+    }
+  },
+  "authenticatedReadback": {
+    "scope": "one ordinary author for the original saved Turn and one different authenticated reviewer",
+    "initialGatewayReads": {
+      "count": 3,
+      "status": 503,
+      "publicError": "temporarily_unavailable"
+    },
+    "laterObservedAt": "2026-10-14T06:48:03.298Z",
+    "authorReceipts": [
+      {
+        "httpStatus": 200,
+        "state": "not-admitted",
+        "ledger": null,
+        "persistedEffect": null
+      },
+      {
+        "httpStatus": 200,
+        "state": "terminal",
+        "ledgerStatus": "completed",
+        "ledgerOutcome": "completed",
+        "resultKind": "bash",
+        "exitCode": 0,
+        "stdoutBytes": 0,
+        "stderrBytes": 0
+      },
+      {
+        "httpStatus": 200,
+        "state": "not-admitted",
+        "ledger": null,
+        "persistedEffect": null
+      }
+    ],
+    "reviewerNegative": {
+      "httpStatus": 404,
+      "publicError": "not_found"
+    },
+    "workspaceAfter": {
+      "activeTurn": null,
+      "resourceWait": null,
+      "releaseHold": null,
+      "recoveryHold": null
+    },
+    "interpretation": "The early 503 responses followed by successful reads are consistent with delayed Durable Object code propagation, but do not prove that cause. No original tool request was replayed."
+  },
+  "capacityGuard": {
+    "authority": "https://github.com/jihegao/riffology-cloud/issues/104",
+    "before": {
+      "paused": true,
+      "active": 1,
+      "quarantined": 1
+    },
+    "after": {
+      "paused": false,
+      "active": 0,
+      "quarantined": 0
+    },
+    "policyUnchanged": true,
+    "quotaMode": "meter-only",
+    "policySchemaVersion": 2,
+    "policySha256": "695cdd9ece91081e201a3dd03ba2ad7451931a0b588addc6454a1f6db9638031",
+    "pinnedPolicySha256": "695cdd9ece91081e201a3dd03ba2ad7451931a0b588addc6454a1f6db9638031",
+    "reviewAtEpochMs": 1798732799999,
+    "reviewAt": "2026-12-31T15:59:59.999Z",
+    "reviewAtAsiaShanghai": "2026-12-31T23:59:59.999+08:00",
+    "limits": {
+      "maxActiveTurns": 2,
+      "maxNanodollarsPerDay": null,
+      "maxNanodollarsTotal": null
+    },
+    "historicalUsageUnchanged": true,
+    "historicalAlertsPreserved": true
+  },
+  "validation": {
+    "focusedRiskChecks": {
+      "passed": 80,
+      "failed": 0
+    },
+    "independentReceiptAndGatewayChecks": {
+      "passed": 19,
+      "failed": 0
+    },
+    "signedEntryChecks": {
+      "passed": 26,
+      "failed": 0
+    },
+    "fullM2": {
+      "passed": 930,
+      "failed": 0,
+      "cancelled": 1,
+      "passedAsSuite": false,
+      "limitation": "The existing revision-store Workerd test reached its fixed 60 second timeout."
+    },
+    "gatewayDurableObjectRegression": {
+      "commit": "4d993db7",
+      "passed": 3,
+      "failed": 0,
+      "scope": "Local Miniflare proof that createGatewayTurnServices can serialize the receipt input and invoke WorkspaceAgent.toolReceipt through a real Durable Object namespace."
+    },
+    "hostedCI": "not claimed green"
+  },
+  "usageAndCost": {
+    "receiptApiUsage": "unknown",
+    "fees": "unknown",
+    "zeroCostClaimed": false
+  },
+  "readOnlyCountProof": {
+    "observedAt": "2026-10-14T07:01:41.399Z",
+    "scope": "project-scoped compute-count endpoints for the four sampled author Turns",
+    "canonicalJsonHashAlgorithm": "sha256(jq -cS JSON)",
+    "beforeSha256": "e94cfa2b581c1e55b6ae7971f74a72186d6a8d5720c4f898a7c332d8dbc664ee",
+    "afterSha256": "e94cfa2b581c1e55b6ae7971f74a72186d6a8d5720c4f898a7c332d8dbc664ee",
+    "deepEqual": true,
+    "samples": 4,
+    "projectToolsSupportedAndNoAddedCalls": true,
+    "trustedPiSupportedAndNoAddedCalls": true,
+    "toolLedgerSupportedAndNoAddedCalls": true,
+    "originalTurnToolLedger": {
+      "admittedBeforeAndAfter": 1,
+      "dispatchedBeforeAndAfter": 1
+    },
+    "otherTurnToolLedgers": [
+      {
+        "admittedBeforeAndAfter": 2,
+        "dispatchedBeforeAndAfter": 2
+      },
+      {
+        "admittedBeforeAndAfter": 8,
+        "dispatchedBeforeAndAfter": 8
+      },
+      {
+        "admittedBeforeAndAfter": 3,
+        "dispatchedBeforeAndAfter": 3
+      }
+    ],
+    "receiptReread": {
+      "httpStatuses": [200, 200, 200],
+      "states": ["not-admitted", "terminal", "not-admitted"],
+      "unchanged": true
+    },
+    "globalZeroClaimed": false,
+    "feeConclusion": "unknown"
+  },
+  "independentRunGroup": {
+    "issue": "https://github.com/jihegao/riffology-cloud/issues/196",
+    "belongsToIssue199Acceptance": false,
+    "postAccepted": true,
+    "postStatus": 202,
+    "totalRuns": 6,
+    "completedRunsAtLatestRead": 2,
+    "releasedRunsAtLatestRead": 1,
+    "release": "pending",
+    "publication": false,
+    "finalStatusClaimed": false
+  },
+  "boundaries": [
+    "The endpoint reads persisted evidence only; it does not retry, admit, dispatch, settle or replay a tool request.",
+    "not-admitted is not a successful execution and unknown remains unknown when terminal evidence is absent.",
+    "The receipt endpoint performs no paid execution; this release does not establish Fire Run or Group completion, model publication or formal Experiment evidence.",
+    "Raw logs, credentials, headers, identities, commands, arguments, module bodies and source archives are excluded from this evidence."
+  ]
+}
