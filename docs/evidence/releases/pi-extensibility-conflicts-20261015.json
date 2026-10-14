@@ -1,0 +1,132 @@
+{
+  "schema": "riffology-task-conflict-review/v1",
+  "reviewDate": "2026-10-15",
+  "timezone": "Asia/Shanghai",
+  "sourceMain": "fbc0e46bde2c8781b71609fa4524d2e75bffaf99",
+  "linear": {
+    "workspace": "jhgao",
+    "teamIssueCount": 46,
+    "projectIssueCount": 21,
+    "paginationComplete": true,
+    "newBatchTaskMatches": 0,
+    "pr210": {
+      "reviewPresent": true,
+      "linkedIssues": []
+    },
+    "pr217": {
+      "reviewPresent": true,
+      "linkedIssues": []
+    },
+    "pr208": {
+      "reviewPresent": true,
+      "linkedIssues": [
+        "JHG-46"
+      ]
+    },
+    "issueSyncConfiguration": "not exposed by connector; no browser surface for settings; not verified",
+    "statusAutomationConfiguration": "not verified; no settings changed",
+    "githubProjectCustomStatusSync": "unsupported by official Linear docs",
+    "projectFieldsRead": "gh project view failed: missing read:project"
+  },
+  "incorrectBotLink": {
+    "comment": "https://github.com/jihegao/riffology-cloud/pull/208#issuecomment-6172760383",
+    "sourceRepository": "jihegao/riffology-cloud",
+    "renderedRepository": "jihegao/sim_engine_compiler",
+    "numbers": [
+      182,
+      185,
+      206,
+      207
+    ],
+    "sourceLinearIssue": "JHG-46",
+    "rootCause": "not verified"
+  },
+  "openPullRequests": [
+    {
+      "number": 208,
+      "head": "dcbb782ae90ae8e4eafa0aad26d3ff30deea9e8f"
+    },
+    {
+      "number": 210,
+      "head": "e5ae439b8f0846647add041bfa20d92665cd51aa"
+    },
+    {
+      "number": 217,
+      "initialHead": "6890f6d492d0ce4eb2859aa125d8262ca4eb1865"
+    }
+  ],
+  "initialMergeChecks": [
+    {
+      "pair": [
+        208,
+        210
+      ],
+      "exit": 0
+    },
+    {
+      "pair": [
+        210,
+        217
+      ],
+      "exit": 0
+    },
+    {
+      "pair": [
+        208,
+        217
+      ],
+      "exit": 1,
+      "path": "docs/release-readiness.md"
+    }
+  ],
+  "documentFix": "Relocate PR217 planning index below the already deployed main integration entry; preserve concurrent PR208 insertion",
+  "finalMergeChecks": [
+    {
+      "pair": [
+        "208",
+        "217"
+      ],
+      "exit": 0,
+      "tree": "d0fa258d9ac7ecb4a8633a2ad55c4f0877e2dc7d"
+    },
+    {
+      "pair": [
+        "210",
+        "217"
+      ],
+      "exit": 0,
+      "tree": "6b4552cd7eb534df9ede23a33edfb988468b880d"
+    }
+  ],
+  "unresolvedReviewThreads": [
+    {
+      "pr": 203,
+      "id": "discussion_r4268576913",
+      "resolved": false,
+      "outdated": false,
+      "liveReproduced": false
+    },
+    {
+      "pr": 203,
+      "id": "discussion_r4268576928",
+      "resolved": false,
+      "outdated": false,
+      "liveReproduced": false
+    }
+  ],
+  "actions": {
+    "productSourceEdits": 0,
+    "cloudWrites": 0,
+    "dataDeletes": 0,
+    "providerRuns": 0,
+    "linearTaskCreations": 0,
+    "linearSettingsWrites": 0,
+    "issueClosures": 0
+  },
+  "authority": "Technical review snapshot only; Issue/PR own scope, Delivery Project owns actual scheduling.",
+  "references": [
+    "https://linear.app/docs/github",
+    "https://github.com/jihegao/riffology-cloud/issues/211",
+    "https://github.com/jihegao/riffology-cloud/pull/217"
+  ]
+}

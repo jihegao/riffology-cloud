@@ -182,3 +182,7 @@ Issue管理范围和完成条件；下表仅说明技术依赖，不另建状态
 ## 本轮验证
 
 只运行文档/证据结构、链接/源码anchor存在性和git diff --check；不为审计重跑付费模型、云端实验或全套CI。外部Haiku请求失败事实与内部agent评审分开记录。所有建议仍须在对应Issue的实现PR内验证，部署与真实用户验收另回填发布索引。
+
+## 后续交付冲突复核
+
+[2026-10-15 Linear 与既有任务/PR复核](pi-extensibility-conflicts-20261015.md)补充自动关联实际状态、旧恢复/Fire案例/purge验收冲突、已合并manifest/lease功能复用与CI范围。它限定了本报告建议对应的增量：不重做PR198/PR59，不让purge等待完整新Pi/UI；本批尚未建立Linear任务镜像。
