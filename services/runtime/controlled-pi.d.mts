@@ -30,7 +30,10 @@ export interface ControlledPiOptions {
   trustedCwd: string;
   scope: SessionScope;
   selectedModel: AllowedModel;
+  /** Models authorized for new provider requests. */
   allowedModels: AllowedModel[];
+  /** Release-controlled checkpoint references only; never authorize dispatch. */
+  allowedHistoryModels?: AllowedModel[];
   /** Release-controlled definitions; project files are not a source for these. */
   providerDefinitions?: Array<{ provider: string; config: Parameters<ModelRuntime['registerProvider']>[1] }>;
   resolveCredential(provider: string, options: { signal?: AbortSignal }): Promise<string | undefined>;
