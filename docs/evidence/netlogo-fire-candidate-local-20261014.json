@@ -272,5 +272,18 @@
     "catalogWrites": false,
     "capacityOrGateChanges": false,
     "productionExecutionChecked": false
+  },
+  "codeSourceCommit": "28b18ffa6c6c9ca37b4d172c07b5a1635145e54c",
+  "hostedCI": {
+    "runId": 38491888673,
+    "checkId": 115618767615,
+    "url": "https://github.com/jihegao/riffology-cloud/actions/runs/38491888673",
+    "conclusion": "failure",
+    "jobStarted": false,
+    "stepsExecuted": 0,
+    "reason": "GitHub reports recent account payments failed or the spending limit needs to be increased",
+    "sourceCommit": "28b18ffa6c6c9ca37b4d172c07b5a1635145e54c",
+    "testFailureEstablished": false,
+    "automaticRetryPerformed": false
   }
 }

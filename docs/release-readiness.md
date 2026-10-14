@@ -18,7 +18,11 @@ initial trees, 53 newly burned trees and six active fires. These are local
 candidate outputs, not the native library's reference values or production Run
 receipts. The locally generated package has a synthetic identity scope.
 
-Independent agent review found no remaining must-fix issue. This increment does
+Independent agent review found no remaining must-fix issue. GitHub
+[CI run 38491888673](https://github.com/jihegao/riffology-cloud/actions/runs/38491888673)
+failed before any job step: its authoritative annotation reports failed account
+payments or a spending-limit problem. Hosted CI did not execute and is not passed;
+no automatic retry was attempted. This increment does
 not deploy, publish a catalog version, change execution gates or establish
 authenticated owner/second-user acceptance. Browser output remains
 **local/unverified**; native replay, cross-implementation equivalence, research/gold,
