@@ -1,5 +1,25 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-14 #206/#207 empty Preview and copied-model files — local implementation
+
+Files now renders initial project files even when no Turn Revision exists. A new
+Managed schema2 hosted session receives the verified current project model files
+through the existing bounded recovery context before its provider input; a corrupt
+initial checkpoint is refused before any provider request. Empty-project Preview
+clears retained form/visual DOM and hides unused controls; copied model Preview
+remains available.
+
+Local checks: Managed Workerd 43/43, then the final tampered-source regression
+1/1; Preview/Workspace 47/47; initial Preview provenance/build/Workerd 11/11;
+UI 21/21, typecheck and whitespace passed. CI was not run. This is local fixture
+evidence, not production authentication or paid acceptance. The screenshot does
+not establish production file loss or the original Preview build failure.
+No deployment or production Turn/Run was performed; review, merge, deployment
+and original authenticated project readback remain pending. Project sync remains
+unconfirmed without Project scopes. See [#207](https://github.com/jihegao/riffology-cloud/issues/207),
+[#206](https://github.com/jihegao/riffology-cloud/issues/206) and
+[local evidence](evidence/copied-project-files-context-20261014.json).
+
 ## 2026-10-14 Main integration deployed: candidate design, unchanged answers and section views
 
 Main `eba528f7b101a67f32565e4aac74a0d4154a7dec` is deployed to [app.riffoid.com](https://app.riffoid.com): Gateway `d9ceec61-1e5f-48cc-8a51-3abdb4b06614` and Entry `5869db28-cb18-4bcc-8e2a-7364e8c888ce`, both at 100%. PRs #169 → #170 → #173 reconcile the current Beta deadline, branding and signed domain source; #198 design/answer/subtabs and #200/#203 receipt/reviewed-copy fixes are all retained. #204 adds acceptance evidence without changing production code.

@@ -9,6 +9,17 @@ const origin='https://workspace.test',previewOrigin='https://p-'+ 'a'.repeat(40)
 const names=['artifact-views.js','index.html','app.js', 'i18n.js', 'i18n-bindings.js', 'locale-preference.js','project-status.js','browser-preview.js','verify-handoff.js','layout.js','export.js','publication.js','evidence.js','evidence.css','services.js','previews.js','simulation.js','local-runs.js','comparison.js','styles.css','workspace.css'];
 const files=Object.fromEntries(await Promise.all(names.map(async name=>[name,await readFile(new URL('../../services/web/'+name,import.meta.url),'utf8')])));
 const digest=value=>createHash('sha256').update(value).digest('hex');
+test('initial copied project files remain visible before the first Turn revision',async t=>{
+ const f=await fixture(t),p=f.page;
+ await p.route('**/api/workspaces/w/files',route=>route.fulfill({contentType:'application/json',body:JSON.stringify({schemaVersion:1,revision:null,files:[{path:'model/model.py',type:'file',size:1024},{path:'model/visualization.json',type:'file',size:128}]})}));
+ await p.locator('[data-workspace-tab=inspect]').click();await p.locator('#files-refresh').click();
+ await p.getByText('model/model.py',{exact:true}).waitFor();
+ assert.match(await p.locator('#files-meta').innerText(),/初始项目文件|Initial project files/);
+ assert.equal(await p.getByText('model/visualization.json',{exact:true}).count(),1);
+ await p.locator('[data-workspace-tab=preview]').click();
+ assert.equal(await p.locator('[data-browser-preview-action=run]').isVisible(),true);
+ assert.equal(f.calls.filter(c=>c.method==='POST'&&!c.path.endsWith('/tickets')).length,0);
+});
 const hostSource=`export class BrowserPreviewRuntime { constructor(){ } async load(){ return {manifest:{projectId:'p',revisionId:'revision-a',packageIdentity:'${'a'.repeat(64)}'},spec:{parameters:{servers:{type:'integer',default:1,minimum:1,maximum:4}}},visualization:{}} } async run(){return {snapshots:[]}} cancel(){} dispose(){} }`;
 const rendererSource=`export class PreviewPlayer { constructor(){} clear(){} load(){} play(){} pause(){} step(){} restart(){} }`;
 const hostHash=digest(hostSource),rendererHash=digest(rendererSource);

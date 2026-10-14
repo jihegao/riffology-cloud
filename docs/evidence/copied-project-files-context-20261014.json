@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-14",
+  "timezone": "Asia/Shanghai",
+  "issues": [
+    206,
+    207,
+    178,
+    196
+  ],
+  "baseline": "fbc0e46",
+  "status": "implemented-local-not-deployed",
+  "findings": [
+    "Files UI suppressed returned initial files when Turn revision was null",
+    "First Managed session omitted verified initial model files; recovery context existed only for a previous closed session",
+    "Preview leave retained reusable parameter/visual DOM across projects"
+  ],
+  "checks": {
+    "managedWorkerd": {
+      "passed": 43,
+      "failed": 0,
+      "note": "Full suite before adding tampered-source assertions; final changed test passed separately (1/1)."
+    },
+    "previewAndWorkspace": {
+      "passed": 47,
+      "failed": 0
+    },
+    "initialPreview": {
+      "passed": 11,
+      "failed": 0
+    },
+    "ui": {
+      "passed": 21,
+      "failed": 0
+    },
+    "typecheck": "passed",
+    "whitespace": "passed",
+    "ci": "not-run"
+  },
+  "scope": "All runs use local fixtures; SDK provider calls intercepted by local test transport. No production Turn/Run or deployment performed.",
+  "pending": [
+    "PR review/merge",
+    "deployment",
+    "original authenticated project files and browser-preview state/package readback",
+    "real user save/restore/Preview acceptance"
+  ],
+  "productionDiagnosis": "Screenshot shows Model initial version and Agent no-files reply; production file loss or Preview build root cause not established. Safari window unavailable.",
+  "sourceSha256": {
+    "services/turn-runtime/managed-product.ts": "08e2ee4482aeddf131f7c7ec1ad924f31cfc989ea230f885bc3182099e772c1c",
+    "services/web/app.js": "bd3447f08a3f7dd77d21ded5e2bea67c144b711e0fb1aa3dc7c70eda3375f2c8",
+    "services/web/browser-preview.js": "7416031503673dc9e83810d03a0642d75d5a2216536e91fdccaeae6d743a4ec2",
+    "services/web/i18n.js": "f40839bd5c214715fa523bcbceb0ea2f8ec93923932365bd4b288d69ec6de815",
+    "scripts/i18n-check.mjs": "f3eabda54152c4f1cfbe40f5ec9ac37b258d7304e7965198d0dd23465608dfa4",
+    "tests/m2/managed-product.test.ts": "78b703a8ba31ab21ee2022d157b5d920bec8e3dff9831adaea213e2502f52f80",
+    "tests/m3/browser-preview-panel.test.mjs": "acb70899dfcda2c7770e2de341d629849de99af94b0950e6a31e58058786f52c",
+    "tests/m3/workspace-layout.test.mjs": "8d0d91ef659544336246cf135d65ab90ccfc15b214ebbc7adad4a909b567751c"
+  }
+}

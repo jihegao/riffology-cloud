@@ -24,6 +24,7 @@ let executionAvailability={service:false,preview:false,simulation:false};
 function renderModelState(){
   const status=$('#workspace-model-status');if(!status)return;
   const active=workspaceSnapshot?.activeTurnId&&workspaceSnapshot.turns?.[workspaceSnapshot.activeTurnId];
+  $('#workspace-services').hidden=!observedModel?.version&&!observedService?.runId;
   let state='ready',text=msg('workspace.model.empty');
   if(active&&!['completed','failed','cancelled','interrupted'].includes(active.status)){
     state='building';text=msg('workspace.model.building');
@@ -44,6 +45,7 @@ function renderModelState(){
   }else if(observedModel?.version){
     text=msg('workspace.model.saved');
   }
+  status.hidden=!active&&!observedModel?.version&&!observedModel?.reasonCode&&!observedService?.runId;
   status.dataset.state=state;bindValue(status, () => (text));
 }
 const browserPreviewPanel=createBrowserPreviewPanel({root:$('#workspace-browser-preview'),api,onVerified:()=>{void simulationPanel.reload();void comparisonPanel.reload();},onVerifyHandoff:draft=>{const accepted=verifyHandoffPanel.handoff(draft);if(accepted){workspaceLayout.select('runs');if(browserPreviewRoute(location)&&activeProject)location.hash=`/workspace/${encodeURIComponent(activeProject.id)}`;}return accepted;},onVerificationAvailability:allowed=>verifyHandoffPanel.setCanVerify(allowed)});
@@ -580,8 +582,8 @@ function renderWorkspaceFiles() {
   if (workspaceFilesError) { bindValue(meta, () => (msg('files.readFailed'))); const error = document.createElement('p'); error.className = 'file-empty file-error'; bindValue(error, () => (workspaceFilesError)); box.append(error); return; }
   if (!workspaceFiles) { bindValue(meta, () => (msg('files.reading'))); const loading = document.createElement('p'); loading.className = 'file-empty'; bindValue(loading, () => (msg('files.loading'))); box.append(loading); return; }
   const files = Array.isArray(workspaceFiles.files) ? workspaceFiles.files : [];
-  if (!workspaceFiles.revision) { bindValue(meta, () => (msg('files.noRevision'))); const empty = document.createElement('p'); empty.className = 'file-empty'; bindValue(empty, () => (msg('files.afterSave'))); box.append(empty); return; }
-  bindValue(meta, () => (msg('files.revision', () => ({p0: workspaceFiles.revision.revisionId, p1: formatNumber(files.length), p2: formatDate(new Date(workspaceFiles.revision.committedAt),{dateStyle:'short',timeStyle:'medium',hour12:false})}))));
+  if (!workspaceFiles.revision) bindValue(meta, () => (msg('files.initial', () => ({p0:formatNumber(files.length)}))));
+  else bindValue(meta, () => (msg('files.revision', () => ({p0: workspaceFiles.revision.revisionId, p1: formatNumber(files.length), p2: formatDate(new Date(workspaceFiles.revision.committedAt),{dateStyle:'short',timeStyle:'medium',hour12:false})}))));
   for (const item of files) {
     if (!item || typeof item.path !== 'string' || !['file', 'directory'].includes(item.type)) continue;
     const row = document.createElement('div'); row.className = `file-entry ${item.type}`;
