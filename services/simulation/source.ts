@@ -44,6 +44,7 @@ export type ModelInspection = {
  canRun: boolean;
  capabilityReason?:string;
  runLimits?:import('./invited-policy.ts').InvitedRunsPolicy;
+ simulationAdmission?:import('../catalog/reviewed-copy.ts').ManagedSimulationAdmission&{currentVersion:{revisionId:string|null;filesSha256:string;specSha256:string}};
  compiler?:CompilerIdentity;
 };
 /** Read the saved semantic model even when its execution contract is invalid. */

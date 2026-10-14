@@ -148,7 +148,7 @@ export interface WorkspaceAgentEnv {
   G4_BROWSER_BUILD_HOLD_SCOPES_JSON?:string;
   MANAGED_ACCEPTANCE_JSON?:string;
   MANAGED_TESTING_JSON?:string;
-  MANAGED_TURN_RUNTIME?:{getByName(name:string):TurnRuntimePort & {preflight(scope:TurnScope,actor:TurnActor):Promise<unknown>;reserveSimulation(scope:TurnScope,runId:string):Promise<unknown>;budgetStatus(scope:TurnScope):Promise<unknown>;cleanup(scope:TurnScope):Promise<unknown>}};
+  MANAGED_TURN_RUNTIME?:{getByName(name:string):TurnRuntimePort & {preflight(scope:TurnScope,actor:TurnActor):Promise<unknown>;simulationReadiness(scope:TurnScope,actor:TurnActor):Promise<unknown>;reserveSimulation(scope:TurnScope,runId:string,actor?:TurnActor):Promise<unknown>;budgetStatus(scope:TurnScope):Promise<unknown>;cleanup(scope:TurnScope):Promise<unknown>}};
   M2_TURNS_ENABLED: unknown;
   M2_MODEL_TURN_CAPABILITY_KEY:string;
   M2_WORKSPACE_RUNTIME_REUSE_ENABLED?:unknown;
@@ -416,11 +416,11 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   #simulationAlarm=new DurableSimulationAlarmPort(this.ctx.storage);
   #simulations(scope:TurnScope):SimulationHost{
     return this.#simulationHost??=new SimulationHost(this.ctx.storage,scope,{
-      admitRun:async(actor,key,body,runId,child)=>{this.#assertRunWritable(scope);if(child?.runAdmission&&(child.runAdmission.policyId!==this.#invitedRunsPolicy()?.policyId||!this.#invitedRunCandidate()))throw Error('invited-runs-paused');if(this.#invitedRunCandidate()&&(!child||child.runAdmission)){await this.#authorizeInvitedRun(scope,actor);return {kind:'invited-runs' as const,policyId:this.#invitedRunsPolicy()!.policyId};}if(!this.#legacySimulationCanRun())throw Error('simulation-unavailable');const managed=await this.#managedAdmit(scope,actor,false);if(managed){await this.#managedRuntime(managed).reserveSimulation(scope,runId);return;}if(this.env.G5_CONTROLLED_WINDOW_JSON===undefined){await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,actor.userId,'run',{scope,key},body);return;}const task=await g5TaskKey(this.env.G5_CONTROLLED_WINDOW_JSON,'simulation',scope.tenantId,actor.userId,{scope,key},body);const policy=g5WindowPolicy(JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON))!;const guard=this.#g5Guard();await guard.registerTask(task);const created=await guard.claimTaskCreate(task.key);if(!created.authorized)throw Error('g5-simulation-create-denied');return {kind:'g5' as const,taskKey:task.key,windowId:policy.windowId,profileSha256:policy.profilePin.profileSha256};},
+      admitRun:async(actor,key,body,runId,child)=>{this.#assertRunWritable(scope);if(child?.runAdmission&&(child.runAdmission.policyId!==this.#invitedRunsPolicy()?.policyId||!this.#invitedRunCandidate()))throw Error('invited-runs-paused');if(this.#invitedRunCandidate()&&(!child||child.runAdmission)){await this.#authorizeInvitedRun(scope,actor);return {kind:'invited-runs' as const,policyId:this.#invitedRunsPolicy()!.policyId};}if(!this.#legacySimulationCanRun())throw Error('simulation-unavailable');const managed=await this.#managedAdmit(scope,actor,false);if(managed){await this.#managedRuntime(managed).reserveSimulation(scope,runId,actor);return;}if(this.env.G5_CONTROLLED_WINDOW_JSON===undefined){await admitG4Task(this.env.TENANT_MODEL_BUDGET,this.env.G4_CONTROLLED_WINDOW_JSON,scope.tenantId,actor.userId,'run',{scope,key},body);return;}const task=await g5TaskKey(this.env.G5_CONTROLLED_WINDOW_JSON,'simulation',scope.tenantId,actor.userId,{scope,key},body);const policy=g5WindowPolicy(JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON))!;const guard=this.#g5Guard();await guard.registerTask(task);const created=await guard.claimTaskCreate(task.key);if(!created.authorized)throw Error('g5-simulation-create-denied');return {kind:'g5' as const,taskKey:task.key,windowId:policy.windowId,profileSha256:policy.profilePin.profileSha256};},
       createdRun:async record=>{if(record.budgetRoute)await this.#g5Guard().bindTask(record.budgetRoute.taskKey,record.runId);},
       authorizeRun:async record=>{if(!record.runAdmission)return this.#legacySimulationCanRun();try{await this.#authorizeInvitedRun(record.scope,record.actor);return true;}catch{return false;}},
       unknownRun:async record=>{if(!record.runAdmission)return;const observed=record.lease?null:await this.#invitedRunCapacity().lookup(record.scope.tenantId,`sim-${record.runId}-${record.attempt}`);const reference=record.lease??(observed?.lease?leaseReference(observed.lease):null);if(reference)await this.#invitedRunCapacity().markUnknown(reference);},
-      beforeStart:async(record,stage)=>{this.#assertRunWritable(scope);if(record.runAdmission){if(record.runAdmission.policyId!==this.#invitedRunsPolicy()?.policyId)throw Error('invited-runs-policy-conflict');await this.#authorizeInvitedRun(scope,record.actor);return;}const managed=this.#managedRoute();if(managed){requireManagedAdmission(this.env.MANAGED_ACCEPTANCE_JSON,managed,record.scope,record.actor.userId,this.env.MANAGED_TESTING_JSON);await this.#managedRuntime(managed).reserveSimulation(record.scope,record.runId);return;}if(!record.budgetRoute)return;await this.#g5StartTask(record.budgetRoute.taskKey);},
+      beforeStart:async(record,stage)=>{this.#assertRunWritable(scope);if(record.runAdmission){if(record.runAdmission.policyId!==this.#invitedRunsPolicy()?.policyId)throw Error('invited-runs-policy-conflict');await this.#authorizeInvitedRun(scope,record.actor);return;}const managed=this.#managedRoute();if(managed){requireManagedAdmission(this.env.MANAGED_ACCEPTANCE_JSON,managed,record.scope,record.actor.userId,this.env.MANAGED_TESTING_JSON);await this.#managedRuntime(managed).reserveSimulation(record.scope,record.runId,record.actor);return;}if(!record.budgetRoute)return;await this.#g5StartTask(record.budgetRoute.taskKey);},
       quota:this.#simulationQuota(scope),
       prepare:async(input,check)=>{
         await check();this.#assertRunWritable(scope);
@@ -755,6 +755,20 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const model=await inspectModel(source,await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source),this.#simulationCanRun());
     if(this.#invitedRunCandidate()&&input.actor){try{await this.#authorizeInvitedRun(scope,input.actor);}catch(error){model.canRun=false;model.capabilityReason=error instanceof Error&&/^(invited-runs-|private-beta-)/.test(error.message)?error.message:'invited-runs-unavailable';}}
     if(this.#invitedRunCandidate())model.runLimits=this.#invitedRunsPolicy()!;
+    const managed=this.#managedRoute();
+    if(managed){
+     const runtimeReady=model.canRun&&model.version!==null;
+     model.canRun=false;
+     if(input.actor)try{
+      const admission=await this.#managedRuntime(managed).simulationReadiness(scope,input.actor) as import('../catalog/reviewed-copy.ts').ManagedSimulationAdmission;
+      const content=source.kind==='initial-workspace'?source.reference.task.modelContent:undefined;
+      const sourceMatches=admission.mode==='existing-managed-budget'||source.kind==='initial-workspace'&&!!content&&
+       content.modelVersionId===admission.source.modelVersionId&&content.modelId===admission.source.modelId&&content.version===admission.source.version&&
+       content.contentSha256===admission.source.contentSha256&&admission.source.specSha256===model.version?.specSha256;
+      if(runtimeReady&&admission.allowed&&sameScope(admission.scope,scope)&&sourceMatches){model.canRun=true;model.simulationAdmission={...admission,currentVersion:model.version!};}
+      else model.capabilityReason='managed-simulation-admission-denied';
+     }catch{model.capabilityReason='managed-simulation-admission-unavailable';}
+    }
     if(!this.#simulationCanRun()){model.canRun=false;if(this.#archiveFence.get())model.capabilityReason='project_archived';}
     model.experimentDraft=readParameterDraft(this.ctx.storage,model.version);
     this.#ready(scope);return model;

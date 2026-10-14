@@ -9,12 +9,14 @@ import {ManagedSdkTransport,type ManagedPaidAdmission,type ManagedDeletionIntent
 import {revisionStoreActorName,type RevisionStoreNamespace} from './revision-store-client.ts';
 import {ManagedCandidateError,managedCandidateRecoveryFiles,packageManagedCandidate,type ManagedCandidateValidation} from './managed-candidate.ts';
 import {managedProjectPolicy,type ManagedAcceptancePolicy} from '../workspace/managed-route.ts';
+import {catalogDatabase} from '../catalog/database.ts';
+import {reviewedCopySimulationAdmission,type ReviewedCopyAdmission} from '../catalog/reviewed-copy.ts';
 
 type AbsentReceipt=Extract<TurnRuntimeReceipt,{phase:'absent'}>;
 type Accepted=Parameters<TurnRuntimePort['accept']>[0];
 type RecordState={candidateValidation?:ManagedCandidateValidation;deliveryError?:{code:string;status:number|null}|null;deliveryRetryCount?:number;nextDeliveryAttemptAt?:number;recoveryObservationDeadlineAt?:number;recoveryContext?:string;inputAttempted?:boolean;deletion?:{intent:ManagedDeletionIntent;acknowledgedAt:number|null;absentAt:number|null};input:Accepted;managedInput:ManagedInput;reserved:boolean;operation:'create'|'continue'|null;observation:ManagedObservation|null;checkpoint:CheckpointReceipt|null;persistenceError:string|null;closed:boolean;cleanupRequested:boolean;cost:number|null;cancelRequested:boolean;receipt:TurnRuntimeReceipt|null};
-type Budget={policy:ManagedAcceptancePolicy;startedAt:number|null;stopped:string|null;simulations:string[]};
-export interface ManagedProductEnv {MANAGED_TURN_RUNTIME:DurableObjectNamespace<ManagedProductRuntime>;MANAGED_ACCEPTANCE_JSON?:string;MANAGED_TESTING_JSON?:string;MANAGED_OPENAI_API_KEY?:string;REVISION_STORE:RevisionStoreNamespace;}
+type Budget={policy:ManagedAcceptancePolicy;startedAt:number|null;stopped:string|null;simulations:string[];nativeOnlyBootstrap?:{mode:'reviewed-copy-first-run';actor:TurnActor;source:ReviewedCopyAdmission['source'];maxDistinctRuns:1}};
+export interface ManagedProductEnv {CATALOG:D1Database;MANAGED_TURN_RUNTIME:DurableObjectNamespace<ManagedProductRuntime>;MANAGED_ACCEPTANCE_JSON?:string;MANAGED_TESTING_JSON?:string;MANAGED_OPENAI_API_KEY?:string;REVISION_STORE:RevisionStoreNamespace;}
 export const managedProductActorName=(scope:TurnScope)=>`managed-product-v1:${scope.tenantId}:${scope.projectId}`;
 const identityOf=(input:Parameters<TurnRuntimePort['observe']>[0])=>turnRuntimeIdentity({scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation});
 const rowKey=(identity:TurnRuntimeIdentity)=>`turn:${identity.turnId}`;
@@ -283,10 +285,44 @@ export class ManagedProductRuntime extends DurableObject<ManagedProductEnv> impl
  async inspectCandidate(scope:TurnScope,turnId:string){return this.#run(async()=>{this.#owned(scope);const row=this.ctx.storage.kv.get<RecordState>('turn:'+turnId);if(!row||!sameScope(row.input.scope,scope))throw Error('managed-original-scope-denied');const bytes=this.ctx.storage.kv.get<Uint8Array>('candidate:'+turnId);const binding=await this.#store().read(identityOf(row.input));let remote:unknown=null;try{if(binding){const receipt=binding.remoteTurnId?await this.#transport().retrieve(binding):await this.#transport().lookupOriginal(binding);remote=receipt?{phase:receipt.phase,observedAt:receipt.observedAt}:null;if(!receipt&&binding.remoteSessionId){const transport=this.#transport(),session=await transport.client.beta.agents.sessions.retrieve(binding.remoteSessionId);const items=[];for await(const item of transport.client.beta.agents.sessions.items.list(binding.remoteSessionId,{order:'asc',limit:100})){if(items.length>=32)break;items.push(item.type==='message'?{type:item.type,role:item.role,turnId:item.turn_id,content:item.content.map(p=>({type:p.type,...('text' in p?{text:String(p.text).slice(0,180)}:{})}))}:{type:item.type});}remote={sessionStatus:session.status,sessionError:session.error,items};}}}catch(error){const e=error as {message?:string;status?:number};remote={error:typeof e.message==='string'&&/^managed-[a-z-]+$/.test(e.message)?e.message:'provider-read-failed',status:typeof e.status==='number'?e.status:null};}return {error:row.persistenceError,candidate:bytes?new TextDecoder().decode(bytes):null,inputAttempted:row.inputAttempted,deliveryError:row.deliveryError??null,reservedAt:binding?.reservedAt,hasRemoteSession:!!binding?.remoteSessionId,hasRemoteTurn:!!binding?.remoteTurnId,remote};});}
  async budgetStatus(scope:TurnScope){return this.#run(async()=>this.#status(scope));}
  async #status(scope:TurnScope){const budget=this.#owned(scope),rows=this.#rows(),paid=rows.filter(r=>r.reserved);return {policy:budget?.policy??this.#policy(scope),startedAt:budget?.startedAt??null,deadline:budget?.startedAt&&budget.policy.maxDurationMs!==null?budget.startedAt+budget.policy.maxDurationMs:null,turnCount:paid.length,sessionCount:paid.filter(r=>r.operation==='create').length,liveSessions:new Set(paid.filter(r=>!r.closed).map(r=>r.input.sessionId)).size,unresolved:paid.filter(r=>!r.observation||['running','unknown'].includes(r.observation.execution)||r.cost===null).length,cleanupPending:paid.some(r=>r.cleanupRequested&&!r.closed),checkpointRecoveryPending:paid.some(r=>this.#needsRecovery(r)),observedUsd:paid.reduce((s,r)=>s+(r.cost??0),0),reservedUsd:paid.length*.75+paid.filter(r=>r.operation==='create').length*.25,stopped:budget?.stopped??null,billingSettled:false,simulationCount:budget?.simulations.length??0,records:await Promise.all(rows.map(async r=>({remoteSessionHash:await this.#store().read(identityOf(r.input)).then(b=>b?.remoteSessionId?turnDigest(b.remoteSessionId):null),identity:identityOf(r.input),execution:r.observation?.execution??'unknown',checkpoint:r.checkpoint,closed:r.closed,usage:r.observation?.usage??{status:'unknown'},cost:r.cost}))) };}
- async reserveSimulation(scope:TurnScope,runId:string){return this.#run(async()=>{
-  const budget=this.#owned(scope);if(!budget)throw Error('managed-budget-not-started');this.#policy(scope);
+ #hasExecutionBindings(){return this.ctx.storage.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='execution_bindings'").toArray().length>0&&this.ctx.storage.sql.exec('SELECT 1 FROM execution_bindings LIMIT 1').toArray().length>0;}
+ async #freshReviewedCopy(scope:TurnScope,actor:TurnActor){
+  const checked=validateActor(actor),policy=this.#policy(scope,checked);
+  if(policy.schemaVersion!==2||this.#owned(scope)||this.#rows().length||this.#hasExecutionBindings()||Array.from(this.ctx.storage.kv.list()).length)throw Error('managed-reviewed-copy-not-fresh');
+  return {policy,checked,admission:await reviewedCopySimulationAdmission(catalogDatabase(this.env.CATALOG),scope,checked)};
+ }
+ async #currentReviewedCopy(scope:TurnScope,budget:Budget,actor:TurnActor|undefined){
+  if(!actor||!budget.nativeOnlyBootstrap)throw Error('managed-reviewed-copy-denied');
+  const checked=validateActor(actor),saved=budget.nativeOnlyBootstrap;
+  if(saved.actor.userId!==checked.userId||saved.actor.authVersion!==checked.authVersion)throw Error('managed-reviewed-copy-denied');
+  this.#currentBudget(scope,checked);
+  const admission=await reviewedCopySimulationAdmission(catalogDatabase(this.env.CATALOG),scope,checked);
+  if(JSON.stringify(saved.source)!==JSON.stringify(admission.source))throw Error('managed-reviewed-copy-denied');
+  return admission;
+ }
+ async simulationReadiness(scope:TurnScope,actor:TurnActor){return this.#run(async()=>{
+  const checked=validateActor(actor),budget=this.#owned(scope);
+  if(budget){
+   this.#currentBudget(scope,checked);
+   if(budget.nativeOnlyBootstrap){const admission=await this.#currentReviewedCopy(scope,budget,checked);return {...admission,allowed:budget.stopped===null&&budget.simulations.length<1,remainingDistinctRuns:Math.max(0,1-budget.simulations.length)};}
+   const withinTime=budget.startedAt!==null&&(budget.policy.maxDurationMs===null||Date.now()<budget.startedAt+budget.policy.maxDurationMs),withinRuns=budget.policy.maxSimulationRuns===null||budget.simulations.length<budget.policy.maxSimulationRuns;
+   const unsettled=this.#rows().filter(row=>row.reserved).some(row=>row.cleanupRequested&&!row.closed||!row.observation||['running','unknown'].includes(row.observation.execution)||budget.policy.schemaVersion===1&&row.cost===null);
+   return {schemaVersion:1 as const,mode:'existing-managed-budget' as const,allowed:budget.stopped===null&&withinTime&&withinRuns&&!unsettled,scope,maxDistinctRuns:budget.policy.maxSimulationRuns,remainingDistinctRuns:budget.policy.maxSimulationRuns===null?null:Math.max(0,budget.policy.maxSimulationRuns-budget.simulations.length)};
+  }
+  const fresh=await this.#freshReviewedCopy(scope,checked);return {...fresh.admission,remainingDistinctRuns:1 as const};
+ });}
+ async reserveSimulation(scope:TurnScope,runId:string,actor?:TurnActor){return this.#run(async()=>{
+  runId=turnId(runId);let budget=this.#owned(scope);
+  if(!budget){
+   if(!actor)throw Error('managed-budget-not-started');const fresh=await this.#freshReviewedCopy(scope,actor);
+   budget={policy:fresh.policy,startedAt:Date.now(),stopped:null,simulations:[runId],nativeOnlyBootstrap:{mode:'reviewed-copy-first-run',actor:fresh.checked,source:fresh.admission.source,maxDistinctRuns:1}};
+   this.ctx.storage.kv.put('budget',budget);await this.ctx.storage.sync();return {reserved:true};
+  }
+  this.#policy(scope,actor?validateActor(actor):undefined);
+  if(budget.nativeOnlyBootstrap)await this.#currentReviewedCopy(scope,budget,actor);
   if(budget.stopped||!budget.startedAt||(budget.policy.maxDurationMs!==null&&Date.now()>=budget.startedAt+budget.policy.maxDurationMs))throw Error('managed-window-closed');
   if(budget.simulations.includes(runId))return {reserved:true};
+  if(budget.nativeOnlyBootstrap)throw Error('managed-reviewed-copy-simulation-limit');
   if(budget.policy.maxSimulationRuns!==null&&budget.simulations.length>=budget.policy.maxSimulationRuns)throw Error('managed-simulation-limit');
   budget.simulations.push(runId);this.ctx.storage.kv.put('budget',budget);await this.ctx.storage.sync();return {reserved:true};
  });}
