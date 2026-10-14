@@ -1,0 +1,205 @@
+{
+  "schema": "riffology.delivery-evidence/v1",
+  "date": "2026-10-14",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/202",
+  "status": {
+    "implemented": true,
+    "deployed": true,
+    "authenticatedReviewedCopyRunAccepted": true,
+    "authenticatedReviewedCopyRunTerminal": true,
+    "authenticatedReviewedCopyRunReleased": true,
+    "acceptance": "passed",
+    "issueOpenAtCapture": true
+  },
+  "evidenceInputs": {
+    "deploymentSource": "copyfix-source-provenance.json",
+    "deploymentVersion": "copyfix-version-after.json",
+    "deploymentReadback": "copyfix-deploy-after.json",
+    "moduleReadback": "copyfix-module-readback.json",
+    "authenticatedAcceptance": {
+      "file": "copy-acceptance.json",
+      "observedAt": "2026-10-14T08:48:34.831Z"
+    },
+    "scopedCountProof": {
+      "file": "copy-provider-count-proof.json",
+      "observedAt": "2026-10-14T08:48:49.212Z"
+    }
+  },
+  "source": {
+    "implementationCommit": "f6a9981a7f9511328b63c3f4ef86dac008b26b7f",
+    "deployedComposition": "e422b297e75b8ee1f32caaa43e0d451a5f7a95d9",
+    "liveBaseline": "4d0995a57367ffbd5cf18e972936e1afd7372935",
+    "liveBaselineModuleSha256": "87560a85eac9b8ddb7fa113260777db938917745ad21442516be53075852ac27",
+    "liveBaselineReproducedExactly": true,
+    "deployedModuleSha256": "517ce37d817efa0f3e17d1add49fadb5e30c91b68d0465dd2ddb40737ffb1818",
+    "deployedModuleBytes": 5741849,
+    "moduleReadbackExact": true,
+    "moduleBodyIncluded": false,
+    "uiOrAssetSourceChanged": false
+  },
+  "deployment": {
+    "version": "9f472694-4aa5-4f0f-8fda-ceddd02e1e88",
+    "versionNumber": 219,
+    "versionCreatedAt": "2026-10-14T08:38:06.752298Z",
+    "deployment": "0dbc1645-cba0-4db0-bb87-ace9ce0e119a",
+    "deploymentCreatedAt": "2026-10-14T08:38:43.690306Z",
+    "percentage": 100,
+    "preservation": {
+      "bindings": 99,
+      "sqliteExports": 23,
+      "containerAssociations": 5,
+      "settingsPreserved": true,
+      "assetConfigurationPreserved": true,
+      "assetBytesReprobed": false,
+      "compatibilityDate": "2026-09-09",
+      "newNamespace": false,
+      "newContainerImage": false,
+      "privateBetaPolicyChanged": false
+    }
+  },
+  "identityScope": {
+    "hashAlgorithm": "sha256(utf8 raw identifier)",
+    "authorUserSha256": "9cb1781a0e6aa30d6093a4a26744ea189386c2f1d337ffb9ca8c9ea1f505558d",
+    "reviewerCopyUserSha256": "012e73979106f2cbf5306da0a73383fa3aa0dc2b89536db5e4559eb424ae586a",
+    "authorProjectSha256": "6f9a4620aa25719ca6e870b5bac984748ec3ebc18d0d737af350395f9d3e832a",
+    "authorWorkspaceSha256": "18d42705720b463732d80cd78bd9b3d8277a578e4e5b5c238db32f58a1506296",
+    "copyProjectSha256": "5ba1062ded69b4751be3e5214e2a2a0f17bcf94995c8b04736e04db5e359d69b",
+    "copyWorkspaceSha256": "58189b017f1d5c032f3eda1a889f8a0670aeed80e0a9cc0f05df6d673f3ecf60",
+    "copyRunSha256": "6bb3f4ead858370ffa4907043bc44db983d8cc8efffbe259d893e8004e391157",
+    "authorAndReviewerDifferent": true,
+    "copyUsesDesignatedReviewerAccount": true,
+    "reviewerIsActiveOperator": true,
+    "copyViaOrdinaryUserFlow": true,
+    "userExplicitlyAuthorizedCopyCloudRun": true,
+    "thirdNonOperatorAcceptancePerformed": false,
+    "rawIdentifiersIncluded": false
+  },
+  "publishedSourceBinding": {
+    "modelId": "netlogo-fire-python-beta",
+    "version": "0.1.0",
+    "publishedContentSha256": "21121a2dcf3b7ea036f9d8de766f2b215f002019c7d66ccf7ff7c7f23f77fc67",
+    "specSha256": "776179d01e8adc25fda68bcf74329d1c5bb301ac787e3c6e3f92bdcfac72e5b0",
+    "authorArchiveSha256": "6ab937da5f07f6415ea7c4014e1cb672c31b3210b5270934961d29572239c7be",
+    "copyInitialArchiveSha256": "3e3360f6fa0440215f0b80908a6b4d4de2d2b819a863aea0716a6e42b9d4bcf7",
+    "authorAndCopyArchiveExpectedEqual": false,
+    "archiveDifferenceReason": "The platform repackaged archive identity differs; the six model-source files and the same 98-byte README match byte for byte. No specific archive-metadata cause is inferred.",
+    "sixModelSourceHashesMatched": true,
+    "readmeMatchedByteForByte": true,
+    "readmeBytes": 98,
+    "readmeSha256": "555cb02767ed32c32ad1949f9a862a944776d4ade871579a16f2b42519b9eb1c",
+    "copyRevisionId": null
+  },
+  "admission": {
+    "route": "managed-schema2-reviewed-copy-first-run",
+    "readinessObserved": true,
+    "readinessMode": "reviewed-copy-first-run",
+    "readinessAllowedBeforePost": true,
+    "readinessReadOnly": true,
+    "maxDistinctNativeRuns": 1,
+    "sameRunIdBeforeStartRevalidated": true,
+    "differentRunIdRejectedByContract": true,
+    "existingUnknownOrCleanupFailsClosed": true,
+    "privateBetaAdmissionChanged": false,
+    "providerOrHostedSessionRequired": false
+  },
+  "authenticatedRun": {
+    "requestCount": 1,
+    "postStatus": 202,
+    "latestState": "completed",
+    "terminalOutcome": "completed",
+    "released": true,
+    "releasePending": false,
+    "input": {
+      "density_percent": 57,
+      "steps": 5,
+      "seed": 20261001
+    },
+    "metrics": {
+      "active_fires": 6,
+      "burn_fraction_pct": 10.133843212237094,
+      "burned_trees": 53,
+      "initial_trees": 523,
+      "trees_remaining": 470
+    },
+    "providerCountProof": {
+      "scope": "original copied project only",
+      "providerTurnsOrSessionsAdded": 0,
+      "workspaceTurnsAndSessionsEmpty": true
+    },
+    "nativeRunCountProof": {
+      "before": 0,
+      "after": 1,
+      "added": 1,
+      "onlyExpectedRunPost": true,
+      "quotaOccupiedAfter": 0,
+      "quotaUnknownAfter": 0,
+      "modelCanRunAfter": false,
+      "capabilityReasonAfter": "managed-simulation-admission-denied"
+    }
+  },
+  "validation": {
+    "newWorkerd": {
+      "passed": 3,
+      "failed": 0
+    },
+    "focusedAndAdjacent": {
+      "passed": 54,
+      "failed": 0
+    },
+    "fullM2": {
+      "passed": 961,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "startedBeforeFinalExistingBudgetReadinessMarkerTightening": true
+    },
+    "postTighteningRerun": {
+      "newWorkerd": {
+        "passed": 3,
+        "failed": 0
+      },
+      "typecheck": "passed",
+      "diffCheck": "passed"
+    },
+    "typecheck": "passed",
+    "diffCheck": "passed",
+    "independentReview": "passed-with-no-must-fix",
+    "hostedCI": "not claimed green"
+  },
+  "usageAndCost": {
+    "providerTurnsOrSessionsAddedInOriginalCopyScope": 0,
+    "nativeRunsAddedInOriginalCopyScope": 1,
+    "fees": "unknown",
+    "zeroCostClaimed": false
+  },
+  "remaining": [
+    "A third ordinary non-operator identity has not performed the copied-project acceptance.",
+    "The narrow release does not change Private Beta admission and does not establish public, commercial, source-native NetLogo or Verified Evidence claims."
+  ],
+  "excluded": [
+    "Raw user, project, workspace and Run identifiers",
+    "Credentials, tokens, headers, settings values and plain-text environment variables",
+    "Module bodies, source archives and raw logs"
+  ],
+  "laterDeploymentObservation": {
+    "observedAt": "2026-10-14T08:58:07.247Z",
+    "deployedAt": "2026-10-14T08:53:29.820092Z",
+    "gatewayVersion": "d9ceec61-1e5f-48cc-8a51-3abdb4b06614",
+    "deployment": "54f253dd-c7b3-4407-867d-b9856642c1ff",
+    "percentage": 100,
+    "moduleSha256": "141ee79098a0ed3f799f2fb2c9f5dde3ba65a2d73317227f9e15b1037077d41a",
+    "moduleBytes": 5795550,
+    "reviewedCopyHelperPresent": true,
+    "secondRunFencePresent": true,
+    "readinessRpcPresent": true,
+    "originalCopiedRunStillCompletedAndReleased": true,
+    "scopedProviderTurnsAndSessions": 0,
+    "scopedNativeRuns": 1,
+    "tenantOccupiedAndUnknown": 0,
+    "postReleaseCanRun": false,
+    "newNativeExecutionPerformed": false,
+    "classification": "later separate main integration; read-only continuity observation only",
+    "reportedSource": "eba528f7",
+    "reportedSourceBasis": "deployment annotation; Fire task did not reproduce byte correspondence for this later source"
+  }
+}
