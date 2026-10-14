@@ -1,3 +1,4 @@
+import {initialWorkspaceArchive} from '../workspace/initial-archive.ts';
 export type WorkspaceFileEntry={path:string;type:'file'|'directory';size:number;mode:number};
 export type WorkspaceFileIndex={schemaVersion:1;files:WorkspaceFileEntry[]};
 export type WorkspaceFileChange={path:string;change:'added'|'modified'|'deleted';type:'file'|'directory';size:number;mode:number};
@@ -83,3 +84,23 @@ export function workspaceArchiveReader(raw:Uint8Array){
   };
 }
 export function workspaceArchiveContents(raw:Uint8Array,requests:ReadonlyArray<{path:string;maxBytes:number}>){return workspaceArchiveReader(raw).read(requests);}
+
+/** Overlay bounded authoring files without dropping opaque files, empty
+ * directories or existing permission bits. Both inputs use the same canonical
+ * reader; new entries use the existing non-executable initial encoder. */
+export function overlayWorkspaceArchive(raw:Uint8Array,patch:Readonly<Record<string,Uint8Array>>,removeFiles:readonly string[]=[]):Uint8Array{
+ const base=parse(raw),updates=parse(initialWorkspaceArchive(patch)),records=new Map<string,{entry:ParsedEntry;bytes:Uint8Array}>();
+ for(const entry of base.files)records.set(entry.path,{entry,bytes:base.bytes.slice(entry.contentOffset-BLOCK,entry.contentOffset+Math.ceil(entry.size/BLOCK)*BLOCK)});
+ for(const path of removeFiles){validPath(path);if(records.get(path)?.entry.type==='directory')reject();records.delete(path);}
+ for(const entry of updates.files){
+  const old=records.get(entry.path);if(old&&old.entry.type!==entry.type)reject();
+  if(old&&entry.type==='directory')continue;
+  const bytes=updates.bytes.slice(entry.contentOffset-BLOCK,entry.contentOffset+Math.ceil(entry.size/BLOCK)*BLOCK);
+  if(old&&old.entry.mode!==entry.mode){bytes.set(encoder.encode(old.entry.mode.toString(8).padStart(7,'0')+'\0'),100);bytes.set(encoder.encode(checksum(bytes,0).toString(8).padStart(6,'0')+'\0 '),148);}
+  records.set(entry.path,{entry,bytes});
+ }
+ const sorted=[...records].sort(([a],[b])=>before(a,b)?-1:1),size=sorted.reduce((n,[,record])=>n+record.bytes.length,0);
+ const result=new Uint8Array(Math.ceil((size+2*BLOCK)/RECORD)*RECORD);let offset=0;
+ for(const [,record]of sorted){result.set(record.bytes,offset);offset+=record.bytes.length;}
+ parse(result);return result;
+}

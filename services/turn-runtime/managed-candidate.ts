@@ -6,6 +6,7 @@ import {canonicalPreviewJson,parseBrowserJsManifest,type PreviewRuntime} from '.
 import {PREVIEW_SOURCE_LOCKS} from '../browser-preview/profiles.ts';
 import {parsePreviewVisualization,validatePreviewJavaScriptSource,validatePreviewPythonSource} from '../browser-preview/validator.ts';
 import {validateInput,validateTrace,type RuntimeTrace} from '../browser-preview/runtime/protocol.mjs';
+import {ARTIFACT_MANIFEST,readModelArtifacts} from '../simulation/model-artifacts.ts';
 
 const encoder=new TextEncoder(),decoder=new TextDecoder('utf-8',{fatal:true});
 const core=['model/model.py','model/results.json','app/requirements.lock'] as const;
@@ -16,7 +17,7 @@ const object=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&
 const exact=(v:unknown,keys:readonly string[]):v is Record<string,unknown>=>object(v)&&Object.keys(v).sort().join(',')===[...keys].sort().join(',');
 const finite=(v:unknown)=>typeof v==='number'&&Number.isFinite(v);
 export type ManagedCandidateDiagnostic={file:string;path:string;reason:string};
-export type ManagedCandidateValidation={status:'checked';schemaVersion:1|2;traceValidation:'not-provided'|'validated';execution:'not-recomputed';profileId?:PreviewRuntime['profileId']}|{status:'invalid';diagnostic:ManagedCandidateDiagnostic};
+export type ManagedCandidateValidation={status:'checked';schemaVersion:1|2|3;operation?:'answer'|'design'|'model';traceValidation:'not-provided'|'validated';execution:'not-recomputed';profileId?:PreviewRuntime['profileId']}|{status:'invalid';diagnostic:ManagedCandidateDiagnostic};
 export class ManagedCandidateError extends Error{
  readonly diagnostic:ManagedCandidateDiagnostic;
  constructor(code:string,file:string,path:string,reason:string){super(code);this.diagnostic={file:file.slice(0,128),path:path.slice(0,256),reason:reason.slice(0,128)};}
@@ -96,6 +97,8 @@ export function managedCandidateRecoveryFiles(archive:Uint8Array):Record<string,
   const bytes=check(entry.path,'$',()=>reader.read([{path:entry.path,maxBytes:limit}]).get(entry.path)!);
   try{files[entry.path]=decoder.decode(bytes);}catch{reject(entry.path,'$','invalid-utf8');}
  }
+ const artifacts=check(ARTIFACT_MANIFEST,'$',()=>readModelArtifacts(archive));
+ if(artifacts){files[ARTIFACT_MANIFEST]=JSON.stringify(artifacts.manifest);Object.assign(files,artifacts.contents);}
  if(encoder.encode(JSON.stringify(files)).byteLength>1024*1024)reject('candidate.json','files','managed-recovery-too-large');
  return files;
 }

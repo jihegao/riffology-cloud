@@ -2,6 +2,16 @@ const supported = ['zh-CN', 'en'];
 
 export const dictionary = Object.freeze({
   "zh-CN": Object.freeze({
+  "views.overview": "概览",
+  "views.runSetup": "运行与对照",
+  "views.metrics": "运行指标",
+  "views.designSaved": "设计已保存；添加计算模型后可运行。",
+  "views.invalid": "设计视图配置无效，仍可查看模型说明和原始文件。",
+  "views.documentBoundary": "已保存的设计文档",
+  "views.designBoundary": "作者提供的设计图或 SysML 文本，尚未进行 SysML 语义核验。",
+  "views.runBoundary": "以下内容来自实际运行记录；浏览器结果仍为 local / unverified。",
+  "turn.save.unchanged": "已完成 · 未修改模型",
+
   "localRuns.historyFull": "本地历史已达到 20 组。请先下载记录，再按需清理浏览器存储；系统不会自动删除旧结果。",
   "localRuns.export": "下载本地历史",
   "localRuns.execution": "执行位置",
@@ -987,6 +997,16 @@ export const dictionary = Object.freeze({
   "service.confirmedOld": "上次确认时间（旧状态）：{time}"
 }),
   "en": Object.freeze({
+  "views.overview": "Overview",
+  "views.runSetup": "Run and compare",
+  "views.metrics": "Run metrics",
+  "views.designSaved": "Design saved. Add a compute model to enable runs.",
+  "views.invalid": "Design view configuration is invalid. Model details and raw files remain available.",
+  "views.documentBoundary": "Saved design document",
+  "views.designBoundary": "Author-provided design diagram or SysML source; SysML semantics have not been checked.",
+  "views.runBoundary": "These values come from recorded runs. Browser results remain local / unverified.",
+  "turn.save.unchanged": "Completed · Model unchanged",
+
   "localRuns.historyFull": "Local history has reached 20 tasks. Download records before clearing browser storage if needed; older results are never removed automatically.",
   "localRuns.export": "Download local history",
   "localRuns.execution": "Execution location",

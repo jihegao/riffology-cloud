@@ -366,3 +366,34 @@ test('Account testing explicit original-delivery recovery is owner scoped and ke
   f.dropInputs(0);const recovered=await f.call({action:'recover-delivery',scope,actor,turnId:request.turnId});assert.equal(recovered.ok,true,JSON.stringify(recovered));assert.equal(recovered.value.outcome,'completed');assert.equal(recovered.value.turnId,request.turnId);assert.equal(f.sessions.size,1);assert.equal([...f.sessions.values()][0].turns.length,1);assert.equal((await f.call({action:'status',scope})).value.turnCount,1);
  }finally{await f.close();}
 });
+
+
+test('Managed answer creates no Revision and the next Turn continues the same hosted Session across restart',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  f.setCandidate({schemaVersion:3,operation:'answer'});
+  const first=await f.call({action:'accept',input:input(1)});assert.equal(first.ok,true,JSON.stringify(first));assert.deepEqual(first.value.unchanged,{workspace:null,session:null});assert.equal(first.value.checkpoint,null);assert.equal(first.value.persistenceErrorCode,null);
+  assert.equal((await f.call({action:'commit-count',scope})).value,0);
+  await f.restart();const again=await f.call({action:'observe',input:input(1)});assert.deepEqual(again.value,first.value);
+  const second=await f.call({action:'accept',input:input(2)});assert.equal(second.ok,true,JSON.stringify(second));assert.ok(second.value.unchanged);assert.equal(f.sessions.size,1);
+  f.setCandidate(managedCandidateFixture('airport'));const third=await f.call({action:'accept',input:input(3)});assert.equal(third.ok,true,JSON.stringify(third));assert.ok(third.value.checkpoint);assert.equal(f.sessions.size,1);assert.equal((await f.call({action:'commit-count',scope})).value,1);
+ }finally{await f.close();}
+});
+test('Managed design overlay after an answer restores original files after hosted Session cleanup',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  f.setCandidate(managedCandidateFixture('airport','javascript-canvas'));const first=await f.call({action:'accept',input:input(1)});assert.equal(first.ok,true,JSON.stringify(first));const checkpoint=first.value.checkpoint,base={workspace:checkpoint,session:checkpoint};
+  f.setCandidate({schemaVersion:3,operation:'answer'});assert.equal((await f.call({action:'accept',input:input(2,'local-session',base)})).value.checkpoint,null);
+  await f.call({action:'cleanup',scope});await f.restart();
+  f.setCandidate({schemaVersion:3,operation:'design',artifacts:{schema:'riffology.model-artifacts/v1',files:[{path:'design/architecture.sysml',role:'sysml'}],views:[{id:'sysml',section:'model',title:'SysML',renderer:'source',source:'design/architecture.sysml'}]},files:{'design/architecture.sysml':'part def Crane;'}});
+  const nextInput=input(3,'local-session',base),next=await f.call({action:'accept',input:nextInput});assert.equal(next.ok,true,JSON.stringify(next));assert.ok(next.value.checkpoint,JSON.stringify(next));
+  const restored=await f.call({action:'restore',input:{scope,sessionId:nextInput.sessionId,turnId:nextInput.turnId,dispatchId:nextInput.dispatchId,generation:1},receipt:next.value.checkpoint});assert.equal(restored.ok,true,JSON.stringify(restored));assert.equal(restored.value.files['design/architecture.sysml'],'part def Crane;');assert.equal(restored.value.files['frontend/main.mjs'],managedCandidateFixture('airport','javascript-canvas').files['frontend/main.mjs']);
+  assert.equal(f.sessions.size,2);assert.equal((await f.call({action:'commit-count',scope})).value,2);
+ }finally{await f.close();}
+});
+
+
+test('Managed answer receipt passes real Dispatcher/Journal with zero Revision commits',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  f.setCandidate({schemaVersion:3,operation:'answer'});const result=await f.call({action:'dispatch-through-journal',scope,actor});assert.equal(result.ok,true,JSON.stringify(result));
+  const {turn,state,idle}=result.value;assert.equal(turn.status,'completed');assert.equal(turn.persistenceOutcome,'unchanged');assert.equal(turn.checkpoint,null);assert.equal(state.workspaceHead,null);assert.equal(state.sessions[turn.sessionId].head,null);assert.equal(state.activeTurnId,null);assert.equal(idle,null);assert.equal((await f.call({action:'commit-count',scope})).value,0);
+ }finally{await f.close();}
+});
