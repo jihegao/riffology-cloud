@@ -1,0 +1,8 @@
+{
+  "scripts/m1/riffoid-validation-mime.mjs": "8537d55425eea9de899b9c7cc1a1a268a972368126db8f3e31193319d59ff95c",
+  "scripts/m1/riffoid-validation-publisher.mjs": "1f77e6a5ccd52489ddb0d4be0a1540dac1d5817deceece6f74869dc39e0e1d56",
+  "scripts/m1/riffoid-validation-transport.mjs": "d720b3463ac57002aff82706d449867b86978739419c21be24c1981155611456",
+  "tests/m1/riffoid-validation-mime.test.mjs": "2c39079fdeca80bf6fcd89ade2c2668fe6c9d00433603fed0dd1b4fa2e94be35",
+  "tests/m1/riffoid-validation-live-adapter.test.mjs": "b59a36af7daf884cecad6e8a01e0f90c374b419c3aa2667fbb65ce8200ef0aa2",
+  "tests/m1/fixtures/riffoid-offline-fixtures.mjs": "57833cd671fa74a3910d7cf324577c28ac6a61981e11c168cfde4abbdc992beb"
+}

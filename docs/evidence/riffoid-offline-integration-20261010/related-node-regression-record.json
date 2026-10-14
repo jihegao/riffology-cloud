@@ -1,0 +1,16 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "tests/m1/riffoid-signature.test.ts",
+    "tests/m1/riffoid-entry.test.ts",
+    "tests/m1/riffoid-two-account.test.ts",
+    "tests/m1/riffoid-recovery.test.ts",
+    "tests/m1/riffoid-compatibility-dates.test.mjs"
+  ],
+  "exitCode": 0,
+  "completedUTC": "2026-10-10T01:01:46.403789+00:00",
+  "logSHA256": "0745585d0a225d9416d415e06a5d686e46ab3fdd88c44e61be94604e845e7e28",
+  "scope": "local fixtures/type checks only; no production requests or deployment",
+  "logNormalization": "absolute integration-worktree path redaction, trailing whitespace and terminal blank lines only"
+}

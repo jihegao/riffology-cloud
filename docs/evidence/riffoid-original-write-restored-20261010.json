@@ -1,0 +1,238 @@
+{
+  "status": "ORIGINAL_GATEWAY_BASELINE_RESTORED_PROTOCOL_STOPPED",
+  "recordedAtUTC": "2026-10-10T15:46:35.192456+00:00",
+  "sourceCommit": "234e078661ff4d3f699ef84999ac62ea53cb7de3",
+  "authorization": {
+    "basis": "Direct user approval in request_user_input_async call_9e063a7076de4363913934111b32fc57",
+    "userWording": "批准恢复原 Gateway 和原日志，接受迟到遥测风险",
+    "frozenPlanSHA256": "d99d92fd180ad9f7206200c8d4f38edc3d0e589ccaf765d909dd667527fda887",
+    "writesPermitted": 2,
+    "lateTelemetryRiskAccepted": true,
+    "protocolReplayPermitted": false
+  },
+  "writes": [
+    {
+      "phase": "gatewayRestorePrivacy",
+      "requestId": "riffoid_ba89353a815d438bab7af9a80543f29a_recoverPrivacy",
+      "bodySHA256": "a4cbf3a92fb95114bfd7bf5aaaefe2b4072db8012d805b3caf774cc99f320062",
+      "requestBodyBytes": 5522814,
+      "callerPUTDispatches": 1,
+      "automaticRetries": 0,
+      "requestOutcome": "NATIVE_PUT_DEADLINE_UNKNOWN_CURRENT_STATE_CONFIRMED_BY_INDEPENDENT_GET",
+      "unknownJournalRetained": true,
+      "independentReadback": {
+        "version": "e57971b3-fd8a-43d4-9c22-799168720ca3",
+        "deployment": "e005865c-9c73-4b57-8205-8c0f69dda555",
+        "metadataSHA256": "034c3ba72a4da999af96b81eb1b93a86177ebcaed740aa73cd7253ed554b61cf",
+        "modulesSHA256": "b8123f8c3eeb18029113b5d71474583128e146870c4f31ecae5b606b6d4b9463",
+        "resourcesSHA256": "71870d9ae8cdc8235653d2a55cec532d5b05fdfe1ad44d8b3bd7c8327dc0668e",
+        "preservationMatches": true,
+        "fullStateMatches": false,
+        "coverage": {
+          "mainModule": true,
+          "metadata": true,
+          "modules": true,
+          "namedResources": true,
+          "assets": false,
+          "assetsRetentionContract": true,
+          "containers": true
+        },
+        "pipelineGuardPassed": true,
+        "readObservation": {
+          "startedAt": 1791646380969,
+          "completedAt": 1791646442890,
+          "elapsedMS": 61920.071708999996,
+          "callerGETDispatches": 36,
+          "maxGETDispatches": 128,
+          "timeoutMS": 180000,
+          "perGETTimeoutMS": 30000,
+          "sourceGETTimeoutMS": 60000,
+          "proxyHTTPAttempts": "NOT_EXPOSED",
+          "snapshotAtomic": false,
+          "bracketVerified": true
+        },
+        "privateReceiptSHA256": "ccd0b59f7fb1032c2c3241321bc10c5fd9549daa4d8ca0f16cdcd6a773a7ae63",
+        "readbackAtUTC": "2026-10-10T15:34:02.890000+00:00"
+      }
+    },
+    {
+      "phase": "gatewayRestoreLogs",
+      "requestId": "riffoid_ba89353a815d438bab7af9a80543f29a_recoverLogs",
+      "bodySHA256": "68c59d7e9f37a1194006b4f8e7aaa3d8f012eb5d72b9e6956d99ce27a3646686",
+      "requestBodyBytes": 5522813,
+      "callerPUTDispatches": 1,
+      "automaticRetries": 0,
+      "requestOutcome": "PUT_ACKNOWLEDGED_POSTWRITE_VERSION_GET_TIMEOUT_CURRENT_STATE_CONFIRMED_BY_INDEPENDENT_GET",
+      "unknownJournalRetained": true,
+      "independentReadback": {
+        "version": "a00f97bc-f0da-4e04-97b0-8f96f0a26a89",
+        "deployment": "d78a6f03-2552-4076-8ad5-7abd1802654c",
+        "metadataSHA256": "5441264ebfd7a5a5af5c93503afef1ba12791bff86410c490545da4ddc426e47",
+        "modulesSHA256": "b8123f8c3eeb18029113b5d71474583128e146870c4f31ecae5b606b6d4b9463",
+        "resourcesSHA256": "71870d9ae8cdc8235653d2a55cec532d5b05fdfe1ad44d8b3bd7c8327dc0668e",
+        "preservationMatches": true,
+        "fullStateMatches": false,
+        "coverage": {
+          "mainModule": true,
+          "metadata": true,
+          "modules": true,
+          "namedResources": true,
+          "assets": false,
+          "assetsRetentionContract": true,
+          "containers": true
+        },
+        "pipelineGuardPassed": true,
+        "readObservation": {
+          "startedAt": 1791647034483,
+          "completedAt": 1791647127679,
+          "elapsedMS": 93195.257833,
+          "callerGETDispatches": 36,
+          "maxGETDispatches": 128,
+          "timeoutMS": 180000,
+          "perGETTimeoutMS": 30000,
+          "sourceGETTimeoutMS": 60000,
+          "proxyHTTPAttempts": "NOT_EXPOSED",
+          "snapshotAtomic": false,
+          "bracketVerified": true
+        },
+        "privateReceiptSHA256": "e4b0249f6ffae84452844779b6f048c72c99d020b89b130331ea5c906aeffd8c",
+        "readbackAtUTC": "2026-10-10T15:45:27.679000+00:00"
+      }
+    }
+  ],
+  "restoredState": {
+    "worker": "riffology-m1-gateway-staging",
+    "baselineModuleBytes": 5497752,
+    "baselineModuleSHA256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290",
+    "bindings": 95,
+    "sqliteExports": 23,
+    "containerAssociations": 5,
+    "temporaryValidationConfigPresent": false,
+    "observability": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "redact_query_string": false,
+      "logs": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "persist": true,
+        "invocation_logs": true
+      },
+      "traces": {
+        "enabled": false,
+        "persist": true,
+        "head_sampling_rate": 1
+      }
+    },
+    "logpush": false,
+    "tailConsumers": [],
+    "proof": {
+      "version": "a00f97bc-f0da-4e04-97b0-8f96f0a26a89",
+      "deployment": "d78a6f03-2552-4076-8ad5-7abd1802654c",
+      "metadataSHA256": "5441264ebfd7a5a5af5c93503afef1ba12791bff86410c490545da4ddc426e47",
+      "modulesSHA256": "b8123f8c3eeb18029113b5d71474583128e146870c4f31ecae5b606b6d4b9463",
+      "resourcesSHA256": "71870d9ae8cdc8235653d2a55cec532d5b05fdfe1ad44d8b3bd7c8327dc0668e",
+      "preservationMatches": true,
+      "fullStateMatches": false,
+      "coverage": {
+        "mainModule": true,
+        "metadata": true,
+        "modules": true,
+        "namedResources": true,
+        "assets": false,
+        "assetsRetentionContract": true,
+        "containers": true
+      },
+      "pipelineGuardPassed": true,
+      "readObservation": {
+        "startedAt": 1791647034483,
+        "completedAt": 1791647127679,
+        "elapsedMS": 93195.257833,
+        "callerGETDispatches": 36,
+        "maxGETDispatches": 128,
+        "timeoutMS": 180000,
+        "perGETTimeoutMS": 30000,
+        "sourceGETTimeoutMS": 60000,
+        "proxyHTTPAttempts": "NOT_EXPOSED",
+        "snapshotAtomic": false,
+        "bracketVerified": true
+      },
+      "privateReceiptSHA256": "e4b0249f6ffae84452844779b6f048c72c99d020b89b130331ea5c906aeffd8c",
+      "readbackAtUTC": "2026-10-10T15:45:27.679000+00:00"
+    }
+  },
+  "retainedJournals": [
+    {
+      "role": "journal",
+      "retained": true,
+      "lockRetained": true,
+      "lockSHA256": "18926a358b0bce9b2fad428077a6bebef8eb34c1da62b692210068ad4dc062d4",
+      "records": [
+        {
+          "name": "riffoid_ba89353a815d438bab7af9a80543f29a_gatewayObserve.intent.json",
+          "sha256": "5306bbfcc77773acfca6aee08139e8bbb709b60741410dc5585c2b1d2a9fe12c"
+        },
+        {
+          "name": "riffoid_ba89353a815d438bab7af9a80543f29a_gatewayObserve.unknown.json",
+          "sha256": "eee72197f02f8706f3905c49d43ebe363345edb495b49cb7526fe3106b182f02"
+        }
+      ]
+    },
+    {
+      "role": "recovery.journal",
+      "retained": true,
+      "lockRetained": true,
+      "lockSHA256": "fda08972f68e1811dc24396835b3f56367db05e31667ece447b94bdd34735868",
+      "records": [
+        {
+          "name": "riffoid_ba89353a815d438bab7af9a80543f29a_recoverPrivacy.intent.json",
+          "sha256": "0159390e4eb64169618b7d3dddb3a784646cab83377ea294e2c24b76c312f89d"
+        },
+        {
+          "name": "riffoid_ba89353a815d438bab7af9a80543f29a_recoverPrivacy.unknown.json",
+          "sha256": "89d5d9763f6fa3a3b8b594561cbda6c271e363968337ab1c6643eb21ce7aee43"
+        }
+      ]
+    },
+    {
+      "role": "logs-recovery.journal",
+      "retained": true,
+      "lockRetained": true,
+      "lockSHA256": "187a66d3be03a76907ed9194b845dc2df2787cc17787b8d2c7039002912b3e25",
+      "records": [
+        {
+          "name": "riffoid_ba89353a815d438bab7af9a80543f29a_recoverLogs.intent.json",
+          "sha256": "2550b340dc3316e069cd2af9ba4a7bff4f7828543c0c2bfc30f499f566289a93"
+        },
+        {
+          "name": "riffoid_ba89353a815d438bab7af9a80543f29a_recoverLogs.unknown.json",
+          "sha256": "5a167ff7632012a4f03645e96124dad909c4c793c0a5b9826eea6df3ae20a8cc"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "liveAdapterAndRecoveryTestsPassed": 52,
+    "gitDiffCheck": "PASS",
+    "independentReadbackPUTs": 0,
+    "rawModuleNativeRead": true,
+    "finalDeploymentAndVersionLists": "connector decoded GET-only metadata; exact worker/account scope",
+    "proxyHTTPAttempts": "NOT_EXPOSED",
+    "assetStandard": "keep-assets-contract-v1",
+    "assetBytesAudited": false,
+    "assetSetIdentityVerified": false,
+    "platformTelemetryDrain": "UNPROVEN"
+  },
+  "remaining": {
+    "domainCutoverComplete": false,
+    "formalAcceptanceT": null,
+    "legacyRecoveryUntil": null,
+    "entryWrittenInThisRound": false,
+    "browserExecutionWrittenInThisRound": false,
+    "maintenanceApplicationRequestsInitiated": 0,
+    "modelTurnRunRequestsInitiated": 0,
+    "globalZeroExecutionClaim": false,
+    "newDomainAuthenticatedAcceptance": "NOT_STARTED",
+    "paidExecutionAcceptance": "NOT_STARTED"
+  }
+}

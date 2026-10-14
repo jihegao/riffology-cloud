@@ -1,0 +1,12 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "typecheck"
+  ],
+  "exitCode": 0,
+  "completedUTC": "2026-10-10T01:01:42.610330+00:00",
+  "logSHA256": "dac125c794db702133345f3a0d33f3193f975fddc564ca4f1498b0d4132ed500",
+  "scope": "local fixtures/type checks only; no production requests or deployment",
+  "logNormalization": "absolute integration-worktree path redaction, trailing whitespace and terminal blank lines only"
+}

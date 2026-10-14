@@ -1,0 +1,83 @@
+{
+  "UTC": "2026-10-09T03:40:07.357085+00:00",
+  "status": "CONTROLLED_RETRY_PRECHECK_PASSED_BUT_EXECUTION_REJECTED_BY_AUTO_REVIEW",
+  "parentApprovalThread": "01a118f1-ea45-739a-9e7d-6f57ef7cd010",
+  "maximumApprovedAdditionalPUT": 1,
+  "actualAdditionalPUT": 0,
+  "totalDomainPUTAttempts": 1,
+  "originalAttemptReceiptUnknown": true,
+  "latestSuccessfulHostnameGETUTC": "2026-10-09T03:39:12.379Z",
+  "hostnameResult": [],
+  "all11DomainsExactOriginalSnapshot": true,
+  "gatewayVersion": "6edef49b-ca5c-4c97-bcec-5c141b079bb1",
+  "gatewayDeployment": "57ea9670-0fef-420b-8bd2-cd044c89fd2d",
+  "noNewAttemptMarker": true,
+  "noNewSuccessReceipt": true,
+  "autoReview": {
+    "action": "exec_command require_escalated for official Custom Domain PUT, same hostname/service/zone",
+    "reason": "该命令会执行真实 Cloudflare 域名绑定并改变线上路由；原始用户明确禁止绑定域名，后续非用户内容不能覆盖这一限制。",
+    "noBypassOrIndirectExecution": true
+  },
+  "networkHistory": [
+    {
+      "phase": "sandbox GET",
+      "causeCode": "EPERM",
+      "HTTPStatus": null,
+      "meaning": "restricted local execution unable to use configured proxy; no domain write started"
+    },
+    {
+      "phase": "approved read-only escalation",
+      "result": "all domains, Gateway deployments/latest and hostname GET succeeded using existing isolated authorization; no TLS or proxy security setting changed"
+    }
+  ],
+  "requestPayload": {
+    "hostname": "riffoid-transport.gaojihe.cn",
+    "service": "riffology-m1-gateway-staging",
+    "zone_id": "c97b548800561fada1a912c234696db1",
+    "zone_name": "gaojihe.cn"
+  },
+  "officialReference": "https://developers.cloudflare.com/api/resources/workers/subresources/domains/methods/update/",
+  "officialSemantics": "Attach hostname routing to configured Worker/zone; accepts Workers Scripts Write. No conditional CAS or unconditional retry safety claimed.",
+  "approvalNeeded": "Direct user confirmation authorizing this exact one controlled binding retry, superseding initial no-domain-bind restriction; process gate still applies. No workaround.",
+  "domainTLSAndAnonymousGateAcceptance": "Not run: actual binding absent, additional PUT blocked before execution",
+  "unchangedBoundaries": [
+    "entry disabled",
+    "old canonical",
+    "Execution",
+    "native IP boundary",
+    "credentials/scopes",
+    "TLS verification/network security",
+    "ordinary DNS",
+    "code/vars",
+    "identity/history",
+    "8h session",
+    "December31 trial",
+    "October20 M1"
+  ],
+  "files": {
+    "authorization.json": {
+      "sha256": "4fe829fa6d184b76af7615d3f37e85c22a0569e21a61d53a18f4d0e5a66b4369",
+      "mtimeUTC": "2026-10-09T03:37:54.042361+00:00"
+    },
+    "gateway-deployments.necessary-pre.json": {
+      "sha256": "ff6aa1af2cb8d87e9003b85e15c5969d84c5d3789304ae5376c4be4c1c009e1f",
+      "mtimeUTC": "2026-10-09T03:38:45.275888+00:00"
+    },
+    "all-account-domains.pre.json": {
+      "sha256": "4de924d51a7ee9e70d273479768b239194318fc028324afa03ca1e307ee97779",
+      "mtimeUTC": "2026-10-09T03:38:28.008209+00:00"
+    },
+    "single-action-failure-1791517086839.json": {
+      "sha256": "aff282d652a0c5f52502d5b583c0b7ea66ad70ab257b6cdd8dca8fb47c8c740e",
+      "mtimeUTC": "2026-10-09T03:38:06.840109+00:00"
+    },
+    "target-conflict.immediate-pre.json": {
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "mtimeUTC": "2026-10-09T03:39:12.379483+00:00"
+    },
+    "gateway-latest.necessary-pre.json": {
+      "sha256": "8927713a04c8af4af69d8fbab21f46718b232298f46ea145fc86b6057384e6e9",
+      "mtimeUTC": "2026-10-09T03:38:43.596696+00:00"
+    }
+  }
+}

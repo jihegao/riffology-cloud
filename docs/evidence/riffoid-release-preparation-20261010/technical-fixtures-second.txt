@@ -1,0 +1,33 @@
+✔ approved wording is consumed without granting production authorization; altered evidence rejects (3.163958ms)
+✔ default dry-run dispatches zero HTTP; read-only and prepare cannot upload (1.382833ms)
+✔ wire multipart keeps public/resources and inherits redacted Secret text without material (7.232958ms)
+✔ raw HTTP preserves cf-entrypoint, body bytes and origin; bounds hangs and rejects redirects (12.541834ms)
+✔ GET-derived modules and runtime export readback work; drift/omitted cf-entrypoint reject (1.571292ms)
+✔ actual asset/container readback gaps stay blocked rather than trusting upload intent (0.589208ms)
+✔ durable exclusive journal is retained for unknown writes and rejects a second owner (22.180542ms)
+✔ version/deployment identity also binds resource snapshot hashes (0.693042ms)
+✔ unapproved live publication performs no HTTP; missing full preflight creates no intent or PUT (0.908125ms)
+✔ mutable/custom transport cannot turn prepare into a network upload (0.548958ms)
+✔ missing Observe originals or forged terminal evidence block before any network write (1.03775ms)
+✔ restart loads original unknown journal and GET reconciliation never clears it (9.556625ms)
+✔ package CLI prepares all eight exact multipart files offline without overwriting prior packet (4.94675ms)
+✔ natural expiry checkpoint survives restart and rejects missing or altered identity/time (29.645334ms)
+✔ destination numeric pagination requires all pages and rejects overlap, loops and limits (1.0515ms)
+✔ container cursor pagination consumes next token and rejects duplicates/repeated token (0.118667ms)
+✔ pipeline guard reads exact owned zone and every scoped inventory; no flag setter (0.49475ms)
+✔ nonempty sinks remain blocked; evidence excludes destination and filter values (0.128083ms)
+✔ zone jobs trigger bounded custom-field metadata; structured absence accepted but guard still blocked (0.441417ms)
+✔ connector bridge supports decoded metadata only and rejects G5/source/other scopes/writes (0.448583ms)
+✔ SDK bridge preserves binary bytes/header with retries disabled; decoded objects do not fake raw HTTP (7.504667ms)
+✔ expanded raw transport accepts only reviewed paths and query keys, with dry-run zero HTTP (1.359709ms)
+✔ existing container configuration, export/name, account and DO namespace must all match (0.860375ms)
+✔ unsupported Secret/environment or command fields reject without inspecting/logging values (0.248292ms)
+✔ asset preservation distinguishes contract/config match from full content inventory (0.067375ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 185.971167

@@ -1,0 +1,12 @@
+{
+  "UTC": "2026-10-09T22:27:51.499995+00:00",
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=P2",
+    "tests/m1/riffoid-validation-coordinator.test.mjs"
+  ],
+  "exitCode": 1,
+  "expectedFailureBeforeRepair": true,
+  "coordinatorSHA256": "21021439eedd7e413e4203003f8eeaabc3f3cf3c203c460424b433a44418e855"
+}

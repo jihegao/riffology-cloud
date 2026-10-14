@@ -1,0 +1,14 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=P2 unknown identity",
+    "tests/m1/riffoid-validation-offline-publisher.test.mjs"
+  ],
+  "exitCode": 1,
+  "completedUTC": "2026-10-09T23:09:01.597676+00:00",
+  "publisherSHA256": "90583b0b8cd81cb2bed4d3740304fdd9e2de70bb0757264625816df032a03236",
+  "logSHA256": "ca3dd07cfab6bb6f11b4c38170deb557f6167b1ff80fe70ff51d242dc93345cd",
+  "networkExecution": "none; static fixtures only",
+  "expectedFailure": true
+}

@@ -1,0 +1,251 @@
+{
+  "schema": "riffoid-two-account-configuration-readback-v1",
+  "date": "2026-10-08",
+  "recordedUTC": "2026-10-08T06:21:53.831385Z",
+  "scope": "Read-only existing authenticated metadata plus docs; no production/security/auth/credential changes",
+  "supersedesUnknownsIn": "riffoid-two-account-browser-readback-20261008.json (05:45 frozen historical record)",
+  "originalAccount": {
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "accountLabel": "Jihe.gao@gmail.com's Account",
+    "membership": {
+      "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+      "accountName": "Jihe.gao@gmail.com's Account",
+      "status": "accepted",
+      "roles": [
+        "Super Administrator - All Privileges"
+      ]
+    },
+    "zone": {
+      "id": "c97b548800561fada1a912c234696db1",
+      "name": "gaojihe.cn",
+      "status": "active",
+      "type": "full",
+      "plan": {
+        "id": "0feeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "name": "Free Website"
+      },
+      "nameServers": [
+        "abdullah.ns.cloudflare.com",
+        "isla.ns.cloudflare.com"
+      ]
+    },
+    "gatewayCustomDomains": [
+      {
+        "id": "bbaf6f610bf9d72ea58237b21ca279fd0c921539",
+        "hostname": "m1.riff-demo.gaojihe.cn",
+        "zoneId": "c97b548800561fada1a912c234696db1",
+        "zoneName": "gaojihe.cn",
+        "service": "riffology-m1-gateway-staging",
+        "environment": "production"
+      },
+      {
+        "id": "9c4d2f673dc0d66249bd3663cfe157eaf288aa4c",
+        "hostname": "preview.m1.riff-demo.gaojihe.cn",
+        "zoneId": "c97b548800561fada1a912c234696db1",
+        "zoneName": "gaojihe.cn",
+        "service": "riffology-m1-gateway-staging",
+        "environment": "production"
+      }
+    ],
+    "zoneWorkerRoutes": [
+      {
+        "id": "196653296b134fc3b8778753ecf3c7eb",
+        "pattern": "riffology.gaojihe.cn/*",
+        "script": "cadence-ai-riff-studio"
+      },
+      {
+        "id": "3c5ae11237a24ff59e64edb28351deb9",
+        "pattern": "share.gaojihe.cn/api/assignments*",
+        "script": "mc-assignment-upload"
+      },
+      {
+        "id": "5765090d6e6448ec8dbc1573e69e3d86",
+        "pattern": "*.preview.riff-demo.gaojihe.cn/*",
+        "script": "riffology-m0-preview-staging"
+      },
+      {
+        "id": "f5a0034d125249a3b81f02676bac054c",
+        "pattern": "*.preview.m1.riff-demo.gaojihe.cn/*",
+        "script": "riffology-m1-gateway-staging"
+      }
+    ],
+    "gatewaySubdomainSettings": {
+      "enabled": false,
+      "previewsEnabled": false
+    },
+    "currentGatewayDeployment": {
+      "id": "c6ff55e4-2364-4920-94e0-b8784a1824b5",
+      "createdOn": "2026-10-08T02:23:00.548287Z",
+      "versions": [
+        {
+          "version_id": "aeddf112-a2be-45da-868c-ed576c55d5ec",
+          "percentage": 100
+        }
+      ]
+    },
+    "currentExecutionDeployment": {
+      "id": "a6fdeb9f-d885-4c72-9e02-968315351edb",
+      "createdOn": "2026-10-01T05:25:24.49884Z",
+      "versions": [
+        {
+          "version_id": "c94df077-02a1-460f-8158-e47a338e68af",
+          "percentage": 100
+        }
+      ]
+    },
+    "currentDeploymentsMatch0545": true,
+    "completeResourceComparison": "Previous05:45 resources exact equality, not a new resources read this stage",
+    "deniedMetadata": {
+      "waf": {
+        "endpointRead": "denied",
+        "code": 10000,
+        "permissionExpansion": false
+      },
+      "dnsLegacy": {
+        "endpointRead": "connectivity failure",
+        "code": null,
+        "permissionExpansion": false
+      },
+      "dnsPrimary": {
+        "endpointRead": "connectivity failure",
+        "code": null,
+        "permissionExpansion": false
+      },
+      "dnsAlternative": {
+        "endpointRead": "denied",
+        "code": 10000,
+        "permissionExpansion": false
+      },
+      "ssl": {
+        "endpointRead": "denied",
+        "code": 9109,
+        "permissionExpansion": false
+      },
+      "pseudoIpv4": {
+        "endpointRead": "denied",
+        "code": 9109,
+        "permissionExpansion": false
+      },
+      "managedTransforms": {
+        "endpointRead": "denied",
+        "code": 10000,
+        "permissionExpansion": false
+      },
+      "headerTransforms": {
+        "endpointRead": "denied",
+        "code": 10000,
+        "permissionExpansion": false
+      }
+    },
+    "zonePermissionLabels": "Account capability labels omitted here; do not prove current endpoint OAuth scopes",
+    "apiAccountsVisibleForOldOrNew": [
+      {
+        "id": "8b0d70250211aa10d89e20605a1c7e5e",
+        "name": "Jihe.gao@gmail.com's Account"
+      }
+    ]
+  },
+  "readMethod": {
+    "cloudflare": "Installed Wrangler authenticated GET implementation reused in local memory, hardcoded metadata allowlist, noninteractive CI, sanitized outputs; no credentials extracted/exported, no installed package edits",
+    "safari": "Approved native URL/text-of-tab reads using existing sessions; no do-JavaScript setting enabled",
+    "permissionsOrLoginChanges": false
+  },
+  "newAccount": {
+    "accountId": "3232ebc7e9bb0199b92e3d70b07825af",
+    "zoneId": "b0b0079990e13eb20a17a2d3c41403b8",
+    "zoneName": "riffoid.com",
+    "previousMetadata": "05:45 frozen DNS0/routes0/projects0/custom rule table empty/SSL Full/single active member",
+    "pseudoIpv4": "Off (native visible Network text)",
+    "managedTransforms": "0/10 Transform Rules; headings visible but Remove visitor IP/Add True Client IP switch states not represented by native text",
+    "newAccountCLIAuthentication": "Not available through existing account GET result; no login/token creation",
+    "consoleDeploymentChannel": "Existing tab authenticated/readable; write/form control not verified",
+    "minimumDeploymentChannelOptions": [
+      "User manual approved package in existing authenticated new-account console",
+      "Existing already-authorized new-account CLI/CI identity if available, verify metadata first; no secrets/token creation/login"
+    ]
+  },
+  "google": {
+    "existingSessionAvailable": true,
+    "projectDisplayName": "Default Gemini Project",
+    "clientDisplayName": "Riffology M1 staging",
+    "clientType": "Web application",
+    "createdDate": "2026-09-06",
+    "clientIdVisiblePrefix": "316292203808-3s6i...",
+    "completeClientId": null,
+    "redirectUris": null,
+    "javascriptOrigins": null,
+    "authorizedDomains": null,
+    "brandingLinks": null,
+    "secretFieldsRead": false,
+    "newLoginOrGrant": false,
+    "requiredNextRead": "User manual non-secret full public client ID/redirect URI/JS origin/domain/branding links; native text rechecked shows only truncated client list. No request to enable JavaScript or new OS permissions.",
+    "projectId": "gen-lang-client-0139341395",
+    "currentClientListUrl": "https://console.cloud.google.com/auth/clients?pli=1&project=gen-lang-client-0139341395",
+    "manualBrandingPage": "https://console.cloud.google.com/auth/branding?project=gen-lang-client-0139341395",
+    "matchesDeployedGatewayOAuthClient": "Not verified; truncated console ID/name do not establish binding correspondence"
+  },
+  "transport": {
+    "recommended": "https://riffoid-transport.gaojihe.cn",
+    "alternative": "https://m1-transport.riff-demo.gaojihe.cn",
+    "publicDnsPreviousRead": "Both NXDOMAIN",
+    "ownershipNamespaceVerified": true,
+    "listedGatewayDomainAndZoneRouteConflict": false,
+    "internalDnsAvailabilityVerified": false,
+    "hostnameChosenApprovedOrCreated": false
+  },
+  "securityBoundary": {
+    "runtimeAuthMode": "disabled",
+    "ipProvenanceImplemented": false,
+    "wafCandidate": "Zone-only provenance, not script identity",
+    "sameZoneOtherWorkerDirectToTransport": "Reasoned counterexample: same upstream_zone passes original rule and bypasses app ingress rule; may inject custom IP. Not blocked by WAF-only design",
+    "sameZoneAttackTest": "Not executed; no existing transport",
+    "platformNegativeTests": "Not executed; offline header fixtures are not platform-generated proof",
+    "conditionalNoSecretOption": "Entire source zone/all scripts/routes/writers must be trusted; no per-script guarantee",
+    "strongerPerScriptOption": "Dedicated private-key signature + public-key pin + atomic replay nonce state, proposed only; no key generated or resources/code configured",
+    "recommended": "Stronger script provenance before auth opens; required to deny same-zone peer Workers. Whole-zone trust is a different guarantee."
+  },
+  "repository": {
+    "pr": 173,
+    "remoteHeadAtStart": "0ed7c9525e09d5cff493ad71b5d8b922ace4c38c",
+    "localHeadAtStart": "9a1a0e131534178b422db65bc1ab295c39879f64",
+    "treeAtStart": "832ca7e5974d1e4df56aaf11a37e512065030d07",
+    "main": "25609953f5c3b69dcb44e520d7e7ed1253d18fe4",
+    "codeChangesThisStage": 0,
+    "previousCodeTests": {
+      "m1Passed": 323,
+      "m3Passed": 1070,
+      "m3ConditionalSkipped": 12,
+      "m3Failed": 0
+    },
+    "currentCIAtStart": {
+      "run": 37734621836,
+      "runNumber": 154,
+      "job": 113171242786,
+      "runnerId": 0,
+      "steps": [],
+      "specificReason": "unknown; not inferred from issue171 billing evidence"
+    },
+    "issue171Source": "https://github.com/jihegao/riffology-cloud/blob/25609953f5c3b69dcb44e520d7e7ed1253d18fe4/docs/evidence/releases/issue171-local-runs-release-20261008.json",
+    "issue171MergedCommit": "abcc406d6e8ec5a6f68932db7e30906cb70e3de2",
+    "issue171EvidenceLimit": "Single identity/local coverage; does not replace full M1/cross-account migration acceptance"
+  },
+  "recovery": {
+    "approvedHours": 48,
+    "cutoverPerformed": false,
+    "cutoverUTC": null,
+    "LEGACY_RECOVERY_UNTIL": null,
+    "staticLocalGuideExportAfterExpiry": true
+  },
+  "browserCleanup": {
+    "originalCloudflareTab": "Restored account home",
+    "taskCreatedGoogleClientListTab": "Retained for user manual readback",
+    "otherUserTabs": "Preserved"
+  },
+  "noDeployDnsWafOAuthCspPermissionsCredentialsInstallPaidOrMergeChanges": true,
+  "sources": [
+    "https://developers.cloudflare.com/workers/configuration/routing/custom-domains/",
+    "https://developers.cloudflare.com/ruleset-engine/rules-language/fields/reference/cf.worker.upstream_zone/",
+    "https://developers.cloudflare.com/fundamentals/reference/http-headers/",
+    "https://developers.cloudflare.com/waf/custom-rules/custom-rulesets/"
+  ]
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "file": "v2-before-fix-tests.txt",
+    "originalArchiveSHA256": "e3d57fc029a2eed103106286a1c4ee094d1b8ca9c5f770c2f5c972ea8e2c8f82",
+    "originalMember": "p2-before-fix-tests.txt",
+    "originalSHA256": "f113938114e0fffd4f3ac03c9ae835a64c5cf963d3b30ddfc5cf85bb20e9812b",
+    "publishedSHA256": "cc4b5aa149668b59105cf867df24cc307c5822da09866c718c14edf9ee8a076a",
+    "redaction": "isolated absolute paths, trailing whitespace and terminal blank lines only; source record log hashes retain original-log meaning"
+  },
+  {
+    "file": "v2-before-fix-record.json",
+    "originalArchiveSHA256": "e3d57fc029a2eed103106286a1c4ee094d1b8ca9c5f770c2f5c972ea8e2c8f82",
+    "originalMember": "p2-before-fix-record.json",
+    "originalSHA256": "1b766e3cfc0cb038fce73d22a64a09b5189bddbf1f6b7e6580d8bd93c89415a3",
+    "publishedSHA256": "1b766e3cfc0cb038fce73d22a64a09b5189bddbf1f6b7e6580d8bd93c89415a3",
+    "redaction": "isolated absolute paths, trailing whitespace and terminal blank lines only; source record log hashes retain original-log meaning"
+  },
+  {
+    "file": "v2-final-tests.txt",
+    "originalArchiveSHA256": "e3d57fc029a2eed103106286a1c4ee094d1b8ca9c5f770c2f5c972ea8e2c8f82",
+    "originalMember": "p2-final-tests.txt",
+    "originalSHA256": "642ca14600b87ae13bbdf2826b333ad1187a9554008b985f7d12d9de1d19cc90",
+    "publishedSHA256": "642ca14600b87ae13bbdf2826b333ad1187a9554008b985f7d12d9de1d19cc90",
+    "redaction": "isolated absolute paths, trailing whitespace and terminal blank lines only; source record log hashes retain original-log meaning"
+  },
+  {
+    "file": "v2-P2-review-response.md",
+    "originalArchiveSHA256": "e3d57fc029a2eed103106286a1c4ee094d1b8ca9c5f770c2f5c972ea8e2c8f82",
+    "originalMember": "P2-REVIEW-RESPONSE.md",
+    "originalSHA256": "55fdf5e36259a97b507ddfc6ea5e1315de469d903c05c28111b1c4fe85f5dd28",
+    "publishedSHA256": "55fdf5e36259a97b507ddfc6ea5e1315de469d903c05c28111b1c4fe85f5dd28",
+    "redaction": "isolated absolute paths, trailing whitespace and terminal blank lines only; source record log hashes retain original-log meaning"
+  },
+  {
+    "file": "v3-p2-before-fix-tests.txt",
+    "originalArchiveSHA256": "5abc1981e21162ddd7bdbfdeda2f72343bf12bef96e6840b29d6230e1bed2917",
+    "originalMember": "before-fix-tests.txt",
+    "originalSHA256": "ca3dd07cfab6bb6f11b4c38170deb557f6167b1ff80fe70ff51d242dc93345cd",
+    "publishedSHA256": "d2ff555663abbdc0a81ba29275ab37b3763fb8d99ca8634900b080e0591cc31a",
+    "redaction": "isolated absolute paths, trailing whitespace and terminal blank lines only; source record log hashes retain original-log meaning"
+  },
+  {
+    "file": "v3-p2-before-fix-record.json",
+    "originalArchiveSHA256": "5abc1981e21162ddd7bdbfdeda2f72343bf12bef96e6840b29d6230e1bed2917",
+    "originalMember": "before-fix-test-record.json",
+    "originalSHA256": "317cd382fb038f3134769f869575cddd4277b06b558c18b44fb62d7eb9f164fb",
+    "publishedSHA256": "317cd382fb038f3134769f869575cddd4277b06b558c18b44fb62d7eb9f164fb",
+    "redaction": "isolated absolute paths, trailing whitespace and terminal blank lines only; source record log hashes retain original-log meaning"
+  },
+  {
+    "file": "v3-p2-historical-after-fix-tests.txt",
+    "originalArchiveSHA256": "5abc1981e21162ddd7bdbfdeda2f72343bf12bef96e6840b29d6230e1bed2917",
+    "originalMember": "after-fix-tests.txt",
+    "originalSHA256": "62365785bbcb3205fd9cc9f4bb69c3cb8be404aeddb2446e0fcc352ede6cd4a9",
+    "publishedSHA256": "62365785bbcb3205fd9cc9f4bb69c3cb8be404aeddb2446e0fcc352ede6cd4a9",
+    "redaction": "isolated absolute paths, trailing whitespace and terminal blank lines only; source record log hashes retain original-log meaning"
+  },
+  {
+    "file": "v3-p2-historical-after-fix-record.json",
+    "originalArchiveSHA256": "5abc1981e21162ddd7bdbfdeda2f72343bf12bef96e6840b29d6230e1bed2917",
+    "originalMember": "after-fix-test-record.json",
+    "originalSHA256": "d2b4f8336825df3ec94e40fe62458ab4c03d11107d702574bf3eb3803f562442",
+    "publishedSHA256": "d2b4f8336825df3ec94e40fe62458ab4c03d11107d702574bf3eb3803f562442",
+    "redaction": "isolated absolute paths, trailing whitespace and terminal blank lines only; source record log hashes retain original-log meaning"
+  },
+  {
+    "file": "v3-p2-external-finding-and-fix.md",
+    "originalArchiveSHA256": "5abc1981e21162ddd7bdbfdeda2f72343bf12bef96e6840b29d6230e1bed2917",
+    "originalMember": "EXTERNAL-FINDING-AND-FIX.md",
+    "originalSHA256": "cd248b0ba4d92c9c82b6206e578eec3b8f9885ac3c7bb149c45a3437b1e37c8c",
+    "publishedSHA256": "cd248b0ba4d92c9c82b6206e578eec3b8f9885ac3c7bb149c45a3437b1e37c8c",
+    "redaction": "isolated absolute paths, trailing whitespace and terminal blank lines only; source record log hashes retain original-log meaning"
+  },
+  {
+    "file": "historical-internal-review-superseded.md",
+    "originalArchiveSHA256": "5abc1981e21162ddd7bdbfdeda2f72343bf12bef96e6840b29d6230e1bed2917",
+    "originalMember": "HISTORICAL-INTERNAL-REVIEW-SUPERSEDED.md",
+    "originalSHA256": "6c268e5f2309142f6f8d85657ea8107b1d4f076ebebd191f1ee41e856213763c",
+    "publishedSHA256": "6c268e5f2309142f6f8d85657ea8107b1d4f076ebebd191f1ee41e856213763c",
+    "redaction": "isolated absolute paths, trailing whitespace and terminal blank lines only; source record log hashes retain original-log meaning"
+  }
+]

@@ -1,0 +1,24 @@
+✔ actual HTTP disconnect during upload emits native abort only with enable_request_signal, no hop/auth/retry (1176.119917ms)
+✔ actual HTTP Entry→Gateway disconnect after real SQLite DO RPC issued: late persistence burns nonce, zero auth/no retry (2651.211166ms)
+✔ actual HTTP bounded DO timeout also commits late and rejects explicit replay before auth (2649.138959ms)
+✔ real HTTP SSE disconnect stops production turnEventStream observation across both bridges, preserving cursor and no retry (623.531292ms)
+✔ graceful pre-header FIN: bounded timeout prevents auth in delayed fixture; immediate native cancellation remains unproven (2669.699834ms)
+ℹ {"scope":"pre-header FIN, delayed fixture only","entryNativeAborts":0,"gatewayNativeAborts":0,"immediateNativeCancellationProven":false,"authCalls":0}
+✔ two local Workerd Workers: actual Gateway auth, canonical PKCE callback, original identity, recovery/CSRF/rate-limit and stream-safe entry (1348.742709ms)
+✔ unselected proxy auth mode keeps the actual Gateway application closed before any auth/storage/network work (196.484292ms)
+✔ forward rollback builds same DO exports and retains local namespace/data while restoring original auth/session/CSRF/assets (2186.562625ms)
+✔ cold recovery preserves current v7 saved journal/discovery/alarm; normal RPC still performs original maintenance (251.801041ms)
+✔ cold recovery preserves legacy v1 saved journal/discovery/alarm; normal RPC still performs original maintenance (216.777875ms)
+✔ production WorkspaceAgent recovery RPC reads persisted state without budget/runtime calls or new journal/alarm changes (145.702583ms)
+✔ actual replay DO: atomic concurrency, durable restart, shard/scope/clock guard, bounded capacity/cleanup, SQL fault (115.445958ms)
+✔ unchanged real Gateway in local Workerd cannot serve a canonical app via a transparent public hop (462.544083ms)
+✔ real-time unused expiry and exact-proof replay through actual entry/Gateway/SQLite, simultaneous duplicate runs cannot sign again (30449.612375ms)
+✔ budget SQL atomicity/restart, scope/expiry, cleanup tombstone, schema privacy and original replay coexistence (103.932083ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 36802.69825

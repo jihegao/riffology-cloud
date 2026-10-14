@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "frozenAt": "2026-10-10T10:08:08.457199+00:00",
+  "stage": "INDEPENDENTLY_REVIEWED_OFFLINE_PRE_PUSH",
+  "remoteParent": "1347db71b64757faec211974f82595d99ac2c403",
+  "baseTree": "5ccbb6d3dbfbaf7fa6e857dd8156c293cd7185e9",
+  "sourceSHA256": {
+    "scripts/m1/riffoid-validation-mime.mjs": "8537d55425eea9de899b9c7cc1a1a268a972368126db8f3e31193319d59ff95c",
+    "scripts/m1/riffoid-validation-publisher.mjs": "1f77e6a5ccd52489ddb0d4be0a1540dac1d5817deceece6f74869dc39e0e1d56",
+    "scripts/m1/riffoid-validation-transport.mjs": "d720b3463ac57002aff82706d449867b86978739419c21be24c1981155611456",
+    "tests/m1/riffoid-validation-mime.test.mjs": "2c39079fdeca80bf6fcd89ade2c2668fe6c9d00433603fed0dd1b4fa2e94be35",
+    "tests/m1/riffoid-validation-live-adapter.test.mjs": "b59a36af7daf884cecad6e8a01e0f90c374b419c3aa2667fbb65ce8200ef0aa2",
+    "tests/m1/fixtures/riffoid-offline-fixtures.mjs": "57833cd671fa74a3910d7cf324577c28ac6a61981e11c168cfde4abbdc992beb",
+    "tests/m1/riffoid-validation-resources.test.mjs": "c73ab3f37263c750caae537b943a30f06681c81f248f0dca9251f55e8c48e750"
+  },
+  "checks": {
+    "localFixtures": {
+      "tests": 127,
+      "pass": 127,
+      "fail": 0,
+      "log": "local-fixtures-frozen.log"
+    },
+    "independentFixtures": {
+      "tests": 127,
+      "pass": 127,
+      "fail": 0,
+      "log": "mime-independent-fixtures.FINAL.txt"
+    },
+    "localTypecheck": {
+      "exitCode": 0,
+      "log": "local-typecheck.log"
+    },
+    "independentTypecheck": {
+      "exitCode": 0,
+      "log": "mime-independent-typecheck.FINAL.txt"
+    },
+    "diffCheck": {
+      "exitCode": 0
+    },
+    "officialRetryMocks": {
+      "tests": 20,
+      "pass": 20,
+      "fail": 0,
+      "log": "retry-offline-counterexamples.json"
+    }
+  },
+  "review": "mime-independent-review.json",
+  "retryReview": "retry-review.json",
+  "independentResolvedP2": "Timer race allowed late per-GET result; fixed monotonic deadline checks, independently reverified calls=1",
+  "historicalCapability": "historical-gateway-raw-digest.json is prior original-scope module readback, not a new/current complete baseline",
+  "thisRound": {
+    "cloudflareProductionGET": 0,
+    "productionWrites": 0,
+    "deployments": 0,
+    "windowOpenings": 0,
+    "experiments": 0,
+    "providerCalls": 0,
+    "credentialAccess": false,
+    "originalDirtyCheckoutModified": false,
+    "githubPushes": 0
+  },
+  "prePushSnapshot": true,
+  "pushedCommit": null,
+  "CI": "NOT_VERIFIED; user-confirmed quota nonblocking, no rerun",
+  "remaining": [
+    "Actual deployed MCP proxy source/retry policy not attested; PUT replay policy unestablished at all layers.",
+    "Complete fresh scoped baselines and actual container association readback source pending.",
+    "Original run/window/native-identity inputs and operational publisher/configuration exclusion pending.",
+    "Asset full-content/set audit unperformed; unexposed routing configuration remains unverified under accepted retention contract.",
+    "CI remains NOT_VERIFIED; user-confirmed quota nonblocking for this authorized push."
+  ],
+  "methodContract": {
+    "GET": "bounded caller budgets plus final deployment/latest/settings/resource brackets; no outer retry; proxy HTTP attempts/termination unexposed",
+    "PUT": "raw adapter blocks before dispatch, all-layer no-replay not established",
+    "paidExecution": "unsupported and not authorized"
+  },
+  "independentSourceHashesMatched": 7
+}

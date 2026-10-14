@@ -187,6 +187,134 @@ simulation, schema implementation, save integration or user acceptance ran.
 The remaining requirements implementation stays open; design completion does
 not imply that the general workflow, Rust/WASM or formal Evidence is available.
 
+2026-10-11 18:08 Asia/Shanghai：[正式配置切换及最小登录/项目检查](evidence/riffoid-direct-cutover-completed-20261011.json)。用户批准固定继续包 `22dfc77d…0991` 并保持独占发布后，仅发出 entry、Gateway 恢复配置两次各一次 PUT；196 次调用端配置 GET 全部完成，发布后 entry 22 GET、Gateway 36 GET 完整读回通过。entry 当前 `668e19e6-6f23-49e0-b4f6-06459790a496`（6绑定），Gateway `2227852e-2802-40e9-92e4-0a1b4ff8aab9`（99绑定），Execution 保持已独立确认的 `3e96532e-dbeb-4c8c-b147-7e71939b0472`（4绑定），三者原代码和原日志配置保留。实际入口发布读回时间 T 为 `2026-10-11T10:03:41.535Z`，旧入口只读原记录恢复截止 `2026-10-13T10:03:41.535Z`（北京时间10月13日18:03:41），并非自动回退旧业务。
+
+新入口 https://app.riffoid.com 已开放；原有 Google 身份在原生 Safari 完成一次正常登录，项目列表及现有项目「22」/原 Session 1 读取成功，随后返回项目列表。没有点击 Send/Run、创建身份/项目/Session 或恢复归档；没有收集账号级权威执行计数，故不宣称全局零执行/费用。该项目原模型显示尚未通过运行检查，未运行模型。这只是单一身份/项目的最小 UI 检查，身份角色/邀请路径、完整 A/B、第二身份/权限隔离、SSE、Browser Execution、付费执行、实际48小时到期与旧记录访问均未验收。上线状态 **尚未验收**；PR #173保持 draft/open、Project Acceptance/P1、M1、负责人jihegao，不标Done、不关Issue。原待决定阻塞已解除；#175最小源码修复继续 In review/P1，未合并/未部署。
+
+本轮控制器正常 exit0、pending为空，未使用回退、无新未知；原五份历史未知及原停止会话锁经哈希核对保留，原 PUT/A/B/Observe/Run/cleanup 均未重试。完整资产字节/集合、平台遥测排空及代理内部 HTTP 尝试次数仍不作成功声明。本条为当前状态，下方按时间保留历史记录。
+
+2026-10-11 17:30:27 Asia/Shanghai：[直接切换中止及独立确认](evidence/riffoid-direct-cutover-partial-20261011.json)。用户取消完整 A/B 并选择直接切换，状态“尚未验收”。Gateway97绑定已发布/完整读回；Browser Execution一次PUT收到响应，但原严格检查因平台只读 `annotations.workers/triggered_by` 从 `version_upload` 变为 `upload` 停止，控制器已退出，原未知记录和锁保留。随后5原生GET定位注释差异，再78个GET完整独立确认三个当前Worker的代码、可写配置、namespace/容器及资产保留合同。Gateway当前 `34969c4a-d82c-4092-b026-33491dea789c`；Execution `3e96532e-dbeb-4c8c-b147-7e71939b0472`；entry `7c04a21d-c95a-4a4c-a6b8-e21282fdc1f0` 仍disabled。新业务未开放，旧完整应用中断，T/recoveryUntil仍空，登录/项目最小检查未启动。原5份历史未知保留；平台注释确认不代表业务健康。
+
+当前阻塞是用户此前保留的“未知后另行批准”决定：固定继续包已准备，仅需entry与实际T+48h的Gateway两次发布；或两次恢复旧Gateway/Execution。20项离线发布边界及实际99绑定multipart/只读注释处理检查通过；新scope尚未执行。不会重试原PUT、重跑A/B或清理记录。PR #173保持blocked，#175源码修复In review/P1；不标Done、不关Issue。
+
+2026-10-11 17:00:55 Asia/Shanghai：[两份 Observe 403 与完整恢复证据](evidence/riffoid-origin-denied-recovery-20261011-66559c.json)。本轮两次维护发布后，电脑 Safari 与手机各一次 Observe 明确返回 `403/origin_denied`，Run/entryReady/cleanup 均未发起；单独批准后的四次各一次恢复全部通过完整读回，原 Gateway/entry 代码、95/5 绑定和日志已恢复。Gateway 当前版本 `7467fa4a-dc57-4178-aae0-ee5fa00db6be`，entry `7c04a21d-c95a-4a4c-a6b8-e21282fdc1f0`；Browser Execution 本轮未发布或重读。四份历史未知记录保留，没有新未知发布。403 定位于验收页 `no-referrer` 在 Safari 的同源 POST 将原生 Origin 变为 null；最小 `same-origin` 修复与夹具校正进入 PR #173/#175，19 项相关测试、类型检查及 2 项本地 Workerd 回归通过，尚未部署或完成线上验收。
+
+用户随后明确允许取消完整 A/B 验证、改为直接切换；后续发布状态必须标为**尚未验收**，先准备正式配置及旧入口回退，切换后至少确认一次现有登录和项目访问。此前双网络协议和第二身份/空闲 Session 不再作为直接切换前提，其未覆盖范围保留。当前尚未正式切换，T/recoveryUntil 仍为空；普通业务健康仍未知。完整资产集合、平台遥测排空、账号全局零执行/费用均不作成功声明。
+
+2026-10-11 16:03:42 Asia/Shanghai：[零发布预检停止与完整只读核对](evidence/riffoid-native-preflight-20261011-c100.json)。`80e5ed67…b0c10` 获批时已不足以完成预检，未启动；获明确批准的 `6a6c6069…7eefd` 在第二次原生 Worker 清单 GET 超时后停止，32 次 GET 发出、31 次完成，首次 PUT 前失败，无 intent/unknown 写入，进程已确认退出。独立诊断随后完成 Gateway 36 次 GET（约 87 秒）及 entry 22 次 GET（约 59 秒），前后原生部署/版本、源码、完整配置、资源和日志管道核对通过；仍为原恢复版 `6d580077…202135` 和原 entry `c110d7a7…7fff`。本轮 PUT／A/B Observe／Run／cleanup 均为零；原四份 unknown、历史数据及日志设置保持。超时原因未确定，keep-assets 不代表完整资产审计，不宣称平台遥测排空或全局零执行/费用。取消的包与配合时段不复用；后续必须留足逐阶段完整读取时间。协议及真实第二身份／已有空闲 Session 验收仍 pending，正式 T/recoveryUntil=null。
+
+2026-10-11 15:07:51 Asia/Shanghai：本轮新恢复批准已执行。原 Gateway 代码、95 个绑定和原日志已恢复，版本 `6d580077-1042-4242-9ca5-665008202135` / deployment `be951946-ead9-4da9-814f-d493d2d13520`。两次原生 PUT 分别应答 5.127 秒和 6.104 秒，各一次、零自动重试/重定向；前后完整独立读回通过，临时维护配置已移除。原四个 unknown 及锁保留，本轮验收不重跑。后续部署/版本身份列表已限定为原生 GET，6 项边界检查及八阶段零网络模板检查通过；配置清单仍使用原严格解码范围，未扩大写入或权限范围。最初读回不一致的传播/读取原因仍未确定。资产字节与平台内部遥测排空未证明，用户接受恢复日志后可能保存迟到遥测。域名切换及真实 A/B 协议尚未验收，正式第二身份和既有空闲 Session 仍缺失；T/recoveryUntil=null。[本轮恢复与读取修复证据](evidence/riffoid-native-maintenance-20261011-5599.json)。
+
+2026-10-11 14:56 Asia/Shanghai 本轮记录：Gateway 单次原生 PUT 在 6.294 秒应答，随后 deployments 的 active 与 versions 的 latest 不一致，控制器立即停止并保留原 intent、unknown 和锁。另一次仅 GET 的完整核对确认临时维护版本 `ef94e323` / `2461c5da` 已生效、日志持久化关闭，既有资源保持。Entry 与 Browser Execution 未发布；A/B Observe、Run、cleanup 均未发起。本轮不重跑。两次各一次的原 Gateway 恢复载荷已冻结并离线核对，计划 SHA `ee5ce9366d1ddf5c902184e92f2fe1b037ae4f99b078051819a9bc8d88688276`，恢复尚未发出 HTTP，需本轮新批准。平台内部遥测排空及资产字节未证明；恢复日志可能保存迟到遥测。[本轮停止、只读核对与恢复包证据](evidence/riffoid-native-maintenance-20261011-5599.json)。正式切换未开始，T/recoveryUntil=null；第二受邀身份与既有空闲 Session 仍缺失。
+
+Earlier October 11 preflight (before the 14:56 record above): the frozen five-minute round stopped before durable intent or PUT because the native Zone-ownership GET exceeded30 seconds. The original Gateway and logging remain restored; no server maintenance configuration or browser protocol operation was published. The exact configuration/identity GET router is repaired, with6 boundary checks and two actual decoded Zone-ownership readbacks passing. Source/module evidence and every PUT remain native. See [preflight and routing repair](evidence/riffoid-zone-reader-preflight-20261011.json). The user currently has no second invited identity without target-project permission or existing idle Session for the agreed formal acceptance; these observations remain pending. Fresh phone cooperation is requested before another window. T/recoveryUntil remain null.
+
+
+## 2026-10-11 域名切换续作：恢复后完整预检及固定载荷（未开启）
+
+原 Gateway 与原日志恢复后，Gateway、Entry、Browser Execution 均已重新完成源码、完整绑定、资产保留合同、关联资源和前后部署身份读回；当前版本分别为 `a00f97bc`、`c110d7a7`、`c94df077`，绑定数为 95/5/4。两 zone WAF、Managed Transforms、Pseudo IPv4 与 ruleset/snippet 元数据也已重新读取。原三个 unknown 记录及其锁保持原样，当前配置读回不改写历史请求终态。
+
+正式切换和失败关闭/前向恢复共七份固定载荷已离线准备，使用三个当前线上模块的原字节；Gateway 切流为 97 绑定、Entry 为 6、Execution 为 4，T 和恢复期限仍为空。包 SHA `c2d84bdbf75122886e426064003ae2275dc89a6791c46c0245c82dfacf35a0bf`；未将未发生的 T 写入恢复配置。维护控制器新增严格 GET-only 部署/版本列表解码桥，源码/配置/版本详情仍独立原生读取；PUT 单次原生传输不变。相关 52 项检查及八阶段零网络/零写入模板检查通过。完整资产字节/集合、平台内部遥测排空和 proxy HTTP 尝试数没有据此证明。
+
+本次准备没有新增生产写入、开启维护窗口或发起协议/模型/Turn/Run。真实双网络协议和认证新域验收仍待完成，PR173 保持 draft/unmerged，T/recoveryUntil=null。[完整基线、固定载荷摘要及证据边界](evidence/riffoid-post-recovery-preparation-20261011.json)。
+
+
+正式控制器已补齐三步激活与已知失败的入口关闭/前向恢复队列；19 项真实文件 journal 的离线检查通过，覆盖重复/并发提交、失去写回执、入口顺序和后台漂移。固定载荷仍未 armed，正式 live 会话、协议后完整部署守卫及真实验收范围待落实。域名/证书与三 Worker 别名均已只读核对；仅 Execution 保留原 workers.dev 地址，新账号凭据完成原五项权限续期。
+
+当前容量快照 active/quarantined=0/0、meter-only、pin `695cdd9e…`、reviewAt=2026-12-31；#104 顶部及 PR169 确认该期限为 10 月 7 日已批准并完成的续期。10 月 20 日是历史容量期限，M1 截止仍为 10 月 20 日。容量策略本次未改，快照仅覆盖 Pi 账本。手机实时配合及认证验收资源待回复，本轮仍无新窗口或生产发布。
+
+
+## 2026-10-10 15:45 UTC original Gateway restored; domain cutover pending
+
+The [approved original-write recovery evidence](evidence/riffoid-original-write-restored-20261010.json) confirms the original Gateway module and all95 bindings,23 SQLite exports,5 existing container associations and frozen asset-retention contract after two recovery PUTs, each dispatched once. Temporary validation configuration is removed. Original observability is restored, including logs.persist=true, traces disabled, logpush=false and empty tails. Current Gateway version is a00f97bc-f0da-4e04-97b0-8f96f0a26a89, deployment d78a6f03-2552-4076-8ad5-7abd1802654c; independent bracketed GET readback completed at15:45:27.679 UTC.
+
+The privacy restore PUT reached its deadline; GET reconciliation confirmed it applied. The approved logs restore returned success after6.142 seconds, but its initial post-write version GET timed out; a separate complete readback subsequently confirmed the restored state. All three intent/unknown pairs and locks are retained. No original unknown is converted into a terminal receipt, no PUT is retried, and the old protocol window remains stopped. The explicit two-write approval accepted possible late persisted telemetry; platform drain is unproven. Asset preservation meets keep-assets-contract-v1; complete asset-set identity and bytes are not audited.
+
+The reviewed logs-only continuation is in234e078661ff4d3f699ef84999ac62ea53cb7de3; live-adapter/recovery checks pass52/52. Entry and Browser Execution receive no writes in this recovery. Domain cutover, two-network protocol verification, authenticated new-domain acceptance and formal T/recoveryUntil remain pending. No model, Turn or Run request is initiated, and no global zero-execution claim is made. Earlier sections below are dated historical snapshots, including the earlier pending-recovery approval.
+
+## 2026-10-10 PR173 MIME bytes and method-specific retry boundary
+
+The publisher now parses raw MIME bytes for modules with or without filename, preserving exact source hashes and line endings. Manual redirects are explicitly rejected; missing/duplicate entrypoints, modules, malformed boundaries and truncation fail closed. Local seven suites pass127/127 with typecheck/diff checks. The [contract and evidence](evidence/riffoid-mime-readback-20261010/mime-and-retry-contract.md) supersede the prior inference that the authenticated execute sandbox lacks raw responses: a historical original-Gateway GET supplied exact byte/header/digest evidence, without certifying a complete fresh baseline. This implementation/review round performs no new production GET/PUT or experiment.
+
+Two fixed official proxy versions and20 offline injections confirm method-agnostic 429/network retry, including PUT; actual deployed proxy version remains unknown. Following independent method review, read-only GET can be accepted with bounded caller observations and deployment/latest/settings/resource brackets. Inability to disable GET retry is not an absolute deployment blocker. All actual PUTs through the current raw adapter are blocked before dispatch until every-layer non-replay is separately established; SDK/metadata bridges are GET-only. Caller timeout is not proof proxy work stopped. Fresh complete baseline, actual container association readback, original run/window inputs and operational coordination remain pending. Existing approved terminal/late-telemetry handling and asset retention contract stay intact. CI remains unverified under the user-confirmed quota decision. No deployment or Done claim.
+
+## 2026-10-10 PR173 asset retention gate — independently accepted offline
+
+The `keep-assets-contract-v1` gate now distinguishes existing asset-set retention from routing configuration readback and complete content auditing. Every upload requires keep_assets and rejects explicit assets metadata and reserved asset-config modules. Both Workers freeze scope, inventory presence, bindings and the three configuration-evidence states; publisher/coordinator/restart checks recompute the same contract and retain namespace/container/module/pipeline/unknown/deadline guards. For a Worker with assets, preservation can pass while full-state/byte coverage remains false. No live execution is authorized by this change.
+
+[Standard and exact boundaries](evidence/riffoid-asset-contract-20261010/asset-retention-standard.md), [current summary](evidence/riffoid-asset-contract-20261010/summary.json) and [independent review](evidence/riffoid-asset-contract-20261010/independent-review.json) record 105/105 local and independent fixtures, typecheck, matching seven source hashes and extra counterexamples. [Retained failed and successful logs](evidence/riffoid-asset-contract-20261010/retained-checks-index.json) remain available. This pre-push snapshot is frozen; PR173 records the resulting published commit. The prior P2 repair was published as `a5adf902245f`; older unpublished/pending-standard descriptions below are historical. User confirmation at 09:10:29 UTC identifies GitHub quota exhaustion as nonblocking for this push; CI remains unverified, with no rerun or workflow/protection change.
+
+[Original authenticated HTTP path and integration options](evidence/riffoid-asset-contract-20261010/raw-http-integration.md) distinguish actual connector authentication from missing raw-response/client exposure. Both original links authenticated; decoded metadata can support semantic configuration checks, but module integrity still requires raw or documented lossless module bytes/names plus authoritative entrypoint. Current version schema lacks assets configuration and containers: absent assets configuration is honestly unverified, while actual container association evidence remains a live blocker. Fresh baseline, publisher coordination and exact run/window inputs are deferred to deployment preparation. Complete asset bytes remain a separate unperformed audit. Application terminal evidence and late-telemetry handling use the existing approved risk record; no absolute platform drain is reintroduced. Original migration was reported stopped at 22:13 UTC on October 9; it is not reopened or replayed. No deployment, window or experiment was started.
+
+## Historical P2 preparation snapshot — superseded by the asset gate above
+
+### 2026-10-10 PR173 external P2 repairs — frozen pre-push evidence
+
+External review of published head `6acdc30dd222` found namespace pagination, completed-chain restart and cross-page cleanup safety gaps. Earlier internal no-P2 results do not accept these new findings. [P2 repair evidence](evidence/riffoid-release-preparation-20261010/p2-repair-summary.json) records the current offline fixes, retained initial failures and 97 passing fixtures/typecheck and independent no-P1/P2 review of the frozen source hashes; [all prior/current check logs](evidence/riffoid-release-preparation-20261010/retained-checks-index.json) are now locally traceable beside their corresponding historical summaries. This round is not pushed or deployed.
+
+Cleanup is unarmed by default. The operator must have the coordinator verify both original Run receipts, then authorize it once in the original A page. Unknown on either side means Stop both original pages; Stop is local and makes no new RPC or server-termination claim. Completed publication chains can be reconstructed with GET-only current readback; unknown markers outrank terminal files, and unowned/invalid locks are never cleared automatically.
+
+The one explicitly approved [G5 summary comparison](evidence/riffoid-release-preparation-20261010/G5-summary-readback.json) returned equal 4919-byte parseable JSON hashes for settings and fixed version `6edef49b`. The previous truncated projection is superseded for this field; complete Worker baseline acceptance is still pending. [Assets contract versus full-content audit proposal](evidence/riffoid-release-preparation-20261010/assets-acceptance-design.md) awaits explicit standard approval; asset-dependent publication remains blocked. Readback repeats namespace/container/pipeline evidence and brackets both accounts; lost or replaced locks and deadline expiry after the final ownership check fail closed. These checks do not create an atomic multi-endpoint snapshot, so external exclusion remains necessary. The old frozen v2 entry candidate does not contain these UI repairs; a fresh source-matched entry bundle exists for offline review only.
+
+## 2026-10-10 PR173 technical follow-up; live publication still blocked
+
+The scoped read-only adapters implement account/owned-zone Logpush inventories, exact-script tails, paginated observability destinations and container application listings. Existing application identity, pinned configuration digest, Worker export and DO namespace association are checked. The publisher brackets all resource/pipeline reads with final settings, script settings, deployment and latest-version reads; any drift blocks publication. A caller-authenticated official SDK raw Response bridge disables retries. Decoded connector metadata is distinguished from raw HTTP headers/body evidence.
+
+[Technical evidence](evidence/riffoid-release-preparation-20261010/technical-follow-up.json) records 74 passing offline fixtures, successful typecheck and [27 independently reviewed fixtures](evidence/riffoid-release-preparation-20261010/technical-independent-review.json). Actual GET observations found all eight selected pipeline inventories empty and verified both zone owners. Five fresh application configuration digests associate with retained earlier Worker metadata; this mixed-epoch check does not certify the current complete baseline.
+
+Gateway assets remain incomplete: `keep_assets` and asset configuration matching prove the preservation contract and configuration only, not every asset byte or asset-set identity. The existing connector does not expose raw HTTP receipts or an authenticated SDK client. Complete fresh baseline and namespace/resource snapshots remain pending. The G5 projection discrepancy is awaiting the parent thread's requested approval; it was not retried or read through an alternate route. Full-state coverage remains false and every live PUT stays blocked. Run/time/visitor inputs remain null. Production writes and provider calls are zero; the original dirty checkout is untouched. Earlier preparation/CI failure evidence remains historical and is not promoted to live acceptance.
+
+## Historical 2026-10-10 PR173 publisher preparation; superseded by technical follow-up
+
+The independent worktree based on published head `3dc896ade535cd2c51d30ffe7fe829b9b8cd03c8` now contains a default dry-run transport, exact multipart preparation, original-identity journal/reconciliation, raw-response readback validation and a fail-closed serial publisher. The coordinator consumes the [exact approved risk record](evidence/riffoid-risk-authorization-20261010.json). Unknown outcomes halt the original page's Run and cleanup; natural expiry skips are persisted before later restoration. This task grants no production writes.
+
+[Preparation evidence](evidence/riffoid-release-preparation-20261010/summary.json) records 61 final offline fixture passes, 45 related Node passes, 15 authorized localhost Workerd passes and a successful typecheck. It retains the accidental sandbox EPERM failure. [Independent review](evidence/riffoid-release-preparation-20261010/independent-review.json) passed 14 new tests and found no remaining P1/P2 in the offline scope. Gateway's frozen candidate matches all 1,087 source/dependency inputs using existing read-only dependencies; no install was needed. Candidate and matching restoration module bytes exist, with eight complete metadata templates that retain null run/time/IP inputs and are explicitly non-executable.
+
+The live path is incomplete: Gateway asset/five-container association coverage and resource snapshots, an existing authorized raw HTTP Response channel, and independent account/zone pipeline reads/validation are still missing. `pipelineGuardPassed:false` blocks every PUT until that adapter is implemented; changing a flag is not acceptable evidence. One immutable-version variable projection differs from full settings; truncation versus drift remains unknown. The full baseline is not certified. No new window, browser standby, deployment, paid execution, merge or Project status update occurred. The local changes have not been pushed. GitHub CI's empty-step failure remains unknown.
+
+## Historical published integration snapshot — 2026-10-10; no deployment
+
+The draft [PR173](https://github.com/jihegao/riffology-cloud/pull/173) receives the frozen v2 + v3-p2 repair on its current head. Marker-before-begin, fixed 300-second single-round bounds and original A-page cleanup are covered by local fixtures. The serial publisher/readback adapter has no live transport. Original unknown-write identities retain their version/content and deployment/version ledger checks without retry or cursor advance. Terminal evidence is limited to the two Observe, two Run and one cleanup application operations; no platform drain is claimed.
+
+[Fresh integrated-code validation and retained failure evidence](evidence/riffoid-offline-integration-20261010/summary.json) records actual commands/results and source hashes. The prior failed fixtures and superseded internal review are retained. The parent reported independent rechecks accepted the frozen archives; that report does not replace current deployment or user acceptance. At that snapshot the two risk decisions were recorded pending. The later exact user confirmation is consumed in the preparation above; productionAuthorized remains false. No deployment, authenticated native-IP acceptance, platform test or paid execution is performed. Project reading remains unavailable; no status is invented or changed.
+
+## 2026-10-10 #173 domain cutover preflight refreshed; real acceptance pending
+
+[PR #173](https://github.com/jihegao/riffology-cloud/pull/173) remains a draft.
+The new `app.riffoid.com` domain has valid HTTPS and returns
+`503/two_account_auth_disabled`; the old application's curl homepage returns 200
+with the existing strict CSP and `no-store`. No cutover T or 48-hour recovery
+deadline has started. Python-client 403 responses are recorded separately and do
+not replace the curl control or establish Browser Execution frame acceptance.
+
+Fresh two-account readback matches the frozen safety-stage Gateway
+`6edef49b-ca5c-4c97-bcec-5c141b079bb1`, entry
+`c110d7a7-fc81-4bb1-b27a-4ca8147a7fff` and Execution
+`c94df077-02a1-460f-8158-e47a338e68af`, with 95/5/4 bindings.
+Each settings binding list exactly matches its immutable version's list; full
+settings/resource and every binding digest were frozen locally. All three exact
+`content/v2` module hashes match the previous evidence. Both WAF Block expressions
+remain enabled; account/zone Logpush, observability destinations and relevant live
+Tail lists were empty at readback. Persisted logs remain enabled. These observations
+do not prove future capture absence or zero background work.
+
+The existing maintenance/signature/entry/topology/forward-restore selection passed
+45 Node/Workerd tests, including actual fixture replay and real 30-second expiry;
+typecheck passed. Local maintenance bundles and non-executable metadata requests
+were generated for review, preserving all 23 Gateway SQLite exports. No runtime
+source was edited, candidate was uploaded, credential was read or platform execution
+test was run. Global activity and infrastructure cost are not claimed zero.
+
+Two actual visitor exits, an available original Google/browser identity, a quiet
+publisher window, current semantically read-only in-flight observation, complete
+rollback payload and temporary logging-change acceptance remain prerequisites.
+The Mac was locked, preventing use of its existing authenticated browser. Delivery
+Project could not be read: the existing CLI token lacks `read:project`, and the
+browser attempt timed out; no scope was expanded or Project phase invented.
+[Current evidence](evidence/riffoid-cutover-preflight-20261010.json) records the
+fresh versions/hashes, checks, candidate identities and concrete remaining gaps.
+
+
 ## 2026-10-08 #171 Browser-local Runs deployed; authenticated owner acceptance
 
 [PR #172](https://github.com/jihegao/riffology-cloud/pull/172) is merged as
@@ -1025,3 +1153,31 @@ remain required for official model publication.
 
 CI runs local checks with no cloud/provider credentials. It cannot close A–D by
 itself. Do not use closing keywords for issues whose own exit conditions remain open.
+
+## 2026-10-10 12:22 UTC continuation: baselines retained, writer pending
+
+This dated follow-up supersedes the earlier locked-Mac/original-login/two-exit gaps. Original-account Safari login and two distinct desktop/mobile visitor exits were confirmed. Raw visitor IPs stay in an ignored private file. The original application authenticated as the existing Google identity; comparison at the new origin remains pending.
+
+Exact complete rollback modules for Gateway `6edef49b`, Entry `c110d7a7` and Execution `c94df077` are retained privately with API-matching lengths/SHA-256. Fresh complete settings and 95/5/4 bindings match the previous freeze. Actual Gateway version JSON exposes all 23 SQLite exports, five current container associations and asset routing configuration; retention must keep that observed configuration. Eight scoped pipeline/tail inventories returned empty and both relevant WAF blocks enabled. Fifteen unfiltered container reads returned eight inactive instances, with no other states in those records; this is not a global activity/drain assertion. The dashboard code editor automatically issued two GET `/` previews returning `503/assets_not_configured` and connected its console; it was closed, and subsequent relevant tail lists were empty. No production configuration, capacity, instance, model/tool/Turn/Run write was submitted.
+
+Relevant source and required fixtures from PR head `6ed830a17f2321de27446758074aff47550c99ea` were verified in an isolated directory. Seven offline suites passed **127/127**, typecheck passed, and latest Entry/Gateway bundles plus eight **non-executable** publication/restoration templates were prepared. Two initial omitted-dependency failures are retained; the final complete run passed. This is relevant-source verification, not a full checkout/tree certification or production acceptance. The old `04f00d6` candidate is marked superseded and must not deploy. No run/window/native marker was armed.
+
+Current blocker: the existing MCP proxy may replay PUT and the reviewed non-dry-run adapter rejects writes before dispatch. The original local Wrangler OAuth expired on 2026-10-09; existing credentials do not supply a usable non-replaying writer for both accounts. Supplemental authorization for two native OAuth logins is pending; no grant or credential-value export was initiated. Previously approved application-terminal/late-telemetry log handling remains accepted; no absolute platform drain prerequisite is added. A native writer still needs independently checked all-layer non-replay, fresh complete raw readback, quiet-publisher/resource guards and actual A/B browser receipts before publication. New origin last observed `503/two_account_auth_disabled`; `T` and `recoveryUntil` remain null. Formal authentication/Execution/48-hour recovery acceptance is still separate.
+
+Evidence: [browser and control-plane follow-up](evidence/riffoid-browser-followup-20261010.json). PR remains draft/unmerged; no Issue closure or Done transition.
+
+
+## 2026-10-10 本机授权与完整发布读回
+
+原、新账号的最小权限 Wrangler 本机 OAuth 均已完成，凭据仅保存在权限 0600 的本机命名配置。独立 Node HTTPS 通道使用一次新 HTTP/1.1/TLS 连接，不自动重试、跳转、代理或 fallback；PUT 保持 15 秒，GET 可明确采用 30 秒且完整读回仍限 120 秒。生产写入还必须绑定原始 durable intent、账号、body hash、阶段和批准窗口。原 MCP PUT 继续禁用；缺少的日志/容器元数据使用现有连接器只读获取。
+
+7 组 preservation 检查 **135/135**、本机 HTTP 故障检查 **20/20** 通过。真实 Gateway/Entry 完整源码及全部资源读回均通过前后部署/latest/settings 括号校验，版本仍为 `6edef49b` / `c110d7a7`。原始 API 的 `use_containers`、实际资产路由字段及 nullable Tail 表示已纳入校验；Gateway 接受已批准的 keep_assets 保留合同，完整资产字节/集合审计仍未执行。无 DO 绑定、runtime/container exports 关联的 Entry 可确认没有本 Worker 的容器关联；这不宣称账号全局没有容器活动。
+
+[本轮证据](evidence/riffoid-native-publisher-20261010.json)记录实际读回、测试范围及限制。先前字段差异和超时保留为失败证据。此快照没有生产 PUT、维护窗口、模型/tool/Turn/Run、正式切换或 T/recoveryUntil；双出口原始浏览器回执、排他协调和正式认证验收仍待完成。PR 保持 draft/unmerged，CI 不伪称通过，未关闭 Issue 或设置 Done。
+
+
+## 2026-10-10 14:56 UTC — original Gateway write held for recovery approval
+
+One native Gateway Observe PUT was acknowledged at version `a5ddd8f0-628b-4c90-8fa4-10177ffee906` / deployment `855e041d-5daa-42c4-b582-6a80b70fd3ed`. Its first readback rejected Cloudflare's changed binding array order, so the original intent remains unknown and its lock remains retained. Full subsequent GET-only readback passed after aligning bindings by their unique names: all 98 binding values, source modules, 23 exports, five container configurations and the observed asset retention contract match. Entry remains at `c110d7a7`; Execution received no write. Gateway log persistence is off; Entry logs remain at baseline. No A/B Observe, Run or cleanup operation was initiated, and this interrupted round is not an acceptance pass.
+
+The comparer now accepts only binding order changes and still rejects duplicate/missing/extra names and value/resource drift. A separate recovery adapter requires a new exact approval for two original Gateway restoration writes, keeps the original unknown and lock, and cannot resume the validation protocol. The exact offline recovery package passed zero-network/zero-write checks; 49 related checks passed. Recovery is **prepared, not executed**, pending the user's additional approval under the existing unknown-log agreement. Late telemetry risk and platform drain remain unproven. Formal cutover, new-domain authenticated acceptance, T and recoveryUntil remain pending/null. [Evidence](evidence/riffoid-original-write-recovery-pending-20261010.json).

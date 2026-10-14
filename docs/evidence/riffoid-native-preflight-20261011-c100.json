@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-11T08:03:42.600Z",
+  "scope": "GET-only preflight stop and independent baseline diagnosis after approved earlier restoration",
+  "status": "PREFLIGHT_STOPPED_BEFORE_FIRST_PUT_BASELINE_DIAGNOSIS_PASSED",
+  "sourceHead": "5ec39fab908d8bf43c2ece64f8c9fc91eb340629",
+  "productionWrites": 0,
+  "appProtocolDispatches": {
+    "observe": 0,
+    "run": 0,
+    "cleanup": 0
+  },
+  "businessRequestsByTheseControllers": 0,
+  "formalT": null,
+  "recoveryUntil": null,
+  "previousUnknownRecordsPreserved": 4,
+  "candidateAttempts": [
+    {
+      "run": "riffoid_dfb0af8963264e779c3f248bb8bd8d56",
+      "packetSHA256": "80e5ed67a037987fbfd33ce6186584fd4fe4b4dfa00f22e01a682220273b0c10",
+      "initialLaunch": "AUTO_REVIEW_REJECTED_EXACT_PACKAGE_APPROVAL_NOT_EVIDENCED",
+      "laterExactHumanApprovalRecorded": true,
+      "processStarted": false,
+      "httpDispatches": 0,
+      "workerWrites": 0,
+      "notExecutedReason": "insufficient lead when approval arrived; fixed window not changed"
+    },
+    {
+      "run": "riffoid_c100675a7034484c99bd04ebb0cad2f9",
+      "packetSHA256": "6a6c60699c52df09929736def7157b505d42843e245a1b2f91e27dc1db37eefd",
+      "exactHumanApprovalRecorded": true,
+      "processStarted": true,
+      "workerWrites": 0,
+      "GETDispatches": 32,
+      "completedGETs": 31,
+      "failedGET": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts",
+      "failure": "second Worker inventory GET exceeded 30000 ms read deadline; late evidence rejected",
+      "pendingWrite": null,
+      "intentRecords": 0,
+      "unknownWriteRecords": 0,
+      "publisherLockAbsentAfterFailure": true,
+      "controllerStopped": true,
+      "stopSignal": "SIGTERM",
+      "confirmedExitCode": 1,
+      "journalFiles": [
+        "capability.PRIVATE.json",
+        "expected-writes.PRIVATE.json",
+        "operator-facts.PRIVATE.json",
+        "packet.PRIVATE.json"
+      ],
+      "laterWindowOrPacketReplay": false
+    }
+  ],
+  "independentInventoryDiagnosis": {
+    "startedAt": 1791705587785,
+    "completedAt": 1791705588953,
+    "productionWrites": 0,
+    "rows": [
+      {
+        "role": "gateway",
+        "worker": "riffology-m1-gateway-staging",
+        "status": "SINGLE_READ_CONFIRMED",
+        "hasAssets": true,
+        "nativeObservation": {
+          "callerDispatches": 1,
+          "automaticRetries": 0,
+          "redirectsFollowed": 0,
+          "elapsedMS": 1017.3355419999999,
+          "tlsAuthorized": true,
+          "connectionReused": false
+        }
+      },
+      {
+        "role": "entry",
+        "worker": "riffoid-entry",
+        "status": "SINGLE_READ_CONFIRMED",
+        "hasAssets": false,
+        "nativeObservation": {
+          "callerDispatches": 1,
+          "automaticRetries": 0,
+          "redirectsFollowed": 0,
+          "elapsedMS": 1158.667291,
+          "tlsAuthorized": true,
+          "connectionReused": false
+        }
+      }
+    ]
+  },
+  "completeReadonlyBaselines": {
+    "gateway": {
+      "version": "6d580077-1042-4242-9ca5-665008202135",
+      "deployment": "be951946-ead9-4da9-814f-d493d2d13520",
+      "activeVersion": "6d580077-1042-4242-9ca5-665008202135",
+      "latestVersion": "6d580077-1042-4242-9ca5-665008202135",
+      "metadataSHA256": "5441264ebfd7a5a5af5c93503afef1ba12791bff86410c490545da4ddc426e47",
+      "modulesSHA256": "b8123f8c3eeb18029113b5d71474583128e146870c4f31ecae5b606b6d4b9463",
+      "resourcesSHA256": "71870d9ae8cdc8235653d2a55cec532d5b05fdfe1ad44d8b3bd7c8327dc0668e",
+      "scriptSettingsSHA256": "1b970dd180239f490dd89ef94a2e456c4b18625c61d79aabdb93cb665b770ee0",
+      "receiptSHA256": "8e5df1fb29aceb7d7b9bb4eb75c754c4f67de767d89e844dd7fcbed155045152",
+      "coverage": {
+        "mainModule": true,
+        "metadata": true,
+        "modules": true,
+        "namedResources": true,
+        "assets": false,
+        "assetsRetentionContract": true,
+        "containers": true
+      },
+      "preservationMatches": true,
+      "fullStateMatches": false,
+      "pipelineGuardPassed": true,
+      "workerLoggingGuardPassed": true,
+      "readObservation": {
+        "startedAt": 1791705676841,
+        "completedAt": 1791705763756,
+        "elapsedMS": 86915.02670799999,
+        "callerGETDispatches": 36,
+        "maxGETDispatches": 128,
+        "timeoutMS": 180000,
+        "perGETTimeoutMS": 30000,
+        "sourceGETTimeoutMS": 60000,
+        "proxyHTTPAttempts": "NOT_EXPOSED",
+        "snapshotAtomic": false,
+        "bracketVerified": true
+      },
+      "worker": "riffology-m1-gateway-staging",
+      "bindingCount": 95,
+      "originalLoggingIdentityVerifiedByMetadataAndSettingsSHA": true
+    },
+    "entry": {
+      "version": "c110d7a7-fc81-4bb1-b27a-4ca8147a7fff",
+      "deployment": "5e920993-ee9d-4a7e-b6fe-39ef494f35fd",
+      "activeVersion": "c110d7a7-fc81-4bb1-b27a-4ca8147a7fff",
+      "latestVersion": "c110d7a7-fc81-4bb1-b27a-4ca8147a7fff",
+      "metadataSHA256": "95da23b6ab891f6b5e5dcdb6b707b1eb4fc6f288cc6ab94c2baf2a365ad99d21",
+      "modulesSHA256": "0fb3b015d14b96aad8efe673917eaf854a865a93688341688d983f0cb9429e7b",
+      "resourcesSHA256": "ab97a2155533d50933994c6e0933d0ae2a2341c5a30246cc659896629948eac2",
+      "scriptSettingsSHA256": "1b970dd180239f490dd89ef94a2e456c4b18625c61d79aabdb93cb665b770ee0",
+      "receiptSHA256": "093dd4ce92f9ae13439e79750ca74a70561ee1b42c6a34f28759f871d1d9ce47",
+      "coverage": {
+        "mainModule": true,
+        "metadata": true,
+        "modules": true,
+        "namedResources": true,
+        "assets": true,
+        "assetsRetentionContract": true,
+        "containers": true
+      },
+      "preservationMatches": true,
+      "fullStateMatches": true,
+      "pipelineGuardPassed": true,
+      "workerLoggingGuardPassed": true,
+      "readObservation": {
+        "startedAt": 1791705763756,
+        "completedAt": 1791705822600,
+        "elapsedMS": 58843.434917000006,
+        "callerGETDispatches": 22,
+        "maxGETDispatches": 128,
+        "timeoutMS": 180000,
+        "perGETTimeoutMS": 30000,
+        "sourceGETTimeoutMS": 60000,
+        "proxyHTTPAttempts": "NOT_EXPOSED",
+        "snapshotAtomic": false,
+        "bracketVerified": true
+      },
+      "worker": "riffoid-entry",
+      "bindingCount": 5,
+      "originalLoggingIdentityVerifiedByMetadataAndSettingsSHA": true
+    }
+  },
+  "privateEvidence": {
+    "failedPreflightTraceSHA256": "31cf7ee75a4e3e0ee2a188a95a73904efc50a4157dd1e6c7a5fa7bb5208e9d3e",
+    "completeReadbackRecordSHA256": "5424ac59d217a2a1e39a945fd754a0b7750ce30f984e8a43b71054a62f8c4a09",
+    "rawLogsAndProfilesNotPublished": true
+  },
+  "limits": [
+    "Root cause of original inventory timeout is not established; later successful GETs do not prove future stability.",
+    "Gateway keep_assets retention contract passed; asset bytes and complete set remain unaudited.",
+    "Neither platform telemetry drain nor account-wide zero execution or cost is asserted.",
+    "Browser Execution was not reread or published in this diagnostic.",
+    "All prior unknowns and original histories remain unchanged.",
+    "A/B native protocol and second invited identity / existing idle Session acceptance remain pending.",
+    "Cancelled/expired packets and operator cooperation interval must not be resumed or silently shifted."
+  ]
+}

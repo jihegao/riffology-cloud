@@ -1,0 +1,109 @@
+{
+  "UTC": "2026-10-10T08:14:14.565627+00:00",
+  "status": "OFFLINE_TECHNICAL_ADAPTERS_REVIEWED_LIVE_PACKAGE_BLOCKED",
+  "basisHead": "3dc896ade535cd2c51d30ffe7fe829b9b8cd03c8",
+  "productionWrites": 0,
+  "providerCalls": 0,
+  "originalDirtyCheckoutModified": false,
+  "newCode": [
+    "scoped pipeline inventories and pagination",
+    "existing container association/configuration hashes",
+    "explicit assets preservation coverage limits",
+    "caller-authenticated SDK raw Response bridge with zero retries",
+    "final state/version/deployment bracket after resource and pipeline reads"
+  ],
+  "checks": {
+    "offlineFixtures": {
+      "pass": 74,
+      "fail": 0,
+      "log": "technical-fixtures-final.txt"
+    },
+    "independentReviewFixtures": {
+      "pass": 27,
+      "fail": 0
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "log": "technical-typecheck.txt"
+    },
+    "earlierRelatedNode": 45,
+    "earlierAuthorizedLocalWorkerd": 15
+  },
+  "productionReadOnlyEvidence": {
+    "entryPipelineObservedAt": "2026-10-10T07:52:31.691Z",
+    "gatewayPipelineObservedAt": "2026-10-10T07:52:34Z",
+    "inventoryScope": "account Logpush, owned-zone Logpush, account observability destinations page=1/perPage=50, exact-script tails; all eight arrays empty",
+    "zoneOwnership": "both actual zone/account ids matched; 08:03:47Z and 08:03:50Z",
+    "containerConfigurationObservedAt": "2026-10-10T07:58:30.298Z",
+    "containerAssociations": {
+      "applicationObservedAt": "2026-10-10T07:58:30.298Z",
+      "workerVersionSource": "retained earlier immutable-version metadata; not a fresh Worker/version read",
+      "workerVersion": "6edef49b-ca5c-4c97-bcec-5c141b079bb1",
+      "mixedEpochs": true,
+      "associations": [
+        {
+          "class_name": "ProjectRuntime",
+          "name": "riffology-m1-project-staging",
+          "exportMatchesApplication": true,
+          "bindingMatchesNamespace": true
+        },
+        {
+          "class_name": "ProjectToolSandbox",
+          "name": "riffology-m3-project-tools-staging",
+          "exportMatchesApplication": true,
+          "bindingMatchesNamespace": true
+        },
+        {
+          "class_name": "TrustedPiSandbox",
+          "name": "riffology-m3-trusted-pi-staging",
+          "exportMatchesApplication": true,
+          "bindingMatchesNamespace": true
+        },
+        {
+          "class_name": "ServiceSandbox",
+          "name": "riffology-m3-service-staging",
+          "exportMatchesApplication": true,
+          "bindingMatchesNamespace": true
+        },
+        {
+          "class_name": "SimulationSandbox",
+          "name": "riffology-phase1-simulation",
+          "exportMatchesApplication": true,
+          "bindingMatchesNamespace": true
+        }
+      ],
+      "fullLiveStateCertified": false,
+      "assetsPresence": "expected true from retained assets configuration/binding; fresh inventory presence not asserted",
+      "productionWrites": 0
+    },
+    "customFieldEntrypoint": "both connector reads returned code 10003 (not found); HTTP status unavailable, so no authoritative 404 absence receipt",
+    "limits": "configuration observations only; not global activity/telemetry drain/future absence or zero infrastructure cost"
+  },
+  "reviewedSHA256": {
+    "riffoid-validation-resources.mjs": "bc2090bb3974180a48f9aec25f608098fad0e71159f2694971c4793b9f73854e",
+    "riffoid-validation-transport.mjs": "c97e170924462ee12fde4c8bd5252907e9e725d457552a6416c48fd9ea3a5c9e",
+    "riffoid-validation-publisher.mjs": "a0bca6f546df7a7a69958e60fce53ac52b13b99d1b1682bd0776c669c1a38287"
+  },
+  "remainingBlockers": [
+    "G5 immutable-version/settings projection difference remains unknown; approval pending in parent and no retry or alternate read performed",
+    "existing connector omits raw HTTP headers/body bytes; SDK bridge requires an already-authenticated caller client not exposed by this connector",
+    "Gateway assets: keep_assets upload contract and configuration match cannot prove full content inventory or asset-set identity; coverage stays false",
+    "full current Worker baseline consistency and frozen namespace/resource snapshots remain incomplete",
+    "original live run/time/visitor inputs remain null; no executable packet, window or user standby requested"
+  ],
+  "retainedFailures": [
+    "technical-fixtures-first.txt: fixture mismatch, repaired and final 74 pass",
+    "earlier sandbox localhost EPERM logs retained in preparation v1",
+    "CI run 38015999110 empty-step failure remains UNKNOWN; no rerun/pass claim"
+  ],
+  "autoReview": {
+    "customFieldsFirstProjection": "rejected because action could expose unrestricted payload; not executed",
+    "saferProjection": "allowlisted metadata only executed; actual code10003 retained without invented HTTP status",
+    "G5AdditionalCompare": "previously rejected, no retry this continuation"
+  },
+  "sources": [
+    "https://developers.cloudflare.com/workers/static-assets/direct-upload/",
+    "https://github.com/cloudflare/cloudflare-typescript#accessing-raw-response-data-eg-headers",
+    "https://developers.cloudflare.com/api/resources/containers/subresources/applications/methods/get/"
+  ]
+}

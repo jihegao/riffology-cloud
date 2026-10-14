@@ -1,0 +1,164 @@
+{
+  "status": "IMPLEMENTED_AND_INDEPENDENTLY_REVIEWED_OFFLINE_ONLY_NOT_DEPLOYED",
+  "scope": "real canonical/signed maintenance protocol; ordinary app fenced; no alternate audience, capability or peer resource",
+  "authorization": {
+    "userUTC": "2026-10-09T06:51:09Z",
+    "userText": "允许。旧站也可以下线不需要持续在线",
+    "permits": "implementation/local tests/independent safety review; PR173 update",
+    "productionPermission": false
+  },
+  "productionReads": 0,
+  "productionWrites": 0,
+  "platformExperiments": 0,
+  "productionPrivateKeyAccess": false,
+  "persistentCredentialsCreated": false,
+  "newWorkerDomainNamespaceOrDependency": false,
+  "formalCutoverT": null,
+  "formalRecoveryUntil": null,
+  "sourceSHA256": {
+    "services/entry/index.ts": "da1c9dc438b255cdef2e9829f6c1971ac98e755346eeabd204375255168ad106",
+    "services/entry/signature.ts": "5cd7aef30ea39e270e88dca9e42d935d403c00d4429cdeb4b337f2c69f5d9580",
+    "services/entry/replay.ts": "a6d000e7cd10645c35fccca0347db6c0fc3d0bcdd81286af12499eabe8ded89e",
+    "services/entry/validation-policy.ts": "567786baf24ee9c730d2760dc5d33ab476ce720b81427189e729f43bafb8edb0",
+    "services/entry/validation-entry.ts": "089af9e427e999375230371ac189b5ed511dc1e66b57152ad0dbd0148fe4b952",
+    "services/entry/validation-gateway.ts": "87779e5a059b8e1c42851ed1e27fad45f5e1d222697ae82d99e7395f4ae769cf",
+    "services/gateway/index.ts": "da0f812502d917afb8e976b8edcd441a9ea28cac7d457b2e8c2913698385645a",
+    "tests/m1/riffoid-validation.test.ts": "9ce648cdfd20155f1256354b07fa2df538987fceba212e1e318cc1b9276010c3",
+    "tests/m1/riffoid-validation-workerd.test.mjs": "1fe137be4d4b8712e5fac0343d75879540d10611cf881cf49f163396e6e36799"
+  },
+  "localChecks": {
+    "typecheck": "passed",
+    "nodePolicyAndExistingEntryTopology": {
+      "pass": 24,
+      "fail": 0,
+      "includesNewPolicy": 4
+    },
+    "newWorkerd": {
+      "pass": 2,
+      "fail": 0,
+      "realUnusedExpiryMilliseconds": 30525,
+      "uniqueFixtureProofs": 3,
+      "simultaneousRunA": 6,
+      "successfulRunA": 1,
+      "actualFixtureHTTPSRequests": 13,
+      "normalProtocolCalls": 8,
+      "deniedDuplicateBeginCalls": 5,
+      "externalBusinessProviderFetches": 0
+    },
+    "affectedSigningAuthRecoveryCancellationRollbackAndExecutionRegressions": {
+      "pass": 39,
+      "fail": 0,
+      "skip": 0
+    },
+    "diffCheck": "passed"
+  },
+  "priorFailuresPreserved": {
+    "sandboxWorkerd": "loopback restriction led to Node26 callback assertion; approved loopback-only/outbound-deny execution passed",
+    "firstNewTypecheck": "test response.json typed unknown; tests corrected without casts to any",
+    "firstNewIntegration": "signEntry correctly strips unsigned case tag; fixed by setting only fixed case tag after signing and preserving empty signed inputs"
+  },
+  "independentReview": {
+    "agent": "validation_security_review",
+    "result": "no blocking code defect found within bounded maintenance scope; not production readiness",
+    "readOnly": true,
+    "checks": {
+      "node": 4,
+      "workerd": 2,
+      "typecheck": "passed",
+      "diffCheck": "passed"
+    },
+    "reviewedEntrySHA256": "089af9e427e999375230371ac189b5ed511dc1e66b57152ad0dbd0148fe4b952",
+    "reviewedReplaySHA256": "a6d000e7cd10645c35fccca0347db6c0fc3d0bcdd81286af12499eabe8ded89e"
+  },
+  "budget": {
+    "freshProofs": 3,
+    "primaryAccepts": 2,
+    "verifierCases": 4,
+    "observeBits": 2,
+    "beginLeases": 2,
+    "securityMetadataRowsMaximum": 3,
+    "postCleanupTombstoneRows": 1,
+    "windowSecondsMaximum": 120,
+    "invocationSecondsMaximum": 45,
+    "fetchSecondsMaximum": 5,
+    "budgetRPCSecondsMaximum": 2,
+    "cleanupOnlySecondsMaximum": 30,
+    "expectedHTTPSIncludingOneCleanup": 9,
+    "hardAggregateHTTPBound": false,
+    "automaticRetry": false
+  },
+  "constraints": [
+    "IP-only cannot identify a specific tester behind the same approved NAT",
+    "transport upstream_zone is zone provenance, not entry script identity; same-zone scripts can consume unsigned control budget",
+    "denied ingress can cause more control HTTPS queries; successful signing/verification budget remains durable",
+    "real native headers/WAF/Transforms, logs/Tail/Logpush, worker-first asset routing and complete resource guards not newly read",
+    "independent peer, OAuth/session/CSRF/rate/SSE/Execution/48h platform acceptance remains pending"
+  ],
+  "buildReview": {
+    "status": "REVIEW_ONLY_NOT_DEPLOYMENT_PAYLOAD",
+    "all23HistoricalDOExportsPresent": true,
+    "modules": [
+      {
+        "name": "entry",
+        "source": "services/entry/index.ts",
+        "file": "entry.review-only.mjs",
+        "bytes": 30740,
+        "sha256": "113f1c0c86b2ab4ddc382839a3a20281fc1147173fe12bd2a0c865a7bdfa16c7",
+        "exports": [
+          "default",
+          "entry",
+          "entryResponse"
+        ]
+      },
+      {
+        "name": "gateway",
+        "source": "services/gateway/index.ts",
+        "file": "gateway.review-only.mjs",
+        "bytes": 5509344,
+        "sha256": "adc45bf1d1d78c8480dfc33d4ea667f19db2ec1564777414c372e1fe9849f5ac",
+        "exports": [
+          "ContainerProxy",
+          "EntryReplayGuard",
+          "G5ControlledWindow",
+          "G5TenantModelBudget",
+          "InvitedRunCapacity",
+          "ManagedProductRuntime",
+          "ModelProxyService",
+          "ObserverExecutor",
+          "PiDeveloperBudget",
+          "PrivateBetaCapacity",
+          "ProductTurnRuntime",
+          "ProductionModelBudget",
+          "ProjectRuntime",
+          "ProjectToolSandbox",
+          "RevisionStore",
+          "ServiceRun",
+          "ServiceRuntime",
+          "ServiceSandbox",
+          "SimulationSandbox",
+          "TenantModelBudget",
+          "TenantQuota",
+          "ToolArtifactStore",
+          "ToolBridgeAgent",
+          "ToolBridgeService",
+          "TrustedPiCapacity",
+          "TrustedPiSandbox",
+          "WorkspaceAgent",
+          "default"
+        ]
+      }
+    ]
+  },
+  "rollback": {
+    "explicitAPP_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
+    "bindings": 95,
+    "modernSQLiteExports": 23,
+    "namespaceObjects": 23,
+    "replayNamespaceId": "3cfeafa707c5491fba4ead3f0954bc8e",
+    "fiveOriginalContainerDeclarations": true,
+    "originalModuleAndAssetsPreserved": true,
+    "originalFrozenManifestSHA256": "166edc28179125b796a6afbc0d4ca7a06c7cf4309dcab78db2b93688b7fa8c1f",
+    "futureActualGuardFields": "null; non-executable",
+    "entryOriginalBundleBaseline": "not supplied; required before any temporary deployment"
+  }
+}

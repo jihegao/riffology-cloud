@@ -1,0 +1,193 @@
+{
+  "schema": "riffoid-direct-continuation-evidence-v1",
+  "date": "2026-10-11",
+  "releaseAcceptance": "尚未验收",
+  "deploymentStatus": "configuration cutover completed; minimum existing login/project UI check passed",
+  "canonical": "https://app.riffoid.com",
+  "previousPartialEvidence": "riffoid-direct-cutover-partial-20261011.json",
+  "humanApproval": {
+    "source": "request_user_input_async call_79cb8c930e0046398710590217d7bd16",
+    "decision": "continue with exclusive publishing",
+    "fullABWaived": true,
+    "fixedPackageSHA256": "22dfc77d7f3a32e2cca50d0c463261c05c05f3cbf9fbd6d46ab1688933da0991",
+    "frozenPlanSHA256": "0747e8629064e90b5632e85002a910df333c1f33c3aea4ba7dcb6ec3104cc194"
+  },
+  "continuation": {
+    "entryEnabled": {
+      "requestId": "direct_22dfc77d7f3a32e2cca50d0c_entryEnabled",
+      "version": "668e19e6-6f23-49e0-b4f6-06459790a496",
+      "deployment": "de01a673-3f7d-4833-873b-9843da28076f",
+      "metadataSHA256": "66d642c885684d243a3fa5322859140470158c68b585cd2ea168ed3be9f76f73",
+      "modulesSHA256": "0fb3b015d14b96aad8efe673917eaf854a865a93688341688d983f0cb9429e7b",
+      "resourcesSHA256": "ab97a2155533d50933994c6e0933d0ae2a2341c5a30246cc659896629948eac2",
+      "scriptSettingsSHA256": "1b970dd180239f490dd89ef94a2e456c4b18625c61d79aabdb93cb665b770ee0",
+      "preservationMatches": true,
+      "fullStateMatches": true,
+      "readObservation": {
+        "startedAt": 1791712991418,
+        "completedAt": 1791713021535,
+        "elapsedMS": 30117.401583999977,
+        "callerGETDispatches": 22,
+        "maxGETDispatches": 128,
+        "timeoutMS": 180000,
+        "perGETTimeoutMS": 30000,
+        "sourceGETTimeoutMS": 60000,
+        "proxyHTTPAttempts": "NOT_EXPOSED",
+        "snapshotAtomic": false,
+        "bracketVerified": true
+      },
+      "limitations": [
+        "independent account/zone pipeline and publisher quiescence evidence required",
+        "caller read budget does not attest proxy termination or HTTP attempt count"
+      ],
+      "bindingCount": 6
+    },
+    "gatewayRecovery": {
+      "requestId": "direct_0747e8629064e90b5632e850_gatewayRecovery",
+      "version": "2227852e-2802-40e9-92e4-0a1b4ff8aab9",
+      "deployment": "aecf807b-49e3-4c88-a03c-7a573b52e1f9",
+      "metadataSHA256": "e1853f6f460d70e95b5c9aae859559d288cc74fb644ddc6720a2a321149f8b2c",
+      "modulesSHA256": "b8123f8c3eeb18029113b5d71474583128e146870c4f31ecae5b606b6d4b9463",
+      "resourcesSHA256": "71870d9ae8cdc8235653d2a55cec532d5b05fdfe1ad44d8b3bd7c8327dc0668e",
+      "scriptSettingsSHA256": "1b970dd180239f490dd89ef94a2e456c4b18625c61d79aabdb93cb665b770ee0",
+      "preservationMatches": true,
+      "fullStateMatches": false,
+      "readObservation": {
+        "startedAt": 1791713127413,
+        "completedAt": 1791713184168,
+        "elapsedMS": 56754.26141700003,
+        "callerGETDispatches": 36,
+        "maxGETDispatches": 128,
+        "timeoutMS": 180000,
+        "perGETTimeoutMS": 30000,
+        "sourceGETTimeoutMS": 60000,
+        "proxyHTTPAttempts": "NOT_EXPOSED",
+        "snapshotAtomic": false,
+        "bracketVerified": true
+      },
+      "limitations": [
+        "independent account/zone pipeline and publisher quiescence evidence required",
+        "caller read budget does not attest proxy termination or HTTP attempt count",
+        "asset bytes and complete asset-set identity not audited"
+      ],
+      "bindingCount": 99
+    }
+  },
+  "transport": {
+    "started": {
+      "GET": 196,
+      "PUT": 2
+    },
+    "completed": {
+      "GET": 196,
+      "PUT": 2
+    },
+    "PUT": [
+      {
+        "path": "/accounts/3232ebc7e9bb0199b92e3d70b07825af/workers/scripts/riffoid-entry?bindings_inherit=strict",
+        "callerDispatches": 1,
+        "automaticRetries": 0,
+        "redirectsFollowed": 0,
+        "elapsedMS": 1638.4932079999708,
+        "tlsAuthorized": true,
+        "peerFingerprint256": "4C:05:A8:08:FB:63:3D:BC:3E:01:FB:1A:B0:08:6B:54:DA:B5:0C:BA:59:50:2C:AA:F3:47:E2:66:C1:9D:FC:71",
+        "httpVersion": "1.1",
+        "connectionReused": false,
+        "contentEncoding": "identity",
+        "wireBytes": 1394,
+        "wireBodySHA256": "ff7dd2ce9fc570006a95cf18f91c18e471181efe9a7a44ed41615386ccf69d48"
+      },
+      {
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging?bindings_inherit=strict",
+        "callerDispatches": 1,
+        "automaticRetries": 0,
+        "redirectsFollowed": 0,
+        "elapsedMS": 5841.33920799999,
+        "tlsAuthorized": true,
+        "peerFingerprint256": "4C:05:A8:08:FB:63:3D:BC:3E:01:FB:1A:B0:08:6B:54:DA:B5:0C:BA:59:50:2C:AA:F3:47:E2:66:C1:9D:FC:71",
+        "httpVersion": "1.1",
+        "connectionReused": false,
+        "contentEncoding": "identity",
+        "wireBytes": 6920,
+        "wireBodySHA256": "44b46be1282ed8e5323da1737e49b9df19bae56a7d5282c234cda0ac6cf8625f"
+      }
+    ],
+    "metadataProxyHTTPAttempts": "NOT_EXPOSED",
+    "newUnknownCount": 0,
+    "controllerExit": 0
+  },
+  "actualDeploymentT": 1791713021535,
+  "recoveryUntil": "2026-10-13T10:03:41.535Z",
+  "recoveryPurpose": "old-origin read-only original records; not automatic full business rollback",
+  "derivedRecoveryBodySHA256": "cf9bfb384b9d62a7af791879d45a00a5156dc23f49cbd97f11b2220d4179d7c0",
+  "derivedRecoveryPacketSHA256": "2d422bcda5bda738afa73525a22a5841c6bf9913aa2f85c08f759323a4c955be",
+  "execution": {
+    "version": "3e96532e-dbeb-4c8c-b147-7e71939b0472",
+    "deployment": "a7f6f18e-4f60-4b94-86a9-f011fa729f59",
+    "APP_ORIGIN": "https://app.riffoid.com",
+    "bindingCount": 4,
+    "repeatedPUT": false,
+    "independentConfirmation": "previous 78 GET baseline plus continuation prepublish brackets"
+  },
+  "minimumAuthenticatedBrowserCheck": {
+    "status": "PASS_MINIMUM_ONLY",
+    "observedAt": 1791713294781,
+    "browser": "native Safari",
+    "destination": "https://app.riffoid.com",
+    "identityScope": "one existing original Google account; invitation/role path not independently checked",
+    "login": "Google account chooser -> app.riffoid.com callback -> authenticated projects view; existing grant, no new scope/consent",
+    "projectTitle": "22",
+    "projectAccess": "existing workspace rendered; prior Session 1 displayed; loading finished; back to projects completed",
+    "modelCheckNotice": "existing model has not passed run checks; no model execution attempted",
+    "coverage": "UI observation; no independent authenticated HTTP trace/cookie/CSP/SSE/IP/second-identity/execution validation; not full acceptance",
+    "projectIdentifierSHA256": "87a1c2b27a7ed3295b97a6a4400f0a2dc4d4dd3e46673820b9d074a254e5fdb7",
+    "requestedActions": {
+      "rootNavigation": 1,
+      "signInClick": 1,
+      "existingAccountSelection": 1,
+      "existingProjectOpen": 1,
+      "backToProjects": 1,
+      "send": 0,
+      "run": 0,
+      "manualRefresh": 0,
+      "newProjectIdentitySession": 0,
+      "archiveRestore": 0
+    },
+    "noGlobalExecutionOrCostClaim": true
+  },
+  "preservation": {
+    "originalCode": true,
+    "logsSettings": true,
+    "originalUnknownCount": 5,
+    "originalUnknownFilesAndLockHashFencedBeforeWritesAndExit": true,
+    "newUnknownCount": 0,
+    "originalPUTsNotRetried": true,
+    "protocolObserveRunCleanupNotRetried": true,
+    "rollbackNotUsed": true,
+    "namespaceContainerAndAssetRetentionContractMatched": true
+  },
+  "notAccepted": [
+    "full A/B native Origin/IP/replay protocol",
+    "second authenticated identity and access isolation",
+    "SSE behavior and Browser Execution isolation",
+    "model/tool/Turn/paid execution",
+    "actual 48h expiry and legacy record access",
+    "complete asset bytes/set identity",
+    "platform telemetry drain",
+    "global execution and cost zero"
+  ],
+  "controller": {
+    "exitCode": 0,
+    "pendingRequest": null,
+    "productionPUTs": 2,
+    "allowedPhase": null,
+    "lockReleasedForThisCompletedSession": true,
+    "originalStoppedSessionLockPreserved": true
+  },
+  "sourceFix175": {
+    "merged": false,
+    "deployed": false,
+    "productionEntryModuleUnchanged": true
+  },
+  "note": "UI observation proves this one current identity/project read only. No browser HTTP trace or account-wide authoritative execution counters were collected. Existing model run-check warning was visible, and no run was requested."
+}

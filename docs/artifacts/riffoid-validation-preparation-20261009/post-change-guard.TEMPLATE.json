@@ -1,0 +1,80 @@
+{
+  "status": "TEMPLATE_ONLY_NOT_AN_EXECUTION_GUARD",
+  "mustNotDeploy": true,
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "service": "riffology-m1-gateway-staging",
+  "knownHistoricalSafetyStage": {
+    "versionId": "6edef49b-ca5c-4c97-bcec-5c141b079bb1",
+    "deploymentId": "57ea9670-0fef-420b-8bd2-cd044c89fd2d",
+    "codeSHA256": "0e882e02295d9e8630593f93e1fada65dd7d3a04a3361b8a2f20c70d2dae8290",
+    "bindings": 95,
+    "namespaceCount": 23
+  },
+  "postChangeActualState": {
+    "phase": null,
+    "versionId": null,
+    "deploymentId": null,
+    "versionPercentage": null,
+    "latestVersionId": null,
+    "reviewedCandidateCodeSHA256": null,
+    "actualCodeSHA256": null,
+    "completeNormalizedSettingsBindingsSnapshot": null,
+    "completeActiveDeploymentSnapshot": null,
+    "completeNamespaceIdentitySnapshot": null,
+    "snapshotSHA256": null,
+    "sourceReadReceipts": null,
+    "recordedUTC": null
+  },
+  "executionApproval": {
+    "sourceUserMessageId": null,
+    "quietWindowStartUTC": null,
+    "quietWindowEndUTC": null,
+    "singlePublisherIdentity": null,
+    "reviewedDerivedRequestSHA256": null,
+    "explicitFailureCloseAndForwardRollbackIncluded": null
+  },
+  "allPostStateAndApprovalFieldsRequired": true,
+  "phaseSchemas": {
+    "CUTOVER_SIGNED_WITHOUT_RECOVERY": {
+      "APP_ORIGIN": "https://app.riffoid.com",
+      "APP_TRANSPORT_ORIGIN": "https://riffoid-transport.gaojihe.cn",
+      "TWO_ACCOUNT_AUTH_MODE": "signed-entry-v1",
+      "LEGACY_RECOVERY_ORIGIN": "ABSENT",
+      "LEGACY_RECOVERY_UNTIL": "ABSENT",
+      "bindingCountIfNoTemporaryChannelPresent": 97
+    },
+    "CUTOVER_SIGNED_WITH_RECOVERY": {
+      "APP_ORIGIN": "https://app.riffoid.com",
+      "APP_TRANSPORT_ORIGIN": "https://riffoid-transport.gaojihe.cn",
+      "TWO_ACCOUNT_AUTH_MODE": "signed-entry-v1",
+      "LEGACY_RECOVERY_ORIGIN": "https://m1.riff-demo.gaojihe.cn",
+      "LEGACY_RECOVERY_UNTIL": "ACTUAL_ACCEPTED_T_PLUS_48H_NOT_PRECOMPUTED",
+      "bindingCountIfNoTemporaryChannelPresent": 99
+    },
+    "MAINTENANCE_SIGNED_VALIDATION": {
+      "separatePreciseWindowApprovalRequired": true,
+      "APP_ORIGIN": "https://app.riffoid.com",
+      "APP_TRANSPORT_ORIGIN": "https://riffoid-transport.gaojihe.cn",
+      "TWO_ACCOUNT_AUTH_MODE": "signed-entry-v1",
+      "LEGACY_RECOVERY_ORIGIN": "ABSENT_FOR_PRE_T_PROTOCOL_WINDOW_ONLY",
+      "LEGACY_RECOVERY_UNTIL": "ABSENT_T_NOT_STARTED",
+      "temporaryConfig": "ACTUAL_REVIEWED_RIFFOID_VALIDATION_CONFIG_JSON",
+      "bindingCountIfExactlyOneTemporaryPlainBindingAdded": 98,
+      "ordinaryBusinessRoutes": "503_even_after_validation_expiry_until_configuration_removed",
+      "actualReviewedTemporaryCodeSHA256": null
+    }
+  },
+  "temporaryValidationPhase": "Maintenance only: real normal canonical/signed, no alternate audience and no Auth/business dispatch. Actual entry baseline and post-version/full resource guards remain required. T has not begun; future formal recovery T+48h remains required.",
+  "preWriteChecks": [
+    "fresh actual latest=active=reviewed version, 100%",
+    "full code/settings/bindings/namespace/exports/assets/containers match actual recorded post-change phase",
+    "same replay namespace and original 22 namespaces",
+    "request modules and explicit restored old origin match reviewed derived artifact",
+    "quiet window currently valid, no concurrent publisher",
+    "unknown prior receipt reconciled with GET before any next write"
+  ],
+  "classicInheritIsLatestOnly": true,
+  "serverAtomicFullConfigurationCASProven": false,
+  "staleOrDriftAction": "STOP, not drop guard or inherit unreviewed state",
+  "receiptUnknownAction": "GET_ONLY_NO_AUTOMATIC_RETRY"
+}

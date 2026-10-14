@@ -5,6 +5,8 @@ import { requireTurnRuntime, turnAdmissionStatus } from './turn-runtime-gate.ts'
 import {traceTurnAdmission} from '../turn/admission-telemetry.ts';
 
 interface WorkspaceTurnActor {
+  recoveryTurnReceipt?(input:{scope:TurnScope;actor:TurnActor;sessionId:string;key:string}):Promise<unknown>;
+  recoveryTurnSnapshot?(input:{scope:TurnScope;actor:TurnActor}):Promise<unknown>;
   managedAcceptanceStatus?(input:{scope:TurnScope;actor:TurnActor}):Promise<unknown>;
   cleanupManagedAcceptance?(input:{scope:TurnScope;actor:TurnActor}):Promise<unknown>;
   createSession(input: { scope: TurnScope; actor: TurnActor; key: string; body: { title: unknown } }): Promise<unknown>;
@@ -42,6 +44,14 @@ export function createGatewayTurnServices(env: TurnServicesEnv) {
     return {piEnabled,configured,managed:backend==='pi'?false:backend==='managed'||!!configured};
   };
   return {
+    async recoveryReceipt(scope:TurnScope,caller:TurnActor,sessionId:string,key:string){
+      const stub=actor(scope);if(!stub.recoveryTurnReceipt)throw Error('recovery-receipt-not-configured');
+      return stub.recoveryTurnReceipt({scope,actor:caller,sessionId,key});
+    },
+    async recoverySnapshot(scope:TurnScope,caller:TurnActor){
+      const stub=actor(scope);if(!stub.recoveryTurnSnapshot)throw Error('recovery-snapshot-not-configured');
+      return stub.recoveryTurnSnapshot({scope,actor:caller});
+    },
     async managedAcceptanceStatus(scope:TurnScope,caller:TurnActor){const stub=actor(scope);if(!stub.managedAcceptanceStatus)throw Error('managed-product-runtime-not-configured');return stub.managedAcceptanceStatus({scope,actor:caller});},
     async cleanupManagedAcceptance(scope:TurnScope,caller:TurnActor){const stub=actor(scope);if(!stub.cleanupManagedAcceptance)throw Error('managed-product-runtime-not-configured');return stub.cleanupManagedAcceptance({scope,actor:caller});},
     async createSession(scope: TurnScope, caller: TurnActor, key: string, body: { title: unknown }) {

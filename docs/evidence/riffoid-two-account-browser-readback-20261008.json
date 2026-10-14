@@ -1,0 +1,113 @@
+{
+  "date": "2026-10-08",
+  "readbackCompletedUTC": "2026-10-08T05:45:40Z",
+  "scope": "Authorized existing-session read-only inspection and documentation; no rollout",
+  "authorization": {
+    "source": "User 2026-10-08T05:32:17Z: 1 allowed Safari Automation prompt, 2 agreed48h server recovery",
+    "safariAutomation": true,
+    "recoveryHoursAfterSuccessfulCutover": 48,
+    "otherPermissionsLoginCredentialsSecurityRulesOAuth": "Not implied or performed"
+  },
+  "safari": {
+    "firstOperation": "get URL of current tab of front window",
+    "initial": "running/waiting then returned URL successfully",
+    "automationNowReadable": true,
+    "firstPageOrigin": "https://m1.riff-demo.gaojihe.cn",
+    "workspaceContentRead": false,
+    "cloudflareTabsLocated": 3,
+    "doJavaScript": "Setting-disabled error8; not enabled and no other permission prompt",
+    "successfulReadInterface": "Public Safari text of tab Apple Events property; no HTML source, profile/cookie/token reads",
+    "newInvestigationTab": "Login page; closed without login",
+    "existingSameAccountTab": "Read-only navigation succeeded for rules/members/DNS/SSL/Workers; original account-home URL restored",
+    "otherTabs": "Preserved",
+    "newLoginAccountSwitchOrSecretRead": false
+  },
+  "newAccount": {
+    "accountId": "3232ebc7e9bb0199b92e3d70b07825af",
+    "accountLabel": "Jihe.gao@theidsa.org's Account",
+    "zoneName": "riffoid.com",
+    "zoneId": "b0b0079990e13eb20a17a2d3c41403b8",
+    "plan": "Free",
+    "dnsRecords": 0,
+    "dnsRecordCapacity": 200,
+    "zoneWorkerRoutes": 0,
+    "overview": "No Workers connected",
+    "workerProjects": 0,
+    "requestsToday": 0,
+    "customRules": "Empty visible table; Create rule available; not a write/compiled-expression proof",
+    "sslTlsMode": "Full",
+    "members": {
+      "observedActiveMember": "jihe.gao@theidsa.org",
+      "memberCount": 1,
+      "apiAccessLabel": "Default",
+      "inviteMembersControlVisible": true,
+      "exactSuperAdminIconPolicyScopes": "not represented in native visible text; not verified",
+      "roleInference": "Official docs require Super Administrator to view Members; successful page access supports role capability, not full API write-channel proof"
+    },
+    "metadataSources": "Existing same-account dashboard Overview, Security Rules, Members, DNS records, SSL/TLS, Worker Routes and Workers & Pages via Safari native visible text"
+  },
+  "originalAccount": {
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "existingCLIAuthentication": "original account, unchanged",
+    "currentDeployments": {
+      "gateway": {
+        "deployment": "c6ff55e4-2364-4920-94e0-b8784a1824b5",
+        "createdOn": "2026-10-08T02:23:00.548287Z",
+        "versions": [
+          {
+            "version_id": "aeddf112-a2be-45da-868c-ed576c55d5ec",
+            "percentage": 100
+          }
+        ],
+        "sha256": "7d2f33019753672a954c6c3b1236001dfab2d54c289a790d2bcb286a7fec6417",
+        "versionResourcesMatchPreviousReadback": true,
+        "bindingCount": 93,
+        "currentVersionMetadataSha256": "79f29816094db2ddafbaa5c8b66e5a8c258a026c71dc05d2302ac0410ca61c58"
+      },
+      "execution": {
+        "deployment": "a6fdeb9f-d885-4c72-9e02-968315351edb",
+        "createdOn": "2026-10-01T05:25:24.49884Z",
+        "versions": [
+          {
+            "version_id": "c94df077-02a1-460f-8158-e47a338e68af",
+            "percentage": 100
+          }
+        ],
+        "sha256": "9a0079bb282d35af09c88fd85d78ec1d53fdeec9011f57b0621f755ecd0cdb40",
+        "versionResourcesMatchPreviousReadback": true,
+        "bindingCount": 4,
+        "currentVersionMetadataSha256": "616e4e8937aeece575cdc5352b8c4f2c0e6d81e39cd33ccb5f7e1a99495f7816"
+      }
+    },
+    "versionResourcesComparedExactly": true,
+    "zoneIdPlanRolesRoutesWafTls": "Not available via exposed existing CLI/connector read actions; Safari existing control tabs are new account; no token extraction or account switch"
+  },
+  "candidateTransportDns": {
+    "riffoid-transport.gaojihe.cn": "NXDOMAIN",
+    "m1-transport.riff-demo.gaojihe.cn": "NXDOMAIN"
+  },
+  "repository": {
+    "pr": 173,
+    "headAtStart": "ce1cf4757dbfb622409568f68cd5371d2d345267",
+    "mainAtStart": "25609953f5c3b69dcb44e520d7e7ed1253d18fe4",
+    "codeChangesThisStage": 0,
+    "previousTests": "M1323/323, M31070pass12conditionalSkip0fail; no code change or repeated suites this stage"
+  },
+  "recovery": {
+    "approvedHours": 48,
+    "clockStarts": "Actual successful cutover UTC, not approval or current preparation time",
+    "cutoverPerformed": false,
+    "cutoverUTC": null,
+    "LEGACY_RECOVERY_UNTIL": null,
+    "staticGuideAndLocalExport": "Retain after server deadline; original8h session lifetime unchanged"
+  },
+  "proposal": "docs/riffoid-two-account-security-overlay.example.jsonc",
+  "remainingApproval": "Exact hostname/route/WAF/IP trust and Google/Gateway/Execution security configuration, no repeated Safari/48h question",
+  "noCloudflareGoogleSecurityCredentialPermissionPaidMergeChanges": true,
+  "sources": [
+    "https://developers.cloudflare.com/waf/custom-rules/",
+    "https://developers.cloudflare.com/waf/custom-rules/use-cases/block-worker-subrequests/",
+    "https://developers.cloudflare.com/ruleset-engine/rules-language/fields/reference/cf.worker.upstream_zone/",
+    "https://developers.cloudflare.com/fundamentals/manage-members/manage/"
+  ]
+}

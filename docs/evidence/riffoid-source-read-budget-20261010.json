@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-10",
+  "baseHead": "edaf6b9180e7aa8efe7833436eefa2084cf4af31",
+  "status": "THREE_CONTROL_PLANE_PREFLIGHTS_STOPPED_BEFORE_PUT",
+  "productionPUTs": 0,
+  "durableIntentRecords": 0,
+  "unknownMutationRecords": 0,
+  "maintenancePublished": false,
+  "formalCutoverT": null,
+  "recoveryUntil": null,
+  "attempts": [
+    {
+      "run": "riffoid_6b1eaecb29344f8c8473beccf0663ebf",
+      "failure": "120s complete readback limit",
+      "processStopped": true
+    },
+    {
+      "run": "riffoid_4a595a0b3a524bdd86de224206d823b2",
+      "failure": "metadata channel receipt deadline; no intent",
+      "processStopped": true
+    },
+    {
+      "run": "riffoid_4a595a0b3a524bdd86de224206d823b2",
+      "failure": "raw source GET exceeded 30s",
+      "processStopped": true
+    }
+  ],
+  "change": {
+    "onlyExactOwnedWorkerSourceGETMaxMS": 60000,
+    "otherGETMaxMS": 30000,
+    "PUTMaxMS": 15000,
+    "completeReadbackMaxMS": 180000,
+    "defaultReadbackMS": 60000,
+    "automaticRetries": 0,
+    "protocolWindowMS": 300000
+  },
+  "tests": {
+    "relatedChecks": 121,
+    "nativeSocketFaultChecks": 21,
+    "operationalDurableIntentGuardChecks": 12,
+    "syntheticClock50sSourceAccepted": true,
+    "syntheticClock50sOtherGETRejected": true,
+    "realPlatformAcceptance": false
+  },
+  "credentialStatus": {
+    "refreshPOSTOriginal": "UNCONFIRMED_NOT_RETRIED",
+    "subsequentExistingCredentialGETBoth": "200_UNCHANGED_BASELINE",
+    "sameScopeReauthentication": "IN_PROGRESS"
+  },
+  "limitations": [
+    "Control-plane GETs only; no browser protocol Observe/Run/cleanup",
+    "Raw visitor IPs and tokens remain private",
+    "No formal new-origin authentication, Execution or 48h recovery acceptance"
+  ]
+}

@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-08",
+  "scope": "local-implementation-and-offline-verification-only",
+  "productionReady": false,
+  "source": {
+    "repository": "jihegao/riffology-cloud",
+    "baseMain": "e55104bec3966a2c6f096ba9910712732979f055",
+    "preparationPR": 173,
+    "preparationRemoteHeadReadback": "90e7a4e77844da7b8d6719a0893860fcd48fffa0",
+    "localBase": "327287233d16d0bcce6bc79ad1e87deae874ea4e",
+    "verifiedEqualBaseTree": "fec83fe7686fdce6496df741d64eb66b4445627a",
+    "localBranch": "codex/riffoid-two-account-local-20261008",
+    "brandPR": 170,
+    "brandHead": "9799c5c80c2c980a4c34ea446ce800dd1139f880",
+    "brandChangesRepeated": false,
+    "originalCheckoutStatus": "clean, codex/riffoid-brand-20261007 at 068b1f295fc3ee25b46919b30bdbcf178f387b81; unchanged"
+  },
+  "authorization": {
+    "localEditsTestsAndNecessaryReadOnlyQueries": true,
+    "pushPRUpdatesOrComments": false,
+    "deployDomainDNSOAuthCSPOnlineChanges": false,
+    "newOnlineWorkersBindingsCredentialsPermissions": false,
+    "installationMergePaidExecution": false
+  },
+  "environment": {
+    "node": "26.10.0",
+    "typescript": "7.0.2",
+    "betterAuth": "1.7.3",
+    "wrangler": "4.129.0",
+    "miniflare": "5.20260903.0-alpha",
+    "workerd": "1.20260903.1",
+    "compatibilityDate": "2026-09-06",
+    "playwright": "1.63.0",
+    "dependencySource": "existing local node_modules symlink; no installation",
+    "browser": "existing cached Chromium; fresh disposable context, service workers blocked, DNS disabled and all requests intercepted in new browser test",
+    "runtimeAssets": "25 existing cached assets verified against upstream hashes/lengths; copied locally then receipts/materialization verified with fetch denied; tracked manifests/assets unchanged"
+  },
+  "verification": [
+    {
+      "command": "node --test tests/m1/riffoid-entry.test.ts tests/m1/riffoid-recovery.test.ts",
+      "exitCode": 0,
+      "tests": 11,
+      "pass": 11,
+      "fail": 0,
+      "skipped": 0,
+      "localLog": ".local/test-node-targeted.log",
+      "logSha256": "00f01a387af1537d409e0dd1c1155ff38d78a1e322e4df02b3a8255a915eb33d"
+    },
+    {
+      "command": "M1_BROWSER_CHANNEL=chromium npm run test:m1",
+      "exitCode": 0,
+      "tests": 317,
+      "pass": 317,
+      "fail": 0,
+      "skipped": 0,
+      "localLog": ".local/test-m1-chromium.log",
+      "logSha256": "b5358680212b3a5ca17c319afea653ff58dd2c9e47bf957b5817d3a0f9a8c960"
+    },
+    {
+      "command": "npm run test:m2",
+      "exitCode": 0,
+      "tests": 869,
+      "pass": 869,
+      "fail": 0,
+      "skipped": 0,
+      "localLog": ".local/test-m2.log",
+      "logSha256": "c1953d2eee0a3f50ee22f43a1812a38d721f526a68abe83bb9282594e227d4c8"
+    },
+    {
+      "command": "M1_BROWSER_CHANNEL=chromium node --test --test-concurrency=2 tests/m3/gateway-previews.test.ts tests/m3/browser-preview-gateway.test.ts tests/m3/browser-preview-gateway-assets.test.mjs tests/m3/gateway-root-assets-workerd.test.mjs tests/m3/g3-gateway-auth-workerd.test.mjs",
+      "exitCode": 0,
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "skipped": 0,
+      "localLog": ".local/test-m3-boundaries-final.log",
+      "logSha256": "2ed7f7a27946e69359404c8607159ec483742fc81e1990a346a21d870c0ac443"
+    },
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "logSha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "newTests": {
+    "total": 14,
+    "entryBoundaryNode": 6,
+    "authRecoveryGatewayNode": 5,
+    "twoIndependentWorkerdWorkers": 1,
+    "productionWorkspaceDOReadOnlyRPC": 1,
+    "freshChromiumCookieIsolation": 1,
+    "includedInM1Count": true
+  },
+  "provedOffline": [
+    "Actual URL transport and genuine canonical Origin remain separate; fixed HTTPS target, exact Host/config boundary and no trusted forwarding/capability headers.",
+    "Real BetterAuth generates canonical PKCE callback; signed synthetic Google token/JWKS complete one callback; original auth user/catalog subject preserved; used state does not repeat token exchange.",
+    "Fresh browser stores Secure/HttpOnly/SameSite=Lax host-only canonical state/session cookies; transport receives none, original legacy cookie remains separate; signout revokes only the new session.",
+    "Legacy endpoint allowlist and expiry deny writes/callbacks/Preview/events; valid old sessions do not refresh and expired sessions are not deleted; current Catalog revocation/membership checks remain.",
+    "Already-started actual WorkspaceAgent recovery snapshot preserves journal/KV/alarm and calls no runtime/budget; original constructor compatibility migration is unchanged and excluded from zero-write assertion.",
+    "Lost accepted response causes one send only; original authenticated key reads the exact receipt without another submit; SSE retains cursor, closes on Catalog revocation and forwards cancellation without cancelling the Turn.",
+    "Shared original database auth rate bucket cannot be evaded with spoofed rotating forwarded IP; CSRF, fixed trustedOrigins and existing endpoint limits remain enabled."
+  ],
+  "harnessLimitations": [
+    "Two local Workerd instances are connected by an outbound test handler, not a production cross-account service binding. global_fetch_strictly_public remains set but actual Cloudflare public routing/TLS/WAF is not exercised.",
+    "Miniflare HTTP dispatch loses genuine Host and Request.redirect metadata. A test-only bundle adapter restores URL Host; production source has no adapter. Node boundary tests check spoofed Host/manual redirect, while Workerd checks canonical redirects without following them.",
+    "Browser HTML is an isolated driver fixture, provider is synthetic signed Google, callback redirect is observed manually with DNS disabled; not a real Google, complete product or paid acceptance.",
+    "Original DO cold-start migration transaction can persist compatibility normalization; new recovery RPC adds no orchestration or migration change."
+  ],
+  "failedAttemptsAndCorrections": [
+    "Sandbox EPERM for local Workerd listener: approved ephemeral loopback test execution only.",
+    "Existing Workerd supports dates through 2026-09-10: used repository date 2026-09-06, no install/update.",
+    "SQLite auth-date fixture initially used numeric milliseconds rather than adapter ISO strings; corrected fixture without changing auth semantics.",
+    "Miniflare loopback Host/RPC origin protection and outbound redirect-metadata artifacts: explicit test-only URL Host adapter, genuine Origin retained, no production Host relaxation.",
+    "Initial browser automatic redirect fixture failed; final test blocks DNS and uses manual callback redirect before fresh local document navigation.",
+    "Initial M1 run:315 tests,249 pass,66 fail due absent default Chrome; supported M1_BROWSER_CHANNEL=chromium uses existing cache; final317 pass.",
+    "M3 initial missing generated assets, then absent default Chrome; verified existing cache/prepared assets and corrected actual M1_BROWSER_CHANNEL setting; final10 pass."
+  ],
+  "preservation": {
+    "protectedTrackedPathsComparedWithBase": [
+      "infra",
+      "services/catalog/migrations",
+      "services/web",
+      "services/browser-preview",
+      "services/model-budget",
+      "services/capacity",
+      "services/simulation/invited-policy.ts",
+      "services/workspace/protocol.ts",
+      "services/gateway/google-oauth-egress.ts",
+      "services/turn/store.ts",
+      "package.json",
+      "package-lock.json"
+    ],
+    "changesInThosePaths": [],
+    "newInfraTemplateOnly": "infra/wrangler.riffoid-entry.template.jsonc (untracked during preservation comparison, added in this local commit)",
+    "dataMigrationsNamespacesActorsImagesPoliciesInternalNames": "unchanged",
+    "trialReviewAt": "2026-12-31T15:59:59.999Z",
+    "M1Deadline": "2026-10-20",
+    "trialAndDeadlineSource": "latest #104/#169 evidence; not a fresh Cloudflare readback"
+  },
+  "unresolvedBeforeOnlineApproval": [
+    "Both actual account IDs/zone/roles",
+    "Independent existing-account public HTTPS transport hostname/route and TLS/WAF/OAuth-egress reachability",
+    "Exact legacy recovery UTC expiry",
+    "Fresh full Gateway/Execution versions, config/bindings/assets and preserved ledgers/gates readback",
+    "Google precise callback registration and Execution canonical ancestor/CSP coordinated packet",
+    "Authorized real invited identities/projects, complete negative/SSE/Preview acceptance and separately scoped paid/release checks if requested",
+    "Versioned coordinated rollback packet"
+  ],
+  "remoteActions": {
+    "pushed": false,
+    "PRCreatedOrUpdated": false,
+    "commentsPosted": false,
+    "deployed": false,
+    "DNSDomainsOAuthCSPChanged": false,
+    "credentialsPermissionsChanged": false,
+    "CloudflareAccountLogin": false,
+    "SafariOrExistingProfileUsed": false,
+    "paidCloudExecution": false,
+    "merged": false
+  }
+}

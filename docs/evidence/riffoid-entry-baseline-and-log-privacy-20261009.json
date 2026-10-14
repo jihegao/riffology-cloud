@@ -1,0 +1,244 @@
+{
+  "status": "PARENT_ACTUAL_READBACK_ATTESTED_LOCAL_BYTES_VERIFIED_NO_PRODUCTION_CALLS",
+  "source": {
+    "parentThread": "01a118f1-ea45-739a-9e7d-6f57ef7cd010",
+    "parentReadUTCMinute": "2026-10-09T07:26Z",
+    "kind": "parent connected-app GET summary; full raw multipart/settings receipts not received locally",
+    "newCloudflareConnectionAccounts": "old jihe.gao@gmail.com Personal whoami confirmed by parent; permissions only proven endpoint-by-endpoint"
+  },
+  "entry": {
+    "accountId": "3232ebc7e9bb0199b92e3d70b07825af",
+    "service": "riffoid-entry",
+    "actualLatestAndActiveVersion": "c110d7a7-fc81-4bb1-b27a-4ca8147a7fff",
+    "actualActiveDeployment": "5e920993-ee9d-4a7e-b6fe-39ef494f35fd",
+    "percentage": 100,
+    "compatibilityDate": "2026-09-06",
+    "compatibilityFlags": [
+      "global_fetch_strictly_public",
+      "enable_request_signal"
+    ],
+    "bindingCount": 5,
+    "parentBindingSummary": {
+      "APP_ORIGIN": "https://app.riffoid.com",
+      "APP_TRANSPORT_ORIGIN": "https://riffoid-transport.gaojihe.cn",
+      "ENTRY_SIGNING_KEY_ID": "riffoid-entry-20261008-a",
+      "ENTRY_SIGNING_PRIVATE_JWK": "metadata only; value not received/read",
+      "TWO_ACCOUNT_AUTH_MODE": "disabled"
+    },
+    "workersDevEnabled": false,
+    "previewURLsEnabled": false,
+    "observability": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "logs": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "persist": true,
+        "invocation_logs": true
+      },
+      "redact_query_string": false,
+      "traces": {
+        "enabled": false,
+        "persist": true
+      }
+    },
+    "tailConsumers": [],
+    "logpush": false
+  },
+  "moduleComparison": {
+    "parentMultipartPartName": "worker.js",
+    "parentExtraction": "after first CRLFCRLF through before last CRLF--",
+    "parentExtractedModuleCharacters": 16197,
+    "parentExtractedModuleSHA256": "7a71a528d3ee7014621848e16801aeddd12c8f39edd3431720d089f337bb7dc4",
+    "originalDeliveryPath": "docs/artifacts/riffoid-entry-disabled-20261008/entry.worker.mjs",
+    "originalDeliveryBytes": 16198,
+    "originalDeliveryCharacters": 16198,
+    "originalDeliverySHA256": "856eb92c777ee04a569dfe53f5bec44d90566341e9c2d3632bf7f4c75de9a0eb",
+    "dropExactlyOneTerminalLFBytes": 16197,
+    "dropExactlyOneTerminalLFSHA256": "7a71a528d3ee7014621848e16801aeddd12c8f39edd3431720d089f337bb7dc4",
+    "terminalCRLF": false,
+    "onlyOneLFRemovalMatchesParentDigest": true,
+    "normalizationForEquivalenceOnly": true,
+    "neitherModuleWhitespaceTrimNorRecompilePerformed": true,
+    "rawProductionMultipartSHA256": null,
+    "rawProductionMultipartReceivedLocally": false,
+    "actualStoredCodeTrailingNewlineCause": "not established; do not claim parser behavior vs API normalization",
+    "futureExactWireGuardUsesParentRawExtractionHash": true,
+    "originalDeliveredBytesPreserved": true
+  },
+  "oldTransportWAF": {
+    "sourceParentReadUTCMinute": "2026-10-09T07:27Z",
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "zoneId": "c97b548800561fada1a912c234696db1",
+    "rulesetId": "f7a4a167ff2d4c8da0ba2c46e38f5d9b",
+    "ruleCount": 1,
+    "rule": {
+      "id": "af184f41fd024d6a9180486a9e98d03a",
+      "description": "riffoid-transport-only",
+      "enabled": true,
+      "action": "block",
+      "expression": "http.host eq \"riffoid-transport.gaojihe.cn\" and cf.worker.upstream_zone ne \"riffoid.com\"",
+      "last_updated": "2026-10-09T01:18:15.297354Z"
+    }
+  },
+  "newEntryWAFAndHeaderSettings": {
+    "sourceParentReadUTCMinute": "2026-10-09T07:27Z",
+    "accountId": "3232ebc7e9bb0199b92e3d70b07825af",
+    "zoneId": "b0b0079990e13eb20a17a2d3c41403b8",
+    "pseudoIPv4": "off",
+    "managedRequestTransforms": {
+      "count": 4,
+      "allEnabled": false,
+      "allHasConflict": false,
+      "remove_visitor_ip_headers": false,
+      "fullNamedObjectsNotProvidedLocally": true
+    },
+    "managedResponseTransforms": {
+      "count": 2,
+      "allEnabled": false,
+      "allHasConflict": false,
+      "fullNamedObjectsNotProvidedLocally": true
+    },
+    "customRulesetId": "bf9425f26625489f8d63e68577b3fc4f",
+    "customRuleCount": 1,
+    "rule": {
+      "id": "90b1eaa4897640d8bbc2b264387e4946",
+      "enabled": true,
+      "action": "block",
+      "expression": "http.host eq \"app.riffoid.com\" and cf.worker.upstream_zone ne \"\""
+    },
+    "lateRequestTransformEntrypoint": {
+      "phase": "http_request_late_transform",
+      "GETResultCode": 10003,
+      "message": "could not find entrypoint",
+      "phaseRulesetAbsentAsObserved": true,
+      "doesNotProveOtherPhasesOrSnippetsAbsent": true
+    }
+  },
+  "privacyGuard": {
+    "actualLoggingSettingsObserved": true,
+    "provesNoWholeProofHeaderBodyPersistence": false,
+    "tailConsumersEmptyAndLogpushFalseDoNotProveAllLoggingSafe": true,
+    "approvedPathSchemaAndExistingPipelinesStillNeedReadOnlyReview": true,
+    "noObservabilityChangeAuthorizedOrPerformed": true,
+    "pipelineListsSnapshotNowAttestedEmpty": "2026-10-09T07:44Z; eight GET 200 empty; publication-time recheck mandatory"
+  },
+  "nativeIngressGuard": {
+    "WAFRuleIDAndExactExpressionsReadbackGapResolved": true,
+    "actualNativeIPObserved": false,
+    "markerSet": false,
+    "twoDistinctRealExitsPending": true,
+    "otherPhasesOrSnippetsFullyEnumerated": false,
+    "zoneIsNotWorkerScriptIdentity": true
+  },
+  "thisLocalFollowup": {
+    "productionReads": 0,
+    "productionWrites": 0,
+    "githubWrites": 0,
+    "runtimeOrPlatformExperiments": 0,
+    "credentialValuesAccessed": false,
+    "formalT": null,
+    "recoveryUntil": null,
+    "githubWritesCheckpoint": "0 at local baseline comparison; later authorized doc-only PR publication recorded separately"
+  },
+  "privacyContractReview": {
+    "kind": "official documentation plus installed schema; no production event observation",
+    "currentPrivacyEstablished": false,
+    "tailRequestHeadersCanIncludeProof": true,
+    "proofSignatureAndIPNamesMatchDocumentedHeuristic": false,
+    "workersLogsStoredHeaderSchemaExhaustivelyGuaranteed": false,
+    "minimalConditionalDifferencePerWorker": {
+      "path": "observability.logs.persist",
+      "baseline": true,
+      "candidate": false,
+      "restoration": true
+    },
+    "requiredPendingMetadata": [
+      "fresh full entry/Gateway settings and per-script destinations plus publication-time pipeline recheck",
+      "existing integrations and other capture configuration; current eight endpoint lists are empty, not a universal retention guarantee"
+    ],
+    "productionLogValuesQueried": false,
+    "productionSettingsWritten": false,
+    "referenceDoc": "../riffoid-validation-privacy-window-20261009.md"
+  },
+  "maintenanceScope": {
+    "ordinaryHTTPBusinessEntryFenced": true,
+    "existingRecoveryHandlerOnlyIfAlreadyConfigured": true,
+    "scheduledProvisioningAndRevisionGCUnchanged": true,
+    "inFlightDOAndRuntimeWorkContinues": true,
+    "zeroAccountActivityOrCostClaimed": false,
+    "inFlightReadPerformed": false,
+    "authoritativeReadOnlyInventoryPending": true,
+    "backgroundPausePerformed": false
+  },
+  "logPipelineSnapshot": {
+    "sourceParentThread": "01a118f1-ea45-739a-9e7d-6f57ef7cd010",
+    "parentReadUTCMinute": "2026-10-09T07:44Z",
+    "kind": "parent successful two-connector metadata-only readback summary; raw responses not received locally",
+    "readCount": 8,
+    "reads": [
+      {
+        "method": "GET",
+        "path": "/accounts/3232ebc7e9bb0199b92e3d70b07825af/logpush/jobs",
+        "httpStatus": 200,
+        "result": []
+      },
+      {
+        "method": "GET",
+        "path": "/zones/b0b0079990e13eb20a17a2d3c41403b8/logpush/jobs",
+        "httpStatus": 200,
+        "result": []
+      },
+      {
+        "method": "GET",
+        "path": "/accounts/3232ebc7e9bb0199b92e3d70b07825af/workers/observability/destinations",
+        "httpStatus": 200,
+        "result": []
+      },
+      {
+        "method": "GET",
+        "path": "/accounts/3232ebc7e9bb0199b92e3d70b07825af/workers/scripts/riffoid-entry/tails",
+        "httpStatus": 200,
+        "result": []
+      },
+      {
+        "method": "GET",
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/logpush/jobs",
+        "httpStatus": 200,
+        "result": []
+      },
+      {
+        "method": "GET",
+        "path": "/zones/c97b548800561fada1a912c234696db1/logpush/jobs",
+        "httpStatus": 200,
+        "result": []
+      },
+      {
+        "method": "GET",
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/observability/destinations",
+        "httpStatus": 200,
+        "result": []
+      },
+      {
+        "method": "GET",
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/tails",
+        "httpStatus": 200,
+        "result": []
+      }
+    ],
+    "instantaneousOnly": true,
+    "mustRecheckBeforePublication": true,
+    "doesNotPreventLaterSubscriptionOrJobChanges": true,
+    "noBusinessLogsRead": true,
+    "noTailOpened": true,
+    "currentPersistRemainsTrue": true,
+    "currentNoProofPersistenceEstablished": false,
+    "doesNotEnumerateAllPossibleCaptureOrCustomFieldRules": true
+  },
+  "approvalStatus": {
+    "parentHasRequestedTemporaryDeploymentAndBothPersistFalsePlusRestorationAndSingle120SecondMaximumTest": true,
+    "userReplyReceivedInThisTask": false,
+    "productionApprovalNotAssumed": true,
+    "productionWritesByThisTask": 0
+  }
+}

@@ -1,0 +1,41 @@
+✔ approved wording is consumed without granting production authorization; altered evidence rejects (3.120667ms)
+✔ default dry-run dispatches zero HTTP; read-only and prepare cannot upload (1.421458ms)
+✔ wire multipart keeps public/resources and inherits redacted Secret text without material (6.996917ms)
+✔ raw HTTP preserves cf-entrypoint, body bytes and origin; bounds hangs and rejects redirects (11.632333ms)
+✔ GET-derived modules and runtime export readback work; drift/omitted cf-entrypoint reject (1.868709ms)
+✔ actual asset/container readback gaps stay blocked rather than trusting upload intent (1.020041ms)
+✔ durable exclusive journal is retained for unknown writes and rejects a second owner (21.813041ms)
+✔ version/deployment identity also binds resource snapshot hashes (0.667125ms)
+✔ unapproved live publication performs no HTTP; missing full preflight creates no intent or PUT (0.932ms)
+✔ mutable/custom transport cannot turn prepare into a network upload (0.6035ms)
+✔ missing Observe originals or forged terminal evidence block before any network write (1.08025ms)
+✔ restart loads original unknown journal and GET reconciliation never clears it (8.776458ms)
+✔ package CLI prepares all eight exact multipart files offline without overwriting prior packet (4.769042ms)
+✖ natural expiry checkpoint survives restart and rejects missing or altered identity/time (30.535833ms)
+✔ resource read drift is bracketed by final deployment and latest-version checks (1.423666ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 14
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 185.140458
+
+✖ failing tests:
+
+test at tests/m1/riffoid-validation-live-adapter.test.mjs:122:1
+✖ natural expiry checkpoint survives restart and rejects missing or altered identity/time (30.535833ms)
+  AssertionError [ERR_ASSERTION]: The "string" argument must be of type string. Received type undefined (undefined)
+      at Publisher.replayRecords (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/scripts/m1/riffoid-validation-publisher.mjs:187:232)
+      at Publisher.restoreOriginalPending (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/scripts/m1/riffoid-validation-publisher.mjs:205:39)
+      at async TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-live-adapter.test.mjs:134:32)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /^[a-f0-9]{64}$/,
+    operator: 'match',
+    diff: 'simple'
+  }

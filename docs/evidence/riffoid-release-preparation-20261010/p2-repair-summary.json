@@ -1,0 +1,82 @@
+{
+  "UTC": "2026-10-10T08:56:17.038416+00:00",
+  "status": "OFFLINE_P2_REPAIR_INDEPENDENTLY_ACCEPTED_NOT_PUBLISHED",
+  "publishedBasisHead": "6acdc30dd22228cf060b9e25dd87bff4b01869be",
+  "previousInternalReview": "superseded by external P2 findings; not reused as new acceptance",
+  "externalFindings": [
+    "namespace single-page and transport query restriction",
+    "completed-chain cold restart missing; lock ownership unclear",
+    "B unknown cannot halt A automatic cleanup",
+    "asset coverage false is placeholder; acceptance standards need explicit decision"
+  ],
+  "changes": [
+    "page/per_page namespace enumeration with repeated-page/limit/exact frozen target-set checks",
+    "completed-chain read-only reconstruction, both current Worker readbacks, journal/lock stability brackets, no replay or unknown unlock",
+    "owner-bound lock release, unknown priority even with terminal JSON, unknown remains original-pending",
+    "local Stop on both original pages; cleanup defaults unarmed; one operator authorization after coordinator confirms both original Run receipts; no added RPC/polling",
+    "explicit assets metadata/reserved multipart parts rejected; contract candidate separated from full-content audit and live coverage remains false",
+    "terminal JSON + unknown retains original pending even after restart",
+    "cross-account cold recovery identity/settings drift",
+    "namespace/container/pipeline independent mutation during readback",
+    "lost/replaced publisher lock before intent/PUT and after write",
+    "deadline rechecked after last lock await with no asynchronous gap before dispatch"
+  ],
+  "checks": {
+    "fixtures": {
+      "pass": 97,
+      "fail": 0,
+      "log": "p2-checks/full-sixth.txt"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "log": "p2-checks/typecheck-final.txt"
+    },
+    "earlierRepairFailuresRetained": [
+      "p2-checks/journal-first.txt",
+      "p2-checks/ui-journal-first.txt",
+      "p2-checks/ui-journal-second.txt"
+    ],
+    "independent": {
+      "pass": 97,
+      "fail": 0,
+      "typecheck": "passed",
+      "diffCheck": "passed"
+    }
+  },
+  "G5Evidence": "G5-summary-readback.json",
+  "assetDecisionProposal": "assets-acceptance-design.md",
+  "priorPublishedEvidence": [
+    "summary.json",
+    "technical-follow-up.json",
+    "technical-independent-review.json"
+  ],
+  "priorAndCurrentCheckIndex": "retained-checks-index.json",
+  "newEntryReviewBundle": {
+    "bytes": 35074,
+    "sha256": "b5bc46a4915c7f027bd343f1944fb34c3a0ae7979add2ab2b2b68e55fedcced5",
+    "status": "OFFLINE_REVIEW_ONLY; v2 entry candidate remains old and must not be reused for these repairs"
+  },
+  "productionWrites": 0,
+  "providerCalls": 0,
+  "pushesThisRound": 0,
+  "originalDirtyCheckoutModified": false,
+  "liveBlockers": [
+    "asset acceptance standard unapproved; coverage false",
+    "raw authenticated HTTP bridge not connected",
+    "complete fresh baseline and namespace/resource evidence not captured",
+    "original live execution inputs absent"
+  ],
+  "CI": "published head CI 38037234823 failed with null steps/log URL, cause UNKNOWN; no rerun",
+  "independentReview": "p2-independent-review.json",
+  "sourceHashes": {
+    "scripts/m1/riffoid-validation-publisher.mjs": "9703c901863fb9abf6abbf4ca0ec16041e98758568a8f4b4986a4a2f93a6299e",
+    "scripts/m1/riffoid-validation-resources.mjs": "6b3878c4b4f7d67c142320e2fc3af36867689286d6ca84a828249fbbca277cc6",
+    "scripts/m1/riffoid-validation-transport.mjs": "85ffef7b9102aabc8170d204eede47c6bad4988e4ffac242539d20dca17ab0b8",
+    "services/entry/validation-cleanup-ui.ts": "37e553fe3fec8696d112d42057d5071c7a382e6c94d90511d5929009c4b3912e",
+    "services/entry/validation-entry.ts": "112198cd6e2e6ba6971b2ee7fd539400ddc4688e0a12c268ffff8c60296a6d10",
+    "tests/m1/riffoid-validation-live-adapter.test.mjs": "7f6e0296c134a8b2496ba51c0213fc08e99e55ef0eafc7aa81b1b1be655e0e65",
+    "tests/m1/riffoid-validation-resources.test.mjs": "5e4e2b33d28144294f52dc9f998c895b602f24ba102cf586204990a2470a80bf",
+    "tests/m1/riffoid-validation-cleanup-ui.test.mjs": "d31f6975a6e13cdfceebe9e778683d1242372f7188b7bab3c7ddb139073c4b61"
+  },
+  "atomicityLimit": "double resource passes and cross-account tail checks detect observed drift; no atomic multi-endpoint snapshot; external exclusion must cover Worker, resource and pipeline configuration writers"
+}

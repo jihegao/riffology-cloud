@@ -1,0 +1,228 @@
+{
+  "scope": "all retained original preparation and current P2 repair pass/failure logs; no production logs",
+  "files": [
+    {
+      "path": "cleanup-first.txt",
+      "sha256": "ba031ce22d4a34c7d53ea11b60a15730640fd2139c98241b383b195f7c558cd4",
+      "sourceLogSHA256": "ba031ce22d4a34c7d53ea11b60a15730640fd2139c98241b383b195f7c558cd4",
+      "IPRedacted": true
+    },
+    {
+      "path": "cleanup-second.txt",
+      "sha256": "01c691207e6cdfe01dc9d3712dd1c4505ba1ce94748afec861501c7349a6c93d",
+      "sourceLogSHA256": "01c691207e6cdfe01dc9d3712dd1c4505ba1ce94748afec861501c7349a6c93d",
+      "IPRedacted": true
+    },
+    {
+      "path": "final-fixtures-v2.txt",
+      "sha256": "f6577f6882ead23ee1716f8220268bf2018482bd39a363ce0b1afe64c6333b45",
+      "sourceLogSHA256": "40856e29b3ae7d0f3e7876526acda0555ea6bd0c5bcab96ad58330a36e3defe3",
+      "IPRedacted": true
+    },
+    {
+      "path": "final-fixtures-v3.txt",
+      "sha256": "cfbd67af6d0a8d8b6e898763e9efcac3b3a05f68e305d4c6c2c505e3ae9a28d5",
+      "sourceLogSHA256": "cfbd67af6d0a8d8b6e898763e9efcac3b3a05f68e305d4c6c2c505e3ae9a28d5",
+      "IPRedacted": true
+    },
+    {
+      "path": "final-fixtures.txt",
+      "sha256": "a3de383ec9e5ae9ffd9403517cdb6025097006879478eeeec44cd6922c3976cb",
+      "sourceLogSHA256": "a3de383ec9e5ae9ffd9403517cdb6025097006879478eeeec44cd6922c3976cb",
+      "IPRedacted": true
+    },
+    {
+      "path": "final-node-regression.txt",
+      "sha256": "b3c217f6cba5b99584668876cf23c96b073be03c7142cb26d218f0e071dae971",
+      "sourceLogSHA256": "b3c217f6cba5b99584668876cf23c96b073be03c7142cb26d218f0e071dae971",
+      "IPRedacted": true
+    },
+    {
+      "path": "final-typecheck.txt",
+      "sha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+      "sourceLogSHA256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+      "IPRedacted": true
+    },
+    {
+      "path": "final-workerd.txt",
+      "sha256": "3758ad1e7684daa23ed9bd0d53eb98e4b90169d3d6bb3e004d6f9d79956cf2cc",
+      "sourceLogSHA256": "3758ad1e7684daa23ed9bd0d53eb98e4b90169d3d6bb3e004d6f9d79956cf2cc",
+      "IPRedacted": true
+    },
+    {
+      "path": "guard-regression.txt",
+      "sha256": "cba7444f18ab7677a5aed331cfaf2815066c7c2b1ddd340a115432e4c23cdea2",
+      "sourceLogSHA256": "cba7444f18ab7677a5aed331cfaf2815066c7c2b1ddd340a115432e4c23cdea2",
+      "IPRedacted": true
+    },
+    {
+      "path": "live-adapter-fifth.txt",
+      "sha256": "178c9b9f6168bcdcce13b136d09e59bf6318c3cde611f0090fed84f2f6ff6370",
+      "sourceLogSHA256": "178c9b9f6168bcdcce13b136d09e59bf6318c3cde611f0090fed84f2f6ff6370",
+      "IPRedacted": true
+    },
+    {
+      "path": "live-adapter-first.txt",
+      "sha256": "cfa7d777d416459c0bcf19df07f533248afd7ef15d77176483c0dcf510fbfcff",
+      "sourceLogSHA256": "cfa7d777d416459c0bcf19df07f533248afd7ef15d77176483c0dcf510fbfcff",
+      "IPRedacted": true
+    },
+    {
+      "path": "live-adapter-fourth.txt",
+      "sha256": "3a06eaf7155b20f9325ccd832e8b1a3fccd3b3228637ab8db50b60b0dba502e2",
+      "sourceLogSHA256": "3a06eaf7155b20f9325ccd832e8b1a3fccd3b3228637ab8db50b60b0dba502e2",
+      "IPRedacted": true
+    },
+    {
+      "path": "live-adapter-second.txt",
+      "sha256": "ac758babce0cc6530f39c4555ea5c5426944b6280d7d5973b7274a918b078d67",
+      "sourceLogSHA256": "ac758babce0cc6530f39c4555ea5c5426944b6280d7d5973b7274a918b078d67",
+      "IPRedacted": true
+    },
+    {
+      "path": "live-adapter-sixth.txt",
+      "sha256": "13049222dccad405a2d5cd41016478ca374462d6f835273bca0212276c385484",
+      "sourceLogSHA256": "13049222dccad405a2d5cd41016478ca374462d6f835273bca0212276c385484",
+      "IPRedacted": true
+    },
+    {
+      "path": "live-adapter-third.txt",
+      "sha256": "1f66bac6fcabab02372107c1e62cf3f9c1c7744555248a2fb635a96dbc51ef0c",
+      "sourceLogSHA256": "1f66bac6fcabab02372107c1e62cf3f9c1c7744555248a2fb635a96dbc51ef0c",
+      "IPRedacted": true
+    },
+    {
+      "path": "p2-checks/full-fifth.txt",
+      "sha256": "a1e3cacb370d4d8b3bfdf1aaccf9f2f0eb85c96152232a77eb759796b5a4d3fb",
+      "sourceLogSHA256": "a1e3cacb370d4d8b3bfdf1aaccf9f2f0eb85c96152232a77eb759796b5a4d3fb",
+      "IPRedacted": true
+    },
+    {
+      "path": "p2-checks/full-first.txt",
+      "sha256": "ab8c59c90d83149480c59569b49f78b73d68f1cc4d8bda7f1b6ade5529b0c6fc",
+      "sourceLogSHA256": "ab8c59c90d83149480c59569b49f78b73d68f1cc4d8bda7f1b6ade5529b0c6fc",
+      "IPRedacted": true
+    },
+    {
+      "path": "p2-checks/full-fourth.txt",
+      "sha256": "e4aa4a66d2d59455ea2c79267fbedfd2b1407839ef2c54e413d918308502b5d8",
+      "sourceLogSHA256": "e4aa4a66d2d59455ea2c79267fbedfd2b1407839ef2c54e413d918308502b5d8",
+      "IPRedacted": true
+    },
+    {
+      "path": "p2-checks/full-second.txt",
+      "sha256": "c0ed262d7377ff1ab2cf533e07711d34b05b8737285785fd0b5dccd8d29e06cf",
+      "sourceLogSHA256": "c0ed262d7377ff1ab2cf533e07711d34b05b8737285785fd0b5dccd8d29e06cf",
+      "IPRedacted": true
+    },
+    {
+      "path": "p2-checks/full-sixth.txt",
+      "sha256": "92ae2e01664d763aa04554625e396b46173db312750b1b9b41d98e185bd05be3",
+      "sourceLogSHA256": "92ae2e01664d763aa04554625e396b46173db312750b1b9b41d98e185bd05be3",
+      "IPRedacted": true
+    },
+    {
+      "path": "p2-checks/full-third.txt",
+      "sha256": "11586c16dc04c44a1b58905217a8c8f5cb9ef953a629ffeedc9f271e55b6c5a9",
+      "sourceLogSHA256": "11586c16dc04c44a1b58905217a8c8f5cb9ef953a629ffeedc9f271e55b6c5a9",
+      "IPRedacted": true
+    },
+    {
+      "path": "p2-checks/journal-first.txt",
+      "sha256": "bf9439ae530af9b70a58c6799df3f20c1e4458aece80492028d6eecbb57c94ff",
+      "sourceLogSHA256": "bf9439ae530af9b70a58c6799df3f20c1e4458aece80492028d6eecbb57c94ff",
+      "IPRedacted": true
+    },
+    {
+      "path": "p2-checks/namespace-first.txt",
+      "sha256": "24e030b0832f7b437b226a4f25630ae05bec75d913b5f219d90f0a2f760cf438",
+      "sourceLogSHA256": "24e030b0832f7b437b226a4f25630ae05bec75d913b5f219d90f0a2f760cf438",
+      "IPRedacted": true
+    },
+    {
+      "path": "p2-checks/p2-targeted-first.txt",
+      "sha256": "b12682cb6f0e63e806783d834ad9d1055d55cc4bc70ee79c53d36d964dc386af",
+      "sourceLogSHA256": "b12682cb6f0e63e806783d834ad9d1055d55cc4bc70ee79c53d36d964dc386af",
+      "IPRedacted": true
+    },
+    {
+      "path": "p2-checks/typecheck-final.txt",
+      "sha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+      "sourceLogSHA256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+      "IPRedacted": true
+    },
+    {
+      "path": "p2-checks/typecheck-first.txt",
+      "sha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+      "sourceLogSHA256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+      "IPRedacted": true
+    },
+    {
+      "path": "p2-checks/typecheck-second.txt",
+      "sha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+      "sourceLogSHA256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+      "IPRedacted": true
+    },
+    {
+      "path": "p2-checks/ui-journal-first.txt",
+      "sha256": "5c4e2f635e9e15068e42af52464261a790667a378c82f04ff36717cad1d10e01",
+      "sourceLogSHA256": "5c4e2f635e9e15068e42af52464261a790667a378c82f04ff36717cad1d10e01",
+      "IPRedacted": true
+    },
+    {
+      "path": "p2-checks/ui-journal-second.txt",
+      "sha256": "3d6d14a6b64aee091ea809a95c216d20605b948a3e77892106c3b4a64ce12e5d",
+      "sourceLogSHA256": "3d6d14a6b64aee091ea809a95c216d20605b948a3e77892106c3b4a64ce12e5d",
+      "IPRedacted": true
+    },
+    {
+      "path": "technical-adapter-existing.txt",
+      "sha256": "138fb13738532b79ce84f1da95c2904bdf8f919e20385a49249106027bf99cc6",
+      "sourceLogSHA256": "138fb13738532b79ce84f1da95c2904bdf8f919e20385a49249106027bf99cc6",
+      "IPRedacted": true
+    },
+    {
+      "path": "technical-fixtures-final.txt",
+      "sha256": "7c0cc3a90cc560ab6d6370adc5c0e0829e19b303b018af113288315485dff60f",
+      "sourceLogSHA256": "7c0cc3a90cc560ab6d6370adc5c0e0829e19b303b018af113288315485dff60f",
+      "IPRedacted": true
+    },
+    {
+      "path": "technical-fixtures-first.txt",
+      "sha256": "d6c8fb44a7043f3c3e8ffd0c062be62dc2bab34c413c65169f1f2b3ed737b991",
+      "sourceLogSHA256": "d6c8fb44a7043f3c3e8ffd0c062be62dc2bab34c413c65169f1f2b3ed737b991",
+      "IPRedacted": true
+    },
+    {
+      "path": "technical-fixtures-full.txt",
+      "sha256": "5a946b036a5d5f765484b471a5a03cceda79af2730f1ec751b5c66d5b592e2df",
+      "sourceLogSHA256": "5a946b036a5d5f765484b471a5a03cceda79af2730f1ec751b5c66d5b592e2df",
+      "IPRedacted": true
+    },
+    {
+      "path": "technical-fixtures-second.txt",
+      "sha256": "f3b7344f7715a71c9942c9b67bd3b77924dbbb10ae9ceeae8d6da5a516692811",
+      "sourceLogSHA256": "f3b7344f7715a71c9942c9b67bd3b77924dbbb10ae9ceeae8d6da5a516692811",
+      "IPRedacted": true
+    },
+    {
+      "path": "technical-fixtures-third.txt",
+      "sha256": "4a54715a4c59806c9820d71dc882608d4792e8f3aa100674df9af723f776db6c",
+      "sourceLogSHA256": "4a54715a4c59806c9820d71dc882608d4792e8f3aa100674df9af723f776db6c",
+      "IPRedacted": true
+    },
+    {
+      "path": "technical-typecheck.txt",
+      "sha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+      "sourceLogSHA256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+      "IPRedacted": true
+    },
+    {
+      "path": "typecheck.txt",
+      "sha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+      "sourceLogSHA256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+      "IPRedacted": true
+    }
+  ],
+  "independentInitialTypecheckFailure": "p2-independent-review.json#initialTypecheckFailure"
+}

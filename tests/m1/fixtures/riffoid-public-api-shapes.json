@@ -1,0 +1,15 @@
+{
+  "provenance": "Synthetic static fixtures using public API envelopes checked 2026-10-09. No production captures, credentials, or real caller addresses.",
+  "sources": [
+    "https://developers.cloudflare.com/api/resources/workers/subresources/scripts/subresources/deployments/methods/list/",
+    "https://developers.cloudflare.com/api/resources/workers/subresources/scripts/subresources/versions/methods/list/",
+    "https://developers.cloudflare.com/api/resources/workers/subresources/scripts/subresources/versions/methods/get/",
+    "https://developers.cloudflare.com/api/resources/workers/subresources/scripts/subresources/script_and_version_settings/methods/get/",
+    "https://developers.cloudflare.com/api/resources/workers/subresources/scripts/subresources/content/methods/get/"
+  ],
+  "deploymentList": {"success":true,"result":{"deployments":[{"id":"fixture-deployment","strategy":"percentage","versions":[{"version_id":"fixture-version","percentage":100}]}]}},
+  "versionList": {"success":true,"result":{"items":[{"id":"fixture-version","number":1}]}},
+  "version": {"success":true,"result":{"id":"fixture-version","resources":{"bindings":[],"script":{"etag":"opaque-platform-etag-not-our-sha256"},"script_runtime":{"compatibility_date":"2026-09-06","compatibility_flags":["global_fetch_strictly_public"],"exports":{}}}}},
+  "settings": {"success":true,"result":{"compatibility_date":"2026-09-06","compatibility_flags":["global_fetch_strictly_public"],"bindings":[],"exports":{},"observability":{"enabled":true,"logs":{"enabled":true,"persist":true,"invocation_logs":true},"traces":{"enabled":false,"persist":false}},"logpush":false,"tail_consumers":[]}},
+  "sourceBytes": {"entry.mjs":"export default { fetch(){return new Response('baseline entry')} };\n","gateway.mjs":"export default { fetch(){return new Response('baseline gateway')} };\n","entry-validation.mjs":"export default { fetch(){return new Response('fixture entry validation')} };\n","gateway-validation.mjs":"export default { fetch(){return new Response('fixture gateway validation')} };\n"}
+}

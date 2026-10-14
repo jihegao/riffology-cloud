@@ -1,0 +1,118 @@
+{
+  "status": "NON_EXECUTABLE_CONDITIONAL_PRIVACY_OVERLAY_PENDING_EXPLICIT_PUBLICATION_APPROVAL",
+  "mustNotDeploy": true,
+  "notCloudflareAPIPayload": true,
+  "uploaderIncluded": false,
+  "formalT": null,
+  "recoveryUntil": null,
+  "targets": [
+    {
+      "accountId": "3232ebc7e9bb0199b92e3d70b07825af",
+      "worker": "riffoid-entry",
+      "historicalBaselineVersion": "c110d7a7-fc81-4bb1-b27a-4ca8147a7fff",
+      "historicalBaselineDeployment": "5e920993-ee9d-4a7e-b6fe-39ef494f35fd",
+      "source": "parent GET summary 2026-10-09T07:26Z; full raw receipt pending",
+      "observedBaselineOnly": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "persist": true,
+          "invocation_logs": true
+        },
+        "redact_query_string": false,
+        "traces": {
+          "enabled": false,
+          "persist": true
+        }
+      },
+      "candidateDifference": {
+        "path": "observability.logs.persist",
+        "from": true,
+        "to": false
+      },
+      "restoreDifference": {
+        "path": "observability.logs.persist",
+        "from": false,
+        "to": true
+      },
+      "freshFullBaselineReceipt": null,
+      "actualPostVersion": null,
+      "actualPostDeployment": null,
+      "actualPostCompleteSnapshot": null,
+      "validationInvocationsDrainedReceipt": null,
+      "actualRestorationReceipt": null
+    },
+    {
+      "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+      "worker": "riffology-m1-gateway-staging",
+      "historicalBaselineVersion": "6edef49b-ca5c-4c97-bcec-5c141b079bb1",
+      "historicalBaselineDeployment": "57ea9670-0fef-420b-8bd2-cd044c89fd2d",
+      "source": "historical frozen safety manifest; fresh full GET pending",
+      "observedBaselineOnly": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "redact_query_string": false,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "persist": true,
+          "invocation_logs": true
+        },
+        "traces": {
+          "enabled": false,
+          "persist": true,
+          "head_sampling_rate": 1
+        }
+      },
+      "candidateDifference": {
+        "path": "observability.logs.persist",
+        "from": true,
+        "to": false
+      },
+      "restoreDifference": {
+        "path": "observability.logs.persist",
+        "from": false,
+        "to": true
+      },
+      "freshFullBaselineReceipt": null,
+      "actualPostVersion": null,
+      "actualPostDeployment": null,
+      "actualPostCompleteSnapshot": null,
+      "validationInvocationsDrainedReceipt": null,
+      "actualRestorationReceipt": null
+    }
+  ],
+  "newResourcesOrCredentials": false,
+  "otherSettingsMustMatchExactBaseline": true,
+  "scope": "only existing entry and Gateway; entire Worker log persistence, including scheduled/DO work",
+  "privacyNotYetEstablished": true,
+  "requiredBeforeUse": {
+    "quietPublisherWindowApproval": null,
+    "explicitLoggingGapAndRestorationApproval": null,
+    "freshCompleteSettingsReceipt": null,
+    "noApplicableOTelOrOtherExportDestinationReceipt": null,
+    "noConfiguredTailConsumerReceipt": null,
+    "noActiveLiveTailSubscriptionReceipt": null,
+    "workersTraceLogpushMetadataReceipt": null,
+    "bothZoneHTTPCustomFieldAndJobFilterReceipt": null,
+    "otherCaptureIntegrationReviewReceipt": null,
+    "nativeIPAcceptanceReceipt": null,
+    "existingInFlightWorkReadOnlyAssessment": null
+  },
+  "unknownMeansStop": true,
+  "noAutomaticAccountWideLogChanges": true,
+  "noLiveTailOrBusinessLogQueries": true,
+  "failure": "close entry; keep ordinary HTTP fenced and privacy overlay until validation invocation drain is established; unknown write uses GET only",
+  "restoration": "forward restore original code/config/namespace identities with secret references; restore exact original observability after drain, independently GET receipt",
+  "background": "HTTP fence does not pause scheduled provisioning/GC, alarms or existing in-flight DO/runtime work",
+  "historicalPipelineSnapshot": {
+    "evidenceFile": "../../evidence/riffoid-entry-baseline-and-log-privacy-20261009.json",
+    "section": "logPipelineSnapshot",
+    "parentReadUTCMinute": "2026-10-09T07:44Z",
+    "eightGETs200Empty": true,
+    "notAFuturePublicationGuard": true
+  },
+  "parentPublicationApprovalRequestPending": true
+}

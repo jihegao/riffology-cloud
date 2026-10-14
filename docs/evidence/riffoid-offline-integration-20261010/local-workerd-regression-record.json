@@ -1,0 +1,21 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=2",
+    "tests/m1/riffoid-validation-workerd.test.mjs",
+    "tests/m1/riffoid-entry-workerd.test.mjs",
+    "tests/m1/riffoid-two-account-workerd.test.mjs",
+    "tests/m1/riffoid-replay-workerd.test.mjs",
+    "tests/m1/riffoid-cancellation-workerd.test.mjs",
+    "tests/m1/riffoid-forward-rollback-workerd.test.mjs",
+    "tests/m1/riffoid-recovery-workerd.test.mjs",
+    "tests/m1/riffoid-recovery-cold-workerd.test.mjs"
+  ],
+  "exitCode": 0,
+  "completedUTC": "2026-10-10T01:03:37.328866+00:00",
+  "logSHA256": "775424461dc6588144f695a7f1e4d2e52d423a21707b875646bbc8707129c047",
+  "scope": "local loopback Workerd/SQLite fixtures; outbound denied except fixture loopback; no Cloudflare production or provider request",
+  "priorAttempt": "local-workerd-sandbox-denied-record.json; loopback listen EPERM, preserved",
+  "logNormalization": "absolute integration-worktree path redaction, trailing whitespace and terminal blank lines only"
+}

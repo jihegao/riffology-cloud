@@ -1,0 +1,36 @@
+✔ approved wording is consumed without granting production authorization; altered evidence rejects (4.369125ms)
+✔ default dry-run dispatches zero HTTP; read-only and prepare cannot upload (1.448708ms)
+✔ wire multipart keeps public/resources and inherits redacted Secret text without material (7.663458ms)
+✔ raw HTTP preserves cf-entrypoint, body bytes and origin; bounds hangs and rejects redirects (12.248208ms)
+✖ GET-derived modules and runtime export readback work; drift/omitted cf-entrypoint reject (1.296459ms)
+✔ actual asset/container readback gaps stay blocked rather than trusting upload intent (0.69425ms)
+✔ durable exclusive journal is retained for unknown writes and rejects a second owner (26.575167ms)
+✔ version/deployment identity also binds resource snapshot hashes (1.127458ms)
+✔ unapproved live publication performs no HTTP; missing full preflight creates no intent or PUT (0.843917ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 8
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 153.650958
+
+✖ failing tests:
+
+test at tests/m1/riffoid-validation-live-adapter.test.mjs:57:1
+✖ GET-derived modules and runtime export readback work; drift/omitted cf-entrypoint reject (1.296459ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///private/tmp/riffoid-pr173-integration-20261010-0hghjbqf/worktree/tests/m1/riffoid-validation-live-adapter.test.mjs:59:103)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

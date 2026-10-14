@@ -1,0 +1,50 @@
+{
+  "status": "NON_EXECUTABLE_ACTUAL_POST_EXECUTION_STATE_AND_WINDOW_MISSING",
+  "mustNotDeploy": true,
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "worker": "riffology-browser-execution",
+  "historicalVersion": "c94df077-02a1-460f-8158-e47a338e68af",
+  "historicalDeployment": "a6fdeb9f-d885-4c72-9e02-968315351edb",
+  "expectedActualPostVersion": null,
+  "expectedActualPostDeployment": null,
+  "completeActualPostSnapshot": null,
+  "restoreAPP_ORIGIN": {
+    "name": "APP_ORIGIN",
+    "type": "plain_text",
+    "text": "https://m1.riff-demo.gaojihe.cn"
+  },
+  "preservedOriginalBindings": [
+    {
+      "name": "ALLOW_LOCALHOST_HTTP",
+      "text": "false",
+      "type": "plain_text"
+    },
+    {
+      "name": "APP_ORIGIN",
+      "text": "https://m1.riff-demo.gaojihe.cn",
+      "type": "plain_text"
+    },
+    {
+      "name": "EXECUTION_ORIGIN",
+      "text": "https://riffology-browser-execution.jihe-gao.workers.dev",
+      "type": "plain_text"
+    },
+    {
+      "name": "RUNTIME_ASSETS",
+      "type": "assets"
+    }
+  ],
+  "originalBindingCount": 4,
+  "compatibilityDate": "2026-09-05",
+  "compatibilityFlags": [
+    "nodejs_compat",
+    "nodejs_compat_do_not_populate_process_env"
+  ],
+  "originalCodeFile": "modules/execution-original.worker.mjs",
+  "originalCodeSHA256": "b76b05f96d345a0ecf280cdb4414c1dd0c56bf71041dc3c72199db8e8c6c07c1",
+  "fixedExecutionOrigin": "https://riffology-browser-execution.jihe-gao.workers.dev",
+  "onlyAncestor": "https://m1.riff-demo.gaojihe.cn",
+  "assetBindingPreserved": true,
+  "secretAccess": false,
+  "uploaderIncluded": false
+}

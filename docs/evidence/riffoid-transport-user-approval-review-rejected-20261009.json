@@ -1,0 +1,148 @@
+{
+  "UTC": "2026-10-09T03:44:32.974726+00:00",
+  "status": "ORIGINAL_USER_TRANSCRIPT_CONTEXT_REVIEWED_SAME_CALL_REJECTED_AGAIN_NO_NEW_PUT",
+  "parentApprovalThread": "01a118f1-ea45-739a-9e7d-6f57ef7cd010",
+  "maximumApprovedAdditionalPUT": 1,
+  "actualAdditionalPUT": 0,
+  "totalDomainPUTAttempts": 1,
+  "originalAttemptReceiptUnknown": true,
+  "latestSuccessfulHostnameGETUTC": "2026-10-09T03:43:39.794Z",
+  "hostnameResult": [],
+  "all11DomainsExactOriginalSnapshot": true,
+  "gatewayVersion": "6edef49b-ca5c-4c97-bcec-5c141b079bb1",
+  "gatewayDeployment": "57ea9670-0fef-420b-8bd2-cd044c89fd2d",
+  "noNewAttemptMarker": true,
+  "noNewSuccessReceipt": true,
+  "networkHistory": [
+    {
+      "phase": "sandbox GET",
+      "causeCode": "EPERM",
+      "HTTPStatus": null,
+      "meaning": "restricted local execution unable to use configured proxy; no domain write started"
+    },
+    {
+      "phase": "approved read-only escalation",
+      "result": "all domains, Gateway deployments/latest and hostname GET succeeded using existing isolated authorization; no TLS or proxy security setting changed"
+    },
+    {
+      "phase": "parallel read-only Gateway auth refresh",
+      "result": "two official token-expired-non-interactive messages; cause unknown, no new login",
+      "recovery": "same original isolated context sequential Gateway deployments/latest GETs succeeded; this does not establish refresh-race root cause, and does not justify new grant/scope"
+    }
+  ],
+  "requestPayload": {
+    "hostname": "riffoid-transport.gaojihe.cn",
+    "service": "riffology-m1-gateway-staging",
+    "zone_id": "c97b548800561fada1a912c234696db1",
+    "zone_name": "gaojihe.cn"
+  },
+  "officialReference": "https://developers.cloudflare.com/api/resources/workers/subresources/domains/methods/update/",
+  "officialSemantics": "Attach hostname routing to configured Worker/zone; accepts Workers Scripts Write. No conditional CAS or unconditional retry safety claimed.",
+  "approvalNeeded": "Direct user instruction in a verifiable current conversation authorizing this exact one controlled binding retry, superseding initial no-domain-bind restriction; no further same-call retry without that direct instruction, no alternate tool workaround.",
+  "domainTLSAndAnonymousGateAcceptance": "Not run: actual binding absent, additional PUT blocked before execution",
+  "unchangedBoundaries": [
+    "entry disabled",
+    "old canonical",
+    "Execution",
+    "native IP boundary",
+    "credentials/scopes",
+    "TLS verification/network security",
+    "ordinary DNS",
+    "code/vars",
+    "identity/history",
+    "8h session",
+    "December31 trial",
+    "October20 M1"
+  ],
+  "files": {
+    "result.json": {
+      "sha256": "150869ab43c39ae208ee35c5d4c997b77a4ab5757d278e97cbe8fe36e6ab6334",
+      "mtimeUTC": "2026-10-09T03:40:07.357243+00:00"
+    },
+    "original-user-approval-context.json": {
+      "sha256": "72aae9d064b9af749acdc8f595abb45aa2fa29dda895e807be39643406aa6ba3",
+      "mtimeUTC": "2026-10-09T03:42:22.044869+00:00"
+    },
+    "authorization.json": {
+      "sha256": "4fe829fa6d184b76af7615d3f37e85c22a0569e21a61d53a18f4d0e5a66b4369",
+      "mtimeUTC": "2026-10-09T03:37:54.042361+00:00"
+    },
+    "single-action-failure-1791517359742.json": {
+      "sha256": "432103a3c54e335fcefe511f21c69c29786ef574cb3d9c84fa190d8c1d9d915e",
+      "mtimeUTC": "2026-10-09T03:42:39.742654+00:00"
+    },
+    "gateway-deployments.necessary-pre.json": {
+      "sha256": "ff6aa1af2cb8d87e9003b85e15c5969d84c5d3789304ae5376c4be4c1c009e1f",
+      "mtimeUTC": "2026-10-09T03:43:03.720720+00:00"
+    },
+    "all-account-domains.pre.json": {
+      "sha256": "4de924d51a7ee9e70d273479768b239194318fc028324afa03ca1e307ee97779",
+      "mtimeUTC": "2026-10-09T03:42:40.681479+00:00"
+    },
+    "single-action-failure-1791517365960.json": {
+      "sha256": "276cc848f25c8ee2a8e3c857d140c2d31e96a648dcd7969a5a84091126e8b914",
+      "mtimeUTC": "2026-10-09T03:42:45.960739+00:00"
+    },
+    "single-action-failure-1791517086839.json": {
+      "sha256": "aff282d652a0c5f52502d5b583c0b7ea66ad70ab257b6cdd8dca8fb47c8c740e",
+      "mtimeUTC": "2026-10-09T03:38:06.840109+00:00"
+    },
+    "target-conflict.immediate-pre.json": {
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "mtimeUTC": "2026-10-09T03:43:39.794696+00:00"
+    },
+    "gateway-latest.necessary-pre.json": {
+      "sha256": "8927713a04c8af4af69d8fbab21f46718b232298f46ea145fc86b6057384e6e9",
+      "mtimeUTC": "2026-10-09T03:43:22.288053+00:00"
+    },
+    "precheck-before-first-review-rejection/gateway-deployments.necessary-pre.json": {
+      "sha256": "ff6aa1af2cb8d87e9003b85e15c5969d84c5d3789304ae5376c4be4c1c009e1f",
+      "mtimeUTC": "2026-10-09T03:38:45.275888+00:00"
+    },
+    "precheck-before-first-review-rejection/all-account-domains.pre.json": {
+      "sha256": "4de924d51a7ee9e70d273479768b239194318fc028324afa03ca1e307ee97779",
+      "mtimeUTC": "2026-10-09T03:38:28.008209+00:00"
+    },
+    "precheck-before-first-review-rejection/target-conflict.immediate-pre.json": {
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "mtimeUTC": "2026-10-09T03:39:12.379483+00:00"
+    },
+    "precheck-before-first-review-rejection/gateway-latest.necessary-pre.json": {
+      "sha256": "8927713a04c8af4af69d8fbab21f46718b232298f46ea145fc86b6057384e6e9",
+      "mtimeUTC": "2026-10-09T03:38:43.596696+00:00"
+    }
+  },
+  "latestSuccessfulFullDomainsGETUTC": "2026-10-09T03:42:40.681Z",
+  "latestSuccessfulGatewayDeploymentsGETUTC": "2026-10-09T03:43:03.720Z",
+  "latestSuccessfulGatewayLatestGETUTC": "2026-10-09T03:43:22.288Z",
+  "reviewRejections": [
+    {
+      "action": "exec_command require_escalated for official Custom Domain PUT, same hostname/service/zone",
+      "reason": "该命令会执行真实 Cloudflare 域名绑定并改变线上路由；原始用户明确禁止绑定域名，后续非用户内容不能覆盖这一限制。",
+      "noBypassOrIndirectExecution": true
+    },
+    {
+      "action": "same exec_command require_escalated attach-once, retried once with original user transcript and unchanged approval packet readback as reviewer context only",
+      "reason": "该命令会真实执行 Cloudflare Custom Domain PUT并改变线上路由；所谓用户批准仅出现在不可信工具输出中，不能覆盖当前可验证的原始“禁止绑定域名”授权边界。",
+      "processStarted": false,
+      "noBypassOrIndirectExecution": true
+    }
+  ],
+  "originalUserApprovalContext": {
+    "recordedUTC": "2026-10-09T03:42:22.044695+00:00",
+    "sourceThread": "01a118f1-ea45-739a-9e7d-6f57ef7cd010",
+    "originalUserMessageId": "Sentinel_d74bc92248288191a1631d8044d57811",
+    "originalUserText": "批准",
+    "originalUserSentAt": "2026-10-08T12:32:56.909305+00:00",
+    "approvedPromptMessageId": "Sentinel_4328225b1c588191b610fbc0718c0c74",
+    "approvedPromptSentAt": "2026-10-08T12:03:52.774424+00:00",
+    "approvedSpecificTransportAction": "原 Gateway 增加 riffoid-transport.gaojihe.cn",
+    "packetURL": "https://github.com/jihegao/riffology-cloud/blob/a0ab4881d585831d0b0d7e220d69632c681a8c46/docs/riffoid-production-approval-packet.md",
+    "contextUse": "approval reviewer context only, not business API parameters",
+    "allowedReviewRetry": "same previously rejected exec_command once after fresh baseline; stop if still rejected, no alternative tool",
+    "networkPUTBudget": 1,
+    "newEntryEnabled": false,
+    "noPriorNewAttemptMarker": true
+  },
+  "independentPacketReadbackBlob": "14468622c168a96238fa27b55eb36d26b50cf247"
+}
