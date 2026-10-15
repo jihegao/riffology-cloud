@@ -2,6 +2,8 @@
 
 本报告对应 [#211](https://github.com/jihegao/riffology-cloud/issues/211)。目标是新 Session 默认 GPT 6 Luna，并让云端项目能加载 skill、原生 Pi 插件、动态工具和自定义页面；平台掌握权限、模型代理、保存权威与资源释放。用户已明确：本次盘点的全部 34 个现有项目及关联历史仿真内容永久删除，后续新项目不自动进入删除集合。
 
+**当前产品决定（2026-10-15）：保留 [#214](https://github.com/jihegao/riffology-cloud/issues/214) / [JHG-46](https://linear.app/jhgao/issue/JHG-46) 的通用 HTML/JS 项目页面、路由与只读订阅；撤销仿真 Browser Preview 及全部相关旧案例。旧 js-frame/frame 模板、render(context) + marks DSL、600×420 画布、五/七文件合同均退出目标，不保留为可选 profile。** 按 [PR217 最新范围约定](https://github.com/jihegao/riffology-cloud/pull/217#issuecomment-6188262716)，本次增量仅更新本审计 PR 的说明与文档并列出清理清单，不删除实现、案例文件或生产数据，不自动改写/关闭其他任务。
+
 当前实现是固定工具的远程 Pi facade，尚不是可扩展 Pi 工作台。最需要改变的是执行域、资源发现、包构建和页面协议。模型能力提高能改善生成质量，不能代替进程隔离，也不能让插件输出成为平台权威。
 
 ## 证据与边界
@@ -51,7 +53,7 @@ flowchart LR
 | R5 | controlled-pi.mjs:170-195，checkpoint 不含 custom entries/messages | 版本化有界 inert extension state，校验图与 scope；restore 不执行代码或旧工具。 |
 | R6 | controlled-pi.mjs:181-189，当前 model/tool allowlist 控制历史读取 | 对未来保留的当前 Session 分开“可读记录”和“新调用权限”；被删除 34 项目的 Session 直接 purge。 |
 | R7 | controlled-pi.mjs:247,283-323，compaction/reload/model picker 等缺失 | 允许受代理计量的 compaction 与安全点资源切换；未知 provider 不自动重发。 |
-| R8 | release-candidate.mjs:6-9,78-81，5.6 Luna、4096 output、单 simulation skill | 新 Session 默认6见 #210；ModelProfile 可配置输出/上下文，仿真指导成为可选 skill。 |
+| R8 | release-candidate.mjs:6-9,78-81，5.6 Luna、4096 output、单 simulation skill | 新 Session 默认6见 #210；ModelProfile 可配置输出/上下文，移除默认仿真/旧 Preview 指导。 |
 | R9 | trusted-pi-turn-host.mjs:38,210-222，只有 text/tool/artifact 事件 | 版本化插件 commands/status/custom UI 事件；payload 有界且不作为权威回执。 |
 | R10 | trusted-pi-turn-host.mjs:14-19,79-85,162-169，16k输入、15k文本、2048事件、2MiB结果、8MiB Session | 分块/引用及累计预算，明确超限；不能简单删除所有有限上限。 |
 | R11 | services/sandbox/classes.ts:94-100、policy.ts:75，项目 deny-all egress | 加锁版依赖构建/项目能力 broker；不给 ambient keys 或任意内网访问。 |
@@ -60,8 +62,8 @@ flowchart LR
 | R14 | tools/protocol.ts:76-81、file_service.py:448-507，bash30s、禁 stdin、输出6000/流、杀后台后代 | 保留有限 bash；另加受监督 start/poll/stop/interactive 作业，lease/TTL/取消/实际释放。 |
 | R15 | workspace_archive.py:25-29,77-103,175-199，56MiB/4096文件、禁止 links | Source Revision 保存源码与 lock；node_modules 可重建缓存分离，继续安全解包。 |
 | R16 | tools/protocol.ts:43-49、file_service.py:49-60，只禁 .riffology | .pi/.agents/AGENTS 已允许写，bash 并非命令白名单；实际缺的是加载、运行与保存依赖。 |
-| R17 | product-tool-bridge.mjs:48，依内容 marker 限制 model/run.py 写入 | 通用文件写入不认 marker 权威；打包时按 adapter 摘要/profile验证。 |
-| R18 | release-candidate.mjs:12-17,55-57,81，五文件与 stdlib/Mesa 指导全局注入 | 拆可选仿真 skill 与真实执行 profile，prompt 如实描述已开放能力。 |
+| R17 | product-tool-bridge.mjs:48，依内容 marker 限制 model/run.py 写入 | 通用文件写入不认 marker 权威；云端计算 adapter 的摘要校验独立保留，不沿用为页面合同。 |
+| R18 | release-candidate.mjs:12-17,55-57,81，五文件与 stdlib/Mesa 指导全局注入 | 删除全局五文件/旧 Browser Preview 指导；项目 skill 按来源加载，不预装旧案例。 |
 | R19 | sandbox/policy.ts:55-73、project-sandbox.ts:12-36，签名与 server-derived actor | 保留在项目代码之外；扩展不能选择身份、密钥或跨项目 scope。 |
 | R20 | classes.ts:147-182、runtime_supervisor.py，dispatch fence/UID/stop/quiescence | 保留并泛化；原 supervisor 与 broker 决定执行/释放，writer静止后提交。 |
 
@@ -71,17 +73,17 @@ flowchart LR
 
 | # | 证据与现状 | 处理与替代保障 |
 |---|---|---|
-| V1 | browser-preview/contract.ts:13-20、validator.ts:58-61，必须五模型文件与 ModelSpec | 通用 project.views/v1 只需入口和安全资产闭包；仿真五文件为可选 profile。 |
+| V1 | browser-preview/contract.ts:13-20、validator.ts:58-61，必须五模型文件与 ModelSpec | 旧五/七文件合同退役；通用 project.views/v1 只需入口和安全资产闭包。 |
 | V2 | validator.ts:18-26，单 render(context)、import/DOM/storage等 token 黑名单 | 通用页允许正常 DOM/ES modules/CSS；隔离 origin 与 broker 控权，regex 不是通用隔离。 |
-| V3 | validator.ts:29-47，固定 Python imports/run(config)/顶层限制 | 移入 simulation-pyodide 兼容 profile，不阻塞通用页面/服务。 |
+| V3 | validator.ts:29-47，固定 Python imports/run(config)/顶层限制 | 随旧 Browser Preview 路径退役，不另建 simulation-pyodide 兼容 profile。 |
 | V4 | contract.ts:6-12、validator.ts:73-76，页面也必须 exact run.py hash | 页面展示与服务端计算声明分开；Verified 路径继续验证冻结计算源。 |
 | V5 | profiles.ts:5,15,24-25，stdlib/Mesa 两种精确依赖 | 构建 lockfile 与摘要闭包，通用 npm/库在独立构建域解析。 |
 | V6 | contract.ts:24,62-65、js-scene.mjs:12-14，固定入口600×420 | manifest 安全入口、响应式尺寸与 resize；不再限制601像素。 |
 | V7 | js-scene.mjs:22-45，rect/circle/line/text 与2048 marks | 用 iframe 内普通 DOM/CSS/canvas/图表库，不继续扩平台手写 UI DSL。 |
 | V8 | js-scene.mjs:16-20、js-frame.mjs:23-35，只 pointer/select、2048 lifetime | DOM事件留 frame；过 broker 的消息有类型/速率/字节背压。 |
 | V9 | browser-preview/runtime/host.mjs:28-53,69-79，先 Python trace 才挂 JS | 纯页面直接挂载；计算为独立可选 worker/service 能力。 |
-| V10 | browser-preview/runtime/protocol.mjs:30-50、validator.ts:13-16，grid/lane/metrics通用化 | 领域数据合同归仿真插件，通用页读取声明的数据/artifacts。 |
-| V11 | profiles/protocol/validator，500 steps、501 frames、10k agents、1M cells、JS128KiB | 领域限额归 profile；包/消息/执行时间有统一资源预算，支持bundle库。 |
+| V10 | browser-preview/runtime/protocol.mjs:30-50、validator.ts:13-16，grid/lane/metrics通用化 | 删除旧 grid/lane/metrics 页面合同；通用页读取声明的数据/artifacts，不内建旧案例。 |
+| V11 | profiles/protocol/validator，500 steps、501 frames、10k agents、1M cells、JS128KiB | 旧仿真帧/agent/cell限制随旧合同退役；通用包/消息/执行时间仍有资源预算。 |
 | V12 | browser-preview/runtime/host.mjs:8,15-17,68,90-93，canvas120s到期/paint10s | 删除一般页面两分钟寿命；保留每次计算 watchdog、取消与清理。 |
 | V13 | browser-preview/runtime/host.mjs:9-13,37,60-72，独立HTTPS site、allow-scripts 无同源 | 保留；主站DOM/cookie/localStorage/service worker不可给项目页。 |
 | V14 | execution/index.ts:15-23，固定frame/hash脚本、connect-src none | 新不可变模块/CSS/media资产交付与相应 CSP；不把任意项目文件放 app ASSETS。 |
@@ -119,8 +121,8 @@ flowchart LR
 | G19 | simulation/invited-policy.ts:4,12，Runs1/user1、group4..8/10min/guard6min | 按作业资源参数化；冻结输入/seed、终态和release保留。 |
 | G20 | invited-resource-quiet.ts:16,24-35，要求M3/M4/G5关、全owner扫描 | 用原执行/lease目录替代阶段互斥；新namespace不证明独立。 |
 | G21 | workspace/durable.ts:890,914,968,1006，G5一票禁Service、Observer耦合M2/M3 | 独立project-service/订阅能力；ACL、stop、原资源隔离保留。 |
-| G22 | gateway/preview-services.ts:38、workspace/durable.ts:849,939,959，M3Preview开关 | 能力视图反映pause/实际资源原因；GET不分配runtime、CSRF保留。 |
-| G23 | browser-preview/g4-build-hold.ts:8,18，120s operator故障注入进常规alarm | 无残留hold后移到测试adapter，保留真实R2/cold恢复用例。 |
+| G22 | gateway/preview-services.ts:38、workspace/durable.ts:849,939,959，M3Preview开关 | 旧仿真 Preview 路由/开关随实现退役；通用页面独立授权，GET不分配runtime、CSRF保留。 |
+| G23 | browser-preview/g4-build-hold.ts:8,18，120s operator故障注入进常规alarm | 旧仿真 build-hold 随路径退役；新包的真实R2/冷恢复测试使用通用页面合同。 |
 | G24 | scripts/m3/vertical-staging-preflight.mjs:90-114，旧gates/quotas/两service/迁移形状 | 退出通用发布门禁，采用实际deployment manifest/hash/binding漂移检查。 |
 | G25 | .github/workflows/check.yml:3-7,35-51、package.json，阶段全套/重复UI检查 | 组件CI+受影响集成，主干/定期全套；历史零引用代码与测试删除。 |
 
@@ -134,7 +136,7 @@ Provider自动retry与provider fallback继续关闭，包括已知失败。可�
 | 当前allowlist决定历史可读 | controlled-pi.test.mjs:148-182 | 当前新Session恢复应不依赖插件仍安装；旧34项目历史内容直接删除，禁止恢复。保留scope/图结构/no replay。 |
 | 固定九工具/一个skill/prompt文字 | tests/m2/product-tool-bridge.test.mjs:11-13、trusted-pi-release-candidate.test.mjs:10-25 | 改registry注册、必要平台API、冲突/schema/摘要与真实加载行为，不为green保留旧限制。 |
 | marker/源码regex | product-tool-bridge.test.mjs:23-31、trusted-pi-turn-host.test.mjs:121 | 用包摘要/权威边界执行测试替代；新版合法fs/import不应因字符串检测失败。 |
-| 五文件/600×420/marks/禁DOM | tests/m3/browser-preview-*、scene/protocol测试 | generic页面改HTML/modules/CSS/表单/resize成功测试；仍支持仿真的领域合同归可选profile。 |
+| 五文件/600×420/marks/禁DOM | tests/m3/browser-preview-*、scene/protocol测试 | 删除旧合同专用断言与案例；通用页验证HTML/modules/CSS/表单/resize和隔离，不保留旧仿真profile。 |
 | 历史六profile/adapter固化 | browser-preview-legacy.test.mjs、canvas.test.mjs:49-81、execution/execution.test.ts:18、orchestrator.test.mjs:28-47 | 目标内容及范围外引用清零后连代码/资产/fixture一起删除，不永久迁到compat目录。 |
 | 单容器/旧阶段gates | trusted-pi-capacity、invited-run-capacity、gateway-turn-runtime-gate、vertical-staging-preflight测试 | 改N容量、公平性、实际pool isolation/能力合同，不把1或M3必false当不变量。 |
 | finite bash与writer静止 | project-files、project-supervisor、workspace-archive、trusted-pi-native | 保留；长驻服务独立 start/observe/stop/TTL/release测试。不能删quiescence让daemon假成功。 |
@@ -159,25 +161,25 @@ Provider自动retry与provider fallback继续关闭，包括已知失败。可�
 
 删除ACK丢失查同一key/operation，不restore/rebuild。未知执行隔离和费用reservation不会因内容清理消失；如实际容器已销毁、写fence生效而费用待核对，可保留无内容摘要独立处理。备份/time-travel的实际保留与删除能力需按提供方核对，不能承诺立即抹除所有底层备份；已被用户下载的外部副本不能由服务器撤回。
 
-当前发布保留8 Preview profiles，其中6为旧727c40f/pre-142/pre-150，2为新构建stdlib/Mesa。清理后删除 services/browser-preview/execution/retained 下6个旧profile与专用bytes、materialize.mjs:33-48 retain复制逻辑、build-host reviewedRetained读者、旧adapter fa798709… 与仅为其存在的测试。当前adapter b0c785d8…、2个新构建profile和共用Pyodide资产不能仅按legacy/v1名字盲删；先按hash集合和剩余当前调用核对。若通用工作台保留仿真为可选skill，当前仿真renderer归该profile；若不再有调用，再删除代码本身。
+当前发布索引中的8个 Preview profiles、对应 renderer、Pyodide 浏览器资产、retained bytes 和旧 adapter 读者都属于待退役旧路径；“当前构建”不再意味着作为可选仿真能力保留。完整清单及共享依赖见 [Browser Preview 退役盘点](browser-preview-retirement-audit-20261015.md)。执行清理前须迁出仍被云端 Runs 共用的 canonical adapter 源和通用网页资产生成职责，并断开 Workspace/Turn 保存、构建及 alarm 的生产引用；清理不能损坏通用页面、原子 Revision 或原执行释放。此处给出删除目标与实施前提，本 PR 未删除这些文件或改变线上路由。
 
 目前完成的是授权范围冻结和删除设计，不是数据清理。DO/R2完整数量、实际release、共享引用、远端副本与备份还未核验。
 
 ## 拆分到现有交付系统
 
-Issue管理范围和完成条件；下表仅说明技术依赖，不另建状态路线图，不表示所有任务同时开工。新增项均保持Backlog建议，负责人 @jihegao，Project字段未同步；当前#104与已部署验收执行位不扩大。
+Issue管理范围和完成条件；下表仅说明技术依赖，不另建状态路线图，不表示所有任务同时开工。负责人 @jihegao，Project字段未同步。当前10/20主线沿 #85 与 #214/JHG-46；下列任务关系及实际阶段以执行卡为准，审计不新增并发开工授权。
 
 | 任务 | 交付与依赖 |
 |---|---|
 | [#209 / PR210](https://github.com/jihegao/riffology-cloud/pull/210) | GPT6默认及原actor profile迁移；线上模型访问/部署/验收待完成，不被本报告当已上线。 |
 | [#212](https://github.com/jihegao/riffology-cloud/issues/212)，父#148 | 全部34项目及关联内容purge、防复活、release与零引用核验；不再以恢复旧项目验收为目标。 |
-| [#85](https://github.com/jihegao/riffology-cloud/issues/85) | 项目AGENTS/skills/prompts读取、命令、provenance与冷恢复；官方simulation-skills是可选内容，不是通用项目资格。任意原生扩展由#213承接。 |
+| [#85](https://github.com/jihegao/riffology-cloud/issues/85) | 项目AGENTS/skills/prompts读取、命令、provenance与冷恢复；不预装或保留旧 Browser Preview 案例，项目skill不是仿真资格。任意原生扩展由#213承接。 |
 | [#213](https://github.com/jihegao/riffology-cloud/issues/213) | 整个可扩展Pi进入项目隔离域；dynamic tools/custom state/events/reload，平台authority置外。 |
 | [#214](https://github.com/jihegao/riffology-cloud/issues/214) | project.views/v1、多页模块DOM与只读updates broker；写动作和长驻服务独立切片。 |
 | [#215](https://github.com/jihegao/riffology-cloud/issues/215) | 能力/资源策略、原lease目录、build/service作业；先有归属证据，再拆全局门禁与扩容。 |
 | [#216](https://github.com/jihegao/riffology-cloud/issues/216) | 跟随新合同改测试与CI；历史引用零后删除兼容实现/测试；安全行为覆盖不减。 |
 
-优先做可验证的小切片：purge基础能力与冻结清单核验；项目技能加载；无需模型调用的通用静态页面。随后交付隔离Pi和broker动作/服务。资源N与全局fence收窄须等原资源目录与release证据，不以“模型更强”替代这些依赖。这里只确定拆分，并未启动多项产品开发。
+当前10/20最小闭环是新项目、项目技能、通用页面与保存/刷新恢复；固定34项目purge与旧路径退役各自核验，不成为整个新页面主线的自动前置。原生Pi、broker写动作/服务分后续切片。资源N与全局fence收窄须等原资源目录与release证据，不以“模型更强”替代这些依赖。这里只确定拆分，并未启动多项产品开发。
 
 ## 本轮验证
 
@@ -185,4 +187,4 @@ Issue管理范围和完成条件；下表仅说明技术依赖，不另建状态
 
 ## 后续交付冲突复核
 
-[2026-10-15 Linear 与既有任务/PR复核](pi-extensibility-conflicts-20261015.md)补充自动关联实际状态、旧恢复/Fire案例/purge验收冲突、已合并manifest/lease功能复用与CI范围。它限定了本报告建议对应的增量：不重做PR198/PR59，不让purge等待完整新Pi/UI；本批尚未建立Linear任务镜像。
+[2026-10-15 Linear 与既有任务/PR复核](pi-extensibility-conflicts-20261015.md)补充自动关联实际状态、旧恢复/Fire案例/purge验收冲突、已合并manifest/lease功能复用与CI范围。它限定了本报告建议对应的增量：不重做PR198/PR59，不让purge等待完整新Pi/UI；原自动关联快照之后已按授权补齐执行卡；现有映射与本次撤销后的待调整项见复核报告。

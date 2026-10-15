@@ -128,5 +128,7 @@
     "https://linear.app/docs/github",
     "https://github.com/jihegao/riffology-cloud/issues/211",
     "https://github.com/jihegao/riffology-cloud/pull/217"
-  ]
+  ],
+  "snapshotStage": "Initial read-only association/conflict review before authorized task reconciliation. Counts and empty links in this snapshot are historical, not current.",
+  "supersededBy": "pi-task-reconciliation-20261015.json"
 }
