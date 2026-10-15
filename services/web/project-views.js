@@ -1,5 +1,6 @@
 import {msg} from './i18n.js';
 import {bindValue} from './i18n-bindings.js';
+import {createProjectViewRemote} from './project-view-remote.js';
 const encoder=new TextEncoder(),decoder=new TextDecoder('utf8',{fatal:true});
 const fail=code=>{throw Error('project-view-'+code);};
 const sha=async bytes=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(n=>n.toString(16).padStart(2,'0')).join('');
@@ -65,51 +66,76 @@ export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},on
 }
 export function createProjectViewsPanel({root,api,pollMs=5000}){
  const doc=root.ownerDocument,win=doc.defaultView;
- let context=null,generation=0,pkg=null,delivery=null,selected='',frame=null,broker=null,timer=null,requestEpoch=0,active=false,visible=true;
+ let context=null,generation=0,pkg=null,delivery=null,selected='',frame=null,remote=null,broker=null,timer=null,requestEpoch=0,active=false,visible=true,closeTail=Promise.resolve();
+ const closing=new Set();
  const nav=doc.createElement('div'),body=doc.createElement('div'),status=doc.createElement('p'),retry=doc.createElement('button');
  nav.className='workspace-subtabs';nav.setAttribute('role','tablist');body.className='project-view-body';status.className='meta';retry.type='button';bindValue(retry,msg('projectViews.retry'));retry.onclick=()=>void reload();
- const storageKey=()=>`riffology:project-views:${context?.tenantId}:${context?.workspaceId}`;
- function disposeFrame(){broker?.close();broker=null;frame?.remove();frame=null;}
- function leave(){generation++;requestEpoch++;clearTimeout(timer);timer=null;active=false;disposeFrame();context=null;pkg=null;delivery=null;root.replaceChildren();}
- function renderNav(){nav.replaceChildren();for(const v of pkg?.manifest.views??[]){const b=doc.createElement('button');b.type='button';b.textContent=v.title;b.setAttribute('role','tab');b.setAttribute('aria-selected',String(v.id===selected));b.onclick=()=>void choose(v.id);nav.append(b);}nav.hidden=!pkg||pkg.manifest.views.length<2;}
+ const storageKey=()=> 'riffology:project-views:'+context?.tenantId+':'+context?.workspaceId;
+ function disposeFrame(){
+  broker?.close();broker=null;frame?.remove();frame=null;
+  if(remote){closing.add(remote);remote=null;}
+  const task=closeTail.catch(()=>{}).then(async()=>{for(const old of [...closing]){await old.close();closing.delete(old);}});
+  closeTail=task;return task;
+ }
+ function leave(){generation++;requestEpoch++;clearTimeout(timer);timer=null;active=false;void disposeFrame().catch(()=>{});context=null;pkg=null;delivery=null;root.replaceChildren();}
+ function renderNav(){nav.replaceChildren();for(const v of pkg?.manifest.views??[]){const button=doc.createElement('button');button.type='button';button.textContent=v.title;button.setAttribute('role','tab');button.setAttribute('aria-selected',String(v.id===selected));button.onclick=()=>void choose(v.id);nav.append(button);}nav.hidden=!pkg||pkg.manifest.views.length<2;}
  async function choose(id){
   if(!active||!context||!pkg||!delivery)return;
-  const view=pkg.manifest.views.find(v=>v.id===id)??pkg.manifest.views[0];if(!view)return;
-  generation++;const token=generation;disposeFrame();selected=view.id;renderNav();
+  const ownPackage=pkg,ownContext=context,ownDelivery=delivery;
+  const view=ownPackage.manifest.views.find(v=>v.id===id)??ownPackage.manifest.views[0];if(!view)return;
+  generation++;const token=generation,disposal=disposeFrame();selected=view.id;renderNav();
   try{win.sessionStorage.setItem(storageKey(),JSON.stringify({id:selected}));}catch{}
-  const current=()=>active&&token===generation&&context!==null;
+  const current=()=>active&&token===generation&&context===ownContext&&pkg===ownPackage;
   try{
-   await verifyProjectViewPackage(pkg,context,current);if(!current())return;
-   const target=new URL(delivery.frameUrl),execution=new URL(delivery.executionOrigin);
-   if(target.origin!==execution.origin||target.origin===win.location.origin||target.search||target.hash||!/^\/project-views\/[a-f0-9]{64}\/frame\.html$/.test(target.pathname))fail('execution-origin');
-   frame=doc.createElement('iframe');const ownFrame=frame;ownFrame.title=view.title;ownFrame.setAttribute('sandbox','allow-scripts');ownFrame.setAttribute('referrerpolicy','no-referrer');ownFrame.setAttribute('allow','camera \'none\'; microphone \'none\'; geolocation \'none\'');ownFrame.style.cssText='width:100%;height:70vh;min-height:320px;border:0';bindValue(status,msg('projectViews.loading'));retry.hidden=true;
-   let loaded=false;
-   ownFrame.onload=()=>{
-    if(!current())return;
-    if(loaded){disposeFrame();bindValue(status,msg('projectViews.navigationEnded'));retry.hidden=false;return;}loaded=true;
-    const channel=new win.MessageChannel(),ownPackage=pkg,ownContext=context;
-    broker=createProjectViewBroker({port:channel.port1,pkg:ownPackage,isCurrent:current,readArtifacts:async query=>{const params=new URLSearchParams({identity:ownPackage.packageIdentity});if(query.cursor)params.set('cursor',query.cursor);if(query.offset!==undefined)params.set('offset',String(query.offset));return api(`/api/workspaces/${encodeURIComponent(ownContext.workspaceId)}/project-view-artifacts${query.artifactId?'/'+query.artifactId:''}?${params}`,{signal:AbortSignal.timeout(10000)});},onNavigate:next=>void choose(next),authorize:async()=>{const authority=await api(`/api/workspaces/${encodeURIComponent(ownContext.workspaceId)}/project-views?identity=${ownPackage.packageIdentity}`,{signal:AbortSignal.timeout(10000)});if(!authority?.current)fail('revoked');},onState:state=>{if(current()){if(state==='failed')disposeFrame();bindValue(status,msg(state==='ready'?'projectViews.ready':'projectViews.loadFailed'));retry.hidden=state==='ready';}}});
-    ownFrame.contentWindow.postMessage({type:'project-view-init',package:pkg,view},'*',[channel.port2]);
-   };
-   ownFrame.src=target.href;body.replaceChildren(ownFrame);
-  }catch{if(current()){disposeFrame();bindValue(status,msg('projectViews.unavailable'));retry.hidden=false;}}
+   // The local host has one slot. A route/scope change first confirms that its
+   // original browser session is closed, then creates the replacement.
+   await disposal;if(!current())return;
+   await verifyProjectViewPackage(ownPackage,ownContext,current);if(!current())return;
+   frame=doc.createElement('canvas');const ownFrame=frame;
+   ownFrame.style.cssText='width:100%;max-width:800px;height:auto;aspect-ratio:4/3;display:block';
+   bindValue(status,msg('projectViews.loading'));retry.hidden=true;
+   const channel=new win.MessageChannel();
+   broker=createProjectViewBroker({
+    port:channel.port1,pkg:ownPackage,isCurrent:current,
+    readArtifacts:async query=>{
+     const params=new URLSearchParams({identity:ownPackage.packageIdentity});
+     if(query.cursor)params.set('cursor',query.cursor);if(query.offset!==undefined)params.set('offset',String(query.offset));
+     return api('/api/workspaces/'+encodeURIComponent(ownContext.workspaceId)+'/project-view-artifacts'+(query.artifactId?'/'+query.artifactId:'')+'?'+params,{signal:AbortSignal.timeout(10000)});
+    },
+    onNavigate:next=>void choose(next),
+    authorize:async()=>{
+     const authority=await api('/api/workspaces/'+encodeURIComponent(ownContext.workspaceId)+'/project-views?identity='+ownPackage.packageIdentity,{signal:AbortSignal.timeout(10000)});
+     if(!authority?.current)fail('revoked');
+    },
+    onState:state=>{if(current()){if(state==='failed')void disposeFrame().catch(()=>{});bindValue(status,msg(state==='ready'?'projectViews.ready':'projectViews.loadFailed'));retry.hidden=state==='ready';}},
+   });
+   const ownRemote=createProjectViewRemote({
+    canvas:ownFrame,delivery:ownDelivery,pkg:ownPackage,view,port:channel.port2,isCurrent:current,
+    onError:()=>{if(current()){void disposeFrame().catch(()=>{});bindValue(status,msg('projectViews.loadFailed'));retry.hidden=false;}},
+   });
+   remote=ownRemote;body.replaceChildren(ownFrame);
+   await ownRemote.start();if(!current())await ownRemote.close();
+  }catch{
+   if(current()){if(remote||broker||frame)await disposeFrame().catch(()=>{});bindValue(status,msg('projectViews.unavailable'));retry.hidden=false;}
+  }
  }
  async function reload(){
   if(!active||!context)return;const epoch=++requestEpoch,own=context;
   clearTimeout(timer);
   try{
-   const result=await api(`/api/workspaces/${encodeURIComponent(own.workspaceId)}/project-views`,{signal:AbortSignal.timeout(10000)});
+   const result=await api('/api/workspaces/'+encodeURIComponent(own.workspaceId)+'/project-views',{signal:AbortSignal.timeout(10000)});
    if(!active||context!==own||epoch!==requestEpoch)return;
-   if(!result?.package){generation++;disposeFrame();pkg=null;root.hidden=true;return;}
+   if(!result?.package){generation++;await disposeFrame();pkg=null;root.hidden=true;return;}
    await verifyProjectViewPackage(result.package,own,()=>active&&context===own&&epoch===requestEpoch);
    if(!active||context!==own||epoch!==requestEpoch)return;
    root.hidden=false;
-   if(pkg?.packageIdentity!==result.package.packageIdentity||!frame){pkg=result.package;delivery=result.delivery;await choose(selected);}
+   if(pkg?.packageIdentity!==result.package.packageIdentity||!frame||delivery?.executionOrigin!==result.delivery?.executionOrigin||delivery?.transport!==result.delivery?.transport){pkg=result.package;delivery=result.delivery;await choose(selected);}
    else await broker?.publish();
-  }catch{if(active&&context===own&&epoch===requestEpoch){generation++;disposeFrame();bindValue(status,msg('projectViews.savedUnavailable'));retry.hidden=false;root.hidden=false;}}
-  finally{if(active&&context===own&&epoch===requestEpoch)timer=setTimeout(()=>void reload(),pollMs);}
+  }catch{
+   if(active&&context===own&&epoch===requestEpoch){generation++;await disposeFrame().catch(()=>{});bindValue(status,msg('projectViews.savedUnavailable'));retry.hidden=false;root.hidden=false;}
+  }finally{if(active&&context===own&&epoch===requestEpoch)timer=setTimeout(()=>void reload(),pollMs);}
  }
- function setActive(value){if(visible===value)return;visible=value;if(!value){active=false;generation++;requestEpoch++;clearTimeout(timer);disposeFrame();}else if(context){active=true;void reload();}}
+ function setActive(value){if(visible===value)return;visible=value;if(!value){active=false;generation++;requestEpoch++;clearTimeout(timer);void disposeFrame().catch(()=>{});}else if(context){active=true;void reload();}}
  win.addEventListener('pagehide',()=>leave());
  return {async enter(scope){leave();context=scope;active=visible;try{selected=JSON.parse(win.sessionStorage.getItem(storageKey())??'null')?.id??'';}catch{selected='';}root.replaceChildren(nav,status,retry,body);retry.hidden=true;await reload();},leave,reload,setActive};
 }

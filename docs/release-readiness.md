@@ -1,5 +1,12 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-15 Generic pages: real package/broker isolated-host integration passed
+
+PR #221 now replaces the application iframe with a PNG canvas client and a local isolated Chromium host. The canonical package, original authorized broker and real MessageChannels are connected. AMD128 verified file/artifact reads, canvas rendering, click/keyboard/fractional-wheel input, page switching, revocation cleanup and nine failed egress attempts with collector positive controls. Original-ID cleanup is confirmed; no labeled containers remain. [Implementation and reproduction](project-view-isolated-host-20261015.md) · [exact-source evidence](../evidence/releases/project-view-isolated-host-20261015.json).
+
+Full local `npm run check` exited 0 (3,077 Node passes, 13 skips, 8 Python passes); final worker/host checks 11/11. This supersedes the earlier synthetic-only integration gap below. Production dual-loopback gates remain closed, the old local generic-frame endpoint returns 410, and no deployment/provider/cloud-compute calls occurred. Draft review and production authenticated/cloud acceptance remain outstanding; #214/JHG-46 are not Done.
+
+
 
 ## 2026-10-15 AMD128 isolated Chromium: local synthetic chain passed
 

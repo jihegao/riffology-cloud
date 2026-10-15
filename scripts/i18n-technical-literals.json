@@ -39,5 +39,14 @@
   "artifact-views.js": {
     "Home": 1,
     "End": 1
+  },
+  "project-view-remote.js": {
+    "Enter": 1,
+    "Escape": 1,
+    "Tab": 1,
+    "Backspace": 1,
+    "Delete": 1,
+    "Home": 1,
+    "End": 1
   }
 }

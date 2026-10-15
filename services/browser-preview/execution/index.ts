@@ -1,4 +1,4 @@
-import {PROJECT_VIEW_FRAME_PATH,PROJECT_VIEW_FRAME_HTML,projectViewFrameHeaders} from '../../project-views/frame.mjs';
+import {PROJECT_VIEW_FRAME_PATH} from '../../project-views/frame.mjs';
 import {checkedStaticAsset,findExecutionAsset} from './delivery.ts';
 function origin(value:string){const url=new URL(value);if(url.href!==url.origin+'/'||url.username||url.password)throw Error('invalid-execution-origin');return url;}
 function cspHash(hex:string){return btoa(String.fromCharCode(...hex.match(/../g)!.map(value=>Number.parseInt(value,16))));}
@@ -16,7 +16,7 @@ export default {
    if(!['GET','HEAD'].includes(request.method)||url.search||url.hash||request.headers.has('Authorization')||request.headers.has('Cookie'))return new Response('not found',{status:404});
    if(url.pathname===PROJECT_VIEW_FRAME_PATH){
     if(env.ALLOW_LOCALHOST_HTTP!=='true'||![new URL(appOrigin).hostname,url.hostname].every(host=>['localhost','127.0.0.1','[::1]'].includes(host)))return new Response('project view candidate unavailable',{status:503,headers:{'cache-control':'no-store'}});
-    return new Response(request.method==='HEAD'?null:PROJECT_VIEW_FRAME_HTML,{headers:projectViewFrameHeaders(appOrigin)});
+    return new Response('generic pages require the local isolated browser host',{status:410,headers:{'cache-control':'no-store'}});
    }
    const asset=findExecutionAsset(url.pathname);if(!asset)return new Response('not found',{status:404});
    const pythonFrame=/^\/runtime\/([a-f0-9]{64})\/frame\.html$/.exec(asset.url)?.[1],javascriptFrame=/^\/runtime\/([a-f0-9]{64})\/js-frame\.html$/.exec(asset.url)?.[1];

@@ -1,0 +1,175 @@
+{
+  "schema": "riffology.isolated-host-release/v1",
+  "date": "2026-10-15",
+  "scope": "Local integration candidate; not merged or deployed",
+  "sourceSha256": {
+    "services/project-views/local-host.mjs": "28831f7d1313e175e23ae8f26d42d923e8b2f6dc27134f52b0f8410ef8cb92f1",
+    "services/project-views/isolated-browser.mjs": "bdb7eda053d63f225edc03ae0ee785ccb4abcdceb35fa84434306e78259f47f2",
+    "services/web/project-view-remote.js": "0acaf818350289427f0f380e4c88d2367f37ff626e1134e63684a1eb8a7a4668",
+    "services/web/project-views.js": "cbc4b5390cda6f20e742eceb12f93d80ce04c68ab5ba3f2f27fe4ff668498b5d",
+    "scripts/m3/project-view-host-acceptance.mjs": "afc5a288964f4bb827afbac752234dd6b2dd0a841785dfdc86b29b486951a84b"
+  },
+  "image": "sha256:658fe76b5935c54d9b078fa4223867cd3aa2524bc8880db1d5274df42df73871",
+  "seccompSha256": "4cdcdc07d9676737fa78222a8fffeda5cd0ebd2b209c82fafd2077d051d30ae2",
+  "amd128": {
+    "schema": "riffology.local-isolated-view-acceptance/v1",
+    "startedAt": "2026-10-15T12:54:37.786Z",
+    "productionEligible": false,
+    "cloudCalls": 0,
+    "cases": [
+      {
+        "kind": "href",
+        "packageIdentity": "45670cc841eae0da34e9f7f8a4e66c25c067cd326954169ae035727f937b0457",
+        "networkFailures": [
+          {
+            "event": "requestfailed",
+            "error": "net::ERR_CONNECTION_REFUSED"
+          }
+        ],
+        "containerId": "af947b2ea0200692cc272e00b83fb44a60ec4e77f03d09944bb74f1db4d59ae6"
+      },
+      {
+        "kind": "assign",
+        "packageIdentity": "e66d3b07c9bdaf03b6cb1f16894b34c5f73967798ba47dadc18f10217ba1a85c",
+        "networkFailures": [
+          {
+            "event": "requestfailed",
+            "error": "net::ERR_CONNECTION_REFUSED"
+          }
+        ],
+        "containerId": "b3fc155044792ad35e62fe6f934d6793584bcef43cbda6e6e0e6fef8e291534e"
+      },
+      {
+        "kind": "replace",
+        "packageIdentity": "ad9d20565ee04004e6acb3973715599a126232b352fa5ce0490c512085aa9386",
+        "networkFailures": [
+          {
+            "event": "requestfailed",
+            "error": "net::ERR_CONNECTION_REFUSED"
+          }
+        ],
+        "containerId": "459c2b8074d512fd964c64de00f24777e9bd9dac490e2e7520c1560cd18bc928"
+      },
+      {
+        "kind": "fetch",
+        "packageIdentity": "ddbae723135dc0b4910016f88c11ad98f85cc2ad0564a6fda7abf7a91eec8762",
+        "networkFailures": [
+          {
+            "event": "requestfailed",
+            "error": "net::ERR_CONNECTION_REFUSED"
+          }
+        ],
+        "containerId": "9b3450ca16ce8abec6000e7a9bde3d0f72e05eb6efc18b87a8d1b65f692a6083"
+      },
+      {
+        "kind": "beacon",
+        "packageIdentity": "0fef9615bc8f02210b0dfbf98ef2a784356e776ec675b13ea51a90c5b5d999f2",
+        "networkFailures": [
+          {
+            "event": "requestfailed",
+            "error": "net::ERR_CONNECTION_REFUSED"
+          }
+        ],
+        "containerId": "98e626fd647b77cf87fb14adcdcf284bbb59d59e79c00abc167c3242fb23c633"
+      },
+      {
+        "kind": "image",
+        "packageIdentity": "a642d38b5c4d854607cd42723f1205e4f60b1814ccabc752eed3a6d4b1982f36",
+        "networkFailures": [
+          {
+            "event": "requestfailed",
+            "error": "net::ERR_CONNECTION_REFUSED"
+          }
+        ],
+        "containerId": "2148a6e7bccf19a0bd330f48b120cbfd6bd6c439d83417f1f3cbeb326494529a"
+      },
+      {
+        "kind": "form",
+        "packageIdentity": "2d0a82d6f0c901fee1808d9824443ce41b99e50f6a9922e5fdb1716fea466cb0",
+        "networkFailures": [
+          {
+            "event": "requestfailed",
+            "error": "net::ERR_CONNECTION_REFUSED"
+          }
+        ],
+        "containerId": "95fbde16d8d224cd0599ff7b4873fb3c23985967253f580f55b9ccc7b3eace87"
+      },
+      {
+        "kind": "window-open",
+        "packageIdentity": "0fe3df1eab7a15387bc486042cfcb36de3ee452ab7351c71ad71cb418ddcdcd1",
+        "networkFailures": [
+          {
+            "event": "requestfailed",
+            "error": "net::ERR_CONNECTION_REFUSED"
+          }
+        ],
+        "containerId": "a07d2e8ada3ba1a84203047976d0dc1158ef96f9131ebd02a343648bc4d49123"
+      },
+      {
+        "kind": "websocket",
+        "packageIdentity": "214c612f820923efeebff6b2bbf1299b3f2f0727ae68f88857fa4af60172ca09",
+        "networkFailures": [
+          {
+            "event": "websocket-error",
+            "error": "request-failed"
+          }
+        ],
+        "containerId": "4ca82abb319ee5b7a2f5d651f996bdc3cbf20ce9dc6465f978c50d85dceb4de8"
+      }
+    ],
+    "uncovered": [
+      "production deployment",
+      "real authenticated invited users",
+      "cloud lifecycle and cost",
+      "accessibility and full multimedia input compatibility"
+    ],
+    "input": {
+      "clickArtifactRead": true,
+      "keyboardArtifactRead": true,
+      "fractionalWheelSessionSurvives": true
+    },
+    "package": {
+      "identity": "6a543a194898e0aa9bf1f813d89a0befb7f1ceaef0bff7863f94fa8584197d26",
+      "artifactReads": 3,
+      "artifactLists": 9,
+      "canvasPixels": true,
+      "appIframes": 0,
+      "appProjectDom": 0
+    },
+    "routeSwitched": true,
+    "revocationClosed": true,
+    "collector": [
+      {
+        "path": "/canary",
+        "query": "?positive=before"
+      },
+      {
+        "path": "/canary",
+        "query": "?positive=after"
+      }
+    ],
+    "errors": [],
+    "status": "passed",
+    "finishedAt": "2026-10-15T12:55:09.105Z",
+    "cleanupConfirmed": true
+  },
+  "remoteEvidenceDirectory": "/tmp/riffology-browser-chain.Y24qNP/host-source/.local/host-acceptance-4",
+  "checks": {
+    "command": "M1_BROWSER_CHANNEL=chromium PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run check",
+    "exitCode": 0,
+    "log": "/private/tmp/isolated-host-full-check-final.log",
+    "nodePass": 3077,
+    "nodeSkip": 13,
+    "pythonPass": 8,
+    "finalWorkerHostTargetedPass": 11,
+    "note": "Full regression plus final targeted tests and exact-source AMD128 integration; no frozen-commit full-suite claim."
+  },
+  "productionEnabled": false,
+  "deployed": false,
+  "providerCalls": 0,
+  "cloudComputeCalls": 0,
+  "previousFailedLocalChecks": [
+    "UI i18n literals corrected",
+    "M1 browser fixture missing remote asset corrected; failed invocation retained in /private/tmp/isolated-host-full-check-3.log"
+  ]
+}

@@ -18,12 +18,12 @@ test('undeclared imports, external packages, computed dynamic imports and traver
  for(const code of ['import "./missing.mjs";','import "https://example.test/lib.mjs";','const a="./value.mjs";import(a);'])await assert.rejects(packaged({...projectFiles(),'app/main.mjs':code}),/project-view-/);
  assert.throws(()=>parseProjectViews({...manifest,files:['../secret.html']}),/manifest-invalid/);
 });
-test('fixed frame stays on approved independent origin and refuses credentials/query before delivery',async()=>{
+test('retired iframe is never delivered; independent origin and credential gates remain',async()=>{
  const env={APP_ORIGIN:'http://localhost:8011',EXECUTION_ORIGIN:'http://127.0.0.1:8012',ALLOW_LOCALHOST_HTTP:'true',RUNTIME_ASSETS:{fetch:async()=>{throw Error('unused');}}};
  const production={...env,APP_ORIGIN:'https://app.example.com',EXECUTION_ORIGIN:'https://pages.example.net',ALLOW_LOCALHOST_HTTP:'false'};
  assert.equal((await worker.fetch(new Request(production.EXECUTION_ORIGIN+PROJECT_VIEW_FRAME_PATH),production)).status,503);
- const response=await worker.fetch(new Request(env.EXECUTION_ORIGIN+PROJECT_VIEW_FRAME_PATH),env);assert.equal(response.status,200);
- assert.match(response.headers.get('content-security-policy'),/connect-src 'none'/);assert.match(response.headers.get('content-security-policy'),/sandbox allow-scripts/);assert.doesNotMatch(response.headers.get('content-security-policy'),/allow-same-origin/);
+ const response=await worker.fetch(new Request(env.EXECUTION_ORIGIN+PROJECT_VIEW_FRAME_PATH),env);assert.equal(response.status,410);
+ assert.doesNotMatch(await response.text(),/<script>/);
  for(const headers of [{Cookie:'session=secret'},{Authorization:'Bearer secret'}])assert.equal((await worker.fetch(new Request(env.EXECUTION_ORIGIN+PROJECT_VIEW_FRAME_PATH,{headers}),env)).status,404);
  assert.equal((await worker.fetch(new Request(env.EXECUTION_ORIGIN+PROJECT_VIEW_FRAME_PATH+'?anything=1'),env)).status,404);
  assert.equal((await worker.fetch(new Request(env.APP_ORIGIN+PROJECT_VIEW_FRAME_PATH),{...env,EXECUTION_ORIGIN:env.APP_ORIGIN})).status,503);
