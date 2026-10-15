@@ -1,0 +1,188 @@
+{
+  "schema": "riffology.real-identity-acceptance-progress/v1",
+  "testedGitHead": "2662f94d1bd71e423946e3ca4b61098eee6ff540",
+  "testedTree": "033d5e7c3999a0b2837c79f725b867fb99d2461e",
+  "productionEligible": false,
+  "deployed": false,
+  "status": "pending-real-identity",
+  "identityType": "synthetic-local-fixture; no real invited OAuth identity exercised",
+  "matrix": [
+    {
+      "requirement": "ordinary invited identity package/broker/files/artifacts, switching and revocation",
+      "status": "pending",
+      "reason": "No configured loopback OAuth login available; broker writes require scope clarification"
+    },
+    {
+      "requirement": "second identity or cross-project package denial and old broker denial",
+      "status": "pending",
+      "reason": "Requires genuine authenticated local identity and project scopes"
+    },
+    {
+      "requirement": "nine egress attempts and collector controls",
+      "status": "passed",
+      "identityScope": "synthetic-local-fixture",
+      "cleanupConfirmed": true
+    }
+  ],
+  "preflight": {
+    "schema": "riffology.local-isolated-view-acceptance/v1",
+    "startedAt": "2026-10-15T13:22:39.897Z",
+    "productionEligible": false,
+    "cloudCalls": 0,
+    "cases": [
+      {
+        "kind": "href",
+        "packageIdentity": "89f90851df16ffbe9e9273d786fa777744014c66792f5bd091bf308b4bfc0b16",
+        "networkFailures": [
+          {
+            "event": "requestfailed",
+            "error": "net::ERR_CONNECTION_REFUSED"
+          }
+        ],
+        "containerId": "16e2c242b36614316445952332aed69ab46ec6c37f0eeebd60c86d414f34ae2a"
+      },
+      {
+        "kind": "assign",
+        "packageIdentity": "7fb2a9cf9af6d145147a9a2897bade8973c42bed6f728dcf938479da9611e751",
+        "networkFailures": [
+          {
+            "event": "requestfailed",
+            "error": "net::ERR_CONNECTION_REFUSED"
+          }
+        ],
+        "containerId": "3442af3c0af4e76d8142eb7d2fa7ebd049d4cca57a73e9d4136a539badc93c31"
+      },
+      {
+        "kind": "replace",
+        "packageIdentity": "a3932f7e3db15baeddfa990ff5c754f4be21c5324c080c8653e2b8a1651be2f1",
+        "networkFailures": [
+          {
+            "event": "requestfailed",
+            "error": "net::ERR_CONNECTION_REFUSED"
+          }
+        ],
+        "containerId": "8ac93e069e3a134acdee5114618e3af473b65ff355f32b16b0e466f050aacb22"
+      },
+      {
+        "kind": "fetch",
+        "packageIdentity": "75513db286d5d7a06e288596db458d097d216715c396c66ceee0401c72bfb221",
+        "networkFailures": [
+          {
+            "event": "requestfailed",
+            "error": "net::ERR_CONNECTION_REFUSED"
+          }
+        ],
+        "containerId": "503d734e8f51ce741a7551ac1b43969a81b80830b37a23a0a115ad0ba607174c"
+      },
+      {
+        "kind": "beacon",
+        "packageIdentity": "da520755dc10c369614c344ff86c6528a4a582aa827f94bfcf6e05bf9c5d1a88",
+        "networkFailures": [
+          {
+            "event": "requestfailed",
+            "error": "net::ERR_CONNECTION_REFUSED"
+          }
+        ],
+        "containerId": "9102b2d052e8f1b8231b4226380d480167011568dc4e2666e0d3f0f988b9028e"
+      },
+      {
+        "kind": "image",
+        "packageIdentity": "fdea446ab8e558b9e1a8fbc0d6cb97eb1c5c70c51a4c193ab3322b85c0b1e3a9",
+        "networkFailures": [
+          {
+            "event": "requestfailed",
+            "error": "net::ERR_CONNECTION_REFUSED"
+          }
+        ],
+        "containerId": "f707075f38f460bfa56aeb946af9f0c38cb2b49b95f619df6ad818bf945dae89"
+      },
+      {
+        "kind": "form",
+        "packageIdentity": "b6043302c2266d6616ae82692155c90b5f7d6a0dced0185cfb5f1c67143b9286",
+        "networkFailures": [
+          {
+            "event": "requestfailed",
+            "error": "net::ERR_CONNECTION_REFUSED"
+          }
+        ],
+        "containerId": "ed9074a683c3d92afcaa674d263b9e8ab171e897af2ec3c4eaa52aa66afcf8c4"
+      },
+      {
+        "kind": "window-open",
+        "packageIdentity": "58a0f83bc5f7bbb17a38f1150ede021a685114b571ef4154abd13c9e747000a9",
+        "networkFailures": [
+          {
+            "event": "requestfailed",
+            "error": "net::ERR_CONNECTION_REFUSED"
+          }
+        ],
+        "containerId": "cadabac119d225972059a4899ed03571d5d3bbc3c50507430f4fe06c91f058b5"
+      },
+      {
+        "kind": "websocket",
+        "packageIdentity": "e0a7649c5780741416f5c912ba56cf6e6c5546d9e0941bb4c943df6799383cd4",
+        "networkFailures": [
+          {
+            "event": "websocket-error",
+            "error": "request-failed"
+          }
+        ],
+        "containerId": "cac18d648615a6a45ce61d5c73c3a22f40093e27f6c3755c7b5d040f7826f9bd"
+      }
+    ],
+    "uncovered": [
+      "production deployment",
+      "real authenticated invited users",
+      "cloud lifecycle and cost",
+      "accessibility and full multimedia input compatibility"
+    ],
+    "input": {
+      "clickArtifactRead": true,
+      "keyboardArtifactRead": true,
+      "fractionalWheelSessionSurvives": true
+    },
+    "package": {
+      "identity": "6a543a194898e0aa9bf1f813d89a0befb7f1ceaef0bff7863f94fa8584197d26",
+      "artifactReads": 3,
+      "artifactLists": 9,
+      "canvasPixels": true,
+      "appIframes": 0,
+      "appProjectDom": 0
+    },
+    "routeSwitched": true,
+    "revocationClosed": true,
+    "collector": [
+      {
+        "path": "/canary",
+        "query": "?positive=before"
+      },
+      {
+        "path": "/canary",
+        "query": "?positive=after"
+      }
+    ],
+    "errors": [],
+    "status": "passed",
+    "finishedAt": "2026-10-15T13:23:10.880Z",
+    "cleanupConfirmed": true
+  },
+  "authFindings": {
+    "callback": "http://127.0.0.1:8795/api/auth/callback/google",
+    "requiredConfigurationKeys": [
+      "BETTER_AUTH_SECRET",
+      "GOOGLE_CLIENT_ID",
+      "GOOGLE_CLIENT_SECRET"
+    ],
+    "existingAmdConfigContainsRequiredKeys": false,
+    "fixtureHelper": "scripts/m3/g3-local-auth.mjs creates users/sessions with internalAdapter; not true OAuth acceptance",
+    "revocationRoute": "POST /api/admin/invitations/:id/access action=revoke",
+    "pageBroker": "files/artifacts read only; no write method"
+  },
+  "unchangedBoundaries": [
+    "PR remains Draft",
+    "no merge or deployment",
+    "dual-loopback gates retained",
+    "no provider or cloud compute calls"
+  ],
+  "remoteRunDirectory": "/tmp/riffology-browser-chain.Y24qNP/host-source/.local/real-identity-preflight-1"
+}
