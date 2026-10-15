@@ -1,5 +1,14 @@
 # Current release readiness — 2026-10-14
 
+
+## 2026-10-15 Draft #221: project resources and isolation repair candidate
+
+[PR #221](https://github.com/jihegao/riffology-cloud/pull/221) is an unpublished-runtime candidate: no merge, deployment or authenticated/paid acceptance. Trusted Pi resources now have a Managed explicit-command counterpart, frozen into the original input digest with bounded resource-text saving. This is not autonomous model-side lazy loading or full Pi backend equivalence.
+
+Repair commit `73d923b9cd9ff10ab4180736990e46937e2d48fd` passed the complete local check (13 skipped): UI 21, M0 353, M1 549, M2 985, M3 1105, issue73 30 and research-quality 8. The execution worker's generic-page gate now requires both app and execution origins to be loopback, matching Gateway's independent check. Three synthetic navigation cases still reproduce the original iframe egress defect; production page delivery remains disabled.
+
+The user approved preserving arbitrary JS and developing an offline isolated-browser prototype, without deployment or cloud charges. [Prototype scope](project-view-offline-prototype-20261015.md) separates its local launcher/fixtures from real browser-image, container-policy and production acceptance. The original October 20 target requires reassessment after evidence; no replacement date is promised. AMD128 independently checked the repair tree: Managed 188 and pages/prototype 32 passed. Its original full baseline invocation failed one release-ACK observation race; a fixture-only correction passed individually on both hosts, without rewriting the failed full invocation. The prototype cleanup follow-up passed 11 injected tests and a real failed-container cleanup; the native network-only probe passed, but no isolated Chromium acceptance is claimed. [Final evidence](../evidence/releases/m1-repair-amd128-20261015.json) separates each tested version.
+
 ## 2026-10-14 Main integration deployed: candidate design, unchanged answers and section views
 
 Main `eba528f7b101a67f32565e4aac74a0d4154a7dec` is deployed to [app.riffoid.com](https://app.riffoid.com): Gateway `d9ceec61-1e5f-48cc-8a51-3abdb4b06614` and Entry `5869db28-cb18-4bcc-8e2a-7364e8c888ce`, both at 100%. PRs #169 → #170 → #173 reconcile the current Beta deadline, branding and signed domain source; #198 design/answer/subtabs and #200/#203 receipt/reviewed-copy fixes are all retained. #204 adds acceptance evidence without changing production code.

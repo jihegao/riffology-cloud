@@ -37,3 +37,7 @@ operation 必须与原文件一致，containerName 必须由该 UUID 唯一派�
 本轮本地 `node --test tests/m3/project-view-offline-prototype.test.mjs` 通过 11 项（退出 0）：启动参数、缺镜像拒绝、注入的有效结果/超时/SIGTERM/清理失败及恢复、错误 operation/容器身份、pending create 空列表与损坏输出。runner、Docker 结果、信号和画面均为显式合成 fixture，**没有执行 Docker 或 Chromium**；这些测试只验证控制与输出处理代码。Mac 未安装 Docker。AMD128 存在 Docker，但尚未准备同时满足镜像和本机安全策略合同的浏览器运行环境，不能宣称原型已运行成功或导航外发已修复。AMD128 的已有 Chromium 直接回归是原 iframe 的独立验证，不是该隔离原型的验证。
 
 此版本是合成画面/点击实验，尚未接入真实 immutable package、MessagePort broker、用户 Web 画面与键盘通道、资源租约、撤权、并发、生产镜像交付。原生 socket 证据只证明测试容器的网络配置，不能证明主机/内核漏洞免疫。生产方案还需真实包的多页/表单/媒体/输入兼容性、退出与释放、带宽/延迟、可访问性、复制粘贴及费用评估，结果形成后再确定排期。
+
+## AMD128 本轮实测补充
+
+同版原型在已有 Node 镜像（不满足浏览器合同）上实际启动，失败后核对原容器 ID 并完成清理；不是浏览器运行通过。另用该本地镜像验证无网络容器只有 loopback、无外部路由、原生 socket 返回 ENETUNREACH，退出 0 且无剩余任务容器。这是网络层证据，未证明 Chromium sandbox/画面交互或完整项目隔离。完整版本与结果见 [AMD128 证据](../evidence/releases/m1-repair-amd128-20261015.json)。
