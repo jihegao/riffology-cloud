@@ -24,5 +24,5 @@ export async function projectResourcesFromArchive(source:PreviewSource,archive:U
   }
   files.push({path:entry.path,content});
  }
- return freezeProjectResources({scope:previewSourceScope(source),revisionId:source.kind==='saved-turn'?source.revision.revisionId:null,filesSha256:previewSourceFilesSha256(source),files,diagnostics});
+ return freezeProjectResources({scope:previewSourceScope(source),revisionId:source.kind!=='initial-workspace'?source.revision.revisionId:null,filesSha256:previewSourceFilesSha256(source),files,diagnostics});
 }

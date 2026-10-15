@@ -100,3 +100,14 @@ test('subscription cancellation fences pending authorization, initial reads and 
   broker.close();
  }
 });
+
+test('manual artifact identifiers and package-bound cursors are read-only and still require authorization',async()=>{
+ const {pkg}=await packaged(),messages=[],reads=[];let authorized=true;
+ const port={postMessage:m=>messages.push(m),close(){},start(){},onmessage:null};
+ const broker=createProjectViewBroker({port,pkg,isCurrent:()=>true,authorize:async()=>{if(!authorized)throw Error('revoked');},readArtifacts:async input=>{reads.push(input);return {source:'user-upload',title:'User upload / unverified'};}});
+ const artifactId='manual-artifact-'+'a'.repeat(64),cursor=['b'.repeat(64),'c'.repeat(64),'d'.repeat(64),'artifact-'+'e'.repeat(60)].join(':');
+ await port.onmessage({data:{id:1,type:'artifacts.read',artifactId,offset:0}});assert.equal(messages.at(-1).value.source,'user-upload');
+ await port.onmessage({data:{id:2,type:'artifacts.list',cursor}});assert.equal(reads.at(-1).cursor,cursor);
+ await port.onmessage({data:{id:3,type:'artifacts.write',artifactId,offset:0}});assert.equal(messages.at(-1).error,'request-denied');
+ authorized=false;await port.onmessage({data:{id:4,type:'artifacts.read',artifactId,offset:0}});assert.equal(messages.at(-1).error,'request-denied');assert.equal(reads.length,2);broker.close();
+});

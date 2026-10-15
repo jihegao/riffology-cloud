@@ -41,10 +41,10 @@ export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},on
    let value;
    if(m.type==='files.list')value=snapshot().files;
    else if(m.type==='artifacts.list'){
-    if(m.cursor!==null&&(typeof m.cursor!=='string'||! /^[a-f0-9]{64}:[a-f0-9]{64}:artifact-[a-f0-9]{60}$/.test(m.cursor)))throw Error('cursor-denied');
+    if(m.cursor!==null&&(typeof m.cursor!=='string'||! /^(?:[a-f0-9]{64}:){2,3}artifact-[a-f0-9]{60}$/.test(m.cursor)))throw Error('cursor-denied');
     value=await readArtifacts({cursor:m.cursor});
    }else if(m.type==='artifacts.read'){
-    if(typeof m.artifactId!=='string'||! /^artifact-[a-f0-9]{60}$/.test(m.artifactId)||!Number.isSafeInteger(m.offset)||m.offset<0||m.offset>1114112)throw Error('artifact-denied');
+    if(typeof m.artifactId!=='string'||! /^(?:artifact-[a-f0-9]{60}|manual-artifact-[a-f0-9]{64})$/.test(m.artifactId)||!Number.isSafeInteger(m.offset)||m.offset<0||m.offset>1114112)throw Error('artifact-denied');
     value=await readArtifacts({artifactId:m.artifactId,offset:m.offset});
    }
    else if(m.type==='files.read'){

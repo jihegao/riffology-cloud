@@ -1,5 +1,13 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-15 Manual-save candidate and real login preparation
+
+PR #221 adds a loopback-only workbench manual-save candidate: explicit manual Revision provenance, one canonical head shared with Turns, user-upload artifacts consumed by the read-only page broker, and original-operation recovery. D1 fencing coordinates publication with invitation revocation. [Interface and recovery semantics](manual-project-save-design-20261015.md) include the remaining GC/purge scope; these changes are not deployed.
+
+The frozen candidate passed full local `npm run check`: 3,124 Node passes, 13 skips, 8 Python passes; two cross-reviews found no additional must-fix. [Candidate evidence](../evidence/releases/manual-save-candidate-20261015.json) records source hashes, prior failures and identity/environment gaps. This does not turn the remote empty CI failure into a pass.
+
+The designated local operator completed real Google OAuth in a separate local Catalog. Invitation activation and the ordinary invited account's project/save/page/revocation chain remain pending. Prior AMD128 page/egress results used synthetic identities and do not satisfy this missing acceptance. Draft, unmerged, `productionEligible:false`, production disabled; no model or cloud-compute acceptance is claimed. The historical suite counts below describe their original revisions, not the new manual-save candidate.
+
 ## 2026-10-15 Generic pages: real package/broker isolated-host integration passed
 
 PR #221 now replaces the application iframe with a PNG canvas client and a local isolated Chromium host. The canonical package, original authorized broker and real MessageChannels are connected. AMD128 verified file/artifact reads, canvas rendering, click/keyboard/fractional-wheel input, page switching, revocation cleanup and nine failed egress attempts with collector positive controls. Original-ID cleanup is confirmed; no labeled containers remain. [Implementation and reproduction](project-view-isolated-host-20261015.md) · [exact-source evidence](../evidence/releases/project-view-isolated-host-20261015.json).

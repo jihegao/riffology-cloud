@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-15",
+  "status": "local-manual-save-candidate-real-identity-pending",
+  "baseRemoteCommit": "26e1e525ff757c914b09b4b2cb6c3ebb9ad2de27",
+  "productionEligible": false,
+  "productionEnabled": false,
+  "deployed": false,
+  "scope": [
+    "Loopback-only ordinary workbench manual save; original actor/scope/CAS/idempotency",
+    "Explicit manual Revision provenance and one canonical workspace head shared with Turns",
+    "User-upload artifact declarations/read path; original tool-output receipt verification retained",
+    "D1 authorization fence and durable rejection/recovery across ACK loss and authVersion changes",
+    "UI reload keeps only operation key/digest; explicit original-request resupply without persisted private body"
+  ],
+  "verification": {
+    "command": "M1_BROWSER_CHANNEL=chromium PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run check",
+    "exitCode": 0,
+    "node": {
+      "passed": 3124,
+      "failed": 0,
+      "skipped": 13
+    },
+    "python": {
+      "passed": 8,
+      "failed": 0
+    },
+    "log": "/private/tmp/manual-save-final-check.log",
+    "logSha256": "00032c928e950c06dddc0d4c0b0c0f6a5dd2c888507a5f62e926a7b03f0465ed",
+    "sourceUnchangedDuringFinalValidation": true,
+    "independentReviews": [
+      "Core author reviewed Gateway/Workspace/broker integration; no new must-fix; focused tests 27/27",
+      "UI author reviewed core manifest/journal/Turn base compatibility; no new must-fix; source and protocol coverage only"
+    ]
+  },
+  "priorFailures": [
+    {
+      "log": "/private/tmp/manual-save-full-check.log",
+      "result": "Typecheck ran while interfaces were being integrated; two incomplete-interface/syntax errors, not passing."
+    },
+    {
+      "log": "/private/tmp/manual-save-full-check-2.log",
+      "result": "M1 failed old schema version expectations (2) and migration allowlist (1); corrected preserving explicit legacy read-only recovery tests."
+    },
+    {
+      "log": "/private/tmp/manual-save-m3-current.log",
+      "result": "8 migration inventory/count expectations failed; allowlists updated for migration0013; final full suite passed."
+    }
+  ],
+  "realIdentity": {
+    "environment": "Separate local Catalog; no production identity/role changes",
+    "authPreparationSource": "2662f94d1bd71e423946e3ca4b61098eee6ff540",
+    "googleOAuth": "Designated local operator completed genuine interactive Google login; token/JWKS 200",
+    "observedAt": "2026-10-15T14:38:36Z",
+    "counts": {
+      "authUsers": 1,
+      "authSessions": 1,
+      "authAccounts": 1,
+      "activeOperators": 0,
+      "pendingBootstrapInvitations": 1
+    },
+    "pending": [
+      "User operator invitation activation",
+      "Ordinary account formal invitation/login",
+      "Real blank-project native initialization and confirmed cleanup",
+      "Ordinary UI save/cold restore and canonical package broker",
+      "Second identity/cross-project denials and revocation cleanup",
+      "Nine egress cases bound to genuine authenticated package"
+    ]
+  },
+  "amdNativeEnvironment": {
+    "status": "environment-probe-completed-formal-project-integration-pending",
+    "observedAt": "2026-10-15T14:58:15Z",
+    "observations": [
+      "Official helper pinned to sha256:0ef6716c52430096900b150d84a3302057d6cd2319dae7987128c85d0733e3c8",
+      "Three initial failed probes retained; original containers cleaned",
+      "Private Unix Docker proxy adds only helper namespaced src_valid_mark=0 for exact probe name/digest; socket0600 parent0700; one transformation",
+      "Actual native application container started; Worker200; fixed platform file write/read succeeded",
+      "enableInternet:false external fetch failed with TypeError, not evidence of a policy403",
+      "Application destroy confirmed; Miniflare left a helper, so probe exited1; outer cleanup verified original ID/image then removed it; no remaining containers/socket",
+      "Host src_valid_mark=1/rp_filter=2 unchanged; helper rp_filter2/TPROXY retained"
+    ],
+    "upstreamUserReport": "https://github.com/cloudflare/workerd/issues/6860",
+    "evidenceDirectory": "/tmp/riffology-native-env-20261015/",
+    "pending": [
+      "Review fixed Gateway/ProjectRuntime proxy name binding and original-ID helper lifecycle",
+      "Actual ordinary user project initialization on frozen candidate",
+      "OAuth state/credentials not migrated to AMD128"
+    ]
+  },
+  "notDelivered": [
+    "Production deployment or gate opening",
+    "Full manual-revision GC/purge; new prefixes conservatively retained; issue212 must cover fence/journal records too",
+    "Actual model Turn or paid execution acceptance",
+    "Cloud container lifecycle/cost/capacity acceptance"
+  ],
+  "actions": {
+    "deployments": 0,
+    "productionGateChanges": 0,
+    "realModelCalls": 0,
+    "cloudComputeCalls": 0
+  },
+  "sourceSha256": {
+    "package.json": "f1f9072cad1eb3673ac206c69ffc1c9b171b772b0d5f4890e4e40a2ad780856c",
+    "scripts/i18n-check.mjs": "99783e40619c71884e064107aa864f6e77a3b5df8645f558e68ef8e9ae39695b",
+    "scripts/m1/staging-preflight.mjs": "e36932b0f151c2f25392cef2d828f455c4b0fb5f07fe990bcaa3817e5d9f7371",
+    "scripts/m3/vertical-staging-preflight.mjs": "35ecf3ccbd3b594cd932c70f2dd6356d4fbbce1a38ce4db736479c78f358d43c",
+    "services/catalog/admin.ts": "43798c3ef0e4e9ade22c126a07f8dd3269fbfe558d15fb2f715dc00c0000572a",
+    "services/catalog/manual-save-fence.ts": "a7b70799d91ea10f20fd0d44486da5942fecf43bb979d452a39fde3dc046d3fa",
+    "services/catalog/migrations/0013_manual_save_fence.sql": "852461352920157299847dc6bc0a301240827230f826d327bb7cb2e58851b5a9",
+    "services/gateway/app.ts": "acaf6a095935910af19f1d536c92adf5aa06a881736b450c559002113eb6714b",
+    "services/gateway/index.ts": "2042d443ab665798633cc74176d5b061ca9ebba054618688f113137d2d50789e",
+    "services/gateway/manual-save-services.ts": "37a6bcf2f7f44be1b57bfff12e6968c8d01608d4d7019c71cc7076a44b2a1b92",
+    "services/preview/bindings.ts": "c2ecade0a2af34d2d4beb08ff3a57d1848150565720b2633534c722de96bc230",
+    "services/preview/source.ts": "891d5b93231a4e6e25209885cea3aa27ee576224030e071eaa809fff1e62be00",
+    "services/project-resources/archive.ts": "3e8f47301351af043d5d57e48c1567c0f924d2f8ae704b1dea9d277b39585c87",
+    "services/project-views/manual-artifacts.ts": "93bdc6b5109a7e9cfc09f84626ee4e51409a54b345c51771436f463c37a2abba",
+    "services/project-views/package.ts": "71dedd19e8a8bb25da0c43425ef615fdba4be156430642b7661c4b10c82d0e4b",
+    "services/run/runtime-durable.ts": "94a52b1652d09d90d9b65ffa7db97781b92e0f9d10c476251b23af6243ebbf38",
+    "services/turn-runtime/managed-product.ts": "a1694e39de694e2d9838de509a878f353efa3b1909d6961924a3f0276bb1c300",
+    "services/turn-runtime/manual-revision.ts": "392b2d33f79210a018cdd43711105a2c350d70ef60dd283a941fdf294affd6ee",
+    "services/turn-runtime/manual-save.ts": "e5534b2fbc4b421772bbda46742bc3b750242cdb01e403298cb186ac9850de2f",
+    "services/turn-runtime/revision-store-client.ts": "7c08569288c11a479aafe01f8d903717857516ade9cfa31f592944e2d7868022",
+    "services/turn-runtime/revision-store.ts": "bf8f7ab43b6a8f830d5c860ce09c021d950d60009fb54538946b117cad64b91a",
+    "services/turn-runtime/revision.ts": "ed0b9347a0b54e8bc0aeb74ca5c9e8d689cd3091d6513807608c90214b2524e5",
+    "services/turn/journal.ts": "7f8d395ccf4d1dd1cdbc3adda59c2a4cef7b54d60a4bfae90ea833688f389e57",
+    "services/turn/protocol.ts": "c7baf98da32177386b631fe387fab32a2c347560f1ad4af9154203d00182311d",
+    "services/turn/store.ts": "a14392cc2c127cc432fcbf731eb73473c378e2d5df5bbf9607e97197399d0113",
+    "services/web/app.js": "96b31a3380bed9e5238a08ad008baf11fa78d6d9ff92357200681174e05b0045",
+    "services/web/i18n.js": "9eb93fcf08bb40815fae30f2f430c9291edcf815e78a6f1145572d4c0f7a3b88",
+    "services/web/index.html": "2a284df96f627f66866f8bd915d85e8d00f775c0b6dea6b41ce670b025055e27",
+    "services/web/manual-save.js": "3dc547c05ca7227581c838ff9cc8328fc72f8fa99b7c4bf4774b0b0506afdddd",
+    "services/web/project-views.js": "5ae2d1485ab3a371e844b736255d98d520b21fe139abc4067d2afb42ce7823b4",
+    "services/web/workspace.css": "2e876ba4c5c0e4198d119534a750c9cc12e092132907331431473c29070bc71b",
+    "services/workspace/durable.ts": "d6ecd168c81face611a0713bc7ac8aedceaff9f3300bcba2c717ed5333807cab",
+    "services/workspace/manual-save-operation.ts": "4dabce0791cd30e4bfe2a075307f6b97d91a3a8f15e68e59f07cbde84e06e7e1",
+    "tests/m1/manual-save-fence.test.ts": "25ba31c342cbf7f3bb1eb3313e8439056c2f1064fc3eeac78b57aedee3ec3edf",
+    "tests/m1/riffoid-recovery-cold-workerd.test.mjs": "14a444282a41eda9dba036d92ef256bacc85e39b79b6da2d92455cca38b266db",
+    "tests/m1/staging-preflight.test.mjs": "d0af41e513943db9fa4fba34a9edc57d3a370703942d013d8462989a8af78b36",
+    "tests/m1/web.test.mjs": "705baec4a85edf2ece1d33da57e02e89959a612081e14c6ef138998ab58410ff",
+    "tests/m2/managed-product.test.ts": "517e8a2e1532aa53097b4a833818e35df4bac839bf2de8d5e27339263b4340ee",
+    "tests/m2/manual-save-operation.test.ts": "9b0aac8c7cf6bb4f61a2e9444a3fb365452b6473ef0ee500f9f056033ef2eece",
+    "tests/m2/manual-save.test.ts": "5f61246af487e9c2be1f991f5afc43b6b33fc9d124aba74f03438bc08feb8e1a",
+    "tests/m2/product-turn-release.test.ts": "2563b93d436c859da439af9940273763da6ec5a679884959e3abde3490322dbc",
+    "tests/m2/turn-journal.test.ts": "db1ecf589f43de8fb4813b0633f765107331ea51b9bf55022a1c9f8ce00165ab",
+    "tests/m2/turn-revision.test.ts": "01fdeebaca25837489ee0a8e46ea6bbc4238f3b24bf7cc9cd25bd2f30b978d83",
+    "tests/m2/turn-store.test.ts": "75460c2472a2cf994fca0ca620668dbde50abf30d682071156f348da0a93463d",
+    "tests/m3/artifact-views.test.mjs": "8dbd4cc545a9426315d8d7b91f78ffb059a2721302fc840fb30aff36a152e50d",
+    "tests/m3/g4-candidate-readiness.test.mjs": "dfa36a9e2e11354f5eaa08fbe49d1adbea2e3c540c0fde4554e020d319e99f4e",
+    "tests/m3/invited-runs-ui.test.mjs": "af73d947031958dde860108b9131bd91bf673d0ecb14236854189c4faf947b71",
+    "tests/m3/local-runs-ui.test.mjs": "bb585b232e9c55c3750a0509489c90ee9227272aa1c29e4f62f341585bd0b87e",
+    "tests/m3/manual-save-gateway.test.mjs": "71c8d49ddd562851e4b2436e6993203dd48d9b0e633779821456d8adf2b9984e",
+    "tests/m3/manual-save-ui.test.mjs": "af11efd22360efdbd184ad15f35cac3e1012bafdee0d98c6ce396c75219b4120",
+    "tests/m3/project-views.test.mjs": "85c161f363fc1db1b8dbdb39ba1000f21d1ce842fde86d9cd294eb5196e71d99",
+    "tests/m3/simulation-ui.test.mjs": "5b695116ef0ea06aa779dbcf6f69a8f993dbd5a2e7081e8f487ca6551d73673a",
+    "tests/m3/workspace-layout.test.mjs": "5a858478b84f5e20ae64a3c92903574c7d37e4410c8c32aa580195fa97037b05"
+  }
+}

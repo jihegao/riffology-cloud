@@ -54,3 +54,9 @@
 .design-graph{display:block;width:100%;min-width:320px;height:auto;background:#fff;border:1px solid #d8dee7;border-radius:8px}
 .design-source{white-space:pre-wrap;overflow-wrap:anywhere;max-height:65vh;overflow:auto}
 .workspace-subview{min-width:0}.workspace-subview>section{overflow-x:auto}
+
+.manual-save-panel { display:grid; gap:12px; padding:20px; border:1px solid var(--line,#ddd); border-radius:12px; }
+.manual-save-panel[hidden] { display:none; }
+.manual-save-panel label { display:grid; gap:6px; }
+.manual-save-panel textarea { width:100%; min-height:180px; font-family:monospace; }
+.manual-save-actions { display:flex; flex-wrap:wrap; gap:8px; }

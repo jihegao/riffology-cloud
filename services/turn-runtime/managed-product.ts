@@ -1,3 +1,4 @@
+import {manualIdentityFromReceipt} from './manual-revision.ts';
 import {managedTestingInstructions} from './managed-testing-instructions.ts';
 import {projectResourcesFromArchive} from '../project-resources/archive.ts';
 import {managedInput as validateManagedInput} from './managed-adapter.ts';
@@ -82,6 +83,7 @@ export class ManagedProductRuntime extends DurableObject<ManagedProductEnv> impl
  async #baseFiles(input:Accepted):Promise<Uint8Array>{
   const store=this.env.REVISION_STORE.getByName(revisionStoreActorName(input.scope));
   if(input.base.workspace){
+   if(input.base.workspace.sessionSha256===null)return (await store.restore(identityOf(input),input.base.workspace)).filesArchive;
    const prior=this.#rows().find(r=>r.checkpoint&&JSON.stringify(r.checkpoint)===JSON.stringify(input.base.workspace));
    if(!prior?.checkpoint)throw new ManagedCandidateError('managed-candidate-invalid','candidate.json','files','base-unavailable');
    return (await store.restore(identityOf(prior.input),prior.checkpoint)).filesArchive;
@@ -93,6 +95,7 @@ export class ManagedProductRuntime extends DurableObject<ManagedProductEnv> impl
   if(!input.base.workspace&&!input.base.initial)return undefined;
   const bytes=await this.#baseFiles(input);
   if(input.base.workspace){
+   if(input.base.workspace.sessionSha256===null)return projectResourcesFromArchive({kind:'manual-save',identity:manualIdentityFromReceipt(input.scope,input.base.workspace),revision:input.base.workspace},bytes);
    const prior=this.#rows().find(r=>r.checkpoint&&JSON.stringify(r.checkpoint)===JSON.stringify(input.base.workspace));
    if(!prior?.checkpoint)throw Error('managed-resource-base-unavailable');
    return projectResourcesFromArchive({kind:'saved-turn',identity:identityOf(prior.input),revision:prior.checkpoint},bytes);
@@ -279,7 +282,8 @@ export class ManagedProductRuntime extends DurableObject<ManagedProductEnv> impl
          row.persistenceError=error.message;row.candidateValidation={status:'invalid',diagnostic:error.diagnostic};await this.#stop(row.persistenceError);return true;
         }
        };
-       if(prior?.checkpoint){if(!await recoverLegacy(()=>store.restore(identityOf(prior.input),prior.checkpoint!)))return pendingCheckpoint();}
+       if(row.input.base.workspace?.sessionSha256===null){if(!await recoverLegacy(()=>store.restore(identityOf(row.input),row.input.base.workspace!)))return pendingCheckpoint();}
+       else if(prior?.checkpoint){if(!await recoverLegacy(()=>store.restore(identityOf(prior.input),prior.checkpoint!)))return pendingCheckpoint();}
        else if(row.input.base.initial){if(!await recoverLegacy(()=>store.resolveInitial(row.input.base.initial!.reference,identity.scope)))return pendingCheckpoint();}
        else if(row.input.base.workspace){row.persistenceError='managed-candidate-invalid';row.candidateValidation={status:'invalid',diagnostic:{file:'candidate.json',path:'files',reason:'legacy-base-unavailable'}};await this.#stop(row.persistenceError);}
       }
@@ -301,7 +305,8 @@ export class ManagedProductRuntime extends DurableObject<ManagedProductEnv> impl
     }else{
      const prior=this.#rows().find(r=>r.checkpoint?.revisionId===row.input.base.workspace?.revisionId);
      try{
-      if(prior?.checkpoint)filesArchive=(await store.restore(identityOf(prior.input),prior.checkpoint)).filesArchive;
+      if(row.input.base.workspace?.sessionSha256===null)filesArchive=await this.#baseFiles(row.input);
+      else if(prior?.checkpoint)filesArchive=(await store.restore(identityOf(prior.input),prior.checkpoint)).filesArchive;
       else if(row.input.base.initial)filesArchive=(await store.resolveInitial(row.input.base.initial.reference,identity.scope)).filesArchive;
       else{row.persistenceError='managed-base-files-unavailable';await this.#stop(row.persistenceError);}
      }catch{return pendingCheckpoint();}
