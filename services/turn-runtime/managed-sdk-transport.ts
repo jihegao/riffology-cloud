@@ -3,6 +3,8 @@ import type { AgentSessionItem } from 'openai/resources/beta/agents/agents';
 import type { ExecutionBinding, ExecutionBindingStore } from './backend-contract.ts';
 import type { ManagedInput, ManagedReceipt, ManagedTransport } from './managed-adapter.ts';
 import { turnDigest } from '../turn/protocol.ts';
+import {managedResourceContext} from './managed-resources.ts';
+import type {ProjectResources} from '../project-resources/text.mjs';
 
 /** Admission is a durable, single-writer authority. A reservation is consumed
  * before either hosted provisioning or input submission; retry is never implicit.
@@ -26,8 +28,8 @@ async function sessionScope(binding: ExecutionBinding) {
   const {scope, sessionId, generation} = binding.identity;
   return turnDigest({scope, sessionId, generation});
 }
-export async function managedInputEnvelope(binding: ExecutionBinding, message: string) {
-  return `[riffology-input-v1:${await managedCorrelation(binding)}]\n${message}`;
+export async function managedInputEnvelope(binding: ExecutionBinding, message: string, projectResources?:ProjectResources,projectResourceText?:string) {
+  return `[riffology-input-v1:${await managedCorrelation(binding)}]\n${projectResourceText??managedResourceContext(projectResources,message)}${message}`;
 }
 
 /** Real public SDK transport, admitted by a durable bounded authority.
@@ -67,7 +69,7 @@ export class ManagedSdkTransport implements ManagedTransport {
     await this.admission.markInputAttempt?.(binding);
     await this.client.beta.agents.sessions.events.create(sessionId, {
       'Idempotency-Key': await managedCorrelation(binding),
-      events: [{type: 'agent.session.input.message', input: [{role: 'user', content: [{type: 'input_text', text: await managedInputEnvelope(binding, input.message)}]}]}],
+      events: [{type: 'agent.session.input.message', input: [{role: 'user', content: [{type: 'input_text', text: await managedInputEnvelope(binding, input.message,input.projectResources,input.projectResourceText)}]}]}],
     });
     const receipt = await this.lookupOriginal({...binding, remoteSessionId: sessionId});
     if (!receipt) throw Error('managed-input-delivery-unresolved');
@@ -116,7 +118,7 @@ export class ManagedSdkTransport implements ManagedTransport {
       await this.store.attach(binding.identity, {sessionId, turnId: null});
     }
     await this.verifySession(binding, sessionId);
-    const original = await managedInputEnvelope(binding, input.message);
+    const original = await managedInputEnvelope(binding, input.message,input.projectResources,input.projectResourceText);
     const turns = new Set<string>();
     for (const item of await this.items(sessionId)) {
       if (item.type === 'message' && item.role === 'user' && item.content.length === 1 && item.content[0].type === 'input_text' && item.content[0].text === original) turns.add(item.turn_id);

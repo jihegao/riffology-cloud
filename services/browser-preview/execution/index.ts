@@ -15,7 +15,7 @@ export default {
    const appOrigin=approved(env,request),url=new URL(request.url);
    if(!['GET','HEAD'].includes(request.method)||url.search||url.hash||request.headers.has('Authorization')||request.headers.has('Cookie'))return new Response('not found',{status:404});
    if(url.pathname===PROJECT_VIEW_FRAME_PATH){
-    if(env.ALLOW_LOCALHOST_HTTP!=='true'||!['localhost','127.0.0.1','[::1]'].includes(url.hostname))return new Response('project view candidate unavailable',{status:503,headers:{'cache-control':'no-store'}});
+    if(env.ALLOW_LOCALHOST_HTTP!=='true'||![new URL(appOrigin).hostname,url.hostname].every(host=>['localhost','127.0.0.1','[::1]'].includes(host)))return new Response('project view candidate unavailable',{status:503,headers:{'cache-control':'no-store'}});
     return new Response(request.method==='HEAD'?null:PROJECT_VIEW_FRAME_HTML,{headers:projectViewFrameHeaders(appOrigin)});
    }
    const asset=findExecutionAsset(url.pathname);if(!asset)return new Response('not found',{status:404});

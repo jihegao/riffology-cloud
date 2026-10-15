@@ -4,7 +4,7 @@ import {resolveManagedCandidate} from '../../services/turn-runtime/managed-candi
 import {managedCandidateFixture} from './fixtures/managed-candidate.ts';
 import {packageManagedCandidate,managedCandidateRecoveryFiles} from '../../services/turn-runtime/managed-candidate.ts';
 import {initialWorkspaceArchive} from '../../services/turn-runtime/initial-workspace-archive.ts';
-import {workspaceArchiveReader,workspaceFileDiff} from '../../services/turn-runtime/workspace-file-index.ts';
+import {workspaceArchiveReader,workspaceFileDiff,workspaceFileIndex} from '../../services/turn-runtime/workspace-file-index.ts';
 import {readModelArtifacts,parseModelArtifacts,parseDesignGraph} from '../../services/simulation/model-artifacts.ts';
 import {inspectModel,digest} from '../../services/simulation/source.ts';
 const artifacts={schema:'riffology.model-artifacts/v1',files:[{path:'design/architecture.sysml',role:'sysml'},{path:'design/bdd.json',role:'graph'}],views:[
@@ -81,4 +81,50 @@ test('manifest roles and view bindings require strings even when a JSON array sp
   {...artifacts.views[4],section:['runs']},
  ];
  for(const view of views)assert.throws(()=>parseModelArtifacts({...artifacts,views:[view]}),/model-view/);
+});
+
+test('v3 resource overlays preserve unrelated bytes and support later skill updates in design and model saves',()=>{
+ const encode=(value:string)=>new TextEncoder().encode(value),binary=new Uint8Array([0,255,17]);
+ const firstSkill='---\nname: review\ndescription: Review project files\n---\nFirst saved skill';
+ const resources={'AGENTS.md':'Project task guidance','.pi/skills/review/SKILL.md':firstSkill,'.pi/prompts/outline.md':'Outline $ARGUMENTS'};
+ const base=initialWorkspaceArchive({'data/input.bin':binary,'docs/notes.md':encode('Keep these notes')});
+ const initial=saved({...design(),files:{...design().files,...resources}},base);
+ const text=(archive:Uint8Array,path:string)=>new TextDecoder('utf8',{fatal:true}).decode(workspaceArchiveReader(archive).read([{path,maxBytes:128*1024}]).get(path)!);
+ for(const [path,content]of Object.entries(resources))assert.equal(text(initial.filesArchive,path),content,path);
+ assert.equal(text(initial.filesArchive,'docs/notes.md'),'Keep these notes');
+ assert.deepEqual(workspaceArchiveReader(initial.filesArchive).read([{path:'data/input.bin',maxBytes:3}]).get('data/input.bin'),binary);
+ const updatedSkill=firstSkill.replace('First saved skill','Updated saved skill'),candidate=managedCandidateFixture('airport');
+ const next=saved({...candidate,schemaVersion:3,operation:'model',artifacts,files:{...candidate.files,'.pi/skills/review/SKILL.md':updatedSkill}},initial.filesArchive);
+ assert.equal(text(next.filesArchive,'.pi/skills/review/SKILL.md'),updatedSkill);
+ for(const path of ['AGENTS.md','.pi/prompts/outline.md','docs/notes.md','design/architecture.sysml','design/bdd.json'])assert.equal(text(next.filesArchive,path),text(initial.filesArchive,path),path);
+ assert.deepEqual(workspaceArchiveReader(next.filesArchive).read([{path:'data/input.bin',maxBytes:3}]).get('data/input.bin'),binary);
+});
+
+test('v3 resource writes cannot expand into plugins, settings, arbitrary hidden paths or traversal',()=>{
+ const candidate=managedCandidateFixture('airport');
+ for(const path of ['.pi/extensions/evil.ts','.pi/settings.json','.agents/skills/review/SKILL.md','.pi/skills/review/helper.ts','.pi/prompts/../settings.md','../AGENTS.md','docs/../AGENTS.md','/AGENTS.md','AGENTS.md/child','.pi/prompts/outline.md/child']){
+  for(const raw of [design(),{...candidate,schemaVersion:3,operation:'model',artifacts}]){
+   assert.throws(()=>saved({...raw,files:{...raw.files,[path]:'Do not execute this file'}}),/managed-candidate-(invalid|schema)/,path);
+  }
+ }
+});
+
+test('v3 saves validate new resource text instead of freezing malformed skills for later use',()=>{
+ for(const content of ['Missing frontmatter and description','---\nname: other\ndescription: Wrong name\n---\nBody','---\ndescription: Missing terminator','---\ndescription: Has CR\n---\nBody\r','---\ndescription: Has NUL\n---\nBody\0']){
+  assert.throws(()=>saved({...design(),files:{...design().files,'.pi/skills/review/SKILL.md':content}}),/managed-candidate-invalid/);
+ }
+ assert.throws(()=>saved({...design(),files:{...design().files,'.pi/prompts/large.md':'x'.repeat(8193)}}),/managed-candidate-invalid/);
+});
+
+test('v3 resource limits apply to the final archive including unchanged inherited files',()=>{
+ const encode=(value:string)=>new TextEncoder().encode(value),patch=(path:string,content:string)=>({...design(),files:{...design().files,[path]:content}});
+ const sixteen=Object.fromEntries(Array.from({length:16},(_,i)=>[`.pi/prompts/p${i}.md`,encode('Saved prompt')]));
+ const atCountLimit=saved(design(),initialWorkspaceArchive(sixteen));
+ assert.equal(workspaceFileIndex(atCountLimit.filesArchive).files.filter(entry=>entry.type==='file'&&entry.path.startsWith('.pi/prompts/')).length,16);
+ assert.throws(()=>saved(patch('.pi/prompts/extra.md','Extra prompt'),atCountLimit.filesArchive),/managed-candidate-invalid/);
+ const atTotalLimit=initialWorkspaceArchive(Object.fromEntries(Array.from({length:3},(_,i)=>[`.pi/prompts/p${i}.md`,encode('x'.repeat(8192))])));
+ const allowed=saved(design(),atTotalLimit);
+ assert.throws(()=>saved(patch('.pi/prompts/extra.md','x'),allowed.filesArchive),/managed-candidate-invalid/);
+ const inheritedTooLarge=initialWorkspaceArchive({'.pi/prompts/large.md':encode('x'.repeat(8193))});
+ assert.throws(()=>saved(design(),inheritedTooLarge),/managed-candidate-invalid/);
 });

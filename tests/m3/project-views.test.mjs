@@ -28,6 +28,21 @@ test('fixed frame stays on approved independent origin and refuses credentials/q
  assert.equal((await worker.fetch(new Request(env.EXECUTION_ORIGIN+PROJECT_VIEW_FRAME_PATH+'?anything=1'),env)).status,404);
  assert.equal((await worker.fetch(new Request(env.APP_ORIGIN+PROJECT_VIEW_FRAME_PATH),{...env,EXECUTION_ORIGIN:env.APP_ORIGIN})).status,503);
 });
+test('generic execution frame rejects mixed production/loopback origins even when local mode is set',async()=>{
+ let assets=0;
+ for(const [app,execution,local] of [
+  ['https://app.example.com','https://127.0.0.1:8012','true'],
+  ['https://127.0.0.1:8011','https://pages.example.net','true'],
+  ['https://app.example.com','https://pages.example.net','true'],
+  ['http://127.0.0.1:8011','http://127.0.0.1:8012','false'],
+  ['http://127.0.0.1:8011','http://127.0.0.1:8011','true'],
+ ]){
+  const response=await worker.fetch(new Request(execution+PROJECT_VIEW_FRAME_PATH),{APP_ORIGIN:app,EXECUTION_ORIGIN:execution,ALLOW_LOCALHOST_HTTP:local,RUNTIME_ASSETS:{fetch:async()=>{assets++;throw Error('must not read assets');}}});
+  assert.equal(response.status,503,JSON.stringify([app,execution,local]));
+  assert.equal(response.headers.get('cache-control'),'no-store');
+ }
+ assert.equal(assets,0);
+});
 test('broker binds generation and package; forged scope, cross-project path, writes and late results never deliver data',async()=>{
  const {pkg}=await packaged(),messages=[];let current=true,release;
  const port={postMessage:m=>messages.push(m),close(){},start(){},onmessage:null};

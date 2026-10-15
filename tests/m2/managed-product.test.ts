@@ -23,13 +23,25 @@ const workerSource=`
  import {TurnDispatcher} from './services/turn/dispatcher.ts';
  import {TurnJournal} from './services/turn/journal.ts';
  import {MemoryTurnStore} from './services/turn/store.ts';
+ import {initialCheckpoint} from './services/runtime/starter.ts';
+ import {checkpointKey} from './services/runtime/core.ts';
+ import {initialWorkspaceReferenceFromReady} from './services/turn-runtime/initial-workspace.ts';
+ import {canonicalWorkspaceMarker,workspaceDigest} from './services/workspace/protocol.ts';
  export class RevisionStore extends BaseRevisionStore {async faultObserveForTest(enabled){this.ctx.storage.kv.put("test:observe-fault",enabled);await this.ctx.storage.sync();}async observe(input){if(this.ctx.storage.kv.get("test:observe-fault"))throw Error("synthetic-observe-unavailable");return super.observe(input);}async faultCommitForTest(mode){this.ctx.storage.kv.put('test:commit-fault',mode);await this.ctx.storage.sync();}async commitsForTest(){return this.ctx.storage.kv.get('test:commit-count')??0;}async commit(input){const mode=this.ctx.storage.kv.get('test:commit-fault');this.ctx.storage.kv.delete('test:commit-fault');this.ctx.storage.kv.put('test:commit-count',(this.ctx.storage.kv.get('test:commit-count')??0)+1);await this.ctx.storage.sync();if(mode==='before')throw Error('synthetic-commit-before-write');const result=await super.commit(input);if(mode==='late-accounting')await new Promise(resolve=>setTimeout(resolve,5));if(mode==='after')throw Error('synthetic-commit-lost-ack');return result;}}
  export class ManagedProductRuntime extends BaseManagedProductRuntime {async legacyStopForTest(){const b=this.ctx.storage.kv.get('budget');b.stopped='managed-execution-unknown';this.ctx.storage.kv.put('budget',b);await this.ctx.storage.sync();}async partialClosureForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:"turn:"})){if(!row.deletion){row.closed=false;this.ctx.storage.kv.put(key,row);}}await this.ctx.storage.sync();}async tickForTest(){await super.alarm();}async pendingClosedForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:"turn:"})){row.receipt=null;row.checkpoint=null;row.closed=true;this.ctx.storage.kv.put(key,row);}await this.ctx.storage.sync();}async seedUnreservedForTest(input,withBinding){const identity={scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation},managedInput={identity,actor:input.actor,message:input.message,base:input.base};this.ctx.storage.kv.put('turn:'+identity.turnId,{input,managedInput,reserved:false,operation:null,observation:null,checkpoint:null,persistenceError:null,closed:false,cleanupRequested:false,cost:null,cancelRequested:false,receipt:null});await this.ctx.storage.sync();if(withBinding)await new SqlExecutionBindingStore(this.ctx.storage).reserve({schemaVersion:1,identity,backend:'managed-agents',inputSha256:await turnDigest(managedInput),reservedAt:Date.now(),remoteSessionId:null,remoteTurnId:null});}async interruptedCleanupForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:'turn:'})){row.cleanupRequested=true;this.ctx.storage.kv.put(key,row);}await this.ctx.storage.sync();throw Error('synthetic-cleanup-interrupted');}async expireForTest(){const budget=this.ctx.storage.kv.get('budget');budget.startedAt=Date.now()-7200001;this.ctx.storage.kv.put('budget',budget);await this.ctx.storage.sync();}}
  export default {async fetch(request,env){
   const b=await request.json(),s=b.input?.scope??b.scope,stub=env.MANAGED.getByName(b.wrong?'wrong-actor':managedProductActorName(s));
   try{
    let value;
-   if(b.action==='dispatch-through-journal'){
+   if(b.action==='blank-initial'){
+    const task={id:'initial-task',tenantId:s.tenantId,projectId:s.projectId,workspaceId:s.workspaceId,generation:s.workspaceGeneration,starterVersion:'blank-v1',authVersion:1,createdAt:1000,deadlineAt:2000};
+    const runtime={taskId:task.id,tenantId:s.tenantId,projectId:s.projectId,workspaceId:s.workspaceId,generation:s.workspaceGeneration,runtimeId:'initial-runtime',leaseId:'initial-lease'},markerNonce='initial-nonce';
+    const checkpoint=await initialCheckpoint({task,identity:runtime,markerNonce});await env.WORKSPACE_CHECKPOINTS.put(checkpointKey(runtime),checkpoint.text);
+    const reference=await initialWorkspaceReferenceFromReady({scope:s,task,runtime,markerNonce,ready:{receiptId:'initial-receipt',initializedAt:1500,layoutVersion:'m1-empty-v1',markerSha256:await workspaceDigest(canonicalWorkspaceMarker(runtime,markerNonce)),checkpointRevision:checkpoint.revision}});
+    const resolved=await env.REVISION_STORE.getByName(revisionStoreActorName(s)).resolveInitial(reference,s);
+    value={workspace:null,session:null,initial:{reference,filesSha256:resolved.filesSha256}};
+   }
+   else if(b.action==='dispatch-through-journal'){
     const store=new MemoryTurnStore(),journal=new TurnJournal(store),calls=[];let runtimeReceipt;
     const session=(await journal.createSession(s,b.actor,'pipeline-session',{title:'Managed pipeline'})).session;
     await journal.submit(s,b.actor,session.id,'pipeline-turn',{message:'Synthetic candidate pipeline'});
@@ -395,5 +407,54 @@ test('Managed answer receipt passes real Dispatcher/Journal with zero Revision c
  const f=await fixture(true);try{
   f.setCandidate({schemaVersion:3,operation:'answer'});const result=await f.call({action:'dispatch-through-journal',scope,actor});assert.equal(result.ok,true,JSON.stringify(result));
   const {turn,state,idle}=result.value;assert.equal(turn.status,'completed');assert.equal(turn.persistenceOutcome,'unchanged');assert.equal(turn.checkpoint,null);assert.equal(state.workspaceHead,null);assert.equal(state.sessions[turn.sessionId].head,null);assert.equal(state.activeTurnId,null);assert.equal(idle,null);assert.equal((await f.call({action:'commit-count',scope})).value,0);
+ }finally{await f.close();}
+});
+
+test('Managed saves bounded project text and loads each current explicit selection across warm continuation and cold recovery',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  const initial=await f.call({action:'blank-initial',scope});assert.equal(initial.ok,true,JSON.stringify(initial));
+  const artifacts={schema:'riffology.model-artifacts/v1',files:[],views:[]};
+  const skill=(text:string)=>'---\nname: pages\ndescription: Build project pages\n---\n'+text;
+  f.setCandidate({schemaVersion:3,operation:'design',artifacts,files:{
+   'AGENTS.md':'CURRENT_PROJECT_AGENT_GUIDANCE',
+   '.pi/skills/pages/SKILL.md':skill('SKILL_VERSION_ONE $ARGUMENTS'),
+   '.pi/skills/other/SKILL.md':'---\nname: other\ndescription: Other work\n---\nUNSELECTED_BODY_MUST_STAY_PRIVATE',
+   '.pi/prompts/report.md':'CURRENT_PROMPT_BODY $@',
+  }});
+  const firstRequest={...input(1,'local-session',initial.value),message:'Save project instructions.'};
+  const first=await f.call({action:'accept',input:firstRequest});assert.ok(first.value?.checkpoint,JSON.stringify(first));
+  const checkpoint=first.value.checkpoint,base={workspace:checkpoint,session:checkpoint};
+  f.setCandidate({schemaVersion:3,operation:'answer'});f.loseInput();
+  const secondRequest={...input(2,'local-session',base),message:'/skill:pages make a blue dashboard',projectResourceText:'CALLER_RESOURCE_OVERRIDE_MUST_NOT_LOAD',projectResources:{scope:{projectId:'other-project'}}};
+  const second=await f.call({action:'accept',input:secondRequest});assert.equal(second.value?.phase,'terminal',JSON.stringify(second));
+  const session=[...f.sessions.values()][0],secondText=session.items.at(-1).content[0].text;
+  assert.match(secondText,/CURRENT_PROJECT_AGENT_GUIDANCE/);assert.match(secondText,/SKILL_VERSION_ONE make a blue dashboard/);
+  assert.match(secondText,new RegExp(checkpoint.filesSha256));assert.match(secondText,new RegExp(checkpoint.revisionId));
+  assert.doesNotMatch(secondText,/UNSELECTED_BODY_MUST_STAY_PRIVATE|CURRENT_PROMPT_BODY|CALLER_RESOURCE_OVERRIDE_MUST_NOT_LOAD/);
+  assert.equal(f.sessions.size,1);const count=posts(f).length;
+  await f.restart();assert.deepEqual(await f.call({action:'accept',input:secondRequest}),second);assert.equal(posts(f).length,count);
+  f.setCandidate({schemaVersion:3,operation:'design',artifacts,files:{'.pi/skills/pages/SKILL.md':skill('SKILL_VERSION_TWO $ARGUMENTS')}});
+  const third=await f.call({action:'accept',input:{...input(3,'local-session',base),message:'Update the pages skill.'}});assert.ok(third.value?.checkpoint,JSON.stringify(third));
+  const nextBase={workspace:third.value.checkpoint,session:third.value.checkpoint};
+  f.setCandidate({schemaVersion:3,operation:'answer'});
+  const fourth=await f.call({action:'accept',input:{...input(4,'local-session',nextBase),message:'/skill:pages fresh task'}});assert.equal(fourth.value?.phase,'terminal',JSON.stringify(fourth));
+  const fourthText=session.items.at(-1).content[0].text;assert.match(fourthText,/SKILL_VERSION_TWO fresh task/);assert.doesNotMatch(fourthText,/SKILL_VERSION_ONE|UNSELECTED_BODY_MUST_STAY_PRIVATE/);assert.equal(f.sessions.size,1);
+  await f.call({action:'cleanup',scope});await f.restart();const before=posts(f).length;
+  const fifth=await f.call({action:'accept',input:{...input(5,'local-session',nextBase),message:'/report cold restore'}});assert.equal(fifth.value?.phase,'terminal',JSON.stringify(fifth));
+  assert.equal(posts(f).length,before+2);assert.equal(f.sessions.size,2);
+  const restored=[...f.sessions.values()][1],currentText=restored.items[0].content[0].text;
+  assert.match(currentText,/CURRENT_PROMPT_BODY cold restore/);assert.match(currentText,/CURRENT_PROJECT_AGENT_GUIDANCE/);
+  assert.doesNotMatch(currentText,/SKILL_VERSION_ONE|SKILL_VERSION_TWO|UNSELECTED_BODY_MUST_STAY_PRIVATE/);
+  const frozenCount=posts(f).length;await f.restart();assert.deepEqual((await f.call({action:'observe',input:secondRequest})).value,second.value);assert.equal(posts(f).length,frozenCount);
+ }finally{await f.close();}
+});
+
+test('Managed initial source hash and explicit missing skill fail before any provider reservation or POST',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  const initial=await f.call({action:'blank-initial',scope});assert.equal(initial.ok,true,JSON.stringify(initial));
+  const bad={...initial.value,initial:{...initial.value.initial,filesSha256:'f'.repeat(64)}};
+  const changed=await f.call({action:'accept',input:input(1,'local-session',bad)});assert.equal(changed.ok,false);assert.match(changed.error,/project-resource-source-mismatch/);assert.equal(posts(f).length,0);
+  const missing=await f.call({action:'accept',input:{...input(1,'local-session',initial.value),message:'/skill:missing'}});assert.equal(missing.ok,false);assert.match(missing.error,/managed-resource-command-unknown/);assert.equal(posts(f).length,0);
+  assert.equal((await f.call({action:'status',scope})).value.turnCount,0);
  }finally{await f.close();}
 });

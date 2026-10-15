@@ -1,4 +1,6 @@
 import {managedCandidateSnapshot} from './candidate-artifact.ts';
+import {managedProjectResources,managedResourceContext} from './managed-resources.ts';
+import type {ProjectResources} from '../project-resources/text.mjs';
 import { sameScope, turnDigest, turnId, jsonPayload, positive, actor as validateActor, message as validateMessage, turnBaseCheckpoints, type TurnActor, type TurnBaseCheckpoints } from '../turn/protocol.ts';
 import type { TurnRuntimeEvent } from '../turn/dispatcher.ts';
 import { sameTurnRuntimeIdentity, turnRuntimeIdentity, type TurnRuntimeIdentity } from './identity.ts';
@@ -15,7 +17,16 @@ export interface ManagedTransport {
  deleteSession(binding:ExecutionBinding):Promise<{sessionId:string;deleted:boolean;observedAt:number}>;
  download(binding:ExecutionBinding,artifactId:string):Promise<Uint8Array>;
 }
-export type ManagedInput={identity:TurnRuntimeIdentity;actor:TurnActor;message:string;base:TurnBaseCheckpoints};
+export type ManagedInput={identity:TurnRuntimeIdentity;actor:TurnActor;message:string;base:TurnBaseCheckpoints;projectResources?:ProjectResources;projectResourceText?:string};
+export function managedInput(raw:ManagedInput):ManagedInput{
+ const identity=turnRuntimeIdentity(raw.identity),actor=validateActor(raw.actor),message=validateMessage(raw.message),base=turnBaseCheckpoints(raw.base);
+ const projectResources=raw.projectResources===undefined?undefined:managedProjectResources(raw.projectResources,identity.scope,base);
+ // This private value is authored at the platform entrypoint, then frozen in
+ // the digest. Recovery retains its original bytes across formatter releases.
+ if(raw.projectResourceText!==undefined&&(!projectResources||typeof raw.projectResourceText!=='string'||new TextEncoder().encode(raw.projectResourceText).byteLength>68*1024))throw Error('managed-resource-text-invalid');
+ const projectResourceText=projectResources?(raw.projectResourceText??managedResourceContext(projectResources,message)):undefined;
+ return {identity,actor,message,base,...(projectResources?{projectResources,projectResourceText}:{})};
+}
 export type ManagedReceipt={schemaVersion:1;identity:TurnRuntimeIdentity;sessionId:string;turnId:string;phase:'running'|'completed'|'failed'|'cancelled';observedAt:number;usage:unknown;events:ManagedEvent[]};
 export type ManagedEvent={id:string;type:string;at:number;payload:Record<string,unknown>};
 export type ManagedObservation={schemaVersion:1;identity:TurnRuntimeIdentity;backend:'managed-agents';execution:'unknown'|'running'|'completed'|'failed'|'cancelled';usage:UsageObservation;events:TurnRuntimeEvent[];nativeFence:null;acceptance:'pending';checkpoint:'pending';resources:'unknown'};
@@ -54,7 +65,7 @@ export class ManagedExecutionAdapter {
   return {...this.unknown(binding.identity),execution:raw.phase,usage:usageObservation(raw.usage),events};
  }
  async accept(input:ManagedInput,previous?:ExecutionBinding):Promise<ManagedObservation>{
-  const identity=turnRuntimeIdentity(input.identity);input={identity,actor:validateActor(input.actor),message:validateMessage(input.message),base:turnBaseCheckpoints(input.base)};const inputSha256=await turnDigest(input);
+  input=managedInput(input);const identity=input.identity,inputSha256=await turnDigest(input);
   if(previous&&(!sameScope(previous.identity.scope,identity.scope)||previous.identity.sessionId!==identity.sessionId||previous.identity.generation!==identity.generation||previous.backend!=='managed-agents'||!previous.remoteSessionId||!previous.remoteTurnId))throw Error('managed-continuation-scope-denied');
   const reserved=await this.store.reserve({schemaVersion:1,identity,backend:'managed-agents',inputSha256,reservedAt:positive(this.clock()),remoteSessionId:previous?.remoteSessionId??null,remoteTurnId:null});
   if(!reserved.created)return this.observe(identity);

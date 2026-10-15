@@ -2,6 +2,7 @@ import {ManagedCandidateError,packageManagedCandidate,type ManagedCandidateValid
 import {initialWorkspaceArchive} from './initial-workspace-archive.ts';
 import {overlayWorkspaceArchive,workspaceArchiveReader,workspaceFileIndex} from './workspace-file-index.ts';
 import {ARTIFACT_MANIFEST,ARTIFACT_LIMIT,parseModelArtifacts,validateArtifactContents} from '../simulation/model-artifacts.ts';
+import {resourceKind,resourceText,RESOURCE_LIMITS} from '../project-resources/text.mjs';
 
 const encoder=new TextEncoder();
 type Result={operation:'answer';validation:ManagedCandidateValidation}|{operation:'save';filesArchive:Uint8Array;validation:ManagedCandidateValidation};
@@ -27,7 +28,8 @@ export function resolveManagedCandidate(raw:unknown,base:Uint8Array|undefined,le
   const manifest=parseModelArtifacts(v.artifacts),declared=new Set(manifest.files.map(f=>f.path)),patch:Record<string,Uint8Array>={},model:Record<string,string>={};
   for(const [path,value]of Object.entries(v.files)){
    if(typeof value!=='string')throw Error('utf8-text-required');
-   if(declared.has(path))patch[path]=encoder.encode(value);
+   if(resourceKind(path)){resourceText(path,value);patch[path]=encoder.encode(value);}
+   else if(declared.has(path))patch[path]=encoder.encode(value);
    else if(v.operation==='model')model[path]=value;
    else throw Error('design-file-role-invalid');
   }
@@ -49,6 +51,8 @@ export function resolveManagedCandidate(raw:unknown,base:Uint8Array|undefined,le
   Object.assign(files,patch);Object.assign(updates,patch);validateArtifactContents(manifest,files);
   updates[ARTIFACT_MANIFEST]=encoder.encode(JSON.stringify(manifest));
   const filesArchive=overlayWorkspaceArchive(base??initialWorkspaceArchive({}),updates,removed);
+  const resources=workspaceFileIndex(filesArchive).files.filter(f=>resourceKind(f.path));
+  if(resources.length>RESOURCE_LIMITS.files||resources.some(f=>f.type!=='file'||f.size>RESOURCE_LIMITS.fileBytes)||resources.reduce((sum,f)=>sum+f.size,0)>RESOURCE_LIMITS.totalBytes)throw Error('managed-resource-limit');
   if(filesArchive.length>8*1024*1024||workspaceFileIndex(filesArchive).files.filter(f=>f.type==='file').length>512)throw Error('managed-base-too-large');
   return {operation:'save',filesArchive,validation};
  }catch(error){if(error instanceof ManagedCandidateError)throw error;throw new ManagedCandidateError('managed-candidate-invalid','candidate.json','$',error instanceof Error?error.message:'schema-invalid');}

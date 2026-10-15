@@ -33,3 +33,26 @@ test('production delivery stays disabled while the real navigation egress bounda
  const service=createGatewayProjectViewServices({APP_ORIGIN:'https://app.example.com',BROWSER_PREVIEW_EXECUTION_ORIGIN:'https://pages.example.net',WORKSPACE_AGENT:{getByName(){return {async projectViews(){reads++;return null;}};}}});
  await assert.rejects(service.read({tenantId:'t',projectId:'p',workspaceId:'w',workspaceGeneration:1},{userId:'u',authVersion:1}),/navigation-egress-unresolved/);await assert.rejects(service.artifacts({tenantId:'t',projectId:'p',workspaceId:'w',workspaceGeneration:1},{userId:'u',authVersion:1},{identity:'a'.repeat(64)}),/navigation-egress-unresolved/);assert.equal(reads,0);
 });
+test('mixed, malformed and disguised origins cannot read packages or artifacts before the local-only gate',async()=>{
+ const local='http://127.0.0.1:8011',execution='http://127.0.0.1:8012';
+ const pairs:Array<[string|undefined,string|undefined]>=[
+  ['https://app.example.com',execution],[local,'https://pages.example.net'],
+  [undefined,execution],[local,undefined],[local,local],
+  ['http://127.0.0.1.example.test:8011',execution],[local,'http://localhost.example.test:8012'],
+  ['http://user@127.0.0.1:8011',execution],[local,execution+'/?extra=1'],
+  [local+'/path',execution],[local,execution+'/#extra'],['file:///tmp/app',execution],
+ ];
+ for(const [app,frame] of pairs){
+  let lookups=0;
+  const service=createGatewayProjectViewServices({APP_ORIGIN:app,BROWSER_PREVIEW_EXECUTION_ORIGIN:frame,WORKSPACE_AGENT:{getByName(){lookups++;throw Error('must not reach Workspace');}}});
+  const scope={tenantId:'t',projectId:'p',workspaceId:'w',workspaceGeneration:1},actor={userId:'u',authVersion:1};
+  await assert.rejects(service.read(scope,actor),/navigation-egress-unresolved/);
+  await assert.rejects(service.artifacts(scope,actor,{identity:'a'.repeat(64)}),/navigation-egress-unresolved/);
+  assert.equal(lookups,0,JSON.stringify([app,frame]));
+ }
+ // Positive control: the gate is not merely rejecting every possible origin.
+ let calls=0;
+ const service=createGatewayProjectViewServices({APP_ORIGIN:local,BROWSER_PREVIEW_EXECUTION_ORIGIN:execution,WORKSPACE_AGENT:{getByName(){return {async projectViews(){calls++;return null;}};}}});
+ assert.deepEqual(await service.read({tenantId:'t',projectId:'p',workspaceId:'w',workspaceGeneration:1},{userId:'u',authVersion:1}),{package:null,delivery:null});
+ assert.equal(calls,1);
+});
