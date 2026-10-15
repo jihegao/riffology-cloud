@@ -41,3 +41,24 @@ operation 必须与原文件一致，containerName 必须由该 UUID 唯一派�
 ## AMD128 本轮实测补充
 
 同版原型在已有 Node 镜像（不满足浏览器合同）上实际启动，失败后核对原容器 ID 并完成清理；不是浏览器运行通过。另用该本地镜像验证无网络容器只有 loopback、无外部路由、原生 socket 返回 ENETUNREACH，退出 0 且无剩余任务容器。这是网络层证据，未证明 Chromium sandbox/画面交互或完整项目隔离。完整版本与结果见 [AMD128 证据](../evidence/releases/m1-repair-amd128-20261015.json)。
+
+## AMD128 actual Chromium chain — 2026-10-15
+
+The next offline stage now passes on AMD128; [machine-readable evidence](../evidence/releases/amd128-isolated-chromium-20261015.json) supersedes the earlier missing-browser result for this synthetic scope only. Production routes remain disabled and the iframe navigation defect remains in the old implementation.
+
+A dedicated local image was built with network disabled from the existing Node/Ubuntu22.04 image, Playwright1.63.0, Chromium1243 (153.0.8010.12), and an enumerated 89-library host `ldd` closure. The 569-input manifest and build logs remain in `/tmp/riffology-browser-chain.Y24qNP`; its digest and Dockerfile are recorded in evidence. This is an experimental cached image, not a production supply chain.
+
+The [reviewed seccomp profile](../scripts/m3/offline-view/README.md) keeps the pinned Moby allowlist and adds namespace calls plus `chroot` needed inside Chromium's own user namespace. No host policy or capability was added. CPU affinity `0,1` avoids the 128-core host creating too many threads while preserving one CPU quota, 768MiB memory and128 PIDs. Chromium reports Namespace/PID/Network/Seccomp-BPF sandbox enabled. The actual Docker config is inspected before exact-ID cleanup: non-root10001, no capabilities, no-new-privileges, read-only root, no network/mounts/ports, private namespaces and exact reviewed seccomp bytes.
+
+```bash
+# Only AMD128 with the explicitly prepared local image and CPUs0,1 available.
+node scripts/m3/project-view-browser-chain.mjs \
+  sha256:658fe76b5935c54d9b078fa4223867cd3aa2524bc8880db1d5274df42df73871 \
+  .local/new-unique-browser-chain
+```
+
+The supervisor uses only a host-loopback synthetic collector, with successful before/after controls. The isolated browser sees its own loopback instead: href/assign/replace/fetch/beacon/image/form/window.open/WebSocket all execute real page APIs and fail; no page request reaches the host collector. A separate native198.18.0.1 connection returns ENETUNREACH with only loopback and no IPv4 route. This is combined OS/browser evidence, not a conclusion from an empty collector or CSP alone. Trusted mouse/keyboard events alter DOM and two800×600 screenshots. A real SIGTERM experiment returns blocked and confirms original-container removal; all experiment containers are absent.
+
+`actual-input-identity.json` records the injected probe input and program hashes before execution. The reused prototype's `fixtureSha256` still identifies its original harness fixture; the chain evidence explicitly marks it as overridden. The chain's actual hashes identify this experiment. Screenshots remain local artifacts with header-only launcher validation, never production UI input.
+
+Static profile and injected cleanup tests pass13/13; final real chain exits0 and intentional interruption exits1 as expected. Prior failed build, policy, PID and preflight attempts are retained. No full repository suite was rerun for these isolated scripts. Real project/broker delivery, user-facing image/input transport, cross-user revocation, independent image decoding, accessibility, latency/cost and cloud lifecycle remain unimplemented/unaccepted. PR221 stays draft; a successful offline experiment does not authorize production enablement.

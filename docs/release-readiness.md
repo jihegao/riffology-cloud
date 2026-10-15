@@ -1,6 +1,12 @@
 # Current release readiness — 2026-10-14
 
 
+## 2026-10-15 AMD128 isolated Chromium: local synthetic chain passed
+
+[PR #221](https://github.com/jihegao/riffology-cloud/pull/221) now includes an actual offline browser chain and reviewed per-container seccomp policy. Chromium153 / Playwright1.63 on AMD128 passed rendering, trusted mouse/keyboard input, nine real page network attempts blocked, host collector positive controls, actual Docker config inspection and exact-ID cleanup. An intentional SIGTERM also confirmed cleanup. [Versioned evidence](../evidence/releases/amd128-isolated-chromium-20261015.json) retains failed setup attempts and scope limits. Static/injected checks13/13 passed; no new full-suite or production claim.
+
+Production generic pages remain disabled. This validates the synthetic isolated-browser boundary; it does not replace the current iframe in the product or deliver real package/broker, user transport, revocation, image decoding or cloud lifecycle. No deployment/provider/paid execution occurred. PR remains draft and #214/JHG-46 remain blocked on production integration and acceptance.
+
 ## 2026-10-15 Draft #221: project resources and isolation repair candidate
 
 [PR #221](https://github.com/jihegao/riffology-cloud/pull/221) is an unpublished-runtime candidate: no merge, deployment or authenticated/paid acceptance. Trusted Pi resources now have a Managed explicit-command counterpart, frozen into the original input digest with bounded resource-text saving. This is not autonomous model-side lazy loading or full Pi backend equivalence.

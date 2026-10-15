@@ -1,0 +1,54 @@
+{
+  "schema": "riffology.offline-view-seccomp/v1",
+  "scope": "Local synthetic experiment only; not a production isolation approval",
+  "baseline": {
+    "repository": "https://github.com/moby/profiles",
+    "tag": "seccomp/v0.2.4",
+    "commit": "245180c51918481c0525424b3ee025d2b435d46c",
+    "url": "https://raw.githubusercontent.com/moby/profiles/245180c51918481c0525424b3ee025d2b435d46c/seccomp/default.json",
+    "rawSha256": "785b2429264afba4d594320337cb17f144f3c7d51585f9805eef72e28f4f9334",
+    "canonicalSha256": "4dc1298afa7676147c1320afa42d72691fc55379ae762b392b56853574a7a38a",
+    "license": "Apache-2.0"
+  },
+  "change": {
+    "operation": "append-two-rules",
+    "allow": [
+      "clone",
+      "setns",
+      "unshare",
+      "chroot"
+    ],
+    "rules": [
+      {
+        "allow": [
+          "clone",
+          "setns",
+          "unshare"
+        ],
+        "source": "https://github.com/microsoft/playwright/blob/v1.63.0/utils/docker/seccomp_profile.json"
+      },
+      {
+        "allow": [
+          "chroot"
+        ],
+        "reason": "Parent-reported AMD128 zygote sys_chroot failure with cap-drop=ALL: permit syscall without granting outer CAP_SYS_CHROOT; kernel current-user-namespace capability and LSM checks remain.",
+        "sources": [
+          "https://github.com/chromium/chromium/blob/153.0.8010.12/sandbox/linux/services/credentials.cc",
+          "https://github.com/chromium/chromium/blob/153.0.8010.12/sandbox/policy/linux/sandbox_linux.cc",
+          "https://github.com/torvalds/linux/blob/v6.8/fs/open.c",
+          "https://github.com/moby/profiles/blob/245180c51918481c0525424b3ee025d2b435d46c/seccomp/seccomp_linux.go"
+        ]
+      }
+    ]
+  },
+  "profile": {
+    "path": "scripts/m3/offline-view/chromium-userns-seccomp.json",
+    "sha256": "4cdcdc07d9676737fa78222a8fffeda5cd0ebd2b209c82fafd2077d051d30ae2"
+  },
+  "notVerified": [
+    "Docker/libseccomp and host kernel compatibility",
+    "Chromium sandbox actual activation",
+    "arbitrary-JS isolation",
+    "container resource cleanup on host crash"
+  ]
+}

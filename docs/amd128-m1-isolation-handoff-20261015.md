@@ -69,3 +69,7 @@ Chromium 系统库缺失时由机器管理员按本机约定准备，再单独�
 ## 返回给主线负责人
 
 返回 commit/tree、机器/Node/浏览器/OS 隔离配置、每条命令退出码、pass/fail/skip、最小失败日志、navigation JSON 和未覆盖范围。只发送合成证据，先检查日志不含凭据。问题按“可复现缺陷／环境阻塞／未覆盖”区分，附文件行号和最小建议。若修复另建分支，不自行合并、部署或解除门禁。通过本轮也只算本地独立复核，不能将 #214/JHG-46 标为 Done。
+
+## 后续隔离 Chromium 已执行
+
+2026-10-15 按用户新授权在独立 `/tmp/riffology-browser-chain.Y24qNP` 构建本地镜像并执行完整合成链路。实际命令、镜像/策略身份、九种页面外发与中断清理证据见 [离线原型更新](project-view-offline-prototype-20261015.md) 与 [验收 JSON](../evidence/releases/amd128-isolated-chromium-20261015.json)。本节更新先前“真实浏览器未执行”的阶段状态；生产、真实项目/broker/UI仍未验收，旧原候选测试结果不改写。
