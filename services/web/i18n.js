@@ -2,6 +2,14 @@ const supported = ['zh-CN', 'en'];
 
 export const dictionary = Object.freeze({
   "zh-CN": Object.freeze({
+  "projectViews.retry": "重试页面",
+  "projectViews.loading": "正在加载已保存页面",
+  "projectViews.navigationEnded": "页面导航已结束当前页面会话",
+  "projectViews.ready": "已保存页面 · 浏览器本地／未核验",
+  "projectViews.loadFailed": "页面加载失败",
+  "projectViews.unavailable": "页面暂不可用",
+  "projectViews.savedUnavailable": "已保存页面暂不可用",
+
   "views.overview": "概览",
   "views.runSetup": "运行与对照",
   "views.metrics": "运行指标",
@@ -997,6 +1005,14 @@ export const dictionary = Object.freeze({
   "service.confirmedOld": "上次确认时间（旧状态）：{time}"
 }),
   "en": Object.freeze({
+  "projectViews.retry": "Retry page",
+  "projectViews.loading": "Loading saved page",
+  "projectViews.navigationEnded": "Page navigation ended the saved page session",
+  "projectViews.ready": "Saved page · browser local / unverified",
+  "projectViews.loadFailed": "Page could not load",
+  "projectViews.unavailable": "Page unavailable",
+  "projectViews.savedUnavailable": "Saved pages unavailable",
+
   "views.overview": "Overview",
   "views.runSetup": "Run and compare",
   "views.metrics": "Run metrics",

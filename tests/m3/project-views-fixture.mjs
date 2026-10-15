@@ -1,0 +1,11 @@
+import {createHash} from 'node:crypto';
+import {buildProjectViews} from '../../services/project-views/package.ts';
+import {initialWorkspaceArchive} from '../../services/workspace/initial-archive.ts';
+export const scope={tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1};
+export const manifest={schema:'project.views/v1',files:['app/home.html','app/report.html','app/main.mjs','app/value.mjs','app/style.css','app/pixel.svg','docs/data.json'],views:[{id:'home',title:'Dashboard',entrypoint:'app/home.html'},{id:'report',title:'Report',entrypoint:'app/report.html'}]};
+export const projectFiles=()=>({'app/views.json':JSON.stringify(manifest),'AGENTS.md':'Use blue project pages.','.pi/skills/pages/SKILL.md':'---\nname: pages\ndescription: Build project pages\n---\nWrite app/views.json and local HTML/module/CSS/media files.',
+ 'app/home.html':'<!doctype html><link rel="stylesheet" href="./style.css"><h1>Project dashboard</h1><img src="./pixel.svg"><p id="value"></p><a href="./report.html">Report route</a><script type="module" src="./main.mjs"></script>',
+ 'app/report.html':'<h1>Saved report</h1><a href="./home.html">Dashboard route</a><script>window.reportLoaded=true;</script>',
+ 'app/main.mjs':'import {value} from "./value.mjs";document.querySelector("#value").textContent=value;window.loadedValue=value;void riffoid.readFile("docs/data.json").then(v=>{window.projectData=v.text;});void riffoid.subscribe(s=>{window.savedSnapshot=s;});',
+ 'app/value.mjs':'export const value="module loaded";','app/style.css':'body { color: rgb(0, 0, 255); background-image: url("./pixel.svg"); }','app/pixel.svg':'<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"><rect width="8" height="8" fill="blue"/></svg>','docs/data.json':'{"label":"saved project data"}'});
+export async function packaged(files=projectFiles(),projectScope=scope){const bytes=initialWorkspaceArchive(Object.fromEntries(Object.entries(files).map(([p,c])=>[p,Buffer.from(c)])));const source={kind:'saved-turn',identity:{scope:projectScope,sessionId:'session-a',turnId:'turn-a',dispatchId:'dispatch-a',generation:1},revision:{revisionId:'revision-a',objectKey:'revisions/a.json',filesSha256:createHash('sha256').update(bytes).digest('hex'),sessionSha256:'b'.repeat(64),committedAt:1000}};return {bytes,source,pkg:await buildProjectViews(source,bytes)};}

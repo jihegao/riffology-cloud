@@ -4,6 +4,11 @@
 !package.json
 !package-lock.json
 !services/
+!services/browser-preview/
+!services/browser-preview/runtime/
+!services/browser-preview/runtime/sha256.mjs
+!services/project-resources/
+!services/project-resources/text.mjs
 !services/runtime/
 !services/runtime/controlled-pi.mjs
 !services/runtime/proxy-pi.mjs

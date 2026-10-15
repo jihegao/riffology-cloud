@@ -36,8 +36,8 @@ async function fixture(t, mode = 'text') {
       chunk({ content: 'begin' });
       return;
     }
-    if (mode === 'tool' && requests.length === 1) {
-      chunk({ tool_calls: [{ index: 0, id: 'call-local', type: 'function', function: { name: tool.name, arguments: '{}' } }] });
+    if (['tool','resource','repair'].includes(mode) && requests.length === 1) {
+      chunk({ tool_calls: [{ index: 0, id: 'call-local', type: 'function', function: { name: mode === 'resource' ? 'project_load_resource' : mode === 'repair' ? 'project_write' : tool.name, arguments: mode === 'resource' ? JSON.stringify({path:'.pi/skills/pages/SKILL.md'}) : mode === 'repair' ? JSON.stringify({path:'.pi/skills/pages/SKILL.md',content:'---\nname: pages\ndescription: Repaired page guidance\n---\nREPAIRED_BODY: build a page.'}) : '{}' } }] });
       chunk({}, 'tool_calls', { prompt_tokens: 12, completion_tokens: 3, total_tokens: 15 });
     } else {
       chunk({ content: 'local protocol fixture response' });
@@ -327,3 +327,75 @@ for (const lateResult of ['resolve', 'reject']) {
     assert.equal(f.requests.length, 0); assert.equal(host.inspect().active, false);
   });
 }
+
+test('frozen project AGENTS and explicit text commands reach real Pi; cold restore does not execute resources', async t => {
+  const {freezeProjectResources}=await import('../../../services/project-resources/text.mjs');
+  const f=await fixture(t);
+  const bundle=freezeProjectResources({scope,revisionId:'revision-a',filesSha256:'a'.repeat(64),files:[
+    {path:'AGENTS.md',content:'PROJECT_AGENT_RULE: use blue for this project.'},
+    {path:'.pi/skills/pages/SKILL.md',content:'---\nname: pages\ndescription: Build a local page\n---\nSELECTED_SKILL_BODY: create an HTML page.'},
+    {path:'.pi/skills/other/SKILL.md',content:'---\nname: other\ndescription: Another task\n---\nUNSELECTED_BODY_MUST_NOT_LOAD'},
+    {path:'.pi/prompts/page.md',content:'PROJECT_PROMPT_BODY: build $ARGUMENTS.'},
+  ]});
+  const host=await createControlledPiSession({...f.options,projectResources:bundle});t.after(()=>host.dispose());
+  assert.match(host.inspect().systemPrompt,/PROJECT_AGENT_RULE/);
+  assert.doesNotMatch(host.inspect().systemPrompt,/SELECTED_SKILL_BODY|UNSELECTED_BODY_MUST_NOT_LOAD/);
+  await host.prompt('/skill:pages blue dashboard');
+  const sent=JSON.stringify(f.requests[0].body);
+  assert.match(sent,/SELECTED_SKILL_BODY/);assert.match(sent,/blue dashboard/);assert.doesNotMatch(sent,/UNSELECTED_BODY_MUST_NOT_LOAD/);
+  assert.deepEqual(host.inspect().tools,['project_load_resource']);assert.equal(host.inspect().extensions,0);
+  assert.equal(host.snapshot().resources.resources.find(r=>r.path.includes('/pages/')).loaded,true);
+  const snapshot=host.snapshot(),requests=f.requests.length;
+  const restored=await createControlledPiSession({...f.options,projectResources:bundle,snapshot});t.after(()=>restored.dispose());
+  assert.equal(f.requests.length,requests,'restore must not dispatch provider or execute old resources');
+  const inherited=restored.snapshot().resources.resources.find(r=>r.path.includes('/pages/'));
+  assert.equal(inherited.loaded,true);assert.equal(inherited.loadedFromHistory,true);
+  const changed=freezeProjectResources({scope,revisionId:'revision-b',filesSha256:'b'.repeat(64),files:bundle.resources});
+  const newer=await createControlledPiSession({...f.options,projectResources:changed,snapshot});t.after(()=>newer.dispose());
+  assert.equal(newer.snapshot().resources.resources.find(r=>r.path.includes('/pages/')).loaded,false);
+  assert.equal(f.requests.length,requests,'different-source restore must not replay historical loads');
+  await restored.prompt('/page a status page');
+  assert.match(JSON.stringify(f.requests.at(-1).body),/PROJECT_PROMPT_BODY.*a status page/);
+  assert.equal(restored.inspect().extensions,0);await assert.rejects(access(f.marker),{code:'ENOENT'});
+  await assert.rejects(createControlledPiSession({...f.options,projectResources:bundle,scope:{...scope,projectId:'project-b'}}),/scope-denied/);
+});
+
+test('model can load a frozen project skill through an in-memory text tool without project execution',async t=>{
+ const {freezeProjectResources}=await import('../../../services/project-resources/text.mjs');
+ const f=await fixture(t,'resource');
+ const bundle=freezeProjectResources({scope,revisionId:'revision-a',filesSha256:'a'.repeat(64),files:[{path:'.pi/skills/pages/SKILL.md',content:'---\nname: pages\ndescription: Build pages\n---\nMODEL_LOADED_SKILL: generate a page.'}]});
+ const host=await createControlledPiSession({...f.options,projectResources:bundle});t.after(()=>host.dispose());
+ assert.equal((await host.prompt('Build a page using the project skill.')).outcome,'completed');
+ assert.equal(f.requests.length,2);assert.match(JSON.stringify(f.requests[1].body),/MODEL_LOADED_SKILL/);
+ assert.equal(host.snapshot().resources.resources[0].loaded,true);
+ const restored=await createControlledPiSession({...f.options,projectResources:bundle,snapshot:host.snapshot()});t.after(()=>restored.dispose());
+ assert.equal(f.requests.length,2);assert.deepEqual(restored.inspect().tools,['project_load_resource']);
+});
+
+
+test('a broken saved skill can be repaired by the remote tool and loaded on the next cold Turn',async t=>{
+ const {projectResourcesFromArchive}=await import('../../../services/project-resources/archive.ts');
+ const {initialWorkspaceArchive}=await import('../../../services/workspace/initial-archive.ts');
+ const {createHash}=await import('node:crypto');
+ const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
+ const identity={scope:{tenantId:scope.tenantId,projectId:scope.projectId,workspaceId:'workspace-a',workspaceGeneration:1},sessionId:scope.sessionId,turnId:'turn-a',dispatchId:'dispatch-a',generation:1};
+ const source=(bytes,revisionId)=>({kind:'saved-turn',identity,revision:{revisionId,objectKey:'private/a.json',filesSha256:sha(bytes),sessionSha256:'b'.repeat(64),committedAt:1000}});
+ let archive=initialWorkspaceArchive({'.pi/skills/pages/SKILL.md':Buffer.from('---\ndescription: &poison *poison\n---\nBROKEN_BODY_NOT_IN_PROMPT')});
+ const broken=await projectResourcesFromArchive(source(archive,'revision-broken'),archive);
+ const f=await fixture(t,'repair');let writes=0;
+ const bridge={definitions:[{name:'project_write',label:'Write project text',description:'Write a bounded project file.',parameters:{type:'object',properties:{path:{type:'string'},content:{type:'string'}},required:['path','content'],additionalProperties:false}}],execute:async({name,args})=>{
+  assert.equal(name,'project_write');assert.equal(args.path,'.pi/skills/pages/SKILL.md');writes++;
+  archive=initialWorkspaceArchive({[args.path]:Buffer.from(args.content)});
+  return {content:[{type:'text',text:'Saved repaired project text.'}]};
+ }};
+ const host=await createControlledPiSession({...f.options,bridge,projectResources:broken});t.after(()=>host.dispose());
+ assert.match(host.inspect().systemPrompt,/frontmatter-invalid/);assert.doesNotMatch(host.inspect().systemPrompt,/BROKEN_BODY|&poison/);
+ assert.equal((await host.prompt('Repair the invalid page skill.')).outcome,'completed');assert.equal(writes,1);
+ const repaired=await projectResourcesFromArchive(source(archive,'revision-repaired'),archive);
+ assert.equal(repaired.diagnostics,undefined);
+ const before=f.requests.length;
+ const next=await createControlledPiSession({...f.options,bridge,projectResources:repaired,snapshot:host.snapshot()});t.after(()=>next.dispose());
+ assert.equal(f.requests.length,before);assert.equal(writes,1);
+ assert.equal((await next.prompt('/skill:pages')).outcome,'completed');
+ assert.match(JSON.stringify(f.requests.at(-1).body),/REPAIRED_BODY/);assert.equal(writes,1);
+});

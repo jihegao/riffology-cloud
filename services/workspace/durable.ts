@@ -1,3 +1,6 @@
+import {committedProjectArtifact,projectArtifactJournalVersion,projectArtifactStoreCursor} from '../project-views/artifacts.ts';
+import {buildProjectViews} from '../project-views/package.ts';
+import {projectResourcesFromArchive} from '../project-resources/archive.ts';
 import {parameterDraftEffect,readParameterDraft} from '../simulation/parameter-draft.ts';
 import {trustedPiCapacityActorName} from '../capacity/client.ts';
 import {WorkspaceArchiveFence} from './archive-fence.ts';
@@ -732,6 +735,33 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
 
     });
   }
+  async projectViews(input:{scope:TurnScope;actor:TurnActor}){
+    await this.#prepareNormalJournal();const scope=this.#ready(input.scope);
+    const authorize=async()=>{
+      const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(input.actor,scope.workspaceId);
+      if(!sameScope(allowed,scope))throw Error('project-view-access-denied');this.#ready(scope);
+    };
+    await authorize();const source=await this.#simulationSource(scope);
+    const result=await buildProjectViews(source,await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source));
+    await authorize();const latest=await this.#simulationSource(scope);
+    if((latest.kind==='saved-turn'?latest.revision.filesSha256:latest.filesSha256)!==(source.kind==='saved-turn'?source.revision.filesSha256:source.filesSha256)||(latest.kind==='saved-turn'?latest.revision.revisionId:null)!==(source.kind==='saved-turn'?source.revision.revisionId:null))throw Error('project-view-stale');
+    await authorize();return result;
+  }
+  async projectViewArtifacts(input:{scope:TurnScope;actor:TurnActor;identity:string;cursor?:string|null;artifactId?:string;offset?:number}){
+    const authorize=async()=>{const pkg=await this.projectViews(input);if(!pkg||pkg.packageIdentity!==input.identity)throw Error('project-view-stale');};
+    await authorize();const scope=this.#ready(input.scope),store=this.env.TOOL_ARTIFACT_STORE.getByName(TOOL_ARTIFACT_STORE_ACTOR);
+    let result,journalVersion:string|undefined;
+    if(input.artifactId!==undefined){
+      const offset=input.offset??0;if(!Number.isSafeInteger(offset)||offset<0||!store.projectRead)throw Error('project-artifact-read-denied');
+      const read=await store.projectRead(scope,input.artifactId);try{
+        if(!committedProjectArtifact(read.receipt,await this.#turns.snapshot(scope)))throw Error('project-artifact-not-committed');
+        if(offset>=read.content.byteLength)throw Error('project-artifact-offset-invalid');
+        const chunk=read.content.slice(offset,offset+16384);let binary='';for(const byte of chunk)binary+=String.fromCharCode(byte);
+        result={receipt:read.receipt,offset,base64:btoa(binary),nextOffset:offset+chunk.length<read.content.length?offset+chunk.length:null};
+      }finally{(read as {[Symbol.dispose]?:()=>void})[Symbol.dispose]?.();}
+    }else{if(!store.projectList)throw Error('project-artifact-list-unavailable');const before=await this.#turns.snapshot(scope);journalVersion=await projectArtifactJournalVersion(before);const page=await store.projectList(scope,projectArtifactStoreCursor(input.cursor??null,journalVersion)),state=await this.#turns.snapshot(scope);if(await projectArtifactJournalVersion(state)!==journalVersion)throw Error('project-artifact-cursor-stale');result={...page,version:await turnDigest({store:page.version,journal:journalVersion}),nextCursor:page.nextCursor?journalVersion+':'+page.nextCursor:null,items:page.items.filter(receipt=>committedProjectArtifact(receipt,state))};}
+    await authorize();const state=await this.#turns.snapshot(scope);if('receipt' in result){if(!committedProjectArtifact(result.receipt,state))throw Error('project-artifact-not-committed');}else{if(await projectArtifactJournalVersion(state)!==journalVersion)throw Error('project-artifact-cursor-stale');result={...result,items:result.items.filter(receipt=>committedProjectArtifact(receipt,state))};}return result;
+  }
   async researchContext(input:{identity:TurnRuntimeIdentity;executionDeadlineAt:number}){
     await this.#prepareNormalJournal();
     const identity=turnRuntimeIdentity(input.identity),scope=this.#ready(identity.scope);
@@ -741,12 +771,21 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       if(state.activeTurnId!==identity.turnId||!turn||!['starting','running'].includes(turn.status)||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation||turn.cancelRequestedAt!==null||turn.finishedAt!==null)throw Error('research-context-turn-denied');
       const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(turn.actor,scope.workspaceId);
       if(!sameScope(allowed,scope))throw Error('research-context-denied');
-      return turn;
+      this.#ready(scope);
+      const current=(await this.#turns.snapshot(scope)).turns[identity.turnId];
+      if(!current||!['starting','running'].includes(current.status)||current.sessionId!==identity.sessionId||current.dispatchId!==identity.dispatchId||current.runtimeGeneration!==identity.generation||current.cancelRequestedAt!==null||current.finishedAt!==null||input.executionDeadlineAt<=Date.now())throw Error('research-context-turn-denied');
+      return current;
     };
-    await authorize();
+    const turn=await authorize();
+    // Workspace writes are serialized by the active Turn. Read its claimed
+    // immutable baseline; never a mutable project directory or caller path.
+    const source=await this.#simulationSource(scope);
+    const sourceSha=source.kind==='saved-turn'?source.revision.filesSha256:source.filesSha256;
+    if(!turn.base||sourceSha!==(turn.base.workspace?.filesSha256??turn.base.initial?.filesSha256)||source.kind==='saved-turn'&&source.revision.revisionId!==turn.base.workspace?.revisionId||source.kind==='initial-workspace'&&turn.base.workspace!==null)throw Error('project-resource-base-mismatch');
+    const projectResources=await projectResourcesFromArchive(source,await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source));
     const model=await this.modelSpec({scope}),page=await this.listExperiments({scope}),experiments=page.items.slice(0,5);
     const groupPage=await this.listExperimentGroups({scope}),evidencePage=await this.#evidence(scope).list(model.version,undefined,3);
-    const result=boundedResearchContext({model,experiments,experimentGroups:groupPage.items,evidence:evidencePage.items,hasMoreExperiments:page.items.length>5||page.nextCursor!==null,hasMoreGroups:groupPage.nextCursor!==null,hasMoreEvidence:evidencePage.nextCursor!==null});
+    const result=boundedResearchContext({model,projectResources,experiments,experimentGroups:groupPage.items,evidence:evidencePage.items,hasMoreExperiments:page.items.length>5||page.nextCursor!==null,hasMoreGroups:groupPage.nextCursor!==null,hasMoreEvidence:evidencePage.nextCursor!==null});
     await authorize();return result;
   }
   async modelSpec(input:{scope:TurnScope;actor?:TurnActor}){

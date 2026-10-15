@@ -1,0 +1,35 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {SqliteCatalog} from '../m1/sqlite-database.ts';
+import {gateway} from '../../services/gateway/app.ts';
+import {ProjectCatalog} from '../../services/catalog/projects.ts';
+import {createGatewayProjectViewServices} from '../../services/gateway/project-view-services.ts';
+const origin='https://app.example.test';
+test('page Gateway derives scope from the current owner and rechecks revocation after awaited package access',async t=>{
+ const db=new SqliteCatalog();t.after(()=>db.sqlite.close());const now=Date.now();
+ db.sqlite.prepare("INSERT INTO catalog_users(id,identity_issuer,identity_subject,normalized_email,created_at,updated_at,auth_version,status) VALUES ('u','better-auth','sub','u@example.test',?,?,1,'active'),('v','better-auth','subv','v@example.test',?,?,1,'active')").run(now,now,now,now);
+ db.sqlite.prepare("INSERT INTO catalog_tenants(id,owner_user_id,created_at,updated_at) VALUES ('tenant','u',?,?),('other','v',?,?)").run(now,now,now,now);
+ db.sqlite.prepare("INSERT INTO catalog_memberships(tenant_id,user_id,created_at,updated_at) VALUES ('tenant','u',?,?),('other','v',?,?)").run(now,now,now,now);
+ const catalog=new ProjectCatalog(db,new Set(['blank-v1']));
+ const p=await catalog.create({userId:'u',authVersion:1},'tenant','one',{title:'P',starterVersion:'blank-v1'}),q=await catalog.create({userId:'v',authVersion:1},'other','two',{title:'Q',starterVersion:'blank-v1'});
+ db.sqlite.prepare("UPDATE catalog_projects SET status='ready'").run();db.sqlite.prepare("UPDATE catalog_workspaces SET status='ready'").run();
+ let revoke=false,artifactRevoke=false,called=0,artifactCalls=0;
+ const services={origin,database:db,identity:async()=>({subject:'sub',email:'u@example.test',emailVerified:true,platformVersion:1}),projectViews:{async artifacts(scope:unknown,actor:unknown,query:unknown){artifactCalls++;assert.equal((scope as {projectId:string}).projectId,p.project.id);assert.deepEqual(actor,{userId:'u',authVersion:1});assert.equal((query as {identity:string}).identity,'a'.repeat(64));if(artifactRevoke)db.sqlite.prepare('DELETE FROM catalog_memberships WHERE tenant_id=?').run('tenant');return {items:[]};},async read(scope:unknown,actor:unknown){called++;assert.equal((scope as {projectId:string}).projectId,p.project.id);assert.deepEqual(actor,{userId:'u',authVersion:1});if(revoke)db.sqlite.prepare('DELETE FROM catalog_memberships WHERE tenant_id=?').run('tenant');return {package:null,delivery:null};}}};
+ const read=(workspace:string,query='')=>gateway(new Request(origin+'/api/workspaces/'+workspace+'/project-views'+query),services);
+ assert.equal((await read(p.project.workspace_id)).status,200);assert.equal((await read(q.project.workspace_id)).status,404);assert.equal(called,1);
+ assert.equal((await read(p.project.workspace_id,'?scope=other')).status,404);
+ const artifacts=(workspace:string,suffix='',query='?identity='+'a'.repeat(64),method='GET')=>gateway(new Request(origin+'/api/workspaces/'+workspace+'/project-view-artifacts'+suffix+query,{method}),services);
+ assert.equal((await artifacts(p.project.workspace_id)).status,200);
+ assert.equal((await artifacts(p.project.workspace_id,'/artifact-'+'b'.repeat(60),'?identity='+'a'.repeat(64)+'&offset=16384')).status,200);
+ assert.equal((await artifacts(q.project.workspace_id)).status,404);assert.equal(artifactCalls,2);
+ for(const query of ['?identity='+'a'.repeat(64)+'&scope=other','?identity='+'a'.repeat(64)+'&cursor=bad','?identity='+'a'.repeat(64)+'&identity='+'a'.repeat(64)])assert.equal((await artifacts(p.project.workspace_id,'',query)).status,404);
+ assert.equal((await artifacts(p.project.workspace_id,'','?identity='+'a'.repeat(64),'POST')).status,403);
+ artifactRevoke=true;assert.equal((await artifacts(p.project.workspace_id)).status,404);
+ db.sqlite.prepare("INSERT INTO catalog_memberships(tenant_id,user_id,created_at,updated_at) VALUES ('tenant','u',?,?)").run(now,now);
+ revoke=true;assert.equal((await read(p.project.workspace_id)).status,404);
+});
+test('production delivery stays disabled while the real navigation egress boundary is unresolved',async()=>{
+ let reads=0;
+ const service=createGatewayProjectViewServices({APP_ORIGIN:'https://app.example.com',BROWSER_PREVIEW_EXECUTION_ORIGIN:'https://pages.example.net',WORKSPACE_AGENT:{getByName(){return {async projectViews(){reads++;return null;}};}}});
+ await assert.rejects(service.read({tenantId:'t',projectId:'p',workspaceId:'w',workspaceGeneration:1},{userId:'u',authVersion:1}),/navigation-egress-unresolved/);await assert.rejects(service.artifacts({tenantId:'t',projectId:'p',workspaceId:'w',workspaceGeneration:1},{userId:'u',authVersion:1},{identity:'a'.repeat(64)}),/navigation-egress-unresolved/);assert.equal(reads,0);
+});

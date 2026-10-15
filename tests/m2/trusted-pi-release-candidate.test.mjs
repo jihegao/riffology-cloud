@@ -5,7 +5,7 @@ import { createControlledPiSession } from '../../services/runtime/controlled-pi.
 import { BROWSER_PREVIEW_SERVER_ADAPTER, BROWSER_PREVIEW_SERVER_ADAPTER_SHA256, PRODUCT_PI_MAX_INPUT_TOKENS, PRODUCT_PI_MAX_OUTPUT_TOKENS, PRODUCT_PI_MODEL, PRODUCT_PI_PROVIDER, PRODUCT_PI_REQUEST_TIMEOUT_MS, createProductTrustedPiRelease } from '../../services/trusted-pi/release-candidate.mjs';
 
 const now=1_800_000_000_000,identity={scope:{tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:2},sessionId:'session-a',turnId:'turn-a',dispatchId:'dispatch-a',generation:2},actor={userId:'user-a',authVersion:3};
-function release(log){return createProductTrustedPiRelease({clock:()=>now,modelFetch:async(input,init)=>{log.push({kind:'model',request:new Request(input,init)});return new Response('data: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});},toolFetch:async(input,init)=>{const request=new Request(input,init);if(new URL(request.url).pathname==='/v1/research'){log.push({kind:'research',request});return Response.json({model:null,experiments:[]});}const command=await request.clone().json();log.push({kind:'tool',request});return Response.json({schemaVersion:1,scope:command.scope,turnId:command.turnId,dispatchId:command.dispatchId,commandId:command.commandId,digest:'a'.repeat(64),deadlineAt:Math.min(now+115000,command.executionDeadlineAt),operation:command.operation,status:'completed',effectId:'effect-a',acceptedAt:now,updatedAt:now,dispatchedAt:now,unknownAt:null,finishedAt:now,lastObservedAt:now,outcome:'completed',errorCode:null,result:{text:'ok'},command:null});}});}
+function release(log){return createProductTrustedPiRelease({clock:()=>now,modelFetch:async(input,init)=>{log.push({kind:'model',request:new Request(input,init)});return new Response('data: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});},toolFetch:async(input,init)=>{const request=new Request(input,init);if(new URL(request.url).pathname==='/v1/research'){log.push({kind:'research',request});return Response.json({model:{spec:{}},experiments:[]});}const command=await request.clone().json();log.push({kind:'tool',request});return Response.json({schemaVersion:1,scope:command.scope,turnId:command.turnId,dispatchId:command.dispatchId,commandId:command.commandId,digest:'a'.repeat(64),deadlineAt:Math.min(now+115000,command.executionDeadlineAt),operation:command.operation,status:'completed',effectId:'effect-a',acceptedAt:now,updatedAt:now,dispatchedAt:now,unknownAt:null,finishedAt:now,lastObservedAt:now,outcome:'completed',errorCode:null,result:{text:'ok'},command:null});}});}
 
 test('candidate fixes one Responses model, simulation policy and eight remote tools',async t=>{
   assert.equal(PRODUCT_PI_REQUEST_TIMEOUT_MS,115_000);
@@ -44,4 +44,10 @@ test('trusted host execution deadline reaches both release transports',async()=>
   await options.bridge.execute({scope:{tenantId:'tenant-a',projectId:'project-a',sessionId:'session-a'},name:'project_list',toolCallId:'tool-call-a',args:{path:''}});
   assert.equal((await log.find(value=>value.kind==='model').request.json()).deadlineAt,executionDeadlineAt);const toolIntent=await log.find(value=>value.kind==='tool').request.json();assert.equal(toolIntent.executionDeadlineAt,executionDeadlineAt);assert.equal(toolIntent.deadlineAt,undefined);
   await assert.rejects(release([]).resolveOptions({identity,actor,executionDeadlineAt:0}),/invalid-product-model-transport/);
+});
+
+test('a fresh generic project does not inherit the simulation profile',async()=>{
+ const release=createProductTrustedPiRelease({clock:()=>now,toolFetch:async()=>Response.json({model:{spec:null},experiments:[]})});
+ const options=await release.resolveOptions({identity,actor,executionDeadlineAt:now+1000});
+ assert.deepEqual(options.fixedSkills,[]);assert.doesNotMatch(options.systemPrompt,/600 by 420|five files|Do not generate HTML/);
 });

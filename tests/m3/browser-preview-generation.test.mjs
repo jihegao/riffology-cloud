@@ -39,7 +39,7 @@ test('embedded JavaScript example is executable and matches the exact scene cont
 });
 test('actual release resolveOptions injects generation policy and original adapter with legacy/evidence guards',async()=>{
  const calls=[];
- const release=createProductTrustedPiRelease({clock:()=>now,modelFetch:async()=>{throw Error('generation-test-must-not-call-model');},toolFetch:async input=>{calls.push(new URL(input).pathname);return Response.json({model:null,experiments:[]});}});
+ const release=createProductTrustedPiRelease({clock:()=>now,modelFetch:async()=>{throw Error('generation-test-must-not-call-model');},toolFetch:async input=>{calls.push(new URL(input).pathname);return Response.json({model:{spec:{}},experiments:[]});}});
  const options=await release.resolveOptions({identity,actor,executionDeadlineAt:now+600000});
  assert.deepEqual(calls,['/v1/research']);assert.deepEqual(options.fixedSkills.map(s=>s.name),['simulation']);
  const content=options.fixedSkills[0].content;assert.ok(content.includes('project_install_preview_adapter'));assert.ok(content.includes(adapterSha));assert.equal(content.includes(adapter),false);
