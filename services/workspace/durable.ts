@@ -1,8 +1,3 @@
-import {CatalogManualSaveFence} from '../catalog/manual-save-fence.ts';
-import {runManualSave,serializeManualSave,manualOperationResult,manualRejectionResult,recoverManualSaveAuthorization,retiredManualSaveResult} from './manual-save-operation.ts';
-import {manualArtifactReceipts} from '../project-views/manual-artifacts.ts';
-import {manualSaveRequest,manualDigest,mergeManualArchive,manualPath,type ManualSaveOperation} from '../turn-runtime/manual-save.ts';
-import {previewSourceFilesSha256} from '../preview/source.ts';
 import {committedProjectArtifact,projectArtifactJournalVersion,projectArtifactStoreCursor} from '../project-views/artifacts.ts';
 import {buildProjectViews} from '../project-views/package.ts';
 import {projectResourcesFromArchive} from '../project-resources/archive.ts';
@@ -72,7 +67,7 @@ import {PreviewRoutes} from '../preview/routes.ts';
 import {previewHostOrigin} from '../preview/origin.ts';
 import {sha,turnDigest} from '../turn/protocol.ts';
 import {initialWorkspaceReference,initialWorkspaceReferenceFromReady,isInitialWorkspaceSourceFailure} from '../turn-runtime/initial-workspace.ts';
-import {workspaceFileIndex,workspaceArchiveReader,workspaceFileDiff} from '../turn-runtime/workspace-file-index.ts';
+import {workspaceFileIndex} from '../turn-runtime/workspace-file-index.ts';
 import { DurableObject } from 'cloudflare:workers';
 import { catalogDatabase } from '../catalog/database.ts';
 import { ProvisioningCatalog } from '../catalog/provisioning.ts';
@@ -227,7 +222,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     try{const proof=await this.env.TRUSTED_PI_CAPACITY.getByName(trustedPiCapacityActorName()).archiveResources?.(scope);if(!proof)throw Error('runtime-capacity-proof-missing');runtimeCapacityQuiet=sameScope(proof.scope,scope)&&proof.quiescent;if(!runtimeCapacityQuiet)blockers.push('runtime-capacity-unreleased');}catch{blockers.push('runtime-capacity-unconfirmed');}
     if(this.env.G5_WINDOW_GUARD){try{const proof=await this.#g5Guard().archiveQuiescence(scope);if(!sameScope(proof.scope,scope)||!proof.quiescent)blockers.push(proof.ambiguousStarts?'g5-native-scope-unconfirmed':'g5-native-start-unconfirmed');}catch{blockers.push('g5-native-authority-unconfirmed');}}else if(this.env.PRIVATE_BETA_POLICY_JSON!==undefined)blockers.push('g5-native-authority-unconfirmed');
     const journal=new DurableTurnStore(this.ctx.storage).read();
-    if(journal&&(journal.activeTurnId||journal.activeManualOperation||journal.resourceWait||journal.releaseHold||journal.recoveryHold||Object.values(journal.turns).some(t=>!['completed','failed','cancelled','interrupted'].includes(t.status))))blockers.push('turn-or-release-unconfirmed');
+    if(journal&&(journal.activeTurnId||journal.resourceWait||journal.releaseHold||journal.recoveryHold||Object.values(journal.turns).some(t=>!['completed','failed','cancelled','interrupted'].includes(t.status))))blockers.push('turn-or-release-unconfirmed');
     for(const turn of Object.values(journal?.turns??{})){
       if(!turn.resourceLease)continue;
       if(!turn.dispatchId||!turn.runtimeGeneration){blockers.push('native-release-unconfirmed');continue;}
@@ -318,7 +313,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     return new BrowserPreviewOrchestrator(this.ctx.storage,owned,{builds:this.#browserBuild(owned),bucket:this.env.WORKSPACE_CHECKPOINTS!,registry:productionPreviewRegistry,
       readOnly:()=>this.#archiveFence.get()!==null,checkScope:()=>{this.#maintenanceScope(owned);},authorize:async actor=>{const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(actor,owned.workspaceId);if(!sameScope(actual,owned))throw Error('browser-preview-access-denied');},
       authorizeVerify:async actor=>{this.#ready(owned);const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(actor,owned.workspaceId);if(!sameScope(actual,owned))throw Error('browser-preview-access-denied');this.#ready(owned);},
-      head:()=>{const head=this.#turns.workspaceRevisionSnapshot(owned);if(head?.source==='manual-save')throw Error('manual-source-browser-preview-unsupported');return head??this.#browserBuild(owned).initial();},saved:revision=>this.#turns.savedRevisionSnapshot(owned,revision)??this.#browserBuild(owned).source(revision),checkSource:source=>this.#checkBrowserSource(owned,source),
+      head:()=>this.#turns.workspaceRevisionSnapshot(owned)??this.#browserBuild(owned).initial(),saved:revision=>this.#turns.savedRevisionSnapshot(owned,revision)??this.#browserBuild(owned).source(revision),checkSource:source=>this.#checkBrowserSource(owned,source),
       files:source=>this.env.REVISION_STORE.getByName(revisionStoreActorName(owned)).serviceFiles(source,16*1024*1024),simulations:this.#simulations(owned),canVerify:()=>this.#simulationCanRun(),image:this.env.M4_SIMULATION_IMAGE??'',
       delivery:hash=>platformPreviewDelivery(this.env.APP_ORIGIN,this.env.BROWSER_PREVIEW_EXECUTION_ORIGIN,hash)});
   }
@@ -461,7 +456,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const scope=this.#ready(input.scope),host=this.#experimentGroups(scope),request=experimentGroupRequest(input.body),head=this.#turns.workspaceRevisionSnapshot(scope);
     const prior=await host.replay(input.actor,input.key,request);if(prior?.runAdmission)return host.view(prior,head?.receipt.filesSha256??null);
     let g5Task:Awaited<ReturnType<typeof g5TaskKey>>|null=null;
-    if(!this.#managedRoute()&&!this.#invitedRunCandidate()&&this.env.G5_CONTROLLED_WINDOW_JSON!==undefined){if(!head||head.source==='manual-save')throw Error('g5-group-parent-turn-absent');const parent=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+head.identity.turnId);if(!parent||parent.kind!=='g5')throw Error('g5-group-parent-turn-unbound');g5Task=await g5TaskKey(this.env.G5_CONTROLLED_WINDOW_JSON,'group',scope.tenantId,input.actor.userId,{scope,key:input.key},request,parent.taskKey);await this.#g5Guard().registerTask(g5Task);}
+    if(!this.#managedRoute()&&!this.#invitedRunCandidate()&&this.env.G5_CONTROLLED_WINDOW_JSON!==undefined){if(!head)throw Error('g5-group-parent-turn-absent');const parent=this.ctx.storage.kv.get<WorkspaceBudgetRoute>('g5-turn-route:'+head.identity.turnId);if(!parent||parent.kind!=='g5')throw Error('g5-group-parent-turn-unbound');g5Task=await g5TaskKey(this.env.G5_CONTROLLED_WINDOW_JSON,'group',scope.tenantId,input.actor.userId,{scope,key:input.key},request,parent.taskKey);await this.#g5Guard().registerTask(g5Task);}
     const finalize=async(group:ExperimentGroupRecord)=>{if(!g5Task)return;const guard=this.#g5Guard();await guard.bindTask(g5Task.key,group.groupId);const started=await guard.claimTaskStart(g5Task.key);if(started.authorized){if(!started.grantId)throw Error('g5-group-start-grant-absent');const confirmed=await guard.confirmTaskStartGrant(g5Task.key,started.grantId);if(!confirmed.confirmed)throw Error('g5-group-start-unconfirmed');}else if(!started.alreadyStarted)throw Error('g5-group-start-denied');this.ctx.storage.kv.put('g5-group-route:'+group.groupId,{kind:'g5',taskKey:g5Task.key,windowId:g5WindowPolicy(JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON!))!.windowId,profileSha256:g5WindowPolicy(JSON.parse(this.env.G5_CONTROLLED_WINDOW_JSON!))!.profilePin.profileSha256} satisfies WorkspaceBudgetRoute);await this.ctx.storage.sync();};
     if(prior){await finalize(prior);return host.view(prior,head?.receipt.filesSha256??null);}
     if(this.#invitedRunCandidate()){await this.#authorizeInvitedRun(scope,input.actor);if(request.seeds.length*(request.interventions.length+1)>this.#invitedRunsPolicy()!.maxGroupRuns)throw Error('invited-runs-group-limit');}
@@ -501,7 +496,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   }
   async #simulationSource(scope:TurnScope):Promise<PreviewSource>{
     const revision=this.#turns.workspaceRevisionSnapshot(scope);
-    if(revision)return revision.source==='manual-save'?{kind:'manual-save',identity:revision.identity,revision:revision.receipt}:{kind:'saved-turn',identity:revision.identity,revision:revision.receipt};
+    if(revision)return {kind:'saved-turn',identity:revision.identity,revision:revision.receipt};
     const initial=await this.#initialWorkspace(scope);
     return {kind:'initial-workspace',reference:initial.reference,filesSha256:initial.filesSha256};
   }
@@ -740,79 +735,6 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
 
     });
   }
-  async #manualAuthorize(scope:TurnScope,actor:TurnActor){
-    this.#ready(scope);this.assertWritableScope(scope);
-    const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(actor,scope.workspaceId);
-    if(!sameScope(scope,actual))throw Error('manual-save-access-denied');
-    this.#ready(scope);this.assertWritableScope(scope);
-  }
-  async #manualAcquireFence(operation:ManualSaveOperation){
-    const fence=new CatalogManualSaveFence(catalogDatabase(this.env.CATALOG)),lease=await fence.acquire({...operation.identity,inputSha256:operation.inputSha256});
-    if(lease.state==='released'&&(operation.status==='pending'||lease.terminal?.status!==operation.status||lease.terminal.revisionId!==(operation.receipt?.revisionId??null)))throw Error('manual-save-fence-terminal-conflict');
-    return lease;
-  }
-  async #manualReleaseFence(operation:ManualSaveOperation){
-    if(operation.status==='pending')throw Error('manual-save-fence-pending');
-    await new CatalogManualSaveFence(catalogDatabase(this.env.CATALOG)).release({...operation.identity,inputSha256:operation.inputSha256},{status:operation.status,revisionId:operation.receipt?.revisionId??null});
-  }
-  #manualRecoverAuthorization(scope:TurnScope,actor:TurnActor,key?:string){
-    return recoverManualSaveAuthorization({journal:this.#turns,scope,actor,authorize:()=>this.#manualAuthorize(scope,actor),
-      abandonUnacquired:operation=>new CatalogManualSaveFence(catalogDatabase(this.env.CATALOG)).abandonUnacquired({...operation.identity,inputSha256:operation.inputSha256})},key);
-  }
-  async manualSaveState(input:{scope:TurnScope;actor:TurnActor;path?:string}){
-    await this.#prepareNormalJournal();const scope=this.#ready(input.scope);
-    return this.#archiveWrite(scope,()=>serializeManualSave(this.#turns,async()=>{
-    await this.#manualRecoverAuthorization(scope,input.actor);
-    const source=await this.#simulationSource(scope),store=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)),archive=await store.serviceFiles(source);
-    let result;
-    if(input.path!==undefined){const path=manualPath(input.path),bytes=workspaceArchiveReader(archive).read([{path,maxBytes:256*1024}]).get(path)!;
-      try{result={path,encoding:'utf8',content:new TextDecoder('utf8',{fatal:true}).decode(bytes)};}catch{let text='';for(const b of bytes)text+=String.fromCharCode(b);result={path,encoding:'base64',content:btoa(text)};}
-    }else{
-      const artifacts=source.kind==='manual-save'?(await store.manualMetadata(source)).artifacts:[];
-      result={base:{revisionId:source.kind==='initial-workspace'?null:source.revision.revisionId,filesSha256:previewSourceFilesSha256(source),workspaceGeneration:scope.workspaceGeneration},files:workspaceFileIndex(archive).files,artifacts};
-    }
-    await this.#manualAuthorize(scope,input.actor);const latest=await this.#simulationSource(scope);
-    if(JSON.stringify(latest)!==JSON.stringify(source))throw Error('manual-save-base-conflict');return result;
-    }));
-  }
-  async manualSaveStatus(input:{scope:TurnScope;actor:TurnActor;operationId:string}){
-    await this.#prepareNormalJournal();const scope=this.#ready(input.scope);
-    return this.#archiveWrite(scope,()=>serializeManualSave(this.#turns,async()=>{
-      if(await this.#manualRecoverAuthorization(scope,input.actor,input.operationId))return retiredManualSaveResult(input.operationId);
-      let operation=this.#turns.getManualSave(scope,input.actor,input.operationId);
-      if(!operation){const rejection=this.#turns.getManualSaveRejection(scope,input.actor,input.operationId);if(!rejection)throw Error('manual-save-not-found');await this.#manualAuthorize(scope,input.actor);return manualRejectionResult(rejection);}
-      await this.#manualAcquireFence(operation);
-      if(operation.status==='pending'){
-        const receipt=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).reconcileManual({identity:operation.identity,inputSha256:operation.inputSha256});
-        if(receipt){await this.#manualAuthorize(scope,input.actor);operation=await this.#turns.publishManualSave(scope,input.actor,input.operationId,receipt);}
-      }
-      await this.#manualAuthorize(scope,input.actor);if(operation.status!=='pending')await this.#manualReleaseFence(operation);return manualOperationResult(operation);
-    }));
-  }
-  async manualSave(input:{scope:TurnScope;actor:TurnActor;key:string;body:unknown}){
-    await this.#prepareNormalJournal();const scope=this.#ready(input.scope),store=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope));
-    return this.#archiveWrite(scope,()=>runManualSave({journal:this.#turns,scope,actor:input.actor,key:input.key,body:input.body,
-      authorize:()=>this.#manualAuthorize(scope,input.actor),
-      acquireFence:operation=>this.#manualAcquireFence(operation),releaseFence:operation=>this.#manualReleaseFence(operation),
-      abandonUnacquired:operation=>new CatalogManualSaveFence(catalogDatabase(this.env.CATALOG)).abandonUnacquired({...operation.identity,inputSha256:operation.inputSha256}),
-      reconcile:operation=>store.reconcileManual({identity:operation.identity,inputSha256:operation.inputSha256}),
-      commit:value=>store.commitManual(value),
-      publish:(operation,receipt,status)=>this.#turns.publishManualSave(scope,input.actor,operation.identity.operationId,receipt,status),
-      current:async()=>{
-        const source=await this.#simulationSource(scope),base={revisionId:source.kind==='initial-workspace'?null:source.revision.revisionId,filesSha256:previewSourceFilesSha256(source),workspaceGeneration:scope.workspaceGeneration};
-        return {base,prepare:async request=>{
-          const original=await store.serviceFiles(source),filesArchive=mergeManualArchive(original,request),filesSha256=await manualDigest(filesArchive);
-          const oldArtifacts=source.kind==='manual-save'?(await store.manualMetadata(source)).artifacts:[];
-          const unchanged=filesSha256===base.filesSha256&&JSON.stringify(oldArtifacts)===JSON.stringify(request.artifacts);
-          if(!unchanged){
-            const candidate={kind:'initial-workspace' as const,reference:source.kind==='initial-workspace'?source.reference:(await this.#initialWorkspace(scope)).reference,filesSha256};
-            await buildProjectViews(candidate,filesArchive);
-          }
-          return {filesArchive,unchanged};
-        }};
-      },
-    }));
-  }
   async projectViews(input:{scope:TurnScope;actor:TurnActor}){
     await this.#prepareNormalJournal();const scope=this.#ready(input.scope);
     const authorize=async()=>{
@@ -822,31 +744,12 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     await authorize();const source=await this.#simulationSource(scope);
     const result=await buildProjectViews(source,await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source));
     await authorize();const latest=await this.#simulationSource(scope);
-    if(previewSourceFilesSha256(latest)!==previewSourceFilesSha256(source)||(latest.kind==='initial-workspace'?null:latest.revision.revisionId)!==(source.kind==='initial-workspace'?null:source.revision.revisionId))throw Error('project-view-stale');
+    if((latest.kind==='saved-turn'?latest.revision.filesSha256:latest.filesSha256)!==(source.kind==='saved-turn'?source.revision.filesSha256:source.filesSha256)||(latest.kind==='saved-turn'?latest.revision.revisionId:null)!==(source.kind==='saved-turn'?source.revision.revisionId:null))throw Error('project-view-stale');
     await authorize();return result;
   }
   async projectViewArtifacts(input:{scope:TurnScope;actor:TurnActor;identity:string;cursor?:string|null;artifactId?:string;offset?:number}){
     const authorize=async()=>{const pkg=await this.projectViews(input);if(!pkg||pkg.packageIdentity!==input.identity)throw Error('project-view-stale');};
-    await authorize();const scope=this.#ready(input.scope),source=await this.#simulationSource(scope);
-    if(source.kind==='manual-save'){
-      const revisionStore=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)),archive=await revisionStore.serviceFiles(source),metadata=await revisionStore.manualMetadata(source),items=await manualArtifactReceipts(source.revision,archive,metadata.artifacts);
-      if(input.artifactId?.startsWith('manual-artifact-')){
-        const receipt=items.find(item=>item.artifactId===input.artifactId),offset=input.offset??0;
-        if(!receipt||!Number.isSafeInteger(offset)||offset<0||offset>receipt.bytes||offset===receipt.bytes&&offset!==0)throw Error('manual-artifact-invalid');
-        const bytes=workspaceArchiveReader(archive).read([{path:receipt.path,maxBytes:256*1024}]).get(receipt.path)!,chunk=bytes.slice(offset,offset+16384);let binary='';for(const byte of chunk)binary+=String.fromCharCode(byte);
-        await authorize();return {receipt,offset,base64:btoa(binary),nextOffset:offset+chunk.length<bytes.length?offset+chunk.length:null};
-      }
-      if(input.artifactId===undefined){
-        const journal=await this.#turns.snapshot(scope),version=await projectArtifactJournalVersion(journal),store=this.env.TOOL_ARTIFACT_STORE?.getByName(TOOL_ARTIFACT_STORE_ACTOR);
-        if(!store){if([...journal.events,...Object.values(journal.eventReceipts).map(r=>r.event)].some(e=>e.type==='tool.completed'&&e.payload.artifact)||input.cursor)throw Error('project-artifact-list-unavailable');await authorize();return {items,nextCursor:null,version:await turnDigest({package:input.identity,journal:version})};}
-        const cursor=input.cursor??null;if(cursor&&!cursor.startsWith(input.identity+':'))throw Error('project-artifact-cursor-stale');
-        if(!store.projectList)throw Error('project-artifact-list-unavailable');
-        const page=await store.projectList(scope,projectArtifactStoreCursor(cursor?.slice(input.identity.length+1)??null,version));
-        await authorize();const current=await this.#turns.snapshot(scope);if(await projectArtifactJournalVersion(current)!==version)throw Error('project-artifact-cursor-stale');
-        return {...page,items:[...(cursor?[]:items),...page.items.filter(receipt=>committedProjectArtifact(receipt,current)).map(receipt=>({...receipt,source:'tool-output' as const}))],version:await turnDigest({package:input.identity,journal:version,store:page.version}),nextCursor:page.nextCursor?input.identity+':'+version+':'+page.nextCursor:null};
-      }
-    }
-    const store=this.env.TOOL_ARTIFACT_STORE.getByName(TOOL_ARTIFACT_STORE_ACTOR);
+    await authorize();const scope=this.#ready(input.scope),store=this.env.TOOL_ARTIFACT_STORE.getByName(TOOL_ARTIFACT_STORE_ACTOR);
     let result,journalVersion:string|undefined;
     if(input.artifactId!==undefined){
       const offset=input.offset??0;if(!Number.isSafeInteger(offset)||offset<0||!store.projectRead)throw Error('project-artifact-read-denied');
@@ -877,8 +780,8 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     // Workspace writes are serialized by the active Turn. Read its claimed
     // immutable baseline; never a mutable project directory or caller path.
     const source=await this.#simulationSource(scope);
-    const sourceSha=previewSourceFilesSha256(source);
-    if(!turn.base||sourceSha!==(turn.base.workspace?.filesSha256??turn.base.initial?.filesSha256)||source.kind!=='initial-workspace'&&source.revision.revisionId!==turn.base.workspace?.revisionId||source.kind==='initial-workspace'&&turn.base.workspace!==null)throw Error('project-resource-base-mismatch');
+    const sourceSha=source.kind==='saved-turn'?source.revision.filesSha256:source.filesSha256;
+    if(!turn.base||sourceSha!==(turn.base.workspace?.filesSha256??turn.base.initial?.filesSha256)||source.kind==='saved-turn'&&source.revision.revisionId!==turn.base.workspace?.revisionId||source.kind==='initial-workspace'&&turn.base.workspace!==null)throw Error('project-resource-base-mismatch');
     const projectResources=await projectResourcesFromArchive(source,await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source));
     const model=await this.modelSpec({scope}),page=await this.listExperiments({scope}),experiments=page.items.slice(0,5);
     const groupPage=await this.listExperimentGroups({scope}),evidencePage=await this.#evidence(scope).list(model.version,undefined,3);
@@ -1011,7 +914,6 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
   #freezeService(scope:TurnScope):ServiceSourceCandidate{
     this.#ready(scope);
     const revision=this.#turns.workspaceRevisionSnapshot(scope);
-    if(revision?.source==='manual-save')throw Error('manual-source-service-unsupported');
     if(revision)return {kind:'saved-turn',identity:revision.identity,revision:revision.receipt};
     const state=this.#store.read();
     if(!state?.identity||!state.runtimeReceipt)throw Error('workspace-initial-source-missing');
@@ -1693,7 +1595,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const identity=turnRuntimeIdentity(input.identity),scope=this.#maintenanceScope(identity.scope),state=await this.#turns.snapshot(scope),turn=state.turns[identity.turnId];
     if(!turn||turn.actor.userId!==input.userId||turn.sessionId!==identity.sessionId||turn.dispatchId!==identity.dispatchId||turn.runtimeGeneration!==identity.generation||turn.status!=='completed'||turn.executionOutcome!=='completed'||turn.persistenceOutcome!=='saved'||!turn.checkpoint||state.activeTurnId!==null||state.releaseHold!==null||state.recoveryHold!==null)throw Error('g5-turn-authority-unsettled');
     const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(turn.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('g5-turn-authority-denied');
-    const head=this.#turns.workspaceRevisionSnapshot(scope);if(!head||head.source==='manual-save'||head.identity.turnId!==identity.turnId||JSON.stringify(head.receipt)!==JSON.stringify(turn.checkpoint))throw Error('g5-turn-authority-head-mismatch');
+    const head=this.#turns.workspaceRevisionSnapshot(scope);if(!head||head.identity.turnId!==identity.turnId||JSON.stringify(head.receipt)!==JSON.stringify(turn.checkpoint))throw Error('g5-turn-authority-head-mismatch');
     const model=await this.modelSpec({scope});if(!model.version)throw Error('g5-turn-authority-model-absent');const toolEventIds=state.events.filter(event=>event.turnId===identity.turnId&&event.type==='tool.completed').map(event=>event.eventId);if(!toolEventIds.length||model.version.revisionId!==turn.checkpoint.revisionId||model.version.filesSha256!==turn.checkpoint.filesSha256)throw Error('g5-turn-authority-evidence-absent');
     return {schemaVersion:1 as const,identity,requestKey:turn.requestKey,version:model.version,toolEventIds};
   }
@@ -1731,7 +1633,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const runIds=new Set(runs.map(record=>record.runId)),groups=[...(await this.ctx.storage.list<ExperimentGroupRecord>({prefix:GROUP_PREFIX})).values()].filter(group=>group.actor.userId===input.userId&&sameScope(group.scope,scope)&&group.children.some(child=>runIds.has(child.runId)));
     const activeRuns=runs.filter(record=>['waiting_for_capacity','preparing','running','finalizing','stopping'].includes(record.status)).length,pendingRuns=runs.filter(record=>record.status==='queued'||record.status==='completed'&&(!record.released||record.releaseProof===null)).length,unknownRuns=runs.filter(record=>record.status==='unknown'||['failed','cancelled'].includes(record.status)).length;
     const activeGroups=groups.filter(group=>group.status==='running').length,pendingGroups=groups.filter(group=>group.status==='queued'||group.status==='completed'&&group.children.some(child=>!runIds.has(child.runId))).length,unknownGroups=groups.filter(group=>['partial','failed','cancelled'].includes(group.status)).length;
-    const head=this.#turns.workspaceRevisionSnapshot(scope),version=(await this.modelSpec({scope})).version;if(!head||head.source==='manual-save'||!version||version.revisionId!==head.receipt.revisionId||version.filesSha256!==head.receipt.filesSha256)throw Error('g5-readonly-counters-revision-absent');
+    const head=this.#turns.workspaceRevisionSnapshot(scope),version=(await this.modelSpec({scope})).version;if(!head||!version||version.revisionId!==head.receipt.revisionId||version.filesSha256!==head.receipt.filesSha256)throw Error('g5-readonly-counters-revision-absent');
     return {schemaVersion:1 as const,projectId:scope.projectId,revision:version,simulationRuns:runs.length,groups:groups.length,active:activeRuns+activeGroups,pending:pendingRuns+pendingGroups,unknown:unknownRuns+unknownGroups,runIds:[...runIds].sort(),groupIds:groups.map(group=>group.groupId).sort()};
   }
   async beginG5ReadonlyReadSession(input:{identity:TurnRuntimeIdentity;userId:string;windowId:string;bindingSha256:string;binding:{schemaVersion:1;kind:'before-reopen-readonly';projectId:string;workspaceId:string;revision:{revisionId:string;filesSha256:string;specSha256:string};runIds:string[];groupIds:string[];claimIds:string[]}}){
@@ -1783,7 +1685,6 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const scope=this.#ready(input.scope),revision=this.#turns.workspaceRevisionSnapshot(scope);
     if(!this.env.REVISION_STORE?.getByName)throw Error('revision-store-not-configured');
     const store=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope));
-    if(revision?.source==='manual-save')throw Error('manual-source-preview-unsupported');
     if(revision){const plan=await store.previewPlan({kind:'saved-turn',identity:revision.identity,revision:revision.receipt});this.#ready(scope);return plan;}
     const state=this.#store.read();
     if(!state?.identity||!state.runtimeReceipt)throw Error('workspace-initial-source-missing');
@@ -1800,26 +1701,14 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const scope=this.#ready(input.scope),revision=await this.#turns.workspaceRevision(scope);
     if(!revision){const initial=await this.#initialWorkspace(scope);return {schemaVersion:1,revision:null,files:workspaceFileIndex(initial.filesArchive).files};}
     if(!this.env.REVISION_STORE?.getByName)throw Error('revision-store-not-configured');
-    const store=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope));
-    const index=revision.source==='manual-save'?workspaceFileIndex(await store.serviceFiles({kind:'manual-save',identity:revision.identity,revision:revision.receipt})):await store.files(revision.identity,revision.receipt);
+    const index=await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).files(revision.identity,revision.receipt);
     return {schemaVersion:1,revision:{revisionId:revision.receipt.revisionId,filesSha256:revision.receipt.filesSha256,committedAt:revision.receipt.committedAt},files:index.files};
   }
   async diffFiles(input:{scope:TurnScope}){
     await this.#prepareNormalJournal();
     const scope=this.#ready(input.scope),revision=await this.#turns.workspaceRevision(scope);
     if(!revision)return {schemaVersion:1,revision:null,baseRevisionId:null,summary:{added:0,modified:0,deleted:0},changes:[]};
-    if(!this.env.REVISION_STORE?.getByName)throw Error('revision-store-not-configured');const store=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope));
-    let result;
-    if(revision.source==='manual-save'){
-      const source={kind:'manual-save' as const,identity:revision.identity,revision:revision.receipt},metadata=await store.manualMetadata(source);let base:Uint8Array;
-      if(metadata.base.revisionId===null)base=(await this.#initialWorkspace(scope)).filesArchive;
-      else{const state=await this.#turns.snapshot(scope),prior=Object.values(state.manualOperations).find(op=>op.status==='committed'&&op.receipt?.revisionId===metadata.base.revisionId);
-        if(prior?.receipt&&'source' in prior.receipt&&prior.receipt.source==='manual-save')base=await store.serviceFiles({kind:'manual-save',identity:prior.identity,revision:prior.receipt});
-        else{const saved=this.#turns.savedRevisionSnapshot(scope,metadata.base.revisionId);if(!saved)throw Error('manual-save-base-unavailable');base=await store.serviceFiles({kind:'saved-turn',identity:saved.identity,revision:saved.receipt});}
-      }
-      if(await manualDigest(base)!==metadata.base.filesSha256)throw Error('manual-save-base-conflict');
-      result=workspaceFileDiff(await store.serviceFiles(source),base);
-    }else result=await store.diff(revision.identity,revision.receipt);
+    if(!this.env.REVISION_STORE?.getByName)throw Error('revision-store-not-configured');const store=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)),result=await store.diff(revision.identity,revision.receipt);
     return {schemaVersion:1,revision:{revisionId:revision.receipt.revisionId,filesSha256:revision.receipt.filesSha256,committedAt:revision.receipt.committedAt},summary:result.summary,changes:result.changes};
   }
   async readObserverArtifact(raw:ObserverArtifactReadInput){

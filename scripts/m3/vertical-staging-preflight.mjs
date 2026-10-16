@@ -42,7 +42,7 @@ export const REQUIRED_EXPORTS=Object.freeze([
 export const REQUIRED_CONTAINERS=Object.freeze(['ProjectRuntime','ProjectToolSandbox','TrustedPiSandbox','ServiceSandbox']);
 export const REQUIRED_MIGRATIONS=Object.freeze([
   '0001_catalog.sql','0002_auth.sql','0003_provisioning.sql','0004_operator_invitations.sql',
-  '0005_initial_operator.sql','0006_model_catalog.sql','0007_model_content_checks.sql','0008_preview_routes.sql','0009_model_submissions.sql','0010_project_budget_routes.sql','0011_user_locale_preferences.sql','0012_project_archives.sql','0013_manual_save_fence.sql',
+  '0005_initial_operator.sql','0006_model_catalog.sql','0007_model_content_checks.sql','0008_preview_routes.sql','0009_model_submissions.sql','0010_project_budget_routes.sql','0011_user_locale_preferences.sql','0012_project_archives.sql',
 ]);
 const REGISTRY=`registry.cloudflare.com/${ACCOUNT_ID}/`;
 const DIGEST=/^sha256:[a-f0-9]{64}$/;

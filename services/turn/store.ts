@@ -1,5 +1,3 @@
-import {manualManifestKey} from '../turn-runtime/manual-revision.ts';
-import {manualSaveIdentity,manualSaveBase,manualReceipt} from '../turn-runtime/manual-save.ts';
 import { projectPreviewDiscoveries } from '../browser-preview/discovery.ts';
 import { TURN_EVENT_BYTES_LIMIT, TURN_EVENT_LIMIT, TURN_EVENT_RECEIPT_LIMIT, actor, checkpointReceipt, jsonPayload, message, positive, sameScope, scope, sha, title, turnBaseCheckpoints, turnId, type CheckpointReceipt, type TurnEvent, type TurnJournalState } from './protocol.ts';
 
@@ -96,12 +94,10 @@ function migrateV5(value:unknown):unknown{
   }catch{throw Error('invalid-persisted-turn-journal');}
 }
 function migrateV6(value:unknown):unknown{if(!record(value)||value.schemaVersion!==6)return value;const state=structuredClone(value) as Record<string,unknown>;state.schemaVersion=7;return state;}
-function migrateV7(value:unknown):unknown{if(!record(value)||value.schemaVersion!==7)return value;return {...structuredClone(value),schemaVersion:8,manualOperations:{},activeManualOperation:null};}
-function migrateV8(value:unknown):unknown{if(!record(value)||value.schemaVersion!==8)return value;return {...structuredClone(value),schemaVersion:9,manualRejections:{}};}
 function valid(value:unknown):asserts value is TurnJournalState{
   try{
-    exact(value,['schemaVersion','manualRejections','manualOperations','activeManualOperation','scope','nextSequence','oldestSequence','retentionBytes','activeTurnId','workspaceHead','resourceWait','releaseHold','recoveryHold','sessions','turns','sessionIntents','turnIntents','eventReceipts','events']);
-    if(value.schemaVersion!==9)throw Error('version');const stateScope=scope(value.scope),nextSequence=positive(value.nextSequence),oldestSequence=positive(value.oldestSequence),retentionRaw=value.retentionBytes;if(oldestSequence>nextSequence||!Number.isSafeInteger(retentionRaw)||(retentionRaw as number)<0||(retentionRaw as number)>TURN_EVENT_BYTES_LIMIT)throw Error('retention-window');const retentionBytes=retentionRaw as number;if(value.activeTurnId!==null)turnId(value.activeTurnId);const workspaceHead=maybeCheckpoint(value.workspaceHead);
+    exact(value,['schemaVersion','scope','nextSequence','oldestSequence','retentionBytes','activeTurnId','workspaceHead','resourceWait','releaseHold','recoveryHold','sessions','turns','sessionIntents','turnIntents','eventReceipts','events']);
+    if(value.schemaVersion!==7)throw Error('version');const stateScope=scope(value.scope),nextSequence=positive(value.nextSequence),oldestSequence=positive(value.oldestSequence),retentionRaw=value.retentionBytes;if(oldestSequence>nextSequence||!Number.isSafeInteger(retentionRaw)||(retentionRaw as number)<0||(retentionRaw as number)>TURN_EVENT_BYTES_LIMIT)throw Error('retention-window');const retentionBytes=retentionRaw as number;if(value.activeTurnId!==null)turnId(value.activeTurnId);const workspaceHead=maybeCheckpoint(value.workspaceHead);
     for(const name of ['sessions','turns','sessionIntents','turnIntents','eventReceipts'] as const)if(!record(value[name]))throw Error('map');if(!Array.isArray(value.events)||value.events.length>TURN_EVENT_LIMIT)throw Error('events');
     const sessions=value.sessions as TurnJournalState['sessions'],turns=value.turns as TurnJournalState['turns'],events=value.events as TurnJournalState['events'];
     for(const [id,row] of Object.entries(sessions)){
@@ -113,7 +109,7 @@ function valid(value:unknown):asserts value is TurnJournalState{
       turnId(row.requestKey);sha(row.payloadSha256);message(row.message);if(typeof row.status!=='string'||!STATUS.has(row.status))throw Error('status');positive(row.createdAt);positive(row.updatedAt);maybePositive(row.startedAt);maybePositive(row.finishedAt);maybePositive(row.startedSequence);maybePositive(row.terminalSequence);if(row.updatedAt<row.createdAt||(row.startedSequence!==null&&row.terminalSequence!==null&&row.terminalSequence<=row.startedSequence))throw Error('turn-time');
       if((row.dispatchId===null)!==(row.runtimeGeneration===null)||(row.dispatchId===null)!==(row.base===null)||(row.dispatchId===null)!==(row.resourceLease===null))throw Error('dispatch-pair');if(row.dispatchId!==null){turnId(row.dispatchId);if(positive(row.runtimeGeneration)!==stateScope.workspaceGeneration||row.startedAt===null||row.startedSequence===null)throw Error('dispatch');exact(row.resourceLease,['operationId','leaseId']);turnId(row.resourceLease.operationId);turnId(row.resourceLease.leaseId);const base=turnBaseCheckpoints(row.base);if(base.initial&&!sameScope(base.initial.reference.scope,stateScope))throw Error('initial-base-scope');for(const receipt of [base.workspace,base.session])if(receipt&&receipt.committedAt>row.startedAt)throw Error('future-base');}else if(row.startedAt!==null||row.startedSequence!==null||row.resourceLease!==null)throw Error('started');
       if(row.executionOutcome!==null&&(typeof row.executionOutcome!=='string'||!OUTCOME.has(row.executionOutcome)))throw Error('outcome');if(row.cancelDisposition!==null&&!['cancelled','interrupted','already-terminal'].includes(String(row.cancelDisposition)))throw Error('cancel-disposition');if(row.cancelDisposition!==null&&row.cancelRequestedAt===null)throw Error('cancel-disposition');if(row.cancelDisposition==='cancelled'&&row.executionOutcome!=='cancelled'||row.cancelDisposition==='interrupted'&&row.executionOutcome!=='interrupted')throw Error('cancel-disposition');if(row.errorCode!==null)turnId(row.errorCode);if(row.persistenceOutcome!==null&&!['saved','unchanged','failed'].includes(row.persistenceOutcome))throw Error('persistence');if(row.persistenceErrorCode!==null)turnId(row.persistenceErrorCode);
-      if(row.checkpoint!==null&&checkpointReceipt(row.checkpoint).sessionSha256===null)throw Error('manual-turn-receipt-denied');
+      if(row.checkpoint!==null)checkpointReceipt(row.checkpoint);
       const isTerminal=['completed','failed','cancelled','interrupted'].includes(row.status);
       if(isTerminal!==(row.finishedAt!==null)||isTerminal!==(row.terminalSequence!==null))throw Error('finished');if(row.status==='queued'&&(row.dispatchId!==null||row.executionOutcome!==null))throw Error('queued');if(['running','cancelling'].includes(row.status)&&row.executionOutcome!==null)throw Error('running');if(row.status==='checkpointing'&&(row.executionOutcome===null||row.persistenceOutcome!==null))throw Error('checkpointing');
       if(row.dispatchId===null&&isTerminal&&row.status!=='cancelled'){
@@ -133,15 +129,7 @@ function valid(value:unknown):asserts value is TurnJournalState{
     for(const row of Object.values(turns)){for(const [sequence,type] of [[row.startedSequence,'turn.started'],[row.terminalSequence,`turn.${row.status}`]] as const)if(sequence!==null&&sequence>=oldestSequence){const savedEvent=events[sequence-oldestSequence];if(!savedEvent||savedEvent.turnId!==row.id||savedEvent.type!==type)throw Error('lineage-event');}}
     saved.sort((a,b)=>a.terminalSequence!-b.terminalSequence!);
     const matches=(receipt:CheckpointReceipt|null,sessionId?:string)=>receipt===null||saved.some(row=>(sessionId===undefined||row.sessionId===sessionId)&&same(row.checkpoint,receipt));
-    if(!record(value.manualOperations))throw Error('manual-operations');
-    const operations=value.manualOperations as TurnJournalState['manualOperations'];
-    if(!record(value.manualRejections))throw Error('manual-rejections');for(const [key,r]of Object.entries(value.manualRejections)){exact(r,['identity','requestSha256','reasonCode','status']);const id=manualSaveIdentity(r.identity);if(!sameScope(id.scope,stateScope)||key!==`${id.actor.userId}|${id.operationId}`||operations[key]||r.status!=='rejected')throw Error('manual-rejection');sha(r.requestSha256);turnId(r.reasonCode);}
-    for(const [key,op] of Object.entries(operations)){exact(op,['identity','requestKey','inputSha256','base','createdAt','status','receipt','publishedSequence']);const id=manualSaveIdentity(op.identity);if(!sameScope(id.scope,stateScope)||key!==`${id.actor.userId}|${turnId(op.requestKey)}`||id.operationId!==op.requestKey)throw Error('manual-identity');sha(op.inputSha256);const base=manualSaveBase(op.base);if(base.workspaceGeneration!==stateScope.workspaceGeneration)throw Error('manual-base');positive(op.createdAt);if(!['pending','committed','aborted','unchanged'].includes(op.status))throw Error('manual-status');if(op.status==='committed'){const r=manualReceipt(op.receipt);if(r.objectKey!==manualManifestKey(id)||r.committedAt!==op.createdAt||positive(op.publishedSequence)>nextSequence)throw Error('manual-published');}else if(op.receipt!==null||op.publishedSequence!==null)throw Error('manual-unpublished');}
-    const pending=Object.entries(operations).filter(([,o])=>o.status==='pending');if(pending.length>1||(pending[0]?.[0]??null)!==value.activeManualOperation||(value.activeManualOperation!==null&&value.activeTurnId!==null))throw Error('manual-active');
-    const manualSaved=Object.values(operations).filter(o=>o.status==='committed');
-    const manualMatch=(r:CheckpointReceipt|null)=>r!==null&&manualSaved.some(o=>same(o.receipt,r));
-    const latestManual=manualSaved.at(-1),lastTurn=saved.at(-1);const expectedHead=latestManual&&(!lastTurn||latestManual.publishedSequence!>lastTurn.terminalSequence!)?latestManual.receipt:lastTurn?.checkpoint??null;
-    if(!same(workspaceHead,expectedHead))throw Error('workspace-head');
+    if(!matches(workspaceHead)||!same(workspaceHead,saved.at(-1)?.checkpoint??null))throw Error('workspace-head');
     for(const session of Object.values(sessions)){const sessionSaved=saved.filter(row=>row.sessionId===session.id);if(!matches(session.head,session.id)||!same(session.head,sessionSaved.at(-1)?.checkpoint??null))throw Error('session-head');}
     const initialTurns=Object.values(turns).filter(row=>row.base?.initial).sort((a,b)=>a.startedSequence!-b.startedSequence!);
     const frozenInitial=initialTurns[0]?.base?.initial;
@@ -149,9 +137,9 @@ function valid(value:unknown):asserts value is TurnJournalState{
     for(const row of Object.values(turns))if(row.base){
       const base=turnBaseCheckpoints(row.base),started=row.startedSequence;if(started===null)throw Error('turn-base');const prior=saved.filter(item=>item.id!==row.id&&item.terminalSequence!<started);
       if(base.initial&&prior.length)throw Error('initial-after-saved-head');
-      if(frozenInitial&&initialTurns[0]!.startedSequence!<started&&!prior.length&&!base.initial&&!manualMatch(base.workspace))throw Error('initial-base-lost');
-      if((!matches(base.workspace)&&!manualMatch(base.workspace))||!matches(base.session,row.sessionId))throw Error('turn-base');
-      if(base.workspace&&!prior.some(item=>same(item.checkpoint,base.workspace))&&!manualSaved.some(o=>o.publishedSequence!<=started&&same(o.receipt,base.workspace)))throw Error('turn-base');
+      if(frozenInitial&&initialTurns[0]!.startedSequence!<started&&!prior.length&&!base.initial)throw Error('initial-base-lost');
+      if(!matches(base.workspace)||!matches(base.session,row.sessionId))throw Error('turn-base');
+      if(base.workspace&&!prior.some(item=>same(item.checkpoint,base.workspace)))throw Error('turn-base');
       if(base.session&&!prior.some(item=>item.sessionId===row.sessionId&&same(item.checkpoint,base.session)))throw Error('turn-base');
     }
     const active=Object.values(turns).filter(row=>['running','cancelling','checkpointing'].includes(row.status));if(active.length>1||(active[0]?.id??null)!==value.activeTurnId)throw Error('active');
@@ -162,8 +150,6 @@ function valid(value:unknown):asserts value is TurnJournalState{
 }
 function preserveInitialBases(previous:TurnJournalState|null,next:TurnJournalState){
   if(!previous)return;
-  for(const [key,r]of Object.entries(previous.manualRejections))if(!same(r,next.manualRejections[key]))throw Error('invalid-persisted-turn-journal');
-  for(const [key,op] of Object.entries(previous.manualOperations)){const after=next.manualOperations[key];if(!after||op.status!=='pending'&&!same(op,after)||!same(op.identity,after.identity)||op.inputSha256!==after.inputSha256||!same(op.base,after.base))throw Error('invalid-persisted-turn-journal');}
   for(const row of Object.values(previous.turns))if(row.dispatchId!==null){
     const after=next.turns[row.id];
     if(row.persistenceOutcome==='saved'&&(!after||after.persistenceOutcome!=='saved'||!same(row.checkpoint,after.checkpoint)||row.sessionId!==after.sessionId||row.dispatchId!==after.dispatchId||row.runtimeGeneration!==after.runtimeGeneration))throw Error('invalid-persisted-turn-journal');
@@ -179,10 +165,10 @@ export class DurableTurnStore implements AtomicTurnStore{
     if(!storage||typeof storage.transaction!=='function'||typeof storage.sync!=='function'||!storage.kv)throw Error('sqlite-turn-storage-required');
     this.#storage=storage;
   }
-  read():TurnJournalState|null{const saved=this.#storage.kv.get<unknown>(KEY);if(saved===undefined)return null;const current=migrateV8(migrateV7(migrateV6(migrateV5(migrateV4(migrateV3(migrateV2(migrate(saved))))))));valid(current);return structuredClone(current);}
+  read():TurnJournalState|null{const saved=this.#storage.kv.get<unknown>(KEY);if(saved===undefined)return null;const current=migrateV6(migrateV5(migrateV4(migrateV3(migrateV2(migrate(saved))))));valid(current);return structuredClone(current);}
   async transact<T>(operation:(current:TurnJournalState|null)=>{state:TurnJournalState;value:T}):Promise<T>{
     const result=await this.#storage.transaction(async transaction=>{
-      const saved=await transaction.get<unknown>(KEY),current=saved===undefined?null:migrateV8(migrateV7(migrateV6(migrateV5(migrateV4(migrateV3(migrateV2(migrate(saved))))))));if(current!==null)valid(current);
+      const saved=await transaction.get<unknown>(KEY),current=saved===undefined?null:migrateV6(migrateV5(migrateV4(migrateV3(migrateV2(migrate(saved))))));if(current!==null)valid(current);
       const output=operation(current===null?null:structuredClone(current));
       if(!output||typeof output!=='object'||output instanceof Promise)throw Error('turn-journal-operation-must-be-synchronous');
       valid(output.state);preserveInitialBases(current,output.state);const state=structuredClone(output.state),value=structuredClone(output.value);

@@ -1,4 +1,3 @@
-import {createManualSavePanel} from './manual-save.js';
 import {bindValue,bindAttribute} from './i18n-bindings.js';
 import {createBrowserPreviewPanel,browserPreviewRoute} from './browser-preview.js';
 import {isAcceptanceProject,projectModelSummary} from './project-status.js';
@@ -57,7 +56,6 @@ const exportPanel=createExportPanel({root:$('#workspace-export')});
 const evidencePanel=createEvidencePanel({root:$('#workspace-evidence'),api,onAssessment:()=>{void comparisonPanel.reload();void simulationPanel.reload();}});
 const simulationPanel=createSimulationPanel({root:$('#workspace-simulation'),modelRoot:$('#workspace-model'),historyRoot:$('#workspace-run-history'),runsRoot:$('#canvas-runs'),api,localRuns,onModel:model=>{browserPreviewPanel.applyParameterDraft(model?.experimentDraft);observedModel=model;renderModelState();}});
 const verifyHandoffPanel=createVerifyHandoffPanel({root:$('#workspace-verify-handoff'),api,onVerified:()=>{void simulationPanel.reload();void comparisonPanel.reload();}});
-const manualSavePanel=createManualSavePanel({root:$('#workspace-manual-save'),api,onSaved:()=>{void refreshWorkspaceFiles(viewGeneration);}});
 const notice = $('#notice');
 const dialog = $('#project-dialog');
 let tenant = null;
@@ -372,7 +370,7 @@ function stopEventStream() {
 }
 
 function accountView() {
-  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();localRuns.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();manualSavePanel.leave();}
+  if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();localRuns.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();}
   $('#login').hidden = !authenticationResolved || authenticated;
   const workspaceRoutePending = Boolean(workspaceProjectIdFromHash()) && !activeProject;
   $('#app').hidden = !tenant || Boolean(activeProject) || workspaceRoutePending;
@@ -791,7 +789,6 @@ function openWorkspace(project) {
   renderWorkspaceFiles();
   renderWorkspaceDiff();
   selectArtifactPanel('files');
-  manualSavePanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,canWrite:ready&&!standalone&&location.protocol==='http:'&&['localhost','127.0.0.1','[::1]'].includes(location.hostname)});
   if(standalone)workspaceLayout.select('preview');
   verifyHandoffPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id});
   void browserPreviewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id,canOpen:readable,standalone,...(standalone?browserRoute:{})});
@@ -919,7 +916,7 @@ function workspaceProjectIdFromHash() {
 }
 
 async function load() {
-  servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();localRuns.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();manualSavePanel.leave();
+  servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();localRuns.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();
   const generation = ++viewGeneration;
   const localeStart = localePreferences.begin();
   stopPolling();
@@ -973,7 +970,7 @@ $('#google').onclick = async () => {
 $('#sign-out').onclick = async () => {
   viewGeneration++;
   const localeStart=localePreferences.begin();
-  servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();localRuns.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();manualSavePanel.leave();
+  servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();localRuns.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();
   stopEventStream();
   stopVisibilityRecovery();pendingVisibilityReads=0;sendingMessage=false;recoveredReceiptTurn=null;
   stopPolling();

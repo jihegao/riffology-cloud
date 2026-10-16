@@ -1,4 +1,3 @@
-import type {ManualCommitInput,ManualSaveIdentity,ManualRevisionReceipt,ManualArtifactDeclaration,ManualSaveBase} from './manual-save.ts';
 import type {ResolvedPreviewPlan,PreviewSource} from '../preview/source.ts';
 import type { InitialWorkspaceReference, ResolvedInitialWorkspace } from './initial-workspace.ts';
 import type { CheckpointReceipt, TurnBaseCheckpoints, TurnScope } from '../turn/protocol.ts';
@@ -18,9 +17,6 @@ export type RevisionGcReconcileInput={operationId:string;inputSha256:string;scop
 export type RevisionCommitReconcileInput={operationId:string;identity:TurnRuntimeIdentity;inputSha256:string};
 export type RevisionCommitResolution=TurnCheckpointResolution;
 export interface RevisionStoreRpc{
-  commitManual(input:ManualCommitInput):Promise<ManualRevisionReceipt>;
-  reconcileManual(input:{identity:ManualSaveIdentity;inputSha256:string}):Promise<ManualRevisionReceipt|null>;
-  manualMetadata(source:PreviewSource):Promise<{artifacts:ManualArtifactDeclaration[];base:ManualSaveBase}>;
   previewPlan(source:PreviewSource):Promise<ResolvedPreviewPlan>;
   serviceFiles(source:PreviewSource,maxBytes?:number):Promise<Uint8Array>;
   initialPreviewPlan(reference:InitialWorkspaceReference,scope:TurnScope):Promise<ResolvedPreviewPlan>;

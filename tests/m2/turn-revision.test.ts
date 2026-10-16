@@ -16,7 +16,7 @@ function fixture(){const bucket=new Bucket(),files=new TextEncoder().encode('can
 
 test('R2 revision writes content-addressed project and trusted session blobs before one immutable manifest',async()=>{
   const f=fixture(),port=f.port(),receipt=await port.commit(commitInput()),replayed=await port.commit(commitInput());
-  assert.equal(receipt.objectKey,'turns/tenant-a/project-a/workspace-a/2/session-a/turn-a/dispatch-a.json');assert.match(receipt.filesSha256,/^[a-f0-9]{64}$/);assert.match(receipt.sessionSha256!,/^[a-f0-9]{64}$/);assert.deepEqual(replayed,receipt);assert.equal(f.freezes,1);assert.equal(f.bucket.puts.length,3);assert.deepEqual(await port.observe(identity),receipt);
+  assert.equal(receipt.objectKey,'turns/tenant-a/project-a/workspace-a/2/session-a/turn-a/dispatch-a.json');assert.match(receipt.filesSha256,/^[a-f0-9]{64}$/);assert.match(receipt.sessionSha256,/^[a-f0-9]{64}$/);assert.deepEqual(replayed,receipt);assert.equal(f.freezes,1);assert.equal(f.bucket.puts.length,3);assert.deepEqual(await port.observe(identity),receipt);
   const manifest=JSON.parse(new TextDecoder().decode(f.bucket.objects.get(receipt.objectKey)!));assert.deepEqual(manifest.identity,identity);assert.deepEqual(manifest.base,base);assert.equal(manifest.files.sha256,receipt.filesSha256);assert.equal(manifest.piSession.sha256,receipt.sessionSha256);assert.notEqual(manifest.files.sha256,manifest.piSession.sha256);
 });
 test('verified restore returns immutable files and a session-bound Pi snapshot',async()=>{

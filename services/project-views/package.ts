@@ -64,6 +64,6 @@ export async function buildProjectViews(source:PreviewSource,archive:Uint8Array)
   if(bytes.length>VIEW_LIMITS.fileBytes)fail('size-limit');
   assets.push({path,mediaType:media[ext]!,base64:base64(bytes),sourceSha256:await sha(original),sha256:await sha(bytes)});
  }
- const body={schema:'project.view-package/v1' as const,scope:previewSourceScope(source),revisionId:source.kind==='initial-workspace'?null:source.revision.revisionId,filesSha256:previewSourceFilesSha256(source),manifest,assets};
+ const body={schema:'project.view-package/v1' as const,scope:previewSourceScope(source),revisionId:source.kind==='saved-turn'?source.revision.revisionId:null,filesSha256:previewSourceFilesSha256(source),manifest,assets};
  return {...body,packageIdentity:await sha(encoder.encode(JSON.stringify(body)))};
 }

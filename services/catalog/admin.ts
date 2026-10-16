@@ -1,4 +1,3 @@
-import {manualSaveFenceInstalled} from './manual-save-fence.ts';
 import { normalizedEmail } from './admission.ts';
 import { statement as sql, type Database } from './database.ts';
 import { CatalogError, digest, opaqueId, type Principal } from './contracts.ts';
@@ -180,18 +179,16 @@ export class OperatorCatalog {
       WHERE i.id=? AND i.state='accepted' AND i.purpose='user' AND i.issued_by IS NOT NULL
       AND i.accepted_by<>? AND NOT EXISTS (SELECT 1 FROM catalog_platform_roles r WHERE r.user_id=i.accepted_by AND r.status='active')
       ${action==='restore'?`AND ${revokeProof}`:''}`;
-    const manualFence=action==='revoke'&&await manualSaveFenceInstalled(this.db);
-    const fencePredicate=manualFence?" AND NOT EXISTS (SELECT 1 FROM catalog_manual_save_fences f WHERE f.user_id=catalog_users.id AND f.state='pending')":'';
     const toStatus=action==='revoke'?'revoked':'active';
     const userUpdate=action==='revoke'
       ? `UPDATE catalog_users SET status='revoked',auth_version=auth_version+1,updated_at=?
-        WHERE id=(${target}) AND status='active' AND EXISTS (${operator})${fencePredicate}`
+        WHERE id=(${target}) AND status='active' AND EXISTS (${operator})`
       : `UPDATE catalog_users SET status='active',updated_at=?
         WHERE id=(${target}) AND status='revoked' AND EXISTS (${operator})`;
     const actionName=`invitation.access.${action}`,userAction=`user.access.${action}`;
     const reasonCode=`accepted-invitation-access-${action}-v1`;
     const updateValues=[now,invitationId,principal.userId,principal.userId,principal.authVersion];
-    try{await this.db.batch([
+    await this.db.batch([
       sql(userUpdate,...updateValues),
       sql(`INSERT INTO catalog_audit_log(id,actor_user_id,tenant_id,action,target_type,target_id,reason_code,outcome,request_id,created_at)
         SELECT ?,?,t.id,?,'invitation',i.id,?,'completed',i.id||':access:${action}:'||u.auth_version,?
@@ -217,7 +214,7 @@ export class OperatorCatalog {
           AND a.request_id=i.id||':access:${action}:'||u.auth_version)`,
         crypto.randomUUID(),principal.userId,userAction,reasonCode,now,invitationId,principal.userId,toStatus,now,
         principal.userId,principal.authVersion,userAction),
-    ]);}catch(error){if(error instanceof Error&&error.message.includes('manual-save-fence-busy'))throw new CatalogError('project_busy');throw error;}
+    ]);
     const rows=await this.db.query<InvitationSummary>(sql(`SELECT i.id,i.normalized_email,i.state,i.created_at,i.expires_at,i.accepted_at,i.revoked_at,? AS access_state
       FROM catalog_invitations i JOIN catalog_users u ON u.id=i.accepted_by
       JOIN catalog_tenants t ON t.owner_user_id=u.id AND t.kind='personal' AND t.status='active'
@@ -229,7 +226,6 @@ export class OperatorCatalog {
         AND au.action=? AND au.target_type='user' AND au.target_id=u.id
         AND ai.request_id=i.id||':access:${action}:'||u.auth_version)
       AND EXISTS (${operator})`,toStatus,invitationId,principal.userId,toStatus,actionName,userAction,principal.userId,principal.authVersion));
-    if(!rows[0]&&manualFence&&(await this.db.query(sql(`SELECT 1 FROM catalog_users u WHERE u.id=(${target}) AND u.status='active' AND EXISTS (${operator})`,invitationId,principal.userId,principal.userId,principal.authVersion))).length)throw new CatalogError('project_busy');
     if(!rows[0])throw new CatalogError('not_found');
     return rows[0];
   }

@@ -59,7 +59,7 @@ export class ServiceRuntime extends DurableObject<ServiceRuntimeEnv>{
  async #input(raw:ServiceRuntimeInput){const input=serviceRuntimeInput(raw);if(!this.env.SERVICE_RUNTIME.idFromName(await serviceRuntimeActorName(input)).equals(this.ctx.id))throw Error('service-runtime-actor-scope-denied');return input;}
  async #supervisor(input:ServiceRuntimeInput){
   const sandbox=this.env.SERVICE_SANDBOX.getByName(await serviceSandboxActorName(input));
-  const source={files:async(source:ServiceRuntimeInput['spec']['plan']['source'])=>{const scope=source.kind!=='initial-workspace'?source.identity.scope:source.reference.scope;return this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source);}};
+  const source={files:async(source:ServiceRuntimeInput['spec']['plan']['source'])=>{const scope=source.kind==='saved-turn'?source.identity.scope:source.reference.scope;return this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source);}};
   return new SqlServiceRuntimeSupervisor(this.ctx.storage,input.scope,new SandboxServiceNativeBackend(sandbox,source,input.spec.runtimeImage),Date.now,async(_,context)=>this.#release(input,context));
  }
  async #release(input?:ServiceRuntimeInput,context?:{kind:'native-stop'|'platform-destroy';fencedAt:number;authorizedAt:number|null}){
