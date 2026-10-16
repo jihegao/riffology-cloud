@@ -6,6 +6,7 @@ import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {managedCandidateFixture} from './fixtures/managed-candidate.ts';
+import {managedRunner} from '../../services/turn-runtime/managed-runner.ts';
 const scope={tenantId:'tenant-managed',projectId:'project-managed',workspaceId:'workspace-managed',workspaceGeneration:1};
 const actor={userId:'test-user',authVersion:1};
 const policy={schemaVersion:1,policyId:'additional-production-v1',scope,userId:actor.userId,enabled:true,syntheticOnly:true,maxTurns:6,maxSessions:2,observedStopUsd:5,maxDurationMs:7200000,maxTurnObservationMs:300000,maxSimulationRuns:12};
@@ -20,13 +21,14 @@ const workerSource=`
  import {RevisionStore as BaseRevisionStore} from './services/turn-runtime/revision-store.ts';
  import {revisionStoreActorName} from './services/turn-runtime/revision-store-client.ts';
  import {managedCandidateRecoveryFiles} from './services/turn-runtime/managed-candidate.ts';
+ import {initialWorkspaceReferenceFromReady} from './services/turn-runtime/initial-workspace.ts';
+ import {initialCheckpoint} from './services/runtime/starter.ts';
+ import {checkpointKey} from './services/runtime/core.ts';
+ import {modelContentKey,verifyModelContent} from './services/runtime/content.ts';
+ import {workspaceDigest,canonicalWorkspaceMarker} from './services/workspace/protocol.ts';
  import {TurnDispatcher} from './services/turn/dispatcher.ts';
  import {TurnJournal} from './services/turn/journal.ts';
  import {MemoryTurnStore} from './services/turn/store.ts';
- import {initialCheckpoint} from './services/runtime/starter.ts';
- import {checkpointKey} from './services/runtime/core.ts';
- import {initialWorkspaceReferenceFromReady} from './services/turn-runtime/initial-workspace.ts';
- import {canonicalWorkspaceMarker,workspaceDigest} from './services/workspace/protocol.ts';
  export class RevisionStore extends BaseRevisionStore {async faultObserveForTest(enabled){this.ctx.storage.kv.put("test:observe-fault",enabled);await this.ctx.storage.sync();}async observe(input){if(this.ctx.storage.kv.get("test:observe-fault"))throw Error("synthetic-observe-unavailable");return super.observe(input);}async faultCommitForTest(mode){this.ctx.storage.kv.put('test:commit-fault',mode);await this.ctx.storage.sync();}async commitsForTest(){return this.ctx.storage.kv.get('test:commit-count')??0;}async commit(input){const mode=this.ctx.storage.kv.get('test:commit-fault');this.ctx.storage.kv.delete('test:commit-fault');this.ctx.storage.kv.put('test:commit-count',(this.ctx.storage.kv.get('test:commit-count')??0)+1);await this.ctx.storage.sync();if(mode==='before')throw Error('synthetic-commit-before-write');const result=await super.commit(input);if(mode==='late-accounting')await new Promise(resolve=>setTimeout(resolve,5));if(mode==='after')throw Error('synthetic-commit-lost-ack');return result;}}
  export class ManagedProductRuntime extends BaseManagedProductRuntime {async legacyStopForTest(){const b=this.ctx.storage.kv.get('budget');b.stopped='managed-execution-unknown';this.ctx.storage.kv.put('budget',b);await this.ctx.storage.sync();}async partialClosureForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:"turn:"})){if(!row.deletion){row.closed=false;this.ctx.storage.kv.put(key,row);}}await this.ctx.storage.sync();}async tickForTest(){await super.alarm();}async pendingClosedForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:"turn:"})){row.receipt=null;row.checkpoint=null;row.closed=true;this.ctx.storage.kv.put(key,row);}await this.ctx.storage.sync();}async seedUnreservedForTest(input,withBinding){const identity={scope:input.scope,sessionId:input.sessionId,turnId:input.turnId,dispatchId:input.dispatchId,generation:input.generation},managedInput={identity,actor:input.actor,message:input.message,base:input.base};this.ctx.storage.kv.put('turn:'+identity.turnId,{input,managedInput,reserved:false,operation:null,observation:null,checkpoint:null,persistenceError:null,closed:false,cleanupRequested:false,cost:null,cancelRequested:false,receipt:null});await this.ctx.storage.sync();if(withBinding)await new SqlExecutionBindingStore(this.ctx.storage).reserve({schemaVersion:1,identity,backend:'managed-agents',inputSha256:await turnDigest(managedInput),reservedAt:Date.now(),remoteSessionId:null,remoteTurnId:null});}async interruptedCleanupForTest(){for(const [key,row]of this.ctx.storage.kv.list({prefix:'turn:'})){row.cleanupRequested=true;this.ctx.storage.kv.put(key,row);}await this.ctx.storage.sync();throw Error('synthetic-cleanup-interrupted');}async expireForTest(){const budget=this.ctx.storage.kv.get('budget');budget.startedAt=Date.now()-7200001;this.ctx.storage.kv.put('budget',budget);await this.ctx.storage.sync();}}
  import {initialWorkspaceArchive} from './services/workspace/initial-archive.ts';
@@ -59,6 +61,19 @@ const workerSource=`
    else if(b.action==='alarm')value=await stub.tickForTest();
    else if(b.action==='pending-closed')value=await stub.pendingClosedForTest();
    else if(b.action==='fault-observe')value=await env.REVISION_STORE.getByName(revisionStoreActorName(s)).faultObserveForTest(b.enabled);
+   else if(b.action==='seed-initial'){
+    const content=JSON.stringify({schemaVersion:1,files:await Promise.all(Object.entries(b.files).sort(([a],[b])=>a.localeCompare(b)).map(async([path,text])=>({path,bytes:new TextEncoder().encode(text).length,sha256:await workspaceDigest(text),contentBase64:Buffer.from(text).toString('base64')})))});
+    const modelContent={modelVersionId:'copy-version',modelId:'copy-model',version:'1',contentRef:'copy.json',contentSha256:await workspaceDigest(content)};
+    await env.MODEL_CONTENT.put(modelContentKey(modelContent),content);
+    const model=await verifyModelContent(modelContent,await env.MODEL_CONTENT.get(modelContentKey(modelContent)));
+    const task={id:'copy-task',tenantId:s.tenantId,projectId:s.projectId,workspaceId:s.workspaceId,generation:s.workspaceGeneration,starterVersion:'blank-v1',authVersion:1,createdAt:1000,deadlineAt:2000,modelContent};
+    const runtime={taskId:task.id,tenantId:s.tenantId,projectId:s.projectId,workspaceId:s.workspaceId,generation:s.workspaceGeneration,runtimeId:'copy-runtime',leaseId:'copy-lease'},markerNonce='copy-nonce';
+    const checkpoint=await initialCheckpoint({task,identity:runtime,markerNonce},model.receipt);
+    await env.WORKSPACE_CHECKPOINTS.put(checkpointKey(runtime),checkpoint.text);
+    const reference=await initialWorkspaceReferenceFromReady({scope:s,task,runtime,markerNonce,ready:{receiptId:'copy-receipt',initializedAt:1500,layoutVersion:'m1-empty-v1',markerSha256:await workspaceDigest(canonicalWorkspaceMarker(runtime,markerNonce)),checkpointRevision:checkpoint.revision}});
+    const resolved=await env.REVISION_STORE.getByName(revisionStoreActorName(s)).resolveInitial(reference,s);
+    value={reference,filesSha256:resolved.filesSha256};
+   }
    else if(b.action==='accept')value=await stub.accept(b.input);
    else if(b.action==='seed-unreserved')value=await stub.seedUnreservedForTest(b.input,b.withBinding);
    else if(b.action==='observe')value=await stub.observe(b.input);
@@ -113,6 +128,25 @@ async function fixture(testing=false){
  return {calls,sessions,highCost(){inputTokens=2000000;},async call(body:unknown):Promise<any>{const response=await mf.dispatchFetch('http://test/',{method:'POST',body:JSON.stringify(body)});assert.equal(response.status,200);return response.json();},async restart(){await mf.dispose();mf=new Miniflare(options);},async close(){await mf.dispose();await rm(directory,{recursive:true,force:true});},loseDeleteAck(){lostDeleteAck=true;},failAbsence(value=true){failAbsentReads=value;},unknownUsage(){unknownUsage=true;},loseInput(){lostInput=true;},loseCreate(){lostCreate=true;},hideOriginal(){hideOriginal=true;},failReads(value=true){failReads=value;},dropInputs(count=1){dropInputs=count;},setCandidate(value:unknown){candidateOutput=JSON.stringify(value);},invalidCandidate(value=true){candidateOutput=value?JSON.stringify({schemaVersion:1,spec,files:{'model/model.py':'invalid'}}):candidate;},deleteUnconfirmed(){deleteUnconfirmed=true;},failDelete(){deleteFails=true;},failArtifacts(value=true){artifactFails=value;},run(){running=true;}};
 }
 const posts=(f:Awaited<ReturnType<typeof fixture>>)=>f.calls.filter(c=>c.method==='POST');
+test('first Managed session receives verified copied model files before provider input',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  const candidate=managedCandidateFixture('grid','grid');
+  const files={...candidate.files,'model/model-spec.json':JSON.stringify(candidate.spec),'model/run.py':managedRunner};
+  const seeded=await f.call({action:'seed-initial',scope,files});assert.equal(seeded.ok,true,JSON.stringify(seeded));
+  assert.equal(posts(f).length,0);
+  f.setCandidate(candidate);
+  const request=input(1,'copy-session',{workspace:null,session:null,initial:seeded.value});
+  const corrupt=structuredClone(request) as any;corrupt.base.initial.reference.checkpointRevision='f'.repeat(64);
+  const refused=await f.call({action:'accept',input:corrupt});assert.equal(refused.ok,false);assert.match(refused.error,/initial-workspace-checkpoint-mismatch/);assert.equal(posts(f).length,0);
+  const corruptFiles=structuredClone(request) as any;corruptFiles.base.initial.filesSha256='e'.repeat(64);
+  const refusedFiles=await f.call({action:'accept',input:corruptFiles});assert.equal(posts(f).length,0);assert.equal(refusedFiles.ok,false);assert.match(refusedFiles.error,/project-resource-source-mismatch/);
+  const accepted=await f.call({action:'accept',input:request});assert.equal(accepted.ok,true,JSON.stringify(accepted));
+  const hosted=[...f.sessions.values()][0],context=JSON.parse(hosted.instructions.slice(hosted.instructions.lastIndexOf('\n')+1));
+  for(const [path,text]of Object.entries(files))assert.equal(context.files[path],text);
+  assert.deepEqual(context.history,[]);assert.equal(posts(f).length,2);
+  await f.restart();await f.call({action:'accept',input:request});assert.equal(posts(f).length,2);
+ }finally{await f.close();}
+});
 for(const version of [1,2] as const)test('Managed Workerd candidate v'+version+' passes its actual late accounting receipt through Dispatcher and Journal',{timeout:60000},async()=>{
  const f=await fixture(true);try{
   if(version===2)f.setCandidate(managedCandidateFixture('airport','javascript-canvas'));
