@@ -1,5 +1,9 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-16 PR208 + PR223 independent integration candidate (not deployed)
+
+The isolated composite preserves PR223's pre-dispatch source-digest guard while integrating initial copied Files/context and empty Preview cleanup from PR208. Full local `npm run check` passed (3136 Node, 13 conditional skips, 8 Python, typecheck); all earlier failed raw runs are retained. Provider POSTs are intercepted fixtures, with no real model calls. Author branches and the current disabled deployment are unchanged. [Review, dependency and acceptance boundaries](pr208-review-integration-20261016.md) · [full evidence](../evidence/releases/pr208-review-integration-20261016.json).
+
 ## 2026-10-16 Manual-save compatible backend deployed, admission closed
 
 PR #223's compatible backend is deployed at 100% as `bb6de79c-10d3-4646-97d3-fc5791bb481c` (deployment `70c7bfe5-2cb4-4766-9f99-5c8ec91219f6`, 02:50 UTC), with exact module hash readback and all existing bindings/exports/container associations retained. Migration 0013 is installed; old table counts/schema are unchanged, and the new fence table is empty. Manual admission remains absent/default-disabled; G5/M3/M4 remain closed.
