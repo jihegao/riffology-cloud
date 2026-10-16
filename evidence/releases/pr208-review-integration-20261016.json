@@ -1,0 +1,60 @@
+{
+  "schema": "riffology.delivery-evidence/v1",
+  "authorHead": "dcbb782ae90ae8e4eafa0aad26d3ff30deea9e8f",
+  "pr223Head": "f625f0193e2964148a990a3af502e7a581ceb688",
+  "standaloneFix": "fcd10b045d9c4dd7f4274ce13337078a3d209cad",
+  "testedCompositeCommit": "25812ea81724f822ccb84b9921b6c89a5f19c231",
+  "testedCompositeTree": "fcc4d50a81d5f439ba8f8d45764d43209a92113b",
+  "finding": {
+    "field": "input.base.initial.filesSha256",
+    "beforeFixInterceptedProviderPosts": 2,
+    "afterFixInterceptedProviderPostsForInvalidSource": 0,
+    "currentPR223Guard": "projectResourcesFromArchive rejects source mismatch before reservation"
+  },
+  "checks": {
+    "author": {
+      "passed": 90,
+      "failed": 0
+    },
+    "negativeBeforeFix": {
+      "passed": 0,
+      "failed": 1
+    },
+    "standaloneFixedManaged": {
+      "passed": 43,
+      "failed": 0
+    },
+    "compositeInitial": {
+      "passed": 47,
+      "failed": 46,
+      "cause": "duplicate generated-fixture imports; production source not at fault"
+    },
+    "compositeFixedManaged": {
+      "passed": 46,
+      "failed": 0
+    },
+    "compositeUi": {
+      "passed": 21,
+      "failed": 0
+    },
+    "typechecks": "passed",
+    "diffChecks": "passed",
+    "fullRepository": "not run",
+    "hostedCI": "not claimed"
+  },
+  "logSha256": {
+    "author90": "b0f2b0fa0424d284e40bea5c5a3992c57cff6f338463b669128e638900d785ed",
+    "negativeBeforeFix": "8147290f01e8499a6694e5744038e81de7d3fa8021ace759e8e411182fad7974",
+    "standaloneFixed43": "a08507346eb113a8c25dc8fbf96f2accd7c7955e873f1479b3657eb40350f9d4",
+    "standaloneTypecheck": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+    "compositeInitial": "2630db7429bcbd5e482369efb281051057c3502f009894b409d933be5eb05bc6",
+    "compositeManaged46": "768b34ef42d4ee9bc5c531d68559e5bdc76bfa88da81c1673dbcf3fd8d0c513a",
+    "compositeUi21": "e0738665a28a790ee7382fe1ce79a4164ba6949cea3d1250bf959085437ee937",
+    "compositeTypecheck": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f"
+  },
+  "scope": "isolated local Workerd/R2/browser fixtures, intercepted provider",
+  "productionWrites": false,
+  "authorBranchModified": false,
+  "merged": false,
+  "deployed": false
+}

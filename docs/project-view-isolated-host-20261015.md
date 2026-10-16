@@ -48,3 +48,18 @@ node services/project-views/local-host.mjs \
 - 目标环境验收先固定两个真实身份、两个新项目、一次会话与明确时限，再验证跨项目/跨身份拒绝、真实外发失败及接收端正对照、撤权/更新/刷新清理和服务重启后的容量保留。只有原容器/运行释放被确认，才能归还容量并讨论持续可用。
 
 可离线完成的下一实现切片是能力验证与租约状态机及伪时钟/失败注入检查。其生产 signing key、持久协调服务、运行镜像与实际费用仍须在明确授权范围内配置；本次没有生成凭据、开服务、推镜像或执行云端浏览器。已有本地宿主与完整回归保留为参照，不冒充此生产协议已实现。
+
+### 最小接线建议：保留现有 Preview 服务，独立接入页面宿主
+
+2026-10-16 的源码核对进一步确认两个接线约束。`BROWSER_PREVIEW_EXECUTION_ORIGIN` 已用于现有 Browser Preview 的固定资产和执行 frame，不能把它直接改成 Node 页面宿主。生产页面应使用独立配置（例如拟议的 `PROJECT_VIEW_EXECUTION_ORIGIN`）及默认关闭的精确范围策略；现有 local-only 客户端/宿主继续作为 v1 参照，不把放宽 loopback 校验当成上线实现。
+
+其次，签名 Entry 普通请求体上限为 32,768 字节，而页面包允许 2 MiB 原始资产、本地创建请求允许 3 MiB、broker 消息允许 64 KiB。不能直接把当前浏览器→宿主协议整体转发到普通 Entry POST，也不能为此扩大现有 Entry 上限。
+
+满足当前协议边界的最小候选路径是：
+
+1. 用户显式打开已声明页面时，浏览器向现有已认证 Gateway 发送小体积的包 identity、viewId 和原 operation key。Gateway 重新校验 Catalog 身份/owner、authVersion、generation、canonical 包与独立页面策略，再由持久协调器记录原操作并签发短期、单次、精确受众的创建能力。浏览器提供的包摘要本身不构成授权。
+2. 浏览器把既有 canonical 包与该能力发送到独立 HTTPS 宿主。宿主校验签名、受众、期限、冻结包/视图、镜像与隔离策略 pin，并在持久协调器以原 key 消费能力后才创建容器。较大包不经过 Entry 普通 POST；宿主只接受显式允许的 app origin，不接收平台 Cookie。生产域名与目标平台尚未选择，不在此文虚构入口。
+3. 后续 PNG、输入及 broker 消息继续走已有有界协议，但 session 能力绑定原 user/scope/generation/包/租约，不能仅凭随机 token 跨身份使用。每次 broker 读取仍走当前 Gateway/Workspace 授权；撤权、generation 或 canonical head 变化停止传输并关闭原 session。项目页面不能持有创建能力、平台凭据或通用数据读写凭据。
+4. 创建响应丢失、客户端刷新或宿主重启只查询/清理原 operation/container ID。持久状态未确认终态时不重复创建或返还容量。Gateway 提供原请求查询/停止入口；用户失去临时客户端 token 时仍由原身份授权关闭原资源，不能以新 key 代替恢复。策略关闭停止新创建，继续允许原操作观察和释放。
+
+第一份可审查实现只需 capability 验证、原操作租约状态机、client/host 协议适配与负例，不需要更换 Pi 运行时或启用 G5/M3/M4。随后必须先在目标平台证明既有 `network none`、seccomp、无 mount、固定镜像与真实释放边界，再安排有明确费用/时限的两个真实身份验收。当前只有设计，以上生产协议、凭据与调度均未实现或启用。
