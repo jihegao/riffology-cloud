@@ -1,0 +1,39 @@
+{
+  "observedAt": "2026-10-16T03:02:49.731Z",
+  "baseline": "fbc0e46bde2c8781b71609fa4524d2e75bffaf99",
+  "before": {
+    "uiFiles": 4,
+    "m1Files": 69,
+    "duplicateFiles": 4,
+    "scheduledFileInvocations": 73
+  },
+  "after": {
+    "uiFiles": 4,
+    "m1Files": 65,
+    "duplicateFiles": 0,
+    "scheduledFileInvocations": 69
+  },
+  "uniqueFilesRetained": 69,
+  "testContentsPreservedExceptRelocatedFixtureImport": true,
+  "otherSuiteCommandsUnchanged": true,
+  "schema": "riffology.delivery-evidence/v1",
+  "checks": {
+    "baselineI18nPassed": 21,
+    "updatedCheckUiPassed": 21,
+    "typecheck": "passed",
+    "diffCheck": "passed",
+    "fullM1": "not rerun; unchanged files and selected set verified",
+    "hostedCI": "not claimed"
+  },
+  "timingsMs": {
+    "baselineTestGroup": 162.535584,
+    "updatedUiTestGroup": 160.123625,
+    "fullCIBenefit": "not measured"
+  },
+  "logsSha256": {
+    "before": "337e0f41cbed09d2d7a269b2fcf5382ea3d015068210d82a329e536678b3f36d",
+    "after": "66642822b67b50ce1e546617013cbbf0fde62a1bcd1ab3a2db104896b815cd35",
+    "typecheck": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f"
+  },
+  "productionChanges": false
+}
