@@ -55,7 +55,10 @@ test('saved page transport renders only a canvas; selected route and browser ref
 
 test('saved-page authority is rechecked through the real broker; leave, retry and foreign-package rejection close remote sessions',async t=>{
  const f=await fixture(t),p=f.page;await ready(p);f.failure=true;
- const denied=await remoteRequest(p,{id:1,type:'files.read',path:'docs/data.json'});assert.equal(denied.error,'request-denied');
+ await p.evaluate(()=>remoteFixture.sessions['session-1'].polls.push({messages:[{id:1,type:'files.read',path:'docs/data.json'}]}));
+ await p.waitForFunction(()=>remoteFixture.sessions['session-1'].closed);
+ assert.equal(await p.locator('canvas').count(),0);
+ assert.equal(await p.evaluate(()=>remoteFixture.sessions['session-1'].broker.some(m=>m.id===1&&m.value?.text)),false,'authority failure closes transport before delivering file data');
  await p.evaluate(()=>panel.leave());assert.equal(await p.locator('canvas').count(),0);assert.equal(await p.evaluate(()=>remoteFixture.sessions['session-1'].closed),true);
  await p.evaluate(async scope=>panel.enter(scope),scope);await p.getByText('Saved pages unavailable',{exact:true}).waitFor();assert.equal(await p.locator('canvas').count(),0);
  f.failure=false;await p.getByRole('button',{name:'Retry page',exact:true}).click();await ready(p);
