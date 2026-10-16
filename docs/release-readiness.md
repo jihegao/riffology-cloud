@@ -1,8 +1,10 @@
 # Current release readiness — 2026-10-14
 
-## 2026-10-16 Restricted manual-save production preparation (not deployed)
+## 2026-10-16 Manual-save compatible backend deployed, admission closed
 
-The new candidate adds an independent exact-user/workspace/time policy, small-text UI/server limits and a v7-compatible write format for ordinary journals. Manual v9 history is retained and requires a compatible forward stop build. All applicable check components pass (3131 Node, 13 skips, 8 Python); the new delta still needs independent review and genuine ordinary-account acceptance. Production remains on `d9ceec61-1e5f-48cc-8a51-3abdb4b06614`, without migration 0013 or an enabling manual policy. [Preparation and stop/migration requirements](manual-save-restricted-production-20261016.md) · [evidence](../evidence/releases/manual-save-restricted-production-20261016.json).
+PR #223's compatible backend is deployed at 100% as `bb6de79c-10d3-4646-97d3-fc5791bb481c` (deployment `70c7bfe5-2cb4-4766-9f99-5c8ec91219f6`, 02:50 UTC), with exact module hash readback and all existing bindings/exports/container associations retained. Migration 0013 is installed; old table counts/schema are unchanged, and the new fence table is empty. Manual admission remains absent/default-disabled; G5/M3/M4 remain closed.
+
+The existing 92-file frontend is retained. Uploading the nine changed/new candidate assets returned 401, so the new manual-save frontend is **not deployed**. Public static reads returned 403; no page or authenticated acceptance is claimed. Independent review of ca3b2b4 found no must-fix. Applicable check components passed (3131 Node, 13 skips, 8 Python), plus two reproducible retention regressions and typecheck. Real ordinary-account/new-project scope, a precisely scoped disabled fallback and two-account acceptance remain pending. [Release and stop/migration requirements](manual-save-restricted-production-20261016.md) · [evidence](../evidence/releases/manual-save-restricted-production-20261016.json).
 
 ## 2026-10-15 Manual-save candidate and real login preparation
 

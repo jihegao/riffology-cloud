@@ -1,11 +1,13 @@
 {
   "schema": "riffology.delivery-evidence/v1",
-  "scope": "restricted production manual-save preparation; no production writes",
+  "scope": "default-disabled compatible backend deployed; existing frontend retained; manual-save frontend and authenticated acceptance pending",
   "source": {
     "commit": "482522f352aea2c747497a659eb8d879637e78c2",
     "tree": "7319930122e3778e881a4a20d8d39b76c13afc34",
     "basePr": 221,
-    "baseHead": "814d206a42c1ae77914fe470691135b8581e0c9e"
+    "baseHead": "814d206a42c1ae77914fe470691135b8581e0c9e",
+    "testedHead": "0063455381180c3e3137c08532bf922c5e88f4c3",
+    "independentReviewHead": "ca3b2b4aeb54bddf15d835002735bcae3253e001"
   },
   "preparedBundle": {
     "sha256": "fda73b51b153e17e4544263cf341ad3496a3ea7b1b4cb8e5f79abae63775787b",
@@ -96,14 +98,6 @@
       "sha256": "2e876ba4c5c0e4198d119534a750c9cc12e092132907331431473c29070bc71b"
     }
   ],
-  "production": {
-    "version": "d9ceec61-1e5f-48cc-8a51-3abdb4b06614",
-    "deployment": "54f253dd-c7b3-4407-867d-b9856642c1ff",
-    "settingsSha256": "b2fc9ed3dd92060b369022b37b7784b8d11ae43eda981c0970b02f8606ac6c17",
-    "manualPolicy": "absent",
-    "catalogMigration": "0012_project_archives.sql",
-    "manualFenceInstalled": false
-  },
   "migrationSha256": "852461352920157299847dc6bc0a301240827230f826d327bb7cb2e58851b5a9",
   "checks": {
     "ui": 21,
@@ -121,7 +115,9 @@
     "typecheck": "passed",
     "diff": "passed",
     "hostedCI": "not claimed",
-    "initialFailures": "new i18n guard; obsolete v9 expectation; strict browser fixtures missing new capability GET. Affected suites rerun complete."
+    "initialFailures": "new i18n guard; obsolete v9 expectation; strict browser fixtures missing new capability GET. Affected suites rerun complete.",
+    "additionalRetentionRegressions": 2,
+    "additionalRetentionTypecheck": "passed"
   },
   "legacyReaderProof": {
     "productionSource": "fbc0e46bde2c8781b71609fa4524d2e75bffaf99",
@@ -139,16 +135,277 @@
     "issue73": "efdf801129b80038827e9c5144c3d7dd1ff3746fa15d752e442cb3d80c42b260",
     "research": "e3282e13d2cf64d655e89232d40cdc2a99386042377c643fe6dcc76e3b2e3382",
     "focused": "0c06dee9be3aad6d8cb1bfeb65e019289013071476490da5339a603101a6a599",
-    "manualUi": "1cdeab15041dd7a624b3c0010643824dac58c6096a39fba1c2892bacec8dfd4e"
+    "manualUi": "1cdeab15041dd7a624b3c0010643824dac58c6096a39fba1c2892bacec8dfd4e",
+    "retentionRegressions": "3fed3e9c1fc6fe2f89f1de2913e20868de6a7cfcd565c04ad8262be4507240f9"
   },
   "acceptance": {
     "implemented": true,
     "merged": false,
-    "deployed": false,
-    "independentDeltaReview": "pending",
+    "deployed": "default-disabled backend only",
+    "independentDeltaReview": "parent independently reviewed ca3b2b4; no must-fix; did not rerun tests",
     "authenticatedOrdinaryOwner": "pending",
     "crossIdentity": "pending",
-    "paidExecution": "not performed"
+    "paidExecution": "not performed",
+    "manualSaveFrontendDeployed": false,
+    "scopedDisabledFallback": "pending real ordinary project scope; absent-policy foundation is not a scoped recovery fallback",
+    "publicStatic": "pending: 403"
   },
-  "productionWritesPerformed": false
+  "productionWritesPerformed": true,
+  "productionBefore": {
+    "version": "d9ceec61-1e5f-48cc-8a51-3abdb4b06614",
+    "deployment": "54f253dd-c7b3-4407-867d-b9856642c1ff",
+    "settingsSha256": "b2fc9ed3dd92060b369022b37b7784b8d11ae43eda981c0970b02f8606ac6c17",
+    "manualPolicy": "absent",
+    "catalogMigration": "0012_project_archives.sql",
+    "manualFenceInstalled": false
+  },
+  "production": {
+    "version": "bb6de79c-10d3-4646-97d3-fc5791bb481c",
+    "deployment": "70c7bfe5-2cb4-4766-9f99-5c8ec91219f6",
+    "deployedAt": "2026-10-16T02:50:11.266853Z",
+    "trafficPercent": 100,
+    "manualPolicy": "absent/default-disabled",
+    "catalogMigration": "0013_manual_save_fence.sql",
+    "manualFenceInstalled": true,
+    "frontend": "prior complete 92-asset manifest retained; 9 changed/new candidate assets not deployed"
+  },
+  "releaseReadback": {
+    "manualModuleReadback": {
+      "ok": true,
+      "observedAt": "2026-10-16T02:50:48.238Z",
+      "modules": [
+        {
+          "header": "Content-Disposition: form-data; name=\"index.js\"; filename=\"index.js\"\r\nContent-Type: application/javascript+module",
+          "bytes": 5690055,
+          "sha256": "fda73b51b153e17e4544263cf341ad3496a3ea7b1b4cb8e5f79abae63775787b"
+        }
+      ]
+    },
+    "manualFinalRetention": {
+      "ok": true,
+      "observedAt": "2026-10-16T02:51:11.151Z",
+      "changedSettingsExceptAnnotations": [],
+      "bindings": 99,
+      "manualPolicyPresent": false,
+      "exportsUnchanged": true,
+      "containersUnchanged": true,
+      "accountContainerApps": 15,
+      "manualFences": [],
+      "gates": [
+        {
+          "name": "G5_ADMISSION_ENABLED",
+          "value": "false"
+        },
+        {
+          "name": "M2_MODEL_PROVIDER_ENABLED",
+          "value": "true"
+        },
+        {
+          "name": "M2_TURNS_ENABLED",
+          "value": "true"
+        },
+        {
+          "name": "M3_PREVIEW_ENABLED",
+          "value": "false"
+        },
+        {
+          "name": "M3_SERVICE_ENABLED",
+          "value": "false"
+        },
+        {
+          "name": "M4_SIMULATION_ENABLED",
+          "value": "false"
+        }
+      ]
+    }
+  },
+  "migrationReadback": {
+    "ok": true,
+    "observedAt": "2026-10-16T02:48:48.874Z",
+    "counts": {
+      "auth_account": 4,
+      "auth_rate_limit": 3,
+      "auth_session": 80,
+      "auth_user": 4,
+      "auth_verification": 1,
+      "catalog_audit_log": 149,
+      "catalog_creation_intents": 34,
+      "catalog_invitations": 4,
+      "catalog_memberships": 4,
+      "catalog_model_audit_log": 3,
+      "catalog_model_content_checks": 1,
+      "catalog_model_operator_intents": 3,
+      "catalog_model_submissions": 1,
+      "catalog_model_versions": 1,
+      "catalog_operator_bootstrap": 1,
+      "catalog_operator_intents": 3,
+      "catalog_outbox": 34,
+      "catalog_platform_roles": 1,
+      "catalog_preview_routes": 10,
+      "catalog_project_archive_items": 9,
+      "catalog_project_archive_manifests": 1,
+      "catalog_project_archive_receipts": 12,
+      "catalog_project_budget_routes": 6,
+      "catalog_projects": 34,
+      "catalog_provisioning_receipts": 34,
+      "catalog_submission_intents": 2,
+      "catalog_submission_reviews": 1,
+      "catalog_tenants": 4,
+      "catalog_user_locale_preferences": 2,
+      "catalog_users": 4,
+      "catalog_workspaces": 34,
+      "d1_migrations": 13,
+      "catalog_manual_save_fences": 0
+    },
+    "changes": [
+      {
+        "name": "d1_migrations",
+        "before": 12,
+        "after": 13
+      }
+    ],
+    "retainedSchemaSha256": "fd85e48634433335aa423013c95f7a05d6cc4a341ca2c7e64155b6705dce21a8",
+    "added": [
+      {
+        "name": "catalog_manual_save_fence_immutable_identity",
+        "type": "trigger",
+        "sqlSha256": "f75e8d0b26ab3e17a2b02c1f08f392e310a4c14fc6b1a2e4cc769110219e25e5"
+      },
+      {
+        "name": "catalog_manual_save_fence_retain",
+        "type": "trigger",
+        "sqlSha256": "59b92a0d1ff49022de95da1d8846be504824602db7046cc893d5c922f4703a5f"
+      },
+      {
+        "name": "catalog_manual_save_fences",
+        "type": "table",
+        "sqlSha256": "1b9fdcd05c9c33b2d39e8cd77973587ed1cf5c9e983911bff32efe9981946626"
+      },
+      {
+        "name": "catalog_manual_save_one_pending_workspace",
+        "type": "index",
+        "sqlSha256": "9109a6578e5a8e67f47db4d7e6c3b35d115d4ca56d40bfc664db9cb0bc217548"
+      },
+      {
+        "name": "catalog_manual_save_pending_user",
+        "type": "index",
+        "sqlSha256": "8a6e87337af43cf6c5fc7e3e958b6c59ab52ebc8376559fc9794bf5ed5dcf81a"
+      },
+      {
+        "name": "catalog_manual_save_revoke_fence",
+        "type": "trigger",
+        "sqlSha256": "394bc5f6605602ba9ae09925be29e043c860e54d67512f032a3ee02f0e9e05c4"
+      }
+    ],
+    "ledger": [
+      {
+        "id": 1,
+        "name": "0001_catalog.sql",
+        "applied_at": "2026-09-11 05:25:30"
+      },
+      {
+        "id": 2,
+        "name": "0002_auth.sql",
+        "applied_at": "2026-09-11 05:25:30"
+      },
+      {
+        "id": 3,
+        "name": "0003_provisioning.sql",
+        "applied_at": "2026-09-11 05:25:31"
+      },
+      {
+        "id": 4,
+        "name": "0004_operator_invitations.sql",
+        "applied_at": "2026-09-11 05:25:31"
+      },
+      {
+        "id": 5,
+        "name": "0005_initial_operator.sql",
+        "applied_at": "2026-09-11 05:25:32"
+      },
+      {
+        "id": 6,
+        "name": "0006_model_catalog.sql",
+        "applied_at": "2026-09-11 05:25:33"
+      },
+      {
+        "id": 7,
+        "name": "0007_model_content_checks.sql",
+        "applied_at": "2026-09-11 05:25:34"
+      },
+      {
+        "id": 8,
+        "name": "0008_preview_routes.sql",
+        "applied_at": "2026-09-11 05:25:34"
+      },
+      {
+        "id": 9,
+        "name": "0009_model_submissions.sql",
+        "applied_at": "2026-09-14 13:40:44"
+      },
+      {
+        "id": 10,
+        "name": "0010_project_budget_routes.sql",
+        "applied_at": "2026-09-16 00:40:23"
+      },
+      {
+        "id": 11,
+        "name": "0011_user_locale_preferences.sql",
+        "applied_at": "2026-09-22 17:30:10"
+      },
+      {
+        "id": 12,
+        "name": "0012_project_archives.sql",
+        "applied_at": "2026-10-01 05:25:16"
+      },
+      {
+        "id": 13,
+        "name": "0013_manual_save_fence.sql",
+        "applied_at": "2026-10-16 02:48:13"
+      }
+    ],
+    "foreignKeyViolations": 0,
+    "beforeSchemaSha256": "fd85e48634433335aa423013c95f7a05d6cc4a341ca2c7e64155b6705dce21a8",
+    "recoveryBookmarkRecorded": true,
+    "recoveryBookmarkPublished": false
+  },
+  "assetUpload": {
+    "candidateManifestFiles": 95,
+    "missingCandidateHashes": 9,
+    "firstAttempt": "HTTP 401; no completed bucket",
+    "reconciliation": "fresh same manifest still missing identical 9 hashes",
+    "sameCallFreshTokenAttempt": "HTTP 401; no completed bucket",
+    "retainedManifestFiles": 92,
+    "retainedManifestMissingHashes": 0,
+    "newCandidateAssetsDeployed": false,
+    "transientUploadTokensPublished": false
+  },
+  "staticReadback": {
+    "status": "pending",
+    "results": [
+      {
+        "path": "/",
+        "error": "HTTP Error 403: Forbidden"
+      },
+      {
+        "path": "/app.js",
+        "error": "HTTP Error 403: Forbidden"
+      },
+      {
+        "path": "/styles.css",
+        "error": "HTTP Error 403: Forbidden"
+      },
+      {
+        "path": "/project-views.js",
+        "error": "HTTP Error 403: Forbidden"
+      }
+    ],
+    "note": "403 plain-text responses; public asset bytes and browser functionality not verified; no login/security bypass attempted"
+  },
+  "productionWriteScope": [
+    "asset upload sessions; unsuccessful candidate bucket uploads",
+    "0013 additive schema and migration ledger",
+    "one compatible Worker version upload",
+    "one default-disabled 100% deployment"
+  ]
 }
