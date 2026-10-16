@@ -22,6 +22,21 @@ test('workbench stages explicit patch against canonical base and preserves uploa
  const s=await p.evaluate(()=>({body:f.body,calls:f.calls,stored:Object.values(sessionStorage)}));
  assert.deepEqual(s.body.base,{revisionId:null,filesSha256:'a'.repeat(64),workspaceGeneration:1});assert.deepEqual(s.body.changes,[{path:'app/home.html',encoding:'utf8',content:'<h1>Saved page</h1>'}]);assert.deepEqual(s.body.artifacts,[{path:'docs/data.json',title:'Data'}]);assert.equal(s.calls.every(c=>c.path.includes('/manual-saves')),true);assert.equal(s.stored.some(s=>s.includes('Saved page')),false);assert.deepEqual(errors,[]);
 });
+test('server capability controls production editor and exposes small text limits',async t=>{
+ const {page:p}=await fixture(t);
+ await p.evaluate(async()=>{const original=f.api;f.api=async(path,options)=>path.endsWith('?capability=1')?{canRead:true,canWrite:true,canRecover:true,textOnly:true,maxFileBytes:8192,maxRequestBytes:24576,maxChanges:8}:original(path,options);f.editor.leave();document.querySelector('#editor').replaceChildren();f.editor=f.create();await f.editor.enter({tenantId:'tenant-a',workspaceId:'workspace-a',canWrite:true,resolveCapability:true});});
+ await p.getByLabel('Project file path').fill('small.txt');await p.getByLabel('Text content').fill('x'.repeat(8193));await p.getByRole('button',{name:'Stage file change',exact:true}).click();
+ assert.match(await p.locator('#editor').textContent(),/8 KiB/);assert.equal(await p.locator('ul li').count(),1);assert.equal(await p.evaluate(()=>f.calls.filter(c=>c.method==='POST').length),0);
+ await p.evaluate(async()=>{f.api=async()=>({canRead:false,canWrite:false,canRecover:false});f.editor.leave();document.querySelector('#editor').replaceChildren();f.editor=f.create();await f.editor.enter({tenantId:'tenant-a',workspaceId:'workspace-b',canWrite:true,resolveCapability:true});});
+ assert.equal(await p.locator('#editor').isHidden(),true);
+});
+test('stopped server capability keeps original status recovery available while editing is disabled',async t=>{
+ const {page:p}=await fixture(t);
+ await p.evaluate(async()=>{sessionStorage.setItem('riffology:manual-save:tenant-a:workspace-a',JSON.stringify({key:'original-key'}));const original=f.api;f.api=async(path,options)=>path.endsWith('?capability=1')?{canRead:true,canWrite:false,canRecover:true,textOnly:true,maxFileBytes:8192,maxRequestBytes:24576,maxChanges:8}:original(path,options);f.editor.leave();document.querySelector('#editor').replaceChildren();f.editor=f.create();await f.editor.enter({tenantId:'tenant-a',workspaceId:'workspace-a',canWrite:true,resolveCapability:true});});
+ assert.equal(await p.getByRole('button',{name:'Confirm and save changes',exact:true}).isDisabled(),true);
+ await p.getByRole('button',{name:'Check original save',exact:true}).click();await p.waitForFunction(()=>f.saved.length===1);
+ assert.equal(await p.evaluate(()=>f.calls.filter(c=>c.method==='POST').length),0);
+});
 test('lost acknowledgement locks writes and checks original operation after remount without persisting private text',async t=>{
  const {page:p}=await fixture(t);await p.evaluate(()=>f.mode='lost');await p.getByLabel('Project file path').fill('private.txt');await p.getByLabel('Text content').fill('private secret fixture');await p.getByRole('button',{name:'Stage file change',exact:true}).click();await p.getByRole('button',{name:'Confirm and save changes',exact:true}).click();await p.getByRole('button',{name:'Check original save',exact:true}).waitFor();
  assert.equal(await p.getByRole('button',{name:'Confirm and save changes',exact:true}).isDisabled(),true);

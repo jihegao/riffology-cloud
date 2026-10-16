@@ -290,12 +290,12 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     }
     const manualSaveRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/manual-saves(?:\/([A-Za-z0-9_-]{1,128}))?$/.exec(url.pathname);
     if(manualSaveRoute){
-      const operationId=manualSaveRoute[2],path=url.searchParams.get('path');
-      if(!['GET','POST'].includes(request.method)||operationId&&(request.method!=='GET'||url.search)||request.method==='POST'&&url.search||[...url.searchParams.keys()].some(k=>k!=='path')||url.searchParams.getAll('path').length>1)throw new HttpError('manual-save-input-invalid',400);
+      const operationId=manualSaveRoute[2],path=url.searchParams.get('path'),capability=url.searchParams.get('capability');
+      if(!['GET','POST'].includes(request.method)||operationId&&(request.method!=='GET'||url.search)||request.method==='POST'&&url.search||[...url.searchParams.keys()].some(k=>!['path','capability'].includes(k))||url.searchParams.getAll('path').length>1||url.searchParams.getAll('capability').length>1||capability!==null&&(capability!=='1'||path!==null))throw new HttpError('manual-save-input-invalid',400);
       if(!services.manualSaves)throw new HttpError('manual-save-unavailable',503);
       const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),scope=await catalog.workspace(principal,manualSaveRoute[1]!);
       try{
-        const result=request.method==='POST'?await services.manualSaves.save(scope,principal,idempotencyKey(request),await readJson(request,4*1024*1024)):
+        const result=capability!==null?services.manualSaves.capability(scope,principal):request.method==='POST'?await services.manualSaves.save(scope,principal,idempotencyKey(request),await readJson(request,services.manualSaves.capability(scope,principal).maxRequestBytes)):
           operationId?await services.manualSaves.status(scope,principal,operationId):await services.manualSaves.state(scope,principal,path??undefined);
         const latest=await catalog.workspace(principal,manualSaveRoute[1]!);if(!sameScope(scope,latest))throw new HttpError('manual-save-access-denied',403);
         return json(result);

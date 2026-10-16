@@ -24,6 +24,7 @@ export class WorkspaceAgent extends Production {
   async changes(){return this.ctx.storage.sql.exec('SELECT total_changes() AS n').one().n;}
   async markBeta(turnId){await this.ctx.storage.put('pi-developer-turn:'+turnId,{privateBeta:true});}
   async markG5(turnId){await this.ctx.storage.delete('pi-developer-turn:'+turnId);await this.ctx.storage.put('g5-turn-route:'+turnId,{kind:'g5',taskKey:'original-task',windowId:'original-window'});}
+  async deniedManual(input){try{await super.manualSave(input);return 'unexpected-success';}catch(error){return error.message;}}
   async deniedReceipt(input){try{await super.recoveryTurnReceipt(input);return 'unexpected-success';}catch(error){return error.message;}}
 }
 export default {fetch(){return new Response('offline-fixture');}};`;
@@ -41,10 +42,11 @@ for(const legacy of [false,true])test(`cold recovery preserves ${legacy?'legacy 
     const receipt=await target.recoveryTurnReceipt({scope,actor,sessionId:history.session.id,key:'saved-key'});assert.equal(receipt.turn.id,history.turn.id);
     for(const denied of [{...actor,userId:'another-user'},{...actor,authVersion:2}])assert.equal(await target.deniedReceipt({scope,actor:denied,sessionId:history.session.id,key:'saved-key'}),'turn-receipt-not-found');
     assert.equal(await target.deniedReceipt({scope,actor,sessionId:history.session.id,key:'another-key'}),'turn-receipt-not-found');
+    assert.equal(await target.deniedManual({scope,actor,key:'denied-save',body:{}}),'manual-save-local-only-or-policy-denied');
     assert.equal(await target.records(),before);assert.equal(await target.changes(),0,'cold constructor and both recovery RPCs perform zero SQLite changes');assert.equal(outbound,0);
     const persisted=JSON.parse(before);assert.equal(persisted.kv['m2:turn-journal'].schemaVersion,legacy?1:7);assert.equal(persisted.kv['browser-preview:discovery-index-version'],undefined);
     await target.turnReceipt({scope,actor,sessionId:history.session.id,key:'saved-key'});
-    const normal=JSON.parse(await target.records());assert.equal(normal.kv['m2:turn-journal'].schemaVersion,9);assert.equal(normal.kv['browser-preview:discovery-index-version'],1);assert.ok(Object.keys(normal.kv).some(key=>key.startsWith('browser-preview:discovery:')));assert.ok(normal.alarm>Date.now());assert.ok(await target.changes()>0);assert.equal(outbound,0);
+    const normal=JSON.parse(await target.records());assert.equal(normal.kv['m2:turn-journal'].schemaVersion,7);assert.equal(normal.kv['browser-preview:discovery-index-version'],1);assert.ok(Object.keys(normal.kv).some(key=>key.startsWith('browser-preview:discovery:')));assert.ok(normal.alarm>Date.now());assert.ok(await target.changes()>0);assert.equal(outbound,0);
     await target.markBeta(history.turn.id);const guarded=await target.records();assert.equal(await target.deniedReceipt({scope,actor,sessionId:history.session.id,key:'saved-key'}),'recovery-authority-unprepared');assert.equal(await target.records(),guarded,'no remote authority initialization or workspace write');
     await target.markG5(history.turn.id);const g5Guarded=await target.records();assert.equal(await target.deniedReceipt({scope,actor,sessionId:history.session.id,key:'saved-key'}),'recovery-authority-unprepared');assert.equal(await target.records(),g5Guarded);assert.equal(outbound,0);
   }finally{await mf?.dispose();await rm(directory,{recursive:true,force:true});}

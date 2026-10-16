@@ -791,7 +791,7 @@ function openWorkspace(project) {
   renderWorkspaceFiles();
   renderWorkspaceDiff();
   selectArtifactPanel('files');
-  manualSavePanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,canWrite:ready&&!standalone&&location.protocol==='http:'&&['localhost','127.0.0.1','[::1]'].includes(location.hostname)});
+  manualSavePanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,canWrite:ready&&!standalone,resolveCapability:true});
   if(standalone)workspaceLayout.select('preview');
   verifyHandoffPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id});
   void browserPreviewPanel.enter({workspaceId:project.workspace_id,tenantId:tenant.id,projectId:project.id,canOpen:readable,standalone,...(standalone?browserRoute:{})});

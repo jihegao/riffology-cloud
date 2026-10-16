@@ -3,6 +3,15 @@ import assert from 'node:assert/strict';
 import { DurableTurnStore } from '../../services/turn/store.ts';
 import { TurnJournal } from '../../services/turn/journal.ts';
 const KEY='m2:turn-journal',scope={tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1},actor={userId:'user-a',authVersion:1};
+test('ordinary persisted journals stay v7 and manual history permanently selects v9',async()=>{
+ const f=fixture(),journal=new TurnJournal(f.store(),()=>1000);
+ await journal.createSession(scope,actor,'first-session',{title:'Ordinary'});
+ const legacy=f.persisted() as any;assert.equal(legacy.schemaVersion,7);assert.equal('manualOperations' in legacy,false);assert.equal('manualRejections' in legacy,false);assert.equal('activeManualOperation' in legacy,false);
+ await journal.rejectManualSave(scope,actor,'rejected-request','a'.repeat(64),'manual-save-base-conflict');
+ const history=f.persisted() as any;assert.equal(history.schemaVersion,9);
+ await new TurnJournal(f.store(),()=>2000).createSession(scope,actor,'second-session',{title:'After manual history'});
+ assert.equal((f.persisted() as any).schemaVersion,9);assert.deepEqual((f.persisted() as any).manualRejections,history.manualRejections);
+});
 function fixture(){
  let values=new Map<string,unknown>(),durable=new Map<string,unknown>(),failSync=false,hold=false;const pending:Array<{commit():void;fail():void}>=[],events:string[]=[];
  let notifyHeld!:()=>void;const held=new Promise<void>(resolve=>{notifyHeld=resolve;});
@@ -33,11 +42,11 @@ test('legacy v1 queued state migrates on the next mutation without inventing a b
  await journal.submit(scope,actor,session.id,'legacy-turn',{message:'Queued'});const legacy=source.peek() as any;
  legacy.schemaVersion=1;delete legacy.workspaceHead;for(const row of Object.values(legacy.sessions) as any[]){delete row.head;}for(const row of Object.values(legacy.turns) as any[]){delete row.base;}
  const target=fixture();target.seed(legacy);const rebuilt=new TurnJournal(target.store(),()=>2000);assert.equal((await rebuilt.view(scope)).turns[Object.keys(legacy.turns)[0]].status,'queued');
- await rebuilt.createSession(scope,actor,'new-session',{title:'New'});const migrated=target.persisted() as any;assert.equal(migrated.schemaVersion,9);assert.equal(migrated.resourceWait,null);assert.equal(migrated.releaseHold,null);assert.equal(migrated.recoveryHold,null);assert.equal(migrated.workspaceHead,null);assert.equal(migrated.sessions[session.id].head,null);assert.equal(migrated.turns[Object.keys(migrated.turns)[0]].base,null);assert.equal(migrated.turns[Object.keys(migrated.turns)[0]].resourceLease,null);assert.equal(migrated.turns[Object.keys(migrated.turns)[0]].cancelDisposition,null);assert.equal(migrated.turns[Object.keys(migrated.turns)[0]].startedSequence,null);assert.equal(migrated.turns[Object.keys(migrated.turns)[0]].terminalSequence,null);
+ await rebuilt.createSession(scope,actor,'new-session',{title:'New'});const migrated=target.persisted() as any;assert.equal(migrated.schemaVersion,7);assert.equal(migrated.resourceWait,null);assert.equal(migrated.releaseHold,null);assert.equal(migrated.recoveryHold,null);assert.equal(migrated.workspaceHead,null);assert.equal(migrated.sessions[session.id].head,null);assert.equal(migrated.turns[Object.keys(migrated.turns)[0]].base,null);assert.equal(migrated.turns[Object.keys(migrated.turns)[0]].resourceLease,null);assert.equal(migrated.turns[Object.keys(migrated.turns)[0]].cancelDisposition,null);assert.equal(migrated.turns[Object.keys(migrated.turns)[0]].startedSequence,null);assert.equal(migrated.turns[Object.keys(migrated.turns)[0]].terminalSequence,null);
 });
 test('legacy v5 cancellation derives the durable disposition without changing the terminal event',async()=>{
  const source=fixture(),journal=new TurnJournal(source.store(),()=>1000),session=(await journal.createSession(scope,actor,'v5-session',{title:'Legacy cancellation'})).session,turn=(await journal.submit(scope,actor,session.id,'v5-turn',{message:'Cancel me'})).turn;await journal.cancel(scope,actor,turn.id);const legacy=source.peek() as any;legacy.schemaVersion=5;delete legacy.turns[turn.id].cancelDisposition;
- const target=fixture();target.seed(legacy);const rebuilt=new TurnJournal(target.store(),()=>2000);assert.equal((await rebuilt.view(scope)).turns[turn.id].cancelDisposition,'cancelled');await rebuilt.createSession(scope,actor,'v5-migration',{title:'Migrated'});const migrated=target.persisted() as any;assert.equal(migrated.schemaVersion,9);assert.equal(migrated.turns[turn.id].cancelDisposition,'cancelled');assert.equal(migrated.events.filter((row:any)=>row.turnId===turn.id&&row.type==='turn.cancelled').length,1);
+ const target=fixture();target.seed(legacy);const rebuilt=new TurnJournal(target.store(),()=>2000);assert.equal((await rebuilt.view(scope)).turns[turn.id].cancelDisposition,'cancelled');await rebuilt.createSession(scope,actor,'v5-migration',{title:'Migrated'});const migrated=target.persisted() as any;assert.equal(migrated.schemaVersion,7);assert.equal(migrated.turns[turn.id].cancelDisposition,'cancelled');assert.equal(migrated.events.filter((row:any)=>row.turnId===turn.id&&row.type==='turn.cancelled').length,1);
 });
 test('legacy saved heads and claimed bases migrate by journal sequence, not remote checkpoint time',async()=>{
  const source=fixture(),clock=(()=>{let now=1000;return()=>++now;})(),journal=new TurnJournal(source.store(),clock);
