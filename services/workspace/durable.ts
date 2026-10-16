@@ -1,5 +1,5 @@
-import {observerRpcData} from '../preview/observer-rpc-data.ts';
 import {CatalogManualSaveFence} from '../catalog/manual-save-fence.ts';
+import {assertManualSaveRead,assertManualSaveBody,manualSaveCapability} from './manual-save-policy.ts';
 import {runManualSave,serializeManualSave,manualOperationResult,manualRejectionResult,recoverManualSaveAuthorization,retiredManualSaveResult} from './manual-save-operation.ts';
 import {manualArtifactReceipts} from '../project-views/manual-artifacts.ts';
 import {manualSaveRequest,manualDigest,mergeManualArchive,manualPath,type ManualSaveOperation} from '../turn-runtime/manual-save.ts';
@@ -75,6 +75,7 @@ import {sha,turnDigest} from '../turn/protocol.ts';
 import {initialWorkspaceReference,initialWorkspaceReferenceFromReady,isInitialWorkspaceSourceFailure} from '../turn-runtime/initial-workspace.ts';
 import {workspaceFileIndex,workspaceArchiveReader,workspaceFileDiff} from '../turn-runtime/workspace-file-index.ts';
 import { DurableObject } from 'cloudflare:workers';
+import { observerRpcData } from '../preview/observer-rpc-data.ts';
 import { catalogDatabase } from '../catalog/database.ts';
 import { ProvisioningCatalog } from '../catalog/provisioning.ts';
 import { tenantQuotaName, type TenantQuota } from '../quota/durable.ts';
@@ -180,6 +181,7 @@ export interface WorkspaceAgentEnv {
   OBSERVER_EXECUTOR?:ObserverExecutorNamespace;
   M3_PREVIEW_ORIGIN?:string;
   APP_ORIGIN?:string;
+  MANUAL_SAVE_POLICY_JSON?:string;
   BROWSER_PREVIEW_EXECUTION_ORIGIN?:string;
   M3_SERVICE_IMAGE?:string;
   SERVICE_RUNTIME?:{getByName(name:string):{forwardHttp(input:ServiceRuntimeInput,request:Request):Promise<Response>;forwardObserverHttp?(input:ObserverRuntimeRequest,request:Request,cancellation:ObserverCancellationPort):Promise<Response>;fetch?(request:Request):Promise<Response>}};
@@ -742,6 +744,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     });
   }
   async #manualAuthorize(scope:TurnScope,actor:TurnActor){
+    assertManualSaveRead(this.env,scope,actor);
     this.#ready(scope);this.assertWritableScope(scope);
     const actual=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).workspace(actor,scope.workspaceId);
     if(!sameScope(scope,actual))throw Error('manual-save-access-denied');
@@ -761,6 +764,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
       abandonUnacquired:operation=>new CatalogManualSaveFence(catalogDatabase(this.env.CATALOG)).abandonUnacquired({...operation.identity,inputSha256:operation.inputSha256})},key);
   }
   async manualSaveState(input:{scope:TurnScope;actor:TurnActor;path?:string}){
+    assertManualSaveRead(this.env,input.scope,input.actor);
     await this.#prepareNormalJournal();const scope=this.#ready(input.scope);
     return this.#archiveWrite(scope,()=>serializeManualSave(this.#turns,async()=>{
     await this.#manualRecoverAuthorization(scope,input.actor);
@@ -777,6 +781,7 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     }));
   }
   async manualSaveStatus(input:{scope:TurnScope;actor:TurnActor;operationId:string}){
+    assertManualSaveRead(this.env,input.scope,input.actor);
     await this.#prepareNormalJournal();const scope=this.#ready(input.scope);
     return this.#archiveWrite(scope,()=>serializeManualSave(this.#turns,async()=>{
       if(await this.#manualRecoverAuthorization(scope,input.actor,input.operationId))return retiredManualSaveResult(input.operationId);
@@ -792,8 +797,10 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     }));
   }
   async manualSave(input:{scope:TurnScope;actor:TurnActor;key:string;body:unknown}){
+    assertManualSaveBody(this.env,input.scope,input.actor,input.body);
     await this.#prepareNormalJournal();const scope=this.#ready(input.scope),store=this.env.REVISION_STORE.getByName(revisionStoreActorName(scope));
     return this.#archiveWrite(scope,()=>runManualSave({journal:this.#turns,scope,actor:input.actor,key:input.key,body:input.body,
+      authorizeNew:()=>{if(!manualSaveCapability(this.env,scope,input.actor).canWrite)throw Error('manual-save-policy-stopped');},
       authorize:()=>this.#manualAuthorize(scope,input.actor),
       acquireFence:operation=>this.#manualAcquireFence(operation),releaseFence:operation=>this.#manualReleaseFence(operation),
       abandonUnacquired:operation=>new CatalogManualSaveFence(catalogDatabase(this.env.CATALOG)).abandonUnacquired({...operation.identity,inputSha256:operation.inputSha256}),

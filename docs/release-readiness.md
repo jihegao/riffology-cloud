@@ -1,5 +1,9 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-16 Restricted manual-save source reconciliation candidate
+
+The production GC/receipt repair and bounded ordinary-owner acceptance are being reconciled on the split #227/#221 stack, with #223's exact-scope default-closed policy, v7 compatibility and retention regressions. This candidate is not merged or newly deployed. The original production operation has independent committed/released/file-hash evidence; refresh/reopen and second-account Files/capability denial are user-confirmed, with HTTP statuses uncaptured and cross-owner POST untested. New admission stays closed. PR #221's broader page acceptance remains pending. [Sanitized source, acceptance and deployment-trigger boundaries](manual-save-production-integration-20261016.md).
+
 ## 2026-10-16 Separate manual-save Draft candidate
 
 [Local deterministic provider proposal](local-provider-acceptance-plan-20261016.md) is review-only; no fixture execution is authorized by this split.

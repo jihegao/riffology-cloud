@@ -40,6 +40,16 @@ test('lost publish acknowledgement reconciles immutable receipt without writing 
  await assert.rejects(runManualSave(f.options),/lost-publish-ack/);assert.equal(f.commits,1);
  assert.equal((await runManualSave(f.options)).status,'committed');assert.equal(f.commits,1);
 });
+test('stop blocks new keys and rejection records while allowing exact original recovery',async()=>{
+ const f=await fixture(),stop=()=>{throw Error('manual-save-policy-stopped');};
+ await assert.rejects(runManualSave({...f.options,authorizeNew:stop}),/policy-stopped/);
+ assert.equal(f.store.snapshot(),null);assert.equal(f.commits,0);
+ f.failCommit=true;await assert.rejects(runManualSave(f.options),/store-unavailable/);
+ f.failCommit=false;assert.equal((await runManualSave({...f.options,authorizeNew:stop})).status,'committed');
+ const prior=f.store.snapshot();await assert.rejects(runManualSave({...f.options,key:'another-key',body:{},authorizeNew:stop}),/policy-stopped/);
+ assert.deepEqual(f.store.snapshot(),prior);assert.equal(f.commits,2);
+ await assert.rejects(runManualSave({...f.options,body:{...f.body,artifacts:[]},authorizeNew:stop}),/idempotency-conflict/);
+});
 test('reconcile failure and revoked authorization never convert a pending save to rejected',async()=>{
  const f=await fixture();f.failCommit=true;await assert.rejects(runManualSave(f.options));f.failReconcile=true;
  await assert.rejects(runManualSave(f.options),/store-unavailable/);assert.equal(f.journal.getManualSave(scope,actor,'same-key')?.status,'pending');

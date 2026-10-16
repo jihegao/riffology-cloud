@@ -5,6 +5,7 @@ import {bindValue} from './i18n-bindings.js';
 export function createManualSavePanel({root,api,onSaved=()=>{}}){
  const doc=root.ownerDocument,win=doc.defaultView;
  let context=null,epoch=0,state=null,busy=false,pending=null;
+ let limits={maxRequestBytes:4*1024*1024,maxFileBytes:262144,maxChanges:64,textOnly:false};
  const changes=new Map(),deletes=new Set(),artifacts=new Map();
  const el=(tag,key)=>{const n=doc.createElement(tag);if(key)bindValue(n,()=>msg('manualSave.'+key));return n;};
  const title=el('h3','title'),help=el('p','help'),status=el('p'),summary=el('ul');status.setAttribute('role','status');
@@ -25,16 +26,16 @@ export function createManualSavePanel({root,api,onSaved=()=>{}}){
  function render(){
   const locked=!context?.canWrite||!state||busy||Boolean(pending);
   for(const n of controls)n.disabled=locked;
-  refresh.disabled=!context?.canWrite||busy||Boolean(pending);
-  check.hidden=!pending;check.disabled=busy||!context?.canWrite;
-  recovery.hidden=!pending;restore.disabled=busy||!context?.canWrite||!pending?.requestSha256;requestText.disabled=busy||!context?.canWrite;
+  refresh.disabled=!context?.canRead||busy||Boolean(pending);
+  check.hidden=!pending;check.disabled=busy||!context?.canRecover;
+  recovery.hidden=!pending;restore.disabled=busy||!context?.canRecover||!pending?.requestSha256;requestText.disabled=busy||!context?.canRecover;
   summary.replaceChildren();
   for(const [p,value]of changes){const li=el('li');const operation=state?.files?.some(f=>f.path===p)?'~':'+';const bytes=new TextEncoder().encode(value.content).length;bindValue(li,()=>`${operation} ${p} (${bytes})`);summary.append(li);}
   for(const p of deletes){const li=el('li');bindValue(li,()=>`− ${p}`);summary.append(li);}
   for(const [p,value]of artifacts){const li=el('li');const label=el('span','userUpload');li.append(label,doc.createTextNode(`: ${value.title||p} (${p})`));summary.append(li);}
  }
  function pathValue(){const p=path.value.trim();if(!p||p.length>1024||p.startsWith('/')||p.split('/').some(s=>!s||s==='.'||s==='..'))throw Error(String(msg('manualSave.invalidPath')));return p;}
- function stageValue(p,encoding,value){if(changes.size>=64&&!changes.has(p))throw Error(String(msg('manualSave.tooLarge')));changes.set(p,{path:p,encoding,content:value});deletes.delete(p);}
+ function stageValue(p,encoding,value){if(changes.size>=limits.maxChanges&&!changes.has(p))throw Error(String(msg('manualSave.tooLarge')));changes.set(p,{path:p,encoding,content:value});deletes.delete(p);}
  function fail(error){bindValue(status,()=>errorMessage(error));}
  async function reload(){
   if(!context||pending||busy)return;const token=epoch;busy=true;render();
@@ -52,12 +53,12 @@ export function createManualSavePanel({root,api,onSaved=()=>{}}){
   changes.clear();deletes.clear();onSaved(result);message(result.status==='unchanged'?'unchanged':'saved');return true;
  }
  async function submit(observe=false){
-  if(!context?.canWrite||busy||(!observe&&(!state||pending)))return;
+  if(!context||busy||(observe?!context.canRecover:!context.canWrite||!state||pending))return;
   const token=epoch,basePath=`/api/workspaces/${encodeURIComponent(context.workspaceId)}/manual-saves`;let completed=false;
   if(!observe){
    const body={schema:'project.manual-save/v1',base:state.base,changes:[...changes.values()],deletes:[...deletes],artifacts:[...artifacts.values()]};
    const bytes=body.changes.reduce((sum,c)=>sum+(c.encoding==='base64'?atob(c.content).length:new TextEncoder().encode(c.content).length),0);
-   if(body.changes.length+body.deletes.length>64||body.artifacts.length>16||bytes>2*1024*1024||new TextEncoder().encode(JSON.stringify(body)).length>4*1024*1024){message('tooLarge');return;}
+   if(body.changes.length+body.deletes.length>limits.maxChanges||body.artifacts.length>16||bytes>2*1024*1024||new TextEncoder().encode(JSON.stringify(body)).length>limits.maxRequestBytes){message('tooLarge');return;}
    pending={key:win.crypto.randomUUID(),body};requestText.value=JSON.stringify(body);
   }
   busy=true;render();message('saving');
@@ -71,14 +72,14 @@ export function createManualSavePanel({root,api,onSaved=()=>{}}){
   }catch(error){if(current(token)){message('unknown');}}finally{if(current(token)){busy=false;render();if(completed)await reload();}}
  }
  load.onclick=async()=>{if(!context||busy||pending)return;const token=epoch;busy=true;render();try{const p=pathValue(),value=await api(`/api/workspaces/${encodeURIComponent(context.workspaceId)}/manual-saves?path=${encodeURIComponent(p)}`);if(!current(token))return;if(value.encoding!=='utf8')throw Error(String(msg('manualSave.binary')));content.value=value.content;mark.checked=artifacts.has(p);artifactTitle.value=artifacts.get(p)?.title??'';}catch(error){if(current(token))fail(error);}finally{if(current(token)){busy=false;render();}}};
- stage.onclick=()=>{try{const p=pathValue();if(new TextEncoder().encode(content.value).length>262144)throw Error(String(msg('manualSave.tooLarge')));stageValue(p,'utf8',content.value);if(mark.checked)artifacts.set(p,{path:p,title:artifactTitle.value.trim()||p});else artifacts.delete(p);message('staged');render();}catch(error){fail(error);}};
+ stage.onclick=()=>{try{const p=pathValue();if(new TextEncoder().encode(content.value).length>limits.maxFileBytes)throw Error(String(msg('manualSave.tooLarge')));stageValue(p,'utf8',content.value);if(mark.checked)artifacts.set(p,{path:p,title:artifactTitle.value.trim()||p});else artifacts.delete(p);message('staged');render();}catch(error){fail(error);}};
  remove.onclick=()=>{try{const p=pathValue();changes.delete(p);deletes.add(p);artifacts.delete(p);message('staged');render();}catch(error){fail(error);}};
- upload.onchange=async()=>{if(!context||busy||pending)return;const token=epoch;busy=true;render();try{for(const file of upload.files){if(file.size>262144)throw Error(String(msg('manualSave.tooLarge')));const bytes=new Uint8Array(await file.arrayBuffer());if(!current(token))return;let binary='';for(const byte of bytes)binary+=String.fromCharCode(byte);stageValue(file.webkitRelativePath||file.name,'base64',btoa(binary));}message('staged');}catch(error){if(current(token))fail(error);}finally{if(current(token)){busy=false;upload.value='';render();}}};
+ upload.onchange=async()=>{if(!context||busy||pending)return;const token=epoch;busy=true;render();try{for(const file of upload.files){if(file.size>limits.maxFileBytes)throw Error(String(msg('manualSave.tooLarge')));const bytes=new Uint8Array(await file.arrayBuffer());if(!current(token))return;if(limits.textOnly){let text;try{text=new TextDecoder('utf8',{fatal:true}).decode(bytes);}catch{throw Error(String(msg('manualSave.binary')));}if(text.includes('\0'))throw Error(String(msg('manualSave.binary')));stageValue(file.webkitRelativePath||file.name,'utf8',text);}else{let binary='';for(const byte of bytes)binary+=String.fromCharCode(byte);stageValue(file.webkitRelativePath||file.name,'base64',btoa(binary));}}message('staged');}catch(error){if(current(token))fail(error);}finally{if(current(token)){busy=false;upload.value='';render();}}};
  restore.onclick=async()=>{
-  if(!context?.canWrite||busy||!pending?.requestSha256)return;
+  if(!context?.canRecover||busy||!pending?.requestSha256)return;
   const token=epoch,original=pending;busy=true;render();let accepted=false;
   try{
-   if(new TextEncoder().encode(requestText.value).length>4*1024*1024)throw Error('invalid');
+   if(new TextEncoder().encode(requestText.value).length>limits.maxRequestBytes)throw Error('invalid');
    const body=JSON.parse(requestText.value),digest=[...new Uint8Array(await win.crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(body))))].map(n=>n.toString(16).padStart(2,'0')).join('');
    if(!current(token)||pending!==original)return;
    if(digest!==original.requestSha256)throw Error('mismatch');
@@ -88,6 +89,6 @@ export function createManualSavePanel({root,api,onSaved=()=>{}}){
  };
  save.onclick=()=>void submit();check.onclick=()=>void submit(true);refresh.onclick=()=>void reload();
  function leave(){epoch++;context=null;state=null;pending=null;busy=false;changes.clear();deletes.clear();artifacts.clear();path.value='';content.value='';artifactTitle.value='';requestText.value='';mark.checked=false;root.hidden=true;render();}
- function enter(value){leave();context=value;root.hidden=!value.canWrite;try{const prior=JSON.parse(win.sessionStorage.getItem(storageKey()));if(prior&&typeof prior.key==='string')pending={key:prior.key,operationId:prior.operationId,requestSha256:typeof prior.requestSha256==='string'&&/^[a-f0-9]{64}$/.test(prior.requestSha256)?prior.requestSha256:undefined};}catch{}if(pending){message('unknown');render();}else if(value.canWrite)void reload();}
+ async function enter(value){leave();context={...value,canRead:value.canWrite,canRecover:value.canWrite};if(!value.canWrite){render();return;}const token=epoch;if(value.resolveCapability){root.hidden=true;try{const capability=await api(`/api/workspaces/${encodeURIComponent(value.workspaceId)}/manual-saves?capability=1`);if(!current(token))return;context={...value,canRead:value.canWrite&&capability.canRead===true,canWrite:value.canWrite&&capability.canWrite===true,canRecover:value.canWrite&&capability.canRecover===true};limits=capability;bindValue(help,()=>msg(limits.textOnly?'manualSave.restrictedHelp':'manualSave.help'));}catch{if(current(token))leave();return;}}root.hidden=!context.canRead;try{const prior=JSON.parse(win.sessionStorage.getItem(storageKey()));if(prior&&typeof prior.key==='string')pending={key:prior.key,operationId:prior.operationId,requestSha256:typeof prior.requestSha256==='string'&&/^[a-f0-9]{64}$/.test(prior.requestSha256)?prior.requestSha256:undefined};}catch{}if(pending){message('unknown');render();}else if(context.canRead)void reload();}
  leave();return {enter,leave,reload};
 }

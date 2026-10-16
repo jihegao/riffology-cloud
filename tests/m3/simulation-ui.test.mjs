@@ -28,6 +28,7 @@ test('simulation panel renders typed parameters, retries one pending request and
   await page.route('**/*', async route => {
     const url = new URL(route.request().url()), path = url.pathname;
     if (path.startsWith('/api/')) {
+      if (path.endsWith('/manual-saves')&&url.search==='?capability=1') return json(route,{canRead:false,canWrite:false,canRecover:false});
       if (path === '/api/auth/get-session') return json(route, { user: { id: 'u' } });
 if (path === '/api/me') return json(route, { execution:{service:true,preview:true,simulation:true},tenants: [{ id: 't' }] });
       if (path === '/api/models') return json(route, { models: [] });
