@@ -23,6 +23,7 @@ async function pageFixture(t, handle, options = {}) {
     assert.equal(url.origin, 'https://ui.test');
     if (url.pathname.startsWith('/api/')) {
       if (await handle(route, url.pathname)) return;
+      if (url.pathname.endsWith('/manual-saves')&&url.search==='?capability=1') return json(route,{canRead:false,canWrite:false,canRecover:false});
       if (url.pathname === '/api/auth/get-session') return json(route, { user: { id: 'fixture-user' } });
 if (url.pathname === '/api/me') return json(route, { execution:{service:true,preview:true,simulation:true},tenants: [{ id: 'tenant-a' }] });
       if (url.pathname === '/api/models') return json(route, { models: [] });

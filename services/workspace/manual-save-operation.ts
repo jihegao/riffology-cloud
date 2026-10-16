@@ -14,7 +14,7 @@ export function manualOperationResult(operation:ManualSaveOperation){return {ope
 export function manualRejectionResult(rejection:ManualSaveRejection){return {operationId:rejection.identity.operationId,status:'rejected' as const,reasonCode:rejection.reasonCode,requestSha256:rejection.requestSha256,source:'manual-save' as const};}
 const preflightErrors=new Set(['invalid-manual-save','invalid-manual-save-path','invalid-manual-save-content','invalid-manual-artifacts','invalid-turn-identifier','invalid-turn-sha','invalid-turn-integer','manual-save-limit','manual-save-base-conflict','manual-save-workspace-busy']);
 type Prepared={filesArchive:Uint8Array;unchanged:boolean};
-type Options={journal:TurnJournal;scope:TurnScope;actor:TurnActor;key:string;body:unknown;authorize:()=>Promise<void>;
+type Options={journal:TurnJournal;scope:TurnScope;actor:TurnActor;key:string;body:unknown;authorize:()=>Promise<void>;authorizeNew?:()=>void;
  current:()=>Promise<{base:ManualSaveBase;prepare:(request:ManualSaveRequest)=>Promise<Prepared>}>;
  reconcile:(operation:ManualSaveOperation)=>Promise<ManualRevisionReceipt|null>;
  commit:(input:ManualCommitInput)=>Promise<ManualRevisionReceipt>;
@@ -39,6 +39,7 @@ export function retiredManualSaveResult(key:string,requestSha256?:string){return
 export async function runManualSave(options:Options){return serializeManualSave(options.journal,async()=>{
  const {journal,scope,actor,key,authorize}=options;
  const retired=await recoverManualSaveAuthorization(options,key);
+ if(!retired&&!journal.getManualSave(scope,actor,key)&&!journal.getManualSaveRejection(scope,actor,key))options.authorizeNew?.();
  let operation:ManualSaveOperation|null=null,writeStarted=false,originalAbsent=false,fenced=false,compensated=false,requestSha256:string|undefined;
  const fence=async(op:ManualSaveOperation)=>{const result=await options.acquireFence(op);if(result.state==='released'&&op.status==='pending')throw Error('manual-save-fence-released-pending');fenced=true;};
  const finish=async(op:ManualSaveOperation)=>{operation=op;await options.releaseFence(op);return {...manualOperationResult(op),requestSha256};};
@@ -60,7 +61,7 @@ export async function runManualSave(options:Options){return serializeManualSave(
   const current=await options.current();
   if(operation&&JSON.stringify(operation.base)!==JSON.stringify(current.base))throw Error('manual-save-base-conflict');
   await authorize();
-  if(!operation){operation=(await journal.reserveManualSave(scope,actor,key,request.base,digest,current.base)).operation;originalAbsent=true;await fence(operation);}
+  if(!operation){options.authorizeNew?.();operation=(await journal.reserveManualSave(scope,actor,key,request.base,digest,current.base)).operation;originalAbsent=true;await fence(operation);}
   const prepared=await current.prepare(request);
   if(prepared.unchanged){await authorize();return await finish(await options.publish(operation,null,'unchanged'));}
   await authorize();writeStarted=true;

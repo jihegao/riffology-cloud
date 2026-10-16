@@ -186,7 +186,13 @@ export class DurableTurnStore implements AtomicTurnStore{
       const output=operation(current===null?null:structuredClone(current));
       if(!output||typeof output!=='object'||output instanceof Promise)throw Error('turn-journal-operation-must-be-synchronous');
       valid(output.state);preserveInitialBases(current,output.state);const state=structuredClone(output.state),value=structuredClone(output.value);
-      await transaction.put(KEY,state);await projectPreviewDiscoveries(transaction,state,current);return value;
+      // Ordinary workspaces retain the production v7 wire format. Once manual
+      // history exists (or a newer format was persisted), never erase/downgrade it.
+      const previousVersion=record(saved)?saved.schemaVersion:undefined;
+      const legacyCompatible=(previousVersion===undefined||typeof previousVersion==='number'&&previousVersion<=7)&&Object.keys(state.manualOperations).length===0&&Object.keys(state.manualRejections).length===0&&state.activeManualOperation===null;
+      const persisted:Record<string,unknown>={...state};
+      if(legacyCompatible){persisted.schemaVersion=7;delete persisted.manualOperations;delete persisted.manualRejections;delete persisted.activeManualOperation;}
+      await transaction.put(KEY,persisted);await projectPreviewDiscoveries(transaction,state,current);return value;
     });
     await this.#storage.sync();return structuredClone(result);
   }

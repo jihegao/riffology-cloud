@@ -23,6 +23,7 @@ async function fixture(t, handle, intent) {
     if (path === '/api/models') return json(route, {models:[]});
     if (path === '/api/tenants/tenant/projects') return json(route, {projects:['a','b'].map(id => ({id, workspace_id:id, title:id, status:'ready'}))});
     if (/^\/api\/workspaces\/[ab]$/.test(path)) return json(route, {schemaVersion:3, activeTurnId:null, sessions:{s:{id:'s', title:'Session', createdAt:1}}, turns:{}});
+    if (path.endsWith('/manual-saves')&&new URL(request.url()).search==='?capability=1') return json(route,{canRead:false,canWrite:false,canRecover:false});
     if (path.endsWith('/events')) return json(route, {events:[], nextSequence:0, hasMore:false, snapshotRequired:false});
     if (path.endsWith('/model')) return json(route, {version:null, spec:null, canRun:false, reasonCode:'model_not_saved'});
     if (path.endsWith('/browser-preview')) return json(route, {currentRevisionId:null, revisionId:null, build:null, stale:false, modelSpec:null, reasonCode:'preview-no-saved-revision', delivery:null});
