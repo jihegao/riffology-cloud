@@ -1,0 +1,154 @@
+{
+  "schema": "riffology.delivery-evidence/v1",
+  "scope": "restricted production manual-save preparation; no production writes",
+  "source": {
+    "commit": "482522f352aea2c747497a659eb8d879637e78c2",
+    "tree": "7319930122e3778e881a4a20d8d39b76c13afc34",
+    "basePr": 221,
+    "baseHead": "814d206a42c1ae77914fe470691135b8581e0c9e"
+  },
+  "preparedBundle": {
+    "sha256": "fda73b51b153e17e4544263cf341ad3496a3ea7b1b4cb8e5f79abae63775787b",
+    "bytes": 5690055,
+    "exports": [
+      "ContainerProxy",
+      "EntryReplayGuard",
+      "G5ControlledWindow",
+      "G5TenantModelBudget",
+      "InvitedRunCapacity",
+      "ManagedProductRuntime",
+      "ModelProxyService",
+      "ObserverExecutor",
+      "PiDeveloperBudget",
+      "PrivateBetaCapacity",
+      "ProductTurnRuntime",
+      "ProductionModelBudget",
+      "ProjectRuntime",
+      "ProjectToolSandbox",
+      "RevisionStore",
+      "ServiceRun",
+      "ServiceRuntime",
+      "ServiceSandbox",
+      "SimulationSandbox",
+      "TenantModelBudget",
+      "TenantQuota",
+      "ToolArtifactStore",
+      "ToolBridgeAgent",
+      "ToolBridgeService",
+      "TrustedPiCapacity",
+      "TrustedPiSandbox",
+      "WorkspaceAgent",
+      "default"
+    ]
+  },
+  "retentionPlan": {
+    "bindings": 99,
+    "sqliteExports": 23,
+    "workerContainerAssociations": 5,
+    "oldAssets": 92,
+    "immutableAssets": 68,
+    "newAssets": 95
+  },
+  "changedAssets": [
+    {
+      "path": "/app.js",
+      "bytes": 83561,
+      "sha256": "27a0ab02e1bd1f3dbe878dcf27913bfd2aac7b1676821101a7c9038351f51fb1"
+    },
+    {
+      "path": "/artifact-views.js",
+      "bytes": 5694,
+      "sha256": "2dbb9a15cc5ed772d3a2304dbd531ca0508a2d0d783f0f9c4809b99b777d93bb"
+    },
+    {
+      "path": "/i18n.js",
+      "bytes": 150171,
+      "sha256": "e5c31537a959192b365687974f399a9ff4554059cb5c018afbff8a454bdbce63"
+    },
+    {
+      "path": "/index.html",
+      "bytes": 14439,
+      "sha256": "2a284df96f627f66866f8bd915d85e8d00f775c0b6dea6b41ce670b025055e27"
+    },
+    {
+      "path": "/manual-save.js",
+      "bytes": 11484,
+      "sha256": "7382eba3d0f0bf17cff59ebda8d5ce67049d87267c372e5c302dfa389fbe7092"
+    },
+    {
+      "path": "/project-view-remote.js",
+      "bytes": 8358,
+      "sha256": "0acaf818350289427f0f380e4c88d2367f37ff626e1134e63684a1eb8a7a4668"
+    },
+    {
+      "path": "/project-views.js",
+      "bytes": 12369,
+      "sha256": "5ae2d1485ab3a371e844b736255d98d520b21fe139abc4067d2afb42ce7823b4"
+    },
+    {
+      "path": "/simulation.js",
+      "bytes": 23498,
+      "sha256": "f18f4182feff6816187ab6781f781017de4954a23be21d1eae31ad1e0b31374d"
+    },
+    {
+      "path": "/workspace.css",
+      "bytes": 20995,
+      "sha256": "2e876ba4c5c0e4198d119534a750c9cc12e092132907331431473c29070bc71b"
+    }
+  ],
+  "production": {
+    "version": "d9ceec61-1e5f-48cc-8a51-3abdb4b06614",
+    "deployment": "54f253dd-c7b3-4407-867d-b9856642c1ff",
+    "settingsSha256": "b2fc9ed3dd92060b369022b37b7784b8d11ae43eda981c0970b02f8606ac6c17",
+    "manualPolicy": "absent",
+    "catalogMigration": "0012_project_archives.sql",
+    "manualFenceInstalled": false
+  },
+  "migrationSha256": "852461352920157299847dc6bc0a301240827230f826d327bb7cb2e58851b5a9",
+  "checks": {
+    "ui": 21,
+    "m0": 353,
+    "m1": 561,
+    "m2": 1011,
+    "m3": 1030,
+    "runtimeExecution": 20,
+    "phase": 13,
+    "models": 92,
+    "issue73": 30,
+    "nodePassed": 3131,
+    "skipped": 13,
+    "pythonPassed": 8,
+    "typecheck": "passed",
+    "diff": "passed",
+    "hostedCI": "not claimed",
+    "initialFailures": "new i18n guard; obsolete v9 expectation; strict browser fixtures missing new capability GET. Affected suites rerun complete."
+  },
+  "legacyReaderProof": {
+    "productionSource": "fbc0e46bde2c8781b71609fa4524d2e75bffaf99",
+    "ordinarySessionCancellationSavedCheckpointReadableByUnmodifiedV7Validator": true,
+    "manualHistoryRetainedByV9Reader": true,
+    "rawV7RollbackAfterManualHistoryRejected": true
+  },
+  "logSha256": {
+    "aggregateInitial": "62e90f55748451ddcadfe339c4be041e1b29985172341e0e43df3800ae301f0c",
+    "ui": "e02c1266c47358098c9a136c0eef6f591c40ebd28a18515f73e1d455fbeac1dc",
+    "typecheck": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f",
+    "m1": "a1084d0245ea9344fc8f176cc334a796caee526dd6df50821f9af23a21533456",
+    "m2": "4777cc071208212506f7917ac255e77acfd2e8b5e81ff96e4705bd21e9d9e3c0",
+    "m3": "93d58523294215a7eb63b152d311965b4ef51c7546b14cb5e0a9ff6c47fab4c2",
+    "issue73": "efdf801129b80038827e9c5144c3d7dd1ff3746fa15d752e442cb3d80c42b260",
+    "research": "e3282e13d2cf64d655e89232d40cdc2a99386042377c643fe6dcc76e3b2e3382",
+    "focused": "0c06dee9be3aad6d8cb1bfeb65e019289013071476490da5339a603101a6a599",
+    "manualUi": "1cdeab15041dd7a624b3c0010643824dac58c6096a39fba1c2892bacec8dfd4e"
+  },
+  "acceptance": {
+    "implemented": true,
+    "merged": false,
+    "deployed": false,
+    "independentDeltaReview": "pending",
+    "authenticatedOrdinaryOwner": "pending",
+    "crossIdentity": "pending",
+    "paidExecution": "not performed"
+  },
+  "productionWritesPerformed": false
+}
