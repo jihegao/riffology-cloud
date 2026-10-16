@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gateway} from '../../services/gateway/app.ts';
-import {SqliteCatalog} from './sqlite-database.ts';
+import {SqliteCatalog} from '../m1/sqlite-database.ts';
 import {setLocale,t,formatNumber,formatDate} from '../../services/web/i18n.js';
 const origin='https://i18n.example.test';
 function fixture(){const db=new SqliteCatalog(),now=1;db.sqlite.exec(readFileSync(new URL('../../services/catalog/migrations/0011_user_locale_preferences.sql',import.meta.url),'utf8'));for(const id of ['a','b'])db.sqlite.prepare("INSERT INTO catalog_users(id,identity_issuer,identity_subject,normalized_email,created_at,updated_at) VALUES(?,'better-auth',?,?,?,?)").run(id,id,id+'@example.test',now,now);let active='a',failLocaleRead=false;const database={query:async statement=>{if(failLocaleRead&&statement.sql.includes('catalog_user_locale_preferences'))throw Error('locale-read-failed');return db.query(statement);},batch:statements=>db.batch(statements)};const call=(path,init={})=>gateway(new Request(origin+path,init),{origin,database,identity:async()=>({subject:active,email:active+'@example.test',emailVerified:true,platformVersion:1})});const headers={origin,'content-type':'application/json'};return {db,setActive:value=>active=value,setLocaleReadFailure:value=>failLocaleRead=value,get:()=>call('/api/me/locale'),me:()=>call('/api/me'),put:locale=>call('/api/me/locale',{method:'PUT',headers,body:JSON.stringify({locale})})};}

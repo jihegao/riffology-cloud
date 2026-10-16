@@ -1,5 +1,9 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-16 CI i18n deduplication (offline sub-slice)
+
+[#216](https://github.com/jihegao/riffology-cloud/issues/216) now has a bounded candidate moving four i18n files to one UI-owned suite. All 69 unique UI/M1 files remain selected; 21 checks no longer execute twice. Updated UI checks, typecheck and inventory verification pass. Path-based CI, historical retirement and hosted validation remain separate; no production change. [Scope and validation](ci-i18n-dedup-20261016.md).
+
 ## 2026-10-14 Main integration deployed: candidate design, unchanged answers and section views
 
 Main `eba528f7b101a67f32565e4aac74a0d4154a7dec` is deployed to [app.riffoid.com](https://app.riffoid.com): Gateway `d9ceec61-1e5f-48cc-8a51-3abdb4b06614` and Entry `5869db28-cb18-4bcc-8e2a-7364e8c888ce`, both at 100%. PRs #169 → #170 → #173 reconcile the current Beta deadline, branding and signed domain source; #198 design/answer/subtabs and #200/#203 receipt/reviewed-copy fixes are all retained. #204 adds acceptance evidence without changing production code.
