@@ -136,7 +136,8 @@
     "research": "e3282e13d2cf64d655e89232d40cdc2a99386042377c643fe6dcc76e3b2e3382",
     "focused": "0c06dee9be3aad6d8cb1bfeb65e019289013071476490da5339a603101a6a599",
     "manualUi": "1cdeab15041dd7a624b3c0010643824dac58c6096a39fba1c2892bacec8dfd4e",
-    "retentionRegressions": "3fed3e9c1fc6fe2f89f1de2913e20868de6a7cfcd565c04ad8262be4507240f9"
+    "retentionRegressions": "3fed3e9c1fc6fe2f89f1de2913e20868de6a7cfcd565c04ad8262be4507240f9",
+    "retainedAssetsCompatibility": "d099bd32d1a868eb7c71a25945e89d8e370158276dcf34e040e3af3d71be5706"
   },
   "acceptance": {
     "implemented": true,
@@ -378,7 +379,15 @@
     "retainedManifestFiles": 92,
     "retainedManifestMissingHashes": 0,
     "newCandidateAssetsDeployed": false,
-    "transientUploadTokensPublished": false
+    "transientUploadTokensPublished": false,
+    "diagnosis": {
+      "protocol": "multipart/base64 and hash-named parts match current official docs and installed Wrangler",
+      "ticketExpiry": "not the explanation: first checked unexpired; second used a freshly issued token in the same call",
+      "connector": "documented cloudflare.request options have no custom Authorization/header override; generic fetch automatically authenticates Cloudflare API requests",
+      "accountPermission": "Worker version upload, deployment and asset-session creation succeeded; no proof of account-wide permission denial",
+      "conclusion": "credential substitution at asset-upload boundary remains unverified; no further upload retries or credential expansion",
+      "nextUserAction": "normally reauthenticate local Wrangler for the existing Gmail Cloudflare account and authorized Worker/assets publishing scope; stop if it requests additional permissions"
+    }
   },
   "staticReadback": {
     "status": "pending",
@@ -400,12 +409,36 @@
         "error": "HTTP Error 403: Forbidden"
       }
     ],
-    "note": "403 plain-text responses; public asset bytes and browser functionality not verified; no login/security bypass attempted"
+    "note": "403 plain-text responses; public asset bytes and browser functionality not verified; no login/security bypass attempted",
+    "diagnosis": {
+      "connectorFetch": "Forbidden: requests to app.riffoid.com are not allowed",
+      "localHttp": "Cloudflare 403 error code 1010; server cloudflare, CF-Ray present",
+      "entryApplicationError": false,
+      "browser": "existing Safari tab at exact public root has title riffoid; no DOM/session inspection or browser acceptance",
+      "boundary": "1010 is an edge browser-signature rejection, not signed Entry JSON; this does not prove absence of a current browser regression",
+      "securityChanges": false,
+      "references": [
+        "https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1010/",
+        "https://developers.cloudflare.com/workers/static-assets/direct-upload/"
+      ]
+    }
   },
   "productionWriteScope": [
     "asset upload sessions; unsuccessful candidate bucket uploads",
     "0013 additive schema and migration ledger",
     "one compatible Worker version upload",
     "one default-disabled 100% deployment"
-  ]
+  ],
+  "offlineStaticCompatibility": {
+    "observedAt": "2026-10-16T02:59:55.635Z",
+    "scope": "offline exact deployed Gateway module with retained asset binding fixture; not live Entry or authenticated browser acceptance",
+    "gatewaySha256": "fda73b51b153e17e4544263cf341ad3496a3ea7b1b4cb8e5f79abae63775787b",
+    "retainedFiles": 92,
+    "staticGets": 93,
+    "staticImportEdges": 49,
+    "missingImports": [],
+    "unexpectedOutbound": 0,
+    "assetFetches": 93,
+    "evidence": "manual-save-retained-assets-compatibility-20261016.json"
+  }
 }
