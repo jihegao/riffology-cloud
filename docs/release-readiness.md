@@ -1,5 +1,9 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-16 UTC Manual Revision to page broker local regression
+
+An isolated candidate on #227 merge `f43bb60` connects real local Gateway/D1/R2/Workspace manual saves and two-page canonical packages to the production broker over Node MessageChannel. It reproduces and repairs late file/artifact delivery after package replacement or revocation, and validates an expected workspace generation. The synthetic fixture and negative control are separate from real invited-page, renderer/container cleanup and nine-egress acceptance; #221/main and production gates remain unchanged. [Regression and evidence boundaries](manual-page-broker-regression-20261017.md).
+
 ## 2026-10-16 Restricted manual-save source reconciliation candidate
 
 The production GC/receipt repair and bounded ordinary-owner acceptance are being reconciled on the split #227/#221 stack, with #223's exact-scope default-closed policy, v7 compatibility and retention regressions. This candidate is not merged or newly deployed. The original production operation has independent committed/released/file-hash evidence; refresh/reopen and second-account Files/capability denial are user-confirmed, with HTTP statuses uncaptured and cross-owner POST untested. New admission stays closed. PR #221's broader page acceptance remains pending. [Sanitized source, acceptance and deployment-trigger boundaries](manual-save-production-integration-20261016.md).
