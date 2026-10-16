@@ -1,5 +1,9 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-16 04:47 UTC PR223 frontend deployed; authenticated acceptance pending
+
+The frozen PR223 frontend (`f625f019`, product source unchanged from the tested candidate; PR225/226 excluded) is deployed at 100% in version `d845ffab-7a7d-4c50-a68d-96bac49a2a9a`. Normal Wrangler reauthentication used only existing scopes; all nine missing assets uploaded, and all 95 public asset bodies match frozen hashes. Exact backend, 99 bindings, 23 SQLite exports and five container associations are preserved. Manual-save policy remains absent/default-disabled, G5/M3/M4 remain closed, and existing M2 gates are unchanged. Real ordinary-owner and second-identity acceptance remain pending; no project/save/provider execution occurred. [Release and next acceptance boundary](manual-save-restricted-production-20261016.md) · [online asset evidence](../evidence/releases/manual-save-frontend-assets-readback-20261016.json).
+
 ## 2026-10-16 Manual-save compatible backend deployed, admission closed
 
 PR #223's compatible backend is deployed at 100% as `bb6de79c-10d3-4646-97d3-fc5791bb481c` (deployment `70c7bfe5-2cb4-4766-9f99-5c8ec91219f6`, 02:50 UTC), with exact module hash readback and all existing bindings/exports/container associations retained. Migration 0013 is installed; old table counts/schema are unchanged, and the new fence table is empty. Manual admission remains absent/default-disabled; G5/M3/M4 remain closed.

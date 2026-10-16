@@ -1,6 +1,6 @@
 {
   "schema": "riffology.delivery-evidence/v1",
-  "scope": "default-disabled compatible backend deployed; existing frontend retained; manual-save frontend and authenticated acceptance pending",
+  "scope": "default-disabled compatible backend and frozen PR223 frontend deployed; ordinary-owner and cross-identity acceptance pending",
   "source": {
     "commit": "482522f352aea2c747497a659eb8d879637e78c2",
     "tree": "7319930122e3778e881a4a20d8d39b76c13afc34",
@@ -142,14 +142,14 @@
   "acceptance": {
     "implemented": true,
     "merged": false,
-    "deployed": "default-disabled backend only",
+    "deployed": "compatible backend plus frozen PR223 frontend; manual policy absent/default-disabled",
     "independentDeltaReview": "parent independently reviewed ca3b2b4; no must-fix; did not rerun tests",
     "authenticatedOrdinaryOwner": "pending",
     "crossIdentity": "pending",
     "paidExecution": "not performed",
-    "manualSaveFrontendDeployed": false,
+    "manualSaveFrontendDeployed": true,
     "scopedDisabledFallback": "pending real ordinary project scope; absent-policy foundation is not a scoped recovery fallback",
-    "publicStatic": "pending: 403"
+    "publicStatic": "passed: root plus all 95 files match frozen bytes"
   },
   "productionWritesPerformed": true,
   "productionBefore": {
@@ -378,7 +378,7 @@
     "sameCallFreshTokenAttempt": "HTTP 401; no completed bucket",
     "retainedManifestFiles": 92,
     "retainedManifestMissingHashes": 0,
-    "newCandidateAssetsDeployed": false,
+    "newCandidateAssetsDeployed": true,
     "transientUploadTokensPublished": false,
     "diagnosis": {
       "protocol": "multipart/base64 and hash-named parts match current official docs and installed Wrangler",
@@ -387,6 +387,14 @@
       "accountPermission": "Worker version upload, deployment and asset-session creation succeeded; no proof of account-wide permission denial",
       "conclusion": "credential substitution at asset-upload boundary remains unverified; no further upload retries or credential expansion",
       "nextUserAction": "normally reauthenticate local Wrangler for the existing Gmail Cloudflare account and authorized Worker/assets publishing scope; stop if it requests additional permissions"
+    },
+    "frontendCompletion": {
+      "observedAt": "2026-10-16T04:47:00.088Z",
+      "missingCandidateHashes": 9,
+      "completedBuckets": 3,
+      "candidateManifestFiles": 95,
+      "normalLocalWranglerOAuth": true,
+      "scopeExpansion": false
     }
   },
   "staticReadback": {
@@ -427,7 +435,9 @@
     "asset upload sessions; unsuccessful candidate bucket uploads",
     "0013 additive schema and migration ledger",
     "one compatible Worker version upload",
-    "one default-disabled 100% deployment"
+    "one default-disabled 100% deployment",
+    "renewed existing Wrangler OAuth using only five previously granted scopes",
+    "three candidate asset bucket uploads, one same-backend frontend version and one 100% deployment; no gate changes"
   ],
   "offlineStaticCompatibility": {
     "observedAt": "2026-10-16T02:59:55.635Z",
@@ -440,5 +450,86 @@
     "unexpectedOutbound": 0,
     "assetFetches": 93,
     "evidence": "manual-save-retained-assets-compatibility-20261016.json"
+  },
+  "frontendCompletion": {
+    "observedAt": "2026-10-16T04:47:00.088Z",
+    "stage": "frontend-deployed-config-readback-passed",
+    "frozenHead": "f625f0193e2964148a990a3af502e7a581ceb688",
+    "versionId": "d845ffab-7a7d-4c50-a68d-96bac49a2a9a",
+    "deploymentId": "5f0218cf-36ae-481e-8bce-1d6bee6399db",
+    "source": {
+      "sha256": "fda73b51b153e17e4544263cf341ad3496a3ea7b1b4cb8e5f79abae63775787b",
+      "bytes": 5690055
+    },
+    "assets": 95,
+    "retainedImmutable": 68,
+    "bindingCount": 99,
+    "exportsUnchanged": true,
+    "containerAssociationsUnchanged": true,
+    "manualPolicyPresent": false,
+    "gates": {
+      "G5_ADMISSION_ENABLED": "false",
+      "M2_LAZY_PROJECT_ENABLED": "false",
+      "M2_MODEL_PROVIDER_ENABLED": "true",
+      "M2_TURNS_ENABLED": "true",
+      "M2_WORKSPACE_RUNTIME_REUSE_ENABLED": "false",
+      "M3_OBSERVER_ENABLED": "false",
+      "M3_PREVIEW_ENABLED": "false",
+      "M3_PREVIEW_WS_ENABLED": "false",
+      "M3_SERVICE_ENABLED": "false",
+      "M4_SIMULATION_ENABLED": "false",
+      "PRODUCTION_MODEL_ENABLED": "true"
+    },
+    "assetsConfig": {
+      "html_handling": "none",
+      "not_found_handling": "none",
+      "serve_directly": false,
+      "raw_run_worker_first": true,
+      "base_path": "/"
+    },
+    "publicBytesVerified": true,
+    "authenticatedAcceptance": false,
+    "publicStaticReadback": {
+      "rootMatches": true,
+      "filesMatched": 95,
+      "retainedImmutable": 68,
+      "evidence": "manual-save-frontend-assets-readback-20261016.json"
+    },
+    "authentication": {
+      "email": "jihe.gao@gmail.com",
+      "grantedScopes": [
+        "user:read",
+        "offline_access",
+        "account:read",
+        "workers:write",
+        "workers_scripts:write"
+      ],
+      "scopeExpansion": false,
+      "credentialsDisclosed": false
+    },
+    "frozenSourceComparison": {
+      "priorDocumentationHead": "cb99066c8b7d726c4c9e4a712684c81949ce76f5",
+      "releaseHead": "f625f0193e2964148a990a3af502e7a581ceb688",
+      "changedPaths": [
+        "docs/manual-save-restricted-production-20261016.md",
+        "evidence/releases/manual-save-restricted-production-20261016.json",
+        "evidence/releases/manual-save-retained-assets-compatibility-20261016.json"
+      ],
+      "productSourceChanged": false,
+      "testedSourceHead": "0063455381180c3e3137c08532bf922c5e88f4c3",
+      "excludedPrs": [
+        225,
+        226
+      ]
+    },
+    "rawEvidenceSha256": {
+      "frontend-preflight-20261016.json": "0dad0807141b6a6f1b9c633b83f246870581dd37ed3b9f423561ac676c679f84",
+      "frontend-release-events-20261016.jsonl": "e7496d941b256b2ef09a8ddd9afe4df2601ac02358619643ea5f1e371f6dbe76",
+      "frontend-version-upload-20261016.json": "26ee8a191792585025b7bb6452078aad8e342de0e91d2f7784743ce2a793bd20",
+      "frontend-deployment-20261016.json": "d806abf625c105789dcc47e02297f40f02b1b878c5e15ca4601ea54e41661ea1",
+      "frontend-release-readback-20261016.json": "67315ab6cf2eddcdfcbbf0507ee23ac0a2815560b1c60a6078aaabb1a4435c6a",
+      "frontend-public-check-20261016.json": "cebbdba89dc96dbbeda414b800221ccd4b041470bb999aae00262932ed0c36bd",
+      "frontend-all-assets-readback-20261016.json": "61542fd1d4275a07775ac34d3d2a561d8422005f9fd3e3258352840d17015f6a"
+    }
   }
 }
