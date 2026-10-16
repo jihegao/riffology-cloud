@@ -1,3 +1,4 @@
+import {manualReceipt,type ManualRevisionReceipt,type ManualSaveOperation,type ManualSaveRejection} from '../turn-runtime/manual-save.ts';
 import { initialWorkspaceReference, type InitialWorkspaceReference } from '../turn-runtime/initial-workspace.ts';
 export type TurnScope = { tenantId:string; projectId:string; workspaceId:string; workspaceGeneration:number };
 export type TurnActor = { userId:string; authVersion:number };
@@ -5,7 +6,8 @@ export type TurnStatus = 'queued'|'running'|'cancelling'|'checkpointing'|'comple
 export type TurnCancelDisposition = 'cancelled'|'interrupted'|'already-terminal';
 export type RuntimeEventType = 'assistant.delta'|'assistant.message'|'tool.started'|'tool.updated'|'tool.completed'|'provider.status';
 export type TurnEventType = 'turn.queued'|'turn.started'|'turn.cancel_requested'|'turn.checkpointing'|'turn.completed'|'turn.failed'|'turn.cancelled'|'turn.interrupted'|RuntimeEventType;
-export type CheckpointReceipt = { revisionId:string; objectKey:string; filesSha256:string; sessionSha256:string; committedAt:number };
+export type TurnCheckpointReceipt = { revisionId:string; objectKey:string; filesSha256:string; sessionSha256:string; committedAt:number };
+export type CheckpointReceipt = TurnCheckpointReceipt | ManualRevisionReceipt;
 export type InitialWorkspaceBase = { reference:InitialWorkspaceReference; filesSha256:string };
 export type TurnBaseCheckpoints = { workspace:CheckpointReceipt|null; session:CheckpointReceipt|null; initial?:InitialWorkspaceBase };
 export type TurnResourceLease = { operationId:string; leaseId:string };
@@ -35,7 +37,7 @@ export type TurnRecord = {
 };
 export type TurnEvent = { sequence:number; eventId:string; turnId:string; workspaceId:string; runtimeGeneration:number; type:TurnEventType; at:number; payload:Record<string,unknown> };
 export type TurnJournalState = {
-  schemaVersion:7; scope:TurnScope; nextSequence:number; oldestSequence:number; retentionBytes:number; activeTurnId:string|null; workspaceHead:CheckpointReceipt|null;
+  schemaVersion:9; manualRejections:Record<string,ManualSaveRejection>; manualOperations:Record<string,ManualSaveOperation>; activeManualOperation:string|null; scope:TurnScope; nextSequence:number; oldestSequence:number; retentionBytes:number; activeTurnId:string|null; workspaceHead:CheckpointReceipt|null;
   resourceWait:TurnResourceWait|null; releaseHold:TurnReleaseHold|null;
   recoveryHold:null|{status:'reconciling';reasonCode:string;since:number;nextAttemptAt:number;turnId:string;dispatchId:string;runtimeGeneration:number};
   sessions:Record<string,SessionRecord>; turns:Record<string,TurnRecord>;
@@ -117,6 +119,7 @@ export function checkpointObjectKey(value:unknown):string{
   const parts=value.split('/');if(parts.some(part=>!part||part==='.'||part==='..'))throw Error('invalid-checkpoint-object-key');return value;
 }
 export function checkpointReceipt(value:unknown):CheckpointReceipt{
+  if(value&&typeof value==='object'&&(value as {source?:unknown}).source==='manual-save')return manualReceipt(value);
   if(!value||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype)throw Error('invalid-checkpoint-receipt');
   const receipt=value as Record<string,unknown>,keys=['revisionId','objectKey','filesSha256','sessionSha256','committedAt'];
   if(Object.keys(receipt).length!==keys.length||keys.some(key=>!Object.hasOwn(receipt,key)))throw Error('invalid-checkpoint-receipt');
@@ -133,6 +136,7 @@ export function turnBaseCheckpoints(value:unknown):TurnBaseCheckpoints{
   const base=value as Record<string,unknown>,keys=Object.hasOwn(value,'initial')?['workspace','session','initial']:['workspace','session'];
   if(Object.keys(base).length!==keys.length||keys.some(key=>!Object.hasOwn(base,key)))throw Error('invalid-turn-base-checkpoints');
   const workspace=base.workspace===null?null:checkpointReceipt(base.workspace),session=base.session===null?null:checkpointReceipt(base.session);
+  if(session?.sessionSha256===null)throw Error('manual-session-base-denied');
   if(session!==null&&workspace===null)throw Error('invalid-turn-base-checkpoints');
   if(Object.hasOwn(base,'initial')){if(workspace!==null||session!==null)throw Error('invalid-turn-base-checkpoints');return {workspace,session,initial:initialWorkspaceBase(base.initial)};}
   return {workspace,session};

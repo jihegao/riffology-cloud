@@ -10,7 +10,7 @@ const bytes=path=>readFileSync(resolve(root,path));
 test('pure review freezes existing config identities and leaves missing choices blocked',()=>{
  const paths=['infra/wrangler.phase1-staging.jsonc','infra/wrangler.browser-execution.jsonc'],before=paths.map(bytes);
  const a=prepareG4Candidate(root),b=prepareG4Candidate(root);assert.deepEqual(a,b);assert.equal(validateG4Review(a).executionReadiness,'blocked');
- assert.equal(a.manifest.migrations.candidate.length,12);assert.ok(a.manifest.migrations.candidate.some(m=>m.path==='services/catalog/migrations/0011_user_locale_preferences.sql'));assert.ok(a.manifest.migrations.candidate.some(m=>m.path==='services/catalog/migrations/0012_project_archives.sql'));assert.equal(a.manifest.migrations.remoteApplied,null);
+ assert.equal(a.manifest.migrations.candidate.length,13);assert.ok(a.manifest.migrations.candidate.some(m=>m.path==='services/catalog/migrations/0011_user_locale_preferences.sql'));assert.ok(a.manifest.migrations.candidate.some(m=>m.path==='services/catalog/migrations/0012_project_archives.sql'));assert.ok(a.manifest.migrations.candidate.some(m=>m.path==='services/catalog/migrations/0013_manual_save_fence.sql'));assert.equal(a.manifest.migrations.remoteApplied,null);
  assert.equal(a.manifest.containerImages.length,5);assert.equal(a.manifest.containerImages.filter(c=>c.candidateManagedReference===null).length,2);
  assert.equal(a.overlays.execution.env,undefined);assert.equal(a.overlays.execution.vars.ALLOW_LOCALHOST_HTTP,'false');
  paths.forEach((p,i)=>assert.deepEqual(bytes(p),before[i]));

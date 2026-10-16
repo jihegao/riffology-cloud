@@ -3,7 +3,7 @@ import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 
-const modules=Object.fromEntries(await Promise.all(['project-views.js','project-view-remote.js','artifact-views.js','i18n.js','i18n-bindings.js'].map(async name=>[name,await readFile(new URL('../../services/web/'+name,import.meta.url),'utf8')])));
+const modules=Object.fromEntries(await Promise.all(['project-views.js','project-view-remote.js','manual-save.js','artifact-views.js','i18n.js','i18n-bindings.js'].map(async name=>[name,await readFile(new URL('../../services/web/'+name,import.meta.url),'utf8')])));
 const source = await readFile(new URL('../../services/web/simulation.js', import.meta.url), 'utf8');
 
 test('simulation panel uses saved model/version and never invokes Pi turns', () => {
@@ -22,7 +22,7 @@ test('simulation panel renders typed parameters, retries one pending request and
   t.after(() => browser.close());
   const context = await browser.newContext({locale:'zh-CN'}); t.after(() => context.close());
   const page = await context.newPage(); const files = {};
-  for (const name of ['artifact-views.js','index.html', 'app.js', 'i18n.js', 'i18n-bindings.js', 'locale-preference.js','project-status.js', 'browser-preview.js', 'verify-handoff.js', 'layout.js', 'export.js', 'publication.js', 'evidence.js', 'evidence.css', 'services.js', 'previews.js', 'simulation.js','project-views.js','project-view-remote.js', 'local-runs.js', 'comparison.js', 'styles.css', 'workspace.css']) files[name] = await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8');
+  for (const name of ['artifact-views.js','index.html', 'app.js', 'i18n.js', 'i18n-bindings.js', 'locale-preference.js','project-status.js', 'browser-preview.js', 'verify-handoff.js', 'layout.js', 'export.js', 'publication.js', 'evidence.js', 'evidence.css', 'services.js', 'previews.js', 'simulation.js','project-views.js','project-view-remote.js','manual-save.js', 'local-runs.js', 'comparison.js', 'styles.css', 'workspace.css']) files[name] = await readFile(new URL(`../../services/web/${name}`, import.meta.url), 'utf8');
   let experiments = [], posts = 0, failOnce = true, changedSpec = false;const attempts=[];
   const json = (route, body, status = 200) => route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
   await page.route('**/*', async route => {

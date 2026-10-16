@@ -33,6 +33,7 @@ import type {GatewayObservations} from './observer-services.ts';
 import type {GatewayG5ReadonlyReads} from './g5-read-services.ts';
 
 export interface GatewayServices {
+  manualSaves?:ReturnType<typeof import('./manual-save-services.ts').createGatewayManualSaveServices>;
   projectViews?:ReturnType<typeof import('./project-view-services.ts').createGatewayProjectViewServices>;
   projectArchives?:GatewayProjectArchives;
   executionAvailability?:{service:boolean;preview:boolean;simulation:boolean};
@@ -287,10 +288,32 @@ export async function gateway(request:Request, services:GatewayServices):Promise
         throw new HttpError('browser-preview-unavailable',503);
       }
     }
-    const projectViewArtifactsRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/project-view-artifacts(?:\/(artifact-[a-f0-9]{60}))?$/.exec(url.pathname);
+    const manualSaveRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/manual-saves(?:\/([A-Za-z0-9_-]{1,128}))?$/.exec(url.pathname);
+    if(manualSaveRoute){
+      const operationId=manualSaveRoute[2],path=url.searchParams.get('path');
+      if(!['GET','POST'].includes(request.method)||operationId&&(request.method!=='GET'||url.search)||request.method==='POST'&&url.search||[...url.searchParams.keys()].some(k=>k!=='path')||url.searchParams.getAll('path').length>1)throw new HttpError('manual-save-input-invalid',400);
+      if(!services.manualSaves)throw new HttpError('manual-save-unavailable',503);
+      const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),scope=await catalog.workspace(principal,manualSaveRoute[1]!);
+      try{
+        const result=request.method==='POST'?await services.manualSaves.save(scope,principal,idempotencyKey(request),await readJson(request,4*1024*1024)):
+          operationId?await services.manualSaves.status(scope,principal,operationId):await services.manualSaves.state(scope,principal,path??undefined);
+        const latest=await catalog.workspace(principal,manualSaveRoute[1]!);if(!sameScope(scope,latest))throw new HttpError('manual-save-access-denied',403);
+        return json(result);
+      }catch(error){
+        if(error instanceof HttpError||error instanceof CatalogError)throw error;
+        const code=error instanceof Error?error.message:'';
+        if(/access-denied|scope-denied/.test(code))throw new HttpError('manual-save-access-denied',403);
+        if(/not-found/.test(code))throw new HttpError('manual-save-not-found',404);
+        if(/conflict|busy|stale/.test(code))throw new HttpError('manual-save-conflict',409);
+        if(/too-large|limit/.test(code))throw new HttpError('manual-save-too-large',413);
+        if(/invalid|path-denied/.test(code))throw new HttpError('manual-save-input-invalid',400);
+        throw new HttpError('manual-save-unavailable',503);
+      }
+    }
+    const projectViewArtifactsRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/project-view-artifacts(?:\/((?:artifact-[a-f0-9]{60}|manual-artifact-[a-f0-9]{64})))?$/.exec(url.pathname);
     if(projectViewArtifactsRoute){
       const artifactId=projectViewArtifactsRoute[2],identity=url.searchParams.get('identity'),cursor=url.searchParams.get('cursor'),offset=url.searchParams.get('offset');
-      if(request.method!=='GET'||!identity||!/^[a-f0-9]{64}$/.test(identity)||[...url.searchParams.keys()].some(k=>!(artifactId?['identity','offset']:['identity','cursor']).includes(k))||[...url.searchParams.keys()].some(k=>url.searchParams.getAll(k).length!==1)||cursor!==null&&!/^[a-f0-9]{64}:[a-f0-9]{64}:artifact-[a-f0-9]{60}$/.test(cursor)||offset!==null&&!/^(0|[1-9][0-9]{0,6})$/.test(offset))throw new CatalogError('not_found');
+      if(request.method!=='GET'||!identity||!/^[a-f0-9]{64}$/.test(identity)||[...url.searchParams.keys()].some(k=>!(artifactId?['identity','offset']:['identity','cursor']).includes(k))||[...url.searchParams.keys()].some(k=>url.searchParams.getAll(k).length!==1)||cursor!==null&&!/^(?:[a-f0-9]{64}:)?[a-f0-9]{64}:[a-f0-9]{64}:artifact-[a-f0-9]{60}$/.test(cursor)||offset!==null&&!/^(0|[1-9][0-9]{0,6})$/.test(offset))throw new CatalogError('not_found');
       const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),scope=await catalog.maintenanceWorkspace(principal,projectViewArtifactsRoute[1]!);
       if(!services.projectViews?.artifacts)throw new HttpError('project-view-unavailable',503);
       try{

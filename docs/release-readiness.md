@@ -1,14 +1,22 @@
 # Current release readiness — 2026-10-14
 
-## 2026-10-16 Scope split: isolated pages remain Draft
+## 2026-10-16 Separate manual-save Draft candidate
 
 [Local deterministic provider proposal](local-provider-acceptance-plan-20261016.md) is review-only; no fixture execution is authorized by this split.
 
-Manual-save implementation, migration0013, journal schema9 and user-upload artifact support have moved out of #221 into the separate `codex/manual-save-draft-20261016` review branch, stacked on #221. #221 retains the manual-save design document only. Historical [manual candidate evidence](../evidence/releases/manual-save-candidate-20261015.json) and [real invited progress/failure](../evidence/releases/project-view-real-invited-progress-20261016.json) identify their original combined source; they do not certify this reduced candidate.
+Manual-save implementation is isolated on `codex/manual-save-draft-20261016`, stacked on the reduced #221 page/skills branch. It includes migration0013, journal schema9, workbench-only writes, user-upload artifacts and the three RPC receipt adaptations. The adapter detaches only the RPC disposal wrapper before strict receipt validation; unknown symbols remain rejected. No page write capability, production gate or authorization rule is relaxed.
 
-Real Google operator invitation, ordinary-user activation, blank project creation and initialization cleanup succeeded on the combined candidate. Its first manual save persisted immutable content but failed publication because of the RPC receipt lifetime symbol; its original journal/fence remain pending. The repaired manual implementation is reviewed separately. Do not boot the reduced schema7 code against that schema9 acceptance state or clear/replay its pending operation.
+[Real invited failure evidence](../evidence/releases/project-view-real-invited-progress-20261016.json) records the unrepaired combined source. The original AMD128 operation remains pending with immutable content already stored; this branch has not been loaded into that environment or used to recover it. Synthetic real-workerd regression verifies first publication and same-key GET/POST recovery after lost ACK; it does not replace real identity acceptance. See [split and repair evidence](../evidence/releases/manual-save-split-20261016.json).
 
-Goal 1 still lacks exact-candidate page/broker, second-identity/cross-project denial, revocation/browser cleanup and invited nine-egress acceptance. Without manual save, the ordinary content-writing path still requires a model Turn, which is not authorized for Goal 1. The user authorized preparing a deterministic local provider-stub plan for review, not running it. This dependency requires resolution before claiming exact-HEAD acceptance; a combined-branch test is not evidence for the reduced #221 alone. Production remains disabled and ineligible; no undraft, merge or deployment. Preview retirement (#64/#141/#144/#150) and Observer/WebGL (#218) remain separate.
+This is an independent Draft review, not an addition to the production-release Goal. #221 acceptance cannot silently borrow combined-branch evidence. No merge/deployment/production enablement or model call is performed. GC/purge remains #212 scope and must include manual prefixes/fences/journal before any relevant purge.
+
+## 2026-10-15 Manual-save candidate and real login preparation
+
+PR #221 adds a loopback-only workbench manual-save candidate: explicit manual Revision provenance, one canonical head shared with Turns, user-upload artifacts consumed by the read-only page broker, and original-operation recovery. D1 fencing coordinates publication with invitation revocation. [Interface and recovery semantics](manual-project-save-design-20261015.md) include the remaining GC/purge scope; these changes are not deployed.
+
+The frozen candidate passed full local `npm run check`: 3,124 Node passes, 13 skips, 8 Python passes; two cross-reviews found no additional must-fix. [Candidate evidence](../evidence/releases/manual-save-candidate-20261015.json) records source hashes, prior failures and identity/environment gaps. This does not turn the remote empty CI failure into a pass.
+
+The designated local operator completed real Google OAuth in a separate local Catalog. Invitation activation and the ordinary invited account's project/save/page/revocation chain remain pending. Prior AMD128 page/egress results used synthetic identities and do not satisfy this missing acceptance. Draft, unmerged, `productionEligible:false`, production disabled; no model or cloud-compute acceptance is claimed. The historical suite counts below describe their original revisions, not the new manual-save candidate.
 
 ## 2026-10-15 Generic pages: real package/broker isolated-host integration passed
 
