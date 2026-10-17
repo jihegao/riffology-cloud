@@ -6,7 +6,7 @@
   "issue": "https://github.com/jihegao/riffology-cloud/issues/214",
   "pullRequest": "https://github.com/jihegao/riffology-cloud/pull/233",
   "sourceCommit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1",
-  "currentStage": "original image export/raw blobs verified; publication prepared; pending exact short-lived Registry credential transfer authorization after automatic review rejection",
+  "currentStage": "Registry exact immutable pin and actual raw bodies verified; premerge resource preservation passed; Ready/merge and default-closed publication next",
   "authorization": {
     "schema": "project-view-current-publication-authorization/v1",
     "recordedAt": "2026-10-17T07:23:00.789703+00:00",
@@ -56,6 +56,14 @@
       "readOnly": true,
       "initialKnownGithubMessage": "recent account payments have failed OR spending limit needs to be increased",
       "initialKnownGithubMessageIsDefiniteArrears": false
+    },
+    "registryCredentialTransfer": {
+      "specificallyGranted": true,
+      "directHumanReply": "授权该短期凭据传输并继续推送",
+      "scope": "15-minute push/pull credential via SSH stdin to existing AMD128 original task directory; exact approved repository executor, temporary 0600 Docker config and terminal erasure; no local OAuth transfer",
+      "apiDoesNotOfferRepositoryScopingDisclosed": true,
+      "oldUnusedCredentialNotDelivered": true,
+      "oldUnusedCredentialMemoryReferenceCleared": true
     }
   },
   "export": {
@@ -174,9 +182,9 @@
     }
   },
   "registry": {
-    "pushed": false,
-    "actualRawReadback": false,
-    "actualPushInvocations": 0,
+    "pushed": true,
+    "actualRawReadback": true,
+    "actualPushInvocations": 1,
     "credentialTransfer": {
       "recordedAt": "2026-10-17T07:38:35.041184+00:00",
       "approval": "Automatic approval review rejected root write_stdin before execution: the 15-minute Registry password transfer to AMD128 was not specifically authorized",
@@ -190,7 +198,55 @@
       "receiverAndRouteStopped": true,
       "pending": "Direct human exact short-lived account/domain push+pull credential transfer authorization; no new container/target admission",
       "sourceRecordSha256": "537e288d947d837d8d09e5609dc806c56a056267ed52a76e6af43569d6efb4ad",
-      "sourceRecordBytes": 9397
+      "sourceRecordBytes": 9397,
+      "historicalSnapshot": true,
+      "currentAuthorizationResolvedByDirectHumanReply": "授权该短期凭据传输并继续推送",
+      "oldUnusedCredentialMemoryReferenceCleared": true
+    },
+    "imagePin": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+    "publicEvidence": "project-view-registry-20261017/receipt.json",
+    "originalProof": {
+      "bytes": 1106,
+      "sha256": "3a4f89835e39f789d92318359cdfb00f6794b02ce8c6dd37e40de2d9af5c2b9c"
+    },
+    "rawBodyReadback": {
+      "configAndLayers": 13,
+      "bytes": 908121595,
+      "allHashedActualBody": true,
+      "receipt": {
+        "bytes": 5172,
+        "sha256": "81f459ac89d1b51d1378c12e311779a8c1cb8faf451020a6b16f7f2ff6cef564"
+      }
+    },
+    "executionTerminal": {
+      "at": "2026-10-17T07:50:35.628551+00:00",
+      "source": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+      "target": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser:e1aeaa0-20261017",
+      "expectedManifest": "sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+      "workerPid": 3517093,
+      "actualPushInvocations": 1,
+      "phase": "push-and-raw-readback-verified",
+      "credentialLogged": false,
+      "existingDockerConfigUsed": false,
+      "costPolicy": "no budget cap; notify delinquency; no new subscription",
+      "pushExitCode": 0,
+      "stdout": {
+        "bytes": 6001,
+        "sha256": "89f60f37abe4caff207e59e0cf9efa3022125153c45c3f860b1c94ef533a3c28"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "finishedAt": "2026-10-17T07:54:46.224736+00:00",
+      "isolatedCredentialFileRemoved": true,
+      "credentialCleanupErrorTypes": []
+    },
+    "cleanup": {
+      "workerAndPushAndRoutePidsAbsent": true,
+      "temporaryDockerConfigAbsent": true,
+      "port7897ConnectCode": 111,
+      "port7897ExclusiveBindPassed": true
     }
   },
   "publication": {
@@ -198,7 +254,43 @@
     "deployed": false,
     "newNamespaces": [],
     "newApplication": null,
-    "admissionEnabled": false
+    "admissionEnabled": false,
+    "preparedPublisher": {
+      "localPath": ".local/jhg46-publication-review-20261017/publish-default-closed.mjs",
+      "sha256": "9a866f448d4de0150a28b8dc2ececa542e44ed077aee7f559e75455d216b08c2",
+      "bytes": 37285,
+      "offlineContractTests": {
+        "passed": 14,
+        "cloudWrites": 0,
+        "notTargetAcceptance": true
+      },
+      "independentStaticReview": "no remaining must-fix",
+      "requires": [
+        "actual Registry raw manifest/config/all-layer body hash proof",
+        "actual GitHub PR233 merge/main proof and two-parent local Git guard",
+        "fresh Personal connector pre/post Container preservation witnesses bound to original request/version"
+      ],
+      "workerWritesExecuted": 0,
+      "applicationsCreated": 0,
+      "localOauthContainersGetUnavailable": true,
+      "localOauthScopeExpanded": false,
+      "unknownWriteOutcomeKeepsOriginalIntentAndLock": true
+    },
+    "preparedPublicAssetsReadback": {
+      "localPath": ".local/jhg46-publication-review-20261017/readback-public-assets.mjs",
+      "sha256": "d78a450c7c205f4567f4b0929d53604f875e35c979e42c365b8d78ab1f907e02",
+      "independentStaticReview": "no remaining must-fix",
+      "executed": false
+    },
+    "preparedContainersWitnessRequest": {
+      "localPath": ".local/jhg46-publication-review-20261017/make-containers-witness-request.mjs",
+      "sha256": "a1600833da8d5aae344c623f86385a7a8a74029d03289b015ecc9618f927aba0",
+      "bytes": 13251,
+      "offlineSyntaxAndSyntheticFailureChecksPassed": true,
+      "independentStaticReview": "no remaining must-fix",
+      "realApiRequests": 0,
+      "credentialReads": false
+    }
   },
   "acceptance": {
     "targetContainerStarted": false,
@@ -220,5 +312,44 @@
     "cloudflareContainerStartRequested": false,
     "realModelTurnRunRequested": false,
     "globalRuntimeOrZeroCostEstablished": false
+  },
+  "premergeResourcePreservation": {
+    "startedAt": "2026-10-17T07:56:22.240Z",
+    "endedAt": "2026-10-17T07:56:25.342Z",
+    "authority": "Personal Cloudflare connector GET-only",
+    "checks": {
+      "settings": true,
+      "apps": true,
+      "namespaces": true,
+      "registries": true,
+      "routes": true,
+      "schedules": true,
+      "domains": true,
+      "subdomain": true,
+      "bindings": true,
+      "runtime": true,
+      "originalActiveDeployment": true,
+      "allOriginalAppVersions": true,
+      "activeBracketStable": true,
+      "settingsBracketStable": true,
+      "appsBracketStable": true,
+      "namespacesBracketStable": true,
+      "allOriginalNamespaceBindings": true,
+      "newProjectViewClassesAbsent": true,
+      "proposedApplicationNameAbsent": true
+    },
+    "counts": {
+      "bindings": 100,
+      "exports": 23,
+      "containerAssociations": 5,
+      "accountNamespaces": 48,
+      "boundOriginalNamespaces": 23,
+      "accountApplications": 15
+    },
+    "sourceReceipt": {
+      "bytes": 9947,
+      "sha256": "f27e4e7d14ccd2178af8d29aed9fba1fd4a02f836872eacabf369c3d4a85ea53"
+    },
+    "doesNotProveZeroExistingRuntimeOrCost": true
   }
 }

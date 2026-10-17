@@ -794,9 +794,11 @@
     "githubCiQuotaFailureMayBeIgnored": true,
     "originalImageExportExecutedOnce": true,
     "rawManifestAndConfigVerified": true,
-    "registryReadbackVerified": false,
+    "registryReadbackVerified": true,
     "deployed": false,
     "targetContainerStartAuthorized": false,
-    "newSubscriptionAuthorized": false
+    "newSubscriptionAuthorized": false,
+    "credentialTransferSpecificallyGranted": true,
+    "premergeResourcePreservationPassed": true
   }
 }
