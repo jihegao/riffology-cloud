@@ -4,6 +4,7 @@ FROM --platform=linux/amd64 mcr.microsoft.com/playwright@sha256:957bb6b7cba151ce
 WORKDIR /opt/viewer
 COPY vendor/playwright /opt/viewer/node_modules/playwright
 COPY vendor/playwright-core /opt/viewer/node_modules/playwright-core
+COPY context-receipt.json /opt/viewer/context-receipt.json
 RUN groupadd --gid 10001 viewer \
  && useradd --uid 10001 --gid 10001 --create-home --home-dir /home/viewer --shell /usr/sbin/nologin viewer \
  && ln -s /ms-playwright/chromium-1243/chrome-linux64 /opt/chrome \

@@ -12,8 +12,8 @@ const scope={tenantId:'tenant-alpha',projectId:'project-alpha',workspaceId:'work
 const view={id:'home',title:'Home',entrypoint:'app/home.html'};
 const pkg:ProjectViewPackage={schema:'project.view-package/v1',scope,revisionId:'revision-one',filesSha256:'f'.repeat(64),manifest:{schema:'project.views/v1',files:['app/home.html'],views:[view]},assets:[],packageIdentity:'a'.repeat(64)};
 async function fixture(){
- const now=Date.now(),raw=JSON.stringify({schema:'project-view-policy/v1',enabled:true,startsAt:now-1000,endsAt:now+600000,image,grants:[{scope,actor}]}),hash=await projectViewPolicyHash(raw);
- const env={APP_ORIGIN:origin,PROJECT_VIEW_POLICY_JSON:raw,PROJECT_VIEW_RUNTIME_POLICY_HASH:hash,PROJECT_VIEW_RUNTIME_IMAGE:image};
+ const now=Date.now(),contextReceiptSha256='c'.repeat(64),raw=JSON.stringify({schema:'project-view-policy/v1',enabled:true,startsAt:now-1000,endsAt:now+600000,image,contextReceiptSha256,grants:[{scope,actor}]}),hash=await projectViewPolicyHash(raw);
+ const env={APP_ORIGIN:origin,PROJECT_VIEW_POLICY_JSON:raw,PROJECT_VIEW_RUNTIME_POLICY_HASH:hash,PROJECT_VIEW_RUNTIME_IMAGE:image,PROJECT_VIEW_RUNTIME_CONTEXT_RECEIPT_SHA256:contextReceiptSha256};
  let saved:ProjectViewRuntimeIdentity|null=null,valid=true,closeCount=0,starts=0,commands=0,packageReads=0,authorityReads=0,onCommand=()=>{},onStart=()=>{};
  const runtime:ProjectViewRuntimePort={
   async lookup(input){return saved&&input.sessionId===saved.sessionId&&input.actor.userId===saved.actor.userId&&input.workspaceId===saved.scope.workspaceId?structuredClone(saved):null;},
@@ -30,9 +30,9 @@ const create={requestId:'original-operation',packageIdentity:pkg.packageIdentity
 test('browser admission is default closed and binds exact actor, scope, image and raw policy pin',async()=>{
  const f=await fixture();assert.ok(parseProjectViewPolicy(f.env.PROJECT_VIEW_POLICY_JSON));
  await projectViewAdmission(f.env,scope,actor);
- for(const changed of [{PROJECT_VIEW_POLICY_JSON:undefined},{PROJECT_VIEW_RUNTIME_POLICY_HASH:'b'.repeat(64)},{PROJECT_VIEW_RUNTIME_IMAGE:'sha256:'+'b'.repeat(64)},{APP_ORIGIN:'http://outside.test'},{PROJECT_VIEW_POLICY_JSON:JSON.stringify({...JSON.parse(f.env.PROJECT_VIEW_POLICY_JSON),enabled:false})}])await assert.rejects(projectViewAdmission({...f.env,...changed},scope,actor),/admission-closed/);
+ for(const changed of [{PROJECT_VIEW_POLICY_JSON:undefined},{PROJECT_VIEW_RUNTIME_POLICY_HASH:'b'.repeat(64)},{PROJECT_VIEW_RUNTIME_IMAGE:'sha256:'+'b'.repeat(64)},{PROJECT_VIEW_RUNTIME_CONTEXT_RECEIPT_SHA256:undefined},{PROJECT_VIEW_RUNTIME_CONTEXT_RECEIPT_SHA256:'d'.repeat(64)},{APP_ORIGIN:'http://outside.test'},{PROJECT_VIEW_POLICY_JSON:JSON.stringify({...JSON.parse(f.env.PROJECT_VIEW_POLICY_JSON),enabled:false})}])await assert.rejects(projectViewAdmission({...f.env,...changed},scope,actor),/admission-closed/);
  for(const [s,a]of [[{...scope,workspaceGeneration:2},actor],[scope,{...actor,authVersion:2}],[{...scope,projectId:'foreign'},actor]] as const)await assert.rejects(projectViewAdmission(f.env,s,a),/admission-closed/);
- for(const mutation of [{extra:true},{endsAt:Date.now()+2*86400000},{grants:[]},{image:'browser:latest'}])assert.equal(parseProjectViewPolicy(JSON.stringify({...JSON.parse(f.env.PROJECT_VIEW_POLICY_JSON),...mutation})),null);
+ for(const mutation of [{extra:true},{endsAt:Date.now()+2*86400000},{grants:[]},{image:'browser:latest'},{contextReceiptSha256:undefined},{contextReceiptSha256:'latest'}])assert.equal(parseProjectViewPolicy(JSON.stringify({...JSON.parse(f.env.PROJECT_VIEW_POLICY_JSON),...mutation})),null);
 });
 test('production page discovery stays closed without a complete explicit browser grant',async()=>{
  const f=await fixture();const closed=createGatewayProjectViewServices({...f.bound,PROJECT_VIEW_POLICY_JSON:'{}'});

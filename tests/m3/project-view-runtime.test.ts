@@ -3,6 +3,7 @@ import test from 'node:test';
 import {DatabaseSync} from 'node:sqlite';
 import {ProjectViewRuntimeCore,type ProjectViewNativePort,type ProjectViewNativeSession,type ProjectViewRuntimeStorage} from '../../services/project-views/runtime-core.ts';
 import {projectViewRuntimeCommand,projectViewRuntimeDigest,projectViewRuntimeIdentity,projectViewRuntimeStart,runtimeActorName,type ProjectViewCapacityPort,type ProjectViewRuntimeStart} from '../../services/project-views/runtime-protocol.ts';
+import {createProjectViewRuntimePipe} from '../../services/project-views/runtime-pipe.mjs';
 
 const encoder=new TextEncoder();
 const sha=async(text:string)=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',encoder.encode(text)))].map(n=>n.toString(16).padStart(2,'0')).join('');
@@ -112,4 +113,19 @@ test('transient cold-recovery storage failure retries original cleanup without e
 test('browser failure closes the original runtime and never executes a replacement',async t=>{
  const f=fixture(t),v=await input();await f.core.start(v);f.finished.reject(Error('untrusted output'));await until(()=>!f.occupied);
  assert.equal((await f.core.status({identity:v.identity})).status,'closed');assert.equal(f.starts,1);assert.equal(f.running,false);
+});
+
+test('real pipe EOF, malformed output and output flood fence the original actor; unknown destroy never returns capacity',async t=>{
+ for(const fault of ['eof','malformed','flood'])await t.test(fault,async t=>{
+  const f=fixture(t),v=await input();let output!:ReadableStreamDefaultController<Uint8Array>,starts=0;
+  const exit=deferred(),stream=new ReadableStream<Uint8Array>({start(controller){output=controller;}});
+  f.native.start=async()=>{starts++;f.running=true;const pipe=createProjectViewRuntimePipe({stdin:new WritableStream<Uint8Array>(),stdout:stream,exitCode:exit.promise.then(()=>0)},v);await pipe.ready;return pipe;};
+  await f.core.start(v);f.failDestroy=true;
+  if(fault==='eof'){exit.resolve();output.close();}
+  else if(fault==='malformed')output.enqueue(encoder.encode('{"type":"exec","command":"forged"}\n'));
+  else output.enqueue(new Uint8Array(3*1024*1024+1));
+  await until(()=>f.destroys>0);await until(()=>f.record().status==='unknown');
+  assert.equal(f.occupied,true);assert.equal((await f.core.status({identity:v.identity})).cleanupConfirmed,false);assert.equal(starts,1);
+  f.failDestroy=false;await f.core.alarm();assert.equal(f.running,false);assert.equal(f.occupied,false);assert.equal(starts,1);
+ });
 });

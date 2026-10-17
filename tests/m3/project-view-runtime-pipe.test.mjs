@@ -4,11 +4,11 @@ import {createProjectViewRuntimePipe,PROJECT_VIEW_BROWSER_PROGRAM} from '../../s
 
 const encoder=new TextEncoder();
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
-function fixture(){
+function fixture(options={}){
  let output,finish,kills=0;const writes=[];
  const stdout=new ReadableStream({start(controller){output=controller;}}),exitCode=new Promise(resolve=>{finish=resolve;});
  const stdin=new WritableStream({write(chunk){writes.push(JSON.parse(new TextDecoder().decode(chunk)));},close(){output.close();finish(0);}});
- const pipe=createProjectViewRuntimePipe({stdin,stdout,exitCode,kill(){kills++;}},{pkg:{canary:'fixed'},view:{id:'home'}});
+ const pipe=createProjectViewRuntimePipe({stdin,stdout,exitCode,kill(){kills++;}},{pkg:{canary:'fixed'},view:{id:'home'}},options);
  return {pipe,writes,get kills(){return kills;},emit(value){output.enqueue(encoder.encode(JSON.stringify(value)+'\n'));},bytes(value){output.enqueue(value);}};
 }
 function image(){const value=new Uint8Array(33);value.set([137,80,78,71,13,10,26,10]);const view=new DataView(value.buffer);view.setUint32(16,800);view.setUint32(20,600);return btoa(String.fromCharCode(...value));}
@@ -34,9 +34,21 @@ for(const [name,value] of [
  ['forged image dimensions',{type:'frame',base64:image(),width:1,height:600}],
  ['unknown output envelope',{type:'exec',command:'touch /tmp/forged'}],
 ])test(name+' fences the pipe',async()=>{
- const f=fixture();await f.pipe.ready;f.emit(value);await assert.rejects(f.pipe.finished,/pipe-invalid/);assert.equal(f.kills,1);assert.throws(()=>f.pipe.poll(),/pipe-invalid/);
+ const f=fixture();await f.pipe.ready;f.emit(value);await assert.rejects(f.pipe.finished,/pipe-invalid/);assert.equal(f.kills,0,'protocol failures delegate original-container destruction to Runtime');assert.throws(()=>f.pipe.poll(),/pipe-invalid/);
 });
 
 test('line byte ceiling rejects a single unterminated output flood',async()=>{
- const f=fixture();await f.pipe.ready;f.bytes(new Uint8Array(3*1024*1024+1));await assert.rejects(f.pipe.finished,/pipe-invalid/);assert.equal(f.kills,1);
+ const f=fixture();await f.pipe.ready;f.bytes(new Uint8Array(3*1024*1024+1));await assert.rejects(f.pipe.finished,/pipe-invalid/);assert.equal(f.kills,0);
+});
+
+test('the synchronous native fence runs in the queued write microtask before any private init byte',async()=>{
+ let permitted=true,checks=0;const f=fixture({beforeWrite(type){checks++;assert.equal(type,'init');if(!permitted)throw Error('original-actor-fenced');}});
+ permitted=false;
+ await assert.rejects(f.pipe.ready,/original-actor-fenced/);await assert.rejects(f.pipe.finished,/pipe-invalid/);assert.equal(checks,1);assert.deepEqual(f.writes,[]);assert.equal(f.kills,0);
+});
+
+test('a queued input cannot write after close flips the pipe state in the same turn',async()=>{
+ const f=fixture();await f.pipe.ready;
+ const rejected=assert.rejects(f.pipe.send({type:'input',event:{kind:'wheel',deltaY:1}}),/pipe-invalid/),closing=f.pipe.close();
+ await rejected;await closing;await assert.rejects(f.pipe.finished,/pipe-invalid/);assert.deepEqual(f.writes.map(value=>value.type),['init']);assert.equal(f.kills,0);
 });

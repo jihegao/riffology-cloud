@@ -1,14 +1,17 @@
 import {DurableObject} from 'cloudflare:workers';
-import {ProjectViewRuntimeCore,type ProjectViewNativePort,type ProjectViewNativeSession} from './runtime-core.ts';
+import {ProjectViewRuntimeCore,type ProjectViewNativePort,type ProjectViewNativeSession,type ProjectViewNativeFence} from './runtime-core.ts';
 import {createProjectViewRuntimePipe,PROJECT_VIEW_BROWSER_PROGRAM} from './runtime-pipe.mjs';
 import {PROJECT_VIEW_CAPACITY_NAME,projectViewRuntimeIdentity,runtimeActorName,runtimeObject,type ProjectViewCapacityPort,type ProjectViewRuntimeCommand,type ProjectViewRuntimeIdentity,type ProjectViewRuntimeStart,type ProjectViewRuntimePort} from './runtime-protocol.ts';
 import {actor,turnId,type TurnActor} from '../turn/protocol.ts';
+import {startProjectViewExec} from './exec-deadline.ts';
+import {PROJECT_VIEW_PREFLIGHT_PROGRAM,readProjectViewPreflight} from './runtime-preflight.mjs';
 
 export interface ProjectViewRuntimeEnv{
  PROJECT_VIEW_RUNTIME:DurableObjectNamespace<ProjectViewRuntime>;
  PROJECT_VIEW_CAPACITY:{getByName(name:string):ProjectViewCapacityPort};
  PROJECT_VIEW_RUNTIME_POLICY_HASH?:string;
  PROJECT_VIEW_RUNTIME_IMAGE?:string;
+ PROJECT_VIEW_RUNTIME_CONTEXT_RECEIPT_SHA256?:string;
 }
 function imageDigest(value:unknown){if(typeof value!=='string'||! /^(?:sha256:|[A-Za-z0-9][A-Za-z0-9._:/-]*@sha256:)[a-f0-9]{64}$/.test(value))throw Error('project-view-runtime-image-denied');return value.slice(-64);}
 
@@ -19,7 +22,7 @@ export class ProjectViewRuntime extends DurableObject<ProjectViewRuntimeEnv> imp
  constructor(ctx:DurableObjectState,env:ProjectViewRuntimeEnv){
   super(ctx,env);
   const native:ProjectViewNativePort={
-   start:input=>this.#startNative(input),
+   start:(input,fence)=>this.#startNative(input,fence),
    running:async()=>{if(!ctx.container)throw Error('project-view-runtime-container-required');return ctx.container.running;},
    destroy:async()=>{if(!ctx.container)throw Error('project-view-runtime-container-required');await ctx.container.destroy();},
   };
@@ -37,27 +40,44 @@ export class ProjectViewRuntime extends DurableObject<ProjectViewRuntimeEnv> imp
  #policy(identity:ProjectViewRuntimeIdentity){
   if(!this.env.PROJECT_VIEW_RUNTIME_POLICY_HASH||! /^[a-f0-9]{64}$/.test(this.env.PROJECT_VIEW_RUNTIME_POLICY_HASH)||identity.policyHash!==this.env.PROJECT_VIEW_RUNTIME_POLICY_HASH)throw Error('project-view-runtime-policy-denied');
   imageDigest(this.env.PROJECT_VIEW_RUNTIME_IMAGE);
+  if(!this.env.PROJECT_VIEW_RUNTIME_CONTEXT_RECEIPT_SHA256||! /^[a-f0-9]{64}$/.test(this.env.PROJECT_VIEW_RUNTIME_CONTEXT_RECEIPT_SHA256))throw Error('project-view-runtime-context-receipt-denied');
  }
- async #startNative(input:ProjectViewRuntimeStart):Promise<ProjectViewNativeSession>{
+ async #startNative(input:ProjectViewRuntimeStart,fence:ProjectViewNativeFence):Promise<ProjectViewNativeSession>{
   this.#identity(input.identity);this.#policy(input.identity);
+  fence.beforeWrite('init');
   const container=this.ctx.container;if(!container||container.running)throw Error('project-view-runtime-container-not-empty');
   // start() itself returns before assignment. Core persists and guards this
   // one start intent; exec never auto-starts a stopped container.
   container.start({entrypoint:['node','-e','process.on("SIGTERM",()=>process.exit(0));setInterval(()=>{},1000)'],enableInternet:false,env:{}});
   this.ctx.waitUntil(container.monitor().then(()=>this.#core.close({identity:input.identity,reason:'container-exited'}),()=>this.#core.close({identity:input.identity,reason:'container-failed'})).catch(()=>{}));
   await container.setInactivityTimeout(10_000);
-  const process=await container.exec(['node','--input-type=module','-e',PROJECT_VIEW_BROWSER_PROGRAM],{stdin:'pipe',stdout:'pipe',stderr:'ignore',cwd:'/opt/viewer',user:'10001:10001',env:{},signal:AbortSignal.timeout(Math.max(1,input.expiresAt-Date.now()))});
-  const actual=await container.inspect();
-  if(!actual||imageDigest(actual.image)!==imageDigest(this.env.PROJECT_VIEW_RUNTIME_IMAGE))throw Error('project-view-runtime-image-mismatch');
-  const pipe=createProjectViewRuntimePipe(process,input);await pipe.ready;
-  let closed=false,capturing=false;
-  const timer=setInterval(()=>{
-   if(closed||capturing)return;capturing=true;
-   const work=pipe.capture().catch(()=>this.#core.close({identity:input.identity,reason:'capture-failed'})).finally(()=>{capturing=false;});this.ctx.waitUntil(work);
-  },500);
-  void pipe.finished.then(()=>{clearInterval(timer);},()=>{clearInterval(timer);});
-  this.ctx.waitUntil(pipe.finished.catch(()=>{}));
-  return {send:command=>pipe.send(command),poll:()=>pipe.poll(),finished:pipe.finished,async close(){closed=true;clearInterval(timer);await pipe.close();}};
+  fence.beforeWrite('init');
+  // Default scheduling preserves the non-root capability boundary. inspect's
+  // image is only a start reference and may be empty; the immutable app/version
+  // image pin is checked by release control-plane readback, not attested here.
+  // This fixed, credential-free program checks baked inputs before any project
+  // bytes are sent to a browser process.
+  const preflight=await startProjectViewExec(signal=>container.exec(['node','--input-type=module','-e',PROJECT_VIEW_PREFLIGHT_PROGRAM,this.env.PROJECT_VIEW_RUNTIME_CONTEXT_RECEIPT_SHA256!],{stdout:'pipe',stderr:'ignore',cwd:'/opt/viewer',user:'10001:10001',env:{},signal}),Math.min(input.expiresAt,Date.now()+15_000));
+  try{
+   const actual=await container.inspect();
+   if(!actual||actual.image&&imageDigest(actual.image)!==imageDigest(this.env.PROJECT_VIEW_RUNTIME_IMAGE))throw Error('project-view-runtime-image-mismatch');
+   await readProjectViewPreflight(preflight.process,this.env.PROJECT_VIEW_RUNTIME_CONTEXT_RECEIPT_SHA256!);
+  }finally{preflight.dispose();}
+  fence.beforeWrite('init');
+  const timed=await startProjectViewExec(signal=>container.exec(['node','--input-type=module','-e',PROJECT_VIEW_BROWSER_PROGRAM],{stdin:'pipe',stdout:'pipe',stderr:'ignore',cwd:'/opt/viewer',user:'10001:10001',env:{},signal}),input.expiresAt);
+  try{
+   fence.beforeWrite('init');
+   const pipe=createProjectViewRuntimePipe(timed.process,input,fence);await pipe.ready;
+   let closed=false,capturing=false;
+   const timer=setInterval(()=>{
+    if(closed||capturing)return;capturing=true;
+    const work=pipe.capture().catch(()=>this.#core.close({identity:input.identity,reason:'capture-failed'})).finally(()=>{capturing=false;});this.ctx.waitUntil(work);
+   },500);
+   const dispose=()=>{closed=true;clearInterval(timer);timed.dispose();};
+   void pipe.finished.then(dispose,dispose);
+   this.ctx.waitUntil(pipe.finished.catch(()=>{}));
+   return {send:command=>pipe.send(command),poll:()=>pipe.poll(),finished:pipe.finished,async close(){dispose();await pipe.close();}};
+  }catch(error){timed.dispose();throw error;}
  }
  async start(input:ProjectViewRuntimeStart){this.#policy(this.#identity(input.identity));return this.#core.start(input);}
  async command(input:{identity:ProjectViewRuntimeIdentity;command:ProjectViewRuntimeCommand}){

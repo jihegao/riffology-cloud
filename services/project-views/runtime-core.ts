@@ -7,9 +7,10 @@ export interface ProjectViewNativeSession{
  close():Promise<void>;
  finished:Promise<void>;
 }
+export type ProjectViewNativeFence={beforeWrite:(type:string)=>void};
 /** This port controls one immutable session actor, never an SDK auto-start API. */
 export interface ProjectViewNativePort{
- start(input:ProjectViewRuntimeStart):Promise<ProjectViewNativeSession>;
+ start(input:ProjectViewRuntimeStart,fence:ProjectViewNativeFence):Promise<ProjectViewNativeSession>;
  running():Promise<boolean>;
  destroy():Promise<void>;
 }
@@ -82,7 +83,14 @@ export class ProjectViewRuntimeCore implements ProjectViewRuntimePort{
    // No native call occurs after a close that raced the durable start intent.
    if(this.#checked(identity).status!=='starting')fail('fenced');
    let session:ProjectViewNativeSession;
-   try{session=await this.#native.start(input);}
+   try{session=await this.#native.start(input,{beforeWrite:type=>{
+    if(type==='close')return;
+    const current=this.#checked(identity),now=this.#now();
+    // Synchronous: no await may separate this journal check from the native
+    // writer.write call. A queued init/input cannot cross close or expiry.
+    if(type==='init'?(current.status!=='starting'||now>=current.createdAt+this.#options.startupMs):current.status!=='running')fail('start-fenced');
+    if(now>=current.expiresAt||type!=='init'&&now>=current.lastPollAt+PROJECT_VIEW_IDLE_MS)fail('start-fenced');
+   }});}
    catch(error){await this.#change(identity,row=>{row.startSettled=true;row.guardUntil=Math.max(row.guardUntil??0,this.#now()+this.#options.assignmentGuardMs);});throw error;}
    this.#session=session;
    await this.#change(identity,row=>{row.startSettled=true;if(row.status==='starting'&&row.expiresAt>this.#now()){row.status='running';row.lastPollAt=this.#now();}});

@@ -9,7 +9,7 @@ const bytes=value=>encoder.encode(JSON.stringify(value)).byteLength;
 const failure=()=>Error('project-view-runtime-pipe-invalid');
 /** No HTTP server or container port. The browser's sole host transport is the
  * fixed process's standard IO; all output is bounded, untrusted page data. */
-export function createProjectViewRuntimePipe(process,input){
+export function createProjectViewRuntimePipe(process,input,options={}){
  if(!process?.stdin||!process.stdout)throw Error('project-view-runtime-pipe-unavailable');
  const writer=process.stdin.getWriter(),reader=process.stdout.getReader();
  let closing=false,failed=false,frame=null,messages=[],messageBytes=0,pending=0,queuedBytes=0,networkEvents=0,capturePending=false;
@@ -18,7 +18,9 @@ export function createProjectViewRuntimePipe(process,input){
  void finished.catch(()=>{});
  function abort(){
   if(failed)return;failed=true;
-  try{process.kill(9);}catch{}
+  // EOF may arrive after process exit. A late exec.kill() can raise an
+  // uncaught platform error; reject the protocol and let Runtime destroy the
+  // original container/process tree. EOF itself is never cleanup proof.
   void writer.abort(failure()).catch(()=>{});void reader.cancel().catch(()=>{});
   finishReject(failure());
  }
@@ -27,7 +29,11 @@ export function createProjectViewRuntimePipe(process,input){
   const line=encoder.encode(JSON.stringify(value)+'\n');
   if(line.byteLength>max||pending>=16||queuedBytes+line.byteLength>4*1024*1024){abort();return Promise.reject(failure());}
   pending++;queuedBytes+=line.byteLength;
-  const work=writeTail.then(()=>{if(failed)throw failure();return writer.write(line);});
+  const work=writeTail.then(()=>{
+   if(failed||closing&&value.type!=='close')throw failure();
+   options.beforeWrite?.(value.type);
+   return writer.write(line);
+  });
   writeTail=work.catch(()=>{});
   return work.catch(error=>{abort();throw error;}).finally(()=>{pending--;queuedBytes-=line.byteLength;});
  }

@@ -5,4 +5,4 @@ export interface ProjectViewRuntimePipe extends ProjectViewNativeSession{
  ready:Promise<void>;
  capture():Promise<void>;
 }
-export function createProjectViewRuntimePipe(process:Pick<ExecProcess,'stdin'|'stdout'|'exitCode'|'kill'>,input:ProjectViewRuntimeStart):ProjectViewRuntimePipe;
+export function createProjectViewRuntimePipe(process:Pick<ExecProcess,'stdin'|'stdout'|'exitCode'>,input:ProjectViewRuntimeStart,options?:{beforeWrite?:(type:string)=>void}):ProjectViewRuntimePipe;
