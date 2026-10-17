@@ -1,0 +1,54 @@
+{
+  "endedAt": "2026-10-17T13:26:07.198892+00:00",
+  "errorCode": null,
+  "localStopErrors": [],
+  "originalSsh": {
+    "linuxStartTicks": null,
+    "pid": 97551,
+    "platform": "macOS-local-ssh",
+    "startedAt": "2026-10-17T13:26:01.735643+00:00"
+  },
+  "originalSshReaped": true,
+  "remoteStoppedByLocalCleanupProved": false,
+  "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+  "safeRemoteResult": {
+    "actualImageConfigUser": "root",
+    "baseDerivedLaunchConfigPreserved": [
+      "User",
+      "Entrypoint",
+      "Cmd",
+      "WorkingDir",
+      "Env"
+    ],
+    "canonicalImplementationCommit": "0d23a12d869abccb9515a8e7f8196b0266258226",
+    "cleanup": {
+      "cleanupConfirmed": true,
+      "labelListEmpty": true,
+      "originalContainerId": "65714c5c5e5377ca8f761c8a1a85d6baa5bd18bc994f95c0ae07db24c4d7ec19",
+      "originalIdAbsent": true
+    },
+    "endedAt": "2026-10-17T13:26:03.276963+00:00",
+    "errorCode": "command-nonzero-start-original-once",
+    "imageId": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+    "noCloudOrProviderAcceptanceClaim": true,
+    "parentRequestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+    "repairArchiveSha256": "4ae32cf711d7500d4b0cd893757ee5a625d9b275518b86e3680146c0b7f7dcd2",
+    "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+    "schema": "trusted-pi-build-probe-result/v1",
+    "status": "unknown-stopped"
+  },
+  "schema": "trusted-pi-package-permissions-build-transport/v1",
+  "sshExitCode": 1,
+  "startedAt": "2026-10-17T13:26:01.735643+00:00",
+  "status": "original-runner-returned-failed-or-stopped",
+  "streams": {
+    "stderr": {
+      "bytesRetained": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytesRetained": 1049,
+      "sha256": "d8ee76285be9217e45b0f4cb6e337f59e5bae8f71bcdb578850ab6acdf36bf6c"
+    }
+  }
+}

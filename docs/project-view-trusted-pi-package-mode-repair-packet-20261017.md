@@ -1,5 +1,7 @@
 # #238 TrustedPi package 权限修复：下一批离线验证包 — 2026-10-17
 
+**后续实际结果：** 本固定包已获直接授权并执行。一次构建生成a946，唯一mock因宿主0600探针入口对UID10002不可读而EACCES，未执行镜像目标或SDK检查；原容器已独立确认清理。详见[实际结果](project-view-trusted-pi-package-mode-result-20261017.md)。下文保留5fe授权前准备快照及原4ae32/bc8e输入，不能据此假称本次验证通过。
+
 负责人 @jihegao；当前选中的 [#214](https://github.com/jihegao/riffology-cloud/issues/214) 验收所需 [#238 最小缺陷修复](https://github.com/jihegao/riffology-cloud/issues/238)。[代码 PR #239](https://github.com/jihegao/riffology-cloud/pull/239) 的候选 commit 为 `0d23a12d869abccb9515a8e7f8196b0266258226`，两份 canonical Dockerfile 的 package COPY 显式增加 `--chmod=0444`，6项相关既有测试及独立 diff 审阅通过。代码尚未合并，本包尚未发送、构建或运行；不代表验收通过。
 
 ## 实际缺陷与候选范围

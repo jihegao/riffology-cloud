@@ -1,0 +1,253 @@
+{
+  "dockerCommands": 0,
+  "endedAt": "2026-10-17T13:21:21.323664+00:00",
+  "grantSha256": "bea3e26bcd34380293afbf6c17df77385652e551d1d0ab1f838c557454fed3de",
+  "helperBytes": 10364,
+  "helperSha256": "4a255c9ceb56b6644c73f034a613981b627f2da3c3603d826530b5df02148cba",
+  "newTransferOrBuildOrMock": false,
+  "originalSshPid": 97022,
+  "originalSshReaped": true,
+  "rawGrantConfigEnvOrHumanReplyReturned": false,
+  "remoteWrites": false,
+  "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+  "safeRemoteProjection": {
+    "arbitraryRawJsonOrEnvReturned": false,
+    "buildProbeDirectoryExists": false,
+    "dockerCommands": 0,
+    "endedAt": "2026-10-17T13:21:17.414225+00:00",
+    "files": [
+      {
+        "bytes": 4031,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "EXECUTION-CONTRACT.md",
+        "sha256": "96404a60a74eb0d5e1377b7513b046517bd8ade99bfed29c6ff514dfb76e6627",
+        "uid": 1000
+      },
+      {
+        "bytes": 1468,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "context/Dockerfile",
+        "sha256": "3ef0b46a9388b9d78a1b82ceeb5c7c2ed821925982975d2a1e2f5a68411a9bb9",
+        "uid": 1000
+      },
+      {
+        "bytes": 2241,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "context/services/browser-preview/runtime/sha256.mjs",
+        "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24",
+        "uid": 1000
+      },
+      {
+        "bytes": 6700,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "context/services/project-resources/text.mjs",
+        "sha256": "9f7f3266549f04a0a8214e6e725ea9d85030532364f136487833e9cc45af303e",
+        "uid": 1000
+      },
+      {
+        "bytes": 23072,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "context/services/runtime/controlled-pi.mjs",
+        "sha256": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871",
+        "uid": 1000
+      },
+      {
+        "bytes": 150262,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "context/services/trusted-pi/package-lock.json",
+        "sha256": "ad20b5c766c411c5ba42a4fc997890fe3494ab8adb96cf5d75031366b3d144fc",
+        "uid": 1000
+      },
+      {
+        "bytes": 244,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "context/services/trusted-pi/package.json",
+        "sha256": "0dde532fe23b810bd09b978f990d48342f7378429f2b2c48f30e055993fa6ebe",
+        "uid": 1000
+      },
+      {
+        "bytes": 27185,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "context/services/trusted-pi/release-candidate.mjs",
+        "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07",
+        "uid": 1000
+      },
+      {
+        "bytes": 1557,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "context/services/trusted-pi/research-context.mjs",
+        "sha256": "938e89155a5d5e0c405f51db5d973a4db264e63d96e308aff8da93caaaa05076",
+        "uid": 1000
+      },
+      {
+        "bytes": 6884,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "input-manifest.json",
+        "sha256": "f27b35dcbe84b58e3442018332374dbf20fa0d315528a322e56ea2a2bcfea5d4",
+        "uid": 1000
+      },
+      {
+        "bytes": 12020,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "probe/compatibility-probe.mjs",
+        "sha256": "bded581766c4656b05b72c6fce39fcb43461a44cbe407c0d1e9ab4a23edf2097",
+        "uid": 1000
+      },
+      {
+        "bytes": 3325,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "repair-manifest.json",
+        "sha256": "e668f9080b5a906c1d74b84246aa865cb458c9c1257086b21e920b32d805a84e",
+        "uid": 1000
+      },
+      {
+        "bytes": 6585,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "operations/EXECUTION.md",
+        "sha256": "4f2ce134078fb80e8f87a5c5e5bbf2b94fb3f0c905cfa25e9bbeb268dd4992ef",
+        "uid": 1000
+      },
+      {
+        "bytes": 28136,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "operations/build-probe-repair.py",
+        "sha256": "c0afbbba0277c82b27fd145c3db830c2faa9375222d77b5044b12d22116d8a81",
+        "uid": 1000
+      },
+      {
+        "bytes": 3987,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "operations/repair_common.py",
+        "sha256": "a1ac0f85ef63d33b434736d81473fe1db056661344a24273493ed5a825f5a6ef",
+        "uid": 1000
+      },
+      {
+        "bytes": 3419,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "operations/scope.json",
+        "sha256": "3ae7c17eb9a25876294d3ee3e94f634e218fc431238b8181ae48f2d35915d8aa",
+        "uid": 1000
+      },
+      {
+        "bytes": 10388,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "operations/test_repair_operations.py",
+        "sha256": "ca30445f5161aeb5dab0a1ffce5b81288b3b6f89899c1ea66df4eba62d567401",
+        "uid": 1000
+      },
+      {
+        "bytes": 6552,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "operations/transfer-local.py",
+        "sha256": "3acb500a50542bde15e4ee2a5bfd8445df200231a4a319e8cdfa117b3a155140",
+        "uid": 1000
+      },
+      {
+        "bytes": 6244,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "operations/transfer-receiver.py",
+        "sha256": "b41f428a527f93aa3e4645270e65b5b6f812f0bd1bc216975ec8183dbc4043d9",
+        "uid": 1000
+      },
+      {
+        "bytes": 1372,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "operations/operations-manifest.json",
+        "sha256": "bc8e45a8783748be4db9fc8040745aa239a2a4473b89740dbc09f290add82383",
+        "uid": 1000
+      },
+      {
+        "bytes": 61519,
+        "gid": 1000,
+        "modeOctal": "0600",
+        "path": "input.tar.gz",
+        "sha256": "4ae32cf711d7500d4b0cd893757ee5a625d9b275518b86e3680146c0b7f7dcd2",
+        "uid": 1000
+      }
+    ],
+    "fixedArchiveAndGrantVerified": true,
+    "grant": {
+      "bytes": 1483,
+      "currentlyInGrantWindow": true,
+      "gid": 1000,
+      "grantWindowBoundValidated": true,
+      "humanReplySha256": "3c339b17c2cea34acf155043419d5e8c7141c3d0e09d0bfd31f4e9c6e4be58ee",
+      "modeOctal": "0600",
+      "path": "operations/human-grant.json",
+      "rawGrantOrHumanReplyReturned": false,
+      "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+      "scopeFieldsMatch": true,
+      "sha256": "bea3e26bcd34380293afbf6c17df77385652e551d1d0ab1f838c557454fed3de",
+      "uid": 1000
+    },
+    "networkCallsByHelper": 0,
+    "onlyRead": true,
+    "operationFilesVerified": 7,
+    "parentRequestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+    "payloadFilesVerified": 12,
+    "remoteFileWrites": 0,
+    "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+    "schema": "trusted-pi-package-permissions-installed-readback/v1",
+    "startedAt": "2026-10-17T13:21:17.411907+00:00",
+    "status": "installed-transfer-identity-verified",
+    "transferIntent": {
+      "bytes": 117,
+      "gid": 1000,
+      "modeOctal": "0600",
+      "once": true,
+      "path": "transfer-intent.json",
+      "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+      "sha256": "c93d70fec11ad55609ee1c891655674b71a10a37b0f6a3e6f48cf49195e2122a",
+      "startedAt": "2026-10-17T13:19:44.431092+00:00",
+      "uid": 1000
+    },
+    "transferResult": {
+      "bytes": 616,
+      "cloudWrite": false,
+      "credentialReadOrTransferred": false,
+      "dockerOrContainerCommandExecuted": false,
+      "fileCount": 12,
+      "gid": 1000,
+      "modeOctal": "0600",
+      "path": "transfer-result.json",
+      "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+      "sha256": "9a66299a0e0577ae116224b9b5813492292be297f1edb0cf8d9a58600305f907",
+      "status": "transferred-verified",
+      "uid": 1000,
+      "unprefixedTarNames": true
+    }
+  },
+  "schema": "trusted-pi-package-permissions-independent-transfer-readback-transport/v1",
+  "sshExitCode": 0,
+  "startedAt": "2026-10-17T13:21:14.469776+00:00",
+  "status": "installed-transfer-identity-verified",
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stdout": {
+    "bytes": 5702,
+    "sha256": "e25979fa3fe99954fa9699adb639d390e240126fe4846503283be32ae9aff353"
+  },
+  "timedOut": false
+}

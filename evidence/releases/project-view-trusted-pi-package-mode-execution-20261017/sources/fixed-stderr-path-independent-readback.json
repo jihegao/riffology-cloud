@@ -1,0 +1,121 @@
+{
+  "dockerCommands": 0,
+  "endedAt": "2026-10-17T13:44:42.276397+00:00",
+  "helperBytes": 3267,
+  "helperSha256": "0c12dae4c6c66d45a8418cbee875911a98fee1d05450ba81e2f117388f850930",
+  "newBuildMockSaveOrPull": false,
+  "originalSshPid": 4551,
+  "originalSshReaped": true,
+  "rawMessageConfigEnvReturned": false,
+  "remoteWrites": 0,
+  "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+  "safeRemoteProjection": {
+    "bytes": 924,
+    "dockerCommands": 0,
+    "knownErrorEACCES": true,
+    "knownPathMatches": [
+      {
+        "exactPathFieldMatched": true,
+        "messageActions": [
+          "open"
+        ],
+        "path": "/compat-input/probe/compatibility-probe.mjs"
+      },
+      {
+        "exactPathFieldMatched": false,
+        "messageActions": [],
+        "path": "/compat-input/input-manifest.json"
+      },
+      {
+        "exactPathFieldMatched": false,
+        "messageActions": [],
+        "path": "/opt/riffology/browser-preview/runtime/sha256.mjs"
+      },
+      {
+        "exactPathFieldMatched": false,
+        "messageActions": [],
+        "path": "/opt/riffology/project-resources/text.mjs"
+      },
+      {
+        "exactPathFieldMatched": false,
+        "messageActions": [],
+        "path": "/opt/riffology/runtime/controlled-pi.mjs"
+      },
+      {
+        "exactPathFieldMatched": false,
+        "messageActions": [],
+        "path": "/opt/riffology/trusted-pi/release-candidate.mjs"
+      },
+      {
+        "exactPathFieldMatched": false,
+        "messageActions": [],
+        "path": "/opt/riffology/trusted-pi/research-context.mjs"
+      },
+      {
+        "exactPathFieldMatched": false,
+        "messageActions": [],
+        "path": "/opt/riffology/trusted-pi/trusted-pi-release.mjs"
+      },
+      {
+        "exactPathFieldMatched": false,
+        "messageActions": [],
+        "path": "/opt/riffology/trusted-pi/trusted-pi-turn-host.mjs"
+      },
+      {
+        "exactPathFieldMatched": false,
+        "messageActions": [],
+        "path": "/opt/riffology/trusted-pi/product-model-transport.mjs"
+      },
+      {
+        "exactPathFieldMatched": false,
+        "messageActions": [],
+        "path": "/opt/riffology/trusted-pi/product-tool-bridge.mjs"
+      },
+      {
+        "exactPathFieldMatched": false,
+        "messageActions": [],
+        "path": "/opt/riffology/runtime_supervisor.py"
+      },
+      {
+        "exactPathFieldMatched": false,
+        "messageActions": [],
+        "path": "/opt/riffology/package.json"
+      },
+      {
+        "exactPathFieldMatched": false,
+        "messageActions": [],
+        "path": "/opt/riffology/package-lock.json"
+      }
+    ],
+    "knownSyscallFields": [
+      "open"
+    ],
+    "matchedKnownPaths": [
+      "/compat-input/probe/compatibility-probe.mjs"
+    ],
+    "nodeVersions": [
+      "22.23.2"
+    ],
+    "observedAt": "2026-10-17T13:44:38.346293+00:00",
+    "otherFileRead": false,
+    "rawMessageOrBodyReturned": false,
+    "remoteWrites": 0,
+    "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+    "schema": "trusted-pi-package-permissions-fixed-stderr-path-classification/v1",
+    "sha256": "0b018b22134813869c9f00c8b051049b0e00082ab66a1773d1de00024b78351c",
+    "status": "fixed-stderr-whitelist-classified"
+  },
+  "schema": "trusted-pi-package-permissions-fixed-stderr-classification-transport/v1",
+  "sshExitCode": 0,
+  "startedAt": "2026-10-17T13:44:38.134215+00:00",
+  "status": "fixed-stderr-whitelist-classified",
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stdout": {
+    "bytes": 2152,
+    "sha256": "ad9cd0c8db068fbb3fa7a034029456c034f6b9de23f77e0b369ec5218ef82106"
+  },
+  "timedOut": false
+}
