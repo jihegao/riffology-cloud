@@ -1,0 +1,7751 @@
+{
+  "schema": "riffology.browser-preview-retirement-inventory/v1",
+  "date": "2026-10-15",
+  "repository": "jihegao/riffology-cloud",
+  "baselineHead": "fbc0e46bde2c8781b71609fa4524d2e75bffaf99",
+  "readOnlySourceAudit": true,
+  "scope": "Inventory only for PR217 audit documentation. No implementation, metadata, asset download, paid execution, or live deletion.",
+  "trackedFileCount": 3006,
+  "trackedUtf8TextFileCount": 2943,
+  "mechanicalRequestedSixPatternUnion": {
+    "fileCount": 75,
+    "nonDocumentationFileCount": 40,
+    "files": [
+      "docs/browser-preview-execution-contract.md",
+      "docs/browser-preview-generation.md",
+      "docs/evidence/browser-local-runs-fix-20261007.json",
+      "docs/evidence/managed-candidate-release-20261013/static-readback.json",
+      "docs/evidence/netlogo-fire-candidate-local-20261014/browser-receipt.json",
+      "docs/evidence/releases/m1-static-20261001.json",
+      "docs/evidence/releases/m1-static-rejections-20261001.json",
+      "docs/evidence/releases/main-integration-20261014-static.json",
+      "docs/evidence/runs/m0-files-1788664612564-25cdd006/actions.ndjson",
+      "docs/evidence/runs/m0-files-1788664612564-25cdd006/files-cloud.json",
+      "docs/evidence/runs/m0-pi-live-deploy-20260906/host-deploy-bundle/index.js.map",
+      "docs/evidence/runs/m0-pi-live-deploy-20260906/host-dry-bundle/index.js.map",
+      "docs/evidence/runs/m0-pi-live-v2-deploy-20260906/host-deploy-bundle/index.js.map",
+      "docs/evidence/runs/m0-pi-live-v2-deploy-20260906/host-dry-bundle/index.js.map",
+      "docs/evidence/runs/m0-release-completion-deploy-deploy-1788689170668/bundle/index.js.map",
+      "docs/evidence/runs/m0-release-completion-deploy-dry-1788689170062/bundle/index.js.map",
+      "docs/evidence/runs/m0-release-deploy-rollback-1788687343387/bundle/cloud-w1.js.map",
+      "docs/evidence/runs/m0-release-deploy-w1-1788685094433/bundle/cloud-w1.js.map",
+      "docs/evidence/runs/m0-release-deploy-w1-1788685105667/bundle/cloud-w1.js.map",
+      "docs/evidence/runs/m0-release-deploy-w1-1788685229437/bundle/cloud-w1.js.map",
+      "docs/evidence/runs/m0-release-deploy-w1-1788686239090/bundle/cloud-w1.js.map",
+      "docs/evidence/runs/m0-release-deploy-w1-1788686239710/bundle/cloud-w1.js.map",
+      "docs/evidence/runs/m0-release-deploy-w1-1788686543361/bundle/cloud-w1.js.map",
+      "docs/evidence/runs/m0-release-deploy-w1-1788686543978/bundle/cloud-w1.js.map",
+      "docs/evidence/runs/m0-release-deploy-w2-retain-1788685562536/bundle/cloud-w2.js.map",
+      "docs/evidence/runs/m0-release-deploy-w2-retain-1788685575637/bundle/cloud-w2.js.map",
+      "docs/evidence/runs/m0-release-deploy-w2-retain-1788686354582/bundle/cloud-w2.js.map",
+      "docs/evidence/runs/m0-release-deploy-w2-retain-1788686727085/bundle/cloud-w2.js.map",
+      "docs/evidence/runs/m0-release-deploy-w2-retain-1788686727680/bundle/cloud-w2.js.map",
+      "docs/evidence/runs/m0-release-deploy-w2-rollout-1788685658684/bundle/cloud-w2.js.map",
+      "docs/evidence/runs/m0-release-deploy-w2-rollout-1788686806906/bundle/cloud-w2.js.map",
+      "docs/evidence/runs/m2-product-turn-lazy-crud-fixture-20260914090031764/primary-review.json",
+      "docs/invited-cloud-runs.md",
+      "docs/release-readiness.md",
+      "docs/runtime-reuse-g5-readiness-20260915.md",
+      "services/browser-preview/contract.ts",
+      "services/browser-preview/execution/assets/static-index.ts",
+      "services/browser-preview/execution/execution.test.ts",
+      "services/browser-preview/execution/index.ts",
+      "services/browser-preview/execution/materialize.mjs",
+      "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/5139f59cfb287705c920e147f5abe2a02f6b018db775b7331eb18f5f6a045044/runtime/renderer.mjs",
+      "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717/delivery/worker.bundle.mjs",
+      "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+      "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+      "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e/delivery/worker.bundle.mjs",
+      "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54/runtime/renderer.mjs",
+      "services/browser-preview/runtime/assets/profiles.json",
+      "services/browser-preview/runtime/browser-acceptance.mjs",
+      "services/browser-preview/runtime/frame.mjs",
+      "services/browser-preview/runtime/host.mjs",
+      "services/browser-preview/runtime/host.test.mjs",
+      "services/browser-preview/runtime/js-scene.mjs",
+      "services/browser-preview/runtime/js-scene.test.mjs",
+      "services/browser-preview/runtime/package-loader.mjs",
+      "services/browser-preview/runtime/package-loader.test.mjs",
+      "services/browser-preview/runtime/prepare-assets.mjs",
+      "services/browser-preview/runtime/renderer.mjs",
+      "services/browser-preview/runtime/worker.mjs",
+      "services/browser-preview/validator.ts",
+      "services/trusted-pi/release-candidate.mjs",
+      "services/turn-runtime/managed-candidate.ts",
+      "services/turn-runtime/managed-testing-instructions.ts",
+      "services/web/browser-preview.js",
+      "services/web/workspace.css",
+      "tests/m2/fixtures/managed-candidate.ts",
+      "tests/m2/managed-candidate-v3.test.ts",
+      "tests/m2/managed-candidate.test.ts",
+      "tests/m2/managed-product.test.ts",
+      "tests/m2/managed-reviewed-copy-workerd.test.mjs",
+      "tests/m2/model-proxy-g5-http.test.ts",
+      "tests/m3/browser-preview-build.test.ts",
+      "tests/m3/browser-preview-contract.test.ts",
+      "tests/m3/browser-preview-generation.test.mjs",
+      "tests/m3/browser-preview-javascript-browser.test.mjs",
+      "tests/m3/browser-preview-javascript-contract.test.ts"
+    ]
+  },
+  "warning": "Mechanical hits overlap and do not imply safe deletion. marks also matches English assertions unrelated to scene graphs; five/seven source paths and Python run adapter overlap native Runs. Documentation is evidence, not an execution consumer.",
+  "patterns": {
+    "marks": {
+      "pattern": "\\bmarks\\b",
+      "fileCount": 33,
+      "lineCount": 48,
+      "nonDocumentationFileCount": 10,
+      "files": [
+        {
+          "path": "docs/evidence/runs/m0-pi-live-deploy-20260906/host-deploy-bundle/index.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-pi-live-deploy-20260906/host-dry-bundle/index.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-pi-live-v2-deploy-20260906/host-deploy-bundle/index.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-pi-live-v2-deploy-20260906/host-dry-bundle/index.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-completion-deploy-deploy-1788689170668/bundle/index.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-completion-deploy-dry-1788689170062/bundle/index.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-deploy-rollback-1788687343387/bundle/cloud-w1.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-deploy-w1-1788685094433/bundle/cloud-w1.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-deploy-w1-1788685105667/bundle/cloud-w1.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-deploy-w1-1788685229437/bundle/cloud-w1.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-deploy-w1-1788686239090/bundle/cloud-w1.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-deploy-w1-1788686239710/bundle/cloud-w1.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-deploy-w1-1788686543361/bundle/cloud-w1.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-deploy-w1-1788686543978/bundle/cloud-w1.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-deploy-w2-retain-1788685562536/bundle/cloud-w2.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-deploy-w2-retain-1788685575637/bundle/cloud-w2.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-deploy-w2-retain-1788686354582/bundle/cloud-w2.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-deploy-w2-retain-1788686727085/bundle/cloud-w2.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-deploy-w2-retain-1788686727680/bundle/cloud-w2.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-deploy-w2-rollout-1788685658684/bundle/cloud-w2.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m0-release-deploy-w2-rollout-1788686806906/bundle/cloud-w2.js.map",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/invited-cloud-runs.md",
+          "lines": [
+            119
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/runtime-reuse-g5-readiness-20260915.md",
+          "lines": [
+            11
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/runtime/js-scene.mjs",
+          "lines": [
+            4,
+            23,
+            26,
+            41,
+            49
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "services/browser-preview/runtime/js-scene.test.mjs",
+          "lines": [
+            6,
+            13,
+            24,
+            25,
+            26
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "services/browser-preview/runtime/package-loader.test.mjs",
+          "lines": [
+            15
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/trusted-pi/release-candidate.mjs",
+          "lines": [
+            42,
+            61
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/turn-runtime/managed-testing-instructions.ts",
+          "lines": [
+            14
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m2/fixtures/managed-candidate.ts",
+          "lines": [
+            21
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m2/model-proxy-g5-http.test.ts",
+          "lines": [
+            112
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/browser-preview-build.test.ts",
+          "lines": [
+            56,
+            63
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "tests/m3/browser-preview-generation.test.mjs",
+          "lines": [
+            38
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/browser-preview-javascript-browser.test.mjs",
+          "lines": [
+            67,
+            75,
+            77,
+            79,
+            85,
+            91
+          ],
+          "lineCount": 6
+        }
+      ]
+    },
+    "js_frame": {
+      "pattern": "js-frame",
+      "fileCount": 15,
+      "lineCount": 53,
+      "nonDocumentationFileCount": 9,
+      "files": [
+        {
+          "path": "docs/evidence/browser-local-runs-fix-20261007.json",
+          "lines": [
+            464,
+            488,
+            492
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "docs/evidence/managed-candidate-release-20261013/static-readback.json",
+          "lines": [
+            73,
+            388,
+            465,
+            690
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "docs/evidence/netlogo-fire-candidate-local-20261014/browser-receipt.json",
+          "lines": [
+            133,
+            163,
+            168
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "docs/evidence/releases/m1-static-20261001.json",
+          "lines": [
+            51,
+            411,
+            499,
+            579
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "docs/evidence/releases/m1-static-rejections-20261001.json",
+          "lines": [
+            3
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/releases/main-integration-20261014-static.json",
+          "lines": [
+            80,
+            395,
+            472,
+            697
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/browser-preview/execution/assets/static-index.ts",
+          "lines": [
+            33,
+            59,
+            84,
+            247,
+            248,
+            607,
+            608,
+            695,
+            696,
+            769,
+            770
+          ],
+          "lineCount": 11
+        },
+        {
+          "path": "services/browser-preview/execution/execution.test.ts",
+          "lines": [
+            12
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/execution/index.ts",
+          "lines": [
+            17
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/execution/materialize.mjs",
+          "lines": [
+            24,
+            25,
+            26,
+            27,
+            29,
+            45
+          ],
+          "lineCount": 6
+        },
+        {
+          "path": "services/browser-preview/runtime/assets/profiles.json",
+          "lines": [
+            46,
+            76,
+            81,
+            390,
+            420,
+            425
+          ],
+          "lineCount": 6
+        },
+        {
+          "path": "services/browser-preview/runtime/host.mjs",
+          "lines": [
+            13,
+            35
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/runtime/host.test.mjs",
+          "lines": [
+            12,
+            14
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/runtime/prepare-assets.mjs",
+          "lines": [
+            21,
+            28
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "tests/m3/browser-preview-javascript-browser.test.mjs",
+          "lines": [
+            23,
+            29,
+            44
+          ],
+          "lineCount": 3
+        }
+      ]
+    },
+    "fixed_600_420": {
+      "pattern": "600.{0,100}420|420.{0,100}600|600\\s*[×xX*]\\s*420",
+      "fileCount": 27,
+      "lineCount": 54,
+      "nonDocumentationFileCount": 23,
+      "files": [
+        {
+          "path": "docs/browser-preview-execution-contract.md",
+          "lines": [
+            9,
+            75
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "docs/evidence/runs/m0-files-1788664612564-25cdd006/actions.ndjson",
+          "lines": [
+            5,
+            6
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "docs/evidence/runs/m0-files-1788664612564-25cdd006/files-cloud.json",
+          "lines": [
+            1
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/runs/m2-product-turn-lazy-crud-fixture-20260914090031764/primary-review.json",
+          "lines": [
+            3870,
+            3901,
+            5575,
+            5583
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/browser-preview/contract.ts",
+          "lines": [
+            24,
+            64,
+            65
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/5139f59cfb287705c920e147f5abe2a02f6b018db775b7331eb18f5f6a045044/runtime/renderer.mjs",
+          "lines": [
+            17,
+            18,
+            19
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717/delivery/worker.bundle.mjs",
+          "lines": [
+            24478
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+          "lines": [
+            107,
+            108
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+          "lines": [
+            111,
+            112
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e/delivery/worker.bundle.mjs",
+          "lines": [
+            24478,
+            30417
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54/runtime/renderer.mjs",
+          "lines": [
+            19,
+            20,
+            21
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/runtime/browser-acceptance.mjs",
+          "lines": [
+            130
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/runtime/frame.mjs",
+          "lines": [
+            68
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/runtime/js-scene.mjs",
+          "lines": [
+            13,
+            16,
+            22,
+            39
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/browser-preview/runtime/js-scene.test.mjs",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/runtime/package-loader.test.mjs",
+          "lines": [
+            14,
+            37
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/runtime/renderer.mjs",
+          "lines": [
+            19,
+            20,
+            21
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/runtime/worker.mjs",
+          "lines": [
+            24
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/trusted-pi/release-candidate.mjs",
+          "lines": [
+            33,
+            60,
+            61
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/turn-runtime/managed-testing-instructions.ts",
+          "lines": [
+            13,
+            14
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/web/workspace.css",
+          "lines": [
+            12
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m2/fixtures/managed-candidate.ts",
+          "lines": [
+            20
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/browser-preview-build.test.ts",
+          "lines": [
+            55,
+            59,
+            66
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "tests/m3/browser-preview-contract.test.ts",
+          "lines": [
+            20,
+            21
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "tests/m3/browser-preview-generation.test.mjs",
+          "lines": [
+            18
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/browser-preview-javascript-browser.test.mjs",
+          "lines": [
+            11,
+            91
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "tests/m3/browser-preview-javascript-contract.test.ts",
+          "lines": [
+            69
+          ],
+          "lineCount": 1
+        }
+      ]
+    },
+    "browser_js_schema": {
+      "pattern": "riffology\\.browser-js",
+      "fileCount": 11,
+      "lineCount": 15,
+      "nonDocumentationFileCount": 11,
+      "files": [
+        {
+          "path": "services/browser-preview/contract.ts",
+          "lines": [
+            4
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/runtime/js-scene.mjs",
+          "lines": [
+            1
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/runtime/js-scene.test.mjs",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/runtime/package-loader.test.mjs",
+          "lines": [
+            14,
+            37
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/trusted-pi/release-candidate.mjs",
+          "lines": [
+            33
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/turn-runtime/managed-testing-instructions.ts",
+          "lines": [
+            14
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m2/fixtures/managed-candidate.ts",
+          "lines": [
+            20
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/browser-preview-build.test.ts",
+          "lines": [
+            55,
+            59,
+            66
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "tests/m3/browser-preview-contract.test.ts",
+          "lines": [
+            20,
+            21
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "tests/m3/browser-preview-generation.test.mjs",
+          "lines": [
+            18
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/browser-preview-javascript-browser.test.mjs",
+          "lines": [
+            11
+          ],
+          "lineCount": 1
+        }
+      ]
+    },
+    "browser_scene_schema": {
+      "pattern": "riffology\\.browser-scene",
+      "fileCount": 8,
+      "lineCount": 16,
+      "nonDocumentationFileCount": 8,
+      "files": [
+        {
+          "path": "services/browser-preview/runtime/js-scene.mjs",
+          "lines": [
+            3
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/runtime/js-scene.test.mjs",
+          "lines": [
+            6,
+            26
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/runtime/package-loader.test.mjs",
+          "lines": [
+            15
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/trusted-pi/release-candidate.mjs",
+          "lines": [
+            42,
+            61
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/turn-runtime/managed-testing-instructions.ts",
+          "lines": [
+            14
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m2/fixtures/managed-candidate.ts",
+          "lines": [
+            21
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/browser-preview-build.test.ts",
+          "lines": [
+            56,
+            63
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "tests/m3/browser-preview-javascript-browser.test.mjs",
+          "lines": [
+            67,
+            75,
+            77,
+            79,
+            85,
+            91
+          ],
+          "lineCount": 6
+        }
+      ]
+    },
+    "javascript_canvas": {
+      "pattern": "javascript-canvas",
+      "fileCount": 19,
+      "lineCount": 49,
+      "nonDocumentationFileCount": 17,
+      "files": [
+        {
+          "path": "docs/browser-preview-generation.md",
+          "lines": [
+            11,
+            20,
+            22
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "docs/release-readiness.md",
+          "lines": [
+            562
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/runtime/host.mjs",
+          "lines": [
+            33,
+            38,
+            72
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/runtime/package-loader.mjs",
+          "lines": [
+            24,
+            25
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/runtime/package-loader.test.mjs",
+          "lines": [
+            13,
+            34
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/runtime/renderer.mjs",
+          "lines": [
+            4,
+            13,
+            15
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/validator.ts",
+          "lines": [
+            7,
+            15,
+            65,
+            77,
+            79
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "services/trusted-pi/release-candidate.mjs",
+          "lines": [
+            55,
+            59,
+            61
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/turn-runtime/managed-candidate.ts",
+          "lines": [
+            142,
+            158
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/turn-runtime/managed-testing-instructions.ts",
+          "lines": [
+            10,
+            13,
+            14
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/web/browser-preview.js",
+          "lines": [
+            53,
+            77
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "tests/m2/fixtures/managed-candidate.ts",
+          "lines": [
+            5,
+            19
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "tests/m2/managed-candidate-v3.test.ts",
+          "lines": [
+            33
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m2/managed-candidate.test.ts",
+          "lines": [
+            18,
+            20,
+            67
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "tests/m2/managed-product.test.ts",
+          "lines": [
+            104,
+            117,
+            142,
+            383,
+            388
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "tests/m2/managed-reviewed-copy-workerd.test.mjs",
+          "lines": [
+            110
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/browser-preview-build.test.ts",
+          "lines": [
+            54,
+            57,
+            61,
+            64,
+            65
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "tests/m3/browser-preview-generation.test.mjs",
+          "lines": [
+            48,
+            51
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "tests/m3/browser-preview-javascript-browser.test.mjs",
+          "lines": [
+            12
+          ],
+          "lineCount": 1
+        }
+      ]
+    },
+    "five_seven_source_contract": {
+      "pattern": "BROWSER_PREVIEW_(?:JAVASCRIPT_)?SOURCE_PATHS|FIVE core|five-file package|SEVEN|五文件|七文件|五个文件|七个文件",
+      "fileCount": 30,
+      "lineCount": 104,
+      "nonDocumentationFileCount": 20,
+      "files": [
+        {
+          "path": "docs/browser-preview-generation.md",
+          "lines": [
+            22,
+            50
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "docs/browser-preview-package-contract.md",
+          "lines": [
+            17,
+            75
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "docs/evidence/riffoid-mime-readback-20261010/mime-independent-review.json",
+          "lines": [
+            27,
+            136,
+            144,
+            148
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "docs/evidence/riffoid-mime-readback-20261010/mime-independent-review.md",
+          "lines": [
+            3
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/riffoid-mime-readback-20261010/retained-checks-index.json",
+          "lines": [
+            109,
+            149,
+            154
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "docs/g4-online-acceptance-20260916.md",
+          "lines": [
+            21
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/issues-acceptance-matrix-20260915.md",
+          "lines": [
+            11
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/issues-controlled-release-scope-20260915.md",
+          "lines": [
+            39
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/issues-development-log-20260915.md",
+          "lines": [
+            52,
+            68,
+            90,
+            136,
+            213
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "docs/m0-registry-alternative.md",
+          "lines": [
+            41
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "scripts/model/benchmark-task-fixtures.mjs",
+          "lines": [
+            7,
+            15,
+            28
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "scripts/model/netlogo-fire-browser-local.mjs",
+          "lines": [
+            8,
+            18
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/contract.ts",
+          "lines": [
+            13,
+            14,
+            17,
+            55
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/browser-preview/execution/retained/bytes/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+          "lines": [
+            441,
+            473,
+            476,
+            480,
+            709,
+            714
+          ],
+          "lineCount": 6
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0/host.bundle.mjs",
+          "lines": [
+            441,
+            473,
+            476,
+            480,
+            709,
+            714
+          ],
+          "lineCount": 6
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717/delivery/worker.bundle.mjs",
+          "lines": [
+            29930,
+            29962,
+            29965,
+            29969,
+            30194,
+            30199
+          ],
+          "lineCount": 6
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396/runtime/package-loader.mjs",
+          "lines": [
+            1,
+            12,
+            16
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e/delivery/worker.bundle.mjs",
+          "lines": [
+            29930,
+            29962,
+            29965,
+            29969,
+            30194,
+            30199
+          ],
+          "lineCount": 6
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f/source/contract.ts",
+          "lines": [
+            10,
+            12,
+            48,
+            49,
+            51
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14/runtime/package-loader.mjs",
+          "lines": [
+            1,
+            12,
+            16
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs",
+          "lines": [
+            451,
+            483,
+            486,
+            490,
+            719,
+            724
+          ],
+          "lineCount": 6
+        },
+        {
+          "path": "services/browser-preview/fixtures/identity.ts",
+          "lines": [
+            1,
+            3
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/runtime/fixtures.mjs",
+          "lines": [
+            2,
+            11,
+            12
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/runtime/package-loader.mjs",
+          "lines": [
+            1,
+            12
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/runtime/package-loader.test.mjs",
+          "lines": [
+            6,
+            16,
+            18
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/validator.ts",
+          "lines": [
+            4,
+            58,
+            66,
+            77
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/trusted-pi/release-candidate.mjs",
+          "lines": [
+            55,
+            57
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "tests/m3/browser-preview-contract.test.ts",
+          "lines": [
+            3,
+            15,
+            16
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "tests/m3/browser-preview-generation.test.mjs",
+          "lines": [
+            5,
+            16,
+            17
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "tests/m3/browser-preview-javascript-contract.test.ts",
+          "lines": [
+            8,
+            10,
+            24,
+            25,
+            30,
+            35,
+            43,
+            44,
+            49,
+            50,
+            57
+          ],
+          "lineCount": 11
+        }
+      ]
+    },
+    "python_browser_contract": {
+      "pattern": "python-canvas|python-stdlib/v1|mesa-3\\.5\\.1/v1|riffology\\.visual/v0\\.1|riffology\\.browser-preview/v[12]",
+      "fileCount": 101,
+      "lineCount": 328,
+      "nonDocumentationFileCount": 79,
+      "files": [
+        {
+          "path": "docs/browser-preview-execution-contract.md",
+          "lines": [
+            9,
+            17,
+            25
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "docs/browser-preview-generation.md",
+          "lines": [
+            11,
+            20,
+            32
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "docs/browser-preview-package-contract.md",
+          "lines": [
+            7,
+            19,
+            21,
+            69
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "docs/evidence/browser-local-runs-fix-20261007.json",
+          "lines": [
+            220,
+            225,
+            244,
+            249
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "docs/evidence/issue-142/README.md",
+          "lines": [
+            3
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/issue-142/browser-acceptance.json",
+          "lines": [
+            4,
+            9,
+            14,
+            19,
+            135,
+            144,
+            148,
+            152,
+            156,
+            160,
+            164,
+            168,
+            172
+          ],
+          "lineCount": 13
+        },
+        {
+          "path": "docs/evidence/issue-142/retained-pre-142-acceptance.json",
+          "lines": [
+            4,
+            9,
+            14,
+            19
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "docs/evidence/issue-77/live-acceptance.json",
+          "lines": [
+            410,
+            415,
+            420,
+            425
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "docs/evidence/issue-77/live-artifacts/turn-2-candidate.json",
+          "lines": [
+            1
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/issue-77/live-artifacts/turn-2-preview-package.json",
+          "lines": [
+            1
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/issue-77/live-artifacts/turn-3-candidate.json",
+          "lines": [
+            1
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/issue-77/live-artifacts/turn-3-preview-package.json",
+          "lines": [
+            1
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/managed-candidate-local-validation-20261012.json",
+          "lines": [
+            204,
+            217,
+            229,
+            242,
+            254,
+            267,
+            279,
+            294
+          ],
+          "lineCount": 8
+        },
+        {
+          "path": "docs/evidence/netlogo-fire-candidate-local-20261014.json",
+          "lines": [
+            85,
+            88
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "docs/evidence/netlogo-fire-candidate-local-20261014/browser-receipt.json",
+          "lines": [
+            17,
+            20
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "docs/evidence/releases/beta-busy-composer-20260924.json",
+          "lines": [
+            59
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/releases/issue-144-20260927.json",
+          "lines": [
+            12
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/releases/issue171-local-runs-release-20261008.json",
+          "lines": [
+            329,
+            334,
+            473,
+            478
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "docs/evidence/releases/pi-model-drawing-local-20261001.json",
+          "lines": [
+            33,
+            47,
+            51,
+            55,
+            59,
+            63,
+            67,
+            71,
+            75
+          ],
+          "lineCount": 9
+        },
+        {
+          "path": "docs/issues-subagent-plan-20260915.md",
+          "lines": [
+            60
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/netlogo-case-intake-20261014.md",
+          "lines": [
+            26
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/release-readiness.md",
+          "lines": [
+            561,
+            807,
+            808,
+            812,
+            833,
+            841,
+            905
+          ],
+          "lineCount": 7
+        },
+        {
+          "path": "examples/netlogo-fire-candidate/model/model.py",
+          "lines": [
+            84
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "examples/netlogo-fire-candidate/model/visualization.json",
+          "lines": [
+            1
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "scripts/issue77/live.mjs",
+          "lines": [
+            20
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "scripts/issue77/production-acceptance.mjs",
+          "lines": [
+            15,
+            85
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "scripts/issue77/verify-downloaded.mjs",
+          "lines": [
+            36,
+            43
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "scripts/m3/check-browser-research-local.mjs",
+          "lines": [
+            42
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "scripts/model/benchmark-task-fixtures.mjs",
+          "lines": [
+            15
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "scripts/model/benchmark-task-fixtures/queue-reference.py",
+          "lines": [
+            56
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "scripts/model/netlogo-fire-browser-local.mjs",
+          "lines": [
+            23
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/build-host.ts",
+          "lines": [
+            19
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/contract.ts",
+          "lines": [
+            2,
+            3,
+            20,
+            48,
+            51
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "services/browser-preview/execution/retained/bytes/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+          "lines": [
+            5,
+            10,
+            116,
+            121,
+            436,
+            463,
+            469,
+            518,
+            721
+          ],
+          "lineCount": 9
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/91f2bbd0ce334a8ce2144e6f26728cf292c5dfd3fa7943864cdd2d2e1ef30d57/source/prepare-assets.mjs",
+          "lines": [
+            38,
+            42
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0/host.bundle.mjs",
+          "lines": [
+            5,
+            10,
+            116,
+            121,
+            436,
+            463,
+            469,
+            518,
+            721
+          ],
+          "lineCount": 9
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717/delivery/worker.bundle.mjs",
+          "lines": [
+            29925,
+            29952,
+            29958,
+            30007,
+            30206
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+          "lines": [
+            2
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396/runtime/package-loader.mjs",
+          "lines": [
+            22
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+          "lines": [
+            2,
+            56,
+            95,
+            98
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e/delivery/worker.bundle.mjs",
+          "lines": [
+            29925,
+            29952,
+            29958,
+            30007,
+            30206,
+            30438,
+            30494
+          ],
+          "lineCount": 7
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f/source/contract.ts",
+          "lines": [
+            2,
+            15,
+            41,
+            44
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/6e84d6d066a91819769093d7d5bf6cf67339a2c708087dc5b41934f5bc9fd931/runtime/host.mjs",
+          "lines": [
+            32,
+            36
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/831ec2706b7c113a456bf413d7df96b82aafbbf4a20ec7de8bbe91908d8dd878/source/prepare-assets.mjs",
+          "lines": [
+            38,
+            42
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14/runtime/package-loader.mjs",
+          "lines": [
+            22
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54/runtime/renderer.mjs",
+          "lines": [
+            4,
+            13,
+            15
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs",
+          "lines": [
+            5,
+            10,
+            121,
+            126,
+            446,
+            473,
+            479,
+            528,
+            731,
+            806,
+            814
+          ],
+          "lineCount": 11
+        },
+        {
+          "path": "services/browser-preview/execution/retained/profiles-727c40f.json",
+          "lines": [
+            4,
+            9,
+            115,
+            120
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/browser-preview/execution/retained/profiles-pre-142.json",
+          "lines": [
+            4,
+            9,
+            115,
+            120
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/browser-preview/execution/retained/profiles-pre-150.json",
+          "lines": [
+            4,
+            9,
+            120,
+            125
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/browser-preview/fixtures/identity.ts",
+          "lines": [
+            3
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/orchestrator.ts",
+          "lines": [
+            33,
+            64
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/profiles.ts",
+          "lines": [
+            5,
+            24
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/runtime/assets/profiles.json",
+          "lines": [
+            4,
+            9,
+            140,
+            145
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/browser-preview/runtime/browser-acceptance.mjs",
+          "lines": [
+            43,
+            65,
+            66,
+            74,
+            75,
+            76,
+            80,
+            90,
+            93,
+            96,
+            98,
+            100,
+            102,
+            103,
+            105,
+            108,
+            130
+          ],
+          "lineCount": 17
+        },
+        {
+          "path": "services/browser-preview/runtime/fixtures.mjs",
+          "lines": [
+            10,
+            13,
+            16
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/runtime/fixtures/fire.py",
+          "lines": [
+            21,
+            30
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/runtime/fixtures/mesa.py",
+          "lines": [
+            59
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/runtime/fixtures/queue.py",
+          "lines": [
+            69
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/runtime/fixtures/traffic.py",
+          "lines": [
+            18,
+            19
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/runtime/host.mjs",
+          "lines": [
+            33,
+            38
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/runtime/package-loader.mjs",
+          "lines": [
+            24
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/runtime/package-loader.test.mjs",
+          "lines": [
+            13,
+            26,
+            36
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/runtime/prepare-assets.mjs",
+          "lines": [
+            38,
+            42
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/runtime/protocol.d.mts",
+          "lines": [
+            2
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/runtime/protocol.mjs",
+          "lines": [
+            3
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/runtime/renderer.mjs",
+          "lines": [
+            4,
+            13,
+            15
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/runtime/worker.mjs",
+          "lines": [
+            43,
+            87
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/validator.ts",
+          "lines": [
+            7,
+            15,
+            76
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/gateway/app.ts",
+          "lines": [
+            269
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/trusted-pi/release-candidate.mjs",
+          "lines": [
+            34,
+            36,
+            55,
+            58,
+            59,
+            60,
+            61,
+            63
+          ],
+          "lineCount": 8
+        },
+        {
+          "path": "services/turn-runtime/managed-candidate.ts",
+          "lines": [
+            46,
+            144,
+            154,
+            164
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/turn-runtime/managed-testing-instructions.ts",
+          "lines": [
+            6,
+            12,
+            13,
+            15
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/turn/journal.ts",
+          "lines": [
+            28,
+            29
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/web/browser-preview.js",
+          "lines": [
+            77
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/web/i18n.js",
+          "lines": [
+            831,
+            1791
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "spikes/mesa-browser-runtime/README.md",
+          "lines": [
+            9,
+            43
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "spikes/mesa-browser-runtime/browser.test.mjs",
+          "lines": [
+            61
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "spikes/mesa-browser-runtime/models/queue_trace.py",
+          "lines": [
+            69
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "spikes/mesa-browser-runtime/models/schelling.py",
+          "lines": [
+            59
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "spikes/mesa-browser-runtime/protocol.js",
+          "lines": [
+            1
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m2/fixtures/managed-candidate.ts",
+          "lines": [
+            5,
+            10,
+            14,
+            17,
+            23
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "tests/m2/managed-candidate.test.ts",
+          "lines": [
+            12,
+            21,
+            32
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "tests/m2/managed-dispatcher.test.ts",
+          "lines": [
+            13,
+            14,
+            17,
+            138
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "tests/m3/browser-preview-build-host.test.mjs",
+          "lines": [
+            28,
+            31,
+            33,
+            34,
+            46,
+            48,
+            49,
+            58,
+            59,
+            65
+          ],
+          "lineCount": 10
+        },
+        {
+          "path": "tests/m3/browser-preview-build.test.ts",
+          "lines": [
+            17,
+            23,
+            29,
+            57,
+            59,
+            61,
+            64,
+            65,
+            68,
+            71,
+            72,
+            73,
+            90,
+            95,
+            100,
+            110,
+            117,
+            119,
+            121
+          ],
+          "lineCount": 19
+        },
+        {
+          "path": "tests/m3/browser-preview-canvas.test.mjs",
+          "lines": [
+            26,
+            28,
+            31,
+            36,
+            37,
+            39,
+            43,
+            92
+          ],
+          "lineCount": 8
+        },
+        {
+          "path": "tests/m3/browser-preview-contract.test.ts",
+          "lines": [
+            24
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/browser-preview-generation.test.mjs",
+          "lines": [
+            19,
+            20,
+            51,
+            60,
+            68,
+            73
+          ],
+          "lineCount": 6
+        },
+        {
+          "path": "tests/m3/browser-preview-initial.test.mjs",
+          "lines": [
+            39,
+            79
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "tests/m3/browser-preview-javascript-browser.test.mjs",
+          "lines": [
+            12
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/browser-preview-legacy.test.mjs",
+          "lines": [
+            39,
+            40
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "tests/m3/browser-preview-orchestrator.test.mjs",
+          "lines": [
+            29,
+            30,
+            35,
+            38,
+            40,
+            43,
+            44,
+            45,
+            46,
+            59
+          ],
+          "lineCount": 10
+        },
+        {
+          "path": "tests/m3/browser-preview-panel.test.mjs",
+          "lines": [
+            32
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/browser-preview-production-registry.test.mjs",
+          "lines": [
+            21
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/fixtures/browser-models/mesa.py",
+          "lines": [
+            59
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/fixtures/browser-models/queue.py",
+          "lines": [
+            69
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/g4-browser-build-hold-workerd.test.mjs",
+          "lines": [
+            21
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/g4-browser-build-recovery-workerd.test.mjs",
+          "lines": [
+            22
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/netlogo-fire-candidate.test.mjs",
+          "lines": [
+            30,
+            33,
+            34
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "tests/m3/simulation-browser-models-docker.test.ts",
+          "lines": [
+            26
+          ],
+          "lineCount": 1
+        }
+      ]
+    },
+    "simulation_browser_mentions": {
+      "pattern": "browser-preview|BrowserPreview|BrowserBuild|BROWSER_PREVIEW|Browser Preview|browserPreview",
+      "fileCount": 214,
+      "lineCount": 1894,
+      "nonDocumentationFileCount": 150,
+      "files": [
+        {
+          "path": ".github/workflows/check.yml",
+          "lines": [
+            39,
+            40
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "AGENTS.md",
+          "lines": [
+            23,
+            38
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "README.md",
+          "lines": [
+            5,
+            15,
+            79
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "docs/artifacts/riffoid-entry-disabled-20261008/manifest.json",
+          "lines": [
+            70
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/artifacts/riffoid-validation-preparation-20261009/gateway-cutover-forward-rollback.NON_EXECUTABLE.json",
+          "lines": [
+            59
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/artifacts/riffoid-validation-preparation-20261009/gateway-validation-cleanup.NON_EXECUTABLE.json",
+          "lines": [
+            59
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/browser-preview-delivery.md",
+          "lines": [
+            1,
+            3,
+            5,
+            7,
+            9,
+            15,
+            17,
+            26,
+            27
+          ],
+          "lineCount": 9
+        },
+        {
+          "path": "docs/browser-preview-execution-contract.md",
+          "lines": [
+            1,
+            3,
+            55,
+            61,
+            71,
+            77,
+            79
+          ],
+          "lineCount": 7
+        },
+        {
+          "path": "docs/browser-preview-generation.md",
+          "lines": [
+            1,
+            32,
+            40,
+            48
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "docs/browser-preview-online-acceptance-20260917.md",
+          "lines": [
+            1,
+            5,
+            22,
+            26
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "docs/browser-preview-orchestration.md",
+          "lines": [
+            1,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            30
+          ],
+          "lineCount": 8
+        },
+        {
+          "path": "docs/browser-preview-package-contract.md",
+          "lines": [
+            1,
+            7,
+            61,
+            81
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "docs/browser-preview-publication-compatibility.md",
+          "lines": [
+            1,
+            18,
+            19,
+            67,
+            77,
+            78,
+            80,
+            82,
+            83,
+            84,
+            96,
+            107
+          ],
+          "lineCount": 12
+        },
+        {
+          "path": "docs/browser-preview-server-profile.md",
+          "lines": [
+            1
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/development-status.md",
+          "lines": [
+            3
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/browser-local-runs-fix-20261007.json",
+          "lines": [
+            396,
+            416,
+            420,
+            424,
+            428,
+            432,
+            436,
+            440,
+            444,
+            448,
+            452,
+            456,
+            460,
+            464,
+            468,
+            472,
+            476,
+            480,
+            484,
+            488,
+            492,
+            496,
+            500,
+            504,
+            508,
+            512,
+            516,
+            520,
+            524,
+            528,
+            532,
+            536,
+            540,
+            544,
+            548
+          ],
+          "lineCount": 35
+        },
+        {
+          "path": "docs/evidence/browser-preview-release-20260917/README.md",
+          "lines": [
+            1,
+            16
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "docs/evidence/issue-142/README.md",
+          "lines": [
+            3,
+            8,
+            13,
+            14,
+            17
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "docs/evidence/issue-77/README.md",
+          "lines": [
+            20,
+            21,
+            29,
+            147
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "docs/evidence/issue-77/live-artifacts/turn-2-preview-package.json",
+          "lines": [
+            1
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/issue-77/live-artifacts/turn-3-preview-package.json",
+          "lines": [
+            1
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/issue-77/offline-20260917.json",
+          "lines": [
+            215
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/issue-77/production-acceptance.json",
+          "lines": [
+            184
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/issue-77/review-validation.json",
+          "lines": [
+            101,
+            105,
+            109,
+            113,
+            117,
+            121,
+            125,
+            129,
+            133,
+            137,
+            141,
+            257,
+            369,
+            373,
+            377
+          ],
+          "lineCount": 15
+        },
+        {
+          "path": "docs/evidence/issue-77/validation.json",
+          "lines": [
+            90,
+            94,
+            98,
+            102,
+            106,
+            110,
+            114,
+            118,
+            122,
+            126,
+            130,
+            246,
+            358,
+            362,
+            366
+          ],
+          "lineCount": 15
+        },
+        {
+          "path": "docs/evidence/managed-candidate-local-validation-20261012.json",
+          "lines": [
+            19,
+            24,
+            69,
+            132,
+            141,
+            150,
+            161
+          ],
+          "lineCount": 7
+        },
+        {
+          "path": "docs/evidence/managed-candidate-release-20261013.json",
+          "lines": [
+            100
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/managed-candidate-release-20261013/source-composition.json",
+          "lines": [
+            13,
+            14,
+            25,
+            30
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "docs/evidence/managed-candidate-release-20261013/static-readback.json",
+          "lines": [
+            38,
+            45,
+            52,
+            59,
+            66,
+            73,
+            80,
+            87,
+            94,
+            101,
+            108,
+            115,
+            122,
+            129,
+            136,
+            143,
+            150,
+            157,
+            164,
+            171,
+            178,
+            185,
+            192,
+            199,
+            206,
+            213,
+            220,
+            227,
+            234,
+            241,
+            248,
+            255,
+            262,
+            269,
+            276,
+            283,
+            290,
+            297,
+            304,
+            311,
+            318,
+            325,
+            332,
+            339,
+            346,
+            353,
+            360,
+            367,
+            374,
+            381,
+            388,
+            395,
+            402,
+            409,
+            416,
+            423,
+            430,
+            437,
+            444,
+            451,
+            458,
+            465,
+            472,
+            479,
+            486,
+            493,
+            500,
+            507,
+            514
+          ],
+          "lineCount": 69
+        },
+        {
+          "path": "docs/evidence/netlogo-fire-candidate-local-20261014.json",
+          "lines": [
+            100,
+            106,
+            112,
+            123
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "docs/evidence/netlogo-fire-candidate-local-20261014/browser-receipt.json",
+          "lines": [
+            98,
+            103,
+            108,
+            113,
+            118,
+            123,
+            128,
+            133,
+            138,
+            143,
+            148,
+            153,
+            158,
+            163,
+            168,
+            173,
+            178,
+            183,
+            188,
+            193,
+            198,
+            203,
+            208,
+            213,
+            218
+          ],
+          "lineCount": 25
+        },
+        {
+          "path": "docs/evidence/releases/beta-busy-composer-20260924.json",
+          "lines": [
+            59
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/releases/issue-144-20260927.json",
+          "lines": [
+            33
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/releases/issue165-parameter-runs-acceptance-20261002.json",
+          "lines": [
+            50,
+            266,
+            321,
+            1417,
+            1423,
+            1429,
+            1435,
+            1510
+          ],
+          "lineCount": 8
+        },
+        {
+          "path": "docs/evidence/releases/issue171-local-runs-release-20261008.json",
+          "lines": [
+            66
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/releases/m1-static-20261001.json",
+          "lines": [
+            11,
+            19,
+            27,
+            35,
+            43,
+            51,
+            59,
+            67,
+            75,
+            83,
+            91,
+            99,
+            107,
+            115,
+            123,
+            131,
+            139,
+            147,
+            155,
+            163,
+            171,
+            179,
+            187,
+            195,
+            203,
+            211,
+            219,
+            227,
+            235,
+            243,
+            251,
+            259,
+            267,
+            275,
+            283,
+            291,
+            299,
+            307,
+            315,
+            323,
+            331,
+            339,
+            347,
+            355,
+            363,
+            371,
+            379,
+            387,
+            395,
+            403,
+            411,
+            419,
+            427,
+            435,
+            443,
+            451,
+            459,
+            467,
+            475,
+            483,
+            491,
+            499,
+            507,
+            515,
+            523,
+            531,
+            539,
+            547,
+            623
+          ],
+          "lineCount": 69
+        },
+        {
+          "path": "docs/evidence/releases/main-integration-20261014-static.json",
+          "lines": [
+            45,
+            52,
+            59,
+            66,
+            73,
+            80,
+            87,
+            94,
+            101,
+            108,
+            115,
+            122,
+            129,
+            136,
+            143,
+            150,
+            157,
+            164,
+            171,
+            178,
+            185,
+            192,
+            199,
+            206,
+            213,
+            220,
+            227,
+            234,
+            241,
+            248,
+            255,
+            262,
+            269,
+            276,
+            283,
+            290,
+            297,
+            304,
+            311,
+            318,
+            325,
+            332,
+            339,
+            346,
+            353,
+            360,
+            367,
+            374,
+            381,
+            388,
+            395,
+            402,
+            409,
+            416,
+            423,
+            430,
+            437,
+            444,
+            451,
+            458,
+            465,
+            472,
+            479,
+            486,
+            493,
+            500,
+            507,
+            514,
+            521
+          ],
+          "lineCount": 69
+        },
+        {
+          "path": "docs/evidence/releases/main-integration-release-20261014.json",
+          "lines": [
+            141
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/releases/netlogo-fire-publication-20261014.json",
+          "lines": [
+            67,
+            278
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "docs/evidence/releases/pi-model-drawing-deployment-20261001.json",
+          "lines": [
+            104,
+            105
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "docs/evidence/releases/pi-model-drawing-local-20261001.json",
+          "lines": [
+            9
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/releases/ui-20260923.json",
+          "lines": [
+            118
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/riffoid-production-approval-packet-20261008.json",
+          "lines": [
+            110
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/riffoid-safety-stage-production-20261009.json",
+          "lines": [
+            38
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/riffoid-two-account-fixes-20261008.json",
+          "lines": [
+            225
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/evidence/riffoid-two-account-local-20261008.json",
+          "lines": [
+            71,
+            128
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "docs/evidence/riffoid-two-account-publish-readback-20261008.json",
+          "lines": [
+            650
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/g4-online-acceptance-20260916.md",
+          "lines": [
+            35
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/g4-server-window-guard.md",
+          "lines": [
+            39
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/g5-a-b2-simulation-output-implementation.md",
+          "lines": [
+            21
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/g5-mac-recovery-20260917.md",
+          "lines": [
+            127
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/integration-main-review-20260918.md",
+          "lines": [
+            3,
+            9,
+            19,
+            25
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "docs/invited-cloud-runs.md",
+          "lines": [
+            32
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/issue-83-preview-ui-delivery.md",
+          "lines": [
+            14
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/issues-acceptance-matrix-20260915.md",
+          "lines": [
+            8
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/issues-controlled-release-scope-20260915.md",
+          "lines": [
+            64
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/issues-development-log-20260915.md",
+          "lines": [
+            32,
+            124,
+            165,
+            172
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "docs/issues-subagent-plan-20260915.md",
+          "lines": [
+            19,
+            23,
+            60,
+            79,
+            88,
+            105,
+            136,
+            144
+          ],
+          "lineCount": 8
+        },
+        {
+          "path": "docs/m3-execution-plan.md",
+          "lines": [
+            1
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/main-integration-release-20261014.md",
+          "lines": [
+            12,
+            18
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "docs/mvp-system-design.md",
+          "lines": [
+            164,
+            423
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "docs/netlogo-fire-publication-20261014.md",
+          "lines": [
+            5,
+            11
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "docs/private-beta-operations.md",
+          "lines": [
+            217
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/release-readiness.md",
+          "lines": [
+            9,
+            29,
+            588,
+            594,
+            655,
+            712,
+            767,
+            808,
+            834,
+            837,
+            1070,
+            1077
+          ],
+          "lineCount": 12
+        },
+        {
+          "path": "docs/requirements-revision-artifact-contract.md",
+          "lines": [
+            22,
+            68,
+            78,
+            79,
+            247,
+            281,
+            357
+          ],
+          "lineCount": 7
+        },
+        {
+          "path": "docs/riffoid-next-conditional-window-plan-20261009.md",
+          "lines": [
+            90
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "docs/riffoid-two-account-entry.md",
+          "lines": [
+            28
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "examples/netlogo-fire-candidate/README.md",
+          "lines": [
+            7,
+            39,
+            40,
+            41
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "examples/netlogo-fire-candidate/model/model-spec.json",
+          "lines": [
+            31
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "infra/wrangler.browser-execution.jsonc",
+          "lines": [
+            4,
+            10
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "infra/wrangler.gateway-local.jsonc",
+          "lines": [
+            9,
+            12
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "infra/wrangler.gateway-staging.jsonc",
+          "lines": [
+            14,
+            22
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "infra/wrangler.m2-product-local.jsonc",
+          "lines": [
+            9,
+            23
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "infra/wrangler.m3-vertical-staging.jsonc",
+          "lines": [
+            16,
+            30
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "infra/wrangler.phase1-staging.jsonc",
+          "lines": [
+            31,
+            48
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "package.json",
+          "lines": [
+            8,
+            23
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "scripts/i18n-check.mjs",
+          "lines": [
+            8
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "scripts/i18n-shell-declarations.json",
+          "lines": [
+            23
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "scripts/issue77/live.mjs",
+          "lines": [
+            34
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "scripts/issue77/prepare-production.mjs",
+          "lines": [
+            5,
+            10,
+            12,
+            29,
+            31
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "scripts/issue77/production-acceptance.mjs",
+          "lines": [
+            85,
+            87,
+            88
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "scripts/issue77/verify-downloaded-browser.mjs",
+          "lines": [
+            9,
+            12,
+            13,
+            15,
+            28,
+            39,
+            40,
+            41,
+            42,
+            44
+          ],
+          "lineCount": 10
+        },
+        {
+          "path": "scripts/issue77/verify-downloaded.mjs",
+          "lines": [
+            14,
+            15,
+            16
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "scripts/m1/build-riffoid-approved-candidates.mjs",
+          "lines": [
+            12
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "scripts/m1/staging-preflight.mjs",
+          "lines": [
+            2,
+            44,
+            119
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "scripts/m3/check-browser-research-local.mjs",
+          "lines": [
+            8,
+            12,
+            13,
+            16,
+            17,
+            18,
+            26,
+            27,
+            37,
+            52,
+            63
+          ],
+          "lineCount": 11
+        },
+        {
+          "path": "scripts/m3/g3-local-environment.mjs",
+          "lines": [
+            10,
+            11
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "scripts/m3/g3-local-worker.mjs",
+          "lines": [
+            28,
+            49
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "scripts/m3/g3-recover-release.mjs",
+          "lines": [
+            8
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "scripts/m3/g3-research-browser-tail.mjs",
+          "lines": [
+            11,
+            13,
+            14,
+            15,
+            16,
+            18,
+            20,
+            22,
+            23
+          ],
+          "lineCount": 9
+        },
+        {
+          "path": "scripts/m3/g4-browser-proposals.mjs",
+          "lines": [
+            3,
+            4,
+            12,
+            13,
+            14
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "scripts/m3/g4-candidate-readiness.mjs",
+          "lines": [
+            7,
+            19,
+            20,
+            23,
+            27,
+            28,
+            37,
+            39,
+            40
+          ],
+          "lineCount": 9
+        },
+        {
+          "path": "scripts/m3/g4-ordinary-browser.mjs",
+          "lines": [
+            11,
+            37,
+            39,
+            47,
+            50,
+            51,
+            53,
+            57
+          ],
+          "lineCount": 8
+        },
+        {
+          "path": "scripts/m3/g4-release-content-probe.mjs",
+          "lines": [
+            8
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "scripts/m3/g4-release-content-probe.test.mjs",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "scripts/m3/materialize-browser-preview-web.mjs",
+          "lines": [
+            9,
+            11,
+            12,
+            13,
+            14,
+            18,
+            19,
+            21,
+            22,
+            23,
+            24,
+            27,
+            28,
+            34
+          ],
+          "lineCount": 14
+        },
+        {
+          "path": "scripts/m3/vertical-runtime-preflight.mjs",
+          "lines": [
+            2,
+            283,
+            305
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "scripts/m3/vertical-staging-preflight.mjs",
+          "lines": [
+            2,
+            325
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "scripts/model/benchmark-task-fixtures.mjs",
+          "lines": [
+            6,
+            7,
+            14,
+            15,
+            28
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "scripts/model/benchmark-task-fixtures.test.mjs",
+          "lines": [
+            6
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "scripts/model/netlogo-fire-browser-local.mjs",
+          "lines": [
+            8,
+            10,
+            11,
+            12,
+            13,
+            18,
+            43,
+            56,
+            81,
+            83
+          ],
+          "lineCount": 10
+        },
+        {
+          "path": "services/browser-preview/build-host.ts",
+          "lines": [
+            1,
+            14,
+            16,
+            17,
+            26,
+            27,
+            28,
+            32,
+            34,
+            35,
+            36,
+            51,
+            63,
+            67,
+            69,
+            70,
+            76,
+            81,
+            83,
+            84,
+            86,
+            91,
+            97,
+            104,
+            106,
+            111,
+            124,
+            129,
+            134
+          ],
+          "lineCount": 29
+        },
+        {
+          "path": "services/browser-preview/contract.ts",
+          "lines": [
+            2,
+            3,
+            13,
+            14,
+            16,
+            17,
+            21,
+            23,
+            37,
+            55,
+            81,
+            82,
+            87
+          ],
+          "lineCount": 13
+        },
+        {
+          "path": "services/browser-preview/discovery.ts",
+          "lines": [
+            1,
+            9,
+            11,
+            22,
+            29,
+            52
+          ],
+          "lineCount": 6
+        },
+        {
+          "path": "services/browser-preview/execution/assets/static-index.ts",
+          "lines": [
+            2,
+            16,
+            21,
+            25,
+            42,
+            47,
+            51,
+            67,
+            72,
+            76,
+            92,
+            97,
+            101,
+            111,
+            116,
+            120,
+            130,
+            135,
+            139,
+            149,
+            154,
+            158,
+            168,
+            173,
+            177,
+            187,
+            192,
+            196,
+            207,
+            208,
+            215,
+            216,
+            223,
+            224,
+            231,
+            232,
+            239,
+            240,
+            247,
+            248,
+            255,
+            256,
+            263,
+            264,
+            271,
+            272,
+            279,
+            280,
+            287,
+            288,
+            295,
+            296,
+            303,
+            304,
+            311,
+            312,
+            319,
+            320,
+            327,
+            328,
+            335,
+            336,
+            343,
+            344,
+            351,
+            352,
+            359,
+            360,
+            367,
+            368,
+            375,
+            376,
+            383,
+            384,
+            391,
+            392,
+            399,
+            400,
+            407,
+            408,
+            415,
+            416,
+            423,
+            424,
+            431,
+            432,
+            439,
+            440,
+            447,
+            448,
+            455,
+            456,
+            463,
+            464,
+            471,
+            472,
+            479,
+            480,
+            487,
+            488,
+            495,
+            496,
+            503,
+            504,
+            511,
+            512,
+            519,
+            520,
+            527,
+            528,
+            535,
+            536,
+            543,
+            544,
+            551,
+            552,
+            559,
+            560,
+            567,
+            568,
+            575,
+            576,
+            583,
+            584,
+            591,
+            592,
+            599,
+            600,
+            607,
+            608,
+            615,
+            616,
+            623,
+            624,
+            631,
+            632,
+            639,
+            640,
+            647,
+            648,
+            655,
+            656,
+            663,
+            664,
+            671,
+            672,
+            679,
+            680,
+            687,
+            688,
+            695,
+            696,
+            703,
+            704,
+            711,
+            712,
+            719,
+            720,
+            727,
+            728,
+            735,
+            736,
+            743,
+            744
+          ],
+          "lineCount": 164
+        },
+        {
+          "path": "services/browser-preview/execution/delivery.ts",
+          "lines": [
+            1,
+            25,
+            26,
+            28,
+            34,
+            35,
+            36
+          ],
+          "lineCount": 7
+        },
+        {
+          "path": "services/browser-preview/execution/env.d.ts",
+          "lines": [
+            2
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/execution/execution.test.ts",
+          "lines": [
+            6,
+            7,
+            9,
+            12,
+            13,
+            14,
+            16,
+            19,
+            20,
+            22,
+            23
+          ],
+          "lineCount": 11
+        },
+        {
+          "path": "services/browser-preview/execution/materialize.mjs",
+          "lines": [
+            6,
+            7,
+            10,
+            13,
+            17,
+            19,
+            26,
+            34,
+            35,
+            38,
+            39,
+            40,
+            42,
+            43,
+            45,
+            46,
+            48,
+            51
+          ],
+          "lineCount": 18
+        },
+        {
+          "path": "services/browser-preview/execution/retained/727c40f.json",
+          "lines": [
+            9,
+            14,
+            18,
+            29,
+            34,
+            38,
+            48,
+            53,
+            57,
+            68,
+            69,
+            76,
+            77,
+            84,
+            85,
+            92,
+            93,
+            100,
+            101,
+            108,
+            109,
+            116,
+            117,
+            124,
+            125,
+            132,
+            133,
+            140,
+            141,
+            148,
+            149,
+            156,
+            157,
+            164,
+            165,
+            172,
+            173,
+            180,
+            181,
+            188,
+            189,
+            196,
+            197,
+            204,
+            205,
+            212,
+            213,
+            220,
+            221,
+            228,
+            229,
+            236,
+            237,
+            244,
+            245,
+            252,
+            253,
+            260,
+            261,
+            268,
+            269,
+            276,
+            277,
+            284,
+            285,
+            292,
+            293,
+            300,
+            301,
+            308,
+            309,
+            316,
+            317,
+            324,
+            325,
+            332,
+            333,
+            340,
+            341,
+            348,
+            349,
+            356,
+            357,
+            364,
+            365,
+            372,
+            373,
+            380,
+            381,
+            388,
+            389
+          ],
+          "lineCount": 91
+        },
+        {
+          "path": "services/browser-preview/execution/retained/README.md",
+          "lines": [
+            13,
+            19,
+            20,
+            21
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/browser-preview/execution/retained/bytes/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+          "lines": [
+            1,
+            435,
+            436,
+            441,
+            445,
+            473,
+            476,
+            480,
+            481,
+            516,
+            688,
+            709,
+            714,
+            743,
+            744,
+            857
+          ],
+          "lineCount": 16
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf/delivery/frame.bundle.mjs",
+          "lines": [
+            3,
+            7,
+            115
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/6e2e0a600f43cf1cf418095e7666a573d7c6142ac179ccc3de0c513635fcfba8/runtime/host.mjs",
+          "lines": [
+            6
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/91f2bbd0ce334a8ce2144e6f26728cf292c5dfd3fa7943864cdd2d2e1ef30d57/source/prepare-assets.mjs",
+          "lines": [
+            8,
+            23,
+            31,
+            48
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0/host.bundle.mjs",
+          "lines": [
+            1,
+            435,
+            436,
+            441,
+            445,
+            473,
+            476,
+            480,
+            481,
+            516,
+            688,
+            709,
+            714,
+            743,
+            744,
+            857
+          ],
+          "lineCount": 16
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717/delivery/worker.bundle.mjs",
+          "lines": [
+            32,
+            532,
+            29924,
+            29925,
+            29930,
+            29934,
+            29962,
+            29965,
+            29969,
+            29970,
+            30005,
+            30173,
+            30194,
+            30199,
+            30228,
+            30336,
+            30363
+          ],
+          "lineCount": 17
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+          "lines": [
+            1,
+            45
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/f420e78080ca2310ed591ccc990d67809914e5acfb819ee34559bebde65a61cc/runtime/worker.mjs",
+          "lines": [
+            1,
+            2,
+            30
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396/runtime/package-loader.mjs",
+          "lines": [
+            1,
+            12,
+            16
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142-bytes/execution-assets/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
+          "lines": [
+            3,
+            7,
+            115
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-142.json",
+          "lines": [
+            11,
+            16,
+            20,
+            31,
+            36,
+            40,
+            50,
+            55,
+            59,
+            69,
+            74,
+            78,
+            88,
+            93,
+            97,
+            108,
+            109,
+            116,
+            117,
+            124,
+            125,
+            132,
+            133,
+            140,
+            141,
+            148,
+            149,
+            156,
+            157,
+            164,
+            165,
+            172,
+            173,
+            180,
+            181,
+            188,
+            189,
+            196,
+            197,
+            204,
+            205,
+            212,
+            213,
+            220,
+            221,
+            228,
+            229,
+            236,
+            237,
+            244,
+            245,
+            252,
+            253,
+            260,
+            261,
+            268,
+            269,
+            276,
+            277,
+            284,
+            285,
+            292,
+            293,
+            300,
+            301,
+            308,
+            309,
+            316,
+            317,
+            324,
+            325,
+            332,
+            333,
+            340,
+            341,
+            348,
+            349,
+            356,
+            357,
+            364,
+            365,
+            372,
+            373,
+            380,
+            381,
+            388,
+            389,
+            396,
+            397,
+            404,
+            405,
+            412,
+            413,
+            420,
+            421,
+            428,
+            429,
+            436,
+            437,
+            444,
+            445
+          ],
+          "lineCount": 101
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+          "lines": [
+            1,
+            45
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e/delivery/worker.bundle.mjs",
+          "lines": [
+            32,
+            532,
+            29924,
+            29925,
+            29930,
+            29934,
+            29962,
+            29965,
+            29969,
+            29970,
+            30005,
+            30173,
+            30194,
+            30199,
+            30228,
+            30336,
+            30396,
+            30444
+          ],
+          "lineCount": 18
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f/source/contract.ts",
+          "lines": [
+            2,
+            10,
+            11,
+            12,
+            16,
+            17,
+            30,
+            48,
+            49,
+            51,
+            52,
+            68,
+            69,
+            74
+          ],
+          "lineCount": 14
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/6e84d6d066a91819769093d7d5bf6cf67339a2c708087dc5b41934f5bc9fd931/runtime/host.mjs",
+          "lines": [
+            6
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/831ec2706b7c113a456bf413d7df96b82aafbbf4a20ec7de8bbe91908d8dd878/source/prepare-assets.mjs",
+          "lines": [
+            8,
+            23,
+            31,
+            48
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14/runtime/package-loader.mjs",
+          "lines": [
+            1,
+            12,
+            16
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs",
+          "lines": [
+            1,
+            445,
+            446,
+            451,
+            455,
+            483,
+            486,
+            490,
+            491,
+            526,
+            698,
+            719,
+            724,
+            753,
+            754,
+            928
+          ],
+          "lineCount": 16
+        },
+        {
+          "path": "services/browser-preview/execution/retained/pre-150.json",
+          "lines": [
+            13,
+            18,
+            22,
+            33,
+            38,
+            42,
+            52,
+            57,
+            61,
+            71,
+            76,
+            80,
+            90,
+            95,
+            99,
+            109,
+            114,
+            118,
+            128,
+            133,
+            137,
+            148,
+            149,
+            156,
+            157,
+            164,
+            165,
+            172,
+            173,
+            180,
+            181,
+            188,
+            189,
+            196,
+            197,
+            204,
+            205,
+            212,
+            213,
+            220,
+            221,
+            228,
+            229,
+            236,
+            237,
+            244,
+            245,
+            252,
+            253,
+            260,
+            261,
+            268,
+            269,
+            276,
+            277,
+            284,
+            285,
+            292,
+            293,
+            300,
+            301,
+            308,
+            309,
+            316,
+            317,
+            324,
+            325,
+            332,
+            333,
+            340,
+            341,
+            348,
+            349,
+            356,
+            357,
+            364,
+            365,
+            372,
+            373,
+            380,
+            381,
+            388,
+            389,
+            396,
+            397,
+            404,
+            405,
+            412,
+            413,
+            420,
+            421,
+            428,
+            429,
+            436,
+            437,
+            444,
+            445,
+            452,
+            453,
+            460,
+            461,
+            468,
+            469,
+            476,
+            477,
+            484,
+            485,
+            492,
+            493,
+            500,
+            501,
+            508,
+            509,
+            516,
+            517,
+            524,
+            525,
+            532,
+            533,
+            540,
+            541,
+            548,
+            549,
+            556,
+            557,
+            564,
+            565,
+            572,
+            573
+          ],
+          "lineCount": 129
+        },
+        {
+          "path": "services/browser-preview/fixtures/identity.ts",
+          "lines": [
+            1,
+            3
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/browser-preview/g4-build-hold.ts",
+          "lines": [
+            3,
+            6,
+            9,
+            10,
+            12,
+            13,
+            15,
+            19,
+            21
+          ],
+          "lineCount": 9
+        },
+        {
+          "path": "services/browser-preview/generation.mjs",
+          "lines": [
+            1,
+            7,
+            8,
+            9,
+            11
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "services/browser-preview/orchestrator.ts",
+          "lines": [
+            1,
+            6,
+            12,
+            13,
+            14,
+            16,
+            17,
+            22,
+            23,
+            24,
+            27,
+            28,
+            33,
+            44,
+            52,
+            53,
+            57,
+            58,
+            62,
+            64,
+            66,
+            75,
+            79,
+            85,
+            86,
+            87,
+            92
+          ],
+          "lineCount": 27
+        },
+        {
+          "path": "services/browser-preview/packager.ts",
+          "lines": [
+            1,
+            4,
+            5,
+            8,
+            9,
+            13,
+            16,
+            17,
+            18,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29
+          ],
+          "lineCount": 16
+        },
+        {
+          "path": "services/browser-preview/platform-delivery.ts",
+          "lines": [
+            1,
+            4,
+            7,
+            8,
+            9
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "services/browser-preview/production-registry.ts",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/profiles.ts",
+          "lines": [
+            15,
+            17,
+            20,
+            21,
+            23,
+            24,
+            25
+          ],
+          "lineCount": 7
+        },
+        {
+          "path": "services/browser-preview/runtime/browser-acceptance.mjs",
+          "lines": [
+            11,
+            13,
+            15,
+            29,
+            40,
+            41,
+            43,
+            45
+          ],
+          "lineCount": 8
+        },
+        {
+          "path": "services/browser-preview/runtime/fixtures.mjs",
+          "lines": [
+            2,
+            3,
+            9,
+            11,
+            12,
+            13
+          ],
+          "lineCount": 6
+        },
+        {
+          "path": "services/browser-preview/runtime/host.mjs",
+          "lines": [
+            6
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/browser-preview/runtime/host.test.mjs",
+          "lines": [
+            3,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14
+          ],
+          "lineCount": 8
+        },
+        {
+          "path": "services/browser-preview/runtime/package-loader.mjs",
+          "lines": [
+            1,
+            12,
+            26
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/runtime/package-loader.test.mjs",
+          "lines": [
+            6,
+            16,
+            17,
+            18,
+            34
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "services/browser-preview/runtime/prepare-assets.mjs",
+          "lines": [
+            8,
+            23,
+            31,
+            48
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/browser-preview/runtime/worker.mjs",
+          "lines": [
+            1,
+            2,
+            51
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/browser-preview/source.ts",
+          "lines": [
+            9,
+            10,
+            11,
+            12,
+            13,
+            14
+          ],
+          "lineCount": 6
+        },
+        {
+          "path": "services/browser-preview/storage.ts",
+          "lines": [
+            1,
+            14,
+            15,
+            17,
+            18,
+            24,
+            26,
+            31,
+            34,
+            35,
+            41,
+            45,
+            47,
+            48,
+            50
+          ],
+          "lineCount": 15
+        },
+        {
+          "path": "services/browser-preview/validator.ts",
+          "lines": [
+            4,
+            51,
+            53,
+            58,
+            66,
+            77,
+            79
+          ],
+          "lineCount": 7
+        },
+        {
+          "path": "services/gateway/app.ts",
+          "lines": [
+            3,
+            4,
+            41,
+            261,
+            264,
+            267,
+            269,
+            270,
+            272,
+            273,
+            274,
+            275,
+            276,
+            279,
+            280,
+            282,
+            286
+          ],
+          "lineCount": 17
+        },
+        {
+          "path": "services/gateway/browser-preview-services.ts",
+          "lines": [
+            2,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            13,
+            15,
+            16,
+            17,
+            19
+          ],
+          "lineCount": 12
+        },
+        {
+          "path": "services/gateway/env.d.ts",
+          "lines": [
+            8
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/gateway/index.ts",
+          "lines": [
+            14,
+            15,
+            24,
+            110,
+            113,
+            119,
+            164
+          ],
+          "lineCount": 7
+        },
+        {
+          "path": "services/gateway/origins.ts",
+          "lines": [
+            9,
+            36,
+            37
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/trusted-pi/product-tool-bridge.mjs",
+          "lines": [
+            28
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/trusted-pi/release-candidate.mjs",
+          "lines": [
+            17,
+            22,
+            27,
+            28,
+            29,
+            30,
+            39,
+            47,
+            55,
+            57,
+            60,
+            61,
+            63,
+            64,
+            76,
+            81
+          ],
+          "lineCount": 16
+        },
+        {
+          "path": "services/turn-runtime/managed-candidate.ts",
+          "lines": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/turn-runtime/managed-runner.ts",
+          "lines": [
+            1
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/turn-runtime/managed-testing-instructions.ts",
+          "lines": [
+            16
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/turn/store.ts",
+          "lines": [
+            1
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/web/app.js",
+          "lines": [
+            2,
+            20,
+            49,
+            57,
+            373,
+            602,
+            774,
+            776,
+            794,
+            912,
+            919,
+            965,
+            973
+          ],
+          "lineCount": 13
+        },
+        {
+          "path": "services/web/browser-preview.js",
+          "lines": [
+            9,
+            10,
+            13,
+            16,
+            17,
+            18,
+            19,
+            20,
+            24,
+            25,
+            27,
+            30,
+            31,
+            33,
+            36,
+            38,
+            40,
+            44,
+            53,
+            59,
+            63,
+            64,
+            71,
+            82,
+            85
+          ],
+          "lineCount": 25
+        },
+        {
+          "path": "services/web/i18n.js",
+          "lines": [
+            641,
+            1636
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "services/web/index.html",
+          "lines": [
+            49
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/web/local-runs.js",
+          "lines": [
+            1,
+            34,
+            102,
+            103
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "services/web/verify-handoff.js",
+          "lines": [
+            1,
+            18,
+            46,
+            66,
+            77,
+            89
+          ],
+          "lineCount": 6
+        },
+        {
+          "path": "services/web/workspace.css",
+          "lines": [
+            42,
+            46,
+            47
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "services/workspace/durable.ts",
+          "lines": [
+            23,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            174,
+            239,
+            279,
+            280,
+            282,
+            283,
+            288,
+            290,
+            292,
+            295,
+            296,
+            299,
+            302,
+            303,
+            304,
+            306,
+            310,
+            311,
+            312,
+            315,
+            318,
+            327,
+            332,
+            366,
+            371,
+            376,
+            381,
+            383,
+            385
+          ],
+          "lineCount": 38
+        },
+        {
+          "path": "services/workspace/shared-alarm.ts",
+          "lines": [
+            1
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/workspace/store.ts",
+          "lines": [
+            1
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "services/workspace/turn-alarm.ts",
+          "lines": [
+            50
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m1/composer-lifecycle.test.mjs",
+          "lines": [
+            28
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m1/riffoid-entry-workerd.test.mjs",
+          "lines": [
+            86
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m1/riffoid-entry.test.ts",
+          "lines": [
+            24,
+            27
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "tests/m1/riffoid-recovery-cold-workerd.test.mjs",
+          "lines": [
+            22,
+            45,
+            47
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "tests/m1/riffoid-recovery.test.ts",
+          "lines": [
+            48,
+            52
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "tests/m1/riffoid-two-account.test.ts",
+          "lines": [
+            9
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m1/staging-preflight.test.mjs",
+          "lines": [
+            5,
+            13,
+            33,
+            63,
+            64,
+            65,
+            66
+          ],
+          "lineCount": 7
+        },
+        {
+          "path": "tests/m1/web.test.mjs",
+          "lines": [
+            8,
+            30,
+            92,
+            338
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "tests/m2/fixtures/managed-candidate.ts",
+          "lines": [
+            2
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m2/managed-candidate.test.ts",
+          "lines": [
+            8
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m2/managed-runner.test.ts",
+          "lines": [
+            7
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m2/trusted-pi-release-candidate.test.mjs",
+          "lines": [
+            5,
+            24,
+            31,
+            32
+          ],
+          "lineCount": 4
+        },
+        {
+          "path": "tests/m2/workspace-shared-alarm.test.ts",
+          "lines": [
+            102,
+            105
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "tests/m3/browser-preview-asset-timeout.test.mjs",
+          "lines": [
+            4,
+            14,
+            17,
+            19,
+            20,
+            24,
+            25
+          ],
+          "lineCount": 7
+        },
+        {
+          "path": "tests/m3/browser-preview-build-host.test.mjs",
+          "lines": [
+            3,
+            4,
+            6,
+            7,
+            8,
+            9,
+            10,
+            12,
+            38,
+            47,
+            58
+          ],
+          "lineCount": 11
+        },
+        {
+          "path": "tests/m3/browser-preview-build.test.ts",
+          "lines": [
+            6,
+            7,
+            8,
+            9,
+            10,
+            59,
+            93
+          ],
+          "lineCount": 7
+        },
+        {
+          "path": "tests/m3/browser-preview-canvas.test.mjs",
+          "lines": [
+            7,
+            8,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            34,
+            55,
+            62,
+            63,
+            64,
+            65,
+            71
+          ],
+          "lineCount": 18
+        },
+        {
+          "path": "tests/m3/browser-preview-contract.test.ts",
+          "lines": [
+            3,
+            4,
+            15,
+            16,
+            24
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "tests/m3/browser-preview-discovery-workerd.test.mjs",
+          "lines": [
+            14
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/browser-preview-gateway-assets.test.mjs",
+          "lines": [
+            11,
+            12,
+            16,
+            17,
+            20,
+            21,
+            22,
+            23,
+            24
+          ],
+          "lineCount": 9
+        },
+        {
+          "path": "tests/m3/browser-preview-gateway.test.ts",
+          "lines": [
+            12,
+            13,
+            17
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "tests/m3/browser-preview-generation.test.mjs",
+          "lines": [
+            4,
+            5,
+            6,
+            7,
+            10,
+            11,
+            12,
+            16,
+            17,
+            55,
+            59,
+            77,
+            78,
+            79,
+            80,
+            81
+          ],
+          "lineCount": 16
+        },
+        {
+          "path": "tests/m3/browser-preview-initial-fixture.mjs",
+          "lines": [
+            2,
+            8,
+            9,
+            10,
+            11,
+            12,
+            26,
+            27,
+            28
+          ],
+          "lineCount": 9
+        },
+        {
+          "path": "tests/m3/browser-preview-initial-workerd.test.mjs",
+          "lines": [
+            8,
+            14,
+            16,
+            22,
+            23,
+            32,
+            34,
+            36
+          ],
+          "lineCount": 8
+        },
+        {
+          "path": "tests/m3/browser-preview-initial.test.mjs",
+          "lines": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10,
+            11,
+            15,
+            22,
+            28,
+            33,
+            38,
+            41,
+            45,
+            53,
+            54,
+            61,
+            74,
+            77
+          ],
+          "lineCount": 20
+        },
+        {
+          "path": "tests/m3/browser-preview-javascript-browser.test.mjs",
+          "lines": [
+            8,
+            13,
+            23
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "tests/m3/browser-preview-javascript-contract.test.ts",
+          "lines": [
+            7,
+            8,
+            9,
+            10,
+            17,
+            18,
+            19,
+            25,
+            30,
+            35,
+            42,
+            43,
+            44,
+            49,
+            50,
+            54,
+            56,
+            57,
+            63,
+            64
+          ],
+          "lineCount": 20
+        },
+        {
+          "path": "tests/m3/browser-preview-legacy.test.mjs",
+          "lines": [
+            4,
+            5,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            27,
+            39
+          ],
+          "lineCount": 10
+        },
+        {
+          "path": "tests/m3/browser-preview-orchestrator.test.mjs",
+          "lines": [
+            3,
+            4,
+            6,
+            7,
+            8,
+            9,
+            10,
+            14,
+            16,
+            25,
+            45,
+            53,
+            59,
+            61,
+            66
+          ],
+          "lineCount": 15
+        },
+        {
+          "path": "tests/m3/browser-preview-panel.test.mjs",
+          "lines": [
+            1,
+            14,
+            22,
+            24,
+            26,
+            27,
+            29,
+            30,
+            32,
+            34,
+            36,
+            44,
+            45,
+            47,
+            50,
+            53,
+            59,
+            67,
+            68,
+            69,
+            70
+          ],
+          "lineCount": 21
+        },
+        {
+          "path": "tests/m3/browser-preview-production-registry.test.mjs",
+          "lines": [
+            3,
+            4,
+            5,
+            6,
+            9,
+            10,
+            11,
+            12
+          ],
+          "lineCount": 8
+        },
+        {
+          "path": "tests/m3/browser-preview-test-fixture.mjs",
+          "lines": [
+            1,
+            2,
+            4,
+            5,
+            6,
+            7,
+            18,
+            25,
+            26
+          ],
+          "lineCount": 9
+        },
+        {
+          "path": "tests/m3/g4-browser-build-hold-workerd.test.mjs",
+          "lines": [
+            2,
+            7,
+            12,
+            13,
+            21
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "tests/m3/g4-browser-build-hold.test.mjs",
+          "lines": [
+            1,
+            5,
+            7
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "tests/m3/g4-browser-build-recovery-workerd.test.mjs",
+          "lines": [
+            2,
+            5,
+            9
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "tests/m3/local-runs-pyodide.test.mjs",
+          "lines": [
+            8,
+            9,
+            10,
+            11,
+            20,
+            28,
+            29,
+            32,
+            45
+          ],
+          "lineCount": 9
+        },
+        {
+          "path": "tests/m3/local-runs-ui.test.mjs",
+          "lines": [
+            5
+          ],
+          "lineCount": 1
+        },
+        {
+          "path": "tests/m3/netlogo-fire-candidate.test.mjs",
+          "lines": [
+            9,
+            10,
+            11
+          ],
+          "lineCount": 3
+        },
+        {
+          "path": "tests/m3/simulation-browser-models-docker.test.ts",
+          "lines": [
+            13,
+            14,
+            15,
+            24,
+            25
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "tests/m3/simulation-ui.test.mjs",
+          "lines": [
+            25,
+            35
+          ],
+          "lineCount": 2
+        },
+        {
+          "path": "tests/m3/verify-handoff-boundary.test.mjs",
+          "lines": [
+            7,
+            8,
+            55,
+            63,
+            103
+          ],
+          "lineCount": 5
+        },
+        {
+          "path": "tests/m3/workspace-layout.test.mjs",
+          "lines": [
+            9,
+            12,
+            44,
+            50,
+            51,
+            52,
+            64,
+            245,
+            246,
+            247,
+            249,
+            252,
+            258,
+            259,
+            260,
+            262,
+            263,
+            267,
+            268,
+            273,
+            274,
+            275,
+            278,
+            279,
+            280,
+            281,
+            282,
+            283,
+            285,
+            291
+          ],
+          "lineCount": 30
+        },
+        {
+          "path": "tests/m3/workspace-service-workerd.test.mjs",
+          "lines": [
+            53,
+            129,
+            130,
+            131,
+            132
+          ],
+          "lineCount": 5
+        }
+      ]
+    }
+  },
+  "groups": {
+    "browser_preview_tree": {
+      "fileCount": 80,
+      "files": [
+        "services/browser-preview/assets-json.d.ts",
+        "services/browser-preview/build-host.ts",
+        "services/browser-preview/contract.ts",
+        "services/browser-preview/discovery.ts",
+        "services/browser-preview/execution/assets/static-index.ts",
+        "services/browser-preview/execution/delivery.ts",
+        "services/browser-preview/execution/env.d.ts",
+        "services/browser-preview/execution/execution.test.ts",
+        "services/browser-preview/execution/index.ts",
+        "services/browser-preview/execution/materialize.mjs",
+        "services/browser-preview/execution/retained/727c40f.json",
+        "services/browser-preview/execution/retained/README.md",
+        "services/browser-preview/execution/retained/bytes/browser-preview-assets/2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8/source/package-lock.json",
+        "services/browser-preview/execution/retained/bytes/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+        "services/browser-preview/execution/retained/bytes/browser-preview-assets/df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8/source/model-spec.ts",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf/delivery/frame.bundle.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/49e63ea216c19622ce8a61b7ecfa1d570dad714da4438503e95aab6e11977b52/runtime/frame.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/5139f59cfb287705c920e147f5abe2a02f6b018db775b7331eb18f5f6a045044/runtime/renderer.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/6e2e0a600f43cf1cf418095e7666a573d7c6142ac179ccc3de0c513635fcfba8/runtime/host.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/91f2bbd0ce334a8ce2144e6f26728cf292c5dfd3fa7943864cdd2d2e1ef30d57/source/prepare-assets.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0/host.bundle.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717/delivery/worker.bundle.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/a86cb7e6e748499e673303ba621ec011850ba9f3e7743f8e27162039ce5f47b5/source/package-lock.json",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/f420e78080ca2310ed591ccc990d67809914e5acfb819ee34559bebde65a61cc/runtime/worker.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396/runtime/package-loader.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/execution-assets/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
+        "services/browser-preview/execution/retained/pre-142.json",
+        "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+        "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e/delivery/worker.bundle.mjs",
+        "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f/source/contract.ts",
+        "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/6e84d6d066a91819769093d7d5bf6cf67339a2c708087dc5b41934f5bc9fd931/runtime/host.mjs",
+        "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/831ec2706b7c113a456bf413d7df96b82aafbbf4a20ec7de8bbe91908d8dd878/source/prepare-assets.mjs",
+        "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14/runtime/package-loader.mjs",
+        "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54/runtime/renderer.mjs",
+        "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs",
+        "services/browser-preview/execution/retained/pre-150.json",
+        "services/browser-preview/execution/retained/profiles-727c40f.json",
+        "services/browser-preview/execution/retained/profiles-pre-142.json",
+        "services/browser-preview/execution/retained/profiles-pre-150.json",
+        "services/browser-preview/fixtures/identity.ts",
+        "services/browser-preview/g4-build-hold.ts",
+        "services/browser-preview/generation.mjs",
+        "services/browser-preview/orchestrator.ts",
+        "services/browser-preview/packager.ts",
+        "services/browser-preview/platform-delivery.ts",
+        "services/browser-preview/production-registry.ts",
+        "services/browser-preview/profiles.ts",
+        "services/browser-preview/runtime/assets/delivery.json",
+        "services/browser-preview/runtime/assets/profiles.json",
+        "services/browser-preview/runtime/assets/upstream.json",
+        "services/browser-preview/runtime/browser-acceptance.mjs",
+        "services/browser-preview/runtime/canvas.mjs",
+        "services/browser-preview/runtime/fixtures.mjs",
+        "services/browser-preview/runtime/fixtures/fire.py",
+        "services/browser-preview/runtime/fixtures/mesa.py",
+        "services/browser-preview/runtime/fixtures/queue.py",
+        "services/browser-preview/runtime/fixtures/run.py",
+        "services/browser-preview/runtime/fixtures/traffic.py",
+        "services/browser-preview/runtime/frame.html",
+        "services/browser-preview/runtime/frame.mjs",
+        "services/browser-preview/runtime/host.mjs",
+        "services/browser-preview/runtime/host.test.mjs",
+        "services/browser-preview/runtime/js-frame.html",
+        "services/browser-preview/runtime/js-frame.mjs",
+        "services/browser-preview/runtime/js-scene.mjs",
+        "services/browser-preview/runtime/js-scene.test.mjs",
+        "services/browser-preview/runtime/package-loader.mjs",
+        "services/browser-preview/runtime/package-loader.test.mjs",
+        "services/browser-preview/runtime/prepare-assets.mjs",
+        "services/browser-preview/runtime/protocol.d.mts",
+        "services/browser-preview/runtime/protocol.mjs",
+        "services/browser-preview/runtime/protocol.test.mjs",
+        "services/browser-preview/runtime/renderer.mjs",
+        "services/browser-preview/runtime/sha256.mjs",
+        "services/browser-preview/runtime/sha256.test.mjs",
+        "services/browser-preview/runtime/worker.mjs",
+        "services/browser-preview/source.ts",
+        "services/browser-preview/storage.ts",
+        "services/browser-preview/validator.ts"
+      ],
+      "trackedBytes": 4392670
+    },
+    "browser_preview_tree_excluding_retained": {
+      "fileCount": 50,
+      "files": [
+        "services/browser-preview/assets-json.d.ts",
+        "services/browser-preview/build-host.ts",
+        "services/browser-preview/contract.ts",
+        "services/browser-preview/discovery.ts",
+        "services/browser-preview/execution/assets/static-index.ts",
+        "services/browser-preview/execution/delivery.ts",
+        "services/browser-preview/execution/env.d.ts",
+        "services/browser-preview/execution/execution.test.ts",
+        "services/browser-preview/execution/index.ts",
+        "services/browser-preview/execution/materialize.mjs",
+        "services/browser-preview/fixtures/identity.ts",
+        "services/browser-preview/g4-build-hold.ts",
+        "services/browser-preview/generation.mjs",
+        "services/browser-preview/orchestrator.ts",
+        "services/browser-preview/packager.ts",
+        "services/browser-preview/platform-delivery.ts",
+        "services/browser-preview/production-registry.ts",
+        "services/browser-preview/profiles.ts",
+        "services/browser-preview/runtime/assets/delivery.json",
+        "services/browser-preview/runtime/assets/profiles.json",
+        "services/browser-preview/runtime/assets/upstream.json",
+        "services/browser-preview/runtime/browser-acceptance.mjs",
+        "services/browser-preview/runtime/canvas.mjs",
+        "services/browser-preview/runtime/fixtures.mjs",
+        "services/browser-preview/runtime/fixtures/fire.py",
+        "services/browser-preview/runtime/fixtures/mesa.py",
+        "services/browser-preview/runtime/fixtures/queue.py",
+        "services/browser-preview/runtime/fixtures/run.py",
+        "services/browser-preview/runtime/fixtures/traffic.py",
+        "services/browser-preview/runtime/frame.html",
+        "services/browser-preview/runtime/frame.mjs",
+        "services/browser-preview/runtime/host.mjs",
+        "services/browser-preview/runtime/host.test.mjs",
+        "services/browser-preview/runtime/js-frame.html",
+        "services/browser-preview/runtime/js-frame.mjs",
+        "services/browser-preview/runtime/js-scene.mjs",
+        "services/browser-preview/runtime/js-scene.test.mjs",
+        "services/browser-preview/runtime/package-loader.mjs",
+        "services/browser-preview/runtime/package-loader.test.mjs",
+        "services/browser-preview/runtime/prepare-assets.mjs",
+        "services/browser-preview/runtime/protocol.d.mts",
+        "services/browser-preview/runtime/protocol.mjs",
+        "services/browser-preview/runtime/protocol.test.mjs",
+        "services/browser-preview/runtime/renderer.mjs",
+        "services/browser-preview/runtime/sha256.mjs",
+        "services/browser-preview/runtime/sha256.test.mjs",
+        "services/browser-preview/runtime/worker.mjs",
+        "services/browser-preview/source.ts",
+        "services/browser-preview/storage.ts",
+        "services/browser-preview/validator.ts"
+      ],
+      "trackedBytes": 316210
+    },
+    "retained_compatibility_assets_indexes": {
+      "fileCount": 30,
+      "files": [
+        "services/browser-preview/execution/retained/727c40f.json",
+        "services/browser-preview/execution/retained/README.md",
+        "services/browser-preview/execution/retained/bytes/browser-preview-assets/2cef6d67f81af46c196b75d0c7df18db2f3d7276eb1cb068b05e2a774a54bde8/source/package-lock.json",
+        "services/browser-preview/execution/retained/bytes/browser-preview-assets/38992bdaf7ee874e4f39395485e7341347181373c45f66c998bbcfd9fe1bcea1/host.bundle.mjs",
+        "services/browser-preview/execution/retained/bytes/browser-preview-assets/df80d6f6218da064a00eae059e468ccf7e258b0c69f58dcaa256df56b97597e8/source/model-spec.ts",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/288a822e2533bd89fc1de6f786961fc9f261a89d29f29eb46d4e281d29bb52bf/delivery/frame.bundle.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/49e63ea216c19622ce8a61b7ecfa1d570dad714da4438503e95aab6e11977b52/runtime/frame.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/5139f59cfb287705c920e147f5abe2a02f6b018db775b7331eb18f5f6a045044/runtime/renderer.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/6e2e0a600f43cf1cf418095e7666a573d7c6142ac179ccc3de0c513635fcfba8/runtime/host.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/91f2bbd0ce334a8ce2144e6f26728cf292c5dfd3fa7943864cdd2d2e1ef30d57/source/prepare-assets.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/9f522e756ee4de1eac5dfb93eea6f6f699c5f3bbc59f647cd4358d79049585d0/host.bundle.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/a71a8543a100e9256049a91bc1ceecae78524e2dfc69121245a1c63aee15b717/delivery/worker.bundle.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/a86cb7e6e748499e673303ba621ec011850ba9f3e7743f8e27162039ce5f47b5/source/package-lock.json",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/c4d8fdd9fdafb055b48ee035c271806156187e8be109e14ebb8edb80c4dacf80/renderer.bundle.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/f420e78080ca2310ed591ccc990d67809914e5acfb819ee34559bebde65a61cc/runtime/worker.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/app-assets/browser-preview-assets/fdfd36964c9415369daa78869c749c0ff72e04fa6165ecbd0c79b3ba7afdc396/runtime/package-loader.mjs",
+        "services/browser-preview/execution/retained/pre-142-bytes/execution-assets/runtime/53110ac3f6ebd8c372a048cb122941ffad41543d8c11b4582147e9f350e103e5/frame.html",
+        "services/browser-preview/execution/retained/pre-142.json",
+        "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/05934c2186c5f8bc7ddb4c9bb778400a2e5b8defe33f679da455e60b725c31a5/renderer.bundle.mjs",
+        "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/0c45554ec2ea09d0e18d3639d7cc13306fa61ba917f40d3ed2c1cd6ce60c012e/delivery/worker.bundle.mjs",
+        "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/2db2237783cbaabd16abd941a459784543ae95879c052efc429f90b4777b595f/source/contract.ts",
+        "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/6e84d6d066a91819769093d7d5bf6cf67339a2c708087dc5b41934f5bc9fd931/runtime/host.mjs",
+        "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/831ec2706b7c113a456bf413d7df96b82aafbbf4a20ec7de8bbe91908d8dd878/source/prepare-assets.mjs",
+        "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/91011f6d694a70939f901eb918a1cc5a72aeef08eda0339d7fce54fb93d41d14/runtime/package-loader.mjs",
+        "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/b5605ae3086c650fa0124c0c4fc571ade2ee3910d12554a86443c5f171224e54/runtime/renderer.mjs",
+        "services/browser-preview/execution/retained/pre-150-bytes/app-assets/browser-preview-assets/e4be32b2e90c487509fbc0ba30644db87865670e812dd9fc85e153deaf3a058e/host.bundle.mjs",
+        "services/browser-preview/execution/retained/pre-150.json",
+        "services/browser-preview/execution/retained/profiles-727c40f.json",
+        "services/browser-preview/execution/retained/profiles-pre-142.json",
+        "services/browser-preview/execution/retained/profiles-pre-150.json"
+      ],
+      "trackedBytes": 4076460
+    },
+    "independent_netlogo_example": {
+      "fileCount": 9,
+      "files": [
+        "examples/netlogo-fire-candidate/README.md",
+        "examples/netlogo-fire-candidate/app/requirements.lock",
+        "examples/netlogo-fire-candidate/docs/SOURCE_AND_LICENSE.md",
+        "examples/netlogo-fire-candidate/model/model-spec.json",
+        "examples/netlogo-fire-candidate/model/model.py",
+        "examples/netlogo-fire-candidate/model/run.py",
+        "examples/netlogo-fire-candidate/model/visualization.json",
+        "scripts/model/netlogo-fire-browser-local.mjs",
+        "tests/m3/netlogo-fire-candidate.test.mjs"
+      ],
+      "trackedBytes": 35680
+    },
+    "independent_mesa_spike": {
+      "fileCount": 11,
+      "files": [
+        "spikes/mesa-browser-runtime/README.md",
+        "spikes/mesa-browser-runtime/VALIDATION.md",
+        "spikes/mesa-browser-runtime/browser-acceptance.mjs",
+        "spikes/mesa-browser-runtime/browser.test.mjs",
+        "spikes/mesa-browser-runtime/index.html",
+        "spikes/mesa-browser-runtime/models/queue_trace.py",
+        "spikes/mesa-browser-runtime/models/schelling.py",
+        "spikes/mesa-browser-runtime/protocol.js",
+        "spikes/mesa-browser-runtime/protocol.test.mjs",
+        "spikes/mesa-browser-runtime/test_models.py",
+        "spikes/mesa-browser-runtime/worker.js"
+      ],
+      "trackedBytes": 53941
+    },
+    "browser_runtime_fixture_sources": {
+      "fileCount": 5,
+      "files": [
+        "services/browser-preview/runtime/fixtures/fire.py",
+        "services/browser-preview/runtime/fixtures/mesa.py",
+        "services/browser-preview/runtime/fixtures/queue.py",
+        "services/browser-preview/runtime/fixtures/run.py",
+        "services/browser-preview/runtime/fixtures/traffic.py"
+      ],
+      "trackedBytes": 14461
+    },
+    "dedicated_browser_preview_m3_tests_and_helpers": {
+      "fileCount": 19,
+      "files": [
+        "tests/m3/browser-preview-asset-timeout.test.mjs",
+        "tests/m3/browser-preview-build-host.test.mjs",
+        "tests/m3/browser-preview-build.test.ts",
+        "tests/m3/browser-preview-canvas.test.mjs",
+        "tests/m3/browser-preview-contract.test.ts",
+        "tests/m3/browser-preview-discovery-workerd.test.mjs",
+        "tests/m3/browser-preview-gateway-assets.test.mjs",
+        "tests/m3/browser-preview-gateway.test.ts",
+        "tests/m3/browser-preview-generation.test.mjs",
+        "tests/m3/browser-preview-initial-fixture.mjs",
+        "tests/m3/browser-preview-initial-workerd.test.mjs",
+        "tests/m3/browser-preview-initial.test.mjs",
+        "tests/m3/browser-preview-javascript-browser.test.mjs",
+        "tests/m3/browser-preview-javascript-contract.test.ts",
+        "tests/m3/browser-preview-legacy.test.mjs",
+        "tests/m3/browser-preview-orchestrator.test.mjs",
+        "tests/m3/browser-preview-panel.test.mjs",
+        "tests/m3/browser-preview-production-registry.test.mjs",
+        "tests/m3/browser-preview-test-fixture.mjs"
+      ],
+      "trackedBytes": 158206
+    },
+    "dedicated_browser_g4_build_tests": {
+      "fileCount": 3,
+      "files": [
+        "tests/m3/g4-browser-build-hold-workerd.test.mjs",
+        "tests/m3/g4-browser-build-hold.test.mjs",
+        "tests/m3/g4-browser-build-recovery-workerd.test.mjs"
+      ],
+      "trackedBytes": 22034
+    },
+    "dedicated_local_runs_tests": {
+      "fileCount": 2,
+      "files": [
+        "tests/m3/local-runs-pyodide.test.mjs",
+        "tests/m3/local-runs-ui.test.mjs"
+      ],
+      "trackedBytes": 23992
+    },
+    "legacy_test_fixture_candidates": {
+      "fileCount": 3,
+      "files": [
+        "tests/fixtures/preview-legacy-run.py",
+        "tests/m3/fixtures/browser-models/mesa.py",
+        "tests/m3/fixtures/browser-models/queue.py"
+      ],
+      "trackedBytes": 9096
+    },
+    "dedicated_web_modules": {
+      "fileCount": 3,
+      "files": [
+        "services/web/browser-preview.js",
+        "services/web/local-runs.js",
+        "services/web/verify-handoff.js"
+      ],
+      "trackedBytes": 50472
+    },
+    "ui_prototype_tree": {
+      "fileCount": 10,
+      "files": [
+        "ui/admin.css",
+        "ui/admin.js",
+        "ui/app.js",
+        "ui/index.html",
+        "ui/serve.mjs",
+        "ui/shared.js",
+        "ui/styles.css",
+        "ui/user-pages.css",
+        "ui/user-pages.js",
+        "ui/workspace.js"
+      ],
+      "trackedBytes": 209032
+    },
+    "native_g5_benchmark_fixture_sources": {
+      "fileCount": 5,
+      "files": [
+        "scripts/model/benchmark-task-fixtures.mjs",
+        "scripts/model/benchmark-task-fixtures.test.mjs",
+        "scripts/model/benchmark-task-fixtures/fixtures.json",
+        "scripts/model/benchmark-task-fixtures/fixtures.sha256",
+        "scripts/model/benchmark-task-fixtures/queue-reference.py"
+      ],
+      "trackedBytes": 125769
+    }
+  },
+  "externalBrowserReferences": {
+    "fileCount": 98,
+    "files": [
+      {
+        "path": ".github/workflows/check.yml",
+        "lines": [
+          39,
+          40
+        ]
+      },
+      {
+        "path": "README.md",
+        "lines": [
+          79
+        ]
+      },
+      {
+        "path": "examples/netlogo-fire-candidate/README.md",
+        "lines": [
+          39,
+          40,
+          41
+        ]
+      },
+      {
+        "path": "infra/wrangler.browser-execution.jsonc",
+        "lines": [
+          4,
+          10
+        ]
+      },
+      {
+        "path": "infra/wrangler.gateway-local.jsonc",
+        "lines": [
+          9,
+          12
+        ]
+      },
+      {
+        "path": "infra/wrangler.gateway-staging.jsonc",
+        "lines": [
+          14,
+          22
+        ]
+      },
+      {
+        "path": "infra/wrangler.m2-product-local.jsonc",
+        "lines": [
+          9,
+          23
+        ]
+      },
+      {
+        "path": "infra/wrangler.m3-vertical-staging.jsonc",
+        "lines": [
+          16,
+          30
+        ]
+      },
+      {
+        "path": "infra/wrangler.phase1-staging.jsonc",
+        "lines": [
+          31,
+          48
+        ]
+      },
+      {
+        "path": "package.json",
+        "lines": [
+          8,
+          23
+        ]
+      },
+      {
+        "path": "scripts/i18n-check.mjs",
+        "lines": [
+          8
+        ]
+      },
+      {
+        "path": "scripts/i18n-shell-declarations.json",
+        "lines": [
+          23
+        ]
+      },
+      {
+        "path": "scripts/issue77/live.mjs",
+        "lines": [
+          34
+        ]
+      },
+      {
+        "path": "scripts/issue77/prepare-production.mjs",
+        "lines": [
+          5,
+          10,
+          12,
+          29,
+          31
+        ]
+      },
+      {
+        "path": "scripts/issue77/production-acceptance.mjs",
+        "lines": [
+          85,
+          87,
+          88
+        ]
+      },
+      {
+        "path": "scripts/issue77/verify-downloaded-browser.mjs",
+        "lines": [
+          9,
+          12,
+          13,
+          15,
+          28,
+          39,
+          40,
+          41,
+          42,
+          44
+        ]
+      },
+      {
+        "path": "scripts/issue77/verify-downloaded.mjs",
+        "lines": [
+          14,
+          15,
+          16
+        ]
+      },
+      {
+        "path": "scripts/m1/build-riffoid-approved-candidates.mjs",
+        "lines": [
+          12
+        ]
+      },
+      {
+        "path": "scripts/m1/staging-preflight.mjs",
+        "lines": [
+          2,
+          44,
+          119
+        ]
+      },
+      {
+        "path": "scripts/m3/check-browser-research-local.mjs",
+        "lines": [
+          8,
+          12,
+          13,
+          16,
+          17,
+          18,
+          26,
+          27,
+          37,
+          52,
+          63
+        ]
+      },
+      {
+        "path": "scripts/m3/g3-local-environment.mjs",
+        "lines": [
+          10,
+          11
+        ]
+      },
+      {
+        "path": "scripts/m3/g3-local-worker.mjs",
+        "lines": [
+          28,
+          49
+        ]
+      },
+      {
+        "path": "scripts/m3/g3-recover-release.mjs",
+        "lines": [
+          8
+        ]
+      },
+      {
+        "path": "scripts/m3/g3-research-browser-tail.mjs",
+        "lines": [
+          11,
+          13,
+          14,
+          15,
+          16,
+          18,
+          20,
+          22,
+          23
+        ]
+      },
+      {
+        "path": "scripts/m3/g4-browser-proposals.mjs",
+        "lines": [
+          14
+        ]
+      },
+      {
+        "path": "scripts/m3/g4-candidate-readiness.mjs",
+        "lines": [
+          7,
+          19,
+          20,
+          23,
+          27,
+          28,
+          37,
+          39,
+          40
+        ]
+      },
+      {
+        "path": "scripts/m3/g4-ordinary-browser.mjs",
+        "lines": [
+          11,
+          37,
+          39,
+          47,
+          50,
+          51,
+          53,
+          57
+        ]
+      },
+      {
+        "path": "scripts/m3/g4-release-content-probe.mjs",
+        "lines": [
+          8
+        ]
+      },
+      {
+        "path": "scripts/m3/g4-release-content-probe.test.mjs",
+        "lines": [
+          5
+        ]
+      },
+      {
+        "path": "scripts/m3/materialize-browser-preview-web.mjs",
+        "lines": [
+          9,
+          11,
+          12,
+          13,
+          14,
+          18,
+          19,
+          21,
+          22,
+          23,
+          24,
+          27,
+          28,
+          34
+        ]
+      },
+      {
+        "path": "scripts/m3/vertical-runtime-preflight.mjs",
+        "lines": [
+          2,
+          283,
+          305
+        ]
+      },
+      {
+        "path": "scripts/m3/vertical-staging-preflight.mjs",
+        "lines": [
+          2,
+          325
+        ]
+      },
+      {
+        "path": "scripts/model/benchmark-task-fixtures.mjs",
+        "lines": [
+          6,
+          7,
+          14,
+          15,
+          28
+        ]
+      },
+      {
+        "path": "scripts/model/benchmark-task-fixtures.test.mjs",
+        "lines": [
+          6
+        ]
+      },
+      {
+        "path": "scripts/model/netlogo-fire-browser-local.mjs",
+        "lines": [
+          8,
+          10,
+          11,
+          12,
+          13,
+          18,
+          43,
+          56,
+          81,
+          83
+        ]
+      },
+      {
+        "path": "services/gateway/app.ts",
+        "lines": [
+          3,
+          4,
+          41,
+          261,
+          264,
+          267,
+          269,
+          270,
+          272,
+          273,
+          274,
+          275,
+          276,
+          279,
+          280,
+          282,
+          286
+        ]
+      },
+      {
+        "path": "services/gateway/browser-preview-services.ts",
+        "lines": [
+          2,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          13,
+          15,
+          16,
+          17,
+          19
+        ]
+      },
+      {
+        "path": "services/gateway/env.d.ts",
+        "lines": [
+          8
+        ]
+      },
+      {
+        "path": "services/gateway/index.ts",
+        "lines": [
+          14,
+          15,
+          24,
+          110,
+          113,
+          119,
+          164
+        ]
+      },
+      {
+        "path": "services/gateway/origins.ts",
+        "lines": [
+          9,
+          36,
+          37
+        ]
+      },
+      {
+        "path": "services/trusted-pi/release-candidate.mjs",
+        "lines": [
+          27,
+          28,
+          29,
+          30,
+          39,
+          47,
+          55,
+          57,
+          60,
+          61,
+          63,
+          76,
+          81
+        ]
+      },
+      {
+        "path": "services/turn-runtime/managed-candidate.ts",
+        "lines": [
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      {
+        "path": "services/turn-runtime/managed-runner.ts",
+        "lines": [
+          1
+        ]
+      },
+      {
+        "path": "services/turn/store.ts",
+        "lines": [
+          1
+        ]
+      },
+      {
+        "path": "services/web/app.js",
+        "lines": [
+          2,
+          20,
+          49,
+          57,
+          373,
+          602,
+          774,
+          776,
+          794,
+          912,
+          919,
+          965,
+          973
+        ]
+      },
+      {
+        "path": "services/web/browser-preview.js",
+        "lines": [
+          9,
+          10,
+          13,
+          16,
+          17,
+          18,
+          19,
+          20,
+          24,
+          25,
+          27,
+          30,
+          31,
+          33,
+          36,
+          38,
+          40,
+          44,
+          53,
+          59,
+          63,
+          64,
+          71,
+          82,
+          85
+        ]
+      },
+      {
+        "path": "services/web/i18n.js",
+        "lines": [
+          641,
+          1636
+        ]
+      },
+      {
+        "path": "services/web/index.html",
+        "lines": [
+          49
+        ]
+      },
+      {
+        "path": "services/web/local-runs.js",
+        "lines": [
+          1,
+          34,
+          102,
+          103
+        ]
+      },
+      {
+        "path": "services/web/verify-handoff.js",
+        "lines": [
+          1,
+          18,
+          46,
+          66,
+          77,
+          89
+        ]
+      },
+      {
+        "path": "services/web/workspace.css",
+        "lines": [
+          42,
+          46,
+          47
+        ]
+      },
+      {
+        "path": "services/workspace/durable.ts",
+        "lines": [
+          23,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          174,
+          239,
+          279,
+          280,
+          282,
+          283,
+          288,
+          290,
+          292,
+          295,
+          296,
+          299,
+          302,
+          303,
+          304,
+          306,
+          310,
+          311,
+          312,
+          315,
+          318,
+          327,
+          332,
+          366,
+          371,
+          376,
+          381,
+          383,
+          385
+        ]
+      },
+      {
+        "path": "services/workspace/shared-alarm.ts",
+        "lines": [
+          1
+        ]
+      },
+      {
+        "path": "services/workspace/store.ts",
+        "lines": [
+          1
+        ]
+      },
+      {
+        "path": "services/workspace/turn-alarm.ts",
+        "lines": [
+          50
+        ]
+      },
+      {
+        "path": "tests/m1/composer-lifecycle.test.mjs",
+        "lines": [
+          28
+        ]
+      },
+      {
+        "path": "tests/m1/riffoid-entry-workerd.test.mjs",
+        "lines": [
+          86
+        ]
+      },
+      {
+        "path": "tests/m1/riffoid-entry.test.ts",
+        "lines": [
+          24,
+          27
+        ]
+      },
+      {
+        "path": "tests/m1/riffoid-recovery-cold-workerd.test.mjs",
+        "lines": [
+          22,
+          45,
+          47
+        ]
+      },
+      {
+        "path": "tests/m1/riffoid-recovery.test.ts",
+        "lines": [
+          48,
+          52
+        ]
+      },
+      {
+        "path": "tests/m1/riffoid-two-account.test.ts",
+        "lines": [
+          9
+        ]
+      },
+      {
+        "path": "tests/m1/staging-preflight.test.mjs",
+        "lines": [
+          5,
+          13,
+          33,
+          63,
+          64,
+          65,
+          66
+        ]
+      },
+      {
+        "path": "tests/m1/web.test.mjs",
+        "lines": [
+          8,
+          30,
+          92,
+          338
+        ]
+      },
+      {
+        "path": "tests/m2/fixtures/managed-candidate.ts",
+        "lines": [
+          2
+        ]
+      },
+      {
+        "path": "tests/m2/managed-candidate.test.ts",
+        "lines": [
+          8
+        ]
+      },
+      {
+        "path": "tests/m2/managed-runner.test.ts",
+        "lines": [
+          7
+        ]
+      },
+      {
+        "path": "tests/m2/trusted-pi-release-candidate.test.mjs",
+        "lines": [
+          5,
+          31,
+          32
+        ]
+      },
+      {
+        "path": "tests/m2/workspace-shared-alarm.test.ts",
+        "lines": [
+          102,
+          105
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-asset-timeout.test.mjs",
+        "lines": [
+          4,
+          14,
+          17,
+          19,
+          20,
+          24,
+          25
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-build-host.test.mjs",
+        "lines": [
+          3,
+          4,
+          6,
+          7,
+          8,
+          9,
+          10,
+          12,
+          38,
+          47,
+          58
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-build.test.ts",
+        "lines": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          59,
+          93
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-canvas.test.mjs",
+        "lines": [
+          7,
+          8,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          34,
+          55,
+          62,
+          63,
+          64,
+          65,
+          71
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-contract.test.ts",
+        "lines": [
+          3,
+          4,
+          15,
+          16,
+          24
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-discovery-workerd.test.mjs",
+        "lines": [
+          14
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-gateway-assets.test.mjs",
+        "lines": [
+          11,
+          12,
+          16,
+          17,
+          20,
+          21,
+          22,
+          23,
+          24
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-gateway.test.ts",
+        "lines": [
+          12,
+          13,
+          17
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-generation.test.mjs",
+        "lines": [
+          4,
+          5,
+          6,
+          7,
+          10,
+          11,
+          12,
+          16,
+          17,
+          55,
+          59,
+          77,
+          78,
+          79,
+          80,
+          81
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-initial-fixture.mjs",
+        "lines": [
+          2,
+          8,
+          9,
+          10,
+          11,
+          12,
+          26,
+          27,
+          28
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-initial-workerd.test.mjs",
+        "lines": [
+          8,
+          14,
+          16,
+          22,
+          23,
+          32,
+          34,
+          36
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-initial.test.mjs",
+        "lines": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11,
+          15,
+          22,
+          28,
+          33,
+          38,
+          41,
+          45,
+          53,
+          54,
+          61,
+          74,
+          77
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-javascript-browser.test.mjs",
+        "lines": [
+          8,
+          13,
+          23
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-javascript-contract.test.ts",
+        "lines": [
+          7,
+          8,
+          9,
+          10,
+          17,
+          18,
+          19,
+          25,
+          30,
+          35,
+          42,
+          43,
+          44,
+          49,
+          50,
+          54,
+          56,
+          57,
+          63,
+          64
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-legacy.test.mjs",
+        "lines": [
+          4,
+          5,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          27,
+          39
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-orchestrator.test.mjs",
+        "lines": [
+          3,
+          4,
+          6,
+          7,
+          8,
+          9,
+          10,
+          14,
+          16,
+          25,
+          45,
+          53,
+          59,
+          61,
+          66
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-panel.test.mjs",
+        "lines": [
+          1,
+          14,
+          22,
+          24,
+          26,
+          27,
+          29,
+          30,
+          32,
+          34,
+          36,
+          44,
+          45,
+          47,
+          50,
+          53,
+          59,
+          67,
+          68,
+          69,
+          70
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-production-registry.test.mjs",
+        "lines": [
+          3,
+          4,
+          5,
+          6,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-test-fixture.mjs",
+        "lines": [
+          1,
+          2,
+          4,
+          5,
+          6,
+          7,
+          18,
+          25,
+          26
+        ]
+      },
+      {
+        "path": "tests/m3/g4-browser-build-hold-workerd.test.mjs",
+        "lines": [
+          2,
+          7,
+          12,
+          13,
+          21
+        ]
+      },
+      {
+        "path": "tests/m3/g4-browser-build-hold.test.mjs",
+        "lines": [
+          1,
+          5,
+          7
+        ]
+      },
+      {
+        "path": "tests/m3/g4-browser-build-recovery-workerd.test.mjs",
+        "lines": [
+          2,
+          5,
+          9
+        ]
+      },
+      {
+        "path": "tests/m3/local-runs-pyodide.test.mjs",
+        "lines": [
+          8,
+          9,
+          10,
+          11,
+          20,
+          28,
+          29,
+          32,
+          45
+        ]
+      },
+      {
+        "path": "tests/m3/local-runs-ui.test.mjs",
+        "lines": [
+          5
+        ]
+      },
+      {
+        "path": "tests/m3/netlogo-fire-candidate.test.mjs",
+        "lines": [
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "path": "tests/m3/simulation-browser-models-docker.test.ts",
+        "lines": [
+          13,
+          14,
+          15,
+          24,
+          25
+        ]
+      },
+      {
+        "path": "tests/m3/simulation-ui.test.mjs",
+        "lines": [
+          25,
+          35
+        ]
+      },
+      {
+        "path": "tests/m3/verify-handoff-boundary.test.mjs",
+        "lines": [
+          7,
+          8,
+          55,
+          63,
+          103
+        ]
+      },
+      {
+        "path": "tests/m3/workspace-layout.test.mjs",
+        "lines": [
+          9,
+          12,
+          44,
+          50,
+          51,
+          52,
+          64,
+          245,
+          246,
+          247,
+          249,
+          252,
+          258,
+          259,
+          260,
+          262,
+          263,
+          267,
+          268,
+          273,
+          274,
+          275,
+          278,
+          279,
+          280,
+          281,
+          282,
+          283,
+          285,
+          291
+        ]
+      },
+      {
+        "path": "tests/m3/workspace-service-workerd.test.mjs",
+        "lines": [
+          53,
+          129,
+          130,
+          131,
+          132
+        ]
+      }
+    ]
+  },
+  "selectedReferenceScans": {
+    "netlogo_external": [
+      {
+        "path": "examples/netlogo-fire-candidate/README.md",
+        "lines": [
+          30,
+          47
+        ]
+      },
+      {
+        "path": "scripts/model/netlogo-fire-browser-local.mjs",
+        "lines": [
+          16,
+          17
+        ]
+      },
+      {
+        "path": "tests/m3/netlogo-fire-candidate.test.mjs",
+        "lines": [
+          14,
+          20
+        ]
+      }
+    ],
+    "mesa_spike_external": [
+      {
+        "path": "spikes/mesa-browser-runtime/README.md",
+        "lines": [
+          20,
+          107
+        ]
+      },
+      {
+        "path": "spikes/mesa-browser-runtime/VALIDATION.md",
+        "lines": [
+          38
+        ]
+      },
+      {
+        "path": "spikes/mesa-browser-runtime/browser-acceptance.mjs",
+        "lines": [
+          10
+        ]
+      },
+      {
+        "path": "spikes/mesa-browser-runtime/protocol.test.mjs",
+        "lines": [
+          33
+        ]
+      }
+    ],
+    "legacy_preview_run_external": [
+      {
+        "path": "services/browser-preview/runtime/browser-acceptance.mjs",
+        "lines": [
+          110
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-legacy.test.mjs",
+        "lines": [
+          17
+        ]
+      }
+    ],
+    "test_browser_models_external": [],
+    "native_run_adapter_external": [
+      {
+        "path": "scripts/issue77/live.mjs",
+        "lines": [
+          34
+        ]
+      },
+      {
+        "path": "scripts/m3/g4-candidate-readiness.mjs",
+        "lines": [
+          27
+        ]
+      },
+      {
+        "path": "scripts/model/benchmark-task-fixtures.mjs",
+        "lines": [
+          14
+        ]
+      },
+      {
+        "path": "services/browser-preview/runtime/fixtures.mjs",
+        "lines": [
+          10
+        ]
+      },
+      {
+        "path": "services/trusted-pi/release-candidate.mjs",
+        "lines": [
+          25
+        ]
+      },
+      {
+        "path": "services/turn-runtime/managed-runner.ts",
+        "lines": [
+          1
+        ]
+      },
+      {
+        "path": "tests/m2/managed-runner.test.ts",
+        "lines": [
+          7
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-build.test.ts",
+        "lines": [
+          15
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-generation.test.mjs",
+        "lines": [
+          30
+        ]
+      },
+      {
+        "path": "tests/m3/netlogo-fire-candidate.test.mjs",
+        "lines": [
+          29
+        ]
+      },
+      {
+        "path": "tests/m3/simulation-browser-models-docker.test.ts",
+        "lines": [
+          36
+        ]
+      },
+      {
+        "path": "tests/m3/simulation-model-adapter.test.mjs",
+        "lines": [
+          7
+        ]
+      }
+    ],
+    "production_assets_root": [
+      {
+        "path": "infra/wrangler.gateway-local.jsonc",
+        "lines": [
+          9,
+          12
+        ]
+      },
+      {
+        "path": "infra/wrangler.gateway-staging.jsonc",
+        "lines": [
+          14,
+          22
+        ]
+      },
+      {
+        "path": "infra/wrangler.m2-product-local.jsonc",
+        "lines": [
+          9,
+          23
+        ]
+      },
+      {
+        "path": "infra/wrangler.m3-vertical-staging.jsonc",
+        "lines": [
+          16,
+          30
+        ]
+      },
+      {
+        "path": "infra/wrangler.phase1-staging.jsonc",
+        "lines": [
+          31,
+          48
+        ]
+      },
+      {
+        "path": "scripts/issue77/prepare-production.mjs",
+        "lines": [
+          11,
+          12,
+          31
+        ]
+      },
+      {
+        "path": "scripts/m1/staging-preflight.mjs",
+        "lines": [
+          44
+        ]
+      },
+      {
+        "path": "scripts/m3/check-browser-research-local.mjs",
+        "lines": [
+          27
+        ]
+      },
+      {
+        "path": "scripts/m3/g3-local-environment.mjs",
+        "lines": [
+          11
+        ]
+      },
+      {
+        "path": "scripts/m3/g3-recover-release.mjs",
+        "lines": [
+          8
+        ]
+      },
+      {
+        "path": "scripts/m3/g4-candidate-readiness.mjs",
+        "lines": [
+          17,
+          19,
+          23,
+          37,
+          40
+        ]
+      },
+      {
+        "path": "scripts/m3/materialize-browser-preview-web.mjs",
+        "lines": [
+          13,
+          16,
+          17,
+          18,
+          19,
+          24,
+          28,
+          29,
+          31
+        ]
+      },
+      {
+        "path": "services/browser-preview/execution/env.d.ts",
+        "lines": [
+          2
+        ]
+      },
+      {
+        "path": "services/gateway/env.d.ts",
+        "lines": [
+          8
+        ]
+      },
+      {
+        "path": "services/gateway/index.ts",
+        "lines": [
+          24,
+          119
+        ]
+      },
+      {
+        "path": "services/gateway/origins.ts",
+        "lines": [
+          9,
+          36,
+          37
+        ]
+      },
+      {
+        "path": "services/workspace/durable.ts",
+        "lines": [
+          174,
+          315
+        ]
+      },
+      {
+        "path": "tests/m1/riffoid-entry.test.ts",
+        "lines": [
+          24,
+          27
+        ]
+      },
+      {
+        "path": "tests/m1/staging-preflight.test.mjs",
+        "lines": [
+          13,
+          63,
+          65,
+          66
+        ]
+      },
+      {
+        "path": "tests/m3/browser-preview-gateway-assets.test.mjs",
+        "lines": [
+          16,
+          20
+        ]
+      },
+      {
+        "path": "tests/m3/g4-candidate-readiness.test.mjs",
+        "lines": [
+          11
+        ]
+      }
+    ],
+    "ui_entry_points": [
+      {
+        "path": "package.json",
+        "lines": [
+          6,
+          8
+        ]
+      },
+      {
+        "path": "tests/m1/web.test.mjs",
+        "lines": [
+          6,
+          9
+        ]
+      }
+    ]
+  },
+  "packageScripts": {
+    "dev": "node ui/serve.mjs",
+    "check": "npm run check:ui && npm run typecheck && npm run test:m0 && npm run test:m1 && npm run test:m2 && npm run test:m3 && npm run issue73:validate && npm run test:research-quality",
+    "check:ui": "node --check ui/app.js && node --check ui/workspace.js && node --check ui/user-pages.js && node --check ui/admin.js && node --check ui/shared.js && node --check services/web/locale-preference.js && node --check services/web/i18n.js && node --check services/web/i18n-bindings.js && node --check services/web/verify-handoff.js && node --check services/web/app.js && node --check services/web/layout.js && node --check services/web/services.js && node --check services/web/previews.js && node --check services/web/admin.js && node --check services/web/artifact-views.js && node --check services/web/simulation.js && node --check services/web/local-runs.js && node --check services/web/comparison.js && node --check services/web/export.js && node --check services/web/publication.js && node --check services/web/evidence.js && node --check services/web/browser-preview.js && node scripts/i18n-check.mjs && node --test tests/m1/i18n.test.mjs tests/m1/locale-preference.test.mjs tests/m1/i18n-bindings.test.mjs tests/m1/i18n-source-check.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "test:m0": "node --test --test-concurrency=2 tests/m0/*.test.ts tests/m0/*.test.mjs tests/m0/pi/*.test.mjs spikes/m0-cloud/*.test.ts spikes/m0-files/*.test.ts spikes/m0-preview/*.test.ts spikes/m0-recovery/*.test.ts spikes/m0-release/*.test.ts scripts/m0/release-manifest.test.mjs && node scripts/evidence/self-test.mjs && node scripts/m0/preflight-self-test.mjs",
+    "test:m1": "node --test --test-concurrency=2 tests/m1/*.test.ts tests/m1/*.test.mjs scripts/m1/model-package.test.mjs",
+    "test:m3": "node --test --test-concurrency=2 tests/m3/*.test.ts tests/m3/*.test.mjs && node --test --test-concurrency=2 services/browser-preview/runtime/*.test.mjs services/browser-preview/execution/*.test.ts && node --test --test-concurrency=2 scripts/m3/phase1-*.test.mjs && node --test --test-concurrency=2 scripts/model/*.test.mjs",
+    "test:m2": "node --test --test-concurrency=2 tests/m2/*.test.ts tests/m2/*.test.mjs",
+    "issue73:validate": "node --test tests/issue73/*.test.mjs",
+    "test:research-quality": "python3 -m unittest discover -s tests/research-quality -p \"test_*.py\""
+  },
+  "baselineSource": "git archive fbc0e46bde2c8781b71609fa4524d2e75bffaf99, not working-tree HEAD",
+  "workingHeadAtAudit": "68bdd3fbf9075136fd8ceb3a94f68ed781ba7afe",
+  "productionCouplings": {
+    "gateway_entry_and_routes": {
+      "disposition": "Detach simulation Browser Preview imports, asset route and API/RPC creation before deleting the feature tree. Preserve generic page APIs and authentication.",
+      "files": [
+        {
+          "path": "services/gateway/index.ts",
+          "lines": [
+            14,
+            15,
+            110,
+            113,
+            164
+          ]
+        },
+        {
+          "path": "services/gateway/app.ts",
+          "lines": [
+            3,
+            4,
+            41,
+            261,
+            264,
+            267,
+            269,
+            270,
+            272,
+            273,
+            274,
+            275,
+            276,
+            279,
+            280,
+            282,
+            286
+          ]
+        },
+        {
+          "path": "services/gateway/browser-preview-services.ts",
+          "lines": [
+            2,
+            7,
+            10,
+            13,
+            16,
+            17,
+            19
+          ]
+        }
+      ],
+      "fileCount": 3
+    },
+    "workspace_turn_save_and_alarm": {
+      "disposition": "Remove specialized discovery/build/RPC/alarm slot coherently; keep Revision transaction, shared alarm scheduling, other service/runtime leases and server Run authority.",
+      "files": [
+        {
+          "path": "services/turn/store.ts",
+          "lines": [
+            1,
+            175
+          ]
+        },
+        {
+          "path": "services/workspace/store.ts",
+          "lines": [
+            1,
+            3,
+            24,
+            25
+          ]
+        },
+        {
+          "path": "services/workspace/durable.ts",
+          "lines": [
+            23,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            239,
+            279,
+            280,
+            281,
+            282,
+            283,
+            288,
+            290,
+            292,
+            295,
+            296,
+            299,
+            302,
+            303,
+            304,
+            306,
+            310,
+            311,
+            312,
+            313,
+            318,
+            327,
+            332,
+            376,
+            385,
+            1722
+          ]
+        },
+        {
+          "path": "services/workspace/shared-alarm.ts",
+          "lines": [
+            1
+          ]
+        },
+        {
+          "path": "services/workspace/turn-alarm.ts",
+          "lines": [
+            1,
+            14,
+            15,
+            22,
+            50
+          ]
+        },
+        {
+          "path": "services/workspace/alarm-router.ts",
+          "lines": [
+            9,
+            20,
+            126,
+            157
+          ]
+        },
+        {
+          "path": "services/simulation/host.ts",
+          "lines": [
+            12,
+            49
+          ]
+        }
+      ],
+      "fileCount": 7
+    },
+    "generation_and_managed_candidate_contract": {
+      "disposition": "Retire the simulation-first prompt and five/seven-file, fixed renderer/profile generation gate. Split generic answer/design/save validation and canonical native adapter out before deleting imports; do not delete the whole Managed runtime.",
+      "files": [
+        {
+          "path": "services/trusted-pi/release-candidate.mjs",
+          "lines": [
+            17,
+            22,
+            27,
+            28,
+            29,
+            30,
+            33,
+            39,
+            42,
+            47,
+            49,
+            50,
+            55,
+            57,
+            59,
+            60,
+            61,
+            63,
+            64,
+            76
+          ]
+        },
+        {
+          "path": "services/turn-runtime/managed-candidate.ts",
+          "lines": [
+            5,
+            6,
+            7,
+            8,
+            31,
+            41,
+            88,
+            113,
+            118,
+            141,
+            142,
+            155,
+            157,
+            158,
+            161,
+            164
+          ]
+        },
+        {
+          "path": "services/turn-runtime/managed-testing-instructions.ts",
+          "lines": [
+            10,
+            13,
+            14,
+            16
+          ]
+        },
+        {
+          "path": "services/turn-runtime/managed-runner.ts",
+          "lines": [
+            1
+          ]
+        }
+      ],
+      "fileCount": 4
+    },
+    "web_simulation_local_runtime": {
+      "disposition": "Dedicated browser-preview/local-runs/verify-handoff modules can retire after app and mixed native/cloud panels stop importing or instantiating them. Generic layout, artifact display, page tabs, API/auth/session shell remain.",
+      "files": [
+        {
+          "path": "services/web/app.js",
+          "lines": [
+            2,
+            10,
+            13,
+            20,
+            49,
+            52,
+            53,
+            57,
+            58,
+            235,
+            237,
+            373,
+            602,
+            774,
+            776,
+            793,
+            794,
+            795,
+            798,
+            912,
+            919,
+            965,
+            973,
+            1200,
+            1202
+          ]
+        },
+        {
+          "path": "services/web/index.html",
+          "lines": [
+            21,
+            49,
+            54
+          ]
+        },
+        {
+          "path": "services/web/browser-preview.js",
+          "lines": [
+            9,
+            10,
+            13,
+            16,
+            17,
+            18,
+            19,
+            20,
+            24,
+            25,
+            27,
+            30,
+            31,
+            33,
+            36,
+            38,
+            40,
+            44,
+            53,
+            58,
+            59,
+            63,
+            64,
+            71,
+            78,
+            82,
+            85
+          ]
+        },
+        {
+          "path": "services/web/local-runs.js",
+          "lines": [
+            1,
+            22,
+            27,
+            34,
+            37,
+            41,
+            42,
+            47,
+            50,
+            51,
+            56,
+            58,
+            61,
+            63,
+            71,
+            75,
+            80,
+            81,
+            88,
+            90,
+            92,
+            93,
+            94,
+            95,
+            102,
+            103,
+            107,
+            108,
+            115,
+            122,
+            127,
+            140,
+            144,
+            146,
+            151,
+            153,
+            155,
+            160,
+            163,
+            164,
+            166,
+            168,
+            179
+          ]
+        },
+        {
+          "path": "services/web/verify-handoff.js",
+          "lines": [
+            1,
+            13,
+            18,
+            44,
+            46,
+            47,
+            48,
+            52,
+            53,
+            56,
+            57,
+            58,
+            66,
+            70,
+            72,
+            77,
+            89,
+            94,
+            95,
+            100,
+            101,
+            105,
+            108,
+            110,
+            115
+          ]
+        },
+        {
+          "path": "services/web/simulation.js",
+          "lines": [
+            68,
+            81,
+            85,
+            86,
+            97,
+            98,
+            99,
+            100,
+            126,
+            128
+          ]
+        },
+        {
+          "path": "services/web/comparison.js",
+          "lines": [
+            9,
+            11,
+            12,
+            41,
+            51,
+            62,
+            63,
+            69,
+            117,
+            128
+          ]
+        },
+        {
+          "path": "services/web/workspace.css",
+          "lines": [
+            42,
+            46,
+            47
+          ]
+        }
+      ],
+      "fileCount": 8
+    },
+    "gateway_assets_ci_configuration": {
+      "disposition": "Gateway ASSETS currently points into .local/browser-preview/gateway-assets. Replace generic web staging/root and generic execution site delivery first, then remove old materializers, fixed Pyodide profiles and dedicated deployment config. Preserve independent execution origin/no credential leak invariants for generic HTML/JS.",
+      "files": [
+        {
+          "path": "package.json",
+          "lines": [
+            8,
+            23
+          ]
+        },
+        {
+          "path": ".github/workflows/check.yml",
+          "lines": [
+            39,
+            40
+          ]
+        },
+        {
+          "path": "scripts/m3/materialize-browser-preview-web.mjs",
+          "lines": [
+            9,
+            11,
+            13,
+            14,
+            16,
+            17,
+            18,
+            19,
+            21,
+            22,
+            23,
+            24,
+            27,
+            28,
+            29,
+            31,
+            34
+          ]
+        },
+        {
+          "path": "infra/wrangler.browser-execution.jsonc",
+          "lines": [
+            3,
+            4,
+            10
+          ]
+        },
+        {
+          "path": "infra/wrangler.gateway-local.jsonc",
+          "lines": [
+            9,
+            12
+          ]
+        },
+        {
+          "path": "infra/wrangler.gateway-staging.jsonc",
+          "lines": [
+            14,
+            22
+          ]
+        },
+        {
+          "path": "infra/wrangler.m2-product-local.jsonc",
+          "lines": [
+            9,
+            23
+          ]
+        },
+        {
+          "path": "infra/wrangler.m3-vertical-staging.jsonc",
+          "lines": [
+            16,
+            30
+          ]
+        },
+        {
+          "path": "infra/wrangler.phase1-staging.jsonc",
+          "lines": [
+            31,
+            48
+          ]
+        },
+        {
+          "path": "services/gateway/origins.ts",
+          "lines": [
+            9,
+            36,
+            37
+          ]
+        },
+        {
+          "path": "services/gateway/env.d.ts",
+          "lines": [
+            8
+          ]
+        }
+      ],
+      "fileCount": 11
+    },
+    "native_adapter_and_g5_benchmark_shared": {
+      "disposition": "run.py is canonical finite native Run adapter as well as browser fixture. Migrate references to services/run/model_run_adapter.py or a new generic adapter module; keep relevant native accounting/unknown-execution and regression coverage. Historical G5 fixture identities are not a new runtime requirement or deletion permission.",
+      "files": [
+        {
+          "path": "services/run/model_run_adapter.py",
+          "lines": []
+        },
+        {
+          "path": "services/turn-runtime/managed-runner.ts",
+          "lines": [
+            1
+          ]
+        },
+        {
+          "path": "tests/m2/managed-runner.test.ts",
+          "lines": [
+            7
+          ]
+        },
+        {
+          "path": "scripts/model/benchmark-task-fixtures.mjs",
+          "lines": [
+            6,
+            7,
+            10,
+            14,
+            15,
+            28
+          ]
+        },
+        {
+          "path": "scripts/issue77/live.mjs",
+          "lines": [
+            34
+          ]
+        },
+        {
+          "path": "tests/m3/netlogo-fire-candidate.test.mjs",
+          "lines": [
+            9,
+            10,
+            11,
+            29
+          ]
+        }
+      ],
+      "fileCount": 6
+    }
+  },
+  "auditWorkingDocumentSupplement": {
+    "excludedFromBaselineCounts": true,
+    "paths": [
+      "docs/pi-extensibility-audit-20261015.md",
+      "docs/pi-extensibility-conflicts-20261015.md",
+      "docs/browser-preview-retirement-audit-20261015.md",
+      "docs/release-readiness.md"
+    ],
+    "note": "These audit documents describe retirement targets, not implementation dependencies. Mutable working-document line numbers are deliberately omitted."
+  }
+}

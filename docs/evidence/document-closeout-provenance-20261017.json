@@ -1,0 +1,266 @@
+{
+  "baseline": "29da0349719dba23d5c9ce95b4b83b97ebf7091a",
+  "compared236": "04419a5b639cfc4555cf4bbf69f020301af4bcc8",
+  "files": [
+    {
+      "sourceCommit": "2dacc5cb49933e0c6fa98b044396c4694a389af4",
+      "sourcePath": "docs/browser-preview-retirement-audit-20261015.md",
+      "preservedPath": "docs/browser-preview-retirement-audit-20261015.md",
+      "sha256": "b700d3e7f972525cc5dae006be6fbbdcabfd9d759e38103815cc36a6793c9399",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "2dacc5cb49933e0c6fa98b044396c4694a389af4",
+      "sourcePath": "docs/evidence/releases/browser-preview-retirement-inventory-20261015.json",
+      "preservedPath": "docs/evidence/releases/browser-preview-retirement-inventory-20261015.json",
+      "sha256": "2630c0e32ba752b44da56d2b6ffcad7cd5db0df4c151d791481a16013d80de94",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "2dacc5cb49933e0c6fa98b044396c4694a389af4",
+      "sourcePath": "docs/evidence/releases/pi-extensibility-audit-20261015.json",
+      "preservedPath": "docs/evidence/releases/pi-extensibility-audit-20261015.json",
+      "sha256": "b1507a788b43e671f26a908bb9563c2ccbcbee375d5da98b73b8625884290a73",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "2dacc5cb49933e0c6fa98b044396c4694a389af4",
+      "sourcePath": "docs/evidence/releases/pi-extensibility-conflicts-20261015.json",
+      "preservedPath": "docs/evidence/releases/pi-extensibility-conflicts-20261015.json",
+      "sha256": "cf43f5aae32c53b9f8a20265c0c1ae8f1165fd74f7448d5c986c92d4a1989171",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "2dacc5cb49933e0c6fa98b044396c4694a389af4",
+      "sourcePath": "docs/evidence/releases/pi-task-reconciliation-20261015.json",
+      "preservedPath": "docs/evidence/releases/pi-task-reconciliation-20261015.json",
+      "sha256": "76c78343d6c1f61a92d1b39adb03aa98df96b7c51a88249cc8fa3223d55b0469",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "2dacc5cb49933e0c6fa98b044396c4694a389af4",
+      "sourcePath": "docs/pi-extensibility-audit-20261015.md",
+      "preservedPath": "docs/pi-extensibility-audit-20261015.md",
+      "sha256": "fe4e6bbaa2f378e86b008a3e57e488c93a69ae8c68e084bc1360aaeb7bdbedf6",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "2dacc5cb49933e0c6fa98b044396c4694a389af4",
+      "sourcePath": "docs/pi-extensibility-conflicts-20261015.md",
+      "preservedPath": "docs/pi-extensibility-conflicts-20261015.md",
+      "sha256": "f2f5cf706b97de8791a6e1a0eaa38b0104efa5f08879b969e6e8432269bd1813",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "2dacc5cb49933e0c6fa98b044396c4694a389af4",
+      "sourcePath": "docs/release-readiness.md",
+      "preservedPath": "docs/evidence/pr217-historical-release-readiness-20261015.md",
+      "sha256": "d5c06570edd0ee82372c5fe14a2752ae5829e83629528de23dd62d183de763b0",
+      "comparison": {
+        "origin/main": "different",
+        "origin/audit-236": "different"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "docs/project-view-production-candidate-20261017.md",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/docs/project-view-production-candidate-20261017.md",
+      "sha256": "5cce85489d47beb5a2a6cdf32c8966d60a54210c320904aeb6e644bee33e5a2b",
+      "comparison": {
+        "origin/main": "different",
+        "origin/audit-236": "different"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "docs/project-view-publication-packet-20261017.json",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/docs/project-view-publication-packet-20261017.json",
+      "sha256": "fd284b723fc18d5b9bb9faa003ab17fcf7bf2834a58cb41de016f2bbe77577ec",
+      "comparison": {
+        "origin/main": "different",
+        "origin/audit-236": "different"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "docs/project-view-publication-packet-20261017.md",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/docs/project-view-publication-packet-20261017.md",
+      "sha256": "0649d14a87acddf53f7c4e6277b23e92922b626690fd5bd2af54a7de41f1df0b",
+      "comparison": {
+        "origin/main": "different",
+        "origin/audit-236": "different"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "docs/release-readiness.md",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/docs/release-readiness.md",
+      "sha256": "e3d6d0837223f14ee3398f77b91b5aeac21dad943d1859e3c31d1069e3801eaf",
+      "comparison": {
+        "origin/main": "different",
+        "origin/audit-236": "different"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "evidence/releases/project-view-closed-publication-20261017/app-create-ack.json",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/evidence/releases/project-view-closed-publication-20261017/app-create-ack.json",
+      "sha256": "0c1256f53e164643dc7c5d2436f264c0f08c0f9efbc5662423d8d68c5d9a8ddb",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "evidence/releases/project-view-closed-publication-20261017/app-hold-ack.json",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/evidence/releases/project-view-closed-publication-20261017/app-hold-ack.json",
+      "sha256": "e748dd0476a87812ee5554cf3830751140b11ec495daf7af110b129083ce2d00",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "evidence/releases/project-view-closed-publication-20261017/app-hold-readback.json",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/evidence/releases/project-view-closed-publication-20261017/app-hold-readback.json",
+      "sha256": "466727a5b98001ba5adfc4c1c5884b8e20aa48a48fc7c2f2a09056a345972d71",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "evidence/releases/project-view-closed-publication-20261017/app-readback-pending.json",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/evidence/releases/project-view-closed-publication-20261017/app-readback-pending.json",
+      "sha256": "d16dea2e1b4b52e9560397ad42c257346c40b4bb1e47b2404818d5ab728770d8",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "evidence/releases/project-view-closed-publication-20261017/app-restore-max-one-ack.json",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/evidence/releases/project-view-closed-publication-20261017/app-restore-max-one-ack.json",
+      "sha256": "7142833f0073d72ab9216044fcdddf73d7974facb2d31fb43417aa26ea6c7aae",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "evidence/releases/project-view-closed-publication-20261017/app-restored-max-one-readback.json",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/evidence/releases/project-view-closed-publication-20261017/app-restored-max-one-readback.json",
+      "sha256": "f1df09ecee66055a3b065262b0b5108d9a6be64121b467f19aa8572b7f4f5ecc",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "evidence/releases/project-view-closed-publication-20261017/containers-witness-after.json",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/evidence/releases/project-view-closed-publication-20261017/containers-witness-after.json",
+      "sha256": "df71b8b3f1ea6d9f9a9450cb74fa03c852f927e6ef2067dabfa2e38ee2527719",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "evidence/releases/project-view-closed-publication-20261017/containers-witness-before.json",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/evidence/releases/project-view-closed-publication-20261017/containers-witness-before.json",
+      "sha256": "f01fef208602941ad3b967509e114256ba032c085f0e84be9ffe1bc18af171c6",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "evidence/releases/project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/evidence/releases/project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+      "sha256": "59b00e3fa015d495165ab9181b6a9c77675ae3393ced22eab6d7fe9bf41db79b",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "evidence/releases/project-view-closed-publication-20261017/merge-proof.json",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/evidence/releases/project-view-closed-publication-20261017/merge-proof.json",
+      "sha256": "40574904dbb94dd1db12e87f9e3cf37d723159694059ba0721b42fd53fba0230",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "evidence/releases/project-view-closed-publication-20261017/public-assets-readback.json",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/evidence/releases/project-view-closed-publication-20261017/public-assets-readback.json",
+      "sha256": "f3a21497b66dc0cf5f119b04cab9efcf9c4aef0dbe08371bfbe46ed18543b5f1",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "evidence/releases/project-view-closed-publication-20261017/worker-reconciliation.json",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/evidence/releases/project-view-closed-publication-20261017/worker-reconciliation.json",
+      "sha256": "fbdd17a60134e26df05535f997c39a4fd8e6c6ed5b47449310d39b46d7b4c952",
+      "comparison": {
+        "origin/main": "absent",
+        "origin/audit-236": "absent"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "evidence/releases/project-view-default-closed-publication-20261017.json",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/evidence/releases/project-view-default-closed-publication-20261017.json",
+      "sha256": "65163b6bfcde76a580048ddfaba6bdbcd78f32a00851b79c475c39baaa6eddb4",
+      "comparison": {
+        "origin/main": "different",
+        "origin/audit-236": "different"
+      }
+    },
+    {
+      "sourceCommit": "d55ca7fb0235fb5b0e6088fe81cf540f8a07ff95",
+      "sourcePath": "evidence/releases/project-view-production-candidate-20261017.json",
+      "preservedPath": "docs/evidence/pr234-historical-snapshot-20261017/evidence/releases/project-view-production-candidate-20261017.json",
+      "sha256": "234032f60bfd3ad19e048e1f2a23e3243307dc3073cb947dc57fc8994a9045bd",
+      "comparison": {
+        "origin/main": "different",
+        "origin/audit-236": "different"
+      }
+    }
+  ]
+}

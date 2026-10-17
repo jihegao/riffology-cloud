@@ -1,0 +1,16 @@
+{
+  "schema": "project-view-max-one-recovery-authorization/v1",
+  "source": "direct human reply in the current Goal chat",
+  "reply": "授权恢复 max1，接受字段差异（推荐）",
+  "reviewedCommit": "62a2945fe765efd09b4ecdb8f8a24b3938d6de96",
+  "reviewedPullRequest": "https://github.com/jihegao/riffology-cloud/pull/234",
+  "applicationId": "a031ae38-f967-483f-ae2e-3dbed3d35268",
+  "scope": {"method":"PATCH","body":{"max_instances":1}},
+  "acceptedVariance": "Legacy instances field may read 1 after restoring max_instances1; this acceptance does not establish its server-side meaning",
+  "requires": ["page admission remains disabled", "actual unfiltered instance list remains empty", "all old resources and actual immutable image/configuration preserved", "unknown original PATCH outcome reconciled without replay"],
+  "containerAcceptanceStartAuthorized": false,
+  "modelTurnRunAuthorized": false,
+  "newSubscriptionAuthorized": false,
+  "maximumIncrementalUsd": null,
+  "arrearsNotificationContinues": true
+}

@@ -1,5 +1,7 @@
 # Current release readiness — 2026-10-14
 
+> 2026-10-17 文档收口：[#235 已合并及默认关闭发布、#236 镜像兼容失败、历史收据保全与后续交接](documentation-closeout-20261017.md)。下方候选/权限缺失描述保留历史语境，以较新的具名证据为准。
+
 ## 2026-10-17 JHG-46 browser-local native DOM candidate; publication and user acceptance pending
 
 The current scope in [#214](https://github.com/jihegao/riffology-cloud/issues/214), confirmed by the user at 16:50 Asia/Shanghai, places project computation and rendering in the user's browser. Remote Chromium/PNG acceptance is no longer this delivery's next step. Canonical Revision/package verification, readonly broker and save/cold recovery remain reusable. Future cloud Rust execution requires a separate billing plan. The older remote-runtime entries below are historical snapshots, not the current implementation queue.
