@@ -29,21 +29,27 @@
       "name": "riffology-project-view-browser",
       "class_name": "ProjectViewRuntime",
       "image": null,
-      "maximumInstances": 1,
+      "scheduling_policy": "default",
+      "instance_type": "basic",
+      "max_instances": 1,
+      "resourceCandidate": {"vcpu": 0.25, "memoryMiB": 1024, "diskGB": 4, "validated": false, "automaticUpsizingAllowed": false},
       "network": "disabled-before-start",
       "status": "pending-reviewed-image-and-resource-policy"
     },
     "newEnvironmentPins": {
       "PROJECT_VIEW_RUNTIME_IMAGE": null,
+      "PROJECT_VIEW_RUNTIME_CONTEXT_RECEIPT_SHA256": null,
       "PROJECT_VIEW_RUNTIME_POLICY_HASH": null,
       "PROJECT_VIEW_POLICY_JSON": {"enabled": false}
     }
   },
   "unresolvedBeforePublication": [
     "Exact reviewed image digest, supply-chain evidence, Chromium sandbox and real no-network/cleanup verification.",
-    "Exact platform container limits and availability; do not silently inherit Pi/Runs resource applications.",
+    "Validate the explicit default/basic candidate: actual expanded image fits its 4 GB disk; 0.25 vCPU / 1 GiB RAM meets Chromium startup and two-page peak limits. It is not equivalent to the older AMD 1 vCPU fixture. Do not silently upsize or inherit Pi/Runs resource applications.",
+    "Preserve compatibility date 2026-09-06 and existing Node flags; retain the default isolated PID namespace and reject no_containers_pid_namespace. Do not switch to durable_object scheduling, whose non-root exec users retain root capabilities.",
+    "Read back the actual default application and every serving version's immutable image/configuration; inspect().image is not an OCI digest attestation. Match the actual app/version image to PROJECT_VIEW_RUNTIME_IMAGE and the exact approved policy. Verify baked context receipt and actual package bytes before user input; this is an input/compatibility check only.",
     "A fresh complete preservation snapshot and unique additive migration tag; no rollback may remove persisted session/cleanup tombstones.",
     "Explicit approved invited identity/project scope, operation/session deadline, infrastructure cost policy and stop/exit conditions before production admission.",
-    "The exact enabled policy bytes and their hash must be reviewed together; default disabled preparation is not production eligibility."
+    "The exact enabled policy bytes and their hash must bind the actual image and contextReceiptSha256 together; default disabled preparation is not production eligibility."
   ]
 }
