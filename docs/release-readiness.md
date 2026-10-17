@@ -1,6 +1,6 @@
 # Current release readiness — 2026-10-14
 
-> 2026-10-17 文档收口：[#235 已合并及默认关闭发布、#236 镜像兼容失败、历史收据保全与后续交接](documentation-closeout-20261017.md)。下方候选/权限缺失描述保留历史语境，以较新的具名证据为准。
+> 2026-10-17 文档收口：[#235 已合并及默认关闭发布、#236 离线兼容进度、历史收据保全与后续交接](documentation-closeout-20261017.md)。下方候选/权限缺失描述保留历史语境，以较新的具名证据为准。
 
 ## 2026-10-17 JHG-46 browser-local native DOM candidate; publication and user acceptance pending
 
