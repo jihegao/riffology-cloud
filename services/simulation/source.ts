@@ -1,5 +1,5 @@
 import {MESA_SERVER_PROFILE,mesaSourcePackages} from './server-profile.ts';
-import {workspaceArchiveReader} from '../turn-runtime/workspace-file-index.ts';
+import {workspaceArchiveReader,workspaceFileIndex} from '../turn-runtime/workspace-file-index.ts';
 import {previewSource,previewSourceFilesSha256,type PreviewSource} from '../preview/source.ts';
 import {parseModelSpec,type ModelSpec} from './model-spec.ts';
 import {inspectCompilerBundle,type CompilerIdentity} from './compiler-bundle.ts';
@@ -38,6 +38,7 @@ async function checkedPlan(model:Awaited<ReturnType<typeof readModel>>):Promise<
 export function modelVersion(plan:SimulationPlan){return {revisionId:plan.source.kind==='saved-turn'?plan.source.revision.revisionId:null,filesSha256:previewSourceFilesSha256(plan.source),specSha256:plan.specSha256};}
 
 export type ModelInspection = {
+ projectViews?:{declared:true;revisionId:string|null;filesSha256:string};
  artifacts?:NonNullable<ReturnType<typeof readModelArtifacts>>&{revisionId:string|null;filesSha256:string};
  artifactReasonCode?:string;
  experimentDraft?:import('./parameter-draft.ts').ExperimentParameterDraft|null;
@@ -54,8 +55,9 @@ export type ModelInspection = {
 export async function inspectModel(raw:PreviewSource,bytes:Uint8Array,runtimeAvailable:boolean):Promise<ModelInspection>{
  const verified=previewSource(raw);
  if(await digest(bytes)!==previewSourceFilesSha256(verified))throw Error('simulation-source-mismatch');
- let design:Pick<ModelInspection,'artifacts'|'artifactReasonCode'>={};
- try{const artifacts=readModelArtifacts(bytes);if(artifacts)design={artifacts:{...artifacts,revisionId:verified.kind==='saved-turn'?verified.revision.revisionId:null,filesSha256:previewSourceFilesSha256(verified)}};}catch{design={artifactReasonCode:'model-artifacts-invalid'};}
+ let design:Pick<ModelInspection,'artifacts'|'artifactReasonCode'|'projectViews'>={};
+ if(workspaceFileIndex(bytes).files.some(f=>f.path==='app/views.json'))design.projectViews={declared:true,revisionId:verified.kind==='saved-turn'?verified.revision.revisionId:null,filesSha256:previewSourceFilesSha256(verified)};
+ try{const artifacts=readModelArtifacts(bytes);if(artifacts)design={...design,artifacts:{...artifacts,revisionId:verified.kind==='saved-turn'?verified.revision.revisionId:null,filesSha256:previewSourceFilesSha256(verified)}};}catch{design={...design,artifactReasonCode:'model-artifacts-invalid'};}
  let model:Awaited<ReturnType<typeof readModel>>;
  try{model=await readModel(raw,bytes);}catch(error){
   const code=error instanceof Error?error.message:'';

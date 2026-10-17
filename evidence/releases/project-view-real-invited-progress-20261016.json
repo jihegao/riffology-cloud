@@ -1,0 +1,269 @@
+{
+  "schema": "riffology.real-invited-acceptance-progress/v1",
+  "date": "2026-10-16",
+  "timezone": "Asia/Shanghai",
+  "sourceHead": "814d206a42c1ae77914fe470691135b8581e0c9e",
+  "sourceTree": "3bd63e55fc003b906873e083dcd7cde7449f5ba3",
+  "productionEligible": false,
+  "productionEnabled": false,
+  "deployed": false,
+  "identityType": "real-google-invited-local",
+  "baseline": {
+    "scope": "AMD loopback real identity baseline; not E2E or paid execution acceptance",
+    "capturedAt": "2026-10-16T02:51:36.155648+00:00",
+    "databaseReadMode": "mode=ro; query_only; single read transaction",
+    "source": {
+      "tree": "3bd63e55fc003b906873e083dcd7cde7449f5ba3",
+      "remoteHead": "814d206a42c1ae77914fe470691135b8581e0c9e"
+    },
+    "counts": {
+      "auth_user": 2,
+      "auth_account": 2,
+      "auth_session": 2,
+      "catalog_users": 2,
+      "catalog_tenants": 2,
+      "catalog_memberships": 2,
+      "catalog_platform_roles": 1,
+      "catalog_invitations": 2,
+      "catalog_operator_bootstrap": 1,
+      "catalog_projects": 1,
+      "catalog_workspaces": 1,
+      "catalog_creation_intents": 1,
+      "catalog_outbox": 1,
+      "catalog_provisioning_receipts": 1,
+      "catalog_manual_save_fences": 0,
+      "catalog_preview_routes": 0,
+      "catalog_audit_log": 9,
+      "catalog_model_versions": 0,
+      "catalog_model_submissions": 0,
+      "d1_migrations": 13
+    },
+    "identities": {
+      "operator": {
+        "verifiedGoogleUsers": 1,
+        "activeCatalogUsers": 1,
+        "activeOperatorBindings": 1,
+        "invitationStates": {
+          "accepted": 1
+        }
+      },
+      "ordinary": {
+        "verifiedGoogleUsers": 1,
+        "activeCatalogUsers": 1,
+        "activeOperatorBindings": 0,
+        "invitationStates": {
+          "accepted": 1
+        }
+      }
+    },
+    "targetInvitation": {
+      "id": "48fe607e-498b-4d6f-8f33-5f21ffeddf93",
+      "states": {
+        "accepted": 1
+      },
+      "issuedByActiveOperator": 1
+    },
+    "projectStates": {
+      "ready": 1
+    },
+    "workspaceStates": {
+      "ready": 1
+    },
+    "auditActions": {
+      "invitation.accept": 2,
+      "invitation.issue": 1,
+      "operator.bootstrap.invite": 1,
+      "platform_role.grant": 1,
+      "project.admission": 1,
+      "project.create": 1,
+      "workspace.dispatch": 1,
+      "workspace.project": 1
+    },
+    "migrations": [
+      "0001_catalog.sql",
+      "0002_auth.sql",
+      "0003_provisioning.sql",
+      "0004_operator_invitations.sql",
+      "0005_initial_operator.sql",
+      "0006_model_catalog.sql",
+      "0007_model_content_checks.sql",
+      "0008_preview_routes.sql",
+      "0009_model_submissions.sql",
+      "0010_project_budget_routes.sql",
+      "0011_user_locale_preferences.sql",
+      "0012_project_archives.sql",
+      "0013_manual_save_fence.sql"
+    ],
+    "durableObjectInstances": {
+      "riffology-gateway-local-TenantQuota": 1,
+      "riffology-gateway-local-RevisionStore": 1,
+      "riffology-gateway-local-WorkspaceAgent": 1,
+      "riffology-gateway-local-ToolArtifactStore": 0,
+      "riffology-gateway-local-ProjectRuntime": 1,
+      "riffology-gateway-local-ProductTurnRuntime": 0
+    },
+    "dockerScopeContainerCount": 0,
+    "verifiedGitTree": "3bd63e55fc003b906873e083dcd7cde7449f5ba3",
+    "trackedDiffClean": true,
+    "logMarkers": {
+      "migrated-auth-continuity-verified": 1,
+      "helper-sysctl-only-transform": 0,
+      "original-container-observation-failed": 0,
+      "cleanup-failed": 0,
+      "invalid_code": 0
+    },
+    "limitations": [
+      "Counts cover this local D1 and local DO instance inventory only, not production or provider billing.",
+      "Read snapshot and later log/container inventories are not globally atomic.",
+      "Auth session count does not prove cookie possession, current browser identity or acceptance coverage.",
+      "No model usage tables exist in Catalog; ProductTurnRuntime and ToolArtifactStore instance counts were zero at capture. This local baseline alone is not proof of zero cloud calls.",
+      "No tokens, cookies, OAuth codes, raw log lines or identity IDs were read into the output."
+    ],
+    "initializationFollowup": {
+      "capturedAt": "2026-10-16T02:52:44.588135+00:00",
+      "urlIdentifierKind": "projectId",
+      "projectId": "9638616f-1e31-4b34-a366-837a1e682ca7",
+      "ordinaryOwnedReadyProjectAndWorkspaceCount": 1,
+      "provisioningReceiptOutcomes": {
+        "ready": 1
+      },
+      "originalContainers": [
+        {
+          "idPrefix": "c7ca62da54aa",
+          "absent": true
+        },
+        {
+          "idPrefix": "51f328ee10de",
+          "absent": true
+        }
+      ],
+      "absenceEvidence": "docker ps -aq empty; each docker inspect exit 1 with error: no such object",
+      "scope": "only initialization original app/helper IDs; no later manual saves covered"
+    }
+  },
+  "saveFailure": {
+    "scope": "AMD loopback real ordinary user UI manual save; unknown publication outcome",
+    "recordedAt": "2026-10-16T02:56:58.193113+00:00",
+    "sourceTree": "3bd63e55fc003b906873e083dcd7cde7449f5ba3",
+    "remoteHead": "814d206a42c1ae77914fe470691135b8581e0c9e",
+    "operationId": "25d63e6a-1a61-4f6c-a6fa-af90ced55a86",
+    "inputSha256": "f9a9fa5ea340686dd9557d9cef51eadcf5e7ab89b2354d435ca2d7eb7fe81896",
+    "journal": {
+      "status": "pending",
+      "receipt": null,
+      "activeManualOperationPresent": true,
+      "createdAt": 1792119166969,
+      "baseRevisionId": null,
+      "baseFilesSha256": "4cd9e7ff1673c4017068c831e9b232cbf82719cbe92796a1d25758292487cda8",
+      "workspaceGeneration": 1,
+      "turnCount": 0
+    },
+    "fence": {
+      "state": "pending",
+      "terminalStatus": null,
+      "revisionId": null,
+      "createdAt": 1792119166991,
+      "releasedAt": null
+    },
+    "revisionStoreOperationRows": 0,
+    "r2": {
+      "totalObjects": 3,
+      "manifest": {
+        "present": true,
+        "schema": "manual-revision/v1",
+        "bytes": 799,
+        "uploadedAt": 1792119167062,
+        "sha256": "5da61f4bef36442e6f2dcc2b6b8b380be079ff81e1b59cbf873e95b41fe37310"
+      },
+      "files": {
+        "present": true,
+        "bytes": 20480,
+        "uploadedAt": 1792119167046,
+        "sha256": "bf0b43815d1e3fdd545ffa49760a16ee82169fc12c0e5203f4412446c4894c9a",
+        "archiveHashMatchesManifest": true,
+        "regularFileCount": 8,
+        "requestedNewFileCount": 7,
+        "existingReadmeCount": 1,
+        "paths": [
+          ".pi/skills/acceptance-pages/SKILL.md",
+          "README.md",
+          "app/home.html",
+          "app/main.mjs",
+          "app/report.html",
+          "app/style.css",
+          "app/views.json",
+          "docs/data.json"
+        ]
+      },
+      "artifacts": {
+        "count": 1,
+        "paths": [
+          "docs/data.json"
+        ]
+      }
+    },
+    "logs": {
+      "gatewayLogLineCount": 3,
+      "matchingErrorLines": 0,
+      "accessLoggingAvailable": false,
+      "actualPostCount": null
+    },
+    "finding": "Immutable manual manifest and matching file archive exist, but workspace journal and authorization fence remain pending without publication receipt. Failure is after R2 persistence; precise RPC error unobserved in available logs.",
+    "hypothesis": "Independent workerd RPC probe reported by manual_revision_core confirms commitManual/reconcileManual receipt carries own Symbol.dispose; raw strict manualReceipt rejects it as invalid-manual-save, observerRpcData-detached receipt passes. This investigation itself did not invoke formal-state RPC.",
+    "limits": [
+      "No replay/restart/database mutation performed during investigation.",
+      "Check original save UI may issue same-key POST recovery after pending/404; available logs cannot establish request count.",
+      "No page isolation pass or complete manual save pass is claimed.",
+      "Snapshot reads span multiple times and are not globally atomic.",
+      "No source body, token, cookie, auth identity ID or secret value included."
+    ],
+    "independentReproduction": {
+      "reportedBy": "manual_revision_core",
+      "logPath": "/tmp/manual-rpc-repro.log",
+      "formalStateTouched": false,
+      "outboundCount": 0
+    }
+  },
+  "independentRpcProbe": {
+    "environment": "separate local workerd, synthetic scope, no formal state",
+    "receiptKeys": [
+      "source",
+      "revisionId",
+      "objectKey",
+      "filesSha256",
+      "sessionSha256",
+      "committedAt",
+      "Symbol(Symbol.dispose)"
+    ],
+    "rawError": "invalid-manual-save",
+    "reconcileError": "invalid-manual-save",
+    "detachedValid": true,
+    "outbound": 0
+  },
+  "matrix": {
+    "operatorGoogleLogin": "passed",
+    "operatorIssuedInvitation": "passed",
+    "ordinaryGoogleLogin": "passed",
+    "ordinaryInvitationAcceptance": "passed",
+    "ordinaryBlankProjectInitialization": "passed",
+    "initializationOriginalContainerCleanup": "passed",
+    "manualSave": "failed-publication-pending-original-operation-retained",
+    "canonicalPageBrokerFilesArtifacts": "not-reached",
+    "pageSwitchAndRestore": "not-reached",
+    "secondIdentityCrossProjectDenial": "pending-two-identities-exist-not-denial-proof",
+    "revocationOldBrokerAndBrowserCleanup": "pending",
+    "invitedNineEgressAttempts": "not-run-prior-synthetic-results-not-substituted"
+  },
+  "nextSafeAction": "Review isolated minimal RPC receipt adaptation; resolve manual-save PR scope before integration. Recover original persisted operation only after reviewed repair; never bypass pending fence with a new project or operation.",
+  "scopeExclusions": [
+    "production release before Goal1 pass",
+    "Preview retirement #64/#141/#144/#150",
+    "Observer/WebGL #218"
+  ],
+  "limitations": [
+    "UI actions were performed through Safari; no cookie/session extraction or synthetic auth seeding.",
+    "One Check original save click may execute same-key POST; actual POST count is unavailable.",
+    "Local identity and storage snapshots do not prove complete E2E or global billing zero.",
+    "No new product code was changed in this evidence commit."
+  ]
+}

@@ -172,3 +172,17 @@ test('observer query fails closed when the persisted control changes during the 
 });
 
 test('native adapter imports no M0 provider, token or probe implementation',async()=>{const source=await import('node:fs/promises').then(fs=>fs.readFile(new URL('../../services/turn-runtime/pi-native.ts',import.meta.url),'utf8'));assert.doesNotMatch(source,/proxy-pi|go-pi-probe|m0-|providerDefinitions|resolveCredential|globalThis\.fetch/);});
+
+test('native checkpoint accepts bounded inert resource provenance and rejects another project',async()=>{
+ const {freezeProjectResources}=await import('../../services/project-resources/text.mjs');
+ const bundle=freezeProjectResources({scope:identity.scope,revisionId:'revision-a',filesSha256:'a'.repeat(64),files:[{path:'AGENTS.md',content:'Project guidance'}],diagnostics:[{path:'.pi/skills/broken/SKILL.md',code:'frontmatter-invalid',sha256:'b'.repeat(64)}]});
+ const {resources,...source}=bundle;
+ const provenance={...source,resources:resources.map(({content,...r})=>({...r,loaded:true,loadedFromHistory:r.kind!=='agents'}))};
+ const bytes=encoder.encode(JSON.stringify({...JSON.parse(new TextDecoder().decode(snapshot())),resources:provenance}));
+ const f=fixture();await f.host.start(input());await f.sandbox.settle('completed',bytes);
+ assert.equal((await f.host.observe(identity)).phase,'terminal');assert.deepEqual(await f.host.frozenSession(identity),bytes);
+ const denied=fixture();await denied.host.start(input());
+ const changed=JSON.parse(new TextDecoder().decode(bytes));changed.resources.scope.projectId='project-b';
+ await denied.sandbox.settle('completed',encoder.encode(JSON.stringify(changed)));
+ await assert.rejects(denied.host.observe(identity),/project-resource-provenance-invalid/);
+});

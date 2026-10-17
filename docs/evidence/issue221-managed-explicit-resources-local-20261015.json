@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/221",
+  "date": "2026-10-15",
+  "baseCommit": "bdf54194df8bf9612e678e72682d053753e55a86",
+  "status": "local-source-candidate",
+  "scope": {
+    "resourceDiscovery": "Current claimed saved Revision or verified initial archive, using existing project.resources/v1 extraction and digest validation.",
+    "loading": "AGENTS plus inert catalog; body expansion only for explicit /skill:name or /prompt-name. Unselected bodies are not sent.",
+    "persistence": "Complete private resource bundle and frozen rendered text participate in the original Managed input digest before provider reservation. Submit and original-input lookup consume those persisted bytes.",
+    "saving": "v3 design/model overlay accepts only AGENTS.md, .pi/skills/<slug>/SKILL.md, .pi/prompts/<slug>.md, using existing text validation and 16-file/8-KiB-file/24-KiB-total limits; preserves omitted workspace files.",
+    "notDelivered": [
+      "Autonomous model-side lazy resource tool",
+      "Native Pi SDK behavior inside Managed",
+      "Plugin execution or new hosted tools",
+      "Routing, default-model or capacity-policy changes",
+      "Deployment, authenticated-user or paid acceptance"
+    ]
+  },
+  "verification": [
+    {
+      "command": "node --test --test-concurrency=2 tests/m2/managed*.test.ts tests/m2/managed*.test.mjs tests/m2/backend-*.test.ts tests/m2/project-resources.test.mjs",
+      "environment": "Node 26.10.0, local Workerd/SQLite/R2, production provider calls intercepted by synthetic fixture, elevated local process permission for loopback",
+      "exitCode": 0,
+      "tests": 188,
+      "passed": 188,
+      "failed": 0,
+      "skipped": 0,
+      "log": "/private/tmp/riffology-managed-skills-targeted-20261015.log"
+    },
+    {
+      "command": "node --test --test-name-pattern='Managed saves bounded project text|Managed initial source hash' tests/m2/managed-product.test.ts",
+      "scope": "Final added caller-supplied private-resource/context spoofing negative assertion; real local canonical initial archive, warm updated skill, lost ACK, actor restart, cold Session reconstruction",
+      "exitCode": 0,
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "initialFailure": {
+    "command": "node --test --test-concurrency=2 tests/m2/managed-product.test.ts tests/m2/managed-sdk-transport.test.ts tests/m2/managed-dispatcher.test.ts tests/m2/managed-candidate.test.ts",
+    "exitCode": 1,
+    "environment": "default sandbox",
+    "result": "91 tests passed; Workerd test child aborted with Node InternalCallbackScope execution_async_id assertion before its assertions. Not counted as passing; same local tests completed after enabling the existing elevated loopback test environment."
+  },
+  "coverage": [
+    "Exact saved and initial source digest/Revision binding; cross-tenant/project and tamper rejection",
+    "User-supplied private resources/context cannot replace platform-authored frozen input",
+    "Warm same-Session continuation consumes current Revision, not old selected text",
+    "ACK loss and actor restart return original receipt with no additional provider POST",
+    "Session cleanup and restart consume current saved resources without reexecuting historical commands",
+    "Original no-resource inputs retain exact previous normalization, digest and envelope",
+    "Read-only catalog, manual-only explicit selection and one-pass bounded argument expansion",
+    "Precise resource-path writes, final inherited resource limits and unchanged unrelated binary/design/compute bytes"
+  ],
+  "contentBoundary": "ManagedInput.projectResources and projectResourceText contain user content. Treat them as target Turn content during permanent purge, not as minimum financial/execution safety records.",
+  "cloudActions": {
+    "productionReads": 0,
+    "providerCalls": 0,
+    "deployments": 0,
+    "gateChanges": 0,
+    "projectDataWrites": 0
+  },
+  "sourceSha256": {
+    "services/turn-runtime/managed-resources.ts": "89a5d9d1a170dc881d187e313e8dceaad880ebe85811ca0a9268ac816b118ca9",
+    "services/turn-runtime/managed-adapter.ts": "e3906c1ba74d0e341cfcffd84f896dec65ea3c0eb8a01c3c393415ba4d6886fc",
+    "services/turn-runtime/managed-candidate-v3.ts": "11919c4aa86c9a739e8dfc4494081976dfc618828e880d40c713bba53b9f42d7",
+    "services/turn-runtime/managed-product.ts": "303fabce0081606b44fe4c82ac3b0f1ce1afe6deeef58d29ecc9d827254f1ca5",
+    "services/turn-runtime/managed-sdk-transport.ts": "10e41c331b3d93175f21abd80a8828dd0d3529040a5e0dfab91a59a8b0c38e2f",
+    "services/turn-runtime/managed-testing-instructions.ts": "90f2b764fc05e639426868b6f33631388820c6cc96dd16479908ffc54d9b7f03",
+    "tests/m2/managed-candidate-v3.test.ts": "f75f9796370ba6796c6d8b03d757f91b25d0a74d043fa61c3a4f3edb4155a2a2",
+    "tests/m2/managed-product.test.ts": "319064eccc06140defc49eff4dd33f4e76f7d6f0f1731e787709609bb65aad4b",
+    "tests/m2/managed-resources.test.ts": "251692dd77ff96a404a1f3d7175752d1edf944d8b6925d758267bedc653687c3"
+  }
+}

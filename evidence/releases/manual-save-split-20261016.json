@@ -1,0 +1,89 @@
+{
+  "schema": "riffology.manual-save-split/v1",
+  "date": "2026-10-16",
+  "splitFromHead": "c14939e0a149f5c3fb7a54b1ae546e2e52beadc2",
+  "productSourceHead": "814d206a42c1ae77914fe470691135b8581e0c9e",
+  "manualBranch": "codex/manual-save-draft-20261016",
+  "baseBranch": "codex/m1-frozen-review-20261015",
+  "status": "draft-separate-review",
+  "productionEligible": false,
+  "productionEnabled": false,
+  "deployed": false,
+  "repair": {
+    "files": [
+      "services/workspace/durable.ts",
+      "tests/m2/manual-save-workerd.test.mjs"
+    ],
+    "boundary": "commit and both reconciliation RPC receipts",
+    "behavior": "Detach RPC Symbol.dispose with existing observerRpcData, retain strict receipt validation and reject unknown symbols",
+    "syntheticWorkerd": {
+      "passed": 2,
+      "failed": 0,
+      "negativeControl": "Unrepaired source fails invalid-manual-save",
+      "typecheck": "passed",
+      "covers": [
+        "first canonical publication",
+        "lost ACK original-key GET recovery",
+        "lost ACK original-key POST recovery",
+        "released committed fences",
+        "no active manual operation",
+        "zero Turns",
+        "zero outbound fetch"
+      ]
+    },
+    "originalOperationRecovery": "not-executed"
+  },
+  "statePreservation": {
+    "amdSourceUnchanged": true,
+    "originalOperationId": "25d63e6a-1a61-4f6c-a6fa-af90ced55a86",
+    "journal": "pending",
+    "fence": "pending",
+    "immutableManifestAndArchive": "retained",
+    "warning": "Do not load reduced schema7 source into schema9 acceptance state."
+  },
+  "acceptanceLimits": [
+    "Real invited page, second-identity denial, revocation/browser cleanup and nine egress are pending.",
+    "Reduced #221 lacks manual writer; current ordinary content creation requires model Turn, forbidden by Goal1.",
+    "Combined-branch testing does not establish reduced-head acceptance."
+  ],
+  "fullCheck": {
+    "command": "M1_BROWSER_CHANNEL=chromium npm run check",
+    "exitCode": 1,
+    "failure": "system LibreSSL lacks openssl pkey -check; TLS test failed",
+    "uiPass": 21,
+    "m0Pass": 353,
+    "m0Skip": 1,
+    "m1Pass": 549,
+    "m2Pass": 985,
+    "m3InitialPass": 1013,
+    "m3InitialSkip": 12,
+    "m3InitialFail": 1,
+    "remainingValidation": "completed",
+    "priorEnvironmentFailures": [
+      "missing .local directory",
+      "system Chrome unavailable; cached Chromium selected"
+    ],
+    "continuationCommand": "npm run test:m3 && npm run issue73:validate && npm run test:research-quality",
+    "continuationExitCode": 0,
+    "nodePassTotal": 3077,
+    "nodeSkipTotal": 13,
+    "pythonPass": 8,
+    "singleFullCommandPassed": false,
+    "note": "All check stages passed across runs after environment correction; original full command exit1 retained.",
+    "continuationEnvironment": {
+      "PATHPrefix": "/opt/homebrew/opt/openssl@3/bin",
+      "M1_BROWSER_CHANNEL": "chromium"
+    }
+  },
+  "sourceChecks": {
+    "workspaceDurableSha256": "c39e8a0c9b74509e44c10bb0fd0c5f10aee5840a6094ba321126ea54988d372e",
+    "scope": "pages",
+    "manualRoutesPresent": false,
+    "journalSchema": 7
+  },
+  "providerPlan": {
+    "path": "docs/local-provider-acceptance-plan-20261016.md",
+    "status": "review-only",
+    "executed": false
+  }
+}

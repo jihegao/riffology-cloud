@@ -1,0 +1,899 @@
+{
+  "schema": "riffology.amd128-browser-chain-evidence/v1",
+  "date": "2026-10-15",
+  "environment": {
+    "host": "AMD128",
+    "os": "Ubuntu 22.04.5",
+    "kernel": "6.8.0-138-generic",
+    "docker": "29.8.1",
+    "runc": "1.5.1",
+    "hostNode": "22.22.3",
+    "imageNode": "22.23.2",
+    "playwright": "1.63.0",
+    "chromium": "153.0.8010.12",
+    "chromiumRevision": "1243"
+  },
+  "scope": "Local synthetic sandboxed browser, not deployed and not real project/broker/UI integration",
+  "productionEligible": false,
+  "cloudProviderCalls": 0,
+  "cloudDeployments": 0,
+  "imagePreparation": {
+    "image": "sha256:658fe76b5935c54d9b078fa4223867cd3aa2524bc8880db1d5274df42df73871",
+    "baseImage": "sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+    "inputFiles": 569,
+    "manifestSha256": "9334cf563fbdced7868597d96425939db556c3e5ab61217741d408040ee3cb3e",
+    "manifestPath": "/tmp/riffology-browser-chain.Y24qNP/image-manifest.json",
+    "dockerfile": "FROM riffology-issue165-trusted-pi:481306e-runtime\nUSER root\nCOPY rootfs/lib/x86_64-linux-gnu/ /usr/lib/x86_64-linux-gnu/\nCOPY rootfs/lib64/ /usr/lib64/\nCOPY chrome/ /opt/chrome/\nCOPY node_modules/ /opt/viewer/node_modules/\nENV HOME=/tmp\nWORKDIR /opt/viewer\nUSER 10001:10001\nENTRYPOINT [\"node\"]\n",
+    "source": "AMD128 pre-existing Node base, Playwright 1.63.0, Chromium 1243, Ubuntu 22.04 ldd closure",
+    "buildNetwork": "none",
+    "limitations": "Cached host ldd closure; no production distribution/supply-chain assurance"
+  },
+  "success": {
+    "actualInputSha256": "6cdcf887b49a79ae46fc02735e5a07eb361209e68dd1af408d026bfc2c00d0de",
+    "actualProgramSha256": "a2acf7b805ac70cdefd8aeaacb89944fd3a3b2493cc73878f836ff8f135c725a",
+    "prototypeFixtureNote": "prototype.fixtureSha256 identifies the original injected-runner harness fixture, replaced here; actual-input-identity.json is the durable identity of the executed input/program.",
+    "policyObserved": true,
+    "schema": "riffology.offline-browser-chain/v1",
+    "date": "2026-10-15T11:51:46.329Z",
+    "image": "sha256:658fe76b5935c54d9b078fa4223867cd3aa2524bc8880db1d5274df42df73871",
+    "policySha256": "4cdcdc07d9676737fa78222a8fffeda5cd0ebd2b209c82fafd2077d051d30ae2",
+    "productionEligible": false,
+    "userUiEligible": false,
+    "prototype": {
+      "schema": "riffology.offline-view-prototype/v1",
+      "operationId": "98fee6cc-f442-4989-81c7-f6359c1ad072",
+      "containerName": "riffoid-view-98fee6cc-f442-4989-81c7-f6359c1ad072",
+      "startedAt": "2026-10-15T11:51:39.622Z",
+      "productionEligible": false,
+      "userUiEligible": false,
+      "frameValidation": "png-header-only",
+      "status": "local-experiment-passed",
+      "runAttempted": true,
+      "cleanupConfirmed": true,
+      "image": "sha256:658fe76b5935c54d9b078fa4223867cd3aa2524bc8880db1d5274df42df73871",
+      "cloudCalls": 0,
+      "scope": "Synthetic offline Docker experiment; no credentials, user projects, mounts or published ports",
+      "uncovered": [
+        "full PNG decode/chunk/CRC validation",
+        "real project package/broker",
+        "session ownership and revocation",
+        "web image/input UI",
+        "latency and accessibility",
+        "cloud resource lifecycle",
+        "host/kernel compromise"
+      ],
+      "fixtureSha256": "cd0e6dcd77771e88f79a6aaabe496666a5a2ad268f28c539e2c90908be4d5625",
+      "processExit": 0,
+      "browser": "153.0.8010.12",
+      "chromiumSandboxRequested": true,
+      "kernelConnectResult": "ENETUNREACH",
+      "frameHashes": [
+        "a6ca77482535afaa80432f9ecd47563ff622c6851b447d59f846241cd060067d",
+        "adb8fd51b315fe955cb9ef7b81c1198764453c68ed6aecf51c2977b27d8953da"
+      ],
+      "containerId": "1d4ba7a371906d69e541fd84fef16f714de89c45c8953caffd645171fec671fa",
+      "cleanup": {
+        "confirmed": true,
+        "proof": "verified-original-id-removed"
+      },
+      "finishedAt": "2026-10-15T11:51:46.323Z"
+    },
+    "inspection": {
+      "User": "10001:10001",
+      "Id": "1d4ba7a371906d69e541fd84fef16f714de89c45c8953caffd645171fec671fa",
+      "Image": "sha256:658fe76b5935c54d9b078fa4223867cd3aa2524bc8880db1d5274df42df73871",
+      "State": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-10-15T11:51:39.88891525Z",
+        "FinishedAt": "2026-10-15T11:51:46.082166704Z"
+      },
+      "HostConfig": {
+        "Binds": null,
+        "ContainerIDFile": "",
+        "LogConfig": {
+          "Type": "json-file",
+          "Config": {}
+        },
+        "NetworkMode": "none",
+        "PortBindings": {},
+        "RestartPolicy": {
+          "Name": "no",
+          "MaximumRetryCount": 0
+        },
+        "AutoRemove": false,
+        "VolumeDriver": "",
+        "VolumesFrom": null,
+        "ConsoleSize": [
+          0,
+          0
+        ],
+        "CapAdd": null,
+        "CapDrop": [
+          "ALL"
+        ],
+        "CgroupnsMode": "private",
+        "Dns": null,
+        "DnsOptions": [],
+        "DnsSearch": [],
+        "ExtraHosts": null,
+        "GroupAdd": null,
+        "IpcMode": "private",
+        "Cgroup": "",
+        "Links": null,
+        "OomScoreAdj": 0,
+        "PidMode": "",
+        "Privileged": false,
+        "PublishAllPorts": false,
+        "ReadonlyRootfs": true,
+        "SecurityOpt": [
+          "seccomp=reviewed-profile; actual JSON compared exactly before pass; sha256:4cdcdc07d9676737fa78222a8fffeda5cd0ebd2b209c82fafd2077d051d30ae2",
+          "no-new-privileges"
+        ],
+        "Tmpfs": {
+          "/tmp": "rw,nosuid,nodev,size=268435456"
+        },
+        "UTSMode": "",
+        "UsernsMode": "",
+        "ShmSize": 134217728,
+        "Runtime": "runc",
+        "Isolation": "",
+        "CpuShares": 0,
+        "Memory": 805306368,
+        "NanoCpus": 1000000000,
+        "CgroupParent": "",
+        "BlkioWeight": 0,
+        "BlkioWeightDevice": [],
+        "BlkioDeviceReadBps": [],
+        "BlkioDeviceWriteBps": [],
+        "BlkioDeviceReadIOps": [],
+        "BlkioDeviceWriteIOps": [],
+        "CpuPeriod": 0,
+        "CpuQuota": 0,
+        "CpuRealtimePeriod": 0,
+        "CpuRealtimeRuntime": 0,
+        "CpusetCpus": "0,1",
+        "CpusetMems": "",
+        "Devices": [],
+        "DeviceCgroupRules": null,
+        "DeviceRequests": null,
+        "MemoryReservation": 0,
+        "MemorySwap": 1610612736,
+        "MemorySwappiness": null,
+        "OomKillDisable": null,
+        "PidsLimit": 128,
+        "Ulimits": null,
+        "CpuCount": 0,
+        "CpuPercent": 0,
+        "IOMaximumIOps": 0,
+        "IOMaximumBandwidth": 0,
+        "MaskedPaths": [
+          "/proc/acpi",
+          "/proc/asound",
+          "/proc/interrupts",
+          "/proc/kcore",
+          "/proc/keys",
+          "/proc/latency_stats",
+          "/proc/sched_debug",
+          "/proc/scsi",
+          "/proc/timer_list",
+          "/proc/timer_stats",
+          "/sys/devices/virtual/powercap",
+          "/sys/firmware"
+        ],
+        "ReadonlyPaths": [
+          "/proc/bus",
+          "/proc/fs",
+          "/proc/irq",
+          "/proc/sys",
+          "/proc/sysrq-trigger"
+        ]
+      },
+      "Mounts": [],
+      "NetworkSettings": {
+        "SandboxID": "",
+        "SandboxKey": "",
+        "Ports": {},
+        "Networks": {
+          "none": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": null,
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "3d3a5f804711fe8ab5204edc9ab33d2dd499a068bf09110d5a2daf0538b5994d",
+            "EndpointID": "",
+            "Gateway": "",
+            "IPAddress": "",
+            "MacAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": null
+          }
+        }
+      }
+    },
+    "requests": [
+      {
+        "url": "/positive-before-36197e33-c08d-4a10-bd12-0b636990f810",
+        "method": "GET"
+      },
+      {
+        "url": "/positive-after-36197e33-c08d-4a10-bd12-0b636990f810",
+        "method": "GET"
+      }
+    ],
+    "positiveControls": 2,
+    "receivedPageRequests": 0,
+    "browserProbe": {
+      "schema": "offline-synthetic-frames/v1",
+      "productionEligible": false,
+      "userUiEligible": false,
+      "browser": "153.0.8010.12",
+      "chromiumSandbox": true,
+      "nonLoopback": [],
+      "connectResult": "ENETUNREACH",
+      "browserProbe": {
+        "schema": "riffology.offline-browser-probe/v1",
+        "operationId": "36197e33-c08d-4a10-bd12-0b636990f810",
+        "collectorOrigin": "http://127.0.0.1:37225",
+        "executablePath": "/opt/chrome/chrome",
+        "network": {
+          "interfaces": [
+            {
+              "name": "lo",
+              "family": "IPv4",
+              "internal": true
+            },
+            {
+              "name": "lo",
+              "family": "IPv6",
+              "internal": true
+            }
+          ],
+          "ipv4RouteRows": 0,
+          "nativeConnectTarget": "198.18.0.1:37225"
+        },
+        "sandboxRequested": true,
+        "sandboxText": "Sandbox Status\nLayer 1 Sandbox\tNamespace\nPID namespaces\tYes\nNetwork namespaces\tYes\nSeccomp-BPF sandbox\tYes\nSeccomp-BPF sandbox supports TSYNC\tYes\nPtrace Protection with Yama LSM (Broker)\tYes\nPtrace Protection with Yama LSM (Non-broker)\tNo\n\nYou are adequately sandboxed.",
+        "sandboxReadError": null,
+        "interaction": {
+          "clicks": 1,
+          "trustedClicks": 1,
+          "keyEvents": 21,
+          "inputEvents": 21,
+          "value": "SYNTHETIC keyboard 42",
+          "echo": "SYNTHETIC keyboard 42",
+          "button": "SYNTHETIC 1",
+          "frameHashes": [
+            "a6ca77482535afaa80432f9ecd47563ff622c6851b447d59f846241cd060067d",
+            "adb8fd51b315fe955cb9ef7b81c1198764453c68ed6aecf51c2977b27d8953da"
+          ]
+        },
+        "cases": [
+          {
+            "kind": "href",
+            "target": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/href?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-href",
+            "invoked": true,
+            "requests": [
+              {
+                "url": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/href?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-href",
+                "method": "GET",
+                "resourceType": "document",
+                "navigation": true,
+                "body": ""
+              }
+            ],
+            "requestFailed": [
+              {
+                "url": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/href?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-href",
+                "error": "net::ERR_CONNECTION_REFUSED"
+              }
+            ],
+            "responses": [],
+            "navigationErrors": [
+              "page.waitForNavigation: net::ERR_CONNECTION_REFUSED\n=========================== logs ===========================\nwaiting for navigation until \"domcontentloaded\"\n============================================================",
+              "net::ERR_CONNECTION_REFUSED"
+            ],
+            "navigations": [],
+            "pageErrors": [],
+            "consoleEvents": [
+              {
+                "stage": "invoked",
+                "kind": "href"
+              }
+            ],
+            "webSockets": [],
+            "popupCount": 0,
+            "droppedEvents": 0,
+            "blocked": true
+          },
+          {
+            "kind": "assign",
+            "target": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/assign?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-assign",
+            "invoked": true,
+            "requests": [
+              {
+                "url": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/assign?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-assign",
+                "method": "GET",
+                "resourceType": "document",
+                "navigation": true,
+                "body": ""
+              }
+            ],
+            "requestFailed": [
+              {
+                "url": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/assign?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-assign",
+                "error": "net::ERR_CONNECTION_REFUSED"
+              }
+            ],
+            "responses": [],
+            "navigationErrors": [
+              "page.waitForNavigation: net::ERR_CONNECTION_REFUSED\n=========================== logs ===========================\nwaiting for navigation until \"domcontentloaded\"\n============================================================",
+              "net::ERR_CONNECTION_REFUSED"
+            ],
+            "navigations": [],
+            "pageErrors": [],
+            "consoleEvents": [
+              {
+                "stage": "invoked",
+                "kind": "assign"
+              }
+            ],
+            "webSockets": [],
+            "popupCount": 0,
+            "droppedEvents": 0,
+            "blocked": true
+          },
+          {
+            "kind": "replace",
+            "target": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/replace?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-replace",
+            "invoked": true,
+            "requests": [
+              {
+                "url": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/replace?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-replace",
+                "method": "GET",
+                "resourceType": "document",
+                "navigation": true,
+                "body": ""
+              }
+            ],
+            "requestFailed": [
+              {
+                "url": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/replace?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-replace",
+                "error": "net::ERR_CONNECTION_REFUSED"
+              }
+            ],
+            "responses": [],
+            "navigationErrors": [
+              "page.waitForNavigation: net::ERR_CONNECTION_REFUSED\n=========================== logs ===========================\nwaiting for navigation until \"domcontentloaded\"\n============================================================",
+              "net::ERR_CONNECTION_REFUSED"
+            ],
+            "navigations": [],
+            "pageErrors": [],
+            "consoleEvents": [
+              {
+                "stage": "invoked",
+                "kind": "replace"
+              }
+            ],
+            "webSockets": [],
+            "popupCount": 0,
+            "droppedEvents": 0,
+            "blocked": true
+          },
+          {
+            "kind": "fetch",
+            "target": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/fetch?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-fetch",
+            "invoked": true,
+            "requests": [
+              {
+                "url": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/fetch?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-fetch",
+                "method": "GET",
+                "resourceType": "fetch",
+                "navigation": false,
+                "body": ""
+              }
+            ],
+            "requestFailed": [
+              {
+                "url": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/fetch?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-fetch",
+                "error": "net::ERR_CONNECTION_REFUSED"
+              }
+            ],
+            "responses": [],
+            "navigationErrors": [],
+            "navigations": [],
+            "pageErrors": [],
+            "consoleEvents": [
+              {
+                "stage": "invoked",
+                "kind": "fetch"
+              },
+              {
+                "stage": "fetch-error",
+                "message": "Failed to fetch"
+              }
+            ],
+            "webSockets": [],
+            "popupCount": 0,
+            "droppedEvents": 0,
+            "blocked": true
+          },
+          {
+            "kind": "beacon",
+            "target": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/beacon?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-beacon",
+            "invoked": true,
+            "requests": [
+              {
+                "url": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/beacon?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-beacon",
+                "method": "POST",
+                "resourceType": "ping",
+                "navigation": false,
+                "body": "SYNTHETIC beacon body"
+              }
+            ],
+            "requestFailed": [
+              {
+                "url": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/beacon?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-beacon",
+                "error": "net::ERR_CONNECTION_REFUSED"
+              }
+            ],
+            "responses": [],
+            "navigationErrors": [],
+            "navigations": [],
+            "pageErrors": [],
+            "consoleEvents": [
+              {
+                "stage": "invoked",
+                "kind": "beacon"
+              },
+              {
+                "stage": "beacon-queued",
+                "accepted": true
+              }
+            ],
+            "webSockets": [],
+            "popupCount": 0,
+            "droppedEvents": 0,
+            "blocked": true
+          },
+          {
+            "kind": "image",
+            "target": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/image?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-image",
+            "invoked": true,
+            "requests": [
+              {
+                "url": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/image?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-image",
+                "method": "GET",
+                "resourceType": "image",
+                "navigation": false,
+                "body": ""
+              }
+            ],
+            "requestFailed": [
+              {
+                "url": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/image?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-image",
+                "error": "net::ERR_CONNECTION_REFUSED"
+              }
+            ],
+            "responses": [],
+            "navigationErrors": [],
+            "navigations": [],
+            "pageErrors": [],
+            "consoleEvents": [
+              {
+                "stage": "invoked",
+                "kind": "image"
+              },
+              {
+                "stage": "image-error"
+              }
+            ],
+            "webSockets": [],
+            "popupCount": 0,
+            "droppedEvents": 0,
+            "blocked": true
+          },
+          {
+            "kind": "form",
+            "target": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/form?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-form",
+            "invoked": true,
+            "requests": [
+              {
+                "url": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/form?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-form",
+                "method": "POST",
+                "resourceType": "document",
+                "navigation": true,
+                "body": "canary=SYNTHETIC+form+body"
+              }
+            ],
+            "requestFailed": [
+              {
+                "url": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/form?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-form",
+                "error": "net::ERR_CONNECTION_REFUSED"
+              }
+            ],
+            "responses": [],
+            "navigationErrors": [
+              "page.waitForNavigation: net::ERR_CONNECTION_REFUSED\n=========================== logs ===========================\nwaiting for navigation until \"domcontentloaded\"\n============================================================",
+              "net::ERR_CONNECTION_REFUSED"
+            ],
+            "navigations": [],
+            "pageErrors": [],
+            "consoleEvents": [
+              {
+                "stage": "invoked",
+                "kind": "form"
+              }
+            ],
+            "webSockets": [],
+            "popupCount": 0,
+            "droppedEvents": 0,
+            "blocked": true
+          },
+          {
+            "kind": "window-open",
+            "target": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/window-open?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-window-open",
+            "invoked": true,
+            "requests": [
+              {
+                "url": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/window-open?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-window-open",
+                "method": "GET",
+                "resourceType": "document",
+                "navigation": true,
+                "body": ""
+              }
+            ],
+            "requestFailed": [
+              {
+                "url": "http://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/window-open?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-window-open",
+                "error": "net::ERR_CONNECTION_REFUSED"
+              }
+            ],
+            "responses": [],
+            "navigationErrors": [
+              "net::ERR_CONNECTION_REFUSED"
+            ],
+            "navigations": [],
+            "pageErrors": [],
+            "consoleEvents": [
+              {
+                "stage": "invoked",
+                "kind": "window-open"
+              },
+              {
+                "stage": "popup-return",
+                "opened": true
+              }
+            ],
+            "webSockets": [],
+            "popupCount": 1,
+            "droppedEvents": 0,
+            "blocked": true
+          },
+          {
+            "kind": "websocket",
+            "target": "ws://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/websocket?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-websocket",
+            "invoked": true,
+            "requests": [],
+            "requestFailed": [],
+            "responses": [],
+            "navigationErrors": [],
+            "navigations": [],
+            "pageErrors": [],
+            "consoleEvents": [
+              {
+                "stage": "invoked",
+                "kind": "websocket"
+              },
+              {
+                "stage": "websocket-error"
+              },
+              {
+                "stage": "websocket-close",
+                "code": 1006
+              }
+            ],
+            "webSockets": [
+              {
+                "url": "ws://127.0.0.1:37225/riffology-synthetic/36197e33-c08d-4a10-bd12-0b636990f810/websocket?canary=SYNTHETIC-36197e33-c08d-4a10-bd12-0b636990f810-websocket",
+                "errors": [
+                  "Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+                ],
+                "closed": true
+              }
+            ],
+            "popupCount": 0,
+            "droppedEvents": 0,
+            "blocked": true
+          }
+        ],
+        "status": "synthetic-network-attempts-blocked",
+        "uncovered": [
+          "No cloud execution, real user project, credentials, persistence or production UI.",
+          "Host collector positive controls and packet observations belong to the external supervisor.",
+          "Browser request failures are observations; individual errors may arise before a kernel connect.",
+          "chrome://sandbox text is observational and is not a complete process or kernel sandbox attestation.",
+          "No browser/kernel exploit resistance, multi-user isolation, recovery or production resource lifecycle claim.",
+          "PNG pixels/chunks/CRC are not independently decoded or validated by this probe."
+        ]
+      }
+    },
+    "status": "local-chain-passed"
+  },
+  "interruption": {
+    "actualInputSha256": "59423f791bde1933b04f4f63cf0d926cbbc5d21a5093272ffec852e2f8c21b16",
+    "actualProgramSha256": "a2acf7b805ac70cdefd8aeaacb89944fd3a3b2493cc73878f836ff8f135c725a",
+    "prototypeFixtureNote": "prototype.fixtureSha256 identifies the original injected-runner harness fixture, replaced here; actual-input-identity.json is the durable identity of the executed input/program.",
+    "policyObserved": true,
+    "schema": "riffology.offline-browser-chain/v1",
+    "date": "2026-10-15T11:52:20.420Z",
+    "image": "sha256:658fe76b5935c54d9b078fa4223867cd3aa2524bc8880db1d5274df42df73871",
+    "policySha256": "4cdcdc07d9676737fa78222a8fffeda5cd0ebd2b209c82fafd2077d051d30ae2",
+    "productionEligible": false,
+    "userUiEligible": false,
+    "prototype": {
+      "schema": "riffology.offline-view-prototype/v1",
+      "operationId": "b1115475-5da8-4231-b8aa-778ae33016c7",
+      "containerName": "riffoid-view-b1115475-5da8-4231-b8aa-778ae33016c7",
+      "startedAt": "2026-10-15T11:52:18.059Z",
+      "productionEligible": false,
+      "userUiEligible": false,
+      "frameValidation": "png-header-only",
+      "status": "blocked",
+      "runAttempted": true,
+      "cleanupConfirmed": true,
+      "image": "sha256:658fe76b5935c54d9b078fa4223867cd3aa2524bc8880db1d5274df42df73871",
+      "cloudCalls": 0,
+      "scope": "Synthetic offline Docker experiment; no credentials, user projects, mounts or published ports",
+      "uncovered": [
+        "full PNG decode/chunk/CRC validation",
+        "real project package/broker",
+        "session ownership and revocation",
+        "web image/input UI",
+        "latency and accessibility",
+        "cloud resource lifecycle",
+        "host/kernel compromise"
+      ],
+      "fixtureSha256": "cd0e6dcd77771e88f79a6aaabe496666a5a2ad268f28c539e2c90908be4d5625",
+      "processExit": 1,
+      "reason": "prototype-interrupted",
+      "containerId": "a1f5207946781a29afef3b17d80e40b399ae1e4b63f902f6bb2f30a17d27564b",
+      "cleanup": {
+        "confirmed": true,
+        "proof": "verified-original-id-removed"
+      },
+      "interruptedBy": "SIGTERM",
+      "finishedAt": "2026-10-15T11:52:20.417Z"
+    },
+    "inspection": {
+      "User": "10001:10001",
+      "Id": "a1f5207946781a29afef3b17d80e40b399ae1e4b63f902f6bb2f30a17d27564b",
+      "Image": "sha256:658fe76b5935c54d9b078fa4223867cd3aa2524bc8880db1d5274df42df73871",
+      "State": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 1,
+        "Error": "",
+        "StartedAt": "2026-10-15T11:52:18.316618245Z",
+        "FinishedAt": "2026-10-15T11:52:20.164599489Z"
+      },
+      "HostConfig": {
+        "Binds": null,
+        "ContainerIDFile": "",
+        "LogConfig": {
+          "Type": "json-file",
+          "Config": {}
+        },
+        "NetworkMode": "none",
+        "PortBindings": {},
+        "RestartPolicy": {
+          "Name": "no",
+          "MaximumRetryCount": 0
+        },
+        "AutoRemove": false,
+        "VolumeDriver": "",
+        "VolumesFrom": null,
+        "ConsoleSize": [
+          0,
+          0
+        ],
+        "CapAdd": null,
+        "CapDrop": [
+          "ALL"
+        ],
+        "CgroupnsMode": "private",
+        "Dns": null,
+        "DnsOptions": [],
+        "DnsSearch": [],
+        "ExtraHosts": null,
+        "GroupAdd": null,
+        "IpcMode": "private",
+        "Cgroup": "",
+        "Links": null,
+        "OomScoreAdj": 0,
+        "PidMode": "",
+        "Privileged": false,
+        "PublishAllPorts": false,
+        "ReadonlyRootfs": true,
+        "SecurityOpt": [
+          "seccomp=reviewed-profile; actual JSON compared exactly before pass; sha256:4cdcdc07d9676737fa78222a8fffeda5cd0ebd2b209c82fafd2077d051d30ae2",
+          "no-new-privileges"
+        ],
+        "Tmpfs": {
+          "/tmp": "rw,nosuid,nodev,size=268435456"
+        },
+        "UTSMode": "",
+        "UsernsMode": "",
+        "ShmSize": 134217728,
+        "Runtime": "runc",
+        "Isolation": "",
+        "CpuShares": 0,
+        "Memory": 805306368,
+        "NanoCpus": 1000000000,
+        "CgroupParent": "",
+        "BlkioWeight": 0,
+        "BlkioWeightDevice": [],
+        "BlkioDeviceReadBps": [],
+        "BlkioDeviceWriteBps": [],
+        "BlkioDeviceReadIOps": [],
+        "BlkioDeviceWriteIOps": [],
+        "CpuPeriod": 0,
+        "CpuQuota": 0,
+        "CpuRealtimePeriod": 0,
+        "CpuRealtimeRuntime": 0,
+        "CpusetCpus": "0,1",
+        "CpusetMems": "",
+        "Devices": [],
+        "DeviceCgroupRules": null,
+        "DeviceRequests": null,
+        "MemoryReservation": 0,
+        "MemorySwap": 1610612736,
+        "MemorySwappiness": null,
+        "OomKillDisable": null,
+        "PidsLimit": 128,
+        "Ulimits": null,
+        "CpuCount": 0,
+        "CpuPercent": 0,
+        "IOMaximumIOps": 0,
+        "IOMaximumBandwidth": 0,
+        "MaskedPaths": [
+          "/proc/acpi",
+          "/proc/asound",
+          "/proc/interrupts",
+          "/proc/kcore",
+          "/proc/keys",
+          "/proc/latency_stats",
+          "/proc/sched_debug",
+          "/proc/scsi",
+          "/proc/timer_list",
+          "/proc/timer_stats",
+          "/sys/devices/virtual/powercap",
+          "/sys/firmware"
+        ],
+        "ReadonlyPaths": [
+          "/proc/bus",
+          "/proc/fs",
+          "/proc/irq",
+          "/proc/sys",
+          "/proc/sysrq-trigger"
+        ]
+      },
+      "Mounts": [],
+      "NetworkSettings": {
+        "SandboxID": "",
+        "SandboxKey": "",
+        "Ports": {},
+        "Networks": {
+          "none": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": null,
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "3d3a5f804711fe8ab5204edc9ab33d2dd499a068bf09110d5a2daf0538b5994d",
+            "EndpointID": "",
+            "Gateway": "",
+            "IPAddress": "",
+            "MacAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": null
+          }
+        }
+      }
+    },
+    "requests": [
+      {
+        "url": "/positive-before-ef1456f0-d3b5-404f-877c-4968dd3327c2",
+        "method": "GET"
+      },
+      {
+        "url": "/positive-after-ef1456f0-d3b5-404f-877c-4968dd3327c2",
+        "method": "GET"
+      }
+    ],
+    "positiveControls": 2,
+    "receivedPageRequests": 0,
+    "browserProbe": null,
+    "status": "blocked"
+  },
+  "priorFailures": [
+    {
+      "stage": "initial build",
+      "reason": "Ubuntu /lib symlink COPY conflict; corrected destination to /usr/lib"
+    },
+    {
+      "stage": "premature image probe",
+      "reason": "image absent; Docker tried default pull and failed local proxy; subsequent probes all use pull=never"
+    },
+    {
+      "stage": "default seccomp",
+      "reason": "No usable sandbox; container removed"
+    },
+    {
+      "stage": "namespace-only seccomp",
+      "reason": "zygote chroot denied; container removed"
+    },
+    {
+      "stage": "namespace+chroot seccomp",
+      "reason": "128-core host caused pthread EAGAIN at PIDs128; restricted CPU affinity to0,1, limits unchanged"
+    },
+    {
+      "stage": "chain-1",
+      "reason": "image inspect text incorrectly parsed as container JSON; no container run; fixed discriminator"
+    }
+  ],
+  "verification": {
+    "staticPolicyAndCleanupTests": {
+      "pass": 13,
+      "fail": 0
+    },
+    "chain-2": {
+      "exit": 0,
+      "scope": "before stronger actual-policy/input-identity checks"
+    },
+    "chain-3": {
+      "exit": 0,
+      "scope": "final strengthened checks"
+    },
+    "chain-interrupt": {
+      "exit": 1,
+      "expected": true,
+      "reason": "intentional SIGTERM",
+      "cleanupConfirmed": true
+    },
+    "remainingTestContainers": 0
+  },
+  "uncovered": [
+    "real project package and scoped broker",
+    "production image/input transport",
+    "independent PNG decode/CRC validation in launcher",
+    "cross-user/session authorization and revocation",
+    "browser or kernel exploit resistance",
+    "cloud lifecycle and cost/latency/accessibility"
+  ],
+  "sourceSha256": {
+    "scripts/m3/project-view-browser-chain.mjs": "9a9c38a398fcf27f32e0bb3fd6229b70afff27d6018cf29de12caac406ff1ce4",
+    "scripts/m3/project-view-browser-probe.mjs": "9e8a16c97a1ff8e5c1aea847d6c6e921638b5a0aee449623aa8999c85a3cb542",
+    "scripts/m3/project-view-offline-prototype.mjs": "7dfe2f852b6ef22d774a2ea823e71a7607f9fabff339d311d383507de1b0e4f5",
+    "scripts/m3/offline-view/chromium-userns-seccomp.json": "4cdcdc07d9676737fa78222a8fffeda5cd0ebd2b209c82fafd2077d051d30ae2"
+  }
+}

@@ -1,0 +1,770 @@
+{
+  "schema": "riffology.amd128-m1-repair-verification/v1",
+  "collectedAt": "2026-10-15T11:10:23.034244+00:00",
+  "dispatch": "SSH deterministic scripts; no remote model calls",
+  "productionEligible": false,
+  "dependencyNote": "First npm ci failed DNS. Reused existing node_modules with identical package-lock sha256; no npm ci success claimed. Host Node 22.22.3 differs from Mac 26.10.0.",
+  "packageLockSha256": "9243ccf1179d9a487059ed507474543c2dc3c7beb9c1456f93ee94d77aaaa4cd",
+  "identityNote": "GitHub DNS failed. SSH archive/patch transfer; exact Git tree checked. Local verification commit metadata differs from upstream.",
+  "baseline": {
+    "upstreamCodeCommit": "eb81a2e43a3cccd3a2673dc56b0281f927693373",
+    "tree": "4c25c2cc3013315e374411cbc8e47eb6b6eb9a5e",
+    "localCommit": "9bfa566bf7e4eab1a1711b5788e86a6a09e1cbd6",
+    "environment": "Thu Oct 15 10:50:16 UTC 2026\nLinux g-1503-amd128 6.8.0-138-generic #138~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Aug  7 13:43:15 UTC  x86_64 x86_64 x86_64 GNU/Linux\nv22.22.3\n10.9.8\nPython 3.10.12\nOpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)\n9bfa566bf7e4eab1a1711b5788e86a6a09e1cbd6\n4c25c2cc3013315e374411cbc8e47eb6b6eb9a5e\n?? node_modules\n",
+    "checks": {
+      "ui": {
+        "exit": 0,
+        "pass": [
+          "21"
+        ],
+        "fail": [
+          "0"
+        ],
+        "skip": [
+          "0"
+        ],
+        "logSha256": "3dcfa4437625ed58454f7cd30349e8ad16e67fd2fea244f8e06876e9dae64af6"
+      },
+      "types": {
+        "exit": 0,
+        "pass": [],
+        "fail": [],
+        "skip": [],
+        "logSha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f"
+      },
+      "focused": {
+        "exit": 0,
+        "pass": [
+          "26"
+        ],
+        "fail": [
+          "0"
+        ],
+        "skip": [
+          "0"
+        ],
+        "logSha256": "d98cc17be1b4581c0ad1c532c3574effbd090c1a541866cab3b3e87c0b5fd14a"
+      },
+      "runtime": {
+        "exit": 0,
+        "pass": [
+          "57"
+        ],
+        "fail": [
+          "0"
+        ],
+        "skip": [
+          "0"
+        ],
+        "logSha256": "1801f6ec18bddd4dc239003bdaf4cfba49204ca0f0de722516b54377ab58dd69"
+      },
+      "navigation": {
+        "exit": 0,
+        "pass": [],
+        "fail": [],
+        "skip": [],
+        "logSha256": "aa5f7d3fbbdfe0c179688e025c926e2775703f4143312cb4f157316a93eb4c85"
+      },
+      "assets": {
+        "exit": 0,
+        "pass": [],
+        "fail": [],
+        "skip": [],
+        "logSha256": "557df41694e2e2729f9824b6d21857b44a1d57bcd032282d11b2aa7a19ae5c82"
+      },
+      "execution-assets": {
+        "exit": 0,
+        "pass": [],
+        "fail": [],
+        "skip": [],
+        "logSha256": "c2b9dafb5d319901b80c5a0e99d7fd2ec80ae3a90cc07da957a95b75193a5f6a"
+      },
+      "web-assets": {
+        "exit": 0,
+        "pass": [],
+        "fail": [],
+        "skip": [],
+        "logSha256": "d1cc383266e0463c2d42fadc8c59bd9de2e5cbf4eaa6844c12b3b313ee9694eb"
+      },
+      "complete": {
+        "exit": 1,
+        "pass": [
+          "21",
+          "353",
+          "549",
+          "970",
+          "975"
+        ],
+        "fail": [
+          "0",
+          "0",
+          "0",
+          "0",
+          "1"
+        ],
+        "skip": [
+          "0",
+          "1",
+          "0",
+          "0",
+          "12"
+        ],
+        "logSha256": "0c36ddd6d80efaf24a0aebaea702d7b65f5bb3f9822f6f50f224a46919124ee1"
+      }
+    },
+    "runnerExit": 0,
+    "navigation-egress-evidence.json": {
+      "schema": "riffoid.project-view-navigation-reproduction/v1",
+      "startedAt": "2026-10-15T10:50:34.149Z",
+      "finishedAt": "2026-10-15T10:50:34.525Z",
+      "gitHeadAtExecution": "9bfa566bf7e4eab1a1711b5788e86a6a09e1cbd6",
+      "sourceDigests": {
+        "services/project-views/frame.mjs": "fd07c57ad44a8330fc780ab3c284a64e1b43a6e61d83ab7f8ad3db2e135297e9",
+        "services/web/project-views.js": "bdf99707b80e3e84272e272e0af6b096fd578135ade3f47bbdafcb87ee893d91",
+        "services/project-views/package.ts": "77564459960edf40c1c420df62304bd2869eb23be42b14e75bba9697e18d6c7d",
+        "services/browser-preview/execution/index.ts": "8a932bc2d8ecb20fba3712b8a9b2c150e2cd8fb896254a62de568063500cb093"
+      },
+      "node": "v22.22.3",
+      "browser": "153.0.8010.12",
+      "browserChannel": "chromium",
+      "chromiumSandbox": false,
+      "scope": "Synthetic fixtures; three loopback HTTP servers; no authenticated/cloud execution.",
+      "origins": {
+        "appOrigin": "http://127.0.0.1:38265",
+        "executionOrigin": "http://127.0.0.1:34951",
+        "collectorOrigin": "http://127.0.0.1:35361"
+      },
+      "frameSha256": "e7242ff855f2f85028811c8f210d4b2b27f7683c2e8d51cbb0afb8a84c6c53ca",
+      "frameResponse": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=31536000, immutable",
+          "content-security-policy": "default-src 'none'; script-src 'unsafe-inline' blob:; style-src 'unsafe-inline' blob:; img-src blob: data:; media-src blob:; font-src blob:; connect-src 'none'; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors http://127.0.0.1:38265; sandbox allow-scripts",
+          "content-type": "text/html; charset=utf-8",
+          "cross-origin-resource-policy": "cross-origin",
+          "permissions-policy": "camera=(), microphone=(), geolocation=(), usb=(), storage-access=()",
+          "referrer-policy": "no-referrer",
+          "x-content-type-options": "nosniff"
+        }
+      },
+      "packageIdentity": "6d31abae40e3797c0c2d44b154ced643d50d5a19fc5e6bf5f9b2d7bfc8809863",
+      "canarySha256": "a155fa57b528379becf41299af7fe20ab9d35ca2077476ffdea278377d4727cd",
+      "received": [
+        {
+          "at": "2026-10-15T10:50:34.161Z",
+          "method": "GET",
+          "url": "/control?case=collector-positive-control",
+          "headers": {
+            "host": "127.0.0.1:35361",
+            "connection": "keep-alive",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "node",
+            "accept-encoding": "gzip, deflate"
+          },
+          "remoteAddress": "127.0.0.1"
+        },
+        {
+          "at": "2026-10-15T10:50:34.503Z",
+          "method": "GET",
+          "url": "/escape?case=self-href&secret=SYNTHETIC_PROJECT_TEXT_795005ff-9466-4f8f-b6db-939e98ee274c",
+          "headers": {
+            "host": "127.0.0.1:35361",
+            "connection": "keep-alive",
+            "sec-ch-ua": "\"Chromium\";v=\"153\", \"Not_A Brand\";v=\"8\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"Linux\"",
+            "upgrade-insecure-requests": "1",
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "sec-fetch-site": "cross-site",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-dest": "iframe",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "accept-language": "en-US,en;q=0.9"
+          },
+          "remoteAddress": "127.0.0.1"
+        }
+      ],
+      "requests": [
+        {
+          "url": "http://127.0.0.1:38265/",
+          "method": "GET"
+        },
+        {
+          "url": "http://127.0.0.1:38265/project-views.js",
+          "method": "GET"
+        },
+        {
+          "url": "http://127.0.0.1:38265/i18n.js",
+          "method": "GET"
+        },
+        {
+          "url": "http://127.0.0.1:38265/i18n-bindings.js",
+          "method": "GET"
+        },
+        {
+          "url": "http://127.0.0.1:38265/api/workspaces/workspace-a/project-views",
+          "method": "GET"
+        },
+        {
+          "url": "http://127.0.0.1:34951/project-views/e7242ff855f2f85028811c8f210d4b2b27f7683c2e8d51cbb0afb8a84c6c53ca/frame.html",
+          "method": "GET"
+        },
+        {
+          "url": "blob:null/e253e816-0462-4cf6-b97b-d14db12c58e8",
+          "method": "GET"
+        },
+        {
+          "url": "blob:null/a41d5d57-3ef0-4d00-9486-2e023238cf13",
+          "method": "GET"
+        },
+        {
+          "url": "blob:null/9d5a4969-cb11-4aa4-be1d-72465188b36f",
+          "method": "GET"
+        },
+        {
+          "url": "http://127.0.0.1:38265/api/workspaces/workspace-a/project-views?identity=6d31abae40e3797c0c2d44b154ced643d50d5a19fc5e6bf5f9b2d7bfc8809863",
+          "method": "GET"
+        },
+        {
+          "url": "http://127.0.0.1:35361/escape?case=self-href&secret=SYNTHETIC_PROJECT_TEXT_795005ff-9466-4f8f-b6db-939e98ee274c",
+          "method": "GET"
+        }
+      ],
+      "browserErrors": [],
+      "knownP1Reproduced": true,
+      "productionEligible": false,
+      "result": "egress-observed",
+      "interpretation": "Exit 0 confirms reproduction of the known defect, never successful isolation. Absence within 5 seconds does not prove network isolation."
+    }
+  },
+  "repair": {
+    "upstreamCodeCommit": "0b1e6707f4d5cc9359f22e2eb392b680432620f3",
+    "tree": "739680ab9b9ac9735fd48b177d261b196d1b08b5",
+    "localCommit": "0b67958a6b34ee4111d565ed7489fdbc8163c8de",
+    "environment": "Thu Oct 15 11:06:39 UTC 2026\nLinux g-1503-amd128 6.8.0-138-generic #138~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Aug  7 13:43:15 UTC  x86_64 x86_64 x86_64 GNU/Linux\nv22.22.3\n10.9.8\nOpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)\n0b67958a6b34ee4111d565ed7489fdbc8163c8de\n739680ab9b9ac9735fd48b177d261b196d1b08b5\n",
+    "checks": {
+      "types": {
+        "exit": 0,
+        "pass": [],
+        "fail": [],
+        "skip": [],
+        "logSha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f"
+      },
+      "managed": {
+        "exit": 0,
+        "pass": [
+          "188"
+        ],
+        "fail": [
+          "0"
+        ],
+        "skip": [
+          "0"
+        ],
+        "logSha256": "8c1ca56172aaab34234e1d698469aec6f030287276fd81326a9c46e97376668f"
+      },
+      "pages": {
+        "exit": 0,
+        "pass": [
+          "32"
+        ],
+        "fail": [
+          "0"
+        ],
+        "skip": [
+          "0"
+        ],
+        "logSha256": "c10c31a6c753ab48066a93438b05f20ae7007ae862bc76c450bf420b4e7aaaa0"
+      },
+      "navigation": {
+        "exit": 0,
+        "pass": [],
+        "fail": [],
+        "skip": [],
+        "logSha256": "446e7cc07e3166443285befed621dae28c860ba7ed47d3d14a0a19759b27f6b0"
+      },
+      "prototype_missing_image": {
+        "exit": 1,
+        "pass": [],
+        "fail": [],
+        "skip": [],
+        "logSha256": "b6715c476430ad4ce2f599a7f100ff0e33c22d6871da082b3d8f3212a509fc60"
+      }
+    },
+    "runnerExit": 0,
+    "navigation.json": {
+      "schema": "riffoid.project-view-navigation-reproduction/v1",
+      "startedAt": "2026-10-15T11:07:39.285Z",
+      "finishedAt": "2026-10-15T11:07:39.968Z",
+      "gitHeadAtExecution": "0b67958a6b34ee4111d565ed7489fdbc8163c8de",
+      "trackedDiffAtExecution": [],
+      "sourceDigests": {
+        "scripts/m3/project-view-navigation-repro.mjs": "210507a64d0e6514a10e73786dece6c49c90fba16de2324dfd0bcebe32ded244",
+        "tests/m3/project-views-fixture.mjs": "3d7a53af429e3b1da2f5d61598837d82b615762cd84458b165e8f436eae9898d",
+        "services/project-views/frame.mjs": "fd07c57ad44a8330fc780ab3c284a64e1b43a6e61d83ab7f8ad3db2e135297e9",
+        "services/web/project-views.js": "bdf99707b80e3e84272e272e0af6b096fd578135ade3f47bbdafcb87ee893d91",
+        "services/project-views/package.ts": "77564459960edf40c1c420df62304bd2869eb23be42b14e75bba9697e18d6c7d",
+        "services/browser-preview/execution/index.ts": "88f0347d31d93c0aa691d9e1b192ca98dda2ae22bc7d04c00f15efc3f5f498b8"
+      },
+      "node": "v22.22.3",
+      "browser": "153.0.8010.12",
+      "browserChannel": "chromium",
+      "chromiumSandbox": false,
+      "scope": "Synthetic fixtures; three loopback HTTP servers; no authenticated/cloud execution.",
+      "origins": {
+        "appOrigin": "http://127.0.0.1:35871",
+        "executionOrigin": "http://127.0.0.1:33075",
+        "collectorOrigin": "http://127.0.0.1:38683"
+      },
+      "frameSha256": "e7242ff855f2f85028811c8f210d4b2b27f7683c2e8d51cbb0afb8a84c6c53ca",
+      "frameResponse": {
+        "status": 200,
+        "headers": {
+          "cache-control": "public, max-age=31536000, immutable",
+          "content-security-policy": "default-src 'none'; script-src 'unsafe-inline' blob:; style-src 'unsafe-inline' blob:; img-src blob: data:; media-src blob:; font-src blob:; connect-src 'none'; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors http://127.0.0.1:35871; sandbox allow-scripts",
+          "content-type": "text/html; charset=utf-8",
+          "cross-origin-resource-policy": "cross-origin",
+          "permissions-policy": "camera=(), microphone=(), geolocation=(), usb=(), storage-access=()",
+          "referrer-policy": "no-referrer",
+          "x-content-type-options": "nosniff"
+        }
+      },
+      "cases": [
+        {
+          "id": "self-href",
+          "packageIdentity": "20341d68fb51ea096ba352c84db40162e261820471ae0638b46f231120f504d9",
+          "filesSha256": "a8d6115dab90a656d13624bb050d2973d0a4e57e1b1d254df476e44bbfb5bf8a",
+          "canarySha256": "dd8b7b5a82b10831159c2a44bbec99983036b16701c135911f14d5151ef14ad4",
+          "result": "egress-observed"
+        },
+        {
+          "id": "self-assign",
+          "packageIdentity": "c6dc0a0df2dda746db5362785af9b150922c034e9d017841a04ebaca94ce1aae",
+          "filesSha256": "21e71918cd6a05391cd80684c0429931aede369685e8ad5572ea6e21e083eac5",
+          "canarySha256": "bf78703a5c5b39bb1a700f60d849a067bf594a0478fdc167245929bdb996cb66",
+          "result": "egress-observed"
+        },
+        {
+          "id": "self-replace",
+          "packageIdentity": "2cb1d8d91e40e5496e8f9f7ed311ae7bd719673690baf17c5e718b3d245e3d91",
+          "filesSha256": "7c4e50c6aca11d623f7469c9ccb94b52caccb4d28c838c80c341e8453cfe0773",
+          "canarySha256": "3d4bdb10c17dc7095869251b6bf38f64bdd63673f11704ef7bc1b10e74e7903f",
+          "result": "egress-observed"
+        }
+      ],
+      "received": [
+        {
+          "at": "2026-10-15T11:07:39.298Z",
+          "method": "GET",
+          "url": "/control?case=collector-positive-control",
+          "headers": {
+            "host": "127.0.0.1:38683",
+            "connection": "keep-alive",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "node",
+            "accept-encoding": "gzip, deflate"
+          },
+          "remoteAddress": "127.0.0.1"
+        },
+        {
+          "at": "2026-10-15T11:07:39.641Z",
+          "method": "GET",
+          "url": "/escape?case=self-href&secret=SYNTHETIC_PROJECT_TEXT_66efb9d2-b65c-4c80-a8ad-d0fd7ddfca17",
+          "headers": {
+            "host": "127.0.0.1:38683",
+            "connection": "keep-alive",
+            "sec-ch-ua": "\"Chromium\";v=\"153\", \"Not_A Brand\";v=\"8\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"Linux\"",
+            "upgrade-insecure-requests": "1",
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "sec-fetch-site": "cross-site",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-dest": "iframe",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "accept-language": "en-US,en;q=0.9"
+          },
+          "remoteAddress": "127.0.0.1"
+        },
+        {
+          "at": "2026-10-15T11:07:39.796Z",
+          "method": "GET",
+          "url": "/escape?case=self-assign&secret=SYNTHETIC_PROJECT_TEXT_dd97eacd-3245-4111-8e5b-9733e4caf44f",
+          "headers": {
+            "host": "127.0.0.1:38683",
+            "connection": "keep-alive",
+            "sec-ch-ua": "\"Chromium\";v=\"153\", \"Not_A Brand\";v=\"8\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"Linux\"",
+            "upgrade-insecure-requests": "1",
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "sec-fetch-site": "cross-site",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-dest": "iframe",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "accept-language": "en-US,en;q=0.9"
+          },
+          "remoteAddress": "127.0.0.1"
+        },
+        {
+          "at": "2026-10-15T11:07:39.954Z",
+          "method": "GET",
+          "url": "/escape?case=self-replace&secret=SYNTHETIC_PROJECT_TEXT_c1655400-f59a-4cd8-b923-94dcc0f9a764",
+          "headers": {
+            "host": "127.0.0.1:38683",
+            "connection": "keep-alive",
+            "sec-ch-ua": "\"Chromium\";v=\"153\", \"Not_A Brand\";v=\"8\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"Linux\"",
+            "upgrade-insecure-requests": "1",
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "sec-fetch-site": "cross-site",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-dest": "iframe",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "accept-language": "en-US,en;q=0.9"
+          },
+          "remoteAddress": "127.0.0.1"
+        }
+      ],
+      "requests": [
+        {
+          "case": "self-href",
+          "url": "http://127.0.0.1:35871/",
+          "method": "GET"
+        },
+        {
+          "case": "self-href",
+          "url": "http://127.0.0.1:35871/project-views.js",
+          "method": "GET"
+        },
+        {
+          "case": "self-href",
+          "url": "http://127.0.0.1:35871/i18n.js",
+          "method": "GET"
+        },
+        {
+          "case": "self-href",
+          "url": "http://127.0.0.1:35871/i18n-bindings.js",
+          "method": "GET"
+        },
+        {
+          "case": "self-href",
+          "url": "http://127.0.0.1:35871/api/workspaces/workspace-a/project-views",
+          "method": "GET"
+        },
+        {
+          "case": "self-href",
+          "url": "http://127.0.0.1:33075/project-views/e7242ff855f2f85028811c8f210d4b2b27f7683c2e8d51cbb0afb8a84c6c53ca/frame.html",
+          "method": "GET"
+        },
+        {
+          "case": "self-href",
+          "url": "blob:null/0ed3f6c9-e107-4ba5-9d8e-25aa14d18b35",
+          "method": "GET"
+        },
+        {
+          "case": "self-href",
+          "url": "blob:null/c78b17a1-ef3e-4f13-b717-7146a2709454",
+          "method": "GET"
+        },
+        {
+          "case": "self-href",
+          "url": "blob:null/76e10d56-fbed-41dc-9c77-36f6aa4d71f1",
+          "method": "GET"
+        },
+        {
+          "case": "self-href",
+          "url": "http://127.0.0.1:35871/api/workspaces/workspace-a/project-views?identity=20341d68fb51ea096ba352c84db40162e261820471ae0638b46f231120f504d9",
+          "method": "GET"
+        },
+        {
+          "case": "self-href",
+          "url": "http://127.0.0.1:38683/escape?case=self-href&secret=SYNTHETIC_PROJECT_TEXT_66efb9d2-b65c-4c80-a8ad-d0fd7ddfca17",
+          "method": "GET"
+        },
+        {
+          "case": "self-assign",
+          "url": "http://127.0.0.1:35871/",
+          "method": "GET"
+        },
+        {
+          "case": "self-assign",
+          "url": "http://127.0.0.1:35871/project-views.js",
+          "method": "GET"
+        },
+        {
+          "case": "self-assign",
+          "url": "http://127.0.0.1:35871/i18n.js",
+          "method": "GET"
+        },
+        {
+          "case": "self-assign",
+          "url": "http://127.0.0.1:35871/i18n-bindings.js",
+          "method": "GET"
+        },
+        {
+          "case": "self-assign",
+          "url": "http://127.0.0.1:35871/api/workspaces/workspace-a/project-views",
+          "method": "GET"
+        },
+        {
+          "case": "self-assign",
+          "url": "http://127.0.0.1:33075/project-views/e7242ff855f2f85028811c8f210d4b2b27f7683c2e8d51cbb0afb8a84c6c53ca/frame.html",
+          "method": "GET"
+        },
+        {
+          "case": "self-assign",
+          "url": "blob:null/aa04ce11-df75-4c1b-85a4-f846dc69f441",
+          "method": "GET"
+        },
+        {
+          "case": "self-assign",
+          "url": "blob:null/95bbb5a5-f867-4ea6-9ada-4e295c3e58bf",
+          "method": "GET"
+        },
+        {
+          "case": "self-assign",
+          "url": "blob:null/87883d24-2b32-43ff-b26f-f3f754e5b1fb",
+          "method": "GET"
+        },
+        {
+          "case": "self-assign",
+          "url": "http://127.0.0.1:35871/api/workspaces/workspace-a/project-views?identity=c6dc0a0df2dda746db5362785af9b150922c034e9d017841a04ebaca94ce1aae",
+          "method": "GET"
+        },
+        {
+          "case": "self-assign",
+          "url": "http://127.0.0.1:38683/escape?case=self-assign&secret=SYNTHETIC_PROJECT_TEXT_dd97eacd-3245-4111-8e5b-9733e4caf44f",
+          "method": "GET"
+        },
+        {
+          "case": "self-replace",
+          "url": "http://127.0.0.1:35871/",
+          "method": "GET"
+        },
+        {
+          "case": "self-replace",
+          "url": "http://127.0.0.1:35871/project-views.js",
+          "method": "GET"
+        },
+        {
+          "case": "self-replace",
+          "url": "http://127.0.0.1:35871/i18n.js",
+          "method": "GET"
+        },
+        {
+          "case": "self-replace",
+          "url": "http://127.0.0.1:35871/i18n-bindings.js",
+          "method": "GET"
+        },
+        {
+          "case": "self-replace",
+          "url": "http://127.0.0.1:35871/api/workspaces/workspace-a/project-views",
+          "method": "GET"
+        },
+        {
+          "case": "self-replace",
+          "url": "http://127.0.0.1:33075/project-views/e7242ff855f2f85028811c8f210d4b2b27f7683c2e8d51cbb0afb8a84c6c53ca/frame.html",
+          "method": "GET"
+        },
+        {
+          "case": "self-replace",
+          "url": "blob:null/b4317d72-f87e-4fc8-8cd0-72663e9d7bb8",
+          "method": "GET"
+        },
+        {
+          "case": "self-replace",
+          "url": "blob:null/acf68175-d6fb-44c8-b6c7-6a443c26fb47",
+          "method": "GET"
+        },
+        {
+          "case": "self-replace",
+          "url": "blob:null/7c5ce1ff-bbd5-47f1-9529-fd4f30541bfd",
+          "method": "GET"
+        },
+        {
+          "case": "self-replace",
+          "url": "http://127.0.0.1:35871/api/workspaces/workspace-a/project-views?identity=2cb1d8d91e40e5496e8f9f7ed311ae7bd719673690baf17c5e718b3d245e3d91",
+          "method": "GET"
+        },
+        {
+          "case": "self-replace",
+          "url": "http://127.0.0.1:38683/escape?case=self-replace&secret=SYNTHETIC_PROJECT_TEXT_c1655400-f59a-4cd8-b923-94dcc0f9a764",
+          "method": "GET"
+        }
+      ],
+      "browserErrors": [],
+      "knownP1Reproduced": true,
+      "matrixComplete": true,
+      "productionEligible": false,
+      "result": "egress-observed",
+      "interpretation": "Exit 0 confirms all three known self-navigation cases reproduced the defect, never successful isolation. Any received canary keeps P1 open. Absence within 5 seconds does not prove network isolation."
+    },
+    "prototype-preflight.json": {
+      "schema": "riffology.offline-view-prototype/v1",
+      "operationId": "4885b6f6-7e47-4995-8144-c2546dfa48f5",
+      "containerName": "riffoid-view-4885b6f6-7e47-4995-8144-c2546dfa48f5",
+      "startedAt": "2026-10-15T11:07:40.165Z",
+      "productionEligible": false,
+      "userUiEligible": false,
+      "frameValidation": "png-header-only",
+      "status": "blocked",
+      "runAttempted": false,
+      "cleanupConfirmed": true,
+      "image": null,
+      "cloudCalls": 0,
+      "scope": "Synthetic offline Docker experiment; no credentials, user projects, mounts or published ports",
+      "uncovered": [
+        "full PNG decode/chunk/CRC validation",
+        "real project package/broker",
+        "session ownership and revocation",
+        "web image/input UI",
+        "latency and accessibility",
+        "cloud resource lifecycle",
+        "host/kernel compromise"
+      ],
+      "reason": "explicit-local-image-digest-required",
+      "cleanup": {
+        "confirmed": true,
+        "proof": "never-attempted"
+      },
+      "finishedAt": "2026-10-15T11:07:40.166Z"
+    }
+  },
+  "baselineFailure": {
+    "file": "tests/m3/simulation-preparation-workerd.test.mjs",
+    "line": 47,
+    "assertion": "released expected false, actual true after lost release ACK",
+    "suite": "M3 main test group",
+    "passed": 975,
+    "failed": 1,
+    "skipped": 12,
+    "interpretation": "Original full invocation failed; diagnostic/fix evidence must be separate. Later check stages not reached."
+  },
+  "networkProbe": {
+    "image": "sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+    "result": {
+      "schema": "riffology.local-container-network-probe/v1",
+      "node": "v22.23.2",
+      "interfaces": [
+        {
+          "name": "lo",
+          "family": "IPv4",
+          "internal": true
+        },
+        {
+          "name": "lo",
+          "family": "IPv6",
+          "internal": true
+        }
+      ],
+      "routeLines": 1,
+      "connect": "ENETUNREACH",
+      "passed": true,
+      "browserValidated": false,
+      "productionEligible": false
+    },
+    "exit": 0,
+    "remainingContainerIds": [],
+    "browserValidated": false,
+    "scope": "Existing local Node image, no network, read-only rootfs, non-root, no capabilities; no Chromium/image acceptance.",
+    "probeSource": "import {networkInterfaces} from 'node:os';\nimport {readFile} from 'node:fs/promises';\nimport {createConnection} from 'node:net';\nconst interfaces=Object.entries(networkInterfaces()).flatMap(([name,addresses])=>addresses.map(a=>({name,family:a.family,internal:a.internal})));\nconst routes=await readFile('/proc/net/route','utf8');\nconst connect=await new Promise(resolve=>{const s=createConnection({host:'198.18.0.1',port:9});s.setTimeout(1000);s.once('connect',()=>{s.destroy();resolve('connected');});s.once('error',e=>resolve(e.code));s.once('timeout',()=>{s.destroy();resolve('timeout');});});\nconst passed=interfaces.every(a=>a.internal)&&routes.trim().split('\\n').length===1&&['ENETUNREACH','EHOSTUNREACH'].includes(connect);\nconsole.log(JSON.stringify({schema:'riffology.local-container-network-probe/v1',node:process.version,interfaces,routeLines:routes.trim().split('\\n').length,connect,passed,browserValidated:false,productionEligible:false}));\nif(!passed)process.exitCode=1;\n"
+  },
+  "interpretation": "Navigation exit 0 reproduces the unresolved iframe defect. prototype_missing_image exit 1 is expected blocked preflight. Neither proves isolated browser acceptance. Runner exit 0 does not override individual check exits.",
+  "ackLossDiagnostic": {
+    "testOnlyFixCommit": "eaf93973fd7e5f68d94b50c69884ae3d700bab32",
+    "exit": 0,
+    "passed": 1,
+    "failed": 0,
+    "testSha256": "a263a37ce0e2af6bf42a0a9f431d075b4db6370aa66ba7e43d9c4f4e28aaae82",
+    "logSha256": "0868120f8f21c2ce05cf3167914fd515fc2f31b1a115aa13e1097d1c4a921fad",
+    "scope": "One corrected test in diagnostic path, production code unchanged; original full check remains failed, no full rerun claimed."
+  },
+  "prototypeRealNegative": {
+    "exit": 1,
+    "evidence": {
+      "schema": "riffology.offline-view-prototype/v1",
+      "operationId": "58da7784-74b4-4272-a8e9-f654024cbb1c",
+      "containerName": "riffoid-view-58da7784-74b4-4272-a8e9-f654024cbb1c",
+      "startedAt": "2026-10-15T11:12:44.488Z",
+      "productionEligible": false,
+      "userUiEligible": false,
+      "frameValidation": "png-header-only",
+      "status": "blocked",
+      "runAttempted": true,
+      "cleanupConfirmed": true,
+      "image": "sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+      "cloudCalls": 0,
+      "scope": "Synthetic offline Docker experiment; no credentials, user projects, mounts or published ports",
+      "uncovered": [
+        "full PNG decode/chunk/CRC validation",
+        "real project package/broker",
+        "session ownership and revocation",
+        "web image/input UI",
+        "latency and accessibility",
+        "cloud resource lifecycle",
+        "host/kernel compromise"
+      ],
+      "fixtureSha256": "cd0e6dcd77771e88f79a6aaabe496666a5a2ad268f28c539e2c90908be4d5625",
+      "processExit": 1,
+      "reason": "container-or-browser-experiment-failed",
+      "containerId": "647211fece8917ccaefdedc3cb508154c91b64bdba2baaf18c03501b552d9ff1",
+      "cleanup": {
+        "confirmed": true,
+        "proof": "verified-original-id-removed"
+      },
+      "finishedAt": "2026-10-15T11:12:45.092Z"
+    },
+    "scope": "Existing Node image intentionally lacks browser contract. Actual Docker run failed closed and verified original ID cleanup; no browser isolation acceptance."
+  },
+  "localIntegration": {
+    "fullCheckCodeCommit": "73d923b9cd9ff10ab4180736990e46937e2d48fd",
+    "fullCheckExit": 0,
+    "uiPass": 21,
+    "m0Pass": 353,
+    "m0Skip": 1,
+    "m1Pass": 549,
+    "m2Pass": 985,
+    "m3Pass": 1105,
+    "m3Skip": 12,
+    "issue73Pass": 30,
+    "researchQualityPass": 8,
+    "fullCheckLogSha256": "5047f0d1a4b7a2e303f8f3eb9a98964d0c3225ac9a1194b184e1982e6ef16903",
+    "postFullCheckChanges": {
+      "prototypeCleanup": "11/11 local and included in AMD128 32/32",
+      "ackFixture": "1/1 local and AMD128; production code unchanged"
+    },
+    "finalCodeCommit": "eaf93973fd7e5f68d94b50c69884ae3d700bab32",
+    "finalCodeTree": "57f3eb1ed7cec34f9204ac84d37b4f798cd27436",
+    "changedSourceSha256": {
+      "docs/evidence/issue221-managed-explicit-resources-local-20261015.json": "6a20daee7f12644e444830a065ce3ffec58a477aee04d561cf4ff3f96e155848",
+      "docs/project-view-offline-prototype-20261015.md": "8e1c630da3240bb5bb5ff795c6d5877298d4367715ceba9cea30534970c8b2a5",
+      "scripts/m3/project-view-navigation-repro.mjs": "210507a64d0e6514a10e73786dece6c49c90fba16de2324dfd0bcebe32ded244",
+      "scripts/m3/project-view-offline-prototype.mjs": "7dfe2f852b6ef22d774a2ea823e71a7607f9fabff339d311d383507de1b0e4f5",
+      "services/browser-preview/execution/index.ts": "88f0347d31d93c0aa691d9e1b192ca98dda2ae22bc7d04c00f15efc3f5f498b8",
+      "services/turn-runtime/managed-adapter.ts": "e3906c1ba74d0e341cfcffd84f896dec65ea3c0eb8a01c3c393415ba4d6886fc",
+      "services/turn-runtime/managed-candidate-v3.ts": "11919c4aa86c9a739e8dfc4494081976dfc618828e880d40c713bba53b9f42d7",
+      "services/turn-runtime/managed-product.ts": "303fabce0081606b44fe4c82ac3b0f1ce1afe6deeef58d29ecc9d827254f1ca5",
+      "services/turn-runtime/managed-resources.ts": "89a5d9d1a170dc881d187e313e8dceaad880ebe85811ca0a9268ac816b118ca9",
+      "services/turn-runtime/managed-sdk-transport.ts": "10e41c331b3d93175f21abd80a8828dd0d3529040a5e0dfab91a59a8b0c38e2f",
+      "services/turn-runtime/managed-testing-instructions.ts": "90f2b764fc05e639426868b6f33631388820c6cc96dd16479908ffc54d9b7f03",
+      "tests/m2/managed-candidate-v3.test.ts": "f75f9796370ba6796c6d8b03d757f91b25d0a74d043fa61c3a4f3edb4155a2a2",
+      "tests/m2/managed-product.test.ts": "319064eccc06140defc49eff4dd33f4e76f7d6f0f1731e787709609bb65aad4b",
+      "tests/m2/managed-resources.test.ts": "251692dd77ff96a404a1f3d7175752d1edf944d8b6925d758267bedc653687c3",
+      "tests/m3/project-view-offline-prototype.test.mjs": "5a18bc646ff690cd99047d9c2e68c3e754c25dc0cf15a40bb83714768aff9094",
+      "tests/m3/project-views-gateway.test.ts": "0ec5fc26a524e6c9d406a271b55b6b3187f791ea60048361b087a01b14023e46",
+      "tests/m3/project-views.test.mjs": "5ccabe796883d78d0f61476cf0ee4890758c4851d69e6ecca11338093f686234",
+      "tests/m3/simulation-preparation-workerd.test.mjs": "a263a37ce0e2af6bf42a0a9f431d075b4db6370aa66ba7e43d9c4f4e28aaae82"
+    },
+    "fullCheckOnFinalHead": false
+  }
+}

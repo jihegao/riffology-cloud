@@ -58,6 +58,9 @@ export function toolArtifactReferenceReceipt(value:unknown):ToolArtifactReferenc
   return {schemaVersion:1,artifactId:toolArtifactId(input.artifactId),kind:input.kind as ToolArtifactReferenceKind,referenceId:turnId(input.referenceId),retainedAt:positive(input.retainedAt),releasedAt:input.releasedAt===null?null:positive(input.releasedAt)};
 }
 export interface ToolArtifactStoreRpc{
+  // Separate optional read projection: older test/runtime adapters fail closed.
+  projectList?(scope:TurnScope,cursor:string|null):Promise<{items:ToolArtifactReceipt[];nextCursor:string|null;version:string}>;
+  projectRead?(scope:TurnScope,artifactId:string):Promise<{receipt:ToolArtifactReceipt;content:Uint8Array}>;
   materialize(input:ToolArtifactInput):Promise<{intent:ToolArtifactIntent;receipt:ToolArtifactReceipt}>;
   reconcile(identity:ToolArtifactIdentity,intent:ToolArtifactIntent):Promise<ToolArtifactReceipt|null>;
   read(scope:TurnScope,artifactId:string):Promise<{receipt:ToolArtifactReceipt;content:Uint8Array}>;

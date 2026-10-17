@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile,mkdir} from 'node:fs/promises';
 import {chromium} from 'playwright';
-const names=['artifact-views.js','simulation.js','i18n.js','i18n-bindings.js','locale-preference.js','workspace.css','styles.css'];
+const names=['artifact-views.js','simulation.js','project-views.js','project-view-remote.js','i18n.js','i18n-bindings.js','locale-preference.js','workspace.css','styles.css'];
 const assets=Object.fromEntries(await Promise.all(names.map(async name=>[name,await readFile(new URL('../../services/web/'+name,import.meta.url),'utf8')])));
 async function fixture(t){
  const browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||'chrome'});t.after(()=>browser.close());const page=await browser.newPage({viewport:{width:1024,height:800}});

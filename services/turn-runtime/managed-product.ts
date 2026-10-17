@@ -1,4 +1,6 @@
 import {managedTestingInstructions} from './managed-testing-instructions.ts';
+import {projectResourcesFromArchive} from '../project-resources/archive.ts';
+import {managedInput as validateManagedInput} from './managed-adapter.ts';
 import {DurableObject} from 'cloudflare:workers';
 import type {TurnRuntimePort,TurnRuntimeReceipt} from '../turn/dispatcher.ts';
 import {sameScope,turnDigest,turnId,turnBaseCheckpoints,actor as validateActor,message as validateMessage,type TurnScope,type TurnActor,type CheckpointReceipt} from '../turn/protocol.ts';
@@ -87,6 +89,16 @@ export class ManagedProductRuntime extends DurableObject<ManagedProductEnv> impl
   if(input.base.initial)return (await store.resolveInitial(input.base.initial.reference,input.scope)).filesArchive;
   throw new ManagedCandidateError('managed-candidate-invalid','candidate.json','files','base-unavailable');
  }
+ async #projectResources(input:Accepted){
+  if(!input.base.workspace&&!input.base.initial)return undefined;
+  const bytes=await this.#baseFiles(input);
+  if(input.base.workspace){
+   const prior=this.#rows().find(r=>r.checkpoint&&JSON.stringify(r.checkpoint)===JSON.stringify(input.base.workspace));
+   if(!prior?.checkpoint)throw Error('managed-resource-base-unavailable');
+   return projectResourcesFromArchive({kind:'saved-turn',identity:identityOf(prior.input),revision:prior.checkpoint},bytes);
+  }
+  return projectResourcesFromArchive({kind:'initial-workspace',reference:input.base.initial!.reference,filesSha256:input.base.initial!.filesSha256},bytes);
+ }
  #previous(input:Accepted,exclude?:string){
   const rows=this.#rows().filter(r=>r.input.sessionId===input.sessionId&&r.reserved&&r.input.turnId!==exclude);
   if(!rows.length){if(input.base.session)throw Error('managed-session-base-unavailable');return undefined;}
@@ -173,7 +185,12 @@ export class ManagedProductRuntime extends DurableObject<ManagedProductEnv> impl
   const budget=this.#currentBudget(identity.scope,input.actor);await this.#recoverTesting(budget);this.#checkAdmission(budget);if(this.#rows().some(r=>!sameScope(r.input.scope,identity.scope)))throw Error('managed-project-scope-denied');
   const previous=this.#previous(input);
   if(!previous||previous.closed){const paid=this.#rows().filter(r=>r.reserved),policy=this.#currentBudget(identity.scope,input.actor).policy;if((policy.maxSessions!==null&&paid.filter(r=>r.operation==='create').length>=policy.maxSessions)||paid.some(r=>!r.closed))throw Error('managed-session-limit-or-cleanup-pending');}
-  const managedInput:ManagedInput={identity,actor:input.actor,message:input.message,base:input.base};
+  // Freeze the claimed baseline before reservation/POST. Continuations receive
+  // this Turn's resources; recovery uses the exact persisted original input.
+  const projectResources=await this.#projectResources(input);
+  this.#currentBudget(identity.scope,input.actor);
+  if(this.ctx.storage.kv.get(`cancel-before-accept:${identity.turnId}`))throw Error('managed-cancelled-before-accept');
+  const managedInput:ManagedInput=validateManagedInput({identity,actor:input.actor,message:input.message,base:input.base,...(projectResources?{projectResources}:{})});
   const row:RecordState={input,managedInput,inputAttempted:false,reserved:false,operation:null,observation:null,checkpoint:null,persistenceError:null,closed:false,cleanupRequested:false,cost:null,cancelRequested:false,receipt:null};
   if(previous)row.previousTurnId=previous.input.turnId;
   if(previous?.closed)row.recoveryContext=await this.#recoveryContext(previous,input);

@@ -1,3 +1,4 @@
+import type {ProjectResources,ResourceProvenance} from '../project-resources/text.mjs';
 import type {
   AgentSession, AgentSessionEventListener, AgentToolResult, AgentToolUpdateCallback,
   ModelRuntime, ResourceLoader, SessionManager, ToolDefinition,
@@ -16,6 +17,7 @@ export interface PiCheckpoint {
   createdAt: string;
   entries: ReturnType<SessionManager['getEntries']>;
   leafId: string | null;
+  resources?: ResourceProvenance|null;
 }
 export interface ProjectToolCall {
   scope: SessionScope;
@@ -45,6 +47,7 @@ export interface ControlledPiOptions {
   }): Record<string, unknown> | Promise<Record<string, unknown>>;
   systemPrompt: string;
   fixedSkills?: FixedPlatformSkill[];
+  projectResources?: ProjectResources;
   bridge?: {
     definitions: Array<Pick<ToolDefinition, 'name' | 'label' | 'description' | 'parameters'>>;
     execute(call: ProjectToolCall): Promise<AgentToolResult<unknown>>;
@@ -61,6 +64,7 @@ export interface ControlledPiSession {
     allowedModels: AllowedModel[];
     tools: string[];
     extensions: number;
+    resources: unknown;
     systemPrompt: string;
     messages: AgentSession['state']['messages'];
     active: boolean;
@@ -74,7 +78,11 @@ export interface ControlledPiSession {
 }
 export declare function createControlledPiSession(options: ControlledPiOptions): Promise<ControlledPiSession>;
 export declare class ControlledResourceLoader implements ResourceLoader {
-  constructor(options: { systemPrompt: string; fixedSkills?: FixedPlatformSkill[] });
+  constructor(options: { systemPrompt: string; fixedSkills?: FixedPlatformSkill[]; projectResources?: ProjectResources; scope?: SessionScope });
+  restoreResourceProvenance(raw: unknown, scope: SessionScope): void;
+  resourceProvenance(): ResourceProvenance|null;
+  loadProjectResource(path: string): string;
+  expandProjectCommand(text: string): string;
   getExtensions: ResourceLoader['getExtensions'];
   getSkills: ResourceLoader['getSkills'];
   getPrompts: ResourceLoader['getPrompts'];

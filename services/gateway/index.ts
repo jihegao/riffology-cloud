@@ -1,3 +1,4 @@
+import {createGatewayProjectViewServices} from './project-view-services.ts';
 import {ProjectArchives} from '../catalog/project-archives.ts';
 import {createGatewayProjectArchives} from './project-archive-services.ts';
 import {invitedRunsPolicy} from '../simulation/invited-policy.ts';
@@ -110,7 +111,7 @@ const gatewayHandler={
     if(url.pathname.startsWith('/browser-preview-assets/')){if(!env.ASSETS)return json({error:'assets_not_configured'},503);const asset=await serveBrowserPreviewAppAsset(request,env.ASSETS);return asset??json({error:'not_found'},404);}
     if(!url.pathname.startsWith('/api/')){
       if(request.method!=='GET'&&request.method!=='HEAD')return json({error:'not_found'},404);
-      if(!['/','/index.html','/app.js','/artifact-views.js','/i18n.js','/i18n-bindings.js','/locale-preference.js','/project-status.js','/layout.js','/services.js','/previews.js','/browser-preview.js','/verify-handoff.js','/simulation.js','/comparison.js','/local-runs.js','/export.js','/publication.js','/evidence.js','/evidence.css','/styles.css','/workspace.css','/admin','/admin.html','/admin.js','/admin.css'].includes(url.pathname))return json({error:'not_found'},404);
+      if(!['/','/index.html','/app.js','/artifact-views.js','/project-views.js','/project-view-remote.js','/i18n.js','/i18n-bindings.js','/locale-preference.js','/project-status.js','/layout.js','/services.js','/previews.js','/browser-preview.js','/verify-handoff.js','/simulation.js','/comparison.js','/local-runs.js','/export.js','/publication.js','/evidence.js','/evidence.css','/styles.css','/workspace.css','/admin','/admin.html','/admin.js','/admin.css'].includes(url.pathname))return json({error:'not_found'},404);
       if(!env.ASSETS)return json({error:'assets_not_configured'},503);
       const assetRequest=['/admin','/'].includes(url.pathname)
         ? new Request(new URL(url.pathname==='/'?'/index.html':'/admin.html',url),{method:request.method,headers:request.headers})
@@ -161,7 +162,7 @@ const gatewayHandler={
       provision:async(principal,tenantId,projectId)=>{
         const item=await new ProvisioningCatalog(database).kickProject(principal,tenantId,projectId);
         if(item)await dispatch(env,item);
-      },projectArchives:createGatewayProjectArchives(new ProjectArchives(database),env.WORKSPACE_AGENT),publications:createGatewayPublications(env),publicationArtifacts:new R2PublicationArtifacts(env.WORKSPACE_CHECKPOINTS),researchExports:createGatewayResearchExports(env),g5ReadonlyReads:createGatewayG5ReadonlyReads(env),simulations:createGatewaySimulationServices(env),browserPreviews:createGatewayBrowserPreviewServices(env),turns:createGatewayTurnServices({...env,M2_TURN_RUNTIME_CONFIGURED:Boolean(typeof env.PRODUCT_TURN_RUNTIME?.getByName==='function'&&typeof env.TRUSTED_PI_CAPACITY?.getByName==='function'&&typeof env.TOOL_ARTIFACT_STORE?.getByName==='function')}),serviceRuns:createGatewayServiceServices(env),previews:createGatewayPreviewServices(env,database),observations:createGatewayObserverServices(env),identity:async req=>{
+      },projectArchives:createGatewayProjectArchives(new ProjectArchives(database),env.WORKSPACE_AGENT),publications:createGatewayPublications(env),publicationArtifacts:new R2PublicationArtifacts(env.WORKSPACE_CHECKPOINTS),researchExports:createGatewayResearchExports(env),g5ReadonlyReads:createGatewayG5ReadonlyReads(env),projectViews:createGatewayProjectViewServices(env),simulations:createGatewaySimulationServices(env),browserPreviews:createGatewayBrowserPreviewServices(env),turns:createGatewayTurnServices({...env,M2_TURN_RUNTIME_CONFIGURED:Boolean(typeof env.PRODUCT_TURN_RUNTIME?.getByName==='function'&&typeof env.TRUSTED_PI_CAPACITY?.getByName==='function'&&typeof env.TOOL_ARTIFACT_STORE?.getByName==='function')}),serviceRuns:createGatewayServiceServices(env),previews:createGatewayPreviewServices(env,database),observations:createGatewayObserverServices(env),identity:async req=>{
       const value=await auth.api.getSession({headers:req.headers,query:{disableCookieCache:true}});
       return sessionIdentity(value);
     }});

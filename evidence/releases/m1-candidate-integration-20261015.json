@@ -1,0 +1,230 @@
+{
+  "schema": "riffology.m1-candidate-integration/v1",
+  "dateUtc": "2026-10-15T10:19:32.479997+00:00",
+  "remoteCodeCommit": "eb81a2e43a3cccd3a2673dc56b0281f927693373",
+  "codeTree": "4c25c2cc3013315e374411cbc8e47eb6b6eb9a5e",
+  "localEquivalentCommit": "0a0bdd0",
+  "sourceSha256": {
+    ".dockerignore": "f1c103191040513d3491d106eab76f21fd6e87f22fa17a07cb8cda8b84d8dc35",
+    "Dockerfile.trusted-pi.cloud": "0396a2770edf3e50f558ff41c0cbd2889db82b8c07c630fe66b3be06b3b4b077",
+    "Dockerfile.trusted-pi.vertical": "adadca2cb2c0b589d530efbf0fb429124cca5985db5cea2f87e034321edeb72f",
+    "docs/project-resources-candidate-20261015.md": "b3f6b6b752b4bcb6fb5b24d050f94c4ab8a9d2741a1bc94f2a1b1a12524b0302",
+    "docs/project-view-isolation-decision-20261015.md": "4f84d0abf603200327f5b857135baaf03992d9d401335719660d76abab4bba8e",
+    "docs/project-views-local-contract-20261015.md": "b260f3cc236e3bd6cd9890cec4156c590ae0e8b67f0771b0e9ea0491e78a4460",
+    "package.json": "718c8a7e5b39ef72d2c0945994b4f45bdc16fc1a05f7c15d78915724f66d159e",
+    "scripts/i18n-check.mjs": "fe8b6fa916b428ddfa6de3df85f40d241bf07395166d227ce1b96ecd268cd292",
+    "scripts/m3/project-view-navigation-repro.mjs": "1f1b7d6e3561a608f9c6a5eb93f4202c653391e9742de806348993b0d3b9ba33",
+    "services/artifacts/durable.ts": "0db8dc1559b9f7aaf3dbd8e3333889bdd6558c7628b696a7eb619ea3a1a0898f",
+    "services/artifacts/protocol.ts": "de7c3963e1fac695c42223be901462a37e80dbc8ae5e8b4c96e9e92012e58cd9",
+    "services/browser-preview/execution/index.ts": "8a932bc2d8ecb20fba3712b8a9b2c150e2cd8fb896254a62de568063500cb093",
+    "services/gateway/app.ts": "d123c5b9fe8ec55a6b7316dfbd2d9dd606b75b69ad555cfbd4636794b666adaa",
+    "services/gateway/index.ts": "5e20fe6514d9fe3d959c1db3354ec76680421cc695340b8c7c9bbbaed25ba4d1",
+    "services/gateway/project-view-services.ts": "e1c1e2fb7fc1772f22859f510d6233f05b0312202e3eaad063ae7af303dc571a",
+    "services/project-resources/archive.ts": "5b84101c50f20a1558de0e6f7fcb04b843d4dcaa687c1c11f169b38e07adffd0",
+    "services/project-resources/text.d.mts": "a4881fb65ea6b7f3b7334d44f76935593c4d6a5fc182438d507299e569a62772",
+    "services/project-resources/text.mjs": "9f7f3266549f04a0a8214e6e725ea9d85030532364f136487833e9cc45af303e",
+    "services/project-views/artifacts.ts": "196c854492d958795e77adc357d37fd66aaf1b276db7d069ea388ddd4032fccf",
+    "services/project-views/frame.d.mts": "0d6b2b532f17fd123e01e3c5ea6be24e8a0f8a53af7d3df4e9c4b14a68490ced",
+    "services/project-views/frame.mjs": "fd07c57ad44a8330fc780ab3c284a64e1b43a6e61d83ab7f8ad3db2e135297e9",
+    "services/project-views/package.ts": "77564459960edf40c1c420df62304bd2869eb23be42b14e75bba9697e18d6c7d",
+    "services/runtime/controlled-pi.d.mts": "464790b9a27297c20091bc2578036a1fcd8d523af977b2109ab1cf860366da35",
+    "services/runtime/controlled-pi.mjs": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871",
+    "services/simulation/research-context.ts": "2420562926850ea90e982c1b2392b24f01dc6cf212f6a250984f6e2d7e631aae",
+    "services/simulation/source.ts": "71db4d09fa1fac0c45f62b9ff7fec0484a016b63a8373d5d2eb60527cfe02b14",
+    "services/tools/http.ts": "97454d64f03a4eed832affc427b3fec136d46c096cb8fa79420d9c6beb0dbb62",
+    "services/trusted-pi/release-candidate.mjs": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07",
+    "services/trusted-pi/research-context.mjs": "938e89155a5d5e0c405f51db5d973a4db264e63d96e308aff8da93caaaa05076",
+    "services/turn-runtime/pi-native.ts": "e11862434a1e52816efd26805c7bac4754c9100dc8567d1db05583fd5c3e8fe2",
+    "services/web/app.js": "27300ad1d22155bfb9d1751e056b22a2648287f7efabd1b85ae7b467826bbb17",
+    "services/web/artifact-views.js": "2dbb9a15cc5ed772d3a2304dbd531ca0508a2d0d783f0f9c4809b99b777d93bb",
+    "services/web/i18n.js": "f6b283dc4fe2912ee2c09791ef5fcf1bd50976e5c3e7eadcf2e204c547e0185c",
+    "services/web/project-views.js": "bdf99707b80e3e84272e272e0af6b096fd578135ade3f47bbdafcb87ee893d91",
+    "services/web/simulation.js": "f18f4182feff6816187ab6781f781017de4954a23be21d1eae31ad1e0b31374d",
+    "services/workspace/durable.ts": "c39e8a0c9b74509e44c10bb0fd0c5f10aee5840a6094ba321126ea54988d372e",
+    "tests/m0/pi/controlled-pi.test.mjs": "c4b249e7254e5228ab02eb1c3c001ff3f70e11fd662dc85965fb51532c7e053b",
+    "tests/m1/web.test.mjs": "59d5f2908e8dcd414e1df1bcef7a179cd13616c82fffda40a680efc68ae4c68e",
+    "tests/m2/project-resources.test.mjs": "453222f790b85217bb9c1d81da9426473ba0dd62ae3ed3fe1413032dd7619627",
+    "tests/m2/tool-artifact-store-workerd.test.mjs": "af7bf229ebb84be1670bdd992117c58a6bb36fa965c37962c6f533414bfdc676",
+    "tests/m2/trusted-pi-native.test.ts": "5498dca5b269734a61ac80ccbf99f7437a9043c30e561a4de62e9bf76e6c5068",
+    "tests/m2/trusted-pi-release-candidate.test.mjs": "063e81f746021996d9784094f7ff0a49081fcf24968d2f7f8e367618f68dead5",
+    "tests/m3/artifact-views.test.mjs": "cf34ab1b3b4d4cc7512f53b833f4f567a57c208663ae56eee888213eef1a25f8",
+    "tests/m3/browser-preview-generation.test.mjs": "81879a126caa9aa197aa4809621adfcf1ea21a47c5cdea7e8994c2ee425793d9",
+    "tests/m3/invited-runs-ui.test.mjs": "e118ce2d4628a69b35cf26f69e25d205cd0bb2bc4f39ac4c9ee2e9c3759dd69c",
+    "tests/m3/local-runs-ui.test.mjs": "25f740a481040c44dbb858c6c89417d7a42b574b9061d4c7b055dfc3419f5fb4",
+    "tests/m3/project-view-artifact-commit.test.ts": "8b8d56ceed8d7f2c0b07fbffdb53711314aaed55dd88864d51a1f809d8a37cb1",
+    "tests/m3/project-view-artifact-fixture.mjs": "8ac215c036d418b3d061be66a87d5a30f1129fbcd811d38c80953b77b656c8f3",
+    "tests/m3/project-views-browser.test.mjs": "dbe193d099590c57422a4c8d249d2c42534b999eeafbd658d8123c157bc51fca",
+    "tests/m3/project-views-fixture.mjs": "3d7a53af429e3b1da2f5d61598837d82b615762cd84458b165e8f436eae9898d",
+    "tests/m3/project-views-gateway.test.ts": "23a6d79b3c88065b517a2b3298656107481f530261ae2e07855f41c3d1843156",
+    "tests/m3/project-views.test.mjs": "c3d7a99599400ae42f072d6b5426a726a123af2036edc1c114228de7bc73ba53",
+    "tests/m3/simulation-ui.test.mjs": "6aa3d078d1a3e079b9e1f066083eeb91aa700dadcef80126433a0340403049d7",
+    "tests/m3/workspace-layout.test.mjs": "da63b00004607c373c3eb2c6950d31340df55f9e4739a8a901044c2fcb593998"
+  },
+  "environment": {
+    "node": "v26.10.0",
+    "browser": "Chromium 153.0.8010.12",
+    "host": "macOS ARM64",
+    "dependencies": "existing workspace node_modules symlink; npm ci not rerun",
+    "openssl": "OpenSSL 3 path used for test process",
+    "assetPreparation": "README three preparation commands exit 0; upstream assets copied from local cache and hash verified by preparation script"
+  },
+  "checks": {
+    "completeExit": 0,
+    "uiPass": 21,
+    "m0Pass": 353,
+    "m0Skip": 1,
+    "m1Pass": 549,
+    "m2Pass": 970,
+    "m3Pass": 1101,
+    "m3Skip": 12,
+    "issue73Pass": 30,
+    "researchQualityPass": 8,
+    "focusedPass": 26,
+    "focusedFail": 0,
+    "typecheck": "pass",
+    "diffCheck": "pass"
+  },
+  "logSha256": {
+    "complete": "7338c1bea52c2e2022d1aeb61a326f80e64efd2d5af9ff25ed1a6b731b27937b",
+    "focused": "bc336c975b9bfc5f0c1996657dc450214b851e9a5fe4dff893fe5ba347e931a5",
+    "initialIncompleteEnvironment": "2902307847e947c20b9d2f6916b7115a42ee60e3aa6b2642c06b4494c1055fd9",
+    "initialBrokenReproduction": "94f6819c9cc309462119cb86f9e2d5da6210c125423c79bab04fd238c85ea6db"
+  },
+  "initialFailures": "Initial full check lacked .local. Initial sandboxed browser run failed/hung. Initial reproduction omitted i18n module; fixed allowlist and added boot wait. Those attempts are not success evidence.",
+  "navigation": {
+    "schema": "riffoid.project-view-navigation-reproduction/v1",
+    "startedAt": "2026-10-15T10:12:44.554Z",
+    "finishedAt": "2026-10-15T10:12:44.970Z",
+    "gitHeadAtExecution": "fbc0e46bde2c8781b71609fa4524d2e75bffaf99",
+    "sourceDigests": {
+      "services/project-views/frame.mjs": "fd07c57ad44a8330fc780ab3c284a64e1b43a6e61d83ab7f8ad3db2e135297e9",
+      "services/web/project-views.js": "bdf99707b80e3e84272e272e0af6b096fd578135ade3f47bbdafcb87ee893d91",
+      "services/project-views/package.ts": "77564459960edf40c1c420df62304bd2869eb23be42b14e75bba9697e18d6c7d",
+      "services/browser-preview/execution/index.ts": "8a932bc2d8ecb20fba3712b8a9b2c150e2cd8fb896254a62de568063500cb093"
+    },
+    "node": "v26.10.0",
+    "browser": "153.0.8010.12",
+    "browserChannel": "chromium",
+    "chromiumSandbox": false,
+    "scope": "Synthetic fixtures; three loopback HTTP servers; no authenticated/cloud execution.",
+    "origins": {
+      "appOrigin": "http://127.0.0.1:58232",
+      "executionOrigin": "http://127.0.0.1:58233",
+      "collectorOrigin": "http://127.0.0.1:58228"
+    },
+    "frameSha256": "e7242ff855f2f85028811c8f210d4b2b27f7683c2e8d51cbb0afb8a84c6c53ca",
+    "frameResponse": {
+      "status": 200,
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable",
+        "content-security-policy": "default-src 'none'; script-src 'unsafe-inline' blob:; style-src 'unsafe-inline' blob:; img-src blob: data:; media-src blob:; font-src blob:; connect-src 'none'; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors http://127.0.0.1:58232; sandbox allow-scripts",
+        "content-type": "text/html; charset=utf-8",
+        "cross-origin-resource-policy": "cross-origin",
+        "permissions-policy": "camera=(), microphone=(), geolocation=(), usb=(), storage-access=()",
+        "referrer-policy": "no-referrer",
+        "x-content-type-options": "nosniff"
+      }
+    },
+    "packageIdentity": "18bb07653046d1e276ff035f7f0dab80721b4541fb15a2821b3d58980a3dbb9c",
+    "canarySha256": "ee157afc31a6ac2b876b292e0f465cf188171898a989ce64fd19929d330bdff4",
+    "received": [
+      {
+        "at": "2026-10-15T10:12:44.563Z",
+        "method": "GET",
+        "url": "/control?case=collector-positive-control",
+        "headers": {
+          "host": "127.0.0.1:58228",
+          "connection": "keep-alive",
+          "accept": "*/*",
+          "accept-language": "*",
+          "sec-fetch-mode": "cors",
+          "user-agent": "node",
+          "accept-encoding": "gzip, deflate"
+        },
+        "remoteAddress": "127.0.0.1"
+      },
+      {
+        "at": "2026-10-15T10:12:44.949Z",
+        "method": "GET",
+        "url": "/escape?case=self-href&secret=SYNTHETIC_PROJECT_TEXT_f4368b18-c460-4d2a-9e5d-baa5955a6861",
+        "headers": {
+          "host": "127.0.0.1:58228",
+          "connection": "keep-alive",
+          "sec-ch-ua": "\"Chromium\";v=\"153\", \"Not_A Brand\";v=\"8\"",
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": "\"macOS\"",
+          "upgrade-insecure-requests": "1",
+          "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+          "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+          "sec-fetch-site": "cross-site",
+          "sec-fetch-mode": "navigate",
+          "sec-fetch-dest": "iframe",
+          "accept-encoding": "gzip, deflate, br, zstd",
+          "accept-language": "en-US,en;q=0.9"
+        },
+        "remoteAddress": "127.0.0.1"
+      }
+    ],
+    "requests": [
+      {
+        "url": "http://127.0.0.1:58232/",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:58232/project-views.js",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:58232/i18n.js",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:58232/i18n-bindings.js",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:58232/api/workspaces/workspace-a/project-views",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:58233/project-views/e7242ff855f2f85028811c8f210d4b2b27f7683c2e8d51cbb0afb8a84c6c53ca/frame.html",
+        "method": "GET"
+      },
+      {
+        "url": "blob:null/c51b1857-4306-40bd-ac11-c557a6e65050",
+        "method": "GET"
+      },
+      {
+        "url": "blob:null/8394c032-aa5f-4cdf-8052-af4182f7f66b",
+        "method": "GET"
+      },
+      {
+        "url": "blob:null/fdf3e3cd-2497-4045-a230-c53ca2d94958",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:58232/api/workspaces/workspace-a/project-views?identity=18bb07653046d1e276ff035f7f0dab80721b4541fb15a2821b3d58980a3dbb9c",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:58228/escape?case=self-href&secret=SYNTHETIC_PROJECT_TEXT_f4368b18-c460-4d2a-9e5d-baa5955a6861",
+        "method": "GET"
+      }
+    ],
+    "browserErrors": [],
+    "knownP1Reproduced": true,
+    "productionEligible": false,
+    "result": "egress-observed",
+    "interpretation": "Exit 0 confirms reproduction of the known defect, never successful isolation. Absence within 5 seconds does not prove network isolation."
+  },
+  "identityNote": "Tests started on an uncommitted independent snapshot based on fbc0e46; code content was unchanged during complete check. Remote/local code trees compared equal. Navigation JSON preserves actual HEAD at execution; source digests bind tested content, not its then-current HEAD.",
+  "coverageLimits": [
+    "No AMD128 result",
+    "No production deployment or authenticated acceptance",
+    "No paid provider execution",
+    "No Docker image build",
+    "Managed skills not wired",
+    "Known navigation egress persists; production entry disabled",
+    "Browser process sandbox not enabled by fixture; OS/network isolation not proven"
+  ]
+}

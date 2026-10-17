@@ -14,6 +14,7 @@ export function createViewTabs(root,section){
   body.setAttribute('aria-labelledby',`${root.id||section}-${section}-${selected}-tab`);
   for(const node of body.children)node.hidden=!view.nodes.includes(node);
   root.dataset.selectedView=selected;
+  for(const candidate of views)candidate.onActive?.(candidate.id===selected);
   if(remember)try{doc.defaultView.sessionStorage.setItem(key,JSON.stringify({identity,id:selected}));}catch{}
  }
  nav.addEventListener('keydown',event=>{

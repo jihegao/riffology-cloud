@@ -2,7 +2,7 @@ FROM docker.io/cloudflare/sandbox:0.12.9-python@sha256:f3c089b1bbb9dd85eeca09e20
 
 USER root
 RUN groupadd -g 10002 trustedpi && useradd -u 10002 -g 10002 -M -s /usr/sbin/nologin trustedpi \
-    && mkdir -p /opt/riffology/runtime /opt/riffology/trusted-pi /var/lib/riffology/pi /var/lib/riffology/turns /var/lib/riffology/runtime-control \
+    && mkdir -p /opt/riffology/project-resources /opt/riffology/runtime /opt/riffology/trusted-pi /var/lib/riffology/pi /var/lib/riffology/turns /var/lib/riffology/runtime-control \
     && chown -R root:root /opt/riffology /var/lib/riffology \
     && chmod 0755 /opt/riffology /opt/riffology/runtime /opt/riffology/trusted-pi /var/lib/riffology /var/lib/riffology/pi \
     && chown trustedpi:trustedpi /var/lib/riffology/pi /var/lib/riffology/turns \
@@ -13,6 +13,8 @@ RUN cd /opt/riffology \
     && npm ci --omit=dev --ignore-scripts \
     && npm cache clean --force
 
+COPY --chown=root:root --chmod=0444 services/browser-preview/runtime/sha256.mjs /opt/riffology/browser-preview/runtime/sha256.mjs
+COPY --chown=root:root --chmod=0444 services/project-resources/text.mjs /opt/riffology/project-resources/text.mjs
 COPY --chown=root:root --chmod=0444 services/runtime/controlled-pi.mjs /opt/riffology/runtime/controlled-pi.mjs
 COPY --chown=root:root --chmod=0555 services/trusted-pi/trusted-pi-turn-host.mjs /opt/riffology/trusted-pi/trusted-pi-turn-host.mjs
 COPY --chown=root:root --chmod=0444 services/trusted-pi/product-model-transport.mjs /opt/riffology/trusted-pi/product-model-transport.mjs

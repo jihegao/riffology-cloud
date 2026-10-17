@@ -1,3 +1,4 @@
+import {createProjectViewsPanel} from './project-views.js';
 import {createViewTabs,artifactView} from './artifact-views.js';
 import {msg,t,uiError,errorMessage,cloudRunError,historicalRunError,formatNumber} from './i18n.js';
 import {bindValue,bindAttribute} from './i18n-bindings.js';
@@ -68,13 +69,15 @@ function modelView(model, experiments, rawOpen, toggleRaw) {
 function createSimulationPanel({root,api,modelRoot=null,historyRoot=null,runsRoot=null,onModel,localRuns=null}) {
   if(!root||typeof api!=='function')throw Error('invalid-simulation-panel');
   let context=null,model=null,experiments=[],pending=null,loading=false,message='',timer=null,posting=false,generation=0,readEpoch=0,draft={},seedValue=42,draftDirty=false,rawOpen=false,lastAgentDraft=null;
+  const projectPagesRoot=root.ownerDocument.createElement('section');projectPagesRoot.className='project-pages';
+  const projectPages=createProjectViewsPanel({root:projectPagesRoot,api});let pagesContext=null;
   const modelTabs=modelRoot?createViewTabs(modelRoot,'model'):null;
   const runNodes=runsRoot?[...runsRoot.children]:[],runTabs=runsRoot?createViewTabs(runsRoot,'runs'):null;
   function displayViews(description){
     const artifacts=model?.artifacts,views=artifacts?.manifest.views??[],identity=artifacts?.filesSha256??model?.version?.filesSha256??'';
     if(artifacts&&!model.spec)description.append(element('p',msg('model.savedVersion',{p0:artifacts.revisionId??msg('model.initial')}),'model-version'),element('p',msg('views.designSaved'),'meta'));
     if(model?.artifactReasonCode)description.append(element('p',msg('views.invalid'),'model-warning'));
-    modelTabs?.update([{id:'_overview',title:msg('views.overview'),nodes:[description]},...views.filter(v=>v.section==='model').map(v=>({id:v.id,title:v.title,nodes:[artifactView(root.ownerDocument,v,artifacts)]}))],context,identity);
+    modelTabs?.update([{id:'_overview',title:msg('views.overview'),nodes:[description,projectPagesRoot],onActive:value=>projectPages.setActive(value)},...views.filter(v=>v.section==='model').map(v=>({id:v.id,title:v.title,nodes:[artifactView(root.ownerDocument,v,artifacts)]}))],context,identity);
     if(runTabs){
       const metrics=element('section');metrics.append(element('h2',msg('views.metrics')),element('p',msg('views.runBoundary'),'meta'));
       for(const run of experiments){const entry=element('article');entry.append(element('p',msg('experiment.record',{p0:t('run.status.'+run.status,{},run.status),p1:run.runId,p2:run.stale?msg('experiment.stale'):'',p3:run.version?.revisionId??msg('model.initialVersion'),p4:run.seed,p5:JSON.stringify(run.parameters)})),element('pre',JSON.stringify(run.result?.metrics??{},null,2)));if(run.evidenceRejection)entry.append(element('p',msg('experiment.rejected',{p0:run.evidenceRejection.reason}),'model-warning'));if(run.errorCode)entry.append(element('p',historicalRunError(run.errorCode,run.status),'model-warning'));if(run.releasePending||TERMINAL.has(run.status)&&run.released===false)entry.append(element('p',msg('run.releasePending'),'meta'));metrics.append(entry);}
@@ -104,7 +107,9 @@ function createSimulationPanel({root,api,modelRoot=null,historyRoot=null,runsRoo
     const valid=()=>token===generation&&current===context&&epoch===readEpoch;
     try{const [m,e]=await Promise.all([api(path('/model')),api(path('/experiments'))]);if(!valid())return;
       const changed=model?.version&&(model.version.filesSha256!==m.version?.filesSha256||model.version.specSha256!==m.version?.specSha256);
-      model=m;onModel?.(m);experiments=(e?.items||[]).map(publicExperiment).filter(Boolean);
+      model=m;onModel?.(m);
+      if(m.projectViews?.declared){if(pagesContext!==current){pagesContext=current;await projectPages.enter(current);}else await projectPages.reload();if(!valid())return;}else{projectPages.leave();pagesContext=null;projectPagesRoot.hidden=true;}
+      experiments=(e?.items||[]).map(publicExperiment).filter(Boolean);
       if(pending?.body){draft={...(pending.body.parameters||{})};seedValue=Number.isSafeInteger(pending.body.seed)?pending.body.seed:42;}
       else if(changed){draft={};draftDirty=false;seedValue=42;}
       else if(!draftDirty&&experiments[0]&&experiments[0].version?.filesSha256===m.version?.filesSha256){draft={...(experiments[0].parameters||{})};seedValue=Number.isSafeInteger(experiments[0].seed)?experiments[0].seed:42;}
@@ -126,7 +131,7 @@ function createSimulationPanel({root,api,modelRoot=null,historyRoot=null,runsRoo
   async function submit(form){if(pending)return submitPending();if(loading||posting||!model?.version||(execution==='cloud'&&!model.canRun))return;const parameters={};for(const item of params(model.spec)){const field=form.get(item.id);if(item.type==='boolean')parameters[item.id]=field!==null;else if(item.type==='integer'||item.type==='number')parameters[item.id]=Number(field);else parameters[item.id]=field;}if(!Number.isSafeInteger(seedValue)||seedValue<0||seedValue>4294967295||Object.values(parameters).some(value=>typeof value==='number'&&!Number.isFinite(value))){message=msg('experiment.invalidInput');render();return;}if(execution==='local'){const token=generation;try{await localRuns.execute('single',model,{parameters,seed:seedValue});}catch(error){if(token===generation)message=errorMessage(error);}finally{if(token===generation)render();}return;}pending={key:crypto.randomUUID(),body:{revisionId:model.version.revisionId,filesSha256:model.version.filesSha256,specSha256:model.version.specSha256,parameters,seed:seedValue}};if(!savePending(pending)){pending=null;message=msg('run.storageFailed');render();return;}await submitPending();}
   async function cancelRun(runId){const token=generation,current=context;try{await api(`/api/workspaces/${encodeURIComponent(current.workspaceId)}/simulation-runs/${encodeURIComponent(runId)}/cancel`,{method:'POST',body:'{}'});if(token===generation&&current===context)await load();}catch(error){if(token===generation&&current===context){message=cloudRunError(error)||msg('experiment.stopUnconfirmed');render();}}}
   async function enter(value){leave();if(!value||!id(value.tenantId)||!id(value.workspaceId))throw Error('invalid-simulation-context');context=value;generation++;pending=readPending();execution=pending?'cloud':localRuns?'local':'cloud';render();await load();}
-  function leave(){generation++;clearTimeout(timer);timer=null;posting=false;context=null;model=null;experiments=[];pending=null;draft={};seedValue=42;draftDirty=false;rawOpen=false;lastAgentDraft=null;root.replaceChildren();modelRoot?.replaceChildren();historyRoot?.replaceChildren();}
+  function leave(){projectPages.leave();pagesContext=null;generation++;clearTimeout(timer);timer=null;posting=false;context=null;model=null;experiments=[];pending=null;draft={};seedValue=42;draftDirty=false;rawOpen=false;lastAgentDraft=null;root.replaceChildren();modelRoot?.replaceChildren();historyRoot?.replaceChildren();}
   return {enter,leave,reload:load};
 }
 export {createSimulationPanel};

@@ -1,5 +1,37 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-16 Scope split: isolated pages remain Draft
+
+[Local deterministic provider proposal](local-provider-acceptance-plan-20261016.md) is review-only; no fixture execution is authorized by this split.
+
+Manual-save implementation, migration0013, journal schema9 and user-upload artifact support have moved out of #221 into the separate `codex/manual-save-draft-20261016` review branch, stacked on #221. #221 retains the manual-save design document only. Historical [manual candidate evidence](../evidence/releases/manual-save-candidate-20261015.json) and [real invited progress/failure](../evidence/releases/project-view-real-invited-progress-20261016.json) identify their original combined source; they do not certify this reduced candidate.
+
+Real Google operator invitation, ordinary-user activation, blank project creation and initialization cleanup succeeded on the combined candidate. Its first manual save persisted immutable content but failed publication because of the RPC receipt lifetime symbol; its original journal/fence remain pending. The repaired manual implementation is reviewed separately. Do not boot the reduced schema7 code against that schema9 acceptance state or clear/replay its pending operation.
+
+Goal 1 still lacks exact-candidate page/broker, second-identity/cross-project denial, revocation/browser cleanup and invited nine-egress acceptance. Without manual save, the ordinary content-writing path still requires a model Turn, which is not authorized for Goal 1. The user authorized preparing a deterministic local provider-stub plan for review, not running it. This dependency requires resolution before claiming exact-HEAD acceptance; a combined-branch test is not evidence for the reduced #221 alone. Production remains disabled and ineligible; no undraft, merge or deployment. Preview retirement (#64/#141/#144/#150) and Observer/WebGL (#218) remain separate.
+
+## 2026-10-15 Generic pages: real package/broker isolated-host integration passed
+
+PR #221 now replaces the application iframe with a PNG canvas client and a local isolated Chromium host. The canonical package, original authorized broker and real MessageChannels are connected. AMD128 verified file/artifact reads, canvas rendering, click/keyboard/fractional-wheel input, page switching, revocation cleanup and nine failed egress attempts with collector positive controls. Original-ID cleanup is confirmed; no labeled containers remain. [Implementation and reproduction](project-view-isolated-host-20261015.md) · [exact-source evidence](../evidence/releases/project-view-isolated-host-20261015.json).
+
+Full local `npm run check` exited 0 (3,077 Node passes, 13 skips, 8 Python passes); final worker/host checks 11/11. This supersedes the earlier synthetic-only integration gap below. Production dual-loopback gates remain closed, the old local generic-frame endpoint returns 410, and no deployment/provider/cloud-compute calls occurred. Draft review and production authenticated/cloud acceptance remain outstanding; #214/JHG-46 are not Done.
+
+
+
+## 2026-10-15 AMD128 isolated Chromium: local synthetic chain passed
+
+[PR #221](https://github.com/jihegao/riffology-cloud/pull/221) now includes an actual offline browser chain and reviewed per-container seccomp policy. Chromium153 / Playwright1.63 on AMD128 passed rendering, trusted mouse/keyboard input, nine real page network attempts blocked, host collector positive controls, actual Docker config inspection and exact-ID cleanup. An intentional SIGTERM also confirmed cleanup. [Versioned evidence](../evidence/releases/amd128-isolated-chromium-20261015.json) retains failed setup attempts and scope limits. Static/injected checks13/13 passed; no new full-suite or production claim.
+
+Production generic pages remain disabled. This validates the synthetic isolated-browser boundary; it does not replace the current iframe in the product or deliver real package/broker, user transport, revocation, image decoding or cloud lifecycle. No deployment/provider/paid execution occurred. PR remains draft and #214/JHG-46 remain blocked on production integration and acceptance.
+
+## 2026-10-15 Draft #221: project resources and isolation repair candidate
+
+[PR #221](https://github.com/jihegao/riffology-cloud/pull/221) is an unpublished-runtime candidate: no merge, deployment or authenticated/paid acceptance. Trusted Pi resources now have a Managed explicit-command counterpart, frozen into the original input digest with bounded resource-text saving. This is not autonomous model-side lazy loading or full Pi backend equivalence.
+
+Repair commit `73d923b9cd9ff10ab4180736990e46937e2d48fd` passed the complete local check (13 skipped): UI 21, M0 353, M1 549, M2 985, M3 1105, issue73 30 and research-quality 8. The execution worker's generic-page gate now requires both app and execution origins to be loopback, matching Gateway's independent check. Three synthetic navigation cases still reproduce the original iframe egress defect; production page delivery remains disabled.
+
+The user approved preserving arbitrary JS and developing an offline isolated-browser prototype, without deployment or cloud charges. [Prototype scope](project-view-offline-prototype-20261015.md) separates its local launcher/fixtures from real browser-image, container-policy and production acceptance. The original October 20 target requires reassessment after evidence; no replacement date is promised. AMD128 independently checked the repair tree: Managed 188 and pages/prototype 32 passed. Its original full baseline invocation failed one release-ACK observation race; a fixture-only correction passed individually on both hosts, without rewriting the failed full invocation. The prototype cleanup follow-up passed 11 injected tests and a real failed-container cleanup; the native network-only probe passed, but no isolated Chromium acceptance is claimed. [Final evidence](../evidence/releases/m1-repair-amd128-20261015.json) separates each tested version.
+
 ## 2026-10-14 Main integration deployed: candidate design, unchanged answers and section views
 
 Main `eba528f7b101a67f32565e4aac74a0d4154a7dec` is deployed to [app.riffoid.com](https://app.riffoid.com): Gateway `d9ceec61-1e5f-48cc-8a51-3abdb4b06614` and Entry `5869db28-cb18-4bcc-8e2a-7364e8c888ce`, both at 100%. PRs #169 → #170 → #173 reconcile the current Beta deadline, branding and signed domain source; #198 design/answer/subtabs and #200/#203 receipt/reviewed-copy fixes are all retained. #204 adds acceptance evidence without changing production code.
