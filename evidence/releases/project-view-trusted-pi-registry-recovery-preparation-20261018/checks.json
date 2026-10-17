@@ -1,0 +1,26 @@
+{
+  "endedAt": "2026-10-17T16:13:52.416753+00:00",
+  "exitCode": 0,
+  "fixtureChecks": 16,
+  "localFakeOnly": true,
+  "operationsManifestSha256": "3779af353a82fa334fc805a54ff02fe91a2f905d2cc9daf4733b1fd92189589c",
+  "realApiCalls": 0,
+  "realCredentialReads": 0,
+  "realDockerCommands": 0,
+  "realSshCommands": 0,
+  "realWranglerCommands": 0,
+  "schema": "trusted-pi-registry-recovery-local-fake/v1",
+  "startedAt": "2026-10-17T16:13:52.336584+00:00",
+  "streams": {
+    "stderr": {
+      "bytes": 115,
+      "sha256": "12be2192df9700849283d9dfb1068e1a3ad6cc14b2021e7ef6c118c48871eb47"
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "testSource": "test_recovery.py",
+  "testSourceSha256": "a68cdfc227160b43e9243e0a0d2c901ee11cbcac2b3068c7bcabcfeae70a5800"
+}

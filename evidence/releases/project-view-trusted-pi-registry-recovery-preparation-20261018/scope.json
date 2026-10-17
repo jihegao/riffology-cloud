@@ -1,0 +1,137 @@
+{
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "archiveMaximumBytes": 4294967296,
+  "canonicalPr": 239,
+  "canonicalPrHead": "0d23a12d869abccb9515a8e7f8196b0266258226",
+  "decompressedLayerMaximumTotalBytes": 4294967296,
+  "excluded": [
+    "new-export",
+    "build",
+    "pull",
+    "load",
+    "container-create-start-or-rm",
+    "merge-pr239",
+    "application-rollout",
+    "Cloudflare-application-Gateway-policy-or-binding-write",
+    "provider-call",
+    "project-create-save",
+    "Turn",
+    "Run",
+    "automatic-retry-or-rollback",
+    "other-token-connector-or-account-fallback",
+    "default-all-scope-login",
+    "new-subscription-or-autopay-change"
+  ],
+  "expectedBlobCount": 52,
+  "expectedConfig": {
+    "digest": "sha256:07c199e17490cc4fdf3e8027770f8a7413090d4e7c3a1f44aa9064e115641059",
+    "mediaType": "application/vnd.oci.image.config.v1+json",
+    "size": 18775
+  },
+  "expectedPlatformManifest": {
+    "digest": "sha256:f18a826d40b2fd60e2cf8c49d7f7b8f595fa609fe2be4c28593479ae846960ea",
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "size": 9396
+  },
+  "expectedRootfsLayerCount": 48,
+  "expectedUserIdSha256": "c8d5e2a134d99693a4585510f761b811d67b3e36c413eb3c9d34d060cccc986d",
+  "newCredential": {
+    "credentialTransport": "SSH stdin only",
+    "deletionIsNotRevocation": true,
+    "expirationMinutes": 15,
+    "naturalTtlMinutes": 15,
+    "oauthTransferred": false,
+    "permissions": [
+      "push",
+      "pull"
+    ],
+    "repositoryScoped": false,
+    "successHttpStatuses": [
+      200,
+      201
+    ]
+  },
+  "oauthPolicy": {
+    "additionalScope": "containers:write",
+    "additionalScopeMeaning": "account Containers write capability; not repository-scoped",
+    "automaticOauthRevocationOrFiveScopeDowngrade": false,
+    "callbackHost": "localhost",
+    "callbackPort": 8976,
+    "cliContainersWriteIsNotRestRequirementProof": true,
+    "cliGlobalArguments": [
+      "--env-file",
+      "/dev/null"
+    ],
+    "consentAttempts": 1,
+    "doesNotGuarantee403Resolution": true,
+    "expectedScopes": [
+      "user:read",
+      "offline_access",
+      "account:read",
+      "workers:write",
+      "workers_scripts:write",
+      "containers:write"
+    ],
+    "explicitEmptyDotenvInput": "/dev/null",
+    "loginScopeArguments": [
+      "user:read",
+      "account:read",
+      "workers:write",
+      "workers_scripts:write",
+      "containers:write"
+    ],
+    "noOtherCredentialOrConnectorFallback": true,
+    "nodeExecutable": "/opt/homebrew/bin/node",
+    "oauthDoesNotExpireWithRegistryJwt": true,
+    "oauthGrantIsPersistent": true,
+    "oauthResourceLimitClaim": "No explicit account/repository resource filter in normal OAuth scope request; executor pins target user/account/repository.",
+    "offlineAccessAutomaticallyAppended": true,
+    "permissionRefusal": "stop-no-retry-no-fallback",
+    "sameSixScopeNormalRenewalAllowed": true,
+    "tokenOutput": "memory only; normal default-profile auth token --json; never persisted or forwarded",
+    "transport": "direct-supported-REST-after-explicit-installed-Wrangler-consent",
+    "wranglerCliPath": "/Users/jihegao/apps/riffology-cloud/node_modules/wrangler/wrangler-dist/cli.js",
+    "wranglerCliSha256": "0a7bc2107ca92b2cc6db58b6a36d38d44b549eebd7db7ec34c36db9da7a91264",
+    "wranglerDiskLogs": false,
+    "wranglerVersion": "4.129.0",
+    "writeLogsEnv": "WRANGLER_WRITE_LOGS=false"
+  },
+  "operations": [
+    "one-explicit-same-user-account-six-scope-oauth-consent",
+    "readonly-existing-original-archive-and-full-oci-graph-diffids-verify",
+    "fixed-original-image-inspect",
+    "fixed-linux-amd64-image-push-once",
+    "raw-registry-manifest-config-all-layers-readback",
+    "original-temporary-registry-credential-and-forward-process-cleanup",
+    "independent-cleanup-readback"
+  ],
+  "parentRequestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "platform": "linux/amd64",
+  "recipient": "AMD128",
+  "registry": "registry.cloudflare.com",
+  "remoteDirectory": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-registry-recovery-v1",
+  "repository": "8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi",
+  "requestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "reviewOnly": true,
+  "route": {
+    "forwardAgent": false,
+    "localExistingProxy": "127.0.0.1:7892",
+    "newRouteCount": 1,
+    "remoteBind": "127.0.0.1:7897"
+  },
+  "schema": "trusted-pi-registry-recovery-scope/v1",
+  "sourceArchive": {
+    "bytes": 407955456,
+    "originalRequestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+    "path": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-image-publication-v1/original.oci.tar",
+    "readOnly": true,
+    "sha256": "83b81e553a9c4e885299650c31cd179e126168c4da50b2dfd3ed1d8ffe5e0b51"
+  },
+  "sourceDescriptor": {
+    "digest": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "size": 856
+  },
+  "sourceImageId": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+  "tag": "jhg46-pi-resource-compat-20261017-a946b164"
+}

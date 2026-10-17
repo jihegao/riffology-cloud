@@ -1,0 +1,100 @@
+{
+  "actualOAuthCredentialSshDockerApiCallsDuringPreparation": 0,
+  "files": {
+    "AUTHORIZATION.md": {
+      "bytes": 4146,
+      "sha256": "f67952e07405e13a5d92e45f27bf60b9d1e28efdeeed2b3bcfa121b355f982c1"
+    },
+    "EXECUTION.md": {
+      "bytes": 4695,
+      "sha256": "6748153859e55b6ab3a9822e0b2a02518c1db3b2106deaef63f83d020f7dcf8e"
+    },
+    "README.md": {
+      "bytes": 2066,
+      "sha256": "6c074a16aa56be5f4abdff85e2e51ecf524e8293f57c27b4028f99ef22655bad"
+    },
+    "checks.json": {
+      "bytes": 848,
+      "sha256": "7d05dc9f3d145aa755b0fff72d810754b73be63016c8519604611bce3d521f31"
+    },
+    "checks.stderr": {
+      "bytes": 115,
+      "sha256": "12be2192df9700849283d9dfb1068e1a3ad6cc14b2021e7ef6c118c48871eb47"
+    },
+    "checks.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "current-main-reconciliation.json": {
+      "bytes": 3657,
+      "sha256": "155be62303b0c0b90f2bbd6df0493ce2b972f58cc296d0322f5abb3a04a26509"
+    },
+    "duplicate244-resolution.json": {
+      "bytes": 639,
+      "sha256": "a90c38dd7595e46619865972f6c4c9b48093c1bb2c2ee4dcbf5556c795865533"
+    },
+    "independent-cleanup-readonly.py": {
+      "bytes": 9057,
+      "sha256": "3fe998b9a38a48f445e03ea16431fc0b71cfa98973707d1819427ddd1929e70d"
+    },
+    "independent-reader-checks.json": {
+      "bytes": 857,
+      "sha256": "78a87886ae5c4755c81b384f1e3830446ff8a990adeb4f2d521a567c17d14190"
+    },
+    "independent-reader-checks.stderr": {
+      "bytes": 105,
+      "sha256": "896778449a9e01573f59972127df4bdc6c456d1bb3c50ee583288f3cbbbe92b3"
+    },
+    "independent-reader-checks.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "independent-review.json": {
+      "bytes": 8426,
+      "sha256": "69738f55f61ba5b9bb11de16034320f1d8f75ce3b48748b91faf4f9ae9c3db0f"
+    },
+    "local-recovery.py": {
+      "bytes": 19223,
+      "sha256": "dd50c217aa6cbbe7a6312d985f7d7d80655dd8d90188d535032bcbd612352e04"
+    },
+    "oci_verify.py": {
+      "bytes": 5748,
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    "operations-manifest.json": {
+      "bytes": 1313,
+      "sha256": "3779af353a82fa334fc805a54ff02fe91a2f905d2cc9daf4733b1fd92189589c"
+    },
+    "parent-normal-login-identity-safe.json": {
+      "bytes": 396,
+      "sha256": "691a6aca3f28abb1f8b0762d0e16e3fc857906b0ac6a17fa0e2bfb9d1c2da1d4"
+    },
+    "pub_common.py": {
+      "bytes": 3291,
+      "sha256": "24ecc1a238a2fd6d71e36087e75a1ce56c24e6be6184220074feed11cc842d0c"
+    },
+    "remote-recovery.py": {
+      "bytes": 13818,
+      "sha256": "339aa74fd246024886ca243526bd097d39be16150719a3b117474a7fcad6a178"
+    },
+    "scope.json": {
+      "bytes": 5078,
+      "sha256": "550c3ccae4e342e5684066c38f33bb0a68f64917c5f68a48151a94efd195eac8"
+    },
+    "test_independent_reader.py": {
+      "bytes": 6568,
+      "sha256": "1ccd6830166f0f2cc8447ad34b066659364c18a5d78e282b414777dfb4914eb4"
+    },
+    "test_recovery.py": {
+      "bytes": 16307,
+      "sha256": "a68cdfc227160b43e9243e0a0d2c901ee11cbcac2b3068c7bcabcfeae70a5800"
+    }
+  },
+  "operationSourceBytes": 72306,
+  "operationSourceCount": 8,
+  "originalArchiveIncluded": false,
+  "requestId": "9ec39434-0856-4ee7-af30-adf3dd5b5df4",
+  "schema": "jhg46-registry-recovery-public-input-inventory/v1",
+  "secretOrHumanGrantIncluded": false,
+  "status": "preparation-only-new-human-grant-required"
+}
