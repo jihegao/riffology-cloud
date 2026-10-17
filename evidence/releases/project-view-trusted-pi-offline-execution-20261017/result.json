@@ -1,0 +1,724 @@
+{
+  "schema": "project-view-trusted-pi-offline-execution/v1",
+  "draft": false,
+  "recordedAt": "2026-10-17T12:24:23.757440+00:00",
+  "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+  "status": "image-built-first-mock-failed-and-original-container-cleaned",
+  "authorization": {
+    "authority": "direct-human-instruction-recorded-by-root",
+    "packetCommit": "f74de9912c0970c1880cc6e2e35bee13cb670659",
+    "archiveBytes": 30515,
+    "archiveSha256": "c92e672ca39d10d61467801f457147e3ee9cf2cfbbbe8b96d00a618a6a208bae",
+    "operationsManifestSha256": "05100f4a7c8aa2448b289d1525498dbd10542612873630e6b1cfd980dbb87512",
+    "recipient": "AMD128",
+    "remoteDirectory": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-resource-compat-v1",
+    "grantFileSha256": "d241c2ee9c47a8f3327ab4220f3d845f24777e036aa450f3f542e4776b53e0f1",
+    "scope": "exact packet transfer; one task-owned loopback reverse route; local same-account OAuth one 15min pull-only credential POST and protected SSH stdin; one fixed-base pull; one network-none build and one original-CID network-none mock probe with cleanup",
+    "excluded": [
+      "registry push",
+      "Cloudflare app/gate update",
+      "real provider/model/Turn/Run",
+      "new subscription",
+      "OAuth export",
+      "automatic retry or new identity after unknown"
+    ],
+    "rawGrantOrCredentialIncluded": false
+  },
+  "transfer": {
+    "firstAttempt": {
+      "startedAt": "2026-10-17T11:45:05.974567+00:00",
+      "endedAt": "2026-10-17T11:45:11.132052+00:00",
+      "exitCode": 1,
+      "result": "known-terminal-prefix-shape-gate-failure",
+      "classificationAuthority": "Root original-state readback and static comparison: transfer expected unprefixed names while frozen archive has jhg46-pi-resource-compat-v1/ prefix. Not an unknown execution retry.",
+      "credentialsReadOrTransferred": false,
+      "pullBuildOrContainerStarted": false,
+      "evidence": {
+        "path": "sources/transfer-safe-receipt.json",
+        "bytes": 525,
+        "sha256": "07b7fc59966335a6a2d79f896232704a5846ae3864a727bcaeadd19d8c877b42",
+        "byteIdenticalToOriginalSafeFile": true
+      }
+    },
+    "originalArchiveRecovery": {
+      "startedAt": "2026-10-17T11:48:42.950991+00:00",
+      "endedAt": "2026-10-17T11:48:44.724729+00:00",
+      "exitCode": 0,
+      "verifiedFileCount": 9,
+      "archiveSha256": "c92e672ca39d10d61467801f457147e3ee9cf2cfbbbe8b96d00a618a6a208bae",
+      "originalArchiveReused": true,
+      "secondPackageTransfer": false,
+      "newRequestOrDirectoryCreated": false,
+      "credentialsOrDocker": false,
+      "evidence": {
+        "path": "sources/unpack-original-recovery-safe-receipt.json",
+        "bytes": 551,
+        "sha256": "d930d1189a7ca1f7e2ddc71d504c2bb070c7c4bc7b91ce504175b3262e70159b",
+        "byteIdenticalToOriginalSafeFile": true
+      }
+    }
+  },
+  "credentialAttempt": {
+    "localAttemptStartedAt": "2026-10-17T11:49:52.187585+00:00",
+    "postIntentAt": "2026-10-17T11:49:54.378346+00:00",
+    "localAttemptEndedAt": "2026-10-17T11:49:59.709580+00:00",
+    "credentialPostAttempted": true,
+    "credentialPostsAutomaticallyRetried": 0,
+    "requestedExpirationMinutes": 15,
+    "requestedPermissions": [
+      "pull"
+    ],
+    "clientErrorCode": "credential-api-unknown-stop-no-retry",
+    "originalHttpStatus": null,
+    "cloudflareReceiptOrCredentialId": null,
+    "usableCredentialReturnedToOperator": false,
+    "credentialEnvelopeSentToAMD": false,
+    "receiverTerminalStatus": "unknown-stopped",
+    "receiverTerminalErrorCode": "stdin-eof",
+    "remoteTerminalReportedEndedAt": "2026-10-17T11:49:52.523207+00:00",
+    "cloudCredentialMintOutcome": "unknown",
+    "unknownMintNotRuledOut": true,
+    "noAuditOrLaterResponseUsedToInferOriginalOutcome": true,
+    "authorityForNoDelivery": "Reviewed operator never returned a credential from create_pull_credential; receiver readback is stdin-eof before pull_with_config.",
+    "evidence": {
+      "path": "sources/pull-state/57a70587-2b21-4a56-aed1-09c8a32d868a/result.json",
+      "bytes": 516,
+      "sha256": "ef9cdccc7e9f79d2e14f5587ea577846fbc090911ee78ce8495c353b5a101b42",
+      "byteIdenticalToOriginalSafeFile": true
+    }
+  },
+  "cleanup": {
+    "firstReadback": {
+      "cleanupConfirmed": true,
+      "originalReceiverAbsent": true,
+      "authConfigAbsent": true,
+      "remote7897Absent": true,
+      "remote7897ConnectErrno": 111,
+      "remote7897ListenerAddresses": [],
+      "ownedLocalSshTerminated": true,
+      "evidence": {
+        "path": "sources/pull-state/57a70587-2b21-4a56-aed1-09c8a32d868a/cleanup-readback.json",
+        "bytes": 815,
+        "sha256": "b238181b1ea40f2f452dbc9aaeb75ee65f4548e2eb4348769e9229b70d646d0b",
+        "byteIdenticalToOriginalSafeFile": true
+      }
+    },
+    "independentFreshReadback": {
+      "startedAt": "2026-10-17T11:54:47.049301+00:00",
+      "endedAt": "2026-10-17T11:54:51.074816+00:00",
+      "mode": "exact-f74-operator-readback-only",
+      "exitCode": 0,
+      "cleanupConfirmed": true,
+      "originalReceiverAbsent": true,
+      "authConfigAbsent": true,
+      "remote7897Absent": true,
+      "remote7897ConnectErrno": 111,
+      "remote7897ListenerAddresses": [],
+      "localOriginalSshPid": 85463,
+      "localOriginalSshAbsent": true,
+      "noSignalsSent": true,
+      "newCredentialPosts": 0,
+      "newForwardOrExecutionReceiver": false,
+      "pullBuildOrContainerRequests": 0,
+      "evidence": {
+        "path": "sources/independent-readback-source-audit-57a70587.json",
+        "bytes": 2030,
+        "sha256": "ac104d509f4a5d5ea67568caf9a0e70402583a7a3294df56894933522a92a88c",
+        "byteIdenticalToOriginalSafeFile": true
+      }
+    },
+    "cleanupDoesNotResolveOriginalCredentialMint": true
+  },
+  "rootAndChildIdentityClarification": {
+    "earlierDefaultUserConcernWithdrawn": true,
+    "frozenC92ArchiveOr051OperationsChanged": false,
+    "newUser10002ImageVariantCreated": false,
+    "checkedInImageRecipeFinalUser": "root",
+    "nativeSupervisorRequiredEffectiveUid": 0,
+    "supervisorRejectsNonRootWith": "trustedpi-account-invalid",
+    "nativeChildExpectedUid": 10002,
+    "nativeContract": "root Sandbox/supervisor validates account/control root, then drops groups/gid/uid for Pi child. This is not the authenticated product-owner identity.",
+    "mockContract": "Explicit --user10002:10002 and env-i exercise SDK compatibility only; they do not prove native supervisor/fence/capacity or Cloudflare launch. No image-mode mock had run at the original clarification snapshot; the later consumed first image-mode attempt failed before SDK imports, as recorded below.",
+    "actualBaseOrDerivedConfigReadByThisBatch": true,
+    "futureRequirement": "Compare actual base and derived Config.User, Entrypoint, Cmd, WorkingDir and Env without changing the original root-supervisor contract.",
+    "sourceEvidence": [
+      {
+        "repositoryPath": "services/trusted-pi/runtime_supervisor.py",
+        "bytes": 16912,
+        "sha256": "79e2bdedaedba063364513d853eb8325f229ba55b1e51df46cbcee359807e29c",
+        "commit": "f74de9912c0970c1880cc6e2e35bee13cb670659"
+      },
+      {
+        "repositoryPath": "Dockerfile.trusted-pi.vertical",
+        "bytes": 2307,
+        "sha256": "adadca2cb2c0b589d530efbf0fb429124cca5985db5cea2f87e034321edeb72f",
+        "commit": "f74de9912c0970c1880cc6e2e35bee13cb670659"
+      },
+      {
+        "repositoryPath": "Dockerfile.trusted-pi.cloud",
+        "bytes": 2476,
+        "sha256": "0396a2770edf3e50f558ff41c0cbd2889db82b8c07c630fe66b3be06b3b4b077",
+        "commit": "f74de9912c0970c1880cc6e2e35bee13cb670659"
+      }
+    ],
+    "actualBaseConfigReadOnly": {
+      "observedUser": "root",
+      "observedEntrypoint": [
+        "/container-server/sandbox"
+      ],
+      "observedCmd": null,
+      "observedWorkingDir": "/container-server",
+      "actualDerivedConfigRead": false,
+      "evidence": {
+        "path": "sources/base-cache-readonly-source-audit-57a70587.json",
+        "bytes": 7075,
+        "sha256": "e824ecfd46fedda0ac378e8e7d4dbae7b878699e49b42a91cc1b25bf55c584db",
+        "byteIdenticalToOriginalSafeFile": true
+      }
+    }
+  },
+  "rootDiagnosisPending": [
+    {
+      "field": "originalCredentialPostTransportAndHttpOutcome",
+      "value": "unknown",
+      "rule": "Use any retained original-request safe status, error code, cf-ray/request ID and timing; do not issue another credential POST or substitute a later403."
+    },
+    {
+      "field": "serverSideCredentialMintAndExpiry",
+      "value": "unknown",
+      "rule": "No valid result was returned. Zero audit rows cannot prove no mint; preserve unknown unless an authoritative original-request receipt resolves it."
+    },
+    {
+      "field": "confirmedArrears",
+      "value": "not-established",
+      "rule": "Neither the client unknown nor a later403 or empty audit result establishes account arrears or zero cost."
+    },
+    {
+      "field": "localRemoteClockOffset",
+      "value": "not-measured",
+      "rule": "Local POST-intent and remote receiver terminal UTC are different host-clock observations; do not infer cross-host causal order from them."
+    },
+    {
+      "field": "nextSafeContinuationDecision",
+      "value": "read-only-fixed-image-layer-target-metadata-inspector-under-independent-review",
+      "rule": "Do not rebuild/start another mock or weaken guard. Identify which frozen target uid/gid/mode failed using the fixed existing derived image with safe metadata-only read; root chooses and executes after review."
+    },
+    {
+      "field": "installedWranglerAuthorizationRequirementSourceCitation",
+      "value": "root reports Wrangler4.129 credentials handler requires containers:write absent from the existing five scopes",
+      "rule": "Attach root actual installed-source citation if used. This later diagnosis must not be presented as the uncaptured original POST HTTP result."
+    },
+    {
+      "field": "actualFailingImageTargetOwnershipAndMode",
+      "value": "unknown-among-12-frozen-targets",
+      "rule": "Static Git/source equivalence is not actual image metadata. First mock is consumed and cleaned; no rerun or relaxation until actual target/layer evidence and an explicit root decision."
+    }
+  ],
+  "sourceSafeFiles": {
+    "batch.json": {
+      "path": "sources/batch.json",
+      "bytes": 1134,
+      "sha256": "28f50240883b3c24fb2e20e0fe5905d910cda3322a2dfeb0afebc662aa231992",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "transfer-local-intent.json": {
+      "path": "sources/transfer-local-intent.json",
+      "bytes": 290,
+      "sha256": "84a6eb46375dc54cdca0dcc20203d66bb9302536921055f0a2ee1e63aa2536ca",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "transfer-safe-receipt.json": {
+      "path": "sources/transfer-safe-receipt.json",
+      "bytes": 525,
+      "sha256": "07b7fc59966335a6a2d79f896232704a5846ae3864a727bcaeadd19d8c877b42",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "unpack-original-recovery-intent.json": {
+      "path": "sources/unpack-original-recovery-intent.json",
+      "bytes": 317,
+      "sha256": "729986c893a59eeb31e1b65b0577c79820c122dd11d42b5a48c414259e363695",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "unpack-original-recovery-safe-receipt.json": {
+      "path": "sources/unpack-original-recovery-safe-receipt.json",
+      "bytes": 551,
+      "sha256": "d930d1189a7ca1f7e2ddc71d504c2bb070c7c4bc7b91ce504175b3262e70159b",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "pull-state/57a70587-2b21-4a56-aed1-09c8a32d868a/intent.json": {
+      "path": "sources/pull-state/57a70587-2b21-4a56-aed1-09c8a32d868a/intent.json",
+      "bytes": 552,
+      "sha256": "8914d10338b3122fe4cb7e065028210d583b8c72ed7c8f7b58d1fa8048c549d2",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "pull-state/57a70587-2b21-4a56-aed1-09c8a32d868a/credential-post-intent.json": {
+      "path": "sources/pull-state/57a70587-2b21-4a56-aed1-09c8a32d868a/credential-post-intent.json",
+      "bytes": 343,
+      "sha256": "0c38bfcaf17d3c5a8ae766a91d635b03ca14ad04a1459a67eae42f7e97e171b7",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "pull-state/57a70587-2b21-4a56-aed1-09c8a32d868a/owned-ssh.json": {
+      "path": "sources/pull-state/57a70587-2b21-4a56-aed1-09c8a32d868a/owned-ssh.json",
+      "bytes": 125,
+      "sha256": "3e0da69125d6587d8bc8182097d2391976479d53af971cd315c8a63b9310c84f",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "pull-state/57a70587-2b21-4a56-aed1-09c8a32d868a/result.json": {
+      "path": "sources/pull-state/57a70587-2b21-4a56-aed1-09c8a32d868a/result.json",
+      "bytes": 516,
+      "sha256": "ef9cdccc7e9f79d2e14f5587ea577846fbc090911ee78ce8495c353b5a101b42",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "pull-state/57a70587-2b21-4a56-aed1-09c8a32d868a/cleanup-readback.json": {
+      "path": "sources/pull-state/57a70587-2b21-4a56-aed1-09c8a32d868a/cleanup-readback.json",
+      "bytes": 815,
+      "sha256": "b238181b1ea40f2f452dbc9aaeb75ee65f4548e2eb4348769e9229b70d646d0b",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "independent-readback-source-audit-57a70587.json": {
+      "path": "sources/independent-readback-source-audit-57a70587.json",
+      "bytes": 2030,
+      "sha256": "ac104d509f4a5d5ea67568caf9a0e70402583a7a3294df56894933522a92a88c",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "readonly-auth-transport-diagnostic.json": {
+      "path": "sources/readonly-auth-transport-diagnostic.json",
+      "bytes": 2539,
+      "sha256": "de9cee20d89675ec5192e2e93830b28862e5d3e0bef6b63603d510ace498f8d6",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "audit-v2-original-post-window-safe.json": {
+      "path": "sources/audit-v2-original-post-window-safe.json",
+      "bytes": 1126,
+      "sha256": "9f41f20859b8bcf7adadd77caa8b4855ca49212bfb2c924d41a6ccc26c3e6da0",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "base-cache-readonly-source-audit-57a70587.json": {
+      "path": "sources/base-cache-readonly-source-audit-57a70587.json",
+      "bytes": 7075,
+      "sha256": "e824ecfd46fedda0ac378e8e7d4dbae7b878699e49b42a91cc1b25bf55c584db",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "build-launch-safe-receipt.json": {
+      "path": "sources/build-launch-safe-receipt.json",
+      "bytes": 1028,
+      "sha256": "c4a7555eb2fe85c19f36d4c2fa4fbf8322c19670c1d362c94b39d1bc7cc02e4a",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "build-preflight-safe-projection-source-audit.json": {
+      "path": "sources/build-preflight-safe-projection-source-audit.json",
+      "bytes": 7764,
+      "sha256": "939d1de365031ece879c44ef3aa8879339828a627f26dd45b8ae5416b464ff82",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "build-continuation-safe-receipt.json": {
+      "path": "sources/build-continuation-safe-receipt.json",
+      "bytes": 1729,
+      "sha256": "41fc2d4c3414f560af0962247b80e70d8f35084b6b2ab66371a3cc62c4442408",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "first-mock-error-classification-source-audit.json": {
+      "path": "sources/first-mock-error-classification-source-audit.json",
+      "bytes": 3183,
+      "sha256": "9ccb10a89664df89911a4efda77969a09c3090acd82e639e48e4f78606e9ea69",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "first-mock-original-cid-cleanup-source-audit.json": {
+      "path": "sources/first-mock-original-cid-cleanup-source-audit.json",
+      "bytes": 1827,
+      "sha256": "2f5e6295e01a983ce1da244c15397136470d939c235ccccf799375547dde3960",
+      "byteIdenticalToOriginalSafeFile": true
+    }
+  },
+  "privacy": {
+    "rawWorkerConfigurationIncluded": false,
+    "oauthOrRegistryCredentialIncluded": false,
+    "rawGrantIncluded": false,
+    "realProductActorIdentifiersIncluded": false,
+    "privateStderrOrResponseBodyCopied": false
+  },
+  "draftPreparation": {
+    "apiRequests": 0,
+    "sshCommands": 0,
+    "dockerCommands": 0,
+    "tests": 0,
+    "trackedFilesEdited": false,
+    "commitOrPush": false,
+    "scope": "Content assembly only; counts exclude the separately referenced already completed read-only observations."
+  },
+  "laterReadOnlyObservations": {
+    "transportAndAuthorization": {
+      "startedAt": "2026-10-17T11:58:01.246857+00:00",
+      "endedAt": "2026-10-17T11:58:08.876630+00:00",
+      "requests": 3,
+      "method": "GET",
+      "outcomes": [
+        {
+          "path": "/user",
+          "status": 200,
+          "errorCodes": [],
+          "userAgent": "Python-default"
+        },
+        {
+          "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/containers/registries",
+          "status": 403,
+          "errorCodes": [
+            10000
+          ],
+          "userAgent": "Python-default"
+        },
+        {
+          "path": "/user",
+          "status": 200,
+          "errorCodes": [],
+          "userAgent": "wrangler/4.129.0"
+        }
+      ],
+      "credentialPosts": 0,
+      "rawUserBodyIncluded": false,
+      "doesNotEstablishOriginalPostStatusOrMint": true,
+      "evidence": {
+        "path": "sources/readonly-auth-transport-diagnostic.json",
+        "bytes": 2539,
+        "sha256": "de9cee20d89675ec5192e2e93830b28862e5d3e0bef6b63603d510ace498f8d6",
+        "byteIdenticalToOriginalSafeFile": true
+      }
+    },
+    "originalPostWindowAudit": {
+      "recordedAt": "2026-10-17T12:00:06Z",
+      "recordedAtMeaning": "Safe projection saved after the tool returned; request start/end timestamps were not captured.",
+      "query": {
+        "method": "GET",
+        "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/logs/audit",
+        "since": "2026-10-17T11:49:00Z",
+        "before": "2026-10-17T11:51:00Z",
+        "raw_method": "POST",
+        "limit": 100,
+        "direction": "asc"
+      },
+      "status": 200,
+      "resultRows": 0,
+      "emptyAuditNoProofOfNoMint": true,
+      "requestStartEndNotCaptured": true,
+      "credentialValuesReturned": false,
+      "evidence": {
+        "path": "sources/audit-v2-original-post-window-safe.json",
+        "bytes": 1126,
+        "sha256": "9f41f20859b8bcf7adadd77caa8b4855ca49212bfb2c924d41a6ccc26c3e6da0",
+        "byteIdenticalToOriginalSafeFile": true
+      }
+    },
+    "fixedBaseCacheInspect": {
+      "localStartedAt": "2026-10-17T12:00:50.004757+00:00",
+      "localEndedAt": "2026-10-17T12:00:51.554708+00:00",
+      "remoteStartedAt": "2026-10-17T12:00:47.634941+00:00",
+      "remoteEndedAt": "2026-10-17T12:00:47.706339+00:00",
+      "sshExitCode": 0,
+      "dockerExitCode": 0,
+      "fixedSocket": "unix:///var/run/docker.sock",
+      "outcome": "present",
+      "identityMatchesFixedReference": true,
+      "image": {
+        "Architecture": "amd64",
+        "Cmd": null,
+        "Descriptor": {
+          "annotations": {
+            "config.digest": "sha256:e323d0348528d552d3a7bc9b2c9fe652763c2c2583f52220332c554d07e7b5a4"
+          },
+          "digest": "sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+          "mediaType": "application/vnd.oci.image.manifest.v1+json",
+          "size": 7883
+        },
+        "Entrypoint": [
+          "/container-server/sandbox"
+        ],
+        "EnvKeyHashes": [
+          {
+            "entrySha256": "3df505b4bf853c456422990cd474612e074d20d307e66398a090b4bfa519348b",
+            "key": "PATH"
+          },
+          {
+            "entrySha256": "710f551e9935e142311836394618b34e396f54727acfff964b5fe729cb1c62a3",
+            "key": "DEBIAN_FRONTEND"
+          },
+          {
+            "entrySha256": "1565b124fb14431da900713ba61b75f0107f12cb6974b530d440779debebec82",
+            "key": "SANDBOX_VERSION"
+          },
+          {
+            "entrySha256": "626209efeecc079b28a0a5963bf282b3a81ad999ab7259c7bc3e73d67afd1385",
+            "key": "PYTHON_POOL_MIN_SIZE"
+          },
+          {
+            "entrySha256": "663190793bee50119b54b305ab3b1c394a6a36403c2731d0870c81736708d2fe",
+            "key": "JAVASCRIPT_POOL_MIN_SIZE"
+          },
+          {
+            "entrySha256": "350f9dfcfb6f40916dd4c46f211b02afb8645422984045e8ce79b7c54a3d1a57",
+            "key": "TYPESCRIPT_POOL_MIN_SIZE"
+          }
+        ],
+        "Id": "sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+        "Os": "linux",
+        "RepoDigests": [
+          "riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+          "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c"
+        ],
+        "RootFS": {
+          "Layers": [
+            "sha256:c0359c5b6ede84d4a083d06d35ee77f0b338dfb17423771854d007d89953fb3e",
+            "sha256:3d65b9874032d7fcc188f6bdfaf5b13788ab5b0bbefa77f4a5ac28c598bf1941",
+            "sha256:0576eb869f395313a1aa5f621268dfb9b5682ec97cf15fe71e371483f5c80fba",
+            "sha256:15ded8de01e6eca481f1a339c99bb4cfda5d23b1dfbc82a4cebb24c5c9a017a8",
+            "sha256:86a3be679e01b1fcee6c778834a25689e30f6071f66576d25fbffc5fce5aa98e",
+            "sha256:f334ab63d20359b7cffc52ca264dd415747a8d4ff7bfbb6149008b8683965dee",
+            "sha256:9b70e64f8f280bd9fa74b9185f0bf19604eaef611dd83c275886a24799d154e5",
+            "sha256:713264a10ffa9ed08c39191b9e03b8f298baa0a1d87f6e58589c8990a25743f3",
+            "sha256:1e82d0f1454bb6187960082585b9b98906b7a52f6ae24fdf1f51fe9e6e91e0e6",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:55394ae40b31c896ec476b35271dc2785c15c370ba8395e115d5a8b20a095f61",
+            "sha256:703eb6bf565d44cb0066bd69bf4b74dd6d5160e55cb1728bc0b1abb242c1a489",
+            "sha256:b7cb327a353f555554a14193e784b45adaf249df9b105bbbe7fd1632fc8bf515",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+            "sha256:6996f5cb764794f926da271d756055e0885640baf700c5467fe6cd5a86623b0e",
+            "sha256:4e52759b8746781db6506ca2dcbacd24e6930e844e72f84bbed3dcf84095e8cf",
+            "sha256:d046221a87ad549a2b8c422442c599d884fada666e0ad514529248a68264533f",
+            "sha256:a07f0fd21a039d53d1a8b570dba45f06e2105dbe09387f538cd64ec206f2037a",
+            "sha256:987f78f14e7466e79ca69151b1ffe93521e6d767de288c6ecdec7ab5de0a7608",
+            "sha256:9eec22a452a78c5b6c09e7876a35359c561543a57864b81ea686db90d12edb8d",
+            "sha256:67a8162b3d5016d9f1d6986738e2ac90d9435d1b19bbeda228525c289257fab0",
+            "sha256:23223ce0c6e4eea1180c40d303dc0572b7721e45f73ae1efd9c5bd2653b8b2b2",
+            "sha256:68fa2c1811cb3e047e0ed221522be6478cb6ed3611ec3f823f9a024c6d4e079c",
+            "sha256:ee976f8a390d1f74c593bbb2fa594e3edd39b093d2bb82ca9083d4bcdcf412ba",
+            "sha256:1437b43f4faa67abda3f415ff82df40578f39add39518a1b6a1bc30b63e1c57d",
+            "sha256:a96e0a797b05dfdd4fa5d334a6b61b0d7977e797180ab8256e96337c3e59a75f",
+            "sha256:85bde228e4afbb5afea9a10192ea098900b9592cd1bfd28942d20c54b0781330",
+            "sha256:ad051baa272a47b245c9fa6575e69090c9c80a3ac26498f2c4bcd0b8d8738f93",
+            "sha256:54a57586f2bf80a35a8e43613f3a1f90c163a6f893e469bf68b535680c4baa7f",
+            "sha256:3ff2f71acf320d7a8c7e9f31497655443a629b712264089bab50cbae88398b96",
+            "sha256:b39597252325de1dbbb169f514ee8b3125a3aca57f303c3bffad0a5e4d14a0ee",
+            "sha256:771a1985fae19d0baa6778b7853b63aeca1e62592f275ab86099e15db2164c85",
+            "sha256:d6e33ac68343d20a9f7944774d62ce3d5809463d891daf1d2b6f94509905b280",
+            "sha256:97196106475784cf7fe5c44ab467679ad57100c57bb686b8c9fa8a9e7947a410",
+            "sha256:8bd3c95731165074ab51992cd165c39d6b2224057d76155dbfb791f7ba36aa8d",
+            "sha256:af4f207aff77940b76562d0bd2f2f983997a20f2588b5a578cc1fefe64ba6bd6",
+            "sha256:b15c7e24d9641014e4bc055bcc559c16ef1ba80ad21db84785a761de84d0d3a0",
+            "sha256:491e5b439e5dc4a1423e3d58aef875d7575c263660ca328a347336e217bc65cb",
+            "sha256:75df2525c118b87d9a8093cf66bf6120caef8bf4a7c1d9c67c87860a8038a0fc"
+          ],
+          "Type": "layers"
+        },
+        "Size": 1820661426,
+        "User": "root",
+        "WorkingDir": "/container-server"
+      },
+      "environmentValuesIncluded": false,
+      "newCredentialOrRoute": false,
+      "pullBuildContainerOrCloudApiRequested": false,
+      "evidence": {
+        "path": "sources/base-cache-readonly-source-audit-57a70587.json",
+        "bytes": 7075,
+        "sha256": "e824ecfd46fedda0ac378e8e7d4dbae7b878699e49b42a91cc1b25bf55c584db",
+        "byteIdenticalToOriginalSafeFile": true
+      }
+    }
+  },
+  "cachedBaseContinuation": {
+    "authority": "Explicit root decision after this exact fixed-base local-cache GET, within the human-authorized original offline build/mock scope.",
+    "allowedWithinOriginalGrant": true,
+    "newScopeOrGrantRequiredForThisSameBuildMock": false,
+    "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+    "fixedBasePresentAndIdentityMatched": true,
+    "newRegistryPostOrPullNeeded": false,
+    "originalCredentialPostStillUnknownAndNotRetried": true,
+    "rootSoleLiveExecutor": true,
+    "cachedBaseRunnerStaticReviewPendingAtDraft": true,
+    "actualBuildOrMockHasRunAtDraft": false,
+    "newRegistryPushOrCloudAppUpdateOrPaidAcceptanceIncluded": false,
+    "limitation": "Cached availability does not prove that the builder can resolve metadata offline. Stop on a resolver/build unknown; do not recreate auth/change resolver or replay automatically.",
+    "snapshotRecordedAtBeforeBuild": "2026-10-17T12:02:33.734823+00:00",
+    "scopeAtSnapshot": "Root decision before the later actual preflight/build/mock results appended below."
+  },
+  "buildAndFirstMockActual": {
+    "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+    "credentialPhaseUnknownPreserved": true,
+    "newCredentialPostOrPullForContinuation": false,
+    "preflightKnownFailure": {
+      "runnerSha256": "1066f2331c6d411b5d9c8c8f7d48cb03e5f537b0ebd0273abe1b89088254000f",
+      "localTransportEndedAt": "2026-10-17T12:05:15.711223+00:00",
+      "sshExitCode": 1,
+      "originalRemoteEndedAt": "2026-10-17T12:05:11.827272+00:00",
+      "errorCode": "command-nonzero-default-builder-inspect",
+      "defaultBuilderExitCode": 125,
+      "defaultBuilderErrorClassification": "unknown-flag-format",
+      "defaultBuilderExpectedPublicError": "unknown flag: --format",
+      "defaultBuilderStderrBytes": 118,
+      "defaultBuilderStderrSha256": "efc09f33c161340d92b67de0d7b3cdf5b7e414f3730315c879d9bfedcacb2353",
+      "originalCliReaped": true,
+      "buildOrCreateOrCidOrIidOrMetadataPresentAtIndependentReadback": false,
+      "originalRecordsRetained": true,
+      "evidence": {
+        "path": "sources/build-preflight-safe-projection-source-audit.json",
+        "bytes": 7764,
+        "sha256": "939d1de365031ece879c44ef3aa8879339828a627f26dd45b8ae5416b464ff82",
+        "byteIdenticalToOriginalSafeFile": true
+      }
+    },
+    "knownReadonlyFailureContinuation": {
+      "runnerSha256": "12a22b87f8dbab84d144dbcac0b141d050703f620a5417c0607bb5ab7a38fcd8",
+      "originalRequestAndLockPreserved": true,
+      "oneExclusivePhase": true,
+      "noOldRecordOverwrite": true,
+      "scope": "Correct only the unsupported read-only builder header inspection, then perform the first build/mock already authorized; no new token/route/pull.",
+      "localTransportEndedAt": "2026-10-17T12:12:06.920877+00:00",
+      "sshExitCode": 1,
+      "outerTransportTimedOut": false,
+      "ownedSshReaped": true,
+      "evidence": {
+        "path": "sources/build-continuation-safe-receipt.json",
+        "bytes": 1729,
+        "sha256": "41fc2d4c3414f560af0962247b80e70d8f35084b6b2ab66371a3cc62c4442408",
+        "byteIdenticalToOriginalSafeFile": true
+      }
+    },
+    "singleBuild": {
+      "performed": true,
+      "succeeded": true,
+      "imageId": "sha256:b2c2f93eff23011fe7863545e2b62b3b3d0d6fd4da161371afae399c0ce59c27",
+      "actualImageConfigUser": "root",
+      "baseDerivedLaunchConfigPreserved": [
+        "User",
+        "Entrypoint",
+        "Cmd",
+        "WorkingDir",
+        "Env"
+      ],
+      "buildIdentityBindingAndBaseDiffIdPrefixPassedInReviewedRunner": true,
+      "independentRawOciOrDerivedImageIdentityAuditPerformedByThisDraft": false,
+      "newRegistryPushOrCloudAppUpdate": false,
+      "evidence": {
+        "path": "sources/build-continuation-safe-receipt.json",
+        "bytes": 1729,
+        "sha256": "41fc2d4c3414f560af0962247b80e70d8f35084b6b2ab66371a3cc62c4442408",
+        "byteIdenticalToOriginalSafeFile": true
+      }
+    },
+    "firstImageMock": {
+      "containerCreateCount": 1,
+      "containerStartCount": 1,
+      "consumedAndNotReplayed": true,
+      "originalContainerId": "b088b79e10cea6ea12bd39995e5410e89e48994cf86fb6814879b2a829011da1",
+      "outcome": "failed-before-sdk-imports-in-frozen-owner-mode-preflight",
+      "startExitCode": 1,
+      "nodeVersions": [
+        "22.23.2"
+      ],
+      "knownErrorCodes": [
+        "ERR_ASSERTION"
+      ],
+      "matchedFrozenAssertion": "image-source-must-be-root-owned-and-not-writable",
+      "frozenProbeSourceLocations": [
+        {
+          "column": 439,
+          "line": 17
+        }
+      ],
+      "whichOf12TargetsFailed": "not-established",
+      "noArbitraryRawMessageReturned": true,
+      "stdoutBytes": 0,
+      "stderrBytes": 362,
+      "stderrSha256": "74b7f6483536bd48c9faedde76a9750985904a8ce75b02090bd27690ca03ea1a",
+      "sdkChecksOrCompatibilityPassClaimed": false,
+      "sourceUidMetadataInspectorPending": true,
+      "evidence": {
+        "path": "sources/first-mock-error-classification-source-audit.json",
+        "bytes": 3183,
+        "sha256": "9ccb10a89664df89911a4efda77969a09c3090acd82e639e48e4f78606e9ea69",
+        "byteIdenticalToOriginalSafeFile": true
+      }
+    },
+    "originalContainerCleanup": {
+      "runnerConfirmed": true,
+      "independentConfirmed": true,
+      "exactOriginalNotFound": true,
+      "labelAllListEmpty": true,
+      "getCommands": 2,
+      "mutationCommandsByIndependentReader": 0,
+      "evidence": {
+        "path": "sources/first-mock-original-cid-cleanup-source-audit.json",
+        "bytes": 1827,
+        "sha256": "2f5e6295e01a983ce1da244c15397136470d939c235ccccf799375547dde3960",
+        "byteIdenticalToOriginalSafeFile": true
+      }
+    },
+    "acceptanceBoundary": {
+      "actualNewImageBuilt": true,
+      "firstImageMockPassed": false,
+      "cloudflareOrOrdinaryUserAcceptance": false,
+      "originalCredentialMintOutcome": "unknown-unchanged",
+      "zeroFeesClaimed": false,
+      "noSecondMockOrBuildAutomaticallyAllowed": true
+    }
+  },
+  "readbackSafetyBoundary": {
+    "broadRawReadbackOrWholeJsonTransferExecuted": false,
+    "twoProposedBroadReadbacksRejectedBeforeExecution": true,
+    "rootSelectedStrictWhitelistAlternativesCompleted": true,
+    "rawProbeMessagesOrBaseEnvironmentValuesReturned": false,
+    "furtherApprovalBlockForCompletedSafeReadbacks": false
+  },
+  "notAGreenOfflineCompatibilityResult": true,
+  "credentialReceiverPhaseExecutionBoundary": {
+    "receiverDockerInfoPreflightOccurred": true,
+    "usableRegistryCredentialReceived": false,
+    "fixedBasePullCommandInvoked": false,
+    "derivedImageBuildInvoked": false,
+    "mockContainerCreatedOrStarted": false,
+    "registryPushOrCloudAppUpdate": false,
+    "realProviderModelTurnRunRequested": false,
+    "newSubscriptionRequested": false,
+    "noGlobalZeroExecutionClaim": true,
+    "costOutcome": "unknown-not-inferred-zero",
+    "nativeOrUserAcceptanceClaimed": false,
+    "actualNewImageDigest": null,
+    "snapshotScope": "Initial credential receiver phase, before cached-base build continuation; these false fields are historical phase observations, not cumulative batch totals.",
+    "scope": "The earlier credential receiver only; the separate later build/mock actual result is recorded below."
+  },
+  "currentGap": "The consumed first image mock failed its unchanged root-owner/mode assertion before SDK imports. Specific target metadata is under read-only investigation. No second mock/build is authorized by this evidence.",
+  "recordingAuthority": "root exact execution receipts, independent source_audit safe projections and exact copied source-safe files; no arbitrary raw logs or environment values.",
+  "actualRunnerSources": {
+    "operations/build-probe-cached-base-v1/EXECUTION.md": {
+      "bytes": 4366,
+      "sha256": "91e86f4edb0801834ebc1130ed81759eaf48801a25b2e93467fa0b2f93800b39"
+    },
+    "operations/build-probe-cached-base-v1/build-probe-once.py": {
+      "bytes": 28357,
+      "sha256": "1066f2331c6d411b5d9c8c8f7d48cb03e5f537b0ebd0273abe1b89088254000f"
+    },
+    "operations/build-probe-cached-base-v1/offline-review.json": {
+      "bytes": 1426,
+      "sha256": "c57cbe102391a1f0338bc460c764fd5878764f16acd43599cd744da21f560731"
+    },
+    "operations/build-probe-cached-base-v1/test_build_probe.py": {
+      "bytes": 8701,
+      "sha256": "1b1c5d947ec2ecc259c81474171b548e26df41119829d290bafdd689012bcf43"
+    },
+    "operations/build-probe-continue-preflight-v1/EXECUTION.md": {
+      "bytes": 3807,
+      "sha256": "912090b2b220b5b5c8b38abf78bda25c66bf02fbc452b5b100ae7e09534a32ab"
+    },
+    "operations/build-probe-continue-preflight-v1/build-probe-once.py": {
+      "bytes": 33205,
+      "sha256": "12a22b87f8dbab84d144dbcac0b141d050703f620a5417c0607bb5ab7a38fcd8"
+    },
+    "operations/build-probe-continue-preflight-v1/offline-review.json": {
+      "bytes": 1812,
+      "sha256": "cdac690af03b24cd7f494780a7bfac530dbff822b31b8f9a22830100f2a46286"
+    },
+    "operations/build-probe-continue-preflight-v1/test_build_probe.py": {
+      "bytes": 12569,
+      "sha256": "462f52be85c6e49e4b9f4f1626c428d290c877e8b27eabf803c3048f2443d49f"
+    }
+  }
+}

@@ -1,5 +1,7 @@
 # #214 TrustedPi 项目资源镜像：下一批离线构建输入包 — 2026-10-17
 
+**后续实际结果：** 用户已授权本冻结包。原57a凭据 POST 未取得可判定回执，已停止并清理，未重试；独立只读核对发现精确 base 已缓存，随后一次断网构建成功，首次 image mock 因文件属主/权限断言失败并清理，尚不能发布。详见 [实际结果](project-view-trusted-pi-offline-result-20261017.md)。下文保留原准备快照和当时的待授权措辞，不能替代这一后续执行记录；原 c92/051 输入不变。
+
 负责人：@jihegao；范围以 [#214](https://github.com/jihegao/riffology-cloud/issues/214) 和 [#85](https://github.com/jihegao/riffology-cloud/issues/85) 为准。本页与 [safe JSON](../evidence/releases/project-view-trusted-pi-offline-build-20261017/review.json) 是独立可审 packet，不授予执行权限，不修改当前 Gateway/assets 的默认关闭发布、readiness、冻结 sender/metadata 或历史操作件。当前只完成本地准备和独立只读审阅。
 
 ## 具体问题与已有实现

@@ -1,0 +1,86 @@
+{
+  "schema": "trusted-pi-first-mock-error-independent-safe-observation/v1",
+  "localStartedAt": "2026-10-17T12:16:17.933977+00:00",
+  "localEndedAt": "2026-10-17T12:16:27.313245+00:00",
+  "sshExitCode": 0,
+  "safeReadCodeSha256": "9a2cf8714a5279da3aab8f9e6b43f55043a4c458f9f6405ad75d3258241d3293",
+  "sshStdoutBytes": 1983,
+  "sshStdoutSha256": "9ea2f675c6cc8285379264162c71f9732b39b0b26a5acfc9c168ad1e635b63a4",
+  "sshStderrBytes": 0,
+  "sshStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "observation": {
+    "classification": {
+      "continue-start-original-once.stderr": {
+        "frozenProbeAssertMatches": {
+          "active-release-alias": false,
+          "bounded-manifest-required": false,
+          "explicit-manifest-sha256-required": false,
+          "image-source-must-be-root-owned-and-not-writable": true,
+          "manifest-hash": false,
+          "node-engine-minimum-22.19": false,
+          "probe-environment-must-contain-only-PATH": false,
+          "probe-must-run-as-trusted-pi-user": false,
+          "target-sha256": false
+        },
+        "knownErrorCodesMatched": [
+          "ERR_ASSERTION"
+        ],
+        "nodeVersions": [
+          "22.23.2"
+        ],
+        "ociStartupError": false,
+        "probeSourceLocations": [
+          {
+            "column": 439,
+            "line": 17
+          }
+        ],
+        "rawMessageReturned": false
+      },
+      "continue-start-original-once.stdout": {
+        "frozenProbeAssertMatches": {
+          "active-release-alias": false,
+          "bounded-manifest-required": false,
+          "explicit-manifest-sha256-required": false,
+          "image-source-must-be-root-owned-and-not-writable": false,
+          "manifest-hash": false,
+          "node-engine-minimum-22.19": false,
+          "probe-environment-must-contain-only-PATH": false,
+          "probe-must-run-as-trusted-pi-user": false,
+          "target-sha256": false
+        },
+        "knownErrorCodesMatched": [],
+        "nodeVersions": [],
+        "ociStartupError": false,
+        "probeSourceLocations": [],
+        "rawMessageReturned": false
+      }
+    },
+    "dockerCommands": 0,
+    "fileHashAndAllowedScalars": {
+      "continue-start-original-once.result.json": {
+        "bytes": 603,
+        "error": null,
+        "exitCode": 1,
+        "originalCliLinuxStartTicks": "164584775",
+        "originalCliPid": 1808746,
+        "originalCliReaped": true,
+        "sha256": "7784950ad43e1cc96a8c21f88c53d0edca12371a4385d1f480586a1a2aa7f344"
+      },
+      "continue-start-original-once.stderr": {
+        "bytes": 362,
+        "sha256": "74b7f6483536bd48c9faedde76a9750985904a8ce75b02090bd27690ca03ea1a"
+      },
+      "continue-start-original-once.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "mutations": 0,
+    "rawBodyOrMessageReturned": false,
+    "remoteObservedAt": "2026-10-17T12:16:23.435360+00:00",
+    "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+    "schema": "trusted-pi-first-mock-fixed-error-classification/v1"
+  },
+  "priorWholeJsonReadbackRejectedBeforeExecution": true
+}
