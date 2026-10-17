@@ -1,0 +1,27 @@
+{
+  "endedAt": "2026-10-17T13:55:45.823326+00:00",
+  "exitCode": 1,
+  "noRealSshDockerAuthApi": true,
+  "preparationFailureHistory": [
+    {
+      "errors": 1,
+      "failures": 2,
+      "initialTests": 12,
+      "kind": "fixture-path-normalization",
+      "reason": "macOS /var symlink was not resolved for fake private record parents; fixture only normalized with Path.resolve, runner guard retained"
+    }
+  ],
+  "schema": "trusted-pi-probe-readable-offline-checks/v1",
+  "startedAt": "2026-10-17T13:55:45.762569+00:00",
+  "streams": {
+    "stderr": {
+      "bytes": 892,
+      "sha256": "2732c9b77f807802736b63986374c0c041a2ed8723e532623bca85cea9f13bb5"
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "testsExpected": 12
+}
