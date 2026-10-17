@@ -18,20 +18,31 @@ export async function verifyProjectViewPackage(pkg,scope,isCurrent=()=>true){
 }
 /** Scope is a closure held by the host, never a claim accepted from a frame.
  * No app API URL, credentials, command or write operation enters this port. */
-export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},onState=()=>{},readAsset,readArtifacts=async()=>({items:[],nextCursor:null,version:null}),authorize=async()=>{}}){
+export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},onState=()=>{},readAsset,readArtifacts=async()=>({items:[],nextCursor:null,version:null}),authorize=async()=>{},liveness=false}){
  let closed=false,failed=false,lastId=0,inflight=0,subscribed=false,artifactState=null,subscriptionEpoch=0;
+ const post=port.postMessage.bind(port),closePort=port.close.bind(port),setTimer=globalThis.setTimeout.bind(globalThis),clearTimer=globalThis.clearTimeout.bind(globalThis),now=globalThis.performance.now.bind(globalThis.performance);
+ let livenessStarted=false,pingNonce=null,pingTimer=null,pongTimer=null,pongDeadline=null;
  const current=()=>!closed&&isCurrent();
- function close(){if(closed)return;closed=true;subscriptionEpoch++;subscribed=false;port.onmessage=null;port.close();}
+ function close(){if(closed)return;closed=true;subscriptionEpoch++;subscribed=false;clearTimer(pingTimer);clearTimer(pongTimer);pingTimer=pongTimer=pingNonce=pongDeadline=null;port.onmessage=null;closePort();}
+ function ping(){
+  pingTimer=null;if(!current())return;
+  pingNonce=[...crypto.getRandomValues(new Uint8Array(32))].map(b=>b.toString(16).padStart(2,'0')).join('');
+  pongDeadline=now()+3000;pongTimer=setTimer(()=>{if(!current())return;close();onState('failed');},3000);
+  try{post({type:'project-view-ping',nonce:pingNonce});}catch{close();onState('failed');}
+ }
  const checkAuthorization=async()=>{try{await authorize();}catch(error){onState('failed');throw error;}};
  const snapshot=()=>({revisionId:pkg.revisionId,filesSha256:pkg.filesSha256,packageIdentity:pkg.packageIdentity,files:pkg.assets.map(({path,sha256,mediaType})=>({path,sha256,mediaType})),artifacts:artifactState,views:pkg.manifest.views.map(({id,title,entrypoint})=>({id,title,entrypoint}))});
- const send=value=>{if(!current())return;if(encoder.encode(JSON.stringify(value)).length>65536){if(value.id)port.postMessage({id:value.id,error:'response-too-large'});return;}port.postMessage(value);};
+ const send=value=>{if(!current())return;if(encoder.encode(JSON.stringify(value)).length>65536){if(value.id)post({id:value.id,error:'response-too-large'});return;}post(value);};
  port.onmessage=async event=>{
   if(!current())return;
   const m=event.data;
   if(!m||typeof m!=='object'||Array.isArray(m))return;
   try{if(encoder.encode(JSON.stringify(m)).length>4096)return;}catch{return;}
   if(m.type==='ended'&&Object.keys(m).sort().join(',')==='reason,type'&&m.reason==='navigation-ended'){failed=true;close();onState('navigation-ended');return;}
-  if(m.type==='installed'&&Object.keys(m).length===1){if(!failed)onState('ready');return;}
+  if(m.type==='project-view-pong'){
+   if(liveness===true&&pingNonce!==null&&Object.keys(m).sort().join(',')==='nonce,type'&&m.nonce===pingNonce){if(now()>=pongDeadline){close();onState('failed');return;}clearTimer(pongTimer);pongTimer=pongDeadline=null;pingNonce=null;pingTimer=setTimer(ping,1000);}return;
+  }
+  if(m.type==='installed'&&Object.keys(m).length===1){if(!failed){onState('ready');if(liveness===true&&!livenessStarted&&current()){livenessStarted=true;ping();}}return;}
   if(m.type==='failed'&&Object.keys(m).sort().join(',')==='error,type'&&['page-install-failed','page-script-failed','page-script-timeout'].includes(m.error)){failed=true;onState('failed');return;}
   if(!Number.isSafeInteger(m.id)||m.id<=lastId||m.id>2147483647)return;
   lastId=m.id;
@@ -104,7 +115,7 @@ export function createProjectViewsPanel({root,api,pollMs=5000}){
    bindValue(status,msg('projectViews.loading'));retry.hidden=true;
    const channel=new win.MessageChannel();
    broker=createProjectViewBroker({
-    port:channel.port1,pkg:ownPackage,isCurrent:current,
+    port:channel.port1,pkg:ownPackage,isCurrent:current,liveness:true,
     readArtifacts:async query=>{
      const params=new URLSearchParams({identity:ownPackage.packageIdentity});
      if(query.cursor)params.set('cursor',query.cursor);if(query.offset!==undefined)params.set('offset',String(query.offset));

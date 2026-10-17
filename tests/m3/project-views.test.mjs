@@ -96,6 +96,27 @@ test('exact navigation terminal closes only its original current broker and fenc
  }
 });
 
+test('opt-in original-port liveness starts once after ready, accepts only its pending nonce and never consumes request IDs',async()=>{
+ const {pkg}=await packaged(),messages=[],states=[];let closes=0;
+ const port={postMessage:m=>messages.push(m),close(){closes++;},start(){},onmessage:null};const broker=createProjectViewBroker({port,pkg,isCurrent:()=>true,liveness:true,onState:s=>states.push(s)}),receive=port.onmessage;
+ await receive({data:{type:'project-view-pong',nonce:'a'.repeat(64)}});assert.deepEqual(messages,[]);
+ await receive({data:{type:'installed'}});const ping=messages.at(-1);assert.deepEqual(Object.keys(ping).sort(),['nonce','type']);assert.equal(ping.type,'project-view-ping');assert.match(ping.nonce,/^[a-f0-9]{64}$/);
+ await receive({data:{type:'installed'}});assert.equal(messages.filter(m=>m.type==='project-view-ping').length,1);
+ await receive({data:{type:'project-view-pong',nonce:'wrong'}});await receive({data:{type:'project-view-pong',nonce:ping.nonce,id:1}});
+ await receive({data:{type:'files.list',id:1}});assert.equal(messages.at(-1).id,1);assert.ok(Array.isArray(messages.at(-1).value));
+ await receive({data:{type:'project-view-pong',nonce:ping.nonce}});broker.close();await new Promise(r=>setTimeout(r,1100));
+ assert.equal(messages.filter(m=>m.type==='project-view-ping').length,1,'close cancels the scheduled next ping');assert.equal(closes,1);assert.deepEqual(states,['ready','ready']);
+ await receive({data:{type:'project-view-pong',nonce:ping.nonce}});assert.equal(broker.closed,true);assert.equal(closes,1);
+});
+
+test('opt-in liveness deadline closes the original channel before reporting failure and late pong cannot revive it',{timeout:5000},async()=>{
+ const {pkg}=await packaged(),messages=[],states=[];let closes=0,finished;const failed=new Promise(r=>{finished=r;});
+ const port={postMessage:m=>messages.push(m),close(){closes++;},start(){},onmessage:null};const broker=createProjectViewBroker({port,pkg,isCurrent:()=>true,liveness:true,onState:s=>{states.push(s);if(s==='failed'){assert.equal(port.onmessage,null);assert.equal(closes,1);finished();}}}),receive=port.onmessage;
+ await receive({data:{type:'installed'}});const ping=messages[0];await receive({data:{type:'project-view-pong',nonce:'wrong'}});await failed;
+ assert.deepEqual(states,['ready','failed']);assert.equal(broker.closed,true);const count=messages.length;
+ await receive({data:{type:'project-view-pong',nonce:ping.nonce}});await receive({data:{type:'files.list',id:1}});await broker.publish();broker.close();assert.equal(messages.length,count);assert.equal(closes,1);
+});
+
 test('artifact broker rejects keys/scope/writes and drops delayed replies after cancellation or generation change',async()=>{
  const {pkg}=await packaged(),messages=[];let current=true,release,started,calls=0;const reading=new Promise(resolve=>{started=resolve;});
  const port={postMessage:m=>messages.push(m),close(){},start(){},onmessage:null};
