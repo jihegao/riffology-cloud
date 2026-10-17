@@ -66,8 +66,8 @@ test('copied real transport is byte-identical to reviewed old function, without 
  const old=await readFile(resolve(ROOT,'../jhg46-publication-review-20261017/publish-default-closed.mjs'),'utf8'),current=await readFile(resolve(ROOT,'publish-native-replacement.mjs'),'utf8');const start='async function transport(directory){';assert.equal(current.slice(current.indexOf(start),current.indexOf('async function snapshot(client)')),old.slice(old.indexOf(start),old.indexOf('async function moduleHash(client)')));
 });
 
-test('sender v2 expected identity is frozen against importing caller mutation',()=>{
+test('sender v3 expected identity is frozen against importing caller mutation',()=>{
  assert.equal(Object.isFrozen(EXPECTED),true);const original={...EXPECTED};
  for(const key of ['finalCandidate','implementation','bundle','metadata','candidateDir','manifest','inventory','graph','frameHtml'])assert.throws(()=>{EXPECTED[key]='unreviewed';},TypeError);
- assert.deepEqual(EXPECTED,original);assert.equal(i.candidateDir,'candidate-v2');assert.equal(i.module.length,5774614);
+ assert.deepEqual(EXPECTED,original);assert.equal(i.candidateDir,'candidate-v3');assert.equal(i.module.length,5775036);
 });

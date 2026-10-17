@@ -1,0 +1,74 @@
+{
+  "schema": "project-view-browser-native-independent-tool-final-review/v1",
+  "reviewedAt": "2026-10-17T10:54:13.876477+00:00",
+  "candidateDir": "candidate-v3",
+  "implementationCommit": "bc4c0377dd4a59c6ddf6b9de71e3f0fcbe028999",
+  "reviewScope": "Static pin-only review and final technical flag readback; no test, entity-build, network or cloud rerun.",
+  "result": "no-must-fix",
+  "preparer": {
+    "file": "prepare-native-replacement.mjs",
+    "bytes": 15650,
+    "sha256": "1f60b41d6519a086bf9b4bc497a26a8b62b6cb89b3ab839bdc3928378d08642c"
+  },
+  "sender": {
+    "file": "publish-native-replacement.mjs",
+    "bytes": 33424,
+    "sha256": "bd32b080035f6ecf8e317c6165f7b1a6bb14a8dd79a6c3903804de59ed97fd03",
+    "technicalFinalCandidate": true,
+    "priorReviewedFalseFlagSha256": "3a70293a6931f5f8daed6dc0a55eea586075a530e3642b2d6232023d8e9f7d7e",
+    "onlyFinalFalseToTrueDifference": true
+  },
+  "offlineProof": {
+    "file": "offline-sender-review-proof-v4-candidate-v3-20261017.json",
+    "bytes": 4465,
+    "sha256": "2d796165927d017272268a1ffff8475865504ebd68e268ae110687ccdae2853d",
+    "jsonParsed": true,
+    "contentsNotReclaimedAsIndependentTestExecution": true
+  },
+  "priorIndependentPinOnlyReview": {
+    "preparerSha256": "1f60b41d6519a086bf9b4bc497a26a8b62b6cb89b3ab839bdc3928378d08642c",
+    "senderSha256": "3a70293a6931f5f8daed6dc0a55eea586075a530e3642b2d6232023d8e9f7d7e",
+    "fullSourceReverseNormalizationEqualsArchivedV2": true,
+    "allowedChanges": [
+      "candidate-v3 paths and binding filename",
+      "implementation commit",
+      "bundle bytes and entity hashes",
+      "local-build schema v3",
+      "preparer source hash",
+      "candidate version in error text",
+      "technical final flag"
+    ],
+    "guardsTransportAndDummyBoundaryUnchanged": true,
+    "allPinsMatchFrozenV3": true,
+    "bundleSha256": "0475703a4ccda6d695709f6045b321431dc60b0e5369bc308bf08cee8279bd85",
+    "bundleBytes": 5775036,
+    "sourceGraphSha256": "bc6cad8a5bfe5f95f3533f8accca392f7a17e9be8db1c834712063b061de5db7",
+    "assetsInventorySha256": "b1fd4e1fe0b538af20cfb090242fa996f75bf26f8076e259a774ee2d5338b39a",
+    "assetsManifestSha256": "b24e87bf762801056e447c106600e1fcee9f23e43c01830436006b5dca8ce1ad",
+    "buildManifestSha256": "497bcfd1a3027c27de6c55a1a7cbaa1ad954b0ce03333f3b67e230d7d7eb0aa2",
+    "sourceBindingFile": "source-commit-binding-v3.json",
+    "sourceBindingSha256": "e946c4050a70637ea9c93537d9ce4518273b78683c59c44652314fcaabc61a54",
+    "frameHtmlSha256": "4bd78b2cf7c06051af24d97c2fd7665eea3b96ddbffe6b23daec485ee1e3eff2",
+    "metadataSha256": "8451e8c5d7fa54df0c8ef06f10a01c997c1ccba182c0cd908e3437cad0df7ce8",
+    "datedBaselineIsNotExecutionWitness": true,
+    "oldCandidatesRemainUnmodifiedAndNotPublishable": true
+  },
+  "executionNotAuthorizedByThisReceipt": true,
+  "remainingExecutionGuards": [
+    "direct human approval of concrete publication scope",
+    "actual PR235 normal merge/source proof",
+    "same-request fresh Personal before/after preservation witnesses"
+  ],
+  "boundaries": {
+    "testsRunByThisFinalReadback": 0,
+    "entityRebuilds": 0,
+    "networkRequests": 0,
+    "cloudReads": 0,
+    "cloudWrites": 0,
+    "credentialReads": 0,
+    "metadataWrites": 0,
+    "sourceEdits": 0,
+    "privateBaselineOrSettingsOutput": false,
+    "rawActorIdsIncluded": false
+  }
+}

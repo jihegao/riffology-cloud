@@ -32,7 +32,7 @@ test('counts alone cannot hide replacement of original records or policy/image d
  for(const mutate of [m=>{m.bindings[0]={...m.bindings[0],text:'tampered'};},m=>{m.keep_bindings=['secret_text'];},m=>{m.compatibility_flags=[];},m=>{const k=Object.keys(m.exports)[0];m.exports[k]={...m.exports[k],storage:'unexpected'};},m=>{m.containers[0]={name:'replaced'};},m=>{m.bindings.find(b=>b.name==='PROJECT_VIEW_POLICY_JSON').text='{"enabled":true}';}]){const m=structuredClone(metadata);mutate(m);assert.throws(()=>assertMetadata(m,i.baseline));}
 });
 test('frozen actual local bundle, 96 assets and complete namespace baseline are checked',()=>{
- assert.equal(i.module.length,5774614);assert.equal(sha(i.module),PINS.bundle);assert.equal(i.inventory.length,96);assert.equal(Object.keys(i.manifest).length,96);
+ assert.equal(i.module.length,5775036);assert.equal(sha(i.module),PINS.bundle);assert.equal(i.inventory.length,96);assert.equal(Object.keys(i.manifest).length,96);
  assert.equal(i.inventory.filter(a=>a.path.startsWith('/browser-preview-assets/')).length,68);assert.equal(i.baseline.namespaces.result.length,50);
  const incomplete=structuredClone(i.baseline);incomplete.namespaces.result_info.total_count=51;assert.throws(()=>buildMetadata(incomplete,{requestId}),/namespace-completeness/);
 });
@@ -83,12 +83,12 @@ test('factory client request cannot be replaced and calls are snapshots',async()
  const observed=client.calls;observed.push({method:'POST',path:'forged'});assert.equal(client.calls.length,2);
 }));
 
-test('v2 loader uses only candidate-v2 bytes and its pins cannot be reassigned',async()=>{
+test('v3 loader uses only candidate-v3 bytes and its pins cannot be reassigned',async()=>{
  assert.equal(Object.isFrozen(PINS),true);assert.throws(()=>{PINS.candidateDir='.';},TypeError);
- assert.equal(i.candidateDir,'candidate-v2');
- assert.deepEqual(i.module,await readFile(resolve(ROOT,'candidate-v2/gateway.mjs')));
+ assert.equal(i.candidateDir,'candidate-v3');
+ assert.deepEqual(i.module,await readFile(resolve(ROOT,'candidate-v3/gateway.mjs')));
  assert.notEqual(sha(i.module),sha(await readFile(resolve(ROOT,'gateway.mjs'))));
- assert.equal(i.build.frame.htmlSha256,'7f71d5ee385b0703471719289d25d4fc98d25b1e0a138bc2ded28a9c6ef06f4c');
+ assert.equal(i.build.frame.htmlSha256,'4bd78b2cf7c06051af24d97c2fd7665eea3b96ddbffe6b23daec485ee1e3eff2');
 });
 
 test('dummy private request exposes no bind method to replace',async()=>temporary(async directory=>{

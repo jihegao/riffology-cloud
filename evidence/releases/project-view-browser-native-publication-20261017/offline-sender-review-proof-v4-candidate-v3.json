@@ -1,0 +1,111 @@
+{
+  "schema": "project-view-browser-native-offline-sender-review/v1",
+  "candidateVersion": 3,
+  "recordedAt": "2026-10-17T10:51:46.059Z",
+  "implementationCommit": "bc4c0377dd4a59c6ddf6b9de71e3f0fcbe028999",
+  "candidateDir": "candidate-v3",
+  "bundle": {
+    "bytes": 5775036,
+    "sha256": "0475703a4ccda6d695709f6045b321431dc60b0e5369bc308bf08cee8279bd85"
+  },
+  "frameHtmlSha256": "4bd78b2cf7c06051af24d97c2fd7665eea3b96ddbffe6b23daec485ee1e3eff2",
+  "technicalFinalCandidate": true,
+  "independentPinOnlyReview": {
+    "agent": "github_audit",
+    "result": "no-must-fix",
+    "reviewedPreparerSha256": "1f60b41d6519a086bf9b4bc497a26a8b62b6cb89b3ab839bdc3928378d08642c",
+    "reviewedSenderBeforeFinalFlagSha256": "3a70293a6931f5f8daed6dc0a55eea586075a530e3642b2d6232023d8e9f7d7e",
+    "permittedFinalChange": "finalCandidate false to true and corresponding contract sentence only; no guard/transport change"
+  },
+  "files": {
+    "prepare-native-replacement.mjs": {
+      "bytes": 15650,
+      "sha256": "1f60b41d6519a086bf9b4bc497a26a8b62b6cb89b3ab839bdc3928378d08642c"
+    },
+    "prepare-native-replacement.test.mjs": {
+      "bytes": 11937,
+      "sha256": "7a06ac62700ba8052afb1b59df4b591d20ea3827fa1b4775b18147eb16e89412"
+    },
+    "publish-native-replacement.mjs": {
+      "bytes": 33424,
+      "sha256": "bd32b080035f6ecf8e317c6165f7b1a6bb14a8dd79a6c3903804de59ed97fd03"
+    },
+    "publish-native-replacement.test.mjs": {
+      "bytes": 11596,
+      "sha256": "cf5d205855deeda05dcf61d120d8d7a9084e1607c984edf64d9a5a8016becf3b"
+    },
+    "publisher-native-review-contract.md": {
+      "bytes": 9162,
+      "sha256": "dc2e918d385640f2d014f4c517281c1651f2ac426de8e46356e69be88cc8ec68"
+    },
+    "offline-sender-v3-final-tests-20261017.log": {
+      "bytes": 2988,
+      "sha256": "e2f056ed3438467a67ebb07982810751913d1451b6a46e4c13528877c7dd39a5"
+    }
+  },
+  "tests": {
+    "command": [
+      "node",
+      "--test",
+      ".local/jhg46-browser-native-publication-20261017/prepare-native-replacement.test.mjs",
+      ".local/jhg46-browser-native-publication-20261017/publish-native-replacement.test.mjs"
+    ],
+    "exitCode": 0,
+    "passes": 31,
+    "failures": 0,
+    "skips": 0,
+    "syntaxChecks": 2,
+    "rawLog": "offline-sender-v3-final-tests-20261017.log",
+    "finalFlagTrueSourceTested": true
+  },
+  "preparedPlan": {
+    "path": "publication-attempts/7c94ac6b-de10-4104-8f74-402c8014a3eb/plan.json",
+    "requestId": "7c94ac6b-de10-4104-8f74-402c8014a3eb",
+    "bytes": 1693,
+    "sha256": "0c15f6f53aea800c5ae26a8cdb7b92a48f8d758ddf884a361c89bac3987bdc81",
+    "reviewOnly": true,
+    "authorizationPresent": false,
+    "blocked": [
+      "actual PR235 normal merge/source proof",
+      "new root-reviewed direct-human grant file",
+      "same-request fresh Personal before/after witnesses"
+    ]
+  },
+  "selectedMetadataSha256": "8451e8c5d7fa54df0c8ef06f10a01c997c1ccba182c0cd908e3437cad0df7ce8",
+  "fullBaselineSha256": "cd04fb90767acd07e3a36d09abd37fb93f1115f93e22ca5d2fc888ed5bff6e94",
+  "safeBaselineSha256": "255c660a7a35c8ce981c8aecbce172214ef16b7cbeba55b43aea57f08fe8a952",
+  "oldHistory": "offline-tool-history-v2-cbeff9-6f3dd6",
+  "oldV1V2PayloadsPlansAndProofsPreserved": true,
+  "oldV1V2PublishAuthorized": false,
+  "actualMissingGrantCli": {
+    "exitCode": 1,
+    "observedStdout": {
+      "result": "stopped",
+      "code": "explicit-new-human-grant-file-required",
+      "credentialLoaderCalls": 0,
+      "realNetworkRequests": 0,
+      "noRetry": true,
+      "noRollback": true
+    }
+  },
+  "proofAssemblyCorrection": "Initial receipt assembly expected an error property; actual CLI correctly uses code. Receipt assembly alone stopped with KeyError after successful tests/prepare; tools/plan unchanged. Corrected using actual observed CLI result, no transport or write retry.",
+  "humanGrantCreated": false,
+  "mergeProofCreated": false,
+  "freshExecutionWitnessCollected": false,
+  "credentialLoaderCalls": 0,
+  "realNetworkRequests": 0,
+  "cloudWrites": 0,
+  "ordinaryUserExecution": false,
+  "pending": [
+    "actual normal PR235 merge and local origin/main/source proof",
+    "new root-reviewed direct human grant for this exact v3 body/plan/sender",
+    "same-request fresh complete Personal before/after witnesses"
+  ],
+  "notPerformed": [
+    "OAuth read or refresh",
+    "real transport invocation",
+    "provider/container/Turn/Run",
+    "registry or cloud mutation",
+    "new permission/policy/window"
+  ]
+}

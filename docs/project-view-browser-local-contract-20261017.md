@@ -52,6 +52,8 @@
 
 本地包、当前身份和 Artifact GET 继续复核普通 accepted invitation、personal owner、authVersion、当前 scope/generation 及未归档状态，并在异步读取后再次检查；initial operator 身份不能代替普通邀请。刷新、切页、离开、撤权和包更新销毁旧 frame/broker，并丢弃迟到结果。导航、脚本错误、加载超时或读取失败后锁定原包；只读轮询即使恢复同一包也不重执行，用户显式重试才解除该锁。刷新或重新打开能重新加载保存的内容，不恢复已销毁的 JS 内存或把本地结果记成服务端 Run。
 
+当前候选还在项目脚本前绑定 bootstrap 自用的 port 发送/关闭、URL 回收和 timer；主 panel 的原 port 在 ready 后用随机 nonce 探测存活，匹配响应须早于单调三秒截止，确认后隔一秒再探测。未响应即先关闭 broker，再拆 frame 并锁定同包；晚到、重复或旧 scope 响应不能恢复它，也不消费文件请求 ID。这是事件循环协作时的断联清理，不是任意同步 JavaScript 的硬终止保证。Chromium 与 Playwright WebKit26.6 的参数、暂停/继续、保存恢复和断联场景已有分批本地证据；安装的 Safari、真实普通身份及 Firefox 未验。[实际结果与原失败记录](../evidence/releases/project-view-native-liveness-candidate-20261017.json)。
+
 固定 frame 使用签入的 [生成字节](../services/project-views/frame-html.mjs)，由 [可读 bootstrap](../services/project-views/frame-source.mjs) 离线生成，避免构建器重排 `Function.toString()` 改变摘要地址。修改源后运行 `node scripts/m3/build-project-view-frame.mjs --write`；`--check` 和实际 Entry/Gateway 测试核对生成同步、Node 与 Workerd 的 HTML/摘要一致。
 
 ## 未选 Worker 合同的比较边界
