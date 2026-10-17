@@ -1,0 +1,23 @@
+{
+  "endedAt": "2026-10-17T15:17:56.496164+00:00",
+  "exitCode": 0,
+  "fixtureChecks": 9,
+  "localFakeOnly": true,
+  "operationsManifestSha256": "986c2d6e12e72785978e0bdfcf6e6357ba82e59cb16c40dc5c1cf8c7530ac4d1",
+  "realApiCalls": 0,
+  "realCredentialReads": 0,
+  "realDockerCommands": 0,
+  "realSshCommands": 0,
+  "schema": "trusted-pi-image-publication-local-fake/v1",
+  "startedAt": "2026-10-17T15:17:56.434434+00:00",
+  "streams": {
+    "stderr": {
+      "bytes": 107,
+      "sha256": "eab4281419f49474c6773f172eab4705e82da9e9196e5418e92a366609bcb99e"
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

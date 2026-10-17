@@ -1,0 +1,82 @@
+{
+  "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+  "archiveMaximumBytes": 4294967296,
+  "canonicalPr": 239,
+  "canonicalPrHead": "0d23a12d869abccb9515a8e7f8196b0266258226",
+  "decompressedLayerMaximumTotalBytes": 4294967296,
+  "excluded": [
+    "rebuild",
+    "container-create-start-or-rm",
+    "application-rollout",
+    "Cloudflare-application-Gateway-policy-or-binding-write",
+    "provider-call",
+    "project-create-save",
+    "Turn",
+    "Run",
+    "automatic-retry-or-rollback",
+    "new-subscription-or-autopay-change"
+  ],
+  "existingOAuthScopesEvidence": {
+    "bytes": 818,
+    "path": "sources/old-oauth-scopes-safe.json",
+    "sha256": "6399ab2d18d47f6cf7b5df1152a09888e84faf6b559867196082707bd25bb7ad"
+  },
+  "newCredential": {
+    "credentialTransport": "SSH stdin only",
+    "deletionIsNotRevocation": true,
+    "expirationMinutes": 15,
+    "naturalTtlMinutes": 15,
+    "oauthTransferred": false,
+    "permissions": [
+      "push",
+      "pull"
+    ],
+    "repositoryScoped": false
+  },
+  "oauthPolicy": {
+    "cliContainersWriteIsNotRestRequirementProof": true,
+    "existingScopesOnly": true,
+    "expectedScopes": [
+      "user:read",
+      "offline_access",
+      "account:read",
+      "workers:write",
+      "workers_scripts:write"
+    ],
+    "newScopeOrLoginExpansion": false,
+    "normalSameScopeRenewalOnlyIfExplicitlyAuthorized": true,
+    "permissionRefusal": "stop-no-retry-no-expansion",
+    "transport": "direct-supported-REST"
+  },
+  "operations": [
+    "original-image-save-once",
+    "raw-oci-graph-and-all-blobs-verify",
+    "fixed-linux-amd64-image-push-once",
+    "raw-registry-manifest-config-all-layers-readback",
+    "original-credential-and-forward-process-cleanup",
+    "independent-cleanup-readback",
+    "normal-merge-pr239-only-after-all-guards"
+  ],
+  "parentRequestId": "b0933502-20df-480a-9a91-d833f5c4358c",
+  "platform": "linux/amd64",
+  "recipient": "AMD128",
+  "registry": "registry.cloudflare.com",
+  "remoteDirectory": "/tmp/riffoid-jhg46-image-20261017.AU613w/pi-image-publication-v1",
+  "repository": "8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi",
+  "requestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "reviewOnly": true,
+  "route": {
+    "forwardAgent": false,
+    "localExistingProxy": "127.0.0.1:7892",
+    "newRouteCount": 1,
+    "remoteBind": "127.0.0.1:7897"
+  },
+  "schema": "trusted-pi-image-publication-scope/v1",
+  "sourceDescriptor": {
+    "digest": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "size": 856
+  },
+  "sourceImageId": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+  "tag": "jhg46-pi-resource-compat-20261017-a946b164"
+}

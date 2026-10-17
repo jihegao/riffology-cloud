@@ -1,0 +1,121 @@
+{
+  "authorFakeReceipts": {
+    "independentReader": {
+      "bytes": 953,
+      "path": "candidate-v1/independent-reader-checks.json",
+      "recordedExitCode": 0,
+      "recordedPassed": 6,
+      "reviewerReranTests": false,
+      "sha256": "b2fd54990e3382be3240654a05706e98935ce739438c3fd62cdc5a0c5d4e244d",
+      "sourceAndStreamHashesVerified": true
+    },
+    "publication": {
+      "bytes": 692,
+      "manifestBindingVerified": true,
+      "path": "candidate-v1/checks.json",
+      "recordedExitCode": 0,
+      "recordedPassed": 9,
+      "reviewerReranTests": false,
+      "sha256": "bd958ce2db38218eae0df77ba7f5cdb9727b5d902a7ebf0dff0147c259590bdd",
+      "streamHashesVerified": true
+    }
+  },
+  "authorOrTrackedFilesModified": false,
+  "excludedActions": [
+    "application rollout or container create/start/rm",
+    "Gateway/assets/policy/binding update",
+    "real project initialization/save or provider/model/Turn/Run",
+    "new subscription/autopay change",
+    "automatic merge, retry or rollback",
+    "credentials or private authorization body in public evidence"
+  ],
+  "finalOperationsManifest": {
+    "bytes": 1319,
+    "path": "candidate-v1/operations-manifest.json",
+    "sha256": "986c2d6e12e72785978e0bdfcf6e6357ba82e59cb16c40dc5c1cf8c7530ac4d1"
+  },
+  "independentReader": {
+    "bytes": 7854,
+    "path": "candidate-v1/independent-cleanup-readonly.py",
+    "sha256": "2cf04125f41a89804ab284fe378990529b5eb9ad11b76888202b481a45a93ab9"
+  },
+  "limitations": [
+    "Static local preparation review only. Reviewer ran no source scripts/tests, SSH, Docker, real OAuth read, Registry/API operation or GitHub mutation.",
+    "Nine and six local fixture receipts are verified saved evidence, not actual daemon export format, existing-scope credential authorization, Registry ingestion or remote cleanup proof.",
+    "Exact new authorization, current same-scope identity/expiry, daemon/platform-push support and disk/source witnesses, actual tag absence, raw export identities, real Registry readback and independent cleanup remain future execution inputs.",
+    "Raw platform/config digests are deliberately unknown until the approved original export; no fixture digest is a release identity.",
+    "Requested15-minute credential TTL does not prove actual elapsed expiry; deleting local config does not revoke service-side authority.",
+    "This batch does not deploy a036, execute the native root supervisor, prove ordinary invited-user page/save/cold restore acceptance, settle fees or complete JHG-46/JHG-56."
+  ],
+  "mustFix": [],
+  "operationFileHashesVerified": {
+    "EXECUTION.md": {
+      "bytes": 6208,
+      "sha256": "78345741ce552e6c8898e80a9fed858ee0d9462c705944b35632c297dbce1f52"
+    },
+    "local-publication.py": {
+      "bytes": 14230,
+      "sha256": "207c9f81044f084f0968451a666a09543395da34de28059aced00850b6045370"
+    },
+    "merge-guard.md": {
+      "bytes": 1905,
+      "sha256": "7cf80654e7d3d7293e3ac8522ae667f79425858c749578b24da0a28265dc656e"
+    },
+    "oci_verify.py": {
+      "bytes": 5748,
+      "sha256": "0a23618e34b9a2acf608acc86d281ebd68f60a62ba2b102ecda92502c294acea"
+    },
+    "pub_common.py": {
+      "bytes": 3104,
+      "sha256": "352c0a919f524be8e1dcc1acc78e905d164212b22bbde6ed5f98efae47673d82"
+    },
+    "remote-publication.py": {
+      "bytes": 13039,
+      "sha256": "87b27c3e8da1f41334d1a20c367a007f92e86e958117c654217f050384f58c02"
+    },
+    "scope.json": {
+      "bytes": 2748,
+      "sha256": "65a524a1e8028f4dd9af64386f86fc69cebaaf4df5acc62ac039884076d2f96a"
+    },
+    "test_publication.py": {
+      "bytes": 8573,
+      "sha256": "6a88b2676ab2d133e9ce40ec66ec7c181a10e4358308cc3d3e1ec63627b01ab6"
+    }
+  },
+  "priorIssuePreserved": {
+    "mustFix": "The prior local driver could exit successfully solely on zero SSH status without a complete final publication ACK. A ready phase or missing terminal ACK was insufficient evidence of publication.",
+    "oldFakeCount": 8,
+    "oldFakeReceipt": {
+      "bytes": 709,
+      "path": "candidate-v1/local-history/manifest-3f7d6860/checks.json",
+      "sha256": "8ec19efb1208bc5ab76e701e53a179c0bdadb3b1a437b14ea1ff68994a6541cf"
+    },
+    "oldManifest": {
+      "bytes": 1319,
+      "path": "candidate-v1/local-history/manifest-3f7d6860/operations-manifest.json",
+      "sha256": "3f7d6860b1623c129ae85a29e2a0c293c1743df4f772f12f7ceb8ce2cfe1a220"
+    },
+    "oldManifestWasNotExecuted": true,
+    "oldSourceFullCopyNotClaimed": true,
+    "resolution": "final_ack now requires exactly one ordered ready event and one complete final schema/status/source/destination; graph/index/platform/config descriptors bind, both attempt counters equal1, credential copies absent and no cleanup/error. Trailing fragments, missing/duplicate/conflicting ACKs are unknown. main also requires finalPublicationAckVerified=true. One additional fake covers these terminal cases."
+  },
+  "recordedAt": "2026-10-17T15:21:01.399704+00:00",
+  "requestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "reviewedPublicationContract": [
+    "Exact new human-reply-bound grant and all8 operation source bytes validated before local OAuth, SSH or API. No grant supplied by preparation.",
+    "Existing same-account five scopes only; direct REST one credential POST accepts201, bounded success schema and account/host fields. No automatic login, refresh, scope expansion, token retry or CLI-scope assumption.",
+    "Only a verified original-export event permits mint/send. OAuth stays local; username/password use only SSH stdin. One task loopback7897 to existing local7892 route with no inherited or agent forwards and no shared control session.",
+    "Original index856 hash anchors the OCI graph; each raw blob is size/hash checked and reachable, one linux/amd64 manifest selected, config/rootfs bound, every runnable layer decompressed diffID matched, bounded archive and decompressed totals. No conversion/rebuild/signature claim.",
+    "One full original save and one platform Docker push CLI invocation, fixed account/repository/new tag with authoritative tag/local absence checks; no old tag overwrite or removal. One CLI invocation is not a claim about internal HTTP retry counts.",
+    "Tag and digest raw manifests with digest headers, raw config and every raw layer body must match the original verified chain before final publication success.",
+    "Unknown/mismatch/refusal stops on the original identities and permanent attempt locks; no second POST/save/push/tag, fallback or automatic rollback.",
+    "Temporary Docker auth config0600 under700 directory is removed and its original processes/route checked independently. This is local copy/process cleanup, not proof of JWT revocation or elapsed expiry.",
+    "Separate fixed readonly reader verifies publication/raw metadata chain,6 original CLI PID/startTicks terminals, no auth-copy residue and no7897 listener/ECONNREFUSED; it emits no raw credential, config/Env or log bodies and performs no Docker or provider operation.",
+    "PR239 merge is manual and last: actual publication plus independent cleanup, exact head0d23a12, reviewed two-line scope, fresh main/base/protection/review/check conclusions. Quota exemption does not waive real technical failure; no bypass, synthetic replacement check, force update or CI rerun."
+  ],
+  "reviewer": "result_review",
+  "schema": "trusted-pi-fixed-publication-independent-static-review/v1",
+  "sourceImageId": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+  "sourceImageRole": "local Engine/OCI index descriptor size856; not yet a known Registry platform manifest or config digest",
+  "status": "passed-no-mustfix-preparation-only"
+}
