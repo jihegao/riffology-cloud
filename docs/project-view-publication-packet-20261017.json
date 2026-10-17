@@ -784,5 +784,19 @@
       "Actual basic startup/peak viability, target preflight/no-network/original-ID cleanup and the selected owner flow; these are target outcomes, not prerequisites falsely claimed before the first closed Worker PUT",
       "Broader JHG56 remains separately pending unless explicitly selected"
     ]
+  },
+  "currentExecution": {
+    "evidence": "../evidence/releases/project-view-default-closed-publication-20261017.json",
+    "snapshotStage": "Original preparation fields below are retained as historical expected-only review inputs; later actual execution evidence supersedes their raw-image and authorization status.",
+    "directPublicationScopeGranted": true,
+    "maximumIncrementalUsd": null,
+    "costCapRemovedByHuman": true,
+    "githubCiQuotaFailureMayBeIgnored": true,
+    "originalImageExportExecutedOnce": true,
+    "rawManifestAndConfigVerified": true,
+    "registryReadbackVerified": false,
+    "deployed": false,
+    "targetContainerStartAuthorized": false,
+    "newSubscriptionAuthorized": false
   }
 }

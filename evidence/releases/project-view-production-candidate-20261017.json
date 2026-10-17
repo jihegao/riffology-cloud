@@ -160,5 +160,20 @@
   "done": false,
   "initialBoundaries": {"observedBeforeDirectOfflineAuthorization": true, "counterScope": "actions performed for the initial candidate in production/cloud; local synthetic Turn/provider-shaped fixtures are excluded; image pull is successful pulls only, with one failed attempt separately recorded", "productionMutations": 0, "providerTurnRunRequests": 0, "containerExecutions": 0, "imagesBuiltPushedPulled": 0, "admissionInvitationBudgetHistoryChanged": false, "originalAmdPendingTouched": false, "controlPlaneReadsProveZeroCloudExecution": false},
   "boundaries": {"counterScope": "candidate actions in Cloudflare/production; separately approved AMD offline work has its own version-specific record", "productionMutations": 0, "realProviderTurnRunRequests": 0, "cloudflareContainerExecutions": 0, "admissionInvitationBudgetHistoryChanged": false, "originalAmdPendingTouched": false, "controlPlaneReadsProveGlobalZeroCloudExecution": false},
-  "projectFields": "not read or updated; existing CLI token lacks read:project; no permission expansion"
+  "projectFields": "2026-10-17 fresh gh read and successful mutation/readback: In review / P1, native Milestone #1, assignee jihegao; prior missing-read:project notes apply only to their historical reads",
+  "currentPublicationExecution": {
+    "evidence": "project-view-default-closed-publication-20261017.json",
+    "originalRawImageExportVerified": true,
+    "rawManifestAndConfigVerified": true,
+    "registryActualReadback": false,
+    "deployed": false,
+    "costCapRemovedByDirectHuman": true,
+    "githubCiQuotaFailureMayBeIgnored": true,
+    "projectStatus": "In review",
+    "projectPriority": "P1",
+    "nativeMilestone": 1,
+    "owner": "jihegao",
+    "ordinaryInvitedAcceptance": "pending",
+    "fullJhg56Matrix": "deferred pending"
+  }
 }

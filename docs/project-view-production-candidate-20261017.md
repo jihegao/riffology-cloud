@@ -1,5 +1,7 @@
 # JHG-46 production page candidate — 2026-10-17
 
+Later execution evidence is recorded in the [default-closed publication batch](../evidence/releases/project-view-default-closed-publication-20261017.json). It supersedes earlier raw-export, cost-cap and Project-access pending statements below: one export/raw verification is complete; the human removed the budget cap and permits the known CI quota failure to be ignored. The separate short-lived Registry credential transfer is awaiting specific authorization after automatic review rejection; no credential delivery, push or production publication occurred. Earlier source/probe results retain their original limits.
+
 Owner: @jihegao. Execution card: [#214](https://github.com/jihegao/riffology-cloud/issues/214); skills remain [#85](https://github.com/jihegao/riffology-cloud/issues/85). Real authenticated acceptance is tracked in JHG-56. Current candidate source is `e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1` on `codex/jhg46-production-20261017`, based on main `24a98cda0fcb361158f9d332b6e8ca21726992a8`. It includes the platform-contract follow-up to initial source `bfca3cc`. This note records its implementation and actual read-only baseline. It does not enable admission or certify a production browser image.
 
 ## Verified baseline

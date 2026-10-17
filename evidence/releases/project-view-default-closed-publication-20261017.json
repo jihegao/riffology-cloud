@@ -1,0 +1,224 @@
+{
+  "schema": "project-view-default-closed-publication/v1",
+  "date": "2026-10-17",
+  "timeZone": "Asia/Shanghai",
+  "owner": "jihegao",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/214",
+  "pullRequest": "https://github.com/jihegao/riffology-cloud/pull/233",
+  "sourceCommit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1",
+  "currentStage": "original image export/raw blobs verified; publication prepared; pending exact short-lived Registry credential transfer authorization after automatic review rejection",
+  "authorization": {
+    "schema": "project-view-current-publication-authorization/v1",
+    "recordedAt": "2026-10-17T07:23:00.789703+00:00",
+    "source": "direct human messages in this Goal chat",
+    "grant": "授权，按上述范围和 US$1 上限推进",
+    "costPolicySupersedingMessage": "改为无费用预算上限，触发欠费通知我即可",
+    "githubCiSupersedingMessage": "GitHub CI 无额度，可忽略，继续推进",
+    "maximumIncrementalUsd": null,
+    "costCapRemoved": true,
+    "registryPriceUnknownDoesNotBlock": true,
+    "newSubscriptionAuthorized": false,
+    "githubCiQuotaFailureMayBeIgnored": true,
+    "ciFailureStillReportedTruthfully": true,
+    "scope": {
+      "registryRepository": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser",
+      "sourceIndex": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+      "expectedRunnableManifest": "sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+      "pullRequest": 233,
+      "readyMergeAuthorizedAfterDigestAndResourceChecks": true,
+      "worker": "riffology-m1-gateway-staging",
+      "newNamespaceClasses": [
+        "ProjectViewRuntime",
+        "ProjectViewCapacity"
+      ],
+      "newApplication": "riffology-project-view-browser",
+      "schedulingPolicy": "default",
+      "instanceType": "basic",
+      "instances": 0,
+      "maxInstances": 1,
+      "closedPolicyRaw": "{\"enabled\":false}"
+    },
+    "notAuthorized": [
+      "new subscription",
+      "container acceptance start",
+      "model/Turn/Run invocation",
+      "automatic payment or billing setting change"
+    ],
+    "stopOn": [
+      "unreconciled execution outcome",
+      "immutable image mismatch",
+      "resource/configuration drift",
+      "unexpected target or extra instance"
+    ],
+    "arrearsMonitor": {
+      "automationId": "jhg-46",
+      "intervalHours": 6,
+      "readOnly": true,
+      "initialKnownGithubMessage": "recent account payments have failed OR spending limit needs to be increased",
+      "initialKnownGithubMessageIsDefiniteArrears": false
+    }
+  },
+  "export": {
+    "startedAt": "2026-10-17T07:08:47.007382+00:00",
+    "finishedAt": "2026-10-17T07:09:00.647967+00:00",
+    "exitCode": 0,
+    "archive": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/derived-image-original.oci.tar",
+    "archiveBytes": 908147712,
+    "archiveSha256": "bf3fd3942323b8419914f221733a8f4d91c5fc7090be148e3db502d54baab860",
+    "actualExportAttempts": 1,
+    "sourceImageUnchanged": true
+  },
+  "rawImageVerification": {
+    "verifiedAt": "2026-10-17T07:10:36.023566+00:00",
+    "members": 23,
+    "blobCount": 18,
+    "blobBytes": 908127627,
+    "allMembersSafeRegularOrDirectory": true,
+    "allBlobSizesAndHashesVerified": true,
+    "allBlobsReachableFromOriginalIndex": true,
+    "originalIndex": {
+      "digest": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+      "bytes": 856,
+      "mediaType": "application/vnd.oci.image.index.v1+json"
+    },
+    "baseLayerPrefixVerified": true,
+    "baseLayerCount": 7,
+    "actualExportAttempts": 1,
+    "publisherSignatureVerified": false
+  },
+  "runnableManifest": {
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "digest": "sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+    "size": 2593,
+    "platform": {
+      "architecture": "amd64",
+      "os": "linux"
+    }
+  },
+  "config": {
+    "mediaType": "application/vnd.oci.image.config.v1+json",
+    "digest": "sha256:927d69be23d858d7311d0869ef72b28e877647a1c12c4415f6280cdd57259d94",
+    "size": 8987
+  },
+  "records": {
+    "intent": {
+      "path": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/image-export-intent.json",
+      "bytes": 1751,
+      "sha256": "d6799577b821067ea6fef28bbc170b4ab5b7d42c16909ae2b6ab30b1d41bb869"
+    },
+    "process": {
+      "path": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/image-export-process.json",
+      "bytes": 100,
+      "sha256": "b84e24386569ddac335d1064af70d9b5589806250473234c4236c44b1acf23a1"
+    },
+    "result": {
+      "path": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/image-export-result.json",
+      "bytes": 2076,
+      "sha256": "44f921d7cff25edb320e015b1d7501f7741be7ca7ee3516a62650b253c554150"
+    },
+    "verification": {
+      "path": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/image-export-verified.json",
+      "bytes": 13289,
+      "sha256": "8e74d4a27115cf088f0b332943095bc116c786c931ccd1b0ce45d71814557d05"
+    }
+  },
+  "independentVerification": {
+    "startedAt": "2026-10-17T07:12:06.948489+00:00",
+    "finishedAt": "2026-10-17T07:12:08.428157+00:00",
+    "archiveMatches": true,
+    "tarSafety": {
+      "regularFiles": 21,
+      "directories": 2,
+      "unsafeOrDuplicateMembers": false,
+      "linksOrOtherSpecialMembers": false,
+      "unexpectedRegularMembers": []
+    },
+    "blobChecks": {
+      "count": 18,
+      "bytes": 908127627,
+      "allShaVerified": true,
+      "allDescriptorSizesVerified": true,
+      "exactlyAllReachable": true
+    },
+    "rawDescriptorFiles": {
+      "source-index.json": {
+        "bytes": 856,
+        "sha256": "42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee"
+      },
+      "linux-amd64-manifest.json": {
+        "bytes": 2593,
+        "sha256": "742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339"
+      },
+      "linux-amd64-config.json": {
+        "bytes": 8987,
+        "sha256": "927d69be23d858d7311d0869ef72b28e877647a1c12c4415f6280cdd57259d94"
+      }
+    },
+    "localRecordSha256": "7054e156b8258568dc474dbaf1ea9d12a622a8cf8e3f0bb5ee35c341a4f01fd9"
+  },
+  "historicalRejection": {
+    "preserved": true,
+    "unexecuted": true,
+    "supersededByNewDirectAuthorizationOnlyForThisExactExport": true
+  },
+  "costEvidence": {
+    "existingWorkersPaidObservedInAuthenticatedUi": true,
+    "existingR2PaidObservedInAuthenticatedUi": true,
+    "registryStoragePricingKnown": false,
+    "costCapRemovedByDirectHumanMessage": true,
+    "noCostCapIsNotZeroCost": true,
+    "billingApiReadFailures": {
+      "code": 10000,
+      "message": "Authentication error",
+      "doesNotProveArrearsOrNoSubscription": true
+    }
+  },
+  "registry": {
+    "pushed": false,
+    "actualRawReadback": false,
+    "actualPushInvocations": 0,
+    "credentialTransfer": {
+      "recordedAt": "2026-10-17T07:38:35.041184+00:00",
+      "approval": "Automatic approval review rejected root write_stdin before execution: the 15-minute Registry password transfer to AMD128 was not specifically authorized",
+      "imagePushAuthorized": true,
+      "budgetCapUsd": null,
+      "notifyDelinquency": true,
+      "credentialsGeneratedByRoot": 1,
+      "credentialsTransferred": false,
+      "actualImagePushInvocations": 0,
+      "noWorkaroundOrRetry": true,
+      "receiverAndRouteStopped": true,
+      "pending": "Direct human exact short-lived account/domain push+pull credential transfer authorization; no new container/target admission",
+      "sourceRecordSha256": "537e288d947d837d8d09e5609dc806c56a056267ed52a76e6af43569d6efb4ad",
+      "sourceRecordBytes": 9397
+    }
+  },
+  "publication": {
+    "merged": false,
+    "deployed": false,
+    "newNamespaces": [],
+    "newApplication": null,
+    "admissionEnabled": false
+  },
+  "acceptance": {
+    "targetContainerStarted": false,
+    "modelTurnRunInvoked": false,
+    "basicStartupVerified": false,
+    "authenticatedUserFlowVerified": false,
+    "fullJhg56MatrixVerified": false
+  },
+  "done": false,
+  "staticDiskObservation": {
+    "inspectSize": 3354611740,
+    "VirtualSizePresent": false,
+    "decimal4GBHeadroom": 645388260,
+    "4GiBHeadroom": 940355556,
+    "cloudflareViabilityProved": false
+  },
+  "boundaries": {
+    "counterScope": "only this candidate batch actions; not global account execution or zero-bill proof",
+    "cloudflareContainerStartRequested": false,
+    "realModelTurnRunRequested": false,
+    "globalRuntimeOrZeroCostEstablished": false
+  }
+}
