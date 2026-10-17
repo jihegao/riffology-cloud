@@ -1,8 +1,16 @@
 # Current release readiness — 2026-10-14
 
-## 2026-10-17 Copied-project context integration on main
+## 2026-10-17 #232 restricted deployment; authenticated acceptance pending
 
-An independent candidate on main `1e35391` reuses #226's eight-file initial Files / first Managed context / empty Preview increment for #207/#206. It retains the current pre-dispatch source digest guard and manual/original-operation behavior. #231 is separate. Final-HEAD related and aggregate results belong to the linked PR/Issue delivery evidence; no local plan is treated as a pass. [Provenance, verification method and acceptance limits](initial-context-main-integration-20261017.md). This candidate is not merged or deployed.
+The user directly approved Ready, merge and the existing restricted deployment. [PR #232](https://github.com/jihegao/riffology-cloud/pull/232) was marked ready and merged as `1908fc1afdc5258647bd408e819d81e29b3b9dd5`; its tree equals the tested candidate `0928173`. Gateway version `f2a0b0a3-8742-4466-89d0-74cf0db6c47b` is at 100%, deployment `2ffb14ba-a651-4010-b042-f8cd5e2d97f0`, acknowledged 2026-10-17 12:22 Asia/Shanghai. The backend module and all 95 public assets match the frozen release bytes; the 68 immutable assets are retained. Root returns the expected index and unauthenticated `/api/me` returns 401.
+
+All 100 bindings, 23 SQLite exports, five container associations and configuration except release annotations match the baseline. All 15 account container application configurations are unchanged. Manual-save admission remains disabled; read-only D1 checks before/after deployment show one released/committed fence, no pending fence, 13 migrations and no foreign-key violations, with zero rows written by those checks. No migration, provider request, Turn, Run, invitation or capacity change was performed as part of this release.
+
+Exact-candidate local checks remain 115/115 related, Node 3,147 passed / 13 conditionally skipped and Python 8 passed. These are candidate checks with merge-tree equivalence, not a new full suite on the merge SHA. The Node25 aggregate cancellation assertion failure remains recorded, and hosted CI did not start because of billing/spending limits. Real owner/second-identity, first Managed session, refresh/recovery and resource-release acceptance remain pending for #207/#206 and JHG-56. No Issue closure or Done transition. GitHub Project synchronization remains unavailable with the existing token missing `read:project`; the browser Project read also timed out. [Sanitized deployment receipt](../evidence/releases/initial-context-deployment-20261017.json).
+
+### Historical integration candidate
+
+An independent candidate on main `1e35391` reuses #226's eight-file initial Files / first Managed context / empty Preview increment for #207/#206. It retains the current pre-dispatch source digest guard and manual/original-operation behavior. #231 is separate. Final-HEAD related and aggregate results belong to the linked PR/Issue delivery evidence; no local plan is treated as a pass. [Provenance, verification method and acceptance limits](initial-context-main-integration-20261017.md). The candidate's former unmerged/undeployed status is superseded by the release above.
 
 The baseline #221/#227 integration was previously merged and released. Its real page/recovery/cross-identity/isolation acceptance remains pending under the latest delivery order; older entries below retain their historical candidate states.
 
