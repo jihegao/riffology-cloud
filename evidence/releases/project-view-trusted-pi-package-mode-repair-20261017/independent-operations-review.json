@@ -1,0 +1,83 @@
+{
+  "archive": {
+    "bytes": 61519,
+    "contentBytes": 238989,
+    "memberNamesArePayloadRelativeWithoutPayloadPrefix": true,
+    "regularMembers": 12,
+    "sha256": "4ae32cf711d7500d4b0cd893757ee5a625d9b275518b86e3680146c0b7f7dcd2"
+  },
+  "boundaries": {
+    "dockerActionPerformedByReview": false,
+    "grantFileCreatedByReview": false,
+    "manifestBoundSevenOperationFilesModifiedByReview": false,
+    "newHumanExecutionAuthorizationStillRequired": true,
+    "newModelOrProviderExecution": false,
+    "newSaveOrMockPerformedByReview": false,
+    "noSdkOrCloudflareOrOrdinaryUserAcceptanceClaim": true,
+    "originalCredentialOutcomeUnknownAndFailureHistoryPreserved": true,
+    "priorDirectLayerObservationIsNotFinalRuntimeStatOrCompleteAliasProof": true,
+    "remoteActionPerformedByReview": false
+  },
+  "canonicalImplementationCommit": "0d23a12d869abccb9515a8e7f8196b0266258226",
+  "canonicalPullRequest": "https://github.com/jihegao/riffology-cloud/pull/239",
+  "checks": {
+    "all18RelativeDocumentLinksExist": true,
+    "all25PublicFilesByteExactToReviewedLocalSources": true,
+    "allSevenManifestOperationFilesBytesAndShaVerified": true,
+    "explicitForwardAgentNoAndClearAllForwardings": true,
+    "fiveRuntimeSourcesSixFunctionalTargetsUnchanged": true,
+    "fixedBaseAndRootSupervisorChildContractRetained": true,
+    "lostCreateAckDoesNotStartAndCleansOnlyOriginalIdentity": true,
+    "missingOrWrongGrantStopsBeforeSshOrDocker": true,
+    "newPermanentTransferAndBuildOnceLocks": true,
+    "noBuildProbeOrRemoteExecutionByThisReview": true,
+    "noOAuthRegistryProviderCredentialOrPullPath": true,
+    "packageManifestAndLockBytesUnchanged": true,
+    "receiverChecksFixedCommonShaBeforeExec": true,
+    "scopeToCommonAndReceiverPinsClosed": true,
+    "strictOriginalProbeAndFunctionalManifestUnchanged": true,
+    "twoPackagePermissionCopiesMakeEightTargets": true,
+    "unknownOrFailureDoesNotReplayOrReplaceIdentity": true
+  },
+  "fakeEvidence": {
+    "earlierDraftFixtureFailurePreserved": true,
+    "endedAt": "2026-10-17T13:00:40.724798+00:00",
+    "receipt": {
+      "bytes": 1175,
+      "path": "evidence/releases/project-view-trusted-pi-package-mode-repair-20261017/operations/offline-checks.json",
+      "sha256": "eb5cade6b9065b408af9d5cab62be359e49a5e3ed526066a7f73f7706b7015fa"
+    },
+    "reportedActualExitCode": 0,
+    "reportedActualTests": 13,
+    "reviewerReexecutedTests": false,
+    "scope": "Pure local synthetic/injected subprocesses; not real SSH, Docker, authentication or a human execution grant.",
+    "startedAt": "2026-10-17T13:00:40.655109+00:00"
+  },
+  "operationsManifest": {
+    "bytes": 1372,
+    "path": "evidence/releases/project-view-trusted-pi-package-mode-repair-20261017/operations/operations-manifest.json",
+    "sha256": "bc8e45a8783748be4db9fc8040745aa239a2a4473b89740dbc09f290add82383"
+  },
+  "parentRequestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+  "previousReviewFindingsResolved": [
+    {
+      "finding": "Bootstrap common validator must not be trusted only by the wire self-described manifest.",
+      "resolution": "Receiver now hard-pins the reviewed common source SHA before compile/exec; final scope/common/receiver and seven-file manifest pins match."
+    },
+    {
+      "finding": "ClearAllForwardings does not by itself disable inherited SSH agent forwarding.",
+      "resolution": "transfer-local ssh argv explicitly includes ForwardAgent=no; existing SSH identity is only used locally for the one AMD128 authentication."
+    }
+  ],
+  "publicPacketDocument": {
+    "bytes": 8800,
+    "path": "docs/project-view-trusted-pi-package-mode-repair-packet-20261017.md",
+    "sha256": "bed7b37ccb47d4d2591d608d6106468d09f2748bda2d6931a3413a23a4acd850"
+  },
+  "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+  "result": "no-must-fix",
+  "reviewOnly": true,
+  "reviewedAt": "2026-10-17T13:03:00.518259+00:00",
+  "reviewer": "source_audit",
+  "schema": "trusted-pi-package-permissions-independent-operations-review/v1"
+}

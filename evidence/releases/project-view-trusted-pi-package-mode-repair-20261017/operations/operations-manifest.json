@@ -1,0 +1,37 @@
+{
+  "archiveSha256": "4ae32cf711d7500d4b0cd893757ee5a625d9b275518b86e3680146c0b7f7dcd2",
+  "canonicalImplementationCommit": "0d23a12d869abccb9515a8e7f8196b0266258226",
+  "files": {
+    "EXECUTION.md": {
+      "bytes": 6585,
+      "sha256": "4f2ce134078fb80e8f87a5c5e5bbf2b94fb3f0c905cfa25e9bbeb268dd4992ef"
+    },
+    "build-probe-repair.py": {
+      "bytes": 28136,
+      "sha256": "c0afbbba0277c82b27fd145c3db830c2faa9375222d77b5044b12d22116d8a81"
+    },
+    "repair_common.py": {
+      "bytes": 3987,
+      "sha256": "a1ac0f85ef63d33b434736d81473fe1db056661344a24273493ed5a825f5a6ef"
+    },
+    "scope.json": {
+      "bytes": 3419,
+      "sha256": "3ae7c17eb9a25876294d3ee3e94f634e218fc431238b8181ae48f2d35915d8aa"
+    },
+    "test_repair_operations.py": {
+      "bytes": 10388,
+      "sha256": "ca30445f5161aeb5dab0a1ffce5b81288b3b6f89899c1ea66df4eba62d567401"
+    },
+    "transfer-local.py": {
+      "bytes": 6552,
+      "sha256": "3acb500a50542bde15e4ee2a5bfd8445df200231a4a319e8cdfa117b3a155140"
+    },
+    "transfer-receiver.py": {
+      "bytes": 6244,
+      "sha256": "b41f428a527f93aa3e4645270e65b5b6f812f0bd1bc216975ec8183dbc4043d9"
+    }
+  },
+  "requestId": "a21af2c8-44ff-4f67-a07f-c364bcd6d295",
+  "schema": "trusted-pi-package-permissions-operations-manifest/v1",
+  "sourceKernelSha256": "12a22b87f8dbab84d144dbcac0b141d050703f620a5417c0607bb5ab7a38fcd8"
+}
