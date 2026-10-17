@@ -99,23 +99,15 @@ test('dispose during authenticated create waits for the same original request th
  assert.equal(f.state.requests.some(r=>r.body.type==='poll'),false);assert.equal(await p.evaluate(()=>remoteFixture.draws.length),0);
 });
 
-test('panel retains unconfirmed original cleanup and blocks replacement sessions until it is confirmed',async t=>{
- const f=await authenticatedFixture(t,{closeConfirmed:false}),p=f.page;
+test('native page panel rejects authenticated remote delivery without creating a remote session',async t=>{
+ const f=await authenticatedFixture(t),p=f.page;
  await p.evaluate(async()=>{
   const {createProjectViewsPanel}=await import('/project-views.js'),root=document.createElement('section');document.body.append(root);
-  window.fetch=remoteFixture.fetch;
-  remoteFixture.panel=createProjectViewsPanel({root,api:async path=>path.includes('?identity=')?{current:true}:{package:remoteFixture.pkg,delivery:remoteFixture.authDelivery},pollMs:60000});
+  remoteFixture.panel=createProjectViewsPanel({root,api:async()=>({package:remoteFixture.pkg,delivery:remoteFixture.authDelivery}),pollMs:60000});
   await remoteFixture.panel.enter({tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1});
  });
- await p.waitForFunction(()=>remoteFixture.decodes===1);
+ assert.equal(f.state.requests.length,0);assert.equal(await p.locator('iframe').count(),0);assert.equal(await p.locator('.project-view-body canvas').count(),0);
  await p.evaluate(()=>remoteFixture.panel.leave());
- await p.waitForFunction(()=>remoteFixture.transportCalls.some(r=>r.url.endsWith('/close')));
- await p.evaluate(()=>remoteFixture.panel.enter({tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1}));
- assert.equal(f.state.requests.filter(r=>r.path===sessionPath).length,1);
- const original=f.state.requests[0].body.requestId;assert.ok(f.state.requests.filter(r=>r.path.endsWith('/close')).every(r=>r.path==='/api/project-view-sessions/'+original+'/close'));
- f.state.closeConfirmed=true;await p.evaluate(()=>remoteFixture.panel.reload());
- assert.equal(f.state.requests.filter(r=>r.path===sessionPath).length,2);
- f.state.closeConfirmed=true;await p.evaluate(()=>remoteFixture.panel.leave());
 });
 
 test('invalid or globally revoked login stops pixel/input delivery and does not claim old-cookie cleanup succeeded',async t=>{

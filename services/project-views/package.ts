@@ -30,7 +30,8 @@ export function parseProjectViews(raw:unknown):ProjectViewsManifest{
 async function sha(bytes:Uint8Array){return [...new Uint8Array(await crypto.subtle.digest('SHA-256',Uint8Array.from(bytes)))].map(n=>n.toString(16).padStart(2,'0')).join('');}
 function base64(bytes:Uint8Array){let s='';for(let i=0;i<bytes.length;i+=16384)s+=String.fromCharCode(...bytes.subarray(i,i+16384));return btoa(s);}
 /** Parse references, not a JS behavior allowlist: DOM and arbitrary project
- * functions execute only inside the isolated browser host; the local UI receives pixels. */
+ * functions execute inside an opaque DOM frame in the user's browser. This is
+ * not a no-egress guarantee for data already delivered to project code. */
 function moduleBytes(path:string,bytes:Uint8Array,files:Set<string>){
  const source=decoder.decode(bytes),replacements:Array<{start:number;end:number;text:string}>=[];
  const tree=parse(source,{ecmaVersion:'latest',sourceType:'module'});

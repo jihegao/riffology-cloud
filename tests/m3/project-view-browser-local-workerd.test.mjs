@@ -1,0 +1,32 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {manualPageFixture,scopes,appOrigin} from './manual-page-broker-fixture.mjs';
+import {PROJECT_VIEW_FRAME_HTML,PROJECT_VIEW_FRAME_PATH,PROJECT_VIEW_FRAME_SHA256} from '../../services/project-views/frame.mjs';
+import {verifyProjectViewPackage} from '../../services/web/project-views.js';
+
+test('local browser discovery traverses real Gateway, canonical Revision, D1/R2 and exact browser grant without a cloud binding',{timeout:60000},async t=>{
+ const f=await manualPageFixture(t,{browserLocal:true});
+ const frame=await f.rawRequest(PROJECT_VIEW_FRAME_PATH);assert.equal(frame.status,200);assert.equal(await frame.text(),PROJECT_VIEW_FRAME_HTML);assert.match(frame.headers.get('content-security-policy'),/sandbox allow-scripts/);
+ const manifest={schema:'project.views/v1',files:['app/home.html','app/report.html','docs/data.json'],views:[{id:'home',title:'Home',entrypoint:'app/home.html'},{id:'report',title:'Report',entrypoint:'app/report.html'}]};
+ const files=version=>({'app/views.json':JSON.stringify(manifest),'app/home.html':'<h1>'+version+'</h1>','app/report.html':'<h1>Report '+version+'</h1>','docs/data.json':JSON.stringify({version})});
+ assert.equal((await f.save('alpha','browser-v1',files('V1'))).body.status,'committed');
+ assert.equal((await f.save('beta','browser-beta',files('BETA'))).body.status,'committed');
+ const first=await f.read(f.base('alpha')+'/project-views');await verifyProjectViewPackage(first.package,scopes.alpha);
+ assert.deepEqual(first.delivery,{execution:'browser-local',transport:'native-dom/v1',executionOrigin:appOrigin,frameUrl:appOrigin+PROJECT_VIEW_FRAME_PATH,frameSha256:PROJECT_VIEW_FRAME_SHA256});
+ assert.equal(first.package.manifest.views.length,2);assert.deepEqual(await f.read(f.base('alpha')+'/project-views?identity='+first.package.packageIdentity),{current:true});
+ const receipt=(await f.read(f.base('alpha')+'/project-view-artifacts?identity='+first.package.packageIdentity)).items[0];assert.equal(receipt.source,'user-upload');
+ const bytes=await f.read(f.base('alpha')+'/project-view-artifacts/'+receipt.artifactId+'?identity='+first.package.packageIdentity+'&offset=0');assert.equal(Buffer.from(bytes.base64,'base64').toString(),files('V1')['docs/data.json']);
+ assert.equal((await f.request(f.base('alpha')+'/project-views',{user:'beta'})).status,404);
+ const before=await f.footprint();assert.equal((await f.save('alpha','browser-v2',files('V2'))).body.status,'committed');
+ const second=await f.read(f.base('alpha')+'/project-views');assert.notEqual(second.package.packageIdentity,first.package.packageIdentity);
+ assert.deepEqual(await f.read(f.base('alpha')+'/project-views?identity='+first.package.packageIdentity),{current:false});
+ await f.restart();assert.deepEqual(await f.read(f.base('alpha')+'/project-views'),second,'real Workerd reconstruction preserves canonical package and native delivery');
+ assert.equal((await f.request(f.base('alpha')+'/project-views',{user:'beta'})).status,404);
+ await f.read('/__fixture/disable-browser-policy');
+ assert.equal((await f.rawRequest(PROJECT_VIEW_FRAME_PATH)).status,503);
+ assert.equal((await f.request(f.base('alpha')+'/project-views')).status,503);
+ assert.equal((await f.request(f.base('alpha')+'/project-view-artifacts?identity='+second.package.packageIdentity)).status,503);
+ const after=await f.footprint();assert.equal(after.outbound,0);assert.equal(after.journal.alpha.turns,0);assert.equal(after.journal.alpha.sessions,0);
+ assert.equal(after.journal.alpha.active,null);assert.equal(after.manualPosts,before.manualPosts+1);
+ assert.ok(before.keys.every(key=>after.keys.includes(key)),'original canonical bytes remain present');
+});

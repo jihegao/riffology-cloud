@@ -1,6 +1,6 @@
 import {msg} from './i18n.js';
 import {bindValue} from './i18n-bindings.js';
-import {createProjectViewRemote} from './project-view-remote.js';
+import {createProjectViewLocal} from './project-view-local.js';
 const encoder=new TextEncoder(),decoder=new TextDecoder('utf8',{fatal:true});
 const fail=code=>{throw Error('project-view-'+code);};
 const sha=async bytes=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(n=>n.toString(16).padStart(2,'0')).join('');
@@ -18,17 +18,31 @@ export async function verifyProjectViewPackage(pkg,scope,isCurrent=()=>true){
 }
 /** Scope is a closure held by the host, never a claim accepted from a frame.
  * No app API URL, credentials, command or write operation enters this port. */
-export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},onState=()=>{},readAsset,readArtifacts=async()=>({items:[],nextCursor:null,version:null}),authorize=async()=>{}}){
+export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},onState=()=>{},readAsset,readArtifacts=async()=>({items:[],nextCursor:null,version:null}),authorize=async()=>{},liveness=false}){
  let closed=false,failed=false,lastId=0,inflight=0,subscribed=false,artifactState=null,subscriptionEpoch=0;
+ const post=port.postMessage.bind(port),closePort=port.close.bind(port),setTimer=globalThis.setTimeout.bind(globalThis),clearTimer=globalThis.clearTimeout.bind(globalThis),now=globalThis.performance.now.bind(globalThis.performance);
+ let livenessStarted=false,pingNonce=null,pingTimer=null,pongTimer=null,pongDeadline=null;
  const current=()=>!closed&&isCurrent();
+ function close(){if(closed)return;closed=true;subscriptionEpoch++;subscribed=false;clearTimer(pingTimer);clearTimer(pongTimer);pingTimer=pongTimer=pingNonce=pongDeadline=null;port.onmessage=null;closePort();}
+ function ping(){
+  pingTimer=null;if(!current())return;
+  pingNonce=[...crypto.getRandomValues(new Uint8Array(32))].map(b=>b.toString(16).padStart(2,'0')).join('');
+  pongDeadline=now()+3000;pongTimer=setTimer(()=>{if(!current())return;close();onState('failed');},3000);
+  try{post({type:'project-view-ping',nonce:pingNonce});}catch{close();onState('failed');}
+ }
  const checkAuthorization=async()=>{try{await authorize();}catch(error){onState('failed');throw error;}};
  const snapshot=()=>({revisionId:pkg.revisionId,filesSha256:pkg.filesSha256,packageIdentity:pkg.packageIdentity,files:pkg.assets.map(({path,sha256,mediaType})=>({path,sha256,mediaType})),artifacts:artifactState,views:pkg.manifest.views.map(({id,title,entrypoint})=>({id,title,entrypoint}))});
- const send=value=>{if(!current())return;if(encoder.encode(JSON.stringify(value)).length>65536){if(value.id)port.postMessage({id:value.id,error:'response-too-large'});return;}port.postMessage(value);};
+ const send=value=>{if(!current())return;if(encoder.encode(JSON.stringify(value)).length>65536){if(value.id)post({id:value.id,error:'response-too-large'});return;}post(value);};
  port.onmessage=async event=>{
   if(!current())return;
   const m=event.data;
-  if(!m||typeof m!=='object'||Array.isArray(m)||encoder.encode(JSON.stringify(m)).length>4096)return;
-  if(m.type==='installed'&&Object.keys(m).length===1){if(!failed)onState('ready');return;}
+  if(!m||typeof m!=='object'||Array.isArray(m))return;
+  try{if(encoder.encode(JSON.stringify(m)).length>4096)return;}catch{return;}
+  if(m.type==='ended'&&Object.keys(m).sort().join(',')==='reason,type'&&m.reason==='navigation-ended'){failed=true;close();onState('navigation-ended');return;}
+  if(m.type==='project-view-pong'){
+   if(liveness===true&&pingNonce!==null&&Object.keys(m).sort().join(',')==='nonce,type'&&m.nonce===pingNonce){if(now()>=pongDeadline){close();onState('failed');return;}clearTimer(pongTimer);pongTimer=pongDeadline=null;pingNonce=null;pingTimer=setTimer(ping,1000);}return;
+  }
+  if(m.type==='installed'&&Object.keys(m).length===1){if(!failed){onState('ready');if(liveness===true&&!livenessStarted&&current()){livenessStarted=true;ping();}}return;}
   if(m.type==='failed'&&Object.keys(m).sort().join(',')==='error,type'&&['page-install-failed','page-script-failed','page-script-timeout'].includes(m.error)){failed=true;onState('failed');return;}
   if(!Number.isSafeInteger(m.id)||m.id<=lastId||m.id>2147483647)return;
   lastId=m.id;
@@ -70,41 +84,38 @@ export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},on
   }catch{send({id:m.id,error:'request-denied'});if(!current())return;}finally{inflight--;}
  };
  port.start?.();
- return {close(){closed=true;subscriptionEpoch++;subscribed=false;port.onmessage=null;port.close();},async publish(){if(!subscribed||!current())return;const epoch=subscriptionEpoch;await checkAuthorization();if(!current()||!subscribed||epoch!==subscriptionEpoch)return;const state=await readArtifacts({cursor:null});if(!current()||!subscribed||epoch!==subscriptionEpoch)return;await checkAuthorization();if(!current()||!subscribed||epoch!==subscriptionEpoch)return;artifactState=state;send({type:'snapshot',snapshot:snapshot()});},get closed(){return closed;}};
+ return {close,async publish(){if(!subscribed||!current())return;const epoch=subscriptionEpoch;await checkAuthorization();if(!current()||!subscribed||epoch!==subscriptionEpoch)return;const state=await readArtifacts({cursor:null});if(!current()||!subscribed||epoch!==subscriptionEpoch)return;await checkAuthorization();if(!current()||!subscribed||epoch!==subscriptionEpoch)return;artifactState=state;send({type:'snapshot',snapshot:snapshot()});},get closed(){return closed;}};
 }
 export function createProjectViewsPanel({root,api,pollMs=5000}){
  const doc=root.ownerDocument,win=doc.defaultView;
- let context=null,generation=0,pkg=null,delivery=null,selected='',frame=null,remote=null,broker=null,timer=null,requestEpoch=0,active=false,visible=true,closeTail=Promise.resolve();
- const closing=new Set();
+ let context=null,generation=0,pkg=null,delivery=null,selected='',frame=null,local=null,broker=null,timer=null,requestEpoch=0,active=false,visible=true,closeTail=Promise.resolve();
+ let failedPackageIdentity=null;
  const nav=doc.createElement('div'),body=doc.createElement('div'),status=doc.createElement('p'),retry=doc.createElement('button');
- nav.className='workspace-subtabs';nav.setAttribute('role','tablist');body.className='project-view-body';status.className='meta';retry.type='button';bindValue(retry,msg('projectViews.retry'));retry.onclick=()=>void reload();
+ nav.className='workspace-subtabs';nav.setAttribute('role','tablist');body.className='project-view-body';status.className='meta';retry.type='button';bindValue(retry,msg('projectViews.retry'));retry.onclick=()=>{failedPackageIdentity=null;void reload();};
  const storageKey=()=> 'riffology:project-views:'+context?.tenantId+':'+context?.workspaceId;
  function disposeFrame(){
   broker?.close();broker=null;frame?.remove();frame=null;
-  if(remote){closing.add(remote);remote=null;}
-  const task=closeTail.catch(()=>{}).then(async()=>{for(const old of [...closing]){await old.close();closing.delete(old);}});
+  const old=local;local=null;
+  const task=closeTail.catch(()=>{}).then(()=>old?.close());
   closeTail=task;return task;
  }
- function leave(){generation++;requestEpoch++;clearTimeout(timer);timer=null;active=false;void disposeFrame().catch(()=>{});context=null;pkg=null;delivery=null;root.replaceChildren();}
+ function leave(){generation++;requestEpoch++;clearTimeout(timer);timer=null;active=false;void disposeFrame().catch(()=>{});context=null;pkg=null;delivery=null;failedPackageIdentity=null;root.replaceChildren();}
  function renderNav(){nav.replaceChildren();for(const v of pkg?.manifest.views??[]){const button=doc.createElement('button');button.type='button';button.textContent=v.title;button.setAttribute('role','tab');button.setAttribute('aria-selected',String(v.id===selected));button.onclick=()=>void choose(v.id);nav.append(button);}nav.hidden=!pkg||pkg.manifest.views.length<2;}
  async function choose(id){
   if(!active||!context||!pkg||!delivery)return;
   const ownPackage=pkg,ownContext=context,ownDelivery=delivery;
   const view=ownPackage.manifest.views.find(v=>v.id===id)??ownPackage.manifest.views[0];if(!view)return;
-  generation++;const token=generation,disposal=disposeFrame();selected=view.id;renderNav();
+  generation++;const token=generation,disposal=disposeFrame();selected=view.id;failedPackageIdentity=null;renderNav();
   try{win.sessionStorage.setItem(storageKey(),JSON.stringify({id:selected}));}catch{}
   const current=()=>active&&token===generation&&context===ownContext&&pkg===ownPackage;
   try{
-   // A route/scope change first confirms that its
-   // original browser session is closed, then creates the replacement.
+   // A route/scope change closes the original local frame and broker first.
    await disposal;if(!current())return;
    await verifyProjectViewPackage(ownPackage,ownContext,current);if(!current())return;
-   frame=doc.createElement('canvas');const ownFrame=frame;
-   ownFrame.style.cssText='width:100%;max-width:800px;height:auto;aspect-ratio:4/3;display:block';
    bindValue(status,msg('projectViews.loading'));retry.hidden=true;
    const channel=new win.MessageChannel();
    broker=createProjectViewBroker({
-    port:channel.port1,pkg:ownPackage,isCurrent:current,
+    port:channel.port1,pkg:ownPackage,isCurrent:current,liveness:true,
     readArtifacts:async query=>{
      const params=new URLSearchParams({identity:ownPackage.packageIdentity});
      if(query.cursor)params.set('cursor',query.cursor);if(query.offset!==undefined)params.set('offset',String(query.offset));
@@ -115,16 +126,16 @@ export function createProjectViewsPanel({root,api,pollMs=5000}){
      const authority=await api('/api/workspaces/'+encodeURIComponent(ownContext.workspaceId)+'/project-views?identity='+ownPackage.packageIdentity,{signal:AbortSignal.timeout(10000)});
      if(!authority?.current)fail('revoked');
     },
-    onState:state=>{if(current()){if(state==='failed')void disposeFrame().catch(()=>{});bindValue(status,msg(state==='ready'?'projectViews.ready':'projectViews.loadFailed'));retry.hidden=state==='ready';}},
+    onState:state=>{if(current()){if(state==='ready')ownLocal.installed();if(state==='failed'||state==='navigation-ended'){failedPackageIdentity=ownPackage.packageIdentity;void disposeFrame().catch(()=>{});}bindValue(status,msg(state==='ready'?'projectViews.ready':state==='navigation-ended'?'projectViews.navigationEnded':'projectViews.loadFailed'));retry.hidden=state==='ready';}},
    });
-   const ownRemote=createProjectViewRemote({
-    canvas:ownFrame,delivery:ownDelivery,pkg:ownPackage,view,port:channel.port2,isCurrent:current,
-    onError:()=>{if(current()){void disposeFrame().catch(()=>{});bindValue(status,msg('projectViews.loadFailed'));retry.hidden=false;}},
+   const ownLocal=createProjectViewLocal({
+    container:body,delivery:ownDelivery,pkg:ownPackage,view,port:channel.port2,isCurrent:current,
+    onError:error=>{if(current()){failedPackageIdentity=ownPackage.packageIdentity;void disposeFrame().catch(()=>{});bindValue(status,msg(error.message==='project-view-local-navigation-ended'?'projectViews.navigationEnded':'projectViews.loadFailed'));retry.hidden=false;}},
    });
-   remote=ownRemote;body.replaceChildren(ownFrame);
-   await ownRemote.start();if(!current())await ownRemote.close();
+   local=ownLocal;frame=ownLocal.frame;
+   await ownLocal.start();if(!current())await ownLocal.close();
   }catch{
-   if(current()){if(remote||broker||frame)await disposeFrame().catch(()=>{});bindValue(status,msg('projectViews.unavailable'));retry.hidden=false;}
+   if(current()){if(local||broker||frame)await disposeFrame().catch(()=>{});failedPackageIdentity=ownPackage.packageIdentity;bindValue(status,msg('projectViews.unavailable'));retry.hidden=false;}
   }
  }
  async function reload(){
@@ -137,10 +148,11 @@ export function createProjectViewsPanel({root,api,pollMs=5000}){
    await verifyProjectViewPackage(result.package,own,()=>active&&context===own&&epoch===requestEpoch);
    if(!active||context!==own||epoch!==requestEpoch)return;
    root.hidden=false;
-   if(pkg?.packageIdentity!==result.package.packageIdentity||!frame||delivery?.executionOrigin!==result.delivery?.executionOrigin||delivery?.transport!==result.delivery?.transport||delivery?.sessionPath!==result.delivery?.sessionPath){pkg=result.package;delivery=result.delivery;await choose(selected);}
+   if(failedPackageIdentity===result.package.packageIdentity)return;
+   if(pkg?.packageIdentity!==result.package.packageIdentity||!frame||delivery?.executionOrigin!==result.delivery?.executionOrigin||delivery?.transport!==result.delivery?.transport||delivery?.frameUrl!==result.delivery?.frameUrl||delivery?.frameSha256!==result.delivery?.frameSha256){pkg=result.package;delivery=result.delivery;await choose(selected);}
    else await broker?.publish();
   }catch{
-   if(active&&context===own&&epoch===requestEpoch){generation++;await disposeFrame().catch(()=>{});bindValue(status,msg('projectViews.savedUnavailable'));retry.hidden=false;root.hidden=false;}
+   if(active&&context===own&&epoch===requestEpoch){failedPackageIdentity=pkg?.packageIdentity??failedPackageIdentity;generation++;await disposeFrame().catch(()=>{});bindValue(status,msg('projectViews.savedUnavailable'));retry.hidden=false;root.hidden=false;}
   }finally{if(active&&context===own&&epoch===requestEpoch)timer=setTimeout(()=>void reload(),pollMs);}
  }
  function setActive(value){if(visible===value)return;visible=value;if(!value){active=false;generation++;requestEpoch++;clearTimeout(timer);void disposeFrame().catch(()=>{});}else if(context){active=true;void reload();}}

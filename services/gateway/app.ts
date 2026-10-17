@@ -338,22 +338,29 @@ export async function gateway(request:Request, services:GatewayServices):Promise
     if(projectViewArtifactsRoute){
       const artifactId=projectViewArtifactsRoute[2],identity=url.searchParams.get('identity'),cursor=url.searchParams.get('cursor'),offset=url.searchParams.get('offset');
       if(request.method!=='GET'||!identity||!/^[a-f0-9]{64}$/.test(identity)||[...url.searchParams.keys()].some(k=>!(artifactId?['identity','offset']:['identity','cursor']).includes(k))||[...url.searchParams.keys()].some(k=>url.searchParams.getAll(k).length!==1)||cursor!==null&&!/^(?:[a-f0-9]{64}:)?[a-f0-9]{64}:[a-f0-9]{64}:artifact-[a-f0-9]{60}$/.test(cursor)||offset!==null&&!/^(0|[1-9][0-9]{0,6})$/.test(offset))throw new CatalogError('not_found');
-      const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models),scope=await catalog.maintenanceWorkspace(principal,projectViewArtifactsRoute[1]!);
+      const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models);
+      // Local page reads now admit execution; preserve the old start route's
+      // archive boundary even though the transport is read-only GET.
+      const scope=await (services.projectViews?.browserLocal?catalog.writableWorkspace(principal,projectViewArtifactsRoute[1]!):catalog.maintenanceWorkspace(principal,projectViewArtifactsRoute[1]!));
       if(!services.projectViews?.artifacts)throw new HttpError('project-view-unavailable',503);
       try{
+        if(services.projectViews.browserLocal&&!await acceptedInvitationProjectAdmission(services.database,'true',principal,scope.tenantId))throw new HttpError('project-view-access-denied',403);
         const result=await services.projectViews.artifacts(scope,principal,{identity,...(artifactId?{artifactId,offset:Number(offset??0)}:{cursor})});
-        const latest=await catalog.maintenanceWorkspace(principal,projectViewArtifactsRoute[1]!);if(!sameScope(scope,latest))throw new HttpError('project-view-access-denied',403);return json(result);
+        if(services.projectViews.browserLocal&&!await acceptedInvitationProjectAdmission(services.database,'true',principal,scope.tenantId))throw new HttpError('project-view-access-denied',403);
+        const latest=await (services.projectViews.browserLocal?catalog.writableWorkspace(principal,projectViewArtifactsRoute[1]!):catalog.maintenanceWorkspace(principal,projectViewArtifactsRoute[1]!));if(!sameScope(scope,latest))throw new HttpError('project-view-access-denied',403);return json(result);
       }catch(error){if(error instanceof CatalogError||error instanceof HttpError)throw error;throw new HttpError('project-view-unavailable',503);}
     }
     const projectViewsRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/project-views$/.exec(url.pathname);
     if(projectViewsRoute){
       if(request.method!=='GET'||[...url.searchParams.keys()].some(k=>k!=='identity')||url.searchParams.getAll('identity').length>1||url.searchParams.has('identity')&&!/^[a-f0-9]{64}$/.test(url.searchParams.get('identity')!))throw new CatalogError('not_found');
       const catalog=new ProjectCatalog(services.database,new Set(['blank-v1']),models);
-      const scope=await catalog.maintenanceWorkspace(principal,projectViewsRoute[1]!);
+      const scope=await (services.projectViews?.browserLocal?catalog.writableWorkspace(principal,projectViewsRoute[1]!):catalog.maintenanceWorkspace(principal,projectViewsRoute[1]!));
       if(!services.projectViews)throw new HttpError('project-view-unavailable',503);
       try{
+        if(services.projectViews.browserLocal&&!await acceptedInvitationProjectAdmission(services.database,'true',principal,scope.tenantId))throw new HttpError('project-view-access-denied',403);
         const result=await services.projectViews.read(scope,principal);
-        const latest=await catalog.maintenanceWorkspace(principal,projectViewsRoute[1]!);
+        if(services.projectViews.browserLocal&&!await acceptedInvitationProjectAdmission(services.database,'true',principal,scope.tenantId))throw new HttpError('project-view-access-denied',403);
+        const latest=await (services.projectViews.browserLocal?catalog.writableWorkspace(principal,projectViewsRoute[1]!):catalog.maintenanceWorkspace(principal,projectViewsRoute[1]!));
         if(!sameScope(scope,latest))throw new HttpError('project-view-access-denied',403);
         return json(url.searchParams.has('identity')?{current:result.package?.packageIdentity===url.searchParams.get('identity')}:result);
       }catch(error){if(error instanceof CatalogError||error instanceof HttpError)throw error;throw new HttpError('project-view-unavailable',503);}

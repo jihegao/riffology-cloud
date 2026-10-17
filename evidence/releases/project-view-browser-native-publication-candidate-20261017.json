@@ -1,0 +1,251 @@
+{
+  "schema": "project-view-browser-native-publication-candidate/v3",
+  "preparedAt": "2026-10-17T10:46:37.522Z",
+  "reviewOnly": true,
+  "deployable": false,
+  "currentProductionChanged": false,
+  "source": {
+    "headCommit": "bc4c0377dd4a59c6ddf6b9de71e3f0fcbe028999",
+    "workingTreeUncommitted": false,
+    "finalCommitPending": false,
+    "mainFreshRead": "1585280c76e55cae61f3969db5545f76edce678c",
+    "graphInputs": 1123,
+    "graphCanonicalSha256": "b127c2e30d5a9a81028d68358241f3f4b48b83e7bbbae1ce5572e5b7cb275d70",
+    "graphFileSha256": "bc6cad8a5bfe5f95f3533f8accca392f7a17e9be8db1c834712063b061de5db7",
+    "implementationCommit": "bc4c0377dd4a59c6ddf6b9de71e3f0fcbe028999",
+    "headCommitAtPreparation": "bc4c0377dd4a59c6ddf6b9de71e3f0fcbe028999",
+    "frameHtmlSha256": "4bd78b2cf7c06051af24d97c2fd7665eea3b96ddbffe6b23daec485ee1e3eff2",
+    "sourceCommitBinding": "evidence/releases/project-view-browser-native-publication-20261017/source-commit-binding-v3.json",
+    "sourceCommitBindingSha256": "e946c4050a70637ea9c93537d9ce4518273b78683c59c44652314fcaabc61a54"
+  },
+  "baseline": {
+    "authority": "Personal Cloudflare connector; GET only; exact existing target account",
+    "observedAt": "2026-10-17T09:52:26.561Z",
+    "getCount": 38,
+    "allStatuses200": true,
+    "settingsDeploymentApplicationBracketsStable": true,
+    "settingsAndVersionBindingsEqual": true,
+    "versionId": "eae8764f-fda5-4241-9f51-cf01ecc46b00",
+    "deploymentId": "0f9c6266-2541-41ff-877e-9e9bbb85f3a2",
+    "actualServingMainModule": {
+      "name": "index.js",
+      "bytes": 5768905,
+      "sha256": "d92548f0f07bb782527618dd26166b11985eaed1723801d6e65cb49b9a41ea78",
+      "equalPreviousPublishedModule": true
+    },
+    "counts": {
+      "bindings": 106,
+      "retainedSecretBindings": 11,
+      "exports": 25,
+      "containerAssociations": 6,
+      "namespaces": 50,
+      "secretBindings": 11,
+      "apps": 16,
+      "appVersionLists": 16,
+      "registries": 1,
+      "domains": 3,
+      "routes": 5,
+      "schedules": 1
+    },
+    "compatibilityDate": "2026-09-09",
+    "compatibilityFlags": [
+      "nodejs_compat",
+      "nodejs_compat_do_not_populate_process_env",
+      "enable_request_signal"
+    ],
+    "remotePolicyClosed": true,
+    "browserPolicyBindingAbsent": true,
+    "app": {
+      "id": "a031ae38-f967-483f-ae2e-3dbed3d35268",
+      "schedulingPolicy": "default",
+      "instancesField": 1,
+      "maxInstances": 1,
+      "instanceListCount": 0,
+      "instanceListComplete": true,
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+      "fieldVariancePreviouslyAccepted": true
+    },
+    "otherApplicationsFreshRead": true,
+    "globalZeroExecutionOrCostClaim": false,
+    "completeConfigurationLocalOnly": true,
+    "rawPrivateSnapshotSha256": "cd04fb90767acd07e3a36d09abd37fb93f1115f93e22ca5d2fc888ed5bff6e94",
+    "safeSnapshotSha256": "255c660a7a35c8ce981c8aecbce172214ef16b7cbeba55b43aea57f08fe8a952",
+    "secretValuesRequested": false,
+    "rawSettingsPublished": false,
+    "completeSnapshotStartedAt": "2026-10-17T09:49:39.905Z",
+    "completeSnapshotEndedAt": "2026-10-17T09:52:26.561Z",
+    "partitionRecoveryGets": 26,
+    "finalGuardGets": 11,
+    "allApplicationVersionListsRead": true,
+    "allPaginationComplete": true,
+    "notExecutionWitness": true
+  },
+  "candidate": {
+    "mainModule": "index.js",
+    "bundleBytes": 5775036,
+    "bundleSha256": "0475703a4ccda6d695709f6045b321431dc60b0e5369bc308bf08cee8279bd85",
+    "buildManifestSha256": "497bcfd1a3027c27de6c55a1a7cbaa1ad954b0ce03333f3b67e230d7d7eb0aa2",
+    "assets": {
+      "count": 96,
+      "web": 28,
+      "immutable": 68,
+      "immutableAllByteIdentical": true,
+      "added": [
+        "/project-view-local.js"
+      ],
+      "changed": [
+        "/project-views.js"
+      ],
+      "removed": [],
+      "inventoryCanonicalSha256": "8d9570beeb215164cbaf824b81362b3ad0af0316846a26f28643a6e3579136f7",
+      "manifestCanonicalSha256": "eae29637fa4a17e34ad594bca4aa565ab68ccf6ad9be001e371810caf9cf439a",
+      "inventoryFileSha256": "b1fd4e1fe0b538af20cfb090242fa996f75bf26f8076e259a774ee2d5338b39a",
+      "manifestFileSha256": "b24e87bf762801056e447c106600e1fcee9f23e43c01830436006b5dca8ce1ad"
+    },
+    "esbuildVersion": "0.28.1",
+    "neutralBundle": true,
+    "nativePlaywrightDependencyInputs": 0,
+    "sourceBytesStableDuringBuild": true
+  },
+  "replacementIntent": {
+    "worker": "riffology-m1-gateway-staging",
+    "replaceOnly": [
+      "index.js",
+      "static asset manifest and changed/new static assets"
+    ],
+    "bindingsAfter": 106,
+    "wireBindingsExcludingRetainedSecrets": 95,
+    "keepBindings": [
+      "secret_text",
+      "secret_key"
+    ],
+    "exportsAfter": 25,
+    "containerAssociationsAfter": 6,
+    "namespacesAfter": 50,
+    "allExistingConfigurationAndNamespaceIdsPreserved": true,
+    "browserPolicyVariableAdded": false,
+    "browserPolicyEnabled": false,
+    "remotePolicyChanged": false,
+    "appOrImageOrPolicyMutation": false,
+    "migrationsOrNamespacesAdded": false,
+    "containerModelTurnRun": false,
+    "assetRoutingPreserved": {
+      "html_handling": "none",
+      "not_found_handling": "none",
+      "serve_directly": false,
+      "raw_run_worker_first": true,
+      "base_path": "/"
+    }
+  },
+  "publicationPreparation": {
+    "metadataPrepared": true,
+    "oldPublisherModified": false,
+    "reason": "Withdrawn v2 retained; candidate-v3 and its exact sender are frozen and independently reviewed. New exact human grant, actual normal PR235 merge proof and fresh same-request Personal preservation witnesses remain mandatory.",
+    "beforeAnyWrite": [
+      "Actual normal PR235 merge/main identity and unchanged frozen production inputs",
+      "New direct-human publication grant bound by root to the exact source, package, sender, metadata and original request plan",
+      "Fresh same-request Personal before/after preservation witnesses; the preparation baseline is not accepted as execution evidence"
+    ],
+    "unknownResultRule": "Preserve the original request identity and lock; read back that operation; never replay PUT or rebuild a request under a new identity.",
+    "rollbackRule": "Only a reviewed forward replacement preserving existing namespaces, tombstones and configuration; do not apply the old pre-lifecycle version.",
+    "metadataWithoutJwtSha256": "8451e8c5d7fa54df0c8ef06f10a01c997c1ccba182c0cd908e3437cad0df7ce8",
+    "senderPrepared": true,
+    "senderReview": "candidate-v3 independent no-mustfix",
+    "senderSha256": "bd32b080035f6ecf8e317c6165f7b1a6bb14a8dd79a6c3903804de59ed97fd03",
+    "preparerSha256": "1f60b41d6519a086bf9b4bc497a26a8b62b6cb89b3ab839bdc3928378d08642c",
+    "reviewPlanSha256": "0c15f6f53aea800c5ae26a8cdb7b92a48f8d758ddf884a361c89bac3987bdc81",
+    "reviewPlanOnly": true,
+    "reviewPlanAuthorizationPresent": false,
+    "reviewProof": "evidence/releases/project-view-browser-native-publication-20261017/offline-sender-review-proof-v4-candidate-v3.json",
+    "reviewProofSha256": "2d796165927d017272268a1ffff8475865504ebd68e268ae110687ccdae2853d",
+    "independentReview": "evidence/releases/project-view-browser-native-publication-20261017/independent-tool-final-review-v3.json",
+    "independentReviewSha256": "e777e0510721648901603986b637ac45d3d423a91fd96fc53de0d320c4d1973f",
+    "technicalCandidateFinalized": true
+  },
+  "validation": {
+    "fullCheck": {
+      "command": "npm run check",
+      "exitCode": 0,
+      "finishedAt": "2026-10-17T09:45:24.486037Z",
+      "nodePass": 3303,
+      "nodeSkip": 13,
+      "pythonPass": 8,
+      "logSha256": "122701a27f1d77ca21ef50d239bcf14ae06bb71f7efc67f876a3cf49fce91405",
+      "evidence": "evidence/releases/project-view-browser-native-candidate-20261017.json",
+      "sourceCommit": "e689beb4a1babd8546405181cf3daf74625ed59d"
+    },
+    "localBuild": "passed",
+    "assetsReceipt": "passed; 96 paths, 68 immutable unchanged",
+    "uiFixturesEarlierBatch": {
+      "pass": 112,
+      "fail": 0
+    },
+    "checkUiEarlierBatch": {
+      "pass": 21,
+      "fail": 0
+    },
+    "notClaimed": [
+      "cloud publication",
+      "browser grant activation",
+      "authenticated ordinary-user save/refresh/recovery acceptance",
+      "container or paid execution",
+      "full JHG-56 matrix"
+    ],
+    "postFullCheckFollowup": {
+      "sourceCommit": "bc4c0377dd4a59c6ddf6b9de71e3f0fcbe028999",
+      "evidence": "evidence/releases/project-view-native-liveness-candidate-20261017.json",
+      "fullCheckRepeated": false
+    },
+    "publisherOfflineChecks": {
+      "preparePass": 17,
+      "senderPass": 14,
+      "totalPass": 31,
+      "fail": 0,
+      "skip": 0,
+      "scope": "final candidate-v3 closed dummy tests and actual missing-grant refusal; no actual publication"
+    }
+  },
+  "execution": {
+    "cloudWrites": 0,
+    "assetSessions": 0,
+    "assetUploads": 0,
+    "registryWrites": 0,
+    "credentialsLoaded": false,
+    "uiLogin": false,
+    "containerStarts": 0,
+    "modelTurnRun": 0
+  },
+  "localArtifacts": {
+    "directory": ".local/jhg46-browser-native-publication-20261017",
+    "privateSnapshot": "baseline-complete.private.json",
+    "safeSnapshot": "baseline-complete-safe.json",
+    "bundle": "candidate-v3/gateway.mjs",
+    "sourceGraph": "candidate-v3/source-graph.json",
+    "buildManifest": "candidate-v3/build-manifest.json",
+    "assetsManifest": "candidate-v3/assets-manifest.json",
+    "assetInventory": "candidate-v3/assets-sha256.json",
+    "initialLocalPreparationFailurePreserved": "preparation-initial-failure.json",
+    "candidateDirectory": ".local/jhg46-browser-native-publication-20261017/candidate-v3",
+    "sourceCommitBinding": "candidate-v3/source-commit-binding-v3.json",
+    "sender": "publish-native-replacement.mjs",
+    "preparer": "prepare-native-replacement.mjs"
+  },
+  "historicalPublicationEvidence": "https://github.com/jihegao/riffology-cloud/pull/234",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/214",
+  "readyForPublicationAuthorization": true,
+  "supersededCandidates": [
+    {
+      "bundleBytes": 5774530,
+      "bundleSha256": "e2eef2c0b20c4d10c2757bea3dc38691f7df5459b9728a43fcb19d0bee0571e2",
+      "buildManifestSha256": "833805159246c4d0847816a6baa44e09f734cd59b47acd699ba5c59235a597c0",
+      "publishable": false
+    },
+    {
+      "bundleBytes": 5774614,
+      "bundleSha256": "7d6520d39d8a76b274420772850c7638282be11e2fe7ee3406fb07413c809cb9",
+      "buildManifestSha256": "4cd61146a0a59df5860e4b1f2479be78eb3bcc778675e35ef6aa930b00565240",
+      "publishable": false,
+      "reason": "withdrawn after actual original-channel lifecycle defect"
+    }
+  ]
+}

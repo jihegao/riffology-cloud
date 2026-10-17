@@ -1,0 +1,233 @@
+{
+  "schema": "project-view-normal-pi-acceptance-review/v1",
+  "recordedAt": "2026-10-17T10:34:25.496Z",
+  "reviewOnly": true,
+  "executionAuthorized": false,
+  "accountOrProjectWritesPerformed": false,
+  "authority": {
+    "issue214": "https://github.com/jihegao/riffology-cloud/issues/214",
+    "latestReviewed214Comment": "https://github.com/jihegao/riffology-cloud/issues/214#issuecomment-6232711021",
+    "issue104": "https://github.com/jihegao/riffology-cloud/issues/104",
+    "issue207": "https://github.com/jihegao/riffology-cloud/issues/207",
+    "issue206": "https://github.com/jihegao/riffology-cloud/issues/206",
+    "direction": "native DOM in user browser; explicit acceptance of egress of already authorized project bytes",
+    "implementationCommit": "9b993bd3d60e619e935be6f6fcb0d1dab8460e1c",
+    "localHeadAtReview": "df12d802b6d5752e36ac10dcace721ff941e1ec9",
+    "fullJhg56Prerequisite": false,
+    "managedRequiredByIssue214": false,
+    "normalUiRuntime": "pi",
+    "normalUiSubmitBody": "{message}; UI does not request a Managed override"
+  },
+  "ordinarySubject": {
+    "label": "ordinary-invited-owner",
+    "authVersion": 2,
+    "activePersonalOwner": true,
+    "ordinaryAcceptedInvitations": 1,
+    "initialOperatorInvitations": 0,
+    "operatorRoles": 0,
+    "readonlyEvidence": {
+      "relativePath": ".local/jhg46-ordinary-actor-readonly-20261017.json",
+      "sha256": "69e9633339041f1d024e583469a15fb4f0f15ca6addda672178fe9c40d7b1f98",
+      "observedAt": "2026-10-17T09:07:25.434Z"
+    },
+    "freshActualAuthenticationRequiredBeforeExecution": true,
+    "publicActorIdentifiersOmitted": true
+  },
+  "scope": {
+    "newBlankProjects": 1,
+    "newProductSessions": 2,
+    "explicitProductTurnPostRequests": 3,
+    "fixedProviderHttpCallCount": null,
+    "turnCountIsNotProviderCallCount": true,
+    "additionalRepairTurnAutomaticallyAllowed": false,
+    "oldProjectRestoreOrReplay": false,
+    "nativeDomExecution": "browser-local/unverified",
+    "serverRunOrSimulation": false,
+    "remoteChromiumOrPng": false,
+    "managedHostedSession": false,
+    "newSubscription": false,
+    "costPolicy": "no user-imposed monetary ceiling; preserve metering/unknown usage; notify confirmed arrears; no new subscription",
+    "monitorOwner": "@jihegao; execution operator must be named in future grant"
+  },
+  "priorConfigurationEvidence": {
+    "privateSnapshotRelativePath": ".local/jhg46-browser-native-publication-20261017/baseline-complete.private.json",
+    "sha256": "cd04fb90767acd07e3a36d09abd37fb93f1115f93e22ca5d2fc888ed5bff6e94",
+    "observedAt": "2026-10-17T09:52:26.561Z",
+    "notFreshExecutionAuthorization": true
+  },
+  "normalPiPins": {
+    "provider": "openai",
+    "model": "gpt-5.6-luna",
+    "providerSelection": "M2_MODEL_PROVIDER=openai; M2_MODEL_ID matches validated PRODUCTION_MODEL_PROFILE_JSON model and accepted evidence; TrustedPi release fixed model must match",
+    "profileVersion": "g5-openai-luna-20260916-wiring-v1",
+    "profileSha256": "7291181d366d597b4c5ebcf365d43dd455904bfdcc4825ba7bf020aac9903341",
+    "gatewayId": "riffology-g5-20260916",
+    "protocol": "openai-responses",
+    "maxInputTokensPerCall": 262144,
+    "maxOutputTokensPerCall": 4096,
+    "trustedPiRequestDeadlineMs": 115000,
+    "providerRetryOrFallback": false,
+    "oldTrustedPiImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+    "newCompatibleTrustedPiImage": null,
+    "projectToolsImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-20261001-project-tools@sha256:e6341979a848f40c06328317759e52fefd700470fc4952d2301c382d16152c39",
+    "projectRuntimeImage": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-m1-project-staging@sha256:bb9c7857c57ab397022fc89fd4c42c6e70cb497c7c6c63e29329fe85b588ba00",
+    "lazyProjectEnabled": false,
+    "workspaceRuntimeReuseEnabled": false,
+    "rules": "fresh safe projection checks provider/model/profile and all original serving versions before execution; source constants alone are not actual provider proof; no secret values needed"
+  },
+  "admissionAndTime": {
+    "existingPiPolicyId": "private-beta-20260920-v1",
+    "schemaVersion": 2,
+    "quotaMode": "meter-only",
+    "admission": "accepted-invitation-personal-projects",
+    "enabledInPriorSnapshot": true,
+    "newPiPolicyNeededIfSameAdmissionRemainsValid": false,
+    "perUserActiveTurns": 1,
+    "privateBetaLogicalGlobalActiveTurns": 2,
+    "trustedPiUnderlyingGlobalSlots": 1,
+    "perTurnNativeExecutionDeadlineMs": 600000,
+    "outerPolicyMaxTurnDurationMs": 900000,
+    "policyMaxProviderCallDurationMs": 360000,
+    "actualTrustedPiCallDeadlineMs": 115000,
+    "toolCommandTotalDeadlineMaximumMs": 120000,
+    "bashTimeoutMaximumMs": 30000,
+    "outerReleaseTimeoutMs": 120000,
+    "monitorIntervalMs": 60000,
+    "humanReviewDeadline": "2026-10-20T15:59:59.999Z",
+    "configuredReviewDeadline": "2026-12-31T15:59:59.999Z",
+    "effectiveExpiryRule": "min(original explicit human grant/#104 authority deadline, configured reviewAt, any narrower scoped grant); config Dec31 does not extend Oct20 human authority",
+    "deadlineIsNotReleaseProof": true,
+    "managedFiveMinuteIsNotPiLimit": true
+  },
+  "steps": [
+    {
+      "id": "preflight",
+      "requests": "read-only after future grant",
+      "must": [
+        "fresh real /api/me equals ordinary active invited actor authVersion2",
+        "new TrustedPi image is proven to contain frozen skill loader and active no-ModelSpec release",
+        "current normal UI route remains Pi and all model/profile/capacity pins equal expected",
+        "no original unknown/quarantined/release hold; no old project recovery",
+        "choose absolute execution window no later than earliest human authority/config/grant expiry"
+      ]
+    },
+    {
+      "id": "new-project",
+      "requests": "one original POST blank-v1; one creation idempotency key/body",
+      "must": [
+        "new personal project only; no initial model/data or admin seed",
+        "await original ProjectRuntime initialization terminal, nativeRunning=false/fenced and quotaReleased",
+        "empty page has no old model/Seed/parameters",
+        "bind returned project/workspace/generation to browser grant"
+      ]
+    },
+    {
+      "id": "s1-t1",
+      "requests": "Session1 creation plus explicit Turn1",
+      "must": [
+        "author small valid .pi/skills/native-pages-check/SKILL.md through ordinary project tools",
+        "save canonical R1 and Session checkpoint",
+        "confirm terminal/stop/persistence/resource disposition/capacity release before next Turn"
+      ]
+    },
+    {
+      "id": "s1-t2",
+      "requests": "explicit Turn2 starting /skill:native-pages-check",
+      "must": [
+        "prove selected skill loaded from R1 path/SHA; no inline/admin replacement for loader",
+        "author app/views.json, exactly two HTML entries, one shared module/CSS and declared small series JSON [2,3,5]",
+        "all package-local references declared; no ModelSpec/trace or server Run",
+        "save V1/R2; verify factor2=20/factor5=50, ordinary page navigation and authorized readFile",
+        "refresh/leave/return V1 from same canonical identities; local runtime restarts without provider replay",
+        "if artifact-read acceptance is required within this Turn: bounded authoring bash writes 17KiB synthetic text then project_read materializes real artifact; observe journal commit and broker list/read slices matching SHA"
+      ]
+    },
+    {
+      "id": "s2-t3",
+      "requests": "Session2 creation plus explicit Turn3 starting /skill:native-pages-check",
+      "must": [
+        "new Pi Session with canonical R2 workspace base; no prior live JS/VM reliance",
+        "prove skill/source loader again, change only series to [2,3,7] and intended V2 marker",
+        "preserve skill, both original pages/shared module/CSS and other files unless declared patch",
+        "save V2/R3; verify factor2=24/factor5=60 and subscription/current-package refresh behavior",
+        "refresh/leave/cold browser context reads identical V2 files/package; no automatic model/old tool replay",
+        "final original Pi native resources/capacity released; R1-R3 retained; scoped browser grant closed without changing remote policy"
+      ]
+    }
+  ],
+  "resourcesAndCleanup": {
+    "necessaryCloudRuntimeScope": [
+      "one new project ProjectRuntime initialization under original outbox identity",
+      "three normal Pi Turns and their existing ProjectToolSandbox/TrustedPiSandbox original dispatch lifecycle"
+    ],
+    "notZeroCloudContainers": true,
+    "newNativeAppOrNamespace": false,
+    "currentColdNoReuse": true,
+    "containerRestartCountNotAssertedFromSessionCount": true,
+    "beforeNextTurnRequired": [
+      "authoritative original Turn terminal and no activeTurn",
+      "canonical Revision and Session receipt committed, exact files/session SHA and CAS head",
+      "stop receipt nativeRunning=false and fenced",
+      "ProjectTool and TrustedPi original IDs stopped/destroyed with resourceDisposition released and original capacity release proof",
+      "no releaseHold/recoveryHold/resourceWait or unresolved execution exposure"
+    ],
+    "cancelRules": [
+      "cancel original Turn only; cancellation ACK is not execution terminal",
+      "expiry schedules fence/destroy under same original identity; unknown remains held/quarantined",
+      "do not release or report zero fees solely from missing usage",
+      "session creation/closure is not a native resource release proof"
+    ],
+    "browserEnd": [
+      "dispose original frame/port/listeners/graphics when navigate/leave/stop",
+      "persisted files/package recovery is checked separately from JS memory; no claim of CPU/RAM hard quotas"
+    ]
+  },
+  "futureExplicitAuthorizationNeeded": [
+    "PR235 normal merge plus exact default-closed replacement publication under existing reviewed sender/metadata/witness requirements",
+    "separately exact existing TrustedPi app compatible immutable image update/build/registry/transport scope; new digest unknown here",
+    "ordinary owner authentication plus one new blank project write and required initialization",
+    "two product Sessions/three explicit paid Pi Turns with existing fixed provider/model; no auto repair fourth Turn",
+    "necessary original ProjectRuntime/ProjectToolSandbox/TrustedPiSandbox starts, stop, bounded original-ID reconciliation and cleanup",
+    "after project IDs are known, scoped PROJECT_VIEW_BROWSER_POLICY_JSON exact actor/authVersion/scope/generation and finite <=24h interval within human deadline; dataEgress accepted",
+    "monitor owner plus no-new-subscription/confirmed-arrears notification"
+  ],
+  "noAdditionalGrantRequiredForThisOfflineReview": [
+    "read committed source/prior safe receipts",
+    "copy non-secret source inputs under this .local directory",
+    "hash and compare frozen source/old recorded image source",
+    "write review-only artifacts"
+  ],
+  "notNeeded": [
+    "Managed acceptance/testing grant",
+    "new Pi admission policy/window when original policy valid",
+    "manual-save grant for canonical Turn saves or described tool-output artifact",
+    "remote ProjectViewRuntime enable/start",
+    "Run/native simulation/Verify as Experiment",
+    "full JHG56 or second-identity matrix"
+  ],
+  "originalIdentityUnknownRules": [
+    "freeze creation key/body hash, each Session key, each Turn key/message/body hash and returned Turn/dispatch/lease identity before next action",
+    "lost ACK: read original receipt/journal/runtime/capacity only; never allocate replacement key/project/session/provider/window",
+    "missing record is not absent-execution proof; do not rerun model/tool or reset observation deadline",
+    "unknown execution/persistence/release blocks next Turn/new Session and relevant capacity stays held",
+    "retain every failed response/original receipt and usage reservation; no history deletion/zero-cost inference"
+  ],
+  "currentBlockers": [
+    "current baked TrustedPi image does not contain newly merged loader/no-ModelSpec prompt; Gateway-only replacement cannot update it",
+    "PR235 source/assets currently not published under new grant",
+    "actual new-project/paid Pi/native lifecycle acceptance grant not yet given",
+    "new-project scoped browser grant not created; exact scope depends on one authorized project creation"
+  ],
+  "imageInputReview": {
+    "path": "project-view-trusted-pi-image-input-review-20261017.json",
+    "bytes": 17627,
+    "sha256": "7a439f7a22d38a0ca4382473b91e8ec7dd5016ac201ca1f2c9135b1a8af2ebf5"
+  },
+  "limitations": [
+    "source and historical source-to-image receipt plus prior actual serving snapshot, not a new byte inspection of running container",
+    "no real ordinary new-project/provider/skill/pages save/cold acceptance performed",
+    "three Turns contain multiple model/tool calls; no fixed three-call claim",
+    "native DOM authorized bytes may egress; no no-egress/cookie-free or browser CPU/RAM quota claim",
+    "existing synthetic fixtures are not ordinary real identity/provider/init acceptance"
+  ]
+}

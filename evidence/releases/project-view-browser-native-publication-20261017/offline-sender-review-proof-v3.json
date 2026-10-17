@@ -1,0 +1,119 @@
+{
+  "schema": "project-view-browser-native-sender-offline-review/v3",
+  "recordedAt": "2026-10-17T10:11:34.197105+00:00",
+  "authority": "local file checks, closed-dummy Node tests and prepare-only/expected-missing-grant CLI refusal; no real adapter invocation",
+  "files": {
+    "prepare-native-replacement.mjs": {
+      "sha256": "cbeff9da9c74e90854c6d3275f2ce82b6438d838399dd2359bb701624dbd3c01",
+      "bytes": 15650
+    },
+    "prepare-native-replacement.test.mjs": {
+      "sha256": "c3c914b0d8573f3710e4269069203e4d6b8396a8f5d7a63260939974427406cf",
+      "bytes": 11937
+    },
+    "publish-native-replacement.mjs": {
+      "sha256": "6f3dd67f9fb07d12d99bac4d935f3d3c908d59e14040237e531038f1ac36d5a3",
+      "bytes": 33424
+    },
+    "publish-native-replacement.test.mjs": {
+      "sha256": "2edde011e5cae22a23750f3962f7e4a09763cd46f3e7660a34f2b39d8f07ac2f",
+      "bytes": 11596
+    },
+    "publisher-native-review-contract.md": {
+      "sha256": "0ab399fc720028cc4fa53ebdfc307905229cb2299e701fe0600b713accb64cae",
+      "bytes": 9092
+    }
+  },
+  "sourceAndCandidate": {
+    "implementationCommit": "9b993bd3d60e619e935be6f6fcb0d1dab8460e1c",
+    "directory": "candidate-v2",
+    "bundleBytes": 5774614,
+    "bundleSha256": "7d6520d39d8a76b274420772850c7638282be11e2fe7ee3406fb07413c809cb9",
+    "graphSha256": "c70e519c6d82e25be1c555ec6abd653ffa6a16f414d455b375741fe794e413dc",
+    "inventorySha256": "74ccd5b5771c7adb25c24227471498bb3c9604acd20fc7835f4342fdea5aa9be",
+    "manifestSha256": "6b823fe7a08407c470a2a03f1b2288a432fcbda8c7b5f6ea53cb433d5f674860",
+    "buildManifestSha256": "4cd61146a0a59df5860e4b1f2479be78eb3bcc778675e35ef6aa930b00565240",
+    "sourceCommitBindingSha256": "53bcd124a9f732d9ca265d9b29a1c6751cfd933e44d80790fc67af0a7b09c2f3",
+    "frameHtmlSha256": "7f71d5ee385b0703471719289d25d4fc98d25b1e0a138bc2ded28a9c6ef06f4c",
+    "v1FallbackAvailable": false,
+    "pinsAndExpectedAreFrozen": true
+  },
+  "selectedMetadata": {
+    "path": "metadata-reviews/1d1a4312-bbe4-4f04-9f07-73f456dad059/metadata-without-jwt.private.json",
+    "sha256": "8451e8c5d7fa54df0c8ef06f10a01c997c1ccba182c0cd908e3437cad0df7ce8",
+    "wireBindings": 95,
+    "keptSecrets": 11,
+    "logicalBindings": 106,
+    "exports": 25,
+    "containerAssociations": 6,
+    "namespaces": 50,
+    "noMigrations": true,
+    "browserPolicyBindingAbsent": true,
+    "remotePolicyClosed": true
+  },
+  "reviewPlan": {
+    "path": "publication-attempts/81d808cf-f0ec-4bfe-b183-8d6d96bea04d/plan.json",
+    "sha256": "b58f81a4542dc184128f98442d3a612f1144f43578cd27c63f53ed0aea6a165d",
+    "requestId": "81d808cf-f0ec-4bfe-b183-8d6d96bea04d",
+    "candidateFinalized": true,
+    "authorizationPresent": false,
+    "blocked": [
+      "actual PR235 normal merge/source proof",
+      "new root-reviewed direct-human grant file",
+      "same-request fresh Personal before/after witnesses"
+    ]
+  },
+  "checks": {
+    "prepareDummyTests": {
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0
+    },
+    "publisherDummyTests": {
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0
+    },
+    "combinedPassed": 31,
+    "combinedDurationMs": 665.083792,
+    "currentSyntaxAndWhitespace": "passed",
+    "factoryRequestAndBindEscapeRegression": "passed; private WeakMap requests and frozen public handles",
+    "v2ExactPathAndMutablePinRegression": "passed",
+    "fullPostAnnotationsRegression": "passed",
+    "transportFunctionTextMatchesReviewedOldSource": true,
+    "missingGrantCli": {
+      "exitCode": 1,
+      "expectedCode": "explicit-new-human-grant-file-required",
+      "credentialLoaderCalls": 0,
+      "realNetworkRequests": 0
+    },
+    "independentGithubAgentReview": "no remaining must-fix after actual final file/hash readback; no suite repetition"
+  },
+  "history": {
+    "v1ParentCandidateAndOriginalMetadataPlansUntouched": true,
+    "toolSnapshotDirectories": [
+      "offline-tool-history-1d334aa8",
+      "offline-tool-history-df014e-d0306b",
+      "offline-tool-history-350252-288997"
+    ],
+    "previousProofFilesRetained": [
+      "offline-tool-review-proof-20261017.json",
+      "offline-sender-review-proof-v2-20261017.json"
+    ],
+    "earlierV2AddedTestSyntaxError": {
+      "observed": true,
+      "corrected": true,
+      "notCountedAsPassedInvocation": true
+    }
+  },
+  "oldPublisherSha256": "9a866f448d4de0150a28b8dc2ececa542e44ed077aee7f559e75455d216b08c2",
+  "realCredentialLoaderCalls": 0,
+  "realNetworkRequests": 0,
+  "cloudWrites": 0,
+  "realAdapterInvoked": false,
+  "authorizationFileCreated": false,
+  "normalOAuthRefreshPerformed": false,
+  "actualMergeProofPresent": false,
+  "freshExecutionWitnessPresent": false,
+  "productionPublicationOrUserAcceptanceClaimed": false
+}

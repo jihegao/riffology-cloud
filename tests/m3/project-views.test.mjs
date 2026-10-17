@@ -7,6 +7,16 @@ import {createProjectViewBroker,verifyProjectViewPackage} from '../../services/w
 import worker from '../../services/browser-preview/execution/index.ts';
 import {PROJECT_VIEW_FRAME_PATH} from '../../services/project-views/frame.mjs';
 import {scope,manifest,projectFiles,packaged} from './project-views-fixture.mjs';
+test('native MessageChannel malformed cyclic and BigInt data cannot reject the host handler or block the next valid read',async t=>{
+ const {MessageChannel}=await import('node:worker_threads'),{pkg}=await packaged(),{port1,port2}=new MessageChannel();let authorizations=0;
+ const broker=createProjectViewBroker({port:port1,pkg,isCurrent:()=>true,authorize:async()=>{authorizations++;}});
+ t.after(()=>{broker.close();port2.onmessage=null;port2.close();});
+ const reply=new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('native broker response timeout')),2000);timer.unref();port2.onmessage=({data})=>{clearTimeout(timer);resolve(data);};});
+ const cyclic={id:1,type:'files.read',path:'docs/data.json'};cyclic.self=cyclic;
+ port2.postMessage(cyclic);port2.postMessage({id:1,type:'files.read',path:1n});port2.postMessage({id:1,type:'files.list'});
+ assert.deepEqual(await reply,{id:1,value:pkg.assets.map(({path,sha256,mediaType})=>({path,sha256,mediaType}))});
+ assert.equal(authorizations,1,'invalid structured-clone input never reaches authorization or consumes the valid request id');
+});
 test('no model contract is required; immutable package freezes complete local modules/CSS/media/data closure',async()=>{
  const {pkg,bytes,source}=await packaged();assert.equal(pkg.manifest.views.length,2);assert.equal(pkg.revisionId,'revision-a');
  assert.match(Buffer.from(pkg.assets.find(a=>a.path==='app/main.mjs').base64,'base64').toString(),/https:\/\/project.invalid\/app\/value.mjs/);
@@ -67,6 +77,44 @@ test('broker read hashes the exact transformed bytes and reports failures withou
  await port.onmessage({data:{type:'failed',error:'page-script-failed'}});
  await port.onmessage({data:{type:'installed'}});assert.deepEqual(states,['failed']);
  broker.close();
+});
+
+test('exact navigation terminal closes only its original current broker and fences queued success and reads',async()=>{
+ const {pkg}=await packaged(),messages=[],states=[];let closes=0,release,started;const reading=new Promise(resolve=>{started=resolve;});
+ const port={postMessage:m=>messages.push(m),close(){closes++;},start(){},onmessage:null};
+ const broker=createProjectViewBroker({port,pkg,isCurrent:()=>true,onState:s=>states.push(s),readAsset:()=>new Promise(r=>{release=r;started();})}),receive=port.onmessage;
+ for(const data of [{type:'ended',reason:'untrusted-reason'},{type:'ended',reason:'navigation-ended',scope:{projectId:'other'}},{type:'ended'}])await receive({data});
+ assert.deepEqual(states,[]);assert.equal(closes,0);
+ const pending=receive({data:{id:1,type:'files.read',path:'docs/data.json'}});await reading;
+ await receive({data:{type:'ended',reason:'navigation-ended'}});assert.deepEqual(states,['navigation-ended']);assert.equal(broker.closed,true);assert.equal(port.onmessage,null);assert.equal(closes,1);
+ await receive({data:{type:'installed'}});await receive({data:{type:'ended',reason:'navigation-ended'}});release(new TextEncoder().encode('late private reply'));await pending;await broker.publish();broker.close();
+ assert.deepEqual(messages,[]);assert.deepEqual(states,['navigation-ended']);assert.equal(closes,1);
+ for(const inactive of ['stale','closed']){
+  let current=true;const states=[],p={postMessage(){throw Error('must not deliver');},close(){},start(){},onmessage:null},b=createProjectViewBroker({port:p,pkg,isCurrent:()=>current,onState:s=>states.push(s)}),handler=p.onmessage;
+  if(inactive==='closed')b.close();else current=false;
+  await handler({data:{type:'ended',reason:'navigation-ended'}});assert.deepEqual(states,[],inactive);b.close();
+ }
+});
+
+test('opt-in original-port liveness starts once after ready, accepts only its pending nonce and never consumes request IDs',async()=>{
+ const {pkg}=await packaged(),messages=[],states=[];let closes=0;
+ const port={postMessage:m=>messages.push(m),close(){closes++;},start(){},onmessage:null};const broker=createProjectViewBroker({port,pkg,isCurrent:()=>true,liveness:true,onState:s=>states.push(s)}),receive=port.onmessage;
+ await receive({data:{type:'project-view-pong',nonce:'a'.repeat(64)}});assert.deepEqual(messages,[]);
+ await receive({data:{type:'installed'}});const ping=messages.at(-1);assert.deepEqual(Object.keys(ping).sort(),['nonce','type']);assert.equal(ping.type,'project-view-ping');assert.match(ping.nonce,/^[a-f0-9]{64}$/);
+ await receive({data:{type:'installed'}});assert.equal(messages.filter(m=>m.type==='project-view-ping').length,1);
+ await receive({data:{type:'project-view-pong',nonce:'wrong'}});await receive({data:{type:'project-view-pong',nonce:ping.nonce,id:1}});
+ await receive({data:{type:'files.list',id:1}});assert.equal(messages.at(-1).id,1);assert.ok(Array.isArray(messages.at(-1).value));
+ await receive({data:{type:'project-view-pong',nonce:ping.nonce}});broker.close();await new Promise(r=>setTimeout(r,1100));
+ assert.equal(messages.filter(m=>m.type==='project-view-ping').length,1,'close cancels the scheduled next ping');assert.equal(closes,1);assert.deepEqual(states,['ready','ready']);
+ await receive({data:{type:'project-view-pong',nonce:ping.nonce}});assert.equal(broker.closed,true);assert.equal(closes,1);
+});
+
+test('opt-in liveness deadline closes the original channel before reporting failure and late pong cannot revive it',{timeout:5000},async()=>{
+ const {pkg}=await packaged(),messages=[],states=[];let closes=0,finished;const failed=new Promise(r=>{finished=r;});
+ const port={postMessage:m=>messages.push(m),close(){closes++;},start(){},onmessage:null};const broker=createProjectViewBroker({port,pkg,isCurrent:()=>true,liveness:true,onState:s=>{states.push(s);if(s==='failed'){assert.equal(port.onmessage,null);assert.equal(closes,1);finished();}}}),receive=port.onmessage;
+ await receive({data:{type:'installed'}});const ping=messages[0];await receive({data:{type:'project-view-pong',nonce:'wrong'}});await failed;
+ assert.deepEqual(states,['ready','failed']);assert.equal(broker.closed,true);const count=messages.length;
+ await receive({data:{type:'project-view-pong',nonce:ping.nonce}});await receive({data:{type:'files.list',id:1}});await broker.publish();broker.close();assert.equal(messages.length,count);assert.equal(closes,1);
 });
 
 test('artifact broker rejects keys/scope/writes and drops delayed replies after cancellation or generation change',async()=>{

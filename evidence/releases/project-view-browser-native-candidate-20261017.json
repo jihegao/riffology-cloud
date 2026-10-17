@@ -1,0 +1,250 @@
+{
+  "schema": "project-view-browser-native-candidate/v1",
+  "date": "2026-10-17",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/214",
+  "pullRequest": "https://github.com/jihegao/riffology-cloud/pull/235",
+  "owner": "jihegao",
+  "contract": "docs/project-view-browser-local-contract-20261017.md",
+  "selection": {
+    "runtime": "native DOM in user browser",
+    "userAcceptedAuthorizedProjectDataEgress": true,
+    "completeNoEgressClaim": false
+  },
+  "source": {
+    "originalFullCheckPreparation": {
+      "testedBaseCommit": "5924c8c97c1faab281f78e6e8ddeabf3abe7a8a1",
+      "testedWorkingTree": true,
+      "resultingImplementationCommit": "e689beb4a1babd8546405181cf3daf74625ed59d"
+    },
+    "changedApplicationFiles": [
+      {
+        "path": "package.json",
+        "bytes": 5371,
+        "sha256": "00fc21c4c9afe9874a3d4c3ef80ea4e2ec441a718397ac573873b6a04d1161ec"
+      },
+      {
+        "path": "services/gateway/app.ts",
+        "bytes": 60141,
+        "sha256": "4b8699d766efaf60aa085196ab6cbeb9b4d21b50ab6b3ed1325b3d7310f7e6a4"
+      },
+      {
+        "path": "services/gateway/index.ts",
+        "bytes": 19187,
+        "sha256": "5589fbe01be3e018f2697e86a61ba6fdc6159731a9509a7ab5264c2e6064d9f1"
+      },
+      {
+        "path": "services/gateway/project-view-services.ts",
+        "bytes": 3855,
+        "sha256": "1b44b1c128166f7d08d96720b12ac2aa3896f307eceafec714fe2994c7c30fbf"
+      },
+      {
+        "path": "services/project-views/browser-delivery.ts",
+        "bytes": 1016,
+        "sha256": "728aa2a84603434d2bd1c548e7ab347ad8a617ca1e668449be338b452585ba55"
+      },
+      {
+        "path": "services/project-views/browser-policy.ts",
+        "bytes": 2713,
+        "sha256": "d7e3d0543c2d0982eb7138b2c3dd6a00555429163541cae21e7660635e67f179"
+      },
+      {
+        "path": "services/project-views/frame-html.mjs",
+        "bytes": 7864,
+        "sha256": "ec9144ab61f3894261ad2ed05c9a0b4261b412ca6f53c48ea23a0e0871ebeba7"
+      },
+      {
+        "path": "services/project-views/frame-source.mjs",
+        "bytes": 7651,
+        "sha256": "c2b8ddbbf93553380fa1309741c5578618337016e692319711cda54caf23b2e3"
+      },
+      {
+        "path": "services/project-views/frame.mjs",
+        "bytes": 1050,
+        "sha256": "a2354dac782288f090280f7eba7edab6f2f8fb0644bb80966f2c59cc0bef4089"
+      },
+      {
+        "path": "services/project-views/package.ts",
+        "bytes": 7612,
+        "sha256": "de2a393919321d1c7575065dba0aeaab449af2a8da62c165bafa655f7aa39cce"
+      },
+      {
+        "path": "services/turn-runtime/managed-testing-instructions.ts",
+        "bytes": 13139,
+        "sha256": "47014c6200afc03799c9cf0311f075bfef155e2cdc76855b6fd0085931af4e96"
+      },
+      {
+        "path": "services/web/project-view-local.js",
+        "bytes": 4072,
+        "sha256": "f21e40c39a90073a38d354c3c67a3ff13387e1a4cb575e56ec06ed47f4d8d0f3"
+      },
+      {
+        "path": "services/web/project-views.js",
+        "bytes": 14900,
+        "sha256": "9da41ade420c660a61f0ad4fc46408b728e81248bdeb30bdc419e63bdc61f1c9"
+      }
+    ],
+    "changedApplicationClosureSha256": "2f0320a20b30c674cc451e010fc9e90b258c624c7d55e6bb2bf7dbe03b55354f",
+    "frameHtmlSha256": "4bd78b2cf7c06051af24d97c2fd7665eea3b96ddbffe6b23daec485ee1e3eff2",
+    "implementationCommit": "bc4c0377dd4a59c6ddf6b9de71e3f0fcbe028999",
+    "productionInputsUnchangedAfterFullCheck": false,
+    "previousFullCheckSource": {
+      "implementationCommit": "e689beb4a1babd8546405181cf3daf74625ed59d",
+      "changedApplicationClosureSha256": "81a34d54c1b62973cb3483c4a480378f710c7819d0576cd0cee85037a1702d59",
+      "frameHtmlSha256": "c68704b393d12755bc65e3b937666cfd7e0d2592bc1d8a5d60ff8287b0f3b58d"
+    },
+    "postFullCheckChange": "Early-bound frame operations and main-panel original-channel liveness, validated separately from historical full check."
+  },
+  "implementation": {
+    "execution": "browser-local",
+    "transport": "native-dom/v1",
+    "opaqueSandbox": "allow-scripts without allow-same-origin",
+    "broker": "existing verified canonical package and readonly broker",
+    "remoteFallback": false,
+    "newBrowserPolicyDefaultClosed": true,
+    "oldRemotePolicyEnabled": false,
+    "ordinaryInvitationAndArchiveRecheckedAfterReads": true,
+    "failedPackageRequiresExplicitRetry": true,
+    "checkedInFrameBytesStableAcrossNodeAndWorkerd": true,
+    "navigationWithoutSecondLoadClosesOriginalFrameAndBroker": true,
+    "cyclicAndBigIntMessagesRejectedBeforeAuthorization": true,
+    "originalChannelLivenessEnabledForMainPanel": true,
+    "cooperativeLivenessDeadlineMs": 3000,
+    "afterPongNextProbeMs": 1000,
+    "privateFrameOperationsBoundBeforeProjectInstall": true
+  },
+  "fullCheck": {
+    "schema": "jhg46-browser-native-local-full-check/v1",
+    "startedAt": "2026-10-17T09:37:55.078549+00:00",
+    "finishedAt": "2026-10-17T09:45:24.486037+00:00",
+    "command": "npm run check",
+    "exitCode": 0,
+    "logPath": ".local/jhg46-browser-native-check-20261017/full-check.log",
+    "logBytes": 350692,
+    "logSha256": "122701a27f1d77ca21ef50d239bcf14ae06bb71f7efc67f876a3cf49fce91405",
+    "node": "v26.10.0",
+    "openssl": "OpenSSL 3.6.4 25 Aug 2026 (Library: OpenSSL 3.6.4 25 Aug 2026)",
+    "browserChannel": "chromium",
+    "cloudExecutionEnabledByEnvironment": false,
+    "environmentPolicy": "preserve only PATH/HOME/TMPDIR/USER/LOGNAME/LANG/LC_ALL; prepend existing OpenSSL3; explicit Chromium",
+    "nodePass": 3303,
+    "nodeSkip": 13,
+    "nodeFail": 0,
+    "pythonPass": 8,
+    "hostedCiPassed": false,
+    "hostedCiQuotaWaiverRetained": true,
+    "sourceCommit": "e689beb4a1babd8546405181cf3daf74625ed59d"
+  },
+  "localCoverage": [
+    "Actual signed Entry to Gateway fixed frame GET/HEAD and local module; unsigned transport denied",
+    "Real synthetic ordinary invitation and initial operator distinction; owner/authVersion, project scope and archive, including post-invitation-query race",
+    "Real local Gateway, D1/R2, Revision manual save V1/V2, Workerd restart and Chromium DOM/module/CSS/media/broker interaction",
+    "Synthetic explicit skill authoring and original-text cold recovery; no real provider request",
+    "Nonce/source/origin, one port transfer, credential/storage/parent DOM script denial, late response fencing",
+    "Navigation/script/load and authority/read failure cleanup, automatic poll recovery does not re-execute the same package; explicit Retry only",
+    "Native input computes20→50, cooperative pause holds50 then resume computes30, refresh restores saved default20 in both local test engines.",
+    "Original opaque-frame prototype replacement vector from the exact same synthetic package now closes original frame/handler/ports; actual HTTP200 response was canceled before document commit.",
+    "Original-port nonce liveness, monotonic deadline, late pong, duplicate installed, ID separation and explicit Retry."
+  ],
+  "independentReview": {
+    "remainingMustFix": 0,
+    "repairsVerified": [
+      "ordinary invitation and archive equivalence after switching POST admission to GET",
+      "post-invitation-query archive race",
+      "compiled frame byte identity drift",
+      "same-package execution replay after failed read poll",
+      "pagehide terminal while destination body remains open and no second load fires",
+      "cyclic/BigInt native MessageChannel message guard"
+    ]
+  },
+  "ordinaryActorPreparation": {
+    "authenticatedOrdinaryInvitedOwnerReadonlyVerified": true,
+    "observedAt": "2026-10-17T09:07:25.434Z",
+    "authVersion": 2,
+    "privateReceiptSha256": "69e9633339041f1d024e583469a15fb4f0f15ca6addda672178fe9c40d7b1f98",
+    "projectCreationSaveOrExecutionAuthorizedByThatLogin": false
+  },
+  "currentProductionChanged": false,
+  "deployed": false,
+  "realAuthenticatedUserAcceptance": false,
+  "fullJhg56Acceptance": false,
+  "cloudContainerOrModelTurnRunRequested": false,
+  "feesKnown": false,
+  "globalZeroExecutionOrCostClaim": false,
+  "limitations": [
+    "Page self-navigation can send already-authorized project data; user explicitly accepted this native DOM boundary.",
+    "Opaque script isolation does not guarantee every induced browser request omits existing site cookies.",
+    "No application-enforced hard CPU/RAM quota; arbitrary DOM code can freeze or crash the browser.",
+    "Local Chromium and Playwright WebKit26.6 fixtures were tested; installed Safari, Firefox and real ordinary-user authoring/save/execution acceptance remain pending.",
+    "Existing remote resources and image history are retained and remain separately gated; this candidate does not start or retire them."
+  ],
+  "done": false,
+  "postFullCheckValidation": {
+    "sourceCommit": "bc4c0377dd4a59c6ddf6b9de71e3f0fcbe028999",
+    "evidence": "evidence/releases/project-view-native-liveness-candidate-20261017.json",
+    "chromiumFirst": {
+      "pass": 36,
+      "fail": 1
+    },
+    "chromiumOnlyFailedObservationFollowup": {
+      "pass": 1,
+      "fail": 0
+    },
+    "webkitFirst": {
+      "pass": 21,
+      "fail": 1
+    },
+    "webkitOnlyFailedObservationFollowup": {
+      "pass": 1,
+      "fail": 0
+    },
+    "sharedFramePass": 48,
+    "uiPass": 21,
+    "sameOriginalPrototypeVectorPass": 1,
+    "fullCheckRerun": false,
+    "noSingleAllGreenInvocationClaimedForFocusedSelections": true
+  },
+  "historicalPostFullCheckValidations": [
+    {
+      "sourceCommit": "9b993bd3d60e619e935be6f6fcb0d1dab8460e1c",
+      "fullCheckRerun": false,
+      "focusedNativeChecks": {
+        "pass": 33,
+        "fail": 0,
+        "skip": 0,
+        "evidence": "evidence/releases/project-view-browser-native-followup-20261017.json",
+        "evidenceKind": "projection of completed exec tool results; not an original stdout log",
+        "privateOriginalReceiptSha256": "4b5f2a35fe38a3c1b47596ac78a4d7b6e89eca47825b76e3a41bcaeda89d5fda",
+        "exactStartAndEndTimestampsRecorded": false,
+        "originalStdoutSaved": false
+      },
+      "sharedFrameLegacyChecks": {
+        "pass": 48,
+        "fail": 0,
+        "skip": 0,
+        "schema": "jhg46-native-frame-legacy-followup/v1",
+        "startedAt": "2026-10-17T10:01:41.900346+00:00",
+        "finishedAt": "2026-10-17T10:01:47.583599+00:00",
+        "command": [
+          "node",
+          "--test",
+          "--test-concurrency=2",
+          "tests/m3/project-view-remote-browser.test.mjs",
+          "tests/m3/project-view-authenticated-browser.test.mjs",
+          "tests/m3/project-view-runtime-bundle.test.mjs",
+          "tests/m3/project-view-runtime-pipe.test.mjs",
+          "tests/m3/project-view-runtime-preflight.test.mjs",
+          "tests/m3/isolated-browser.test.mjs"
+        ],
+        "exitCode": 0,
+        "logPath": ".local/jhg46-browser-native-check-20261017/legacy-frame-followup.log",
+        "logSha256": "462df8c793d8e19046eee072379dd7ca77ba2a860f3a9798226fc7c6d562f120",
+        "logBytes": 5008,
+        "realCloudRequested": false
+      },
+      "typecheck": "passed",
+      "i18n": "passed",
+      "frameGenerationCheck": "passed",
+      "diffCheck": "passed"
+    }
+  ]
+}

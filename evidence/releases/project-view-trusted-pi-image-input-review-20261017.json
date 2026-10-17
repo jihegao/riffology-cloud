@@ -1,0 +1,420 @@
+{
+  "schema": "trusted-pi-resource-compatibility-input-review/v1",
+  "recordedAt": "2026-10-17T10:34:25.496Z",
+  "reviewOnly": true,
+  "buildAuthorizedByThisArtifact": false,
+  "implementationCommit": "9b993bd3d60e619e935be6f6fcb0d1dab8460e1c",
+  "oldImage": {
+    "reference": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+    "sourceCommit": "481306ef53998dd1220cbca79dd3e97c1a2fe939",
+    "sourceEvidence": {
+      "path": "docs/evidence/releases/issue165-parameter-runs-acceptance-20261002.json",
+      "sha256": "4b049e406cd5e63495a62b506a0edfd655e5b538866f3c278bd15ad455790bbe"
+    },
+    "releaseBytesSha256": "474d883823f7fb8d48fff5f7d322b80482856e70222bbd838886ecfcaa28ee78",
+    "sourceProofIsHistoricalNotNewImageInspection": true,
+    "servingSnapshotAt": "2026-10-17T09:52:26.561Z",
+    "version": 11,
+    "percentage": 100,
+    "schedulingPolicy": "default",
+    "maxInstances": 1
+  },
+  "newLoaderFirstCommit": "eb81a2e43a3cccd3a2673dc56b0281f927693373",
+  "runtimeEntrypoints": [
+    {
+      "path": "services/turn-runtime/pi-native.ts",
+      "lines": [
+        84,
+        89
+      ],
+      "behavior": "writes only input Session/base64 plus control JSON; invokes fixed baked /usr/local/bin/node /opt/riffology/trusted-pi/trusted-pi-turn-host.mjs token"
+    },
+    {
+      "path": "services/turn-runtime/release.ts",
+      "lines": [
+        51,
+        53
+      ],
+      "behavior": "identity-bound RPC forwards write/start; no current module payload"
+    },
+    {
+      "path": "services/sandbox/classes.ts",
+      "lines": [
+        55,
+        58
+      ],
+      "behavior": "cold path forwards to Sandbox writeFile/startProcess; no source copy or mount"
+    },
+    {
+      "path": "services/trusted-pi/trusted-pi-turn-host.mjs",
+      "lines": [
+        4,
+        7,
+        253,
+        256
+      ],
+      "behavior": "static relative controlled-pi import plus fixed dynamic baked release module"
+    },
+    {
+      "path": "services/sandbox/workspace-native.ts",
+      "lines": [
+        124,
+        129
+      ],
+      "behavior": "even warm path admits only control/input file suffixes and same fixed baked host command; current reuse=false"
+    }
+  ],
+  "runtimeCodeInjectedPerRequest": false,
+  "graph": {
+    "entrySourcePaths": [
+      "services/trusted-pi/trusted-pi-turn-host.mjs",
+      "services/trusted-pi/release-candidate.mjs"
+    ],
+    "uniqueMjsFiles": 8,
+    "relativeImports": [
+      {
+        "from": "services/trusted-pi/release-candidate.mjs",
+        "import": "./product-model-transport.mjs",
+        "to": "services/trusted-pi/product-model-transport.mjs"
+      },
+      {
+        "from": "services/trusted-pi/release-candidate.mjs",
+        "import": "./product-tool-bridge.mjs",
+        "to": "services/trusted-pi/product-tool-bridge.mjs"
+      },
+      {
+        "from": "services/trusted-pi/release-candidate.mjs",
+        "import": "./research-context.mjs",
+        "to": "services/trusted-pi/research-context.mjs"
+      },
+      {
+        "from": "services/trusted-pi/trusted-pi-turn-host.mjs",
+        "import": "../runtime/controlled-pi.mjs",
+        "to": "services/runtime/controlled-pi.mjs"
+      },
+      {
+        "from": "services/runtime/controlled-pi.mjs",
+        "import": "../project-resources/text.mjs",
+        "to": "services/project-resources/text.mjs"
+      },
+      {
+        "from": "services/project-resources/text.mjs",
+        "import": "../browser-preview/runtime/sha256.mjs",
+        "to": "services/browser-preview/runtime/sha256.mjs"
+      }
+    ],
+    "externalImports": [
+      "@earendil-works/pi-coding-agent",
+      "node:crypto",
+      "node:fs/promises",
+      "node:path",
+      "node:url"
+    ],
+    "dynamicReleaseAlias": {
+      "absolutePath": "/opt/riffology/trusted-pi/trusted-pi-release.mjs",
+      "sourcePath": "services/trusted-pi/release-candidate.mjs"
+    },
+    "pythonSupervisor": "services/trusted-pi/runtime_supervisor.py",
+    "pythonSupervisorImportsAreStandardLibraryOnly": true
+  },
+  "sourceComparisons": [
+    {
+      "sourcePath": "services/browser-preview/runtime/sha256.mjs",
+      "bytes": 2241,
+      "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24",
+      "oldSourceSha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24",
+      "comparison": "same-source",
+      "currentWorkingTreeEqualsFrozenCommit": true
+    },
+    {
+      "sourcePath": "services/project-resources/text.mjs",
+      "bytes": 6700,
+      "sha256": "9f7f3266549f04a0a8214e6e725ea9d85030532364f136487833e9cc45af303e",
+      "oldSourceSha256": null,
+      "comparison": "added-source",
+      "currentWorkingTreeEqualsFrozenCommit": true
+    },
+    {
+      "sourcePath": "services/runtime/controlled-pi.mjs",
+      "bytes": 23072,
+      "sha256": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871",
+      "oldSourceSha256": "623efc2d8e5b9ca1e884b6a27a030ecb306efc3827c7ac39a6890b388b22bcff",
+      "comparison": "changed-source",
+      "currentWorkingTreeEqualsFrozenCommit": true
+    },
+    {
+      "sourcePath": "services/trusted-pi/product-model-transport.mjs",
+      "bytes": 7703,
+      "sha256": "c2bece021f34f0b929e796238d132a819281d172b5d8fd3a6f431ed9d46801c6",
+      "oldSourceSha256": "c2bece021f34f0b929e796238d132a819281d172b5d8fd3a6f431ed9d46801c6",
+      "comparison": "same-source",
+      "currentWorkingTreeEqualsFrozenCommit": true
+    },
+    {
+      "sourcePath": "services/trusted-pi/product-tool-bridge.mjs",
+      "bytes": 11657,
+      "sha256": "e536e9231a7fa41be956e3066535a62b7de460b37a4e5a40937c67d9f5981e74",
+      "oldSourceSha256": "e536e9231a7fa41be956e3066535a62b7de460b37a4e5a40937c67d9f5981e74",
+      "comparison": "same-source",
+      "currentWorkingTreeEqualsFrozenCommit": true
+    },
+    {
+      "sourcePath": "services/trusted-pi/release-candidate.mjs",
+      "bytes": 27185,
+      "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07",
+      "oldSourceSha256": "474d883823f7fb8d48fff5f7d322b80482856e70222bbd838886ecfcaa28ee78",
+      "comparison": "changed-source",
+      "currentWorkingTreeEqualsFrozenCommit": true
+    },
+    {
+      "sourcePath": "services/trusted-pi/research-context.mjs",
+      "bytes": 1557,
+      "sha256": "938e89155a5d5e0c405f51db5d973a4db264e63d96e308aff8da93caaaa05076",
+      "oldSourceSha256": "b472a054942246b5e4ba917920bb40f134ba31ae1fc4701c43f8e8491de6d0aa",
+      "comparison": "changed-source",
+      "currentWorkingTreeEqualsFrozenCommit": true
+    },
+    {
+      "sourcePath": "services/trusted-pi/trusted-pi-turn-host.mjs",
+      "bytes": 15937,
+      "sha256": "9964e7ab863207ce9b9a911e03bfcb4f99afc61fb6508d2d6611b66931be516b",
+      "oldSourceSha256": "9964e7ab863207ce9b9a911e03bfcb4f99afc61fb6508d2d6611b66931be516b",
+      "comparison": "same-source",
+      "currentWorkingTreeEqualsFrozenCommit": true
+    }
+  ],
+  "currentDockerfiles": {
+    "base": "docker.io/cloudflare/sandbox:0.12.9-python@sha256:f3c089b1bbb9dd85eeca09e20d841e6900390f45fb4e84dfbef0e9d17ddac806",
+    "verticalRelease": "active reviewed product candidate copied to trusted-pi-release.mjs",
+    "cloudRelease": "intentionally inert release-unconfigured copied to trusted-pi-release.mjs; not a ready product image",
+    "copies": [
+      {
+        "recipe": "Dockerfile.trusted-pi.vertical",
+        "source": "services/trusted-pi/package.json",
+        "destination": "/opt/riffology/package.json",
+        "sha256": "0dde532fe23b810bd09b978f990d48342f7378429f2b2c48f30e055993fa6ebe"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.vertical",
+        "source": "services/trusted-pi/package-lock.json",
+        "destination": "/opt/riffology/package-lock.json",
+        "sha256": "ad20b5c766c411c5ba42a4fc997890fe3494ab8adb96cf5d75031366b3d144fc"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.vertical",
+        "source": "services/browser-preview/runtime/sha256.mjs",
+        "destination": "/opt/riffology/browser-preview/runtime/sha256.mjs",
+        "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.vertical",
+        "source": "services/project-resources/text.mjs",
+        "destination": "/opt/riffology/project-resources/text.mjs",
+        "sha256": "9f7f3266549f04a0a8214e6e725ea9d85030532364f136487833e9cc45af303e"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.vertical",
+        "source": "services/runtime/controlled-pi.mjs",
+        "destination": "/opt/riffology/runtime/controlled-pi.mjs",
+        "sha256": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.vertical",
+        "source": "services/trusted-pi/trusted-pi-turn-host.mjs",
+        "destination": "/opt/riffology/trusted-pi/trusted-pi-turn-host.mjs",
+        "sha256": "9964e7ab863207ce9b9a911e03bfcb4f99afc61fb6508d2d6611b66931be516b"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.vertical",
+        "source": "services/trusted-pi/product-model-transport.mjs",
+        "destination": "/opt/riffology/trusted-pi/product-model-transport.mjs",
+        "sha256": "c2bece021f34f0b929e796238d132a819281d172b5d8fd3a6f431ed9d46801c6"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.vertical",
+        "source": "services/trusted-pi/product-tool-bridge.mjs",
+        "destination": "/opt/riffology/trusted-pi/product-tool-bridge.mjs",
+        "sha256": "e536e9231a7fa41be956e3066535a62b7de460b37a4e5a40937c67d9f5981e74"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.vertical",
+        "source": "services/trusted-pi/release-candidate.mjs",
+        "destination": "/opt/riffology/trusted-pi/release-candidate.mjs",
+        "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.vertical",
+        "source": "services/trusted-pi/release-candidate.mjs",
+        "destination": "/opt/riffology/trusted-pi/trusted-pi-release.mjs",
+        "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.vertical",
+        "source": "services/trusted-pi/research-context.mjs",
+        "destination": "/opt/riffology/trusted-pi/research-context.mjs",
+        "sha256": "938e89155a5d5e0c405f51db5d973a4db264e63d96e308aff8da93caaaa05076"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.vertical",
+        "source": "services/trusted-pi/runtime_supervisor.py",
+        "destination": "/opt/riffology/runtime_supervisor.py",
+        "sha256": "79e2bdedaedba063364513d853eb8325f229ba55b1e51df46cbcee359807e29c"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.cloud",
+        "source": "services/trusted-pi/package.json",
+        "destination": "/opt/riffology/package.json",
+        "sha256": "0dde532fe23b810bd09b978f990d48342f7378429f2b2c48f30e055993fa6ebe"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.cloud",
+        "source": "services/trusted-pi/package-lock.json",
+        "destination": "/opt/riffology/package-lock.json",
+        "sha256": "ad20b5c766c411c5ba42a4fc997890fe3494ab8adb96cf5d75031366b3d144fc"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.cloud",
+        "source": "services/browser-preview/runtime/sha256.mjs",
+        "destination": "/opt/riffology/browser-preview/runtime/sha256.mjs",
+        "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.cloud",
+        "source": "services/project-resources/text.mjs",
+        "destination": "/opt/riffology/project-resources/text.mjs",
+        "sha256": "9f7f3266549f04a0a8214e6e725ea9d85030532364f136487833e9cc45af303e"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.cloud",
+        "source": "services/runtime/controlled-pi.mjs",
+        "destination": "/opt/riffology/runtime/controlled-pi.mjs",
+        "sha256": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.cloud",
+        "source": "services/trusted-pi/trusted-pi-turn-host.mjs",
+        "destination": "/opt/riffology/trusted-pi/trusted-pi-turn-host.mjs",
+        "sha256": "9964e7ab863207ce9b9a911e03bfcb4f99afc61fb6508d2d6611b66931be516b"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.cloud",
+        "source": "services/trusted-pi/product-model-transport.mjs",
+        "destination": "/opt/riffology/trusted-pi/product-model-transport.mjs",
+        "sha256": "c2bece021f34f0b929e796238d132a819281d172b5d8fd3a6f431ed9d46801c6"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.cloud",
+        "source": "services/trusted-pi/product-tool-bridge.mjs",
+        "destination": "/opt/riffology/trusted-pi/product-tool-bridge.mjs",
+        "sha256": "e536e9231a7fa41be956e3066535a62b7de460b37a4e5a40937c67d9f5981e74"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.cloud",
+        "source": "services/trusted-pi/release-candidate.mjs",
+        "destination": "/opt/riffology/trusted-pi/release-candidate.mjs",
+        "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.cloud",
+        "source": "services/trusted-pi/release-unconfigured.mjs",
+        "destination": "/opt/riffology/trusted-pi/trusted-pi-release.mjs",
+        "sha256": "b930a5abdf7ef8a47e86d80011d05b9001cdc74b7c2e61126ac379c63f228ddd"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.cloud",
+        "source": "services/trusted-pi/research-context.mjs",
+        "destination": "/opt/riffology/trusted-pi/research-context.mjs",
+        "sha256": "938e89155a5d5e0c405f51db5d973a4db264e63d96e308aff8da93caaaa05076"
+      },
+      {
+        "recipe": "Dockerfile.trusted-pi.cloud",
+        "source": "services/trusted-pi/runtime_supervisor.py",
+        "destination": "/opt/riffology/runtime_supervisor.py",
+        "sha256": "79e2bdedaedba063364513d853eb8325f229ba55b1e51df46cbcee359807e29c"
+      }
+    ],
+    "dockerignoreSha256": "f1c103191040513d3491d106eab76f21fd6e87f22fa17a07cb8cda8b84d8dc35"
+  },
+  "dependencyLock": {
+    "schemaVersion": 3,
+    "packageEntriesIncludingRoot": 294,
+    "directDependencies": {
+      "@earendil-works/pi-coding-agent": "0.85.0",
+      "@earendil-works/pi-server": "0.85.0"
+    },
+    "nodeEngine": ">=22.19.0",
+    "packageJsonSha256": "0dde532fe23b810bd09b978f990d48342f7378429f2b2c48f30e055993fa6ebe",
+    "packageLockSha256": "ad20b5c766c411c5ba42a4fc997890fe3494ab8adb96cf5d75031366b3d144fc",
+    "sameBytesAsOldImageSourceCommit": true,
+    "packagesDownloadedInstalledOrExecuted": false,
+    "lockIntegrityIsNotNewRegistryAttestation": true
+  },
+  "minimalOverlayProposal": {
+    "recipe": {
+      "path": "minimal-overlay-review/Dockerfile.compatibility-review",
+      "bytes": 1245,
+      "sha256": "bcdec6d274816323daa1c11b9245082efcf8132cc0d2901dab3cb13b2c9110b2"
+    },
+    "base": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+    "uniqueSourceFiles": 5,
+    "fileDestinations": 6,
+    "files": [
+      {
+        "sourcePath": "services/browser-preview/runtime/sha256.mjs",
+        "bytes": 2241,
+        "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24"
+      },
+      {
+        "sourcePath": "services/project-resources/text.mjs",
+        "bytes": 6700,
+        "sha256": "9f7f3266549f04a0a8214e6e725ea9d85030532364f136487833e9cc45af303e"
+      },
+      {
+        "sourcePath": "services/runtime/controlled-pi.mjs",
+        "bytes": 23072,
+        "sha256": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871"
+      },
+      {
+        "sourcePath": "services/trusted-pi/release-candidate.mjs",
+        "bytes": 27185,
+        "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07"
+      },
+      {
+        "sourcePath": "services/trusted-pi/research-context.mjs",
+        "bytes": 1557,
+        "sha256": "938e89155a5d5e0c405f51db5d973a4db264e63d96e308aff8da93caaaa05076"
+      }
+    ],
+    "noNpmInstallOrBaseDownloadPerformed": true,
+    "newImageDigest": null,
+    "preserve": [
+      "existing dependencies/lock",
+      "host/supervisor bytes",
+      "uid10002",
+      "fixed proxy/tool bridge destinations",
+      "provider/model/budgets",
+      "existing app/namespace/default/max1",
+      "all unrelated resources"
+    ],
+    "mustVerifyBeforeFutureBuildOrPublication": [
+      "reconcile actual original image config/root permissions/entrypoint and old retained package versions without starting paid target",
+      "root review exact closure and recipe; freeze source and build receipt",
+      "explicit build/transfer/registry/app-image-update authorization and exact destination",
+      "offline image reads/tests prove baked active release plus /skill/provenance and current no-ModelSpec prompt",
+      "actual manifest/config/layer identities plus serving-versions original app readback",
+      "no namespace/resource recreation; unknown original rollout is readback-only, never a new update"
+    ]
+  },
+  "notPerformed": [
+    "Docker invocation",
+    "download",
+    "SSH",
+    "transfer",
+    "registry request",
+    "Cloudflare API request",
+    "credential read",
+    "provider call",
+    "project/session/grant creation",
+    "source or Gateway candidate edits"
+  ]
+}

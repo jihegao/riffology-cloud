@@ -1,0 +1,102 @@
+{
+  "schema": "project-view-browser-native-source-commit-binding/v1",
+  "observedAt": "2026-10-17T10:46:37.581Z",
+  "implementationCommit": "bc4c0377dd4a59c6ddf6b9de71e3f0fcbe028999",
+  "observedHeadEqualsImplementation": true,
+  "productionPathsCleanAgainstCommit": true,
+  "productionPaths": [
+    "services",
+    "package.json",
+    "package-lock.json",
+    "scripts/m3/build-project-view-frame.mjs"
+  ],
+  "documentationChangesExcludedFromProductionEquality": true,
+  "candidateDir": "candidate-v3",
+  "artifacts": {
+    "gateway.mjs": {
+      "bytes": 5775036,
+      "sha256": "0475703a4ccda6d695709f6045b321431dc60b0e5369bc308bf08cee8279bd85"
+    },
+    "source-graph.json": {
+      "bytes": 1003586,
+      "sha256": "bc6cad8a5bfe5f95f3533f8accca392f7a17e9be8db1c834712063b061de5db7"
+    },
+    "esbuild-metafile.json": {
+      "bytes": 1111339,
+      "sha256": "27d753aac91cf0ada6a305109264d5bcd8a7ae1b873d7e4f34b8289e95b8efd9"
+    },
+    "assets-sha256.json": {
+      "bytes": 20499,
+      "sha256": "b1fd4e1fe0b538af20cfb090242fa996f75bf26f8076e259a774ee2d5338b39a"
+    },
+    "assets-manifest.json": {
+      "bytes": 15987,
+      "sha256": "b24e87bf762801056e447c106600e1fcee9f23e43c01830436006b5dca8ce1ad"
+    },
+    "build-manifest.json": {
+      "bytes": 6967,
+      "sha256": "497bcfd1a3027c27de6c55a1a7cbaa1ad954b0ce03333f3b67e230d7d7eb0aa2"
+    }
+  },
+  "sourceGraph": {
+    "inputs": 1123,
+    "currentDiskAllHashesMatch": true,
+    "trackedInputsMatchingCommit": 302,
+    "dependencyOrExternalInputsFrozenByHash": 821,
+    "dependencyFilesNotClaimedAsGitBlobs": true,
+    "canonicalSha256": "b127c2e30d5a9a81028d68358241f3f4b48b83e7bbbae1ce5572e5b7cb275d70"
+  },
+  "assets": {
+    "paths": 96,
+    "webAssetsMatchingCommit": 28,
+    "immutableAssetsMatchingTrackedStaticIndex": 68,
+    "immutableAssetsUnchangedFromPriorCandidate": true
+  },
+  "frame": {
+    "htmlSha256": "4bd78b2cf7c06051af24d97c2fd7665eea3b96ddbffe6b23daec485ee1e3eff2",
+    "path": "/project-views/4bd78b2cf7c06051af24d97c2fd7665eea3b96ddbffe6b23daec485ee1e3eff2/frame.html",
+    "generatedModuleSha256": "ec9144ab61f3894261ad2ed05c9a0b4261b412ca6f53c48ea23a0e0871ebeba7"
+  },
+  "fixSourceHashes": {
+    "services/project-views/frame-source.mjs": {
+      "bytes": 7651,
+      "sha256": "c2b8ddbbf93553380fa1309741c5578618337016e692319711cda54caf23b2e3"
+    },
+    "services/project-views/frame-html.mjs": {
+      "bytes": 7864,
+      "sha256": "ec9144ab61f3894261ad2ed05c9a0b4261b412ca6f53c48ea23a0e0871ebeba7"
+    },
+    "services/web/project-views.js": {
+      "bytes": 14900,
+      "sha256": "9da41ade420c660a61f0ad4fc46408b728e81248bdeb30bdc419e63bdc61f1c9"
+    },
+    "tests/m3/project-views.test.mjs": {
+      "bytes": 15321,
+      "sha256": "4238a6b3426a24c5d31d37edb8cf2aa720e30291b3a8254f9d3116fa3cf3a7b1"
+    },
+    "tests/m3/project-views-browser.test.mjs": {
+      "bytes": 23500,
+      "sha256": "51e61464b37ec17248698446c47c020847af8b4bae49fde5796573631fee137b"
+    },
+    "tests/m3/project-view-local-fixture.mjs": {
+      "bytes": 2676,
+      "sha256": "795122bdcb39f8cccb350dc9503190cd6acac447bccb4d781c615552bb957f21"
+    },
+    "tests/m3/project-view-native-gateway-browser.test.mjs": {
+      "bytes": 5282,
+      "sha256": "fabac9ca1da7daa5436cbb4315672f2aa7fe29c945c58b792219d4e7aa788d80"
+    },
+    "tests/m3/project-view-native-computation-browser.test.mjs": {
+      "bytes": 4368,
+      "sha256": "5fd765c3458cd94bf6e36bad3488c764058c2889304664dc1c55c58fed890644"
+    }
+  },
+  "priorCandidatesUnmodified": true,
+  "priorCandidatesMustNotPublish": true,
+  "cloudWrites": 0,
+  "networkRequests": 0,
+  "bundleRebuilt": true,
+  "currentSourceOrMetadataGateChanged": false,
+  "actualMergeProofPending": true,
+  "freshExecutionWitnessStillRequired": true
+}

@@ -1,0 +1,60 @@
+{
+  "schema": "trusted-pi-serving-metadata-observation/v1",
+  "authority": "Cloudflare Personal connector: exact app GET, all versions GET, same app GET; projection in connector",
+  "startedAt": "2026-10-17T10:35:29.064Z",
+  "endedAt": "2026-10-17T10:35:29.705Z",
+  "readOnly": true,
+  "requestCount": 3,
+  "statuses": [
+    200,
+    200,
+    200
+  ],
+  "complete": true,
+  "checks": {
+    "sameAppId": true,
+    "sameName": true,
+    "bracketUnchanged": true,
+    "appMatchesPriorBaseline": true,
+    "allVersionsMatchPriorBaseline": true,
+    "originalNamespace": true,
+    "expectedImage": true,
+    "defaultScheduling": true,
+    "maxOne": true,
+    "noUnknownServingVersion": true
+  },
+  "allChecks": true,
+  "app": {
+    "id": "a03628c4-f032-461f-a65b-612ccac11a06",
+    "name": "riffology-m3-trusted-pi-staging",
+    "version": 11,
+    "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+    "schedulingPolicy": "default",
+    "maxInstances": 1,
+    "namespaceId": "ac0e9a31323e463b9a05696dad1b30d5"
+  },
+  "versions": [
+    {
+      "version": 11,
+      "percentage": 100,
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c"
+    },
+    {
+      "version": 10,
+      "percentage": 0,
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:15d0b9fda5296e7f187c5bad547a4fcb5dac9aca6fa2ede638a12f908d290ce4"
+    }
+  ],
+  "canonicalSha256": {
+    "appBefore": "c32958da504bc60edbbb771f9ba69a7c57cc19a666dfd5aea3526823afdac1f2",
+    "appAfter": "c32958da504bc60edbbb771f9ba69a7c57cc19a666dfd5aea3526823afdac1f2",
+    "allVersions": "35a051ed1fb0e983a7783f2df973530f1c482bbf94fb60d6df7162f45032d067"
+  },
+  "pagination": null,
+  "notPerformed": [
+    "container start/inspect",
+    "registry body read",
+    "credential read",
+    "configuration mutation"
+  ]
+}

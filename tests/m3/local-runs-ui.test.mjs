@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {chromium} from 'playwright';
-const names=['artifact-views.js','local-runs.js','browser-preview.js','simulation.js','project-views.js','project-view-remote.js','manual-save.js','comparison.js','i18n.js','i18n-bindings.js'];
+const names=['artifact-views.js','local-runs.js','browser-preview.js','simulation.js','project-views.js','project-view-local.js','project-view-remote.js','manual-save.js','comparison.js','i18n.js','i18n-bindings.js'];
 const modules=Object.fromEntries(await Promise.all(names.map(async name=>[name,await readFile(new URL('../../services/web/'+name,import.meta.url),'utf8')])));
 async function fixture(t){
  const browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||'chrome'});t.after(()=>browser.close());const context=await browser.newContext();const page=await context.newPage();

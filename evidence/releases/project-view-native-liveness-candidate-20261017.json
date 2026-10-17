@@ -1,0 +1,473 @@
+{
+  "schema": "project-view-native-liveness-candidate/v1",
+  "recordedAt": "2026-10-17T10:50:42.150057+00:00",
+  "implementationCommit": "bc4c0377dd4a59c6ddf6b9de71e3f0fcbe028999",
+  "sourceFiles": [
+    {
+      "path": "services/project-views/frame-source.mjs",
+      "bytes": 7651,
+      "sha256": "c2b8ddbbf93553380fa1309741c5578618337016e692319711cda54caf23b2e3",
+      "matchesEarlierFrozenAnnouncement": true
+    },
+    {
+      "path": "services/project-views/frame-html.mjs",
+      "bytes": 7864,
+      "sha256": "ec9144ab61f3894261ad2ed05c9a0b4261b412ca6f53c48ea23a0e0871ebeba7",
+      "matchesEarlierFrozenAnnouncement": true
+    },
+    {
+      "path": "services/web/project-views.js",
+      "bytes": 14900,
+      "sha256": "9da41ade420c660a61f0ad4fc46408b728e81248bdeb30bdc419e63bdc61f1c9",
+      "matchesEarlierFrozenAnnouncement": true
+    }
+  ],
+  "frameHtmlSha256": "4bd78b2cf7c06051af24d97c2fd7665eea3b96ddbffe6b23daec485ee1e3eff2",
+  "implementation": [
+    "Before any project install, capture private bound send/close, URL revoke, and the bootstrap timers; all private port sends use the closure.",
+    "Only the main panel enables the new broker liveness option; legacy/default brokers do not send pings.",
+    "After ready, at most one exact nonce/type challenge is pending; response uses the original private port.",
+    "An exact matching pong must arrive before the monotonic 3-second deadline; valid acknowledgment schedules the next ping after 1 second.",
+    "Timeout closes and invalidates the original broker before the panel removes its frame and latches the package; explicit Retry is required.",
+    "Close clears both timers and pending nonce; late/duplicate/stale responses do not revive a session.",
+    "No request ID or read/write authority is added by liveness."
+  ],
+  "actualReproduction": {
+    "beforeCommit": "9b993bd3d60e619e935be6f6fcb0d1dab8460e1c",
+    "privateOriginalSummarySha256": "989e06dae510f982a7b0bf5c536acc934dfb6162ed021058ccd4f029aa9cc322",
+    "vectors": {
+      "portPrototypeReplacement": {
+        "defectReproduced": true,
+        "observation": {
+          "kind": "observation",
+          "vector": "port-prototype",
+          "packageIdentity": "57c5a7d91f98d2abb13b9dfe3282e70edb5d4d2dee4acb3242c1781f7700130d",
+          "frameHtmlSha256": "7f71d5ee385b0703471719289d25d4fc98d25b1e0a138bc2ded28a9c6ef06f4c",
+          "observationMs": 2002,
+          "navigationDocumentCommitted": true,
+          "httpStatus": 200,
+          "httpHeadersSent": true,
+          "responseBodyEnded": false,
+          "streamClosedBeforeCleanup": false,
+          "armed": [
+            "port-prototype"
+          ],
+          "frameCount": 1,
+          "sameOriginalFrame": true,
+          "frameConnected": true,
+          "secondLoads": 0,
+          "hostPortCloses": 0,
+          "brokerHandlerStillPresent": true,
+          "ready": true,
+          "retryHidden": true
+        },
+        "source": "raw.log",
+        "explanation": "The canonical project button replaces its own realm MessagePort.prototype.postMessage and close after install, then navigates. The original host remains ready with retained frame/handler and no close during the 2-second observation."
+      },
+      "captureStopImmediatePropagation": {
+        "defectReproduced": false,
+        "observation": {
+          "kind": "observation",
+          "vector": "capture-stop",
+          "packageIdentity": "3c24cf532bda46078eda40c126b2ef6957027469b270f15db438c4bbf53f9232",
+          "frameHtmlSha256": "7f71d5ee385b0703471719289d25d4fc98d25b1e0a138bc2ded28a9c6ef06f4c",
+          "observationMs": 2004,
+          "navigationDocumentCommitted": false,
+          "httpStatus": 200,
+          "httpHeadersSent": true,
+          "responseBodyEnded": false,
+          "streamClosedBeforeCleanup": true,
+          "armed": [
+            "capture-stop"
+          ],
+          "captureEvents": [
+            {
+              "type": "synthetic-capture-called",
+              "eventPhase": 2,
+              "trusted": true
+            }
+          ],
+          "frameCount": 0,
+          "sameOriginalFrame": false,
+          "frameConnected": false,
+          "secondLoads": 0,
+          "hostPortCloses": 2,
+          "brokerHandlerStillPresent": false,
+          "ready": false,
+          "retryHidden": false
+        },
+        "source": "capture-v2.raw.log",
+        "explanation": "The actual project capture listener did run (trusted pagehide, phase2), but did not prevent host teardown in this Chromium. Do not promote the earlier generic event-order inference into browser evidence."
+      }
+    },
+    "originalRuns": {
+      "originalTwoVectors": {
+        "schema": "jhg46-native-lifecycle-adversarial-process-result/v1",
+        "startedAt": "2026-10-17T10:23:54.550333+00:00",
+        "finishedAt": "2026-10-17T10:24:12.283696+00:00",
+        "pid": 76733,
+        "exitCode": 1,
+        "outerTimeout": false,
+        "rawLog": ".local/jhg46-native-lifecycle-adversarial-20261017/raw.log",
+        "rawLogBytes": 1356,
+        "rawLogSha256": "801f460060b210985942464b6dae035f986452836149c53e4263e1d5a8240c72",
+        "nodeProcessReaped": true,
+        "sourceCommit": "9b993bd3d60e619e935be6f6fcb0d1dab8460e1c",
+        "command": [
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          ".local/jhg46-native-lifecycle-adversarial-20261017/reproduce.mjs"
+        ]
+      },
+      "captureDiagnosticV2": {
+        "startedAt": "2026-10-17T10:25:43.262128+00:00",
+        "finishedAt": "2026-10-17T10:25:46.241439+00:00",
+        "pid": 77141,
+        "exitCode": 1,
+        "outerTimeout": false,
+        "rawLog": ".local/jhg46-native-lifecycle-adversarial-20261017/capture-v2.raw.log",
+        "rawLogBytes": 1907,
+        "rawLogSha256": "b75c735ebaebc28a4dc1dd5b3f427be8762fc01023e544e97b3d5f5cd7eeb5f5",
+        "nodeProcessReaped": true,
+        "command": [
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          ".local/jhg46-native-lifecycle-adversarial-20261017/capture-reproduce-v2.mjs"
+        ]
+      }
+    },
+    "afterSamePackage": [
+      {
+        "kind": "observation",
+        "vector": "port-prototype",
+        "packageIdentity": "57c5a7d91f98d2abb13b9dfe3282e70edb5d4d2dee4acb3242c1781f7700130d",
+        "frameHtmlSha256": "4bd78b2cf7c06051af24d97c2fd7665eea3b96ddbffe6b23daec485ee1e3eff2",
+        "observationMs": 2003,
+        "navigationDocumentCommitted": false,
+        "httpStatus": 200,
+        "httpHeadersSent": true,
+        "responseBodyEnded": false,
+        "streamClosedBeforeCleanup": true,
+        "armed": [
+          "port-prototype"
+        ],
+        "frameCount": 0,
+        "sameOriginalFrame": false,
+        "frameConnected": false,
+        "secondLoads": 0,
+        "hostPortCloses": 2,
+        "brokerHandlerStillPresent": false,
+        "ready": false,
+        "retryHidden": false
+      },
+      {
+        "kind": "cleanup",
+        "vector": "port-prototype",
+        "browserPid": 79052,
+        "hostLeft": true,
+        "browserClosed": true,
+        "browserPidAbsent": true,
+        "serverClosed": true,
+        "hostPortCloses": 2
+      }
+    ],
+    "afterSamePackageReceipt": {
+      "schema": "jhg46-native-liveness-root-check/v1",
+      "mode": "prototype",
+      "startedAt": "2026-10-17T10:42:12.719107+00:00",
+      "finishedAt": "2026-10-17T10:42:15.611290+00:00",
+      "command": [
+        "node",
+        "--test",
+        ".local/jhg46-native-lifecycle-adversarial-20261017/fixed-port-regression.mjs"
+      ],
+      "exitCode": 0,
+      "counts": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      "sourceHashes": {
+        "services/project-views/frame-source.mjs": "c2b8ddbbf93553380fa1309741c5578618337016e692319711cda54caf23b2e3",
+        "services/project-views/frame-html.mjs": "ec9144ab61f3894261ad2ed05c9a0b4261b412ca6f53c48ea23a0e0871ebeba7",
+        "services/web/project-views.js": "9da41ade420c660a61f0ad4fc46408b728e81248bdeb30bdc419e63bdc61f1c9"
+      },
+      "sourceBytesStableDuringRun": true,
+      "logPath": ".local/jhg46-native-liveness-check-20261017/root-prototype.raw.log",
+      "logBytes": 916,
+      "logSha256": "ff0ab5460fd8ff196e761cab5ee0950c76b056d6fd084a913ae8b582f91ff9c4",
+      "executionScope": "local synthetic fixtures only",
+      "cloudContainerOrModelExecutionRequested": false
+    },
+    "fixedNavigationCommitClaimed": false
+  },
+  "chromiumFocused": {
+    "firstFocused": {
+      "schema": "jhg46-native-liveness-focused/v1",
+      "startedAt": "2026-10-17T10:36:38.204523+00:00",
+      "finishedAt": "2026-10-17T10:36:53.198038+00:00",
+      "pid": 78225,
+      "exitCode": 1,
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=2",
+        "tests/m3/project-view-local-browser.test.mjs",
+        "tests/m3/project-views-browser.test.mjs",
+        "tests/m3/project-view-native-gateway-browser.test.mjs",
+        "tests/m3/project-views.test.mjs",
+        "tests/m3/project-view-frame-bytes.test.mjs",
+        "tests/m3/project-view-browser-entry-workerd.test.mjs",
+        "tests/m3/project-view-native-computation-browser.test.mjs"
+      ],
+      "browserEngine": "chromium",
+      "logPath": ".local/jhg46-native-liveness-check-20261017/focused-first.raw.log",
+      "logBytes": 5702,
+      "logSha256": "f2efcb282614fb77843776d7855a1ede175698dc02c0189db8bc6f01bd09b66a",
+      "cloudOrModelRequested": false,
+      "fullCheckRepeated": false,
+      "sourceFiles": [
+        {
+          "path": "services/project-views/frame-source.mjs",
+          "sha256": "c2b8ddbbf93553380fa1309741c5578618337016e692319711cda54caf23b2e3"
+        },
+        {
+          "path": "services/project-views/frame-html.mjs",
+          "sha256": "ec9144ab61f3894261ad2ed05c9a0b4261b412ca6f53c48ea23a0e0871ebeba7"
+        },
+        {
+          "path": "services/web/project-views.js",
+          "sha256": "9da41ade420c660a61f0ad4fc46408b728e81248bdeb30bdc419e63bdc61f1c9"
+        }
+      ],
+      "nodePass": 36,
+      "nodeFail": 1,
+      "nodeSkip": 0,
+      "nodeCancelled": 0,
+      "selectionTests": 37
+    },
+    "knownFirstFailure": "The old stream-navigation test installed its close spy after the broker had captured the native close method, so that spy could not count the broker close. Direct frame cleanup had already passed. This was a test-observation error, not a production cleanup failure.",
+    "singleAffectedFollowup": {
+      "schema": "jhg46-native-liveness-stream-observer-followup/v1",
+      "startedAt": "2026-10-17T10:38:23.492859+00:00",
+      "finishedAt": "2026-10-17T10:38:29.300612+00:00",
+      "pid": 78886,
+      "exitCode": 0,
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "navigation to a committed endless HTTP response",
+        "tests/m3/project-views-browser.test.mjs"
+      ],
+      "reason": "Only the previous test spy missed the new early-bound broker close. Original broker channel is now captured before construction and directly checked for closed handler; production files unchanged.",
+      "logPath": ".local/jhg46-native-liveness-check-20261017/stream-observer-followup.raw.log",
+      "logBytes": 243,
+      "logSha256": "c3eb7c7b8e2fa602714eb8d1a349047be9c3ab17c3bd46729263b264b07ed729",
+      "cloudOrModelRequested": false,
+      "fullCheckRepeated": false,
+      "nodePass": 1,
+      "nodeFail": 0,
+      "nodeSkip": 0
+    },
+    "productionBytesChangedBetweenRuns": false,
+    "onlyPreviouslyFailedCaseRerun": true,
+    "noSingleAll37PassRunClaimed": true,
+    "typecheck": {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "evidence": "completed exec tool output f73fb7; no separate original stdout file claimed"
+    },
+    "i18n": {
+      "command": "node scripts/i18n-check.mjs",
+      "exitCode": 0
+    },
+    "generatedFrame": {
+      "command": "node scripts/m3/build-project-view-frame.mjs --check",
+      "exitCode": 0
+    },
+    "diffCheck": {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    "independentStaticReview": "github_audit reported no must-fix after verifying all three frozen source hashes; not another test run"
+  },
+  "webkitFocused": {
+    "initial": {
+      "schema": "jhg46-native-webkit-liveness-check/v1",
+      "startedAt": "2026-10-17T10:37:33.137947+00:00",
+      "finishedAt": "2026-10-17T10:37:50.348691+00:00",
+      "sourceBaseCommit": "df12d802b6d5752e36ac10dcace721ff941e1ec9",
+      "workingTreeSource": {
+        "services/project-views/frame-source.mjs": "c2b8ddbbf93553380fa1309741c5578618337016e692319711cda54caf23b2e3",
+        "services/project-views/frame-html.mjs": "ec9144ab61f3894261ad2ed05c9a0b4261b412ca6f53c48ea23a0e0871ebeba7",
+        "services/web/project-views.js": "9da41ade420c660a61f0ad4fc46408b728e81248bdeb30bdc419e63bdc61f1c9"
+      },
+      "testFileHashes": {
+        "tests/m3/project-view-local-browser.test.mjs": "4c1b0352f4f1f19b4fa7e8cc8ace943e0bad51e1018dba6f919229316e114773",
+        "tests/m3/project-views-browser.test.mjs": "937afa55a08adf759403575e66a24c3e33f26686a65f637251ce80d423f3eeac",
+        "tests/m3/project-view-native-gateway-browser.test.mjs": "fabac9ca1da7daa5436cbb4315672f2aa7fe29c945c58b792219d4e7aa788d80",
+        "tests/m3/project-view-native-computation-browser.test.mjs": "5fd765c3458cd94bf6e36bad3488c764058c2889304664dc1c55c58fed890644"
+      },
+      "sourceAndTestBytesStableDuringRun": true,
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "tests/m3/project-view-local-browser.test.mjs",
+        "tests/m3/project-views-browser.test.mjs",
+        "tests/m3/project-view-native-gateway-browser.test.mjs",
+        "tests/m3/project-view-native-computation-browser.test.mjs"
+      ],
+      "exitCode": 1,
+      "logBytes": 3893,
+      "logSha256": "06f953d55f7c14dbab1861ee0c69e324a97414867b1afb2de7816b18f881e56b",
+      "logPath": ".local/jhg46-native-webkit-20261017/webkit-liveness-check.log",
+      "browserIsInstalledSafari": false,
+      "browserEngine": "Playwright WebKit 26.6 revision2359",
+      "environmentPolicy": "explicit whitelist without cloud execution switches or credentials; only isolated browser path/engine added",
+      "cloudModelTurnRunRequested": false
+    },
+    "initialCounts": {
+      "selection": 22,
+      "pass": 21,
+      "fail": 1,
+      "skip": 0
+    },
+    "knownFailure": "The old test close spy was installed after native close was bound. The production frame/handler teardown passed; only test observation was corrected.",
+    "onlyAffectedCaseFollowup": {
+      "schema": "jhg46-native-liveness-root-check/v1",
+      "mode": "webkit-counter",
+      "startedAt": "2026-10-17T10:42:02.707655+00:00",
+      "finishedAt": "2026-10-17T10:42:08.481414+00:00",
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "navigation to a committed endless HTTP response",
+        "tests/m3/project-views-browser.test.mjs"
+      ],
+      "exitCode": 0,
+      "counts": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      "sourceHashes": {
+        "services/project-views/frame-source.mjs": "c2b8ddbbf93553380fa1309741c5578618337016e692319711cda54caf23b2e3",
+        "services/project-views/frame-html.mjs": "ec9144ab61f3894261ad2ed05c9a0b4261b412ca6f53c48ea23a0e0871ebeba7",
+        "services/web/project-views.js": "9da41ade420c660a61f0ad4fc46408b728e81248bdeb30bdc419e63bdc61f1c9"
+      },
+      "sourceBytesStableDuringRun": true,
+      "logPath": ".local/jhg46-native-liveness-check-20261017/root-webkit-counter.raw.log",
+      "logBytes": 246,
+      "logSha256": "905db56a4c176b2aeea55efca3ac2fbf69866fa862efab91283d88e0d24c2b79",
+      "executionScope": "local synthetic fixtures only",
+      "cloudContainerOrModelExecutionRequested": false
+    },
+    "all22NotClaimedAsSingleGreenInvocation": true
+  },
+  "independentSharedFrameRegression": {
+    "schema": "jhg46-native-liveness-root-check/v1",
+    "mode": "legacy",
+    "startedAt": "2026-10-17T10:42:11.904113+00:00",
+    "finishedAt": "2026-10-17T10:42:17.645804+00:00",
+    "command": [
+      "node",
+      "--test",
+      "--test-concurrency=2",
+      "tests/m3/project-view-remote-browser.test.mjs",
+      "tests/m3/project-view-authenticated-browser.test.mjs",
+      "tests/m3/project-view-runtime-bundle.test.mjs",
+      "tests/m3/project-view-runtime-pipe.test.mjs",
+      "tests/m3/project-view-runtime-preflight.test.mjs",
+      "tests/m3/isolated-browser.test.mjs"
+    ],
+    "exitCode": 0,
+    "counts": {
+      "tests": 48,
+      "pass": 48,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "sourceHashes": {
+      "services/project-views/frame-source.mjs": "c2b8ddbbf93553380fa1309741c5578618337016e692319711cda54caf23b2e3",
+      "services/project-views/frame-html.mjs": "ec9144ab61f3894261ad2ed05c9a0b4261b412ca6f53c48ea23a0e0871ebeba7",
+      "services/web/project-views.js": "9da41ade420c660a61f0ad4fc46408b728e81248bdeb30bdc419e63bdc61f1c9"
+    },
+    "sourceBytesStableDuringRun": true,
+    "logPath": ".local/jhg46-native-liveness-check-20261017/root-legacy.raw.log",
+    "logBytes": 5001,
+    "logSha256": "afed4518337e7c9f92bb0bb83c28ee9c5ab5dd5cf62eb3597ce7dde375691f1c",
+    "executionScope": "local synthetic fixtures only",
+    "cloudContainerOrModelExecutionRequested": false
+  },
+  "uiCheck": {
+    "schema": "jhg46-native-liveness-ui-check/v1",
+    "startedAt": "2026-10-17T10:43:52.016361+00:00",
+    "finishedAt": "2026-10-17T10:43:54.054062+00:00",
+    "command": [
+      "npm",
+      "run",
+      "check:ui"
+    ],
+    "exitCode": 0,
+    "logPath": ".local/jhg46-native-liveness-check-20261017/root-check-ui.raw.log",
+    "logBytes": 3478,
+    "logSha256": "a8b9660fd7e6d6a74b8ad5e980fd6ea692a1627bad0bb1baed419b98bf537833",
+    "cloudModelExecutionRequested": false
+  },
+  "normalCoverage": [
+    "Normal exact pongs maintain a live original channel.",
+    "Child response suspension reaches the cooperative deadline, closes original handler/frame/ports, continues read-only polling without restart, then explicit Retry restores a new channel.",
+    "Duplicate installed does not open another liveness chain; ping/pong does not consume user request ID1.",
+    "Wrong or extra-field pong is ignored; timeout closes before failure callback and late pong cannot revive it.",
+    "Actual Gateway/signed Entry, native computation/parameters/pause/resume/reload, and real R2 subscription cases passed in the first selection."
+  ],
+  "nativeComputation": {
+    "engines": [
+      "Chromium",
+      "Playwright WebKit26.6/revision2359"
+    ],
+    "savedData": [
+      2,
+      3,
+      5
+    ],
+    "defaultFactor": 2,
+    "defaultResult": 20,
+    "changedFactor": 5,
+    "changedResult": 50,
+    "pausedInputFactor": 3,
+    "pausedResult": 50,
+    "resumedResult": 30,
+    "reloadSavedDefaultResult": 20,
+    "localJsMemoryPersisted": false,
+    "test": "tests/m3/project-view-native-computation-browser.test.mjs"
+  },
+  "fullCheckBoundary": {
+    "sourceCommit": "e689beb4a1babd8546405181cf3daf74625ed59d",
+    "nodePass": 3303,
+    "nodeSkip": 13,
+    "pythonPass": 8,
+    "repeatedForThisFix": false
+  },
+  "limitations": [
+    "Event-loop cooperation is required. There is no hard termination guarantee for synchronous infinite JavaScript or CPU/RAM quota.",
+    "Playwright WebKit is not the installed Safari app or authenticated ordinary-user acceptance. Firefox remains untested.",
+    "Only sampled original vectors were tested: prototype replacement was reproduced then fixed; capture-stop was not reproduced in this Chromium.",
+    "Authorized project data egress remains accepted; no no-egress or cookie-free claim."
+  ],
+  "deployed": false,
+  "browserGrantEnabled": false,
+  "authenticatedOrdinaryUserAcceptance": false,
+  "cloudContainerOrModelRequested": false,
+  "done": false
+}

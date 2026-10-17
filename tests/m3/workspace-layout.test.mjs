@@ -6,7 +6,7 @@ import {resolve} from 'node:path';
 import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 const origin='https://workspace.test',previewOrigin='https://p-'+ 'a'.repeat(40)+'.preview.test';
-const names=['artifact-views.js','index.html','app.js', 'i18n.js', 'i18n-bindings.js', 'locale-preference.js','project-status.js','browser-preview.js','verify-handoff.js','layout.js','export.js','publication.js','evidence.js','evidence.css','services.js','previews.js','simulation.js','project-views.js','project-view-remote.js','manual-save.js','local-runs.js','comparison.js','styles.css','workspace.css'];
+const names=['artifact-views.js','index.html','app.js', 'i18n.js', 'i18n-bindings.js', 'locale-preference.js','project-status.js','browser-preview.js','verify-handoff.js','layout.js','export.js','publication.js','evidence.js','evidence.css','services.js','previews.js','simulation.js','project-views.js','project-view-local.js','project-view-remote.js','manual-save.js','local-runs.js','comparison.js','styles.css','workspace.css'];
 const files=Object.fromEntries(await Promise.all(names.map(async name=>[name,await readFile(new URL('../../services/web/'+name,import.meta.url),'utf8')])));
 const digest=value=>createHash('sha256').update(value).digest('hex');
 test('initial copied project files remain visible before the first Turn revision',async t=>{
