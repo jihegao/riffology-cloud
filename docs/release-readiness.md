@@ -1,5 +1,11 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-17 Copied-project context integration on main
+
+An independent candidate on main `1e35391` reuses #226's eight-file initial Files / first Managed context / empty Preview increment for #207/#206. It retains the current pre-dispatch source digest guard and manual/original-operation behavior. #231 is separate. Final-HEAD related and aggregate results belong to the linked PR/Issue delivery evidence; no local plan is treated as a pass. [Provenance, verification method and acceptance limits](initial-context-main-integration-20261017.md). This candidate is not merged or deployed.
+
+The baseline #221/#227 integration was previously merged and released. Its real page/recovery/cross-identity/isolation acceptance remains pending under the latest delivery order; older entries below retain their historical candidate states.
+
 ## 2026-10-16 UTC Manual Revision to page broker local regression
 
 An isolated candidate on #227 merge `f43bb60` connects real local Gateway/D1/R2/Workspace manual saves and two-page canonical packages to the production broker over Node MessageChannel. It reproduces and repairs late file/artifact delivery after package replacement or revocation, and validates an expected workspace generation. The synthetic fixture and negative control are separate from real invited-page, renderer/container cleanup and nine-egress acceptance; #221/main and production gates remain unchanged. [Regression and evidence boundaries](manual-page-broker-regression-20261017.md).

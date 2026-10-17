@@ -45,6 +45,7 @@ export function createBrowserPreviewPanel({root,api,runtimeFactory=createBrowser
  function paragraph(text,role=null){const p=doc.createElement('p');bindValue(p,text);if(role)p.setAttribute('role',role);return p;}
  function render(){
   if(!context)return;
+  root.hidden=!loaded&&!state?.build&&!message&&!context.standalone;
   const declared=state?.views?.filesSha256===loaded?.manifest.filesSha256?state?.views?.items??[]:[];
   viewTabs.update([{id:'_overview',title:msg('views.overview'),nodes:[visual,metrics]},...declared.map(v=>({id:v.id,title:v.title,nodes:v.renderer==='scene'?[visual]:[metrics]}))],context,loaded?.manifest.packageIdentity??'');
   controls.replaceChildren();const title=doc.createElement('h3');bindValue(title,msg('browser.title'));controls.append(title);
@@ -81,7 +82,7 @@ export function createBrowserPreviewPanel({root,api,runtimeFactory=createBrowser
 
  function click(event){const target=event.target.closest?.('[data-browser-preview-action]');if(!target||!root.contains(target)||target.disabled)return;const action=target.dataset.browserPreviewAction;if(action==='retry-build')void retryBuild();else if(action==='refresh')void refresh();else if(action==='run')void run();else if(action==='cancel'){engine?.runtime.cancel();engine?.player.clear();trace=null;message=msg('browser.cancelled');render();}else if(action==='verify')void verify();else if(['play','pause','step','restart'].includes(action))engine?.player[action]();}
  function change(){if(!loaded)return;try{remember();message='';}catch(error){message=errorMessage(error);}const status=controls.querySelector('[role="status"]');if(status)bindValue(status,()=>message||msg('browser.parametersSaved'));}
- function leave(){verificationReady=false;onVerificationAvailability(false);generation++;readVersion++;clearTimeout(pollTimer);for(const controller of requests)controller.abort();requests.clear();engine?.runtime.dispose();engine?.player.clear();engine=null;loaded=null;inputs=null;parameterDraft=null;lastAgentDraft=null;trace=null;state=null;context=null;loading=running=verifying=false;message='';root.removeEventListener('click',click);root.removeEventListener('change',change);root.replaceChildren();}
+ function leave(){verificationReady=false;onVerificationAvailability(false);generation++;readVersion++;clearTimeout(pollTimer);for(const controller of requests)controller.abort();requests.clear();engine?.runtime.dispose();engine?.player.clear();engine=null;loaded=null;inputs=null;parameterDraft=null;lastAgentDraft=null;trace=null;state=null;context=null;loading=running=verifying=false;message='';root.removeEventListener('click',click);root.removeEventListener('change',change);for(const node of [controls,form,visual,metrics])node.replaceChildren();root.replaceChildren();root.hidden=true;}
  async function enter(value){leave();if(!value||!id(value.tenantId)||!id(value.projectId)||!id(value.workspaceId))throw Error('invalid-browser-preview-context');context={...value,canOpen:value.canOpen===true};root.append(controls,form,viewRoot);root.addEventListener('click',click);root.addEventListener('change',change);render();await refresh();}
  return {enter,leave,refresh,savedRevision:()=>void refresh(),applyParameterDraft,run,verify};
 }

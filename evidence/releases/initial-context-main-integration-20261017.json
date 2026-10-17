@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-17",
+  "base": "1e35391a04a0e5c669fa708971b2456e9a414ca3",
+  "sourcePullRequest": 226,
+  "sourceHead": "5ca13487d01ca0b308bb48e05424347b6c51c79e",
+  "sourceBase": "f625f0193e2964148a990a3af502e7a581ceb688",
+  "sourceCodeCommit": "25812ea81724f822ccb84b9921b6c89a5f19c231",
+  "sourcePatchSha256": "4c16a13463f77cf0f322c4aa326550fae13ffce0b9493849ce83db145820353d",
+  "businessFileCount": 8,
+  "sourceFiles": {
+    "scripts/i18n-check.mjs": "7f22e786c1d3f356610207b947ecfbc0be769031fa81a231490b4ae377ce4a59",
+    "services/turn-runtime/managed-product.ts": "6e4fc4c93ad9d33260ca41e9eb4a2d62153d9c14627b6b92b6bb339955972091",
+    "services/web/app.js": "ab2ddcb5d7d647b4faab1041da1df2c0f78800f0b7036089aaad5ad8aa887165",
+    "services/web/browser-preview.js": "7416031503673dc9e83810d03a0642d75d5a2216536e91fdccaeae6d743a4ec2",
+    "services/web/i18n.js": "8aa92fc5d74de0ce7fb4e294957b21b294fda607516ccb8a8da684aa40a4c869",
+    "tests/m2/managed-product.test.ts": "1c10f9dfd39d49e3cea3f08bf05be05af7d919ce30e243901f6bc3c336d0a388",
+    "tests/m3/browser-preview-panel.test.mjs": "acb70899dfcda2c7770e2de341d629849de99af94b0950e6a31e58058786f52c",
+    "tests/m3/workspace-layout.test.mjs": "e097f7eb63708c8f98f16dc3a74fc18104f25705df27aa9e367550d40f617168"
+  },
+  "checksEvidence": "Final candidate HEAD, exit codes, counts and log hashes must be read from the associated Draft PR/Issue207 completion comments; no aggregate pass is asserted by this source manifest.",
+  "boundaries": {
+    "sourceAttributionPreserved": true,
+    "accountIdentity231Included": false,
+    "originalBranchesRewritten": false,
+    "merge": false,
+    "deployment": false,
+    "productionDataChanged": false,
+    "realProviderExecution": false,
+    "authenticatedAcceptance": false
+  }
+}
