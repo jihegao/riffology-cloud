@@ -1,0 +1,9 @@
+# Current account ID — Issue #228
+
+The account area shows a shortened ID from the current successful `/api/me` response. Its native disclosure exposes a labelled, read-only full ID and a keyboard-accessible copy button. Clipboard denial or missing support selects the full value and explains manual copying. Existing sign-out is reused. Labels and status messages follow the selected Chinese/English locale.
+
+Loading, signing out, a current 401, and failed identity checks clear the old value and copy feedback. Focus/foreground checks use a 15-second timeout; a restored page rehydrates the account. A changed verified account reloads its existing application context. Identity epochs reject old reads, old 401s and late clipboard acknowledgements; a separate account-load generation prevents an old sign-out acknowledgement from clearing a newly restored account. Ordinary Workspace navigation does not change that account generation.
+
+Tested implementation commit: `9a27b3d36c1c160bd74e73ca47198238d930d35f`, based on main `1e35391a04a0e5c669fa708971b2456e9a414ca3`. [Machine-readable evidence](../evidence/releases/account-identity-228-20261017.json) records source and log hashes. Local related browser checks passed 122/122; `check:ui` passed its syntax/dictionary guards and 21/21 tests; typecheck and whitespace checks passed. Desktop and 320px synthetic screenshots were reviewed. The initial fixture-hook failure remains recorded separately.
+
+Browser requests use intercepted synthetic identities. Automatic clipboard writes are stubbed; native input selection is exercised. Real OAuth accounts, operating-system clipboard permissions, deployment and authenticated production acceptance remain pending. No backend, admission policy, credentials, production data or provider execution changes are included. This is a Draft implementation, not an Issue close or an acceptance claim.
