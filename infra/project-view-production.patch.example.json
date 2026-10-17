@@ -14,7 +14,7 @@
   },
   "preservationRequirements": [
     "Freeze and compare the actual active deployment, complete settings and complete Worker resource arrays immediately before any publication.",
-    "Append to existing bindings, SQLite exports/migrations and container associations; never replace them with this partial example.",
+    "Append to the existing modern SQLite exports, bindings and container associations; never replace them with this partial example or add mutually exclusive legacy migrations.",
     "Keep original Workspace namespace, 100 baseline bindings, 23 baseline exports and 5 baseline container associations, all existing assets and all account container application configurations.",
     "Keep current Pi/Runs policies, pending records, historical usage, reservations and admission state; do not reuse their capacity for project pages.",
     "No account, database, route, invitation, credential, budget or existing execution-gate change is implied."
@@ -24,7 +24,11 @@
       {"name": "PROJECT_VIEW_RUNTIME", "class_name": "ProjectViewRuntime"},
       {"name": "PROJECT_VIEW_CAPACITY", "class_name": "ProjectViewCapacity"}
     ],
-    "newSqliteClasses": ["ProjectViewRuntime", "ProjectViewCapacity"],
+    "appendExports": {
+      "ProjectViewRuntime": {"type": "durable-object", "storage": "sqlite", "container": "riffology-project-view-browser"},
+      "ProjectViewCapacity": {"type": "durable-object", "storage": "sqlite"}
+    },
+    "appendWorkerContainers": [{"name": "riffology-project-view-browser"}],
     "containerAssociation": {
       "name": "riffology-project-view-browser",
       "class_name": "ProjectViewRuntime",
@@ -43,13 +47,17 @@
       "PROJECT_VIEW_POLICY_JSON": {"enabled": false}
     }
   },
-  "unresolvedBeforePublication": [
-    "Exact reviewed image digest, supply-chain evidence, Chromium sandbox and real no-network/cleanup verification.",
-    "Validate the explicit default/basic candidate: actual expanded image fits its 4 GB disk; 0.25 vCPU / 1 GiB RAM meets Chromium startup and two-page peak limits. It is not equivalent to the older AMD 1 vCPU fixture. Do not silently upsize or inherit Pi/Runs resource applications.",
-    "Preserve compatibility date 2026-09-06 and existing Node flags; retain the default isolated PID namespace and reject no_containers_pid_namespace. Do not switch to durable_object scheduling, whose non-root exec users retain root capabilities.",
+  "closedPublicationRequirements": [
+    "Exact reviewed registry image digest, build-input evidence, software/resource/sandbox configuration and explicit scope for default-closed publication. Target execution evidence is obtained only in the subsequent selected authorized attempt.",
+    "Review actual expanded-image size and headroom against default/basic's 4 GB disk before publication. Its actual 0.25 vCPU / 1 GiB startup and peak viability remains first-target evidence, not a circular prerequisite to creating the disabled target. Do not silently upsize or inherit Pi/Runs applications.",
+    "Preserve the actual serving runtime: fresh 2026-10-17 readback confirms compatibility date 2026-09-09 and flags nodejs_compat, nodejs_compat_do_not_populate_process_env, enable_request_signal. Recheck immediately before publication; retain the default isolated PID namespace and reject no_containers_pid_namespace. Do not switch to durable_object scheduling, whose non-root exec users retain root capabilities.",
     "Read back the actual default application and every serving version's immutable image/configuration; inspect().image is not an OCI digest attestation. Match the actual app/version image to PROJECT_VIEW_RUNTIME_IMAGE and the exact approved policy. Verify baked context receipt and actual package bytes before user input; this is an input/compatibility check only.",
-    "A fresh complete preservation snapshot and unique additive migration tag; no rollback may remove persisted session/cleanup tombstones.",
-    "Explicit approved invited identity/project scope, operation/session deadline, infrastructure cost policy and stop/exit conditions before production admission.",
-    "The exact enabled policy bytes and their hash must bind the actual image and contextReceiptSha256 together; default disabled preparation is not production eligibility."
+    "A fresh complete preservation snapshot and unique release annotation. This Worker uses modern exports, not legacy migrations/new_sqlite_classes: lifecycle changes require direct script deployment and cannot use the PR232 staged-version procedure unchanged. Keep both new exports, namespaces and persisted session/cleanup tombstones in any safe forward rollback.",
+    "Keep the exact closed policy and reviewed image/receipt environment pins throughout publication and configuration/source/asset readback."
+  ],
+  "firstTargetAdmissionRequirements": [
+    "Explicit approved invited identity/new-project scope, operation/session deadline, infrastructure cost policy and stop/exit conditions before admission.",
+    "The exact enabled policy bytes and their hash bind actual image and contextReceiptSha256 together; disabled preparation is not production eligibility.",
+    "During the selected authorized target attempt, record actual startup/resource behavior, Chromium sandbox/no-network evidence and original-ID cleanup. Stop on failure or unknown execution; no automatic upsizing or replacement identity. Full JHG-56 remains independently pending."
   ]
 }

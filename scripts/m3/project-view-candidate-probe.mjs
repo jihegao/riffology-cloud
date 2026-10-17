@@ -73,8 +73,10 @@ async function originalAbsent(runner,record){
  const result=await cli(runner,['container','inspect','--format','{{json .}}',record.containerId]);
  // An unavailable daemon, a truncated response, or an empty successful list
  // is not proof. Docker's explicit not-found result must name this exact ID.
+ // Docker 29's formatted inspect emits one stdout newline on a not-found
+ // result. Accept only that exact empty formatting, never arbitrary trim().
  const escaped=record.containerId;
- if(result.error||result.status!==1||result.stdout!==''||typeof result.stderr!=='string'||!new RegExp('^(?:Error:|Error response from daemon:) No such container: '+escaped+'\\n?$').test(result.stderr))fail('original-absence-unconfirmed');
+ if(result.error||result.status!==1||(result.stdout!==''&&result.stdout!=='\n')||typeof result.stderr!=='string'||!new RegExp('^(?:Error:|Error response from daemon:) No such container: '+escaped+'\\n?$').test(result.stderr))fail('original-absence-unconfirmed');
  return true;
 }
 async function cleanupOriginal(directory,record,runner){

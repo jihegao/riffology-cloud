@@ -1,0 +1,1211 @@
+{
+  "schema": "project-view-amd-offline-evidence/v1",
+  "date": "2026-10-17",
+  "host": "AMD128",
+  "scope": "One user-approved current-candidate offline build and one synthetic browser probe; original failed build and frozen failed probe remain unchanged. No Cloudflare or authenticated-user acceptance.",
+  "authorization": {
+    "originalArchiveReply": "授权发送并做上述离线验证",
+    "existingProxyReply": "允许排查并修复现有代理后重试原镜像",
+    "candidateV2Reply": "授权追加发送新版包并验证",
+    "noProductionGrantInferred": true
+  },
+  "publicBase": {
+    "reference": "mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a",
+    "startedAt": "2026-10-17T06:12:27.212147+00:00",
+    "completedAt": "2026-10-17T06:19:48.202385+00:00",
+    "proxyPort": 7892,
+    "daemonProxyPort7897Repaired": false,
+    "manifestSha256": "957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a",
+    "manifestBytes": 1644,
+    "configDigest": "sha256:e8cca6c072224762154d1c2457a02e014f49e1126ad91cd1fa5174154c102614",
+    "blobs": {
+      "sha256:e8cca6c072224762154d1c2457a02e014f49e1126ad91cd1fa5174154c102614": {
+        "expectedBytes": 6920,
+        "receivedBytes": 6920,
+        "getAttempts": 1,
+        "status": "verified",
+        "sha256": "e8cca6c072224762154d1c2457a02e014f49e1126ad91cd1fa5174154c102614"
+      },
+      "sha256:d544298cabd50e7c86bfef1e52b67f01db6b3a57bfecfe37a851873dee83e52a": {
+        "expectedBytes": 29736943,
+        "receivedBytes": 29736943,
+        "getAttempts": 1,
+        "status": "verified",
+        "sha256": "d544298cabd50e7c86bfef1e52b67f01db6b3a57bfecfe37a851873dee83e52a"
+      },
+      "sha256:acb5643d3437e187e1cfede618719d640d05729da2eef256e5a796188e6a8e80": {
+        "expectedBytes": 100515976,
+        "receivedBytes": 100515976,
+        "getAttempts": 1,
+        "status": "verified",
+        "sha256": "acb5643d3437e187e1cfede618719d640d05729da2eef256e5a796188e6a8e80"
+      },
+      "sha256:ed16bcb2a179831155a8c20d5d8a6aef340ad5b11051d08323760383d82a8e71": {
+        "expectedBytes": 3117207,
+        "receivedBytes": 3117207,
+        "getAttempts": 1,
+        "status": "verified",
+        "sha256": "ed16bcb2a179831155a8c20d5d8a6aef340ad5b11051d08323760383d82a8e71"
+      },
+      "sha256:db7afc29b16390e802d6c0963017813d8dc4716b91a6601b611bf0469cd31682": {
+        "expectedBytes": 243903929,
+        "receivedBytes": 243903929,
+        "getAttempts": 1,
+        "status": "verified",
+        "sha256": "db7afc29b16390e802d6c0963017813d8dc4716b91a6601b611bf0469cd31682"
+      },
+      "sha256:e9559170b698b53b6548a2a51be4c701941d9fe627d08b5a579c568e2ab346e1": {
+        "expectedBytes": 298327927,
+        "receivedBytes": 298327927,
+        "getAttempts": 1,
+        "status": "verified",
+        "sha256": "e9559170b698b53b6548a2a51be4c701941d9fe627d08b5a579c568e2ab346e1"
+      },
+      "sha256:47550e174b162d0d5a4d1cc5163efdf5b22c2b33998c7361b826d8c74fdbc284": {
+        "expectedBytes": 117602866,
+        "receivedBytes": 117602866,
+        "getAttempts": 1,
+        "status": "verified",
+        "sha256": "47550e174b162d0d5a4d1cc5163efdf5b22c2b33998c7361b826d8c74fdbc284"
+      },
+      "sha256:4b56d4fd802681f4cd0ddd7924acce9c00ee77d7819c130a8a4c631c20663efe": {
+        "expectedBytes": 110814413,
+        "receivedBytes": 110814413,
+        "getAttempts": 1,
+        "status": "verified",
+        "sha256": "4b56d4fd802681f4cd0ddd7924acce9c00ee77d7819c130a8a4c631c20663efe"
+      }
+    },
+    "downloadedBlobBytes": 904026181,
+    "archiveBytes": 904038400,
+    "archiveSha256": "a780bdee662c638afe9a28b9904d356bcad32d66fb00b2addfc358992e697ddf",
+    "oneLoad": true,
+    "loadExitCode": 0,
+    "loadLogSha256": "653e697724d54d8554c59ca75e644f2cf6041a6c894a9128c244403a5f50ac27",
+    "loadErrorMarkers": {
+      "unpackError": false,
+      "errorDetail": false,
+      "genericError": false
+    },
+    "originalManifestRewritten": false,
+    "readback": {
+      "id": "sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a",
+      "descriptor": {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "digest": "sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a",
+        "size": 1644,
+        "annotations": {
+          "io.containerd.image.name": "mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a",
+          "org.opencontainers.image.ref.name": "mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a"
+        }
+      },
+      "repoDigests": [
+        "mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a"
+      ],
+      "os": "linux",
+      "architecture": "amd64",
+      "rootfs": {
+        "Type": "layers",
+        "Layers": [
+          "sha256:c0359c5b6ede84d4a083d06d35ee77f0b338dfb17423771854d007d89953fb3e",
+          "sha256:7bdd2a4a36363256f671320ec06a6b39baa2ce5c6984058f49edfa2e29120bde",
+          "sha256:39da630a645a55f423aad12d915ada1c4ee36046e6e3492b4f158f0a88e48c68",
+          "sha256:3ccb8fb2e57416bc914054a7dfdaa14f7470ca7558c90672e79b4161bc800502",
+          "sha256:0e429e8b9545725f80d11e9ee7b1c9d16d60620db058dc27ccce7177807b50df",
+          "sha256:ed82e048006c001fffda94d5eda0c6a24ca2ad38d2f8a04d9b675b89f1943b16",
+          "sha256:c532dd921e853f1a46d235f07a905073de78d5ac9958cb50d437c1e99b7bf7d4"
+        ]
+      },
+      "configBlobDigest": "sha256:e8cca6c072224762154d1c2457a02e014f49e1126ad91cd1fa5174154c102614",
+      "configMetadataMatch": {
+        "targetDigest": true,
+        "targetSize": true,
+        "targetMediaType": true,
+        "idMatchesTarget": true,
+        "canonicalRepoDigest": true,
+        "linuxAmd64": true,
+        "rootfsType": true,
+        "rootfsDiffIds": true,
+        "environment": true,
+        "user": true,
+        "workingDirectory": true,
+        "entrypoint": true,
+        "command": true
+      },
+      "configEnvironmentKeys": [
+        "PATH",
+        "LANG",
+        "LC_ALL",
+        "PLAYWRIGHT_BROWSERS_PATH"
+      ],
+      "imageSize": 3327946417
+    },
+    "sourceContracts": [
+      "https://docs.docker.com/engine/storage/containerd/",
+      "https://github.com/moby/moby/blob/464cd50/daemon/containerd/image_exporter.go",
+      "https://github.com/moby/moby/blob/464cd50/daemon/containerd/image_inspect.go",
+      "https://github.com/containerd/containerd/blob/v2.3.5/client/import.go",
+      "https://github.com/containerd/containerd/blob/v2.3.5/core/images/archive/importer.go"
+    ]
+  },
+  "originalFailedBuild": {
+    "schema": "project-view-approved-old-build/v1",
+    "phase": "build-failed",
+    "startedAt": "2026-10-17T06:21:21.884120+00:00",
+    "archiveSha256": "b42440856d0f73b3a16d45dbc48c2d5abe3802adf901395a66b7e419d1e33cee",
+    "contextReceiptSha256": "5ce286244928318aa2bc736dc2e9401fd7e70f37de162869cd340a1ca22c266f",
+    "dockerfileSha256": "616787296ccb1e7e96fd743b83b4a5d657135a10485813ef5c6153481cc1414f",
+    "baseImage": "mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a",
+    "command": [
+      "/usr/bin/docker",
+      "--host",
+      "unix:///var/run/docker.sock",
+      "build",
+      "--builder",
+      "default",
+      "--network=none",
+      "--pull=false",
+      "--platform=linux/amd64",
+      "--iidfile",
+      "/tmp/riffoid-jhg46-image-20261017.AU613w/derived-image.id",
+      "--metadata-file",
+      "/tmp/riffoid-jhg46-image-20261017.AU613w/build-metadata.json",
+      "/tmp/riffoid-jhg46-image-20261017.AU613w/verified-original/context"
+    ],
+    "network": "none",
+    "pull": false,
+    "buildAttempts": 1,
+    "productionEligible": false,
+    "currentPreflightIncluded": false,
+    "costStatus": "unknown",
+    "exitCode": 1,
+    "finishedAt": "2026-10-17T06:21:22.219968+00:00",
+    "log": "/tmp/riffoid-jhg46-image-20261017.AU613w/offline-build.log",
+    "logBytes": 1949,
+    "logSha256": "110ca189e13af83e355baf997980933f71842b04a5836d89291cce5adb0fedf1",
+    "errorType": "RuntimeError",
+    "reason": "offline-build-failed",
+    "sanitizedLogText": "#0 building with \"default\" instance using docker driver\n\n#1 [internal] load build definition from Dockerfile\n#1 transferring dockerfile: 1.15kB done\n#1 WARN: FromPlatformFlagConstDisallowed: FROM --platform flag should not use constant value \"linux/amd64\" (line 3)\n#1 DONE 0.0s\n\n#2 [internal] load metadata for mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a\n#2 ERROR: failed to do request: Head \"https://mcr.microsoft.com/v2/playwright/manifests/sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a\": proxyconnect tcp: dial tcp 127.0.0.1:7897: connect: connection refused\n------\n > [internal] load metadata for mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a:\n------\n\n 1 warning found (use docker --debug to expand):\n - FromPlatformFlagConstDisallowed: FROM --platform flag should not use constant value \"linux/amd64\" (line 3)\nDockerfile:3\n--------------------\n   1 |     # A derived candidate, never the unqualified Playwright tag or the AMD fixture.\n   2 |     # Public MCR linux/amd64 manifest and config were read/hash-checked on 2026-10-17.\n   3 | >>> FROM --platform=linux/amd64 mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a\n   4 |     WORKDIR /opt/viewer\n   5 |     COPY vendor/playwright /opt/viewer/node_modules/playwright\n--------------------\nERROR: failed to build: failed to solve: mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a: failed to resolve source metadata for mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a: failed to do request: Head \"https://mcr.microsoft.com/v2/playwright/manifests/sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a\": proxyconnect tcp: dial tcp 127.0.0.1:7897: connect: connection refused\n",
+    "transfer": {
+      "schema": "project-view-approved-old-transfer/v1",
+      "archiveSha256": "b42440856d0f73b3a16d45dbc48c2d5abe3802adf901395a66b7e419d1e33cee",
+      "archiveBytes": 4061701,
+      "contextReceiptSha256": "5ce286244928318aa2bc736dc2e9401fd7e70f37de162869cd340a1ca22c266f",
+      "contextFiles": 178,
+      "frozenAcceptanceFiles": 4,
+      "verifiedPackageFiles": 176,
+      "extractedBytes": 18635024,
+      "path": "/tmp/riffoid-jhg46-image-20261017.AU613w/verified-original",
+      "productionEligible": false,
+      "currentPreflightIncluded": false
+    },
+    "derivedImageIdProduced": false,
+    "probeDirectoryCreated": false,
+    "scopeBoundary": {
+      "approvedOldArchiveOnly": true,
+      "newSourceOrReceiptTransferred": false,
+      "sourceOrDockerfileChanged": false,
+      "cloudflareAcceptance": false,
+      "providerCalls": false,
+      "feeStatus": "unknown",
+      "probe": "pending; no browser operation started",
+      "automaticBuildRetry": false
+    }
+  },
+  "candidateV2Transfer": {
+    "schema": "project-view-approved-candidate-v2-transfer/v1",
+    "verifiedAt": "2026-10-17T06:26:17.511448+00:00",
+    "sourceCommit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1",
+    "archive": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/payload.tar.gz",
+    "archiveBytes": 4131467,
+    "archiveSha256": "37eb16cd7fa9b5d8dc5e381e7af170996c165eaee5fdbd02f2598a73599390ad",
+    "manifestSha256": "dc1776cdfa66e623b723f874ea4050e30b8555da29235e5c5f81c64955482980",
+    "manifestBytes": 37683,
+    "manifestFiles": 191,
+    "archiveMembers": 192,
+    "allManifestFilesVerified": true,
+    "allMembersRegular": true,
+    "unsafePathsOrLinksRejected": true,
+    "extractedBytes": 18894783,
+    "extractedDirectory": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/verified",
+    "contextReceiptSha256": "357e280840ff665334b1fa055d74755ec4019932922e6b57dbc620bbb953fe8c",
+    "verifiedPackageFiles": 176,
+    "dockerfileSha256": "bd1c6b88a434d7ff01e643cb627353acb70ee906c44707c28d6f7ffff1592d6a",
+    "preflightReceiptCopied": true,
+    "sourceClosure": [
+      {
+        "path": "acceptance/package.json",
+        "bytes": 5320,
+        "sha256": "f1f9072cad1eb3673ac206c69ffc1c9b171b772b0d5f4890e4e40a2ad780856c"
+      },
+      {
+        "path": "acceptance/scripts/m3/project-view-candidate-probe.mjs",
+        "bytes": 23114,
+        "sha256": "39d561d8e75e5b543ffb15c5af55e8434997a8c4698877763e5c64b5c40b6b81"
+      },
+      {
+        "path": "acceptance/scripts/m3/project-view-offline-prototype.mjs",
+        "bytes": 14611,
+        "sha256": "7dfe2f852b6ef22d774a2ea823e71a7607f9fabff339d311d383507de1b0e4f5"
+      },
+      {
+        "path": "acceptance/scripts/m3/offline-view/chromium-userns-seccomp.json",
+        "bytes": 18134,
+        "sha256": "4cdcdc07d9676737fa78222a8fffeda5cd0ebd2b209c82fafd2077d051d30ae2"
+      },
+      {
+        "path": "acceptance/services/project-views/runtime-preflight.mjs",
+        "bytes": 8600,
+        "sha256": "0b6dc8d02a3167bb3cd20979a9c42125192ff14c4c4aa33ed6082cdb92abb35f"
+      },
+      {
+        "path": "acceptance/services/project-views/runtime-pipe.mjs",
+        "bytes": 5382,
+        "sha256": "5b7cfcf0e779b1686ea59acc7b157b366d1bd1f41f6f4769aa71ab73e359844d"
+      },
+      {
+        "path": "acceptance/services/project-views/isolated-browser.mjs",
+        "bytes": 13335,
+        "sha256": "a61fadbdf19a37bfe38031a55b0ea84d5df1be0387960cf3d7d46ea3e6808251"
+      },
+      {
+        "path": "acceptance/services/project-views/frame.mjs",
+        "bytes": 7483,
+        "sha256": "fd07c57ad44a8330fc780ab3c284a64e1b43a6e61d83ab7f8ad3db2e135297e9"
+      },
+      {
+        "path": "acceptance/services/browser-preview/runtime/sha256.mjs",
+        "bytes": 2241,
+        "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24"
+      },
+      {
+        "path": "acceptance/services/web/project-views.js",
+        "bytes": 13169,
+        "sha256": "fc53df2a13d48a8de676d4af0c7693d866811cfab7ce3748d9ec161bab0aa6c9"
+      },
+      {
+        "path": "acceptance/services/web/project-view-remote.js",
+        "bytes": 9888,
+        "sha256": "8e13adf868a6ded4ccd240d64f38404eea07ba76416635ede1db08be46e26974"
+      },
+      {
+        "path": "acceptance/services/web/i18n.js",
+        "bytes": 150342,
+        "sha256": "8aa92fc5d74de0ce7fb4e294957b21b294fda607516ccb8a8da684aa40a4c869"
+      },
+      {
+        "path": "acceptance/services/web/i18n-bindings.js",
+        "bytes": 2559,
+        "sha256": "d54d8c9cc94dd68383eb5dcd7947b7cead768dc283fec43c3f74bf30e303a095"
+      }
+    ],
+    "frozenManifestAuthorizationFlags": "pre-authorization preparation snapshot retained byte-for-byte; current authorization recorded separately",
+    "transferred": true,
+    "transferAuthorized": true,
+    "scpExitCode": 0,
+    "build": "pending-root-approved-offline-resolver",
+    "probe": "pending; no container started",
+    "productionEligible": false,
+    "costStatus": "unknown",
+    "originalPayloadAndFailedBuildPreserved": true,
+    "existingPendingOrOtherContainersTouched": false
+  },
+  "candidateV2": {
+    "schema": "project-view-approved-candidate-v2-execution/v1",
+    "scope": "Exact user-approved e1ae frozen v2 archive, one local OCI-bound offline build, one synthetic candidate probe, and separate original-ID cleanup observation",
+    "build": {
+      "schema": "project-view-approved-candidate-v2-build/v1",
+      "phase": "built-and-readback-verified",
+      "startedAt": "2026-10-17T06:28:07.203583+00:00",
+      "sourceCommit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1",
+      "archiveSha256": "37eb16cd7fa9b5d8dc5e381e7af170996c165eaee5fdbd02f2598a73599390ad",
+      "manifestSha256": "dc1776cdfa66e623b723f874ea4050e30b8555da29235e5c5f81c64955482980",
+      "contextReceiptSha256": "357e280840ff665334b1fa055d74755ec4019932922e6b57dbc620bbb953fe8c",
+      "dockerfileSha256": "bd1c6b88a434d7ff01e643cb627353acb70ee906c44707c28d6f7ffff1592d6a",
+      "baseImage": "mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a",
+      "baseConfigDigest": "sha256:e8cca6c072224762154d1c2457a02e014f49e1126ad91cd1fa5174154c102614",
+      "localOciResolver": "mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a=oci-layout:///tmp/riffoid-jhg46-image-20261017.AU613w/base-oci-20261017-hvgyki5t/layout@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a",
+      "command": [
+        "/usr/bin/docker",
+        "--host",
+        "unix:///var/run/docker.sock",
+        "build",
+        "--builder",
+        "default",
+        "--network=none",
+        "--pull=false",
+        "--platform=linux/amd64",
+        "--build-context",
+        "mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a=oci-layout:///tmp/riffoid-jhg46-image-20261017.AU613w/base-oci-20261017-hvgyki5t/layout@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a",
+        "--iidfile",
+        "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/derived-image.id",
+        "--metadata-file",
+        "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/build-metadata.json",
+        "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/verified/context"
+      ],
+      "network": "none",
+      "pull": false,
+      "buildAttempts": 1,
+      "oldBuildReplayed": false,
+      "productionEligible": false,
+      "costStatus": "unknown",
+      "exitCode": 0,
+      "finishedAt": "2026-10-17T06:28:10.184475+00:00",
+      "log": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/offline-build.log",
+      "logBytes": 2900,
+      "logSha256": "68e8cfa5417f60fa20d3ad1883da433f5594cd32227e069843bf7aaab548b6a2",
+      "rawIidFile": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+      "exportConfigDigest": null,
+      "exportTargetDigest": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+      "imageId": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+      "descriptor": {
+        "mediaType": "application/vnd.oci.image.index.v1+json",
+        "digest": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+        "size": 856
+      },
+      "os": "linux",
+      "architecture": "amd64",
+      "config": {
+        "User": "10001:10001",
+        "WorkingDir": "/opt/viewer",
+        "Entrypoint": [
+          "node",
+          "-e",
+          "process.on('SIGTERM',()=>process.exit(0));setInterval(()=>{},1000)"
+        ],
+        "environmentKeys": [
+          "PATH",
+          "LANG",
+          "LC_ALL",
+          "PLAYWRIGHT_BROWSERS_PATH"
+        ]
+      },
+      "rootfs": {
+        "Type": "layers",
+        "Layers": [
+          "sha256:c0359c5b6ede84d4a083d06d35ee77f0b338dfb17423771854d007d89953fb3e",
+          "sha256:7bdd2a4a36363256f671320ec06a6b39baa2ce5c6984058f49edfa2e29120bde",
+          "sha256:39da630a645a55f423aad12d915ada1c4ee36046e6e3492b4f158f0a88e48c68",
+          "sha256:3ccb8fb2e57416bc914054a7dfdaa14f7470ca7558c90672e79b4161bc800502",
+          "sha256:0e429e8b9545725f80d11e9ee7b1c9d16d60620db058dc27ccce7177807b50df",
+          "sha256:ed82e048006c001fffda94d5eda0c6a24ca2ad38d2f8a04d9b675b89f1943b16",
+          "sha256:c532dd921e853f1a46d235f07a905073de78d5ac9958cb50d437c1e99b7bf7d4",
+          "sha256:92b15303903cbf97244160ef0dff0a34ee8416edb3ba51ff055a7aa657856ba9",
+          "sha256:0ec719465c1775ce5334962bd9bb369d955164c2c6e98aff760a742cda3dc86f",
+          "sha256:163fc5d219cc375248963495f0a59c23892b30d1b440a408b95cd81f0b26a642",
+          "sha256:b90b44d93140a17afd6bdd31087e63ed54ff8bc970a44a11e6156b68d699ec1f",
+          "sha256:e4baa818e74d3c1dc6c447b3ea7e71ac69e47e5f037fbb2ed705f578e6b8e2d5"
+        ]
+      },
+      "dockerImageSizeObserved": 3354611740,
+      "imageSizeNote": "Docker containerd accounting; not Cloudflare instance disk-fit proof",
+      "registryPush": false,
+      "sourceOrDockerfileChanged": false
+    },
+    "probeSupervisor": {
+      "schema": "project-view-approved-candidate-v2-probe-supervisor/v1",
+      "phase": "probe-terminal",
+      "startedAt": "2026-10-17T06:29:33.193687+00:00",
+      "sourceCommit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1",
+      "archiveSha256": "37eb16cd7fa9b5d8dc5e381e7af170996c165eaee5fdbd02f2598a73599390ad",
+      "manifestSha256": "dc1776cdfa66e623b723f874ea4050e30b8555da29235e5c5f81c64955482980",
+      "contextReceiptSha256": "357e280840ff665334b1fa055d74755ec4019932922e6b57dbc620bbb953fe8c",
+      "imageId": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+      "imageInspectSha256": "d370c3466000b2bf2285e4e4a5d20db8cb47f929c7fdb92b45a2b1d95f0e2e63",
+      "command": [
+        "/home/g/.local/node-v22.22.3-linux-x64/bin/node",
+        "scripts/m3/project-view-candidate-probe.mjs",
+        "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+        "357e280840ff665334b1fa055d74755ec4019932922e6b57dbc620bbb953fe8c",
+        "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/verified/acceptance/candidate-probe-original"
+      ],
+      "cwd": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/verified/acceptance",
+      "hostNodeVersion": "22.22.3",
+      "hostEnvironmentKeys": [
+        "HOME",
+        "LANG",
+        "LC_ALL",
+        "LOGNAME",
+        "PATH",
+        "USER"
+      ],
+      "output": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/verified/acceptance/candidate-probe-original",
+      "attempts": 1,
+      "productionEligible": false,
+      "costStatus": "unknown",
+      "existingPendingOrOtherContainersTouched": false,
+      "exitCode": 1,
+      "finishedAt": "2026-10-17T06:29:36.483760+00:00",
+      "logBytes": 146,
+      "logSha256": "6b80bbbeafdfd727ce8cb500fe860f93bf22ae739ed76fc24ba728b61ae03495",
+      "operationId": "9a39056e-ecd0-42c8-ad89-1e8a220770d1",
+      "containerId": "33ccab30c822302a5527e82d3dae9637ffef12dad417efdfba936566317c5352",
+      "probeStatus": "blocked",
+      "probeReason": "candidate-probe-cleanup-unconfirmed",
+      "cleanupConfirmed": false,
+      "cleanup": {
+        "confirmed": false,
+        "reason": "candidate-probe-original-absence-unconfirmed"
+      },
+      "evidence": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/verified/acceptance/candidate-probe-original/candidate-evidence.json",
+      "evidenceSha256": "e41fcdc0bb9cb47591ecb93272e6ec7adc59e39c13e826078dc480d336f67c1a",
+      "preflight": {
+        "schema": "project-view-preflight/v1",
+        "contextReceiptSha256": "357e280840ff665334b1fa055d74755ec4019932922e6b57dbc620bbb953fe8c",
+        "files": 176,
+        "bytes": 18547881,
+        "uid": 10001,
+        "gid": 10001,
+        "chromium": "153.0.8010.12"
+      },
+      "frames": [
+        {
+          "path": "frame-0.png",
+          "bytes": 7219,
+          "sha256": "e31e7147c6c887e6b84a2e962eb5b75c86c0df7fa49bf3d37a49fa3e35318ce8",
+          "width": 800,
+          "height": 600
+        },
+        {
+          "path": "frame-1.png",
+          "bytes": 9993,
+          "sha256": "3dba3e075c113ffe875bb6dd6d904870ee388083a3cb63b0a62f7679c3f21cf9",
+          "width": 800,
+          "height": 600
+        }
+      ],
+      "brokerReads": {
+        "docs/initial.json": 1,
+        "docs/rendered-initial.json": 1,
+        "docs/click.json": 1,
+        "docs/rendered-click.json": 1,
+        "docs/text.json": 1,
+        "docs/rendered-text.json": 1,
+        "docs/key.json": 1
+      },
+      "cli": {
+        "container": {
+          "exitCode": 137,
+          "signal": null,
+          "stdoutBytes": 0,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrBytes": 0,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "discardedStdoutBytes": 0,
+          "discardedStderrBytes": 0
+        },
+        "preflight": {
+          "exitCode": 0,
+          "signal": null,
+          "stdoutBytes": 209,
+          "stdoutSha256": "10d525d34a68f987f9a9ac1a595d19a22c1b2ad0addbec140ab522a90198d95a",
+          "stderrBytes": 0,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "discardedStdoutBytes": 0,
+          "discardedStderrBytes": 0
+        },
+        "browser": {
+          "exitCode": 0,
+          "signal": null,
+          "stdoutBytes": 140620,
+          "stdoutSha256": "d66beaeabd0ef48ba99b17d065220508e470b79c9ff46807c31fd42d7e0d12f3",
+          "stderrBytes": 0,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "discardedStdoutBytes": 0,
+          "discardedStderrBytes": 0
+        }
+      }
+    },
+    "frozenProbe": {
+      "schema": "riffology.candidate-view-probe/v1",
+      "operationId": "9a39056e-ecd0-42c8-ad89-1e8a220770d1",
+      "containerName": "riffoid-view-9a39056e-ecd0-42c8-ad89-1e8a220770d1",
+      "image": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+      "contextReceiptSha256": "357e280840ff665334b1fa055d74755ec4019932922e6b57dbc620bbb953fe8c",
+      "startedAt": "2026-10-17T06:29:33.251Z",
+      "status": "blocked",
+      "runAttempted": true,
+      "cleanupConfirmed": false,
+      "productionEligible": false,
+      "authenticatedAcceptance": false,
+      "cloudCalls": 0,
+      "programSha256": "5e3a71f02bc6d03f0ade083131672e841fa5c4b3778e7d51bd92f0729d7f2181",
+      "preflightProgramSha256": "9806878e13fbdc122b77b5339699c4969ee7e8feb7b92d7df2548321d526fe4b",
+      "profileSha256": "4cdcdc07d9676737fa78222a8fffeda5cd0ebd2b209c82fafd2077d051d30ae2",
+      "execEnvironment": {
+        "method": "/usr/bin/env -i",
+        "keys": [
+          "PATH"
+        ],
+        "home": false
+      },
+      "resourceScope": "Docker fixture 0.75 GiB / 1 vCPU is not equivalent to the pending Cloudflare basic target 1 GiB / 0.25 vCPU",
+      "uncovered": [
+        "Cloudflare target container execution and resource release",
+        "real authenticated identities and canonical Revision persistence",
+        "nine-egress collector controls and browser inner sandbox diagnostics",
+        "new binary media and full PNG pixel/chunk/CRC validation",
+        "derived-image build/supply-chain provenance requires separate frozen build evidence"
+      ],
+      "imageConfig": {
+        "id": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+        "architecture": "amd64",
+        "os": "linux",
+        "user": "10001:10001",
+        "cwd": "/opt/viewer",
+        "path": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "homeEnvironmentPresent": false
+      },
+      "fixturePackageIdentity": "a2b10f8eec8a3cce171ef66d5ab7d4e969210a8f6a9367258c6ce0e49d7d5f6e",
+      "argvSha256": "3a1cf008d39c1f5036eacac56b95404695602f136a5efff19c4860807d626f19",
+      "containerId": "33ccab30c822302a5527e82d3dae9637ffef12dad417efdfba936566317c5352",
+      "containerConfig": {
+        "id": "33ccab30c822302a5527e82d3dae9637ffef12dad417efdfba936566317c5352",
+        "image": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+        "user": "10001:10001",
+        "cwd": "/opt/viewer",
+        "execEnvironmentKeys": [
+          "PATH"
+        ],
+        "containerHomeEnvironmentPresent": false,
+        "network": "none",
+        "readonlyRootfs": true,
+        "capDropAll": true,
+        "noNewPrivileges": true,
+        "memoryBytes": 805306368,
+        "nanoCpus": 1000000000,
+        "cpuSet": "0,1",
+        "pids": 128,
+        "shmBytes": 134217728,
+        "tmpfs": "rw,nosuid,nodev,size=268435456",
+        "profileSha256": "4cdcdc07d9676737fa78222a8fffeda5cd0ebd2b209c82fafd2077d051d30ae2"
+      },
+      "preflight": {
+        "schema": "project-view-preflight/v1",
+        "contextReceiptSha256": "357e280840ff665334b1fa055d74755ec4019932922e6b57dbc620bbb953fe8c",
+        "files": 176,
+        "bytes": 18547881,
+        "uid": 10001,
+        "gid": 10001,
+        "chromium": "153.0.8010.12"
+      },
+      "frames": [
+        {
+          "path": "frame-0.png",
+          "bytes": 7219,
+          "sha256": "e31e7147c6c887e6b84a2e962eb5b75c86c0df7fa49bf3d37a49fa3e35318ce8",
+          "width": 800,
+          "height": 600
+        },
+        {
+          "path": "frame-1.png",
+          "bytes": 9993,
+          "sha256": "3dba3e075c113ffe875bb6dd6d904870ee388083a3cb63b0a62f7679c3f21cf9",
+          "width": 800,
+          "height": 600
+        }
+      ],
+      "brokerReads": {
+        "docs/initial.json": 1,
+        "docs/rendered-initial.json": 1,
+        "docs/click.json": 1,
+        "docs/rendered-click.json": 1,
+        "docs/text.json": 1,
+        "docs/rendered-text.json": 1,
+        "docs/key.json": 1
+      },
+      "input": {
+        "click": true,
+        "text": true,
+        "key": true,
+        "fractionalWheelSent": true,
+        "commands": 5
+      },
+      "frameObservation": "bounded PNG header plus changed raster bytes; not independent pixel decoding",
+      "removeObservation": {
+        "exitCode": 0,
+        "error": null
+      },
+      "cleanup": {
+        "confirmed": false,
+        "reason": "candidate-probe-original-absence-unconfirmed"
+      },
+      "reason": "candidate-probe-cleanup-unconfirmed",
+      "cli": {
+        "container": {
+          "exitCode": 137,
+          "signal": null,
+          "stdoutBytes": 0,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrBytes": 0,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "discardedStdoutBytes": 0,
+          "discardedStderrBytes": 0
+        },
+        "preflight": {
+          "exitCode": 0,
+          "signal": null,
+          "stdoutBytes": 209,
+          "stdoutSha256": "10d525d34a68f987f9a9ac1a595d19a22c1b2ad0addbec140ab522a90198d95a",
+          "stderrBytes": 0,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "discardedStdoutBytes": 0,
+          "discardedStderrBytes": 0
+        },
+        "browser": {
+          "exitCode": 0,
+          "signal": null,
+          "stdoutBytes": 140620,
+          "stdoutSha256": "d66beaeabd0ef48ba99b17d065220508e470b79c9ff46807c31fd42d7e0d12f3",
+          "stderrBytes": 0,
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "discardedStdoutBytes": 0,
+          "discardedStderrBytes": 0
+        }
+      },
+      "finishedAt": "2026-10-17T06:29:36.440Z"
+    },
+    "cleanupObservation": {
+      "schema": "project-view-candidate-original-cleanup-observation/v1",
+      "observedAt": "2026-10-17T06:31:09.785923+00:00",
+      "operationId": "9a39056e-ecd0-42c8-ad89-1e8a220770d1",
+      "containerId": "33ccab30c822302a5527e82d3dae9637ffef12dad417efdfba936566317c5352",
+      "image": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+      "originalEvidenceSha256": "e41fcdc0bb9cb47591ecb93272e6ec7adc59e39c13e826078dc480d336f67c1a",
+      "originalEvidenceStatus": "blocked",
+      "originalEvidenceCleanupConfirmed": false,
+      "originalEvidencePreserved": true,
+      "originalRemoveObservation": {
+        "exitCode": 0,
+        "error": null
+      },
+      "scopedAllNoTruncList": {
+        "command": [
+          "/usr/bin/docker",
+          "--host",
+          "unix:///var/run/docker.sock",
+          "container",
+          "ls",
+          "--all",
+          "--no-trunc",
+          "--filter",
+          "label=io.riffoid.candidate-view.operation=9a39056e-ecd0-42c8-ad89-1e8a220770d1",
+          "--format",
+          "{{.ID}}"
+        ],
+        "exitCode": 0,
+        "stdoutBytes": 0,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutEscaped": "",
+        "stderrBytes": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrEscaped": "",
+        "truncated": false,
+        "discardedBytes": 0
+      },
+      "originalIdInspect": {
+        "command": [
+          "/usr/bin/docker",
+          "--host",
+          "unix:///var/run/docker.sock",
+          "container",
+          "inspect",
+          "--format",
+          "{{json .}}",
+          "33ccab30c822302a5527e82d3dae9637ffef12dad417efdfba936566317c5352"
+        ],
+        "exitCode": 1,
+        "stdoutBytes": 1,
+        "stdoutSha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "stdoutEscaped": "\n",
+        "stderrBytes": 112,
+        "stderrSha256": "9d58c52bffa53c5726b302085a0d3364103e15c5dec88c6ab3624cb8f4060add",
+        "stderrEscaped": "Error response from daemon: No such container: 33ccab30c822302a5527e82d3dae9637ffef12dad417efdfba936566317c5352\n",
+        "truncated": false,
+        "discardedBytes": 0
+      },
+      "daemonPing": {
+        "method": "GET",
+        "path": "/_ping",
+        "status": 200,
+        "bodyBytes": 2,
+        "bodySha256": "565339bc4d33d72817b583024112eb7f5cdf3e5eef0252d6ec1b9c9a94e12bb3",
+        "bodyEscaped": "OK",
+        "truncated": false,
+        "discardedBytes": 0
+      },
+      "authoritativeOriginalIdNotFound": {
+        "method": "GET",
+        "path": "/containers/33ccab30c822302a5527e82d3dae9637ffef12dad417efdfba936566317c5352/json",
+        "status": 404,
+        "bodyBytes": 98,
+        "bodySha256": "05513c48be88fcb6df4134eb96eb1497961b54ff462baccc2341b6a8c848f606",
+        "bodyEscaped": "{\"message\":\"No such container: 33ccab30c822302a5527e82d3dae9637ffef12dad417efdfba936566317c5352\"}\n",
+        "truncated": false,
+        "discardedBytes": 0
+      },
+      "independentCleanupConfirmed": true,
+      "frozenProbeStatusRewritten": false,
+      "newProbeOrContainerCreated": false,
+      "otherContainersTouched": false,
+      "reason": "Frozen helper requires empty stdout; actual Docker29 --format NotFound adds one newline. Exact original daemon NotFound and healthy-daemon scoped absence establish cleanup separately."
+    },
+    "files": {
+      "buildResult": {
+        "path": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/build-result.json",
+        "bytes": 4341,
+        "sha256": "88e5dc79faf7468374de1091af2309cfd8f072b7dfdc8a78751d4624b2339702"
+      },
+      "probeResult": {
+        "path": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/probe-result.json",
+        "bytes": 4274,
+        "sha256": "4a2f1801050d013c4955b4a8fb45049769493610223ab9c652aa602424e96149"
+      },
+      "frozenProbe": {
+        "path": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/verified/acceptance/candidate-probe-original/candidate-evidence.json",
+        "bytes": 5254,
+        "sha256": "e41fcdc0bb9cb47591ecb93272e6ec7adc59e39c13e826078dc480d336f67c1a"
+      },
+      "cleanupObservation": {
+        "path": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/cleanup-independent-source-audit.json",
+        "bytes": 3133,
+        "sha256": "56dc208ea70f739f5655aad3eb4037d3738ea446185c94bc9a127766a44e0fca"
+      },
+      "buildMetadata": {
+        "path": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/build-metadata.json",
+        "bytes": 2280,
+        "sha256": "8b7984fbde5f194afd2ed4ebf5935c5690ff59370b4f28adc31ccf62e37ec5a9"
+      },
+      "imageInspect": {
+        "path": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/image-inspect.json",
+        "bytes": 1866,
+        "sha256": "d370c3466000b2bf2285e4e4a5d20db8cb47f929c7fdb92b45a2b1d95f0e2e63"
+      }
+    },
+    "metadataTarget": {
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "digest": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+      "size": 856
+    },
+    "rawIidFile": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+    "imageIdentity": {
+      "Id": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+      "Descriptor": {
+        "mediaType": "application/vnd.oci.image.index.v1+json",
+        "digest": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+        "size": 856
+      },
+      "Os": "linux",
+      "Architecture": "amd64",
+      "User": "10001:10001",
+      "WorkingDir": "/opt/viewer",
+      "environmentKeys": [
+        "PATH",
+        "LANG",
+        "LC_ALL",
+        "PLAYWRIGHT_BROWSERS_PATH"
+      ]
+    },
+    "sanitizedBuildLogText": "#0 building with \"default\" instance using docker driver\n\n#1 [internal] load build definition from Dockerfile\n#1 transferring dockerfile: 1.21kB done\n#1 WARN: FromPlatformFlagConstDisallowed: FROM --platform flag should not use constant value \"linux/amd64\" (line 3)\n#1 DONE 0.0s\n\n#2 [context mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a] load metadata for mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a\n#2 DONE 0.0s\n\n#3 [internal] load .dockerignore\n#3 transferring context: 2B done\n#3 DONE 0.0s\n\n#4 [internal] load build context\n#4 DONE 0.0s\n\n#5 [context mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a] OCI load from client\n#5 resolve mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a 0.0s done\n#5 DONE 0.3s\n\n#6 [1/6] WORKDIR /opt/viewer\n#6 DONE 0.1s\n\n#4 [internal] load build context\n#4 transferring context: 18.60MB 0.2s done\n#4 DONE 0.3s\n\n#7 [2/6] COPY vendor/playwright /opt/viewer/node_modules/playwright\n#7 DONE 0.1s\n\n#8 [3/6] COPY vendor/playwright-core /opt/viewer/node_modules/playwright-core\n#8 DONE 0.1s\n\n#9 [4/6] COPY context-receipt.json /opt/viewer/context-receipt.json\n#9 DONE 0.1s\n\n#10 [5/6] RUN groupadd --gid 10001 viewer  && useradd --uid 10001 --gid 10001 --create-home --home-dir /home/viewer --shell /usr/sbin/nologin viewer  && ln -s /ms-playwright/chromium-1243/chrome-linux64 /opt/chrome  && test -x /opt/chrome/chrome  && node -e 'if(require(\"playwright/package.json\").version!==\"1.63.0\"||require(\"playwright-core/package.json\").version!==\"1.63.0\")process.exit(1)'\n#10 DONE 0.3s\n\n#11 exporting to image\n#11 exporting layers\n#11 exporting layers 0.9s done\n#11 exporting manifest sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339 0.0s done\n#11 exporting config sha256:927d69be23d858d7311d0869ef72b28e877647a1c12c4415f6280cdd57259d94 0.0s done\n#11 exporting attestation manifest sha256:a8e124eb09a8f4b60a33156f7b1aea8850980205432079c145af44aabe8d4510\n#11 exporting attestation manifest sha256:a8e124eb09a8f4b60a33156f7b1aea8850980205432079c145af44aabe8d4510 0.0s done\n#11 exporting manifest list sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee 0.0s done\n#11 naming to moby-dangling@sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee done\n#11 unpacking to moby-dangling@sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee\n#11 unpacking to moby-dangling@sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee 0.3s done\n#11 DONE 1.4s\n\n#12 resolving provenance for metadata file\n#12 DONE 0.0s\n\n 1 warning found (use docker --debug to expand):\n - FromPlatformFlagConstDisallowed: FROM --platform flag should not use constant value \"linux/amd64\" (line 3)\n",
+    "sanitizedProbeSupervisorLogText": "{\"status\":\"blocked\",\"operationId\":\"9a39056e-ecd0-42c8-ad89-1e8a220770d1\",\"cleanupConfirmed\":false,\"reason\":\"candidate-probe-cleanup-unconfirmed\"}\n",
+    "summary": {
+      "sourceCommit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1",
+      "archiveSha256": "37eb16cd7fa9b5d8dc5e381e7af170996c165eaee5fdbd02f2598a73599390ad",
+      "buildTerminalSuccess": true,
+      "frozenProbeTerminalStatus": "blocked",
+      "frozenProbeReason": "candidate-probe-cleanup-unconfirmed",
+      "preflightObserved": true,
+      "brokerAndInputObserved": true,
+      "changedRasterBytesObserved": true,
+      "independentOriginalCleanupConfirmed": true,
+      "oldFailureAndFrozenProbePreserved": true,
+      "newProbeAfterFailure": false,
+      "cloudflareContainerAcceptance": false,
+      "authenticatedUserAcceptance": false,
+      "nineEgressCollectorAndInnerSandboxDiagnostics": "not part of this v2 candidate probe; pending",
+      "productionEligible": false,
+      "costStatus": "unknown"
+    }
+  },
+  "localCheckerFollowup": {
+    "scope": "Only offline absence parser and its contract tests changed after the frozen probe; production runtime and image inputs unchanged",
+    "change": "Accept exactly one Docker 29 formatted-inspect stdout newline, retaining code 1, exact original-ID NotFound and empty scoped list. Reject nonempty stdout and multiple newlines.",
+    "command": "node --test tests/m3/project-view-candidate-probe.test.mjs",
+    "exitCode": 0,
+    "passed": 18,
+    "failed": 0,
+    "newRemotePayload": false,
+    "rebuiltImage": false,
+    "replayedProbe": false,
+    "changedFrozenProbeResult": false,
+    "completeRepositoryCheckRepeated": false,
+    "files": [
+      {
+        "path": "scripts/m3/project-view-candidate-probe.mjs",
+        "bytes": 23289,
+        "sha256": "b2e88b339b1baa5deb45aae46a5fb5f8ad5e7bad04a4b87d6a973db11a47108b"
+      },
+      {
+        "path": "tests/m3/project-view-candidate-probe.test.mjs",
+        "bytes": 17867,
+        "sha256": "dec086d758acb6f28ff9e951ce07e2ce6e51014fa7c1cceeb5932b54377a164a"
+      }
+    ]
+  },
+  "boundaries": {
+    "productionEligible": false,
+    "registryPushes": 0,
+    "cloudflareContainerExecutions": 0,
+    "providerRequests": 0,
+    "authenticatedUserAcceptance": false,
+    "cloudflareBasicResourceAcceptance": false,
+    "nineEgressCollectorAcceptance": false,
+    "innerSandboxDiagnostics": false,
+    "originalAmdPendingOrHistoryChanged": false,
+    "daemonOrProxyConfigurationChanged": false,
+    "costStatus": "unknown"
+  },
+  "independentReview": {
+    "schema": "project-view-candidate-v2-independent-review/v1",
+    "reviewer": "github_audit",
+    "reviewedAt": "2026-10-17T06:34:30.737130+00:00",
+    "conclusion": {
+      "mustFix": [],
+      "offlineBuildVerified": true,
+      "functionalProbeObservationsVerified": true,
+      "originalContainerAbsenceIndependentlyConfirmed": true,
+      "originalProbeRemainsBlocked": true,
+      "productionEligible": false,
+      "authenticatedAcceptance": false,
+      "registryPushPerformed": false,
+      "newBuildOrContainerPerformedByReviewer": false,
+      "costStatus": "unknown"
+    },
+    "frozenSource": {
+      "sourceCommit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1",
+      "archive": {
+        "bytes": 4131467,
+        "sha256": "37eb16cd7fa9b5d8dc5e381e7af170996c165eaee5fdbd02f2598a73599390ad",
+        "authorization": "human-authorized exact v2 transfer; source agent receipt reviewed"
+      },
+      "payloadManifest": {
+        "bytes": 37683,
+        "sha256": "dc1776cdfa66e623b723f874ea4050e30b8555da29235e5c5f81c64955482980"
+      },
+      "independentlyRehashedFiles": {
+        "regularFiles": 191,
+        "bytes": 18857100,
+        "sizeAndSha256Mismatches": [],
+        "unsafePaths": [],
+        "symlinks": 0
+      },
+      "contextReceiptSha256": "357e280840ff665334b1fa055d74755ec4019932922e6b57dbc620bbb953fe8c",
+      "dockerfileSha256": "bd1c6b88a434d7ff01e643cb627353acb70ee906c44707c28d6f7ffff1592d6a"
+    },
+    "build": {
+      "exitCode": 0,
+      "attempts": 1,
+      "oldFailedBuildReplayed": false,
+      "intentAndResultCommandsEqual": true,
+      "executable": "/usr/bin/docker",
+      "host": "unix:///var/run/docker.sock",
+      "builder": "default",
+      "platform": "linux/amd64",
+      "network": "none",
+      "pull": false,
+      "context": "/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/verified/context",
+      "exactFromOciNamedContext": "mcr.microsoft.com/playwright@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a=oci-layout:///tmp/riffoid-jhg46-image-20261017.AU613w/base-oci-20261017-hvgyki5t/layout@sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a",
+      "observedResolver": "[context mcr.microsoft.com/playwright@sha256:957...] OCI load from client; resolve original exact base completed",
+      "noDockerfileModification": true,
+      "registryFallbackObserved": false,
+      "iidMetadataAndInspectTargetEqual": true,
+      "target": {
+        "digest": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+        "mediaType": "application/vnd.oci.image.index.v1+json",
+        "size": 856
+      },
+      "runnableManifest": {
+        "digest": "sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "size": 2593,
+        "platform": {
+          "os": "linux",
+          "architecture": "amd64"
+        },
+        "available": true,
+        "kind": "image",
+        "rawManifestShaIndependentlyVerified": false
+      },
+      "attestationManifest": {
+        "digest": "sha256:a8e124eb09a8f4b60a33156f7b1aea8850980205432079c145af44aabe8d4510",
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "size": 837,
+        "platform": {
+          "os": "unknown",
+          "architecture": "unknown"
+        },
+        "kind": "attestation",
+        "for": "sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+        "rawManifestShaIndependentlyVerified": false
+      },
+      "config": {
+        "digest": "sha256:927d69be23d858d7311d0869ef72b28e877647a1c12c4415f6280cdd57259d94",
+        "identitySource": "BuildKit export log only; raw config blob not independently read by this reviewer",
+        "rawConfigShaIndependentlyVerified": false,
+        "user": "10001:10001",
+        "workingDir": "/opt/viewer",
+        "environmentKeys": [
+          "PATH",
+          "LANG",
+          "LC_ALL",
+          "PLAYWRIGHT_BROWSERS_PATH"
+        ],
+        "homePresent": false
+      },
+      "engineImageReadback": {
+        "method": "GET",
+        "socket": "/var/run/docker.sock",
+        "path": "/v1.56/images/sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee/json?manifests=true",
+        "status": 200,
+        "rawBytes": 3015,
+        "rawSha256": "6a4f129c0446cbc8d8dd24e9b2fde7eac74aa620a00fa827ce69ae4faf0e0ba5",
+        "repoDigests": [],
+        "rootfsDiffIds": 12,
+        "runnableContentBytes": 908124188,
+        "runnableUnpackedBytes": 2446487552,
+        "inspectCombinedBytes": 3354611740,
+        "cloudflareDiskFitVerified": false
+      },
+      "identityInterpretation": "With this installed containerd-backed Engine, inspect.Id and iid equal the OCI target index, not image config. Runnable linux/amd64 and provenance attestation are separate index entries. Local unpublished image has no registry RepoDigest.",
+      "futureRegistryIntent": "Retain index and attestation as build artifacts. The runnable linux/amd64 manifest is the proposed platform payload; actual Cloudflare deploy pin must be a supported registry canonical reference verified after a separately authorized push. No assertion that Cloudflare accepts or rejects this attestation index, and no registry write was performed."
+    },
+    "probe": {
+      "operationId": "9a39056e-ecd0-42c8-ad89-1e8a220770d1",
+      "containerId": "33ccab30c822302a5527e82d3dae9637ffef12dad417efdfba936566317c5352",
+      "image": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+      "originalTerminalExitCode": 1,
+      "originalStatus": "blocked",
+      "originalCleanupConfirmed": false,
+      "originalEvidencePreserved": true,
+      "originalReason": "candidate-probe-cleanup-unconfirmed",
+      "verifiedObservations": {
+        "preflight": {
+          "files": 176,
+          "bytes": 18547881,
+          "uid": 10001,
+          "gid": 10001,
+          "chromium": "153.0.8010.12",
+          "contextReceiptSha256": "357e280840ff665334b1fa055d74755ec4019932922e6b57dbc620bbb953fe8c"
+        },
+        "brokerReads": 7,
+        "eachBrokerReadOnce": true,
+        "input": {
+          "click": true,
+          "text": true,
+          "key": true,
+          "fractionalWheelSent": true,
+          "commands": 5
+        },
+        "frameFilesIndependentlyRehashed": [
+          {
+            "path": "frame-0.png",
+            "bytes": 7219,
+            "sha256": "e31e7147c6c887e6b84a2e962eb5b75c86c0df7fa49bf3d37a49fa3e35318ce8",
+            "dimensions": [
+              800,
+              600
+            ]
+          },
+          {
+            "path": "frame-1.png",
+            "bytes": 9993,
+            "sha256": "3dba3e075c113ffe875bb6dd6d904870ee388083a3cb63b0a62f7679c3f21cf9",
+            "dimensions": [
+              800,
+              600
+            ]
+          }
+        ],
+        "frameContentsDiffer": true
+      },
+      "resourceScope": "Docker fixture 768 MiB / 1 vCPU, not the pending Cloudflare basic 1 GiB / 0.25 vCPU target.",
+      "uncovered": [
+        "Cloudflare target execution and cleanup",
+        "real authenticated identities and canonical Revision persistence",
+        "nine-egress positive/negative collector controls",
+        "browser inner sandbox diagnostics",
+        "full PNG pixel/chunk/CRC validation",
+        "registry publication and deployment"
+      ],
+      "fixturePackageIdentity": "a2b10f8eec8a3cce171ef66d5ab7d4e969210a8f6a9367258c6ce0e49d7d5f6e",
+      "programSha256": "5e3a71f02bc6d03f0ade083131672e841fa5c4b3778e7d51bd92f0729d7f2181",
+      "preflightProgramSha256": "9806878e13fbdc122b77b5339699c4969ee7e8feb7b92d7df2548321d526fe4b",
+      "seccompProfileSha256": "4cdcdc07d9676737fa78222a8fffeda5cd0ebd2b209c82fafd2077d051d30ae2"
+    },
+    "originalCleanupIndependentObservation": {
+      "observedAt": "2026-10-17T06:34:30.737130+00:00",
+      "method": "read-only fixed /var/run/docker.sock HTTP GET",
+      "originalId": {
+        "path": "/v1.56/containers/33ccab30c822302a5527e82d3dae9637ffef12dad417efdfba936566317c5352/json",
+        "status": 404,
+        "rawBytes": 98,
+        "rawSha256": "05513c48be88fcb6df4134eb96eb1497961b54ff462baccc2341b6a8c848f606",
+        "exactMessageMatched": true
+      },
+      "scopedAllList": {
+        "label": "io.riffoid.candidate-view.operation=9a39056e-ecd0-42c8-ad89-1e8a220770d1",
+        "all": true,
+        "status": 200,
+        "rawBytes": 3,
+        "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "count": 0,
+        "ids": []
+      },
+      "sourceAgentCliCorroboration": {
+        "listExit": 0,
+        "listEmpty": true,
+        "inspectExit": 1,
+        "stdoutBytes": 1,
+        "stdoutSha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "stdoutExact": "single newline",
+        "stderrExactOriginalIdNotFound": true,
+        "stderrBytes": 112,
+        "stderrSha256": "9d58c52bffa53c5726b302085a0d3364103e15c5dec88c6ab3624cb8f4060add",
+        "daemonPingStatus": 200
+      },
+      "conclusion": "Current original ID and original operation scope have no container. This independently establishes original cleanup without treating rm exit 0 or Docker CLI termination as proof and without rewriting the frozen failed probe.",
+      "newContainerOrDestructiveCommandByReviewer": false
+    },
+    "localParserReview": {
+      "files": [
+        "scripts/m3/project-view-candidate-probe.mjs",
+        "tests/m3/project-view-candidate-probe.test.mjs"
+      ],
+      "change": "originalAbsent additionally accepts stdout exactly one newline; exact status 1, original hexadecimal ID NotFound and empty original scope are still required. Arbitrary trim is not used.",
+      "newPositive": "Docker 29 exact formatted NotFound newline with blocked original probe preserved",
+      "newNegative": [
+        "nonempty stdout despite same-ID NotFound",
+        "multiple stdout newlines despite same-ID NotFound"
+      ],
+      "reviewedTestCaseCount": 18,
+      "reportedValidation": {
+        "reportedBy": "parent /root",
+        "command": "node --test tests/m3/project-view-candidate-probe.test.mjs",
+        "passed": 18,
+        "failed": 0,
+        "diffCheckPassed": true
+      },
+      "independentlyRepeated": false,
+      "reasonNotRepeated": "The exact narrow tests already passed and no new concern justified repeating them.",
+      "notTransferredToAmd": true,
+      "noRebuildOrNewProbe": true,
+      "mustFix": []
+    },
+    "rawEvidence": {
+      "build-intent.json": {
+        "bytes": 1986,
+        "sha256": "cb083349b358f1b187c5fbacfe441bf1b56ee03fac47aea1f16d4ca3857a06ca"
+      },
+      "build-result.json": {
+        "bytes": 4341,
+        "sha256": "88e5dc79faf7468374de1091af2309cfd8f072b7dfdc8a78751d4624b2339702"
+      },
+      "build-metadata.json": {
+        "bytes": 2280,
+        "sha256": "8b7984fbde5f194afd2ed4ebf5935c5690ff59370b4f28adc31ccf62e37ec5a9"
+      },
+      "derived-image.id": {
+        "bytes": 71,
+        "sha256": "eb5352c4376691151df141aa82e562fd630589d9111555650412980ee34cc911"
+      },
+      "offline-build.log": {
+        "bytes": 2900,
+        "sha256": "68e8cfa5417f60fa20d3ad1883da433f5594cd32227e069843bf7aaab548b6a2"
+      },
+      "image-inspect.json": {
+        "bytes": 1866,
+        "sha256": "d370c3466000b2bf2285e4e4a5d20db8cb47f929c7fdb92b45a2b1d95f0e2e63"
+      },
+      "probe-intent.json": {
+        "bytes": 1511,
+        "sha256": "372fc072f0eab53d587e81b5e683ce8630f16642e03579fc3830feb98c1fef8e"
+      },
+      "probe-result.json": {
+        "bytes": 4274,
+        "sha256": "4a2f1801050d013c4955b4a8fb45049769493610223ab9c652aa602424e96149"
+      },
+      "candidate-supervisor.log": {
+        "bytes": 146,
+        "sha256": "6b80bbbeafdfd727ce8cb500fe860f93bf22ae739ed76fc24ba728b61ae03495"
+      },
+      "cleanup-independent-source-audit.json": {
+        "bytes": 3133,
+        "sha256": "56dc208ea70f739f5655aad3eb4037d3738ea446185c94bc9a127766a44e0fca"
+      },
+      "verified/payload-manifest.json": {
+        "bytes": 37683,
+        "sha256": "dc1776cdfa66e623b723f874ea4050e30b8555da29235e5c5f81c64955482980"
+      },
+      "verified/acceptance/candidate-probe-original/candidate-evidence.json": {
+        "bytes": 5254,
+        "sha256": "e41fcdc0bb9cb47591ecb93272e6ec7adc59e39c13e826078dc480d336f67c1a"
+      }
+    },
+    "authority": [
+      "https://github.com/moby/moby/blob/464cd50/daemon/containerd/image_inspect.go",
+      "https://github.com/moby/moby/blob/464cd50/daemon/containerd/image_exporter.go",
+      "https://github.com/docker/buildx/blob/v0.37.1/build/build.go#L755-L760",
+      "https://github.com/docker/buildx/blob/v0.37.1/util/buildflags/context.go#L23-L28",
+      "https://github.com/moby/buildkit/blob/v0.33.0/frontend/dockerui/config.go#L446-L463",
+      "https://github.com/moby/buildkit/blob/v0.33.0/frontend/dockerfile/dockerfile2llb/convert.go#L623-L652",
+      "https://github.com/moby/buildkit/blob/v0.33.0/source/containerimage/ocilayout.go#L41-L91",
+      "https://developers.cloudflare.com/containers/guides/image-management/"
+    ],
+    "limitations": [
+      "No private configuration, credentials or source contents are included; fields are safe evidence projections.",
+      "No registry publication, cloud deployment, gate changes or authenticated production acceptance occurred.",
+      "Original Docker daemon proxy 7897 is not repaired; this successful build used the verified local OCI source.",
+      "Host costs are unknown, not zero.",
+      "Build metadata omits config digest under installed Buildx containerd-Moby path; config digest is presently log-observed, not independently raw-blob verified."
+    ],
+    "reviewCompletedAt": "2026-10-17T06:39:30.885579+00:00",
+    "derivedRawBlobVerification": {
+      "status": "pending",
+      "observedIdentitiesRemainValid": true,
+      "saveAttempt": {
+        "status": "rejected-before-execution",
+        "source": "automatic approval review",
+        "reason": "Direct human authorization covered transfer/build/probe/cleanup, not a new persistent about-1-GB derived-image export on AMD128.",
+        "remoteCommandExecuted": false,
+        "remoteIntentCreated": false,
+        "archiveCreated": false,
+        "retryOrWorkaroundAttempted": false
+      },
+      "sourceAgentEvidence": {
+        "path": ".local/jhg46-derived-image-export-blocked-20261017.json",
+        "bytes": 1361,
+        "sha256": "6b764f90ea2ef3b81ad4ca594c7546ed5661a31b39cb7bcca5d2a7aae690f723"
+      },
+      "nextAction": "A future raw derived-image archive/export requires direct human approval for this exact immutable image ID and persistent output. Do not repeat or substitute an API export without that scope."
+    }
+  },
+  "derivedImageArchiveAttempt": {
+    "schema": "project-view-derived-image-export-approval/v1",
+    "date": "2026-10-17",
+    "status": "rejected-before-execution",
+    "source": "automatic approval review",
+    "action": "One offline docker image save of the already built immutable candidate image to an exclusive persistent archive on AMD128",
+    "sourceImageId": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee",
+    "proposedArchive": "AMD128:/tmp/riffoid-jhg46-image-20261017.AU613w/candidate-v2/derived-image-original.oci.tar",
+    "estimatedSize": "about 1 GB; exact output bytes and SHA remain unknown until authorized export",
+    "reason": "The reviewer found direct human authorization for transfer/build/probe/cleanup, but not for creating a new persistent derived-image export on AMD128, and considered that extra side effect unnecessary for the authorized validation.",
+    "remoteCommandExecuted": false,
+    "remoteExportIntentCreatedByThisAttempt": false,
+    "archiveCreatedByThisAttempt": false,
+    "retryOrWorkaroundAttempted": false,
+    "nextRequiredAuthorization": "Direct human approval for this concrete immutable image ID and persistent archive output on AMD128 before a save/export operation",
+    "unaffectedWork": "Read-only review of existing evidence and publication preparation documents can continue",
+    "productionEligible": false,
+    "costStatus": "unknown"
+  }
+}

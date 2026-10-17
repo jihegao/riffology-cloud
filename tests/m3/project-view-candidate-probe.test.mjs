@@ -58,10 +58,19 @@ test('cleanup resolves lost rm ACK using scoped empty list AND explicit original
  const runner=async args=>{calls.push(args);if(args[3]==='ls')return good(removed?'':ID+'\n');if(args[3]==='inspect')return removed?absent():good(container());if(args[3]==='rm'){assert.equal(args.at(-1),ID);removed=true;return {status:null,error:Error('lost ACK'),stdout:'',stderr:''};}throw Error('unexpected');};
  const result=await cleanupCandidateProbe({output:f.output,operationId:OP,runner});assert.equal(result.cleanupConfirmed,true);assert.equal(result.status,'blocked');assert.equal(result.cleanup.originalIdNotFound,true);assert.ok(result.priorEvidenceSha256);assert.equal(calls.filter(args=>args[3]==='rm').length,1);assert.equal(calls.filter(args=>args[3]==='inspect').length,2);
 });
+test('Docker 29 formatted not-found newline confirms only the original cleanup',async t=>{
+ const f=await cleanupFixture(t),calls=[];
+ const observed={status:1,stdout:'\n',stderr:'Error response from daemon: No such container: '+ID+'\n'};
+ const runner=async args=>{calls.push(args);if(args[3]==='ls')return good('');if(args[3]==='inspect'){assert.equal(args.at(-1),ID);return observed;}assert.fail('no new container or destructive command');};
+ const result=await cleanupCandidateProbe({output:f.output,operationId:OP,runner});
+ assert.equal(result.cleanupConfirmed,true);assert.equal(result.cleanup.originalIdNotFound,true);assert.equal(result.cleanup.scopedListEmpty,true);assert.equal(result.status,'blocked','cleanup-only cannot upgrade the original probe');assert.equal(calls.length,2);
+});
 for(const [name,inspection] of [
  ['daemon unavailable',{status:1,stdout:'',stderr:'Cannot connect to the Docker daemon'}],
  ['ambiguous empty failure',{status:1,stdout:'',stderr:''}],
  ['wrong-ID not-found',{status:1,stdout:'',stderr:'Error: No such container: '+'e'.repeat(64)+'\n'}],
+ ['nonempty stdout with not-found',{...absent(),stdout:'{}\n'}],
+ ['multiple newlines with not-found',{...absent(),stdout:'\n\n'}],
  ['existing original ID',good(container())],
  ['successful empty response',good('')],
 ])test('empty label list does not prove cleanup when original inspect is '+name,async t=>{

@@ -5,7 +5,7 @@
   "owner": "jihegao",
   "issue": "https://github.com/jihegao/riffology-cloud/issues/214",
   "skillsIssue": "https://github.com/jihegao/riffology-cloud/issues/85",
-  "source": {"kind": "committed-default-closed-candidate", "branch": "codex/jhg46-production-20261017", "commit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1", "initialSourceCommit": "bfca3cca1b07085ee78ce45064f86c2577379a50", "baseMain": "24a98cda0fcb361158f9d332b6e8ca21726992a8", "scope": "source/tests frozen before final platform-follow-up full check; subsequent documentation-only evidence commit"},
+  "source": {"kind": "committed-default-closed-candidate", "branch": "codex/jhg46-production-20261017", "commit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1", "initialSourceCommit": "bfca3cca1b07085ee78ce45064f86c2577379a50", "baseMain": "24a98cda0fcb361158f9d332b6e8ca21726992a8", "scope": "production runtime/Managed/image inputs frozen before the final platform full check; later evidence and an offline-only NotFound checker/test repair are separate", "offlineCheckerFollowup": {"contractPassed": 18, "completeCheckRepeated": false, "productionRuntimeOrImageChanged": false, "remotePayloadOrProbeReplayed": false}},
   "controlPlaneBaseline": {
     "observedAt": "2026-10-17T04:47:42.817Z",
     "method": "Cloudflare connector GET only; endpoint schemas searched before reads; safe fields projected inside connector",
@@ -21,7 +21,7 @@
   },
   "implementedCapacity": {"singleton": "project-view-capacity-v1", "maxOccupiedSessions": 1, "storage": "SQLite", "expiryReturnsCapacity": false, "originalRuntimeStatusRequired": true, "durableCleanupProofRequired": true, "terminalTombstonesRetained": true, "closeBeforeAcquireFenced": true},
   "officialBaseCandidate": {
-    "status": "metadata-verified-only; not a derived image or production eligibility",
+    "status": "initial metadata verified; original base subsequently acquired/imported and v2 derived image built offline; registry and target acceptance pending",
     "tag": "mcr.microsoft.com/playwright:v1.63.0-jammy",
     "indexDigest": "sha256:167d0506cfbe3c294fb214b2d11737326eeee028aa611fa1ba538e5057675847",
     "linuxAmd64ManifestDigest": "sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a",
@@ -33,14 +33,14 @@
     "indexManifestAndConfigDigestsVerified": true,
     "registryBaseUrl": "https://mcr.microsoft.com/v2/playwright/",
     "configRedirectOrigin": "https://eastasia.data.mcr.microsoft.com",
-    "layersRequested": false,
+    "initialMetadataCheckLayersRequested": false,
     "officialDockerfile": "https://github.com/microsoft/playwright/blob/v1.63.0/utils/docker/Dockerfile.jammy",
     "officialBrowserDeclaration": "https://github.com/microsoft/playwright/blob/v1.63.0/packages/playwright-core/browsers.json",
     "playwrightPackages": "1.63.0; installed manifests plus two immutable official npm archive SRIs and all 176 vendor bytes verified",
     "browserRevision": "1243 / Chromium 153.0.8010.12",
     "failedMetadataChecks": ["system-Python TLS EOF reading noble tag and platform manifest", "first config GET intentionally rejected its redirect before the explicit checked Microsoft data-domain GET"],
     "nobleDigest": "not-verified",
-    "derivedImageDigest": null,
+    "derivedImageDigest": null, "localDerivedIndex": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee", "registryDigestReadback": "not-pushed",
     "productionImageAccepted": false
   },
   "checks": {
@@ -111,7 +111,7 @@
       "platformFocused": {"passed": 48, "bundleWorkerdPassed": 2, "nativeAPI": "synthetic Runtime adapter; actual neutral Gateway/rollback bundle and Workerd construction; no target container"}
     },
     "independentReview": {"status": "completed-platform-follow-up-source-and-targeted-tests", "reviewers": ["github_audit", "source_audit", "plan_review"], "scopes": ["Gateway policy/session routes", "Managed pages candidate and dispatch/journal recovery", "runtime identity/lifecycle/native adapter", "bounded pipe output", "frontend original-ID cleanup and 401", "actual Gateway and rollback bundle dependency separation", "exec signal lifetime and queued initialization fence", "bounded preflight receipt/file/permission validation", "local candidate probe original-ID cleanup"], "repairedFindings": ["same original start recomputed expiry and conflicted with its frozen request", "stdout fragment count was unbounded despite a byte ceiling", "transient cold-recovery rejected promise remained cached", "literal Playwright import crossed the Worker bundle boundary", "late timeout or pipe kill could signal an exited native process", "default inspect image reference incorrectly treated as actual OCI attestation", "delayed preflight or exec handle could send initialization after original close/deadline"], "additionalMustFix": 0, "productionIsolationAccepted": false},
-    "hostedCI": {"head": "b99a911a3f6338ba64b29509914de6c1e1f98d1d", "run": "https://github.com/jihegao/riffology-cloud/actions/runs/39006624300", "jobId": 117320299141, "conclusion": "failure", "jobStarted": false, "steps": 0, "annotation": "GitHub reports recent account payment failure or spending limit; job was not started", "verifiedVia": "GET actions/jobs and check-runs annotations", "earlierRunAtBba6c4c": "https://github.com/jihegao/riffology-cloud/actions/runs/39006388405", "manuallyRerun": false, "billingChanged": false, "recordedAsPass": false}
+    "hostedCI": {"head": "0a2f0c86eb9b4fc9ea500f08dece62e3d3489998", "run": "https://github.com/jihegao/riffology-cloud/actions/runs/39009073694", "jobId": 117327474632, "conclusion": "failure", "jobStarted": false, "steps": 0, "annotation": "GitHub reports recent account payment failure or spending limit; job was not started", "verifiedVia": "GET actions/jobs and check-runs annotations", "earlierRunAtBba6c4c": "https://github.com/jihegao/riffology-cloud/actions/runs/39006388405", "manuallyRerun": false, "billingChanged": false, "recordedAsPass": false, "earlierRunAtB99": "https://github.com/jihegao/riffology-cloud/actions/runs/39006624300", "job": "https://github.com/jihegao/riffology-cloud/actions/runs/39009073694/job/117327474632", "scope": "latest observed hosted check; later evidence/helper commit has no inferred CI pass"}
   },
   "imageInputVerification": {"contextReceiptSha256": "5ce286244928318aa2bc736dc2e9401fd7e70f37de162869cd340a1ca22c266f", "originalArchiveVerificationReceiptSha256": "e3e09a109e0dc3f01a232b74619d6d51445d3fc732f86bfee7cfaee74ed7d849", "publishedArchiveVerificationReceiptSha256": "22f44ec729b7192afbf6ec41a3e9a46f43e8efe1379e5a5177cdceb7aca5df38", "manifestFormattingNote": "Published sanitized manifests use normalized JSON formatting; published-byte SHA fields were checked independently and original-byte hashes retained separately.", "evidence": "project-view-image-inputs-20261017/receipt.json", "officialArchivesDownloadedOnceEach": 2, "sha512SRIAndExactFileSetsMatch": true, "playwrightFiles": 62, "coreFiles": 114, "missingExtraChangedFiles": 0, "publisherSignatureOrAttestationVerified": false, "imageContextTests": {"passed": 2, "failed": 0}},
   "platformImageContract": {
@@ -124,7 +124,7 @@
     "exactReceipt": "project-view-image-inputs-20261017/context-receipt-preflight.json",
     "all176FilesStillMatchSRIArchiveManifests": true,
     "preflightIsOCIAttestation": false,
-    "candidateV2Payload": {"bytes": 4131467, "sha256": "37eb16cd7fa9b5d8dc5e381e7af170996c165eaee5fdbd02f2598a73599390ad", "manifest": "project-view-image-inputs-20261017/candidate-v2-payload-manifest.json", "manifestSha256": "dc1776cdfa66e623b723f874ea4050e30b8555da29235e5c5f81c64955482980", "filesIncludingManifest": 192, "acceptanceClosureFiles": 13, "transferred": false, "authorization": "not covered by the direct reply approving the exact original b4244085 archive; new concrete payload awaits direct authorization"},
+    "candidateV2Payload": {"bytes": 4131467, "sha256": "37eb16cd7fa9b5d8dc5e381e7af170996c165eaee5fdbd02f2598a73599390ad", "manifest": "project-view-image-inputs-20261017/candidate-v2-payload-manifest.json", "manifestSha256": "dc1776cdfa66e623b723f874ea4050e30b8555da29235e5c5f81c64955482980", "filesIncludingManifest": 192, "acceptanceClosureFiles": 13, "transferred": true, "authorization": "direct human reply: 授权追加发送新版包并验证; exact 37eb16cd archive verified at candidate-v2", "frozenManifestNote": "pre-authorization preparation flags are retained byte-for-byte; later direct authorization and transfer are evidenced separately"},
     "officialReferences": ["https://developers.cloudflare.com/containers/api/durable-object-container/", "https://developers.cloudflare.com/containers/platform/limits/", "https://developers.cloudflare.com/workers/wrangler/configuration/#containers", "https://developers.cloudflare.com/workers/configuration/compatibility-flags/#use-an-isolated-pid-namespace-for-containers"]
   },
   "initialOfflineImageAttempt": {
@@ -145,14 +145,15 @@
     "transfer": {"scpExitCode": 0, "remoteSha256AndBytesVerified": true, "bytes": 4061701, "remoteDirectory": "/tmp/riffoid-jhg46-image-20261017.AU613w", "archive": "context.tar.gz", "extracted": "verified-original", "regularFiles": 182, "packageFiles": 176, "frozenAcceptanceFiles": 4, "linksOrEscapingPaths": false, "contextReceiptSha256": "5ce286244928318aa2bc736dc2e9401fd7e70f37de162869cd340a1ca22c266f", "originalBytesPreserved": true, "newReceiptOrCandidateProbeIncluded": false},
     "hostNode": {"default": "12.22.9", "selectedExisting": "22.22.3", "installedDependencies": false},
     "proxyDiagnosis": {"dockerEndpoint": "127.0.0.1:7897", "listener": false, "activeDifferentCore": "FastLinkCore at 127.0.0.1:7892", "inactiveClash": "corePid null, desired-running false, configured 7892", "safeStop": "Starting inactive Clash preserving 7892 would conflict with the active FastLink service; opaque FastLink config was not reverse engineered", "configurationOrServiceChanged": false, "newDockerPullAttempted": false},
-    "build": "pending-authoritative-same-digest-base-availability",
+    "build": {"exitCode": 1, "attempts": 1, "reason": "BuildKit still attempted original MCR HEAD through unavailable daemon proxy 7897; no build RUN executed", "replayed": false, "evidence": "project-view-amd-offline-20261017.json"},
     "probe": "not-run",
     "containerCreateRunStart": 0,
     "originalAmdPendingTouched": false,
     "costStatus": "unknown",
     "currentE1aeImageOrTargetAcceptanceProven": false
   },
-  "remaining": {"exactBrowserImage": "pending", "actualContainerSandboxAndNoNetwork": "pending", "originalContainerCleanup": "pending", "ordinaryInvitedIdentity": "pending", "secondIdentity": "pending", "twoPageRenderAndBroker": "pending", "refreshLeaveColdRecovery": "pending", "revocationAndNineEgressControls": "pending", "productionPublicationPacket": "pending"},
+  "amdOfflineExecution": {"evidence": "project-view-amd-offline-20261017.json", "sourceCommit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1", "buildExitCode": 0, "buildAttempts": 1, "localIndex": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee", "frozenProbeExitCode": 1, "frozenProbeStatus": "blocked", "functionalPreflightBrokerInputsChangedRasterObserved": true, "originalContainerCleanupIndependentlyConfirmed": true, "frozenProbeRewrittenOrReplayed": false, "localAbsenceCheckerFixContractPassed": 18, "productionSourceOrImageChangedByCheckerFix": false, "costStatus": "unknown"},
+  "remaining": {"exactBrowserImage": "AMD candidate built; production registry immutable digest/readback pending", "actualContainerSandboxAndNoNetwork": "AMD network-none configuration observed; Cloudflare target, inner sandbox and collector controls pending", "originalContainerCleanup": "AMD original ID 404 plus empty scope independently confirmed; Cloudflare target cleanup pending", "ordinaryInvitedIdentity": "pending", "secondIdentity": "pending", "twoPageRenderAndBroker": "pending", "refreshLeaveColdRecovery": "pending", "revocationAndNineEgressControls": "pending", "productionPublicationPacket": "pending"},
   "pullRequest": "https://github.com/jihegao/riffology-cloud/pull/233",
   "productionEligible": false,
   "deployed": false,
