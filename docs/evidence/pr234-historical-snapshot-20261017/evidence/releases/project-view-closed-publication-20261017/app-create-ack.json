@@ -1,0 +1,27 @@
+{
+  "schema": "project-view-single-app-create-result/v1",
+  "parentRequestId": "d8fbe6ba-21cb-4ed4-a846-31886d6dac9d",
+  "requestId": "ada18822-8797-48a9-9214-c888cfb03d6e",
+  "startedAt": "2026-10-17T08:22:29.033Z",
+  "endedAt": "2026-10-17T08:22:31.842Z",
+  "postRequested": true,
+  "postCount": 1,
+  "status": 201,
+  "success": true,
+  "appId": "a031ae38-f967-483f-ae2e-3dbed3d35268",
+  "app": {
+    "id": "a031ae38-f967-483f-ae2e-3dbed3d35268",
+    "name": "riffology-project-view-browser",
+    "scheduling_policy": "default",
+    "instances": 0,
+    "max_instances": 1,
+    "namespaceId": "5bc5561f57c24146a160d2a54160277c",
+    "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+    "configurationCanonicalSha256": "e6516faf9a9cda94286394631c028c7a8a913d75ba0d9a22e0dde79eb2a9c337"
+  },
+  "errorCodes": [],
+  "readbackStillRequired": true,
+  "automaticRetry": false,
+  "unknownMustReconcileByExactNameNamespaceImage": true,
+  "containerStartsRequested": 0
+}
