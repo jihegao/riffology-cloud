@@ -1,0 +1,121 @@
+{
+  "at": "2026-10-17T15:41:28.543539+00:00",
+  "conclusions": [
+    "Exact OAuth scope or API-token permission group for this specific REST operation was not established by the retrieved public sources. The endpoint HTML does not display Accepted Permissions; resolved operation does not return security/scope/group metadata.",
+    "Wrangler4.129.0 enforces containers:write before its credential command. This is a client guard, not proof of the REST service minimum scope or the actual403 cause.",
+    "Adjacent registry-create lists Workers Containers Write; registry-list lists Workers Containers Read or Write. These belong to different operations and are not transferred to credential-generation permission requirements.",
+    "No endpoint-specific GET/dry-run/permission-introspection operation was found in the returned path item (onlyPOST). Supported generic GET diagnostics below have narrower meaning and are not a replacement credential POST.",
+    "Fresh resolved schema describes403 as requested token permissions not allowed for the account; this is a generic response contract. With actual105B body unavailable, no error code/message or exact cause is established. Do not replay c3e.",
+    "Current REST/TypeScript HTML examples show200; resolved OpenAPI success lists201. Preserve this source-version/presentation discrepancy for any future packet. It neither explains403 nor authorizes changing the frozen executor."
+  ],
+  "endpoint": "POST /accounts/{account_id}/containers/registries/registry.cloudflare.com/credentials",
+  "installedSource": {
+    "bytes": 14390953,
+    "lineReferences": {
+      "actualGuard": 178861,
+      "commandScopeGuard": 190988,
+      "generatedCredentialPost": 135634,
+      "scopeConstant": 191243,
+      "storedScopeSource": 122542,
+      "whoamiPermissionSource": 341959
+    },
+    "observations": [
+      "getTokenPermissions returns getScopes; stored auth scopes are loaded from auth metadata. whoami scope output is not server endpoint authorization introspection.",
+      "No Wrangler command was invoked and no local auth file was read."
+    ],
+    "path": "node_modules/wrangler/wrangler-dist/cli.js",
+    "sha256": "0a7bc2107ca92b2cc6db58b6a36d38d44b549eebd7db7ec34c36db9da7a91264",
+    "version": "4.129.0"
+  },
+  "nextSafeAction": "First finish original c3e terminal/cleanup evidence and preserve its consumed lock. Do not retryPOST, expandOAuthscopes or create a token from this research. If further diagnosis is needed, freeze a separate narrowly scoped read-only witness plan or obtain authoritative endpoint-specific permission guidance; authorize any new credential grant and any new execution separately.",
+  "schema": "jhg46-registry-credential-permission-research/v1",
+  "scope": "Public official docs/OpenAPI and installed Wrangler source only; no credentials/current-account inspection or service requests.",
+  "sideEffects": {
+    "actualAccountReads": 0,
+    "ciRunsOrFixes": 0,
+    "cloudflareExecuteCalls": 0,
+    "credentialPosts": 0,
+    "oauthOrRegistryCredentialReads": 0,
+    "sshCommands": 0,
+    "wranglerCommands": 0
+  },
+  "sources": [
+    {
+      "supports": "Exact target operation/security methods/request fields; no displayed Accepted Permissions; HTML200examples.",
+      "url": "https://developers.cloudflare.com/api/resources/containers/subresources/registries/subresources/credentials/methods/generate/"
+    },
+    {
+      "supports": "Same missing explicit permission mapping and200example presentation.",
+      "url": "https://developers.cloudflare.com/api/typescript/resources/containers/subresources/registries/subresources/credentials/methods/generate/"
+    },
+    {
+      "supports": "Adjacent operation only: Workers Containers Write.",
+      "url": "https://developers.cloudflare.com/api/resources/containers/subresources/registries/methods/create/"
+    },
+    {
+      "supports": "Supported registry metadata GET; Read/Write accepted permissions.",
+      "url": "https://developers.cloudflare.com/api/resources/containers/subresources/registries/methods/list/"
+    },
+    {
+      "supports": "API-token status GET and limits of response.",
+      "url": "https://developers.cloudflare.com/api/resources/user/subresources/tokens/methods/verify/"
+    },
+    {
+      "supports": "Token policy metadata GET; API Tokens Read/Write accepted permissions.",
+      "url": "https://developers.cloudflare.com/api/resources/user/subresources/tokens/methods/get/"
+    },
+    {
+      "supports": "Permission catalog GET; not effective caller policy.",
+      "url": "https://developers.cloudflare.com/api/resources/user/subresources/tokens/subresources/permission_groups/methods/list/"
+    },
+    {
+      "supports": "Official OpenAPI repository; this receipt queried the static resolved schema tool rather than retrieving a pinned repository snapshot.",
+      "url": "https://github.com/cloudflare/api-schemas"
+    }
+  ],
+  "staticSchemaReceipt": {
+    "bytes": 1080,
+    "path": "openapi-credential-operation-summary.json",
+    "sha256": "cabd6cc7c164b93d59a204a8028ebc16d8a509675554f11fa365a32bbfe64c15"
+  },
+  "supportedReadonlyOptionsNotExecuted": [
+    {
+      "limit": "No effective permission policies returned; OAuth compatibility is not established by this API-token documentation.",
+      "method": "GET",
+      "path": "/user/tokens/verify",
+      "use": "API-token active/disabled/expired and token identifier/time bounds"
+    },
+    {
+      "documentedAcceptedPermissions": [
+        "API Tokens Read",
+        "API Tokens Write"
+      ],
+      "limit": "Requires an authorized known token identity and token-read permission; not a documented introspection path for the current Wrangler OAuth access token. Do not request broader permission solely to run this diagnostic.",
+      "method": "GET",
+      "path": "/user/tokens/{token_id}",
+      "use": "Known API-token metadata/policies, permission_groups, resources and conditions"
+    },
+    {
+      "limit": "Catalog existence/selectability is not proof the current caller possesses the group or that the group authorizes this exact credential POST.",
+      "method": "GET",
+      "path": "/user/tokens/permission_groups",
+      "use": "Available permission catalog/group names and selectable/resource scope metadata"
+    },
+    {
+      "documentedAcceptedPermissions": [
+        "Workers Containers Read",
+        "Workers Containers Write"
+      ],
+      "limit": "A successful list is read authorization, not permission to mint push/pull credentials.",
+      "method": "GET",
+      "path": "/accounts/{account_id}/containers/registries",
+      "use": "Configured registry metadata/managed-registry existence under supported read permission"
+    }
+  ],
+  "unknown": [
+    "Actual403 Cloudflare error code/message; original105B body was not preserved and is not reconstructed from its hash.",
+    "Current same-account effective registry permission/entitlement and how OAuth scopes map to this endpoint.",
+    "Whether any proposed GET diagnostic is accessible under current credentials; none was called.",
+    "A definitive service-side permission requirement or an official OAuth introspection/dry-run method that predicts this exact POST authorization."
+  ]
+}

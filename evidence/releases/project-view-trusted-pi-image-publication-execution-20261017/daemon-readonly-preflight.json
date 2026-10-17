@@ -1,0 +1,26 @@
+{
+  "clientApiVersion": "1.56",
+  "clientVersion": "29.8.1",
+  "credentialReadOrPost": false,
+  "freeBytes": 661764493312,
+  "launchConfigJsonSha256": "d6ed85534d0bad7cde36e3290b1ef4d2e15395fc591ee11ef65de33f84f4bb98",
+  "noRouteCreated": true,
+  "platform": "linux/amd64",
+  "pushHelpHasPlatform": true,
+  "rawEnvConfigOrLogsReturned": false,
+  "readOnlyDockerCommands": 3,
+  "remoteWrites": 0,
+  "requestId": "c3e04c41-72da-409b-a2b1-f924e6cc67fa",
+  "rootfsJsonSha256": "59f00e90f0dc26f6c66d38a780fe8191b8e28cb4a3e8da1209f3af09bb5ff178",
+  "rootfsLayers": 48,
+  "schema": "trusted-pi-publication-daemon-readonly-witness/v1",
+  "serverApiVersion": "1.56",
+  "serverVersion": "29.8.1",
+  "sourceDescriptor": {
+    "digest": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "size": 856
+  },
+  "sourceImageId": "sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593",
+  "targetDirectoryAbsent": true
+}

@@ -1,5 +1,7 @@
 # Trusted Pi 固定镜像发布包 — 2026-10-17
 
+> 后续实际结果：本固定包已获授权执行。原始导出通过，唯一credential POST被HTTP403拒绝，未push/合并；原身份清理已独立确认。[实际结果与限制](project-view-trusted-pi-image-publication-result-20261017.md)。原fc807579提交仍是冻结授权合同，不能复用已消费的一次尝试。
+
 本包是同一 JHG-46 Goal 的下一批准备，**尚未执行，等待新的明确授权**。[b093 实际离线结果](project-view-trusted-pi-readable-probe-result-20261017.md)已通过并在 `911e646b278b169dcefcdc3cacf4efdd994f3004` 归档：12 个固定目标、15 项 SDK 检查通过，原容器清理独立确认。该授权仅覆盖一次离线探针，明确排除了本包的导出、Registry 凭据、推送和合并。
 
 本次交付为：**a946 原镜像单次导出及原始字节校验 → 既有仓库单次平台推送及完整回读 → 原凭据副本/进程/路由清理和独立确认 → 满足当前门禁后普通合并 PR #239**。[固定源码、检查与评审](../evidence/releases/project-view-trusted-pi-image-publication-preparation-20261017/README.md)可逐项审阅。不改应用、Gateway、assets、policy、binding 或页面准入，不 rollout、不启动容器或真实项目/模型/Turn/Run；保留全部旧资源、版本、镜像、费用历史及原请求锁。
