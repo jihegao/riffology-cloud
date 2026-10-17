@@ -1,0 +1,187 @@
+{
+  "schema": "project-view-browser-native-publication-candidate/v1",
+  "preparedAt": "2026-10-17T09:44:40.959Z",
+  "reviewOnly": true,
+  "deployable": false,
+  "currentProductionChanged": false,
+  "source": {
+    "headCommit": "e689beb4a1babd8546405181cf3daf74625ed59d",
+    "workingTreeUncommitted": false,
+    "finalCommitPending": false,
+    "mainFreshRead": "1585280c76e55cae61f3969db5545f76edce678c",
+    "graphInputs": 1123,
+    "graphCanonicalSha256": "15e70ad53230b696f3418e09143c6569e0903e9c245f2b6e9d880c908d49da4a",
+    "graphFileSha256": "29a8f517f5dfdd41c14f88109b4d3eca84bf6ea62640aa60a0b5bf33fb20dec4",
+    "implementationCommit": "e689beb4a1babd8546405181cf3daf74625ed59d",
+    "headCommitAtPreparation": "5924c8c97c1faab281f78e6e8ddeabf3abe7a8a1",
+    "frameHtmlSha256": "c68704b393d12755bc65e3b937666cfd7e0d2592bc1d8a5d60ff8287b0f3b58d"
+  },
+  "baseline": {
+    "authority": "Personal Cloudflare connector; GET only; exact existing target account",
+    "observedAt": "2026-10-17T09:40:49.207Z",
+    "getCount": 10,
+    "allStatuses200": true,
+    "settingsDeploymentApplicationBracketsStable": true,
+    "settingsAndVersionBindingsEqual": true,
+    "versionId": "eae8764f-fda5-4241-9f51-cf01ecc46b00",
+    "deploymentId": "0f9c6266-2541-41ff-877e-9e9bbb85f3a2",
+    "actualServingMainModule": {
+      "name": "index.js",
+      "bytes": 5768905,
+      "sha256": "d92548f0f07bb782527618dd26166b11985eaed1723801d6e65cb49b9a41ea78",
+      "equalPreviousPublishedModule": true
+    },
+    "counts": {
+      "bindings": 106,
+      "retainedSecretBindings": 11,
+      "exports": 25,
+      "containerAssociations": 6,
+      "namespaces": 50
+    },
+    "compatibilityDate": "2026-09-09",
+    "compatibilityFlags": [
+      "nodejs_compat",
+      "nodejs_compat_do_not_populate_process_env",
+      "enable_request_signal"
+    ],
+    "remotePolicyClosed": true,
+    "browserPolicyBindingAbsent": true,
+    "app": {
+      "id": "a031ae38-f967-483f-ae2e-3dbed3d35268",
+      "schedulingPolicy": "default",
+      "instancesField": 1,
+      "maxInstances": 1,
+      "instanceListCount": 0,
+      "instanceListComplete": true,
+      "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+      "fieldVariancePreviouslyAccepted": true
+    },
+    "otherApplicationsFreshRead": false,
+    "globalZeroExecutionOrCostClaim": false,
+    "completeConfigurationLocalOnly": true,
+    "rawPrivateSnapshotSha256": "ce8277c2cfb39feba6ce93e09754525e9a02e68c03a41402bbc9c0c14c99680a",
+    "safeSnapshotSha256": "f1b6755f2f3dfe346bfdde05147ef9e04c752f981fba64a494eeff5f80066c7a",
+    "secretValuesRequested": false,
+    "rawSettingsPublished": false
+  },
+  "candidate": {
+    "mainModule": "index.js",
+    "bundleBytes": 5774530,
+    "bundleSha256": "e2eef2c0b20c4d10c2757bea3dc38691f7df5459b9728a43fcb19d0bee0571e2",
+    "buildManifestSha256": "833805159246c4d0847816a6baa44e09f734cd59b47acd699ba5c59235a597c0",
+    "assets": {
+      "count": 96,
+      "web": 28,
+      "immutable": 68,
+      "immutableAllByteIdentical": true,
+      "added": [
+        "/project-view-local.js"
+      ],
+      "changed": [
+        "/project-views.js"
+      ],
+      "removed": [],
+      "inventoryCanonicalSha256": "2c070d067c5b40344ada259d57e6efdc8b421a7daa0659fd3a2e31db6be3fafd",
+      "manifestCanonicalSha256": "af86f2031af0b781d5f4354f3fc8577d6c759e52936ee7b7ee0d9092e32fc14d"
+    },
+    "esbuildVersion": "0.28.1",
+    "neutralBundle": true,
+    "nativePlaywrightDependencyInputs": 0,
+    "sourceBytesStableDuringBuild": true
+  },
+  "replacementIntent": {
+    "worker": "riffology-m1-gateway-staging",
+    "replaceOnly": [
+      "index.js",
+      "static asset manifest and changed/new static assets"
+    ],
+    "bindingsAfter": 106,
+    "wireBindingsExcludingRetainedSecrets": 95,
+    "keepBindings": [
+      "secret_text",
+      "secret_key"
+    ],
+    "exportsAfter": 25,
+    "containerAssociationsAfter": 6,
+    "namespacesAfter": 50,
+    "allExistingConfigurationAndNamespaceIdsPreserved": true,
+    "browserPolicyVariableAdded": false,
+    "browserPolicyEnabled": false,
+    "remotePolicyChanged": false,
+    "appOrImageOrPolicyMutation": false,
+    "migrationsOrNamespacesAdded": false,
+    "containerModelTurnRun": false,
+    "assetRoutingPreserved": {
+      "html_handling": "none",
+      "not_found_handling": "none",
+      "serve_directly": false,
+      "raw_run_worker_first": true,
+      "base_path": "/"
+    }
+  },
+  "publicationPreparation": {
+    "metadataPrepared": false,
+    "oldPublisherModified": false,
+    "reason": "The existing reviewed generator is pinned to the former 100-binding/23-export baseline and adds namespaces; it cannot be reused for this 106-binding replacement-only baseline. Preparation intentionally stops at frozen bundle/assets/manifests and a read-only baseline.",
+    "beforeAnyWrite": [
+      "Final immutable source commit and normal review/merge identity",
+      "Fresh authoritative exact module/version/settings and resource-preservation guard",
+      "Separately reviewed replacement-only metadata/sender; preserve complete current config and retained secrets",
+      "Concrete authorized publication operation and unknown-result stop rules"
+    ],
+    "unknownResultRule": "Preserve the original request identity and lock; read back that operation; never replay PUT or rebuild a request under a new identity.",
+    "rollbackRule": "Only a reviewed forward replacement preserving existing namespaces, tombstones and configuration; do not apply the old pre-lifecycle version."
+  },
+  "validation": {
+    "fullCheck": {
+      "command": "npm run check",
+      "exitCode": 0,
+      "finishedAt": "2026-10-17T09:45:24.486037Z",
+      "nodePass": 3303,
+      "nodeSkip": 13,
+      "pythonPass": 8,
+      "logSha256": "122701a27f1d77ca21ef50d239bcf14ae06bb71f7efc67f876a3cf49fce91405",
+      "evidence": "evidence/releases/project-view-browser-native-candidate-20261017.json"
+    },
+    "localBuild": "passed",
+    "assetsReceipt": "passed; 96 paths, 68 immutable unchanged",
+    "uiFixturesEarlierBatch": {
+      "pass": 112,
+      "fail": 0
+    },
+    "checkUiEarlierBatch": {
+      "pass": 21,
+      "fail": 0
+    },
+    "notClaimed": [
+      "cloud publication",
+      "browser grant activation",
+      "authenticated ordinary-user save/refresh/recovery acceptance",
+      "container or paid execution",
+      "full JHG-56 matrix"
+    ]
+  },
+  "execution": {
+    "cloudWrites": 0,
+    "assetSessions": 0,
+    "assetUploads": 0,
+    "registryWrites": 0,
+    "credentialsLoaded": false,
+    "uiLogin": false,
+    "containerStarts": 0,
+    "modelTurnRun": 0
+  },
+  "localArtifacts": {
+    "directory": ".local/jhg46-browser-native-publication-20261017",
+    "privateSnapshot": "baseline-full.private.json",
+    "safeSnapshot": "baseline-safe.json",
+    "bundle": "gateway.mjs",
+    "sourceGraph": "source-graph.json",
+    "buildManifest": "build-manifest.json",
+    "assetsManifest": "assets-manifest.json",
+    "assetInventory": "assets-sha256.json",
+    "initialLocalPreparationFailurePreserved": "preparation-initial-failure.json"
+  },
+  "historicalPublicationEvidence": "https://github.com/jihegao/riffology-cloud/pull/234",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/214"
+}

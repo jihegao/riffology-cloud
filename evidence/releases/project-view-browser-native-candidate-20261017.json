@@ -81,7 +81,9 @@
       }
     ],
     "changedApplicationClosureSha256": "81a34d54c1b62973cb3483c4a480378f710c7819d0576cd0cee85037a1702d59",
-    "frameHtmlSha256": "c68704b393d12755bc65e3b937666cfd7e0d2592bc1d8a5d60ff8287b0f3b58d"
+    "frameHtmlSha256": "c68704b393d12755bc65e3b937666cfd7e0d2592bc1d8a5d60ff8287b0f3b58d",
+    "implementationCommit": "e689beb4a1babd8546405181cf3daf74625ed59d",
+    "productionInputsUnchangedAfterFullCheck": true
   },
   "implementation": {
     "execution": "browser-local",
