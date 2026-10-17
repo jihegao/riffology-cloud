@@ -63,5 +63,5 @@ export function bootstrap(){
   started=true;port=event.ports[0];port.onmessage=e=>{const m=e.data;if(m?.type==='snapshot'){for(const listener of listeners)try{listener(m.snapshot);}catch{}return;}const item=pending.get(m?.id);if(!item)return;pending.delete(m.id);clearTimeout(item.timer);m.error?item.reject(Error(m.error)):item.resolve(m.value);};port.start();
   void install(event.data.package,event.data.view).catch(()=>reportFailure('page-install-failed'));
  });
- window.addEventListener('pagehide',()=>{port?.close();for(const u of urls)URL.revokeObjectURL(u);});
+ window.addEventListener('pagehide',()=>{failed=true;try{port?.postMessage({type:'ended',reason:'navigation-ended'});}catch{}port?.close();for(const u of urls)URL.revokeObjectURL(u);});
 }

@@ -21,13 +21,16 @@ export async function verifyProjectViewPackage(pkg,scope,isCurrent=()=>true){
 export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},onState=()=>{},readAsset,readArtifacts=async()=>({items:[],nextCursor:null,version:null}),authorize=async()=>{}}){
  let closed=false,failed=false,lastId=0,inflight=0,subscribed=false,artifactState=null,subscriptionEpoch=0;
  const current=()=>!closed&&isCurrent();
+ function close(){if(closed)return;closed=true;subscriptionEpoch++;subscribed=false;port.onmessage=null;port.close();}
  const checkAuthorization=async()=>{try{await authorize();}catch(error){onState('failed');throw error;}};
  const snapshot=()=>({revisionId:pkg.revisionId,filesSha256:pkg.filesSha256,packageIdentity:pkg.packageIdentity,files:pkg.assets.map(({path,sha256,mediaType})=>({path,sha256,mediaType})),artifacts:artifactState,views:pkg.manifest.views.map(({id,title,entrypoint})=>({id,title,entrypoint}))});
  const send=value=>{if(!current())return;if(encoder.encode(JSON.stringify(value)).length>65536){if(value.id)port.postMessage({id:value.id,error:'response-too-large'});return;}port.postMessage(value);};
  port.onmessage=async event=>{
   if(!current())return;
   const m=event.data;
-  if(!m||typeof m!=='object'||Array.isArray(m)||encoder.encode(JSON.stringify(m)).length>4096)return;
+  if(!m||typeof m!=='object'||Array.isArray(m))return;
+  try{if(encoder.encode(JSON.stringify(m)).length>4096)return;}catch{return;}
+  if(m.type==='ended'&&Object.keys(m).sort().join(',')==='reason,type'&&m.reason==='navigation-ended'){failed=true;close();onState('navigation-ended');return;}
   if(m.type==='installed'&&Object.keys(m).length===1){if(!failed)onState('ready');return;}
   if(m.type==='failed'&&Object.keys(m).sort().join(',')==='error,type'&&['page-install-failed','page-script-failed','page-script-timeout'].includes(m.error)){failed=true;onState('failed');return;}
   if(!Number.isSafeInteger(m.id)||m.id<=lastId||m.id>2147483647)return;
@@ -70,7 +73,7 @@ export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},on
   }catch{send({id:m.id,error:'request-denied'});if(!current())return;}finally{inflight--;}
  };
  port.start?.();
- return {close(){closed=true;subscriptionEpoch++;subscribed=false;port.onmessage=null;port.close();},async publish(){if(!subscribed||!current())return;const epoch=subscriptionEpoch;await checkAuthorization();if(!current()||!subscribed||epoch!==subscriptionEpoch)return;const state=await readArtifacts({cursor:null});if(!current()||!subscribed||epoch!==subscriptionEpoch)return;await checkAuthorization();if(!current()||!subscribed||epoch!==subscriptionEpoch)return;artifactState=state;send({type:'snapshot',snapshot:snapshot()});},get closed(){return closed;}};
+ return {close,async publish(){if(!subscribed||!current())return;const epoch=subscriptionEpoch;await checkAuthorization();if(!current()||!subscribed||epoch!==subscriptionEpoch)return;const state=await readArtifacts({cursor:null});if(!current()||!subscribed||epoch!==subscriptionEpoch)return;await checkAuthorization();if(!current()||!subscribed||epoch!==subscriptionEpoch)return;artifactState=state;send({type:'snapshot',snapshot:snapshot()});},get closed(){return closed;}};
 }
 export function createProjectViewsPanel({root,api,pollMs=5000}){
  const doc=root.ownerDocument,win=doc.defaultView;
@@ -112,7 +115,7 @@ export function createProjectViewsPanel({root,api,pollMs=5000}){
      const authority=await api('/api/workspaces/'+encodeURIComponent(ownContext.workspaceId)+'/project-views?identity='+ownPackage.packageIdentity,{signal:AbortSignal.timeout(10000)});
      if(!authority?.current)fail('revoked');
     },
-    onState:state=>{if(current()){if(state==='ready')ownLocal.installed();if(state==='failed'){failedPackageIdentity=ownPackage.packageIdentity;void disposeFrame().catch(()=>{});}bindValue(status,msg(state==='ready'?'projectViews.ready':'projectViews.loadFailed'));retry.hidden=state==='ready';}},
+    onState:state=>{if(current()){if(state==='ready')ownLocal.installed();if(state==='failed'||state==='navigation-ended'){failedPackageIdentity=ownPackage.packageIdentity;void disposeFrame().catch(()=>{});}bindValue(status,msg(state==='ready'?'projectViews.ready':state==='navigation-ended'?'projectViews.navigationEnded':'projectViews.loadFailed'));retry.hidden=state==='ready';}},
    });
    const ownLocal=createProjectViewLocal({
     container:body,delivery:ownDelivery,pkg:ownPackage,view,port:channel.port2,isCurrent:current,

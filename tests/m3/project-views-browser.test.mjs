@@ -6,9 +6,10 @@ import {scope,projectFiles,packaged} from './project-views-fixture.mjs';
 import {localBrowserFixture,projectFrame} from './project-view-local-fixture.mjs';
 
 // Real native DOM with the actual package/bootstrap/broker; fixture identity is synthetic.
-async function fixture(t,files=projectFiles(),artifactBackend=null){
+async function fixture(t,files=projectFiles(),artifactBackend=null,extraHandler=null){
  const initial=files?.pkg?files:await packaged(files);let current=initial.pkg,failure=false,reads=0;
  let f;f=await localBrowserFixture(t,{html:'<div id="model"></div><section id="simulation"></section><section id="history"></section><section id="runs"></section>',handler:async(_req,res,url)=>{
+  if(extraHandler&&await extraHandler(_req,res,url))return true;
   if(url.pathname.endsWith('/project-views')){reads++;if(failure){res.writeHead(503);res.end('{}');return true;}res.setHeader('content-type','application/json');res.end(JSON.stringify(url.searchParams.has('identity')?{current:current.packageIdentity===url.searchParams.get('identity')}:{package:current,delivery:f.delivery}));return true;}
   if(url.pathname.includes('/project-view-artifacts')){
    if(failure||url.searchParams.get('identity')!==current.packageIdentity){res.writeHead(403);res.end('{}');return true;}
@@ -81,6 +82,23 @@ test('self navigation may send authorized bytes but ends the original native ses
  await p.evaluate(async()=>(await import('/i18n.js')).setLocale('zh-CN',{persist:false}));await p.getByText('页面导航已结束当前页面会话',{exact:true}).waitFor();await p.evaluate(async()=>(await import('/i18n.js')).setLocale('en',{persist:false}));
  const frames=f.requests.filter(r=>r.path.endsWith('/frame.html')).length;await p.evaluate(()=>panel.reload());assert.equal(f.requests.filter(r=>r.path.endsWith('/frame.html')).length,frames);
  assert.ok(f.requests.some(r=>r.path==='/outside'));await p.getByRole('button',{name:'Retry page',exact:true}).click();await ready(p);noRemote(f);
+});
+
+test('navigation to a committed endless HTTP response closes the original native frame and port before another load',async t=>{
+ let streamingResponse,streamClosed=false;const f=await fixture(t,projectFiles(),null,async(_req,res,url)=>{
+  if(url.pathname!=='/never-ending-navigation')return false;
+  streamingResponse=res;res.writeHead(200,{'content-type':'text/html','cache-control':'no-store'});res.write('<!doctype html><title>Streaming target</title>'+(' '.repeat(2048)));res.once('close',()=>{streamClosed=true;});return true;
+ }),p=f.page;await ready(p);const child=projectFrame(f);
+ await p.evaluate(()=>{window.originalFrame=document.querySelector('.project-view-body iframe');window.afterReadyLoads=0;originalFrame.addEventListener('load',()=>afterReadyLoads++);window.hostPortCloses=0;const close=MessagePort.prototype.close;MessagePort.prototype.close=function(){hostPortCloses++;return close.call(this);};});
+ const response=p.waitForResponse(r=>r.url().endsWith('/never-ending-navigation')&&r.request().isNavigationRequest(),{timeout:5000});
+ await child.evaluate(()=>{location.href='/never-ending-navigation';});assert.equal((await response).status(),200);
+ assert.equal(streamingResponse.headersSent,true,'the actual HTTP navigation response was committed');assert.equal(streamingResponse.writableEnded,false,'the committed response has not finished');
+ await p.getByText('Page navigation ended the saved page session',{exact:true}).waitFor({timeout:1000});
+ assert.equal(await p.locator('iframe').count(),0);assert.equal(await p.evaluate(()=>afterReadyLoads),0,'there was no second load to trigger cleanup');assert.ok(await p.evaluate(()=>hostPortCloses)>=2,'the original broker and transferred local port are closed');
+ for(let i=0;i<50&&!streamClosed;i++)await p.waitForTimeout(20);assert.equal(streamClosed,true,'removing the original frame cancels its streaming navigation');
+ const reads=f.reads,frames=f.requests.filter(r=>r.path.endsWith('/frame.html')).length;for(let i=0;i<100&&f.reads===reads;i++)await p.waitForTimeout(60);
+ assert.ok(f.reads>reads,'a subsequent automatic read-only poll completed');assert.equal(await p.locator('iframe').count(),0);assert.equal(f.requests.filter(r=>r.path.endsWith('/frame.html')).length,frames);
+ await p.getByRole('button',{name:'Retry page',exact:true}).click();await ready(p);noRemote(f);
 });
 
 test('script failure is bounded in the host and explicit retry loads repaired saved bytes',async t=>{
