@@ -1,5 +1,7 @@
 # Trusted Pi：仅修复探针输入可读性的下一批包 — 2026-10-17
 
+实际结果：本包随后获明确授权，唯一b093 mock已通过且原CID清理获独立确认，见[实际结果](project-view-trusted-pi-readable-probe-result-20261017.md)。以下保留冻结前合同；固定授权输入仍以7b8b15f提交为准。
+
 本包属于同一 JHG-46 Goal，承接 [#242](https://github.com/jihegao/riffology-cloud/issues/242)。它准备下一次离线验证，尚未获本次实际传输或容器运行授权。[操作源码、输入与本地检查](../evidence/releases/project-view-trusted-pi-readable-probe-inputs-20261017/README.md) · [固定输入清单](../evidence/releases/project-view-trusted-pi-readable-probe-inputs-20261017/payload-summary.json)。
 
 上一批请求 `a21af2c8-44ff-4f67-a07f-c364bcd6d295` 已完成一次断网构建，得到 local Engine/descriptor index `sha256:a946b164d10d074fcc9859f6c54c3b65d1901b41696c5ee8d8e31e275ddd1593`。其唯一 mock 因宿主探针为 uid1000/0600、mock 用户为10002，在打开 `/compat-input/probe/compatibility-probe.mjs` 时 EACCES；入口代码、12目标及SDK检查均未执行。原CID已独立确认NotFound、正确label空列表，原CLI均回收并确认原进程不存在。[实际结果和历史边界](project-view-trusted-pi-package-mode-result-20261017.md)。这尚不能评估镜像内package权限修复是否通过。
