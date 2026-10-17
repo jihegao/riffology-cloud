@@ -64,3 +64,16 @@ source 模式明确 `activeAliasActuallyInspected:false`，不冒充镜像内实
 6. **原 ID 清理和未知处理。** 保留原 wait/log/CID/intent，失败也销毁/删除同一容器。独立 inspect原ID，仅明确识别的 NotFound加该label空列表才算清理；空列表或未知错误不冒充404。lost ACK只按原身份只读核对，不第二次create/run、新key或删锁重试；不删其它容器、镜像或历史。Docker fixture资源限制不提升为 CF target资源可行性证明。
 
 这个待授权范围**没有** Registry push、CF app image更新/新资源、gate/policy、真实 provider/Turn/Run/ProjectRuntime 或普通用户验收。实际新镜像 pin 与后续发布必须另据真实构建/注册表证据冻结；当前只是可审输入。现有无预算上限、不得新增订阅、确凿欠费通知规则保留。缺授权期间这些动作均未执行。
+
+
+## 一次性 route/pull 操作件补充 — 2026-10-17
+
+root 后续只读 [代理回执](../evidence/releases/project-view-trusted-pi-offline-build-20261017/proxy-readonly.json)记录于 **2026-10-17 11:20:18.066 UTC**（工具返回后的记录时间）：固定 Docker socket 正常；实际 `HttpProxy`/`HttpsProxy` 均为 `http://127.0.0.1:7897`，AMD loopback 返回 Linux `ECONNREFUSED`/111，当前没有 listener；本机既有 `http://127.0.0.1:7892` 在获准网络环境仅做 TCP 检查可达，没有发送外部代理请求。早先字段大小写和受限环境的误报没有作为权威证据。回执 SHA256：`2e09cf2060fc7dbcc8addc9a4771162cded285770ef658d6d880ea2d898ef22b`。这不证明未来 Registry 上游已通。
+
+独立可审 [operations/EXECUTION.md](../evidence/releases/project-view-trusted-pi-offline-build-20261017/operations/EXECUTION.md) 和 [操作件清单](../evidence/releases/project-view-trusted-pi-offline-build-20261017/operations/operations-manifest.json)补齐此次最小 route/pull 段，**原9份 payload、30,515B 小包 `c92e672c…` 及其 manifest 全部不变**。新操作件 manifest SHA256：`05100f4a7c8aa2448b289d1525498dbd10542612873630e6b1cfd980dbb87512`；local operator SHA `4ef6352c4a48e52c8b1cd6ca1c0120d2b296c71851380b92d06ec8748fe934e7`，receiver SHA `caab07b759505ad31a9340201c803c03057a9e62537150a4d367b5f5bc73cc3b`。未来同一具体 grant 必须同时列小包、操作件清单和实际 reviewed packet commit，不能沿用 Gateway/Chromium 的旧授权。
+
+该 grant 还须明确：本机单个自有 SSH 进程临时 `-R 127.0.0.1:7897:127.0.0.1:7892` 到 AMD128；接收进程在凭据生成前核实实际7897仅 loopback。所有 grant/target/source/hash/commit 守卫先完成，再只在本机内存读取现有有效 Wrangler OAuth，通过既有7892向固定 account/managed Registry **一次**请求15分钟、仅 `permissions:["pull"]` 的 credential（HTTP201）；返回四字段直接内存→同一 SSH stdin，不进入工具结果/参数/env/log/本机磁盘，OAuth 不传 AMD。过期无效即停；不自动续期、登录或加 scope。仅固定9b76 digest 的一次 pull；API credential 是 account registry 权限，操作件约束固定 repo/digest，临时通用代理并非 repo 防火墙。
+
+receiver 仅任务0700目录/0600 Docker auth config 暂存 base64 secret，无 helper/`docker login` 密码 argv。pull 后 finally 删除并验证，终止原自有 SSH/receiver，独立只读核原 PID/start-tick 已退出、auth config 不存在及7897明确111且监听列表空。关闭管道或 kill race 不得跳过原身份读回和 unknown 记录；未知只核原 UUID，不新 token/route/请求重放，不删锁。build/probe 仍沿原9份合同逐条执行，不由此操作件暗含新增能力。
+
+[本地 fake 检查回执](../evidence/releases/project-view-trusted-pi-offline-build-20261017/operations/offline-checks.json)记录最后一次 **18/18** 通过、`git diff --check` 通过；测试未读取真实 OAuth、生成/转移真实凭据、执行 SSH/relay、pull/build/container 或云写。独立审阅范围是操作件静态边界，mock 不替代未来真实路由/pull/清理证据。**本节全部真实动作仍未执行，下一批 grant 尚待明确批准。**
