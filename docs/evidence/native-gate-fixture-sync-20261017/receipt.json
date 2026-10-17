@@ -1,0 +1,63 @@
+{
+  "base": "29da0349719dba23d5c9ce95b4b83b97ebf7091a",
+  "originalPr237": "05e94163485a7d3776b911ede2582e7009593039",
+  "hostedRun": "https://github.com/jihegao/riffology-cloud/actions/runs/39033087891/job/117397364971",
+  "node": "v25.3.0",
+  "localPlatform": "darwin-arm64",
+  "esbuild": "0.28.1",
+  "testFile": "tests/m3/project-view-runtime-native-gate.test.mjs",
+  "testSha256": "361554290cde619763e3d66b73e96b57b5cd033e362c48c41b0b3db7ff37355c",
+  "diagnosticInvocations": 3,
+  "repairValidationInvocations": 3,
+  "repairResults": [
+    {
+      "label": "normal file including delayed teardown regression",
+      "invocations": 1,
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "label": "original failing case with real digest completion delayed 50ms",
+      "invocations": 1,
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "label": "adjacent runtime/preflight/exec-deadline files",
+      "invocations": 1,
+      "passed": 31,
+      "failed": 0
+    }
+  ],
+  "unchangedProductionTree": "0439955cbd595afddab6a1a0a52e38ab4b0a0091",
+  "limitations": [
+    "CI actual scheduling/crypto-worker cause not traced",
+    "macOS validation is not Linux hosted reproduction",
+    "no full npm check or hosted rerun",
+    "no production/provider/container execution"
+  ],
+  "artifacts": {
+    "pr237-delay-digest.mjs": "ee6205bf6264e8224bfa720941806e0988e9c9381358eba5be3e089b4e3dd856",
+    "pr237-native-gate-local-once.tap": "8d2054b6ceba06dc1688cbbf9da5dc0b97237795593c7f0edbacf3c950f6d3eb",
+    "hosted-failure-excerpt.json": "2154bb31e3030230bd8801ee231ed9431a5b4c3a24456a2f6ba1c9fecebb466f",
+    "pr237-fixture-fix-adjacent.tap": "ac4f318b8a3da7630da6b7c6c4ab4b3aba12a2ede2b555722f7e3bd24b50a7f5",
+    "pr237-native-gate-base-delayed.tap.json": "c9bad1a0aa65b01443c73ef8538f637c13ded548eadaf79a53b0114d6c151285",
+    "pr237-fixture-fix-delay50.tap": "e2592be1f548bc514ddf517ceb03f0661a61aaed9c3c04c3458c70d3d69fd182",
+    "pr237-native-gate-delayed.tap.json": "a1258b7fd6be4f55be59693d849b0f2332e8818ee17e7d532cc89949fd6c840f",
+    "pr237-fixture-fix-normal.tap": "01b216cdce7a088ef435350c10c434b7f5f0f6cbf94c623feabc9ff782c4f900"
+  },
+  "jsonEncodedLogs": {
+    "pr237-native-gate-delayed.tap.json": {
+      "originalName": "pr237-native-gate-delayed.tap",
+      "decodedSha256": "2469e3605121e6ee2a8751fed07fe571a14977880623dacf8a51cc8ac090a6a6"
+    },
+    "pr237-native-gate-base-delayed.tap.json": {
+      "originalName": "pr237-native-gate-base-delayed.tap",
+      "decodedSha256": "84a43d3b62b435b29896de6cb8b1567b14d867bd882c7f7c7d5be43060aabf3b"
+    },
+    "hosted-failure-excerpt.json": {
+      "originalName": "hosted-failure-excerpt.log",
+      "decodedSha256": "8e153dfc148ca477e6fdeaabb93df6d82741be58862eb9b4db39ea291f55d152"
+    }
+  }
+}
