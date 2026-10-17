@@ -1,0 +1,60 @@
+{
+  "base": "29da0349719dba23d5c9ce95b4b83b97ebf7091a",
+  "ciPr240Head": "bb7b7d9d34682d4c10fe975be4bac6f1560d9c82",
+  "ciRun": "https://github.com/jihegao/riffology-cloud/actions/runs/39034860204/job/117402520688",
+  "node": "v25.3.0",
+  "platform": "darwin-arm64",
+  "diagnosticTestInvocations": 2,
+  "repairTestInvocations": 4,
+  "typecheckInvocations": 1,
+  "results": {
+    "beforeNormal": "1/1 pass",
+    "beforeDelay50": "0/1 pass, same until failure",
+    "afterRuntimeFile": "15/15 pass, includes builtin delayed cleanup case",
+    "afterExternalDelay50": "2/2 pass; builtin delay case adds another 50ms",
+    "browserDefault": "2/2 pass",
+    "browserExplicitChromium": "2/2 pass",
+    "typecheck": "exit 0"
+  },
+  "googleChromeLocallyInstalled": false,
+  "actualHostedCryptoDelayProven": false,
+  "sourceSha256": {
+    "tests/m1/riffoid-cookie-browser.test.mjs": "b475beecdc57c79d5bd298ea5480229dbdcd33b2c91bc2386f1f4130320eadf4",
+    "tests/m1/riffoid-local-history-browser.test.mjs": "e2e381b80fb0bbeb0c7c20ea05b3251b6686854d264d6f5a1e18d03a4639abc5",
+    "tests/m3/project-view-runtime.test.ts": "83c2fa886f6aa9a384e51fbd99e2facc03f85f38436a23790de78e2775ec760d"
+  },
+  "encodedLogs": {
+    "release-proof-before-normal.tap.json": {
+      "decodedSha256": "7c1820b5ca45cf0acff975e5a61344fb6a7d85c36cfc1aa687fccd4dfc34bf30"
+    },
+    "release-proof-before-delay.tap.json": {
+      "decodedSha256": "ea7e3e8501ff9b9f8b61c22450b27f77724855ee4a9c12ada4221325162ab0bc"
+    },
+    "release-proof-after-normal.tap.json": {
+      "decodedSha256": "4f9eb68960083561b12b5f0b53c83d2ef089b110efffa960e7cc6aa15f533b1b"
+    },
+    "release-proof-after-delay.tap.json": {
+      "decodedSha256": "6b9112f1c7441b17627b592c7594a289e166894ad747ad45f3d822c074b286bd"
+    },
+    "channel-fix-default.tap.json": {
+      "decodedSha256": "777201b38ab6b989b916def712a4b3665c5e3e5211ea267c048d529d086a9345"
+    },
+    "channel-fix-explicit.tap.json": {
+      "decodedSha256": "e436bf86f90bd52f5d38e7080f726b09172b7896c2e08b7a2f66980fe441cf68"
+    },
+    "browser-release-fix-typecheck.log.json": {
+      "decodedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "artifacts": {
+    "release-proof-after-normal.tap.json": "d7de70c2127e0d85129d215ace5f75794c958fe6fa6a3710c4b9611f2ab41d9f",
+    "release-proof-before-normal.tap.json": "74f942a72ff61728af9c2c76d9eb13e840c318af58576871e14e21ff19965c3b",
+    "hosted-excerpt.json": "293908b2b9a9cede5456f044ecd428cf63c721f1bba7d07235cc9b26b9b57e4e",
+    "channel-fix-explicit.tap.json": "49c8eaaeea068adf9f6466054524aa28a6034f4dc284aae49fe8658653366d7c",
+    "channel-fix-default.tap.json": "02d237067625bc6c18c64c5c863aefa20cea7326e1f0fa4a7c313440b0eb20a0",
+    "browser-release-fix-typecheck.log.json": "29c16feeff171185ec68a5d4b6dba1ceeddce42a4a2c98e1c59fc01e20609ca6",
+    "release-proof-delay50.mjs": "424a9a0e95350ff8eab102ff1de2910f3d9e41886fad4ac2b95def36a27024b7",
+    "release-proof-after-delay.tap.json": "4952a2cbdbd816c1cb4afa0778cef26696516b761725b7ebe46e43cb0352dd9d",
+    "release-proof-before-delay.tap.json": "88e691c212274e7fff795adb8a6b84f5b256d79a92f4f42fc82d2efe439c058e"
+  }
+}

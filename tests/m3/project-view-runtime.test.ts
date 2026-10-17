@@ -14,12 +14,14 @@ async function input():Promise<ProjectViewRuntimeStart>{
  return {identity:{schema:'project.view-session/v1',sessionId:'session-a',operationId:'operation-a',scope:body.scope,actor:{userId:'owner-a',authVersion:1},packageIdentity,viewId:'home',policyHash:'b'.repeat(64)},pkg:{...body,packageIdentity},view,expiresAt:201000};
 }
 function deferred(){let resolve!:()=>void,reject!:(error:Error)=>void;const promise=new Promise<void>((yes,no)=>{resolve=yes;reject=no;});return {promise,resolve,reject};}
+async function bounded(work:Promise<unknown>){let timer:ReturnType<typeof setTimeout>|undefined;try{await Promise.race([work,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('fixture background completion timed out')),2000);})]);}finally{clearTimeout(timer);}}
 const tick=()=>new Promise<void>(resolve=>setImmediate(resolve));
 async function until(condition:()=>boolean){for(let n=0;n<30&&!condition();n++)await tick();assert.ok(condition(),'expected asynchronous boundary was reached');}
 
 function fixture(t:{after(fn:()=>void):void}){
  const db=new DatabaseSync(':memory:');let alarm:number|null=null,now=1000,running=false,starts=0,destroys=0,closes=0,acquires=0,releases=0,occupied=false,released=false,failDestroy=false,failRelease=false;
  let startGate:ReturnType<typeof deferred>|null=null,acquireGate:ReturnType<typeof deferred>|null=null;
+ const background:Promise<unknown>[]=[];
  const finished=deferred(),commands:unknown[]=[];let messages:unknown[]=[{type:'installed'}];
  const session:ProjectViewNativeSession={async send(command){commands.push(command);},poll(){const value={messages};messages=[];return value;},async close(){closes++;},finished:finished.promise};
  const storage={sql:{exec(query:string,...args:(string|number|null)[]){const statement=db.prepare(query);const rows=statement.columns().length?statement.all(...args):(statement.run(...args),[]);return {toArray:()=>structuredClone(rows)};}},transactionSync<T>(fn:()=>T){db.exec('BEGIN IMMEDIATE');try{const value=fn();db.exec('COMMIT');return value;}catch(error){db.exec('ROLLBACK');throw error;}},async sync(){},async setAlarm(at:number){alarm=at;},async deleteAlarm(){alarm=null;}} as unknown as ProjectViewRuntimeStorage;
@@ -29,10 +31,10 @@ function fixture(t:{after(fn:()=>void):void}){
   async acquire(request){acquires++;assert.equal((await core.status({identity:request.identity})).status,'starting','start intent must be durable before acquire callback');if(acquireGate)await acquireGate.promise;if(released)throw Error('terminal-tombstone');occupied=true;},
   async release(request){releases++;const actual=await core.status({identity:request.identity});assert.equal(actual.status,'closed');assert.equal(actual.cleanupConfirmed,true);assert.equal(actual.cleanupProofId,request.proof.proofId);if(failRelease)throw Error('lost-ack');released=true;occupied=false;},
  };
- const create=()=>new ProjectViewRuntimeCore(storage,native,capacity,{clock:()=>now,startupMs:200,rpcMs:50,retryMs:5,assignmentGuardMs:100,quietMs:10});
+ const create=()=>new ProjectViewRuntimeCore(storage,native,capacity,{waitUntil:work=>{background.push(work);},clock:()=>now,startupMs:200,rpcMs:50,retryMs:5,assignmentGuardMs:100,quietMs:10});
  core=create();
  t.after(()=>db.close());
- return {storage,native,capacity,create,get core(){return core;},set core(value:ProjectViewRuntimeCore){core=value;},get now(){return now;},set now(value:number){now=value;},get alarm(){return alarm;},get starts(){return starts;},get destroys(){return destroys;},get closes(){return closes;},get acquires(){return acquires;},get releases(){return releases;},get occupied(){return occupied;},get running(){return running;},set running(value:boolean){running=value;},set failDestroy(value:boolean){failDestroy=value;},set failRelease(value:boolean){failRelease=value;},set startGate(value:ReturnType<typeof deferred>){startGate=value;},set acquireGate(value:ReturnType<typeof deferred>){acquireGate=value;},finished,commands,record(){return JSON.parse((db.prepare('SELECT value FROM project_view_runtime WHERE singleton=1').get() as {value:string}).value);}};
+ return {storage,native,capacity,create,async waitForBackground(){await bounded(Promise.all(background));},get core(){return core;},set core(value:ProjectViewRuntimeCore){core=value;},get now(){return now;},set now(value:number){now=value;},get alarm(){return alarm;},get starts(){return starts;},get destroys(){return destroys;},get closes(){return closes;},get acquires(){return acquires;},get releases(){return releases;},get occupied(){return occupied;},get running(){return running;},set running(value:boolean){running=value;},set failDestroy(value:boolean){failDestroy=value;},set failRelease(value:boolean){failRelease=value;},set startGate(value:ReturnType<typeof deferred>){startGate=value;},set acquireGate(value:ReturnType<typeof deferred>){acquireGate=value;},finished,commands,record(){return JSON.parse((db.prepare('SELECT value FROM project_view_runtime WHERE singleton=1').get() as {value:string}).value);}};
 }
 
 test('one frozen start, repeated request preserves original expiry, lookup is owner-only, and proof precedes release',async t=>{
@@ -110,8 +112,18 @@ test('transient cold-recovery storage failure retries original cleanup without e
  f.now=1110;await f.core.alarm();assert.equal(f.occupied,false);assert.equal(f.starts,1);assert.equal((await f.core.status({identity:v.identity})).status,'closed');
 });
 
-test('browser failure closes the original runtime and never executes a replacement',async t=>{
- const f=fixture(t),v=await input();await f.core.start(v);f.finished.reject(Error('untrusted output'));await until(()=>!f.occupied);
+for(const delayMs of [0,50])test('browser failure closes the original runtime and never executes a replacement'+(delayMs?' with delayed cleanup digest':''),async t=>{
+ const f=fixture(t),v=await input();await f.core.start(v);
+ if(delayMs){
+  const digest=crypto.subtle.digest.bind(crypto.subtle);
+  t.mock.method(crypto.subtle,'digest',async(...args:Parameters<typeof digest>)=>{
+   const result=await digest(...args);await new Promise(resolve=>setTimeout(resolve,delayMs));return result;
+  });
+ }
+ f.finished.reject(Error('untrusted output'));
+ // Runtime tracks the browser terminal -> close -> proof -> capacity release
+ // chain with waitUntil. Join that chain, not a count of event-loop turns.
+ await f.waitForBackground();assert.equal(f.occupied,false);
  assert.equal((await f.core.status({identity:v.identity})).status,'closed');assert.equal(f.starts,1);assert.equal(f.running,false);
 });
 

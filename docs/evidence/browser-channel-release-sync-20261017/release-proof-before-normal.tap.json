@@ -1,0 +1,4 @@
+{
+  "encoding": "utf-8",
+  "text": "TAP version 13\n# (node:424) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: browser failure closes the original runtime and never executes a replacement\nok 1 - browser failure closes the original runtime and never executes a replacement\n  ---\n  duration_ms: 8.879791\n  type: 'test'\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 1\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 120.268375\n"
+}
