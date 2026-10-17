@@ -1,5 +1,7 @@
 {
   "index.html": [
+    "account.copy",
+    "account.userId",
     "composer.editDraft",
     "composer.send",
     "home.loginCopy",

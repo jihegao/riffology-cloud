@@ -85,6 +85,165 @@ test('Queue entry uses only published catalog versions and normal independent-co
 });
 async function waitFor(check) { for (let i = 0; i < 100; i++) { if (check()) return; await new Promise(resolve => setTimeout(resolve, 20)); } assert.ok(check(), 'condition timed out'); }
 
+const identityA = '11111111-2222-4333-8444-555555555555', identityB = 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee';
+const identityResponse = userId => ({userId,tenants:[{id:'tenant-a'}],execution:{},locale:null});
+const gate = () => { let resolve; const promise = new Promise(done => { resolve = done; }); return {promise,resolve}; };
+
+test('account ID is from me, keyboard-copyable, and unchanged by language selection', async t => {
+  const calls=[];
+  const page=await pageFixture(t,async(route,path)=>{
+    calls.push({path,method:route.request().method()});
+    if(path==='/api/me'){await json(route,{...identityResponse(identityA),token:'must-never-render',email:'not-displayed@example.test'});return true;}
+    if(path==='/api/me/locale'){await json(route,{locale:null});return true;}
+  });
+  await page.addInitScript(()=>{globalThis.copies=[];Object.defineProperty(navigator,'clipboard',{value:{writeText:async value=>{globalThis.copies.push(value);}},configurable:true});});
+  await page.goto('https://ui.test/');await page.locator('#account-details:not([hidden])').waitFor();
+  assert.match(await page.locator('#account-summary').innerText(),/11111111…555555/);
+  await page.locator('#account-summary').focus();await page.keyboard.press('Enter');
+  await page.keyboard.press('Tab');assert.equal(await page.locator('#account-user-id').evaluate(n=>n===document.activeElement),true);
+  assert.equal(await page.locator('#account-user-id').inputValue(),identityA);
+  await page.keyboard.press('Tab');await page.keyboard.press('Enter');await page.getByText('用户 ID 已复制。',{exact:true}).waitFor();
+  assert.deepEqual(await page.evaluate(()=>globalThis.copies),[identityA]);
+  await page.locator('[data-locale-select]').selectOption('en');await page.getByRole('button',{name:'Copy user ID',exact:true}).waitFor();
+  assert.equal(await page.locator('#account-user-id').inputValue(),identityA);
+  assert.equal(await page.locator('#account-copy-status').innerText(),'User ID copied.');
+  assert.doesNotMatch(await page.locator('#account').innerText(),/must-never-render|not-displayed/);
+  assert.ok(calls.every(c=>c.method==='GET'||c.path==='/api/me/locale'));
+});
+
+test('account ID stays empty while loading and unknown identity never uses a project owner',async t=>{
+  const pending=gate();let requested=false;
+  const page=await pageFixture(t,async(route,path)=>{if(path==='/api/me'){requested=true;await pending.promise;await json(route,{tenants:[{id:identityA}]});return true;}if(path===`/api/tenants/${identityA}/projects`){await json(route,{projects:[]});return true;}});
+  await page.goto('https://ui.test/',{waitUntil:'domcontentloaded'});await waitFor(()=>requested);
+  assert.equal(await page.locator('#account-user-id').inputValue(),'');assert.equal(await page.locator('#account-details').isVisible(),false);
+  assert.equal(await page.locator('#account-state').innerText(),'正在确认账户…');pending.resolve();
+  await page.getByText('暂时无法确认账户',{exact:true}).waitFor();assert.equal(await page.locator('#account-user-id').inputValue(),'');
+});
+
+test('sign-out clears ID immediately and ignores a delayed prior identity response',async t=>{
+  const pending=gate(),logout=gate();let reads=0,held=false,signingOut=false;
+  const page=await pageFixture(t,async(route,path)=>{
+    if(path==='/api/me'){if(++reads===2){held=true;await pending.promise;}await json(route,identityResponse(identityA));return true;}
+    if(path==='/api/auth/sign-out'){signingOut=true;await logout.promise;await json(route,{success:true});return true;}
+  });
+  await page.goto('https://ui.test/');await page.locator('#account-details:not([hidden])').waitFor();
+  await page.evaluate(()=>dispatchEvent(new Event('focus')));await waitFor(()=>held);
+  await page.locator('#sign-out').click();await waitFor(()=>signingOut);
+  assert.equal(await page.locator('#account-user-id').inputValue(),'');assert.equal(await page.locator('#account-copy').isDisabled(),true);
+  assert.equal(await page.locator('#account-state').innerText(),'正在退出…');
+  logout.resolve();await page.locator('#login:not([hidden])').waitFor();const finished=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/me');pending.resolve();await finished;
+  assert.equal(await page.locator('#account-user-id').inputValue(),'');assert.equal(await page.locator('#account-details').isVisible(),false);
+});
+
+test('restored pages revalidate a changed account and discard a delayed old me response',async t=>{
+  const pending=gate();let reads=0,held=false;
+  const page=await pageFixture(t,async(route,path)=>{
+    if(path==='/api/me'){const number=++reads;if(number===2){held=true;await pending.promise;}await json(route,identityResponse(number<=2?identityA:identityB));return true;}
+  });
+  await page.goto('https://ui.test/');await page.locator('#account-details:not([hidden])').waitFor();
+  await page.evaluate(()=>dispatchEvent(new Event('focus')));await waitFor(()=>held);
+  await page.evaluate(()=>dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true})));
+  await page.waitForFunction(id=>document.querySelector('#account-user-id').value===id,identityB);
+  const finished=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/me');pending.resolve();await finished;
+  assert.equal(await page.locator('#account-user-id').inputValue(),identityB);
+});
+
+test('an expired current API response clears ID; an older 401 cannot clear a newer account',async t=>{
+  const delayed=gate();let me=identityA,models=0,held=false;
+  const page=await pageFixture(t,async(route,path)=>{
+    if(path==='/api/me'){await json(route,identityResponse(me));return true;}
+    if(path==='/api/models'){if(++models===2){held=true;await delayed.promise;await json(route,{error:'unauthenticated'},401);}else await json(route,{models:[]});return true;}
+  });
+  await page.goto('https://ui.test/');await page.locator('#account-details:not([hidden])').waitFor();
+  await page.locator('#models-refresh').click();await waitFor(()=>held);me=identityB;
+  await page.evaluate(()=>dispatchEvent(new Event('focus')));await page.waitForFunction(id=>document.querySelector('#account-user-id').value===id,identityB);
+  const finished=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/models'&&r.status()===401);delayed.resolve();await finished;
+  assert.equal(await page.locator('#account-user-id').inputValue(),identityB);
+  await page.route('**/api/models',route=>json(route,{error:'expired'},401));
+  await page.locator('#models-refresh').click();await page.getByText('会话已失效，请重新登录。',{exact:true}).waitFor();
+  assert.equal(await page.locator('#account-user-id').inputValue(),'');assert.equal(await page.locator('#account-copy-status').innerText(),'');
+});
+
+test('failed sign-out only restores the ID after a new successful me check',async t=>{
+  const pending=gate();let reads=0,held=false;
+  const page=await pageFixture(t,async(route,path)=>{
+    if(path==='/api/me'){if(++reads===2){held=true;await pending.promise;}await json(route,identityResponse(identityA));return true;}
+    if(path==='/api/auth/sign-out'){await json(route,{error:'unavailable'},503);return true;}
+  });
+  await page.goto('https://ui.test/');await page.locator('#account-details:not([hidden])').waitFor();await page.locator('#sign-out').click();await waitFor(()=>held);
+  assert.equal(await page.locator('#account-user-id').inputValue(),'');pending.resolve();await page.waitForFunction(id=>document.querySelector('#account-user-id').value===id,identityA);
+});
+
+test('unavailable clipboard selects the full ID for manual copying and late copy success stays cleared',async t=>{
+  const page=await pageFixture(t,async(route,path)=>{
+    if(path==='/api/me'){await json(route,identityResponse(identityA));return true;}
+    if(path==='/api/auth/sign-out'){await json(route,{success:true});return true;}
+  });
+  await page.addInitScript(()=>Object.defineProperty(navigator,'clipboard',{value:undefined,configurable:true}));
+  await page.goto('https://ui.test/');await page.locator('#account-details:not([hidden])').waitFor();await page.locator('#account-summary').click();await page.locator('#account-copy').click();
+  await page.getByText('无法自动复制，请选中用户 ID 手动复制。',{exact:true}).waitFor();
+  assert.deepEqual(await page.locator('#account-user-id').evaluate(n=>[n===document.activeElement,n.selectionStart,n.selectionEnd]),[true,0,identityA.length]);
+  await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:()=>new Promise(resolve=>{globalThis.finishCopy=resolve;})},configurable:true}));
+  await page.locator('#account-copy').click();await page.locator('#sign-out').click();await page.locator('#login:not([hidden])').waitFor();await page.evaluate(()=>globalThis.finishCopy());
+  assert.equal(await page.locator('#account-copy-status').innerText(),'');assert.equal(await page.locator('#account-user-id').inputValue(),'');
+});
+
+test('mobile account disclosure and copy controls fit narrow screens and retain keyboard access',async t=>{
+  const page=await pageFixture(t,async(route,path)=>{if(path==='/api/me'){await json(route,identityResponse(identityA));return true;}},{mobile:true});
+  await page.setViewportSize({width:320,height:740});await page.goto('https://ui.test/');await page.locator('#account-details:not([hidden])').waitFor();
+  await page.locator('#account-summary').focus();await page.keyboard.press('Enter');await page.keyboard.press('Tab');await page.keyboard.press('Tab');
+  assert.equal(await page.locator('#account-copy').evaluate(n=>n===document.activeElement),true);
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+  const bounds=await page.locator('.account-identity-card').boundingBox();assert.ok(bounds.x>=0&&bounds.x+bounds.width<=320);
+});
+
+test('a delayed sign-out acknowledgement cannot erase a newly restored account',async t=>{
+  const pending=gate();let user=identityA,held=false;
+  const page=await pageFixture(t,async(route,path)=>{
+    if(path==='/api/me'){await json(route,identityResponse(user));return true;}
+    if(path==='/api/auth/sign-out'){held=true;await pending.promise;await json(route,{success:true});return true;}
+  });
+  await page.goto('https://ui.test/');await page.locator('#account-details:not([hidden])').waitFor();await page.locator('#sign-out').click();await waitFor(()=>held);
+  user=identityB;await page.evaluate(()=>dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true})));
+  await page.waitForFunction(id=>document.querySelector('#account-user-id').value===id,identityB);
+  pending.resolve();await page.waitForFunction(()=>!document.querySelector('#sign-out').disabled);
+  assert.equal(await page.locator('#account-user-id').inputValue(),identityB);assert.equal(await page.locator('#login').isVisible(),false);
+});
+
+test('failed foreground identity checks clear the ID and a later focus can verify it again',async t=>{
+  let checks=0;
+  const page=await pageFixture(t,async(route,path)=>{if(path==='/api/me'){if(++checks===2)await json(route,{error:'unavailable'},503);else await json(route,identityResponse(identityA));return true;}});
+  await page.goto('https://ui.test/');await page.locator('#account-details:not([hidden])').waitFor();await page.evaluate(()=>dispatchEvent(new Event('focus')));
+  await page.getByText('暂时无法确认账户',{exact:true}).waitFor();assert.equal(await page.locator('#account-user-id').inputValue(),'');
+  await page.evaluate(()=>dispatchEvent(new Event('focus')));await page.waitForFunction(id=>document.querySelector('#account-user-id').value===id,identityA);
+});
+
+test('a stale projects 401 after a same-account identity refresh cannot sign out the verified account',async t=>{
+  const pending=gate();let held=false,reads=0;
+  const page=await pageFixture(t,async(route,path)=>{
+    if(path==='/api/me'){reads++;await json(route,identityResponse(identityA));return true;}
+    if(path==='/api/tenants/tenant-a/projects'){held=true;await pending.promise;await json(route,{error:'expired'},401);return true;}
+  });
+  await page.goto('https://ui.test/',{waitUntil:'domcontentloaded'});await waitFor(()=>held);await page.waitForFunction(id=>document.querySelector('#account-user-id').value===id,identityA);
+  await page.evaluate(()=>dispatchEvent(new Event('focus')));await waitFor(()=>reads===2);await page.waitForFunction(id=>document.querySelector('#account-user-id').value===id,identityA);
+  pending.resolve();await page.waitForFunction(()=>document.querySelector('#projects').getAttribute('aria-busy')==='false'||!document.querySelector('#login').hidden);
+  assert.equal(await page.locator('#login').isVisible(),false,'old projects 401 must not sign out a newly verified identity');
+  assert.equal(await page.locator('#sign-out').isVisible(),true);assert.equal(await page.locator('#account-user-id').inputValue(),identityA);
+  await page.locator('#account-summary').click();assert.equal(await page.locator('#account-copy').isEnabled(),true);
+});
+
+test('a current projects 401 signs out and clears all identity and copy values',async t=>{
+  const pending=gate();let held=false;
+  const page=await pageFixture(t,async(route,path)=>{
+    if(path==='/api/me'){await json(route,identityResponse(identityA));return true;}
+    if(path==='/api/tenants/tenant-a/projects'){held=true;await pending.promise;await json(route,{error:'expired'},401);return true;}
+  });
+  await page.goto('https://ui.test/',{waitUntil:'domcontentloaded'});await waitFor(()=>held);await page.waitForFunction(id=>document.querySelector('#account-user-id').value===id,identityA);
+  await page.locator('#account-summary').click();pending.resolve();await page.locator('#login:not([hidden])').waitFor();
+  assert.equal(await page.locator('#sign-out').isVisible(),false);assert.equal(await page.locator('#account-details').isVisible(),false);
+  assert.equal(await page.locator('#account-user-id').inputValue(),'');assert.equal(await page.locator('#account-copy').isDisabled(),true);assert.equal(await page.locator('#account-copy-status').innerText(),'');
+});
+
 test('project filters use saved-model and preview metadata without executing or deleting projects',async t=>{
  const calls=[];const page=await pageFixture(t,async(route,path)=>{
   calls.push({path,method:route.request().method()});

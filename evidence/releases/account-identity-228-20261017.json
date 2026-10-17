@@ -1,0 +1,73 @@
+{
+  "observedAt": "2026-10-17",
+  "testedCodeCommit": "9a27b3d36c1c160bd74e73ca47198238d930d35f",
+  "baseCommit": "1e35391a04a0e5c669fa708971b2456e9a414ca3",
+  "sourceFiles": {
+    "scripts/i18n-check.mjs": "4696e96cf6ae34c76e9622b3a320636e02b93a51de1e1a4fe45cb0edab93eefa",
+    "scripts/i18n-shell-declarations.json": "c8e870ad517179f57ec19107e8f85b58bb48574871d12156cef2d068bad60b9b",
+    "services/web/app.js": "f694f99e813be237b90913a19db0c1a36e88ae1d89b40560a3b1c33d484ae13d",
+    "services/web/i18n.js": "6f3f4abd7afeb38fe8f4290b0678d9546f9e4783bafa89a1819777a414c95773",
+    "services/web/index.html": "398c928adadb7be1f43464f025a13c89cc853a99c3ac62acb38e1eeefb551ae1",
+    "services/web/styles.css": "3a920195ede72762e4aacccf51059092eaf7fc901b70977db3881f938542578f",
+    "tests/m1/web.test.mjs": "8274ded9b757b8323262f20214f813e57873d1f7665028db407173a8c589524c"
+  },
+  "environment": {
+    "node": "26.10.0",
+    "browser": "locally installed Playwright Chromium",
+    "identity": "synthetic IDs in intercepted ui.test browser fixtures"
+  },
+  "checks": [
+    {
+      "name": "related-browser",
+      "command": "M1_BROWSER_CHANNEL=chromium node --test --test-concurrency=2 tests/m1/web.test.mjs tests/m1/riffoid-validation-cleanup-ui.test.mjs tests/m3/browser-preview-panel.test.mjs tests/m3/workspace-layout.test.mjs",
+      "exitCode": 0,
+      "passes": 122,
+      "failures": 0,
+      "skips": 0,
+      "logSha256": "f08d92a4b5865af8b10cb2cf9d3538029eee0c85e7fc20822cb41044b205cc9e"
+    },
+    {
+      "name": "ui-and-i18n",
+      "command": "npm run check:ui",
+      "exitCode": 0,
+      "passes": 21,
+      "failures": 0,
+      "logSha256": "7012a31b128991ab5b3bd17baac2be2d201f0558c072960031c71934b16aa135"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "logSha256": "8fa1cf5506304e8abac55868e7f1a136c9b1dde57a3981a382da4c21ea129a6f"
+    },
+    {
+      "name": "diff",
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "visualReview": {
+    "widths": [
+      320,
+      1200
+    ],
+    "syntheticIdentity": true,
+    "allSixApiRequestsIntercepted": true,
+    "screenshotSha256": {
+      "320": "9f0b7ec44889b26dd2e3495519920c89857cec377d2c3761c08811d0df792059",
+      "1200": "81eb08bc8fba09f6af9096d41f87e4d1168123b91ebbc8c8507bf5b949d061bf"
+    }
+  },
+  "priorFailure": {
+    "logSha256": "df24c02b0af65ecbc8bd65fdf213deed6de1f3826ddfdbbe6f714412951c461b",
+    "description": "First browser run had 60 individual passing cases but failed the file hook: the missing-userId synthetic fixture exposed a tenant path not handled by that fixture. Added the explicit empty-project route; failure is retained and not counted as a pass."
+  },
+  "limits": [
+    "No deployment or merge",
+    "No real OAuth account acceptance",
+    "No real Clipboard API permission prompt/OS clipboard acceptance; automatic copy is stubbed and the fallback uses native input selection",
+    "No provider/Pi or production-data requests",
+    "No complete npm run check or remote CI success claimed",
+    "Existing permissions and admission configuration untouched"
+  ]
+}

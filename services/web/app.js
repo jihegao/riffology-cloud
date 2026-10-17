@@ -63,6 +63,13 @@ const dialog = $('#project-dialog');
 let tenant = null;
 let authenticated = false;
 let accountUserId = null;
+let accountIdentityOwner = null;
+let accountIdentityState = 'loading';
+// Fence identity reads/copy receipts separately from ordinary Workspace navigation.
+let accountIdentityEpoch = 0;
+let accountLoadGeneration = 0;
+let accountIdentityRead = null;
+let signingOut = false;
 let authenticationResolved = false;
 let viewGeneration = 0;
 let listGeneration = 0;
@@ -337,12 +344,19 @@ function managedBlockMessage(code) {
 }
 
 async function api(path, options = {}) {
+  const identityEpoch = accountIdentityEpoch;
   const {responseType,onProgress,...fetchOptions}=options;
   const response = await fetch(path, {
     credentials: 'same-origin', ...fetchOptions,
     headers: { 'Content-Type': 'application/json', ...options.headers },
   });
   if (!response.ok) {
+    // Auth consumers must fence again after the asynchronous error-body read.
+    let authIdentityEpoch = identityEpoch;
+    if (response.status === 401 && identityEpoch === accountIdentityEpoch) {
+      setAccountIdentity('expired');
+      authIdentityEpoch = accountIdentityEpoch;
+    }
     const projectLimit = response.status === 429 && path.startsWith('/api/workspaces/');
     let code = null;
     try { const body = await response.clone().json(); if (typeof body?.error === 'string') code = body.error; } catch {}
@@ -353,7 +367,7 @@ async function api(path, options = {}) {
     if (code === 'turn_runtime_not_ready') messages[503] = msg('error.turnsPaused');
     const blocked = managedBlockMessage(code);
     const localizedMessage = blocked || cloudRunError({code,localizedMessage:messages[response.status]||msg('error.requestFailed')});
-    throw Object.assign(new Error(String(localizedMessage)), {localizedMessage, status: response.status, code, retryable: !blocked && code !== 'turn_runtime_not_ready' });
+    throw Object.assign(new Error(String(localizedMessage)), {localizedMessage, status: response.status, code, authIdentityEpoch, retryable: !blocked && code !== 'turn_runtime_not_ready' });
   }
   if(responseType==='bytes'){const length=Number(response.headers.get('content-length'));if(length>33554432)throw uiError('error.resourceTooLarge');if(typeof onProgress==='function'&&response.body){const reader=response.body.getReader(),chunks=[];let size=0;try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>33554432)throw uiError('error.resourceTooLarge');chunks.push(value);onProgress(size,length);}}catch(error){await reader.cancel().catch(()=>{});throw error;}const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}return bytes;}const bytes=new Uint8Array(await response.arrayBuffer());if(bytes.length>33554432)throw uiError('error.resourceTooLarge');return bytes;}
   return response.status === 204 ? null : response.json();
@@ -372,6 +386,7 @@ function stopEventStream() {
 }
 
 function accountView() {
+  renderAccountIdentity();
   if(!authenticated||!tenant||!activeProject){servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();localRuns.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();manualSavePanel.leave();}
   $('#login').hidden = !authenticationResolved || authenticated;
   const workspaceRoutePending = Boolean(workspaceProjectIdFromHash()) && !activeProject;
@@ -380,6 +395,65 @@ function accountView() {
   $('#invitation').hidden = !authenticated || Boolean(tenant);
   $('#sign-out').hidden = !authenticated;
 }
+
+function staleAuthenticationError(error) {
+  return error.status === 401 && error.authIdentityEpoch !== accountIdentityEpoch;
+}
+
+function renderAccountIdentity() {
+  const ready = authenticated && accountIdentityState === 'ready' && typeof accountUserId === 'string' && accountUserId.length > 0;
+  $('#account-details').hidden = !ready;
+  $('#account-user-id').value = ready ? accountUserId : '';
+  $('#account-copy').disabled = !ready;
+  bindValue($('#account-state'), msg(`account.identity.${ready ? 'ready' : accountIdentityState === 'ready' ? 'unavailable' : accountIdentityState}`));
+  const short = ready && accountUserId.length > 18 ? `${accountUserId.slice(0,8)}…${accountUserId.slice(-6)}` : ready ? accountUserId : '';
+  bindValue($('#account-summary'), msg('account.identityShort', {id:short}));
+}
+
+function setAccountIdentity(state, userId = null) {
+  accountIdentityEpoch++;
+  accountIdentityState = state;
+  accountUserId = state === 'ready' && typeof userId === 'string' && userId.length > 0 ? userId : null;
+  $('#account-details').open = false;
+  bindValue($('#account-copy-status'), '');
+  renderAccountIdentity();
+}
+
+async function refreshAccountIdentity(resumeLocaleStart) {
+  if (!authenticationResolved || !authenticated || signingOut || document.hidden || accountIdentityRead?.epoch === accountIdentityEpoch) return;
+  const previous = accountIdentityOwner;
+  setAccountIdentity('loading');
+  const epoch = accountIdentityEpoch;
+  const read = (async () => {
+    try {
+      const user = await api('/api/me', {signal:AbortSignal.timeout(15000)});
+      if (epoch !== accountIdentityEpoch) return;
+      if (user.userId !== previous) { await load(); return; }
+      setAccountIdentity('ready', user.userId);
+      if (resumeLocaleStart !== undefined) localePreferences.activate(accountUserId, viewGeneration, resumeLocaleStart, {locale:user.locale});
+    } catch (error) {
+      if (epoch !== accountIdentityEpoch) return;
+      setAccountIdentity(error.status === 401 ? 'expired' : 'unavailable');
+    }
+  })();
+  const pending = {epoch, promise:read};
+  accountIdentityRead = pending;
+  try { await read; } finally { if (accountIdentityRead === pending) accountIdentityRead = null; }
+}
+
+$('#account-copy').onclick = async () => {
+  if (accountIdentityState !== 'ready' || !accountUserId) return;
+  const epoch = accountIdentityEpoch, userId = accountUserId;
+  try {
+    if (!navigator.clipboard?.writeText) throw uiError('account.copyUnavailable');
+    await navigator.clipboard.writeText(userId);
+    if (epoch === accountIdentityEpoch) bindValue($('#account-copy-status'), msg('account.copied'));
+  } catch {
+    if (epoch !== accountIdentityEpoch) return;
+    $('#account-user-id').focus(); $('#account-user-id').select();
+    bindValue($('#account-copy-status'), msg('account.copyUnavailable'));
+  }
+};
 
 function turnStatus(turn) {
   const labels = { queued: msg('turn.status.queued'), running: msg('turn.status.running'), cancelling: msg('turn.status.cancelling'), checkpointing: msg('turn.status.checkpointing'), completed: msg('turn.status.completed'), failed: msg('turn.status.failed'), cancelled: msg('turn.status.cancelled'), interrupted: msg('turn.status.interrupted') };
@@ -897,9 +971,11 @@ async function renderProjects() {
     scheduleProjectRefresh(projects);
     filterProjectCards();void loadProjectSummaries(summaryJobs,generation,requestNumber);
   } catch (error) {
-    if (generation !== viewGeneration || requestNumber !== listGeneration) return;
+    if (generation !== viewGeneration || requestNumber !== listGeneration || staleAuthenticationError(error)) return;
     if (error.status === 401) {
       authenticated = false;
+      accountIdentityOwner = null;
+      setAccountIdentity('signedOut');
       tenant = null;
       viewGeneration++;
       box.replaceChildren();
@@ -919,6 +995,7 @@ function workspaceProjectIdFromHash() {
 }
 
 async function load() {
+  accountLoadGeneration++;
   servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();localRuns.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();manualSavePanel.leave();
   const generation = ++viewGeneration;
   const localeStart = localePreferences.begin();
@@ -930,7 +1007,8 @@ async function load() {
   workspaceFiles = null;
   workspaceFilesError = '';
   authenticated = false;
-  accountUserId = null;
+  accountIdentityOwner = null;
+  setAccountIdentity('loading');
   tenant = null;
   authenticationResolved = false;
   accountView();
@@ -938,7 +1016,8 @@ async function load() {
     const user = await api('/api/me');
     if (generation !== viewGeneration) return;
     authenticated = true;
-    accountUserId = user.userId;
+    accountIdentityOwner = user.userId;
+    setAccountIdentity('ready', user.userId);
     authenticationResolved = true;
     localePreferences.activate(accountUserId, generation, localeStart, {locale:user.locale});
     executionAvailability={service:user.execution?.service===true,preview:user.execution?.preview===true,simulation:user.execution?.simulation===true};
@@ -947,16 +1026,19 @@ async function load() {
     pollDeadline = Date.now() + POLL_WINDOW_MS;
     if (tenant) { await Promise.all([renderProjects(), loadModels()]); }
   } catch (error) {
-    if (generation !== viewGeneration) return;
+    if (generation !== viewGeneration || staleAuthenticationError(error)) return;
     if (error.status === 401) {
       authenticated = false;
-      accountUserId = null;
+      setAccountIdentity('signedOut');
       authenticationResolved = true;
       tenant = null;
     } else if (error.status === 404) {
       authenticated = true;
       authenticationResolved = true;
       tenant = null;
+      setAccountIdentity('unavailable');
+    } else {
+      setAccountIdentity('unavailable');
     }
     accountView();
     show(error.status === 404 && authenticated ? msg('invitation.prompt') : errorMessage(error), error.status !== 404);
@@ -971,7 +1053,10 @@ $('#google').onclick = async () => {
 };
 
 $('#sign-out').onclick = async () => {
+  signingOut = true;
+  setAccountIdentity('signingOut');
   viewGeneration++;
+  const accountGeneration = accountLoadGeneration;
   const localeStart=localePreferences.begin();
   servicePanel.close();previewPanel.leave();browserPreviewPanel.leave();localRuns.leave();simulationPanel.leave();comparisonPanel.leave();exportPanel.leave();publicationPanel.leave();evidencePanel.leave();verifyHandoffPanel.leave();manualSavePanel.leave();
   stopEventStream();
@@ -981,8 +1066,10 @@ $('#sign-out').onclick = async () => {
   button.disabled = true;
   try {
     await api('/api/auth/sign-out', { method: 'POST', body: '{}' });
+    if (accountGeneration !== accountLoadGeneration) return;
     authenticated = false;
-    accountUserId = null;
+    accountIdentityOwner = null;
+    setAccountIdentity('signedOut');
     tenant = null;
     activeProject = null;
     workspaceSnapshot = null;
@@ -1000,11 +1087,12 @@ $('#sign-out').onclick = async () => {
     $('#projects').replaceChildren();
     accountView();
     show(msg('account.signedOut'));
-  } catch (error) { if(authenticated&&accountUserId)localePreferences.activate(accountUserId,viewGeneration,localeStart);if(authenticated&&tenant&&activeProject){previewPanel.enter({workspaceId:activeProject.workspace_id,tenantId:tenant.id,canOpen:activeProject.status==='ready'&&executionAvailability.preview,paused:!executionAvailability.preview});servicePanel.open({workspaceId:activeProject.workspace_id,tenantId:tenant.id,canStart:activeProject.status==='ready'&&executionAvailability.service});void refreshWorkspace(viewGeneration);}show(errorMessage(error), true); }
-  finally { button.disabled = false; }
+  } catch (error) { if(accountGeneration!==accountLoadGeneration)return;if(authenticated&&accountUserId)localePreferences.activate(accountUserId,viewGeneration,localeStart);if(authenticated&&tenant&&activeProject){previewPanel.enter({workspaceId:activeProject.workspace_id,tenantId:tenant.id,canOpen:activeProject.status==='ready'&&executionAvailability.preview,paused:!executionAvailability.preview});servicePanel.open({workspaceId:activeProject.workspace_id,tenantId:tenant.id,canStart:activeProject.status==='ready'&&executionAvailability.service});void refreshWorkspace(viewGeneration);}show(errorMessage(error), true); }
+  finally { button.disabled = false; signingOut = false; if (authenticated && accountGeneration === accountLoadGeneration) void refreshAccountIdentity(localeStart); }
 };
 
 document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) void refreshAccountIdentity();
   stopPolling();
   stopEventStream();
   listGeneration++;
@@ -1012,6 +1100,9 @@ document.addEventListener('visibilitychange', () => {
   else if (!document.hidden && activeProject) void refreshWorkspace(viewGeneration);
   else if (!document.hidden && tenant) void renderProjects();
 });
+
+window.addEventListener('focus', () => { void refreshAccountIdentity(); });
+window.addEventListener('pageshow', event => { if (event.persisted) void load(); });
 
 window.addEventListener('hashchange', () => {
   if (workspaceProjectIdFromHash()) { if (tenant) void renderProjects(); }
