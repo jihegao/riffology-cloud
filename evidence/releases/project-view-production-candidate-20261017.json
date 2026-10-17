@@ -157,20 +157,40 @@
     "currentE1aeImageOrTargetAcceptanceProven": false
   },
   "amdOfflineExecution": {"evidence": "project-view-amd-offline-20261017.json", "sourceCommit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1", "buildExitCode": 0, "buildAttempts": 1, "localIndex": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee", "frozenProbeExitCode": 1, "frozenProbeStatus": "blocked", "functionalPreflightBrokerInputsChangedRasterObserved": true, "originalContainerCleanupIndependentlyConfirmed": true, "frozenProbeRewrittenOrReplayed": false, "localAbsenceCheckerFixContractPassed": 18, "productionSourceOrImageChangedByCheckerFix": false, "costStatus": "unknown"},
-  "remaining": {"exactBrowserImage": "Registry immutable image and all raw bodies verified; app and every configured version pinned to742a; safe max0 hold verified, original max1 publication contract and actual target acceptance pending", "actualContainerSandboxAndNoNetwork": "AMD network-none configuration observed; Cloudflare target, inner sandbox and collector controls pending", "originalContainerCleanup": "AMD original ID 404 plus empty scope independently confirmed; Cloudflare target cleanup pending", "ordinaryInvitedIdentity": "pending", "secondIdentity": "pending", "twoPageRenderAndBroker": "pending", "refreshLeaveColdRecovery": "pending", "revocationAndNineEgressControls": "pending", "productionPublicationPacket": "Gateway default-closed deployment/95 assets verified; application current instances0/max0 safe hold fully read back after original initial0/GET1 difference; original max1 publication incomplete"},
+  "remaining": {
+    "exactBrowserImage": "Registry immutable image and all raw bodies verified; same app and every configured version pinned to742a; current max1 publication complete under explicit accepted legacy instances variance; actual target viability/acceptance pending",
+    "actualContainerSandboxAndNoNetwork": "AMD network-none configuration observed; Cloudflare target, inner sandbox and collector controls pending",
+    "originalContainerCleanup": "AMD original ID 404 plus empty scope independently confirmed; Cloudflare target cleanup pending",
+    "ordinaryInvitedIdentity": "pending",
+    "secondIdentity": "pending",
+    "twoPageRenderAndBroker": "pending",
+    "refreshLeaveColdRecovery": "pending",
+    "revocationAndNineEgressControls": "pending",
+    "productionPublicationPacket": "Default-closed Gateway/95 assets/two namespaces/same max1 app publication and full preservation readback complete under explicit accepted instances-field variance; original drift and max0 hold retained, target acceptance pending"
+  },
   "pullRequest": "https://github.com/jihegao/riffology-cloud/pull/233",
   "productionEligible": false,
   "deployed": true,
   "done": false,
   "initialBoundaries": {"observedBeforeDirectOfflineAuthorization": true, "counterScope": "actions performed for the initial candidate in production/cloud; local synthetic Turn/provider-shaped fixtures are excluded; image pull is successful pulls only, with one failed attempt separately recorded", "productionMutations": 0, "providerTurnRunRequests": 0, "containerExecutions": 0, "imagesBuiltPushedPulled": 0, "admissionInvitationBudgetHistoryChanged": false, "originalAmdPendingTouched": false, "controlPlaneReadsProveZeroCloudExecution": false},
-  "boundaries": {"counterScope": "candidate actions in Cloudflare/production; separately approved AMD offline work has its own version-specific record", "productionMutations": 3, "realProviderTurnRunRequests": 0, "cloudflareContainerExecutions": 0, "admissionInvitationBudgetHistoryChanged": false, "originalAmdPendingTouched": false, "controlPlaneReadsProveGlobalZeroCloudExecution": false,
-    "productionMutationsScope": "Acknowledged Gateway lifecycle PUT, Container application POST and safety max_instances0 PATCH only; asset preparation and Registry wire requests separately recorded",
+  "boundaries": {
+    "counterScope": "candidate actions in Cloudflare/production; separately approved AMD offline work has its own version-specific record",
+    "productionMutations": 4,
+    "realProviderTurnRunRequests": 0,
+    "cloudflareContainerExecutions": 0,
+    "admissionInvitationBudgetHistoryChanged": false,
+    "originalAmdPendingTouched": false,
+    "controlPlaneReadsProveGlobalZeroCloudExecution": false,
+    "productionMutationsScope": "Acknowledged Gateway lifecycle PUT, application POST, safety max_instances0 PATCH and explicitly authorized max_instances1 restoration PATCH; Registry and asset preparation separately recorded",
     "workerLifecyclePuts": 1,
     "registryImagePushOperations": 1,
     "assetSessionPosts": 1,
     "assetUploadPosts": 2,
     "containerApplicationsCreated": 1,
-    "containerApplicationPausePatches": 1},
+    "containerApplicationPausePatches": 1,
+    "containerApplicationRestorePatches": 1,
+    "containerExecutionCounterScope": "No explicit target container start/acceptance action requested; point-in-time empty instance list does not prove global or historical zero execution/cost"
+  },
   "projectFields": "2026-10-17 fresh gh read and successful mutation/readback: In review / P1, native Milestone #1, assignee jihegao; prior missing-read:project notes apply only to their historical reads",
   "currentPublicationExecution": {
     "evidence": "project-view-default-closed-publication-20261017.json",
@@ -190,7 +210,7 @@
     "premergeResourcePreservationPassed": true,
     "merged": true,
     "workerPublicationPending": false,
-    "applicationPublicationPending": true,
+    "applicationPublicationPending": false,
     "workerReconciliationEvidence": {
       "evidence": "project-view-closed-publication-20261017/worker-reconciliation.json",
       "bytes": 4128,
@@ -198,14 +218,59 @@
     },
     "publicAssetsVerified": 95,
     "applicationCreated": true,
-    "applicationReadback": "default-closed-application-max-zero-hold-verified",
-    "applicationState": "paused-max-zero",
-    "safeHoldVerified": true,
+    "applicationReadback": "default-closed-max-one-authorized-variance-readback-verified",
+    "applicationState": "published-max-one-under-explicitly-accepted-variance",
     "originalMaxOnePublicationComplete": false,
     "applicationHoldReadbackEvidence": {
       "evidence": "project-view-closed-publication-20261017/app-hold-readback.json",
       "bytes": 10837,
       "sha256": "466727a5b98001ba5adfc4c1c5884b8e20aa48a48fc7c2f2a09056a345972d71"
+    },
+    "historicalMaxZeroHoldVerified": true,
+    "originalNoVarianceContractPassed": false,
+    "currentAuthorizedMaxOnePublicationComplete": true,
+    "defaultClosedPublicationComplete": true,
+    "acceptedLegacyInstancesVariance": {
+      "explicitHumanAccepted": true,
+      "field": "application.instances",
+      "allowed": [
+        0,
+        1
+      ],
+      "observed": 1,
+      "nonzeroObserved": true,
+      "doesNotProveRuntimeCount": true,
+      "serverSideNormalizationProved": false,
+      "authorizationEvidence": {
+        "evidence": "project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+        "bytes": 1025,
+        "sha256": "59b00e3fa015d495165ab9181b6a9c77675ae3393ced22eab6d7fe9bf41db79b"
+      }
+    },
+    "applicationReadbackEvidence": {
+      "evidence": "project-view-closed-publication-20261017/app-restored-max-one-readback.json",
+      "bytes": 11210,
+      "sha256": "f1df09ecee66055a3b065262b0b5108d9a6be64121b467f19aa8572b7f4f5ecc"
+    },
+    "applicationRestoreAckEvidence": {
+      "evidence": "project-view-closed-publication-20261017/app-restore-max-one-ack.json",
+      "bytes": 1991,
+      "sha256": "7142833f0073d72ab9216044fcdddf73d7974facb2d31fb43417aa26ea6c7aae"
+    },
+    "applicationRestoreAuthorizationEvidence": {
+      "evidence": "project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+      "bytes": 1025,
+      "sha256": "59b00e3fa015d495165ab9181b6a9c77675ae3393ced22eab6d7fe9bf41db79b"
+    },
+    "productionEligible": false,
+    "targetAcceptance": "pending",
+    "publicationMutations": {
+      "workerLifecyclePuts": 1,
+      "applicationCreatePosts": 1,
+      "applicationPausePatches": 1,
+      "applicationRestorePatches": 1,
+      "total": 4,
+      "scope": "Registry image push and asset preparation separately recorded"
     }
   },
   "currentPublication": {
@@ -223,23 +288,67 @@
     "merged": true,
     "deployed": true,
     "workerPublicationPending": false,
-    "applicationPublicationPending": true,
+    "applicationPublicationPending": false,
     "admissionEnabled": false,
     "targetAcceptance": "pending",
     "applicationCreated": true,
-    "applicationReadback": "default-closed-application-max-zero-hold-verified",
-    "applicationReadbackEvidence": {
+    "applicationReadback": "default-closed-max-one-authorized-variance-readback-verified",
+    "initialApplicationReadbackEvidence": {
       "evidence": "project-view-closed-publication-20261017/app-readback-pending.json",
       "bytes": 9612,
       "sha256": "d16dea2e1b4b52e9560397ad42c257346c40b4bb1e47b2404818d5ab728770d8"
     },
-    "applicationState": "paused-max-zero",
-    "safeHoldVerified": true,
+    "applicationReadbackEvidence": {
+      "evidence": "project-view-closed-publication-20261017/app-restored-max-one-readback.json",
+      "bytes": 11210,
+      "sha256": "f1df09ecee66055a3b065262b0b5108d9a6be64121b467f19aa8572b7f4f5ecc"
+    },
+    "applicationState": "published-max-one-under-explicitly-accepted-variance",
     "originalMaxOnePublicationComplete": false,
     "applicationHoldReadbackEvidence": {
       "evidence": "project-view-closed-publication-20261017/app-hold-readback.json",
       "bytes": 10837,
       "sha256": "466727a5b98001ba5adfc4c1c5884b8e20aa48a48fc7c2f2a09056a345972d71"
+    },
+    "historicalMaxZeroHoldVerified": true,
+    "originalNoVarianceContractPassed": false,
+    "currentAuthorizedMaxOnePublicationComplete": true,
+    "defaultClosedPublicationComplete": true,
+    "acceptedLegacyInstancesVariance": {
+      "explicitHumanAccepted": true,
+      "field": "application.instances",
+      "allowed": [
+        0,
+        1
+      ],
+      "observed": 1,
+      "nonzeroObserved": true,
+      "doesNotProveRuntimeCount": true,
+      "serverSideNormalizationProved": false,
+      "authorizationEvidence": {
+        "evidence": "project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+        "bytes": 1025,
+        "sha256": "59b00e3fa015d495165ab9181b6a9c77675ae3393ced22eab6d7fe9bf41db79b"
+      }
+    },
+    "applicationRestoreAckEvidence": {
+      "evidence": "project-view-closed-publication-20261017/app-restore-max-one-ack.json",
+      "bytes": 1991,
+      "sha256": "7142833f0073d72ab9216044fcdddf73d7974facb2d31fb43417aa26ea6c7aae"
+    },
+    "applicationRestoreAuthorizationEvidence": {
+      "evidence": "project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+      "bytes": 1025,
+      "sha256": "59b00e3fa015d495165ab9181b6a9c77675ae3393ced22eab6d7fe9bf41db79b"
+    },
+    "productionEligible": false,
+    "publicationMutations": {
+      "workerLifecyclePuts": 1,
+      "applicationCreatePosts": 1,
+      "applicationPausePatches": 1,
+      "applicationRestorePatches": 1,
+      "total": 4,
+      "scope": "Registry image push and asset preparation separately recorded"
     }
   }
 }

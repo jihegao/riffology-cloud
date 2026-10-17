@@ -6,7 +6,7 @@
   "issue": "https://github.com/jihegao/riffology-cloud/issues/214",
   "pullRequest": "https://github.com/jihegao/riffology-cloud/pull/233",
   "sourceCommit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1",
-  "currentStage": "PR233 merged and Gateway default-closed deployment/95 assets verified; created application safely paused at instances0/max0 with complete GET readback; original max1 publication contract incomplete; target admission closed",
+  "currentStage": "PR233 merged; default-closed Gateway, two namespaces and same max1 application published and read back under explicit human acceptance of legacy instances-field variance; target execution/user acceptance pending",
   "authorization": {
     "schema": "project-view-current-publication-authorization/v1",
     "recordedAt": "2026-10-17T07:23:00.789703+00:00",
@@ -64,6 +64,19 @@
       "apiDoesNotOfferRepositoryScopingDisclosed": true,
       "oldUnusedCredentialNotDelivered": true,
       "oldUnusedCredentialMemoryReferenceCleared": true
+    },
+    "maxOneRecovery": {
+      "specificallyGranted": true,
+      "directHumanReply": "授权恢复 max1，接受字段差异（推荐）",
+      "evidence": {
+        "evidence": "project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+        "bytes": 1025,
+        "sha256": "59b00e3fa015d495165ab9181b6a9c77675ae3393ced22eab6d7fe9bf41db79b"
+      },
+      "scope": "Same existing application, one PATCH max_instances1; accept only legacy instances 0/1 while page admission stays closed and actual instance list is empty",
+      "serverSideMeaningEstablishedByThisGrant": false,
+      "containerAcceptanceStartAuthorized": false,
+      "modelTurnRunAuthorized": false
     }
   },
   "export": {
@@ -275,8 +288,8 @@
       "createdAt": "2026-10-17T08:22:31.842Z",
       "createAckInstances": 0,
       "requestedInitialInstances": 0,
-      "observedConfigurationInstances": 0,
-      "maxInstances": 0,
+      "observedConfigurationInstances": 1,
+      "maxInstances": 1,
       "schedulingPolicy": "default",
       "namespaceId": "5bc5561f57c24146a160d2a54160277c",
       "imagePin": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
@@ -294,8 +307,8 @@
         }
       ],
       "observedInstanceListCount": 0,
-      "instanceObservationEndedAt": "2026-10-17T08:30:15.067Z",
-      "readbackStatus": "default-closed-application-max-zero-hold-verified",
+      "instanceObservationEndedAt": "2026-10-17T08:43:37.290Z",
+      "readbackStatus": "default-closed-max-one-authorized-variance-readback-verified",
       "allOtherReadbackChecksPassed": true,
       "checks": {
         "appCount16": true,
@@ -303,8 +316,8 @@
         "exactName": true,
         "exactNamespace": true,
         "defaultScheduling": true,
-        "zeroRequestedInstances": true,
-        "maxZeroHold": true,
+        "legacyInstancesWithinExplicitAcceptedVariance": true,
+        "maxOne": true,
         "immutableImage742a": true,
         "basicResources": true,
         "appCompleteConfiguration": true,
@@ -329,9 +342,9 @@
           "sha256": "0c1256f53e164643dc7c5d2436f264c0f08c0f9efbc5662423d8d68c5d9a8ddb"
         },
         "readback": {
-          "evidence": "project-view-closed-publication-20261017/app-readback-pending.json",
-          "bytes": 9612,
-          "sha256": "d16dea2e1b4b52e9560397ad42c257346c40b4bb1e47b2404818d5ab728770d8"
+          "evidence": "project-view-closed-publication-20261017/app-restored-max-one-readback.json",
+          "bytes": 11210,
+          "sha256": "f1df09ecee66055a3b065262b0b5108d9a6be64121b467f19aa8572b7f4f5ecc"
         },
         "holdAck": {
           "evidence": "project-view-closed-publication-20261017/app-hold-ack.json",
@@ -342,6 +355,21 @@
           "evidence": "project-view-closed-publication-20261017/app-hold-readback.json",
           "bytes": 10837,
           "sha256": "466727a5b98001ba5adfc4c1c5884b8e20aa48a48fc7c2f2a09056a345972d71"
+        },
+        "initialReadback": {
+          "evidence": "project-view-closed-publication-20261017/app-readback-pending.json",
+          "bytes": 9612,
+          "sha256": "d16dea2e1b4b52e9560397ad42c257346c40b4bb1e47b2404818d5ab728770d8"
+        },
+        "restoreAck": {
+          "evidence": "project-view-closed-publication-20261017/app-restore-max-one-ack.json",
+          "bytes": 1991,
+          "sha256": "7142833f0073d72ab9216044fcdddf73d7974facb2d31fb43417aa26ea6c7aae"
+        },
+        "acceptedVarianceAuthorization": {
+          "evidence": "project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+          "bytes": 1025,
+          "sha256": "59b00e3fa015d495165ab9181b6a9c77675ae3393ced22eab6d7fe9bf41db79b"
         }
       },
       "instancesSemanticsReview": {
@@ -352,7 +380,8 @@
         "officialEditContract": "https://developers.cloudflare.com/api/resources/containers/subresources/applications/methods/edit/",
         "apiPatchInstancesPropertySupported": false,
         "documentedNonnegativeMaximumField": "max_instances",
-        "serviceNormalizationProved": false
+        "serviceNormalizationProved": false,
+        "currentRecoveryUsesExplicitAcceptedVariance": true
       },
       "targetBasicViabilityVerified": false,
       "userAcceptanceVerified": false,
@@ -389,21 +418,114 @@
         },
         "originalFailurePreserved": true
       },
-      "currentState": "paused-max-zero",
+      "currentState": "published-max-one-under-explicitly-accepted-variance",
       "originalDesiredMaxInstances": 1,
       "originalMaxOnePublicationComplete": false,
-      "safeHoldVerified": true,
-      "pause": {
-        "requestId": "560da903-8c44-4986-b747-544687ef6e4b",
+      "priorMaxZeroHold": {
+        "state": "paused-max-zero",
+        "observedConfigurationInstances": 0,
+        "maxInstances": 0,
+        "safeHoldVerified": true,
+        "pause": {
+          "requestId": "560da903-8c44-4986-b747-544687ef6e4b",
+          "patches": 1,
+          "status": 200,
+          "acknowledgedAt": "2026-10-17T08:27:35.664Z",
+          "body": {
+            "max_instances": 0
+          },
+          "containerStartRequested": false
+        },
+        "holdAck": {
+          "evidence": "project-view-closed-publication-20261017/app-hold-ack.json",
+          "bytes": 833,
+          "sha256": "e748dd0476a87812ee5554cf3830751140b11ec495daf7af110b129083ce2d00"
+        },
+        "holdReadback": {
+          "evidence": "project-view-closed-publication-20261017/app-hold-readback.json",
+          "bytes": 10837,
+          "sha256": "466727a5b98001ba5adfc4c1c5884b8e20aa48a48fc7c2f2a09056a345972d71"
+        },
+        "configurationChecks": {
+          "immutableImage742a": true,
+          "basicResources": true,
+          "defaultNetwork": true,
+          "noPorts": true,
+          "noEnvironmentOverrides": true,
+          "noKeys": true,
+          "noCommandOrEntrypointOverrides": true,
+          "expectedRuntime": true,
+          "knownConfigurationFields": true,
+          "defaultDeploymentType": true
+        },
+        "versionConfigurationChecks": [
+          {
+            "version": 1,
+            "percentage": 100,
+            "checks": {
+              "immutableImage742a": true,
+              "basicResources": true,
+              "defaultNetwork": true,
+              "noPorts": true,
+              "noEnvironmentOverrides": true,
+              "noKeys": true,
+              "noCommandOrEntrypointOverrides": true,
+              "expectedRuntime": true,
+              "knownConfigurationFields": true,
+              "defaultDeploymentType": true
+            }
+          }
+        ],
+        "readbackRequests": 26,
+        "readbackCloudWrites": 0
+      },
+      "allCurrentReadbackChecksPassed": true,
+      "currentAuthorizedMaxOnePublicationComplete": true,
+      "originalNoVarianceContractPassed": false,
+      "originalMaxOnePublicationCompleteScope": "Historical initial contract requiring GET instances0; current max1 publication is complete only under the later explicit accepted variance",
+      "acceptedLegacyInstancesVariance": {
+        "explicitHumanAccepted": true,
+        "field": "application.instances",
+        "allowed": [
+          0,
+          1
+        ],
+        "observed": 1,
+        "nonzeroObserved": true,
+        "doesNotProveRuntimeCount": true,
+        "serverSideNormalizationProved": false,
+        "authorizationEvidence": {
+          "evidence": "project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+          "bytes": 1025,
+          "sha256": "59b00e3fa015d495165ab9181b6a9c77675ae3393ced22eab6d7fe9bf41db79b"
+        }
+      },
+      "restore": {
+        "requestId": "b9f3b2fc-c84a-4733-a35c-0123ce4c8f2e",
+        "priorHoldPatchRequestId": "560da903-8c44-4986-b747-544687ef6e4b",
         "patches": 1,
         "status": 200,
-        "acknowledgedAt": "2026-10-17T08:27:35.664Z",
+        "acknowledgedAt": "2026-10-17T08:43:04.584Z",
         "body": {
-          "max_instances": 0
+          "max_instances": 1
         },
+        "ackInstances": 0,
+        "ackMaxInstances": 1,
+        "ack": {
+          "evidence": "project-view-closed-publication-20261017/app-restore-max-one-ack.json",
+          "bytes": 1991,
+          "sha256": "7142833f0073d72ab9216044fcdddf73d7974facb2d31fb43417aa26ea6c7aae"
+        },
+        "readback": {
+          "evidence": "project-view-closed-publication-20261017/app-restored-max-one-readback.json",
+          "bytes": 11210,
+          "sha256": "f1df09ecee66055a3b065262b0b5108d9a6be64121b467f19aa8572b7f4f5ecc"
+        },
+        "readbackRequests": 26,
+        "readbackCloudWrites": 0,
         "containerStartRequested": false
       },
-      "holdConfigurationChecks": {
+      "currentConfigurationChecks": {
         "immutableImage742a": true,
         "basicResources": true,
         "defaultNetwork": true,
@@ -415,7 +537,7 @@
         "knownConfigurationFields": true,
         "defaultDeploymentType": true
       },
-      "holdVersionConfigurationChecks": [
+      "currentVersionConfigurationChecks": [
         {
           "version": 1,
           "percentage": 100,
@@ -432,9 +554,7 @@
             "defaultDeploymentType": true
           }
         }
-      ],
-      "holdReadbackRequests": 26,
-      "holdReadbackCloudWrites": 0
+      ]
     },
     "admissionEnabled": false,
     "preparedPublisher": {
@@ -487,7 +607,7 @@
       "realApiRequestsScope": "generation itself; actual generated GET requests are evidenced separately by before/after Personal witnesses"
     },
     "workerPublicationPending": false,
-    "applicationPublicationPending": true,
+    "applicationPublicationPending": false,
     "merge": {
       "evidence": "project-view-closed-publication-20261017/merge-proof.json",
       "bytes": 1033,
@@ -547,7 +667,7 @@
       },
       "independentOfflineResourceReview": "passed; original100bindings/23exports/5associations/48namespace records and all runtime/settings/routes/schedules retained"
     },
-    "applicationResult": "Created once, original max1 readback failed instances0-to1 contract; one safety PATCH max0 followed by complete GET-only hold readback passed. Current instances0/max0; original max1 publication incomplete.",
+    "applicationResult": "Same original application restored by one explicitly authorized max_instances1 PATCH; complete GET readback passed under accepted legacy instances0/1 variance, with actual instances-v2 list empty. Initial drift and verified max0 hold retained; no container acceptance start.",
     "containerPreservationWitnesses": {
       "before": {
         "evidence": "project-view-closed-publication-20261017/containers-witness-before.json",
@@ -583,22 +703,31 @@
       "authenticatedUserFlowVerified": false,
       "containerOrProviderRequestMade": false
     },
-    "defaultClosedPublicationComplete": false,
-    "safeHoldVerified": true,
+    "defaultClosedPublicationComplete": true,
     "publicationMutations": {
       "workerLifecyclePuts": 1,
       "applicationCreatePosts": 1,
       "applicationPausePatches": 1,
-      "total": 3,
+      "applicationRestorePatches": 1,
+      "total": 4,
       "scope": "Registry image push and asset preparation separately recorded"
-    }
+    },
+    "historicalMaxZeroHoldVerified": true,
+    "currentAuthorizedMaxOnePublicationComplete": true,
+    "currentApplicationReadbackEvidence": {
+      "evidence": "project-view-closed-publication-20261017/app-restored-max-one-readback.json",
+      "bytes": 11210,
+      "sha256": "f1df09ecee66055a3b065262b0b5108d9a6be64121b467f19aa8572b7f4f5ecc"
+    },
+    "currentApplicationReadback": "default-closed-max-one-authorized-variance-readback-verified"
   },
   "acceptance": {
     "targetContainerStarted": false,
     "modelTurnRunInvoked": false,
     "basicStartupVerified": false,
     "authenticatedUserFlowVerified": false,
-    "fullJhg56MatrixVerified": false
+    "fullJhg56MatrixVerified": false,
+    "targetContainerStartRequested": false
   },
   "done": false,
   "staticDiskObservation": {
@@ -652,5 +781,6 @@
       "sha256": "f27e4e7d14ccd2178af8d29aed9fba1fd4a02f836872eacabf369c3d4a85ea53"
     },
     "doesNotProveZeroExistingRuntimeOrCost": true
-  }
+  },
+  "productionEligible": false
 }

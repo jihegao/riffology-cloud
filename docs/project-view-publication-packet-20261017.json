@@ -802,12 +802,49 @@
     "premergeResourcePreservationPassed": true,
     "merged": true,
     "workerPublicationPending": false,
-    "applicationPublicationPending": true,
+    "applicationPublicationPending": false,
     "applicationCreated": true,
-    "applicationReadback": "default-closed-application-max-zero-hold-verified",
-    "applicationState": "paused-max-zero",
-    "safeHoldVerified": true,
-    "originalMaxOnePublicationComplete": false
+    "applicationReadback": "default-closed-max-one-authorized-variance-readback-verified",
+    "applicationState": "published-max-one-under-explicitly-accepted-variance",
+    "originalMaxOnePublicationComplete": false,
+    "historicalMaxZeroHoldVerified": true,
+    "currentAuthorizedMaxOnePublicationComplete": true,
+    "originalNoVarianceContractPassed": false,
+    "defaultClosedPublicationComplete": true,
+    "productionEligible": false,
+    "targetAcceptance": "pending",
+    "acceptedLegacyInstancesVariance": {
+      "explicitHumanAccepted": true,
+      "field": "application.instances",
+      "allowed": [
+        0,
+        1
+      ],
+      "observed": 1,
+      "nonzeroObserved": true,
+      "doesNotProveRuntimeCount": true,
+      "serverSideNormalizationProved": false,
+      "authorizationEvidence": {
+        "evidence": "../evidence/releases/project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+        "bytes": 1025,
+        "sha256": "59b00e3fa015d495165ab9181b6a9c77675ae3393ced22eab6d7fe9bf41db79b"
+      }
+    },
+    "applicationReadbackEvidence": {
+      "evidence": "../evidence/releases/project-view-closed-publication-20261017/app-restored-max-one-readback.json",
+      "bytes": 11210,
+      "sha256": "f1df09ecee66055a3b065262b0b5108d9a6be64121b467f19aa8572b7f4f5ecc"
+    },
+    "applicationRestoreAckEvidence": {
+      "evidence": "../evidence/releases/project-view-closed-publication-20261017/app-restore-max-one-ack.json",
+      "bytes": 1991,
+      "sha256": "7142833f0073d72ab9216044fcdddf73d7974facb2d31fb43417aa26ea6c7aae"
+    },
+    "applicationRestoreAuthorizationEvidence": {
+      "evidence": "../evidence/releases/project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+      "bytes": 1025,
+      "sha256": "59b00e3fa015d495165ab9181b6a9c77675ae3393ced22eab6d7fe9bf41db79b"
+    }
   },
   "writesPerformedScope": "Historical review-generation artifact only; actual later authorized execution is reported under latestActualResult",
   "latestActualResult": {
@@ -837,8 +874,8 @@
       "createPosts": 1,
       "createStatus": 201,
       "createAckInstances": 0,
-      "observedConfigurationInstances": 0,
-      "maxInstances": 0,
+      "observedConfigurationInstances": 1,
+      "maxInstances": 1,
       "schedulingPolicy": "default",
       "resources": {
         "vcpu": 0.25,
@@ -847,8 +884,8 @@
       },
       "imagePin": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
       "namespaceId": "5bc5561f57c24146a160d2a54160277c",
-      "readbackStatus": "default-closed-application-max-zero-hold-verified",
-      "evidence": "../evidence/releases/project-view-closed-publication-20261017/app-hold-readback.json",
+      "readbackStatus": "default-closed-max-one-authorized-variance-readback-verified",
+      "evidence": "../evidence/releases/project-view-closed-publication-20261017/app-restored-max-one-readback.json",
       "initialReadback": {
         "observedConfigurationInstances": 1,
         "maxInstances": 1,
@@ -856,28 +893,78 @@
         "evidence": "../evidence/releases/project-view-closed-publication-20261017/app-readback-pending.json",
         "originalFailurePreserved": true
       },
-      "currentState": "paused-max-zero",
-      "safeHoldVerified": true,
+      "currentState": "published-max-one-under-explicitly-accepted-variance",
       "originalDesiredMaxInstances": 1,
       "originalMaxOnePublicationComplete": false,
-      "readbackSha256": "466727a5b98001ba5adfc4c1c5884b8e20aa48a48fc7c2f2a09056a345972d71",
+      "readbackSha256": "f1df09ecee66055a3b065262b0b5108d9a6be64121b467f19aa8572b7f4f5ecc",
       "holdAckEvidence": "../evidence/releases/project-view-closed-publication-20261017/app-hold-ack.json",
-      "holdAckSha256": "e748dd0476a87812ee5554cf3830751140b11ec495daf7af110b129083ce2d00"
+      "holdAckSha256": "e748dd0476a87812ee5554cf3830751140b11ec495daf7af110b129083ce2d00",
+      "priorMaxZeroHold": {
+        "state": "paused-max-zero",
+        "observedConfigurationInstances": 0,
+        "maxInstances": 0,
+        "safeHoldVerified": true,
+        "evidence": "../evidence/releases/project-view-closed-publication-20261017/app-hold-readback.json",
+        "readbackSha256": "466727a5b98001ba5adfc4c1c5884b8e20aa48a48fc7c2f2a09056a345972d71",
+        "holdAckEvidence": "../evidence/releases/project-view-closed-publication-20261017/app-hold-ack.json",
+        "holdAckSha256": "e748dd0476a87812ee5554cf3830751140b11ec495daf7af110b129083ce2d00"
+      },
+      "readbackBytes": 11210,
+      "currentAuthorizedMaxOnePublicationComplete": true,
+      "originalNoVarianceContractPassed": false,
+      "acceptedLegacyInstancesVariance": {
+        "explicitHumanAccepted": true,
+        "field": "application.instances",
+        "allowed": [
+          0,
+          1
+        ],
+        "observed": 1,
+        "nonzeroObserved": true,
+        "doesNotProveRuntimeCount": true,
+        "serverSideNormalizationProved": false,
+        "authorizationEvidence": {
+          "evidence": "../evidence/releases/project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+          "bytes": 1025,
+          "sha256": "59b00e3fa015d495165ab9181b6a9c77675ae3393ced22eab6d7fe9bf41db79b"
+        }
+      },
+      "restoreAck": {
+        "evidence": "../evidence/releases/project-view-closed-publication-20261017/app-restore-max-one-ack.json",
+        "bytes": 1991,
+        "sha256": "7142833f0073d72ab9216044fcdddf73d7974facb2d31fb43417aa26ea6c7aae"
+      },
+      "restoreAuthorization": {
+        "evidence": "../evidence/releases/project-view-closed-publication-20261017/max-one-recovery-authorization.json",
+        "bytes": 1025,
+        "sha256": "59b00e3fa015d495165ab9181b6a9c77675ae3393ced22eab6d7fe9bf41db79b"
+      },
+      "observedInstanceListCount": 0,
+      "instanceObservationEndedAt": "2026-10-17T08:43:37.290Z"
     },
-    "newApplicationPublicationPending": true,
+    "newApplicationPublicationPending": false,
     "targetContainerStartsRequested": 0,
     "modelTurnRunInvoked": 0,
     "targetAcceptance": "pending",
     "done": false,
-    "defaultClosedPublicationComplete": false,
-    "safeHoldVerified": true,
+    "defaultClosedPublicationComplete": true,
     "originalMaxOnePublicationComplete": false,
     "publicationMutations": {
       "workerLifecyclePuts": 1,
       "applicationCreatePosts": 1,
       "applicationPausePatches": 1,
-      "total": 3,
+      "applicationRestorePatches": 1,
+      "total": 4,
       "scope": "Registry image push and asset preparation separately recorded"
+    },
+    "historicalMaxZeroHoldVerified": true,
+    "currentAuthorizedMaxOnePublicationComplete": true,
+    "originalNoVarianceContractPassed": false,
+    "productionEligible": false,
+    "currentApplicationReadbackEvidence": {
+      "evidence": "../evidence/releases/project-view-closed-publication-20261017/app-restored-max-one-readback.json",
+      "bytes": 11210,
+      "sha256": "f1df09ecee66055a3b065262b0b5108d9a6be64121b467f19aa8572b7f4f5ecc"
     }
   }
 }
