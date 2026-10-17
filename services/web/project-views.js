@@ -95,7 +95,7 @@ export function createProjectViewsPanel({root,api,pollMs=5000}){
   try{win.sessionStorage.setItem(storageKey(),JSON.stringify({id:selected}));}catch{}
   const current=()=>active&&token===generation&&context===ownContext&&pkg===ownPackage;
   try{
-   // The local host has one slot. A route/scope change first confirms that its
+   // A route/scope change first confirms that its
    // original browser session is closed, then creates the replacement.
    await disposal;if(!current())return;
    await verifyProjectViewPackage(ownPackage,ownContext,current);if(!current())return;
@@ -137,7 +137,7 @@ export function createProjectViewsPanel({root,api,pollMs=5000}){
    await verifyProjectViewPackage(result.package,own,()=>active&&context===own&&epoch===requestEpoch);
    if(!active||context!==own||epoch!==requestEpoch)return;
    root.hidden=false;
-   if(pkg?.packageIdentity!==result.package.packageIdentity||!frame||delivery?.executionOrigin!==result.delivery?.executionOrigin||delivery?.transport!==result.delivery?.transport){pkg=result.package;delivery=result.delivery;await choose(selected);}
+   if(pkg?.packageIdentity!==result.package.packageIdentity||!frame||delivery?.executionOrigin!==result.delivery?.executionOrigin||delivery?.transport!==result.delivery?.transport||delivery?.sessionPath!==result.delivery?.sessionPath){pkg=result.package;delivery=result.delivery;await choose(selected);}
    else await broker?.publish();
   }catch{
    if(active&&context===own&&epoch===requestEpoch){generation++;await disposeFrame().catch(()=>{});bindValue(status,msg('projectViews.savedUnavailable'));retry.hidden=false;root.hidden=false;}

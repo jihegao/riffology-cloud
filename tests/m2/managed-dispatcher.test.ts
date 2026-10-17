@@ -15,6 +15,7 @@ const candidateReports=[
  ['invalid candidate',{status:'invalid',diagnostic:{file:'candidate.json',path:'preview.trace.snapshots[1].agents[0].lane',reason:'runtime-agent-invalid'}}],
  ['design v3',{status:'checked',schemaVersion:3,operation:'design',traceValidation:'not-provided',execution:'not-recomputed'}],
  ['model v3',{status:'checked',schemaVersion:3,operation:'model',traceValidation:'validated',execution:'not-recomputed',profileId:'python-stdlib/v1'}],
+ ['pages v3',{status:'checked',schemaVersion:3,operation:'pages',traceValidation:'not-provided',execution:'not-recomputed'}],
 ] as const;
 const accounting=(candidateValidation:unknown)=>({backend:'managed-agents',usage:{status:'unknown',reason:'missing'},billing:'pending',resources:'session-retained',candidateValidation});
 type Input=Parameters<TurnRuntimePort['accept']>[0];
@@ -139,6 +140,9 @@ for(const [name,type,payload] of [
  ['missing v2 trace validation','provider.status',accounting({...candidateReports[1][1],traceValidation:'not-provided'})],
  ['v3 missing operation','provider.status',accounting({...candidateReports[1][1],schemaVersion:3})],
  ['v3 array operation','provider.status',accounting({...candidateReports[4][1],operation:['design']})],
+ ['pages false trace validation','provider.status',accounting({...candidateReports[6][1],traceValidation:'validated'})],
+ ['pages false execution profile','provider.status',accounting({...candidateReports[6][1],profileId:'python-stdlib/v1'})],
+ ['pages false recomputation','provider.status',accounting({...candidateReports[6][1],execution:'recomputed'})],
  ['unknown candidate profile','provider.status',accounting({...candidateReports[1][1],profileId:'arbitrary-python/v1'})],
  ['missing candidate profile','provider.status',accounting({...candidateReports[0][1],schemaVersion:2,traceValidation:'validated'})],
  ['missing invalid diagnostic','provider.status',accounting({status:'invalid'})],

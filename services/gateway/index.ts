@@ -1,4 +1,8 @@
 import {createGatewayManualSaveServices} from './manual-save-services.ts';
+import {createGatewayProjectViewSessionServices} from './project-view-session-services.ts';
+import type {ProjectViewPolicyEnv} from '../project-views/policy.ts';
+import type {ProjectViewRuntime} from '../project-views/runtime-durable.ts';
+import type {ProjectViewCapacity} from '../project-views/capacity-durable.ts';
 import {createGatewayProjectViewServices} from './project-view-services.ts';
 import {ProjectArchives} from '../catalog/project-archives.ts';
 import {createGatewayProjectArchives} from './project-archive-services.ts';
@@ -23,7 +27,7 @@ import {createGatewaySimulationServices} from './simulation-services.ts';
 import {R2ModelContentUploadPort} from '../runtime/model-upload.ts';
 import {acceptedInvitationProjectAdmission} from '../catalog/project-admission.ts';
 // Optional until the model-content binding is configured for an environment.
-type GatewayRuntimeEnv=Omit<GatewayEnv,'APP_ORIGIN'> & VerificationEnv & ValidationEnv & {APP_ORIGIN:string;APP_TRANSPORT_ORIGIN?:string;MANUAL_SAVE_POLICY_JSON?:string;TWO_ACCOUNT_AUTH_MODE?:string;LEGACY_RECOVERY_ORIGIN?:string;LEGACY_RECOVERY_UNTIL?:string;PRIVATE_BETA_CAPACITY?:DurableObjectNamespace<PrivateBetaCapacity>;INVITED_RUNS_POLICY_JSON?:string;INVITED_PROJECT_ADMISSION_ENABLED?:string;PI_DEVELOPER_POLICY_JSON?:string;MANAGED_TESTING_JSON?:string;MANAGED_PROJECT_BOOTSTRAP_JSON?:string;M4_SIMULATION_ENABLED?:unknown;G5_WINDOW_GUARD?:DurableObjectNamespace<G5ControlledWindow>;G5_CONTROLLED_WINDOW_JSON?:string;G5_ADMISSION_ENABLED?:string;G4_CONTROLLED_WINDOW_JSON?:string;TENANT_MODEL_BUDGET?:G4TaskBudgetNamespace;TRUSTED_PI_CAPACITY?:DurableObjectNamespace<import('../capacity/durable.ts').TrustedPiCapacity>;MODEL_CONTENT?:R2Bucket;TOOL_ARTIFACT_STORE?:DurableObjectNamespace<import('../artifacts/durable.ts').ToolArtifactStore>;M3_SERVICE_ENABLED?:unknown;M3_PREVIEW_ENABLED?:unknown;M3_PREVIEW_WS_ENABLED?:unknown;M3_PREVIEW_ORIGIN?:string;BROWSER_PREVIEW_EXECUTION_ORIGIN?:string;M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?:string};
+type GatewayRuntimeEnv=Omit<GatewayEnv,'APP_ORIGIN'> & VerificationEnv & ValidationEnv & ProjectViewPolicyEnv & {PROJECT_VIEW_RUNTIME?:DurableObjectNamespace<ProjectViewRuntime>;PROJECT_VIEW_CAPACITY?:DurableObjectNamespace<ProjectViewCapacity>} & {APP_ORIGIN:string;APP_TRANSPORT_ORIGIN?:string;MANUAL_SAVE_POLICY_JSON?:string;TWO_ACCOUNT_AUTH_MODE?:string;LEGACY_RECOVERY_ORIGIN?:string;LEGACY_RECOVERY_UNTIL?:string;PRIVATE_BETA_CAPACITY?:DurableObjectNamespace<PrivateBetaCapacity>;INVITED_RUNS_POLICY_JSON?:string;INVITED_PROJECT_ADMISSION_ENABLED?:string;PI_DEVELOPER_POLICY_JSON?:string;MANAGED_TESTING_JSON?:string;MANAGED_PROJECT_BOOTSTRAP_JSON?:string;M4_SIMULATION_ENABLED?:unknown;G5_WINDOW_GUARD?:DurableObjectNamespace<G5ControlledWindow>;G5_CONTROLLED_WINDOW_JSON?:string;G5_ADMISSION_ENABLED?:string;G4_CONTROLLED_WINDOW_JSON?:string;TENANT_MODEL_BUDGET?:G4TaskBudgetNamespace;TRUSTED_PI_CAPACITY?:DurableObjectNamespace<import('../capacity/durable.ts').TrustedPiCapacity>;MODEL_CONTENT?:R2Bucket;TOOL_ARTIFACT_STORE?:DurableObjectNamespace<import('../artifacts/durable.ts').ToolArtifactStore>;M3_SERVICE_ENABLED?:unknown;M3_PREVIEW_ENABLED?:unknown;M3_PREVIEW_WS_ENABLED?:unknown;M3_PREVIEW_ORIGIN?:string;BROWSER_PREVIEW_EXECUTION_ORIGIN?:string;M1_GOOGLE_OAUTH_EGRESS_CAPABILITY?:string};
 import {R2ModelContentPort} from '../runtime/content.ts';
 import { createAuth } from './auth.ts';
 import {appTopology,requireRequestHost} from './origins.ts';
@@ -48,6 +52,8 @@ import { sessionIdentity } from './session-identity.ts';
 import {runRevisionGcMaintenance} from './revision-gc-maintenance.ts';
 import {runGatewayScheduledDomains} from './scheduled.ts';
 export {InvitedRunCapacity} from '../simulation/invited-capacity-durable.ts';
+export {ProjectViewRuntime} from '../project-views/runtime-durable.ts';
+export {ProjectViewCapacity} from '../project-views/capacity-durable.ts';
 export {EntryReplayGuard} from '../entry/replay.ts';
 export { TenantQuota } from '../quota/durable.ts';
 export { TenantModelBudget } from '../model-budget/durable.ts';
@@ -163,7 +169,7 @@ const gatewayHandler={
       provision:async(principal,tenantId,projectId)=>{
         const item=await new ProvisioningCatalog(database).kickProject(principal,tenantId,projectId);
         if(item)await dispatch(env,item);
-      },projectArchives:createGatewayProjectArchives(new ProjectArchives(database),env.WORKSPACE_AGENT),publications:createGatewayPublications(env),publicationArtifacts:new R2PublicationArtifacts(env.WORKSPACE_CHECKPOINTS),researchExports:createGatewayResearchExports(env),g5ReadonlyReads:createGatewayG5ReadonlyReads(env),projectViews:createGatewayProjectViewServices(env),manualSaves:createGatewayManualSaveServices(env),simulations:createGatewaySimulationServices(env),browserPreviews:createGatewayBrowserPreviewServices(env),turns:createGatewayTurnServices({...env,M2_TURN_RUNTIME_CONFIGURED:Boolean(typeof env.PRODUCT_TURN_RUNTIME?.getByName==='function'&&typeof env.TRUSTED_PI_CAPACITY?.getByName==='function'&&typeof env.TOOL_ARTIFACT_STORE?.getByName==='function')}),serviceRuns:createGatewayServiceServices(env),previews:createGatewayPreviewServices(env,database),observations:createGatewayObserverServices(env),identity:async req=>{
+      },projectArchives:createGatewayProjectArchives(new ProjectArchives(database),env.WORKSPACE_AGENT),publications:createGatewayPublications(env),publicationArtifacts:new R2PublicationArtifacts(env.WORKSPACE_CHECKPOINTS),researchExports:createGatewayResearchExports(env),g5ReadonlyReads:createGatewayG5ReadonlyReads(env),projectViews:createGatewayProjectViewServices(env),projectViewSessions:createGatewayProjectViewSessionServices(env),manualSaves:createGatewayManualSaveServices(env),simulations:createGatewaySimulationServices(env),browserPreviews:createGatewayBrowserPreviewServices(env),turns:createGatewayTurnServices({...env,M2_TURN_RUNTIME_CONFIGURED:Boolean(typeof env.PRODUCT_TURN_RUNTIME?.getByName==='function'&&typeof env.TRUSTED_PI_CAPACITY?.getByName==='function'&&typeof env.TOOL_ARTIFACT_STORE?.getByName==='function')}),serviceRuns:createGatewayServiceServices(env),previews:createGatewayPreviewServices(env,database),observations:createGatewayObserverServices(env),identity:async req=>{
       const value=await auth.api.getSession({headers:req.headers,query:{disableCookieCache:true}});
       return sessionIdentity(value);
     }});

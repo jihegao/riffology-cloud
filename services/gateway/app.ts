@@ -15,7 +15,7 @@ import type {ModelContentPort} from '../runtime/content.ts';
 import { Admission, type VerifiedIdentity } from '../catalog/admission.ts';
 import { CatalogError,createProjectInput,opaqueId, type Principal } from '../catalog/contracts.ts';
 import { ProjectCatalog,projectBudgetRoute,type ProjectBudgetRoute } from '../catalog/projects.ts';
-import {projectCreationAdmission,type ProjectCreationAdmission} from '../catalog/project-admission.ts';
+import {projectCreationAdmission,acceptedInvitationProjectAdmission,type ProjectCreationAdmission} from '../catalog/project-admission.ts';
 import { ModelCatalog, type ModelVersion } from '../catalog/models.ts';
 import { OperatorCatalog } from '../catalog/admin.ts';
 import { LocalePreferences } from '../catalog/locale-preferences.ts';
@@ -33,6 +33,7 @@ import type {GatewayObservations} from './observer-services.ts';
 import type {GatewayG5ReadonlyReads} from './g5-read-services.ts';
 
 export interface GatewayServices {
+  projectViewSessions?:ReturnType<typeof import('./project-view-session-services.ts').createGatewayProjectViewSessionServices>;
   manualSaves?:ReturnType<typeof import('./manual-save-services.ts').createGatewayManualSaveServices>;
   projectViews?:ReturnType<typeof import('./project-view-services.ts').createGatewayProjectViewServices>;
   projectArchives?:GatewayProjectArchives;
@@ -137,6 +138,16 @@ export async function gateway(request:Request, services:GatewayServices):Promise
       return json(await admission.accept(identity,(body as {token?:unknown}).token));
     }
     const principal=await admission.principal(identity);
+    // Original browser cleanup remains available after archive/revocation or a
+    // policy change. The private runtime lookup verifies the authenticated owner.
+    const viewCleanup=/^\/api\/project-view-sessions\/([A-Za-z0-9_-]{1,128})\/close$/.exec(url.pathname);
+    if(viewCleanup){
+      if(request.method!=='POST'||url.search)throw new CatalogError('not_found');
+      const body=await readJson(request,4096);if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).join(',')!=='workspaceId')throw new CatalogError('invalid_input');
+      const workspaceId=opaqueId((body as {workspaceId:unknown}).workspaceId);
+      if(!services.projectViewSessions)throw new HttpError('project-view-unavailable',503);
+      try{return json(await services.projectViewSessions.close(workspaceId,principal,viewCleanup[1]!));}catch{throw new CatalogError('not_found');}
+    }
     // All workspace mutations share the Catalog archive boundary, including
     // maintenance POSTs. Workspace's durable fence closes already-admitted races.
     const writeWorkspace=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})(?:\/|$)/.exec(url.pathname);
@@ -309,6 +320,19 @@ export async function gateway(request:Request, services:GatewayServices):Promise
         if(/invalid|path-denied/.test(code))throw new HttpError('manual-save-input-invalid',400);
         throw new HttpError('manual-save-unavailable',503);
       }
+    }
+    const viewSession=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/project-view-sessions(?:\/([A-Za-z0-9_-]{1,128}))?$/.exec(url.pathname);
+    if(viewSession){
+      if(request.method!=='POST'||url.search)throw new CatalogError('not_found');
+      if(!services.projectViewSessions)throw new HttpError('project-view-unavailable',503);
+      const catalog=new ProjectCatalog(services.database,new Set()),workspaceId=viewSession[1]!,scope=await catalog.maintenanceWorkspace(principal,workspaceId);
+      const authorize=async(session:import('../project-views/runtime-protocol.ts').ProjectViewRuntimeIdentity)=>{
+        const latest=await catalog.maintenanceWorkspace(principal,workspaceId);
+        if(!sameScope(latest,scope)||!sameScope(latest,session.scope)||!await acceptedInvitationProjectAdmission(services.database,'true',principal,latest.tenantId))throw new HttpError('project-view-access-denied',403);
+      };
+      const body=await readJson(request,viewSession[2]?70*1024:4096);
+      try{return json(viewSession[2]?await services.projectViewSessions.command(workspaceId,principal,viewSession[2],body,authorize):await services.projectViewSessions.start(scope,principal,body,authorize),viewSession[2]?200:201);}
+      catch(error){if(error instanceof CatalogError||error instanceof HttpError)throw error;throw new HttpError('project-view-unavailable',503);}
     }
     const projectViewArtifactsRoute=/^\/api\/workspaces\/([A-Za-z0-9_-]{1,128})\/project-view-artifacts(?:\/((?:artifact-[a-f0-9]{60}|manual-artifact-[a-f0-9]{64})))?$/.exec(url.pathname);
     if(projectViewArtifactsRoute){
