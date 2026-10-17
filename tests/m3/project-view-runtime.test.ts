@@ -14,25 +14,47 @@ async function input():Promise<ProjectViewRuntimeStart>{
  return {identity:{schema:'project.view-session/v1',sessionId:'session-a',operationId:'operation-a',scope:body.scope,actor:{userId:'owner-a',authVersion:1},packageIdentity,viewId:'home',policyHash:'b'.repeat(64)},pkg:{...body,packageIdentity},view,expiresAt:201000};
 }
 function deferred(){let resolve!:()=>void,reject!:(error:Error)=>void;const promise=new Promise<void>((yes,no)=>{resolve=yes;reject=no;});return {promise,resolve,reject};}
-const tick=()=>new Promise<void>(resolve=>setImmediate(resolve));
-async function until(condition:()=>boolean){for(let n=0;n<30&&!condition();n++)await tick();assert.ok(condition(),'expected asynchronous boundary was reached');}
+async function bounded<T>(work:Promise<T>,boundary:string):Promise<T>{let timer:ReturnType<typeof setTimeout>|undefined;try{return await Promise.race([work,new Promise<never>((_,reject)=>{timer=setTimeout(()=>reject(Error('fixture timeout: '+boundary)),2000);})]);}finally{clearTimeout(timer);}}
+function delayDigests(t:{mock:{method:Function}}){const digest=crypto.subtle.digest.bind(crypto.subtle);t.mock.method(crypto.subtle,'digest',async(...args:Parameters<typeof digest>)=>{const result=await digest(...args);await new Promise(resolve=>setTimeout(resolve,50));return result;});}
 
 function fixture(t:{after(fn:()=>void):void}){
  const db=new DatabaseSync(':memory:');let alarm:number|null=null,now=1000,running=false,starts=0,destroys=0,closes=0,acquires=0,releases=0,occupied=false,released=false,failDestroy=false,failRelease=false;
  let startGate:ReturnType<typeof deferred>|null=null,acquireGate:ReturnType<typeof deferred>|null=null;
+ const background:Promise<unknown>[]=[],startOutcomes:Promise<unknown>[]=[];
+ const acquireEntered=deferred(),nativeEntered=deferred(),sessions=new Set<ProjectViewNativeSession>();let finishing=false,cleanupWork:Promise<void>|undefined;
  const finished=deferred(),commands:unknown[]=[];let messages:unknown[]=[{type:'installed'}];
  const session:ProjectViewNativeSession={async send(command){commands.push(command);},poll(){const value={messages};messages=[];return value;},async close(){closes++;},finished:finished.promise};
  const storage={sql:{exec(query:string,...args:(string|number|null)[]){const statement=db.prepare(query);const rows=statement.columns().length?statement.all(...args):(statement.run(...args),[]);return {toArray:()=>structuredClone(rows)};}},transactionSync<T>(fn:()=>T){db.exec('BEGIN IMMEDIATE');try{const value=fn();db.exec('COMMIT');return value;}catch(error){db.exec('ROLLBACK');throw error;}},async sync(){},async setAlarm(at:number){alarm=at;},async deleteAlarm(){alarm=null;}} as unknown as ProjectViewRuntimeStorage;
- const native:ProjectViewNativePort={async start(){starts++;if(startGate)await startGate.promise;running=true;return session;},async running(){return running;},async destroy(){destroys++;if(failDestroy)throw Error('unavailable');running=false;}};
+ const native:ProjectViewNativePort={async start(){starts++;nativeEntered.resolve();if(startGate)await startGate.promise;if(finishing)throw Error('fixture-finished');running=true;return session;},async running(){return running;},async destroy(){destroys++;if(failDestroy)throw Error('unavailable');running=false;}};
  let core!:ProjectViewRuntimeCore;
  const capacity:ProjectViewCapacityPort={
-  async acquire(request){acquires++;assert.equal((await core.status({identity:request.identity})).status,'starting','start intent must be durable before acquire callback');if(acquireGate)await acquireGate.promise;if(released)throw Error('terminal-tombstone');occupied=true;},
+  async acquire(request){if(finishing)throw Error('fixture-finished');acquires++;assert.equal((await core.status({identity:request.identity})).status,'starting','start intent must be durable before acquire callback');acquireEntered.resolve();if(acquireGate)await acquireGate.promise;if(finishing)throw Error('fixture-finished');if(released)throw Error('terminal-tombstone');occupied=true;},
   async release(request){releases++;const actual=await core.status({identity:request.identity});assert.equal(actual.status,'closed');assert.equal(actual.cleanupConfirmed,true);assert.equal(actual.cleanupProofId,request.proof.proofId);if(failRelease)throw Error('lost-ack');released=true;occupied=false;},
  };
- const create=()=>new ProjectViewRuntimeCore(storage,native,capacity,{clock:()=>now,startupMs:200,rpcMs:50,retryMs:5,assignmentGuardMs:100,quietMs:10});
+ const create=()=>{
+  const instance=new ProjectViewRuntimeCore(storage,{...native,async start(...args){if(finishing)throw Error('fixture-finished');const value=await native.start(...args);sessions.add(value);return value;},running:()=>native.running(),destroy:()=>native.destroy()},capacity,{waitUntil:work=>{background.push(work);},clock:()=>now,startupMs:200,rpcMs:50,retryMs:5,assignmentGuardMs:100,quietMs:10});
+  const start=instance.start.bind(instance);
+  instance.start=(value)=>{const work=start(value);startOutcomes.push(work.then(()=>undefined,()=>undefined));return work;};return instance;
+ };
  core=create();
- t.after(()=>db.close());
- return {storage,native,capacity,create,get core(){return core;},set core(value:ProjectViewRuntimeCore){core=value;},get now(){return now;},set now(value:number){now=value;},get alarm(){return alarm;},get starts(){return starts;},get destroys(){return destroys;},get closes(){return closes;},get acquires(){return acquires;},get releases(){return releases;},get occupied(){return occupied;},get running(){return running;},set running(value:boolean){running=value;},set failDestroy(value:boolean){failDestroy=value;},set failRelease(value:boolean){failRelease=value;},set startGate(value:ReturnType<typeof deferred>){startGate=value;},set acquireGate(value:ReturnType<typeof deferred>){acquireGate=value;},finished,commands,record(){return JSON.parse((db.prepare('SELECT value FROM project_view_runtime WHERE singleton=1').get() as {value:string}).value);}};
+ async function waitForBackground(){
+  await bounded((async()=>{let joined=0;while(joined<background.length){const batch=background.slice(joined);joined=background.length;await Promise.all(batch);}})(),'terminal close/proof/release');
+ }
+ async function waitForEntry(work:Promise<unknown>,boundary:'acquire'|'native-start'){
+  const entry=boundary==='acquire'?acquireEntered:nativeEntered;
+  await bounded(Promise.race([entry.promise,work.then(()=>{throw Error('start completed before '+boundary);})]),boundary);
+  assert.equal(boundary==='acquire'?acquires:starts,1);
+ }
+ function cleanup(){return cleanupWork??=(async()=>{
+  finishing=true;acquireGate?.resolve();startGate?.resolve();finished.resolve();
+  // Join whole start calls, including validation before the runtime registers work.
+  await bounded(Promise.all(startOutcomes),'start teardown');
+  for(const session of sessions)await bounded(session.close(),'synthetic session teardown');
+  // All synthetic terminals are now settled; include work registered while joining.
+  await waitForBackground();db.close();
+ })();}
+ t.after(cleanup);
+ return {storage,native,capacity,create,cleanup,waitForEntry,waitForBackground,get core(){return core;},set core(value:ProjectViewRuntimeCore){core=value;},get now(){return now;},set now(value:number){now=value;},get alarm(){return alarm;},get starts(){return starts;},get destroys(){return destroys;},get closes(){return closes;},get acquires(){return acquires;},get releases(){return releases;},get occupied(){return occupied;},get running(){return running;},set running(value:boolean){running=value;},set failDestroy(value:boolean){failDestroy=value;},set failRelease(value:boolean){failRelease=value;},set startGate(value:ReturnType<typeof deferred>){startGate=value;},set acquireGate(value:ReturnType<typeof deferred>){acquireGate=value;},finished,commands,record(){return JSON.parse((db.prepare('SELECT value FROM project_view_runtime WHERE singleton=1').get() as {value:string}).value);}};
 }
 
 test('one frozen start, repeated request preserves original expiry, lookup is owner-only, and proof precedes release',async t=>{
@@ -67,16 +89,16 @@ test('cold reconstruction fences the original actor and retains capacity through
  f.now=1101;await f.core.alarm();assert.equal(f.occupied,false);assert.equal((await f.core.status({identity:v.identity})).status,'closed');assert.equal(f.starts,1);assert.ok(f.destroys>=3);
 });
 
-test('close before acquire ACK creates terminal capacity proof and a late acquire cannot launch',async t=>{
- const f=fixture(t),v=await input(),gate=deferred();f.acquireGate=gate;
- const starting=f.core.start(v);await until(()=>f.acquires===1);
+for(const delayed of [false,true])test('close before acquire ACK creates terminal capacity proof and a late acquire cannot launch'+(delayed?' with delayed validation':''),async t=>{
+ const f=fixture(t),v=await input(),gate=deferred();f.acquireGate=gate;if(delayed)delayDigests(t);
+ const starting=f.core.start(v);await f.waitForEntry(starting,'acquire');
  await f.core.close({identity:v.identity,reason:'user-closed'});assert.equal(f.starts,0);assert.equal(f.releases,1);
  gate.resolve();assert.equal((await starting).status,'closed');assert.equal(f.starts,0);assert.equal(f.occupied,false);
 });
 
-test('close during native preparation blocks late output and destroys the same late original start',async t=>{
- const f=fixture(t),v=await input(),gate=deferred();f.startGate=gate;
- const starting=f.core.start(v);await until(()=>f.starts===1);
+for(const delayed of [false,true])test('close during native preparation blocks late output and destroys the same late original start'+(delayed?' with delayed validation':''),async t=>{
+ const f=fixture(t),v=await input(),gate=deferred();f.startGate=gate;if(delayed)delayDigests(t);
+ const starting=f.core.start(v);await f.waitForEntry(starting,'native-start');
  assert.deepEqual(await f.core.close({identity:v.identity,reason:'user-closed'}),{closed:true,cleanupConfirmed:false});assert.equal(f.occupied,true);
  gate.resolve();await starting;assert.equal(f.running,false);assert.equal(f.starts,1);
  assert.deepEqual(await f.core.command({identity:v.identity,command:{type:'poll'}}),{closed:true,cleanupConfirmed:false});
@@ -110,8 +132,18 @@ test('transient cold-recovery storage failure retries original cleanup without e
  f.now=1110;await f.core.alarm();assert.equal(f.occupied,false);assert.equal(f.starts,1);assert.equal((await f.core.status({identity:v.identity})).status,'closed');
 });
 
-test('browser failure closes the original runtime and never executes a replacement',async t=>{
- const f=fixture(t),v=await input();await f.core.start(v);f.finished.reject(Error('untrusted output'));await until(()=>!f.occupied);
+for(const delayMs of [0,50])test('browser failure closes the original runtime and never executes a replacement'+(delayMs?' with delayed cleanup digest':''),async t=>{
+ const f=fixture(t),v=await input();await f.core.start(v);
+ if(delayMs){
+  const digest=crypto.subtle.digest.bind(crypto.subtle);
+  t.mock.method(crypto.subtle,'digest',async(...args:Parameters<typeof digest>)=>{
+   const result=await digest(...args);await new Promise(resolve=>setTimeout(resolve,delayMs));return result;
+  });
+ }
+ f.finished.reject(Error('untrusted output'));
+ // Runtime tracks the browser terminal -> close -> proof -> capacity release
+ // chain with waitUntil. Join that chain, not a count of event-loop turns.
+ await f.waitForBackground();assert.equal(f.occupied,false);
  assert.equal((await f.core.status({identity:v.identity})).status,'closed');assert.equal(f.starts,1);assert.equal(f.running,false);
 });
 
@@ -124,8 +156,26 @@ test('real pipe EOF, malformed output and output flood fence the original actor;
   if(fault==='eof'){exit.resolve();output.close();}
   else if(fault==='malformed')output.enqueue(encoder.encode('{"type":"exec","command":"forged"}\n'));
   else output.enqueue(new Uint8Array(3*1024*1024+1));
-  await until(()=>f.destroys>0);await until(()=>f.record().status==='unknown');
+  await f.waitForBackground();assert.ok(f.destroys>0);assert.equal(f.record().status,'unknown');
   assert.equal(f.occupied,true);assert.equal((await f.core.status({identity:v.identity})).cleanupConfirmed,false);assert.equal(starts,1);
   f.failDestroy=false;await f.core.alarm();assert.equal(f.running,false);assert.equal(f.occupied,false);assert.equal(starts,1);
  });
+});
+
+test('teardown joins pending validation before database close without synthetic admission',async t=>{
+ const f=fixture(t),v=await input();delayDigests(t);const starting=f.core.start(v);
+ await f.cleanup();assert.notEqual((await starting).status,'running');assert.equal(f.acquires,0);assert.equal(f.starts,0);
+});
+
+test('entry wait preserves a real validation rejection and failed-start teardown settles',async t=>{
+ const f=fixture(t),v=await input();delayDigests(t);
+ const starting=f.core.start({...v,pkg:{...v.pkg,assets:[{...v.pkg.assets[0]!,base64:btoa('tampered bytes')}]}});
+ await assert.rejects(f.waitForEntry(starting,'acquire'),/input-denied/);
+ await assert.rejects(starting,/input-denied/);await f.cleanup();assert.equal(f.acquires,0);assert.equal(f.starts,0);
+});
+
+for(const boundary of ['acquire','native-start'] as const)test('teardown releases pending '+boundary+' gate and joins original start',async t=>{
+ const f=fixture(t),v=await input(),gate=deferred();if(boundary==='acquire')f.acquireGate=gate;else f.startGate=gate;
+ const starting=f.core.start(v);await f.waitForEntry(starting,boundary);await f.cleanup();await starting;
+ assert.equal(f.acquires,1);assert.equal(f.starts,boundary==='acquire'?0:1);assert.equal(f.running,false);
 });

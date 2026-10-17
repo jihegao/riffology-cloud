@@ -32,7 +32,7 @@ test('fresh offline Chromium: canonical Google state/session cookies remain host
       const url=String(input);if(url==='https://oauth2.googleapis.com/token'){tokenCalls++;assert.equal(new URLSearchParams(init.body).get('redirect_uri'),canonical+'/api/auth/callback/google');return Response.json({access_token:'fixture-only',token_type:'Bearer',expires_in:300,id_token:idToken});}
       if(url==='https://www.googleapis.com/oauth2/v3/certs')return Response.json({keys:[jwk]});unexpectedNetwork++;throw Error('offline-network-denied');
     };
-    browser=await chromium.launch({headless:true,args:['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost']});const contextBrowser=await browser.newContext({serviceWorkers:'block'});
+    browser=await chromium.launch({headless:true,channel:process.env.M1_BROWSER_CHANNEL||undefined,args:['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost']});const contextBrowser=await browser.newContext({serviceWorkers:'block'});
     const signed=(await serializeSignedCookie(context.authCookies.sessionToken.name,oldSession.token,secret)).split(';')[0],separator=signed.indexOf('=');
     await contextBrowser.addCookies([{name:signed.slice(0,separator),value:signed.slice(separator+1),url:legacy,secure:true,httpOnly:true,sameSite:'Lax'}]);
     const backend=async request=>new URL(request.url).pathname.startsWith('/api/auth/')?auth.handler(request):gateway(request,{origin:canonical,transportOrigin:transport,database:db,identity:async req=>sessionIdentity(await auth.api.getSession({headers:req.headers,query:{disableCookieCache:true}}))});
