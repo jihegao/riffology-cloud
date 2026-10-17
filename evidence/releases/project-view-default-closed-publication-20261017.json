@@ -6,7 +6,7 @@
   "issue": "https://github.com/jihegao/riffology-cloud/issues/214",
   "pullRequest": "https://github.com/jihegao/riffology-cloud/pull/233",
   "sourceCommit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1",
-  "currentStage": "Registry exact immutable pin and actual raw bodies verified; premerge resource preservation passed; Ready/merge and default-closed publication next",
+  "currentStage": "PR233 merged and Gateway default-closed deployment/95 assets verified; created application safely paused at instances0/max0 with complete GET readback; original max1 publication contract incomplete; target admission closed",
   "authorization": {
     "schema": "project-view-current-publication-authorization/v1",
     "recordedAt": "2026-10-17T07:23:00.789703+00:00",
@@ -250,10 +250,192 @@
     }
   },
   "publication": {
-    "merged": false,
-    "deployed": false,
-    "newNamespaces": [],
-    "newApplication": null,
+    "merged": true,
+    "deployed": true,
+    "newNamespaces": [
+      {
+        "className": "ProjectViewRuntime",
+        "namespaceId": "5bc5561f57c24146a160d2a54160277c",
+        "useSqlite": true
+      },
+      {
+        "className": "ProjectViewCapacity",
+        "namespaceId": "dca3daa973e84b3db83a65c17a0a343a",
+        "useSqlite": true
+      }
+    ],
+    "newApplication": {
+      "id": "a031ae38-f967-483f-ae2e-3dbed3d35268",
+      "name": "riffology-project-view-browser",
+      "originalRequestId": "ada18822-8797-48a9-9214-c888cfb03d6e",
+      "parentWorkerRequestId": "d8fbe6ba-21cb-4ed4-a846-31886d6dac9d",
+      "created": true,
+      "createPosts": 1,
+      "createStatus": 201,
+      "createdAt": "2026-10-17T08:22:31.842Z",
+      "createAckInstances": 0,
+      "requestedInitialInstances": 0,
+      "observedConfigurationInstances": 0,
+      "maxInstances": 0,
+      "schedulingPolicy": "default",
+      "namespaceId": "5bc5561f57c24146a160d2a54160277c",
+      "imagePin": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+      "resources": {
+        "vcpu": 0.25,
+        "memoryMiB": 1024,
+        "diskMB": 4000
+      },
+      "configuredVersions": [
+        {
+          "version": 1,
+          "percentage": 100,
+          "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+          "configurationSha256": "992a95c9754f53d636a31d4d45e183229a04ce417e6ac3b8e00e8132ccca5a68"
+        }
+      ],
+      "observedInstanceListCount": 0,
+      "instanceObservationEndedAt": "2026-10-17T08:30:15.067Z",
+      "readbackStatus": "default-closed-application-max-zero-hold-verified",
+      "allOtherReadbackChecksPassed": true,
+      "checks": {
+        "appCount16": true,
+        "actualAppIdPinned": true,
+        "exactName": true,
+        "exactNamespace": true,
+        "defaultScheduling": true,
+        "zeroRequestedInstances": true,
+        "maxZeroHold": true,
+        "immutableImage742a": true,
+        "basicResources": true,
+        "appCompleteConfiguration": true,
+        "allNewVersionsPresent": true,
+        "allConfiguredVersionsPinned": true,
+        "allNewVersionsCompleteConfiguration": true,
+        "newAppInstanceListEmpty": true,
+        "original15Complete": true,
+        "allOriginalVersionsPreserved": true,
+        "registryPreserved": true,
+        "namespaces50Preserved": true,
+        "settingsPreserved": true,
+        "workerVersionResourcesPreserved": true,
+        "activeDeploymentPreserved": true,
+        "appsBracketStable": true,
+        "deploymentBracketStable": true
+      },
+      "refs": {
+        "createAck": {
+          "evidence": "project-view-closed-publication-20261017/app-create-ack.json",
+          "bytes": 1085,
+          "sha256": "0c1256f53e164643dc7c5d2436f264c0f08c0f9efbc5662423d8d68c5d9a8ddb"
+        },
+        "readback": {
+          "evidence": "project-view-closed-publication-20261017/app-readback-pending.json",
+          "bytes": 9612,
+          "sha256": "d16dea2e1b4b52e9560397ad42c257346c40b4bb1e47b2404818d5ab728770d8"
+        },
+        "holdAck": {
+          "evidence": "project-view-closed-publication-20261017/app-hold-ack.json",
+          "bytes": 833,
+          "sha256": "e748dd0476a87812ee5554cf3830751140b11ec495daf7af110b129083ce2d00"
+        },
+        "holdReadback": {
+          "evidence": "project-view-closed-publication-20261017/app-hold-readback.json",
+          "bytes": 10837,
+          "sha256": "466727a5b98001ba5adfc4c1c5884b8e20aa48a48fc7c2f2a09056a345972d71"
+        }
+      },
+      "instancesSemanticsReview": {
+        "status": "unresolved",
+        "installedWrangler": "4.129.0; sends deprecated instances:0 plus max_instances, omits instances when modifying/normalizing",
+        "officialClientSource": "https://raw.githubusercontent.com/cloudflare/workers-sdk/wrangler@4.129.0/packages/wrangler/src/containers/deploy.ts",
+        "officialCreateContract": "https://developers.cloudflare.com/api/resources/containers/subresources/applications/methods/create/",
+        "officialEditContract": "https://developers.cloudflare.com/api/resources/containers/subresources/applications/methods/edit/",
+        "apiPatchInstancesPropertySupported": false,
+        "documentedNonnegativeMaximumField": "max_instances",
+        "serviceNormalizationProved": false
+      },
+      "targetBasicViabilityVerified": false,
+      "userAcceptanceVerified": false,
+      "emptyInstanceListProvesGlobalNoExecutionOrCost": false,
+      "initialReadback": {
+        "status": "pending-instances-field-difference",
+        "observedConfigurationInstances": 1,
+        "maxInstances": 1,
+        "checks": {
+          "appCount16": true,
+          "exactName": true,
+          "exactNamespace": true,
+          "defaultScheduling": true,
+          "zeroRequestedInstances": false,
+          "maxOne": true,
+          "immutableImage742a": true,
+          "basicResources": true,
+          "allConfiguredVersionsPinned": true,
+          "newAppInstanceListEmpty": true,
+          "original15Complete": true,
+          "allOriginalVersionsPreserved": true,
+          "registryPreserved": true,
+          "namespaces50Preserved": true,
+          "settingsPreserved": true,
+          "workerVersionResourcesPreserved": true,
+          "activeDeploymentPreserved": true,
+          "appsBracketStable": true,
+          "deploymentBracketStable": true
+        },
+        "evidence": {
+          "evidence": "project-view-closed-publication-20261017/app-readback-pending.json",
+          "bytes": 9612,
+          "sha256": "d16dea2e1b4b52e9560397ad42c257346c40b4bb1e47b2404818d5ab728770d8"
+        },
+        "originalFailurePreserved": true
+      },
+      "currentState": "paused-max-zero",
+      "originalDesiredMaxInstances": 1,
+      "originalMaxOnePublicationComplete": false,
+      "safeHoldVerified": true,
+      "pause": {
+        "requestId": "560da903-8c44-4986-b747-544687ef6e4b",
+        "patches": 1,
+        "status": 200,
+        "acknowledgedAt": "2026-10-17T08:27:35.664Z",
+        "body": {
+          "max_instances": 0
+        },
+        "containerStartRequested": false
+      },
+      "holdConfigurationChecks": {
+        "immutableImage742a": true,
+        "basicResources": true,
+        "defaultNetwork": true,
+        "noPorts": true,
+        "noEnvironmentOverrides": true,
+        "noKeys": true,
+        "noCommandOrEntrypointOverrides": true,
+        "expectedRuntime": true,
+        "knownConfigurationFields": true,
+        "defaultDeploymentType": true
+      },
+      "holdVersionConfigurationChecks": [
+        {
+          "version": 1,
+          "percentage": 100,
+          "checks": {
+            "immutableImage742a": true,
+            "basicResources": true,
+            "defaultNetwork": true,
+            "noPorts": true,
+            "noEnvironmentOverrides": true,
+            "noKeys": true,
+            "noCommandOrEntrypointOverrides": true,
+            "expectedRuntime": true,
+            "knownConfigurationFields": true,
+            "defaultDeploymentType": true
+          }
+        }
+      ],
+      "holdReadbackRequests": 26,
+      "holdReadbackCloudWrites": 0
+    },
     "admissionEnabled": false,
     "preparedPublisher": {
       "localPath": ".local/jhg46-publication-review-20261017/publish-default-closed.mjs",
@@ -270,17 +452,29 @@
         "actual GitHub PR233 merge/main proof and two-parent local Git guard",
         "fresh Personal connector pre/post Container preservation witnesses bound to original request/version"
       ],
-      "workerWritesExecuted": 0,
+      "workerWritesExecuted": 1,
       "applicationsCreated": 0,
       "localOauthContainersGetUnavailable": true,
       "localOauthScopeExpanded": false,
-      "unknownWriteOutcomeKeepsOriginalIntentAndLock": true
+      "unknownWriteOutcomeKeepsOriginalIntentAndLock": true,
+      "frozenSenderUnchanged": true,
+      "readOnlyReconciliationHelper": {
+        "sha256": "211c7921595145094de9bebcc67dd534342bfa8e09f6af441dcb355be5651738",
+        "cloudWrites": 0,
+        "originalFailurePreserved": true
+      },
+      "applicationsCreatedScope": "Frozen Worker-only sender; the separate approved app POST is recorded under newApplication"
     },
     "preparedPublicAssetsReadback": {
       "localPath": ".local/jhg46-publication-review-20261017/readback-public-assets.mjs",
       "sha256": "d78a450c7c205f4567f4b0929d53604f875e35c979e42c365b8d78ab1f907e02",
       "independentStaticReview": "no remaining must-fix",
-      "executed": false
+      "executed": true,
+      "resultEvidence": {
+        "evidence": "project-view-closed-publication-20261017/public-assets-readback.json",
+        "bytes": 34794,
+        "sha256": "f3a21497b66dc0cf5f119b04cab9efcf9c4aef0dbe08371bfbe46ed18543b5f1"
+      }
     },
     "preparedContainersWitnessRequest": {
       "localPath": ".local/jhg46-publication-review-20261017/make-containers-witness-request.mjs",
@@ -289,7 +483,114 @@
       "offlineSyntaxAndSyntheticFailureChecksPassed": true,
       "independentStaticReview": "no remaining must-fix",
       "realApiRequests": 0,
-      "credentialReads": false
+      "credentialReads": false,
+      "realApiRequestsScope": "generation itself; actual generated GET requests are evidenced separately by before/after Personal witnesses"
+    },
+    "workerPublicationPending": false,
+    "applicationPublicationPending": true,
+    "merge": {
+      "evidence": "project-view-closed-publication-20261017/merge-proof.json",
+      "bytes": 1033,
+      "sha256": "40574904dbb94dd1db12e87f9e3cf37d723159694059ba0721b42fd53fba0230",
+      "prNumber": 233,
+      "mergeCommitSha": "1585280c76e55cae61f3969db5545f76edce678c",
+      "headSha": "2ebd1d754f5c5e9a0db2b3cce6edc08af429559e",
+      "mergedAt": "2026-10-17T08:00:29Z",
+      "observedAt": "2026-10-17T08:01:00.814Z",
+      "normalMerge": true,
+      "admin": false,
+      "hostedCiQuotaFailureReportedNotPassed": true
+    },
+    "worker": {
+      "name": "riffology-m1-gateway-staging",
+      "originalRequestId": "d8fbe6ba-21cb-4ed4-a846-31886d6dac9d",
+      "workerPutAcknowledgedAt": "2026-10-17T08:05:07.178Z",
+      "actualLifecyclePutInvocations": 1,
+      "deploymentId": "0f9c6266-2541-41ff-877e-9e9bbb85f3a2",
+      "versionId": "eae8764f-fda5-4241-9f51-cf01ecc46b00",
+      "source": {
+        "bytes": 5768905,
+        "sha256": "d92548f0f07bb782527618dd26166b11985eaed1723801d6e65cb49b9a41ea78"
+      },
+      "counts": {
+        "bindings": 106,
+        "exports": 25,
+        "containerAssociations": 6,
+        "oldNamespacesRetained": 48,
+        "totalNamespaces": 50,
+        "oldApplicationsRetained": 15
+      },
+      "pagePins": {
+        "PROJECT_VIEW_POLICY_JSON": "{\"enabled\":false}",
+        "PROJECT_VIEW_RUNTIME_IMAGE": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+        "PROJECT_VIEW_RUNTIME_CONTEXT_RECEIPT_SHA256": "357e280840ff665334b1fa055d74755ec4019932922e6b57dbc620bbb953fe8c",
+        "PROJECT_VIEW_RUNTIME_POLICY_HASH": "5acf3ff77b4420677b5923071f303facaba7a9273a346284a667a275df325146"
+      },
+      "defaultClosed": true,
+      "reconciliation": {
+        "evidence": "project-view-closed-publication-20261017/worker-reconciliation.json",
+        "bytes": 4128,
+        "sha256": "fbdd17a60134e26df05535f997c39a4fd8e6c6ed5b47449310d39b46d7b4c952"
+      },
+      "privateAfterSnapshotSha256": "7ef8abb3bbc69627df52b65301ea8f130da65a3cca24d7b8aee20df608977761",
+      "reconciliationRequests": 11,
+      "reconciliationCloudWrites": 0,
+      "originalSenderReadback": {
+        "phase": "postwrite-readback",
+        "result": "stopped before postwrite.private.json was saved",
+        "code": "transport-or-response-or-local-error",
+        "stoppedRecordSha256": "8f90ee569c8519fcdc74f62894f85f14824f277ea3723025374cd698474f0c5f",
+        "originalFailurePreserved": true,
+        "rootCause": "unknown; not reproduced by independent subsequent GET readback",
+        "putReplayed": false,
+        "rollbackAttempted": false
+      },
+      "independentOfflineResourceReview": "passed; original100bindings/23exports/5associations/48namespace records and all runtime/settings/routes/schedules retained"
+    },
+    "applicationResult": "Created once, original max1 readback failed instances0-to1 contract; one safety PATCH max0 followed by complete GET-only hold readback passed. Current instances0/max0; original max1 publication incomplete.",
+    "containerPreservationWitnesses": {
+      "before": {
+        "evidence": "project-view-closed-publication-20261017/containers-witness-before.json",
+        "bytes": 2768,
+        "sha256": "f01fef208602941ad3b967509e114256ba032c085f0e84be9ffe1bc18af171c6"
+      },
+      "after": {
+        "evidence": "project-view-closed-publication-20261017/containers-witness-after.json",
+        "bytes": 2767,
+        "sha256": "df71b8b3f1ea6d9f9a9450cb74fa03c852f927e6ef2067dabfa2e38ee2527719"
+      },
+      "all15OriginalApplicationsAndAllVersionsAndRegistryPreserved": true,
+      "afterObservationStartedAt": "2026-10-17T08:17:39.142Z",
+      "afterObservationEndedAt": "2026-10-17T08:17:45.225Z",
+      "authority": "Personal Cloudflare connector GET-only witness"
+    },
+    "publicAssets": {
+      "evidence": "project-view-closed-publication-20261017/public-assets-readback.json",
+      "bytes": 34794,
+      "sha256": "f3a21497b66dc0cf5f119b04cab9efcf9c4aef0dbe08371bfbe46ed18543b5f1",
+      "observedAt": "2026-10-17T08:09:57.465Z",
+      "deploymentId": "0f9c6266-2541-41ff-877e-9e9bbb85f3a2",
+      "versionId": "eae8764f-fda5-4241-9f51-cf01ecc46b00",
+      "expectedFiles": 95,
+      "checkedFiles": 95,
+      "allMatch": true,
+      "root": {
+        "status": 200,
+        "sha256": "2a284df96f627f66866f8bd915d85e8d00f775c0b6dea6b41ce670b025055e27",
+        "matchesIndex": true
+      },
+      "unauthenticatedMeStatus": 401,
+      "authenticatedUserFlowVerified": false,
+      "containerOrProviderRequestMade": false
+    },
+    "defaultClosedPublicationComplete": false,
+    "safeHoldVerified": true,
+    "publicationMutations": {
+      "workerLifecyclePuts": 1,
+      "applicationCreatePosts": 1,
+      "applicationPausePatches": 1,
+      "total": 3,
+      "scope": "Registry image push and asset preparation separately recorded"
     }
   },
   "acceptance": {

@@ -1,0 +1,108 @@
+{
+  "schema": "project-view-original-publication-reconciliation/v1",
+  "status": "original-worker-put-reconciled-preservation-passed",
+  "requestId": "d8fbe6ba-21cb-4ed4-a846-31886d6dac9d",
+  "planSha256": "4b41f982a15a4df642ebc49917d419fcf8c336b99bcc021ddb080ed7525ada90",
+  "senderSha256": "9a866f448d4de0150a28b8dc2ececa542e44ed077aee7f559e75455d216b08c2",
+  "workerPutAckSha256": "167dba7ba9e47c7b4e7b64ad27eca7bbe431e1a97ffa7d7d116d1dc93623ffa9",
+  "workerPutIntentSha256": "14c89c9e4d43869674f784ccc1637b68bd7cb0a142bbf36ca20d74984d8a328e",
+  "putAcknowledgedAt": "2026-10-17T08:05:07.178Z",
+  "startedAt": "2026-10-17T08:18:16.870Z",
+  "endedAt": "2026-10-17T08:18:22.206Z",
+  "activeDeployment": "0f9c6266-2541-41ff-877e-9e9bbb85f3a2",
+  "versionId": "eae8764f-fda5-4241-9f51-cf01ecc46b00",
+  "newNamespaces": {
+    "ProjectViewRuntime": "5bc5561f57c24146a160d2a54160277c",
+    "ProjectViewCapacity": "dca3daa973e84b3db83a65c17a0a343a"
+  },
+  "counts": {
+    "bindings": 106,
+    "exports": 25,
+    "containerAssociations": 6,
+    "oldNamespacesRetained": 48,
+    "totalNamespaces": 50,
+    "oldApplicationsRetained": 15
+  },
+  "source": {
+    "bytes": 5768905,
+    "sha256": "d92548f0f07bb782527618dd26166b11985eaed1723801d6e65cb49b9a41ea78"
+  },
+  "closedPagePolicy": true,
+  "old100Bindings23Exports5AssociationsFullRuntimeSettingsAndAssetRoutingPreserved": true,
+  "oldNamespaceRecordsComparedByIdWithoutIgnoringAnyFields": true,
+  "old15AppsAllVersionsAndRegistryPreservedByIndependentPersonalWitness": true,
+  "personalWitness": {
+    "sha256": "df71b8b3f1ea6d9f9a9450cb74fa03c852f927e6ef2067dabfa2e38ee2527719",
+    "startedAt": "2026-10-17T08:17:39.142Z",
+    "endedAt": "2026-10-17T08:17:45.225Z"
+  },
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/subdomain",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/domains?service=riffology-m1-gateway-staging",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/schedules",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/settings",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/durable_objects/namespaces?per_page=1000&page=1",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/deployments?per_page=1&page=1",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/zones/c97b548800561fada1a912c234696db1/workers/routes",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/versions/eae8764f-fda5-4241-9f51-cf01ecc46b00",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/content/v2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/deployments?per_page=1&page=1",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/accounts/8b0d70250211aa10d89e20605a1c7e5e/workers/scripts/riffology-m1-gateway-staging/settings",
+      "status": 200
+    }
+  ],
+  "privateAfterFileSha256": "7ef8abb3bbc69627df52b65301ea8f130da65a3cca24d7b8aee20df608977761",
+  "originalSenderFailurePreserved": true,
+  "rootCause": "unknown; original postwrite-readback error not reproduced",
+  "originalPostPendingOrLockNotWritten": true,
+  "secondPutAttempted": false,
+  "rollbackAttempted": false,
+  "assetWrites": 0,
+  "applicationWrites": 0,
+  "containerStarts": 0,
+  "providerTurnRun": 0,
+  "cloudWrites": 0,
+  "notUserOrContainerAcceptance": true
+}

@@ -5,7 +5,10 @@
   "owner": "jihegao",
   "issue": "https://github.com/jihegao/riffology-cloud/issues/214",
   "skillsIssue": "https://github.com/jihegao/riffology-cloud/issues/85",
-  "source": {"kind": "committed-default-closed-candidate", "branch": "codex/jhg46-production-20261017", "commit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1", "initialSourceCommit": "bfca3cca1b07085ee78ce45064f86c2577379a50", "baseMain": "24a98cda0fcb361158f9d332b6e8ca21726992a8", "scope": "production runtime/Managed/image inputs frozen before the final platform full check; later evidence and an offline-only NotFound checker/test repair are separate", "offlineCheckerFollowup": {"contractPassed": 18, "completeCheckRepeated": false, "productionRuntimeOrImageChanged": false, "remotePayloadOrProbeReplayed": false}},
+  "source": {"kind": "committed-default-closed-candidate", "branch": "codex/jhg46-production-20261017", "commit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1", "initialSourceCommit": "bfca3cca1b07085ee78ce45064f86c2577379a50", "baseMain": "24a98cda0fcb361158f9d332b6e8ca21726992a8", "scope": "production runtime/Managed/image inputs frozen before the final platform full check; later evidence and an offline-only NotFound checker/test repair are separate", "offlineCheckerFollowup": {"contractPassed": 18, "completeCheckRepeated": false, "productionRuntimeOrImageChanged": false, "remotePayloadOrProbeReplayed": false},
+    "merged": true,
+    "mergeCommit": "1585280c76e55cae61f3969db5545f76edce678c",
+    "reviewedPrHead": "2ebd1d754f5c5e9a0db2b3cce6edc08af429559e"},
   "controlPlaneBaseline": {
     "observedAt": "2026-10-17T04:47:42.817Z",
     "method": "Cloudflare connector GET only; endpoint schemas searched before reads; safe fields projected inside connector",
@@ -21,7 +24,7 @@
   },
   "implementedCapacity": {"singleton": "project-view-capacity-v1", "maxOccupiedSessions": 1, "storage": "SQLite", "expiryReturnsCapacity": false, "originalRuntimeStatusRequired": true, "durableCleanupProofRequired": true, "terminalTombstonesRetained": true, "closeBeforeAcquireFenced": true},
   "officialBaseCandidate": {
-    "status": "initial metadata verified; original base subsequently acquired/imported and v2 derived image built offline; registry and target acceptance pending",
+    "status": "Original base and v2 derived image verified; exact Registry runnable manifest/config/all layer bodies verified and Gateway default-closed deployed; target container acceptance pending",
     "tag": "mcr.microsoft.com/playwright:v1.63.0-jammy",
     "indexDigest": "sha256:167d0506cfbe3c294fb214b2d11737326eeee028aa611fa1ba538e5057675847",
     "linuxAmd64ManifestDigest": "sha256:957bb6b7cba151ced0b5bb841703e282c45df1d934af88933b1b655411ecba3a",
@@ -40,8 +43,9 @@
     "browserRevision": "1243 / Chromium 153.0.8010.12",
     "failedMetadataChecks": ["system-Python TLS EOF reading noble tag and platform manifest", "first config GET intentionally rejected its redirect before the explicit checked Microsoft data-domain GET"],
     "nobleDigest": "not-verified",
-    "derivedImageDigest": null, "localDerivedIndex": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee", "registryDigestReadback": "not-pushed",
-    "productionImageAccepted": false
+    "derivedImageDigest": "sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339", "localDerivedIndex": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee", "registryDigestReadback": "sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+    "productionImageAccepted": false,
+    "productionImageAcceptedMeaning": "Registry publication is verified; Cloudflare startup/basic sandbox/no-network and user acceptance are still pending"
   },
   "checks": {
     "capacity": {"command": "node --test tests/m3/project-view-capacity.test.ts", "node": "26.10.0", "passed": 8, "failed": 0, "sqlite": "on-disk with database reopen", "runtimeAuthority": "synthetic injected status", "cloudflareRuntime": "not-run"},
@@ -153,20 +157,27 @@
     "currentE1aeImageOrTargetAcceptanceProven": false
   },
   "amdOfflineExecution": {"evidence": "project-view-amd-offline-20261017.json", "sourceCommit": "e1aeaa0f5bcdbaf8c459be4e816cdae533df17e1", "buildExitCode": 0, "buildAttempts": 1, "localIndex": "sha256:42dd6fed859ced62a55900be5dfc52d02309de8379f4685914cce76abadb0eee", "frozenProbeExitCode": 1, "frozenProbeStatus": "blocked", "functionalPreflightBrokerInputsChangedRasterObserved": true, "originalContainerCleanupIndependentlyConfirmed": true, "frozenProbeRewrittenOrReplayed": false, "localAbsenceCheckerFixContractPassed": 18, "productionSourceOrImageChangedByCheckerFix": false, "costStatus": "unknown"},
-  "remaining": {"exactBrowserImage": "AMD candidate built; production registry immutable digest/readback pending", "actualContainerSandboxAndNoNetwork": "AMD network-none configuration observed; Cloudflare target, inner sandbox and collector controls pending", "originalContainerCleanup": "AMD original ID 404 plus empty scope independently confirmed; Cloudflare target cleanup pending", "ordinaryInvitedIdentity": "pending", "secondIdentity": "pending", "twoPageRenderAndBroker": "pending", "refreshLeaveColdRecovery": "pending", "revocationAndNineEgressControls": "pending", "productionPublicationPacket": "pending"},
+  "remaining": {"exactBrowserImage": "Registry immutable image and all raw bodies verified; app and every configured version pinned to742a; safe max0 hold verified, original max1 publication contract and actual target acceptance pending", "actualContainerSandboxAndNoNetwork": "AMD network-none configuration observed; Cloudflare target, inner sandbox and collector controls pending", "originalContainerCleanup": "AMD original ID 404 plus empty scope independently confirmed; Cloudflare target cleanup pending", "ordinaryInvitedIdentity": "pending", "secondIdentity": "pending", "twoPageRenderAndBroker": "pending", "refreshLeaveColdRecovery": "pending", "revocationAndNineEgressControls": "pending", "productionPublicationPacket": "Gateway default-closed deployment/95 assets verified; application current instances0/max0 safe hold fully read back after original initial0/GET1 difference; original max1 publication incomplete"},
   "pullRequest": "https://github.com/jihegao/riffology-cloud/pull/233",
   "productionEligible": false,
-  "deployed": false,
+  "deployed": true,
   "done": false,
   "initialBoundaries": {"observedBeforeDirectOfflineAuthorization": true, "counterScope": "actions performed for the initial candidate in production/cloud; local synthetic Turn/provider-shaped fixtures are excluded; image pull is successful pulls only, with one failed attempt separately recorded", "productionMutations": 0, "providerTurnRunRequests": 0, "containerExecutions": 0, "imagesBuiltPushedPulled": 0, "admissionInvitationBudgetHistoryChanged": false, "originalAmdPendingTouched": false, "controlPlaneReadsProveZeroCloudExecution": false},
-  "boundaries": {"counterScope": "candidate actions in Cloudflare/production; separately approved AMD offline work has its own version-specific record", "productionMutations": 0, "realProviderTurnRunRequests": 0, "cloudflareContainerExecutions": 0, "admissionInvitationBudgetHistoryChanged": false, "originalAmdPendingTouched": false, "controlPlaneReadsProveGlobalZeroCloudExecution": false},
+  "boundaries": {"counterScope": "candidate actions in Cloudflare/production; separately approved AMD offline work has its own version-specific record", "productionMutations": 3, "realProviderTurnRunRequests": 0, "cloudflareContainerExecutions": 0, "admissionInvitationBudgetHistoryChanged": false, "originalAmdPendingTouched": false, "controlPlaneReadsProveGlobalZeroCloudExecution": false,
+    "productionMutationsScope": "Acknowledged Gateway lifecycle PUT, Container application POST and safety max_instances0 PATCH only; asset preparation and Registry wire requests separately recorded",
+    "workerLifecyclePuts": 1,
+    "registryImagePushOperations": 1,
+    "assetSessionPosts": 1,
+    "assetUploadPosts": 2,
+    "containerApplicationsCreated": 1,
+    "containerApplicationPausePatches": 1},
   "projectFields": "2026-10-17 fresh gh read and successful mutation/readback: In review / P1, native Milestone #1, assignee jihegao; prior missing-read:project notes apply only to their historical reads",
   "currentPublicationExecution": {
     "evidence": "project-view-default-closed-publication-20261017.json",
     "originalRawImageExportVerified": true,
     "rawManifestAndConfigVerified": true,
     "registryActualReadback": true,
-    "deployed": false,
+    "deployed": true,
     "costCapRemovedByDirectHuman": true,
     "githubCiQuotaFailureMayBeIgnored": true,
     "projectStatus": "In review",
@@ -176,6 +187,59 @@
     "ordinaryInvitedAcceptance": "pending",
     "fullJhg56Matrix": "deferred pending",
     "credentialTransferSpecificallyGranted": true,
-    "premergeResourcePreservationPassed": true
+    "premergeResourcePreservationPassed": true,
+    "merged": true,
+    "workerPublicationPending": false,
+    "applicationPublicationPending": true,
+    "workerReconciliationEvidence": {
+      "evidence": "project-view-closed-publication-20261017/worker-reconciliation.json",
+      "bytes": 4128,
+      "sha256": "fbdd17a60134e26df05535f997c39a4fd8e6c6ed5b47449310d39b46d7b4c952"
+    },
+    "publicAssetsVerified": 95,
+    "applicationCreated": true,
+    "applicationReadback": "default-closed-application-max-zero-hold-verified",
+    "applicationState": "paused-max-zero",
+    "safeHoldVerified": true,
+    "originalMaxOnePublicationComplete": false,
+    "applicationHoldReadbackEvidence": {
+      "evidence": "project-view-closed-publication-20261017/app-hold-readback.json",
+      "bytes": 10837,
+      "sha256": "466727a5b98001ba5adfc4c1c5884b8e20aa48a48fc7c2f2a09056a345972d71"
+    }
+  },
+  "currentPublication": {
+    "evidence": "project-view-default-closed-publication-20261017.json",
+    "workerReceipt": {
+      "evidence": "project-view-closed-publication-20261017/worker-reconciliation.json",
+      "bytes": 4128,
+      "sha256": "fbdd17a60134e26df05535f997c39a4fd8e6c6ed5b47449310d39b46d7b4c952"
+    },
+    "publicAssetsReceipt": {
+      "evidence": "project-view-closed-publication-20261017/public-assets-readback.json",
+      "bytes": 34794,
+      "sha256": "f3a21497b66dc0cf5f119b04cab9efcf9c4aef0dbe08371bfbe46ed18543b5f1"
+    },
+    "merged": true,
+    "deployed": true,
+    "workerPublicationPending": false,
+    "applicationPublicationPending": true,
+    "admissionEnabled": false,
+    "targetAcceptance": "pending",
+    "applicationCreated": true,
+    "applicationReadback": "default-closed-application-max-zero-hold-verified",
+    "applicationReadbackEvidence": {
+      "evidence": "project-view-closed-publication-20261017/app-readback-pending.json",
+      "bytes": 9612,
+      "sha256": "d16dea2e1b4b52e9560397ad42c257346c40b4bb1e47b2404818d5ab728770d8"
+    },
+    "applicationState": "paused-max-zero",
+    "safeHoldVerified": true,
+    "originalMaxOnePublicationComplete": false,
+    "applicationHoldReadbackEvidence": {
+      "evidence": "project-view-closed-publication-20261017/app-hold-readback.json",
+      "bytes": 10837,
+      "sha256": "466727a5b98001ba5adfc4c1c5884b8e20aa48a48fc7c2f2a09056a345972d71"
+    }
   }
 }

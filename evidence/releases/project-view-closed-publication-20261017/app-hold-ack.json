@@ -1,0 +1,22 @@
+{
+  "schema": "project-view-stop-on-configuration-drift-result/v1",
+  "requestId": "560da903-8c44-4986-b747-544687ef6e4b",
+  "parentApplicationRequestId": "ada18822-8797-48a9-9214-c888cfb03d6e",
+  "appId": "a031ae38-f967-483f-ae2e-3dbed3d35268",
+  "startedAt": "2026-10-17T08:27:35.249Z",
+  "endedAt": "2026-10-17T08:27:35.664Z",
+  "patchRequested": 1,
+  "status": 200,
+  "success": true,
+  "errorCodes": [],
+  "app": {
+    "id": "a031ae38-f967-483f-ae2e-3dbed3d35268",
+    "instances": 0,
+    "max_instances": 0,
+    "namespaceId": "5bc5561f57c24146a160d2a54160277c",
+    "image": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser@sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339"
+  },
+  "readbackRequired": true,
+  "noRetry": true,
+  "containerStartRequested": false
+}
