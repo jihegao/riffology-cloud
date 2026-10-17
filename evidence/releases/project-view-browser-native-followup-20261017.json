@@ -1,0 +1,184 @@
+{
+  "schema": "jhg46-browser-native-navigation-followup/v1",
+  "recordedAt": "2026-10-17T10:06:41.306016+00:00",
+  "evidenceKind": "projection of completed exec tool results; not an original stdout log",
+  "sourceAtExecution": {
+    "baseHead": "a04edb4bd135f5bb24538def41a07f7f06314e0d",
+    "workingTreeFixesUncommitted": true,
+    "applicationFiles": [
+      {
+        "path": "services/project-views/frame-source.mjs",
+        "bytes": 7229,
+        "sha256": "184366308bbbe79e3b47819b528337bdc391d42425077072ffaa6680c687b877"
+      },
+      {
+        "path": "services/project-views/frame-html.mjs",
+        "bytes": 7441,
+        "sha256": "2f9e681cc252578f495bd7f36c334e241dc330da613f53f1e4f03f2d7dced482"
+      },
+      {
+        "path": "services/web/project-views.js",
+        "bytes": 13723,
+        "sha256": "dbc510d01acefe75f789bbac9437d3951e7e9556deaab032617fb6e6c02ea636"
+      }
+    ],
+    "frameHtmlSha256": "7f71d5ee385b0703471719289d25d4fc98d25b1e0a138bc2ded28a9c6ef06f4c",
+    "diffSha256AtFinalInspection": "2b0567f2d6ea88a171d6957aa14e3f7b54563bf35c5021861a23285d5d8b5005"
+  },
+  "focused": {
+    "startedAt": null,
+    "finishedAt": null,
+    "wallClockTimestampEvidence": "Exact process start/end UTC timestamps were not recorded by the original command or returned tool result. They cannot be reconstructed authoritatively; recordedAt is receipt creation, not execution time.",
+    "nodeReportedDurationMs": 14245.687,
+    "localExecutionSessionId": 98094,
+    "resultChunkIds": [
+      "a6d10d",
+      "e46835"
+    ],
+    "command": [
+      "node",
+      "--test",
+      "--test-concurrency=2",
+      "tests/m3/project-view-local-browser.test.mjs",
+      "tests/m3/project-views-browser.test.mjs",
+      "tests/m3/project-view-native-gateway-browser.test.mjs",
+      "tests/m3/project-views.test.mjs",
+      "tests/m3/project-view-frame-bytes.test.mjs",
+      "tests/m3/project-view-browser-entry-workerd.test.mjs"
+    ],
+    "launcher": "python3 subprocess.run with explicit environment whitelist; SystemExit(returncode)",
+    "environment": {
+      "preservedOnly": [
+        "PATH",
+        "HOME",
+        "USER",
+        "LOGNAME",
+        "TMPDIR",
+        "LANG",
+        "LC_ALL",
+        "TERM"
+      ],
+      "set": {
+        "M1_BROWSER_CHANNEL": "chromium"
+      }
+    },
+    "files": [
+      "tests/m3/project-view-local-browser.test.mjs",
+      "tests/m3/project-views-browser.test.mjs",
+      "tests/m3/project-view-native-gateway-browser.test.mjs",
+      "tests/m3/project-views.test.mjs",
+      "tests/m3/project-view-frame-bytes.test.mjs",
+      "tests/m3/project-view-browser-entry-workerd.test.mjs"
+    ],
+    "fileCount": 6,
+    "exitCode": 0,
+    "nodePass": 33,
+    "nodeSkip": 0,
+    "nodeFail": 0,
+    "originalStdoutFile": null,
+    "originalStdoutSha256": null,
+    "stdoutBoundary": "Original stdout was delivered through exec tool output and was not persisted as a raw file. This JSON is a factual report/projection and does not claim an original byte hash."
+  },
+  "repairChecks": {
+    "typecheck": {
+      "command": "npm run typecheck",
+      "exitCode": 0
+    },
+    "i18n": {
+      "command": "node scripts/i18n-check.mjs",
+      "exitCode": 0,
+      "reported": [
+        "i18n product dictionary coverage passed",
+        "i18n legacy CJK ratchet and translated shell declarations passed"
+      ]
+    },
+    "generatedFrame": {
+      "writeCommand": "node scripts/m3/build-project-view-frame.mjs --write",
+      "checkCommand": "node scripts/m3/build-project-view-frame.mjs --check",
+      "exitCode": 0
+    },
+    "diffCheck": {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    "toolResultChunks": [
+      "e0864a",
+      "a0fcc7"
+    ]
+  },
+  "reproduction": {
+    "beforeFix": {
+      "sourceHead": "a04edb4bd135f5bb24538def41a07f7f06314e0d",
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "committed navigation with an endless response",
+        "tests/m3/project-views-browser.test.mjs"
+      ],
+      "exitCode": 1,
+      "pass": 0,
+      "fail": 1,
+      "nodeReportedDurationMs": 1689.816333,
+      "toolResultChunk": "4ad016",
+      "observed": [
+        "Real Chromium framenavigated event reached the endless-response target.",
+        "Actual Node response writableEnded was false.",
+        "The existing navigation-ended host message did not appear; locator timed out at 1000ms."
+      ],
+      "originalStdoutFile": null,
+      "originalStdoutSha256": null
+    },
+    "intermediateAfterFix": {
+      "exitCode": 1,
+      "nodeReportedDurationMs": 5685.448375,
+      "toolResultChunk": "628f7a",
+      "reason": "The fixed host removed the frame before Playwright delivered the later framenavigated event. The test was changed to observe the actual HTTP navigation response before asserting host cleanup; product assertions were retained."
+    },
+    "fixedFocusedStreamCase": {
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "navigation to a committed endless HTTP response",
+        "tests/m3/project-views-browser.test.mjs"
+      ],
+      "exitCode": 0,
+      "pass": 1,
+      "fail": 0,
+      "nodeReportedDurationMs": 5775.541083,
+      "toolResultChunk": "e0f45a",
+      "alsoPassedInFinal33": true,
+      "observed": [
+        "Actual browser navigation request received HTTP 200; Node headersSent=true and writableEnded=false.",
+        "The original iframe was removed without a second load event (afterReadyLoads=0).",
+        "Original broker and transferred local port close calls were observed.",
+        "The original endless streaming response closed after its frame was removed.",
+        "A subsequent automatic read-only poll completed without recreating the same package frame.",
+        "Explicit Retry created a fresh working saved page."
+      ]
+    }
+  },
+  "coverage": [
+    "Exact original-port ended/navigation-ended terminal; malformed reason or extra keys rejected.",
+    "Closed/stale broker and queued success/read/publish results do not deliver data.",
+    "Real Node MessageChannel cyclic and BigInt payloads do not reject the async host handler; following valid read succeeds.",
+    "Native nonce/source/opaque origin, pre-connect legacy direct init, cookie/storage/parent DOM script denial.",
+    "Actual Gateway/D1/R2/Revision cold reconstruction and signed Entry fixed-frame bytes."
+  ],
+  "fullCheckBoundary": {
+    "fullCheckRerunForThisFix": false,
+    "previousImplementationCommit": "e689beb4a1babd8546405181cf3daf74625ed59d",
+    "previousNodePass": 3303,
+    "previousNodeSkip": 13,
+    "previousPythonPass": 8,
+    "previousLogSha256": "122701a27f1d77ca21ef50d239bcf14ae06bb71f7efc67f876a3cf49fce91405",
+    "scope": "The prior 3303/13/8 full check belongs only to e689. This follow-up claims only the separately recorded focused and static checks."
+  },
+  "cloudWrites": 0,
+  "modelTurnRunRequested": false,
+  "testRerunToProduceReceipt": false,
+  "laterBoundFixCommit": "9b993bd3d60e619e935be6f6fcb0d1dab8460e1c",
+  "laterCommitBinding": "Parent committed the exact five-file fix after these focused results; no new test execution or full-check claim is implied.",
+  "privateOriginalReceiptSha256": "4b5f2a35fe38a3c1b47596ac78a4d7b6e89eca47825b76e3a41bcaeda89d5fda"
+}

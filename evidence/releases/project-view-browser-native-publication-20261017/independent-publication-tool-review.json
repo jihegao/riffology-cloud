@@ -1,0 +1,89 @@
+{
+  "schema": "project-view-browser-native-independent-publication-tool-review/v1",
+  "reviewedAt": "2026-10-17T10:11:15.728113+00:00",
+  "method": "Independent static code, exact artifact hash, commit-blob/source-graph/asset closure and byte-identical transport comparison; no repeated test suite or real adapter call",
+  "implementationCommit": "9b993bd3d60e619e935be6f6fcb0d1dab8460e1c",
+  "artifacts": {
+    "prepare-native-replacement.mjs": {
+      "bytes": 15650,
+      "sha256": "cbeff9da9c74e90854c6d3275f2ce82b6438d838399dd2359bb701624dbd3c01"
+    },
+    "publish-native-replacement.mjs": {
+      "bytes": 33424,
+      "sha256": "6f3dd67f9fb07d12d99bac4d935f3d3c908d59e14040237e531038f1ac36d5a3"
+    },
+    "candidate-v2/gateway.mjs": {
+      "bytes": 5774614,
+      "sha256": "7d6520d39d8a76b274420772850c7638282be11e2fe7ee3406fb07413c809cb9"
+    },
+    "candidate-v2/source-graph.json": {
+      "bytes": 1003586,
+      "sha256": "c70e519c6d82e25be1c555ec6abd653ffa6a16f414d455b375741fe794e413dc"
+    },
+    "candidate-v2/assets-sha256.json": {
+      "bytes": 20499,
+      "sha256": "74ccd5b5771c7adb25c24227471498bb3c9604acd20fc7835f4342fdea5aa9be"
+    },
+    "candidate-v2/assets-manifest.json": {
+      "bytes": 15987,
+      "sha256": "6b823fe7a08407c470a2a03f1b2288a432fcbda8c7b5f6ea53cb433d5f674860"
+    },
+    "candidate-v2/build-manifest.json": {
+      "bytes": 6487,
+      "sha256": "4cd61146a0a59df5860e4b1f2479be78eb3bcc778675e35ef6aa930b00565240"
+    },
+    "candidate-v2/source-commit-binding-v2.json": {
+      "bytes": 4043,
+      "sha256": "53bcd124a9f732d9ca265d9b29a1c6751cfd933e44d80790fc67af0a7b09c2f3"
+    },
+    "baseline-complete.private.json": {
+      "bytes": 142572,
+      "sha256": "cd04fb90767acd07e3a36d09abd37fb93f1115f93e22ca5d2fc888ed5bff6e94"
+    },
+    "baseline-complete-safe.json": {
+      "bytes": 10179,
+      "sha256": "255c660a7a35c8ce981c8aecbce172214ef16b7cbeba55b43aea57f08fe8a952"
+    },
+    "metadata-reviews/1d1a4312-bbe4-4f04-9f07-73f456dad059/metadata-without-jwt.private.json": {
+      "bytes": 30410,
+      "sha256": "8451e8c5d7fa54df0c8ef06f10a01c997c1ccba182c0cd908e3437cad0df7ce8"
+    }
+  },
+  "checks": {
+    "candidateV2OnlyNoPreP2Fallback": true,
+    "flatPinsFrozen": true,
+    "all106Logical95Wire11KeptSecretsPreserved": true,
+    "all25Exports6Associations50NamespacesPreserved": true,
+    "noMigrationNewBindingNamespaceOrApp": true,
+    "browserPolicyStillAbsentAndRemoteClosed": true,
+    "allSettingsAndReviewedAnnotationsExactlyCompared": true,
+    "full16AppAllVersionRegistryRouteCronDomainNamespaceWitnessRequired": true,
+    "witnessSameRequestPhaseActualVersionFreshWithin5Minutes": true,
+    "postWitnessAfterOriginalAck": true,
+    "mergeProofNormalPR235TwoParentsActualMainAndProductionSourceGuard": true,
+    "humanGrantPlanPublisherAndBytesBeforeCredentialLoader": true,
+    "singleFrozenMultipartSinglePutOriginalWxLock": true,
+    "unknownStopsWithoutReplayFallbackRollbackOrUnlock": true,
+    "offlineFinalizeNoCredentialsOrNetwork": true,
+    "prepareAndSenderDummyPrivateWeakMapNoExposedRequestOrBind": true,
+    "factoryCallsAreSnapshots": true,
+    "realTransportExactlyEqualsReviewedOldFunction": true,
+    "oldPublisherAndV1FrozenArtifactsPreserved": true
+  },
+  "tests": {
+    "independentSuiteRerun": false,
+    "planAgentReportedFocusedPass": 31,
+    "planAgentReportedFocusedFail": 0,
+    "claimScope": "offline helper protocol tests only"
+  },
+  "verdict": "no-mustfix",
+  "publicationAuthorizedByThisReview": false,
+  "actualPR235MergeProofPending": true,
+  "actualHumanPublicationEnvelopePending": true,
+  "freshExecutionWitnessPending": true,
+  "assetsPublicReadbackPending": true,
+  "ordinaryUserAcceptancePending": true,
+  "cloudWritesDuringReview": 0,
+  "credentialsLoadedDuringReview": false,
+  "realAdapterInvokedDuringReview": false
+}

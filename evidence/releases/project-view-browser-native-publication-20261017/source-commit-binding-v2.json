@@ -1,0 +1,112 @@
+{
+  "schema": "project-view-browser-native-source-commit-binding/v1",
+  "observedAt": "2026-10-17T10:07:22.812878+00:00",
+  "implementationCommit": "9b993bd3d60e619e935be6f6fcb0d1dab8460e1c",
+  "observedHeadEqualsImplementation": true,
+  "productionPathsCleanAgainstCommit": true,
+  "productionPaths": [
+    "services",
+    "package.json",
+    "package-lock.json",
+    "scripts/m3/build-project-view-frame.mjs"
+  ],
+  "documentationChangesExcludedFromProductionEquality": true,
+  "candidateDir": "candidate-v2",
+  "artifacts": {
+    "gateway.mjs": {
+      "bytes": 5774614,
+      "sha256": "7d6520d39d8a76b274420772850c7638282be11e2fe7ee3406fb07413c809cb9"
+    },
+    "source-graph.json": {
+      "bytes": 1003586,
+      "sha256": "c70e519c6d82e25be1c555ec6abd653ffa6a16f414d455b375741fe794e413dc"
+    },
+    "esbuild-metafile.json": {
+      "bytes": 1111339,
+      "sha256": "3d12b5331659ae55d489b37b88fa11b0697254c8fcd8fb93d5f50c0dbac40139"
+    },
+    "assets-sha256.json": {
+      "bytes": 20499,
+      "sha256": "74ccd5b5771c7adb25c24227471498bb3c9604acd20fc7835f4342fdea5aa9be"
+    },
+    "assets-manifest.json": {
+      "bytes": 15987,
+      "sha256": "6b823fe7a08407c470a2a03f1b2288a432fcbda8c7b5f6ea53cb433d5f674860"
+    },
+    "build-manifest.json": {
+      "bytes": 6487,
+      "sha256": "4cd61146a0a59df5860e4b1f2479be78eb3bcc778675e35ef6aa930b00565240"
+    }
+  },
+  "sourceGraph": {
+    "inputs": 1123,
+    "currentDiskAllHashesMatch": true,
+    "trackedInputsMatchingCommit": 302,
+    "dependencyOrExternalInputsFrozenByHash": 821,
+    "dependencyFilesNotClaimedAsGitBlobs": true,
+    "canonicalSha256": "9369ee6aa9e51990b4b564d60503bfb56e4c96ca8c0a52ffa4205ee33de3fdf6"
+  },
+  "assets": {
+    "paths": 96,
+    "webAssetsMatchingCommit": 28,
+    "immutableAssetsMatchingTrackedStaticIndex": 68,
+    "immutableAssetsUnchangedFromPriorCandidate": true
+  },
+  "frame": {
+    "htmlSha256": "7f71d5ee385b0703471719289d25d4fc98d25b1e0a138bc2ded28a9c6ef06f4c",
+    "path": "/project-views/7f71d5ee385b0703471719289d25d4fc98d25b1e0a138bc2ded28a9c6ef06f4c/frame.html",
+    "generatedModuleSha256": "2f9e681cc252578f495bd7f36c334e241dc330da613f53f1e4f03f2d7dced482"
+  },
+  "fixSourceHashes": {
+    "services/project-views/frame-source.mjs": {
+      "bytes": 7229,
+      "sha256": "184366308bbbe79e3b47819b528337bdc391d42425077072ffaa6680c687b877"
+    },
+    "services/project-views/frame-html.mjs": {
+      "bytes": 7441,
+      "sha256": "2f9e681cc252578f495bd7f36c334e241dc330da613f53f1e4f03f2d7dced482"
+    },
+    "services/web/project-views.js": {
+      "bytes": 13723,
+      "sha256": "dbc510d01acefe75f789bbac9437d3951e7e9556deaab032617fb6e6c02ea636"
+    },
+    "tests/m3/project-views-browser.test.mjs": {
+      "bytes": 20107,
+      "sha256": "3716e8aff304474a3e2e38231fa94e2414d9ab105718506956ca1342d7feff1d"
+    },
+    "tests/m3/project-views.test.mjs": {
+      "bytes": 12727,
+      "sha256": "5774132627e539701d9efce573f5e99ac2bc8758bafa3c51f6e540513763f901"
+    }
+  },
+  "productionSourceHashes": {
+    "services/project-views/frame.mjs": {
+      "bytes": 1050,
+      "sha256": "a2354dac782288f090280f7eba7edab6f2f8fb0644bb80966f2c59cc0bef4089"
+    },
+    "services/web/project-view-local.js": {
+      "bytes": 4072,
+      "sha256": "f21e40c39a90073a38d354c3c67a3ff13387e1a4cb575e56ec06ed47f4d8d0f3"
+    },
+    "scripts/m3/build-project-view-frame.mjs": {
+      "bytes": 1183,
+      "sha256": "caaa7d214ce73cc7c9cfc6fc6febc81f5ee3c21d712813b11a0aa80ba5b2a96c"
+    },
+    "package.json": {
+      "bytes": 5371,
+      "sha256": "00fc21c4c9afe9874a3d4c3ef80ea4e2ec441a718397ac573873b6a04d1161ec"
+    },
+    "package-lock.json": {
+      "bytes": 214930,
+      "sha256": "9243ccf1179d9a487059ed507474543c2dc3c7beb9c1456f93ee94d77aaaa4cd"
+    }
+  },
+  "priorBuildManifestUnmodified": true,
+  "priorPreP2CandidateMustNotPublish": true,
+  "cloudWrites": 0,
+  "networkRequests": 0,
+  "bundleRebuilt": false,
+  "currentSourceOrMetadataGateChanged": false,
+  "actualMergeProofPending": true,
+  "freshExecutionWitnessStillRequired": true
+}

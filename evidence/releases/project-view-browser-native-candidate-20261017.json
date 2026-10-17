@@ -46,13 +46,13 @@
       },
       {
         "path": "services/project-views/frame-html.mjs",
-        "bytes": 7357,
-        "sha256": "01c1e7639b4d540b91be8a1066fc0a362d39c280f036a5014e823a394dca37ab"
+        "bytes": 7441,
+        "sha256": "2f9e681cc252578f495bd7f36c334e241dc330da613f53f1e4f03f2d7dced482"
       },
       {
         "path": "services/project-views/frame-source.mjs",
-        "bytes": 7145,
-        "sha256": "2007ace697683385b8bde94a363fd3dcee3626916d1c7a3b1447b8f9bcf3dc93"
+        "bytes": 7229,
+        "sha256": "184366308bbbe79e3b47819b528337bdc391d42425077072ffaa6680c687b877"
       },
       {
         "path": "services/project-views/frame.mjs",
@@ -76,14 +76,20 @@
       },
       {
         "path": "services/web/project-views.js",
-        "bytes": 13413,
-        "sha256": "4d4d30eca134080cfa2ba5c4b4e608ac26be277f62130aa9ca839e5a127c5796"
+        "bytes": 13723,
+        "sha256": "dbc510d01acefe75f789bbac9437d3951e7e9556deaab032617fb6e6c02ea636"
       }
     ],
-    "changedApplicationClosureSha256": "81a34d54c1b62973cb3483c4a480378f710c7819d0576cd0cee85037a1702d59",
-    "frameHtmlSha256": "c68704b393d12755bc65e3b937666cfd7e0d2592bc1d8a5d60ff8287b0f3b58d",
-    "implementationCommit": "e689beb4a1babd8546405181cf3daf74625ed59d",
-    "productionInputsUnchangedAfterFullCheck": true
+    "changedApplicationClosureSha256": "4cb276145c6de6a41a4a296b59d1fd74d9659a02532c0f0bf607d81a4d88efe6",
+    "frameHtmlSha256": "7f71d5ee385b0703471719289d25d4fc98d25b1e0a138bc2ded28a9c6ef06f4c",
+    "implementationCommit": "9b993bd3d60e619e935be6f6fcb0d1dab8460e1c",
+    "productionInputsUnchangedAfterFullCheck": false,
+    "previousFullCheckSource": {
+      "implementationCommit": "e689beb4a1babd8546405181cf3daf74625ed59d",
+      "changedApplicationClosureSha256": "81a34d54c1b62973cb3483c4a480378f710c7819d0576cd0cee85037a1702d59",
+      "frameHtmlSha256": "c68704b393d12755bc65e3b937666cfd7e0d2592bc1d8a5d60ff8287b0f3b58d"
+    },
+    "postFullCheckChange": "Navigation pagehide terminal and malformed structured-clone message guard; separate focused checks below, no second full check claimed."
   },
   "implementation": {
     "execution": "browser-local",
@@ -95,7 +101,9 @@
     "oldRemotePolicyEnabled": false,
     "ordinaryInvitationAndArchiveRecheckedAfterReads": true,
     "failedPackageRequiresExplicitRetry": true,
-    "checkedInFrameBytesStableAcrossNodeAndWorkerd": true
+    "checkedInFrameBytesStableAcrossNodeAndWorkerd": true,
+    "navigationWithoutSecondLoadClosesOriginalFrameAndBroker": true,
+    "cyclicAndBigIntMessagesRejectedBeforeAuthorization": true
   },
   "fullCheck": {
     "schema": "jhg46-browser-native-local-full-check/v1",
@@ -116,7 +124,8 @@
     "nodeFail": 0,
     "pythonPass": 8,
     "hostedCiPassed": false,
-    "hostedCiQuotaWaiverRetained": true
+    "hostedCiQuotaWaiverRetained": true,
+    "sourceCommit": "e689beb4a1babd8546405181cf3daf74625ed59d"
   },
   "localCoverage": [
     "Actual signed Entry to Gateway fixed frame GET/HEAD and local module; unsigned transport denied",
@@ -132,7 +141,9 @@
       "ordinary invitation and archive equivalence after switching POST admission to GET",
       "post-invitation-query archive race",
       "compiled frame byte identity drift",
-      "same-package execution replay after failed read poll"
+      "same-package execution replay after failed read poll",
+      "pagehide terminal while destination body remains open and no second load fires",
+      "cyclic/BigInt native MessageChannel message guard"
     ]
   },
   "ordinaryActorPreparation": {
@@ -156,5 +167,47 @@
     "Only local Chromium fixtures were tested; Safari/WebKit, Firefox and real ordinary-user authoring/save/execution acceptance remain pending.",
     "Existing remote resources and image history are retained and remain separately gated; this candidate does not start or retire them."
   ],
-  "done": false
+  "done": false,
+  "postFullCheckValidation": {
+    "sourceCommit": "9b993bd3d60e619e935be6f6fcb0d1dab8460e1c",
+    "fullCheckRerun": false,
+    "focusedNativeChecks": {
+      "pass": 33,
+      "fail": 0,
+      "skip": 0,
+      "evidence": "evidence/releases/project-view-browser-native-followup-20261017.json",
+      "evidenceKind": "projection of completed exec tool results; not an original stdout log",
+      "privateOriginalReceiptSha256": "4b5f2a35fe38a3c1b47596ac78a4d7b6e89eca47825b76e3a41bcaeda89d5fda",
+      "exactStartAndEndTimestampsRecorded": false,
+      "originalStdoutSaved": false
+    },
+    "sharedFrameLegacyChecks": {
+      "pass": 48,
+      "fail": 0,
+      "skip": 0,
+      "schema": "jhg46-native-frame-legacy-followup/v1",
+      "startedAt": "2026-10-17T10:01:41.900346+00:00",
+      "finishedAt": "2026-10-17T10:01:47.583599+00:00",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=2",
+        "tests/m3/project-view-remote-browser.test.mjs",
+        "tests/m3/project-view-authenticated-browser.test.mjs",
+        "tests/m3/project-view-runtime-bundle.test.mjs",
+        "tests/m3/project-view-runtime-pipe.test.mjs",
+        "tests/m3/project-view-runtime-preflight.test.mjs",
+        "tests/m3/isolated-browser.test.mjs"
+      ],
+      "exitCode": 0,
+      "logPath": ".local/jhg46-browser-native-check-20261017/legacy-frame-followup.log",
+      "logSha256": "462df8c793d8e19046eee072379dd7ca77ba2a860f3a9798226fc7c6d562f120",
+      "logBytes": 5008,
+      "realCloudRequested": false
+    },
+    "typecheck": "passed",
+    "i18n": "passed",
+    "frameGenerationCheck": "passed",
+    "diffCheck": "passed"
+  }
 }
