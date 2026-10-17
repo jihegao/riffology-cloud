@@ -1,0 +1,199 @@
+TAP version 13
+# Subtest: exec resolve clears its deadline and even an already-queued timeout cannot abort the exited process
+ok 1 - exec resolve clears its deadline and even an already-queued timeout cannot abort the exited process
+  ---
+  duration_ms: 0.648958
+  type: 'test'
+  ...
+# Subtest: exec reject clears its deadline and even an already-queued timeout cannot abort the exited process
+ok 2 - exec reject clears its deadline and even an already-queued timeout cannot abort the exited process
+  ---
+  duration_ms: 0.067625
+  type: 'test'
+  ...
+# Subtest: an already-exited exec result cancels the newly scheduled timer before it can signal
+ok 3 - an already-exited exec result cancels the newly scheduled timer before it can signal
+  ---
+  duration_ms: 0.093666
+  type: 'test'
+  ...
+# Subtest: exec setup rejection leaves no timer or orphan abort signal
+ok 4 - exec setup rejection leaves no timer or orphan abort signal
+  ---
+  duration_ms: 0.163458
+  type: 'test'
+  ...
+# Subtest: inspect/setup failure and explicit session close detach the exec timer before container destruction
+ok 5 - inspect/setup failure and explicit session close detach the exec timer before container destruction
+  ---
+  duration_ms: 0.114542
+  type: 'test'
+  ...
+# Subtest: the original deadline still aborts a live process exactly once
+ok 6 - the original deadline still aborts a live process exactly once
+  ---
+  duration_ms: 0.0735
+  type: 'test'
+  ...
+# Subtest: pending exec setup never arms an unobservable timer and an expired late handle is rejected without a late abort
+ok 7 - pending exec setup never arms an unobservable timer and an expired late handle is rejected without a late abort
+  ---
+  duration_ms: 0.352583
+  type: 'test'
+  ...
+# Subtest: an already expired deadline never executes a native process
+ok 8 - an already expired deadline never executes a native process
+  ---
+  duration_ms: 0.0955
+  type: 'test'
+  ...
+# Subtest: runtime preflight hashes all 176 frozen package files and emits only the bounded compatibility receipt
+ok 9 - runtime preflight hashes all 176 frozen package files and emits only the bounded compatibility receipt
+  ---
+  duration_ms: 137.940083
+  type: 'test'
+  ...
+# Subtest: runtime preflight rejects receipt replacement and vendor byte changes before reporting readiness
+ok 10 - runtime preflight rejects receipt replacement and vendor byte changes before reporting readiness
+  ---
+  duration_ms: 75.157291
+  type: 'test'
+  ...
+# Subtest: a pinned malformed manifest cannot escape paths, duplicate work, change package pins, or evade size bounds
+ok 11 - a pinned malformed manifest cannot escape paths, duplicate work, change package pins, or evade size bounds
+  ---
+  duration_ms: 94.5865
+  type: 'test'
+  ...
+# Subtest: runtime preflight rejects linked package files and linked parent directories
+ok 12 - runtime preflight rejects linked package files and linked parent directories
+  ---
+  duration_ms: 83.191416
+  type: 'test'
+  ...
+# Subtest: runtime preflight requires Linux amd64, the dedicated effective identity, and no process capabilities
+ok 13 - runtime preflight requires Linux amd64, the dedicated effective identity, and no process capabilities
+  ---
+  duration_ms: 96.809208
+  type: 'test'
+  ...
+# Subtest: runtime preflight permits only an absolute nonempty PATH and refuses inherited home or credential variables
+ok 14 - runtime preflight permits only an absolute nonempty PATH and refuses inherited home or credential variables
+  ---
+  duration_ms: 70.249458
+  type: 'test'
+  ...
+# Subtest: a correctly hashed receipt still rejects incompatible package metadata and Chromium revision
+ok 15 - a correctly hashed receipt still rejects incompatible package metadata and Chromium revision
+  ---
+  duration_ms: 125.349333
+  type: 'test'
+  ...
+# Subtest: preflight reader waits for both EOF and successful process exit before opening the gate
+ok 16 - preflight reader waits for both EOF and successful process exit before opening the gate
+  ---
+  duration_ms: 1.418583
+  type: 'test'
+  ...
+# Subtest: preflight reader rejects EOF, floods, malformed receipts, mismatched pins, and nonzero exit
+ok 17 - preflight reader rejects EOF, floods, malformed receipts, mismatched pins, and nonzero exit
+  ---
+  duration_ms: 0.463084
+  type: 'test'
+  ...
+# (node:94043) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: one frozen start, repeated request preserves original expiry, lookup is owner-only, and proof precedes release
+ok 18 - one frozen start, repeated request preserves original expiry, lookup is owner-only, and proof precedes release
+  ---
+  duration_ms: 5.924959
+  type: 'test'
+  ...
+# Subtest: tampered package, mismatched generation and write-like input do not reach native/capacity
+ok 19 - tampered package, mismatched generation and write-like input do not reach native/capacity
+  ---
+  duration_ms: 0.707708
+  type: 'test'
+  ...
+# Subtest: cold reconstruction fences the original actor and retains capacity through delayed assignment and quiet proof
+ok 20 - cold reconstruction fences the original actor and retains capacity through delayed assignment and quiet proof
+  ---
+  duration_ms: 1.076375
+  type: 'test'
+  ...
+# Subtest: close before acquire ACK creates terminal capacity proof and a late acquire cannot launch
+ok 21 - close before acquire ACK creates terminal capacity proof and a late acquire cannot launch
+  ---
+  duration_ms: 0.960417
+  type: 'test'
+  ...
+# Subtest: close during native preparation blocks late output and destroys the same late original start
+ok 22 - close during native preparation blocks late output and destroys the same late original start
+  ---
+  duration_ms: 0.8445
+  type: 'test'
+  ...
+# Subtest: unknown destroy retains capacity and original alarm; successful original retry supplies proof
+ok 23 - unknown destroy retains capacity and original alarm; successful original retry supplies proof
+  ---
+  duration_ms: 0.822875
+  type: 'test'
+  ...
+# Subtest: idle expiry closes rather than silently extending the original session
+ok 24 - idle expiry closes rather than silently extending the original session
+  ---
+  duration_ms: 2.505041
+  type: 'test'
+  ...
+# Subtest: capacity release lost ACK preserves one durable proof and retries it after reconstruction
+ok 25 - capacity release lost ACK preserves one durable proof and retries it after reconstruction
+  ---
+  duration_ms: 1.130583
+  type: 'test'
+  ...
+# Subtest: transient cold-recovery storage failure retries original cleanup without extending the persisted guard
+ok 26 - transient cold-recovery storage failure retries original cleanup without extending the persisted guard
+  ---
+  duration_ms: 0.967667
+  type: 'test'
+  ...
+# Subtest: browser failure closes the original runtime and never executes a replacement
+ok 27 - browser failure closes the original runtime and never executes a replacement
+  ---
+  duration_ms: 0.799625
+  type: 'test'
+  ...
+# Subtest: real pipe EOF, malformed output and output flood fence the original actor; unknown destroy never returns capacity
+    # Subtest: eof
+    ok 1 - eof
+      ---
+      duration_ms: 2.498416
+      type: 'test'
+      ...
+    # Subtest: malformed
+    ok 2 - malformed
+      ---
+      duration_ms: 1.378167
+      type: 'test'
+      ...
+    # Subtest: flood
+    ok 3 - flood
+      ---
+      duration_ms: 4.233125
+      type: 'test'
+      ...
+    1..3
+ok 28 - real pipe EOF, malformed output and output flood fence the original actor; unknown destroy never returns capacity
+  ---
+  duration_ms: 8.295916
+  type: 'test'
+  ...
+1..28
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 719.6245

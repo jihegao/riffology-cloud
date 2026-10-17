@@ -1,0 +1,67 @@
+TAP version 13
+# (node:93993) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Runtime waits for bounded preflight EOF and exit before any browser exec or private init
+ok 1 - actual Runtime waits for bounded preflight EOF and exit before any browser exec or private init
+  ---
+  duration_ms: 5.137417
+  type: 'test'
+  ...
+# Subtest: actual Runtime rejects malformed preflight, missing inspection and mismatched nonempty image without private init
+    # Subtest: {"output":"{}\\n"}
+    ok 1 - {"output":"{}\\n"}
+      ---
+      duration_ms: 1.284417
+      type: 'test'
+      ...
+    # Subtest: {"output":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    ok 2 - {"output":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      ---
+      duration_ms: 1.085292
+      type: 'test'
+      ...
+    # Subtest: {"inspection":null}
+    ok 3 - {"inspection":null}
+      ---
+      duration_ms: 0.771708
+      type: 'test'
+      ...
+    # Subtest: {"inspection":{"image":"registry.example/wrong@sha256:eeeeeeeeeeeeeeeeeeeeeeeeee
+    ok 4 - {"inspection":{"image":"registry.example/wrong@sha256:eeeeeeeeeeeeeeeeeeeeeeeeee
+      ---
+      duration_ms: 1.141
+      type: 'test'
+      ...
+    1..4
+ok 2 - actual Runtime rejects malformed preflight, missing inspection and mismatched nonempty image without private init
+  ---
+  duration_ms: 4.501791
+  type: 'test'
+  ...
+# Subtest: closing the original actor while preflight is pending blocks every later browser exec and init
+ok 3 - closing the original actor while preflight is pending blocks every later browser exec and init
+  ---
+  duration_ms: 0.839041
+  type: 'test'
+  ...
+# Subtest: a browser exec handle returned after original actor close cannot send private init
+ok 4 - a browser exec handle returned after original actor close cannot send private init
+  ---
+  duration_ms: 0.768833
+  type: 'test'
+  ...
+# Subtest: fixture teardown joins a start still validating real digests before closing SQLite
+ok 5 - fixture teardown joins a start still validating real digests before closing SQLite
+  ---
+  duration_ms: 153.74375
+  type: 'test'
+  ...
+1..5
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 253.119875
