@@ -10,7 +10,8 @@ export const scopes=Object.fromEntries(['alpha','beta'].map(user=>[user,{tenantI
 /** Synthetic identities and initialization only. Saves, packages and artifact
  * receipts come from the real Gateway/Workspace/RevisionStore and local D1/R2.
  * This worker is bundled only inside this test, never a deployment entrypoint. */
-export async function manualPageFixture(t){
+export async function manualPageFixture(t,{browserLocal=false}={}){
+ const browserPolicy=JSON.stringify({schema:'project-view-browser-policy/v1',enabled:true,startsAt:Date.now()-1000,endsAt:Date.now()+600000,dataEgress:'accepted',grants:Object.entries(scopes).map(([user,scope])=>({scope,actor:{userId:user,authVersion:1}}))});
  const source=`
  import {WorkspaceAgent as BaseWorkspace} from './services/workspace/durable.ts';
  export {RevisionStore} from './services/turn-runtime/revision-store.ts';
@@ -18,11 +19,13 @@ export async function manualPageFixture(t){
  import {catalogDatabase} from './services/catalog/database.ts';
  import {createGatewayManualSaveServices} from './services/gateway/manual-save-services.ts';
  import {createGatewayProjectViewServices} from './services/gateway/project-view-services.ts';
+ import {serveProjectViewBrowserFrame} from './services/project-views/browser-delivery.ts';
  import {initialCheckpoint} from './services/runtime/starter.ts';
  import {checkpointKey} from './services/runtime/core.ts';
  import {canonicalWorkspaceMarker,workspaceDigest,workspaceAgentName} from './services/workspace/protocol.ts';
  const appOrigin=${JSON.stringify(appOrigin)},scopes=${JSON.stringify(scopes)};
- const localEnv=env=>({...env,APP_ORIGIN:appOrigin,BROWSER_PREVIEW_EXECUTION_ORIGIN:'http://localhost:8821'});
+ let browserPolicyEnabled=true;
+ const localEnv=env=>({...env,APP_ORIGIN:appOrigin,BROWSER_PREVIEW_EXECUTION_ORIGIN:'http://localhost:8821',...(${JSON.stringify(browserLocal)}?{PROJECT_VIEW_BROWSER_POLICY_JSON:browserPolicyEnabled?${JSON.stringify(browserPolicy)}:'{"enabled":false}'}:{})});
  export class WorkspaceAgent extends BaseWorkspace {
   #packageReads=0;
   constructor(ctx,env){super(ctx,localEnv(env));}
@@ -41,6 +44,8 @@ export async function manualPageFixture(t){
  }
  export default {async fetch(request,env){
   const url=new URL(request.url),bound=localEnv(env),stub=scope=>env.WORKSPACE_AGENT.getByName(workspaceAgentName(scope.tenantId,scope.workspaceId));
+  if(url.pathname==='/__fixture/disable-browser-policy'){browserPolicyEnabled=false;return Response.json({ok:true});}
+  if(${JSON.stringify(browserLocal)}){const frame=serveProjectViewBrowserFrame(request,bound);if(frame)return frame;}
   if(url.pathname==='/__fixture/seed'){for(const scope of Object.values(scopes))await stub(scope).seedForTest(scope);return Response.json({ok:true});}
   if(url.pathname==='/__fixture/diagnostics'){if(url.searchParams.get('user')==='alpha')return Response.json(await stub(scopes.alpha).diagnosticsForTest());const result={};for(const [name,scope]of Object.entries(scopes))result[name]=await stub(scope).diagnosticsForTest();return Response.json(result);}
   if(url.pathname==='/__fixture/package-reads')return Response.json({reads:await stub(scopes.alpha).packageReadsForTest()});
@@ -69,6 +74,10 @@ export async function manualPageFixture(t){
   ["INSERT INTO catalog_projects(id,tenant_id,owner_user_id,workspace_id,title,starter_version,status,created_at,updated_at) VALUES(?,?,?,?,'Synthetic pages','blank-v1','ready',1000,1000)",[s.projectId,s.tenantId,user,s.workspaceId]],
   ["INSERT INTO catalog_workspaces(id,project_id,tenant_id,owner_user_id,status,created_at,updated_at) VALUES(?,?,?,?,'ready',1000,1000)",[s.workspaceId,s.projectId,s.tenantId,user]],
  ])await db.prepare(sql).bind(...values).run();
+ if(browserLocal)for(const user of Object.keys(scopes)){
+  await db.prepare("INSERT INTO catalog_invitations(id,token_hash,normalized_email,state,issued_by,created_at,expires_at) VALUES(?,?,?,'pending',?,1000,?)").bind('browser-invite-'+user,user==='alpha'?'a'.repeat(64):'b'.repeat(64),user+'@example.test',user==='alpha'?'beta':'alpha',Date.now()+600000).run();
+  await db.prepare("UPDATE catalog_invitations SET state='accepted',accepted_by=?,accepted_at=1001 WHERE id=?").bind(user,'browser-invite-'+user).run();
+ }
  let manualPosts=0;
  const request=async(path,{user='alpha',method='GET',body,key}={})=>{
   const headers={'x-synthetic-user':user,Origin:appOrigin};if(body!==undefined)headers['content-type']='application/json';if(key)headers['Idempotency-Key']=key;
@@ -79,7 +88,7 @@ export async function manualPageFixture(t){
  const read=async(path,options)=>{const r=await request(path,options);if(r.status!==200)throw Error('fixture read denied '+r.status+': '+JSON.stringify(r.body));return r.body;};
  await read('/__fixture/seed');
  const base=user=>'/api/workspaces/'+scopes[user].workspaceId;
- return {get db(){return db;},get bucket(){return bucket;},base,request,read,get outbound(){return outbound;},get manualPosts(){return manualPosts;},
+ return {get db(){return db;},get bucket(){return bucket;},base,request,read,rawRequest:(path,init={})=>mf.dispatchFetch(appOrigin+path,init),get outbound(){return outbound;},get manualPosts(){return manualPosts;},
   async restart(){await mf.dispose();mf=new Miniflare(options);await mf.ready;db=await mf.getD1Database('CATALOG',worker);bucket=await mf.getR2Bucket('WORKSPACE_CHECKPOINTS',worker);},
   async save(user,key,files){const current=await read(base(user)+'/manual-saves',{user});return request(base(user)+'/manual-saves',{user,method:'POST',key,body:{schema:'project.manual-save/v1',base:current.base,changes:Object.entries(files).map(([path,content])=>({path,encoding:'utf8',content})),deletes:[],artifacts:[{path:'docs/data.json',title:'Synthetic upload / unverified'}]}});},
   async footprint(){const fences=(await db.prepare('SELECT operation_id,state,terminal_status,revision_id FROM catalog_manual_save_fences ORDER BY operation_id').all()).results;return {journal:await read('/__fixture/diagnostics'),fences,keys:(await bucket.list()).objects.map(x=>x.key).sort(),manualPosts,outbound};},

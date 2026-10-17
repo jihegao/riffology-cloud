@@ -3,7 +3,7 @@
   "date": "2026-10-17",
   "owner": "jihegao",
   "issue": "https://github.com/jihegao/riffology-cloud/issues/214",
-  "decisionStatus": "pending explicit user selection between Worker API and native DOM boundary",
+  "decisionStatus": "Pending at this actual probe; the user subsequently selected native DOM and accepted authorized-data egress. See docs/project-view-browser-local-contract-20261017.md.",
   "experimentKind": "local real Chromium synthetic feasibility spike; not production implementation or target acceptance",
   "executed": {
     "runs": 1,
@@ -219,6 +219,7 @@
     "Cookie controls cover this synthetic HttpOnly Strict /api cookie and observed requests only, not every Cookie or browser credential policy."
   ],
   "reproduce": {
+    "recordedBaselineCommit": "5924c8c97c1faab281f78e6e8ddeabf3abe7a8a1",
     "command": "node scripts/m3/project-view-browser-local-feasibility.mjs --output /absolute/path/to/a-new-local-output-directory",
     "requires": [
       "Already installed Playwright and Chromium channel",

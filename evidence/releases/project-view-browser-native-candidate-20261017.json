@@ -1,0 +1,158 @@
+{
+  "schema": "project-view-browser-native-candidate/v1",
+  "date": "2026-10-17",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/214",
+  "pullRequest": "https://github.com/jihegao/riffology-cloud/pull/235",
+  "owner": "jihegao",
+  "contract": "docs/project-view-browser-local-contract-20261017.md",
+  "selection": {
+    "runtime": "native DOM in user browser",
+    "userAcceptedAuthorizedProjectDataEgress": true,
+    "completeNoEgressClaim": false
+  },
+  "source": {
+    "testedBaseCommit": "5924c8c97c1faab281f78e6e8ddeabf3abe7a8a1",
+    "testedWorkingTree": true,
+    "changedApplicationFiles": [
+      {
+        "path": "package.json",
+        "bytes": 5371,
+        "sha256": "00fc21c4c9afe9874a3d4c3ef80ea4e2ec441a718397ac573873b6a04d1161ec"
+      },
+      {
+        "path": "services/gateway/app.ts",
+        "bytes": 60141,
+        "sha256": "4b8699d766efaf60aa085196ab6cbeb9b4d21b50ab6b3ed1325b3d7310f7e6a4"
+      },
+      {
+        "path": "services/gateway/index.ts",
+        "bytes": 19187,
+        "sha256": "5589fbe01be3e018f2697e86a61ba6fdc6159731a9509a7ab5264c2e6064d9f1"
+      },
+      {
+        "path": "services/gateway/project-view-services.ts",
+        "bytes": 3855,
+        "sha256": "1b44b1c128166f7d08d96720b12ac2aa3896f307eceafec714fe2994c7c30fbf"
+      },
+      {
+        "path": "services/project-views/browser-delivery.ts",
+        "bytes": 1016,
+        "sha256": "728aa2a84603434d2bd1c548e7ab347ad8a617ca1e668449be338b452585ba55"
+      },
+      {
+        "path": "services/project-views/browser-policy.ts",
+        "bytes": 2713,
+        "sha256": "d7e3d0543c2d0982eb7138b2c3dd6a00555429163541cae21e7660635e67f179"
+      },
+      {
+        "path": "services/project-views/frame-html.mjs",
+        "bytes": 7357,
+        "sha256": "01c1e7639b4d540b91be8a1066fc0a362d39c280f036a5014e823a394dca37ab"
+      },
+      {
+        "path": "services/project-views/frame-source.mjs",
+        "bytes": 7145,
+        "sha256": "2007ace697683385b8bde94a363fd3dcee3626916d1c7a3b1447b8f9bcf3dc93"
+      },
+      {
+        "path": "services/project-views/frame.mjs",
+        "bytes": 1050,
+        "sha256": "a2354dac782288f090280f7eba7edab6f2f8fb0644bb80966f2c59cc0bef4089"
+      },
+      {
+        "path": "services/project-views/package.ts",
+        "bytes": 7612,
+        "sha256": "de2a393919321d1c7575065dba0aeaab449af2a8da62c165bafa655f7aa39cce"
+      },
+      {
+        "path": "services/turn-runtime/managed-testing-instructions.ts",
+        "bytes": 13139,
+        "sha256": "47014c6200afc03799c9cf0311f075bfef155e2cdc76855b6fd0085931af4e96"
+      },
+      {
+        "path": "services/web/project-view-local.js",
+        "bytes": 4072,
+        "sha256": "f21e40c39a90073a38d354c3c67a3ff13387e1a4cb575e56ec06ed47f4d8d0f3"
+      },
+      {
+        "path": "services/web/project-views.js",
+        "bytes": 13413,
+        "sha256": "4d4d30eca134080cfa2ba5c4b4e608ac26be277f62130aa9ca839e5a127c5796"
+      }
+    ],
+    "changedApplicationClosureSha256": "81a34d54c1b62973cb3483c4a480378f710c7819d0576cd0cee85037a1702d59",
+    "frameHtmlSha256": "c68704b393d12755bc65e3b937666cfd7e0d2592bc1d8a5d60ff8287b0f3b58d"
+  },
+  "implementation": {
+    "execution": "browser-local",
+    "transport": "native-dom/v1",
+    "opaqueSandbox": "allow-scripts without allow-same-origin",
+    "broker": "existing verified canonical package and readonly broker",
+    "remoteFallback": false,
+    "newBrowserPolicyDefaultClosed": true,
+    "oldRemotePolicyEnabled": false,
+    "ordinaryInvitationAndArchiveRecheckedAfterReads": true,
+    "failedPackageRequiresExplicitRetry": true,
+    "checkedInFrameBytesStableAcrossNodeAndWorkerd": true
+  },
+  "fullCheck": {
+    "schema": "jhg46-browser-native-local-full-check/v1",
+    "startedAt": "2026-10-17T09:37:55.078549+00:00",
+    "finishedAt": "2026-10-17T09:45:24.486037+00:00",
+    "command": "npm run check",
+    "exitCode": 0,
+    "logPath": ".local/jhg46-browser-native-check-20261017/full-check.log",
+    "logBytes": 350692,
+    "logSha256": "122701a27f1d77ca21ef50d239bcf14ae06bb71f7efc67f876a3cf49fce91405",
+    "node": "v26.10.0",
+    "openssl": "OpenSSL 3.6.4 25 Aug 2026 (Library: OpenSSL 3.6.4 25 Aug 2026)",
+    "browserChannel": "chromium",
+    "cloudExecutionEnabledByEnvironment": false,
+    "environmentPolicy": "preserve only PATH/HOME/TMPDIR/USER/LOGNAME/LANG/LC_ALL; prepend existing OpenSSL3; explicit Chromium",
+    "nodePass": 3303,
+    "nodeSkip": 13,
+    "nodeFail": 0,
+    "pythonPass": 8,
+    "hostedCiPassed": false,
+    "hostedCiQuotaWaiverRetained": true
+  },
+  "localCoverage": [
+    "Actual signed Entry to Gateway fixed frame GET/HEAD and local module; unsigned transport denied",
+    "Real synthetic ordinary invitation and initial operator distinction; owner/authVersion, project scope and archive, including post-invitation-query race",
+    "Real local Gateway, D1/R2, Revision manual save V1/V2, Workerd restart and Chromium DOM/module/CSS/media/broker interaction",
+    "Synthetic explicit skill authoring and original-text cold recovery; no real provider request",
+    "Nonce/source/origin, one port transfer, credential/storage/parent DOM script denial, late response fencing",
+    "Navigation/script/load and authority/read failure cleanup, automatic poll recovery does not re-execute the same package; explicit Retry only"
+  ],
+  "independentReview": {
+    "remainingMustFix": 0,
+    "repairsVerified": [
+      "ordinary invitation and archive equivalence after switching POST admission to GET",
+      "post-invitation-query archive race",
+      "compiled frame byte identity drift",
+      "same-package execution replay after failed read poll"
+    ]
+  },
+  "ordinaryActorPreparation": {
+    "authenticatedOrdinaryInvitedOwnerReadonlyVerified": true,
+    "observedAt": "2026-10-17T09:07:25.434Z",
+    "authVersion": 2,
+    "privateReceiptSha256": "69e9633339041f1d024e583469a15fb4f0f15ca6addda672178fe9c40d7b1f98",
+    "projectCreationSaveOrExecutionAuthorizedByThatLogin": false
+  },
+  "currentProductionChanged": false,
+  "deployed": false,
+  "realAuthenticatedUserAcceptance": false,
+  "fullJhg56Acceptance": false,
+  "cloudContainerOrModelTurnRunRequested": false,
+  "feesKnown": false,
+  "globalZeroExecutionOrCostClaim": false,
+  "limitations": [
+    "Page self-navigation can send already-authorized project data; user explicitly accepted this native DOM boundary.",
+    "Opaque script isolation does not guarantee every induced browser request omits existing site cookies.",
+    "No application-enforced hard CPU/RAM quota; arbitrary DOM code can freeze or crash the browser.",
+    "Only local Chromium fixtures were tested; Safari/WebKit, Firefox and real ordinary-user authoring/save/execution acceptance remain pending.",
+    "Existing remote resources and image history are retained and remain separately gated; this candidate does not start or retire them."
+  ],
+  "done": false
+}

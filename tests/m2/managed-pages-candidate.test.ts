@@ -6,6 +6,7 @@ import {initialWorkspaceArchive} from '../../services/turn-runtime/initial-works
 import {workspaceArchiveReader,workspaceFileIndex} from '../../services/turn-runtime/workspace-file-index.ts';
 import {buildProjectViews,readProjectViewsArchive,VIEW_LIMITS} from '../../services/project-views/package.ts';
 import {digest} from '../../services/simulation/source.ts';
+import {managedTestingInstructions} from '../../services/turn-runtime/managed-testing-instructions.ts';
 
 const encode=(text:string)=>new TextEncoder().encode(text);
 const manifest={schema:'project.views/v1',files:['app/home.html','app/report.html','app/main.mjs','app/value.mjs','app/style.css','app/pixel.svg','docs/data.json'],views:[{id:'home',title:'Dashboard',entrypoint:'app/home.html'},{id:'report',title:'Report',entrypoint:'app/report.html'}]};
@@ -28,6 +29,12 @@ const text=(archive:Uint8Array,path:string)=>new TextDecoder('utf8',{fatal:true}
 function reason(raw:unknown,expected:string,base?:Uint8Array){assert.throws(()=>saved(raw,base),(error:unknown)=>error instanceof ManagedCandidateError&&error.diagnostic.reason===expected);}
 
 test('pages Turn produces a validated two-page package without a model and reports truthful authoring provenance',async()=>{
+ const pageInstructions=managedTestingInstructions.split('\n').find(line=>line.startsWith('- For general project HTML pages'))!;
+ assert.match(pageInstructions,/native DOM JavaScript locally in the user browser inside an opaque sandboxed iframe/);
+ assert.match(pageInstructions,/local computation and interaction use this pages operation without ModelSpec/);
+ assert.match(pageInstructions,/no canonical project writes, credentials or cross-project access/);
+ assert.match(pageInstructions,/may send already-authorized project bytes out through browser navigation/);
+ assert.match(managedTestingInstructions,/Network, credentials and subagents are unavailable/);
  const result=saved(),filesSha256=await digest(result.filesArchive);
  assert.deepEqual(result.validation,{status:'checked',schemaVersion:3,operation:'pages',traceValidation:'not-provided',execution:'not-recomputed'});
  assert.deepEqual(JSON.parse(text(result.filesArchive,'app/views.json')),manifest);
