@@ -606,6 +606,139 @@
     "rawManifestAndConfigHashVerified": false,
     "expectedImagePinAuthority": "Root offline Engine manifest projection only; not raw-body hash evidence or registry readback"
   },
+  "registryAndCostResearch": {
+    "retrievedOn": "2026-10-17",
+    "researchOnly": true,
+    "accountBillingOrSubscriptionsRead": false,
+    "credentialsReadGeneratedOrTransferred": false,
+    "imageTagExportPushOrRegistryAuthenticationPerformed": false,
+    "sources": {
+      "containersPricing": "https://developers.cloudflare.com/containers/platform/pricing/",
+      "accountImageStorageLimit": "https://developers.cloudflare.com/containers/platform/limits/#account-limits",
+      "managedRegistryImageManagement": "https://developers.cloudflare.com/containers/guides/image-management/",
+      "registryCredentialsCommand": "https://developers.cloudflare.com/workers/wrangler/commands/containers/#registries-credentials",
+      "accountPermissionNames": "https://developers.cloudflare.com/fundamentals/api/reference/permissions/",
+      "dockerSinglePlatformPush": "https://docs.docker.com/reference/cli/docker/image/push/#options",
+      "dockerCliV29_8_1Implementation": "https://github.com/docker/cli/blob/v29.8.1/cli/command/image/push.go#L57-L110",
+      "usageReconciliation": "https://developers.cloudflare.com/billing/understand/usage-based-billing/"
+    },
+    "registryStorage": {
+      "ratePublishedInInspectedOfficialSources": false,
+      "rate": null,
+      "billingBasis": null,
+      "layerOrVersionDeduplicationAccounting": null,
+      "registryFreeAllowance": null,
+      "separateRegistrySubscriptionRequirement": null,
+      "accountStorageCapacityLimitGB": 50,
+      "capacityLimitIsFreeAllowance": false,
+      "r2BackedDoesNotEstablishR2CustomerPricing": true,
+      "candidateBlobSizesAndRetentionCostVerified": false,
+      "unknownDoesNotMeanZero": true
+    },
+    "credentialContract": {
+      "source": "Official commands/OpenAPI plus installed Wrangler 4.129.0; no credential request executed",
+      "endpoint": "POST /accounts/{account_id}/containers/registries/{domain}/credentials",
+      "defaultExpirationMinutes": 15,
+      "schemaMinimumExpirationMinutes": 1,
+      "schemaPermissions": [
+        "pull",
+        "push",
+        "list"
+      ],
+      "proposedPushAndReadbackPermissions": [
+        "push",
+        "pull"
+      ],
+      "repositoryScopeFieldExposed": false,
+      "oneRepositoryTokenGuaranteed": false,
+      "effectiveScope": "Account/domain credential; enforce exact approved repository/path in executor, without claiming a repository-scoped token",
+      "installedWranglerOAuthScope": "containers:write",
+      "publishedAccountRoleCandidate": "Containers Write",
+      "perEndpointMinimumRoleVerified": false,
+      "currentCredentialPermissionVerified": false,
+      "credentialGenerationOrTransferAuthorizedByThisArtifact": false
+    },
+    "futureSinglePlatformPush": {
+      "protocolOnlyNotExecutableNow": true,
+      "minimumDockerEngineApi": "1.46",
+      "source": "Verified original same-build local index, preserving local index/provenance as separate build evidence",
+      "destinationTag": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser:e1aeaa0-20261017",
+      "reviewCommands": [
+        "docker image tag <VERIFIED_ORIGINAL_LOCAL_INDEX_ID> registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser:e1aeaa0-20261017",
+        "docker image push --platform linux/amd64 registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser:e1aeaa0-20261017"
+      ],
+      "platform": "linux/amd64",
+      "expectedRunnableManifestDigest": "sha256:742a5fd20d84f6e0d233c291e7764db8e087ba7f20d75ad102b70e788e2a5339",
+      "requiresRawManifestConfigAndLayerIdentityBeforePush": true,
+      "requiresAuthoritativeRegistryRawManifestAndBlobReadback": true,
+      "rawOrPushedDigestMismatchAction": "stop; do not replace the approved image pin or rewrite image content",
+      "dockerOptionPushesIndexOrAttestations": false,
+      "cloudflareIndexProvenanceOrReferrerCompatibilityEstablished": false,
+      "installedWranglerPush": "Checks linux/amd64 then ordinary docker tag/push; no platform-selection option, so not equivalent to the exact single-platform step",
+      "documentedPushWorkflowRequiresDockerSaveArchive": false,
+      "currentDaemonProxyPort": 7897,
+      "currentDaemonProxyListenerPresent": false,
+      "offlineBuildRepairedDaemonProxy": false,
+      "pushStillUsesDaemonProxy": true,
+      "routeRemediationAuthorizedByThisArtifact": false,
+      "automaticRelayDaemonChangeOrRegistryFallbackAllowed": false,
+      "dockerProgressIsUncompressedTransferIsCompressed": true,
+      "dockerByteCountsEstablishRegistryBillingBasis": false
+    },
+    "costProposal": {
+      "currency": "USD",
+      "proposedIncrementalBatchBudget": 1,
+      "budgetVerified": false,
+      "totalIncrementalCost": null,
+      "totalCostStatus": "unknown; Registry fees, applicable plan and non-compute dimensions are unverified",
+      "noWorkersPaidPlanAssumed": true,
+      "neverNewSubscribe": true,
+      "currentAccountPlanOrAllowanceVerified": false,
+      "publishedWorkersPaidMonthlyMinimumUSD": 5,
+      "publishedMonthlyIncluded": {
+        "memoryGiBHours": 25,
+        "cpuVcpuMinutes": 375,
+        "diskGBHours": 200
+      },
+      "nominalBasicProfileIllustration": {
+        "targetResourceProfileReadbackVerified": false,
+        "memoryGiB": 1,
+        "activeVcpuAssumedForIllustration": 0.25,
+        "provisionedDiskGB": 4,
+        "includedAllowanceAssumedAvailable": false,
+        "publishedOverageUSDPerGiBSecondMemory": 0.0000025,
+        "publishedOverageUSDPerVcpuSecondActiveCpu": 0.00002,
+        "publishedOverageUSDPerGBSecondProvisionedDisk": 0.00000007,
+        "illustrativeComputeUSDPerSecond": 0.00000778,
+        "illustrativeComputeUSDFor300Seconds": 0.002334,
+        "illustrativeComputeUSDFor600Seconds": 0.004668,
+        "cpuBillingFollowsActualActiveTime": true,
+        "isFullBillOrHardSpendingCap": false,
+        "isAuthorizedComputeRunOrMeasuredBill": false
+      },
+      "excludedOrUnverifiedDimensions": [
+        "Registry storage and operations",
+        "Workers",
+        "Durable Objects",
+        "logs",
+        "egress",
+        "tax",
+        "provider calls"
+      ],
+      "currentProposedApplicationInstances": 0,
+      "containerStartsPerformed": 0,
+      "zeroTotalBillClaimed": false,
+      "usageAlertsAreSynchronousSpendCaps": false,
+      "budgetBillingSubscriptionApiCallsPerformed": 0,
+      "preExecutionEvidenceStillRequired": [
+        "Already-authorized evidence of applicable active plan without creating a subscription or assuming Workers Paid",
+        "Applicable published/account-specific Registry terms; if unresolved, keep total cost unknown and budgetVerified false",
+        "Measured candidate blob sizes and retention horizon",
+        "Bounded compute, request, log and transfer activity plus other fee dimensions",
+        "Actual execution grant and original-identity stop/reconciliation contract; this research does not authorize account billing reads"
+      ]
+    }
+  },
   "selectedAcceptance": {
     "grants": null,
     "startsAt": null,
