@@ -73,3 +73,27 @@ test('Preview subtabs share frozen runtime, inputs and playback and restore only
  await p.evaluate(async()=>{views.items=views.items.filter(v=>v.id!=='metrics');await panel.refresh();});assert.equal(await p.locator('#preview-subviews').getAttribute('data-selected-view'),'_overview');
  await p.evaluate(async()=>{views.filesSha256='c'.repeat(64);await panel.refresh();});assert.equal(await p.getByRole('tab',{name:'Scene',exact:true}).count(),0);
 });
+
+test('entering an empty project clears the previous model and stays blank until a saved model arrives',async t=>{
+ const p=await fixture(t);
+ assert.equal(await p.locator('[data-parameter]').count(),3);
+ await p.evaluate(async()=>{
+  window.savedApi=api;scope={...scope,projectId:'empty-project',workspaceId:'empty-workspace'};
+  const {createBrowserPreviewPanel}=await import('/browser-preview.js');
+  panel.leave();
+  panel=createBrowserPreviewPanel({root:document.querySelector('#preview'),runtimeFactory:factory,api:async(path,options)=>{
+   if(window.empty!==false){calls.push({path,method:options?.method||'GET'});return {currentRevisionId:null,stale:false,build:null};}
+   return savedApi(path,options);
+  }});
+  // Reuse this same panel across a populated workspace and an empty one.
+  window.empty=false;await panel.enter(scope);window.empty=true;calls=[];await panel.enter(scope);
+ });
+ assert.equal(await p.locator('#preview').isVisible(),false);
+ assert.equal(await p.locator('#preview input,#preview select,#preview canvas,#preview iframe').count(),0);
+ assert.equal(await p.evaluate(()=>calls.length),1);
+ assert.equal(await p.evaluate(()=>calls[0].method),'GET');
+ await p.evaluate(async()=>{empty=false;await panel.savedRevision();});
+ await p.locator('[data-parameter=customers]').waitFor({state:'visible'});
+ assert.equal(await p.locator('[data-parameter=customers]').inputValue(),'6');
+ assert.equal(await p.evaluate(()=>runs.length),0);
+});
