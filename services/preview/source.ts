@@ -1,10 +1,11 @@
+import {manualSaveIdentity,manualReceipt,type ManualSaveIdentity,type ManualRevisionReceipt} from '../turn-runtime/manual-save.ts';
 import {initialWorkspaceReference,type InitialWorkspaceReference} from '../turn-runtime/initial-workspace.ts';
 import {checkpointReceipt,sha,type CheckpointReceipt} from '../turn/protocol.ts';
 import {turnRuntimeIdentity,type TurnRuntimeIdentity} from '../turn-runtime/identity.ts';
 import {workspaceArchiveReader} from '../turn-runtime/workspace-file-index.ts';
 import {PREVIEW_DECLARATION_PATH,parsePreviewDeclaration,type PreviewDeclaration} from './declaration.ts';
 
-export type PreviewSource={kind:'saved-turn';identity:TurnRuntimeIdentity;revision:CheckpointReceipt}|{kind:'initial-workspace';reference:InitialWorkspaceReference;filesSha256:string};
+export type PreviewSource={kind:'manual-save';identity:ManualSaveIdentity;revision:ManualRevisionReceipt}|{kind:'saved-turn';identity:TurnRuntimeIdentity;revision:CheckpointReceipt}|{kind:'initial-workspace';reference:InitialWorkspaceReference;filesSha256:string};
 export interface PreviewRevisionSource{files(source:PreviewSource):Promise<Uint8Array>}
 export type ResolvedPreviewPlan={schemaVersion:1;kind:'service';source:PreviewSource;declaration:PreviewDeclaration;declarationSha256:string;entrypointSha256:string;dependencyLockSha256:string};
 function exact(raw:unknown,keys:string[]):asserts raw is Record<string,unknown>{
@@ -16,12 +17,13 @@ function exact(raw:unknown,keys:string[]):asserts raw is Record<string,unknown>{
 function data(raw:unknown):void{if(raw===null||typeof raw!=='object')return;if(Object.getPrototypeOf(raw)!==Object.prototype&& !Array.isArray(raw))throw Error('invalid-preview-source');for(const key of Reflect.ownKeys(raw)){if(typeof key!=='string')throw Error('invalid-preview-source');const d=Object.getOwnPropertyDescriptor(raw,key)!;if(!('value'in d)||(!d.enumerable&&!(Array.isArray(raw)&&key==='length')))throw Error('invalid-preview-source');data(d.value);}}
 export function previewSource(raw:unknown):PreviewSource{
  data(raw);const kind=(raw as {kind?:unknown})?.kind;
- if(kind==='saved-turn'){exact(raw,['kind','identity','revision']);return {kind,identity:turnRuntimeIdentity(raw.identity),revision:checkpointReceipt(raw.revision)};}
+ if(kind==='manual-save'){exact(raw,['kind','identity','revision']);return {kind,identity:manualSaveIdentity(raw.identity),revision:manualReceipt(raw.revision)};}
+ if(kind==='saved-turn'){exact(raw,['kind','identity','revision']);if(checkpointReceipt(raw.revision).sessionSha256===null)throw Error('invalid-preview-source');return {kind,identity:turnRuntimeIdentity(raw.identity),revision:checkpointReceipt(raw.revision)};}
  if(kind==='initial-workspace'){exact(raw,['kind','reference','filesSha256']);return {kind,reference:initialWorkspaceReference(raw.reference),filesSha256:sha(raw.filesSha256)};}
  throw Error('invalid-preview-source');
 }
-export function previewSourceScope(source:PreviewSource){const s=previewSource(source);return s.kind==='saved-turn'?s.identity.scope:s.reference.scope;}
-export function previewSourceFilesSha256(source:PreviewSource){const s=previewSource(source);return s.kind==='saved-turn'?s.revision.filesSha256:s.filesSha256;}
+export function previewSourceScope(source:PreviewSource){const s=previewSource(source);return s.kind!=='initial-workspace'?s.identity.scope:s.reference.scope;}
+export function previewSourceFilesSha256(source:PreviewSource){const s=previewSource(source);return s.kind!=='initial-workspace'?s.revision.filesSha256:s.filesSha256;}
 export function resolvedPreviewPlan(raw:unknown):ResolvedPreviewPlan{
  exact(raw,['schemaVersion','kind','source','declaration','declarationSha256','entrypointSha256','dependencyLockSha256']);
  if(raw.schemaVersion!==1||raw.kind!=='service')throw Error('invalid-preview-plan');
@@ -53,7 +55,7 @@ export class PreviewPlanResolver{
   readonly #source:PreviewRevisionSource;
   constructor(source:PreviewRevisionSource){if(!source?.files)throw Error('preview-revision-source-required');this.#source=source;}
   async resolve(rawSource:PreviewSource):Promise<ResolvedPreviewPlan>{
-    const source=previewSource(rawSource);
+    const source=previewSource(rawSource);if(source.kind==='manual-save')throw Error('manual-preview-execution-unsupported');
     const raw=await this.#source.files(structuredClone(source));
     if(!(raw instanceof Uint8Array)||raw.length>56*1024*1024)throw Error('invalid-preview-revision');
     const archive=workspaceArchiveReader(raw);

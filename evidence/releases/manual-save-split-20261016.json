@@ -53,9 +53,9 @@
     "uiPass": 21,
     "m0Pass": 353,
     "m0Skip": 1,
-    "m1Pass": 549,
-    "m2Pass": 985,
-    "m3InitialPass": 1013,
+    "m1Pass": 561,
+    "m2Pass": 1008,
+    "m3InitialPass": 1027,
     "m3InitialSkip": 12,
     "m3InitialFail": 1,
     "remainingValidation": "completed",
@@ -63,23 +63,23 @@
       "missing .local directory",
       "system Chrome unavailable; cached Chromium selected"
     ],
-    "continuationCommand": "npm run test:m3 && npm run issue73:validate && npm run test:research-quality",
-    "continuationExitCode": 0,
-    "nodePassTotal": 3077,
-    "nodeSkipTotal": 13,
-    "pythonPass": 8,
-    "singleFullCommandPassed": false,
-    "note": "All check stages passed across runs after environment correction; original full command exit1 retained.",
     "continuationEnvironment": {
       "PATHPrefix": "/opt/homebrew/opt/openssl@3/bin",
       "M1_BROWSER_CHANNEL": "chromium"
-    }
+    },
+    "continuationCommand": "npm run test:m3 && npm run issue73:validate && npm run test:research-quality",
+    "continuationExitCode": 0,
+    "nodePassTotal": 3126,
+    "nodeSkipTotal": 13,
+    "pythonPass": 8,
+    "singleFullCommandPassed": false,
+    "note": "All check stages passed across runs after environment correction; original full command exit1 retained."
   },
   "sourceChecks": {
-    "workspaceDurableSha256": "c39e8a0c9b74509e44c10bb0fd0c5f10aee5840a6094ba321126ea54988d372e",
-    "scope": "pages",
-    "manualRoutesPresent": false,
-    "journalSchema": 7
+    "workspaceDurableSha256": "1dcea221dcfd161a4a4c97ea0edb14eb7c5b533550f2d06dbc474214d48d8787",
+    "scope": "manual",
+    "manualRoutesPresent": true,
+    "journalSchema": 9
   },
   "providerPlan": {
     "path": "docs/local-provider-acceptance-plan-20261016.md",

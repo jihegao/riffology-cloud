@@ -7,7 +7,7 @@ const sha=async bytes=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',b
 const decode=asset=>Uint8Array.from(atob(asset.base64),c=>c.charCodeAt(0));
 /** Called only with a package returned by the current authenticated host API. */
 export async function verifyProjectViewPackage(pkg,scope,isCurrent=()=>true){
- if(!isCurrent()||!pkg||pkg.schema!=='project.view-package/v1'||pkg.scope?.tenantId!==scope.tenantId||pkg.scope?.workspaceId!==scope.workspaceId||scope.projectId&&pkg.scope.projectId!==scope.projectId||!Array.isArray(pkg.assets)||pkg.assets.length>64||pkg.manifest?.schema!=='project.views/v1'||!Array.isArray(pkg.manifest.views)||pkg.manifest.views.length>16)fail('scope-denied');
+ if(!isCurrent()||!pkg||pkg.schema!=='project.view-package/v1'||pkg.scope?.tenantId!==scope.tenantId||pkg.scope?.workspaceId!==scope.workspaceId||scope.projectId&&pkg.scope.projectId!==scope.projectId||scope.workspaceGeneration!==undefined&&pkg.scope.workspaceGeneration!==scope.workspaceGeneration||!Array.isArray(pkg.assets)||pkg.assets.length>64||pkg.manifest?.schema!=='project.views/v1'||!Array.isArray(pkg.manifest.views)||pkg.manifest.views.length>16)fail('scope-denied');
  const {packageIdentity,...body}=pkg;
  const bytes=encoder.encode(JSON.stringify(body));if(bytes.length>3*1024*1024||await sha(bytes)!==packageIdentity)fail('package-digest');
  if(!isCurrent())fail('stale');
@@ -21,6 +21,7 @@ export async function verifyProjectViewPackage(pkg,scope,isCurrent=()=>true){
 export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},onState=()=>{},readAsset,readArtifacts=async()=>({items:[],nextCursor:null,version:null}),authorize=async()=>{}}){
  let closed=false,failed=false,lastId=0,inflight=0,subscribed=false,artifactState=null,subscriptionEpoch=0;
  const current=()=>!closed&&isCurrent();
+ const checkAuthorization=async()=>{try{await authorize();}catch(error){onState('failed');throw error;}};
  const snapshot=()=>({revisionId:pkg.revisionId,filesSha256:pkg.filesSha256,packageIdentity:pkg.packageIdentity,files:pkg.assets.map(({path,sha256,mediaType})=>({path,sha256,mediaType})),artifacts:artifactState,views:pkg.manifest.views.map(({id,title,entrypoint})=>({id,title,entrypoint}))});
  const send=value=>{if(!current())return;if(encoder.encode(JSON.stringify(value)).length>65536){if(value.id)port.postMessage({id:value.id,error:'response-too-large'});return;}port.postMessage(value);};
  port.onmessage=async event=>{
@@ -37,14 +38,14 @@ export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},on
   if(requestSubscriptionEpoch!==null)subscribed=false;
   inflight++;
   try{
-   await authorize();if(!current())return;
+   await checkAuthorization();if(!current())return;
    let value;
    if(m.type==='files.list')value=snapshot().files;
    else if(m.type==='artifacts.list'){
-    if(m.cursor!==null&&(typeof m.cursor!=='string'||! /^[a-f0-9]{64}:[a-f0-9]{64}:artifact-[a-f0-9]{60}$/.test(m.cursor)))throw Error('cursor-denied');
+    if(m.cursor!==null&&(typeof m.cursor!=='string'||! /^(?:[a-f0-9]{64}:){2,3}artifact-[a-f0-9]{60}$/.test(m.cursor)))throw Error('cursor-denied');
     value=await readArtifacts({cursor:m.cursor});
    }else if(m.type==='artifacts.read'){
-    if(typeof m.artifactId!=='string'||! /^artifact-[a-f0-9]{60}$/.test(m.artifactId)||!Number.isSafeInteger(m.offset)||m.offset<0||m.offset>1114112)throw Error('artifact-denied');
+    if(typeof m.artifactId!=='string'||! /^(?:artifact-[a-f0-9]{60}|manual-artifact-[a-f0-9]{64})$/.test(m.artifactId)||!Number.isSafeInteger(m.offset)||m.offset<0||m.offset>1114112)throw Error('artifact-denied');
     value=await readArtifacts({artifactId:m.artifactId,offset:m.offset});
    }
    else if(m.type==='files.read'){
@@ -58,11 +59,18 @@ export function createProjectViewBroker({port,pkg,isCurrent,onNavigate=()=>{},on
     const v=pkg.manifest.views.find(v=>v.entrypoint===m.entrypoint);if(!v)throw Error('route-denied');
     if(current())onNavigate(v.id);value={accepted:true};
    }else throw Error('request-denied');
+   // A package update or Catalog revocation can happen while bytes are being
+   // read. Recheck the real host authority at the final delivery boundary.
+   if(['files.read','artifacts.list','artifacts.read','updates.subscribe'].includes(m.type)){
+    if(!current())return;
+    await checkAuthorization();if(!current())return;
+    if(m.type==='updates.subscribe'&&requestSubscriptionEpoch!==subscriptionEpoch){send({id:m.id,value:{subscribed:false}});return;}
+   }
    if(!current())return;send({id:m.id,value});if(subscribed&&m.type==='updates.subscribe')send({type:'snapshot',snapshot:snapshot()});
   }catch{send({id:m.id,error:'request-denied'});if(!current())return;}finally{inflight--;}
  };
  port.start?.();
- return {close(){closed=true;subscriptionEpoch++;subscribed=false;port.onmessage=null;port.close();},async publish(){if(!subscribed||!current())return;const epoch=subscriptionEpoch;await authorize();if(!current()||!subscribed||epoch!==subscriptionEpoch)return;const state=await readArtifacts({cursor:null});if(!current()||!subscribed||epoch!==subscriptionEpoch)return;artifactState=state;send({type:'snapshot',snapshot:snapshot()});},get closed(){return closed;}};
+ return {close(){closed=true;subscriptionEpoch++;subscribed=false;port.onmessage=null;port.close();},async publish(){if(!subscribed||!current())return;const epoch=subscriptionEpoch;await checkAuthorization();if(!current()||!subscribed||epoch!==subscriptionEpoch)return;const state=await readArtifacts({cursor:null});if(!current()||!subscribed||epoch!==subscriptionEpoch)return;await checkAuthorization();if(!current()||!subscribed||epoch!==subscriptionEpoch)return;artifactState=state;send({type:'snapshot',snapshot:snapshot()});},get closed(){return closed;}};
 }
 export function createProjectViewsPanel({root,api,pollMs=5000}){
  const doc=root.ownerDocument,win=doc.defaultView;

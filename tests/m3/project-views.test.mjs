@@ -44,13 +44,13 @@ test('generic execution frame rejects mixed production/loopback origins even whe
  assert.equal(assets,0);
 });
 test('broker binds generation and package; forged scope, cross-project path, writes and late results never deliver data',async()=>{
- const {pkg}=await packaged(),messages=[];let current=true,release;
+ const {pkg}=await packaged(),messages=[];let current=true,release,started;const reading=new Promise(resolve=>{started=resolve;});
  const port={postMessage:m=>messages.push(m),close(){},start(){},onmessage:null};
- const broker=createProjectViewBroker({port,pkg,isCurrent:()=>current,readAsset:()=>new Promise(r=>{release=r;})});
+ const broker=createProjectViewBroker({port,pkg,isCurrent:()=>current,readAsset:()=>new Promise(r=>{release=r;started();})});
  await port.onmessage({data:{id:1,type:'files.list',scope:{projectId:'other'}}});assert.equal(messages.at(-1).error,'request-denied');
  await port.onmessage({data:{id:2,type:'files.read',path:'../other/secret'}});assert.equal(messages.at(-1).error,'request-denied');
  await port.onmessage({data:{id:3,type:'write',path:'app/home.html'}});assert.equal(messages.at(-1).error,'request-denied');
- const pending=port.onmessage({data:{id:4,type:'files.read',path:'docs/data.json'}});await Promise.resolve();const before=messages.length;current=false;release(new TextEncoder().encode('late secret'));await pending;assert.equal(messages.length,before);
+ const pending=port.onmessage({data:{id:4,type:'files.read',path:'docs/data.json'}});await reading;const before=messages.length;current=false;release(new TextEncoder().encode('late secret'));await pending;assert.equal(messages.length,before);
  broker.close();assert.equal(broker.closed,true);
 });
 
@@ -70,9 +70,9 @@ test('broker read hashes the exact transformed bytes and reports failures withou
 });
 
 test('artifact broker rejects keys/scope/writes and drops delayed replies after cancellation or generation change',async()=>{
- const {pkg}=await packaged(),messages=[];let current=true,release,calls=0;
+ const {pkg}=await packaged(),messages=[];let current=true,release,started,calls=0;const reading=new Promise(resolve=>{started=resolve;});
  const port={postMessage:m=>messages.push(m),close(){},start(){},onmessage:null};
- const broker=createProjectViewBroker({port,pkg,isCurrent:()=>current,readArtifacts:async()=>{calls++;return new Promise(r=>{release=r;});}});
+ const broker=createProjectViewBroker({port,pkg,isCurrent:()=>current,readArtifacts:async()=>{calls++;return new Promise(r=>{release=r;started();});}});
  for(const [id,m]of [
   [1,{type:'artifacts.read',artifactId:'tool-artifacts/private-key',offset:0}],
   [2,{type:'artifacts.read',artifactId:'artifact-'+'a'.repeat(60),offset:0,scope:{projectId:'other'}}],
@@ -80,7 +80,7 @@ test('artifact broker rejects keys/scope/writes and drops delayed replies after 
   [4,{type:'artifacts.delete'}],
  ]){await port.onmessage({data:{id,...m}});assert.equal(messages.at(-1).error,'request-denied');}
  assert.equal(calls,0);
- const pending=port.onmessage({data:{id:5,type:'artifacts.read',artifactId:'artifact-'+'a'.repeat(60),offset:0}});await Promise.resolve();const before=messages.length;current=false;release({base64:btoa('late private artifact')});await pending;assert.equal(messages.length,before);
+ const pending=port.onmessage({data:{id:5,type:'artifacts.read',artifactId:'artifact-'+'a'.repeat(60),offset:0}});await reading;const before=messages.length;current=false;release({base64:btoa('late private artifact')});await pending;assert.equal(messages.length,before);
  broker.close();
 });
 
@@ -99,4 +99,15 @@ test('subscription cancellation fences pending authorization, initial reads and 
   assert.equal(messages.slice(afterCancel).some(m=>m.type==='snapshot'||m.value?.subscribed===true),false,stage);
   broker.close();
  }
+});
+
+test('manual artifact identifiers and package-bound cursors are read-only and still require authorization',async()=>{
+ const {pkg}=await packaged(),messages=[],reads=[];let authorized=true;
+ const port={postMessage:m=>messages.push(m),close(){},start(){},onmessage:null};
+ const broker=createProjectViewBroker({port,pkg,isCurrent:()=>true,authorize:async()=>{if(!authorized)throw Error('revoked');},readArtifacts:async input=>{reads.push(input);return {source:'user-upload',title:'User upload / unverified'};}});
+ const artifactId='manual-artifact-'+'a'.repeat(64),cursor=['b'.repeat(64),'c'.repeat(64),'d'.repeat(64),'artifact-'+'e'.repeat(60)].join(':');
+ await port.onmessage({data:{id:1,type:'artifacts.read',artifactId,offset:0}});assert.equal(messages.at(-1).value.source,'user-upload');
+ await port.onmessage({data:{id:2,type:'artifacts.list',cursor}});assert.equal(reads.at(-1).cursor,cursor);
+ await port.onmessage({data:{id:3,type:'artifacts.write',artifactId,offset:0}});assert.equal(messages.at(-1).error,'request-denied');
+ authorized=false;await port.onmessage({data:{id:4,type:'artifacts.read',artifactId,offset:0}});assert.equal(messages.at(-1).error,'request-denied');assert.equal(reads.length,2);broker.close();
 });

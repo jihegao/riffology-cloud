@@ -1,0 +1,13 @@
+{
+  "sourceCommit": "fbc0e46bde2c8781b71609fa4524d2e75bffaf99",
+  "files": {
+    "store.ts": {
+      "path": "services/turn/store.ts",
+      "sha256": "743ae44851defaded5d46d3a2d4b940c6a01068dd2eb25a02a9cd5094f02b212"
+    },
+    "protocol.ts": {
+      "path": "services/turn/protocol.ts",
+      "sha256": "c7c2676c3bd12481f8dad74d5d16adf96fdfea1b019b24643ee377b558936646"
+    }
+  }
+}

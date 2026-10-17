@@ -3,6 +3,15 @@ import assert from 'node:assert/strict';
 import { DurableTurnStore } from '../../services/turn/store.ts';
 import { TurnJournal } from '../../services/turn/journal.ts';
 const KEY='m2:turn-journal',scope={tenantId:'tenant-a',projectId:'project-a',workspaceId:'workspace-a',workspaceGeneration:1},actor={userId:'user-a',authVersion:1};
+test('ordinary persisted journals stay v7 and manual history permanently selects v9',async()=>{
+ const f=fixture(),journal=new TurnJournal(f.store(),()=>1000);
+ await journal.createSession(scope,actor,'first-session',{title:'Ordinary'});
+ const legacy=f.persisted() as any;assert.equal(legacy.schemaVersion,7);assert.equal('manualOperations' in legacy,false);assert.equal('manualRejections' in legacy,false);assert.equal('activeManualOperation' in legacy,false);
+ await journal.rejectManualSave(scope,actor,'rejected-request','a'.repeat(64),'manual-save-base-conflict');
+ const history=f.persisted() as any;assert.equal(history.schemaVersion,9);
+ await new TurnJournal(f.store(),()=>2000).createSession(scope,actor,'second-session',{title:'After manual history'});
+ assert.equal((f.persisted() as any).schemaVersion,9);assert.deepEqual((f.persisted() as any).manualRejections,history.manualRejections);
+});
 function fixture(){
  let values=new Map<string,unknown>(),durable=new Map<string,unknown>(),failSync=false,hold=false;const pending:Array<{commit():void;fail():void}>=[],events:string[]=[];
  let notifyHeld!:()=>void;const held=new Promise<void>(resolve=>{notifyHeld=resolve;});
@@ -143,4 +152,27 @@ test('runtime batch never acknowledges before sync and replays after lost durabi
  assert.equal(resolved,false);f.pending[0]!.commit();await pending;assert.equal(resolved,true);
  f.hold(false);f.failSync(true);await assert.rejects(journal.appendRuntimeBatch(scope,[{...input,eventId:'delta-2'}]),/sync-failure/);
  f.failSync(false);const replay=await new TurnJournal(f.store(),()=>1000).appendRuntimeBatch(scope,[{...input,eventId:'delta-2'}]);assert.equal(replay[0]!.replayed,true);
+});
+
+test('manual reservation and published canonical head survive lost journal ACK and reconstruction',async()=>{
+ const f=fixture(),journal=new TurnJournal(f.store(),()=>1000),base={revisionId:null,filesSha256:'a'.repeat(64),workspaceGeneration:1};
+ f.failSync(true);await assert.rejects(journal.reserveManualSave(scope,actor,'manual-first',base,'b'.repeat(64),base),/sync-failure/);
+ f.failSync(false);let rebuilt=new TurnJournal(f.store(),()=>2000);assert.equal(rebuilt.getManualSave(scope,actor,'manual-first')?.status,'pending');
+ const replay=await rebuilt.reserveManualSave(scope,actor,'manual-first',base,'b'.repeat(64),base);assert.equal(replay.replayed,true);assert.equal(replay.operation.createdAt,1000);
+ const receipt={source:'manual-save' as const,revisionId:'c'.repeat(64),objectKey:'manual-revisions-v1/tenant-a/project-a/workspace-a/1/user-a/1/manual-first.json',filesSha256:'d'.repeat(64),sessionSha256:null,committedAt:1000};
+ f.failSync(true);await assert.rejects(rebuilt.publishManualSave(scope,actor,'manual-first',receipt),/sync-failure/);f.failSync(false);rebuilt=new TurnJournal(f.store(),()=>3000);
+ assert.deepEqual(rebuilt.workspaceRevisionSnapshot(scope)?.receipt,receipt);assert.equal(rebuilt.getManualSave(scope,actor,'manual-first')?.status,'committed');assert.equal((await rebuilt.publishManualSave(scope,actor,'manual-first',receipt)).status,'committed');
+ const newerBase={revisionId:receipt.revisionId,filesSha256:receipt.filesSha256,workspaceGeneration:1};await rebuilt.reserveManualSave(scope,actor,'manual-second',newerBase,'e'.repeat(64),newerBase);const next={...receipt,revisionId:'f'.repeat(64),objectKey:receipt.objectKey.replace('manual-first','manual-second'),committedAt:3000};await rebuilt.publishManualSave(scope,actor,'manual-second',next);assert.equal(new TurnJournal(f.store()).workspaceRevisionSnapshot(scope)?.receipt.revisionId,next.revisionId);
+ const corrupt=structuredClone(f.persisted()) as any;corrupt.manualOperations['user-a|manual-first'].receipt.objectKey=next.objectKey;f.seed(corrupt);assert.throws(()=>f.store().read(),/invalid-persisted/);
+});
+
+test('preflight rejection is durable after lost ACK and cannot poison an accepted operation or occupy its lock',async()=>{
+ const f=fixture(),journal=new TurnJournal(f.store(),()=>1000),rawSha='a'.repeat(64);
+ f.failSync(true);await assert.rejects(journal.rejectManualSave(scope,actor,'invalid-save',rawSha,'invalid-manual-save'),/sync-failure/);f.failSync(false);
+ const rebuilt=new TurnJournal(f.store(),()=>2000),rejection=rebuilt.getManualSaveRejection(scope,actor,'invalid-save');assert.equal(rejection?.status,'rejected');assert.equal(rejection?.requestSha256,rawSha);assert.equal((f.peek() as any).activeManualOperation,null);assert.deepEqual(await rebuilt.rejectManualSave(scope,actor,'invalid-save',rawSha,'invalid-manual-save'),rejection);
+ await assert.rejects(rebuilt.rejectManualSave(scope,actor,'invalid-save','b'.repeat(64),'invalid-manual-save'),/idempotency/);
+ const base={revisionId:null,filesSha256:'c'.repeat(64),workspaceGeneration:1};await assert.rejects(rebuilt.reserveManualSave(scope,actor,'invalid-save',base,'d'.repeat(64),base),/idempotency/);
+ await rebuilt.reserveManualSave(scope,actor,'accepted-save',base,'d'.repeat(64),base);await assert.rejects(rebuilt.rejectManualSave(scope,actor,'accepted-save',rawSha,'manual-save-workspace-busy'),/operation-conflict/);
+ assert.equal((f.peek() as any).activeManualOperation,'user-a|accepted-save');assert.throws(()=>rebuilt.getManualSaveRejection(scope,{...actor,authVersion:2},'invalid-save'),/not-found/);
+ const corrupt=structuredClone(f.peek()) as any;corrupt.manualRejections['user-a|accepted-save']={...rejection,identity:{...rejection!.identity,operationId:'accepted-save'}};f.seed(corrupt);assert.throws(()=>f.store().read(),/invalid-persisted/);
 });

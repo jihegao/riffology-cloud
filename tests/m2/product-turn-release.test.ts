@@ -23,6 +23,9 @@ class Bucket{
   async get(key:string){const value=this.objects.get(key);if(!value)return null;const bytes=Uint8Array.from(value);return {size:bytes.byteLength,body:new ReadableStream({start(controller){controller.enqueue(bytes);controller.close();}}),async arrayBuffer(){return bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);}};}
 }
 class Store implements RevisionStoreRpc{
+  async commitManual():Promise<never>{throw Error('manual-not-in-fixture');}
+  async reconcileManual():Promise<never>{throw Error('manual-not-in-fixture');}
+  async manualMetadata():Promise<never>{throw Error('manual-not-in-fixture');}
   readonly bucket:Bucket;readonly prepared=new Map<string,RevisionCommitInput>();
   constructor(bucket:Bucket){this.bucket=bucket;}
   resolveInitial(...args:Parameters<RevisionStoreRpc['resolveInitial']>){return new InitialWorkspaceResolver(this.bucket as never).resolve(...args);}

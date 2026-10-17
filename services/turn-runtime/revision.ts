@@ -1,3 +1,4 @@
+import {readManualReceipt} from './manual-revision.ts';
 import {backendState as validateBackendState,type BackendState} from './backend-contract.ts';
 import type { CheckpointReceipt, TurnBaseCheckpoints } from '../turn/protocol.ts';
 import { checkpointObjectKey, checkpointReceipt, positive, sameScope, scope as turnScope, sha, turnBaseCheckpoints, turnDigest, turnId } from '../turn/protocol.ts';
@@ -72,7 +73,7 @@ async function readReceipt(bucket:TurnRevisionBucket,receipt:CheckpointReceipt,i
   return {identity:parentIdentity,receipt:expected,...parts,...(saved.backendState?.backend==='managed-agents'?{piSession:null,backendState:validateBackendState(saved.backendState)}:{})};
 }
 async function readFilesPart(bucket:TurnRevisionBucket,saved:Manifest,maxBytes=MAX_BLOB_BYTES):Promise<Uint8Array>{if(saved.files.size>maxBytes)reject('turn-revision-object-too-large');const bytes=await readObject(bucket,saved.files.objectKey,maxBytes);if(!bytes||bytes.byteLength!==saved.files.size||await digest(bytes)!==saved.files.sha256)reject('turn-revision-object-conflict');return bytes;}
-async function readFilesReceipt(bucket:TurnRevisionBucket,receipt:CheckpointReceipt,identity:TurnRuntimeIdentity,maxBytes=MAX_BLOB_BYTES):Promise<Uint8Array>{if(!Number.isSafeInteger(maxBytes)||maxBytes<1||maxBytes>MAX_BLOB_BYTES)reject('turn-revision-object-too-large');const {saved}=await readReceiptManifest(bucket,receipt,identity,false);return readFilesPart(bucket,saved,maxBytes);}
+async function readFilesReceipt(bucket:TurnRevisionBucket,receipt:CheckpointReceipt,identity:TurnRuntimeIdentity,maxBytes=MAX_BLOB_BYTES):Promise<Uint8Array>{if(receipt.sessionSha256===null){const saved=await readManualReceipt(bucket,identity.scope,receipt);if(saved.filesArchive.length>maxBytes)reject('turn-revision-object-too-large');return saved.filesArchive;}if(!Number.isSafeInteger(maxBytes)||maxBytes<1||maxBytes>MAX_BLOB_BYTES)reject('turn-revision-object-too-large');const {saved}=await readReceiptManifest(bucket,receipt,identity,false);return readFilesPart(bucket,saved,maxBytes);}
 
 /** Reads a committed immutable Revision for restore. A caller receives bytes
  * only after the receipt, canonical manifest key, complete scope and both
@@ -80,7 +81,7 @@ async function readFilesReceipt(bucket:TurnRevisionBucket,receipt:CheckpointRece
 export class R2TurnRevisionReader{
   readonly #bucket:TurnRevisionBucket;
   constructor(bucket:TurnRevisionBucket){if(!bucket?.get)reject('r2-turn-revision-required');this.#bucket=bucket;}
-  async restore(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt,sessionBound=false):Promise<RestoredTurnRevision>{return readReceipt(this.#bucket,receipt,turnRuntimeIdentity(raw),sessionBound);}
+  async restore(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt,sessionBound=false):Promise<RestoredTurnRevision>{if(receipt.sessionSha256===null){if(sessionBound)reject('manual-session-base-denied');const identity=turnRuntimeIdentity(raw),saved=await readManualReceipt(this.#bucket,identity.scope,receipt);return {identity,receipt:saved.receipt,filesArchive:saved.filesArchive,piSession:null};}return readReceipt(this.#bucket,receipt,turnRuntimeIdentity(raw),sessionBound);}
   async files(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt,maxBytes=MAX_BLOB_BYTES):Promise<Uint8Array>{return readFilesReceipt(this.#bucket,receipt,turnRuntimeIdentity(raw),maxBytes);}
   async workspaceFiles(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt):Promise<TurnRevisionWorkspaceFiles>{const identity=turnRuntimeIdentity(raw),{saved}=await readReceiptManifest(this.#bucket,receipt,identity,false),filesArchive=await readFilesPart(this.#bucket,saved);return {filesArchive,base:saved.base.workspace,...(saved.base.initial?{initial:saved.base.initial}:{})};}
   async backendState(raw:TurnRuntimeIdentity,receipt:CheckpointReceipt):Promise<PiRevisionState|BackendState>{const {saved}=await readReceiptManifest(this.#bucket,receipt,turnRuntimeIdentity(raw),true);return saved.backendState??piRevisionState();}
@@ -111,6 +112,7 @@ export class R2TurnRevisionPort{
     const saved=await readIdentityManifest(this.#bucket,identity);return saved&&{manifest:saved.manifest,receipt:saved.receipt};
   }
   async #verifyBase(receipt:CheckpointReceipt,identity:TurnRuntimeIdentity,sessionBound:boolean):Promise<void>{
+    if(receipt.sessionSha256===null){if(sessionBound)reject('manual-session-base-denied');await readManualReceipt(this.#bucket,identity.scope,receipt);return;}
     await readReceipt(this.#bucket,receipt,identity,sessionBound);
   }
   async observe(raw:TurnRuntimeIdentity):Promise<CheckpointReceipt|null>{const identity=turnRuntimeIdentity(raw);return (await this.#readManifest(identity))?.receipt??null;}
