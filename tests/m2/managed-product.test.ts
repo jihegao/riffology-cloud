@@ -46,7 +46,7 @@ const workerSource=`
     value={workspace:null,session:null,initial:{reference,filesSha256:resolved.filesSha256}};
    }
    else if(b.action==='dispatch-through-journal'){
-    const store=new MemoryTurnStore(),journal=new TurnJournal(store),calls=[];let runtimeReceipt;
+    const store=new MemoryTurnStore(),journal=new TurnJournal(store,Date.now,b.initial?async()=>b.initial:undefined),calls=[];let runtimeReceipt;
     const session=(await journal.createSession(s,b.actor,'pipeline-session',{title:'Managed pipeline'})).session;
     await journal.submit(s,b.actor,session.id,'pipeline-turn',{message:'Synthetic candidate pipeline'});
     // Delay the real commit ACK so ManagedProduct's unmodified report is
@@ -496,3 +496,41 @@ test('Managed initial source hash and explicit missing skill fail before any pro
 });
 
  test('Managed reads a truthful manual head and frozen resources without a prior synthetic Turn',{timeout:60000},async()=>{const f=await fixture(true);try{const initial=await f.call({action:'blank-initial',scope});assert.equal(initial.ok,true);const manual=await f.call({action:'manual-base',scope,actor,operationId:'manual-authoring',base:{revisionId:null,filesSha256:initial.value.initial.filesSha256,workspaceGeneration:1},files:{'AGENTS.md':'MANUAL_CURRENT_GUIDANCE','.pi/prompts/report.md':'MANUAL_REPORT $ARGUMENTS','docs/manual.txt':'USER_CONTENT'}});assert.equal(manual.ok,true,JSON.stringify(manual));assert.equal(manual.value.source,'manual-save');assert.equal(manual.value.sessionSha256,null);f.setCandidate({schemaVersion:3,operation:'answer'});const response=await f.call({action:'accept',input:{...input(1,'manual-session',{workspace:manual.value,session:null}),message:'/report current manual data'}});assert.equal(response.value?.phase,'terminal',JSON.stringify(response));const session=[...f.sessions.values()][0],text=session.items[0].content[0].text;assert.match(text,/MANUAL_CURRENT_GUIDANCE/);assert.match(text,/MANUAL_REPORT current manual data/);assert.match(text,new RegExp(manual.value.revisionId));assert.equal((await f.call({action:'status',scope})).value.turnCount,1);}finally{await f.close();}});
+
+const pagesManifest={schema:'project.views/v1',files:['app/home.html','app/report.html','app/main.mjs','app/value.mjs','app/style.css'],views:[{id:'home',title:'Home',entrypoint:'app/home.html'},{id:'report',title:'Report',entrypoint:'app/report.html'}]};
+const pagesFiles={'app/home.html':'<h1>Original dashboard</h1><a href="./report.html">Report</a><script type="module" src="./main.mjs"></script>','app/report.html':'<h1>Original report</h1><a href="./home.html">Home</a>','app/main.mjs':'import {value} from "./value.mjs";window.savedValue=value;','app/value.mjs':'export const value="original module";','app/style.css':'body { color: blue; }'};
+test('Managed pages pass real late accounting through Dispatcher to the single canonical head',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  const initial=await f.call({action:'blank-initial',scope});assert.equal(initial.ok,true);
+  f.setCandidate({schemaVersion:3,operation:'pages',manifest:pagesManifest,files:pagesFiles});
+  const result=await f.call({action:'dispatch-through-journal',scope,actor,initial:initial.value.initial});assert.equal(result.ok,true,JSON.stringify(result));
+  const {turn,state,runtimeReceipt,idle}=result.value;assert.equal(turn.status,'completed');assert.equal(turn.persistenceOutcome,'saved');assert.ok(turn.checkpoint);
+  assert.deepEqual(state.workspaceHead,turn.checkpoint);assert.deepEqual(state.sessions[turn.sessionId].head,turn.checkpoint);assert.equal(state.activeTurnId,null);assert.equal(idle,null);
+  const report=runtimeReceipt.events.at(-1);assert.ok(report.at>turn.checkpoint.committedAt);assert.deepEqual(report.payload.candidateValidation,{status:'checked',schemaVersion:3,operation:'pages',traceValidation:'not-provided',execution:'not-recomputed'});
+ }finally{await f.close();}
+});
+
+test('Managed saves a skill then pages, recovers the original lost commit ACK, and restores editable page text after cold cleanup',{timeout:60000},async()=>{
+ const f=await fixture(true);try{
+  const initial=await f.call({action:'blank-initial',scope});assert.equal(initial.ok,true);
+  f.setCandidate({schemaVersion:3,operation:'design',artifacts:{schema:'riffology.model-artifacts/v1',files:[],views:[]},files:{'.pi/skills/pages/SKILL.md':'---\nname: pages\ndescription: Build saved project pages\n---\nSAVED_PAGES_SKILL $ARGUMENTS'}});
+  const first=await f.call({action:'accept',input:{...input(1,'local-session',initial.value),message:'Create a project pages skill.'}});assert.ok(first.value?.checkpoint,JSON.stringify(first));
+  f.setCandidate({schemaVersion:3,operation:'pages',manifest:pagesManifest,files:pagesFiles});
+  const secondInput={...input(2,'local-session',{workspace:first.value.checkpoint,session:first.value.checkpoint}),message:'/skill:pages build two pages'};
+  await f.call({action:'fault-commit',scope,mode:'after'});const lost=await f.call({action:'accept',input:secondInput});assert.equal(lost.value?.phase,'running',JSON.stringify(lost));assert.equal(lost.value.checkpoint,null);
+  const postCount=posts(f).length,artifactReads=f.calls.filter(c=>c.path.includes('/artifacts')).length;
+  await f.restart();f.failArtifacts();const second=await f.call({action:'observe',input:secondInput});assert.ok(second.value?.checkpoint,JSON.stringify(second));assert.equal(posts(f).length,postCount);assert.equal(f.calls.filter(c=>c.path.includes('/artifacts')).length,artifactReads);assert.equal((await f.call({action:'commit-count',scope})).value,2);
+  const warm=[...f.sessions.values()][0];assert.match(warm.items.at(-1).content[0].text,/SAVED_PAGES_SKILL build two pages/);
+  await f.call({action:'cleanup',scope});await f.restart();f.failArtifacts(false);
+  f.setCandidate({schemaVersion:3,operation:'pages',manifest:pagesManifest,files:{'app/report.html':'<h1>Cold edited report</h1>'}});
+  const thirdInput={...input(3,'local-session',{workspace:second.value.checkpoint,session:second.value.checkpoint}),message:'/skill:pages edit the report only'};
+  const third=await f.call({action:'accept',input:thirdInput});assert.ok(third.value?.checkpoint,JSON.stringify(third));
+  const cold=[...f.sessions.values()][1],context=JSON.parse(cold.instructions.slice(cold.instructions.lastIndexOf('\n')+1));
+  assert.deepEqual(JSON.parse(context.files['app/views.json']),pagesManifest);for(const [path,text]of Object.entries(pagesFiles))assert.equal(context.files[path],text,path);
+  assert.equal(Object.hasOwn(context.files,'.pi/skills/pages/SKILL.md'),false);assert.match(cold.items[0].content[0].text,/SAVED_PAGES_SKILL edit the report only/);
+  const thirdIdentity={scope,sessionId:thirdInput.sessionId,turnId:thirdInput.turnId,dispatchId:thirdInput.dispatchId,generation:1};
+  const restored=await f.call({action:'restore',input:thirdIdentity,receipt:third.value.checkpoint});assert.equal(restored.ok,true,JSON.stringify(restored));
+  for(const [path,text]of Object.entries(pagesFiles))assert.equal(restored.value.files[path],path==='app/report.html'?'<h1>Cold edited report</h1>':text,path);
+  const before=posts(f).length;assert.deepEqual((await f.call({action:'accept',input:thirdInput})).value,third.value);assert.equal(posts(f).length,before);
+ }finally{await f.close();}
+});

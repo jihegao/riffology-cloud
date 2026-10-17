@@ -1,6 +1,13 @@
 const encoder=new TextEncoder(),WIDTH=800,HEIGHT=600,MAX_PNG=2*1024*1024;
 const fail=code=>{throw Error('project-view-remote-'+code);};
-export function validateProjectViewRemoteDelivery(win,delivery){
+export function validateProjectViewRemoteDelivery(win,delivery,pkg){
+ if(delivery?.transport==='isolated-browser-authenticated/v1'){
+  const origin=value=>{let u;try{u=new URL(value);}catch{fail('origin');}if(u.username||u.password||u.href!==u.origin+'/'||!(u.protocol==='https:'||u.protocol==='http:'&&['127.0.0.1','localhost','[::1]'].includes(u.hostname)))fail('origin');return u.origin;};
+  const app=origin(win.location.origin),execution=origin(delivery.executionOrigin),workspaceId=pkg?.scope?.workspaceId;
+  if(app!==execution)fail('origin');
+  if(typeof workspaceId!=='string'||!/^[A-Za-z0-9_-]{1,128}$/.test(workspaceId)||delivery.sessionPath!=='/api/workspaces/'+encodeURIComponent(workspaceId)+'/project-view-sessions')fail('session-path');
+  return execution;
+ }
  const origin=value=>{let u;try{u=new URL(value);}catch{fail('origin');}if(u.protocol!=='http:'||!['127.0.0.1','localhost','[::1]'].includes(u.hostname)||u.username||u.password||u.href!==u.origin+'/')fail('origin');return u.origin;};
  if(delivery?.transport!=='isolated-browser/v1')fail('transport');
  const app=origin(win.location.origin),execution=origin(delivery.executionOrigin);
@@ -10,8 +17,9 @@ export function validateProjectViewRemoteDelivery(win,delivery){
 /** The application only receives PNG pixels and bounded broker data. Project
  * HTML, scripts and browser DOM never enter this document. */
 export function createProjectViewRemote({canvas,delivery,pkg,view,port,isCurrent=()=>true,onError=()=>{},fetch:transport,pollMs=100}){
- const win=canvas.ownerDocument.defaultView,execution=validateProjectViewRemoteDelivery(win,delivery),fetcher=transport??win.fetch.bind(win);
+ const win=canvas.ownerDocument.defaultView,execution=validateProjectViewRemoteDelivery(win,delivery,pkg),authenticated=delivery.transport==='isolated-browser-authenticated/v1',fetcher=transport??win.fetch.bind(win);
  if(!Number.isInteger(pollMs)||pollMs<25||pollMs>1000)fail('poll-interval');
+ if(authenticated)pollMs=Math.max(500,pollMs);
  let disposed=false,session=null,startPromise=null,closePromise=null,timer=null,tail=Promise.resolve(),queued=0,errorReported=false,composing=false;
  const lifetime=new win.AbortController(),listeners=[];
  const current=()=>!disposed&&isCurrent();
@@ -28,7 +36,7 @@ export function createProjectViewRemote({canvas,delivery,pkg,view,port,isCurrent
  }
  async function post(url,body,{token,timeout=10000,abort=true,keepalive=false,limit=4*1024*1024}={}){
   const signal=abort?win.AbortSignal.any([lifetime.signal,win.AbortSignal.timeout(timeout)]):win.AbortSignal.timeout(timeout);
-  return json(await fetcher(url,{method:'POST',mode:'cors',credentials:'omit',cache:'no-store',redirect:'error',referrerPolicy:'no-referrer',keepalive,signal,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify(body)}),limit);
+  return json(await fetcher(url,{method:'POST',mode:authenticated?'same-origin':'cors',credentials:authenticated?'same-origin':'omit',cache:'no-store',redirect:'error',referrerPolicy:'no-referrer',keepalive,signal,headers:{'Content-Type':'application/json',...(!authenticated&&token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify(body)}),limit);
  }
  function report(error){if(errorReported||disposed||!isCurrent())return;errorReported=true;try{onError(error);}finally{void close().catch(()=>{});}}
  function enqueue(body){
@@ -36,7 +44,8 @@ export function createProjectViewRemote({canvas,delivery,pkg,view,port,isCurrent
   if(++queued>64){queued--;const error=Error('project-view-remote-queue-limit');report(error);return Promise.reject(error);}
   const task=tail.then(async()=>{
    if(!current()||!session)return null;
-   const result=await post(execution+'/project-views/v1/sessions/'+session.id,body,{token:session.token,timeout:body.type==='poll'?1500:3000});
+   const path=authenticated?delivery.sessionPath+'/'+session.id:'/project-views/v1/sessions/'+session.id;
+   const result=await post(execution+path,body,{token:session.token,timeout:body.type==='poll'?1500:3000});
    return current()?result:null;
   });
   tail=task.catch(()=>{});task.catch(error=>report(error)).finally(()=>{queued--;});
@@ -91,11 +100,16 @@ export function createProjectViewRemote({canvas,delivery,pkg,view,port,isCurrent
    if(!current())return;
    // Keep the bounded create response observable after disposal, so a late
    // original ID can be closed. The host must expire abandoned create replies.
-   const result=await post(execution+'/project-views/v1/sessions',{package:pkg,view},{abort:false,limit:4096});
-   if(!result||typeof result.id!=='string'||!/^[A-Za-z0-9_-]{1,128}$/.test(result.id)||typeof result.token!=='string'||!/^[A-Za-z0-9_-]{1,512}$/.test(result.token))fail('session');
-   session={id:result.id,token:result.token};
+   if(authenticated)session={id:win.crypto.randomUUID()};
+   const body=authenticated?{requestId:session.id,packageIdentity:pkg.packageIdentity,viewId:view.id}:{package:pkg,view};
+   const result=await post(execution+(authenticated?delivery.sessionPath:'/project-views/v1/sessions'),body,{abort:false,limit:4096});
+   if(authenticated){if(!result||Object.keys(result).join(',')!=='id'||result.id!==session.id)fail('session');}
+   else{
+    if(!result||typeof result.id!=='string'||!/^[A-Za-z0-9_-]{1,128}$/.test(result.id)||typeof result.token!=='string'||!/^[A-Za-z0-9_-]{1,512}$/.test(result.token))fail('session');
+    session={id:result.id,token:result.token};
+   }
    if(current())void poll();else void close().catch(()=>{});
-  })();
+  })().catch(error=>{if(authenticated)void close().catch(()=>{});throw error;});
   return startPromise;
  }
  function close(){
@@ -103,9 +117,10 @@ export function createProjectViewRemote({canvas,delivery,pkg,view,port,isCurrent
   disposed=true;win.clearTimeout(timer);lifetime.abort();port.onmessage=null;port.close();
   for(const [type,handler,options]of listeners)canvas.removeEventListener(type,handler,options);
   closePromise=(async()=>{
-   try{await startPromise;}catch{return;}
+   try{await startPromise;}catch{if(!authenticated)return;}
    if(!session)return;
-   const result=await post(execution+'/project-views/v1/sessions/'+session.id,{type:'close'},{token:session.token,abort:false,keepalive:true,limit:4096});
+   const path=authenticated?'/api/project-view-sessions/'+session.id+'/close':'/project-views/v1/sessions/'+session.id;
+   const result=await post(execution+path,authenticated?{workspaceId:pkg.scope.workspaceId}:{type:'close'},{token:session.token,abort:false,keepalive:true,limit:4096});
    if(result.closed!==true||result.cleanupConfirmed!==true)fail('cleanup-unconfirmed');
   })().catch(error=>{closePromise=null;throw error;});
   return closePromise;

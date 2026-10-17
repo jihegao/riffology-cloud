@@ -1,0 +1,114 @@
+{
+  "schema": "project-view-registry-blob-readback/v1",
+  "registryOrigin": "https://registry.cloudflare.com",
+  "repository": "8b0d70250211aa10d89e20605a1c7e5e/riffology-project-view-browser",
+  "observedAt": "2026-10-17T07:54:46.217988+00:00",
+  "entries": [
+    {
+      "digest": "sha256:927d69be23d858d7311d0869ef72b28e877647a1c12c4415f6280cdd57259d94",
+      "bytes": 8987,
+      "sha256": "927d69be23d858d7311d0869ef72b28e877647a1c12c4415f6280cdd57259d94",
+      "hashedActualBody": true,
+      "status": 200,
+      "dockerContentDigest": "sha256:927d69be23d858d7311d0869ef72b28e877647a1c12c4415f6280cdd57259d94"
+    },
+    {
+      "digest": "sha256:d544298cabd50e7c86bfef1e52b67f01db6b3a57bfecfe37a851873dee83e52a",
+      "bytes": 29736943,
+      "sha256": "d544298cabd50e7c86bfef1e52b67f01db6b3a57bfecfe37a851873dee83e52a",
+      "hashedActualBody": true,
+      "status": 200,
+      "dockerContentDigest": "sha256:d544298cabd50e7c86bfef1e52b67f01db6b3a57bfecfe37a851873dee83e52a"
+    },
+    {
+      "digest": "sha256:acb5643d3437e187e1cfede618719d640d05729da2eef256e5a796188e6a8e80",
+      "bytes": 100515976,
+      "sha256": "acb5643d3437e187e1cfede618719d640d05729da2eef256e5a796188e6a8e80",
+      "hashedActualBody": true,
+      "status": 200,
+      "dockerContentDigest": "sha256:acb5643d3437e187e1cfede618719d640d05729da2eef256e5a796188e6a8e80"
+    },
+    {
+      "digest": "sha256:ed16bcb2a179831155a8c20d5d8a6aef340ad5b11051d08323760383d82a8e71",
+      "bytes": 3117207,
+      "sha256": "ed16bcb2a179831155a8c20d5d8a6aef340ad5b11051d08323760383d82a8e71",
+      "hashedActualBody": true,
+      "status": 200,
+      "dockerContentDigest": "sha256:ed16bcb2a179831155a8c20d5d8a6aef340ad5b11051d08323760383d82a8e71"
+    },
+    {
+      "digest": "sha256:db7afc29b16390e802d6c0963017813d8dc4716b91a6601b611bf0469cd31682",
+      "bytes": 243903929,
+      "sha256": "db7afc29b16390e802d6c0963017813d8dc4716b91a6601b611bf0469cd31682",
+      "hashedActualBody": true,
+      "status": 200,
+      "dockerContentDigest": "sha256:db7afc29b16390e802d6c0963017813d8dc4716b91a6601b611bf0469cd31682"
+    },
+    {
+      "digest": "sha256:e9559170b698b53b6548a2a51be4c701941d9fe627d08b5a579c568e2ab346e1",
+      "bytes": 298327927,
+      "sha256": "e9559170b698b53b6548a2a51be4c701941d9fe627d08b5a579c568e2ab346e1",
+      "hashedActualBody": true,
+      "status": 200,
+      "dockerContentDigest": "sha256:e9559170b698b53b6548a2a51be4c701941d9fe627d08b5a579c568e2ab346e1"
+    },
+    {
+      "digest": "sha256:47550e174b162d0d5a4d1cc5163efdf5b22c2b33998c7361b826d8c74fdbc284",
+      "bytes": 117602866,
+      "sha256": "47550e174b162d0d5a4d1cc5163efdf5b22c2b33998c7361b826d8c74fdbc284",
+      "hashedActualBody": true,
+      "status": 200,
+      "dockerContentDigest": "sha256:47550e174b162d0d5a4d1cc5163efdf5b22c2b33998c7361b826d8c74fdbc284"
+    },
+    {
+      "digest": "sha256:4b56d4fd802681f4cd0ddd7924acce9c00ee77d7819c130a8a4c631c20663efe",
+      "bytes": 110814413,
+      "sha256": "4b56d4fd802681f4cd0ddd7924acce9c00ee77d7819c130a8a4c631c20663efe",
+      "hashedActualBody": true,
+      "status": 200,
+      "dockerContentDigest": "sha256:4b56d4fd802681f4cd0ddd7924acce9c00ee77d7819c130a8a4c631c20663efe"
+    },
+    {
+      "digest": "sha256:7fb96922bd40613df224f8d65c05988856b174de1bdb3568f8a465c15e2c74fe",
+      "bytes": 116,
+      "sha256": "7fb96922bd40613df224f8d65c05988856b174de1bdb3568f8a465c15e2c74fe",
+      "hashedActualBody": true,
+      "status": 200,
+      "dockerContentDigest": "sha256:7fb96922bd40613df224f8d65c05988856b174de1bdb3568f8a465c15e2c74fe"
+    },
+    {
+      "digest": "sha256:914e7f2fb3384fd3bc7a4c2623f4ec7ce093c56ee47a592a94d78ab151198379",
+      "bytes": 912568,
+      "sha256": "914e7f2fb3384fd3bc7a4c2623f4ec7ce093c56ee47a592a94d78ab151198379",
+      "hashedActualBody": true,
+      "status": 200,
+      "dockerContentDigest": "sha256:914e7f2fb3384fd3bc7a4c2623f4ec7ce093c56ee47a592a94d78ab151198379"
+    },
+    {
+      "digest": "sha256:529c945ff707dc2dadf57e34d1e42e6d4477d91b641ff6885bb6abcbac23fa3c",
+      "bytes": 3163480,
+      "sha256": "529c945ff707dc2dadf57e34d1e42e6d4477d91b641ff6885bb6abcbac23fa3c",
+      "hashedActualBody": true,
+      "status": 200,
+      "dockerContentDigest": "sha256:529c945ff707dc2dadf57e34d1e42e6d4477d91b641ff6885bb6abcbac23fa3c"
+    },
+    {
+      "digest": "sha256:2081d3854eb234f5ce67806132661e7498aa6669dda00e61c32af0b1485db048",
+      "bytes": 9704,
+      "sha256": "2081d3854eb234f5ce67806132661e7498aa6669dda00e61c32af0b1485db048",
+      "hashedActualBody": true,
+      "status": 200,
+      "dockerContentDigest": "sha256:2081d3854eb234f5ce67806132661e7498aa6669dda00e61c32af0b1485db048"
+    },
+    {
+      "digest": "sha256:8f1bd496db355fcee4e549459b520dd784e64d7449847e6107f42e04715ca438",
+      "bytes": 7479,
+      "sha256": "8f1bd496db355fcee4e549459b520dd784e64d7449847e6107f42e04715ca438",
+      "hashedActualBody": true,
+      "status": 200,
+      "dockerContentDigest": "sha256:8f1bd496db355fcee4e549459b520dd784e64d7449847e6107f42e04715ca438"
+    }
+  ],
+  "bodyBytes": 908121595,
+  "source": "original fixed-image executor actual complete GET body hashes, no HEAD substitution"
+}

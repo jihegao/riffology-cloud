@@ -72,7 +72,11 @@ export async function isolatedBrowserMain(options={}) {
  }
  async function initialize(message) {
   validateInit(message);
-  const chromium=options.chromium??(await import('playwright')).chromium;
+  // This function is also serialized with toString() into the container's
+  // fixed Node program. Keep the native-only package out of Worker bundles;
+  // the module name is fixed here and cannot come from stdin or project data.
+  const browserModule='playwright';
+  const chromium=options.chromium??(await import(browserModule)).chromium;
   if(stopping)return;
   const launched=await chromium.launch({executablePath:'/opt/chrome/chrome',headless:true,chromiumSandbox:true,timeout:10000});
   // A close or fatal input may arrive while launch is still pending.

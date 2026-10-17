@@ -832,7 +832,20 @@ export class WorkspaceAgent extends DurableObject<WorkspaceAgentEnv> {
     const result=await buildProjectViews(source,await this.env.REVISION_STORE.getByName(revisionStoreActorName(scope)).serviceFiles(source));
     await authorize();const latest=await this.#simulationSource(scope);
     if(previewSourceFilesSha256(latest)!==previewSourceFilesSha256(source)||(latest.kind==='initial-workspace'?null:latest.revision.revisionId)!==(source.kind==='initial-workspace'?null:source.revision.revisionId))throw Error('project-view-stale');
-    await authorize();return result;
+    await authorize();
+    this.ctx.storage.kv.put('project-view-package-authority',{scope,revisionId:source.kind==='initial-workspace'?null:source.revision.revisionId,filesSha256:previewSourceFilesSha256(source),packageIdentity:result?.packageIdentity??null});
+    return result;
+  }
+  /** Lightweight authority for pixel/input delivery. Never rereads/transfers the
+   * archive on every poll; cached package identity is tied to the canonical head. */
+  async projectViewCurrent(input:{scope:TurnScope;actor:TurnActor;identity:string}){
+    await this.#prepareNormalJournal();const scope=this.#ready(input.scope);
+    const authorize=async()=>{const allowed=await new ProjectCatalog(catalogDatabase(this.env.CATALOG),new Set()).maintenanceWorkspace(input.actor,scope.workspaceId);if(!sameScope(allowed,scope))throw Error('project-view-access-denied');this.#ready(scope);};
+    await authorize();const source=await this.#simulationSource(scope);
+    const saved=this.ctx.storage.kv.get<{scope:TurnScope;revisionId:string|null;filesSha256:string;packageIdentity:string|null}>('project-view-package-authority');
+    await authorize();const latest=await this.#simulationSource(scope);
+    const revision=(value:typeof source)=>value.kind==='initial-workspace'?null:value.revision.revisionId;
+    return {current:!!saved&&sameScope(saved.scope,scope)&&saved.packageIdentity===input.identity&&saved.filesSha256===previewSourceFilesSha256(source)&&saved.revisionId===revision(source)&&previewSourceFilesSha256(latest)===previewSourceFilesSha256(source)&&revision(latest)===revision(source)};
   }
   async projectViewArtifacts(input:{scope:TurnScope;actor:TurnActor;identity:string;cursor?:string|null;artifactId?:string;offset?:number}){
     const authorize=async()=>{const pkg=await this.projectViews(input);if(!pkg||pkg.packageIdentity!==input.identity)throw Error('project-view-stale');};

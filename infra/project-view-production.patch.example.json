@@ -1,0 +1,63 @@
+{
+  "schema": "project-view-production-review-patch/v1",
+  "deployable": false,
+  "purpose": "Review-only additions to the existing Gateway; this is not a Wrangler config or an executable API request.",
+  "baseline": {
+    "observedAt": "2026-10-17T04:47:42.817Z",
+    "worker": "riffology-m1-gateway-staging",
+    "versionId": "f2a0b0a3-8742-4466-89d0-74cf0db6c47b",
+    "deploymentId": "2ffb14ba-a651-4010-b042-f8cd5e2d97f0",
+    "bindingCount": 100,
+    "sqliteExportCount": 23,
+    "containerAssociationCount": 5,
+    "workspaceNamespace": "64bf54d3461746cebcf6ede7cf8a2e31"
+  },
+  "preservationRequirements": [
+    "Freeze and compare the actual active deployment, complete settings and complete Worker resource arrays immediately before any publication.",
+    "Append to the existing modern SQLite exports, bindings and container associations; never replace them with this partial example or add mutually exclusive legacy migrations.",
+    "Keep original Workspace namespace, 100 baseline bindings, 23 baseline exports and 5 baseline container associations, all existing assets and all account container application configurations.",
+    "Keep current Pi/Runs policies, pending records, historical usage, reservations and admission state; do not reuse their capacity for project pages.",
+    "No account, database, route, invitation, credential, budget or existing execution-gate change is implied."
+  ],
+  "appendOnlyResourceIntent": {
+    "durableObjectBindings": [
+      {"name": "PROJECT_VIEW_RUNTIME", "class_name": "ProjectViewRuntime"},
+      {"name": "PROJECT_VIEW_CAPACITY", "class_name": "ProjectViewCapacity"}
+    ],
+    "appendExports": {
+      "ProjectViewRuntime": {"type": "durable-object", "storage": "sqlite", "container": "riffology-project-view-browser"},
+      "ProjectViewCapacity": {"type": "durable-object", "storage": "sqlite"}
+    },
+    "appendWorkerContainers": [{"name": "riffology-project-view-browser"}],
+    "containerAssociation": {
+      "name": "riffology-project-view-browser",
+      "class_name": "ProjectViewRuntime",
+      "image": null,
+      "scheduling_policy": "default",
+      "instance_type": "basic",
+      "max_instances": 1,
+      "resourceCandidate": {"vcpu": 0.25, "memoryMiB": 1024, "diskGB": 4, "validated": false, "automaticUpsizingAllowed": false},
+      "network": "disabled-before-start",
+      "status": "pending-reviewed-image-and-resource-policy"
+    },
+    "newEnvironmentPins": {
+      "PROJECT_VIEW_RUNTIME_IMAGE": null,
+      "PROJECT_VIEW_RUNTIME_CONTEXT_RECEIPT_SHA256": null,
+      "PROJECT_VIEW_RUNTIME_POLICY_HASH": null,
+      "PROJECT_VIEW_POLICY_JSON": {"enabled": false}
+    }
+  },
+  "closedPublicationRequirements": [
+    "Exact reviewed registry image digest, build-input evidence, software/resource/sandbox configuration and explicit scope for default-closed publication. Target execution evidence is obtained only in the subsequent selected authorized attempt.",
+    "Review actual expanded-image size and headroom against default/basic's 4 GB disk before publication. Its actual 0.25 vCPU / 1 GiB startup and peak viability remains first-target evidence, not a circular prerequisite to creating the disabled target. Do not silently upsize or inherit Pi/Runs applications.",
+    "Preserve the actual serving runtime: fresh 2026-10-17 readback confirms compatibility date 2026-09-09 and flags nodejs_compat, nodejs_compat_do_not_populate_process_env, enable_request_signal. Recheck immediately before publication; retain the default isolated PID namespace and reject no_containers_pid_namespace. Do not switch to durable_object scheduling, whose non-root exec users retain root capabilities.",
+    "Read back the actual default application and every serving version's immutable image/configuration; inspect().image is not an OCI digest attestation. Match the actual app/version image to PROJECT_VIEW_RUNTIME_IMAGE and the exact approved policy. Verify baked context receipt and actual package bytes before user input; this is an input/compatibility check only.",
+    "A fresh complete preservation snapshot and unique release annotation. This Worker uses modern exports, not legacy migrations/new_sqlite_classes: lifecycle changes require direct script deployment and cannot use the PR232 staged-version procedure unchanged. Keep both new exports, namespaces and persisted session/cleanup tombstones in any safe forward rollback.",
+    "Keep the exact closed policy and reviewed image/receipt environment pins throughout publication and configuration/source/asset readback."
+  ],
+  "firstTargetAdmissionRequirements": [
+    "Explicit approved invited identity/new-project scope, operation/session deadline, infrastructure cost policy and stop/exit conditions before admission.",
+    "The exact enabled policy bytes and their hash bind actual image and contextReceiptSha256 together; disabled preparation is not production eligibility.",
+    "During the selected authorized target attempt, record actual startup/resource behavior, Chromium sandbox/no-network evidence and original-ID cleanup. Stop on failure or unknown execution; no automatic upsizing or replacement identity. Full JHG-56 remains independently pending."
+  ]
+}

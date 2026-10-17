@@ -6,12 +6,14 @@ export const VIEW_LIMITS={files:64,fileBytes:256*1024,totalBytes:2*1024*1024,vie
 export type ProjectView={id:string;title:string;entrypoint:string};
 export type ProjectViewsManifest={schema:'project.views/v1';files:string[];views:ProjectView[]};
 export type ProjectViewPackage={schema:'project.view-package/v1';scope:{tenantId:string;projectId:string;workspaceId:string;workspaceGeneration:number};revisionId:string|null;filesSha256:string;manifest:ProjectViewsManifest;assets:Array<{path:string;mediaType:string;base64:string;sourceSha256:string;sha256:string}>;packageIdentity:string};
+export type ProjectViewArchive={manifest:ProjectViewsManifest;assets:Array<{path:string;mediaType:string;original:Uint8Array;bytes:Uint8Array}>};
 const encoder=new TextEncoder(),decoder=new TextDecoder('utf8',{fatal:true});
 const media:Record<string,string>={html:'text/html',js:'text/javascript',mjs:'text/javascript',css:'text/css',json:'application/json',txt:'text/plain',md:'text/plain',svg:'image/svg+xml',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',gif:'image/gif',webp:'image/webp',woff2:'font/woff2',mp3:'audio/mpeg',mp4:'video/mp4'};
 function fail(code:string):never{throw Error('project-view-'+code);}
 const object=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&Object.getPrototypeOf(v)===Object.prototype;
 function exact(v:unknown,keys:string[]):asserts v is Record<string,unknown>{if(!object(v)||Object.keys(v).sort().join(',')!==keys.sort().join(','))fail('manifest-invalid');}
 export function viewAssetPath(v:unknown):v is string{return typeof v==='string'&&v.length<=200&&/^(?:[A-Za-z0-9_-]+\/)*[A-Za-z0-9_-]+\.[a-z0-9]+$/.test(v)&&!v.split('/').some(p=>p==='node_modules'||p==='vendor')&&Object.hasOwn(media,v.split('.').at(-1)!);}
+export function projectViewTextAsset(path:string){return ['html','js','mjs','css','json','txt','md','svg'].includes(path.split('.').at(-1)!);}
 export function resolveViewAsset(from:string,reference:string):string{
  if(!reference||/[\\?#%\s]/.test(reference)||reference.startsWith('/')||/^[a-z][a-z0-9+.-]*:/i.test(reference))fail('reference-invalid');
  const parts=from.split('/').slice(0,-1);
@@ -49,21 +51,28 @@ function moduleBytes(path:string,bytes:Uint8Array,files:Set<string>){
  visit(tree);let output=source;for(const r of replacements.sort((a,b)=>b.start-a.start))output=output.slice(0,r.start)+r.text+output.slice(r.end);
  return encoder.encode(output);
 }
-export async function buildProjectViews(source:PreviewSource,archive:Uint8Array):Promise<ProjectViewPackage|null>{
+/** Shared authoring/delivery validation; reads bounded archive bytes only. */
+export function readProjectViewsArchive(archive:Uint8Array):ProjectViewArchive|null{
  const reader=workspaceArchiveReader(archive),index=workspaceFileIndex(archive);
- if(await reader.sha256()!==previewSourceFilesSha256(source))fail('source-mismatch');
  if(!index.files.some(f=>f.path===PROJECT_VIEWS_MANIFEST))return null;
  const manifest=parseProjectViews(JSON.parse(decoder.decode(reader.read([{path:PROJECT_VIEWS_MANIFEST,maxBytes:16384}]).get(PROJECT_VIEWS_MANIFEST)!)));
  const wanted=new Set(manifest.files);let total=0;
- const assets:ProjectViewPackage['assets']=[];
+ const assets:ProjectViewArchive['assets']=[];
  for(const path of manifest.files){
   const entry=index.files.find(f=>f.path===path);if(!entry||entry.type!=='file')fail('asset-missing');
   total+=entry.size;if(entry.size>VIEW_LIMITS.fileBytes||total>VIEW_LIMITS.totalBytes)fail('size-limit');
   const original=reader.read([{path,maxBytes:VIEW_LIMITS.fileBytes}]).get(path)!,ext=path.split('.').at(-1)!,bytes=['js','mjs'].includes(ext)?moduleBytes(path,original,wanted):original;
-  if(['html','css','json','txt','md','svg'].includes(ext))decoder.decode(original);
+  if(projectViewTextAsset(path))decoder.decode(original);
   if(bytes.length>VIEW_LIMITS.fileBytes)fail('size-limit');
-  assets.push({path,mediaType:media[ext]!,base64:base64(bytes),sourceSha256:await sha(original),sha256:await sha(bytes)});
+  assets.push({path,mediaType:media[ext]!,original,bytes});
  }
+ return {manifest,assets};
+}
+export async function buildProjectViews(source:PreviewSource,archive:Uint8Array):Promise<ProjectViewPackage|null>{
+ if(await workspaceArchiveReader(archive).sha256()!==previewSourceFilesSha256(source))fail('source-mismatch');
+ const parsed=readProjectViewsArchive(archive);if(!parsed)return null;
+ const {manifest}=parsed,assets:ProjectViewPackage['assets']=[];
+ for(const {path,mediaType,original,bytes}of parsed.assets)assets.push({path,mediaType,base64:base64(bytes),sourceSha256:await sha(original),sha256:await sha(bytes)});
  const body={schema:'project.view-package/v1' as const,scope:previewSourceScope(source),revisionId:source.kind==='initial-workspace'?null:source.revision.revisionId,filesSha256:previewSourceFilesSha256(source),manifest,assets};
  return {...body,packageIdentity:await sha(encoder.encode(JSON.stringify(body)))};
 }

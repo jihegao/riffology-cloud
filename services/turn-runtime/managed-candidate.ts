@@ -7,6 +7,7 @@ import {PREVIEW_SOURCE_LOCKS} from '../browser-preview/profiles.ts';
 import {parsePreviewVisualization,validatePreviewJavaScriptSource,validatePreviewPythonSource} from '../browser-preview/validator.ts';
 import {validateInput,validateTrace,type RuntimeTrace} from '../browser-preview/runtime/protocol.mjs';
 import {ARTIFACT_MANIFEST,readModelArtifacts} from '../simulation/model-artifacts.ts';
+import {PROJECT_VIEWS_MANIFEST,projectViewTextAsset,readProjectViewsArchive} from '../project-views/package.ts';
 
 const encoder=new TextEncoder(),decoder=new TextDecoder('utf-8',{fatal:true});
 const core=['model/model.py','model/results.json','app/requirements.lock'] as const;
@@ -17,7 +18,7 @@ const object=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&
 const exact=(v:unknown,keys:readonly string[]):v is Record<string,unknown>=>object(v)&&Object.keys(v).sort().join(',')===[...keys].sort().join(',');
 const finite=(v:unknown)=>typeof v==='number'&&Number.isFinite(v);
 export type ManagedCandidateDiagnostic={file:string;path:string;reason:string};
-export type ManagedCandidateValidation={status:'checked';schemaVersion:1|2|3;operation?:'answer'|'design'|'model';traceValidation:'not-provided'|'validated';execution:'not-recomputed';profileId?:PreviewRuntime['profileId']}|{status:'invalid';diagnostic:ManagedCandidateDiagnostic};
+export type ManagedCandidateValidation={status:'checked';schemaVersion:1|2|3;operation?:'answer'|'design'|'model'|'pages';traceValidation:'not-provided'|'validated';execution:'not-recomputed';profileId?:PreviewRuntime['profileId']}|{status:'invalid';diagnostic:ManagedCandidateDiagnostic};
 export class ManagedCandidateError extends Error{
  readonly diagnostic:ManagedCandidateDiagnostic;
  constructor(code:string,file:string,path:string,reason:string){super(code);this.diagnostic={file:file.slice(0,128),path:path.slice(0,256),reason:reason.slice(0,128)};}
@@ -99,6 +100,11 @@ export function managedCandidateRecoveryFiles(archive:Uint8Array):Record<string,
  }
  const artifacts=check(ARTIFACT_MANIFEST,'$',()=>readModelArtifacts(archive));
  if(artifacts){files[ARTIFACT_MANIFEST]=JSON.stringify(artifacts.manifest);Object.assign(files,artifacts.contents);}
+ const pages=check(PROJECT_VIEWS_MANIFEST,'$',()=>readProjectViewsArchive(archive));
+ if(pages){
+  files[PROJECT_VIEWS_MANIFEST]=JSON.stringify(pages.manifest);
+  for(const asset of pages.assets)if(projectViewTextAsset(asset.path))files[asset.path]=decoder.decode(asset.original);
+ }
  if(encoder.encode(JSON.stringify(files)).byteLength>1024*1024)reject('candidate.json','files','managed-recovery-too-large');
  return files;
 }
