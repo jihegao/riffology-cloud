@@ -1,5 +1,11 @@
 # Current release readiness — 2026-10-14
 
+## 2026-10-17 JHG-46 authenticated page runtime candidate
+
+Source `bfca3cca1b07085ee78ce45064f86c2577379a50` adds an explicit Managed `pages` authoring operation and bounded original-text cold recovery, plus same-origin authenticated pixel/input sessions backed by a dedicated no-Internet container and durable single-slot capacity. Existing manual-save admission, Pi/Runs policies and legacy execution gates remain outside this feature's admission. Final local `npm run check` exited 0: 3,205 Node passes, 13 conditional skips and 8 Python passes, including typecheck and actual local Workerd/browser fixtures. Earlier failed invocations and the repaired Playwright Worker bundle defect are retained in the candidate evidence; this is not production identity/container acceptance.
+
+The new runtime remains default closed and unpublished. An offline image context uses a verified official linux/amd64 base manifest and two exact Playwright packages; both public npm archives match the lock SRI and all 176 vendor files. No derived image is built or accepted. AMD128 Docker's configured proxy refused the single base pull, and automatic approval review rejected the private context transfer pending direct authorization. No candidate container or production session was started. [Implementation, publication and acceptance boundaries](project-view-production-candidate-20261017.md) · [candidate evidence](../evidence/releases/project-view-production-candidate-20261017.json) · [public package byte comparison](../evidence/releases/project-view-image-inputs-20261017/receipt.json).
+
 ## 2026-10-17 #232 restricted deployment; authenticated acceptance pending
 
 The user directly approved Ready, merge and the existing restricted deployment. [PR #232](https://github.com/jihegao/riffology-cloud/pull/232) was marked ready and merged as `1908fc1afdc5258647bd408e819d81e29b3b9dd5`; its tree equals the tested candidate `0928173`. Gateway version `f2a0b0a3-8742-4466-89d0-74cf0db6c47b` is at 100%, deployment `2ffb14ba-a651-4010-b042-f8cd5e2d97f0`, acknowledged 2026-10-17 12:22 Asia/Shanghai. The backend module and all 95 public assets match the frozen release bytes; the 68 immutable assets are retained. Root returns the expected index and unauthenticated `/api/me` returns 401.

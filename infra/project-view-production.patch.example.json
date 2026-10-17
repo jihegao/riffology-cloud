@@ -1,0 +1,49 @@
+{
+  "schema": "project-view-production-review-patch/v1",
+  "deployable": false,
+  "purpose": "Review-only additions to the existing Gateway; this is not a Wrangler config or an executable API request.",
+  "baseline": {
+    "observedAt": "2026-10-17T04:47:42.817Z",
+    "worker": "riffology-m1-gateway-staging",
+    "versionId": "f2a0b0a3-8742-4466-89d0-74cf0db6c47b",
+    "deploymentId": "2ffb14ba-a651-4010-b042-f8cd5e2d97f0",
+    "bindingCount": 100,
+    "sqliteExportCount": 23,
+    "containerAssociationCount": 5,
+    "workspaceNamespace": "64bf54d3461746cebcf6ede7cf8a2e31"
+  },
+  "preservationRequirements": [
+    "Freeze and compare the actual active deployment, complete settings and complete Worker resource arrays immediately before any publication.",
+    "Append to existing bindings, SQLite exports/migrations and container associations; never replace them with this partial example.",
+    "Keep original Workspace namespace, 100 baseline bindings, 23 baseline exports and 5 baseline container associations, all existing assets and all account container application configurations.",
+    "Keep current Pi/Runs policies, pending records, historical usage, reservations and admission state; do not reuse their capacity for project pages.",
+    "No account, database, route, invitation, credential, budget or existing execution-gate change is implied."
+  ],
+  "appendOnlyResourceIntent": {
+    "durableObjectBindings": [
+      {"name": "PROJECT_VIEW_RUNTIME", "class_name": "ProjectViewRuntime"},
+      {"name": "PROJECT_VIEW_CAPACITY", "class_name": "ProjectViewCapacity"}
+    ],
+    "newSqliteClasses": ["ProjectViewRuntime", "ProjectViewCapacity"],
+    "containerAssociation": {
+      "name": "riffology-project-view-browser",
+      "class_name": "ProjectViewRuntime",
+      "image": null,
+      "maximumInstances": 1,
+      "network": "disabled-before-start",
+      "status": "pending-reviewed-image-and-resource-policy"
+    },
+    "newEnvironmentPins": {
+      "PROJECT_VIEW_RUNTIME_IMAGE": null,
+      "PROJECT_VIEW_RUNTIME_POLICY_HASH": null,
+      "PROJECT_VIEW_POLICY_JSON": {"enabled": false}
+    }
+  },
+  "unresolvedBeforePublication": [
+    "Exact reviewed image digest, supply-chain evidence, Chromium sandbox and real no-network/cleanup verification.",
+    "Exact platform container limits and availability; do not silently inherit Pi/Runs resource applications.",
+    "A fresh complete preservation snapshot and unique additive migration tag; no rollback may remove persisted session/cleanup tombstones.",
+    "Explicit approved invited identity/project scope, operation/session deadline, infrastructure cost policy and stop/exit conditions before production admission.",
+    "The exact enabled policy bytes and their hash must be reviewed together; default disabled preparation is not production eligibility."
+  ]
+}
