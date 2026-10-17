@@ -351,7 +351,12 @@ async function api(path, options = {}) {
     headers: { 'Content-Type': 'application/json', ...options.headers },
   });
   if (!response.ok) {
-    if (response.status === 401 && identityEpoch === accountIdentityEpoch) setAccountIdentity('expired');
+    // Auth consumers must fence again after the asynchronous error-body read.
+    let authIdentityEpoch = identityEpoch;
+    if (response.status === 401 && identityEpoch === accountIdentityEpoch) {
+      setAccountIdentity('expired');
+      authIdentityEpoch = accountIdentityEpoch;
+    }
     const projectLimit = response.status === 429 && path.startsWith('/api/workspaces/');
     let code = null;
     try { const body = await response.clone().json(); if (typeof body?.error === 'string') code = body.error; } catch {}
@@ -362,7 +367,7 @@ async function api(path, options = {}) {
     if (code === 'turn_runtime_not_ready') messages[503] = msg('error.turnsPaused');
     const blocked = managedBlockMessage(code);
     const localizedMessage = blocked || cloudRunError({code,localizedMessage:messages[response.status]||msg('error.requestFailed')});
-    throw Object.assign(new Error(String(localizedMessage)), {localizedMessage, status: response.status, code, retryable: !blocked && code !== 'turn_runtime_not_ready' });
+    throw Object.assign(new Error(String(localizedMessage)), {localizedMessage, status: response.status, code, authIdentityEpoch, retryable: !blocked && code !== 'turn_runtime_not_ready' });
   }
   if(responseType==='bytes'){const length=Number(response.headers.get('content-length'));if(length>33554432)throw uiError('error.resourceTooLarge');if(typeof onProgress==='function'&&response.body){const reader=response.body.getReader(),chunks=[];let size=0;try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>33554432)throw uiError('error.resourceTooLarge');chunks.push(value);onProgress(size,length);}}catch(error){await reader.cancel().catch(()=>{});throw error;}const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}return bytes;}const bytes=new Uint8Array(await response.arrayBuffer());if(bytes.length>33554432)throw uiError('error.resourceTooLarge');return bytes;}
   return response.status === 204 ? null : response.json();
@@ -391,8 +396,12 @@ function accountView() {
   $('#sign-out').hidden = !authenticated;
 }
 
+function staleAuthenticationError(error) {
+  return error.status === 401 && error.authIdentityEpoch !== accountIdentityEpoch;
+}
+
 function renderAccountIdentity() {
-  const ready = accountIdentityState === 'ready' && typeof accountUserId === 'string' && accountUserId.length > 0;
+  const ready = authenticated && accountIdentityState === 'ready' && typeof accountUserId === 'string' && accountUserId.length > 0;
   $('#account-details').hidden = !ready;
   $('#account-user-id').value = ready ? accountUserId : '';
   $('#account-copy').disabled = !ready;
@@ -962,9 +971,11 @@ async function renderProjects() {
     scheduleProjectRefresh(projects);
     filterProjectCards();void loadProjectSummaries(summaryJobs,generation,requestNumber);
   } catch (error) {
-    if (generation !== viewGeneration || requestNumber !== listGeneration) return;
+    if (generation !== viewGeneration || requestNumber !== listGeneration || staleAuthenticationError(error)) return;
     if (error.status === 401) {
       authenticated = false;
+      accountIdentityOwner = null;
+      setAccountIdentity('signedOut');
       tenant = null;
       viewGeneration++;
       box.replaceChildren();
@@ -1015,7 +1026,7 @@ async function load() {
     pollDeadline = Date.now() + POLL_WINDOW_MS;
     if (tenant) { await Promise.all([renderProjects(), loadModels()]); }
   } catch (error) {
-    if (generation !== viewGeneration) return;
+    if (generation !== viewGeneration || staleAuthenticationError(error)) return;
     if (error.status === 401) {
       authenticated = false;
       setAccountIdentity('signedOut');

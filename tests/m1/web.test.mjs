@@ -218,6 +218,32 @@ test('failed foreground identity checks clear the ID and a later focus can verif
   await page.evaluate(()=>dispatchEvent(new Event('focus')));await page.waitForFunction(id=>document.querySelector('#account-user-id').value===id,identityA);
 });
 
+test('a stale projects 401 after a same-account identity refresh cannot sign out the verified account',async t=>{
+  const pending=gate();let held=false,reads=0;
+  const page=await pageFixture(t,async(route,path)=>{
+    if(path==='/api/me'){reads++;await json(route,identityResponse(identityA));return true;}
+    if(path==='/api/tenants/tenant-a/projects'){held=true;await pending.promise;await json(route,{error:'expired'},401);return true;}
+  });
+  await page.goto('https://ui.test/',{waitUntil:'domcontentloaded'});await waitFor(()=>held);await page.waitForFunction(id=>document.querySelector('#account-user-id').value===id,identityA);
+  await page.evaluate(()=>dispatchEvent(new Event('focus')));await waitFor(()=>reads===2);await page.waitForFunction(id=>document.querySelector('#account-user-id').value===id,identityA);
+  pending.resolve();await page.waitForFunction(()=>document.querySelector('#projects').getAttribute('aria-busy')==='false'||!document.querySelector('#login').hidden);
+  assert.equal(await page.locator('#login').isVisible(),false,'old projects 401 must not sign out a newly verified identity');
+  assert.equal(await page.locator('#sign-out').isVisible(),true);assert.equal(await page.locator('#account-user-id').inputValue(),identityA);
+  await page.locator('#account-summary').click();assert.equal(await page.locator('#account-copy').isEnabled(),true);
+});
+
+test('a current projects 401 signs out and clears all identity and copy values',async t=>{
+  const pending=gate();let held=false;
+  const page=await pageFixture(t,async(route,path)=>{
+    if(path==='/api/me'){await json(route,identityResponse(identityA));return true;}
+    if(path==='/api/tenants/tenant-a/projects'){held=true;await pending.promise;await json(route,{error:'expired'},401);return true;}
+  });
+  await page.goto('https://ui.test/',{waitUntil:'domcontentloaded'});await waitFor(()=>held);await page.waitForFunction(id=>document.querySelector('#account-user-id').value===id,identityA);
+  await page.locator('#account-summary').click();pending.resolve();await page.locator('#login:not([hidden])').waitFor();
+  assert.equal(await page.locator('#sign-out').isVisible(),false);assert.equal(await page.locator('#account-details').isVisible(),false);
+  assert.equal(await page.locator('#account-user-id').inputValue(),'');assert.equal(await page.locator('#account-copy').isDisabled(),true);assert.equal(await page.locator('#account-copy-status').innerText(),'');
+});
+
 test('project filters use saved-model and preview metadata without executing or deleting projects',async t=>{
  const calls=[];const page=await pageFixture(t,async(route,path)=>{
   calls.push({path,method:route.request().method()});

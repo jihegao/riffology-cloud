@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-17",
+  "reviewedBase": "82a0e6280e06fec9fdca4ef8a37b93618ef5f6c0",
+  "negativeControl": {
+    "implementation": "original 82a0e62 app.js plus the two new browser tests",
+    "exitCode": 1,
+    "pass": 1,
+    "fail": 1,
+    "reason": "old projects 401 must not sign out a newly verified identity",
+    "logSha256": "a62d5d3e89145c31e20a7ad376442416b1d0403009bda4dc7e73445076bbc8c5"
+  },
+  "fixedFocused": {
+    "exitCode": 0,
+    "pass": 2,
+    "fail": 0,
+    "logSha256": "f1426b095c249f8a2a9bbd47107ae4f415a01b7b008d78995b785b33d685f221"
+  },
+  "sourceFiles": {
+    "services/web/app.js": "2f3ede5130433a616ae869297bd3f02e71872ce77b497a62374d2b7b581c0fa6",
+    "tests/m1/web.test.mjs": "6eb3301c5565f894467a8e78a6a5a3f660c8fcebf9427266f0ae9ed67433a5bb"
+  },
+  "aggregateEvidence": "Original and final exact-head aggregate outcomes are recorded separately in PR231 comments; this file does not assert unrun checks passed.",
+  "boundaries": {
+    "realBrowser": "local Playwright Chromium",
+    "identity": "synthetic intercepted ui.test responses",
+    "productionAcceptance": false,
+    "realClipboardAcceptance": false,
+    "deployed": false,
+    "productionPolicyChanged": false,
+    "initialContext226Included": false
+  }
+}

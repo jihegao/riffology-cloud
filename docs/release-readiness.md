@@ -2,6 +2,8 @@
 
 ## 2026-10-17 Current account ID candidate
 
+Independent review found an old projects-list401 could bypass the identity epoch after a same-account refresh. A real local browser negative reproduces that original defect; the follow-up unifies auth-error fencing and clears the identity on a current sign-out. Exact original-head and fixed-head aggregate evidence must be read separately in the PR. [Auth fence follow-up](account-identity-auth-fence-20261017.md).
+
 Issue #228 has a separate implementation on main `1e35391`: verified current-account ID disclosure/copy, immediate stale-identity clearing and late-response fencing, with Chinese/English and narrow-screen keyboard support. Local related browser checks passed122/122, UI/i18n21/21 and typecheck passed. It is not merged or deployed; real-account and operating-system clipboard acceptance remain pending. [Implementation and evidence](account-identity-228-20261017.md).
 
 The baseline #221/#227 integration was merged into main `1e35391` and released before this candidate. Real page/recovery/cross-identity/isolation acceptance remains pending and was postponed under the user's latest delivery order; the historical entries below describe their original candidate states. This account-ID change does not integrate #208/#226.
