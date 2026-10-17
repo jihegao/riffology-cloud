@@ -1,0 +1,622 @@
+{
+  "schema": "project-view-browser-local-feasibility/v1",
+  "date": "2026-10-17",
+  "owner": "jihegao",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/214",
+  "decisionStatus": "pending explicit user selection between Worker API and native DOM boundary",
+  "experimentKind": "local real Chromium synthetic feasibility spike; not production implementation or target acceptance",
+  "executed": {
+    "runs": 1,
+    "startedAt": "2026-10-17T09:04:47.277Z",
+    "finishedAt": "2026-10-17T09:04:48.079Z",
+    "chromiumVersion": "153.0.8010.12",
+    "servers": 2,
+    "serverInterfaces": [
+      "127.0.0.1"
+    ],
+    "freshNonPersistentBrowserContext": true,
+    "syntheticOnly": true,
+    "cloudContainerProviderModelRequests": 0,
+    "noGlobalZeroCostOrExecutionClaim": true
+  },
+  "originalReport": {
+    "localIgnoredPath": ".local/jhg46-browser-local-feasibility-20261017/run-d5db2af9-2e71-42ea-8769-529a244276e6/evidence.json",
+    "bytes": 11899,
+    "sha256": "586559d10e5604b0d2c74be9a5b794e1681e95a95d75a5919754c3402ab7e707",
+    "originalBytesRetained": true,
+    "publicProjectionNormalized": true
+  },
+  "publicProjectionNormalization": {
+    "removedFields": [
+      "nonce"
+    ],
+    "substitutions": [
+      "synthetic canary UUID query values -> [synthetic-canary]",
+      "synthetic nonce -> [synthetic-nonce]"
+    ],
+    "realCookieCredentialValuesPresent": false,
+    "projectionCompactJsonSha256": "0e6e4a05cc6ca6db8c9b01f9741cd67e4c001f69b053ff727539da74840fa027"
+  },
+  "executedSource": {
+    "localIgnoredPath": ".local/jhg46-browser-local-feasibility-20261017.mjs",
+    "bytes": 19742,
+    "sha256": "dfc5056103a16cc85b7be29349e9290280a23d6b446271826689d729b907c501"
+  },
+  "reviewableSource": {
+    "path": "scripts/m3/project-view-browser-local-feasibility.mjs",
+    "bytes": 20178,
+    "sha256": "45ded36fcd1c4eaa1dadb5a2520490a8961976350d026f350ef884782b32e2a8",
+    "changesFromExecutedSource": [
+      "Repository-relative module paths adjusted for scripts/m3 location",
+      "Require explicit --output absolute path and fail on existing output directory",
+      "Local synthetic-only usage comment"
+    ],
+    "coreBrowserFunctionsByteIdentical": true,
+    "coreBrowserFunctionSha256": {
+      "untrustedWorker": "ae9c1f0b47c3ff0a23b32f1677d270dc7025a755153e140964dce3f516c2b082",
+      "trustedBootstrap": "a702df23fc0b40d4a04cd2194f2d47ec4b34fe5ca6190c2fbbf81adf82f31c99",
+      "appMain": "f70c7ebc984e1337a209341f5ceb54927547243ffce81c0b0ef12ccf7a1de347"
+    },
+    "reviewableCopyNotRerun": true,
+    "syntaxCheckPassed": true
+  },
+  "actualAssertions": {
+    "beforeAndAfterCollectorPositive": true,
+    "appCookiePositive": true,
+    "opaqueOrigin": true,
+    "opaqueCookieDenied": true,
+    "opaqueParentDomDenied": true,
+    "workerCreated": true,
+    "workerNoDom": true,
+    "workerAttacksAllFail": true,
+    "workerAttackHttpObserved": 0,
+    "workerNoHttpEgress": true,
+    "workerCalculationAndParameterRender": true,
+    "baselineSameFrameCspSelfNavigationLeakedSyntheticCanary": true,
+    "collectorNeverReceivedSyntheticCookie": true,
+    "workersGone": true
+  },
+  "baseline": {
+    "currentSourceDirectlyServed": true,
+    "retired410RouteNotUsed": true,
+    "notAnEnabledProductionRouteClaim": true,
+    "frameModuleSha256": "fd07c57ad44a8330fc780ab3c284a64e1b43a6e61d83ab7f8ad3db2e135297e9",
+    "frameHtmlSha256": "e7242ff855f2f85028811c8f210d4b2b27f7683c2e8d51cbb0afb8a84c6c53ca",
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "public, max-age=31536000, immutable",
+      "content-security-policy": "default-src 'none'; script-src 'unsafe-inline' blob:; style-src 'unsafe-inline' blob:; img-src blob: data:; media-src blob:; font-src blob:; connect-src 'none'; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors http://127.0.0.1:61477; sandbox allow-scripts",
+      "permissions-policy": "camera=(), microphone=(), geolocation=(), usb=(), storage-access=()",
+      "referrer-policy": "no-referrer",
+      "x-content-type-options": "nosniff",
+      "cross-origin-resource-policy": "cross-origin"
+    },
+    "canonicalPackageVerified": true,
+    "canonicalPackageIdentity": "93b08c8af9fb6bc875f240df93128d308299f7088def6b943e53e6e2bd4090bb",
+    "existingReadonlyBrokerUsed": true,
+    "authorizationChecks": 2,
+    "canaryReadVia": "files.read docs/canary.json",
+    "domSelfNavigation": {
+      "attempt": "location.href = collector URL plus broker-returned synthetic canary",
+      "collectorRequestObserved": true,
+      "collectorSyntheticCanaryPresent": true
+    },
+    "credentialsIncludeFetchToAppApi": {
+      "attempted": true,
+      "httpRequestObserved": false,
+      "mechanism": "connect-src none"
+    },
+    "cookieLeakObserved": false,
+    "knownFailure": "Opaque sandbox allow-scripts and connect-src none do not block project DOM self-navigation with broker-readable data.",
+    "mainCommit": "1585280c76e55cae61f3969db5545f76edce678c",
+    "servedModuleSha256": {
+      "services/project-views/frame.mjs": "fd07c57ad44a8330fc780ab3c284a64e1b43a6e61d83ab7f8ad3db2e135297e9",
+      "services/web/project-views.js": "fc53df2a13d48a8de676d4af0c7693d866811cfab7ce3748d9ec161bab0aa6c9",
+      "services/web/project-view-remote.js": "8e13adf868a6ded4ccd240d64f38404eea07ba76416635ede1db08be46e26974",
+      "services/web/i18n.js": "8aa92fc5d74de0ce7fb4e294957b21b294fda607516ccb8a8da684aa40a4c869",
+      "services/web/i18n-bindings.js": "d54d8c9cc94dd68383eb5dcd7947b7cead768dc283fec43c3f74bf30e303a095"
+    }
+  },
+  "workerPrototype": {
+    "opaqueIframeOrigin": "null",
+    "sandbox": "allow-scripts",
+    "trustedBootstrapCreatesBlobWorker": true,
+    "cspInheritanceObserved": {
+      "fetchAppApi": "connect-src violation",
+      "fetchCollector": "connect-src violation",
+      "webSocket": "connect-src violation",
+      "importScripts": "script-src-elem violation"
+    },
+    "remoteWorkerFailure": "SecurityError from origin null, not independently attributed to CSP",
+    "workerSelfNavigationFailure": "WorkerLocation.href readonly; assign and replace absent",
+    "domGlobals": {
+      "document": "undefined",
+      "window": "undefined",
+      "parent": "undefined",
+      "open": "undefined",
+      "origin": "null",
+      "offscreenCanvas": "function"
+    },
+    "brokerReadOnlyFixture": true,
+    "brokerReads": 1,
+    "parameterFactors": [
+      2,
+      5
+    ],
+    "computedValues": [
+      20,
+      50
+    ],
+    "frames": [
+      {
+        "factor": 2,
+        "sum": 20,
+        "checksum": 431090944,
+        "imageBitmapClosed": true
+      },
+      {
+        "factor": 5,
+        "sum": 50,
+        "checksum": 627275264,
+        "imageBitmapClosed": true
+      }
+    ],
+    "workerAttackHttpRequests": 0,
+    "webSocketUpgrades": 0,
+    "brokerProtocol": "Custom synthetic series.json MessagePort responder; product createProjectViewBroker exercised only by the DOM baseline.",
+    "productBrokerProtocolIntegrated": false
+  },
+  "controls": {
+    "collectorPositiveBefore": 200,
+    "collectorPositiveAfter": 200,
+    "appHttpOnlySyntheticCookiePositiveBefore": true,
+    "appHttpOnlySyntheticCookiePositiveAfter": true,
+    "opaqueCookieAccessDenied": true,
+    "opaqueParentDomAccessDenied": true,
+    "collectorSyntheticAuthCookieObserved": false
+  },
+  "cleanup": {
+    "worker": {
+      "child": {
+        "type": "cleanup",
+        "workerTerminateCalled": true,
+        "blobRevoked": true,
+        "controlListenerRemoved": true
+      },
+      "parent": {
+        "portClosed": true,
+        "frameRemoved": true,
+        "listenerRemoved": true
+      }
+    },
+    "workerTargetsBefore": 1,
+    "workerTargetsAfter": 0,
+    "workerPortLifetimeEndedWithTerminatedWorker": true,
+    "baseline": {
+      "brokerClosed": true,
+      "frameRemoved": true
+    },
+    "browserContextClosed": true,
+    "browserClosed": true,
+    "loopbackServersClosed": true
+  },
+  "localRenderArtifact": {
+    "localIgnoredPath": ".local/jhg46-browser-local-feasibility-20261017/run-d5db2af9-2e71-42ea-8769-529a244276e6/canvas.png",
+    "bytes": 153,
+    "sha256": "1c7d48e587aac3dd932f74017872d9f155d9f1b8fb4e5d6b5a68bcbb8ca6087c",
+    "observed": "Trusted parent canvas rendered transferred ImageBitmap; both ImageBitmaps explicitly closed."
+  },
+  "limitations": [
+    "Worker JS/OffscreenCanvas API only; arbitrary HTML/DOM project JavaScript is not compatible.",
+    "No browser engine other than installed Chromium was tested; Safari/Firefox/mobile untested.",
+    "No hard CPU/memory/network quota or full nine-egress matrix; selected vectors only.",
+    "No successful WebSocket handshake positive control was executed; HTTP collector and app-cookie controls passed before/after.",
+    "Remote Worker failed the opaque-origin check; self-navigation failed because WorkerLocation lacks navigation APIs. These are separate from CSP inheritance.",
+    "Broker permissions are synthetic; no real authenticated identity, cross-project, revocation, save/recovery or full JHG56 acceptance.",
+    "The original output is retained privately with its exact hash; public query-value and nonce redaction is disclosed.",
+    "No cloud browser, container, provider, model, Turn, Run or original user data was used.",
+    "Worker series.json used a custom synthetic port responder; actual product broker protocol integration was exercised only in the DOM baseline.",
+    "Cookie controls cover this synthetic HttpOnly Strict /api cookie and observed requests only, not every Cookie or browser credential policy."
+  ],
+  "reproduce": {
+    "command": "node scripts/m3/project-view-browser-local-feasibility.mjs --output /absolute/path/to/a-new-local-output-directory",
+    "requires": [
+      "Already installed Playwright and Chromium channel",
+      "Existing parent directory; output directory must not exist",
+      "Local permission to bind two loopback ports and launch fresh headless Chromium"
+    ],
+    "overwritesExistingOutput": false,
+    "installsSoftware": false,
+    "remoteConnections": false,
+    "notExecutedAgainForPublication": true
+  },
+  "productionAppChanged": false,
+  "productionEligible": false,
+  "done": false,
+  "actualRunProjection": {
+    "schema": "browser-local-worker-feasibility/v1",
+    "startedAt": "2026-10-17T09:04:47.277Z",
+    "syntheticOnly": true,
+    "loopbackOnly": true,
+    "cloudContainerProviderModelRequests": 0,
+    "workerPrototypeNotArbitraryDomCompatibility": true,
+    "http": [
+      {
+        "server": "app",
+        "path": "/app",
+        "queryKeys": [],
+        "method": "GET",
+        "syntheticCanaryPresent": false,
+        "syntheticAuthCookiePresent": false,
+        "origin": null,
+        "at": "2026-10-17T09:04:47.631Z"
+      },
+      {
+        "server": "collector",
+        "path": "/positive-before",
+        "queryKeys": [],
+        "method": "GET",
+        "syntheticCanaryPresent": false,
+        "syntheticAuthCookiePresent": false,
+        "origin": "http://127.0.0.1:61477",
+        "at": "2026-10-17T09:04:47.641Z"
+      },
+      {
+        "server": "app",
+        "path": "/api/protected",
+        "queryKeys": [
+          "positive"
+        ],
+        "method": "GET",
+        "syntheticCanaryPresent": false,
+        "syntheticAuthCookiePresent": true,
+        "origin": null,
+        "at": "2026-10-17T09:04:47.642Z"
+      },
+      {
+        "server": "app",
+        "path": "/opaque",
+        "queryKeys": [],
+        "method": "GET",
+        "syntheticCanaryPresent": false,
+        "syntheticAuthCookiePresent": false,
+        "origin": null,
+        "at": "2026-10-17T09:04:47.653Z"
+      },
+      {
+        "server": "app",
+        "path": "/web/project-views.js",
+        "queryKeys": [],
+        "method": "GET",
+        "syntheticCanaryPresent": false,
+        "syntheticAuthCookiePresent": false,
+        "origin": "http://127.0.0.1:61477",
+        "at": "2026-10-17T09:04:47.836Z"
+      },
+      {
+        "server": "app",
+        "path": "/web/i18n.js",
+        "queryKeys": [],
+        "method": "GET",
+        "syntheticCanaryPresent": false,
+        "syntheticAuthCookiePresent": false,
+        "origin": "http://127.0.0.1:61477",
+        "at": "2026-10-17T09:04:47.839Z"
+      },
+      {
+        "server": "app",
+        "path": "/web/i18n-bindings.js",
+        "queryKeys": [],
+        "method": "GET",
+        "syntheticCanaryPresent": false,
+        "syntheticAuthCookiePresent": false,
+        "origin": "http://127.0.0.1:61477",
+        "at": "2026-10-17T09:04:47.840Z"
+      },
+      {
+        "server": "app",
+        "path": "/web/project-view-remote.js",
+        "queryKeys": [],
+        "method": "GET",
+        "syntheticCanaryPresent": false,
+        "syntheticAuthCookiePresent": false,
+        "origin": "http://127.0.0.1:61477",
+        "at": "2026-10-17T09:04:47.840Z"
+      },
+      {
+        "server": "app",
+        "path": "/baseline",
+        "queryKeys": [],
+        "method": "GET",
+        "syntheticCanaryPresent": false,
+        "syntheticAuthCookiePresent": false,
+        "origin": null,
+        "at": "2026-10-17T09:04:47.845Z"
+      },
+      {
+        "server": "collector",
+        "path": "/baseline-nav",
+        "queryKeys": [
+          "canary"
+        ],
+        "method": "GET",
+        "syntheticCanaryPresent": true,
+        "syntheticAuthCookiePresent": false,
+        "origin": null,
+        "at": "2026-10-17T09:04:47.853Z"
+      },
+      {
+        "server": "collector",
+        "path": "/positive-after",
+        "queryKeys": [],
+        "method": "GET",
+        "syntheticCanaryPresent": false,
+        "syntheticAuthCookiePresent": false,
+        "origin": "http://127.0.0.1:61477",
+        "at": "2026-10-17T09:04:47.873Z"
+      },
+      {
+        "server": "app",
+        "path": "/api/protected",
+        "queryKeys": [
+          "positive"
+        ],
+        "method": "GET",
+        "syntheticCanaryPresent": false,
+        "syntheticAuthCookiePresent": true,
+        "origin": null,
+        "at": "2026-10-17T09:04:47.874Z"
+      }
+    ],
+    "websocketUpgrades": [],
+    "browserRequests": [
+      {
+        "url": "http://127.0.0.1:61477/app",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:61476/positive-before",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:61477/api/protected?positive=before",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:61477/opaque",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:61477/web/project-views.js",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:61477/web/i18n.js",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:61477/web/i18n-bindings.js",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:61477/web/project-view-remote.js",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:61477/baseline",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:61476/baseline-nav?canary=[synthetic-canary]",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:61476/positive-after",
+        "method": "GET"
+      },
+      {
+        "url": "http://127.0.0.1:61477/api/protected?positive=after",
+        "method": "GET"
+      }
+    ],
+    "browserFailures": [],
+    "console": [
+      "Connecting to 'http://127.0.0.1:61477/api/protected?attempt=baseline-fetch' violates the following Content Security Policy directive: \"connect-src 'none'\". The action has been blocked.",
+      "Fetch API cannot load http://127.0.0.1:61477/api/protected?attempt=baseline-fetch. Refused to connect because it violates the document's Content Security Policy."
+    ],
+    "pageErrors": [],
+    "limitations": [
+      "Worker JS and OffscreenCanvas prototype only; not arbitrary DOM/HTML compatibility.",
+      "No production permissions, authenticated identity, cross-project or complete JHG56 acceptance.",
+      "No hard CPU/memory quota proof; trusted owner can terminate this Worker.",
+      "Point-in-time traces and synthetic canaries do not certify all browser exfiltration channels."
+    ],
+    "origins": {
+      "app": "http://127.0.0.1:61477",
+      "collector": "http://127.0.0.1:61476"
+    },
+    "source": {
+      "frameModuleSha256": "fd07c57ad44a8330fc780ab3c284a64e1b43a6e61d83ab7f8ad3db2e135297e9",
+      "frameHtmlSha256": "e7242ff855f2f85028811c8f210d4b2b27f7683c2e8d51cbb0afb8a84c6c53ca",
+      "frameHeaders": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "content-security-policy": "default-src 'none'; script-src 'unsafe-inline' blob:; style-src 'unsafe-inline' blob:; img-src blob: data:; media-src blob:; font-src blob:; connect-src 'none'; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors http://127.0.0.1:61477; sandbox allow-scripts",
+        "permissions-policy": "camera=(), microphone=(), geolocation=(), usb=(), storage-access=()",
+        "referrer-policy": "no-referrer",
+        "x-content-type-options": "nosniff",
+        "cross-origin-resource-policy": "cross-origin"
+      },
+      "spikeSha256": "dfc5056103a16cc85b7be29349e9290280a23d6b446271826689d729b907c501"
+    },
+    "chromiumVersion": "153.0.8010.12",
+    "positiveBefore": {
+      "collectorStatus": 200,
+      "appApi": {
+        "syntheticCookieSeen": true
+      }
+    },
+    "workerInitial": {
+      "frames": [
+        {
+          "factor": 2,
+          "sum": 20,
+          "checksum": 431090944,
+          "imageBitmapClosed": true
+        }
+      ],
+      "messages": [
+        {
+          "type": "bootstrap",
+          "origin": "null",
+          "cookieAccess": "SecurityError",
+          "parentDomAccess": "SecurityError"
+        },
+        {
+          "type": "csp",
+          "effectiveDirective": "connect-src",
+          "blockedURI": "http://127.0.0.1:61477/api/protected?attempt=worker&canary=[synthetic-canary]"
+        },
+        {
+          "type": "csp",
+          "effectiveDirective": "connect-src",
+          "blockedURI": "http://127.0.0.1:61476/worker-fetch?canary=[synthetic-canary]"
+        },
+        {
+          "type": "csp",
+          "effectiveDirective": "connect-src",
+          "blockedURI": "ws://127.0.0.1:61476/worker-ws?canary=[synthetic-canary]"
+        },
+        {
+          "type": "attacks",
+          "results": {
+            "fetchAppApi": {
+              "outcome": "failed",
+              "name": "TypeError",
+              "message": "Failed to fetch"
+            },
+            "fetchCollector": {
+              "outcome": "failed",
+              "name": "TypeError",
+              "message": "Failed to fetch"
+            },
+            "webSocket": {
+              "outcome": "failed",
+              "name": "WebSocketError"
+            },
+            "importScripts": {
+              "outcome": "failed",
+              "name": "NetworkError",
+              "message": "Failed to execute 'importScripts' on 'WorkerGlobalScope': The script at 'http://127.0.0.1:61476/remote-script.js?canary=[synthetic-canary]' failed to load."
+            },
+            "remoteWorker": {
+              "outcome": "failed",
+              "name": "SecurityError",
+              "message": "Failed to construct 'Worker': Script at 'http://127.0.0.1:61476/remote-worker.js?canary=[synthetic-canary]' cannot be accessed from origin 'null'."
+            },
+            "locationAssign": {
+              "outcome": "failed",
+              "name": "TypeError",
+              "message": "self.location.assign is not a function"
+            },
+            "locationHref": {
+              "outcome": "failed",
+              "name": "TypeError",
+              "message": "Cannot set property href of [object WorkerLocation] which has only a getter"
+            },
+            "locationReplace": {
+              "outcome": "failed",
+              "name": "TypeError",
+              "message": "self.location.replace is not a function"
+            }
+          },
+          "capabilities": {
+            "document": "undefined",
+            "window": "undefined",
+            "parent": "undefined",
+            "open": "undefined",
+            "origin": "null",
+            "offscreenCanvas": "function"
+          }
+        },
+        {
+          "type": "csp",
+          "effectiveDirective": "script-src-elem",
+          "blockedURI": "http://127.0.0.1:61476/remote-script.js?canary=[synthetic-canary]"
+        }
+      ],
+      "brokerReads": 1,
+      "baselineBrokerStates": [],
+      "baselineAuthorizations": 0,
+      "cleanup": null
+    },
+    "workerFrames": [
+      {
+        "factor": 2,
+        "sum": 20,
+        "checksum": 431090944,
+        "imageBitmapClosed": true
+      },
+      {
+        "factor": 5,
+        "sum": 50,
+        "checksum": 627275264,
+        "imageBitmapClosed": true
+      }
+    ],
+    "workerTargetsBeforeCleanup": 1,
+    "workerCleanup": {
+      "child": {
+        "type": "cleanup",
+        "workerTerminateCalled": true,
+        "blobRevoked": true,
+        "controlListenerRemoved": true
+      },
+      "parent": {
+        "portClosed": true,
+        "frameRemoved": true,
+        "listenerRemoved": true
+      }
+    },
+    "workerTargetsAfterCleanup": 0,
+    "baselinePackageIdentity": "93b08c8af9fb6bc875f240df93128d308299f7088def6b943e53e6e2bd4090bb",
+    "baseline": {
+      "packageVerified": true,
+      "authorizations": 2,
+      "states": [
+        "ready"
+      ],
+      "cleanup": {
+        "brokerClosed": true,
+        "frameRemoved": true
+      }
+    },
+    "positiveAfter": {
+      "collectorStatus": 200,
+      "appApi": {
+        "syntheticCookieSeen": true
+      }
+    },
+    "assertions": {
+      "beforeAndAfterCollectorPositive": true,
+      "appCookiePositive": true,
+      "opaqueOrigin": true,
+      "opaqueCookieDenied": true,
+      "opaqueParentDomDenied": true,
+      "workerCreated": true,
+      "workerNoDom": true,
+      "workerAttacksAllFail": true,
+      "workerAttackHttpObserved": 0,
+      "workerNoHttpEgress": true,
+      "workerCalculationAndParameterRender": true,
+      "baselineSameFrameCspSelfNavigationLeakedSyntheticCanary": true,
+      "collectorNeverReceivedSyntheticCookie": true,
+      "workersGone": true
+    },
+    "status": "prototype-feasible-with-known-dom-baseline-failure",
+    "browserContextClosed": true,
+    "browserClosed": true,
+    "loopbackServersClosed": true,
+    "finishedAt": "2026-10-17T09:04:48.079Z"
+  }
+}
