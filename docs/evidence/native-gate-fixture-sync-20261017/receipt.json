@@ -37,9 +37,9 @@
     "no production/provider/container execution"
   ],
   "artifacts": {
-    "hosted-failure-excerpt.log": "8e153dfc148ca477e6fdeaabb93df6d82741be58862eb9b4db39ea291f55d152",
     "pr237-delay-digest.mjs": "ee6205bf6264e8224bfa720941806e0988e9c9381358eba5be3e089b4e3dd856",
     "pr237-native-gate-local-once.tap": "8d2054b6ceba06dc1688cbbf9da5dc0b97237795593c7f0edbacf3c950f6d3eb",
+    "hosted-failure-excerpt.json": "2154bb31e3030230bd8801ee231ed9431a5b4c3a24456a2f6ba1c9fecebb466f",
     "pr237-fixture-fix-adjacent.tap": "ac4f318b8a3da7630da6b7c6c4ab4b3aba12a2ede2b555722f7e3bd24b50a7f5",
     "pr237-native-gate-base-delayed.tap.json": "c9bad1a0aa65b01443c73ef8538f637c13ded548eadaf79a53b0114d6c151285",
     "pr237-fixture-fix-delay50.tap": "e2592be1f548bc514ddf517ceb03f0661a61aaed9c3c04c3458c70d3d69fd182",
@@ -54,6 +54,10 @@
     "pr237-native-gate-base-delayed.tap.json": {
       "originalName": "pr237-native-gate-base-delayed.tap",
       "decodedSha256": "84a43d3b62b435b29896de6cb8b1567b14d867bd882c7f7c7d5be43060aabf3b"
+    },
+    "hosted-failure-excerpt.json": {
+      "originalName": "hosted-failure-excerpt.log",
+      "decodedSha256": "8e153dfc148ca477e6fdeaabb93df6d82741be58862eb9b4db39ea291f55d152"
     }
   }
 }
