@@ -1,0 +1,146 @@
+{
+  "schema": "project-view-browser-native-publication-result/v1",
+  "recordedAt": "2026-10-17T11:13:58.348917+00:00",
+  "issue": "https://github.com/jihegao/riffology-cloud/issues/214",
+  "pullRequest": "https://github.com/jihegao/riffology-cloud/pull/235",
+  "result": "default-closed-publication-and-bounded-readback-passed",
+  "source": {
+    "implementationCommit": "bc4c0377dd4a59c6ddf6b9de71e3f0fcbe028999",
+    "frozenPacketCommit": "c3cb51fd9e257eccae08b9380f028e816391421a",
+    "mergeCommit": "29da0349719dba23d5c9ce95b4b83b97ebf7091a",
+    "mergeParents": [
+      "1585280c76e55cae61f3969db5545f76edce678c",
+      "c3cb51fd9e257eccae08b9380f028e816391421a"
+    ],
+    "mergedAt": "2026-10-17T11:04:41Z",
+    "mergeProofSha256": "5d7c552d2cc598cfd33ccfff2e24c049f86bb035e17305ff684f128d3f11f2b7"
+  },
+  "authorization": {
+    "exactV3HumanReply": "授权更新为修复版 v3 并继续发布",
+    "oldDf12And7dCandidateWithdrawn": true,
+    "humanGrantSha256": "18793f51d54de172b69c0b1b70bf66dce011bc2582416202970da70bf7bf4155",
+    "unlimitedFeeBudget": true,
+    "confirmedArrearsNotificationRemains": true,
+    "githubQuotaFailureWaived": true,
+    "subscriptionOrAutopayChanged": false
+  },
+  "publication": {
+    "accountId": "8b0d70250211aa10d89e20605a1c7e5e",
+    "worker": "riffology-m1-gateway-staging",
+    "requestId": "94a86e2d-0d9d-429b-aa80-f736b05ed921",
+    "planSha256": "7cc26e0500aee487aca57894c71431d258d76582da14e786ed29e45b725cb180",
+    "publisherSha256": "bd32b080035f6ecf8e317c6165f7b1a6bb14a8dd79a6c3903804de59ed97fd03",
+    "metadataSha256": "8451e8c5d7fa54df0c8ef06f10a01c997c1ccba182c0cd908e3437cad0df7ce8",
+    "acknowledgedAt": "2026-10-17T11:06:48.382Z",
+    "actualDeploymentId": "272163f3-4cf9-497b-8747-ef45cc2ed8e0",
+    "actualVersionId": "b62db92d-693a-4043-9ad1-f126e3a70c64",
+    "actualModule": {
+      "mainModule": "index.js",
+      "bytes": 5775036,
+      "sha256": "0475703a4ccda6d695709f6045b321431dc60b0e5369bc308bf08cee8279bd85"
+    },
+    "originalIntentSha256": "afa8ff8f9511056799272ed5d37a3958e45961cd9bae3f43d57b30dd18ef9445",
+    "originalAckSha256": "5a056cb19015d639dd1a7072d7465863cc00c9896e5c486490652dd807adc4f5",
+    "workerReadbackReceiptSha256": "6bffb67744fdd1541b5bb12ca0aad283f027c9a282d0e0545a452ace29632c95",
+    "writeCounts": {
+      "assetSession": 1,
+      "serverRequestedAssetUploadBuckets": 2,
+      "workerPut": 1
+    },
+    "originalLockRetained": true,
+    "automaticRetry": false,
+    "rollback": false,
+    "unknownTerminal": false
+  },
+  "preservation": {
+    "authority": "Personal Cloudflare connector",
+    "preRead": {
+      "startedAt": "2026-10-17T11:04:51.902Z",
+      "endedAt": "2026-10-17T11:04:54.236Z",
+      "getCount": 39,
+      "sha256": "e251628786ee58b139c2f38e7036827fc3eab01776c65fb7fbbdf84944d0149d"
+    },
+    "postRead": {
+      "startedAt": "2026-10-17T11:07:28.746Z",
+      "endedAt": "2026-10-17T11:07:31.382Z",
+      "getCount": 39,
+      "sha256": "5552131a635e7fc80fd0744cb86429aefbc9f2f73fea48a3b819ccf7ccc13c1f"
+    },
+    "independentAll16AppsAndEveryVersionPreserved": true,
+    "counts": {
+      "apps": 16,
+      "appVersionLists": 16,
+      "namespaces": 50,
+      "registries": 1,
+      "domains": 3,
+      "routes": 5,
+      "bindings": 106,
+      "exports": 25,
+      "containerAssociations": 6
+    },
+    "all106BindingsIncluding11KeptSecretsPreserved": true,
+    "all25ExportsAnd6AssociationsPreserved": true,
+    "all50NamespaceRecordsPreserved": true,
+    "settingsPreservedExceptReviewedReleaseAnnotations": true,
+    "allImagesPoliciesRegistryRoutesCronsDomainsAndSubdomainPreserved": true,
+    "postActualModuleMatchesFrozenV3": true,
+    "originalBrowserAppInstanceListCount": 0,
+    "observationIsDatedAndScoped": true,
+    "allAccountZeroExecutionOrFeesClaimed": false,
+    "rawConfigurationPublished": false,
+    "secretValuesRequested": false
+  },
+  "admission": {
+    "remotePolicyEnabled": false,
+    "browserPolicyBindingPresent": false,
+    "browserAdmissionClosed": true,
+    "newResources": 0,
+    "newAuthenticatedProjectOrSaveRequests": 0,
+    "containerOrProviderModelTurnRunRequests": 0,
+    "newRegistryOrApplicationImageWrites": 0,
+    "userAcceptance": false
+  },
+  "oauth": {
+    "existingSameAccountNormallyRenewedUnderGrant": true,
+    "existingScopesUnchanged": true,
+    "newLogin": false,
+    "credentialTransferToAMD": false,
+    "credentialValuesPublished": false
+  },
+  "publicAssets": {
+    "evidence": "evidence/releases/project-view-browser-native-public-assets-20261017.json",
+    "evidenceSha256": "5fda9759088c370e896944f8bd49d2c291745ead43c81d0c76233239043278ce",
+    "initialRound": {
+      "requests": 96,
+      "pass": 95,
+      "fail": 1,
+      "failure": "SciPy HTTP200 body read-timeout; no complete digest; not a content mismatch",
+      "receiptSha256": "f5d12bf6320a7e769abe533b631418d1e36e769746a9313eb758cf7b230c39b6"
+    },
+    "rootDirectedSinglePathFollowup": {
+      "requests": 1,
+      "pass": 1,
+      "fail": 0,
+      "completeBytes": 14029768,
+      "receiptSha256": "effa98c49402a4f6717e108c70f193924e0f02f6c5675e7be4bb89d7b147db13"
+    },
+    "totalGetRequests": 97,
+    "distinctPathsCompletelyVerified": 96,
+    "singleAllGreen96InvocationClaimed": false,
+    "credentialsOrRedirectsOrExecution": false
+  },
+  "validationBoundary": {
+    "fullCheck3303Node13Skipped8PythonBelongsOnlyTo": "e689beb4a1babd8546405181cf3daf74625ed59d",
+    "currentLocalLifecycleEvidence": "evidence/releases/project-view-native-liveness-candidate-20261017.json",
+    "ordinaryAuthenticatedAcceptance": false,
+    "fullJHG56Matrix": false,
+    "hardSynchronousJsCpuOrRamTerminationGuarantee": false
+  },
+  "nextUncoveredScope": {
+    "trustedPiStillUsesExistingOldImage": true,
+    "offlineImagePacket": "docs/project-view-trusted-pi-offline-build-packet-20261017.md",
+    "newOfflineTransferPullBuildGrantGiven": false,
+    "paidOrdinaryPiAndBrowserScopedGrantGiven": false,
+    "goalComplete": false
+  }
+}
