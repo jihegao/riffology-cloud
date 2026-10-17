@@ -1,0 +1,26 @@
+TAP version 13
+# (node:94017) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# DIAG digest begin 1
+# DIAG digest end 1 elapsedMs 0.6457089999999965
+# DIAG digest begin 2
+# DIAG digest end 2 elapsedMs 51.202708
+# DIAG digest begin 3
+# DIAG digest end 3 elapsedMs 0.09712500000000546
+# DIAG digest begin 4
+# DIAG digest end 4 elapsedMs 0.05579099999999926
+# Subtest: closing the original actor while preflight is pending blocks every later browser exec and init
+ok 1 - closing the original actor while preflight is pending blocks every later browser exec and init
+  ---
+  duration_ms: 56.99925
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 146.974375
