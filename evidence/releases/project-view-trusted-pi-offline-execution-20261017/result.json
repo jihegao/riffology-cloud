@@ -1,7 +1,7 @@
 {
   "schema": "project-view-trusted-pi-offline-execution/v1",
   "draft": false,
-  "recordedAt": "2026-10-17T12:24:23.757440+00:00",
+  "recordedAt": "2026-10-17T12:50:54.440699+00:00",
   "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
   "status": "image-built-first-mock-failed-and-original-container-cleaned",
   "authorization": {
@@ -327,6 +327,18 @@
       "path": "sources/first-mock-original-cid-cleanup-source-audit.json",
       "bytes": 1827,
       "sha256": "2f5e6295e01a983ce1da244c15397136470d939c235ccccf799375547dde3960",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "layer-metadata-original-cli-cleanup-source-audit.json": {
+      "path": "sources/layer-metadata-original-cli-cleanup-source-audit.json",
+      "bytes": 4419,
+      "sha256": "8258e3f74c284fce9b1b37695167629c03d3ff0daa63213a28ec3e68e556ef6c",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "layer-metadata-read-safe-receipt.json": {
+      "path": "sources/layer-metadata-read-safe-receipt.json",
+      "bytes": 25931,
+      "sha256": "9c31aef84fe9d51e81f3859f9f2aa6fa0ef2e8937fe5cdcf515e7ce840400034",
       "byteIdenticalToOriginalSafeFile": true
     }
   },
@@ -685,7 +697,7 @@
     "snapshotScope": "Initial credential receiver phase, before cached-base build continuation; these false fields are historical phase observations, not cumulative batch totals.",
     "scope": "The earlier credential receiver only; the separate later build/mock actual result is recorded below."
   },
-  "currentGap": "The consumed first image mock failed its unchanged root-owner/mode assertion before SDK imports. Specific target metadata is under read-only investigation. No second mock/build is authorized by this evidence.",
+  "currentGap": "The unchanged first mock remains failed. A later one-save cryptographic layer read observed both exact package files as direct layer-22 root:root 0664 entries, supporting a candidate that explicitly copies those unchanged bytes as root:root 0444. Alias-aware final filesystem state and the exact runtime target causing the original assertion remain unproved. A repaired input, one new build and one new original-CID network-none mock require an explicit new grant; no second save or automatic mock is authorized by this result.",
   "recordingAuthority": "root exact execution receipts, independent source_audit safe projections and exact copied source-safe files; no arbitrary raw logs or environment values.",
   "actualRunnerSources": {
     "operations/build-probe-cached-base-v1/EXECUTION.md": {
@@ -719,6 +731,334 @@
     "operations/build-probe-continue-preflight-v1/test_build_probe.py": {
       "bytes": 12569,
       "sha256": "462f52be85c6e49e4b9f4f1626c428d290c877e8b27eabf803c3048f2443d49f"
+    },
+    "operations/image-layer-metadata-executed-98dc/image_layer_metadata.py": {
+      "bytes": 24927,
+      "sha256": "98dc761c4dd09271793cf06c5ccf25e7dd27798453bd1dd4690a6759992cdc5e",
+      "originalEvidenceName": "executed-98dc.py"
+    },
+    "operations/image-layer-metadata-executed-98dc/test_image_layer_metadata.py": {
+      "bytes": 9430,
+      "sha256": "1bb7eb7ef3beb54b90b91f0deee6333e39c363f2ed4f76641b8e1e9c00f1e09c",
+      "originalEvidenceName": "executed-98dc-test.py"
+    },
+    "operations/image-layer-metadata-executed-98dc/actual-11fake-before-execution-history.json": {
+      "bytes": 1575,
+      "sha256": "60c0b975a3ed7c93bb91a83852b1e2c195879d353bb1a3b013cf82b94b1fcee9",
+      "originalEvidenceName": "actual-11fake-before-execution-history.json"
+    }
+  },
+  "layerMetadataReadOnlyObservation": {
+    "previousResult": {
+      "path": "evidence/releases/project-view-trusted-pi-offline-execution-20261017/result.json",
+      "bytes": 33849,
+      "sha256": "add09ceafb4ab0451261df7a09414a3ff651f6f8e7e2ddf8d5e3c7f7c1b8352e",
+      "recordedAt": "2026-10-17T12:24:23.757440+00:00",
+      "allPriorFailureUnknownAndCleanupHistoryPreserved": true
+    },
+    "requestId": "57a70587-2b21-4a56-aed1-09c8a32d868a",
+    "imageId": "sha256:b2c2f93eff23011fe7863545e2b62b3b3d0d6fd4da161371afae399c0ce59c27",
+    "authority": "Root executed the fixed reviewed inspector once on AMD128; source_audit independently reviewed the returned safe records and read the three original CLI lifecycle records.",
+    "executedSourceSha256": "98dc761c4dd09271793cf06c5ccf25e7dd27798453bd1dd4690a6759992cdc5e",
+    "sshExitCode": 0,
+    "metadataStatus": "metadata-read-completed",
+    "remoteEndedAt": "2026-10-17T12:36:30.105824+00:00",
+    "localTransportEndedAt": "2026-10-17T12:36:34.176189+00:00",
+    "saveInvocations": 1,
+    "additionalSavesForAliasReview": 0,
+    "archiveStream": {
+      "bytesObserved": 407923200,
+      "sha256Observed": "fedb4e2f69adc9f56504cb560ddbf432939e3980e65d26f84f93de5055a9159e",
+      "decompressedLayerBytesObserved": 1283005440,
+      "persistedOrReturned": false
+    },
+    "cryptographicBinding": {
+      "freshPreAndPostImageBindingPassedInExecutedInspector": true,
+      "rootDescriptor": {
+        "digest": "sha256:b2c2f93eff23011fe7863545e2b62b3b3d0d6fd4da161371afae399c0ce59c27",
+        "mediaType": "application/vnd.oci.image.index.v1+json",
+        "size": 856
+      },
+      "selectedLinuxAmd64Manifest": {
+        "digest": "sha256:e2a1c8b2a85e13605fa1be990f82ee1ab7766a5246be529a1ed41a66e0851ce1",
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "size": 9206
+      },
+      "configDigest": "sha256:90428b6f5270e8caf8049b9afefc17df1bbfbe96d911328f2fc412f3a05ba109",
+      "layerCount": 47,
+      "allSelectedBlobSizeAndShaAndDiffIdsCheckedInExecutedInspector": true,
+      "independentRawArchiveRehashByThisDraft": false
+    },
+    "directTargetObservations": [
+      {
+        "gid": 0,
+        "matchesFrozenSizeAndSha": true,
+        "mode": 292,
+        "modeOctal": "0444",
+        "ownershipGuardWouldPass": true,
+        "path": "opt/riffology/browser-preview/runtime/sha256.mjs",
+        "present": true,
+        "sha256": "85da435e9edaf4dca3411cf5f86fa45a95fe15c78060849d11f7eb0344b5bd24",
+        "size": 2241,
+        "sourceLayerDigest": "sha256:9043882f31e3e7309340a5f47d0d1f3e157798deef348fa9480f2cdd6e6dd38d",
+        "sourceLayerIndex": 41,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "matchesFrozenSizeAndSha": true,
+        "mode": 292,
+        "modeOctal": "0444",
+        "ownershipGuardWouldPass": true,
+        "path": "opt/riffology/project-resources/text.mjs",
+        "present": true,
+        "sha256": "9f7f3266549f04a0a8214e6e725ea9d85030532364f136487833e9cc45af303e",
+        "size": 6700,
+        "sourceLayerDigest": "sha256:3a64d22bb39aa56cb0f352b6a36f4393b3bd1215818445ceb2e0329e1cf7d46b",
+        "sourceLayerIndex": 42,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "matchesFrozenSizeAndSha": true,
+        "mode": 292,
+        "modeOctal": "0444",
+        "ownershipGuardWouldPass": true,
+        "path": "opt/riffology/runtime/controlled-pi.mjs",
+        "present": true,
+        "sha256": "cf4143bff6cf049d2ab8247ef86ceb5f5391da67a86acb56ea901a119b2d6871",
+        "size": 23072,
+        "sourceLayerDigest": "sha256:3f2285f2a74161b56b844e9255a5e18050b70b550eb332b811ed6ecd6b47e5f1",
+        "sourceLayerIndex": 43,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "matchesFrozenSizeAndSha": true,
+        "mode": 292,
+        "modeOctal": "0444",
+        "ownershipGuardWouldPass": true,
+        "path": "opt/riffology/trusted-pi/release-candidate.mjs",
+        "present": true,
+        "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07",
+        "size": 27185,
+        "sourceLayerDigest": "sha256:355f15a59bcbedd5c7de0b2d952bcd5b6d5b4f26873a7f7fcd06fd24da511df6",
+        "sourceLayerIndex": 44,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "matchesFrozenSizeAndSha": true,
+        "mode": 292,
+        "modeOctal": "0444",
+        "ownershipGuardWouldPass": true,
+        "path": "opt/riffology/trusted-pi/research-context.mjs",
+        "present": true,
+        "sha256": "938e89155a5d5e0c405f51db5d973a4db264e63d96e308aff8da93caaaa05076",
+        "size": 1557,
+        "sourceLayerDigest": "sha256:9c783cfb480c06cb0273b023d961a5fc49cee97ef51fc97bbd33b4831675bc66",
+        "sourceLayerIndex": 45,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "matchesFrozenSizeAndSha": true,
+        "mode": 292,
+        "modeOctal": "0444",
+        "ownershipGuardWouldPass": true,
+        "path": "opt/riffology/trusted-pi/trusted-pi-release.mjs",
+        "present": true,
+        "sha256": "034cdc9df6c09e9cd7a32320e6bbfc2f9bbf5761151fe1d585d7fd64cdcd8d07",
+        "size": 27185,
+        "sourceLayerDigest": "sha256:2fdab1e4167f40303b4ce7d17a5ea4b7d1f34a57a54d51897ee60fab24cfc17b",
+        "sourceLayerIndex": 46,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "matchesFrozenSizeAndSha": true,
+        "mode": 365,
+        "modeOctal": "0555",
+        "ownershipGuardWouldPass": true,
+        "path": "opt/riffology/trusted-pi/trusted-pi-turn-host.mjs",
+        "present": true,
+        "sha256": "9964e7ab863207ce9b9a911e03bfcb4f99afc61fb6508d2d6611b66931be516b",
+        "size": 15937,
+        "sourceLayerDigest": "sha256:0827d428792775c2fdd8305bd9b195d9606be8d6e25dd1f279129909508fd507",
+        "sourceLayerIndex": 25,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "matchesFrozenSizeAndSha": true,
+        "mode": 292,
+        "modeOctal": "0444",
+        "ownershipGuardWouldPass": true,
+        "path": "opt/riffology/trusted-pi/product-model-transport.mjs",
+        "present": true,
+        "sha256": "c2bece021f34f0b929e796238d132a819281d172b5d8fd3a6f431ed9d46801c6",
+        "size": 7703,
+        "sourceLayerDigest": "sha256:301894d6f50c2740c5ec389bc7844a0dd7f9078abe2e8c7e8444f53528a37b94",
+        "sourceLayerIndex": 26,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "matchesFrozenSizeAndSha": true,
+        "mode": 292,
+        "modeOctal": "0444",
+        "ownershipGuardWouldPass": true,
+        "path": "opt/riffology/trusted-pi/product-tool-bridge.mjs",
+        "present": true,
+        "sha256": "e536e9231a7fa41be956e3066535a62b7de460b37a4e5a40937c67d9f5981e74",
+        "size": 11657,
+        "sourceLayerDigest": "sha256:0158583f76613a48aa1ee03c036760955ed2fab8f3571819fc3760f30680c41e",
+        "sourceLayerIndex": 39,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "matchesFrozenSizeAndSha": true,
+        "mode": 365,
+        "modeOctal": "0555",
+        "ownershipGuardWouldPass": true,
+        "path": "opt/riffology/runtime_supervisor.py",
+        "present": true,
+        "sha256": "79e2bdedaedba063364513d853eb8325f229ba55b1e51df46cbcee359807e29c",
+        "size": 16912,
+        "sourceLayerDigest": "sha256:6ad02f9de5086647ed7ae8ffad9da806baff2a7405772c5f4d13d56b6c5d3a32",
+        "sourceLayerIndex": 31,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "matchesFrozenSizeAndSha": true,
+        "mode": 436,
+        "modeOctal": "0664",
+        "ownershipGuardWouldPass": false,
+        "path": "opt/riffology/package.json",
+        "present": true,
+        "sha256": "0dde532fe23b810bd09b978f990d48342f7378429f2b2c48f30e055993fa6ebe",
+        "size": 244,
+        "sourceLayerDigest": "sha256:537658ceee64f93f297b6337ee8ebc85bf87f3c856b8da3fa9cd360b0d1153e1",
+        "sourceLayerIndex": 22,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "matchesFrozenSizeAndSha": true,
+        "mode": 436,
+        "modeOctal": "0664",
+        "ownershipGuardWouldPass": false,
+        "path": "opt/riffology/package-lock.json",
+        "present": true,
+        "sha256": "ad20b5c766c411c5ba42a4fc997890fe3494ab8adb96cf5d75031366b3d144fc",
+        "size": 150262,
+        "sourceLayerDigest": "sha256:537658ceee64f93f297b6337ee8ebc85bf87f3c856b8da3fa9cd360b0d1153e1",
+        "sourceLayerIndex": 22,
+        "uid": 0
+      }
+    ],
+    "directTargetSummary": {
+      "total": 12,
+      "allPresentAndFrozenBytesShaMatch": true,
+      "rootOwnerCount": 12,
+      "rootGroupCount": 12,
+      "mode0444Or0555Count": 10,
+      "mode0664Count": 2,
+      "two0664PackageEntriesSourceLayerIndex": 22,
+      "directHeaderOwnershipPredicateIsNotRuntimeStat": true
+    },
+    "postExecutionAliasReview": {
+      "gapFoundAfterExecution": true,
+      "executedInspectorAccountedForUnrelatedPathLinksIntoCriticalPaths": false,
+      "limitation": "The executed source rejected direct target or ancestor links but did not fully account for a separate path linking into those paths. Layer summaries therefore do not prove effective inode ownership/mode or alias safety. The raw archive was not retained and was not exported again.",
+      "executedSourceUnchanged": true,
+      "correctedOfflineInspectorNotExecuted": true
+    },
+    "originalCliCleanup": {
+      "evidence": {
+        "path": "sources/layer-metadata-original-cli-cleanup-source-audit.json",
+        "bytes": 4419,
+        "sha256": "8258e3f74c284fce9b1b37695167629c03d3ff0daa63213a28ec3e68e556ef6c",
+        "byteIdenticalToOriginalSafeFile": true
+      },
+      "allThreeRecordedExitZeroAndReaped": true,
+      "allThreeCurrentOriginalPidsAbsent": true,
+      "independentReadbackDockerCommands": 0,
+      "independentReadbackSaveInvocations": 0,
+      "observedAt": "2026-10-17T12:42:39.476172+00:00",
+      "entries": [
+        {
+          "label": "pre-inspect",
+          "pid": 2038948,
+          "linuxStartTicks": "164730538",
+          "exitCode": 0,
+          "reaped": true,
+          "currentProcessState": "absent"
+        },
+        {
+          "label": "save",
+          "pid": 2039026,
+          "linuxStartTicks": "164730547",
+          "exitCode": 0,
+          "reaped": true,
+          "currentProcessState": "absent"
+        },
+        {
+          "label": "post-inspect",
+          "pid": 2040603,
+          "linuxStartTicks": "164731527",
+          "exitCode": 0,
+          "reaped": true,
+          "currentProcessState": "absent"
+        }
+      ]
+    },
+    "evidence": {
+      "path": "sources/layer-metadata-read-safe-receipt.json",
+      "bytes": 25931,
+      "sha256": "9c31aef84fe9d51e81f3859f9f2aa6fa0ef2e8937fe5cdcf515e7ce840400034",
+      "byteIdenticalToOriginalSafeFile": true
+    },
+    "stdoutSafeResultIdentity": {
+      "bytes": 19692,
+      "sha256": "579e3718dba12267985b36e6a42c0c088f8d0c341461c92d28f0858e7919714b",
+      "alreadyContainedAsSafeRemoteResultInReceipt": true,
+      "duplicatePayloadCopied": false
+    },
+    "acceptanceBoundary": {
+      "runtimeFilesystemStatProved": false,
+      "fullAliasSafetyProved": false,
+      "exactOriginalRuntimeFailureTargetEstablished": false,
+      "uniqueRootCauseEstablished": false,
+      "sdkCompatibilityPassed": false,
+      "newBuildOrMockPerformedByThisObservation": false,
+      "cloudflareOrOrdinaryUserAcceptance": false,
+      "originalCredentialMintOutcome": "unknown-unchanged",
+      "zeroFeesClaimed": false,
+      "rawTargetContentOrEnvOrFullConfigReturned": false
+    },
+    "nextRepairCandidate": {
+      "status": "offline-review-only-not-executed",
+      "proposedChange": "Explicitly COPY the two exact existing package files with root:root ownership and mode 0444 in the fixed-base overlay; add explicit mode 0444 to canonical package COPY for future complete builds.",
+      "fixedBaseUnchanged": "registry.cloudflare.com/8b0d70250211aa10d89e20605a1c7e5e/riffology-issue165-trusted-pi@sha256:9b76ab9ee7a4f31d250957fbbeefc62d71056e6bd1eb24686ebbeaff3d65873c",
+      "packageBytesAndShaUnchanged": true,
+      "fiveRuntimeSourceInputsAndSixRuntimeTargetsUnchanged": true,
+      "rootSupervisorAndUid10002ChildContractUnchanged": true,
+      "probeOwnerModeAndHashGuardsUnchanged": true,
+      "npmOrDependencyInstallationAllowed": false,
+      "requiresExplicitNewInputBuildAndMockGrant": true,
+      "newImageBuildOrMockExecuted": false
+    },
+    "historicalFieldBoundary": "Earlier firstImageMock.whichOf12TargetsFailed=not-established and sourceUidMetadataInspectorPending are retained as the original failure snapshot. The direct layer read is now complete, but final runtime metadata and the exact original runtime failing target remain unproved.",
+    "executedSourcePath": "operations/image-layer-metadata-executed-98dc/image_layer_metadata.py",
+    "historicalFakeTests": {
+      "path": "operations/image-layer-metadata-executed-98dc/actual-11fake-before-execution-history.json",
+      "passedBeforeExecution": 11,
+      "originalUtcAndRawConsoleNotRetained": true,
+      "newTestRunByThisAppend": false,
+      "laterAliasTestsNotAttributedToExecutedSource": true
     }
   }
 }
